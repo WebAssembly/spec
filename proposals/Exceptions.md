@@ -133,9 +133,10 @@ Exception indices are used by:
 1. The `throw` instruction which creates a WebAssembly exception with the
    corresponding exception tag, and then throws it.
 
-2. The `if_except` instruction queries an exception to see if the corresponding
-   exception tag denoted by the exception index. If true it pushes the
-   corresponding values of the exception onto the stack.
+2. The `br_on_exn` instruction queries an exception to see if it matches the
+   corresponding exception tag denoted by the exception index. If true it
+   branches to the given label and pushes the corresponding argument values of
+   the exception onto the stack.
 
 ### The exception reference data type
 
@@ -220,39 +221,58 @@ exception on top of the stack is popped and then thrown.
 
 ### Exception data extraction
 
-The `if_except` block begins with an `if_except` instruction, and has two
-instruction blocks,
-
-That is, the forms of an if_except block is:
+The `br_on_exn` instruction is a conditional branch that checks the exception
+tag of an exception on top of the stack, in the form of:
 
 ```
-if_except block_type except_index
-  Instruction*
-end
+br_on_exn label except_index
+```
 
-if_except block_type except_index
-  Instruction*
-else
-  Instruction*
+The `br_on_exn` instruction checks the exception tag of an `except_ref` on top
+of the stack if it matches the given exception index. If it does, it branches
+out to the label referenced by the instruction (In the binary form, the label
+will be converted to a relative depth immediate, like other branch
+instructions), and while doing that, pops the `except_ref` value from the stack
+and instead pushes the exception's argument values on top of the stack. In order
+to use these popped values, the block signature of the branch target has to
+match the exception types - because it receives the exception arguments as
+branch operands. If the exception tag does not match, the `except_ref` value
+remains on the stack. For example, when an `except_ref` contains an exception of
+type (i32 i64), the target block signature should be (i32 i64) as well, as in
+the following example:
+
+```
+block $l (result i32 i64)
+  ...
+  ;; except_ref $e is on the stack at this point
+  br_on_exn $l ;; branch to $l with $e's arguments
+  ...
 end
 ```
 
-In the first form, the instructions between the `if_except` and 'end' define the
-`then block`. In the second form, the instructions between the `if_except` and
-`else` define the `then block`, while the instructions between the `else` and
-the `end` define the `else block`.
+This can now be used to construct handler switches in the same way `br_table`
+is used to construct regular switch:
 
-The conditional query of an exception checks the exception tag of exception on
-top of the stack. It succeeds only if the exception index of the instruction
-matches the corresponding exception tag. Once the query completes, the exception
-is popped off the stack.
+```
+block $end
+  block $l1
+    ...
+      block $lN
+        br_on_exn $l1
+        ...
+        br_on_exn $lN
+        rethrow
+      end $lN
+      ;; handler for $eN here
+      br $end
+    ...
+  end $l1
+  ;; handler for $e1
+end $end
+```
 
-If the query succeeds the values (associated with the popped exception) are
-extracted and pushed onto the stack, and control transfers to the instructions
-in the then block.
-
-If the query fails, it either enters the else block, or transfer control to the
-end of the if_except block if there is no else block.
+If the query fails, the control flow falls through, and no values are pushed
+onto the stack.
 
 ### Stack traces
 
@@ -274,15 +294,14 @@ The following rules are added to *instructions*:
   try resulttype instruction* catch instruction* end |
   throw except_index |
   rethrow |
-  if_except resulttype except_index then instruction* end |
-  if_except resulttype except_index then instruction* else instruction* end
+  br_on_exn label except_index
 ```
 
-Like the `block`, `loop`, and `if` instructions, the `try` and `if_except`
-instructions are *structured* control flow instructions, and can be labeled.
-This allows branch instructions to exit try and `if_except` blocks.
+Like the `block`, `loop`, and `if` instructions, the `try` instruction is
+*structured* control flow instruction, and can be labeled. This allows branch
+instructions to exit try blocks.
 
-The `except_index` of the `throw` and `if_except` instructions defines the
+The `except_index` of the `throw` and `br_on_exn` instructions defines the
 exception (and hence, exception tag) to create/extract from. See [exception
 index space](#exception-index-space) for further clarification of exception
 tags.
@@ -447,7 +466,7 @@ throws, and rethrows as follows:
 | `catch` | `0x07` | | begins the catch block of the try block |
 | `throw` | `0x08` | index : `varint32` | Creates an exception defined by the exception `index`and then throws it |
 | `rethrow` | `0x09` | | Pops the `except_ref` on top of the stack and throws it |
-| `if_except` | `0x0a` |  index : `varuint32`, sig : `block_type` | Begin exception data extraction if exception on stack was created using the corresponding exception `index` |
+| `br_on_exn` | `0x0a` |  relative_depth : `varuint32`, index : `varuint32` | Branches to the given label and extracts data within `except_ref` on top of stack if it was created using the corresponding exception `index` |
 
-The *sig* fields of `block`, `if`, `try` and `if_except` operators are block
-signatures which describe their use of the operand stack.
+The *sig* fields of `block`, `if`, and `try` operators are block signatures
+which describe their use of the operand stack.
