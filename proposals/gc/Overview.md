@@ -161,11 +161,8 @@ For example, `D.g`:
 ```
 (func $D.g (param $Cthis (ref $C))
   (local $this (ref $D))
-  (block $fail (result (ref $D))
-    (set_local $this (cast_down (ref $Cthis) (ref $D) $fail (get_local $Cthis)))
-    ...
-  )
-  (unreachable)
+  (set_local $this (ref.cast (ref $Cthis) (ref $D) (get_local $Cthis)))
+  ...
 )
 ```
 
