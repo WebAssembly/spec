@@ -31,6 +31,9 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
   - `reftype ::= ... | rtt <reftype>`
   - `rtt t ok` iff `t ok`
 
+* Note: types `anyref` and `funcref` already exist via [reference types proposal](https://github.com/WebAssembly/reference-types)
+
+
 
 #### Type Definitions
 
@@ -167,6 +170,13 @@ In addition to the rules for basic reference types:
   - `ref.func $f : [] -> [(ref $t)]`
      - iff `$f : $t`
 
+* `call_ref` calls a function through a reference
+  - `call_ref : [t1* (optref $t)] -> [t2*]`
+     - iff `$t = [t1*] -> [t2*]`
+  - traps on `null`
+
+Perhaps also the following short-hands:
+
 * `ref.is_func` checks whether a reference is a function
   - `ref.is_func : [anyref] -> [i32]`
   - equivalent to `(rtt.funcref) (ref.test anyref funcref)`
@@ -175,11 +185,6 @@ In addition to the rules for basic reference types:
   - `ref.as_func : [anyref] -> [funcref]`
   - traps if reference is not a function
   - equivalent to `(rtt.funcref) (ref.cast anyref funcref)`
-
-* `call_ref` calls a function through a reference
-  - `call_ref : [t1* (optref $t)] -> [t2*]`
-     - iff `$t = [t1*] -> [t2*]`
-  - traps on `null`
 
 
 #### Structures
@@ -250,10 +255,17 @@ In addition to the rules for basic reference types:
 #### Integer references
 
 Tentatively, support a type of guaranteed unboxed scalars.
-TODO: Is 31 bit value range the right choice?
 
-* `i31ref.new` creates an `i31ref` from a 32 bit value, truncating high bit
-  - `i31ref.new : [i32] -> [i31ref]`
+* `i31.new` creates an `i31ref` from a 32 bit value, truncating high bit
+  - `i31.new : [i32] -> [i31ref]`
+
+* `i31.get_u` extracts the value, zero-extending
+  - `i31.get_u : [i31ref] -> [i32]`
+
+* `i31.get_s` extracts the value, sign-extending
+  - `i31.get_s : [i31ref] -> [i32]`
+
+Perhaps also the following short-hands:
 
 * `ref.is_i31` checks whether a reference is an i31
   - `ref.is_i31 : [anyref] -> [i32]`
@@ -264,17 +276,11 @@ TODO: Is 31 bit value range the right choice?
   - traps if reference is not an integer
   - equivalent to `(rtt.i31ref) (ref.cast anyref i31ref)`
 
-* `i31ref.get_u` extracts the value, zero-extending
-  - `i31ref.get_u : [i31ref] -> [i32]`
-
-* `i31ref.get_s` extracts the value, sign-extending
-  - `i31ref.get_s : [i31ref] -> [i32]`
-
 
 #### Optional references
 
-* `optref.as_nonnull` converts an optional reference to a non-optional one
-  - `optref.as_nonnull : [(optref $t)] -> [(ref $t)]`
+* `ref.as_nonnull` converts an optional reference to a non-optional one
+  - `ref.as_nonnull : [(optref $t)] -> [(ref $t)]`
     - iff `$t` is defined
   - traps on `null`
 
@@ -282,6 +288,8 @@ TODO: Is 31 bit value range the right choice?
   - `br_on_null $l : [(optref $t)] -> [(ref $t)]`
     - iff `$t` is defined
   - branches to on `null`, otherwise returns operand as non-optional
+
+* Note: `ref.is_null` already exists via [reference types proposal](https://github.com/WebAssembly/reference-types)
 
 
 #### Runtime Types
