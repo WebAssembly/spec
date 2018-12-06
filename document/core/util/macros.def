@@ -171,7 +171,7 @@
 .. |F32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32}}
 .. |F64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64}}
 
-.. |ANYFUNC| mathdef:: \xref{syntax/types}{syntax-elemtype}{\K{anyfunc}}
+.. |FUNCREF| mathdef:: \xref{syntax/types}{syntax-elemtype}{\K{funcref}}
 
 .. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
 .. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{const}}
@@ -317,11 +317,11 @@
 .. |DROP| mathdef:: \xref{syntax/instructions}{syntax-instr-parametric}{\K{drop}}
 .. |SELECT| mathdef:: \xref{syntax/instructions}{syntax-instr-parametric}{\K{select}}
 
-.. |GETLOCAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{get\_local}}
-.. |SETLOCAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{set\_local}}
-.. |TEELOCAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{tee\_local}}
-.. |GETGLOBAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{get\_global}}
-.. |SETGLOBAL| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{set\_global}}
+.. |LOCALGET| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{local.get}}
+.. |LOCALSET| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{local.set}}
+.. |LOCALTEE| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{local.tee}}
+.. |GLOBALGET| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{global.get}}
+.. |GLOBALSET| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{global.set}}
 
 .. |LOAD| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{load}}
 .. |STORE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{store}}
@@ -940,15 +940,15 @@
 .. |fge| mathdef:: \xref{exec/numerics}{op-fge}{\F{fge}}
 
 .. |extend| mathdef:: \xref{exec/numerics}{op-extend_u}{\F{extend}}
-.. |extendu| mathdef:: \xref{exec/numerics}{op-extend_u}{\F{extend\_u}}
-.. |extends| mathdef:: \xref{exec/numerics}{op-extend_s}{\F{extend\_s}}
+.. |extendu| mathdef:: \xref{exec/numerics}{op-extend_u}{\F{extend}^{\K{u}}}
+.. |extends| mathdef:: \xref{exec/numerics}{op-extend_s}{\F{extend}^{\K{s}}}
 .. |wrap| mathdef:: \xref{exec/numerics}{op-wrap}{\F{wrap}}
-.. |truncu| mathdef:: \xref{exec/numerics}{op-trunc_u}{\F{trunc\_u}}
-.. |truncs| mathdef:: \xref{exec/numerics}{op-trunc_s}{\F{trunc\_s}}
+.. |truncu| mathdef:: \xref{exec/numerics}{op-trunc_u}{\F{trunc}^{\K{u}}}
+.. |truncs| mathdef:: \xref{exec/numerics}{op-trunc_s}{\F{trunc}^{\K{s}}}
 .. |promote| mathdef:: \xref{exec/numerics}{op-promote}{\F{promote}}
 .. |demote| mathdef:: \xref{exec/numerics}{op-demote}{\F{demote}}
-.. |convertu| mathdef:: \xref{exec/numerics}{op-convert_u}{\F{convert\_u}}
-.. |converts| mathdef:: \xref{exec/numerics}{op-convert_s}{\F{convert\_s}}
+.. |convertu| mathdef:: \xref{exec/numerics}{op-convert_u}{\F{convert}^{\K{u}}}
+.. |converts| mathdef:: \xref{exec/numerics}{op-convert_s}{\F{convert}^{\K{s}}}
 .. |reinterpret| mathdef:: \xref{exec/numerics}{op-reinterpret}{\F{reinterpret}}
 
 

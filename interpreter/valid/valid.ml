@@ -230,20 +230,20 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
 
 
 
-  | GetLocal x ->
+  | LocalGet x ->
     [] --> [local c x]
 
-  | SetLocal x ->
+  | LocalSet x ->
     [local c x] --> []
 
-  | TeeLocal x ->
+  | LocalTee x ->
     [local c x] --> [local c x]
 
-  | GetGlobal x ->
+  | GlobalGet x ->
     let GlobalType (t, mut) = global c x in
     [] --> [t]
 
-  | SetGlobal x ->
+  | GlobalSet x ->
     let GlobalType (t, mut) = global c x in
     require (mut = Mutable) x.at "global is immutable";
     [t] --> []
@@ -368,7 +368,7 @@ let check_func (c : context) (f : func) =
 let is_const (c : context) (e : instr) =
   match e.it with
   | Const _ -> true
-  | GetGlobal x -> let GlobalType (_, mut) = global c x in mut = Immutable
+  | GlobalGet x -> let GlobalType (_, mut) = global c x in mut = Immutable
   | _ -> false
 
 let check_const (c : context) (const : const) (t : value_type) =

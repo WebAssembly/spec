@@ -120,7 +120,7 @@ Table Types
    \production{table type} & \Ttabletype &::=&
      \X{lim}{:}\Tlimits~~\X{et}{:}\Telemtype &\Rightarrow& \X{lim}~\X{et} \\
    \production{element type} & \Telemtype &::=&
-     \text{anyfunc} &\Rightarrow& \ANYFUNC \\
+     \text{funcref} &\Rightarrow& \FUNCREF \\
    \end{array}
 
 .. note::

@@ -72,8 +72,8 @@ let u32 s =
   Int32.(add lo (shift_left hi 16))
 
 let u64 s =
-  let lo = I64_convert.extend_u_i32 (u32 s) in
-  let hi = I64_convert.extend_u_i32 (u32 s) in
+  let lo = I64_convert.extend_i32_u (u32 s) in
+  let hi = I64_convert.extend_i32_u (u32 s) in
   Int64.(add lo (shift_left hi 32))
 
 let rec vuN n s =
@@ -141,7 +141,7 @@ let value_type s =
 
 let elem_type s =
   match vs7 s with
-  | -0x10 -> AnyFuncType
+  | -0x10 -> FuncRefType
   | _ -> error s (pos s - 1) "invalid element type"
 
 let stack_type s =
@@ -254,11 +254,11 @@ let rec instr s =
 
   | 0x1c | 0x1d | 0x1e | 0x1f as b -> illegal s pos b
 
-  | 0x20 -> get_local (at var s)
-  | 0x21 -> set_local (at var s)
-  | 0x22 -> tee_local (at var s)
-  | 0x23 -> get_global (at var s)
-  | 0x24 -> set_global (at var s)
+  | 0x20 -> local_get (at var s)
+  | 0x21 -> local_set (at var s)
+  | 0x22 -> local_tee (at var s)
+  | 0x23 -> global_get (at var s)
+  | 0x24 -> global_set (at var s)
 
   | 0x25 | 0x26 | 0x27 as b -> illegal s pos b
 
@@ -406,25 +406,25 @@ let rec instr s =
   | 0xa6 -> f64_copysign
 
   | 0xa7 -> i32_wrap_i64
-  | 0xa8 -> i32_trunc_s_f32
-  | 0xa9 -> i32_trunc_u_f32
-  | 0xaa -> i32_trunc_s_f64
-  | 0xab -> i32_trunc_u_f64
-  | 0xac -> i64_extend_s_i32
-  | 0xad -> i64_extend_u_i32
-  | 0xae -> i64_trunc_s_f32
-  | 0xaf -> i64_trunc_u_f32
-  | 0xb0 -> i64_trunc_s_f64
-  | 0xb1 -> i64_trunc_u_f64
-  | 0xb2 -> f32_convert_s_i32
-  | 0xb3 -> f32_convert_u_i32
-  | 0xb4 -> f32_convert_s_i64
-  | 0xb5 -> f32_convert_u_i64
+  | 0xa8 -> i32_trunc_f32_s
+  | 0xa9 -> i32_trunc_f32_u
+  | 0xaa -> i32_trunc_f64_s
+  | 0xab -> i32_trunc_f64_u
+  | 0xac -> i64_extend_i32_s
+  | 0xad -> i64_extend_i32_u
+  | 0xae -> i64_trunc_f32_s
+  | 0xaf -> i64_trunc_f32_u
+  | 0xb0 -> i64_trunc_f64_s
+  | 0xb1 -> i64_trunc_f64_u
+  | 0xb2 -> f32_convert_i32_s
+  | 0xb3 -> f32_convert_i32_u
+  | 0xb4 -> f32_convert_i64_s
+  | 0xb5 -> f32_convert_i64_u
   | 0xb6 -> f32_demote_f64
-  | 0xb7 -> f64_convert_s_i32
-  | 0xb8 -> f64_convert_u_i32
-  | 0xb9 -> f64_convert_s_i64
-  | 0xba -> f64_convert_u_i64
+  | 0xb7 -> f64_convert_i32_s
+  | 0xb8 -> f64_convert_i32_u
+  | 0xb9 -> f64_convert_i64_s
+  | 0xba -> f64_convert_i64_u
   | 0xbb -> f64_promote_f32
 
   | 0xbc -> i32_reinterpret_f32
@@ -579,7 +579,7 @@ let local s =
 let code _ s =
   let pos = pos s in
   let nts = vec local s in
-  let ns = List.map (fun (n, _) -> I64_convert.extend_u_i32 n) nts in
+  let ns = List.map (fun (n, _) -> I64_convert.extend_i32_u n) nts in
   require (I64.lt_u (List.fold_left I64.add 0L ns) 0x1_0000_0000L)
     s pos "too many locals";
   let locals = List.flatten (List.map (Lib.Fun.uncurry Lib.List32.make) nts) in

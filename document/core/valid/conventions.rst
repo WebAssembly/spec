@@ -148,13 +148,13 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
    (saying that it consumes two |I32| values and produces one),
    independent of any side conditions.
 
-   An instruction like |GETLOCAL| can be typed as follows:
+   An instruction like |LOCALGET| can be typed as follows:
 
    .. math::
       \frac{
         C.\CLOCALS[x] = t
       }{
-        C \vdash \GETLOCAL~x : [] \to [t]
+        C \vdash \LOCALGET~x : [] \to [t]
       }
 
    Here, the premise enforces that the immediate :ref:`local index <syntax-localidx>` :math:`x` exists in the context.

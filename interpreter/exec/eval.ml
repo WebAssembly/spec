@@ -173,28 +173,28 @@ let rec step (c : config) : config =
       | Select, I32 i :: v2 :: v1 :: vs' ->
         v1 :: vs', []
 
-      | GetLocal x, vs ->
+      | LocalGet x, vs ->
         !(local frame x) :: vs, []
 
-      | SetLocal x, v :: vs' ->
+      | LocalSet x, v :: vs' ->
         local frame x := v;
         vs', []
 
-      | TeeLocal x, v :: vs' ->
+      | LocalTee x, v :: vs' ->
         local frame x := v;
         v :: vs', []
 
-      | GetGlobal x, vs ->
+      | GlobalGet x, vs ->
         Global.load (global frame.inst x) :: vs, []
 
-      | SetGlobal x, v :: vs' ->
+      | GlobalSet x, v :: vs' ->
         (try Global.store (global frame.inst x) v; vs', []
         with Global.NotMutable -> Crash.error e.at "write to immutable global"
            | Global.Type -> Crash.error e.at "type mismatch at global write")
 
       | Load {offset; ty; sz; _}, I32 i :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_u_i32 i in
+        let addr = I64_convert.extend_i32_u i in
         (try
           let v =
             match sz with
@@ -205,7 +205,7 @@ let rec step (c : config) : config =
 
       | Store {offset; sz; _}, v :: I32 i :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_u_i32 i in
+        let addr = I64_convert.extend_i32_u i in
         (try
           (match sz with
           | None -> Memory.store_value mem addr offset v
@@ -402,7 +402,7 @@ let init_memory (inst : module_inst) (seg : memory_segment) =
   let {index; offset = const; init} = seg.it in
   let mem = memory inst index in
   let offset' = i32 (eval_const inst const) const.at in
-  let offset = I64_convert.extend_u_i32 offset' in
+  let offset = I64_convert.extend_i32_u offset' in
   let end_ = Int64.(add offset (of_int (String.length init))) in
   let bound = Memory.bound mem in
   if I64.lt_u bound end_ || I64.lt_u end_ offset then
