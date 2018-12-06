@@ -403,7 +403,7 @@ So the list of all sections will be:
 | Table | `4` | Indirect function table and other tables |
 | Memory | `5` | Memory attributes |
 | Global | `6` | Global declarations |
-| Event | `12` | Event declarations |
+| Event | `13` | Event declarations |
 | Export | `7` | Exports |
 | Start | `8` | Start function declaration |
 | Element | `9` | Elements section |
