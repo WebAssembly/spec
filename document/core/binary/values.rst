@@ -117,7 +117,8 @@ Names
 The auxiliary |utf8| function expressing this encoding is defined as follows:
 
 .. math::
-   \begin{array}{@{}lcl@{\qquad}l}
+   \begin{array}{@{}l@{}}
+   \begin{array}{@{}lcl@{\qquad}l@{}}
    \utf8(c^\ast) &=& (\utf8(c))^\ast \\[1ex]
    \utf8(c) &=& b &
      (\begin{array}[t]{@{}c@{~}l@{}}
@@ -139,6 +140,8 @@ The auxiliary |utf8| function expressing this encoding is defined as follows:
       \iff & \unicode{10000} \leq c < \unicode{110000} \\
       \wedge & c = 2^{18}(b_1-\hex{F0})+2^{12}(b_2-\hex{80})+2^6(b_3-\hex{80})+(b_4-\hex{80})) \\
       \end{array} \\
+   \end{array} \\
+   \where b_2, b_3, b_4 < \hex{C0} \\
    \end{array}
 
 .. note::
