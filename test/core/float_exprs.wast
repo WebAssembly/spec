@@ -489,7 +489,7 @@
 (assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.ba4c5p+13)) (f32.const 0x1.136f16p-7))
 (assert_return (invoke "f32.no_approximate_sqrt_reciprocal" (f32.const 0x1.4a5be2p+104)) (f32.const 0x1.c2b5bp-53))
 
-;; Test that converting i32_i64 to f32_f64 and back isn't folded away.
+;; Test that converting i32/i64 to f32/f64 and back isn't folded away.
 
 (module
   (func (export "i32.no_fold_f32_s") (param i32) (result i32)

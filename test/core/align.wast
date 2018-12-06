@@ -521,7 +521,7 @@
     (local.get 2)
   )
 
-  ;; $8s: i32_i64.load8_s, $8u: i32_i64.load8_u, $16s: i32_i64.load16_s, $16u: i32_i64.load16_u, $32: i32.load
+  ;; $8s: i32/i64.load8_s, $8u: i32/i64.load8_u, $16s: i32/i64.load16_s, $16u: i32/i64.load16_u, $32: i32.load
   ;; $32s: i64.load32_s, $32u: i64.load32_u, $64: i64.load
 
   (func (export "i32_align_switch") (param i32 i32) (result i32)
