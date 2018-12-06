@@ -204,10 +204,11 @@ Perhaps also the following short-hands:
     - iff `$t = struct (mut t)*`
     - and all `t*` are defaultable
 
-* `struct.get <typeidx> <fieldidx>` reads field `$x` from a structure
-  - `struct.get $t i : [(optref $t)] -> [t]`
+* `struct.get_<sx>? <typeidx> <fieldidx>` reads field `$x` from a structure
+  - `struct.get_<sx>? $t i : [(optref $t)] -> [t]`
     - iff `$t = struct (mut1 t1)^i (mut ti) (mut2 t2)*`
     - and `t = unpacked(ti)`
+    - and `_<sx>` present iff `t =/= ti`
   - traps on `null`
 
 * `struct.set <typeidx> <fieldidx>` writes field `$x` of a structure
@@ -234,10 +235,11 @@ Perhaps also the following short-hands:
     - iff `$t = array (mut t)`
     - and `t` is defaultable
 
-* `array.get <typeidx>` reads an element from an array
-  - `array.get $t : [(optref $t) i32] -> [t]`
+* `array.get_<sx>? <typeidx>` reads an element from an array
+  - `array.get_<sx>? $t : [(optref $t) i32] -> [t]`
     - iff `$t = array (mut t')`
     - and `t = unpacked(t')`
+    - and `_<sx>` present iff `t =/= t'`
   - traps on `null`
 
 * `array.set <typeidx>` writes an element to an array
