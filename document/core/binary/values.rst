@@ -88,7 +88,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
 Floating-Point
 ~~~~~~~~~~~~~~
 
-:ref:`Floating-point <syntax-float>` values are encoded directly by their |IEEE754|_ bit pattern in |LittleEndian|_ byte order:
+:ref:`Floating-point <syntax-float>` values are encoded directly by their |IEEE754|_ (Section 3.4) bit pattern in |LittleEndian|_ byte order:
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
@@ -105,7 +105,7 @@ Floating-Point
 Names
 ~~~~~
 
-:ref:`Names <syntax-name>` are encoded as a :ref:`vector <binary-vec>` of bytes containing the |Unicode|_ UTF-8 encoding of the name's code point sequence.
+:ref:`Names <syntax-name>` are encoded as a :ref:`vector <binary-vec>` of bytes containing the |Unicode|_ (Section 3.9) UTF-8 encoding of the name's code point sequence.
 
 .. math::
    \begin{array}{llclllll}
@@ -117,7 +117,8 @@ Names
 The auxiliary |utf8| function expressing this encoding is defined as follows:
 
 .. math::
-   \begin{array}{@{}lcl@{\qquad}l}
+   \begin{array}{@{}l@{}}
+   \begin{array}{@{}lcl@{\qquad}l@{}}
    \utf8(c^\ast) &=& (\utf8(c))^\ast \\[1ex]
    \utf8(c) &=& b &
      (\begin{array}[t]{@{}c@{~}l@{}}
@@ -139,6 +140,8 @@ The auxiliary |utf8| function expressing this encoding is defined as follows:
       \iff & \unicode{10000} \leq c < \unicode{110000} \\
       \wedge & c = 2^{18}(b_1-\hex{F0})+2^{12}(b_2-\hex{80})+2^6(b_3-\hex{80})+(b_4-\hex{80})) \\
       \end{array} \\
+   \end{array} \\
+   \where b_2, b_3, b_4 < \hex{C0} \\
    \end{array}
 
 .. note::
