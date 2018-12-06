@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version 670c46b501fc025ae87a3398a195af35379ab37d" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="994591e51c9df9e7ef980b04d660709b79982f75" name="document-revision">
+  <meta content="a1642af2f0c35e88a6a5f915a7df77514be8e880" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -932,9 +932,9 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="constructor" data-export id="dom-memory-memory"><code>Memory(<var>descriptor</var>)</code></dfn> constructor, when invoked, performs the following steps: 
     <ol>
      <li data-md>
-      <p>If <var>descriptor</var>["initial"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present">present</a>, let <var>initial</var> be <var>descriptor</var>["initial"]; otherwise, let <var>initial</var> be 0.</p>
+      <p>let <var>initial</var> be <var>descriptor</var>["initial"].</p>
      <li data-md>
-      <p>If <var>descriptor</var>["maximum"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present①">present</a>, let <var>maximum</var> be <var>descriptor</var>["maximum"]; otherwise, let <var>maximum</var> be empty.</p>
+      <p>If <var>descriptor</var>["maximum"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present">present</a>, let <var>maximum</var> be <var>descriptor</var>["maximum"]; otherwise, let <var>maximum</var> be empty.</p>
      <li data-md>
       <p>If <var>maximum</var> is not empty and <var>maximum</var> &lt; <var>initial</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror">RangeError</a></code> exception.</p>
      <li data-md>
@@ -1064,9 +1064,9 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Table" data-dfn-type="constructor" data-export id="dom-table-table"><code>Table(<var>descriptor</var>)</code></dfn> constructor, when invoked, performs the following steps: 
     <ol>
      <li data-md>
-      <p>If <var>descriptor</var>["initial"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present②">present</a>, let <var>initial</var> be <var>descriptor</var>["initial"]; otherwise, let <var>initial</var> be 0.</p>
+      <p>let <var>initial</var> be <var>descriptor</var>["initial"].</p>
      <li data-md>
-      <p>If <var>descriptor</var>["maximum"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present③">present</a>, let <var>maximum</var> be <var>descriptor</var>["maximum"]; otherwise, let <var>maximum</var> be empty.</p>
+      <p>If <var>descriptor</var>["maximum"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present①">present</a>, let <var>maximum</var> be <var>descriptor</var>["maximum"]; otherwise, let <var>maximum</var> be empty.</p>
      <li data-md>
       <p>If <var>maximum</var> is not empty and <var>maximum</var> &lt; <var>initial</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">RangeError</a></code> exception.</p>
      <li data-md>
@@ -2507,8 +2507,8 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside class="dfn-panel" data-for="term-for-dfn-present">
    <a href="https://heycam.github.io/webidl/#dfn-present">https://heycam.github.io/webidl/#dfn-present</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-present">3.3. Memories</a> <a href="#ref-for-dfn-present①">(2)</a>
-    <li><a href="#ref-for-dfn-present②">3.4. Tables</a> <a href="#ref-for-dfn-present③">(2)</a>
+    <li><a href="#ref-for-dfn-present">3.3. Memories</a>
+    <li><a href="#ref-for-dfn-present①">3.4. Tables</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-unsigned-long">
