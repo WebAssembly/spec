@@ -139,7 +139,7 @@ Similarly, both <span class="math notranslate nohighlight">\(\def\mathdef1305#1{
 </div>
 <div class="section" id="floating-point">
 <span id="binary-float"></span><span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating-point</span></a> values are encoded directly by their <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a> bit pattern in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order:</p>
+<p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating-point</span></a> values are encoded directly by their <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a> (Section 3.4) bit pattern in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef1229#1{{}}\mathdef1229{floating-point value} &amp; \href{../binary/values.html#binary-float}{\def\mathdef1264#1{{\mathtt{f}#1}}\mathdef1264{N}} &amp;::=&amp;
@@ -148,7 +148,7 @@ Similarly, both <span class="math notranslate nohighlight">\(\def\mathdef1305#1{
 </div>
 <div class="section" id="names">
 <span id="binary-name"></span><span id="binary-utf8"></span><span id="index-4"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">Names</span></a> are encoded as a <a class="reference internal" href="conventions.html#binary-vec"><span class="std std-ref">vector</span></a> of bytes containing the <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> UTF-8 encoding of the name’s code point sequence.</p>
+<p><a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">Names</span></a> are encoded as a <a class="reference internal" href="conventions.html#binary-vec"><span class="std std-ref">vector</span></a> of bytes containing the <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 3.9) UTF-8 encoding of the name’s code point sequence.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclllll}
 \def\mathdef1229#1{{}}\mathdef1229{name} &amp; \href{../binary/values.html#binary-name}{\mathtt{name}} &amp;::=&amp;
@@ -157,7 +157,8 @@ Similarly, both <span class="math notranslate nohighlight">\(\def\mathdef1305#1{
 \end{array}\end{split}\]</div>
 <p>The auxiliary <span class="math notranslate nohighlight">\(\href{../binary/values.html#binary-utf8}{\mathrm{utf8}}\)</span> function expressing this encoding is defined as follows:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\begin{array}{&#64;{}lcl&#64;{\qquad}l}
+\[\begin{split}\begin{array}{&#64;{}l&#64;{}}
+\begin{array}{&#64;{}lcl&#64;{\qquad}l&#64;{}}
 \href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c^\ast) &amp;=&amp; (\href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c))^\ast \\[1ex]
 \href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c) &amp;=&amp; b &amp;
   (\begin{array}[t]{&#64;{}c&#64;{~}l&#64;{}}
@@ -179,6 +180,8 @@ Similarly, both <span class="math notranslate nohighlight">\(\def\mathdef1305#1{
    \mathrel{\mbox{if}} &amp; \def\mathdef1321#1{\mathrm{U{+}#1}}\mathdef1321{10000} \leq c &lt; \def\mathdef1322#1{\mathrm{U{+}#1}}\mathdef1322{110000} \\
    \wedge &amp; c = 2^{18}(b_1-\def\mathdef1323#1{\mathtt{0x#1}}\mathdef1323{F0})+2^{12}(b_2-\def\mathdef1324#1{\mathtt{0x#1}}\mathdef1324{80})+2^6(b_3-\def\mathdef1325#1{\mathtt{0x#1}}\mathdef1325{80})+(b_4-\def\mathdef1326#1{\mathtt{0x#1}}\mathdef1326{80})) \\
    \end{array} \\
+\end{array} \\
+\mathrel{\mbox{where}} b_2, b_3, b_4 &lt; \def\mathdef1327#1{\mathtt{0x#1}}\mathdef1327{C0} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
