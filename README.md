@@ -12,3 +12,5 @@ ECMAScript committee](https://github.com/tc39/ecmascript_simd) and the
 resulted.
 
 The [proposed specification](proposals/simd/SIMD.md) has the details.
+
+[Design issue](https://github.com/WebAssembly/proposals/issues/1)
