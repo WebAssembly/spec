@@ -14,7 +14,6 @@ WASM_EXEC = os.path.join(INTERPRETER_DIR, 'wasm')
 
 WAST_TESTS_DIR = os.path.join(SCRIPT_DIR, 'core')
 JS_TESTS_DIR = os.path.join(SCRIPT_DIR, 'js-api')
-HTML_TESTS_DIR = os.path.join(SCRIPT_DIR, 'html')
 HARNESS_DIR = os.path.join(SCRIPT_DIR, 'harness')
 
 HARNESS_FILES = ['testharness.js', 'testharnessreport.js', 'testharness.css']
@@ -139,9 +138,6 @@ def wrap_single_test(js_file):
 def build_html_js(out_dir):
     ensure_empty_dir(out_dir)
     build_js(out_dir, True)
-
-    for js_file in glob.glob(os.path.join(HTML_TESTS_DIR, '*.js')):
-        shutil.copy(js_file, out_dir)
 
     for js_file in glob.glob(os.path.join(out_dir, '*.js')):
         wrap_single_test(js_file)
