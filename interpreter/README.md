@@ -253,7 +253,7 @@ elem:    ( elem <var>? (offset <instr>* ) <var>* )
 memory:  ( memory <name>? <memory_type> )
          ( memory <name>? ( export <string> ) <...> )                       ;; = (export <string> (memory <N>))+ (memory <name>? <...>)
          ( memory <name>? ( import <string> <string> ) <memory_type> )      ;; = (import <name>? <string> <string> (memory <memory_type>))
-         ( memory <name>? ( export <string> )* ( data <string>* )           ;; = (memory <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
+         ( memory <name>? ( export <string> )* ( data <string>* ) )         ;; = (memory <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
 data:    ( data <var>? ( offset <instr>* ) <string>* )
          ( data <var>? <expr> <string>* )                                   ;; = (data <var>? (offset <expr>) <string>*)
 
