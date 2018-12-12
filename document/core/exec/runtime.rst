@@ -478,6 +478,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
      \dots \\ &&|&
      \TRAP \\ &&|&
      \REFFUNC~\funcaddr \\ &&|&
+     \REFHOST~\hostaddr \\ &&|&
      \INVOKE~\funcaddr \\ &&|&
      \INITELEM~\tableaddr~\u32~\funcidx^\ast \\ &&|&
      \INITDATA~\memaddr~\u32~\byte^\ast \\ &&|&
@@ -488,7 +489,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
 The |TRAP| instruction represents the occurrence of a trap.
 Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single |TRAP| instruction, signalling abrupt termination.
 
-The |REFFUNC| instruction represents :ref:`function reference values <syntax-ref.func>`.
+The |REFFUNC| instruction represents :ref:`function reference values <syntax-ref.func>`. Similarly, |REFHOST| represents :ref:`host references <syntax-ref.host>`.
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.
