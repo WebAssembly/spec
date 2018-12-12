@@ -12,23 +12,28 @@ let nat n = I32.to_string_u (I32.of_int_u n)
 let nat32 = I32.to_string_u
 
 let add_hex_char buf c = Printf.bprintf buf "\\%02x" (Char.code c)
-let add_char buf c =
-  if c < '\x20' || c >= '\x7f' then
-    add_hex_char buf c
-  else begin
-    if c = '\"' || c = '\\' then Buffer.add_char buf '\\';
-    Buffer.add_char buf c
-  end
+let add_char buf = function
+  | '\n' -> Buffer.add_string buf "\\n"
+  | '\t' -> Buffer.add_string buf "\\t"
+  | '\"' -> Buffer.add_string buf "\\\""
+  | '\\' -> Buffer.add_string buf "\\\\"
+  | c when '\x20' <= c && c < '\x7f' -> Buffer.add_char buf c
+  | c -> add_hex_char buf c
+let add_unicode_char buf = function
+  | (0x09 | 0x0a) as uc -> add_char buf (Char.chr uc)
+  | uc when 0x20 <= uc && uc < 0x7f -> add_char buf (Char.chr uc)
+  | uc -> Printf.bprintf buf "\\u{%02x}" uc
 
-let string_with add_char s =
-  let buf = Buffer.create (3 * String.length s + 2) in
+let string_with iter add_char s =
+  let buf = Buffer.create 256 in
   Buffer.add_char buf '\"';
-  String.iter (add_char buf) s;
+  iter (add_char buf) s;
   Buffer.add_char buf '\"';
   Buffer.contents buf
 
-let bytes = string_with add_hex_char
-let string = string_with add_char
+let bytes = string_with String.iter add_hex_char
+let string = string_with String.iter add_char
+let name = string_with List.iter add_unicode_char
 
 let list_of_opt = function None -> [] | Some x -> [x]
 
@@ -43,6 +48,10 @@ let break_bytes s =
   let ss = Lib.String.breakup s 16 in
   list (atom bytes) ss
 
+let break_string s =
+  let ss, s' = Lib.List.split_last (Lib.String.split s '\n') in
+  list (atom string) (List.map (fun s -> s ^ "\n") ss @ [s'])
+
 
 (* Types *)
 
@@ -52,7 +61,7 @@ let elem_type t = string_of_elem_type t
 
 let decls kind ts = tab kind (atom value_type) ts
 
-let stack_type ts = list (atom value_type) ts
+let stack_type ts = decls "result" ts
 
 let func_type (FuncType (ins, out)) =
   Node ("func", decls "param" ins @ decls "result" out)
@@ -111,14 +120,14 @@ struct
     | Rotr -> "rotr"
 
   let cvtop xx = function
-    | ExtendSI32 -> "extend_s/i32"
-    | ExtendUI32 -> "extend_u/i32"
-    | WrapI64 -> "wrap/i64"
-    | TruncSF32 -> "trunc_s/f32"
-    | TruncUF32 -> "trunc_u/f32"
-    | TruncSF64 -> "trunc_s/f64"
-    | TruncUF64 -> "trunc_u/f64"
-    | ReinterpretFloat -> "reinterpret/f" ^ xx
+    | ExtendSI32 -> "extend_i32_s"
+    | ExtendUI32 -> "extend_i32_u"
+    | WrapI64 -> "wrap_i64"
+    | TruncSF32 -> "trunc_f32_s"
+    | TruncUF32 -> "trunc_f32_u"
+    | TruncSF64 -> "trunc_f64_s"
+    | TruncUF64 -> "trunc_f64_u"
+    | ReinterpretFloat -> "reinterpret_f" ^ xx
 end
 
 module FloatOp =
@@ -154,13 +163,13 @@ struct
     | CopySign -> "copysign"
 
   let cvtop xx = function
-    | ConvertSI32 -> "convert_s/i32"
-    | ConvertUI32 -> "convert_u/i32"
-    | ConvertSI64 -> "convert_s/i64"
-    | ConvertUI64 -> "convert_u/i64"
-    | PromoteF32 -> "promote/f32"
-    | DemoteF64 -> "demote/f64"
-    | ReinterpretInt -> "reinterpret/i" ^ xx
+    | ConvertSI32 -> "convert_i32_s"
+    | ConvertUI32 -> "convert_i32_u"
+    | ConvertSI64 -> "convert_i64_s"
+    | ConvertUI64 -> "convert_i64_u"
+    | PromoteF32 -> "promote_f32"
+    | DemoteF64 -> "demote_f64"
+    | ReinterpretInt -> "reinterpret_i" ^ xx
 end
 
 let oper (intop, floatop) op =
@@ -178,10 +187,10 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
-let mem_size = function
-  | Memory.Mem8 -> "8"
-  | Memory.Mem16 -> "16"
-  | Memory.Mem32 -> "32"
+let pack_size = function
+  | Memory.Pack8 -> "8"
+  | Memory.Pack16 -> "16"
+  | Memory.Pack32 -> "32"
 
 let extension = function
   | Memory.SX -> "_s"
@@ -195,12 +204,12 @@ let memop name {ty; align; offset; _} =
 let loadop op =
   match op.sz with
   | None -> memop "load" op
-  | Some (sz, ext) -> memop ("load" ^ mem_size sz ^ extension ext) op
+  | Some (sz, ext) -> memop ("load" ^ pack_size sz ^ extension ext) op
 
 let storeop op =
   match op.sz with
   | None -> memop "store" op
-  | Some sz -> memop ("store" ^ mem_size sz) op
+  | Some sz -> memop ("store" ^ pack_size sz) op
 
 
 (* Expressions *)
@@ -214,6 +223,8 @@ let rec instr e =
     match e.it with
     | Unreachable -> "unreachable", []
     | Nop -> "nop", []
+    | Drop -> "drop", []
+    | Select -> "select", []
     | Block (ts, es) -> "block", stack_type ts @ list instr es
     | Loop (ts, es) -> "loop", stack_type ts @ list instr es
     | If (ts, es1, es2) ->
@@ -225,18 +236,16 @@ let rec instr e =
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
-    | CallIndirect x -> "call_indirect " ^ var x, []
-    | Drop -> "drop", []
-    | Select -> "select", []
-    | GetLocal x -> "get_local " ^ var x, []
-    | SetLocal x -> "set_local " ^ var x, []
-    | TeeLocal x -> "tee_local " ^ var x, []
-    | GetGlobal x -> "get_global " ^ var x, []
-    | SetGlobal x -> "set_global " ^ var x, []
+    | CallIndirect x -> "call_indirect", [Node ("type " ^ var x, [])]
+    | LocalGet x -> "local.get " ^ var x, []
+    | LocalSet x -> "local.set " ^ var x, []
+    | LocalTee x -> "local.tee " ^ var x, []
+    | GlobalGet x -> "global.get " ^ var x, []
+    | GlobalSet x -> "global.set " ^ var x, []
     | Load op -> loadop op, []
     | Store op -> storeop op, []
-    | CurrentMemory -> "current_memory", []
-    | GrowMemory -> "grow_memory", []
+    | MemorySize -> "memory.size", []
+    | MemoryGrow -> "memory.grow", []
     | Const lit -> constop lit ^ " " ^ value lit, []
     | Test op -> testop op, []
     | Compare op -> relop op, []
@@ -293,35 +302,33 @@ let data seg =
 
 (* Modules *)
 
-let typedef i t =
-  Node ("type $" ^ nat i, [struct_type t])
+let typedef i ty =
+  Node ("type $" ^ nat i, [struct_type ty.it])
 
-let import_kind i k =
-  match k.it with
+let import_desc i d =
+  match d.it with
   | FuncImport x ->
     Node ("func $" ^ nat i, [Node ("type", [atom var x])])
-  | TableImport t -> table 0 i ({ttype = t} @@ k.at)
-  | MemoryImport t -> memory 0 i ({mtype = t} @@ k.at)
+  | TableImport t -> table 0 i ({ttype = t} @@ d.at)
+  | MemoryImport t -> memory 0 i ({mtype = t} @@ d.at)
   | GlobalImport t -> Node ("global $" ^ nat i, [global_type t])
 
 let import i im =
-  let {module_name; item_name; ikind} = im.it in
+  let {module_name; item_name; idesc} = im.it in
   Node ("import",
-    [atom string module_name; atom string item_name; import_kind i ikind]
+    [atom name module_name; atom name item_name; import_desc i idesc]
   )
 
-let export_kind k =
-  match k.it with
-  | FuncExport -> "func"
-  | TableExport -> "table"
-  | MemoryExport -> "memory"
-  | GlobalExport -> "global"
+let export_desc d =
+  match d.it with
+  | FuncExport x -> Node ("func", [atom var x])
+  | TableExport x -> Node ("table", [atom var x])
+  | MemoryExport x -> Node ("memory", [atom var x])
+  | GlobalExport x -> Node ("global", [atom var x])
 
 let export ex =
-  let {name; ekind; item} = ex.it in
-  Node ("export",
-    [atom string name; Node (export_kind ekind, [atom var item])]
-  )
+  let {name = n; edesc} = ex.it in
+  Node ("export", [atom name n; export_desc edesc])
 
 let global off i g =
   let {gtype; value} = g.it in
@@ -335,13 +342,13 @@ let var_opt = function
   | Some x -> " " ^ x.it
 
 let is_func_import im =
-  match im.it.ikind.it with FuncImport _ -> true | _ -> false
+  match im.it.idesc.it with FuncImport _ -> true | _ -> false
 let is_table_import im =
-  match im.it.ikind.it with TableImport _ -> true | _ -> false
+  match im.it.idesc.it with TableImport _ -> true | _ -> false
 let is_memory_import im =
-  match im.it.ikind.it with MemoryImport _ -> true | _ -> false
+  match im.it.idesc.it with MemoryImport _ -> true | _ -> false
 let is_global_import im =
-  match im.it.ikind.it with GlobalImport _ -> true | _ -> false
+  match im.it.idesc.it with GlobalImport _ -> true | _ -> false
 
 let module_with_var_opt x_opt m =
   let func_imports = List.filter is_func_import m.it.imports in
@@ -365,7 +372,10 @@ let module_with_var_opt x_opt m =
   )
 
 let binary_module_with_var_opt x_opt bs =
-  Node ("module" ^ var_opt x_opt, break_bytes bs)
+  Node ("module" ^ var_opt x_opt ^ " binary", break_bytes bs)
+
+let quoted_module_with_var_opt x_opt s =
+  Node ("module" ^ var_opt x_opt ^ " quote", break_string s)
 
 let module_ = module_with_var_opt None
 
@@ -380,22 +390,29 @@ let literal lit =
   | Values.F64 z -> Node ("f64.const " ^ F64.to_string z, [])
 
 let definition mode x_opt def =
-  match mode, def.it with
-  | `Textual, _ | `Original, Textual _ ->
-    let m =
-      match def.it with
-      | Textual m -> m
-      | Encoded (_, bs) -> Decode.decode "" bs
-    in module_with_var_opt x_opt m
-  | `Binary, _ | `Original, Encoded _ ->
-    let bs =
-      match def.it with
-      | Textual m -> Encode.encode m
-      | Encoded (_, bs) -> bs
-    in binary_module_with_var_opt x_opt bs
+  try
+    match mode, def.it with
+    | `Textual, _ | `Original, Textual _ ->
+      let rec unquote def =
+        match def.it with
+        | Textual m -> m
+        | Encoded (_, bs) -> Decode.decode "" bs
+        | Quoted (_, s) -> unquote (Parse.string_to_module s)
+      in module_with_var_opt x_opt (unquote def)
+    | `Binary, _ | `Original, Encoded _ ->
+      let rec unquote def =
+        match def.it with
+        | Textual m -> Encode.encode m
+        | Encoded (_, bs) -> bs
+        | Quoted (_, s) -> unquote (Parse.string_to_module s)
+      in binary_module_with_var_opt x_opt (unquote def)
+    | `Original, Quoted (_, s) ->
+      quoted_module_with_var_opt x_opt s
+  with Parse.Syntax _ ->
+    quoted_module_with_var_opt x_opt "<invalid module>"
 
-let access x_opt name =
-  String.concat " " [var_opt x_opt; string name]
+let access x_opt n =
+  String.concat " " [var_opt x_opt; name n]
 
 let action act =
   match act.it with
@@ -428,8 +445,8 @@ let assertion mode ass =
 let command mode cmd =
   match cmd.it with
   | Module (x_opt, def) -> definition mode x_opt def
-  | Register (name, x_opt) ->
-    Node ("register " ^ string name ^ var_opt x_opt, [])
+  | Register (n, x_opt) ->
+    Node ("register " ^ name n ^ var_opt x_opt, [])
   | Action act -> action act
   | Assertion ass -> assertion mode ass
   | Meta _ -> assert false

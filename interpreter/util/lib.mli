@@ -2,6 +2,9 @@
 
 module Fun :
 sig
+  val curry : ('a * 'b -> 'c) -> ('a -> 'b -> 'c)
+  val uncurry : ('a -> 'b -> 'c) -> ('a * 'b -> 'c)
+
   val repeat : int -> ('a -> unit) -> 'a -> unit
 end
 
@@ -9,21 +12,24 @@ module List :
 sig
   val make : int -> 'a -> 'a list
   val table : int -> (int -> 'a) -> 'a list
-  val take : int -> 'a list -> 'a list (* raise Failure *)
-  val drop : int -> 'a list -> 'a list (* raise Failure *)
+  val take : int -> 'a list -> 'a list (* raises Failure *)
+  val drop : int -> 'a list -> 'a list (* raises Failure *)
 
-  val last : 'a list -> 'a (* raise Failure *)
-  val split_last : 'a list -> 'a list * 'a (* raise Failure *)
+  val last : 'a list -> 'a (* raises Failure *)
+  val split_last : 'a list -> 'a list * 'a (* raises Failure *)
 
   val index_of : 'a -> 'a list -> int option
+  val index_where : ('a -> bool) -> 'a list -> int option
+  val map_filter : ('a -> 'b option) -> 'a list -> 'b list
 end
 
 module List32 :
 sig
+  val make : int32 -> 'a -> 'a list
   val length : 'a list -> int32
-  val nth : 'a list -> int32 -> 'a (* raise Failure *)
-  val take : int32 -> 'a list -> 'a list (* raise Failure *)
-  val drop : int32 -> 'a list -> 'a list (* raise Failure *)
+  val nth : 'a list -> int32 -> 'a (* raises Failure *)
+  val take : int32 -> 'a list -> 'a list (* raises Failure *)
+  val drop : int32 -> 'a list -> 'a list (* raises Failure *)
 end
 
 module Array32 :
@@ -64,5 +70,8 @@ end
 
 module String :
 sig
+  val implode : char list -> string
+  val explode : string -> char list
+  val split : string -> char -> string list
   val breakup : string -> int -> string list
 end
