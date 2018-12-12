@@ -9,6 +9,7 @@ See [overview](Overview.md) for background.
 
 Based on [reference types proposal](https://github.com/WebAssembly/reference-types), which introduces type `anyref` etc.
 
+
 ### Types
 
 #### Value Types
@@ -27,12 +28,11 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 * `i31ref` is a new reference type
   - `reftype ::= ... | i31ref`
 
-* `rtt <reftype>` is a new reference type that is a runtime representation of type `<reftype>` (see [overview](Overview.md#casting-and-runtime-types))
-  - `reftype ::= ... | rtt <reftype>`
+* `rtt <typeuse>` is a new reference type that is a runtime representation of type `<typeuse>` (see [overview](Overview.md#casting-and-runtime-types))
+  - `reftype ::= ... | rtt <typeuse>`
   - `rtt t ok` iff `t ok`
 
 * Note: types `anyref` and `funcref` already exist via [reference types proposal](https://github.com/WebAssembly/reference-types)
-
 
 
 #### Type Definitions
@@ -57,6 +57,17 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
   - `unpacked(pt) = i32`
 
 
+#### Type Uses
+
+A *type use* denotes a user-defined or pre-defined data type:
+
+* `typeuse ::= typeidx | any | func | eq | i31 | rtt`
+
+* In the binary encoding,
+  - the `<typeidx>` is encoded as a (positive) signed LEB
+  - the others use the same (negative) opcodes as `anyref`, `funcref`, `eqref`, `i31ref`, `rtt`, respectively
+
+
 #### Imports
 
 * `type <typetype>` is an import description with an upper bound
@@ -64,7 +75,7 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
   - Note: `type` may get additional parameters in the future
 
 * `typetype` describes the type of a type import, and is either an upper bound or a type equivalence
-  - `typetype ::= sub <reftype> | eq <reftype>`
+  - `typetype ::= sub <typeuse> | eq <typeuse>`
 
 * Type imports have indices prepended to the type index space, similar to other imports.
   - Note: due to bounds, type imports can be mutually recursive with other type imports as well as regular type definitions. Hence they have to be validated together with the type section.
@@ -194,7 +205,7 @@ Perhaps also the following short-hands:
     - iff `$t = struct (mut t)*`
   - equivalent to `struct.new_rtt $t anyref (rtt.anyref)`
 
-* `struct.new_rtt <typeidx> <reftype>` allocates a structure of type `$t` with RTT information and initialises its fields with given values
+* `struct.new_rtt <typeidx> <typeuse>` allocates a structure of type `$t` with RTT information and initialises its fields with given values
   - `struct.new_rtt $t t' : [(rtt t') t*] -> [(ref $t)]`
     - iff `$t = struct (mut t)*`
     - and `ref $t <: t'`
@@ -299,16 +310,7 @@ Perhaps also the following short-hands:
 * `rtt.anyref` returns the RTT of type `anyref` as a subtype of only itself
   - `rtt.anyref : [] -> [(rtt anyref)]`
 
-* `rtt.eqref` returns the RTT of type `eqref` as a subtype of `anyref`
-  - `rtt.eqref : [] -> [(rtt eqref)]`
-
-* `rtt.funcref` returns the RTT of type `funcref` as a subtype of `anyref`
-  - `rtt.funcref : [] -> [(rtt funcref)]`
-
-* `rtt.i31ref` returns the RTT of type `i31ref` as a subtype of `anyref`
-  - `rtt.i31ref : [] -> [(rtt eqref)]`
-
-* `rtt.new <reftype> <reftype>` returns the RTT of the specified type as a subtype of a given RTT operand
+* `rtt.new <typeuse> <typeuse>` returns the RTT of the specified type as a subtype of a given RTT operand
   - `rtt.new t t' : [(rtt t')] -> [(rtt t)]`
     - iff `t <: t'`
   - multiple invocations of this instruction with the same operand yield the same RTTs
@@ -318,17 +320,17 @@ Perhaps also the following short-hands:
 
 #### Casts
 
-* `ref.test <reftype> <reftype>` tests whether a reference value is of a type given by a RTT representation
+* `ref.test <typeuse> <typeuse>` tests whether a reference value is of a type given by a RTT representation
   - `ref.test t t' : [t (rtt t')] -> [i32]`
      - iff `t' <: t <: anyref`
   - returns 1 if the operand's runtime type is defined to be a (transitive) subtype of `t`, 0 otherwise
 
-* `ref.cast <reftype> <reftype>` casts a reference value down to a type given by a RTT representation
+* `ref.cast <typeuse> <typeuse>` casts a reference value down to a type given by a RTT representation
   - `ref.cast t t' : [t (rtt t')] -> [t']`
      - iff `t' <: t <: anyref`
   - traps if the operand's runtime type is not defined to be a (transitive) subtype of `t`
 
-* `br_on_cast <labelidx> <reftype> <reftype>` branches if a value can be cast down to a given reference type
+* `br_on_cast <labelidx> <typeuse> <typeuse>` branches if a value can be cast down to a given reference type
   - `br_on_cast $l t t' : [t (rtt t')] -> [t]`
     - iff `t' <: t <: anyref`
     - and `$l : [t']`
