@@ -183,15 +183,15 @@
 ;; Invalid typing of access to parameters
 
 (assert_invalid
-  (module (func $type-param-num-vs-num (param i32) (result i64) (local.get 0)))
+  (module (func $type-param-num-vs-num (param i32) (result i64) (local.set 0 (i32.const 0))))
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-param-num-vs-num (param f32) (i32.eqz (local.get 0))))
+  (module (func $type-param-num-vs-num (param f32) (i32.eqz (local.set 0 (f32.const 0)))))
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-param-num-vs-num (param f64 i64) (f64.neg (local.get 1))))
+  (module (func $type-param-num-vs-num (param f64 i64) (f64.neg (local.set 1 (i64.const 0)))))
   "type mismatch"
 )
 
@@ -230,34 +230,7 @@
 )
 
 
-;; Invalid local index
-
-(assert_invalid
-  (module (func $unbound-local (local i32 i64) (local.get 3)))
-  "unknown local"
-)
-(assert_invalid
-  (module (func $large-local (local i32 i64) (local.get 14324343)))
-  "unknown local"
-)
-
-(assert_invalid
-  (module (func $unbound-param (param i32 i64) (local.get 2)))
-  "unknown local"
-)
-(assert_invalid
-  (module (func $large-param (local i32 i64) (local.get 714324343)))
-  "unknown local"
-)
-
-(assert_invalid
-  (module (func $unbound-mixed (param i32) (local i32 i64) (local.get 3)))
-  "unknown local"
-)
-(assert_invalid
-  (module (func $large-mixed (param i64) (local i32 i64) (local.get 214324343)))
-  "unknown local"
-)
+;; Invalid typing of access to mixed args
 
 (assert_invalid
   (module (func $type-mixed-arg-num-vs-num (param f32) (local i32) (local.set 1 (f32.const 0))))
@@ -270,5 +243,35 @@
 (assert_invalid
   (module (func $type-mixed-arg-num-vs-num (param i64) (local f64 i64) (local.set 1 (i64.const 0))))
   "type mismatch"
+)
+
+
+;; Invalid local index
+
+(assert_invalid
+  (module (func $unbound-local (local i32 i64) (local.set 3 (i32.const 0))))
+  "unknown local"
+)
+(assert_invalid
+  (module (func $large-local (local i32 i64) (local.set 14324343 (i32.const 0))))
+  "unknown local"
+)
+
+(assert_invalid
+  (module (func $unbound-param (param i32 i64) (local.set 2 (i32.const 0))))
+  "unknown local"
+)
+(assert_invalid
+  (module (func $large-param (param i32 i64) (local.set 714324343 (i32.const 0))))
+  "unknown local"
+)
+
+(assert_invalid
+  (module (func $unbound-mixed (param i32) (local i32 i64) (local.set 3 (i32.const 0))))
+  "unknown local"
+)
+(assert_invalid
+  (module (func $large-mixed (param i64) (local i32 i64) (local.set 214324343 (i32.const 0))))
+  "unknown local"
 )
 
