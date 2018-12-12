@@ -15,20 +15,30 @@ On :ref:`value types <syntax-valtype>`, a simple notion of subtyping is defined.
 Limits
 ~~~~~~
 
-:ref:`Limits <syntax-limits>` must have meaningful bounds.
+:ref:`Limits <syntax-limits>` must have meaningful bounds that are within a given range.
 
 :math:`\{ \LMIN~n, \LMAX~m^? \}`
 ................................
 
-* If the maximum :math:`m^?` is not empty, then its value must not be smaller than :math:`n`.
+* The value of :math:`n` must not be larger than :math:`k`.
 
-* Then the limit is valid.
+* If the maximum :math:`m^?` is not empty, then:
+
+  * Its value must not be larger than :math:`k`.
+
+  * Its value must not be smaller than :math:`n`.
+
+* Then the limit is valid within range :math:`k`.
 
 .. math::
    \frac{
+     n \leq k
+     \qquad
+     (m \leq k)^?
+     \qquad
      (n \leq m)^?
    }{
-     \vdashlimits \{ \LMIN~n, \LMAX~m^? \} \ok
+     \vdashlimits \{ \LMIN~n, \LMAX~m^? \} : k
    }
 
 
@@ -56,7 +66,7 @@ Function Types
    }
 
 .. note::
-   This restriction may be removed in future versions of WebAssembly.
+   The restriction to at most one result may be removed in future versions of WebAssembly.
 
 
 .. index:: table type, reference type, limits
@@ -70,13 +80,13 @@ Table Types
 :math:`\limits~\reftype`
 ........................
 
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>`.
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{32}`.
 
 * Then the table type is valid.
 
 .. math::
    \frac{
-     \vdashlimits \limits \ok
+     \vdashlimits \limits : 2^{32}
    }{
      \vdashtabletype \limits~\reftype \ok
    }
@@ -93,13 +103,13 @@ Memory Types
 :math:`\limits`
 ...............
 
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>`.
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{16}`.
 
 * Then the memory type is valid.
 
 .. math::
    \frac{
-     \vdashlimits \limits \ok
+     \vdashlimits \limits : 2^{16}
    }{
      \vdashmemtype \limits \ok
    }

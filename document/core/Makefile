@@ -27,6 +27,9 @@ usage:
 	@echo "  html       to make standalone HTML files"
 	@echo "  pdf        to make standalone PDF file"
 	@echo "  bikeshed   to make a bikeshed wrapped single large HTML file"
+	@echo "  diff       to make a diff of the bikeshed HTML file with the latest TR"
+	@echo "  WD-tar     generate tar file for updating the Working Draft"
+	@echo "  WD-echidna publish the Working Draft tar file via Echidna"
 	@echo "  all        to make all 3"
 	@echo "  publish    to make all and push to gh-pages"
 	@echo "  help       to see more options"
@@ -139,6 +142,8 @@ singlehtml:
 bikeshed:
 	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
 		$(ALLSPHINXOPTS) $(BUILDDIR)/bikeshed_singlehtml
+	python util/bikeshed_fixup.py $(BUILDDIR)/bikeshed_singlehtml/index.html \
+		>$(BUILDDIR)/bikeshed_singlehtml/index_fixed.html
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
@@ -148,8 +153,47 @@ bikeshed:
 	cp -r util/katex/dist/* $(BUILDDIR)/html/bikeshed/katex/dist/
 	patch -p0 $(BUILDDIR)/html/bikeshed/katex/dist/katex.css \
 		< util/katex_fix.patch
+	cp $(BUILDDIR)/bikeshed_singlehtml/_static/pygments.css \
+		$(BUILDDIR)/html/bikeshed/
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed/."
+
+.PHONY: WD-tar
+WD-tar: bikeshed
+	@echo "Building tar file..."
+	tar cvf \
+		$(BUILDDIR)/WD.tar \
+		--transform='s|$(BUILDDIR)/html/bikeshed/||' \
+		--transform='s|index.html|Overview.html|' \
+		$(BUILDDIR)/html/bikeshed/index.html \
+		$(BUILDDIR)/html/bikeshed/pygments.css \
+		$(BUILDDIR)/html/bikeshed/katex/dist/katex.css \
+		$(BUILDDIR)/html/bikeshed/katex/dist/fonts
+	@echo "Built $(BUILDDIR)/WD.tar."
+
+.PHONY: WD-echidna
+WD-echidna: WD-tar
+	@if [ -z $(W3C_USERNAME) ] || \
+	    [ -z $(W3C_PASSWORD) ] || \
+			[ -z $(DECISION_URL) ] ; then \
+		echo "Must provide W3C_USERNAME, W3C_PASSWORD, and DECISION_URL environment variables"; \
+		exit 1; \
+	fi
+	curl 'https://labs.w3.org/echidna/api/request' \
+		--user '$(W3C_USERNAME):$(W3C_PASSWORD)' \
+		-F "tar=@$(BUILDDIR)/WD.tar" \
+		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
+	@echo
+	@echo "Published working draft. Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
+
+.PHONY: diff
+diff: bikeshed
+	@echo "Downloading the old single-file html spec..."
+	curl `grep "^TR" index.bs | cut -d' ' -f2` -o $(BUILDDIR)/html/bikeshed/old.html
+	@echo "Done."
+	@echo "Diffing new against old (go get a coffee)..."
+	perl ../util/htmldiff.pl $(BUILDDIR)/html/bikeshed/old.html $(BUILDDIR)/html/bikeshed/index.html $(BUILDDIR)/html/bikeshed/diff.html
+	@echo "Done. The diff is at $(BUILDDIR)/html/bikeshed/diff.html"
 
 .PHONY: pickle
 pickle:

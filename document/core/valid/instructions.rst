@@ -14,7 +14,7 @@ and the provided output stack with result values of types :math:`t_2^\ast` that 
    consuming two |I32| values and producing one.
 
 Typing extends to :ref:`instruction sequences <valid-instr-seq>` :math:`\instr^\ast`.
-Such a sequence has a :ref:`function types <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]` if the accumulative effect of executing the instructions is consuming values of types :math:`t_1^\ast` off the operand stack and pushing new values of types :math:`t_2^\ast`.
+Such a sequence has a :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]` if the accumulative effect of executing the instructions is consuming values of types :math:`t_1^\ast` off the operand stack and pushing new values of types :math:`t_2^\ast`.
 
 .. _polymorphism:
 
@@ -142,15 +142,15 @@ Numeric Instructions
 
 .. _valid-cvtop:
 
-:math:`t_2\K{.}\cvtop/t_1`
-..........................
+:math:`t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^?`
+..........................................
 
 * The instruction is valid with type :math:`[t_1] \to [t_2]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr t_2\K{.}\cvtop/t_1 : [t_1] \to [t_2]
+     C \vdashinstr t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^? : [t_1] \to [t_2]
    }
 
 
@@ -162,7 +162,7 @@ Numeric Instructions
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-ref_null:
+.. _valid-ref.null:
 
 :math:`\REFNULL`
 ................
@@ -176,7 +176,7 @@ Reference Instructions
    }
 
 
-.. _valid-ref_isnull:
+.. _valid-ref.isnull:
 
 :math:`\REFISNULL`
 ..................
@@ -238,9 +238,9 @@ Parametric Instructions
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-get_local:
+.. _valid-local.get:
 
-:math:`\GETLOCAL~x`
+:math:`\LOCALGET~x`
 ...................
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
@@ -253,13 +253,13 @@ Variable Instructions
    \frac{
      C.\CLOCALS[x] = t
    }{
-     C \vdashinstr \GETLOCAL~x : [] \to [t]
+     C \vdashinstr \LOCALGET~x : [] \to [t]
    }
 
 
-.. _valid-set_local:
+.. _valid-local.set:
 
-:math:`\SETLOCAL~x`
+:math:`\LOCALSET~x`
 ...................
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
@@ -272,13 +272,13 @@ Variable Instructions
    \frac{
      C.\CLOCALS[x] = t
    }{
-     C \vdashinstr \SETLOCAL~x : [t] \to []
+     C \vdashinstr \LOCALSET~x : [t] \to []
    }
 
 
-.. _valid-tee_local:
+.. _valid-local.tee:
 
-:math:`\TEELOCAL~x`
+:math:`\LOCALTEE~x`
 ...................
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
@@ -291,13 +291,13 @@ Variable Instructions
    \frac{
      C.\CLOCALS[x] = t
    }{
-     C \vdashinstr \TEELOCAL~x : [t] \to [t]
+     C \vdashinstr \LOCALTEE~x : [t] \to [t]
    }
 
 
-.. _valid-get_global:
+.. _valid-global.get:
 
-:math:`\GETGLOBAL~x`
+:math:`\GLOBALGET~x`
 ....................
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
@@ -310,13 +310,13 @@ Variable Instructions
    \frac{
      C.\CGLOBALS[x] = \mut~t
    }{
-     C \vdashinstr \GETGLOBAL~x : [] \to [t]
+     C \vdashinstr \GLOBALGET~x : [] \to [t]
    }
 
 
-.. _valid-set_global:
+.. _valid-global.set:
 
-:math:`\SETGLOBAL~x`
+:math:`\GLOBALSET~x`
 ....................
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
@@ -331,7 +331,7 @@ Variable Instructions
    \frac{
      C.\CGLOBALS[x] = \MVAR~t
    }{
-     C \vdashinstr \SETGLOBAL~x : [t] \to []
+     C \vdashinstr \GLOBALSET~x : [t] \to []
    }
 
 
@@ -345,9 +345,9 @@ Variable Instructions
 Table Instructions
 ~~~~~~~~~~~~~~~~~~
 
-.. _valid-get_table:
+.. _valid-table.get:
 
-:math:`\GETTABLE~x`
+:math:`\TABLEGET~x`
 ...................
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
@@ -360,13 +360,13 @@ Table Instructions
    \frac{
      C.\CTABLES[x] = \limits~t
    }{
-     C \vdashinstr \GETTABLE~x : [\I32] \to [t]
+     C \vdashinstr \TABLEGET~x : [\I32] \to [t]
    }
 
 
-.. _valid-set_table:
+.. _valid-table.set:
 
-:math:`\SETTABLE~x`
+:math:`\TABLESET~x`
 ...................
 
 * The local :math:`C.\CTABLES[x]` must be defined in the context.
@@ -379,7 +379,7 @@ Table Instructions
    \frac{
      C.\CTABLES[x] = t
    }{
-     C \vdashinstr \SETTABLE~x : [\I32~t] \to []
+     C \vdashinstr \TABLESET~x : [\I32~t] \to []
    }
 
 
@@ -399,7 +399,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t` divided by :math:`8`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32] \to [t]`.
 
@@ -439,7 +439,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`width <syntax-valtype>` of :math:`t` divided by :math:`8`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32~t] \to []`.
 
@@ -474,10 +474,10 @@ Memory Instructions
    }
 
 
-.. _valid-current_memory:
+.. _valid-memory.size:
 
-:math:`\CURRENTMEMORY`
-......................
+:math:`\MEMORYSIZE`
+...................
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
@@ -487,13 +487,13 @@ Memory Instructions
    \frac{
      C.\CMEMS[0] = \memtype
    }{
-     C \vdashinstr \CURRENTMEMORY : [] \to [\I32]
+     C \vdashinstr \MEMORYSIZE : [] \to [\I32]
    }
 
 
-.. _valid-grow_memory:
+.. _valid-memory.grow:
 
-:math:`\GROWMEMORY`
+:math:`\MEMORYGROW`
 ...................
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
@@ -504,7 +504,7 @@ Memory Instructions
    \frac{
      C.\CMEMS[0] = \memtype
    }{
-     C \vdashinstr \GROWMEMORY : [\I32] \to [\I32]
+     C \vdashinstr \MEMORYGROW : [\I32] \to [\I32]
    }
 
 
@@ -568,6 +568,8 @@ Control Instructions
    }
 
 .. note::
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^?]` inserts the new label type at index :math:`0`, shifting all others.
+
    The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the block was entered.
    This may be generalized in future versions of WebAssembly.
 
@@ -592,6 +594,8 @@ Control Instructions
    }
 
 .. note::
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[]` inserts the new label type at index :math:`0`, shifting all others.
+
    The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the loop was entered.
    This may be generalized in future versions of WebAssembly.
 
@@ -621,6 +625,8 @@ Control Instructions
    }
 
 .. note::
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^?]` inserts the new label type at index :math:`0`, shifting all others.
+
    The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the conditional was entered.
    This may be generalized in future versions of WebAssembly.
 
@@ -644,6 +650,8 @@ Control Instructions
    }
 
 .. note::
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
+
    The |BR| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
@@ -665,6 +673,9 @@ Control Instructions
      C \vdashinstr \BRIF~l : [t^?~\I32] \to [t^?]
    }
 
+.. note::
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
+
 
 .. _valid-br_table:
 
@@ -678,10 +689,10 @@ Control Instructions
 
 * There must be a :ref:`result type <syntax-resulttype>` :math:`[t^?]`, such that:
 
-  * The result type :math:`t^?` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_i]`.
+  * The result type :math:`[t^?]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_i]`.
 
   * For all :math:`l_i` in :math:`l^\ast`,
-    the result type :math:`t^?` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_i]`.
+    the result type :math:`[t^?]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_i]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^?~\I32] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
@@ -695,6 +706,8 @@ Control Instructions
    }
 
 .. note::
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l_i]` performs a relative lookup as expected.
+
    The |BRTABLE| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
    Furthermore, the :ref:`result type <syntax-resulttype>` :math:`[t^?]` is also chosen non-deterministically in this rule.
@@ -707,7 +720,7 @@ Control Instructions
 :math:`\RETURN`
 ...............
 
-* The return type :math:`C.\CRETURN` must not be empty in the context.
+* The return type :math:`C.\CRETURN` must not be absent in the context.
 
 * Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\CRETURN`.
 
@@ -723,8 +736,8 @@ Control Instructions
 .. note::
    The |RETURN| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
-   :math:`C.\CRETURN` is empty (:math:`\epsilon`) when validating an :ref:`expression <valid-expr>` that is not a function body.
-   This differs from it being set to the empty result type (:math:`[]`),
+   :math:`C.\CRETURN` is absent (set to :math:`\epsilon`) when validating an :ref:`expression <valid-expr>` that is not a function body.
+   This differs from it being set to the empty result type (:math:`[\epsilon]`),
    which is the case for functions not returning anything.
 
 
@@ -754,7 +767,7 @@ Control Instructions
 
 * Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The :ref:`reference type <syntax-reftype>` :math:`t` must :ref:`match <match-reftype>` type |ANYFUNC|.
+* The :ref:`reference type <syntax-reftype>` :math:`t` must :ref:`match <match-reftype>` type |FUNCREF|.
 
 * The type :math:`C.\CTYPES[y]` must be defined in the context.
 
@@ -766,7 +779,7 @@ Control Instructions
    \frac{
      C.\CTABLES[x] = \limits~t
      \qquad
-     \vdashvaltypematch t \leq \ANYFUNC
+     \vdashvaltypematch t \leq \FUNCREF
      \qquad
      C.\CTYPES[y] = [t_1^\ast] \to [t_2^\ast]
    }{
@@ -864,13 +877,13 @@ Constant Expressions
 
   * either of the form :math:`t.\CONST~c`,
 
-  * or of the form :math:`\GETGLOBAL~x`, in which case :math:`C.\CGLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
+  * or of the form :math:`\GLOBALGET~x`, in which case :math:`C.\CGLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
 
 .. math::
    \frac{
      (C \vdashinstrconst \instr \const)^\ast
    }{
-     C \vdashexprconst \instr~\END \const
+     C \vdashexprconst \instr^\ast~\END \const
    }
 
 .. math::
@@ -887,8 +900,11 @@ Constant Expressions
    \frac{
      C.\CGLOBALS[x] = \CONST~t
    }{
-     C \vdashinstrconst \GETGLOBAL~x \const
+     C \vdashinstrconst \GLOBALGET~x \const
    }
 
 .. note::
+   Currently, constant expressions occurring as initializers of :ref:`globals <syntax-global>` are further constrained in that contained |GLOBALGET| instructions are only allowed to refer to *imported* globals.
+   This is enforced in the :ref:`validation rule for modules <valid-module>` by constraining the context :math:`C` accordingly.
+
    The definition of constant expression may be extended in future versions of WebAssembly.

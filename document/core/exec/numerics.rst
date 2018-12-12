@@ -291,7 +291,8 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 .. math::
    \begin{array}{@{}lcll}
    \irems_N(i_1, 0) &=& \{\} \\
-   \irems_N(i_1, i_2) &=& \signed_N^{-1}(i_1 - i_2 \cdot \trunc(\signed_N(i_1) / \signed_N(i_2))) \\
+   \irems_N(i_1, i_2) &=& \signed_N^{-1}(j_1 - j_2 \cdot \trunc(j_1 / j_2)) \\
+     && (\where j_1 = \signed_N(i_1) \wedge j_2 = \signed_N(i_2)) \\
    \end{array}
 
 .. note::

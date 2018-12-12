@@ -29,6 +29,7 @@ JS =		# set to JS shell command to run JS tests
 .PHONY:		default opt unopt libopt libunopt jslib all land zip
 
 default:	opt
+debug:		unopt
 opt:		$(OPT)
 unopt:		$(UNOPT)
 libopt:		_build/$(LIB).cmx
@@ -48,16 +49,17 @@ comma =		,
 .INTERMEDIATE:	_tags
 _tags:
 		echo >$@ "true: bin_annot"
+		echo >>$@ "true: debug"
 		echo >>$@ "<{$(subst $(space),$(comma),$(DIRS))}/*.cmx>: for-pack($(PACK))"
 
-$(UNOPT):	main.d.byte
+$(UNOPT):	main.byte
 		mv $< $@
 
 $(OPT):		main.native
 		mv $< $@
 
-.PHONY:		main.d.byte main.native
-main.d.byte:	_tags
+.PHONY:		main.byte main.native
+main.byte:	_tags
 		$(OCB) -quiet $@
 
 main.native:	_tags
@@ -104,7 +106,7 @@ $(WINMAKE):	clean
 		| grep -v ocamldep \
 		| grep -v mkdir \
 		| sed s:`which ocaml`:ocaml:g \
-		| sed s:host/main.d.byte:%NAME%.exe: \
+		| sed s:main/main.d.byte:%NAME%.exe: \
 		>>$@
 
 

@@ -154,10 +154,10 @@ struct
   let cvtop op v =
     let i = match op with
       | WrapI64 -> I32_convert.wrap_i64 (I64Num.of_num 1 v)
-      | TruncSF32 -> I32_convert.trunc_s_f32 (F32Num.of_num 1 v)
-      | TruncUF32 -> I32_convert.trunc_u_f32 (F32Num.of_num 1 v)
-      | TruncSF64 -> I32_convert.trunc_s_f64 (F64Num.of_num 1 v)
-      | TruncUF64 -> I32_convert.trunc_u_f64 (F64Num.of_num 1 v)
+      | TruncSF32 -> I32_convert.trunc_f32_s (F32Num.of_num 1 v)
+      | TruncUF32 -> I32_convert.trunc_f32_u (F32Num.of_num 1 v)
+      | TruncSF64 -> I32_convert.trunc_f64_s (F64Num.of_num 1 v)
+      | TruncUF64 -> I32_convert.trunc_f64_u (F64Num.of_num 1 v)
       | ReinterpretFloat -> I32_convert.reinterpret_f32 (F32Num.of_num 1 v)
       | ExtendSI32 -> raise (TypeError (1, v, I32Type))
       | ExtendUI32 -> raise (TypeError (1, v, I32Type))
@@ -170,12 +170,12 @@ struct
 
   let cvtop op v =
     let i = match op with
-      | ExtendSI32 -> I64_convert.extend_s_i32 (I32Num.of_num 1 v)
-      | ExtendUI32 -> I64_convert.extend_u_i32 (I32Num.of_num 1 v)
-      | TruncSF32 -> I64_convert.trunc_s_f32 (F32Num.of_num 1 v)
-      | TruncUF32 -> I64_convert.trunc_u_f32 (F32Num.of_num 1 v)
-      | TruncSF64 -> I64_convert.trunc_s_f64 (F64Num.of_num 1 v)
-      | TruncUF64 -> I64_convert.trunc_u_f64 (F64Num.of_num 1 v)
+      | ExtendSI32 -> I64_convert.extend_i32_s (I32Num.of_num 1 v)
+      | ExtendUI32 -> I64_convert.extend_i32_u (I32Num.of_num 1 v)
+      | TruncSF32 -> I64_convert.trunc_f32_s (F32Num.of_num 1 v)
+      | TruncUF32 -> I64_convert.trunc_f32_u (F32Num.of_num 1 v)
+      | TruncSF64 -> I64_convert.trunc_f64_s (F64Num.of_num 1 v)
+      | TruncUF64 -> I64_convert.trunc_f64_u (F64Num.of_num 1 v)
       | ReinterpretFloat -> I64_convert.reinterpret_f64 (F64Num.of_num 1 v)
       | WrapI64 -> raise (TypeError (1, v, I64Type))
     in I64Num.to_num i
@@ -188,10 +188,10 @@ struct
   let cvtop op v =
     let z = match op with
       | DemoteF64 -> F32_convert.demote_f64 (F64Num.of_num 1 v)
-      | ConvertSI32 -> F32_convert.convert_s_i32 (I32Num.of_num 1 v)
-      | ConvertUI32 -> F32_convert.convert_u_i32 (I32Num.of_num 1 v)
-      | ConvertSI64 -> F32_convert.convert_s_i64 (I64Num.of_num 1 v)
-      | ConvertUI64 -> F32_convert.convert_u_i64 (I64Num.of_num 1 v)
+      | ConvertSI32 -> F32_convert.convert_i32_s (I32Num.of_num 1 v)
+      | ConvertUI32 -> F32_convert.convert_i32_u (I32Num.of_num 1 v)
+      | ConvertSI64 -> F32_convert.convert_i64_s (I64Num.of_num 1 v)
+      | ConvertUI64 -> F32_convert.convert_i64_u (I64Num.of_num 1 v)
       | ReinterpretInt -> F32_convert.reinterpret_i32 (I32Num.of_num 1 v)
       | PromoteF32 -> raise (TypeError (1, v, F32Type))
     in F32Num.to_num z
@@ -204,10 +204,10 @@ struct
   let cvtop op v =
     let z = match op with
       | PromoteF32 -> F64_convert.promote_f32 (F32Num.of_num 1 v)
-      | ConvertSI32 -> F64_convert.convert_s_i32 (I32Num.of_num 1 v)
-      | ConvertUI32 -> F64_convert.convert_u_i32 (I32Num.of_num 1 v)
-      | ConvertSI64 -> F64_convert.convert_s_i64 (I64Num.of_num 1 v)
-      | ConvertUI64 -> F64_convert.convert_u_i64 (I64Num.of_num 1 v)
+      | ConvertSI32 -> F64_convert.convert_i32_s (I32Num.of_num 1 v)
+      | ConvertUI32 -> F64_convert.convert_i32_u (I32Num.of_num 1 v)
+      | ConvertSI64 -> F64_convert.convert_i64_s (I64Num.of_num 1 v)
+      | ConvertUI64 -> F64_convert.convert_i64_u (I64Num.of_num 1 v)
       | ReinterpretInt -> F64_convert.reinterpret_i64 (I64Num.of_num 1 v)
       | DemoteF64 -> raise (TypeError (1, v, F64Type))
     in F64Num.to_num z

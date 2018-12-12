@@ -161,7 +161,7 @@ rule token = parse
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
   | "anyref" { ANYREF }
-  | "anyfunc" { ANYFUNC }
+  | "funcref" { FUNCREF }
   | (nxx as t) { NUM_TYPE (num_type t) }
   | "mut" { MUT }
 
@@ -198,13 +198,13 @@ rule token = parse
   | "call" { CALL }
   | "call_indirect" { CALL_INDIRECT }
 
-  | "get_local" { GET_LOCAL }
-  | "set_local" { SET_LOCAL }
-  | "tee_local" { TEE_LOCAL }
-  | "get_global" { GET_GLOBAL }
-  | "set_global" { SET_GLOBAL }
-  | "get_table" { GET_TABLE }
-  | "set_table" { SET_TABLE }
+  | "local.get" { LOCAL_GET }
+  | "local.set" { LOCAL_SET }
+  | "local.tee" { LOCAL_TEE }
+  | "global.get" { GLOBAL_GET }
+  | "global.set" { GLOBAL_SET }
+  | "table.get" { TABLE_GET }
+  | "table.set" { TABLE_SET }
 
   | (nxx as t)".load"
     { LOAD (fun a o ->
@@ -295,34 +295,34 @@ rule token = parse
   | (fxx as t)".gt" { COMPARE (floatop t f32_gt f64_gt) }
   | (fxx as t)".ge" { COMPARE (floatop t f32_ge f64_ge) }
 
-  | "i32.wrap/i64" { CONVERT i32_wrap_i64 }
-  | "i64.extend_s/i32" { CONVERT i64_extend_s_i32 }
-  | "i64.extend_u/i32" { CONVERT i64_extend_u_i32 }
-  | "f32.demote/f64" { CONVERT f32_demote_f64 }
-  | "f64.promote/f32" { CONVERT f64_promote_f32 }
-  | (ixx as t)".trunc_s/f32"
-    { CONVERT (intop t i32_trunc_s_f32 i64_trunc_s_f32) }
-  | (ixx as t)".trunc_u/f32"
-    { CONVERT (intop t i32_trunc_u_f32 i64_trunc_u_f32) }
-  | (ixx as t)".trunc_s/f64"
-    { CONVERT (intop t i32_trunc_s_f64 i64_trunc_s_f64) }
-  | (ixx as t)".trunc_u/f64"
-    { CONVERT (intop t i32_trunc_u_f64 i64_trunc_u_f64) }
-  | (fxx as t)".convert_s/i32"
-    { CONVERT (floatop t f32_convert_s_i32 f64_convert_s_i32) }
-  | (fxx as t)".convert_u/i32"
-    { CONVERT (floatop t f32_convert_u_i32 f64_convert_u_i32) }
-  | (fxx as t)".convert_s/i64"
-    { CONVERT (floatop t f32_convert_s_i64 f64_convert_s_i64) }
-  | (fxx as t)".convert_u/i64"
-    { CONVERT (floatop t f32_convert_u_i64 f64_convert_u_i64) }
-  | "f32.reinterpret/i32" { CONVERT f32_reinterpret_i32 }
-  | "f64.reinterpret/i64" { CONVERT f64_reinterpret_i64 }
-  | "i32.reinterpret/f32" { CONVERT i32_reinterpret_f32 }
-  | "i64.reinterpret/f64" { CONVERT i64_reinterpret_f64 }
+  | "i32.wrap_i64" { CONVERT i32_wrap_i64 }
+  | "i64.extend_i32_s" { CONVERT i64_extend_i32_s }
+  | "i64.extend_i32_u" { CONVERT i64_extend_i32_u }
+  | "f32.demote_f64" { CONVERT f32_demote_f64 }
+  | "f64.promote_f32" { CONVERT f64_promote_f32 }
+  | (ixx as t)".trunc_f32_s"
+    { CONVERT (intop t i32_trunc_f32_s i64_trunc_f32_s) }
+  | (ixx as t)".trunc_f32_u"
+    { CONVERT (intop t i32_trunc_f32_u i64_trunc_f32_u) }
+  | (ixx as t)".trunc_f64_s"
+    { CONVERT (intop t i32_trunc_f64_s i64_trunc_f64_s) }
+  | (ixx as t)".trunc_f64_u"
+    { CONVERT (intop t i32_trunc_f64_u i64_trunc_f64_u) }
+  | (fxx as t)".convert_i32_s"
+    { CONVERT (floatop t f32_convert_i32_s f64_convert_i32_s) }
+  | (fxx as t)".convert_i32_u"
+    { CONVERT (floatop t f32_convert_i32_u f64_convert_i32_u) }
+  | (fxx as t)".convert_i64_s"
+    { CONVERT (floatop t f32_convert_i64_s f64_convert_i64_s) }
+  | (fxx as t)".convert_i64_u"
+    { CONVERT (floatop t f32_convert_i64_u f64_convert_i64_u) }
+  | "f32.reinterpret_i32" { CONVERT f32_reinterpret_i32 }
+  | "f64.reinterpret_i64" { CONVERT f64_reinterpret_i64 }
+  | "i32.reinterpret_f32" { CONVERT i32_reinterpret_f32 }
+  | "i64.reinterpret_f64" { CONVERT i64_reinterpret_f64 }
 
-  | "current_memory" { CURRENT_MEMORY }
-  | "grow_memory" { GROW_MEMORY }
+  | "memory.size" { MEMORY_SIZE }
+  | "memory.grow" { MEMORY_GROW }
 
   | "type" { TYPE }
   | "func" { FUNC }

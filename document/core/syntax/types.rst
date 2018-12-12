@@ -5,7 +5,7 @@
 Types
 -----
 
-Various entitites in WebAssembly are classified by types.
+Various entities in WebAssembly are classified by types.
 Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-instantiation>`, and possibly :ref:`execution <syntax-call_indirect>`.
 
 
@@ -54,14 +54,14 @@ Reference Types
 .. math::
    \begin{array}{llll}
    \production{reference type} & \reftype &::=&
-     \ANYREF ~|~ \ANYFUNC ~|~ \NULLREF \\
+     \ANYREF ~|~ \FUNCREF ~|~ \NULLREF \\
    \end{array}
 
 The type |ANYREF| denotes the infinite union of all references, and thereby a :ref:`supertype <match-reftype>` of all other reference types.
 
-The type |ANYFUNC| denotes the infinite union of all references to :ref:`functions <syntax-func>`, regardless of their :ref:`function types <syntax-functype>`.
+The type |FUNCREF| denotes the infinite union of all references to :ref:`functions <syntax-func>`, regardless of their :ref:`function types <syntax-functype>`.
 
-The type |NULLREF| only contains a single value: the :ref:`null <syntax-ref_null>` reference.
+The type |NULLREF| only contains a single value: the :ref:`null <syntax-ref.null>` reference.
 It is a :ref:`subtype <match-reftype>` of all other reference types.
 By virtue of not being representable in either the :ref:`binary format <binary-reftype>` nor the :ref:`text format <text-reftype>`, the |NULLREF| type cannot be used in a program;
 it only occurs during :ref:`validation <valid>`.
@@ -104,7 +104,7 @@ Result Types
 ~~~~~~~~~~~~
 
 *Result types* classify the result of :ref:`executing <exec-instr>` :ref:`instructions <syntax-instr>` or :ref:`blocks <syntax-instr-control>`,
-which is a sequence of values.
+which is a sequence of values written with brackets.
 
 .. math::
    \begin{array}{llll}
@@ -126,7 +126,7 @@ Function Types
 ~~~~~~~~~~~~~~
 
 *Function types* classify the signature of :ref:`functions <syntax-func>`,
-mapping a vector of parameters to a vector of results.
+mapping a vector of parameters to a vector of results, written as follows.
 
 .. math::
    \begin{array}{llll}

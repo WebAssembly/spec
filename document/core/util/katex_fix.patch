@@ -1,21 +1,39 @@
-113a114
->   /*
-116a118
->   */
-119c121
-<   display: inline-block;
+113c113
+< .katex-display {
 ---
-> /*  display: inline-block; */
-127d128
+> div > .katex-display {
+123c123,126
+<   font: normal 1.21em KaTeX_Main, Times New Roman, serif;
+---
+>   /* font: normal 1.21em KaTeX_Main, Times New Roman, serif; */
+>   font-weight: normal;
+>   font-size: 1.21em;
+>   font-family: KaTeX_Main, Times New Roman, serif;
+127d129
 <   text-rendering: auto;
-133c134
+133c135
 <   display: inline-block;
 ---
 > /*  display: inline-block; */
-1059,1064d1059
-< }
+1060,1065d1061
 < .katex svg path {
 <   fill: currentColor;
 < }
 < .katex svg line {
 <   stroke: currentColor;
+< }
+1142a1139,1152
+> }
+> /* Force borders on tables */
+> table {
+>   border-collapse: collapse;
+> }
+> .docutils th, td {
+>   border: 1px solid;
+>   padding: .4em;
+> }
+> .footnote td {
+>   border: 0;
+> }
+> .codepre {
+>   white-space: pre;

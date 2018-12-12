@@ -94,7 +94,7 @@ If inline declarations are given, then their types must match the referenced :re
        \quad\Rightarrow\quad x, I' \\ &&& \qquad
        (\iff \begin{array}[t]{@{}l@{}}
         I.\ITYPEDEFS[x] = [t_1^\ast] \to [t_2^\ast] \wedge
-        I' = \{\ILOCALS~\F{id}(\Tparam)\}^\ast \idcwellformed) \\
+        I' = \{\ILOCALS~\F{id}(\Tparam)^\ast\} \idcwellformed) \\
         \end{array} \\
    \end{array}
 
@@ -226,7 +226,7 @@ Multiple anonymous locals may be combined into a single declaration:
      (\text{(}~~\text{local}~~\Tvaltype~~\text{)})^\ast \\
    \end{array}
 
-Moreover, functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+Functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
 
 .. math::
    \begin{array}{llclll}
@@ -273,7 +273,7 @@ Table definitions can bind a symbolic :ref:`table identifier <text-id>`.
 Abbreviations
 .............
 
-An :ref:`element segment <text-elem>` can be given inline with a table definition, in which case the :ref:`limits <text-limits>` of the :ref:`table type <text-tabletype>` are inferred from the length of the given segment:
+An :ref:`element segment <text-elem>` can be given inline with a table definition, in which case its offset is :math:`0` and the :ref:`limits <text-limits>` of the :ref:`table type <text-tabletype>` are inferred from the length of the given segment:
 
 .. math::
    \begin{array}{llclll}
@@ -285,7 +285,7 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
-Moreover, tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
 
 .. math::
    \begin{array}{llclll}
@@ -332,7 +332,7 @@ Memory definitions can bind a symbolic :ref:`memory identifier <text-id>`.
 Abbreviations
 .............
 
-A :ref:`data segment <text-data>` can be given inline with a memory definition, in which case the :ref:`limits <text-limits>` of the :ref:`memory type <text-memtype>` are inferred from the length of the data, rounded up to :ref:`page size <page-size>`:
+A :ref:`data segment <text-data>` can be given inline with a memory definition, in which case its offset is :math:`0` the :ref:`limits <text-limits>` of the :ref:`memory type <text-memtype>` are inferred from the length of the data, rounded up to :ref:`page size <page-size>`:
 
 .. math::
    \begin{array}{llclll}
@@ -344,7 +344,7 @@ A :ref:`data segment <text-data>` can be given inline with a memory definition, 
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
    \end{array}
 
-Moreover, memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
 
 .. math::
    \begin{array}{llclll}
@@ -496,7 +496,7 @@ As an abbreviation, a single instruction may occur in place of the offset:
      \text{(}~\text{offset}~~\Tinstr~\text{)}
    \end{array}
 
-Also, the table index can be omitted, defaulting to :math:`0`.
+Also, the table index can be omitted, defaulting to :math:`\T{0}`.
 
 .. math::
    \begin{array}{llclll}
@@ -520,15 +520,13 @@ Data Segments
 ~~~~~~~~~~~~~
 
 Data segments allow for an optional :ref:`memory index <text-memidx>` to identify the memory to initialize.
-When omitted, :math:`\T{0}` is assumed.
 The data is written as a :ref:`string <text-string>`, which may be split up into a possibly empty sequence of individual string literals.
 
 .. math::
    \begin{array}{llclll}
    \production{data segment} & \Tdata_I &::=&
-     \text{(}~\text{data}~~(x{:}\Tmemidx_I)^?~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \DMEM~x', \DOFFSET~e, \DINIT~b^\ast \} \\
-       &&& \qquad\qquad\qquad (\iff x' = x^? \neq \epsilon \vee x' = 0) \\[1ex]
+     \text{(}~\text{data}~~x{:}\Tmemidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \DMEM~x', \DOFFSET~e, \DINIT~b^\ast \} \\[1ex]
    \production{data string} & \Tdatastring &::=&
      (b^\ast{:}\Tstring)^\ast \quad\Rightarrow\quad \concat((b^\ast)^\ast) \\
    \end{array}
@@ -548,6 +546,16 @@ As an abbreviation, a single instruction may occur in place of the offset:
    \production{data offset} &
      \Tinstr &\equiv&
      \text{(}~\text{offset}~~\Tinstr~\text{)}
+   \end{array}
+
+Also, the memory index can be omitted, defaulting to :math:`\T{0}`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{data segment} &
+    \text{(}~\text{data}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+       &\equiv&
+     \text{(}~\text{data}~~0~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
    \end{array}
 
 As another abbreviation, data segments may also be specified inline with :ref:`memory <text-mem>` definitions; see the respective section.
@@ -633,30 +641,6 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
      \{\IGLOBALS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\dots~\text{)}) &=&
      \{\} \\
-   \end{array}
-
-
-.. math
-   \F{idc}(\epsilon) &=&
-     \{\} \\
-   \F{idc}(\Tmodulebody~\Tmodulefield) &=&
-     \F{idc}(\Tmodulebody) \compose \F{idc}(\Tmodulefield) \\[1ex]
-
-   The definition of the :ref:`identifier context <text-context>` :math:`I` uses the following auxiliary function to extract optional identifiers from definitions and imports in an order-preserving fashion:
-
-   \begin{array}{@{}l@{}}
-   \begin{array}{@{}lcl@{\qquad\qquad}l}
-   \F{id}(\text{(}~\text{type}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
-   \F{id}(\text{(}~\text{func}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
-   \F{id}(\text{(}~\text{table}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
-   \F{id}(\text{(}~\text{memory}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
-   \F{id}(\text{(}~\text{global}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\[1ex]
-   \F{funcids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{func}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
-   \F{tableids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{table}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
-   \F{memids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{memory}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
-   \F{globalids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{global}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
-   \end{array} \\
-   \F{desc}(\text{(}~\text{import}~\dots~\Timportdesc~\text{)}) \quad=\quad \Timportdesc
    \end{array}
 
 

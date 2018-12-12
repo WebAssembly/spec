@@ -73,7 +73,7 @@ let kLocalNamesCode = 2;
 let kWasmFunctionTypeForm = 0x60;
 let kWasmAnyFunctionTypeForm = 0x70;
 
-let kResizableMaximumFlag = 1;
+let kHasMaximumFlag = 1;
 
 // Function declaration flags
 let kDeclFunctionName   = 0x01;
@@ -108,7 +108,7 @@ let kSig_i_dd = makeSig([kWasmF64, kWasmF64], [kWasmI32]);
 let kSig_v_v = makeSig([], []);
 let kSig_i_v = makeSig([], [kWasmI32]);
 let kSig_l_v = makeSig([], [kWasmI64]);
-let kSig_f_v = makeSig([], [kWasmF64]);
+let kSig_f_v = makeSig([], [kWasmF32]);
 let kSig_d_v = makeSig([], [kWasmF64]);
 let kSig_v_i = makeSig([kWasmI32], []);
 let kSig_v_ii = makeSig([kWasmI32, kWasmI32], []);
@@ -194,7 +194,7 @@ let kExprI64StoreMem8 = 0x3c;
 let kExprI64StoreMem16 = 0x3d;
 let kExprI64StoreMem32 = 0x3e;
 let kExprMemorySize = 0x3f;
-let kExprGrowMemory = 0x40;
+let kExprMemoryGrow = 0x40;
 let kExprI32Eqz = 0x45;
 let kExprI32Eq = 0x46;
 let kExprI32Ne = 0x47;

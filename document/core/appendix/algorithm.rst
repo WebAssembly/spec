@@ -33,11 +33,11 @@ A type error is encountered if a join or meet is required when it does not exist
 
 .. code-block:: pseudo
 
-   type val_type = I32 | I64 | F32 | F64 | Anyref | Anyfunc | Nullref
+   type val_type = I32 | I64 | F32 | F64 | Anyref | Funcref | Nullref
    type opd_type = val_type | Unknown
 
    func is_ref(t : opd_type) : bool =
-     return t = Anyref || t = Anyfunc || t = Nullref
+     return t = Anyref || t = Funcref || t = Nullref
 
    func matches(t1 : opd_type, t2 : opd_type) : bool =
      return t1 = t2 || t1 = Unknown ||
@@ -134,9 +134,10 @@ The control stack is likewise manipulated through auxiliary functions:
 
    func pop_ctrl() : list(val_type) =
      error_if(ctrls.is_empty())
-     let frame = ctrls.pop()
+     let frame = ctrls[0]
      pop_opds(frame.end_types)
      error_if(opds.size() =/= frame.height)
+     ctrls.pop()
      return frame.end_types
 
    func unreachable() =

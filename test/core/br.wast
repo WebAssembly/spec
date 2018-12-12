@@ -95,16 +95,16 @@
   )
   (func (export "as-if-then") (param i32 i32) (result i32)
     (block (result i32)
-      (if (result i32) (get_local 0)
+      (if (result i32) (local.get 0)
         (then (br 1 (i32.const 3)))
-        (else (get_local 1))
+        (else (local.get 1))
       )
     )
   )
   (func (export "as-if-else") (param i32 i32) (result i32)
     (block (result i32)
-      (if (result i32) (get_local 0)
-        (then (get_local 1))
+      (if (result i32) (local.get 0)
+        (then (local.get 1))
         (else (br 1 (i32.const 4)))
       )
     )
@@ -112,12 +112,12 @@
 
   (func (export "as-select-first") (param i32 i32) (result i32)
     (block (result i32)
-      (select (br 0 (i32.const 5)) (get_local 0) (get_local 1))
+      (select (br 0 (i32.const 5)) (local.get 0) (local.get 1))
     )
   )
   (func (export "as-select-second") (param i32 i32) (result i32)
     (block (result i32)
-      (select (get_local 0) (br 0 (i32.const 6)) (get_local 1))
+      (select (local.get 0) (br 0 (i32.const 6)) (local.get 1))
     )
   )
   (func (export "as-select-cond") (result i32)
@@ -144,7 +144,7 @@
   )
 
   (type $sig (func (param i32 i32 i32) (result i32)))
-  (table anyfunc (elem $f))
+  (table funcref (elem $f))
   (func (export "as-call_indirect-func") (result i32)
     (block (result i32)
       (call_indirect (type $sig)
@@ -178,8 +178,15 @@
     )
   )
 
-  (func (export "as-set_local-value") (result i32) (local f32)
-    (block (result i32) (set_local 0 (br 0 (i32.const 17))) (i32.const -1))
+  (func (export "as-local.set-value") (result i32) (local f32)
+    (block (result i32) (local.set 0 (br 0 (i32.const 17))) (i32.const -1))
+  )
+  (func (export "as-local.tee-value") (result i32) (local i32)
+    (block (result i32) (local.tee 0 (br 0 (i32.const 1))))
+  )
+  (global $a (mut i32) (i32.const 10))
+  (func (export "as-global.set-value") (result i32)
+    (block (result i32) (global.set $a (br 0 (i32.const 1))))
   )
 
   (memory 1)
@@ -235,11 +242,11 @@
   )
 
   (func (export "as-convert-operand") (result i32)
-    (block (result i32) (i32.wrap/i64 (br 0 (i32.const 41))))
+    (block (result i32) (i32.wrap_i64 (br 0 (i32.const 41))))
   )
 
-  (func (export "as-grow_memory-size") (result i32)
-    (block (result i32) (grow_memory (br 0 (i32.const 40))))
+  (func (export "as-memory.grow-size") (result i32)
+    (block (result i32) (memory.grow (br 0 (i32.const 40))))
   )
 
   (func (export "nested-block-value") (result i32)
@@ -376,7 +383,9 @@
 (assert_return (invoke "as-call_indirect-mid") (i32.const 22))
 (assert_return (invoke "as-call_indirect-last") (i32.const 23))
 
-(assert_return (invoke "as-set_local-value") (i32.const 17))
+(assert_return (invoke "as-local.set-value") (i32.const 17))
+(assert_return (invoke "as-local.tee-value") (i32.const 1))
+(assert_return (invoke "as-global.set-value") (i32.const 1))
 
 (assert_return (invoke "as-load-address") (f32.const 1.7))
 (assert_return (invoke "as-loadN-address") (i64.const 30))
@@ -398,7 +407,7 @@
 
 (assert_return (invoke "as-convert-operand") (i32.const 41))
 
-(assert_return (invoke "as-grow_memory-size") (i32.const 40))
+(assert_return (invoke "as-memory.grow-size") (i32.const 40))
 
 (assert_return (invoke "nested-block-value") (i32.const 9))
 (assert_return (invoke "nested-br-value") (i32.const 9))

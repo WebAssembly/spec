@@ -1,0 +1,48 @@
+(module
+  (table $t2 1 anyref)
+  (table $t3 2 funcref) (elem $t3 (i32.const 1) $dummy)
+  (func $dummy)
+
+  (func (export "get-anyref") (param $i i32) (result anyref)
+    (table.get $t2 (local.get $i))
+  )
+  (func $f3 (export "get-funcref") (param $i i32) (result funcref)
+    (table.get $t3 (local.get $i))
+  )
+
+  (func (export "set-anyref") (param $i i32) (param $r anyref)
+    (table.set $t2 (local.get $i) (local.get $r))
+  )
+  (func (export "set-funcref") (param $i i32) (param $r funcref)
+    (table.set $t3 (local.get $i) (local.get $r))
+  )
+  (func (export "set-funcref-from") (param $i i32) (param $j i32)
+    (table.set $t3 (local.get $i) (table.get $t3 (local.get $j)))
+  )
+
+  (func (export "isnull-funcref") (param $i i32) (result i32)
+    (ref.isnull (call $f3 (local.get $i)))
+  )
+)
+
+(assert_return (invoke "get-anyref" (i32.const 0)) (ref.null))
+(assert_return (invoke "set-anyref" (i32.const 0) (ref.host 1)))
+(assert_return (invoke "get-anyref" (i32.const 0)) (ref.host 1))
+(assert_return (invoke "set-anyref" (i32.const 0) (ref.null)))
+(assert_return (invoke "get-anyref" (i32.const 0)) (ref.null))
+
+(assert_return (invoke "get-funcref" (i32.const 0)) (ref.null))
+(assert_return (invoke "set-funcref-from" (i32.const 0) (i32.const 1)))
+(assert_return (invoke "isnull-funcref" (i32.const 0)) (i32.const 0))
+(assert_return (invoke "set-funcref" (i32.const 0) (ref.null)))
+(assert_return (invoke "get-funcref" (i32.const 0)) (ref.null))
+
+(assert_trap (invoke "set-anyref" (i32.const 2) (ref.null)) "out of bounds")
+(assert_trap (invoke "set-funcref" (i32.const 3) (ref.null)) "out of bounds")
+(assert_trap (invoke "set-anyref" (i32.const -1) (ref.null)) "out of bounds")
+(assert_trap (invoke "set-funcref" (i32.const -1) (ref.null)) "out of bounds")
+
+(assert_trap (invoke "set-anyref" (i32.const 2) (ref.host 0)) "out of bounds")
+(assert_trap (invoke "set-funcref-from" (i32.const 3) (i32.const 1)) "out of bounds")
+(assert_trap (invoke "set-anyref" (i32.const -1) (ref.host 0)) "out of bounds")
+(assert_trap (invoke "set-funcref-from" (i32.const -1) (i32.const 1)) "out of bounds")

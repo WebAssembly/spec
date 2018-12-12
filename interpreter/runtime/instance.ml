@@ -30,7 +30,7 @@ type Values.ref_ += FuncRef of func_inst
 let () =
   let type_of_ref' = !Values.type_of_ref' in
   Values.type_of_ref' := function
-    | FuncRef _ -> AnyFuncType
+    | FuncRef _ -> FuncRefType
     | r -> type_of_ref' r
 
 let () =

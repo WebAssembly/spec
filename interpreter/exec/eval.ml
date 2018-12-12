@@ -57,12 +57,12 @@ type code = value stack * admin_instr list
 and admin_instr = admin_instr' phrase
 and admin_instr' =
   | Plain of instr'
+  | Invoke of func_inst
   | Trapping of string
   | Returning of value stack
   | Breaking of int32 * value stack
   | Label of int * instr list * code
   | Frame of int * frame * code
-  | Invoke of func_inst
 
 type config =
 {
@@ -178,36 +178,36 @@ let rec step (c : config) : config =
       | Select, Num (I32 i) :: v2 :: v1 :: vs' ->
         v1 :: vs', []
 
-      | GetLocal x, vs ->
+      | LocalGet x, vs ->
         !(local frame x) :: vs, []
 
-      | SetLocal x, v :: vs' ->
+      | LocalSet x, v :: vs' ->
         local frame x := v;
         vs', []
 
-      | TeeLocal x, v :: vs' ->
+      | LocalTee x, v :: vs' ->
         local frame x := v;
         v :: vs', []
 
-      | GetGlobal x, vs ->
+      | GlobalGet x, vs ->
         Global.load (global frame.inst x) :: vs, []
 
-      | SetGlobal x, v :: vs' ->
+      | GlobalSet x, v :: vs' ->
         (try Global.store (global frame.inst x) v; vs', []
         with Global.NotMutable -> Crash.error e.at "write to immutable global"
            | Global.Type -> Crash.error e.at "type mismatch at global write")
 
-      | GetTable x, Num (I32 i) :: vs' ->
+      | TableGet x, Num (I32 i) :: vs' ->
         (try Ref (Table.load (table frame.inst x) i) :: vs', []
         with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
 
-      | SetTable x, Ref r :: Num (I32 i) :: vs' ->
+      | TableSet x, Ref r :: Num (I32 i) :: vs' ->
         (try Table.store (table frame.inst x) i r; vs', []
         with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
 
       | Load {offset; ty; sz; _}, Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_u_i32 i in
+        let addr = I64_convert.extend_i32_u i in
         (try
           let n =
             match sz with
@@ -218,7 +218,7 @@ let rec step (c : config) : config =
 
       | Store {offset; sz; _}, Num n :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_u_i32 i in
+        let addr = I64_convert.extend_i32_u i in
         (try
           (match sz with
           | None -> Memory.store_num mem addr offset n
@@ -227,11 +227,11 @@ let rec step (c : config) : config =
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | CurrentMemory, vs ->
+      | MemorySize, vs ->
         let mem = memory frame.inst (0l @@ e.at) in
         Num (I32 (Memory.size mem)) :: vs, []
 
-      | GrowMemory, Num (I32 delta) :: vs' ->
+      | MemoryGrow, Num (I32 delta) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let old_size = Memory.size mem in
         let result =
@@ -239,13 +239,13 @@ let rec step (c : config) : config =
           with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
         in Num (I32 result) :: vs', []
 
-      | Null, vs' ->
+      | RefNull, vs' ->
         Ref NullRef :: vs', []
 
-      | IsNull, Ref NullRef :: vs' ->
+      | RefIsNull, Ref NullRef :: vs' ->
         Num (I32 1l) :: vs', []
 
-      | IsNull, v :: vs' ->
+      | RefIsNull, v :: vs' ->
         Num (I32 0l) :: vs', []
 
       | Const n, vs ->
@@ -424,7 +424,7 @@ let init_memory (inst : module_inst) (seg : memory_segment) =
   let {index; offset = const; init} = seg.it in
   let mem = memory inst index in
   let offset' = i32 (eval_const inst const) const.at in
-  let offset = I64_convert.extend_u_i32 offset' in
+  let offset = I64_convert.extend_i32_u offset' in
   let end_ = Int64.(add offset (of_int (String.length init))) in
   let bound = Memory.bound mem in
   if I64.lt_u bound end_ || I64.lt_u end_ offset then

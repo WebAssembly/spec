@@ -136,8 +136,8 @@ Also, for backwards compatibility, the table index to :math:`\text{call\_indirec
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. _text-ref_null:
-.. _text-ref_isnull:
+.. _text-ref.null:
+.. _text-ref.isnull:
 
 .. math::
    \begin{array}{llclll}
@@ -172,20 +172,20 @@ Parametric Instructions
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _text-get_local:
-.. _text-set_local:
-.. _text-tee_local:
-.. _text-get_global:
-.. _text-set_global:
+.. _text-local.get:
+.. _text-local.set:
+.. _text-local.tee:
+.. _text-global.get:
+.. _text-global.set:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
-     \text{get\_local}~~x{:}\Tlocalidx_I &\Rightarrow& \GETLOCAL~x \\ &&|&
-     \text{set\_local}~~x{:}\Tlocalidx_I &\Rightarrow& \SETLOCAL~x \\ &&|&
-     \text{tee\_local}~~x{:}\Tlocalidx_I &\Rightarrow& \TEELOCAL~x \\ &&|&
-     \text{get\_global}~~x{:}\Tglobalidx_I &\Rightarrow& \GETGLOBAL~x \\ &&|&
-     \text{set\_global}~~x{:}\Tglobalidx_I &\Rightarrow& \SETGLOBAL~x \\
+     \text{local.get}~~x{:}\Tlocalidx_I &\Rightarrow& \LOCALGET~x \\ &&|&
+     \text{local.set}~~x{:}\Tlocalidx_I &\Rightarrow& \LOCALSET~x \\ &&|&
+     \text{local.tee}~~x{:}\Tlocalidx_I &\Rightarrow& \LOCALTEE~x \\ &&|&
+     \text{global.get}~~x{:}\Tglobalidx_I &\Rightarrow& \GLOBALGET~x \\ &&|&
+     \text{global.set}~~x{:}\Tglobalidx_I &\Rightarrow& \GLOBALSET~x \\
    \end{array}
 
 
@@ -196,14 +196,14 @@ Variable Instructions
 Table Instructions
 ~~~~~~~~~~~~~~~~~~
 
-.. _text-get_table:
-.. _text-set_table:
+.. _text-table.get:
+.. _text-table.set:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
-     \text{get\_table}~~x{:}\Ttableidx_I &\Rightarrow& \GETTABLE~x \\ &&|&
-     \text{set\_table}~~x{:}\Ttableidx_I &\Rightarrow& \SETTABLE~x \\
+     \text{table.get}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEGET~x \\ &&|&
+     \text{table.set}~~x{:}\Ttableidx_I &\Rightarrow& \TABLESET~x \\
    \end{array}
 
 
@@ -219,8 +219,8 @@ Memory Instructions
 .. _text-loadn:
 .. _text-store:
 .. _text-storen:
-.. _text-current_memory:
-.. _text-grow_memory:
+.. _text-memory.size:
+.. _text-memory.grow:
 
 The offset and alignment immediates to memory instructions are optional.
 The offset defaults to :math:`\T{0}`, the alignment to the storage size of the respective memory access, which is its *natural alignment*.
@@ -260,8 +260,8 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
      \text{i64.store8}~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\STORE\K{8}~m \\ &&|&
      \text{i64.store16}~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
      \text{i64.store32}~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
-     \text{current\_memory} &\Rightarrow& \CURRENTMEMORY \\ &&|&
-     \text{grow\_memory} &\Rightarrow& \GROWMEMORY \\
+     \text{memory.size} &\Rightarrow& \MEMORYSIZE \\ &&|&
+     \text{memory.grow} &\Rightarrow& \MEMORYGROW \\
    \end{array}
 
 
@@ -432,31 +432,31 @@ Numeric Instructions
 .. math::
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
-     \text{i32.wrap/i64} &\Rightarrow& \I32.\WRAP\K{/}\I64 \\ &&|&
-     \text{i32.trunc\_s/f32} &\Rightarrow& \I32.\TRUNC\K{\_s/}\F32 \\ &&|&
-     \text{i32.trunc\_u/f32} &\Rightarrow& \I32.\TRUNC\K{\_u/}\F32 \\ &&|&
-     \text{i32.trunc\_s/f64} &\Rightarrow& \I32.\TRUNC\K{\_s/}\F64 \\ &&|&
-     \text{i32.trunc\_u/f64} &\Rightarrow& \I32.\TRUNC\K{\_u/}\F64 \\ &&|&
-     \text{i64.extend\_s/i32} &\Rightarrow& \I64.\EXTEND\K{\_s/}\I32 \\ &&|&
-     \text{i64.extend\_u/i32} &\Rightarrow& \I64.\EXTEND\K{\_u/}\I32 \\ &&|&
-     \text{i64.trunc\_s/f32} &\Rightarrow& \I64.\TRUNC\K{\_s/}\F32 \\ &&|&
-     \text{i64.trunc\_u/f32} &\Rightarrow& \I64.\TRUNC\K{\_u/}\F32 \\ &&|&
-     \text{i64.trunc\_s/f64} &\Rightarrow& \I64.\TRUNC\K{\_s/}\F64 \\ &&|&
-     \text{i64.trunc\_u/f64} &\Rightarrow& \I64.\TRUNC\K{\_u/}\F64 \\ &&|&
-     \text{f32.convert\_s/i32} &\Rightarrow& \F32.\CONVERT\K{\_s/}\I32 \\ &&|&
-     \text{f32.convert\_u/i32} &\Rightarrow& \F32.\CONVERT\K{\_u/}\I32 \\ &&|&
-     \text{f32.convert\_s/i64} &\Rightarrow& \F32.\CONVERT\K{\_s/}\I64 \\ &&|&
-     \text{f32.convert\_u/i64} &\Rightarrow& \F32.\CONVERT\K{\_u/}\I64 \\ &&|&
-     \text{f32.demote/f64} &\Rightarrow& \F32.\DEMOTE\K{/}\F64 \\ &&|&
-     \text{f64.convert\_s/i32} &\Rightarrow& \F64.\CONVERT\K{\_s/}\I32 \\ &&|&
-     \text{f64.convert\_u/i32} &\Rightarrow& \F64.\CONVERT\K{\_u/}\I32 \\ &&|&
-     \text{f64.convert\_s/i64} &\Rightarrow& \F64.\CONVERT\K{\_s/}\I64 \\ &&|&
-     \text{f64.convert\_u/i64} &\Rightarrow& \F64.\CONVERT\K{\_u/}\I64 \\ &&|&
-     \text{f64.promote/f32} &\Rightarrow& \F64.\PROMOTE\K{/}\F32 \\ &&|&
-     \text{i32.reinterpret/f32} &\Rightarrow& \I32.\REINTERPRET\K{/}\F32 \\ &&|&
-     \text{i64.reinterpret/f64} &\Rightarrow& \I64.\REINTERPRET\K{/}\F64 \\ &&|&
-     \text{f32.reinterpret/i32} &\Rightarrow& \F32.\REINTERPRET\K{/}\I32 \\ &&|&
-     \text{f64.reinterpret/i64} &\Rightarrow& \F64.\REINTERPRET\K{/}\I64 \\
+     \text{i32.wrap\_i64} &\Rightarrow& \I32.\WRAP\K{\_}\I64 \\ &&|&
+     \text{i32.trunc\_f32\_s} &\Rightarrow& \I32.\TRUNC\K{\_}\F32\K{\_s} \\ &&|&
+     \text{i32.trunc\_f32\_u} &\Rightarrow& \I32.\TRUNC\K{\_}\F32\K{\_u} \\ &&|&
+     \text{i32.trunc\_f64\_s} &\Rightarrow& \I32.\TRUNC\K{\_}\F64\K{\_s} \\ &&|&
+     \text{i32.trunc\_f64\_u} &\Rightarrow& \I32.\TRUNC\K{\_}\F64\K{\_u} \\ &&|&
+     \text{i64.extend\_i32\_s} &\Rightarrow& \I64.\EXTEND\K{\_}\I32\K{\_s} \\ &&|&
+     \text{i64.extend\_i32\_u} &\Rightarrow& \I64.\EXTEND\K{\_}\I32\K{\_u} \\ &&|&
+     \text{i64.trunc\_f32\_s} &\Rightarrow& \I64.\TRUNC\K{\_}\F32\K{\_s} \\ &&|&
+     \text{i64.trunc\_f32\_u} &\Rightarrow& \I64.\TRUNC\K{\_}\F32\K{\_u} \\ &&|&
+     \text{i64.trunc\_f64\_s} &\Rightarrow& \I64.\TRUNC\K{\_}\F64\K{\_s} \\ &&|&
+     \text{i64.trunc\_f64\_u} &\Rightarrow& \I64.\TRUNC\K{\_}\F64\K{\_u} \\ &&|&
+     \text{f32.convert\_i32\_s} &\Rightarrow& \F32.\CONVERT\K{\_}\I32\K{\_s} \\ &&|&
+     \text{f32.convert\_i32\_u} &\Rightarrow& \F32.\CONVERT\K{\_}\I32\K{\_u} \\ &&|&
+     \text{f32.convert\_i64\_s} &\Rightarrow& \F32.\CONVERT\K{\_}\I64\K{\_s} \\ &&|&
+     \text{f32.convert\_i64\_u} &\Rightarrow& \F32.\CONVERT\K{\_}\I64\K{\_u} \\ &&|&
+     \text{f32.demote\_f64} &\Rightarrow& \F32.\DEMOTE\K{\_}\F64 \\ &&|&
+     \text{f64.convert\_i32\_s} &\Rightarrow& \F64.\CONVERT\K{\_}\I32\K{\_s} \\ &&|&
+     \text{f64.convert\_i32\_u} &\Rightarrow& \F64.\CONVERT\K{\_}\I32\K{\_u} \\ &&|&
+     \text{f64.convert\_i64\_s} &\Rightarrow& \F64.\CONVERT\K{\_}\I64\K{\_s} \\ &&|&
+     \text{f64.convert\_i64\_u} &\Rightarrow& \F64.\CONVERT\K{\_}\I64\K{\_u} \\ &&|&
+     \text{f64.promote\_f32} &\Rightarrow& \F64.\PROMOTE\K{\_}\F32 \\ &&|&
+     \text{i32.reinterpret\_f32} &\Rightarrow& \I32.\REINTERPRET\K{\_}\F32 \\ &&|&
+     \text{i64.reinterpret\_f64} &\Rightarrow& \I64.\REINTERPRET\K{\_}\F64 \\ &&|&
+     \text{f32.reinterpret\_i32} &\Rightarrow& \F32.\REINTERPRET\K{\_}\I32 \\ &&|&
+     \text{f64.reinterpret\_i64} &\Rightarrow& \F64.\REINTERPRET\K{\_}\I64 \\
    \end{array}
 
 
@@ -492,6 +492,16 @@ Such a folded instruction can appear anywhere a regular instruction can.
    \end{array}
 
 .. note::
+   For example, the instruction sequence
+
+   .. math::
+      \mathtt{(get\_local~\$x)~(i32.const~2)~i32.add~(i32.const~3)~i32.mul}
+
+   can be folded into
+
+   .. math::
+      \mathtt{(i32.mul~(i32.add~(get\_local~\$x)~(i32.const~2))~(i32.const~3))}
+
    Folded instructions are solely syntactic sugar,
    no additional syntactic or type-based checking is implied.
 

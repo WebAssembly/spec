@@ -78,7 +78,8 @@ let harness =
   "}\n" ^
   "\n" ^
   "function get(instance, name) {\n" ^
-  "  return instance.exports[name];\n" ^
+  "  let v = instance.exports[name];\n" ^
+  "  return (v instanceof WebAssembly.Global) ? v.value : v;\n" ^
   "}\n" ^
   "\n" ^
   "function exports(instance) {\n" ^
@@ -250,7 +251,7 @@ let abs_mask_of = function
 let value v =
   match v.it with
   | Values.Num num -> [Const (num @@ v.at) @@ v.at]
-  | Values.Ref Values.NullRef -> [Null @@ v.at]
+  | Values.Ref Values.NullRef -> [RefNull @@ v.at]
   | Values.Ref (HostRef n) ->
     [Const (Values.I32 n @@ v.at) @@ v.at; Call (hostref_idx @@ v.at) @@ v.at]
   | Values.Ref _ -> assert false
@@ -260,7 +261,7 @@ let invoke ft vs at =
   List.concat (List.map value vs) @ [Call (subject_idx @@ at) @@ at]
 
 let get t at =
-  [], GlobalImport t @@ at, [GetGlobal (subject_idx @@ at) @@ at]
+  [], GlobalImport t @@ at, [GlobalGet (subject_idx @@ at) @@ at]
 
 let run ts at =
   [], []
@@ -277,7 +278,7 @@ let assert_return vs ts at =
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | Values.Ref Values.NullRef ->
-      [ IsNull @@ at;
+      [ RefIsNull @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | Values.Ref (HostRef n) ->
@@ -310,7 +311,7 @@ let assert_return_ref ts at =
   let test = function
     | NumType _ -> [Br (0l @@ at) @@ at]
     | RefType _ ->
-      [ IsNull @@ at;
+      [ RefIsNull @@ at;
         BrIf (0l @@ at) @@ at ]
   in [], List.flatten (List.rev_map test ts)
 

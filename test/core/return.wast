@@ -9,6 +9,19 @@
   (func (export "type-f32") (drop (f32.neg (return))))
   (func (export "type-f64") (drop (f64.neg (return))))
 
+  (func (export "type-i32-value") (result i32)
+    (block (result i32) (i32.ctz (return (i32.const 1))))
+  )
+  (func (export "type-i64-value") (result i64)
+    (block (result i64) (i64.ctz (return (i64.const 2))))
+  )
+  (func (export "type-f32-value") (result f32)
+    (block (result f32) (f32.neg (return (f32.const 3))))
+  )
+  (func (export "type-f64-value") (result f64)
+    (block (result f64) (f64.neg (return (f64.const 4))))
+  )
+
   (func (export "nullary") (return))
   (func (export "unary") (result f64) (return (f64.const 3)))
 
@@ -91,20 +104,20 @@
   )
   (func (export "as-if-then") (param i32 i32) (result i32)
     (if (result i32)
-      (get_local 0) (then (return (i32.const 3))) (else (get_local 1))
+      (local.get 0) (then (return (i32.const 3))) (else (local.get 1))
     )
   )
   (func (export "as-if-else") (param i32 i32) (result i32)
     (if (result i32)
-      (get_local 0) (then (get_local 1)) (else (return (i32.const 4)))
+      (local.get 0) (then (local.get 1)) (else (return (i32.const 4)))
     )
   )
 
   (func (export "as-select-first") (param i32 i32) (result i32)
-    (select (return (i32.const 5)) (get_local 0) (get_local 1))
+    (select (return (i32.const 5)) (local.get 0) (local.get 1))
   )
   (func (export "as-select-second") (param i32 i32) (result i32)
-    (select (get_local 0) (return (i32.const 6)) (get_local 1))
+    (select (local.get 0) (return (i32.const 6)) (local.get 1))
   )
   (func (export "as-select-cond") (result i32)
     (select (i32.const 0) (i32.const 1) (return (i32.const 7)))
@@ -122,7 +135,7 @@
   )
 
   (type $sig (func (param i32 i32 i32) (result i32)))
-  (table anyfunc (elem $f))
+  (table funcref (elem $f))
   (func (export "as-call_indirect-func") (result i32)
     (call_indirect (type $sig)
       (return (i32.const 20)) (i32.const 1) (i32.const 2) (i32.const 3)
@@ -144,8 +157,15 @@
     )
   )
 
-  (func (export "as-set_local-value") (result i32) (local f32)
-    (set_local 0 (return (i32.const 17))) (i32.const -1)
+  (func (export "as-local.set-value") (result i32) (local f32)
+    (local.set 0 (return (i32.const 17))) (i32.const -1)
+  )
+  (func (export "as-local.tee-value") (result i32) (local i32)
+    (local.tee 0 (return (i32.const 1)))
+  )
+  (global $a (mut i32) (i32.const 0))
+  (func (export "as-global.set-value") (result i32)
+    (global.set $a (return (i32.const 1)))
   )
 
   (memory 1)
@@ -193,11 +213,11 @@
   )
 
   (func (export "as-convert-operand") (result i32)
-    (i32.wrap/i64 (return (i32.const 41)))
+    (i32.wrap_i64 (return (i32.const 41)))
   )
 
-  (func (export "as-grow_memory-size") (result i32)
-    (grow_memory (return (i32.const 40)))
+  (func (export "as-memory.grow-size") (result i32)
+    (memory.grow (return (i32.const 40)))
   )
 )
 
@@ -205,6 +225,11 @@
 (assert_return (invoke "type-i64"))
 (assert_return (invoke "type-f32"))
 (assert_return (invoke "type-f64"))
+
+(assert_return (invoke "type-i32-value") (i32.const 1))
+(assert_return (invoke "type-i64-value") (i64.const 2))
+(assert_return (invoke "type-f32-value") (f32.const 3))
+(assert_return (invoke "type-f64-value") (f64.const 4))
 
 (assert_return (invoke "nullary"))
 (assert_return (invoke "unary") (f64.const 3))
@@ -256,7 +281,9 @@
 (assert_return (invoke "as-call_indirect-mid") (i32.const 22))
 (assert_return (invoke "as-call_indirect-last") (i32.const 23))
 
-(assert_return (invoke "as-set_local-value") (i32.const 17))
+(assert_return (invoke "as-local.set-value") (i32.const 17))
+(assert_return (invoke "as-local.tee-value") (i32.const 1))
+(assert_return (invoke "as-global.set-value") (i32.const 1))
 
 (assert_return (invoke "as-load-address") (f32.const 1.7))
 (assert_return (invoke "as-loadN-address") (i64.const 30))
@@ -278,7 +305,7 @@
 
 (assert_return (invoke "as-convert-operand") (i32.const 41))
 
-(assert_return (invoke "as-grow_memory-size") (i32.const 40))
+(assert_return (invoke "as-memory.grow-size") (i32.const 40))
 
 (assert_invalid
   (module (func $type-value-empty-vs-num (result f64) (return)))

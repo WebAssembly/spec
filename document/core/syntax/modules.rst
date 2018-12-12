@@ -73,7 +73,7 @@ Each class of definition has its own *index space*, as distinguished by the foll
 The index space for :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>` includes respective :ref:`imports <syntax-import>` declared in the same module.
 The indices of these imports precede the indices of other definitions in the same index space.
 
-The index space for :ref:`locals <syntax-local>` is only accessible inside a :ref:`function <syntax-func>` and includes the parameters and local variables of that function, which precede the other locals.
+The index space for :ref:`locals <syntax-local>` is only accessible inside a :ref:`function <syntax-func>` and includes the parameters of that function, which precede the local variables.
 
 Label indices reference :ref:`structured control instructions <syntax-instr-control>` inside an instruction sequence.
 
@@ -83,7 +83,7 @@ Conventions
 
 * The meta variable :math:`l` ranges over label indices.
 
-* The meta variables :math:`x, y` ranges over indices in any of the other index spaces.
+* The meta variables :math:`x, y` range over indices in any of the other index spaces.
 
 
 .. index:: ! type definition, type index, function type
@@ -120,7 +120,7 @@ The |MFUNCS| component of a module defines a vector of *functions* with the foll
    \end{array}
 
 The |FTYPE| of a function declares its signature by reference to a :ref:`type <syntax-type>` defined in the module.
-The parameters of the function are referenced through 0-based :ref:`local indices <syntax-localidx>` in the function's body.
+The parameters of the function are referenced through 0-based :ref:`local indices <syntax-localidx>` in the function's body; they are mutable.
 
 The |FLOCALS| declare a vector of mutable local variables and their types.
 These variables are referenced through :ref:`local indices <syntax-localidx>` in the function's body.
@@ -226,7 +226,7 @@ Element Segments
 ~~~~~~~~~~~~~~~~
 
 The initial contents of a table is uninitialized.
-The |MELEM| component of a module defines a vector of *element segments* that initialize a subrange of a table at a given offset from a static :ref:`vector <syntax-vec>` of elements.
+The |MELEM| component of a module defines a vector of *element segments* that initialize a subrange of a table, at a given offset, from a static :ref:`vector <syntax-vec>` of elements.
 
 .. math::
    \begin{array}{llll}
@@ -237,7 +237,7 @@ The |MELEM| component of a module defines a vector of *element segments* that in
 The |EOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
 
 .. note::
-   In the current version of WebAssembly, only tables of element type |ANYFUNC| can be initialized with an element segment.
+   In the current version of WebAssembly, only tables of element type |FUNCREF| can be initialized with an element segment.
    This limitation may be lifted in the future.
 
 
@@ -250,8 +250,8 @@ The |EOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <s
 Data Segments
 ~~~~~~~~~~~~~
 
-The initial contents of a :ref:`memory <syntax-mem>` are zero bytes.
-The |MDATA| component of a module defines a vector of *data segments* that initialize a range of memory at a given offset with a static :ref:`vector <syntax-vec>` of :ref:`bytes <syntax-byte>`.
+The initial contents of a :ref:`memory <syntax-mem>` are zero-valued bytes.
+The |MDATA| component of a module defines a vector of *data segments* that initialize a range of memory, at a given offset, with a static :ref:`vector <syntax-vec>` of :ref:`bytes <syntax-byte>`.
 
 .. math::
    \begin{array}{llll}
@@ -273,7 +273,7 @@ The |DOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <s
 Start Function
 ~~~~~~~~~~~~~~
 
-The |MSTART| component of a module optionally declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <exec-instantiation>`, after :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` have been initialized.
+The |MSTART| component of a module declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <exec-instantiation>`, after :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` have been initialized.
 
 .. math::
    \begin{array}{llll}
@@ -310,9 +310,6 @@ The |MEXPORTS| component of a module defines a set of *exports* that become acce
 Each export is labeled by a unique :ref:`name <syntax-name>`.
 Exportable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`,
 which are referenced through a respective descriptor.
-
-.. note::
-   In the current version of WebAssembly, only *immutable* globals may be exported.
 
 
 Conventions
@@ -362,8 +359,6 @@ Every import defines an index in the respective :ref:`index space <syntax-index>
 In each index space, the indices of imports go before the first index of any definition contained in the module itself.
 
 .. note::
-   In the current version of WebAssembly, only *immutable* globals may be imported.
-
    Unlike export names, import names are not necessarily unique.
    It is possible to import the same |IMODULE|/|INAME| pair multiple times;
    such imports may even have different type descriptions, including different kinds of entities.
