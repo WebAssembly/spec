@@ -27,7 +27,7 @@ Summary:
 
 * Add a new type `anyref` that can be used as both a value type and a table element type.
 
-* Also allow `anyfunc` as a value type.
+* Also allow `funcref` as a value type.
 
 * Introduce instructions to get and set table slots.
 
@@ -44,8 +44,8 @@ Notes:
 
 Typing extensions:
 
-* Introduce `anyref`, `anyfunc`, and `nullref` as a new class of *reference types*.
-  - `reftype ::= anyref | anyfunc | nullref`
+* Introduce `anyref`, `funcref`, and `nullref` as a new class of *reference types*.
+  - `reftype ::= anyref | funcref | nullref`
   - `nullref` is merely an internal type and is neither expressible in the binary format, nor the text format, nor the JS API.
   - Question: should it be?
 
@@ -60,7 +60,7 @@ Typing extensions:
 * Introduce a simple subtype relation between reference types.
   - reflexive transitive closure of the following rules
   - `t < anyref` for all reftypes `t`
-  - `anyfunc < anyref`
+  - `nullref < anyref` and `nullref < funcref`
   - Note: No rule `nullref < t` for all reftypes `t` -- while that is derivable from the above given the current set of types it might not hold for future reference types which don't allow null.
 
 
@@ -79,7 +79,7 @@ New/extended instructions:
   - `table.fill $x : [i32 i32 t] -> []` iff `t` is the element type of table `$x`
 
 * The `call_indirect` instruction takes a table index as immediate that identifies the table it calls through.
-  - `call_indirect (type $t) $x : [t1* i32] -> [t2*]` iff `$t` denotes the function type `[t1*] -> [t2*]` and the element type of table `$x` is a subtype of `anyfunc`.
+  - `call_indirect (type $t) $x : [t1* i32] -> [t2*]` iff `$t` denotes the function type `[t1*] -> [t2*]` and the element type of table `$x` is a subtype of `funcref`.
   - In the binary format, space for the index is already reserved.
   - For backwards compatibility, the index may be omitted in the text format, in which case it defaults to 0.
 
@@ -99,7 +99,7 @@ API extensions:
 
 * Any JS value can be passed as `anyref` to a Wasm function, stored in a global, or in a table.
 
-* Any Wasm exported function object or `null` can be passed as `anyfunc` to a Wasm function, stored in a global, or in a table.
+* Any Wasm exported function object or `null` can be passed as `funcref` to a Wasm function, stored in a global, or in a table.
 
 
 ## Possible Future Extensions
@@ -147,12 +147,12 @@ Additions:
 * Add `(ref $t)` as a reference type
   - `reftype ::= ... | ref <typeidx>`
 * Add `(ref.func $f)` and `(call_ref)` instructions
-  - `ref.func $f : [] -> (ref $t)  iff $f : $t`
+  - `ref.func $f : [] -> (ref $t)` iff `$f : $t`
   - `call_ref : [ts1 (ref $t)] -> [ts2]` iff `$t = [ts1] -> [ts2]`
-* Introduce subtyping `ref <functype> < anyfunc`
+* Introduce subtyping `ref <functype> < funcref`
 * Subtying between concrete and universal reference types
   - `ref $t < anyref`
-  - `ref <functype> < anyfunc`
+  - `ref <functype> < funcref`
   - Note: reference types are not necessarily subtypes of `eqref`, including functions
 
 * Typed function references cannot be null!
@@ -198,8 +198,8 @@ Questions:
 
 * Do we need to impose constraints on the order of imports, to stratify section dependencies? Should type import and export be separate sections instead?
 
-* Do we need a nullable `(ref opt $t)` type to allow use with locals etc.? Could a `(nullable T)` type constructor work instead?
-  - Unclear how `nullable` constructor would integrate exactly. Would it only allow (non-nullable) reference types as argument? Does this require a kind system? Should `anyref` be different from `(nullable anyref)`, or the latter disallowed? What about `anyfunc`?
+* Do we need a nullable `(optref $t)` type to allow use with locals etc.? Could a `(nullable T)` type constructor work instead?
+  - Unclear how `nullable` constructor would integrate exactly. Would it only allow (non-nullable) reference types as argument? Does this require a kind system? Should `anyref` be different from `(nullable anyref)`, or the latter disallowed? What about `funcref`?
   - Semantically, thinking of `(nullable T)` as `T | nullref` could answer these questions, but we cannot support arbitrary unions in Wasm.
 
 * Should we add `(new)` definitional type to enable Wasm modules to define new types, too?
