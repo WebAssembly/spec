@@ -219,6 +219,26 @@ Reference Instructions
    \end{array}
 
 
+.. _exec-ref.func:
+
+:math:`\REFFUNC~x`
+..................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-ref.func>`, :math:`F.\AMODULE.\MIFUNCS[x]` exists.
+
+3. Let :math:`a` be the :ref:`function address <syntax-funcaddr>` :math:`F.\AMODULE.\MIFUNCS[x]`.
+
+4. Push the value :math:`\REFFUNCADDR~a` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   F; \REFFUNC~x &\stepto& F; \REFFUNCADDR~a
+     & (\iff a = F.\AMODULE.\MIFUNCS[x]) \\
+   \end{array}
+
+
 .. index:: parametric instructions, value
    pair: execution; instruction
    single: abstract syntax; instruction
@@ -1042,7 +1062,7 @@ Control Instructions
 
 13. Assert: due to :ref:`validation of table mutation <valid-table.set>`, :math:`r` is a :ref:`function reference <syntax-ref.func>`.
 
-14. Let :math:`\REFFUNC~a` be the :ref:`function reference <syntax-ref.func>` :math:`r`.
+14. Let :math:`\REFFUNCADDR~a` be the :ref:`function reference <syntax-ref.func>` :math:`r`.
 
 15. Assert: due to :ref:`validation of table mutation <valid-table.set>`, :math:`S.\SFUNCS[a]` exists.
 
@@ -1064,7 +1084,7 @@ Control Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM[i] = \REFFUNC~a \\
+     (\iff & S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM[i] = \REFFUNCADDR~a \\
      \wedge & S.\SFUNCS[a] = f \\
      \wedge & F.\AMODULE.\MITYPES[y] = f.\FITYPE)
      \end{array}

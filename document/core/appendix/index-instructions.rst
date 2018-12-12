@@ -217,4 +217,5 @@ Instruction                             Binary Opcode     Type                  
 (reserved)                              :math:`\hex{CF}`                                                  
 :math:`\REFNULL`                        :math:`\hex{D0}`  :math:`[] \to [\NULLREF]`                   :ref:`validation <valid-ref.null>`        :ref:`execution <exec-ref.null>`
 :math:`\REFISNULL`                      :math:`\hex{D1}`  :math:`[\ANYREF] \to [\I32]`                :ref:`validation <valid-ref.isnull>`      :ref:`execution <exec-ref.isnull>`
+:math:`\REFFUNC~x`                      :math:`\hex{D2}`  :math:`[] \to [\FUNCREF]`                   :ref:`validation <valid-ref.func>`        :ref:`execution <exec-ref.func>`
 ======================================  ================  ==========================================  ========================================  ===============================================================

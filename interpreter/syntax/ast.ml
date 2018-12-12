@@ -95,6 +95,7 @@ and instr' =
   | MemoryGrow                        (* grow linear memory *)
   | RefNull                           (* null reference *)
   | RefIsNull                         (* null test *)
+  | RefFunc of var                    (* function reference *)
   | Const of literal                  (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)

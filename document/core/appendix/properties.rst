@@ -484,8 +484,8 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. index:: function address, extern value, extern type, function type
 
-:math:`\REFFUNC~\funcaddr`
-..........................
+:math:`\REFFUNCADDR~\funcaddr`
+..............................
 
 * The :ref:`external function value <syntax-externval>` :math:`\EVFUNC~\funcaddr` must be :ref:`valid <valid-externval-func>` with :ref:`external function type <syntax-externtype>` :math:`\ETFUNC \functype`.
 
@@ -495,7 +495,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    \frac{
      S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype
    }{
-     S; C \vdashadmininstr \REFFUNC~\funcaddr : [] \to [\FUNCREF]
+     S; C \vdashadmininstr \REFFUNCADDR~\funcaddr : [] \to [\FUNCREF]
    }
 
 

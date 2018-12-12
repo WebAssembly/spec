@@ -248,6 +248,10 @@ let rec step (c : config) : config =
       | RefIsNull, v :: vs' ->
         Num (I32 0l) :: vs', []
 
+      | RefFunc x, vs' ->
+        let f = func frame.inst x in
+        Ref (FuncRef f) :: vs', []
+
       | Const n, vs ->
         Num n.it :: vs, []
 
@@ -455,15 +459,15 @@ let init (m : module_) (exts : extern list) : module_inst =
       types = List.map (fun type_ -> type_.it) types }
   in
   let fs = List.map (create_func inst0) funcs in
-  let inst1 =
-    { inst0 with
-      funcs = inst0.funcs @ fs;
-      tables = inst0.tables @ List.map (create_table inst0) tables;
-      memories = inst0.memories @ List.map (create_memory inst0) memories;
-      globals = inst0.globals @ List.map (create_global inst0) globals;
+  let inst1 = {inst0 with funcs = inst0.funcs @ fs} in
+  let inst2 =
+    { inst1 with
+      tables = inst1.tables @ List.map (create_table inst1) tables;
+      memories = inst1.memories @ List.map (create_memory inst1) memories;
+      globals = inst1.globals @ List.map (create_global inst1) globals;
     }
   in
-  let inst = {inst1 with exports = List.map (create_export inst1) exports} in
+  let inst = {inst2 with exports = List.map (create_export inst2) exports} in
   List.iter (init_func inst) fs;
   let init_elems = List.map (init_table inst) elems in
   let init_datas = List.map (init_memory inst) data in

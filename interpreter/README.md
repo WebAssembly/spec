@@ -232,7 +232,7 @@ op:
   memory.grow
   ref.null
   ref.isnull
-  ref.eq
+  ref.func <var>
   <val_type>.const <value>
   <val_type>.<unop>
   <val_type>.<binop>

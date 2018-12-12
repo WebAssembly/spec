@@ -189,6 +189,21 @@ Reference Instructions
      C \vdashinstr \REFISNULL : [\ANYREF] \to [\I32]
    }
 
+.. _valid-ref.func:
+
+:math:`\REFFUNC~x`
+..................
+
+* The function :math:`C.\CFUNCS[x]` must be defined in the context.
+
+* The instruction is valid with type :math:`[] \to [\FUNCREF]`.
+
+.. math::
+   \frac{
+     C.\CFUNCS[x] = \functype
+   }{
+     C \vdashinstr \REFFUNC~x : [] \to [\FUNCREF]
+   }
 
 
 .. index:: parametric instructions, value type, polymorphism
@@ -879,6 +894,8 @@ Constant Expressions
 
   * or of the form :math:`\REFNULL`,
 
+  * or of the form :math:`\REFFUNC~x`,
+
   * or of the form :math:`\GLOBALGET~x`, in which case :math:`C.\CGLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
 
 .. math::
@@ -899,6 +916,12 @@ Constant Expressions
      C \vdashinstrconst \REFNULL \const
    }
    \qquad
+   \frac{
+   }{
+     C \vdashinstrconst \REFFUNC~x \const
+   }
+
+.. math::
    \frac{
      C.\CGLOBALS[x] = \CONST~t
    }{

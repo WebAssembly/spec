@@ -178,6 +178,7 @@ rule token = parse
           f64_const (n @@ s.at), Values.F64 n))
     }
   | "ref.null" { REF_NULL }
+  | "ref.func" { REF_FUNC }
   | "ref.host" { REF_HOST }
   | "ref.isnull" { REF_ISNULL }
 

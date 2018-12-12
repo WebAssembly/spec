@@ -677,7 +677,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
        ii. Let :math:`\funcaddr_{ij}` be the :ref:`function address <syntax-funcaddr>` :math:`\moduleinst.\MIFUNCS[\funcidx_{ij}]`.
 
-       iii. Replace :math:`\tableinst_i.\TIELEM[\X{eo}_i + j]` with :math:`\REFFUNC~\funcaddr_{ij}`.
+       iii. Replace :math:`\tableinst_i.\TIELEM[\X{eo}_i + j]` with :math:`\REFFUNCADDR~\funcaddr_{ij}`.
 
 14. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
 
@@ -727,7 +727,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      S; F; \epsilon \\
    S; F; \INITELEM~a~i~(x_0~x^\ast) &\stepto&
      S'; F; \INITELEM~a~(i+1)~x^\ast \\ &&
-     (\iff S' = S \with \STABLES[a].\TIELEM[i] = \REFFUNC~F.\AMODULE.\MIFUNCS[x_0])
+     (\iff S' = S \with \STABLES[a].\TIELEM[i] = \REFFUNCADDR~F.\AMODULE.\MIFUNCS[x_0])
    \\[1ex]
    S; F; \INITDATA~a~i~\epsilon &\stepto&
      S; F; \epsilon \\

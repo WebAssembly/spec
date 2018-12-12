@@ -375,6 +375,7 @@ let encode m =
       (* TODO: Allocate more adequate opcodes *)
       | RefNull -> op 0xd0
       | RefIsNull -> op 0xd1
+      | RefFunc x -> op 0xd2; var x
 
     let const c =
       list instr c.it; end_ ()

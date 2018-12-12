@@ -155,7 +155,7 @@ let type_cvtop at = function
 (* Expressions *)
 
 let check_memop (c : context) (memop : 'a memop) get_sz at =
-  ignore (memory c (0l @@ at));
+  let _mt = memory c (0l @@ at) in
   let size =
     match get_sz memop.sz with
     | None -> size memop.ty
@@ -295,11 +295,11 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [NumType I32Type; NumType memop.ty] --> []
 
   | MemorySize ->
-    ignore (memory c (0l @@ e.at));
+    let _mt = memory c (0l @@ e.at) in
     [] --> [NumType I32Type]
 
   | MemoryGrow ->
-    ignore (memory c (0l @@ e.at));
+    let _mt = memory c (0l @@ e.at) in
     [NumType I32Type] --> [NumType I32Type]
 
   | RefNull ->
@@ -307,6 +307,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
 
   | RefIsNull ->
     [RefType AnyRefType] --> [NumType I32Type]
+
+  | RefFunc x ->
+    let _ft = func c x in
+    [] --> [RefType FuncRefType]
 
   | Const v ->
     let t = NumType (type_num v.it) in
@@ -421,6 +425,7 @@ let check_func (c : context) (f : func) =
 let is_const (c : context) (e : instr) =
   match e.it with
   | RefNull
+  | RefFunc _
   | Const _ -> true
   | GlobalGet x -> let GlobalType (_, mut) = global c x in mut = Immutable
   | _ -> false
@@ -443,14 +448,14 @@ let check_memory (c : context) (mem : memory) =
 
 let check_elem (c : context) (seg : table_segment) =
   let {index; offset; init} = seg.it in
-  check_const c offset (NumType I32Type);
-  ignore (table c index);
-  ignore (List.map (func c) init)
+  let _tt = table c index in
+  let _xs = List.map (func c) init in
+  check_const c offset (NumType I32Type)
 
 let check_data (c : context) (seg : memory_segment) =
   let {index; offset; init} = seg.it in
-  check_const c offset (NumType I32Type);
-  ignore (memory c index)
+  let _mt = memory c index in
+  check_const c offset (NumType I32Type)
 
 let check_global (c : context) (glob : global) =
   let {gtype; value} = glob.it in

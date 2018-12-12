@@ -171,6 +171,7 @@ Occasionally, it is convenient to group operators together according to the foll
    pair: abstract syntax; instruction
 .. _syntax-ref.null:
 .. _syntax-ref.isnull:
+.. _syntax-ref.func:
 .. _syntax-instr-ref:
 
 Reference Instructions
@@ -183,7 +184,8 @@ Instructions in this group are concerned with accessing :ref:`references <syntax
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \REFNULL \\&&|&
-     \REFISNULL \\
+     \REFISNULL \\&&|&
+     \REFFUNC~\funcidx \\
    \end{array}
 
 These instruction produce a null value, check for a null value, or compare two references, respectively.

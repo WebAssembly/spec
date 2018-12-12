@@ -73,6 +73,9 @@ New/extended instructions:
 * The new instruction `ref.isnull` checks for null.
   - `ref.isnull : [anyref] -> [i32]`
 
+* The new instruction `ref.func` creates a reference to a given function.
+  - `ref.func $x : [] -> [funcref]` iff `$x` is a function
+
 * The new instructions `table.get` and `table.set` access tables.
   - `table.get $x : [i32] -> [t]` iff `t` is the element type of table `$x`
   - `table.set $x : [i32 t] -> []` iff `t` is the element type of table `$x`
@@ -146,8 +149,9 @@ Additions:
 
 * Add `(ref $t)` as a reference type
   - `reftype ::= ... | ref <typeidx>`
-* Add `(ref.func $f)` and `(call_ref)` instructions
+* Refine `(ref.func $f)` instruction
   - `ref.func $f : [] -> (ref $t)` iff `$f : $t`
+* Add `(call_ref)` instruction
   - `call_ref : [ts1 (ref $t)] -> [ts2]` iff `$t = [ts1] -> [ts2]`
 * Introduce subtyping `ref <functype> < funcref`
 * Subtying between concrete and universal reference types
