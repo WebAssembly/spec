@@ -126,14 +126,13 @@ HTML_BOTTOM = """
 def wrap_single_test(js_file):
     test_func_name = os.path.basename(js_file).replace('.', '_').replace('-', '_')
 
-    content = ["(function {}() {{".format(test_func_name)]
+    content = "(function {}() {{\n".format(test_func_name)
     with open(js_file, 'r') as f:
-        content += f.readlines()
-    content.append('reinitializeRegistry();')
-    content.append('})();')
+        content += f.read()
+    content += "reinitializeRegistry();\n})();\n"
 
     with open(js_file, 'w') as f:
-        f.write('\n'.join(content))
+        f.write(content)
 
 def build_html_js(out_dir):
     ensure_empty_dir(out_dir)
