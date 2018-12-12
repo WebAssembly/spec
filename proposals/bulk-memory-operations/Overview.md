@@ -390,7 +390,7 @@ appear in the following order:
 | Export | `7` | Exports |
 | Start | `8` | Start function declaration |
 | Element | `9` | Elements section |
-| DataCount | `13` | Data segment count |
+| DataCount | `12` | Data segment count |
 | Code | `10` | Function bodies (code) |
 | Data | `11` | Data segments |
 
