@@ -205,7 +205,7 @@ Perhaps also the following short-hands:
     - iff `$t = struct (mut t)*`
   - equivalent to `struct.new_rtt $t anyref (rtt.anyref)`
 
-* `struct.new_rtt <typeidx> <typeuse>` allocates a structure of type `$t` with RTT information and initialises its fields with given values
+* `struct.new_rtt <typeidx> <typeuse>` allocates a structure of type `$t` with RTT information determining its [runtime type](#values) and initialises its fields with given values
   - `struct.new_rtt $t t' : [(rtt t') t*] -> [(ref $t)]`
     - iff `$t = struct (mut t)*`
     - and `ref $t <: t'`
@@ -236,7 +236,7 @@ Perhaps also the following short-hands:
     - iff `$t = array (mut t)`
   - equivalent to `array.new_rtt $t anyref (rtt.anyref)`
 
-* `array.new_rtt <typeidx>` allocates a array of type `$t` with RTT information
+* `array.new_rtt <typeidx> <typeuse>` allocates a array of type `$t` with RTT information determining its [runtime type](#values)
   - `array.new_rtt $t t' : [(rtt t') t i32] -> [(ref $t)]`
     - iff `$t = array (mut t)`
     - and `ref $t <: t'`
@@ -320,7 +320,7 @@ Perhaps also the following short-hands:
 
 #### Casts
 
-* `ref.test <typeuse> <typeuse>` tests whether a reference value is of a type given by a RTT representation
+* `ref.test <typeuse> <typeuse>` tests whether a reference value's [runtime type](#values) matches a type given by a RTT representation
   - `ref.test t t' : [t (rtt t')] -> [i32]`
      - iff `t' <: t <: anyref`
   - returns 1 if the operand's runtime type is defined to be a (transitive) subtype of `t`, 0 otherwise
