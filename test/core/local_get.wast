@@ -59,6 +59,51 @@
       )
     )
   )
+
+  ;; As parameter of control constructs and instructions
+
+  (func (export "as-block-value") (param i32) (result i32)
+    (block (result i32) (local.get 0))
+  )
+  (func (export "as-loop-value") (param i32) (result i32)
+    (loop (result i32) (local.get 0))
+  )
+  (func (export "as-br-value") (param i32) (result i32)
+    (block (result i32) (br 0 (local.get 0)))
+  )
+  (func (export "as-br_if-value") (param i32) (result i32)
+    (block $l0 (result i32) (br_if $l0 (local.get 0) (i32.const 1)))
+  )
+
+  (func (export "as-br_if-value-cond") (param i32) (result i32)
+    (block (result i32)
+      (br_if 0 (local.get 0) (local.get 0))
+    )
+  )
+  (func (export "as-br_table-value") (param i32) (result i32)
+    (block
+      (block
+        (block
+          (br_table 0 1 2 (local.get 0))
+          (return (i32.const 0))
+        )
+        (return (i32.const 1))
+      )
+      (return (i32.const 2))
+    )
+    (i32.const 3)
+  )
+
+  (func (export "as-return-value") (param i32)
+    (return (local.get 0))
+  )
+
+  (func (export "as-if-then") (param i32) (result i32)
+    (if (result i32) (local.get 0) (then (local.get 0)) (else (i32.const 0)))
+  )
+  (func (export "as-if-else") (param i32) (result i32)
+    (if (result i32) (local.get 0) (then (i32.const 1)) (else (local.get 0)))
+  )
 )
 
 (assert_return (invoke "type-local-i32") (i32.const 0))
@@ -70,6 +115,19 @@
 (assert_return (invoke "type-param-i64" (i64.const 3)) (i64.const 3))
 (assert_return (invoke "type-param-f32" (f32.const 4.4)) (f32.const 4.4))
 (assert_return (invoke "type-param-f64" (f64.const 5.5)) (f64.const 5.5))
+
+(assert_return (invoke "as-block-value" (i32.const 6)) (i32.const 6))
+(assert_return (invoke "as-loop-value" (i32.const 7)) (i32.const 7))
+
+(assert_return (invoke "as-br-value" (i32.const 8)) (i32.const 8))
+(assert_return (invoke "as-br_if-value" (i32.const 9)) (i32.const 9))
+(assert_return (invoke "as-br_if-value-cond" (i32.const 10)) (i32.const 10))
+(assert_return (invoke "as-br_table-value" (i32.const 1)) (i32.const 2))
+
+(assert_return (invoke "as-return-value" (i32.const 0)))
+
+(assert_return (invoke "as-if-then" (i32.const 1)) (i32.const 1))
+(assert_return (invoke "as-if-else" (i32.const 0)) (i32.const 0))
 
 (assert_return
   (invoke "type-mixed"
@@ -92,11 +150,11 @@
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-local-num-vs-num (local f32) (i32.eqz (local.get 0))))
+  (module (func $type-local-num-vs-num (result i32) (local f32) (i32.eqz (local.get 0))))
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-local-num-vs-num (local f64 i64) (f64.neg (local.get 1))))
+  (module (func $type-local-num-vs-num (result f64) (local f64 i64) (f64.neg (local.get 1))))
   "type mismatch"
 )
 
@@ -108,11 +166,11 @@
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-param-num-vs-num (param f32) (i32.eqz (local.get 0))))
+  (module (func $type-param-num-vs-num (param f32) (result i32) (i32.eqz (local.get 0))))
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-param-num-vs-num (param f64 i64) (f64.neg (local.get 1))))
+  (module (func $type-param-num-vs-num (param f64 i64) (result f64) (f64.neg (local.get 1))))
   "type mismatch"
 )
 
@@ -150,7 +208,7 @@
   "unknown local"
 )
 (assert_invalid
-  (module (func $large-param (local i32 i64) (local.get 714324343)))
+  (module (func $large-param (param i32 i64) (local.get 714324343)))
   "unknown local"
 )
 
