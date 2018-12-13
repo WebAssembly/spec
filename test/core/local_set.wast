@@ -143,24 +143,6 @@
 
 ;; Invalid typing of access to locals
 
-(assert_invalid
-  (module (func $type-local-num-vs-num (result i64) (local i32)
-    (local.set 0 (i32.const 0))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-local-num-vs-num (local f32)
-    (i32.eqz (local.set 0 (f32.const 0)))
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-local-num-vs-num (local f64 i64)
-    (f64.neg (local.set 1 (i64.const 0)))
-  ))
-  "type mismatch"
-)
 
 (assert_invalid
   (module (func $type-local-arg-void-vs-num (local i32) (local.set 0 (nop))))
@@ -182,18 +164,6 @@
 
 ;; Invalid typing of access to parameters
 
-(assert_invalid
-  (module (func $type-param-num-vs-num (param i32) (result i64) (local.set 0 (i32.const 0))))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-param-num-vs-num (param f32) (i32.eqz (local.set 0 (f32.const 0)))))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-param-num-vs-num (param f64 i64) (f64.neg (local.set 1 (i64.const 0)))))
-  "type mismatch"
-)
 
 (assert_invalid
   (module (func $type-param-arg-void-vs-num (param i32) (local.set 0 (nop))))

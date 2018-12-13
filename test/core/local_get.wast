@@ -150,11 +150,11 @@
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-local-num-vs-num (local f32) (i32.eqz (local.get 0))))
+  (module (func $type-local-num-vs-num (result i32) (local f32) (i32.eqz (local.get 0))))
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-local-num-vs-num (local f64 i64) (f64.neg (local.get 1))))
+  (module (func $type-local-num-vs-num (result f64) (local f64 i64) (f64.neg (local.get 1))))
   "type mismatch"
 )
 
@@ -166,11 +166,11 @@
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-param-num-vs-num (param f32) (i32.eqz (local.get 0))))
+  (module (func $type-param-num-vs-num (param f32) (result i32) (i32.eqz (local.get 0))))
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-param-num-vs-num (param f64 i64) (f64.neg (local.get 1))))
+  (module (func $type-param-num-vs-num (param f64 i64) (result f64) (f64.neg (local.get 1))))
   "type mismatch"
 )
 
