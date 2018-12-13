@@ -137,14 +137,14 @@ Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. _text-ref.null:
-.. _text-ref.isnull:
+.. _text-ref.is_null:
 .. _text-ref.func:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{ref.null} &\Rightarrow& \REFNULL \\ &&|&
-     \text{ref.isnull} &\Rightarrow& \REFISNULL \\ &&|&
+     \text{ref.is\_null} &\Rightarrow& \REFISNULL \\
      \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
    \end{array}
 

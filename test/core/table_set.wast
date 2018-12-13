@@ -20,8 +20,8 @@
     (table.set $t3 (local.get $i) (table.get $t3 (local.get $j)))
   )
 
-  (func (export "isnull-funcref") (param $i i32) (result i32)
-    (ref.isnull (call $f3 (local.get $i)))
+  (func (export "is_null-funcref") (param $i i32) (result i32)
+    (ref.is_null (call $f3 (local.get $i)))
   )
 )
 
@@ -33,7 +33,7 @@
 
 (assert_return (invoke "get-funcref" (i32.const 0)) (ref.null))
 (assert_return (invoke "set-funcref-from" (i32.const 0) (i32.const 1)))
-(assert_return (invoke "isnull-funcref" (i32.const 0)) (i32.const 0))
+(assert_return (invoke "is_null-funcref" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "set-funcref" (i32.const 0) (ref.null)))
 (assert_return (invoke "get-funcref" (i32.const 0)) (ref.null))
 

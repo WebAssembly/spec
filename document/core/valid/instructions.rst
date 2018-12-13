@@ -176,7 +176,7 @@ Reference Instructions
    }
 
 
-.. _valid-ref.isnull:
+.. _valid-ref.is_null:
 
 :math:`\REFISNULL`
 ..................

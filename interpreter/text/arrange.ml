@@ -250,7 +250,7 @@ let rec instr e =
     | MemorySize -> "memory.size", []
     | MemoryGrow -> "memory.grow", []
     | RefNull -> "ref.null", []
-    | RefIsNull -> "ref.isnull", []
+    | RefIsNull -> "ref.is_null", []
     | RefFunc x -> "ref.func " ^ var x, []
     | Const lit -> constop lit ^ " " ^ num lit, []
     | Test op -> testop op, []

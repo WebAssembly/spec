@@ -180,7 +180,7 @@ rule token = parse
   | "ref.null" { REF_NULL }
   | "ref.func" { REF_FUNC }
   | "ref.host" { REF_HOST }
-  | "ref.isnull" { REF_ISNULL }
+  | "ref.is_null" { REF_IS_NULL }
 
   | "nop" { NOP }
   | "unreachable" { UNREACHABLE }

@@ -70,8 +70,8 @@ New/extended instructions:
   - `ref.null : [] -> [nullref]`
   - allowed in constant expressions
 
-* The new instruction `ref.isnull` checks for null.
-  - `ref.isnull : [anyref] -> [i32]`
+* The new instruction `ref.is_null` checks for null.
+  - `ref.is_null : [anyref] -> [i32]`
 
 * The new instruction `ref.func` creates a reference to a given function.
   - `ref.func $x : [] -> [funcref]` iff `$x` is a function

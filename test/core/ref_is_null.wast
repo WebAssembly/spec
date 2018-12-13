@@ -1,9 +1,9 @@
 (module
   (func $f2 (export "anyref") (param $x anyref) (result i32)
-    (ref.isnull (local.get $x))
+    (ref.is_null (local.get $x))
   )
   (func $f3 (export "funcref") (param $x funcref) (result i32)
-    (ref.isnull (local.get $x))
+    (ref.is_null (local.get $x))
   )
 
   (table $t2 2 anyref)

@@ -335,7 +335,7 @@
 .. |MEMORYGROW| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.grow}}
 
 .. |REFNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}null}}
-.. |REFISNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}isnull}}
+.. |REFISNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}is\_null}}
 .. |REFFUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}func}}
 
 .. |CONST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{const}}
