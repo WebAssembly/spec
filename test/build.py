@@ -76,10 +76,7 @@ def convert_wast_to_js(out_js_dir):
         if result != 0:
             print('Error when compiling {} to JS: {}', wast_file, result.stdout)
 
-def build_js(out_js_dir, include_harness=False):
-    print('Building JS...')
-    convert_wast_to_js(out_js_dir)
-
+def copy_harness_files(out_js_dir, include_harness):
     harness_dir = os.path.join(out_js_dir, 'harness')
     ensure_empty_dir(harness_dir)
 
@@ -89,6 +86,10 @@ def build_js(out_js_dir, include_harness=False):
             continue
         shutil.copy(js_file, harness_dir)
 
+def build_js(out_js_dir, include_harness=False):
+    print('Building JS...')
+    convert_wast_to_js(out_js_dir)
+    copy_harness_files(out_js_dir, include_harness)
     print('Done building JS.')
 
 # HTML harness.
