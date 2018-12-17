@@ -99,11 +99,6 @@ WebAssembly's scalar floating-point operations. In particular, the rules about
 NaN propagation and default NaN values are the same, and all operations use the
 default *roundTiesToEven* rounding mode.
 
-An implementation is allowed to flush subnormals in arithmetic floating-point
-operations. This means that any subnormal operand is treated as 0, and any
-subnormal result is rounded to 0. Note that this differs from WebAssembly
-scalar floating-point semantics which require correct subnormal handling.
-
 # JavaScript API and SIMD Values
 
 Accessing WebAssembly module imports or exports containing SIMD Type from JavaScript will throw.
