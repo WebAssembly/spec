@@ -75,6 +75,7 @@ def convert_wast_to_js(out_js_dir):
     for result in pool.imap_unordered(convert_one_wast_file, inputs):
         if result != 0:
             print('Error when compiling {} to JS: {}', wast_file, result.stdout)
+    return [js_file for (wast_file, js_file) in inputs]
 
 def copy_harness_files(out_js_dir, include_harness):
     harness_dir = os.path.join(out_js_dir, 'harness')
@@ -128,14 +129,15 @@ def wrap_single_test(js_file):
 
 def build_html_js(out_dir):
     ensure_empty_dir(out_dir)
-    convert_wast_to_js(out_dir)
     copy_harness_files(out_dir, True)
 
-    for js_file in glob.glob(os.path.join(out_dir, '*.js')):
+    tests = convert_wast_to_js(out_dir)
+    for js_file in tests:
         wrap_single_test(js_file)
+    return tests
 
-def build_html_from_js(js_html_dir, html_dir, use_sync):
-    for js_file in glob.glob(os.path.join(js_html_dir, '*.js')):
+def build_html_from_js(tests, html_dir, use_sync):
+    for js_file in tests:
         js_filename = os.path.basename(js_file)
         html_filename = js_filename + '.html'
         html_file = os.path.join(html_dir, html_filename)
@@ -153,10 +155,10 @@ def build_html(html_dir, js_dir, use_sync):
 
     js_html_dir = os.path.join(html_dir, 'js')
 
-    build_html_js(js_html_dir)
+    tests = build_html_js(js_html_dir)
 
     print('Building WPT tests from JS tests...')
-    build_html_from_js(js_html_dir, html_dir, use_sync)
+    build_html_from_js(tests, html_dir, use_sync)
 
     print("Done building HTML tests.")
 
@@ -167,7 +169,7 @@ def build_front_page(out_dir, js_dir, use_sync):
 
     js_out_dir = os.path.join(out_dir, 'js')
 
-    build_html_js(js_out_dir)
+    tests = build_html_js(js_out_dir)
 
     front_page = os.path.join(out_dir, 'index.html')
     js_harness = "sync_index.js" if use_sync else "async_index.js"
@@ -175,7 +177,7 @@ def build_front_page(out_dir, js_dir, use_sync):
         content = HTML_HEADER.replace('{PREFIX}', './js/harness') \
                              .replace('{WPT_PREFIX}', './js/harness')\
                              .replace('{JS_HARNESS}', js_harness)
-        for js_file in glob.glob(os.path.join(js_out_dir, '*.js')):
+        for js_file in tests:
             filename = os.path.basename(js_file)
             content += "        <script src=./js/{SCRIPT}></script>\n".replace('{SCRIPT}', filename)
         content += HTML_BOTTOM
