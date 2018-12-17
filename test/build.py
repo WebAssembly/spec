@@ -86,10 +86,10 @@ def copy_harness_files(out_js_dir, include_harness):
             continue
         shutil.copy(js_file, harness_dir)
 
-def build_js(out_js_dir, include_harness=False):
+def build_js(out_js_dir):
     print('Building JS...')
     convert_wast_to_js(out_js_dir)
-    copy_harness_files(out_js_dir, include_harness)
+    copy_harness_files(out_js_dir, False)
     print('Done building JS.')
 
 # HTML harness.
@@ -128,7 +128,8 @@ def wrap_single_test(js_file):
 
 def build_html_js(out_dir):
     ensure_empty_dir(out_dir)
-    build_js(out_dir, True)
+    convert_wast_to_js(out_dir)
+    copy_harness_files(out_dir, True)
 
     for js_file in glob.glob(os.path.join(out_dir, '*.js')):
         wrap_single_test(js_file)
