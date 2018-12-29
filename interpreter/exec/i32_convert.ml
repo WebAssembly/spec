@@ -2,7 +2,7 @@
 
 let wrap_i64 x = Int64.to_int32 x
 
-let trunc_s_f32 x =
+let trunc_f32_s x =
   if F32.ne x x then
     raise Numeric_error.InvalidConversionToInteger
   else
@@ -12,7 +12,7 @@ let trunc_s_f32 x =
     else
       Int32.of_float xf
 
-let trunc_u_f32 x =
+let trunc_f32_u x =
   if F32.ne x x then
     raise Numeric_error.InvalidConversionToInteger
   else
@@ -22,7 +22,7 @@ let trunc_u_f32 x =
     else
       Int64.(to_int32 (of_float xf))
 
-let trunc_s_f64 x =
+let trunc_f64_s x =
   if F64.ne x x then
     raise Numeric_error.InvalidConversionToInteger
   else
@@ -32,7 +32,7 @@ let trunc_s_f64 x =
     else
       Int32.of_float xf
 
-let trunc_u_f64 x =
+let trunc_f64_u x =
   if F64.ne x x then
     raise Numeric_error.InvalidConversionToInteger
   else

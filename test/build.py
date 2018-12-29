@@ -13,8 +13,6 @@ INTERPRETER_DIR = os.path.join(SCRIPT_DIR, '..', 'interpreter')
 WASM_EXEC = os.path.join(INTERPRETER_DIR, 'wasm')
 
 WAST_TESTS_DIR = os.path.join(SCRIPT_DIR, 'core')
-JS_TESTS_DIR = os.path.join(SCRIPT_DIR, 'js-api')
-HTML_TESTS_DIR = os.path.join(SCRIPT_DIR, 'html')
 HARNESS_DIR = os.path.join(SCRIPT_DIR, 'harness')
 
 HARNESS_FILES = ['testharness.js', 'testharnessreport.js', 'testharness.css']
@@ -82,10 +80,6 @@ def build_js(out_js_dir, include_harness=False):
     print('Building JS...')
     convert_wast_to_js(out_js_dir)
 
-    print('Copying JS tests to the JS out dir...')
-    for js_file in glob.glob(os.path.join(JS_TESTS_DIR, '*.js')):
-        shutil.copy(js_file, out_js_dir)
-
     harness_dir = os.path.join(out_js_dir, 'harness')
     ensure_empty_dir(harness_dir)
 
@@ -123,21 +117,17 @@ HTML_BOTTOM = """
 def wrap_single_test(js_file):
     test_func_name = os.path.basename(js_file).replace('.', '_').replace('-', '_')
 
-    content = ["(function {}() {{".format(test_func_name)]
+    content = "(function {}() {{\n".format(test_func_name)
     with open(js_file, 'r') as f:
-        content += f.readlines()
-    content.append('reinitializeRegistry();')
-    content.append('})();')
+        content += f.read()
+    content += "reinitializeRegistry();\n})();\n"
 
     with open(js_file, 'w') as f:
-        f.write('\n'.join(content))
+        f.write(content)
 
 def build_html_js(out_dir):
     ensure_empty_dir(out_dir)
     build_js(out_dir, True)
-
-    for js_file in glob.glob(os.path.join(HTML_TESTS_DIR, '*.js')):
-        shutil.copy(js_file, out_dir)
 
     for js_file in glob.glob(os.path.join(out_dir, '*.js')):
         wrap_single_test(js_file)

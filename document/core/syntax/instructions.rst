@@ -64,14 +64,14 @@ These operations closely match respective operations available in hardware.
      \K{i}\X{nn}\K{.}\itestop \\&&|&
      \K{i}\X{nn}\K{.}\irelop ~|~
      \K{f}\X{nn}\K{.}\frelop \\&&|&
-     \K{i32.}\WRAP\K{/i64} ~|~
-     \K{i64.}\EXTEND\K{\_}\sx/\K{i32} ~|~
-     \K{i}\X{nn}\K{.}\TRUNC\K{\_}\sx/\K{f}\X{mm} \\&&|&
-     \K{f32.}\DEMOTE\K{/f64} ~|~
-     \K{f64.}\PROMOTE\K{/f32} ~|~
-     \K{f}\X{nn}\K{.}\CONVERT\K{\_}\sx/\K{i}\X{mm} \\&&|&
-     \K{i}\X{nn}\K{.}\REINTERPRET\K{/f}\X{nn} ~|~
-     \K{f}\X{nn}\K{.}\REINTERPRET\K{/i}\X{nn} \\&&|&
+     \K{i32.}\WRAP\K{\_i64} ~|~
+     \K{i64.}\EXTEND\K{\_i32}\K{\_}\sx ~|~
+     \K{i}\X{nn}\K{.}\TRUNC\K{\_f}\X{mm}\K{\_}\sx \\&&|&
+     \K{f32.}\DEMOTE\K{\_f64} ~|~
+     \K{f64.}\PROMOTE\K{\_f32} ~|~
+     \K{f}\X{nn}\K{.}\CONVERT\K{\_i}\X{mm}\K{\_}\sx \\&&|&
+     \K{i}\X{nn}\K{.}\REINTERPRET\K{\_f}\X{nn} ~|~
+     \K{f}\X{nn}\K{.}\REINTERPRET\K{\_i}\X{nn} \\&&|&
      \dots \\
    \production{integer unary operator} & \iunop &::=&
      \K{clz} ~|~
@@ -158,9 +158,9 @@ Occasionally, it is convenient to group operators together according to the foll
    \production{relational operator} & \relop &::=& \irelop ~|~ \frelop \\
    \production{conversion operator} & \cvtop &::=&
      \WRAP ~|~
-     \EXTEND\K{\_}\sx ~|~
-     \TRUNC\K{\_}\sx ~|~
-     \CONVERT\K{\_}\sx ~|~
+     \EXTEND ~|~
+     \TRUNC ~|~
+     \CONVERT ~|~
      \DEMOTE ~|~
      \PROMOTE ~|~
      \REINTERPRET \\
@@ -202,15 +202,15 @@ Variable instructions are concerned with access to :ref:`local <syntax-local>` o
    \begin{array}{llcl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
-     \GETLOCAL~\localidx \\&&|&
-     \SETLOCAL~\localidx \\&&|&
-     \TEELOCAL~\localidx \\&&|&
-     \GETGLOBAL~\globalidx \\&&|&
-     \SETGLOBAL~\globalidx \\
+     \LOCALGET~\localidx \\&&|&
+     \LOCALSET~\localidx \\&&|&
+     \LOCALTEE~\localidx \\&&|&
+     \GLOBALGET~\globalidx \\&&|&
+     \GLOBALSET~\globalidx \\
    \end{array}
 
 These instructions get or set the values of variables, respectively.
-The |TEELOCAL| instruction is like |SETLOCAL| but also returns its argument.
+The |LOCALTEE| instruction is like |LOCALSET| but also returns its argument.
 
 
 .. index:: ! memory instruction, memory, memory index, page size, little endian, trap
@@ -342,7 +342,7 @@ However, forward branches that target a control instruction with a non-empty res
 
 The |CALL| instruction invokes another :ref:`function <syntax-func>`, consuming the necessary arguments from the stack and returning the result values of the call.
 The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>`.
-Since tables may contain function elements of heterogeneous type |ANYFUNC|,
+Since tables may contain function elements of heterogeneous type |FUNCREF|,
 the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's immediate, and the call aborted with a :ref:`trap <trap>` if it does not match.
 
 .. note::

@@ -1,6 +1,6 @@
-# WebAssembly Interpreter
+# WebAssembly Reference Interpreter
 
-This repository implements a reference interpreter for WebAssembly. It is written for clarity and simplicity, _not_ speed. It is intended as a playground for trying out ideas and a device for nailing down the exact semantics, and as a proxy for the (yet to be produced) formal specification of WebAssembly. For that purpose, the code is written in a fairly declarative, "speccy" way.
+This repository implements a interpreter for WebAssembly. It is written for clarity and simplicity, _not_ speed. It is intended as a playground for trying out ideas and a device for nailing down the exact semantics, and as a proxy for the (yet to be produced) formal specification of WebAssembly. For that purpose, the code is written in a fairly declarative, "speccy" way.
 
 The interpreter can
 
@@ -181,10 +181,10 @@ relop: eq | ne | lt | ...
 sign:  s|u
 offset: offset=<nat>
 align: align=(1|2|4|8|...)
-cvtop: trunc_s | trunc_u | extend_s | extend_u | ...
+cvtop: trunc | extend | wrap | ...
 
 val_type: i32 | i64 | f32 | f64
-elem_type: anyfunc
+elem_type: funcref
 block_type : ( result <val_type>* )*
 func_type:   ( type <var> )? <param>* <result>*
 global_type: <val_type> | ( mut <val_type> )
@@ -197,7 +197,7 @@ expr:
   ( block <name>? <block_type> <instr>* )
   ( loop <name>? <block_type> <instr>* )
   ( if <name>? <block_type> ( then <instr>* ) ( else <instr>* )? )
-  ( if <name>? <block_tyoe> <expr>+ ( then <instr>* ) ( else <instr>* )? ) ;; = <expr>+ (if <name>? <block_type> (then <instr>*) (else <instr>*)?)
+  ( if <name>? <block_type> <expr>+ ( then <instr>* ) ( else <instr>* )? ) ;; = <expr>+ (if <name>? <block_type> (then <instr>*) (else <instr>*)?)
 
 instr:
   <expr>
@@ -218,11 +218,11 @@ op:
   call_indirect <func_type>
   drop
   select
-  get_local <var>
-  set_local <var>
-  tee_local <var>
-  get_global <var>
-  set_global <var>
+  local.get <var>
+  local.set <var>
+  local.tee <var>
+  global.get <var>
+  global.set <var>
   <val_type>.load((8|16|32)_<sign>)? <offset>? <align>?
   <val_type>.store(8|16|32)? <offset>? <align>?
   memory.size
@@ -232,7 +232,7 @@ op:
   <val_type>.<binop>
   <val_type>.<testop>
   <val_type>.<relop>
-  <val_type>.<cvtop>/<val_type>
+  <val_type>.<cvtop>_<val_type>(_<sign>)?
 
 func:    ( func <name>? <func_type> <local>* <instr>* )
          ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)
@@ -253,7 +253,7 @@ elem:    ( elem <var>? (offset <instr>* ) <var>* )
 memory:  ( memory <name>? <memory_type> )
          ( memory <name>? ( export <string> ) <...> )                       ;; = (export <string> (memory <N>))+ (memory <name>? <...>)
          ( memory <name>? ( import <string> <string> ) <memory_type> )      ;; = (import <name>? <string> <string> (memory <memory_type>))
-         ( memory <name>? ( export <string> )* ( data <string>* )           ;; = (memory <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
+         ( memory <name>? ( export <string> )* ( data <string>* ) )         ;; = (memory <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
 data:    ( data <var>? ( offset <instr>* ) <string>* )
          ( data <var>? <expr> <string>* )                                   ;; = (data <var>? (offset <expr>) <string>*)
 

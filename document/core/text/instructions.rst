@@ -144,20 +144,20 @@ Parametric Instructions
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _text-get_local:
-.. _text-set_local:
-.. _text-tee_local:
-.. _text-get_global:
-.. _text-set_global:
+.. _text-local.get:
+.. _text-local.set:
+.. _text-local.tee:
+.. _text-global.get:
+.. _text-global.set:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
-     \text{get\_local}~~x{:}\Tlocalidx_I &\Rightarrow& \GETLOCAL~x \\ &&|&
-     \text{set\_local}~~x{:}\Tlocalidx_I &\Rightarrow& \SETLOCAL~x \\ &&|&
-     \text{tee\_local}~~x{:}\Tlocalidx_I &\Rightarrow& \TEELOCAL~x \\ &&|&
-     \text{get\_global}~~x{:}\Tglobalidx_I &\Rightarrow& \GETGLOBAL~x \\ &&|&
-     \text{set\_global}~~x{:}\Tglobalidx_I &\Rightarrow& \SETGLOBAL~x \\
+     \text{local.get}~~x{:}\Tlocalidx_I &\Rightarrow& \LOCALGET~x \\ &&|&
+     \text{local.set}~~x{:}\Tlocalidx_I &\Rightarrow& \LOCALSET~x \\ &&|&
+     \text{local.tee}~~x{:}\Tlocalidx_I &\Rightarrow& \LOCALTEE~x \\ &&|&
+     \text{global.get}~~x{:}\Tglobalidx_I &\Rightarrow& \GLOBALGET~x \\ &&|&
+     \text{global.set}~~x{:}\Tglobalidx_I &\Rightarrow& \GLOBALSET~x \\
    \end{array}
 
 
@@ -386,31 +386,31 @@ Numeric Instructions
 .. math::
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
-     \text{i32.wrap/i64} &\Rightarrow& \I32.\WRAP\K{/}\I64 \\ &&|&
-     \text{i32.trunc\_s/f32} &\Rightarrow& \I32.\TRUNC\K{\_s/}\F32 \\ &&|&
-     \text{i32.trunc\_u/f32} &\Rightarrow& \I32.\TRUNC\K{\_u/}\F32 \\ &&|&
-     \text{i32.trunc\_s/f64} &\Rightarrow& \I32.\TRUNC\K{\_s/}\F64 \\ &&|&
-     \text{i32.trunc\_u/f64} &\Rightarrow& \I32.\TRUNC\K{\_u/}\F64 \\ &&|&
-     \text{i64.extend\_s/i32} &\Rightarrow& \I64.\EXTEND\K{\_s/}\I32 \\ &&|&
-     \text{i64.extend\_u/i32} &\Rightarrow& \I64.\EXTEND\K{\_u/}\I32 \\ &&|&
-     \text{i64.trunc\_s/f32} &\Rightarrow& \I64.\TRUNC\K{\_s/}\F32 \\ &&|&
-     \text{i64.trunc\_u/f32} &\Rightarrow& \I64.\TRUNC\K{\_u/}\F32 \\ &&|&
-     \text{i64.trunc\_s/f64} &\Rightarrow& \I64.\TRUNC\K{\_s/}\F64 \\ &&|&
-     \text{i64.trunc\_u/f64} &\Rightarrow& \I64.\TRUNC\K{\_u/}\F64 \\ &&|&
-     \text{f32.convert\_s/i32} &\Rightarrow& \F32.\CONVERT\K{\_s/}\I32 \\ &&|&
-     \text{f32.convert\_u/i32} &\Rightarrow& \F32.\CONVERT\K{\_u/}\I32 \\ &&|&
-     \text{f32.convert\_s/i64} &\Rightarrow& \F32.\CONVERT\K{\_s/}\I64 \\ &&|&
-     \text{f32.convert\_u/i64} &\Rightarrow& \F32.\CONVERT\K{\_u/}\I64 \\ &&|&
-     \text{f32.demote/f64} &\Rightarrow& \F32.\DEMOTE\K{/}\F64 \\ &&|&
-     \text{f64.convert\_s/i32} &\Rightarrow& \F64.\CONVERT\K{\_s/}\I32 \\ &&|&
-     \text{f64.convert\_u/i32} &\Rightarrow& \F64.\CONVERT\K{\_u/}\I32 \\ &&|&
-     \text{f64.convert\_s/i64} &\Rightarrow& \F64.\CONVERT\K{\_s/}\I64 \\ &&|&
-     \text{f64.convert\_u/i64} &\Rightarrow& \F64.\CONVERT\K{\_u/}\I64 \\ &&|&
-     \text{f64.promote/f32} &\Rightarrow& \F64.\PROMOTE\K{/}\F32 \\ &&|&
-     \text{i32.reinterpret/f32} &\Rightarrow& \I32.\REINTERPRET\K{/}\F32 \\ &&|&
-     \text{i64.reinterpret/f64} &\Rightarrow& \I64.\REINTERPRET\K{/}\F64 \\ &&|&
-     \text{f32.reinterpret/i32} &\Rightarrow& \F32.\REINTERPRET\K{/}\I32 \\ &&|&
-     \text{f64.reinterpret/i64} &\Rightarrow& \F64.\REINTERPRET\K{/}\I64 \\
+     \text{i32.wrap\_i64} &\Rightarrow& \I32.\WRAP\K{\_}\I64 \\ &&|&
+     \text{i32.trunc\_f32\_s} &\Rightarrow& \I32.\TRUNC\K{\_}\F32\K{\_s} \\ &&|&
+     \text{i32.trunc\_f32\_u} &\Rightarrow& \I32.\TRUNC\K{\_}\F32\K{\_u} \\ &&|&
+     \text{i32.trunc\_f64\_s} &\Rightarrow& \I32.\TRUNC\K{\_}\F64\K{\_s} \\ &&|&
+     \text{i32.trunc\_f64\_u} &\Rightarrow& \I32.\TRUNC\K{\_}\F64\K{\_u} \\ &&|&
+     \text{i64.extend\_i32\_s} &\Rightarrow& \I64.\EXTEND\K{\_}\I32\K{\_s} \\ &&|&
+     \text{i64.extend\_i32\_u} &\Rightarrow& \I64.\EXTEND\K{\_}\I32\K{\_u} \\ &&|&
+     \text{i64.trunc\_f32\_s} &\Rightarrow& \I64.\TRUNC\K{\_}\F32\K{\_s} \\ &&|&
+     \text{i64.trunc\_f32\_u} &\Rightarrow& \I64.\TRUNC\K{\_}\F32\K{\_u} \\ &&|&
+     \text{i64.trunc\_f64\_s} &\Rightarrow& \I64.\TRUNC\K{\_}\F64\K{\_s} \\ &&|&
+     \text{i64.trunc\_f64\_u} &\Rightarrow& \I64.\TRUNC\K{\_}\F64\K{\_u} \\ &&|&
+     \text{f32.convert\_i32\_s} &\Rightarrow& \F32.\CONVERT\K{\_}\I32\K{\_s} \\ &&|&
+     \text{f32.convert\_i32\_u} &\Rightarrow& \F32.\CONVERT\K{\_}\I32\K{\_u} \\ &&|&
+     \text{f32.convert\_i64\_s} &\Rightarrow& \F32.\CONVERT\K{\_}\I64\K{\_s} \\ &&|&
+     \text{f32.convert\_i64\_u} &\Rightarrow& \F32.\CONVERT\K{\_}\I64\K{\_u} \\ &&|&
+     \text{f32.demote\_f64} &\Rightarrow& \F32.\DEMOTE\K{\_}\F64 \\ &&|&
+     \text{f64.convert\_i32\_s} &\Rightarrow& \F64.\CONVERT\K{\_}\I32\K{\_s} \\ &&|&
+     \text{f64.convert\_i32\_u} &\Rightarrow& \F64.\CONVERT\K{\_}\I32\K{\_u} \\ &&|&
+     \text{f64.convert\_i64\_s} &\Rightarrow& \F64.\CONVERT\K{\_}\I64\K{\_s} \\ &&|&
+     \text{f64.convert\_i64\_u} &\Rightarrow& \F64.\CONVERT\K{\_}\I64\K{\_u} \\ &&|&
+     \text{f64.promote\_f32} &\Rightarrow& \F64.\PROMOTE\K{\_}\F32 \\ &&|&
+     \text{i32.reinterpret\_f32} &\Rightarrow& \I32.\REINTERPRET\K{\_}\F32 \\ &&|&
+     \text{i64.reinterpret\_f64} &\Rightarrow& \I64.\REINTERPRET\K{\_}\F64 \\ &&|&
+     \text{f32.reinterpret\_i32} &\Rightarrow& \F32.\REINTERPRET\K{\_}\I32 \\ &&|&
+     \text{f64.reinterpret\_i64} &\Rightarrow& \F64.\REINTERPRET\K{\_}\I64 \\
    \end{array}
 
 

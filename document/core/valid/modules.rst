@@ -154,7 +154,7 @@ Element segments :math:`\elem` are not classified by a type.
 
 * Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |ANYFUNC|.
+* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |FUNCREF|.
 
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
@@ -168,7 +168,7 @@ Element segments :math:`\elem` are not classified by a type.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~\ANYFUNC
+     C.\CTABLES[x] = \limits~\FUNCREF
      \qquad
      C \vdashexpr \expr : [\I32]
      \qquad

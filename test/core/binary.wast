@@ -114,6 +114,26 @@
   "\0b"                                ;; end
 )
 
+;; Data segment memory index can have non-minimal length
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\05\03\01"                          ;; Memory section with 1 entry
+  "\00\00"                             ;; no max, minimum 0
+  "\0b\07\01"                          ;; Data section with 1 entry
+  "\80\00"                             ;; Memory index 0, encoded with 2 bytes
+  "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
+)
+
+;; Element segment table index can have non-minimal length
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\04\04\01"                          ;; Table section with 1 entry
+  "\70\00\00"                          ;; no max, minimum 0, funcref
+  "\09\07\01"                          ;; Element section with 1 entry
+  "\80\00"                             ;; Table index 0, encoded with 2 bytes
+  "\41\00\0b\00"                       ;; (i32.const 0) with no elements
+)
+
 ;; Unsigned LEB128 must not be overlong
 (assert_malformed
   (module binary
@@ -553,7 +573,7 @@
 )
 
 ;; No more than 2^32 locals.
-(assert_malformed 
+(assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
     "\01\04\01\60\00\00"       ;; Type section
@@ -567,4 +587,57 @@
     "\0b"                      ;; end
   )
   "too many locals"
+)
+
+;; Function section has non-zero count, but code section is absent.
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"  ;; Type section
+    "\03\03\02\00\00"     ;; Function section with 2 functions
+  )
+  "function and code section have inconsistent lengths"
+)
+
+;; Code section has non-zero count, but function section is absent.
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\0a\04\01\02\00\0b"  ;; Code section with 1 empty function
+  )
+  "function and code section have inconsistent lengths"
+)
+
+;; Function section count > code section count
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"  ;; Type section
+    "\03\03\02\00\00"     ;; Function section with 2 functions
+    "\0a\04\01\02\00\0b"  ;; Code section with 1 empty function
+  )
+  "function and code section have inconsistent lengths"
+)
+
+;; Function section count < code section count
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"           ;; Type section
+    "\03\02\01\00"                 ;; Function section with 1 function
+    "\0a\07\02\02\00\0b\02\00\0b"  ;; Code section with 2 empty functions
+  )
+  "function and code section have inconsistent lengths"
+)
+
+;; Function section has zero count, and code section is absent.
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\03\01\00"  ;; Function section with 0 functions
+)
+
+;; Code section has zero count, and function section is absent.
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\0a\01\00"  ;; Code section with 0 functions
 )

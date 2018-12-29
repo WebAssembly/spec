@@ -10,20 +10,20 @@ let demote_f64 x =
   let nan32bits = Int32.logor 0x7fc00000l (I32_convert.wrap_i64 fields) in
   F32.of_bits nan32bits
 
-let convert_s_i32 x =
+let convert_i32_s x =
   F32.of_float (Int32.to_float x)
 
 (*
- * Similar to convert_u_i64 below, the high half of the i32 range are beyond
+ * Similar to convert_i64_u below, the high half of the i32 range are beyond
  * the range where f32 can represent odd numbers, though we do need to adjust
  * the least significant bit to round correctly.
  *)
-let convert_u_i32 x =
+let convert_i32_u x =
   F32.of_float
     Int32.(if x >= zero then to_float x else
            to_float (logor (shift_right_logical x 1) (logand x 1l)) *. 2.0)
 
-let convert_s_i64 x =
+let convert_i64_s x =
   F32.of_float (Int64.to_float x)
 
 (*
@@ -32,7 +32,7 @@ let convert_s_i64 x =
  * numbers, so we can shift the value right, do a conversion, and then scale it
  * back up, without worrying about losing the least-significant digit.
  *)
-let convert_u_i64 x =
+let convert_i64_u x =
   F32.of_float (if x >= Int64.zero then
     Int64.to_float x
   else

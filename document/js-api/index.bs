@@ -161,10 +161,11 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
         text: const
     text: address; url: exec/runtime.html#addresses
     text: signed_32; url: exec/numerics.html#aux-signed
-    text: grow_memory; url: exec/instructions.html#exec-grow-memory
+    text: memory.grow; url: exec/instructions.html#exec-memory-grow
     text: current frame; url: exec/conventions.html#exec-notation-textual
     text: 𝗆𝗈𝖽𝗎𝗅𝖾; url: exec/runtime.html#syntax-frame
     text: 𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌; url: exec/runtime.html#syntax-moduleinst
+    text: sequence; url: syntax/conventions.html#grammar-notation
 </pre>
 
 <pre class='link-defaults'>
@@ -556,14 +557,21 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
+    To <dfn>create a memory buffer</dfn> from a [=memory address=] |memaddr|, perform the following steps:
+
+    1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
+    1. Let |buffer| be a new {{ArrayBuffer}} whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |block|.
+    1. Set |buffer|.\[[ArrayBufferDetachKey]] to "WebAssembly.Memory".
+    1. Return |buffer|.
+</div>
+
+<div algorithm>
     To <dfn>create a memory object</dfn> from a [=memory address=] |memaddr|, perform the following steps:
 
     1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
     1. If |map|[|memaddr|] [=map/exists=],
         1. Return |map|[|memaddr|].
-    1. Let |block| be a Data Block which is [=identified with=] the underlying memory of |memaddr|
-    1. Let |buffer| be a new {{ArrayBuffer}} whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |block|.
-    1. Set |buffer|.\[[ArrayBufferDetachKey]] to "WebAssembly.Memory".
+    1. Let |buffer| be a the result of [=create a memory buffer|creating a memory buffer=] from |memaddr|.
     1. Let |memory| be a new {{Memory}} instance with \[[Memory]] set to |memaddr| and \[[BufferObject]] set to |buffer|.
     1. [=map/Set=] |map|[|memaddr|] to |memory|.
     1. Return |memory|.
@@ -571,7 +579,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     The <dfn constructor for="Memory">Memory(|descriptor|)</dfn> constructor, when invoked, performs the following steps:
-    1. If |descriptor|["initial"] is [=present=], let |initial| be |descriptor|["initial"]; otherwise, let |initial| be 0.
+    1. let |initial| be |descriptor|["initial"].
     1. If |descriptor|["maximum"] is [=present=], let |maximum| be |descriptor|["maximum"]; otherwise, let |maximum| be empty.
     1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
     1. Let |memtype| be { min |initial|, max |maximum| }
@@ -588,8 +596,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Assert: |map|[|memaddr|] [=map/exists=]
     1. Let |memory| be |map|[|memaddr|].
     1. Perform ! [=DetachArrayBuffer=](|memory|.\[[BufferObject]], "WebAssembly.Memory").
-    1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
-    1. Let |buffer| be a new {{ArrayBuffer}} whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |block|.
+    1. Let |buffer| be a the result of [=create a memory buffer|creating a memory buffer=] from |memaddr|.
     1. Set |memory|.\[[BufferObject]] to |buffer|.
 </div>
 
@@ -606,14 +613,18 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Return |ret|.
 </div>
 
-Immediately after a WebAssembly [=grow_memory=] instruction executes, perform the following steps:
+Immediately after a WebAssembly [=memory.grow=] instruction executes, perform the following steps:
 
-<div algorithm="grow_memory">
+<div algorithm="memory.grow">
     1. If the top of the stack is not [=𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] (−1), then:
         1. Let |frame| be the [=current frame=].
         1. Assert: due to validation, |frame|.[=𝗆𝗈𝖽𝗎𝗅𝖾=].[=𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌=][0] exists.
         1. Let |memaddr| be the memory address |frame|.[=𝗆𝗈𝖽𝗎𝗅𝖾=].[=𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌=][0].
         1. [=Reset the memory buffer=] of |memaddr|.
+</div>
+
+<div algorithm>
+    The getter of the <dfn attribute for="Memory">buffer</dfn> attribute of {{Memory}} returns the receiver's \[[BufferObject]] internal slot.
 </div>
 
 <h3 id="tables">Tables</h3>
@@ -663,7 +674,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     The <dfn constructor for="Table">Table(|descriptor|)</dfn> constructor, when invoked, performs the following steps:
-    1. If |descriptor|["initial"] is [=present=], let |initial| be |descriptor|["initial"]; otherwise, let |initial| be 0.
+    1. let |initial| be |descriptor|["initial"].
     1. If |descriptor|["maximum"] is [=present=], let |maximum| be |descriptor|["maximum"]; otherwise, let |maximum| be empty.
     1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
     1. Let |type| be the [=table type=] {[=table type|𝗆𝗂𝗇=] n, [=table type|𝗆𝖺𝗑=] |maximum|} [=table type|𝖺𝗇𝗒𝖿𝗎𝗇𝖼=].
@@ -876,7 +887,8 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. Otherwise, let |arg| be undefined.
         1. [=Append=] [=ToWebAssemblyValue=](|arg|, |t|) to |args|.
         1. Set |i| to |i| + 1.
-    1. Let (|store|, |ret|) be the result of [=invoke_func=](|store|, |funcaddr|, |args|).
+    1. Let |argsSeq| be a WebAssembly [=sequence=] containing the elements of |args|.
+    1. Let (|store|, |ret|) be the result of [=invoke_func=](|store|, |funcaddr|, |argsSeq|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
     1. If |ret| is empty, return undefined.
@@ -985,3 +997,42 @@ same class of exception is thrown as for out of memory conditions in JavaScript.
 The particular exception here is implementation-defined in both cases.
 
 Note: ECMAScript doesn't specify any sort of behavior on out-of-memory conditions; implementations have been observed to throw OOMError and to crash. Either is valid here.
+
+<div class="issue">
+    A failed allocation of a large table or memory may either result in
+        - a {{RangeError}}, as specified in the {{Memory}} {{Memory/grow()}} and {{Table}} {{Table/grow()}} operations
+        - returning -1 as the [=memory.grow=] instruction
+        - UA-specific OOM behavior as described in this section.
+    In a future revision, we may reconsider more reliable and recoverable errors for allocations of large amounts of memory.
+
+    See [Issue 879](https://github.com/WebAssembly/spec/issues/879) for further discussion.
+</div>
+
+<h2 id="limits">Implementation-defined Limits</h2>
+
+The WebAssembly core specification allows an implementation to define limits on the syntactic structure of the module.
+While each embedding of WebAssembly may choose to define its own limits, for predictability the standard WebAssembly JavaScript Interface described in this document defines the following exact limits.
+An implementation must reject a module that exceeds these limits with a {{CompileError}}.
+In practice, an implementation may run out of resources for valid modules below these limits.
+
+<ul>
+<li>The maximum size of a module is 1073741824 bytes (1 GiB).</li>
+<li>The maximum number of types defined in the types section is 1000000.</li>
+<li>The maximum number of functions defined in a module is 1000000.</li>
+<li>The maximum number of imports declared in a module is 100000.</li>
+<li>The maximum number of exports declared in a module is 100000.</li>
+<li>The maximum number of globals defined in a module is 1000000.</li>
+<li>The maximum number of data segments defined in a module is 100000.</li>
+
+<li>The maximum number of tables, including declared or imported tables, is 1.</li>
+<li>The maximum size of a table is 10000000.</li>
+<li>The maximum number of table entries in any table initialization is 10000000.</li>
+<li>The maximum number of memories, including declared or imported memories, is 1.</li>
+<li>The initial or maximum number of pages for any memory, declared or imported, is at most 32767.</li>
+
+<li>The maximum number of parameters to any function is 1000.</li>
+<li>The maximum number of return values for any function is 1.</li>
+<li>The maximum size of a function body, including locals declarations, is 7654321 bytes.</li>
+<li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50000.</li>
+
+</ul>
