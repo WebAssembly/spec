@@ -144,3 +144,251 @@
   (module (memory 1) (func (param i64) (result i64) (i64.store32 (i32.const 0) (i64.const 1))))
   "type mismatch"
 )
+
+
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-1st-operand-missing
+      (i32.store)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-2nd-operand-missing
+     (i32.const 0) (i32.store)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-1st-operand-missing-in-block
+      (i32.const 0) (i32.const 0)
+      (block (i32.store))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-2nd-operand-missing-in-block
+      (i32.const 0)
+      (block (i32.const 0) (i32.store))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-1st-operand-missing-in-loop
+      (i32.const 0) (i32.const 0)
+      (loop (i32.store))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-2nd-operand-missing-in-loop
+      (i32.const 0)
+      (loop (i32.const 0) (i32.store))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-1st-operand-missing-in-if
+      (i32.const 0) (i32.const 0)
+      (if (then (i32.store)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-2nd-operand-missing-in-if
+      (i32.const 0)
+      (if (then (i32.const 0) (i32.store)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-1st-operand-missing-in-else
+      (i32.const 0) (i32.const 0)
+      (if (result i32) (then (i32.const 0)) (else (i32.store)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-2nd-operand-missing-in-else
+      (i32.const 0)
+      (if (result i32) (then (i32.const 0)) (else (i32.const 0) (i32.store)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-1st-operand-missing-in-br
+      (i32.const 0) (i32.const 0)
+      (block (br 0 (i32.store)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-2nd-operand-missing-in-br
+      (i32.const 0)
+      (block (br 0 (i32.const 0) (i32.store)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-1st-operand-missing-in-br_if
+      (i32.const 0) (i32.const 0)
+      (block (br_if 0 (i32.store) (i32.const 1)) )
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-2nd-operand-missing-in-br_if
+      (i32.const 0)
+      (block (br_if 0 (i32.const 0) (i32.store) (i32.const 1)) )
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-1st-operand-missing-in-br_table
+      (i32.const 0) (i32.const 0)
+      (block (br_table 0 (i32.store)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-2nd-operand-missing-in-br_table
+      (i32.const 0)
+      (block (br_table 0 (i32.const 0) (i32.store)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-1st-operand-missing-in-return
+      (return (i32.store))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-2nd-operand-missing-in-return
+      (return (i32.const 0) (i32.store))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-1st-operand-missing-in-select
+      (select (i32.store) (i32.const 1) (i32.const 2))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-2nd-operand-missing-in-select
+      (select (i32.const 0) (i32.store) (i32.const 1) (i32.const 2))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-1st-operand-missing-in-call
+      (call 1 (i32.store))
+    )
+    (func (param i32) (result i32) (local.get 0))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-2nd-operand-missing-in-call
+      (call 1 (i32.const 0) (i32.store))
+    )
+    (func (param i32) (result i32) (local.get 0))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $f (param i32) (result i32) (local.get 0))
+    (type $sig (func (param i32) (result i32)))
+    (table funcref (elem $f))
+    (func $type-1st-operand-missing-in-call_indirect
+      (block (result i32)
+        (call_indirect (type $sig)
+          (i32.store) (i32.const 0)
+        )
+      )
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $f (param i32) (result i32) (local.get 0))
+    (type $sig (func (param i32) (result i32)))
+    (table funcref (elem $f))
+    (func $type-2nd-operand-missing-in-call_indirect
+      (block (result i32)
+        (call_indirect (type $sig)
+          (i32.const 0) (i32.store) (i32.const 0)
+        )
+      )
+    )
+  )
+  "type mismatch"
+)

@@ -443,6 +443,199 @@
 )
 
 (assert_invalid
+  (module
+    (func $type-operand-missing
+      (block (result i32) (br 0))
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-block
+      (i32.const 0)
+      (block (result i32) (br 0))
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-if
+      (block
+        (i32.const 0) (i32.const 0)
+        (if (result i32) (then (br 0)))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-else
+      (block
+        (i32.const 0) (i32.const 0)
+        (if (result i32) (then (i32.const 0)) (else (br 0)))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-br
+      (i32.const 0)
+      (block (result i32) (br 0 (br 0))) (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-br_if
+      (i32.const 0)
+      (block (result i32) (br_if 0 (br 0) (i32.const 1))) (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-br_table
+      (i32.const 0)
+      (block (result i32) (br_table 0 (br 0))) (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-return
+      (block (result i32)
+        (return (br 0))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-select
+      (block (result i32)
+        (select (br 0) (i32.const 1) (i32.const 2))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-call
+      (block (result i32)
+        (call 1 (br 0))
+      )
+      (i32.eqz) (drop)
+    )
+    (func (param i32) (result i32) (local.get 0))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f (param i32) (result i32) (local.get 0))
+    (type $sig (func (param i32) (result i32)))
+    (table funcref (elem $f))
+    (func $type-operand-missing-in-call_indirect
+      (block (result i32)
+        (call_indirect (type $sig)
+          (br 0) (i32.const 0)
+        )
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-local.set
+      (local i32)
+      (block (result i32)
+        (local.set 0 (br 0)) (local.get 0)
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-local.tee
+      (local i32)
+      (block (result i32)
+        (local.tee 0 (br 0))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-operand-missing-in-global.set
+      (block (result i32)
+        (global.set $x (br 0)) (global.get $x)
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-operand-missing-in-memory.grow
+      (block (result i32)
+        (memory.grow (br 0))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-operand-missing-in-load
+      (block (result i32)
+        (i32.load (br 0))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-operand-missing-in-store
+      (block (result i32)
+        (i32.store (br 0) (i32.const 0))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+
+(assert_invalid
   (module (func $unbound-label (br 1)))
   "unknown label"
 )
