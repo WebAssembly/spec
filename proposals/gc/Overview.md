@@ -300,7 +300,7 @@ However, compilation with a uniform representation can still be achieved in this
 (func $g
   (param $p1 (ref $pair)) (param $p2 (ref $pair)) (param $pick (ref $pick))
   (result (ref $C))
-  (if (i31ref.get_u (cast_down i31ref (get_local $p1)))
+  (if (i31ref.get_u (cast_down i31ref (call_ref $pick (get_local $p1))))
     (then (cast_down (ref $C) (call_ref $pick (get_local $p2))))
     (else (call $new_C))
   )
