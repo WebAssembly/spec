@@ -287,8 +287,8 @@ that were dropped after being copied into memory during module instantiation.
 Copy data from a source memory region to destination region; these regions may
 overlap: the copy is performed as if the source region was first copied to a
 temporary buffer, then the temporary buffer is copied to the destination
-region. This instruction has an immediate argument of which memory to operate
-on, and it must be zero for now.
+region. This instruction has two immediate arguments: the source and
+destination memory indices. They currently both must be zero.
 
 The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in order:
 
@@ -355,11 +355,11 @@ instr ::= ...
 | ---- | ---- | ---- | ---- |
 | `memory.init` | `0xfc 0x08` | `memory:0x00`, `segment:varuint32` | :thinking: copy from a passive data segment to linear memory |
 | `memory.drop` | `0xfc 0x09` | `segment:varuint32` | :thinking: prevent further use of passive data segment |
-| `memory.copy` | `0xfc 0x0a` | `memory:0x00` | :thinking: copy from one region of linear memory to another region |
+| `memory.copy` | `0xfc 0x0a` | `memory_src:0x00` `memory_dst:0x00` | :thinking: copy from one region of linear memory to another region |
 | `memory.fill` | `0xfc 0x0b` | `memory:0x00` | :thinking: fill a region of linear memory with a given byte value |
 | `table.init` | `0xfc 0x0c` | `table:0x00`, `segment:varuint32` | :thinking: copy from a passive element segment to a table |
 | `table.drop` | `0xfc 0x0d` | `segment:varuint32` | :thinking: prevent further use of a passive element segment |
-| `table.copy` | `0xfc 0x0e` | `table:0x00` | :thinking: copy from one region of a table to another region |
+| `table.copy` | `0xfc 0x0e` | `table_src:0x00` `table_dst:0x00` | :thinking: copy from one region of a table to another region |
 
 ### `DataCount` section
 
