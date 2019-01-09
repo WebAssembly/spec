@@ -28,7 +28,7 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 * `i31ref` is a new reference type
   - `reftype ::= ... | i31ref`
 
-* `rtt <typeuse>` is a new reference type that is a runtime representation of type `<typeuse>` (see [overview](Overview.md#casting-and-runtime-types))
+* `rtt <typeuse>` is a new reference type that is a runtime representation of type `<typeuse>` (see [Runtime types](#runtime-types))
   - `reftype ::= ... | rtt <typeuse>`
   - `rtt t ok` iff `t ok`
 
@@ -159,12 +159,35 @@ In addition to the rules for basic reference types:
 * Table definitions with non-zero minimum size must have an element type that is defaultable. (Imports are not affected.)
 
 
-### Values
+### Runtime
 
-* Each reference value has an associated *runtime type*, which is a runtime description of its type:
-  - For structures or arrays, it is determined by an [RTT](#runtime-types) value provided upon creation, or `anyref` if none.
-  - For `i31ref` references it is `i31ref`.
-  - For `null` it is `nullref`.
+#### Runtime Types
+
+* Runtime types (RTTs) are explicit values representing types at runtime; a value of type `rtt <t>` is a dynamic representative of static type `<t>`.
+
+* All RTTs are explicitly created and all operations involving dynamic type information (like casts) operate on explicit RTT operands.
+
+* There is a runtime subtyping hierarchy on RTTs; creating an RTT requires providing a *parent type* in the form of an existing RTT; the RTT for `anyref` is the root of this hierarchy.
+
+* An RTT t1 is a *sub-RTT* of another RTT t2 iff either of the following holds:
+  - t1 and t2 represent the same static type, or
+  - t1 has a parent that is a sub-RTT of t2.
+
+* Validation requires that each parent type is a representative of a static supertype of its child; runtime subtyping hence is a sub-relation of static subtyping (a graph with fewer nodes and edges).
+
+* At the same time, runtime subtyping forms a linear hierarchy such that the relation can be checked efficiently using standard implementation techniques (it is a tree-shaped graph).
+
+
+#### Values
+
+* Creating a structure or array optionally allows supplying a suitable RTT to represent its runtime type; it defaults to `anyref` if none is given.
+
+* Each reference value has an associated runtime type:
+  - For structures or arrays, it is the RTT provided upon creation, or `anyref` if none.
+  - For `i31ref` references it is the RTT for `i31ref`.
+  - For `null` it is the RTT for `nullref`.
+
+* The so-defined runtime type is the only type information that can be discovered about a reference value at runtime; a structure or array with RTT `anyref` thereby is fully opaque to runtime type checks (and an implementation may choose to optimize away its RTT).
 
 
 ### Instructions
@@ -265,7 +288,7 @@ Perhaps also the following short-hands:
   - traps on `null`
 
 
-#### Integer references
+#### Integer References
 
 Tentatively, support a type of guaranteed unboxed scalars.
 
@@ -290,7 +313,7 @@ Perhaps also the following short-hands:
   - equivalent to `(rtt.i31ref) (ref.cast anyref i31ref)`
 
 
-#### Optional references
+#### Optional References
 
 * `ref.as_nonnull` converts an optional reference to a non-optional one
   - `ref.as_nonnull : [(optref $t)] -> [(ref $t)]`
@@ -307,33 +330,34 @@ Perhaps also the following short-hands:
 
 #### Runtime Types
 
-* `rtt.anyref` returns the RTT of type `anyref` as a subtype of only itself
+* `rtt.anyref` returns the RTT of type `anyref` as a sub-RTT of only itself
   - `rtt.anyref : [] -> [(rtt anyref)]`
 
-* `rtt.new <typeuse> <typeuse>` returns the RTT of the specified type as a subtype of a given RTT operand
+* `rtt.new <typeuse> <typeuse>` returns the RTT of the specified type as a sub-RTT of a given parent RTT operand
   - `rtt.new t t' : [(rtt t')] -> [(rtt t)]`
     - iff `t <: t'`
-  - multiple invocations of this instruction with the same operand yield the same RTTs
+  - multiple invocations of this instruction with the same operand yield the same observable RTTs
 
 * All RTT instructions are considered *constant expressions*.
 
 
 #### Casts
 
-* `ref.test <typeuse> <typeuse>` tests whether a reference value's [runtime type](#values) matches a type given by a RTT representation
+* `ref.test <typeuse> <typeuse>` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given RTT
   - `ref.test t t' : [t (rtt t')] -> [i32]`
      - iff `t' <: t <: anyref`
-  - returns 1 if the operand's runtime type is defined to be a (transitive) subtype of `t`, 0 otherwise
+  - returns 1 if the first operand's runtime type is a sub-RTT of the RTT operand, 0 otherwise
 
 * `ref.cast <typeuse> <typeuse>` casts a reference value down to a type given by a RTT representation
   - `ref.cast t t' : [t (rtt t')] -> [t']`
      - iff `t' <: t <: anyref`
-  - traps if the operand's runtime type is not defined to be a (transitive) subtype of `t`
+  - traps if the first operand's runtime type is not a sub-RTT of the RTT operand
 
 * `br_on_cast <labelidx> <typeuse> <typeuse>` branches if a value can be cast down to a given reference type
   - `br_on_cast $l t t' : [t (rtt t')] -> [t]`
     - iff `t' <: t <: anyref`
     - and `$l : [t']`
+  - branches iff the first operand's runtime type is a sub-RTT of the RTT operand
   - passes cast operand along with branch
 
 
