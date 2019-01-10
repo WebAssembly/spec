@@ -142,7 +142,7 @@ which pretty-prints a binary back into a canonicalised S-expression string.
 
 For example:
 ```
-let source = '(module (func (export "f") (param i32 i32) (result i32) (i32.add (get_local 0) (get_local 1))))'
+let source = '(module (func (export "f") (param i32 i32) (result i32) (i32.add (local.get 0) (local.get 1))))'
 let binary = WebAssemblyText.encode(source)
 
 (new WebAssembly.Instance(new WebAssembly.Module(binary))).exports.f(3, 4)
@@ -152,7 +152,7 @@ WebAssemblyText.decode(binary)
 // =>
 // (module
 //   (type $0 (func (param i32 i32) (result i32)))
-//   (func $0 (type 0) (get_local 0) (get_local 1) (i32.add))
+//   (func $0 (type 0) (local.get 0) (local.get 1) (i32.add))
 //   (export "f" (func 0))
 // )
 ```
