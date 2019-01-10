@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version 53d2305928d30790ebcc3b8ea611fb0709647013" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="db5be4ca7c0c53691b1a83d457ba09e013ccb809" name="document-revision">
+  <meta content="36edef5f190bbe8fcfbfcee70553381d0fc12f1c" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -473,19 +473,23 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
      <li data-md>
       <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
      <li data-md>
-      <p>In parallel, <a data-link-type="dfn" href="#compile-a-webassembly-module" id="ref-for-compile-a-webassembly-module①">compile the WebAssembly module</a> <var>bytes</var> and store the result as <var>module</var>.</p>
-     <li data-md>
-      <p>When the above operation completes, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task">queue a task</a> to perform the following steps. If <var>taskSource</var> was provided, queue the task on that task source.</p>
+      <p>Run the following steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>:</p>
       <ol>
        <li data-md>
-        <p>If <var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑤">error</a>, reject <var>promise</var> with a <code class="idl"><a data-link-type="idl" href="#compileerror" id="ref-for-compileerror">CompileError</a></code> exception.</p>
+        <p><a data-link-type="dfn" href="#compile-a-webassembly-module" id="ref-for-compile-a-webassembly-module①">Compile the WebAssembly module</a> <var>bytes</var> and store the result as <var>module</var>.</p>
        <li data-md>
-        <p>Otherwise,</p>
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task">Queue a task</a> to perform the following steps. If <var>taskSource</var> was provided, queue the task on that task source.</p>
         <ol>
          <li data-md>
-          <p><a data-link-type="dfn" href="#construct-a-webassembly-module-object" id="ref-for-construct-a-webassembly-module-object">Construct a WebAssembly module object</a> from <var>module</var> and <var>bytes</var>, and let <var>moduleObject</var> be the result.</p>
+          <p>If <var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑤">error</a>, reject <var>promise</var> with a <code class="idl"><a data-link-type="idl" href="#compileerror" id="ref-for-compileerror">CompileError</a></code> exception.</p>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise">Resolve</a> <var>promise</var> with <var>moduleObject</var>.</p>
+          <p>Otherwise,</p>
+          <ol>
+           <li data-md>
+            <p><a data-link-type="dfn" href="#construct-a-webassembly-module-object" id="ref-for-construct-a-webassembly-module-object">Construct a WebAssembly module object</a> from <var>module</var> and <var>bytes</var>, and let <var>moduleObject</var> be the result.</p>
+           <li data-md>
+            <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise">Resolve</a> <var>promise</var> with <var>moduleObject</var>.</p>
+          </ol>
         </ol>
       </ol>
      <li data-md>
@@ -714,7 +718,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
      <li data-md>
       <p>Return <var>promise</var>.</p>
     </ol>
-    <p class="note" role="note"><span>Note:</span> It would be valid to perform certain parts of the instantiation <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>, but several parts need to happen in the event loop, including JavaScript operations to access the <var>importObject</var> and execution of the start function.</p>
+    <p class="note" role="note"><span>Note:</span> It would be valid to perform certain parts of the instantiation <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>, but several parts need to happen in the event loop, including JavaScript operations to access the <var>importObject</var> and execution of the start function.</p>
    </div>
    <div class="algorithm" data-algorithm="instantiate(bytes, importObject)">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export data-lt="instantiate(bytes, importObject)|instantiate(bytes)" id="dom-webassembly-instantiate"><code>instantiate(<var>bytes</var>, <var>importObject</var>)</code></dfn> method, when invoked, performs the following steps: 
@@ -1924,7 +1928,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside class="dfn-panel" data-for="term-for-in-parallel">
    <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-in-parallel">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-in-parallel">3. The WebAssembly Namespace</a> <a href="#ref-for-in-parallel①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-queue-a-task">
