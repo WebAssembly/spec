@@ -1,5 +1,7 @@
 ;; TODO: move all tests in this file to appropriate operator-specific files.
 
+;; TODO(stack): more of the above
+
 ;; if condition
 (assert_invalid (module (func (if (f32.const 0) (then)))) "type mismatch")
 
