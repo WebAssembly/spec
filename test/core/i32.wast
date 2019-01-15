@@ -419,3 +419,140 @@
 (assert_return (invoke "ge_u" (i32.const -1) (i32.const 0x80000000)) (i32.const 1))
 (assert_return (invoke "ge_u" (i32.const 0x80000000) (i32.const 0x7fffffff)) (i32.const 1))
 (assert_return (invoke "ge_u" (i32.const 0x7fffffff) (i32.const 0x80000000)) (i32.const 0))
+
+
+(assert_invalid
+  (module
+    (func $type-unary-operand-missing
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-unary-operand-missing-in-block
+      (i32.const 0)
+      (block (i32.eqz) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-unary-operand-missing-in-loop
+      (i32.const 0)
+      (loop (i32.eqz) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-unary-operand-missing-in-if
+      (i32.const 0) (i32.const 0)
+      (if (then (i32.eqz) (drop)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-unary-operand-missing-in-else
+      (i32.const 0) (i32.const 0)
+      (if (result i32) (then (i32.const 0)) (else (i32.eqz))) (drop)
+    )
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-missing
+      (i32.add) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-missing
+      (i32.const 0) (i32.add) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-missing-in-block
+      (i32.const 0) (i32.const 0)
+      (block (i32.add) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-missing-in-block
+      (i32.const 0)
+      (block (i32.const 0) (i32.add) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-missing-in-loop
+      (i32.const 0) (i32.const 0)
+      (loop (i32.add) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-missing-in-loop
+      (i32.const 0)
+      (loop (i32.const 0) (i32.add) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-missing-in-if
+      (i32.const 0) (i32.const 0) (i32.const 0)
+      (if (i32.add) (then (drop)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-missing-in-if
+      (i32.const 0) (i32.const 0)
+      (if (i32.const 0) (then (i32.add)) (else (drop)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-missing-in-else
+      (i32.const 0) (i32.const 0) (i32.const 0)
+      (if (result i32) (then (i32.const 0)) (else (i32.add) (i32.const 0)))
+      (drop) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-missing-in-else
+      (i32.const 0) (i32.const 0)
+      (if (result i32) (then (i32.const 0)) (else (i32.add)))
+      (drop)
+    )
+  )
+  "type mismatch"
+)

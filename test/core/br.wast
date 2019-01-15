@@ -443,6 +443,52 @@
 )
 
 (assert_invalid
+  (module
+    (func $type-operand-missing
+      (block (result i32) (br 0))
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-block
+      (i32.const 0)
+      (block (result i32) (br 0))
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-if
+      (block
+        (i32.const 0) (i32.const 0)
+        (if (result i32) (then (br 0)))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-operand-missing-in-else
+      (block
+        (i32.const 0) (i32.const 0)
+        (if (result i32) (then (i32.const 0)) (else (br 0)))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+
+;; TODO: Compare above "*operand-missing*" tests to others, identify and remove duplicates.
+
+(assert_invalid
   (module (func $unbound-label (br 1)))
   "unknown label"
 )
