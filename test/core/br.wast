@@ -486,6 +486,7 @@
   "type mismatch"
 )
 
+;; TODO: Compare above "*operand-missing*" tests to others, identify and remove duplicates.
 
 (assert_invalid
   (module (func $unbound-label (br 1)))
