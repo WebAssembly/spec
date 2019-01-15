@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version 53d2305928d30790ebcc3b8ea611fb0709647013" name="generator">
+  <meta content="Bikeshed version 9c6ae748322940994300e90a77c34437364b40a6" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="36edef5f190bbe8fcfbfcee70553381d0fc12f1c" name="document-revision">
+  <meta content="3b92782088dcf4de3de58a7f806f97c28db874c5" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-10">10 January 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-15">15 January 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -520,7 +520,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
        <li data-md>
         <p>Let <var>o</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-get-o-p" id="ref-for-sec-get-o-p">Get</a>(<var>importObject</var>, <var>moduleName</var>).</p>
        <li data-md>
-        <p>If <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values">Type</a>(<var>o</var>) is not <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-object" id="ref-for-concept-url-object">Object</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①">TypeError</a></code> exception.</p>
+        <p>If <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values">Type</a>(<var>o</var>) is not <a data-link-type="dfn" href="https://w3c.github.io/FileAPI/#blob-url-entry-object" id="ref-for-blob-url-entry-object">Object</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①">TypeError</a></code> exception.</p>
        <li data-md>
         <p>Let <var>v</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-get-o-p" id="ref-for-sec-get-o-p①">Get</a>(<var>o</var>, <var>componentName</var>)</p>
        <li data-md>
@@ -1925,6 +1925,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-utf-8-decode-without-bom-or-fail">3.1. Modules</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-blob-url-entry-object">
+   <a href="https://w3c.github.io/FileAPI/#blob-url-entry-object">https://w3c.github.io/FileAPI/#blob-url-entry-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-blob-url-entry-object">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-in-parallel">
    <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel</a><b>Referenced in:</b>
    <ul>
@@ -2012,12 +2018,6 @@ In practice, an implementation may run out of resources for valid modules below 
    <a href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection">https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-upon-rejection">3. The WebAssembly Namespace</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-url-object">
-   <a href="https://url.spec.whatwg.org/#concept-url-object">https://url.spec.whatwg.org/#concept-url-object</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-url-object">3. The WebAssembly Namespace</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-addresses">
@@ -2567,6 +2567,11 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-utf-8-decode-without-bom-or-fail" style="color:initial">utf-8 decode without bom or fail</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[FileAPI]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-blob-url-entry-object" style="color:initial">object</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-in-parallel" style="color:initial">in parallel</span>
@@ -2590,11 +2595,6 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-resolve-promise" style="color:initial">resolve</span>
      <li><span class="dfn-paneled" id="term-for-upon-fulfillment" style="color:initial">upon fulfillment</span>
      <li><span class="dfn-paneled" id="term-for-upon-rejection" style="color:initial">upon rejection</span>
-    </ul>
-   <li>
-    <a data-link-type="biblio">[URL]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="term-for-concept-url-object" style="color:initial">object</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBASSEMBLY]</a> defines the following terms:
@@ -2688,6 +2688,8 @@ In practice, an implementation may run out of resources for valid modules below 
    <dd><a href="https://tc39.github.io/ecma262/">ECMAScript Language Specification</a>. URL: <a href="https://tc39.github.io/ecma262/">https://tc39.github.io/ecma262/</a>
    <dt id="biblio-encoding">[ENCODING]
    <dd>Anne van Kesteren. <a href="https://encoding.spec.whatwg.org/">Encoding Standard</a>. Living Standard. URL: <a href="https://encoding.spec.whatwg.org/">https://encoding.spec.whatwg.org/</a>
+   <dt id="biblio-fileapi">[FileAPI]
+   <dd>Marijn Kruisselbrink; Arun Ranganathan. <a href="https://www.w3.org/TR/FileAPI/">File API</a>. 6 November 2018. WD. URL: <a href="https://www.w3.org/TR/FileAPI/">https://www.w3.org/TR/FileAPI/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-infra">[INFRA]
@@ -2696,8 +2698,6 @@ In practice, an implementation may run out of resources for valid modules below 
    <dd>Domenic Denicola. <a href="https://www.w3.org/2001/tag/doc/promises-guide">Writing Promise-Using Specifications</a>. 16 February 2016. TAG Finding. URL: <a href="https://www.w3.org/2001/tag/doc/promises-guide">https://www.w3.org/2001/tag/doc/promises-guide</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
-   <dt id="biblio-url">[URL]
-   <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/">URL Standard</a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
    <dt id="biblio-webassembly">[WEBASSEMBLY]
    <dd><a href="https://webassembly.github.io/spec/core/">WebAssembly Core Specification</a>. Draft. URL: <a href="https://webassembly.github.io/spec/core/">https://webassembly.github.io/spec/core/</a>
    <dt id="biblio-webidl">[WebIDL]
