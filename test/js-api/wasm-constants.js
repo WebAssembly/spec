@@ -64,8 +64,7 @@ let kStartSectionCode = 8;       // Start function declaration
 let kElementSectionCode = 9;     // Elements section
 let kCodeSectionCode = 10;       // Function code
 let kDataSectionCode = 11;       // Data segments
-let kExceptionSectionCode = 12;  // Exception section (between Global & Export)
-let kDataCountSectionCode = 13;  // Data segments
+let kNameSectionCode = 12;       // Name section (encoded as string)
 
 // Name section types
 let kModuleNameCode = 0;
@@ -77,11 +76,6 @@ let kWasmAnyFunctionTypeForm = 0x70;
 
 let kHasMaximumFlag = 1;
 let kResizableMaximumFlag = 1;
-
-// Segment flags
-let kActiveNoIndex = 0;
-let kPassive = 1;
-let kActiveWithIndex = 2;
 
 // Function declaration flags
 let kDeclFunctionName   = 0x01;
@@ -95,7 +89,7 @@ let kWasmI32 = 0x7f;
 let kWasmI64 = 0x7e;
 let kWasmF32 = 0x7d;
 let kWasmF64 = 0x7c;
-let kWasmS128  = 0x7b;
+let kWasmS128 = 0x7b;
 
 let kExternalFunction = 0;
 let kExternalTable = 1;
