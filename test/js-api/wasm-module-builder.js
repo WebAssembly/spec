@@ -150,7 +150,7 @@ class WasmModuleBuilder {
     return this;
   }
 
-  addMemory(min, max, exp) {
+  addMemory(min, max, exp, shared = false) {
     this.memory = {min: min, max: max, exp: exp};
     return this;
   }
@@ -350,13 +350,14 @@ class WasmModuleBuilder {
     }
 
     // Add memory section
-    if (wasm.memory != undefined) {
+    if (wasm.memory !== undefined) {
       if (debug) print("emitting memory @ " + binary.length);
       binary.emit_section(kMemorySectionCode, section => {
         section.emit_u8(1);  // one memory entry
-        section.emit_u32v(kResizableMaximumFlag);
+        const has_max = wasm.memory.max !== undefined;
+        section.emit_u8(has_max ? 1 : 0);
         section.emit_u32v(wasm.memory.min);
-        section.emit_u32v(wasm.memory.max);
+        if (has_max) section.emit_u32v(wasm.memory.max);
       });
     }
 
@@ -411,7 +412,7 @@ class WasmModuleBuilder {
     }
 
     // Add export table.
-    var mem_export = (wasm.memory != undefined && wasm.memory.exp);
+    var mem_export = (wasm.memory !== undefined && wasm.memory.exp);
     var exports_count = wasm.exports.length + (mem_export ? 1 : 0);
     if (exports_count > 0) {
       if (debug) print("emitting exports @ " + binary.length);
