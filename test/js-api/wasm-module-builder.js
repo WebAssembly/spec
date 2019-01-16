@@ -74,9 +74,8 @@ class Binary extends Array {
     // Emit section length.
     this.emit_u32v(section.length);
     // Copy the temporary buffer.
-    for (let i = 0, len = section.length; i < len; i++) {
-      this.push(section[i]);
-    }
+    // Avoid spread because {section} can be huge.
+    for (let b of section) this.push(b);
   }
 }
 
