@@ -94,7 +94,7 @@
     (i32.const 3)
   )
 
-  (func (export "as-return-value") (param i32)
+  (func (export "as-return-value") (param i32) (result i32)
     (return (local.get 0))
   )
 
@@ -124,7 +124,7 @@
 (assert_return (invoke "as-br_if-value-cond" (i32.const 10)) (i32.const 10))
 (assert_return (invoke "as-br_table-value" (i32.const 1)) (i32.const 2))
 
-(assert_return (invoke "as-return-value" (i32.const 0)))
+(assert_return (invoke "as-return-value" (i32.const 0)) (i32.const 0))
 
 (assert_return (invoke "as-if-then" (i32.const 1)) (i32.const 1))
 (assert_return (invoke "as-if-else" (i32.const 0)) (i32.const 0))
