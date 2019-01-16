@@ -384,7 +384,7 @@ Table Instructions
 :math:`\TABLESET~x`
 ...................
 
-* The local :math:`C.\CTABLES[x]` must be defined in the context.
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
 
 * Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
