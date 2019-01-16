@@ -146,7 +146,7 @@ class D extends C {
 (type $D-vt (struct (extend $C-vt) (ref $h-sig)))  ;; immutable, subtype of $C-vt
 ```
 
-(Note: the use of `extend` in this example and others is assumed to be simple syntactic sugar for expanding the referenced structure type in place; subtyping still is meant to defined [structurally](#subtyping).)
+(Note: the use of `extend` in this example and others is assumed to be simple syntactic sugar for expanding the referenced structure type in place; there may be no `extend` construct in the abstract syntax or binary format; subtyping still is meant to defined [structurally](#subtyping).)
 
 Needs:
 
