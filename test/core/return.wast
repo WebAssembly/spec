@@ -322,14 +322,6 @@
 
 (assert_invalid
   (module
-    (func $type-operand-missing (result i32)
-      (return)
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
     (func $type-operand-missing-in-block (result i32)
       (i32.const 0)
       (block (return))
@@ -365,4 +357,3 @@
   "type mismatch"
 )
 
-;; TODO: Compare above "*operand-missing*" tests to others, identify and remove duplicates.
