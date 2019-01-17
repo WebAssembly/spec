@@ -461,7 +461,7 @@ dictionary ModuleImportDescriptor {
 interface Module {
   static sequence&lt;ModuleExportDescriptor> exports(Module moduleObject);
   static sequence&lt;ModuleImportDescriptor> imports(Module moduleObject);
-  static sequence&lt;ArrayBuffer> customSections(Module moduleObject, USVString sectionName);
+  static sequence&lt;ArrayBuffer> customSections(Module moduleObject, DOMString sectionName);
 };
 </pre>
 
