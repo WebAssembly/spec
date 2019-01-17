@@ -220,7 +220,7 @@ class WasmModuleBuilder {
 
   addDataSegment(addr, data, is_global = false) {
     this.data_segments.push(
-        {addr: addr, data: data, is_global: is_global, is_active: true});
+        {addr: addr, data: data, is_global: is_global});
     return this.data_segments.length - 1;
   }
 
@@ -230,7 +230,7 @@ class WasmModuleBuilder {
 
   addElementSegment(base, is_global, array, is_import = false) {
     this.element_segments.push({base: base, is_global: is_global,
-                                    array: array, is_active: true});
+                                    array: array});
     if (!is_global) {
       var length = base + array.length;
       if (length > this.table_length_min && !is_import) {
@@ -447,18 +447,14 @@ class WasmModuleBuilder {
         section.emit_u32v(inits.length);
 
         for (let init of inits) {
-          if (init.is_active) {
-            section.emit_u8(0);  // table index / flags
-            if (init.is_global) {
-              section.emit_u8(kExprGetGlobal);
-            } else {
-              section.emit_u8(kExprI32Const);
-            }
-            section.emit_u32v(init.base);
-            section.emit_u8(kExprEnd);
+          section.emit_u8(0);  // table index / flags
+          if (init.is_global) {
+            section.emit_u8(kExprGetGlobal);
           } else {
-            section.emit_u8(kPassive);  // flags
+            section.emit_u8(kExprI32Const);
           }
+          section.emit_u32v(init.base);
+          section.emit_u8(kExprEnd);
           section.emit_u32v(init.array.length);
           for (let index of init.array) {
             section.emit_u32v(index);
@@ -513,21 +509,17 @@ class WasmModuleBuilder {
       binary.emit_section(kDataSectionCode, section => {
         section.emit_u32v(wasm.data_segments.length);
         for (let seg of wasm.data_segments) {
-          if (seg.is_active) {
-            section.emit_u8(0);  // linear memory index 0 / flags
-            if (seg.is_global) {
-              // initializer is a global variable
-              section.emit_u8(kExprGetGlobal);
-              section.emit_u32v(seg.addr);
-            } else {
-              // initializer is a constant
-              section.emit_u8(kExprI32Const);
-              section.emit_u32v(seg.addr);
-            }
-            section.emit_u8(kExprEnd);
+          section.emit_u8(0);  // linear memory index 0 / flags
+          if (seg.is_global) {
+            // initializer is a global variable
+            section.emit_u8(kExprGetGlobal);
+            section.emit_u32v(seg.addr);
           } else {
-            section.emit_u8(kPassive);  // flags
+            // initializer is a constant
+            section.emit_u8(kExprI32Const);
+            section.emit_u32v(seg.addr);
           }
+          section.emit_u8(kExprEnd);
           section.emit_u32v(seg.data.length);
           section.emit_bytes(seg.data);
         }
