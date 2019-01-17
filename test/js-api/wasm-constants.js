@@ -64,7 +64,6 @@ let kStartSectionCode = 8;       // Start function declaration
 let kElementSectionCode = 9;     // Elements section
 let kCodeSectionCode = 10;       // Function code
 let kDataSectionCode = 11;       // Data segments
-let kNameSectionCode = 12;       // Name section (encoded as string)
 
 // Name section types
 let kModuleNameCode = 0;
@@ -122,12 +121,6 @@ let kSig_v_l = makeSig([kWasmI64], []);
 let kSig_v_d = makeSig([kWasmF64], []);
 let kSig_v_dd = makeSig([kWasmF64, kWasmF64], []);
 let kSig_v_ddi = makeSig([kWasmF64, kWasmF64, kWasmI32], []);
-let kSig_ii_v = makeSig([], [kWasmI32, kWasmI32]);
-let kSig_iii_v = makeSig([], [kWasmI32, kWasmI32, kWasmI32]);
-let kSig_ii_i = makeSig([kWasmI32], [kWasmI32, kWasmI32]);
-let kSig_iii_i = makeSig([kWasmI32], [kWasmI32, kWasmI32, kWasmI32]);
-let kSig_ii_ii = makeSig([kWasmI32, kWasmI32], [kWasmI32, kWasmI32]);
-let kSig_iii_ii = makeSig([kWasmI32, kWasmI32], [kWasmI32, kWasmI32, kWasmI32]);
 
 let kSig_v_f = makeSig([kWasmF32], []);
 let kSig_f_f = makeSig([kWasmF32], [kWasmF32]);
@@ -334,11 +327,6 @@ let kExprI32ReinterpretF32 = 0xbc;
 let kExprI64ReinterpretF64 = 0xbd;
 let kExprF32ReinterpretI32 = 0xbe;
 let kExprF64ReinterpretI64 = 0xbf;
-let kExprI32SExtendI8 = 0xc0;
-let kExprI32SExtendI16 = 0xc1;
-let kExprI64SExtendI8 = 0xc2;
-let kExprI64SExtendI16 = 0xc3;
-let kExprI64SExtendI32 = 0xc4;
 
 let kTrapUnreachable          = 0;
 let kTrapMemOutOfBounds       = 1;
