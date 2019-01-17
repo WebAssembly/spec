@@ -348,10 +348,7 @@ let kTrapRemByZero            = 4;
 let kTrapFloatUnrepresentable = 5;
 let kTrapFuncInvalid          = 6;
 let kTrapFuncSigMismatch      = 7;
-let kTrapTypeError            = 8;
-let kTrapUnalignedAccess      = 9;
-let kTrapDataSegmentDropped   = 10;
-let kTrapElemSegmentDropped   = 11;
+let kTrapInvalidIndex         = 8;
 
 let kTrapMsgs = [
   "unreachable",
@@ -359,13 +356,10 @@ let kTrapMsgs = [
   "divide by zero",
   "divide result unrepresentable",
   "remainder by zero",
-  "float unrepresentable in integer range",
-  "invalid index into function table",
+  "integer result unrepresentable",
+  "invalid function",
   "function signature mismatch",
-  "wasm function signature contains illegal type",
-  "operation does not support unaligned accesses",
-  "data segment has been dropped",
-  "element segment has been dropped"
+  "invalid index into function table"
 ];
 
 function assertTraps(trap, code) {
