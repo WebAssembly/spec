@@ -150,7 +150,7 @@ class WasmModuleBuilder {
     return this;
   }
 
-  addMemory(min, max, exp, shared = false) {
+  addMemory(min, max, exp) {
     this.memory = {min: min, max: max, exp: exp};
     return this;
   }
