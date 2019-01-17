@@ -79,7 +79,7 @@ testLimit("types", 1, kJSEmbeddingMaxTypes, (builder, count) => {
 
 testLimit("functions", 1, kJSEmbeddingMaxFunctions, (builder, count) => {
         const type = builder.addType(kSig_v_v);
-        const body = [];
+        const body = [kExprEnd];
         for (let i = 0; i < count; i++) {
             builder.addFunction(/*name=*/ undefined, type).addBody(body);
         }
@@ -95,7 +95,7 @@ testLimit("imports", 1, kJSEmbeddingMaxImports, (builder, count) => {
 testLimit("exports", 1, kJSEmbeddingMaxExports, (builder, count) => {
         const type = builder.addType(kSig_v_v);
         const f = builder.addFunction(/*name=*/ undefined, type);
-        f.addBody([]);
+        f.addBody([kExprEnd]);
         for (let i = 0; i < count; i++) {
             builder.addExport("f" + i, f.index);
         }
@@ -109,7 +109,7 @@ testLimit("globals", 1, kJSEmbeddingMaxGlobals, (builder, count) => {
 
 testLimit("data segments", 1, kJSEmbeddingMaxDataSegments, (builder, count) => {
         const data = [];
-        builder.addMemory(1, 1, false, false);
+        builder.addMemory(1, 1, false);
         for (let i = 0; i < count; i++) {
             builder.addDataSegment(0, data);
         }
@@ -117,12 +117,12 @@ testLimit("data segments", 1, kJSEmbeddingMaxDataSegments, (builder, count) => {
 
 testLimit("initial declared memory pages", 1, kJSEmbeddingMaxMemoryPages,
           (builder, count) => {
-            builder.addMemory(count, undefined, false, false);
+            builder.addMemory(count, undefined, false);
           });
 
 testLimit("maximum declared memory pages", 1, kJSEmbeddingMaxMemoryPages,
           (builder, count) => {
-            builder.addMemory(1, count, false, false);
+            builder.addMemory(1, count, false);
           });
 
 testLimit("initial imported memory pages", 1, kJSEmbeddingMaxMemoryPages,
@@ -140,6 +140,7 @@ testLimit("function size", 2, kJSEmbeddingMaxFunctionSize, (builder, count) => {
         const nops = count - 2;
         const array = new Array(nops);
         for (let i = 0; i < nops; i++) array[i] = kExprNop;
+        array.push(kExprEnd);
         builder.addFunction(undefined, type).addBody(array);
     });
 
@@ -147,7 +148,7 @@ testLimit("function locals", 1, kJSEmbeddingMaxFunctionLocals, (builder, count) 
         const type = builder.addType(kSig_v_v);
         builder.addFunction(undefined, type)
           .addLocals({i32_count: count})
-          .addBody([]);
+          .addBody([kExprEnd]);
     });
 
 testLimit("function params", 1, kJSEmbeddingMaxFunctionParams, (builder, count) => {
@@ -159,10 +160,10 @@ testLimit("function params", 1, kJSEmbeddingMaxFunctionParams, (builder, count) 
     });
 
 testLimit("function params+locals", 1, kJSEmbeddingMaxFunctionLocals - 2, (builder, count) => {
-        const type = builder.addType(kSig_i_ii);
+        const type = builder.addType(kSig_v_ii);
         builder.addFunction(undefined, type)
           .addLocals({i32_count: count})
-          .addBody([kExprUnreachable]);
+          .addBody([kExprEnd]);
     });
 
 testLimit("function returns", 0, kJSEmbeddingMaxFunctionReturns, (builder, count) => {
