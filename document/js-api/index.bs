@@ -446,14 +446,14 @@ enum ImportExportKind {
 };
 
 dictionary ModuleExportDescriptor {
-  required DOMString name;
+  required USVString name;
   required ImportExportKind kind;
   // Note: Other fields such as signature may be added in the future.
 };
 
 dictionary ModuleImportDescriptor {
-  required DOMString module;
-  required DOMString name;
+  required USVString module;
+  required USVString name;
   required ImportExportKind kind;
 };
 
@@ -732,7 +732,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <pre class="idl">
 dictionary GlobalDescriptor {
-  required DOMString value;
+  required USVString value;
   boolean mutable = false;
 };
 
