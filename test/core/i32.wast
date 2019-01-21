@@ -423,7 +423,7 @@
 
 (assert_invalid
   (module
-    (func $type-unary-operand-missing
+    (func $type-unary-operand-empty
       (i32.eqz) (drop)
     )
   )
@@ -431,7 +431,7 @@
 )
 (assert_invalid
   (module
-    (func $type-unary-operand-missing-in-block
+    (func $type-unary-operand-empty-in-block
       (i32.const 0)
       (block (i32.eqz) (drop))
     )
@@ -440,7 +440,7 @@
 )
 (assert_invalid
   (module
-    (func $type-unary-operand-missing-in-loop
+    (func $type-unary-operand-empty-in-loop
       (i32.const 0)
       (loop (i32.eqz) (drop))
     )
@@ -449,7 +449,7 @@
 )
 (assert_invalid
   (module
-    (func $type-unary-operand-missing-in-if
+    (func $type-unary-operand-empty-in-if
       (i32.const 0) (i32.const 0)
       (if (then (i32.eqz) (drop)))
     )
@@ -458,7 +458,7 @@
 )
 (assert_invalid
   (module
-    (func $type-unary-operand-missing-in-else
+    (func $type-unary-operand-empty-in-else
       (i32.const 0) (i32.const 0)
       (if (result i32) (then (i32.const 0)) (else (i32.eqz))) (drop)
     )
@@ -468,7 +468,7 @@
 
 (assert_invalid
   (module
-    (func $type-binary-1st-operand-missing
+    (func $type-binary-1st-operand-empty
       (i32.add) (drop)
     )
   )
@@ -476,7 +476,7 @@
 )
 (assert_invalid
   (module
-    (func $type-binary-2nd-operand-missing
+    (func $type-binary-2nd-operand-empty
       (i32.const 0) (i32.add) (drop)
     )
   )
@@ -484,7 +484,7 @@
 )
 (assert_invalid
   (module
-    (func $type-binary-1st-operand-missing-in-block
+    (func $type-binary-1st-operand-empty-in-block
       (i32.const 0) (i32.const 0)
       (block (i32.add) (drop))
     )
@@ -493,7 +493,7 @@
 )
 (assert_invalid
   (module
-    (func $type-binary-2nd-operand-missing-in-block
+    (func $type-binary-2nd-operand-empty-in-block
       (i32.const 0)
       (block (i32.const 0) (i32.add) (drop))
     )
@@ -502,7 +502,7 @@
 )
 (assert_invalid
   (module
-    (func $type-binary-1st-operand-missing-in-loop
+    (func $type-binary-1st-operand-empty-in-loop
       (i32.const 0) (i32.const 0)
       (loop (i32.add) (drop))
     )
@@ -511,7 +511,7 @@
 )
 (assert_invalid
   (module
-    (func $type-binary-2nd-operand-missing-in-loop
+    (func $type-binary-2nd-operand-empty-in-loop
       (i32.const 0)
       (loop (i32.const 0) (i32.add) (drop))
     )
@@ -520,7 +520,7 @@
 )
 (assert_invalid
   (module
-    (func $type-binary-1st-operand-missing-in-if
+    (func $type-binary-1st-operand-empty-in-if
       (i32.const 0) (i32.const 0) (i32.const 0)
       (if (i32.add) (then (drop)))
     )
@@ -529,7 +529,7 @@
 )
 (assert_invalid
   (module
-    (func $type-binary-2nd-operand-missing-in-if
+    (func $type-binary-2nd-operand-empty-in-if
       (i32.const 0) (i32.const 0)
       (if (i32.const 0) (then (i32.add)) (else (drop)))
     )
@@ -538,7 +538,7 @@
 )
 (assert_invalid
   (module
-    (func $type-binary-1st-operand-missing-in-else
+    (func $type-binary-1st-operand-empty-in-else
       (i32.const 0) (i32.const 0) (i32.const 0)
       (if (result i32) (then (i32.const 0)) (else (i32.add) (i32.const 0)))
       (drop) (drop)
@@ -548,7 +548,7 @@
 )
 (assert_invalid
   (module
-    (func $type-binary-2nd-operand-missing-in-else
+    (func $type-binary-2nd-operand-empty-in-else
       (i32.const 0) (i32.const 0)
       (if (result i32) (then (i32.const 0)) (else (i32.add)))
       (drop)
