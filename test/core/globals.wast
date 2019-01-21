@@ -360,7 +360,7 @@
 (assert_invalid
   (module
     (global $x (mut i32) (i32.const 0))
-    (func $type-global.set-operand-missing
+    (func $type-global.set-value-empty
       (global.set $x)
     )
   )
@@ -369,7 +369,7 @@
 (assert_invalid
   (module
     (global $x (mut i32) (i32.const 0))
-    (func $type-global.set-operand-missing-in-block
+    (func $type-global.set-value-empty-in-block
       (i32.const 0)
       (block (global.set $x))
     )
@@ -379,7 +379,7 @@
 (assert_invalid
   (module
     (global $x (mut i32) (i32.const 0))
-    (func $type-global.set-operand-missing-in-loop
+    (func $type-global.set-value-empty-in-loop
       (i32.const 0)
       (loop (global.set $x))
     )
@@ -389,7 +389,7 @@
 (assert_invalid
   (module
     (global $x (mut i32) (i32.const 0))
-    (func $type-global.set-operand-missing-in-if
+    (func $type-global.set-value-empty-in-then
       (i32.const 0) (i32.const 0)
       (if (then (global.set $x)))
     )
@@ -399,7 +399,7 @@
 (assert_invalid
   (module
     (global $x (mut i32) (i32.const 0))
-    (func $type-global.set-operand-missing-in-else
+    (func $type-global.set-value-empty-in-else
       (i32.const 0) (i32.const 0)
       (if (result i32) (then (i32.const 0)) (else (global.set $x)))
     )
@@ -409,7 +409,7 @@
 (assert_invalid
   (module
     (global $x (mut i32) (i32.const 0))
-    (func $type-global.set-operand-missing-in-br
+    (func $type-global.set-value-empty-in-br
       (i32.const 0)
       (block (br 0 (global.set $x)))
     )
@@ -419,7 +419,7 @@
 (assert_invalid
   (module
     (global $x (mut i32) (i32.const 0))
-    (func $type-global.set-operand-missing-in-br_if
+    (func $type-global.set-value-empty-in-br_if
       (i32.const 0)
       (block (br_if 0 (global.set $x)))
     )
@@ -429,7 +429,7 @@
 (assert_invalid
   (module
     (global $x (mut i32) (i32.const 0))
-    (func $type-global.set-operand-missing-in-br_table
+    (func $type-global.set-value-empty-in-br_table
       (i32.const 0)
       (block (br_table 0 (global.set $x)))
     )
@@ -439,7 +439,7 @@
 (assert_invalid
   (module
     (global $x (mut i32) (i32.const 0))
-    (func $type-global.set-operand-missing-in-return
+    (func $type-global.set-value-empty-in-return
       (return (global.set $x))
     )
   )
@@ -448,7 +448,7 @@
 (assert_invalid
   (module
     (global $x (mut i32) (i32.const 0))
-    (func $type-global.set-operand-missing-in-select
+    (func $type-global.set-value-empty-in-select
       (select (global.set $x) (i32.const 1) (i32.const 2))
     )
   )
@@ -457,7 +457,7 @@
 (assert_invalid
   (module
     (global $x (mut i32) (i32.const 0))
-    (func $type-global.set-operand-missing-in-call
+    (func $type-global.set-value-empty-in-call
       (call 1 (global.set $x))
     )
     (func (param i32) (result i32) (local.get 0))
@@ -470,7 +470,7 @@
     (func $f (param i32) (result i32) (local.get 0))
     (type $sig (func (param i32) (result i32)))
     (table funcref (elem $f))
-    (func $type-global.set-operand-missing-in-call_indirect
+    (func $type-global.set-value-empty-in-call_indirect
       (block (result i32)
         (call_indirect (type $sig)
           (global.set $x) (i32.const 0)

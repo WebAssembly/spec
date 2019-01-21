@@ -183,6 +183,118 @@
 )
 
 (assert_invalid
+  (module
+    (func $type-param-arg-empty-vs-num (param i32)
+      (local.set 0)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-param-arg-empty-vs-num-in-block (param i32)
+      (i32.const 0)
+      (block (local.set 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-param-arg-empty-vs-num-in-loop (param i32)
+      (i32.const 0)
+      (loop (local.set 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-param-arg-empty-vs-num-in-then (param i32)
+      (i32.const 0)
+      (if (i32.const 1) (then (local.set 0)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-param-arg-empty-vs-num-in-else (param i32)
+      (i32.const 0)
+      (if (result i32) (i32.const 0) (then (i32.const 0)) (else (local.set 0)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-param-arg-empty-vs-num-in-br (param i32)
+      (i32.const 0)
+      (block (br 0 (local.set 0)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-param-arg-empty-vs-num-in-br_if (param i32)
+      (i32.const 0)
+      (block (br_if 0 (local.set 0)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-param-arg-empty-vs-num-in-br_table (param i32)
+      (i32.const 0)
+      (block (br_table 0 (local.set 0)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-param-arg-empty-vs-num-in-return (param i32)
+      (return (local.set 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-param-arg-empty-vs-num-in-select (param i32)
+      (select (local.set 0) (i32.const 1) (i32.const 2))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-param-arg-empty-vs-num-in-call (param i32)
+      (call 1 (local.set 0))
+    )
+    (func (param i32) (result i32) (local.get 0))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f (param i32) (result i32) (local.get 0))
+    (type $sig (func (param i32) (result i32)))
+    (table funcref (elem $f))
+    (func $type-param-arg-empty-vs-num-in-call_indirect (param i32)
+      (block (result i32)
+        (call_indirect (type $sig)
+          (local.set 0) (i32.const 0)
+        )
+      )
+    )
+  )
+  "type mismatch"
+)
+
+(assert_invalid
   (module (func $i32-vs-empty (param i32) (result i32) (local.set 0 (i32.const 1))))
   "type mismatch"
 )
@@ -245,115 +357,3 @@
   "unknown local"
 )
 
-
-(assert_invalid
-  (module
-    (func $type-operand-missing (param i32)
-      (local.set 0)
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $type-operand-missing-in-block (param i32)
-      (i32.const 0)
-      (block (local.set 0))
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $type-operand-missing-in-loop (param i32)
-      (i32.const 0)
-      (loop (local.set 0))
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $type-operand-missing-in-if (param i32)
-      (i32.const 0)
-      (if (i32.const 1) (then (local.set 0)))
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $type-operand-missing-in-else (param i32)
-      (i32.const 0)
-      (if (result i32) (i32.const 0) (then (i32.const 0)) (else (local.set 0)))
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $type-operand-missing-in-br (param i32)
-      (i32.const 0)
-      (block (br 0 (local.set 0)))
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $type-operand-missing-in-br_if (param i32)
-      (i32.const 0)
-      (block (br_if 0 (local.set 0)))
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $type-operand-missing-in-br_table (param i32)
-      (i32.const 0)
-      (block (br_table 0 (local.set 0)))
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $type-operand-missing-in-return (param i32)
-      (return (local.set 0))
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $type-operand-missing-in-select (param i32)
-      (select (local.set 0) (i32.const 1) (i32.const 2))
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $type-operand-missing-in-call (param i32)
-      (call 1 (local.set 0))
-    )
-    (func (param i32) (result i32) (local.get 0))
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $f (param i32) (result i32) (local.get 0))
-    (type $sig (func (param i32) (result i32)))
-    (table funcref (elem $f))
-    (func $type-operand-missing-in-call_indirect (param i32)
-      (block (result i32)
-        (call_indirect (type $sig)
-          (local.set 0) (i32.const 0)
-        )
-      )
-    )
-  )
-  "type mismatch"
-)
