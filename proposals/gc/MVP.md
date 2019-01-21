@@ -437,5 +437,3 @@ TODO.
 * Provide a way to make data types non-eq, especially immutable ones?
 
 * Allow closures into function reference types, via a `func.bind` operator?
-
-* Should we rename `anyfunc` to `funcref` for more consistency?
