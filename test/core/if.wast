@@ -724,7 +724,7 @@
 
 (assert_invalid
   (module
-    (func $type-operand-missing
+    (func $type-condition-empty
       (if (then))
     )
   )
@@ -732,7 +732,7 @@
 )
 (assert_invalid
   (module
-    (func $type-operand-missing-in-block
+    (func $type-condition-empty-in-block
       (i32.const 0)
       (block (if (then)))
     )
@@ -741,7 +741,7 @@
 )
 (assert_invalid
   (module
-    (func $type-operand-missing-in-loop
+    (func $type-condition-empty-in-loop
       (i32.const 0)
       (loop (if (then)))
     )
@@ -750,7 +750,7 @@
 )
 (assert_invalid
   (module
-    (func $type-operand-missing-in-if
+    (func $type-condition-empty-in-then
       (i32.const 0) (i32.const 0)
       (if (then (if (then))))
     )
@@ -759,7 +759,7 @@
 )
 (assert_invalid
   (module
-    (func $type-operand-missing-in-else
+    (func $type-condition-empty-in-else
       (i32.const 0) (i32.const 0)
       (if (result i32) (then (i32.const 0)) (else (if (then)) (i32.const 0)))
       (drop)
@@ -767,8 +767,6 @@
   )
   "type mismatch"
 )
-
-;; TODO: Compare above "*operand-missing*" tests to others, identify and remove duplicates.
 
 
 (assert_malformed

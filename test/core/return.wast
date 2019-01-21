@@ -312,25 +312,8 @@
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-value-void-vs-num (result f64) (return (nop))))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-value-num-vs-num (result f64) (return (i64.const 1))))
-  "type mismatch"
-)
-
-(assert_invalid
   (module
-    (func $type-operand-missing (result i32)
-      (return)
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $type-operand-missing-in-block (result i32)
+    (func $type-value-empty-vs-num-in-block (result f64)
       (i32.const 0)
       (block (return))
     )
@@ -339,7 +322,7 @@
 )
 (assert_invalid
   (module
-    (func $type-operand-missing-in-loop (result i32)
+    (func $type-value-empty-vs-num-in-loop (result f64)
       (i32.const 0)
       (loop (return))
     )
@@ -348,7 +331,7 @@
 )
 (assert_invalid
   (module
-    (func $type-operand-missing-in-if (result i32)
+    (func $type-value-empty-vs-num-in-then (result f64)
       (i32.const 0) (i32.const 0)
       (if (then (return)))
     )
@@ -357,12 +340,19 @@
 )
 (assert_invalid
   (module
-    (func $type-operand-missing-in-else (result i32)
+    (func $type-value-empty-vs-num-in-else (result i32)
       (i32.const 0) (i32.const 0)
       (if (result i32) (then (i32.const 0)) (else (return))) (drop)
     )
   )
   "type mismatch"
 )
+(assert_invalid
+  (module (func $type-value-void-vs-num (result f64) (return (nop))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-value-num-vs-num (result f64) (return (i64.const 1))))
+  "type mismatch"
+)
 
-;; TODO: Compare above "*operand-missing*" tests to others, identify and remove duplicates.
