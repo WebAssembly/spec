@@ -61,7 +61,7 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 
 A *type use* denotes a user-defined or pre-defined data type:
 
-* `typeuse ::= typeidx | any | func | eq | i31 | rtt`
+* `typeuse ::= <typeidx> | any | func | eq | i31 | rtt`
 
 * In the binary encoding,
   - the `<typeidx>` is encoded as a (positive) signed LEB
