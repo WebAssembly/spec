@@ -203,6 +203,7 @@ In addition to the rules for basic reference types:
 * `ref.func` creates a function reference from a function index
   - `ref.func $f : [] -> [(ref $t)]`
      - iff `$f : $t`
+  - this is a *constant instruction*
 
 * `call_ref` calls a function through a reference
   - `call_ref : [t1* (optref $t)] -> [t2*]`
@@ -332,13 +333,13 @@ Perhaps also the following short-hands:
 
 * `rtt.anyref` returns the RTT of type `anyref` as a sub-RTT of only itself
   - `rtt.anyref : [] -> [(rtt anyref)]`
+  - this is a *constant instruction*
 
 * `rtt.new <typeuse> <typeuse>` returns the RTT of the specified type as a sub-RTT of a given parent RTT operand
   - `rtt.new t t' : [(rtt t')] -> [(rtt t)]`
     - iff `t <: t'`
   - multiple invocations of this instruction with the same operand yield the same observable RTTs
-
-* All RTT instructions are considered *constant expressions*.
+  - this is a *constant instruction*
 
 
 #### Casts
