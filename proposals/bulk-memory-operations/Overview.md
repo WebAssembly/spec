@@ -183,12 +183,12 @@ as an operand to `memory.init` or `table.init`.
 
 Segments can also be discarded by using the following new instructions:
 
-* `memory.drop`: prevent further use of a data segment
-* `table.drop`: prevent further use of an element segment
+* `data.drop`: prevent further use of a data segment
+* `elem.drop`: prevent further use of an element segment
 
 An active segment is equivalent to a passive segment, but with an implicit
-`memory.init` followed by a `memory.drop` (or `table.init` followed by a
-`table.drop`) that is prepended to the module's start function.
+`memory.init` followed by a `data.drop` (or `table.init` followed by a
+`elem.drop`) that is prepended to the module's start function.
 
 The new encoding of a data segment is now:
 
@@ -261,7 +261,7 @@ target offset, and length as given by the `memory.init` operands.
 It is a validation error to use `memory.init` with an out-of-bounds segment index.
 
 A trap occurs if:
-* the segment is used after it has been dropped via `memory.drop`. This includes
+* the segment is used after it has been dropped via `data.drop`. This includes
   active segments that were dropped after being copied into memory during module
   instantiation.
 * any of the accessed bytes lies outside the source data segment or the target memory
@@ -269,15 +269,15 @@ A trap occurs if:
 Note that it is allowed to use `memory.init` on the same data segment more than
 once.
 
-### `memory.drop` instruction
+### `data.drop` instruction
 
-The `memory.drop` instruction prevents further use of a given segment. After a
+The `data.drop` instruction prevents further use of a given segment. After a
 data segment has been dropped, it is no longer valid to use it in a `memory.init`
 instruction. This instruction is intended to be used as an optimization hint to
 the WebAssembly implementation. After a memory segment is dropped its data can
 no longer be retrieved, so the memory used by this segment may be freed.
 
-It is a validation error to use `memory.drop` with an out-of-bounds segment index.
+It is a validation error to use `data.drop` with an out-of-bounds segment index.
 
 A trap occurs if the segment was already dropped. This includes active segments
 that were dropped after being copied into memory during module instantiation.
@@ -307,7 +307,7 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 - top-1: byte value to set
 - top-0: size of memory region in bytes
 
-### `table.init`, `table.drop`, and `table.copy` instructions
+### `table.init`, `elem.drop`, and `table.copy` instructions
 
 The `table.*` instructions behave similary to the `memory.*` instructions, with
 the difference that they operate on element segments and tables, instead of
@@ -337,7 +337,7 @@ implemented as follows:
 
     ;; The memory used by this segment is no longer needed, so this segment can
     ;; be dropped.
-    (memory.drop 1))
+    (data.drop 1))
 )
 ```
 
@@ -354,11 +354,11 @@ instr ::= ...
 | Name | Opcode | Immediate | Description |
 | ---- | ---- | ---- | ---- |
 | `memory.init` | `0xfc 0x08` | `segment:varuint32`, `memory:0x00` | :thinking: copy from a passive data segment to linear memory |
-| `memory.drop` | `0xfc 0x09` | `segment:varuint32` | :thinking: prevent further use of passive data segment |
+| `data.drop` | `0xfc 0x09` | `segment:varuint32` | :thinking: prevent further use of passive data segment |
 | `memory.copy` | `0xfc 0x0a` | `memory_src:0x00` `memory_dst:0x00` | :thinking: copy from one region of linear memory to another region |
 | `memory.fill` | `0xfc 0x0b` | `memory:0x00` | :thinking: fill a region of linear memory with a given byte value |
 | `table.init` | `0xfc 0x0c` | `segment:varuint32`, `table:0x00` | :thinking: copy from a passive element segment to a table |
-| `table.drop` | `0xfc 0x0d` | `segment:varuint32` | :thinking: prevent further use of a passive element segment |
+| `elem.drop` | `0xfc 0x0d` | `segment:varuint32` | :thinking: prevent further use of a passive element segment |
 | `table.copy` | `0xfc 0x0e` | `table_src:0x00` `table_dst:0x00` | :thinking: copy from one region of a table to another region |
 
 ### `DataCount` section
@@ -403,4 +403,4 @@ segments in the `Data` section:
 
 It is a validation error if `count` is not equal to the number of data segments
 in the `Data` section. It is also a validation error if the `DataCount` section
-is omitted and a `memory.init` or `memory.drop` instruction is used.
+is omitted and a `memory.init` or `data.drop` instruction is used.
