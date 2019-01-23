@@ -166,7 +166,7 @@ A :ref:`number type <syntax-numtype>` :math:`\numtype_1` matches a :ref:`number 
 Reference Types
 ...............
 
-A :ref:`reference type <syntax-reftype>` :math:`\reftype_1` matches a :ref:`number type <syntax-reftype>` :math:`\reftype_2` if and only if:
+A :ref:`reference type <syntax-reftype>` :math:`\reftype_1` matches a :ref:`reference type <syntax-reftype>` :math:`\reftype_2` if and only if:
 
 * Either both :math:`\reftype_1` and :math:`\reftype_2` are the same.
 
