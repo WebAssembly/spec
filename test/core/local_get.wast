@@ -174,20 +174,23 @@
   "type mismatch"
 )
 
+
+;; local.set should have retval
+
 (assert_invalid
-  (module (func $i32-vs-empty (local i32) (local.get 0)))
+  (module (func $type-empty-vs-i32 (local i32) (local.get 0)))
   "type mismatch"
 )
 (assert_invalid
-  (module (func $i64-vs-empty (local i64) (local.get 0)))
+  (module (func $type-empty-vs-i64 (local i64) (local.get 0)))
   "type mismatch"
 )
 (assert_invalid
-  (module (func $f32-vs-empty (local f32) (local.get 0)))
+  (module (func $type-empty-vs-f32 (local f32) (local.get 0)))
   "type mismatch"
 )
 (assert_invalid
-  (module (func $f64-vs-empty (local f64) (local.get 0)))
+  (module (func $type-empty-vs-f64 (local f64) (local.get 0)))
   "type mismatch"
 )
 

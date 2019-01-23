@@ -294,23 +294,6 @@
   "type mismatch"
 )
 
-(assert_invalid
-  (module (func $i32-vs-empty (param i32) (result i32) (local.set 0 (i32.const 1))))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $i64-vs-empty (param i64) (result i64) (local.set 0 (i64.const 1))))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $f32-vs-empty (param f32) (result f32) (local.set 0 (f32.const 1))))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $f64-vs-empty (param f64) (result f64) (local.set 0 (f64.const 1))))
-  "type mismatch"
-)
-
 
 ;; Invalid typing of access to mixed args
 
@@ -324,6 +307,26 @@
 )
 (assert_invalid
   (module (func $type-mixed-arg-num-vs-num (param i64) (local f64 i64) (local.set 1 (i64.const 0))))
+  "type mismatch"
+)
+
+
+;; local.set should have no retval
+
+(assert_invalid
+  (module (func $type-empty-vs-i32 (param i32) (result i32) (local.set 0 (i32.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-empty-vs-i64 (param i64) (result i64) (local.set 0 (i64.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-empty-vs-f32 (param f32) (result f32) (local.set 0 (f32.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-empty-vs-f64 (param f64) (result f64) (local.set 0 (f64.const 1))))
   "type mismatch"
 )
 
