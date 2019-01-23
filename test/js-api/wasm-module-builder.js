@@ -74,7 +74,8 @@ class Binary extends Array {
     // Emit section length.
     this.emit_u32v(section.length);
     // Copy the temporary buffer.
-    this.push(...section);
+    // Avoid spread because {section} can be huge.
+    for (let b of section) this.push(b);
   }
 }
 
@@ -133,9 +134,10 @@ class WasmModuleBuilder {
     this.exports = [];
     this.globals = [];
     this.functions = [];
-    this.function_table = [];
-    this.function_table_length = 0;
-    this.function_table_inits = [];
+    this.table_length_min = 0;
+    this.table_length_max = undefined;
+    this.element_segments = [];
+    this.data_segments = [];
     this.segments = [];
     this.explicit = [];
     this.num_imported_funcs = 0;
@@ -217,33 +219,47 @@ class WasmModuleBuilder {
   }
 
   addDataSegment(addr, data, is_global = false) {
-    this.segments.push({addr: addr, data: data, is_global: is_global});
-    return this.segments.length - 1;
+    this.data_segments.push(
+        {addr: addr, data: data, is_global: is_global});
+    return this.data_segments.length - 1;
   }
 
   exportMemoryAs(name) {
     this.exports.push({name: name, kind: kExternalMemory, index: 0});
   }
 
-  addFunctionTableInit(base, is_global, array) {
-    this.function_table_inits.push({base: base, is_global: is_global,
+  addElementSegment(base, is_global, array, is_import = false) {
+    this.element_segments.push({base: base, is_global: is_global,
                                     array: array});
     if (!is_global) {
       var length = base + array.length;
-      if (length > this.function_table_length) {
-        this.function_table_length = length;
+      if (length > this.table_length_min && !is_import) {
+        this.table_length_min = length;
+      }
+      if (length > this.table_length_max && !is_import) {
+         this.table_length_max = length;
       }
     }
     return this;
   }
 
   appendToTable(array) {
-    return this.addFunctionTableInit(this.function_table.length, false, array);
+    for (let n of array) {
+      if (typeof n != 'number')
+        throw new Error('invalid table (entries have to be numbers): ' + array);
+    }
+    return this.addElementSegment(this.table_length_min, false, array);
   }
 
-  setFunctionTableLength(length) {
-    this.function_table_length = length;
+  setTableBounds(min, max = undefined) {
+    this.table_length_min = min;
+    this.table_length_max = max;
     return this;
+  }
+
+  // TODO(ssauleau): legacy, remove this
+  setFunctionTableLength(length) {
+    return this.setTableBounds(length);
   }
 
   toArray(debug = false) {
@@ -319,26 +335,29 @@ class WasmModuleBuilder {
       });
     }
 
-    // Add function_table.
-    if (wasm.function_table_length > 0) {
+    // Add table section
+    if (wasm.table_length_min > 0) {
       if (debug) print("emitting table @ " + binary.length);
       binary.emit_section(kTableSectionCode, section => {
         section.emit_u8(1);  // one table entry
         section.emit_u8(kWasmAnyFunctionTypeForm);
-        section.emit_u8(1);
-        section.emit_u32v(wasm.function_table_length);
-        section.emit_u32v(wasm.function_table_length);
+        const max = wasm.table_length_max;
+        const has_max = max !== undefined;
+        section.emit_u8(has_max ? kHasMaximumFlag : 0);
+        section.emit_u32v(wasm.table_length_min);
+        if (has_max) section.emit_u32v(max);
       });
     }
 
     // Add memory section
-    if (wasm.memory != undefined) {
+    if (wasm.memory !== undefined) {
       if (debug) print("emitting memory @ " + binary.length);
       binary.emit_section(kMemorySectionCode, section => {
         section.emit_u8(1);  // one memory entry
-        section.emit_u32v(kResizableMaximumFlag);
+        const has_max = wasm.memory.max !== undefined;
+        section.emit_u8(has_max ? 1 : 0);
         section.emit_u32v(wasm.memory.min);
-        section.emit_u32v(wasm.memory.max);
+        if (has_max) section.emit_u32v(wasm.memory.max);
       });
     }
 
@@ -393,7 +412,7 @@ class WasmModuleBuilder {
     }
 
     // Add export table.
-    var mem_export = (wasm.memory != undefined && wasm.memory.exp);
+    var mem_export = (wasm.memory !== undefined && wasm.memory.exp);
     var exports_count = wasm.exports.length + (mem_export ? 1 : 0);
     if (exports_count > 0) {
       if (debug) print("emitting exports @ " + binary.length);
@@ -420,15 +439,15 @@ class WasmModuleBuilder {
       });
     }
 
-    // Add table elements.
-    if (wasm.function_table_inits.length > 0) {
-      if (debug) print("emitting table @ " + binary.length);
+    // Add element segments
+    if (wasm.element_segments.length > 0) {
+      if (debug) print("emitting element segments @ " + binary.length);
       binary.emit_section(kElementSectionCode, section => {
-        var inits = wasm.function_table_inits;
+        var inits = wasm.element_segments;
         section.emit_u32v(inits.length);
-        section.emit_u8(0); // table index
 
         for (let init of inits) {
+          section.emit_u8(0);  // table index / flags
           if (init.is_global) {
             section.emit_u8(kExprGetGlobal);
           } else {
@@ -485,12 +504,12 @@ class WasmModuleBuilder {
     }
 
     // Add data segments.
-    if (wasm.segments.length > 0) {
+    if (wasm.data_segments.length > 0) {
       if (debug) print("emitting data segments @ " + binary.length);
       binary.emit_section(kDataSectionCode, section => {
-        section.emit_u32v(wasm.segments.length);
-        for (let seg of wasm.segments) {
-          section.emit_u8(0);  // linear memory index 0
+        section.emit_u32v(wasm.data_segments.length);
+        for (let seg of wasm.data_segments) {
+          section.emit_u8(0);  // linear memory index 0 / flags
           if (seg.is_global) {
             // initializer is a global variable
             section.emit_u8(kExprGetGlobal);
