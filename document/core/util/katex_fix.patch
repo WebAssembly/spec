@@ -1,7 +1,3 @@
-113c113
-< .katex-display {
----
-> div > .katex-display {
 123c123,126
 <   font: normal 1.21em KaTeX_Main, Times New Roman, serif;
 ---
@@ -9,21 +5,27 @@
 >   font-weight: normal;
 >   font-size: 1.21em;
 >   font-family: KaTeX_Main, Times New Roman, serif;
-127d129
+126d128
 <   text-rendering: auto;
-133c135
-<   display: inline-block;
+989c991
+< .katex-display {
 ---
-> /*  display: inline-block; */
-1060,1065d1061
-< .katex svg path {
-<   fill: currentColor;
-< }
-< .katex svg line {
-<   stroke: currentColor;
-< }
-1142a1139,1152
-> }
+> div > .katex-display {
+994c996
+< .katex-display > .katex {
+---
+> div > .katex-display > .katex {
+999c1001
+< .katex-display > .katex > .katex-html {
+---
+> div > .katex-display > .katex > .katex-html {
+1003c1005
+< .katex-display > .katex > .katex-html > .tag {
+---
+> div > .katex-display > .katex > .katex-html > .tag {
+1007c1009,1022
+< 
+---
 > /* Force borders on tables */
 > table {
 >   border-collapse: collapse;
@@ -37,3 +39,4 @@
 > }
 > .codepre {
 >   white-space: pre;
+> }
