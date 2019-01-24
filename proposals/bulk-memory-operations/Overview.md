@@ -265,6 +265,8 @@ A trap occurs if:
   active segments that were dropped after being copied into memory during module
   instantiation.
 * any of the accessed bytes lies outside the source data segment or the target memory
+* the source offset is outside the source data segment
+* the destination offset is outside the target memory
 
 Note that it is allowed to use `memory.init` on the same data segment more than
 once.
@@ -296,6 +298,11 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 - top-1: source address
 - top-0: size of memory region in bytes
 
+A trap occurs if:
+* any of the accessed bytes lies outside the source or target memory
+* the source offset is outside the source memory
+* the destination offset is outside the target memory
+
 ### `memory.fill` instruction
 
 Set all bytes in a memory region to a given byte. This instruction has an
@@ -306,6 +313,10 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 - top-2: destination address
 - top-1: byte value to set
 - top-0: size of memory region in bytes
+
+A trap occurs if:
+* any of the accessed bytes lies outside the target memory
+* the destination offset is outside the target memory
 
 ### `table.init`, `elem.drop`, and `table.copy` instructions
 
