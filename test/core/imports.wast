@@ -568,6 +568,8 @@
 ;; This module is required to validate, regardless of whether it can be
 ;; linked. Overloading is not possible in wasm itself, but it is possible
 ;; in modules from which wasm can import.
+(module)
+(register "not wasm")
 (assert_unlinkable
   (module
     (import "not wasm" "overloaded" (func))
