@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version eee3e9e7543e2188fb60d183a6cf3fe3a7d971c1" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="9136258e3ae1ec6f2f85597712d95eef8d43647b" name="document-revision">
+  <meta content="fb1fdcbaac03e5e77b7655d97493e6778901388b" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -539,7 +539,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
           <p>Otherwise,</p>
           <ol>
            <li data-md>
-            <p><a data-link-type="dfn" href="#create-a-host-function" id="ref-for-create-a-host-function">Create a host function</a> from <var>v</var> and let <var>funcaddr</var> be the result.</p>
+            <p><a data-link-type="dfn" href="#create-a-host-function" id="ref-for-create-a-host-function">Create a host function</a> from <var>v</var> and <var>functype</var>, and let <var>funcaddr</var> be the result.</p>
            <li data-md>
             <p>Let <var>index</var> be the number of external functions in <var>imports</var>. This value <var>index</var> is known as the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="index-of-the-host-function">index of the host function</dfn> <var>funcaddr</var>.</p>
           </ol>
@@ -1427,32 +1427,47 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
    </div>
    <p class="note" role="note"><span>Note:</span> <a data-link-type="dfn" href="#call-an-exported-function" id="ref-for-call-an-exported-function①">Calling an Exported Function</a> executes in the [[Realm]] of the callee Exported Function, as per the definition of <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-built-in-function-objects" id="ref-for-sec-built-in-function-objects①">built-in function objects</a>.</p>
    <p class="note" role="note"><span>Note:</span> Exported Functions do not have a [[Construct]] method and thus it is not possible to call one with the <code>new</code> operator.</p>
+   <div class="algorithm" data-algorithm="run a host function">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="run-a-host-function">run a host function</dfn> from the JavaScript object <var>func</var> and type <var>functype</var>, perform the following steps: 
+    <ol>
+     <li data-md>
+      <p>Let [<var>parameters</var>] → [<var>results</var>] be <var>functype</var>.</p>
+     <li data-md>
+      <p class="assertion">Assert: <var>results</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a> is at most one.</p>
+     <li data-md>
+      <p>If either <var>parameters</var> or <var>results</var> contains <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①③">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">TypeError</a></code>.</p>
+     <li data-md>
+      <p>Let <var>arguments</var> be a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a> of the arguments of the invocation of this function.</p>
+     <li data-md>
+      <p>Let <var>jsArguments</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑥">list</a>.</p>
+     <li data-md>
+      <p>For each <var>arg</var> in <var>arguments</var>,</p>
+      <ol>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">Append</a> ! <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue②">ToJSValue</a>(<var>arg</var>) to <var>jsArguments</var>.</p>
+      </ol>
+     <li data-md>
+      <p>Let <var>ret</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-call" id="ref-for-sec-call">Call</a>(<var>func</var>, undefined, <var>jsArguments</var>).</p>
+     <li data-md>
+      <p>If <var>results</var> is <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-empty" id="ref-for-list-empty">empty</a>, return undefined.</p>
+     <li data-md>
+      <p>Otherwise, return ? <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue④">ToWebAssemblyValue</a>(<var>ret</var>, <var>results</var>[0]).</p>
+    </ol>
+   </div>
    <div class="algorithm" data-algorithm="create a host function">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-host-function">create a host function</dfn> from the JavaScript object <var>func</var>, perform the following steps: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-host-function">create a host function</dfn> from the JavaScript object <var>func</var> and type <var>functype</var>, perform the following steps: 
     <ol>
      <li data-md>
       <p>Let <var>hostfunc</var> be a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-hostfunc" id="ref-for-syntax-hostfunc">host function</a> which performs the following steps when called:</p>
       <ol>
        <li data-md>
-        <p>If the signature contains an <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①③">𝗂𝟨𝟦</a> (as argument or result), the host function throws a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">TypeError</a></code> when called.</p>
+        <p>Let <var>result</var> be the result of <a data-link-type="dfn" href="#run-a-host-function" id="ref-for-run-a-host-function">running a host function</a> from <var>func</var> and <var>functype</var>.</p>
        <li data-md>
-        <p>Let <var>arguments</var> be a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a> of the arguments of the invocation of this function.</p>
+        <p class="assertion">Assert: <var>result</var>.[[Type]] is throw or return.</p>
        <li data-md>
-        <p>Let <var>jsArguments</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑥">list</a>.</p>
+        <p>If <var>result</var>.[[Type]] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-throw" id="ref-for-dfn-throw">throw</a>, then trigger a WebAssembly trap, and propagate <var>result</var>.[[Value]] to the enclosing JavaScript.</p>
        <li data-md>
-        <p>For each <var>arg</var> in <var>arguments</var>,</p>
-        <ol>
-         <li data-md>
-          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#set-append" id="ref-for-set-append⑨">Append</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue②">ToJSValue</a>(<var>arg</var>) to <var>jsArguments</var>.</p>
-        </ol>
-       <li data-md>
-        <p>Let <var>ret</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-call" id="ref-for-sec-call">Call</a>(<var>func</var>, undefined, <var>jsArguments</var>). If an exception is thrown, trigger a WebAssembly trap, and propagate the exception to the enclosing JavaScript.</p>
-       <li data-md>
-        <p>Let [<var>parameters</var>] → [<var>results</var>] be <var>functype</var>.</p>
-       <li data-md>
-        <p>If <var>results</var> is empty, return undefined.</p>
-       <li data-md>
-        <p>Otherwise, return <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue④">ToWebAssemblyValue</a>(<var>ret</var>, <var>results</var>[0]).</p>
+        <p>Otherwise, return <var>result</var>.[[Value]].</p>
       </ol>
      <li data-md>
       <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent②②">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②③">associated store</a>.</p>
@@ -1707,6 +1722,7 @@ In practice, an implementation may run out of resources for valid modules below 
     </ul>
    <li><a href="#name-of-the-webassembly-function">name of the WebAssembly function</a><span>, in §3.6</span>
    <li><a href="#reset-the-memory-buffer">reset the Memory buffer</a><span>, in §3.3</span>
+   <li><a href="#run-a-host-function">run a host function</a><span>, in §3.6</span>
    <li><a href="#runtimeerror">RuntimeError</a><span>, in §3.7</span>
    <li><a href="#dom-table-set">set(index, value)</a><span>, in §3.4</span>
    <li><a href="#string-value-of-the-extern-type">string value of the extern type</a><span>, in §3.1</span>
@@ -1955,7 +1971,13 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-set-append">3. The WebAssembly Namespace</a> <a href="#ref-for-set-append①">(2)</a> <a href="#ref-for-set-append②">(3)</a> <a href="#ref-for-set-append③">(4)</a>
     <li><a href="#ref-for-set-append④">3.1. Modules</a> <a href="#ref-for-set-append⑤">(2)</a> <a href="#ref-for-set-append⑥">(3)</a>
     <li><a href="#ref-for-set-append⑦">3.4. Tables</a>
-    <li><a href="#ref-for-set-append⑧">3.6. Exported Functions</a> <a href="#ref-for-set-append⑨">(2)</a>
+    <li><a href="#ref-for-set-append⑧">3.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list-empty">
+   <a href="https://infra.spec.whatwg.org/#list-empty">https://infra.spec.whatwg.org/#list-empty</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-empty">3.6. Exported Functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-map-exists">
@@ -1988,6 +2010,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-map-set①">3.4. Tables</a>
     <li><a href="#ref-for-map-set②">3.5. Globals</a>
     <li><a href="#ref-for-map-set③">3.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list-size">
+   <a href="https://infra.spec.whatwg.org/#list-size">https://infra.spec.whatwg.org/#list-size</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-size">3.6. Exported Functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-a-new-promise">
@@ -2515,6 +2543,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-dfn-present①">3.4. Tables</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-throw">
+   <a href="https://heycam.github.io/webidl/#dfn-throw">https://heycam.github.io/webidl/#dfn-throw</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-throw">3.6. Exported Functions</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-idl-unsigned-long">
    <a href="https://heycam.github.io/webidl/#idl-unsigned-long">https://heycam.github.io/webidl/#idl-unsigned-long</a><b>Referenced in:</b>
    <ul>
@@ -2581,11 +2615,13 @@ In practice, an implementation may run out of resources for valid modules below 
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-set-append" style="color:initial">append</span>
+     <li><span class="dfn-paneled" id="term-for-set-append" style="color:initial">append <small>(for set)</small></span>
+     <li><span class="dfn-paneled" id="term-for-list-empty" style="color:initial">empty</span>
      <li><span class="dfn-paneled" id="term-for-map-exists" style="color:initial">exist</span>
      <li><span class="dfn-paneled" id="term-for-list" style="color:initial">list</span>
      <li><span class="dfn-paneled" id="term-for-ordered-map" style="color:initial">ordered map</span>
      <li><span class="dfn-paneled" id="term-for-map-set" style="color:initial">set</span>
+     <li><span class="dfn-paneled" id="term-for-list-size" style="color:initial">size</span>
     </ul>
    <li>
     <a data-link-type="biblio">[promises-guide]</a> defines the following terms:
@@ -2676,6 +2712,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-dfn-get-buffer-source-copy" style="color:initial">get a copy of the buffer source</span>
      <li><span class="dfn-paneled" id="term-for-idl-object" style="color:initial">object</span>
      <li><span class="dfn-paneled" id="term-for-dfn-present" style="color:initial">present</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-throw" style="color:initial">throw</span>
      <li><span class="dfn-paneled" id="term-for-idl-unsigned-long" style="color:initial">unsigned long</span>
     </ul>
   </ul>
@@ -3255,6 +3292,12 @@ In practice, an implementation may run out of resources for valid modules below 
    <b><a href="#call-an-exported-function">#call-an-exported-function</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-call-an-exported-function">3.6. Exported Functions</a> <a href="#ref-for-call-an-exported-function①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="run-a-host-function">
+   <b><a href="#run-a-host-function">#run-a-host-function</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-run-a-host-function">3.6. Exported Functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="create-a-host-function">
