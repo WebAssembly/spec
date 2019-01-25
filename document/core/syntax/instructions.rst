@@ -329,7 +329,7 @@ In case of |LOOP| it is a *backward jump* to the beginning of the loop.
 
 .. note::
    This enforces *structured control flow*.
-   Intuitively, a branch targeting a |BLOCK| or |IF| behaves like a :math:`\K{break}` statement,
+   Intuitively, a branch targeting a |BLOCK| or |IF| behaves like a :math:`\K{break}` statement in most C-like languages,
    while a branch targeting a |LOOP| behaves like a :math:`\K{continue}` statement.
 
 Branch instructions come in several flavors:
