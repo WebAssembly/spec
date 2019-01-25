@@ -27,6 +27,15 @@ jsCommand = arguments.js
 outputDir = arguments.out
 inputFiles = arguments.file if arguments.file else glob.glob(os.path.join(inputDir, "*.wast"))
 
+if not os.path.exists(wasmCommand):
+  sys.stderr.write("""\
+Error: The executable '%s' does not exist.
+Provide the correct path with the '--wasm' flag.
+
+""" % (wasmCommand))
+  parser.print_help()
+  sys.exit(1)
+
 
 class RunTests(unittest.TestCase):
   def _runCommand(self, command, logPath, expectedExitCode = 0):
