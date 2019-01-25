@@ -105,8 +105,6 @@ HTML_HEADER = """<!doctype html>
         <script src={WPT_PREFIX}/testharness.js></script>
         <script src={WPT_PREFIX}/testharnessreport.js></script>
         <script src={PREFIX}/{JS_HARNESS}></script>
-        <script src={PREFIX}/wasm-constants.js></script>
-        <script src={PREFIX}/wasm-module-builder.js></script>
 
         <div id=log></div>
 """
