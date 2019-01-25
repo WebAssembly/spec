@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version eee3e9e7543e2188fb60d183a6cf3fe3a7d971c1" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="fb1fdcbaac03e5e77b7655d97493e6778901388b" name="document-revision">
+  <meta content="10b54a4974fbe11ff0e21404f2968419461d321c" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -773,7 +773,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="module"><code><c- g>Module</c-></code></dfn> {
   <c- b>static</c-> <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#dictdef-moduleexportdescriptor" id="ref-for-dictdef-moduleexportdescriptor"><c- n>ModuleExportDescriptor</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-exports" id="ref-for-dom-module-exports"><c- g>exports</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑦"><c- n>Module</c-></a> <dfn class="idl-code" data-dfn-for="Module/exports(moduleObject)" data-dfn-type="argument" data-export id="dom-module-exports-moduleobject-moduleobject"><code><c- g>moduleObject</c-></code><a class="self-link" href="#dom-module-exports-moduleobject-moduleobject"></a></dfn>);
   <c- b>static</c-> <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#dictdef-moduleimportdescriptor" id="ref-for-dictdef-moduleimportdescriptor"><c- n>ModuleImportDescriptor</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-imports" id="ref-for-dom-module-imports"><c- g>imports</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑧"><c- n>Module</c-></a> <dfn class="idl-code" data-dfn-for="Module/imports(moduleObject)" data-dfn-type="argument" data-export id="dom-module-imports-moduleobject-moduleobject"><code><c- g>moduleObject</c-></code><a class="self-link" href="#dom-module-imports-moduleobject-moduleobject"></a></dfn>);
-  <c- b>static</c-> <c- b>sequence</c->&lt;<a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects"><c- b>ArrayBuffer</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-customsections" id="ref-for-dom-module-customsections"><c- g>customSections</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑨"><c- n>Module</c-></a> <dfn class="idl-code" data-dfn-for="Module/customSections(moduleObject, sectionName)" data-dfn-type="argument" data-export id="dom-module-customsections-moduleobject-sectionname-moduleobject"><code><c- g>moduleObject</c-></code><a class="self-link" href="#dom-module-customsections-moduleobject-sectionname-moduleobject"></a></dfn>, <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <dfn class="idl-code" data-dfn-for="Module/customSections(moduleObject, sectionName)" data-dfn-type="argument" data-export id="dom-module-customsections-moduleobject-sectionname-sectionname"><code><c- g>sectionName</c-></code><a class="self-link" href="#dom-module-customsections-moduleobject-sectionname-sectionname"></a></dfn>);
+  <c- b>static</c-> <c- b>sequence</c->&lt;<a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects"><c- b>ArrayBuffer</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-customsections" id="ref-for-dom-module-customsections"><c- g>customSections</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑨"><c- n>Module</c-></a> <dfn class="idl-code" data-dfn-for="Module/customSections(moduleObject, sectionName)" data-dfn-type="argument" data-export id="dom-module-customsections-moduleobject-sectionname-moduleobject"><code><c- g>moduleObject</c-></code><a class="self-link" href="#dom-module-customsections-moduleobject-sectionname-moduleobject"></a></dfn>, <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="Module/customSections(moduleObject, sectionName)" data-dfn-type="argument" data-export id="dom-module-customsections-moduleobject-sectionname-sectionname"><code><c- g>sectionName</c-></code><a class="self-link" href="#dom-module-customsections-moduleobject-sectionname-sectionname"></a></dfn>);
 };
 </pre>
    <div class="algorithm" data-algorithm="string value of the extern type">
@@ -1154,7 +1154,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
    </div>
    <h3 class="heading settled" data-level="3.5" id="globals"><span class="secno">3.5. </span><span class="content">Globals</span><a class="self-link" href="#globals"></a></h3>
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-globaldescriptor"><code><c- g>GlobalDescriptor</c-></code></dfn> {
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString④"><c- b>USVString</c-></a> <dfn class="idl-code" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-globaldescriptor-value"><code><c- g>value</c-></code><a class="self-link" href="#dom-globaldescriptor-value"></a></dfn>;
+  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <dfn class="idl-code" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-globaldescriptor-value"><code><c- g>value</c-></code><a class="self-link" href="#dom-globaldescriptor-value"></a></dfn>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean①"><c- b>boolean</c-></a> <dfn class="idl-code" data-default="false" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="boolean " id="dom-globaldescriptor-mutable"><code><c- g>mutable</c-></code><a class="self-link" href="#dom-globaldescriptor-mutable"></a></dfn> = <c- b>false</c->;
 };
 
@@ -2473,6 +2473,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-BufferSource③">3.1. Modules</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-idl-DOMString">
+   <a href="https://heycam.github.io/webidl/#idl-DOMString">https://heycam.github.io/webidl/#idl-DOMString</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idl-DOMString">3.1. Modules</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-EnforceRange">
    <a href="https://heycam.github.io/webidl/#EnforceRange">https://heycam.github.io/webidl/#EnforceRange</a><b>Referenced in:</b>
    <ul>
@@ -2511,8 +2517,8 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside class="dfn-panel" data-for="term-for-idl-USVString">
    <a href="https://heycam.github.io/webidl/#idl-USVString">https://heycam.github.io/webidl/#idl-USVString</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idl-USVString">3.1. Modules</a> <a href="#ref-for-idl-USVString①">(2)</a> <a href="#ref-for-idl-USVString②">(3)</a> <a href="#ref-for-idl-USVString③">(4)</a>
-    <li><a href="#ref-for-idl-USVString④">3.5. Globals</a>
+    <li><a href="#ref-for-idl-USVString">3.1. Modules</a> <a href="#ref-for-idl-USVString①">(2)</a> <a href="#ref-for-idl-USVString②">(3)</a>
+    <li><a href="#ref-for-idl-USVString③">3.5. Globals</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-boolean">
@@ -2703,6 +2709,7 @@ In practice, an implementation may run out of resources for valid modules below 
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-BufferSource" style="color:initial">BufferSource</span>
+     <li><span class="dfn-paneled" id="term-for-idl-DOMString" style="color:initial">DOMString</span>
      <li><span class="dfn-paneled" id="term-for-EnforceRange" style="color:initial">EnforceRange</span>
      <li><span class="dfn-paneled" id="term-for-Exposed" style="color:initial">Exposed</span>
      <li><span class="dfn-paneled" id="term-for-Function" style="color:initial">Function</span>
@@ -2766,7 +2773,7 @@ In practice, an implementation may run out of resources for valid modules below 
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-moduleexportdescriptor"><code><c- g>ModuleExportDescriptor</c-></code></a> {
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString⑤"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-moduleexportdescriptor-name"><code><c- g>name</c-></code></a>;
+  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString④"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-moduleexportdescriptor-name"><code><c- g>name</c-></code></a>;
   <c- b>required</c-> <a class="n" data-link-type="idl-name" href="#enumdef-importexportkind" id="ref-for-enumdef-importexportkind②"><c- n>ImportExportKind</c-></a> <a data-type="ImportExportKind " href="#dom-moduleexportdescriptor-kind"><code><c- g>kind</c-></code></a>;
   // Note: Other fields such as signature may be added in the future.
 };
@@ -2781,7 +2788,7 @@ In practice, an implementation may run out of resources for valid modules below 
 <c- b>interface</c-> <a href="#module"><code><c- g>Module</c-></code></a> {
   <c- b>static</c-> <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#dictdef-moduleexportdescriptor" id="ref-for-dictdef-moduleexportdescriptor②"><c- n>ModuleExportDescriptor</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-exports" id="ref-for-dom-module-exports①"><c- g>exports</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑦①"><c- n>Module</c-></a> <a href="#dom-module-exports-moduleobject-moduleobject"><code><c- g>moduleObject</c-></code></a>);
   <c- b>static</c-> <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#dictdef-moduleimportdescriptor" id="ref-for-dictdef-moduleimportdescriptor②"><c- n>ModuleImportDescriptor</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-imports" id="ref-for-dom-module-imports①"><c- g>imports</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑧①"><c- n>Module</c-></a> <a href="#dom-module-imports-moduleobject-moduleobject"><code><c- g>moduleObject</c-></code></a>);
-  <c- b>static</c-> <c- b>sequence</c->&lt;<a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects⑥"><c- b>ArrayBuffer</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-customsections" id="ref-for-dom-module-customsections①"><c- g>customSections</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑨①"><c- n>Module</c-></a> <a href="#dom-module-customsections-moduleobject-sectionname-moduleobject"><code><c- g>moduleObject</c-></code></a>, <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③①"><c- b>USVString</c-></a> <a href="#dom-module-customsections-moduleobject-sectionname-sectionname"><code><c- g>sectionName</c-></code></a>);
+  <c- b>static</c-> <c- b>sequence</c->&lt;<a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects⑥"><c- b>ArrayBuffer</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-customsections" id="ref-for-dom-module-customsections①"><c- g>customSections</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑨①"><c- n>Module</c-></a> <a href="#dom-module-customsections-moduleobject-sectionname-moduleobject"><code><c- g>moduleObject</c-></code></a>, <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①"><c- b>DOMString</c-></a> <a href="#dom-module-customsections-moduleobject-sectionname-sectionname"><code><c- g>sectionName</c-></code></a>);
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace①①"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly①①"><c- n>WebAssembly</c-></a>, <a class="idl-code" data-link-type="constructor" href="#dom-instance-instance" id="ref-for-dom-instance-instance①"><c- g>Constructor</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module①⓪①"><c- n>Module</c-></a> <a href="#dom-instance-instance-module-importobject-module"><code><c- g>module</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-object" id="ref-for-idl-object②①"><c- b>object</c-></a> <a href="#dom-instance-instance-module-importobject-importobject"><code><c- g>importObject</c-></code></a>), <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed②①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->,<c- n>Worklet</c->)]
@@ -2821,7 +2828,7 @@ In practice, an implementation may run out of resources for valid modules below 
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-globaldescriptor"><code><c- g>GlobalDescriptor</c-></code></a> {
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString④①"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-globaldescriptor-value"><code><c- g>value</c-></code></a>;
+  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③①"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-globaldescriptor-value"><code><c- g>value</c-></code></a>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean①①"><c- b>boolean</c-></a> <a data-default="false" data-type="boolean " href="#dom-globaldescriptor-mutable"><code><c- g>mutable</c-></code></a> = <c- b>false</c->;
 };
 
