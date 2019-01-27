@@ -168,7 +168,7 @@ index is used to identify the exception tag to use to create and throw the
 corresponding exception.
 
 The values on top of the stack must correspond to the type associated with the
-exception. These values are popped of the stack and are used (along with the
+exception. These values are popped off the stack and are used (along with the
 corresponding exception tag) to create the corresponding exception. That
 exception is then thrown.
 
