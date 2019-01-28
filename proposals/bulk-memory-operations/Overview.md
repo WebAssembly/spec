@@ -271,6 +271,21 @@ A trap occurs if:
 Note that it is allowed to use `memory.init` on the same data segment more than
 once.
 
+Initialization takes place bytewise from lower addresses toward higher
+addresses.  A trap resulting from an access outside the source data
+segment or target memory only occurs once the first byte that is
+outside the source or target is reached.  Bytes written before the
+trap stay written.
+
+(Data are read and written as-if individual bytes were read and
+written, but various optimizations are possible that avoid reading and
+writing only individual bytes.)
+
+Note that the semantics require bytewise accesses, so a trap that
+might result from, say, reading a sequence of several words before
+writing any, will have to be handled carefully: the reads that
+succeeded will have to be written, if possible.
+
 ### `data.drop` instruction
 
 The `data.drop` instruction prevents further use of a given segment. After a
@@ -303,6 +318,18 @@ A trap occurs if:
 * the source offset is outside the source memory
 * the destination offset is outside the target memory
 
+All the data are read before any is written, and writing takes place
+bytewise from lower addresses toward higher addresses.  A trap
+resulting from an access outside the source memory is thus signalled
+before any target bytes are affected.  A trap resulting from an access
+outside the target memory only occurs once the first byte that is
+outside the target is reached.  Bytes written before the trap stay
+written.
+
+TODO: While those semantics are efficient in the context of unshared
+memory, they are not efficient in the context of shared memory with
+mprotect, and need to be improved.
+
 ### `memory.fill` instruction
 
 Set all bytes in a memory region to a given byte. This instruction has an
@@ -317,6 +344,14 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 A trap occurs if:
 * any of the accessed bytes lies outside the target memory
 * the destination offset is outside the target memory
+
+Filling takes place bytewise from lower addresses toward higher
+addresses.  A trap resulting from an access outside the target memory
+only occurs once the first byte that is outside the target is reached.
+Bytes written before the trap stay written.
+
+(Data are written as-if individual bytes were written, but various
+optimizations are possible that avoid writing only individual bytes.)
 
 ### `table.init`, `elem.drop`, and `table.copy` instructions
 
