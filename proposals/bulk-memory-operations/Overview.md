@@ -301,11 +301,26 @@ that were dropped after being copied into memory during module instantiation.
 
 ### `memory.copy` instruction
 
-Copy data from a source memory region to destination region; these regions may
-overlap: the copy is performed as if the source region was first copied to a
-temporary buffer, then the temporary buffer is copied to the destination
-region. This instruction has two immediate arguments: the source and
+Copy data from a source memory region to destination region.  The
+regions are said to overlap if they are in the same memory and the
+start address of one region is one of the addresses that's read or
+written (by the copy operation) in the other region.
+
+This instruction has two immediate arguments: the source and
 destination memory indices. They currently both must be zero.
+
+If the regions overlap, and the source region starts at a lower
+address than the target region, then the copy takes place as if from
+higher to lower addresses: the highest source address is read first
+and the value is written to the highest target address, then the next
+highest, and so on.  Otherwise, the copy takes place as if from lower
+to higher addresses: the lowest source address is read first and the
+value is written to the lowest target address, then the next lowest,
+and so on.
+
+(The direction of the copy is defined in order to future-proof
+`memory.copy` for shared memory and a memory read/write protection
+feature.)
 
 The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in order:
 
@@ -318,17 +333,14 @@ A trap occurs if:
 * the source offset is outside the source memory
 * the destination offset is outside the target memory
 
-All the data are read before any is written, and writing takes place
-bytewise from lower addresses toward higher addresses.  A trap
-resulting from an access outside the source memory is thus signalled
-before any target bytes are affected.  A trap resulting from an access
-outside the target memory only occurs once the first byte that is
-outside the target is reached.  Bytes written before the trap stay
-written.
+A trap resulting from an access outside the source or target region
+only occurs once the first byte that is outside the source or target
+is reached (in the defined copy order).  Bytes written before the trap
+stay written.
 
-TODO: While those semantics are efficient in the context of unshared
-memory, they are not efficient in the context of shared memory with
-mprotect, and need to be improved.
+(Data are read and written as-if individual bytes were read and
+written, but various optimizations are possible that avoid reading and
+writing only individual bytes.)
 
 ### `memory.fill` instruction
 
