@@ -583,7 +583,7 @@ def S.eq(a, b):
 * `f32x4.ne(a: v128, b: v128) -> v128`
 * `f64x2.ne(a: v128, b: v128) -> v128`
 
-The `ne` operations produce the inverse of their `ne` counterparts:
+The `ne` operations produce the inverse of their `eq` counterparts:
 
 ```python
 def S.ne(a, b):
