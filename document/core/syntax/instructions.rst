@@ -138,7 +138,7 @@ For each type, several subcategories can be distinguished:
 * *Comparisons*: consume two operands of the respective type and produce a Boolean integer result.
 
 * *Conversions*: consume a value of one type and produce a result of another
-  (the source type of the conversion is the one after the ":math:`\K{/}`").
+  (the source type of the conversion is the one after the ":math:`\K{\_}`").
 
 Some integer instructions come in two flavors,
 where a signedness annotation |sx| distinguishes whether the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
