@@ -241,6 +241,24 @@ An `elem_expr` is like an `init_expr`, but can only contain expressions of the f
 
 TODO: coordinate with other proposals to determine the binary encoding for `ref.null` and `ref.func`.
 
+### Segment Initialization
+
+In the MVP, segments are initialized during module instantiation. If any segment
+would be initialized out-of-bounds, then the memory or table instance is not
+modified.
+
+This behavior is changed in the bulk memory proposal.
+
+Each active segment is initialized in module-definition order. For each
+segment, each byte in the data segment is copied into the memory, in order of
+lowest to highest addresses. If, for a given byte, the copy is out-of-bounds,
+instantiation fails and no further bytes in this segment nor further segments
+are copied. Bytes written before this point stay written.
+
+The behavior of element segment initialization is changed similarly, with the
+difference that elements are copied from element segments into tables, instead
+of bytes being copied from data segments into memories.
+
 ### `memory.init` instruction
 
 The `memory.init` instruction copies data from a given passive segment into a target
@@ -251,12 +269,6 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 - top-2: destination address
 - top-1: offset into the source segment
 - top-0: size of memory region in bytes
-
-When `memory.init` is executed, its behavior matches the steps described in
-step 11 of
-[instantiation](https://webassembly.github.io/spec/exec/modules.html#instantiation),
-but it behaves as though the segment were specified with the source offset,
-target offset, and length as given by the `memory.init` operands.
 
 It is a validation error to use `memory.init` with an out-of-bounds segment index.
 
