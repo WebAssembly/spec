@@ -342,34 +342,6 @@ let kTrapFuncInvalid          = 6;
 let kTrapFuncSigMismatch      = 7;
 let kTrapInvalidIndex         = 8;
 
-let kTrapMsgs = [
-  "unreachable",
-  "memory access out of bounds",
-  "divide by zero",
-  "divide result unrepresentable",
-  "remainder by zero",
-  "integer result unrepresentable",
-  "invalid function",
-  "function signature mismatch",
-  "invalid index into function table"
-];
-
-function assertTraps(trap, code) {
-  try {
-    if (typeof code === 'function') {
-      code();
-    } else {
-      eval(code);
-    }
-  } catch (e) {
-    assertEquals('object', typeof e);
-    assertEquals(kTrapMsgs[trap], e.message);
-    // Success.
-    return;
-  }
-  throw new MjsUnitAssertionError('Did not trap, expected: ' + kTrapMsgs[trap]);
-}
-
 function wasmI32Const(val) {
   let bytes = [kExprI32Const];
   for (let i = 0; i < 4; ++i) {
