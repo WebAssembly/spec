@@ -352,11 +352,14 @@ function wasmI32Const(val) {
 }
 
 function wasmF32Const(f) {
-  return [kExprF32Const].concat(Array.from(new Uint8Array((new Float32Array([f])).buffer)));
+  f32_view[0] = f;
+  return [kExprF32Const, byte_view[0], byte_view[1], byte_view[2], byte_view[3]];
 }
 
 function wasmF64Const(f) {
-  return [kExprF64Const].concat(Array.from(new Uint8Array((new Float64Array([f])).buffer)));
+  f64_view[0] = f;
+  return [kExprF64Const, byte_view[0], byte_view[1], byte_view[2], byte_view[3],
+          byte_view[4], byte_view[5], byte_view[6], byte_view[7]];
 }
 
 class Binary extends Array {
