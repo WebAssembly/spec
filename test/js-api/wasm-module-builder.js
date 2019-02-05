@@ -263,16 +263,6 @@ class WasmModuleBuilder {
     return this;
   }
 
-  // TODO(ssauleau): legacy, remove this
-  setFunctionTableLength(length) {
-    return this.setTableBounds(length);
-  }
-
-  // TODO(ssauleau): legacy, remove this
-  setTableLength(min, max = undefined) {
-    return this.setTableBounds(min, max);
-  }
-
   toArray(debug = false) {
     let binary = new Binary;
     let wasm = this;

@@ -99,7 +99,7 @@ test(() => {
     .addBody([])
     .exportFunc();
 
-  builder.setFunctionTableLength(1);
+  builder.setTableBounds(1);
   builder.addExportOfKind("table", kExternalTable, 0);
 
   builder.addGlobal(kWasmI32, true)
