@@ -363,6 +363,14 @@ let encode m =
       | Convert (F64 F64Op.DemoteF64) -> assert false
       | Convert (F64 F64Op.ReinterpretInt) -> op 0xbf
 
+      | MemoryInit x -> op 0xfc; op 0x08; var x; u8 0x00
+      | DataDrop x -> op 0xfc; op 0x09; var x
+      | MemoryCopy -> op 0xfc; op 0x0a; u8 0x00; u8 0x00
+      | MemoryFill -> op 0xfc; op 0x0b; u8 0x00
+      | TableInit x -> op 0xfc; op 0x0c; var x; u8 0x00
+      | ElemDrop x -> op 0xfc; op 0x0d; var x
+      | TableCopy -> op 0xfc; op 0x0e; u8 0x00; u8 0x00
+
     let const c =
       list instr c.it; end_ ()
 
@@ -470,8 +478,18 @@ let encode m =
 
     (* Element section *)
     let segment dat seg =
-      let {index; offset; init} = seg.it in
-      var index; const offset; dat init
+      let {sdesc; init} = seg.it in
+      match sdesc with
+      | Active {index; offset} ->
+        if index.it = 0l then
+          u8 0x00
+        else begin
+          u8 0x02; var index
+        end;
+        const offset;
+        dat init
+      | Passive ->
+          u8 0x01; dat init
 
     let table_segment seg =
       segment (vec var) seg

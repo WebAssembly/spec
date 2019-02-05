@@ -193,12 +193,32 @@ let var s = vu32 s
 
 let op s = u8 s
 let end_ s = expect 0x0b s "END opcode expected"
+let zero_flag s = expect 0x00 s "zero flag expected"
 
 let memop s =
   let align = vu32 s in
   require (I32.le_u align 32l) s (pos s - 1) "invalid memop flags";
   let offset = vu32 s in
   Int32.to_int align, offset
+
+let misc_instr s =
+  let pos = pos s in
+  match op s with
+  | 0x08 ->
+    let x = at var s in
+    zero_flag s;
+    memory_init x
+  | 0x09 -> data_drop (at var s)
+  | 0x0a -> zero_flag s; zero_flag s; memory_copy
+  | 0x0b -> zero_flag s; memory_fill
+  | 0x0c ->
+    let x = at var s in
+    zero_flag s;
+    table_init x
+  | 0x0d -> elem_drop (at var s)
+  | 0x0e -> zero_flag s; zero_flag s; table_copy
+
+  | b -> illegal s pos b
 
 let rec instr s =
   let pos = pos s in
@@ -244,7 +264,7 @@ let rec instr s =
   | 0x10 -> call (at var s)
   | 0x11 ->
     let x = at var s in
-    expect 0x00 s "zero flag expected";
+    zero_flag s;
     call_indirect x
 
   | 0x12 | 0x13 | 0x14 | 0x15 | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
@@ -287,12 +307,8 @@ let rec instr s =
   | 0x3d -> let a, o = memop s in i64_store16 a o
   | 0x3e -> let a, o = memop s in i64_store32 a o
 
-  | 0x3f ->
-    expect 0x00 s "zero flag expected";
-    memory_size
-  | 0x40 ->
-    expect 0x00 s "zero flag expected";
-    memory_grow
+  | 0x3f -> zero_flag s; memory_size
+  | 0x40 -> zero_flag s; memory_grow
 
   | 0x41 -> i32_const (at vs32 s)
   | 0x42 -> i64_const (at vs64 s)
@@ -431,6 +447,8 @@ let rec instr s =
   | 0xbd -> i64_reinterpret_f64
   | 0xbe -> f32_reinterpret_i32
   | 0xbf -> f64_reinterpret_i64
+
+  | 0xfc -> misc_instr s
 
   | b -> illegal s pos b
 
@@ -589,10 +607,24 @@ let code_section s =
 (* Element section *)
 
 let segment dat s =
-  let index = at var s in
-  let offset = const s in
-  let init = dat s in
-  {index; offset; init}
+  match vu32 s with
+  | 0l ->
+    let index = Source.(0l @@ Source.no_region) in
+    let offset = const s in
+    let sdesc = Active {index; offset} in
+    let init = dat s in
+    {sdesc; init}
+  | 1l ->
+    let sdesc = Passive in
+    let init = dat s in
+    {sdesc; init}
+  | 2l ->
+    let index = at var s in
+    let offset = const s in
+    let sdesc = Active {index; offset} in
+    let init = dat s in
+    {sdesc; init}
+  | _ -> error s (pos s - 1) "invalid segment flags"
 
 let table_segment s =
   segment (vec (at var)) s

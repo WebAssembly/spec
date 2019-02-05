@@ -15,6 +15,7 @@ type extern_type =
   | ExternTableType of table_type
   | ExternMemoryType of memory_type
   | ExternGlobalType of global_type
+type segment_type = Seg
 
 
 (* Attributes *)

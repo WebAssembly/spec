@@ -202,3 +202,10 @@ let f64_reinterpret_i64 = Convert (F64 F64Op.ReinterpretInt)
 let memory_size = MemorySize
 let memory_grow = MemoryGrow
 
+let memory_init x = MemoryInit x
+let data_drop x = DataDrop x
+let memory_copy = MemoryCopy
+let memory_fill = MemoryFill
+let table_init x = TableInit x
+let elem_drop x = ElemDrop x
+let table_copy = TableCopy

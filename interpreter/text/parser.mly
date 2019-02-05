@@ -64,11 +64,14 @@ let empty_types () = {space = empty (); list = []}
 
 type context =
   { types : types; tables : space; memories : space;
-    funcs : space; locals : space; globals : space; labels : int32 VarMap.t }
+    funcs : space; locals : space; globals : space;
+    data : space; elems : space;
+    labels : int32 VarMap.t }
 
 let empty_context () =
   { types = empty_types (); tables = empty (); memories = empty ();
     funcs = empty (); locals = empty (); globals = empty ();
+    data = empty (); elems = empty ();
     labels = VarMap.empty }
 
 let enter_func (c : context) =
@@ -84,6 +87,8 @@ let local (c : context) x = lookup "local" c.locals x
 let global (c : context) x = lookup "global" c.globals x
 let table (c : context) x = lookup "table" c.tables x
 let memory (c : context) x = lookup "memory" c.memories x
+let data (c : context) x = lookup "data segment" c.data x
+let elem (c : context) x = lookup "elem segment" c.elems x
 let label (c : context) x =
   try VarMap.find x.it c.labels
   with Not_found -> error x.at ("unknown label " ^ x.it)
@@ -111,6 +116,8 @@ let bind_local (c : context) x = bind "local" c.locals x
 let bind_global (c : context) x = bind "global" c.globals x
 let bind_table (c : context) x = bind "table" c.tables x
 let bind_memory (c : context) x = bind "memory" c.memories x
+let bind_data (c : context) x = bind "data segment" c.data x
+let bind_elem (c : context) x = bind "elem segment" c.elems x
 let bind_label (c : context) x =
   {c with labels = VarMap.add x.it 0l (VarMap.map (Int32.add 1l) c.labels)}
 
@@ -130,6 +137,8 @@ let anon_locals (c : context) ts =
 let anon_global (c : context) = anon "global" c.globals 1l
 let anon_table (c : context) = anon "table" c.tables 1l
 let anon_memory (c : context) = anon "memory" c.memories 1l
+let anon_data (c : context) = anon "data segment" c.data 1l
+let anon_elem (c : context) = anon "elem segment" c.elems 1l
 let anon_label (c : context) =
   {c with labels = VarMap.map (Int32.add 1l) c.labels}
 
@@ -152,8 +161,11 @@ let inline_type_explicit (c : context) x ft at =
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token UNREACHABLE MEMORY_SIZE MEMORY_GROW
+%token MEMORY_INIT DATA_DROP MEMORY_COPY MEMORY_FILL
+%token TABLE_INIT ELEM_DROP TABLE_COPY
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
+%token PASSIVE
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
@@ -325,6 +337,13 @@ plain_instr :
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
+  | MEMORY_INIT var { fun c -> memory_init ($2 c data) }
+  | DATA_DROP var { fun c -> data_drop ($2 c data) }
+  | MEMORY_COPY { fun c -> memory_copy }
+  | MEMORY_FILL { fun c -> memory_fill }
+  | TABLE_INIT var { fun c -> table_init ($2 c elem) }
+  | ELEM_DROP var { fun c -> elem_drop ($2 c elem) }
+  | TABLE_COPY { fun c -> table_copy }
 
 
 call_instr :
@@ -550,12 +569,25 @@ offset :
   | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
 
 elem :
+  | LPAR ELEM bind_var_opt PASSIVE var_list RPAR
+    { let at = at () in
+      fun c -> ignore ($3 c anon_elem bind_elem @@ at);
+      fun () -> {sdesc = Passive; init = $5 c func} @@ at }
+  | LPAR ELEM bind_var var offset var_list RPAR
+    { let at = at () in
+      fun c -> ignore ((bind_elem c $3) @@ at);
+      fun () -> {sdesc = Active {index = $4 c table; offset = $5 c};
+                 init = $6 c func} @@ at }
   | LPAR ELEM var offset var_list RPAR
     { let at = at () in
-      fun c -> {index = $3 c table; offset = $4 c; init = $5 c func} @@ at }
-  | LPAR ELEM offset var_list RPAR  /* Sugar */
+      fun c -> ignore (anon_elem c @@ at);
+      fun () -> {sdesc = Active {index = $3 c table; offset = $4 c};
+                 init = $5 c func} @@ at }
+  | LPAR ELEM offset var_list RPAR /* Sugar */
     { let at = at () in
-      fun c -> {index = 0l @@ at; offset = $3 c; init = $4 c func} @@ at }
+      fun c -> ignore (anon_elem c @@ at);
+      fun () -> {sdesc = Active {index = 0l @@ at; offset = $3 c};
+                 init = $4 c func} @@ at }
 
 table :
   | LPAR TABLE bind_var_opt table_fields RPAR
@@ -577,17 +609,32 @@ table_fields :
   | elem_type LPAR ELEM var_list RPAR  /* Sugar */
     { fun c x at ->
       let init = $4 c func in let size = Int32.of_int (List.length init) in
+      let sdesc =
+        Active {index = x; offset = [i32_const (0l @@ at) @@ at] @@ at} in
       [{ttype = TableType ({min = size; max = Some size}, $1)} @@ at],
-      [{index = x; offset = [i32_const (0l @@ at) @@ at] @@ at; init} @@ at],
+      [{sdesc; init} @@ at],
       [], [] }
 
 data :
-  | LPAR DATA var offset string_list RPAR
+  | LPAR DATA bind_var_opt PASSIVE string_list RPAR
     { let at = at () in
-      fun c -> {index = $3 c memory; offset = $4 c; init = $5} @@ at }
-  | LPAR DATA offset string_list RPAR  /* Sugar */
-    { let at = at () in
-      fun c -> {index = 0l @@ at; offset = $3 c; init = $4} @@ at }
+      fun c -> ignore ($3 c anon_data bind_data @@ at);
+      fun () -> {sdesc = Passive; init = $5} @@ at }
+ | LPAR DATA bind_var var offset string_list RPAR
+   { let at = at () in
+     fun c -> ignore ((bind_data c $3) @@ at);
+     fun () -> {sdesc = Active {index = $4 c memory;
+                offset = $5 c}; init = $6} @@ at }
+ | LPAR DATA var offset string_list RPAR
+   { let at = at () in
+     fun c -> ignore (anon_data c @@ at);
+     fun () -> {sdesc = Active {index = $3 c memory;
+                offset = $4 c}; init = $5} @@ at }
+ | LPAR DATA offset string_list RPAR /* Sugar */
+   { let at = at () in
+     fun c -> ignore (anon_data c @@ at);
+     fun () -> {sdesc = Active {index = 0l @@ at;
+                offset = $3 c}; init = $4} @@ at }
 
 memory :
   | LPAR MEMORY bind_var_opt memory_fields RPAR
@@ -609,9 +656,10 @@ memory_fields :
   | LPAR DATA string_list RPAR  /* Sugar */
     { fun c x at ->
       let size = Int32.(div (add (of_int (String.length $3)) 65535l) 65536l) in
+      let sdesc =
+        Active {index = x; offset = [i32_const (0l @@ at) @@ at] @@ at} in
       [{mtype = MemoryType {min = size; max = Some size}} @@ at],
-      [{index = x;
-        offset = [i32_const (0l @@ at) @@ at] @@ at; init = $3} @@ at],
+      [{sdesc; init = $3} @@ at],
       [], [] }
 
 global :
@@ -730,13 +778,13 @@ module_fields1 :
       { m with funcs = funcs @ m.funcs;
         imports = ims @ m.imports; exports = exs @ m.exports } }
   | elem module_fields
-    { fun c -> let mf = $2 c in
-      fun () -> let m = mf () in
-      {m with elems = $1 c :: m.elems} }
+    { fun c -> let ef = $1 c in let mf = $2 c in
+      fun () -> let elems = ef () in let m = mf () in
+      {m with elems = elems :: m.elems} }
   | data module_fields
-    { fun c -> let mf = $2 c in
-      fun () -> let m = mf () in
-      {m with data = $1 c :: m.data} }
+    { fun c -> let df = $1 c in let mf = $2 c in
+      fun () -> let data = df () in let m = mf () in
+      {m with data = data :: m.data} }
   | start module_fields
     { fun c -> let mf = $2 c in
       fun () -> let m = mf () in let x = $1 c in

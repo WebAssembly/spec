@@ -21,6 +21,8 @@ type context =
   tables : table_type list;
   memories : memory_type list;
   globals : global_type list;
+  data : segment_type list;
+  elems : segment_type list;
   locals : value_type list;
   results : value_type list;
   labels : stack_type list;
@@ -28,7 +30,8 @@ type context =
 
 let empty_context =
   { types = []; funcs = []; tables = []; memories = [];
-    globals = []; locals = []; results = []; labels = [] }
+    globals = []; data = []; elems = [];
+    locals = []; results = []; labels = [] }
 
 let lookup category list x =
   try Lib.List32.nth list x.it with Failure _ ->
@@ -39,6 +42,8 @@ let func (c : context) x = lookup "function" c.funcs x
 let table (c : context) x = lookup "table" c.tables x
 let memory (c : context) x = lookup "memory" c.memories x
 let global (c : context) x = lookup "global" c.globals x
+let data (c : context) x = lookup "data segment" c.data x
+let elem (c : context) x = lookup "elem segment" c.elems x
 let local (c : context) x = lookup "local" c.locals x
 let label (c : context) x = lookup "label" c.labels x
 
@@ -288,6 +293,38 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let t1, t2 = type_cvtop e.at cvtop in
     [t1] --> [t2]
 
+  | MemoryInit x ->
+    ignore (memory c (0l @@ e.at));
+    ignore (data c x);
+    [I32Type; I32Type; I32Type] --> []
+
+  | DataDrop x ->
+    ignore (memory c (0l @@ e.at));
+    ignore (data c x);
+    [] --> []
+
+  | MemoryCopy ->
+    ignore (memory c (0l @@ e.at));
+    [I32Type; I32Type; I32Type] --> []
+
+  | MemoryFill ->
+    ignore (memory c (0l @@ e.at));
+    [I32Type; I32Type; I32Type] --> []
+
+  | TableInit x ->
+    ignore (table c (0l @@ e.at));
+    ignore (elem c x);
+    [I32Type; I32Type; I32Type] --> []
+
+  | ElemDrop x ->
+    ignore (table c (0l @@ e.at));
+    ignore (elem c x);
+    [] --> []
+
+  | TableCopy ->
+    ignore (table c (0l @@ e.at));
+    [I32Type; I32Type; I32Type] --> []
+
 and check_seq (c : context) (es : instr list) : infer_stack_type =
   match es with
   | [] ->
@@ -391,15 +428,21 @@ let check_memory (c : context) (mem : memory) =
   check_memory_type mtype mem.at
 
 let check_elem (c : context) (seg : table_segment) =
-  let {index; offset; init} = seg.it in
-  check_const c offset I32Type;
-  ignore (table c index);
-  ignore (List.map (func c) init)
+  let {sdesc; init} = seg.it in
+  ignore (List.map (func c) init);
+  match sdesc with
+  | Active {index; offset} ->
+    check_const c offset I32Type;
+    ignore (table c index)
+  | Passive -> ()
 
 let check_data (c : context) (seg : memory_segment) =
-  let {index; offset; init} = seg.it in
-  check_const c offset I32Type;
-  ignore (memory c index)
+  let {sdesc; init} = seg.it in
+  match sdesc with
+  | Active {index; offset} ->
+    check_const c offset I32Type;
+    ignore (memory c index)
+  | Passive -> ()
 
 let check_global (c : context) (glob : global) =
   let {gtype; value} = glob.it in
@@ -463,6 +506,8 @@ let check_module (m : module_) =
       funcs = c0.funcs @ List.map (fun f -> type_ c0 f.it.ftype) funcs;
       tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
       memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
+      elems = List.map (fun elem -> Seg) elems;
+      data = List.map (fun data -> Seg) data;
     }
   in
   let c =

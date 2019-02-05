@@ -97,11 +97,22 @@ and instr' =
   | Unary of unop                     (* unary numeric operator *)
   | Binary of binop                   (* binary numeric operator *)
   | Convert of cvtop                  (* conversion *)
+  | MemoryInit of var                 (* initialize memory from segment *)
+  | DataDrop of var                   (* drop passive data segment *)
+  | MemoryCopy                        (* copy memory regions *)
+  | MemoryFill                        (* fill memory region with value *)
+  | TableInit of var                  (* initialize table from segment *)
+  | ElemDrop of var                   (* drop passive element segment *)
+  | TableCopy                         (* copy elements between table regions *)
 
 
 (* Globals & Functions *)
 
 type const = instr list Source.phrase
+
+type segment_desc =
+  | Active of {index : var; offset : const}
+  | Passive
 
 type global = global' Source.phrase
 and global' =
@@ -136,8 +147,7 @@ and memory' =
 type 'data segment = 'data segment' Source.phrase
 and 'data segment' =
 {
-  index : var;
-  offset : const;
+  sdesc : segment_desc;
   init : 'data;
 }
 

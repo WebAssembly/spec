@@ -252,6 +252,13 @@ let rec instr e =
     | Unary op -> unop op, []
     | Binary op -> binop op, []
     | Convert op -> cvtop op, []
+    | MemoryInit x -> "memory.init " ^ var x, []
+    | DataDrop x -> "data.drop " ^ var x, []
+    | MemoryCopy -> "memory.copy", []
+    | MemoryFill -> "memory.fill", []
+    | TableInit x -> "table.init " ^ var x, []
+    | ElemDrop x -> "elem.drop " ^ var x, []
+    | TableCopy -> "table.copy", []
   in Node (head, inner)
 
 let const c =
@@ -290,8 +297,11 @@ let memory off i mem =
   Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
 
 let segment head dat seg =
-  let {index; offset; init} = seg.it in
-  Node (head, atom var index :: Node ("offset", const offset) :: dat init)
+  let {sdesc; init} = seg.it in
+  match sdesc with
+  | Active {index; offset} ->
+    Node (head, atom var index :: Node ("offset", const offset) :: dat init)
+  | Passive -> Node (head, dat init)
 
 let elems seg =
   segment "elem" (list (atom var)) seg

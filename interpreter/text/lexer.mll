@@ -317,6 +317,16 @@ rule token = parse
   | "memory.size" { MEMORY_SIZE }
   | "memory.grow" { MEMORY_GROW }
 
+  | "memory.init" { MEMORY_INIT }
+  | "data.drop" { DATA_DROP }
+  | "memory.copy" { MEMORY_COPY }
+  | "memory.fill" { MEMORY_FILL }
+  | "table.init" { TABLE_INIT }
+  | "elem.drop" { ELEM_DROP }
+  | "table.copy" { TABLE_COPY }
+
+  | "passive" { PASSIVE }
+
   | "type" { TYPE }
   | "func" { FUNC }
   | "start" { START }
