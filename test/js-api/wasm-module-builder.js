@@ -452,6 +452,12 @@ class WasmFunctionBuilder {
   }
 
   addBody(body) {
+    const bodyCopy = body.slice();
+    bodyCopy.push(kExprEnd);
+    return this.addBodyWithEnd(bodyCopy);
+  }
+
+  addBodyWithEnd(body) {
     this.body = body;
     return this;
   }
@@ -609,11 +615,6 @@ class WasmModuleBuilder {
     this.table_length_min = min;
     this.table_length_max = max;
     return this;
-  }
-
-  // TODO(ssauleau): legacy, remove this
-  setFunctionTableLength(length) {
-    return this.setTableBounds(length);
   }
 
   toArray(debug = false) {

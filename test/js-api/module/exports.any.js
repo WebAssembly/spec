@@ -91,18 +91,14 @@ test(() => {
 
   builder
     .addFunction("fn", kSig_v_v)
-    .addBody([
-        kExprEnd
-    ])
+    .addBody([])
     .exportFunc();
   builder
     .addFunction("fn2", kSig_v_v)
-    .addBody([
-        kExprEnd
-    ])
+    .addBody([])
     .exportFunc();
 
-  builder.setFunctionTableLength(1);
+  builder.setTableBounds(1);
   builder.addExportOfKind("table", kExternalTable, 0);
 
   builder.addGlobal(kWasmI32, true)
