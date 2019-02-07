@@ -110,10 +110,6 @@ and instr' =
 
 type const = instr list Source.phrase
 
-type segment_desc =
-  | Active of {index : var; offset : const}
-  | Passive
-
 type global = global' Source.phrase
 and global' =
 {
@@ -146,10 +142,8 @@ and memory' =
 
 type 'data segment = 'data segment' Source.phrase
 and 'data segment' =
-{
-  sdesc : segment_desc;
-  init : 'data;
-}
+  | Active of {index : var; offset : const; init : 'data}
+  | Passive of 'data
 
 type table_segment = var list segment
 type memory_segment = string segment

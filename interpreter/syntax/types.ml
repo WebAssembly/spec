@@ -10,12 +10,12 @@ type mutability = Immutable | Mutable
 type table_type = TableType of Int32.t limits * elem_type
 type memory_type = MemoryType of Int32.t limits
 type global_type = GlobalType of value_type * mutability
+type segment_type = SegmentType
 type extern_type =
   | ExternFuncType of func_type
   | ExternTableType of table_type
   | ExternMemoryType of memory_type
   | ExternGlobalType of global_type
-type segment_type = Seg
 
 
 (* Attributes *)

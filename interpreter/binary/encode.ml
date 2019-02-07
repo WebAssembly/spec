@@ -478,9 +478,8 @@ let encode m =
 
     (* Element section *)
     let segment dat seg =
-      let {sdesc; init} = seg.it in
-      match sdesc with
-      | Active {index; offset} ->
+      match seg.it with
+      | Active {index; offset; init} ->
         if index.it = 0l then
           u8 0x00
         else begin
@@ -488,8 +487,8 @@ let encode m =
         end;
         const offset;
         dat init
-      | Passive ->
-          u8 0x01; dat init
+      | Passive init ->
+        u8 0x01; dat init
 
     let table_segment seg =
       segment (vec var) seg

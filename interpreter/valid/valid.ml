@@ -428,21 +428,20 @@ let check_memory (c : context) (mem : memory) =
   check_memory_type mtype mem.at
 
 let check_elem (c : context) (seg : table_segment) =
-  let {sdesc; init} = seg.it in
-  ignore (List.map (func c) init);
-  match sdesc with
-  | Active {index; offset} ->
+  match seg.it with
+  | Active {index; offset; init} ->
+    ignore (table c index);
     check_const c offset I32Type;
-    ignore (table c index)
-  | Passive -> ()
+    ignore (List.map (func c) init)
+  | Passive init ->
+    ignore (List.map (func c) init)
 
 let check_data (c : context) (seg : memory_segment) =
-  let {sdesc; init} = seg.it in
-  match sdesc with
-  | Active {index; offset} ->
-    check_const c offset I32Type;
-    ignore (memory c index)
-  | Passive -> ()
+  match seg.it with
+  | Active {index; offset; init} ->
+    ignore (memory c index);
+    check_const c offset I32Type
+  | Passive init -> ()
 
 let check_global (c : context) (glob : global) =
   let {gtype; value} = glob.it in
@@ -506,8 +505,8 @@ let check_module (m : module_) =
       funcs = c0.funcs @ List.map (fun f -> type_ c0 f.it.ftype) funcs;
       tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
       memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
-      elems = List.map (fun elem -> Seg) elems;
-      data = List.map (fun data -> Seg) data;
+      elems = List.map (fun elem -> SegmentType) elems;
+      data = List.map (fun data -> SegmentType) data;
     }
   in
   let c =

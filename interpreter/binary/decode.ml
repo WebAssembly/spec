@@ -611,20 +611,17 @@ let segment dat s =
   | 0l ->
     let index = Source.(0l @@ Source.no_region) in
     let offset = const s in
-    let sdesc = Active {index; offset} in
     let init = dat s in
-    {sdesc; init}
+    Active {index; offset; init}
   | 1l ->
-    let sdesc = Passive in
     let init = dat s in
-    {sdesc; init}
+    Passive init
   | 2l ->
     let index = at var s in
     let offset = const s in
-    let sdesc = Active {index; offset} in
     let init = dat s in
-    {sdesc; init}
-  | _ -> error s (pos s - 1) "invalid segment flags"
+    Active {index; offset; init}
+  | _ -> error s (pos s - 1) "invalid segment kind"
 
 let table_segment s =
   segment (vec (at var)) s
