@@ -275,13 +275,13 @@ Perhaps also the following short-hands:
     - iff `$t = array (mut t')`
     - and `t = unpacked(t')`
     - and `_<sx>` present iff `t =/= t'`
-  - traps on `null`
+  - traps on `null` or if the dynamic index is out of bounds
 
 * `array.set <typeidx>` writes an element to an array
   - `array.set $t : [(optref $t) i32 t] -> []`
     - iff `$t = array (var t')`
     - and `t = unpacked(t')`
-  - traps on `null`
+  - traps on `null` or if the dynamic index is out of bounds
 
 * `array.len <typeidx>` inquires the length of an array
   - `array.len $t : [(optref $t)] -> [i32]`
