@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/WebAssembly/multi-value.svg?branch=master)](https://travis-ci.org/WebAssembly/reference-types)
+[![Build Status](https://travis-ci.org/WebAssembly/reference-types.svg?branch=master)](https://travis-ci.org/WebAssembly/reference-types)
 
 # Reference Types Proposal for WebAssembly
 

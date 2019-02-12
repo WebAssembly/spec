@@ -140,6 +140,8 @@ Questions:
 
 ### Typed function references
 
+See the [typed function references proposal](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md)
+
 Motivation:
 
 * Allow function pointers to be expressed directly without going through table and dynamic type check.
@@ -165,13 +167,6 @@ Additions:
 
 * Likewise `WebAssembly.Table#grow` takes an additional initialisation argument.
   - optional for backwards compatibility, defaults to `null`
-
-
-Question:
-
-* General function have no reasonable default, do we need scoped variables like `let`?
-* Should there be a down cast instruction?
-* Should there be depth subtyping for function types?
 
 
 ### Type Import/Export
