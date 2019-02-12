@@ -7,7 +7,13 @@ See [overview](Overview.md) for background.
 
 ## Language
 
-Based on [reference types proposal](https://github.com/WebAssembly/reference-types), which introduces type `anyref` etc.
+Based on the following proposals:
+
+* [reference types](https://github.com/WebAssembly/reference-types), which introduces type `anyref` etc.
+
+* [typed function references](https://github.com/WebAssembly/function-references), which introduces type `(ref $t)` etc.
+
+Both these proposals are requisites.
 
 
 ### Types
@@ -16,10 +22,6 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 
 * `eqref` is a new reference type
   - `reftype ::= ... | eqref`
-
-* `ref <typeidx>` is a new reference type
-  - `reftype ::= ... | ref <typeidx>`
-  - `ref $t ok` iff `$t` is defined in the context
 
 * `optref <typeidx>` is a new reference type
   - `reftype ::= ... | optref <typeidx>`
@@ -148,17 +150,6 @@ In addition to the rules for basic reference types:
   - Note: `rtt t1` is *not* a subtype of `rtt t2`, even if `t1` is a subtype of `t2`; such subtyping would be unsound, since RTTs are used in both co- and contravariant roles (e.g., both when constructing and consuming a reference)
 
 
-#### Defaultability
-
-* Any numeric value type is defaultable (to 0)
-
-* A reference value type is defaultable (to `null`) if it is not of the form `ref $t`
-
-* Locals must have a type that is defaultable.
-
-* Table definitions with non-zero minimum size must have an element type that is defaultable. (Imports are not affected.)
-
-
 ### Runtime
 
 #### Runtime Types
@@ -200,17 +191,7 @@ In addition to the rules for basic reference types:
 
 #### Functions
 
-* `ref.func` creates a function reference from a function index
-  - `ref.func $f : [] -> [(ref $t)]`
-     - iff `$f : $t`
-  - this is a *constant instruction*
-
-* `call_ref` calls a function through a reference
-  - `call_ref : [t1* (optref $t)] -> [t2*]`
-     - iff `$t = [t1*] -> [t2*]`
-  - traps on `null`
-
-Perhaps also the following short-hands:
+Perhaps add the following short-hands:
 
 * `ref.is_func` checks whether a reference is a function
   - `ref.is_func : [anyref] -> [i32]`
@@ -362,14 +343,6 @@ Perhaps also the following short-hands:
   - passes cast operand along with branch
 
 
-#### Local Bindings
-
-* `let <valtype>* <blocktype> <instr>* end` locally binds operands to variables
-  - `let t* bt instr* end : [t* t1*] -> [t2*]`
-    - iff `bt = [t1*] -> [t2*]`
-    - and `instr* : bt` under a context with `locals` extended by `t*` and `labels` extended by `[t2*]`
-
-
 ## Binary Format
 
 TODO.
@@ -398,9 +371,7 @@ Based on the JS type reflection proposal.
 
 #### Reference Types
 
-In addition to the rules for basic reference types:
-
-* Any function that is an instance of `WebAssembly.Function` with type `<functype>` is allowed as `ref <functype>`.
+In addition to the rules for basic and function reference types:
 
 * The `null` value is allowed as `eqref` and `optref $t`.
 
@@ -413,14 +384,6 @@ In addition to the rules for basic reference types:
 
 
 ### Constructors
-
-#### `Global`
-
-* `TypeError` is produced if the `Global` constructor is invoked without a value argument but a type that is not defaultable.
-
-#### `Table`
-
-* The `Table` constructor gets an additional optional argument `init` that is used to initialise the table slots. It defaults to `null`. A `TypeError` is produced if the argument is omitted and the table's element type is not defaultable.
 
 #### `Type`
 
@@ -436,5 +399,3 @@ TODO.
   - only these types would be castable
 
 * Provide a way to make data types non-eq, especially immutable ones?
-
-* Allow closures into function reference types, via a `func.bind` operator?

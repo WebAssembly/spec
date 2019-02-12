@@ -2,7 +2,8 @@
 
 ## Introduction
 
-Note: Basic support for simple host reference types has been carved out into a [separate proposal](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md) that should become the future basis for this proposal.
+Note: Basic support for simple [reference types](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md)and for [typed function references proposal](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md) have been carved out into a [separate proposal that should become the future basis for this proposal.
+
 
 See [MVP](MVP.md) for a concrete v1 proposal.
 
