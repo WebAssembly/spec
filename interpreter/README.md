@@ -58,7 +58,7 @@ Either way, in order to run the test suite you'll need to have Python installed.
 
 #### Cross-compiling the Interpreter to JavaScript ####
 
-The Makefile also provides a target to compile (parts of) the interpreter into a (Javacript library)[javascript-library]:
+The Makefile also provides a target to compile (parts of) the interpreter into a [JavaScript library](#javascript-library):
 ```
 make wast.js
 ```
