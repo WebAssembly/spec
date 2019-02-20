@@ -170,7 +170,7 @@ When several of these placeholders occur in a single clause, then they must be r
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
 \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_t(i) &amp;=&amp; \href{../exec/numerics.html#aux-littleendian}{\mathrm{littleendian}}(\href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_t(i)) \\[1ex]
 \href{../exec/numerics.html#aux-littleendian}{\mathrm{littleendian}}(\epsilon) &amp;=&amp; \epsilon \\
-\href{../exec/numerics.html#aux-littleendian}{\mathrm{littleendian}}(d_1^8~d_2^{N-8}) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_8^{-1}(d_1^8)~\href{../exec/numerics.html#aux-littleendian}{\mathrm{littleendian}}(d_2^{N-8}) \\
+\href{../exec/numerics.html#aux-littleendian}{\mathrm{littleendian}}(d^8~{d'}^\ast~) &amp;=&amp; \href{../exec/numerics.html#aux-littleendian}{\mathrm{littleendian}}({d'}^\ast)~\href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_8^{-1}(d^8) \\
 \end{array}\end{split}\]</div>
 <p>Again these functions are invertable bijections.</p>
 </div>
