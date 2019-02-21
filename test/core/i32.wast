@@ -465,6 +465,128 @@
   )
   "type mismatch"
 )
+(assert_invalid
+  (module
+    (func $type-unary-operand-empty-in-br
+      (i32.const 0)
+      (block (br 0 (i32.eqz)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-unary-operand-empty-in-br_if
+      (i32.const 0)
+      (block (br_if 0 (i32.eqz) (i32.const 1)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-unary-operand-empty-in-br_table
+      (i32.const 0)
+      (block (br_table 0 (i32.eqz)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-unary-operand-empty-in-return
+      (return (i32.eqz)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-unary-operand-empty-in-select
+      (select (i32.eqz) (i32.const 1) (i32.const 2)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-unary-operand-empty-in-call
+      (call 1 (i32.eqz)) (drop)
+    )
+    (func (param i32) (result i32) (local.get 0))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f (param i32) (result i32) (local.get 0))
+    (type $sig (func (param i32) (result i32)))
+    (table funcref (elem $f))
+    (func $type-unary-operand-empty-in-call_indirect
+      (block (result i32)
+        (call_indirect (type $sig)
+          (i32.eqz) (i32.const 0)
+        )
+        (drop)
+      )
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-unary-operand-empty-in-local.set
+      (local i32)
+      (local.set 0 (i32.eqz)) (local.get 0) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-unary-operand-empty-in-local.tee
+      (local i32)
+      (local.tee 0 (i32.eqz)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-unary-operand-empty-in-global.set
+      (global.set $x (i32.eqz)) (global.get $x) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-unary-operand-empty-in-memory.grow
+      (memory.grow (i32.eqz)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-unary-operand-empty-in-load
+      (i32.load (i32.eqz)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-unary-operand-empty-in-store
+      (i32.store (i32.eqz) (i32.const 1))
+    )
+  )
+  "type mismatch"
+)
 
 (assert_invalid
   (module
@@ -552,6 +674,250 @@
       (i32.const 0) (i32.const 0)
       (if (result i32) (then (i32.const 0)) (else (i32.add)))
       (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-empty-in-br
+      (i32.const 0) (i32.const 0)
+      (block (br 0 (i32.add)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-empty-in-br
+      (i32.const 0)
+      (block (br 0 (i32.const 0) (i32.add)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-empty-in-br_if
+      (i32.const 0) (i32.const 0)
+      (block (br_if 0 (i32.add) (i32.const 1)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-empty-in-br_if
+      (i32.const 0)
+      (block (br_if 0 (i32.const 0) (i32.add) (i32.const 1)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-empty-in-br_table
+      (i32.const 0) (i32.const 0)
+      (block (br_table 0 (i32.add)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-empty-in-br_table
+      (i32.const 0)
+      (block (br_table 0 (i32.const 0) (i32.add)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-empty-in-return
+      (return (i32.add)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-empty-in-return
+      (return (i32.const 0) (i32.add)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-empty-in-select
+      (select (i32.add) (i32.const 1) (i32.const 2)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-empty-in-select
+      (select (i32.const 0) (i32.add) (i32.const 1) (i32.const 2)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-empty-in-call
+      (call 1 (i32.add)) (drop)
+    )
+    (func (param i32 i32) (result i32) (local.get 0))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-empty-in-call
+      (call 1 (i32.const 0) (i32.add)) (drop)
+    )
+    (func (param i32 i32) (result i32) (local.get 0))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f (param i32) (result i32) (local.get 0))
+    (type $sig (func (param i32) (result i32)))
+    (table funcref (elem $f))
+    (func $type-binary-1st-operand-empty-in-call_indirect
+      (block (result i32)
+        (call_indirect (type $sig)
+          (i32.add) (i32.const 0)
+        )
+        (drop)
+      )
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f (param i32) (result i32) (local.get 0))
+    (type $sig (func (param i32) (result i32)))
+    (table funcref (elem $f))
+    (func $type-binary-2nd-operand-empty-in-call_indirect
+      (block (result i32)
+        (call_indirect (type $sig)
+          (i32.const 0) (i32.add) (i32.const 0)
+        )
+        (drop)
+      )
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-empty-in-local.set
+      (local i32)
+      (local.set 0 (i32.add)) (local.get 0) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-empty-in-local.set
+      (local i32)
+      (local.set 0 (i32.const 0) (i32.add)) (local.get 0) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-1st-operand-empty-in-local.tee
+      (local i32)
+      (local.tee 0 (i32.add)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-binary-2nd-operand-empty-in-local.tee
+      (local i32)
+      (local.tee 0 (i32.const 0) (i32.add)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-binary-1st-operand-empty-in-global.set
+      (global.set $x (i32.add)) (global.get $x) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-binary-2nd-operand-empty-in-global.set
+      (global.set $x (i32.const 0) (i32.add)) (global.get $x) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-binary-1st-operand-empty-in-memory.grow
+      (memory.grow (i32.add)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-binary-2nd-operand-empty-in-memory.grow
+      (memory.grow (i32.const 0) (i32.add)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-binary-1st-operand-empty-in-load
+      (i32.load (i32.add)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-binary-2nd-operand-empty-in-load
+      (i32.load (i32.const 0) (i32.add)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-binary-1st-operand-empty-in-store
+      (i32.store (i32.add) (i32.const 1))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-binary-2nd-operand-empty-in-store
+      (i32.store (i32.const 1) (i32.add) (i32.const 0))
     )
   )
   "type mismatch"
