@@ -1,10 +1,10 @@
 (* WebAssembly-compatible type conversions to i64 implementation *)
 
-let extend_s_i32 x = Int64.of_int32 x
+let extend_i32_s x = Int64.of_int32 x
 
-let extend_u_i32 x = Int64.logand (Int64.of_int32 x) 0x00000000ffffffffL
+let extend_i32_u x = Int64.logand (Int64.of_int32 x) 0x00000000ffffffffL
 
-let trunc_s_f32 x =
+let trunc_f32_s x =
   if F32.ne x x then
     raise Numeric_error.InvalidConversionToInteger
   else
@@ -14,7 +14,7 @@ let trunc_s_f32 x =
     else
       Int64.of_float xf
 
-let trunc_u_f32 x =
+let trunc_f32_u x =
   if F32.ne x x then
     raise Numeric_error.InvalidConversionToInteger
   else
@@ -26,7 +26,7 @@ let trunc_u_f32 x =
     else
       Int64.of_float xf
 
-let trunc_s_f64 x =
+let trunc_f64_s x =
   if F64.ne x x then
     raise Numeric_error.InvalidConversionToInteger
   else
@@ -36,7 +36,7 @@ let trunc_s_f64 x =
     else
       Int64.of_float xf
 
-let trunc_u_f64 x =
+let trunc_f64_u x =
   if F64.ne x x then
     raise Numeric_error.InvalidConversionToInteger
   else

@@ -28,7 +28,7 @@ And for :ref:`conversion operators <exec-cvtop>`:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \X{cvtop}_{t_1,t_2}(c) &=& \X{cvtop}_{|t_1|,|t_2|}(c) \\
+   \X{cvtop}^{\sx^?}_{t_1,t_2}(c) &=& \X{cvtop}^{\sx^?}_{|t_1|,|t_2|}(c) \\
    \end{array}
 
 Where the underlying operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
@@ -70,7 +70,7 @@ Where the underlying operators are non-deterministic, because they may return on
    (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& (t\K{.}\CONST~c)
      & (\iff c \in \unop_t(c_1)) \\
    (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& \TRAP
-     & (\iff \unop_{t_1,t_2}(c_1) = \{\})
+     & (\iff \unop_{t}(c_1) = \{\})
    \end{array}
 
 
@@ -100,7 +100,7 @@ Where the underlying operators are non-deterministic, because they may return on
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& (t\K{.}\CONST~c)
      & (\iff c \in \binop_t(c_1,c_2)) \\
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& \TRAP
-     & (\iff \binop_{t_1,t_2}(c_1) = \{\})
+     & (\iff \binop_{t}(c_1,c2) = \{\})
    \end{array}
 
 
@@ -148,16 +148,16 @@ Where the underlying operators are non-deterministic, because they may return on
 
 .. _exec-cvtop:
 
-:math:`t_2\K{.}\cvtop/t_1`
-..........................
+:math:`t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^?`
+..........................................
 
 1. Assert: due to :ref:`validation <valid-cvtop>`, a value of :ref:`value type <syntax-valtype>` :math:`t_1` is on the top of the stack.
 
 2. Pop the value :math:`t_1.\CONST~c_1` from the stack.
 
-3. If :math:`\cvtop_{t_1,t_2}(c_1)` is defined:
+3. If :math:`\cvtop^{\sx^?}_{t_1,t_2}(c_1)` is defined:
 
-   a. Let :math:`c_2` be a possible result of computing :math:`\cvtop_{t_1,t_2}(c_1)`.
+   a. Let :math:`c_2` be a possible result of computing :math:`\cvtop^{\sx^?}_{t_1,t_2}(c_1)`.
 
    b. Push the value :math:`t_2.\CONST~c_2` to the stack.
 
@@ -167,10 +167,10 @@ Where the underlying operators are non-deterministic, because they may return on
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (t\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& (t_2\K{.}\CONST~c_2)
-     & (\iff c_2 \in \cvtop_{t_1,t_2}(c_1)) \\
-   (t\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& \TRAP
-     & (\iff \cvtop_{t_1,t_2}(c_1) = \{\})
+   (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^? &\stepto& (t_2\K{.}\CONST~c_2)
+     & (\iff c_2 \in \cvtop^{\sx^?}_{t_1,t_2}(c_1)) \\
+   (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^? &\stepto& \TRAP
+     & (\iff \cvtop^{\sx^?}_{t_1,t_2}(c_1) = \{\})
    \end{array}
 
 
@@ -237,14 +237,14 @@ Parametric Instructions
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _exec-get_local:
+.. _exec-local.get:
 
-:math:`\GETLOCAL~x`
+:math:`\LOCALGET~x`
 ...................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-get_local>`, :math:`F.\ALOCALS[x]` exists.
+2. Assert: due to :ref:`validation <valid-local.get>`, :math:`F.\ALOCALS[x]` exists.
 
 3. Let :math:`\val` be the value :math:`F.\ALOCALS[x]`.
 
@@ -252,21 +252,21 @@ Variable Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; (\GETLOCAL~x) &\stepto& F; \val
+   F; (\LOCALGET~x) &\stepto& F; \val
      & (\iff F.\ALOCALS[x] = \val) \\
    \end{array}
 
 
-.. _exec-set_local:
+.. _exec-local.set:
 
-:math:`\SETLOCAL~x`
+:math:`\LOCALSET~x`
 ...................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-set_local>`, :math:`F.\ALOCALS[x]` exists.
+2. Assert: due to :ref:`validation <valid-local.set>`, :math:`F.\ALOCALS[x]` exists.
 
-3. Assert: due to :ref:`validation <valid-set_local>`, a value is on the top of the stack.
+3. Assert: due to :ref:`validation <valid-local.set>`, a value is on the top of the stack.
 
 4. Pop the value :math:`\val` from the stack.
 
@@ -274,17 +274,17 @@ Variable Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; \val~(\SETLOCAL~x) &\stepto& F'; \epsilon
+   F; \val~(\LOCALSET~x) &\stepto& F'; \epsilon
      & (\iff F' = F \with \ALOCALS[x] = \val) \\
    \end{array}
 
 
-.. _exec-tee_local:
+.. _exec-local.tee:
 
-:math:`\TEELOCAL~x`
+:math:`\LOCALTEE~x`
 ...................
 
-1. Assert: due to :ref:`validation <valid-tee_local>`, a value is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-local.tee>`, a value is on the top of the stack.
 
 2. Pop the value :math:`\val` from the stack.
 
@@ -292,26 +292,26 @@ Variable Instructions
 
 4. Push the value :math:`\val` to the stack.
 
-5. :ref:`Execute <exec-set_local>` the instruction :math:`(\SETLOCAL~x)`.
+5. :ref:`Execute <exec-local.set>` the instruction :math:`(\LOCALSET~x)`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val~(\TEELOCAL~x) &\stepto& \val~\val~(\SETLOCAL~x)
+   \val~(\LOCALTEE~x) &\stepto& \val~\val~(\LOCALSET~x)
    \end{array}
 
 
-.. _exec-get_global:
+.. _exec-global.get:
 
-:math:`\GETGLOBAL~x`
+:math:`\GLOBALGET~x`
 ....................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-get_global>`, :math:`F.\AMODULE.\MIGLOBALS[x]` exists.
+2. Assert: due to :ref:`validation <valid-global.get>`, :math:`F.\AMODULE.\MIGLOBALS[x]` exists.
 
 3. Let :math:`a` be the :ref:`global address <syntax-globaladdr>` :math:`F.\AMODULE.\MIGLOBALS[x]`.
 
-4. Assert: due to :ref:`validation <valid-get_global>`, :math:`S.\SGLOBALS[a]` exists.
+4. Assert: due to :ref:`validation <valid-global.get>`, :math:`S.\SGLOBALS[a]` exists.
 
 5. Let :math:`\X{glob}` be the :ref:`global instance <syntax-globalinst>` :math:`S.\SGLOBALS[a]`.
 
@@ -322,29 +322,29 @@ Variable Instructions
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\GETGLOBAL~x) &\stepto& S; F; \val
+   S; F; (\GLOBALGET~x) &\stepto& S; F; \val
    \end{array}
    \\ \qquad
      (\iff S.\SGLOBALS[F.\AMODULE.\MIGLOBALS[x]].\GIVALUE = \val) \\
    \end{array}
 
 
-.. _exec-set_global:
+.. _exec-global.set:
 
-:math:`\SETGLOBAL~x`
+:math:`\GLOBALSET~x`
 ....................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-set_global>`, :math:`F.\AMODULE.\MIGLOBALS[x]` exists.
+2. Assert: due to :ref:`validation <valid-global.set>`, :math:`F.\AMODULE.\MIGLOBALS[x]` exists.
 
 3. Let :math:`a` be the :ref:`global address <syntax-globaladdr>` :math:`F.\AMODULE.\MIGLOBALS[x]`.
 
-4. Assert: due to :ref:`validation <valid-set_global>`, :math:`S.\SGLOBALS[a]` exists.
+4. Assert: due to :ref:`validation <valid-global.set>`, :math:`S.\SGLOBALS[a]` exists.
 
 5. Let :math:`\X{glob}` be the :ref:`global instance <syntax-globalinst>` :math:`S.\SGLOBALS[a]`.
 
-6. Assert: due to :ref:`validation <valid-set_global>`, a value is on the top of the stack.
+6. Assert: due to :ref:`validation <valid-global.set>`, a value is on the top of the stack.
 
 7. Pop the value :math:`\val` from the stack.
 
@@ -353,14 +353,14 @@ Variable Instructions
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; \val~(\SETGLOBAL~x) &\stepto& S'; F; \epsilon
+   S; F; \val~(\GLOBALSET~x) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
    (\iff S' = S \with \SGLOBALS[F.\AMODULE.\MIGLOBALS[x]].\GIVALUE = \val) \\
    \end{array}
 
 .. note::
-   :ref:`Validation <valid-set_global>` ensures that the global is, in fact, marked as mutable.
+   :ref:`Validation <valid-global.set>` ensures that the global is, in fact, marked as mutable.
 
 
 .. index:: memory instruction, memory index, store, frame, address, memory address, memory instance, store, frame, value, integer, limits, value type, bit width

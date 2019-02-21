@@ -13,8 +13,6 @@ INTERPRETER_DIR = os.path.join(SCRIPT_DIR, '..', 'interpreter')
 WASM_EXEC = os.path.join(INTERPRETER_DIR, 'wasm')
 
 WAST_TESTS_DIR = os.path.join(SCRIPT_DIR, 'core')
-JS_TESTS_DIR = os.path.join(SCRIPT_DIR, 'js-api')
-HTML_TESTS_DIR = os.path.join(SCRIPT_DIR, 'html')
 HARNESS_DIR = os.path.join(SCRIPT_DIR, 'harness')
 
 HARNESS_FILES = ['testharness.js', 'testharnessreport.js', 'testharness.css']
@@ -77,15 +75,9 @@ def convert_wast_to_js(out_js_dir):
     for result in pool.imap_unordered(convert_one_wast_file, inputs):
         if result != 0:
             print('Error when compiling {} to JS: {}', wast_file, result.stdout)
+    return [js_file for (wast_file, js_file) in inputs]
 
-def build_js(out_js_dir, include_harness=False):
-    print('Building JS...')
-    convert_wast_to_js(out_js_dir)
-
-    print('Copying JS tests to the JS out dir...')
-    for js_file in glob.glob(os.path.join(JS_TESTS_DIR, '*.js')):
-        shutil.copy(js_file, out_js_dir)
-
+def copy_harness_files(out_js_dir, include_harness):
     harness_dir = os.path.join(out_js_dir, 'harness')
     ensure_empty_dir(harness_dir)
 
@@ -95,6 +87,10 @@ def build_js(out_js_dir, include_harness=False):
             continue
         shutil.copy(js_file, harness_dir)
 
+def build_js(out_js_dir):
+    print('Building JS...')
+    convert_wast_to_js(out_js_dir)
+    copy_harness_files(out_js_dir, False)
     print('Done building JS.')
 
 # HTML harness.
@@ -109,8 +105,6 @@ HTML_HEADER = """<!doctype html>
         <script src={WPT_PREFIX}/testharness.js></script>
         <script src={WPT_PREFIX}/testharnessreport.js></script>
         <script src={PREFIX}/{JS_HARNESS}></script>
-        <script src={PREFIX}/wasm-constants.js></script>
-        <script src={PREFIX}/wasm-module-builder.js></script>
 
         <div id=log></div>
 """
@@ -123,27 +117,25 @@ HTML_BOTTOM = """
 def wrap_single_test(js_file):
     test_func_name = os.path.basename(js_file).replace('.', '_').replace('-', '_')
 
-    content = ["(function {}() {{".format(test_func_name)]
+    content = "(function {}() {{\n".format(test_func_name)
     with open(js_file, 'r') as f:
-        content += f.readlines()
-    content.append('reinitializeRegistry();')
-    content.append('})();')
+        content += f.read()
+    content += "reinitializeRegistry();\n})();\n"
 
     with open(js_file, 'w') as f:
-        f.write('\n'.join(content))
+        f.write(content)
 
 def build_html_js(out_dir):
     ensure_empty_dir(out_dir)
-    build_js(out_dir, True)
+    copy_harness_files(out_dir, True)
 
-    for js_file in glob.glob(os.path.join(HTML_TESTS_DIR, '*.js')):
-        shutil.copy(js_file, out_dir)
-
-    for js_file in glob.glob(os.path.join(out_dir, '*.js')):
+    tests = convert_wast_to_js(out_dir)
+    for js_file in tests:
         wrap_single_test(js_file)
+    return tests
 
-def build_html_from_js(js_html_dir, html_dir, use_sync):
-    for js_file in glob.glob(os.path.join(js_html_dir, '*.js')):
+def build_html_from_js(tests, html_dir, use_sync):
+    for js_file in tests:
         js_filename = os.path.basename(js_file)
         html_filename = js_filename + '.html'
         html_file = os.path.join(html_dir, html_filename)
@@ -161,10 +153,10 @@ def build_html(html_dir, js_dir, use_sync):
 
     js_html_dir = os.path.join(html_dir, 'js')
 
-    build_html_js(js_html_dir)
+    tests = build_html_js(js_html_dir)
 
     print('Building WPT tests from JS tests...')
-    build_html_from_js(js_html_dir, html_dir, use_sync)
+    build_html_from_js(tests, html_dir, use_sync)
 
     print("Done building HTML tests.")
 
@@ -175,7 +167,7 @@ def build_front_page(out_dir, js_dir, use_sync):
 
     js_out_dir = os.path.join(out_dir, 'js')
 
-    build_html_js(js_out_dir)
+    tests = build_html_js(js_out_dir)
 
     front_page = os.path.join(out_dir, 'index.html')
     js_harness = "sync_index.js" if use_sync else "async_index.js"
@@ -183,7 +175,7 @@ def build_front_page(out_dir, js_dir, use_sync):
         content = HTML_HEADER.replace('{PREFIX}', './js/harness') \
                              .replace('{WPT_PREFIX}', './js/harness')\
                              .replace('{JS_HARNESS}', js_harness)
-        for js_file in glob.glob(os.path.join(js_out_dir, '*.js')):
+        for js_file in tests:
             filename = os.path.basename(js_file)
             content += "        <script src=./js/{SCRIPT}></script>\n".replace('{SCRIPT}', filename)
         content += HTML_BOTTOM

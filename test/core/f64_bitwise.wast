@@ -2,9 +2,9 @@
 ;; values.
 
 (module
-  (func (export "abs") (param $x f64) (result f64) (f64.abs (get_local $x)))
-  (func (export "neg") (param $x f64) (result f64) (f64.neg (get_local $x)))
-  (func (export "copysign") (param $x f64) (param $y f64) (result f64) (f64.copysign (get_local $x) (get_local $y)))
+  (func (export "abs") (param $x f64) (result f64) (f64.abs (local.get $x)))
+  (func (export "neg") (param $x f64) (result f64) (f64.neg (local.get $x)))
+  (func (export "copysign") (param $x f64) (param $y f64) (result f64) (f64.copysign (local.get $x) (local.get $y)))
 )
 
 (assert_return (invoke "copysign" (f64.const -0x0p+0) (f64.const -0x0p+0)) (f64.const -0x0p+0))

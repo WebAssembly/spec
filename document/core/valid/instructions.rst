@@ -14,7 +14,7 @@ and the provided output stack with result values of types :math:`t_2^\ast` that 
    consuming two |I32| values and producing one.
 
 Typing extends to :ref:`instruction sequences <valid-instr-seq>` :math:`\instr^\ast`.
-Such a sequence has a :ref:`function types <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]` if the accumulative effect of executing the instructions is consuming values of types :math:`t_1^\ast` off the operand stack and pushing new values of types :math:`t_2^\ast`.
+Such a sequence has a :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]` if the accumulative effect of executing the instructions is consuming values of types :math:`t_1^\ast` off the operand stack and pushing new values of types :math:`t_2^\ast`.
 
 .. _polymorphism:
 
@@ -142,15 +142,15 @@ Numeric Instructions
 
 .. _valid-cvtop:
 
-:math:`t_2\K{.}\cvtop/t_1`
-..........................
+:math:`t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^?`
+..........................................
 
 * The instruction is valid with type :math:`[t_1] \to [t_2]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr t_2\K{.}\cvtop/t_1 : [t_1] \to [t_2]
+     C \vdashinstr t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^? : [t_1] \to [t_2]
    }
 
 
@@ -201,9 +201,9 @@ Parametric Instructions
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-get_local:
+.. _valid-local.get:
 
-:math:`\GETLOCAL~x`
+:math:`\LOCALGET~x`
 ...................
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
@@ -216,13 +216,13 @@ Variable Instructions
    \frac{
      C.\CLOCALS[x] = t
    }{
-     C \vdashinstr \GETLOCAL~x : [] \to [t]
+     C \vdashinstr \LOCALGET~x : [] \to [t]
    }
 
 
-.. _valid-set_local:
+.. _valid-local.set:
 
-:math:`\SETLOCAL~x`
+:math:`\LOCALSET~x`
 ...................
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
@@ -235,13 +235,13 @@ Variable Instructions
    \frac{
      C.\CLOCALS[x] = t
    }{
-     C \vdashinstr \SETLOCAL~x : [t] \to []
+     C \vdashinstr \LOCALSET~x : [t] \to []
    }
 
 
-.. _valid-tee_local:
+.. _valid-local.tee:
 
-:math:`\TEELOCAL~x`
+:math:`\LOCALTEE~x`
 ...................
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
@@ -254,13 +254,13 @@ Variable Instructions
    \frac{
      C.\CLOCALS[x] = t
    }{
-     C \vdashinstr \TEELOCAL~x : [t] \to [t]
+     C \vdashinstr \LOCALTEE~x : [t] \to [t]
    }
 
 
-.. _valid-get_global:
+.. _valid-global.get:
 
-:math:`\GETGLOBAL~x`
+:math:`\GLOBALGET~x`
 ....................
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
@@ -273,13 +273,13 @@ Variable Instructions
    \frac{
      C.\CGLOBALS[x] = \mut~t
    }{
-     C \vdashinstr \GETGLOBAL~x : [] \to [t]
+     C \vdashinstr \GLOBALGET~x : [] \to [t]
    }
 
 
-.. _valid-set_global:
+.. _valid-global.set:
 
-:math:`\SETGLOBAL~x`
+:math:`\GLOBALSET~x`
 ....................
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
@@ -294,7 +294,7 @@ Variable Instructions
    \frac{
      C.\CGLOBALS[x] = \MVAR~t
    }{
-     C \vdashinstr \SETGLOBAL~x : [t] \to []
+     C \vdashinstr \GLOBALSET~x : [t] \to []
    }
 
 
@@ -646,7 +646,7 @@ Control Instructions
    }
 
 .. note::
-   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^?]` inserts the new label type at index :math:`0`, shifting all others.
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[]` inserts the new label type at index :math:`0`, shifting all others.
 
    The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the loop was entered.
    This may be generalized in future versions of WebAssembly.
@@ -742,7 +742,7 @@ Control Instructions
   the label :math:`C.\CLABELS[l_i]` must be defined in the context.
 
 * For all :math:`l_i` in :math:`l^\ast`,
-  :math:`C.\CLABELS[l_i]` must be :math:`t^?`.
+  :math:`C.\CLABELS[l_i]` must be :math:`[t^?]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^?~\I32] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
@@ -813,7 +813,7 @@ Control Instructions
 
 * Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[0]`.
 
-* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |ANYFUNC|.
+* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |FUNCREF|.
 
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
@@ -823,7 +823,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C.\CTABLES[0] = \limits~\ANYFUNC
+     C.\CTABLES[0] = \limits~\FUNCREF
      \qquad
      C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
    }{
@@ -917,7 +917,7 @@ Constant Expressions
 
   * either of the form :math:`t.\CONST~c`,
 
-  * or of the form :math:`\GETGLOBAL~x`, in which case :math:`C.\CGLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
+  * or of the form :math:`\GLOBALGET~x`, in which case :math:`C.\CGLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
 
 .. math::
    \frac{
@@ -935,11 +935,11 @@ Constant Expressions
    \frac{
      C.\CGLOBALS[x] = \CONST~t
    }{
-     C \vdashinstrconst \GETGLOBAL~x \const
+     C \vdashinstrconst \GLOBALGET~x \const
    }
 
 .. note::
-   Currently, constant expressions occurring as initializers of :ref:`globals <syntax-global>` are further constrained in that contained |GETGLOBAL| instructions are only allowed to refer to *imported* globals.
+   Currently, constant expressions occurring as initializers of :ref:`globals <syntax-global>` are further constrained in that contained |GLOBALGET| instructions are only allowed to refer to *imported* globals.
    This is enforced in the :ref:`validation rule for modules <valid-module>` by constraining the context :math:`C` accordingly.
 
    The definition of constant expression may be extended in future versions of WebAssembly.

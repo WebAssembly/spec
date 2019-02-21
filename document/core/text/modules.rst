@@ -660,30 +660,6 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
    \end{array}
 
 
-.. math
-   \F{idc}(\epsilon) &=&
-     \{\} \\
-   \F{idc}(\Tmodulebody~\Tmodulefield) &=&
-     \F{idc}(\Tmodulebody) \compose \F{idc}(\Tmodulefield) \\[1ex]
-
-   The definition of the :ref:`identifier context <text-context>` :math:`I` uses the following auxiliary function to extract optional identifiers from definitions and imports in an order-preserving fashion:
-
-   \begin{array}{@{}l@{}}
-   \begin{array}{@{}lcl@{\qquad\qquad}l}
-   \F{id}(\text{(}~\text{type}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
-   \F{id}(\text{(}~\text{func}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
-   \F{id}(\text{(}~\text{table}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
-   \F{id}(\text{(}~\text{memory}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\
-   \F{id}(\text{(}~\text{global}~\Tid^?~\dots~\text{)}) &=& \Tid^? \\[1ex]
-   \F{funcids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{func}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
-   \F{tableids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{table}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
-   \F{memids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{memory}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
-   \F{globalids}(\Timport^\ast) &=& [\Tid^? ~|~ \text{(}~\text{global}~\Tid^?~\dots~\text{)} \in \F{desc}(\Timport)^\ast] \\
-   \end{array} \\
-   \F{desc}(\text{(}~\text{import}~\dots~\Timportdesc~\text{)}) \quad=\quad \Timportdesc
-   \end{array}
-
-
 Abbreviations
 .............
 

@@ -3,12 +3,12 @@
 
   (func (export "fill") (param i32 i32 i32)
     (memory.fill
-      (get_local 0)
-      (get_local 1)
-      (get_local 2)))
+      (local.get 0)
+      (local.get 1)
+      (local.get 2)))
 
   (func (export "load8_u") (param i32) (result i32)
-    (i32.load8_u (get_local 0)))
+    (i32.load8_u (local.get 0)))
 )
 
 ;; Basic fill test.
@@ -43,12 +43,12 @@
 
   (func (export "copy") (param i32 i32 i32)
     (memory.copy
-      (get_local 0)
-      (get_local 1)
-      (get_local 2)))
+      (local.get 0)
+      (local.get 1)
+      (local.get 2)))
 
   (func (export "load8_u") (param i32) (result i32)
-    (i32.load8_u (get_local 0)))
+    (i32.load8_u (local.get 0)))
 )
 
 ;; Non-overlapping copy.

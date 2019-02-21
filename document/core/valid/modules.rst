@@ -154,7 +154,7 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
 
 * Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |ANYFUNC|.
+* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |FUNCREF|.
 
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
@@ -168,7 +168,7 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~\ANYFUNC
+     C.\CTABLES[x] = \limits~\FUNCREF
      \qquad
      C \vdashexpr \expr : [\I32]
      \qquad
@@ -351,21 +351,14 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
 
-* Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\CGLOBALS[x]`.
-
-* The mutability :math:`\mut` must be |MCONST|.
-
 * Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~C.\CGLOBALS[x]`.
 
 .. math::
    \frac{
-     C.\CGLOBALS[x] = \MCONST~t
+     C.\CGLOBALS[x] = \globaltype
    }{
-     C \vdashexportdesc \EDGLOBAL~x : \ETGLOBAL~(\MCONST~t)
+     C \vdashexportdesc \EDGLOBAL~x : \ETGLOBAL~\globaltype
    }
-
-.. note::
-   In future versions of WebAssembly, the restriction to exporting only immutable globals may be removed.
 
 
 .. index:: import, name, function type, table type, memory type, global type
@@ -447,19 +440,14 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 * The global type :math:`\globaltype` must be :ref:`valid <valid-globaltype>`.
 
-* The mutability of :math:`\globaltype` must be |MCONST|.
-
 * Then the import description is valid with type :math:`\ETGLOBAL~\globaltype`.
 
 .. math::
    \frac{
-     \vdashglobaltype \MCONST~t \ok
+     \vdashglobaltype \globaltype \ok
    }{
-     C \vdashimportdesc \IDGLOBAL~\MCONST~t : \ETGLOBAL~\MCONST~t
+     C \vdashimportdesc \IDGLOBAL~\globaltype : \ETGLOBAL~\globaltype
    }
-
-.. note::
-   In future versions of WebAssembly, the restriction to importing only immutable globals may be removed.
 
 
 .. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
@@ -505,7 +493,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C.\CRETURN` is empty.
 
-* Let :math:`C'` be the :ref:`context <context>` where :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\externtype_i^\ast)` and all other fields are empty.
+* Let :math:`C'` be the :ref:`context <context>` where :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)` and all other fields are empty.
 
 * Under the context :math:`C`:
 

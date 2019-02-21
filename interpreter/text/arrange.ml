@@ -120,14 +120,14 @@ struct
     | Rotr -> "rotr"
 
   let cvtop xx = function
-    | ExtendSI32 -> "extend_s/i32"
-    | ExtendUI32 -> "extend_u/i32"
-    | WrapI64 -> "wrap/i64"
-    | TruncSF32 -> "trunc_s/f32"
-    | TruncUF32 -> "trunc_u/f32"
-    | TruncSF64 -> "trunc_s/f64"
-    | TruncUF64 -> "trunc_u/f64"
-    | ReinterpretFloat -> "reinterpret/f" ^ xx
+    | ExtendSI32 -> "extend_i32_s"
+    | ExtendUI32 -> "extend_i32_u"
+    | WrapI64 -> "wrap_i64"
+    | TruncSF32 -> "trunc_f32_s"
+    | TruncUF32 -> "trunc_f32_u"
+    | TruncSF64 -> "trunc_f64_s"
+    | TruncUF64 -> "trunc_f64_u"
+    | ReinterpretFloat -> "reinterpret_f" ^ xx
 end
 
 module FloatOp =
@@ -163,13 +163,13 @@ struct
     | CopySign -> "copysign"
 
   let cvtop xx = function
-    | ConvertSI32 -> "convert_s/i32"
-    | ConvertUI32 -> "convert_u/i32"
-    | ConvertSI64 -> "convert_s/i64"
-    | ConvertUI64 -> "convert_u/i64"
-    | PromoteF32 -> "promote/f32"
-    | DemoteF64 -> "demote/f64"
-    | ReinterpretInt -> "reinterpret/i" ^ xx
+    | ConvertSI32 -> "convert_i32_s"
+    | ConvertUI32 -> "convert_i32_u"
+    | ConvertSI64 -> "convert_i64_s"
+    | ConvertUI64 -> "convert_i64_u"
+    | PromoteF32 -> "promote_f32"
+    | DemoteF64 -> "demote_f64"
+    | ReinterpretInt -> "reinterpret_i" ^ xx
 end
 
 let oper (intop, floatop) op =
@@ -237,11 +237,11 @@ let rec instr e =
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallIndirect x -> "call_indirect", [Node ("type " ^ var x, [])]
-    | GetLocal x -> "get_local " ^ var x, []
-    | SetLocal x -> "set_local " ^ var x, []
-    | TeeLocal x -> "tee_local " ^ var x, []
-    | GetGlobal x -> "get_global " ^ var x, []
-    | SetGlobal x -> "set_global " ^ var x, []
+    | LocalGet x -> "local.get " ^ var x, []
+    | LocalSet x -> "local.set " ^ var x, []
+    | LocalTee x -> "local.tee " ^ var x, []
+    | GlobalGet x -> "global.get " ^ var x, []
+    | GlobalSet x -> "global.set " ^ var x, []
     | Load op -> loadop op, []
     | Store op -> storeop op, []
     | MemorySize -> "memory.size", []

@@ -102,17 +102,17 @@
     (if (result i32) (unreachable) (then (i32.const 0)) (else (i32.const 1)))
   )
   (func (export "as-if-then") (param i32 i32) (result i32)
-    (if (result i32) (get_local 0) (then (unreachable)) (else (get_local 1)))
+    (if (result i32) (local.get 0) (then (unreachable)) (else (local.get 1)))
   )
   (func (export "as-if-else") (param i32 i32) (result i32)
-    (if (result i32) (get_local 0) (then (get_local 1)) (else (unreachable)))
+    (if (result i32) (local.get 0) (then (local.get 1)) (else (unreachable)))
   )
 
   (func (export "as-select-first") (param i32 i32) (result i32)
-    (select (unreachable) (get_local 0) (get_local 1))
+    (select (unreachable) (local.get 0) (local.get 1))
   )
   (func (export "as-select-second") (param i32 i32) (result i32)
-    (select (get_local 0) (unreachable) (get_local 1))
+    (select (local.get 0) (unreachable) (local.get 1))
   )
   (func (export "as-select-cond") (result i32)
     (select (i32.const 0) (i32.const 1) (unreachable))
@@ -129,7 +129,7 @@
   )
 
   (type $sig (func (param i32 i32 i32)))
-  (table anyfunc (elem $dummy3))
+  (table funcref (elem $dummy3))
   (func (export "as-call_indirect-func")
     (call_indirect (type $sig)
       (unreachable) (i32.const 1) (i32.const 2) (i32.const 3)
@@ -151,8 +151,15 @@
     )
   )
 
-  (func (export "as-set_local-value") (local f32)
-    (set_local 0 (unreachable))
+  (func (export "as-local.set-value") (local f32)
+    (local.set 0 (unreachable))
+  )
+  (func (export "as-local.tee-value") (result f32) (local f32)
+    (local.tee 0 (unreachable))
+  )
+  (global $a (mut f32) (f32.const 0))
+  (func (export "as-global.set-value") (result f32)
+    (global.set $a (unreachable))
   )
 
   (memory 1)
@@ -200,7 +207,7 @@
   )
 
   (func (export "as-convert-operand") (result i32)
-    (i32.wrap/i64 (unreachable))
+    (i32.wrap_i64 (unreachable))
   )
 
   (func (export "as-memory.grow-size") (result i32)
@@ -264,7 +271,9 @@
 (assert_trap (invoke "as-call_indirect-mid") "unreachable")
 (assert_trap (invoke "as-call_indirect-last") "unreachable")
 
-(assert_trap (invoke "as-set_local-value") "unreachable")
+(assert_trap (invoke "as-local.set-value") "unreachable")
+(assert_trap (invoke "as-local.tee-value") "unreachable")
+(assert_trap (invoke "as-global.set-value") "unreachable")
 
 (assert_trap (invoke "as-load-address") "unreachable")
 (assert_trap (invoke "as-loadN-address") "unreachable")
