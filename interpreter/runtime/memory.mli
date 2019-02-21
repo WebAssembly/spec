@@ -7,6 +7,7 @@ type t = memory
 type size = int32  (* number of pages *)
 type address = int64
 type offset = int32
+type count = int32
 
 type pack_size = Pack8 | Pack16 | Pack32
 type extension = SX | ZX
@@ -42,3 +43,6 @@ val load_packed :
 val store_packed :
   pack_size -> memory -> address -> offset -> value -> unit
     (* raises Type, Bounds *)
+
+val fill : memory -> address -> int -> count -> unit (* raises Bounds *)
+val copy : memory -> address -> address -> count -> unit (* raises Bounds *)
