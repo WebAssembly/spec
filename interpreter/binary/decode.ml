@@ -485,6 +485,7 @@ let id s =
     | 9 -> `ElemSection
     | 10 -> `CodeSection
     | 11 -> `DataSection
+    | 12 -> `DataCountSection
     | _ -> error s (pos s) "invalid section id"
     ) bo
 
@@ -639,6 +640,12 @@ let data_section s =
   section `DataSection (vec (at memory_segment)) [] s
 
 
+(* DataCount section *)
+
+let data_count_section s =
+  section `DataCountSection (opt vu32 true) None s
+
+
 (* Custom section *)
 
 let custom size s =
@@ -679,6 +686,8 @@ let module_ s =
   iterate custom_section s;
   let elems = elem_section s in
   iterate custom_section s;
+  let data_count = data_count_section s in
+  iterate custom_section s;
   let func_bodies = code_section s in
   iterate custom_section s;
   let data = data_section s in
@@ -686,6 +695,9 @@ let module_ s =
   require (pos s = len s) s (len s) "junk after last section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";
+  require
+    (data_count = None || data_count = Some (Int32.of_int (List.length data)))
+    s (len s) "data count and data section have inconsistent lengths";
   let funcs =
     List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
       func_types func_bodies

@@ -503,6 +503,11 @@ let encode m =
     let data_section data =
       section 11 (vec memory_segment) data (data <> [])
 
+    (* DataCount section *)
+
+    let data_count_section data =
+      section 12 len (List.length data) (data <> [])
+
     (* Module *)
 
     let module_ m =
@@ -517,6 +522,7 @@ let encode m =
       export_section m.it.exports;
       start_section m.it.start;
       elem_section m.it.elems;
+      data_count_section m.it.data;
       code_section m.it.funcs;
       data_section m.it.data
   end
