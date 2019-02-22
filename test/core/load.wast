@@ -366,6 +366,24 @@
 )
 
 
+;; Type check
+
+(assert_invalid (module (memory 1) (func (result i32) (i32.load (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i32) (i32.load8_s (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i32) (i32.load8_u (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i32) (i32.load16_s (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i32) (i32.load16_u (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load8_s (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load8_u (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load16_s (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load16_u (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load32_s (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load32_u (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result f32) (f32.load (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result f64) (f64.load (f32.const 0)))) "type mismatch")
+
+
 (assert_invalid
   (module
     (memory 0)
