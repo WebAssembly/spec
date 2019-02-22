@@ -348,3 +348,8 @@
   )
   "type mismatch"
 )
+
+
+;; Type check
+
+(assert_invalid (module (memory 1) (func (result i32) (memory.grow (f32.const 0)))) "type mismatch")
