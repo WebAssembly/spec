@@ -147,14 +147,11 @@ let store_packed sz mem a o v =
 
 let check_bounds mem a = if I64.gt_u a (bound mem) then raise Bounds
 
-let fill mem a v n =
-  let rec loop a n =
-    if n > 0l then begin
-      store_byte mem a v;
-      loop (Int64.add a 1L) (Int32.sub n 1l)
-    end
-  in loop a n;
-  check_bounds mem Int64.(add a (of_int32 n))
+let init mem a bs =
+  for i = 0 to String.length bs - 1 do
+    store_byte mem Int64.(add a (of_int i)) (Char.code bs.[i])
+  done;
+  check_bounds mem Int64.(add a (of_int (String.length bs)))
 
 let copy mem d s n =
   let n' = Int64.of_int32 n in
@@ -170,3 +167,12 @@ let copy mem d s n =
     loop d s n 1L);
   check_bounds mem (Int64.add d n');
   check_bounds mem (Int64.add s n')
+
+let fill mem a v n =
+  let rec loop a n =
+    if n > 0l then begin
+      store_byte mem a v;
+      loop (Int64.add a 1L) (Int32.sub n 1l)
+    end
+  in loop a n;
+  check_bounds mem Int64.(add a (of_int32 n))
