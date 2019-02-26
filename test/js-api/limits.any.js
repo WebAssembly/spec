@@ -30,43 +30,38 @@ function testLimit(name, min, limit, gen) {
     return builder.toBuffer();
   }
 
+  const buffer_with_min = get_buffer(min);
+  const buffer_with_limit = get_buffer(limit);
+  const buffer_with_limit_plus_1 = get_buffer(limit + 1);
+
   test(() => {
-    const buffer = get_buffer(min);
-    assert_true(WebAssembly.validate(buffer));
+    assert_true(WebAssembly.validate(buffer_with_min));
   }, `Validate ${name} mininum`);
   test(() => {
-    const buffer = get_buffer(limit);
-    assert_true(WebAssembly.validate(buffer));
+    assert_true(WebAssembly.validate(buffer_with_limit));
   }, `Validate ${name} limit`);
   test(() => {
-    const buffer = get_buffer(limit + 1);
-    assert_false(WebAssembly.validate(buffer));
+    assert_false(WebAssembly.validate(buffer_with_limit_plus_1));
   }, `Validate ${name} over limit`);
 
   test(() => {
-    const buffer = get_buffer(min);
-    new WebAssembly.Module(buffer);
+    new WebAssembly.Module(buffer_with_min);
   }, `Compile ${name} mininum`);
   test(() => {
-    const buffer = get_buffer(limit);
-    new WebAssembly.Module(buffer);
+    new WebAssembly.Module(buffer_with_limit);
   }, `Compile ${name} limit`);
   test(() => {
-    const buffer = get_buffer(limit + 1);
-    assert_throws(new WebAssembly.CompileError(), () => new WebAssembly.Module(buffer));
+    assert_throws(new WebAssembly.CompileError(), () => new WebAssembly.Module(buffer_with_limit_plus_1));
   }, `Compile ${name} over limit`);
 
   promise_test(t => {
-    const buffer = get_buffer(min);
-    return WebAssembly.compile(buffer);
+    return WebAssembly.compile(buffer_with_min);
   }, `Async compile ${name} mininum`);
   promise_test(t => {
-    const buffer = get_buffer(limit);
-    return WebAssembly.compile(buffer);
+    return WebAssembly.compile(buffer_with_limit);
   }, `Async compile ${name} limit`);
   promise_test(t => {
-    const buffer = get_buffer(limit + 1);
-    return promise_rejects(t, new WebAssembly.CompileError(), WebAssembly.compile(buffer));
+    return promise_rejects(t, new WebAssembly.CompileError(), WebAssembly.compile(buffer_with_limit_plus_1));
   }, `Async compile ${name} over limit`);
 }
 
