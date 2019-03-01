@@ -2,6 +2,7 @@ open Types
 
 type size = int32
 type index = int32
+type count = int32
 
 type elem = ..
 type elem += Uninitialized
@@ -50,6 +51,28 @@ let store tab i v =
 
 let check_bounds tab i = if I32.gt_u i (size tab) then raise Bounds
 
-let init tab offset elems =
-  List.iteri (fun i -> store tab (Int32.(add offset (of_int i)))) elems;
-  check_bounds tab Int32.(add offset (of_int (List.length elems)))
+let init tab es d s n =
+  let rec loop es d s n =
+    match s, n, es with
+    | 0l, 0l, _ -> ()
+    | 0l, n, e::es' ->
+      store tab d e;
+      loop es' (Int32.add d 1l) 0l (Int32.sub n 1l)
+    | s, n, _::es' -> loop es' d (Int32.sub s 1l) n
+    | _ -> raise Bounds
+  in loop es d s n;
+  check_bounds tab (Int32.add d n)
+
+let copy tab d s n =
+  let overlap = I32.lt_s Int32.(abs (sub d s)) n in
+  let rec loop d s n dx =
+    if n > 0l then begin
+      store tab d (load tab s);
+      loop (Int32.add d dx) (Int32.add s dx) (Int32.sub n 1l) dx
+    end
+  in (if overlap && s < d then
+    loop Int32.(add d (sub n 1l)) Int32.(add s (sub n 1l)) n (-1l)
+  else
+    loop d s n 1l);
+  check_bounds tab (Int32.add d n);
+  check_bounds tab (Int32.add s n)

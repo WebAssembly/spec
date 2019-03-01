@@ -44,6 +44,7 @@ val store_packed :
   pack_size -> memory -> address -> offset -> value -> unit
     (* raises Type, Bounds *)
 
-val init : memory -> address -> string -> unit (* raises Bounds *)
+val init :
+  memory -> string -> address -> address -> count -> unit (* raises Bounds *)
 val copy : memory -> address -> address -> count -> unit (* raises Bounds *)
 val fill : memory -> address -> int -> count -> unit (* raises Bounds *)

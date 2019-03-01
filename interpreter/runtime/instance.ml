@@ -8,6 +8,8 @@ type module_inst =
   memories : memory_inst list;
   globals : global_inst list;
   exports : export_inst list;
+  elems : elems_inst list;
+  data : data_inst list;
 }
 
 and func_inst = module_inst ref Func.t
@@ -15,6 +17,8 @@ and table_inst = Table.t
 and memory_inst = Memory.t
 and global_inst = Global.t
 and export_inst = Ast.name * extern
+and elems_inst = Table.elem list option ref
+and data_inst = string option ref
 
 and extern =
   | ExternFunc of func_inst
@@ -29,7 +33,7 @@ type Table.elem += FuncElem of func_inst
 
 let empty_module_inst =
   { types = []; funcs = []; tables = []; memories = []; globals = [];
-    exports = [] }
+    exports = []; elems = []; data = [] }
 
 let extern_type_of = function
   | ExternFunc func -> ExternFuncType (Func.type_of func)

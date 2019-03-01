@@ -300,7 +300,7 @@ let segment head dat seg =
   match seg.it with
   | Active {index; offset; init} ->
     Node (head, atom var index :: Node ("offset", const offset) :: dat init)
-  | Passive init -> Node (head, dat init)
+  | Passive init -> Node (head ^ " passive", dat init)
 
 let elems seg =
   segment "elem" (list (atom var)) seg

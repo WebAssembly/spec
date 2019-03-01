@@ -17,6 +17,10 @@ exception Trap = Trap.Error
 exception Crash = Crash.Error (* failure that cannot happen in valid code *)
 exception Exhaustion = Exhaustion.Error
 
+let table_error at = function
+  | Table.Bounds -> "out of bounds table access"
+  | exn -> raise exn
+
 let memory_error at = function
   | Memory.Bounds -> "out of bounds memory access"
   | Memory.SizeOverflow -> "memory size overflow"
@@ -78,6 +82,8 @@ let func (inst : module_inst) x = lookup "function" inst.funcs x
 let table (inst : module_inst) x = lookup "table" inst.tables x
 let memory (inst : module_inst) x = lookup "memory" inst.memories x
 let global (inst : module_inst) x = lookup "global" inst.globals x
+let elems (inst : module_inst) x = lookup "elems" inst.elems x
+let data (inst : module_inst) x = lookup "data" inst.data x
 let local (frame : frame) x = lookup "local" frame.locals x
 
 let elem inst x i at =
@@ -249,6 +255,22 @@ let rec step (c : config) : config =
         (try Eval_numeric.eval_cvtop cvtop v :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
+      | MemoryInit x, I32 n :: I32 s :: I32 d :: vs' ->
+        let mem = memory frame.inst (0l @@ e.at) in
+        (match !(data frame.inst x) with
+        | Some bs ->
+          let dst = I64_convert.extend_i32_u d in
+          let src = I64_convert.extend_i32_u s in
+          (try Memory.init mem bs dst src n; vs', []
+          with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
+        | None -> vs', [Trapping "data segment dropped" @@ e.at])
+
+      | DataDrop x, vs ->
+        let seg = data frame.inst x in
+        (match !seg with
+        | Some _ -> seg := None; vs, []
+        | None -> vs, [Trapping "data segment dropped" @@ e.at])
+
       | MemoryCopy, I32 n :: I32 s :: I32 d :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let dst = I64_convert.extend_i32_u d in
@@ -261,6 +283,25 @@ let rec step (c : config) : config =
         let addr = I64_convert.extend_i32_u i in
         (try Memory.fill mem addr (Int32.to_int b) n; vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
+
+      | TableInit x, I32 n :: I32 s :: I32 d :: vs' ->
+        let tab = table frame.inst (0l @@ e.at) in
+        (match !(elems frame.inst x) with
+        | Some es ->
+          (try Table.init tab es d s n; vs', []
+          with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
+        | None -> vs', [Trapping "elements segment dropped" @@ e.at])
+
+      | ElemDrop x, vs ->
+        let seg = elems frame.inst x in
+        (match !seg with
+        | Some _ -> seg := None; vs, []
+        | None -> vs, [Trapping "elements segment dropped" @@ e.at])
+
+      | TableCopy, I32 n :: I32 s :: I32 d :: vs' ->
+        let tab = table frame.inst (0l @@ e.at) in
+        (try Table.copy tab d s n; vs', []
+        with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
 
       | _ ->
         let s1 = string_of_values (List.rev vs) in
@@ -394,6 +435,19 @@ let create_export (inst : module_inst) (ex : export) : export_inst =
     | GlobalExport x -> ExternGlobal (global inst x)
   in name, ext
 
+let elems_list inst init =
+  List.map (fun x -> (FuncElem (func inst x))) init
+
+let create_elems (inst : module_inst) (seg : table_segment) : elems_inst =
+  match seg.it with
+  | Active _ -> ref None
+  | Passive init -> ref (Some (elems_list inst init))
+
+let create_data (inst : module_inst) (seg : memory_segment) : data_inst =
+  match seg.it with
+  | Active _ -> ref None
+  | Passive init -> ref (Some init)
+
 
 let init_func (inst : module_inst) (func : func_inst) =
   match func with
@@ -405,7 +459,9 @@ let init_table (inst : module_inst) (seg : table_segment) =
   | Active {index; offset = const; init} ->
     let tab = table inst index in
     let offset = i32 (eval_const inst const) const.at in
-    (try Table.init tab offset (List.map (fun x -> FuncElem (func inst x)) init)
+    let elems = elems_list inst init in
+    let len = Int32.of_int (List.length elems) in
+    (try Table.init tab elems offset 0l len
     with Table.Bounds -> Link.error seg.at "elements segment does not fit table")
   | Passive init -> ()
 
@@ -415,7 +471,8 @@ let init_memory (inst : module_inst) (seg : memory_segment) =
     let mem = memory inst index in
     let offset' = i32 (eval_const inst const) const.at in
     let offset = I64_convert.extend_i32_u offset' in
-    (try Memory.init mem offset init
+    let len = Int32.of_int (String.length init) in
+    (try Memory.init mem init offset 0L len
     with Memory.Bounds -> Link.error seg.at "data segment does not fit memory")
   | Passive init -> ()
 
@@ -448,10 +505,16 @@ let init (m : module_) (exts : extern list) : module_inst =
       funcs = inst0.funcs @ fs;
       tables = inst0.tables @ List.map (create_table inst0) tables;
       memories = inst0.memories @ List.map (create_memory inst0) memories;
-      globals = inst0.globals @ List.map (create_global inst0) globals;
+      globals = inst0.globals @ List.map (create_global inst0) globals
     }
   in
-  let inst = {inst1 with exports = List.map (create_export inst1) exports} in
+  let inst =
+    { inst1 with
+      exports = List.map (create_export inst1) exports;
+      elems = List.map (create_elems inst1) elems;
+      data = List.map (create_data inst1) data
+    }
+  in
   List.iter (init_func inst) fs;
   List.iter (init_table inst) elems;
   List.iter (init_memory inst) data;
