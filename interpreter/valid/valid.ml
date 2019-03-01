@@ -424,14 +424,19 @@ let check_memory (c : context) (mem : memory) =
   let {mtype} = mem.it in
   check_memory_type mtype mem.at
 
+let check_elemref (c : context) (el : elem) =
+  match el.it with
+  | Null -> ()
+  | Func x -> ignore (func c x)
+
 let check_elem (c : context) (seg : table_segment) =
   match seg.it with
   | Active {index; offset; init} ->
     ignore (table c index);
     check_const c offset I32Type;
-    ignore (List.map (func c) init)
+    List.iter (check_elemref c) init
   | Passive init ->
-    ignore (List.map (func c) init)
+    List.iter (check_elemref c) init
 
 let check_data (c : context) (seg : memory_segment) =
   match seg.it with

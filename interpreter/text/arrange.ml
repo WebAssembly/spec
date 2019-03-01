@@ -296,17 +296,27 @@ let memory off i mem =
   let {mtype = MemoryType lim} = mem.it in
   Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
 
-let segment head dat seg =
+let segment head active passive seg =
   match seg.it with
   | Active {index; offset; init} ->
-    Node (head, atom var index :: Node ("offset", const offset) :: dat init)
-  | Passive init -> Node (head ^ " passive", dat init)
+    Node (head, atom var index :: Node ("offset", const offset) :: active init)
+  | Passive init -> Node (head ^ " passive", passive init)
+
+let active_elem el =
+  match el.it with
+  | Null -> assert false
+  | Func x -> atom var x
+
+let passive_elem el =
+  match el.it with
+  | Null -> Node ("ref.null", [])
+  | Func x -> Node ("ref.func", [atom var x])
 
 let elems seg =
-  segment "elem" (list (atom var)) seg
+  segment "elem" (list active_elem) (list passive_elem) seg
 
 let data seg =
-  segment "data" break_bytes seg
+  segment "data" break_bytes break_bytes seg
 
 
 (* Modules *)

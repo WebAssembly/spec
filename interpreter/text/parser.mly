@@ -163,6 +163,7 @@ let inline_type_explicit (c : context) x ft at =
 %token UNREACHABLE MEMORY_SIZE MEMORY_GROW
 %token MEMORY_INIT DATA_DROP MEMORY_COPY MEMORY_FILL
 %token TABLE_INIT ELEM_DROP TABLE_COPY
+%token REF_NULL REF_FUNC
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
 %token PASSIVE
@@ -568,22 +569,35 @@ offset :
   | LPAR OFFSET const_expr RPAR { $3 }
   | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
 
+elemref :
+  | LPAR REF_NULL RPAR { let at = at () in fun c -> Null @@ at }
+  | LPAR REF_FUNC var RPAR { let at = at () in fun c -> Func ($3 c func) @@ at }
+
+passive_elemref_list :
+  | /* empty */ { fun c -> [] }
+  | elemref passive_elemref_list { fun c -> $1 c :: $2 c }
+
+active_elemref_list :
+  | var_list
+    { let f = function {at; _} as x -> Func x @@ at in
+      fun c lookup -> List.map f ($1 c lookup) }
+
 elem :
-  | LPAR ELEM bind_var_opt PASSIVE var_list RPAR
+  | LPAR ELEM bind_var_opt PASSIVE passive_elemref_list RPAR
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () -> Passive ($5 c func) @@ at }
-  | LPAR ELEM bind_var var offset var_list RPAR
+      fun () -> Passive ($5 c) @@ at }
+  | LPAR ELEM bind_var var offset active_elemref_list RPAR
     { let at = at () in
       fun c -> ignore (bind_elem c $3);
       fun () ->
       Active {index = $4 c table; offset = $5 c; init = $6 c func} @@ at }
-  | LPAR ELEM var offset var_list RPAR
+  | LPAR ELEM var offset active_elemref_list RPAR
     { let at = at () in
       fun c -> ignore (anon_elem c);
       fun () ->
       Active {index = $3 c table; offset = $4 c; init = $5 c func} @@ at }
-  | LPAR ELEM offset var_list RPAR  /* Sugar */
+  | LPAR ELEM offset active_elemref_list RPAR  /* Sugar */
     { let at = at () in
       fun c -> ignore (anon_elem c);
       fun () ->
@@ -606,7 +620,7 @@ table_fields :
   | inline_export table_fields  /* Sugar */
     { fun c x at -> let tabs, elems, ims, exs = $2 c x at in
       tabs, elems, ims, $1 (TableExport x) c :: exs }
-  | elem_type LPAR ELEM var_list RPAR  /* Sugar */
+  | elem_type LPAR ELEM active_elemref_list RPAR  /* Sugar */
     { fun c x at ->
       let offset = [i32_const (0l @@ at) @@ at] @@ at in
       let init = $4 c func in let size = Int32.of_int (List.length init) in

@@ -612,25 +612,36 @@ let code_section s =
 
 (* Element section *)
 
-let segment dat s =
+let segment active passive s =
   match vu32 s with
   | 0l ->
     let index = Source.(0l @@ Source.no_region) in
     let offset = const s in
-    let init = dat s in
+    let init = active s in
     Active {index; offset; init}
   | 1l ->
-    let init = dat s in
+    let init = passive s in
     Passive init
   | 2l ->
     let index = at var s in
     let offset = const s in
-    let init = dat s in
+    let init = active s in
     Active {index; offset; init}
   | _ -> error s (pos s - 1) "invalid segment kind"
 
+let active_elem s = Func (at var s)
+
+let passive_elem s =
+  match u8 s with
+  | 0xd0 -> end_ s; Null
+  | 0xd2 ->
+    let x = at var s in
+    end_ s;
+    Func x
+  | _ -> error s (pos s - 1) "invalid elem"
+
 let table_segment s =
-  segment (vec (at var)) s
+  segment (vec (at active_elem)) (vec (at passive_elem)) s
 
 let elem_section s =
   section `ElemSection (vec (at table_segment)) [] s
@@ -639,7 +650,7 @@ let elem_section s =
 (* Data section *)
 
 let memory_segment s =
-  segment string s
+  segment string string s
 
 let data_section s =
   section `DataSection (vec (at memory_segment)) [] s

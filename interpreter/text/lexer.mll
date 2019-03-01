@@ -325,6 +325,9 @@ rule token = parse
   | "elem.drop" { ELEM_DROP }
   | "table.copy" { TABLE_COPY }
 
+  | "ref.null" { REF_NULL }
+  | "ref.func" { REF_FUNC }
+
   | "passive" { PASSIVE }
 
   | "type" { TYPE }

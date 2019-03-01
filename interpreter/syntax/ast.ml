@@ -145,7 +145,12 @@ and 'data segment' =
   | Active of {index : var; offset : const; init : 'data}
   | Passive of 'data
 
-type table_segment = var list segment
+type elem = elem' Source.phrase
+and elem' =
+  | Null
+  | Func of var
+
+type table_segment = elem list segment
 type memory_segment = string segment
 
 
@@ -191,7 +196,7 @@ and module_' =
   memories : memory list;
   funcs : func list;
   start : var option;
-  elems : var list segment list;
+  elems : elem list segment list;
   data : string segment list;
   imports : import list;
   exports : export list;

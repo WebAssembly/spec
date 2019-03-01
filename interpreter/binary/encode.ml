@@ -477,7 +477,7 @@ let encode m =
       section 10 (vec code) fs (fs <> [])
 
     (* Element section *)
-    let segment dat seg =
+    let segment active passive seg =
       match seg.it with
       | Active {index; offset; init} ->
         if index.it = 0l then
@@ -486,19 +486,29 @@ let encode m =
           u8 0x02; var index
         end;
         const offset;
-        dat init
+        active init
       | Passive init ->
-        u8 0x01; dat init
+        u8 0x01; passive init
+
+    let active_elem el =
+      match el.it with
+      | Null -> assert false
+      | Func x -> var x
+
+    let passive_elem el =
+      match el.it with
+      | Null -> u8 0xd0; end_ ()
+      | Func x -> u8 0xd2; var x; end_ ()
 
     let table_segment seg =
-      segment (vec var) seg
+      segment (vec active_elem) (vec passive_elem) seg
 
     let elem_section elems =
       section 9 (vec table_segment) elems (elems <> [])
 
     (* Data section *)
     let memory_segment seg =
-      segment string seg
+      segment string string seg
 
     let data_section data =
       section 11 (vec memory_segment) data (data <> [])
