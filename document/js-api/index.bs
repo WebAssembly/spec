@@ -732,7 +732,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <pre class="idl">
 dictionary GlobalDescriptor {
-  required USVString value;
+  required DOMString value;
   boolean mutable = false;
 };
 
