@@ -11,7 +11,6 @@
 )
 (register "a")
 
-
 (module
   (type (func (result i32)))  ;; type #0
   (import "a" "ef0" (func (result i32)))    ;; index 0
@@ -140,15 +139,15 @@
   (func (result i32) (i32.const 8))
   (func (result i32) (i32.const 9))  ;; index 9
   (func (export "test")
-    (table.init 1 (i32.const 7) (i32.const 0) (i32.const 4)) 
-elem.drop 1 
-(table.init 3 (i32.const 15) (i32.const 1) (i32.const 3)) 
-elem.drop 3 
-(table.copy (i32.const 20) (i32.const 15) (i32.const 5)) 
-(table.copy (i32.const 21) (i32.const 29) (i32.const 1)) 
-(table.copy (i32.const 24) (i32.const 10) (i32.const 1)) 
-(table.copy (i32.const 13) (i32.const 11) (i32.const 4)) 
-(table.copy (i32.const 19) (i32.const 20) (i32.const 5)))
+    (table.init 1 (i32.const 7) (i32.const 0) (i32.const 4))
+    (elem.drop 1)
+    (table.init 3 (i32.const 15) (i32.const 1) (i32.const 3))
+    (elem.drop 3)
+    (table.copy (i32.const 20) (i32.const 15) (i32.const 5))
+    (table.copy (i32.const 21) (i32.const 29) (i32.const 1))
+    (table.copy (i32.const 24) (i32.const 10) (i32.const 1))
+    (table.copy (i32.const 13) (i32.const 11) (i32.const 4))
+    (table.copy (i32.const 19) (i32.const 20) (i32.const 5)))
   (func (export "check") (param i32) (result i32)
     (call_indirect (type 0) (local.get 0)))
 )
@@ -230,9 +229,8 @@ elem.drop 3
   (func (result i32) (i32.const 8))
   (func (result i32) (i32.const 9))
   (func (export "test")
-    elem.drop 2
+    (elem.drop 2)
     ))
-
 (assert_trap (invoke "test") "elements segment dropped")
 
 (module
@@ -254,7 +252,6 @@ elem.drop 3
   (func (export "test")
     (table.init 2 (i32.const 12) (i32.const 1) (i32.const 1))
     ))
-
 (assert_trap (invoke "test") "elements segment dropped")
 
 (module
@@ -276,7 +273,6 @@ elem.drop 3
   (func (export "test")
     (table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))
     (table.init 1 (i32.const 21) (i32.const 1) (i32.const 1))))
-
 (invoke "test")
 
 (module
@@ -296,9 +292,8 @@ elem.drop 3
   (func (result i32) (i32.const 8))
   (func (result i32) (i32.const 9))
   (func (export "test")
-    elem.drop 1
-    elem.drop 1))
-
+    (elem.drop 1)
+    (elem.drop 1)))
 (assert_trap (invoke "test") "elements segment dropped")
 
 (module
@@ -318,9 +313,8 @@ elem.drop 3
   (func (result i32) (i32.const 8))
   (func (result i32) (i32.const 9))
   (func (export "test")
-    elem.drop 1
+    (elem.drop 1)
     (table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))))
-
 (assert_trap (invoke "test") "elements segment dropped")
 
 (module
@@ -340,9 +334,8 @@ elem.drop 3
   (func (result i32) (i32.const 8))
   (func (result i32) (i32.const 9))
   (func (export "test")
-    
-    (table.init 1 (i32.const 12) (i32.const 0) (i32.const 5))))
-
+    (table.init 1 (i32.const 12) (i32.const 0) (i32.const 5))
+    ))
 (assert_trap (invoke "test") "out of bounds")
 
 (module
@@ -362,9 +355,8 @@ elem.drop 3
   (func (result i32) (i32.const 8))
   (func (result i32) (i32.const 9))
   (func (export "test")
-    
-    (table.init 1 (i32.const 12) (i32.const 2) (i32.const 3))))
-
+    (table.init 1 (i32.const 12) (i32.const 2) (i32.const 3))
+    ))
 (assert_trap (invoke "test") "out of bounds")
 
 (module
@@ -384,9 +376,8 @@ elem.drop 3
   (func (result i32) (i32.const 8))
   (func (result i32) (i32.const 9))
   (func (export "test")
-    
-    (table.init 1 (i32.const 28) (i32.const 1) (i32.const 3))))
-
+    (table.init 1 (i32.const 28) (i32.const 1) (i32.const 3))
+    ))
 (assert_trap (invoke "test") "out of bounds")
 
 (module
@@ -406,9 +397,8 @@ elem.drop 3
   (func (result i32) (i32.const 8))
   (func (result i32) (i32.const 9))
   (func (export "test")
-    
-    (table.init 1 (i32.const 12) (i32.const 4) (i32.const 0))))
-
+    (table.init 1 (i32.const 12) (i32.const 4) (i32.const 0))
+    ))
 (invoke "test")
 
 (module
@@ -428,601 +418,601 @@ elem.drop 3
   (func (result i32) (i32.const 8))
   (func (result i32) (i32.const 9))
   (func (export "test")
-    
-    (table.init 1 (i32.const 30) (i32.const 2) (i32.const 0))))
-
+    (table.init 1 (i32.const 30) (i32.const 2) (i32.const 0))
+    ))
 (invoke "test")
-(assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (i32.const 1) (f32.const 1))))
-   "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (i32.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (i32.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (i32.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (i32.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (f32.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (i32.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (f32.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (f32.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (f32.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (f32.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (f32.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (f32.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (i64.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (f32.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (i64.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (i64.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (i64.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (i64.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (i64.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (i64.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (f64.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (i64.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (f64.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (f64.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (f64.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (f64.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i32.const 1) (f64.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (f64.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (i32.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i32.const 1) (f64.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (i32.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (i32.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (i32.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (i32.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (i32.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (i32.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (f32.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (i32.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (f32.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (f32.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (f32.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (f32.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (f32.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (f32.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (i64.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (f32.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (i64.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (i64.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (i64.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (i64.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (i64.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (i64.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (f64.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (i64.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (f64.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (f64.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (f64.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (f64.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f32.const 1) (f64.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (f64.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (i32.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f32.const 1) (f64.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (i32.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (i32.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (i32.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (i32.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (i32.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (i32.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (f32.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (i32.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (f32.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (f32.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (f32.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (f32.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (f32.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (f32.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (i64.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (f32.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (i64.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (i64.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (i64.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (i64.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (i64.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (i64.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (f64.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (i64.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (f64.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (f64.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (f64.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (f64.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (i64.const 1) (f64.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (f64.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (i32.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (i64.const 1) (f64.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (i32.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (i32.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (i32.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (i32.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (i32.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (i32.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (f32.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (i32.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (f32.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (f32.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (f32.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (f32.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (f32.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (f32.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (i64.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (f32.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (i64.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (i64.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (i64.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (i64.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (i64.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (i64.const 1) (i64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (f64.const 1) (i32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (i64.const 1) (f64.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (f64.const 1) (f32.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (f64.const 1) (i32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (f64.const 1) (i64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (f64.const 1) (f32.const 1))))
+  "type mismatch")
 
 (assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (f64.const 1) (f64.const 1) (f64.const 1))))
-   "type mismatch")
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (f64.const 1) (i64.const 1))))
+  "type mismatch")
+
+(assert_invalid
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (f64.const 1) (f64.const 1) (f64.const 1))))
+  "type mismatch")
 
 (module
-           (type (func (result i32)))
-           (table 32 64 funcref)
-           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
-           (func $f0 (export "f0") (result i32) (i32.const 0))
-           (func $f1 (export "f1") (result i32) (i32.const 1))
-           (func $f2 (export "f2") (result i32) (i32.const 2))
-           (func $f3 (export "f3") (result i32) (i32.const 3))
-           (func $f4 (export "f4") (result i32) (i32.const 4))
-           (func $f5 (export "f5") (result i32) (i32.const 5))
-           (func $f6 (export "f6") (result i32) (i32.const 6))
-           (func $f7 (export "f7") (result i32) (i32.const 7))
-           (func $f8 (export "f8") (result i32) (i32.const 8))
-           (func $f9 (export "f9") (result i32) (i32.const 9))
-           (func $f10 (export "f10") (result i32) (i32.const 10))
-           (func $f11 (export "f11") (result i32) (i32.const 11))
-           (func $f12 (export "f12") (result i32) (i32.const 12))
-           (func $f13 (export "f13") (result i32) (i32.const 13))
-           (func $f14 (export "f14") (result i32) (i32.const 14))
-           (func $f15 (export "f15") (result i32) (i32.const 15))
-           (func (export "test") (param $n i32) (result i32)
-             (call_indirect (type 0) (local.get $n)))
-           (func (export "run") (param $offs i32) (param $len i32)
-             (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
+  (type (func (result i32)))
+  (table 32 64 funcref)
+  (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+  (func $f0 (export "f0") (result i32) (i32.const 0))
+  (func $f1 (export "f1") (result i32) (i32.const 1))
+  (func $f2 (export "f2") (result i32) (i32.const 2))
+  (func $f3 (export "f3") (result i32) (i32.const 3))
+  (func $f4 (export "f4") (result i32) (i32.const 4))
+  (func $f5 (export "f5") (result i32) (i32.const 5))
+  (func $f6 (export "f6") (result i32) (i32.const 6))
+  (func $f7 (export "f7") (result i32) (i32.const 7))
+  (func $f8 (export "f8") (result i32) (i32.const 8))
+  (func $f9 (export "f9") (result i32) (i32.const 9))
+  (func $f10 (export "f10") (result i32) (i32.const 10))
+  (func $f11 (export "f11") (result i32) (i32.const 11))
+  (func $f12 (export "f12") (result i32) (i32.const 12))
+  (func $f13 (export "f13") (result i32) (i32.const 13))
+  (func $f14 (export "f14") (result i32) (i32.const 14))
+  (func $f15 (export "f15") (result i32) (i32.const 15))
+  (func (export "test") (param $n i32) (result i32)
+    (call_indirect (type 0) (local.get $n)))
+  (func (export "run") (param $offs i32) (param $len i32)
+    (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 (assert_trap (invoke "run" (i32.const 24) (i32.const 16)) "out of bounds")
 (assert_return (invoke "test" (i32.const 24)) (i32.const 0))
 (assert_return (invoke "test" (i32.const 25)) (i32.const 1))
@@ -1056,30 +1046,31 @@ elem.drop 3
 (assert_trap (invoke "test" (i32.const 21)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 22)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 23)) "uninitialized element")
+
 (module
-           (type (func (result i32)))
-           (table 32 64 funcref)
-           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
-           (func $f0 (export "f0") (result i32) (i32.const 0))
-           (func $f1 (export "f1") (result i32) (i32.const 1))
-           (func $f2 (export "f2") (result i32) (i32.const 2))
-           (func $f3 (export "f3") (result i32) (i32.const 3))
-           (func $f4 (export "f4") (result i32) (i32.const 4))
-           (func $f5 (export "f5") (result i32) (i32.const 5))
-           (func $f6 (export "f6") (result i32) (i32.const 6))
-           (func $f7 (export "f7") (result i32) (i32.const 7))
-           (func $f8 (export "f8") (result i32) (i32.const 8))
-           (func $f9 (export "f9") (result i32) (i32.const 9))
-           (func $f10 (export "f10") (result i32) (i32.const 10))
-           (func $f11 (export "f11") (result i32) (i32.const 11))
-           (func $f12 (export "f12") (result i32) (i32.const 12))
-           (func $f13 (export "f13") (result i32) (i32.const 13))
-           (func $f14 (export "f14") (result i32) (i32.const 14))
-           (func $f15 (export "f15") (result i32) (i32.const 15))
-           (func (export "test") (param $n i32) (result i32)
-             (call_indirect (type 0) (local.get $n)))
-           (func (export "run") (param $offs i32) (param $len i32)
-             (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
+  (type (func (result i32)))
+  (table 32 64 funcref)
+  (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+  (func $f0 (export "f0") (result i32) (i32.const 0))
+  (func $f1 (export "f1") (result i32) (i32.const 1))
+  (func $f2 (export "f2") (result i32) (i32.const 2))
+  (func $f3 (export "f3") (result i32) (i32.const 3))
+  (func $f4 (export "f4") (result i32) (i32.const 4))
+  (func $f5 (export "f5") (result i32) (i32.const 5))
+  (func $f6 (export "f6") (result i32) (i32.const 6))
+  (func $f7 (export "f7") (result i32) (i32.const 7))
+  (func $f8 (export "f8") (result i32) (i32.const 8))
+  (func $f9 (export "f9") (result i32) (i32.const 9))
+  (func $f10 (export "f10") (result i32) (i32.const 10))
+  (func $f11 (export "f11") (result i32) (i32.const 11))
+  (func $f12 (export "f12") (result i32) (i32.const 12))
+  (func $f13 (export "f13") (result i32) (i32.const 13))
+  (func $f14 (export "f14") (result i32) (i32.const 14))
+  (func $f15 (export "f15") (result i32) (i32.const 15))
+  (func (export "test") (param $n i32) (result i32)
+    (call_indirect (type 0) (local.get $n)))
+  (func (export "run") (param $offs i32) (param $len i32)
+    (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 (assert_trap (invoke "run" (i32.const 25) (i32.const 16)) "out of bounds")
 (assert_return (invoke "test" (i32.const 25)) (i32.const 0))
 (assert_return (invoke "test" (i32.const 26)) (i32.const 1))
@@ -1113,30 +1104,31 @@ elem.drop 3
 (assert_trap (invoke "test" (i32.const 22)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 23)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 24)) "uninitialized element")
+
 (module
-           (type (func (result i32)))
-           (table 160 320 funcref)
-           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
-           (func $f0 (export "f0") (result i32) (i32.const 0))
-           (func $f1 (export "f1") (result i32) (i32.const 1))
-           (func $f2 (export "f2") (result i32) (i32.const 2))
-           (func $f3 (export "f3") (result i32) (i32.const 3))
-           (func $f4 (export "f4") (result i32) (i32.const 4))
-           (func $f5 (export "f5") (result i32) (i32.const 5))
-           (func $f6 (export "f6") (result i32) (i32.const 6))
-           (func $f7 (export "f7") (result i32) (i32.const 7))
-           (func $f8 (export "f8") (result i32) (i32.const 8))
-           (func $f9 (export "f9") (result i32) (i32.const 9))
-           (func $f10 (export "f10") (result i32) (i32.const 10))
-           (func $f11 (export "f11") (result i32) (i32.const 11))
-           (func $f12 (export "f12") (result i32) (i32.const 12))
-           (func $f13 (export "f13") (result i32) (i32.const 13))
-           (func $f14 (export "f14") (result i32) (i32.const 14))
-           (func $f15 (export "f15") (result i32) (i32.const 15))
-           (func (export "test") (param $n i32) (result i32)
-             (call_indirect (type 0) (local.get $n)))
-           (func (export "run") (param $offs i32) (param $len i32)
-             (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
+  (type (func (result i32)))
+  (table 160 320 funcref)
+  (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+  (func $f0 (export "f0") (result i32) (i32.const 0))
+  (func $f1 (export "f1") (result i32) (i32.const 1))
+  (func $f2 (export "f2") (result i32) (i32.const 2))
+  (func $f3 (export "f3") (result i32) (i32.const 3))
+  (func $f4 (export "f4") (result i32) (i32.const 4))
+  (func $f5 (export "f5") (result i32) (i32.const 5))
+  (func $f6 (export "f6") (result i32) (i32.const 6))
+  (func $f7 (export "f7") (result i32) (i32.const 7))
+  (func $f8 (export "f8") (result i32) (i32.const 8))
+  (func $f9 (export "f9") (result i32) (i32.const 9))
+  (func $f10 (export "f10") (result i32) (i32.const 10))
+  (func $f11 (export "f11") (result i32) (i32.const 11))
+  (func $f12 (export "f12") (result i32) (i32.const 12))
+  (func $f13 (export "f13") (result i32) (i32.const 13))
+  (func $f14 (export "f14") (result i32) (i32.const 14))
+  (func $f15 (export "f15") (result i32) (i32.const 15))
+  (func (export "test") (param $n i32) (result i32)
+    (call_indirect (type 0) (local.get $n)))
+  (func (export "run") (param $offs i32) (param $len i32)
+    (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 (assert_trap (invoke "run" (i32.const 96) (i32.const 32)) "out of bounds")
 (assert_return (invoke "test" (i32.const 96)) (i32.const 0))
 (assert_return (invoke "test" (i32.const 97)) (i32.const 1))
@@ -1298,30 +1290,31 @@ elem.drop 3
 (assert_trap (invoke "test" (i32.const 93)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 94)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 95)) "uninitialized element")
+
 (module
-           (type (func (result i32)))
-           (table 160 320 funcref)
-           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
-           (func $f0 (export "f0") (result i32) (i32.const 0))
-           (func $f1 (export "f1") (result i32) (i32.const 1))
-           (func $f2 (export "f2") (result i32) (i32.const 2))
-           (func $f3 (export "f3") (result i32) (i32.const 3))
-           (func $f4 (export "f4") (result i32) (i32.const 4))
-           (func $f5 (export "f5") (result i32) (i32.const 5))
-           (func $f6 (export "f6") (result i32) (i32.const 6))
-           (func $f7 (export "f7") (result i32) (i32.const 7))
-           (func $f8 (export "f8") (result i32) (i32.const 8))
-           (func $f9 (export "f9") (result i32) (i32.const 9))
-           (func $f10 (export "f10") (result i32) (i32.const 10))
-           (func $f11 (export "f11") (result i32) (i32.const 11))
-           (func $f12 (export "f12") (result i32) (i32.const 12))
-           (func $f13 (export "f13") (result i32) (i32.const 13))
-           (func $f14 (export "f14") (result i32) (i32.const 14))
-           (func $f15 (export "f15") (result i32) (i32.const 15))
-           (func (export "test") (param $n i32) (result i32)
-             (call_indirect (type 0) (local.get $n)))
-           (func (export "run") (param $offs i32) (param $len i32)
-             (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
+  (type (func (result i32)))
+  (table 160 320 funcref)
+  (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+  (func $f0 (export "f0") (result i32) (i32.const 0))
+  (func $f1 (export "f1") (result i32) (i32.const 1))
+  (func $f2 (export "f2") (result i32) (i32.const 2))
+  (func $f3 (export "f3") (result i32) (i32.const 3))
+  (func $f4 (export "f4") (result i32) (i32.const 4))
+  (func $f5 (export "f5") (result i32) (i32.const 5))
+  (func $f6 (export "f6") (result i32) (i32.const 6))
+  (func $f7 (export "f7") (result i32) (i32.const 7))
+  (func $f8 (export "f8") (result i32) (i32.const 8))
+  (func $f9 (export "f9") (result i32) (i32.const 9))
+  (func $f10 (export "f10") (result i32) (i32.const 10))
+  (func $f11 (export "f11") (result i32) (i32.const 11))
+  (func $f12 (export "f12") (result i32) (i32.const 12))
+  (func $f13 (export "f13") (result i32) (i32.const 13))
+  (func $f14 (export "f14") (result i32) (i32.const 14))
+  (func $f15 (export "f15") (result i32) (i32.const 15))
+  (func (export "test") (param $n i32) (result i32)
+    (call_indirect (type 0) (local.get $n)))
+  (func (export "run") (param $offs i32) (param $len i32)
+    (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 (assert_trap (invoke "run" (i32.const 97) (i32.const 31)) "out of bounds")
 (assert_return (invoke "test" (i32.const 97)) (i32.const 0))
 (assert_return (invoke "test" (i32.const 98)) (i32.const 1))
@@ -1483,30 +1476,31 @@ elem.drop 3
 (assert_trap (invoke "test" (i32.const 94)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 95)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 96)) "uninitialized element")
+
 (module
-           (type (func (result i32)))
-           (table 64 64 funcref)
-           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
-           (func $f0 (export "f0") (result i32) (i32.const 0))
-           (func $f1 (export "f1") (result i32) (i32.const 1))
-           (func $f2 (export "f2") (result i32) (i32.const 2))
-           (func $f3 (export "f3") (result i32) (i32.const 3))
-           (func $f4 (export "f4") (result i32) (i32.const 4))
-           (func $f5 (export "f5") (result i32) (i32.const 5))
-           (func $f6 (export "f6") (result i32) (i32.const 6))
-           (func $f7 (export "f7") (result i32) (i32.const 7))
-           (func $f8 (export "f8") (result i32) (i32.const 8))
-           (func $f9 (export "f9") (result i32) (i32.const 9))
-           (func $f10 (export "f10") (result i32) (i32.const 10))
-           (func $f11 (export "f11") (result i32) (i32.const 11))
-           (func $f12 (export "f12") (result i32) (i32.const 12))
-           (func $f13 (export "f13") (result i32) (i32.const 13))
-           (func $f14 (export "f14") (result i32) (i32.const 14))
-           (func $f15 (export "f15") (result i32) (i32.const 15))
-           (func (export "test") (param $n i32) (result i32)
-             (call_indirect (type 0) (local.get $n)))
-           (func (export "run") (param $offs i32) (param $len i32)
-             (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
+  (type (func (result i32)))
+  (table 64 64 funcref)
+  (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+  (func $f0 (export "f0") (result i32) (i32.const 0))
+  (func $f1 (export "f1") (result i32) (i32.const 1))
+  (func $f2 (export "f2") (result i32) (i32.const 2))
+  (func $f3 (export "f3") (result i32) (i32.const 3))
+  (func $f4 (export "f4") (result i32) (i32.const 4))
+  (func $f5 (export "f5") (result i32) (i32.const 5))
+  (func $f6 (export "f6") (result i32) (i32.const 6))
+  (func $f7 (export "f7") (result i32) (i32.const 7))
+  (func $f8 (export "f8") (result i32) (i32.const 8))
+  (func $f9 (export "f9") (result i32) (i32.const 9))
+  (func $f10 (export "f10") (result i32) (i32.const 10))
+  (func $f11 (export "f11") (result i32) (i32.const 11))
+  (func $f12 (export "f12") (result i32) (i32.const 12))
+  (func $f13 (export "f13") (result i32) (i32.const 13))
+  (func $f14 (export "f14") (result i32) (i32.const 14))
+  (func $f15 (export "f15") (result i32) (i32.const 15))
+  (func (export "test") (param $n i32) (result i32)
+    (call_indirect (type 0) (local.get $n)))
+  (func (export "run") (param $offs i32) (param $len i32)
+    (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 (assert_trap (invoke "run" (i32.const 48) (i32.const 4294967280)) "out of bounds")
 (assert_return (invoke "test" (i32.const 48)) (i32.const 0))
 (assert_return (invoke "test" (i32.const 49)) (i32.const 1))
@@ -1572,30 +1566,31 @@ elem.drop 3
 (assert_trap (invoke "test" (i32.const 45)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 46)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 47)) "uninitialized element")
+
 (module
-           (type (func (result i32)))
-           (table 16 16 funcref)
-           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
-           (func $f0 (export "f0") (result i32) (i32.const 0))
-           (func $f1 (export "f1") (result i32) (i32.const 1))
-           (func $f2 (export "f2") (result i32) (i32.const 2))
-           (func $f3 (export "f3") (result i32) (i32.const 3))
-           (func $f4 (export "f4") (result i32) (i32.const 4))
-           (func $f5 (export "f5") (result i32) (i32.const 5))
-           (func $f6 (export "f6") (result i32) (i32.const 6))
-           (func $f7 (export "f7") (result i32) (i32.const 7))
-           (func $f8 (export "f8") (result i32) (i32.const 8))
-           (func $f9 (export "f9") (result i32) (i32.const 9))
-           (func $f10 (export "f10") (result i32) (i32.const 10))
-           (func $f11 (export "f11") (result i32) (i32.const 11))
-           (func $f12 (export "f12") (result i32) (i32.const 12))
-           (func $f13 (export "f13") (result i32) (i32.const 13))
-           (func $f14 (export "f14") (result i32) (i32.const 14))
-           (func $f15 (export "f15") (result i32) (i32.const 15))
-           (func (export "test") (param $n i32) (result i32)
-             (call_indirect (type 0) (local.get $n)))
-           (func (export "run") (param $offs i32) (param $len i32)
-             (table.init 0 (local.get $offs) (i32.const 8) (local.get $len))))
+  (type (func (result i32)))
+  (table 16 16 funcref)
+  (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+  (func $f0 (export "f0") (result i32) (i32.const 0))
+  (func $f1 (export "f1") (result i32) (i32.const 1))
+  (func $f2 (export "f2") (result i32) (i32.const 2))
+  (func $f3 (export "f3") (result i32) (i32.const 3))
+  (func $f4 (export "f4") (result i32) (i32.const 4))
+  (func $f5 (export "f5") (result i32) (i32.const 5))
+  (func $f6 (export "f6") (result i32) (i32.const 6))
+  (func $f7 (export "f7") (result i32) (i32.const 7))
+  (func $f8 (export "f8") (result i32) (i32.const 8))
+  (func $f9 (export "f9") (result i32) (i32.const 9))
+  (func $f10 (export "f10") (result i32) (i32.const 10))
+  (func $f11 (export "f11") (result i32) (i32.const 11))
+  (func $f12 (export "f12") (result i32) (i32.const 12))
+  (func $f13 (export "f13") (result i32) (i32.const 13))
+  (func $f14 (export "f14") (result i32) (i32.const 14))
+  (func $f15 (export "f15") (result i32) (i32.const 15))
+  (func (export "test") (param $n i32) (result i32)
+    (call_indirect (type 0) (local.get $n)))
+  (func (export "run") (param $offs i32) (param $len i32)
+    (table.init 0 (local.get $offs) (i32.const 8) (local.get $len))))
 (assert_trap (invoke "run" (i32.const 0) (i32.const 4294967292)) "out of bounds")
 (assert_return (invoke "test" (i32.const 0)) (i32.const 8))
 (assert_return (invoke "test" (i32.const 1)) (i32.const 9))

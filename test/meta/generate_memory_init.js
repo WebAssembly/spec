@@ -30,7 +30,7 @@ const e = 0;
 
 // This just gives the initial state of the memory, with its active
 // initialisers applied.
-mem_test("nop",
+mem_test("(nop)",
          [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
 // Passive init that overwrites all-zero entries
@@ -42,22 +42,22 @@ mem_test("(memory.init 3 (i32.const 15) (i32.const 1) (i32.const 3))",
          [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 9,2,7,e,e, e,e,e,e,e, e,e,e,e,e]);
 
 // Perform active and passive initialisation and then multiple copies
-mem_test("(memory.init 1 (i32.const 7) (i32.const 0) (i32.const 4)) \n" +
-         "data.drop 1 \n" +
-         "(memory.init 3 (i32.const 15) (i32.const 1) (i32.const 3)) \n" +
-         "data.drop 3 \n" +
-         "(memory.copy (i32.const 20) (i32.const 15) (i32.const 5)) \n" +
-         "(memory.copy (i32.const 21) (i32.const 29) (i32.const 1)) \n" +
-         "(memory.copy (i32.const 24) (i32.const 10) (i32.const 1)) \n" +
-         "(memory.copy (i32.const 13) (i32.const 11) (i32.const 4)) \n" +
-         "(memory.copy (i32.const 19) (i32.const 20) (i32.const 5))",
+mem_test(`(memory.init 1 (i32.const 7) (i32.const 0) (i32.const 4))
+    (data.drop 1)
+    (memory.init 3 (i32.const 15) (i32.const 1) (i32.const 3))
+    (data.drop 3)
+    (memory.copy (i32.const 20) (i32.const 15) (i32.const 5))
+    (memory.copy (i32.const 21) (i32.const 29) (i32.const 1))
+    (memory.copy (i32.const 24) (i32.const 10) (i32.const 1))
+    (memory.copy (i32.const 13) (i32.const 11) (i32.const 4))
+    (memory.copy (i32.const 19) (i32.const 20) (i32.const 5))`,
          [e,e,3,1,4, 1,e,2,7,1, 8,e,7,e,7, 5,2,7,e,9, e,7,e,8,8, e,e,e,e,e]);
 
 // Miscellaneous
 
 let PREAMBLE =
     `(memory 1)
-     (data passive "\\37")`;
+    (data passive "\\37")`;
 
 // drop with no memory
 print(
@@ -193,11 +193,11 @@ print(
             continue;  // this is the only valid case
         print(
 `(assert_invalid
-   (module
-     ${PREAMBLE}
-     (func (export "test")
-       (memory.init 0 (${ty1}.const 1) (${ty2}.const 1) (${ty3}.const 1))))
-   "type mismatch")
+  (module
+    ${PREAMBLE}
+    (func (export "test")
+      (memory.init 0 (${ty1}.const 1) (${ty2}.const 1) (${ty3}.const 1))))
+  "type mismatch")
 `);
     }}}
 }
@@ -214,11 +214,11 @@ const mem_init_len = 16;
 function mem_init(min, max, shared, backup, write) {
     print(
 `(module
-   (memory ${min} ${max} ${shared})
-   (data passive "\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42")
+  (memory ${min} ${max} ${shared})
+  (data passive "\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42")
    ${checkRangeCode()}
-   (func (export "run") (param $offs i32) (param $len i32)
-     (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
+  (func (export "run") (param $offs i32) (param $len i32)
+    (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 `);
     // A fill writing past the end of the memory should throw *and* have filled
     // all the way up to the end.

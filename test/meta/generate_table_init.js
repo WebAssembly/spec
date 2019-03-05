@@ -15,8 +15,7 @@ function emit_a() {
   (func (export "ef3") (result i32) (i32.const 3))
   (func (export "ef4") (result i32) (i32.const 4))
 )
-(register "a")
-`);
+(register "a")`);
 }
 
 // ... and this one imports those 5 functions.  It adds 5 of its own, creates a
@@ -88,15 +87,15 @@ tab_test("(table.init 3 (i32.const 15) (i32.const 1) (i32.const 3))",
          [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 9,2,7,e,e, e,e,e,e,e, e,e,e,e,e]);
 
 // Perform active and passive initialisation and then multiple copies
-tab_test("(table.init 1 (i32.const 7) (i32.const 0) (i32.const 4)) \n" +
-         "elem.drop 1 \n" +
-         "(table.init 3 (i32.const 15) (i32.const 1) (i32.const 3)) \n" +
-         "elem.drop 3 \n" +
-         "(table.copy (i32.const 20) (i32.const 15) (i32.const 5)) \n" +
-         "(table.copy (i32.const 21) (i32.const 29) (i32.const 1)) \n" +
-         "(table.copy (i32.const 24) (i32.const 10) (i32.const 1)) \n" +
-         "(table.copy (i32.const 13) (i32.const 11) (i32.const 4)) \n" +
-         "(table.copy (i32.const 19) (i32.const 20) (i32.const 5))",
+tab_test(`(table.init 1 (i32.const 7) (i32.const 0) (i32.const 4))
+    (elem.drop 1)
+    (table.init 3 (i32.const 15) (i32.const 1) (i32.const 3))
+    (elem.drop 3)
+    (table.copy (i32.const 20) (i32.const 15) (i32.const 5))
+    (table.copy (i32.const 21) (i32.const 29) (i32.const 1))
+    (table.copy (i32.const 24) (i32.const 10) (i32.const 1))
+    (table.copy (i32.const 13) (i32.const 11) (i32.const 4))
+    (table.copy (i32.const 19) (i32.const 20) (i32.const 5))`,
          [e,e,3,1,4, 1,e,2,7,1, 8,e,7,e,7, 5,2,7,e,9, e,7,e,8,8, e,e,e,e,e]);
 
 
@@ -161,14 +160,17 @@ function do_test(insn1, insn2, errText)
   (func (result i32) (i32.const 9))
   (func (export "test")
     ${insn1}
-    ${insn2}))
-`);
+    ${insn2}))`);
 
     if (errText !== undefined) {
         print(`(assert_trap (invoke "test") "${errText}")`);
     } else {
         print(`(invoke "test")`);
     }
+}
+
+function tab_test1(insn1, errText) {
+    do_test(insn1, "", errText);
 }
 
 function tab_test2(insn1, insn2, errText) {
@@ -180,12 +182,12 @@ function tab_test_nofail(insn1, insn2) {
 }
 
 // drop with elem seg ix indicating an active segment
-tab_test2("elem.drop 2", "",
+tab_test1("(elem.drop 2)",
           "elements segment dropped");
 
 // init with elem seg ix indicating an active segment
-tab_test2("(table.init 2 (i32.const 12) (i32.const 1) (i32.const 1))", "",
-         "elements segment dropped");
+tab_test1("(table.init 2 (i32.const 12) (i32.const 1) (i32.const 1))",
+          "elements segment dropped");
 
 // init, using an elem seg ix more than once is OK
 tab_test_nofail(
@@ -193,41 +195,36 @@ tab_test_nofail(
     "(table.init 1 (i32.const 21) (i32.const 1) (i32.const 1))");
 
 // drop, then drop
-tab_test2("elem.drop 1",
-          "elem.drop 1",
+tab_test2("(elem.drop 1)",
+          "(elem.drop 1)",
           "elements segment dropped");
 
 // drop, then init
-tab_test2("elem.drop 1",
-         "(table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))",
-         "elements segment dropped");
+tab_test2("(elem.drop 1)",
+          "(table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))",
+          "elements segment dropped");
 
 // init: seg ix is valid passive, but length to copy > len of seg
-tab_test2("",
-         "(table.init 1 (i32.const 12) (i32.const 0) (i32.const 5))",
-         "out of bounds");
+tab_test1("(table.init 1 (i32.const 12) (i32.const 0) (i32.const 5))",
+          "out of bounds");
 
 // init: seg ix is valid passive, but implies copying beyond end of seg
-tab_test2("",
-         "(table.init 1 (i32.const 12) (i32.const 2) (i32.const 3))",
-         "out of bounds");
+tab_test1("(table.init 1 (i32.const 12) (i32.const 2) (i32.const 3))",
+          "out of bounds");
 
 // init: seg ix is valid passive, but implies copying beyond end of dst
-tab_test2("",
-         "(table.init 1 (i32.const 28) (i32.const 1) (i32.const 3))",
-         "out of bounds");
+tab_test1("(table.init 1 (i32.const 28) (i32.const 1) (i32.const 3))",
+          "out of bounds");
 
 // init: seg ix is valid passive, zero len, and src offset out of bounds at the
 // end of the table - this is allowed
-tab_test2("",
-         "(table.init 1 (i32.const 12) (i32.const 4) (i32.const 0))",
-         undefined);
+tab_test1("(table.init 1 (i32.const 12) (i32.const 4) (i32.const 0))",
+          undefined);
 
 // init: seg ix is valid passive, zero len, and dst offset out of bounds at the
 // end of the table - this is allowed
-tab_test2("",
-         "(table.init 1 (i32.const 30) (i32.const 2) (i32.const 0))",
-         undefined);
+tab_test1("(table.init 1 (i32.const 30) (i32.const 2) (i32.const 0))",
+          undefined);
 
 // invalid argument types
 {
@@ -239,15 +236,15 @@ tab_test2("",
         if (ty1 == 'i32' && ty2 == 'i32' && ty3 == 'i32')
             continue;  // this is the only valid case
         print(
-`(assert_invalid
-   (module
-     (table 10 funcref)
-     (elem passive funcref $f0 $f0 $f0)
-     (func $f0)
-     (func (export "test")
-       (table.init 0 (${ty1}.const 1) (${ty2}.const 1) (${ty3}.const 1))))
-   "type mismatch")
-`);
+`
+(assert_invalid
+  (module
+    (table 10 funcref)
+    (elem passive funcref $f0 $f0 $f0)
+    (func $f0)
+    (func (export "test")
+      (table.init 0 (${ty1}.const 1) (${ty2}.const 1) (${ty3}.const 1))))
+  "type mismatch")`);
     }}}
 }
 
@@ -262,30 +259,32 @@ const tbl_init_len = 16;
 
 function tbl_init(min, max, backup, write, segoffs=0) {
     print(
-        `(module
-           (type (func (result i32)))
-           (table ${min} ${max} funcref)
-           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
-           (func $f0 (export "f0") (result i32) (i32.const 0))
-           (func $f1 (export "f1") (result i32) (i32.const 1))
-           (func $f2 (export "f2") (result i32) (i32.const 2))
-           (func $f3 (export "f3") (result i32) (i32.const 3))
-           (func $f4 (export "f4") (result i32) (i32.const 4))
-           (func $f5 (export "f5") (result i32) (i32.const 5))
-           (func $f6 (export "f6") (result i32) (i32.const 6))
-           (func $f7 (export "f7") (result i32) (i32.const 7))
-           (func $f8 (export "f8") (result i32) (i32.const 8))
-           (func $f9 (export "f9") (result i32) (i32.const 9))
-           (func $f10 (export "f10") (result i32) (i32.const 10))
-           (func $f11 (export "f11") (result i32) (i32.const 11))
-           (func $f12 (export "f12") (result i32) (i32.const 12))
-           (func $f13 (export "f13") (result i32) (i32.const 13))
-           (func $f14 (export "f14") (result i32) (i32.const 14))
-           (func $f15 (export "f15") (result i32) (i32.const 15))
-           (func (export "test") (param $n i32) (result i32)
-             (call_indirect (type 0) (local.get $n)))
-           (func (export "run") (param $offs i32) (param $len i32)
-             (table.init 0 (local.get $offs) (i32.const ${segoffs}) (local.get $len))))`);
+        `
+(module
+  (type (func (result i32)))
+  (table ${min} ${max} funcref)
+  (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+  (func $f0 (export "f0") (result i32) (i32.const 0))
+  (func $f1 (export "f1") (result i32) (i32.const 1))
+  (func $f2 (export "f2") (result i32) (i32.const 2))
+  (func $f3 (export "f3") (result i32) (i32.const 3))
+  (func $f4 (export "f4") (result i32) (i32.const 4))
+  (func $f5 (export "f5") (result i32) (i32.const 5))
+  (func $f6 (export "f6") (result i32) (i32.const 6))
+  (func $f7 (export "f7") (result i32) (i32.const 7))
+  (func $f8 (export "f8") (result i32) (i32.const 8))
+  (func $f9 (export "f9") (result i32) (i32.const 9))
+  (func $f10 (export "f10") (result i32) (i32.const 10))
+  (func $f11 (export "f11") (result i32) (i32.const 11))
+  (func $f12 (export "f12") (result i32) (i32.const 12))
+  (func $f13 (export "f13") (result i32) (i32.const 13))
+  (func $f14 (export "f14") (result i32) (i32.const 14))
+  (func $f15 (export "f15") (result i32) (i32.const 15))
+  (func (export "test") (param $n i32) (result i32)
+    (call_indirect (type 0) (local.get $n)))
+  (func (export "run") (param $offs i32) (param $len i32)
+    (table.init 0 (local.get $offs) (i32.const ${segoffs}) (local.get $len))))`);
+
     // A fill writing past the end of the table should throw *and* have filled
     // all the way up to the end.
     //

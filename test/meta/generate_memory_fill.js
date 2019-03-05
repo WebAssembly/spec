@@ -3,8 +3,8 @@
 
 print_origin("generate_memory_fill.js");
 
-let PREAMBLE = `
-  (memory 1 1)
+let PREAMBLE =
+  `(memory 1 1)
   ${checkRangeCode()}`;
 
 // Range valid
@@ -21,8 +21,7 @@ checkRange(0x0FF00, 0x10000, 0x55)
 
 // Range invalid
 print(
-`
-(module
+`(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0xFF00) (i32.const 0x55) (i32.const 257))))
@@ -31,8 +30,7 @@ print(
 
 // Wraparound the end of 32-bit offset space
 print(
-`
-(module
+`(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0xFFFFFF00) (i32.const 0x55) (i32.const 257))))
@@ -41,8 +39,7 @@ print(
 
 // Zero len with offset in-bounds is a no-op
 print(
-`
-(module
+`(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0x12) (i32.const 0x55) (i32.const 0))))
@@ -52,8 +49,7 @@ checkRange(0x00000, 0x10000, 0x00);
 
 // Zero len with offset out-of-bounds at the end of memory is allowed
 print(
-`
-(module
+`(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0x10000) (i32.const 0x55) (i32.const 0))))
@@ -62,8 +58,7 @@ print(
 
 // Very large range
 print(
-`
-(module
+`(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0x1) (i32.const 0xAA) (i32.const 0xFFFE))))
@@ -93,8 +88,7 @@ checkRange(0x12+10, 0x10000, 0x00);
 
 // Module doesn't have a memory.
 print(
-`
-(assert_invalid
+`(assert_invalid
   (module
     (func (export "testfn")
       (memory.fill (i32.const 10) (i32.const 20) (i32.const 30))))
@@ -110,8 +104,7 @@ print(
         if (ty1 == 'i32' && ty2 == 'i32' && ty3 == 'i32')
             continue;  // this is the only valid case
         print(
-`
-(assert_invalid
+`(assert_invalid
   (module
     (memory 1 1)
     (func (export "testfn")
