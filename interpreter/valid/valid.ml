@@ -431,11 +431,11 @@ let check_elemref (c : context) (el : elem) =
 
 let check_elem (c : context) (seg : table_segment) =
   match seg.it with
-  | Active {index; offset; init} ->
+  | Active {index; offset; init = (_,init)} ->
     ignore (table c index);
     check_const c offset I32Type;
     List.iter (check_elemref c) init
-  | Passive init ->
+  | Passive (etype,init) ->
     List.iter (check_elemref c) init
 
 let check_data (c : context) (seg : memory_segment) =

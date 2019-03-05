@@ -150,7 +150,7 @@ and elem' =
   | Null
   | Func of var
 
-type table_segment = elem list segment
+type table_segment = (elem_type * (elem list)) segment
 type memory_segment = string segment
 
 
@@ -196,8 +196,8 @@ and module_' =
   memories : memory list;
   funcs : func list;
   start : var option;
-  elems : elem list segment list;
-  data : string segment list;
+  elems : table_segment list;
+  data : memory_segment list;
   imports : import list;
   exports : export list;
 }

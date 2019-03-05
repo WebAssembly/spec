@@ -572,6 +572,7 @@ offset :
 elemref :
   | LPAR REF_NULL RPAR { let at = at () in fun c -> Null @@ at }
   | LPAR REF_FUNC var RPAR { let at = at () in fun c -> Func ($3 c func) @@ at }
+  | var { let at = at () in fun c -> Func ($1 c func) @@ at }
 
 passive_elemref_list :
   | /* empty */ { fun c -> [] }
@@ -583,25 +584,28 @@ active_elemref_list :
       fun c lookup -> List.map f ($1 c lookup) }
 
 elem :
-  | LPAR ELEM bind_var_opt PASSIVE passive_elemref_list RPAR
+  | LPAR ELEM bind_var_opt PASSIVE elem_type passive_elemref_list RPAR
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () -> Passive ($5 c) @@ at }
+      fun () -> Passive ($5, ($6 c)) @@ at }
   | LPAR ELEM bind_var var offset active_elemref_list RPAR
     { let at = at () in
       fun c -> ignore (bind_elem c $3);
       fun () ->
-      Active {index = $4 c table; offset = $5 c; init = $6 c func} @@ at }
+      let init = FuncRefType, ($6 c func) in
+      Active {index = $4 c table; offset = $5 c; init} @@ at }
   | LPAR ELEM var offset active_elemref_list RPAR
     { let at = at () in
       fun c -> ignore (anon_elem c);
       fun () ->
-      Active {index = $3 c table; offset = $4 c; init = $5 c func} @@ at }
+      let init = FuncRefType, $5 c func in
+      Active {index = $3 c table; offset = $4 c; init} @@ at }
   | LPAR ELEM offset active_elemref_list RPAR  /* Sugar */
     { let at = at () in
       fun c -> ignore (anon_elem c);
       fun () ->
-      Active {index = 0l @@ at; offset = $3 c; init = $4 c func} @@ at }
+      let init = FuncRefType, $4 c func in
+      Active {index = 0l @@ at; offset = $3 c; init} @@ at }
 
 table :
   | LPAR TABLE bind_var_opt table_fields RPAR
@@ -623,7 +627,8 @@ table_fields :
   | elem_type LPAR ELEM active_elemref_list RPAR  /* Sugar */
     { fun c x at ->
       let offset = [i32_const (0l @@ at) @@ at] @@ at in
-      let init = $4 c func in let size = Int32.of_int (List.length init) in
+      let init' = $4 c func in let size = Int32.of_int (List.length init') in
+      let init = FuncRefType, init' in
       [{ttype = TableType ({min = size; max = Some size}, $1)} @@ at],
       [Active {index = x; offset; init} @@ at],
       [], [] }

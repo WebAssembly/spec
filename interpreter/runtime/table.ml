@@ -64,9 +64,9 @@ let init tab es d s n =
   check_bounds tab (Int32.add d n)
 
 let copy tab d s n =
-  let overlap = I32.lt_s Int32.(abs (sub d s)) n in
+  let overlap = I32.lt_u Int32.(abs (sub d s)) n in
   let rec loop d s n dx =
-    if n > 0l then begin
+    if I32.gt_u n 0l then begin
       store tab d (load tab s);
       loop (Int32.add d dx) (Int32.add s dx) (Int32.sub n 1l) dx
     end

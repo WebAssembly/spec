@@ -501,7 +501,9 @@ let encode m =
       | Func x -> u8 0xd2; var x; end_ ()
 
     let table_segment seg =
-      segment (vec active_elem) (vec passive_elem) seg
+      let active (_,init) = vec active_elem init in
+      let passive (etype,init) = elem_type etype; vec passive_elem init in
+      segment active passive seg
 
     let elem_section elems =
       section 9 (vec table_segment) elems (elems <> [])

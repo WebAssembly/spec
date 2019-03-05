@@ -445,7 +445,7 @@ let elems_list inst init =
 let create_elems (inst : module_inst) (seg : table_segment) : elems_inst =
   match seg.it with
   | Active _ -> ref None
-  | Passive init -> ref (Some (elems_list inst init))
+  | Passive (_,init) -> ref (Some (elems_list inst init))
 
 let create_data (inst : module_inst) (seg : memory_segment) : data_inst =
   match seg.it with
@@ -460,7 +460,7 @@ let init_func (inst : module_inst) (func : func_inst) =
 
 let init_table (inst : module_inst) (seg : table_segment) =
   match seg.it with
-  | Active {index; offset = const; init} ->
+  | Active {index; offset = const; init = (_,init)} ->
     let tab = table inst index in
     let offset = i32 (eval_const inst const) const.at in
     let elems = elems_list inst init in

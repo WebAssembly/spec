@@ -313,7 +313,9 @@ let passive_elem el =
   | Func x -> Node ("ref.func", [atom var x])
 
 let elems seg =
-  segment "elem" (list active_elem) (list passive_elem) seg
+  let active (_,init) = list active_elem init in
+  let passive (etype,init) = atom elem_type etype :: list passive_elem init in
+  segment "elem" active passive seg
 
 let data seg =
   segment "data" break_bytes break_bytes seg

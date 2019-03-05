@@ -5,7 +5,7 @@
 
 (module
   (table 3 funcref)
-  (elem passive (ref.func 0) (ref.null) (ref.func 1))
+  (elem passive funcref (ref.func 0) (ref.null) (ref.func 1))
   (func)
   (func))
 
@@ -182,7 +182,7 @@
 ;; table.init
 (module
   (table 3 funcref)
-  (elem passive
+  (elem passive funcref
     (ref.func $zero) (ref.func $one) (ref.func $zero) (ref.func $one))
 
   (func $zero (result i32) (i32.const 0))
@@ -227,7 +227,7 @@
 (module
   (table 1 funcref)
   (func $f)
-  (elem $p passive (ref.func $f))
+  (elem $p passive funcref (ref.func $f))
   (elem $a 0 (i32.const 0) $f)
 
   (func (export "drop_passive") (elem.drop $p))

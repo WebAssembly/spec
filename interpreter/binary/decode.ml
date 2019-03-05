@@ -5,11 +5,12 @@ type stream =
   name : string;
   bytes : string;
   pos : int ref;
+  has_data_count : bool ref;
 }
 
 exception EOS
 
-let stream name bs = {name; bytes = bs; pos = ref 0}
+let stream name bs = {name; bytes = bs; pos = ref 0; has_data_count = ref false}
 
 let len s = String.length s.bytes
 let pos s = !(s.pos)
@@ -201,14 +202,18 @@ let memop s =
   let offset = vu32 s in
   Int32.to_int align, offset
 
+let check_data_count s =
+  require !(s.has_data_count) s (pos s - 1) "data count section required"
+
 let misc_instr s =
   let pos = pos s in
   match op s with
   | 0x08 ->
+    check_data_count s;
     let x = at var s in
     zero_flag s;
     memory_init x
-  | 0x09 -> data_drop (at var s)
+  | 0x09 -> check_data_count s; data_drop (at var s)
   | 0x0a -> zero_flag s; zero_flag s; memory_copy
   | 0x0b -> zero_flag s; memory_fill
   | 0x0c ->
@@ -640,8 +645,16 @@ let passive_elem s =
     Func x
   | _ -> error s (pos s - 1) "invalid elem"
 
+let active_elem_segment s =
+  FuncRefType, vec (at active_elem) s
+
+let passive_elem_segment s =
+  let etype = elem_type s in
+  let init = vec (at passive_elem) s in
+  etype, init
+
 let table_segment s =
-  segment (vec (at active_elem)) (vec (at passive_elem)) s
+  segment active_elem_segment passive_elem_segment s
 
 let elem_section s =
   section `ElemSection (vec (at table_segment)) [] s
@@ -659,7 +672,10 @@ let data_section s =
 (* DataCount section *)
 
 let data_count_section s =
-  section `DataCountSection (opt vu32 true) None s
+  let contents s =
+    s.has_data_count := true;
+    opt vu32 true s
+  in section `DataCountSection contents None s
 
 
 (* Custom section *)
