@@ -21,9 +21,9 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 5))  ;; index 5
   (func (result i32) (i32.const 6))
   (func (result i32) (i32.const 7))
@@ -76,9 +76,9 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 5))  ;; index 5
   (func (result i32) (i32.const 6))
   (func (result i32) (i32.const 7))
@@ -131,9 +131,9 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 5))  ;; index 5
   (func (result i32) (i32.const 6))
   (func (result i32) (i32.const 7))
@@ -198,7 +198,7 @@ elem.drop 3
 
 (assert_invalid
   (module
-    (elem passive 0)
+    (elem passive funcref 0)
     (func (result i32) (i32.const 0))
     (func (export "test")
       (elem.drop 4)))
@@ -206,7 +206,7 @@ elem.drop 3
 
 (assert_invalid
   (module
-    (elem passive 0)
+    (elem passive funcref 0)
     (func (result i32) (i32.const 0))
     (func (export "test")
       (table.init 4 (i32.const 12) (i32.const 1) (i32.const 1))))
@@ -216,9 +216,9 @@ elem.drop 3
 (module
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 0))
   (func (result i32) (i32.const 1))
   (func (result i32) (i32.const 2))
@@ -238,9 +238,9 @@ elem.drop 3
 (module
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 0))
   (func (result i32) (i32.const 1))
   (func (result i32) (i32.const 2))
@@ -260,9 +260,9 @@ elem.drop 3
 (module
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 0))
   (func (result i32) (i32.const 1))
   (func (result i32) (i32.const 2))
@@ -282,9 +282,9 @@ elem.drop 3
 (module
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 0))
   (func (result i32) (i32.const 1))
   (func (result i32) (i32.const 2))
@@ -304,9 +304,9 @@ elem.drop 3
 (module
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 0))
   (func (result i32) (i32.const 1))
   (func (result i32) (i32.const 2))
@@ -326,9 +326,9 @@ elem.drop 3
 (module
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 0))
   (func (result i32) (i32.const 1))
   (func (result i32) (i32.const 2))
@@ -348,9 +348,9 @@ elem.drop 3
 (module
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 0))
   (func (result i32) (i32.const 1))
   (func (result i32) (i32.const 2))
@@ -370,9 +370,9 @@ elem.drop 3
 (module
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 0))
   (func (result i32) (i32.const 1))
   (func (result i32) (i32.const 2))
@@ -392,9 +392,9 @@ elem.drop 3
 (module
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 0))
   (func (result i32) (i32.const 1))
   (func (result i32) (i32.const 2))
@@ -414,9 +414,9 @@ elem.drop 3
 (module
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 0))
   (func (result i32) (i32.const 1))
   (func (result i32) (i32.const 2))
@@ -435,7 +435,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (i32.const 1) (f32.const 1))))
@@ -444,7 +444,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (i32.const 1) (i64.const 1))))
@@ -453,7 +453,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (i32.const 1) (f64.const 1))))
@@ -462,7 +462,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (f32.const 1) (i32.const 1))))
@@ -471,7 +471,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (f32.const 1) (f32.const 1))))
@@ -480,7 +480,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (f32.const 1) (i64.const 1))))
@@ -489,7 +489,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (f32.const 1) (f64.const 1))))
@@ -498,7 +498,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (i64.const 1) (i32.const 1))))
@@ -507,7 +507,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (i64.const 1) (f32.const 1))))
@@ -516,7 +516,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (i64.const 1) (i64.const 1))))
@@ -525,7 +525,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (i64.const 1) (f64.const 1))))
@@ -534,7 +534,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (f64.const 1) (i32.const 1))))
@@ -543,7 +543,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (f64.const 1) (f32.const 1))))
@@ -552,7 +552,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (f64.const 1) (i64.const 1))))
@@ -561,7 +561,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i32.const 1) (f64.const 1) (f64.const 1))))
@@ -570,7 +570,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (i32.const 1) (i32.const 1))))
@@ -579,7 +579,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (i32.const 1) (f32.const 1))))
@@ -588,7 +588,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (i32.const 1) (i64.const 1))))
@@ -597,7 +597,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (i32.const 1) (f64.const 1))))
@@ -606,7 +606,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (f32.const 1) (i32.const 1))))
@@ -615,7 +615,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (f32.const 1) (f32.const 1))))
@@ -624,7 +624,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (f32.const 1) (i64.const 1))))
@@ -633,7 +633,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (f32.const 1) (f64.const 1))))
@@ -642,7 +642,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (i64.const 1) (i32.const 1))))
@@ -651,7 +651,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (i64.const 1) (f32.const 1))))
@@ -660,7 +660,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (i64.const 1) (i64.const 1))))
@@ -669,7 +669,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (i64.const 1) (f64.const 1))))
@@ -678,7 +678,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (f64.const 1) (i32.const 1))))
@@ -687,7 +687,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (f64.const 1) (f32.const 1))))
@@ -696,7 +696,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (f64.const 1) (i64.const 1))))
@@ -705,7 +705,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f32.const 1) (f64.const 1) (f64.const 1))))
@@ -714,7 +714,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (i32.const 1) (i32.const 1))))
@@ -723,7 +723,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (i32.const 1) (f32.const 1))))
@@ -732,7 +732,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (i32.const 1) (i64.const 1))))
@@ -741,7 +741,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (i32.const 1) (f64.const 1))))
@@ -750,7 +750,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (f32.const 1) (i32.const 1))))
@@ -759,7 +759,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (f32.const 1) (f32.const 1))))
@@ -768,7 +768,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (f32.const 1) (i64.const 1))))
@@ -777,7 +777,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (f32.const 1) (f64.const 1))))
@@ -786,7 +786,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (i64.const 1) (i32.const 1))))
@@ -795,7 +795,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (i64.const 1) (f32.const 1))))
@@ -804,7 +804,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (i64.const 1) (i64.const 1))))
@@ -813,7 +813,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (i64.const 1) (f64.const 1))))
@@ -822,7 +822,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (f64.const 1) (i32.const 1))))
@@ -831,7 +831,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (f64.const 1) (f32.const 1))))
@@ -840,7 +840,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (f64.const 1) (i64.const 1))))
@@ -849,7 +849,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (i64.const 1) (f64.const 1) (f64.const 1))))
@@ -858,7 +858,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (i32.const 1) (i32.const 1))))
@@ -867,7 +867,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (i32.const 1) (f32.const 1))))
@@ -876,7 +876,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (i32.const 1) (i64.const 1))))
@@ -885,7 +885,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (i32.const 1) (f64.const 1))))
@@ -894,7 +894,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (f32.const 1) (i32.const 1))))
@@ -903,7 +903,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (f32.const 1) (f32.const 1))))
@@ -912,7 +912,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (f32.const 1) (i64.const 1))))
@@ -921,7 +921,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (f32.const 1) (f64.const 1))))
@@ -930,7 +930,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (i64.const 1) (i32.const 1))))
@@ -939,7 +939,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (i64.const 1) (f32.const 1))))
@@ -948,7 +948,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (i64.const 1) (i64.const 1))))
@@ -957,7 +957,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (i64.const 1) (f64.const 1))))
@@ -966,7 +966,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (f64.const 1) (i32.const 1))))
@@ -975,7 +975,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (f64.const 1) (f32.const 1))))
@@ -984,7 +984,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (f64.const 1) (i64.const 1))))
@@ -993,7 +993,7 @@ elem.drop 3
 (assert_invalid
    (module
      (table 10 funcref)
-     (elem passive $f0 $f0 $f0)
+     (elem passive funcref $f0 $f0 $f0)
      (func $f0)
      (func (export "test")
        (table.init 0 (f64.const 1) (f64.const 1) (f64.const 1))))
@@ -1002,7 +1002,7 @@ elem.drop 3
 (module
            (type (func (result i32)))
            (table 32 64 funcref)
-           (elem passive $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
            (func $f0 (export "f0") (result i32) (i32.const 0))
            (func $f1 (export "f1") (result i32) (i32.const 1))
            (func $f2 (export "f2") (result i32) (i32.const 2))
@@ -1059,7 +1059,7 @@ elem.drop 3
 (module
            (type (func (result i32)))
            (table 32 64 funcref)
-           (elem passive $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
            (func $f0 (export "f0") (result i32) (i32.const 0))
            (func $f1 (export "f1") (result i32) (i32.const 1))
            (func $f2 (export "f2") (result i32) (i32.const 2))
@@ -1116,7 +1116,7 @@ elem.drop 3
 (module
            (type (func (result i32)))
            (table 160 320 funcref)
-           (elem passive $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
            (func $f0 (export "f0") (result i32) (i32.const 0))
            (func $f1 (export "f1") (result i32) (i32.const 1))
            (func $f2 (export "f2") (result i32) (i32.const 2))
@@ -1301,7 +1301,7 @@ elem.drop 3
 (module
            (type (func (result i32)))
            (table 160 320 funcref)
-           (elem passive $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
            (func $f0 (export "f0") (result i32) (i32.const 0))
            (func $f1 (export "f1") (result i32) (i32.const 1))
            (func $f2 (export "f2") (result i32) (i32.const 2))
@@ -1486,7 +1486,7 @@ elem.drop 3
 (module
            (type (func (result i32)))
            (table 64 64 funcref)
-           (elem passive $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
            (func $f0 (export "f0") (result i32) (i32.const 0))
            (func $f1 (export "f1") (result i32) (i32.const 1))
            (func $f2 (export "f2") (result i32) (i32.const 2))
@@ -1575,7 +1575,7 @@ elem.drop 3
 (module
            (type (func (result i32)))
            (table 16 16 funcref)
-           (elem passive $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
+           (elem passive funcref $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15)
            (func $f0 (export "f0") (result i32) (i32.const 0))
            (func $f1 (export "f1") (result i32) (i32.const 1))
            (func $f2 (export "f2") (result i32) (i32.const 2))

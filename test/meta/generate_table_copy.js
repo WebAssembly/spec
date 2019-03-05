@@ -39,9 +39,9 @@ function emit_b(insn) {
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 5))  ;; index 5
   (func (result i32) (i32.const 6))
   (func (result i32) (i32.const 7))
@@ -120,9 +120,9 @@ function do_test(insn1, insn2, errText)
 (module
   (table 30 30 funcref)
   (elem (i32.const 2) 3 1 4 1)
-  (elem passive 2 7 1 8)
+  (elem passive funcref 2 7 1 8)
   (elem (i32.const 12) 7 5 2 3 6)
-  (elem passive 5 9 2 7 6)
+  (elem passive funcref 5 9 2 7 6)
   (func (result i32) (i32.const 0))
   (func (result i32) (i32.const 1))
   (func (result i32) (i32.const 2))
