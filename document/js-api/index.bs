@@ -757,8 +757,14 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 <h3 id="globals">Globals</h3>
 
 <pre class="idl">
+enum ValtypeEnum {
+  "i32",
+  "i64",
+  "f32",
+  "f64"
+};
 dictionary GlobalDescriptor {
-  required USVString value;
+  required ValtypeEnum value;
   boolean mutable = false;
 };
 
