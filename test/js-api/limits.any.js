@@ -36,7 +36,7 @@ function testLimit(name, min, limit, gen) {
 
   test(() => {
     assert_true(WebAssembly.validate(buffer_with_min));
-  }, `Validate ${name} mininum`);
+  }, `Validate ${name} minimum`);
   test(() => {
     assert_true(WebAssembly.validate(buffer_with_limit));
   }, `Validate ${name} limit`);
@@ -46,7 +46,7 @@ function testLimit(name, min, limit, gen) {
 
   test(() => {
     new WebAssembly.Module(buffer_with_min);
-  }, `Compile ${name} mininum`);
+  }, `Compile ${name} minimum`);
   test(() => {
     new WebAssembly.Module(buffer_with_limit);
   }, `Compile ${name} limit`);
@@ -56,7 +56,7 @@ function testLimit(name, min, limit, gen) {
 
   promise_test(t => {
     return WebAssembly.compile(buffer_with_min);
-  }, `Async compile ${name} mininum`);
+  }, `Async compile ${name} minimum`);
   promise_test(t => {
     return WebAssembly.compile(buffer_with_limit);
   }, `Async compile ${name} limit`);
