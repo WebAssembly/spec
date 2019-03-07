@@ -1,5 +1,10 @@
+SHARED_MEM=false
+
 # SpiderMonkey shell
-JSSHELL=~/m-i/js/src/build-debug/dist/bin/js -e 'const WITH_SHARED_MEMORY=false;' -f common.js
+JSSHELL=~/m-i/js/src/build-debug/dist/bin/js -e 'const WITH_SHARED_MEMORY=$(SHARED_MEM);' -f common.js
+
+# Node.js
+#JSSHELL=./noderun.sh $(SHARED_MEM)
 
 TARGETDIR=../core
 

@@ -205,9 +205,6 @@ tab_test2("(table.copy (i32.const 15) (i32.const 30) (i32.const 0))",
 // - src address oob
 // - target address oob
 // - both oob
-//
-// Note we do not test the multi-table case here because that is part of the
-// reftypes proposal; tests are in the gc/ subdirectory.
 
 const tbl_copy_len = 16;
 

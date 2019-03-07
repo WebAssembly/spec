@@ -1,11 +1,3 @@
-// WITH_SHARED_MEMORY can be overridden in a preamble, see `Makefile`.
-//
-// Set WITH_SHARED_MEMORY to true to get additional testing on memory backed by
-// SharedArrayBuffer.
-if (typeof this.WITH_SHARED_MEMORY == "undefined") {
-    this.WITH_SHARED_MEMORY = false;
-}
-
 const PAGESIZE = 65536;
 
 function print_origin(origin) {
