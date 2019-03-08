@@ -98,12 +98,12 @@ and instr' =
   | Binary of binop                   (* binary numeric operator *)
   | Convert of cvtop                  (* conversion *)
   | MemoryInit of var                 (* initialize memory from segment *)
-  | DataDrop of var                   (* drop passive data segment *)
   | MemoryCopy                        (* copy memory regions *)
   | MemoryFill                        (* fill memory region with value *)
   | TableInit of var                  (* initialize table from segment *)
-  | ElemDrop of var                   (* drop passive element segment *)
   | TableCopy                         (* copy elements between table regions *)
+  | DataDrop of var                   (* drop passive data segment *)
+  | ElemDrop of var                   (* drop passive element segment *)
 
 
 (* Globals & Functions *)
@@ -140,18 +140,18 @@ and memory' =
   mtype : memory_type;
 }
 
-type 'data segment = 'data segment' Source.phrase
-and 'data segment' =
+type ('data, 'ty) segment = ('data, 'ty) segment' Source.phrase
+and ('data, 'ty) segment' =
   | Active of {index : var; offset : const; init : 'data}
-  | Passive of 'data
+  | Passive of {etype : 'ty; data : 'data}
 
 type elem = elem' Source.phrase
 and elem' =
   | Null
   | Func of var
 
-type table_segment = (elem_type * (elem list)) segment
-type memory_segment = string segment
+type table_segment = (elem list, elem_type) segment
+type memory_segment = (string, unit) segment
 
 
 (* Modules *)
@@ -197,7 +197,7 @@ and module_' =
   funcs : func list;
   start : var option;
   elems : table_segment list;
-  data : memory_segment list;
+  datas : memory_segment list;
   imports : import list;
   exports : export list;
 }
@@ -213,8 +213,8 @@ let empty_module =
   memories = [];
   funcs = [];
   start = None;
-  elems  = [];
-  data = [];
+  elems = [];
+  datas = [];
   imports = [];
   exports = [];
 }

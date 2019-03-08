@@ -21,7 +21,7 @@ type context =
   tables : table_type list;
   memories : memory_type list;
   globals : global_type list;
-  data : segment_type list;
+  datas : segment_type list;
   elems : segment_type list;
   locals : value_type list;
   results : value_type list;
@@ -30,7 +30,7 @@ type context =
 
 let empty_context =
   { types = []; funcs = []; tables = []; memories = [];
-    globals = []; data = []; elems = [];
+    globals = []; datas = []; elems = [];
     locals = []; results = []; labels = [] }
 
 let lookup category list x =
@@ -42,7 +42,7 @@ let func (c : context) x = lookup "function" c.funcs x
 let table (c : context) x = lookup "table" c.tables x
 let memory (c : context) x = lookup "memory" c.memories x
 let global (c : context) x = lookup "global" c.globals x
-let data (c : context) x = lookup "data segment" c.data x
+let data (c : context) x = lookup "data segment" c.datas x
 let elem (c : context) x = lookup "elem segment" c.elems x
 let local (c : context) x = lookup "local" c.locals x
 let label (c : context) x = lookup "label" c.labels x
@@ -298,11 +298,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     ignore (data c x);
     [I32Type; I32Type; I32Type] --> []
 
-  | DataDrop x ->
-    ignore (memory c (0l @@ e.at));
-    ignore (data c x);
-    [] --> []
-
   | MemoryCopy ->
     ignore (memory c (0l @@ e.at));
     [I32Type; I32Type; I32Type] --> []
@@ -316,14 +311,19 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     ignore (elem c x);
     [I32Type; I32Type; I32Type] --> []
 
+  | TableCopy ->
+    ignore (table c (0l @@ e.at));
+    [I32Type; I32Type; I32Type] --> []
+
+  | DataDrop x ->
+    ignore (memory c (0l @@ e.at));
+    ignore (data c x);
+    [] --> []
+
   | ElemDrop x ->
     ignore (table c (0l @@ e.at));
     ignore (elem c x);
     [] --> []
-
-  | TableCopy ->
-    ignore (table c (0l @@ e.at));
-    [I32Type; I32Type; I32Type] --> []
 
 and check_seq (c : context) (es : instr list) : infer_stack_type =
   match es with
@@ -431,12 +431,12 @@ let check_elemref (c : context) (el : elem) =
 
 let check_elem (c : context) (seg : table_segment) =
   match seg.it with
-  | Active {index; offset; init = (_,init)} ->
+  | Active {index; offset; init} ->
     ignore (table c index);
     check_const c offset I32Type;
     List.iter (check_elemref c) init
-  | Passive (etype,init) ->
-    List.iter (check_elemref c) init
+  | Passive {etype; data} ->
+    List.iter (check_elemref c) data
 
 let check_data (c : context) (seg : memory_segment) =
   match seg.it with
@@ -489,7 +489,7 @@ let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
 
 let check_module (m : module_) =
   let
-    { types; imports; tables; memories; globals; funcs; start; elems; data;
+    { types; imports; tables; memories; globals; funcs; start; elems; datas;
       exports } = m.it
   in
   let c0 =
@@ -502,7 +502,7 @@ let check_module (m : module_) =
       tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
       memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
       elems = List.map (fun elem -> SegmentType) elems;
-      data = List.map (fun data -> SegmentType) data;
+      datas = List.map (fun data -> SegmentType) datas;
     }
   in
   let c =
@@ -513,7 +513,7 @@ let check_module (m : module_) =
   List.iter (check_table c1) tables;
   List.iter (check_memory c1) memories;
   List.iter (check_elem c1) elems;
-  List.iter (check_data c1) data;
+  List.iter (check_data c1) datas;
   List.iter (check_func c) funcs;
   check_start c start;
   ignore (List.fold_left (check_export c) NameSet.empty exports);

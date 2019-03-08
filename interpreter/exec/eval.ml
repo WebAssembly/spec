@@ -82,11 +82,11 @@ let func (inst : module_inst) x = lookup "function" inst.funcs x
 let table (inst : module_inst) x = lookup "table" inst.tables x
 let memory (inst : module_inst) x = lookup "memory" inst.memories x
 let global (inst : module_inst) x = lookup "global" inst.globals x
-let elems (inst : module_inst) x = lookup "elems" inst.elems x
-let data (inst : module_inst) x = lookup "data" inst.data x
+let elem (inst : module_inst) x = lookup "element segment" inst.elems x
+let data (inst : module_inst) x = lookup "data segment" inst.datas x
 let local (frame : frame) x = lookup "local" frame.locals x
 
-let elem inst x i at =
+let any_elem inst x i at =
   match Table.load (table inst x) i with
   | Table.Uninitialized ->
     Trap.error at ("uninitialized element " ^ Int32.to_string i)
@@ -95,7 +95,7 @@ let elem inst x i at =
     Trap.error at ("undefined element " ^ Int32.to_string i)
 
 let func_elem inst x i at =
-  match elem inst x i at with
+  match any_elem inst x i at with
   | FuncElem f -> f
   | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
 
@@ -263,13 +263,8 @@ let rec step (c : config) : config =
           let src = I64_convert.extend_i32_u s in
           (try Memory.init mem bs dst src n; vs', []
           with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
-        | None -> vs', [Trapping "data segment dropped" @@ e.at])
-
-      | DataDrop x, vs ->
-        let seg = data frame.inst x in
-        (match !seg with
-        | Some _ -> seg := None; vs, []
-        | None -> vs, [Trapping "data segment dropped" @@ e.at])
+        | None -> vs', [Trapping "data segment dropped" @@ e.at]
+        )
 
       | MemoryCopy, I32 n :: I32 s :: I32 d :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
@@ -286,22 +281,31 @@ let rec step (c : config) : config =
 
       | TableInit x, I32 n :: I32 s :: I32 d :: vs' ->
         let tab = table frame.inst (0l @@ e.at) in
-        (match !(elems frame.inst x) with
+        (match !(elem frame.inst x) with
         | Some es ->
           (try Table.init tab es d s n; vs', []
           with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
-        | None -> vs', [Trapping "elements segment dropped" @@ e.at])
-
-      | ElemDrop x, vs ->
-        let seg = elems frame.inst x in
-        (match !seg with
-        | Some _ -> seg := None; vs, []
-        | None -> vs, [Trapping "elements segment dropped" @@ e.at])
+        | None -> vs', [Trapping "element segment dropped" @@ e.at]
+        )
 
       | TableCopy, I32 n :: I32 s :: I32 d :: vs' ->
         let tab = table frame.inst (0l @@ e.at) in
         (try Table.copy tab d s n; vs', []
         with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
+
+      | DataDrop x, vs ->
+        let seg = data frame.inst x in
+        (match !seg with
+        | Some _ -> seg := None; vs, []
+        | None -> vs, [Trapping "data segment dropped" @@ e.at]
+        )
+
+      | ElemDrop x, vs ->
+        let seg = elem frame.inst x in
+        (match !seg with
+        | Some _ -> seg := None; vs, []
+        | None -> vs, [Trapping "element segment dropped" @@ e.at]
+        )
 
       | _ ->
         let s1 = string_of_values (List.rev vs) in
@@ -435,22 +439,22 @@ let create_export (inst : module_inst) (ex : export) : export_inst =
     | GlobalExport x -> ExternGlobal (global inst x)
   in name, ext
 
-let elems_list inst init =
+let elem_list inst init =
   let to_elem el =
     match el.it with
     | Null -> Table.Uninitialized
     | Func x -> FuncElem (func inst x)
   in List.map to_elem init
 
-let create_elems (inst : module_inst) (seg : table_segment) : elems_inst =
+let create_elem (inst : module_inst) (seg : table_segment) : elem_inst =
   match seg.it with
   | Active _ -> ref None
-  | Passive (_,init) -> ref (Some (elems_list inst init))
+  | Passive {data; _} -> ref (Some (elem_list inst data))
 
 let create_data (inst : module_inst) (seg : memory_segment) : data_inst =
   match seg.it with
   | Active _ -> ref None
-  | Passive init -> ref (Some init)
+  | Passive {data; _} -> ref (Some data)
 
 
 let init_func (inst : module_inst) (func : func_inst) =
@@ -460,14 +464,14 @@ let init_func (inst : module_inst) (func : func_inst) =
 
 let init_table (inst : module_inst) (seg : table_segment) =
   match seg.it with
-  | Active {index; offset = const; init = (_,init)} ->
+  | Active {index; offset = const; init} ->
     let tab = table inst index in
     let offset = i32 (eval_const inst const) const.at in
-    let elems = elems_list inst init in
+    let elems = elem_list inst init in
     let len = Int32.of_int (List.length elems) in
     (try Table.init tab elems offset 0l len
     with Table.Bounds -> Link.error seg.at "elements segment does not fit table")
-  | Passive init -> ()
+  | Passive _ -> ()
 
 let init_memory (inst : module_inst) (seg : memory_segment) =
   match seg.it with
@@ -478,7 +482,7 @@ let init_memory (inst : module_inst) (seg : memory_segment) =
     let len = Int32.of_int (String.length init) in
     (try Memory.init mem init offset 0L len
     with Memory.Bounds -> Link.error seg.at "data segment does not fit memory")
-  | Passive init -> ()
+  | Passive _ -> ()
 
 
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
@@ -494,7 +498,7 @@ let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
 let init (m : module_) (exts : extern list) : module_inst =
   let
     { imports; tables; memories; globals; funcs; types;
-      exports; elems; data; start
+      exports; elems; datas; start
     } = m.it
   in
   if List.length exts <> List.length imports then
@@ -509,18 +513,18 @@ let init (m : module_) (exts : extern list) : module_inst =
       funcs = inst0.funcs @ fs;
       tables = inst0.tables @ List.map (create_table inst0) tables;
       memories = inst0.memories @ List.map (create_memory inst0) memories;
-      globals = inst0.globals @ List.map (create_global inst0) globals
+      globals = inst0.globals @ List.map (create_global inst0) globals;
     }
   in
   let inst =
     { inst1 with
       exports = List.map (create_export inst1) exports;
-      elems = List.map (create_elems inst1) elems;
-      data = List.map (create_data inst1) data
+      elems = List.map (create_elem inst1) elems;
+      datas = List.map (create_data inst1) datas;
     }
   in
   List.iter (init_func inst) fs;
   List.iter (init_table inst) elems;
-  List.iter (init_memory inst) data;
+  List.iter (init_memory inst) datas;
   Lib.Option.app (fun x -> ignore (invoke (func inst x) [])) start;
   inst

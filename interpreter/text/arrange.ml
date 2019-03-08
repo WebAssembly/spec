@@ -300,7 +300,7 @@ let segment head active passive seg =
   match seg.it with
   | Active {index; offset; init} ->
     Node (head, atom var index :: Node ("offset", const offset) :: active init)
-  | Passive init -> Node (head ^ " passive", passive init)
+  | Passive {etype; data} -> Node (head ^ " passive", passive etype data)
 
 let active_elem el =
   match el.it with
@@ -313,12 +313,12 @@ let passive_elem el =
   | Func x -> Node ("ref.func", [atom var x])
 
 let elems seg =
-  let active (_,init) = list active_elem init in
-  let passive (etype,init) = atom elem_type etype :: list passive_elem init in
+  let active init = list active_elem init in
+  let passive etype init = atom elem_type etype :: list passive_elem init in
   segment "elem" active passive seg
 
 let data seg =
-  segment "data" break_bytes break_bytes seg
+  segment "data" break_bytes (fun _ bs -> break_bytes bs) seg
 
 
 (* Modules *)
@@ -389,7 +389,7 @@ let module_with_var_opt x_opt m =
     list export m.it.exports @
     opt start m.it.start @
     list elems m.it.elems @
-    list data m.it.data
+    list data m.it.datas
   )
 
 let binary_module_with_var_opt x_opt bs =

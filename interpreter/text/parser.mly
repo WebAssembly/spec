@@ -587,25 +587,21 @@ elem :
   | LPAR ELEM bind_var_opt PASSIVE elem_type passive_elemref_list RPAR
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () -> Passive ($5, ($6 c)) @@ at }
+      fun () -> Passive {etype = $5; data = $6 c} @@ at }
   | LPAR ELEM bind_var var offset active_elemref_list RPAR
     { let at = at () in
       fun c -> ignore (bind_elem c $3);
       fun () ->
-      let init = FuncRefType, ($6 c func) in
-      Active {index = $4 c table; offset = $5 c; init} @@ at }
+      Active {index = $4 c table; offset = $5 c; init = $6 c func} @@ at }
   | LPAR ELEM var offset active_elemref_list RPAR
     { let at = at () in
       fun c -> ignore (anon_elem c);
       fun () ->
-      let init = FuncRefType, $5 c func in
-      Active {index = $3 c table; offset = $4 c; init} @@ at }
+      Active {index = $3 c table; offset = $4 c; init = $5 c func} @@ at }
   | LPAR ELEM offset active_elemref_list RPAR  /* Sugar */
     { let at = at () in
       fun c -> ignore (anon_elem c);
-      fun () ->
-      let init = FuncRefType, $4 c func in
-      Active {index = 0l @@ at; offset = $3 c; init} @@ at }
+      fun () -> Active {index = 0l @@ at; offset = $3 c; init = $4 c func} @@ at }
 
 table :
   | LPAR TABLE bind_var_opt table_fields RPAR
@@ -627,8 +623,8 @@ table_fields :
   | elem_type LPAR ELEM active_elemref_list RPAR  /* Sugar */
     { fun c x at ->
       let offset = [i32_const (0l @@ at) @@ at] @@ at in
-      let init' = $4 c func in let size = Int32.of_int (List.length init') in
-      let init = FuncRefType, init' in
+      let init = $4 c func in
+      let size = Lib.List32.length init in
       [{ttype = TableType ({min = size; max = Some size}, $1)} @@ at],
       [Active {index = x; offset; init} @@ at],
       [], [] }
@@ -637,7 +633,7 @@ data :
   | LPAR DATA bind_var_opt PASSIVE string_list RPAR
     { let at = at () in
       fun c -> ignore ($3 c anon_data bind_data);
-      fun () -> Passive $5 @@ at }
+      fun () -> Passive {etype = (); data = $5} @@ at }
  | LPAR DATA bind_var var offset string_list RPAR
    { let at = at () in
      fun c -> ignore (bind_data c $3);
@@ -782,7 +778,7 @@ module_fields1 :
       fun () -> let mems, data, ims, exs = mmf () in let m = mf () in
       if mems <> [] && m.imports <> [] then
         error (List.hd m.imports).at "import after memory definition";
-      { m with memories = mems @ m.memories; data = data @ m.data;
+      { m with memories = mems @ m.memories; datas = data @ m.datas;
         imports = ims @ m.imports; exports = exs @ m.exports } }
   | func module_fields
     { fun c -> let ff = $1 c in let mf = $2 c in
@@ -798,7 +794,7 @@ module_fields1 :
   | data module_fields
     { fun c -> let df = $1 c in let mf = $2 c in
       fun () -> let data = df () in let m = mf () in
-      {m with data = data :: m.data} }
+      {m with datas = data :: m.datas} }
   | start module_fields
     { fun c -> let mf = $2 c in
       fun () -> let m = mf () in let x = $1 c in

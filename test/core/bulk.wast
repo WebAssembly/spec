@@ -241,10 +241,10 @@
 
 (invoke "init_passive")
 (invoke "drop_passive")
-(assert_trap (invoke "drop_passive") "elements segment dropped")
-(assert_trap (invoke "init_passive") "elements segment dropped")
-(assert_trap (invoke "drop_active") "elements segment dropped")
-(assert_trap (invoke "init_active") "elements segment dropped")
+(assert_trap (invoke "drop_passive") "element segment dropped")
+(assert_trap (invoke "init_passive") "element segment dropped")
+(assert_trap (invoke "drop_active") "element segment dropped")
+(assert_trap (invoke "init_active") "element segment dropped")
 
 
 ;; table.copy

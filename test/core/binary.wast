@@ -678,7 +678,10 @@
     "\41\00"
     "\41\00"
     "\fc\08\00\00"             ;; memory.init
-    "\0b")                     ;; end
+    "\0b"
+
+    "\0b\03\01\01\00"          ;; Data section
+  )                            ;; end
   "data count section required")
 
 ;; data.drop requires a datacount section
@@ -694,7 +697,10 @@
     ;; function 0
     "\05\00"
     "\fc\09\00"                ;; data.drop
-    "\0b")                     ;; end
+    "\0b"
+
+    "\0b\03\01\01\00"          ;; Data section
+  )                            ;; end
   "data count section required")
 
 ;; passive element segment containing opcode other than ref.func or ref.null

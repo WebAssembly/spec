@@ -5,12 +5,12 @@ type stream =
   name : string;
   bytes : string;
   pos : int ref;
-  has_data_count : bool ref;
+  need_data_count : bool ref;
 }
 
 exception EOS
 
-let stream name bs = {name; bytes = bs; pos = ref 0; has_data_count = ref false}
+let stream name bs = {name; bytes = bs; pos = ref 0; need_data_count = ref false}
 
 let len s = String.length s.bytes
 let pos s = !(s.pos)
@@ -202,18 +202,15 @@ let memop s =
   let offset = vu32 s in
   Int32.to_int align, offset
 
-let check_data_count s =
-  require !(s.has_data_count) s (pos s - 1) "data count section required"
-
 let misc_instr s =
   let pos = pos s in
   match op s with
   | 0x08 ->
-    check_data_count s;
     let x = at var s in
     zero_flag s;
+    s.need_data_count := true;
     memory_init x
-  | 0x09 -> check_data_count s; data_drop (at var s)
+  | 0x09 -> s.need_data_count := true; data_drop (at var s)
   | 0x0a -> zero_flag s; zero_flag s; memory_copy
   | 0x0b -> zero_flag s; memory_fill
   | 0x0c ->
@@ -625,8 +622,8 @@ let segment active passive s =
     let init = active s in
     Active {index; offset; init}
   | 1l ->
-    let init = passive s in
-    Passive init
+    let etype, data = passive s in
+    Passive {etype; data}
   | 2l ->
     let index = at var s in
     let offset = const s in
@@ -634,7 +631,8 @@ let segment active passive s =
     Active {index; offset; init}
   | _ -> error s (pos s - 1) "invalid segment kind"
 
-let active_elem s = Func (at var s)
+let active_elem s =
+  Func (at var s)
 
 let passive_elem s =
   match u8 s with
@@ -646,7 +644,7 @@ let passive_elem s =
   | _ -> error s (pos s - 1) "invalid elem"
 
 let active_elem_segment s =
-  FuncRefType, vec (at active_elem) s
+  vec (at active_elem) s
 
 let passive_elem_segment s =
   let etype = elem_type s in
@@ -663,7 +661,7 @@ let elem_section s =
 (* Data section *)
 
 let memory_segment s =
-  segment string string s
+  segment string (fun s -> (), string s) s
 
 let data_section s =
   section `DataSection (vec (at memory_segment)) [] s
@@ -671,11 +669,11 @@ let data_section s =
 
 (* DataCount section *)
 
+let data_count s =
+  Some (vu32 s)
+
 let data_count_section s =
-  let contents s =
-    s.has_data_count := true;
-    opt vu32 true s
-  in section `DataCountSection contents None s
+  section `DataCountSection data_count None s
 
 
 (* Custom section *)
@@ -722,18 +720,19 @@ let module_ s =
   iterate custom_section s;
   let func_bodies = code_section s in
   iterate custom_section s;
-  let data = data_section s in
+  let datas = data_section s in
   iterate custom_section s;
   require (pos s = len s) s (len s) "junk after last section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";
-  require
-    (data_count = None || data_count = Some (Int32.of_int (List.length data)))
+  require (data_count = None || data_count = Some (Lib.List32.length datas))
     s (len s) "data count and data section have inconsistent lengths";
+  require (not !(s.need_data_count) || data_count <> None)
+    s (len s) "data count section required";
   let funcs =
     List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
       func_types func_bodies
-  in {types; tables; memories; globals; funcs; imports; exports; elems; data; start}
+  in {types; tables; memories; globals; funcs; imports; exports; elems; datas; start}
 
 
 let decode name bs = at module_ (stream name bs)

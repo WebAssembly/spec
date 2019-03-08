@@ -485,10 +485,9 @@ let encode m =
         else begin
           u8 0x02; var index
         end;
-        const offset;
-        active init
-      | Passive init ->
-        u8 0x01; passive init
+        const offset; active init
+      | Passive {etype; data} ->
+        u8 0x01; passive etype data
 
     let active_elem el =
       match el.it with
@@ -501,8 +500,8 @@ let encode m =
       | Func x -> u8 0xd2; var x; end_ ()
 
     let table_segment seg =
-      let active (_,init) = vec active_elem init in
-      let passive (etype,init) = elem_type etype; vec passive_elem init in
+      let active init = vec active_elem init in
+      let passive etype data = elem_type etype; vec passive_elem data in
       segment active passive seg
 
     let elem_section elems =
@@ -510,15 +509,14 @@ let encode m =
 
     (* Data section *)
     let memory_segment seg =
-      segment string string seg
+      segment string (fun _ s -> string s) seg
 
-    let data_section data =
-      section 11 (vec memory_segment) data (data <> [])
+    let data_section datas =
+      section 11 (vec memory_segment) datas (datas <> [])
 
-    (* DataCount section *)
-
-    let data_count_section data =
-      section 12 len (List.length data) (data <> [])
+    (* Data count section *)
+    let data_count_section datas =
+      section 12 len (List.length datas) true
 
     (* Module *)
 
@@ -534,8 +532,8 @@ let encode m =
       export_section m.it.exports;
       start_section m.it.start;
       elem_section m.it.elems;
-      data_count_section m.it.data;
+      data_count_section m.it.datas;
       code_section m.it.funcs;
-      data_section m.it.data
+      data_section m.it.datas
   end
   in E.module_ m; to_string s

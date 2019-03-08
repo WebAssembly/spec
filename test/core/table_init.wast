@@ -231,7 +231,7 @@
   (func (export "test")
     (elem.drop 2)
     ))
-(assert_trap (invoke "test") "elements segment dropped")
+(assert_trap (invoke "test") "element segment dropped")
 
 (module
   (table 30 30 funcref)
@@ -252,7 +252,7 @@
   (func (export "test")
     (table.init 2 (i32.const 12) (i32.const 1) (i32.const 1))
     ))
-(assert_trap (invoke "test") "elements segment dropped")
+(assert_trap (invoke "test") "element segment dropped")
 
 (module
   (table 30 30 funcref)
@@ -294,7 +294,7 @@
   (func (export "test")
     (elem.drop 1)
     (elem.drop 1)))
-(assert_trap (invoke "test") "elements segment dropped")
+(assert_trap (invoke "test") "element segment dropped")
 
 (module
   (table 30 30 funcref)
@@ -315,7 +315,7 @@
   (func (export "test")
     (elem.drop 1)
     (table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))))
-(assert_trap (invoke "test") "elements segment dropped")
+(assert_trap (invoke "test") "element segment dropped")
 
 (module
   (table 30 30 funcref)
