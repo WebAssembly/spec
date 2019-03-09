@@ -515,8 +515,8 @@ let encode m =
       section 11 (vec memory_segment) datas (datas <> [])
 
     (* Data count section *)
-    let data_count_section datas =
-      section 12 len (List.length datas) true
+    let data_count_section datas m =
+      section 12 len (List.length datas) Free.((module_ m).datas <> Set.empty)
 
     (* Module *)
 
@@ -532,7 +532,7 @@ let encode m =
       export_section m.it.exports;
       start_section m.it.start;
       elem_section m.it.elems;
-      data_count_section m.it.datas;
+      data_count_section m.it.datas m;
       code_section m.it.funcs;
       data_section m.it.datas
   end

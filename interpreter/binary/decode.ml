@@ -5,12 +5,11 @@ type stream =
   name : string;
   bytes : string;
   pos : int ref;
-  need_data_count : bool ref;
 }
 
 exception EOS
 
-let stream name bs = {name; bytes = bs; pos = ref 0; need_data_count = ref false}
+let stream name bs = {name; bytes = bs; pos = ref 0}
 
 let len s = String.length s.bytes
 let pos s = !(s.pos)
@@ -208,9 +207,8 @@ let misc_instr s =
   | 0x08 ->
     let x = at var s in
     zero_flag s;
-    s.need_data_count := true;
     memory_init x
-  | 0x09 -> s.need_data_count := true; data_drop (at var s)
+  | 0x09 -> data_drop (at var s)
   | 0x0a -> zero_flag s; zero_flag s; memory_copy
   | 0x0b -> zero_flag s; memory_fill
   | 0x0c ->
@@ -727,7 +725,8 @@ let module_ s =
     s (len s) "function and code section have inconsistent lengths";
   require (data_count = None || data_count = Some (Lib.List32.length datas))
     s (len s) "data count and data section have inconsistent lengths";
-  require (not !(s.need_data_count) || data_count <> None)
+  require (data_count <> None ||
+    List.for_all Free.(fun f -> (func f).datas = Set.empty) func_bodies)
     s (len s) "data count section required";
   let funcs =
     List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
