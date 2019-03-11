@@ -364,11 +364,14 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             2. Let |tableaddr| be |v|.\[[Table]]
             1. Let |externtable| be the [=external value=] [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr|.
             1. [=Append=] |externtable| to |imports|.
-    1. Let (|store|, |instance|) be [=instantiate_module=](|store|, |module|, |imports|).
-    1. If |instance| is [=error=], throw an appropriate exception type:
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+    1. Let |result| be [=instantiate_module=](|store|, |module|, |imports|).
+    1. If |result| is [=error=], throw an appropriate exception type:
         * A {{LinkError}} exception for most cases which occur during linking.
         * If the error came when running the start function, throw a {{RuntimeError}} for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.
         * Another error type if appropriate, for example an out-of-memory exception, as documented in <a href="#errors">the WebAssembly error mapping</a>.
+    1. Let (|store|, |instance|) be |result|.
+    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. Let |exportsObject| be ! [=ObjectCreate=](null).
     1. For each pair (|name|, |externtype|) in [=module_exports=](|module|),
         1. Let |externval| be [=get_export=](|instance|, |name|).
