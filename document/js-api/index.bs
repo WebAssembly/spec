@@ -393,8 +393,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
         Note: the validity and uniqueness checks performed during [=WebAssembly module validation=] ensure that each property name is valid and no properties are defined twice.
     1. Perform ! [=SetIntegrityLevel=](|exportsObject|, `"frozen"`).
-    1. Let |instanceObject| be a new {{Instance}} object whose internal \[[Instance]] slot is set to |instance| and the \[[Exports]] slot to |exportsObject|.
-    1. Return |instanceObject|.
+    1. Return a new {{Instance}} object whose internal \[[Instance]] slot is set to |instance| and the \[[Exports]] slot to |exportsObject|.
 </div>
 
 <div algorithm="instantiate">
