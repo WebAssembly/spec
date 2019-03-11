@@ -396,10 +396,8 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. Return a new {{Instance}} object whose internal \[[Instance]] slot is set to |instance| and the \[[Exports]] slot to |exportsObject|.
 </div>
 
-<div algorithm="instantiate">
-  To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
-    1. Let |module| be |moduleObject|.\[[Module]].
-    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
+<div algorithm>
+  To <dfn>instantiate the core of a WebAssembly module</dfn> from a module |module| and imports |imports|, perform the following steps:
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |result| be [=instantiate_module=](|store|, |module|, |imports|).
     1. If |result| is [=error=], throw an appropriate exception type:
@@ -408,6 +406,14 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
         * Another error type if appropriate, for example an out-of-memory exception, as documented in <a href="#errors">the WebAssembly error mapping</a>.
     1. Let (|store|, |instance|) be |result|.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
+    1. Return |instance|.
+</div>
+
+<div algorithm="instantiate">
+  To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
+    1. Let |module| be |moduleObject|.\[[Module]].
+    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
+    1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
     1. [=Create an instance object=] from |module| and |instance|, and let the result be |instanceObject|.
     1. Return |instanceObject|.
 </div>
