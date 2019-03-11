@@ -316,9 +316,8 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| and return the result.
 </div>
 
-<div algorithm="instantiate">
-  To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
-    1. Let |module| be |moduleObject|.\[[Module]].
+<div algorithm="read-the-imports">
+  To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject|, perform the following steps:
     1. If |module|.[=𝗂𝗆𝗉𝗈𝗋𝗍𝗌=] is not an empty list, and |importObject| is undefined, throw a {{TypeError}} exception.
     1. Let |imports| be an empty [=list=] of [=external value=]s.
     1. For each (|moduleName|, |componentName|, |externtype|) in [=module_imports=](|module|), do
@@ -349,17 +348,24 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
                 1. Throw a {{LinkError}} exception.
             1. Let |externglobal| be [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr|.
             1. [=Append=] |externglobal| to |imports|.
-        1. If |externtype| is of the form [=𝗆𝖾𝗆=] |memtype|,
+        1. If |externtype| is of the form [=𝗆𝖾𝗆=] <var ignore>memtype</var>,
             1. If |v| is not a {{Memory}} object, throw a {{LinkError}} exception.
             1. Note: [=instantiate_module=] invoked below will check the imported {{Memory}}'s size against the importing module's requirements.
             1. Let |externmem| be the [=external value=] [=external value|𝗆𝖾𝗆=]  |v|.\[[Memory]].
             1. [=Append=] |externmem| to |imports|.
-        1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] |tabletype|,
+        1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] <var ignore>tabletype</var>,
             1. If |v| is not a {{Table}} instance, throw a {{LinkError}} exception.
             1. Note: The table's length, etc. is checked by [=instantiate_module=] invoked below.
             1. Let |tableaddr| be |v|.\[[Table]]
             1. Let |externtable| be the [=external value=] [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr|.
             1. [=Append=] |externtable| to |imports|.
+    1. Return |imports|.
+</div>
+
+<div algorithm="instantiate">
+  To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
+    1. Let |module| be |moduleObject|.\[[Module]].
+    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |result| be [=instantiate_module=](|store|, |module|, |imports|).
     1. If |result| is [=error=], throw an appropriate exception type:
@@ -372,7 +378,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. For each pair (|name|, |externtype|) in [=module_exports=](|module|),
         1. Let |externval| be [=get_export=](|instance|, |name|).
         1. Assert: |externval| is not [=error=].
-        1. If |externtype| is of the form [=𝖿𝗎𝗇𝖼=] |functype|,
+        1. If |externtype| is of the form [=𝖿𝗎𝗇𝖼=] <var ignore>functype</var>,
             1. Assert: |externval| is of the form [=external value|𝖿𝗎𝗇𝖼=] |funcaddr|.
             1. Let [=external value|𝖿𝗎𝗇𝖼=] |funcaddr| be |externval|.
             1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
@@ -382,12 +388,12 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. Let [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr| be |externval|.
             1. Let |global| be [=create a global object|a new Global object=] created from |globaladdr|.
             1. Let |value| be |global|.
-        1. If |externtype| is of the form [=𝗆𝖾𝗆=] |memtype|,
+        1. If |externtype| is of the form [=𝗆𝖾𝗆=] <var ignore>memtype</var>,
             1. Assert: |externval| is of the form [=external value|𝗆𝖾𝗆=] |memaddr|.
             1. Let [=external value|𝗆𝖾𝗆=] |memaddr| be |externval|.
             1. Let |memory| be [=create a memory object|a new Memory object=] created from |memaddr|.
             1. Let |value| be |memory|.
-        1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] |tabletype|,
+        1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] <var ignore>tabletype</var>,
             1. Assert: |externval| is of the form [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr|.
             1. Let [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr| be |externval|.
             1. Let |table| be [=create a Table object|a new Table object=] created from |tableaddr|.
