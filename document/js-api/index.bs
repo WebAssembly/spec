@@ -362,18 +362,8 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. Return |imports|.
 </div>
 
-<div algorithm="instantiate">
-  To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
-    1. Let |module| be |moduleObject|.\[[Module]].
-    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
-    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |result| be [=instantiate_module=](|store|, |module|, |imports|).
-    1. If |result| is [=error=], throw an appropriate exception type:
-        * A {{LinkError}} exception for most cases which occur during linking.
-        * If the error came when running the start function, throw a {{RuntimeError}} for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.
-        * Another error type if appropriate, for example an out-of-memory exception, as documented in <a href="#errors">the WebAssembly error mapping</a>.
-    1. Let (|store|, |instance|) be |result|.
-    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
+<div algorithm>
+  To <dfn>create an instance object</dfn> from a WebAssembly module |module| and instance |instance|, perform the following steps:
     1. Let |exportsObject| be ! [=ObjectCreate=](null).
     1. For each pair (|name|, |externtype|) in [=module_exports=](|module|),
         1. Let |externval| be [=get_export=](|instance|, |name|).
@@ -404,6 +394,22 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
         Note: the validity and uniqueness checks performed during [=WebAssembly module validation=] ensure that each property name is valid and no properties are defined twice.
     1. Perform ! [=SetIntegrityLevel=](|exportsObject|, `"frozen"`).
     1. Let |instanceObject| be a new {{Instance}} object whose internal \[[Instance]] slot is set to |instance| and the \[[Exports]] slot to |exportsObject|.
+    1. Return |instanceObject|.
+</div>
+
+<div algorithm="instantiate">
+  To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
+    1. Let |module| be |moduleObject|.\[[Module]].
+    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+    1. Let |result| be [=instantiate_module=](|store|, |module|, |imports|).
+    1. If |result| is [=error=], throw an appropriate exception type:
+        * A {{LinkError}} exception for most cases which occur during linking.
+        * If the error came when running the start function, throw a {{RuntimeError}} for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.
+        * Another error type if appropriate, for example an out-of-memory exception, as documented in <a href="#errors">the WebAssembly error mapping</a>.
+    1. Let (|store|, |instance|) be |result|.
+    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
+    1. [=Create an instance object=] from |module| and |instance|, and let the result be |instanceObject|.
     1. Return |instanceObject|.
 </div>
 
