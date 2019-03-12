@@ -409,6 +409,15 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. Return |instance|.
 </div>
 
+<div algorithm>
+  To <dfn>asynchronously instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
+    1. Let |promise| be [=a new promise=].
+    1. [=Queue a task=] to perform the following steps:
+        1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |moduleObject| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
+        1. [=Resolve=] |promise| with |instance|.
+    1. Return |promise|.
+</div>
+
 <div algorithm="instantiate">
   To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
     1. Let |module| be |moduleObject|.\[[Module]].
@@ -442,11 +451,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
 <div algorithm>
   The <dfn method for="WebAssembly">instantiate(|moduleObject|, |importObject|)</dfn> method, when invoked, performs the following steps:
-    1. Let |promise| be [=a new promise=].
-    1. [=Queue a task=] to perform the following steps:
-        1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |moduleObject| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
-        1. [=Resolve=] |promise| with |instance|.
-    1. Return |promise|
+    1. [=asynchronously instantiate a WebAssembly module|Asynchronously instantiate the WebAssembly module=] |moduleObject| importing |importObject|, and return the result.
 </div>
 
 Note: A follow-on streaming API is documented in the <a href="https://webassembly.github.io/spec/web-api/index.html">WebAssembly Web API</a>.
