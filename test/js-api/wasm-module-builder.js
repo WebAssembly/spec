@@ -622,7 +622,7 @@ class WasmModuleBuilder {
     return this;
   }
 
-  toUint8Array(debug = false) {
+  toBuffer(debug = false) {
     let binary = new Binary;
     let wasm = this;
 
@@ -905,12 +905,8 @@ class WasmModuleBuilder {
     return binary.trunc_buffer();
   }
 
-  toBuffer(debug = false) {
-    return this.toUint8Array(debug).buffer;
-  }
-
   toArray(debug = false) {
-    return Array.from(this.toUint8Array(debug));
+    return Array.from(this.toBuffer(debug));
   }
 
   instantiate(ffi) {

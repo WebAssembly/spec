@@ -96,7 +96,7 @@ test(() => {
   });
 
   const builder = new WasmModuleBuilder();
-  builder.addExplicitSection(binary);
+  builder.addExplicitSection(binary.trunc_buffer());
   const buffer = builder.toBuffer()
   const module = new WebAssembly.Module(buffer);
 
@@ -126,7 +126,7 @@ test(() => {
   });
 
   const builder = new WasmModuleBuilder();
-  builder.addExplicitSection(binary);
+  builder.addExplicitSection(binary.trunc_buffer());
   const buffer = builder.toBuffer();
   const module = new WebAssembly.Module(buffer);
 
@@ -147,7 +147,7 @@ test(() => {
   });
 
   const builder = new WasmModuleBuilder();
-  builder.addExplicitSection(binary);
+  builder.addExplicitSection(binary.trunc_buffer());
   const buffer = builder.toBuffer();
   const module = new WebAssembly.Module(buffer);
 
