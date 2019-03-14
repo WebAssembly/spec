@@ -364,7 +364,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 </div>
 
 <div algorithm>
-  To <dfn>create an instance object</dfn> from a WebAssembly module |module| and instance |instance|, perform the following steps:
+  To <dfn>create an exports object</dfn> from a WebAssembly module |module| and instance |instance|, perform the following steps:
     1. Let |exportsObject| be ! [=ObjectCreate=](null).
     1. For each pair (|name|, |externtype|) in [=module_exports=](|module|),
         1. Let |externval| be [=instance_export=](|instance|, |name|).
@@ -394,6 +394,12 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
         Note: the validity and uniqueness checks performed during [=WebAssembly module validation=] ensure that each property name is valid and no properties are defined twice.
     1. Perform ! [=SetIntegrityLevel=](|exportsObject|, `"frozen"`).
+    1. Return |exportsObject|.
+</div>
+
+<div algorithm>
+  To <dfn>create an instance object</dfn> from a WebAssembly module |module| and instance |instance|, perform the following steps:
+    1. [=Create an exports object=] from |module| and |instance| and let |exportsObject| be the result.
     1. Return a new {{Instance}} object whose internal \[[Instance]] slot is set to |instance| and the \[[Exports]] slot to |exportsObject|.
 </div>
 
