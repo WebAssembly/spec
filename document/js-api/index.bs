@@ -738,7 +738,7 @@ enum ValueType {
 };
 </pre>
 
-Note: this type may be extended with additional cases in future versions of WebAssembly. Client code should not assume that no other constants can occur.
+Note: this type may be extended with additional cases in future versions of WebAssembly.
 
 <pre class="idl">
 dictionary GlobalDescriptor {
