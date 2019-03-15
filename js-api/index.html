@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version 9c9e00cfdaddb9b81439182b02ae23e5d5b65b2d" name="generator">
+  <meta content="Bikeshed version 216244e56bff167005cb8814f82a6fa7e1a0661f" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="16a91bd79e389bf88c3a69523b510476f6ab9868" name="document-revision">
+  <meta content="2f5d8e761b67325c6dd3501b56b603199264572b" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1197,8 +1197,16 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://www
     </ol>
    </div>
    <h3 class="heading settled" data-level="3.5" id="globals"><span class="secno">3.5. </span><span class="content">Globals</span><a class="self-link" href="#globals"></a></h3>
+<pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-valuetype"><code><c- g>ValueType</c-></code></dfn> {
+  <dfn class="idl-code" data-dfn-for="ValueType" data-dfn-type="enum-value" data-export id="dom-valuetype-i32"><code><c- s>"i32"</c-></code><a class="self-link" href="#dom-valuetype-i32"></a></dfn>,
+  <dfn class="idl-code" data-dfn-for="ValueType" data-dfn-type="enum-value" data-export id="dom-valuetype-i64"><code><c- s>"i64"</c-></code><a class="self-link" href="#dom-valuetype-i64"></a></dfn>,
+  <dfn class="idl-code" data-dfn-for="ValueType" data-dfn-type="enum-value" data-export id="dom-valuetype-f32"><code><c- s>"f32"</c-></code><a class="self-link" href="#dom-valuetype-f32"></a></dfn>,
+  <dfn class="idl-code" data-dfn-for="ValueType" data-dfn-type="enum-value" data-export id="dom-valuetype-f64"><code><c- s>"f64"</c-></code><a class="self-link" href="#dom-valuetype-f64"></a></dfn>
+};
+</pre>
+   <p class="note" role="note"><span>Note:</span> this type may be extended with additional cases in future versions of WebAssembly.</p>
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-globaldescriptor"><code><c- g>GlobalDescriptor</c-></code></dfn> {
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <dfn class="idl-code" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-globaldescriptor-value"><code><c- g>value</c-></code><a class="self-link" href="#dom-globaldescriptor-value"></a></dfn>;
+  <c- b>required</c-> <a class="n" data-link-type="idl-name" href="#enumdef-valuetype" id="ref-for-enumdef-valuetype"><c- n>ValueType</c-></a> <dfn class="idl-code" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="ValueType " id="dom-globaldescriptor-value"><code><c- g>value</c-></code><a class="self-link" href="#dom-globaldescriptor-value"></a></dfn>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean①"><c- b>boolean</c-></a> <dfn class="idl-code" data-default="false" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="boolean " id="dom-globaldescriptor-mutable"><code><c- g>mutable</c-></code><a class="self-link" href="#dom-globaldescriptor-mutable"></a></dfn> = <c- b>false</c->;
 };
 
@@ -1245,8 +1253,6 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://www
       <p>If <var>s</var> equals "f32", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype③">𝖿𝟥𝟤</a>.</p>
      <li data-md>
       <p>If <var>s</var> equals "f64", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype④">𝖿𝟨𝟦</a>.</p>
-     <li data-md>
-      <p>Otherwise, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a></code> exception.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="DefaultValue">
@@ -1281,7 +1287,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://www
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>If <var>valuetype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑨">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror④">TypeError</a></code> exception.</p>
+        <p>If <var>valuetype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑨">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a></code> exception.</p>
        <li data-md>
         <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①">ToWebAssemblyValue</a>(<var>v</var>, <var>valuetype</var>).</p>
       </ol>
@@ -1307,7 +1313,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://www
      <li data-md>
       <p>Let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-type-global" id="ref-for-embed-type-global">type_global</a>(<var>store</var>, <var>globaladdr</var>).</p>
      <li data-md>
-      <p>If <var>globaltype</var> is of the form <var>mut</var> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①⓪">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑤">TypeError</a></code>.</p>
+      <p>If <var>globaltype</var> is of the form <var>mut</var> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①⓪">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror④">TypeError</a></code>.</p>
      <li data-md>
       <p>Let <var>value</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-read-global" id="ref-for-embed-read-global">read_global</a>(<var>store</var>, <var>globaladdr</var>).</p>
      <li data-md>
@@ -1333,9 +1339,9 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://www
      <li data-md>
       <p>Let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-type-global" id="ref-for-embed-type-global①">type_global</a>(<var>store</var>, <var>globaladdr</var>), where <var>globaltype</var> is of the form <var>mut</var> <var>valuetype</var>.</p>
      <li data-md>
-      <p>If <var>mut</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut③">const</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">TypeError</a></code>.</p>
+      <p>If <var>mut</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut③">const</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑤">TypeError</a></code>.</p>
      <li data-md>
-      <p>If <var>valuetype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①①">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">TypeError</a></code>.</p>
+      <p>If <var>valuetype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①①">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">TypeError</a></code>.</p>
      <li data-md>
       <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue②">ToWebAssemblyValue</a>(<var>v</var>, <var>valuetype</var>).</p>
      <li data-md>
@@ -1437,7 +1443,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let [<var>parameters</var>] → [<var>results</var>] be <var>functype</var>.</p>
      <li data-md>
-      <p>If <var>parameters</var> or <var>results</var> contains an <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①②">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">TypeError</a></code>.</p>
+      <p>If <var>parameters</var> or <var>results</var> contains an <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①②">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">TypeError</a></code>.</p>
       <p class="note" role="note"><span>Note:</span> the above error is thrown each time the [[Call]] method is invoked.</p>
      <li data-md>
       <p>Let <var>args</var> be an empty list of WebAssembly values.</p>
@@ -1479,7 +1485,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p class="assertion">Assert: <var>results</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a> is at most one.</p>
      <li data-md>
-      <p>If either <var>parameters</var> or <var>results</var> contains <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①③">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">TypeError</a></code>.</p>
+      <p>If either <var>parameters</var> or <var>results</var> contains <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①③">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">TypeError</a></code>.</p>
      <li data-md>
       <p>Let <var>arguments</var> be a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a> of the arguments of the invocation of this function.</p>
      <li data-md>
@@ -1697,11 +1703,13 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#exported-function-cache">Exported Function cache</a><span>, in §2.2</span>
    <li><a href="#dom-instance-exports">exports</a><span>, in §3.2</span>
    <li><a href="#dom-module-exports">exports(moduleObject)</a><span>, in §3.1</span>
+   <li><a href="#dom-valuetype-f32">"f32"</a><span>, in §3.5</span>
+   <li><a href="#dom-valuetype-f64">"f64"</a><span>, in §3.5</span>
    <li><a href="#dom-importexportkind-function">"function"</a><span>, in §3.1</span>
    <li><a href="#getglobalvalue">GetGlobalValue</a><span>, in §3.5</span>
    <li><a href="#dom-table-get">get(index)</a><span>, in §3.4</span>
-   <li><a href="#dom-importexportkind-global">"global"</a><span>, in §3.1</span>
    <li><a href="#global">Global</a><span>, in §3.5</span>
+   <li><a href="#dom-importexportkind-global">"global"</a><span>, in §3.1</span>
    <li><a href="#dictdef-globaldescriptor">GlobalDescriptor</a><span>, in §3.5</span>
    <li><a href="#dom-global-global">Global(descriptor, v)</a><span>, in §3.5</span>
    <li><a href="#global-object-cache">Global object cache</a><span>, in §2.2</span>
@@ -1711,6 +1719,8 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><a href="#dom-memory-grow">method for Memory</a><span>, in §3.3</span>
      <li><a href="#dom-table-grow">method for Table</a><span>, in §3.4</span>
     </ul>
+   <li><a href="#dom-valuetype-i32">"i32"</a><span>, in §3.5</span>
+   <li><a href="#dom-valuetype-i64">"i64"</a><span>, in §3.5</span>
    <li><a href="#identified-with">identified with</a><span>, in §2.1</span>
    <li><a href="#enumdef-importexportkind">ImportExportKind</a><span>, in §3.1</span>
    <li><a href="#dom-module-imports">imports(moduleObject)</a><span>, in §3.1</span>
@@ -1745,8 +1755,8 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><a href="#dom-memorydescriptor-maximum">dict-member for MemoryDescriptor</a><span>, in §3.3</span>
      <li><a href="#dom-tabledescriptor-maximum">dict-member for TableDescriptor</a><span>, in §3.4</span>
     </ul>
-   <li><a href="#dom-importexportkind-memory">"memory"</a><span>, in §3.1</span>
    <li><a href="#memory">Memory</a><span>, in §3.3</span>
+   <li><a href="#dom-importexportkind-memory">"memory"</a><span>, in §3.1</span>
    <li><a href="#dictdef-memorydescriptor">MemoryDescriptor</a><span>, in §3.3</span>
    <li><a href="#dom-memory-memory">Memory(descriptor)</a><span>, in §3.3</span>
    <li><a href="#memory-object-cache">Memory object cache</a><span>, in §2.2</span>
@@ -1776,8 +1786,8 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#string-value-of-the-extern-type">string value of the extern type</a><span>, in §3.1</span>
    <li><a href="#dom-importexportkind-table">"table"</a><span>, in §3.1</span>
    <li><a href="#table">Table</a><span>, in §3.4</span>
-   <li><a href="#dictdef-tabledescriptor">TableDescriptor</a><span>, in §3.4</span>
    <li><a href="#dom-table-table">Table(descriptor)</a><span>, in §3.4</span>
+   <li><a href="#dictdef-tabledescriptor">TableDescriptor</a><span>, in §3.4</span>
    <li><a href="#enumdef-tablekind">TableKind</a><span>, in §3.4</span>
    <li><a href="#table-object-cache">Table object cache</a><span>, in §2.2</span>
    <li><a href="#tojsvalue">ToJSValue</a><span>, in §3.6</span>
@@ -1791,6 +1801,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><a href="#dom-globaldescriptor-value">dict-member for GlobalDescriptor</a><span>, in §3.5</span>
     </ul>
    <li><a href="#dom-global-valueof">valueOf()</a><span>, in §3.5</span>
+   <li><a href="#enumdef-valuetype">ValueType</a><span>, in §3.5</span>
    <li><a href="#namespacedef-webassembly">WebAssembly</a><span>, in §3</span>
    <li><a href="#dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a><span>, in §3</span>
   </ul>
@@ -1840,8 +1851,8 @@ In practice, an implementation may run out of resources for valid modules below 
    <ul>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror">3. The WebAssembly Namespace</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror①">(2)</a>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror②">3.4. Tables</a>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror③">3.5. Globals</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror④">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑤">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">(4)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">(5)</a>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">3.6. Exported Functions</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">(2)</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror③">3.5. Globals</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror④">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑤">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">(4)</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">3.6. Exported Functions</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-agent">
@@ -2566,7 +2577,6 @@ In practice, an implementation may run out of resources for valid modules below 
    <a href="https://heycam.github.io/webidl/#idl-USVString">https://heycam.github.io/webidl/#idl-USVString</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-USVString">3.1. Modules</a> <a href="#ref-for-idl-USVString①">(2)</a> <a href="#ref-for-idl-USVString②">(3)</a>
-    <li><a href="#ref-for-idl-USVString③">3.5. Globals</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-boolean">
@@ -2821,7 +2831,7 @@ In practice, an implementation may run out of resources for valid modules below 
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-moduleexportdescriptor"><code><c- g>ModuleExportDescriptor</c-></code></a> {
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString④"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-moduleexportdescriptor-name"><code><c- g>name</c-></code></a>;
+  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-moduleexportdescriptor-name"><code><c- g>name</c-></code></a>;
   <c- b>required</c-> <a class="n" data-link-type="idl-name" href="#enumdef-importexportkind" id="ref-for-enumdef-importexportkind②"><c- n>ImportExportKind</c-></a> <a data-type="ImportExportKind " href="#dom-moduleexportdescriptor-kind"><code><c- g>kind</c-></code></a>;
   // Note: Other fields such as signature may be added in the future.
 };
@@ -2875,8 +2885,15 @@ In practice, an implementation may run out of resources for valid modules below 
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long①⓪①"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="unsigned long" href="#dom-table-length" id="ref-for-dom-table-length①"><c- g>length</c-></a>;
 };
 
+<c- b>enum</c-> <a href="#enumdef-valuetype"><code><c- g>ValueType</c-></code></a> {
+  <a href="#dom-valuetype-i32"><code><c- s>"i32"</c-></code></a>,
+  <a href="#dom-valuetype-i64"><code><c- s>"i64"</c-></code></a>,
+  <a href="#dom-valuetype-f32"><code><c- s>"f32"</c-></code></a>,
+  <a href="#dom-valuetype-f64"><code><c- s>"f64"</c-></code></a>
+};
+
 <c- b>dictionary</c-> <a href="#dictdef-globaldescriptor"><code><c- g>GlobalDescriptor</c-></code></a> {
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③①"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-globaldescriptor-value"><code><c- g>value</c-></code></a>;
+  <c- b>required</c-> <a class="n" data-link-type="idl-name" href="#enumdef-valuetype" id="ref-for-enumdef-valuetype①"><c- n>ValueType</c-></a> <a data-type="ValueType " href="#dom-globaldescriptor-value"><code><c- g>value</c-></code></a>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean①①"><c- b>boolean</c-></a> <a data-default="false" data-type="boolean " href="#dom-globaldescriptor-mutable"><code><c- g>mutable</c-></code></a> = <c- b>false</c->;
 };
 
@@ -3288,6 +3305,12 @@ In practice, an implementation may run out of resources for valid modules below 
    <b><a href="#dom-table-set">#dom-table-set</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-table-set">3.4. Tables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="enumdef-valuetype">
+   <b><a href="#enumdef-valuetype">#enumdef-valuetype</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-enumdef-valuetype">3.5. Globals</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dictdef-globaldescriptor">
