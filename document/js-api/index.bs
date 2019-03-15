@@ -763,6 +763,11 @@ enum WebAssemblyValueType {
   "f32",
   "f64"
 };
+</pre>
+
+Note: the WebAssemblyValueType enum is subject to future changes; several incomming WebAssembly GC proposals will add new values or extend the types. 
+
+<pre class="idl">
 dictionary GlobalDescriptor {
   required WebAssemblyValueType value;
   boolean mutable = false;
