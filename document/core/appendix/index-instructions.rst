@@ -11,7 +11,7 @@ Instruction                             Binary Opcode     Type                  
 :math:`\NOP`                            :math:`\hex{01}`  :math:`[] \to []`                           :ref:`validation <valid-nop>`             :ref:`execution <exec-nop>`
 :math:`\BLOCK~[t^?]`                    :math:`\hex{02}`  :math:`[] \to [t^\ast]`                     :ref:`validation <valid-block>`           :ref:`execution <exec-block>`
 :math:`\LOOP~[t^?]`                     :math:`\hex{03}`  :math:`[] \to [t^\ast]`                     :ref:`validation <valid-loop>`            :ref:`execution <exec-loop>`
-:math:`\IF~[t^?]`                       :math:`\hex{04}`  :math:`[] \to [t^\ast]`                     :ref:`validation <valid-if>`              :ref:`execution <exec-if>`
+:math:`\IF~[t^?]`                       :math:`\hex{04}`  :math:`[\I32] \to [t^\ast]`                 :ref:`validation <valid-if>`              :ref:`execution <exec-if>`
 :math:`\ELSE`                           :math:`\hex{05}`                                                
 (reserved)                              :math:`\hex{06}`                                                  
 (reserved)                              :math:`\hex{07}`                                                  
