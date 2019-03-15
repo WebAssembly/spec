@@ -730,7 +730,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 <h3 id="globals">Globals</h3>
 
 <pre class="idl">
-enum WebAssemblyValueType {
+enum ValueType {
   "i32",
   "i64",
   "f32",
@@ -738,11 +738,11 @@ enum WebAssemblyValueType {
 };
 </pre>
 
-Note: the WebAssemblyValueType enum is subject to future changes; several incomming WebAssembly GC proposals will add new values or extend the types. 
+Note: this type may be extended with additional values in future versions of WebAssembly. Client code should not assume that no other constants can occur.
 
 <pre class="idl">
 dictionary GlobalDescriptor {
-  required WebAssemblyValueType value;
+  required ValueType value;
   boolean mutable = false;
 };
 
