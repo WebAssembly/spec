@@ -777,7 +777,6 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |s| equals "i64", return [=𝗂𝟨𝟦=].
     1. If |s| equals "f32", return [=𝖿𝟥𝟤=].
     1. If |s| equals "f64", return [=𝖿𝟨𝟦=].
-    1. Otherwise, throw a {{TypeError}} exception.
 </div>
 
 <div algorithm>
