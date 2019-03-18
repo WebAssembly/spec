@@ -474,13 +474,15 @@ The verification of WebAssembly type requirements is deferred to the
     1. Let |module| be |moduleObject|.\[[Module]].
     1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
         If this operation throws an exception, catch it, [=reject=] |promise| with the exception, and return |promise|.
-    1. [=Queue a task=] to perform the following steps:
-        1.  [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
-            If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
-        1.  Let |instanceObject| be a [=/new=] {{Instance}}.
-        1.  [=initialize an instance object|Initialize=] |instanceObject| from |module| and |instance|.
-            If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
-        1. [=Resolve=] |promise| with |instanceObject|.
+    1. Run the following steps [=in parallel=]:
+        1. [=Queue a task=] to perform the following steps:
+            Note: Implementation-specific work may be performed here.
+            1.  [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
+                If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
+            1.  Let |instanceObject| be a [=/new=] {{Instance}}.
+            1.  [=initialize an instance object|Initialize=] |instanceObject| from |module| and |instance|.
+                If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
+            1. [=Resolve=] |promise| with |instanceObject|.
     1. Return |promise|.
 </div>
 
@@ -499,14 +501,15 @@ The verification of WebAssembly type requirements is deferred to the
 
     1. Let |promise| be [=a new promise=].
     1. [=Upon fulfillment=] of |promiseOfModule| with value |module|:
-        1. [=synchronously instantiate a WebAssembly module|Synchronously instantiate the WebAssembly module=] |module| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, [=reject=] |promise| with the exception, and abort these substeps.
-        1. Let |result| be the {{WebAssemblyInstantiatedSource}} value «[ "{{WebAssemblyInstantiatedSource/module}}" → |module|, "{{WebAssemblyInstantiatedSource/instance}}" → |instance| ]».
-        1. [=Resolve=] |promise| with |result|.
+        1. [=asynchronously instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |innerPromise| be the result.
+        1. [=Upon fulfillment=] of |innerPromise| with value |instance|.
+            1. Let |result| be the {{WebAssemblyInstantiatedSource}} value «[ "{{WebAssemblyInstantiatedSource/module}}" → |module|, "{{WebAssemblyInstantiatedSource/instance}}" → |instance| ]».
+            1. [=Resolve=] |promise| with |result|.
+        1. [=Upon rejection=] of |innerPromise| with reason |reason|:
+            1. [=Reject=] |promise| with |reason|.
     1. [=Upon rejection=] of |promiseOfModule| with reason |reason|:
         1. [=Reject=] |promise| with |reason|.
     1. Return |promise|.
-
-    Note: It would be valid to perform certain parts of the instantiation [=in parallel=], but several parts need to happen in the event loop, including JavaScript operations to access the |importObject| and execution of the start function.
 </div>
 
 <div algorithm>
