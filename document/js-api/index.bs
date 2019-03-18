@@ -592,6 +592,8 @@ interface Module {
     1. If |module| is [=error=], throw a {{CompileError}} exception.
     1. Set **this**.\[[Module]] to |module|.
     1. Set **this**.\[[Bytes]] to |stableBytes|.
+
+Note: Some implementations enforce a size limitation on |bytes|. Use of this API is discouraged, in favor of asynchronous APIs.
 </div>
 
 <h3 id="instances">Instances</h3>
@@ -610,6 +612,8 @@ interface Instance {
     1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
     1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
     1. [=initialize an instance object|Initialize=] **this** from |module| and |instance|.
+
+Note: The use of this synchronous API is discouraged, as some implementations sometimes do long-running compilation work when instantiating.
 </div>
 
 <div algorithm>
