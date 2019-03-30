@@ -367,3 +367,10 @@
 (assert_return (invoke "neg" (f32.const inf)) (f32.const -inf))
 (assert_return (invoke "neg" (f32.const -nan)) (f32.const nan))
 (assert_return (invoke "neg" (f32.const nan)) (f32.const -nan))
+
+
+;; Type check
+
+(assert_invalid (module (func (result f32) (f32.copysign (i64.const 0) (f64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.abs (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.neg (i64.const 0)))) "type mismatch")

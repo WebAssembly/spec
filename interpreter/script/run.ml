@@ -4,6 +4,7 @@ open Source
 
 (* Errors & Tracing *)
 
+module Script = Error.Make ()
 module Abort = Error.Make ()
 module Assert = Error.Make ()
 module IO = Error.Make ()
@@ -112,6 +113,7 @@ let input_from get_script run =
   | Eval.Exhaustion (at, msg) -> error at "resource exhaustion" msg
   | Eval.Crash (at, msg) -> error at "runtime crash" msg
   | Encode.Code (at, msg) -> error at "encoding error" msg
+  | Script.Error (at, msg) -> error at "script error" msg
   | IO (at, msg) -> error at "i/o error" msg
   | Assert (at, msg) -> error at "assertion failure" msg
   | Abort _ -> false
@@ -299,6 +301,13 @@ let run_action act =
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternFunc f) ->
+      let Types.FuncType (ins, out) = Func.type_of f in
+      if List.length vs <> List.length ins then
+        Script.error act.at "wrong number of arguments";
+      List.iter2 (fun v t ->
+        if not (Types.match_value_type (Values.type_of_value v.it) t) then
+          Script.error v.at "wrong type of argument"
+      ) vs ins;
       Eval.invoke f (List.map (fun v -> v.it) vs)
     | Some _ -> Assert.error act.at "export is not a function"
     | None -> Assert.error act.at "undefined export"

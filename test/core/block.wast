@@ -370,6 +370,34 @@
 )
 
 (assert_invalid
+  (module
+    (func $type-value-empty-in-block
+      (i32.const 0)
+      (block (block (result i32)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-value-empty-in-loop
+      (i32.const 0)
+      (loop (block (result i32)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-value-empty-in-then
+      (i32.const 0) (i32.const 0)
+      (if (then (block (result i32)) (drop)))
+    )
+  )
+  "type mismatch"
+)
+
+(assert_invalid
   (module (func $type-value-void-vs-i32 (result i32)
     (block (result i32) (nop))
   ))
@@ -1080,6 +1108,7 @@
   ))
   "type mismatch"
 )
+
 
 (assert_malformed
   (module quote "(func block end $l)")

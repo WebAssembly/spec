@@ -2410,3 +2410,13 @@
 (assert_return (invoke "ge" (f32.const nan:0x200000) (f32.const nan)) (i32.const 0))
 (assert_return (invoke "ge" (f32.const nan) (f32.const nan:0x200000)) (i32.const 0))
 (assert_return (invoke "ge" (f32.const nan:0x200000) (f32.const nan:0x200000)) (i32.const 0))
+
+
+;; Type check
+
+(assert_invalid (module (func (result f32) (f32.eq (i64.const 0) (f64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.ge (i64.const 0) (f64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.gt (i64.const 0) (f64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.le (i64.const 0) (f64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.lt (i64.const 0) (f64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.ne (i64.const 0) (f64.const 0)))) "type mismatch")
