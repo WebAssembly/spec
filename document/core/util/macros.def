@@ -329,18 +329,18 @@
 .. |GLOBALGET| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{global.get}}
 .. |GLOBALSET| mathdef:: \xref{syntax/instructions}{syntax-instr-variable}{\K{global.set}}
 
+.. |TABLECOPY| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.copy}}
+.. |TABLEINIT| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.init}}
+.. |ELEMDROP| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{elem.drop}}
+
 .. |LOAD| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{load}}
 .. |STORE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{store}}
 .. |MEMORYSIZE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.size}}
 .. |MEMORYGROW| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.grow}}
-.. |MEMORYINIT| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.init}}
-.. |MEMORYDROP| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.drop}}
-.. |MEMORYCOPY| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.copy}}
 .. |MEMORYFILL| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.fill}}
-
-.. |TABLEINIT| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.init}}
-.. |TABLEDROP| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.drop}}
-.. |TABLECOPY| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.copy}}
+.. |MEMORYCOPY| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.copy}}
+.. |MEMORYINIT| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.init}}
+.. |DATADROP| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{data.drop}}
 
 .. |CONST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{const}}
 .. |EQZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{eqz}}

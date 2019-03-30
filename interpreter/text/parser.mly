@@ -154,19 +154,20 @@ let inline_type_explicit (c : context) x ft at =
 
 %}
 
-%token NAT INT FLOAT STRING VAR VALUE_TYPE FUNCREF MUT LPAR RPAR
-%token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
+%token LPAR RPAR
+%token NAT INT FLOAT STRING VAR
+%token FUNCREF VALUE_TYPE MUT
+%token UNREACHABLE NOP DROP SELECT
+%token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
+%token TABLE_COPY TABLE_INIT ELEM_DROP
+%token MEMORY_SIZE MEMORY_GROW MEMORY_FILL MEMORY_COPY MEMORY_INIT DATA_DROP
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
-%token UNREACHABLE MEMORY_SIZE MEMORY_GROW
-%token MEMORY_INIT DATA_DROP MEMORY_COPY MEMORY_FILL
-%token TABLE_INIT ELEM_DROP TABLE_COPY
 %token REF_NULL REF_FUNC
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
-%token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
-%token PASSIVE
+%token TABLE ELEM MEMORY DATA PASSIVE OFFSET IMPORT EXPORT TABLE
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
@@ -328,23 +329,23 @@ plain_instr :
   | LOCAL_TEE var { fun c -> local_tee ($2 c local) }
   | GLOBAL_GET var { fun c -> global_get ($2 c global) }
   | GLOBAL_SET var { fun c -> global_set ($2 c global) }
+  | TABLE_COPY { fun c -> table_copy }
+  | TABLE_INIT var { fun c -> table_init ($2 c elem) }
+  | ELEM_DROP var { fun c -> elem_drop ($2 c elem) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
   | MEMORY_SIZE { fun c -> memory_size }
   | MEMORY_GROW { fun c -> memory_grow }
+  | MEMORY_FILL { fun c -> memory_fill }
+  | MEMORY_COPY { fun c -> memory_copy }
+  | MEMORY_INIT var { fun c -> memory_init ($2 c data) }
+  | DATA_DROP var { fun c -> data_drop ($2 c data) }
   | CONST literal { fun c -> fst (literal $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
-  | MEMORY_INIT var { fun c -> memory_init ($2 c data) }
-  | DATA_DROP var { fun c -> data_drop ($2 c data) }
-  | MEMORY_COPY { fun c -> memory_copy }
-  | MEMORY_FILL { fun c -> memory_fill }
-  | TABLE_INIT var { fun c -> table_init ($2 c elem) }
-  | ELEM_DROP var { fun c -> elem_drop ($2 c elem) }
-  | TABLE_COPY { fun c -> table_copy }
 
 
 call_instr :
@@ -570,9 +571,9 @@ offset :
   | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
 
 elemref :
-  | LPAR REF_NULL RPAR { let at = at () in fun c -> Null @@ at }
-  | LPAR REF_FUNC var RPAR { let at = at () in fun c -> Func ($3 c func) @@ at }
-  | var { let at = at () in fun c -> Func ($1 c func) @@ at }
+  | LPAR REF_NULL RPAR { let at = at () in fun c -> ref_null @@ at }
+  | LPAR REF_FUNC var RPAR { let at = at () in fun c -> ref_func ($3 c func) @@ at }
+  | var { let at = at () in fun c -> ref_func ($1 c func) @@ at }
 
 passive_elemref_list :
   | /* empty */ { fun c -> [] }
@@ -580,7 +581,7 @@ passive_elemref_list :
 
 active_elemref_list :
   | var_list
-    { let f = function {at; _} as x -> Func x @@ at in
+    { let f = function {at; _} as x -> ref_func x @@ at in
       fun c lookup -> List.map f ($1 c lookup) }
 
 elem :

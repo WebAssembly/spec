@@ -167,6 +167,10 @@ let encode m =
       | GlobalGet x -> op 0x23; var x
       | GlobalSet x -> op 0x24; var x
 
+      | TableCopy -> op 0xfc; op 0x0e; u8 0x00; u8 0x00
+      | TableInit x -> op 0xfc; op 0x0c; var x; u8 0x00
+      | ElemDrop x -> op 0xfc; op 0x0d; var x
+
       | Load ({ty = I32Type; sz = None; _} as mo) -> op 0x28; memop mo
       | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x29; memop mo
       | Load ({ty = F32Type; sz = None; _} as mo) -> op 0x2a; memop mo
@@ -210,6 +214,10 @@ let encode m =
 
       | MemorySize -> op 0x3f; u8 0x00
       | MemoryGrow -> op 0x40; u8 0x00
+      | MemoryFill -> op 0xfc; op 0x0b; u8 0x00
+      | MemoryCopy -> op 0xfc; op 0x0a; u8 0x00; u8 0x00
+      | MemoryInit x -> op 0xfc; op 0x08; var x; u8 0x00
+      | DataDrop x -> op 0xfc; op 0x09; var x
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c
       | Const {it = I64 c; _} -> op 0x42; vs64 c
@@ -363,14 +371,6 @@ let encode m =
       | Convert (F64 F64Op.DemoteF64) -> assert false
       | Convert (F64 F64Op.ReinterpretInt) -> op 0xbf
 
-      | MemoryInit x -> op 0xfc; op 0x08; var x; u8 0x00
-      | DataDrop x -> op 0xfc; op 0x09; var x
-      | MemoryCopy -> op 0xfc; op 0x0a; u8 0x00; u8 0x00
-      | MemoryFill -> op 0xfc; op 0x0b; u8 0x00
-      | TableInit x -> op 0xfc; op 0x0c; var x; u8 0x00
-      | ElemDrop x -> op 0xfc; op 0x0d; var x
-      | TableCopy -> op 0xfc; op 0x0e; u8 0x00; u8 0x00
-
     let const c =
       list instr c.it; end_ ()
 
@@ -491,13 +491,13 @@ let encode m =
 
     let active_elem el =
       match el.it with
-      | Null -> assert false
-      | Func x -> var x
+      | RefNull -> assert false
+      | RefFunc x -> var x
 
     let passive_elem el =
       match el.it with
-      | Null -> u8 0xd0; end_ ()
-      | Func x -> u8 0xd2; var x; end_ ()
+      | RefNull -> u8 0xd0; end_ ()
+      | RefFunc x -> u8 0xd2; var x; end_ ()
 
     let table_segment seg =
       let active init = vec active_elem init in

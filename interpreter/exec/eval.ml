@@ -198,6 +198,27 @@ let rec step (c : config) : config =
         with Global.NotMutable -> Crash.error e.at "write to immutable global"
            | Global.Type -> Crash.error e.at "type mismatch at global write")
 
+      | TableCopy, I32 n :: I32 s :: I32 d :: vs' ->
+        let tab = table frame.inst (0l @@ e.at) in
+        (try Table.copy tab d s n; vs', []
+        with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
+
+      | TableInit x, I32 n :: I32 s :: I32 d :: vs' ->
+        let tab = table frame.inst (0l @@ e.at) in
+        (match !(elem frame.inst x) with
+        | Some es ->
+          (try Table.init tab es d s n; vs', []
+          with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
+        | None -> vs', [Trapping "element segment dropped" @@ e.at]
+        )
+
+      | ElemDrop x, vs ->
+        let seg = elem frame.inst x in
+        (match !seg with
+        | Some _ -> seg := None; vs, []
+        | None -> vs, [Trapping "element segment dropped" @@ e.at]
+        )
+
       | Load {offset; ty; sz; _}, I32 i :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
@@ -232,6 +253,37 @@ let rec step (c : config) : config =
           with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
         in I32 result :: vs', []
 
+      | MemoryFill, I32 n :: I32 b :: I32 i :: vs' ->
+        let mem = memory frame.inst (0l @@ e.at) in
+        let addr = I64_convert.extend_i32_u i in
+        (try Memory.fill mem addr (Int32.to_int b) n; vs', []
+        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
+
+      | MemoryCopy, I32 n :: I32 s :: I32 d :: vs' ->
+        let mem = memory frame.inst (0l @@ e.at) in
+        let dst = I64_convert.extend_i32_u d in
+        let src = I64_convert.extend_i32_u s in
+        (try Memory.copy mem dst src n; vs', []
+        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
+
+      | MemoryInit x, I32 n :: I32 s :: I32 d :: vs' ->
+        let mem = memory frame.inst (0l @@ e.at) in
+        (match !(data frame.inst x) with
+        | Some bs ->
+          let dst = I64_convert.extend_i32_u d in
+          let src = I64_convert.extend_i32_u s in
+          (try Memory.init mem bs dst src n; vs', []
+          with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
+        | None -> vs', [Trapping "data segment dropped" @@ e.at]
+        )
+
+      | DataDrop x, vs ->
+        let seg = data frame.inst x in
+        (match !seg with
+        | Some _ -> seg := None; vs, []
+        | None -> vs, [Trapping "data segment dropped" @@ e.at]
+        )
+
       | Const v, vs ->
         v.it :: vs, []
 
@@ -254,58 +306,6 @@ let rec step (c : config) : config =
       | Convert cvtop, v :: vs' ->
         (try Eval_numeric.eval_cvtop cvtop v :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
-
-      | MemoryInit x, I32 n :: I32 s :: I32 d :: vs' ->
-        let mem = memory frame.inst (0l @@ e.at) in
-        (match !(data frame.inst x) with
-        | Some bs ->
-          let dst = I64_convert.extend_i32_u d in
-          let src = I64_convert.extend_i32_u s in
-          (try Memory.init mem bs dst src n; vs', []
-          with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
-        | None -> vs', [Trapping "data segment dropped" @@ e.at]
-        )
-
-      | MemoryCopy, I32 n :: I32 s :: I32 d :: vs' ->
-        let mem = memory frame.inst (0l @@ e.at) in
-        let dst = I64_convert.extend_i32_u d in
-        let src = I64_convert.extend_i32_u s in
-        (try Memory.copy mem dst src n; vs', []
-        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
-
-      | MemoryFill, I32 n :: I32 b :: I32 i :: vs' ->
-        let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_i32_u i in
-        (try Memory.fill mem addr (Int32.to_int b) n; vs', []
-        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
-
-      | TableInit x, I32 n :: I32 s :: I32 d :: vs' ->
-        let tab = table frame.inst (0l @@ e.at) in
-        (match !(elem frame.inst x) with
-        | Some es ->
-          (try Table.init tab es d s n; vs', []
-          with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
-        | None -> vs', [Trapping "element segment dropped" @@ e.at]
-        )
-
-      | TableCopy, I32 n :: I32 s :: I32 d :: vs' ->
-        let tab = table frame.inst (0l @@ e.at) in
-        (try Table.copy tab d s n; vs', []
-        with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
-
-      | DataDrop x, vs ->
-        let seg = data frame.inst x in
-        (match !seg with
-        | Some _ -> seg := None; vs, []
-        | None -> vs, [Trapping "data segment dropped" @@ e.at]
-        )
-
-      | ElemDrop x, vs ->
-        let seg = elem frame.inst x in
-        (match !seg with
-        | Some _ -> seg := None; vs, []
-        | None -> vs, [Trapping "element segment dropped" @@ e.at]
-        )
 
       | _ ->
         let s1 = string_of_values (List.rev vs) in
@@ -442,8 +442,8 @@ let create_export (inst : module_inst) (ex : export) : export_inst =
 let elem_list inst init =
   let to_elem el =
     match el.it with
-    | Null -> Table.Uninitialized
-    | Func x -> FuncElem (func inst x)
+    | RefNull -> Table.Uninitialized
+    | RefFunc x -> FuncElem (func inst x)
   in List.map to_elem init
 
 let create_elem (inst : module_inst) (seg : table_segment) : elem_inst =

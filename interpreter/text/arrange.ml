@@ -242,23 +242,23 @@ let rec instr e =
     | LocalTee x -> "local.tee " ^ var x, []
     | GlobalGet x -> "global.get " ^ var x, []
     | GlobalSet x -> "global.set " ^ var x, []
+    | TableCopy -> "table.copy", []
+    | TableInit x -> "table.init " ^ var x, []
+    | ElemDrop x -> "elem.drop " ^ var x, []
     | Load op -> loadop op, []
     | Store op -> storeop op, []
     | MemorySize -> "memory.size", []
     | MemoryGrow -> "memory.grow", []
+    | MemoryFill -> "memory.fill", []
+    | MemoryCopy -> "memory.copy", []
+    | MemoryInit x -> "memory.init " ^ var x, []
+    | DataDrop x -> "data.drop " ^ var x, []
     | Const lit -> constop lit ^ " " ^ value lit, []
     | Test op -> testop op, []
     | Compare op -> relop op, []
     | Unary op -> unop op, []
     | Binary op -> binop op, []
     | Convert op -> cvtop op, []
-    | MemoryInit x -> "memory.init " ^ var x, []
-    | DataDrop x -> "data.drop " ^ var x, []
-    | MemoryCopy -> "memory.copy", []
-    | MemoryFill -> "memory.fill", []
-    | TableInit x -> "table.init " ^ var x, []
-    | ElemDrop x -> "elem.drop " ^ var x, []
-    | TableCopy -> "table.copy", []
   in Node (head, inner)
 
 let const c =
@@ -304,13 +304,13 @@ let segment head active passive seg =
 
 let active_elem el =
   match el.it with
-  | Null -> assert false
-  | Func x -> atom var x
+  | RefNull -> assert false
+  | RefFunc x -> atom var x
 
 let passive_elem el =
   match el.it with
-  | Null -> Node ("ref.null", [])
-  | Func x -> Node ("ref.func", [atom var x])
+  | RefNull -> Node ("ref.null", [])
+  | RefFunc x -> Node ("ref.func", [atom var x])
 
 let elems seg =
   let active init = list active_elem init in

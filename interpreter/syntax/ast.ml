@@ -87,23 +87,23 @@ and instr' =
   | LocalTee of var                   (* write local variable and keep value *)
   | GlobalGet of var                  (* read global variable *)
   | GlobalSet of var                  (* write global variable *)
+  | TableCopy                         (* copy elements between table regions *)
+  | TableInit of var                  (* initialize table from segment *)
+  | ElemDrop of var                   (* drop passive element segment *)
   | Load of loadop                    (* read memory at address *)
   | Store of storeop                  (* write memory at address *)
   | MemorySize                        (* size of linear memory *)
   | MemoryGrow                        (* grow linear memory *)
+  | MemoryFill                        (* fill memory region with value *)
+  | MemoryCopy                        (* copy memory regions *)
+  | MemoryInit of var                 (* initialize memory from segment *)
+  | DataDrop of var                   (* drop passive data segment *)
   | Const of literal                  (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)
   | Unary of unop                     (* unary numeric operator *)
   | Binary of binop                   (* binary numeric operator *)
   | Convert of cvtop                  (* conversion *)
-  | MemoryInit of var                 (* initialize memory from segment *)
-  | MemoryCopy                        (* copy memory regions *)
-  | MemoryFill                        (* fill memory region with value *)
-  | TableInit of var                  (* initialize table from segment *)
-  | TableCopy                         (* copy elements between table regions *)
-  | DataDrop of var                   (* drop passive data segment *)
-  | ElemDrop of var                   (* drop passive element segment *)
 
 
 (* Globals & Functions *)
@@ -147,8 +147,8 @@ and ('data, 'ty) segment' =
 
 type elem = elem' Source.phrase
 and elem' =
-  | Null
-  | Func of var
+  | RefNull
+  | RefFunc of var
 
 type table_segment = (elem list, elem_type) segment
 type memory_segment = (string, unit) segment

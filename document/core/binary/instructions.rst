@@ -110,6 +110,27 @@ Variable Instructions
    \end{array}
 
 
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+Each variant of :ref:`table instruction <syntax-instr-table>` is encoded with a different byte code.
+
+.. _binary-table.copy:
+.. _binary-table.init:
+.. _binary-elem.drop:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Binstr &::=& \dots \\ &&|&
+     \hex{FC}~\hex{0C}~~\hex{00}~x{:}\Belemidx &\Rightarrow& \TABLEINIT~x \\ &&|&
+     \hex{FC}~\hex{0D}~~x{:}\Belemidx &\Rightarrow& \ELEMDROP~x \\ &&|&
+     \hex{FC}~\hex{0E}~~\hex{00}~~\hex{00} &\Rightarrow& \TABLECOPY \\
+   \end{array}
+
+.. note::
+   In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |TABLECOPY| instruction may be used to index additional tables.
+
+
 .. index:: memory instruction, memory index
    pair: binary format; instruction
 .. _binary-instr-memory:
@@ -126,10 +147,10 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
 .. _binary-storen:
 .. _binary-memory.size:
 .. _binary-memory.grow:
-.. _binary-memory.init:
-.. _binary-memory.drop:
-.. _binary-memory.copy:
 .. _binary-memory.fill:
+.. _binary-memory.copy:
+.. _binary-memory.init:
+.. _binary-data.drop:
 
 .. math::
    \begin{array}{llclll}
@@ -169,27 +190,6 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
 
 .. note::
    In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |MEMORYSIZE|, |MEMORYGROW|, |MEMORYCOPY|, and |MEMORYFILL| instructions may be used to index additional memories.
-
-
-Table Instructions
-~~~~~~~~~~~~~~~~~~
-
-Each variant of :ref:`table instruction <syntax-instr-table>` is encoded with a different byte code.
-
-.. _binary-table.init:
-.. _binary-table.drop:
-.. _binary-table.copy:
-
-.. math::
-   \begin{array}{llclll}
-   \production{instruction} & \Binstr &::=& \dots \\ &&|&
-     \hex{FC}~\hex{0C}~~\hex{00}~x{:}\Belemidx &\Rightarrow& \TABLEINIT~x \\ &&|&
-     \hex{FC}~\hex{0D}~~x{:}\Belemidx &\Rightarrow& \TABLEDROP~x \\ &&|&
-     \hex{FC}~\hex{0E}~~\hex{00}~~\hex{00} &\Rightarrow& \TABLECOPY \\
-   \end{array}
-
-.. note::
-   In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |TABLECOPY| instruction may be used to index additional tables.
 
 
 .. index:: numeric instruction

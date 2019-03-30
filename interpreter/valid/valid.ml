@@ -233,8 +233,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let FuncType (ins, out) = type_ c x in
     (ins @ [I32Type]) --> out
 
-
-
   | LocalGet x ->
     [] --> [local c x]
 
@@ -253,6 +251,20 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     require (mut = Mutable) x.at "global is immutable";
     [t] --> []
 
+  | TableCopy ->
+    ignore (table c (0l @@ e.at));
+    [I32Type; I32Type; I32Type] --> []
+
+  | TableInit x ->
+    ignore (table c (0l @@ e.at));
+    ignore (elem c x);
+    [I32Type; I32Type; I32Type] --> []
+
+  | ElemDrop x ->
+    ignore (table c (0l @@ e.at));
+    ignore (elem c x);
+    [] --> []
+
   | Load memop ->
     check_memop c memop (Lib.Option.map fst) e.at;
     [I32Type] --> [memop.ty]
@@ -268,6 +280,24 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | MemoryGrow ->
     ignore (memory c (0l @@ e.at));
     [I32Type] --> [I32Type]
+
+  | MemoryFill ->
+    ignore (memory c (0l @@ e.at));
+    [I32Type; I32Type; I32Type] --> []
+
+  | MemoryCopy ->
+    ignore (memory c (0l @@ e.at));
+    [I32Type; I32Type; I32Type] --> []
+
+  | MemoryInit x ->
+    ignore (memory c (0l @@ e.at));
+    ignore (data c x);
+    [I32Type; I32Type; I32Type] --> []
+
+  | DataDrop x ->
+    ignore (memory c (0l @@ e.at));
+    ignore (data c x);
+    [] --> []
 
   | Const v ->
     let t = type_value v.it in
@@ -292,38 +322,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | Convert cvtop ->
     let t1, t2 = type_cvtop e.at cvtop in
     [t1] --> [t2]
-
-  | MemoryInit x ->
-    ignore (memory c (0l @@ e.at));
-    ignore (data c x);
-    [I32Type; I32Type; I32Type] --> []
-
-  | MemoryCopy ->
-    ignore (memory c (0l @@ e.at));
-    [I32Type; I32Type; I32Type] --> []
-
-  | MemoryFill ->
-    ignore (memory c (0l @@ e.at));
-    [I32Type; I32Type; I32Type] --> []
-
-  | TableInit x ->
-    ignore (table c (0l @@ e.at));
-    ignore (elem c x);
-    [I32Type; I32Type; I32Type] --> []
-
-  | TableCopy ->
-    ignore (table c (0l @@ e.at));
-    [I32Type; I32Type; I32Type] --> []
-
-  | DataDrop x ->
-    ignore (memory c (0l @@ e.at));
-    ignore (data c x);
-    [] --> []
-
-  | ElemDrop x ->
-    ignore (table c (0l @@ e.at));
-    ignore (elem c x);
-    [] --> []
 
 and check_seq (c : context) (es : instr list) : infer_stack_type =
   match es with
@@ -426,8 +424,8 @@ let check_memory (c : context) (mem : memory) =
 
 let check_elemref (c : context) (el : elem) =
   match el.it with
-  | Null -> ()
-  | Func x -> ignore (func c x)
+  | RefNull -> ()
+  | RefFunc x -> ignore (func c x)
 
 let check_elem (c : context) (seg : table_segment) =
   match seg.it with

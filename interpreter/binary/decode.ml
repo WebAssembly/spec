@@ -47,6 +47,8 @@ let skip n = guard (skip n)
 
 let expect b s msg = require (guard get s = b) s (pos s - 1) msg
 let illegal s pos b = error s pos ("illegal opcode " ^ string_of_byte b)
+let illegal2 s pos b1 b2 =
+  error s pos ("illegal opcode " ^ string_of_byte b1 ^ " " ^ string_of_byte b2)
 
 let at f s =
   let left = pos s in
@@ -201,25 +203,6 @@ let memop s =
   let offset = vu32 s in
   Int32.to_int align, offset
 
-let misc_instr s =
-  let pos = pos s in
-  match op s with
-  | 0x08 ->
-    let x = at var s in
-    zero_flag s;
-    memory_init x
-  | 0x09 -> data_drop (at var s)
-  | 0x0a -> zero_flag s; zero_flag s; memory_copy
-  | 0x0b -> zero_flag s; memory_fill
-  | 0x0c ->
-    let x = at var s in
-    zero_flag s;
-    table_init x
-  | 0x0d -> elem_drop (at var s)
-  | 0x0e -> zero_flag s; zero_flag s; table_copy
-
-  | b -> illegal s pos b
-
 let rec instr s =
   let pos = pos s in
   match op s with
@@ -264,8 +247,7 @@ let rec instr s =
   | 0x10 -> call (at var s)
   | 0x11 ->
     let x = at var s in
-    zero_flag s;
-    call_indirect x
+    zero_flag s; call_indirect x
 
   | 0x12 | 0x13 | 0x14 | 0x15 | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
@@ -448,7 +430,26 @@ let rec instr s =
   | 0xbe -> f32_reinterpret_i32
   | 0xbf -> f64_reinterpret_i64
 
-  | 0xfc -> misc_instr s
+  | 0xfc as b1 ->
+    (match op s with
+    | 0x00 | 0x01 | 0x02 | 0x03 | 0x04 | 0x05 | 0x06 | 0x07 as b2 ->
+      illegal2 s pos b1 b2
+
+    | 0x08 ->
+      let x = at var s in
+      zero_flag s; memory_init x
+    | 0x09 -> data_drop (at var s)
+    | 0x0a -> zero_flag s; zero_flag s; memory_copy
+    | 0x0b -> zero_flag s; memory_fill
+
+    | 0x0c ->
+      let x = at var s in
+      zero_flag s; table_init x
+    | 0x0d -> elem_drop (at var s)
+    | 0x0e -> zero_flag s; zero_flag s; table_copy
+
+    | b2 -> illegal2 s pos b1 b2
+    )
 
   | b -> illegal s pos b
 
@@ -630,15 +631,15 @@ let segment active passive s =
   | _ -> error s (pos s - 1) "invalid segment kind"
 
 let active_elem s =
-  Func (at var s)
+  ref_func (at var s)
 
 let passive_elem s =
   match u8 s with
-  | 0xd0 -> end_ s; Null
+  | 0xd0 -> end_ s; ref_null
   | 0xd2 ->
     let x = at var s in
     end_ s;
-    Func x
+    ref_func x
   | _ -> error s (pos s - 1) "invalid elem"
 
 let active_elem_segment s =

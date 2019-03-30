@@ -92,8 +92,8 @@ let memory (m : memory) = empty
 
 let elem (e : elem) =
   match e.it with
-  | Null -> empty
-  | Func x -> funcs (var x)
+  | RefNull -> empty
+  | RefFunc x -> funcs (var x)
 
 let table_segment (s : table_segment) =
   match s.it with
