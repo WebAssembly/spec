@@ -449,12 +449,12 @@ Such a folded instruction can appear anywhere a regular instruction can.
    For example, the instruction sequence
 
    .. math::
-      \mathtt{(get\_local~\$x)~(i32.const~2)~i32.add~(i32.const~3)~i32.mul}
+      \mathtt{(local.get~\$x)~(i32.const~2)~i32.add~(i32.const~3)~i32.mul}
 
    can be folded into
 
    .. math::
-      \mathtt{(i32.mul~(i32.add~(get\_local~\$x)~(i32.const~2))~(i32.const~3))}
+      \mathtt{(i32.mul~(i32.add~(local.get~\$x)~(i32.const~2))~(i32.const~3))}
 
    Folded instructions are solely syntactic sugar,
    no additional syntactic or type-based checking is implied.
