@@ -30,7 +30,6 @@
 (assert_return (invoke "funcref" (ref.null)) (i32.const 1))
 
 (assert_return (invoke "anyref" (ref.host 1)) (i32.const 0))
-(assert_return (invoke "funcref" (ref.host 1)) (i32.const 0))
 
 (invoke "init" (ref.host 0))
 

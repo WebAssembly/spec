@@ -21,11 +21,15 @@ let harness =
   "function is_funcref(x) {\n" ^
   "  return typeof x === \"function\" ? 1 : 0;\n" ^
   "}\n" ^
+  "function eq_ref(x, y) {\n" ^
+  "  return x === y ? 1 : 0;\n" ^
+  "}\n" ^
   "\n" ^
   "let spectest = {\n" ^
   "  hostref: hostref,\n" ^
   "  is_hostref: is_hostref,\n" ^
   "  is_funcref: is_funcref,\n" ^
+  "  eq_ref: eq_ref,\n" ^
   "  print: console.log.bind(console),\n" ^
   "  print_i32: console.log.bind(console),\n" ^
   "  print_i32_f32: console.log.bind(console),\n" ^
@@ -83,7 +87,7 @@ let harness =
   "}\n" ^
   "\n" ^
   "function exports(instance) {\n" ^
-  "  return {module: instance.exports, host: {ref: hostref}};\n" ^
+  "  return {module: instance.exports, spectest: spectest};\n" ^
   "}\n" ^
   "\n" ^
   "function run(action) {\n" ^
@@ -327,7 +331,6 @@ let assert_return_func ts at =
 let wrap item_name wrap_action wrap_assertion at =
   let itypes, idesc, action = wrap_action at in
   let locals, assertion = wrap_assertion at in
-  let item = Lib.List32.length itypes @@ at in
   let types =
     (FuncType ([], []) @@ at) ::
     (FuncType ([NumType I32Type], [RefType AnyRefType]) @@ at) ::
@@ -346,6 +349,12 @@ let wrap item_name wrap_action wrap_assertion at =
        idesc = FuncImport (3l @@ at) @@ at} @@ at;
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_ref";
        idesc = FuncImport (4l @@ at) @@ at} @@ at ]
+  in
+  let item =
+    List.fold_left
+      (fun i im ->
+        match im.it.idesc.it with FuncImport _ -> Int32.add i 1l | _ -> i
+      ) 0l imports @@ at
   in
   let edesc = FuncExport item @@ at in
   let exports = [{name = Utf8.decode "run"; edesc} @@ at] in
