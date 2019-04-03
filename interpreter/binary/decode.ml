@@ -47,6 +47,8 @@ let skip n = guard (skip n)
 
 let expect b s msg = require (guard get s = b) s (pos s - 1) msg
 let illegal s pos b = error s pos ("illegal opcode " ^ string_of_byte b)
+let illegal2 s pos b1 b2 =
+  error s pos ("illegal opcode " ^ string_of_byte b1 ^ " " ^ string_of_byte b2)
 
 let at f s =
   let left = pos s in
@@ -448,6 +450,15 @@ let rec instr s =
   | 0xd1 -> ref_is_null
   | 0xd2 -> ref_func (at var s)
 
+  | 0xfc as b1 ->
+    (match op s with
+    | 0x0f -> table_grow (at var s)
+    | 0x10 -> table_size (at var s)
+    | 0x11 -> table_fill (at var s)
+
+    | b2 -> illegal2 s pos b1 b2
+    )
+
   | b -> illegal s pos b
 
 and instr_block s = List.rev (instr_block' s [])
@@ -610,7 +621,14 @@ let code_section s =
 (* Element section *)
 
 let segment dat s =
-  let index = at var s in
+  let pos = pos s in
+  let x = at vu32 s in
+  let index =
+    match x.Source.it with
+    | 0l -> x
+    | 2l -> at var s
+    | _ -> error s pos "invalid segment kind"
+  in
   let offset = const s in
   let init = dat s in
   {index; offset; init}

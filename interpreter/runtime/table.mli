@@ -11,11 +11,13 @@ exception Type
 exception Bounds
 exception SizeOverflow
 exception SizeLimit
+exception OutOfMemory
 
-val alloc : table_type -> table
+val alloc : table_type -> ref_ -> table (* raises OutOfMemory *)
 val type_of : table -> table_type
 val size : table -> size
-val grow : table -> size -> unit (* raises SizeOverflow, SizeLimit *)
+val grow : table -> size -> ref_ -> unit
+  (* raises SizeOverflow, SizeLimit, OutOfMemory *)
 
 val load : table -> index -> ref_ (* raises Bounds *)
 val store : table -> index -> ref_ -> unit (* raises Type, Bounds *)

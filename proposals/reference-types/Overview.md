@@ -14,6 +14,7 @@ Motivation:
   - allow representing data structures containing references
 by repurposing tables as a general memory for opaque data types
   - allow manipulating function tables from within Wasm.
+  - add instructions missing from [bulk operations proposal](https://github.com/WebAssembly/bulk-memory-operations/blob/master/proposals/bulk-memory-operations/Overview.md)
 
 * Set the stage for later additions:
 
@@ -30,6 +31,8 @@ Summary:
 * Also allow `funcref` as a value type.
 
 * Introduce instructions to get and set table slots.
+
+* Add missing table size, grow, fill instructions.
 
 * Allow multiple tables.
 
@@ -59,9 +62,9 @@ Typing extensions:
 
 * Introduce a simple subtype relation between reference types.
   - reflexive transitive closure of the following rules
-  - `t < anyref` for all reftypes `t`
-  - `nullref < anyref` and `nullref < funcref`
-  - Note: No rule `nullref < t` for all reftypes `t` -- while that is derivable from the above given the current set of types it might not hold for future reference types which don't allow null.
+  - `t <: anyref` for all reftypes `t`
+  - `nullref <: anyref` and `nullref <: funcref`
+  - Note: No rule `nullref <: t` for all reftypes `t` -- while that is derivable from the above given the current set of types it might not hold for future reference types which don't allow null.
 
 
 New/extended instructions:
@@ -74,17 +77,51 @@ New/extended instructions:
   - `ref.is_null : [anyref] -> [i32]`
 
 * The new instruction `ref.func` creates a reference to a given function.
-  - `ref.func $x : [] -> [funcref]` iff `$x` is a function
+  - `ref.func $x : [] -> [funcref]`
+    - iff `$x : func $t`
+  - allowed in constant expressions
+  - Note: the result type of this instruction may be refined by future proposals (e.g., to `[(ref $t)]`)
 
 * The new instructions `table.get` and `table.set` access tables.
-  - `table.get $x : [i32] -> [t]` iff `t` is the element type of table `$x`
-  - `table.set $x : [i32 t] -> []` iff `t` is the element type of table `$x`
-  - `table.fill $x : [i32 i32 t] -> []` iff `t` is the element type of table `$x`
+  - `table.get $x : [i32] -> [t]`
+    - iff `$x : table t`
+  - `table.set $x : [i32 t] -> []`
+    - iff `$x : table t`
 
-* The `call_indirect` instruction takes a table index as immediate that identifies the table it calls through.
-  - `call_indirect (type $t) $x : [t1* i32] -> [t2*]` iff `$t` denotes the function type `[t1*] -> [t2*]` and the element type of table `$x` is a subtype of `funcref`.
-  - In the binary format, space for the index is already reserved.
-  - For backwards compatibility, the index may be omitted in the text format, in which case it defaults to 0.
+* The new instructions `table.size`and `table.grow` manipulate the size of a table.
+  - `table.size $x : [] -> [i32]`
+    - iff `$x : table t`
+  - `table.grow $x : [t i32] -> [i32]`
+    - iff `$x : table t`
+  - the first operand of `table.grow` is an initialisation value (for compatibility with future extensions to the type system, such as non-nullable references)
+
+* The new instruction `table.fill` fills a range in a table with a value.
+  - `table.fill $x : [i32 t i32] -> []`
+    - iff `$x : table t`
+  - the first operand is the start index of the range, the third operand its length (analoguous to `memory.fill`)
+  - traps when range+length > size of the table, but only after filling range up to size (analoguous to `memory.fill`)
+
+* The `table.init` instruction takes an additional table index as immediate.
+  - `table.init $x $y : [i32 i32 i32] -> []`
+    - iff `$x : table t`
+    - and `$y : elem t'`
+    - and `t' <: t`
+
+* The `table.copy` instruction takes two additional table indices as immediate.
+  - `table.copy $x $y : [i32 i32 i32] -> []`
+    - iff `$x : table t`
+    - and `$y : table t'`
+    - and `t' <: t`
+
+* The `call_indirect` instruction takes a table index as immediate.
+  - `call_indirect (type $t) $x : [t1* i32] -> [t2*]`
+    - iff `$t = [t1*] -> [t2*]`
+    - and `$x : table t'`
+    - and `t' <: funcref`
+
+Note:
+- In the binary format, space for the additional table indices is already reserved.
+- For backwards compatibility, all table indices may be omitted in the text format, in which case they default to 0 (for `table.copy`, both indices must be either present or absent).
 
 
 Table extensions:

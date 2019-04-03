@@ -200,12 +200,18 @@ Table Instructions
 
 .. _text-table.get:
 .. _text-table.set:
+.. _text-table.size:
+.. _text-table.grow:
+.. _text-table.fill:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{table.get}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEGET~x \\ &&|&
-     \text{table.set}~~x{:}\Ttableidx_I &\Rightarrow& \TABLESET~x \\
+     \text{table.set}~~x{:}\Ttableidx_I &\Rightarrow& \TABLESET~x \\ &&|&
+     \text{table.size}~~x{:}\Ttableidx_I &\Rightarrow& \TABLESIZE~x \\ &&|&
+     \text{table.grow}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEGROW~x \\ &&|&
+     \text{table.fill}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEFILL~x \\
    \end{array}
 
 

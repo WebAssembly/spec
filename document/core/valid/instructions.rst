@@ -398,6 +398,61 @@ Table Instructions
    }
 
 
+.. _valid-table.size:
+
+:math:`\TABLESIZE~x`
+....................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Then the instruction is valid with type :math:`[] \to [\I32]`.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = t
+   }{
+     C \vdashinstr \TABLESIZE~x : [] \to [\I32]
+   }
+
+
+.. _valid-table.grow:
+
+:math:`\TABLEGROW~x`
+....................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* Then the instruction is valid with type :math:`[t~\I32] \to [\I32]`.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = t
+   }{
+     C \vdashinstr \TABLEGROW~x : [t~\I32] \to [\I32]
+   }
+
+
+.. _valid-table.fill:
+
+:math:`\TABLEFILL~x`
+....................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* Then the instruction is valid with type :math:`[\I32~t~\I32] \to []`.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = t
+   }{
+     C \vdashinstr \TABLEFILL~x : [\I32~t~\I32] \to []
+   }
+
+
 .. index:: memory instruction, memory index, context
    pair: validation; instruction
    single: abstract syntax; instruction

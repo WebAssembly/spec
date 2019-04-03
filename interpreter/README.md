@@ -226,6 +226,9 @@ op:
   global.set <var>
   table.get <var>
   table.set <var>
+  table.size <var>
+  table.grow <var>
+  table.fill <var>
   <val_type>.load((8|16|32)_<sign>)? <offset>? <align>?
   <val_type>.store(8|16|32)? <offset>? <align>?
   memory.size

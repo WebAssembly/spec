@@ -522,6 +522,162 @@ Table Instructions
    \end{array}
 
 
+.. _exec-table.size:
+
+:math:`\TABLESIZE~x`
+....................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-table.size>`, :math:`F.\AMODULE.\MITABLES[x]` exists.
+
+3. Let :math:`a` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[x]`.
+
+4. Assert: due to :ref:`validation <valid-table.size>`, :math:`S.\STABLES[a]` exists.
+
+5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[a]`.
+
+6. Let :math:`\X{sz}` be the length of :math:`\X{tab}.\TIELEM`.
+
+7. Push the value :math:`\I32.\CONST~\X{sz}` to the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; \TABLESIZE~x &\stepto& S; F; (\I32.\CONST~\X{sz})
+   \end{array}
+   \\ \qquad
+     (\iff |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM| = \X{sz}) \\
+   \end{array}
+
+
+.. _exec-table.grow:
+
+:math:`\TABLEGROW~x`
+....................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-table.grow>`, :math:`F.\AMODULE.\MITABLES[x]` exists.
+
+3. Let :math:`a` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[x]`.
+
+4. Assert: due to :ref:`validation <valid-table.grow>`, :math:`S.\STABLES[a]` exists.
+
+5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[a]`.
+
+6. Let :math:`\X{sz}` be the length of :math:`S.\STABLES[a]`.
+
+7. Assert: due to :ref:`validation <valid-table.grow>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+8. Pop the value :math:`\I32.\CONST~n` from the stack.
+
+9. Assert: due to :ref:`validation <valid-table.fill>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+10. Pop the value :math:`\val` from the stack.
+
+11. Either, try :ref:`growing <grow-table>` :math:`\X{table}` by :math:`n` entries with initialization value :math:`\val`:
+
+   a. If it succeeds, push the value :math:`\I32.\CONST~\X{sz}` to the stack.
+
+   b. Else, push the value :math:`\I32.\CONST~(-1)` to the stack.
+
+12. Or, push the value :math:`\I32.\CONST~(-1)` to the stack.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; \val~(\I32.\CONST~n)~\TABLEGROW~x &\stepto& S'; F; (\I32.\CONST~\X{sz})
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & F.\AMODULE.\MITABLES[x] = a \\
+     \wedge & \X{sz} = |S.\STABLES[a].\TIELEM| \\
+     \wedge & S' = S \with \STABLES[a] = \growtable(S.\STABLES[a], n, \val)) \\
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~n)~\TABLEGROW~x &\stepto& S; F; (\I32.\CONST~{-1})
+   \end{array}
+   \end{array}
+
+.. note::
+   The |TABLEGROW| instruction is non-deterministic.
+   It may either succeed, returning the old table size :math:`\X{sz}`,
+   or fail, returning :math:`{-1}`.
+   Failure *must* occur if the referenced table instance has a maximum size defined that would be exceeded.
+   However, failure *can* occur in other cases as well.
+   In practice, the choice depends on the :ref:`resources <impl-exec>` available to the :ref:`embedder <embedder>`.
+
+
+.. _exec-table.fill:
+
+:math:`\TABLEFILL~x`
+....................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-table.fill>`, :math:`F.\AMODULE.\MITABLES[x]` exists.
+
+3. Let :math:`a` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[x]`.
+
+4. Assert: due to :ref:`validation <valid-table.fill>`, :math:`S.\STABLES[a]` exists.
+
+5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[a]`.
+
+6. Assert: due to :ref:`validation <valid-table.fill>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+7. Pop the value :math:`\I32.\CONST~n` from the stack.
+
+8. Assert: due to :ref:`validation <valid-table.fill>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+9. Pop the value :math:`\val` from the stack.
+
+10. Assert: due to :ref:`validation <valid-table.fill>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+11. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+12. If :math:`n` is :math:`0`, then:
+
+    a. If :math:`i` is larger than the length of :math:`\X{tab}.\TIELEM`, then:
+
+       i. Trap.
+
+12. Else:
+
+    a. Push the value :math:`\I32.CONST~i` to the stack.
+
+    b. Push the value :math:`\val` to the stack.
+
+    c. Execute the instruction :math:`\TABLESET~x`.
+
+    d. Push the value :math:`\I32.CONST~(i+1)` to the stack.
+
+    e. Push the value :math:`\val` to the stack.
+
+    f. Push the value :math:`\I32.CONST~(n-1)` to the stack.
+
+    c. Execute the instruction :math:`\TABLEFILL~x`.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~(n+1))~(\TABLEFILL~x) &\stepto& S'; F; (\I32.\CONST~i)~\val~(\TABLESET~x)~(\I32.\CONST~(i+1))~\val~(\I32.\CONST~n)~(\TABLEFILL~x)
+   \end{array} \\
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~0)~(\TABLEFILL~x) &\stepto& S'; F; \epsilon
+   \end{array}
+   \\ \qquad
+     (\iff i \leq |\STABLES[F.\AMODULE.\MITABLES[x]]|) \\
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~0)~(\TABLEFILL~x) &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise) \\
+   \end{array}
+
+
 .. index:: memory instruction, memory index, store, frame, address, memory address, memory instance, value, integer, limits, value type, bit width
    pair: execution; instruction
    single: abstract syntax; instruction

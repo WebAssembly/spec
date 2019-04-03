@@ -138,20 +138,23 @@ Variable Instructions
 Table Instructions
 ~~~~~~~~~~~~~~~~~~
 
-:ref:`Table instructions <syntax-instr-table>` are represented by single byte codes.
+:ref:`Table instructions <syntax-instr-table>` are represented by either single byte or two byte codes.
 
 .. _binary-table.get:
 .. _binary-table.set:
+.. _binary-table.size:
+.. _binary-table.grow:
+.. _binary-table.fill:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{25}~~x{:}\Btableidx &\Rightarrow& \TABLEGET~x \\ &&|&
-     \hex{26}~~x{:}\Btableidx &\Rightarrow& \TABLESET~x \\
+     \hex{26}~~x{:}\Btableidx &\Rightarrow& \TABLESET~x \\ &&|&
+     \hex{FC}~\hex{0F}~~x{:}\Btableidx &\Rightarrow& \TABLEGROW~x \\ &&|&
+     \hex{FC}~\hex{10}~~x{:}\Btableidx &\Rightarrow& \TABLESIZE~x \\ &&|&
+     \hex{FC}~\hex{11}~~x{:}\Btableidx &\Rightarrow& \TABLEFILL~x \\
    \end{array}
-
-.. note::
-   These opcode assignments are preliminary.
 
 
 .. index:: memory instruction, memory index

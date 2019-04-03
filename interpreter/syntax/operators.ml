@@ -10,8 +10,8 @@ let i64_const n = Const (I64 n.it @@ n.at)
 let f32_const n = Const (F32 n.it @@ n.at)
 let f64_const n = Const (F64 n.it @@ n.at)
 let ref_null = RefNull
-let ref_is_null = RefIsNull
 let ref_func x = RefFunc x
+let ref_is_null = RefIsNull
 
 let unreachable = Unreachable
 let nop = Nop
@@ -33,8 +33,12 @@ let local_set x = LocalSet x
 let local_tee x = LocalTee x
 let global_get x = GlobalGet x
 let global_set x = GlobalSet x
+
 let table_get x = TableGet x
 let table_set x = TableSet x
+let table_size x = TableSize x
+let table_grow x = TableGrow x
+let table_fill x = TableFill x
 
 let i32_load align offset = Load {ty = I32Type; align; offset; sz = None}
 let i64_load align offset = Load {ty = I64Type; align; offset; sz = None}

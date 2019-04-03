@@ -328,6 +328,9 @@
 
 .. |TABLEGET| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.get}}
 .. |TABLESET| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.set}}
+.. |TABLESIZE| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.size}}
+.. |TABLEGROW| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.grow}}
+.. |TABLEFILL| mathdef:: \xref{syntax/instructions}{syntax-instr-table}{\K{table.fill}}
 
 .. |LOAD| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{load}}
 .. |STORE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{store}}

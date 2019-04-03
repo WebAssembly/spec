@@ -298,7 +298,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 :ref:`Tables <syntax-tableinst>`
 ................................
 
-1. Let :math:`\tabletype` be the :ref:`table type <syntax-tabletype>` to allocate.
+1. Let :math:`\tabletype` be the :ref:`table type <syntax-tabletype>` to allocate and :math:`\val` the initialization value.
 
 2. Let :math:`(\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
 
@@ -312,11 +312,11 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 .. math::
    \begin{array}{rlll}
-   \alloctable(S, \tabletype) &=& S', \tableaddr \\[1ex]
+   \alloctable(S, \tabletype, \val) &=& S', \tableaddr \\[1ex]
    \mbox{where:} \hfill \\
    \tabletype &=& \{\LMIN~n, \LMAX~m^?\}~\reftype \\
    \tableaddr &=& |S.\STABLES| \\
-   \tableinst &=& \{ \TIELEM~\REFNULL^n, \TIMAX~m^? \} \\
+   \tableinst &=& \{ \TIELEM~\val^n, \TIMAX~m^? \} \\
    S' &=& S \compose \{\STABLES~\tableinst\} \\
    \end{array}
 
@@ -385,7 +385,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 Growing :ref:`tables <syntax-tableinst>`
 ........................................
 
-1. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` to grow and :math:`n` the number of elements by which to grow it.
+1. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` to grow, :math:`n` the number of elements by which to grow it, and :math:`\val` the initialization value.
 
 2. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\tableinst.\TIELEM`.
 
@@ -397,7 +397,7 @@ Growing :ref:`tables <syntax-tableinst>`
 
 .. math::
    \begin{array}{rllll}
-   \growtable(\tableinst, n) &=& \tableinst \with \TIELEM = \tableinst.\TIELEM~\REFNULL^n \\
+   \growtable(\tableinst, n, \val) &=& \tableinst \with \TIELEM = \tableinst.\TIELEM~\val^n \\
      && (
        \begin{array}[t]{@{}r@{~}l@{}}
        \iff & \X{len} = n + |\tableinst.\TIELEM| \\
@@ -519,7 +519,7 @@ where:
      \MIEXPORTS~\exportinst^\ast ~\}
      \end{array} \\[1ex]
    S_1, \funcaddr^\ast &=& \allocfunc^\ast(S, \module.\MFUNCS, \moduleinst) \\
-   S_2, \tableaddr^\ast &=& \alloctable^\ast(S_1, (\table.\TTYPE)^\ast)
+   S_2, \tableaddr^\ast &=& \alloctable^\ast(S_1, (\table.\TTYPE)^\ast, \REFNULL)
      \qquad\qquad\qquad~ (\where \table^\ast = \module.\MTABLES) \\
    S_3, \memaddr^\ast &=& \allocmem^\ast(S_2, (\mem.\MTYPE)^\ast)
      \qquad\qquad\qquad~ (\where \mem^\ast = \module.\MMEMS) \\

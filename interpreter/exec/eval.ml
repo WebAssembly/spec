@@ -205,6 +205,29 @@ let rec step (c : config) : config =
         (try Table.store (table frame.inst x) i r; vs', []
         with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
 
+      | TableSize x, vs ->
+        Num (I32 (Table.size (table frame.inst x))) :: vs, []
+
+      | TableGrow x, Num (I32 delta) :: Ref r :: vs' ->
+        let tab = table frame.inst x in
+        let old_size = Table.size tab in
+        let result =
+          try Table.grow tab delta r; old_size
+          with Table.SizeOverflow | Table.SizeLimit | Table.OutOfMemory -> -1l
+        in Num (I32 result) :: vs', []
+
+      | TableFill x, Num (I32 0l) :: Ref r :: Num (I32 i) :: vs' ->
+        if I32.gt_u i (Table.size (table frame.inst x)) then
+          vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
+        else
+          vs', []
+
+      | TableFill x, Num (I32 n) :: Ref r :: Num (I32 i) :: vs' ->
+        assert (I32.lt_u i 0xffff_ffffl);
+        Ref r :: Num (I32 i) ::
+          Num (I32 (I32.sub n 1l)) :: Ref r :: Num (I32 (I32.add i 1l)) :: vs',
+          [Plain (TableSet x) @@ e.at; Plain (TableFill x) @@ e.at]
+
       | Load {offset; ty; sz; _}, Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
@@ -388,7 +411,7 @@ let create_func (inst : module_inst) (f : func) : func_inst =
 
 let create_table (inst : module_inst) (tab : table) : table_inst =
   let {ttype} = tab.it in
-  Table.alloc ttype
+  Table.alloc ttype NullRef
 
 let create_memory (inst : module_inst) (mem : memory) : memory_inst =
   let {mtype} = mem.it in

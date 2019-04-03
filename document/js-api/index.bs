@@ -716,7 +716,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
     1. Let |type| be the [=table type=] {[=table type|𝗆𝗂𝗇=] n, [=table type|𝗆𝖺𝗑=] |maximum|} [=table type|funcref=].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let (|store|, |tableaddr|) be [=alloc_table=](|store|, |type|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
+    1. Let (|store|, |tableaddr|) be [=alloc_table=](|store|, |type|, [=ref.null=]). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. [=Create a table object=] from the table address |tableaddr| and return the result.
 </div>
@@ -726,7 +726,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |tableaddr| be the Table instance's \[[Table]] internal slot.
     1. Let |initialSize| be the length of the Table instance's \[[Values]] internal slot.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |result| be [=grow_table=](|store|, |tableaddr|, |delta|).
+    1. Let |result| be [=grow_table=](|store|, |tableaddr|, |delta|, [=ref.null=]).
     1. If |result| is [=error=], throw a {{RangeError}} exception.
 
         Note: The above exception may happen due to either insufficient memory or an invalid size parameter.
@@ -752,12 +752,12 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     The <dfn method for="Table">set(|index|, |value|)</dfn> method, when invoked, performs the following steps:
     1. Let |tableaddr| be the Table instance's \[[Table]] internal slot.
     1. Let |values| be the Table instance's \[[Values]] internal slot.
-    1. If |value| is null, let |funcaddr| be an empty [=function element=].
+    1. If |value| is null, let |ref| be [=ref.null=].
     1. Otherwise,
         1. If |value| does not have a \[[FunctionAddress]] internal slot, throw a {{TypeError}} exception.
-        1. Let |funcaddr| be |value|.\[[FunctionAddress]].
+        1. Let |ref| be [=ref.func=] |value|.\[[FunctionAddress]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |store| be [=write_table=](|store|, |tableaddr|, |index|, |funcaddr|).
+    1. Let |store| be [=write_table=](|store|, |tableaddr|, |index|, |ref|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. Set |values|[|index|] to |value|.

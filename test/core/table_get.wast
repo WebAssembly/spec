@@ -33,3 +33,55 @@
 (assert_trap (invoke "get-funcref" (i32.const 3)) "out of bounds")
 (assert_trap (invoke "get-anyref" (i32.const -1)) "out of bounds")
 (assert_trap (invoke "get-funcref" (i32.const -1)) "out of bounds")
+
+
+;; Type errors
+
+(assert_invalid
+  (module
+    (table $t 10 anyref)
+    (func $type-index-empty-vs-i32 (result anyref)
+      (table.get $t)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (table $t 10 anyref)
+    (func $type-index-f32-vs-i32 (result anyref)
+      (table.get $t (f32.const 1))
+    )
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (table $t 10 anyref)
+    (func $type-result-anyref-vs-empty
+      (table.get $t (i32.const 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (table $t 10 anyref)
+    (func $type-result-anyref-vs-funcref (result funcref)
+      (table.get $t (i32.const 1))
+    )
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (table $t1 1 funcref)
+    (table $t2 1 anyref)
+    (func $type-result-anyref-vs-funcref-multi (result funcref)
+      (table.get $t2 (i32.const 0))
+    )
+  )
+  "type mismatch"
+)

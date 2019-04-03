@@ -294,8 +294,8 @@ Tables
 
 .. _embed-alloc-table:
 
-:math:`\F{alloc\_table}(\store, \tabletype) : (\store, \tableaddr)`
-...................................................................
+:math:`\F{alloc\_table}(\store, \tabletype) : (\store, \tableaddr, \val)`
+.........................................................................
 
 1. Let :math:`\tableaddr` be the result of :ref:`allocating a table <alloc-table>` in :math:`\store` with :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
 
@@ -303,7 +303,7 @@ Tables
 
 .. math::
    \begin{array}{lclll}
-   \F{alloc\_table}(S, \X{tt}) &=& (S', \X{a}) && (\iff \alloctable(S, \X{tt}) = S', \X{a}) \\
+   \F{alloc\_table}(S, \X{tt}, v) &=& (S', \X{a}) && (\iff \alloctable(S, \X{tt}, v) = S', \X{a}) \\
    \end{array}
 
 
@@ -390,8 +390,8 @@ Tables
 
 .. _embed-grow-table:
 
-:math:`\F{grow\_table}(\store, \tableaddr, n) : \store ~|~ \error`
-..................................................................
+:math:`\F{grow\_table}(\store, \tableaddr, n, \val) : \store ~|~ \error`
+........................................................................
 
 1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
 
@@ -406,9 +406,9 @@ Tables
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{grow\_table}(S, a, n) &=& S' &&
-     (\iff S' = S \with \STABLES[a] = \growtable(S.\STABLES[a], n)) \\
-   \F{grow\_table}(S, a, n) &=& \ERROR && (\otherwise) \\
+   \F{grow\_table}(S, a, n, v) &=& S' &&
+     (\iff S' = S \with \STABLES[a] = \growtable(S.\STABLES[a], n, v)) \\
+   \F{grow\_table}(S, a, n, v) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 

@@ -241,6 +241,9 @@ The |LOCALTEE| instruction is like |LOCALSET| but also returns its argument.
    pair: abstract syntax; instruction
 .. _syntax-table.get:
 .. _syntax-table.set:
+.. _syntax-table.size:
+.. _syntax-table.grow:
+.. _syntax-table.fill:
 .. _syntax-instr-table:
 
 Table Instructions
@@ -253,10 +256,19 @@ Instructions in this group are concerned with accessing :ref:`tables <syntax-tab
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \TABLEGET~\tableidx \\&&|&
-     \TABLESET~\tableidx \\
+     \TABLESET~\tableidx \\&&|&
+     \TABLESIZE~\tableidx \\&&|&
+     \TABLEGROW~\tableidx \\&&|&
+     \TABLEFILL~\tableidx \\
    \end{array}
 
-These instructions get or set an element in a table, respectively.
+The |TABLEGET| and |TABLESET| instructions load or store an element in a table, respectively.
+
+The |TABLESIZE| instruction returns the current size of a table.
+The |TABLEGROW| instruction grows table by a given delta and returns the previous size, or :math:`-1` if enough space cannot be allocated.
+It also takes an initialization value for the newly allocated entries.
+
+The |TABLEFILL| instruction sets all entries in a range to a given value.
 
 An additional instruction that accesses a table is the :ref:`control instruction <syntax-instr-control>` |CALLINDIRECT|.
 

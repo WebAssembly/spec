@@ -173,8 +173,12 @@ let encode m =
       | LocalTee x -> op 0x22; var x
       | GlobalGet x -> op 0x23; var x
       | GlobalSet x -> op 0x24; var x
+
       | TableGet x -> op 0x25; var x
       | TableSet x -> op 0x26; var x
+      | TableSize x -> op 0xfc; op 0x10; var x
+      | TableGrow x -> op 0xfc; op 0x0f; var x
+      | TableFill x -> op 0xfc; op 0x11; var x
 
       | Load ({ty = I32Type; sz = None; _} as mo) -> op 0x28; memop mo
       | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x29; memop mo
@@ -485,7 +489,12 @@ let encode m =
     (* Element section *)
     let segment dat seg =
       let {index; offset; init} = seg.it in
-      var index; const offset; dat init
+      if index.it = 0l then
+        u8 0x00
+      else begin
+        u8 0x02; var index
+      end;
+      const offset; dat init
 
     let table_segment seg =
       segment (vec var) seg

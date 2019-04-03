@@ -270,7 +270,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [local c x] --> [local c x]
 
   | GlobalGet x ->
-    let GlobalType (t, mut) = global c x in
+    let GlobalType (t, _mut) = global c x in
     [] --> [t]
 
   | GlobalSet x ->
@@ -279,12 +279,24 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [t] --> []
 
   | TableGet x ->
-    let TableType (lim, t) = table c x in
+    let TableType (_lim, t) = table c x in
     [NumType I32Type] --> [RefType t]
 
   | TableSet x ->
-    let TableType (lim, t) = table c x in
+    let TableType (_lim, t) = table c x in
     [NumType I32Type; RefType t] --> []
+
+  | TableSize x ->
+    let _tt = table c x in
+    [] --> [NumType I32Type]
+
+  | TableGrow x ->
+    let TableType (_lim, t) = table c x in
+    [RefType t; NumType I32Type] --> [NumType I32Type]
+
+  | TableFill x ->
+    let TableType (_lim, t) = table c x in
+    [NumType I32Type; RefType t; NumType I32Type] --> []
 
   | Load memop ->
     check_memop c memop (Lib.Option.map fst) e.at;

@@ -148,13 +148,15 @@ let inline_type_explicit (c : context) x ft at =
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
 %token ANYREF FUNCREF NUM_TYPE MUT
-%token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
+%token UNREACHABLE NOP DROP SELECT
+%token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
-%token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET TABLE_GET TABLE_SET
+%token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
+%token TABLE_GET TABLE_SET TABLE_SIZE TABLE_GROW TABLE_FILL
+%token MEMORY_SIZE MEMORY_GROW
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
-%token REF_NULL REF_FUNC REF_HOST REF_IS_NULL
 %token CONST UNARY BINARY TEST COMPARE CONVERT
-%token UNREACHABLE MEMORY_SIZE MEMORY_GROW
+%token REF_NULL REF_FUNC REF_HOST REF_IS_NULL
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
 %token MODULE BIN QUOTE
@@ -326,6 +328,9 @@ plain_instr :
   | GLOBAL_SET var { fun c -> global_set ($2 c global) }
   | TABLE_GET var { fun c -> table_get ($2 c table) }
   | TABLE_SET var { fun c -> table_set ($2 c table) }
+  | TABLE_SIZE var { fun c -> table_size ($2 c table) }
+  | TABLE_GROW var { fun c -> table_grow ($2 c table) }
+  | TABLE_FILL var { fun c -> table_fill ($2 c table) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
   | MEMORY_SIZE { fun c -> memory_size }
