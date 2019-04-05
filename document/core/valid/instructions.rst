@@ -357,7 +357,7 @@ Table Instructions
    \frac{
      C.\CELEM[x] = \segtype
    }{
-     C \vdashinstr \DATADROP~x : [] \to []
+     C \vdashinstr \ELEMDROP~x : [] \to []
    }
 
 
@@ -547,8 +547,6 @@ Memory Instructions
 ...................
 
 * The data segment :math:`C.\CDATA[x]` must be defined in the context.
-
-* The :ref:`segment type <syntax-segtype>` :math:`C.\CDATA[x]` must be |SPASSIVE|.
 
 * Then the instruction is valid with type :math:`[] \to []`.
 

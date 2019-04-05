@@ -503,6 +503,7 @@
 .. |Belemsec| mathdef:: \xref{binary/modules}{binary-elemsec}{\B{elemsec}}
 .. |Bdatasec| mathdef:: \xref{binary/modules}{binary-datasec}{\B{datasec}}
 .. |Bstartsec| mathdef:: \xref{binary/modules}{binary-startsec}{\B{startsec}}
+.. |Bdatacountsec| mathdef:: \xref{binary/modules}{binary-datacountsec}{\B{datacountsec}}
 
 .. |Bcustom| mathdef:: \xref{binary/modules}{binary-customsec}{\B{custom}}
 .. |Btype| mathdef:: \xref{binary/modules}{binary-typedef}{\B{type}}
