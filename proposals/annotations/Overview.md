@@ -9,7 +9,7 @@ Problem
 * No equivalent exists for the text format. In particular, there is no way to
   - represent custom sections themselves in the text format, cf. WebAssembly/design#1153 and https://gist.github.com/binji/d1cfff7faaebb2aa4f8b1c995234e5a0
   - reflect arbitrary names in the text format, cf. WebAssembly/spec#617
-  - express information like for host bindings, cf. https://github.com/WebAssembly/webidl-bindings/blob/master/proposals/webidl-bindings/Explainer.md
+  - express information like for Web IDL bindings, cf. https://github.com/WebAssembly/webidl-bindings/blob/master/proposals/webidl-bindings/Explainer.md
 
 Solution
 
