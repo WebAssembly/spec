@@ -9,7 +9,7 @@ Problem
 * No equivalent exists for the text format. In particular, there is no way to
   - represent custom sections themselves in the text format, cf. WebAssembly/design#1153 and https://gist.github.com/binji/d1cfff7faaebb2aa4f8b1c995234e5a0
   - reflect arbitrary names in the text format, cf. WebAssembly/spec#617
-  - express information like for host bindings, cf. https://github.com/WebAssembly/host-bindings/blob/master/proposals/host-bindings/Overview.md
+  - express information like for Web IDL bindings, cf. https://github.com/WebAssembly/webidl-bindings/blob/master/proposals/webidl-bindings/Explainer.md
 
 Solution
 
@@ -47,21 +47,21 @@ Extend the Appendix on the Custom Sections:
 ## Examples
 
 Expressing generic custom sections (cf. https://gist.github.com/binji/d1cfff7faaebb2aa4f8b1c995234e5a0)
-```
+```wasm
 (module
   (@custom "my-fancy-section" (after function) "contents-bytes")
 )
 ```
 
 Expressing names
-```
+```wasm
 (module (@name "Gümüsü")
   (func $lambda (@name "λ") (param $x (@name "α βγ δ") i32) (result i32) (get_local $x))
 )
 ```
 
-Host bindings (cf. https://github.com/WebAssembly/host-bindings/blob/master/proposals/host-bindings/Overview.md)
-```
+Web IDL bindings (cf. https://github.com/WebAssembly/webidl-bindings/blob/master/proposals/webidl-bindings/Explainer.md)
+```wasm
 (module
   (func (export "f") (param i32 (@js unsigned)) ...)                        ;; argument converted as unsigned
   (func (export "method") (param $x anyref (@js this)) (param $y i32) ...)  ;; maps this to first arg
