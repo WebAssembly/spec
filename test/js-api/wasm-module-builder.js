@@ -3,20 +3,35 @@
 // found in the LICENSE file.
 
 // Used for encoding f32 and double constants to bits.
-let __buffer = new ArrayBuffer(8);
-let byte_view = new Int8Array(__buffer);
-let f32_view = new Float32Array(__buffer);
-let f64_view = new Float64Array(__buffer);
+let f32_view = new Float32Array(1);
+let f32_bytes_view = new Uint8Array(f32_view.buffer);
+let f64_view = new Float64Array(1);
+let f64_bytes_view = new Uint8Array(f64_view.buffer);
 
-function bytes() {
-  var buffer = new ArrayBuffer(arguments.length);
-  var view = new Uint8Array(buffer);
-  for (var i = 0; i < arguments.length; i++) {
-    var val = arguments[i];
-    if ((typeof val) == "string") val = val.charCodeAt(0);
+// The bytes function receives one of
+//  - several arguments, each of which is either a number or a string of length
+//    1; if it's a string, the charcode of the contained character is used.
+//  - a single array argument containing the actual arguments
+//  - a single string; the returned buffer will contain the char codes of all
+//    contained characters.
+function bytes(...input) {
+  if (input.length == 1 && typeof input[0] == 'array') input = input[0];
+  if (input.length == 1 && typeof input[0] == 'string') {
+    let len = input[0].length;
+    let view = new Uint8Array(len);
+    for (let i = 0; i < len; i++) view[i] = input[0].charCodeAt(i);
+    return view.buffer;
+  }
+  let view = new Uint8Array(input.length);
+  for (let i = 0; i < input.length; i++) {
+    let val = input[i];
+    if (typeof val == 'string') {
+      assertEquals(1, val.length, 'string inputs must have length 1');
+      val = val.charCodeAt(0);
+    }
     view[i] = val | 0;
   }
-  return buffer;
+  return view.buffer;
 }
 
 // Header declaration constants
@@ -33,25 +48,8 @@ var kWasmV3 = 0;
 var kHeaderSize = 8;
 var kPageSize = 65536;
 var kSpecMaxPages = 65535;
-
-function bytesWithHeader() {
-  var buffer = new ArrayBuffer(kHeaderSize + arguments.length);
-  var view = new Uint8Array(buffer);
-  view[0] = kWasmH0;
-  view[1] = kWasmH1;
-  view[2] = kWasmH2;
-  view[3] = kWasmH3;
-  view[4] = kWasmV0;
-  view[5] = kWasmV1;
-  view[6] = kWasmV2;
-  view[7] = kWasmV3;
-  for (var i = 0; i < arguments.length; i++) {
-    var val = arguments[i];
-    if ((typeof val) == "string") val = val.charCodeAt(0);
-    view[kHeaderSize + i] = val | 0;
-  }
-  return buffer;
-}
+var kMaxVarInt32Size = 5;
+var kMaxVarInt64Size = 10;
 
 let kDeclNoLocals = 0;
 
@@ -179,10 +177,6 @@ let kExprSetLocal = 0x21;
 let kExprTeeLocal = 0x22;
 let kExprGetGlobal = 0x23;
 let kExprSetGlobal = 0x24;
-let kExprI32Const = 0x41;
-let kExprI64Const = 0x42;
-let kExprF32Const = 0x43;
-let kExprF64Const = 0x44;
 let kExprI32LoadMem = 0x28;
 let kExprI64LoadMem = 0x29;
 let kExprF32LoadMem = 0x2a;
@@ -208,6 +202,10 @@ let kExprI64StoreMem16 = 0x3d;
 let kExprI64StoreMem32 = 0x3e;
 let kExprMemorySize = 0x3f;
 let kExprMemoryGrow = 0x40;
+let kExprI32Const = 0x41;
+let kExprI64Const = 0x42;
+let kExprF32Const = 0x43;
+let kExprF64Const = 0x44;
 let kExprI32Eqz = 0x45;
 let kExprI32Eq = 0x46;
 let kExprI32Ne = 0x47;
@@ -332,69 +330,74 @@ let kExprI64ReinterpretF64 = 0xbd;
 let kExprF32ReinterpretI32 = 0xbe;
 let kExprF64ReinterpretI64 = 0xbf;
 
-let kTrapUnreachable          = 0;
-let kTrapMemOutOfBounds       = 1;
-let kTrapDivByZero            = 2;
-let kTrapDivUnrepresentable   = 3;
-let kTrapRemByZero            = 4;
-let kTrapFloatUnrepresentable = 5;
-let kTrapFuncInvalid          = 6;
-let kTrapFuncSigMismatch      = 7;
-let kTrapInvalidIndex         = 8;
-
-function wasmI32Const(val) {
-  let bytes = [kExprI32Const];
-  for (let i = 0; i < 4; ++i) {
-    bytes.push(0x80 | ((val >> (7 * i)) & 0x7f));
+class Binary {
+  constructor() {
+    this.length = 0;
+    this.buffer = new Uint8Array(8192);
   }
-  bytes.push((val >> (7 * 4)) & 0x7f);
-  return bytes;
-}
 
-function wasmF32Const(f) {
-  f32_view[0] = f;
-  return [kExprF32Const, byte_view[0], byte_view[1], byte_view[2], byte_view[3]];
-}
+  ensure_space(needed) {
+    if (this.buffer.length - this.length >= needed) return;
+    let new_capacity = this.buffer.length * 2;
+    while (new_capacity - this.length < needed) new_capacity *= 2;
+    let new_buffer = new Uint8Array(new_capacity);
+    new_buffer.set(this.buffer);
+    this.buffer = new_buffer;
+  }
 
-function wasmF64Const(f) {
-  f64_view[0] = f;
-  return [kExprF64Const, byte_view[0], byte_view[1], byte_view[2], byte_view[3],
-          byte_view[4], byte_view[5], byte_view[6], byte_view[7]];
-}
+  trunc_buffer() {
+    return this.buffer = this.buffer.slice(0, this.length);
+  }
 
-class Binary extends Array {
+  reset() {
+    this.length = 0;
+  }
+
   emit_u8(val) {
-    this.push(val);
+    this.ensure_space(1);
+    this.buffer[this.length++] = val;
   }
 
   emit_u16(val) {
-    this.push(val & 0xff);
-    this.push((val >> 8) & 0xff);
+    this.ensure_space(2);
+    this.buffer[this.length++] = val;
+    this.buffer[this.length++] = val >> 8;
   }
 
   emit_u32(val) {
-    this.push(val & 0xff);
-    this.push((val >> 8) & 0xff);
-    this.push((val >> 16) & 0xff);
-    this.push((val >> 24) & 0xff);
+    this.ensure_space(4);
+    this.buffer[this.length++] = val;
+    this.buffer[this.length++] = val >> 8;
+    this.buffer[this.length++] = val >> 16;
+    this.buffer[this.length++] = val >> 24;
   }
 
-  emit_u32v(val) {
-    while (true) {
+  emit_leb(val, max_len) {
+    this.ensure_space(max_len);
+    for (let i = 0; i < max_len; ++i) {
       let v = val & 0xff;
       val = val >>> 7;
       if (val == 0) {
-        this.push(v);
-        break;
+        this.buffer[this.length++] = v;
+        return;
       }
-      this.push(v | 0x80);
+      this.buffer[this.length++] = v | 0x80;
     }
+    throw new Error("Leb value exceeds maximum length of " + max_len);
+  }
+
+  emit_u32v(val) {
+    this.emit_leb(val, kMaxVarInt32Size);
+  }
+
+  emit_u64v(val) {
+    this.emit_leb(val, kMaxVarInt64Size);
   }
 
   emit_bytes(data) {
-    for (let i = 0; i < data.length; i++) {
-      this.push(data[i] & 0xff);
-    }
+    this.ensure_space(data.length);
+    this.buffer.set(data, this.length);
+    this.length += data.length;
   }
 
   emit_string(string) {
@@ -415,21 +418,22 @@ class Binary extends Array {
   }
 
   emit_header() {
-    this.push(kWasmH0, kWasmH1, kWasmH2, kWasmH3,
-              kWasmV0, kWasmV1, kWasmV2, kWasmV3);
+    this.emit_bytes([
+      kWasmH0, kWasmH1, kWasmH2, kWasmH3, kWasmV0, kWasmV1, kWasmV2, kWasmV3
+    ]);
   }
 
   emit_section(section_code, content_generator) {
     // Emit section name.
     this.emit_u8(section_code);
     // Emit the section to a temporary buffer: its full length isn't know yet.
-    let section = new Binary;
+    const section = new Binary;
     content_generator(section);
     // Emit section length.
     this.emit_u32v(section.length);
     // Copy the temporary buffer.
     // Avoid spread because {section} can be huge.
-    for (let b of section) this.push(b);
+    this.emit_bytes(section.trunc_buffer());
   }
 }
 
@@ -521,8 +525,9 @@ class WasmModuleBuilder {
   }
 
   addType(type) {
-    // TODO: canonicalize types?
     this.types.push(type);
+    var pl = type.params.length;  // should have params
+    var rl = type.results.length; // should have results
     return this.types.length - 1;
   }
 
@@ -541,28 +546,28 @@ class WasmModuleBuilder {
     return func;
   }
 
-  addImport(module = "", name, type) {
+  addImport(module, name, type) {
     let type_index = (typeof type) == "number" ? type : this.addType(type);
     this.imports.push({module: module, name: name, kind: kExternalFunction,
                        type: type_index});
     return this.num_imported_funcs++;
   }
 
-  addImportedGlobal(module = "", name, type) {
+  addImportedGlobal(module, name, type) {
     let o = {module: module, name: name, kind: kExternalGlobal, type: type,
              mutable: false}
     this.imports.push(o);
     return this.num_imported_globals++;
   }
 
-  addImportedMemory(module = "", name, initial = 0, maximum) {
+  addImportedMemory(module, name, initial = 0, maximum) {
     let o = {module: module, name: name, kind: kExternalMemory,
              initial: initial, maximum: maximum};
     this.imports.push(o);
     return this;
   }
 
-  addImportedTable(module = "", name, initial, maximum) {
+  addImportedTable(module, name, initial, maximum) {
     let o = {module: module, name: name, kind: kExternalTable, initial: initial,
              maximum: maximum};
     this.imports.push(o);
@@ -617,7 +622,7 @@ class WasmModuleBuilder {
     return this;
   }
 
-  toArray(debug = false) {
+  toBuffer(debug = false) {
     let binary = new Binary;
     let wasm = this;
 
@@ -738,22 +743,12 @@ class WasmModuleBuilder {
             case kWasmF32:
               section.emit_u8(kExprF32Const);
               f32_view[0] = global.init;
-              section.emit_u8(byte_view[0]);
-              section.emit_u8(byte_view[1]);
-              section.emit_u8(byte_view[2]);
-              section.emit_u8(byte_view[3]);
+              section.emit_bytes(f32_bytes_view);
               break;
             case kWasmF64:
               section.emit_u8(kExprF64Const);
               f64_view[0] = global.init;
-              section.emit_u8(byte_view[0]);
-              section.emit_u8(byte_view[1]);
-              section.emit_u8(byte_view[2]);
-              section.emit_u8(byte_view[3]);
-              section.emit_u8(byte_view[4]);
-              section.emit_u8(byte_view[5]);
-              section.emit_u8(byte_view[6]);
-              section.emit_u8(byte_view[7]);
+              section.emit_bytes(f64_bytes_view);
               break;
             }
           } else {
@@ -787,7 +782,7 @@ class WasmModuleBuilder {
     }
 
     // Add start function section.
-    if (wasm.start_index != undefined) {
+    if (wasm.start_index !== undefined) {
       if (debug) print("emitting start function @ " + binary.length);
       binary.emit_section(kStartSectionCode, section => {
         section.emit_u32v(wasm.start_index);
@@ -824,7 +819,9 @@ class WasmModuleBuilder {
       if (debug) print("emitting code @ " + binary.length);
       binary.emit_section(kCodeSectionCode, section => {
         section.emit_u32v(wasm.functions.length);
+        let header = new Binary;
         for (let func of wasm.functions) {
+          header.reset();
           // Function body length will be patched later.
           let local_decls = [];
           let l = func.locals;
@@ -844,7 +841,6 @@ class WasmModuleBuilder {
             }
           }
 
-          let header = new Binary;
           header.emit_u32v(local_decls.length);
           for (let decl of local_decls) {
             header.emit_u32v(decl.count);
@@ -852,7 +848,7 @@ class WasmModuleBuilder {
           }
 
           section.emit_u32v(header.length + func.body.length);
-          section.emit_bytes(header);
+          section.emit_bytes(header.trunc_buffer());
           section.emit_bytes(func.body);
         }
       });
@@ -906,24 +902,51 @@ class WasmModuleBuilder {
       });
     }
 
-    return binary;
+    return binary.trunc_buffer();
   }
 
-  toBuffer(debug = false) {
-    let bytes = this.toArray(debug);
-    let buffer = new ArrayBuffer(bytes.length);
-    let view = new Uint8Array(buffer);
-    for (let i = 0; i < bytes.length; i++) {
-      let val = bytes[i];
-      if ((typeof val) == "string") val = val.charCodeAt(0);
-      view[i] = val | 0;
-    }
-    return new Uint8Array(buffer);
+  toArray(debug = false) {
+    return Array.from(this.toBuffer(debug));
   }
 
-  instantiate(...args) {
-    let module = new WebAssembly.Module(this.toBuffer());
-    let instance = new WebAssembly.Instance(module, ...args);
+  instantiate(ffi) {
+    let module = this.toModule();
+    let instance = new WebAssembly.Instance(module, ffi);
     return instance;
   }
+
+  asyncInstantiate(ffi) {
+    return WebAssembly.instantiate(this.toBuffer(), ffi)
+        .then(({module, instance}) => instance);
+  }
+
+  toModule(debug = false) {
+    return new WebAssembly.Module(this.toBuffer(debug));
+  }
+}
+
+function wasmI32Const(val) {
+  let bytes = [kExprI32Const];
+  for (let i = 0; i < 4; ++i) {
+    bytes.push(0x80 | ((val >> (7 * i)) & 0x7f));
+  }
+  bytes.push((val >> (7 * 4)) & 0x7f);
+  return bytes;
+}
+
+function wasmF32Const(f) {
+  f32_view[0] = f;
+  return [
+    kExprF32Const, f32_bytes_view[0], f32_bytes_view[1], f32_bytes_view[2],
+    f32_bytes_view[3]
+  ];
+}
+
+function wasmF64Const(f) {
+  f64_view[0] = f;
+  return [
+    kExprF64Const, f64_bytes_view[0], f64_bytes_view[1], f64_bytes_view[2],
+    f64_bytes_view[3], f64_bytes_view[4], f64_bytes_view[5], f64_bytes_view[6],
+    f64_bytes_view[7]
+  ];
 }

@@ -316,9 +316,8 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| and return the result.
 </div>
 
-<div algorithm="instantiate">
-  To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
-    1. Let |module| be |moduleObject|.\[[Module]].
+<div algorithm="read-the-imports">
+  To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject|, perform the following steps:
     1. If |module|.[=𝗂𝗆𝗉𝗈𝗋𝗍𝗌=] is not an empty list, and |importObject| is undefined, throw a {{TypeError}} exception.
     1. Let |imports| be an empty [=list=] of [=external value=]s.
     1. For each (|moduleName|, |componentName|, |externtype|) in [=module_imports=](|module|), do
@@ -349,31 +348,27 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
                 1. Throw a {{LinkError}} exception.
             1. Let |externglobal| be [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr|.
             1. [=Append=] |externglobal| to |imports|.
-        1. If |externtype| is of the form [=𝗆𝖾𝗆=] |memtype|,
+        1. If |externtype| is of the form [=𝗆𝖾𝗆=] <var ignore>memtype</var>,
             1. If |v| is not a {{Memory}} object, throw a {{LinkError}} exception.
-
-            Note: [=instantiate_module=] invoked below will check the imported {{Memory}}'s size against the importing module's requirements.
-
-            2. Let |externmem| be the [=external value=] [=external value|𝗆𝖾𝗆=]  |v|.\[[Memory]].
+            1. Note: [=instantiate_module=] invoked below will check the imported {{Memory}}'s size against the importing module's requirements.
+            1. Let |externmem| be the [=external value=] [=external value|𝗆𝖾𝗆=]  |v|.\[[Memory]].
             1. [=Append=] |externmem| to |imports|.
-        1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] |tabletype|,
+        1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] <var ignore>tabletype</var>,
             1. If |v| is not a {{Table}} instance, throw a {{LinkError}} exception.
-
-            Note: The table's length, etc. is checked by [=instantiate_module=] invoked below.
-
-            2. Let |tableaddr| be |v|.\[[Table]]
+            1. Note: The table's length, etc. is checked by [=instantiate_module=] invoked below.
+            1. Let |tableaddr| be |v|.\[[Table]]
             1. Let |externtable| be the [=external value=] [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr|.
             1. [=Append=] |externtable| to |imports|.
-    1. Let (|store|, |instance|) be [=instantiate_module=](|store|, |module|, |imports|).
-    1. If |instance| is [=error=], throw an appropriate exception type:
-        * A {{LinkError}} exception for most cases which occur during linking.
-        * If the error came when running the start function, throw a {{RuntimeError}} for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.
-        * Another error type if appropriate, for example an out-of-memory exception, as documented in <a href="#errors">the WebAssembly error mapping</a>.
+    1. Return |imports|.
+</div>
+
+<div algorithm>
+  To <dfn>create an instance object</dfn> from a WebAssembly module |module| and instance |instance|, perform the following steps:
     1. Let |exportsObject| be ! [=ObjectCreate=](null).
     1. For each pair (|name|, |externtype|) in [=module_exports=](|module|),
         1. Let |externval| be [=get_export=](|instance|, |name|).
         1. Assert: |externval| is not [=error=].
-        1. If |externtype| is of the form [=𝖿𝗎𝗇𝖼=] |functype|,
+        1. If |externtype| is of the form [=𝖿𝗎𝗇𝖼=] <var ignore>functype</var>,
             1. Assert: |externval| is of the form [=external value|𝖿𝗎𝗇𝖼=] |funcaddr|.
             1. Let [=external value|𝖿𝗎𝗇𝖼=] |funcaddr| be |externval|.
             1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
@@ -383,12 +378,12 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. Let [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr| be |externval|.
             1. Let |global| be [=create a global object|a new Global object=] created from |globaladdr|.
             1. Let |value| be |global|.
-        1. If |externtype| is of the form [=𝗆𝖾𝗆=] |memtype|,
+        1. If |externtype| is of the form [=𝗆𝖾𝗆=] <var ignore>memtype</var>,
             1. Assert: |externval| is of the form [=external value|𝗆𝖾𝗆=] |memaddr|.
             1. Let [=external value|𝗆𝖾𝗆=] |memaddr| be |externval|.
             1. Let |memory| be [=create a memory object|a new Memory object=] created from |memaddr|.
             1. Let |value| be |memory|.
-        1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] |tabletype|,
+        1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] <var ignore>tabletype</var>,
             1. Assert: |externval| is of the form [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr|.
             1. Let [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr| be |externval|.
             1. Let |table| be [=create a Table object|a new Table object=] created from |tableaddr|.
@@ -398,7 +393,43 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
         Note: the validity and uniqueness checks performed during [=WebAssembly module validation=] ensure that each property name is valid and no properties are defined twice.
     1. Perform ! [=SetIntegrityLevel=](|exportsObject|, `"frozen"`).
-    1. Let |instanceObject| be a new {{Instance}} object whose internal \[[Instance]] slot is set to |instance| and the \[[Exports]] slot to |exportsObject|.
+    1. Return a new {{Instance}} object whose internal \[[Instance]] slot is set to |instance| and the \[[Exports]] slot to |exportsObject|.
+</div>
+
+<div algorithm>
+  To <dfn>instantiate the core of a WebAssembly module</dfn> from a module |module| and imports |imports|, perform the following steps:
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+    1. Let |result| be [=instantiate_module=](|store|, |module|, |imports|).
+    1. If |result| is [=error=], throw an appropriate exception type:
+        * A {{LinkError}} exception for most cases which occur during linking.
+        * If the error came when running the start function, throw a {{RuntimeError}} for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.
+        * Another error type if appropriate, for example an out-of-memory exception, as documented in <a href="#errors">the WebAssembly error mapping</a>.
+    1. Let (|store|, |instance|) be |result|.
+    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
+    1. Return |instance|.
+</div>
+
+<div algorithm>
+  To <dfn>asynchronously instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
+    1. Let |promise| be [=a new promise=].
+    1. Let |module| be |moduleObject|.\[[Module]].
+    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
+        If this operation throws an exception, catch it, [=reject=] |promise| with the exception, and return |promise|.
+    1. [=Queue a task=] to perform the following steps:
+        1.  [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
+            If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
+        1.  [=Create an instance object=] from |module| and |instance|, and let the result be |instanceObject|.
+            If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
+        1. [=Resolve=] |promise| with |instanceObject|.
+    1. Return |promise|.
+</div>
+
+<div algorithm="instantiate">
+  To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
+    1. Let |module| be |moduleObject|.\[[Module]].
+    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
+    1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
+    1. [=Create an instance object=] from |module| and |instance|, and let the result be |instanceObject|.
     1. Return |instanceObject|.
 </div>
 
@@ -426,11 +457,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
 <div algorithm>
   The <dfn method for="WebAssembly">instantiate(|moduleObject|, |importObject|)</dfn> method, when invoked, performs the following steps:
-    1. Let |promise| be [=a new promise=].
-    1. [=Queue a task=] to perform the following steps:
-        1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |moduleObject| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, and [=reject=] |promise| with the exception.
-        1. [=Resolve=] |promise| with |instance|.
-    1. Return |promise|
+    1. [=asynchronously instantiate a WebAssembly module|Asynchronously instantiate the WebAssembly module=] |moduleObject| importing |importObject|, and return the result.
 </div>
 
 Note: A follow-on streaming API is documented in the <a href="https://webassembly.github.io/spec/web-api/index.html">WebAssembly Web API</a>.
@@ -731,8 +758,19 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 <h3 id="globals">Globals</h3>
 
 <pre class="idl">
+enum ValueType {
+  "i32",
+  "i64",
+  "f32",
+  "f64"
+};
+</pre>
+
+Note: this type may be extended with additional cases in future versions of WebAssembly.
+
+<pre class="idl">
 dictionary GlobalDescriptor {
-  required USVString value;
+  required ValueType value;
   boolean mutable = false;
 };
 
@@ -767,7 +805,6 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |s| equals "i64", return [=𝗂𝟨𝟦=].
     1. If |s| equals "f32", return [=𝖿𝟥𝟤=].
     1. If |s| equals "f64", return [=𝖿𝟨𝟦=].
-    1. Otherwise, throw a {{TypeError}} exception.
 </div>
 
 <div algorithm>
