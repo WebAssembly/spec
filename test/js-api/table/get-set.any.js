@@ -1,5 +1,4 @@
 // META: global=jsshell
-// META: script=/wasm/jsapi/wasm-constants.js
 // META: script=/wasm/jsapi/wasm-module-builder.js
 // META: script=assertions.js
 
@@ -9,15 +8,11 @@ setup(() => {
 
   builder
     .addFunction("fn", kSig_v_d)
-    .addBody([
-        kExprEnd
-    ])
+    .addBody([])
     .exportFunc();
   builder
     .addFunction("fn2", kSig_v_v)
-    .addBody([
-        kExprEnd
-    ])
+    .addBody([])
     .exportFunc();
 
   const buffer = builder.toBuffer()

@@ -364,3 +364,204 @@
   (module (memory 1) (func $load_f64 (f64.load (i32.const 0))))
   "type mismatch"
 )
+
+
+;; Type check
+
+(assert_invalid (module (memory 1) (func (result i32) (i32.load (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i32) (i32.load8_s (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i32) (i32.load8_u (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i32) (i32.load16_s (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i32) (i32.load16_u (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load8_s (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load8_u (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load16_s (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load16_u (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load32_s (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result i64) (i64.load32_u (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result f32) (f32.load (f32.const 0)))) "type mismatch")
+(assert_invalid (module (memory 1) (func (result f64) (f64.load (f32.const 0)))) "type mismatch")
+
+
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty
+      (i32.load) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-block
+      (i32.const 0)
+      (block (i32.load) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-loop
+      (i32.const 0)
+      (loop (i32.load) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-then
+      (i32.const 0) (i32.const 0)
+      (if (then (i32.load) (drop)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-else
+      (i32.const 0) (i32.const 0)
+      (if (result i32) (then (i32.const 0)) (else (i32.load))) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-br
+      (i32.const 0)
+      (block (br 0 (i32.load)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-br_if
+      (i32.const 0)
+      (block (br_if 0 (i32.load) (i32.const 1)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-br_table
+      (i32.const 0)
+      (block (br_table 0 (i32.load)) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-return
+      (return (i32.load)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-select
+      (select (i32.load) (i32.const 1) (i32.const 2)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-call
+      (call 1 (i32.load)) (drop)
+    )
+    (func (param i32) (result i32) (local.get 0))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $f (param i32) (result i32) (local.get 0))
+    (type $sig (func (param i32) (result i32)))
+    (table funcref (elem $f))
+    (func $type-address-empty-in-call_indirect
+      (block (result i32)
+        (call_indirect (type $sig)
+          (i32.load) (i32.const 0)
+        )
+        (drop)
+      )
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-local.set
+      (local i32)
+      (local.set 0 (i32.load)) (local.get 0) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-local.tee
+      (local i32)
+      (local.tee 0 (i32.load)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (global $x (mut i32) (i32.const 0))
+    (func $type-address-empty-in-global.set
+      (global.set $x (i32.load)) (global.get $x) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-memory.grow
+      (memory.grow (i32.load)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-address-empty-in-load
+      (i32.load (i32.load)) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-address-empty-in-store
+      (i32.store (i32.load) (i32.const 1))
+    )
+  )
+  "type mismatch"
+)

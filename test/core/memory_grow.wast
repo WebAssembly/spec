@@ -307,3 +307,49 @@
 (assert_return (invoke "as-compare-right") (i32.const 1))
 
 (assert_return (invoke "as-memory.grow-size") (i32.const 1))
+
+
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-size-empty
+      (memory.grow) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-size-empty-in-block
+      (i32.const 0)
+      (block (memory.grow) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-size-empty-in-loop
+      (i32.const 0)
+      (loop (memory.grow) (drop))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 0)
+    (func $type-size-empty-in-then
+      (i32.const 0) (i32.const 0)
+      (if (then (memory.grow) (drop)))
+    )
+  )
+  "type mismatch"
+)
+
+
+;; Type check
+
+(assert_invalid (module (memory 1) (func (result i32) (memory.grow (f32.const 0)))) "type mismatch")

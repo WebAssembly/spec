@@ -138,7 +138,7 @@ For each type, several subcategories can be distinguished:
 * *Comparisons*: consume two operands of the respective type and produce a Boolean integer result.
 
 * *Conversions*: consume a value of one type and produce a result of another
-  (the source type of the conversion is the one after the ":math:`\K{/}`").
+  (the source type of the conversion is the one after the ":math:`\K{\_}`").
 
 Some integer instructions come in two flavors,
 where a signedness annotation |sx| distinguishes whether the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
@@ -329,7 +329,7 @@ In case of |LOOP| it is a *backward jump* to the beginning of the loop.
 
 .. note::
    This enforces *structured control flow*.
-   Intuitively, a branch targeting a |BLOCK| or |IF| behaves like a :math:`\K{break}` statement,
+   Intuitively, a branch targeting a |BLOCK| or |IF| behaves like a :math:`\K{break}` statement in most C-like languages,
    while a branch targeting a |LOOP| behaves like a :math:`\K{continue}` statement.
 
 Branch instructions come in several flavors:
