@@ -5,7 +5,7 @@ Lexical Format
 --------------
 
 
-.. index:: ! character, Unicode, ASCII, code point, ! source text
+.. index:: ! character, Unicode, ASCII, character, ! source text
    pair: text format; character
 .. _source:
 .. _text-source:
@@ -15,7 +15,7 @@ Characters
 ~~~~~~~~~~
 
 The text format assigns meaning to *source text*, which consists of a sequence of *characters*.
-Characters are assumed to be represented as valid |Unicode|_ (Section 2.4) *code points*.
+Characters are assumed to be represented as valid |Unicode|_ (Section 2.4) *scalar values*.
 
 .. math::
    \begin{array}{llll}
