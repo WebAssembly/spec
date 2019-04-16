@@ -226,6 +226,19 @@
 .. |labelidx| mathdef:: \xref{syntax/modules}{syntax-labelidx}{\X{labelidx}}
 
 
+.. Indices, meta functions
+
+.. |freetypeidx| mathdef:: \xref{syntax/modules}{syntax-typeidx}{\F{typeidx}}
+.. |freefuncidx| mathdef:: \xref{syntax/modules}{syntax-funcidx}{\F{funcidx}}
+.. |freetableidx| mathdef:: \xref{syntax/modules}{syntax-tableidx}{\F{tableidx}}
+.. |freememidx| mathdef:: \xref{syntax/modules}{syntax-memidx}{\F{memidx}}
+.. |freeglobalidx| mathdef:: \xref{syntax/modules}{syntax-globalidx}{\F{globalidx}}
+.. |freeelemidx| mathdef:: \xref{syntax/modules}{syntax-elemidx}{\F{elemidx}}
+.. |freedataidx| mathdef:: \xref{syntax/modules}{syntax-dataidx}{\F{dataidx}}
+.. |freelocalidx| mathdef:: \xref{syntax/modules}{syntax-localidx}{\F{localidx}}
+.. |freelabelidx| mathdef:: \xref{syntax/modules}{syntax-labelidx}{\F{labelidx}}
+
+
 .. Modules, terminals
 
 .. |MTYPES| mathdef:: \xref{syntax/modules}{syntax-module}{\K{types}}

@@ -81,14 +81,23 @@ Each class of definition has its own *index space*, as distinguished by the foll
 The index space for :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>` includes respective :ref:`imports <syntax-import>` declared in the same module.
 The indices of these imports precede the indices of other definitions in the same index space.
 
-Element indices reference :ref:`element segments <syntax-elem>`.
-
-Data indices reference :ref:`data segments <syntax-data>`.
+Element indices reference :ref:`element segments <syntax-elem>` and data indices reference :ref:`data segments <syntax-data>`.
 
 The index space for :ref:`locals <syntax-local>` is only accessible inside a :ref:`function <syntax-func>` and includes the parameters of that function, which precede the local variables.
 
 Label indices reference :ref:`structured control instructions <syntax-instr-control>` inside an instruction sequence.
 
+
+.. _free-typeidx:
+.. _free-funcidx:
+.. _free-tableidx:
+.. _free-memidx:
+.. _free-globalidx:
+.. _free-elemidx:
+.. _free-dataidx:
+.. _free-localidx:
+.. _free-labelidx:
+.. _free-index:
 
 Conventions
 ...........
@@ -96,6 +105,11 @@ Conventions
 * The meta variable :math:`l` ranges over label indices.
 
 * The meta variables :math:`x, y` range over indices in any of the other index spaces.
+
+* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`.
+
+.. note::
+   For example, if :math:`\instr^\ast` is :math:`(\DATADROP~x) (\MEMORYINIT~y)`, then :math:`\freedataidx(\instr^\ast) = \{x, y\}`.
 
 
 .. index:: ! type definition, type index, function type

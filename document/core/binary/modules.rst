@@ -476,9 +476,11 @@ The preamble is followed by a sequence of :ref:`sections <binary-section>`.
 :ref:`Custom sections <binary-customsec>` may be inserted at any place in this sequence,
 while other sections must occur at most once and in the prescribed order.
 All sections can be empty.
+
 The lengths of vectors produced by the (possibly empty) :ref:`function <binary-funcsec>` and :ref:`code <binary-codesec>` section must match up.
-Similarly, the data count must match the length of the :ref:`data segment <binary-datasec>` vector.
-The :math:`\MEMORYINIT` and :math:`\DATADROP` instructions can only be used if the data count section is present.
+
+Similarly, the optional data count must match the length of the :ref:`data segment <binary-datasec>` vector.
+Furthermore, it must be present if any :math:`data index <syntax-dataidx>` occurs in the code section.
 
 .. math::
    \begin{array}{llcllll}
@@ -512,7 +514,7 @@ The :math:`\MEMORYINIT` and :math:`\DATADROP` instructions can only be used if t
      \Bcustomsec^\ast \\ &&&
      \X{code}^n{:\,}\Bcodesec \\ &&&
      \Bcustomsec^\ast \\ &&&
-     \data^{\X{m'}}{:\,}\Bdatasec \\ &&&
+     \data^m{:\,}\Bdatasec \\ &&&
      \Bcustomsec^\ast
      \quad\Rightarrow\quad \{~
        \begin{array}[t]{@{}l@{}}
@@ -522,29 +524,18 @@ The :math:`\MEMORYINIT` and :math:`\DATADROP` instructions can only be used if t
        \MMEMS~\mem^\ast, \\
        \MGLOBALS~\global^\ast, \\
        \MELEM~\elem^\ast, \\
-       \MDATA~\data^{\X{m'}}, \\
+       \MDATA~\data^m, \\
        \MSTART~\start^?, \\
        \MIMPORTS~\import^\ast, \\
        \MEXPORTS~\export^\ast ~\} \\
-      \end{array} \\ &&&
-     (\begin{array}[t]{@{}c@{~}l@{}}
-      \iff & m^? \neq \epsilon \\
-      \vee & \forall (t^\ast, e) \in \X{code}^n, \MEMORYINIT \notin e \wedge \DATADROP \notin e) \\
-      \end{array} \\
+       \end{array} \\ &&&
+     (\iff m^? \neq \epsilon \vee \freedataidx(\X{code}^n) = \emptyset) \\
    \end{array}
 
 where for each :math:`t_i^\ast, e_i` in :math:`\X{code}^n`,
 
 .. math::
    \func^n[i] = \{ \FTYPE~\typeidx^n[i], \FLOCALS~t_i^\ast, \FBODY~e_i \} ) \\
-
-and where,
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \X{m'} &=& m & (\iff m^? \neq \epsilon) \\
-   \X{m'} &=& 0 & (\otherwise)
-   \end{array}
 
 .. note::
    The version of the WebAssembly binary format may increase in the future
