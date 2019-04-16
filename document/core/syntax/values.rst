@@ -146,21 +146,21 @@ Conventions
 * The meta variable :math:`z` ranges over floating-point values where clear from context.
 
 
-.. index:: ! name, byte, Unicode, UTF-8, code point, binary format
+.. index:: ! name, byte, Unicode, UTF-8, character, binary format
    pair: abstract syntax; name
-.. _syntax-codepoint:
+.. _syntax-char:
 .. _syntax-name:
 
 Names
 ~~~~~
 
-*Names* are sequences of scalar *code points* as defined by |Unicode|_ (Section 2.4).
+*Names* are sequences of *characters*, which are *scalar values* as defined by |Unicode|_ (Section 2.4).
 
 .. math::
    \begin{array}{llclll}
    \production{name} & \name &::=&
-     \codepoint^\ast \qquad\qquad (\iff |\utf8(\codepoint^\ast)| < 2^{32}) \\
-   \production{code point} & \codepoint &::=&
+     \char^\ast \qquad\qquad (\iff |\utf8(\char^\ast)| < 2^{32}) \\
+   \production{character} & \char &::=&
      \unicode{00} ~|~ \dots ~|~ \unicode{D7FF} ~|~
      \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\
    \end{array}
@@ -172,4 +172,4 @@ the length of a name is bounded by the length of its :ref:`UTF-8 <binary-utf8>` 
 Convention
 ..........
 
-* Code points are sometimes used interchangeably with natural numbers :math:`n < 1114112`.
+* Characters (Unicode scalar values) are sometimes used interchangeably with natural numbers :math:`n < 1114112`.

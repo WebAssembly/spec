@@ -150,7 +150,7 @@
 .. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{64}}}
 
 .. |name| mathdef:: \xref{syntax/values}{syntax-name}{\X{name}}
-.. |codepoint| mathdef:: \xref{syntax/values}{syntax-name}{\X{codepoint}}
+.. |char| mathdef:: \xref{syntax/values}{syntax-name}{\X{char}}
 
 
 .. Values, meta functions
@@ -434,7 +434,7 @@
 .. |Bf64| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{64}}}
 
 .. |Bname| mathdef:: \xref{binary/values}{binary-name}{\B{name}}
-.. |Bcodepoint| mathdef:: \xref{binary/values}{binary-name}{\B{codepoint}}
+.. |Bchar| mathdef:: \xref{binary/values}{binary-name}{\B{char}}
 
 
 .. Values, meta functions
@@ -593,7 +593,7 @@
 .. |Tstringelem| mathdef:: \xref{text/values}{text-string}{\T{stringelem}}
 .. |Tstringchar| mathdef:: \xref{text/values}{text-string}{\T{stringchar}}
 .. |Tname| mathdef:: \xref{text/values}{text-name}{\T{name}}
-.. |Tcodepoint| mathdef:: \xref{text/values}{text-name}{\T{codepoint}}
+.. |Tchar| mathdef:: \xref{text/values}{text-name}{\T{char}}
 .. |Tcodeval| mathdef:: \xref{text/values}{text-name}{\T{codeval}}
 .. |Tcodecont| mathdef:: \xref{text/values}{text-name}{\T{cont}}
 

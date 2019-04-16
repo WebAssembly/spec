@@ -32,7 +32,7 @@ They mirror the conventions used for :ref:`abstract syntax <grammar>` and for th
 In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, :math:`\mathtt{typewriter}` font is adopted for the former.
 
 * Terminal symbols are either literal strings of characters enclosed in quotes
-  or expressed as |Unicode|_ code points: :math:`\text{module}`, :math:`\unicode{0A}`.
+  or expressed as |Unicode|_ scalar values: :math:`\text{module}`, :math:`\unicode{0A}`.
   (All characters written literally are unambiguously drawn from the 7-bit |ASCII|_ subset of Unicode.)
 
 * Nonterminal symbols are written in typewriter font: :math:`\T{valtype}, \T{instr}`.

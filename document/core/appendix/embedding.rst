@@ -82,10 +82,10 @@ Modules
 .. index:: text format
 .. _embed-parse-module:
 
-:math:`\F{parse\_module}(\codepoint^\ast) : \module ~|~ \error`
+:math:`\F{parse\_module}(\char^\ast) : \module ~|~ \error`
 ...............................................................
 
-1. If there exists a derivation for the :ref:`source <text-source>` :math:`\codepoint^\ast` as a :math:`\Tmodule` according to the :ref:`text grammar for modules <text-module>`, yielding a :ref:`module <syntax-module>` :math:`m`, then return :math:`m`.
+1. If there exists a derivation for the :ref:`source <text-source>` :math:`\char^\ast` as a :math:`\Tmodule` according to the :ref:`text grammar for modules <text-module>`, yielding a :ref:`module <syntax-module>` :math:`m`, then return :math:`m`.
 
 2. Else, return :math:`\ERROR`.
 
