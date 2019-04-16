@@ -90,12 +90,12 @@
 <div class="section" id="characters">
 <span id="text-char"></span><span id="text-source"></span><span id="source"></span><span id="index-1"></span><h2>Characters<a class="headerlink" href="#characters" title="Permalink to this headline">¶</a></h2>
 <p>The text format assigns meaning to <em>source text</em>, which consists of a sequence of <em>characters</em>.
-Characters are assumed to be represented as valid <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.4) <em>code points</em>.</p>
+Characters are assumed to be represented as valid <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.4) <em>scalar values</em>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef2641#1{{}}\mathdef2641{source} &amp; \href{../text/lexical.html#text-source}{\mathtt{source}} &amp;::=&amp;
-  \href{../text/lexical.html#text-char}{\mathtt{char}}^\ast \\
-\def\mathdef2641#1{{}}\mathdef2641{character} &amp; \href{../text/lexical.html#text-char}{\mathtt{char}} &amp;::=&amp;
+  \href{../text/values.html#text-name}{\mathtt{char}}^\ast \\
+\def\mathdef2641#1{{}}\mathdef2641{character} &amp; \href{../text/values.html#text-name}{\mathtt{char}} &amp;::=&amp;
   \def\mathdef2698#1{\mathrm{U{+}#1}}\mathdef2698{00} ~|~ \dots ~|~ \def\mathdef2699#1{\mathrm{U{+}#1}}\mathdef2699{D7FF} ~|~ \def\mathdef2700#1{\mathrm{U{+}#1}}\mathdef2700{E000} ~|~ \dots ~|~ \def\mathdef2701#1{\mathrm{U{+}#1}}\mathdef2701{10FFFF} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
@@ -157,11 +157,11 @@ Block comments can be nested.</p>
 \def\mathdef2641#1{{}}\mathdef2641{line comment} &amp; \href{../text/lexical.html#text-comment}{\mathtt{linecomment}} &amp;::=&amp;
   \def\mathdef2681#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2681{{;}{;}}~~\href{../text/lexical.html#text-comment}{\mathtt{linechar}}^\ast~~(\def\mathdef2717#1{\mathrm{U{+}#1}}\mathdef2717{0A} ~|~ \mathtt{eof}) \\
 \def\mathdef2641#1{{}}\mathdef2641{line character} &amp; \href{../text/lexical.html#text-comment}{\mathtt{linechar}} &amp;::=&amp;
-  c{:}\href{../text/lexical.html#text-char}{\mathtt{char}} &amp; (\mathrel{\mbox{if}} c \neq \def\mathdef2718#1{\mathrm{U{+}#1}}\mathdef2718{0A}) \\
+  c{:}\href{../text/values.html#text-name}{\mathtt{char}} &amp; (\mathrel{\mbox{if}} c \neq \def\mathdef2718#1{\mathrm{U{+}#1}}\mathdef2718{0A}) \\
 \def\mathdef2641#1{{}}\mathdef2641{block comment} &amp; \href{../text/lexical.html#text-comment}{\mathtt{blockcomment}} &amp;::=&amp;
   \def\mathdef2679#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2679{{(}{;}}~~\href{../text/lexical.html#text-comment}{\mathtt{blockchar}}^\ast~~\def\mathdef2680#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2680{{;}{)}} \\
 \def\mathdef2641#1{{}}\mathdef2641{block character} &amp; \href{../text/lexical.html#text-comment}{\mathtt{blockchar}} &amp;::=&amp;
-  c{:}\href{../text/lexical.html#text-char}{\mathtt{char}} &amp; (\mathrel{\mbox{if}} c \neq \def\mathdef2719#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2719{;} \wedge c \neq \def\mathdef2720#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2720{(}) \\ &amp;&amp;|&amp;
+  c{:}\href{../text/values.html#text-name}{\mathtt{char}} &amp; (\mathrel{\mbox{if}} c \neq \def\mathdef2719#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2719{;} \wedge c \neq \def\mathdef2720#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2720{(}) \\ &amp;&amp;|&amp;
   \def\mathdef2721#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2721{;} &amp; (\mathrel{\mbox{if}}~\mbox{the next character is not}~\def\mathdef2722#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2722{)}) \\ &amp;&amp;|&amp;
   \def\mathdef2723#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2723{(} &amp; (\mathrel{\mbox{if}}~\mbox{the next character is not}~\def\mathdef2724#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2724{;}) \\ &amp;&amp;|&amp;
   \href{../text/lexical.html#text-comment}{\mathtt{blockcomment}} \\

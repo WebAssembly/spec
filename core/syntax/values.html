@@ -178,13 +178,13 @@ No distinction is made between signalling and quiet NaNs.</p>
 </div>
 </div>
 <div class="section" id="names">
-<span id="syntax-name"></span><span id="syntax-codepoint"></span><span id="index-4"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
-<p><em>Names</em> are sequences of scalar <em>code points</em> as defined by <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.4).</p>
+<span id="syntax-name"></span><span id="syntax-char"></span><span id="index-4"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
+<p><em>Names</em> are sequences of <em>characters</em>, which are <em>scalar values</em> as defined by <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.4).</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef2189#1{{}}\mathdef2189{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
-  \href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast \qquad\qquad (\mathrel{\mbox{if}} |\href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(\href{../syntax/values.html#syntax-name}{\mathit{codepoint}}^\ast)| &lt; 2^{32}) \\
-\def\mathdef2189#1{{}}\mathdef2189{code point} &amp; \href{../syntax/values.html#syntax-name}{\mathit{codepoint}} &amp;::=&amp;
+  \href{../syntax/values.html#syntax-name}{\mathit{char}}^\ast \qquad\qquad (\mathrel{\mbox{if}} |\href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(\href{../syntax/values.html#syntax-name}{\mathit{char}}^\ast)| &lt; 2^{32}) \\
+\def\mathdef2189#1{{}}\mathdef2189{character} &amp; \href{../syntax/values.html#syntax-name}{\mathit{char}} &amp;::=&amp;
   \def\mathdef2248#1{\mathrm{U{+}#1}}\mathdef2248{00} ~|~ \dots ~|~ \def\mathdef2249#1{\mathrm{U{+}#1}}\mathdef2249{D7FF} ~|~
   \def\mathdef2250#1{\mathrm{U{+}#1}}\mathdef2250{E000} ~|~ \dots ~|~ \def\mathdef2251#1{\mathrm{U{+}#1}}\mathdef2251{10FFFF} \\
 \end{array}\end{split}\]</div>
@@ -193,7 +193,7 @@ the length of a name is bounded by the length of its <a class="reference interna
 <div class="section" id="convention">
 <h3>Convention<a class="headerlink" href="#convention" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Code points are sometimes used interchangeably with natural numbers <span class="math notranslate nohighlight">\(n &lt; 1114112\)</span>.</li>
+<li>Characters (Unicode scalar values) are sometimes used interchangeably with natural numbers <span class="math notranslate nohighlight">\(n &lt; 1114112\)</span>.</li>
 </ul>
 </div>
 </div>

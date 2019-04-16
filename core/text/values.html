@@ -203,7 +203,7 @@ except for hexadecimal escape sequences <span class="math notranslate nohighligh
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
 \def\mathdef3175#1{{}}\mathdef3175{string character} &amp; \href{../text/values.html#text-string}{\mathtt{stringchar}} &amp;::=&amp;
-  c{:}\href{../text/lexical.html#text-char}{\mathtt{char}} &amp;\Rightarrow&amp; c \qquad
+  c{:}\href{../text/values.html#text-name}{\mathtt{char}} &amp;\Rightarrow&amp; c \qquad
     &amp; (\mathrel{\mbox{if}} c \geq \def\mathdef3269#1{\mathrm{U{+}#1}}\mathdef3269{20} \wedge c \neq \def\mathdef3270#1{\mathrm{U{+}#1}}\mathdef3270{7F} \wedge c \neq \def\mathdef3271#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3271{&quot;} \wedge c \neq \def\mathdef3272#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3272{\backslash}) \\ &amp;&amp;|&amp;
   \def\mathdef3273#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3273{\backslash t} &amp;\Rightarrow&amp; \def\mathdef3274#1{\mathrm{U{+}#1}}\mathdef3274{09} \\ &amp;&amp;|&amp;
   \def\mathdef3275#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3275{\backslash n} &amp;\Rightarrow&amp; \def\mathdef3276#1{\mathrm{U{+}#1}}\mathdef3276{0A} \\ &amp;&amp;|&amp;
@@ -218,7 +218,7 @@ except for hexadecimal escape sequences <span class="math notranslate nohighligh
 <div class="section" id="names">
 <span id="text-name"></span><span id="index-4"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">Names</span></a> are strings denoting a literal character sequence.
-A name string must form a valid UTF-8 encoding as defined by <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.5) and is interpreted as a string of Unicode code points.</p>
+A name string must form a valid UTF-8 encoding as defined by <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> (Section 2.5) and is interpreted as a string of Unicode scalar values.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll&#64;{\qquad}l}
 \def\mathdef3175#1{{}}\mathdef3175{name} &amp; \href{../text/values.html#text-name}{\mathtt{name}} &amp;::=&amp;
