@@ -13,7 +13,7 @@ The interface is intended to be complete, in the sense that an embedder does not
 
 .. note::
    On the other hand, an embedder does not need to provide the host environment with access to all functionality defined in this interface.
-   For example, an implementation may not support :ref:`parsing <embed-parse-module>` of the :ref:`text format <text>`.
+   For example, an implementation may not support :ref:`parsing <embed-module-parse>` of the :ref:`text format <text>`.
 
 In the description of the embedder interface, syntactic classes from the :ref:`abstract syntax <syntax>` and the :ref:`runtime's abstract machine <syntax-runtime>` are used as names for variables that range over the possible objects from that class.
 Hence, these syntactic classes can also be interpreted as types.
@@ -42,16 +42,16 @@ In addition to the error conditions specified explicitly in this section, implem
 Store
 ~~~~~
 
-.. _embed-init-store:
+.. _embed-store-init:
 
-:math:`\F{init\_store}() : \store`
+:math:`\F{store\_init}() : \store`
 ..................................
 
 1. Return the empty :ref:`store <syntax-store>`.
 
 .. math::
    \begin{array}{lclll}
-   \F{init\_store}() &=& \{ \SFUNCS~\epsilon,~ \SMEMS~\epsilon,~ \STABLES~\epsilon,~ \SGLOBALS~\epsilon \} \\
+   \F{store\_init}() &=& \{ \SFUNCS~\epsilon,~ \SMEMS~\epsilon,~ \STABLES~\epsilon,~ \SGLOBALS~\epsilon \} \\
    \end{array}
 
 
@@ -63,9 +63,9 @@ Modules
 ~~~~~~~
 
 .. index:: binary format
-.. _embed-decode-module:
+.. _embed-module-decode:
 
-:math:`\F{decode\_module}(\byte^\ast) : \module ~|~ \error`
+:math:`\F{module\_decode}(\byte^\ast) : \module ~|~ \error`
 ...........................................................
 
 1. If there exists a derivation for the :ref:`byte <syntax-byte>` sequence :math:`\byte^\ast` as a :math:`\Bmodule` according to the :ref:`binary grammar for modules <binary-module>`, yielding a :ref:`module <syntax-module>` :math:`m`, then return :math:`m`.
@@ -74,16 +74,16 @@ Modules
 
 .. math::
    \begin{array}{lclll}
-   \F{decode\_module}(b^\ast) &=& m && (\iff \Bmodule \stackrel\ast\Longrightarrow m{:}b^\ast) \\
-   \F{decode\_module}(b^\ast) &=& \ERROR && (\otherwise) \\
+   \F{module\_decode}(b^\ast) &=& m && (\iff \Bmodule \stackrel\ast\Longrightarrow m{:}b^\ast) \\
+   \F{module\_decode}(b^\ast) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
 .. index:: text format
-.. _embed-parse-module:
+.. _embed-module-parse:
 
-:math:`\F{parse\_module}(\char^\ast) : \module ~|~ \error`
-...............................................................
+:math:`\F{module\_parse}(\char^\ast) : \module ~|~ \error`
+..........................................................
 
 1. If there exists a derivation for the :ref:`source <text-source>` :math:`\char^\ast` as a :math:`\Tmodule` according to the :ref:`text grammar for modules <text-module>`, yielding a :ref:`module <syntax-module>` :math:`m`, then return :math:`m`.
 
@@ -91,15 +91,15 @@ Modules
 
 .. math::
    \begin{array}{lclll}
-   \F{parse\_module}(c^\ast) &=& m && (\iff \Tmodule \stackrel\ast\Longrightarrow m{:}c^\ast) \\
-   \F{parse\_module}(c^\ast) &=& \ERROR && (\otherwise) \\
+   \F{module\_parse}(c^\ast) &=& m && (\iff \Tmodule \stackrel\ast\Longrightarrow m{:}c^\ast) \\
+   \F{module\_parse}(c^\ast) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
 .. index:: validation
-.. _embed-validate-module:
+.. _embed-module-validate:
 
-:math:`\F{validate\_module}(\module) : \error^?`
+:math:`\F{module\_validate}(\module) : \error^?`
 ................................................
 
 1. If :math:`\module` is :ref:`valid <valid-module>`, then return nothing.
@@ -108,15 +108,15 @@ Modules
 
 .. math::
    \begin{array}{lclll}
-   \F{validate\_module}(m) &=& \epsilon && (\iff {} \vdashmodule m : \externtype^\ast \to {\externtype'}^\ast) \\
-   \F{validate\_module}(m) &=& \ERROR && (\otherwise) \\
+   \F{module\_validate}(m) &=& \epsilon && (\iff {} \vdashmodule m : \externtype^\ast \to {\externtype'}^\ast) \\
+   \F{module\_validate}(m) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
 .. index:: instantiation, module instance
-.. _embed-instantiate-module:
+.. _embed-module-instantiate:
 
-:math:`\F{instantiate\_module}(\store, \module, \externval^\ast) : (\store, \moduleinst ~|~ \error)`
+:math:`\F{module\_instantiate}(\store, \module, \externval^\ast) : (\store, \moduleinst ~|~ \error)`
 ....................................................................................................
 
 1. Try :ref:`instantiating <exec-instantiation>` :math:`\module` in :math:`\store` with :ref:`external values <syntax-externval>` :math:`\externval^\ast` as imports:
@@ -129,8 +129,8 @@ Modules
 
 .. math::
    \begin{array}{lclll}
-   \F{instantiate\_module}(S, m, \X{ev}^\ast) &=& (S', F.\AMODULE) && (\iff \instantiate(S, m, \X{ev}^\ast) \stepto^\ast S'; F; \epsilon) \\
-   \F{instantiate\_module}(S, m, \X{ev}^\ast) &=& (S', \ERROR) && (\iff \instantiate(S, m, \X{ev}^\ast) \stepto^\ast S'; F; \TRAP) \\
+   \F{module\_instantiate}(S, m, \X{ev}^\ast) &=& (S', F.\AMODULE) && (\iff \instantiate(S, m, \X{ev}^\ast) \stepto^\ast S'; F; \epsilon) \\
+   \F{module\_instantiate}(S, m, \X{ev}^\ast) &=& (S', \ERROR) && (\iff \instantiate(S, m, \X{ev}^\ast) \stepto^\ast S'; F; \TRAP) \\
    \end{array}
 
 .. note::
@@ -138,7 +138,7 @@ Modules
 
 
 .. index:: import
-.. _embed-imports:
+.. _embed-module-imports:
 
 :math:`\F{module\_imports}(\module) : (\name, \name, \externtype)^\ast`
 .......................................................................
@@ -164,7 +164,7 @@ Modules
 
 
 .. index:: export
-.. _embed-exports:
+.. _embed-module-exports:
 
 :math:`\F{module\_exports}(\module) : (\name, \externtype)^\ast`
 ................................................................
@@ -189,16 +189,18 @@ Modules
    \end{array}
 
 
-.. index:: module, store, module instance, export instance
-.. _embed-export:
+.. index:: module, module instance
+.. _embed-instance:
 
-Exports
-~~~~~~~
+Module Instances
+~~~~~~~~~~~~~~~~
 
-.. _embed-get-export:
+.. index:: export, export instance
 
-:math:`\F{get\_export}(\moduleinst, \name) : \externval ~|~ \error`
-...................................................................
+.. _embed-instance-export:
+
+:math:`\F{instance\_export}(\moduleinst, \name) : \externval ~|~ \error`
+........................................................................
 
 1. Assert: due to :ref:`validity <valid-moduleinst>` of the :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst`, all its :ref:`export names <syntax-exportinst>` are different.
 
@@ -211,8 +213,8 @@ Exports
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{get\_export}(m, \name) &=& m.\MIEXPORTS[i].\EIVALUE && (\iff m.\MEXPORTS[i].\EINAME = \name) \\
-   \F{get\_export}(m, \name) &=& \ERROR && (\otherwise) \\
+   \F{instance\_export}(m, \name) &=& m.\MIEXPORTS[i].\EIVALUE && (\iff m.\MEXPORTS[i].\EINAME = \name) \\
+   \F{instance\_export}(m, \name) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
@@ -222,9 +224,9 @@ Exports
 Functions
 ~~~~~~~~~
 
-.. _embed-alloc-func:
+.. _embed-func-alloc:
 
-:math:`\F{alloc\_func}(\store, \functype, \hostfunc) : (\store, \funcaddr)`
+:math:`\F{func\_alloc}(\store, \functype, \hostfunc) : (\store, \funcaddr)`
 ...........................................................................
 
 1. Let :math:`\funcaddr` be the result of :ref:`allocating a host function <alloc-func>` in :math:`\store` with :ref:`function type <syntax-functype>` :math:`\functype` and host function code :math:`\hostfunc`.
@@ -233,18 +235,18 @@ Functions
 
 .. math::
    \begin{array}{lclll}
-   \F{alloc\_func}(S, \X{ft}, \X{code}) &=& (S', \X{a}) && (\iff \allochostfunc(S, \X{ft}, \X{code}) = S', \X{a}) \\
+   \F{func\_alloc}(S, \X{ft}, \X{code}) &=& (S', \X{a}) && (\iff \allochostfunc(S, \X{ft}, \X{code}) = S', \X{a}) \\
    \end{array}
 
 .. note::
    This operation assumes that :math:`\hostfunc` satisfies the :ref:`pre- and post-conditions <exec-invoke-host>` required for a function instance with type :math:`\functype`.
 
-   Regular (non-host) function instances can only be created indirectly through :ref:`module instantiation <embed-instantiate-module>`.
+   Regular (non-host) function instances can only be created indirectly through :ref:`module instantiation <embed-module-instantiate>`.
 
 
-.. _embed-type-func:
+.. _embed-func-type:
 
-:math:`\F{type\_func}(\store, \funcaddr) : \functype`
+:math:`\F{func\_type}(\store, \funcaddr) : \functype`
 .....................................................
 
 1. Assert: :math:`\store.\SFUNCS[\funcaddr]` exists.
@@ -255,14 +257,14 @@ Functions
 
 .. math::
    \begin{array}{lclll}
-   \F{type\_func}(S, a) &=& \X{ft} && (\iff S \vdashexternval \EVFUNC~a : \ETFUNC~\X{ft}) \\
+   \F{func\_type}(S, a) &=& \X{ft} && (\iff S \vdashexternval \EVFUNC~a : \ETFUNC~\X{ft}) \\
    \end{array}
 
 
 .. index:: invocation, value, result
-.. _embed-invoke-func:
+.. _embed-func-invoke:
 
-:math:`\F{invoke\_func}(\store, \funcaddr, \val^\ast) : (\store, \val^\ast ~|~ \error)`
+:math:`\F{func\_invoke}(\store, \funcaddr, \val^\ast) : (\store, \val^\ast ~|~ \error)`
 ........................................................................................
 
 1. Assert: :math:`\store.\SFUNCS[\funcaddr]` exists.
@@ -278,8 +280,8 @@ Functions
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{invoke\_func}(S, a, v^\ast) &=& (S', {v'}^\ast) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; {v'}^\ast) \\
-   \F{invoke\_func}(S, a, v^\ast) &=& (S', \ERROR) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; \TRAP) \\
+   \F{func\_invoke}(S, a, v^\ast) &=& (S', {v'}^\ast) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; {v'}^\ast) \\
+   \F{func\_invoke}(S, a, v^\ast) &=& (S', \ERROR) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; \TRAP) \\
    \end{array}
 
 .. note::
@@ -292,9 +294,9 @@ Functions
 Tables
 ~~~~~~
 
-.. _embed-alloc-table:
+.. _embed-table-alloc:
 
-:math:`\F{alloc\_table}(\store, \tabletype) : (\store, \tableaddr)`
+:math:`\F{table\_alloc}(\store, \tabletype) : (\store, \tableaddr)`
 ...................................................................
 
 1. Let :math:`\tableaddr` be the result of :ref:`allocating a table <alloc-table>` in :math:`\store` with :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
@@ -303,13 +305,13 @@ Tables
 
 .. math::
    \begin{array}{lclll}
-   \F{alloc\_table}(S, \X{tt}) &=& (S', \X{a}) && (\iff \alloctable(S, \X{tt}) = S', \X{a}) \\
+   \F{table\_alloc}(S, \X{tt}) &=& (S', \X{a}) && (\iff \alloctable(S, \X{tt}) = S', \X{a}) \\
    \end{array}
 
 
-.. _embed-type-table:
+.. _embed-table-type:
 
-:math:`\F{type\_table}(\store, \tableaddr) : \tabletype`
+:math:`\F{table\_type}(\store, \tableaddr) : \tabletype`
 ........................................................
 
 1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
@@ -320,13 +322,13 @@ Tables
 
 .. math::
    \begin{array}{lclll}
-   \F{type\_table}(S, a) &=& \X{tt} && (\iff S \vdashexternval \EVTABLE~a : \ETTABLE~\X{tt}) \\
+   \F{table\_type}(S, a) &=& \X{tt} && (\iff S \vdashexternval \EVTABLE~a : \ETTABLE~\X{tt}) \\
    \end{array}
 
 
-.. _embed-read-table:
+.. _embed-table-read:
 
-:math:`\F{read\_table}(\store, \tableaddr, i) : \funcaddr^? ~|~ \error`
+:math:`\F{table\_read}(\store, \tableaddr, i) : \funcaddr^? ~|~ \error`
 .......................................................................
 
 1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
@@ -341,15 +343,15 @@ Tables
 
 .. math::
    \begin{array}{lclll}
-   \F{read\_table}(S, a, i) &=& \X{fa}^? && (\iff S.\STABLES[a].\TIELEM[i] = \X{fa}^?) \\
-   \F{read\_table}(S, a, i) &=& \ERROR && (\otherwise) \\
+   \F{table\_read}(S, a, i) &=& \X{fa}^? && (\iff S.\STABLES[a].\TIELEM[i] = \X{fa}^?) \\
+   \F{table\_read}(S, a, i) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
-.. _embed-write-table:
+.. _embed-table-write:
 
-:math:`\F{write\_table}(\store, \tableaddr, i, \funcaddr^?) : \store ~|~ \error`
-................................................................................
+:math:`\F{table\_write}(\store, \tableaddr, i, \funcaddr^?) : \store ~|~ \error`
+..................................................................................
 
 1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
 
@@ -365,14 +367,14 @@ Tables
 
 .. math::
    \begin{array}{lclll}
-   \F{write\_table}(S, a, i, \X{fa}^?) &=& S' && (\iff S' = S \with \STABLES[a].\TIELEM[i] = \X{fa}^?) \\
-   \F{write\_table}(S, a, i, \X{fa}^?) &=& \ERROR && (\otherwise) \\
+   \F{table\_write}(S, a, i, \X{fa}^?) &=& S' && (\iff S' = S \with \STABLES[a].\TIELEM[i] = \X{fa}^?) \\
+   \F{table\_write}(S, a, i, \X{fa}^?) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
-.. _embed-size-table:
+.. _embed-table-size:
 
-:math:`\F{size\_table}(\store, \tableaddr) : \X{i32}`
+:math:`\F{table\_size}(\store, \tableaddr) : \X{i32}`
 .....................................................
 
 1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
@@ -382,15 +384,15 @@ Tables
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{size\_table}(S, a) &=& n &&
+   \F{table\_size}(S, a) &=& n &&
      (\iff |S.\STABLES[a].\TIELEM| = n) \\
    \end{array}
 
 
 
-.. _embed-grow-table:
+.. _embed-table-grow:
 
-:math:`\F{grow\_table}(\store, \tableaddr, n) : \store ~|~ \error`
+:math:`\F{table\_grow}(\store, \tableaddr, n) : \store ~|~ \error`
 ..................................................................
 
 1. Assert: :math:`\store.\STABLES[\tableaddr]` exists.
@@ -406,9 +408,9 @@ Tables
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{grow\_table}(S, a, n) &=& S' &&
+   \F{table\_grow}(S, a, n) &=& S' &&
      (\iff S' = S \with \STABLES[a] = \growtable(S.\STABLES[a], n)) \\
-   \F{grow\_table}(S, a, n) &=& \ERROR && (\otherwise) \\
+   \F{table\_grow}(S, a, n) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
@@ -418,9 +420,9 @@ Tables
 Memories
 ~~~~~~~~
 
-.. _embed-alloc-mem:
+.. _embed-mem-alloc:
 
-:math:`\F{alloc\_mem}(\store, \memtype) : (\store, \memaddr)`
+:math:`\F{mem\_alloc}(\store, \memtype) : (\store, \memaddr)`
 ................................................................
 
 1. Let :math:`\memaddr` be the result of :ref:`allocating a memory <alloc-mem>` in :math:`\store` with :ref:`memory type <syntax-memtype>` :math:`\memtype`.
@@ -429,13 +431,13 @@ Memories
 
 .. math::
    \begin{array}{lclll}
-   \F{alloc\_mem}(S, \X{mt}) &=& (S', \X{a}) && (\iff \allocmem(S, \X{mt}) = S', \X{a}) \\
+   \F{mem\_alloc}(S, \X{mt}) &=& (S', \X{a}) && (\iff \allocmem(S, \X{mt}) = S', \X{a}) \\
    \end{array}
 
 
-.. _embed-type-mem:
+.. _embed-mem-type:
 
-:math:`\F{type\_mem}(\store, \memaddr) : \memtype`
+:math:`\F{mem\_type}(\store, \memaddr) : \memtype`
 ..................................................
 
 1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
@@ -446,13 +448,13 @@ Memories
 
 .. math::
    \begin{array}{lclll}
-   \F{type\_mem}(S, a) &=& \X{mt} && (\iff S \vdashexternval \EVMEM~a : \ETMEM~\X{mt}) \\
+   \F{mem\_type}(S, a) &=& \X{mt} && (\iff S \vdashexternval \EVMEM~a : \ETMEM~\X{mt}) \\
    \end{array}
 
 
-.. _embed-read-mem:
+.. _embed-mem-read:
 
-:math:`\F{read\_mem}(\store, \memaddr, i) : \byte ~|~ \error`
+:math:`\F{mem\_read}(\store, \memaddr, i) : \byte ~|~ \error`
 .............................................................
 
 1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
@@ -467,14 +469,14 @@ Memories
 
 .. math::
    \begin{array}{lclll}
-   \F{read\_mem}(S, a, i) &=& b && (\iff S.\SMEMS[a].\MIDATA[i] = b) \\
-   \F{read\_mem}(S, a, i) &=& \ERROR && (\otherwise) \\
+   \F{mem\_read}(S, a, i) &=& b && (\iff S.\SMEMS[a].\MIDATA[i] = b) \\
+   \F{mem\_read}(S, a, i) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
-.. _embed-write-mem:
+.. _embed-mem-write:
 
-:math:`\F{write\_mem}(\store, \memaddr, i, \byte) : \store ~|~ \error`
+:math:`\F{mem\_write}(\store, \memaddr, i, \byte) : \store ~|~ \error`
 ......................................................................
 
 1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
@@ -491,14 +493,14 @@ Memories
 
 .. math::
    \begin{array}{lclll}
-   \F{write\_mem}(S, a, i, b) &=& S' && (\iff S' = S \with \SMEMS[a].\MIDATA[i] = b) \\
-   \F{write\_mem}(S, a, i, b) &=& \ERROR && (\otherwise) \\
+   \F{mem\_write}(S, a, i, b) &=& S' && (\iff S' = S \with \SMEMS[a].\MIDATA[i] = b) \\
+   \F{mem\_write}(S, a, i, b) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
-.. _embed-size-mem:
+.. _embed-mem-size:
 
-:math:`\F{size\_mem}(\store, \memaddr) : \X{i32}`
+:math:`\F{mem\_size}(\store, \memaddr) : \X{i32}`
 .................................................
 
 1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
@@ -508,15 +510,15 @@ Memories
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{size\_mem}(S, a) &=& n &&
+   \F{mem\_size}(S, a) &=& n &&
      (\iff |S.\SMEMS[a].\MIDATA| = n \cdot 64\,\F{Ki}) \\
    \end{array}
 
 
 
-.. _embed-grow-mem:
+.. _embed-mem-grow:
 
-:math:`\F{grow\_mem}(\store, \memaddr, n) : \store ~|~ \error`
+:math:`\F{mem\_grow}(\store, \memaddr, n) : \store ~|~ \error`
 ..............................................................
 
 1. Assert: :math:`\store.\SMEMS[\memaddr]` exists.
@@ -532,9 +534,9 @@ Memories
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{grow\_mem}(S, a, n) &=& S' &&
+   \F{mem\_grow}(S, a, n) &=& S' &&
      (\iff S' = S \with \SMEMS[a] = \growmem(S.\SMEMS[a], n)) \\
-   \F{grow\_mem}(S, a, n) &=& \ERROR && (\otherwise) \\
+   \F{mem\_grow}(S, a, n) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
@@ -545,9 +547,9 @@ Memories
 Globals
 ~~~~~~~
 
-.. _embed-alloc-global:
+.. _embed-global-alloc:
 
-:math:`\F{alloc\_global}(\store, \globaltype, \val) : (\store, \globaladdr)`
+:math:`\F{global\_alloc}(\store, \globaltype, \val) : (\store, \globaladdr)`
 ............................................................................
 
 1. Let :math:`\globaladdr` be the result of :ref:`allocating a global <alloc-global>` in :math:`\store` with :ref:`global type <syntax-globaltype>` :math:`\globaltype` and initialization value :math:`\val`.
@@ -556,13 +558,13 @@ Globals
 
 .. math::
    \begin{array}{lclll}
-   \F{alloc\_global}(S, \X{gt}, v) &=& (S', \X{a}) && (\iff \allocglobal(S, \X{gt}, v) = S', \X{a}) \\
+   \F{global\_alloc}(S, \X{gt}, v) &=& (S', \X{a}) && (\iff \allocglobal(S, \X{gt}, v) = S', \X{a}) \\
    \end{array}
 
 
-.. _embed-type-global:
+.. _embed-global-type:
 
-:math:`\F{type\_global}(\store, \globaladdr) : \globaltype`
+:math:`\F{global\_type}(\store, \globaladdr) : \globaltype`
 ...........................................................
 
 1. Assert: :math:`\store.\SGLOBALS[\globaladdr]` exists.
@@ -573,13 +575,13 @@ Globals
 
 .. math::
    \begin{array}{lclll}
-   \F{type\_global}(S, a) &=& \X{gt} && (\iff S \vdashexternval \EVGLOBAL~a : \ETGLOBAL~\X{gt}) \\
+   \F{global\_type}(S, a) &=& \X{gt} && (\iff S \vdashexternval \EVGLOBAL~a : \ETGLOBAL~\X{gt}) \\
    \end{array}
 
 
-.. _embed-read-global:
+.. _embed-global-read:
 
-:math:`\F{read\_global}(\store, \globaladdr) : \val`
+:math:`\F{global\_read}(\store, \globaladdr) : \val`
 ....................................................
 
 1. Assert: :math:`\store.\SGLOBALS[\globaladdr]` exists.
@@ -590,13 +592,13 @@ Globals
 
 .. math::
    \begin{array}{lclll}
-   \F{read\_global}(S, a) &=& v && (\iff S.\SGLOBALS[a].\GIVALUE = v) \\
+   \F{global\_read}(S, a) &=& v && (\iff S.\SGLOBALS[a].\GIVALUE = v) \\
    \end{array}
 
 
-.. _embed-write-global:
+.. _embed-global-write:
 
-:math:`\F{write\_global}(\store, \globaladdr, \val) : \store ~|~ \error`
+:math:`\F{global\_write}(\store, \globaladdr, \val) : \store ~|~ \error`
 ........................................................................
 
 1. Assert: :math:`\store.\SGLOBALS[a]` exists.
@@ -612,6 +614,6 @@ Globals
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{write\_global}(S, a, v) &=& S' && (\iff S.\SGLOBALS[a].\GIMUT = \MVAR \wedge S' = S \with \SGLOBALS[a].\GIVALUE = v) \\
-   \F{write\_global}(S, a, v) &=& \ERROR && (\otherwise) \\
+   \F{global\_write}(S, a, v) &=& S' && (\iff S.\SGLOBALS[a].\GIMUT = \MVAR \wedge S' = S \with \SGLOBALS[a].\GIVALUE = v) \\
+   \F{global\_write}(S, a, v) &=& \ERROR && (\otherwise) \\
    \end{array}

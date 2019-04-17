@@ -434,7 +434,6 @@
 .. |Bf64| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{64}}}
 
 .. |Bname| mathdef:: \xref{binary/values}{binary-name}{\B{name}}
-.. |Bchar| mathdef:: \xref{binary/values}{binary-name}{\B{char}}
 
 
 .. Values, meta functions
@@ -593,9 +592,6 @@
 .. |Tstringelem| mathdef:: \xref{text/values}{text-string}{\T{stringelem}}
 .. |Tstringchar| mathdef:: \xref{text/values}{text-string}{\T{stringchar}}
 .. |Tname| mathdef:: \xref{text/values}{text-name}{\T{name}}
-.. |Tchar| mathdef:: \xref{text/values}{text-name}{\T{char}}
-.. |Tcodeval| mathdef:: \xref{text/values}{text-name}{\T{codeval}}
-.. |Tcodecont| mathdef:: \xref{text/values}{text-name}{\T{cont}}
 
 .. |Tid| mathdef:: \xref{text/values}{text-id}{\T{id}}
 .. |Tidchar| mathdef:: \xref{text/values}{text-idchar}{\T{idchar}}
