@@ -57,7 +57,7 @@ In addition to pre- and post-conditions explicitly stated with each operation, t
 * Every runtime object returned as a result is :ref:`valid <valid-store>` per an implicit post-condition.
 
 .. note::
-   As long as the embedder only constructs runtime objects through the interface, the associated pre-condition are always met.
+   As long as the embedder treats runtime objects as abstract and only creates and manipulates them through the interface defined here, the associated pre-condition are automatically met.
 
 
 
