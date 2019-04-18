@@ -421,6 +421,7 @@ The preamble is followed by a sequence of :ref:`sections <binary-section>`.
 :ref:`Custom sections <binary-customsec>` may be inserted at any place in this sequence,
 while other sections must occur at most once and in the prescribed order.
 All sections can be empty.
+
 The lengths of vectors produced by the (possibly empty) :ref:`function <binary-funcsec>` and :ref:`code <binary-codesec>` section must match up.
 
 .. math::

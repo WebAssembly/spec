@@ -107,30 +107,32 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
         text: ref.host
     text: function index; url: syntax/modules.html#syntax-funcidx
     text: function instance; url: exec/runtime.html#function-instances
-    text: init_store; url: appendix/embedding.html#embed-init-store
-    text: decode_module; url: appendix/embedding.html#embed-decode-module
-    text: validate_module; url: appendix/embedding.html#embed-validate-module
-    text: instantiate_module; url: appendix/embedding.html#embed-instantiate-module
-    text: module_imports; url: appendix/embedding.html#embed-imports
-    text: get_export; url: appendix/embedding.html#embed-get-export
-    text: alloc_func; url: appendix/embedding.html#embed-alloc-func
-    text: type_func; url: appendix/embedding.html#embed-type-func
-    text: invoke_func; url: appendix/embedding.html#embed-invoke-func
-    text: alloc_table; url: appendix/embedding.html#embed-alloc-table
-    text: type_table; url: appendix/embedding.html#embed-type-table
-    text: read_table; url: appendix/embedding.html#embed-read-table
-    text: write_table; url: appendix/embedding.html#embed-write-table
-    text: grow_table; url: appendix/embedding.html#embed-grow-table
-    text: alloc_mem; url: appendix/embedding.html#embed-alloc-mem
-    text: type_mem; url: appendix/embedding.html#embed-type-mem
-    text: read_mem; url: appendix/embedding.html#embed-read-mem
-    text: write_mem; url: appendix/embedding.html#embed-write-mem
-    text: grow_mem; url: appendix/embedding.html#embed-grow-mem
-    text: alloc_global; url: appendix/embedding.html#embed-alloc-global
-    text: type_global; url: appendix/embedding.html#embed-type-global
-    text: read_global; url: appendix/embedding.html#embed-read-global
-    text: write_global; url: appendix/embedding.html#embed-write-global
-    text: module_exports; url: appendix/embedding.html#embed-exports
+    text: store_init; url: appendix/embedding.html#embed-store-init
+    text: module_decode; url: appendix/embedding.html#embed-module-decode
+    text: module_validate; url: appendix/embedding.html#embed-module-validate
+    text: module_instantiate; url: appendix/embedding.html#embed-module-instantiate
+    text: module_imports; url: appendix/embedding.html#embed-module-imports
+    text: module_exports; url: appendix/embedding.html#embed-module-exports
+    text: instance_export; url: appendix/embedding.html#embed-instance-export
+    text: func_alloc; url: appendix/embedding.html#embed-func-alloc
+    text: func_type; url: appendix/embedding.html#embed-func-type
+    text: func_invoke; url: appendix/embedding.html#embed-func-invoke
+    text: table_alloc; url: appendix/embedding.html#embed-table-alloc
+    text: table_type; url: appendix/embedding.html#embed-table-type
+    text: table_read; url: appendix/embedding.html#embed-table-read
+    text: table_write; url: appendix/embedding.html#embed-table-write
+    text: table_size; url: appendix/embedding.html#embed-table-size
+    text: table_grow; url: appendix/embedding.html#embed-table-grow
+    text: mem_alloc; url: appendix/embedding.html#embed-mem-alloc
+    text: mem_type; url: appendix/embedding.html#embed-mem-type
+    text: mem_read; url: appendix/embedding.html#embed-mem-read
+    text: mem_write; url: appendix/embedding.html#embed-mem-write
+    text: mem_size; url: appendix/embedding.html#embed-mem-size
+    text: mem_grow; url: appendix/embedding.html#embed-mem-grow
+    text: global_alloc; url: appendix/embedding.html#embed-global-alloc
+    text: global_type; url: appendix/embedding.html#embed-global-type
+    text: global_read; url: appendix/embedding.html#embed-global-read
+    text: global_write; url: appendix/embedding.html#embed-global-write
     text: error; url: appendix/embedding.html#embed-error
     text: store; url: exec/runtime.html#syntax-store
     text: table type; url: syntax/types.html#syntax-tabletype
@@ -152,8 +154,6 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: external value; url: exec/runtime.html#syntax-externval
     text: host function; url: exec/runtime.html#syntax-hostfunc
     text: the instantiation algorithm; url: exec/modules.html#instantiation
-    text: size_table; url: appendix/embedding.html#embed-size-table
-    text: size_mem; url: appendix/embedding.html#embed-size-mem
     text: module; url: syntax/modules.html#syntax-module
     text: 𝗂𝗆𝗉𝗈𝗋𝗍𝗌; url: syntax/modules.html#syntax-module
     url: syntax/types.html#external-types
@@ -275,8 +275,8 @@ Note:
 
 <div algorithm>
   To <dfn>compile a WebAssembly module</dfn> from source bytes |bytes|, perform the following steps:
-    1. Let |module| be [=decode_module=](|bytes|). If |module| is [=error=], return [=error=].
-    1. If [=validate_module=](|module|) is [=error=], return [=error=].
+    1. Let |module| be [=module_decode=](|bytes|). If |module| is [=error=], return [=error=].
+    1. If [=module_validate=](|module|) is [=error=], return [=error=].
     1. Return |module|.
 </div>
 
@@ -337,7 +337,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. If |v| has a \[[FunctionAddress]] internal slot, and therefore is an [=Exported Function=],
                 1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
 
-                Note: The signature is checked by [=instantiate_module=] invoked below.
+                Note: The signature is checked by [=module_instantiate=] invoked below.
             1. Otherwise,
                 1. [=Create a host function=] from |v| and |functype|, and let |funcaddr| be the result.
                 1. Let |index| be the number of external functions in |imports|. This value |index| is known as the <dfn>index of the host function</dfn> |funcaddr|.
@@ -348,7 +348,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
                 1. If |valtype| is [=𝗂𝟨𝟦=], throw a {{LinkError}} exception.
                 1. Let |value| be [=ToWebAssemblyValue=](|v|, |valtype|)
                 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-                1. Let (|store|, |globaladdr|) be [=alloc_global=](|store|, [=const=] |valtype|, |value|).
+                1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, [=const=] |valtype|, |value|).
                 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
             1. If |v| is a {{Global}} instance,
                 1. Let |globaladdr| be |v|.\[[Global]]
@@ -358,12 +358,12 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. [=Append=] |externglobal| to |imports|.
         1. If |externtype| is of the form [=𝗆𝖾𝗆=] <var ignore>memtype</var>,
             1. If |v| is not a {{Memory}} object, throw a {{LinkError}} exception.
-            1. Note: [=instantiate_module=] invoked below will check the imported {{Memory}}'s size against the importing module's requirements.
+            1. Note: [=module_instantiate=] invoked below will check the imported {{Memory}}'s size against the importing module's requirements.
             1. Let |externmem| be the [=external value=] [=external value|𝗆𝖾𝗆=]  |v|.\[[Memory]].
             1. [=Append=] |externmem| to |imports|.
         1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] <var ignore>tabletype</var>,
             1. If |v| is not a {{Table}} instance, throw a {{LinkError}} exception.
-            1. Note: The table's length, etc. is checked by [=instantiate_module=] invoked below.
+            1. Note: The table's length, etc. is checked by [=module_instantiate=] invoked below.
             1. Let |tableaddr| be |v|.\[[Table]]
             1. Let |externtable| be the [=external value=] [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr|.
             1. [=Append=] |externtable| to |imports|.
@@ -374,7 +374,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
   To <dfn>create an instance object</dfn> from a WebAssembly module |module| and instance |instance|, perform the following steps:
     1. Let |exportsObject| be ! [=ObjectCreate=](null).
     1. For each pair (|name|, |externtype|) in [=module_exports=](|module|),
-        1. Let |externval| be [=get_export=](|instance|, |name|).
+        1. Let |externval| be [=instance_export=](|instance|, |name|).
         1. Assert: |externval| is not [=error=].
         1. If |externtype| is of the form [=𝖿𝗎𝗇𝖼=] <var ignore>functype</var>,
             1. Assert: |externval| is of the form [=external value|𝖿𝗎𝗇𝖼=] |funcaddr|.
@@ -407,7 +407,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 <div algorithm>
   To <dfn>instantiate the core of a WebAssembly module</dfn> from a module |module| and imports |imports|, perform the following steps:
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |result| be [=instantiate_module=](|store|, |module|, |imports|).
+    1. Let |result| be [=module_instantiate=](|store|, |module|, |imports|).
     1. If |result| is [=error=], throw an appropriate exception type:
         * A {{LinkError}} exception for most cases which occur during linking.
         * If the error came when running the start function, throw a {{RuntimeError}} for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.
@@ -620,7 +620,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
     1. Let |memtype| be { min |initial|, max |maximum| }
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let (|store|, |memaddr|) be [=alloc_mem=](|store|, |memtype|). If allocation fails, throw a {{RangeError}} exception.
+    1. Let (|store|, |memaddr|) be [=mem_alloc=](|store|, |memtype|). If allocation fails, throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. [=Create a memory object=] from the memory address |memaddr| and return the result.
 </div>
@@ -641,8 +641,8 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |memory| be the Memory instance.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |memaddr| be |memory|.\[[Memory]].
-    1. Let |ret| be the [=size_mem=](|store|, |memaddr|).
-    1. Let |store| be [=grow_mem=](|store|, |memaddr|, |delta|).
+    1. Let |ret| be the [=mem_size=](|store|, |memaddr|).
+    1. Let |store| be [=mem_grow=](|store|, |memaddr|, |delta|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. [=Reset the memory buffer=] of |memaddr|.
@@ -703,7 +703,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |map|[|tableaddr|] [=map/exists=],
         1. Return |map|[|tableaddr|].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |values| be a list whose length is [=size_table=](|store|, |tableaddr|) where each element is null.
+    1. Let |values| be a list whose length is [=table_size=](|store|, |tableaddr|) where each element is null.
     1. Let |table| be a new {{Table}} instance with \[[Table]] set to |tableaddr| and \[[Values]] set to |values|.
     1. [=map/Set=] |map|[|tableaddr|] to |table|.
     1. Return |table|.
@@ -716,7 +716,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
     1. Let |type| be the [=table type=] {[=table type|𝗆𝗂𝗇=] n, [=table type|𝗆𝖺𝗑=] |maximum|} [=table type|funcref=].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let (|store|, |tableaddr|) be [=alloc_table=](|store|, |type|, [=ref.null=]). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
+    1. Let (|store|, |tableaddr|) be [=table_alloc=](|store|, |type|, [=ref.null=]). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. [=Create a table object=] from the table address |tableaddr| and return the result.
 </div>
@@ -726,7 +726,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |tableaddr| be the Table instance's \[[Table]] internal slot.
     1. Let |initialSize| be the length of the Table instance's \[[Values]] internal slot.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |result| be [=grow_table=](|store|, |tableaddr|, |delta|, [=ref.null=]).
+    1. Let |result| be [=table_grow=](|store|, |tableaddr|, |delta|, [=ref.null=]).
     1. If |result| is [=error=], throw a {{RangeError}} exception.
 
         Note: The above exception may happen due to either insufficient memory or an invalid size parameter.
@@ -757,7 +757,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
         1. If |value| does not have a \[[FunctionAddress]] internal slot, throw a {{TypeError}} exception.
         1. Let |ref| be [=ref.func=] |value|.\[[FunctionAddress]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |store| be [=write_table=](|store|, |tableaddr|, |index|, |ref|).
+    1. Let |store| be [=table_write=](|store|, |tableaddr|, |index|, |ref|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. Set |values|[|index|] to |value|.
@@ -836,7 +836,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
         1. Let |value| be [=ToWebAssemblyValue=](|v|, |valuetype|).
     1. If |mutable| is true, let |globaltype| be [=var=] |valuetype|; otherwise, let |globaltype| be [=const=] |valuetype|.
     1. Let |store| be the current agent's [=associated store=].
-    1. Let (|store|, |globaladdr|) be [=alloc_global=](|store|, |globaltype|, |value|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
+    1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, |globaltype|, |value|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
     1. Set the current agent's [=associated store=] to |store|.
     1. [=Create a global object=] from the global address |globaladdr| and return the result.
 </div>
@@ -845,9 +845,9 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     The algorithm <dfn>GetGlobalValue</dfn>({{Global}} |global|) performs the following steps:
     1. Let |store| be the current agent's [=associated store=].
     1. Let |globaladdr| be |global|.\[[Global]].
-    1. Let |globaltype| be [=type_global=](|store|, |globaladdr|).
+    1. Let |globaltype| be [=global_type=](|store|, |globaladdr|).
     1. If |globaltype| is of the form <var ignore>mut</var> [=𝗂𝟨𝟦=], throw a {{TypeError}}.
-    1. Let |value| be [=read_global=](|store|, |globaladdr|).
+    1. Let |value| be [=global_read=](|store|, |globaladdr|).
     1. Return [=ToJSValue=](|value|).
 </div>
 
@@ -860,11 +860,11 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |global| be the {{Global}} instance.
     1. Let |store| be the current agent's [=associated store=].
     1. Let |globaladdr| be |global|.\[[Global]].
-    1. Let |globaltype| be [=type_global=](|store|, |globaladdr|), where |globaltype| is of the form |mut| |valuetype|.
+    1. Let |globaltype| be [=global_type=](|store|, |globaladdr|), where |globaltype| is of the form |mut| |valuetype|.
     1. If |mut| is [=const=], throw a {{TypeError}}.
     1. If |valuetype| is [=𝗂𝟨𝟦=], throw a {{TypeError}}.
     1. Let |value| be [=ToWebAssemblyValue=](|v|, |valuetype|).
-    1. Let |store| be [=write_global=](|store|, |globaladdr|, |value|).
+    1. Let |store| be [=global_write=](|store|, |globaladdr|, |value|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
     1. Set the current agent's [=associated store=] to |store|.
 </div>
@@ -907,7 +907,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. Let |function| be [=CreateBuiltinFunction=](|realm|, |steps|, [=%FunctionPrototype%=], &laquo; \[[FunctionAddress]] &raquo;).
     1. Set |function|.\[[FunctionAddress]] to |funcaddr|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |functype| be [=type_func=](|store|, |funcaddr|).
+    1. Let |functype| be [=func_type=](|store|, |funcaddr|).
     1. Let [|paramTypes|] → [<var ignore>resultTypes</var>] be |functype|.
     1. Let |arity| be the length of |paramTypes|.
     1. Perform ! [=SetFunctionLength=](|function|, |arity|).
@@ -921,7 +921,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
   To <dfn>call an Exported Function</dfn> with [=function address=] |funcaddr| and a [=list=] of JavaScript arguments |argValues|, perform the following steps:
 
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |functype| be [=type_func=](|store|, |funcaddr|).
+    1. Let |functype| be [=func_type=](|store|, |funcaddr|).
     1. Let [|parameters|] → [|results|] be |functype|.
     1. If |parameters| or |results| contains an [=𝗂𝟨𝟦=], throw a {{TypeError}}.
 
@@ -935,7 +935,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. [=Append=] [=ToWebAssemblyValue=](|arg|, |t|, {{TypeError}}) to |args|.
         1. Set |i| to |i| + 1.
     1. Let |argsSeq| be a WebAssembly [=sequence=] containing the elements of |args|.
-    1. Let (|store|, |ret|) be the result of [=invoke_func=](|store|, |funcaddr|, |argsSeq|).
+    1. Let (|store|, |ret|) be the result of [=func_invoke=](|store|, |funcaddr|, |argsSeq|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
     1. If |ret| is empty, return undefined.
@@ -970,7 +970,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
         1. If |result|.\[[Type]] is [=throw=], then trigger a WebAssembly trap, and propagate |result|.\[[Value]] to the enclosing JavaScript.
         1. Otherwise, return |result|.\[[Value]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let (|store|, |funcaddr|) be [=alloc_func=](|store|, |functype|, |hostfunc|).
+    1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. Return |funcaddr|
 </div>

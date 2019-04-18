@@ -105,7 +105,7 @@ Floating-Point
 Names
 ~~~~~
 
-:ref:`Names <syntax-name>` are encoded as a :ref:`vector <binary-vec>` of bytes containing the |Unicode|_ (Section 3.9) UTF-8 encoding of the name's code point sequence.
+:ref:`Names <syntax-name>` are encoded as a :ref:`vector <binary-vec>` of bytes containing the |Unicode|_ (Section 3.9) UTF-8 encoding of the name's character sequence.
 
 .. math::
    \begin{array}{llclllll}
