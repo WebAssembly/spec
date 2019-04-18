@@ -89,6 +89,67 @@ The following auxiliary typing rules specify this typing relation relative to a 
    }
 
 
+.. index:: value, value type, validation
+.. _valid-val:
+
+Value Typing
+~~~~~~~~~~~~
+
+For the purpose of checking argument :ref:`values <syntax-externval>` against the parameter types of exported :ref:`functions <syntax-func>`,
+values are classified by :ref:`value types <syntax-valtype>`.
+The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which possibly referenced addresses live.
+
+:ref:`Numeric Values <syntax-val>` :math:`t.\CONST~c`
+.....................................................
+
+* The value is valid with :ref:`number type <syntax-numtype>` :math:`t`.
+
+.. math::
+   \frac{
+   }{
+     S \vdashval t.\CONST~c : t
+   }
+
+
+:ref:`Null References <syntax-ref>` :math:`\REFNULL`
+....................................................
+
+* The value is valid with :ref:`reference type <syntax-reftype>` :math:`\NULLREF`.
+
+.. math::
+   \frac{
+   }{
+     S \vdashval \REFNULL : \NULLREF
+   }
+
+
+:ref:`Function References <syntax-ref>` :math:`\REFFUNCADDR~a`
+..............................................................
+
+* The :ref:`external value <syntax-externval>` :math:`\EVFUNC~a` must be :ref:`valid <valid-externval>`.
+
+* Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`\FUNCREF`.
+
+.. math::
+   \frac{
+     S \vdashexternval \EVFUNC~a : \ETFUNC~\functype
+   }{
+     S \vdashval \REFFUNCADDR~a : \FUNCREF
+   }
+
+
+:ref:`Host References <syntax-ref.host>` :math:`\REFHOST~a`
+...........................................................
+
+* The value is valid with :ref:`reference type <syntax-reftype>` :math:`\ANYREF`.
+
+.. math::
+   \frac{
+   }{
+     S \vdashval \REFHOST~a : \ANYREF
+   }
+
+
 .. index:: ! matching, external type
 .. _exec-import:
 .. _match:
@@ -777,7 +838,7 @@ The following steps are performed:
 
 5. For each :ref:`value type <syntax-valtype>` :math:`t_i` in :math:`t_1^n` and corresponding :ref:`value <syntax-val>` :math:`val_i` in :math:`\val^\ast`, do:
 
-   a. If :math:`\val_i` is not :math:`t_i.\CONST~c_i` for some :math:`c_i`, then:
+   a. If :math:`\val_i` is not :ref:`valid <valid-val>` with value type :math:`t_i`, then:
 
       i. Fail.
 
@@ -798,6 +859,6 @@ The values :math:`\val_{\F{res}}^m` are returned as the results of the invocatio
    \begin{array}{@{}lcl}
    \invoke(S, \funcaddr, \val^n) &=& S; F; \val^n~(\INVOKE~\funcaddr) \\
      &(\iff & S.\SFUNCS[\funcaddr].\FITYPE = [t_1^n] \to [t_2^m] \\
-     &\wedge& \val^n = (t_1.\CONST~c)^n \\
+     &\wedge& (S \vdashval \val : t_1)^n \\
      &\wedge& F = \{ \AMODULE~\{\}, \ALOCALS~\epsilon \}) \\
    \end{array}

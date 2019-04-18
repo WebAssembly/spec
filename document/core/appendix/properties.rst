@@ -21,64 +21,12 @@ In order to state and prove soundness precisely, the typing rules must be extend
 
 
 .. index:: value, value type, result, result type, trap
-.. _valid-val:
 .. _valid-result:
 
-Values and Results
-~~~~~~~~~~~~~~~~~~
+Results
+~~~~~~~
 
-:ref:`Values <syntax-val>` and :ref:`results <syntax-result>` can be classified by :ref:`value types <syntax-valtype>` and :ref:`result types <syntax-resulttype>` as follows.
-
-:ref:`Numeric Values <syntax-val>` :math:`t.\CONST~c`
-.....................................................
-
-* The value is valid with :ref:`number type <syntax-numtype>` :math:`t`.
-
-.. math::
-   \frac{
-   }{
-     S \vdashval t.\CONST~c : t
-   }
-
-
-:ref:`Null References <syntax-ref>` :math:`\REFNULL`
-....................................................
-
-* The value is valid with :ref:`reference type <syntax-reftype>` :math:`\NULLREF`.
-
-.. math::
-   \frac{
-   }{
-     S \vdashval \REFNULL : \NULLREF
-   }
-
-
-:ref:`Function References <syntax-ref>` :math:`\REFFUNCADDR~a`
-..............................................................
-
-* The :ref:`external value <syntax-externval>` :math:`\EVFUNC~a` must be :ref:`valid <valid-externval>`.
-
-* Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`\FUNCREF`.
-
-.. math::
-   \frac{
-     S \vdashexternval \EVFUNC~a : \ETFUNC~\functype
-   }{
-     S \vdashval \REFFUNCADDR~a : \FUNCREF
-   }
-
-
-:ref:`Host References <syntax-ref.host>` :math:`\REFHOST~a`
-...........................................................
-
-* The value is valid with :ref:`reference type <syntax-reftype>` :math:`\ANYREF`.
-
-.. math::
-   \frac{
-   }{
-     S \vdashval \REFHOST~a : \ANYREF
-   }
-
+:ref:`Results <syntax-result>` can be classified by :ref:`result types <syntax-resulttype>` as follows.
 
 :ref:`Results <syntax-result>` :math:`\val^\ast`
 ................................................
