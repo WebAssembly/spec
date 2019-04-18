@@ -325,18 +325,18 @@ Tables
 
 .. _embed-table-alloc:
 
-:math:`\F{table\_alloc}(\store, \tabletype) : (\store, \tableaddr, \val)`
-.........................................................................
+:math:`\F{table\_alloc}(\store, \tabletype) : (\store, \tableaddr, \reff)`
+..........................................................................
 
 1. Pre-condition: :math:`\tabletype` is :math:`valid <valid-tabletype>`.
 
-2. Let :math:`\tableaddr` be the result of :ref:`allocating a table <alloc-table>` in :math:`\store` with :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
+2. Let :math:`\tableaddr` be the result of :ref:`allocating a table <alloc-table>` in :math:`\store` with :ref:`table type <syntax-tabletype>` :math:`\tabletype` and initialization value :math:`\reff`.
 
 3. Return the new store paired with :math:`\tableaddr`.
 
 .. math::
    \begin{array}{lclll}
-   \F{table\_alloc}(S, \X{tt}, v) &=& (S', \X{a}) && (\iff \alloctable(S, \X{tt}, v) = S', \X{a}) \\
+   \F{table\_alloc}(S, \X{tt}, r) &=& (S', \X{a}) && (\iff \alloctable(S, \X{tt}, r) = S', \X{a}) \\
    \end{array}
 
 
@@ -359,46 +359,46 @@ Tables
 
 .. _embed-table-read:
 
-:math:`\F{table\_read}(\store, \tableaddr, i:\u32) : \funcaddr^? ~|~ \error`
-............................................................................
+:math:`\F{table\_read}(\store, \tableaddr, i:\X{u32}) : \reff ~|~ \error`
+.........................................................................
 
 1. Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
 
 2. If :math:`i` is larger than or equal to the length of :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
 
-3. Else, return :math:`\X{ti}.\TIELEM[i]`.
+3. Else, return the :ref:`reference value <syntax-ref>` :math:`\X{ti}.\TIELEM[i]`.
 
 .. math::
    \begin{array}{lclll}
-   \F{table\_read}(S, a, i) &=& \X{fa}^? && (\iff S.\STABLES[a].\TIELEM[i] = \X{fa}^?) \\
+   \F{table\_read}(S, a, i) &=& r && (\iff S.\STABLES[a].\TIELEM[i] = r) \\
    \F{table\_read}(S, a, i) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
 .. _embed-table-write:
 
-:math:`\F{table\_write}(\store, \tableaddr, i:\u32, \funcaddr^?) : \store ~|~ \error`
-.......................................................................................
+:math:`\F{table\_write}(\store, \tableaddr, i:\X{u32}, \reff) : \store ~|~ \error`
+..................................................................................
 
 1. Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
 
 2. If :math:`i` is larger than or equal to the length of :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
 
-3. Replace :math:`\X{ti}.\TIELEM[i]` with the optional :ref:`function address <syntax-funcaddr>` :math:`\X{fa}^?`.
+3. Replace :math:`\X{ti}.\TIELEM[i]` with the :ref:`reference value <syntax-ref>` :math:`\reff`.
 
 4. Return the updated store.
 
 .. math::
    \begin{array}{lclll}
-   \F{table\_write}(S, a, i, \X{fa}^?) &=& S' && (\iff S' = S \with \STABLES[a].\TIELEM[i] = \X{fa}^?) \\
-   \F{table\_write}(S, a, i, \X{fa}^?) &=& \ERROR && (\otherwise) \\
+   \F{table\_write}(S, a, i, r) &=& S' && (\iff S' = S \with \STABLES[a].\TIELEM[i] = r) \\
+   \F{table\_write}(S, a, i, r) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
 .. _embed-table-size:
 
-:math:`\F{table\_size}(\store, \tableaddr) : \u32`
-..................................................
+:math:`\F{table\_size}(\store, \tableaddr) : \X{u32}`
+.....................................................
 
 1. Return the length of :math:`\store.\STABLES[\tableaddr].\TIELEM`.
 
@@ -413,10 +413,10 @@ Tables
 
 .. _embed-table-grow:
 
-:math:`\F{table\_grow}(\store, \tableaddr, n:\u32, \val) : \store ~|~ \error`
-.............................................................................
+:math:`\F{table\_grow}(\store, \tableaddr, n:\X{u32}, \reff) : \store ~|~ \error`
+.................................................................................
 
-1. Try :ref:`growing <grow-table>` the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]` by :math:`n` elements:
+1. Try :ref:`growing <grow-table>` the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]` by :math:`n` elements with initialization value :math:`\reff`:
 
    a. If it succeeds, return the updated store.
 
@@ -425,9 +425,9 @@ Tables
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{table\_grow}(S, a, n, v) &=& S' &&
-     (\iff S' = S \with \STABLES[a] = \growtable(S.\STABLES[a], n, v)) \\
-   \F{table\_grow}(S, a, n, v) &=& \ERROR && (\otherwise) \\
+   \F{table\_grow}(S, a, n, r) &=& S' &&
+     (\iff S' = S \with \STABLES[a] = \growtable(S.\STABLES[a], n, r)) \\
+   \F{table\_grow}(S, a, n, r) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
@@ -473,8 +473,8 @@ Memories
 
 .. _embed-mem-read:
 
-:math:`\F{mem\_read}(\store, \memaddr, i:\u32) : \byte ~|~ \error`
-..................................................................
+:math:`\F{mem\_read}(\store, \memaddr, i:\X{u32}) : \byte ~|~ \error`
+.....................................................................
 
 1. Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
 
@@ -491,8 +491,8 @@ Memories
 
 .. _embed-mem-write:
 
-:math:`\F{mem\_write}(\store, \memaddr, i:\u32, \byte) : \store ~|~ \error`
-...........................................................................
+:math:`\F{mem\_write}(\store, \memaddr, i:\X{u32}, \byte) : \store ~|~ \error`
+..............................................................................
 
 1. Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
 
@@ -511,8 +511,8 @@ Memories
 
 .. _embed-mem-size:
 
-:math:`\F{mem\_size}(\store, \memaddr) : \u32`
-..............................................
+:math:`\F{mem\_size}(\store, \memaddr) : \X{u32}`
+.................................................
 
 1. Return the length of :math:`\store.\SMEMS[\memaddr].\MIDATA` divided by the :ref:`page size <page-size>`.
 
@@ -527,8 +527,8 @@ Memories
 
 .. _embed-mem-grow:
 
-:math:`\F{mem\_grow}(\store, \memaddr, n:\u32) : \store ~|~ \error`
-...................................................................
+:math:`\F{mem\_grow}(\store, \memaddr, n:\X{u32}) : \store ~|~ \error`
+......................................................................
 
 1. Try :ref:`growing <grow-mem>` the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]` by :math:`n` :ref:`pages <page-size>`:
 
