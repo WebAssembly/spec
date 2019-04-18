@@ -29,15 +29,54 @@ Values and Results
 
 :ref:`Values <syntax-val>` and :ref:`results <syntax-result>` can be classified by :ref:`value types <syntax-valtype>` and :ref:`result types <syntax-resulttype>` as follows.
 
-:ref:`Values <syntax-val>` :math:`t.\CONST~c`
-.............................................
+:ref:`Numeric Values <syntax-val>` :math:`t.\CONST~c`
+.....................................................
 
-* The value is valid with :ref:`value type <syntax-valtype>` :math:`t`.
+* The value is valid with :ref:`number type <syntax-numtype>` :math:`t`.
 
 .. math::
    \frac{
    }{
-     \vdashval t.\CONST~c : t
+     S \vdashval t.\CONST~c : t
+   }
+
+
+:ref:`Null References <syntax-ref>` :math:`\REFNULL`
+....................................................
+
+* The value is valid with :ref:`reference type <syntax-reftype>` :math:`\NULLREF`.
+
+.. math::
+   \frac{
+   }{
+     S \vdashval \REFNULL : \NULLREF
+   }
+
+
+:ref:`Function References <syntax-ref>` :math:`\REFFUNCADDR~a`
+..............................................................
+
+* The :ref:`external value <syntax-externval>` :math:`\EVFUNC~a` must be :ref:`valid <valid-externval>`.
+
+* Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`\FUNCREF`.
+
+.. math::
+   \frac{
+     S \vdashexternval \EVFUNC~a : \ETFUNC~\functype
+   }{
+     S \vdashval \REFFUNCADDR~a : \FUNCREF
+   }
+
+
+:ref:`Host References <syntax-ref.host>` :math:`\REFHOST~a`
+...........................................................
+
+* The value is valid with :ref:`reference type <syntax-reftype>` :math:`\ANYREF`.
+
+.. math::
+   \frac{
+   }{
+     S \vdashval \REFHOST~a : \ANYREF
    }
 
 
@@ -54,9 +93,9 @@ Values and Results
 
 .. math::
    \frac{
-     (\vdashval \val : t)^\ast
+     (S \vdashval \val : t)^\ast
    }{
-     \vdashresult \val^\ast : [t^\ast]
+     S \vdashresult \val^\ast : [t^\ast]
    }
 
 
@@ -68,7 +107,7 @@ Values and Results
 .. math::
    \frac{
    }{
-     \vdashresult \TRAP : [t^\ast]
+     S \vdashresult \TRAP : [t^\ast]
    }
 
 
@@ -183,7 +222,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \forall S_1, \val^\ast,~
        {\vdashstore S_1 \ok} \wedge
        {\vdashstoreextends S \extendsto S_1} \wedge
-       {\vdashresult \val^\ast : [t_1^\ast]}
+       {S_1 \vdashresult \val^\ast : [t_1^\ast]}
        \Longrightarrow {} \\ \qquad
        \X{hf}(S_1; \val^\ast) \supset \emptyset \wedge {} \\ \qquad
      \forall R \in \X{hf}(S_1; \val^\ast),~
@@ -191,7 +230,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
        \exists S_2, \result,~
        {\vdashstore S_2 \ok} \wedge
        {\vdashstoreextends S_1 \extendsto S_2} \wedge
-       {\vdashresult \result : [t_2^\ast]} \wedge
+       {S_2 \vdashresult \result : [t_2^\ast]} \wedge
        R = (S_2; \result)
      \end{array}
    }{
@@ -437,7 +476,7 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
    \frac{
      S \vdashmoduleinst \moduleinst : C
      \qquad
-     (\vdashval \val : t)^\ast
+     (S \vdashval \val : t)^\ast
    }{
      S \vdashframe \{\ALOCALS~\val^\ast, \AMODULE~\moduleinst\} : (C, \CLOCALS~t^\ast)
    }

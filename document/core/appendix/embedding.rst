@@ -414,7 +414,7 @@ Tables
 .. _embed-table-grow:
 
 :math:`\F{table\_grow}(\store, \tableaddr, n:\u32, \val) : \store ~|~ \error`
-........................................................................
+.............................................................................
 
 1. Try :ref:`growing <grow-table>` the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]` by :math:`n` elements:
 

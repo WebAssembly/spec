@@ -45,8 +45,8 @@ Typing of Runtime Constructs
 ===============================================  ===============================================================================
 Construct                                        Judgement
 ===============================================  ===============================================================================
-:ref:`Value <valid-val>`                         :math:`\vdashval \val : \valtype`
-:ref:`Result <valid-result>`                     :math:`\vdashresult \result : \resulttype`
+:ref:`Value <valid-val>`                         :math:`S \vdashval \val : \valtype`
+:ref:`Result <valid-result>`                     :math:`S \vdashresult \result : \resulttype`
 :ref:`External value <valid-externval>`          :math:`S \vdashexternval \externval : \externtype`
 :ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \functype`
 :ref:`Table instance <valid-tableinst>`          :math:`S \vdashtableinst \tableinst : \tabletype`
