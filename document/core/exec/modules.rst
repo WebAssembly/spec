@@ -393,7 +393,7 @@ Growing :ref:`tables <syntax-tableinst>`
      && (
        \begin{array}[t]{@{}r@{~}l@{}}
        \iff & \X{len} = n + |\tableinst.\TIELEM| \\
-       \wedge & \X{len} \leq 2^{32} \\
+       \wedge & \X{len} < 2^{32} \\
        \wedge & (\tableinst.\TIMAX = \epsilon \vee \X{len} \leq \tableinst.\TIMAX)) \\
        \end{array} \\
    \end{array}
