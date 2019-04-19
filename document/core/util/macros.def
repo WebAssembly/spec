@@ -267,6 +267,9 @@
 .. |EOFFSET| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{offset}}
 .. |EINIT| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{init}}
 
+.. |REFNULL| mathdef:: \xref{syntax/modules}{syntax-elemexpr}{\K{ref.null}}
+.. |REFFUNC| mathdef:: \xref{syntax/modules}{syntax-elemexpr}{\K{ref.func}}
+
 .. |DMEM| mathdef:: \xref{syntax/modules}{syntax-data}{\K{data}}
 .. |DOFFSET| mathdef:: \xref{syntax/modules}{syntax-data}{\K{offset}}
 .. |DINIT| mathdef:: \xref{syntax/modules}{syntax-data}{\K{init}}
@@ -302,6 +305,7 @@
 .. |importdesc| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\X{importdesc}}
 .. |exportdesc| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\X{exportdesc}}
 .. |elem| mathdef:: \xref{syntax/modules}{syntax-elem}{\X{elem}}
+.. |elemexpr| mathdef:: \xref{syntax/modules}{syntax-elemexpr}{\X{elemexpr}}
 .. |data| mathdef:: \xref{syntax/modules}{syntax-data}{\X{data}}
 .. |start| mathdef:: \xref{syntax/modules}{syntax-start}{\X{start}}
 
@@ -529,6 +533,7 @@
 .. |Bimportdesc| mathdef:: \xref{binary/modules}{binary-importdesc}{\B{importdesc}}
 .. |Bexportdesc| mathdef:: \xref{binary/modules}{binary-exportdesc}{\B{exportdesc}}
 .. |Belem| mathdef:: \xref{binary/modules}{binary-elem}{\B{elem}}
+.. |Belemexpr| mathdef:: \xref{binary/modules}{binary-elemexpr}{\B{elemexpr}}
 .. |Bcode| mathdef:: \xref{binary/modules}{binary-code}{\B{code}}
 .. |Blocal| mathdef:: \xref{binary/modules}{binary-local}{\B{local}}
 .. |Blocals| mathdef:: \xref{binary/modules}{binary-local}{\B{locals}}
@@ -773,6 +778,7 @@
 .. |vdashmem| mathdef:: \xref{valid/modules}{valid-mem}{\vdash}
 .. |vdashglobal| mathdef:: \xref{valid/modules}{valid-global}{\vdash}
 .. |vdashelem| mathdef:: \xref{valid/modules}{valid-elem}{\vdash}
+.. |vdashelemexpr| mathdef:: \xref{valid/modules}{valid-elemexpr}{\vdash}
 .. |vdashdata| mathdef:: \xref{valid/modules}{valid-data}{\vdash}
 .. |vdashstart| mathdef:: \xref{valid/modules}{valid-start}{\vdash}
 .. |vdashexport| mathdef:: \xref{valid/modules}{valid-export}{\vdash}

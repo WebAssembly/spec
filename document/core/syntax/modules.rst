@@ -247,6 +247,7 @@ starting with the smallest index not referencing a global :ref:`import <syntax-i
    single: table; element
    single: element; segment
 .. _syntax-elem:
+.. _syntax-elemexpr:
 
 Element Segments
 ~~~~~~~~~~~~~~~~
@@ -260,8 +261,11 @@ The |MELEM| component of a module defines a vector of element segments. Each act
 .. math::
    \begin{array}{llll}
    \production{element segment} & \elem &::=&
-     \{ \ETABLE~\tableidx, \EOFFSET~\expr, \EINIT~\vec(\funcidx) \} \\&&|&
-     \{ \EINIT~\vec(\funcidx) \} \\
+     \{ \ETABLE~\tableidx, \EOFFSET~\expr, \EINIT~\vec(\elemexpr) \} \\&&|&
+     \{ \EINIT~\vec(\elemexpr) \} \\
+   \production{elemexpr} & \elemexpr &::=&
+     \REFNULL~\END \\&&|&
+     (\REFFUNC~\funcidx)~\END \\
    \end{array}
 
 The |EOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
