@@ -35,6 +35,17 @@
 (assert_trap (invoke "get" (i32.const 5)) "out of bounds table access")
 
 
+;; Reject growing to size outside i32 value range
+(module
+  (table $t 0x10 anyref)
+  (func $f (export "grow") (result i32)
+    (table.grow $t (ref.func $f) (i32.const 0xffff_fff0))
+  )
+)
+
+(assert_return (invoke "grow") (i32.const -1))
+
+
 (module
   (table $t 0 anyref)
   (func (export "grow") (param i32) (result i32)
