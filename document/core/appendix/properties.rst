@@ -196,59 +196,80 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 .. index:: table type, table instance, limits, function address
 .. _valid-tableinst:
 
-:ref:`Table Instances <syntax-tableinst>` :math:`\{ \TIELEM~(\X{fa}^?)^n, \TIMAX~m^? \}`
-..............................................................................................
+:ref:`Table Instances <syntax-tableinst>` :math:`\{ \TITYPE~(\limits~t), \TIELEM~\reff^\ast \}`
+...............................................................................................
 
-* For each optional :ref:`function address <syntax-funcaddr>` :math:`\X{fa}^?_i` in the table elements :math:`(\X{fa}^?)^n`:
+* The :ref:`table type <syntax-tabletype>` :math:`\limits~t` must be :ref:`valid <valid-tabletype>`.
 
-  * Either :math:`\X{fa}^?_i` is empty.
+* The length of :math:`\reff^\ast` must equal :math:`\limits.\LMIN`.
 
-  * Or the :ref:`external value <syntax-externval>` :math:`\EVFUNC~\X{fa}` must be :ref:`valid <valid-externval-func>` with some :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\X{ft}`.
+* For each :ref:`reference <syntax-ref>` :math:`\reff_i` in the table elements :math:`\reff^n`:
 
-* The :ref:`limits <syntax-limits>` :math:`\{\LMIN~n, \LMAX~m^?\}` must be :ref:`valid <valid-limits>`.
+  * The :ref:`reference <syntax-ref>` :math:`\reff_i` must be :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>` :math:`t'_i`.
 
-* Then the table instance is valid with :ref:`table type <syntax-tabletype>` :math:`\{\LMIN~n, \LMAX~m^?\}~\FUNCREF`.
+  * The :ref:`reference type <syntax-reftype>` :math:`t'_i` must :ref:`match <match-reftype>` the :ref:`reference type <syntax-reftype>` :math:`t`.
+
+* Then the table instance is valid with :ref:`table type <syntax-tabletype>` :math:`\limits~t`.
 
 .. math::
    \frac{
-     ((S \vdash \EVFUNC~\X{fa} : \ETFUNC~\functype)^?)^n
+     \vdashtabletype \limits~t \ok
      \qquad
-     \vdashlimits \{\LMIN~n, \LMAX~m^?\} \ok
+     n = \limits.\LMIN
+     \qquad
+     (S \vdash \reff : t')^n
+     \qquad
+     (\vdashreftypematch t' \matchesvaltype t)^n
    }{
-     S \vdashtableinst \{ \TIELEM~(\X{fa}^?)^n, \TIMAX~m^? \} : \{\LMIN~n, \LMAX~m^?\}~\FUNCREF
+     S \vdashtableinst \{ \TITYPE~(\limits~t), \TIELEM~\reff^n \} : \limits~t
    }
 
 
 .. index:: memory type, memory instance, limits, byte
 .. _valid-meminst:
 
-:ref:`Memory Instances <syntax-meminst>` :math:`\{ \MIDATA~b^n, \MIMAX~m^? \}`
-..............................................................................
+:ref:`Memory Instances <syntax-meminst>` :math:`\{ \MITYPE~\limits, \MIDATA~b^\ast \}`
+......................................................................................
 
-* The :ref:`limits <syntax-limits>` :math:`\{\LMIN~n, \LMAX~m^?\}` must be :ref:`valid <valid-limits>`.
+* The :ref:`memory type <syntax-memtype>` :math:`\{\LMIN~n, \LMAX~m^?\}` must be :ref:`valid <valid-memtype>`.
 
-* Then the memory instance is valid with :ref:`memory type <syntax-memtype>` :math:`\{\LMIN~n, \LMAX~m^?\}`.
+* The length of :math:`b^\ast` must equal :math:`\limits.\LMIN` multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
+
+* Then the memory instance is valid with :ref:`memory type <syntax-memtype>` :math:`\limits`.
 
 .. math::
    \frac{
-     \vdashlimits \{\LMIN~n, \LMAX~m^?\} \ok
+     \vdashmemtype \limits \ok
+     \qquad
+     n = \limits.\LMIN \cdot 64\,\F{Ki}
    }{
-     S \vdashmeminst \{ \MIDATA~b^n, \MIMAX~m^? \} : \{\LMIN~n, \LMAX~m^?\}
+     S \vdashmeminst \{ \MITYPE~\limits, \MIDATA~b^n \} : \limits
    }
 
 
 .. index:: global type, global instance, value, mutability
 .. _valid-globalinst:
 
-:ref:`Global Instances <syntax-globalinst>` :math:`\{ \GIVALUE~(t.\CONST~c), \GIMUT~\mut \}`
-............................................................................................
+:ref:`Global Instances <syntax-globalinst>` :math:`\{ \GITYPE~(\mut~t), \GIVALUE~\val \}`
+.........................................................................................
 
-* The global instance is valid with :ref:`global type <syntax-globaltype>` :math:`\mut~t`.
+* The :ref:`global type <syntax-globaltype>` :math:`\mut~t` must be :ref:`valid <valid-globaltype>`.
+
+* The :ref:`value <syntax-val>` :math:`\val` must be :ref:`valid <valid-val>` with some :ref:`value type <syntax-valtype>` :math:`t'`.
+
+* The :ref:`value type <syntax-valtype>` :math:`t'` must :ref:`match <match-valtype>` the :ref:`value type <syntax-valtype>` :math:`t`.
+
+* Then the global instance is valid with :ref:`global type <syntax-globaltype>` :math:`\mut~t`.
 
 .. math::
    \frac{
+     \vdashglobaltype \mut~t \ok
+     \qquad
+     S \vdashval \val : t'
+     \qquad
+     \vdashvaltypematch t' \matchesvaltype t
    }{
-     S \vdashglobalinst \{ \GIVALUE~(t.\CONST~c), \GIMUT~\mut \} : \mut~t
+     S \vdashglobalinst \{ \GITYPE~(\mut~t), \GIVALUE~\val \} : \mut~t
    }
 
 
@@ -508,7 +529,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\INITELEM~\tableaddr~o~x^n`
 ..................................
 
-* The :ref:`external table value <syntax-externval>` :math:`\EVTABLE~\tableaddr` must be :ref:`valid <valid-externval-table>` with some :ref:`external table type <syntax-externtype>` :math:`\ETTABLE~\limits~\FUNCREF`.
+* The :ref:`external table value <syntax-externval>` :math:`\EVTABLE~\tableaddr` must be :ref:`valid <valid-externval-table>` with some :ref:`external table type <syntax-externtype>` :math:`\ETTABLE~(\limits~\FUNCREF)`.
 
 * The index :math:`o + n` must be smaller than or equal to :math:`\limits.\LMIN`.
 
@@ -676,15 +697,15 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 :ref:`Table Instance <syntax-tableinst>` :math:`\tableinst`
 ...........................................................
 
-* The length of :math:`\tableinst.\TIELEM` must not shrink.
+* The :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE` must remain unchanged.
 
-* The value of :math:`\tableinst.\TIMAX` must remain unchanged.
+* The length of :math:`\tableinst.\TIELEM` must not shrink.
 
 .. math::
    \frac{
      n_1 \leq n_2
    }{
-     \vdashtableinstextends \{\TIELEM~(\X{fa}_1^?)^{n_1}, \TIMAX~m\} \extendsto \{\TIELEM~(\X{fa}_2^?)^{n_2}, \TIMAX~m\}
+     \vdashtableinstextends \{\TITYPE~\X{tt}, \TIELEM~(\X{fa}_1^?)^{n_1}\} \extendsto \{\TITYPE~\X{tt}, \TIELEM~(\X{fa}_2^?)^{n_2}\}
    }
 
 
@@ -694,15 +715,15 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 :ref:`Memory Instance <syntax-meminst>` :math:`\meminst`
 ........................................................
 
-* The length of :math:`\meminst.\MIDATA` must not shrink.
+* The :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE` must remain unchanged.
 
-* The value of :math:`\meminst.\MIMAX` must remain unchanged.
+* The length of :math:`\meminst.\MIDATA` must not shrink.
 
 .. math::
    \frac{
      n_1 \leq n_2
    }{
-     \vdashmeminstextends \{\MIDATA~b_1^{n_1}, \MIMAX~m\} \extendsto \{\MIDATA~b_2^{n_2}, \MIMAX~m\}
+     \vdashmeminstextends \{\MITYPE~\X{mt}, \MIDATA~b_1^{n_1}\} \extendsto \{\MITYPE~\X{mt}, \MIDATA~b_2^{n_2}\}
    }
 
 
@@ -712,17 +733,17 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 :ref:`Global Instance <syntax-globalinst>` :math:`\globalinst`
 ..............................................................
 
-* The :ref:`mutability <syntax-mut>` :math:`\globalinst.\GIMUT` must remain unchanged.
+* The :ref:`global type <syntax-globaltype>` :math:`\globalinst.\GITYPE` must remain unchanged.
 
-* The :ref:`value type <syntax-valtype>` of the :ref:`value <syntax-val>` :math:`\globalinst.\GIVALUE` must remain unchanged.
+* Let :math:`\mut~t` be the structure of :math:`\globalinst.\GITYPE`.
 
-* If :math:`\globalinst.\GIMUT` is |MCONST|, then the :ref:`value <syntax-val>` :math:`\globalinst.\GIVALUE` must remain unchanged.
+* If :math:`\mut` is |MCONST|, then the :ref:`value <syntax-val>` :math:`\globalinst.\GIVALUE` must remain unchanged.
 
 .. math::
    \frac{
-     \mut = \MVAR \vee c_1 = c_2
+     \mut = \MVAR \vee \val_1 = \val_2
    }{
-     \vdashglobalinstextends \{\GIVALUE~(t.\CONST~c_1), \GIMUT~\mut\} \extendsto \{\GIVALUE~(t.\CONST~c_2), \GIMUT~\mut\}
+     \vdashglobalinstextends \{\GITYPE~(\mut~t), \GIVALUE~\val_1\} \extendsto \{\GITYPE~(\mut~t), \GIVALUE~\val_2\}
    }
 
 

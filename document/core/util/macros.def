@@ -806,14 +806,14 @@
 .. |FICODE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{code}}
 .. |FIHOSTCODE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{hostcode}}
 
+.. |TITYPE| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{type}}
 .. |TIELEM| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{elem}}
-.. |TIMAX| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{max}}
 
+.. |MITYPE| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{type}}
 .. |MIDATA| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{data}}
-.. |MIMAX| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{max}}
 
+.. |GITYPE| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{type}}
 .. |GIVALUE| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{value}}
-.. |GIMUT| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{mut}}
 
 .. |EINAME| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\K{name}}
 .. |EIVALUE| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\K{value}}

@@ -249,18 +249,18 @@ Table Instances
 ~~~~~~~~~~~~~~~
 
 A *table instance* is the runtime representation of a :ref:`table <syntax-table>`.
-It holds a vector of *function elements* and an optional maximum size, if one was specified in the :ref:`table type <syntax-tabletype>` at the table's definition site.
-
-Each table element is a :ref:`reference value <syntax-ref>`.
-Table elements can be mutated through :ref:`table instructions <syntax-instr-table>`, the execution of an :ref:`element segment <syntax-elem>`, or by external means provided by the :ref:`embedder <embedder>`.
+It records its :ref:`type <syntax-tabletype>` and holds a vector of :ref:`reference values <syntax-ref>`.
 
 .. math::
    \begin{array}{llll}
    \production{(table instance)} & \tableinst &::=&
-     \{ \TIELEM~\vec(\reff), \TIMAX~\u32^? \} \\
+     \{ \TITYPE~\tabletype, \TIELEM~\vec(\reff) \} \\
    \end{array}
 
-It is an invariant of the semantics that the length of the element vector never exceeds the maximum size, if present.
+Table elements can be mutated through :ref:`table instructions <syntax-instr-table>`, the execution of an active :ref:`element segment <syntax-elem>`, or by external means provided by the :ref:`embedder <embedder>`.
+
+It is an invariant of the semantics that all table elements have a type :ref:`matching <match-reftype>` the element type of :math:`\tabletype`.
+It also is an invariant that the length of the element vector never exceeds the maximum size of :math:`\tabletype`, if present.
 
 
 .. index:: ! memory instance, memory, byte, ! page size, memory type, embedder, data segment, instruction
@@ -273,20 +273,19 @@ Memory Instances
 ~~~~~~~~~~~~~~~~
 
 A *memory instance* is the runtime representation of a linear :ref:`memory <syntax-mem>`.
-It holds a vector of :ref:`bytes <syntax-byte>` and an optional maximum size, if one was specified at the definition site of the memory.
+It records its :ref:`type <syntax-memtype>` and holds a vector of :ref:`bytes <syntax-byte>`.
 
 .. math::
    \begin{array}{llll}
    \production{(memory instance)} & \meminst &::=&
-     \{ \MIDATA~\vec(\byte), \MIMAX~\u32^? \} \\
+     \{ \MITYPE~\memtype, \MIDATA~\vec(\byte) \} \\
    \end{array}
 
 The length of the vector always is a multiple of the WebAssembly *page size*, which is defined to be the constant :math:`65536` -- abbreviated :math:`64\,\F{Ki}`.
-Like in a :ref:`memory type <syntax-memtype>`, the maximum size in a memory instance is given in units of this page size.
 
-The bytes can be mutated through :ref:`memory instructions <syntax-instr-memory>`, the execution of a :ref:`data segment <syntax-data>`, or by external means provided by the :ref:`embedder <embedder>`.
+The bytes can be mutated through :ref:`memory instructions <syntax-instr-memory>`, the execution of an active :ref:`data segment <syntax-data>`, or by external means provided by the :ref:`embedder <embedder>`.
 
-It is an invariant of the semantics that the length of the byte vector, divided by page size, never exceeds the maximum size, if present.
+It is an invariant of the semantics that the length of the byte vector, divided by page size, never exceeds the maximum size of :math:`\memtype`, if present.
 
 
 .. index:: ! global instance, global, value, mutability, instruction, embedder
@@ -298,15 +297,17 @@ Global Instances
 ~~~~~~~~~~~~~~~~
 
 A *global instance* is the runtime representation of a :ref:`global <syntax-global>` variable.
-It holds an individual :ref:`value <syntax-val>` and a flag indicating whether it is mutable.
+It records its :ref:`type <syntax-globaltype>` and holds an individual :ref:`value <syntax-val>`.
 
 .. math::
    \begin{array}{llll}
    \production{(global instance)} & \globalinst &::=&
-     \{ \GIVALUE~\val, \GIMUT~\mut \} \\
+     \{ \GITYPE~\valtype, \GIVALUE~\val \} \\
    \end{array}
 
 The value of mutable globals can be mutated through :ref:`variable instructions <syntax-instr-variable>` or by external means provided by the :ref:`embedder <embedder>`.
+
+It is an invariant of the semantics that the value has a type :ref:`matching <match-valtype>` the :ref:`value type <syntax-valtype>` of :math:`\globaltype`.
 
 
 .. index:: ! export instance, export, name, external value

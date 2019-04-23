@@ -23,51 +23,48 @@ The following auxiliary typing rules specify this typing relation relative to a 
 :math:`\EVFUNC~a`
 .................
 
-* The store entry :math:`S.\SFUNCS[a]` must be a :ref:`function instance <syntax-funcinst>` :math:`\{\FITYPE~\functype, \dots\}`.
+* The store entry :math:`S.\SFUNCS[a]` must exist.
 
-* Then :math:`\EVFUNC~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype`.
+* Then :math:`\EVFUNC~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~S.\SFUNCS[a].\FITYPE`.
 
 .. math::
    \frac{
-     S.\SFUNCS[a] = \{\FITYPE~\functype, \dots\}
    }{
-     S \vdashexternval \EVFUNC~a : \ETFUNC~\functype
+     S \vdashexternval \EVFUNC~a : \ETFUNC~S.\SFUNCS[a].\FITYPE
    }
 
 
-.. index:: table type, table address, limits
+.. index:: table type, table address
 .. _valid-externval-table:
 
 :math:`\EVTABLE~a`
 ..................
 
-* The store entry :math:`S.\STABLES[a]` must be a :ref:`table instance <syntax-tableinst>` :math:`\{\TIELEM~(\X{fa}^?)^n, \TIMAX~m^?\}`.
+* The store entry :math:`S.\STABLES[a]` must exist.
 
-* Then :math:`\EVTABLE~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETTABLE~(\{\LMIN~n, \LMAX~m^?\}~\FUNCREF)`.
+* Then :math:`\EVTABLE~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETTABLE~S.\STABLES[a].\TITYPE`.
 
 .. math::
    \frac{
-     S.\STABLES[a] = \{ \TIELEM~(\X{fa}^?)^n, \TIMAX~m^? \}
    }{
-     S \vdashexternval \EVTABLE~a : \ETTABLE~(\{\LMIN~n, \LMAX~m^?\}~\FUNCREF)
+     S \vdashexternval \EVTABLE~a : \ETTABLE~S.\STABLES[a].\TITYPE
    }
 
 
-.. index:: memory type, memory address, limits
+.. index:: memory type, memory address
 .. _valid-externval-mem:
 
 :math:`\EVMEM~a`
 ................
 
-* The store entry :math:`S.\SMEMS[a]` must be a :ref:`memory instance <syntax-meminst>` :math:`\{\MIDATA~b^{n\cdot64\,\F{Ki}}, \MIMAX~m^?\}`, for some :math:`n`.
+* The store entry :math:`S.\SMEMS[a]` must exist.
 
-* Then :math:`\EVMEM~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETMEM~(\{\LMIN~n, \LMAX~m^?\})`.
+* Then :math:`\EVMEM~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETMEM~S.\SMEMS[a].\MITYPE`.
 
 .. math::
    \frac{
-     S.\SMEMS[a] = \{ \MIDATA~b^{n\cdot64\,\F{Ki}}, \MIMAX~m^? \}
    }{
-     S \vdashexternval \EVMEM~a : \ETMEM~\{\LMIN~n, \LMAX~m^?\}
+     S \vdashexternval \EVMEM~a : \ETMEM~S.\SMEMS[a].\MITYPE
    }
 
 
@@ -77,15 +74,14 @@ The following auxiliary typing rules specify this typing relation relative to a 
 :math:`\EVGLOBAL~a`
 ...................
 
-* The store entry :math:`S.\SGLOBALS[a]` must be a :ref:`global instance <syntax-globalinst>` :math:`\{\GIVALUE~(t.\CONST~c), \GIMUT~\mut\}`.
+* The store entry :math:`S.\SGLOBALS[a]` must exist.
 
-* Then :math:`\EVGLOBAL~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~(\mut~t)`.
+* Then :math:`\EVGLOBAL~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~S.\SGLOBALS[a].\GITYPE`.
 
 .. math::
    \frac{
-     S.\SGLOBALS[a] = \{ \GIVALUE~(t.\CONST~c), \GIMUT~\mut \}
    }{
-     S \vdashexternval \EVGLOBAL~a : \ETGLOBAL~(\mut~t)
+     S \vdashexternval \EVGLOBAL~a : \ETGLOBAL~S.\SGLOBALS[a].\GITYPE
    }
 
 
@@ -99,6 +95,8 @@ For the purpose of checking argument :ref:`values <syntax-externval>` against th
 values are classified by :ref:`value types <syntax-valtype>`.
 The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which possibly referenced addresses live.
 
+.. _valid-num:
+
 :ref:`Numeric Values <syntax-val>` :math:`t.\CONST~c`
 .....................................................
 
@@ -110,6 +108,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
      S \vdashval t.\CONST~c : t
    }
 
+.. _valid-ref:
 
 :ref:`Null References <syntax-ref>` :math:`\REFNULL`
 ....................................................
@@ -359,13 +358,13 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 :ref:`Tables <syntax-tableinst>`
 ................................
 
-1. Let :math:`\tabletype` be the :ref:`table type <syntax-tabletype>` to allocate and :math:`\val` the initialization value.
+1. Let :math:`\tabletype` be the :ref:`table type <syntax-tabletype>` to allocate and :math:`\reff` the initialization value.
 
 2. Let :math:`(\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
 
 3. Let :math:`a` be the first free :ref:`table address <syntax-tableaddr>` in :math:`S`.
 
-4. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` :math:`\{ \TIELEM~\REFNULL^n, \TIMAX~m^? \}` with :math:`n` empty elements.
+4. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` :math:`\{ \TITYPE~\tabletype, \TIELEM~\reff^n \}` with :math:`n` elements set to :math:`\reff`.
 
 5. Append :math:`\tableinst` to the |STABLES| of :math:`S`.
 
@@ -373,11 +372,11 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 .. math::
    \begin{array}{rlll}
-   \alloctable(S, \tabletype, \val) &=& S', \tableaddr \\[1ex]
+   \alloctable(S, \tabletype, \reff) &=& S', \tableaddr \\[1ex]
    \mbox{where:} \hfill \\
    \tabletype &=& \{\LMIN~n, \LMAX~m^?\}~\reftype \\
    \tableaddr &=& |S.\STABLES| \\
-   \tableinst &=& \{ \TIELEM~\val^n, \TIMAX~m^? \} \\
+   \tableinst &=& \{ \TITYPE~\tabletype, \TIELEM~\reff^n \} \\
    S' &=& S \compose \{\STABLES~\tableinst\} \\
    \end{array}
 
@@ -394,7 +393,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 3. Let :math:`a` be the first free :ref:`memory address <syntax-memaddr>` in :math:`S`.
 
-4. Let :math:`\meminst` be the :ref:`memory instance <syntax-meminst>` :math:`\{ \MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}}, \MIMAX~m^? \}` that contains :math:`n` pages of zeroed :ref:`bytes <syntax-byte>`.
+4. Let :math:`\meminst` be the :ref:`memory instance <syntax-meminst>` :math:`\{ \MITYPE~\memtype, \MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \}` that contains :math:`n` pages of zeroed :ref:`bytes <syntax-byte>`.
 
 5. Append :math:`\meminst` to the |SMEMS| of :math:`S`.
 
@@ -406,7 +405,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    \mbox{where:} \hfill \\
    \memtype &=& \{\LMIN~n, \LMAX~m^?\} \\
    \memaddr &=& |S.\SMEMS| \\
-   \meminst &=& \{ \MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}}, \MIMAX~m^? \} \\
+   \meminst &=& \{ \MITYPE~\memtype, \MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \} \\
    S' &=& S \compose \{\SMEMS~\meminst\} \\
    \end{array}
 
@@ -419,23 +418,20 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 1. Let :math:`\globaltype` be the :ref:`global type <syntax-globaltype>` to allocate and :math:`\val` the :ref:`value <syntax-val>` to initialize the global with.
 
-2. Let :math:`\mut~t` be the structure of :ref:`global type <syntax-globaltype>` :math:`\globaltype`.
+2. Let :math:`a` be the first free :ref:`global address <syntax-globaladdr>` in :math:`S`.
 
-3. Let :math:`a` be the first free :ref:`global address <syntax-globaladdr>` in :math:`S`.
+3. Let :math:`\globalinst` be the :ref:`global instance <syntax-globalinst>` :math:`\{ \GITYPE~\globaltype, \GIVALUE~\val \}`.
 
-4. Let :math:`\globalinst` be the :ref:`global instance <syntax-globalinst>` :math:`\{ \GIVALUE~\val, \GIMUT~\mut \}`.
+4. Append :math:`\globalinst` to the |SGLOBALS| of :math:`S`.
 
-5. Append :math:`\globalinst` to the |SGLOBALS| of :math:`S`.
-
-6. Return :math:`a`.
+5. Return :math:`a`.
 
 .. math::
    \begin{array}{rlll}
    \allocglobal(S, \globaltype, \val) &=& S', \globaladdr \\[1ex]
    \mbox{where:} \hfill \\
-   \globaltype &=& \mut~t \\
    \globaladdr &=& |S.\SGLOBALS| \\
-   \globalinst &=& \{ \GIVALUE~\val, \GIMUT~\mut \} \\
+   \globalinst &=& \{ \GITYPE~\globaltype, \GIVALUE~\val \} \\
    S' &=& S \compose \{\SGLOBALS~\globalinst\} \\
    \end{array}
 
@@ -446,24 +442,32 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 Growing :ref:`tables <syntax-tableinst>`
 ........................................
 
-1. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` to grow, :math:`n` the number of elements by which to grow it, and :math:`\val` the initialization value.
+1. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` to grow, :math:`n` the number of elements by which to grow it, and :math:`\reff` the initialization value.
 
 2. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\tableinst.\TIELEM`.
 
 3. If :math:`\X{len}` is larger than :math:`2^{32}`, then fail.
 
-4. If :math:`\tableinst.\TIMAX` is not empty and smaller than :math:`\X{len}`, then fail.
+4. Let :math:`\limits~t` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE`.
 
-5. Append :math:`\REFNULL^n` to :math:`\tableinst.\TIELEM`.
+5. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
+
+6. If :math:`\limits'` is not :ref:`valid <valid-limits>`, then fail.
+
+7. Append :math:`\reff^n` to :math:`\tableinst.\TIELEM`.
+
+8. Set :math:`\tableinst.\TITYPE` to the :ref:`table type <syntax-tabletype>` :math:`\limits'~t`.
 
 .. math::
    \begin{array}{rllll}
-   \growtable(\tableinst, n, \val) &=& \tableinst \with \TIELEM = \tableinst.\TIELEM~\val^n \\
+   \growtable(\tableinst, n, \reff) &=& \tableinst \with \TITYPE = \limits'~t \with \TIELEM = \tableinst.\TIELEM~\reff^n \\
      && (
        \begin{array}[t]{@{}r@{~}l@{}}
        \iff & \X{len} = n + |\tableinst.\TIELEM| \\
        \wedge & \X{len} \leq 2^{32} \\
-       \wedge & (\tableinst.\TIMAX = \epsilon \vee \X{len} \leq \tableinst.\TIMAX)) \\
+       \wedge & \limits~t = \tableinst.\TITYPE \\
+       \wedge & \limits' = \limits \with \LMIN = \X{len} \\
+       \wedge & \vdashlimits \limits' \ok \\
        \end{array} \\
    \end{array}
 
@@ -482,18 +486,26 @@ Growing :ref:`memories <syntax-meminst>`
 
 4. If :math:`\X{len}` is larger than :math:`2^{16}`, then fail.
 
-5. If :math:`\meminst.\MIMAX` is not empty and its value is smaller than :math:`\X{len}`, then fail.
+5. Let :math:`\limits` be the structure of :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE`.
 
-6. Append :math:`n` times :math:`64\,\F{Ki}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIDATA`.
+6. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
+
+7. If :math:`\limits'` is not :ref:`valid <valid-limits>`, then fail.
+
+8. Append :math:`n` times :math:`64\,\F{Ki}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIDATA`.
+
+9. Set :math:`\meminst.\MITYPE` to the :ref:`memory type <syntax-memtype>` :math:`\limits'`.
 
 .. math::
    \begin{array}{rllll}
-   \growmem(\meminst, n) &=& \meminst \with \MIDATA = \meminst.\MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \\
+   \growmem(\meminst, n) &=& \meminst \with \MITYPE = \limits' \with \MIDATA = \meminst.\MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \\
      && (
        \begin{array}[t]{@{}r@{~}l@{}}
        \iff & \X{len} = n + |\meminst.\MIDATA| / 64\,\F{Ki} \\
        \wedge & \X{len} \leq 2^{16} \\
-       \wedge & (\meminst.\MIMAX = \epsilon \vee \X{len} \leq \meminst.\MIMAX)) \\
+       \wedge & \limits = \meminst.\MITYPE \\
+       \wedge & \limits' = \limits \with \LMIN = \X{len} \\
+       \wedge & \vdashlimits \limits' \ok \\
        \end{array} \\
    \end{array}
 
