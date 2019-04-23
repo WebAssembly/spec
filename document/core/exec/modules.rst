@@ -381,7 +381,7 @@ Growing :ref:`tables <syntax-tableinst>`
 
 2. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\tableinst.\TIELEM`.
 
-3. If :math:`\X{len}` is larger than :math:`2^{32}`, then fail.
+3. If :math:`\X{len}` is larger than or equal to :math:`2^{32}`, then fail.
 
 4. If :math:`\tableinst.\TIMAX` is not empty and smaller than :math:`\X{len}`, then fail.
 
@@ -393,7 +393,7 @@ Growing :ref:`tables <syntax-tableinst>`
      && (
        \begin{array}[t]{@{}r@{~}l@{}}
        \iff & \X{len} = n + |\tableinst.\TIELEM| \\
-       \wedge & \X{len} \leq 2^{32} \\
+       \wedge & \X{len} < 2^{32} \\
        \wedge & (\tableinst.\TIMAX = \epsilon \vee \X{len} \leq \tableinst.\TIMAX)) \\
        \end{array} \\
    \end{array}
