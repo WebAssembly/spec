@@ -6,7 +6,7 @@ TODO: more text, motivation, explanation
 
 Motivation:
 
-* Easier and more efficient interop with host environment (see e.g. the [WebIDL bindings proposal](https://github.com/WebAssembly/webidl-bindings/blob/master/proposals/webidl-bindings/Overview.md))
+* Easier and more efficient interop with host environment (see e.g. the [WebIDL bindings proposal](https://github.com/WebAssembly/webidl-bindings/blob/master/proposals/webidl-bindings/Explainer.md))
   - allow host references to be represented directly by type `anyref` (see [here](https://github.com/WebAssembly/webidl-bindings/issues/9))
   - without having to go through tables, allocating slots, and maintaining index bijections at the boundaries
 
