@@ -144,7 +144,7 @@ Annotations can contain other parenthesized token sequences (including nested an
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{annot} & \Tannot &::=&
-     \text{(}~\text{@}~\Tidchar^+ ~(\Tspace ~|~ \Ttoken)^\ast~\text{)} \\
+     \text{(@}~\Tidchar^+ ~(\Tspace ~|~ \Ttoken)^\ast~\text{)} \\
    \end{array}
 
 .. note::
