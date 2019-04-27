@@ -17,9 +17,12 @@
   ;; bla (@x
 )
 
+(assert_malformed (module quote "( @a)") "unknown operator")
+
 (assert_malformed (module quote "(@)") "malformed annotation id")
 (assert_malformed (module quote "(@ )") "malformed annotation id")
 (assert_malformed (module quote "(@ x)") "malformed annotation id")
+(assert_malformed (module quote "(@(@a)x)") "malformed annotation id")
 
 (assert_malformed (module quote "(@x ") "unclosed annotation")
 (assert_malformed (module quote "(@x ()") "unclosed annotation")
@@ -32,6 +35,7 @@
 (assert_malformed (module quote "(@x (@y )))") "unexpected token")
 
 (assert_malformed (module quote "(@x \"") "unclosed string")
+(assert_malformed (module quote "(@x \")") "unclosed string")
 
 (assert_malformed (module quote "((@a)@b)") "unknown operator")
 (assert_malformed (module quote "(func $(@a))") "unknown operator")
