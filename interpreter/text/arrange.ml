@@ -120,14 +120,14 @@ struct
     | Rotr -> "rotr"
 
   let cvtop xx = function
-    | ExtendSI32 -> "extend_s/i32"
-    | ExtendUI32 -> "extend_u/i32"
-    | WrapI64 -> "wrap/i64"
-    | TruncSF32 -> "trunc_s/f32"
-    | TruncUF32 -> "trunc_u/f32"
-    | TruncSF64 -> "trunc_s/f64"
-    | TruncUF64 -> "trunc_u/f64"
-    | ReinterpretFloat -> "reinterpret/f" ^ xx
+    | ExtendSI32 -> "extend_i32_s"
+    | ExtendUI32 -> "extend_i32_u"
+    | WrapI64 -> "wrap_i64"
+    | TruncSF32 -> "trunc_f32_s"
+    | TruncUF32 -> "trunc_f32_u"
+    | TruncSF64 -> "trunc_f64_s"
+    | TruncUF64 -> "trunc_f64_u"
+    | ReinterpretFloat -> "reinterpret_f" ^ xx
 end
 
 module FloatOp =
@@ -163,13 +163,13 @@ struct
     | CopySign -> "copysign"
 
   let cvtop xx = function
-    | ConvertSI32 -> "convert_s/i32"
-    | ConvertUI32 -> "convert_u/i32"
-    | ConvertSI64 -> "convert_s/i64"
-    | ConvertUI64 -> "convert_u/i64"
-    | PromoteF32 -> "promote/f32"
-    | DemoteF64 -> "demote/f64"
-    | ReinterpretInt -> "reinterpret/i" ^ xx
+    | ConvertSI32 -> "convert_i32_s"
+    | ConvertUI32 -> "convert_i32_u"
+    | ConvertSI64 -> "convert_i64_s"
+    | ConvertUI64 -> "convert_i64_u"
+    | PromoteF32 -> "promote_f32"
+    | DemoteF64 -> "demote_f64"
+    | ReinterpretInt -> "reinterpret_i" ^ xx
 end
 
 let oper (intop, floatop) op =
@@ -187,10 +187,10 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
-let mem_size = function
-  | Memory.Mem8 -> "8"
-  | Memory.Mem16 -> "16"
-  | Memory.Mem32 -> "32"
+let pack_size = function
+  | Memory.Pack8 -> "8"
+  | Memory.Pack16 -> "16"
+  | Memory.Pack32 -> "32"
 
 let extension = function
   | Memory.SX -> "_s"
@@ -204,12 +204,12 @@ let memop name {ty; align; offset; _} =
 let loadop op =
   match op.sz with
   | None -> memop "load" op
-  | Some (sz, ext) -> memop ("load" ^ mem_size sz ^ extension ext) op
+  | Some (sz, ext) -> memop ("load" ^ pack_size sz ^ extension ext) op
 
 let storeop op =
   match op.sz with
   | None -> memop "store" op
-  | Some sz -> memop ("store" ^ mem_size sz) op
+  | Some sz -> memop ("store" ^ pack_size sz) op
 
 
 (* Expressions *)
@@ -223,6 +223,8 @@ let rec instr e =
     match e.it with
     | Unreachable -> "unreachable", []
     | Nop -> "nop", []
+    | Drop -> "drop", []
+    | Select -> "select", []
     | Block (ts, es) -> "block", stack_type ts @ list instr es
     | Loop (ts, es) -> "loop", stack_type ts @ list instr es
     | If (ts, es1, es2) ->
@@ -235,17 +237,15 @@ let rec instr e =
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallIndirect x -> "call_indirect", [Node ("type " ^ var x, [])]
-    | Drop -> "drop", []
-    | Select -> "select", []
-    | GetLocal x -> "get_local " ^ var x, []
-    | SetLocal x -> "set_local " ^ var x, []
-    | TeeLocal x -> "tee_local " ^ var x, []
-    | GetGlobal x -> "get_global " ^ var x, []
-    | SetGlobal x -> "set_global " ^ var x, []
+    | LocalGet x -> "local.get " ^ var x, []
+    | LocalSet x -> "local.set " ^ var x, []
+    | LocalTee x -> "local.tee " ^ var x, []
+    | GlobalGet x -> "global.get " ^ var x, []
+    | GlobalSet x -> "global.set " ^ var x, []
     | Load op -> loadop op, []
     | Store op -> storeop op, []
-    | CurrentMemory -> "current_memory", []
-    | GrowMemory -> "grow_memory", []
+    | MemorySize -> "memory.size", []
+    | MemoryGrow -> "memory.grow", []
     | Const lit -> constop lit ^ " " ^ value lit, []
     | Test op -> testop op, []
     | Compare op -> relop op, []

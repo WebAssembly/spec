@@ -38,7 +38,7 @@ The following conventions are adopted in stating these rules.
 * Certain rules require the stack to contain at least one frame.
   The most recent frame is referred to as the *current* frame.
 
-* Both the store and the current frame are mutated by *replacing* some of its components.
+* Both the store and the current frame are mutated by *replacing* some of their components.
   Such replacement is assumed to apply globally.
 
 * The execution of an instruction may *trap*,

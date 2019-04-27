@@ -145,13 +145,13 @@ let inline_type_explicit (c : context) x ft at =
 
 %}
 
-%token NAT INT FLOAT STRING VAR VALUE_TYPE ANYFUNC MUT LPAR RPAR
+%token NAT INT FLOAT STRING VAR VALUE_TYPE FUNCREF MUT LPAR RPAR
 %token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
-%token GET_LOCAL SET_LOCAL TEE_LOCAL GET_GLOBAL SET_GLOBAL
+%token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
-%token UNREACHABLE CURRENT_MEMORY GROW_MEMORY
+%token UNREACHABLE MEMORY_SIZE MEMORY_GROW
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
 %token MODULE BIN QUOTE
@@ -205,7 +205,7 @@ value_type_list :
   | VALUE_TYPE value_type_list { $1 :: $2 }
 
 elem_type :
-  | ANYFUNC { AnyFuncType }
+  | FUNCREF { FuncRefType }
 
 global_type :
   | VALUE_TYPE { GlobalType ($1, Immutable) }
@@ -301,6 +301,8 @@ instr :
 plain_instr :
   | UNREACHABLE { fun c -> unreachable }
   | NOP { fun c -> nop }
+  | DROP { fun c -> drop }
+  | SELECT { fun c -> select }
   | BR var { fun c -> br ($2 c label) }
   | BR_IF var { fun c -> br_if ($2 c label) }
   | BR_TABLE var var_list
@@ -308,17 +310,15 @@ plain_instr :
       br_table xs x }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
-  | DROP { fun c -> drop }
-  | SELECT { fun c -> select }
-  | GET_LOCAL var { fun c -> get_local ($2 c local) }
-  | SET_LOCAL var { fun c -> set_local ($2 c local) }
-  | TEE_LOCAL var { fun c -> tee_local ($2 c local) }
-  | GET_GLOBAL var { fun c -> get_global ($2 c global) }
-  | SET_GLOBAL var { fun c -> set_global ($2 c global) }
+  | LOCAL_GET var { fun c -> local_get ($2 c local) }
+  | LOCAL_SET var { fun c -> local_set ($2 c local) }
+  | LOCAL_TEE var { fun c -> local_tee ($2 c local) }
+  | GLOBAL_GET var { fun c -> global_get ($2 c global) }
+  | GLOBAL_SET var { fun c -> global_set ($2 c global) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
-  | CURRENT_MEMORY { fun c -> current_memory }
-  | GROW_MEMORY { fun c -> grow_memory }
+  | MEMORY_SIZE { fun c -> memory_size }
+  | MEMORY_GROW { fun c -> memory_grow }
   | CONST literal { fun c -> fst (literal $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }

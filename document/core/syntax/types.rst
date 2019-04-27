@@ -5,7 +5,7 @@
 Types
 -----
 
-Various entitites in WebAssembly are classified by types.
+Various entities in WebAssembly are classified by types.
 Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-instantiation>`, and possibly :ref:`execution <syntax-call_indirect>`.
 
 
@@ -49,7 +49,7 @@ Result Types
 ~~~~~~~~~~~~
 
 *Result types* classify the result of :ref:`executing <exec-instr>` :ref:`instructions <syntax-instr>` or :ref:`blocks <syntax-instr-control>`,
-which is a sequence of values.
+which is a sequence of values written with brackets.
 
 .. math::
    \begin{array}{llll}
@@ -71,7 +71,7 @@ Function Types
 ~~~~~~~~~~~~~~
 
 *Function types* classify the signature of :ref:`functions <syntax-func>`,
-mapping a vector of parameters to a vector of results.
+mapping a vector of parameters to a vector of results, written as follows.
 
 .. math::
    \begin{array}{llll}
@@ -145,13 +145,13 @@ Table Types
    \production{table type} & \tabletype &::=&
      \limits~\elemtype \\
    \production{element type} & \elemtype &::=&
-     \ANYFUNC \\
+     \FUNCREF \\
    \end{array}
 
 Like memories, tables are constrained by limits for their minimum and optionally maximum size.
 The limits are given in numbers of entries.
 
-The element type |ANYFUNC| is the infinite union of all :ref:`function types <syntax-functype>`.
+The element type |FUNCREF| is the infinite union of all :ref:`function types <syntax-functype>`.
 A table of that type thus contains references to functions of heterogeneous type.
 
 .. note::

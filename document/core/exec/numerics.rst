@@ -128,7 +128,7 @@ When a number is stored into :ref:`memory <syntax-mem>`, it is converted into a 
    \begin{array}{lll@{\qquad}l}
    \bytes_t(i) &=& \littleendian(\bits_t(i)) \\[1ex]
    \littleendian(\epsilon) &=& \epsilon \\
-   \littleendian(d_1^8~d_2^{N-8}) &=& \ibits_8^{-1}(d_1^8)~\littleendian(d_2^{N-8}) \\
+   \littleendian(d^8~{d'}^\ast~) &=& \littleendian({d'}^\ast)~\ibits_8^{-1}(d^8) \\
    \end{array}
 
 Again these functions are invertable bijections.

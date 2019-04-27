@@ -414,13 +414,14 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
 Modules
 ~~~~~~~
 
-The encoding of a :ref:`module <syntax-module>` starts with a preamble containing a 4-byte magic number and a version field.
+The encoding of a :ref:`module <syntax-module>` starts with a preamble containing a 4-byte magic number (the string :math:`\text{\backslash0asm}`) and a version field.
 The current version of the WebAssembly binary format is 1.
 
 The preamble is followed by a sequence of :ref:`sections <binary-section>`.
 :ref:`Custom sections <binary-customsec>` may be inserted at any place in this sequence,
 while other sections must occur at most once and in the prescribed order.
 All sections can be empty.
+
 The lengths of vectors produced by the (possibly empty) :ref:`function <binary-funcsec>` and :ref:`code <binary-codesec>` section must match up.
 
 .. math::

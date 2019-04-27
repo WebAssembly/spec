@@ -21,6 +21,9 @@ publish: all deploy
 clean: $(DIRS:%=clean-%)
 	rm -rf $(BUILDDIR)
 
+.PHONY: diff
+diff: $(DIRS:%=diff-%)
+
 
 # Directory-specific targets.
 
@@ -53,6 +56,10 @@ $(DIRS:%=publish-%): publish-%: % deploy-%
 $(DIRS:%=clean-%): clean-%:
 	(cd $(@:clean-%=%); make BUILDDIR=$(BUILDDIR) clean)
 	rm -rf $(BUILDDIR)/$(@:clean-%=%)
+
+.PHONY: $(DIRS:%=diff-%)
+$(DIRS:%=diff-%): diff-%:
+	(cd $(@:diff-%=%); make BUILDDIR=$(BUILDDIR) diff)
 
 
 # Help.

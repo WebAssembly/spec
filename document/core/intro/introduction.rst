@@ -5,7 +5,7 @@ WebAssembly (abbreviated Wasm [#wasm]_) is a *safe, portable, low-level code for
 designed for efficient execution and compact representation.
 Its main goal is to enable high performance applications on the Web, but it does not make any Web-specific assumptions or provide Web-specific features, so it can be employed in other environments as well.
 
-WebAssembly is an open standard developed by a `W3C Community Group <https://www.w3.org/community/webassembly/>`_ that includes representatives of all major browser vendors.
+WebAssembly is an open standard developed by a `W3C Community Group <https://www.w3.org/community/webassembly/>`_.
 
 This document describes version |release| of the :ref:`core <scope>` WebAssembly standard.
 It is intended that it will be superseded by new incremental releases with additional features in the future.
@@ -75,7 +75,7 @@ Instead, this specification is complemented by additional documents defining int
 These will each define a WebAssembly *application programming interface (API)* suitable for a given environment.
 
 
-.. index:: IEEE 754, floating point, Unicode, name, text format, UTF-8, code point
+.. index:: IEEE 754, floating point, Unicode, name, text format, UTF-8, character
 .. _dependencies:
 
 Dependencies
@@ -88,9 +88,9 @@ WebAssembly depends on two existing standards:
 * |Unicode|_, for the representation of import/export :ref:`names <syntax-name>` and the :ref:`text format <text>`.
 
 However, to make this specification self-contained, relevant aspects of the aforementioned standards are defined and formalized as part of this specification,
-such as the :ref:`binary representation <aux-fbits>` and :ref:`rounding <aux-ieee>` of floating-point values, and the :ref:`value range <syntax-codepoint>` and :ref:`UTF-8 encoding <binary-utf8>` of Unicode characters.
+such as the :ref:`binary representation <aux-fbits>` and :ref:`rounding <aux-ieee>` of floating-point values, and the :ref:`value range <syntax-char>` and :ref:`UTF-8 encoding <binary-utf8>` of Unicode characters.
 
 .. note::
-   The aforementioned standards are the authorative source of all respective definitions.
+   The aforementioned standards are the authoritative source of all respective definitions.
    Formalizations given in this specification are intended to match these definitions.
    Any discrepancy in the syntax or semantics described is to be considered an error.

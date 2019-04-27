@@ -25,7 +25,7 @@ Value Types
 
 .. note::
    In future versions of WebAssembly, value types may include types denoted by :ref:`type indices <syntax-typeidx>`.
-   Thus, the binary format for types corresponds to the encodings of small negative :math:`\xref{binary/values}{binary-sint}{\sN}` values, so that they can coexist with (positive) type indices in the future.
+   Thus, the binary format for types corresponds to the |SignedLEB128|_ :ref:`encoding <binary-sint>` of small negative :math:`\sN` values, so that they can coexist with (positive) type indices in the future.
 
 
 .. index:: result type, value type
@@ -115,7 +115,7 @@ Table Types
    \production{table type} & \Btabletype &::=&
      \X{et}{:}\Belemtype~~\X{lim}{:}\Blimits &\Rightarrow& \X{lim}~\X{et} \\
    \production{element type} & \Belemtype &::=&
-     \hex{70} &\Rightarrow& \ANYFUNC \\
+     \hex{70} &\Rightarrow& \FUNCREF \\
    \end{array}
 
 

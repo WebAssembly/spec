@@ -1,11 +1,11 @@
 ;; Failures in unreachable code.
 
 (assert_invalid
-  (module (func $local-index (unreachable) (drop (get_local 0))))
+  (module (func $local-index (unreachable) (drop (local.get 0))))
   "unknown local"
 )
 (assert_invalid
-  (module (func $global-index (unreachable) (drop (get_global 0))))
+  (module (func $global-index (unreachable) (drop (global.get 0))))
   "unknown global"
 )
 (assert_invalid
@@ -682,7 +682,7 @@
 (assert_invalid
   (module (func $tee-local-unreachable-value
     (local i32)
-    (tee_local 0 (unreachable))
+    (local.tee 0 (unreachable))
   ))
   "type mismatch"
 )
@@ -696,4 +696,14 @@
     )
   ))
   "type mismatch"
+)
+(assert_invalid 
+  (module
+    (func $type-br_if-after-unreachable (result i64)
+      unreachable
+      br_if 0
+      i64.extend_i32_u
+    )
+  )
+ "type mismatch"
 )

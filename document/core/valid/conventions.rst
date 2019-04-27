@@ -40,14 +40,14 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Globals*: the list of globals declared in the current module, represented by their global type.
 * *Locals*: the list of locals declared in the current function (including parameters), represented by their value type.
 * *Labels*: the stack of labels accessible from the current position, represented by their result type.
-* *Return*: the return type of the current function, represented as a result type.
+* *Return*: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.
 
 In other words, a context contains a sequence of suitable :ref:`types <syntax-type>` for each :ref:`index space <syntax-index>`,
 describing each defined entry in that space.
 Locals, labels and return type are only used for validating :ref:`instructions <syntax-instr>` in :ref:`function bodies <syntax-func>`, and are left empty elsewhere.
 The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.
 
-It is convenient to define contexts as :ref:`records <notation-record>` :math:`C` with abstract syntax:
+More concretely, contexts are defined as :ref:`records <notation-record>` :math:`C` with abstract syntax:
 
 .. math::
    \begin{array}{llll}
@@ -64,22 +64,18 @@ It is convenient to define contexts as :ref:`records <notation-record>` :math:`C
      \end{array}
    \end{array}
 
-.. note::
-   The fields of a context are not defined as :ref:`vectors <syntax-vec>`,
-   since their lengths are not bounded by the maximum vector size.
+.. _notation-extend:
 
-In addition to field access :math:`C.\K{field}` the following notation is adopted for manipulating contexts:
+In addition to field access written :math:`C.\K{field}` the following notation is adopted for manipulating contexts:
 
 * When spelling out a context, empty fields are omitted.
 
 * :math:`C,\K{field}\,A^\ast` denotes the same context as :math:`C` but with the elements :math:`A^\ast` prepended to its :math:`\K{field}` component sequence.
 
 .. note::
-   This notation is defined to *prepend* not *append*.
-   It is only used in situations where the original :math:`C.\K{field}` is either empty
-   or :math:`\K{field}` is :math:`\K{labels}`.
-   In the latter case adding to the front is desired
-   because the :ref:`label index <syntax-labelidx>` space is indexed relatively, that is, in reverse order of addition.
+   We use :ref:`indexing notation <notation-index>` like :math:`C.\CLABELS[i]` to look up indices in their respective :ref:`index space <syntax-index>` in the context.
+   Context extension notation :math:`C,\K{field}\,A` is primarily used to locally extend *relative* index spaces, such as :ref:`label indices <syntax-labelidx>`.
+   Accordingly, the notation is defined to append at the *front* of the respective sequence, introducing a new relative index :math:`0` and shifting the existing ones.
 
 
 .. _valid-notation-textual:
@@ -152,13 +148,13 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
    (saying that it consumes two |I32| values and produces one),
    independent of any side conditions.
 
-   An instruction like |GETLOCAL| can be typed as follows:
+   An instruction like |LOCALGET| can be typed as follows:
 
    .. math::
       \frac{
         C.\CLOCALS[x] = t
       }{
-        C \vdash \GETLOCAL~x : [] \to [t]
+        C \vdash \LOCALGET~x : [] \to [t]
       }
 
    Here, the premise enforces that the immediate :ref:`local index <syntax-localidx>` :math:`x` exists in the context.

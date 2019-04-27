@@ -35,7 +35,7 @@ extensions = [
   'sphinx.ext.mathjax',
   'sphinx.ext.ifconfig',
   'sphinx.ext.githubpages',
-  'mathdef',
+  'mathdefbs',
   'pseudo-lexer'
 ]
 
