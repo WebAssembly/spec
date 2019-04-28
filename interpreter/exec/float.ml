@@ -233,11 +233,39 @@ struct
     else
       of_signless_string s
 
+  (* String conversion that groups digits for readability *)
+
+  let is_digit c = '0' <= c && c <= '9'
+  let isnt_digit c = not (is_digit c)
+
+  let rec add_digits buf s i j k =
+    if i < j then begin
+      if k = 0 then Buffer.add_char buf '_';
+      Buffer.add_char buf s.[i];
+      add_digits buf s (i + 1) j ((k + 2) mod 3)
+    end
+
+  let group_digits s =
+    let len = String.length s in
+    let mant = Lib.Option.get (Lib.String.find_from_opt is_digit s 0) len in
+    let point = Lib.Option.get (Lib.String.find_from_opt isnt_digit s mant) len in
+    let frac = Lib.Option.get (Lib.String.find_from_opt is_digit s point) len in
+    let exp = Lib.Option.get (Lib.String.find_from_opt isnt_digit s frac) len in
+    let buf = Buffer.create (len*4/3) in
+    Buffer.add_substring buf s 0 mant;
+    add_digits buf s mant point ((point - mant) mod 3 + 3);
+    Buffer.add_substring buf s point (frac - point);
+    add_digits buf s frac exp 3;
+    Buffer.add_substring buf s exp (len - exp);
+    Buffer.contents buf
+
   let to_string x =
     (if x < Rep.zero then "-" else "") ^
     if is_nan x then
-      "nan:0x" ^ Rep.to_hex_string (Rep.logand (abs x) (Rep.lognot bare_nan))
+      let payload = Rep.logand (abs x) (Rep.lognot bare_nan) in
+      "nan:0x" ^ Rep.to_hex_string payload
     else
       (* TODO: use sprintf "%h" once we have upgraded to OCaml 4.03 *)
-      string_of_float (to_float (abs x))
+      let s = string_of_float (to_float (abs x)) in
+      group_digits (if s.[String.length s - 1] = '.' then s ^ "0" else s)
 end
