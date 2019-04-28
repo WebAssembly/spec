@@ -50,7 +50,7 @@ The character stream in the source text is divided, from left to right, into a s
      (\text{a} ~|~ \dots ~|~ \text{z})~\Tidchar^\ast
      \qquad (\mbox{if occurring as a literal terminal in the grammar}) \\
    \production{reserved} & \Treserved &::=&
-     \Tidchar^+ ~|~ \text{;} ~|~ \text{[} ~|~ \text{]} ~|~ \text{\{} ~|~ \text{\}} \\
+     \Tidchar^+ ~|~ \text{,} ~|~ \text{;} ~|~ \text{[} ~|~ \text{]} ~|~ \text{\{} ~|~ \text{\}} \\
    \end{array}
 
 Tokens are formed from the input character stream according to the *longest match* rule.

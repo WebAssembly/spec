@@ -6,7 +6,7 @@
 (@a x-y$yz"aa"-2)
 (@a block func module i32.add)
 (@a 0x 8q 0xfa #4g0-.@f#^&@#$*0sf -- @#)
-(@a ; ] [ }} }x{ ({) {{};}] ;)
+(@a , ; ] [ }} }x{ ({) ,{{};}] ;)
 (@a (bla) () (5-g) ("aa" a) ($x) (bla bla) (x (y)) ")" "(" x")"y)
 (@a @ @x (@x) (@x y) (@) (@ x) (@(@(@(@)))))
 (@a Heiße Würstchen   
