@@ -55,8 +55,7 @@ type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) Values.op
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Values.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
 
-type 'a memop =
-  {ty : num_type; align : int; offset : Memory.offset; sz : 'a option}
+type 'a memop = {ty : num_type; align : int; offset : int32; sz : 'a option}
 type loadop = (Memory.pack_size * Memory.extension) memop
 type storeop = Memory.pack_size memop
 

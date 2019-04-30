@@ -11,7 +11,7 @@ type pack_size = Pack8 | Pack16 | Pack32
 type extension = SX | ZX
 
 type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
-type memory = {mutable content : memory'; max : size option}
+type memory = {mutable ty : memory_type; mutable content : memory'}
 type t = memory
 
 exception Type
@@ -27,9 +27,10 @@ let packed_size = function
   | Pack16 -> 2
   | Pack32 -> 4
 
-let within_limits n = function
+let valid_limits {min; max} =
+  match max with
   | None -> true
-  | Some max -> I32.le_u n max
+  | Some m -> I32.le_u min m
 
 let create n =
   if I32.gt_u n 0x10000l then raise SizeOverflow else
@@ -40,9 +41,9 @@ let create n =
     mem
   with Out_of_memory -> raise OutOfMemory
 
-let alloc (MemoryType {min; max}) =
-  assert (within_limits min max);
-  {content = create min; max}
+let alloc (MemoryType lim as mt) =
+  if not (valid_limits lim) then raise Type;
+  {ty = mt; content = create lim.min}
 
 let bound mem =
   Array1_64.dim mem.content
@@ -51,16 +52,20 @@ let size mem =
   Int64.(to_int32 (div (bound mem) page_size))
 
 let type_of mem =
-  MemoryType {min = size mem; max = mem.max}
+  mem.ty
 
 let grow mem delta =
-  let old_size = size mem in
+  let MemoryType lim = mem.ty in
+  assert (lim.min = size mem);
+  let old_size = lim.min in
   let new_size = Int32.add old_size delta in
   if I32.gt_u old_size new_size then raise SizeOverflow else
-  if not (within_limits new_size mem.max) then raise SizeLimit else
+  let lim' = {lim with min = new_size} in
+  if not (valid_limits lim') then raise SizeLimit else
   let after = create new_size in
   let dim = Array1_64.dim mem.content in
   Array1.blit (Array1_64.sub mem.content 0L dim) (Array1_64.sub after 0L dim);
+  mem.ty <- MemoryType lim';
   mem.content <- after
 
 let load_byte mem a =

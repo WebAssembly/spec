@@ -20,7 +20,7 @@ exception OutOfMemory
 val page_size : int64
 val packed_size : pack_size -> int
 
-val alloc : memory_type -> memory (* raises SizeOverflow, OutOfMemory *)
+val alloc : memory_type -> memory (* raises Type, SizeOverflow, OutOfMemory *)
 val type_of : memory -> memory_type
 val size : memory -> size
 val bound : memory -> address

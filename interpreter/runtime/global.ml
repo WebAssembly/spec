@@ -1,20 +1,24 @@
 open Types
 open Values
 
-type global = {mutable content : value; ty : value_type; mut : mutability}
+type global = {ty : global_type; mutable content : value}
 type t = global
 
 exception Type
 exception NotMutable
 
-let alloc (GlobalType (ty, mut)) v =
-  if not (match_value_type (type_of_value v) ty) then raise Type;
-  {content = v; ty; mut}
+let alloc (GlobalType (t, mut) as gt) v =
+  if not (match_value_type (type_of_value v) t) then raise Type;
+  {ty = gt; content = v}
 
-let type_of glob = GlobalType (glob.ty, glob.mut)
+let type_of glob =
+  glob.ty
 
-let load glob = glob.content
+let load glob =
+  glob.content
+
 let store glob v =
-  if glob.mut <> Mutable then raise NotMutable;
-  if not (match_value_type (type_of_value v) glob.ty) then raise Type;
+  let GlobalType (t, mut) = glob.ty in
+  if mut <> Mutable then raise NotMutable;
+  if not (match_value_type (type_of_value v) t) then raise Type;
   glob.content <- v
