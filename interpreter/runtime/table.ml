@@ -22,9 +22,9 @@ let create size r =
   try Lib.Array32.make size r
   with Out_of_memory | Invalid_argument _ -> raise OutOfMemory
 
-let alloc (TableType (lim, _) as tt) r =
+let alloc (TableType (lim, _) as ty) r =
   if not (valid_limits lim) then raise Type;
-  {ty = tt; content = create lim.min r}
+  {ty; content = create lim.min r}
 
 let size tab =
   Lib.Array32.length tab.content

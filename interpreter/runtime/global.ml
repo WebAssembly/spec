@@ -7,9 +7,9 @@ type t = global
 exception Type
 exception NotMutable
 
-let alloc (GlobalType (t, mut) as gt) v =
+let alloc (GlobalType (t, _) as ty) v =
   if not (match_value_type (type_of_value v) t) then raise Type;
-  {ty = gt; content = v}
+  {ty; content = v}
 
 let type_of glob =
   glob.ty

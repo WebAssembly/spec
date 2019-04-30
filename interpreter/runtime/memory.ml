@@ -41,9 +41,9 @@ let create n =
     mem
   with Out_of_memory -> raise OutOfMemory
 
-let alloc (MemoryType lim as mt) =
+let alloc (MemoryType lim as ty) =
   if not (valid_limits lim) then raise Type;
-  {ty = mt; content = create lim.min}
+  {ty; content = create lim.min}
 
 let bound mem =
   Array1_64.dim mem.content
