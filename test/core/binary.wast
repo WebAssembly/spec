@@ -33,7 +33,7 @@
 ;; Leading UTF-8 BOM.
 (assert_malformed (module binary "\ef\bb\bf\00asm\01\00\00\00") "magic header not detected")
 
-;; Unknown binary version.
+;; Malformed binary version.
 (assert_malformed (module binary "\00asm") "unexpected end")
 (assert_malformed (module binary "\00asm\01") "unexpected end")
 (assert_malformed (module binary "\00asm\01\00\00") "unexpected end")
