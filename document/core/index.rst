@@ -23,6 +23,7 @@ WebAssembly Specification
       appendix/index-types
       appendix/index-instructions
       appendix/index-rules
+      appendix/security-considerations
 
 .. only:: html
 

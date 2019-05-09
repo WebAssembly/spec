@@ -1084,3 +1084,11 @@ In practice, an implementation may run out of resources for valid modules below 
 <li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50000.</li>
 
 </ul>
+
+<h2 id="security-considerations">Security and Privacy Considerations</h2>
+
+<p><em>This section is non-normative.</em></p>
+
+This document defines a host environment for WebAssembly.
+It enables a WebAssembly instance to  provides access to :ref:`import <syntax-import>` and :ref:`export <syntax-export>` all Javascript functions and APIs.
+This WebAssembly instance is thusly bound to the same constraints as any other Javascript program.
