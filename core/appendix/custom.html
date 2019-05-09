@@ -114,7 +114,10 @@ Each subsection consists of a</p>
 \def\mathdef37#1{{}}\mathdef37{name section} &amp; \href{../appendix/custom.html#binary-namesubsection}{\mathtt{namesec}} &amp;::=&amp;
   \href{../binary/modules.html#binary-section}{\mathtt{section}}_0(\href{../appendix/custom.html#binary-namesubsection}{\mathtt{namedata}}) \\
 \def\mathdef37#1{{}}\mathdef37{name data} &amp; \href{../appendix/custom.html#binary-namesubsection}{\mathtt{namedata}} &amp;::=&amp;
-  n{:}\href{../binary/values.html#binary-name}{\mathtt{name}}~~\href{../appendix/custom.html#binary-namesubsection}{\mathtt{namesubsection}}^\ast &amp; (\mathrel{\mbox{if}} n = \def\mathdef74#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef74{name}) \\
+  n{:}\href{../binary/values.html#binary-name}{\mathtt{name}} &amp; (\mathrel{\mbox{if}} n = \def\mathdef74#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef74{name}) \\ &amp;&amp;&amp;
+  \href{../appendix/custom.html#binary-modulenamesec}{\mathtt{modulenamesubsec}}^? \\ &amp;&amp;&amp;
+  \href{../appendix/custom.html#binary-funcnamesec}{\mathtt{funcnamesubsec}}^? \\ &amp;&amp;&amp;
+  \href{../appendix/custom.html#binary-localnamesec}{\mathtt{localnamesubsec}}^? \\
 \def\mathdef37#1{{}}\mathdef37{name subsection} &amp; \href{../appendix/custom.html#binary-namesubsection}{\mathtt{namesubsection}}_N(\mathtt{B}) &amp;::=&amp;
   N{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}}~~\mathit{size}{:}\href{../binary/values.html#binary-int}{\def\mathdef42#1{{\mathtt{u}#1}}\mathdef42{\mathtt{32}}}~~\mathtt{B}
     &amp; (\mathrel{\mbox{if}} \mathit{size} = ||\mathtt{B}||) \\
@@ -142,6 +145,7 @@ Each subsection consists of a</p>
 </tr>
 </tbody>
 </table>
+<p>Each subsection may occur at most once, and in order of increasing id.</p>
 </div>
 <div class="section" id="name-maps">
 <span id="binary-namemap"></span><span id="binary-indirectnamemap"></span><span id="index-2"></span><h3>Name Maps<a class="headerlink" href="#name-maps" title="Permalink to this headline">¶</a></h3>
