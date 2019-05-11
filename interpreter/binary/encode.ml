@@ -104,6 +104,7 @@ let encode m =
     let value_type = function
       | NumType t -> num_type t
       | RefType t -> ref_type t
+      | BotType -> assert false
 
     let stack_type = function
       | [] -> vs7 (-0x40)
@@ -166,7 +167,8 @@ let encode m =
       | CallIndirect (x, y) -> op 0x11; var y; var x
 
       | Drop -> op 0x1a
-      | Select -> op 0x1b
+      | Select None -> op 0x1b
+      | Select (Some ts) -> op 0x1c; vec value_type ts
 
       | LocalGet x -> op 0x20; var x
       | LocalSet x -> op 0x21; var x

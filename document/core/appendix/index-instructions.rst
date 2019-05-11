@@ -35,7 +35,7 @@ Instruction                             Binary Opcode     Type                  
 (reserved)                              :math:`\hex{19}`                                                  
 :math:`\DROP`                           :math:`\hex{1A}`  :math:`[t] \to []`                          :ref:`validation <valid-drop>`            :ref:`execution <exec-drop>`
 :math:`\SELECT`                         :math:`\hex{1B}`  :math:`[t~t~\I32] \to [t]`                  :ref:`validation <valid-select>`          :ref:`execution <exec-select>`
-(reserved)                              :math:`\hex{1C}`                                                  
+:math:`\SELECT~t`                       :math:`\hex{1C}`  :math:`[t~t~\I32] \to [t]`                  :ref:`validation <valid-select>`          :ref:`execution <exec-select>`
 (reserved)                              :math:`\hex{1D}`                                                  
 (reserved)                              :math:`\hex{1E}`                                                  
 (reserved)                              :math:`\hex{1F}`                                                  

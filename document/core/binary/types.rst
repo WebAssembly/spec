@@ -45,6 +45,9 @@ Reference Types
      \hex{6F} &\Rightarrow& \ANYREF \\
    \end{array}
 
+.. note::
+   The type :math:`\NULLREF` cannot occur in a module.
+
 
 .. index:: value type, number type, reference type
    pair: binary format; value type
@@ -61,6 +64,9 @@ Value Types
      t{:}\Bnumtype &\Rightarrow& t \\ &&|&
      t{:}\Breftype &\Rightarrow& t \\
    \end{array}
+
+.. note::
+   The type :math:`\BOT` cannot occur in a module.
 
 
 .. index:: result type, value type

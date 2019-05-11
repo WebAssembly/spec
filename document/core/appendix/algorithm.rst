@@ -22,48 +22,29 @@ Data Structures
 ~~~~~~~~~~~~~~~
 
 Types are representable as an enumeration.
-In addition to the plain types from the WebAssembly validation semantics, an extended notion of operand type includes a bottom type `Unknown` that is used as the type of :ref:`polymorphic <polymorphism>` operands.
-
 A simple subtyping check can be defined on these types.
-In addition, corresponding functions computing the join (least upper bound) and meet (greatest lower bound) of two types are used.
-Because there is no top type, a join does not exist in all cases.
-Similarly, a meet must always be defined on known value types that exclude the auxiliary bottom type `Unknown`,
-hence a meet does not exist in all cases either.
-A type error is encountered if a join or meet is required when it does not exist.
 
 .. code-block:: pseudo
 
-   type val_type = I32 | I64 | F32 | F64 | Anyref | Funcref | Nullref
-   type opd_type = val_type | Unknown
+   type val_type = I32 | I64 | F32 | F64 | Anyref | Funcref | Nullref | Bot
 
-   func is_ref(t : opd_type) : bool =
-     return t = Anyref || t = Funcref || t = Nullref
+   func is_num(t : val_type) : bool =
+     return t = I32 || t = I64 || t = F32 || t = F64 || t = Bot
 
-   func matches(t1 : opd_type, t2 : opd_type) : bool =
-     return t1 = t2 || t1 = Unknown ||
+   func is_ref(t : val_type) : bool =
+     return t = Anyref || t = Funcref || t = Nullref || t = Bot
+
+   func matches(t1 : val_type, t2 : val_type) : bool =
+     return t1 = t2 || t1 = Bot ||
        (t1 = Nullref && is_ref(t2)) || (is_ref(t1) && t2 = Anyref)
 
-   func join(t1 : opd_type, t2 : opd_type) : opd_type =
-     if (t1 = t2) return t1
-     if (matches(t1, t2)) return t2
-     if (matches(t2, t1)) return t1
-     error_if(not (is_ref(t1) && is_ref(t2)))
-     return Anyref
-
-   func meet(t1 : val_type, t2 : val_type) : val_type =
-     if (t1 = t2) return t1
-     if (matches(t1, t2)) return t1
-     if (matches(t2, t1)) return t2
-     error_if(not (is_ref(t1) && is_ref(t2)))
-     return Nullref
-
-The algorithm uses two separate stacks: the *operand stack* and the *control stack*.
+The algorithm uses two separate stacks: the *value stack* and the *control stack*.
 The former tracks the :ref:`types <syntax-valtype>` of operand values on the :ref:`stack <stack>`,
 the latter surrounding :ref:`structured control instructions <syntax-instr-control>` and their associated :ref:`blocks <syntax-instr-control>`.
 
 .. code-block:: pseudo
 
-   type opd_stack = stack(opd_type)
+   type val_stack = stack(val_type)
 
    type ctrl_stack = stack(ctrl_frame)
    type ctrl_frame = {
@@ -73,7 +54,7 @@ the latter surrounding :ref:`structured control instructions <syntax-instr-contr
      unreachable : bool
    }
 
-For each value, the operand stack records its :ref:`value type <syntax-valtype>`, or :code:`Unknown` when the type is not known.
+For each value, the value stack records its :ref:`value type <syntax-valtype>`.
 
 For each entered block, the control stack records a *control frame* with the type of the associated :ref:`label <syntax-label>` (used to type-check branches), the result type of the block (used to check its result), the height of the operand stack at the start of the block (used to check that operands do not underflow the current block), and a flag recording whether the remainder of the block is unreachable (used to handle :ref:`stack-polymorphic <polymorphism>` typing after branches).
 
@@ -85,43 +66,48 @@ For the purpose of presenting the algorithm, the operand and control stacks are 
 
 .. code-block:: pseudo
 
-   var opds : opd_stack
+   var vals : val_stack
    var ctrls : ctrl_stack
 
 However, these variables are not manipulated directly by the main checking function, but through a set of auxiliary functions:
 
 .. code-block:: pseudo
 
-   func push_opd(type : opd_type) =
-     opds.push(type)
+   func push_val(type : val_type) =
+     vals.push(type)
 
-   func pop_opd() : opd_type =
-     if (opds.size() = ctrls[0].height && ctrls[0].unreachable) return Unknown
-     error_if(opds.size() = ctrls[0].height)
-     return opds.pop()
+   func pop_val() : val_type =
+     if (vals.size() = ctrls[0].height && ctrls[0].unreachable) return Bot
+     error_if(vals.size() = ctrls[0].height)
+     return vals.pop()
 
-   func pop_opd(expect : val_type) =
-     let actual = pop_opd()
+   func pop_val(expect : val_type) : val_type =
+     let actual = pop_val()
      error_if(not matches(actual, expect))
+     return actual
 
-   func push_opds(types : list(val_type)) = foreach (t in types) push_opd(t)
-   func pop_opds(types : list(val_type)) = foreach (t in reverse(types)) pop_opd(t)
+   func push_vals(types : list(val_type)) = foreach (t in types) push_val(t)
+   func pop_vals(types : list(val_type)) : list(val_type) =
+     var popped := []
+     foreach (t in reverse(types)) popped.append(pop_val(t))
+     return popped
 
-Pushing an operand simply pushes the respective type to the operand stack.
+Pushing an operand value simply pushes the respective type to the value stack.
 
-Popping an operand checks that the operand stack does not underflow the current block and then removes one type.
-But first, a special case is handled where the block contains no known operands, but has been marked as unreachable.
+Popping an operand value checks that the value stack does not underflow the current block and then removes one type.
+But first, a special case is handled where the block contains no known values, but has been marked as unreachable.
 That can occur after an unconditional branch, when the stack is typed :ref:`polymorphically <polymorphism>`.
-In that case, an unknown type is returned.
+In that case, the :code:`Bot` type is returned, because that is a *principal* choice trivially satisfying all use constraints.
 
-A second function for popping an operand takes an expected (known) type, which the actual operand type is checked against.
-The types may differ by subtyping, inlcuding the case where the actual type is unknown.
+A second function for popping an operand value takes an expected type, which the actual operand type is checked against.
+The types may differ by subtyping, including the case where the actual type is :code:`Bot`, and thereby matches unconditionally.
+The function returns the actual type popped from the stack.
 
 Finally, there are accumulative functions for pushing or popping multiple operand types.
 
 .. note::
    The notation :code:`stack[i]` is meant to index the stack from the top,
-   so that :code:`ctrls[0]` accesses the element pushed last.
+   so that, e.g., :code:`ctrls[0]` accesses the element pushed last.
 
 
 The control stack is likewise manipulated through auxiliary functions:
@@ -129,19 +115,19 @@ The control stack is likewise manipulated through auxiliary functions:
 .. code-block:: pseudo
 
    func push_ctrl(label : list(val_type), out : list(val_type)) =
-     let frame = ctrl_frame(label, out, opds.size(), false)
+     let frame = ctrl_frame(label, out, vals.size(), false)
      ctrls.push(frame)
 
    func pop_ctrl() : list(val_type) =
      error_if(ctrls.is_empty())
      let frame = ctrls[0]
-     pop_opds(frame.end_types)
-     error_if(opds.size() =/= frame.height)
+     pop_vals(frame.end_types)
+     error_if(vals.size() =/= frame.height)
      ctrls.pop()
      return frame.end_types
 
    func unreachable() =
-     opds.resize(ctrls[0].height)
+     vals.resize(ctrls[0].height)
      ctrls[0].unreachable := true
 
 Pushing a control frame takes the types of the label and result values.
@@ -152,18 +138,18 @@ It then verifies that the operand stack contains the right types of values expec
 Afterwards, it checks that the stack has shrunk back to its initial height.
 
 Finally, the current frame can be marked as unreachable.
-In that case, all existing operand types are purged from the operand stack, in order to allow for the :ref:`stack-polymorphism <polymorphism>` logic in :code:`pop_opd` to take effect.
+In that case, all existing operand types are purged from the value stack, in order to allow for the :ref:`stack-polymorphism <polymorphism>` logic in :code:`pop_val` to take effect.
 
 .. note::
    Even with the unreachable flag set, consecutive operands are still pushed to and popped from the operand stack.
    That is necessary to detect invalid :ref:`examples <polymorphism>` like :math:`(\UNREACHABLE~(\I32.\CONST)~\I64.\ADD)`.
-   However, a polymorphic stack cannot underflow, but instead generates :code:`Unknown` types as needed.
+   However, a polymorphic stack cannot underflow, but instead generates :code:`Bot` types as needed.
 
 
 .. index:: opcode
 
-Validation of Opcode Sequences
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Validation of Instruction Sequences
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following function shows the validation of a number of representative instructions that manipulate the stack.
 Other instructions are checked in a similar manner.
@@ -177,18 +163,26 @@ Other instructions are checked in a similar manner.
    func validate(opcode) =
      switch (opcode)
        case (i32.add)
-         pop_opd(I32)
-         pop_opd(I32)
-         push_opd(I32)
+         pop_val(I32)
+         pop_val(I32)
+         push_val(I32)
 
        case (drop)
-         pop_opd()
+         pop_val()
 
        case (select)
-         pop_opd(I32)
-         let t1 = pop_opd()
-         let t2 = pop_opd()
-         push_opd(join(t1, t2))
+         pop_val(I32)
+         let t1 = pop_val()
+         let t2 = pop_val()
+         error_if(not (is_num(t1) && is_num(t2)))
+         error_if(t1 =/= t2 && t1 =/= Bot && t2 =/= Bot)
+         push_val(if (t1 = Bot) t2 else t1)
+
+       case (select t)
+         pop_val(I32)
+         pop_val(t)
+         pop_val(t)
+         push_val(t)
 
        case (unreachable)
          unreachable()
@@ -200,12 +194,12 @@ Other instructions are checked in a similar manner.
          push_ctrl([], [t*])
 
        case (if t*)
-         pop_opd(I32)
+         pop_val(I32)
          push_ctrl([t*], [t*])
 
        case (end)
          let results = pop_ctrl()
-         push_opds(results)
+         push_vals(results)
 
        case (else)
          let results = pop_ctrl()
@@ -213,26 +207,22 @@ Other instructions are checked in a similar manner.
 
        case (br n)
          error_if(ctrls.size() < n)
-         pop_opds(ctrls[n].label_types)
+         pop_vals(ctrls[n].label_types)
          unreachable()
 
        case (br_if n)
          error_if(ctrls.size() < n)
-         pop_opd(I32)
-         pop_opds(ctrls[n].label_types)
-         push_opds(ctrls[n].label_types)
+         pop_val(I32)
+         pop_vals(ctrls[n].label_types)
+         push_vals(ctrls[n].label_types)
 
        case (br_table n* m)
+         pop_val(I32)
          error_if(ctrls.size() < m)
-         var ts = ctrls[m].label_types
+         let arity = ctrls[m].label_types.size()
          foreach (n in n*)
            error_if(ctrls.size() < n)
-           ts := meet(ts, ctrls[n].label_types)
-         pop_opd(I32)
-         pop_opds(ts)
+           error_if(ctrls[n].label_types.size() =/= arity)
+           push_vals(pop_vals(ctrls[n].label_types))
+         pop_vals(ctrls[m].label_types)
          unreachable()
-
-.. note::
-   It is an invariant under the current WebAssembly instruction set that an operand of :code:`Unknown` type is never duplicated on the stack.
-   This would change if the language were extended with stack operators like :code:`dup`.
-   Under such an extension, the above algorithm would need to be refined by replacing the :code:`Unknown` type with proper *type variables* to ensure that all uses are consistent.

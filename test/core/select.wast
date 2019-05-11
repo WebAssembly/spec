@@ -4,45 +4,67 @@
   (table $tab funcref (elem $dummy))
   (memory 1)
 
-  (func (export "select_i32") (param $lhs i32) (param $rhs i32) (param $cond i32) (result i32)
-   (select (local.get $lhs) (local.get $rhs) (local.get $cond)))
+  (func (export "select-i32") (param i32 i32 i32) (result i32)
+    (select (local.get 0) (local.get 1) (local.get 2))
+  )
+  (func (export "select-i64") (param i64 i64 i32) (result i64)
+    (select (local.get 0) (local.get 1) (local.get 2))
+  )
+  (func (export "select-f32") (param f32 f32 i32) (result f32)
+    (select (local.get 0) (local.get 1) (local.get 2))
+  )
+  (func (export "select-f64") (param f64 f64 i32) (result f64)
+    (select (local.get 0) (local.get 1) (local.get 2))
+  )
 
-  (func (export "select_i64") (param $lhs i64) (param $rhs i64) (param $cond i32) (result i64)
-   (select (local.get $lhs) (local.get $rhs) (local.get $cond)))
+  (func (export "select-i32-t") (param i32 i32 i32) (result i32)
+    (select (result i32) (local.get 0) (local.get 1) (local.get 2))
+  )
+  (func (export "select-i64-t") (param i64 i64 i32) (result i64)
+    (select (result i64) (local.get 0) (local.get 1) (local.get 2))
+  )
+  (func (export "select-f32-t") (param f32 f32 i32) (result f32)
+    (select (result f32) (local.get 0) (local.get 1) (local.get 2))
+  )
+  (func (export "select-f64-t") (param f64 f64 i32) (result f64)
+    (select (result f64) (local.get 0) (local.get 1) (local.get 2))
+  )
+  (func (export "select-anyref") (param anyref anyref i32) (result anyref)
+    (select (result anyref) (local.get 0) (local.get 1) (local.get 2))
+  )
 
-  (func (export "select_f32") (param $lhs f32) (param $rhs f32) (param $cond i32) (result f32)
-   (select (local.get $lhs) (local.get $rhs) (local.get $cond)))
-
-  (func (export "select_f64") (param $lhs f64) (param $rhs f64) (param $cond i32) (result f64)
-   (select (local.get $lhs) (local.get $rhs) (local.get $cond)))
+  (func (export "join-nullref") (param i32) (result anyref)
+    (select (result anyref) (ref.null) (ref.null) (local.get 0))
+  )
+  (func (export "join-funcref") (param i32) (result anyref)
+    (select (result anyref)
+      (table.get $tab (i32.const 0))
+      (ref.null)
+      (local.get 0)
+    )
+  )
+  (func (export "join-anyref") (param i32) (param anyref) (result anyref)
+    (select (result anyref)
+      (table.get $tab (i32.const 0))
+      (local.get 1)
+      (local.get 0)
+    )
+  )
 
   ;; Check that both sides of the select are evaluated
-  (func (export "select_trap_l") (param $cond i32) (result i32)
+  (func (export "select-trap-left") (param $cond i32) (result i32)
     (select (unreachable) (i32.const 0) (local.get $cond))
   )
-  (func (export "select_trap_r") (param $cond i32) (result i32)
+  (func (export "select-trap-right") (param $cond i32) (result i32)
     (select (i32.const 0) (unreachable) (local.get $cond))
   )
 
-  (func (export "select_unreached")
+  (func (export "select-unreached")
     (unreachable) (select)
     (unreachable) (i32.const 0) (select)
     (unreachable) (i32.const 0) (i32.const 0) (select)
     (unreachable) (f32.const 0) (i32.const 0) (select)
     (unreachable)
-  )
-
-
-  (func (export "join-nullref") (param i32) (result anyref)
-    (select (ref.null) (ref.null) (local.get 0))
-  )
-
-  (func (export "join-funcref") (param i32) (result anyref)
-    (select (table.get $tab (i32.const 0)) (ref.null) (local.get 0))
-  )
-
-  (func (export "join-anyref") (param i32) (param anyref) (result anyref)
-    (select (table.get $tab (i32.const 0)) (local.get 1) (local.get 0))
   )
 
 
@@ -190,33 +212,64 @@
   )
 )
 
-(assert_return (invoke "select_i32" (i32.const 1) (i32.const 2) (i32.const 1)) (i32.const 1))
-(assert_return (invoke "select_i64" (i64.const 2) (i64.const 1) (i32.const 1)) (i64.const 2))
-(assert_return (invoke "select_f32" (f32.const 1) (f32.const 2) (i32.const 1)) (f32.const 1))
-(assert_return (invoke "select_f64" (f64.const 1) (f64.const 2) (i32.const 1)) (f64.const 1))
+(assert_return (invoke "select-i32" (i32.const 1) (i32.const 2) (i32.const 1)) (i32.const 1))
+(assert_return (invoke "select-i64" (i64.const 2) (i64.const 1) (i32.const 1)) (i64.const 2))
+(assert_return (invoke "select-f32" (f32.const 1) (f32.const 2) (i32.const 1)) (f32.const 1))
+(assert_return (invoke "select-f64" (f64.const 1) (f64.const 2) (i32.const 1)) (f64.const 1))
 
-(assert_return (invoke "select_i32" (i32.const 1) (i32.const 2) (i32.const 0)) (i32.const 2))
-(assert_return (invoke "select_i32" (i32.const 2) (i32.const 1) (i32.const 0)) (i32.const 1))
-(assert_return (invoke "select_i64" (i64.const 2) (i64.const 1) (i32.const -1)) (i64.const 2))
-(assert_return (invoke "select_i64" (i64.const 2) (i64.const 1) (i32.const 0xf0f0f0f0)) (i64.const 2))
+(assert_return (invoke "select-i32" (i32.const 1) (i32.const 2) (i32.const 0)) (i32.const 2))
+(assert_return (invoke "select-i32" (i32.const 2) (i32.const 1) (i32.const 0)) (i32.const 1))
+(assert_return (invoke "select-i64" (i64.const 2) (i64.const 1) (i32.const -1)) (i64.const 2))
+(assert_return (invoke "select-i64" (i64.const 2) (i64.const 1) (i32.const 0xf0f0f0f0)) (i64.const 2))
 
-(assert_return (invoke "select_f32" (f32.const nan) (f32.const 1) (i32.const 1)) (f32.const nan))
-(assert_return (invoke "select_f32" (f32.const nan:0x20304) (f32.const 1) (i32.const 1)) (f32.const nan:0x20304))
-(assert_return (invoke "select_f32" (f32.const nan) (f32.const 1) (i32.const 0)) (f32.const 1))
-(assert_return (invoke "select_f32" (f32.const nan:0x20304) (f32.const 1) (i32.const 0)) (f32.const 1))
-(assert_return (invoke "select_f32" (f32.const 2) (f32.const nan) (i32.const 1)) (f32.const 2))
-(assert_return (invoke "select_f32" (f32.const 2) (f32.const nan:0x20304) (i32.const 1)) (f32.const 2))
-(assert_return (invoke "select_f32" (f32.const 2) (f32.const nan) (i32.const 0)) (f32.const nan))
-(assert_return (invoke "select_f32" (f32.const 2) (f32.const nan:0x20304) (i32.const 0)) (f32.const nan:0x20304))
+(assert_return (invoke "select-f32" (f32.const nan) (f32.const 1) (i32.const 1)) (f32.const nan))
+(assert_return (invoke "select-f32" (f32.const nan:0x20304) (f32.const 1) (i32.const 1)) (f32.const nan:0x20304))
+(assert_return (invoke "select-f32" (f32.const nan) (f32.const 1) (i32.const 0)) (f32.const 1))
+(assert_return (invoke "select-f32" (f32.const nan:0x20304) (f32.const 1) (i32.const 0)) (f32.const 1))
+(assert_return (invoke "select-f32" (f32.const 2) (f32.const nan) (i32.const 1)) (f32.const 2))
+(assert_return (invoke "select-f32" (f32.const 2) (f32.const nan:0x20304) (i32.const 1)) (f32.const 2))
+(assert_return (invoke "select-f32" (f32.const 2) (f32.const nan) (i32.const 0)) (f32.const nan))
+(assert_return (invoke "select-f32" (f32.const 2) (f32.const nan:0x20304) (i32.const 0)) (f32.const nan:0x20304))
 
-(assert_return (invoke "select_f64" (f64.const nan) (f64.const 1) (i32.const 1)) (f64.const nan))
-(assert_return (invoke "select_f64" (f64.const nan:0x20304) (f64.const 1) (i32.const 1)) (f64.const nan:0x20304))
-(assert_return (invoke "select_f64" (f64.const nan) (f64.const 1) (i32.const 0)) (f64.const 1))
-(assert_return (invoke "select_f64" (f64.const nan:0x20304) (f64.const 1) (i32.const 0)) (f64.const 1))
-(assert_return (invoke "select_f64" (f64.const 2) (f64.const nan) (i32.const 1)) (f64.const 2))
-(assert_return (invoke "select_f64" (f64.const 2) (f64.const nan:0x20304) (i32.const 1)) (f64.const 2))
-(assert_return (invoke "select_f64" (f64.const 2) (f64.const nan) (i32.const 0)) (f64.const nan))
-(assert_return (invoke "select_f64" (f64.const 2) (f64.const nan:0x20304) (i32.const 0)) (f64.const nan:0x20304))
+(assert_return (invoke "select-f64" (f64.const nan) (f64.const 1) (i32.const 1)) (f64.const nan))
+(assert_return (invoke "select-f64" (f64.const nan:0x20304) (f64.const 1) (i32.const 1)) (f64.const nan:0x20304))
+(assert_return (invoke "select-f64" (f64.const nan) (f64.const 1) (i32.const 0)) (f64.const 1))
+(assert_return (invoke "select-f64" (f64.const nan:0x20304) (f64.const 1) (i32.const 0)) (f64.const 1))
+(assert_return (invoke "select-f64" (f64.const 2) (f64.const nan) (i32.const 1)) (f64.const 2))
+(assert_return (invoke "select-f64" (f64.const 2) (f64.const nan:0x20304) (i32.const 1)) (f64.const 2))
+(assert_return (invoke "select-f64" (f64.const 2) (f64.const nan) (i32.const 0)) (f64.const nan))
+(assert_return (invoke "select-f64" (f64.const 2) (f64.const nan:0x20304) (i32.const 0)) (f64.const nan:0x20304))
+
+(assert_return (invoke "select-i32-t" (i32.const 1) (i32.const 2) (i32.const 1)) (i32.const 1))
+(assert_return (invoke "select-i64-t" (i64.const 2) (i64.const 1) (i32.const 1)) (i64.const 2))
+(assert_return (invoke "select-f32-t" (f32.const 1) (f32.const 2) (i32.const 1)) (f32.const 1))
+(assert_return (invoke "select-f64-t" (f64.const 1) (f64.const 2) (i32.const 1)) (f64.const 1))
+(assert_return (invoke "select-anyref" (ref.host 1) (ref.host 2) (i32.const 1)) (ref.host 1))
+
+(assert_return (invoke "select-i32-t" (i32.const 1) (i32.const 2) (i32.const 0)) (i32.const 2))
+(assert_return (invoke "select-i32-t" (i32.const 2) (i32.const 1) (i32.const 0)) (i32.const 1))
+(assert_return (invoke "select-i64-t" (i64.const 2) (i64.const 1) (i32.const -1)) (i64.const 2))
+(assert_return (invoke "select-i64-t" (i64.const 2) (i64.const 1) (i32.const 0xf0f0f0f0)) (i64.const 2))
+(assert_return (invoke "select-anyref" (ref.host 1) (ref.host 2) (i32.const 0)) (ref.host 2))
+(assert_return (invoke "select-anyref" (ref.host 2) (ref.host 1) (i32.const 0)) (ref.host 1))
+
+(assert_return (invoke "select-f32-t" (f32.const nan) (f32.const 1) (i32.const 1)) (f32.const nan))
+(assert_return (invoke "select-f32-t" (f32.const nan:0x20304) (f32.const 1) (i32.const 1)) (f32.const nan:0x20304))
+(assert_return (invoke "select-f32-t" (f32.const nan) (f32.const 1) (i32.const 0)) (f32.const 1))
+(assert_return (invoke "select-f32-t" (f32.const nan:0x20304) (f32.const 1) (i32.const 0)) (f32.const 1))
+(assert_return (invoke "select-f32-t" (f32.const 2) (f32.const nan) (i32.const 1)) (f32.const 2))
+(assert_return (invoke "select-f32-t" (f32.const 2) (f32.const nan:0x20304) (i32.const 1)) (f32.const 2))
+(assert_return (invoke "select-f32-t" (f32.const 2) (f32.const nan) (i32.const 0)) (f32.const nan))
+(assert_return (invoke "select-f32-t" (f32.const 2) (f32.const nan:0x20304) (i32.const 0)) (f32.const nan:0x20304))
+
+(assert_return (invoke "select-f64-t" (f64.const nan) (f64.const 1) (i32.const 1)) (f64.const nan))
+(assert_return (invoke "select-f64-t" (f64.const nan:0x20304) (f64.const 1) (i32.const 1)) (f64.const nan:0x20304))
+(assert_return (invoke "select-f64-t" (f64.const nan) (f64.const 1) (i32.const 0)) (f64.const 1))
+(assert_return (invoke "select-f64-t" (f64.const nan:0x20304) (f64.const 1) (i32.const 0)) (f64.const 1))
+(assert_return (invoke "select-f64-t" (f64.const 2) (f64.const nan) (i32.const 1)) (f64.const 2))
+(assert_return (invoke "select-f64-t" (f64.const 2) (f64.const nan:0x20304) (i32.const 1)) (f64.const 2))
+(assert_return (invoke "select-f64-t" (f64.const 2) (f64.const nan) (i32.const 0)) (f64.const nan))
+(assert_return (invoke "select-f64-t" (f64.const 2) (f64.const nan:0x20304) (i32.const 0)) (f64.const nan:0x20304))
 
 (assert_return (invoke "join-nullref" (i32.const 1)) (ref.null))
 (assert_return (invoke "join-nullref" (i32.const 0)) (ref.null))
@@ -227,10 +280,10 @@
 (assert_return_func (invoke "join-anyref" (i32.const 1) (ref.host 1)))
 (assert_return (invoke "join-anyref" (i32.const 0) (ref.host 1)) (ref.host 1))
 
-(assert_trap (invoke "select_trap_l" (i32.const 1)) "unreachable")
-(assert_trap (invoke "select_trap_l" (i32.const 0)) "unreachable")
-(assert_trap (invoke "select_trap_r" (i32.const 1)) "unreachable")
-(assert_trap (invoke "select_trap_r" (i32.const 0)) "unreachable")
+(assert_trap (invoke "select-trap-left" (i32.const 1)) "unreachable")
+(assert_trap (invoke "select-trap-left" (i32.const 0)) "unreachable")
+(assert_trap (invoke "select-trap-right" (i32.const 1)) "unreachable")
+(assert_trap (invoke "select-trap-right" (i32.const 0)) "unreachable")
 
 (assert_return (invoke "as-select-first" (i32.const 0)) (i32.const 1))
 (assert_return (invoke "as-select-first" (i32.const 1)) (i32.const 0))
@@ -309,22 +362,54 @@
 (assert_return (invoke "as-convert-operand" (i32.const 1)) (i32.const 1))
 
 (assert_invalid
-  (module (func $arity-0 (select (nop) (nop) (i32.const 1))))
+  (module (func $arity-0-implicit (select (nop) (nop) (i32.const 1))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $arity-0 (select (result) (nop) (nop) (i32.const 1))))
+  "invalid result arity"
+)
+(assert_invalid
+  (module (func $arity-2 (result i32 i32)
+    (select (result i32 i32)
+      (i32.const 0) (i32.const 0)
+      (i32.const 0) (i32.const 0)
+      (i32.const 1)
+    )
+  ))
+  "invalid result arity"
+)
+
+
+(assert_invalid
+  (module (func $type-nullref-implicit
+    (drop (select (ref.null) (ref.null) (i32.const 1)))
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-anyref-implicit (param $r anyref)
+    (drop (select (local.get $r) (local.get $r) (i32.const 1)))
+  ))
   "type mismatch"
 )
 
-;; The first two operands should have the same type as each other
-
 (assert_invalid
-  (module (func $type-num-vs-num (select (i32.const 1) (i64.const 1) (i32.const 1))))
+  (module (func $type-num-vs-num
+    (drop (select (i32.const 1) (i64.const 1) (i32.const 1)))
+  ))
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-num-vs-num (select (i32.const 1) (f32.const 1.0) (i32.const 1))))
+  (module (func $type-num-vs-num
+    (drop (select (i32.const 1) (f32.const 1.0) (i32.const 1)))
+  ))
   "type mismatch"
 )
 (assert_invalid
-  (module (func $type-num-vs-num (select (i32.const 1) (f64.const 1.0) (i32.const 1))))
+  (module (func $type-num-vs-num
+    (drop (select (i32.const 1) (f64.const 1.0) (i32.const 1)))
+  ))
   "type mismatch"
 )
 

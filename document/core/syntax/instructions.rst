@@ -205,12 +205,16 @@ Instructions in this group can operate on operands of any :ref:`value type <synt
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \DROP \\&&|&
-     \SELECT
+     \SELECT~(\valtype^\ast)^? \\
    \end{array}
 
 The |DROP| operator simply throws away a single operand.
 
 The |SELECT| operator selects one of its first two operands based on whether its third operand is zero or not.
+It may include a :ref:`value type <syntax-valtype>` determining the type of these operands. If missing, the operands must be of :ref:`numeric type <syntax-numtype>`.
+
+.. note::
+   In future versions of WebAssembly, the type annotation on |SELECT| may allow for more than a single value being selected at the same time.
 
 
 .. index:: ! variable instruction, local, global, local index, global index

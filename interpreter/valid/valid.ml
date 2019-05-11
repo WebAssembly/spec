@@ -55,49 +55,25 @@ let label (c : context) x = lookup "label" c.labels x
  *)
 
 type ellipses = NoEllipses | Ellipses
-type infer_stack_type = ellipses * value_type option list
+type infer_stack_type = ellipses * value_type list
 type op_type = {ins : infer_stack_type; outs : infer_stack_type}
 
-let known = List.map (fun t -> Some t)
-let stack ts = (NoEllipses, known ts)
-let (-~>) ts1 ts2 = {ins = NoEllipses, ts1; outs = NoEllipses, ts2}
-let (-->) ts1 ts2 = {ins = NoEllipses, known ts1; outs = NoEllipses, known ts2}
-let (-->...) ts1 ts2 = {ins = Ellipses, known ts1; outs = Ellipses, known ts2}
-
-let string_of_infer_type t =
-  Lib.Option.get (Lib.Option.map string_of_value_type t) "_"
-let string_of_infer_types ts =
-  "[" ^ String.concat " " (List.map string_of_infer_type ts) ^ "]"
-
-let match_type t1 t2 =
-  match t1, t2 with
-  | Some t1, Some t2 -> match_value_type t1 t2
-  | _, _ -> true
-
-let join_type t1 t2 at =
-  match t1, t2 with
-  | _, None -> t1
-  | None, _ -> t2
-  | Some t1', Some t2' ->
-    let t = join_value_type t1' t2' in
-    require (t <> None) at
-      ("type mismatch: operator requires common supertype for " ^
-       string_of_infer_type t1 ^ " and " ^ string_of_infer_type t2 ^
-       " but none exists");
-    t
+let stack ts = (NoEllipses, ts)
+let (-->) ts1 ts2 = {ins = NoEllipses, ts1; outs = NoEllipses, ts2}
+let (-->...) ts1 ts2 = {ins = Ellipses, ts1; outs = Ellipses, ts2}
 
 let check_stack ts1 ts2 at =
   require
-    (List.length ts1 = List.length ts2 && List.for_all2 match_type ts1 ts2) at
-    ("type mismatch: operator requires " ^ string_of_infer_types ts2 ^
-     " but stack has " ^ string_of_infer_types ts1)
+    (List.length ts1 = List.length ts2 && List.for_all2 match_value_type ts1 ts2) at
+    ("type mismatch: operator requires " ^ string_of_stack_type ts2 ^
+     " but stack has " ^ string_of_stack_type ts1)
 
 let pop (ell1, ts1) (ell2, ts2) at =
   let n1 = List.length ts1 in
   let n2 = List.length ts2 in
   let n = min n1 n2 in
   let n3 = if ell2 = Ellipses then (n1 - n) else 0 in
-  check_stack (Lib.List.make n3 None @ Lib.List.drop (n2 - n) ts2) ts1 at;
+  check_stack (Lib.List.make n3 BotType @ Lib.List.drop (n2 - n) ts2) ts1 at;
   (ell2, if ell1 = Ellipses then [] else Lib.List.take (n2 - n) ts2)
 
 let push (ell1, ts1) (ell2, ts2) =
@@ -106,7 +82,7 @@ let push (ell1, ts1) (ell2, ts2) =
   ts2 @ ts1
 
 let peek i (ell, ts) =
-  try List.nth (List.rev ts) i with Failure _ -> None
+  try List.nth (List.rev ts) i with Failure _ -> BotType
 
 
 (* Type Synthesis *)
@@ -200,13 +176,19 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [] --> []
 
   | Drop ->
-    [peek 0 s] -~> []
+    [peek 0 s] --> []
 
-  | Select ->
-    let t1 = peek 2 s in
-    let t2 = peek 1 s in
-    let t = join_type t1 t2 e.at in
-    [t; t; Some (NumType I32Type)] -~> [t]
+  | Select None ->
+    let t = peek 1 s in
+    require (is_num_type t) e.at
+      ("type mismatch: instruction requires numeric type" ^
+       " but stack has " ^ string_of_value_type t);
+    [t; t; NumType I32Type] --> [t]
+
+  | Select (Some ts) ->
+    check_arity (List.length ts) e.at;
+    require (List.length ts <> 0) e.at "invalid result arity, 0 is not (yet) allowed";
+    (ts @ ts @ [NumType I32Type]) --> ts
 
   | Block (ts, es) ->
     check_arity (List.length ts) e.at;
@@ -231,18 +213,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     (label c x @ [NumType I32Type]) --> label c x
 
   | BrTable (xs, x) ->
-    let ts =
-      List.fold_left (fun t1 t2 ->
-          let t = meet_stack_type t1 t2 in
-          require (t <> None) e.at
-            ("type mismatch: operator requires common subtype for " ^
-             string_of_stack_type t1 ^ " and " ^ string_of_stack_type t2 ^
-             " but none exists");
-          Lib.Option.force t)
-        (label c x) (List.map (label c) xs)
-    in
-    check_stack (known ts) (known (label c x)) x.at;
-    List.iter (fun x' -> check_stack (known ts) (known (label c x')) x'.at) xs;
+    let n = List.length (label c x) in
+    let ts = Lib.List.table n (fun i -> peek (i + 1) s) in
+    check_stack ts (label c x) x.at;
+    List.iter (fun x' -> check_stack ts (label c x') x'.at) xs;
     (ts @ [NumType I32Type]) -->... []
 
   | Return ->
@@ -256,8 +230,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let TableType (lim, t) = table c x in
     let FuncType (ins, out) = type_ c y in
     require (match_ref_type t FuncRefType) x.at
-      ("type mismatch: operator requires table of functions, " ^ 
-       "but table has " ^ string_of_ref_type t);
+      ("type mismatch: instruction requires table of functions" ^
+       " but table has " ^ string_of_ref_type t);
     (ins @ [NumType I32Type]) --> out
 
   | LocalGet x ->
@@ -364,7 +338,7 @@ and check_block (c : context) (es : instr list) (ts : stack_type) at =
   let s' = pop (stack ts) s at in
   require (snd s' = []) at
     ("type mismatch: operator requires " ^ string_of_stack_type ts ^
-     " but stack has " ^ string_of_infer_types (snd s))
+     " but stack has " ^ string_of_stack_type (snd s))
 
 
 (* Types *)
@@ -388,6 +362,7 @@ let check_value_type (t : value_type) at =
   match t with
   | NumType t' -> check_num_type t' at
   | RefType t' -> check_ref_type t' at
+  | BotType -> ()
 
 let check_func_type (ft : func_type) at =
   let FuncType (ins, out) = ft in

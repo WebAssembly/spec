@@ -164,6 +164,8 @@
 
 .. |to| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
 
+.. |BOT| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{bot}}
+
 .. |I8| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\K{i8}}
 .. |I16| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\K{i16}}
 .. |I32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i32}}

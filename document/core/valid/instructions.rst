@@ -35,7 +35,7 @@ Two degrees of polymorphism can be distinguished:
 In both cases, the unconstrained types or type sequences can be chosen arbitrarily, as long as they meet the constraints imposed for the surrounding parts of the program.
 
 .. note::
-   For example, the |SELECT| instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any possible :ref:`value type <syntax-valtype>` :math:`t`.   Consequently, both instruction sequences
+   For example, the |SELECT| instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any possible :ref:`number type <syntax-numtype>` :math:`t`.   Consequently, both instruction sequences
 
    .. math::
       (\I32.\CONST~1)~~(\I32.\CONST~2)~~(\I32.\CONST~3)~~\SELECT{}
@@ -60,6 +60,8 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
       \UNREACHABLE~~(\I64.\CONST~0)~~\I32.\ADD
 
    is invalid, because there is no possible type to pick for the |UNREACHABLE| instruction that would make the sequence well-typed.
+
+The :ref:`Appendix <algo-valid>` describes a type checking :ref:`algorithm <algo-valid>` that efficiently implements validation of instruction sequences as prescribed by the rules given here.
 
 
 .. index:: numeric instruction
@@ -227,22 +229,40 @@ Parametric Instructions
      C \vdashinstr \DROP : [t] \to []
    }
 
+.. note::
+   Both |DROP| and |SELECT| without annotation are :ref:`value-polymorphic <polymorphism>` instructions.
+
+
 
 .. _valid-select:
 
-:math:`\SELECT`
-...............
+:math:`\SELECT~(t^\ast)^?`
+..........................
 
-* The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`value type <syntax-valtype>` :math:`t`.
+* If :math:`t^\ast` is present, then:
+
+  * The length of :math:`t^\ast` must be :math:`1`.
+
+  * Then the instruction is valid with type :math:`[t^\ast~t^\ast~\I32] \to [t^\ast]`.
+
+* Else:
+
+  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`value type <syntax-valtype>` :math:`t` that :ref:`matches <match-valtype>` some :ref:`number type <syntax-numtype>`.
 
 .. math::
    \frac{
+   }{
+     C \vdashinstr \SELECT~t : [t~t~\I32] \to [t]
+   }
+   \qquad
+   \frac{
+     \vdashvaltypematch t \matchesvaltype \numtype
    }{
      C \vdashinstr \SELECT : [t~t~\I32] \to [t]
    }
 
 .. note::
-   Both |DROP| and |SELECT| are :ref:`value-polymorphic <polymorphism>` instructions.
+   In future versions of WebAssembly, |SELECT| may allow more than one value per choice.
 
 
 .. index:: variable instructions, local index, global index, context

@@ -264,8 +264,8 @@ Parametric Instructions
 
 .. _exec-select:
 
-:math:`\SELECT`
-...............
+:math:`\SELECT~(t^\ast)^?`
+..........................
 
 1. Assert: due to :ref:`validation <valid-select>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
@@ -287,11 +287,14 @@ Parametric Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val_1~\val_2~(\I32\K{.}\CONST~c)~\SELECT &\stepto& \val_1
+   \val_1~\val_2~(\I32\K{.}\CONST~c)~\SELECT~t^? &\stepto& \val_1
      & (\iff c \neq 0) \\
-   \val_1~\val_2~(\I32\K{.}\CONST~c)~\SELECT &\stepto& \val_2
+   \val_1~\val_2~(\I32\K{.}\CONST~c)~\SELECT~t^? &\stepto& \val_2
      & (\iff c = 0) \\
    \end{array}
+
+.. note::
+   In future versions of WebAssembly, |SELECT| may allow more than one value per choice.
 
 
 .. index:: variable instructions, local index, global index, address, global address, global instance, store, frame, value

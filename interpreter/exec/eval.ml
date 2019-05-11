@@ -172,10 +172,10 @@ let rec step (c : config) : config =
       | Drop, v :: vs' ->
         vs', []
 
-      | Select, Num (I32 0l) :: v2 :: v1 :: vs' ->
+      | Select _, Num (I32 0l) :: v2 :: v1 :: vs' ->
         v2 :: vs', []
 
-      | Select, Num (I32 i) :: v2 :: v1 :: vs' ->
+      | Select _, Num (I32 i) :: v2 :: v1 :: vs' ->
         v1 :: vs', []
 
       | LocalGet x, vs ->

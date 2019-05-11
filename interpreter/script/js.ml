@@ -306,6 +306,7 @@ let assert_return_nan_bitpattern nan_bitmask_of ts at =
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefType _ -> [Br (0l @@ at) @@ at]
+    | BotType -> assert false
   in [], List.flatten (List.rev_map test ts)
 
 let assert_return_canonical_nan = assert_return_nan_bitpattern abs_mask_of
@@ -317,6 +318,7 @@ let assert_return_ref ts at =
     | RefType _ ->
       [ RefIsNull @@ at;
         BrIf (0l @@ at) @@ at ]
+    | BotType -> assert false
   in [], List.flatten (List.rev_map test ts)
 
 let assert_return_func ts at =
@@ -326,6 +328,7 @@ let assert_return_func ts at =
       [ Call (is_funcref_idx @@ at) @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
+    | BotType -> assert false
   in [], List.flatten (List.rev_map test ts)
 
 let wrap item_name wrap_action wrap_assertion at =
@@ -374,6 +377,7 @@ let is_js_num_type = function
 let is_js_value_type = function
   | NumType t -> is_js_num_type t
   | RefType t -> true
+  | BotType -> assert false
 
 let is_js_global_type = function
   | GlobalType (t, mut) -> is_js_value_type t && mut = Immutable

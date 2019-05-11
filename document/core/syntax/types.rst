@@ -63,7 +63,7 @@ The type |FUNCREF| denotes the infinite union of all references to :ref:`functio
 
 The type |NULLREF| only contains a single value: the :ref:`null <syntax-ref.null>` reference.
 It is a :ref:`subtype <match-reftype>` of all other reference types.
-By virtue of not being representable in either the :ref:`binary format <binary-reftype>` nor the :ref:`text format <text-reftype>`, the |NULLREF| type cannot be used in a program;
+By virtue of being representable in neither the :ref:`binary format <binary-reftype>` nor the :ref:`text format <text-reftype>`, the |NULLREF| type cannot be used in a program;
 it only occurs during :ref:`validation <valid>`.
 
 .. note::
@@ -73,7 +73,7 @@ Reference types are *opaque*, meaning that neither their size nor their bit patt
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
 
 
-.. index:: ! value type, number type, reference type
+.. index:: ! value type, number type, reference type, ! bottom type
    pair: abstract syntax; value type
    pair: value; type
 .. _syntax-valtype:
@@ -82,11 +82,16 @@ Value Types
 ~~~~~~~~~~~
 
 *Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
+They are either :ref:`number types <syntax-numtype>`, :ref:`reference type <syntax-reftype>`, or the unique *bottom type*, written :math:`\BOT`.
+
+The type :math:`\BOT` is a :ref:`subtype <match-valtype>` of all other types.
+By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
+it only occurs during :ref:`validation <valid>`.
 
 .. math::
    \begin{array}{llll}
    \production{value type} & \valtype &::=&
-     \numtype ~|~ \reftype \\
+     \numtype ~|~ \reftype ~|~ \BOT \\
    \end{array}
 
 Conventions

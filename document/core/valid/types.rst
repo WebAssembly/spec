@@ -270,6 +270,15 @@ A :ref:`value type <syntax-valtype>` :math:`\valtype_1` matches a :ref:`value ty
 
 * Or both :math:`\valtype_1` and :math:`\valtype_2` are :ref:`reference types <syntax-reftype>` and :math:`\valtype_1` :ref:`matches <match-reftype>` :math:`\valtype_2`.
 
+* Or :math:`\valtype_1` is :math:`\BOT`.
+
+.. math::
+   ~\\[-1ex]
+   \frac{
+   }{
+     \vdashvaltypematch \BOT \matchesvaltype \valtype
+   }
+
 
 .. _match-resulttype:
 
