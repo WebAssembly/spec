@@ -19,5 +19,4 @@ Appendix
       index-types
       index-instructions
       index-rules
-      security-considerations
 

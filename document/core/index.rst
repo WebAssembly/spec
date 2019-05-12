@@ -15,6 +15,7 @@ WebAssembly Specification
    binary/index
    text/index
    appendix/index
+   security
 
 .. only:: latex
 
@@ -23,7 +24,6 @@ WebAssembly Specification
       appendix/index-types
       appendix/index-instructions
       appendix/index-rules
-      appendix/security-considerations
 
 .. only:: html
 
