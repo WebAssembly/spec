@@ -164,7 +164,7 @@ print(
 (assert_trap (invoke "test") "out of bounds")
 `);
 
-// init: seg ix is valid passive, zero len, but src offset out of bounds
+// init: seg ix is valid passive, zero len, but src offset past the end
 print(
 `(module
   ${PREAMBLE}
@@ -173,13 +173,40 @@ print(
 (assert_trap (invoke "test") "out of bounds")
 `);
 
-// init: seg ix is valid passive, zero len, but dst offset out of bounds
+// init: seg ix is valid passive, zero len, src offset at the end
 print(
 `(module
   ${PREAMBLE}
   (func (export "test")
-    (memory.init 0 (i32.const 0x10000) (i32.const 2) (i32.const 0))))
+    (memory.init 0 (i32.const 1234) (i32.const 1) (i32.const 0))))
+(invoke "test")
+`);
+
+// init: seg ix is valid passive, zero len, but dst offset past the end
+print(
+`(module
+  ${PREAMBLE}
+  (func (export "test")
+    (memory.init 0 (i32.const 0x10001) (i32.const 0) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds")
+`);
+
+// init: seg ix is valid passive, zero len, but dst offset at the end
+print(
+`(module
+  ${PREAMBLE}
+  (func (export "test")
+    (memory.init 0 (i32.const 0x10000) (i32.const 0) (i32.const 0))))
+(invoke "test")
+`);
+
+// init: seg ix is valid passive, zero len, dst and src offsets at the end
+print(
+`(module
+  ${PREAMBLE}
+  (func (export "test")
+    (memory.init 0 (i32.const 0x10000) (i32.const 1) (i32.const 0))))
+(invoke "test")
 `);
 
 // invalid argument types.  TODO: can add anyfunc etc here.

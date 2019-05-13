@@ -183,11 +183,11 @@ function tab_test_nofail(insn1, insn2) {
 
 // drop with elem seg ix indicating an active segment
 tab_test1("(elem.drop 2)",
-          "elements segment dropped");
+          "element segment dropped");
 
 // init with elem seg ix indicating an active segment
 tab_test1("(table.init 2 (i32.const 12) (i32.const 1) (i32.const 1))",
-          "elements segment dropped");
+          "element segment dropped");
 
 // init, using an elem seg ix more than once is OK
 tab_test_nofail(
@@ -197,12 +197,12 @@ tab_test_nofail(
 // drop, then drop
 tab_test2("(elem.drop 1)",
           "(elem.drop 1)",
-          "elements segment dropped");
+          "element segment dropped");
 
 // drop, then init
 tab_test2("(elem.drop 1)",
           "(table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))",
-          "elements segment dropped");
+          "element segment dropped");
 
 // init: seg ix is valid passive, but length to copy > len of seg
 tab_test1("(table.init 1 (i32.const 12) (i32.const 0) (i32.const 5))",
@@ -221,9 +221,24 @@ tab_test1("(table.init 1 (i32.const 28) (i32.const 1) (i32.const 3))",
 tab_test1("(table.init 1 (i32.const 12) (i32.const 4) (i32.const 0))",
           undefined);
 
+// init: seg ix is valid passive, zero len, and src offset out of bounds past the
+// end of the table - this is not allowed
+tab_test1("(table.init 1 (i32.const 12) (i32.const 5) (i32.const 0))",
+          "out of bounds");
+
 // init: seg ix is valid passive, zero len, and dst offset out of bounds at the
 // end of the table - this is allowed
 tab_test1("(table.init 1 (i32.const 30) (i32.const 2) (i32.const 0))",
+          undefined);
+
+// init: seg ix is valid passive, zero len, and dst offset out of bounds past the
+// end of the table - this is not allowed
+tab_test1("(table.init 1 (i32.const 31) (i32.const 2) (i32.const 0))",
+          "out of bounds");
+
+// init: seg ix is valid passive, zero len, and dst and src offsets out of bounds
+// at the end of the table - this is allowed
+tab_test1("(table.init 1 (i32.const 30) (i32.const 4) (i32.const 0))",
           undefined);
 
 // invalid argument types

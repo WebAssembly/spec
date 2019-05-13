@@ -277,8 +277,8 @@ A trap occurs if:
   active segments that were dropped after being copied into memory during module
   instantiation.
 * any of the accessed bytes lies outside the source data segment or the target memory
-* the source offset is outside the source data segment
-* the destination offset is outside the target memory
+* the source offset is greater than the length of the source data segment
+* the destination offset is greater than the length of the target memory
 
 Note that it is allowed to use `memory.init` on the same data segment more than
 once.
@@ -342,8 +342,8 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 
 A trap occurs if:
 * any of the accessed bytes lies outside the source or target memory
-* the source offset is outside the source memory
-* the destination offset is outside the target memory
+* the source offset is greater than the length of the source memory
+* the destination offset is greater than the length of the target memory
 
 A trap resulting from an access outside the source or target region
 only occurs once the first byte that is outside the source or target
@@ -367,7 +367,7 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 
 A trap occurs if:
 * any of the accessed bytes lies outside the target memory
-* the destination offset is outside the target memory
+* the destination offset is greater than the length of the target memory
 
 Filling takes place bytewise from lower addresses toward higher
 addresses.  A trap resulting from an access outside the target memory

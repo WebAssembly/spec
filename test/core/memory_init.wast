@@ -276,8 +276,29 @@
   (memory 1)
     (data "\37")
   (func (export "test")
-    (memory.init 0 (i32.const 0x10000) (i32.const 2) (i32.const 0))))
+    (memory.init 0 (i32.const 1234) (i32.const 1) (i32.const 0))))
+(invoke "test")
+
+(module
+  (memory 1)
+    (data passive "\37")
+  (func (export "test")
+    (memory.init 0 (i32.const 0x10001) (i32.const 0) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds")
+
+(module
+  (memory 1)
+    (data passive "\37")
+  (func (export "test")
+    (memory.init 0 (i32.const 0x10000) (i32.const 0) (i32.const 0))))
+(invoke "test")
+
+(module
+  (memory 1)
+    (data passive "\37")
+  (func (export "test")
+    (memory.init 0 (i32.const 0x10000) (i32.const 1) (i32.const 0))))
+(invoke "test")
 
 (assert_invalid
   (module
