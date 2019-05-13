@@ -11,9 +11,9 @@ function mem_test(instruction, expected_result_vector) {
 (module
   (memory (export "memory0") 1 1)
   (data (i32.const 2) "\\03\\01\\04\\01")
-  (data passive "\\02\\07\\01\\08")
+  (data "\\02\\07\\01\\08")
   (data (i32.const 12) "\\07\\05\\02\\03\\06")
-  (data passive "\\05\\09\\02\\07\\06")
+  (data "\\05\\09\\02\\07\\06")
   (func (export "test")
     ${instruction})
   (func (export "load8_u") (param i32) (result i32)
@@ -57,7 +57,7 @@ mem_test(`(memory.init 1 (i32.const 7) (i32.const 0) (i32.const 4))
 
 let PREAMBLE =
     `(memory 1)
-    (data passive "\\37")`;
+    (data "\\37")`;
 
 // drop with no memory
 print(
@@ -242,7 +242,7 @@ function mem_init(min, max, shared, backup, write) {
     print(
 `(module
   (memory ${min} ${max} ${shared})
-  (data passive "\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42")
+  (data "\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42")
    ${checkRangeCode()}
   (func (export "run") (param $offs i32) (param $len i32)
     (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
