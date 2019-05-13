@@ -134,8 +134,11 @@ let float =
   | sign? "nan"
   | sign? "nan:" "0x" hexnum
 let string = '"' character* '"'
-let name = '$' (letter | digit | '_' | symbol)+
-let reserved = ([^'\"''('')'';'] # space)+  (* hack for table size *)
+
+let id = (letter | digit | '_' | symbol)+
+let name = '$' id
+
+let reserved = ';' | ([^'\"''('')'';'] # space)+  (* hack for table size *)
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
@@ -353,6 +356,9 @@ rule token = parse
 
   | name as s { VAR s }
 
+  | "(@"id { annot (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
+  | "(@" { error lexbuf "malformed annotation id" }
+
   | ";;"utf8_no_nl*eof { EOF }
   | ";;"utf8_no_nl*'\n' { Lexing.new_line lexbuf; token lexbuf }
   | ";;"utf8_no_nl* { token lexbuf (* causes error on following position *) }
@@ -363,6 +369,32 @@ rule token = parse
 
   | reserved { error lexbuf "unknown operator" }
   | utf8 { error lexbuf "malformed operator" }
+  | _ { error lexbuf "malformed UTF-8 encoding" }
+
+and annot start = parse
+  | ")" { () }
+  | "(" { annot (Lexing.lexeme_start_p lexbuf) lexbuf; annot start lexbuf }
+
+  | reserved { annot start lexbuf }
+  | nat { annot start lexbuf }
+  | int { annot start lexbuf }
+  | float { annot start lexbuf }
+  | id { annot start lexbuf }
+  | name { annot start lexbuf }
+  | string { annot start lexbuf }
+  | '"'character*('\n'|eof) { error lexbuf "unclosed string literal" }
+  | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
+    { error lexbuf "illegal control character in string literal" }
+  | '"'character*'\\'_
+    { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
+
+  | (";;"utf8_no_nl*)? eof { error_nest start lexbuf "unclosed annotation" }
+  | ";;"utf8_no_nl*'\n' { Lexing.new_line lexbuf; annot start lexbuf }
+  | ";;"utf8_no_nl* { annot start lexbuf (* error on following position *) }
+  | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; annot start lexbuf }
+  | space#'\n' { annot start lexbuf }
+  | '\n' { Lexing.new_line lexbuf; annot start lexbuf }
+  | eof { error_nest start lexbuf "unclosed annotation" }
   | _ { error lexbuf "malformed UTF-8 encoding" }
 
 and comment start = parse
