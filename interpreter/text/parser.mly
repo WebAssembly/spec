@@ -167,7 +167,7 @@ let inline_type_explicit (c : context) x ft at =
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token REF_NULL REF_FUNC
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
-%token TABLE ELEM MEMORY DATA PASSIVE OFFSET IMPORT EXPORT TABLE
+%token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
@@ -573,7 +573,6 @@ offset :
 elemref :
   | LPAR REF_NULL RPAR { let at = at () in fun c -> ref_null @@ at }
   | LPAR REF_FUNC var RPAR { let at = at () in fun c -> ref_func ($3 c func) @@ at }
-  | var { let at = at () in fun c -> ref_func ($1 c func) @@ at }
 
 passive_elemref_list :
   | /* empty */ { fun c -> [] }
@@ -585,10 +584,10 @@ active_elemref_list :
       fun c lookup -> List.map f ($1 c lookup) }
 
 elem :
-  | LPAR ELEM bind_var_opt PASSIVE elem_type passive_elemref_list RPAR
+  | LPAR ELEM bind_var_opt elem_type passive_elemref_list RPAR
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () -> Passive {etype = $5; data = $6 c} @@ at }
+      fun () -> Passive {etype = $4; data = $5 c} @@ at }
   | LPAR ELEM bind_var var offset active_elemref_list RPAR
     { let at = at () in
       fun c -> ignore (bind_elem c $3);
@@ -631,10 +630,10 @@ table_fields :
       [], [] }
 
 data :
-  | LPAR DATA bind_var_opt PASSIVE string_list RPAR
+  | LPAR DATA bind_var_opt string_list RPAR
     { let at = at () in
       fun c -> ignore ($3 c anon_data bind_data);
-      fun () -> Passive {etype = (); data = $5} @@ at }
+      fun () -> Passive {etype = (); data = $4} @@ at }
  | LPAR DATA bind_var var offset string_list RPAR
    { let at = at () in
      fun c -> ignore (bind_data c $3);

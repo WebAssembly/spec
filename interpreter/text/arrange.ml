@@ -300,7 +300,7 @@ let segment head active passive seg =
   match seg.it with
   | Active {index; offset; init} ->
     Node (head, atom var index :: Node ("offset", const offset) :: active init)
-  | Passive {etype; data} -> Node (head ^ " passive", passive etype data)
+  | Passive {etype; data} -> Node (head, passive etype data)
 
 let active_elem el =
   match el.it with

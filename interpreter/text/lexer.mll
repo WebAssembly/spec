@@ -339,7 +339,6 @@ rule token = parse
   | "memory" { MEMORY }
   | "elem" { ELEM }
   | "data" { DATA }
-  | "passive" { PASSIVE }
   | "offset" { OFFSET }
   | "import" { IMPORT }
   | "export" { EXPORT }
