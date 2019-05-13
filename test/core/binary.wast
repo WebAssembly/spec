@@ -270,6 +270,185 @@
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
+    "\05\0a\01"                          ;; Memory section with 1 entry
+    "\01\82\00"                          ;; minimum 2
+    "\82\80\80\80\80\00"                 ;; max 2 with one byte too many
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\05\03\01"                          ;; Memory section with 1 entry
+    "\00\00"                             ;; no max, minimum 0
+    "\0b\0b\01"                          ;; Data section with 1 entry
+    "\80\80\80\80\80\00"                 ;; Memory index 0 with one byte too many
+    "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\04\04\01"                          ;; Table section with 1 entry
+    "\70\00\00"                          ;; no max, minimum 0, funcref
+    "\09\0b\01"                          ;; Element section with 1 entry
+    "\80\80\80\80\80\00"                 ;; Table index 0 with one byte too many
+    "\41\00\0b\00"                       ;; (i32.const 0) with no elements
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\00"                                ;; custom section
+    "\83\80\80\80\80\00"                 ;; section size 3 with one byte too many
+    "\01"                                ;; name byte count
+    "1"                                  ;; name
+    "2"                                  ;; sequence of bytes
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\00"                                ;; custom section
+    "\05"                                ;; section size
+    "\83\80\80\80\80\00"                 ;; name byte count 3 with one byte too many
+    "123"                                ;; name
+    "4"                                  ;; sequence of bytes
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\08\01"                          ;; type section
+    "\60"                                ;; func type
+    "\82\80\80\80\80\00"                 ;; num params 2 with one byte too many
+    "\7f\7e"                             ;; param type
+    "\01"                                ;; num result
+    "\7f"                                ;; result type
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\08\01"                          ;; type section
+    "\60"                                ;; func type
+    "\02"                                ;; num params
+    "\7f\7e"                             ;; param type
+    "\81\80\80\80\80\00"                 ;; num result 1 with one byte too many
+    "\7f"                                ;; result type
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\05\01"                          ;; type section
+    "\60\01\7f\00"                       ;; function type
+    "\02\1b\01"                          ;; import section
+    "\88\80\80\80\80\00"                 ;; module name length 8 with one byte too many
+    "\73\70\65\63\74\65\73\74"           ;; module name
+    "\09"                                ;; entity name length
+    "\70\72\69\6e\74\5f\69\33\32"        ;; entity name
+    "\00"                                ;; import kind
+    "\00"                                ;; import signature index
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\05\01"                          ;; type section
+    "\60\01\7f\00"                       ;; function type
+    "\02\1b\01"                          ;; import section
+    "\08"                                ;; module name length
+    "\73\70\65\63\74\65\73\74"           ;; module name
+    "\89\80\80\80\80\00"                 ;; entity name length 9 with one byte too many
+    "\70\72\69\6e\74\5f\69\33\32"        ;; entity name
+    "\00"                                ;; import kind
+    "\00"                                ;; import signature index
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\05\01"                          ;; type section
+    "\60\01\7f\00"                       ;; function type
+    "\02\1b\01"                          ;; import section
+    "\08"                                ;; module name length
+    "\73\70\65\63\74\65\73\74"           ;; module name
+    "\09"                                ;; entity name length 9
+    "\70\72\69\6e\74\5f\69\33\32"        ;; entity name
+    "\00"                                ;; import kind
+    "\80\80\80\80\80\00"                 ;; import signature index 0 with one byte too many
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01"                          ;; type section
+    "\60\00\00"                          ;; function type
+    "\03\03\01"                          ;; function section
+    "\80\80\80\80\80\00"                 ;; function 0 signature index with one byte too many
+    "\0a\04\01"                          ;; code section
+    "\02\00\0b"                          ;; function body
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01"                          ;; type section
+    "\60\00\00"                          ;; fun type
+    "\03\02\01\00"                       ;; function section
+    "\07\0b\01"                          ;; export section
+    "\82\80\80\80\80\00"                 ;; string length 2 with one byte too many
+    "\66\31"                             ;; export name f1
+    "\00"                                ;; export kind
+    "\00"                                ;; export func index
+    "\0a\04\01"                          ;; code section
+    "\02\00\0b"                          ;; function body
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01"                          ;; type section
+    "\60\00\00"                          ;; fun type
+    "\03\02\01\00"                       ;; function section
+    "\07\0b\01"                          ;; export section
+    "\02"                                ;; string length 2
+    "\66\31"                             ;; export name f1
+    "\00"                                ;; export kind
+    "\80\80\80\80\80\00"                 ;; export func index 0 with one byte too many
+    "\0a\04\01"                          ;; code section
+    "\02\00\0b"                          ;; function body
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01"                          ;; type section
+    "\60\00\00"                          ;; fun type
+    "\03\02\01\00"                       ;; function section
+    "\0a"                                ;; code section
+    "\05"                                ;; section size
+    "\81\80\80\80\80\00"                 ;; num functions 1 with one byte too many
+    "\02\00\0b"                          ;; function body
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
     "\01\04\01\60\00\00"       ;; Type section
     "\03\02\01\00"             ;; Function section
     "\05\03\01\00\01"          ;; Memory section
