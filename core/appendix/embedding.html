@@ -130,12 +130,11 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">As long as an embedder treats runtime objects as abstract and only creates and manipulates them through the interface defined here, all implicit pre-conditions are automatically met.</p>
 </div>
+</div>
 <div class="section" id="store">
-<span id="embed-store"></span><span id="index-1"></span><h3>Store<a class="headerlink" href="#store" title="Permalink to this headline">¶</a></h3>
-</div>
-</div>
+<span id="embed-store"></span><span id="index-1"></span><h2>Store<a class="headerlink" href="#store" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="embed-store-init">
-<span id="id1"></span><h2><span class="math notranslate nohighlight">\(\mathrm{store\_init}() : \href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span><a class="headerlink" href="#embed-store-init" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h3><span class="math notranslate nohighlight">\(\mathrm{store\_init}() : \href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span><a class="headerlink" href="#embed-store-init" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Return the empty <a class="reference internal" href="../exec/runtime.html#syntax-store"><span class="std std-ref">store</span></a>.</li>
 </ol>
@@ -143,12 +142,12 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \[\begin{split}\begin{array}{lclll}
 \mathrm{store\_init}() &amp;=&amp; \{ \href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}~\epsilon,~ \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}~\epsilon,~ \href{../exec/runtime.html#syntax-store}{\mathsf{tables}}~\epsilon,~ \href{../exec/runtime.html#syntax-store}{\mathsf{globals}}~\epsilon \} \\
 \end{array}\end{split}\]</div>
+</div>
+</div>
 <div class="section" id="modules">
-<span id="embed-module"></span><span id="index-2"></span><h3>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h3>
-</div>
-</div>
+<span id="embed-module"></span><span id="index-2"></span><h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="embed-module-decode">
-<span id="index-3"></span><span id="id2"></span><h2><span class="math notranslate nohighlight">\(\mathrm{module\_decode}(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}^\ast) : \href{../syntax/modules.html#syntax-module}{\mathit{module}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-module-decode" title="Permalink to this headline">¶</a></h2>
+<span id="index-3"></span><span id="id2"></span><h3><span class="math notranslate nohighlight">\(\mathrm{module\_decode}(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}^\ast) : \href{../syntax/modules.html#syntax-module}{\mathit{module}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-module-decode" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>If there exists a derivation for the <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">byte</span></a> sequence <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-byte}{\mathit{byte}}^\ast\)</span> as a <span class="math notranslate nohighlight">\(\href{../binary/modules.html#binary-module}{\mathtt{module}}\)</span> according to the <a class="reference internal" href="../binary/modules.html#binary-module"><span class="std std-ref">binary grammar for modules</span></a>, yielding a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> <span class="math notranslate nohighlight">\(m\)</span>, then return <span class="math notranslate nohighlight">\(m\)</span>.</li>
 <li>Else, return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
@@ -160,7 +159,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-module-parse">
-<span id="index-4"></span><span id="id3"></span><h2><span class="math notranslate nohighlight">\(\mathrm{module\_parse}(\href{../syntax/values.html#syntax-name}{\mathit{char}}^\ast) : \href{../syntax/modules.html#syntax-module}{\mathit{module}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-module-parse" title="Permalink to this headline">¶</a></h2>
+<span id="index-4"></span><span id="id3"></span><h3><span class="math notranslate nohighlight">\(\mathrm{module\_parse}(\href{../syntax/values.html#syntax-name}{\mathit{char}}^\ast) : \href{../syntax/modules.html#syntax-module}{\mathit{module}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-module-parse" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>If there exists a derivation for the <a class="reference internal" href="../text/lexical.html#text-source"><span class="std std-ref">source</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-name}{\mathit{char}}^\ast\)</span> as a <span class="math notranslate nohighlight">\(\href{../text/modules.html#text-module}{\mathtt{module}}\)</span> according to the <a class="reference internal" href="../text/modules.html#text-module"><span class="std std-ref">text grammar for modules</span></a>, yielding a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> <span class="math notranslate nohighlight">\(m\)</span>, then return <span class="math notranslate nohighlight">\(m\)</span>.</li>
 <li>Else, return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
@@ -172,7 +171,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-module-validate">
-<span id="index-5"></span><span id="id4"></span><h2><span class="math notranslate nohighlight">\(\mathrm{module\_validate}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}) : \href{../appendix/embedding.html#embed-error}{\mathit{error}}^?\)</span><a class="headerlink" href="#embed-module-validate" title="Permalink to this headline">¶</a></h2>
+<span id="index-5"></span><span id="id4"></span><h3><span class="math notranslate nohighlight">\(\mathrm{module\_validate}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}) : \href{../appendix/embedding.html#embed-error}{\mathit{error}}^?\)</span><a class="headerlink" href="#embed-module-validate" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>If <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> is <a class="reference internal" href="../valid/modules.html#valid-module"><span class="std std-ref">valid</span></a>, then return nothing.</li>
 <li>Else, return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
@@ -184,7 +183,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-module-instantiate">
-<span id="index-6"></span><span id="id5"></span><h2><span class="math notranslate nohighlight">\(\mathrm{module\_instantiate}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/modules.html#syntax-module}{\mathit{module}}, \href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}})\)</span><a class="headerlink" href="#embed-module-instantiate" title="Permalink to this headline">¶</a></h2>
+<span id="index-6"></span><span id="id5"></span><h3><span class="math notranslate nohighlight">\(\mathrm{module\_instantiate}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/modules.html#syntax-module}{\mathit{module}}, \href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}})\)</span><a class="headerlink" href="#embed-module-instantiate" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Try <a class="reference internal" href="../exec/modules.html#exec-instantiation"><span class="std std-ref">instantiating</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> in <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast\)</span> as imports:</li>
 </ol>
@@ -208,7 +207,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 </div>
 </div>
 <div class="section" id="embed-module-imports">
-<span id="index-7"></span><span id="id6"></span><h2><span class="math notranslate nohighlight">\(\mathrm{module\_imports}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}) : (\href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}})^\ast\)</span><a class="headerlink" href="#embed-module-imports" title="Permalink to this headline">¶</a></h2>
+<span id="index-7"></span><span id="id6"></span><h3><span class="math notranslate nohighlight">\(\mathrm{module\_imports}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}) : (\href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}})^\ast\)</span><a class="headerlink" href="#embed-module-imports" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Pre-condition: <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> is <a class="reference internal" href="../valid/modules.html#valid-module"><span class="std std-ref">valid</span></a> with external import types <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span> and external export types <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast\)</span>.</li>
 <li>Let <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}^\ast\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">imports</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{imports}}\)</span>.</li>
@@ -232,7 +231,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-module-exports">
-<span id="index-8"></span><span id="id7"></span><h2><span class="math notranslate nohighlight">\(\mathrm{module\_exports}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}) : (\href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}})^\ast\)</span><a class="headerlink" href="#embed-module-exports" title="Permalink to this headline">¶</a></h2>
+<span id="index-8"></span><span id="id7"></span><h3><span class="math notranslate nohighlight">\(\mathrm{module\_exports}(\href{../syntax/modules.html#syntax-module}{\mathit{module}}) : (\href{../syntax/values.html#syntax-name}{\mathit{name}}, \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}})^\ast\)</span><a class="headerlink" href="#embed-module-exports" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Pre-condition: <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> is <a class="reference internal" href="../valid/modules.html#valid-module"><span class="std std-ref">valid</span></a> with external import types <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast\)</span> and external export types <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast\)</span>.</li>
 <li>Let <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exports</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{exports}}\)</span>.</li>
@@ -254,12 +253,12 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \mathrm{module\_exports}(m) &amp;=&amp; (\mathit{ex}.\href{../syntax/modules.html#syntax-export}{\mathsf{name}}, \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}')^\ast \\
   &amp;&amp; \qquad (\mathrel{\mbox{if}} \mathit{ex}^\ast = m.\href{../syntax/modules.html#syntax-module}{\mathsf{exports}} \wedge {} \href{../valid/modules.html#valid-module}{\vdash} m : \href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}^\ast \href{../syntax/types.html#syntax-functype}{\rightarrow} {\href{../syntax/types.html#syntax-externtype}{\mathit{externtype}}'}^\ast) \\
 \end{array}\end{split}\]</div>
+</div>
+</div>
 <div class="section" id="module-instances">
-<span id="embed-instance"></span><span id="index-9"></span><h3>Module Instances<a class="headerlink" href="#module-instances" title="Permalink to this headline">¶</a></h3>
-</div>
-</div>
+<span id="embed-instance"></span><span id="index-9"></span><h2>Module Instances<a class="headerlink" href="#module-instances" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="embed-instance-export">
-<span id="index-10"></span><span id="id8"></span><h2><span class="math notranslate nohighlight">\(\mathrm{instance\_export}(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}, \href{../syntax/values.html#syntax-name}{\mathit{name}}) : \href{../exec/runtime.html#syntax-externval}{\mathit{externval}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-instance-export" title="Permalink to this headline">¶</a></h2>
+<span id="index-10"></span><span id="id8"></span><h3><span class="math notranslate nohighlight">\(\mathrm{instance\_export}(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}, \href{../syntax/values.html#syntax-name}{\mathit{name}}) : \href{../exec/runtime.html#syntax-externval}{\mathit{externval}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-instance-export" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: due to <a class="reference internal" href="properties.html#valid-moduleinst"><span class="std std-ref">validity</span></a> of the <a class="reference internal" href="../exec/runtime.html#syntax-moduleinst"><span class="std std-ref">module instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}\)</span>, all its <a class="reference internal" href="../exec/runtime.html#syntax-exportinst"><span class="std std-ref">export names</span></a> are different.</li>
 <li>If there exists an <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-exportinst}{\mathit{exportinst}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{exports}}\)</span> such that <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">name</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-exportinst}{\mathit{exportinst}}_i.\href{../exec/runtime.html#syntax-exportinst}{\mathsf{name}}\)</span> equals <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-name}{\mathit{name}}\)</span>, then:<ol class="loweralpha">
@@ -274,12 +273,12 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \mathrm{instance\_export}(m, \href{../syntax/values.html#syntax-name}{\mathit{name}}) &amp;=&amp; m.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{exports}}[i].\href{../exec/runtime.html#syntax-exportinst}{\mathsf{value}} &amp;&amp; (\mathrel{\mbox{if}} m.\href{../syntax/modules.html#syntax-module}{\mathsf{exports}}[i].\href{../exec/runtime.html#syntax-exportinst}{\mathsf{name}} = \href{../syntax/values.html#syntax-name}{\mathit{name}}) \\
 \mathrm{instance\_export}(m, \href{../syntax/values.html#syntax-name}{\mathit{name}}) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
 \end{array}\end{split}\]</div>
+</div>
+</div>
 <div class="section" id="functions">
-<span id="embed-func"></span><span id="index-11"></span><h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
-</div>
-</div>
+<span id="embed-func"></span><span id="index-11"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="embed-func-alloc">
-<span id="id9"></span><h2><span class="math notranslate nohighlight">\(\mathrm{func\_alloc}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \href{../exec/runtime.html#syntax-hostfunc}{\mathit{hostfunc}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}})\)</span><a class="headerlink" href="#embed-func-alloc" title="Permalink to this headline">¶</a></h2>
+<span id="id9"></span><h3><span class="math notranslate nohighlight">\(\mathrm{func\_alloc}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \href{../exec/runtime.html#syntax-hostfunc}{\mathit{hostfunc}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}})\)</span><a class="headerlink" href="#embed-func-alloc" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Pre-condition: <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span> is <span class="math notranslate nohighlight">\(valid &lt;valid-functype&gt;\)</span>.</li>
 <li>Let <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span> be the result of <a class="reference internal" href="../exec/modules.html#alloc-func"><span class="std std-ref">allocating a host function</span></a> in <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span> and host function code <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-hostfunc}{\mathit{hostfunc}}\)</span>.</li>
@@ -296,7 +295,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 </div>
 </div>
 <div class="section" id="embed-func-type">
-<span id="id10"></span><h2><span class="math notranslate nohighlight">\(\mathrm{func\_type}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}) : \href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span><a class="headerlink" href="#embed-func-type" title="Permalink to this headline">¶</a></h2>
+<span id="id10"></span><h3><span class="math notranslate nohighlight">\(\mathrm{func\_type}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}) : \href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span><a class="headerlink" href="#embed-func-type" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: the <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{func}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span> is <a class="reference internal" href="../exec/modules.html#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span>.</li>
 <li>Return <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span>.</li>
@@ -308,7 +307,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-func-invoke">
-<span id="index-12"></span><span id="id11"></span><h2><span class="math notranslate nohighlight">\(\mathrm{func\_invoke}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}})\)</span><a class="headerlink" href="#embed-func-invoke" title="Permalink to this headline">¶</a></h2>
+<span id="index-12"></span><span id="id11"></span><h3><span class="math notranslate nohighlight">\(\mathrm{func\_invoke}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}})\)</span><a class="headerlink" href="#embed-func-invoke" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Try <a class="reference internal" href="../exec/modules.html#exec-invocation"><span class="std std-ref">invoking</span></a> the function <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span> in <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">values</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span> as arguments:</li>
 </ol>
@@ -331,12 +330,12 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">The store may be modified even in case of an error.</p>
 </div>
+</div>
+</div>
 <div class="section" id="tables">
-<span id="embed-table"></span><span id="index-13"></span><h3>Tables<a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h3>
-</div>
-</div>
+<span id="embed-table"></span><span id="index-13"></span><h2>Tables<a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="embed-table-alloc">
-<span id="id12"></span><h2><span class="math notranslate nohighlight">\(\mathrm{table\_alloc}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}})\)</span><a class="headerlink" href="#embed-table-alloc" title="Permalink to this headline">¶</a></h2>
+<span id="id12"></span><h3><span class="math notranslate nohighlight">\(\mathrm{table\_alloc}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}})\)</span><a class="headerlink" href="#embed-table-alloc" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Pre-condition: <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span> is <span class="math notranslate nohighlight">\(valid &lt;valid-tabletype&gt;\)</span>.</li>
 <li>Let <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}\)</span> be the result of <a class="reference internal" href="../exec/modules.html#alloc-table"><span class="std std-ref">allocating a table</span></a> in <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span>.</li>
@@ -348,7 +347,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-table-type">
-<span id="id13"></span><h2><span class="math notranslate nohighlight">\(\mathrm{table\_type}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}) : \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span><a class="headerlink" href="#embed-table-type" title="Permalink to this headline">¶</a></h2>
+<span id="id13"></span><h3><span class="math notranslate nohighlight">\(\mathrm{table\_type}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}) : \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span><a class="headerlink" href="#embed-table-type" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: the <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{table}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}\)</span> is <a class="reference internal" href="../exec/modules.html#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span>.</li>
 <li>Return <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span>.</li>
@@ -360,7 +359,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-table-read">
-<span id="id14"></span><h2><span class="math notranslate nohighlight">\(\mathrm{table\_read}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, i:\href{../syntax/values.html#syntax-int}{\mathit{u32}}) : \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^? ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-table-read" title="Permalink to this headline">¶</a></h2>
+<span id="id14"></span><h3><span class="math notranslate nohighlight">\(\mathrm{table\_read}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, i:\href{../syntax/values.html#syntax-int}{\mathit{u32}}) : \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^? ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-table-read" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Let <span class="math notranslate nohighlight">\(\mathit{ti}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span>.</li>
 <li>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length of <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
@@ -373,7 +372,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-table-write">
-<span id="id15"></span><h2><span class="math notranslate nohighlight">\(\mathrm{table\_write}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, i:\href{../syntax/values.html#syntax-int}{\mathit{u32}}, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^?) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-table-write" title="Permalink to this headline">¶</a></h2>
+<span id="id15"></span><h3><span class="math notranslate nohighlight">\(\mathrm{table\_write}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, i:\href{../syntax/values.html#syntax-int}{\mathit{u32}}, \href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^?) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-table-write" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Let <span class="math notranslate nohighlight">\(\mathit{ti}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span>.</li>
 <li>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length of <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
@@ -387,7 +386,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-table-size">
-<span id="id16"></span><h2><span class="math notranslate nohighlight">\(\mathrm{table\_size}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}) : \href{../syntax/values.html#syntax-int}{\mathit{u32}}\)</span><a class="headerlink" href="#embed-table-size" title="Permalink to this headline">¶</a></h2>
+<span id="id16"></span><h3><span class="math notranslate nohighlight">\(\mathrm{table\_size}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}) : \href{../syntax/values.html#syntax-int}{\mathit{u32}}\)</span><a class="headerlink" href="#embed-table-size" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Return the length of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>.</li>
 </ol>
@@ -399,7 +398,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-table-grow">
-<span id="id17"></span><h2><span class="math notranslate nohighlight">\(\mathrm{table\_grow}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, n:\href{../syntax/values.html#syntax-int}{\mathit{u32}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-table-grow" title="Permalink to this headline">¶</a></h2>
+<span id="id17"></span><h3><span class="math notranslate nohighlight">\(\mathrm{table\_grow}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, n:\href{../syntax/values.html#syntax-int}{\mathit{u32}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-table-grow" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Try <a class="reference internal" href="../exec/modules.html#grow-table"><span class="std std-ref">growing</span></a> the <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span> by <span class="math notranslate nohighlight">\(n\)</span> elements:<ol class="loweralpha">
 <li>If it succeeds, return the updated store.</li>
@@ -414,12 +413,12 @@ If it does, the post conditions are guaranteed by the semantics.</p>
   (\mathrel{\mbox{if}} S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a] = \href{../exec/modules.html#grow-table}{\mathrm{growtable}}(S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a], n)) \\
 \mathrm{table\_grow}(S, a, n) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
 \end{array}\end{split}\]</div>
+</div>
+</div>
 <div class="section" id="memories">
-<span id="embed-mem"></span><span id="index-14"></span><h3>Memories<a class="headerlink" href="#memories" title="Permalink to this headline">¶</a></h3>
-</div>
-</div>
+<span id="embed-mem"></span><span id="index-14"></span><h2>Memories<a class="headerlink" href="#memories" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="embed-mem-alloc">
-<span id="id18"></span><h2><span class="math notranslate nohighlight">\(\mathrm{mem\_alloc}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}})\)</span><a class="headerlink" href="#embed-mem-alloc" title="Permalink to this headline">¶</a></h2>
+<span id="id18"></span><h3><span class="math notranslate nohighlight">\(\mathrm{mem\_alloc}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}})\)</span><a class="headerlink" href="#embed-mem-alloc" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Pre-condition: <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span> is <span class="math notranslate nohighlight">\(valid &lt;valid-memtype&gt;\)</span>.</li>
 <li>Let <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}\)</span> be the result of <a class="reference internal" href="../exec/modules.html#alloc-mem"><span class="std std-ref">allocating a memory</span></a> in <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
@@ -431,7 +430,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-mem-type">
-<span id="id19"></span><h2><span class="math notranslate nohighlight">\(\mathrm{mem\_type}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}) : \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span><a class="headerlink" href="#embed-mem-type" title="Permalink to this headline">¶</a></h2>
+<span id="id19"></span><h3><span class="math notranslate nohighlight">\(\mathrm{mem\_type}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}) : \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span><a class="headerlink" href="#embed-mem-type" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: the <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{mem}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}\)</span> is <a class="reference internal" href="../exec/modules.html#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
 <li>Return <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span>.</li>
@@ -443,7 +442,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-mem-read">
-<span id="id20"></span><h2><span class="math notranslate nohighlight">\(\mathrm{mem\_read}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, i:\href{../syntax/values.html#syntax-int}{\mathit{u32}}) : \href{../syntax/values.html#syntax-byte}{\mathit{byte}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-mem-read" title="Permalink to this headline">¶</a></h2>
+<span id="id20"></span><h3><span class="math notranslate nohighlight">\(\mathrm{mem\_read}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, i:\href{../syntax/values.html#syntax-int}{\mathit{u32}}) : \href{../syntax/values.html#syntax-byte}{\mathit{byte}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-mem-read" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Let <span class="math notranslate nohighlight">\(\mathit{mi}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span>.</li>
 <li>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length of <span class="math notranslate nohighlight">\(\mathit{mi}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
@@ -456,7 +455,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-mem-write">
-<span id="id21"></span><h2><span class="math notranslate nohighlight">\(\mathrm{mem\_write}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, i:\href{../syntax/values.html#syntax-int}{\mathit{u32}}, \href{../syntax/values.html#syntax-byte}{\mathit{byte}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-mem-write" title="Permalink to this headline">¶</a></h2>
+<span id="id21"></span><h3><span class="math notranslate nohighlight">\(\mathrm{mem\_write}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, i:\href{../syntax/values.html#syntax-int}{\mathit{u32}}, \href{../syntax/values.html#syntax-byte}{\mathit{byte}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-mem-write" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Let <span class="math notranslate nohighlight">\(\mathit{mi}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span>.</li>
 <li>If <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{u32}}\)</span> is larger than or equal to the length of <span class="math notranslate nohighlight">\(\mathit{mi}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
@@ -470,7 +469,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-mem-size">
-<span id="id22"></span><h2><span class="math notranslate nohighlight">\(\mathrm{mem\_size}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}) : \href{../syntax/values.html#syntax-int}{\mathit{u32}}\)</span><a class="headerlink" href="#embed-mem-size" title="Permalink to this headline">¶</a></h2>
+<span id="id22"></span><h3><span class="math notranslate nohighlight">\(\mathrm{mem\_size}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}) : \href{../syntax/values.html#syntax-int}{\mathit{u32}}\)</span><a class="headerlink" href="#embed-mem-size" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Return the length of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}\)</span> divided by the <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</li>
 </ol>
@@ -482,7 +481,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-mem-grow">
-<span id="id23"></span><h2><span class="math notranslate nohighlight">\(\mathrm{mem\_grow}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, n:\href{../syntax/values.html#syntax-int}{\mathit{u32}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-mem-grow" title="Permalink to this headline">¶</a></h2>
+<span id="id23"></span><h3><span class="math notranslate nohighlight">\(\mathrm{mem\_grow}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}, n:\href{../syntax/values.html#syntax-int}{\mathit{u32}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-mem-grow" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Try <a class="reference internal" href="../exec/modules.html#grow-mem"><span class="std std-ref">growing</span></a> the <a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}]\)</span> by <span class="math notranslate nohighlight">\(n\)</span> <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">pages</span></a>:<ol class="loweralpha">
 <li>If it succeeds, return the updated store.</li>
@@ -497,12 +496,12 @@ If it does, the post conditions are guaranteed by the semantics.</p>
   (\mathrel{\mbox{if}} S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a] = \href{../exec/modules.html#grow-mem}{\mathrm{growmem}}(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a], n)) \\
 \mathrm{mem\_grow}(S, a, n) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
 \end{array}\end{split}\]</div>
+</div>
+</div>
 <div class="section" id="globals">
-<span id="embed-global"></span><span id="index-15"></span><h3>Globals<a class="headerlink" href="#globals" title="Permalink to this headline">¶</a></h3>
-</div>
-</div>
+<span id="embed-global"></span><span id="index-15"></span><h2>Globals<a class="headerlink" href="#globals" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="embed-global-alloc">
-<span id="id24"></span><h2><span class="math notranslate nohighlight">\(\mathrm{global\_alloc}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}})\)</span><a class="headerlink" href="#embed-global-alloc" title="Permalink to this headline">¶</a></h2>
+<span id="id24"></span><h3><span class="math notranslate nohighlight">\(\mathrm{global\_alloc}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}) : (\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}})\)</span><a class="headerlink" href="#embed-global-alloc" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Pre-condition: <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span> is <span class="math notranslate nohighlight">\(valid &lt;valid-globaltype&gt;\)</span>.</li>
 <li>Let <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}\)</span> be the result of <a class="reference internal" href="../exec/modules.html#alloc-global"><span class="std std-ref">allocating a global</span></a> in <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}\)</span> with <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span> and initialization value <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span>.</li>
@@ -514,7 +513,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-global-type">
-<span id="id25"></span><h2><span class="math notranslate nohighlight">\(\mathrm{global\_type}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) : \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span><a class="headerlink" href="#embed-global-type" title="Permalink to this headline">¶</a></h2>
+<span id="id25"></span><h3><span class="math notranslate nohighlight">\(\mathrm{global\_type}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) : \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span><a class="headerlink" href="#embed-global-type" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Assert: the <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{global}}~\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}\)</span> is <a class="reference internal" href="../exec/modules.html#valid-externval"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span>.</li>
 <li>Return <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span>.</li>
@@ -526,7 +525,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-global-read">
-<span id="id26"></span><h2><span class="math notranslate nohighlight">\(\mathrm{global\_read}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) : \href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span><a class="headerlink" href="#embed-global-read" title="Permalink to this headline">¶</a></h2>
+<span id="id26"></span><h3><span class="math notranslate nohighlight">\(\mathrm{global\_read}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) : \href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span><a class="headerlink" href="#embed-global-read" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Let <span class="math notranslate nohighlight">\(\mathit{gi}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-globalinst"><span class="std std-ref">global instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}]\)</span>.</li>
 <li>Return the <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\(\mathit{gi}.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}}\)</span>.</li>
@@ -537,7 +536,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \end{array}\end{split}\]</div>
 </div>
 <div class="section" id="embed-global-write">
-<span id="id27"></span><h2><span class="math notranslate nohighlight">\(\mathrm{global\_write}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-global-write" title="Permalink to this headline">¶</a></h2>
+<span id="id27"></span><h3><span class="math notranslate nohighlight">\(\mathrm{global\_write}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}, \href{../exec/runtime.html#syntax-val}{\mathit{val}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#embed-global-write" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Let <span class="math notranslate nohighlight">\(\mathit{gi}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-globalinst"><span class="std std-ref">global instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}]\)</span>.</li>
 <li>If <span class="math notranslate nohighlight">\(\mathit{gi}.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}}\)</span> is not <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-mut}{\mathsf{var}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</li>
@@ -550,6 +549,7 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 \mathrm{global\_write}(S, a, v) &amp;=&amp; S' &amp;&amp; (\mathrel{\mbox{if}} S.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[a].\href{../exec/runtime.html#syntax-globalinst}{\mathsf{mut}} = \href{../syntax/types.html#syntax-mut}{\mathsf{var}} \wedge S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[a].\href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}} = v) \\
 \mathrm{global\_write}(S, a, v) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
 \end{array}\end{split}\]</div>
+</div>
 </div>
 </div>
 
