@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version ee4d7efc3ed6155392d49e10a542e2351fd5792d" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="74dd66b5a11061ed8be3df7d6f326d0143a09e7a" name="document-revision">
+  <meta content="263af5ad374c66d1d09544bb05c5d6038f095b0e" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -338,6 +338,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
       <li><a href="#out-of-memory"><span class="secno">4.2</span> <span class="content">Out of Memory</span></a>
      </ol>
     <li><a href="#limits"><span class="secno">5</span> <span class="content">Implementation-defined Limits</span></a>
+    <li><a href="#security-considerations"><span class="secno">6</span> <span class="content">Security and Privacy Considerations</span></a>
     <li>
      <a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
      <ol class="toc">
@@ -1652,6 +1653,11 @@ In practice, an implementation may run out of resources for valid modules below 
     <li>The maximum size of a function body, including locals declarations, is 7654321 bytes.
     <li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50000.
    </ul>
+   <h2 class="heading settled" data-level="6" id="security-considerations"><span class="secno">6. </span><span class="content">Security and Privacy Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
+   <p><em>This section is non-normative.</em></p>
+   <p>This document defines a host environment for WebAssembly.
+It enables a WebAssembly instance to :ref:<code>import &lt;syntax-import></code> and :ref:<code>export &lt;syntax-export></code> all Javascript functions and APIs.
+This WebAssembly instance is thusly bound to the same constraints as any other Javascript program.</p>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content"> Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="heading settled" id="document-conventions"><span class="content"> Document conventions</span><a class="self-link" href="#document-conventions"></a></h3>

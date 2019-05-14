@@ -35,6 +35,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Introduction</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#security-considerations">Security Considerations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
 </ul>
 </li>
@@ -138,8 +139,17 @@ It does not, however, define how WebAssembly programs can interact with a specif
 <p>Instead, this specification is complemented by additional documents defining interfaces to specific embedding environments such as the Web.
 These will each define a WebAssembly <em>application programming interface (API)</em> suitable for a given environment.</p>
 </div>
+</div>
+<div class="section" id="security-considerations">
+<span id="security"></span><span id="index-1"></span><h1>Security Considerations<a class="headerlink" href="#security-considerations" title="Permalink to this headline">¶</a></h1>
+<p>WebAssembly provides no ambient access to the computing environment in which code is executed.
+Any interaction with the environment, such as I/O, access to resources, or operating system calls, can only be performed by invoking <a class="reference internal" href="overview.html#function"><span class="std std-ref">functions</span></a> provided by the <a class="reference internal" href="overview.html#embedder"><span class="std std-ref">embedder</span></a> and imported into a WebAssembly <a class="reference internal" href="overview.html#module"><span class="std std-ref">module</span></a>.
+An embedder can establish security policies suitable for a respective environment by controlling or limiting which functional capabilities it makes available for import.
+Such considerations are an embedder’s responsibility and the subject of <a class="reference internal" href="#scope"><span class="std std-ref">API definitions</span></a> for a specific environment.</p>
+<p>Because WebAssembly is designed to be translated into machine code running directly on the host’s hardware, it is potentially vulnerable to side channel attacks on the hardware level.
+In environments where this is a concern, an embedder may have to put suitable mitigations into place to isolate WebAssembly computations.</p>
 <div class="section" id="dependencies">
-<span id="index-1"></span><span id="id4"></span><h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<span id="index-2"></span><span id="id4"></span><h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <p>WebAssembly depends on two existing standards:</p>
 <ul class="simple">
 <li><a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a>, for the representation of <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">floating-point data</span></a> and the semantics of respective <a class="reference internal" href="../exec/numerics.html#float-ops"><span class="std std-ref">numeric operations</span></a>.</li>
