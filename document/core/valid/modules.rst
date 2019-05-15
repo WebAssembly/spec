@@ -154,7 +154,7 @@ Element segments :math:`\elem` are not classified by a type.
 
 * Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The :ref:`reference type <syntax-reftype>` :math:`t` must be |FUNCREF|.
+* The :ref:`reference type <syntax-reftype>` |FUNCREF| must :ref:`match <match-reftype>` the reference type :math:`t`.
 
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
@@ -168,7 +168,9 @@ Element segments :math:`\elem` are not classified by a type.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~\FUNCREF
+     C.\CTABLES[x] = \limits~t
+     \qquad
+     \vdashreftypematch \FUNCREF \matchesvaltype t
      \qquad
      C \vdashexpr \expr : [\I32]
      \qquad
