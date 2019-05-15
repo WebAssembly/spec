@@ -168,15 +168,17 @@ Element segments :math:`\elem` are not classified by a type.
 
 .. math::
    \frac{
+     \begin{array}{@{}c@{}}
      C.\CTABLES[x] = \limits~t
      \qquad
      \vdashreftypematch \FUNCREF \matchesvaltype t
-     \qquad
+     \\
      C \vdashexpr \expr : [\I32]
      \qquad
      C \vdashexprconst \expr \const
      \qquad
      (C.\CFUNCS[y] = \functype)^\ast
+     \end{array}
    }{
      C \vdashelem \{ \ETABLE~x, \EOFFSET~\expr, \EINIT~y^\ast \} \ok
    }
