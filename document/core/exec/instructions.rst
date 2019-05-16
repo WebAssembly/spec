@@ -618,6 +618,77 @@ Memory Instructions
    In practice, the choice depends on the :ref:`resources <impl-exec>` available to the :ref:`embedder <embedder>`.
 
 
+.. _exec-memory.fill:
+
+:math:`\MEMORYFILL`
+...................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-memory.fill>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+
+4. Assert: due to :ref:`validation <valid-memory.fill>`, :math:`S.\SMEMS[a]` exists.
+
+5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
+
+6. Assert: due to :ref:`validation <valid-memory.fill>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+7. Pop the value :math:`\I32.\CONST~n` from the stack.
+
+8. Assert: due to :ref:`validation <valid-memory.fill>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+9. Pop the value :math:`\val` from the stack.
+
+10. Assert: due to :ref:`validation <valid-memory.fill>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+11. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+12. If :math:`n` is :math:`0`, then:
+
+    a. If :math:`i` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+
+       i. Trap.
+
+13. Else:
+
+    a. Push the value :math:`\I32.\CONST~i` to the stack.
+
+    b. Push the value :math:`\val` to the stack.
+
+    c. Execute the instruction :math:`\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}`.
+
+    d. Push the value :math:`\I32.\CONST~(i+1)` to the stack.
+
+    e. Push the value :math:`\val` to the stack.
+
+    f. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
+
+    g. Execute the instruction :math:`\MEMORYFILL`.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~(n+1))~(\MEMORYFILL) &\stepto& S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\I32.\CONST~i)~\val~(\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
+     (\I32.\CONST~(i+1))~\val~(\I32.\CONST~n)~(\MEMORYFILL) \\
+     \end{array} \\
+   \end{array} \\
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~0)~(\MEMORYFILL) &\stepto& S; F; \epsilon
+   \end{array}
+   \\ \qquad
+     (\iff i \leq |\SMEMS[F.\AMODULE.\MIMEMS[x]]|) \\
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~0)~(\MEMORYFILL) &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise) \\
+   \end{array}
+
+
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, address, table address, table instance, store, frame
    pair: execution; instruction
    single: abstract syntax; instruction

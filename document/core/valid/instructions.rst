@@ -489,7 +489,7 @@ Memory Instructions
 .. _valid-memory.fill:
 
 :math:`\MEMORYFILL`
-.....................
+...................
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
@@ -506,7 +506,7 @@ Memory Instructions
 .. _valid-memory.copy:
 
 :math:`\MEMORYCOPY`
-.....................
+...................
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
