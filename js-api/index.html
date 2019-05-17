@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version ee4d7efc3ed6155392d49e10a542e2351fd5792d" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="bc7d3006bbda0de5031c2a1b9266a62fa7895019" name="document-revision">
+  <meta content="39646d14fcec64ecb0e034a0db129e9df6884754" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-05-16">16 May 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-05-17">17 May 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -388,7 +388,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
    <h2 class="heading settled" data-level="2" id="webassembly-storage"><span class="secno">2. </span><span class="content">Internal storage</span><a class="self-link" href="#webassembly-storage"></a></h2>
    <h3 class="heading settled" data-level="2.1" id="store"><span class="secno">2.1. </span><span class="content">Interaction of the WebAssembly Store with JavaScript</span><a class="self-link" href="#store"></a></h3>
    <p class="note" role="note"><span>Note:</span> WebAssembly semantics are defined in terms of an abstract <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-store" id="ref-for-syntax-store">store</a>, representing the state of the WebAssembly abstract machine. WebAssembly operations take a store and return an updated store.</p>
-   <p>Each <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#agent" id="ref-for-agent">agent</a> has an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="associated-store">associated store</dfn>. When a new agent is created, its associated store is set to the result of <a data-link-type="dfn">init_store</a>().</p>
+   <p>Each <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#agent" id="ref-for-agent">agent</a> has an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="associated-store">associated store</dfn>. When a new agent is created, its associated store is set to the result of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-store-init" id="ref-for-embed-store-init">store_init</a>().</p>
    <p class="note" role="note"><span>Note:</span> In this specification, no WebAssembly-related objects, memory or addresses can be shared among agents in an <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-agent-clusters" id="ref-for-sec-agent-clusters">agent cluster</a>. In a future version of WebAssembly, this may change.</p>
    <p>Elements of the WebAssembly store may be <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="identified-with">identified with</dfn> JavaScript values. In particular, each WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances" id="ref-for-memory-instances">memory instance</a> with a corresponding <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory">Memory</a></code> object is identified with a JavaScript <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-data-blocks" id="ref-for-sec-data-blocks">Data Block</a>; modifications to this Data Block are identified to updating the agent’s store to a store which reflects those changes, and vice versa.</p>
    <h3 class="heading settled" data-level="2.2" id="object-caches"><span class="secno">2.2. </span><span class="content">WebAssembly JS Object Caches</span><a class="self-link" href="#object-caches"></a></h3>
@@ -1655,9 +1655,7 @@ In practice, an implementation may run out of resources for valid modules below 
    </ul>
    <h2 class="heading settled" data-level="6" id="security-considerations"><span class="secno">6. </span><span class="content">Security and Privacy Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
    <p><em>This section is non-normative.</em></p>
-   <p>This document defines a host environment for WebAssembly.
-It enables a WebAssembly instance to :ref:<code>import &lt;syntax-import></code> and :ref:<code>export &lt;syntax-export></code> all Javascript functions and APIs.
-This WebAssembly instance is thusly bound to the same constraints as any other Javascript program.</p>
+   <p>This document defines a host environment for WebAssembly. It enables a WebAssembly instance to <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-import" id="ref-for-syntax-import">import</a> JavaScript objects and functions from an <a data-link-type="dfn" href="#read-the-imports" id="ref-for-read-the-imports②">import object</a>, but otherwise provides no access to the embedding environment. Thus a WebAssembly instance is bounds to the same constraints as JavaScript.</p>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content"> Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="heading settled" id="document-conventions"><span class="content"> Document conventions</span><a class="self-link" href="#document-conventions"></a></h3>
@@ -2237,6 +2235,12 @@ This WebAssembly instance is thusly bound to the same constraints as any other J
     <li><a href="#ref-for-syntax-hostfunc">3.6. Exported Functions</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-import">
+   <a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-import">https://webassembly.github.io/spec/core/syntax/modules.html#syntax-import</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-import">6. Security and Privacy Considerations</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-embed-instance-export">
    <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-instance-export">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-instance-export</a><b>Referenced in:</b>
    <ul>
@@ -2342,6 +2346,12 @@ This WebAssembly instance is thusly bound to the same constraints as any other J
    <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-store">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-store</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-syntax-store">2.1. Interaction of the WebAssembly Store with JavaScript</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-embed-store-init">
+   <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-store-init">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-store-init</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-embed-store-init">2.1. Interaction of the WebAssembly Store with JavaScript</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-syntax-tableaddr">
@@ -2719,6 +2729,7 @@ This WebAssembly instance is thusly bound to the same constraints as any other J
      <li><span class="dfn-paneled" id="term-for-embed-global-type" style="color:initial">global_type</span>
      <li><span class="dfn-paneled" id="term-for-embed-global-write" style="color:initial">global_write</span>
      <li><span class="dfn-paneled" id="term-for-syntax-hostfunc" style="color:initial">host function</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-import" style="color:initial">import</span>
      <li><span class="dfn-paneled" id="term-for-embed-instance-export" style="color:initial">instance_export</span>
      <li><span class="dfn-paneled" id="term-for-embed-mem-alloc" style="color:initial">mem_alloc</span>
      <li><span class="dfn-paneled" id="term-for-embed-mem-grow" style="color:initial">mem_grow</span>
@@ -2736,6 +2747,7 @@ This WebAssembly instance is thusly bound to the same constraints as any other J
      <li><span class="dfn-paneled" id="term-for-grammar-notation" style="color:initial">sequence</span>
      <li><span class="dfn-paneled" id="term-for-aux-signed" style="color:initial">signed_32</span>
      <li><span class="dfn-paneled" id="term-for-syntax-store" style="color:initial">store</span>
+     <li><span class="dfn-paneled" id="term-for-embed-store-init" style="color:initial">store_init</span>
      <li><span class="dfn-paneled" id="term-for-syntax-tableaddr" style="color:initial">table address</span>
      <li><span class="dfn-paneled" id="term-for-table-instances" style="color:initial">table instance</span>
      <li><span class="dfn-paneled" id="term-for-syntax-tabletype" style="color:initial">table type</span>
@@ -3035,6 +3047,7 @@ This WebAssembly instance is thusly bound to the same constraints as any other J
    <b><a href="#read-the-imports">#read-the-imports</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-read-the-imports">3. The WebAssembly Namespace</a> <a href="#ref-for-read-the-imports①">(2)</a>
+    <li><a href="#ref-for-read-the-imports②">6. Security and Privacy Considerations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="index-of-the-host-function">
