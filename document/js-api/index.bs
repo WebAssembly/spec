@@ -85,6 +85,9 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: the Number value; url: sec-ecmascript-language-types-number-type
         text: NumberToRawBytes; url: sec-numbertorawbytes
         text: Built-in Function Objects; url: sec-built-in-function-objects
+        text: NativeError Object Structure; url: sec-nativeerror-object-structure
+    type: abstract-op
+        text: CreateMethodProperty; url: sec-createmethodproperty
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
     url: valid/modules.html#valid-module
         text: valid
@@ -167,6 +170,9 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: 𝗆𝗈𝖽𝗎𝗅𝖾; url: exec/runtime.html#syntax-frame
     text: 𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌; url: exec/runtime.html#syntax-moduleinst
     text: sequence; url: syntax/conventions.html#grammar-notation
+urlPrefix: https://heycam.github.io/webidl/; spec: WebIDL
+    type: dfn
+        text: create a namespace object; url: create-a-namespace-object
 </pre>
 
 <pre class='link-defaults'>
@@ -999,21 +1005,23 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerce a JavaScript val
 
 <h3 id="error-objects">Error Objects</h3>
 
-WebAssembly defines the following Error classes: {{CompileError}}, {{LinkError}}, and {{RuntimeError}}. WebAssembly errors have the following custom bindings:
-- Unlike normal interface types, the interface prototype object for these exception classes must have as its \[[Prototype]] the intrinsic object [=%ErrorPrototype%=].
-- The constructor and properties of WebAssembly errors is as specified for {{NativeError}}.
-- If an implementation gives native Error objects special powers or nonstandard properties (such as a stack property), it should also expose those on these exception instances.
+WebAssembly defines the following Error classes: <dfn exception>CompileError</dfn>, <dfn exception>LinkError</dfn>, and <dfn exception>RuntimeError</dfn>.
 
-<pre class='idl'>
-[LegacyNamespace=WebAssembly]
-interface CompileError { };
+<div algorithm="create the WebAssembly namespace object">
+When the [=namespace object=] for the {{WebAssembly}} namespace is [=create a namespace object|created=], the following steps must be run:
 
-[LegacyNamespace=WebAssembly]
-interface LinkError { };
+1.  Let |namespaceObject| the [=namespace object=].
+1.  [=list/iterate|For each=] |error| of « "CompileError", "LinkError", "RuntimeError" »,
+    1.  Let |constructor| be a new object, implementing the [=NativeError Object Structure=], with <var ignore>NativeError</var> set to |error|.
+    1.  ! [$CreateMethodProperty$](|namespaceObject|, |error|,  |constructor|).
 
-[LegacyNamespace=WebAssembly]
-interface RuntimeError { };
-</pre>
+</div>
+
+Note: This defines {{CompileError}}, {{LinkError}}, and {{RuntimeError}} classes on the {{WebAssembly}} namespace, which are produced by the APIs defined in this specification.
+They expose the same interface as native JavaScript errors like {{TypeError}} and {{RangeError}}.
+
+Note: It is not currently possible to define this behavior using Web IDL.
+
 
 <h2 id="errors">Error Condition Mappings to JavaScript</h2>
 
