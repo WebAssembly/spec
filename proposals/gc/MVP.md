@@ -11,9 +11,9 @@ Based on the following proposals:
 
 * [reference types](https://github.com/WebAssembly/reference-types), which introduces type `anyref` etc.
 
-* [typed function references](https://github.com/WebAssembly/function-references), which introduces type `(ref $t)` etc.
+* [typed function references](https://github.com/WebAssembly/function-references), which introduces types `(ref $t)` and `(optref $t)` etc.
 
-Both these proposals are requisites.
+Both these proposals are prerequisites.
 
 
 ### Types
@@ -23,10 +23,6 @@ Both these proposals are requisites.
 * `eqref` is a new reference type
   - `reftype ::= ... | eqref`
 
-* `optref <typeidx>` is a new reference type
-  - `reftype ::= ... | optref <typeidx>`
-  - `optref $t ok` iff `$t` is defined in the context
-
 * `i31ref` is a new reference type
   - `reftype ::= ... | i31ref`
 
@@ -34,7 +30,7 @@ Both these proposals are requisites.
   - `reftype ::= ... | rtt <typeuse>`
   - `rtt t ok` iff `t ok`
 
-* Note: types `anyref` and `funcref` already exist via [reference types proposal](https://github.com/WebAssembly/reference-types)
+* Note: types `anyref` and `funcref` already exist via [reference types proposal](https://github.com/WebAssembly/reference-types), and `ref $t` and `optref $t` via [typed references](https://github.com/WebAssembly/function-references)
 
 
 #### Type Definitions
@@ -94,7 +90,7 @@ A *type use* denotes a user-defined or pre-defined data type:
 
 Greatest fixpoint (co-inductive interpretation) of the given rules (implying reflexivity and transitivity).
 
-In addition to the rules for basic reference types:
+In addition to the rules for [basic](https://github.com/WebAssembly/reference-types/proposals/reference-types/Overview.md#subtyping), and [typed](https://github.com/WebAssembly/function-references/proposals/function-references/Overview.md#subtyping) reference types:
 
 * `eqref` is a subtype of `anyref`
   - `eqref <: anyref`
@@ -107,29 +103,11 @@ In addition to the rules for basic reference types:
   - `i31ref <: anyref`
   - Note: `i31ref` is *not* a supertype of `nullref`, i.e., nut nullable
 
-* Any nullable reference type is a subtype of `anyref` and a supertype of `nullref`
-  - `optref $t <: anyref`
-  - `nullref <: optref $t`
-
-* Any concrete reference type is a subtype of the respective nullable reference type (and thereby of `anyref`)
-  - `ref $t <: optref $t`
-  - Note: concrete reference types are *not* supertypes of `nullref`, i.e., not nullable
-
-* Any function reference type is a subtype of `funcref`
-  - `ref $t <: funcref`
-     - iff `$t = <functype>`
-
 * Any optional reference type (and thereby respective concrete reference type) is a subtype of `eqref` if its not a function
   - `optref $t <: eqref`
      - if `$t = <structtype>` or `$t = <arraytype>`
      - or `$t = type rt` and `rt <: eqref`
   - TODO: provide a way to make data types non-eq, especially immutable ones
-
-* Concrete and optional reference types are covariant
-  - `ref $t1 <: ref $t2`
-     - iff `$t1 <: $t2`
-  - `optref $t1 <: optref $t2`
-     - iff `$t1 <: $t2`
 
 * Structure types support width and depth subtyping
   - `struct <fieldtype1>* <fieldtype1'>* <: struct <fieldtype2>*`
@@ -295,21 +273,6 @@ Perhaps also the following short-hands:
   - equivalent to `(rtt.i31ref) (ref.cast anyref i31ref)`
 
 
-#### Optional References
-
-* `ref.as_nonnull` converts an optional reference to a non-optional one
-  - `ref.as_nonnull : [(optref $t)] -> [(ref $t)]`
-    - iff `$t` is defined
-  - traps on `null`
-
-* `br_on_null` checks for null and branches
-  - `br_on_null $l : [(optref $t)] -> [(ref $t)]`
-    - iff `$t` is defined
-  - branches to on `null`, otherwise returns operand as non-optional
-
-* Note: `ref.is_null` already exists via [reference types proposal](https://github.com/WebAssembly/reference-types)
-
-
 #### Runtime Types
 
 * `rtt.anyref` returns the RTT of type `anyref` as a sub-RTT of only itself
@@ -350,7 +313,7 @@ TODO.
 
 ## JS API
 
-See [GC JS API document](MVP-JS.md).
+See [GC JS API document](MVP-JS.md) .
 
 
 ## Questions
