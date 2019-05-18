@@ -23,19 +23,24 @@ let convert_i32_u x =
     Int32.(if x >= zero then to_float x else
            to_float (logor (shift_right_logical x 1) (logand x 1l)) *. 2.0)
 
-let convert_i64_s x =
-  F32.of_float (Int64.to_float x)
-
 (*
- * Values in the low half of the int64 range can be converted with a signed
- * conversion. The high half is beyond the range where f32 can represent odd
- * numbers, so we can shift the value right, do a conversion, and then scale it
- * back up, without worrying about losing the least-significant digit.
+ * Values that are too large would get rounded when represented in f64,
+ * but double rounding via i64->f64->f32 can produce inaccurate results.
+ * Hence, for large values we shift right but make sure to accumulate the lost
+ * bits in the least signifant bit, such that rounding still is correct.
  *)
+let convert_i64_s x =
+  let open Int64 in
+  if abs x < 0x10_0000_0000_0000L then F32.of_float (to_float x) else
+  let r = if logand x 0xfffL = 0L then 0L else 1L in
+  let z = F32.of_float (to_float (logor (shift_right x 12) r)) in
+  F32.mul z (F32.of_float 0x1p12)
+
 let convert_i64_u x =
-  F32.of_float (if x >= Int64.zero then
-    Int64.to_float x
-  else
-    Int64.(to_float (shift_right_logical x 1) *. 2.0))
+  let open Int64 in
+  if I64.lt_u x 0x10_0000_0000_0000L then F32.of_float (to_float x) else
+  let r = if logand x 0xfffL = 0L then 0L else 1L in
+  let z = F32.of_float (to_float (logor (shift_right_logical x 12) r)) in
+  F32.mul z (F32.of_float 0x1p12)
 
 let reinterpret_i32 = F32.of_bits
