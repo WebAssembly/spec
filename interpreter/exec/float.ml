@@ -180,7 +180,7 @@ struct
     if xf < yf then y else
     determine_binary_nan x y
 
-  (* abs, neg, and copysign are purely bitwise operations, even on NaN values *)
+  (* abs, neg, copysign are purely bitwise operations, even on NaN values *)
   let abs x =
     Rep.logand x Rep.max_int
 

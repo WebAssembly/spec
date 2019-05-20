@@ -7,7 +7,7 @@ let demote_f64 x =
   let sign_field = Int64.(shift_left (shift_right_logical nan64bits 63) 31) in
   let significand_field = Int64.(shift_right_logical (shift_left nan64bits 12) 41) in
   let fields = Int64.logor sign_field significand_field in
-  let nan32bits = Int32.logor 0x7fc00000l (I32_convert.wrap_i64 fields) in
+  let nan32bits = Int32.logor 0x7fc0_0000l (I32_convert.wrap_i64 fields) in
   F32.of_bits nan32bits
 
 let convert_i32_s x =
@@ -19,9 +19,10 @@ let convert_i32_s x =
  * the least significant bit to round correctly.
  *)
 let convert_i32_u x =
-  F32.of_float
-    Int32.(if x >= zero then to_float x else
-           to_float (logor (shift_right_logical x 1) (logand x 1l)) *. 2.0)
+  F32.of_float Int32.(
+    if x >= zero then to_float x else
+    to_float (logor (shift_right_logical x 1) (logand x 1l)) *. 2.0
+  )
 
 (*
  * Values that are too large would get rounded when represented in f64,
