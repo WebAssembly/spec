@@ -126,7 +126,7 @@ When several of these placeholders occur in a single clause, then they must be r
 <li><p class="first">Truncation of rational values is written <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q)\)</span>, with the usual mathematical definition:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp;=&amp; \pm i &amp; (\mathrel{\mbox{if}} i \in \mathbb{N} \wedge q - 1 &lt; i \leq q) \\
+\href{../exec/numerics.html#aux-trunc}{\mathrm{trunc}}(\pm q) &amp;=&amp; \pm i &amp; (\mathrel{\mbox{if}} i \in \mathbb{N} \wedge +q - 1 &lt; i \leq +q) \\
 \end{array}\end{split}\]</div>
 </li>
 </ul>
@@ -348,8 +348,8 @@ it holds that <span class="math notranslate nohighlight">\(i_1 = i_2\cdot\href{.
 <div class="section" id="op-ishr-u">
 <span id="id12"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-ishr-u}{\mathrm{ishr\_u}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ishr-u" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Let <span class="math notranslate nohighlight">\(j_2\)</span> be <span class="math notranslate nohighlight">\(i_2\)</span> modulo <span class="math notranslate nohighlight">\(N\)</span>.</li>
-<li>Return the result of shifting <span class="math notranslate nohighlight">\(i_1\)</span> right by <span class="math notranslate nohighlight">\(j_2\)</span> bits, extended with <span class="math notranslate nohighlight">\(0\)</span> bits.</li>
+<li>Let <span class="math notranslate nohighlight">\(k\)</span> be <span class="math notranslate nohighlight">\(i_2\)</span> modulo <span class="math notranslate nohighlight">\(N\)</span>.</li>
+<li>Return the result of shifting <span class="math notranslate nohighlight">\(i_1\)</span> right by <span class="math notranslate nohighlight">\(k\)</span> bits, extended with <span class="math notranslate nohighlight">\(0\)</span> bits.</li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}lcll}
@@ -360,8 +360,8 @@ it holds that <span class="math notranslate nohighlight">\(i_1 = i_2\cdot\href{.
 <div class="section" id="op-ishr-s">
 <span id="id13"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-ishr-s}{\mathrm{ishr\_s}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-ishr-s" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Let <span class="math notranslate nohighlight">\(j_2\)</span> be <span class="math notranslate nohighlight">\(i_2\)</span> modulo <span class="math notranslate nohighlight">\(N\)</span>.</li>
-<li>Return the result of shifting <span class="math notranslate nohighlight">\(i_1\)</span> right by <span class="math notranslate nohighlight">\(j_2\)</span> bits, extended with the most significant bit of the original value.</li>
+<li>Let <span class="math notranslate nohighlight">\(k\)</span> be <span class="math notranslate nohighlight">\(i_2\)</span> modulo <span class="math notranslate nohighlight">\(N\)</span>.</li>
+<li>Return the result of shifting <span class="math notranslate nohighlight">\(i_1\)</span> right by <span class="math notranslate nohighlight">\(k\)</span> bits, extended with the most significant bit of the original value.</li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}lcll}
@@ -372,8 +372,8 @@ it holds that <span class="math notranslate nohighlight">\(i_1 = i_2\cdot\href{.
 <div class="section" id="op-irotl">
 <span id="id14"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-irotl}{\mathrm{irotl}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-irotl" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Let <span class="math notranslate nohighlight">\(j_2\)</span> be <span class="math notranslate nohighlight">\(i_2\)</span> modulo <span class="math notranslate nohighlight">\(N\)</span>.</li>
-<li>Return the result of rotating <span class="math notranslate nohighlight">\(i_1\)</span> left by <span class="math notranslate nohighlight">\(j_2\)</span> bits.</li>
+<li>Let <span class="math notranslate nohighlight">\(k\)</span> be <span class="math notranslate nohighlight">\(i_2\)</span> modulo <span class="math notranslate nohighlight">\(N\)</span>.</li>
+<li>Return the result of rotating <span class="math notranslate nohighlight">\(i_1\)</span> left by <span class="math notranslate nohighlight">\(k\)</span> bits.</li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}lcll}
@@ -384,8 +384,8 @@ it holds that <span class="math notranslate nohighlight">\(i_1 = i_2\cdot\href{.
 <div class="section" id="op-irotr">
 <span id="id15"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-irotr}{\mathrm{irotr}}_N(i_1, i_2)\)</span><a class="headerlink" href="#op-irotr" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Let <span class="math notranslate nohighlight">\(j_2\)</span> be <span class="math notranslate nohighlight">\(i_2\)</span> modulo <span class="math notranslate nohighlight">\(N\)</span>.</li>
-<li>Return the result of rotating <span class="math notranslate nohighlight">\(i_1\)</span> right by <span class="math notranslate nohighlight">\(j_2\)</span> bits.</li>
+<li>Let <span class="math notranslate nohighlight">\(k\)</span> be <span class="math notranslate nohighlight">\(i_2\)</span> modulo <span class="math notranslate nohighlight">\(N\)</span>.</li>
+<li>Return the result of rotating <span class="math notranslate nohighlight">\(i_1\)</span> right by <span class="math notranslate nohighlight">\(k\)</span> bits.</li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}lcll}
@@ -560,7 +560,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 </div>
 <div class="section" id="rounding">
 <span id="aux-ieee"></span><span id="index-9"></span><h3>Rounding<a class="headerlink" href="#rounding" title="Permalink to this headline">¶</a></h3>
-<p>Rounding always is round-to-nearest ties-to-even, in correspondance with <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a> (Section 4.3.1).</p>
+<p>Rounding always is round-to-nearest ties-to-even, in correspondence with <a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a> (Section 4.3.1).</p>
 <p>An <em>exact</em> floating-point number is a rational number that is exactly representable as a <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">floating-point number</span></a> of given bit width <span class="math notranslate nohighlight">\(N\)</span>.</p>
 <p>A <em>limit</em> number for a given floating-point bit width <span class="math notranslate nohighlight">\(N\)</span> is a positive or negative number whose magnitude is the smallest power of <span class="math notranslate nohighlight">\(2\)</span> that is not exactly representable as a floating-point number of width <span class="math notranslate nohighlight">\(N\)</span> (that magnitude is <span class="math notranslate nohighlight">\(2^{128}\)</span> for <span class="math notranslate nohighlight">\(N = 32\)</span> and <span class="math notranslate nohighlight">\(2^{1024}\)</span> for <span class="math notranslate nohighlight">\(N = 64\)</span>).</p>
 <p>A <em>candidate</em> number is either an exact floating-point number or a positive or negative limit number for the given bit width <span class="math notranslate nohighlight">\(N\)</span>.</p>
@@ -638,7 +638,7 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <span id="id30"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fadd}{\mathrm{fadd}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fadd" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>If either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a NaN, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
-<li>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of opposite signs, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of opposite signs, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</li>
 <li>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of equal sign, then return that infinity.</li>
 <li>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity, then return that infinity.</li>
 <li>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of opposite sign, then return positive zero.</li>
@@ -667,7 +667,7 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <span id="id31"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fsub}{\mathrm{fsub}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fsub" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>If either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a NaN, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
-<li>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of equal signs, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of equal signs, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</li>
 <li>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of opposite sign, then return <span class="math notranslate nohighlight">\(z_1\)</span>.</li>
 <li>Else if <span class="math notranslate nohighlight">\(z_1\)</span> is an infinity, then return that infinity.</li>
 <li>Else if <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity, then return that infinity negated.</li>
@@ -702,7 +702,7 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <span id="id32"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fmul" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>If either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a NaN, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
-<li>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> is a zero and the other an infinity, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> is a zero and the other an infinity, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</li>
 <li>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of equal sign, then return positive infinity.</li>
 <li>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of opposite sign, then return negative infinity.</li>
 <li>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity and the other a value with equal sign, then return positive infinity.</li>
@@ -734,7 +734,7 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <span id="id33"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fdiv}{\mathrm{fdiv}}_N(z_1, z_2)\)</span><a class="headerlink" href="#op-fdiv" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>If either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a NaN, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
-<li>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
+<li>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</li>
 <li>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</li>
 <li>Else if <span class="math notranslate nohighlight">\(z_1\)</span> is an infinity and <span class="math notranslate nohighlight">\(z_2\)</span> a value with equal sign, then return positive infinity.</li>
 <li>Else if <span class="math notranslate nohighlight">\(z_1\)</span> is an infinity and <span class="math notranslate nohighlight">\(z_2\)</span> a value with opposite sign, then return negative infinity.</li>
@@ -858,7 +858,7 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <span id="id39"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(z)\)</span><a class="headerlink" href="#op-fsqrt" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>If <span class="math notranslate nohighlight">\(z\)</span> is a NaN, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
-<li>Else if <span class="math notranslate nohighlight">\(z\)</span> has a negative sign, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</li>
+<li>Else if <span class="math notranslate nohighlight">\(z\)</span> has a negative sign, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</li>
 <li>Else if <span class="math notranslate nohighlight">\(z\)</span> is positive infinity, then return positive infinity.</li>
 <li>Else if <span class="math notranslate nohighlight">\(z\)</span> is a zero, then return that zero.</li>
 <li>Else return the square root of <span class="math notranslate nohighlight">\(z\)</span>.</li>
@@ -1170,7 +1170,7 @@ It is not defined for NaNs, infinities, or values for which the result is out of
 <span id="id55"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-promote}{\mathrm{promote}}_{M,N}(z)\)</span><a class="headerlink" href="#op-promote" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>If <span class="math notranslate nohighlight">\(z\)</span> is a <a class="reference internal" href="../syntax/values.html#canonical-nan"><span class="std std-ref">canonical NaN</span></a>, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span> (i.e., a canonical NaN of size <span class="math notranslate nohighlight">\(N\)</span>).</li>
-<li>Else if <span class="math notranslate nohighlight">\(z\)</span> is a NaN, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\}\)</span> (i.e., any NaN of size <span class="math notranslate nohighlight">\(N\)</span>).</li>
+<li>Else if <span class="math notranslate nohighlight">\(z\)</span> is a NaN, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\pm \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(1)\}\)</span> (i.e., any <a class="reference internal" href="../syntax/values.html#arithmetic-nan"><span class="std std-ref">arithmetic NaN</span></a> of size <span class="math notranslate nohighlight">\(N\)</span>).</li>
 <li>Else, return <span class="math notranslate nohighlight">\(z\)</span>.</li>
 </ul>
 <div class="math notranslate nohighlight">

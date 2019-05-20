@@ -342,9 +342,9 @@ Conversely, a simple block label has the form</p>
 <p class="last">When branching, the empty continuation ends the targeted block, such that execution can proceed with consecutive instructions.</p>
 </div>
 </div>
-<div class="section" id="frames">
-<h3>Frames<a class="headerlink" href="#frames" title="Permalink to this headline">¶</a></h3>
-<p>Activation frames carry the return arity of the respective function,
+<div class="section" id="activations-and-frames">
+<h3>Activations and Frames<a class="headerlink" href="#activations-and-frames" title="Permalink to this headline">¶</a></h3>
+<p>Activation frames carry the return arity <span class="math notranslate nohighlight">\(n\)</span> of the respective function,
 hold the values of its <a class="reference internal" href="../syntax/modules.html#syntax-local"><span class="std std-ref">locals</span></a> (including arguments) in the order corresponding to their static <a class="reference internal" href="../syntax/modules.html#syntax-localidx"><span class="std std-ref">local indices</span></a>,
 and a reference to the function’s own <a class="reference internal" href="#syntax-moduleinst"><span class="std std-ref">module instance</span></a>:</p>
 <div class="math notranslate nohighlight">
@@ -414,7 +414,7 @@ When <span class="math notranslate nohighlight">\(\href{../syntax/instructions.h
 </div>
 <div class="section" id="block-contexts">
 <span id="syntax-ctxt-block"></span><span id="index-14"></span><h3>Block Contexts<a class="headerlink" href="#block-contexts" title="Permalink to this headline">¶</a></h3>
-<p>In order to specify the reduction of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">branches</span></a>, the following syntax of <em>block contexts</em> is defined, indexed by the count <span class="math notranslate nohighlight">\(k\)</span> of labels surrounding the hole:</p>
+<p>In order to specify the reduction of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">branches</span></a>, the following syntax of <em>block contexts</em> is defined, indexed by the count <span class="math notranslate nohighlight">\(k\)</span> of labels surrounding a <em>hole</em> <span class="math notranslate nohighlight">\([\_]\)</span> that marks the place where the next step of computation is taking place:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef1197#1{{}}\mathdef1197{(block contexts)} &amp; \href{../exec/runtime.html#syntax-ctxt-block}{B}^0 &amp;::=&amp;
@@ -438,7 +438,7 @@ The selected label is identified through the <a class="reference internal" href=
 <span id="syntax-config"></span><span id="syntax-thread"></span><span id="index-15"></span><h3>Configurations<a class="headerlink" href="#configurations" title="Permalink to this headline">¶</a></h3>
 <p>A <em>configuration</em> consists of the current <a class="reference internal" href="#syntax-store"><span class="std std-ref">store</span></a> and an executing <em>thread</em>.</p>
 <p>A thread is a computation over <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a>
-that operates relative to a current <a class="reference internal" href="#syntax-frame"><span class="std std-ref">frame</span></a> referring to the home <a class="reference internal" href="#syntax-moduleinst"><span class="std std-ref">module instance</span></a> that the computation runs in.</p>
+that operates relative to a current <a class="reference internal" href="#syntax-frame"><span class="std std-ref">frame</span></a> referring to the <a class="reference internal" href="#syntax-moduleinst"><span class="std std-ref">module instance</span></a> in which the computation runs, i.e., where the current function originates from.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl}
 \def\mathdef1197#1{{}}\mathdef1197{(configuration)} &amp; \href{../exec/runtime.html#syntax-config}{\mathit{config}} &amp;::=&amp;

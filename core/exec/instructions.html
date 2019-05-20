@@ -89,7 +89,7 @@
 <p>WebAssembly computation is performed by executing individual <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a>.</p>
 <div class="section" id="numeric-instructions">
 <span id="exec-instr-numeric"></span><span id="index-1"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
-<p>Numeric instructions are defined in terms of the basic <a class="reference internal" href="numerics.html#exec-numeric"><span class="std std-ref">numeric operators</span></a>.
+<p>Numeric instructions are defined in terms of the generic <a class="reference internal" href="numerics.html#exec-numeric"><span class="std std-ref">numeric operators</span></a>.
 The mapping of numeric instructions to their underlying operators is expressed by the following definition:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
@@ -103,6 +103,15 @@ The mapping of numeric instructions to their underlying operators is expressed b
 \end{array}\end{split}\]</div>
 <p>Where the underlying operators are partial, the corresponding instruction will <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> when the result is not defined.
 Where the underlying operators are non-deterministic, because they may return one of multiple possible <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a> values, so are the corresponding instructions.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For example, the result of instruction <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> applied to operands <span class="math notranslate nohighlight">\(i_1, i_2\)</span>
+invokes <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}}(i_1, i_2)\)</span>,
+which maps to the generic <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-iadd}{\mathrm{iadd}}_{32}(i_1, i_2)\)</span> via the above definition.
+Similarly, <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_}\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}\mathsf{\_s}\)</span> applied to <span class="math notranslate nohighlight">\(z\)</span>
+invokes <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}^{\mathsf{s}}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}},\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}}(z)\)</span>,
+which maps to the generic <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-trunc-s}{\mathrm{trunc}^{\mathsf{s}}}_{32,64}(z)\)</span>.</p>
+</div>
 <div class="section" id="exec-const">
 <span id="id1"></span><h3><span class="math notranslate nohighlight">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span><a class="headerlink" href="#exec-const" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
@@ -932,11 +941,8 @@ However, the effects of any such call are subsumed by the non-deterministic beha
 </ol>
 <p>The value <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span> is the result of the evaluation.</p>
 <div class="math notranslate nohighlight">
-\[\frac{
-  S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F'; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'^\ast
-}{
-  S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F'; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}
-}\]</div>
+\[S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F'; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'^\ast
+\qquad (\mathrel{\mbox{if}} S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S'; F'; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}})\]</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Evaluation iterates this reduction rule until reaching a value.

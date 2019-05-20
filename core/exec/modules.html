@@ -350,7 +350,7 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 <li>Let <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> to grow and <span class="math notranslate nohighlight">\(n\)</span> the number of elements by which to grow it.</li>
 <li>Let <span class="math notranslate nohighlight">\(\mathit{len}\)</span> be <span class="math notranslate nohighlight">\(n\)</span> added to the length of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>.</li>
 <li>If <span class="math notranslate nohighlight">\(\mathit{len}\)</span> is larger than or equal to <span class="math notranslate nohighlight">\(2^{32}\)</span>, then fail.</li>
-<li>If <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{max}}\)</span> is not empty and smaller than <span class="math notranslate nohighlight">\(\mathit{len}\)</span>, then fail.</li>
+<li>If <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{max}}\)</span> is not empty and its value is smaller than <span class="math notranslate nohighlight">\(\mathit{len}\)</span>, then fail.</li>
 <li>Append <span class="math notranslate nohighlight">\(n\)</span> empty elements to <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>.</li>
 </ol>
 <div class="math notranslate nohighlight">
@@ -668,6 +668,8 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
 </li>
 </ol>
 </li>
+<li>Let <span class="math notranslate nohighlight">\(F\)</span> be the dummy <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frame</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~\{\}, \href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\epsilon \}\)</span>.</li>
+<li>Push the frame <span class="math notranslate nohighlight">\(F\)</span> to the stack.</li>
 <li>Push the values <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span> to the stack.</li>
 <li><a class="reference internal" href="instructions.html#exec-invoke"><span class="std std-ref">Invoke</span></a> the function instance at address <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span>.</li>
 </ol>
