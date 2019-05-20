@@ -383,7 +383,7 @@ Growing :ref:`tables <syntax-tableinst>`
 
 3. If :math:`\X{len}` is larger than or equal to :math:`2^{32}`, then fail.
 
-4. If :math:`\tableinst.\TIMAX` is not empty and smaller than :math:`\X{len}`, then fail.
+4. If :math:`\tableinst.\TIMAX` is not empty and its value is smaller than :math:`\X{len}`, then fail.
 
 5. Append :math:`n` empty elements to :math:`\tableinst.\TIELEM`.
 
@@ -773,9 +773,13 @@ The following steps are performed:
 
       i. Fail.
 
-6. Push the values :math:`\val^\ast` to the stack.
+6. Let :math:`F` be the dummy :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~\{\}, \ALOCALS~\epsilon \}`.
 
-7. :ref:`Invoke <exec-invoke>` the function instance at address :math:`\funcaddr`.
+7. Push the frame :math:`F` to the stack.
+
+8. Push the values :math:`\val^\ast` to the stack.
+
+9. :ref:`Invoke <exec-invoke>` the function instance at address :math:`\funcaddr`.
 
 Once the function has returned, the following steps are executed:
 

@@ -60,6 +60,7 @@ project = u'WebAssembly'
 title = u'WebAssembly Specification'
 copyright = u'2017, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
+editor = u'Andreas Rossberg (editor)'
 logo = 'static/webassembly.png'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -301,7 +302,7 @@ latex_documents = [
   ( master_doc,
     name + '.tex',
     title,
-    author,
+    author + '\\\\ \\hfill\\large ' + editor,
     'manual'
   ),
 ]

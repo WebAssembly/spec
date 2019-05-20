@@ -54,7 +54,7 @@ Conventions:
 
   .. math::
      \begin{array}{lll@{\qquad}l}
-     \trunc(\pm q) &=& \pm i & (\iff i \in \mathbb{N} \wedge q - 1 < i \leq q) \\
+     \trunc(\pm q) &=& \pm i & (\iff i \in \mathbb{N} \wedge +q - 1 < i \leq +q) \\
      \end{array}
 
 
@@ -358,9 +358,9 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 :math:`\ishru_N(i_1, i_2)`
 ..........................
 
-* Let :math:`j_2` be :math:`i_2` modulo :math:`N`.
+* Let :math:`k` be :math:`i_2` modulo :math:`N`.
 
-* Return the result of shifting :math:`i_1` right by :math:`j_2` bits, extended with :math:`0` bits.
+* Return the result of shifting :math:`i_1` right by :math:`k` bits, extended with :math:`0` bits.
 
 .. math::
    \begin{array}{@{}lcll}
@@ -373,9 +373,9 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 :math:`\ishrs_N(i_1, i_2)`
 ..........................
 
-* Let :math:`j_2` be :math:`i_2` modulo :math:`N`.
+* Let :math:`k` be :math:`i_2` modulo :math:`N`.
 
-* Return the result of shifting :math:`i_1` right by :math:`j_2` bits, extended with the most significant bit of the original value.
+* Return the result of shifting :math:`i_1` right by :math:`k` bits, extended with the most significant bit of the original value.
 
 .. math::
    \begin{array}{@{}lcll}
@@ -388,9 +388,9 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 :math:`\irotl_N(i_1, i_2)`
 ..........................
 
-* Let :math:`j_2` be :math:`i_2` modulo :math:`N`.
+* Let :math:`k` be :math:`i_2` modulo :math:`N`.
 
-* Return the result of rotating :math:`i_1` left by :math:`j_2` bits.
+* Return the result of rotating :math:`i_1` left by :math:`k` bits.
 
 .. math::
    \begin{array}{@{}lcll}
@@ -403,9 +403,9 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 :math:`\irotr_N(i_1, i_2)`
 ..........................
 
-* Let :math:`j_2` be :math:`i_2` modulo :math:`N`.
+* Let :math:`k` be :math:`i_2` modulo :math:`N`.
 
-* Return the result of rotating :math:`i_1` right by :math:`j_2` bits.
+* Return the result of rotating :math:`i_1` right by :math:`k` bits.
 
 .. math::
    \begin{array}{@{}lcll}
@@ -640,7 +640,7 @@ with the following qualifications:
 Rounding
 ........
 
-Rounding always is round-to-nearest ties-to-even, in correspondance with |IEEE754|_ (Section 4.3.1).
+Rounding always is round-to-nearest ties-to-even, in correspondence with |IEEE754|_ (Section 4.3.1).
 
 An *exact* floating-point number is a rational number that is exactly representable as a :ref:`floating-point number <syntax-float>` of given bit width :math:`N`.
 
@@ -746,7 +746,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if both :math:`z_1` and :math:`z_2` are infinities of opposite signs, then return an element of :math:`\nans_N\{z_1, z_2\}`.
+* Else if both :math:`z_1` and :math:`z_2` are infinities of opposite signs, then return an element of :math:`\nans_N\{\}`.
 
 * Else if both :math:`z_1` and :math:`z_2` are infinities of equal sign, then return that infinity.
 
@@ -786,7 +786,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if both :math:`z_1` and :math:`z_2` are infinities of equal signs, then return an element of :math:`\nans_N\{z_1, z_2\}`.
+* Else if both :math:`z_1` and :math:`z_2` are infinities of equal signs, then return an element of :math:`\nans_N\{\}`.
 
 * Else if both :math:`z_1` and :math:`z_2` are infinities of opposite sign, then return :math:`z_1`.
 
@@ -833,7 +833,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if one of :math:`z_1` and :math:`z_2` is a zero and the other an infinity, then return an element of :math:`\nans_N\{z_1, z_2\}`.
+* Else if one of :math:`z_1` and :math:`z_2` is a zero and the other an infinity, then return an element of :math:`\nans_N\{\}`.
 
 * Else if both :math:`z_1` and :math:`z_2` are infinities of equal sign, then return positive infinity.
 
@@ -876,7 +876,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if both :math:`z_1` and :math:`z_2` are infinities, then return an element of :math:`\nans_N\{z_1, z_2\}`.
+* Else if both :math:`z_1` and :math:`z_2` are infinities, then return an element of :math:`\nans_N\{\}`.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
@@ -1045,7 +1045,7 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * If :math:`z` is a NaN, then return an element of :math:`\nans_N\{z\}`.
 
-* Else if :math:`z` has a negative sign, then return an element of :math:`\nans_N\{z\}`.
+* Else if :math:`z` has a negative sign, then return an element of :math:`\nans_N\{\}`.
 
 * Else if :math:`z` is positive infinity, then return positive infinity.
 
@@ -1471,7 +1471,7 @@ Conversions
 
 * If :math:`z` is a :ref:`canonical NaN <canonical-nan>`, then return an element of :math:`\nans_N\{\}` (i.e., a canonical NaN of size :math:`N`).
 
-* Else if :math:`z` is a NaN, then return an element of :math:`\nans_N\{\pm \NAN(1)\}` (i.e., any NaN of size :math:`N`).
+* Else if :math:`z` is a NaN, then return an element of :math:`\nans_N\{\pm \NAN(1)\}` (i.e., any :ref:`arithmetic NaN <arithmetic-nan>` of size :math:`N`).
 
 * Else, return :math:`z`.
 

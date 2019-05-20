@@ -15,7 +15,7 @@ WebAssembly computation is performed by executing individual :ref:`instructions 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-Numeric instructions are defined in terms of the basic :ref:`numeric operators <exec-numeric>`.
+Numeric instructions are defined in terms of the generic :ref:`numeric operators <exec-numeric>`.
 The mapping of numeric instructions to their underlying operators is expressed by the following definition:
 
 .. math::
@@ -33,6 +33,14 @@ And for :ref:`conversion operators <exec-cvtop>`:
 
 Where the underlying operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
 Where the underlying operators are non-deterministic, because they may return one of multiple possible :ref:`NaN <syntax-nan>` values, so are the corresponding instructions.
+
+.. note::
+   For example, the result of instruction :math:`\I32.\ADD` applied to operands :math:`i_1, i_2`
+   invokes :math:`\ADD_{\I32}(i_1, i_2)`,
+   which maps to the generic :math:`\iadd_{32}(i_1, i_2)` via the above definition.
+   Similarly, :math:`\I64.\TRUNC\K{\_}\F32\K{\_s}` applied to :math:`z`
+   invokes :math:`\TRUNC^{\K{s}}_{\F32,\I64}(z)`,
+   which maps to the generic :math:`\truncs_{32,64}(z)`.
 
 
 .. _exec-const:
@@ -1149,11 +1157,8 @@ An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <e
 The value :math:`\val` is the result of the evaluation.
 
 .. math::
-   \frac{
-     S; F; \instr^\ast \stepto S'; F'; \instr'^\ast
-   }{
-     S; F; \instr^\ast~\END \stepto S'; F'; \instr'^\ast~\END
-   }
+   S; F; \instr^\ast \stepto S'; F'; \instr'^\ast
+   \qquad (\iff S; F; \instr^\ast~\END \stepto S'; F'; \instr'^\ast~\END)
 
 .. note::
    Evaluation iterates this reduction rule until reaching a value.
