@@ -133,7 +133,7 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 
 The following new subtyping rules are added:
 
-* Concrete and optional reference types are covariant
+* Concrete and optional reference types are invariant
   - `ref $t1 <: ref $t2`
      - iff `$t1 = $t2`
   - `optref $t1 <: optref $t2`
