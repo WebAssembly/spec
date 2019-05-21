@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Note: Basic support for simple [reference types](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md)and for [typed function references proposal](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md) have been carved out into a [separate proposal that should become the future basis for this proposal.
+Note: Basic support for simple [reference types](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md) and for [typed function references proposal](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md) have been carved out into separate proposals which should become the future basis for this proposal.
 
 
 See [MVP](MVP.md) for a concrete v1 proposal.
