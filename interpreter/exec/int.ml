@@ -175,7 +175,7 @@ struct
     let rec loop acc n =
       if n = Rep.zero then
         Rep.bitwidth
-      else if and_ n (Rep.shift_left Rep.one (Rep.bitwidth - 1)) = Rep.zero then
+      else if and_ n (Rep.shift_left Rep.one (Rep.bitwidth - 1)) = zero then
         loop (1 + acc) (Rep.shift_left n 1)
       else
         acc
