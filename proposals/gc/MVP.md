@@ -109,6 +109,12 @@ In addition to the rules for [basic](https://github.com/WebAssembly/reference-ty
      - or `$t = type rt` and `rt <: eqref`
   - TODO: provide a way to make data types non-eq, especially immutable ones
 
+* Concrete and optional reference types are covariant
+  - `ref $t1 <: ref $t2`
+     - iff `$t1 <: $t2`
+  - `optref $t1 <: optref $t2`
+     - iff `$t1 <: $t2`
+
 * Structure types support width and depth subtyping
   - `struct <fieldtype1>* <fieldtype1'>* <: struct <fieldtype2>*`
     - iff `(<fieldtype1> <: <fieldtype2>)*`
