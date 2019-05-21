@@ -601,7 +601,7 @@ This extends to nested and recursive types:
 (type $u (struct (type $vec) (ptr $u)))   ;; u = t1 = t2
 ```
 Note: This is the standard definition of recursive structural equivalence for "equi-recursive" types.
-Checking it is computationally equivalent to checking whether two FSAs are equivalent, i.e., it is a non-trivial algorithm (even though most practical cases will be trivial).
+Checking it is computationally equivalent to checking whether two DFAs are equivalent, i.e., it is a non-trivial algorithm (even though most practical cases will be trivial).
 This may be a problem, in which case we need to fall back to a more restrictive definition, although it is unclear what exactly that would be.
 
 
@@ -627,7 +627,7 @@ The subtyping relation is the reflexive transitive closure of a few basic rules:
 
 Note: Like [type equivalence](#type-equivalence), subtyping is *structural*.
 The above is the standard (co-inductive) definition, which is the most general definition that is sound.
-Checking it is computationally equivalent to checking whether one FSA recognises a sublanguage of another FSA, i.e., it is a non-trivial algorithm (even though most practical cases will be trivial).
+Checking it is computationally equivalent to checking whether one DFA recognises a sublanguage of another DFA, i.e., it is a non-trivial algorithm (even though most practical cases will be trivial).
 Like with type equivalence, this may be a problem, in which case a more restrictive definition might be needed.
 
 Subtyping could be relaxed such that mutable fields/elements could be subtypes of immutable ones.
