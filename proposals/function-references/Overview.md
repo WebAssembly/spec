@@ -131,11 +131,14 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 
 #### Subtyping
 
+The following new subtyping rules are added:
+
 * Concrete and optional reference types are covariant
   - `ref $t1 <: ref $t2`
-     - iff `$t1 <: $t2`
+     - iff `$t1 = $t2`
   - `optref $t1 <: optref $t2`
-     - iff `$t1 <: $t2`
+     - iff `$t1 = $t2`
+  - Note: no structural subtyping yet, deferred to GC proposal
 
 * Any nullable reference type is a subtype of `anyref` and a supertype of `nullref`
   - `optref $t <: anyref`
