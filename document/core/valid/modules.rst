@@ -182,7 +182,7 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
 
 
 :math:`\{ \ETYPE~et, \EINIT~e^\ast \}`
-...........................
+......................................
 
 * For each :math:`e_i` in :math:`e^\ast`,
 
