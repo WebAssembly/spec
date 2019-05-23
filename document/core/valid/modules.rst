@@ -181,7 +181,7 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
    }
 
 
-:math:`\{ \EINIT~e^\ast \}`
+:math:`\{ \ETYPE~et, \EINIT~e^\ast \}`
 ...........................
 
 * For each :math:`e_i` in :math:`e^\ast`,
@@ -195,7 +195,7 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
    \frac{
      (C \vdashelemexpr e \ok)^\ast
    }{
-     C \vdashelem \{ \EINIT~e^\ast \} : \SPASSIVE
+     C \vdashelem \{ \ETYPE~et, \EINIT~e^\ast \} : \SPASSIVE
    }
 
 

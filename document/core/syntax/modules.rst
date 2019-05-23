@@ -256,13 +256,13 @@ The initial contents of a table is uninitialized. *Element segments* can be used
 
 Element segments can be :ref:`active <syntax-active>` or :ref:`passive <syntax-passive>`. An active element segment copies its elements into a table during :ref:`instantiation <exec-instantiation>`. A passive element segment's elements can be copied using the |TABLEINIT| instruction.
 
-The |MELEM| component of a module defines a vector of element segments. Each active element segment defines the |ETABLE| and the starting |EOFFSET| in that table to initialize. Each passive element segment only defines its contents.
+The |MELEM| component of a module defines a vector of element segments. Each active element segment defines the |ETABLE| and the starting |EOFFSET| in that table to initialize. Each passive element segment defines its element type and contents.
 
 .. math::
    \begin{array}{llll}
    \production{element segment} & \elem &::=&
      \{ \ETABLE~\tableidx, \EOFFSET~\expr, \EINIT~\vec(\elemexpr) \} \\&&|&
-     \{ \EINIT~\vec(\elemexpr) \} \\
+     \{ \ETYPE~\elemtype, \EINIT~\vec(\elemexpr) \} \\
    \production{elemexpr} & \elemexpr &::=&
      \REFNULL~\END \\&&|&
      (\REFFUNC~\funcidx)~\END \\

@@ -266,6 +266,7 @@
 .. |ETABLE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{table}}
 .. |EOFFSET| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{offset}}
 .. |EINIT| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{init}}
+.. |ETYPE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{type}}
 
 .. |REFNULL| mathdef:: \xref{syntax/modules}{syntax-elemexpr}{\K{ref.null}}
 .. |REFFUNC| mathdef:: \xref{syntax/modules}{syntax-elemexpr}{\K{ref.func}}
