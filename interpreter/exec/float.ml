@@ -2,8 +2,14 @@ module type RepType =
 sig
   type t
 
+  val zero : t
+  val min_int : t
+  val max_int : t
+
   val pos_nan : t
   val neg_nan : t
+  val bare_nan : t
+
   val bits_of_float : float -> t
   val float_of_bits : t -> float
   val of_string : string -> t
@@ -14,12 +20,6 @@ sig
   val logand : t -> t -> t
   val logor : t -> t -> t
   val logxor : t -> t -> t
-
-  val min_int : t
-  val max_int : t
-
-  val zero : t
-  val bare_nan : t
 end
 
 module type S =
@@ -221,6 +221,7 @@ struct
         if s.[i] <> '_' then Buffer.add_char buf s.[i]
       done;
       let s' = Buffer.contents buf in
+      (* TODO(#809): this causes double rounding *)
       let x = of_float (float_of_string s') in
       if is_inf x then failwith "of_string" else x
 
