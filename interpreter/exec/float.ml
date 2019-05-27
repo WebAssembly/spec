@@ -217,9 +217,6 @@ struct
   let rec compare_mantissa_str' hex s1 i1 s2 i2 =
     let i1' = skip_non_hex s1 i1 in
     let i2' = skip_non_hex s2 i2 in
-(*
-Printf.printf "[cmp %b %d:%d/%d:%b %d:%d/%d:%b]\n" (s1=s2) i1 i1' (String.length s1) (at_end hex s1 i1') i2 i2' (String.length s2) (at_end hex s2 i2');
-*)
     match at_end hex s1 i1', at_end hex s2 i2' with
     | true, true -> 0
     | true, false -> if at_end hex s2 (skip_zeroes s2 i2') then 0 else +1
@@ -273,20 +270,10 @@ Printf.printf "[cmp %b %d:%d/%d:%b %d:%d/%d:%b]\n" (s1=s2) i1 i1' (String.length
      *   remove tie by adding epsilon.
      * - In all other cases we are good.
      *)
-let z' =
     match compare_mantissa_str hex s s', logand bits lsb <> zero with
     | -1, true -> z -. eps (* already rounded up, odd lsb: sub epsilon *)
     | +1, false -> z +. eps (* already rounded down, even lsb: add epsilon *)
     | _ -> z (* no rounding occurred or it doesn't affect outcome *)
-in
-let s'' = Printf.sprintf (if hex then "%.*h" else "%.*g") (String.length s) z' in
-let b = logand bits lsb = zero in
-let n = compare_mantissa_str hex s s' in
-if z' = z then
-Printf.printf ("[tie! %b %+d %s, %s genuine]\n") b n s s'
-else
-Printf.printf ("[tie! %b %+d %s, %s corrected (eps=%h) to %s]\n") b n s s' eps s'';
-z'
 
   let of_signless_string s =
     if s = "inf" then
