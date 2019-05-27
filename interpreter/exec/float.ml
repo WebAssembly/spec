@@ -253,27 +253,21 @@ struct
     let mask = lognot (shift_left (-1L) (52 - Rep.mantissa)) in
     (* If we will have no tie, we are good. *)
     if logand bits mask <> tie then z else
-    (* Else, define epsilon as half the value of the target LSB's value. *)
-    let exp = float_of_bits (logand bits 0xfff0_0000_0000_0000L) in
-    let eps = float_of_bits (logor tie (bits_of_float exp)) -. exp in
     (* Convert 64 bit float back to string to compare to input. *)
     let hex = String.sub s 0 2 = "0x" in
     let s' =
       Printf.sprintf (if hex then "%.*h" else "%.*g") (String.length s) z in
     (*
-     * Compare mantissas in string representation:
-     * - If mantissa became larger, 64 bit float was rounded up already;
-     *   if also target LSB is set, round-to-even would round up once more,
-     *   remove tie by subtracting epsilon.
-     * - If mantissa became smaller, 64 bit float was rounded down already;
-     *   if also target LSB is clear, round-to-even would round down again,
-     *   remove tie by adding epsilon.
-     * - In all other cases we are good.
+     * - If mantissa became larger, float was rounded up to tie already;
+     *   round-to-even might round up again: clear tie bit to round down.
+     * - If mantissa became smaller, float was rounded down to tie already;
+     *   round-to-even migth round down again: set bit below tie to round up.
+     * - If tie is not the result of prior rounding, then we are good.
      *)
-    match compare_mantissa_str hex s s', logand bits lsb <> zero with
-    | -1, true -> z -. eps (* already rounded up, odd lsb: sub epsilon *)
-    | +1, false -> z +. eps (* already rounded down, even lsb: add epsilon *)
-    | _ -> z (* no rounding occurred or it doesn't affect outcome *)
+    match compare_mantissa_str hex s s' with
+    | -1 -> float_of_bits (logand bits (lognot tie))
+    | +1 -> float_of_bits (logor bits (shift_right tie 1))
+    | _ -> z
 
   let of_signless_string s =
     if s = "inf" then
