@@ -142,12 +142,92 @@
   "constant out of range"
 )
 
+;; NaNs
+(module (func (f32.const nan:0x1) drop))
+(module (func (f64.const nan:0x1) drop))
+(module (func (f32.const nan:0x7f_ffff) drop))
+(module (func (f64.const nan:0xf_ffff_ffff_ffff) drop))
+
+(assert_malformed
+  (module quote "(func (f32.const nan:1) drop)")
+  "unknown operator"
+)
+(assert_malformed
+  (module quote "(func (f64.const nan:1) drop)")
+  "unknown operator"
+)
+
+(assert_malformed
+  (module quote "(func (f32.const nan:0x0) drop)")
+  "constant out of range"
+)
+(assert_malformed
+  (module quote "(func (f64.const nan:0x0) drop)")
+  "constant out of range"
+)
+
+(assert_malformed
+  (module quote "(func (f32.const nan:0x80_0000) drop)")
+  "constant out of range"
+)
+(assert_malformed
+  (module quote "(func (f64.const nan:0x10_0000_0000_0000) drop)")
+  "constant out of range"
+)
+
+
+;; Signs on special values
+
+(module
+  (func (export "f32") (param f32) (result i32)
+    (i32.reinterpret_f32 (local.get 0))
+  )
+  (func (export "f64") (param f64) (result i64)
+    (i64.reinterpret_f64 (local.get 0))
+  )
+)
+
+(assert_return (invoke "f32" (f32.const 0)) (i32.const 0x0000_0000))
+(assert_return (invoke "f32" (f32.const +0)) (i32.const 0x0000_0000))
+(assert_return (invoke "f32" (f32.const -0)) (i32.const 0x8000_0000))
+
+(assert_return (invoke "f64" (f64.const 0)) (i64.const 0x0000_0000_0000_0000))
+(assert_return (invoke "f64" (f64.const +0)) (i64.const 0x0000_0000_0000_0000))
+(assert_return (invoke "f64" (f64.const -0)) (i64.const 0x8000_0000_0000_0000))
+
+(assert_return (invoke "f32" (f32.const inf)) (i32.const 0x7f80_0000))
+(assert_return (invoke "f32" (f32.const +inf)) (i32.const 0x7f80_0000))
+(assert_return (invoke "f32" (f32.const -inf)) (i32.const 0xff80_0000))
+
+(assert_return (invoke "f64" (f64.const inf)) (i64.const 0x7ff0_0000_0000_0000))
+(assert_return (invoke "f64" (f64.const +inf)) (i64.const 0x7ff0_0000_0000_0000))
+(assert_return (invoke "f64" (f64.const -inf)) (i64.const 0xfff0_0000_0000_0000))
+
+(assert_return (invoke "f32" (f32.const nan)) (i32.const 0x7fc0_0000))
+(assert_return (invoke "f32" (f32.const +nan)) (i32.const 0x7fc0_0000))
+(assert_return (invoke "f32" (f32.const -nan)) (i32.const 0xffc0_0000))
+
+(assert_return (invoke "f64" (f64.const nan)) (i64.const 0x7ff8_0000_0000_0000))
+(assert_return (invoke "f64" (f64.const +nan)) (i64.const 0x7ff8_0000_0000_0000))
+(assert_return (invoke "f64" (f64.const -nan)) (i64.const 0xfff8_0000_0000_0000))
+
+(assert_return (invoke "f32" (f32.const nan:0x12_3456)) (i32.const 0x7f92_3456))
+(assert_return (invoke "f32" (f32.const +nan:0x12_3456)) (i32.const 0x7f92_3456))
+(assert_return (invoke "f32" (f32.const -nan:0x12_3456)) (i32.const 0xff92_3456))
+
+(assert_return (invoke "f64" (f64.const nan:0x1_2345_6789_abcd)) (i64.const 0x7ff1_2345_6789_abcd))
+(assert_return (invoke "f64" (f64.const +nan:0x1_2345_6789_abcd)) (i64.const 0x7ff1_2345_6789_abcd))
+(assert_return (invoke "f64" (f64.const -nan:0x1_2345_6789_abcd)) (i64.const 0xfff1_2345_6789_abcd))
+
 
 ;; Rounding behaviour
 
-(module (func (export "f32") (param f32) (result f32) (local.get 0)))
+(module
+  (func (export "f32") (param f32) (result f32) (local.get 0))
+  (func (export "f64") (param f64) (result f64) (local.get 0))
+)
 
-;; Small exponent
+;; f32, small exponent
 (assert_return (invoke "f32" (f32.const +0x1.00000100000000000p-50)) (f32.const +0x1.000000p-50))
 (assert_return (invoke "f32" (f32.const -0x1.00000100000000000p-50)) (f32.const -0x1.000000p-50))
 
@@ -180,7 +260,7 @@
 (assert_return (invoke "f32" (f32.const +0x1.00000500000000001p-50)) (f32.const +0x1.000006p-50))
 (assert_return (invoke "f32" (f32.const -0x1.00000500000000001p-50)) (f32.const -0x1.000006p-50))
 
-;; Large exponent
+;; f32, large exponent
 (assert_return (invoke "f32" (f32.const +0x1.00000100000000000p+50)) (f32.const +0x1.000000p+50))
 (assert_return (invoke "f32" (f32.const -0x1.00000100000000000p+50)) (f32.const -0x1.000000p+50))
 
@@ -213,7 +293,7 @@
 (assert_return (invoke "f32" (f32.const +0x1.00000500000000001p+50)) (f32.const +0x1.000006p+50))
 (assert_return (invoke "f32" (f32.const -0x1.00000500000000001p+50)) (f32.const -0x1.000006p+50))
 
-;; Subnormal
+;; f32, subnormal
 (assert_return (invoke "f32" (f32.const +0x0.00000100000000000p-126)) (f32.const +0x0.000000p-126))
 (assert_return (invoke "f32" (f32.const -0x0.00000100000000000p-126)) (f32.const -0x0.000000p-126))
 
@@ -246,7 +326,7 @@
 (assert_return (invoke "f32" (f32.const +0x0.00000500000000001p-126)) (f32.const +0x0.000006p-126))
 (assert_return (invoke "f32" (f32.const -0x0.00000500000000001p-126)) (f32.const -0x0.000006p-126))
 
-;; Round down at limit to infinity
+;; f32, round down at limit to infinity
 (assert_return (invoke "f32" (f32.const +0x1.fffffe8p127)) (f32.const +0x1.fffffep127))
 (assert_return (invoke "f32" (f32.const -0x1.fffffe8p127)) (f32.const -0x1.fffffep127))
 (assert_return (invoke "f32" (f32.const +0x1.fffffefffffff8p127)) (f32.const +0x1.fffffep127))
@@ -254,10 +334,7 @@
 (assert_return (invoke "f32" (f32.const +0x1.fffffefffffffffffp127)) (f32.const +0x1.fffffep127))
 (assert_return (invoke "f32" (f32.const -0x1.fffffefffffffffffp127)) (f32.const -0x1.fffffep127))
 
-
-(module (func (export "f64") (param f64) (result f64) (local.get 0)))
-
-;; Small exponent
+;; f64, small exponent
 (assert_return (invoke "f64" (f64.const +0x1.000000000000080000000000p-600)) (f64.const +0x1.0000000000000p-600))
 (assert_return (invoke "f64" (f64.const -0x1.000000000000080000000000p-600)) (f64.const -0x1.0000000000000p-600))
 
@@ -290,7 +367,7 @@
 (assert_return (invoke "f64" (f64.const +0x1.000000000000280000000001p-600)) (f64.const +0x1.0000000000003p-600))
 (assert_return (invoke "f64" (f64.const -0x1.000000000000280000000001p-600)) (f64.const -0x1.0000000000003p-600))
 
-;; Large exponent
+;; f64, large exponent
 (assert_return (invoke "f64" (f64.const +0x1.000000000000080000000000p+600)) (f64.const +0x1.0000000000000p+600))
 (assert_return (invoke "f64" (f64.const -0x1.000000000000080000000000p+600)) (f64.const -0x1.0000000000000p+600))
 
@@ -323,7 +400,7 @@
 (assert_return (invoke "f64" (f64.const +0x1.000000000000280000000001p+600)) (f64.const +0x1.0000000000003p+600))
 (assert_return (invoke "f64" (f64.const -0x1.000000000000280000000001p+600)) (f64.const -0x1.0000000000003p+600))
 
-;; Subnormal
+;; f64, subnormal
 (assert_return (invoke "f64" (f64.const +0x0.000000000000080000000000p-1022)) (f64.const +0x0.0000000000000p-1022))
 (assert_return (invoke "f64" (f64.const -0x0.000000000000080000000000p-1022)) (f64.const -0x0.0000000000000p-1022))
 
@@ -356,7 +433,7 @@
 (assert_return (invoke "f64" (f64.const +0x1.000000000000280000000001p-1022)) (f64.const +0x1.0000000000003p-1022))
 (assert_return (invoke "f64" (f64.const -0x1.000000000000280000000001p-1022)) (f64.const -0x1.0000000000003p-1022))
 
-;; Round down at limit to infinity
+;; f64, round down at limit to infinity
 (assert_return (invoke "f64" (f64.const +0x1.fffffffffffff4p1023)) (f64.const +0x1.fffffffffffffp1023))
 (assert_return (invoke "f64" (f64.const -0x1.fffffffffffff4p1023)) (f64.const -0x1.fffffffffffffp1023))
 (assert_return (invoke "f64" (f64.const +0x1.fffffffffffff7ffffffp1023)) (f64.const +0x1.fffffffffffffp1023))

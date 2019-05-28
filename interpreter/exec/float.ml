@@ -61,6 +61,8 @@ end
 
 module Make (Rep : RepType) : S with type bits = Rep.t =
 struct
+  let _ = assert (Rep.mantissa <= 52)
+
   type t = Rep.t
   type bits = Rep.t
 
@@ -242,8 +244,8 @@ struct
   let float_of_string_prevent_double_rounding s =
     (* First parse to a 64 bit float. *)
     let z = float_of_string s in
-    (* We're done if target precision is f64 or value is already infinite. *)
-    if Rep.mantissa = 52 || abs_float z = 1.0 /. 0.0 then z else
+    (* If value is already infinite we are done. *)
+    if abs_float z = 1.0 /. 0.0 then z else
     (* Else, bit twiddling to see what rounding to target precision will do. *)
     let open Int64 in
     let bits = bits_of_float z in
@@ -251,22 +253,24 @@ struct
     (* Check for tie, i.e. whether the bits right of target LSB are 10000... *)
     let tie = shift_right lsb 1 in
     let mask = lognot (shift_left (-1L) (52 - Rep.mantissa)) in
-    (* If we will have no tie, we are good. *)
+    (* If we have no tie, we are good. *)
     if logand bits mask <> tie then z else
+    (* Else, define epsilon to be the value of the tie bit. *)
+    let exp = float_of_bits (logand bits 0xfff0_0000_0000_0000L) in
+    let eps = float_of_bits (logor tie (bits_of_float exp)) -. exp in
     (* Convert 64 bit float back to string to compare to input. *)
-    let hex = String.sub s 0 2 = "0x" in
+    let hex = String.contains s 'x' in
     let s' =
       Printf.sprintf (if hex then "%.*h" else "%.*g") (String.length s) z in
-    (*
-     * - If mantissa became larger, float was rounded up to tie already;
-     *   round-to-even might round up again: clear tie bit to round down.
+    (* - If mantissa became larger, float was rounded up to tie already;
+     *   round-to-even might round up again: sub epsilon to round down.
      * - If mantissa became smaller, float was rounded down to tie already;
-     *   round-to-even migth round down again: set bit below tie to round up.
+     *   round-to-even migth round down again: add epsilon to round up.
      * - If tie is not the result of prior rounding, then we are good.
      *)
     match compare_mantissa_str hex s s' with
-    | -1 -> float_of_bits (logand bits (lognot tie))
-    | +1 -> float_of_bits (logor bits (shift_right tie 1))
+    | -1 -> z -. eps
+    | +1 -> z +. eps
     | _ -> z
 
   let of_signless_string s =
