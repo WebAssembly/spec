@@ -2,8 +2,16 @@ module type RepType =
 sig
   type t
 
+  val mantissa : int
+
+  val zero : t
+  val min_int : t
+  val max_int : t
+
   val pos_nan : t
   val neg_nan : t
+  val bare_nan : t
+
   val bits_of_float : float -> t
   val float_of_bits : t -> float
   val of_string : string -> t
@@ -14,12 +22,6 @@ sig
   val logand : t -> t -> t
   val logor : t -> t -> t
   val logxor : t -> t -> t
-
-  val min_int : t
-  val max_int : t
-
-  val zero : t
-  val bare_nan : t
 end
 
 module type S =
@@ -59,6 +61,8 @@ end
 
 module Make (Rep : RepType) : S with type bits = Rep.t =
 struct
+  let _ = assert (Rep.mantissa <= 52)
+
   type t = Rep.t
   type bits = Rep.t
 
@@ -197,6 +201,85 @@ struct
   let le x y = (to_float x <= to_float y)
   let ge x y = (to_float x >= to_float y)
 
+  (*
+   * Compare mantissa of two floats in string representation (hex or dec).
+   * This is a gross hack to detect rounding during parsing of floats.
+   *)
+  let is_hex c = ('0' <= c && c <= '9') || ('A' <= c && c <= 'F')
+  let is_exp hex c = (c = if hex then 'P' else 'E')
+  let at_end hex s i = (i = String.length s) || is_exp hex s.[i]
+
+  let rec skip_non_hex s i =  (* to skip sign, 'x', '.', '_', etc. *)
+    if at_end true s i || is_hex s.[i] then i else skip_non_hex s (i + 1)
+
+  let rec skip_zeroes s i =
+    let i' = skip_non_hex s i in
+    if at_end true s i' || s.[i'] <> '0' then i' else skip_zeroes s (i' + 1)
+
+  let rec compare_mantissa_str' hex s1 i1 s2 i2 =
+    let i1' = skip_non_hex s1 i1 in
+    let i2' = skip_non_hex s2 i2 in
+    match at_end hex s1 i1', at_end hex s2 i2' with
+    | true, true -> 0
+    | true, false -> if at_end hex s2 (skip_zeroes s2 i2') then 0 else -1
+    | false, true -> if at_end hex s1 (skip_zeroes s1 i1') then 0 else +1
+    | false, false ->
+      match compare s1.[i1'] s2.[i2'] with
+      | 0 -> compare_mantissa_str' hex s1 (i1' + 1) s2 (i2' + 1)
+      | n -> n
+
+  let compare_mantissa_str hex s1 s2 =
+    let s1' = String.uppercase s1 in
+    let s2' = String.uppercase s2 in
+    compare_mantissa_str' hex s1' (skip_zeroes s1' 0) s2' (skip_zeroes s2' 0)
+
+  (*
+   * Convert a string to a float in target precision by going through
+   * OCaml's 64 bit floats. This may incur double rounding errors in edge
+   * cases, i.e., when rounding to target precision involves a tie that
+   * was created by earlier rounding during parsing to float. If both
+   * end up rounding in the same direction, we would "over round".
+   * This function tries to detect this case and correct accordingly.
+   *)
+  let float_of_string_prevent_double_rounding s =
+    (* First parse to a 64 bit float. *)
+    let z = float_of_string s in
+    (* If value is already infinite we are done. *)
+    if abs_float z = 1.0 /. 0.0 then z else
+    (* Else, bit twiddling to see what rounding to target precision will do. *)
+    let open Int64 in
+    let bits = bits_of_float z in
+    let lsb = shift_left 1L (52 - Rep.mantissa) in
+    (* Check for tie, i.e. whether the bits right of target LSB are 10000... *)
+    let tie = shift_right lsb 1 in
+    let mask = lognot (shift_left (-1L) (52 - Rep.mantissa)) in
+    (* If we have no tie, we are good. *)
+    if logand bits mask <> tie then z else
+    (* Else, define epsilon to be the value of the tie bit. *)
+    let exp = float_of_bits (logand bits 0xfff0_0000_0000_0000L) in
+    let eps = float_of_bits (logor tie (bits_of_float exp)) -. exp in
+    (* Convert 64 bit float back to string to compare to input. *)
+    let hex = String.contains s 'x' in
+    let s' =
+      if not hex then Printf.sprintf "%.*g" (String.length s) z else
+      let m = logor (logand bits 0xf_ffff_ffff_ffffL) 0x10_0000_0000_0000L in
+      (* Shift mantissa to match msb position in most significant hex digit *)
+      let i = skip_zeroes (String.uppercase s) 0 in
+      let sh =
+        match s.[i] with '1' -> 0 | '2'..'3' -> 1 | '4'..'7' -> 2 | _ -> 3 in
+      Printf.sprintf "%Lx" (shift_left m sh)
+    in
+    (* - If mantissa became larger, float was rounded up to tie already;
+     *   round-to-even might round up again: sub epsilon to round down.
+     * - If mantissa became smaller, float was rounded down to tie already;
+     *   round-to-even migth round down again: add epsilon to round up.
+     * - If tie is not the result of prior rounding, then we are good.
+     *)
+    match compare_mantissa_str hex s s' with
+    | -1 -> z -. eps
+    | +1 -> z +. eps
+    | _ -> z
+
   let of_signless_string s =
     if s = "inf" then
       pos_inf
@@ -221,7 +304,7 @@ struct
         if s.[i] <> '_' then Buffer.add_char buf s.[i]
       done;
       let s' = Buffer.contents buf in
-      let x = of_float (float_of_string s') in
+      let x = of_float (float_of_string_prevent_double_rounding s') in
       if is_inf x then failwith "of_string" else x
 
   let of_string s =
