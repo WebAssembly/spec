@@ -221,8 +221,8 @@ struct
     let i2' = skip_non_hex s2 i2 in
     match at_end hex s1 i1', at_end hex s2 i2' with
     | true, true -> 0
-    | true, false -> if at_end hex s2 (skip_zeroes s2 i2') then 0 else +1
-    | false, true -> if at_end hex s1 (skip_zeroes s1 i1') then 0 else -1
+    | true, false -> if at_end hex s2 (skip_zeroes s2 i2') then 0 else -1
+    | false, true -> if at_end hex s1 (skip_zeroes s1 i1') then 0 else +1
     | false, false ->
       match compare s1.[i1'] s2.[i2'] with
       | 0 -> compare_mantissa_str' hex s1 (i1' + 1) s2 (i2' + 1)
@@ -261,7 +261,14 @@ struct
     (* Convert 64 bit float back to string to compare to input. *)
     let hex = String.contains s 'x' in
     let s' =
-      Printf.sprintf (if hex then "%.*h" else "%.*g") (String.length s) z in
+      if not hex then Printf.sprintf "%.*g" (String.length s) z else
+      let m = logor (logand bits 0xf_ffff_ffff_ffffL) 0x10_0000_0000_0000L in
+      (* Shift mantissa to match msb position in most significant hex digit *)
+      let i = skip_zeroes (String.uppercase s) 0 in
+      let sh =
+        match s.[i] with '1' -> 0 | '2'..'3' -> 1 | '4'..'7' -> 2 | _ -> 3 in
+      Printf.sprintf "%Lx" (shift_left m sh)
+    in
     (* - If mantissa became larger, float was rounded up to tie already;
      *   round-to-even might round up again: sub epsilon to round down.
      * - If mantissa became smaller, float was rounded down to tie already;
