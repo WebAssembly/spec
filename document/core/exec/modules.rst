@@ -371,6 +371,58 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    \end{array}
 
 
+.. index:: element, element instance, element address
+.. _alloc-elem:
+
+:ref:`Element segments <syntax-eleminst>`
+.........................................
+
+1. Let :math:`\funcelem^\ast` be the vector of :ref:`function elements <syntax-funcelem>` to allocate.
+
+2. Let :math:`a` be the first free :ref:`element address <syntax-elemaddr>` in :math:`S`.
+
+3. Let :math:`\eleminst` be the :ref:`element instance <syntax-eleminst>` :math:`\{ \EIINIT~\funcelem^\ast \}`.
+
+4. Append :math:`\eleminst` to the |SELEM| of :math:`S`.
+
+5. Return :math:`a`.
+
+.. math::
+  \begin{array}{rlll}
+  \allocelem(S, \funcelem^\ast) &=& S', \elemaddr \\[1ex]
+  \mbox{where:} \hfill \\
+  \elemaddr &=& |S.\SELEM| \\
+  \eleminst &=& \{ \EIINIT~\funcelem^\ast \} \\
+  S' &=& S \compose \{\SELEM~\eleminst\} \\
+  \end{array}
+
+
+.. index:: data, data instance, data address
+.. _alloc-data:
+
+:ref:`Data segments <syntax-datainst>`
+......................................
+
+1. Let :math:`\bytes` be the vector of :ref:`bytes <syntax-byte>` to allocate.
+
+2. Let :math:`a` be the first free :ref:`data address <syntax-dataaddr>` in :math:`S`.
+
+3. Let :math:`\datainst` be the :ref:`data instance <syntax-datainst>` :math:`\{ \DIINIT~\bytes \}`.
+
+4. Append :math:`\datainst` to the |SDATA| of :math:`S`.
+
+5. Return :math:`a`.
+
+.. math::
+  \begin{array}{rlll}
+  \allocdata(S, \bytes) &=& S', \dataaddr \\[1ex]
+  \mbox{where:} \hfill \\
+  \dataaddr &=& |S.\SDATA| \\
+  \datainst &=& \{ \DIINIT~\bytes \} \\
+  S' &=& S \compose \{\SDATA~\datainst\} \\
+  \end{array}
+
+
 .. index:: table, table instance, table address, grow, limits
 .. _grow-table:
 

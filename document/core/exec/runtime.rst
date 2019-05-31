@@ -60,7 +60,7 @@ Store
 ~~~~~
 
 The *store* represents all global state that can be manipulated by WebAssembly programs.
-It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
+It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>`, :ref:`element segments <syntax-eleminst>`, and :ref:`data segments <syntax-datainst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
 
 Syntactically, the store is defined as a :ref:`record <notation-record>` listing the existing instances of each category:
 
@@ -71,7 +71,9 @@ Syntactically, the store is defined as a :ref:`record <notation-record>` listing
      \SFUNCS & \funcinst^\ast, \\
      \STABLES & \tableinst^\ast, \\
      \SMEMS & \meminst^\ast, \\
-     \SGLOBALS & \globalinst^\ast ~\} \\
+     \SGLOBALS & \globalinst^\ast, \\
+     \SELEM & (\eleminst^?)^\ast, \\
+     \SDATA & (\datainst^?)^\ast ~\} \\
      \end{array}
    \end{array}
 
@@ -87,25 +89,31 @@ Convention
 * The meta variable :math:`S` ranges over stores where clear from context.
 
 
-.. index:: ! address, store, function instance, table instance, memory instance, global instance, embedder
+.. index:: ! address, store, function instance, table instance, memory instance, global instance, element instance, data instance, embedder
    pair: abstract syntax; function address
    pair: abstract syntax; table address
    pair: abstract syntax; memory address
    pair: abstract syntax; global address
+   pair: abstract syntax; element address
+   pair: abstract syntax; data address
    pair: function; address
    pair: table; address
    pair: memory; address
    pair: global; address
+   pair: element; address
+   pair: data; address
 .. _syntax-funcaddr:
 .. _syntax-tableaddr:
 .. _syntax-memaddr:
 .. _syntax-globaladdr:
+.. _syntax-elemaddr:
+.. _syntax-dataaddr:
 .. _syntax-addr:
 
 Addresses
 ~~~~~~~~~
 
-:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
+:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>`, :ref:`element instances <syntax-eleminst>`, and :ref:`data instances <syntax-datainst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
 These are simply indices into the respective store component.
 
 .. math::
@@ -119,6 +127,10 @@ These are simply indices into the respective store component.
    \production{(memory address)} & \memaddr &::=&
      \addr \\
    \production{(global address)} & \globaladdr &::=&
+     \addr \\
+   \production{(element address)} & \elemaddr &::=&
+     \addr \\
+   \production{(data address)} & \dataaddr &::=&
      \addr \\
    \end{array}
 
@@ -137,7 +149,7 @@ even where this identity is not observable from within WebAssembly code itself
    hence logical addresses can be arbitrarily large natural numbers.
 
 
-.. index:: ! instance, function type, function instance, table instance, memory instance, global instance, export instance, table address, memory address, global address, index, name
+.. index:: ! instance, function type, function instance, table instance, memory instance, global instance, element instance, data instance, export instance, table address, memory address, global address, element address, data address, index, name
    pair: abstract syntax; module instance
    pair: module; instance
 .. _syntax-moduleinst:
@@ -158,6 +170,8 @@ and collects runtime representations of all entities that are imported, defined,
      \MITABLES & \tableaddr^\ast, \\
      \MIMEMS & \memaddr^\ast, \\
      \MIGLOBALS & \globaladdr^\ast, \\
+     \MIELEMS & (\elemaddr^?)^\ast, \\
+     \MIDATAS & (\dataaddr^?)^\ast, \\
      \MIEXPORTS & \exportinst^\ast ~\} \\
      \end{array}
    \end{array}
@@ -273,6 +287,42 @@ It holds an individual :ref:`value <syntax-val>` and a flag indicating whether i
    \end{array}
 
 The value of mutable globals can be mutated through :ref:`variable instructions <syntax-instr-variable>` or by external means provided by the :ref:`embedder <embedder>`.
+
+
+.. index:: ! element instance, element segment, embedder, element expression
+   pair: abstract syntax; element instance
+   pair: element; instance
+.. _syntax-eleminst:
+
+Element Instances
+~~~~~~~~~~~~~~~~~
+
+An *element instance* is the runtime representation of an :ref:`element segment <syntax-elem>`.
+Like table instances, an element instance holds a vector of function elements.
+
+.. math::
+  \begin{array}{llll}
+  \production{(element instance)} & \eleminst &::=&
+    \{ \EIINIT~\vec(\funcelem) \} \\
+  \end{array}
+
+
+.. index:: ! data instance, data segment, embedder, byte
+  pair: abstract syntax; data instance
+  pair: data; instance
+.. _syntax-datainst:
+
+Data Instances
+~~~~~~~~~~~~~~
+
+An *data instance* is the runtime representation of a :ref:`data segment <syntax-data>`.
+It holds a vector of :ref:`bytes <syntax-byte>`.
+
+.. math::
+  \begin{array}{llll}
+  \production{(data instance)} & \datainst &::=&
+    \{ \DIINIT~\vec(\byte) \} \\
+  \end{array}
 
 
 .. index:: ! export instance, export, name, external value

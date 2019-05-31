@@ -806,6 +806,8 @@
 .. |alloctable| mathdef:: \xref{exec/modules}{alloc-table}{\F{alloctable}}
 .. |allocmem| mathdef:: \xref{exec/modules}{alloc-mem}{\F{allocmem}}
 .. |allocglobal| mathdef:: \xref{exec/modules}{alloc-global}{\F{allocglobal}}
+.. |allocelem| mathdef:: \xref{exec/modules}{alloc-elem}{\F{allocelem}}
+.. |allocdata| mathdef:: \xref{exec/modules}{alloc-data}{\F{allocdata}}
 .. |allocmodule| mathdef:: \xref{exec/modules}{alloc-module}{\F{allocmodule}}
 
 .. |growtable| mathdef:: \xref{exec/modules}{grow-table}{\F{growtable}}
@@ -819,7 +821,8 @@
 .. |tableaddr| mathdef:: \xref{exec/runtime}{syntax-tableaddr}{\X{tableaddr}}
 .. |memaddr| mathdef:: \xref{exec/runtime}{syntax-memaddr}{\X{memaddr}}
 .. |globaladdr| mathdef:: \xref{exec/runtime}{syntax-globaladdr}{\X{globaladdr}}
-
+.. |elemaddr| mathdef:: \xref{exec/runtime}{syntax-elemaddr}{\X{elemaddr}}
+.. |dataaddr| mathdef:: \xref{exec/runtime}{syntax-dataaddr}{\X{dataaddr}}
 
 .. Instances, terminals
 
@@ -837,6 +840,10 @@
 .. |GIVALUE| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{value}}
 .. |GIMUT| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{mut}}
 
+.. |EIINIT| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{init}}
+
+.. |DIINIT| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{init}}
+
 .. |EINAME| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\K{name}}
 .. |EIVALUE| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\K{value}}
 
@@ -850,6 +857,8 @@
 .. |MITABLES| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{tableaddrs}}
 .. |MIMEMS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{memaddrs}}
 .. |MIGLOBALS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{globaladdrs}}
+.. |MIELEMS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{elemaddrs}}
+.. |MIDATAS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{dataaddrs}}
 .. |MIEXPORTS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{exports}}
 
 
@@ -863,6 +872,8 @@
 .. |funcelem| mathdef:: \xref{exec/runtime}{syntax-funcelem}{\X{funcelem}}
 .. |meminst| mathdef:: \xref{exec/runtime}{syntax-meminst}{\X{meminst}}
 .. |globalinst| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\X{globalinst}}
+.. |eleminst| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\X{eleminst}}
+.. |datainst| mathdef:: \xref{exec/runtime}{syntax-datainst}{\X{datainst}}
 .. |exportinst| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\X{exportinst}}
 
 .. |hostfunc| mathdef:: \xref{exec/runtime}{syntax-hostfunc}{\X{hostfunc}}
@@ -882,7 +893,8 @@
 .. |STABLES| mathdef:: \xref{exec/runtime}{syntax-store}{\K{tables}}
 .. |SMEMS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{mems}}
 .. |SGLOBALS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{globals}}
-
+.. |SELEM| mathdef:: \xref{exec/runtime}{syntax-store}{\K{elem}}
+.. |SDATA| mathdef:: \xref{exec/runtime}{syntax-store}{\K{data}}
 
 .. Store, non-terminals
 
