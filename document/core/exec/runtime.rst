@@ -72,8 +72,8 @@ Syntactically, the store is defined as a :ref:`record <notation-record>` listing
      \STABLES & \tableinst^\ast, \\
      \SMEMS & \meminst^\ast, \\
      \SGLOBALS & \globalinst^\ast, \\
-     \SELEM & (\eleminst^?)^\ast, \\
-     \SDATA & (\datainst^?)^\ast ~\} \\
+     \SELEM & \eleminst^\ast, \\
+     \SDATA & \datainst^\ast ~\} \\
      \end{array}
    \end{array}
 
