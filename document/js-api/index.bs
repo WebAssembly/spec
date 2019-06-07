@@ -178,7 +178,6 @@ urlPrefix: https://heycam.github.io/webidl/; spec: WebIDL
 <pre class='link-defaults'>
 spec:infra; type:dfn; text:list
 spec:ecma-262; type:exception; for:ECMAScript; text:Error
-spec:infra; type:dfn; for:set; text:append
 spec:ecmascript; type:exception; for:ECMAScript; text:TypeError
 spec:ecmascript; type:exception; for:ECMAScript; text:RangeError
 spec:ecmascript; type:interface; for:ECMAScript; text:ArrayBuffer
@@ -348,7 +347,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
                 1. [=Create a host function=] from |v| and |functype|, and let |funcaddr| be the result.
                 1. Let |index| be the number of external functions in |imports|. This value |index| is known as the <dfn>index of the host function</dfn> |funcaddr|.
             1. Let |externfunc| be the [=external value=] [=external value|𝖿𝗎𝗇𝖼=] |funcaddr|.
-            1. [=Append=] |externfunc| to |imports|.
+            1. [=list/Append=] |externfunc| to |imports|.
         1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] <var ignore>mut</var> |valtype|,
             1. If [=Type=](|v|) is Number,
                 1. If |valtype| is [=𝗂𝟨𝟦=], throw a {{LinkError}} exception.
@@ -361,18 +360,18 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. Otherwise,
                 1. Throw a {{LinkError}} exception.
             1. Let |externglobal| be [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr|.
-            1. [=Append=] |externglobal| to |imports|.
+            1. [=list/Append=] |externglobal| to |imports|.
         1. If |externtype| is of the form [=𝗆𝖾𝗆=] <var ignore>memtype</var>,
             1. If |v| is not a {{Memory}} object, throw a {{LinkError}} exception.
             1. Note: [=module_instantiate=] invoked below will check the imported {{Memory}}'s size against the importing module's requirements.
             1. Let |externmem| be the [=external value=] [=external value|𝗆𝖾𝗆=]  |v|.\[[Memory]].
-            1. [=Append=] |externmem| to |imports|.
+            1. [=list/Append=] |externmem| to |imports|.
         1. Otherwise, |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] <var ignore>tabletype</var>,
             1. If |v| is not a {{Table}} instance, throw a {{LinkError}} exception.
             1. Note: The table's length, etc. is checked by [=module_instantiate=] invoked below.
             1. Let |tableaddr| be |v|.\[[Table]]
             1. Let |externtable| be the [=external value=] [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr|.
-            1. [=Append=] |externtable| to |imports|.
+            1. [=list/Append=] |externtable| to |imports|.
     1. Return |imports|.
 </div>
 
@@ -531,7 +530,7 @@ interface Module {
     1. For each (|name|, |type|) in [=module_exports=](|module|)
         1. Let |kind| be the [=string value of the extern type=] |type|.
         1. Let |obj| be a new {{ModuleExportDescriptor}} dictionary with {{ModuleExportDescriptor/name}} |name| and {{ModuleExportDescriptor/kind}} |kind|.
-        1. [=Append=] |obj| to the end of |exports|.
+        1. [=list/Append=] |obj| to the end of |exports|.
     1. Return |exports|.
 </div>
 
@@ -542,7 +541,7 @@ interface Module {
     1. For each (|moduleName|, |name|, |type|) in [=module_imports=](|module|),
         1. Let |kind| be the [=string value of the extern type=] |type|.
         1. Let |obj| be a new {{ModuleImportDescriptor}} dictionary with {{ModuleImportDescriptor/module}} |moduleName|, {{ModuleImportDescriptor/name}} |name| and {{ModuleImportDescriptor/kind}} |kind|.
-        1. [=Append=] |obj| to the end of |imports|.
+        1. [=list/Append=] |obj| to the end of |imports|.
     1. Return |imports|.
 </div>
 
@@ -554,7 +553,7 @@ interface Module {
         1. Let |name| be the <code>name</code> of |customSection|, [=UTF-8 decode without BOM or fail|decoded as UTF-8=].
         1. Assert: |name| is not failure (|moduleObject|.\[[Module]] is [=valid=]).
         1. If |name| equals |sectionName| as string values,
-            1. [=Append=] a new {{ArrayBuffer}} containing a copy of the bytes in |bytes| for the range matched by this [=customsec=] production.
+            1. [=list/Append=] a new {{ArrayBuffer}} containing a copy of the bytes in |bytes| for the range matched by this [=customsec=] production to |customSections|.
     1. Return |customSections|.
 </div>
 
@@ -722,7 +721,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 {{Table}} object has the following internal slots:
 
     * \[[Table]] : a [=table address=]
-    * \[[Values]] : a List whose elements are either null or [=Exported Function=]s.
+    * \[[Values]] : a [=list=] whose elements are either null or [=Exported Function=]s.
 </div>
 
 <div algorithm>
@@ -769,7 +768,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
         Note: The above exception may happen due to either insufficient memory or an invalid size parameter.
 
     1. Set the [=surrounding agent=]'s [=associated store=] to |result|.
-    1. [=Append=] null to **this**.\[[Values]] |delta| times.
+    1. [=list/Append=] null to **this**.\[[Values]] |delta| times.
     1. Return |initialSize|.
 </div>
 
@@ -969,12 +968,12 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
 
         Note: the above error is thrown each time the \[[Call]] method is invoked.
 
-    5. Let |args| be an empty list of WebAssembly values.
+    5. Let |args| be an empty [=list=] of WebAssembly values.
     1. Let |i| be 0.
     1. For each type |t| of |parameters|,
         1. If the length of |argValues| &gt; |i|, let |arg| be |argValues|[|i|].
         1. Otherwise, let |arg| be undefined.
-        1. [=Append=] [=ToWebAssemblyValue=](|arg|, |t|) to |args|.
+        1. [=list/Append=] [=ToWebAssemblyValue=](|arg|, |t|) to |args|.
         1. Set |i| to |i| + 1.
     1. Let |argsSeq| be a WebAssembly [=sequence=] containing the elements of |args|.
     1. Let (|store|, |ret|) be the result of [=func_invoke=](|store|, |funcaddr|, |argsSeq|).
