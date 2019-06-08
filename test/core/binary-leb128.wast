@@ -267,7 +267,7 @@
   (module binary
     "\00asm" "\01\00\00\00"
     "\00"                                ;; custom section
-    "\05"                                ;; section size
+    "\0A"                                ;; section size
     "\83\80\80\80\80\00"                 ;; name byte count 3 with one byte too many
     "123"                                ;; name
     "4"                                  ;; sequence of bytes
@@ -277,7 +277,7 @@
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\01\08\01"                          ;; type section
+    "\01\0c\01"                          ;; type section
     "\60"                                ;; func type
     "\82\80\80\80\80\00"                 ;; num params 2 with one byte too many
     "\7f\7e"                             ;; param type
@@ -592,7 +592,7 @@
   (module binary
     "\00asm" "\01\00\00\00"
     "\00"                                ;; custom section
-    "\05"                                ;; section size
+    "\09"                                ;; section size
     "\83\80\80\80\40"                    ;; name byte count 3 with unused bits set
     "123"                                ;; name
     "4"                                  ;; sequence of bytes
@@ -602,7 +602,7 @@
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\01\08\01"                          ;; type section
+    "\01\0b\01"                          ;; type section
     "\60"                                ;; func type
     "\82\80\80\80\10"                    ;; num params 2 with unused bits set
     "\7f\7e"                             ;; param type
@@ -614,7 +614,7 @@
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\01\08\01"                          ;; type section
+    "\01\0b\01"                          ;; type section
     "\60"                                ;; func type
     "\02"                                ;; num params
     "\7f\7e"                             ;; param type
@@ -658,7 +658,7 @@
   "\00asm" "\01\00\00\00"
   "\01\05\01"                          ;; type section
   "\60\01\7f\00"                       ;; function type
-  "\02\1b\01"                          ;; import section
+  "\02\1a\01"                          ;; import section
   "\08"                                ;; module name length
   "\73\70\65\63\74\65\73\74"           ;; module name
   "\09"                                ;; entity name length 9
@@ -673,7 +673,7 @@
     "\00asm" "\01\00\00\00"
     "\01\04\01"                          ;; type section
     "\60\00\00"                          ;; function type
-    "\03\03\01"                          ;; function section
+    "\03\06\01"                          ;; function section
     "\80\80\80\80\10"                    ;; function 0 signature index with unused bits set
     "\0a\04\01"                          ;; code section
     "\02\00\0b"                          ;; function body
@@ -720,7 +720,7 @@
     "\60\00\00"                          ;; fun type
     "\03\02\01\00"                       ;; function section
     "\0a"                                ;; code section
-    "\05"                                ;; section size
+    "\08"                                ;; section size
     "\81\80\80\80\10"                    ;; num functions 1 with unused bits set
     "\02\00\0b"                          ;; function body
   )
