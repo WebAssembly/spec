@@ -12,7 +12,7 @@ Category                                  Constructor                           
 :ref:`Value type <syntax-valtype>`        |I64|                                        :math:`\hex{7E}` (-2 as |Bs7|)
 :ref:`Value type <syntax-valtype>`        |F32|                                        :math:`\hex{7D}` (-3 as |Bs7|)
 :ref:`Value type <syntax-valtype>`        |F64|                                        :math:`\hex{7C}` (-4 as |Bs7|)
-(reserved)                                                                             :math:`\hex{7C}` .. :math:`\hex{71}`
+(reserved)                                                                             :math:`\hex{7B}` .. :math:`\hex{71}`
 :ref:`Element type <syntax-elemtype>`     |FUNCREF|                                    :math:`\hex{70}` (-16 as |Bs7|)
 (reserved)                                                                             :math:`\hex{6F}` .. :math:`\hex{61}`
 :ref:`Function type <syntax-functype>`    :math:`[\valtype^\ast] \to [\valtype^\ast]`  :math:`\hex{60}` (-32 as |Bs7|)

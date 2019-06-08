@@ -45,7 +45,17 @@ def Main():
       </ul>
     </div>""", '')
 
-  sys.stdout.write(data)
+  # Use bikeshed biblio references for unicode and IEEE754
+  data = data.replace(
+      """<a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a>""",
+      "[[!UNICODE]]"
+  )
 
+  data = data.replace(
+      """<a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a>""",
+      "[[!IEEE-754-2008]]"
+  )
+
+  sys.stdout.write(data)
 
 Main()

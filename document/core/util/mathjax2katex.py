@@ -233,7 +233,7 @@ def Main():
         fixed = ('class="' + cls_before + ' ' + cls_after + '">' +
                  spans + ReplaceMath(cache, mth) + '<')
         done_fixups.append((start, end, fixed))
-      except KeyboardInterrupt, AssertionError:
+      except Exception:
         sys.stderr.write('!!! Error processing fragment')
 
       q.task_done()
