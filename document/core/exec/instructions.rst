@@ -704,29 +704,31 @@ Memory Instructions
 
 5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[\X{ma}]`.
 
-6. Assert: due to :ref:`validation <valid-memory.init>`, :math:`F.\AMODULE.\MIDATAS[x]` exists.
+6. Assert: due to :ref:`validation <valid-data.init>`, :math:`F.\AMODULE.\MIDATAS[x]` exists.
 
-7. Let :math:`\X{da}^?` be the optional :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[x]`.
+7. Let :math:`\X{da}` be the :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[x]`.
 
-8. If :math:`\X{da}^? = \epsilon`, then:
+8. Assert: due to :ref:`validation <valid-data.init>`, :math:`S.\SDATA[\X{da}]` exists.
+
+9. Let :math:`\X{data}^?` be the optional :ref:`data instance <syntax-datainst>` :math:`S.\SDATA[\X{da}]`.
+
+10. If :math:`\X{data}^? = \epsilon`, then:
 
    a. Trap.
 
-9. Let :math:`\X{data}` be the :ref:`data instance <syntax-datainst>` :math:`S.\SDATA[\X{da}]`.
+11. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-10. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+12. Pop the value :math:`\I32.\CONST~n` from the stack.
 
-11. Pop the value :math:`\I32.\CONST~n` from the stack.
+13. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-12. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+14. Pop the value :math:`\I32.\CONST~s` from the stack.
 
-13. Pop the value :math:`\I32.\CONST~s` from the stack.
+15. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-14. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+16. Pop the value :math:`\I32.\CONST~d` from the stack.
 
-15. Pop the value :math:`\I32.\CONST~d` from the stack.
-
-16. If :math:`n` is :math:`0`, then:
+17. If :math:`n` is :math:`0`, then:
 
     a. If :math:`d` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
 
@@ -736,7 +738,7 @@ Memory Instructions
 
        i. Trap.
 
-17. Else:
+18. Else:
 
     a. Push the value :math:`\I32.\CONST~d` to the stack.
 
@@ -755,6 +757,7 @@ Memory Instructions
     h. Execute the instruction :math:`\MEMORYINIT~x`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~(n+1))~(\MEMORYINIT~x) &\stepto& S; F;
@@ -765,8 +768,8 @@ Memory Instructions
    \end{array} \\
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & F.\AMODULE.\MIDATAS[x] \ne \epsilon \\
-     \wedge & b = \SDATA[F.\AMODULE.\MIDATAS[x]].\DIINIT[s]) \\
+     (\iff & s < |S.\SDATA[F.\AMODULE.\MIDATAS[x]].\DIINIT| \\
+     \wedge & b = S.\SDATA[F.\AMODULE.\MIDATAS[x]].\DIINIT[s]) \\
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -774,9 +777,8 @@ Memory Instructions
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & F.\AMODULE.\MIDATAS[x] \ne \epsilon \\
-     \wedge & d \leq |\SMEMS[F.\AMODULE.\MIMEMS[0]]| \\
-     \wedge & s \leq |\SDATA[F.\AMODULE.\MIDATAS[x]]|) \\
+     (\iff & d \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
+     \wedge & s \leq |S.\SDATA[F.\AMODULE.\MIDATAS[x]].\DIINIT|) \\
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -794,22 +796,37 @@ Memory Instructions
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-memory.init>`, :math:`F.\AMODULE.\MIDATAS[x]` exists.
+2. Assert: due to :ref:`validation <valid-data.init>`, :math:`F.\AMODULE.\MIDATAS[x]` exists.
 
-3. Let :math:`a^?` be the optional :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[x]`.
+3. Let :math:`a` be the :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[x]`.
 
-4. If :math:`a^? = \epsilon`, then:
+4. Assert: due to :ref:`validation <valid-data.init>`, :math:`S.\SDATA[a]` exists.
+
+5. Let :math:`\X{data}^?` be the optional :ref:`data instance <syntax-datainst>` :math:`S.\SDATA[a]`.
+
+6. If :math:`\X{data}^? = \epsilon`, then:
 
    a. Trap.
 
-5. Replace :math:`F.\AMODULE.\MIDATAS[x]` with :math:`\epsilon`.
+7. Replace :math:`S.\SDATA[a]` with :math:`\epsilon`.
 
 .. math::
+   ~\\[-1ex]
+   \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   F; (\DATADROP~x) &\stepto& F'; \epsilon
-     & (\iff F' = F \with \AMODULE.\MIDATAS[x] = \epsilon) \\
-   F; (\DATADROP~x) &\stepto& F; \TRAP
-     & (\otherwise) \\
+   S; F; (\DATADROP~x) &\stepto& S'; F; \epsilon
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & S.\SDATA[F.\AMODULE.\MIDATAS[x]] \ne \epsilon \\
+     \wedge & S' = S \with \SDATA[F.\AMODULE.\MIDATAS[x]] = \epsilon) \\
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\DATADROP~x) &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise)
    \end{array}
 
 
