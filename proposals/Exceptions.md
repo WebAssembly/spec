@@ -319,7 +319,7 @@ import and event sections. Thus, the index space starts at zero with imported
 events, followed by internally-defined events in the [event
 section](#event-section).
 
-The event index space defines the (module) static version of runtine event tags.
+The event index space defines the (module) static version of runtime event tags.
 For event indices that are not imported/exported, the corresponding event tag is
 guaranteed to be unique over all loaded modules. Events that are imported or
 exported alias the respective events defined elsewhere, and use the same tag.
