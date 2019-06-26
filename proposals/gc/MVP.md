@@ -13,7 +13,9 @@ Based on the following proposals:
 
 * [typed function references](https://github.com/WebAssembly/function-references), which introduces types `(ref $t)` and `(optref $t)` etc.
 
-Both these proposals are prerequisites.
+* [type imports](https://github.com/WebAssembly/proposal-type-imports), which allows type definitionss to be imported and exported
+
+All three proposals are prerequisites.
 
 
 ### Types
