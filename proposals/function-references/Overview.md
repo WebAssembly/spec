@@ -32,7 +32,7 @@ Note: In a Wasm engine, function references (whether first-class or as table ent
 
 * This proposal is based on the [reference types proposal](https://github.com/WebAssembly/reference-types))
 
-* Add a new form of *typed reference type* `ref $t` and a nullable variant `optref $t`, where `$t` is a type index; can be used as both a value type or an element type for tables
+* Add a new form of *typed reference type* `ref $t` and a nullable variant `ref (opt $t)`, where `$t` is a type index; can be used as both a value type or an element type for tables
 
 * Add an instruction `ref.as_non_null` that converts an optional reference to a non-optional one or traps if null
 
@@ -118,39 +118,65 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 
 ### Types
 
+#### Constructed Types
+
+A *constructed type* denotes a user-defined or pre-defined data type that is not a primitive scalar:
+
+* `constype ::= opt? <typeidx> | any | func | null`
+  - `(opt? $t) ok` iff `$t` is defined in the context
+  - `any ok` and `func ok` and `null ok`, always
+  - Note: `null` is only on internal type
+
+* In the binary encoding,
+  - the non-optional `<typeidx>` type is encoded as a (positive) signed LEB
+  - `opt` is given a new (negative) type opcode, follosed by the unsigned LEB
+  - the others use the same (negative) opcodes as the existing `anyref`, `funcref`, respectively
+
+
 #### Value Types
 
-* `ref <typeidx>` is a new reference type
-  - `reftype ::= ... | ref <typeidx>`
-  - `ref $t ok` iff `$t` is defined in the context
+* `ref <constype>` is a new reference type
+  - `reftype ::= ... | ref <constype>`
+  - `(ref <constype>) ok` iff `<constype> ok`
 
-* `optref <typeidx>` is a new reference type
-  - `reftype ::= ... | optref <typeidx>`
-  - `optref $t ok` iff `$t` is defined in the context
+* Reference types now *all* take the form `ref <constype>`
+  - `anyref`, `funcref`, `nullref` are reinterpreted as abbreviations for `(ref any)`, `(ref func)`, `(ref null)`, respectively
+  - Note: this refactoring allows using `any` and `func` as constructed types, which is relevant for future extensions such as [type imports](https://github.com/WebAssembly/proposal-type-imports/proposals/type-imports/Overview.md)
 
 
 #### Subtyping
 
-The following new subtyping rules are added:
+Greatest fixpoint (co-inductive interpretation) of the given rules (implying reflexivity and transitivity).
 
-* Concrete and optional reference types are invariant
-  - `ref $t1 <: ref $t2`
-     - iff `$t1 = $t2`
-  - `optref $t1 <: optref $t2`
-     - iff `$t1 = $t2`
-  - Note: no structural subtyping yet, deferred to GC proposal
+The following rules, now defined in terms of constructed types, replace and extend the rules for [basic reference types](https://github.com/WebAssembly/reference-types/proposals/reference-types/Overview.md#subtyping).
 
-* Any nullable reference type is a subtype of `anyref` and a supertype of `nullref`
-  - `optref $t <: anyref`
-  - `nullref <: optref $t`
+#### Value Types
 
-* Any concrete reference type is a subtype of the respective nullable reference type (and thereby of `anyref`)
-  - `ref $t <: optref $t`
-  - Note: concrete reference types are *not* supertypes of `nullref`, i.e., not nullable
+* Reference types are covariant in the referenced constructed type
+  - `(ref <constype1>) <: (ref <constype2>)`
+    - iff `<constype1> <: <constype2>`
 
-* Any nullable function reference type (and thereby any function reference type) is a subtype of `funcref`
-  - `optref $t <: funcref`
+#### Constructed Types
+
+* Type `func` is a subtype of `any`
+  - `func <: any`
+
+* Type `null` is a subtype of `func`
+  - `null <: func`
+
+* Any nullable type is a subtype of `any` and a supertype of `null`
+  - `(opt $t) <: any`
+  - `null <: (opt $t)`
+
+* Any concrete type is a subtype of the respective nullable type (and thereby of `any`)
+  - `$t <: (opt $t)`
+  - Note: concrete types are *not* supertypes of `null`, i.e., not nullable
+
+* Any nullable function type (and thereby any function type) is a subtype of `func`
+  - `(opt $t) <: func`
      - iff `$t = <functype>`
+
+* Note: Function types themselves are invariant for now. This may be relaxed in future extensions.
 
 
 #### Defaultability
@@ -171,8 +197,8 @@ Question:
 
 #### Functions
 
-* `func.ref` creates a function reference from a function index
-  - `func.ref $f : [] -> [(ref $t)]`
+* `ref.func` creates a function reference from a function index
+  - `ref.func $f : [] -> [(ref $t)]`
      - iff `$f : $t`
   - this is a *constant instruction*
 
@@ -190,20 +216,16 @@ Question:
     - iff `$t = [t1^n t1'*] -> [t2*]`
     - and `$t' = [t1'*] -> [t2*]`
 
-Questions:
-- Should `call_ref` be named `func.call`?
-- The requirement to provide type `$t'` for `func.bind` instead of just a number side-steps the issue of expressing an anonymous function type. Should we try better?
-
 
 #### Optional References
 
 * `ref.as_non_null` converts an optional reference to a non-optional one
-  - `ref.as_non_null : [(optref $t)] -> [(ref $t)]`
+  - `ref.as_non_null : [(ref opt $t)] -> [(ref $t)]`
     - iff `$t` is defined
   - traps on `null`
 
 * `br_on_null` checks for null and branches
-  - `br_on_null $l : [(optref $t)] -> [(ref $t)]`
+  - `br_on_null $l : [(ref opt $t)] -> [(ref $t)]`
     - iff `$t` is defined
   - branches to `$l` on `null`, otherwise returns operand as non-optional
 
@@ -215,9 +237,14 @@ Questions:
 * `let <blocktype> (local <valtype>)* <instr>* end` locally binds operands to variables
   - `let bt (local t)* instr* end : [t* t1*] -> [t2*]`
     - iff `bt = [t1*] -> [t2*]`
-    - and `instr* : bt` under a context with `locals` extended by `t*` and `labels` extended by `[t2*]`
+    - and `instr* : bt` under a context with `locals` extended with `t*` and `labels` extended with `[t2*]`
 
 Note: The lattter condition implies that inside the body of the `let`, its locals are prepended to the list of locals. Nesting multiple `let` blocks hence addresses them relatively, similar to labels. Function-level local declarations can be viewed as syntactic sugar for a bunch of zero constant instructions and a `let`.
+
+
+### Tables
+
+TODO: how to initialise tables of non-opt element type (init value? init segment?).
 
 
 ## Binary Format
@@ -231,8 +258,11 @@ Based on the JS type reflection proposal.
 
 ### Type Representation
 
-* A `ValueType` can be described by an object of the form `{ref: DefType}` and `{optref: DefType}`
-  - `type ValueType = ... | {ref: DefType} | {optref: DefType}`
+* A `ValueType` can be described by an object of the form `{ref: ConsType}`
+  - `type ValueType = ... | {ref: ConsType}`
+
+* A `ConsType` can be described by a suitable union type
+  - `type ConsType = "any" | "func" | {def: DefType, opt: bool}`
 
 
 ### Value Conversions
@@ -241,9 +271,9 @@ Based on the JS type reflection proposal.
 
 In addition to the rules for basic reference types:
 
-* Any function that is an instance of `WebAssembly.Function` with type `<functype>` is allowed as `ref <functype>`.
+* Any function that is an instance of `WebAssembly.Function` with type `<functype>` is allowed as `ref <functype>` or `ref opt <functype>`.
 
-* The `null` value is allowed as `optref $t`.
+* The `null` value is allowed as `ref opt $t`.
 
 
 ### Constructors
@@ -255,3 +285,5 @@ In addition to the rules for basic reference types:
 #### `Table`
 
 * The `Table` constructor gets an additional optional argument `init` that is used to initialise the table slots. It defaults to `null`. A `TypeError` is produced if the argument is omitted and the table's element type is not defaultable.
+
+* The `Table` method `grow` gets an additional optional argument `init` that is used to initialise the new table slots. It defaults to `null`. A `TypeError` is produced if the argument is omitted and the table's element type is not defaultable.
