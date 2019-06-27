@@ -227,7 +227,8 @@ Elements of the WebAssembly store may be <dfn>identified with</dfn> JavaScript v
 
 <h3 id="object-caches">WebAssembly JS Object Caches</h3>
 
-Note: There are several WebAssembly objects that may have a corresponding JavaScript object. The correspondence is stored in a per-agent mapping from WebAssembly [=address=]es to JavaScript objects. This mapping is used to ensure that, for a given [=agent=], there exists at most one JavaScript object for a particular WebAssembly address.
+Note: There are several WebAssembly objects that may have a corresponding JavaScript object. The correspondence is stored in a per-agent mapping from WebAssembly [=address=]es to JavaScript objects.
+This mapping is used to ensure that, for a given [=agent=], there exists at most one JavaScript object for a particular WebAssembly address. However, this property does not hold for shared objects.
 
 Each [=agent=] is associated with the following [=ordered map=]s:
     * The <dfn>Memory object cache</dfn>, mapping [=memory address=]es to {{Memory}} objects.
