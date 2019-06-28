@@ -114,7 +114,7 @@
 
   (func (export "test")
     (memory.fill (i32.const 0x20000) (i32.const 0x55) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds memory access")
+(invoke "test")
 
 (module
   (memory 1 1)

@@ -182,20 +182,15 @@
   "data segment does not fit"
 )
 
-(assert_unlinkable
-  (module
-    (memory 0)
-    (data (i32.const 1))
-  )
-  "data segment does not fit"
+;; Writing 0 bytes outside of bounds is allowed now.
+(module
+  (memory 0)
+  (data (i32.const 1))
 )
 
-(assert_unlinkable
-  (module
-    (memory 0 1)
-    (data (i32.const 1))
-  )
-  "data segment does not fit"
+(module
+  (memory 0 1)
+  (data (i32.const 1))
 )
 
 ;; This seems to cause a time-out on Travis.

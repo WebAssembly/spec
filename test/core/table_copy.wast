@@ -633,7 +633,7 @@
     (table.copy (i32.const 31) (i32.const 15) (i32.const 0))
     ))
 
-(assert_trap (invoke "test") "out of bounds")
+(invoke "test")
 
 (module
   (table 30 30 funcref)
@@ -681,7 +681,7 @@
     (table.copy (i32.const 15) (i32.const 31) (i32.const 0))
     ))
 
-(assert_trap (invoke "test") "out of bounds")
+(invoke "test")
 
 (module
   (table 30 30 funcref)

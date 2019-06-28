@@ -164,13 +164,13 @@ print(
 (assert_trap (invoke "test") "out of bounds")
 `);
 
-// init: seg ix is valid passive, zero len, but src offset past the end
+// init: seg ix is valid passive, src offset past the end, zero len is always valid
 print(
 `(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 1234) (i32.const 4) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(invoke "test")
 `);
 
 // init: seg ix is valid passive, zero len, src offset at the end
@@ -182,13 +182,13 @@ print(
 (invoke "test")
 `);
 
-// init: seg ix is valid passive, zero len, but dst offset past the end
+// init: seg ix is valid passive, dst offset past the end, zero len is always valid
 print(
 `(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 0x10001) (i32.const 0) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(invoke "test")
 `);
 
 // init: seg ix is valid passive, zero len, but dst offset at the end

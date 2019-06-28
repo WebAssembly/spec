@@ -48,9 +48,8 @@
 ;; Succeed when writing 0 bytes at the end of the region.
 (invoke "fill" (i32.const 0x10000) (i32.const 0) (i32.const 0))
 
-;; Fail on out-of-bounds when writing 0 bytes outside of memory.
-(assert_trap (invoke "fill" (i32.const 0x10001) (i32.const 0) (i32.const 0))
-    "out of bounds memory access")
+;; OK to write 0 bytes outside of memory.
+(invoke "fill" (i32.const 0x10001) (i32.const 0) (i32.const 0))
 
 
 ;; memory.copy
@@ -110,11 +109,9 @@
 (invoke "copy" (i32.const 0x10000) (i32.const 0) (i32.const 0))
 (invoke "copy" (i32.const 0) (i32.const 0x10000) (i32.const 0))
 
-;; Fail on out-of-bounds when copying 0 bytes outside of memory.
-(assert_trap (invoke "copy" (i32.const 0x10001) (i32.const 0) (i32.const 0))
-    "out of bounds memory access")
-(assert_trap (invoke "copy" (i32.const 0) (i32.const 0x10001) (i32.const 0))
-    "out of bounds memory access")
+;; OK to copy 0 bytes outside of memory.
+(invoke "copy" (i32.const 0x10001) (i32.const 0) (i32.const 0))
+(invoke "copy" (i32.const 0) (i32.const 0x10001) (i32.const 0))
 
 
 ;; memory.init
@@ -150,11 +147,9 @@
 (invoke "init" (i32.const 0x10000) (i32.const 0) (i32.const 0))
 (invoke "init" (i32.const 0) (i32.const 4) (i32.const 0))
 
-;; Fail on out-of-bounds when writing 0 bytes outside of memory or segment.
-(assert_trap (invoke "init" (i32.const 0x10001) (i32.const 0) (i32.const 0))
-    "out of bounds memory access")
-(assert_trap (invoke "init" (i32.const 0) (i32.const 5) (i32.const 0))
-    "out of bounds memory access")
+;; OK to write 0 bytes outside of memory or segment.
+(invoke "init" (i32.const 0x10001) (i32.const 0) (i32.const 0))
+(invoke "init" (i32.const 0) (i32.const 5) (i32.const 0))
 
 ;; data.drop
 (module
@@ -216,11 +211,9 @@
 (invoke "init" (i32.const 3) (i32.const 0) (i32.const 0))
 (invoke "init" (i32.const 0) (i32.const 4) (i32.const 0))
 
-;; Fail on out-of-bounds when storing 0 elements outside of table or segment.
-(assert_trap (invoke "init" (i32.const 4) (i32.const 0) (i32.const 0))
-    "out of bounds table access")
-(assert_trap (invoke "init" (i32.const 0) (i32.const 5) (i32.const 0))
-    "out of bounds table access")
+;; OK to storing 0 elements outside of table or segment.
+(invoke "init" (i32.const 4) (i32.const 0) (i32.const 0))
+(invoke "init" (i32.const 0) (i32.const 5) (i32.const 0))
 
 
 ;; elem.drop
@@ -302,7 +295,5 @@
 (invoke "copy" (i32.const 0) (i32.const 10) (i32.const 0))
 
 ;; Fail on out-of-bounds when copying 0 elements outside of table.
-(assert_trap (invoke "copy" (i32.const 11) (i32.const 0) (i32.const 0))
-    "out of bounds table access")
-(assert_trap (invoke "copy" (i32.const 0) (i32.const 11) (i32.const 0))
-    "out of bounds table access")
+(invoke "copy" (i32.const 11) (i32.const 0) (i32.const 0))
+(invoke "copy" (i32.const 0) (i32.const 11) (i32.const 0))

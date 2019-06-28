@@ -56,13 +56,13 @@ print(
 (invoke "test")
 `);
 
-// Zero len with offset out-of-bounds past the end of memory is not allowed
+// Zero len with offset out-of-bounds past the end of memory is allowed
 print(
 `(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0x20000) (i32.const 0x55) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds memory access")
+(invoke "test")
 `);
 
 // Very large range

@@ -446,7 +446,7 @@
   (func (export "test")
     (table.init 1 (i32.const 12) (i32.const 5) (i32.const 0))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(invoke "test")
 
 (module
   (table 30 30 funcref)
@@ -492,7 +492,7 @@
   (func (export "test")
     (table.init 1 (i32.const 31) (i32.const 2) (i32.const 0))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(invoke "test")
 
 (module
   (table 30 30 funcref)

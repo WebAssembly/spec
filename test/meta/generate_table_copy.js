@@ -189,20 +189,20 @@ tab_test2("(table.copy (i32.const 30) (i32.const 15) (i32.const 0))",
          "",
          undefined);
 
-// copy: zero length with dst offset out of bounds past the end of the table is not allowed
+// copy: zero length with dst offset out of bounds past the end of the table is allowed
 tab_test2("(table.copy (i32.const 31) (i32.const 15) (i32.const 0))",
          "",
-         "out of bounds");
+         undefined);
 
 // copy: zero length with src offset out of bounds at the end of the table is allowed
 tab_test2("(table.copy (i32.const 15) (i32.const 30) (i32.const 0))",
          "",
          undefined);
 
-// copy: zero length with src offset out of bounds past the end of the table is not allowed
+// copy: zero length with src offset out of bounds past the end of the table is allowed
 tab_test2("(table.copy (i32.const 15) (i32.const 31) (i32.const 0))",
          "",
-         "out of bounds");
+         undefined);
 
 // copy: zero length with both dst and src offset out of bounds at the end of the table is allowed
 tab_test2("(table.copy (i32.const 30) (i32.const 30) (i32.const 0))",

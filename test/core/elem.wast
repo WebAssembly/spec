@@ -166,12 +166,10 @@
   "elements segment does not fit"
 )
 
-(assert_unlinkable
-  (module
-    (table 0 funcref)
-    (elem (i32.const 1))
-  )
-  "elements segment does not fit"
+;; Writing 0 elems outside of bounds is allowed now.
+(module
+  (table 0 funcref)
+  (elem (i32.const 1))
 )
 
 (assert_unlinkable

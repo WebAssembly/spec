@@ -304,13 +304,13 @@ print(
 (invoke "test")
 `);
 
-// Zero len with dest offset out-of-bounds past the end of memory is not allowed
+// Zero len with dest offset out-of-bounds past the end of memory is allowed
 print(
 `(module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x20000) (i32.const 0x7000) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(invoke "test")
 `);
 
 // Zero len with src offset out-of-bounds at the end of memory is allowed
@@ -322,13 +322,13 @@ print(
 (invoke "test")
 `);
 
-// Zero len with src offset out-of-bounds past the end of memory is not allowed
+// Zero len with src offset out-of-bounds past the end of memory is allowed
 print(
 `(module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x9000) (i32.const 0x20000) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(invoke "test")
 `);
 
 // Zero len with both dest and src offsets out-of-bounds at the end of memory is allowed

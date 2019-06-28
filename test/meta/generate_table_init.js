@@ -226,9 +226,9 @@ tab_test1("(table.init 1 (i32.const 12) (i32.const 4) (i32.const 0))",
           undefined);
 
 // init: seg ix is valid passive, zero len, and src offset out of bounds past the
-// end of the table - this is not allowed
+// end of the table - this is allowed
 tab_test1("(table.init 1 (i32.const 12) (i32.const 5) (i32.const 0))",
-          "out of bounds");
+          undefined);
 
 // init: seg ix is valid passive, zero len, and dst offset out of bounds at the
 // end of the table - this is allowed
@@ -236,9 +236,9 @@ tab_test1("(table.init 1 (i32.const 30) (i32.const 2) (i32.const 0))",
           undefined);
 
 // init: seg ix is valid passive, zero len, and dst offset out of bounds past the
-// end of the table - this is not allowed
+// end of the table - this is allowed
 tab_test1("(table.init 1 (i32.const 31) (i32.const 2) (i32.const 0))",
-          "out of bounds");
+          undefined);
 
 // init: seg ix is valid passive, zero len, and dst and src offsets out of bounds
 // at the end of the table - this is allowed

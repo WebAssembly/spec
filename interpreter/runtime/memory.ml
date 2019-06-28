@@ -145,11 +145,6 @@ let store_packed sz mem a o v =
     | _ -> raise Type
   in storen mem a o n x
 
-let check_str_bounds bs a =
-  if I64.gt_u a (Int64.of_int (String.length bs)) then raise Bounds
-
-let check_bounds mem a = if I64.gt_u a (bound mem) then raise Bounds
-
 let init mem bs d s n =
   let load_str_byte a =
     try Char.code bs.[Int64.to_int a]
@@ -159,10 +154,7 @@ let init mem bs d s n =
       store_byte mem d (load_str_byte s);
       loop (Int64.add d 1L) (Int64.add s 1L) (Int32.sub n 1l)
     end
-  in loop d s n;
-  let n' = I64_convert.extend_i32_u n in
-  check_bounds mem (Int64.add d n');
-  check_str_bounds bs (Int64.add s n')
+  in loop d s n
 
 let copy mem d s n =
   let n' = I64_convert.extend_i32_u n in
@@ -175,9 +167,7 @@ let copy mem d s n =
   in (if overlap && s < d then
     loop Int64.(add d (sub n' 1L)) Int64.(add s (sub n' 1L)) n (-1L)
   else
-    loop d s n 1L);
-  check_bounds mem (Int64.add d n');
-  check_bounds mem (Int64.add s n')
+    loop d s n 1L)
 
 let fill mem a v n =
   let rec loop a n =
@@ -185,5 +175,4 @@ let fill mem a v n =
       store_byte mem a v;
       loop (Int64.add a 1L) (Int32.sub n 1l)
     end
-  in loop a n;
-  check_bounds mem (Int64.add a (I64_convert.extend_i32_u n))
+  in loop a n

@@ -49,19 +49,16 @@ let load tab i =
 let store tab i v =
   try Lib.Array32.set tab.content i v with Invalid_argument _ -> raise Bounds
 
-let check_bounds tab i = if I32.gt_u i (size tab) then raise Bounds
-
 let init tab es d s n =
   let rec loop es d s n =
     match s, n, es with
-    | 0l, 0l, _ -> ()
+    | s, 0l, _ -> ()
     | 0l, n, e::es' ->
       store tab d e;
       loop es' (Int32.add d 1l) 0l (Int32.sub n 1l)
     | s, n, _::es' -> loop es' d (Int32.sub s 1l) n
     | _ -> raise Bounds
-  in loop es d s n;
-  check_bounds tab (Int32.add d n)
+  in loop es d s n
 
 let copy tab d s n =
   let overlap = I32.lt_u Int32.(abs (sub d s)) n in
@@ -73,6 +70,4 @@ let copy tab d s n =
   in (if overlap && s < d then
     loop Int32.(add d (sub n 1l)) Int32.(add s (sub n 1l)) n (-1l)
   else
-    loop d s n 1l);
-  check_bounds tab (Int32.add d n);
-  check_bounds tab (Int32.add s n)
+    loop d s n 1l)
