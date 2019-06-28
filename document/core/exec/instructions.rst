@@ -830,6 +830,245 @@ Memory Instructions
    \end{array}
 
 
+.. index:: table instruction, table index, store, frame, address, table address, table instance, function element, element address, element instance, value type
+   pair: execution; instruction
+   single: abstract syntax; instruction
+.. _exec-instr-table:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+.. _exec-table.init:
+
+:math:`\TABLEINIT~x`
+....................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-table.init>`, :math:`F.\AMODULE.\MITABLES[0]` exists.
+
+3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[0]`.
+
+4. Assert: due to :ref:`validation <valid-table.init>`, :math:`S.\STABLES[\X{ta}]` exists.
+
+5. Let :math:`\X{table}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
+
+6. Assert: due to :ref:`validation <valid-elem.init>`, :math:`F.\AMODULE.\MIELEMS[x]` exists.
+
+7. Let :math:`\X{ea}` be the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[x]`.
+
+8. Assert: due to :ref:`validation <valid-elem.init>`, :math:`S.\SELEM[\X{ea}]` exists.
+
+9. Let :math:`\X{elem}^?` be the optional :ref:`element instance <syntax-eleminst>` :math:`S.\SELEM[\X{ea}]`.
+
+10. If :math:`\X{elem}^? = \epsilon`, then:
+
+   a. Trap.
+
+11. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+12. Pop the value :math:`\I32.\CONST~n` from the stack.
+
+13. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+14. Pop the value :math:`\I32.\CONST~s` from the stack.
+
+15. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+16. Pop the value :math:`\I32.\CONST~d` from the stack.
+
+17. If :math:`n` is :math:`0`, then:
+
+    a. If :math:`d` is larger than the length of :math:`\X{table}.\TIELEM`, then:
+
+       i. Trap.
+
+    b. If :math:`s` is larger than the length of :math:`\X{elem}.\EIINIT`, then:
+
+       i. Trap.
+
+18. Else:
+
+    a. Push the value :math:`\I32.\CONST~d` to the stack.
+
+    b. Let :math:`\funcelem` be the :ref:`function element <syntax-funcelem>` :math:`\X{elem}.\EIINIT[s]`.
+
+    d. Execute the instruction :math:`\TABLESET~\funcelem`.
+
+    e. Push the value :math:`\I32.\CONST~(d+1)` to the stack.
+
+    f. Push the value :math:`\I32.\CONST~(s+1)` to the stack.
+
+    g. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
+
+    h. Execute the instruction :math:`\TABLEINIT~x`.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~(n+1))~(\TABLEINIT~x) &\stepto& S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\I32.\CONST~d)~\funcelem~\TABLESET \\
+     (\I32.\CONST~(d+1))~(\I32.\CONST~(s+1))~(\I32.\CONST~n)~(\TABLEINIT~x) \\
+     \end{array} \\
+   \end{array} \\
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & s < |S.\SELEM[F.\AMODULE.\MIELEMS[x]].\EIINIT| \\
+     \wedge & \funcelem = S.\SELEM[F.\AMODULE.\MIELEMS[x]].\EIINIT[s]) \\
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~(s)~(\I32.\CONST~0)~(\TABLEINIT~x) &\stepto& S; F; \epsilon
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & d \leq |S.\STABLES[F.\AMODULE.\MITABLES[0]].\TIELEM| \\
+     \wedge & s \leq |S.\SELEM[F.\AMODULE.\MIELEMS[x]].\EIINIT|) \\
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\TABLEINIT~x) &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise) \\
+   \end{array}
+
+
+.. _exec-elem.drop:
+
+:math:`\ELEMDROP~x`
+...................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-elem.init>`, :math:`F.\AMODULE.\MIELEMS[x]` exists.
+
+3. Let :math:`a` be the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[x]`.
+
+4. Assert: due to :ref:`validation <valid-elem.init>`, :math:`S.\SELEM[a]` exists.
+
+5. Let :math:`\X{elem}^?` be the optional :ref:`elem instance <syntax-eleminst>` :math:`S.\SELEM[a]`.
+
+6. If :math:`\X{elem}^? = \epsilon`, then:
+
+   a. Trap.
+
+7. Replace :math:`S.\SELEM[a]` with :math:`\epsilon`.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\ELEMDROP~x) &\stepto& S'; F; \epsilon
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & S.\SELEM[F.\AMODULE.\MIELEMS[x]] \ne \epsilon \\
+     \wedge & S' = S \with \SELEM[F.\AMODULE.\MIELEMS[x]] = \epsilon) \\
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\ELEMDROP~x) &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise)
+   \end{array}
+
+
+.. _exec-table.get:
+
+:math:`\TABLEGET`
+.................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: :math:`F.\AMODULE.\MITABLES[0]` exists.
+
+3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[0]`.
+
+4. Assert: :math:`S.\STABLES[\X{ta}]` exists.
+
+5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
+
+6. Assert: a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+7. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+8. If :math:`i` is not smaller than the length of :math:`\X{tab}.\TIELEM`, then:
+
+   a. Trap.
+
+9. Push the :ref:`function element <syntax-funcelem>` :math:`X{tab}.\TIELEM[i]` to the stack.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~\TABLEGET &\stepto& S; F; \funcelem
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & \funcelem = S.\STABLES[F.\AMODULE.\MITABLES[0]].\TIELEM[i])
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~\TABLEGET &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise) \\
+   \end{array}
+
+
+.. _exec-table.set:
+
+:math:`\TABLESET`
+.................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: :math:`F.\AMODULE.\MITABLES[0]` exists.
+
+3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[0]`.
+
+4. Assert: :math:`S.\STABLES[\X{ta}]` exists.
+
+5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
+
+6. Assert: a :ref:`function element <syntax-funcelem>` is on the top of the stack.
+
+7. Pop the function element :math:`\funcelem` from the stack.
+
+8. Assert: a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+9. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+10. If :math:`i` is not smaller than the length of :math:`\X{tab}.\TIELEM`, then:
+
+   a. Trap.
+
+11. Replace :math:`X{tab}.\TIELEM[i]` with :math:`\funcelem`.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~\funcelem~\TABLESET &\stepto& S'; F; \epsilon
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & S' = S \with \STABLES[F.\AMODULE.\MITABLES[0]].\TIELEM[i] = \funcelem)
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~\funcelem~\TABLESET &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise) \\
+   \end{array}
+
+
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, address, table address, table instance, store, frame
    pair: execution; instruction
    single: abstract syntax; instruction

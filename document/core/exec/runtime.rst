@@ -480,6 +480,8 @@ Conventions
 .. _syntax-invoke:
 .. _syntax-init_elem:
 .. _syntax-init_data:
+.. _syntax-table_get:
+.. _syntax-table_set:
 .. _syntax-instr-admin:
 
 Administrative Instructions
@@ -498,6 +500,8 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
      \INVOKE~\funcaddr \\ &&|&
      \INITELEM~\tableaddr~\u32~\funcidx^\ast \\ &&|&
      \INITDATA~\memaddr~\u32~\byte^\ast \\ &&|&
+     \TABLEGET \\ &&|&
+     \TABLESET \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
      \FRAME_n\{\frame\}~\instr^\ast~\END \\
    \end{array}
@@ -512,6 +516,11 @@ The |INITELEM| and |INITDATA| instructions perform initialization of :ref:`eleme
 
 .. note::
    The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.
+
+The |TABLEGET| and |TABLESET| instructions are used to simplify the specification of the |TABLEINIT| and |TABLECOPY| instructions.
+
+.. note::
+   In the future, |TABLEGET| and |TABLESET| may be provided as regular instructions.
 
 The |LABEL| and |FRAME| instructions model :ref:`labels <syntax-label>` and :ref:`frames <syntax-frame>` :ref:`"on the stack" <exec-notation>`.
 Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instr-seq>` with an |END| marker.

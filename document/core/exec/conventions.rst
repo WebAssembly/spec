@@ -33,7 +33,7 @@ The following conventions are adopted in stating these rules.
 
 * The execution rules also assume the presence of an implicit :ref:`stack <stack>`
   that is modified by *pushing* or *popping*
-  :ref:`values <syntax-value>`, :ref:`labels <syntax-label>`, and :ref:`frames <syntax-frame>`.
+  :ref:`values <syntax-value>`, :ref:`function elements <syntax-funcelem>`, :ref:`labels <syntax-label>`, and :ref:`frames <syntax-frame>`.
 
 * Certain rules require the stack to contain at least one frame.
   The most recent frame is referred to as the *current* frame.

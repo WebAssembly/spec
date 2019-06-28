@@ -922,6 +922,8 @@
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
 .. |INITELEM| mathdef:: \xref{exec/runtime}{syntax-init_elem}{\K{init\_elem}}
 .. |INITDATA| mathdef:: \xref{exec/runtime}{syntax-init_data}{\K{init\_data}}
+.. |TABLEGET| mathdef:: \xref{exec/runtime}{syntax-table_get}{\K{table.get}
+.. |TABLESET| mathdef:: \xref{exec/runtime}{syntax-table_set}{\K{table.set}
 
 
 .. Values & Results, non-terminals
