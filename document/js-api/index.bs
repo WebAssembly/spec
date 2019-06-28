@@ -365,7 +365,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 </div>
 
 <div algorithm>
-  To <dfn>create an instance object</dfn> from a WebAssembly module |module| and instance |instance|, perform the following steps:
+  To <dfn>create an exports object</dfn> from a WebAssembly module |module| and instance |instance|, perform the following steps:
     1. Let |exportsObject| be ! [=ObjectCreate=](null).
     1. For each pair (|name|, |externtype|) in [=module_exports=](|module|),
         1. Let |externval| be [=instance_export=](|instance|, |name|).
@@ -395,7 +395,15 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
         Note: the validity and uniqueness checks performed during [=WebAssembly module validation=] ensure that each property name is valid and no properties are defined twice.
     1. Perform ! [=SetIntegrityLevel=](|exportsObject|, `"frozen"`).
-    1. Return a new {{Instance}} object whose internal \[[Instance]] slot is set to |instance| and the \[[Exports]] slot to |exportsObject|.
+    1. Return |exportsObject|.
+</div>
+
+<div algorithm>
+  To <dfn>initialize an instance object</dfn> |instanceObject| from a WebAssembly module |module| and instance |instance|, perform the following steps:
+
+    1. [=Create an exports object=] from |module| and |instance| and let |exportsObject| be the result.
+    1. Set |instanceObject|.\[[Instance]] to |instance|.
+    1. Set |instanceObject|.\[[Exports]] to |exportsObject|.
 </div>
 
 <div algorithm>
@@ -420,7 +428,8 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. [=Queue a task=] to perform the following steps:
         1.  [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
             If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
-        1.  [=Create an instance object=] from |module| and |instance|, and let the result be |instanceObject|.
+        1.  Let |instanceObject| be a [=/new=] {{Instance}}.
+        1.  [=initialize an instance object|Initialize=] |instanceObject| from |module| and |instance|.
             If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
         1. [=Resolve=] |promise| with |instanceObject|.
     1. Return |promise|.
@@ -431,7 +440,8 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. Let |module| be |moduleObject|.\[[Module]].
     1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
     1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
-    1. [=Create an instance object=] from |module| and |instance|, and let the result be |instanceObject|.
+    1. Let |instanceObject| be a [=/new=] {{Instance}}.
+    1. [=initialize an instance object|Initialize=] |instanceObject| from |module| and |instance|.
     1. Return |instanceObject|.
 </div>
 
@@ -542,7 +552,8 @@ interface Module {
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Compile a WebAssembly module|Compile the WebAssembly module=] |stableBytes| and store the result as |module|.
     1. If |module| is [=error=], throw a {{CompileError}} exception.
-    1. [=Construct a WebAssembly module object=] from |module| and |stableBytes|, and return the result.
+    1. Set **this**.\[[Module]] to |module|.
+    1. Set **this**.\[[Bytes]] to |stableBytes|.
 </div>
 
 <h3 id="instances">Instances</h3>
@@ -555,11 +566,15 @@ interface Instance {
 </pre>
 
 <div algorithm>
-    The <dfn constructor for="Instance">Instance(|module|, |importObject|)</dfn> constructor, when invoked, [=instantiate a WebAssembly module|instantiates the WebAssembly module=] |module| importing |importObject| and returns the result.
+  The <dfn constructor for="Instance">Instance(|module|, |importObject|)</dfn> constructor, when invoked, runs the following steps:
+    1. Let |module| be |module|.\[[Module]].
+    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
+    1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
+    1. [=initialize an instance object|Initialize=] **this** from |module| and |instance|.
 </div>
 
 <div algorithm>
-    The getter of the <dfn attribute for="Instance">exports</dfn> attribute of {{Instance}} returns the receiver's \[[Exports]] internal slot.
+    The getter of the <dfn attribute for="Instance">exports</dfn> attribute of {{Instance}} returns **this**.\[[Exports]].
 </div>
 
 <h3 id="memories">Memories</h3>
@@ -596,14 +611,23 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
+    To <dfn>initialize a memory object</dfn> |memory| from a [=memory address=] |memaddr|, perform the following steps:
+    1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
+    1. Assert: |map|[|memaddr|] doesn't [=map/exist=].
+    1. Let |buffer| be a the result of [=create a memory buffer|creating a memory buffer=] from |memaddr|.
+    1. Set |memory|.\[[Memory]] to |memaddr|.
+    1. Set |memory|.\[[BufferObject]] to |buffer|.
+    1. [=map/Set=] |map|[|memaddr|] to |memory|.
+</div>
+
+<div algorithm>
     To <dfn>create a memory object</dfn> from a [=memory address=] |memaddr|, perform the following steps:
 
     1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
     1. If |map|[|memaddr|] [=map/exists=],
         1. Return |map|[|memaddr|].
-    1. Let |buffer| be a the result of [=create a memory buffer|creating a memory buffer=] from |memaddr|.
-    1. Let |memory| be a new {{Memory}} instance with \[[Memory]] set to |memaddr| and \[[BufferObject]] set to |buffer|.
-    1. [=map/Set=] |map|[|memaddr|] to |memory|.
+    1. Let |memory| be a [=/new=] {{Memory}}.
+    1. [=initialize a memory object|Initialize=] |memory| from |memaddr|.
     1. Return |memory|.
 </div>
 
@@ -616,14 +640,14 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |memaddr|) be [=mem_alloc=](|store|, |memtype|). If allocation fails, throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
-    1. [=Create a memory object=] from the memory address |memaddr| and return the result.
+    1. [=initialize a memory object|Initialize=] **this** from |memaddr|.
 </div>
 
 <div algorithm>
     To <dfn>reset the Memory buffer</dfn> of |memaddr|, perform the following steps:
 
     1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
-    1. Assert: |map|[|memaddr|] [=map/exists=]
+    1. Assert: |map|[|memaddr|] [=map/exists=].
     1. Let |memory| be |map|[|memaddr|].
     1. Perform ! [=DetachArrayBuffer=](|memory|.\[[BufferObject]], "WebAssembly.Memory").
     1. Let |buffer| be a the result of [=create a memory buffer|creating a memory buffer=] from |memaddr|.
@@ -632,9 +656,8 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm=dom-Memory-grow>
     The <dfn method for="Memory">grow(|delta|)</dfn> method, when invoked, performs the following steps:
-    1. Let |memory| be the Memory instance.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |memaddr| be |memory|.\[[Memory]].
+    1. Let |memaddr| be **this**.\[[Memory]].
     1. Let |ret| be the [=mem_size=](|store|, |memaddr|).
     1. Let |store| be [=mem_grow=](|store|, |memaddr|, |delta|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
@@ -654,7 +677,7 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
 </div>
 
 <div algorithm>
-    The getter of the <dfn attribute for="Memory">buffer</dfn> attribute of {{Memory}} returns the receiver's \[[BufferObject]] internal slot.
+    The getter of the <dfn attribute for="Memory">buffer</dfn> attribute of {{Memory}} returns **this**.\[[BufferObject]].
 </div>
 
 <h3 id="tables">Tables</h3>
@@ -691,14 +714,23 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
+    To <dfn>initialize a table object</dfn> |table| from a [=table address=] |tableaddr|, perform the following steps:
+    1. Let |map| be the [=surrounding agent=]'s associated [=Table object cache=].
+    1. Assert: |map|[|tableaddr|] doesn't [=map/exist=].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+    1. Let |values| be a list whose length is [=table_size=](|store|, |tableaddr|) where each element is null.
+    1. Set |table|.\[[Table]] to |tableaddr|.
+    1. Set |table|.\[[Values]] to |values|.
+    1. [=map/Set=] |map|[|tableaddr|] to |table|.
+</div>
+
+<div algorithm>
     To <dfn>create a table object</dfn> from a [=table address=] |tableaddr|, perform the following steps:
     1. Let |map| be the [=surrounding agent=]'s associated [=Table object cache=].
     1. If |map|[|tableaddr|] [=map/exists=],
         1. Return |map|[|tableaddr|].
-    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |values| be a list whose length is [=table_size=](|store|, |tableaddr|) where each element is null.
-    1. Let |table| be a new {{Table}} instance with \[[Table]] set to |tableaddr| and \[[Values]] set to |values|.
-    1. [=map/Set=] |map|[|tableaddr|] to |table|.
+    1. Let |table| be a [=/new=] {{Table}}.
+    1. [=initialize a table object|Initialize=] |table| from |tableaddr|.
     1. Return |table|.
 </div>
 
@@ -711,13 +743,13 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |tableaddr|) be [=table_alloc=](|store|, |type|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
-    1. [=Create a table object=] from the table address |tableaddr| and return the result.
+    1. [=initialize a table object|Initialize=] **this** from |tableaddr|.
 </div>
 
 <div algorithm=dom-Table-grow>
     The <dfn method for="Table">grow(|delta|)</dfn> method, when invoked, performs the following steps:
-    1. Let |tableaddr| be the Table instance's \[[Table]] internal slot.
-    1. Let |initialSize| be the length of the Table instance's \[[Values]] internal slot.
+    1. Let |tableaddr| be **this**.\[[Table]].
+    1. Let |initialSize| be the length of **this**.\[[Values]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |result| be [=table_grow=](|store|, |tableaddr|, |delta|).
     1. If |result| is [=error=], throw a {{RangeError}} exception.
@@ -725,17 +757,17 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
         Note: The above exception may happen due to either insufficient memory or an invalid size parameter.
 
     1. Set the [=surrounding agent=]'s [=associated store=] to |result|.
-    1. [=Append=] null to the Table instance's \[[Values]] internal slot |delta| times.
+    1. [=Append=] null to **this**.\[[Values]] |delta| times.
     1. Return |initialSize|.
 </div>
 
 <div algorithm>
-  The getter of the <dfn attribute for="Table">length</dfn> attribute of {{Table}} returns the length of the table's \[[Values]] internal slot.
+  The getter of the <dfn attribute for="Table">length</dfn> attribute of {{Table}} returns the length of **this**.\[[Values]].
 </div>
 
 <div algorithm>
     The <dfn method for="Table">get(|index|)</dfn> method, when invoked, performs the following steps:
-    1. Let |values| be the Table instance's \[[Values]] internal slot.
+    1. Let |values| be **this**.\[[Values]].
     1. Let |size| be the length of |values|.
     1. If |index| &ge; |size|, throw a {{RangeError}} exception.
     1. Return |values|[|index|].
@@ -743,8 +775,8 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     The <dfn method for="Table">set(|index|, |value|)</dfn> method, when invoked, performs the following steps:
-    1. Let |tableaddr| be the Table instance's \[[Table]] internal slot.
-    1. Let |values| be the Table instance's \[[Values]] internal slot.
+    1. Let |tableaddr| be **this**.\[[Table]].
+    1. Let |values| be **this**.\[[Values]].
     1. If |value| is null, let |funcaddr| be an empty [=function element=].
     1. Otherwise,
         1. If |value| does not have a \[[FunctionAddress]] internal slot, throw a {{TypeError}} exception.
@@ -792,12 +824,20 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
+    To <dfn>initialize a global object</dfn> |global| from a [=global address=] |globaladdr|, perform the following steps:
+    1. Let |map| be the [=surrounding agent=]'s associated [=Global object cache=].
+    1. Assert: |map|[|globaladdr|] doesn't [=map/exist=].
+    1. Set |global|.\[[Global]] to |globaladdr|.
+    1. [=map/Set=] |map|[|globaladdr|] to |global|.
+</div>
+
+<div algorithm>
     To <dfn>create a global object</dfn> from a [=global address=] |globaladdr|, perform the following steps:
     1. Let |map| be the current [=agent=]'s associated [=Global object cache=].
     1. If |map|[|globaladdr|] [=map/exists=],
         1. Return |map|[|globaladdr|].
-    1. Let |global| be a new {{Global}} instance with \[[Global]] set to |globaladdr|.
-    1. [=map/Set=] |map|[|globaladdr|] to |global|.
+    1. Let |global| be a [=/new=] {{Global}}.
+    1. [=initialize a global object|Initialize=] |global| from |globaladdr|.
     1. Return |global|.
 </div>
 
@@ -831,7 +871,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the current agent's [=associated store=].
     1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, |globaltype|, |value|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
     1. Set the current agent's [=associated store=] to |store|.
-    1. [=Create a global object=] from the global address |globaladdr| and return the result.
+    1. [=initialize a global object|Initialize=] **this** from |globaladdr|.
 </div>
 
 <div algorithm>
@@ -846,17 +886,15 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     The getter of the <dfn attribute for="Global">value</dfn> attribute of {{Global}}, when invoked, performs the following steps:
-    1. Let |global| be the {{Global}} instance.
-    1. Return [=GetGlobalValue=](|global|).
+    1. Return [=GetGlobalValue=](**this**).
 
-    The setter of the value attribute of {{Global}}, when invoked with a value |v|, performs the following steps:
-    1. Let |global| be the {{Global}} instance.
+    The setter of the value attribute of {{Global}}, when invoked, performs the following steps:
     1. Let |store| be the current agent's [=associated store=].
-    1. Let |globaladdr| be |global|.\[[Global]].
+    1. Let |globaladdr| be **this**.\[[Global]].
     1. Let |globaltype| be [=global_type=](|store|, |globaladdr|), where |globaltype| is of the form |mut| |valuetype|.
     1. If |mut| is [=const=], throw a {{TypeError}}.
     1. If |valuetype| is [=𝗂𝟨𝟦=], throw a {{TypeError}}.
-    1. Let |value| be [=ToWebAssemblyValue=](|v|, |valuetype|).
+    1. Let |value| be [=ToWebAssemblyValue=](**the given value**, |valuetype|).
     1. Let |store| be [=global_write=](|store|, |globaladdr|, |value|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
     1. Set the current agent's [=associated store=] to |store|.
@@ -864,8 +902,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     The <dfn method for="Global">valueOf()</dfn> method, when invoked, performs the following steps:
-    1. Let |global| be the {{Global}} instance.
-    1. Return [=GetGlobalValue=](|global|).
+    1. Return [=GetGlobalValue=](**this**).
 </div>
 
 <h3 id="exported-function-exotic-objects">Exported Functions</h3>
