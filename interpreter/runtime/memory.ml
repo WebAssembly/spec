@@ -158,13 +158,12 @@ let init mem bs d s n =
 
 let copy mem d s n =
   let n' = I64_convert.extend_i32_u n in
-  let overlap = I64.lt_u Int64.(abs (sub d s)) n' in
   let rec loop d s n dx =
     if I32.gt_u n 0l then begin
       store_byte mem d (load_byte mem s);
       loop (Int64.add d dx) (Int64.add s dx) (Int32.sub n 1l) dx
     end
-  in (if overlap && s < d then
+  in (if s < d then
     loop Int64.(add d (sub n' 1L)) Int64.(add s (sub n' 1L)) n (-1L)
   else
     loop d s n 1L)

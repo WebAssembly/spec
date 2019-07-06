@@ -84,7 +84,8 @@ function initializers(count, startingAt) {
     return s;
 }
 
-function mem_copy(min, max, shared, srcOffs, targetOffs, len, copyDown=false) {
+function mem_copy(min, max, shared, srcOffs, targetOffs, len) {
+    let copyDown = srcOffs < targetOffs;
     let memLength = min * PAGESIZE;
     let targetAvail = memLength - targetOffs;
     let srcAvail = memLength - srcOffs;
@@ -165,13 +166,13 @@ if (WITH_SHARED_MEMORY) {
 }
 
 // OOB target address, overlapping, src < target
-mem_copy(1, 1, "", PAGESIZE-50, PAGESIZE-20, 40, true);
+mem_copy(1, 1, "", PAGESIZE-50, PAGESIZE-20, 40);
 
 // OOB source address, overlapping, target < src
 mem_copy(1, 1, "", PAGESIZE-20, PAGESIZE-50, 40);
 
 // OOB both, overlapping, including target == src
-mem_copy(1, 1, "", PAGESIZE-30, PAGESIZE-20, 40, true);
+mem_copy(1, 1, "", PAGESIZE-30, PAGESIZE-20, 40);
 mem_copy(1, 1, "", PAGESIZE-20, PAGESIZE-30, 40);
 mem_copy(1, 1, "", PAGESIZE-20, PAGESIZE-20, 40);
 
@@ -179,7 +180,7 @@ mem_copy(1, 1, "", PAGESIZE-20, PAGESIZE-20, 40);
 mem_copy(1, "", "", PAGESIZE-20, 0, 0xFFFFF000);
 
 // Arithmetic overflow on target adddress is an overlapping case.
-mem_copy(1, 1, "", PAGESIZE-0x1000, PAGESIZE-20, 0xFFFFFF00, true);
+mem_copy(1, 1, "", PAGESIZE-0x1000, PAGESIZE-20, 0xFFFFFF00);
 
 // Sundry compilation failures.
 

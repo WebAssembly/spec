@@ -61,13 +61,12 @@ let init tab es d s n =
   in loop es d s n
 
 let copy tab d s n =
-  let overlap = I32.lt_u Int32.(abs (sub d s)) n in
   let rec loop d s n dx =
     if I32.gt_u n 0l then begin
       store tab d (load tab s);
       loop (Int32.add d dx) (Int32.add s dx) (Int32.sub n 1l) dx
     end
-  in (if overlap && s < d then
+  in (if s < d then
     loop Int32.(add d (sub n 1l)) Int32.(add s (sub n 1l)) n (-1l)
   else
     loop d s n 1l)
