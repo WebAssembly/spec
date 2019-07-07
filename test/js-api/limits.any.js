@@ -17,7 +17,7 @@ const kJSEmbeddingMaxFunctionParams = 1000;
 const kJSEmbeddingMaxFunctionReturns = 1;
 const kJSEmbeddingMaxTableSize = 10000000;
 const kJSEmbeddingMaxElementSegments = 10000000;
-const kJSEmbeddingMaxTables = 1;
+const kJSEmbeddingMaxTables = 100000;
 const kJSEmbeddingMaxMemories = 1;
 
 // This function runs the {gen} function with the values {min}, {limit}, and
