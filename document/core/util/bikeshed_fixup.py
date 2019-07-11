@@ -15,10 +15,13 @@ def Main():
   data = data.replace('<h5>', '<h5 class="no-toc">')
 
   # TODO(bradnelson/tabatkins): Fix when bikeshed can do letters.
-  # Don't number the Appendix.
+  # Don't number the Appendix or Changes sections.
   data = data.replace(
       '<h2>Appendix</h2>',
       '<h2 class="no-num">A Appendix</h2>')
+  data = data.replace(
+      '<h2>Changes</h2>',
+      '<h2 class="no-num">Changes</h2>')
   number = 1
   for section in [
       'Embedding',

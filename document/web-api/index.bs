@@ -2,11 +2,12 @@
 Title: WebAssembly Web API
 Shortname: wasm-web-api
 Group: wasm
-Status: ED
+Status: CR
 Level: 1
 TR: https://www.w3.org/TR/wasm-web-api-1/
 ED: https://webassembly.github.io/spec/web-api/
-Editor: Daniel Ehrenberg (Igalia)
+Previous Version: https://www.w3.org/TR/2018/WD-wasm-web-api-1-20180904/
+Editor: Daniel Ehrenberg, Igalia, w3cid 101636
 Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader web platform.
 Markup Shorthands: css no, markdown yes
