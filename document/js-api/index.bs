@@ -1130,3 +1130,7 @@ In practice, an implementation may run out of resources for valid modules below 
 <p><em>This section is non-normative.</em></p>
 
 This document defines a host environment for WebAssembly. It enables a WebAssembly instance to [=import=] JavaScript objects and functions from an [=read the imports|import object=], but otherwise provides no access to the embedding environment. Thus a WebAssembly instance is bounds to the same constraints as JavaScript.
+
+<pre class=include>
+path: changes.html
+</pre>

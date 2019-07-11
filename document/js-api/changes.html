@@ -1,0 +1,13 @@
+<h2 class="no-num" id="changes">Changes</h2>
+
+Changes since the previous <a href="https://www.w3.org/TR/2018/WD-wasm-js-api-1-20180904/">Working Draft</a>:
+
+* Used `noun_verb` format from core embedding API (e.g. `init_store` becomes [=store_init=]).
+* [=Asynchronously compile a WebAssembly module=]. Clarified how operations run in parallel.
+* [=Create an exports object=]. Changed to share text between various module instantiation methods.
+* Used **this** where appropriate.
+* Separated initialization and creation of {{Memory}}, {{Table}}, and {{Global}} objects.
+* Defined the {{Memory}}.buffer getter.
+* [=ToValueType=], [=DefaultValue=]. Removed unreachable throw steps.
+* [[#limits]]. Added Implementation-defined Limits section.
+* [[#security-considerations]]. Added Security and Privacy Considerations section.
