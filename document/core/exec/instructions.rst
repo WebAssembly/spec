@@ -913,7 +913,7 @@ Table Instructions
 
 4. Assert: due to :ref:`validation <valid-table.init>`, :math:`S.\STABLES[\X{ta}]` exists.
 
-5. Let :math:`\X{table}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
+5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
 
 6. Assert: due to :ref:`validation <valid-elem.init>`, :math:`F.\AMODULE.\MIELEMS[x]` exists.
 
@@ -925,58 +925,66 @@ Table Instructions
 
 10. If :math:`\X{elem}^? = \epsilon`, then:
 
-   a. Trap.
+    a. Trap.
 
 11. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-12. Pop the value :math:`\I32.\CONST~n` from the stack.
+12. Pop the value :math:`\I32.\CONST~cnt` from the stack.
 
 13. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-14. Pop the value :math:`\I32.\CONST~s` from the stack.
+14. Pop the value :math:`\I32.\CONST~src` from the stack.
 
 15. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-16. Pop the value :math:`\I32.\CONST~d` from the stack.
+16. Pop the value :math:`\I32.\CONST~dst` from the stack.
 
-17. Else:
+17. If :math:`cnt = 0`, then:
 
-    a. Push the value :math:`\I32.\CONST~d` to the stack.
+    a. Return.
 
-    b. Let :math:`\funcelem` be the :ref:`function element <syntax-funcelem>` :math:`\X{elem}.\EIINIT[s]`.
+18. If `src` is larger than the length of :math:`\X{elem}.\EIINIT`, then:
 
-    d. Execute the instruction :math:`\TABLESET~\funcelem`.
+    a. Trap.
 
-    e. Push the value :math:`\I32.\CONST~(d+1)` to the stack.
+19. Let :math:`\funcelem` be the :ref:`function element <syntax-funcelem>` :math:`\X{elem}.\EIINIT[src]`.
 
-    f. Push the value :math:`\I32.\CONST~(s+1)` to the stack.
+20. Push the value :math:`\I32.\CONST~dst` to the stack.
 
-    g. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
+21. Push the value :math:`\funcelem` to the stack.
 
-    h. Execute the instruction :math:`\TABLEINIT~x`.
+22. Execute the instruction :math:`\TABLESET`.
+
+23. Push the value :math:`\I32.\CONST~(dst+1)` to the stack.
+
+24. Push the value :math:`\I32.\CONST~(src+1)` to the stack.
+
+25. Push the value :math:`\I32.\CONST~(cnt-1)` to the stack.
+
+26. Execute the instruction :math:`\TABLEINIT~x`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~(s)~(\I32.\CONST~0)~(\TABLEINIT~x) &\stepto& S; F; \epsilon
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~0)~(\TABLEINIT~x) &\stepto& S'; F; \epsilon
    \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~(n+1))~(\TABLEINIT~x) &\stepto& S; F;
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~(cnt+1))~(\TABLEINIT~x) &\stepto& S'; F;
      \begin{array}[t]{@{}l@{}}
-     (\I32.\CONST~d)~\funcelem~\TABLESET \\
-     (\I32.\CONST~(d+1))~(\I32.\CONST~(s+1))~(\I32.\CONST~n)~(\TABLEINIT~x) \\
+     (\I32.\CONST~dst)~\funcelem~(\TABLESET~x) \\
+     (\I32.\CONST~(dst+1))~(\I32.\CONST~(src+1))~(\I32.\CONST~cnt)~(\TABLEINIT~x) \\
      \end{array} \\
    \end{array} \\
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & s < |S.\SELEM[F.\AMODULE.\MIELEMS[x]].\EIINIT| \\
-     \wedge & \funcelem = S.\SELEM[F.\AMODULE.\MIELEMS[x]].\EIINIT[s]) \\
+     (\iff & src < |S.\SELEM[F.\AMODULE.\MIELEMS[x]].\EIINIT| \\
+     \wedge & \funcelem = S.\SELEM[F.\AMODULE.\MIELEMS[x]].\EIINIT[src]) \\
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\TABLEINIT~x) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~(cnt+1))~(\TABLEINIT~x) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -1093,7 +1101,7 @@ Table Instructions
 
 10. If :math:`i` is not smaller than the length of :math:`\X{tab}.\TIELEM`, then:
 
-   a. Trap.
+    a. Trap.
 
 11. Replace :math:`X{tab}.\TIELEM[i]` with :math:`\funcelem`.
 
