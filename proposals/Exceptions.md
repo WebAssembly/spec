@@ -12,8 +12,8 @@ of events.
 
 This proposal requires the [reference types
 proposal](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md)
-as a prerequisite, since the [`except_ref`](#the-exception-reference-data-type)
-type should be represented as a subtype of `anyref`.
+as a prerequisite, since the [`exnref`](#the-exception-reference-data-type) type
+should be represented as a subtype of `anyref`.
 
 ---
 
@@ -140,7 +140,7 @@ Exception indices are used by:
 
 ### The exception reference data type
 
-Data types are extended to have a new `except_ref` type, that refers to an
+Data types are extended to have a new `exnref` type, that refers to an
 exception. The representation of an exception is left to the implementation.
 
 ### Try and catch blocks
@@ -200,7 +200,7 @@ are not in the body of the try block.
 
 Once a catching try block is found for the thrown exception, the operand stack
 is popped back to the size the operand stack had when the try block was entered,
-and then an except_ref referring to the caught exception is pushed back onto the
+and then an `exnref` referring to the caught exception is pushed back onto the
 operand stack.
 
 If control is transferred to the body of a catch block, and the last instruction
@@ -214,10 +214,10 @@ Note that a caught exception can be rethrown using the `rethrow` instruction.
 
 ### Rethrowing an exception
 
-The `rethrow` instruction takes the exception associated with the `except_ref`
-on top of the stack, and rethrows the exception. A rethrow has the same effect
-as a throw, other than an exception is not created. Rather, the referenced
-exception on top of the stack is popped and then thrown.
+The `rethrow` instruction takes the exception associated with the `exnref` on
+top of the stack, and rethrows the exception. A rethrow has the same effect as a
+throw, other than an exception is not created. Rather, the referenced exception
+on top of the stack is popped and then thrown.
 
 ### Exception data extraction
 
@@ -228,23 +228,22 @@ tag of an exception on top of the stack, in the form of:
 br_on_exn label except_index
 ```
 
-The `br_on_exn` instruction checks the exception tag of an `except_ref` on top
-of the stack if it matches the given exception index. If it does, it branches
-out to the label referenced by the instruction (In the binary form, the label
-will be converted to a relative depth immediate, like other branch
-instructions), and while doing that, pops the `except_ref` value from the stack
-and instead pushes the exception's argument values on top of the stack. In order
-to use these popped values, the block signature of the branch target has to
-match the exception types - because it receives the exception arguments as
-branch operands. If the exception tag does not match, the `except_ref` value
-remains on the stack. For example, when an `except_ref` contains an exception of
-type (i32 i64), the target block signature should be (i32 i64) as well, as in
-the following example:
+The `br_on_exn` instruction checks the exception tag of an `exnref` on top of
+the stack if it matches the given exception index. If it does, it branches out
+to the label referenced by the instruction (In the binary form, the label will
+be converted to a relative depth immediate, like other branch instructions), and
+while doing that, pops the `exnref` value from the stack and instead pushes the
+exception's argument values on top of the stack. In order to use these popped
+values, the block signature of the branch target has to match the exception
+types - because it receives the exception arguments as branch operands. If the
+exception tag does not match, the `exnref` value remains on the stack. For
+example, when an `exnref` contains an exception of type (i32 i64), the target
+block signature should be (i32 i64) as well, as in the following example:
 
 ```
 block $l (result i32 i64)
   ...
-  ;; except_ref $e is on the stack at this point
+  ;; exnref $e is on the stack at this point
   br_on_exn $l ;; branch to $l with $e's arguments
   ...
 end
@@ -331,7 +330,7 @@ document](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md).
 
 ### Data Types
 
-#### except_ref
+#### exnref
 
 An exception reference points to an exception.
 
@@ -339,12 +338,12 @@ An exception reference points to an exception.
 
 | Opcode | Type constructor |
 |--------|------------------|
-| -0x18  |  `except_ref`    |
+| -0x18  |  `exnref`        |
 
 #### value_type
 
-A `varint7` indicating a `value_type` is extended to include `except_ref` as
-encoded above.
+A `varint7` indicating a `value_type` is extended to include `exnref` as encoded
+above.
 
 #### Other Types
 
@@ -465,8 +464,8 @@ throws, and rethrows as follows:
 | `try` | `0x06` | sig : `block_type` | begins a block which can handle thrown exceptions |
 | `catch` | `0x07` | | begins the catch block of the try block |
 | `throw` | `0x08` | index : `varint32` | Creates an exception defined by the exception `index`and then throws it |
-| `rethrow` | `0x09` | | Pops the `except_ref` on top of the stack and throws it |
-| `br_on_exn` | `0x0a` |  relative_depth : `varuint32`, index : `varuint32` | Branches to the given label and extracts data within `except_ref` on top of stack if it was created using the corresponding exception `index` |
+| `rethrow` | `0x09` | | Pops the `exnref` on top of the stack and throws it |
+| `br_on_exn` | `0x0a` |  relative_depth : `varuint32`, index : `varuint32` | Branches to the given label and extracts data within `exnref` on top of stack if it was created using the corresponding exception `index` |
 
 The *sig* fields of `block`, `if`, and `try` operators are block signatures
 which describe their use of the operand stack.
