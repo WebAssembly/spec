@@ -149,6 +149,7 @@ urlPrefix: https://webassembly.github.io/reference-types/core/; spec: WebAssembl
     text: memory address; url: exec/runtime.html#syntax-memaddr
     text: global address; url: exec/runtime.html#syntax-globaladdr
     text: extern address; url: exec/runtime.html#syntax-externaddr
+    text: tag address; url: exec/runtime.html#syntax-tagaddr
     url: syntax/types.html#syntax-numtype
         text: i32
         text: i64
@@ -160,7 +161,10 @@ urlPrefix: https://webassembly.github.io/reference-types/core/; spec: WebAssembl
         text: externref
     text: function element; url: exec/runtime.html#syntax-funcelem
     text: import component; url: syntax/modules.html#imports
-    text: external value; url: exec/runtime.html#syntax-externval
+    url: exec/runtime.html#syntax-externval
+        text: external value
+        for: external value
+            text: tag
     text: host function; url: exec/runtime.html#syntax-hostfunc
     text: the instantiation algorithm; url: exec/modules.html#instantiation
     text: module; url: syntax/modules.html#syntax-module
@@ -172,6 +176,8 @@ urlPrefix: https://webassembly.github.io/reference-types/core/; spec: WebAssembl
         text: table
         text: mem
         text: global
+        for: externtype
+            text: tag
     text: global type; url: syntax/types.html#syntax-globaltype
     url: syntax/types.html#syntax-mut
         text: var
@@ -184,9 +190,12 @@ urlPrefix: https://webassembly.github.io/reference-types/core/; spec: WebAssembl
     text: memaddrs; for: moduleinst; url: exec/runtime.html#syntax-moduleinst
     text: signed_64; url: exec/numerics.html#aux-signed
     text: sequence; url: syntax/conventions.html#grammar-notation
+    text: exception; for: tagtype/attribute; url: syntax/types.html#syntax-tagtype
 urlPrefix: https://heycam.github.io/webidl/; spec: WebIDL
     type: dfn
         text: create a namespace object; url: create-a-namespace-object
+urlPrefix: https://webassembly.github.io/js-types/js-api/; spec: WebAssembly JS API (JS Type Reflection)
+    type: abstract-op; text: FromValueType; url: abstract-opdef-fromvaluetype
 </pre>
 
 <pre class='link-defaults'>
@@ -391,6 +400,12 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. Let |tableaddr| be |v|.\[[Table]].
             1. Let |externtable| be the [=external value=] [=external value|table=] |tableaddr|.
             1. [=list/Append=] |externtable| to |imports|.
+        1. If |externtype| is of the form [=externtype/tag=] |attribute| <var ignore>functype</var>,
+            1. Assert: |attribute| is [=tagtype/attribute/exception=].
+            1. If |v| does not [=implement=] {{Tag}}, throw a {{LinkError}} exception.
+            1. Let |tagaddr| be |v|.\[[Address]].
+            1. Let |externtag| be the [=external value=] [=external value/tag=] |tagaddr|.
+            1. [=list/Append=] |externtag| to |imports|.
     1. Return |imports|.
 
 Note: This algorithm only verifies the right kind of JavaScript values are passed.
@@ -424,6 +439,12 @@ The verification of WebAssembly type requirements is deferred to the
             1. Let [=external value|table=] |tableaddr| be |externval|.
             1. Let |table| be [=create a Table object|a new Table object=] created from |tableaddr|.
             1. Let |value| be |table|.
+        1. If |externtype| is of the form [=externtype/tag=] |attribute| <var ignore>functype</var>,
+            1. Assert: |attribute| is [=tagtype/attribute/exception=].
+            1. Assert: |externval| is of the form [=external value/tag=] |tagaddr|.
+            1. Let [=external value/tag=] |tagaddr| be |externval|.
+            1. Let |exception| be [=create a Tag object|a new Tag object=] created from |tagaddr|.
+            1. Let |value| be |exception|.
         1. Let |status| be ! [=CreateDataProperty=](|exportsObject|, |name|, |value|).
         1. Assert: |status| is true.
 
@@ -515,7 +536,8 @@ enum ImportExportKind {
   "function",
   "table",
   "memory",
-  "global"
+  "global",
+  "tag"
 };
 
 dictionary ModuleExportDescriptor {
@@ -545,6 +567,7 @@ interface Module {
     * "table" if |type| is of the form [=table=] <var ignore>tabletype</var>
     * "memory" if |type| is of the form [=mem=] <var ignore>memtype</var>
     * "global" if |type| is of the form [=global=] <var ignore>globaltype</var>
+    * "tag" if |type| is of the form [=externtype/tag=] <var ignore>tag</var>
 </div>
 
 <div algorithm>
@@ -1005,8 +1028,15 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. [=list/Append=] [=ToWebAssemblyValue=](|arg|, |t|) to |args|.
         1. Set |i| to |i| + 1.
     1. Let (|store|, |ret|) be the result of [=func_invoke=](|store|, |funcaddr|, |args|).
+    1. Note: The expectation is that [=func_invoke=] will be updated to return (|store|, <var ignore>val</var>* | [=error=] | (exception |exntag| |payload|)).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
+    1. If |ret| is exception |exntag| |payload|, then
+        1. If |exntag| is the [=JavaScript exception tag=], then
+            1. Let « [=ref.extern=] |externaddr| » be |payload|.
+            1. Throw the result of [=retrieving an extern value=] from |externaddr|.
+        1. Let |exception| be [=create a RuntimeException object|a new RuntimeException=] for |exntag| and |payload|.
+        1. Throw |exception|.
     1. Let |outArity| be the [=list/size=] of |ret|.
     1. If |outArity| is 0, return undefined.
     1. Otherwise, if |outArity| is 1, return [=ToJSValue=](|ret|[0]).
@@ -1057,7 +1087,14 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
         1. [=Clean up after running a callback=] with |stored settings|.
         1. [=Clean up after running script=] with |relevant settings|.
         1. Assert: |result|.\[[Type]] is <emu-const>throw</emu-const> or <emu-const>normal</emu-const>.
-        1. If |result|.\[[Type]] is <emu-const>throw</emu-const>, then trigger a WebAssembly trap, and propagate |result|.\[[Value]] to the enclosing JavaScript.
+        1. If |result|.\[[Type]] is <emu-const>throw</emu-const>, then:
+            1. If |v| [=implements=] {{RuntimeException}},
+                1. Let |type| be |v|.\[[Type]].
+                1. Let |payload| be |v|.\[[Payload]].
+            1. Otherwise,
+                1. Let |type| be the [=JavaScript exception tag=].
+                1. Let |payload| be [=ToWebAssemblyValue=](|v|, [=externref=]).
+            1. [=WebAssembly/Throw=] with |type| and |payload|.
         1. Otherwise, return |result|.\[[Value]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
@@ -1123,6 +1160,143 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
     1. [=map/Set=] |map|[|externaddr|] to |v|.
     1. Return [=ref.extern=] |externaddr|.
 1. Assert: This step is not reached.
+
+</div>
+
+<h3 id="tags">Tags</h3>
+
+The <dfn>tag_parameters</dfn> algorithm returns the [=list=] of types for a given
+[=tag address=] in the given [=associated store=].
+
+<h4 id="exceptions-types">Exception types</h4>
+
+<pre class="idl">
+dictionary TagType {
+  required sequence&lt;ValueType> parameters;
+};
+
+[LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
+interface Tag {
+  constructor(TagType type);
+  TagType type();
+};
+</pre>
+
+An {{Tag}} value represents a type of exception.
+
+<div algorithm>
+
+To <dfn>create a Tag object</dfn> from a [=tag address=] |tagAddress|, perform the following steps:
+
+TODO: define cache.
+
+1. Let |tag| be a [=new=] {{Tag}}.
+1. Set |tag|.\[[Address]] to |tagAddress|.
+1. Return |tag|.
+
+</div>
+
+<div algorithm>
+
+The <dfn method for="Tag">type()</dfn> method steps are:
+
+1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+1. Let |parameters| be [=tag_parameters=](|store|, **this**.\[[Address]]).
+1. Let |idlParameters| be «».
+1. [=list/iterate|For each=] |type| of |parameters|,
+    1. [=list/Append=] [$FromValueType$](|type|) to |idlParameters|.
+1. Return «[ "{{TagType/parameters}}" → |idlParameters| ]».
+
+</div>
+
+<h4 id="runtime-exceptions">Runtime exceptions</h4>
+
+<pre class="idl">
+[LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
+interface RuntimeException {
+  constructor(Tag exceptionTag, sequence&lt;any> payload);
+  any getArg(Tag exceptionTag, unsigned long index);
+  boolean is(Tag exceptionTag);
+};
+</pre>
+
+A {{RuntimeException}} value represents an exception.
+
+<div algorithm>
+
+To <dfn>create a RuntimeException object</dfn> from a [=tag address=] |tagAddress| and [=list=]
+of WebAssembly values |payload|, perform the following steps:
+
+1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+1. Let |types| be [=tag_parameters=](|store|, |tagAddress|).
+1. Assert: |types|'s [=list/size=] is |payload|'s [=list/size=].
+1. [=list/iterate|For each=] |value| and |resultType| of |payload| and |types|, paired linearly,
+    1. Assert: |value|'s type matches |resultType|.
+1. Let |exception| be a [=new=] {{RuntimeException}}.
+1. Set |exception|.\[[Type]] to |tagAddress|.
+1. Set |exception|.\[[Payload]] to |payload|.
+1. Return |exception|.
+
+</div>
+
+<div algorithm>
+
+The <dfn constructor for=RuntimeException
+lt="RuntimeException(exceptionTag, payload)">new RuntimeException(|exceptionTag|, |payload|)</dfn>
+constructor steps are:
+
+1. Let |types| be [=tag_parameters=](|exceptionTag|.\[[Address]]).
+1. If |types|'s [=list/size=] is not |payload|'s [=list/size=],
+    1. Throw a {{TypeError}}.
+1. Let |wasmPayload| be « ».
+1. [=list/iterate|For each=] |value| and |resultType| of |payload| and |types|, paired linearly,
+    1. [=list/Append=] ? [=ToWebAssemblyValue=](|value|, |resultType|) to |wasmPayload|.
+1. Set **this**.\[[Type]] to |exceptionTag|.\[[Address]].
+1. Set **this**.\[[Payload]] to |wasmPayload|.
+
+</div>
+
+<div algorithm>
+
+The <dfn method for="RuntimeException">getArg(|exceptionTag|, |index|)</dfn> method steps are:
+
+1. If **this**.\[[Type]] is not equal to |exceptionTag|.\[[Address]],
+    1. Throw a {{TypeError}}.
+1. Let |payload| be **this**.\[[Payload]].
+1. If |index| ≥ |payload|'s [=list/size=],
+    1. Throw a {{TypeError}}.
+1. Return [=ToJSValue=](|payload|[|index|]).
+
+</div>
+
+<div algorithm>
+
+The <dfn method for="RuntimeException">is(|exceptionTag|)</dfn> method steps are:
+
+1. If **this**.\[[Type]] is not equal to |exceptionTag|.\[[Address]],
+    1. Return false.
+1. Return true.
+
+</div>
+
+<h4 id="js-exceptions">JavaScript exceptions</h4>
+
+The <dfn>JavaScript exception tag</dfn> is a [=tag address=] reserved by this
+specification to distinguish exceptions originating from JavaScript.
+
+For any [=associated store=] |store|, the result of
+[=tag_parameters=](|store|, [=JavaScript exception tag=]) must be « [=externref=] ».
+
+ Issue: Should it be possible for `catch <JS-exception-tag>` to extract the payload from an exception with this tag?
+
+<div algorithm>
+
+To <dfn for=WebAssembly>throw</dfn> with a [=tag address=] |type| and matching [=list=] of WebAssembly values |payload|, perform the following steps:
+
+1. Unwind the stack until reaching the *catching try block* given |type|.
+1. Invoke the catch block with |payload|.
+
+Note: This algorithm is expected to be moved into the core specification.
 
 </div>
 
