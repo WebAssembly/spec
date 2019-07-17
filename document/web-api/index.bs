@@ -12,6 +12,7 @@ Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader web platform.
 Markup Shorthands: css no, markdown yes
 Prepare For TR: true
+Date: 2019-07-18
 Deadline: 2019-08-15
 </pre>
 
