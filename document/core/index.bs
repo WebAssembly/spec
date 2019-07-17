@@ -12,6 +12,7 @@ Repository: WebAssembly/spec
 Markup Shorthands: css no, markdown yes, algorithm no, idl no
 Abstract: This document describes version 1.0 of the core WebAssembly standard, a safe, portable, low-level code format designed for efficient execution and compact representation.
 Prepare For TR: true
+Deadline: 2019-08-15
 </pre>
 
 <pre class='biblio'>
@@ -24,6 +25,11 @@ Prepare For TR: true
   }
 }
 </pre>
+
+According to the <a href="https://wpt.fyi/results/wasm">Web Platform Tests</a>,
+this specification already meets the CR exit criteria (two implementations of
+each feature.) We expect to pass all positive tests. Some implementations may
+fail some negative tests so long as they reject.
 
 <pre class=include>
 path: _build/bikeshed_singlehtml/index_fixed.html

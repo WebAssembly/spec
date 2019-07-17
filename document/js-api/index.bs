@@ -12,6 +12,7 @@ Repository: WebAssembly/spec
 Markup Shorthands: css no, markdown yes
 Abstract: This document provides an explicit JavaScript API for interacting with WebAssembly.
 Prepare For TR: true
+Deadline: 2019-08-15
 </pre>
 
 <pre class='biblio'>
@@ -179,6 +180,11 @@ spec:ecmascript; type:exception; for:ECMAScript; text:RangeError
 spec:ecmascript; type:interface; for:ECMAScript; text:ArrayBuffer
 spec:promises-guide-1; type:dfn; text:resolve
 </pre>
+
+According to the <a href="https://wpt.fyi/results/wasm">Web Platform Tests</a>,
+this specification already meets the CR exit criteria (two implementations of
+each feature.) We expect to pass all positive tests. Some implementations may
+fail some negative tests so long as they reject.
 
 This API privides a way to access WebAssembly [[WEBASSEMBLY]] through a bridge to explicitly construct modules from JavaScript [[ECMASCRIPT]].
 
