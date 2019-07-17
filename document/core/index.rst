@@ -1,3 +1,6 @@
+WebAssembly Specification
+=========================
+
 .. toctree::
    :maxdepth: 2
 
