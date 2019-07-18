@@ -296,7 +296,7 @@ struct
       else
         Rep.logor x bare_nan
     else
-      (* TODO: once we update past 4.02, replace buffer hack with this
+      (* TODO(ocmal-4.03): replace buffer hack with this:
       let s' = String.concat "" (String.split_on_char '_' s) in
       *)
       let buf = Buffer.create (String.length s) in
@@ -348,7 +348,7 @@ struct
       let payload = Rep.logand (abs x) (Rep.lognot bare_nan) in
       "nan:0x" ^ Rep.to_hex_string payload
     else
-      (* TODO: use sprintf "%h" once we have upgraded to OCaml 4.03 *)
+      (* TODO(ocaml-4.03): use sprintf "%h" *)
       let s = string_of_float (to_float (abs x)) in
       group_digits (if s.[String.length s - 1] = '.' then s ^ "0" else s)
 end

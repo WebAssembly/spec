@@ -34,14 +34,14 @@ let convert_i64_s x =
   F32.of_float Int64.(
     if abs x < 0x10_0000_0000_0000L then to_float x else
     let r = if logand x 0xfffL = 0L then 0L else 1L in
-    to_float (logor (shift_right x 12) r) *. 0x1p12
+    to_float (logor (shift_right x 12) r) *. (* TODO(ocaml-4.03): 0x1p12 *) 4096.0
   )
 
 let convert_i64_u x =
   F32.of_float Int64.(
     if I64.lt_u x 0x10_0000_0000_0000L then to_float x else
     let r = if logand x 0xfffL = 0L then 0L else 1L in
-    to_float (logor (shift_right_logical x 12) r) *. 0x1p12
+    to_float (logor (shift_right_logical x 12) r) *. (* TODO(ocaml-4.03): 0x1p12 *) 4096.0
   )
 
 let reinterpret_i32 = F32.of_bits
