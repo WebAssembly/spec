@@ -143,8 +143,8 @@
 | `f32x4.convert_u/i32x4`   |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `f64x2.convert_s/i64x2`   | `-munimplemented-simd128` |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `f64x2.convert_u/i64x2`   | `-munimplemented-simd128` |                    | :heavy_check_mark: | :heavy_check_mark: |
-| `v8x16.shuffle1`          |                           |                    | :heavy_check_mark: |                    |
-| `v8x16.shuffle2_imm`      |                           |                    | :heavy_check_mark: | :heavy_check_mark: |
+| `v8x16.swizzle`           |                           |                    | :heavy_check_mark: |                    |
+| `v8x16.shuffle`           |                           |                    | :heavy_check_mark: | :heavy_check_mark: |
 
 [1] Tip of tree LLVM as of April 24, 2019
 
