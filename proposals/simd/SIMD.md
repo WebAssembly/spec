@@ -666,6 +666,15 @@ natural alignment.
 
 Load a `v128` vector from the given heap address.
 
+### Load and Splat
+
+* `i8x16.load_splat(memarg) -> v128`
+* `i16x8.load_splat(memarg) -> v128`
+* `i32x4.load_splat(memarg) -> v128`
+* `i64x2.load_splat(memarg) -> v128`
+
+Load a single element and splat to all lanes of a `v128` vector.
+
 ### Store
 
 * `v128.store(memarg, data: v128)`
