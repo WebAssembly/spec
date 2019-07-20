@@ -79,7 +79,7 @@ These will each define a WebAssembly *application programming interface (API)* s
 .. _security:
 
 Security Considerations
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 
 WebAssembly provides no ambient access to the computing environment in which code is executed.
 Any interaction with the environment, such as I/O, access to resources, or operating system calls, can only be performed by invoking :ref:`functions <function>` provided by the :ref:`embedder <embedder>` and imported into a WebAssembly :ref:`module <module>`.
