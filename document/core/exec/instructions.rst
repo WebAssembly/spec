@@ -645,7 +645,11 @@ Memory Instructions
 
 11. Pop the value :math:`\I32.\CONST~i` from the stack.
 
-12. Else:
+12. If :math:`n = 0`, then:
+
+    a. Return.
+
+13. If :math:`n = 1`, then:
 
     a. Push the value :math:`\I32.\CONST~i` to the stack.
 
@@ -653,26 +657,42 @@ Memory Instructions
 
     c. Execute the instruction :math:`\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}`.
 
-    d. Push the value :math:`\I32.\CONST~(i+1)` to the stack.
+    d. Return.
 
-    e. Push the value :math:`\val` to the stack.
+14. Push the value :math:`\I32.\CONST~i` to the stack.
 
-    f. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
+15. Push the value :math:`\val` to the stack.
 
-    g. Execute the instruction :math:`\MEMORYFILL`.
+16. Push the value :math:`\I32.\CONST~1` to the stack.
+
+17. Execute the instruction :math:`\MEMORYFILL`.
+
+18. Push the value :math:`\vconst_\I32(i+1)` to the stack.
+
+19. Push the value :math:`\val` to the stack.
+
+20. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
+
+21. Execute the instruction :math:`\MEMORYFILL`.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~(n+1))~(\MEMORYFILL) &\stepto& S; F;
-     \begin{array}[t]{@{}l@{}}
-     (\I32.\CONST~i)~\val~(\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
-     (\I32.\CONST~(i+1))~\val~(\I32.\CONST~n)~(\MEMORYFILL) \\
-     \end{array} \\
-   \end{array} \\
-   \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~0)~(\MEMORYFILL) &\stepto& S; F; \epsilon
    \end{array} \\
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~1)~(\MEMORYFILL) &\stepto& S; F;
+     (\I32.\CONST~i)~\val~(\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
+   \end{array} \\
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~n)~(\MEMORYFILL) &\stepto& S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\I32.\CONST~i)~\val~(\I32.\CONST~1)~(\MEMORYFILL) \\
+     (\vconst_\I32(i+1))~\val~(\I32.\CONST~(n-1))~(\MEMORYFILL) \\
+     \end{array} \\
+   \end{array}
+   \\ \qquad
+     (\iff n > 1) \\
    \end{array}
 
 
@@ -705,56 +725,81 @@ Memory Instructions
 
 11. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-12. Pop the value :math:`\I32.\CONST~n` from the stack.
+12. Pop the value :math:`\I32.\CONST~cnt` from the stack.
 
 13. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-14. Pop the value :math:`\I32.\CONST~s` from the stack.
+14. Pop the value :math:`\I32.\CONST~src` from the stack.
 
 15. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-16. Pop the value :math:`\I32.\CONST~d` from the stack.
+16. Pop the value :math:`\I32.\CONST~dst` from the stack.
 
-17. Else:
+17. If :math:`cnt = 0`, then:
 
-    a. Push the value :math:`\I32.\CONST~d` to the stack.
+    a. Return.
 
-    b. Let :math:`b` be the byte :math:`\X{data}.\DIINIT[s]`.
+18. If :math:`cnt = 1`, then:
 
-    c. Push the value :math:`\I32.\CONST~b` to the stack.
+    a. Push the value :math:`\I32.\CONST~dst` to the stack.
 
-    d. Execute the instruction :math:`\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}`.
+    b. If `src` is larger than the length of :math:`\X{data}.\DIINIT`, then:
 
-    e. Push the value :math:`\I32.\CONST~(d+1)` to the stack.
+       i. Trap.
 
-    f. Push the value :math:`\I32.\CONST~(s+1)` to the stack.
+    c. Let :math:`b` be the byte :math:`\X{data}.\DIINIT[src]`.
 
-    g. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
+    d. Push the value :math:`\I32.\CONST~b` to the stack.
 
-    h. Execute the instruction :math:`\MEMORYINIT~x`.
+    e. Execute the instruction :math:`\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}`.
+
+    f. Return.
+
+19. Push the value :math:`\I32.\CONST~dst` to the stack.
+
+20. Push the value :math:`\I32.\CONST~src` to the stack.
+
+21. Push the value :math:`\I32.\CONST~1` to the stack.
+
+22. Execute the instruction :math:`\MEMORYINIT~x`.
+
+23. Push the value :math:`\vconst_\I32(dst+1)` to the stack.
+
+24. Push the value :math:`\vconst_\I32(src+1)` to the stack.
+
+25. Push the value :math:`\I32.\CONST~(cnt-1)` to the stack.
+
+26. Execute the instruction :math:`\MEMORYINIT~x`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\MEMORYINIT~x) &\stepto& S; F; \epsilon
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~0)~(\MEMORYINIT~x) &\stepto& S; F; \epsilon
    \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~(n+1))~(\MEMORYINIT~x) &\stepto& S; F;
-     \begin{array}[t]{@{}l@{}}
-     (\I32.\CONST~d)~(\I32.\CONST~b)~(\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
-     (\I32.\CONST~(d+1))~(\I32.\CONST~(s+1))~(\I32.\CONST~n)~(\MEMORYINIT~x) \\
-     \end{array} \\
-   \end{array} \\
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~1)~(\MEMORYINIT~x) &\stepto& S; F;
+     (\I32.\CONST~dst)~(\I32.\CONST~b)~(\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
+   \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & s < |S.\SDATA[F.\AMODULE.\MIDATAS[x]].\DIINIT| \\
-     \wedge & b = S.\SDATA[F.\AMODULE.\MIDATAS[x]].\DIINIT[s]) \\
+     (\iff & src < |S.\SDATA[F.\AMODULE.\MIDATAS[x]].\DIINIT| \\
+     \wedge & b = S.\SDATA[F.\AMODULE.\MIDATAS[x]].\DIINIT[src]) \\
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\MEMORYINIT~x) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~cnt))~(\MEMORYINIT~x) &\stepto& S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~1)~(\MEMORYINIT~x) \\
+     (\vconst_\I32(dst+1))~(\vconst_\I32(src+1))~(\I32.\CONST~(cnt-1))~(\MEMORYINIT~x) \\
+     \end{array} \\
+   \end{array}
+   \\ \qquad
+     (\iff cnt > 1)
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~cnt)~(\MEMORYINIT~x) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -802,6 +847,109 @@ Memory Instructions
    \end{array}
 
 
+.. _exec-memory.copy:
+
+:math:`\MEMORYCOPY`
+...................
+
+1. Assert: due to :ref:`validation <valid-memory.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+2. Pop the value :math:`\I32.\CONST~cnt` from the stack.
+
+3. Assert: due to :ref:`validation <valid-memory.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+4. Pop the value :math:`\I32.\CONST~src` from the stack.
+
+5. Assert: due to :ref:`validation <valid-memory.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+6. Pop the value :math:`\I32.\CONST~dst` from the stack.
+
+7. If :math:`cnt = 0`, then:
+
+   a. Return.
+
+8. If :math:`cnt = 1`, then:
+
+   a. Push the value :math:`\I32.\CONST~dst` to the stack.
+
+   b. Push the value :math:`\I32.\CONST~src` to the stack.
+
+   c. Execute the instruction :math:`\I32\K{.}\LOAD\K{8\_u}~\{ \OFFSET~0, \ALIGN~0 \}`.
+
+   d. Execute the instruction :math:`\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}`.
+
+   e. Return.
+
+9. If :math:`dst <= src`, then:
+
+   a. Push the value :math:`\I32.\CONST~dst` to the stack.
+
+   b. Push the value :math:`\I32.\CONST~src` to the stack.
+
+   c. Push the value :math:`\I32.\CONST~1` to the stack.
+
+   d. Execute the instruction :math:`\MEMORYCOPY`.
+
+   e. Push the value :math:`\vconst_\I32(dst+1)` to the stack.
+
+   f. Push the value :math:`\vconst_\I32(src+1)` to the stack.
+
+10. Else:
+
+   a. Push the value :math:`\vconst_\I32(dst+cnt-1)` to the stack.
+
+   b. Push the value :math:`\vconst_\I32(src+cnt-1)` to the stack.
+
+   c. Push the value :math:`\I32.\CONST~1` to the stack.
+
+   d. Execute the instruction :math:`\MEMORYCOPY`.
+
+   e. Push the value :math:`\I32.\CONST~dst` to the stack.
+
+   f. Push the value :math:`\I32.\CONST~src` to the stack.
+
+11. Push the value :math:`\I32.\CONST~(cnt-1)` to the stack.
+
+12. Execute the instruction :math:`\MEMORYCOPY`.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~0)~\MEMORYCOPY &\stepto& S; F; \epsilon
+   \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~1)~\MEMORYCOPY &\stepto& S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\I32.\CONST~dst) \\
+     (\I32.\CONST~src)~(\I32\K{.}\LOAD\K{8\_u}~\{ \OFFSET~0, \ALIGN~0 \}) \\
+     (\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
+     \end{array} \\
+   \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~cnt)~\MEMORYCOPY &\stepto& S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~1)~\MEMORYCOPY \\
+     (\vconst_\I32(dst+1))~(\vconst_\I32(src+1))~(\I32.\CONST~(cnt-1))~\MEMORYCOPY \\
+     \end{array} \\
+   \end{array}
+   \\ \qquad
+     (\iff dst <= src \wedge cnt > 1)
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~cnt)~\MEMORYCOPY &\stepto& S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\I32.\CONST~(dst+cnt-1))~(\I32.\CONST~(src+cnt-1))~(\I32.\CONST~1)~\MEMORYCOPY \\
+     (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~(cnt-1))~\MEMORYCOPY \\
+     \end{array} \\
+   \end{array}
+   \\ \qquad
+     (\iff dst > src \wedge cnt > 1) \\
+   \end{array}
+
+
 .. index:: table instruction, table index, store, frame, address, table address, table instance, function element, element address, element instance, value type
    pair: execution; instruction
    single: abstract syntax; instruction
@@ -813,90 +961,99 @@ Table Instructions
 .. _exec-table.copy:
 
 :math:`\TABLECOPY`
-...................
+..................
 
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+1. Assert: due to :ref:`validation <valid-table.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-2. Assert: due to :ref:`validation <valid-table.copy>`, :math:`F.\AMODULE.\MITABLES[0]` exists.
+2. Pop the value :math:`\I32.\CONST~cnt` from the stack.
 
-3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[0]`.
+3. Assert: due to :ref:`validation <valid-table.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-4. Assert: due to :ref:`validation <valid-table.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+4. Pop the value :math:`\I32.\CONST~src` from the stack.
 
-5. Pop the value :math:`\I32.\CONST~cnt` from the stack.
+5. Assert: due to :ref:`validation <valid-table.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-6. Assert: due to :ref:`validation <valid-table.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+6. Pop the value :math:`\I32.\CONST~dst` from the stack.
 
-7. Pop the value :math:`\I32.\CONST~src` from the stack.
+7. If :math:`cnt = 0`, then:
 
-8. Assert: due to :ref:`validation <valid-table.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+   a. Return.
 
-9. Pop the value :math:`\I32.\CONST~dst` from the stack.
+8. If :math:`cnt = 1`, then:
 
-10. If :math:`cnt = 0`, then:
+   a. Push the value :math:`\I32.\CONST~dst` to the stack.
 
-    a. Return.
+   b. Push the value :math:`\I32.\CONST~src` to the stack.
 
-11. If :math:`dst < src`, then:
+   c. Execute the instruction :math:`\TABLEGET`.
 
-    a. Push the value :math:`\I32.\CONST~dst` to the stack.
+   d. Execute the instruction :math:`\TABLESET`.
 
-    b. Push the value :math:`\I32.\CONST~src` to the stack.
+   e. Return.
 
-    c. Execute the instruction :math:`\TABLEGET`.
+9. If :math:`dst <= src`, then:
 
-    d. Execute the instruction :math:`\TABLESET`.
+   a. Push the value :math:`\I32.\CONST~dst` to the stack.
 
-    e. Push the value :math:`\I32.\CONST~(dst+1)` to the stack.
+   b. Push the value :math:`\I32.\CONST~src` to the stack.
 
-    f. Push the value :math:`\I32.\CONST~(src+1)` to the stack.
+   c. Push the value :math:`\I32.\CONST~1` to the stack.
 
-12. Else:
+   d. Execute the instruction :math:`\TABLECOPY`.
 
-    a. Push the value :math:`\I32.\CONST~(dst+cnt-1)` to the stack.
+   e. Push the value :math:`\vconst_\I32(dst+1)` to the stack.
 
-    b. Push the value :math:`\I32.\CONST~(src+cnt-1)` to the stack.
+   f. Push the value :math:`\vconst_\I32(src+1)` to the stack.
 
-    c. Execute the instruction :math:`\TABLEGET`.
+10. Else:
 
-    d. Execute the instruction :math:`\TABLESET`.
+   a. Push the value :math:`\vconst_\I32(dst+cnt-1)` to the stack.
 
-    e. Push the value :math:`\I32.\CONST~dst` to the stack.
+   b. Push the value :math:`\vconst_\I32(src+cnt-1)` to the stack.
 
-    f. Push the value :math:`\I32.\CONST~src` to the stack.
+   c. Push the value :math:`\I32.\CONST~1` to the stack.
 
-13. Push the value :math:`\I32.\CONST~(cnt-1)` to the stack.
+   d. Execute the instruction :math:`\TABLECOPY`.
 
-14. Execute the instruction :math:`\TABLECOPY`.
+   e. Push the value :math:`\I32.\CONST~dst` to the stack.
+
+   f. Push the value :math:`\I32.\CONST~src` to the stack.
+
+11. Push the value :math:`\I32.\CONST~(cnt-1)` to the stack.
+
+12. Execute the instruction :math:`\TABLECOPY`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~0)~\TABLECOPY &\stepto& S'; F; \epsilon
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~0)~\TABLECOPY &\stepto& S; F; \epsilon
    \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~(cnt+1))~\TABLECOPY &\stepto& S; F;
-     \begin{array}[t]{@{}l@{}}
-     (\I32.\CONST~dst)~((\I32.\CONST~src)~\TABLEGET)~\TABLESET \\
-     (\I32.\CONST~(dst+1))~(\I32.\CONST~(src+1))~(\I32.\CONST~cnt)~\TABLECOPY \\
-     \end{array} \\
-   \end{array} \\
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & dst < src)
-     \end{array}
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~1)~\TABLECOPY &\stepto& S; F;
+     (\I32.\CONST~dst)~(\I32.\CONST~src)~\TABLEGET~\TABLESET \\
+   \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~(cnt+1))~\TABLECOPY &\stepto& S; F;
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~cnt)~\TABLECOPY &\stepto& S; F;
      \begin{array}[t]{@{}l@{}}
-     (\I32.\CONST~(dst+cnt-1))~((\I32.\CONST~(src+cnt-1))~\TABLEGET)~\TABLESET \\
-     (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~cnt)~\TABLECOPY \\
+     (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~1)~\TABLECOPY \\
+     (\vconst_\I32(dst+1))~(\vconst_\I32(src+1))~(\I32.\CONST~(cnt-1))~\TABLECOPY \\
      \end{array} \\
-   \end{array} \\
+   \end{array}
    \\ \qquad
-     (\otherwise) \\
+     (\iff dst <= src \wedge cnt > 1)
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~cnt)~\TABLECOPY &\stepto& S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\I32.\CONST~(dst+cnt-1))~(\I32.\CONST~(src+cnt-1))~(\I32.\CONST~1)~\TABLECOPY \\
+     (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~(cnt-1))~\TABLECOPY \\
+     \end{array} \\
+   \end{array}
+   \\ \qquad
+     (\iff dst > src \wedge cnt > 1) \\
    \end{array}
 
 
@@ -943,21 +1100,33 @@ Table Instructions
 
     a. Return.
 
-18. If `src` is larger than the length of :math:`\X{elem}.\EIINIT`, then:
+18. If :math:`cnt = 1`, then:
 
-    a. Trap.
+    a. Push the value :math:`\I32.\CONST~dst` to the stack.
 
-19. Let :math:`\funcelem` be the :ref:`function element <syntax-funcelem>` :math:`\X{elem}.\EIINIT[src]`.
+    b. If `src` is larger than the length of :math:`\X{elem}.\EIINIT`, then:
 
-20. Push the value :math:`\I32.\CONST~dst` to the stack.
+       i. Trap.
 
-21. Push the value :math:`\funcelem` to the stack.
+    c. Let :math:`\funcelem` be the :ref:`function element <syntax-funcelem>` :math:`\X{elem}.\EIINIT[src]`.
 
-22. Execute the instruction :math:`\TABLESET`.
+    d. Push the value :math:`\funcelem` to the stack.
 
-23. Push the value :math:`\I32.\CONST~(dst+1)` to the stack.
+    e. Execute the instruction :math:`\TABLESET`.
 
-24. Push the value :math:`\I32.\CONST~(src+1)` to the stack.
+    f. Return.
+
+19. Push the value :math:`\I32.\CONST~dst` to the stack.
+
+20. Push the value :math:`\I32.\CONST~src` to the stack.
+
+21. Push the value :math:`\I32.\CONST~1` to the stack.
+
+22. Execute the instruction :math:`\TABLEINIT~x`.
+
+23. Push the value :math:`\vconst_\I32(dst+1)` to the stack.
+
+24. Push the value :math:`\vconst_\I32(src+1)` to the stack.
 
 25. Push the value :math:`\I32.\CONST~(cnt-1)` to the stack.
 
@@ -967,16 +1136,13 @@ Table Instructions
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~0)~(\TABLEINIT~x) &\stepto& S'; F; \epsilon
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~0)~(\TABLEINIT~x) &\stepto& S; F; \epsilon
    \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~(cnt+1))~(\TABLEINIT~x) &\stepto& S'; F;
-     \begin{array}[t]{@{}l@{}}
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~1)~(\TABLEINIT~x) &\stepto& S; F;
      (\I32.\CONST~dst)~\funcelem~(\TABLESET~x) \\
-     (\I32.\CONST~(dst+1))~(\I32.\CONST~(src+1))~(\I32.\CONST~cnt)~(\TABLEINIT~x) \\
-     \end{array} \\
-   \end{array} \\
+   \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & src < |S.\SELEM[F.\AMODULE.\MIELEMS[x]].\EIINIT| \\
@@ -984,7 +1150,17 @@ Table Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~(cnt+1))~(\TABLEINIT~x) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~cnt)~(\TABLEINIT~x) &\stepto& S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~1)~(\TABLEINIT~x) \\
+     (\vconst_\I32(dst+1))~(\vconst_\I32(src+1))~(\I32.\CONST~(cnt-1))~(\TABLEINIT~x) \\
+     \end{array} \\
+   \end{array}
+   \\ \qquad
+     (\iff cnt > 1)
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~cnt)~(\TABLEINIT~x) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\

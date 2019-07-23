@@ -29,6 +29,19 @@ It is convenient to reuse the same notation as for the |CONST| :ref:`instruction
      \F64.\CONST~\f64
    \end{array}
 
+Conventions
+...........
+
+The following auxiliary notation is defined for constant values, to ensure they are well-formed for the given :ref:`value type <syntax-valtype>`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \vconst_t(x) &=& (t\K{.}\CONST~x)
+     & (\iff x~\mbox{is well-formed for}~t) \\
+   \vconst_t(x) &=& \TRAP
+     & (\otherwise) \\
+   \end{array}
+
 
 .. index:: ! result, value, trap
    pair: abstract syntax; result
@@ -380,8 +393,6 @@ It filters out entries of a specific kind in an order-preserving fashion:
 * :math:`\evmems(\externval^\ast) = [\memaddr ~|~ (\EVMEM~\memaddr) \in \externval^\ast]`
 
 * :math:`\evglobals(\externval^\ast) = [\globaladdr ~|~ (\EVGLOBAL~\globaladdr) \in \externval^\ast]`
-
-
 
 .. index:: ! stack, ! frame, ! label, instruction, store, activation, function, call, local, module instance
    pair: abstract syntax; frame

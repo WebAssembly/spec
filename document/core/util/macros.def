@@ -885,6 +885,7 @@
 .. |evtables| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{tables}}
 .. |evmems| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{mems}}
 .. |evglobals| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{globals}}
+.. |vconst| mathdef:: \xref{exec/runtime}{syntax-val}{\F{const}}
 
 
 .. Store, terminals
