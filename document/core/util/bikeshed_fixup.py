@@ -52,8 +52,8 @@ def Main():
   )
 
   data = data.replace(
-      """<a class="reference external" href="http://ieeexplore.ieee.org/document/4610935/">IEEE 754-2008</a>""",
-      "[[!IEEE-754-2008]]"
+      """<a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a>""",
+      "[[!IEEE-754-2019]]"
   )
 
   sys.stdout.write(data)
