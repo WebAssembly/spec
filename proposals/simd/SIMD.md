@@ -784,3 +784,27 @@ Lane-wise saturating conversion from floating point to integer using the IEEE
 resulting lane is 0. If the rounded integer value of a lane is outside the
 range of the destination type, the result is saturated to the nearest
 representable integer value.
+
+### Integer to integer narrowing
+* `i8x16.narrow_i16x8_s(a: v128, b: v128) -> v128`
+* `i8x16.narrow_i16x8_u(a: v128, b: v128) -> v128`
+* `i16x8.narrow_i32x4_s(a: v128, b: v128) -> v128`
+* `i16x8.narrow_i32x4_u(a: v128, b: v128) -> v128`
+
+Converts two input vectors into a smaller lane vector by narrowing each lane,
+signed or unsigned. The signed narrowing operation will use signed saturation
+to handle overflow, 0x7f or 0x80 for i8x16, the unsigned narrowing operation
+will use unsigned saturation to handle overflow, 0x00 or 0xff for i8x16.
+
+### Integer to integer widening
+* `i16x8.widen_low_i8x16_s(a: v128) -> v128`
+* `i16x8.widen_high_i8x16_s(a: v128) -> v128`
+* `i16x8.widen_low_i8x16_u(a: v128) -> v128`
+* `i16x8.widen_high_i8x16_u(a: v128) -> v128`
+* `i32x4.widen_low_i16x8_s(a: v128) -> v128`
+* `i32x4.widen_high_i16x8_s(a: v128) -> v128`
+* `i32x4.widen_low_i16x8_u(a: v128) -> v128`
+* `i32x4.widen_high_i16x8_u(a: v128) -> v128`
+
+Converts low or high half of the smaller lane vector to a larger lane vector,
+sign extended or zero (unsigned) extended.
