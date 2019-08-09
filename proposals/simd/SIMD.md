@@ -795,6 +795,8 @@ Converts two input vectors into a smaller lane vector by narrowing each lane,
 signed or unsigned. The signed narrowing operation will use signed saturation
 to handle overflow, 0x7f or 0x80 for i8x16, the unsigned narrowing operation
 will use unsigned saturation to handle overflow, 0x00 or 0xff for i8x16.
+Regardless of the whether the operation is signed or unsigned, the input lanes
+are interpreted as signed integers.
 
 ### Integer to integer widening
 * `i16x8.widen_low_i8x16_s(a: v128) -> v128`
