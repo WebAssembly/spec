@@ -300,7 +300,7 @@ def S.shuffle(a, b, s):
         if s[i] < S.lanes:
             result[i] = a[s[i]]
         else:
-            result[i] = b[s[i] - S.lanes]
+            result[i] = b[s[i] - S.lanes
     return result
 ```
 
@@ -469,7 +469,7 @@ Shift the bits in each lane to the left by the same amount. Only the low bits
 of the shift amount are used:
 
 ```python
-def S.shl(a, x):
+def S.shl(a, y):
     # Number of bits to shift: 0 .. S.LaneBits - 1.
     amount = y mod S.LaneBits
     def shift(x):
