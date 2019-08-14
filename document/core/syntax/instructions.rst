@@ -129,9 +129,9 @@ For each type, several subcategories can be distinguished:
 
 * *Constants*: return a static constant.
 
-* *Unary Operators*: consume one operand and produce one result of the respective type.
+* *Unary Operations*: consume one operand and produce one result of the respective type.
 
-* *Binary Operators*: consume two operands and produce one result of the respective type.
+* *Binary Operations*: consume two operands and produce one result of the respective type.
 
 * *Tests*: consume one operand of the respective type and produce a Boolean integer result.
 
@@ -184,9 +184,9 @@ Instructions in this group can operate on operands of any :ref:`value type <synt
      \SELECT
    \end{array}
 
-The |DROP| operator simply throws away a single operand.
+The |DROP| instruction simply throws away a single operand.
 
-The |SELECT| operator selects one of its first two operands based on whether its third operand is zero or not.
+The |SELECT| instruction selects one of its first two operands based on whether its third operand is zero or not.
 
 
 .. index:: ! variable instruction, local, global, local index, global index
