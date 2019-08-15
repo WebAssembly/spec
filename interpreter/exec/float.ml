@@ -348,7 +348,6 @@ struct
       let payload = Rep.logand (abs x) (Rep.lognot bare_nan) in
       "nan:0x" ^ Rep.to_hex_string payload
     else
-      (* TODO(ocaml-4.03): use sprintf "%h" *)
-      let s = string_of_float (to_float (abs x)) in
+      let s = Printf.sprintf "%.17g" (to_float (abs x)) in
       group_digits (if s.[String.length s - 1] = '.' then s ^ "0" else s)
 end
