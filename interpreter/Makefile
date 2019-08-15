@@ -36,7 +36,7 @@ libopt:		_build/$(LIB).cmx
 libunopt:	_build/$(LIB).cmo
 jslib:		$(JSLIB)
 all:		unopt opt libunopt libopt test
-land:		all $(WINMAKE)
+land:		$(WINMAKE) all
 zip: 		$(ZIP)
 
 
@@ -102,7 +102,7 @@ $(WINMAKE):	clean
 		echo rem Auto-generated from Makefile! >$@
 		echo set NAME=$(NAME) >>$@
 		echo if \'%1\' neq \'\' set NAME=%1 >>$@
-		$(OCB) main.d.byte \
+		$(OCB) main.byte \
 		| grep -v ocamldep \
 		| grep -v mkdir \
 		| sed s:`which ocaml`:ocaml:g \
