@@ -74,21 +74,19 @@ echo 1>&2 ==== Preparing ====
 npm link bs-platform
 
 echo 1>&2 ==== Compiling ====
-BSPATH=`bsb -where`
-echo 1>&2 BSPATH = $BSPATH
 bsb || exit 1
-cp '$BSPATH/js/*.js' lib/js/src
 
 echo 1>&2 ==== Linking full version ====
 LOG=1
-link lib/js/src/*.js >temp.js || exit 1
+FILES='node_modules/bs-platform/lib/js/*.js lib/js/src/*.js'
+link $FILES >temp.js || exit 1
 
 echo 1>&2 ==== Running for dependencies ====
-node temp.js >temp.log || exit 1
+node temp.js | tee temp.log || exit 1
 
 echo 1>&2 ==== Linking stripped version ====
 used=''
-for file in `ls lib/js/src/*.js`
+for file in `ls $FILES`
 do
   if grep -q `basename $file | sed s/.js//g` temp.log
   then
