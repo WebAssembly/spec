@@ -293,6 +293,16 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
 
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{table}~~\Tid^?~~\Telemtype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Texpr)~\text{)}~~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{table}~~\Tid'~~n~~n~~\Telemtype~\text{)}~~
+       \text{(}~\text{elem}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Texpr)~\text{)}
+       \\ & \qquad\qquad
+       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+   \end{array}
+
 Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
 
 .. math::
@@ -483,10 +493,13 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
 .. math::
    \begin{array}{llclll}
    \production{element segment} & \Telem_I &::=&
-     \text{(}~\text{elem}~~\Tid^?~~x{:}\Ttableidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \ETABLE~x, \EOFFSET~e, \EINIT~y^\ast \} \\ &&|&
-     \text{(}~\text{elem}~~\Tid^?~~et{:}\Telemtype~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast \} \\
+     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{table}~~x{:}\Ttableidx_I ~\text{)}~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~(et, y^\ast){:}\Telemlist~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \ETABLE~x, \EOFFSET~e, \ETYPE~et, \EINIT~y^\ast \} \\ &&|&
+     \text{(}~\text{elem}~~\Tid^?~~(et, y^\ast){:}\Telemlist~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{\ETYPE~et,\EINIT~y^\ast \} \\
+   \production{elemlist}  & \Telemlist &::=&
+     \text{func}~~y^\ast{:}\Tvec(\Tfuncidx_I) \qquad\Rightarrow\quad ( \ETYPE~\FUNCREF, \EINIT~y^\ast ) \\ &&|&
+     et{:}\Telemtype~~y^\ast{:}\Tvec(\Texpr_I) \qquad\Rightarrow\quad ( \ETYPE~et, \EINIT~y^\ast ) \\
    \end{array}
 
 .. note::
@@ -506,14 +519,14 @@ As an abbreviation, a single instruction may occur in place of the offset:
      \text{(}~\text{offset}~~\Tinstr~\text{)}
    \end{array}
 
-Also, the table index can be omitted, defaulting to :math:`\T{0}`.
+Also, the table index can be omitted, defaulting to :math:`\T{0}`. If the table index is omitted, also the :math:`\text{func}` keyword can be omitted.
 
 .. math::
    \begin{array}{llclll}
    \production{element segment} &
     \text{(}~\text{elem}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
        &\equiv&
-     \text{(}~\text{elem}~~0~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+     \text{(}~\text{elem}~~\text{(}~\text{table}~~\text{0}~\text{)}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
    \end{array}
 
 As another abbreviation, element segments may also be specified inline with :ref:`table <text-table>` definitions; see the respective section.

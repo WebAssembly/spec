@@ -4,20 +4,43 @@
 (module
   (table $t 10 funcref)
   (func $f)
+  (func $g)
+  (elem (table $t) (i32.const 0) func)
   (elem (i32.const 0))
   (elem (i32.const 0) $f $f)
   (elem (offset (i32.const 0)))
   (elem (offset (i32.const 0)) $f $f)
-  (elem 0 (i32.const 0))
-  (elem 0x0 (i32.const 0) $f $f)
-  (elem 0x000 (offset (i32.const 0)))
-  (elem 0 (offset (i32.const 0)) $f $f)
-  (elem $t (i32.const 0))
-  (elem $t (i32.const 0) $f $f)
-  (elem $t (offset (i32.const 0)))
-  (elem $t (offset (i32.const 0)) $f $f)
+
+  (elem func)
+  (elem $s func)
+  (elem func $f $f $g $g)
+  (elem $x func $f $f $g $g)
+
+  (elem (table 0) (i32.const 0) func)
+  (elem (table 0x0) (i32.const 0) func $f $f)
+  (elem (table 0x000) (offset (i32.const 0)) func)
+  (elem (table 0) (offset (i32.const 0)) func $f $f)
+  (elem (table $t) (i32.const 0) func)
+  (elem (table $t) (i32.const 0) func $f $f)
+  (elem (table $t) (offset (i32.const 0)) func)
+  (elem (table $t) (offset (i32.const 0)) func $f $f)
+
+  (elem (i32.const 3) funcref (ref.func $f) (ref.func $g) (ref.func $f))
+  (elem (i32.const 3) funcref (ref.func $f) (ref.null) (ref.func $f))
+
+  (elem funcref (ref.func $f) (ref.func $g) (ref.func $f))
+  (elem funcref (ref.func $f) (ref.func $g) (ref.null))
+
+  (elem (table $t) (i32.const 3) funcref (ref.func $f) (ref.func $g) (ref.func $f))
+  (elem (table $t) (i32.const 3) funcref (ref.func $f) (ref.null) (ref.func $g))
 )
 
+(module
+  (func $f)
+  (func $g)
+
+  (table $t funcref (elem (ref.func $f) (ref.null) (ref.func $g)))
+)
 ;; Basic use
 
 (module

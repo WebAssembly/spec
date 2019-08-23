@@ -140,18 +140,21 @@ and memory' =
   mtype : memory_type;
 }
 
-type ('data, 'ty) segment = ('data, 'ty) segment' Source.phrase
-and ('data, 'ty) segment' =
-  | Active of {index : var; offset : const; init : 'data}
-  | Passive of {etype : 'ty; data : 'data}
-
 type elem = elem' Source.phrase
 and elem' =
   | RefNull
   | RefFunc of var
 
-type table_segment = (elem list, elem_type) segment
-type memory_segment = (string, unit) segment
+
+type table_segment = table_segment' Source.phrase
+and table_segment' =
+  | ActiveElem of {index : var; offset : const; etype : elem_type; init : elem list}
+  | PassiveElem of {etype : elem_type; data : elem list}
+
+type memory_segment = memory_segment' Source.phrase
+and memory_segment' =
+  | ActiveData of {index : var; offset : const; init : string}
+  | PassiveData of {data : string}
 
 
 (* Modules *)
@@ -264,3 +267,4 @@ let string_of_name n =
   in
   List.iter escape n;
   Buffer.contents b
+

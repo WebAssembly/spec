@@ -296,29 +296,47 @@ let memory off i mem =
   let {mtype = MemoryType lim} = mem.it in
   Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
 
-let segment head active passive seg =
-  match seg.it with
-  | Active {index; offset; init} ->
-    Node (head, atom var index :: Node ("offset", const offset) :: active init)
-  | Passive {etype; data} -> Node (head, passive etype data)
-
-let active_elem el =
+let elem_index el =
   match el.it with
   | RefNull -> assert false
   | RefFunc x -> atom var x
 
-let passive_elem el =
+let elem_expr el =
   match el.it with
   | RefNull -> Node ("ref.null", [])
   | RefFunc x -> Node ("ref.func", [atom var x])
 
+let all_func_ref l = not (List.exists (fun elem -> elem.it = RefNull) l)
+
 let elems seg =
-  let active init = list active_elem init in
-  let passive etype init = atom elem_type etype :: list passive_elem init in
-  segment "elem" active passive seg
+  match seg.it with
+  | ActiveElem {index = {it = 0l;_}; offset; init; _}
+    when all_func_ref init ->
+    Node ("elem", Node ("offset", const offset) :: list elem_index init)
+  | ActiveElem {index; offset; init; _}
+    when all_func_ref init ->
+    Node ("elem", Node ("table", [atom var index])
+    :: Node ("offset", const offset) :: Atom "func" :: list elem_index init)
+  | ActiveElem {index = {it = 0l;_}; offset; etype; init} ->
+    Node ("elem", Node ("offset", const offset) :: atom elem_type etype
+    :: list elem_expr init)
+  | ActiveElem {index; offset; etype; init} ->
+    Node ("elem", Node ("table", [atom var index])
+    :: Node ("offset", const offset)
+    :: atom elem_type etype :: list elem_expr init)
+  | PassiveElem {data; _}
+    when all_func_ref data ->
+    Node ("elem func", list elem_index data)
+  | PassiveElem {etype; data} ->
+    Node ("elem", atom elem_type etype
+    :: list elem_expr data)
 
 let data seg =
-  segment "data" break_bytes (fun _ bs -> break_bytes bs) seg
+  match seg.it with
+  | ActiveData {index; offset; init} ->
+    Node ("data", atom var index :: Node ("offset", const offset)
+    :: break_bytes init)
+  | PassiveData {data} -> Node ("data", break_bytes data)
 
 
 (* Modules *)

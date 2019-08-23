@@ -477,39 +477,50 @@ let encode m =
       section 10 (vec code) fs (fs <> [])
 
     (* Element section *)
-    let segment active passive seg =
-      match seg.it with
-      | Active {index; offset; init} ->
-        if index.it = 0l then
-          u8 0x00
-        else begin
-          u8 0x02; var index
-        end;
-        const offset; active init
-      | Passive {etype; data} ->
-        u8 0x01; passive etype data
-
-    let active_elem el =
-      match el.it with
-      | RefNull -> assert false
-      | RefFunc x -> var x
-
-    let passive_elem el =
+    let elem_expr el =
       match el.it with
       | RefNull -> u8 0xd0; end_ ()
       | RefFunc x -> u8 0xd2; var x; end_ ()
 
+    let elem_index el =
+      match el.it with
+      | RefNull -> assert false
+      | RefFunc x -> var x
+
+    let elem_indices data = vec elem_index data
+
+    let all_func_ref l = not (List.exists (fun elem -> elem.it = RefNull) l)
+
     let table_segment seg =
-      let active init = vec active_elem init in
-      let passive etype data = elem_type etype; vec passive_elem data in
-      segment active passive seg
+      match seg.it with
+      | ActiveElem {index = {it = 0l;_}; offset; init; _}
+        when all_func_ref init ->
+        u8 0x00; const offset; elem_indices init
+      | PassiveElem {data; _}
+        when all_func_ref data ->
+        u8 0x01; u8 0x00; elem_indices data
+      | ActiveElem {index; offset; init; _}
+        when all_func_ref init ->
+        u8 0x02; var index; const offset; u8 0x00; elem_indices init
+      | ActiveElem {index = {it = 0l;_}; offset; etype; init} ->
+        u8 0x04; const offset; vec elem_expr init
+      | PassiveElem {etype; data} ->
+        u8 0x05; elem_type etype; vec elem_expr data
+      | ActiveElem {index; offset; etype; init} ->
+        u8 0x06; var index; const offset; elem_type etype; vec elem_expr init
 
     let elem_section elems =
       section 9 (vec table_segment) elems (elems <> [])
 
     (* Data section *)
     let memory_segment seg =
-      segment string (fun _ s -> string s) seg
+      match seg.it with
+      | ActiveData {index = {it = 0l;_}; offset; init} ->
+        u8 0x00; const offset; string init
+      | PassiveData {data} ->
+        u8 0x01; string data
+      | ActiveData {index; offset; init} ->
+        u8 0x02; var index; const offset; string init
 
     let data_section datas =
       section 11 (vec memory_segment) datas (datas <> [])

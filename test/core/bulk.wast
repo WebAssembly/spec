@@ -215,7 +215,7 @@
   (table 1 funcref)
   (func $f)
   (elem $p funcref (ref.func $f))
-  (elem $a 0 (i32.const 0) $f)
+  (elem $a (table 0) (i32.const 0) func $f)
 
   (func (export "drop_passive") (elem.drop $p))
   (func (export "init_passive")

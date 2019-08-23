@@ -261,7 +261,7 @@ The |MELEM| component of a module defines a vector of element segments. Each act
 .. math::
    \begin{array}{llll}
    \production{element segment} & \elem &::=&
-     \{ \ETABLE~\tableidx, \EOFFSET~\expr, \EINIT~\vec(\elemexpr) \} \\&&|&
+     \{ \ETABLE~\tableidx, \EOFFSET~\expr, \ETYPE~\elemtype, \EINIT~\vec(\elemexpr) \} \\&&|&
      \{ \ETYPE~\elemtype, \EINIT~\vec(\elemexpr) \} \\
    \production{elemexpr} & \elemexpr &::=&
      \REFNULL~\END \\&&|&

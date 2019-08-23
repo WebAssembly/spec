@@ -429,19 +429,19 @@ let check_elemref (c : context) (el : elem) =
 
 let check_elem (c : context) (seg : table_segment) =
   match seg.it with
-  | Active {index; offset; init} ->
+  | ActiveElem {index; offset; init; _} ->
     ignore (table c index);
     check_const c offset I32Type;
     List.iter (check_elemref c) init
-  | Passive {etype; data} ->
+  | PassiveElem {data; _} ->
     List.iter (check_elemref c) data
 
 let check_data (c : context) (seg : memory_segment) =
   match seg.it with
-  | Active {index; offset; init} ->
+  | ActiveData {index; offset; init} ->
     ignore (memory c index);
     check_const c offset I32Type
-  | Passive init -> ()
+  | PassiveData init -> ()
 
 let check_global (c : context) (glob : global) =
   let {gtype; value} = glob.it in

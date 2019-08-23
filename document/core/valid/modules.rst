@@ -147,8 +147,8 @@ Element Segments
 
 Element segments :math:`\elem` are classified by :ref:`segment types <syntax-segtype>`.
 
-:math:`\{ \ETABLE~x, \EOFFSET~\expr, \EINIT~e^\ast \}`
-......................................................
+:math:`\{ \ETABLE~x, \EOFFSET~\expr, \ETYPE~et, \EINIT~e^\ast \}`
+.................................................................
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -159,6 +159,8 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
 * The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
+
+* The :ref:`element type <syntax-elemtype>` :math:`et` must be |FUNCREF|.
 
 * For each :math:`e_i` in :math:`e^\ast`,
 
@@ -175,14 +177,18 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
      \qquad
      C \vdashexprconst \expr \const
      \qquad
+     et = \FUNCREF
+     \qquad
      (C \vdashelemexpr e \ok)^\ast
    }{
-     C \vdashelem \{ \ETABLE~x, \EOFFSET~\expr, \EINIT~e^\ast \} : \SACTIVE
+     C \vdashelem \{ \ETABLE~x, \EOFFSET~\expr, \ETYPE~et, \EINIT~e^\ast \} : \SACTIVE
    }
 
 
 :math:`\{ \ETYPE~et, \EINIT~e^\ast \}`
 ......................................
+
+* The :ref:`element type <syntax-elemtype>` :math:`et` must be |FUNCREF|.
 
 * For each :math:`e_i` in :math:`e^\ast`,
 
@@ -193,6 +199,8 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
 
 .. math::
    \frac{
+     et = \FUNCREF
+     \qquad
      (C \vdashelemexpr e \ok)^\ast
    }{
      C \vdashelem \{ \ETYPE~et, \EINIT~e^\ast \} : \SPASSIVE
