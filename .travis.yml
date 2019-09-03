@@ -5,10 +5,15 @@ python:
 
 sudo: on
 
+before_install:
+  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  - sudo apt-get update -qq
+
 install:
   - ./interpreter/meta/travis/install-ocaml.sh
   - sudo pip install sphinx==1.7.9
-  - sudo apt-get install texlive-full
+  - sudo apt-get install texlive-full yarn
   - git clone https://github.com/tabatkins/bikeshed.git
   - pip install --editable $PWD/bikeshed
   - bikeshed update
