@@ -7,7 +7,7 @@ let promote_f32 x =
   let sign_field = Int64.(shift_left (shift_right_logical nan32bits 31) 63) in
   let significand_field = Int64.(shift_right_logical (shift_left nan32bits 41) 12) in
   let fields = Int64.logor sign_field significand_field in
-  let nan64bits = Int64.logor 0x7ff8000000000000L fields in
+  let nan64bits = Int64.logor 0x7ff8_0000_0000_0000L fields in
   F64.of_bits nan64bits
 
 let convert_i32_s x =
@@ -19,7 +19,7 @@ let convert_i32_s x =
  * shift. Instead, we can use int64 signed arithmetic.
  *)
 let convert_i32_u x =
-  F64.of_float Int64.(to_float (logand (of_int32 x) 0x00000000ffffffffL))
+  F64.of_float Int64.(to_float (logand (of_int32 x) 0x0000_0000_ffff_ffffL))
 
 let convert_i64_s x =
   F64.of_float (Int64.to_float x)
@@ -31,8 +31,9 @@ let convert_i64_s x =
  * bit to round correctly, do a conversion, and then scale it back up.
  *)
 let convert_i64_u x =
-  F64.of_float
-    Int64.(if x >= zero then to_float x else
-           to_float (logor (shift_right_logical x 1) (logand x 1L)) *. 2.0)
+  F64.of_float Int64.(
+    if x >= zero then to_float x else
+    to_float (logor (shift_right_logical x 1) (logand x 1L)) *. 2.0
+  )
 
 let reinterpret_i64 = F64.of_bits

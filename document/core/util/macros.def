@@ -3,8 +3,14 @@
 .. External Standards
 .. ------------------
 
-.. |IEEE754| replace:: IEEE 754-2008
-.. _IEEE754: http://ieeexplore.ieee.org/document/4610935/
+.. |WasmDraft| replace:: http://webassembly.github.io/spec/core/
+.. _WasmDraft: http://webassembly.github.io/spec/core/
+
+.. |WasmIssues| replace:: http://github.com/webassembly/spec/issues/
+.. _WasmIssues: http://github.com/webassembly/spec/issues/
+
+.. |IEEE754| replace:: IEEE 754-2019
+.. _IEEE754: https://ieeexplore.ieee.org/document/8766229
 
 .. |Unicode| replace:: Unicode
 .. _Unicode: http://www.unicode.org/versions/latest/
@@ -119,38 +125,38 @@
 
 .. |byte| mathdef:: \xref{syntax/values}{syntax-byte}{\X{byte}}
 
-.. |uX#1| mathdef:: {\X{u}#1}
-.. |sX#1| mathdef:: {\X{s}#1}
-.. |iX#1| mathdef:: {\X{i}#1}
-.. |fX#1| mathdef:: {\X{f}#1}
+.. |uX#1| mathdef:: {\X{u#1}}
+.. |sX#1| mathdef:: {\X{s#1}}
+.. |iX#1| mathdef:: {\X{i#1}}
+.. |fX#1| mathdef:: {\X{f#1}}
 
-.. |uN| mathdef:: \xref{syntax/values}{syntax-int}{\uX{N}}
-.. |uM| mathdef:: \xref{syntax/values}{syntax-int}{\uX{M}}
-.. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{1}}}
-.. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{8}}}
-.. |u16| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{16}}}
-.. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{32}}}
-.. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\uX{\X{64}}}
+.. |uN| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}N}
+.. |uM| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}M}
+.. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\X{u1}}
+.. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\X{u8}}
+.. |u16| mathdef:: \xref{syntax/values}{syntax-int}{\X{u16}}
+.. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\X{u32}}
+.. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\X{u64}}
 
-.. |sN| mathdef:: \xref{syntax/values}{syntax-int}{\sX{N}}
-.. |s8| mathdef:: \xref{syntax/values}{syntax-int}{\sX{\X{8}}}
-.. |s16| mathdef:: \xref{syntax/values}{syntax-int}{\sX{\X{16}}}
-.. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\sX{\X{32}}}
-.. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\sX{\X{64}}}
+.. |sN| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}N}
+.. |s8| mathdef:: \xref{syntax/values}{syntax-int}{\X{s8}}
+.. |s16| mathdef:: \xref{syntax/values}{syntax-int}{\X{s16}}
+.. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\X{s32}}
+.. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\X{s64}}
 
-.. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\iX{N}}
-.. |i8| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{8}}}
-.. |i16| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{16}}}
-.. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{32}}}
-.. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\iX{\X{64}}}
+.. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}N}
+.. |i8| mathdef:: \xref{syntax/values}{syntax-int}{\X{i8}}
+.. |i16| mathdef:: \xref{syntax/values}{syntax-int}{\X{i16}}
+.. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\X{i32}}
+.. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\X{i64}}
 
-.. |fN| mathdef:: \xref{syntax/values}{syntax-float}{\fX{N}}
-.. |fNmag| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{Nmag}}}
-.. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{32}}}
-.. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\fX{\X{64}}}
+.. |fN| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}N}
+.. |fNmag| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\X{Nmag}}
+.. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\X{f32}}
+.. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\X{f64}}
 
 .. |name| mathdef:: \xref{syntax/values}{syntax-name}{\X{name}}
-.. |codepoint| mathdef:: \xref{syntax/values}{syntax-name}{\X{codepoint}}
+.. |char| mathdef:: \xref{syntax/values}{syntax-name}{\X{char}}
 
 
 .. Values, meta functions
@@ -434,7 +440,6 @@
 .. |Bf64| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{64}}}
 
 .. |Bname| mathdef:: \xref{binary/values}{binary-name}{\B{name}}
-.. |Bcodepoint| mathdef:: \xref{binary/values}{binary-name}{\B{codepoint}}
 
 
 .. Values, meta functions
@@ -593,9 +598,6 @@
 .. |Tstringelem| mathdef:: \xref{text/values}{text-string}{\T{stringelem}}
 .. |Tstringchar| mathdef:: \xref{text/values}{text-string}{\T{stringchar}}
 .. |Tname| mathdef:: \xref{text/values}{text-name}{\T{name}}
-.. |Tcodepoint| mathdef:: \xref{text/values}{text-name}{\T{codepoint}}
-.. |Tcodeval| mathdef:: \xref{text/values}{text-name}{\T{codeval}}
-.. |Tcodecont| mathdef:: \xref{text/values}{text-name}{\T{cont}}
 
 .. |Tid| mathdef:: \xref{text/values}{text-id}{\T{id}}
 .. |Tidchar| mathdef:: \xref{text/values}{text-idchar}{\T{idchar}}
@@ -725,6 +727,7 @@
 .. |vdashtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\vdash}
 .. |vdashmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\vdash}
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
+.. |vdashexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\vdash}
 
 .. |vdashinstr| mathdef:: \xref{valid/instructions}{valid-instr}{\vdash}
 .. |vdashinstrseq| mathdef:: \xref{valid/instructions}{valid-instr-seq}{\vdash}

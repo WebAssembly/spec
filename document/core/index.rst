@@ -3,7 +3,12 @@ WebAssembly Specification
 
 .. only:: html
 
-   Release |release| (Draft, last updated |today|)
+   | Release |release| (Draft, |today|)
+
+   | Editor: Andreas Rossberg
+
+   | Latest Draft: |WasmDraft|
+   | Issue Tracker: |WasmIssues|
 
 .. toctree::
    :maxdepth: 2

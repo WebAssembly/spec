@@ -265,6 +265,11 @@
 (assert_return (invoke "f32.convert_i64_s" (i64.const 16777219)) (f32.const 16777220.0))
 (assert_return (invoke "f32.convert_i64_s" (i64.const -16777219)) (f32.const -16777220.0))
 
+(assert_return (invoke "f32.convert_i64_s" (i64.const 0x7fffff4000000001)) (f32.const 0x1.fffffep+62))
+(assert_return (invoke "f32.convert_i64_s" (i64.const 0x8000004000000001)) (f32.const -0x1.fffffep+62))
+(assert_return (invoke "f32.convert_i64_s" (i64.const 0x0020000020000001)) (f32.const 0x1.000002p+53))
+(assert_return (invoke "f32.convert_i64_s" (i64.const 0xffdfffffdfffffff)) (f32.const -0x1.000002p+53))
+
 (assert_return (invoke "f64.convert_i32_s" (i32.const 1)) (f64.const 1.0))
 (assert_return (invoke "f64.convert_i32_s" (i32.const -1)) (f64.const -1.0))
 (assert_return (invoke "f64.convert_i32_s" (i32.const 0)) (f64.const 0.0))
@@ -308,6 +313,11 @@
 ;; Test rounding directions.
 (assert_return (invoke "f32.convert_i64_u" (i64.const 16777217)) (f32.const 16777216.0))
 (assert_return (invoke "f32.convert_i64_u" (i64.const 16777219)) (f32.const 16777220.0))
+
+(assert_return (invoke "f32.convert_i64_u" (i64.const 0x0020000020000001)) (f32.const 0x1.000002p+53))
+(assert_return (invoke "f32.convert_i64_u" (i64.const 0x7fffffbfffffffff)) (f32.const 0x1.fffffep+62))
+(assert_return (invoke "f32.convert_i64_u" (i64.const 0x8000008000000001)) (f32.const 0x1.000002p+63))
+(assert_return (invoke "f32.convert_i64_u" (i64.const 0xfffffe8000000001)) (f32.const 0x1.fffffep+63))
 
 (assert_return (invoke "f64.convert_i32_u" (i32.const 1)) (f64.const 1.0))
 (assert_return (invoke "f64.convert_i32_u" (i32.const 0)) (f64.const 0.0))
@@ -459,3 +469,31 @@
 (assert_return (invoke "i64.reinterpret_f64" (f64.const -nan)) (i64.const 0xfff8000000000000))
 (assert_return (invoke "i64.reinterpret_f64" (f64.const nan:0x4000000000000)) (i64.const 0x7ff4000000000000))
 (assert_return (invoke "i64.reinterpret_f64" (f64.const -nan:0x4000000000000)) (i64.const 0xfff4000000000000))
+
+;; Type check
+
+(assert_invalid (module (func (result i32) (i32.wrap_i64 (f32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result i32) (i32.trunc_f32_s (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result i32) (i32.trunc_f32_u (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result i32) (i32.trunc_f64_s (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result i32) (i32.trunc_f64_u (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result i32) (i32.reinterpret_f32 (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result i64) (i64.extend_i32_s (f32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result i64) (i64.extend_i32_u (f32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result i64) (i64.trunc_f32_s (i32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result i64) (i64.trunc_f32_u (i32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result i64) (i64.trunc_f64_s (i32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result i64) (i64.trunc_f64_u (i32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result i64) (i64.reinterpret_f64 (i32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.convert_i32_s (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.convert_i32_u (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.convert_i64_s (i32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.convert_i64_u (i32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.demote_f64 (i32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f32) (f32.reinterpret_i32 (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.convert_i32_s (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.convert_i32_u (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.convert_i64_s (i32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.convert_i64_u (i32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.promote_f32 (i32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.reinterpret_i64 (i32.const 0)))) "type mismatch")

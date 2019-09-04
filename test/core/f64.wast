@@ -2516,3 +2516,18 @@
 (assert_return_arithmetic_nan (invoke "nearest" (f64.const -nan:0x4000000000000)))
 (assert_return_canonical_nan (invoke "nearest" (f64.const nan)))
 (assert_return_arithmetic_nan (invoke "nearest" (f64.const nan:0x4000000000000)))
+
+
+;; Type check
+
+(assert_invalid (module (func (result f64) (f64.add (i64.const 0) (f32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.div (i64.const 0) (f32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.max (i64.const 0) (f32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.min (i64.const 0) (f32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.mul (i64.const 0) (f32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.sub (i64.const 0) (f32.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.ceil (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.floor (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.nearest (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.sqrt (i64.const 0)))) "type mismatch")
+(assert_invalid (module (func (result f64) (f64.trunc (i64.const 0)))) "type mismatch")

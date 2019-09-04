@@ -566,6 +566,12 @@
 )
 
 (assert_invalid
+  (module (func $type-cond-empty-vs-i32
+    (block (br_if 0))
+  ))
+  "type mismatch"
+)
+(assert_invalid
   (module (func $type-cond-void-vs-i32
     (block (br_if 0 (nop)))
   ))
@@ -595,6 +601,54 @@
   ))
   "type mismatch"
 )
+
+(assert_invalid
+  (module
+    (func $type-1st-cond-empty-in-then
+      (block
+        (i32.const 0) (i32.const 0)
+        (if (result i32) (then (br_if 0)))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-2nd-cond-empty-in-then
+      (block
+        (i32.const 0) (i32.const 0)
+        (if (result i32) (then (br_if 0 (i32.const 1))))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-1st-cond-empty-in-return
+      (block (result i32)
+        (return (br_if 0))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-2nd-cond-empty-in-return
+      (block (result i32)
+        (return (br_if 0 (i32.const 1)))
+      )
+      (i32.eqz) (drop)
+    )
+  )
+  "type mismatch"
+)
+
 
 (assert_invalid
   (module (func $unbound-label (br_if 1 (i32.const 1))))

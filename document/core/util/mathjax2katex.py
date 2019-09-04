@@ -11,6 +11,8 @@ import threading
 
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+# Update this to invalidate the cache; e.g. when updating katex.
+CACHE_VERSION = 2
 
 
 def FindMatching(data, prefix):
@@ -67,7 +69,7 @@ def ReplaceMath(cache, data):
   data = data.replace('’', '\\text{’}')
   data = data.replace('‘', '\\text{‘}')
   data = data.replace('\\hfill', '')
-  data = data.replace('\\mbox', '\\mathrel')
+  data = data.replace('\\mbox', '\\text')
   data = data.replace('\\begin{split}', '\\begin{aligned}')
   data = data.replace('\\end{split}', '\\end{aligned}')
   data = data.replace('&amp;', '&')
@@ -121,13 +123,6 @@ def ReplaceMath(cache, data):
   # Fix stray spans that come out of katex.
   ret = re.sub('[<]span class="vlist" style="height:[0-9.]+em;"[>]',
                '<span class="vlist">', ret)
-  # Drop bad italic font adjustment.
-  # https://github.com/WebAssembly/spec/issues/669
-  # https://github.com/Khan/KaTeX/issues/1259
-  ret = re.sub(
-      'mathit" style="margin-right:0.[0-9]+em', 'mathit" style="', ret)
-  ret = re.sub(
-      'mainit" style="margin-right:0.[0-9]+em', 'mathit" style="', ret)
   assert HasBalancedTags(ret)
 
   cache[data] = ret
@@ -152,7 +147,7 @@ def Main():
     return 'x' * len(match.group())
 
   data = open(sys.argv[1]).read()
-  cache = shelve.open(sys.argv[1] + '.cache')
+  cache = shelve.open('%s.%d.cache' % (sys.argv[1], CACHE_VERSION))
   # Drop index + search links.
   data = data.replace(
       '<link href="genindex.html" rel="index" title="Index">', '')
@@ -238,7 +233,7 @@ def Main():
         fixed = ('class="' + cls_before + ' ' + cls_after + '">' +
                  spans + ReplaceMath(cache, mth) + '<')
         done_fixups.append((start, end, fixed))
-      except KeyboardInterrupt, AssertionError:
+      except Exception:
         sys.stderr.write('!!! Error processing fragment')
 
       q.task_done()

@@ -24,7 +24,7 @@
   "unknown memory"
 )
 (assert_invalid
-  (module (func (f32.store (f32.const 0) (i32.const 0))))
+  (module (func (f32.store (i32.const 0) (f32.const 0))))
   "unknown memory"
 )
 (assert_invalid

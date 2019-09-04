@@ -240,7 +240,7 @@
 (assert_return (invoke "as-compare-operand") (i32.const 1))
 
 (assert_invalid
-  (module (global f32 (f32.const 0)) (func (global.set 0 (i32.const 1))))
+  (module (global f32 (f32.const 0)) (func (global.set 0 (f32.const 1))))
   "global is immutable"
 )
 
@@ -304,7 +304,7 @@
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\02\94\80\80\80\00"             ;; import section
+    "\02\98\80\80\80\00"             ;; import section
       "\01"                          ;; length 1
       "\08\73\70\65\63\74\65\73\74"  ;; "spectest"
       "\0a\67\6c\6f\62\61\6c\5f\69\33\32" ;; "global_i32"
@@ -317,7 +317,7 @@
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\02\94\80\80\80\00"             ;; import section
+    "\02\98\80\80\80\00"             ;; import section
       "\01"                          ;; length 1
       "\08\73\70\65\63\74\65\73\74"  ;; "spectest"
       "\0a\67\6c\6f\62\61\6c\5f\69\33\32" ;; "global_i32"
@@ -354,4 +354,129 @@
       "\0b"               ;; end
   )
   "invalid mutability"
+)
+
+
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-global.set-value-empty
+      (global.set $x)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-global.set-value-empty-in-block
+      (i32.const 0)
+      (block (global.set $x))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-global.set-value-empty-in-loop
+      (i32.const 0)
+      (loop (global.set $x))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-global.set-value-empty-in-then
+      (i32.const 0) (i32.const 0)
+      (if (then (global.set $x)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-global.set-value-empty-in-else
+      (i32.const 0) (i32.const 0)
+      (if (result i32) (then (i32.const 0)) (else (global.set $x)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-global.set-value-empty-in-br
+      (i32.const 0)
+      (block (br 0 (global.set $x)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-global.set-value-empty-in-br_if
+      (i32.const 0)
+      (block (br_if 0 (global.set $x)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-global.set-value-empty-in-br_table
+      (i32.const 0)
+      (block (br_table 0 (global.set $x)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-global.set-value-empty-in-return
+      (return (global.set $x))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-global.set-value-empty-in-select
+      (select (global.set $x) (i32.const 1) (i32.const 2))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $type-global.set-value-empty-in-call
+      (call 1 (global.set $x))
+    )
+    (func (param i32) (result i32) (local.get 0))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (global $x (mut i32) (i32.const 0))
+    (func $f (param i32) (result i32) (local.get 0))
+    (type $sig (func (param i32) (result i32)))
+    (table funcref (elem $f))
+    (func $type-global.set-value-empty-in-call_indirect
+      (block (result i32)
+        (call_indirect (type $sig)
+          (global.set $x) (i32.const 0)
+        )
+      )
+    )
+  )
+  "type mismatch"
 )

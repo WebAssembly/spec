@@ -129,16 +129,16 @@ For each type, several subcategories can be distinguished:
 
 * *Constants*: return a static constant.
 
-* *Unary Operators*: consume one operand and produce one result of the respective type.
+* *Unary Operations*: consume one operand and produce one result of the respective type.
 
-* *Binary Operators*: consume two operands and produce one result of the respective type.
+* *Binary Operations*: consume two operands and produce one result of the respective type.
 
 * *Tests*: consume one operand of the respective type and produce a Boolean integer result.
 
 * *Comparisons*: consume two operands of the respective type and produce a Boolean integer result.
 
 * *Conversions*: consume a value of one type and produce a result of another
-  (the source type of the conversion is the one after the ":math:`\K{/}`").
+  (the source type of the conversion is the one after the ":math:`\K{\_}`").
 
 Some integer instructions come in two flavors,
 where a signedness annotation |sx| distinguishes whether the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
@@ -184,9 +184,9 @@ Instructions in this group can operate on operands of any :ref:`value type <synt
      \SELECT
    \end{array}
 
-The |DROP| operator simply throws away a single operand.
+The |DROP| instruction simply throws away a single operand.
 
-The |SELECT| operator selects one of its first two operands based on whether its third operand is zero or not.
+The |SELECT| instruction selects one of its first two operands based on whether its third operand is zero or not.
 
 
 .. index:: ! variable instruction, local, global, local index, global index
@@ -246,7 +246,7 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
    \end{array}
 
 Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
-They all take a *memory immediate* |memarg| that contains an address *offset* and an *alignment* hint (in base 2 logarithmic representation).
+They all take a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
 Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-valtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
@@ -329,7 +329,7 @@ In case of |LOOP| it is a *backward jump* to the beginning of the loop.
 
 .. note::
    This enforces *structured control flow*.
-   Intuitively, a branch targeting a |BLOCK| or |IF| behaves like a :math:`\K{break}` statement,
+   Intuitively, a branch targeting a |BLOCK| or |IF| behaves like a :math:`\K{break}` statement in most C-like languages,
    while a branch targeting a |LOOP| behaves like a :math:`\K{continue}` statement.
 
 Branch instructions come in several flavors:
