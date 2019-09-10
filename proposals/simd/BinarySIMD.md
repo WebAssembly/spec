@@ -189,3 +189,4 @@ The `v8x16.shuffle` instruction has 16 bytes after `simdop`.
 | `i32x4.load16x4_u`         |    `0xd5`| m:memarg           |
 | `i64x2.load32x2_s`         |    `0xd6`| m:memarg           |
 | `i64x2.load32x2_u`         |    `0xd7`| m:memarg           |
+| `v128.andnot`              |    `0xd8`| -                  |
