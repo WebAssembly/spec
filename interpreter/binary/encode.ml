@@ -490,13 +490,11 @@ let encode m =
 
     (* Element section *)
     let segment dat seg =
-      let {index; offset; init} = seg.it in
-      if index.it = 0l then
-        u8 0x00
-      else begin
-        u8 0x02; var index
-      end;
-      const offset; dat init
+      match seg.it with
+      | {index; offset; init} when index.it = 0l ->
+        u8 0x00; const offset; dat init
+      | {index; offset; init} ->
+        u8 0x02; var index; const offset; u8 0x00; dat init
 
     let table_segment seg =
       segment (vec var) seg

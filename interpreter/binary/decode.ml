@@ -550,6 +550,10 @@ let table s =
 let table_section s =
   section `TableSection (vec (at table)) [] s
 
+let elem_kind s =
+  match vs7 s with
+  | 0x00 -> FuncRefType
+  | _ -> error s (pos s - 1) "invalid elem kind"
 
 (* Memory section *)
 
@@ -621,21 +625,23 @@ let code_section s =
 
 (* Element section *)
 
-let segment dat s =
-  let pos = pos s in
-  let x = at vu32 s in
-  let index =
-    match x.Source.it with
-    | 0l -> x
-    | 2l -> at var s
-    | _ -> error s pos "invalid segment kind"
-  in
-  let offset = const s in
-  let init = dat s in
-  {index; offset; init}
+let segment dat kind s =
+  match u8 s with
+  | 0 ->
+    let index = Source.(0l @@ Source.no_region) in
+    let offset = const s in
+    let init = dat s in
+    {index; offset; init}
+  | 2 ->
+    let index = at var s in
+    let offset = const s in
+    let _ = kind s in
+    let init = dat s in
+    {index; offset; init}
+  | _ -> error s (pos s - 1) "invalid segment kind"
 
 let table_segment s =
-  segment (vec (at var)) s
+  segment (vec (at var)) elem_kind s
 
 let elem_section s =
   section `ElemSection (vec (at table_segment)) [] s
@@ -644,7 +650,7 @@ let elem_section s =
 (* Data section *)
 
 let memory_segment s =
-  segment string s
+  segment string (fun s -> ()) s
 
 let data_section s =
   section `DataSection (vec (at memory_segment)) [] s

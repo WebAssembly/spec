@@ -321,7 +321,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
    \production{element segment} & \Belem &::=&
      \hex{00}~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \{ \ETABLE~0, \EOFFSET~e, \EINIT~y^\ast \} \\ &&|&
-     \hex{02}~~x{:}\Btableidx~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
+     \hex{02}~~x{:}\Btableidx~~e{:}\Bexpr~~\hex{00}~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \{ \ETABLE~x, \EOFFSET~e, \EINIT~y^\ast \} \\
    \end{array}
 
