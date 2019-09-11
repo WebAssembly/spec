@@ -913,6 +913,13 @@
 .katex svg path {
   stroke: none;
 }
+.katex img {
+  border-style: none;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+}
 .katex .stretchy {
   width: 100%;
   display: block;
@@ -969,10 +976,7 @@
 .katex .boxpad {
   padding: 0 0.3em 0 0.3em;
 }
-.katex .fbox {
-  box-sizing: border-box;
-  border: 0.04em solid black;
-}
+.katex .fbox,
 .katex .fcolorbox {
   box-sizing: border-box;
   border: 0.04em solid;
@@ -1005,6 +1009,13 @@ div > .katex-display > .katex > .katex-html {
 div > .katex-display > .katex > .katex-html > .tag {
   position: absolute;
   right: 0;
+}
+.katex-display.leqno > .katex > .katex-html > .tag {
+  left: 0;
+  right: auto;
+}
+.katex-display.fleqn > .katex {
+  text-align: left;
 }
 /* Force borders on tables */
 table {
