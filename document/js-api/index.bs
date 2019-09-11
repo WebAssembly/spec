@@ -185,6 +185,12 @@ spec:ecmascript; type:interface; for:ECMAScript; text:ArrayBuffer
 spec:promises-guide-1; type:dfn; text:resolve
 </pre>
 
+<style>
+emu-const {
+    font-family: serif;
+}
+</style>
+
 This API privides a way to access WebAssembly [[WEBASSEMBLY]] through a bridge to explicitly construct modules from JavaScript [[ECMASCRIPT]].
 
 <h2 id="sample">Sample API Usage</h2>
@@ -983,12 +989,11 @@ Note: [=call an Exported Function|Calling an Exported Function=] executes in the
 Note: Exported Functions do not have a \[[Construct]] method and thus it is not possible to call one with the `new` operator.
 
 <div algorithm>
-  To <dfn>run a host function</dfn> from the JavaScript object |func| and type |functype|, perform the following steps:
+  To <dfn>run a host function</dfn> from the JavaScript object |func|, type |functype|, and [=list=] of [=WebAssembly values=] |arguments|, perform the following steps:
 
     1. Let [|parameters|] → [|results|] be |functype|.
     1. Assert: |results|'s [=list/size=] is at most one.
     1. If either |parameters| or |results| contains [=𝗂𝟨𝟦=], throw a {{TypeError}}.
-    1. Let |arguments| be a [=list=] of the arguments of the invocation of this function.
     1. Let |jsArguments| be an empty [=list=].
     1. For each |arg| in |arguments|,
         1. [=list/Append=] ! [=ToJSValue=](|arg|) to |jsArguments|.
@@ -1000,15 +1005,16 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 <div algorithm>
   To <dfn>create a host function</dfn> from the JavaScript object |func| and type |functype|, perform the following steps:
 
-    1. Let |hostfunc| be a [=host function=] which performs the following steps when called:
-        1. Let |result| be the result of [=run a host function|running a host function=] from |func| and |functype|.
-        1. Assert: |result|.\[[Type]] is throw or return.
-        1. If |result|.\[[Type]] is [=throw=], then trigger a WebAssembly trap, and propagate |result|.\[[Value]] to the enclosing JavaScript.
+    1. Assert: [=IsCallable=](|func|).
+    1. Let |hostfunc| be a [=host function=] which performs the following steps when called with arguments |arguments|:
+        1. Let |result| be the result of [=run a host function|running a host function=] from |func|, |functype|, and |arguments|.
+        1. Assert: |result|.\[[Type]] is <emu-const>throw</emu-const> or <emu-const>return</emu-const>.
+        1. If |result|.\[[Type]] is <emu-const>throw</emu-const>, then trigger a WebAssembly trap, and propagate |result|.\[[Value]] to the enclosing JavaScript.
         1. Otherwise, return |result|.\[[Value]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
-    1. Return |funcaddr|
+    1. Return |funcaddr|.
 </div>
 
 <div algorithm>
