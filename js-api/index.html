@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version cb5a17652cb33dffd20b8b6a876bb811c1f749a9" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="076ad5dd2c5255ad8bb0002827d9d8a5eb696b85" name="document-revision">
+  <meta content="b7d6dfcf17b9710f9279ee7ffcad795672f8fe74" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -483,7 +483,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
         <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task">Queue a task</a> to perform the following steps. If <var>taskSource</var> was provided, queue the task on that task source.</p>
         <ol>
          <li data-md>
-          <p>If <var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑤">error</a>, reject <var>promise</var> with a <code class="idl"><a data-link-type="idl" href="#compileerror" id="ref-for-compileerror">CompileError</a></code> exception.</p>
+          <p>If <var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑤">error</a>, reject <var>promise</var> with a <code class="idl"><a data-link-type="idl" href="#exceptiondef-compileerror" id="ref-for-exceptiondef-compileerror">CompileError</a></code> exception.</p>
          <li data-md>
           <p>Otherwise,</p>
           <ol>
@@ -527,7 +527,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
         <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types">𝖿𝗎𝗇𝖼</a> <var>functype</var>,</p>
         <ol>
          <li data-md>
-          <p>If <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-iscallable" id="ref-for-sec-iscallable">IsCallable</a>(<var>v</var>) is false, throw a <code class="idl"><a data-link-type="idl" href="#linkerror" id="ref-for-linkerror">LinkError</a></code> exception.</p>
+          <p>If <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-iscallable" id="ref-for-sec-iscallable">IsCallable</a>(<var>v</var>) is false, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror">LinkError</a></code> exception.</p>
          <li data-md>
           <p>If <var>v</var> has a [[FunctionAddress]] internal slot, and therefore is an <a data-link-type="dfn" href="#exported-function" id="ref-for-exported-function①">Exported Function</a>,</p>
           <ol>
@@ -555,7 +555,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
           <p>If <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values①">Type</a>(<var>v</var>) is Number,</p>
           <ol>
            <li data-md>
-            <p>If <var>valtype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="#linkerror" id="ref-for-linkerror①">LinkError</a></code> exception.</p>
+            <p>If <var>valtype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror①">LinkError</a></code> exception.</p>
            <li data-md>
             <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue">ToWebAssemblyValue</a>(<var>v</var>, <var>valtype</var>)</p>
            <li data-md>
@@ -575,7 +575,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
           <p>Otherwise,</p>
           <ol>
            <li data-md>
-            <p>Throw a <code class="idl"><a data-link-type="idl" href="#linkerror" id="ref-for-linkerror②">LinkError</a></code> exception.</p>
+            <p>Throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror②">LinkError</a></code> exception.</p>
           </ol>
          <li data-md>
           <p>Let <var>externglobal</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval③">𝗀𝗅𝗈𝖻𝖺𝗅</a> <var>globaladdr</var>.</p>
@@ -586,7 +586,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
         <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types②">𝗆𝖾𝗆</a> <var>memtype</var>,</p>
         <ol>
          <li data-md>
-          <p>If <var>v</var> is not a <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory②">Memory</a></code> object, throw a <code class="idl"><a data-link-type="idl" href="#linkerror" id="ref-for-linkerror③">LinkError</a></code> exception.</p>
+          <p>If <var>v</var> is not a <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory②">Memory</a></code> object, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror③">LinkError</a></code> exception.</p>
          <li data-md>
           <p class="note" role="note"><span>Note:</span> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-instantiate" id="ref-for-embed-module-instantiate①">module_instantiate</a> invoked below will check the imported <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory③">Memory</a></code>'s size against the importing module’s requirements.</p>
          <li data-md>
@@ -598,7 +598,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
         <p>Otherwise, <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types③">𝗍𝖺𝖻𝗅𝖾</a> <var>tabletype</var>,</p>
         <ol>
          <li data-md>
-          <p>If <var>v</var> is not a <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table①">Table</a></code> instance, throw a <code class="idl"><a data-link-type="idl" href="#linkerror" id="ref-for-linkerror④">LinkError</a></code> exception.</p>
+          <p>If <var>v</var> is not a <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table①">Table</a></code> instance, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror④">LinkError</a></code> exception.</p>
          <li data-md>
           <p class="note" role="note"><span>Note:</span> The table’s length, etc. is checked by <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-instantiate" id="ref-for-embed-module-instantiate②">module_instantiate</a> invoked below.</p>
          <li data-md>
@@ -707,9 +707,9 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
       <p>If <var>result</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑦">error</a>, throw an appropriate exception type:</p>
       <ul>
        <li data-md>
-        <p>A <code class="idl"><a data-link-type="idl" href="#linkerror" id="ref-for-linkerror⑤">LinkError</a></code> exception for most cases which occur during linking.</p>
+        <p>A <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror⑤">LinkError</a></code> exception for most cases which occur during linking.</p>
        <li data-md>
-        <p>If the error came when running the start function, throw a <code class="idl"><a data-link-type="idl" href="#runtimeerror" id="ref-for-runtimeerror">RuntimeError</a></code> for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.</p>
+        <p>If the error came when running the start function, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror">RuntimeError</a></code> for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.</p>
        <li data-md>
         <p>Another error type if appropriate, for example an out-of-memory exception, as documented in <a href="#errors">the WebAssembly error mapping</a>.</p>
       </ul>
@@ -926,7 +926,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      <li data-md>
       <p><a data-link-type="dfn" href="#compile-a-webassembly-module" id="ref-for-compile-a-webassembly-module②">Compile the WebAssembly module</a> <var>stableBytes</var> and store the result as <var>module</var>.</p>
      <li data-md>
-      <p>If <var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑧">error</a>, throw a <code class="idl"><a data-link-type="idl" href="#compileerror" id="ref-for-compileerror①">CompileError</a></code> exception.</p>
+      <p>If <var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑧">error</a>, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-compileerror" id="ref-for-exceptiondef-compileerror①">CompileError</a></code> exception.</p>
      <li data-md>
       <p>Set <strong>this</strong>.[[Module]] to <var>module</var>.</p>
      <li data-md>
@@ -1535,7 +1535,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Set the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent②⑥">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②④">associated store</a> to <var>store</var>.</p>
      <li data-md>
-      <p>If <var>ret</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①③">error</a>, throw an exception. This exception should be a WebAssembly <code class="idl"><a data-link-type="idl" href="#runtimeerror" id="ref-for-runtimeerror①">RuntimeError</a></code> exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.</p>
+      <p>If <var>ret</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①③">error</a>, throw an exception. This exception should be a WebAssembly <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror①">RuntimeError</a></code> exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.</p>
      <li data-md>
       <p>If <var>ret</var> is empty, return undefined.</p>
      <li data-md>
@@ -1642,24 +1642,25 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
     </ol>
    </div>
    <h3 class="heading settled" data-level="3.7" id="error-objects"><span class="secno">3.7. </span><span class="content">Error Objects</span><a class="self-link" href="#error-objects"></a></h3>
-   <p>WebAssembly defines the following Error classes: <code class="idl"><a data-link-type="idl" href="#compileerror" id="ref-for-compileerror②">CompileError</a></code>, <code class="idl"><a data-link-type="idl" href="#linkerror" id="ref-for-linkerror⑥">LinkError</a></code>, and <code class="idl"><a data-link-type="idl" href="#runtimeerror" id="ref-for-runtimeerror②">RuntimeError</a></code>. WebAssembly errors have the following custom bindings:</p>
-   <ul>
-    <li data-md>
-     <p>Unlike normal interface types, the interface prototype object for these exception classes must have as its [[Prototype]] the intrinsic object <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-well-known-intrinsic-objects" id="ref-for-sec-well-known-intrinsic-objects">%ErrorPrototype%</a>.</p>
-    <li data-md>
-     <p>The constructor and properties of WebAssembly errors is as specified for <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-nativeerror-constructors" id="ref-for-sec-nativeerror-constructors">NativeError</a></code>.</p>
-    <li data-md>
-     <p>If an implementation gives native Error objects special powers or nonstandard properties (such as a stack property), it should also expose those on these exception instances.</p>
-   </ul>
-<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace⑤"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑤"><c- n>WebAssembly</c-></a>]
-<c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="compileerror"><code><c- g>CompileError</c-></code></dfn> { };
-
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace⑥"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑥"><c- n>WebAssembly</c-></a>]
-<c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="linkerror"><code><c- g>LinkError</c-></code></dfn> { };
-
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace⑦"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑦"><c- n>WebAssembly</c-></a>]
-<c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="runtimeerror"><code><c- g>RuntimeError</c-></code></dfn> { };
-</pre>
+   <p>WebAssembly defines the following Error classes: <dfn class="dfn-paneled idl-code" data-dfn-type="exception" data-export id="exceptiondef-compileerror"><code>CompileError</code></dfn>, <dfn class="dfn-paneled idl-code" data-dfn-type="exception" data-export id="exceptiondef-linkerror"><code>LinkError</code></dfn>, and <dfn class="dfn-paneled idl-code" data-dfn-type="exception" data-export id="exceptiondef-runtimeerror"><code>RuntimeError</code></dfn>.</p>
+   <div class="algorithm" data-algorithm="create the WebAssembly namespace object">
+     When the <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-namespace-object" id="ref-for-dfn-namespace-object">namespace object</a> for the <code class="idl"><a data-link-type="idl" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑤">WebAssembly</a></code> namespace is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#create-a-namespace-object" id="ref-for-create-a-namespace-object">created</a>, the following steps must be run: 
+    <ol>
+     <li data-md>
+      <p>Let <var>namespaceObject</var> the <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-namespace-object" id="ref-for-dfn-namespace-object①">namespace object</a>.</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate">For each</a> <var>error</var> of « "CompileError", "LinkError", "RuntimeError" »,</p>
+      <ol>
+       <li data-md>
+        <p>Let <var>constructor</var> be a new object, implementing the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-nativeerror-object-structure" id="ref-for-sec-nativeerror-object-structure">NativeError Object Structure</a>, with <var>NativeError</var> set to <var>error</var>.</p>
+       <li data-md>
+        <p>! <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createmethodproperty" id="ref-for-sec-createmethodproperty">CreateMethodProperty</a>(<var>namespaceObject</var>, <var>error</var>, <var>constructor</var>).</p>
+      </ol>
+    </ol>
+   </div>
+   <p class="note" role="note"><span>Note:</span> This defines <code class="idl"><a data-link-type="idl" href="#exceptiondef-compileerror" id="ref-for-exceptiondef-compileerror②">CompileError</a></code>, <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror⑥">LinkError</a></code>, and <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror②">RuntimeError</a></code> classes on the <code class="idl"><a data-link-type="idl" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑥">WebAssembly</a></code> namespace, which are produced by the APIs defined in this specification.
+They expose the same interface as native JavaScript errors like <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">TypeError</a></code> and <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑧">RangeError</a></code>.</p>
+   <p class="note" role="note"><span>Note:</span> It is not currently possible to define this behavior using Web IDL.</p>
    <h2 class="heading settled" data-level="4" id="errors"><span class="secno">4. </span><span class="content">Error Condition Mappings to JavaScript</span><a class="self-link" href="#errors"></a></h2>
    <p>Running WebAssembly programs encounter certain events which halt execution of the WebAssembly code.
 WebAssembly code (currently)
@@ -1676,7 +1677,7 @@ general, prevent future execution.</p>
    <p>Whenever a stack overflow occurs in
 WebAssembly code, the same class of exception is thrown as for a stack overflow in
 JavaScript. The particular exception here is implementation-defined in both cases.</p>
-   <p class="note" role="note"><span>Note:</span> ECMAScript doesn’t specify any sort of behavior on stack overflow; implementations have been observed to throw <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑧">RangeError</a></code>, InternalError or Error. Any is valid here.</p>
+   <p class="note" role="note"><span>Note:</span> ECMAScript doesn’t specify any sort of behavior on stack overflow; implementations have been observed to throw <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑨">RangeError</a></code>, InternalError or Error. Any is valid here.</p>
    <h3 class="heading settled" data-level="4.2" id="out-of-memory"><span class="secno">4.2. </span><span class="content">Out of Memory</span><a class="self-link" href="#out-of-memory"></a></h3>
    <p>Whenever validation, compilation or instantiation run out of memory, the
 same class of exception is thrown as for out of memory conditions in JavaScript.
@@ -1686,7 +1687,7 @@ The particular exception here is implementation-defined in both cases.</p>
     <a class="self-link" href="#issue-7eafcf54"></a> A failed allocation of a large table or memory may either result in 
     <ul>
      <li data-md>
-      <p>a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑨">RangeError</a></code>, as specified in the <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑧">Memory</a></code> <code class="idl"><a data-link-type="idl" href="#dom-memory-grow" id="ref-for-dom-memory-grow①">grow()</a></code> and <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table⑥">Table</a></code> <code class="idl"><a data-link-type="idl" href="#dom-table-grow" id="ref-for-dom-table-grow①">grow()</a></code> operations</p>
+      <p>a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror①⓪">RangeError</a></code>, as specified in the <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑧">Memory</a></code> <code class="idl"><a data-link-type="idl" href="#dom-memory-grow" id="ref-for-dom-memory-grow①">grow()</a></code> and <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table⑥">Table</a></code> <code class="idl"><a data-link-type="idl" href="#dom-table-grow" id="ref-for-dom-table-grow①">grow()</a></code> operations</p>
      <li data-md>
       <p>returning -1 as the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/instructions.html#exec-memory-grow" id="ref-for-exec-memory-grow①">memory.grow</a> instruction</p>
      <li data-md>
@@ -1698,7 +1699,7 @@ The particular exception here is implementation-defined in both cases.</p>
    <h2 class="heading settled" data-level="5" id="limits"><span class="secno">5. </span><span class="content">Implementation-defined Limits</span><a class="self-link" href="#limits"></a></h2>
    <p>The WebAssembly core specification allows an implementation to define limits on the syntactic structure of the module.
 While each embedding of WebAssembly may choose to define its own limits, for predictability the standard WebAssembly JavaScript Interface described in this document defines the following exact limits.
-An implementation must reject a module that exceeds these limits with a <code class="idl"><a data-link-type="idl" href="#compileerror" id="ref-for-compileerror③">CompileError</a></code>.
+An implementation must reject a module that exceeds these limits with a <code class="idl"><a data-link-type="idl" href="#exceptiondef-compileerror" id="ref-for-exceptiondef-compileerror③">CompileError</a></code>.
 In practice, an implementation may run out of resources for valid modules below these limits.</p>
    <ul>
     <li>The maximum size of a module is 1073741824 bytes (1 GiB).
@@ -1758,7 +1759,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#call-an-exported-function">call an Exported Function</a><span>, in §3.6</span>
    <li><a href="#compile-a-webassembly-module">compile a WebAssembly module</a><span>, in §3</span>
    <li><a href="#dom-webassembly-compile">compile(bytes)</a><span>, in §3</span>
-   <li><a href="#compileerror">CompileError</a><span>, in §3.7</span>
+   <li><a href="#exceptiondef-compileerror">CompileError</a><span>, in §3.7</span>
    <li><a href="#construct-a-webassembly-module-object">construct a WebAssembly module object</a><span>, in §3</span>
    <li><a href="#create-a-global-object">create a global object</a><span>, in §3.5</span>
    <li><a href="#create-a-host-function">create a host function</a><span>, in §3.6</span>
@@ -1822,7 +1823,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><a href="#dom-moduleimportdescriptor-kind">dict-member for ModuleImportDescriptor</a><span>, in §3.1</span>
     </ul>
    <li><a href="#dom-table-length">length</a><span>, in §3.4</span>
-   <li><a href="#linkerror">LinkError</a><span>, in §3.7</span>
+   <li><a href="#exceptiondef-linkerror">LinkError</a><span>, in §3.7</span>
    <li>
     maximum
     <ul>
@@ -1855,7 +1856,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#read-the-imports">read the imports</a><span>, in §3</span>
    <li><a href="#reset-the-memory-buffer">reset the Memory buffer</a><span>, in §3.3</span>
    <li><a href="#run-a-host-function">run a host function</a><span>, in §3.6</span>
-   <li><a href="#runtimeerror">RuntimeError</a><span>, in §3.7</span>
+   <li><a href="#exceptiondef-runtimeerror">RuntimeError</a><span>, in §3.7</span>
    <li><a href="#dom-table-set">set(index, value)</a><span>, in §3.4</span>
    <li><a href="#string-value-of-the-extern-type">string value of the extern type</a><span>, in §3.1</span>
    <li><a href="#dom-importexportkind-table">"table"</a><span>, in §3.1</span>
@@ -1879,12 +1880,6 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#namespacedef-webassembly">WebAssembly</a><span>, in §3</span>
    <li><a href="#dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a><span>, in §3</span>
   </ul>
-  <aside class="dfn-panel" data-for="term-for-sec-well-known-intrinsic-objects">
-   <a href="https://tc39.github.io/ecma262/#sec-well-known-intrinsic-objects">https://tc39.github.io/ecma262/#sec-well-known-intrinsic-objects</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sec-well-known-intrinsic-objects">3.7. Error Objects</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-sec-properties-of-the-function-prototype-object">
    <a href="https://tc39.github.io/ecma262/#sec-properties-of-the-function-prototype-object">https://tc39.github.io/ecma262/#sec-properties-of-the-function-prototype-object</a><b>Referenced in:</b>
    <ul>
@@ -1898,10 +1893,10 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-sec-arraybuffer-objects③">3.3. Memories</a> <a href="#ref-for-sec-arraybuffer-objects④">(2)</a> <a href="#ref-for-sec-arraybuffer-objects⑤">(3)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-sec-nativeerror-constructors">
-   <a href="https://tc39.github.io/ecma262/#sec-nativeerror-constructors">https://tc39.github.io/ecma262/#sec-nativeerror-constructors</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-sec-createmethodproperty">
+   <a href="https://tc39.github.io/ecma262/#sec-createmethodproperty">https://tc39.github.io/ecma262/#sec-createmethodproperty</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-sec-nativeerror-constructors">3.7. Error Objects</a>
+    <li><a href="#ref-for-sec-createmethodproperty">3.7. Error Objects</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-native-error-types-used-in-this-standard-rangeerror">
@@ -1910,8 +1905,9 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror">3.3. Memories</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror①">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror②">(3)</a>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">3.4. Tables</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror④">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑤">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑥">(4)</a>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑦">3.5. Globals</a>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑧">4.1. Stack Overflow</a>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑨">4.2. Out of Memory</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑧">3.7. Error Objects</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑨">4.1. Stack Overflow</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-rangeerror①⓪">4.2. Out of Memory</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-native-error-types-used-in-this-standard-typeerror">
@@ -1921,6 +1917,7 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror②">3.4. Tables</a>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror③">3.5. Globals</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror④">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑤">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">(4)</a>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">3.6. Exported Functions</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">(2)</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">3.7. Error Objects</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-agent">
@@ -1991,6 +1988,12 @@ In practice, an implementation may run out of resources for valid modules below 
    <ul>
     <li><a href="#ref-for-sec-iscallable">3. The WebAssembly Namespace</a>
     <li><a href="#ref-for-sec-iscallable①">3.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-nativeerror-object-structure">
+   <a href="https://tc39.github.io/ecma262/#sec-nativeerror-object-structure">https://tc39.github.io/ecma262/#sec-nativeerror-object-structure</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-nativeerror-object-structure">3.7. Error Objects</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-numbertorawbytes">
@@ -2109,6 +2112,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-map-exists③">3.4. Tables</a> <a href="#ref-for-map-exists④">(2)</a>
     <li><a href="#ref-for-map-exists⑤">3.5. Globals</a> <a href="#ref-for-map-exists⑥">(2)</a>
     <li><a href="#ref-for-map-exists⑦">3.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list-iterate">
+   <a href="https://infra.spec.whatwg.org/#list-iterate">https://infra.spec.whatwg.org/#list-iterate</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-iterate">3.7. Error Objects</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list">
@@ -2609,7 +2618,6 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-LegacyNamespace②">3.3. Memories</a>
     <li><a href="#ref-for-LegacyNamespace③">3.4. Tables</a>
     <li><a href="#ref-for-LegacyNamespace④">3.5. Globals</a>
-    <li><a href="#ref-for-LegacyNamespace⑤">3.7. Error Objects</a> <a href="#ref-for-LegacyNamespace⑥">(2)</a> <a href="#ref-for-LegacyNamespace⑦">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-USVString">
@@ -2631,11 +2639,23 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-idl-boolean①">3.5. Globals</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-create-a-namespace-object">
+   <a href="https://heycam.github.io/webidl/#create-a-namespace-object">https://heycam.github.io/webidl/#create-a-namespace-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-create-a-namespace-object">3.7. Error Objects</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-get-buffer-source-copy">
    <a href="https://heycam.github.io/webidl/#dfn-get-buffer-source-copy">https://heycam.github.io/webidl/#dfn-get-buffer-source-copy</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-get-buffer-source-copy">3. The WebAssembly Namespace</a> <a href="#ref-for-dfn-get-buffer-source-copy①">(2)</a> <a href="#ref-for-dfn-get-buffer-source-copy②">(3)</a>
     <li><a href="#ref-for-dfn-get-buffer-source-copy③">3.1. Modules</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-namespace-object">
+   <a href="https://heycam.github.io/webidl/#dfn-namespace-object">https://heycam.github.io/webidl/#dfn-namespace-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-namespace-object">3.7. Error Objects</a> <a href="#ref-for-dfn-namespace-object①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-new">
@@ -2697,10 +2717,9 @@ In practice, an implementation may run out of resources for valid modules below 
    <li>
     <a data-link-type="biblio">[ECMASCRIPT]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-sec-well-known-intrinsic-objects" style="color:initial">%errorprototype%</span>
      <li><span class="dfn-paneled" id="term-for-sec-properties-of-the-function-prototype-object" style="color:initial">%functionprototype%</span>
      <li><span class="dfn-paneled" id="term-for-sec-arraybuffer-objects" style="color:initial">ArrayBuffer</span>
-     <li><span class="dfn-paneled" id="term-for-sec-nativeerror-constructors" style="color:initial">NativeError</span>
+     <li><span class="dfn-paneled" id="term-for-sec-createmethodproperty" style="color:initial">CreateMethodProperty</span>
      <li><span class="dfn-paneled" id="term-for-sec-native-error-types-used-in-this-standard-rangeerror" style="color:initial">RangeError</span>
      <li><span class="dfn-paneled" id="term-for-sec-native-error-types-used-in-this-standard-typeerror" style="color:initial">TypeError</span>
      <li><span class="dfn-paneled" id="term-for-agent" style="color:initial">agent</span>
@@ -2714,6 +2733,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-sec-detacharraybuffer" style="color:initial">detacharraybuffer</span>
      <li><span class="dfn-paneled" id="term-for-sec-get-o-p" style="color:initial">get</span>
      <li><span class="dfn-paneled" id="term-for-sec-iscallable" style="color:initial">iscallable</span>
+     <li><span class="dfn-paneled" id="term-for-sec-nativeerror-object-structure" style="color:initial">nativeerror object structure</span>
      <li><span class="dfn-paneled" id="term-for-sec-numbertorawbytes" style="color:initial">numbertorawbytes</span>
      <li><span class="dfn-paneled" id="term-for-sec-objectcreate" style="color:initial">objectcreate</span>
      <li><span class="dfn-paneled" id="term-for-sec-setfunctionlength" style="color:initial">setfunctionlength</span>
@@ -2744,6 +2764,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-set-append" style="color:initial">append <small>(for set)</small></span>
      <li><span class="dfn-paneled" id="term-for-list-empty" style="color:initial">empty</span>
      <li><span class="dfn-paneled" id="term-for-map-exists" style="color:initial">exist</span>
+     <li><span class="dfn-paneled" id="term-for-list-iterate" style="color:initial">iterate</span>
      <li><span class="dfn-paneled" id="term-for-list" style="color:initial">list</span>
      <li><span class="dfn-paneled" id="term-for-ordered-map" style="color:initial">ordered map</span>
      <li><span class="dfn-paneled" id="term-for-map-set" style="color:initial">set</span>
@@ -2829,7 +2850,9 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-idl-USVString" style="color:initial">USVString</span>
      <li><span class="dfn-paneled" id="term-for-a-new-promise" style="color:initial">a new promise</span>
      <li><span class="dfn-paneled" id="term-for-idl-boolean" style="color:initial">boolean</span>
+     <li><span class="dfn-paneled" id="term-for-create-a-namespace-object" style="color:initial">create a namespace object</span>
      <li><span class="dfn-paneled" id="term-for-dfn-get-buffer-source-copy" style="color:initial">get a copy of the buffer source</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-namespace-object" style="color:initial">namespace object</span>
      <li><span class="dfn-paneled" id="term-for-new" style="color:initial">new</span>
      <li><span class="dfn-paneled" id="term-for-idl-object" style="color:initial">object</span>
      <li><span class="dfn-paneled" id="term-for-dfn-present" style="color:initial">present</span>
@@ -2895,7 +2918,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <c- b>required</c-> <a class="n" data-link-type="idl-name" href="#enumdef-importexportkind" id="ref-for-enumdef-importexportkind①①"><c- n>ImportExportKind</c-></a> <a data-type="ImportExportKind " href="#dom-moduleimportdescriptor-kind"><code><c- g>kind</c-></code></a>;
 };
 
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace⑧"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑧"><c- n>WebAssembly</c-></a>, <a class="idl-code" data-link-type="constructor" href="#dom-module-module" id="ref-for-dom-module-module①"><c- g>Constructor</c-></a>(<a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource③①"><c- n>BufferSource</c-></a> <a href="#dom-module-module-bytes-bytes"><code><c- g>bytes</c-></code></a>), <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->,<c- n>Worklet</c->)]
+[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace⑤"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑦"><c- n>WebAssembly</c-></a>, <a class="idl-code" data-link-type="constructor" href="#dom-module-module" id="ref-for-dom-module-module①"><c- g>Constructor</c-></a>(<a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource③①"><c- n>BufferSource</c-></a> <a href="#dom-module-module-bytes-bytes"><code><c- g>bytes</c-></code></a>), <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->,<c- n>Worklet</c->)]
 <c- b>interface</c-> <a href="#module"><code><c- g>Module</c-></code></a> {
   <c- b>static</c-> <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#dictdef-moduleexportdescriptor" id="ref-for-dictdef-moduleexportdescriptor②"><c- n>ModuleExportDescriptor</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-exports" id="ref-for-dom-module-exports①"><c- g>exports</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑧①"><c- n>Module</c-></a> <a href="#dom-module-exports-moduleobject-moduleobject"><code><c- g>moduleObject</c-></code></a>);
   <c- b>static</c-> <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#dictdef-moduleimportdescriptor" id="ref-for-dictdef-moduleimportdescriptor②"><c- n>ModuleImportDescriptor</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-imports" id="ref-for-dom-module-imports①"><c- g>imports</c-></a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑨①"><c- n>Module</c-></a> <a href="#dom-module-imports-moduleobject-moduleobject"><code><c- g>moduleObject</c-></code></a>);
@@ -2955,15 +2978,6 @@ In practice, an implementation may run out of resources for valid modules below 
   <c- b>any</c-> <a class="idl-code" data-link-type="method" href="#dom-global-valueof" id="ref-for-dom-global-valueof①"><c- g>valueOf</c-></a>();
   <c- b>attribute</c-> <c- b>any</c-> <a class="idl-code" data-link-type="attribute" data-type="any" href="#dom-global-value" id="ref-for-dom-global-value①"><c- g>value</c-></a>;
 };
-
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace⑤①"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑤①"><c- n>WebAssembly</c-></a>]
-<c- b>interface</c-> <a href="#compileerror"><code><c- g>CompileError</c-></code></a> { };
-
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace⑥①"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑥①"><c- n>WebAssembly</c-></a>]
-<c- b>interface</c-> <a href="#linkerror"><code><c- g>LinkError</c-></code></a> { };
-
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace⑦①"><c- g>LegacyNamespace</c-></a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑦①"><c- n>WebAssembly</c-></a>]
-<c- b>interface</c-> <a href="#runtimeerror"><code><c- g>RuntimeError</c-></code></a> { };
 
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
@@ -3049,7 +3063,7 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-namespacedef-webassembly②">3.3. Memories</a>
     <li><a href="#ref-for-namespacedef-webassembly③">3.4. Tables</a>
     <li><a href="#ref-for-namespacedef-webassembly④">3.5. Globals</a>
-    <li><a href="#ref-for-namespacedef-webassembly⑤">3.7. Error Objects</a> <a href="#ref-for-namespacedef-webassembly⑥">(2)</a> <a href="#ref-for-namespacedef-webassembly⑦">(3)</a>
+    <li><a href="#ref-for-namespacedef-webassembly⑤">3.7. Error Objects</a> <a href="#ref-for-namespacedef-webassembly⑥">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="compile-a-webassembly-module">
@@ -3499,28 +3513,28 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-towebassemblyvalue③">3.6. Exported Functions</a> <a href="#ref-for-towebassemblyvalue④">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="compileerror">
-   <b><a href="#compileerror">#compileerror</a></b><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="exceptiondef-compileerror">
+   <b><a href="#exceptiondef-compileerror">#exceptiondef-compileerror</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-compileerror">3. The WebAssembly Namespace</a>
-    <li><a href="#ref-for-compileerror①">3.1. Modules</a>
-    <li><a href="#ref-for-compileerror②">3.7. Error Objects</a>
-    <li><a href="#ref-for-compileerror③">5. Implementation-defined Limits</a>
+    <li><a href="#ref-for-exceptiondef-compileerror">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-exceptiondef-compileerror①">3.1. Modules</a>
+    <li><a href="#ref-for-exceptiondef-compileerror②">3.7. Error Objects</a>
+    <li><a href="#ref-for-exceptiondef-compileerror③">5. Implementation-defined Limits</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="linkerror">
-   <b><a href="#linkerror">#linkerror</a></b><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="exceptiondef-linkerror">
+   <b><a href="#exceptiondef-linkerror">#exceptiondef-linkerror</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-linkerror">3. The WebAssembly Namespace</a> <a href="#ref-for-linkerror①">(2)</a> <a href="#ref-for-linkerror②">(3)</a> <a href="#ref-for-linkerror③">(4)</a> <a href="#ref-for-linkerror④">(5)</a> <a href="#ref-for-linkerror⑤">(6)</a>
-    <li><a href="#ref-for-linkerror⑥">3.7. Error Objects</a>
+    <li><a href="#ref-for-exceptiondef-linkerror">3. The WebAssembly Namespace</a> <a href="#ref-for-exceptiondef-linkerror①">(2)</a> <a href="#ref-for-exceptiondef-linkerror②">(3)</a> <a href="#ref-for-exceptiondef-linkerror③">(4)</a> <a href="#ref-for-exceptiondef-linkerror④">(5)</a> <a href="#ref-for-exceptiondef-linkerror⑤">(6)</a>
+    <li><a href="#ref-for-exceptiondef-linkerror⑥">3.7. Error Objects</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="runtimeerror">
-   <b><a href="#runtimeerror">#runtimeerror</a></b><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="exceptiondef-runtimeerror">
+   <b><a href="#exceptiondef-runtimeerror">#exceptiondef-runtimeerror</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-runtimeerror">3. The WebAssembly Namespace</a>
-    <li><a href="#ref-for-runtimeerror①">3.6. Exported Functions</a>
-    <li><a href="#ref-for-runtimeerror②">3.7. Error Objects</a>
+    <li><a href="#ref-for-exceptiondef-runtimeerror">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-exceptiondef-runtimeerror①">3.6. Exported Functions</a>
+    <li><a href="#ref-for-exceptiondef-runtimeerror②">3.7. Error Objects</a>
    </ul>
   </aside>
 <script>/* script-var-click-highlighting */
