@@ -465,8 +465,8 @@ def S.sub_saturate_u(a, b):
 * `i32x4.shl(a: v128, y: i32) -> v128`
 * `i64x2.shl(a: v128, y: i32) -> v128`
 
-Shift the bits in each lane to the left by the same amount. Only the low bits
-of the shift amount are used:
+Shift the bits in each lane to the left by the same amount. The shift count is
+taken modulo lane width:
 
 ```python
 def S.shl(a, y):
@@ -487,9 +487,9 @@ def S.shl(a, y):
 * `i64x2.shr_s(a: v128, y: i32) -> v128`
 * `i64x2.shr_u(a: v128, y: i32) -> v128`
 
-Shift the bits in each lane to the right by the same amount. This is an
-arithmetic right shift for the `_s` variants and a logical right shift for the
-`_u` variants.
+Shift the bits in each lane to the right by the same amount. The shift count is
+taken modulo lane width.  This is an arithmetic right shift for the `_s`
+variants and a logical right shift for the `_u` variants.
 
 ```python
 def S.shr_s(a, y):
