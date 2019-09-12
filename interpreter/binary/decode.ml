@@ -637,32 +637,32 @@ let elem_refs s =
   vec (at elem_expr) s
 
 let table_segment s =
-  match vu32 s with
-  | 0l ->
+  match u8 s with
+  | 0x00 ->
     let index = Source.(0l @@ Source.no_region) in
     let offset = const s in
     let init = elem_indices s in
     ActiveElem {index; offset; etype = FuncRefType; init}
-  | 1l ->
+  | 0x01 ->
     let etype = elem_kind s in
     let data = elem_indices s in
     PassiveElem {etype; data}
-  | 2l ->
+  | 0x02 ->
     let index = at var s in
     let offset = const s in
     let etype = elem_kind s in
     let init = elem_indices s in
     ActiveElem {index; offset; etype; init}
-  | 4l ->
+  | 0x04 ->
     let index = Source.(0l @@ Source.no_region) in
     let offset = const s in
     let init = elem_refs s in
     ActiveElem {index; offset; etype = FuncRefType; init}
-  | 5l ->
+  | 0x05 ->
     let etype = elem_type s in
     let data = elem_refs s in
     PassiveElem {etype; data}
-  | 6l ->
+  | 0x06 ->
     let index = at var s in
     let offset = const s in
     let etype = elem_type s in
