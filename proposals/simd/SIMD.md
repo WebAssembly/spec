@@ -300,7 +300,7 @@ def S.shuffle(a, b, s):
         if s[i] < S.lanes:
             result[i] = a[s[i]]
         else:
-            result[i] = b[s[i] - S.lanes
+            result[i] = b[s[i]] - S.lanes
     return result
 ```
 
