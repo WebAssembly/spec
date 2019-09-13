@@ -86,7 +86,6 @@
 | `i8x16.sub`                |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i8x16.sub_saturate_s`     |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i8x16.sub_saturate_u`     |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| `i8x16.mul`                |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.neg`                |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.any_true`           |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.all_true`           |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -145,6 +144,12 @@
 | `f64x2.convert_u/i64x2`    | `-munimplemented-simd128` |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `v8x16.swizzle`            |                           |                    | :heavy_check_mark: |                    |
 | `v8x16.shuffle`            |                           |                    | :heavy_check_mark: | :heavy_check_mark: |
+| `i16x8.load8x8_u`          |                           |                    |                    |                    |
+| `i16x8.load8x8_s`          |                           |                    |                    |                    |
+| `i32x4.load16x4_u`         |                           |                    |                    |                    |
+| `i32x4.load16x4_s`         |                           |                    |                    |                    |
+| `i64x2.load32x2_u`         |                           |                    |                    |                    |
+| `i64x2.load32x2_s`         |                           |                    |                    |                    |
 | `i8x16.narrow_i16x8_s`     |                           | :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i8x16.narrow_i16x8_u`     |                           | :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i16x8.narrow_i32x4_s`     |                           | :heavy_check_mark: | :heavy_check_mark: |                    |
