@@ -808,6 +808,24 @@ will use unsigned saturation to handle overflow, 0x00 or 0xff for i8x16.
 Regardless of the whether the operation is signed or unsigned, the input lanes
 are interpreted as signed integers.
 
+```python
+def S.narrow_T_s(a, b):
+    result = S.New()
+    for i in range(T.Lanes):
+        result[i] = S.SignedSaturate(a[i])
+    for i in range(T.Lanes):
+        result[T.Lanes + i] = S.SignedSaturate(b[i])
+    return result
+
+def S.narrow_T_u(a, b):
+    result = S.New()
+    for i in range(T.Lanes):
+        result[i] = S.UnsignedSaturate(a[i])
+    for i in range(T.Lanes):
+        result[T.Lanes + i] = S.UnsignedSaturate(b[i])
+    return result
+```
+
 ### Integer to integer widening
 * `i16x8.widen_low_i8x16_s(a: v128) -> v128`
 * `i16x8.widen_high_i8x16_s(a: v128) -> v128`
@@ -820,3 +838,27 @@ are interpreted as signed integers.
 
 Converts low or high half of the smaller lane vector to a larger lane vector,
 sign extended or zero (unsigned) extended.
+
+```python
+def S.widen_low_T(ext, a):
+    result = S.New()
+    for i in range(S.Lanes):
+        result[i] = ext(a[i])
+
+def S.widen_high_T(ext, a):
+    result = S.New()
+    for i in range(S.Lanes):
+        result[i] = ext(a[S.Lanes + i])
+
+def S.widen_low_T_s(a):
+    return S.widen_low_T(Sext, a)
+
+def S.widen_high_T_s(a):
+    return S.widen_high_T(Sext, a)
+
+def S.widen_low_T_u(a):
+    return S.widen_low_T(Zext, a)
+
+def S.widen_high_T_u(a):
+    return S.widen_high_T(Zext, a)
+```
