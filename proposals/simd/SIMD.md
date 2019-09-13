@@ -685,6 +685,7 @@ def S.load_splat(memarg):
     val = memory.bytes[memarg.start:memarg.start + S.LaneBytes])
     for i in range(S.Lanes):
         S.bytes[i:i + S.LaneBytes] = val
+    return result
 ```
 ### Load and Extend
 
@@ -696,6 +697,21 @@ def S.load_splat(memarg):
 * `i64x2.load32x2_s(memarg) -> v128`: load two 32-bit integers and sign extend each one to a 64-bit lane
 
 Fetch consequtive integers up to 32-bit wide and produce a vector with lanes up to 64 bits.
+
+```python
+def S.load_extend(ext, memarg):
+    result = S.New()
+    bytes = memory.bytes[memarg.start:memarg.start + 8])
+    for i in range(S.Lanes):
+        result[i] = ext(S.LaneType.from_byte(bytes[(i * S.LaneBytes/2):((i+1) * S.LaneBytes/2)]))
+    return result
+
+def S.load_extend_s(memarg):
+    return S.load_extend(Sext, memarg)
+
+def S.load_extend_u(memarg):
+    return S.load_extend(Zext, memarg)
+```
 
 ### Store
 
