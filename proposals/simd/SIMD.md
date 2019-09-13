@@ -679,6 +679,13 @@ def S.load(memarg):
 
 Load a single element and splat to all lanes of a `v128` vector.
 
+```python
+def S.load_splat(memarg):
+    result = S.New()
+    val = memory.bytes[memarg.start:memarg.start + S.LaneBytes])
+    for i in range(S.Lanes):
+        S.bytes[i:i + S.LaneBytes] = val
+```
 ### Load and Extend
 
 * `i16x8.load8x8_u(memarg) -> v128`: load eight 8-bit integers and zero extend each one to a 16-bit lane
