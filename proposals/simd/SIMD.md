@@ -665,6 +665,11 @@ natural alignment.
 
 Load a `v128` vector from the given heap address.
 
+```python
+def S.load(memarg):
+    return S.New(memory.bytes[memarg.start:memarg.start + 16])
+```
+
 ### Load and Splat
 
 * `v8x16.load_splat(memarg) -> v128`
@@ -690,6 +695,11 @@ Fetch consequtive integers up to 32-bit wide and produce a vector with lanes up 
 * `v128.store(memarg, data: v128)`
 
 Store a `v128` vector to the given heap address.
+
+```python
+def S.store(memarg, a):
+    memory.bytes[memarg.start:memarg.start + 16] = S.bytes
+```
 
 ## Floating-point sign bit operations
 
