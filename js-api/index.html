@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version cb5a17652cb33dffd20b8b6a876bb811c1f749a9" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="f3efeb00b334f84560850d438def0551a666f314" name="document-revision">
+  <meta content="352edf4d331f89f3216428c5cd46b6d6d761b0ff" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -271,7 +271,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-09-11">11 September 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-09-14">14 September 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -495,7 +495,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
            <li data-md>
             <p><a data-link-type="dfn" href="#construct-a-webassembly-module-object" id="ref-for-construct-a-webassembly-module-object">Construct a WebAssembly module object</a> from <var>module</var> and <var>bytes</var>, and let <var>moduleObject</var> be the result.</p>
            <li data-md>
-            <p><a data-link-type="dfn">Resolve</a> <var>promise</var> with <var>moduleObject</var>.</p>
+            <p><a data-link-type="dfn" href="https://heycam.github.io/webidl/#resolve" id="ref-for-resolve">Resolve</a> <var>promise</var> with <var>moduleObject</var>.</p>
           </ol>
         </ol>
       </ol>
@@ -748,7 +748,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
         <p><a data-link-type="dfn" href="#initialize-an-instance-object" id="ref-for-initialize-an-instance-object">Initialize</a> <var>instanceObject</var> from <var>module</var> and <var>instance</var>.
 If this throws an exception, catch it, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#reject" id="ref-for-reject②">reject</a> <var>promise</var> with the exception, and terminate these substeps.</p>
        <li data-md>
-        <p><a data-link-type="dfn">Resolve</a> <var>promise</var> with <var>instanceObject</var>.</p>
+        <p><a data-link-type="dfn" href="https://heycam.github.io/webidl/#resolve" id="ref-for-resolve①">Resolve</a> <var>promise</var> with <var>instanceObject</var>.</p>
       </ol>
      <li data-md>
       <p>Return <var>promise</var>.</p>
@@ -784,7 +784,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
        <li data-md>
         <p>Let <var>result</var> be a <code class="idl"><a data-link-type="idl" href="#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a></code> dictionary with <code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-module" id="ref-for-dom-webassemblyinstantiatedsource-module">module</a></code> set to <var>module</var> and <code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-instance" id="ref-for-dom-webassemblyinstantiatedsource-instance">instance</a></code> set to <var>instance</var>.</p>
        <li data-md>
-        <p><a data-link-type="dfn">Resolve</a> <var>promise</var> with <var>result</var>.</p>
+        <p><a data-link-type="dfn" href="https://heycam.github.io/webidl/#resolve" id="ref-for-resolve②">Resolve</a> <var>promise</var> with <var>result</var>.</p>
       </ol>
      <li data-md>
       <p><a data-link-type="dfn" href="https://heycam.github.io/webidl/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> of <var>promiseOfModule</var> with reason <var>reason</var>:</p>
@@ -2692,6 +2692,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-reject">3. The WebAssembly Namespace</a> <a href="#ref-for-reject①">(2)</a> <a href="#ref-for-reject②">(3)</a> <a href="#ref-for-reject③">(4)</a> <a href="#ref-for-reject④">(5)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-resolve">
+   <a href="https://heycam.github.io/webidl/#resolve">https://heycam.github.io/webidl/#resolve</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-resolve">3. The WebAssembly Namespace</a> <a href="#ref-for-resolve①">(2)</a> <a href="#ref-for-resolve②">(3)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-idl-unsigned-long">
    <a href="https://heycam.github.io/webidl/#idl-unsigned-long">https://heycam.github.io/webidl/#idl-unsigned-long</a><b>Referenced in:</b>
    <ul>
@@ -2856,6 +2862,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-idl-object" style="color:initial">object</span>
      <li><span class="dfn-paneled" id="term-for-dfn-present" style="color:initial">present</span>
      <li><span class="dfn-paneled" id="term-for-reject" style="color:initial">reject</span>
+     <li><span class="dfn-paneled" id="term-for-resolve" style="color:initial">resolve</span>
      <li><span class="dfn-paneled" id="term-for-idl-unsigned-long" style="color:initial">unsigned long</span>
      <li><span class="dfn-paneled" id="term-for-upon-fulfillment" style="color:initial">upon fulfillment</span>
      <li><span class="dfn-paneled" id="term-for-upon-rejection" style="color:initial">upon rejection</span>
