@@ -681,8 +681,8 @@ Load a single element and splat to all lanes of a `v128` vector.
 
 ```python
 def S.load_splat(memarg):
-    val = memory[memarg.start:memarg.start + S.LaneBytes])
-    return S.splat(S.LaneType.from_bytes(val))
+    val_bytes = memory[memarg.start:memarg.start + S.LaneBytes])
+    return S.splat(S.LaneType.from_bytes(val_bytes))
 ```
 
 ### Load and Extend
