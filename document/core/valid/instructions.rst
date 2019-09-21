@@ -775,11 +775,11 @@ Control Instructions
 * The label :math:`C.\CLABELS[l_N]` must be defined in the context.
 
 * For all :math:`l_i` in :math:`l^\ast`,
-  the label :math:`C.\CLABELS[l_i]` must be defined in the context
+  the label :math:`C.\CLABELS[l_i]` must be defined in the context.
 
 * There must be a :ref:`result type <syntax-resulttype>` :math:`[t^?]`, such that:
 
-  * The result type :math:`[t^?]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_i]`.
+  * The result type :math:`[t^?]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_N]`.
 
   * For all :math:`l_i` in :math:`l^\ast`,
     the result type :math:`[t^?]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_i]`.
