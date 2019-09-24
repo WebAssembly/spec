@@ -71,6 +71,7 @@
 | `f64x2.ge`                 | `-munimplemented-simd128` |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `v128.not`                 |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `v128.and`                 |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| `v128.andnot`              |                           |                    |                    |                    |
 | `v128.or`                  |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `v128.xor`                 |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `v128.bitselect`           |               `-msimd128` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |

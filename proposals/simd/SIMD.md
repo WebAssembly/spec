@@ -521,6 +521,12 @@ The logical operations defined on the scalar integer types are also available
 on the `v128` type where they operate bitwise the same way C's `&`, `|`, `^`,
 and `~` operators work on an `unsigned` type.
 
+### Bitwise AND-NOT
+
+* `v128.andnot(a: v128, b: v128) -> v128`
+
+Bitwise AND of bits of `a` and the logical inverse of bits of `b`. This operation is equivalent to `v128.and(a, v128.not(b))`.
+
 ### Bitwise select
 * `v128.bitselect(v1: v128, v2: v128, c: v128) -> v128`
 
