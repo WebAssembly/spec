@@ -139,7 +139,7 @@ Note: This algorithm accepts a {{Response}} object, or a
 
 <h2 id="serialization">Serialization</h2>
 
-Web user agents must augment the {{Module}} interface with the <code>[<a extended-attribute>Serializable</a>]</code> extended attribute.
+Web user agents must augment the {{Module}} interface with the <code>[<a extended-attribute>Serializable</a>]</code> extended attribute set to <code>SameAgentCluster</code>.
 
 The [=serialization steps=], given |value|, |serialized|, and |forStorage|, are:
 
@@ -147,15 +147,11 @@ The [=serialization steps=], given |value|, |serialized|, and |forStorage|, are:
 
     1. Set |serialized|.\[[Bytes]] to the [=sub-serialization=] of |value|.\[[Bytes]].
 
-    1. Set |serialized|.\[[AgentCluster]] to the [=current Realm=]'s corresponding [=agent cluster=].
-
 The [=deserialization steps=], given |serialized| and |value|, are:
 
     1. Let |bytes| be the [=sub-deserialization=] of |serialized|.\[[Bytes]].
 
     1. Set |value|.\[[Bytes]] to |bytes|.
-
-    1. If |targetRealm|'s corresponding [=agent cluster=] is not |serialized|.\[[AgentCluster]], then throw a "<a exception>DataCloneError</a>" {{DOMException}}.
 
     1. [=Compile a WebAssembly module=] from |bytes| and set |value|.\[[Module]] to the result.
 
