@@ -623,7 +623,7 @@ There is no observable difference between quiet and signalling NaNs.</li>
 then its sign is non-deterministic and the <a class="reference internal" href="../syntax/values.html#syntax-payload"><span class="std std-ref">payload</span></a> is computed as follows:</p>
 <ul class="simple">
 <li>If the payload of all NaN inputs to the operator is <a class="reference internal" href="../syntax/values.html#canonical-nan"><span class="std std-ref">canonical</span></a> (including the case that there are no NaN inputs), then the payload of the output is canonical as well.</li>
-<li>Otherwise the payload is picked non-determinsitically among all <a class="reference internal" href="../syntax/values.html#arithmetic-nan"><span class="std std-ref">arithmetic NaNs</span></a>; that is, its most significant bit is <span class="math notranslate nohighlight">\(1\)</span> and all others are unspecified.</li>
+<li>Otherwise the payload is picked non-deterministically among all <a class="reference internal" href="../syntax/values.html#arithmetic-nan"><span class="std std-ref">arithmetic NaNs</span></a>; that is, its most significant bit is <span class="math notranslate nohighlight">\(1\)</span> and all others are unspecified.</li>
 </ul>
 <p>This non-deterministic result is expressed by the following auxiliary function producing a set of allowed outputs from a set of inputs:</p>
 <div class="math notranslate nohighlight">
