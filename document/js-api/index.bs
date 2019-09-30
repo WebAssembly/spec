@@ -510,7 +510,7 @@ dictionary ModuleImportDescriptor {
 
 [LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
 interface Module {
- constructor(BufferSource bytes);
+  constructor(BufferSource bytes);
   static sequence&lt;ModuleExportDescriptor> exports(Module moduleObject);
   static sequence&lt;ModuleImportDescriptor> imports(Module moduleObject);
   static sequence&lt;ArrayBuffer> customSections(Module moduleObject, DOMString sectionName);
