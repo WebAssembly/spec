@@ -369,6 +369,7 @@ def S.sub(a, b):
 ### Integer multiplication
 * `i16x8.mul(a: v128, b: v128) -> v128`
 * `i32x4.mul(a: v128, b: v128) -> v128`
+* `i64x2.mul(a: v128, b: v128) -> v128`
 
 Lane-wise wrapping integer multiplication:
 
@@ -548,7 +549,6 @@ These operations reduce all the lanes of an integer vector to a single scalar
 * `i8x16.any_true(a: v128) -> i32`
 * `i16x8.any_true(a: v128) -> i32`
 * `i32x4.any_true(a: v128) -> i32`
-* `i64x2.any_true(a: v128) -> i32`
 
 These functions return 1 if any lane in `a` is non-zero, 0 otherwise.
 
@@ -564,7 +564,6 @@ def S.any_true(a):
 * `i8x16.all_true(a: v128) -> i32`
 * `i16x8.all_true(a: v128) -> i32`
 * `i32x4.all_true(a: v128) -> i32`
-* `i64x2.all_true(a: v128) -> i32`
 
 These functions return 1 if all lanes in `a` are non-zero, 0 otherwise.
 
