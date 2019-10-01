@@ -34,7 +34,7 @@ The design of this extension is almost entirely canonical. Concretely:
 * Allow multiple memory imports and definitions in a single module.
 
 * Add a memory index to all memory-related instructions.
-  - Loads and stores have the memop field, in which we can allocate a bit indicating a memory index immediate.
+  - Loads and stores have the memop field, in which we can allocate a bit indicating a memory index immediate in the binary format.
   - All other memory instruction already have a memory index immediate (which currently has to be 0).
 
 * Data segments and exports already have a memory index as well.
