@@ -42,6 +42,32 @@ The design of this extension is almost entirely canonical. Concretely:
 * Extend the validation and execution semantics in the obvious manner.
 
 
+### Instructions
+
+#### Loads and Stores
+
+TODO
+
+#### Other Memory Instructions
+
+TODO
+
+
+### Modules
+
+#### Data Segments
+
+TODO
+
+#### Exports
+
+TODO
+
+#### Modules
+
+TODO
+
+
 ## Implementation
 
 Engines already have to deal with multiple memories, but any given code so far can only address one.
