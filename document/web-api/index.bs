@@ -17,7 +17,7 @@ Prepare For TR: true
 {
   "ECMA-262": {
     "href": "https://tc39.github.io/ecma262",
-    "title": "ECMAScript® 2018 Language Specification",
+    "title": "ECMAScript® Language Specification",
     "publisher": "ECMA TC39",
     "status": "Current Editor's Draft"
   },
