@@ -44,28 +44,43 @@ The design of this extension is almost entirely canonical. Concretely:
 
 ### Instructions
 
-#### Loads and Stores
+Except where noted, the following changes apply to each `load` and `store` instruction as well as to `memory.size` and `memory.grow`. Corresponding changes will be necessary for the new instructions introduced by the bulk memory proposal.instructions.
 
-TODO
+Abstract syntax:
 
-#### Other Memory Instructions
+* Add a memory index immediate.
 
-TODO
+Validation:
+
+* Check the memory index immediate instead of index 0.
+
+Execution:
+
+* Access the memory according to their index immediate instead of memory 0.
+
+Binary format:
+
+* For loads and stores: Reinterpret the alignment value in the `memarg` as a bitfield; if bit 6 (the MSB of the first LEB byte) is set, then an `i32` memory index follows after the offset immediate (even with SIMD, alignment must not currently be larger than 4 in the logarithmic encoding, i.e., taking up the lower 3 bits, so this is more than safe).
+
+* For other memory instructions: Replace the hard-coded `0x00` bytes with an `i32` memory index.
+
+Text format:
+
+* Add an optional `memidx` immediate that defaults to 0 if absent (for backwards compatibility). In the case of loads and stores, this index must occur before the optional alignment and offset immediates.
 
 
 ### Modules
 
-#### Data Segments
+#### Data Segments and Memory Exports
 
-TODO
+The abstract syntax for data segments and memory exports already carry a memory index that is checked and used accordingly (even though it currently is known to be 0). Binary and text format also already have the corresponding index parameter (which is optional and defaults to 0 in the case of data segments).
 
-#### Exports
+So technically, no spec change is necessary, though implementations now need to deal with the possibility that the index is not 0.
 
-TODO
 
 #### Modules
 
-TODO
+* Validation for modules no longer checks that there is at most 1 memory defined or imported.
 
 
 ## Implementation
