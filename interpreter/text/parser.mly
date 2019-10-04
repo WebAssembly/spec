@@ -173,8 +173,8 @@ let inline_type_explicit (c : context) x ft at =
 %token<Ast.instr'> TEST
 %token<Ast.instr'> COMPARE
 %token<Ast.instr'> CONVERT
-%token<int option -> Memory.offset -> Ast.instr'> LOAD
-%token<int option -> Memory.offset -> Ast.instr'> STORE
+%token<Ast.var -> int option -> Memory.offset -> Ast.instr'> LOAD
+%token<Ast.var -> int option -> Memory.offset -> Ast.instr'> STORE
 %token<string> OFFSET_EQ_NAT
 %token<string> ALIGN_EQ_NAT
 
@@ -251,6 +251,10 @@ var :
   | NAT { let at = at () in fun c lookup -> nat32 $1 at @@ at }
   | VAR { let at = at () in fun c lookup -> lookup c ($1 @@ at) @@ at }
 
+var_opt :
+  | /* empty */ { fun c lookup at -> 0l @@ at }
+  | var { fun c lookup at -> $1 c lookup }
+
 var_list :
   | /* empty */ { fun c lookup -> [] }
   | var var_list { fun c lookup -> $1 c lookup :: $2 c lookup }
@@ -315,10 +319,14 @@ plain_instr :
   | LOCAL_TEE var { fun c -> local_tee ($2 c local) }
   | GLOBAL_GET var { fun c -> global_get ($2 c global) }
   | GLOBAL_SET var { fun c -> global_set ($2 c global) }
-  | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
-  | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
-  | MEMORY_SIZE { fun c -> memory_size }
-  | MEMORY_GROW { fun c -> memory_grow }
+  | LOAD var_opt offset_opt align_opt
+    { let at1 = ati 1 in fun c -> $1 ($2 c memory at1) $4 $3 }
+  | STORE var_opt offset_opt align_opt
+    { let at1 = ati 1 in fun c -> $1 ($2 c memory at1) $4 $3 }
+  | MEMORY_SIZE var_opt
+    { let at1 = ati 1 in fun c -> memory_size ($2 c memory at1) }
+  | MEMORY_GROW var_opt
+    { let at1 = ati 1 in fun c -> memory_grow ($2 c memory at1) }
   | CONST literal { fun c -> fst (literal $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }

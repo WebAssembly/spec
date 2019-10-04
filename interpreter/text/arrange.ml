@@ -187,6 +187,13 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
+
+(* Expressions *)
+
+let var x = nat32 x.it
+let value v = string_of_value v.it
+let constop v = value_type (type_of v.it) ^ ".const"
+
 let pack_size = function
   | Memory.Pack8 -> "8"
   | Memory.Pack16 -> "16"
@@ -196,28 +203,21 @@ let extension = function
   | Memory.SX -> "_s"
   | Memory.ZX -> "_u"
 
-let memop name {ty; align; offset; _} sz =
-  value_type ty ^ "." ^ name ^
+let memop name x {ty; align; offset; _} sz =
+  value_type ty ^ "." ^ name ^ " " ^ var x ^
   (if offset = 0l then "" else " offset=" ^ nat32 offset) ^
   (if 1 lsl align = sz then "" else " align=" ^ nat (1 lsl align))
 
-let loadop op =
+let loadop x op =
   match op.sz with
-  | None -> memop "load" op (size op.ty)
+  | None -> memop "load" x op (size op.ty)
   | Some (sz, ext) ->
-    memop ("load" ^ pack_size sz ^ extension ext) op (Memory.packed_size sz)
+    memop ("load" ^ pack_size sz ^ extension ext) x op (Memory.packed_size sz)
 
-let storeop op =
+let storeop x op =
   match op.sz with
-  | None -> memop "store" op (size op.ty)
-  | Some sz -> memop ("store" ^ pack_size sz) op (Memory.packed_size sz)
-
-
-(* Expressions *)
-
-let var x = nat32 x.it
-let value v = string_of_value v.it
-let constop v = value_type (type_of v.it) ^ ".const"
+  | None -> memop "store" x op (size op.ty)
+  | Some sz -> memop ("store" ^ pack_size sz) x op (Memory.packed_size sz)
 
 let rec instr e =
   let head, inner =
@@ -243,10 +243,10 @@ let rec instr e =
     | LocalTee x -> "local.tee " ^ var x, []
     | GlobalGet x -> "global.get " ^ var x, []
     | GlobalSet x -> "global.set " ^ var x, []
-    | Load op -> loadop op, []
-    | Store op -> storeop op, []
-    | MemorySize -> "memory.size", []
-    | MemoryGrow -> "memory.grow", []
+    | Load (x, op) -> loadop x op, []
+    | Store (x, op) -> storeop x op, []
+    | MemorySize x -> "memory.size " ^ var x, []
+    | MemoryGrow x -> "memory.grow " ^ var x, []
     | Const lit -> constop lit ^ " " ^ value lit, []
     | Test op -> testop op, []
     | Compare op -> relop op, []

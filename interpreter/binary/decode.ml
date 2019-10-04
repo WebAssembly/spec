@@ -195,10 +195,13 @@ let op s = u8 s
 let end_ s = expect 0x0b s "END opcode expected"
 
 let memop s =
-  let align = vu32 s in
+  let flags = vu32 s in
+  let has_var = (Int32.logand flags 0x40l = 0l) in
+  let align = Int32.(logand flags (lognot 0x40l)) in
   require (I32.le_u align 32l) s (pos s - 1) "invalid memop flags";
   let offset = vu32 s in
-  Int32.to_int align, offset
+  let x = if has_var then Source.(0l @@ no_region) else at var s in 
+  x, Int32.to_int align, offset
 
 let rec instr s =
   let pos = pos s in
@@ -262,37 +265,33 @@ let rec instr s =
 
   | 0x25 | 0x26 | 0x27 as b -> illegal s pos b
 
-  | 0x28 -> let a, o = memop s in i32_load a o
-  | 0x29 -> let a, o = memop s in i64_load a o
-  | 0x2a -> let a, o = memop s in f32_load a o
-  | 0x2b -> let a, o = memop s in f64_load a o
-  | 0x2c -> let a, o = memop s in i32_load8_s a o
-  | 0x2d -> let a, o = memop s in i32_load8_u a o
-  | 0x2e -> let a, o = memop s in i32_load16_s a o
-  | 0x2f -> let a, o = memop s in i32_load16_u a o
-  | 0x30 -> let a, o = memop s in i64_load8_s a o
-  | 0x31 -> let a, o = memop s in i64_load8_u a o
-  | 0x32 -> let a, o = memop s in i64_load16_s a o
-  | 0x33 -> let a, o = memop s in i64_load16_u a o
-  | 0x34 -> let a, o = memop s in i64_load32_s a o
-  | 0x35 -> let a, o = memop s in i64_load32_u a o
+  | 0x28 -> let x, a, o = memop s in i32_load x a o
+  | 0x29 -> let x, a, o = memop s in i64_load x a o
+  | 0x2a -> let x, a, o = memop s in f32_load x a o
+  | 0x2b -> let x, a, o = memop s in f64_load x a o
+  | 0x2c -> let x, a, o = memop s in i32_load8_s x a o
+  | 0x2d -> let x, a, o = memop s in i32_load8_u x a o
+  | 0x2e -> let x, a, o = memop s in i32_load16_s x a o
+  | 0x2f -> let x, a, o = memop s in i32_load16_u x a o
+  | 0x30 -> let x, a, o = memop s in i64_load8_s x a o
+  | 0x31 -> let x, a, o = memop s in i64_load8_u x a o
+  | 0x32 -> let x, a, o = memop s in i64_load16_s x a o
+  | 0x33 -> let x, a, o = memop s in i64_load16_u x a o
+  | 0x34 -> let x, a, o = memop s in i64_load32_s x a o
+  | 0x35 -> let x, a, o = memop s in i64_load32_u x a o
 
-  | 0x36 -> let a, o = memop s in i32_store a o
-  | 0x37 -> let a, o = memop s in i64_store a o
-  | 0x38 -> let a, o = memop s in f32_store a o
-  | 0x39 -> let a, o = memop s in f64_store a o
-  | 0x3a -> let a, o = memop s in i32_store8 a o
-  | 0x3b -> let a, o = memop s in i32_store16 a o
-  | 0x3c -> let a, o = memop s in i64_store8 a o
-  | 0x3d -> let a, o = memop s in i64_store16 a o
-  | 0x3e -> let a, o = memop s in i64_store32 a o
+  | 0x36 -> let x, a, o = memop s in i32_store x a o
+  | 0x37 -> let x, a, o = memop s in i64_store x a o
+  | 0x38 -> let x, a, o = memop s in f32_store x a o
+  | 0x39 -> let x, a, o = memop s in f64_store x a o
+  | 0x3a -> let x, a, o = memop s in i32_store8 x a o
+  | 0x3b -> let x, a, o = memop s in i32_store16 x a o
+  | 0x3c -> let x, a, o = memop s in i64_store8 x a o
+  | 0x3d -> let x, a, o = memop s in i64_store16 x a o
+  | 0x3e -> let x, a, o = memop s in i64_store32 x a o
 
-  | 0x3f ->
-    expect 0x00 s "zero flag expected";
-    memory_size
-  | 0x40 ->
-    expect 0x00 s "zero flag expected";
-    memory_grow
+  | 0x3f -> memory_size (at var s)
+  | 0x40 -> memory_grow (at var s)
 
   | 0x41 -> i32_const (at vs32 s)
   | 0x42 -> i64_const (at vs64 s)
