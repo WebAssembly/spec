@@ -230,9 +230,9 @@ As an abbreviation, the memory index can be omitted in all memory instructions, 
     \Tvaltype\text{.load}~~\Tmemarg
        &\equiv&
      \Tvaltype\text{.load}~~\text{0}~~\Tmemarg \\&
-    \Tvaltype\text{.load}N\text{\_}X~~\Tmemarg
+    \Tvaltype\text{.load}N\text{\_}\sx~~\Tmemarg
        &\equiv&
-     \Tvaltype\text{.load}N\text{\_}X~~\text{0}~~\Tmemarg \\&
+     \Tvaltype\text{.load}N\text{\_}\sx~~\text{0}~~\Tmemarg \\&
     \Tvaltype\text{.store}~~\Tmemarg
        &\equiv&
      \Tvaltype\text{.store}~~\text{0}~~\Tmemarg \\&
