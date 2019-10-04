@@ -309,10 +309,10 @@ Memory Instructions
 
 .. _valid-load:
 
-:math:`t\K{.}\LOAD~\memarg`
-...........................
+:math:`t\K{.}\LOAD~x~\memarg`
+.............................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
@@ -320,20 +320,20 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq |t|/8
    }{
-     C \vdashinstr t\K{.load}~\memarg : [\I32] \to [t]
+     C \vdashinstr t\K{.load}~x~\memarg : [\I32] \to [t]
    }
 
 
 .. _valid-loadn:
 
-:math:`t\K{.}\LOAD{N}\K{\_}\sx~\memarg`
-.......................................
+:math:`t\K{.}\LOAD{N}\K{\_}\sx~x~\memarg`
+.........................................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
@@ -341,18 +341,18 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
-     C \vdashinstr t\K{.load}N\K{\_}\sx~\memarg : [\I32] \to [t]
+     C \vdashinstr t\K{.load}N\K{\_}\sx~x~\memarg : [\I32] \to [t]
    }
 
 
-:math:`t\K{.}\STORE~\memarg`
-............................
+:math:`t\K{.}\STORE~x~\memarg`
+..............................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
 
@@ -360,20 +360,20 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq |t|/8
    }{
-     C \vdashinstr t\K{.store}~\memarg : [\I32~t] \to []
+     C \vdashinstr t\K{.store}~x~\memarg : [\I32~t] \to []
    }
 
 
 .. _valid-storen:
 
-:math:`t\K{.}\STORE{N}~\memarg`
-...............................
+:math:`t\K{.}\STORE{N}~x~\memarg`
+.................................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
@@ -381,45 +381,45 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
-     C \vdashinstr t\K{.store}N~\memarg : [\I32~t] \to []
+     C \vdashinstr t\K{.store}N~x~\memarg : [\I32~t] \to []
    }
 
 
 .. _valid-memory.size:
 
-:math:`\MEMORYSIZE`
-...................
+:math:`\MEMORYSIZE~x`
+.....................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[] \to [\I32]`.
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
    }{
-     C \vdashinstr \MEMORYSIZE : [] \to [\I32]
+     C \vdashinstr \MEMORYSIZE~x : [] \to [\I32]
    }
 
 
 .. _valid-memory.grow:
 
-:math:`\MEMORYGROW`
-...................
+:math:`\MEMORYGROW~x`
+.....................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[\I32] \to [\I32]`.
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
    }{
-     C \vdashinstr \MEMORYGROW : [\I32] \to [\I32]
+     C \vdashinstr \MEMORYGROW~x : [\I32] \to [\I32]
    }
 
 

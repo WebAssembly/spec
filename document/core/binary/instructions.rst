@@ -117,7 +117,7 @@ Variable Instructions
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with a different byte code. Loads and stores are followed by the encoding of their |memarg| immediate.
+Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with a different byte code. Loads and stores are followed by the encoding of their |memarg| immediate, which includes the :ref:`memory index <binary-memidx>` if bit 6 of the flags field containing alignemnt is set; the memory index defaults to 0 otherwise.
 
 .. _binary-memarg:
 .. _binary-load:
@@ -128,9 +128,12 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
 .. _binary-memory.grow:
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llcllll}
    \production{memory argument} & \Bmemarg &::=&
-     a{:}\Bu32~~o{:}\Bu32 &\Rightarrow& \{ \ALIGN~a,~\OFFSET~o \} \\
+     a{:}\Bu32~~o{:}\Bu32 &\Rightarrow& 0~\{ \ALIGN~a,~\OFFSET~o \}
+       & (\iff a < 2^6) \\ &&|&
+     a{:}\Bu32~~o{:}\Bu32~~x{:}\memidx &\Rightarrow& x~\{ \ALIGN~(a - 2^6),~\OFFSET~o \}
+       & (\otherwise) \\
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{28}~~m{:}\Bmemarg &\Rightarrow& \I32.\LOAD~m \\ &&|&
      \hex{29}~~m{:}\Bmemarg &\Rightarrow& \I64.\LOAD~m \\ &&|&
@@ -155,12 +158,9 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
      \hex{3C}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{8}~m \\ &&|&
      \hex{3D}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
      \hex{3E}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
-     \hex{3F}~~\hex{00} &\Rightarrow& \MEMORYSIZE \\ &&|&
-     \hex{40}~~\hex{00} &\Rightarrow& \MEMORYGROW \\
+     \hex{3F}~~x{:}\Bmemidx &\Rightarrow& \MEMORYSIZE~x \\ &&|&
+     \hex{40}~~x{:}\Bmemidx &\Rightarrow& \MEMORYGROW~x \\
    \end{array}
-
-.. note::
-   In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |MEMORYSIZE| and |MEMORYGROW| instructions may be used to index additional memories.
 
 
 .. index:: numeric instruction

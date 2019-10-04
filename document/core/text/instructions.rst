@@ -191,31 +191,60 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
      \text{align{=}}a{:}\Tu32 &\Rightarrow& a \\ &&|&
      \epsilon &\Rightarrow& N \\
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
-     \text{i32.load}~~m{:}\Tmemarg_4 &\Rightarrow& \I32.\LOAD~m \\ &&|&
-     \text{i64.load}~~m{:}\Tmemarg_8 &\Rightarrow& \I64.\LOAD~m \\ &&|&
-     \text{f32.load}~~m{:}\Tmemarg_4 &\Rightarrow& \F32.\LOAD~m \\ &&|&
-     \text{f64.load}~~m{:}\Tmemarg_8 &\Rightarrow& \F64.\LOAD~m \\ &&|&
-     \text{i32.load8\_s}~~m{:}\Tmemarg_1 &\Rightarrow& \I32.\LOAD\K{8\_s}~m \\ &&|&
-     \text{i32.load8\_u}~~m{:}\Tmemarg_1 &\Rightarrow& \I32.\LOAD\K{8\_u}~m \\ &&|&
-     \text{i32.load16\_s}~~m{:}\Tmemarg_2 &\Rightarrow& \I32.\LOAD\K{16\_s}~m \\ &&|&
-     \text{i32.load16\_u}~~m{:}\Tmemarg_2 &\Rightarrow& \I32.\LOAD\K{16\_u}~m \\ &&|&
-     \text{i64.load8\_s}~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\LOAD\K{8\_s}~m \\ &&|&
-     \text{i64.load8\_u}~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\LOAD\K{8\_u}~m \\ &&|&
-     \text{i64.load16\_s}~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\LOAD\K{16\_s}~m \\ &&|&
-     \text{i64.load16\_u}~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\LOAD\K{16\_u}~m \\ &&|&
-     \text{i64.load32\_s}~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\LOAD\K{32\_s}~m \\ &&|&
-     \text{i64.load32\_u}~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\LOAD\K{32\_u}~m \\ &&|&
-     \text{i32.store}~~m{:}\Tmemarg_4 &\Rightarrow& \I32.\STORE~m \\ &&|&
-     \text{i64.store}~~m{:}\Tmemarg_8 &\Rightarrow& \I64.\STORE~m \\ &&|&
-     \text{f32.store}~~m{:}\Tmemarg_4 &\Rightarrow& \F32.\STORE~m \\ &&|&
-     \text{f64.store}~~m{:}\Tmemarg_8 &\Rightarrow& \F64.\STORE~m \\ &&|&
-     \text{i32.store8}~~m{:}\Tmemarg_1 &\Rightarrow& \I32.\STORE\K{8}~m \\ &&|&
-     \text{i32.store16}~~m{:}\Tmemarg_2 &\Rightarrow& \I32.\STORE\K{16}~m \\ &&|&
-     \text{i64.store8}~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\STORE\K{8}~m \\ &&|&
-     \text{i64.store16}~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
-     \text{i64.store32}~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
-     \text{memory.size} &\Rightarrow& \MEMORYSIZE \\ &&|&
-     \text{memory.grow} &\Rightarrow& \MEMORYGROW \\
+     \text{i32.load}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I32.\LOAD~x~m \\ &&|&
+     \text{i64.load}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \I64.\LOAD~x~m \\ &&|&
+     \text{f32.load}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \F32.\LOAD~x~m \\ &&|&
+     \text{f64.load}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \F64.\LOAD~x~m \\ &&|&
+     \text{i32.load8\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \I32.\LOAD\K{8\_s}~x~m \\ &&|&
+     \text{i32.load8\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \I32.\LOAD\K{8\_u}~x~m \\ &&|&
+     \text{i32.load16\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I32.\LOAD\K{16\_s}~x~m \\ &&|&
+     \text{i32.load16\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I32.\LOAD\K{16\_u}~x~m \\ &&|&
+     \text{i64.load8\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\LOAD\K{8\_s}~x~m \\ &&|&
+     \text{i64.load8\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\LOAD\K{8\_u}~x~m \\ &&|&
+     \text{i64.load16\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\LOAD\K{16\_s}~x~m \\ &&|&
+     \text{i64.load16\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\LOAD\K{16\_u}~x~m \\ &&|&
+     \text{i64.load32\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\LOAD\K{32\_s}~x~m \\ &&|&
+     \text{i64.load32\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\LOAD\K{32\_u}~x~m \\ &&|&
+     \text{i32.store}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I32.\STORE~x~m \\ &&|&
+     \text{i64.store}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \I64.\STORE~x~m \\ &&|&
+     \text{f32.store}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \F32.\STORE~x~m \\ &&|&
+     \text{f64.store}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \F64.\STORE~x~m \\ &&|&
+     \text{i32.store8}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \I32.\STORE\K{8}~x~m \\ &&|&
+     \text{i32.store16}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I32.\STORE\K{16}~x~m \\ &&|&
+     \text{i64.store8}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\STORE\K{8}~x~m \\ &&|&
+     \text{i64.store16}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\STORE\K{16}~x~m \\ &&|&
+     \text{i64.store32}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\STORE\K{32}~x~m \\ &&|&
+     \text{memory.size}~~x{:}\Tmemidx &\Rightarrow& \MEMORYSIZE~x \\ &&|&
+     \text{memory.grow}~~x{:}\Tmemidx &\Rightarrow& \MEMORYGROW~x \\
+   \end{array}
+
+
+Abbreviations
+.............
+
+As an abbreviation, the memory index can be omitted in all memory instructions, defaulting to :math:`\T{0}`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} &
+    \Tvaltype\text{.load}~~\Tmemarg
+       &\equiv&
+     \Tvaltype\text{.load}~~\text{0}~~\Tmemarg \\&
+    \Tvaltype\text{.load}N\text{\_}X~~\Tmemarg
+       &\equiv&
+     \Tvaltype\text{.load}N\text{\_}X~~\text{0}~~\Tmemarg \\&
+    \Tvaltype\text{.store}~~\Tmemarg
+       &\equiv&
+     \Tvaltype\text{.store}~~\text{0}~~\Tmemarg \\&
+    \Tvaltype\text{.store}N~~\Tmemarg
+       &\equiv&
+     \Tvaltype\text{.store}N~~\text{0}~~\Tmemarg \\&
+    \text{memory.size}
+       &\equiv&
+     \text{memory.size}~~\text{0} \\&
+    \text{memory.grow}
+       &\equiv&
+     \text{memory.grow}~~\text{0} \\
    \end{array}
 
 
