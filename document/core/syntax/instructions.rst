@@ -231,22 +231,22 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
      \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
-     \K{i}\X{nn}\K{.}\LOAD~\memarg ~|~
-     \K{f}\X{nn}\K{.}\LOAD~\memarg \\&&|&
-     \K{i}\X{nn}\K{.}\STORE~\memarg ~|~
-     \K{f}\X{nn}\K{.}\STORE~\memarg \\&&|&
-     \K{i}\X{nn}\K{.}\LOAD\K{8\_}\sx~\memarg ~|~
-     \K{i}\X{nn}\K{.}\LOAD\K{16\_}\sx~\memarg ~|~
-     \K{i64.}\LOAD\K{32\_}\sx~\memarg \\&&|&
-     \K{i}\X{nn}\K{.}\STORE\K{8}~\memarg ~|~
-     \K{i}\X{nn}\K{.}\STORE\K{16}~\memarg ~|~
-     \K{i64.}\STORE\K{32}~\memarg \\&&|&
-     \MEMORYSIZE \\&&|&
-     \MEMORYGROW \\
+     \K{i}\X{nn}\K{.}\LOAD~\memidx~\memarg ~|~
+     \K{f}\X{nn}\K{.}\LOAD~\memidx~\memarg \\&&|&
+     \K{i}\X{nn}\K{.}\STORE~\memidx~\memarg ~|~
+     \K{f}\X{nn}\K{.}\STORE~\memidx~\memarg \\&&|&
+     \K{i}\X{nn}\K{.}\LOAD\K{8\_}\sx~\memidx~\memarg ~|~
+     \K{i}\X{nn}\K{.}\LOAD\K{16\_}\sx~\memidx~\memarg ~|~
+     \K{i64.}\LOAD\K{32\_}\sx~\memidx~\memarg \\&&|&
+     \K{i}\X{nn}\K{.}\STORE\K{8}~\memidx~\memarg ~|~
+     \K{i}\X{nn}\K{.}\STORE\K{16}~\memidx~\memarg ~|~
+     \K{i64.}\STORE\K{32}~\memidx~\memarg \\&&|&
+     \MEMORYSIZE~\memidx \\&&|&
+     \MEMORYGROW~\memidx \\
    \end{array}
 
 Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
-They all take a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
+They all take a :ref:`memory index <syntax-memidx>` and a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
 Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-valtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
@@ -258,13 +258,8 @@ A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside th
    Future version of WebAssembly might provide memory instructions with 64 bit address ranges.
 
 The |MEMORYSIZE| instruction returns the current size of a memory.
-The |MEMORYGROW| instruction grows memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
+The |MEMORYGROW| instruction grows a memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
 Both instructions operate in units of :ref:`page size <page-size>`.
-
-.. note::
-   In the current version of WebAssembly,
-   all memory instructions implicitly operate on :ref:`memory <syntax-mem>` :ref:`index <syntax-memidx>` :math:`0`.
-   This restriction may be lifted in future versions.
 
 
 .. index:: ! control instruction, ! structured control, ! label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector, trap, function, table, function type

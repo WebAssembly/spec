@@ -552,8 +552,6 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \qquad
      |C.\CTABLES| \leq 1
      \qquad
-     |C.\CMEMS| \leq 1
-     \qquad
      (\export.\ENAME)^\ast ~\F{disjoint}
      \end{array}
    }{
@@ -584,4 +582,4 @@ Instead, the context :math:`C` for validation of the module's content is constru
    The effect of defining the limited context :math:`C'` for validating the module's globals is that their initialization expressions can only access imported globals and nothing else.
 
 .. note::
-   The restriction on the number of tables and memories may be lifted in future versions of WebAssembly.
+   The restriction on the number of tables may be lifted in future versions of WebAssembly.
