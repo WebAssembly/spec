@@ -418,11 +418,11 @@ instr ::= ...
 | ---- | ---- | ---- | ---- |
 | `memory.init` | `0xfc 0x08` | `segment:varuint32`, `memory:0x00` | :thinking: copy from a passive data segment to linear memory |
 | `data.drop` | `0xfc 0x09` | `segment:varuint32` | :thinking: prevent further use of passive data segment |
-| `memory.copy` | `0xfc 0x0a` | `memory_src:0x00` `memory_dst:0x00` | :thinking: copy from one region of linear memory to another region |
+| `memory.copy` | `0xfc 0x0a` | `memory_dst:0x00` `memory_src:0x00` | :thinking: copy from one region of linear memory to another region |
 | `memory.fill` | `0xfc 0x0b` | `memory:0x00` | :thinking: fill a region of linear memory with a given byte value |
 | `table.init` | `0xfc 0x0c` | `segment:varuint32`, `table:0x00` | :thinking: copy from a passive element segment to a table |
 | `elem.drop` | `0xfc 0x0d` | `segment:varuint32` | :thinking: prevent further use of a passive element segment |
-| `table.copy` | `0xfc 0x0e` | `table_src:0x00` `table_dst:0x00` | :thinking: copy from one region of a table to another region |
+| `table.copy` | `0xfc 0x0e` | `table_dst:0x00` `table_src:0x00` | :thinking: copy from one region of a table to another region |
 
 ### `DataCount` section
 
