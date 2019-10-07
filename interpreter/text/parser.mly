@@ -569,6 +569,9 @@ func_body :
 table_use :
   | LPAR TABLE var RPAR { fun c -> $3 c }
 
+memory_use :
+  | LPAR MEMORY var RPAR { fun c -> $3 c }
+
 offset :
   | LPAR OFFSET const_expr RPAR { $3 }
   | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
@@ -597,29 +600,29 @@ elem_list :
 
 
 elem :
-  | LPAR ELEM bind_var_opt offset elem_var_list RPAR  /* Sugar */
-    { let at = at () in
-      fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () ->
-      { etype = FuncRefType; einit = $5 c func;
-        emode = Active {index = 0l @@ at; offset = $4 c} @@ at} @@ at }
   | LPAR ELEM bind_var_opt elem_list RPAR
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () ->
-      {etype = (fst $4); einit = (snd $4) c; emode = Passive @@ at} @@ at }
+      { etype = (fst $4); einit = (snd $4) c; emode = Passive @@ at } @@ at }
   | LPAR ELEM bind_var_opt table_use offset elem_list RPAR
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () ->
       { etype = (fst $6); einit = (snd $6) c;
-        emode = Active {index = $4 c table; offset = $5 c} @@ at} @@ at }
+        emode = Active {index = $4 c table; offset = $5 c} @@ at } @@ at }
   | LPAR ELEM bind_var_opt offset elem_list RPAR  /* Sugar */
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () ->
       { etype = (fst $5); einit = (snd $5) c;
-        emode = Active {index = 0l @@ at; offset = $4 c} @@ at} @@ at }
+        emode = Active {index = 0l @@ at; offset = $4 c} @@ at } @@ at }
+  | LPAR ELEM bind_var_opt offset elem_var_list RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> ignore ($3 c anon_elem bind_elem);
+      fun () ->
+      { etype = FuncRefType; einit = $5 c func;
+        emode = Active {index = 0l @@ at; offset = $4 c} @@ at } @@ at }
 
 table :
   | LPAR TABLE bind_var_opt table_fields RPAR
@@ -662,21 +665,16 @@ data :
     { let at = at () in
       fun c -> ignore ($3 c anon_data bind_data);
       fun () -> {dinit = $4; dmode = Passive @@ at} @@ at }
- | LPAR DATA bind_var var offset string_list RPAR
+ | LPAR DATA bind_var_opt memory_use offset string_list RPAR
    { let at = at () in
-     fun c -> ignore (bind_data c $3);
+     fun c -> ignore ($3 c anon_data bind_data);
      fun () ->
      {dinit = $6; dmode = Active {index = $4 c memory; offset = $5 c} @@ at} @@ at }
- | LPAR DATA var offset string_list RPAR
+ | LPAR DATA bind_var_opt offset string_list RPAR  /* Sugar */
    { let at = at () in
-     fun c -> ignore (anon_data c);
+     fun c -> ignore ($3 c anon_data bind_data);
      fun () ->
-     {dinit = $5; dmode = Active {index = $3 c memory; offset = $4 c} @@ at} @@ at }
- | LPAR DATA offset string_list RPAR  /* Sugar */
-   { let at = at () in
-     fun c -> ignore (anon_data c);
-     fun () ->
-     {dinit = $4; dmode = Active {index = 0l @@ at; offset = $3 c} @@ at} @@ at }
+     {dinit = $5; dmode = Active {index = 0l @@ at; offset = $4 c} @@ at} @@ at }
 
 memory :
   | LPAR MEMORY bind_var_opt memory_fields RPAR

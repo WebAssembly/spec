@@ -696,11 +696,13 @@
 .. |Telem| mathdef:: \xref{text/modules}{text-elem}{\T{elem}}
 .. |Telemlist| mathdef:: \xref{text/modules}{text-elemlist}{\T{elemlist}}
 .. |Telemexpr| mathdef:: \xref{text/modules}{text-elemexpr}{\X{elemexpr}}
+.. |Ttableuse| mathdef:: \xref{text/modules}{text-tableuse}{\T{tableuse}}
 .. |Tcode| mathdef:: \xref{text/modules}{text-code}{\T{code}}
 .. |Tlocal| mathdef:: \xref{text/modules}{text-local}{\T{local}}
 .. |Tlocals| mathdef:: \xref{text/modules}{text-local}{\T{locals}}
 .. |Tdata| mathdef:: \xref{text/modules}{text-data}{\T{data}}
 .. |Tdatastring| mathdef:: \xref{text/modules}{text-datastring}{\T{datastring}}
+.. |Tmemuse| mathdef:: \xref{text/modules}{text-memuse}{\T{memuse}}
 .. |Tstart| mathdef:: \xref{text/modules}{text-start}{\T{start}}
 
 
