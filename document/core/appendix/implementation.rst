@@ -24,7 +24,7 @@ However, it is expected that all implementations have "reasonably" large limits 
 Syntactic Limits
 ~~~~~~~~~~~~~~~~
 
-.. index:: abstract syntax, module, type, function, table, memory, global, element, data, import, export, parameter, result, local, structured control instruction, instruction, name, Unicode, code point
+.. index:: abstract syntax, module, type, function, table, memory, global, element, data, import, export, parameter, result, local, structured control instruction, instruction, name, Unicode, character
 .. _impl-syntax:
 
 Structure
@@ -40,7 +40,7 @@ An implementation may impose restrictions on the following dimensions of a modul
 * the number of :ref:`element segments <syntax-elem>` in a :ref:`module <syntax-module>`
 * the number of :ref:`data segments <syntax-data>` in a :ref:`module <syntax-module>`
 * the number of :ref:`imports <syntax-import>` to a :ref:`module <syntax-module>`
-* the number of :ref:`exports <syntax-export>` form a :ref:`module <syntax-module>`
+* the number of :ref:`exports <syntax-export>` from a :ref:`module <syntax-module>`
 * the number of parameters in a :ref:`function type <syntax-functype>`
 * the number of results in a :ref:`function type <syntax-functype>`
 * the number of :ref:`locals <syntax-local>` in a :ref:`function <syntax-func>`
@@ -52,7 +52,7 @@ An implementation may impose restrictions on the following dimensions of a modul
 * the length of an :ref:`element segment <syntax-elem>`
 * the length of a :ref:`data segment <syntax-data>`
 * the length of a :ref:`name <syntax-name>`
-* the range of :ref:`code points <syntax-codepoint>` in a :ref:`name <syntax-name>`
+* the range of :ref:`characters <syntax-char>` in a :ref:`name <syntax-name>`
 
 If the limits of an implementation are exceeded for a given module,
 then the implementation may reject the :ref:`validation <valid>`, compilation, or :ref:`instantiation <exec-instantiation>` of that module with an embedder-specific error.
@@ -91,7 +91,7 @@ For a module given in :ref:`text format <text>`, additional limitations may be i
 * the size of an individual :ref:`token <text-token>`
 * the nesting depth of :ref:`folded instructions <text-foldedinstr>`
 * the length of symbolic :ref:`identifiers <text-id>`
-* the range of literal :ref:`characters <text-char>` (code points) allowed in the :ref:`source text <source>`
+* the range of literal :ref:`characters <text-char>` allowed in the :ref:`source text <source>`
 
 
 .. index:: validation, function

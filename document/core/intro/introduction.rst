@@ -75,7 +75,22 @@ Instead, this specification is complemented by additional documents defining int
 These will each define a WebAssembly *application programming interface (API)* suitable for a given environment.
 
 
-.. index:: IEEE 754, floating point, Unicode, name, text format, UTF-8, code point
+.. index:: ! security, host, embedder,  module, function, import
+.. _security:
+
+Security Considerations
+~~~~~~~~~~~~~~~~~~~~~~~
+
+WebAssembly provides no ambient access to the computing environment in which code is executed.
+Any interaction with the environment, such as I/O, access to resources, or operating system calls, can only be performed by invoking :ref:`functions <function>` provided by the :ref:`embedder <embedder>` and imported into a WebAssembly :ref:`module <module>`.
+An embedder can establish security policies suitable for a respective environment by controlling or limiting which functional capabilities it makes available for import.
+Such considerations are an embedder’s responsibility and the subject of :ref:`API definitions <scope>` for a specific environment.
+
+Because WebAssembly is designed to be translated into machine code running directly on the host's hardware, it is potentially vulnerable to side channel attacks on the hardware level.
+In environments where this is a concern, an embedder may have to put suitable mitigations into place to isolate WebAssembly computations.
+
+
+.. index:: IEEE 754, floating point, Unicode, name, text format, UTF-8, character
 .. _dependencies:
 
 Dependencies
@@ -88,7 +103,7 @@ WebAssembly depends on two existing standards:
 * |Unicode|_, for the representation of import/export :ref:`names <syntax-name>` and the :ref:`text format <text>`.
 
 However, to make this specification self-contained, relevant aspects of the aforementioned standards are defined and formalized as part of this specification,
-such as the :ref:`binary representation <aux-fbits>` and :ref:`rounding <aux-ieee>` of floating-point values, and the :ref:`value range <syntax-codepoint>` and :ref:`UTF-8 encoding <binary-utf8>` of Unicode characters.
+such as the :ref:`binary representation <aux-fbits>` and :ref:`rounding <aux-ieee>` of floating-point values, and the :ref:`value range <syntax-char>` and :ref:`UTF-8 encoding <binary-utf8>` of Unicode characters.
 
 .. note::
    The aforementioned standards are the authoritative source of all respective definitions.

@@ -332,6 +332,10 @@ The |MSTART| component of a module declares the :ref:`function index <syntax-fun
      \{ \SFUNC~\funcidx \} \\
    \end{array}
 
+.. note::
+   The start function is intended for initializing the state of a module.
+   The module and its exports are not accessible before this initialization has completed.
+
 
 .. index:: ! export, name, index, function index, table index, memory index, global index, function, table, memory, global, instantiation
    pair: abstract syntax; export

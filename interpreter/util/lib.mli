@@ -75,4 +75,5 @@ sig
   val explode : string -> char list
   val split : string -> char -> string list
   val breakup : string -> int -> string list
+  val find_from_opt : (char -> bool) -> string -> int -> int option
 end

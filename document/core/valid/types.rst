@@ -131,3 +131,68 @@ Global Types
    }{
      \vdashglobaltype \mut~\valtype \ok
    }
+
+
+.. index:: external type, function type, table type, memory type, global type
+   pair: validation; external type
+   single: abstract syntax; external type
+.. _valid-externtype:
+
+External Types
+~~~~~~~~~~~~~~
+
+:math:`\ETFUNC~\functype`
+.........................
+
+* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
+
+* Then the external type is valid.
+
+.. math::
+   \frac{
+     \vdashfunctype \functype \ok
+   }{
+     \vdashexterntype \ETFUNC~\functype \ok
+   }
+
+:math:`\ETTABLE~\tabletype`
+...........................
+
+* The :ref:`table type <syntax-tabletype>` :math:`\tabletype` must be :ref:`valid <valid-tabletype>`.
+
+* Then the external type is valid.
+
+.. math::
+   \frac{
+     \vdashtabletype \tabletype \ok
+   }{
+     \vdashexterntype \ETTABLE~\tabletype \ok
+   }
+
+:math:`\ETMEM~\memtype`
+.......................
+
+* The :ref:`memory type <syntax-memtype>` :math:`\memtype` must be :ref:`valid <valid-memtype>`.
+
+* Then the external type is valid.
+
+.. math::
+   \frac{
+     \vdashmemtype \memtype \ok
+   }{
+     \vdashexterntype \ETMEM~\memtype \ok
+   }
+
+:math:`\ETGLOBAL~\globaltype`
+.............................
+
+* The :ref:`global type <syntax-globaltype>` :math:`\globaltype` must be :ref:`valid <valid-globaltype>`.
+
+* Then the external type is valid.
+
+.. math::
+   \frac{
+     \vdashglobaltype \globaltype \ok
+   }{
+     \vdashexterntype \ETGLOBAL~\globaltype \ok
+   }

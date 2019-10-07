@@ -19,7 +19,7 @@ WINMAKE =	winmake.bat
 
 DIRS =		util syntax binary text valid runtime exec script host main
 LIBS =		bigarray
-FLAGS = 	-cflags '-w +a-4-27-42-44-45 -warn-error +a'
+FLAGS = 	-cflags '-w +a-3-4-27-42-44-45 -warn-error +a'
 OCB =		ocamlbuild $(FLAGS) $(DIRS:%=-I %) $(LIBS:%=-libs %)
 JS =		# set to JS shell command to run JS tests
 
@@ -36,7 +36,7 @@ libopt:		_build/$(LIB).cmx
 libunopt:	_build/$(LIB).cmo
 jslib:		$(JSLIB)
 all:		unopt opt libunopt libopt test
-land:		all $(WINMAKE)
+land:		$(WINMAKE) all
 zip: 		$(ZIP)
 
 
@@ -102,7 +102,7 @@ $(WINMAKE):	clean
 		echo rem Auto-generated from Makefile! >$@
 		echo set NAME=$(NAME) >>$@
 		echo if \'%1\' neq \'\' set NAME=%1 >>$@
-		$(OCB) main.d.byte \
+		$(OCB) main.byte \
 		| grep -v ocamldep \
 		| grep -v mkdir \
 		| sed s:`which ocaml`:ocaml:g \
@@ -140,6 +140,7 @@ $(ZIP):		$(WINMAKE)
 clean:
 		rm -rf _build/jslib $(LIB).mlpack _tags
 		$(OCB) -clean
+
 
 # Opam support
 
