@@ -614,6 +614,8 @@ Moreover, if the dots :math:`\dots` are a sequence :math:`A^n` (as for globals),
 Instantiation
 ~~~~~~~~~~~~~
 
+.. todo:: Adjust for passive segments.
+
 Given a :ref:`store <syntax-store>` :math:`S`, a :ref:`module <syntax-module>` :math:`\module` is instantiated with a list of :ref:`external values <syntax-externval>` :math:`\externval^n` supplying the required imports as follows.
 
 Instantiation checks that the module is :ref:`valid <valid>` and the provided imports :ref:`match <match-externtype>` the declared types,
@@ -665,47 +667,43 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 8. Push the frame :math:`F` to the stack.
 
-9. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
+9. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM` whose :ref:`mode <syntax-elemmode>` :math:`\elem_i.\EMODE` is of the form :math:`\EACTIVE~\{ \ETABLE~\tableidx_i, \EOFFSET~\X{eoexpr}_i \}`, do:
 
-    a. Let :math:`\X{eoval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\elem_i.\EOFFSET`.
+    a. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\MITABLES[\tableidx_i]` exists.
 
-    b. Assert: due to :ref:`validation <valid-elem>`, :math:`\X{eoval}_i` is of the form :math:`\I32.\CONST~\X{eo}_i`.
+    b. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` :math:`\moduleinst.\MITABLES[\tableidx_i]`.
 
-    c. Let :math:`\tableidx_i` be the :ref:`table index <syntax-tableidx>` :math:`\elem_i.\ETABLE`.
+    c. Assert: due to :ref:`validation <valid-elem>`, :math:`S'.\STABLES[\tableaddr_i]` exists.
 
-    d. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\MITABLES[\tableidx_i]` exists.
+    d. Let :math:`\tableinst_i` be the :ref:`table instance <syntax-tableinst>` :math:`S'.\STABLES[\tableaddr_i]`.
 
-    e. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` :math:`\moduleinst.\MITABLES[\tableidx_i]`.
+    e. Let :math:`\X{eoval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\X{eoexpr}_i`.
 
-    f. Assert: due to :ref:`validation <valid-elem>`, :math:`S'.\STABLES[\tableaddr_i]` exists.
+    f. Assert: due to :ref:`validation <valid-elem>`, :math:`\X{eoval}_i` is of the form :math:`\I32.\CONST~\X{eo}_i`.
 
-    g. Let :math:`\tableinst_i` be the :ref:`table instance <syntax-tableinst>` :math:`S'.\STABLES[\tableaddr_i]`.
+    g. Let :math:`\X{eend}_i` be :math:`\X{eo}_i` plus the length of :math:`\elem_i.\EINIT`.
 
-    h. Let :math:`\X{eend}_i` be :math:`\X{eo}_i` plus the length of :math:`\elem_i.\EINIT`.
-
-    i. If :math:`\X{eend}_i` is larger than the length of :math:`\tableinst_i.\TIELEM`, then:
+    h. If :math:`\X{eend}_i` is larger than the length of :math:`\tableinst_i.\TIELEM`, then:
 
        i. Fail.
 
-10. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
+10. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA` whose :ref:`mode <syntax-datamode>` :math:`\data_i.\DMODE` is of the form :math:`\DACTIVE~\{ \DMEM~\memidx_i, \DOFFSET~\X{doexpr}_i \}`, do:
 
-    a. Let :math:`\X{doval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\data_i.\DOFFSET`.
+    a. Assert: due to :ref:`validation <valid-data>`, :math:`\moduleinst.\MIMEMS[\memidx_i]` exists.
 
-    b. Assert: due to :ref:`validation <valid-data>`, :math:`\X{doval}_i` is of the form :math:`\I32.\CONST~\X{do}_i`.
+    b. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` :math:`\moduleinst.\MIMEMS[\memidx_i]`.
 
-    c. Let :math:`\memidx_i` be the :ref:`memory index <syntax-memidx>` :math:`\data_i.\DMEM`.
+    c. Assert: due to :ref:`validation <valid-data>`, :math:`S'.\SMEMS[\memaddr_i]` exists.
 
-    d. Assert: due to :ref:`validation <valid-data>`, :math:`\moduleinst.\MIMEMS[\memidx_i]` exists.
+    d. Let :math:`\meminst_i` be the :ref:`memory instance <syntax-meminst>` :math:`S'.\SMEMS[\memaddr_i]`.
 
-    e. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` :math:`\moduleinst.\MIMEMS[\memidx_i]`.
+    e. Let :math:`\X{doval}_i` be the result of :ref:`evaluating <exec-expr>` the expression :math:`\data_i.\DOFFSET`.
 
-    f. Assert: due to :ref:`validation <valid-data>`, :math:`S'.\SMEMS[\memaddr_i]` exists.
+    f. Assert: due to :ref:`validation <valid-data>`, :math:`\X{doval}_i` is of the form :math:`\I32.\CONST~\X{do}_i`.
 
-    g. Let :math:`\meminst_i` be the :ref:`memory instance <syntax-meminst>` :math:`S'.\SMEMS[\memaddr_i]`.
+    g. Let :math:`\X{dend}_i` be :math:`\X{do}_i` plus the length of :math:`\data_i.\DINIT`.
 
-    h. Let :math:`\X{dend}_i` be :math:`\X{do}_i` plus the length of :math:`\data_i.\DINIT`.
-
-    i. If :math:`\X{dend}_i` is larger than the length of :math:`\meminst_i.\MIDATA`, then:
+    h. If :math:`\X{dend}_i` is larger than the length of :math:`\meminst_i.\MIDATA`, then:
 
        i. Fail.
 
@@ -713,7 +711,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 12. Pop the frame from the stack.
 
-13. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM`, do:
+13. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEM` whose :ref:`mode <syntax-elemmode>` :math:`\elem_i.\EMODE` is of the form :math:`\EACTIVE~\{ \ETABLE~\tableidx_i, \EOFFSET~\X{eoexpr}_i \}`, do:
 
     a. For each :ref:`function index <syntax-funcidx>` :math:`\funcidx_{ij}` in :math:`\elem_i.\EINIT` (starting with :math:`j = 0`), do:
 
@@ -723,7 +721,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
        iii. Replace :math:`\tableinst_i.\TIELEM[\X{eo}_i + j]` with :math:`\funcaddr_{ij}`.
 
-14. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA`, do:
+14. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATA` whose :ref:`mode <syntax-datamode>` :math:`\data_i.\DMODE` is of the form :math:`\DACTIVE~\{ \DMEM~\memidx_i, \DOFFSET~\X{doexpr}_i \}`, do:
 
     a. For each :ref:`byte <syntax-byte>` :math:`b_{ij}` in :math:`\data_i.\DINIT` (starting with :math:`j = 0`), do:
 

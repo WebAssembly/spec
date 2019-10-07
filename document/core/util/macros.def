@@ -263,17 +263,23 @@
 .. |GTYPE| mathdef:: \xref{syntax/modules}{syntax-global}{\K{type}}
 .. |GINIT| mathdef:: \xref{syntax/modules}{syntax-global}{\K{init}}
 
+.. |ETYPE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{type}}
+.. |EINIT| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{init}}
+.. |EMODE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{mode}}
+.. |EPASSIVE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{passive}}
+.. |EACTIVE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{active}}
 .. |ETABLE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{table}}
 .. |EOFFSET| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{offset}}
-.. |EINIT| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{init}}
-.. |ETYPE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{type}}
 
 .. |REFNULL| mathdef:: \xref{syntax/modules}{syntax-elemexpr}{\K{ref.null}}
 .. |REFFUNC| mathdef:: \xref{syntax/modules}{syntax-elemexpr}{\K{ref.func}}
 
-.. |DMEM| mathdef:: \xref{syntax/modules}{syntax-data}{\K{data}}
-.. |DOFFSET| mathdef:: \xref{syntax/modules}{syntax-data}{\K{offset}}
 .. |DINIT| mathdef:: \xref{syntax/modules}{syntax-data}{\K{init}}
+.. |DMODE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{mode}}
+.. |DPASSIVE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{passive}}
+.. |DACTIVE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{active}}
+.. |DMEM| mathdef:: \xref{syntax/modules}{syntax-data}{\K{memory}}
+.. |DOFFSET| mathdef:: \xref{syntax/modules}{syntax-data}{\K{offset}}
 
 .. |SFUNC| mathdef:: \xref{syntax/modules}{syntax-start}{\K{func}}
 
@@ -306,8 +312,10 @@
 .. |importdesc| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\X{importdesc}}
 .. |exportdesc| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\X{exportdesc}}
 .. |elem| mathdef:: \xref{syntax/modules}{syntax-elem}{\X{elem}}
+.. |elemmode| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\X{elemmode}}
 .. |elemexpr| mathdef:: \xref{syntax/modules}{syntax-elemexpr}{\X{elemexpr}}
 .. |data| mathdef:: \xref{syntax/modules}{syntax-data}{\X{data}}
+.. |datamode| mathdef:: \xref{syntax/modules}{syntax-datamode}{\X{datamode}}
 .. |start| mathdef:: \xref{syntax/modules}{syntax-start}{\X{start}}
 
 
@@ -534,6 +542,7 @@
 .. |Bimportdesc| mathdef:: \xref{binary/modules}{binary-importdesc}{\B{importdesc}}
 .. |Bexportdesc| mathdef:: \xref{binary/modules}{binary-exportdesc}{\B{exportdesc}}
 .. |Belem| mathdef:: \xref{binary/modules}{binary-elem}{\B{elem}}
+.. |Belemkind| mathdef:: \xref{binary/modules}{binary-elemexpr}{\B{elemkind}}
 .. |Belemexpr| mathdef:: \xref{binary/modules}{binary-elemexpr}{\B{elemexpr}}
 .. |Bcode| mathdef:: \xref{binary/modules}{binary-code}{\B{code}}
 .. |Blocal| mathdef:: \xref{binary/modules}{binary-local}{\B{local}}
@@ -689,6 +698,8 @@
 .. |Timportdesc| mathdef:: \xref{text/modules}{text-importdesc}{\T{importdesc}}
 .. |Texportdesc| mathdef:: \xref{text/modules}{text-exportdesc}{\T{exportdesc}}
 .. |Telem| mathdef:: \xref{text/modules}{text-elem}{\T{elem}}
+.. |Telemlist| mathdef:: \xref{text/modules}{text-elemlist}{\T{elemlist}}
+.. |Telemexpr| mathdef:: \xref{text/modules}{text-elemexpr}{\X{elemexpr}}
 .. |Tcode| mathdef:: \xref{text/modules}{text-code}{\T{code}}
 .. |Tlocal| mathdef:: \xref{text/modules}{text-local}{\T{local}}
 .. |Tlocals| mathdef:: \xref{text/modules}{text-local}{\T{locals}}
@@ -702,7 +713,6 @@
 .. |Tmemarg| mathdef:: \xref{text/instructions}{text-memarg}{\T{memarg}}
 .. |Talign| mathdef:: \xref{text/instructions}{text-memarg}{\T{align}}
 .. |Toffset| mathdef:: \xref{text/instructions}{text-memarg}{\T{offset}}
-.. |Telemlist| mathdef:: \xref{text/instructions}{text-memarg}{\T{elemlist}}
 
 .. |Tlabel| mathdef:: \xref{text/instructions}{text-label}{\T{label}}
 .. |Tinstr| mathdef:: \xref{text/instructions}{text-instr}{\T{instr}}
@@ -780,8 +790,10 @@
 .. |vdashmem| mathdef:: \xref{valid/modules}{valid-mem}{\vdash}
 .. |vdashglobal| mathdef:: \xref{valid/modules}{valid-global}{\vdash}
 .. |vdashelem| mathdef:: \xref{valid/modules}{valid-elem}{\vdash}
+.. |vdashelemmode| mathdef:: \xref{valid/modules}{valid-elemmode}{\vdash}
 .. |vdashelemexpr| mathdef:: \xref{valid/modules}{valid-elemexpr}{\vdash}
 .. |vdashdata| mathdef:: \xref{valid/modules}{valid-data}{\vdash}
+.. |vdashdatamode| mathdef:: \xref{valid/modules}{valid-datamode}{\vdash}
 .. |vdashstart| mathdef:: \xref{valid/modules}{valid-start}{\vdash}
 .. |vdashexport| mathdef:: \xref{valid/modules}{valid-export}{\vdash}
 .. |vdashexportdesc| mathdef:: \xref{valid/modules}{valid-exportdesc}{\vdash}

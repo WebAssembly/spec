@@ -422,31 +422,39 @@ let check_memory (c : context) (mem : memory) =
   let {mtype} = mem.it in
   check_memory_type mtype mem.at
 
-let check_elemref (c : context) (el : elem) =
-  match el.it with
+let check_elem_expr (c : context) (t : elem_type) (e : elem_expr) =
+  match e.it with
   | RefNull -> ()
   | RefFunc x -> ignore (func c x)
 
-let check_elem (c : context) (seg : table_segment) =
-  match seg.it with
-  | ActiveElem {index; offset; init; _} ->
-    ignore (table c index);
-    check_const c offset I32Type;
-    List.iter (check_elemref c) init
-  | PassiveElem {data; _} ->
-    List.iter (check_elemref c) data
+let check_elem_mode (c : context) (t : elem_type) (mode : segment_mode) =
+  match mode.it with
+  | Passive -> ()
+  | Active {index; offset} ->
+    let TableType (_, et) = table c index in
+    require (et = t) mode.at "type mismatch in active element segment";
+    check_const c offset I32Type
 
-let check_data (c : context) (seg : memory_segment) =
-  match seg.it with
-  | ActiveData {index; offset; init} ->
+let check_elem (c : context) (seg : elem_segment) =
+  let {etype; einit; emode} = seg.it in
+  List.iter (check_elem_expr c etype) einit;
+  check_elem_mode c etype emode
+
+let check_data_mode (c : context) (mode : segment_mode) =
+  match mode.it with
+  | Passive -> ()
+  | Active {index; offset} ->
     ignore (memory c index);
     check_const c offset I32Type
-  | PassiveData init -> ()
+
+let check_data (c : context) (seg : data_segment) =
+  let {dinit; dmode} = seg.it in
+  check_data_mode c dmode
 
 let check_global (c : context) (glob : global) =
-  let {gtype; value} = glob.it in
+  let {gtype; ginit} = glob.it in
   let GlobalType (t, mut) = gtype in
-  check_const c value t
+  check_const c ginit t
 
 
 (* Modules *)
@@ -485,6 +493,11 @@ let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
   require (not (NameSet.mem name set)) ex.at "duplicate export name";
   NameSet.add name set
 
+let segment_type mode =
+  match mode.it with
+  | Passive -> PassiveType
+  | Active _ -> ActiveType
+
 let check_module (m : module_) =
   let
     { types; imports; tables; memories; globals; funcs; start; elems; datas;
@@ -499,8 +512,8 @@ let check_module (m : module_) =
       funcs = c0.funcs @ List.map (fun f -> type_ c0 f.it.ftype) funcs;
       tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
       memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
-      elems = List.map (fun elem -> SegmentType) elems;
-      datas = List.map (fun data -> SegmentType) datas;
+      elems = List.map (fun elem -> segment_type elem.it.emode) elems;
+      datas = List.map (fun data -> segment_type data.it.dmode) datas;
     }
   in
   let c =

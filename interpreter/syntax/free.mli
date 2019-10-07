@@ -25,8 +25,8 @@ val global : Ast.global -> t
 val func : Ast.func -> t
 val table : Ast.table -> t
 val memory : Ast.memory -> t
-val table_segment : Ast.table_segment -> t
-val memory_segment : Ast.memory_segment -> t
+val elem : Ast.elem_segment -> t
+val data : Ast.data_segment -> t
 val export : Ast.export -> t
 val import : Ast.import -> t
 val start : Ast.var option -> t

@@ -286,9 +286,9 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{table}~~\Tid^?~~\Telemtype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~~\text{)} \quad\equiv \\ & \qquad
+     \text{(}~\text{table}~~\Tid^?~~\Telemtype~~\text{(}~\text{elem}~~\Telemlist~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{table}~~\Tid'~~n~~n~~\Telemtype~\text{)}~~
-       \text{(}~\text{elem}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
+       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Telemlist~\text{)}
        \\ & \qquad\qquad
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
    \end{array}
@@ -357,7 +357,7 @@ A :ref:`data segment <text-data>` can be given inline with a memory definition, 
    \production{module field} &
      \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{data}~~b^n{:}\Tdatastring~\text{)}~~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{memory}~~\Tid'~~m~~m~\text{)}~~
-       \text{(}~\text{data}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
+       \text{(}~\text{data}~~\text{(}~\text{memory}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
        \\ & \qquad\qquad
        (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
    \end{array}
@@ -484,6 +484,8 @@ A :ref:`start function <syntax-start>` is defined in terms of its index.
    single: table; element
    single: element; segment
 .. _text-elem:
+.. _text-elemlist:
+.. _text-elemexpr:
 
 Element Segments
 ~~~~~~~~~~~~~~~~
@@ -493,13 +495,15 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
 .. math::
    \begin{array}{llclll}
    \production{element segment} & \Telem_I &::=&
-     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{table}~~x{:}\Ttableidx_I ~\text{)}~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~(et, y^\ast){:}\Telemlist~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \ETABLE~x, \EOFFSET~e, \ETYPE~et, \EINIT~y^\ast \} \\ &&|&
      \text{(}~\text{elem}~~\Tid^?~~(et, y^\ast){:}\Telemlist~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{\ETYPE~et,\EINIT~y^\ast \} \\
-   \production{elemlist}  & \Telemlist &::=&
-     \text{func}~~y^\ast{:}\Tvec(\Tfuncidx_I) \qquad\Rightarrow\quad ( \ETYPE~\FUNCREF, \EINIT~y^\ast ) \\ &&|&
-     et{:}\Telemtype~~y^\ast{:}\Tvec(\Texpr_I) \qquad\Rightarrow\quad ( \ETYPE~et, \EINIT~y^\ast ) \\
+       \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EPASSIVE \} \\ &&|&
+     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{table}~~x{:}\Ttableidx_I ~\text{)}~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~(et, y^\ast){:}\Telemlist~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\
+   \production{element list} & \Telemlist &::=&
+     et{:}\Telemtype~~y^\ast{:}\Tvec(\Telemexpr_I) \qquad\Rightarrow\quad ( \ETYPE~et, \EINIT~y^\ast ) \\
+   \production{element expression} & \Telemexpr &::=&
+     \text{(}~\text{ref.null}~\text{)} \\ &&|&
+     \text{(}~\text{ref.func}~~\Tfuncidx_I~\text{)} \\
    \end{array}
 
 .. note::
@@ -510,7 +514,7 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
 Abbreviations
 .............
 
-As an abbreviation, a single instruction may occur in place of the offset:
+As an abbreviation, a single instruction may occur in place of the offset of an active element segment:
 
 .. math::
    \begin{array}{llcll}
@@ -519,14 +523,27 @@ As an abbreviation, a single instruction may occur in place of the offset:
      \text{(}~\text{offset}~~\Tinstr~\text{)}
    \end{array}
 
-Also, the table index can be omitted, defaulting to :math:`\T{0}`. If the table index is omitted, also the :math:`\text{func}` keyword can be omitted.
+Also, the element list may be written as just a sequence of :ref:`function indices <text-funcidx>`:
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llcll}
+   \production{element list} &
+     \text{func}~~\Tvec(\Tfuncidx_I) &\equiv&
+     \text{funcref}~~\Tvec(\text{(}~\text{ref.func}~~\Tfuncidx_I~\text{)})
+   \end{array}
+
+Also, the table index can be omitted, defaulting to :math:`\T{0}`.
+Furthermore, for backwards compatibility with earlier versions of WebAssembly, if the table index is omitted, the :math:`\text{func}` keyword can be omitted as well.
+
+.. math::
+   \begin{array}{ll}
    \production{element segment} &
-    \text{(}~\text{elem}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
-       &\equiv&
-     \text{(}~\text{elem}~~\text{(}~\text{table}~~\text{0}~\text{)}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+    \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\Telemlist~\text{)}
+       \quad\equiv \\&
+     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{table}~~\text{0}~\text{)}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\Telemlist~\text{)} \\
+    \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\Tvec(\Tfuncidx_I)~\text{)}
+       \quad\equiv \\&
+     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{table}~~\text{0}~\text{)}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\text{func}~~\Tvec(\Tfuncidx_I)~\text{)}
    \end{array}
 
 As another abbreviation, element segments may also be specified inline with :ref:`table <text-table>` definitions; see the respective section.
@@ -548,10 +565,10 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
 .. math::
    \begin{array}{llclll}
    \production{data segment} & \Tdata_I &::=&
-     \text{(}~\text{data}~~\Tid^?~~x{:}\Tmemidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \DMEM~x', \DOFFSET~e, \DINIT~b^\ast \} \\ &&|&
-     \text{(}~\text{data}~~\Tid^?~~\text{passive}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \DINIT~b^\ast \} \\
+     \text{(}~\text{data}~~\Tid^?~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \DINIT~b^\ast, \DMODE~\DPASSIVE \} \\ &&|&
+     \text{(}~\text{data}~~\Tid^?~~\text{(}~\text{memory}~~x{:}\Tmemidx_I ~\text{)}~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~x', \DOFFSET~e \} \} \\
    \production{data string} & \Tdatastring &::=&
      (b^\ast{:}\Tstring)^\ast \quad\Rightarrow\quad \concat((b^\ast)^\ast) \\
    \end{array}
@@ -564,7 +581,7 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
 Abbreviations
 .............
 
-As an abbreviation, a single instruction may occur in place of the offset:
+As an abbreviation, a single instruction may occur in place of the offset of an active data segment:
 
 .. math::
    \begin{array}{llcll}
@@ -578,9 +595,9 @@ Also, the memory index can be omitted, defaulting to :math:`\T{0}`.
 .. math::
    \begin{array}{llclll}
    \production{data segment} &
-    \text{(}~\text{data}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+    \text{(}~\text{data}~~\Tid^?~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
        &\equiv&
-     \text{(}~\text{data}~~0~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+     \text{(}~\text{data}~~\Tid^?~~\text{(}~\text{memory}~~\text{0}~\text{)}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
    \end{array}
 
 As another abbreviation, data segments may also be specified inline with :ref:`memory <text-mem>` definitions; see the respective section.

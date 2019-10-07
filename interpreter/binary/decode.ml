@@ -535,11 +535,6 @@ let func_section s =
 
 (* Table section *)
 
-let elem_kind s =
-  match vs7 s with
-  | 0x00 -> FuncRefType
-  | _ -> error s (pos s - 1) "invalid elem kind"
-
 let table s =
   let ttype = table_type s in
   {ttype}
@@ -562,8 +557,8 @@ let memory_section s =
 
 let global s =
   let gtype = global_type s in
-  let value = const s in
-  {gtype; value}
+  let ginit = const s in
+  {gtype; ginit}
 
 let global_section s =
   section `GlobalSection (vec (at global)) [] s
@@ -618,8 +613,26 @@ let code_section s =
 
 (* Element section *)
 
+let passive s =
+  Passive
+
+let active s =
+  let index = at var s in
+  let offset = const s in
+  Active {index; offset}
+
+let active_zero s =
+  let index = Source.(0l @@ Source.no_region) in
+  let offset = const s in
+  Active {index; offset}
+
 let elem_index s =
   ref_func (at var s)
+
+let elem_kind s =
+  match u8 s with
+  | 0x00 -> FuncRefType
+  | _ -> error s (pos s - 1) "invalid element kind"
 
 let elem_expr s =
   match u8 s with
@@ -628,73 +641,64 @@ let elem_expr s =
     let x = at var s in
     end_ s;
     ref_func x
-  | _ -> error s (pos s - 1) "invalid elem"
+  | _ -> error s (pos s - 1) "invalid element expression"
 
-let elem_indices s =
-  vec (at elem_index) s
-
-let elem_refs s =
-  vec (at elem_expr) s
-
-let table_segment s =
-  match u8 s with
-  | 0x00 ->
-    let index = Source.(0l @@ Source.no_region) in
-    let offset = const s in
-    let init = elem_indices s in
-    ActiveElem {index; offset; etype = FuncRefType; init}
-  | 0x01 ->
+let elem s =
+  match vu32 s with
+  | 0x00l ->
+    let emode = at active_zero s in
+    let einit = vec (at elem_index) s in
+    {etype = FuncRefType; einit; emode}
+  | 0x01l ->
+    let emode = at passive s in
     let etype = elem_kind s in
-    let data = elem_indices s in
-    PassiveElem {etype; data}
-  | 0x02 ->
-    let index = at var s in
-    let offset = const s in
+    let einit = vec (at elem_index) s in
+    {etype; einit; emode}
+  | 0x02l ->
+    let emode = at active s in
     let etype = elem_kind s in
-    let init = elem_indices s in
-    ActiveElem {index; offset; etype; init}
-  | 0x04 ->
-    let index = Source.(0l @@ Source.no_region) in
-    let offset = const s in
-    let init = elem_refs s in
-    ActiveElem {index; offset; etype = FuncRefType; init}
-  | 0x05 ->
+    let einit = vec (at elem_index) s in
+    {etype; einit; emode}
+  | 0x04l ->
+    let emode = at active_zero s in
+    let einit = vec (at elem_expr) s in
+    {etype = FuncRefType; einit; emode}
+  | 0x05l ->
+    let emode = at passive s in
     let etype = elem_type s in
-    let data = elem_refs s in
-    PassiveElem {etype; data}
-  | 0x06 ->
-    let index = at var s in
-    let offset = const s in
+    let einit = vec (at elem_expr) s in
+    {etype; einit; emode}
+  | 0x06l ->
+    let emode = at active s in
     let etype = elem_type s in
-    let init = elem_refs s in
-    ActiveElem {index; offset; etype; init}
-  | _ -> error s (pos s - 1) "invalid table segment kind"
+    let einit = vec (at elem_expr) s in
+    {etype; einit; emode}
+  | _ -> error s (pos s - 1) "invalid elements segment kind"
 
 let elem_section s =
-  section `ElemSection (vec (at table_segment)) [] s
+  section `ElemSection (vec (at elem)) [] s
 
 
 (* Data section *)
 
-let memory_segment s =
+let data s =
   match vu32 s with
-  | 0l ->
-    let index = Source.(0l @@ Source.no_region) in
-    let offset = const s in
-    let init = string s in
-    ActiveData {index; offset; init}
-  | 1l ->
-    let data = string s in
-    PassiveData {data}
-  | 2l ->
-    let index = at var s in
-    let offset = const s in
-    let init = string s in
-    ActiveData {index; offset; init}
-  | _ -> error s (pos s - 1) "invalid memory segment kind"
+  | 0x00l ->
+    let dmode = at active_zero s in
+    let dinit = string s in
+    {dinit; dmode}
+  | 0x01l ->
+    let dmode = at passive s in
+    let dinit = string s in
+    {dinit; dmode}
+  | 0x02l ->
+    let dmode = at active s in
+    let dinit = string s in
+    {dinit; dmode}
+  | _ -> error s (pos s - 1) "invalid data segment kind"
 
 let data_section s =
-  section `DataSection (vec (at memory_segment)) [] s
+  section `DataSection (vec (at data)) [] s
 
 
 (* DataCount section *)

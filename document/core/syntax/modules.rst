@@ -247,6 +247,7 @@ starting with the smallest index not referencing a global :ref:`import <syntax-i
    single: table; element
    single: element; segment
 .. _syntax-elem:
+.. _syntax-elemmode:
 .. _syntax-elemexpr:
 
 Element Segments
@@ -254,15 +255,20 @@ Element Segments
 
 The initial contents of a table is uninitialized. *Element segments* can be used to initialize a subrange of a table from a static :ref:`vector <syntax-vec>` of elements.
 
-Element segments can be :ref:`active <syntax-active>` or :ref:`passive <syntax-passive>`. An active element segment copies its elements into a table during :ref:`instantiation <exec-instantiation>`. A passive element segment's elements can be copied using the |TABLEINIT| instruction.
+The |MELEM| component of a module defines a vector of element segments.
+Each element segment defines an :ref:`element type <syntax-elemtype>` and a corresponding list of :ref:`element expressions <syntax-elemexpr>`.
 
-The |MELEM| component of a module defines a vector of element segments. Each active element segment defines the |ETABLE| and the starting |EOFFSET| in that table to initialize. Each passive element segment defines its element type and contents.
+Element segments have a mode that identifies them as either :ref:`passive <syntax-passive>` or :ref:`active <syntax-active>`.
+A passive element segment's elements can be copied to a table using the |TABLEINIT| instruction.
+An active element segment copies its elements into a table during :ref:`instantiation <exec-instantiation>`, as specified by a :ref:`table index <syntax-tableidx>` and a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>` defining an offset into that table.
 
 .. math::
    \begin{array}{llll}
    \production{element segment} & \elem &::=&
-     \{ \ETABLE~\tableidx, \EOFFSET~\expr, \ETYPE~\elemtype, \EINIT~\vec(\elemexpr) \} \\&&|&
-     \{ \ETYPE~\elemtype, \EINIT~\vec(\elemexpr) \} \\
+     \{ \ETYPE~\elemtype, \EINIT~\vec(\elemexpr), \EMODE~\elemmode \} \\
+   \production{element segment mode} & \elemmode &::=&
+     \EPASSIVE \\&&|&
+     \EACTIVE~\{ \ETABLE~\tableidx, \EOFFSET~\expr \} \\
    \production{elemexpr} & \elemexpr &::=&
      \REFNULL~\END \\&&|&
      (\REFFUNC~\funcidx)~\END \\
@@ -282,24 +288,27 @@ Element segments are referenced through :ref:`element indices <syntax-elemidx>`.
    single: memory; data
    single: data; segment
 .. _syntax-data:
+.. _syntax-datamode:
 
 Data Segments
 ~~~~~~~~~~~~~
 
 The initial contents of a :ref:`memory <syntax-mem>` are zero bytes. *Data segments* can be used to initialize a range of memory from a static :ref:`vector <syntax-vec>` of :ref:`bytes <syntax-byte>`.
 
-Like element segments, data segments can be :ref:`active <syntax-active>` or :ref:`passive <syntax-passive>`. An active data segment copies its contents into a table during :ref:`instantiation <exec-instantiation>`. A passive data segment's contents can be copied using the |MEMORYINIT| instruction.
+The |MDATA| component of a module defines a vector of data segments.
 
-The |MDATA| component of a module defines a vector of data segments. Each active data segment defines the memory to initialize, and the starting |DOFFSET| in that memory to initialize. Each passive data segment only defines its contents.
+Like element segments, data segments have a mode that identifies them as either :ref:`passive <syntax-passive>` or :ref:`active <syntax-active>`.
+A passive data segment's contents can be copied into a memory using the |MEMORYINIT| instruction.
+An active data segment copies its contents into a memory during :ref:`instantiation <exec-instantiation>`, as specified by a :ref:`memory index <syntax-memidx>` and a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>` defining an offset into that memory.
 
 .. math::
    \begin{array}{llll}
    \production{data segment} & \data &::=&
-     \{ \DMEM~\memidx, \DOFFSET~\expr, \DINIT~\vec(\byte) \} \\&&|&
-     \{ \DINIT~\vec(\byte) \} \\
+     \{ \DINIT~\vec(\byte), \DMODE~\datamode \} \\
+   \production{data segment mode} & \datamode &::=&
+     \DPASSIVE \\&&|&
+     \DACTIVE~\{ \DMEM~\memidx, \DOFFSET~\expr \} \\
    \end{array}
-
-The |DOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
 
 Data segments are referenced through :ref:`data indices <syntax-dataidx>`.
 

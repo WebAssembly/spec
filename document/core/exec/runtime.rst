@@ -314,7 +314,7 @@ Element Instances
 ~~~~~~~~~~~~~~~~~
 
 An *element instance* is the runtime representation of an :ref:`element segment <syntax-elem>`.
-Like table instances, an element instance holds a vector of function elements.
+It holds a vector of function elements.
 
 .. math::
   \begin{array}{llll}

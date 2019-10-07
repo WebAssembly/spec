@@ -314,6 +314,7 @@ It decodes into an optional :ref:`start function <syntax-start>` that represents
    single: element; segment
 .. _binary-elem:
 .. _binary-elemsec:
+.. _binary-elemkind:
 .. _binary-elemexpr:
 
 Element Section
@@ -327,27 +328,36 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
    \production{element section} & \Belemsec &::=&
      \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg} \\
    \production{element segment} & \Belem &::=&
-     \hex{00}~~o{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \ETABLE~0, \EOFFSET~o, \ETYPE~\FUNCREF, \EINIT~((\REFFUNC~y)~\END)^\ast \} \\ &&|&
-     \hex{01}~~\hex{00}~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \ETYPE~\FUNCREF, \EINIT~((\REFFUNC~y)~\END)^\ast \} \\ &&|&
-     \hex{02}~~x{:}\Btableidx~~o{:}\Bexpr~~\hex{00}~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \ETABLE~x, \EOFFSET~o, \ETYPE~\FUNCREF, \EINIT~((\REFFUNC~y)~\END)^\ast \} \\ &&|&
-     \hex{04}~~o{:}\Bexpr~e^\ast{:}\Bvec(\Belemexpr)
-       &\Rightarrow& \{ \ETABLE~0, \EOFFSET~o, \ETYPE~\FUNCREF, \EINIT~e^\ast \} \\ &&|&
-     \hex{05}~~\X{et}:\Belemtype~~e^\ast{:}\Bvec(\Belemexpr)
-       &\Rightarrow& \{ \ETYPE~et, \EINIT~e^\ast \} \\ &&|&
-     \hex{06}~~x{:}\Btableidx~~o{:}\Bexpr~~\X{et}:\Belemtype~~e^\ast{:}\Bvec(\Belemexpr)
-       &\Rightarrow& \{ \ETABLE~x, \EOFFSET~o, \ETYPE~et, \EINIT~e^\ast \} \\
-   \production{elemexpr} & \Belemexpr &::=&
+     \hex{00}~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
+       &\Rightarrow& \{ \ETYPE~\FUNCREF, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
+     \hex{01}~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
+       &\Rightarrow& \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EPASSIVE \} \\ &&|&
+     \hex{02}~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
+       &\Rightarrow& \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
+     \hex{04}~~e{:}\Bexpr~~\X{el}^\ast{:}\Bvec(\Belemexpr)
+       &\Rightarrow& \{ \ETYPE~\FUNCREF, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
+     \hex{05}~~\X{et}:\Belemtype~~\X{el}^\ast{:}\Bvec(\Belemexpr)
+       &\Rightarrow& \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EPASSIVE \} \\ &&|&
+     \hex{06}~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Belemtype~~\X{el}^\ast{:}\Bvec(\Belemexpr)
+       &\Rightarrow& \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\
+   \production{element kind} & \Belemkind &::=&
+     \hex{00} &\Rightarrow& \FUNCREF \\
+   \production{element expression} & \Belemexpr &::=&
      \hex{D0}~\hex{0B} &\Rightarrow& \REFNULL~\END \\ &&|&
      \hex{D2}~x{:}\Bfuncidx~\hex{0B} &\Rightarrow& (\REFFUNC~x)~\END \\
    \end{array}
 
 .. note::
+   The initial byte can be interpreted as a bitfield.
+   Bit 0 indicates a passive segment,
+   bit 1 indicates the presence of an explicit table index for an active segment,
+   bit 2 indicates the use of element type and element expressions instead of element kind and element indices.
+
    In the current version of WebAssembly, at most one table may be defined or
    imported in a single module, so all valid :ref:`active <syntax-active>`
    element segments have a |ETABLE| value of :math:`0`.
+
+   Additional element kinds may be added in future versions of WebAssembly.
 
 
 .. index:: ! code section, function, local, type index, function type
@@ -427,14 +437,18 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
      \X{seg}^\ast{:}\Bsection_{11}(\Bvec(\Bdata)) &\Rightarrow& \X{seg} \\
    \production{data segment} & \Bdata &::=&
      \hex{00}~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
-       &\Rightarrow& \{ \DMEM~0, \DOFFSET~e, \DINIT~b^\ast \} \\ &&|&
+       &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~0, \DOFFSET~e \} \} \\ &&|&
      \hex{01}~~b^\ast{:}\Bvec(\Bbyte)
-       &\Rightarrow& \{ \DINIT~b^\ast \} \\ &&|&
+       &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DPASSIVE \} \\ &&|&
      \hex{02}~~x{:}\Bmemidx~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
-       &\Rightarrow& \{ \DMEM~x, \DOFFSET~e, \DINIT~b^\ast \} \\
+       &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~x, \DOFFSET~e \} \} \\
    \end{array}
 
 .. note::
+   The initial byte can be interpreted as a bitfield.
+   Bit 0 indicates a passive segment,
+   bit 1 indicates the presence of an explicit memory index for an active segment.
+
    In the current version of WebAssembly, at most one memory may be defined or
    imported in a single module, so all valid :ref:`active <syntax-active>` data
    segments have a |DMEM| value of :math:`0`.

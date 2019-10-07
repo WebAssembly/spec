@@ -190,13 +190,13 @@ Global Types
 Segment Types
 ~~~~~~~~~~~~~
 
-*Segment types* classify :ref:`data segments <syntax-data>` and :ref:`element segments <syntax-elem>`, which can either be *active* or *passive*.
+*Segment types* classify :ref:`data segments <syntax-data>` and :ref:`element segments <syntax-elem>`, which can either be  *passive* or *active*.
 
 .. math::
    \begin{array}{llll}
    \production{segment type} & \segtype &::=&
-     \SACTIVE ~|~
-     \SPASSIVE \\
+     \SPASSIVE ~|~
+     \SACTIVE \\
    \end{array}
 
 

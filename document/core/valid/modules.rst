@@ -145,65 +145,27 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
 Element Segments
 ~~~~~~~~~~~~~~~~
 
-Element segments :math:`\elem` are classified by :ref:`segment types <syntax-segtype>`.
+Element segments :math:`\elem` are classified by :ref:`segment types <syntax-segtype>`, as determined by their :ref:`mode <syntax-elemmode>`.
 
-:math:`\{ \ETABLE~x, \EOFFSET~\expr, \ETYPE~et, \EINIT~e^\ast \}`
-.................................................................
-
-* The table :math:`C.\CTABLES[x]` must be defined in the context.
-
-* Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
-
-* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |FUNCREF|.
-
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
-
-* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
-
-* The :ref:`element type <syntax-elemtype>` :math:`et` must be |FUNCREF|.
+:math:`\{ \ETYPE~et, \EINIT~e^\ast, \EMODE~\elemmode \}`
+........................................................
 
 * For each :math:`e_i` in :math:`e^\ast`,
 
   * The element expression :math:`e_i` must be :ref:`valid <valid-elemexpr>`.
 
-* Then the element segment is valid with type |SACTIVE|.
+* The element mode :math:`\elemmode` must valid with type :math:`\segtype`.
+
+* Then the element segment is valid with type :math:`\segtype`.
 
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~\FUNCREF
-     \qquad
-     C \vdashexpr \expr : [\I32]
-     \qquad
-     C \vdashexprconst \expr \const
-     \qquad
-     et = \FUNCREF
-     \qquad
      (C \vdashelemexpr e \ok)^\ast
-   }{
-     C \vdashelem \{ \ETABLE~x, \EOFFSET~\expr, \ETYPE~et, \EINIT~e^\ast \} : \SACTIVE
-   }
-
-
-:math:`\{ \ETYPE~et, \EINIT~e^\ast \}`
-......................................
-
-* The :ref:`element type <syntax-elemtype>` :math:`et` must be |FUNCREF|.
-
-* For each :math:`e_i` in :math:`e^\ast`,
-
-  * The element expression :math:`e_i` must be :ref:`valid <valid-elemexpr>`.
-
-* Then the element segment is valid with type |SPASSIVE|.
-
-
-.. math::
-   \frac{
-     et = \FUNCREF
      \qquad
-     (C \vdashelemexpr e \ok)^\ast
+     C; \X{et} \vdashelemmode \elemmode : \segtype
    }{
-     C \vdashelem \{ \ETYPE~et, \EINIT~e^\ast \} : \SPASSIVE
+     C \vdashelem \{ \ETYPE~et, \EINIT~e^\ast, \EMODE~\elemmode \} : \segtype
    }
 
 
@@ -231,6 +193,49 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
    }
 
 
+.. _valid-elemmode:
+
+:math:`\EPASSIVE`
+.................
+
+* The element mode is valid with type |SPASSIVE|.
+
+.. math::
+   \frac{
+   }{
+     C; \X{et} \vdashelemmode \EPASSIVE : \SPASSIVE
+   }
+
+
+:math:`\EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \}`
+................................................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* The :ref:`element type <syntax-elemtype>` :math:`\X{et}` of the segment must match :math:`\elemtype`.
+
+* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
+
+* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
+
+* Then the element mode is valid with type |SACTIVE|.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = \limits~\elemtype
+     \qquad
+     \X{et} = \elemtype
+     \qquad
+     C \vdashexpr \expr : [\I32]
+     \qquad
+     C \vdashexprconst \expr \const
+   }{
+     C; \X{et} \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} : \SACTIVE
+   }
+
+
 .. index:: data, memory, memory index, expression, byte
    pair: validation; data
    single: abstract syntax; data
@@ -241,10 +246,39 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
 Data Segments
 ~~~~~~~~~~~~~
 
-Data segments :math:`\data` are classified by :ref:`segment types <syntax-segtype>`.
+Data segments :math:`\data` are classified by :ref:`segment types <syntax-segtype>`, as determined by their :ref:`mode <syntax-datamode>`.
 
-:math:`\{ \DMEM~x, \DOFFSET~\expr, \DINIT~b^\ast \}`
+:math:`\{ \DINIT~b^\ast, \DMODE~\datamode \}`
 ....................................................
+
+* The data mode :math:`\datamode` must valid with type :math:`\segtype`.
+
+* Then the data segment is valid with type :math:`\segtype`.
+
+.. math::
+   \frac{
+     C \vdashdatamode \datamode : \segtype
+   }{
+     C \vdashdata \{ \DINIT~b^\ast, \DMODE~\datamode \} : \segtype
+   }
+
+
+.. _valid-datamode:
+
+:math:`\DPASSIVE`
+.................
+
+* The data mode is valid with type |SPASSIVE|.
+
+.. math::
+   \frac{
+   }{
+     C \vdashdatamode \DPASSIVE : \SPASSIVE
+   }
+
+
+:math:`\DACTIVE~\{ \DMEM~x, \DOFFSET~\expr \}`
+..............................................
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -252,8 +286,7 @@ Data segments :math:`\data` are classified by :ref:`segment types <syntax-segtyp
 
 * The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
-* Then the data segment is valid with type |SACTIVE|.
-
+* Then the data mode is valid with type |SACTIVE|.
 
 .. math::
    \frac{
@@ -263,20 +296,7 @@ Data segments :math:`\data` are classified by :ref:`segment types <syntax-segtyp
      \qquad
      C \vdashexprconst \expr \const
    }{
-     C \vdashdata \{ \DMEM~x, \DOFFSET~\expr, \DINIT~b^\ast \} : \SACTIVE
-   }
-
-
-:math:`\{ \DINIT~b^\ast \}`
-....................................................
-
-* The data segment is valid.
-
-
-.. math::
-   \frac{
-   }{
-     C \vdashdata \{ \DINIT~b^\ast \} : \SPASSIVE
+     C \vdashelemmode \EACTIVE~\{ \DMEM~x, \DOFFSET~\expr \} : \SACTIVE
    }
 
 

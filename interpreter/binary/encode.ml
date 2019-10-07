@@ -430,8 +430,8 @@ let encode m =
 
     (* Global section *)
     let global g =
-      let {gtype; value} = g.it in
-      global_type gtype; const value
+      let {gtype; ginit} = g.it in
+      global_type gtype; const ginit
 
     let global_section gs =
       section 6 (vec global) gs (gs <> [])
@@ -477,53 +477,60 @@ let encode m =
       section 10 (vec code) fs (fs <> [])
 
     (* Element section *)
-    let elem_expr el =
-      match el.it with
+    let elem_kind = function
+      | FuncRefType -> u8 0x00
+
+    let elem_expr e =
+      match e.it with
       | RefNull -> u8 0xd0; end_ ()
       | RefFunc x -> u8 0xd2; var x; end_ ()
 
-    let elem_index el =
-      match el.it with
+    let elem_index e =
+      match e.it with
       | RefNull -> assert false
       | RefFunc x -> var x
 
-    let elem_indices data = vec elem_index data
+    let is_func_ref e = match e.it with RefFunc _ -> true | _ -> false
 
-    let all_func_ref l = not (List.exists (fun elem -> elem.it = RefNull) l)
-
-    let table_segment seg =
-      match seg.it with
-      | ActiveElem {index = {it = 0l;_}; offset; init; _}
-        when all_func_ref init ->
-        u8 0x00; const offset; elem_indices init
-      | PassiveElem {data; _}
-        when all_func_ref data ->
-        u8 0x01; u8 0x00; elem_indices data
-      | ActiveElem {index; offset; init; _}
-        when all_func_ref init ->
-        u8 0x02; var index; const offset; u8 0x00; elem_indices init
-      | ActiveElem {index = {it = 0l;_}; offset; etype; init} ->
-        u8 0x04; const offset; vec elem_expr init
-      | PassiveElem {etype; data} ->
-        u8 0x05; elem_type etype; vec elem_expr data
-      | ActiveElem {index; offset; etype; init} ->
-        u8 0x06; var index; const offset; elem_type etype; vec elem_expr init
+    let elem seg =
+      let {etype; einit; emode} = seg.it in
+      let has_indices = List.for_all is_func_ref einit in
+      match emode.it with
+      | Passive ->
+        if has_indices then
+          (vu32 0x01l; elem_kind etype; vec elem_index einit)
+        else
+          (vu32 0x05l; elem_type etype; vec elem_expr einit)
+      | Active {index; offset} ->
+        match index.it = 0l, etype = FuncRefType, has_indices with
+        | true, true, true ->
+          vu32 0x00l; const offset; vec elem_index einit
+        | true, true, false ->
+          vu32 0x04l; const offset; vec elem_expr einit
+        | _, _, true ->
+          vu32 0x02l;
+          var index; const offset; elem_kind etype; vec elem_index einit
+        | _, _, false ->
+          vu32 0x06l;
+          var index; const offset; elem_type etype; vec elem_expr einit
 
     let elem_section elems =
-      section 9 (vec table_segment) elems (elems <> [])
+      section 9 (vec elem) elems (elems <> [])
 
     (* Data section *)
-    let memory_segment seg =
-      match seg.it with
-      | ActiveData {index = {it = 0l;_}; offset; init} ->
-        u8 0x00; const offset; string init
-      | PassiveData {data} ->
-        u8 0x01; string data
-      | ActiveData {index; offset; init} ->
-        u8 0x02; var index; const offset; string init
+    let data seg =
+      let {dinit; dmode} = seg.it in
+      match dmode.it with
+      | Passive ->
+        vu32 0x01l; string dinit
+      | Active {index; offset} ->
+        if index.it = 0l then
+          (vu32 0x00l; const offset; string dinit)
+        else
+          (vu32 0x02l; var index; const offset; string dinit)
 
     let data_section datas =
-      section 11 (vec memory_segment) datas (datas <> [])
+      section 11 (vec data) datas (datas <> [])
 
     (* Data count section *)
     let data_count_section datas m =

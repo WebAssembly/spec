@@ -85,26 +85,26 @@ and block (es : instr list) =
 
 let const (c : const) = block c.it
 
-let global (g : global) = const g.it.value
+let global (g : global) = const g.it.ginit
 let func (f : func) = {(block f.it.body) with locals = Set.empty}
 let table (t : table) = empty
 let memory (m : memory) = empty
 
-let elem (e : elem) =
+let segment_mode f (m : segment_mode) =
+  match m.it with
+  | Passive -> empty
+  | Active {index; offset} -> f (var index) ++ const offset
+
+let elem_expr (e : elem_expr) =
   match e.it with
   | RefNull -> empty
   | RefFunc x -> funcs (var x)
 
-let table_segment (s : table_segment) =
-  match s.it with
-  | ActiveElem {index; offset; init; _} ->
-    tables (var index) ++ const offset ++ list elem init
-  | PassiveElem {data; _} -> list elem data
+let elem (s : elem_segment) =
+  list elem_expr s.it.einit ++ segment_mode tables s.it.emode
 
-let memory_segment (s : memory_segment) =
-  match s.it with
-  | ActiveData {index; offset; init} -> memories (var index) ++ const offset
-  | PassiveData {data} -> empty
+let data (s : data_segment) =
+  segment_mode memories s.it.dmode
 
 let type_ (t : type_) = empty
 
@@ -135,7 +135,7 @@ let module_ (m : module_) =
   list memory m.it.memories ++
   list func m.it.funcs ++
   start m.it.start ++
-  list table_segment m.it.elems ++
-  list memory_segment m.it.datas ++
+  list elem m.it.elems ++
+  list data m.it.datas ++
   list import m.it.imports ++
   list export m.it.exports

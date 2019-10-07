@@ -114,7 +114,7 @@ type global = global' Source.phrase
 and global' =
 {
   gtype : global_type;
-  value : const;
+  ginit : const;
 }
 
 type func = func' Source.phrase
@@ -140,21 +140,30 @@ and memory' =
   mtype : memory_type;
 }
 
-type elem = elem' Source.phrase
-and elem' =
+type segment_mode = segment_mode' Source.phrase
+and segment_mode' =
+  | Passive
+  | Active of {index : var; offset : const}
+
+type elem_expr = elem_expr' Source.phrase
+and elem_expr' =
   | RefNull
   | RefFunc of var
 
+type elem_segment = elem_segment' Source.phrase
+and elem_segment' =
+{
+  etype : elem_type;
+  einit : elem_expr list;
+  emode : segment_mode;
+}
 
-type table_segment = table_segment' Source.phrase
-and table_segment' =
-  | ActiveElem of {index : var; offset : const; etype : elem_type; init : elem list}
-  | PassiveElem of {etype : elem_type; data : elem list}
-
-type memory_segment = memory_segment' Source.phrase
-and memory_segment' =
-  | ActiveData of {index : var; offset : const; init : string}
-  | PassiveData of {data : string}
+type data_segment = data_segment' Source.phrase
+and data_segment' =
+{
+  dinit : string;
+  dmode : segment_mode;
+}
 
 
 (* Modules *)
@@ -199,8 +208,8 @@ and module_' =
   memories : memory list;
   funcs : func list;
   start : var option;
-  elems : table_segment list;
-  datas : memory_segment list;
+  elems : elem_segment list;
+  datas : data_segment list;
   imports : import list;
   exports : export list;
 }

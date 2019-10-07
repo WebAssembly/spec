@@ -425,8 +425,8 @@ let create_memory (inst : module_inst) (mem : memory) : memory_inst =
   Memory.alloc mtype
 
 let create_global (inst : module_inst) (glob : global) : global_inst =
-  let {gtype; value} = glob.it in
-  let v = eval_const inst value in
+  let {gtype; ginit} = glob.it in
+  let v = eval_const inst ginit in
   Global.alloc gtype v
 
 let create_export (inst : module_inst) (ex : export) : export_inst =
@@ -446,15 +446,17 @@ let elem_list inst init =
     | RefFunc x -> FuncElem (func inst x)
   in List.map to_elem init
 
-let create_elem (inst : module_inst) (seg : table_segment) : elem_inst =
-  match seg.it with
-  | ActiveElem _ -> ref None
-  | PassiveElem {data; _} -> ref (Some (elem_list inst data))
+let create_elem (inst : module_inst) (seg : elem_segment) : elem_inst =
+  let {etype; einit; emode} = seg.it in
+  match emode.it with
+  | Passive -> ref (Some (elem_list inst einit))
+  | Active _ -> ref None
 
-let create_data (inst : module_inst) (seg : memory_segment) : data_inst =
-  match seg.it with
-  | ActiveData _ -> ref None
-  | PassiveData {data} -> ref (Some data)
+let create_data (inst : module_inst) (seg : data_segment) : data_inst =
+  let {dinit; dmode} = seg.it in
+  match dmode.it with
+  | Passive -> ref (Some dinit)
+  | Active _ -> ref None
 
 
 let init_func (inst : module_inst) (func : func_inst) =
@@ -462,27 +464,28 @@ let init_func (inst : module_inst) (func : func_inst) =
   | Func.AstFunc (_, inst_ref, _) -> inst_ref := inst
   | _ -> assert false
 
-let init_table (inst : module_inst) (seg : table_segment) =
-  match seg.it with
-  | ActiveElem {index; offset = const; init; _} ->
+let init_table (inst : module_inst) (seg : elem_segment) =
+  let {etype; einit; emode} = seg.it in
+  match emode.it with
+  | Passive -> ()
+  | Active {index; offset} ->
+    let refs = elem_list inst einit in
     let tab = table inst index in
-    let offset = i32 (eval_const inst const) const.at in
-    let elems = elem_list inst init in
-    let len = Int32.of_int (List.length elems) in
-    (try Table.init tab elems offset 0l len
+    let i = i32 (eval_const inst offset) offset.at in
+    let n = Int32.of_int (List.length einit) in
+    (try Table.init tab refs i 0l n
     with Table.Bounds -> Link.error seg.at "elements segment does not fit table")
-  | PassiveElem _ -> ()
 
-let init_memory (inst : module_inst) (seg : memory_segment) =
-  match seg.it with
-  | ActiveData {index; offset = const; init} ->
+let init_memory (inst : module_inst) (seg : data_segment) =
+  let {dinit; dmode} = seg.it in
+  match dmode.it with
+  | Passive -> ()
+  | Active {index; offset} ->
     let mem = memory inst index in
-    let offset' = i32 (eval_const inst const) const.at in
-    let offset = I64_convert.extend_i32_u offset' in
-    let len = Int32.of_int (String.length init) in
-    (try Memory.init mem init offset 0L len
+    let i = i32 (eval_const inst offset) offset.at in
+    let n = Int32.of_int (String.length dinit) in
+    (try Memory.init mem dinit (I64_convert.extend_i32_u i) 0L n
     with Memory.Bounds -> Link.error seg.at "data segment does not fit memory")
-  | PassiveData _ -> ()
 
 
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
