@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version e86d5b1b47a216fa66165c234892adc259212183" name="generator">
+  <meta content="Bikeshed version b76a1f3caa65320a39ee72dbf2680ea887ace619" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="5e3277c914e6191f06f1d9499cc94562742755ed" name="document-revision">
+  <meta content="c7ca01c466d346d539f54476712d959770d13354" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -271,7 +271,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-09-30">30 September 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-10-07">7 October 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -945,7 +945,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
 };
 </pre>
    <div class="algorithm" data-algorithm="Instance(module, importObject)">
-     The <dfn class="dfn-paneled idl-code" data-dfn-for="Instance" data-dfn-type="constructor" data-export id="dom-instance-instance"><code>Instance(<var>module</var>, <var>importObject</var>)</code></dfn> constructor, when invoked, runs the following steps: 
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="Instance" data-dfn-type="constructor" data-export data-lt="Instance(module, importObject)|Instance(module)" id="dom-instance-instance"><code>Instance(<var>module</var>, <var>importObject</var>)</code></dfn> constructor, when invoked, runs the following steps: 
     <ol>
      <li data-md>
       <p>Let <var>module</var> be <var>module</var>.[[Module]].</p>
@@ -1349,7 +1349,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Global(descriptor, v)">
-     The <dfn class="dfn-paneled idl-code" data-dfn-for="Global" data-dfn-type="constructor" data-export id="dom-global-global"><code>Global(<var>descriptor</var>, <var>v</var>)</code></dfn> constructor, when invoked, performs the following steps: 
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="Global" data-dfn-type="constructor" data-export data-lt="Global(descriptor, v)|Global(descriptor)" id="dom-global-global"><code>Global(<var>descriptor</var>, <var>v</var>)</code></dfn> constructor, when invoked, performs the following steps: 
     <ol>
      <li data-md>
       <p>Let <var>mutable</var> be <var>descriptor</var>["mutable"].</p>
@@ -1787,6 +1787,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#global">Global</a><span>, in §3.5</span>
    <li><a href="#dom-importexportkind-global">"global"</a><span>, in §3.1</span>
    <li><a href="#dictdef-globaldescriptor">GlobalDescriptor</a><span>, in §3.5</span>
+   <li><a href="#dom-global-global">Global(descriptor)</a><span>, in §3.5</span>
    <li><a href="#dom-global-global">Global(descriptor, v)</a><span>, in §3.5</span>
    <li><a href="#global-object-cache">Global object cache</a><span>, in §2.2</span>
    <li>
@@ -1813,6 +1814,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#initialize-a-table-object">initialize a table object</a><span>, in §3.4</span>
    <li><a href="#instance">Instance</a><span>, in §3.2</span>
    <li><a href="#dom-webassemblyinstantiatedsource-instance">instance</a><span>, in §3</span>
+   <li><a href="#dom-instance-instance">Instance(module)</a><span>, in §3.2</span>
    <li><a href="#dom-instance-instance">Instance(module, importObject)</a><span>, in §3.2</span>
    <li><a href="#instantiate-a-promise-of-a-module">instantiate a promise of a module</a><span>, in §3</span>
    <li><a href="#instantiate-a-webassembly-module">instantiate a WebAssembly module</a><span>, in §3</span>
