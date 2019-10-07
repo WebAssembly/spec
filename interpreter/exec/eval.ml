@@ -202,11 +202,17 @@ let rec step (c : config) : config =
         with Global.NotMutable -> Crash.error e.at "write to immutable global"
            | Global.Type -> Crash.error e.at "type mismatch at global write")
 
+      | TableCopy, I32 0l :: I32 s :: I32 d :: vs' ->
+        vs', []
+
       (* TODO: turn into small-step, but needs reference values *)
       | TableCopy, I32 n :: I32 s :: I32 d :: vs' ->
         let tab = table frame.inst (0l @@ e.at) in
         (try Table.copy tab d s n; vs', []
         with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
+
+      | TableInit x, I32 0l :: I32 s :: I32 d :: vs' ->
+        vs', []
 
       (* TODO: turn into small-step, but needs reference values *)
       | TableInit x, I32 n :: I32 s :: I32 d :: vs' ->

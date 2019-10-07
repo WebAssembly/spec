@@ -220,20 +220,24 @@
   (elem $a (table 0) (i32.const 0) func $f)
 
   (func (export "drop_passive") (elem.drop $p))
-  (func (export "init_passive")
-    (table.init $p (i32.const 0) (i32.const 0) (i32.const 0)))
+  (func (export "init_passive") (param $len i32)
+    (table.init $p (i32.const 0) (i32.const 0) (local.get $len))
+  )
 
   (func (export "drop_active") (elem.drop $a))
-  (func (export "init_active")
-    (table.init $a (i32.const 0) (i32.const 0) (i32.const 0)))
+  (func (export "init_active") (param $len i32)
+    (table.init $a (i32.const 0) (i32.const 0) (local.get $len))
+  )
 )
 
-(invoke "init_passive")
+(invoke "init_passive" (i32.const 1))
 (invoke "drop_passive")
 (assert_trap (invoke "drop_passive") "element segment dropped")
-(assert_trap (invoke "init_passive") "element segment dropped")
+(assert_return (invoke "init_passive" (i32.const 0)))
+(assert_trap (invoke "init_passive" (i32.const 1)) "element segment dropped")
 (assert_trap (invoke "drop_active") "element segment dropped")
-(assert_trap (invoke "init_active") "element segment dropped")
+(assert_return (invoke "init_active" (i32.const 0)))
+(assert_trap (invoke "init_active" (i32.const 1)) "element segment dropped")
 
 
 ;; table.copy
