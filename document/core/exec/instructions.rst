@@ -695,6 +695,9 @@ Memory Instructions
      (\iff n > 1) \\
    \end{array}
 
+.. note::
+   The use of the :math:`\vconst_t` meta function in the rules for this and the following instructions ensures that an overflowing index turns into a :ref:`trap <syntax-trap>`.
+
 
 .. _exec-memory.init:
 
@@ -936,12 +939,12 @@ Memory Instructions
      \end{array} \\
    \end{array}
    \\ \qquad
-     (\iff dst <= src \wedge cnt > 1)
+     (\iff dst \leq src \wedge cnt > 1)
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~cnt)~\MEMORYCOPY &\stepto& S; F;
      \begin{array}[t]{@{}l@{}}
-     (\I32.\CONST~(dst+cnt-1))~(\I32.\CONST~(src+cnt-1))~(\I32.\CONST~1)~\MEMORYCOPY \\
+     (\vconst_{\I32}(dst+cnt-1))~(\vconst_{\I32}(src+cnt-1))~(\I32.\CONST~1)~\MEMORYCOPY \\
      (\I32.\CONST~dst)~(\I32.\CONST~src)~(\I32.\CONST~(cnt-1))~\MEMORYCOPY \\
      \end{array} \\
    \end{array}
