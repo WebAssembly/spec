@@ -21,8 +21,8 @@ type context =
   tables : table_type list;
   memories : memory_type list;
   globals : global_type list;
-  datas : segment_type list;
-  elems : segment_type list;
+  datas : unit list;
+  elems : unit list;
   locals : value_type list;
   results : value_type list;
   labels : stack_type list;
@@ -493,11 +493,6 @@ let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
   require (not (NameSet.mem name set)) ex.at "duplicate export name";
   NameSet.add name set
 
-let segment_type mode =
-  match mode.it with
-  | Passive -> PassiveType
-  | Active _ -> ActiveType
-
 let check_module (m : module_) =
   let
     { types; imports; tables; memories; globals; funcs; start; elems; datas;
@@ -512,8 +507,8 @@ let check_module (m : module_) =
       funcs = c0.funcs @ List.map (fun f -> type_ c0 f.it.ftype) funcs;
       tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
       memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
-      elems = List.map (fun elem -> segment_type elem.it.emode) elems;
-      datas = List.map (fun data -> segment_type data.it.dmode) datas;
+      elems = List.map (fun _ -> ()) elems;
+      datas = List.map (fun _ -> ()) datas;
     }
   in
   let c =

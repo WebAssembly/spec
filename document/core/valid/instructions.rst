@@ -330,7 +330,7 @@ Table Instructions
 
 * The table :math:`C.\CTABLES[0]` must be defined in the context.
 
-* The element segment :math:`C.\CELEM[x]` must be defined in the context.
+* The element segment :math:`C.\CELEMS[x]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
@@ -338,7 +338,7 @@ Table Instructions
    \frac{
      C.\CTABLES[0] = \tabletype
      \qquad
-     C.\CELEM[x] = \segtype
+     C.\CELEMS[x] = {\ok}
    }{
      C \vdashinstr \TABLEINIT~x : [\I32~\I32~\I32] \to []
    }
@@ -349,13 +349,13 @@ Table Instructions
 :math:`\ELEMDROP~x`
 ...................
 
-* The element segment :math:`C.\CELEM[x]` must be defined in the context.
+* The element segment :math:`C.\CELEMS[x]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[] \to []`.
 
 .. math::
    \frac{
-     C.\CELEM[x] = \segtype
+     C.\CELEMS[x] = {\ok}
    }{
      C \vdashinstr \ELEMDROP~x : [] \to []
    }
@@ -527,7 +527,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The data segment :math:`C.\CDATA[x]` must be defined in the context.
+* The data segment :math:`C.\CDATAS[x]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
@@ -535,7 +535,7 @@ Memory Instructions
    \frac{
      C.\CMEMS[0] = \memtype
      \qquad
-     C.\CDATA[x] = \segtype
+     C.\CDATAS[x] = {\ok}
    }{
      C \vdashinstr \MEMORYINIT~x : [\I32~\I32~\I32] \to []
    }
@@ -546,13 +546,13 @@ Memory Instructions
 :math:`\DATADROP~x`
 ...................
 
-* The data segment :math:`C.\CDATA[x]` must be defined in the context.
+* The data segment :math:`C.\CDATAS[x]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[] \to []`.
 
 .. math::
    \frac{
-     C.\CDATA[x] = \segtype
+     C.\CDATAS[x] = {\ok}
    }{
      C \vdashinstr \DATADROP~x : [] \to []
    }

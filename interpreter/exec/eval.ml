@@ -405,11 +405,6 @@ let eval_const (inst : module_inst) (const : const) : value =
   | [v] -> v
   | vs -> Crash.error const.at "wrong number of results on stack"
 
-let i32 (v : value) at =
-  match v with
-  | I32 i -> i
-  | _ -> Crash.error at "type error: i32 value expected"
-
 
 (* Modules *)
 
@@ -447,45 +442,12 @@ let elem_list inst init =
   in List.map to_elem init
 
 let create_elem (inst : module_inst) (seg : elem_segment) : elem_inst =
-  let {etype; einit; emode} = seg.it in
-  match emode.it with
-  | Passive -> ref (Some (elem_list inst einit))
-  | Active _ -> ref None
+  let {etype; einit; _} = seg.it in
+  ref (Some (elem_list inst einit))
 
 let create_data (inst : module_inst) (seg : data_segment) : data_inst =
-  let {dinit; dmode} = seg.it in
-  match dmode.it with
-  | Passive -> ref (Some dinit)
-  | Active _ -> ref None
-
-
-let init_func (inst : module_inst) (func : func_inst) =
-  match func with
-  | Func.AstFunc (_, inst_ref, _) -> inst_ref := inst
-  | _ -> assert false
-
-let init_table (inst : module_inst) (seg : elem_segment) =
-  let {etype; einit; emode} = seg.it in
-  match emode.it with
-  | Passive -> ()
-  | Active {index; offset} ->
-    let refs = elem_list inst einit in
-    let tab = table inst index in
-    let i = i32 (eval_const inst offset) offset.at in
-    let n = Int32.of_int (List.length einit) in
-    (try Table.init tab refs i 0l n
-    with Table.Bounds -> Link.error seg.at "elements segment does not fit table")
-
-let init_memory (inst : module_inst) (seg : data_segment) =
-  let {dinit; dmode} = seg.it in
-  match dmode.it with
-  | Passive -> ()
-  | Active {index; offset} ->
-    let mem = memory inst index in
-    let i = i32 (eval_const inst offset) offset.at in
-    let n = Int32.of_int (String.length dinit) in
-    (try Memory.init mem dinit (I64_convert.extend_i32_u i) 0L n
-    with Memory.Bounds -> Link.error seg.at "data segment does not fit memory")
+  let {dinit; _} = seg.it in
+  ref (Some dinit)
 
 
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
@@ -497,6 +459,40 @@ let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   | ExternTable tab -> {inst with tables = tab :: inst.tables}
   | ExternMemory mem -> {inst with memories = mem :: inst.memories}
   | ExternGlobal glob -> {inst with globals = glob :: inst.globals}
+
+let init_func (inst : module_inst) (func : func_inst) =
+  match func with
+  | Func.AstFunc (_, inst_ref, _) -> inst_ref := inst
+  | _ -> assert false
+
+let run_elem i elem =
+  match elem.it.emode.it with
+  | Passive -> []
+  | Active {index; offset} ->
+    let at = elem.it.emode.at in
+    let x = i @@ at in
+    offset.it @ [
+      Const (I32 0l @@ at) @@ at;
+      Const (I32 (Lib.List32.length elem.it.einit) @@ at) @@ at;
+      TableInit x @@ at;
+      ElemDrop x @@ at
+    ]
+
+let run_data i data =
+  match data.it.dmode.it with
+  | Passive -> []
+  | Active {index; offset} ->
+    let at = data.it.dmode.at in
+    let x = i @@ at in
+    offset.it @ [
+      Const (I32 0l @@ at) @@ at;
+      Const (I32 (Int32.of_int (String.length data.it.dinit)) @@ at) @@ at;
+      MemoryInit x @@ at;
+      DataDrop x @@ at
+    ]
+
+let run_start start =
+  [Call start @@ start.at]
 
 let init (m : module_) (exts : extern list) : module_inst =
   let
@@ -527,7 +523,8 @@ let init (m : module_) (exts : extern list) : module_inst =
     }
   in
   List.iter (init_func inst) fs;
-  List.iter (init_table inst) elems;
-  List.iter (init_memory inst) datas;
-  Lib.Option.app (fun x -> ignore (invoke (func inst x) [])) start;
+  let es_elem = List.concat (Lib.List32.mapi run_elem elems) in
+  let es_data = List.concat (Lib.List32.mapi run_data datas) in
+  let es_start = Lib.Option.get (Lib.Option.map run_start start) [] in
+  ignore (eval (config inst [] (List.map plain (es_elem @ es_data @ es_start))));
   inst

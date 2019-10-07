@@ -145,7 +145,7 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
 Element Segments
 ~~~~~~~~~~~~~~~~
 
-Element segments :math:`\elem` are classified by :ref:`segment types <syntax-segtype>`, as determined by their :ref:`mode <syntax-elemmode>`.
+Element segments :math:`\elem` are not classified by any type but merely checked for well-formedness.
 
 :math:`\{ \ETYPE~et, \EINIT~e^\ast, \EMODE~\elemmode \}`
 ........................................................
@@ -154,18 +154,18 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
 
   * The element expression :math:`e_i` must be :ref:`valid <valid-elemexpr>`.
 
-* The element mode :math:`\elemmode` must valid with type :math:`\segtype`.
+* The element mode :math:`\elemmode` must be valid.
 
-* Then the element segment is valid with type :math:`\segtype`.
+* Then the element segment is valid.
 
 
 .. math::
    \frac{
      (C \vdashelemexpr e \ok)^\ast
      \qquad
-     C; \X{et} \vdashelemmode \elemmode : \segtype
+     C; \X{et} \vdashelemmode \elemmode \ok
    }{
-     C \vdashelem \{ \ETYPE~et, \EINIT~e^\ast, \EMODE~\elemmode \} : \segtype
+     C \vdashelem \{ \ETYPE~et, \EINIT~e^\ast, \EMODE~\elemmode \} \ok
    }
 
 
@@ -198,12 +198,12 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
 :math:`\EPASSIVE`
 .................
 
-* The element mode is valid with type |SPASSIVE|.
+* The element mode is valid.
 
 .. math::
    \frac{
    }{
-     C; \X{et} \vdashelemmode \EPASSIVE : \SPASSIVE
+     C; \X{et} \vdashelemmode \EPASSIVE \ok
    }
 
 
@@ -220,7 +220,7 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
 
 * The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
-* Then the element mode is valid with type |SACTIVE|.
+* Then the element mode is valid.
 
 .. math::
    \frac{
@@ -232,7 +232,7 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
      \qquad
      C \vdashexprconst \expr \const
    }{
-     C; \X{et} \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} : \SACTIVE
+     C; \X{et} \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} \ok
    }
 
 
@@ -246,20 +246,20 @@ Element segments :math:`\elem` are classified by :ref:`segment types <syntax-seg
 Data Segments
 ~~~~~~~~~~~~~
 
-Data segments :math:`\data` are classified by :ref:`segment types <syntax-segtype>`, as determined by their :ref:`mode <syntax-datamode>`.
+Data segments :math:`\data` are not classified by any type but merely checked for well-formedness.
 
 :math:`\{ \DINIT~b^\ast, \DMODE~\datamode \}`
 ....................................................
 
-* The data mode :math:`\datamode` must valid with type :math:`\segtype`.
+* The data mode :math:`\datamode` must be valid.
 
-* Then the data segment is valid with type :math:`\segtype`.
+* Then the data segment is valid.
 
 .. math::
    \frac{
-     C \vdashdatamode \datamode : \segtype
+     C \vdashdatamode \datamode \ok
    }{
-     C \vdashdata \{ \DINIT~b^\ast, \DMODE~\datamode \} : \segtype
+     C \vdashdata \{ \DINIT~b^\ast, \DMODE~\datamode \} \ok
    }
 
 
@@ -268,12 +268,12 @@ Data segments :math:`\data` are classified by :ref:`segment types <syntax-segtyp
 :math:`\DPASSIVE`
 .................
 
-* The data mode is valid with type |SPASSIVE|.
+* The data mode is valid.
 
 .. math::
    \frac{
    }{
-     C \vdashdatamode \DPASSIVE : \SPASSIVE
+     C \vdashdatamode \DPASSIVE \ok
    }
 
 
@@ -286,7 +286,7 @@ Data segments :math:`\data` are classified by :ref:`segment types <syntax-segtyp
 
 * The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
-* Then the data mode is valid with type |SACTIVE|.
+* Then the data mode is valid.
 
 .. math::
    \frac{
@@ -296,7 +296,7 @@ Data segments :math:`\data` are classified by :ref:`segment types <syntax-segtyp
      \qquad
      C \vdashexprconst \expr \const
    }{
-     C \vdashelemmode \EACTIVE~\{ \DMEM~x, \DOFFSET~\expr \} : \SACTIVE
+     C \vdashelemmode \EACTIVE~\{ \DMEM~x, \DOFFSET~\expr \} \ok
    }
 
 
@@ -537,9 +537,9 @@ Instead, the context :math:`C` for validation of the module's content is constru
   * :math:`C.\CGLOBALS` is :math:`\etglobals(\X{it}^\ast)` concatenated with :math:`\X{gt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}^\ast` as determined below,
 
-  * :math:`C.\CELEM` is :math:`\X{est}^\ast`, with :ref:`segment types <syntax-segtype>` :math:`\X{est}^\ast` as determined below,
+  * :math:`C.\CELEMS` is :math:`{\ok}^{N_e}`, where :math:`N_e` is the length of the vector :math:`\module.\MELEMS`,
 
-  * :math:`C.\CDATA` is :math:`\X{dst}^\ast`, with :ref:`segment types <syntax-segtype>` :math:`\X{dst}^\ast` as determined below,
+  * :math:`C.\CDATAS` is :math:`{\ok}^{N_d}`, where :math:`N_d` is the length of the vector :math:`\module.\MDATAS`,
 
   * :math:`C.\CLOCALS` is empty,
 
@@ -568,11 +568,11 @@ Instead, the context :math:`C` for validation of the module's content is constru
     * Under the context :math:`C'`,
       the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
 
-  * For each :math:`\elem_i` in :math:`\module.\MELEM`,
-    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with a :ref:`segment type <syntax-segtype>` :math:`\X{est}_i`.
+  * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
+    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>`.
 
-  * For each :math:`\data_i` in :math:`\module.\MDATA`,
-    the segment :math:`\data_i` must be :ref:`valid <valid-data>` with a :ref:`segment type <syntax-segtype>` :math:`\X{dst}_i`.
+  * For each :math:`\data_i` in :math:`\module.\MDATAS`,
+    the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
 
   * If :math:`\module.\MSTART` is non-empty,
     then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
@@ -597,10 +597,6 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
 * Let :math:`\X{gt}^\ast` be the concatenation of the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}_i`, in index order.
 
-* Let :math:`\X{est}^\ast` be the concatenation of the :ref:`segment types <syntax-segtype>` :math:`\X{est}_i`, in index order.
-
-* Let :math:`\X{dst}^\ast` be the concatenation of the :ref:`segment types <syntax-segtype>` :math:`\X{dst}_i`, in index order.
-
 * Let :math:`\X{it}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{it}_i` of the imports, in index order.
 
 * Let :math:`\X{et}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{et}_i` of the exports, in index order.
@@ -620,9 +616,9 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \quad
      (C' \vdashglobal \global : \X{gt})^\ast
      \\
-     (C \vdashelem \elem : \X{est})^\ast
+     (C \vdashelem \elem \ok)^{N_e}
      \quad
-     (C \vdashdata \data : \X{dst})^\ast
+     (C \vdashdata \data \ok)^{N_d}
      \quad
      (C \vdashstart \start \ok)^?
      \quad
@@ -638,7 +634,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \qquad
      \X{igt}^\ast = \etglobals(\X{it}^\ast)
      \\
-     C = \{ \CTYPES~\functype^\ast, \CFUNCS~\X{ift}^\ast~\X{ft}^\ast, \CTABLES~\X{itt}^\ast~\X{tt}^\ast, \CMEMS~\X{imt}^\ast~\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast~\X{gt}^\ast, \CELEM~\X{est}^\ast, \CDATA~\X{dst}^\ast \}
+     C = \{ \CTYPES~\functype^\ast, \CFUNCS~\X{ift}^\ast~\X{ft}^\ast, \CTABLES~\X{itt}^\ast~\X{tt}^\ast, \CMEMS~\X{imt}^\ast~\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast~\X{gt}^\ast, \CELEMS~{\ok}^{N_e}, \CDATAS~{\ok}^{N_d} \}
      \\
      C' = \{ \CGLOBALS~\X{igt}^\ast \}
      \qquad
@@ -656,8 +652,8 @@ Instead, the context :math:`C` for validation of the module's content is constru
          \MTABLES~\table^\ast,
          \MMEMS~\mem^\ast,
          \MGLOBALS~\global^\ast, \\
-         \MELEM~\elem^\ast,
-         \MDATA~\data^\ast,
+         \MELEMS~\elem^\ast,
+         \MDATAS~\data^\ast,
          \MSTART~\start^?,
          \MIMPORTS~\import^\ast,
          \MEXPORTS~\export^\ast \} : \X{it}^\ast \to \X{et}^\ast \\

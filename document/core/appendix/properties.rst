@@ -485,54 +485,6 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }
 
 
-.. index:: element, table, table address, module instance, function index
-
-:math:`\INITELEM~\tableaddr~o~x^n`
-..................................
-
-* The :ref:`external table value <syntax-externval>` :math:`\EVTABLE~\tableaddr` must be :ref:`valid <valid-externval-table>` with some :ref:`external table type <syntax-externtype>` :math:`\ETTABLE~\limits~\FUNCREF`.
-
-* The index :math:`o + n` must be smaller than or equal to :math:`\limits.\LMIN`.
-
-* The :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst` must be :ref:`valid <valid-moduleinst>` with some :ref:`context <context>` :math:`C`.
-
-* Each :ref:`function index <syntax-funcidx>` :math:`x_i` in :math:`x^n` must be defined in the context :math:`C`.
-
-* Then the instruction is valid.
-
-.. math::
-   \frac{
-     S \vdashexternval \EVTABLE~\tableaddr : \ETTABLE~\limits~\FUNCREF
-     \qquad
-     o + n \leq \limits.\LMIN
-     \qquad
-     (C.\CFUNCS[x] = \functype)^n
-   }{
-     S; C \vdashadmininstr \INITELEM~\tableaddr~o~x^n \ok
-   }
-
-
-.. index:: data, memory, memory address, byte
-
-:math:`\INITDATA~\memaddr~o~b^n`
-................................
-
-* The :ref:`external memory value <syntax-externval>` :math:`\EVMEM~\memaddr` must be :ref:`valid <valid-externval-mem>` with some :ref:`external memory type <syntax-externtype>` :math:`\ETMEM~\limits`.
-
-* The index :math:`o + n` must be smaller than or equal to :math:`\limits.\LMIN` divided by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
-
-* Then the instruction is valid.
-
-.. math::
-   \frac{
-     S \vdashexternval \EVMEM~\memaddr : \ETMEM~\limits
-     \qquad
-     o + n \leq \limits.\LMIN \cdot 64\,\F{Ki}
-   }{
-     S; C \vdashadmininstr \INITDATA~\memaddr~o~b^n \ok
-   }
-
-
 .. index:: label, instruction, result type
 
 :math:`\LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END`

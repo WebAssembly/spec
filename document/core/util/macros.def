@@ -179,9 +179,6 @@
 .. |LMIN| mathdef:: \xref{syntax/types}{syntax-limits}{\K{min}}
 .. |LMAX| mathdef:: \xref{syntax/types}{syntax-limits}{\K{max}}
 
-.. |SACTIVE| mathdef:: \xref{syntax/types}{syntax-segtype}{\K{active}}
-.. |SPASSIVE| mathdef:: \xref{syntax/types}{syntax-segtype}{\K{passive}}
-
 .. |ETFUNC| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{func}}
 .. |ETTABLE| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{table}}
 .. |ETMEM| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{mem}}
@@ -197,7 +194,6 @@
 .. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
 .. |elemtype| mathdef:: \xref{syntax/types}{syntax-elemtype}{\X{elemtype}}
 .. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
-.. |segtype| mathdef:: \xref{syntax/types}{syntax-segtype}{\X{segtype}}
 
 .. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
 .. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mut}}
@@ -248,8 +244,8 @@
 .. |MGLOBALS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{globals}}
 .. |MIMPORTS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{imports}}
 .. |MEXPORTS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{exports}}
-.. |MDATA| mathdef:: \xref{syntax/modules}{syntax-module}{\K{data}}
-.. |MELEM| mathdef:: \xref{syntax/modules}{syntax-module}{\K{elem}}
+.. |MDATAS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{datas}}
+.. |MELEMS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{elems}}
 .. |MSTART| mathdef:: \xref{syntax/modules}{syntax-module}{\K{start}}
 
 .. |FTYPE| mathdef:: \xref{syntax/modules}{syntax-func}{\K{type}}
@@ -764,8 +760,8 @@
 .. |CTABLES| mathdef:: \xref{valid/conventions}{context}{\K{tables}}
 .. |CMEMS| mathdef:: \xref{valid/conventions}{context}{\K{mems}}
 .. |CGLOBALS| mathdef:: \xref{valid/conventions}{context}{\K{globals}}
-.. |CELEM| mathdef:: \xref{valid/conventions}{context}{\K{elem}}
-.. |CDATA| mathdef:: \xref{valid/conventions}{context}{\K{data}}
+.. |CELEMS| mathdef:: \xref{valid/conventions}{context}{\K{elems}}
+.. |CDATAS| mathdef:: \xref{valid/conventions}{context}{\K{datas}}
 .. |CLOCALS| mathdef:: \xref{valid/conventions}{context}{\K{locals}}
 .. |CLABELS| mathdef:: \xref{valid/conventions}{context}{\K{labels}}
 .. |CRETURN| mathdef:: \xref{valid/conventions}{context}{\K{return}}
@@ -934,8 +930,6 @@
 
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
-.. |INITELEM| mathdef:: \xref{exec/runtime}{syntax-init_elem}{\K{init\_elem}}
-.. |INITDATA| mathdef:: \xref{exec/runtime}{syntax-init_data}{\K{init\_data}}
 .. |TABLEGET| mathdef:: \xref{exec/runtime}{syntax-table_get}{\K{table.get}}
 .. |TABLESET| mathdef:: \xref{exec/runtime}{syntax-table_set}{\K{table.set}}
 

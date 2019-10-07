@@ -203,13 +203,13 @@
 )
 (assert_return (get $G2 "g") (i32.const 5))
 
-(assert_unlinkable
+(assert_trap
   (module
     (table (import "Mt" "tab") 0 funcref)
     (elem (i32.const 10) $f)
     (func $f)
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
 
 (assert_unlinkable
@@ -226,26 +226,26 @@
 
 ;; Unlike in the v1 spec, the elements stored before an out-of-bounds access
 ;; persist after the instantiation failure.
-(assert_unlinkable
+(assert_trap
   (module
     (table (import "Mt" "tab") 10 funcref)
     (func $f (result i32) (i32.const 0))
     (elem (i32.const 7) $f)
     (elem (i32.const 12) $f)  ;; out of bounds
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
 (assert_return (invoke $Mt "call" (i32.const 7)) (i32.const 0))
 
-(assert_unlinkable
+(assert_trap
   (module
     (table (import "Mt" "tab") 10 funcref)
     (func $f (result i32) (i32.const 0))
     (elem (i32.const 7) $f)
     (memory 1)
-    (data (i32.const 0x10000) "d") ;; out of bounds
+    (data (i32.const 0x10000) "d")  ;; out of bounds
   )
-  "data segment does not fit"
+  "out of bounds"
 )
 (assert_return (invoke $Mt "call" (i32.const 7)) (i32.const 0))
 
@@ -297,12 +297,12 @@
   (data (i32.const 0xffff) "a")
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (memory (import "Mm" "mem") 0)
     (data (i32.const 0x10000) "a")
   )
-  "data segment does not fit"
+  "out of bounds"
 )
 
 (module $Pm
@@ -335,25 +335,25 @@
 
 ;; Unlike in v1 spec, bytes written before an out-of-bounds access persist
 ;; after the instantiation failure.
-(assert_unlinkable
+(assert_trap
   (module
     (memory (import "Mm" "mem") 1)
     (data (i32.const 0) "abc")
     (data (i32.const 0x50000) "d") ;; out of bounds
   )
-  "data segment does not fit"
+  "out of bounds"
 )
 (assert_return (invoke $Mm "load" (i32.const 0)) (i32.const 97))
 
-(assert_unlinkable
+(assert_trap
   (module
     (memory (import "Mm" "mem") 1)
     (data (i32.const 0) "abc")
     (table 0 funcref)
     (func)
-    (elem (i32.const 0) 0) ;; out of bounds
+    (elem (i32.const 0) 0)  ;; out of bounds
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
 (assert_return (invoke $Mm "load" (i32.const 0)) (i32.const 97))
 

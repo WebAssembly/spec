@@ -321,7 +321,7 @@ Element Section
 ~~~~~~~~~~~~~~~
 
 The *element section* has the id 9.
-It decodes into a vector of :ref:`element segments <syntax-elem>` that represent the |MELEM| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`element segments <syntax-elem>` that represent the |MELEMS| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
@@ -354,7 +354,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
    bit 2 indicates the use of element type and element expressions instead of element kind and element indices.
 
    In the current version of WebAssembly, at most one table may be defined or
-   imported in a single module, so all valid :ref:`active <syntax-active>`
+   imported in a single module, so all valid :ref:`active <syntax-elem>`
    element segments have a |ETABLE| value of :math:`0`.
 
    Additional element kinds may be added in future versions of WebAssembly.
@@ -429,7 +429,7 @@ Data Section
 ~~~~~~~~~~~~
 
 The *data section* has the id 11.
-It decodes into a vector of :ref:`data segments <syntax-data>` that represent the |MDATA| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`data segments <syntax-data>` that represent the |MDATAS| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
@@ -450,7 +450,7 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
    bit 1 indicates the presence of an explicit memory index for an active segment.
 
    In the current version of WebAssembly, at most one memory may be defined or
-   imported in a single module, so all valid :ref:`active <syntax-active>` data
+   imported in a single module, so all valid :ref:`active <syntax-data>` data
    segments have a |DMEM| value of :math:`0`.
 
 
@@ -543,8 +543,8 @@ Furthermore, it must be present if any :math:`data index <syntax-dataidx>` occur
        \MTABLES~\table^\ast, \\
        \MMEMS~\mem^\ast, \\
        \MGLOBALS~\global^\ast, \\
-       \MELEM~\elem^\ast, \\
-       \MDATA~\data^m, \\
+       \MELEMS~\elem^\ast, \\
+       \MDATAS~\data^m, \\
        \MSTART~\start^?, \\
        \MIMPORTS~\import^\ast, \\
        \MEXPORTS~\export^\ast ~\} \\

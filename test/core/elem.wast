@@ -162,31 +162,31 @@
 
 ;; Invalid bounds for elements
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 0 funcref)
     (func $f)
     (elem (i32.const 0) $f)
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 0 0 funcref)
     (func $f)
     (elem (i32.const 0) $f)
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 0 1 funcref)
     (func $f)
     (elem (i32.const 0) $f)
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
 
 ;; Writing 0 elems outside of bounds is allowed now.
@@ -195,72 +195,72 @@
   (elem (i32.const 1))
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 10 funcref)
     (func $f)
     (elem (i32.const 10) $f)
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
-(assert_unlinkable
+(assert_trap
   (module
     (import "spectest" "table" (table 10 funcref))
     (func $f)
     (elem (i32.const 10) $f)
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 10 20 funcref)
     (func $f)
     (elem (i32.const 10) $f)
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
-(assert_unlinkable
+(assert_trap
   (module
     (import "spectest" "table" (table 10 funcref))
     (func $f)
     (elem (i32.const 10) $f)
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 10 funcref)
     (func $f)
     (elem (i32.const -1) $f)
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
-(assert_unlinkable
+(assert_trap
   (module
     (import "spectest" "table" (table 10 funcref))
     (func $f)
     (elem (i32.const -1) $f)
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (table 10 funcref)
     (func $f)
     (elem (i32.const -10) $f)
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
-(assert_unlinkable
+(assert_trap
   (module
     (import "spectest" "table" (table 10 funcref))
     (func $f)
     (elem (i32.const -10) $f)
   )
-  "elements segment does not fit"
+  "out of bounds"
 )
 
 ;; Element without table

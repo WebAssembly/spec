@@ -641,8 +641,8 @@ The name serves a documentary role only.
      \X{gl}{:}\Tglobal_I &\Rightarrow& \{\MGLOBALS~\X{gl}\} \\ |&
      \X{ex}{:}\Texport_I &\Rightarrow& \{\MEXPORTS~\X{ex}\} \\ |&
      \X{st}{:}\Tstart_I &\Rightarrow& \{\MSTART~\X{st}\} \\ |&
-     \X{el}{:}\Telem_I &\Rightarrow& \{\MELEM~\X{el}\} \\ |&
-     \X{da}{:}\Tdata_I &\Rightarrow& \{\MDATA~\X{da}\} \\
+     \X{el}{:}\Telem_I &\Rightarrow& \{\MELEMS~\X{el}\} \\ |&
+     \X{da}{:}\Tdata_I &\Rightarrow& \{\MDATAS~\X{da}\} \\
    \end{array}
    \end{array}
 

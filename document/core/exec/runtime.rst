@@ -489,8 +489,6 @@ Conventions
    pair:: abstract syntax; administrative instruction
 .. _syntax-trap:
 .. _syntax-invoke:
-.. _syntax-init_elem:
-.. _syntax-init_data:
 .. _syntax-table_get:
 .. _syntax-table_set:
 .. _syntax-instr-admin:
@@ -509,8 +507,6 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
      \dots \\ &&|&
      \TRAP \\ &&|&
      \INVOKE~\funcaddr \\ &&|&
-     \INITELEM~\tableaddr~\u32~\funcidx^\ast \\ &&|&
-     \INITDATA~\memaddr~\u32~\byte^\ast \\ &&|&
      \TABLEGET \\ &&|&
      \TABLESET \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
@@ -522,11 +518,6 @@ Traps are bubbled up through nested instruction sequences, ultimately reducing t
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.
-
-The |INITELEM| and |INITDATA| instructions perform initialization of :ref:`element <syntax-elem>` and :ref:`data <syntax-data>` segments during module :ref:`instantiation <exec-instantiation>`.
-
-.. note::
-   The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.
 
 The |TABLEGET| and |TABLESET| instructions are used to simplify the specification of the |TABLEINIT| and |TABLECOPY| instructions.
 
