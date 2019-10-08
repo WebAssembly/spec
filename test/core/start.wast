@@ -100,6 +100,6 @@
 )
 
 (assert_malformed
-  (module (func $a (unreachable)) (func $b (unreachable)) (start $a) (start $b))
+  (module quote "(module (func $a (unreachable)) (func $b (unreachable)) (start $a) (start $b))")
   "multiple start sections"
 )

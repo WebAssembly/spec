@@ -807,5 +807,5 @@
     "\02\00"
     "\0b"                      ;; end
   )
-  "multiple start sections"
+  "junk after last section"
 )
