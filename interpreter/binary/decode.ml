@@ -126,6 +126,12 @@ let sized f s =
   require (pos s = start + size) s start "section size mismatch";
   x
 
+let bits i j flags =
+  Int32.(to_int
+    (logand (shift_right flags i) (lognot (shift_left (-1l) (j + 1)))))
+
+let bit i flags = bits i i flags = 1
+
 
 (* Types *)
 
@@ -196,12 +202,11 @@ let end_ s = expect 0x0b s "END opcode expected"
 
 let memop s =
   let flags = vu32 s in
-  let has_var = (Int32.logand flags 0x40l = 0l) in
-  let align = Int32.(logand flags (lognot 0x40l)) in
-  require (I32.le_u align 32l) s (pos s - 1) "invalid memop flags";
+  let align = bits 0 5 flags in
+  require (bits 7 31 flags = 0) s (pos s - 1) "invalid memop flags";
   let offset = vu32 s in
-  let x = if has_var then Source.(0l @@ no_region) else at var s in 
-  x, Int32.to_int align, offset
+  let x = if bit 6 flags then at var s else Source.(0l @@ no_region) in 
+  x, align, offset
 
 let rec instr s =
   let pos = pos s in

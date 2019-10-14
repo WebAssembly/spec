@@ -26,7 +26,7 @@
       (br_if 1 (i32.eq (local.get $i) (i32.const 23)))
       (i32.store8 $mem2 (local.get $i) (i32.load8_u $mem1 (local.get $i)))
       (local.set $i (i32.add (local.get $i) (i32.const 1)))
-      (br 0)
+      (br $cont)
     )
   )
 
@@ -37,7 +37,7 @@
       (br_if 1 (i32.eq (local.get $i) (i32.const 54)))
       (i32.store8 $mem1 (local.get $i) (i32.load8_u $mem2 (local.get $i)))
       (local.set $i (i32.add (local.get $i) (i32.const 1)))
-      (br 0)
+      (br $cont)
     )
   )
 )
