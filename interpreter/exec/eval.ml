@@ -192,8 +192,8 @@ let rec step (c : config) : config =
         with Global.NotMutable -> Crash.error e.at "write to immutable global"
            | Global.Type -> Crash.error e.at "type mismatch at global write")
 
-      | Load {offset; ty; sz; _}, I32 i :: vs' ->
-        let mem = memory frame.inst (0l @@ e.at) in
+      | Load (x, {offset; ty; sz; _}), I32 i :: vs' ->
+        let mem = memory frame.inst x in
         let addr = I64_convert.extend_i32_u i in
         (try
           let v =
@@ -203,8 +203,8 @@ let rec step (c : config) : config =
           in v :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | Store {offset; sz; _}, v :: I32 i :: vs' ->
-        let mem = memory frame.inst (0l @@ e.at) in
+      | Store (x, {offset; sz; _}), v :: I32 i :: vs' ->
+        let mem = memory frame.inst x in
         let addr = I64_convert.extend_i32_u i in
         (try
           (match sz with
@@ -214,12 +214,12 @@ let rec step (c : config) : config =
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | MemorySize, vs ->
-        let mem = memory frame.inst (0l @@ e.at) in
+      | MemorySize x, vs ->
+        let mem = memory frame.inst x in
         I32 (Memory.size mem) :: vs, []
 
-      | MemoryGrow, I32 delta :: vs' ->
-        let mem = memory frame.inst (0l @@ e.at) in
+      | MemoryGrow x, I32 delta :: vs' ->
+        let mem = memory frame.inst x in
         let old_size = Memory.size mem in
         let result =
           try Memory.grow mem delta; old_size

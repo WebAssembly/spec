@@ -138,7 +138,6 @@ let type_cvtop at = function
 (* Expressions *)
 
 let check_memop (c : context) (memop : 'a memop) get_sz at =
-  ignore (memory c (0l @@ at));
   let size =
     match get_sz memop.sz with
     | None -> size memop.ty
@@ -248,20 +247,22 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     require (mut = Mutable) x.at "global is immutable";
     [t] --> []
 
-  | Load memop ->
+  | Load (x, memop) ->
+    ignore (memory c x);
     check_memop c memop (Lib.Option.map fst) e.at;
     [I32Type] --> [memop.ty]
 
-  | Store memop ->
-    check_memop c memop (fun sz -> sz) e.at;
+  | Store (x, memop) ->
+    ignore (memory c x);
+    check_memop c memop Lib.Fun.id e.at;
     [I32Type; memop.ty] --> []
 
-  | MemorySize ->
-    ignore (memory c (0l @@ e.at));
+  | MemorySize x ->
+    ignore (memory c x);
     [] --> [I32Type]
 
-  | MemoryGrow ->
-    ignore (memory c (0l @@ e.at));
+  | MemoryGrow x ->
+    ignore (memory c x);
     [I32Type] --> [I32Type]
 
   | Const v ->
@@ -469,6 +470,4 @@ let check_module (m : module_) =
   check_start c start;
   ignore (List.fold_left (check_export c) NameSet.empty exports);
   require (List.length c.tables <= 1) m.at
-    "multiple tables are not allowed (yet)";
-  require (List.length c.memories <= 1) m.at
-    "multiple memories are not allowed (yet)"
+    "multiple tables are not allowed (yet)"

@@ -135,9 +135,15 @@ let encode m =
     let op n = u8 n
     let end_ () = op 0x0b
 
-    let memop {align; offset; _} = vu32 (Int32.of_int align); vu32 offset
-
     let var x = vu32 x.it
+
+    let memop x {align; offset; _} =
+      let has_var = x.it <> 0l in
+      let flags =
+        Int32.(logor (of_int align) (if has_var then 0x40l else 0x00l)) in
+      vu32 flags;
+      vu32 offset;
+      if has_var then var x
 
     let rec instr e =
       match e.it with
@@ -167,49 +173,64 @@ let encode m =
       | GlobalGet x -> op 0x23; var x
       | GlobalSet x -> op 0x24; var x
 
-      | Load ({ty = I32Type; sz = None; _} as mo) -> op 0x28; memop mo
-      | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x29; memop mo
-      | Load ({ty = F32Type; sz = None; _} as mo) -> op 0x2a; memop mo
-      | Load ({ty = F64Type; sz = None; _} as mo) -> op 0x2b; memop mo
-      | Load ({ty = I32Type; sz = Some (Pack8, SX); _} as mo) ->
-        op 0x2c; memop mo
-      | Load ({ty = I32Type; sz = Some (Pack8, ZX); _} as mo) ->
-        op 0x2d; memop mo
-      | Load ({ty = I32Type; sz = Some (Pack16, SX); _} as mo) ->
-        op 0x2e; memop mo
-      | Load ({ty = I32Type; sz = Some (Pack16, ZX); _} as mo) ->
-        op 0x2f; memop mo
-      | Load {ty = I32Type; sz = Some (Pack32, _); _} ->
+      | Load (x, ({ty = I32Type; sz = None; _} as mo)) ->
+        op 0x28; memop x mo
+      | Load (x, ({ty = I64Type; sz = None; _} as mo)) ->
+        op 0x29; memop x mo
+      | Load (x, ({ty = F32Type; sz = None; _} as mo)) ->
+        op 0x2a; memop x mo
+      | Load (x, ({ty = F64Type; sz = None; _} as mo)) ->
+        op 0x2b; memop x mo
+      | Load (x, ({ty = I32Type; sz = Some (Pack8, SX); _} as mo)) ->
+        op 0x2c; memop x mo
+      | Load (x, ({ty = I32Type; sz = Some (Pack8, ZX); _} as mo)) ->
+        op 0x2d; memop x mo
+      | Load (x, ({ty = I32Type; sz = Some (Pack16, SX); _} as mo)) ->
+        op 0x2e; memop x mo
+      | Load (x, ({ty = I32Type; sz = Some (Pack16, ZX); _} as mo)) ->
+        op 0x2f; memop x mo
+      | Load (x, {ty = I32Type; sz = Some (Pack32, _); _}) ->
         assert false
-      | Load ({ty = I64Type; sz = Some (Pack8, SX); _} as mo) ->
-        op 0x30; memop mo
-      | Load ({ty = I64Type; sz = Some (Pack8, ZX); _} as mo) ->
-        op 0x31; memop mo
-      | Load ({ty = I64Type; sz = Some (Pack16, SX); _} as mo) ->
-        op 0x32; memop mo
-      | Load ({ty = I64Type; sz = Some (Pack16, ZX); _} as mo) ->
-        op 0x33; memop mo
-      | Load ({ty = I64Type; sz = Some (Pack32, SX); _} as mo) ->
-        op 0x34; memop mo
-      | Load ({ty = I64Type; sz = Some (Pack32, ZX); _} as mo) ->
-        op 0x35; memop mo
-      | Load {ty = F32Type | F64Type; sz = Some _; _} ->
+      | Load (x, ({ty = I64Type; sz = Some (Pack8, SX); _} as mo)) ->
+        op 0x30; memop x mo
+      | Load (x, ({ty = I64Type; sz = Some (Pack8, ZX); _} as mo)) ->
+        op 0x31; memop x mo
+      | Load (x, ({ty = I64Type; sz = Some (Pack16, SX); _} as mo)) ->
+        op 0x32; memop x mo
+      | Load (x, ({ty = I64Type; sz = Some (Pack16, ZX); _} as mo)) ->
+        op 0x33; memop x mo
+      | Load (x, ({ty = I64Type; sz = Some (Pack32, SX); _} as mo)) ->
+        op 0x34; memop x mo
+      | Load (x, ({ty = I64Type; sz = Some (Pack32, ZX); _} as mo)) ->
+        op 0x35; memop x mo
+      | Load (x, {ty = F32Type | F64Type; sz = Some _; _}) ->
         assert false
 
-      | Store ({ty = I32Type; sz = None; _} as mo) -> op 0x36; memop mo
-      | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x37; memop mo
-      | Store ({ty = F32Type; sz = None; _} as mo) -> op 0x38; memop mo
-      | Store ({ty = F64Type; sz = None; _} as mo) -> op 0x39; memop mo
-      | Store ({ty = I32Type; sz = Some Pack8; _} as mo) -> op 0x3a; memop mo
-      | Store ({ty = I32Type; sz = Some Pack16; _} as mo) -> op 0x3b; memop mo
-      | Store {ty = I32Type; sz = Some Pack32; _} -> assert false
-      | Store ({ty = I64Type; sz = Some Pack8; _} as mo) -> op 0x3c; memop mo
-      | Store ({ty = I64Type; sz = Some Pack16; _} as mo) -> op 0x3d; memop mo
-      | Store ({ty = I64Type; sz = Some Pack32; _} as mo) -> op 0x3e; memop mo
-      | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
+      | Store (x, ({ty = I32Type; sz = None; _} as mo)) ->
+        op 0x36; memop x mo
+      | Store (x, ({ty = I64Type; sz = None; _} as mo)) ->
+        op 0x37; memop x mo
+      | Store (x, ({ty = F32Type; sz = None; _} as mo)) ->
+        op 0x38; memop x mo
+      | Store (x, ({ty = F64Type; sz = None; _} as mo)) ->
+        op 0x39; memop x mo
+      | Store (x, ({ty = I32Type; sz = Some Pack8; _} as mo)) ->
+        op 0x3a; memop x mo
+      | Store (x, ({ty = I32Type; sz = Some Pack16; _} as mo)) ->
+        op 0x3b; memop x mo
+      | Store (x, {ty = I32Type; sz = Some Pack32; _}) ->
+        assert false
+      | Store (x, ({ty = I64Type; sz = Some Pack8; _} as mo)) ->
+        op 0x3c; memop x mo
+      | Store (x, ({ty = I64Type; sz = Some Pack16; _} as mo)) ->
+        op 0x3d; memop x mo
+      | Store (x, ({ty = I64Type; sz = Some Pack32; _} as mo)) ->
+        op 0x3e; memop x mo
+      | Store (x, {ty = F32Type | F64Type; sz = Some _; _}) ->
+        assert false
 
-      | MemorySize -> op 0x3f; u8 0x00
-      | MemoryGrow -> op 0x40; u8 0x00
+      | MemorySize x -> op 0x3f; var x
+      | MemoryGrow x -> op 0x40; var x
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c
       | Const {it = I64 c; _} -> op 0x42; vs64 c
