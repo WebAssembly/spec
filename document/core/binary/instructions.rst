@@ -133,7 +133,7 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
      a{:}\Bu32~~o{:}\Bu32 &\Rightarrow& 0~\{ \ALIGN~a,~\OFFSET~o \}
        & (\iff a < 2^6) \\ &&|&
      a{:}\Bu32~~o{:}\Bu32~~x{:}\memidx &\Rightarrow& x~\{ \ALIGN~(a - 2^6),~\OFFSET~o \}
-       & (\otherwise) \\
+       & (\iff 2^6 \leq a < 2^7) \\
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{28}~~m{:}\Bmemarg &\Rightarrow& \I32.\LOAD~m \\ &&|&
      \hex{29}~~m{:}\Bmemarg &\Rightarrow& \I64.\LOAD~m \\ &&|&

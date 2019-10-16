@@ -86,13 +86,6 @@ let encode m =
       patch s (p + 3) (lsb ((n lsr 21) lor 0x80));
       patch s (p + 4) (lsb (n lsr 28))
 
-    let bits i j n flags =
-      let w = Int32.(shift_left (of_int n) i) in
-      assert (Int32.(logand flags (shift_left (-1l) (j + 1))) = 0l);
-      Int32.logor w flags
-
-    let bit i b flags = bits i i (if b then 1 else 0) flags
-
     (* Types *)
 
     open Types
@@ -145,10 +138,12 @@ let encode m =
     let var x = vu32 x.it
 
     let memop x {align; offset; _} =
-      let flags = bit 6 (x.it <> 0l) (bits 0 5 align 0l) in
+      let has_var = x.it <> 0l in
+      let flags =
+        Int32.(logor (of_int align) (if has_var then 0x40l else 0x00l)) in
       vu32 flags;
       vu32 offset;
-      if x.it <> 0l then var x
+      if has_var then var x
 
     let rec instr e =
       match e.it with
