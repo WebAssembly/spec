@@ -147,7 +147,7 @@ bikeshed:
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
-	(cd util/katex/ && npm install --only=prod)
+	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
 	python util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
 		>$(BUILDDIR)/html/bikeshed/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/katex/dist/
@@ -268,7 +268,7 @@ latex:
 latexpdf:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo "Running LaTeX files through pdflatex..."
-	$(MAKE) -C $(BUILDDIR)/latex all-pdf
+	$(MAKE) -C $(BUILDDIR)/latex LATEXMKOPTS=" </dev/null" all-pdf >$(BUILDDIR)/latex/LOG 2>&1 || cat $(BUILDDIR)/latex/LOG
 	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
 
 .PHONY: latexpdfja

@@ -226,3 +226,8 @@ Other instructions are checked in a similar manner.
            push_vals(pop_vals(ctrls[n].label_types))
          pop_vals(ctrls[m].label_types)
          unreachable()
+
+.. note::
+   It is an invariant under the current WebAssembly instruction set that an operand of :code:`Unknown` type is never duplicated on the stack.
+   This would change if the language were extended with stack instructions like :code:`dup`.
+   Under such an extension, the above algorithm would need to be refined by replacing the :code:`Unknown` type with proper *type variables* to ensure that all uses are consistent.

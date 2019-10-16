@@ -6,7 +6,7 @@ Status: ED
 Level: 1
 TR: https://www.w3.org/TR/wasm-web-api-1/
 ED: https://webassembly.github.io/spec/web-api/
-Editor: Daniel Ehrenberg (Igalia)
+Editor: Ms2ger (Igalia)
 Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader web platform.
 Markup Shorthands: css no, markdown yes
@@ -75,7 +75,7 @@ url:https://w3c.github.io/webappsec-secure-contexts/#environment-settings-object
 
 <pre class='link-defaults'>
 spec:ecma-262; type:exception; for:ECMAScript; text:TypeError
-spec:promises-guide-1; type:dfn; text:resolve
+spec:webidl; type:dfn; text:resolve
 </pre>
 
 This document builds off of the WebAssembly specification [[WEBASSEMBLY]] and the WebAssembly JavaScript embedding [[WASMJS]].

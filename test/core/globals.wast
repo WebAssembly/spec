@@ -245,7 +245,7 @@
 (assert_return (invoke "as-compare-operand") (i32.const 1))
 
 (assert_invalid
-  (module (global f32 (f32.const 0)) (func (global.set 0 (i32.const 1))))
+  (module (global f32 (f32.const 0)) (func (global.set 0 (f32.const 1))))
   "global is immutable"
 )
 
@@ -314,7 +314,7 @@
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\02\94\80\80\80\00"             ;; import section
+    "\02\98\80\80\80\00"             ;; import section
       "\01"                          ;; length 1
       "\08\73\70\65\63\74\65\73\74"  ;; "spectest"
       "\0a\67\6c\6f\62\61\6c\5f\69\33\32" ;; "global_i32"
@@ -327,7 +327,7 @@
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\02\94\80\80\80\00"             ;; import section
+    "\02\98\80\80\80\00"             ;; import section
       "\01"                          ;; length 1
       "\08\73\70\65\63\74\65\73\74"  ;; "spectest"
       "\0a\67\6c\6f\62\61\6c\5f\69\33\32" ;; "global_i32"

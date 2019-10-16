@@ -626,19 +626,20 @@ let code_section s =
 (* Element section *)
 
 let segment dat kind s =
-  match u8 s with
-  | 0 ->
+  let pos = pos s in
+  match vu32 s with
+  | 0l ->
     let index = Source.(0l @@ Source.no_region) in
     let offset = const s in
     let init = dat s in
     {index; offset; init}
-  | 2 ->
+  | 2l ->
     let index = at var s in
     let offset = const s in
     let _ = kind s in
     let init = dat s in
     {index; offset; init}
-  | _ -> error s (pos s - 1) "invalid segment kind"
+  | _ -> error s pos "invalid segment kind"
 
 let table_segment s =
   segment (vec (at var)) elem_kind s

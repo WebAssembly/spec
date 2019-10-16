@@ -426,10 +426,10 @@ Intuitively, :math:`\instr^\ast` is the *continuation* to execute when the branc
 
    When branching, the empty continuation ends the targeted block, such that execution can proceed with consecutive instructions.
 
-Frames
-......
+Activations and Frames
+......................
 
-Activation frames carry the return arity of the respective function,
+Activation frames carry the return arity :math:`n` of the respective function,
 hold the values of its :ref:`locals <syntax-local>` (including arguments) in the order corresponding to their static :ref:`local indices <syntax-localidx>`,
 and a reference to the function's own :ref:`module instance <syntax-moduleinst>`:
 
@@ -539,7 +539,7 @@ That way, the end of the inner instruction sequence is known when part of an out
 Block Contexts
 ..............
 
-In order to specify the reduction of :ref:`branches <syntax-instr-control>`, the following syntax of *block contexts* is defined, indexed by the count :math:`k` of labels surrounding the hole:
+In order to specify the reduction of :ref:`branches <syntax-instr-control>`, the following syntax of *block contexts* is defined, indexed by the count :math:`k` of labels surrounding a *hole* :math:`[\_]` that marks the place where the next step of computation is taking place:
 
 .. math::
    \begin{array}{llll}
@@ -573,7 +573,7 @@ Configurations
 A *configuration* consists of the current :ref:`store <syntax-store>` and an executing *thread*.
 
 A thread is a computation over :ref:`instructions <syntax-instr>`
-that operates relative to a current :ref:`frame <syntax-frame>` referring to the home :ref:`module instance <syntax-moduleinst>` that the computation runs in.
+that operates relative to a current :ref:`frame <syntax-frame>` referring to the :ref:`module instance <syntax-moduleinst>` in which the computation runs, i.e., where the current function originates from.
 
 .. math::
    \begin{array}{llcl}

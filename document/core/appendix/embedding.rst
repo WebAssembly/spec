@@ -16,7 +16,7 @@ The interface is intended to be complete, in the sense that an embedder does not
    For example, an implementation may not support :ref:`parsing <embed-module-parse>` of the :ref:`text format <text>`.
 
 Types
-.....
+~~~~~
 
 In the description of the embedder interface, syntactic classes from the :ref:`abstract syntax <syntax>` and the :ref:`runtime's abstract machine <syntax-runtime>` are used as names for variables that range over the possible objects from that class.
 Hence, these syntactic classes can also be interpreted as types.
@@ -27,7 +27,7 @@ For numeric parameters, notation like :math:`n:\u32` is used to specify a symbol
 .. _embed-error:
 
 Errors
-......
+~~~~~~
 
 Failure of an interface operation is indicated by an auxiliary syntactic class:
 
@@ -44,7 +44,7 @@ In addition to the error conditions specified explicitly in this section, implem
 
 
 Pre- and Post-Conditions
-........................
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Some operations state *pre-conditions* about their arguments or *post-conditions* about their results.
 It is the embedder's responsibility to meet the pre-conditions.

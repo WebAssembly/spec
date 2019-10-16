@@ -44,6 +44,14 @@ struct
       let len = min n (String.length s - i) in
       if len = 0 then [] else String.sub s i len :: loop (i + len)
     in loop 0
+
+  let rec find_from_opt f s i =
+    if i = String.length s then
+      None
+    else if f s.[i] then
+      Some i
+    else
+      find_from_opt f s (i + 1)
 end
 
 module List =
