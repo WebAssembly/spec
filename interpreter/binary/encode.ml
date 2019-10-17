@@ -95,6 +95,7 @@ let encode m =
       | I64Type -> vs7 (-0x02)
       | F32Type -> vs7 (-0x03)
       | F64Type -> vs7 (-0x04)
+      | V128Type -> failwith "TODO v128"
 
     let elem_type = function
       | FuncRefType -> vs7 (-0x10)
@@ -195,6 +196,10 @@ let encode m =
         op 0x35; memop mo
       | Load {ty = F32Type | F64Type; sz = Some _; _} ->
         assert false
+      | Load {ty = V128Type; sz = None; _} ->
+        failwith "TODO v128"
+      | Load {ty = V128Type; sz = Some _; _} ->
+        failwith "TODO v128"
 
       | Store ({ty = I32Type; sz = None; _} as mo) -> op 0x36; memop mo
       | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x37; memop mo
@@ -207,6 +212,10 @@ let encode m =
       | Store ({ty = I64Type; sz = Some Pack16; _} as mo) -> op 0x3d; memop mo
       | Store ({ty = I64Type; sz = Some Pack32; _} as mo) -> op 0x3e; memop mo
       | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
+      | Store {ty = V128Type; sz = None; _} ->
+        failwith "TODO v128"
+      | Store {ty = V128Type; sz = Some _; _} ->
+        failwith "TODO v128"
 
       | MemorySize -> op 0x3f; u8 0x00
       | MemoryGrow -> op 0x40; u8 0x00
@@ -215,11 +224,14 @@ let encode m =
       | Const {it = I64 c; _} -> op 0x42; vs64 c
       | Const {it = F32 c; _} -> op 0x43; f32 c
       | Const {it = F64 c; _} -> op 0x44; f64 c
+      | Const {it = V128 c; _} ->
+        failwith "TODO v128"
 
       | Test (I32 I32Op.Eqz) -> op 0x45
       | Test (I64 I64Op.Eqz) -> op 0x50
       | Test (F32 _) -> assert false
       | Test (F64 _) -> assert false
+      | Test (V128 _) -> assert false
 
       | Compare (I32 I32Op.Eq) -> op 0x46
       | Compare (I32 I32Op.Ne) -> op 0x47
@@ -256,6 +268,7 @@ let encode m =
       | Compare (F64 F64Op.Gt) -> op 0x64
       | Compare (F64 F64Op.Le) -> op 0x65
       | Compare (F64 F64Op.Ge) -> op 0x66
+      | Compare (V128 _) -> failwith "TODO v128"
 
       | Unary (I32 I32Op.Clz) -> op 0x67
       | Unary (I32 I32Op.Ctz) -> op 0x68
@@ -280,6 +293,7 @@ let encode m =
       | Unary (F64 F64Op.Trunc) -> op 0x9d
       | Unary (F64 F64Op.Nearest) -> op 0x9e
       | Unary (F64 F64Op.Sqrt) -> op 0x9f
+      | Unary (V128 _) -> failwith "TODO v128"
 
       | Binary (I32 I32Op.Add) -> op 0x6a
       | Binary (I32 I32Op.Sub) -> op 0x6b
@@ -328,6 +342,7 @@ let encode m =
       | Binary (F64 F64Op.Min) -> op 0xa4
       | Binary (F64 F64Op.Max) -> op 0xa5
       | Binary (F64 F64Op.CopySign) -> op 0xa6
+      | Binary (V128 _) -> failwith "TODO v128"
 
       | Convert (I32 I32Op.ExtendSI32) -> assert false
       | Convert (I32 I32Op.ExtendUI32) -> assert false
@@ -362,6 +377,7 @@ let encode m =
       | Convert (F64 F64Op.PromoteF32) -> op 0xbb
       | Convert (F64 F64Op.DemoteF64) -> assert false
       | Convert (F64 F64Op.ReinterpretInt) -> op 0xbf
+      | Convert (V128 _) -> failwith "TODO v128"
 
     let const c =
       list instr c.it; end_ ()

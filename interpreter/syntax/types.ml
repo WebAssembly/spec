@@ -1,6 +1,6 @@
 (* Types *)
 
-type value_type = I32Type | I64Type | F32Type | F64Type
+type value_type = I32Type | I64Type | F32Type | F64Type | V128Type
 type elem_type = FuncRefType
 type stack_type = value_type list
 type func_type = FuncType of stack_type * stack_type
@@ -22,6 +22,7 @@ type extern_type =
 let size = function
   | I32Type | F32Type -> 4
   | I64Type | F64Type -> 8
+  | V128Type -> 16
 
 
 (* Subtyping *)
@@ -73,6 +74,7 @@ let string_of_value_type = function
   | I64Type -> "i64"
   | F32Type -> "f32"
   | F64Type -> "f64"
+  | V128Type -> "v128"
 
 let string_of_value_types = function
   | [t] -> string_of_value_type t
