@@ -226,7 +226,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    \frac{
      ((S \vdash \EVFUNC~\X{fa} : \ETFUNC~\functype)^?)^n
      \qquad
-     \vdashlimits \{\LMIN~n, \LMAX~m^?\} \ok
+     \vdashtabletype \{\LMIN~n, \LMAX~m^?\}~\FUNCREF \ok
    }{
      S \vdashtableinst \{ \TIELEM~(\X{fa}^?)^n, \TIMAX~m^? \} : \{\LMIN~n, \LMAX~m^?\}~\FUNCREF
    }
@@ -244,7 +244,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 .. math::
    \frac{
-     \vdashlimits \{\LMIN~n, \LMAX~m^?\} \ok
+     \vdashmemtype \{\LMIN~n, \LMAX~m^?\} \ok
    }{
      S \vdashmeminst \{ \MIDATA~b^n, \MIMAX~m^? \} : \{\LMIN~n, \LMAX~m^?\}
    }
