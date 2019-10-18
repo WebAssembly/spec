@@ -253,14 +253,14 @@ That way, the function itself is able to make sufficient assumptions about futur
 <li>Or the <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{func}}~\mathit{fa}\)</span> must be <a class="reference internal" href="../exec/modules.html#valid-externval-func"><span class="std std-ref">valid</span></a> with some <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\mathit{ft}\)</span>.</li>
 </ul>
 </li>
-<li>The <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a> <span class="math notranslate nohighlight">\(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}\)</span> must be <a class="reference internal" href="../valid/types.html#valid-limits"><span class="std std-ref">valid</span></a>.</li>
+<li>The <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a> <span class="math notranslate nohighlight">\(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}\)</span> must be <a class="reference internal" href="../valid/types.html#valid-limits"><span class="std std-ref">valid</span></a> within range <span class="math notranslate nohighlight">\(2^{32}\)</span>.</li>
 <li>Then the table instance is valid with <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate nohighlight">\(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}~\href{../syntax/types.html#syntax-elemtype}{\mathsf{funcref}}\)</span>.</li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
   ((S \vdash \href{../exec/runtime.html#syntax-externval}{\mathsf{func}}~\mathit{fa} : \href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}})^?)^n
   \qquad
-  \href{../valid/types.html#valid-limits}{\vdash} \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\} \mathrel{\mbox{ok}}
+  \href{../valid/types.html#valid-limits}{\vdash} \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\} : 2^{32}
 }{
   S \href{../appendix/properties.html#valid-tableinst}{\vdash} \{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}~(\mathit{fa}^?)^n, \href{../exec/runtime.html#syntax-tableinst}{\mathsf{max}}~m^? \} : \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}~\href{../syntax/types.html#syntax-elemtype}{\mathsf{funcref}}
 }\]</div>
@@ -268,12 +268,12 @@ That way, the function itself is able to make sufficient assumptions about futur
 <div class="section" id="memory-instances">
 <span id="valid-meminst"></span><span id="index-6"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">Memory Instances</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~b^n, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \}\)</span><a class="headerlink" href="#memory-instances" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a> <span class="math notranslate nohighlight">\(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}\)</span> must be <a class="reference internal" href="../valid/types.html#valid-limits"><span class="std std-ref">valid</span></a>.</li>
+<li>The <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a> <span class="math notranslate nohighlight">\(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}\)</span> must be <a class="reference internal" href="../valid/types.html#valid-limits"><span class="std std-ref">valid</span></a> within range <span class="math notranslate nohighlight">\(2^{16}\)</span>.</li>
 <li>Then the memory instance is valid with <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math notranslate nohighlight">\(\{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}\)</span>.</li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
-  \href{../valid/types.html#valid-limits}{\vdash} \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\} \mathrel{\mbox{ok}}
+  \href{../valid/types.html#valid-limits}{\vdash} \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\} : 2^{16}
 }{
   S \href{../appendix/properties.html#valid-meminst}{\vdash} \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~b^n, \href{../exec/runtime.html#syntax-meminst}{\mathsf{max}}~m^? \} : \{\href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^?\}
 }\]</div>
