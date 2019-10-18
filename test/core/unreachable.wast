@@ -107,7 +107,7 @@
   (func (export "as-if-else") (param i32 i32) (result i32)
     (if (result i32) (local.get 0) (then (local.get 1)) (else (unreachable)))
   )
-  (func (export "as-if-then-no-else") (param i32 i32)
+  (func (export "as-if-then-no-else") (param i32 i32) (result i32)
     (if (local.get 0) (then (unreachable))) (local.get 1)
   )
 
