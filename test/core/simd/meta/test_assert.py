@@ -10,7 +10,7 @@ TODO: Add more assertions
 
 
 # Generate assert_return to test
-class AssertReturn(object):
+class AssertReturn:
 
     instruction = ''
     instruction_param = ''
@@ -18,10 +18,6 @@ class AssertReturn(object):
 
     def __init__(self, instruction, instruction_param, expected_result):
         super(AssertReturn, self).__init__()
-
-        # Check the init parameters
-        if not instruction or not instruction_param or not expected_result:
-            raise Exception('AssertReturn: wrong param.')
 
         # Convert to list if got str
         if isinstance(instruction_param, str):
@@ -49,7 +45,7 @@ class AssertReturn(object):
         results = []
         for result in self.expected_result:
             white_space = ' '
-            if len(result) != 0:
+            if len(params) != 0 or len(results) != 0:
                 white_space = '\n ' + ' ' * head_len
             results.append(white_space + result)
 

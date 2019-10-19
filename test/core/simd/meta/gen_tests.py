@@ -13,6 +13,14 @@ SUBMODULES = (
     'simd_i16x8_cmp',
     'simd_i32x4_cmp',
     'simd_f32x4_cmp',
+    'simd_f64x2_cmp',
+    'simd_i8x16_arith',
+    'simd_i16x8_arith',
+    'simd_i32x4_arith',
+    'simd_f32x4_arith',
+    'simd_sat_arith',
+    'simd_bitwise',
+    'simd_f32x4',
 )
 
 
@@ -24,6 +32,10 @@ def gen_group_tests(mod_name):
 
 
 def main():
+    """
+    Default program entry
+    """
+
     parser = argparse.ArgumentParser(
         description='Front-end script to call other modules to generate SIMD tests')
     parser.add_argument('-a', '--all', dest='gen_all', action='store_true',

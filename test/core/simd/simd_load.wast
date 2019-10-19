@@ -64,20 +64,16 @@
 (module (memory 1)
   (data (offset (i32.const 0))  "\02\00\00\00\02\00\00\00\02\00\00\00\02\00\00\00")
   (data (offset (i32.const 16)) "\03\00\00\00\03\00\00\00\03\00\00\00\03\00\00\00")
-  (func (export "as-add/sub/sul-operand") (result v128)
+  (func (export "as-add/sub-operand") (result v128)
     ;; 2 2 2 2 + 3 3 3 3 = 5 5 5 5
-    ;; 5 5 5 5 + 3 3 3 3 = 2 2 2 2
-    ;; 2 2 2 2 * 3 3 3 3 = 6 6 6 6
-    (i8x16.mul
-      (i8x16.sub
-        (i8x16.add (v128.load (i32.const 0)) (v128.load (i32.const 16)))
-        (v128.load (i32.const 16))
-      )
+    ;; 5 5 5 5 - 3 3 3 3 = 2 2 2 2
+    (i8x16.sub
+      (i8x16.add (v128.load (i32.const 0)) (v128.load (i32.const 16)))
       (v128.load (i32.const 16))
     )
   )
 )
-(assert_return (invoke "as-add/sub/sul-operand") (v128.const i32x4 6 6 6 6))
+(assert_return (invoke "as-add/sub-operand") (v128.const i32x4 2 2 2 2))
 
 (module (memory 1)
   (data (offset (i32.const 0))  "\00\00\00\43\00\00\80\3f\66\66\e6\3f\00\00\80\bf")  ;; 128 1.0 1.8 -1
