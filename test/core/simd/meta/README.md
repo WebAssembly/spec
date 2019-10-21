@@ -7,6 +7,15 @@ Currently it only support following simd test files generation.
 - 'simd_i16x8_cmp.wast'
 - 'simd_i32x4_cmp.wast'
 - 'simd_f32x4_cmp.wast'
+- 'simd_f64x2_cmp.wast'
+- 'simd_i8x16_arith.wast'
+- 'simd_i16x8_arith.wast'
+- 'simd_i32x4_arith.wast'
+- 'simd_f32x4_arith.wast'
+- 'simd_bitwise.wast'
+- 'simd_i8x16_sat_arith.wast'
+- 'simd_i16x8_sat_arith.wast'
+- 'simd_f32x4.wast'
 
 
 Usage:
