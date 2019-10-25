@@ -46,6 +46,8 @@ All three proposals are prerequisites.
 
 * `arraytype` describes an array with dynamically indexed fields
   - `arraytype ::= array <fieldtype>`
+  - `<fieldtype> = mut <storagetype>`
+  - Note: in the MVP, all arrays must be defined as mutable
 
 * `fieldtype` describes a struct or array field and whether it is mutable
   - `fieldtype ::= <mutability> <storagetype>`
@@ -181,12 +183,12 @@ Perhaps add the following short-hands:
 
 * `ref.is_func` checks whether a reference is a function
   - `ref.is_func : [anyref] -> [i32]`
-  - equivalent to `(rtt.funcref) (ref.test anyref funcref)`
+  - equivalent to `(rtt.get funcref) (ref.test)`
 
 * `ref.as_func` converts to a function reference
   - `ref.as_func : [anyref] -> [funcref]`
   - traps if reference is not a function
-  - equivalent to `(rtt.funcref) (ref.cast anyref funcref)`
+  - equivalent to `(rtt.get funcref) (ref.cast)`
 
 
 #### Structures
@@ -194,10 +196,10 @@ Perhaps add the following short-hands:
 * `struct.new <typeidx>` allocates a structure of type `$t` and initialises its fields with given values
   - `struct.new $t : [t*] -> [(ref $t)]`
     - iff `$t = struct (mut t)*`
-  - equivalent to `struct.new_rtt $t anyref (rtt.anyref)`
+  - equivalent to `struct.new_sub $t (rtt.get anyref)`
 
-* `struct.new_rtt <typeidx> <typeuse>` allocates a structure of type `$t` with RTT information determining its [runtime type](#values) and initialises its fields with given values
-  - `struct.new_rtt $t t' : [(rtt t') t*] -> [(ref $t)]`
+* `struct.new_sub <typeidx>` allocates a structure of type `$t` with RTT information determining its [runtime type](#values) and initialises its fields with given values
+  - `struct.new_sub $t : [(rtt t') t*] -> [(ref $t)]`
     - iff `$t = struct (mut t)*`
     - and `ref $t <: t'`
 
@@ -225,10 +227,10 @@ Perhaps add the following short-hands:
 * `array.new <typeidx>` allocates an array of type `$t` and initialises its fields with a given value
   - `array.new $t : [t i32] -> [(ref $t)]`
     - iff `$t = array (mut t)`
-  - equivalent to `array.new_rtt $t anyref (rtt.anyref)`
+  - equivalent to `array.new_sub $t (rtt.get anyref)`
 
-* `array.new_rtt <typeidx> <typeuse>` allocates a array of type `$t` with RTT information determining its [runtime type](#values)
-  - `array.new_rtt $t t' : [(rtt t') t i32] -> [(ref $t)]`
+* `array.new_sub <typeidx> <typeuse>` allocates a array of type `$t` with RTT information determining its [runtime type](#values)
+  - `array.new_sub $t t' : [(rtt t') t i32] -> [(ref $t)]`
     - iff `$t = array (mut t)`
     - and `ref $t <: t'`
 
@@ -256,7 +258,7 @@ Perhaps add the following short-hands:
   - traps on `null`
 
 
-#### Integer References
+#### Unboxed Scalars
 
 Tentatively, support a type of guaranteed unboxed scalars.
 
@@ -273,22 +275,24 @@ Perhaps also the following short-hands:
 
 * `ref.is_i31` checks whether a reference is an i31
   - `ref.is_i31 : [anyref] -> [i32]`
-  - equivalent to `(rtt.i31ref) (ref.test anyref i31ref)`
+  - equivalent to `(rtt.get i31ref) (ref.test)`
 
 * `ref.as_i31` converts to an integer reference
   - `ref.as_i31 : [anyref] -> [i31ref]`
   - traps if reference is not an integer
-  - equivalent to `(rtt.i31ref) (ref.cast anyref i31ref)`
+  - equivalent to `(rtt.get i31ref) (ref.cast)`
 
 
 #### Runtime Types
 
-* `rtt.anyref` returns the RTT of type `anyref` as a sub-RTT of only itself
-  - `rtt.anyref : [] -> [(rtt anyref)]`
+* `rtt.get <typeuse>` returns the RTT of the specified type
+  - `rtt.get t : [] -> [(rtt t)]`
+  - multiple invocations of this instruction yield the same observable RTTs
   - this is a *constant instruction*
+  - equivalent to `(rtt.sub t (rtt.get anyref))`, except when `t` itself is `anyref`
 
-* `rtt.new <typeuse> <typeuse>` returns the RTT of the specified type as a sub-RTT of a given parent RTT operand
-  - `rtt.new t t' : [(rtt t')] -> [(rtt t)]`
+* `rtt.sub <typeuse>` returns the RTT of the specified type as a sub-RTT of a given parent RTT operand
+  - `rtt.sub t : [(rtt t')] -> [(rtt t)]`
     - iff `t <: t'`
   - multiple invocations of this instruction with the same operand yield the same observable RTTs
   - this is a *constant instruction*
@@ -296,18 +300,18 @@ Perhaps also the following short-hands:
 
 #### Casts
 
-* `ref.test <typeuse> <typeuse>` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given RTT
-  - `ref.test t t' : [t (rtt t')] -> [i32]`
+* `ref.test` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given RTT
+  - `ref.test : [t (rtt t')] -> [i32]`
      - iff `t' <: t <: anyref`
   - returns 1 if the first operand's runtime type is a sub-RTT of the RTT operand, 0 otherwise
 
-* `ref.cast <typeuse> <typeuse>` casts a reference value down to a type given by a RTT representation
-  - `ref.cast t t' : [t (rtt t')] -> [t']`
+* `ref.cast` casts a reference value down to a type given by a RTT representation
+  - `ref.cast : [t (rtt t')] -> [t']`
      - iff `t' <: t <: anyref`
   - traps if the first operand's runtime type is not a sub-RTT of the RTT operand
 
-* `br_on_cast <labelidx> <typeuse> <typeuse>` branches if a value can be cast down to a given reference type
-  - `br_on_cast $l t t' : [t (rtt t')] -> [t]`
+* `br_on_cast <labelidx>` branches if a value can be cast down to a given reference type
+  - `br_on_cast $l : [t (rtt t')] -> [t]`
     - iff `t' <: t <: anyref`
     - and `$l : [t']`
   - branches iff the first operand's runtime type is a sub-RTT of the RTT operand
