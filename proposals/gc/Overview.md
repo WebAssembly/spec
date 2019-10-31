@@ -6,7 +6,7 @@ Note: Basic support for simple [reference types](https://github.com/WebAssembly/
 
 See [MVP](MVP.md) for a concrete v1 proposal.
 
-WARNING: Some contents of this document may have gotten out of sync with the [MVP][MVP.md] design.
+WARNING: Some contents of this document may have gotten out of sync with the [MVP](MVP.md) design.
 
 
 ### Motivation
