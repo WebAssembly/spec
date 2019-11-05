@@ -109,6 +109,10 @@
 | `i32x4.add`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.sub`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.mul`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| `i32x4.min_s`              | `-munimplemented-simd128` |    :heavy_check_mark: |                    |                    |
+| `i32x4.min_u`              | `-munimplemented-simd128` |    :heavy_check_mark: |                    |                    |
+| `i32x4.max_s`              | `-munimplemented-simd128` |    :heavy_check_mark: |                    |                    |
+| `i32x4.max_u`              | `-munimplemented-simd128` |    :heavy_check_mark: |                    |                    |
 | `i64x2.neg`                | `-munimplemented-simd128` |                       | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.shl`                | `-munimplemented-simd128` |                       | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.shr_s`              | `-munimplemented-simd128` |                       | :heavy_check_mark: | :heavy_check_mark: |

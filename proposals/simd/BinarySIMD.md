@@ -131,6 +131,10 @@ The `v8x16.shuffle` instruction has 16 bytes after `simdop`.
 | `i32x4.add`                |    `0x79`| -                  |
 | `i32x4.sub`                |    `0x7c`| -                  |
 | `i32x4.mul`                |    `0x7f`| -                  |
+| `i32x4.min_s`              |    `0x80`| -                  |
+| `i32x4.min_u`              |    `0x81`| -                  |
+| `i32x4.max_s`              |    `0x82`| -                  |
+| `i32x4.max_u`              |    `0x83`| -                  |
 | `i64x2.neg`                |    `0x84`| -                  |
 | `i64x2.shl`                |    `0x87`| -                  |
 | `i64x2.shr_s`              |    `0x88`| -                  |
