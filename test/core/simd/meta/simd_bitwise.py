@@ -24,6 +24,7 @@ class SimdBitWise(SIMD):
   (func (export "bitselect") (param $0 v128) (param $1 v128) (param $2 v128) (result v128)
     (v128.bitselect (local.get $0) (local.get $1) (local.get $2))
   )
+  (func (export "andnot") (param $0 v128) (param $1 v128) (result v128) (v128.andnot (local.get $0) (local.get $1)))
 )
 {normal_case}"""
 
@@ -116,7 +117,12 @@ class SimdBitWise(SIMD):
             ['#', 'bitselect'],
             ["v128.bitselect", ['0', '0', '0'], [], ['i32', 'i32x4', 'i32x4']],
             ["v128.bitselect", ['0', '0', '0'], [], ['i32x4', 'i32x4', 'i32']],
-            ["v128.bitselect", ['0', '0', '0'], [], ['i32', 'i32', 'i32']]
+            ["v128.bitselect", ['0', '0', '0'], [], ['i32', 'i32', 'i32']],
+
+            ['#', 'andnot'],
+            ["v128.andnot", ['0', '0'], [], ['i32', 'i32x4']],
+            ["v128.andnot", ['0', '0'], [], ['i32x4', 'i32']],
+            ["v128.andnot", ['0', '0'], [], ['i32', 'i32']]
         ]
 
         lst_ipr = self.init_case_data(case_data)
@@ -168,6 +174,7 @@ class SimdBitWise(SIMD):
             ["v128.or", ['0', '1'], [], ['i32', 'i32']],
             ["v128.xor", ['0', '1'], [], ['i32', 'i32']],
             ["v128.bitselect", ['0', '1', '2'], [], ['i32', 'i32', 'i32']],
+            ["v128.andnot", ['0', '1'], [], ['i32', 'i32']],
         ]
         lst_ipr = self.init_case_data(case_data)
 
@@ -223,10 +230,9 @@ class SimdBitWise(SIMD):
                '\n            (v128.load (i32.const 1))' \
                '\n            (v128.load (i32.const 2))' \
                '\n          )' \
-               '\n          (v128.bitselect' \
+               '\n          (v128.andnot' \
                '\n            (v128.load (i32.const 0))' \
                '\n            (v128.load (i32.const 1))' \
-               '\n            (v128.load (i32.const 2))' \
                '\n          )' \
                '\n        )' \
                '\n      )' \
@@ -330,6 +336,20 @@ class SimdBitWise(SIMD):
                            ['0x55555555', '0xAAAAAAAA', '0x00000000', '0xFFFFFFFF']],
                           [['0x00000000', '0xFFFFFFFF', '0x55555555', '0xAAAAAAAA']],
                           ['i32x4', 'i32x4', 'i32x4', 'i32x4']],
+            ["andnot", [['0', '-1'], ['0', '-1', '0', '-1']], [['0', '0', '-1', '0']], ['i32x4', 'i32x4', 'i32x4']],
+            ["andnot", ['0', '0'], ['0'], ['i32x4', 'i32x4', 'i32x4']],
+            ["andnot", ['0', '-1'], ['0'], ['i32x4', 'i32x4', 'i32x4']],
+            ["andnot", ['0', '0xFFFFFFFF'], ['0'], ['i32x4', 'i32x4', 'i32x4']],
+            ["andnot", ['1', '1'], ['0'], ['i32x4', 'i32x4', 'i32x4']],
+            ["andnot", ['255', '85'], ['170'], ['i32x4', 'i32x4', 'i32x4']],
+            ["andnot", ['255', '128'], ['127'], ['i32x4', 'i32x4', 'i32x4']],
+            ["andnot", ['2863311530', ['10', '128', '5', '165']], [['2863311520', '2863311402', '2863311530', '2863311370']],
+                       ['i32x4', 'i32x4', 'i32x4']],
+            ["andnot", ['0xFFFFFFFF', '0x55555555'], ['0xAAAAAAAA'], ['i32x4', 'i32x4', 'i32x4']],
+            ["andnot", ['0xFFFFFFFF', '0xAAAAAAAA'], ['0x55555555'], ['i32x4', 'i32x4', 'i32x4']],
+            ["andnot", ['0xFFFFFFFF', '0x0'], ['0xFFFFFFFF'], ['i32x4', 'i32x4', 'i32x4']],
+            ["andnot", ['0x55555555', ['0x5555', '0xFFFF', '0x55FF', '0x5FFF']], ['0x55550000'],
+                       ['i32x4', 'i32x4', 'i32x4']],
 
             ['#', 'for float special data [e.g. -nan nan -inf inf]'],
             ["not", ['-nan'], ['5.87747e-39'], ['f32x4', 'f32x4']],
@@ -379,7 +399,18 @@ class SimdBitWise(SIMD):
             ["bitselect", ['nan', 'inf','0xA5A5A5A5'], ['inf'], ['f32x4', 'f32x4', 'f32x4', 'f32x4']],
             ["bitselect", ['-inf', '-inf','0xA5A5A5A5'], ['-inf'], ['f32x4', 'f32x4', 'f32x4', 'f32x4']],
             ["bitselect", ['-inf', 'inf','0xA5A5A5A5'], ['inf'], ['f32x4', 'f32x4', 'f32x4', 'f32x4']],
-            ["bitselect", ['inf', 'inf','0xA5A5A5A5'], ['inf'], ['f32x4', 'f32x4', 'f32x4', 'f32x4']]
+            ["bitselect", ['inf', 'inf','0xA5A5A5A5'], ['inf'], ['f32x4', 'f32x4', 'f32x4', 'f32x4']],
+
+            ["andnot", ['-nan', '-nan'], ['0x00000000'], ['f32x4', 'f32x4', 'i32x4']],
+            ["andnot", ['-nan', 'nan'], ['-0'], ['f32x4', 'f32x4', 'f32x4']],
+            ["andnot", ['-nan', '-inf'], ['0x00400000'], ['f32x4', 'f32x4', 'i32x4']],
+            ["andnot", ['-nan', 'inf'], ['0x80400000'], ['f32x4', 'f32x4', 'i32x4']],
+            ["andnot", ['nan', 'nan'], ['0x00000000'], ['f32x4', 'f32x4', 'f32x4']],
+            ["andnot", ['nan', '-inf'], ['0x00400000'], ['f32x4', 'f32x4', 'i32x4']],
+            ["andnot", ['nan', 'inf'], ['0x00400000'], ['f32x4', 'f32x4', 'i32x4']],
+            ["andnot", ['-inf', '-inf'], ['0x00000000'], ['f32x4', 'f32x4', 'f32x4']],
+            ["andnot", ['-inf', 'inf'], ['0x80000000'], ['f32x4', 'f32x4', 'i32x4']],
+            ["andnot", ['inf', 'inf'], ['0x00000000'], ['f32x4', 'f32x4', 'i32x4']]
         ]
 
     def gen_test_cases(self):
