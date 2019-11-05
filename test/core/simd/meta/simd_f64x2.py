@@ -28,8 +28,8 @@ class Simdf64x2Case(Simdf32x4Case):
         # Function template
         tpl_func = '  (func (export "{}"){} (result v128) ({} {}{}))'
 
-        # Const data for min and max
-        lst_instr_with_const = [
+        # Raw data list specific for "const vs const" and "param vs const" tests
+        const_test_raw_data = [
             [
                 [['0', '1'], ['0', '2']],
                 [['0', '1'], ['0', '2']]
@@ -64,8 +64,9 @@ class Simdf64x2Case(Simdf32x4Case):
             ]
         ]
 
-        # Assert data
-        lst_oprt_with_const_assert = {}
+        # Test data list combined with `const_test_raw_data` and corresponding ops and function names
+        # specific for "const vs const" and "param vs const" tests
+        const_test_data = {}
 
         # Generate func and assert
         for op in self.BINARY_OPS:
@@ -76,7 +77,7 @@ class Simdf64x2Case(Simdf32x4Case):
             template.insert(len(template)-1, '  ;; {} const vs const'.format(op_name))
 
             # Add const vs const cases
-            for case_data in lst_instr_with_const:
+            for case_data in const_test_raw_data:
 
                 func_name = "{}_with_const_{}".format(op_name, len(template)-7)
                 template.insert(len(template)-1,
@@ -86,10 +87,10 @@ class Simdf64x2Case(Simdf32x4Case):
 
                 ret_idx = 0 if op == 'min' else 1
 
-                if op not in lst_oprt_with_const_assert:
-                    lst_oprt_with_const_assert[op] = []
+                if op not in const_test_data:
+                    const_test_data[op] = []
 
-                lst_oprt_with_const_assert[op].append([func_name, case_data[1][ret_idx]])
+                const_test_data[op].append([func_name, case_data[1][ret_idx]])
 
             # Add comment for the case script "  ;; [f64x2.min, f64x2.max] param vs const"
             template.insert(len(template)-1, '  ;; {} param vs const'.format(op_name))
@@ -97,7 +98,7 @@ class Simdf64x2Case(Simdf32x4Case):
             case_cnt = 0
 
             # Add param vs const cases
-            for case_data in lst_instr_with_const:
+            for case_data in const_test_raw_data:
 
                 func_name = "{}_with_const_{}".format(op_name, len(template)-7)
 
@@ -110,18 +111,16 @@ class Simdf64x2Case(Simdf32x4Case):
                     func_param_1 = '(local.get 0)'
 
                 template.insert(len(template)-1,
-                                tpl_func.format(func_name, '(param v128)', op_name, func_param_0, ' ' + func_param_1))
+                                tpl_func.format(func_name, ' (param v128)', op_name, func_param_0, ' ' + func_param_1))
 
                 ret_idx = 0 if op == 'min' else 1
 
-                if op not in lst_oprt_with_const_assert:
-                    lst_oprt_with_const_assert[op] = []
+                if op not in const_test_data:
+                    const_test_data[op] = []
 
-                lst_oprt_with_const_assert[op].append([func_name, case_data[0][1], case_data[1][ret_idx]])
+                const_test_data[op].append([func_name, case_data[0][1], case_data[1][ret_idx]])
 
                 case_cnt += 1
-
-        # print(lst_oprt_with_const_assert)
 
         # Generate func for abs
         op_name = self.full_op_name('abs')
@@ -262,10 +261,10 @@ class Simdf64x2Case(Simdf32x4Case):
         lst_diff_lane_vs_clause_assert.append('')
 
         # Add test for operations with constant operands
-        for key in lst_oprt_with_const_assert:
+        for key in const_test_data:
 
             case_cnt = 0
-            for case_data in lst_oprt_with_const_assert[key]:
+            for case_data in const_test_data[key]:
 
                 # Add comment for the param combination
                 if case_cnt == 0:
@@ -294,6 +293,8 @@ class Simdf64x2Case(Simdf32x4Case):
 
     @property
     def combine_ternary_arith_test_data(self):
+        # This method overrides the base class method from SimdArithmeticCase
+        # used for generating test data for min and max combination tests.
         return {
             'min-max': [
                 ['1.125'] * 2, ['0.25'] * 2, ['0.125'] * 2, ['0.125'] * 2
@@ -305,6 +306,8 @@ class Simdf64x2Case(Simdf32x4Case):
 
     @property
     def combine_binary_arith_test_data(self):
+        # This method overrides the base class method from SimdArithmeticCase
+        # used for generating test data for min, max and abs combination tests.
         return {
             'min-abs': [
                 ['-1.125'] * 2, ['0.125'] * 2, ['0.125'] * 2
