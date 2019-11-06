@@ -46,6 +46,8 @@ Note: In a Wasm engine, function references (whether first-class or as table ent
 
 * Add a block instruction `let (local t*) ... end` for introducing locals with block scope, in order to handle reference types without default initialisation values
 
+* Add an optional initialiser expression to table definitions, for element types that do not have an implicit default value.
+
 
 ### Examples
 
@@ -150,13 +152,13 @@ Greatest fixpoint (co-inductive interpretation) of the given rules (implying ref
 
 The following rules, now defined in terms of constructed types, replace and extend the rules for [basic reference types](https://github.com/WebAssembly/reference-types/proposals/reference-types/Overview.md#subtyping).
 
-#### Value Types
+##### Value Types
 
 * Reference types are covariant in the referenced constructed type
   - `(ref <constype1>) <: (ref <constype2>)`
     - iff `<constype1> <: <constype2>`
 
-#### Constructed Types
+##### Constructed Types
 
 * Type `func` is a subtype of `any`
   - `func <: any`
@@ -187,10 +189,7 @@ The following rules, now defined in terms of constructed types, replace and exte
 
 * Function-level locals must have a type that is defaultable.
 
-* Table definitions with non-zero minimum size must have an element type that is defaultable. (Imports are not affected.)
-
-Question:
-- Should we introduce a variant of table definition with explicit default initialiser?
+* Table definitions with a type that is not defaultable must have an initialiser value. (Imports are not affected.)
 
 
 ### Instructions
@@ -254,7 +253,9 @@ TODO: This assumes that let-bound locals are mutable. Should they be?
 
 ### Tables
 
-TODO: How to initialise tables of non-opt element type (init value? init segment?).
+* Table definitions have an initialiser value: `(table <tabletype> <constexpr>)`
+  - `(table <limits> <reftype> <constexpr>) ok` iff `<limits> <reftype> ok` and `<constexpr> : <reftype>`
+  - `(table <tabletype>)` is shorthand for `(table <tabletype> (ref.null))`
 
 
 ## Binary Format
