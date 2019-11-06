@@ -239,12 +239,22 @@ Question:
     - iff `bt = [t1*] -> [t2*]`
     - and `instr* : bt` under a context with `locals` extended with `t*` and `labels` extended with `[t2*]`
 
-Note: The lattter condition implies that inside the body of the `let`, its locals are prepended to the list of locals. Nesting multiple `let` blocks hence addresses them relatively, similar to labels. Function-level local declarations can be viewed as syntactic sugar for a bunch of zero constant instructions and a `let`.
+Note: The latter condition implies that inside the body of the `let`, its locals are prepended to the list of locals. Nesting multiple `let` blocks hence addresses them relatively, similar to labels. Function-level local declarations can be viewed as syntactic sugar for a bunch of zero constant instructions and a `let` wrapping the function body. That is,
+```
+(func ... (local t)* ...)
+```
+is equivalent to
+```
+(func ... (t.default)* (let (local t)* ...))
+```
+where `(t.default)` is `(t.const 0)` for numeric types `t`, and `(ref.null)` for reference types.
+
+TODO: This assumes that let-bound locals are mutable. Should they be?
 
 
 ### Tables
 
-TODO: how to initialise tables of non-opt element type (init value? init segment?).
+TODO: How to initialise tables of non-opt element type (init value? init segment?).
 
 
 ## Binary Format
