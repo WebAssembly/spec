@@ -3,7 +3,7 @@
 # Multi Memory Proposal for WebAssembly
 
 This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
-It is meant for discussion, prototype specification and implementation of a proposal to add support for returning multiple values to WebAssembly.
+It is meant for discussion, prototype specification and implementation of a proposal to add support for multiple memories to WebAssembly.
 
 * See the [overview](proposals/multi-memory/Overview.md) for a summary of the proposal.
 
