@@ -667,7 +667,7 @@ Load a `v128` vector from the given heap address.
 
 ```python
 def S.load(memarg):
-    return S.from_bytes(memory[memarg.start:memarg.start + 16])
+    return S.from_bytes(memory[memarg.offset:memarg.offset + 16])
 ```
 
 ### Load and Splat
@@ -681,7 +681,7 @@ Load a single element and splat to all lanes of a `v128` vector.
 
 ```python
 def S.load_splat(memarg):
-    val_bytes = memory[memarg.start:memarg.start + S.LaneBytes])
+    val_bytes = memory[memarg.offset:memarg.offset + S.LaneBytes])
     return S.splat(S.LaneType.from_bytes(val_bytes))
 ```
 
@@ -699,7 +699,7 @@ Fetch consequtive integers up to 32-bit wide and produce a vector with lanes up 
 ```python
 def S.load_extend(ext, memarg):
     result = S.New()
-    bytes = memory[memarg.start:memarg.start + 8])
+    bytes = memory[memarg.offset:memarg.offset + 8])
     for i in range(S.Lanes):
         result[i] = ext(S.LaneType.from_bytes(bytes[(i * S.LaneBytes/2):((i+1) * S.LaneBytes/2)]))
     return result
@@ -719,7 +719,7 @@ Store a `v128` vector to the given heap address.
 
 ```python
 def S.store(memarg, a):
-    memory[memarg.start:memarg.start + 16] = bytes(a)
+    memory[memarg.offset:memarg.offset + 16] = bytes(a)
 ```
 
 ## Floating-point sign bit operations
