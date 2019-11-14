@@ -108,38 +108,13 @@ function mem_copy(min, max, shared, srcOffs, targetOffs, len) {
 
     let immediateOOB = copyDown && (srcOffs + len > memLength || targetOffs + len > memLength);
 
-    var t = 0;
     var s = 0;
     var i = 0;
-    function checkTarget() {
-        if (i >= targetOffs && i < targetLim) {
-            print(`(assert_return (invoke "load8_u" (i32.const ${i})) (i32.const ${(t++) & 0xFF}))`);
-            if (i >= srcOffs && i < srcLim)
-                s++;
-            return true;
-        }
-        return false;
-    }
-    function checkSource() {
-        if (i >= srcOffs && i < srcLim) {
-            print(`(assert_return (invoke "load8_u" (i32.const ${i})) (i32.const ${(s++) & 0xFF}))`);
-            if (i >= targetOffs && i < targetLim)
-                t++;
-            return true;
-        }
-        return false;
-    }
-
     let k = 0;
     for (i=0; i < memLength; i++ ) {
-        if (immediateOOB) {
-            if (checkSource())
-                continue;
-        } else {
-            if (copyDown && (checkSource() || checkTarget()))
-                continue;
-            if (!copyDown && (checkTarget() || checkSource()))
-                continue;
+        if (i >= srcOffs && i < srcLim) {
+            print(`(assert_return (invoke "load8_u" (i32.const ${i})) (i32.const ${(s++) & 0xFF}))`);
+            continue;
         }
         // Only spot-check for zero, or we'll be here all night.
         if (++k == 199) {

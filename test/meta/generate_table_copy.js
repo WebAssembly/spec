@@ -275,37 +275,12 @@ function tbl_copy(min, max, srcOffs, targetOffs, len) {
     print(`(assert_trap (invoke "run" (i32.const ${targetOffs}) (i32.const ${srcOffs}) (i32.const ${len}))
              "out of bounds")`);
 
-    var t = 0;
     var s = 0;
     var i = 0;
-    function checkTarget() {
-        if (i >= targetOffs && i < targetLim) {
-            print(`(assert_return (invoke "test" (i32.const ${i})) (i32.const ${t++}))`);
-            if (i >= srcOffs && i < srcLim)
-                s++;
-            return true;
-        }
-        return false;
-    }
-    function checkSource() {
+    for (i=0; i < tblLength; i++ ) {
         if (i >= srcOffs && i < srcLim) {
             print(`(assert_return (invoke "test" (i32.const ${i})) (i32.const ${s++}))`);
-            if (i >= targetOffs && i < targetLim)
-                t++;
-            return true;
-        }
-        return false;
-    }
-
-    for (i=0; i < tblLength; i++ ) {
-        if (immediateOOB) {
-            if (checkSource())
-                continue;
-        } else {
-            if (copyDown && (checkSource() || checkTarget()))
-                continue;
-            if (!copyDown && (checkTarget() || checkSource()))
-                continue;
+            continue;
         }
         print(`(assert_trap (invoke "test" (i32.const ${i})) "uninitialized element")`);
     }

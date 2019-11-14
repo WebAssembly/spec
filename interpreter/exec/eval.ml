@@ -117,9 +117,27 @@ let drop n (vs : 'a stack) at =
  *   c : config
  *)
 
-let const_i32_add i j at msg =
-  let k = I32.add i j in
-  if I32.lt_u k i then Trapping msg else Plain (Const (I32 k @@ at))
+let mem_oob frame x i n =
+  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
+    (Memory.bound (memory frame.inst x))
+
+let data_oob frame x i n =
+  match !(data frame.inst x) with
+    | None -> false
+    | Some bs ->
+      I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
+      (I64.of_int_u (String.length bs))
+
+let table_oob frame x i n =
+  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
+    (I64_convert.extend_i32_u (Table.size (table frame.inst x)))
+
+let elem_oob frame x i n =
+  match !(elem frame.inst x) with
+    | None -> false
+    | Some es ->
+      I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
+      (I64.of_int_u (List.length es))
 
 let rec step (c : config) : config =
   let {frame; code = vs, es; _} = c in
@@ -205,6 +223,10 @@ let rec step (c : config) : config =
       | TableCopy, I32 0l :: I32 s :: I32 d :: vs' ->
         vs', []
 
+      | TableCopy, I32 n :: I32 s :: I32 d :: vs'
+        when table_oob frame (0l @@ e.at) s n || table_oob frame (0l @@ e.at) d n ->
+        vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
+
       (* TODO: turn into small-step, but needs reference values *)
       | TableCopy, I32 n :: I32 s :: I32 d :: vs' ->
         let tab = table frame.inst (0l @@ e.at) in
@@ -213,6 +235,10 @@ let rec step (c : config) : config =
 
       | TableInit x, I32 0l :: I32 s :: I32 d :: vs' ->
         vs', []
+
+      | TableInit x, I32 n :: I32 s :: I32 d :: vs'
+        when table_oob frame (0l @@ e.at) d n || elem_oob frame x s n ->
+        vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
 
       (* TODO: turn into small-step, but needs reference values *)
       | TableInit x, I32 n :: I32 s :: I32 d :: vs' ->
@@ -233,22 +259,22 @@ let rec step (c : config) : config =
 
       | Load {offset; ty; sz; _}, I32 i :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_i32_u i in
+        let a = I64_convert.extend_i32_u i in
         (try
           let v =
             match sz with
-            | None -> Memory.load_value mem addr offset ty
-            | Some (sz, ext) -> Memory.load_packed sz ext mem addr offset ty
+            | None -> Memory.load_value mem a offset ty
+            | Some (sz, ext) -> Memory.load_packed sz ext mem a offset ty
           in v :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
       | Store {offset; sz; _}, v :: I32 i :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_i32_u i in
+        let a = I64_convert.extend_i32_u i in
         (try
           (match sz with
-          | None -> Memory.store_value mem addr offset v
-          | Some sz -> Memory.store_packed sz mem addr offset v
+          | None -> Memory.store_value mem a offset v
+          | Some sz -> Memory.store_packed sz mem a offset v
           );
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
@@ -268,21 +294,17 @@ let rec step (c : config) : config =
       | MemoryFill, I32 0l :: v :: I32 i :: vs' ->
         vs', []
 
-      | MemoryFill, I32 1l :: v :: I32 i :: vs' ->
-        vs', List.map (at e.at) [
-          Plain (Const (I32 i @@ e.at));
-          Plain (Const (v @@ e.at));
-          Plain (Store
-            {ty = I32Type; align = 0; offset = 0l; sz = Some Memory.Pack8});
-        ]
+      | MemoryFill, I32 n :: v :: I32 i :: vs'
+        when mem_oob frame (0l @@ e.at) i n ->
+        vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
 
       | MemoryFill, I32 n :: v :: I32 i :: vs' ->
         vs', List.map (at e.at) [
           Plain (Const (I32 i @@ e.at));
           Plain (Const (v @@ e.at));
-          Plain (Const (I32 1l @@ e.at));
-          Plain (MemoryFill);
-          const_i32_add i 1l e.at (memory_error e.at Memory.Bounds);
+          Plain (Store
+            {ty = I32Type; align = 0; offset = 0l; sz = Some Memory.Pack8});
+          Plain (Const (I32 (I32.add i 1l) @@ e.at));
           Plain (Const (v @@ e.at));
           Plain (Const (I32 (I32.sub n 1l) @@ e.at));
           Plain (MemoryFill);
@@ -291,8 +313,30 @@ let rec step (c : config) : config =
       | MemoryCopy, I32 0l :: I32 s :: I32 d :: vs' ->
         vs', []
 
-      | MemoryCopy, I32 1l :: I32 s :: I32 d :: vs' ->
+      | MemoryCopy, I32 n :: I32 s :: I32 d :: vs'
+        when mem_oob frame (0l @@ e.at) s n || mem_oob frame (0l @@ e.at) d n ->
+        vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
+
+      | MemoryCopy, I32 n :: I32 s :: I32 d :: vs' when d <= s ->
         vs', List.map (at e.at) [
+          Plain (Const (I32 d @@ e.at));
+          Plain (Const (I32 s @@ e.at));
+          Plain (Load
+            {ty = I32Type; align = 0; offset = 0l; sz = Some Memory.(Pack8, ZX)});
+          Plain (Store
+            {ty = I32Type; align = 0; offset = 0l; sz = Some Memory.Pack8});
+          Plain (Const (I32 (I32.add d 1l) @@ e.at));
+          Plain (Const (I32 (I32.add s 1l) @@ e.at));
+          Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+          Plain (MemoryCopy);
+        ]
+
+      | MemoryCopy, I32 n :: I32 s :: I32 d :: vs' when s < d ->
+        vs', List.map (at e.at) [
+          Plain (Const (I32 (I32.add d 1l) @@ e.at));
+          Plain (Const (I32 (I32.add s 1l) @@ e.at));
+          Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+          Plain (MemoryCopy);
           Plain (Const (I32 d @@ e.at));
           Plain (Const (I32 s @@ e.at));
           Plain (Load
@@ -301,39 +345,17 @@ let rec step (c : config) : config =
             {ty = I32Type; align = 0; offset = 0l; sz = Some Memory.Pack8});
         ]
 
-      | MemoryCopy, I32 n :: I32 s :: I32 d :: vs' when d <= s ->
-        vs', List.map (at e.at) [
-          Plain (Const (I32 d @@ e.at));
-          Plain (Const (I32 s @@ e.at));
-          Plain (Const (I32 1l @@ e.at));
-          Plain (MemoryCopy);
-          const_i32_add d 1l e.at (memory_error e.at Memory.Bounds);
-          const_i32_add s 1l e.at (memory_error e.at Memory.Bounds);
-          Plain (Const (I32 (I32.sub n 1l) @@ e.at));
-          Plain (MemoryCopy);
-        ]
-
-      | MemoryCopy, I32 n :: I32 s :: I32 d :: vs' when s < d ->
-        vs', List.map (at e.at) [
-          const_i32_add d (I32.sub n 1l) e.at (memory_error e.at Memory.Bounds);
-          const_i32_add s (I32.sub n 1l) e.at (memory_error e.at Memory.Bounds);
-          Plain (Const (I32 1l @@ e.at));
-          Plain (MemoryCopy);
-          Plain (Const (I32 d @@ e.at));
-          Plain (Const (I32 s @@ e.at));
-          Plain (Const (I32 (I32.sub n 1l) @@ e.at));
-          Plain (MemoryCopy);
-        ]
-
       | MemoryInit x, I32 0l :: I32 s :: I32 d :: vs' ->
         vs', []
 
-      | MemoryInit x, I32 1l :: I32 s :: I32 d :: vs' ->
+      | MemoryInit x, I32 n :: I32 s :: I32 d :: vs'
+        when mem_oob frame (0l @@ e.at) d n || data_oob frame x s n ->
+        vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
+
+      | MemoryInit x, I32 n :: I32 s :: I32 d :: vs' ->
         (match !(data frame.inst x) with
         | None ->
           vs', [Trapping "data segment dropped" @@ e.at]
-        | Some bs when Int32.to_int s >= String.length bs  ->
-          vs', [Trapping "out of bounds data segment access" @@ e.at]
         | Some bs ->
           let b = Int32.of_int (Char.code bs.[Int32.to_int s]) in
           vs', List.map (at e.at) [
@@ -341,20 +363,12 @@ let rec step (c : config) : config =
             Plain (Const (I32 b @@ e.at));
             Plain (
               Store {ty = I32Type; align = 0; offset = 0l; sz = Some Memory.Pack8});
+            Plain (Const (I32 (I32.add d 1l) @@ e.at));
+            Plain (Const (I32 (I32.add s 1l) @@ e.at));
+            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (MemoryInit x);
           ]
         )
-
-      | MemoryInit x, I32 n :: I32 s :: I32 d :: vs' ->
-        vs', List.map (at e.at) [
-          Plain (Const (I32 d @@ e.at));
-          Plain (Const (I32 s @@ e.at));
-          Plain (Const (I32 1l @@ e.at));
-          Plain (MemoryInit x);
-          const_i32_add d 1l e.at (memory_error e.at Memory.Bounds);
-          const_i32_add s 1l e.at (memory_error e.at Memory.Bounds);
-          Plain (Const (I32 (I32.sub n 1l) @@ e.at));
-          Plain (MemoryInit x);
-        ]
 
       | DataDrop x, vs ->
         let seg = data frame.inst x in

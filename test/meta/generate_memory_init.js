@@ -257,9 +257,7 @@ function mem_init(min, max, shared, backup, write) {
 `(assert_trap (invoke "run" (i32.const ${offs}) (i32.const ${write}))
               "out of bounds")
 `);
-    checkRange(0, offs, 0);
-    checkRange(offs, offs+Math.min(backup, mem_init_len), 0x42);
-    checkRange(offs+Math.min(backup, mem_init_len), offs+backup, 0);
+    checkRange(0, min, 0);
 }
 
 // We exceed the bounds of the memory but not of the data segment

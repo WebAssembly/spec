@@ -825,11 +825,7 @@
 (assert_trap (invoke "run" (i32.const 65528) (i32.const 16))
               "out of bounds")
 
-(assert_return (invoke "checkRange" (i32.const 0) (i32.const 65528) (i32.const 0))
-               (i32.const -1))
-(assert_return (invoke "checkRange" (i32.const 65528) (i32.const 65536) (i32.const 66))
-               (i32.const -1))
-(assert_return (invoke "checkRange" (i32.const 65536) (i32.const 65536) (i32.const 0))
+(assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))
 (module
   (memory 1 1 )
@@ -852,11 +848,7 @@
 (assert_trap (invoke "run" (i32.const 65527) (i32.const 16))
               "out of bounds")
 
-(assert_return (invoke "checkRange" (i32.const 0) (i32.const 65527) (i32.const 0))
-               (i32.const -1))
-(assert_return (invoke "checkRange" (i32.const 65527) (i32.const 65536) (i32.const 66))
-               (i32.const -1))
-(assert_return (invoke "checkRange" (i32.const 65536) (i32.const 65536) (i32.const 0))
+(assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))
 (module
   (memory 1 1 )
@@ -879,11 +871,7 @@
 (assert_trap (invoke "run" (i32.const 65472) (i32.const 30))
               "out of bounds")
 
-(assert_return (invoke "checkRange" (i32.const 0) (i32.const 65472) (i32.const 0))
-               (i32.const -1))
-(assert_return (invoke "checkRange" (i32.const 65472) (i32.const 65488) (i32.const 66))
-               (i32.const -1))
-(assert_return (invoke "checkRange" (i32.const 65488) (i32.const 65536) (i32.const 0))
+(assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))
 (module
   (memory 1 1 )
@@ -906,11 +894,7 @@
 (assert_trap (invoke "run" (i32.const 65473) (i32.const 31))
               "out of bounds")
 
-(assert_return (invoke "checkRange" (i32.const 0) (i32.const 65473) (i32.const 0))
-               (i32.const -1))
-(assert_return (invoke "checkRange" (i32.const 65473) (i32.const 65489) (i32.const 66))
-               (i32.const -1))
-(assert_return (invoke "checkRange" (i32.const 65489) (i32.const 65536) (i32.const 0))
+(assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))
 (module
   (memory 1  )
@@ -933,11 +917,7 @@
 (assert_trap (invoke "run" (i32.const 65528) (i32.const 4294967040))
               "out of bounds")
 
-(assert_return (invoke "checkRange" (i32.const 0) (i32.const 65528) (i32.const 0))
-               (i32.const -1))
-(assert_return (invoke "checkRange" (i32.const 65528) (i32.const 65536) (i32.const 66))
-               (i32.const -1))
-(assert_return (invoke "checkRange" (i32.const 65536) (i32.const 65536) (i32.const 0))
+(assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))
 (module
   (memory 1  )
@@ -960,9 +940,5 @@
 (assert_trap (invoke "run" (i32.const 0) (i32.const 4294967292))
               "out of bounds")
 
-(assert_return (invoke "checkRange" (i32.const 0) (i32.const 0) (i32.const 0))
-               (i32.const -1))
-(assert_return (invoke "checkRange" (i32.const 0) (i32.const 16) (i32.const 66))
-               (i32.const -1))
-(assert_return (invoke "checkRange" (i32.const 16) (i32.const 65536) (i32.const 0))
+(assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))

@@ -315,13 +315,7 @@ function tbl_init(min, max, backup, write, segoffs=0) {
     // table with as much data as was available.
     let offs = min - backup;
     print(`(assert_trap (invoke "run" (i32.const ${offs}) (i32.const ${write})) "out of bounds")`);
-    for (let i=0; i < Math.min(backup, tbl_init_len - segoffs); i++) {
-        print(`(assert_return (invoke "test" (i32.const ${offs + i})) (i32.const ${i + segoffs}))`);
-    }
-    for (let i=Math.min(backup, tbl_init_len); i < backup; i++) {
-        print(`(assert_trap (invoke "test" (i32.const ${offs + i})) "uninitialized element")`);
-    }
-    for (let i=0; i < offs; i++) {
+    for (let i=0; i < min; i++) {
         print(`(assert_trap (invoke "test" (i32.const ${i})) "uninitialized element")`);
     }
 }

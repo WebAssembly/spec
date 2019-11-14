@@ -123,7 +123,7 @@ print(
     }}}
 }
 
-// memory.fill: out of bounds, but should perform a partial fill.
+// memory.fill: out of bounds, and should not perform a partial fill.
 //
 // Arithmetic overflow of memory offset + len should not affect the behavior, we
 // should still fill up to the limit.
@@ -143,8 +143,7 @@ function mem_fill(min, max, shared, backup, write=backup*2) {
 `(assert_trap (invoke "run" (i32.const ${offs}) (i32.const ${val}) (i32.const ${write}))
               "out of bounds")
 `);
-    checkRange(offs, offs+backup, val);
-    checkRange(0, offs, 0);
+    checkRange(0, min, 0);
 }
 
 mem_fill(1, 1, "", 256);

@@ -730,25 +730,25 @@ Memory Instructions
 
 9. Let :math:`\X{data}^?` be the optional :ref:`data instance <syntax-datainst>` :math:`S.\SDATA[\X{da}]`.
 
-10. If :math:`\X{data}^? = \epsilon`, then:
+10. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-   a. Trap.
+11. Pop the value :math:`\I32.\CONST~cnt` from the stack.
 
-11. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+12. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-12. Pop the value :math:`\I32.\CONST~cnt` from the stack.
+13. Pop the value :math:`\I32.\CONST~src` from the stack.
 
-13. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+14. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-14. Pop the value :math:`\I32.\CONST~src` from the stack.
+15. Pop the value :math:`\I32.\CONST~dst` from the stack.
 
-15. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
-
-16. Pop the value :math:`\I32.\CONST~dst` from the stack.
-
-17. If :math:`cnt = 0`, then:
+16. If :math:`cnt = 0`, then:
 
     a. Return.
+
+17. If :math:`\X{data}^? = \epsilon`, then:
+
+   a. Trap.
 
 18. If :math:`cnt = 1`, then:
 
@@ -1091,25 +1091,25 @@ Table Instructions
 
 9. Let :math:`\X{elem}^?` be the optional :ref:`element instance <syntax-eleminst>` :math:`S.\SELEM[\X{ea}]`.
 
-10. If :math:`\X{elem}^? = \epsilon`, then:
+10. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-    a. Trap.
+11. Pop the value :math:`\I32.\CONST~cnt` from the stack.
 
-11. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+12. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-12. Pop the value :math:`\I32.\CONST~cnt` from the stack.
+13. Pop the value :math:`\I32.\CONST~src` from the stack.
 
-13. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+14. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-14. Pop the value :math:`\I32.\CONST~src` from the stack.
+15. Pop the value :math:`\I32.\CONST~dst` from the stack.
 
-15. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
-
-16. Pop the value :math:`\I32.\CONST~dst` from the stack.
-
-17. If :math:`cnt = 0`, then:
+16. If :math:`cnt = 0`, then:
 
     a. Return.
+
+17. If :math:`\X{elem}^? = \epsilon`, then:
+
+    a. Trap.
 
 18. If :math:`cnt = 1`, then:
 
