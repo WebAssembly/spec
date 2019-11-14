@@ -114,7 +114,7 @@ New/extended instructions:
     - and `t' <: t`
 
 * The `call_indirect` instruction takes a table index as immediate.
-  - `call_indirect (type $t) $x : [t1* i32] -> [t2*]`
+  - `call_indirect $x (type $t) : [t1* i32] -> [t2*]`
     - iff `$t = [t1*] -> [t2*]`
     - and `$x : table t'`
     - and `t' <: funcref`
@@ -260,7 +260,7 @@ Addition:
 Note:
 
 * Can decompose `call_indirect` (assuming multi-value proposal):
-  - `(call_indirect $t $x)` reduces to `(table.get $x) (cast $t anyref (ref $t) (then (call_ref (ref $t))) (else (unreachable)))`
+  - `(call_indirect $x (type $t))` reduces to `(table.get $x) (cast $t anyref (ref $t) (then (call_ref (ref $t))) (else (unreachable)))`
 
 
 ### GC Types
