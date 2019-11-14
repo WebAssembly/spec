@@ -144,7 +144,7 @@ Reference Instructions
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{ref.null} &\Rightarrow& \REFNULL \\ &&|&
-     \text{ref.is\_null} &\Rightarrow& \REFISNULL \\
+     \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
      \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
    \end{array}
 
