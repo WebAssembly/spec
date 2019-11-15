@@ -140,8 +140,8 @@ let reserved = ([^'\"''('')'';'] # space)+  (* hack for table size *)
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
-let v = "v128"
-let nxx = ixx | fxx | v
+let vxxx = "v128"
+let nxx = ixx | fxx | vxxx
 let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
