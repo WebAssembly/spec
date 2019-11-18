@@ -133,6 +133,7 @@ let type_cvtop at = function
     | PromoteF32 -> F32Type
     | DemoteF64 -> error at "invalid conversion"
     ), F64Type
+  | Values.V128 cvtop -> failwith "TODO v128"
 
 
 (* Expressions *)
