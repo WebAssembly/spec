@@ -41,7 +41,12 @@ class RunTests(unittest.TestCase):
   def _runCommand(self, command, logPath, expectedExitCode = 0):
     with open(logPath, 'w+') as out:
       exitCode = subprocess.call(command, shell=True, stdout=out, stderr=subprocess.STDOUT)
-      self.assertEqual(expectedExitCode, exitCode, "failed with exit code %i (expected %i) for %s" % (exitCode, expectedExitCode, command))
+      if exitCode != expectedExitCode:
+          out.flush()
+          out.seek(0)
+          raise Exception(
+            "!! failed with exit code %i (expected %i) for %s\n%s" 
+            % (exitCode, expectedExitCode, command, out.read()))
 
   def _auxFile(self, path):
     if os.path.exists(path):
