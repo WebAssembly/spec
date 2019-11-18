@@ -457,6 +457,37 @@ def S.sub_saturate_u(a, b):
     return S.lanewise_binary(subsat, S.AsUnsigned(a), S.AsUnsigned(b))
 ```
 
+### Lane-wise integer minimum
+* `i8x16.min_s(a: v128, b: v128) -> v128`
+* `i8x16.min_u(a: v128, b: v128) -> v128`
+* `i16x8.min_s(a: v128, b: v128) -> v128`
+* `i16x8.min_u(a: v128, b: v128) -> v128`
+* `i32x4.min_s(a: v128, b: v128) -> v128`
+* `i32x4.min_u(a: v128, b: v128) -> v128`
+
+Compares lane-wise signed/unsigned integers, and returns the minimum of
+each pair.
+
+```python
+def S.min(a, b):
+    return S.lanewise_binary(min, a, b)
+```
+
+### Lane-wise integer maximum
+* `i8x16.max_s(a: v128, b: v128) -> v128`
+* `i8x16.max_u(a: v128, b: v128) -> v128`
+* `i16x8.max_s(a: v128, b: v128) -> v128`
+* `i16x8.max_u(a: v128, b: v128) -> v128`
+* `i32x4.max_s(a: v128, b: v128) -> v128`
+* `i32x4.max_u(a: v128, b: v128) -> v128`
+
+Compares lane-wise signed/unsigned integers, and returns the maximum of
+each pair.
+
+```python
+def S.max(a, b):
+    return S.lanewise_binary(max, a, b)
+```
 ## Bit shifts
 
 ### Left shift by scalar
