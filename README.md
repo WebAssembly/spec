@@ -10,7 +10,7 @@ ECMAScript committee](https://github.com/tc39/ecmascript_simd) and the
 [portable SIMD specification](https://github.com/stoklund/portable-simd) that
 resulted.
 
-The [proposed specification](proposals/simd/SIMD.md) has the details.
+The [proposed semantics](proposals/simd/SIMD.md) has the details.
 
 Note: this proposal is still being worked out, and rate of changes is high, please consult the [implementation status document](proposals/simd/ImplementationStatus.md) to get an idea of the state of implementation across toolchains and embedders.
 
