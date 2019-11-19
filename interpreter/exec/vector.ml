@@ -16,6 +16,7 @@ sig
   type bits
   val default : t (* FIXME good name for default value? *)
   val to_string : t -> string
+  val of_bits : bits -> t
   val to_bits : t -> bits
 end
 
@@ -27,4 +28,5 @@ struct
   let default = Rep.make Rep.bytewidth (chr 0)
   let to_string = Rep.to_string (* FIXME very very wrong *)
   let to_bits x = x
+  let of_bits x = x
 end

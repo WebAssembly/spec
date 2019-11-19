@@ -39,6 +39,45 @@ let ati i =
 let literal f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
+let range_check i min max at =
+    let i_32 = Int32.to_int i in
+    let min_32 = Int32.of_int min in
+    let max_32 = Int32.of_int max in
+    if i > max_32 || i < min_32 then error at "constant out of range" else i_32
+
+let int8_of_string s = range_check (I32.of_string s.it) (-128) 255 s.at
+let int16_of_string s = range_check (I32.of_string s.it) (-32768) 65535 s.at
+let int32_of_string s = I32.to_bits (literal (fun s -> I32.of_string s.it) s)
+let int64_of_string s = I64.to_bits (literal (fun s -> I64.of_string s.it) s)
+let f32_of_string s = F32.to_bits (literal (fun s -> F32.of_string s.it) s)
+let f64_of_string s = F64.to_bits (literal (fun s -> F64.of_string s.it) s)
+
+let simd_literal f shape ss =
+    let open Bytes in
+    let b = create 16 in
+    (match shape with
+    | "i8x16" ->
+            List.iteri (fun i s -> set_uint8 b i (int8_of_string s)) ss;
+            if List.length ss != 16 then parse_error "unexpected token";
+    | "i16x8" ->
+            List.iteri (fun i s -> set_uint16_le b i (int16_of_string s)) ss;
+            if List.length ss != 8 then parse_error "unexpected token";
+    | "i32x4" ->
+            List.iteri (fun i s -> set_int32_le b i (int32_of_string s)) ss;
+            if List.length ss != 4 then parse_error "unexpected token";
+    | "i64x2" ->
+            List.iteri (fun i s -> set_int64_le b i (int64_of_string s)) ss;
+            if List.length ss != 2 then parse_error "unexpected token";
+    | "f32x4" ->
+            List.iteri (fun i s -> set_int32_le b i (f32_of_string s)) ss;
+            if List.length ss != 4 then parse_error "unexpected token";
+    | "f64x2" ->
+            List.iteri (fun i s -> set_int64_le b i (f64_of_string s)) ss;
+            if List.length ss != 2 then parse_error "unexpected token";
+    | _ -> assert false);
+    let v = V128.of_bits b in
+    (v128_const (v @@ (ati 1)), Values.V128 v)
+
 let nat s at =
   try
     let n = int_of_string s in
@@ -145,7 +184,7 @@ let inline_type_explicit (c : context) x ft at =
 
 %}
 
-%token NAT INT FLOAT STRING VAR VALUE_TYPE FUNCREF MUT LPAR RPAR
+%token NAT INT FLOAT STRING VAR VALUE_TYPE FUNCREF MUT LPAR RPAR SIMD_SHAPE
 %token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
@@ -161,6 +200,7 @@ let inline_type_explicit (c : context) x ft at =
 %token INPUT OUTPUT
 %token EOF
 
+%token<string> SIMD_SHAPE
 %token<string> NAT
 %token<string> INT
 %token<string> FLOAT
@@ -247,6 +287,10 @@ literal :
   | INT { $1 @@ at () }
   | FLOAT { $1 @@ at () }
 
+literal_list:
+  | /* empty */ {[]}
+  | literal literal_list { $1 :: $2 }
+
 var :
   | NAT { let at = at () in fun c lookup -> nat32 $1 at @@ at }
   | VAR { let at = at () in fun c lookup -> lookup c ($1 @@ at) @@ at }
@@ -319,6 +363,7 @@ plain_instr :
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
   | MEMORY_SIZE { fun c -> memory_size }
   | MEMORY_GROW { fun c -> memory_grow }
+  | CONST SIMD_SHAPE literal_list { fun c -> fst (simd_literal $1 $2 $3) }
   | CONST literal { fun c -> fst (literal $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
@@ -820,6 +865,9 @@ meta :
 
 const :
   | LPAR CONST literal RPAR { snd (literal $2 $3) @@ ati 3 }
+  | LPAR CONST SIMD_SHAPE literal_list RPAR {
+      snd (simd_literal $2 $3 $4) @@ ati 3
+  }
 
 const_list :
   | /* empty */ { [] }
