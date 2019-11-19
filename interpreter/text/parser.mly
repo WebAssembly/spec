@@ -39,6 +39,14 @@ let ati i =
 let literal f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
+let nanop f nan =
+  let open Source in
+  let open Values in
+  match snd (f ("0" @@ no_region)) with
+  | F32 _ -> F32 nan.it @@ nan.at
+  | F64 _ -> F64 nan.it @@ nan.at
+  | I32 _ | I64 _ -> error nan.at "NaN pattern with non-float type"
+
 let nat s at =
   try
     let n = int_of_string s in
@@ -157,7 +165,8 @@ let inline_type_explicit (c : context) x ft at =
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
-%token ASSERT_RETURN ASSERT_RETURN_CANONICAL_NAN ASSERT_RETURN_ARITHMETIC_NAN ASSERT_TRAP ASSERT_EXHAUSTION
+%token ASSERT_RETURN ASSERT_TRAP ASSERT_EXHAUSTION
+%token NAN
 %token INPUT OUTPUT
 %token EOF
 
@@ -177,6 +186,8 @@ let inline_type_explicit (c : context) x ft at =
 %token<int option -> Memory.offset -> Ast.instr'> STORE
 %token<string> OFFSET_EQ_NAT
 %token<string> ALIGN_EQ_NAT
+
+%token<Script.nan> NAN
 
 %nonassoc LOW
 %nonassoc VAR
@@ -795,9 +806,7 @@ assertion :
     { AssertUnlinkable (snd $3, $4) @@ at () }
   | LPAR ASSERT_TRAP script_module STRING RPAR
     { AssertUninstantiable (snd $3, $4) @@ at () }
-  | LPAR ASSERT_RETURN action const_list RPAR { AssertReturn ($3, $4) @@ at () }
-  | LPAR ASSERT_RETURN_CANONICAL_NAN action RPAR { AssertReturnCanonicalNaN $3 @@ at () }
-  | LPAR ASSERT_RETURN_ARITHMETIC_NAN action RPAR { AssertReturnArithmeticNaN $3 @@ at () }
+  | LPAR ASSERT_RETURN action result_list RPAR { AssertReturn ($3, $4) @@ at () }
   | LPAR ASSERT_TRAP action STRING RPAR { AssertTrap ($3, $4) @@ at () }
   | LPAR ASSERT_EXHAUSTION action STRING RPAR { AssertExhaustion ($3, $4) @@ at () }
 
@@ -824,6 +833,14 @@ const :
 const_list :
   | /* empty */ { [] }
   | const const_list { $1 :: $2 }
+
+result :
+  | const { LitResult $1 @@ at () }
+  | LPAR CONST NAN RPAR { NanResult (nanop $2 ($3 @@ ati 3)) @@ at () }
+
+result_list :
+  | /* empty */ { [] }
+  | result result_list { $1 :: $2 }
 
 script :
   | cmd_list EOF { $1 }
