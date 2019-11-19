@@ -300,7 +300,7 @@
     (func $f)
     (elem (i32.const 0) $f)
   )
-  "unknown table 0"
+  "unknown table"
 )
 
 ;; Invalid offsets

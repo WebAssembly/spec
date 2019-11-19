@@ -290,7 +290,7 @@
   (module
     (data (i32.const 0) "")
   )
-  "unknown memory 0"
+  "unknown memory"
 )
 
 ;; Invalid offsets

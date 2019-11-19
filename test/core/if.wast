@@ -892,42 +892,42 @@
 
 
 (assert_malformed
-  (module quote "(func if end $l)")
+  (module quote "(func i32.const 0 if end $l)")
   "mismatching label"
 )
 (assert_malformed
-  (module quote "(func if $a end $l)")
+  (module quote "(func i32.const 0 if $a end $l)")
   "mismatching label"
 )
 (assert_malformed
-  (module quote "(func if else $l end)")
+  (module quote "(func i32.const 0 if else $l end)")
   "mismatching label"
 )
 (assert_malformed
-  (module quote "(func if $a else $l end)")
+  (module quote "(func i32.const 0 if $a else $l end)")
   "mismatching label"
 )
 (assert_malformed
-  (module quote "(func if else end $l)")
+  (module quote "(func i32.const 0 if else end $l)")
   "mismatching label"
 )
 (assert_malformed
-  (module quote "(func if else $l end $l)")
+  (module quote "(func i32.const 0 if else $l end $l)")
   "mismatching label"
 )
 (assert_malformed
-  (module quote "(func if else $l1 end $l2)")
+  (module quote "(func i32.const 0 if else $l1 end $l2)")
   "mismatching label"
 )
 (assert_malformed
-  (module quote "(func if $a else end $l)")
+  (module quote "(func i32.const 0 if $a else end $l)")
   "mismatching label"
 )
 (assert_malformed
-  (module quote "(func if $a else $a end $l)")
+  (module quote "(func i32.const 0 if $a else $a end $l)")
   "mismatching label"
 )
 (assert_malformed
-  (module quote "(func if $a else $l end $l)")
+  (module quote "(func i32.const 0 if $a else $l end $l)")
   "mismatching label"
 )
