@@ -225,6 +225,85 @@
   (func (export "as-convert-operand") (result i64)
     (block (result i64) (i64.extend_i32_s (call $dummy (i32.const 1))))
   )
+
+  ;; Test correct argument passing
+
+  (func $return-arg-0-helper (param i32) (result i32)
+        (local.get 0)
+  )
+  (func (export "return-arg-0") (param i32) (result i32)
+        (call $return-arg-0-helper (local.get 0))
+  )
+
+  (func $return-arg-1-helper (param i32 i32) (result i32)
+        (local.get 1)
+  )
+  (func (export "return-arg-1") (param i32 i32) (result i32)
+    (call $return-arg-1-helper
+      (local.get 0) (local.get 1))
+  )
+
+  (func $return-arg-2-helper (param i32 i32 i32) (result i32)
+        (local.get 2)
+  )
+  (func (export "return-arg-2") (param i32 i32 i32) (result i32)
+    (call $return-arg-2-helper
+      (local.get 0) (local.get 1) (local.get 2))
+  )
+
+  (func $return-arg-3-helper (param i32 i32 i32 i32) (result i32)
+        (local.get 3)
+  )
+  (func (export "return-arg-3") (param i32 i32 i32 i32) (result i32)
+    (call $return-arg-3-helper
+      (local.get 0) (local.get 1) (local.get 2) (local.get 3))
+  )
+
+  (func $return-arg-4-helper (param i32 i32 i32 i32 i32) (result i32)
+        (local.get 4)
+  )
+  (func (export "return-arg-4") (param i32 i32 i32 i32 i32) (result i32)
+    (call $return-arg-4-helper
+      (local.get 0) (local.get 1) (local.get 2) (local.get 3)
+      (local.get 4))
+  )
+
+  (func $return-arg-5-helper (param i32 i32 i32 i32 i32 i32) (result i32)
+        (local.get 5)
+  )
+  (func (export "return-arg-5") (param i32 i32 i32 i32 i32 i32) (result i32)
+    (call $return-arg-5-helper
+      (local.get 0) (local.get 1) (local.get 2) (local.get 3)
+      (local.get 4) (local.get 5))
+  )
+
+  (func $return-arg-6-helper (param i32 i32 i32 i32 i32 i32 i32) (result i32)
+        (local.get 6)
+  )
+  (func (export "return-arg-6") (param i32 i32 i32 i32 i32 i32 i32) (result i32)
+    (call $return-arg-6-helper
+      (local.get 0) (local.get 1) (local.get 2) (local.get 3)
+      (local.get 4) (local.get 5) (local.get 6))
+  )
+
+  (func $return-arg-7-helper (param i32 i32 i32 i32 i32 i32 i32 i32) (result i32)
+        (local.get 7)
+  )
+  (func (export "return-arg-7") (param i32 i32 i32 i32 i32 i32 i32 i32) (result i32)
+    (call $return-arg-7-helper
+      (local.get 0) (local.get 1) (local.get 2) (local.get 3)
+      (local.get 4) (local.get 5) (local.get 6) (local.get 7))
+  )
+
+  (func $return-arg-8-helper (param i32 i32 i32 i32 i32 i32 i32 i32 i32) (result i32)
+        (local.get 8)
+  )
+  (func (export "return-arg-8") (param i32 i32 i32 i32 i32 i32 i32 i32 i32) (result i32)
+    (call $return-arg-8-helper
+      (local.get 0) (local.get 1) (local.get 2) (local.get 3)
+      (local.get 4) (local.get 5) (local.get 6) (local.get 7)
+      (local.get 8))
+  )
 )
 
 (assert_return (invoke "type-i32") (i32.const 0x132))
@@ -307,6 +386,46 @@
 (assert_return (invoke "as-compare-left") (i32.const 1))
 (assert_return (invoke "as-compare-right") (i32.const 1))
 (assert_return (invoke "as-convert-operand") (i64.const 1))
+
+(assert_return (invoke "return-arg-0" (i32.const 1)) (i32.const 1))
+(assert_return (invoke "return-arg-1" (i32.const 1) (i32.const 2)) (i32.const 2))
+(assert_return
+  (invoke "return-arg-2"
+    (i32.const 1) (i32.const 2) (i32.const 3))
+  (i32.const 3))
+(assert_return
+  (invoke "return-arg-3"
+    (i32.const 1) (i32.const 2) (i32.const 3)
+    (i32.const 4))
+  (i32.const 4))
+(assert_return
+  (invoke "return-arg-4"
+    (i32.const 1) (i32.const 2) (i32.const 3)
+    (i32.const 4) (i32.const 5))
+  (i32.const 5))
+(assert_return
+  (invoke "return-arg-5"
+    (i32.const 1) (i32.const 2) (i32.const 3)
+    (i32.const 4) (i32.const 5) (i32.const 6))
+  (i32.const 6))
+(assert_return
+  (invoke "return-arg-6"
+    (i32.const 1) (i32.const 2) (i32.const 3)
+    (i32.const 4) (i32.const 5) (i32.const 6)
+    (i32.const 7))
+  (i32.const 7))
+(assert_return
+  (invoke "return-arg-7"
+    (i32.const 1) (i32.const 2) (i32.const 3)
+    (i32.const 4) (i32.const 5) (i32.const 6)
+    (i32.const 7) (i32.const 8))
+  (i32.const 8))
+(assert_return
+  (invoke "return-arg-8"
+    (i32.const 1) (i32.const 2) (i32.const 3)
+    (i32.const 4) (i32.const 5) (i32.const 6)
+    (i32.const 7) (i32.const 8) (i32.const 9))
+  (i32.const 9))
 
 ;; Invalid typing
 
