@@ -273,10 +273,9 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 It is a validation error to use `memory.init` with an out-of-bounds segment index.
 
 A trap occurs if:
-* the segment is used after it has been dropped via `data.drop`. This includes
-  active segments that were dropped after being copied into memory during module
-  instantiation.
-* any of the accessed bytes lies outside the source data segment or the target memory
+* the source offset plus size is greater than the length of the source data segment;
+  this includes the case that the segment has been dropped via `data.drop`
+* the destination offset plus size is greater than the length of the target memory
 
 Note that it is allowed to use `memory.init` on the same data segment more than
 once.
@@ -337,7 +336,8 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 - top-0: size of memory region in bytes
 
 A trap occurs if:
-* any of the accessed bytes lies outside the source or target memory
+* the source offset plus size is greater than the length of the source memory   
+* the destination offset plus size is greater than the length of the target memory   
 
 A trap resulting from an access outside the source or target region
 only occurs once the first byte that is outside the source or target
@@ -360,7 +360,7 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 - top-0: size of memory region in bytes
 
 A trap occurs if:
-* any of the accessed bytes lies outside the target memory
+* the destination offset plus size is greater than the length of the target memory   
 
 Filling takes place bytewise from lower addresses toward higher
 addresses.  A trap resulting from an access outside the target memory

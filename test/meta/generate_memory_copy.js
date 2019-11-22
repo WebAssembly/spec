@@ -280,13 +280,13 @@ print(
 (invoke "test")
 `);
 
-// Zero len with dest offset out-of-bounds past the end of memory is allowed
+// Zero len with dest offset out-of-bounds past the end of memory is not allowed
 print(
 `(module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x20000) (i32.const 0x7000) (i32.const 0))))
-(invoke "test")
+(assert_trap (invoke "test") "out of bounds")
 `);
 
 // Zero len with src offset out-of-bounds at the end of memory is allowed
@@ -298,13 +298,13 @@ print(
 (invoke "test")
 `);
 
-// Zero len with src offset out-of-bounds past the end of memory is allowed
+// Zero len with src offset out-of-bounds past the end of memory is not allowed
 print(
 `(module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x9000) (i32.const 0x20000) (i32.const 0))))
-(invoke "test")
+(assert_trap (invoke "test") "out of bounds")
 `);
 
 // Zero len with both dest and src offsets out-of-bounds at the end of memory is allowed
@@ -314,6 +314,15 @@ print(
   (func (export "test")
     (memory.copy (i32.const 0x10000) (i32.const 0x10000) (i32.const 0))))
 (invoke "test")
+`);
+
+// Zero len with both dest and src offsets out-of-bounds past the end of memory is not allowed
+print(
+`(module
+  (memory 1 1)
+  (func (export "test")
+    (memory.copy (i32.const 0x20000) (i32.const 0x20000) (i32.const 0))))
+(assert_trap (invoke "test") "out of bounds")
 `);
 
 // 100 random fills followed by 100 random copies, in a single-page buffer,

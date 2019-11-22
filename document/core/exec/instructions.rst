@@ -728,7 +728,7 @@ Memory Instructions
 
 8. Assert: due to :ref:`validation <valid-memory.init>`, :math:`S.\SDATA[\X{da}]` exists.
 
-9. Let :math:`\X{data}^?` be the optional :ref:`data instance <syntax-datainst>` :math:`S.\SDATA[\X{da}]`.
+9. Let :math:`\X{data}` be the  :ref:`data instance <syntax-datainst>` :math:`S.\SDATA[\X{da}]`.
 
 10. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
@@ -746,11 +746,7 @@ Memory Instructions
 
     a. Return.
 
-17. If :math:`\X{data}^? = \epsilon`, then:
-
-   a. Trap.
-
-18. If :math:`cnt = 1`, then:
+17. If :math:`cnt = 1`, then:
 
     a. Push the value :math:`\I32.\CONST~dst` to the stack.
 
@@ -766,21 +762,21 @@ Memory Instructions
 
     f. Return.
 
-19. Push the value :math:`\I32.\CONST~dst` to the stack.
+18. Push the value :math:`\I32.\CONST~dst` to the stack.
 
-20. Push the value :math:`\I32.\CONST~src` to the stack.
+19. Push the value :math:`\I32.\CONST~src` to the stack.
 
-21. Push the value :math:`\I32.\CONST~1` to the stack.
+20. Push the value :math:`\I32.\CONST~1` to the stack.
 
-22. Execute the instruction :math:`\MEMORYINIT~x`.
+21. Execute the instruction :math:`\MEMORYINIT~x`.
 
-23. Push the value :math:`\vconst_{\I32}(dst+1)` to the stack.
+22. Push the value :math:`\vconst_{\I32}(dst+1)` to the stack.
 
-24. Push the value :math:`\vconst_{\I32}(src+1)` to the stack.
+23. Push the value :math:`\vconst_{\I32}(src+1)` to the stack.
 
-25. Push the value :math:`\I32.\CONST~(cnt-1)` to the stack.
+24. Push the value :math:`\I32.\CONST~(cnt-1)` to the stack.
 
-26. Execute the instruction :math:`\MEMORYINIT~x`.
+25. Execute the instruction :math:`\MEMORYINIT~x`.
 
 .. math::
    ~\\[-1ex]
@@ -830,13 +826,7 @@ Memory Instructions
 
 4. Assert: due to :ref:`validation <valid-data.drop>`, :math:`S.\SDATA[a]` exists.
 
-5. Let :math:`\X{data}^?` be the optional :ref:`data instance <syntax-datainst>` :math:`S.\SDATA[a]`.
-
-6. If :math:`\X{data}^? = \epsilon`, then:
-
-   a. Trap.
-
-7. Replace :math:`S.\SDATA[a]` with :math:`\epsilon`.
+5. Replace :math:`S.\SDATA[a]` with the :ref:`data instance <syntax-datainst>` :math:`\{\DIINIT~\epsilon\}`.
 
 .. math::
    ~\\[-1ex]
@@ -845,16 +835,7 @@ Memory Instructions
    S; F; (\DATADROP~x) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SDATA[F.\AMODULE.\MIDATAS[x]] \ne \epsilon \\
-     \wedge & S' = S \with \SDATA[F.\AMODULE.\MIDATAS[x]] = \epsilon) \\
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\DATADROP~x) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\otherwise)
+     (\iff S' = S \with \SDATA[F.\AMODULE.\MIDATAS[x]] = \{ \DIINIT~\epsilon \}) \\
    \end{array}
 
 
@@ -1089,7 +1070,7 @@ Table Instructions
 
 8. Assert: due to :ref:`validation <valid-table.init>`, :math:`S.\SELEM[\X{ea}]` exists.
 
-9. Let :math:`\X{elem}^?` be the optional :ref:`element instance <syntax-eleminst>` :math:`S.\SELEM[\X{ea}]`.
+9. Let :math:`\X{elem}` be the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEM[\X{ea}]`.
 
 10. Assert: due to :ref:`validation <valid-table.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
@@ -1107,11 +1088,7 @@ Table Instructions
 
     a. Return.
 
-17. If :math:`\X{elem}^? = \epsilon`, then:
-
-    a. Trap.
-
-18. If :math:`cnt = 1`, then:
+17. If :math:`cnt = 1`, then:
 
     a. Push the value :math:`\I32.\CONST~dst` to the stack.
 
@@ -1127,21 +1104,21 @@ Table Instructions
 
     f. Return.
 
-19. Push the value :math:`\I32.\CONST~dst` to the stack.
+18. Push the value :math:`\I32.\CONST~dst` to the stack.
 
-20. Push the value :math:`\I32.\CONST~src` to the stack.
+19. Push the value :math:`\I32.\CONST~src` to the stack.
 
-21. Push the value :math:`\I32.\CONST~1` to the stack.
+20. Push the value :math:`\I32.\CONST~1` to the stack.
 
-22. Execute the instruction :math:`\TABLEINIT~x`.
+21. Execute the instruction :math:`\TABLEINIT~x`.
 
-23. Push the value :math:`\vconst_{\I32}(dst+1)` to the stack.
+22. Push the value :math:`\vconst_{\I32}(dst+1)` to the stack.
 
-24. Push the value :math:`\vconst_{\I32}(src+1)` to the stack.
+23. Push the value :math:`\vconst_{\I32}(src+1)` to the stack.
 
-25. Push the value :math:`\I32.\CONST~(cnt-1)` to the stack.
+24. Push the value :math:`\I32.\CONST~(cnt-1)` to the stack.
 
-26. Execute the instruction :math:`\TABLEINIT~x`.
+25. Execute the instruction :math:`\TABLEINIT~x`.
 
 .. math::
    ~\\[-1ex]
@@ -1191,13 +1168,7 @@ Table Instructions
 
 4. Assert: due to :ref:`validation <valid-elem.drop>`, :math:`S.\SELEM[a]` exists.
 
-5. Let :math:`\X{elem}^?` be the optional :ref:`elem instance <syntax-eleminst>` :math:`S.\SELEM[a]`.
-
-6. If :math:`\X{elem}^? = \epsilon`, then:
-
-   a. Trap.
-
-7. Replace :math:`S.\SELEM[a]` with :math:`\epsilon`.
+5. Replace :math:`S.\SELEM[a]` with the :ref:`element instance <syntax-eleminst>` :math:`\{\EIINIT~\epsilon\}`.
 
 .. math::
    ~\\[-1ex]
@@ -1206,16 +1177,7 @@ Table Instructions
    S; F; (\ELEMDROP~x) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SELEM[F.\AMODULE.\MIELEMS[x]] \ne \epsilon \\
-     \wedge & S' = S \with \SELEM[F.\AMODULE.\MIELEMS[x]] = \epsilon) \\
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\ELEMDROP~x) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\otherwise)
+     (\iff S' = S \with \SELEM[F.\AMODULE.\MIELEMS[x]] = \{ \EIINIT~\epsilon \}) \\
    \end{array}
 
 

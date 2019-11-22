@@ -75,7 +75,6 @@ Store
 The *store* represents all global state that can be manipulated by WebAssembly programs.
 It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>`, :ref:`element segments <syntax-eleminst>`, and :ref:`data segments <syntax-datainst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
 
-Element and data segments can be dropped by the owning module, in which case the respective instances are replaced with :math:`\epsilon`.
 It is an invariant of the semantics that no element or data instance is :ref:`addressed <syntax-addr>` from anywhere else but the owning module instances.
 
 Syntactically, the store is defined as a :ref:`record <notation-record>` listing the existing instances of each category:
@@ -88,8 +87,8 @@ Syntactically, the store is defined as a :ref:`record <notation-record>` listing
      \STABLES & \tableinst^\ast, \\
      \SMEMS & \meminst^\ast, \\
      \SGLOBALS & \globalinst^\ast, \\
-     \SELEM & (\eleminst^?)^\ast, \\
-     \SDATA & (\datainst^?)^\ast ~\} \\
+     \SELEM & \eleminst^\ast, \\
+     \SDATA & \datainst^\ast ~\} \\
      \end{array}
    \end{array}
 

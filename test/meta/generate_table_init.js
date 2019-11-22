@@ -181,32 +181,29 @@ function tab_test2(insn1, insn2, errText) {
     do_test(insn1, insn2, errText);
 }
 
-function tab_test_nofail(insn1, insn2) {
-    do_test(insn1, insn2, undefined);
-}
-
 // drop with elem seg ix indicating an active segment
 tab_test1("(elem.drop 2)",
-          "element segment dropped");
+          undefined);
 
 // init with elem seg ix indicating an active segment
 tab_test1("(table.init 2 (i32.const 12) (i32.const 1) (i32.const 1))",
-          "element segment dropped");
+          "out of bounds");
 
 // init, using an elem seg ix more than once is OK
-tab_test_nofail(
+tab_test2(
     "(table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))",
-    "(table.init 1 (i32.const 21) (i32.const 1) (i32.const 1))");
+    "(table.init 1 (i32.const 21) (i32.const 1) (i32.const 1))",
+    undefined);
 
 // drop, then drop
 tab_test2("(elem.drop 1)",
           "(elem.drop 1)",
-          "element segment dropped");
+          undefined);
 
 // drop, then init
 tab_test2("(elem.drop 1)",
           "(table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))",
-          "element segment dropped");
+          "out of bounds");
 
 // init: seg ix is valid passive, but length to copy > len of seg
 tab_test1("(table.init 1 (i32.const 12) (i32.const 0) (i32.const 5))",
@@ -226,9 +223,9 @@ tab_test1("(table.init 1 (i32.const 12) (i32.const 4) (i32.const 0))",
           undefined);
 
 // init: seg ix is valid passive, zero len, and src offset out of bounds past the
-// end of the table - this is allowed
+// end of the table - this is not allowed
 tab_test1("(table.init 1 (i32.const 12) (i32.const 5) (i32.const 0))",
-          undefined);
+          "out of bounds");
 
 // init: seg ix is valid passive, zero len, and dst offset out of bounds at the
 // end of the table - this is allowed
@@ -236,14 +233,19 @@ tab_test1("(table.init 1 (i32.const 30) (i32.const 2) (i32.const 0))",
           undefined);
 
 // init: seg ix is valid passive, zero len, and dst offset out of bounds past the
-// end of the table - this is allowed
+// end of the table - this is not allowed
 tab_test1("(table.init 1 (i32.const 31) (i32.const 2) (i32.const 0))",
-          undefined);
+          "out of bounds");
 
 // init: seg ix is valid passive, zero len, and dst and src offsets out of bounds
 // at the end of the table - this is allowed
 tab_test1("(table.init 1 (i32.const 30) (i32.const 4) (i32.const 0))",
           undefined);
+
+// init: seg ix is valid passive, zero len, and src/dst offset out of bounds past the
+// end of the table - this is not allowed
+tab_test1("(table.init 1 (i32.const 31) (i32.const 5) (i32.const 0))",
+          "out of bounds");
 
 // invalid argument types
 {

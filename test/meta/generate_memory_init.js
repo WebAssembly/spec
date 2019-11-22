@@ -85,7 +85,7 @@ print(
   (func (export "test")
     (data.drop 0)
     (data.drop 0)))
-(assert_trap (invoke "test") "data segment dropped")
+(invoke "test")
 `);
 
 // drop, then init
@@ -95,7 +95,7 @@ print(
   (func (export "test")
     (data.drop 0)
     (memory.init 0 (i32.const 1234) (i32.const 1) (i32.const 1))))
-(assert_trap (invoke "test") "data segment dropped")
+(assert_trap (invoke "test") "out of bounds")
 `);
 
 // init with data seg ix indicating an active segment
@@ -105,7 +105,7 @@ print(
    (data (i32.const 0) "\\37")
    (func (export "test")
      (memory.init 0 (i32.const 1234) (i32.const 1) (i32.const 1))))
-(assert_trap (invoke "test") "data segment dropped")
+(assert_trap (invoke "test") "out of bounds")
 `);
 
 // init with no memory
@@ -164,13 +164,13 @@ print(
 (assert_trap (invoke "test") "out of bounds")
 `);
 
-// init: seg ix is valid passive, src offset past the end, zero len is always valid
+// init: seg ix is valid passive, src offset past the end, zero len is invalid
 print(
 `(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 1234) (i32.const 4) (i32.const 0))))
-(invoke "test")
+(assert_trap (invoke "test") "out of bounds")
 `);
 
 // init: seg ix is valid passive, zero len, src offset at the end
@@ -182,13 +182,13 @@ print(
 (invoke "test")
 `);
 
-// init: seg ix is valid passive, dst offset past the end, zero len is always valid
+// init: seg ix is valid passive, dst offset past the end, zero len is invalid
 print(
 `(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 0x10001) (i32.const 0) (i32.const 0))))
-(invoke "test")
+(assert_trap (invoke "test") "out of bounds")
 `);
 
 // init: seg ix is valid passive, zero len, but dst offset at the end
@@ -207,6 +207,16 @@ print(
   (func (export "test")
     (memory.init 0 (i32.const 0x10000) (i32.const 1) (i32.const 0))))
 (invoke "test")
+`);
+
+// init: seg ix is valid passive, src and dst offset past the end, zero len is
+// invalid
+print(
+`(module
+  ${PREAMBLE}
+  (func (export "test")
+    (memory.init 0 (i32.const 0x10001) (i32.const 4) (i32.const 0))))
+(assert_trap (invoke "test") "out of bounds")
 `);
 
 // invalid argument types.  TODO: can add anyfunc etc here.

@@ -48,8 +48,9 @@
 ;; Succeed when writing 0 bytes at the end of the region.
 (invoke "fill" (i32.const 0x10000) (i32.const 0) (i32.const 0))
 
-;; OK to write 0 bytes outside of memory.
-(invoke "fill" (i32.const 0x10001) (i32.const 0) (i32.const 0))
+;; Writing 0 bytes outside the memory traps.
+(assert_trap (invoke "fill" (i32.const 0x10001) (i32.const 0) (i32.const 0))
+    "out of bounds memory access")
 
 
 ;; memory.copy
@@ -103,9 +104,11 @@
 (invoke "copy" (i32.const 0x10000) (i32.const 0) (i32.const 0))
 (invoke "copy" (i32.const 0) (i32.const 0x10000) (i32.const 0))
 
-;; OK to copy 0 bytes outside of memory.
-(invoke "copy" (i32.const 0x10001) (i32.const 0) (i32.const 0))
-(invoke "copy" (i32.const 0) (i32.const 0x10001) (i32.const 0))
+;; Copying 0 bytes outside the memory traps.
+(assert_trap (invoke "copy" (i32.const 0x10001) (i32.const 0) (i32.const 0))
+    "out of bounds memory access")
+(assert_trap (invoke "copy" (i32.const 0) (i32.const 0x10001) (i32.const 0))
+    "out of bounds memory access")
 
 
 ;; memory.init
@@ -141,9 +144,11 @@
 (invoke "init" (i32.const 0x10000) (i32.const 0) (i32.const 0))
 (invoke "init" (i32.const 0) (i32.const 4) (i32.const 0))
 
-;; OK to write 0 bytes outside of memory or segment.
-(invoke "init" (i32.const 0x10001) (i32.const 0) (i32.const 0))
-(invoke "init" (i32.const 0) (i32.const 5) (i32.const 0))
+;; Writing 0 bytes outside the memory traps.
+(assert_trap (invoke "init" (i32.const 0x10001) (i32.const 0) (i32.const 0))
+    "out of bounds memory access")
+(assert_trap (invoke "init" (i32.const 0) (i32.const 5) (i32.const 0))
+    "out of bounds memory access")
 
 ;; data.drop
 (module
@@ -162,12 +167,14 @@
 
 (invoke "init_passive" (i32.const 1))
 (invoke "drop_passive")
-(assert_trap (invoke "drop_passive") "data segment dropped")
+(invoke "drop_passive")
 (assert_return (invoke "init_passive" (i32.const 0)))
-(assert_trap (invoke "init_passive" (i32.const 1)) "data segment dropped")
-(assert_trap (invoke "drop_active") "data segment dropped")
+(assert_trap (invoke "init_passive" (i32.const 1)) "out of bounds")
+(invoke "init_passive" (i32.const 0))
+(invoke "drop_active")
 (assert_return (invoke "init_active" (i32.const 0)))
-(assert_trap (invoke "init_active" (i32.const 1)) "data segment dropped")
+(assert_trap (invoke "init_active" (i32.const 1)) "out of bounds")
+(invoke "init_active" (i32.const 0))
 
 
 ;; table.init
@@ -208,9 +215,11 @@
 (invoke "init" (i32.const 3) (i32.const 0) (i32.const 0))
 (invoke "init" (i32.const 0) (i32.const 4) (i32.const 0))
 
-;; OK to storing 0 elements outside of table or segment.
-(invoke "init" (i32.const 4) (i32.const 0) (i32.const 0))
-(invoke "init" (i32.const 0) (i32.const 5) (i32.const 0))
+;; Writing 0 elements outside the table traps.
+(assert_trap (invoke "init" (i32.const 4) (i32.const 0) (i32.const 0))
+    "out of bounds table access")
+(assert_trap (invoke "init" (i32.const 0) (i32.const 5) (i32.const 0))
+    "out of bounds table access")
 
 
 ;; elem.drop
@@ -233,12 +242,14 @@
 
 (invoke "init_passive" (i32.const 1))
 (invoke "drop_passive")
-(assert_trap (invoke "drop_passive") "element segment dropped")
+(invoke "drop_passive")
 (assert_return (invoke "init_passive" (i32.const 0)))
-(assert_trap (invoke "init_passive" (i32.const 1)) "element segment dropped")
-(assert_trap (invoke "drop_active") "element segment dropped")
+(assert_trap (invoke "init_passive" (i32.const 1)) "out of bounds")
+(invoke "init_passive" (i32.const 0))
+(invoke "drop_active")
 (assert_return (invoke "init_active" (i32.const 0)))
-(assert_trap (invoke "init_active" (i32.const 1)) "element segment dropped")
+(assert_trap (invoke "init_active" (i32.const 1)) "out of bounds")
+(invoke "init_active" (i32.const 0))
 
 
 ;; table.copy
@@ -290,5 +301,7 @@
 (invoke "copy" (i32.const 0) (i32.const 10) (i32.const 0))
 
 ;; Fail on out-of-bounds when copying 0 elements outside of table.
-(invoke "copy" (i32.const 11) (i32.const 0) (i32.const 0))
-(invoke "copy" (i32.const 0) (i32.const 11) (i32.const 0))
+(assert_trap (invoke "copy" (i32.const 11) (i32.const 0) (i32.const 0))
+  "out of bounds")
+(assert_trap (invoke "copy" (i32.const 0) (i32.const 11) (i32.const 0))
+  "out of bounds")

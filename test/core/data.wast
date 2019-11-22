@@ -193,16 +193,19 @@
   )
   "out of bounds"
 )
-
-;; Writing 0 bytes outside of bounds is allowed now.
-(module
-  (memory 0)
-  (data (i32.const 1))
+(assert_trap
+  (module
+    (memory 0)
+    (data (i32.const 1))
+  )
+  "out of bounds"
 )
-
-(module
-  (memory 0 1)
-  (data (i32.const 1))
+(assert_trap
+  (module
+    (memory 0 1)
+    (data (i32.const 1))
+  )
+  "out of bounds"
 )
 
 ;; This seems to cause a time-out on Travis.

@@ -56,13 +56,13 @@ print(
 (invoke "test")
 `);
 
-// Zero len with offset out-of-bounds past the end of memory is allowed
+// Zero len with offset out-of-bounds past the end of memory is not allowed
 print(
 `(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0x20000) (i32.const 0x55) (i32.const 0))))
-(invoke "test")
+(assert_trap (invoke "test") "out of bounds")
 `);
 
 // Very large range
@@ -136,7 +136,7 @@ function mem_fill(min, max, shared, backup, write=backup*2) {
   (func (export "run") (param $offs i32) (param $val i32) (param $len i32)
     (memory.fill (local.get $offs) (local.get $val) (local.get $len))))
 `);
-    // A fill past the end should throw *and* have filled all the way up to the end
+    // A fill past the end should throw *and* not have performed a partial fill
     let offs = min*PAGESIZE - backup;
     let val = 37;
     print(
