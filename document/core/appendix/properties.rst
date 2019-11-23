@@ -100,6 +100,10 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in :math:`S.\SGLOBALS` must be :ref:`valid <valid-globalinst>` with some  :ref:`global type <syntax-globaltype>` :math:`\globaltype_i`.
 
+* Each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in :math:`S.\SELEMS` must be :ref:`valid <valid-eleminst>`.
+
+* Each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in :math:`S.\SDATAS` must be :ref:`valid <valid-datainst>`.
+
 * Then the store is valid.
 
 .. math::
@@ -114,11 +118,17 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \qquad
      (S \vdashglobalinst \globalinst : \globaltype)^\ast
      \\
+     (S \vdasheleminst \eleminst \ok)^\ast
+     \qquad
+     (S \vdashdatainst \datainst \ok)^\ast
+     \\
      S = \{
        \SFUNCS~\funcinst^\ast,
        \STABLES~\tableinst^\ast,
        \SMEMS~\meminst^\ast,
-       \SGLOBALS~\globalinst^\ast \}
+       \SGLOBALS~\globalinst^\ast,
+       \SELEMS~\eleminst^\ast,
+       \SDATAS~\datainst^\ast \}
      \end{array}
    }{
      \vdashstore S \ok
@@ -224,7 +234,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 .. math::
    \frac{
-     ((S \vdash \EVFUNC~\X{fa} : \ETFUNC~\functype)^?)^n
+     ((S \vdashexternval \EVFUNC~\X{fa} : \ETFUNC~\functype)^?)^n
      \qquad
      \vdashlimits \{\LMIN~n, \LMAX~m^?\} : 2^{32}
    }{
@@ -265,6 +275,41 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    }
 
 
+.. index:: element instance, reference
+.. _valid-eleminst:
+
+:ref:`Element Instances <syntax-eleminst>` :math:`\{ \EIELEM~\X{fa}^\ast \}`
+............................................................................
+
+* For each :ref:`function address <syntax-funcaddr>` :math:`\X{fa}_i` in the table elements :math:`\X{fa}^\ast`:
+
+  * The :ref:`external value <syntax-externval>` :math:`\EVFUNC~\X{fa}` must be :ref:`valid <valid-externval-func>` with some :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\X{ft}`.
+
+* Then the element instance is valid.
+
+.. math::
+   \frac{
+     (S \vdashexternval \EVFUNC~\X{fa} : \ETFUNC~\functype)^\ast
+   }{
+     S \vdasheleminst \{ \EIELEM~\X{fa}^\ast \} \ok
+   }
+
+
+.. index:: data instance, byte
+.. _valid-datainst:
+
+:ref:`Data Instances <syntax-eleminst>` :math:`\{ \DIDATA~b^\ast \}`
+....................................................................
+
+* The data instance is valid.
+
+.. math::
+   \frac{
+   }{
+     S \vdashdatainst \{ \DIDATA~b^\ast \} \ok
+   }
+
+
 .. index:: external type, export instance, name, external value
 .. _valid-exportinst:
 
@@ -299,6 +344,10 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * For each :ref:`global address <syntax-globaladdr>` :math:`\globaladdr_i` in :math:`\moduleinst.\MIGLOBALS`, the :ref:`external value <syntax-externval>` :math:`\EVGLOBAL~\globaladdr_i` must be :ref:`valid <valid-externval-global>` with some :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_i`.
 
+* For each :ref:`element address <syntax-elemaddr>` :math:`\elemaddr_i` in :math:`\moduleinst.\MIELEMS`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\elemaddr_i]` must be :ref:`valid <valid-eleminst>`.
+
+* For each :ref:`data address <syntax-dataaddr>` :math:`\dataaddr_i` in :math:`\moduleinst.\MIDATAS`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\dataaddr_i]` must be :ref:`valid <valid-datainst>`.
+
 * Each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS` must be :ref:`valid <valid-exportinst>`.
 
 * For each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS`, the :ref:`name <syntax-name>` :math:`\exportinst_i.\EINAME` must be different from any other name occurring in :math:`\moduleinst.\MIEXPORTS`.
@@ -327,6 +376,10 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \qquad
      (S \vdashexternval \EVGLOBAL~\globaladdr : \ETGLOBAL~\globaltype)^\ast
      \\
+     (S \vdasheleminst S.\SELEMS[\elemaddr] \ok)^\ast
+     \qquad
+     (S \vdashdatainst S.\SDATAS[\dataaddr] \ok)^\ast
+     \\
      (S \vdashexportinst \exportinst \ok)^\ast
      \qquad
      (\exportinst.\EINAME)^\ast ~\mbox{disjoint}
@@ -338,7 +391,9 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
        \MIFUNCS & \funcaddr^\ast, \\
        \MITABLES & \tableaddr^\ast, \\
        \MIMEMS & \memaddr^\ast, \\
-       \MIGLOBALS & \globaladdr^\ast \\
+       \MIGLOBALS & \globaladdr^\ast, \\
+       \MIELEMS & \elemaddr^\ast, \\
+       \MIDATAS & \dataaddr^\ast, \\
        \MIEXPORTS & \exportinst^\ast ~\} : \{
          \begin{array}[t]{@{}l@{~}l@{}}
          \CTYPES & \functype^\ast, \\
@@ -560,6 +615,10 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * The length of :math:`S.\SGLOBALS` must not shrink.
 
+* The length of :math:`S.\SELEMS` must not shrink.
+
+* The length of :math:`S.\SDATAS` must not shrink.
+
 * For each :ref:`function instance <syntax-funcinst>` :math:`\funcinst_i` in the original :math:`S.\SFUNCS`, the new function instance must be an :ref:`extension <extend-funcinst>` of the old.
 
 * For each :ref:`table instance <syntax-tableinst>` :math:`\tableinst_i` in the original :math:`S.\STABLES`, the new table instance must be an :ref:`extension <extend-tableinst>` of the old.
@@ -568,21 +627,31 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * For each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in the original :math:`S.\SGLOBALS`, the new global instance must be an :ref:`extension <extend-globalinst>` of the old.
 
+* For each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in the original :math:`S.\SELEMS`, the new global instance must be an :ref:`extension <extend-eleminst>` of the old.
+
+* For each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in the original :math:`S.\SDATAS`, the new global instance must be an :ref:`extension <extend-datainst>` of the old.
+
 .. math::
    \frac{
      \begin{array}{@{}ccc@{}}
      S_1.\SFUNCS = \funcinst_1^\ast &
      S_2.\SFUNCS = {\funcinst'_1}^\ast~\funcinst_2^\ast &
-     (\funcinst_1 \extendsto \funcinst'_1)^\ast \\
+     (\vdashfuncinstextends \funcinst_1 \extendsto \funcinst'_1)^\ast \\
      S_1.\STABLES = \tableinst_1^\ast &
      S_2.\STABLES = {\tableinst'_1}^\ast~\tableinst_2^\ast &
-     (\tableinst_1 \extendsto \tableinst'_1)^\ast \\
+     (\vdashtableinstextends \tableinst_1 \extendsto \tableinst'_1)^\ast \\
      S_1.\SMEMS = \meminst_1^\ast &
      S_2.\SMEMS = {\meminst'_1}^\ast~\meminst_2^\ast &
-     (\meminst_1 \extendsto \meminst'_1)^\ast \\
+     (\vdashmeminstextends \meminst_1 \extendsto \meminst'_1)^\ast \\
      S_1.\SGLOBALS = \globalinst_1^\ast &
      S_2.\SGLOBALS = {\globalinst'_1}^\ast~\globalinst_2^\ast &
-     (\globalinst_1 \extendsto \globalinst'_1)^\ast \\
+     (\vdashglobalinstextends \globalinst_1 \extendsto \globalinst'_1)^\ast \\
+     S_1.\SELEMS = \eleminst_1^\ast &
+     S_2.\SELEMS = {\eleminst'_1}^\ast~\eleminst_2^\ast &
+     (\vdasheleminstextends \eleminst_1 \extendsto \eleminst'_1)^\ast \\
+     S_1.\SDATAS = \datainst_1^\ast &
+     S_2.\SDATAS = {\datainst'_1}^\ast~\datainst_2^\ast &
+     (\vdashdatainstextends \datainst_1 \extendsto \datainst'_1)^\ast \\
      \end{array}
    }{
      \vdashstoreextends S_1 \extendsto S_2
@@ -657,6 +726,38 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
      \mut = \MVAR \vee c_1 = c_2
    }{
      \vdashglobalinstextends \{\GIVALUE~(t.\CONST~c_1), \GIMUT~\mut\} \extendsto \{\GIVALUE~(t.\CONST~c_2), \GIMUT~\mut\}
+   }
+
+
+.. index:: element instance
+.. _extend-eleminst:
+
+:ref:`Element Instance <syntax-eleminst>` :math:`\eleminst`
+...........................................................
+
+* The vector :math:`\eleminst.\EIELEM` must either remain unchanged or shrink to length :math:`0`.
+
+.. math::
+   \frac{
+     \X{fa}_1^\ast = \X{fa}_2^\ast \vee \X{fa}_2^\ast = \epsilon
+   }{
+     \vdasheleminstextends \{\EIELEM~\X{fa}_1^\ast\} \extendsto \{\EIELEM~\X{fa}_2^\ast\}
+   }
+
+
+.. index:: data instance
+.. _extend-datainst:
+
+:ref:`Data Instance <syntax-datainst>` :math:`\datainst`
+........................................................
+
+* The vector :math:`\datainst.\DIDATA` must either remain unchanged or shrink to length :math:`0`.
+
+.. math::
+   \frac{
+     b_1^\ast = b_2^\ast \vee b_2^\ast = \epsilon
+   }{
+     \vdashdatainstextends \{\DIDATA~b_1^\ast\} \extendsto \{\DIDATA~b_2^\ast\}
    }
 
 

@@ -854,9 +854,9 @@
 .. |GIVALUE| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{value}}
 .. |GIMUT| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{mut}}
 
-.. |EIINIT| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{init}}
+.. |EIELEM| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{elem}}
 
-.. |DIINIT| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{init}}
+.. |DIDATA| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{data}}
 
 .. |EINAME| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\K{name}}
 .. |EIVALUE| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\K{value}}
@@ -899,7 +899,6 @@
 .. |evtables| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{tables}}
 .. |evmems| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{mems}}
 .. |evglobals| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{globals}}
-.. |vconst| mathdef:: \xref{exec/runtime}{syntax-val}{\F{const}}
 
 
 .. Store, terminals
@@ -908,8 +907,8 @@
 .. |STABLES| mathdef:: \xref{exec/runtime}{syntax-store}{\K{tables}}
 .. |SMEMS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{mems}}
 .. |SGLOBALS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{globals}}
-.. |SELEM| mathdef:: \xref{exec/runtime}{syntax-store}{\K{elem}}
-.. |SDATA| mathdef:: \xref{exec/runtime}{syntax-store}{\K{data}}
+.. |SELEMS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{elems}}
+.. |SDATAS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{datas}}
 
 .. Store, non-terminals
 
@@ -1067,6 +1066,8 @@
 .. |vdashtableinst| mathdef:: \xref{appendix/properties}{valid-tableinst}{\vdash}
 .. |vdashmeminst| mathdef:: \xref{appendix/properties}{valid-meminst}{\vdash}
 .. |vdashglobalinst| mathdef:: \xref{appendix/properties}{valid-globalinst}{\vdash}
+.. |vdasheleminst| mathdef:: \xref{appendix/properties}{valid-eleminst}{\vdash}
+.. |vdashdatainst| mathdef:: \xref{appendix/properties}{valid-datainst}{\vdash}
 .. |vdashexportinst| mathdef:: \xref{appendix/properties}{valid-exportinst}{\vdash}
 .. |vdashmoduleinst| mathdef:: \xref{appendix/properties}{valid-moduleinst}{\vdash}
 
@@ -1079,6 +1080,8 @@
 .. |vdashtableinstextends| mathdef:: \xref{appendix/properties}{extend-tableinst}{\vdash}
 .. |vdashmeminstextends| mathdef:: \xref{appendix/properties}{extend-meminst}{\vdash}
 .. |vdashglobalinstextends| mathdef:: \xref{appendix/properties}{extend-globalinst}{\vdash}
+.. |vdasheleminstextends| mathdef:: \xref{appendix/properties}{extend-eleminst}{\vdash}
+.. |vdashdatainstextends| mathdef:: \xref{appendix/properties}{extend-datainst}{\vdash}
 .. |vdashstoreextends| mathdef:: \xref{appendix/properties}{extend-store}{\vdash}
 
 

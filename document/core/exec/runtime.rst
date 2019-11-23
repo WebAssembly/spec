@@ -29,19 +29,6 @@ It is convenient to reuse the same notation as for the |CONST| :ref:`instruction
      \F64.\CONST~\f64
    \end{array}
 
-Conventions
-...........
-
-The following auxiliary notation is defined for constant values, to ensure they are well-formed for the given :ref:`value type <syntax-valtype>`.
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \vconst_t(x) &=& (t\K{.}\CONST~x)
-     & (\iff x~\mbox{is well-formed for}~t) \\
-   \vconst_t(x) &=& \TRAP
-     & (\otherwise) \\
-   \end{array}
-
 
 .. index:: ! result, value, trap
    pair: abstract syntax; result
@@ -87,8 +74,8 @@ Syntactically, the store is defined as a :ref:`record <notation-record>` listing
      \STABLES & \tableinst^\ast, \\
      \SMEMS & \meminst^\ast, \\
      \SGLOBALS & \globalinst^\ast, \\
-     \SELEM & \eleminst^\ast, \\
-     \SDATA & \datainst^\ast ~\} \\
+     \SELEMS & \eleminst^\ast, \\
+     \SDATAS & \datainst^\ast ~\} \\
      \end{array}
    \end{array}
 
@@ -318,7 +305,7 @@ It holds a vector of function elements.
 .. math::
   \begin{array}{llll}
   \production{(element instance)} & \eleminst &::=&
-    \{ \EIINIT~\vec(\funcelem) \} \\
+    \{ \EIELEM~\vec(\funcelem) \} \\
   \end{array}
 
 
@@ -336,7 +323,7 @@ It holds a vector of :ref:`bytes <syntax-byte>`.
 .. math::
   \begin{array}{llll}
   \production{(data instance)} & \datainst &::=&
-    \{ \DIINIT~\vec(\byte) \} \\
+    \{ \DIDATA~\vec(\byte) \} \\
   \end{array}
 
 
