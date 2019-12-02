@@ -107,6 +107,9 @@
   (func (export "as-if-else") (param i32 i32) (result i32)
     (if (result i32) (local.get 0) (then (local.get 1)) (else (unreachable)))
   )
+  (func (export "as-if-then-no-else") (param i32 i32) (result i32)
+    (if (local.get 0) (then (unreachable))) (local.get 1)
+  )
 
   (func (export "as-select-first") (param i32 i32) (result i32)
     (select (unreachable) (local.get 0) (local.get 1))
@@ -255,6 +258,8 @@
 (assert_return (invoke "as-if-then" (i32.const 0) (i32.const 6)) (i32.const 6))
 (assert_trap (invoke "as-if-else" (i32.const 0) (i32.const 6)) "unreachable")
 (assert_return (invoke "as-if-else" (i32.const 1) (i32.const 6)) (i32.const 6))
+(assert_trap (invoke "as-if-then-no-else" (i32.const 1) (i32.const 6)) "unreachable")
+(assert_return (invoke "as-if-then-no-else" (i32.const 0) (i32.const 6)) (i32.const 6))
 
 (assert_trap (invoke "as-select-first" (i32.const 0) (i32.const 6)) "unreachable")
 (assert_trap (invoke "as-select-first" (i32.const 1) (i32.const 6)) "unreachable")

@@ -265,6 +265,7 @@ struct
       let m = logor (logand bits 0xf_ffff_ffff_ffffL) 0x10_0000_0000_0000L in
       (* Shift mantissa to match msb position in most significant hex digit *)
       let i = skip_zeroes (String.uppercase s) 0 in
+      if i = String.length s then Printf.sprintf "%.*g" (String.length s) z else
       let sh =
         match s.[i] with '1' -> 0 | '2'..'3' -> 1 | '4'..'7' -> 2 | _ -> 3 in
       Printf.sprintf "%Lx" (shift_left m sh)

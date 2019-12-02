@@ -96,6 +96,8 @@ Floating-Point
      h{:}\Thexdigit~~q{:}\Thexfrac &\Rightarrow& (h+q)/16 \\ &&|&
      h{:}\Thexdigit~~\text{\_}~~~~p{:}\Thexdigit~~q{:}\Thexfrac &\Rightarrow& (h+(p+q)/16)/16 \\
    \production{decimal floating-point number} & \Tfloat &::=&
+     p{:}\Tnum
+       &\Rightarrow& p \\ &&|&
      p{:}\Tnum~\text{.}~q{:}\Tfrac
        &\Rightarrow& p+q \\ &&|&
      p{:}\Tnum~(\text{E}~|~\text{e})~{\pm}{:}\Tsign~e{:}\Tnum
@@ -103,6 +105,8 @@ Floating-Point
      p{:}\Tnum~\text{.}~q{:}\Tfrac~(\text{E}~|~\text{e})~{\pm}{:}\Tsign~e{:}\Tnum
        &\Rightarrow& (p+q)\cdot 10^{\pm e} \\
    \production{hexadecimal floating-point number} & \Thexfloat &::=&
+     \text{0x}~p{:}\Thexnum
+       &\Rightarrow& p \\ &&|&
      \text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac
        &\Rightarrow& p+q \\ &&|&
      \text{0x}~p{:}\Thexnum~(\text{P}~|~\text{p})~{\pm}{:}\Tsign~e{:}\Tnum

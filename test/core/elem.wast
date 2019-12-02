@@ -249,7 +249,7 @@
     (func $f)
     (elem (i32.const 0) $f)
   )
-  "unknown table 0"
+  "unknown table"
 )
 
 ;; Invalid offsets
@@ -350,7 +350,7 @@
 
 (register "module1" $module1)
 
-(assert_trap (invoke $module1 "call-7") "uninitialized element 7")
+(assert_trap (invoke $module1 "call-7") "uninitialized element")
 (assert_return (invoke $module1 "call-8") (i32.const 65))
 (assert_return (invoke $module1 "call-9") (i32.const 66))
 
