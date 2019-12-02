@@ -111,6 +111,7 @@ let load_value mem a o t =
   | I64Type -> I64 n
   | F32Type -> F32 (F32.of_bits (Int64.to_int32 n))
   | F64Type -> F64 (F64.of_bits n)
+  | V128Type -> failwith "TODO v128"
 
 let store_value mem a o v =
   let x =
@@ -119,6 +120,7 @@ let store_value mem a o v =
     | I64 x -> x
     | F32 x -> Int64.of_int32 (F32.to_bits x)
     | F64 x -> F64.to_bits x
+    | V128 x -> failwith "TODO v128" (* FIXME V128.to_bits x requires store to accept something other than int64 *)
   in storen mem a o (Types.size (Values.type_of v)) x
 
 let extend x n = function

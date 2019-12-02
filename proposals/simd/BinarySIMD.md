@@ -109,6 +109,10 @@ The `v8x16.shuffle` instruction has 16 bytes after `simdop`.
 | `i8x16.sub`                |    `0x5a`| -                  |
 | `i8x16.sub_saturate_s`     |    `0x5b`| -                  |
 | `i8x16.sub_saturate_u`     |    `0x5c`| -                  |
+| `i8x16.min_s`              |    `0x5e`| -                  |
+| `i8x16.min_u`              |    `0x5f`| -                  |
+| `i8x16.max_s`              |    `0x60`| -                  |
+| `i8x16.max_u`              |    `0x61`| -                  |
 | `i16x8.neg`                |    `0x62`| -                  |
 | `i16x8.any_true`           |    `0x63`| -                  |
 | `i16x8.all_true`           |    `0x64`| -                  |
@@ -122,6 +126,10 @@ The `v8x16.shuffle` instruction has 16 bytes after `simdop`.
 | `i16x8.sub_saturate_s`     |    `0x6c`| -                  |
 | `i16x8.sub_saturate_u`     |    `0x6d`| -                  |
 | `i16x8.mul`                |    `0x6e`| -                  |
+| `i16x8.min_s`              |    `0x6f`| -                  |
+| `i16x8.min_u`              |    `0x70`| -                  |
+| `i16x8.max_s`              |    `0x71`| -                  |
+| `i16x8.max_u`              |    `0x72`| -                  |
 | `i32x4.neg`                |    `0x73`| -                  |
 | `i32x4.any_true`           |    `0x74`| -                  |
 | `i32x4.all_true`           |    `0x75`| -                  |

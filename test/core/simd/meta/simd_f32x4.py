@@ -5,63 +5,15 @@ Generate f32x4 [abs, min, max] cases.
 """
 
 from simd_f32x4_arith import Simdf32x4ArithmeticCase
+from simd_float_op import FloatingPointSimpleOp
 from simd import SIMD
 from test_assert import AssertReturn
-
-
-def binary_op(op: str, p1: str, p2: str) -> str:
-    """Binary operation on p1 and p2 with the operation specified by op
-
-    :param op: min, max,
-    :param p1: float number in hex
-    :param p2: float number in hex
-    :return:
-    """
-    f1 = float.fromhex(p1)
-    f2 = float.fromhex(p2)
-
-    if '-nan' in [p1, p2] and 'nan' in [p1, p2]:
-        return p1
-
-    if 'nan' in [p1, p2]:
-        return 'nan'
-
-    if '-nan' in [p1, p2]:
-        return '-nan'
-
-    if op == 'min':
-        if '-0x0p+0' in [p1, p2] and '0x0p+0' in [p1, p2]:
-            return '-0x0p+0'
-        result = min(f1, f2)
-
-    elif op == 'max':
-        if '-0x0p+0' in [p1, p2] and '0x0p+0' in [p1, p2]:
-            return '0x0p+0'
-        result = max(f1, f2)
-
-    else:
-        raise Exception('Unknown binary operation: {}'.format(op))
-
-    return result.hex()
-
-
-def unary_op(op: str, p1: str) -> str:
-    """Unnary operation on p1 with the operation specified by op
-
-    :param op: abs,
-    :param p1: float number in hex
-    :return:
-    """
-    f1 = float.fromhex(p1)
-    if op == 'abs':
-        return abs(f1).hex()
-
-    raise Exception('Unknown unary operation: {}'.format(op))
 
 
 class Simdf32x4Case(Simdf32x4ArithmeticCase):
     UNARY_OPS = ('abs',)
     BINARY_OPS = ('min', 'max',)
+    floatOp = FloatingPointSimpleOp()
 
     FLOAT_NUMBERS = (
         '0x0p+0', '-0x0p+0', '0x1p-149', '-0x1p-149', '0x1p-126', '-0x1p-126', '0x1p-1', '-0x1p-1', '0x1p+0', '-0x1p+0',
@@ -367,7 +319,7 @@ class Simdf32x4Case(Simdf32x4ArithmeticCase):
             op_name = self.full_op_name(op)
             for p1 in self.FLOAT_NUMBERS:
                 for p2 in self.FLOAT_NUMBERS:
-                    result = binary_op(op, p1, p2)
+                    result = self.floatOp.binary_op(op, p1, p2)
                     if 'nan' not in result:
                         # Normal floating point numbers as the results
                         binary_test_data.append(['assert_return', op_name, p1, p2, result])
@@ -443,7 +395,7 @@ class Simdf32x4Case(Simdf32x4ArithmeticCase):
 
         for p in self.FLOAT_NUMBERS:
             op_name = self.full_op_name('abs')
-            result = unary_op('abs', p)
+            result = self.floatOp.unary_op('abs', p)
             # Abs operation is valid for all the floating point numbers
             unary_test_data.append(['assert_return', op_name, p, result])
 

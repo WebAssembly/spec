@@ -457,6 +457,37 @@ def S.sub_saturate_u(a, b):
     return S.lanewise_binary(subsat, S.AsUnsigned(a), S.AsUnsigned(b))
 ```
 
+### Lane-wise integer minimum
+* `i8x16.min_s(a: v128, b: v128) -> v128`
+* `i8x16.min_u(a: v128, b: v128) -> v128`
+* `i16x8.min_s(a: v128, b: v128) -> v128`
+* `i16x8.min_u(a: v128, b: v128) -> v128`
+* `i32x4.min_s(a: v128, b: v128) -> v128`
+* `i32x4.min_u(a: v128, b: v128) -> v128`
+
+Compares lane-wise signed/unsigned integers, and returns the minimum of
+each pair.
+
+```python
+def S.min(a, b):
+    return S.lanewise_binary(min, a, b)
+```
+
+### Lane-wise integer maximum
+* `i8x16.max_s(a: v128, b: v128) -> v128`
+* `i8x16.max_u(a: v128, b: v128) -> v128`
+* `i16x8.max_s(a: v128, b: v128) -> v128`
+* `i16x8.max_u(a: v128, b: v128) -> v128`
+* `i32x4.max_s(a: v128, b: v128) -> v128`
+* `i32x4.max_u(a: v128, b: v128) -> v128`
+
+Compares lane-wise signed/unsigned integers, and returns the maximum of
+each pair.
+
+```python
+def S.max(a, b):
+    return S.lanewise_binary(max, a, b)
+```
 ## Bit shifts
 
 ### Left shift by scalar
@@ -670,6 +701,11 @@ natural alignment.
 
 Load a `v128` vector from the given heap address.
 
+```python
+def S.load(memarg):
+    return S.from_bytes(memory[memarg.offset:memarg.offset + 16])
+```
+
 ### Load and Splat
 
 * `v8x16.load_splat(memarg) -> v128`
@@ -678,6 +714,12 @@ Load a `v128` vector from the given heap address.
 * `v64x2.load_splat(memarg) -> v128`
 
 Load a single element and splat to all lanes of a `v128` vector.
+
+```python
+def S.load_splat(memarg):
+    val_bytes = memory[memarg.offset:memarg.offset + S.LaneBytes])
+    return S.splat(S.LaneType.from_bytes(val_bytes))
+```
 
 ### Load and Extend
 
@@ -690,11 +732,31 @@ Load a single element and splat to all lanes of a `v128` vector.
 
 Fetch consequtive integers up to 32-bit wide and produce a vector with lanes up to 64 bits.
 
+```python
+def S.load_extend(ext, memarg):
+    result = S.New()
+    bytes = memory[memarg.offset:memarg.offset + 8])
+    for i in range(S.Lanes):
+        result[i] = ext(S.LaneType.from_bytes(bytes[(i * S.LaneBytes/2):((i+1) * S.LaneBytes/2)]))
+    return result
+
+def S.load_extend_s(memarg):
+    return S.load_extend(Sext, memarg)
+
+def S.load_extend_u(memarg):
+    return S.load_extend(Zext, memarg)
+```
+
 ### Store
 
 * `v128.store(memarg, data: v128)`
 
 Store a `v128` vector to the given heap address.
+
+```python
+def S.store(memarg, a):
+    memory[memarg.offset:memarg.offset + 16] = bytes(a)
+```
 
 ## Floating-point sign bit operations
 

@@ -87,6 +87,10 @@
 | `i8x16.sub`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i8x16.sub_saturate_s`     |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i8x16.sub_saturate_u`     |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| `i8x16.min_s`              | `-munimplemented-simd128` |    :heavy_check_mark: |                    |                    |
+| `i8x16.min_u`              | `-munimplemented-simd128` |    :heavy_check_mark: |                    |                    |
+| `i8x16.max_s`              | `-munimplemented-simd128` |    :heavy_check_mark: |                    |                    |
+| `i8x16.max_u`              | `-munimplemented-simd128` |    :heavy_check_mark: |                    |                    |
 | `i16x8.neg`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.any_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.all_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -100,6 +104,10 @@
 | `i16x8.sub_saturate_s`     |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.sub_saturate_u`     |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.mul`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| `i16x8.min_s`              | `-munimplemented-simd128` |    :heavy_check_mark: |                    |                    |
+| `i16x8.min_u`              | `-munimplemented-simd128` |    :heavy_check_mark: |                    |                    |
+| `i16x8.max_s`              | `-munimplemented-simd128` |    :heavy_check_mark: |                    |                    |
+| `i16x8.max_u`              | `-munimplemented-simd128` |    :heavy_check_mark: |                    |                    |
 | `i32x4.neg`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.any_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.all_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |

@@ -44,16 +44,27 @@ struct
              | ReinterpretInt
 end
 
+(* FIXME *)
+module VectorOp =
+struct
+  type unop = TodoUnOp
+  type binop = TodoBinOp
+  type testop = TodoTestOp
+  type relop = TodoRelOp
+  type cvtop = TodoCvtOp
+end
+
 module I32Op = IntOp
 module I64Op = IntOp
 module F32Op = FloatOp
 module F64Op = FloatOp
+module V128Op = VectorOp
 
-type unop = (I32Op.unop, I64Op.unop, F32Op.unop, F64Op.unop) Values.op
-type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop) Values.op
-type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) Values.op
-type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Values.op
-type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
+type unop = (I32Op.unop, I64Op.unop, F32Op.unop, F64Op.unop, V128Op.unop) Values.op
+type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop, V128Op.binop) Values.op
+type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop, V128Op.testop) Values.op
+type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop, V128Op.relop) Values.op
+type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop, V128Op.cvtop) Values.op
 
 type 'a memop =
   {ty : value_type; align : int; offset : Memory.offset; sz : 'a option}

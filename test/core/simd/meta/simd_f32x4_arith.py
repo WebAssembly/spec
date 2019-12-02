@@ -4,100 +4,21 @@
 Generate f32x4 floating-point arithmetic operation cases.
 """
 
-import math
 from simd_arithmetic import SimdArithmeticCase
+from simd_float_op import FloatingPointArithOp
 
 
-def binary_op(op: str, p1: str, p2: str) -> str:
-    """Binary operation on p1 and p2 with the operation specified by op
-
-    :param op: add, sub, mul,
-    :param p1: float number in hex
-    :param p2: float number in hex
-    :return:
-    """
-    f1 = float.fromhex(p1)
-    f2 = float.fromhex(p2)
-    if op == 'add':
-        if 'inf' in p1 and 'inf' in p2 and p1 != p2:
-            return '-nan'
-        result = f1 + f2
-
-    elif op == 'sub':
-        if 'inf' in p1 and 'inf' in p2 and p1 == p2:
-            return '-nan'
-        result = f1 - f2
-
-    elif op == 'mul':
-        if '0x0p+0' in p1 and 'inf' in p2 or 'inf' in p1 and '0x0p+0' in p2:
-            return '-nan'
-        result = f1 * f2
-
-    elif op == 'div':
-        if '0x0p+0' in p1 and '0x0p+0' in p2:
-            return '-nan'
-        if 'inf' in p1 and 'inf' in p2:
-            return '-nan'
-
-        try:
-            result = f1 / f2
-            return get_valid_float(result)
-        except ZeroDivisionError:
-            if p1[0] == p2[0]:
-                return 'inf'
-            elif p1 == 'inf' and p2 == '0x0p+0':
-                return 'inf'
-            else:
-                return '-inf'
-
-    else:
-        raise Exception('Unknown binary operation')
-
-    return get_valid_float(result)
-
-
-def get_valid_float(value):
-    if value > float.fromhex('0x1.fffffep+127'):
-        return 'inf'
-    if value < float.fromhex('-0x1.fffffep+127'):
-        return '-inf'
-    return value.hex()
-
-
-def float_sqrt(p):
-    if p == '-0x0p+0':
-        return '-0x0p+0'
-
-    try:
-        p = float.fromhex(p)
-        result = float.hex(math.sqrt(p))
-    except ValueError:
-        result = '-nan'
-
-    return result
-
-
-def float_neg(p):
-    if p == 'nan':
-        return '-nan'
-    try:
-        p = float.fromhex(p)
-        result = float.hex(-p)
-    except ValueError:
-        if p.startswith('nan:'):
-            return '-' + p
-        if p.startswith('-nan:'):
-            return p[1:]
-
-    return result
+class F32ArithOp(FloatingPointArithOp):
+    maximum = '0x1.fffffep+127'
 
 
 class Simdf32x4ArithmeticCase(SimdArithmeticCase):
     LANE_LEN = 4
     LANE_TYPE = 'f32x4'
 
+    floatOp = F32ArithOp()
     UNARY_OPS = ('neg', 'sqrt')
-    BINARY_OPS = ('add', 'sub', 'mul', 'div',)
+    BINARY_OPS = ('add', 'sub', 'mul', 'div')
 
     FLOAT_NUMBERS = (
         '0x0p+0', '-0x0p+0', '0x1p-149', '-0x1p-149', '0x1p-126', '-0x1p-126', '0x1p-1', '-0x1p-1', '0x1p+0', '-0x1p+0',
@@ -250,7 +171,7 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
             op_name = self.full_op_name(op)
             for p1 in self.FLOAT_NUMBERS:
                 for p2 in self.FLOAT_NUMBERS:
-                    result = binary_op(op, p1, p2)
+                    result = self.floatOp.binary_op(op, p1, p2)
                     if 'nan' not in result:
                         # Normal floating point numbers as the results
                         binary_test_data.append(['assert_return', op_name, p1, p2, result])
@@ -290,7 +211,7 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
             else:
                 # Normal floating point numbers for sqrt operation
                 op_name = self.full_op_name('sqrt')
-                result = float_sqrt(p)
+                result = self.floatOp.float_sqrt(p)
                 if 'nan' not in result:
                     # Get the sqrt value correctly
                     unary_test_data.append(['assert_return', op_name, p, result])
@@ -300,7 +221,7 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
 
         for p in self.FLOAT_NUMBERS + self.NAN_NUMBERS:
             op_name = self.full_op_name('neg')
-            result = float_neg(p)
+            result = self.floatOp.float_neg(p)
             # Neg operation is valid for all the floating point numbers
             unary_test_data.append(['assert_return', op_name, p, result])
 
@@ -363,9 +284,10 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
                     cases.append(template.format(
                         'assert_return_arithmetic_nan', test_type, i))
                 else:
-                    cases.append('({} (invoke "f32x4_extract_lane_{}_{}") '.format(
-                        'assert_return', test_type, i) +
-                                 '(f32.const {}))'.format(result))
+                    cases.append(''.join([
+                        '({} (invoke "f32x4_extract_lane_{}_{}") '.format(
+                            'assert_return', test_type, i),
+                        '(f32.const {}))'.format(result)]))
 
 
 def gen_test_cases():

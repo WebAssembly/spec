@@ -172,20 +172,39 @@ struct
     | ReinterpretInt -> "reinterpret_i" ^ xx
 end
 
-let oper (intop, floatop) op =
+(* FIXME *)
+module VectorOp =
+struct
+  (* TODO
+  open Ast.FloatOp
+  *)
+
+  let testop xx = fun _ -> failwith "TODO v128"
+
+  let relop xx = fun _ -> failwith "TODO v128"
+
+  let unop xx = fun _ -> failwith "TODO v128"
+
+  let binop xx = fun _ -> failwith "TODO v128"
+
+  let cvtop xx = fun _ -> failwith "TODO v128"
+end
+
+let oper (intop, floatop, vectop) op =
   value_type (type_of op) ^ "." ^
   (match op with
   | I32 o -> intop "32" o
   | I64 o -> intop "64" o
   | F32 o -> floatop "32" o
   | F64 o -> floatop "64" o
+  | V128 o -> vectop "128" o
   )
 
-let unop = oper (IntOp.unop, FloatOp.unop)
-let binop = oper (IntOp.binop, FloatOp.binop)
-let testop = oper (IntOp.testop, FloatOp.testop)
-let relop = oper (IntOp.relop, FloatOp.relop)
-let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
+let unop = oper (IntOp.unop, FloatOp.unop, VectorOp.unop)
+let binop = oper (IntOp.binop, FloatOp.binop, VectorOp.binop)
+let testop = oper (IntOp.testop, FloatOp.testop, VectorOp.testop)
+let relop = oper (IntOp.relop, FloatOp.relop, VectorOp.relop)
+let cvtop = oper (IntOp.cvtop, FloatOp.cvtop, VectorOp.cvtop)
 
 let pack_size = function
   | Memory.Pack8 -> "8"
@@ -381,6 +400,7 @@ let literal lit =
   | Values.I64 i -> Node ("i64.const " ^ I64.to_string_s i, [])
   | Values.F32 z -> Node ("f32.const " ^ F32.to_string z, [])
   | Values.F64 z -> Node ("f64.const " ^ F64.to_string z, [])
+  | Values.V128 v -> Node ("v128.const " ^ V128.to_string v, [])
 
 let definition mode x_opt def =
   try

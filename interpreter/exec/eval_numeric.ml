@@ -116,6 +116,31 @@ end
 module F32Op = FloatOp (F32) (Values.F32Value)
 module F64Op = FloatOp (F64) (Values.F64Value)
 
+(* Vector operators *)
+
+module VectorOp (VXX : Vector.S) (Value : ValueType with type t = VXX.t) =
+struct
+  (* TODO
+  open Ast.VectorOp
+
+  let to_value = Value.to_value
+  let of_value = of_arg Value.of_value
+  *)
+
+  (* FIXME *)
+  let unop op = failwith "TODO v128"
+
+  (* FIXME *)
+  let binop op = failwith "TODO v128"
+
+  (* FIXME *)
+  let testop op = failwith "TODO v128"
+
+  (* FIXME *)
+  let relop op = failwith "TODO v128"
+end
+
+module V128Op = VectorOp (V128) (Values.V128Value)
 
 (* Conversion operators *)
 
@@ -181,17 +206,28 @@ struct
     | DemoteF64 -> raise (TypeError (1, v, F64Type))
 end
 
+module V128CvtOp =
+struct
+  (* TODO
+  open Ast.VectorOp
+  *)
+
+  (* FIXME *)
+  let cvtop op v = failwith "TODO v128"
+end
+
 
 (* Dispatch *)
 
-let op i32 i64 f32 f64 = function
+let op i32 i64 f32 f64 v128 = function
   | I32 x -> i32 x
   | I64 x -> i64 x
   | F32 x -> f32 x
   | F64 x -> f64 x
+  | V128 x -> v128 x
 
-let eval_unop = op I32Op.unop I64Op.unop F32Op.unop F64Op.unop
-let eval_binop = op I32Op.binop I64Op.binop F32Op.binop F64Op.binop
-let eval_testop = op I32Op.testop I64Op.testop F32Op.testop F64Op.testop
-let eval_relop = op I32Op.relop I64Op.relop F32Op.relop F64Op.relop
-let eval_cvtop = op I32CvtOp.cvtop I64CvtOp.cvtop F32CvtOp.cvtop F64CvtOp.cvtop
+let eval_unop = op I32Op.unop I64Op.unop F32Op.unop F64Op.unop V128Op.unop
+let eval_binop = op I32Op.binop I64Op.binop F32Op.binop F64Op.binop V128Op.binop
+let eval_testop = op I32Op.testop I64Op.testop F32Op.testop F64Op.testop V128Op.testop
+let eval_relop = op I32Op.relop I64Op.relop F32Op.relop F64Op.relop V128Op.relop
+let eval_cvtop = op I32CvtOp.cvtop I64CvtOp.cvtop F32CvtOp.cvtop F64CvtOp.cvtop V128CvtOp.cvtop

@@ -10,49 +10,7 @@ test datas.
 """
 
 from simd_arithmetic import SimdArithmeticCase
-
-
-def binary_op(op: str, p1: str, p2: str) -> str:
-    """Binary operation on p1 and p2 with the operation specified by op
-
-    :param op: eq, ne, lt, le, gt, ge
-    :param p1: float number in hex
-    :param p2: float number in hex
-    :return:
-    """
-
-    # ne
-    # if either p1 or p2 is a NaN, then return True
-    if op == 'ne' and ('nan' in p1.lower() or 'nan' in p2.lower()):
-        return '-1'
-
-    # other instructions
-    # if either p1 or p2 is a NaN, then return False
-    if 'nan' in p1.lower() or 'nan' in p2.lower():
-        return '0'
-
-    f1 = float.fromhex(p1)
-    f2 = float.fromhex(p2)
-
-    if op == 'eq':
-        return '-1' if f1 == f2 else '0'
-
-    elif op == 'ne':
-        return '-1' if f1 != f2 else '0'
-
-    elif op == 'lt':
-        return '-1' if f1 < f2 else '0'
-
-    elif op == 'le':
-        return '-1' if f1 <= f2 else '0'
-
-    elif op == 'gt':
-        return '-1' if f1 > f2 else '0'
-
-    elif op == 'ge':
-        return '-1' if f1 >= f2 else '0'
-    else:
-        raise Exception('Unknown binary operation')
+from simd_float_op import FloatingPointCmpOp
 
 
 class Simdf64x2CmpCase(SimdArithmeticCase):
@@ -61,6 +19,7 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
 
     UNARY_OPS = ()
     BINARY_OPS = ('eq', 'ne', 'lt', 'le', 'gt', 'ge',)
+    floatOp = FloatingPointCmpOp()
 
     FLOAT_NUMBERS_SPECIAL = ('0x1p-1074', '-inf', '0x1.921fb54442d18p+2',
                              '0x1p+0', '-0x1.fffffffffffffp+1023', '-0x0p+0', '-0x1p-1', '0x1.fffffffffffffp+1023',
@@ -256,19 +215,19 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
             op_name = self.full_op_name(op)
             for p1 in self.FLOAT_NUMBERS_SPECIAL:
                 for p2 in self.FLOAT_NUMBERS_SPECIAL + self.NAN_NUMBERS:
-                    result = binary_op(op, p1, p2)
+                    result = self.floatOp.binary_op(op, p1, p2)
                     binary_test_data.append(['assert_return', op_name, p1, p2, result])
 
             for p1 in self.NAN_NUMBERS:
                 for p2 in self.FLOAT_NUMBERS_SPECIAL + self.NAN_NUMBERS:
-                    result = binary_op(op, p1, p2)
+                    result = self.floatOp.binary_op(op, p1, p2)
                     binary_test_data.append(['assert_return', op_name, p1, p2, result])
 
         for op in self.BINARY_OPS:
             op_name = self.full_op_name(op)
             for p1 in self.FLOAT_NUMBERS_NORMAL:
                 for p2 in self.FLOAT_NUMBERS_NORMAL:
-                    result = binary_op(op, p1, p2)
+                    result = self.floatOp.binary_op(op, p1, p2)
                     binary_test_data.append(['assert_return', op_name, p1, p2, result])
 
         for case in binary_test_data:
