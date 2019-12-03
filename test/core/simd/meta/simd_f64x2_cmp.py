@@ -31,18 +31,19 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
 
     NAN_NUMBERS = ('nan', '-nan', 'nan:0x4000000000000', '-nan:0x4000000000000')
 
-    binary_params_template = ('({} (invoke "{}" ', '{}', '{})', '{})')
-    unary_param_template = ('({} (invoke "{}" ', '{})', '{})')
-    binary_nan_template = ('({} (invoke "{}" ', '{}', '{}))')
-    unary_nan_template = ('({} (invoke "{}" ', '{}))')
+    binary_params_template = ('({assert_type} (invoke "{func}" ', '{operand_1}', '{operand_2})', '{expected_result})')
+    unary_param_template = ('({assert_type} (invoke "{func}" ', '{operand})', '{expected_result})')
+    binary_nan_template = ('({assert_type} (invoke "{func}" ', '{operand_1}', '{operand_2}))')
+    unary_nan_template = ('({assert_type} (invoke "{func}" ', '{operand}))')
+
 
     def full_op_name(self, op_name):
         return self.LANE_TYPE + '.' + op_name
 
     @staticmethod
-    def v128_const(lane, val):
+    def v128_const(lane, value):
         lane_cnt = 2 if lane in ['f64x2', 'i64x2'] else 4
-        return '(v128.const {} {})'.format(lane, ' '.join([str(val)] * lane_cnt))
+        return '(v128.const {lane_type} {value})'.format(lane_type=lane, value=' '.join([str(value)] * lane_cnt))
 
     @property
     def combine_ternary_arith_test_data(self):
@@ -63,22 +64,22 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
         arg2 = self.v128_const(self.LANE_TYPE, case[3])
 
         if len(case) == 4:
-            line_head = self.binary_nan_template[0].format(case[0], op_name)
+            line_head = self.binary_nan_template[0].format(assert_type=case[0], func=op_name)
             line_head_len = len(line_head)
             blank_head = ' ' * line_head_len
             lines = [
-                line_head + self.binary_nan_template[1].format(arg1),
-                blank_head + self.binary_nan_template[2].format(arg2)
+                line_head + self.binary_nan_template[1].format(operand_1=arg1),
+                blank_head + self.binary_nan_template[2].format(operand_2=arg2)
             ]
         elif len(case) == 5:
-            line_head = self.binary_params_template[0].format(case[0], op_name)
+            line_head = self.binary_params_template[0].format(assert_type=case[0], func=op_name)
             line_head_len = len(line_head)
             blank_head = ' ' * line_head_len
             result = self.v128_const('i64x2', case[-1])
             lines = [
-                line_head + self.binary_params_template[1].format(arg1),
-                blank_head + self.binary_params_template[2].format(arg2),
-                blank_head + self.binary_params_template[3].format(result)
+                line_head + self.binary_params_template[1].format(operand_1=arg1),
+                blank_head + self.binary_params_template[2].format(operand_2=arg2),
+                blank_head + self.binary_params_template[3].format(expected_result=result)
             ]
         else:
             raise Exception('Invalid format for the test case!')
@@ -95,18 +96,18 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
         arg = self.v128_const(self.LANE_TYPE, case[2])
 
         if len(case) == 3:
-            line_head = self.unary_nan_template[0].format(case[0], op_name)
+            line_head = self.unary_nan_template[0].format(assert_type=case[0], func=op_name)
             lines = [
-                line_head + self.unary_nan_template[1].format(arg)
+                line_head + self.unary_nan_template[1].format(operand=arg)
             ]
         elif len(case) == 4:
-            line_head = self.unary_param_template[0].format(case[0], op_name)
+            line_head = self.unary_param_template[0].format(assert_type=case[0], func=op_name)
             line_head_len = len(line_head)
             blank_head = ' ' * line_head_len
             result = self.v128_const(self.LANE_TYPE, case[-1])
             lines = [
-                line_head + self.unary_param_template[1].format(arg),
-                blank_head + self.unary_param_template[2].format(result)
+                line_head + self.unary_param_template[1].format(operand=arg),
+                blank_head + self.unary_param_template[2].format(expected_result=result)
             ]
         else:
             raise Exception('Invalid format for the test case!')
@@ -117,11 +118,11 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
         combine_cases = [';; combination\n(module (memory 1)']
 
         # append funcs
-        binary_fn_template = '  (func (export "{}-in-block")\n' \
+        binary_func_template = '  (func (export "{op}-in-block")\n' \
                              '    (block\n' \
                              '      (drop\n' \
                              '        (block (result v128)\n' \
-                             '          ({}\n' \
+                             '          ({op}\n' \
                              '            (block (result v128) (v128.load (i32.const 0)))\n' \
                              '            (block (result v128) (v128.load (i32.const 1)))\n' \
                              '          )\n' \
@@ -129,28 +130,28 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
                              '      )\n' \
                              '    )\n' \
                              '  )'
-        for fn_name in self.combine_binary_arith_test_data:
-            combine_cases.append(binary_fn_template.format(fn_name, fn_name))
+        for func in self.combine_binary_arith_test_data:
+            combine_cases.append(binary_func_template.format(op=func))
 
-        binary_fn_template = '  (func (export "nested-{fn}")\n' \
+        binary_func_template = '  (func (export "nested-{func}")\n' \
                              '    (drop\n' \
-                             '      ({fn}\n' \
-                             '        ({fn}\n' \
-                             '          ({fn}\n' \
+                             '      ({func}\n' \
+                             '        ({func}\n' \
+                             '          ({func}\n' \
                              '            (v128.load (i32.const 0))\n' \
                              '            (v128.load (i32.const 1))\n' \
                              '          )\n' \
-                             '          ({fn}\n' \
+                             '          ({func}\n' \
                              '            (v128.load (i32.const 2))\n' \
                              '            (v128.load (i32.const 3))\n' \
                              '          )\n' \
                              '        )\n' \
-                             '        ({fn}\n' \
-                             '          ({fn}\n' \
+                             '        ({func}\n' \
+                             '          ({func}\n' \
                              '            (v128.load (i32.const 0))\n' \
                              '            (v128.load (i32.const 1))\n' \
                              '          )\n' \
-                             '          ({fn}\n' \
+                             '          ({func}\n' \
                              '            (v128.load (i32.const 2))\n' \
                              '            (v128.load (i32.const 3))\n' \
                              '          )\n' \
@@ -159,8 +160,8 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
                              '    )\n' \
                              '  )' \
 
-        for fn_name in self.combine_binary_arith_test_data:
-            combine_cases.append(binary_fn_template.format(fn=fn_name))
+        for func in self.combine_binary_arith_test_data:
+            combine_cases.append(binary_func_template.format(func=func))
 
         combine_cases.append('  (func (export "as-param")\n'
                              '    (drop\n'
@@ -192,13 +193,13 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
         combine_cases.append(')')
 
         # append assert
-        binary_case_template = ('(assert_return (invoke "{fn}-in-block"))')
-        for fn_name in self.combine_binary_arith_test_data:
-            combine_cases.append(binary_case_template.format(fn=fn_name))
+        binary_case_template = ('(assert_return (invoke "{func}-in-block"))')
+        for func in self.combine_binary_arith_test_data:
+            combine_cases.append(binary_case_template.format(func=func))
 
-        binary_case_template = ('(assert_return (invoke "nested-{fn}"))')
-        for fn_name in self.combine_binary_arith_test_data:
-            combine_cases.append(binary_case_template.format(fn=fn_name))
+        binary_case_template = ('(assert_return (invoke "nested-{func}"))')
+        for func in self.combine_binary_arith_test_data:
+            combine_cases.append(binary_case_template.format(func=func))
 
         combine_cases.append('(assert_return (invoke "as-param"))\n')
 
@@ -246,15 +247,14 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
 
         tpl_assert = "(assert_malformed (module quote \"(memory 1) (func " \
                      " (param $x v128) (param $y v128) (result v128) " \
-                     "({}.{} (local.get $x) (local.get $y)))\") \"unknown operator\")"
+                     "({lane_type}.{op} (local.get $x) (local.get $y)))\") \"unknown operator\")"
 
         cases.append('\n\n;; unknown operators')
 
         for lane_type in ['f2x64']:
             for op in self.BINARY_OPS:
-                cases.append(tpl_assert.format(lane_type,
-                                               op,
-                                               ' '.join([self.v128_const('i32x4', '0')]*2)))
+                cases.append(tpl_assert.format(lane_type=lane_type,
+                                               op=op))
 
     def gen_test_cases(self):
         wast_filename = '../simd_{lane_type}_cmp.wast'.format(lane_type=self.LANE_TYPE)

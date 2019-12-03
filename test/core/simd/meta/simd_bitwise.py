@@ -128,7 +128,7 @@ class SimdBitWise(SIMD):
         lst_ipr = self.init_case_data(case_data)
 
         str_invalid_case_func_tpl = '\n(assert_invalid (module (func (result v128)' \
-                                    ' ({} {}))) "type mismatch")'
+                                    ' ({op} {operand}))) "type mismatch")'
 
         lst_invalid_case_func = []
 
@@ -139,7 +139,7 @@ class SimdBitWise(SIMD):
                 continue
             else:
                 lst_invalid_case_func.append(
-                    str_invalid_case_func_tpl.format(ipr[0], ' '.join(ipr[1]))
+                    str_invalid_case_func_tpl.format(op=ipr[0], operand=' '.join(ipr[1]))
                 )
 
         return '\n{}\n'.format(''.join(lst_invalid_case_func))
@@ -149,21 +149,21 @@ class SimdBitWise(SIMD):
         Generate combination case with test data
         """
 
-        str_in_block_case_func_tpl = '\n  (func (export "{}-in-block")' \
+        str_in_block_case_func_tpl = '\n  (func (export "{op}-in-block")' \
                                      '\n    (block' \
                                      '\n      (drop' \
                                      '\n        (block (result v128)' \
-                                     '\n          ({}' \
-                                     '{}' \
+                                     '\n          ({op}' \
+                                     '{block_with_result}' \
                                      '\n          )' \
                                      '\n        )' \
                                      '\n      )' \
                                      '\n    )' \
                                      '\n  )'
-        str_nested_case_func_tpl = '\n  (func (export "nested-{}")' \
+        str_nested_case_func_tpl = '\n  (func (export "nested-{op}")' \
                                    '\n    (drop' \
-                                   '\n      ({}' \
-                                   '{}' \
+                                   '\n      ({op}' \
+                                   '{block_with_result}' \
                                    '\n      )' \
                                    '\n    )' \
                                    '\n  )'
@@ -187,23 +187,23 @@ class SimdBitWise(SIMD):
 
             lst_block = ['\n            (block (result v128) (v128.load {}))'.format(x) for x in ipr[1]]
             lst_in_block_case_func.append(
-                str_in_block_case_func_tpl.format(ipr[0], ipr[0], ''.join(lst_block))
+                str_in_block_case_func_tpl.format(op=ipr[0], block_with_result=''.join(lst_block))
             )
 
-            tpl_1 = '\n        ({}' \
-                    '{}' \
+            tpl_1 = '\n        ({op}' \
+                    '{combined_operation}' \
                     '\n        )'
-            tpl_2 = '\n          ({}' \
-                    '{}' \
+            tpl_2 = '\n          ({op}' \
+                    '{combined_operation}' \
                     '\n          )'
-            tpl_3 = '\n            (v128.load {})'
+            tpl_3 = '\n            (v128.load {value})'
 
-            lst_tpl_3 = [tpl_3.format(x) for x in ipr[1]]
-            lst_tpl_2 = [tpl_2.format(ipr[0], ''.join(lst_tpl_3))] * len(ipr[1])
-            lst_tpl_1 = [tpl_1.format(ipr[0], ''.join(lst_tpl_2))] * len(ipr[1])
+            lst_tpl_3 = [tpl_3.format(value=x) for x in ipr[1]]
+            lst_tpl_2 = [tpl_2.format(op=ipr[0], combined_operation=''.join(lst_tpl_3))] * len(ipr[1])
+            lst_tpl_1 = [tpl_1.format(op=ipr[0], combined_operation=''.join(lst_tpl_2))] * len(ipr[1])
 
             lst_nested_case_func.append(
-                str_nested_case_func_tpl.format(ipr[0], ipr[0], ''.join(lst_tpl_1))
+                str_nested_case_func_tpl.format(op=ipr[0], block_with_result=''.join(lst_tpl_1))
             )
 
             lst_in_block_case_assert.append('\n(assert_return (invoke "{}-in-block"))'.format(ipr[0]))
@@ -211,8 +211,8 @@ class SimdBitWise(SIMD):
 
         return '\n;; Combination\n' \
                '\n(module (memory 1)' \
-               '{}' \
-               '{}' \
+               '{in_block_cases}' \
+               '{nested_cases}' \
                '\n  (func (export "as-param")' \
                '\n    (drop' \
                '\n      (v128.or' \
@@ -239,12 +239,12 @@ class SimdBitWise(SIMD):
                '\n    )' \
                '\n  )' \
                '\n)' \
-               '{}' \
-               '{}' \
-               '\n(assert_return (invoke "as-param"))\n'.format(''.join(lst_in_block_case_func),
-                                                                ''.join(lst_nested_case_func),
-                                                                ''.join(lst_in_block_case_assert),
-                                                                ''.join(lst_nested_case_assert))
+               '{assert_in_block_cases}' \
+               '{assert_of_nested_cases}' \
+               '\n(assert_return (invoke "as-param"))\n'.format(in_block_cases=''.join(lst_in_block_case_func),
+                                                                nested_cases=''.join(lst_nested_case_func),
+                                                                assert_in_block_cases=''.join(lst_in_block_case_assert),
+                                                                assert_of_nested_cases=''.join(lst_nested_case_assert))
 
     def get_all_cases(self):
         """

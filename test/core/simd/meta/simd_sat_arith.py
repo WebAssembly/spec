@@ -12,7 +12,7 @@ class SimdSaturateArithmeticCases(SimdArithmeticCase):
     BINARY_OPS = ('add_saturate_s', 'add_saturate_u',
                   'sub_saturate_s', 'sub_saturate_u')
     malformed_template = '(assert_malformed (module quote\n    "(func (result v128) ' \
-                         '({}.{} ({}) ({})))")\n    "unknown operator")'
+                         '({lane_type}.{op} ({operand_1}) ({operand_2})))")\n    "unknown operator")'
 
     def gen_test_cases(self):
         wast_filename = '../simd_{lane_type}_sat_arith.wast'.format(lane_type=self.LANE_TYPE)
@@ -23,11 +23,11 @@ class SimdSaturateArithmeticCases(SimdArithmeticCase):
         return super().gen_test_template().replace('{invalid_cases}',
                                                    '{malformed_cases}\n\n{invalid_cases}')
 
-    def v128_const(self, lane, val, lane_len=None):
+    def v128_const(self, lane, value, lane_len=None):
         if not lane_len:
             lane_len = self.LANE_LEN
 
-        return 'v128.const {} {}'.format(lane, ' '.join([str(val)] * lane_len))
+        return 'v128.const {lane_type} {value}'.format(lane_type=lane, value=' '.join([str(value)] * lane_len))
 
     def get_malformed_cases(self):
         malformed_cases = [';; Malformed cases: non-existent op names']
@@ -37,8 +37,8 @@ class SimdSaturateArithmeticCases(SimdArithmeticCase):
         # for saturating integer arithmetic operation
         for op in inst_ops:
             malformed_cases.append(self.malformed_template.format(
-                self.LANE_TYPE, '_'.join([op, 'saturate']),
-                self.v128_const(self.LANE_TYPE, '1'), self.v128_const(self.LANE_TYPE, '2')))
+                lane_type=self.LANE_TYPE, op='_'.join([op, 'saturate']),
+                operand_1=self.v128_const(self.LANE_TYPE, '1'), operand_2=self.v128_const(self.LANE_TYPE, '2')))
 
         return '\n'.join(malformed_cases)
 
@@ -107,60 +107,60 @@ class SimdSaturateArithmeticCases(SimdArithmeticCase):
 
     def get_combine_cases(self):
         combine_cases = [';; combination\n(module']
-        ternary_fn_template = '  (func (export "{fn}") (param v128 v128 v128) (result v128)\n' \
+        ternary_func_template = '  (func (export "{func}") (param v128 v128 v128) (result v128)\n' \
                               '    ({lane}.{op1} ({lane}.{op2} (local.get 0) (local.get 1))'\
                               '(local.get 2)))'
-        for fn_name in sorted(self.combine_ternary_arith_test_data):
-            fn_parts = fn_name.split('-')
-            operator1 = fn_parts[1].replace('_', '_saturate_')
-            operator2 = fn_parts[2].replace('_', '_saturate_')
-            combine_cases.append(ternary_fn_template.format(fn=fn_name,
+        for func in sorted(self.combine_ternary_arith_test_data):
+            func_parts = func.split('-')
+            op1 = func_parts[1].replace('_', '_saturate_')
+            op2 = func_parts[2].replace('_', '_saturate_')
+            combine_cases.append(ternary_func_template.format(func=func,
                                                             lane=self.LANE_TYPE,
-                                                            op1=operator1,
-                                                            op2=operator2))
-        binary_fn_template = '  (func (export "{fn}") (param v128 v128) (result v128)\n'\
+                                                            op1=op1,
+                                                            op2=op2))
+        binary_func_template = '  (func (export "{func}") (param v128 v128) (result v128)\n'\
                              '    ({lane}.{op1} ({lane}.{op2} (local.get 0)) (local.get 1)))'
-        for fn_name in sorted(self.combine_binary_arith_test_data):
-            fn_parts = fn_name.split('-')
-            operator1 = fn_parts[1].replace('_', '_saturate_')
-            combine_cases.append(binary_fn_template.format(fn=fn_name,
+        for func in sorted(self.combine_binary_arith_test_data):
+            func_parts = func.split('-')
+            op1 = func_parts[1].replace('_', '_saturate_')
+            combine_cases.append(binary_func_template.format(func=func,
                                                            lane=self.LANE_TYPE,
-                                                           op1=operator1,
-                                                           op2=fn_parts[2]))
+                                                           op1=op1,
+                                                           op2=func_parts[2]))
         combine_cases.append(')\n')
-        ternary_case_template = ('(assert_return (invoke "{}" ',
-                                 '(v128.const {} {})',
-                                 '(v128.const {} {})',
-                                 '(v128.const {} {}))',
-                                 '(v128.const {} {}))')
-        for fn_name, test in sorted(self.combine_ternary_arith_test_data.items()):
-            line_head = ternary_case_template[0].format(fn_name)
+        ternary_case_template = ('(assert_return (invoke "{func}" ',
+                                 '(v128.const {lane_type_1} {val_1})',
+                                 '(v128.const {lane_type_2} {val_2})',
+                                 '(v128.const {lane_type_3} {val_3}))',
+                                 '(v128.const {lane_type_4} {val_4}))')
+        for func, test in sorted(self.combine_ternary_arith_test_data.items()):
+            line_head = ternary_case_template[0].format(func=func)
             line_head_len = len(line_head)
             blank_head = ' ' * line_head_len
             combine_cases.append('\n'.join([
                 line_head + ternary_case_template[1].format(
-                    self.LANE_TYPE, ' '.join(test[0])),
+                    lane_type_1=self.LANE_TYPE, val_1=' '.join(test[0])),
                 blank_head + ternary_case_template[2].format(
-                    self.LANE_TYPE, ' '.join(test[1])),
+                    lane_type_2=self.LANE_TYPE, val_2=' '.join(test[1])),
                 blank_head + ternary_case_template[3].format(
-                    self.LANE_TYPE, ' '.join(test[2])),
+                    lane_type_3=self.LANE_TYPE, val_3=' '.join(test[2])),
                 blank_head + ternary_case_template[4].format(
-                    self.LANE_TYPE, ' '.join(test[3]))]))
-        binary_case_template = ('(assert_return (invoke "{}" ',
-                                '(v128.const {} {})',
-                                '(v128.const {} {}))',
-                                '(v128.const {} {}))')
-        for fn_name, test in sorted(self.combine_binary_arith_test_data.items()):
-            line_head = binary_case_template[0].format(fn_name)
+                    lane_type_4=self.LANE_TYPE, val_4=' '.join(test[3]))]))
+        binary_case_template = ('(assert_return (invoke "{func}" ',
+                                '(v128.const {lane_type_1} {val_1})',
+                                '(v128.const {lane_type_2} {val_2}))',
+                                '(v128.const {lane_type_3} {val_3}))')
+        for func, test in sorted(self.combine_binary_arith_test_data.items()):
+            line_head = binary_case_template[0].format(func=func)
             line_head_len = len(line_head)
             blank_head = ' ' * line_head_len
             combine_cases.append('\n'.join([
                 line_head + binary_case_template[1].format(
-                    self.LANE_TYPE, ' '.join(test[0])),
+                    lane_type_1=self.LANE_TYPE, val_1=' '.join(test[0])),
                 blank_head + binary_case_template[2].format(
-                    self.LANE_TYPE, ' '.join(test[1])),
+                    lane_type_2=self.LANE_TYPE, val_2=' '.join(test[1])),
                 blank_head + binary_case_template[3].format(
-                    self.LANE_TYPE, ' '.join(test[2]))]))
+                    lane_type_3=self.LANE_TYPE, val_3=' '.join(test[2]))]))
         return '\n'.join(combine_cases)
 
 
@@ -290,9 +290,9 @@ class SimdI8x16SaturateArithmeticCases(SimdSaturateArithmeticCases):
             for op in ['add', 'sub']:
                 for suffix in ['s', 'u']:
                     malformed_cases.append(self.malformed_template.format(
-                        prefix, '_'.join([op, 'saturate', suffix]),
-                        self.v128_const(prefix, '0', lane_len=4),
-                        self.v128_const(prefix, '0', lane_len=4)
+                        lane_type=prefix, op='_'.join([op, 'saturate', suffix]),
+                        operand_1=self.v128_const(prefix, '0', lane_len=4),
+                        operand_2=self.v128_const(prefix, '0', lane_len=4)
                     ))
         return super().get_malformed_cases() + '\n' + '\n'.join(malformed_cases)
 

@@ -26,17 +26,17 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
     )
 
     NAN_NUMBERS = ('nan', '-nan', 'nan:0x200000', '-nan:0x200000')
-    binary_params_template = ('({} (invoke "{}" ', '{}', '{})', '{})')
-    unary_param_template = ('({} (invoke "{}" ', '{})', '{})')
-    binary_nan_template = ('({} (invoke "{}" ', '{}', '{}))')
-    unary_nan_template = ('({} (invoke "{}" ', '{}))')
+    binary_params_template = ('({assert_type} (invoke "{func}" ', '{operand_1}', '{operand_2})', '{expected_result})')
+    unary_param_template = ('({assert_type} (invoke "{func}" ', '{operand})', '{expected_result})')
+    binary_nan_template = ('({assert_type} (invoke "{func}" ', '{operand_1}', '{operand_2}))')
+    unary_nan_template = ('({assert_type} (invoke "{func}" ', '{operand}))')
 
     def full_op_name(self, op_name):
         return self.LANE_TYPE + '.' + op_name
 
     @staticmethod
-    def v128_const(lane, val):
-        return '(v128.const {} {})'.format(lane, ' '.join([str(val)] * 4))
+    def v128_const(lane, value):
+        return '(v128.const {lane_type} {value})'.format(lane_type=lane, value=' '.join([str(value)] * 4))
 
     @property
     def combine_ternary_arith_test_data(self):
@@ -107,22 +107,22 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
         arg2 = self.v128_const(self.LANE_TYPE, case[3])
 
         if len(case) == 4:
-            line_head = self.binary_nan_template[0].format(case[0], op_name)
+            line_head = self.binary_nan_template[0].format(assert_type=case[0], func=op_name)
             line_head_len = len(line_head)
             blank_head = ' ' * line_head_len
             lines = [
-                line_head + self.binary_nan_template[1].format(arg1),
-                blank_head + self.binary_nan_template[2].format(arg2)
+                line_head + self.binary_nan_template[1].format(operand_1=arg1),
+                blank_head + self.binary_nan_template[2].format(operand_2=arg2)
             ]
         elif len(case) == 5:
-            line_head = self.binary_params_template[0].format(case[0], op_name)
+            line_head = self.binary_params_template[0].format(assert_type=case[0], func=op_name)
             line_head_len = len(line_head)
             blank_head = ' ' * line_head_len
             result = self.v128_const(self.LANE_TYPE, case[-1])
             lines = [
-                line_head + self.binary_params_template[1].format(arg1),
-                blank_head + self.binary_params_template[2].format(arg2),
-                blank_head + self.binary_params_template[3].format(result)
+                line_head + self.binary_params_template[1].format(operand_1=arg1),
+                blank_head + self.binary_params_template[2].format(operand_2=arg2),
+                blank_head + self.binary_params_template[3].format(expected_result=result)
             ]
         else:
             raise Exception('Invalid format for the test case!')
@@ -139,18 +139,18 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
         arg = self.v128_const(self.LANE_TYPE, case[2])
 
         if len(case) == 3:
-            line_head = self.unary_nan_template[0].format(case[0], op_name)
+            line_head = self.unary_nan_template[0].format(assert_type=case[0], func=op_name)
             lines = [
-                line_head + self.unary_nan_template[1].format(arg)
+                line_head + self.unary_nan_template[1].format(operand=arg)
             ]
         elif len(case) == 4:
-            line_head = self.unary_param_template[0].format(case[0], op_name)
+            line_head = self.unary_param_template[0].format(assert_type=case[0], func=op_name)
             line_head_len = len(line_head)
             blank_head = ' ' * line_head_len
             result = self.v128_const(self.LANE_TYPE, case[-1])
             lines = [
-                line_head + self.unary_param_template[1].format(arg),
-                blank_head + self.unary_param_template[2].format(result)
+                line_head + self.unary_param_template[1].format(operand=arg),
+                blank_head + self.unary_param_template[2].format(expected_result=result)
             ]
         else:
             raise Exception('Invalid format for the test case!')
@@ -255,38 +255,38 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
         mixed_cases = ['\n\n;; Mixed f32x4 tests when some lanes are NaNs', '(module\n']
         cases.extend(mixed_cases)
         for test_type, test_data in sorted(self.mixed_sqrt_nan_test_data.items()):
-            func = ['  (func $f32x4_sqrt_{} (result v128)'.format(test_type),
-                    '    v128.const f32x4 {}'.format(test_data[0]),
+            func = ['  (func $f32x4_sqrt_{test_type} (result v128)'.format(test_type=test_type),
+                    '    v128.const f32x4 {value}'.format(value=test_data[0]),
                     '    f32x4.sqrt)']
             cases.extend(func)
             for i, test in enumerate(test_data[1]):
-                test = ['  (func (export "f32x4_extract_lane_{}_{}") (result f32)'.format(
-                        test_type, i),
-                        '    (f32x4.extract_lane {} (call $f32x4_sqrt_{})))'.format(
-                        i, test_type)]
+                test = ['  (func (export "f32x4_extract_lane_{test_type}_{index}") (result f32)'.format(
+                        test_type=test_type, index=i),
+                        '    (f32x4.extract_lane {index} (call $f32x4_sqrt_{test_type})))'.format(
+                        index=i, test_type=test_type)]
                 cases.extend(test)
             cases.append('')
         cases.append(')\n')
 
         for test_type, test_data in sorted(self.mixed_sqrt_nan_test_data.items()):
-            template = '({} (invoke "f32x4_extract_lane_{}_{}"))'
+            template = '({assert_type} (invoke "f32x4_extract_lane_{test_type}_{index}"))'
             for i, result in enumerate(test_data[1]):
                 if test_type == 'canon' and result == 'nan':
                     cases.append(template.format(
-                        'assert_return_canonical_nan', test_type, i))
+                        assert_type='assert_return_canonical_nan', test_type=test_type, index=i))
                 elif test_type == 'arith' and result == 'nan':
                     cases.append(template.format(
-                        'assert_return_arithmetic_nan', test_type, i))
+                        assert_type='assert_return_arithmetic_nan', test_type=test_type, index=i))
                 elif result == 'canon':
                     cases.append(template.format(
-                        'assert_return_canonical_nan', test_type, i))
+                        assert_type='assert_return_canonical_nan', test_type=test_type, index=i))
                 elif result == 'arith':
                     cases.append(template.format(
-                        'assert_return_arithmetic_nan', test_type, i))
+                        assert_type='assert_return_arithmetic_nan', test_type=test_type, index=i))
                 else:
                     cases.append(''.join([
-                        '({} (invoke "f32x4_extract_lane_{}_{}") '.format(
-                            'assert_return', test_type, i),
+                        '({assert_type} (invoke "f32x4_extract_lane_{test_type}_{index}") '.format(
+                            assert_type='assert_return', test_type=test_type, index=i),
                         '(f32.const {}))'.format(result)]))
 
 

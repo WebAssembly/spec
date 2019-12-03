@@ -28,8 +28,8 @@ class Simdf64x2ArithmeticCase(Simdf32x4ArithmeticCase):
     NAN_NUMBERS = ('nan', '-nan', 'nan:0x4000000000000', '-nan:0x4000000000000')
 
     @staticmethod
-    def v128_const(lane, val):
-        return '(v128.const {} {})'.format(lane, ' '.join([str(val)] * 2))
+    def v128_const(lane, value):
+        return '(v128.const {lane_type} {value})'.format(lane_type=lane, value=' '.join([str(value)] * 2))
 
     @property
     def combine_ternary_arith_test_data(self):

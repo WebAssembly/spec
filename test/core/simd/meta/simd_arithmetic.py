@@ -257,7 +257,7 @@ class SimdArithmeticCase:
             ]
         }
 
-    def gen_test_fn_template(self):
+    def gen_test_func_template(self):
         template = [
             ';; Tests for {} arithmetic operations on major boundary values and all special values.\n\n'.format(
                 self.LANE_TYPE), '(module']
@@ -273,7 +273,7 @@ class SimdArithmeticCase:
         return template
 
     def gen_test_template(self):
-        template = self.gen_test_fn_template()
+        template = self.gen_test_func_template()
 
         template.append('{normal_cases}')
         template.append('\n{invalid_cases}')
@@ -313,73 +313,73 @@ class SimdArithmeticCase:
     def get_invalid_cases(self):
         invalid_cases = [';; type check']
         unary_template = '(assert_invalid (module (func (result v128) '\
-                         '({}.{} ({})))) "type mismatch")'
+                         '({lane_type}.{op} ({operand})))) "type mismatch")'
         binary_template = '(assert_invalid (module (func (result v128) '\
-                          '({}.{} ({}) ({})))) "type mismatch")'
+                          '({lane_type}.{op} ({operand_1}) ({operand_2})))) "type mismatch")'
 
         for op in self.UNARY_OPS:
-            invalid_cases.append(unary_template.format(self.LANE_TYPE, op,
-                                                       'i32.const 0'))
+            invalid_cases.append(unary_template.format(lane_type=self.LANE_TYPE, op=op,
+                                                       operand='i32.const 0'))
         for op in self.BINARY_OPS:
-            invalid_cases.append(binary_template.format(self.LANE_TYPE, op,
-                                                        'i32.const 0',
-                                                        'f32.const 0.0'))
+            invalid_cases.append(binary_template.format(lane_type=self.LANE_TYPE, op=op,
+                                                        operand_1='i32.const 0',
+                                                        operand_2='f32.const 0.0'))
 
         return '\n'.join(invalid_cases)
 
     def get_combine_cases(self):
         combine_cases = [';; combination\n(module']
-        ternary_fn_template = '  (func (export "{fn}") (param v128 v128 v128) (result v128)\n' \
+        ternary_func_template = '  (func (export "{func}") (param v128 v128 v128) (result v128)\n' \
                               '    ({lane}.{op1} ({lane}.{op2} (local.get 0) (local.get 1))'\
                               '(local.get 2)))'
-        for fn_name in sorted(self.combine_ternary_arith_test_data):
-            fn_parts = fn_name.split('-')
-            combine_cases.append(ternary_fn_template.format(fn=fn_name,
+        for func in sorted(self.combine_ternary_arith_test_data):
+            func_parts = func.split('-')
+            combine_cases.append(ternary_func_template.format(func=func,
                                                             lane=self.LANE_TYPE,
-                                                            op1=fn_parts[0],
-                                                            op2=fn_parts[1]))
-        binary_fn_template = '  (func (export "{fn}") (param v128 v128) (result v128)\n'\
+                                                            op1=func_parts[0],
+                                                            op2=func_parts[1]))
+        binary_func_template = '  (func (export "{func}") (param v128 v128) (result v128)\n'\
                              '    ({lane}.{op1} ({lane}.{op2} (local.get 0)) (local.get 1)))'
-        for fn_name in sorted(self.combine_binary_arith_test_data):
-            fn_parts = fn_name.split('-')
-            combine_cases.append(binary_fn_template.format(fn=fn_name,
+        for func in sorted(self.combine_binary_arith_test_data):
+            func_parts = func.split('-')
+            combine_cases.append(binary_func_template.format(func=func,
                                                            lane=self.LANE_TYPE,
-                                                           op1=fn_parts[0],
-                                                           op2=fn_parts[1]))
+                                                           op1=func_parts[0],
+                                                           op2=func_parts[1]))
         combine_cases.append(')\n')
-        ternary_case_template = ('(assert_return (invoke "{}" ',
-                                 '(v128.const {} {})',
-                                 '(v128.const {} {})',
-                                 '(v128.const {} {}))',
-                                 '(v128.const {} {}))')
-        for fn_name, test in sorted(self.combine_ternary_arith_test_data.items()):
-            line_head = ternary_case_template[0].format(fn_name)
+        ternary_case_template = ('(assert_return (invoke "{func}" ',
+                                 '(v128.const {lane_type_1} {val_1})',
+                                 '(v128.const {lane_type_2} {val_2})',
+                                 '(v128.const {lane_type_3} {val_3}))',
+                                 '(v128.const {lane_type_4} {val_4}))')
+        for func, test in sorted(self.combine_ternary_arith_test_data.items()):
+            line_head = ternary_case_template[0].format(func=func)
             line_head_len = len(line_head)
             blank_head = ' ' * line_head_len
             combine_cases.append('\n'.join([
                 line_head + ternary_case_template[1].format(
-                    self.LANE_TYPE, ' '.join(test[0])),
+                    lane_type_1=self.LANE_TYPE, val_1=' '.join(test[0])),
                 blank_head + ternary_case_template[2].format(
-                    self.LANE_TYPE, ' '.join(test[1])),
+                    lane_type_2=self.LANE_TYPE, val_2=' '.join(test[1])),
                 blank_head + ternary_case_template[3].format(
-                    self.LANE_TYPE, ' '.join(test[2])),
+                    lane_type_3=self.LANE_TYPE, val_3=' '.join(test[2])),
                 blank_head + ternary_case_template[4].format(
-                    self.LANE_TYPE, ' '.join(test[3]))]))
-        binary_case_template = ('(assert_return (invoke "{}" ',
-                                '(v128.const {} {})',
-                                '(v128.const {} {}))',
-                                '(v128.const {} {}))')
-        for fn_name, test in sorted(self.combine_binary_arith_test_data.items()):
-            line_head = binary_case_template[0].format(fn_name)
+                    lane_type_4=self.LANE_TYPE, val_4=' '.join(test[3]))]))
+        binary_case_template = ('(assert_return (invoke "{func}" ',
+                                '(v128.const {lane_type_1} {val_1})',
+                                '(v128.const {lane_type_2} {val_2}))',
+                                '(v128.const {lane_type_3} {val_3}))')
+        for func, test in sorted(self.combine_binary_arith_test_data.items()):
+            line_head = binary_case_template[0].format(func=func)
             line_head_len = len(line_head)
             blank_head = ' ' * line_head_len
             combine_cases.append('\n'.join([
                 line_head + binary_case_template[1].format(
-                    self.LANE_TYPE, ' '.join(test[0])),
+                    lane_type_1=self.LANE_TYPE, val_1=' '.join(test[0])),
                 blank_head + binary_case_template[2].format(
-                    self.LANE_TYPE, ' '.join(test[1])),
+                    lane_type_2=self.LANE_TYPE, val_2=' '.join(test[1])),
                 blank_head + binary_case_template[3].format(
-                    self.LANE_TYPE, ' '.join(test[2]))]))
+                    lane_type_3=self.LANE_TYPE, val_3=' '.join(test[2]))]))
         return '\n'.join(combine_cases)
 
     def get_normal_case(self):

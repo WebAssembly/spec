@@ -49,4 +49,4 @@ class AssertReturn:
                 white_space = '\n ' + ' ' * head_len
             results.append(white_space + result)
 
-        return '{}{}){})'.format(assert_return, ''.join(params), ''.join(results))
+        return '{assert_head}{params}){expected_result})'.format(assert_head=assert_return, params=''.join(params), expected_result=''.join(results))
