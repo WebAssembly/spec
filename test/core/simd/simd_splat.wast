@@ -34,6 +34,8 @@
 (assert_return (invoke "i16x8.splat" (i32.const 0xffff7fff)) (v128.const i16x8 0x7fff 0x7fff 0x7fff 0x7fff 0x7fff 0x7fff 0x7fff 0x7fff))
 (assert_return (invoke "i16x8.splat" (i32.const 0x8000)) (v128.const i16x8 0x8000 0x8000 0x8000 0x8000 0x8000 0x8000 0x8000 0x8000))
 (assert_return (invoke "i16x8.splat" (i32.const 0xABCD)) (v128.const i32x4 0xABCDABCD 0xABCDABCD 0xABCDABCD 0xABCDABCD))
+(assert_return (invoke "i16x8.splat" (i32.const 012345)) (v128.const i16x8 012_345 012_345 012_345 012_345 012_345 012_345 012_345 012_345))
+(assert_return (invoke "i16x8.splat" (i32.const 0x01234)) (v128.const i16x8 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234))
 
 (assert_return (invoke "i32x4.splat" (i32.const 0)) (v128.const i32x4 0 0 0 0))
 (assert_return (invoke "i32x4.splat" (i32.const 5)) (v128.const i32x4 5 5 5 5))
@@ -43,6 +45,8 @@
 (assert_return (invoke "i32x4.splat" (i32.const -2147483648)) (v128.const i32x4 0x80000000 0x80000000 0x80000000 0x80000000))
 (assert_return (invoke "i32x4.splat" (i32.const 2147483647)) (v128.const i32x4 0x7fffffff 0x7fffffff 0x7fffffff 0x7fffffff))
 (assert_return (invoke "i32x4.splat" (i32.const 2147483648)) (v128.const i32x4 0x80000000 0x80000000 0x80000000 0x80000000))
+(assert_return (invoke "i32x4.splat" (i32.const 01234567890)) (v128.const i32x4 012_3456_7890 012_3456_7890 012_3456_7890 012_3456_7890))
+(assert_return (invoke "i32x4.splat" (i32.const 0x012345678)) (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678))
 
 (assert_return (invoke "f32x4.splat" (f32.const 0.0)) (v128.const f32x4 0.0 0.0 0.0 0.0))
 (assert_return (invoke "f32x4.splat" (f32.const 1.1)) (v128.const f32x4 1.1 1.1 1.1 1.1))
@@ -58,6 +62,14 @@
 (assert_return (invoke "f32x4.splat" (f32.const nan)) (v128.const f32x4 nan nan nan nan))
 (assert_return (invoke "f32x4.splat" (f32.const nan:0x1)) (v128.const f32x4 nan:0x1 nan:0x1 nan:0x1 nan:0x1))
 (assert_return (invoke "f32x4.splat" (f32.const nan:0x7f_ffff)) (v128.const f32x4 nan:0x7f_ffff nan:0x7f_ffff nan:0x7f_ffff nan:0x7f_ffff))
+(assert_return (invoke "f32x4.splat" (f32.const 0123456789)) (v128.const f32x4 0123456789 0123456789 0123456789 0123456789))
+(assert_return (invoke "f32x4.splat" (f32.const 0123456789.)) (v128.const f32x4 0123456789. 0123456789. 0123456789. 0123456789.))
+(assert_return (invoke "f32x4.splat" (f32.const 0x0123456789ABCDEF)) (v128.const f32x4 0x0123456789ABCDEF 0x0123456789ABCDEF 0x0123456789ABCDEF 0x0123456789ABCDEF))
+(assert_return (invoke "f32x4.splat" (f32.const 0x0123456789ABCDEF.)) (v128.const f32x4 0x0123456789ABCDEF. 0x0123456789ABCDEF. 0x0123456789ABCDEF. 0x0123456789ABCDEF.))
+(assert_return (invoke "f32x4.splat" (f32.const 0123456789e019)) (v128.const f32x4 0123456789e019 0123456789e019 0123456789e019 0123456789e019))
+(assert_return (invoke "f32x4.splat" (f32.const 0123456789.e+019)) (v128.const f32x4 0123456789.e+019 0123456789.e+019 0123456789.e+019 0123456789.e+019))
+(assert_return (invoke "f32x4.splat" (f32.const 0x0123456789ABCDEFp019)) (v128.const f32x4 0x0123456789ABCDEFp019 0x0123456789ABCDEFp019 0x0123456789ABCDEFp019 0x0123456789ABCDEFp019))
+(assert_return (invoke "f32x4.splat" (f32.const 0x0123456789ABCDEF.p-019)) (v128.const f32x4 0x0123456789ABCDEF.p-019 0x0123456789ABCDEF.p-019 0x0123456789ABCDEF.p-019 0x0123456789ABCDEF.p-019))
 
 (assert_return (invoke "i64x2.splat" (i64.const 0)) (v128.const i64x2 0 0))
 (assert_return (invoke "i64x2.splat" (i64.const -0)) (v128.const i64x2 0 0))
@@ -71,6 +83,8 @@
 (assert_return (invoke "i64x2.splat" (i64.const 0xffffffffffffffff)) (v128.const i64x2 -1 -1))
 (assert_return (invoke "i64x2.splat" (i64.const -0x8000000000000000)) (v128.const i64x2 -0x8000000000000000 -0x8000000000000000))
 (assert_return (invoke "i64x2.splat" (i64.const -0x8000000000000000)) (v128.const i64x2 0x8000000000000000 0x8000000000000000))
+(assert_return (invoke "i64x2.splat" (i64.const 01234567890123456789)) (v128.const i64x2 01_234_567_890_123_456_789 01_234_567_890_123_456_789))
+(assert_return (invoke "i64x2.splat" (i64.const 0x01234567890ABcdef)) (v128.const i64x2 0x0_1234_5678_90AB_cdef 0x0_1234_5678_90AB_cdef))
 
 (assert_return (invoke "f64x2.splat" (f64.const 0.0)) (v128.const f64x2 0.0 0.0))
 (assert_return (invoke "f64x2.splat" (f64.const -0.0)) (v128.const f64x2 -0.0 -0.0))
@@ -94,7 +108,14 @@
 (assert_return (invoke "f64x2.splat" (f64.const -nan)) (v128.const f64x2 -nan -nan))
 (assert_return (invoke "f64x2.splat" (f64.const nan:0x4000000000000)) (v128.const f64x2 nan:0x4000000000000 nan:0x4000000000000))
 (assert_return (invoke "f64x2.splat" (f64.const -nan:0x4000000000000)) (v128.const f64x2 -nan:0x4000000000000 -nan:0x4000000000000))
-
+(assert_return (invoke "f64x2.splat" (f64.const 0123456789)) (v128.const f64x2 0123456789 0123456789))
+(assert_return (invoke "f64x2.splat" (f64.const 0123456789.)) (v128.const f64x2 0123456789. 0123456789.))
+(assert_return (invoke "f64x2.splat" (f64.const 0x0123456789ABCDEFabcdef)) (v128.const f64x2 0x0123456789ABCDEFabcdef 0x0123456789ABCDEFabcdef))
+(assert_return (invoke "f64x2.splat" (f64.const 0x0123456789ABCDEFabcdef.)) (v128.const f64x2 0x0123456789ABCDEFabcdef. 0x0123456789ABCDEFabcdef.))
+(assert_return (invoke "f64x2.splat" (f64.const 0123456789e019)) (v128.const f64x2 0123456789e019 0123456789e019))
+(assert_return (invoke "f64x2.splat" (f64.const 0123456789e+019)) (v128.const f64x2 0123456789e+019 0123456789e+019))
+(assert_return (invoke "f64x2.splat" (f64.const 0x0123456789ABCDEFabcdef.p019)) (v128.const f64x2 0x0123456789ABCDEFabcdef.p019 0x0123456789ABCDEFabcdef.p019))
+(assert_return (invoke "f64x2.splat" (f64.const 0x0123456789ABCDEFabcdef.p-019)) (v128.const f64x2 0x0123456789ABCDEFabcdef.p-019 0x0123456789ABCDEFabcdef.p-019))
 
 ;; Unknown operator
 
