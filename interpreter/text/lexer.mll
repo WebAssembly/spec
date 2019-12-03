@@ -65,15 +65,12 @@ let floatop t f32 f64 =
   | "f64" -> f64
   | _ -> assert false
 
-let fail_v128 = (fun s -> assert false)
-
-let numop t i32 i64 f32 f64 v128 =
+let numop t i32 i64 f32 f64 =
   match t with
   | "i32" -> i32
   | "i64" -> i64
   | "f32" -> f32
   | "f64" -> f64
-  | "v128" -> v128
   | _ -> assert false
 
 let memsz sz m8 m16 m32 =
@@ -167,6 +164,7 @@ rule token = parse
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
   | (nxx as t) { VALUE_TYPE (value_type t) }
+  | (vxxx)".const" { V128_CONST }
   | (nxx as t)".const"
     { let open Source in
       CONST (numop t
@@ -177,8 +175,7 @@ rule token = parse
         (fun s -> let n = F32.of_string s.it in
           f32_const (n @@ s.at), Values.F32 n)
         (fun s -> let n = F64.of_string s.it in
-          f64_const (n @@ s.at), Values.F64 n)
-        (fail_v128))
+          f64_const (n @@ s.at), Values.F64 n))
     }
   | "funcref" { FUNCREF }
   | "mut" { MUT }
@@ -209,11 +206,11 @@ rule token = parse
   | (nxx as t)".load"
     { LOAD (fun a o ->
         numop t (i32_load (opt a 2)) (i64_load (opt a 3))
-                (f32_load (opt a 2)) (f64_load (opt a 3)) (fail_v128) o) }
+                (f32_load (opt a 2)) (f64_load (opt a 3)) o) }
   | (nxx as t)".store"
     { STORE (fun a o ->
         numop t (i32_store (opt a 2)) (i64_store (opt a 3))
-                (f32_store (opt a 2)) (f64_store (opt a 3)) (fail_v128) o) }
+                (f32_store (opt a 2)) (f64_store (opt a 3)) o) }
   | (ixx as t)".load"(mem_size as sz)"_"(sign as s)
     { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
       LOAD (fun a o ->

@@ -176,19 +176,19 @@
 )
 (assert_malformed
   (module quote "(func (v128.const i32x4 0x10000000000000000 0x10000000000000000) drop)")
-  "constant out of range"
+  "unexpected token"
 )
 (assert_malformed
   (module quote "(func (v128.const i32x4 -0x8000000000000001 -0x8000000000000001) drop)")
-  "constant out of range"
+  "unexpected token"
 )
 (assert_malformed
   (module quote "(func (v128.const i32x4 18446744073709551616 18446744073709551616) drop)")
-  "constant out of range"
+  "unexpected token"
 )
 (assert_malformed
   (module quote "(func (v128.const i32x4 -9223372036854775808 -9223372036854775808) drop)")
-  "constant out of range"
+  "unexpected token"
 )
 (assert_malformed
   (module quote "(func (v128.const f32x4  0x1p128  0x1p128  0x1p128  0x1p128) drop)")

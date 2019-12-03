@@ -39,11 +39,9 @@ let ati i =
 let literal f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
-let range_check i min max at =
-    let i_32 = Int32.to_int i in
-    let min_32 = Int32.of_int min in
-    let max_32 = Int32.of_int max in
-    if i > max_32 || i < min_32 then error at "constant out of range" else i_32
+let range_check i32 min max at =
+  let i = Int32.to_int i32 in
+  if i > max || i < min then error at "constant out of range" else i
 
 let int8_of_string s = range_check (I32.of_string s.it) (-128) 255 s.at
 let int16_of_string s = range_check (I32.of_string s.it) (-32768) 65535 s.at
@@ -52,31 +50,25 @@ let int64_of_string s = I64.to_bits (literal (fun s -> I64.of_string s.it) s)
 let f32_of_string s = F32.to_bits (literal (fun s -> F32.of_string s.it) s)
 let f64_of_string s = F64.to_bits (literal (fun s -> F64.of_string s.it) s)
 
-let simd_literal f shape ss =
-    let open Bytes in
-    let b = create 16 in
-    (match shape with
-    | "i8x16" ->
-            List.iteri (fun i s -> set_uint8 b i (int8_of_string s)) ss;
-            if List.length ss != 16 then parse_error "unexpected token";
-    | "i16x8" ->
-            List.iteri (fun i s -> set_uint16_le b i (int16_of_string s)) ss;
-            if List.length ss != 8 then parse_error "unexpected token";
-    | "i32x4" ->
-            List.iteri (fun i s -> set_int32_le b i (int32_of_string s)) ss;
-            if List.length ss != 4 then parse_error "unexpected token";
-    | "i64x2" ->
-            List.iteri (fun i s -> set_int64_le b i (int64_of_string s)) ss;
-            if List.length ss != 2 then parse_error "unexpected token";
-    | "f32x4" ->
-            List.iteri (fun i s -> set_int32_le b i (f32_of_string s)) ss;
-            if List.length ss != 4 then parse_error "unexpected token";
-    | "f64x2" ->
-            List.iteri (fun i s -> set_int64_le b i (f64_of_string s)) ss;
-            if List.length ss != 2 then parse_error "unexpected token";
-    | _ -> assert false);
-    let v = V128.of_bits b in
-    (v128_const (v @@ (ati 1)), Values.V128 v)
+let simd_literal shape ss =
+  let open Bytes in
+  let b = create 16 in
+  (match shape with
+  | "i8x16" when List.length ss = 16 ->
+    List.iteri (fun i s -> set_uint8 b i (int8_of_string s)) ss;
+  | "i16x8" when List.length ss = 8 ->
+    List.iteri (fun i s -> set_uint16_le b i (int16_of_string s)) ss;
+  | "i32x4" when List.length ss = 4 ->
+    List.iteri (fun i s -> set_int32_le b i (int32_of_string s)) ss;
+  | "i64x2" when List.length ss = 2 ->
+    List.iteri (fun i s -> set_int64_le b i (int64_of_string s)) ss;
+  | "f32x4" when List.length ss = 4 ->
+    List.iteri (fun i s -> set_int32_le b i (f32_of_string s)) ss;
+  | "f64x2" when List.length ss = 2 ->
+    List.iteri (fun i s -> set_int64_le b i (f64_of_string s)) ss;
+  | _ -> parse_error "unexpected token");
+  let v = V128.of_bits b in
+  (v128_const (v @@ ati 1), Values.V128 v)
 
 let nat s at =
   try
@@ -189,7 +181,7 @@ let inline_type_explicit (c : context) x ft at =
 %token CALL CALL_INDIRECT RETURN
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
-%token CONST UNARY BINARY TEST COMPARE CONVERT
+%token CONST V128_CONST UNARY BINARY TEST COMPARE CONVERT
 %token UNREACHABLE MEMORY_SIZE MEMORY_GROW
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
@@ -288,7 +280,7 @@ literal :
   | FLOAT { $1 @@ at () }
 
 literal_list:
-  | /* empty */ {[]}
+  | /* empty */ { [] }
   | literal literal_list { $1 :: $2 }
 
 var :
@@ -363,8 +355,8 @@ plain_instr :
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
   | MEMORY_SIZE { fun c -> memory_size }
   | MEMORY_GROW { fun c -> memory_grow }
-  | CONST SIMD_SHAPE literal_list { fun c -> fst (simd_literal $1 $2 $3) }
   | CONST literal { fun c -> fst (literal $1 $2) }
+  | V128_CONST SIMD_SHAPE literal_list { fun c -> fst (simd_literal $2 $3) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
   | UNARY { fun c -> $1 }
@@ -865,8 +857,8 @@ meta :
 
 const :
   | LPAR CONST literal RPAR { snd (literal $2 $3) @@ ati 3 }
-  | LPAR CONST SIMD_SHAPE literal_list RPAR {
-      snd (simd_literal $2 $3 $4) @@ ati 3
+  | LPAR V128_CONST SIMD_SHAPE literal_list RPAR {
+      snd (simd_literal $3 $4) @@ ati 3
   }
 
 const_list :
