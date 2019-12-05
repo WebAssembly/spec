@@ -488,6 +488,21 @@ each pair.
 def S.max(a, b):
     return S.lanewise_binary(max, a, b)
 ```
+
+### Lane-wise integer rounding average
+* `i8x16.avgr_u(a: v128, b: v128) -> v128`
+* `i16x8.avgr_u(a: v128, b: v128) -> v128`
+
+Lane-wise rounding average:
+
+```python
+def S.RoundingAverage(x, y):
+    return (x + y + 1) // 2
+
+def S.avgr_u(a, b):
+    return S.lanewise_binary(S.RoundingAverage, S.AsUnsigned(a), S.AsUnsigned(b))
+```
+
 ## Bit shifts
 
 ### Left shift by scalar
