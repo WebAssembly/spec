@@ -323,6 +323,35 @@ class SimdI16x8SaturateArithmeticCases(SimdSaturateArithmeticCases):
         return ['0x01', '-0x01', '-0x8000', '-0x7fff', '0x7fff', '0x8000', '0xffff']
 
     @property
+    def underscore_literal_test_data(self):
+        return {
+            'i16x8.add_saturate_s': [
+                [['012_345', '032_123'], '032_767', ['i16x8'] * 3],
+                [['012_345', '056_789'], '03_598', ['i16x8'] * 3],
+                [['0x0_1234', '0x0_5678'], '0x0_68ac', ['i16x8'] * 3],
+                [['0x0_90AB', '0x0_cdef'], '-0x0_8000', ['i16x8'] * 3]
+            ],
+            'i16x8.add_saturate_u': [
+                [['012_345', '056_789'], '065_535', ['i16x8'] * 3],
+                [['012_345', '-012_345'], '065_535', ['i16x8'] * 3],
+                [['0x0_1234', '0x0_5678'], '0x0_68ac', ['i16x8'] * 3],
+                [['0x0_90AB', '0x0_cdef'], '0x0_ffff', ['i16x8'] * 3]
+            ],
+            'i16x8.sub_saturate_s': [
+                [['012_345', '056_789'], '021_092', ['i16x8'] * 3],
+                [['012_345', '-012_345'], '024_690', ['i16x8'] * 3],
+                [['0x0_1234', '0x0_5678'], '0x0_bbbc', ['i16x8'] * 3],
+                [['0x0_90AB', '-0x1234'], '0xa2df', ['i16x8'] * 3]
+            ],
+            'i16x8.sub_saturate_u': [
+                [['012_345', '056_789'], '0', ['i16x8'] * 3],
+                [['056_789', '-12_345'], '03_598', ['i16x8'] * 3],
+                [['0x0_1234', '-0x0_5678'], '0', ['i16x8'] * 3],
+                [['0x0_cdef', '0x0_90AB'], '0x0_3d44', ['i16x8'] * 3]
+            ]
+        }
+
+    @property
     def i16x8_f32x4_test_data(self):
         return {
             'i16x8.add_saturate_s': [
@@ -406,7 +435,8 @@ class SimdI16x8SaturateArithmeticCases(SimdSaturateArithmeticCases):
         return [
             self.i16x8_f32x4_test_data,
             self.combine_dec_hex_test_data,
-            self.range_test_data
+            self.range_test_data,
+            self.underscore_literal_test_data
         ]
 
 
