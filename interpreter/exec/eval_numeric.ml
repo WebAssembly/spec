@@ -116,12 +116,12 @@ end
 module F32Op = FloatOp (F32) (Values.F32Value)
 module F64Op = FloatOp (F64) (Values.F64Value)
 
-(* Vector operators *)
+(* Simd operators *)
 
-module VectorOp (VXX : Vector.S) (Value : ValueType with type t = VXX.t) =
+module SimdOp (VXX : Simd.S) (Value : ValueType with type t = VXX.t) =
 struct
   (* TODO
-  open Ast.VectorOp
+  open Ast.SimdOp
 
   let to_value = Value.to_value
   let of_value = of_arg Value.of_value
@@ -140,7 +140,7 @@ struct
   let relop op = failwith "TODO v128"
 end
 
-module V128Op = VectorOp (V128) (Values.V128Value)
+module V128Op = SimdOp (V128) (Values.V128Value)
 
 (* Conversion operators *)
 
@@ -209,7 +209,7 @@ end
 module V128CvtOp =
 struct
   (* TODO
-  open Ast.VectorOp
+  open Ast.SimdOp
   *)
 
   (* FIXME *)

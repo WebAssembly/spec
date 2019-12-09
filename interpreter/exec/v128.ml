@@ -1,4 +1,4 @@
-include Vector.Make
+include Simd.Make
   (struct
     include Bytes
     let bytewidth = 16
