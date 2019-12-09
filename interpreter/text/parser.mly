@@ -54,17 +54,17 @@ let simd_literal shape ss =
   let open Bytes in
   let b = create 16 in
   (match shape with
-  | "i8x16" when List.length ss = 16 ->
+  | Simd.I8x16 when List.length ss = 16 ->
     List.iteri (fun i s -> set_uint8 b i (int8_of_string s)) ss;
-  | "i16x8" when List.length ss = 8 ->
+  | Simd.I16x8 when List.length ss = 8 ->
     List.iteri (fun i s -> set_uint16_le b i (int16_of_string s)) ss;
-  | "i32x4" when List.length ss = 4 ->
+  | Simd.I32x4 when List.length ss = 4 ->
     List.iteri (fun i s -> set_int32_le b i (int32_of_string s)) ss;
-  | "i64x2" when List.length ss = 2 ->
+  | Simd.I64x2 when List.length ss = 2 ->
     List.iteri (fun i s -> set_int64_le b i (int64_of_string s)) ss;
-  | "f32x4" when List.length ss = 4 ->
+  | Simd.F32x4 when List.length ss = 4 ->
     List.iteri (fun i s -> set_int32_le b i (f32_of_string s)) ss;
-  | "f64x2" when List.length ss = 2 ->
+  | Simd.F64x2 when List.length ss = 2 ->
     List.iteri (fun i s -> set_int64_le b i (f64_of_string s)) ss;
   | _ -> parse_error "unexpected token");
   let v = V128.of_bits b in
@@ -192,7 +192,6 @@ let inline_type_explicit (c : context) x ft at =
 %token INPUT OUTPUT
 %token EOF
 
-%token<string> SIMD_SHAPE
 %token<string> NAT
 %token<string> INT
 %token<string> FLOAT
@@ -209,6 +208,7 @@ let inline_type_explicit (c : context) x ft at =
 %token<int option -> Memory.offset -> Ast.instr'> STORE
 %token<string> OFFSET_EQ_NAT
 %token<string> ALIGN_EQ_NAT
+%token<Simd.shape> SIMD_SHAPE
 
 %nonassoc LOW
 %nonassoc VAR
