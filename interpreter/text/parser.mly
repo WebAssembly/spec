@@ -43,32 +43,44 @@ let range_check i32 min max at =
   let i = Int32.to_int i32 in
   if i > max || i < min then error at "constant out of range" else i
 
-let int8_of_string s = range_check (I32.of_string s.it) (-128) 255 s.at
-let int16_of_string s = range_check (I32.of_string s.it) (-32768) 65535 s.at
-let int32_of_string s = I32.to_bits (literal (fun s -> I32.of_string s.it) s)
-let int64_of_string s = I64.to_bits (literal (fun s -> I64.of_string s.it) s)
-let f32_of_string s = F32.to_bits (literal (fun s -> F32.of_string s.it) s)
-let f64_of_string s = F64.to_bits (literal (fun s -> F64.of_string s.it) s)
+let check_simd_i8 s = let _ = range_check (I32.of_string s.it) (-128) 255 s.at in ()
+let check_simd_i16 s = let _ = range_check (I32.of_string s.it) (-32768) 65535 s.at in ()
+let check_simd_i32 s = let _ = (literal (fun s -> I32.of_string s.it) s) in ()
+let check_simd_i64 s = let _ = (literal (fun s -> I64.of_string s.it) s) in ()
+let check_simd_f32 s = let _ = (literal (fun s -> F32.of_string s.it) s) in ()
+let check_simd_f64 s = let _ = (literal (fun s -> F64.of_string s.it) s) in ()
+
+(* Validate that the correct number of literals is passed to v128.const. *)
+let validate_simd_literal_length shape ss =
+  let len = List.length ss in
+  if len == 0 then error (ati 1) "unexpected token";
+  let at = (List.hd ss).at in
+  match shape with
+  | Simd.I8x16 -> if len != 16 then error at "unexpected token"
+  | Simd.I16x8  -> if len != 8 then error at "unexpected token"
+  | Simd.I32x4  -> if len != 4 then error at "unexpected token"
+  | Simd.I64x2  -> if len != 2 then error at "unexpected token"
+  | Simd.F32x4  -> if len != 4 then error at "unexpected token"
+  | Simd.F64x2  -> if len != 2 then error at "unexpected token"
+
+(* Validate that strings passed to v128.const is withing range.
+ * We do the validation separate from the construction in order to
+ * provide accurate locations for the error message. *)
+let validate_simd_literal shape ss =
+  match shape with
+  | Simd.I8x16 -> List.iter check_simd_i8 ss
+  | Simd.I16x8 -> List.iter check_simd_i16 ss
+  | Simd.I32x4 -> List.iter check_simd_i32 ss
+  | Simd.I64x2 -> List.iter check_simd_i64 ss
+  | Simd.F32x4 -> List.iter check_simd_f32 ss
+  | Simd.F64x2 -> List.iter check_simd_f64 ss
 
 let simd_literal shape ss =
-  let open Bytes in
-  let b = create 16 in
-  (match shape with
-  | Simd.I8x16 when List.length ss = 16 ->
-    List.iteri (fun i s -> set_uint8 b i (int8_of_string s)) ss;
-  | Simd.I16x8 when List.length ss = 8 ->
-    List.iteri (fun i s -> set_uint16_le b i (int16_of_string s)) ss;
-  | Simd.I32x4 when List.length ss = 4 ->
-    List.iteri (fun i s -> set_int32_le b i (int32_of_string s)) ss;
-  | Simd.I64x2 when List.length ss = 2 ->
-    List.iteri (fun i s -> set_int64_le b i (int64_of_string s)) ss;
-  | Simd.F32x4 when List.length ss = 4 ->
-    List.iteri (fun i s -> set_int32_le b i (f32_of_string s)) ss;
-  | Simd.F64x2 when List.length ss = 2 ->
-    List.iteri (fun i s -> set_int64_le b i (f64_of_string s)) ss;
-  | _ -> parse_error "unexpected token");
-  let v = V128.of_bits b in
-  (v128_const (v @@ ati 1), Values.V128 v)
+  validate_simd_literal shape ss;
+  validate_simd_literal_length shape ss;
+  let v = V128.of_strings shape (List.map (fun s -> s.it) ss) in
+  (* This List.hd call is okay since we validated the length. *)
+  (v128_const (v @@ (List.hd ss).at), Values.V128 v)
 
 let nat s at =
   try

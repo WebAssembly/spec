@@ -10,6 +10,7 @@ sig
   (* ^ bits_make ? *)
   val to_string : t -> string
   val bytewidth : int
+  val of_strings : shape -> string list -> t
 end
 
 module type S =
@@ -20,6 +21,7 @@ sig
   val to_string : t -> string
   val of_bits : bits -> t
   val to_bits : t -> bits
+  val of_strings : shape -> string list -> t
 end
 
 module Make (Rep : RepType) : S with type bits = Rep.t =
@@ -31,4 +33,5 @@ struct
   let to_string = Rep.to_string (* FIXME very very wrong *)
   let to_bits x = x
   let of_bits x = x
+  let of_strings = Rep.of_strings
 end
