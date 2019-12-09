@@ -4,6 +4,7 @@
 
 from abc import abstractmethod
 import math
+import struct
 
 
 class FloatingPointOp:
@@ -20,7 +21,7 @@ class FloatingPointArithOp(FloatingPointOp):
         neg, sqrt, add, sub, mul, div
     """
 
-    def binary_op(self, op: str, p1: str, p2: str) -> str:
+    def binary_op(self, op: str, p1: str, p2: str, single_prec=False) -> str:
         """Binary operation on p1 and p2 with the operation specified by op
 
         :param op: add, sub, mul, div
@@ -28,8 +29,20 @@ class FloatingPointArithOp(FloatingPointOp):
         :param p2: float number in hex
         :return:
         """
-        f1 = float.fromhex(p1)
-        f2 = float.fromhex(p2)
+        if '0x' in p1 or '0x' in p2:
+            hex_form = True
+        else:
+            hex_form = False
+
+        if '0x' in p1:
+            f1 = float.fromhex(p1)
+        else:
+            f1 = float(p1)
+        if '0x' in p2:
+            f2 = float.fromhex(p2)
+        else:
+            f2 = float(p2)
+
         if op == 'add':
             if 'inf' in p1 and 'inf' in p2 and p1 != p2:
                 return '-nan'
@@ -43,7 +56,15 @@ class FloatingPointArithOp(FloatingPointOp):
         elif op == 'mul':
             if '0x0p+0' in p1 and 'inf' in p2 or 'inf' in p1 and '0x0p+0' in p2:
                 return '-nan'
-            result = f1 * f2
+            if single_prec:
+                # For some literals, f32x4.mul operation may cause precision lost.
+                # Use struct.unpack('f', struct.pack('f', literal)) to compensate
+                # single precision lost of f32
+                f1 = struct.unpack('f', struct.pack('f', f1))[0]
+                f2 = struct.unpack('f', struct.pack('f', f2))[0]
+                result = struct.unpack('f', struct.pack('f', f1 * f2))[0]
+            else:
+                result = f1 * f2
 
         elif op == 'div':
             if '0x0p+0' in p1 and '0x0p+0' in p2:
@@ -53,7 +74,7 @@ class FloatingPointArithOp(FloatingPointOp):
 
             try:
                 result = f1 / f2
-                return self.get_valid_float(result, self.maximum)
+                return self.get_valid_float(result, self.maximum, hex_form)
             except ZeroDivisionError:
                 if p1[0] == p2[0]:
                     return 'inf'
@@ -65,22 +86,30 @@ class FloatingPointArithOp(FloatingPointOp):
         else:
             raise Exception('Unknown binary operation')
 
-        return self.get_valid_float(result, self.maximum)
+        return self.get_valid_float(result, self.maximum, hex_form)
 
-    def get_valid_float(self, value, maximum_literals):
+    def get_valid_float(self, value, maximum_literals, hex_form=False):
         if value > float.fromhex(maximum_literals):
             return 'inf'
         if value < float.fromhex('-' + maximum_literals):
             return '-inf'
-        return value.hex()
+
+        if hex_form:
+            return value.hex()
+        else:
+            return str(value)
 
     def float_sqrt(self, p):
         if p == '-0x0p+0':
             return '-0x0p+0'
 
         try:
-            p = float.fromhex(p)
-            result = float.hex(math.sqrt(p))
+            if '0x' in p:
+                f = float.fromhex(p)
+                result = float.hex(math.sqrt(f))
+            else:
+                f = float(p)
+                result = str(math.sqrt(f))
         except ValueError:
             result = '-nan'
 
@@ -90,8 +119,12 @@ class FloatingPointArithOp(FloatingPointOp):
         if p == 'nan':
             return '-nan'
         try:
-            p = float.fromhex(p)
-            result = float.hex(-p)
+            if '0x' in p:
+                f = float.fromhex(p)
+                result = float.hex(-f)
+            else:
+                f = float(p)
+                result = str(-f)
         except ValueError:
             if p.startswith('nan:'):
                 return '-' + p

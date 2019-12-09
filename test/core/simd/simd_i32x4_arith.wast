@@ -163,6 +163,12 @@
 (assert_return (invoke "i32x4.add" (v128.const i32x4 0 1 2 3)
                                    (v128.const i32x4 0 2 4 6))
                                    (v128.const i32x4 0 3 6 9))
+(assert_return (invoke "i32x4.add" (v128.const i32x4 01_234_567_890 01_234_567_890 01_234_567_890 01_234_567_890)
+                                   (v128.const i32x4 01_234_567_890 01_234_567_890 01_234_567_890 01_234_567_890))
+                                   (v128.const i32x4 02_469_135_780 02_469_135_780 02_469_135_780 02_469_135_780))
+(assert_return (invoke "i32x4.add" (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678)
+                                   (v128.const i32x4 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef))
+                                   (v128.const i32x4 0x0_a2e0_2467 0x0_a2e0_2467 0x0_a2e0_2467 0x0_a2e0_2467))
 
 ;; i32x4.sub
 (assert_return (invoke "i32x4.sub" (v128.const i32x4 0 0 0 0)
@@ -318,6 +324,12 @@
 (assert_return (invoke "i32x4.sub" (v128.const i32x4 0 1 2 3)
                                    (v128.const i32x4 0 2 4 6))
                                    (v128.const i32x4 0 -1 -2 -3))
+(assert_return (invoke "i32x4.sub" (v128.const i32x4 03_214_567_890  03_214_567_890  03_214_567_890  03_214_567_890 )
+                                   (v128.const i32x4 01_234_567_890  01_234_567_890  01_234_567_890  01_234_567_890 ))
+                                   (v128.const i32x4 01_980_000_000 01_980_000_000 01_980_000_000 01_980_000_000))
+(assert_return (invoke "i32x4.sub" (v128.const i32x4 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef)
+                                   (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678))
+                                   (v128.const i32x4 0x0_7e77_7777 0x0_7e77_7777 0x0_7e77_7777 0x0_7e77_7777))
 
 ;; i32x4.mul
 (assert_return (invoke "i32x4.mul" (v128.const i32x4 0 0 0 0)
@@ -473,6 +485,12 @@
 (assert_return (invoke "i32x4.mul" (v128.const i32x4 0 1 2 3)
                                    (v128.const i32x4 0 2 4 6))
                                    (v128.const i32x4 0 0x02 0x08 0x12))
+(assert_return (invoke "i32x4.mul" (v128.const i32x4 0_123_456_789 0_123_456_789 0_123_456_789 0_123_456_789)
+                                   (v128.const i32x4 0_987_654_321 0_987_654_321 0_987_654_321 0_987_654_321))
+                                   (v128.const i32x4 04_227_814_277 04_227_814_277 04_227_814_277 04_227_814_277))
+(assert_return (invoke "i32x4.mul" (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678)
+                                   (v128.const i32x4 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef))
+                                   (v128.const i32x4 0x0_2a42_d208 0x0_2a42_d208 0x0_2a42_d208 0x0_2a42_d208))
 
 ;; i32x4.neg
 (assert_return (invoke "i32x4.neg" (v128.const i32x4 0 0 0 0))

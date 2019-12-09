@@ -34,6 +34,23 @@ class SimdI32x4ArithmeticCase(SimdArithmeticCase):
         return ['0x01', '-0x01', '-0x80000000', '-0x7fffffff', '0x7fffffff', '0x80000000', '0xffffffff']
 
     @property
+    def underscore_literal_test_data(self):
+        return {
+            'i32x4.add': [
+                [['01_234_567_890', '01_234_567_890'], '02_469_135_780', ['i32x4'] * 3],
+                [['0x0_1234_5678', '0x0_90AB_cdef'], '0x0_a2e0_2467', ['i32x4'] * 3]
+            ],
+            'i32x4.sub': [
+                [['03_214_567_890 ', '01_234_567_890 '], '01_980_000_000', ['i32x4'] * 3],
+                [['0x0_90AB_cdef', '0x0_1234_5678'], '0x0_7e77_7777', ['i32x4'] * 3]
+            ],
+            'i32x4.mul': [
+                [['0_123_456_789', '0_987_654_321'], '04_227_814_277', ['i32x4'] * 3],
+                [['0x0_1234_5678', '0x0_90AB_cdef'], '0x0_2a42_d208', ['i32x4'] * 3]
+            ]
+        }
+
+    @property
     def i32x4_i8x16_test_data(self):
         return {
             'i32x4.add': [
@@ -145,7 +162,8 @@ class SimdI32x4ArithmeticCase(SimdArithmeticCase):
             self.i32x4_i16x8_test_data,
             self.i32x4_f32x4_test_data,
             self.combine_dec_hex_test_data,
-            self.range_test_data
+            self.range_test_data,
+            self.underscore_literal_test_data
         ]
 
 

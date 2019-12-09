@@ -35,6 +35,29 @@ class SimdI64x2ArithmeticCase(SimdArithmeticCase):
                 '0x7fffffffffffffff', '0x8000000000000000', '0xffffffffffffffff']
 
     @property
+    def underscore_literal_test_data(self):
+        return {
+            'i64x2.add': [
+                [['01_234_567_890_123_456_789', '01_234_567_890_123_456_789'],
+                 '02_469_135_780_246_913_578', ['i64x2'] * 3],
+                [['0x0_1234_5678_90AB_cdef', '0x0_90AB_cdef_1234_5678'],
+                 '0x0_a2e0_2467_a2e0_2467', ['i64x2'] * 3]
+            ],
+            'i64x2.sub': [
+                [['03_214_567_890_123_456_789', '01_234_567_890_123_456_789'],
+                 '01_980_000_000_000_000_000', ['i64x2'] * 3],
+                [['0x0_90AB_cdef_8765_4321', '0x0_1234_5678_90AB_cdef'],
+                 '0x0_7e77_7776_f6b9_7532', ['i64x2'] * 3]
+            ],
+            'i64x2.mul': [
+                [['01_234_567_890_123_456_789', '01_234_567_890_123_456_789'],
+                 '09_710_478_858_155_731_897', ['i64x2'] * 3],
+                [['0x0_1234_5678_90AB_cdef', '0x0_90AB_cdef_8765_4321'],
+                 '0x0_602f_05e9_e556_18cf', ['i64x2'] * 3]
+            ]
+        }
+
+    @property
     def i64x2_i8x16_test_data(self):
         """This test data will be intepreted by the SIMD.v128_const() method in simd.py."""
         return {
@@ -164,7 +187,8 @@ class SimdI64x2ArithmeticCase(SimdArithmeticCase):
             self.i64x2_i32x4_test_data,
             self.i64x2_f64x2_test_data,
             self.combine_dec_hex_test_data,
-            self.range_test_data
+            self.range_test_data,
+            self.underscore_literal_test_data
         ]
 
 

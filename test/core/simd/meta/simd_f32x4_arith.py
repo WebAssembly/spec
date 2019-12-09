@@ -24,7 +24,17 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
         '0x0p+0', '-0x0p+0', '0x1p-149', '-0x1p-149', '0x1p-126', '-0x1p-126', '0x1p-1', '-0x1p-1', '0x1p+0', '-0x1p+0',
         '0x1.921fb6p+2', '-0x1.921fb6p+2', '0x1.fffffep+127', '-0x1.fffffep+127', 'inf', '-inf'
     )
-
+    LITERAL_NUMBERS = ('0123456789', '0123456789e019', '0123456789e+019', '0123456789e-019',
+                       '0123456789.', '0123456789.e019', '0123456789.e+019', '0123456789.e-019',
+                       '0123456789.0123456789', '0123456789.0123456789e019',
+                       '0123456789.0123456789e+019', '0123456789.0123456789e-019',
+                       '0x0123456789ABCDEF', '0x0123456789ABCDEFp019',
+                       '0x0123456789ABCDEFp+019', '0x0123456789ABCDEFp-019',
+                       '0x0123456789ABCDEF.', '0x0123456789ABCDEF.p019',
+                       '0x0123456789ABCDEF.p+019', '0x0123456789ABCDEF.p-019',
+                       '0x0123456789ABCDEF.019aF', '0x0123456789ABCDEF.019aFp019',
+                       '0x0123456789ABCDEF.019aFp+019', '0x0123456789ABCDEF.019aFp-019'
+    )
     NAN_NUMBERS = ('nan', '-nan', 'nan:0x200000', '-nan:0x200000')
     binary_params_template = ('({assert_type} (invoke "{func}" ', '{operand_1}', '{operand_2})', '{expected_result})')
     unary_param_template = ('({assert_type} (invoke "{func}" ', '{operand})', '{expected_result})')
@@ -200,10 +210,17 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
                     else:
                         binary_test_data.append(['assert_return_canonical_nan_f32x4', op_name, p1, p2])
 
+            for p in self.LITERAL_NUMBERS:
+                if self.LANE_TYPE == 'f32x4':
+                    result = self.floatOp.binary_op(op, p, p, single_prec=True)
+                else:
+                    result = self.floatOp.binary_op(op, p, p)
+                binary_test_data.append(['assert_return', op_name, p, p, result])
+
         for case in binary_test_data:
             cases.append(self.single_binary_test(case))
 
-        for p in self.FLOAT_NUMBERS + self.NAN_NUMBERS:
+        for p in self.FLOAT_NUMBERS + self.NAN_NUMBERS + self.LITERAL_NUMBERS:
             if 'nan:' in p:
                 unary_test_data.append(['assert_return_arithmetic_nan_f32x4', op_name, p])
             elif 'nan' in p:
@@ -219,7 +236,7 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
                     #
                     unary_test_data.append(['assert_return_canonical_nan_f32x4', op_name, p])
 
-        for p in self.FLOAT_NUMBERS + self.NAN_NUMBERS:
+        for p in self.FLOAT_NUMBERS + self.NAN_NUMBERS + self.LITERAL_NUMBERS:
             op_name = self.full_op_name('neg')
             result = self.floatOp.float_neg(p)
             # Neg operation is valid for all the floating point numbers

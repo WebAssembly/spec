@@ -24,7 +24,19 @@ class Simdf64x2ArithmeticCase(Simdf32x4ArithmeticCase):
         '0x1.921fb54442d18p+2', '-0x1.921fb54442d18p+2', '0x1.fffffffffffffp+1023', '-0x1.fffffffffffffp+1023',
         '0x0.0000000000001p-1022', '0x0.0000000000001p-1022', 'inf', '-inf'
     )
-
+    LITERAL_NUMBERS = ('0123456789', '0123456789e019', '0123456789e+019', '0123456789e-019',
+                       '0123456789.', '0123456789.e019', '0123456789.e+019', '0123456789.e-019',
+                       '0123456789.0123456789', '0123456789.0123456789e019',
+                       '0123456789.0123456789e+019', '0123456789.0123456789e-019',
+                       '0x0123456789ABCDEFabcdef', '0x0123456789ABCDEFabcdefp019',
+                       '0x0123456789ABCDEFabcdefp+019', '0x0123456789ABCDEFabcdefp-019',
+                       '0x0123456789ABCDEFabcdef.', '0x0123456789ABCDEFabcdef.p019',
+                       '0x0123456789ABCDEFabcdef.p+019', '0x0123456789ABCDEFabcdef.p-019',
+                       '0x0123456789ABCDEFabcdef.0123456789ABCDEFabcdef',
+                       '0x0123456789ABCDEFabcdef.0123456789ABCDEFabcdefp019',
+                       '0x0123456789ABCDEFabcdef.0123456789ABCDEFabcdefp+019',
+                       '0x0123456789ABCDEFabcdef.0123456789ABCDEFabcdefp-019'
+    )
     NAN_NUMBERS = ('nan', '-nan', 'nan:0x4000000000000', '-nan:0x4000000000000')
 
     @staticmethod
