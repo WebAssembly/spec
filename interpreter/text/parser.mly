@@ -836,7 +836,7 @@ meta :
 const :
   | LPAR CONST literal RPAR { snd (literal $2 $3) @@ ati 3 }
   | LPAR V128_CONST SIMD_SHAPE literal_list RPAR {
-      snd (simd_literal $3 $4 (at ())) @@ ati 3
+      snd (simd_literal $3 $4 (at ())) @@ ati 4
   }
 
 const_list :
