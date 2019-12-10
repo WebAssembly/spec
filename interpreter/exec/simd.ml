@@ -2,6 +2,15 @@ open Char
 
 type shape = I8x16 | I16x8 | I32x4 | I64x2 | F32x4 | F64x2
 
+let lanes shape =
+  match shape with
+  | I8x16 -> 16
+  | I16x8 -> 8
+  | I32x4 -> 4
+  | I64x2 -> 2
+  | F32x4 -> 4
+  | F64x2 -> 2
+
 module type RepType =
 sig
   type t

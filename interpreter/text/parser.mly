@@ -39,48 +39,15 @@ let ati i =
 let literal f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
-let range_check i32 min max at =
-  let i = Int32.to_int i32 in
-  if i > max || i < min then error at "constant out of range" else i
-
-let check_simd_i8 s = let _ = range_check (I32.of_string s.it) (-128) 255 s.at in ()
-let check_simd_i16 s = let _ = range_check (I32.of_string s.it) (-32768) 65535 s.at in ()
-let check_simd_i32 s = let _ = (literal (fun s -> I32.of_string s.it) s) in ()
-let check_simd_i64 s = let _ = (literal (fun s -> I64.of_string s.it) s) in ()
-let check_simd_f32 s = let _ = (literal (fun s -> F32.of_string s.it) s) in ()
-let check_simd_f64 s = let _ = (literal (fun s -> F64.of_string s.it) s) in ()
-
-(* Validate that the correct number of literals is passed to v128.const. *)
-let validate_simd_literal_length shape ss =
-  let len = List.length ss in
-  if len == 0 then error (ati 1) "unexpected token";
-  let at = (List.hd ss).at in
-  match shape with
-  | Simd.I8x16 -> if len != 16 then error at "unexpected token"
-  | Simd.I16x8  -> if len != 8 then error at "unexpected token"
-  | Simd.I32x4  -> if len != 4 then error at "unexpected token"
-  | Simd.I64x2  -> if len != 2 then error at "unexpected token"
-  | Simd.F32x4  -> if len != 4 then error at "unexpected token"
-  | Simd.F64x2  -> if len != 2 then error at "unexpected token"
-
-(* Validate that strings passed to v128.const is withing range.
- * We do the validation separate from the construction in order to
- * provide accurate locations for the error message. *)
-let validate_simd_literal shape ss =
-  match shape with
-  | Simd.I8x16 -> List.iter check_simd_i8 ss
-  | Simd.I16x8 -> List.iter check_simd_i16 ss
-  | Simd.I32x4 -> List.iter check_simd_i32 ss
-  | Simd.I64x2 -> List.iter check_simd_i64 ss
-  | Simd.F32x4 -> List.iter check_simd_f32 ss
-  | Simd.F64x2 -> List.iter check_simd_f64 ss
-
 let simd_literal shape ss =
-  validate_simd_literal shape ss;
-  validate_simd_literal_length shape ss;
-  let v = V128.of_strings shape (List.map (fun s -> s.it) ss) in
-  (* This List.hd call is okay since we validated the length. *)
-  (v128_const (v @@ (List.hd ss).at), Values.V128 v)
+  try
+      let v = V128.of_strings shape (List.map (fun s -> s.it) ss) in
+      (* This List.hd call is okay an exception would have been raise if length is 0. *)
+      (v128_const (v @@ (List.hd ss).at), Values.V128 v)
+  with
+    (* TODO better location for error messages. *)
+    | Failure _ -> error (ati 1) "constant out of range"
+    | Invalid_argument _ -> error (ati 1) "unexpected token"
 
 let nat s at =
   try
