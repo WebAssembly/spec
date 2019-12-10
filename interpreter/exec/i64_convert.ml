@@ -22,7 +22,7 @@ let trunc_f32_u x =
     if xf >= -.Int64.(to_float min_int) *. 2.0 || xf <= -1.0 then
       raise Numeric_error.IntegerOverflow
     else if xf >= -.Int64.(to_float min_int) then
-      Int64.(logxor (of_float (xf -. (* TODO(ocaml-4.03): 0x1p63 *) 9223372036854775808.0)) min_int)
+      Int64.(logxor (of_float (xf -. 0x1p63)) min_int)
     else
       Int64.of_float xf
 
@@ -44,7 +44,7 @@ let trunc_f64_u x =
     if xf >= -.Int64.(to_float min_int) *. 2.0 || xf <= -1.0 then
       raise Numeric_error.IntegerOverflow
     else if xf >= -.Int64.(to_float min_int) then
-      Int64.(logxor (of_float (xf -. (* TODO(ocaml-4.03): 0x1p63 *) 9223372036854775808.0)) min_int)
+      Int64.(logxor (of_float (xf -. 0x1p63)) min_int)
     else
       Int64.of_float xf
 
