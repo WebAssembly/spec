@@ -8,7 +8,7 @@ The reason why this is different from other cmp files is that
 f32x4 only has 6 comparison instructions but with amounts of
 test datas.
 """
-
+import struct
 from simd_compare import SimdCmpCase
 
 
@@ -337,7 +337,10 @@ class Simdf32x4CmpCase(SimdCmpCase):
                     '0x1p+0', '-0x1.fffffep+127', '-0x0p+0', '-0x1p-1', '0x1.fffffep+127',
                     '-nan', '-0x1p-149', '-0x1p-126', '0x1p-1', '-0x1.921fb6p+2',
                     'nan:0x200000', '0x0p+0', 'inf', '-0x1p+0', '0x1p-126')
-
+        LITERAL_NUMBERS = (
+            '0123456789e019', '0123456789e-019',
+            '0123456789.e019', '0123456789.e+019',
+            '0123456789.0123456789')
         Ops = ('eq', 'ne', 'lt', 'le', 'gt', 'ge')
 
         # Combinations between operand1 and operand2
@@ -345,6 +348,10 @@ class Simdf32x4CmpCase(SimdCmpCase):
             case_data.append(['#', op])
             for param1 in operand1:
                 for param2 in operand2:
+                    case_data.append([op, [param1, param2], self.operate(op, param1, param2), ['f32x4', 'f32x4', 'i32x4']])
+
+            for param1 in LITERAL_NUMBERS:
+                for param2 in LITERAL_NUMBERS:
                     case_data.append([op, [param1, param2], self.operate(op, param1, param2), ['f32x4', 'f32x4', 'i32x4']])
         # eq
         case_data.append(['#', 'eq'])
@@ -446,7 +453,12 @@ class Simdf32x4CmpCase(SimdCmpCase):
         if p == '-inf':
             return -float(340282366920938463463374607431768211456)
 
-        return float.fromhex(p)
+        if '0x' in p:
+            f = float.fromhex(p)
+        else:
+            f = float(p)
+
+        return struct.unpack('f', struct.pack('f', f))[0]
 
     def operate(self, op, p1, p2):
         for p in (p1, p2):

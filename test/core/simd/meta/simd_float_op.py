@@ -207,8 +207,15 @@ class FloatingPointCmpOp(FloatingPointOp):
         if 'nan' in p1.lower() or 'nan' in p2.lower():
             return '0'
 
-        f1 = float.fromhex(p1)
-        f2 = float.fromhex(p2)
+        if '0x' in p1:
+            f1 = float.fromhex(p1)
+        else:
+            f1 = float(p1)
+
+        if '0x' in p2:
+            f2 = float.fromhex(p2)
+        else:
+            f2 = float(p2)
 
         if op == 'eq':
             return '-1' if f1 == f2 else '0'

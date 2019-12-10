@@ -26,7 +26,11 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
                              '-0x1p-1074', '-0x1p-1022', '0x1p-1', '-0x1.921fb54442d18p+2',
                              '0x0p+0', 'inf', '-0x1p+0', '0x1p-1022'
                             )
+    LITERAL_NUMBERS = ('01234567890123456789e038', '01234567890123456789e-038',
+                       '0123456789.e038', '0123456789.e+038',
+                       '01234567890123456789.01234567890123456789'
 
+    )
     FLOAT_NUMBERS_NORMAL = ('-1', '0', '1', '2.0')
 
     NAN_NUMBERS = ('nan', '-nan', 'nan:0x4000000000000', '-nan:0x4000000000000')
@@ -216,6 +220,11 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
             op_name = self.full_op_name(op)
             for p1 in self.FLOAT_NUMBERS_SPECIAL:
                 for p2 in self.FLOAT_NUMBERS_SPECIAL + self.NAN_NUMBERS:
+                    result = self.floatOp.binary_op(op, p1, p2)
+                    binary_test_data.append(['assert_return', op_name, p1, p2, result])
+
+            for p1 in self.LITERAL_NUMBERS:
+                for p2 in self.LITERAL_NUMBERS:
                     result = self.floatOp.binary_op(op, p1, p2)
                     binary_test_data.append(['assert_return', op_name, p1, p2, result])
 
