@@ -28,7 +28,7 @@ let convert_i32_u x =
  * Values that are too large would get rounded when represented in f64,
  * but double rounding via i64->f64->f32 can produce inaccurate results.
  * Hence, for large values we shift right but make sure to accumulate the lost
- * bits in the least signifant bit, such that rounding still is correct.
+ * bits in the least significant bit, such that rounding still is correct.
  *)
 let convert_i64_s x =
   F32.of_float Int64.(
