@@ -4,6 +4,7 @@ include Simd.Make
     let bytewidth = 16
 
     let of_strings shape ss =
+      if List.length ss <> Simd.lanes shape then raise (Invalid_argument "wrong length");
       let range_check i32 min max at =
         let i = Int32.to_int i32 in
         if i > max || i < min then raise (Failure "constant out of range") else i in
@@ -25,6 +26,5 @@ include Simd.Make
         List.iteri (fun i s -> set_int32_le b i (F32.to_bits (F32.of_string s))) ss
       | Simd.F64x2 ->
         List.iteri (fun i s -> set_int64_le b i (F64.to_bits (F64.of_string s))) ss);
-      if List.length ss != (Simd.lanes shape) then raise (Invalid_argument "wrong length")
-      else b
+      b
   end)

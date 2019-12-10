@@ -39,15 +39,14 @@ let ati i =
 let literal f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
-let simd_literal shape ss =
+let simd_literal shape ss at =
   try
-      let v = V128.of_strings shape (List.map (fun s -> s.it) ss) in
-      (* This List.hd call is okay an exception would have been raise if length is 0. *)
-      (v128_const (v @@ (List.hd ss).at), Values.V128 v)
+    let v = V128.of_strings shape (List.map (fun s -> s.it) ss) in
+    (v128_const (v @@ at), Values.V128 v)
   with
     (* TODO better location for error messages. *)
-    | Failure _ -> error (ati 1) "constant out of range"
-    | Invalid_argument _ -> error (ati 1) "unexpected token"
+    | Failure _ -> error at "constant out of range"
+    | Invalid_argument _ -> error at "unexpected token"
 
 let nat s at =
   try
@@ -335,7 +334,7 @@ plain_instr :
   | MEMORY_SIZE { fun c -> memory_size }
   | MEMORY_GROW { fun c -> memory_grow }
   | CONST literal { fun c -> fst (literal $1 $2) }
-  | V128_CONST SIMD_SHAPE literal_list { fun c -> fst (simd_literal $2 $3) }
+  | V128_CONST SIMD_SHAPE literal_list { fun c -> fst (simd_literal $2 $3 (at ())) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
   | UNARY { fun c -> $1 }
@@ -837,7 +836,7 @@ meta :
 const :
   | LPAR CONST literal RPAR { snd (literal $2 $3) @@ ati 3 }
   | LPAR V128_CONST SIMD_SHAPE literal_list RPAR {
-      snd (simd_literal $3 $4) @@ ati 3
+      snd (simd_literal $3 $4 (at ())) @@ ati 3
   }
 
 const_list :
