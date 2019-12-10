@@ -231,7 +231,7 @@ Construct a vector with `x` replicated to all lanes:
 def S.splat(x):
     result = S.New()
     for i in range(S.Lanes):
-        result[i] = x
+        result[i] = S.Reduce(x)
     return result
 ```
 
