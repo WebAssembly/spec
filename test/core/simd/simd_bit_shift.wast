@@ -190,6 +190,12 @@
 (assert_return (invoke "i16x8.shl" (v128.const i16x8 -128 -64 0 1 2 3 4 5)
                                    (i32.const 1))
                                    (v128.const i16x8 65280 65408 0 2 4 6 8 10))
+(assert_return (invoke "i16x8.shl" (v128.const i16x8 012_345 012_345 012_345 012_345 012_345 012_345 012_345 012_345)
+                                   (i32.const 2))
+                                   (v128.const i16x8 49380 49380 49380 49380 49380 49380 49380 49380))
+(assert_return (invoke "i16x8.shl" (v128.const i16x8 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234)
+                                   (i32.const 2))
+                                   (v128.const i16x8 0x48d0 0x48d0 0x48d0 0x48d0 0x48d0 0x48d0 0x48d0 0x48d0))
 (assert_return (invoke "i16x8.shl" (v128.const i16x8 0xAABB 0xCCDD 0xEEFF 0xA0B0 0xC0D0 0xE0F0 0x0A0B 0x0C0D)
                                    (i32.const 4))
                                    (v128.const i16x8 0xABB0 0xCDD0 0xEFF0 0xB00 0xD00 0xF00 0xA0B0 0xC0D0))
@@ -228,11 +234,18 @@
 (assert_return (invoke "i16x8.shl" (v128.const i16x8 0 1 2 3 4 5 6 7)
                                    (i32.const 514))
                                    (v128.const i16x8 0 4 8 12 16 20 24 28))
+
 ;; i16x8 shr_u
 ;; amount less than lane width
 (assert_return (invoke "i16x8.shr_u" (v128.const i16x8 -128 -64 0 1 2 3 4 5)
                                      (i32.const 1))
                                      (v128.const i16x8 32704 32736 0 0 1 1 2 2))
+(assert_return (invoke "i16x8.shr_u" (v128.const i16x8 012_345 012_345 012_345 012_345 012_345 012_345 012_345 012_345)
+                                     (i32.const 2))
+                                     (v128.const i16x8 3086 3086 3086 3086 3086 3086 3086 3086))
+(assert_return (invoke "i16x8.shr_u" (v128.const i16x8 0x0_90AB 0x0_90AB 0x0_90AB 0x0_90AB 0x0_90AB 0x0_90AB 0x0_90AB 0x0_90AB)
+                                     (i32.const 2))
+                                     (v128.const i16x8 0x242a 0x242a 0x242a 0x242a 0x242a 0x242a 0x242a 0x242a))
 (assert_return (invoke "i16x8.shr_u" (v128.const i16x8 0xAABB 0xCCDD 0xEEFF 0xA0B0 0xC0D0 0xE0F0 0x0A0B 0x0C0D)
                                      (i32.const 4))
                                      (v128.const i16x8 0xAAB 0xCCD 0xEEF 0xA0B 0xC0D 0xE0F 0x0A0 0x0C0))
@@ -271,11 +284,18 @@
 (assert_return (invoke "i16x8.shr_u" (v128.const i16x8 0 1 2 3 4 5 6 7)
                                      (i32.const 514))
                                      (v128.const i16x8 0 0 0 0 1 1 1 1))
+
 ;; i16x8 shr_s
 ;; amount less than lane width
 (assert_return (invoke "i16x8.shr_s" (v128.const i16x8 -128 -64 0 1 2 3 4 5)
                                      (i32.const 1))
                                      (v128.const i16x8 65472 65504 0 0 1 1 2 2))
+(assert_return (invoke "i16x8.shr_s" (v128.const i16x8 012_345 012_345 012_345 012_345 012_345 012_345 012_345 012_345)
+                                     (i32.const 2))
+                                     (v128.const i16x8 3086 3086 3086 3086 3086 3086 3086 3086))
+(assert_return (invoke "i16x8.shr_s" (v128.const i16x8 0x0_90AB 0x0_90AB 0x0_90AB 0x0_90AB 0x0_90AB 0x0_90AB 0x0_90AB 0x0_90AB)
+                                     (i32.const 2))
+                                     (v128.const i16x8 0xe42a 0xe42a 0xe42a 0xe42a 0xe42a 0xe42a 0xe42a 0xe42a))
 (assert_return (invoke "i16x8.shr_s" (v128.const i16x8 0xAABB 0xCCDD 0xEEFF 0xA0B0 0xC0D0 0xE0F0 0x0A0B 0x0C0D)
                                      (i32.const 4))
                                      (v128.const i16x8 0xFAAB 0xFCCD 0xFEEF 0xFA0B 0xFC0D 0xFE0F 0x00A0 0x00C0))
@@ -314,6 +334,7 @@
 (assert_return (invoke "i16x8.shr_s" (v128.const i16x8 0 1 2 3 4 5 6 7)
                                      (i32.const 514))
                                      (v128.const i16x8 0 0 0 0 1 1 1 1))
+
 ;; shifting by a constant amount
 (assert_return (invoke "i16x8.shl_1" (v128.const i16x8 0 1 2 3 4 5 6 7))
                                      (v128.const i16x8 0 2 4 6 8 10 12 14))
@@ -327,6 +348,12 @@
 (assert_return (invoke "i32x4.shl" (v128.const i32x4 -2147483648 -32768 0 0x0A0B0C0D)
                                    (i32.const 1))
                                    (v128.const i32x4 0 4294901760 0 0x1416181A))
+(assert_return (invoke "i32x4.shl" (v128.const i32x4 01_234_567_890 01_234_567_890 01_234_567_890 01_234_567_890)
+                                   (i32.const 2))
+                                   (v128.const i32x4 643304264 643304264 643304264 643304264))
+(assert_return (invoke "i32x4.shl" (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678)
+                                   (i32.const 2))
+                                   (v128.const i32x4 0x48d159e0 0x48d159e0 0x48d159e0 0x48d159e0))
 (assert_return (invoke "i32x4.shl" (v128.const i32x4 0xAABBCCDD 0xEEFFA0B0 0xC0D0E0F0 0x0A0B0C0D)
                                    (i32.const 4))
                                    (v128.const i32x4 0xABBCCDD0 0xEFFA0B00 0x0D0E0F00 0xA0B0C0D0))
@@ -365,11 +392,18 @@
 (assert_return (invoke "i32x4.shl" (v128.const i32x4 0 1 0x0E 0x0F)
                                    (i32.const 514))
                                    (v128.const i32x4 0 4 0x38 0x3C))
+
 ;; i32x4 shr_u
 ;; amount less than lane width
 (assert_return (invoke "i32x4.shr_u" (v128.const i32x4 -2147483648 -32768 0x0000000C 0x0000000D)
                                      (i32.const 1))
                                      (v128.const i32x4 1073741824 2147467264 0x00000006 0x00000006))
+(assert_return (invoke "i32x4.shr_u" (v128.const i32x4 01_234_567_890 01_234_567_890 01_234_567_890 01_234_567_890)
+                                     (i32.const 2))
+                                     (v128.const i32x4 308641972 308641972 308641972 308641972))
+(assert_return (invoke "i32x4.shr_u" (v128.const i32x4 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef)
+                                     (i32.const 2))
+                                     (v128.const i32x4 0x242af37b 0x242af37b 0x242af37b 0x242af37b))
 (assert_return (invoke "i32x4.shr_u" (v128.const i32x4 0xAABBCCDD 0xEEFFA0B0 0xC0D0E0F0 0x0A0B0C0D)
                                      (i32.const 4))
                                      (v128.const i32x4 0x0AABBCCD 0x0EEFFA0B 0x0C0D0E0F 0x00A0B0C0))
@@ -408,11 +442,18 @@
 (assert_return (invoke "i32x4.shr_u" (v128.const i32x4 0 1 0x0E 0x0F)
                                      (i32.const 514))
                                      (v128.const i32x4 0 0 0x03 0x03))
+
 ;; i32x4 shr_s
 ;; amount less than lane width
 (assert_return (invoke "i32x4.shr_s" (v128.const i32x4 -2147483648 -32768 0x0C 0x0D)
                                      (i32.const 1))
                                      (v128.const i32x4 3221225472 4294950912 0x06 0x06))
+(assert_return (invoke "i32x4.shr_s" (v128.const i32x4 01_234_567_890 01_234_567_890 01_234_567_890 01_234_567_890)
+                                     (i32.const 2))
+                                     (v128.const i32x4 308641972 308641972 308641972 308641972))
+(assert_return (invoke "i32x4.shr_s" (v128.const i32x4 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef)
+                                     (i32.const 2))
+                                     (v128.const i32x4 0xe42af37b 0xe42af37b 0xe42af37b 0xe42af37b))
 (assert_return (invoke "i32x4.shr_s" (v128.const i32x4 0xAABBCCDD 0xEEFFA0B0 0xC0D0E0F0 0x0A0B0C0D)
                                      (i32.const 4))
                                      (v128.const i32x4 0xfaabbccd 0xFEEFFA0B 0xFC0D0E0F 0x00A0B0C0))
@@ -465,6 +506,12 @@
 (assert_return (invoke "i64x2.shl" (v128.const i64x2 -9223372036854775808 -2147483648)
                                    (i32.const 1))
                                    (v128.const i64x2 0 18446744069414584320))
+(assert_return (invoke "i64x2.shl" (v128.const i64x2 01_234_567_890_123_456_789 01_234_567_890_123_456_789)
+                                   (i32.const 2))
+                                   (v128.const i64x2 4938271560493827156 4938271560493827156))
+(assert_return (invoke "i64x2.shl" (v128.const i64x2 0x0_1234_5678_90AB_cdef 0x0_1234_5678_90AB_cdef)
+                                   (i32.const 2))
+                                   (v128.const i64x2 0x48d159e242af37bc 0x48d159e242af37bc))
 (assert_return (invoke "i64x2.shl" (v128.const i64x2 0xAABBCCDDEEFFA0B0 0xC0D0E0F00A0B0C0D)
                                    (i32.const 4))
                                    (v128.const i64x2 0xABBCCDDEEFFA0B00 0xD0E0F00A0B0C0D0))
@@ -500,11 +547,18 @@
 (assert_return (invoke "i64x2.shl" (v128.const i64x2 1 0x0F)
                                    (i32.const 514))
                                    (v128.const i64x2 4 0x3C))
+
 ;; i64x2 shr_u
 ;; amount less than lane width
 (assert_return (invoke "i64x2.shr_u" (v128.const i64x2 -9223372036854775808 -2147483648)
                                      (i32.const 1))
                                      (v128.const i64x2 4611686018427387904 9223372035781033984))
+(assert_return (invoke "i64x2.shr_u" (v128.const i64x2 01_234_567_890_123_456_789 01_234_567_890_123_456_789)
+                                     (i32.const 2))
+                                     (v128.const i64x2 308641972530864197 308641972530864197))
+(assert_return (invoke "i64x2.shr_u" (v128.const i64x2 0x0_90AB_cdef_8765_4321 0x0_90AB_cdef_8765_4321)
+                                     (i32.const 2))
+                                     (v128.const i64x2 0x242af37be1d950c8 0x242af37be1d950c8))
 (assert_return (invoke "i64x2.shr_u" (v128.const i64x2 0xAABBCCDDEEFFA0B0 0xC0D0E0F00A0B0C0D)
                                      (i32.const 4))
                                      (v128.const i64x2 0xAABBCCDDEEFFA0B 0xC0D0E0F00A0B0C0))
@@ -540,11 +594,18 @@
 (assert_return (invoke "i64x2.shr_u" (v128.const i64x2 0 0x0F)
                                      (i32.const 514))
                                      (v128.const i64x2 0 0x03))
+
 ;; i64x2 shr_s
 ;; amount less than lane width
 (assert_return (invoke "i64x2.shr_s" (v128.const i64x2 -9223372036854775808 -2147483648)
                                      (i32.const 1))
                                      (v128.const i64x2 13835058055282163712 18446744072635809792))
+(assert_return (invoke "i64x2.shr_s" (v128.const i64x2 01_234_567_890_123_456_789 01_234_567_890_123_456_789)
+                                     (i32.const 2))
+                                     (v128.const i64x2 308641972530864197 308641972530864197))
+(assert_return (invoke "i64x2.shr_s" (v128.const i64x2 0x0_90AB_cdef_8765_4321 0x0_90AB_cdef_8765_4321)
+                                     (i32.const 2))
+                                     (v128.const i64x2 0xe42af37be1d950c8 0xe42af37be1d950c8))
 (assert_return (invoke "i64x2.shr_s" (v128.const i64x2 0xAABBCCDDEEFFA0B0 0xC0D0E0F00A0B0C0D)
                                      (i32.const 4))
                                      (v128.const i64x2 0xFAABBCCDDEEFFA0B 0xFC0D0E0F00A0B0C0))
@@ -583,6 +644,7 @@
 (assert_return (invoke "i64x2.shr_s" (v128.const i64x2 1 0x0F)
                                      (i32.const 514))
                                      (v128.const i64x2 0 0x03))
+
 ;; shifting by a constant amount
 (assert_return (invoke "i64x2.shl_1" (v128.const i64x2 1 0x0F))
                                      (v128.const i64x2 2 0x1E))

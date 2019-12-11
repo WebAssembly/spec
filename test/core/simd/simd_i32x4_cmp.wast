@@ -152,6 +152,12 @@
 (assert_return (invoke "eq" (v128.const i32x4 0x55555555 0x55555555 0x55555555 0x55555555)
                             (v128.const i16x8 0xAAAA 0xAAAA 0xAAAA 0xAAAA 0xAAAA 0xAAAA 0xAAAA 0xAAAA))
                             (v128.const i32x4 0 0 0 0))
+(assert_return (invoke "eq" (v128.const i32x4 0_123_456_789 0_123_456_789 0_123_456_789 0_123_456_789)
+                            (v128.const i32x4 123456789 123456789 123456789 123456789))
+                            (v128.const i32x4 -1 -1 -1 -1))
+(assert_return (invoke "eq" (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678)
+                            (v128.const i32x4 0x12345678 0x12345678 0x12345678 0x12345678))
+                            (v128.const i32x4 -1 -1 -1 -1))
 
 ;; ne
 
@@ -290,6 +296,12 @@
 (assert_return (invoke "ne" (v128.const i32x4 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA)
                             (v128.const i16x8 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555))
                             (v128.const i32x4 -1 -1 -1 -1))
+(assert_return (invoke "ne" (v128.const i32x4 0_123_456_789 0_123_456_789 0_123_456_789 0_123_456_789)
+                            (v128.const i32x4 123456789 123456789 123456789 123456789))
+                            (v128.const i32x4 0 0 0 0))
+(assert_return (invoke "ne" (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678)
+                            (v128.const i32x4 0x12345678 0x12345678 0x12345678 0x12345678))
+                            (v128.const i32x4 0 0 0 0))
 
 ;; lt_s
 
@@ -427,6 +439,12 @@
                               (v128.const i32x4 0 0 -1 -1))
 (assert_return (invoke "lt_s" (v128.const i32x4 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA)
                               (v128.const i16x8 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555))
+                              (v128.const i32x4 -1 -1 -1 -1))
+(assert_return (invoke "lt_s" (v128.const i32x4 0_123_456_789 0_123_456_789 0_123_456_789 0_123_456_789)
+                              (v128.const i32x4 123456789 123456789 123456789 123456789))
+                              (v128.const i32x4 0 0 0 0))
+(assert_return (invoke "lt_s" (v128.const i32x4 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef)
+                              (v128.const i32x4 -0x6f543210 -0x6f543210 -0x6f543210 -0x6f543210))
                               (v128.const i32x4 -1 -1 -1 -1))
 
 ;; lt_u
@@ -566,6 +584,12 @@
 (assert_return (invoke "lt_u" (v128.const i32x4 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA)
                               (v128.const i16x8 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555))
                               (v128.const i32x4 0 0 0 0))
+(assert_return (invoke "lt_u" (v128.const i32x4 0_123_456_789 0_123_456_789 0_123_456_789 0_123_456_789)
+                              (v128.const i32x4 123456789 123456789 123456789 123456789))
+                              (v128.const i32x4 0 0 0 0))
+(assert_return (invoke "lt_u" (v128.const i32x4 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef)
+                              (v128.const i32x4 -0x6f543210 -0x6f543210 -0x6f543210 -0x6f543210))
+                              (v128.const i32x4 -1 -1 -1 -1))
 
 ;; le_s
 
@@ -703,6 +727,12 @@
                               (v128.const i32x4 0 -1 -1 -1))
 (assert_return (invoke "le_s" (v128.const i32x4 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA)
                               (v128.const i16x8 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555))
+                              (v128.const i32x4 -1 -1 -1 -1))
+(assert_return (invoke "le_s" (v128.const i32x4 0_123_456_789 0_123_456_789 0_123_456_789 0_123_456_789)
+                              (v128.const i32x4 123456789 123456789 123456789 123456789))
+                              (v128.const i32x4 -1 -1 -1 -1))
+(assert_return (invoke "le_s" (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678)
+                              (v128.const i32x4 0x12345678 0x12345678 0x12345678 0x12345678))
                               (v128.const i32x4 -1 -1 -1 -1))
 
 ;; le_u
@@ -842,6 +872,12 @@
 (assert_return (invoke "le_u" (v128.const i32x4 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA)
                               (v128.const i16x8 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555))
                               (v128.const i32x4 0 0 0 0))
+(assert_return (invoke "le_u" (v128.const i32x4 0_123_456_789 0_123_456_789 0_123_456_789 0_123_456_789)
+                              (v128.const i32x4 123456789 123456789 123456789 123456789))
+                              (v128.const i32x4 -1 -1 -1 -1))
+(assert_return (invoke "le_u" (v128.const i32x4 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef)
+                              (v128.const i32x4 0x90ABcdef 0x90ABcdef 0x90ABcdef 0x90ABcdef))
+                              (v128.const i32x4 -1 -1 -1 -1))
 
 ;; gt_s
 
@@ -979,6 +1015,12 @@
                               (v128.const i32x4 -1 0 0 -1))
 (assert_return (invoke "gt_s" (v128.const i32x4 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA)
                               (v128.const i16x8 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555))
+                              (v128.const i32x4 0 0 0 0))
+(assert_return (invoke "gt_s" (v128.const i32x4 0_123_456_789 0_123_456_789 0_123_456_789 0_123_456_789)
+                              (v128.const i32x4 123456789 123456789 123456789 123456789))
+                              (v128.const i32x4 0 0 0 0))
+(assert_return (invoke "gt_s" (v128.const i32x4 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef 0x0_90AB_cdef)
+                              (v128.const i32x4 -0x6f543211 -0x6f543211 -0x6f543211 -0x6f543211))
                               (v128.const i32x4 0 0 0 0))
 
 ;; gt_u
@@ -1118,6 +1160,12 @@
 (assert_return (invoke "gt_u" (v128.const i32x4 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA)
                               (v128.const i16x8 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555))
                               (v128.const i32x4 -1 -1 -1 -1))
+(assert_return (invoke "gt_u" (v128.const i32x4 0_123_456_789 0_123_456_789 0_123_456_789 0_123_456_789)
+                              (v128.const i32x4 123456789 123456789 123456789 123456789))
+                              (v128.const i32x4 0 0 0 0))
+(assert_return (invoke "gt_u" (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678)
+                              (v128.const i32x4 0x12345678 0x12345678 0x12345678 0x12345678))
+                              (v128.const i32x4 0 0 0 0))
 
 ;; ge_s
 
@@ -1256,6 +1304,12 @@
 (assert_return (invoke "ge_s" (v128.const i32x4 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA)
                               (v128.const i16x8 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555))
                               (v128.const i32x4 0 0 0 0))
+(assert_return (invoke "ge_s" (v128.const i32x4 0_123_456_789 0_123_456_789 0_123_456_789 0_123_456_789)
+                              (v128.const i32x4 123456789 123456789 123456789 123456789))
+                              (v128.const i32x4 -1 -1 -1 -1))
+(assert_return (invoke "ge_s" (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678)
+                              (v128.const i32x4 0x12345678 0x12345678 0x12345678 0x12345678))
+                              (v128.const i32x4 -1 -1 -1 -1))
 
 ;; ge_u
 
@@ -1393,6 +1447,12 @@
                               (v128.const i32x4 0 -1 0 0))
 (assert_return (invoke "ge_u" (v128.const i32x4 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA 0xAAAAAAAA)
                               (v128.const i16x8 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555 0x5555))
+                              (v128.const i32x4 -1 -1 -1 -1))
+(assert_return (invoke "ge_u" (v128.const i32x4 0_123_456_789 0_123_456_789 0_123_456_789 0_123_456_789)
+                              (v128.const i32x4 123456789 123456789 123456789 123456789))
+                              (v128.const i32x4 -1 -1 -1 -1))
+(assert_return (invoke "ge_u" (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678)
+                              (v128.const i32x4 0x12345678 0x12345678 0x12345678 0x12345678))
                               (v128.const i32x4 -1 -1 -1 -1))
 
 
@@ -1695,4 +1755,3 @@
 (assert_malformed (module quote "(memory 1) (func (param $x v128) (param $y v128) (result v128) (i4x32.gt_u (local.get $x) (local.get $y)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (param $x v128) (param $y v128) (result v128) (i4x32.ge_s (local.get $x) (local.get $y)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (param $x v128) (param $y v128) (result v128) (i4x32.ge_u (local.get $x) (local.get $y)))") "unknown operator")
-

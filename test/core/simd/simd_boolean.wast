@@ -68,6 +68,10 @@
                                         (i32.const 1))
 (assert_return (invoke "i16x8.any_true" (v128.const i16x8 0x55 0x55 0x55 0x55 0x55 0x55 0x55 0x55))
                                         (i32.const 1))
+(assert_return (invoke "i16x8.any_true" (v128.const i16x8 012_345 012_345 012_345 012_345 012_345 012_345 012_345 012_345))
+                                        (i32.const 1))
+(assert_return (invoke "i16x8.any_true" (v128.const i16x8 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234))
+                                        (i32.const 1))
 (assert_return (invoke "i16x8.all_true" (v128.const i16x8 0 0 0 0 0 0 0 0))
                                         (i32.const 0))
 (assert_return (invoke "i16x8.all_true" (v128.const i16x8 0 0 0 0 0 0 1 0))
@@ -86,7 +90,10 @@
                                         (i32.const 1))
 (assert_return (invoke "i16x8.all_true" (v128.const i16x8 0x55 0x55 0x55 0x55 0x55 0x55 0x55 0x55))
                                         (i32.const 1))
-
+(assert_return (invoke "i16x8.all_true" (v128.const i16x8 012_345 012_345 012_345 012_345 012_345 012_345 012_345 012_345))
+                                        (i32.const 1))
+(assert_return (invoke "i16x8.all_true" (v128.const i16x8 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234 0x0_1234))
+                                        (i32.const 1))
 ;; i32x4
 (assert_return (invoke "i32x4.any_true" (v128.const i32x4 0 0 0 0))
                                         (i32.const 0))
@@ -106,6 +113,10 @@
                                         (i32.const 1))
 (assert_return (invoke "i32x4.any_true" (v128.const i32x4 0x55 0x55 0x55 0x55))
                                         (i32.const 1))
+(assert_return (invoke "i32x4.any_true" (v128.const i32x4 01_234_567_890 01_234_567_890 01_234_567_890 01_234_567_890))
+                                        (i32.const 1))
+(assert_return (invoke "i32x4.any_true" (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678))
+                                        (i32.const 1))
 (assert_return (invoke "i32x4.all_true" (v128.const i32x4 0 0 0 0))
                                         (i32.const 0))
 (assert_return (invoke "i32x4.all_true" (v128.const i32x4 0 0 1 0))
@@ -124,7 +135,10 @@
                                         (i32.const 1))
 (assert_return (invoke "i32x4.all_true" (v128.const i32x4 0x55 0x55 0x55 0x55))
                                         (i32.const 1))
-
+(assert_return (invoke "i32x4.all_true" (v128.const i32x4 01_234_567_890 01_234_567_890 01_234_567_890 01_234_567_890))
+                                        (i32.const 1))
+(assert_return (invoke "i32x4.all_true" (v128.const i32x4 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678 0x0_1234_5678))
+                                        (i32.const 1))
 
 ;; Combination
 
