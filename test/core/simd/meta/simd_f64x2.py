@@ -17,7 +17,10 @@ class Simdf64x2Case(Simdf32x4Case):
         '0x0p+0', '-0x0p+0', '0x1p-1074', '-0x1p-1074', '0x1p-1022', '-0x1p-1022', '0x1p-1', '-0x1p-1', '0x1p+0', '-0x1p+0',
         '0x1.921fb54442d18p+2', '-0x1.921fb54442d18p+2', '0x1.fffffffffffffp+1023', '-0x1.fffffffffffffp+1023', 'inf', '-inf'
     )
-
+    LITERAL_NUMBERS = ('01234567890123456789e038', '01234567890123456789e-038',
+                       '0123456789.e038', '0123456789.e+038',
+                       '-01234567890123456789.01234567890123456789'
+    )
     NAN_NUMBERS = ('nan', '-nan', 'nan:0x4000000000000', '-nan:0x4000000000000')
 
     def gen_test_func_template(self):
@@ -28,7 +31,7 @@ class Simdf64x2Case(Simdf32x4Case):
         # Function template
         tpl_func = '  (func (export "{func}"){params} (result v128) ({op} {operand_1}{operand_2}))'
 
-        # Raw data list specific for "const vs const" and "param vs const" tests
+        # Raw data list specific for "const vs const" and "param vs const" tests"
         const_test_raw_data = [
             [
                 [['0', '1'], ['0', '2']],
@@ -362,6 +365,11 @@ class Simdf64x2Case(Simdf32x4Case):
                     else:
                         binary_test_data.append(['assert_return_canonical_nan_f64x2', op_name, p1, p2])
 
+            for p1 in self.LITERAL_NUMBERS:
+                for p2 in self.LITERAL_NUMBERS:
+                    result = self.floatOp.binary_op(op, p1, p2, hex_form=False)
+                    binary_test_data.append(['assert_return', op_name, p1, p2, result])
+
         for case in binary_test_data:
             cases.append(self.single_binary_test(case))
 
@@ -419,9 +427,12 @@ class Simdf64x2Case(Simdf32x4Case):
                                            self.v128_const(case_data[3][1], case_data[1][1])],
                                           self.v128_const(case_data[3][2], case_data[2][0]))))
 
-        for p in self.FLOAT_NUMBERS:
+        for p in self.FLOAT_NUMBERS + self.LITERAL_NUMBERS:
             op_name = self.full_op_name('abs')
-            result = self.floatOp.unary_op('abs', p)
+            hex_literal = True
+            if p in self.LITERAL_NUMBERS:
+                hex_literal = False
+            result = self.floatOp.unary_op('abs', p, hex_form=hex_literal)
             # Abs operation is valid for all the floating point numbers
             unary_test_data.append(['assert_return', op_name, p, result])
 

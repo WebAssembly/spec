@@ -137,7 +137,7 @@ class FloatingPointArithOp(FloatingPointOp):
 class FloatingPointSimpleOp(FloatingPointOp):
     """Common simple ops for both f32x4 and f64x2: abs, min, max"""
 
-    def binary_op(self, op: str, p1: str, p2: str) -> str:
+    def binary_op(self, op: str, p1: str, p2: str, hex_form=True) -> str:
         """Binary operation on p1 and p2 with the operation specified by op
 
         :param op: min, max,
@@ -145,8 +145,15 @@ class FloatingPointSimpleOp(FloatingPointOp):
         :param p2: float number in hex
         :return:
         """
-        f1 = float.fromhex(p1)
-        f2 = float.fromhex(p2)
+        if '0x' in p1:
+            f1 = float.fromhex(p1)
+        else:
+            f1 = float(p1)
+
+        if '0x' in p2:
+            f2 = float.fromhex(p2)
+        else:
+            f2 = float(p2)
 
         if '-nan' in [p1, p2] and 'nan' in [p1, p2]:
             return p1
@@ -160,28 +167,38 @@ class FloatingPointSimpleOp(FloatingPointOp):
         if op == 'min':
             if '-0x0p+0' in [p1, p2] and '0x0p+0' in [p1, p2]:
                 return '-0x0p+0'
-            result = min(f1, f2)
+            if hex_form:
+                return min(f1, f2).hex()
+            else:
+                return p1 if f1 <= f2 else p2
 
         elif op == 'max':
             if '-0x0p+0' in [p1, p2] and '0x0p+0' in [p1, p2]:
                 return '0x0p+0'
-            result = max(f1, f2)
+            if hex_form:
+                return max(f1, f2).hex()
+            else:
+                return p1 if f1 > f2 else p2
 
         else:
             raise Exception('Unknown binary operation: {}'.format(op))
 
-        return result.hex()
-
-    def unary_op(self, op: str, p1: str) -> str:
+    def unary_op(self, op: str, p1: str, hex_form=True) -> str:
         """Unnary operation on p1 with the operation specified by op
 
         :param op: abs,
         :param p1: float number in hex
         :return:
         """
-        f1 = float.fromhex(p1)
+        if '0x' in p1:
+            f1 = float.fromhex(p1)
+        else:
+            f1 = float(p1)
         if op == 'abs':
-            return abs(f1).hex()
+            if hex_form:
+                return abs(f1).hex()
+            else:
+                return p1 if not p1.startswith('-') else p1[1:]
 
         raise Exception('Unknown unary operation: {}'.format(op))
 

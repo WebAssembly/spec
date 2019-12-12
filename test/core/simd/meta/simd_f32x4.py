@@ -20,6 +20,11 @@ class Simdf32x4Case(Simdf32x4ArithmeticCase):
         '0x1.921fb6p+2', '-0x1.921fb6p+2', '0x1.fffffep+127', '-0x1.fffffep+127', 'inf', '-inf'
     )
 
+    LITERAL_NUMBERS = (
+        '0123456789e019', '0123456789e-019',
+        '0123456789.e019', '0123456789.e+019',
+        '-0123456789.0123456789'
+    )
     NAN_NUMBERS = ('nan', '-nan', 'nan:0x200000', '-nan:0x200000')
     binary_params_template = ('({assert_type} (invoke "{func}" ', '{operand_1}', '{operand_2})', '{expected_result})')
     unary_param_template = ('({assert_type} (invoke "{func}" ', '{operand})', '{expected_result})')
@@ -330,6 +335,11 @@ class Simdf32x4Case(Simdf32x4ArithmeticCase):
                         # assert_return_canonical_nan statements
                         binary_test_data.append(['assert_return_canonical_nan_f32x4', op_name, p1, p2])
 
+            for p1 in self.LITERAL_NUMBERS:
+                for p2 in self.LITERAL_NUMBERS:
+                    result = self.floatOp.binary_op(op, p1, p2, hex_form=False)
+                    binary_test_data.append(['assert_return', op_name, p1, p2, result])
+
             # assert_return_canonical_nan and assert_return_arithmetic_nan cases
             for p1 in self.NAN_NUMBERS:
                 for p2 in self.FLOAT_NUMBERS:
@@ -395,9 +405,12 @@ class Simdf32x4Case(Simdf32x4ArithmeticCase):
                                            self.v128_const(case_data[3][1], case_data[1][1])],
                                           self.v128_const(case_data[3][2], case_data[2][0]))))
 
-        for p in self.FLOAT_NUMBERS:
+        for p in self.FLOAT_NUMBERS + self.LITERAL_NUMBERS:
             op_name = self.full_op_name('abs')
-            result = self.floatOp.unary_op('abs', p)
+            hex_literal = True
+            if p in self.LITERAL_NUMBERS:
+                hex_literal = False
+            result = self.floatOp.unary_op('abs', p, hex_form=hex_literal)
             # Abs operation is valid for all the floating point numbers
             unary_test_data.append(['assert_return', op_name, p, result])
 
