@@ -32,8 +32,8 @@ This can be applied to any form of call, that is:
 * The proposal thus introduces a tail version of every call instruction
 
 * An alternative scheme introducing a single instruction prefix applicable to every call instruction was considered but rejected by the CG
-  - considerations: WebAssembly will likely get a few more call instructions in the future, e.g., `call_ref`
-  - but instruction prefixes as modifiers re not used anywhere else in Wasm
+  - WebAssembly will likely get a few more call instructions in the future, e.g., `call_ref`
+  - otoh, instruction prefixes as modifiers are not used anywhere else in Wasm
 
 
 ### Execution
