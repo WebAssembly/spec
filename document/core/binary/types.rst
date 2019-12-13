@@ -42,11 +42,9 @@ Reference Types
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{reference type} & \Breftype &::=&
      \hex{70} &\Rightarrow& \FUNCREF \\ &&|&
-     \hex{6F} &\Rightarrow& \ANYREF \\
+     \hex{6F} &\Rightarrow& \ANYREF \\ &&|&
+     \hex{6E} &\Rightarrow& \NULLREF \\
    \end{array}
-
-.. note::
-   The type :math:`\NULLREF` cannot occur in a module.
 
 
 .. index:: value type, number type, reference type

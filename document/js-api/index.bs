@@ -152,6 +152,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     url: syntax/types.html#syntax-reftype
         text: anyref
         text: funcref
+        text: nullref
     text: function element; url: exec/runtime.html#syntax-funcelem
     text: import component; url: syntax/modules.html#imports
     text: external value; url: exec/runtime.html#syntax-externval
@@ -704,6 +705,7 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
 
 <pre class="idl">
 enum TableKind {
+  "nullref",
   "anyref",
   "anyfunc",
   // Note: More values may be added in future iterations,
@@ -868,6 +870,10 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |s| equals "i64", return [=𝗂𝟨𝟦=].
     1. If |s| equals "f32", return [=𝖿𝟥𝟤=].
     1. If |s| equals "f64", return [=𝖿𝟨𝟦=].
+    1. If |s| equals "anyref", return [=anyref=].
+    1. If |s| equals "funcref", return [=funcref=].
+    1. If |s| equals "nullref", return [=nullref=].
+    1. Assert: This step is not reached.
 </div>
 
 <div algorithm>
@@ -876,7 +882,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |valuetype| equals [=𝗂𝟨𝟦=], return [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. If |valuetype| equals [=𝖿𝟥𝟤=], return [=𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. If |valuetype| equals [=𝖿𝟨𝟦=], return [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] 0.
-    1. Assert: This step is not reached.
+    1. Else, return [=ref.null=].
 </div>
 
 <div algorithm>
@@ -1063,11 +1069,14 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|, |error|) coerces a Java
 1. If |type| is [=𝖿𝟨𝟦=],
     1. Let |f64| be ? [=ToNumber=](|v|).
     1. Return [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |f64|.
+1. Assert: |type| is a reference type.
 1. If |type| is [=anyref=],
-    1. Return the result of [=allocating a host address=] for |v|.
+    1. Do nothing.
 1. If |type| is [=funcref=],
     1. If |v| is not an [=Exported function=] or null, throw |error|.
-    1. Return the result of [=allocating a host address=] for |v|.
+1. If |type| is [=nullref=],
+    1. If |v| is not null, throw |error|.
+1. Return the result of [=allocating a host address=] for |v|.
 
 </div>
 

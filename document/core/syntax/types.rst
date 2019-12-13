@@ -63,8 +63,6 @@ The type |FUNCREF| denotes the infinite union of all references to :ref:`functio
 
 The type |NULLREF| only contains a single value: the :ref:`null <syntax-ref.null>` reference.
 It is a :ref:`subtype <match-reftype>` of all other reference types.
-By virtue of being representable in neither the :ref:`binary format <binary-reftype>` nor the :ref:`text format <text-reftype>`, the |NULLREF| type cannot be used in a program;
-it only occurs during :ref:`validation <valid>`.
 
 .. note::
    Future versions of WebAssembly may include reference types that do not include null and hence are not supertypes of |NULLREF|.

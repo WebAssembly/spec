@@ -26,7 +26,7 @@ Get the most important parts soon!
 
 Summary:
 
-* Add a new type `anyref` that can be used as both a value type and a table element type.
+* Add new types `anyref` and `nullref` that can be used as both a value types and a table element types.
 
 * Also allow `funcref` as a value type.
 
@@ -49,8 +49,6 @@ Typing extensions:
 
 * Introduce `anyref`, `funcref`, and `nullref` as a new class of *reference types*.
   - `reftype ::= anyref | funcref | nullref`
-  - `nullref` is merely an internal type and is neither expressible in the binary format, nor the text format, nor the JS API.
-  - Question: should it be?
 
 * Value types (of locals, globals, function parameters and results) can now be either numeric types or reference types.
   - `numtype ::= i32 | i64 | f32 | f64`

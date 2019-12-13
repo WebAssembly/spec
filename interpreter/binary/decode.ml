@@ -145,6 +145,7 @@ let ref_type s =
   match vs7 s with
   | -0x10 -> FuncRefType
   | -0x11 -> AnyRefType
+  | -0x12 -> NullRefType
   | _ -> error s (pos s - 1) "invalid reference type"
 
 let value_type s =

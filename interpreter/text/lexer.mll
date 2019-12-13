@@ -162,6 +162,7 @@ rule token = parse
 
   | "anyref" { ANYREF }
   | "funcref" { FUNCREF }
+  | "nullref" { NULLREF }
   | (nxx as t) { NUM_TYPE (num_type t) }
   | "mut" { MUT }
 

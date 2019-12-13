@@ -147,7 +147,7 @@ let inline_type_explicit (c : context) x ft at =
 
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
-%token ANYREF FUNCREF NUM_TYPE MUT
+%token ANYREF NULLREF FUNCREF NUM_TYPE MUT
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
@@ -209,6 +209,7 @@ string_list :
 ref_type :
   | ANYREF { AnyRefType }
   | FUNCREF { FuncRefType }
+  | NULLREF { NullRefType }
 
 value_type :
   | NUM_TYPE { NumType $1 }
