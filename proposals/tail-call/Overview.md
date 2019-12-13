@@ -27,13 +27,13 @@ This can be applied to any form of call, that is:
 
 ### Instructions
 
-* Tail calls should be separate, explicit call instructions (current instructions explicitly disallow TCE)
+* Tail calls are performed via separate, explicit call instructions (existing call instructions explicitly disallow TCE)
 
-* Two possible schemes:
-  1. introduce tail version of every call instruction
-  2. introduce single prefix instruction that can be applied to every call instruction
+* The proposal thus introduces a tail version of every call instruction
 
-* Consideration: WebAssembly will likely get more call instructions in the future, e.g., `call_ref`
+* An alternative scheme introducing a single instruction prefix applicable to every call instruction was considered but rejected by the CG
+  - considerations: WebAssembly will likely get a few more call instructions in the future, e.g., `call_ref`
+  - but instruction prefixes as modifiers re not used anywhere else in Wasm
 
 
 ### Execution
@@ -44,21 +44,28 @@ This can be applied to any form of call, that is:
 
 * Only keeps the necessary call arguments
 
+* Tail calls to host functions cannot guarantee tail behaviour (outside the scope of the spec)
+
 
 ### Typing
 
-* Because tail calls transfer control and unwind the stack they are stack-polymorphic:
+* Typing rule for tail call instruction is derived by their nature of merging call and return
 
-* Open question: distinguish tail-calls in function type? Possibilities:
+* Because tail calls transfer control and unwind the stack they are stack-polymorphic
+
+* Previously open question: should tail calls induce different function types? Possibilities:
   1. Distinguish tail-callees by type
   2. Distinguish tail-callers by type
   3. Both
   4. Neither
 
 * Considerations:
-  - Option 1 (and 3) allows different calling conventions for non-tail-callable functions, which may be reduce constraints on ABIs.
+  - Option 1 (and 3) allows different calling conventions for non-tail-callable functions, which may reduce constraints on ABIs.
   - On the other hand, it creates a bifurcated function space, which can lead to difficulties e.g. when using function tables or other forms of dynamic indirection.
-  - Benefit of option 2 (and 3) unclear.
+  - Benefit of option 2 (and thus 3) unclear.
+  - Experimental validation revealed that there isn't a notable performance benefit to option 1 either.
+
+* CG resolution was to go with option 4 as the conceptually simplest.
 
 
 ## Examples
@@ -66,19 +73,19 @@ This can be applied to any form of call, that is:
 A simple boring example of a tail-recursive factorial funciton.
 ```
 (func $fac (param $x i64) (result i64)
-	(return_call $fac-aux (get_local $x) (i64.const 1))
+  (return_call $fac-aux (get_local $x) (i64.const 1))
 )
 
 (func $fac-aux (param $x i64) (param $r i64) (result i64)
-	(if (i64.eqz (get_local $x))
-		(then (return (get_local $r)))
-		(else
-			(return_call $fac-aux
-				(i64.sub (get_local $x) (i64.const 1))
-				(i64.mul (get_local $x) (get_local $r))
-			)
-		)
-	)
+  (if (i64.eqz (get_local $x))
+    (then (return (get_local $r)))
+    (else
+      (return_call $fac-aux
+        (i64.sub (get_local $x) (i64.const 1))
+        (i64.mul (get_local $x) (get_local $r))
+      )
+    )
+  )
 )
 
 ```
@@ -86,18 +93,14 @@ A simple boring example of a tail-recursive factorial funciton.
 
 ## Spec Changes
 
-For now, we assume that separate instructions are introduced.
-It is not difficult to adapt the rules to an alternative design with instruction prefixes.
-
-The details of possible typing refinements to distinguish tail-callers/callees are to be discussed and not yet included.
-
-
 ### Structure
 
-Add two instructions (for now):
+Add two instructions:
 
 * `return_call <funcidx>`, the tail-call version of `call`
 * `return_call_indirect <tableidx> <typeidx>`, the tail-call version of `call_indirect`
+
+Other language extensions like [typed function refereces](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md) that introduce new call instructions will also introduce tail versions of these new instructions.
 
 
 ### Validation
@@ -142,13 +145,4 @@ The text format is extended with two new instructions in the obvious manner.
 
 ## Open Questions
 
-* Which instruction scheme should be picked?
-
-* Differentiate tail-callers or callees by type?
-
-* What about tail calls to host functions?
-  - treat as tail-calling a wrapper, use type distinction, or trap?
-  - note: cannot distinguish statically without type system support, e.g. with indirect calls
-
-* Instruction name bikeshedding
-
+* Can tail calls across module boundaries guarantee tail behaviour?
