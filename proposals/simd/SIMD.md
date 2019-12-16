@@ -745,7 +745,7 @@ def S.load_splat(memarg):
 * `i64x2.load32x2_s(memarg) -> v128`: load two 32-bit integers and sign extend each one to a 64-bit lane
 * `i64x2.load32x2_u(memarg) -> v128`: load two 32-bit integers and zero extend each one to a 64-bit lane
 
-Fetch consequtive integers up to 32-bit wide and produce a vector with lanes up to 64 bits.
+Fetch consecutive integers up to 32-bit wide and produce a vector with lanes up to 64 bits.
 
 ```python
 def S.load_extend(ext, memarg):
