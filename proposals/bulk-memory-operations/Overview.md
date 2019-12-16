@@ -320,16 +320,8 @@ written (by the copy operation) in the other region.
 This instruction has two immediate arguments: the source and
 destination memory indices. They currently both must be zero.
 
-If the source region starts at a lower address than the target region, then the
-copy takes place as if from higher to lower addresses: the highest source
-address is read first and the value is written to the highest target address,
-then the next highest, and so on.  Otherwise, the copy takes place as if from
-lower to higher addresses: the lowest source address is read first and the
-value is written to the lowest target address, then the next lowest, and so on.
-
-(The direction of the copy is defined in order to future-proof
-`memory.copy` for shared memory and a memory read/write protection
-feature.)
+Copying takes place as if an intermediate buffer were used, allowing the
+destination and source to overlap.
 
 The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in order:
 
