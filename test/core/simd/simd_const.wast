@@ -230,7 +230,7 @@
 
 (assert_malformed
   (module quote "(func (v128.const i8x16) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 (assert_malformed
   (module quote "(func (v128.const i8x16 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x) drop)")
@@ -247,7 +247,7 @@
 
 (assert_malformed
   (module quote "(func (v128.const i16x8) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 (assert_malformed
   (module quote "(func (v128.const i16x8 0x 0x 0x 0x 0x 0x 0x 0x) drop)")
@@ -264,7 +264,7 @@
 
 (assert_malformed
   (module quote "(func (v128.const i32x4) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 (assert_malformed
   (module quote "(func (v128.const i32x4 0x 0x 0x 0x) drop)")
@@ -281,7 +281,7 @@
 
 (assert_malformed
   (module quote "(func (v128.const i64x2) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 (assert_malformed
   (module quote "(func (v128.const i64x2 0x 0x) drop)")
@@ -298,7 +298,7 @@
 
 (assert_malformed
   (module quote "(func (v128.const f32x4) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 (assert_malformed
   (module quote "(func (v128.const f32x4 .0 .0 .0 .0) drop)")
@@ -383,7 +383,7 @@
 
 (assert_malformed
   (module quote "(func (v128.const f64x2) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 (assert_malformed
   (module quote "(func (v128.const f64x2 .0 .0) drop)")
@@ -470,13 +470,13 @@
 
 (assert_malformed
   (module quote "(func (v128.const i32x4 0x10000000000000000 0x10000000000000000) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 
 ;; too many arguments
 (assert_malformed
   (module quote "(func (v128.const i32x4 0x1 0x1 0x1 0x1 0x1) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 
 ;; Rounding behaviour

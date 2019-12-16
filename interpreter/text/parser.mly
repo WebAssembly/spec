@@ -46,7 +46,7 @@ let simd_literal shape ss at =
   with
     (* TODO better location for error messages. *)
     | Failure _ -> error at "constant out of range"
-    | Invalid_argument _ -> error at "unexpected token"
+    | Invalid_argument _ -> error at "wrong number of lane literals"
 
 let nat s at =
   try
@@ -334,7 +334,7 @@ plain_instr :
   | MEMORY_SIZE { fun c -> memory_size }
   | MEMORY_GROW { fun c -> memory_grow }
   | CONST literal { fun c -> fst (literal $1 $2) }
-  | V128_CONST SIMD_SHAPE literal_list { fun c -> fst (simd_literal $2 $3 (at ())) }
+  | V128_CONST SIMD_SHAPE literal_list { let at = at () in fun c -> fst (simd_literal $2 $3 at) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
   | UNARY { fun c -> $1 }
