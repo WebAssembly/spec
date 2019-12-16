@@ -45,11 +45,11 @@ the following contents:
 
 ```wasm
 (func (param $dst i32) (param $src i32) (param $size i32) (result i32)
-  get_local $dst
-  get_local $src
-  get_local $size
+  local.get $dst
+  local.get $src
+  local.get $size
   memory.copy
-  get_local $dst)
+  local.get $dst)
 ```
 
 Here are the results on my machine (x86_64, 2.9GHz, L1 32k, L2 256k, L3 256k):
@@ -160,8 +160,6 @@ Filling a memory region can be accomplished with `memory.fill`:
 
 * `memory.fill`: fill a region of linear memory with a given byte value
 
-TODO: should we provide `memory.clear` and `table.clear` instead?
-
 The [binary format for the data
 section](https://webassembly.github.io/spec/core/binary/modules.html#binary-datasec)
 currently has a collection of segments, each of which has a memory index, an
@@ -171,9 +169,10 @@ Since WebAssembly currently does not allow for multiple memories, the memory
 index of each segment must be zero. We can repurpose this 32-bit integer as a
 flags field where new meaning is attached to nonzero values.
 
-When the new flags field is `1`, this segment is _passive_. A passive segment
-will not be automatically copied into the memory or table on instantiation, and
-must instead be applied manually using the following new instructions:
+When the low bit of the new flags field is `1`, this segment is _passive_. A
+passive segment will not be automatically copied into the memory or table on
+instantiation, and must instead be applied manually using the following new
+instructions:
 
 * `memory.init`: copy a region from a data segment
 * `table.init`: copy a region from an element segment
@@ -181,65 +180,86 @@ must instead be applied manually using the following new instructions:
 A passive segment has no initializer expression, since it will be specified
 as an operand to `memory.init` or `table.init`.
 
-Segments can also be discarded by using the following new instructions:
+Segments can also be shrunk to size zero by using the following new instructions:
 
-* `data.drop`: prevent further use of a data segment
-* `elem.drop`: prevent further use of an element segment
+* `data.drop`: discard the data in an data segment
+* `elem.drop`: discard the data in an element segment
 
 An active segment is equivalent to a passive segment, but with an implicit
 `memory.init` followed by a `data.drop` (or `table.init` followed by a
 `elem.drop`) that is prepended to the module's start function.
 
-The new encoding of a data segment is now:
+Additionally, the reference-types proposal introduces the notion of a function
+reference (a function whose address is a program value).  To support this,
+element segments can have several encodings, and can also be used to
+forward-declare functions whose address will be taken; see below.
 
-| Field | Type | Present? | Description |
-| - | - | - | - |
-| flags | `varuint32` | always | Flags for passive and presence of fields below, only values of 0, 1, and 2 are valid |
-| index | `varuint32`? | flags = 2 | Memory index; 0 if the field is not present |
-| offset | `init_expr`? | flags != 1 | an `i32` initializer expression for offset |
-| size | `varuint32` | always | size of `data` (in bytes) |
-| data | `bytes` | always | sequence of `size` bytes |
+The reference-types proposal also introduces the bulk instructions `table.fill`
+and `table.grow`, both of which take a function reference as an initializer
+argument.
 
-Another way of looking at it:
+### Data segments
 
-| Flags | Active? | index | offset |
-| - | - | - | - |
-| 0 | Active | Always 0 | Present |
-| 1 | Passive | - | -  |
-| 2 | Active | Present | Present |
+The meaning of the bits of the flag field (a `varuint32`) for data segments is:
+
+| Bit | Meaning                                        |
+| -   | -                                              |
+| 0   | 0=is active, 1=is passive                      |
+| 1   | if bit 0 clear: 0=memory 0, 1=has memory index |
+
+which yields this view, with the fields carried by each flag value:
+
+| Flags | Meaning                  | Memory index | Offset in memory | Count       | Payload |
+| -     | -                        | -            | -                | -           | -       |
+| 0     | Active                   |              | `init_expr`      | `varuint32` | `u8`*   |
+| 1     | Passive                  |              |                  | `varuint32` | `u8`*   |
+| 2     | Active with memory index | `varuint32`  | `init_expr`      | `varuint32` | `u8`*   |
+
+All other flag values are illegal.  At present the memory index must be zero,
+but the upcoming multi-memory proposal changes that.
+
 
 ### Element segments
 
-The new binary format for element segments is similar to the new format for data segments, but
-also includes an element type when the segment is passive. A passive segment also has a sequence
-of `expr`s instead of function indices.
+The meaning of the bits of the flag field (a `varuint32`) for element segments is:
 
-| Field | Type | Present? | Description |
-| - | - | - | - |
-| flags | `varuint32` | always | Flags for passive and presence of fields below, only values of 0, 1, and 2 are valid |
-| index | `varuint32`? | flags = 2 |  Table index; 0 if the field is not present  |
-| element_type | `elem_type`? | flags = 1 | element type of this segment; `anyfunc` if not present |
-| offset | `init_expr`? | flags != 1 | an `i32` initializer expression for offset |
-| count | `varuint32` | always | number of elements |
-| elems | `varuint32*` | flags != 1 | sequence of function indices |
-| elems | `elem_expr*` | flags = 1 | sequence of element expressions |
+| Bit | Meaning                                          |
+| -   | -                                                |
+| 0   | 0=is active, 1=is passive                        |
+| 1   | if bit 0 clear: 0=table 0, 1=has table index     | 
+|     | if bit 0 set: 0=active, 1=declared               |
+| 2   | 0=carries indicies; 1=carries elemexprs          |
 
-Another way of looking at it:
+which yields this view, with the fields carried by each flag value:
 
-| Flags | Active? | index | element_type | offset |
-| - | - | - | - | - |
-| 0 | Active | Always 0 | Always `anyfunc` | Present |
-| 1 | Passive | - | Present | - |
-| 2 | Active | Present | Always `anyfunc` | Present |
+| Flag | Meaning                          | Table index | Offset in table | Encoding      | Count       | Payload      |
+| -    | -                                | -           | -               | -             | -           | -            |
+| 0    | Legacy active, funcref externval |             | `init_expr`     |               | `varuint32` | `idx`*       |
+| 1    | Passive, externval               |             |                 | `extern_kind` | `varuint32` | `idx`*       |
+| 2    | Active, externval                | `varuint32` | `init_expr`     | `extern_kind` | `varuint32` | `idx`*       |
+| 3    | Declared, externval              |             |                 | `extern_kind` | `varuint32` | `idx`*       |
+| 4    | Legacy active, funcref elemexpr  |             | `init_expr`     |               | `varuint32` | `elem_expr`* |
+| 5    | Passive, elemexpr                |             |                 | `elem_type`   | `varuint32` | `elem_expr`* |
+| 6    | Active, elemexpr                 | `varuint32` | `init_expr`     | `elem_type`   | `varuint32` | `elem_expr`* |
+| 7    | Declared, elemexpr               |             |                 | `elem_type`   | `varuint32` | `elem_expr`* |
+
+All other flag values are illegal.  Note that the "declared" attribute
+is not used by this proposal, but is used by the reference-types
+proposal.
+
+The `extern_kind` must be zero, signifying a function definition.  An `idx` is a
+`varuint32` that references an entity in the module, currently only its function
+table.
+
+At present the table index must be zero, but the reference-types
+proposal introduces a notion of multiple tables.
 
 An `elem_expr` is like an `init_expr`, but can only contain expressions of the following sequences:
 
-| Binary | Text | Description |
-| - | - | - |
-| `0xd0 0x0b` | `ref.null end` | Returns a null reference |
+| Binary                | Text                    | Description                                |
+| -                     | -                       | -                                          |
+| `0xd0 0x0b`           | `ref.null end`          | Returns a null reference                   |
 | `0xd2 varuint32 0x0b` | `ref.func $funcidx end` | Returns a reference to function `$funcidx` |
-
-TODO: coordinate with other proposals to determine the binary encoding for `ref.null` and `ref.func`.
 
 ### Segment Initialization
 
@@ -247,17 +267,13 @@ In the MVP, segments are initialized during module instantiation. If any segment
 would be initialized out-of-bounds, then the memory or table instance is not
 modified.
 
-This behavior is changed in the bulk memory proposal.
+This behavior is changed in the bulk memory proposal:
 
-Each active segment is initialized in module-definition order. For each
-segment, each byte in the data segment is copied into the memory, in order of
-lowest to highest addresses. If, for a given byte, the copy is out-of-bounds,
-instantiation fails and no further bytes in this segment nor further segments
-are copied. Bytes written before this point stay written.
-
-The behavior of element segment initialization is changed similarly, with the
-difference that elements are copied from element segments into tables, instead
-of bytes being copied from data segments into memories.
+Each active segment is initialized in module-definition order. For
+each segment, if reading the source or writing the destination would
+go out of bounds, then instantiation fails at that point.  Data that
+had already been written for previous (in-bounds) segments stays
+written.
 
 ### `memory.init` instruction
 
@@ -273,40 +289,26 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 It is a validation error to use `memory.init` with an out-of-bounds segment index.
 
 A trap occurs if:
+
 * the source offset plus size is greater than the length of the source data segment;
   this includes the case that the segment has been dropped via `data.drop`
 * the destination offset plus size is greater than the length of the target memory
 
+The order of writing is unspecified, though this is currently unobservable.
+
 Note that it is allowed to use `memory.init` on the same data segment more than
 once.
 
-Initialization takes place bytewise from lower addresses toward higher
-addresses.  A trap resulting from an access outside the source data
-segment or target memory only occurs once the first byte that is
-outside the source or target is reached.  Bytes written before the
-trap stay written.
-
-(Data are read and written as-if individual bytes were read and
-written, but various optimizations are possible that avoid reading and
-writing only individual bytes.)
-
-Note that the semantics require bytewise accesses, so a trap that
-might result from, say, reading a sequence of several words before
-writing any, will have to be handled carefully: the reads that
-succeeded will have to be written, if possible.
-
 ### `data.drop` instruction
 
-The `data.drop` instruction prevents further use of a given segment. After a
-data segment has been dropped, it is no longer valid to use it in a `memory.init`
-instruction. This instruction is intended to be used as an optimization hint to
-the WebAssembly implementation. After a memory segment is dropped its data can
-no longer be retrieved, so the memory used by this segment may be freed.
+The `data.drop` instruction shrinks the size of the segment to zero. After a
+data segment has been dropped, it can still be used in a `memory.init`
+instruction, but only a zero-length access at offset zero will not trap.  This
+instruction is intended to be used as an optimization hint to the WebAssembly
+implementation. After a memory segment is dropped its data can no longer be
+retrieved, so the memory used by this segment may be freed.
 
 It is a validation error to use `data.drop` with an out-of-bounds segment index.
-
-A trap occurs if the segment was already dropped. This includes active segments
-that were dropped after being copied into memory during module instantiation.
 
 ### `memory.copy` instruction
 
@@ -336,17 +338,11 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 - top-0: size of memory region in bytes
 
 A trap occurs if:
+
 * the source offset plus size is greater than the length of the source memory   
 * the destination offset plus size is greater than the length of the target memory   
 
-A trap resulting from an access outside the source or target region
-only occurs once the first byte that is outside the source or target
-is reached (in the defined copy order).  Bytes written before the trap
-stay written.
-
-(Data are read and written as-if individual bytes were read and
-written, but various optimizations are possible that avoid reading and
-writing only individual bytes.)
+The bounds check is performed before any data are written.
 
 ### `memory.fill` instruction
 
@@ -360,15 +356,11 @@ The instruction has the signature `[i32 i32 i32] -> []`. The parameters are, in 
 - top-0: size of memory region in bytes
 
 A trap occurs if:
-* the destination offset plus size is greater than the length of the target memory   
 
-Filling takes place bytewise from lower addresses toward higher
-addresses.  A trap resulting from an access outside the target memory
-only occurs once the first byte that is outside the target is reached.
-Bytes written before the trap stay written.
+* the destination offset plus size is greater than the length of the target memory
 
-(Data are written as-if individual bytes were written, but various
-optimizations are possible that avoid writing only individual bytes.)
+The bounds check is performed before any data are written.
+
 
 ### `table.init`, `elem.drop`, and `table.copy` instructions
 
@@ -390,7 +382,7 @@ implemented as follows:
 (data passive "goodbye")       ;; data segment 1, is passive
 
 (func $start
-  (if (get_global 0)
+  (if (global.get 0)
 
     ;; copy data segment 1 into memory 0 (the 0 is implicit)
     (memory.init 1
@@ -416,13 +408,13 @@ instr ::= ...
 
 | Name | Opcode | Immediate | Description |
 | ---- | ---- | ---- | ---- |
-| `memory.init` | `0xfc 0x08` | `segment:varuint32`, `memory:0x00` | :thinking: copy from a passive data segment to linear memory |
-| `data.drop` | `0xfc 0x09` | `segment:varuint32` | :thinking: prevent further use of passive data segment |
-| `memory.copy` | `0xfc 0x0a` | `memory_dst:0x00` `memory_src:0x00` | :thinking: copy from one region of linear memory to another region |
-| `memory.fill` | `0xfc 0x0b` | `memory:0x00` | :thinking: fill a region of linear memory with a given byte value |
-| `table.init` | `0xfc 0x0c` | `segment:varuint32`, `table:0x00` | :thinking: copy from a passive element segment to a table |
-| `elem.drop` | `0xfc 0x0d` | `segment:varuint32` | :thinking: prevent further use of a passive element segment |
-| `table.copy` | `0xfc 0x0e` | `table_dst:0x00` `table_src:0x00` | :thinking: copy from one region of a table to another region |
+| `memory.init` | `0xfc 0x08` | `segment:varuint32`, `memory:0x00` | copy from a passive data segment to linear memory |
+| `data.drop` | `0xfc 0x09` | `segment:varuint32` | prevent further use of passive data segment |
+| `memory.copy` | `0xfc 0x0a` | `memory_dst:0x00` `memory_src:0x00` | copy from one region of linear memory to another region |
+| `memory.fill` | `0xfc 0x0b` | `memory:0x00` | fill a region of linear memory with a given byte value |
+| `table.init` | `0xfc 0x0c` | `segment:varuint32`, `table:0x00` | copy from a passive element segment to a table |
+| `elem.drop` | `0xfc 0x0d` | `segment:varuint32` | prevent further use of a passive element segment |
+| `table.copy` | `0xfc 0x0e` | `table_dst:0x00` `table_src:0x00` | copy from one region of a table to another region |
 
 ### `DataCount` section
 
