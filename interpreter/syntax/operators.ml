@@ -9,6 +9,7 @@ let i32_const n = Const (I32 n.it @@ n.at)
 let i64_const n = Const (I64 n.it @@ n.at)
 let f32_const n = Const (F32 n.it @@ n.at)
 let f64_const n = Const (F64 n.it @@ n.at)
+let v128_const n = Const (V128 n.it @@ n.at)
 
 let unreachable = Unreachable
 let nop = Nop

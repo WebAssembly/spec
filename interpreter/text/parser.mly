@@ -39,6 +39,15 @@ let ati i =
 let literal f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
+let simd_literal shape ss at =
+  try
+    let v = V128.of_strings shape (List.map (fun s -> s.it) ss) in
+    (v128_const (v @@ at), Values.V128 v)
+  with
+    (* TODO better location for error messages. *)
+    | Failure _ -> error at "constant out of range"
+    | Invalid_argument _ -> error at "wrong number of lane literals"
+
 let nat s at =
   try
     let n = int_of_string s in
@@ -145,12 +154,12 @@ let inline_type_explicit (c : context) x ft at =
 
 %}
 
-%token NAT INT FLOAT STRING VAR VALUE_TYPE FUNCREF MUT LPAR RPAR
+%token NAT INT FLOAT STRING VAR VALUE_TYPE FUNCREF MUT LPAR RPAR SIMD_SHAPE
 %token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
-%token CONST UNARY BINARY TEST COMPARE CONVERT
+%token CONST V128_CONST UNARY BINARY TEST COMPARE CONVERT
 %token UNREACHABLE MEMORY_SIZE MEMORY_GROW
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
@@ -177,6 +186,7 @@ let inline_type_explicit (c : context) x ft at =
 %token<int option -> Memory.offset -> Ast.instr'> STORE
 %token<string> OFFSET_EQ_NAT
 %token<string> ALIGN_EQ_NAT
+%token<Simd.shape> SIMD_SHAPE
 
 %nonassoc LOW
 %nonassoc VAR
@@ -246,6 +256,10 @@ literal :
   | NAT { $1 @@ at () }
   | INT { $1 @@ at () }
   | FLOAT { $1 @@ at () }
+
+literal_list:
+  | /* empty */ { [] }
+  | literal literal_list { $1 :: $2 }
 
 var :
   | NAT { let at = at () in fun c lookup -> nat32 $1 at @@ at }
@@ -320,6 +334,7 @@ plain_instr :
   | MEMORY_SIZE { fun c -> memory_size }
   | MEMORY_GROW { fun c -> memory_grow }
   | CONST literal { fun c -> fst (literal $1 $2) }
+  | V128_CONST SIMD_SHAPE literal_list { let at = at () in fun c -> fst (simd_literal $2 $3 at) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
   | UNARY { fun c -> $1 }
@@ -820,6 +835,9 @@ meta :
 
 const :
   | LPAR CONST literal RPAR { snd (literal $2 $3) @@ ati 3 }
+  | LPAR V128_CONST SIMD_SHAPE literal_list RPAR {
+      snd (simd_literal $3 $4 (at ())) @@ ati 4
+  }
 
 const_list :
   | /* empty */ { [] }

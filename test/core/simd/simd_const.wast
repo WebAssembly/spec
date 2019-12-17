@@ -175,22 +175,6 @@
   "constant out of range"
 )
 (assert_malformed
-  (module quote "(func (v128.const i32x4 0x10000000000000000 0x10000000000000000) drop)")
-  "constant out of range"
-)
-(assert_malformed
-  (module quote "(func (v128.const i32x4 -0x8000000000000001 -0x8000000000000001) drop)")
-  "constant out of range"
-)
-(assert_malformed
-  (module quote "(func (v128.const i32x4 18446744073709551616 18446744073709551616) drop)")
-  "constant out of range"
-)
-(assert_malformed
-  (module quote "(func (v128.const i32x4 -9223372036854775808 -9223372036854775808) drop)")
-  "constant out of range"
-)
-(assert_malformed
   (module quote "(func (v128.const f32x4  0x1p128  0x1p128  0x1p128  0x1p128) drop)")
   "constant out of range"
 )
@@ -246,7 +230,7 @@
 
 (assert_malformed
   (module quote "(func (v128.const i8x16) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 (assert_malformed
   (module quote "(func (v128.const i8x16 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x 0x) drop)")
@@ -263,7 +247,7 @@
 
 (assert_malformed
   (module quote "(func (v128.const i16x8) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 (assert_malformed
   (module quote "(func (v128.const i16x8 0x 0x 0x 0x 0x 0x 0x 0x) drop)")
@@ -280,7 +264,7 @@
 
 (assert_malformed
   (module quote "(func (v128.const i32x4) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 (assert_malformed
   (module quote "(func (v128.const i32x4 0x 0x 0x 0x) drop)")
@@ -297,7 +281,7 @@
 
 (assert_malformed
   (module quote "(func (v128.const i64x2) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 (assert_malformed
   (module quote "(func (v128.const i64x2 0x 0x) drop)")
@@ -314,7 +298,7 @@
 
 (assert_malformed
   (module quote "(func (v128.const f32x4) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 (assert_malformed
   (module quote "(func (v128.const f32x4 .0 .0 .0 .0) drop)")
@@ -394,12 +378,12 @@
 )
 (assert_malformed
   (module quote "(func (v128.const f32x4 nan:0x0 nan:0x0 nan:0x0 nan:0x0) drop)")
-  "unknown operator"
+  "constant out of range"
 )
 
 (assert_malformed
   (module quote "(func (v128.const f64x2) drop)")
-  "unexpected token"
+  "wrong number of lane literals"
 )
 (assert_malformed
   (module quote "(func (v128.const f64x2 .0 .0) drop)")
@@ -479,7 +463,20 @@
 )
 (assert_malformed
   (module quote "(func (v128.const f64x2 nan:0x0 nan:0x0) drop)")
-  "unknown operator"
+  "constant out of range"
+)
+
+;; too little arguments
+
+(assert_malformed
+  (module quote "(func (v128.const i32x4 0x10000000000000000 0x10000000000000000) drop)")
+  "wrong number of lane literals"
+)
+
+;; too many arguments
+(assert_malformed
+  (module quote "(func (v128.const i32x4 0x1 0x1 0x1 0x1 0x1) drop)")
+  "wrong number of lane literals"
 )
 
 ;; Rounding behaviour
@@ -1076,7 +1073,7 @@
   (func (export "i32x4.test") (result v128) (return (v128.const i32x4 0x0bAdD00D 0x0bAdD00D 0x0bAdD00D 0x0bAdD00D)))
   (func (export "i32x4.smax") (result v128) (return (v128.const i32x4 0x7fffffff 0x7fffffff 0x7fffffff 0x7fffffff)))
   (func (export "i32x4.neg_smax") (result v128) (return (v128.const i32x4 -0x7fffffff -0x7fffffff -0x7fffffff -0x7fffffff)))
-  (func (export "i32x4.inc_smin") (result v128) (return (i32x4.add (v128.const i32x4 -0x80000000 -0x80000000 -0x80000000 -0x80000000) (v128.const i32x4 1 1 1 1))))
+  (; (func (export "i32x4.inc_smin") (result v128) (return (i32x4.add (v128.const i32x4 -0x80000000 -0x80000000 -0x80000000 -0x80000000) (v128.const i32x4 1 1 1 1)))) ;)
   (func (export "i32x4.neg_zero") (result v128) (return (v128.const i32x4 -0x0 -0x0 -0x0 -0x0)))
   (func (export "i32x4.not_octal") (result v128) (return (v128.const i32x4 010 010 010 010)))
   (func (export "i32x4.plus_sign") (result v128) (return (v128.const i32x4 +42 +42 +42 +42)))
@@ -1089,7 +1086,7 @@
   (func (export "i64x2.test") (result v128) (return (v128.const i64x2 0x0bAdD00D0bAdD00D 0x0bAdD00D0bAdD00D)))
   (func (export "i64x2.smax") (result v128) (return (v128.const i64x2 0x7fffffffffffffff 0x7fffffffffffffff)))
   (func (export "i64x2.neg_smax") (result v128) (return (v128.const i64x2 -0x7fffffffffffffff -0x7fffffffffffffff)))
-  (func (export "i64x2.inc_smin") (result v128) (return (i64x2.add (v128.const i64x2 -0x8000000000000000 -0x8000000000000000) (v128.const i64x2 1 1))))
+  (; (func (export "i64x2.inc_smin") (result v128) (return (i64x2.add (v128.const i64x2 -0x8000000000000000 -0x8000000000000000) (v128.const i64x2 1 1)))) ;)
   (func (export "i64x2.neg_zero") (result v128) (return (v128.const i64x2 -0x0 -0x0)))
   (func (export "i64x2.not_octal") (result v128) (return (v128.const i64x2 010010 010010)))
   (func (export "i64x2.plus_sign") (result v128) (return (v128.const i64x2 +42 +42)))

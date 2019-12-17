@@ -87,6 +87,15 @@ let ext e s u =
   | _ -> assert false
 
 let opt = Lib.Option.get
+
+let simd_shape = function
+  | "i8x16" -> Simd.I8x16
+  | "i16x8" -> Simd.I16x8
+  | "i32x4" -> Simd.I32x4
+  | "i64x2" -> Simd.I64x2
+  | "f32x4" -> Simd.F32x4
+  | "f64x2" -> Simd.F64x2
+  | _ -> assert false
 }
 
 let sign = '+' | '-'
@@ -146,6 +155,7 @@ let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
 let mem_size = "8" | "16" | "32"
+let simd_shape = "i8x16" | "i16x8" | "i32x4" | "i64x2" | "f32x4" | "f64x2"
 
 rule token = parse
   | "(" { LPAR }
@@ -163,6 +173,7 @@ rule token = parse
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
   | (nxx as t) { VALUE_TYPE (value_type t) }
+  | (vxxx)".const" { V128_CONST }
   | (nxx as t)".const"
     { let open Source in
       CONST (numop t
@@ -352,6 +363,8 @@ rule token = parse
   | "assert_exhaustion" { ASSERT_EXHAUSTION }
   | "input" { INPUT }
   | "output" { OUTPUT }
+
+  | (simd_shape as s) { SIMD_SHAPE (simd_shape s) }
 
   | name as s { VAR s }
 
