@@ -1,7 +1,7 @@
 ;; Tests for the extract_lane, replace_lane, swizzle and shuffle group instructions
 
 
-(module 
+(module
   (func (export "i8x16_extract_lane_s-first") (param v128) (result i32)
     (i8x16.extract_lane_s 0 (local.get 0)))
   (func (export "i8x16_extract_lane_s-last") (param v128) (result i32)
@@ -408,7 +408,7 @@
 (assert_invalid (module (func (result f32) (f32x4.extract_lane -1 (v128.const f32x4 0 0 0 0)))) "invalid lane index")
 (assert_invalid (module (func (result f32) (f32x4.extract_lane 4 (v128.const f32x4 0 0 0 0)))) "invalid lane index")
 (assert_invalid (module (func (result v128) (i8x16.replace_lane -1 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))) "invalid lane index")
-(assert_invalid (module (func (result v128) (i8x16.replace_lane 16 (v128.const ii8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))) "invalid lane index")
+(assert_invalid (module (func (result v128) (i8x16.replace_lane 16 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))) "invalid lane index")
 (assert_invalid (module (func (result v128) (i16x8.replace_lane -1 (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1)))) "invalid lane index")
 (assert_invalid (module (func (result v128) (i16x8.replace_lane 8 (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1)))) "invalid lane index")
 (assert_invalid (module (func (result v128) (i32x4.replace_lane -1 (v128.const i32x4 0 0 0 0) (i32.const 1)))) "invalid lane index")
@@ -433,10 +433,10 @@
 (assert_invalid (module (func (result v128) (i16x8.replace_lane 8 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))) "invalid lane index")
 (assert_invalid (module (func (result v128) (i32x4.replace_lane 4 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))) "invalid lane index")
 (assert_invalid (module (func (result v128) (f32x4.replace_lane 4 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))) "invalid lane index")
-(assert_invalid (module (func (result i64) (i64x2.extract_lane 2 (v128.const i64x2 0 0 0 0)))) "invalid lane index")
-(assert_invalid (module (func (result f64) (f64x2.extract_lane 2 (v128.const f64x2 0 0 0 0)))) "invalid lane index")
-(assert_invalid (module (func (result v128) (i64x2.replace_lane 2 (v128.const i64x2 0 0 0 0) (i64.const 1)))) "invalid lane index")
-(assert_invalid (module (func (result v128) (f64x2.replace_lane 2 (v128.const f64x2 0 0 0 0) (f64.const 1.0)))) "invalid lane index")
+(assert_invalid (module (func (result i64) (i64x2.extract_lane 2 (v128.const i64x2 0 0)))) "invalid lane index")
+(assert_invalid (module (func (result f64) (f64x2.extract_lane 2 (v128.const f64x2 0 0)))) "invalid lane index")
+(assert_invalid (module (func (result v128) (i64x2.replace_lane 2 (v128.const i64x2 0 0) (i64.const 1)))) "invalid lane index")
+(assert_invalid (module (func (result v128) (f64x2.replace_lane 2 (v128.const f64x2 0 0) (f64.const 1.0)))) "invalid lane index")
 
 ;; Invalid parameters: required v128 but pass other types
 
@@ -478,14 +478,16 @@
   (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) (f32.const 4.0)))) "type mismatch")
 
 ;; v8x16.shuffle: the 1st argument must be 16-byte literals in 0..32
-(assert_invalid (module (func (result v128)
-  (v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
-  (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)
-  (v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))) "invalid lane length")
-(assert_invalid (module (func (result v128)
-  (v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
-  (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)
-  (v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))) "invalid lane length")
+(assert_malformed (module quote "(func (param v128) (result v128)"
+  "local.get 0"
+  "local.get 0"
+  "v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14)")
+  "invalid lane length")
+(assert_malformed (module quote "(func (param v128) (result v128)"
+  "local.get 0"
+  "local.get 0"
+  "v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16)")
+  "invalid lane length")
 (assert_invalid (module (func (result v128)
   (v8x16.shuffle -1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
   (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)
@@ -727,9 +729,9 @@
 (assert_return (invoke "as-i64x2_splat-operand" (v128.const i64x2 -1 0)) (v128.const i64x2 -1 -1))
 (assert_return (invoke "as-f64x2_splat-operand" (v128.const f64x2 inf nan)) (v128.const f64x2 inf inf))
 (assert_return (invoke "as-i8x16_add-operands"
-  (v128.const i8x16 0xff 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16) (i32.const 1) 
+  (v128.const i8x16 0xff 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16) (i32.const 1)
   (v128.const i8x16 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 0xff) (i32.const 1))
-  (v128.const i8x16 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17)) 
+  (v128.const i8x16 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17))
 (assert_return (invoke "as-i16x8_add-operands"
   (v128.const i16x8 -1 4 9 16 25 36 49 64) (i32.const 1)
   (v128.const i16x8 64 49 36 25 16 9 4 -1) (i32.const 1))
