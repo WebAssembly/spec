@@ -101,110 +101,59 @@ class Simdf64x2ArithmeticCase(Simdf32x4ArithmeticCase):
             ]
         }
 
-    def get_normal_case(self):
-        return super().get_normal_case().replace('nan_f32x4', 'nan_f64x2')
-
     def get_invalid_cases(self):
         return super().get_invalid_cases().replace('32', '64')
 
     @property
-    def mixed_sqrt_nan_test_data(self):
+    def mixed_nan_test_data(self):
         return {
-            'neg': [
-                ['nan', '1.0', 'nan', '-1.0'],
+            'neg_canon': [
+                ('nan', '1.0'), ('nan:canonical', '-1.0'),
             ],
-            'sqrt': [
-                ['4.0', '-nan', '2.0', 'nan'],
+            'sqrt_canon': [
+                ('4.0', '-nan'), ('2.0', 'nan:canonical'),
             ],
-            'add': [
-                ['nan 1.0', '-1.0 1.0', 'nan', '2.0'],
+            'add_arith': [
+                ('nan:0x8000000000000', '1.0'), ('nan', '1.0'),
+                ('nan:arithmetic', '2.0'),
             ],
-            'sub': [
-                ['1.0 -1.0', '-nan 1.0', 'nan', '-2.0'],
+            'sub_arith': [
+                ('1.0', '-1.0'), ('-nan', '1.0'), ('nan', '-2.0'),
             ],
-            'mul': [
-                ['1.0 2.0', 'nan 2.0', 'nan', '4.0'],
+            'mul_mixed': [
+                ('nan:0x8000000000000', '1.0'), ('2.0', 'nan'),
+                ('nan:arithmetic', 'nan:canonical')
             ],
-            'div': [
-                ['6.0 nan', '3.0 -nan', '2.0', 'nan']
+            'div_mixed': [
+                ('nan', '1.0'), ('2.0', '-nan:0x8000000000000'),
+                ('nan:canonical', 'nan:arithmetic')
             ]
         }
 
     def mixed_nan_test(self, cases):
-        """Mask the mixed nan tests of simd_f32x4_arith as we'll use
-        call_indirect."""
-        test_data_lines = [
-            '\n;; Mixed f64x2 tests when some lanes are NaNs',
-            '(module',
-            '  (type $v_v (func (param v128) (result v128)))',
-            '  (type $vv_v (func (param v128 v128) (result v128)))',
-            '  (table funcref (elem {}))\n'.format(
-                ' '.join(['$64x2_' + op for op in self.UNARY_OPS + self.BINARY_OPS]))
-
-        ]
-        for op in self.UNARY_OPS:
-            test_data_lines.append(
-                '  (func $64x2_{op} (type $v_v) (f64x2.{op} (local.get 0)))'.format(op=op)
-            )
-        for op in self.BINARY_OPS:
-            test_data_lines.append(
-                '  (func $64x2_{op} (type $vv_v) (f64x2.{op} (local.get 0) (local.get 1)))'.format(op=op)
-            )
-        test_data_lines.append('')
-        for index in range(2):
-            test_data_lines.extend([
-                '  (func (export "call_indirect_v_v_f64x2_extract_lane_{i}")'.format(i=index),
-                '    (param v128 i32) (result f64)',
-                '      (f64x2.extract_lane {i}'.format(i=index),
-                '        (call_indirect (type $v_v) (local.get 0) (local.get 1))))'])
-            test_data_lines.extend([
-                '  (func (export "call_indirect_vv_v_f64x2_extract_lane_{i}")'.format(i=index),
-                '    (param v128 v128 i32) (result f64)',
-                '      (f64x2.extract_lane {i}'.format(i=index),
-                '        (call_indirect (type $vv_v) (local.get 0) (local.get 1) (local.get 2))))'])
-
-        test_data_lines.append(')')
-
-        for index, op in enumerate(self.UNARY_OPS):
-            data_set = self.mixed_sqrt_nan_test_data.get(op)
-            for data in data_set:
-                for i in range(2):
-                    if 'nan' in data[i + 2]:
-                        test_data_lines.append(''.join([
-                            '(assert_return_canonical_nan ',
-                            '(invoke "call_indirect_v_v_f64x2_extract_lane_{i}" '.format(i=i),
-                            '(v128.const f64x2 {p}) (i32.const {index})))'.format(
-                                p=' '.join(data[:2]), index=index)
-                        ]))
-                    else:
-                        test_data_lines.append(''.join([
-                            '(assert_return ',
-                            '(invoke "call_indirect_v_v_f64x2_extract_lane_{i}" '.format(i=i),
-                            '(v128.const f64x2 {p}) (i32.const {index})) (f64.const {r}))'.format(
-                                p=' '.join(data[:2]), index=index, r=data[i + 2])
-                        ]))
-
-        for index, op in enumerate(self.BINARY_OPS, start=2):
-            data_set = self.mixed_sqrt_nan_test_data.get(op)
-            for data in data_set:
-                for i in range(2):
-                    if 'nan' in data[i + 2]:
-                        test_data_lines.append(''.join([
-                            '(assert_return_canonical_nan ',
-                            '(invoke "call_indirect_vv_v_f64x2_extract_lane_{i}" '.format(i=i),
-                            '(v128.const f64x2 {p1}) (v128.const f64x2 {p2}) (i32.const {index})))'.format(
-                                p1=data[0], p2=data[1], index=index)
-                        ]))
-                    else:
-                        test_data_lines.append(''.join([
-                            '(assert_return ',
-                            '(invoke "call_indirect_vv_v_f64x2_extract_lane_{i}" '.format(i=i),
-                            '(v128.const f64x2 {p1}) (v128.const f64x2 {p2}) (i32.const {index})) '.format(
-                                p1=data[0], p2=data[1], index=index),
-                            ' (f64.const {r}))'.format(r=data[i + 2])
-                        ]))
-
-        cases.extend(test_data_lines)
+        """Mixed f64x2 tests when only expects NaNs in a subset of lanes."""
+        mixed_cases = [
+            '\n;; Mixed f64x2 tests when some lanes are NaNs', '(module']
+        for test_type, test_data in sorted(self.mixed_nan_test_data.items()):
+            op = test_type.split('_')[0]
+            if op in self.UNARY_OPS:
+                mixed_cases.extend([
+                    '  (func (export "{lane}_{t}") (result v128)'.format(lane=self.LANE_TYPE, t=test_type),
+                    '    ({lane}.{op} (v128.const {lane} {param})))'.format(
+                        lane=self.LANE_TYPE, op=op, param=' '.join(test_data[0]))])
+            if op in self.BINARY_OPS:
+                mixed_cases.extend([
+                    '  (func (export "{lane}_{t}") (result v128)'.format(lane=self.LANE_TYPE, t=test_type),
+                    '    ({lane}.{op} (v128.const {lane} {param1}) (v128.const {lane} {param2})))'.format(
+                        lane=self.LANE_TYPE, op=op,
+                        param1=' '.join(test_data[0]),
+                        param2=' '.join(test_data[1]))])
+        mixed_cases.append(')\n')
+        for test_type, test_data in sorted(self.mixed_nan_test_data.items()):
+            mixed_cases.append('(assert_return (invoke "{lane}_{t}") (v128.const {lane} {result}))'.format(
+                lane=self.LANE_TYPE, t=test_type, result=' '.join(test_data[-1])
+            ))
+        cases.extend(mixed_cases)
 
 
 def gen_test_cases():
