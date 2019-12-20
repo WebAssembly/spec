@@ -19,6 +19,9 @@ Currently it only support following simd test files generation.
 - 'simd_i16x8_sat_arith.wast'
 - 'simd_f32x4.wast'
 - 'simd_f64x2.wast'
+- 'simd_i8x16.wast'
+- 'simd_i16x8.wast'
+- 'simd_i32x4.wast'
 
 
 Usage:
@@ -27,4 +30,4 @@ Usage:
 $ python gen_tests.py -a
 ```
 
-More details documented in `gen_tests.py`.
+This script requires Python 3.6+, more details are documented in `gen_tests.py`.

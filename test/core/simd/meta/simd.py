@@ -6,7 +6,7 @@ currently only supports generating v128 const constant data.
 """
 
 
-class SIMD(object):
+class SIMD:
 
     # Constant template
     CONST = '({value_type}.const {value})'
@@ -14,25 +14,26 @@ class SIMD(object):
     # v128 Constant template
     V128_CONST = '(v128.const {lane_type} {value})'
 
-    def const(self, value, value_type):
+    @staticmethod
+    def const(value, value_type):
         """
         generation constant data, [e.g. i32, i64, f32, f64]
         Params:
             value: constant data, string or list,
             lane_type: lane type, [i32, i64, f32, f64]
         """
-        return self.CONST.format(value_type=value_type, value=''.join(value))
+        return SIMD.CONST.format(value_type=value_type, value=''.join(value))
 
-    def v128_const(self, value, lane_type):
+    @staticmethod
+    def v128_const(value, lane_type):
         """
         generation v128 constant data, [e.g. i8x16, i16x8, i32x4, f32x4]
         Params:
             value: constant data, string or list,
             lane_type: lane type, [e.g. i8x16, i16x8, i32x4, f32x4]
         """
-
         if lane_type.lower().find('x') == -1:
-            return self.const(value, lane_type)
+            return SIMD.const(value, lane_type)
 
         lane_cnt = int(lane_type[1:].split('x')[1])
 
@@ -47,7 +48,7 @@ class SIMD(object):
 
             # If it is an empty list, generate all constant data with 0x00
             if len(value) == 0:
-                return self.v128_const('0x00', lane_type)
+                return SIMD.v128_const('0x00', lane_type)
 
             data_elem = []
 
@@ -80,4 +81,4 @@ class SIMD(object):
         data_elem = ' '.join(data_elem)
 
         # Returns v128 constant text
-        return self.V128_CONST.format(lane_type=lane_type, value=data_elem)
+        return SIMD.V128_CONST.format(lane_type=lane_type, value=data_elem)
