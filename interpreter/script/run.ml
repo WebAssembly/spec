@@ -258,7 +258,7 @@ let string_of_result r =
   | LitResult v -> Values.string_of_value v.it
   | NanResult nanop ->
     match nanop.it with
-    | Values.I32 _ | Values.I64 _ -> assert false
+    | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
     | Values.F32 n | Values.F64 n -> string_of_nan n
 
 let string_of_results = function

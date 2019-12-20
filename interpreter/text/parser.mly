@@ -54,7 +54,7 @@ let nanop f nan =
   match snd (f ("0" @@ no_region)) with
   | F32 _ -> F32 nan.it @@ nan.at
   | F64 _ -> F64 nan.it @@ nan.at
-  | I32 _ | I64 _ -> error nan.at "NaN pattern with non-float type"
+  | I32 _ | I64 _ | V128 _ -> error nan.at "NaN pattern with non-float type"
 
 let nat s at =
   try

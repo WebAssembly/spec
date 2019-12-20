@@ -233,7 +233,7 @@ let assert_return ress ts at =
     | NanResult nanop ->
       let nan =
         match nanop.it with
-        | Values.I32 _ | Values.I64 _ -> assert false
+        | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
         | Values.F32 n | Values.F64 n -> n
       in
       let nan_bitmask_of =
@@ -332,7 +332,7 @@ let of_result res =
   | LitResult lit -> of_literal lit
   | NanResult nanop ->
     match nanop.it with
-    | Values.I32 _ | Values.I64 _ -> assert false
+    | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
     | Values.F32 n | Values.F64 n -> of_nan n
 
 let rec of_definition def =

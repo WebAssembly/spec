@@ -12,7 +12,7 @@ and action' =
   | Get of var option * Ast.name
 
 type nanop = nanop' Source.phrase
-and nanop' = (unit, unit, nan, nan) Values.op
+and nanop' = (unit, unit, nan, nan, unit) Values.op
 and nan = CanonicalNan | ArithmeticNan
 
 type result = result' Source.phrase
