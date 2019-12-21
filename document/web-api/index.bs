@@ -231,3 +231,53 @@ stack frame representations; this allows engines to continue using their
 existing formats for JavaScript (which existing code may already be depending
 on) while still printing WebAssembly frames in a format consistent with
 JavaScript.
+
+<h2 id="mediaType">Media-type Registration</h2>
+
+This section will be submitted to the Internet Engineering Steering Group (IESG) for
+review, approval, and registration with IANA.
+
+application/wasm
+
+<dl>
+<dt>Type name:</dt>
+ <dd>application</dd>
+<dt>Subtype name:</dt>
+ <dd>wasm</dd>
+<dt>Required parameters:</dt>
+ <dd>None</dd>
+<dt>Optional parameters:</dt>
+ <dd>None</dd>
+<dt>Encoding considerations:</dt>
+ <dd>None (this is a binary format)</dd>
+<dt>Security considerations:</dt>
+ <dd>See see WebAssembly Core Security Considerations<br/>
+ https://www.w3.org/TR/wasm-core/#security-considerations%E2%91%A0</dd>
+<dt>Interoperability considerations:</dt>
+ <dd>See see WebAssembly Core Conformance<br/>
+ https://www.w3.org/TR/wasm-core/#conformance</dd>
+<dt>Published specification:</dt>
+ https://www.w3.org/TR/wasm-core-1/
+ https://www.w3.org/TR/wasm-js-api-1/
+ https://www.w3.org/TR/wasm-web-api-1/
+<dt>Applications that use this media type:</dt>
+ <dd>Web browsers and runtime systems</dd>
+<dt>Additional information:</dt>
+<dd><dl>
+ <dt>Magic number(s):</dt>
+ <dd>0x00 0x61 0x73 0x6D</dd>
+ <dt>File extension(s):</dt>
+ <dd>.wasm</dd>
+ <dt>Macintosh file type code(s):</dt>
+ <dd>None</dd>
+</dl></dd>
+<dt>Person & email address to contact for further information:</dt>
+ <dd>Eric Prud'hommeaux <eric@w3.org></dd>
+<dt>Intended usage:</dt>
+ <dd>Common</dd>
+<dt>Restrictions on usage:</dt>
+ <dd>None</dd>
+<dt>Author(s):</dt>
+ <dd>W3C's Web Assembly Working Group</dd>
+<dt>Change controller:</dt>
+ <dd>W3C</dd>
