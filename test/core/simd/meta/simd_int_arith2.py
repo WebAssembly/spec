@@ -368,7 +368,7 @@ class SimdLaneWiseInteger:
 
     def gen_test_cases(self):
         """generate case file"""
-        wast_filename = '../simd_{lane_type}.wast'.format(lane_type=self.LANE_TYPE)
+        wast_filename = '../simd_{lane_type}_arith2.wast'.format(lane_type=self.LANE_TYPE)
         with open(wast_filename, 'w') as fp:
             fp.write(self.get_all_cases())
 
