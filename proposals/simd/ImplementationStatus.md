@@ -87,11 +87,11 @@
 | `i8x16.sub`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i8x16.sub_saturate_s`     |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i8x16.sub_saturate_u`     |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| `i8x16.min_s`              |               `-msimd128` |    :heavy_check_mark: |                    |                    |
-| `i8x16.min_u`              |               `-msimd128` |    :heavy_check_mark: |                    |                    |
-| `i8x16.max_s`              |               `-msimd128` |    :heavy_check_mark: |                    |                    |
-| `i8x16.max_u`              |               `-msimd128` |    :heavy_check_mark: |                    |                    |
-| `i8x16.avgr_u`             | `-munimplemented-simd128` |                       |                    |                    |
+| `i8x16.min_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i8x16.min_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i8x16.max_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i8x16.max_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i8x16.avgr_u`             | `-munimplemented-simd128` |                       | :heavy_check_mark: |                    |
 | `i16x8.neg`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.any_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.all_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -105,11 +105,11 @@
 | `i16x8.sub_saturate_s`     |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.sub_saturate_u`     |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.mul`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| `i16x8.min_s`              |               `-msimd128` |    :heavy_check_mark: |                    |                    |
-| `i16x8.min_u`              |               `-msimd128` |    :heavy_check_mark: |                    |                    |
-| `i16x8.max_s`              |               `-msimd128` |    :heavy_check_mark: |                    |                    |
-| `i16x8.max_u`              |               `-msimd128` |    :heavy_check_mark: |                    |                    |
-| `i16x8.avgr_u`             | `-munimplemented-simd128` |                       |                    |                    |
+| `i16x8.min_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i16x8.min_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i16x8.max_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i16x8.max_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i16x8.avgr_u`             | `-munimplemented-simd128` |                       | :heavy_check_mark: |                    |
 | `i32x4.neg`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.any_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.all_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -119,10 +119,10 @@
 | `i32x4.add`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.sub`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.mul`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| `i32x4.min_s`              |               `-msimd128` |    :heavy_check_mark: |                    |                    |
-| `i32x4.min_u`              |               `-msimd128` |    :heavy_check_mark: |                    |                    |
-| `i32x4.max_s`              |               `-msimd128` |    :heavy_check_mark: |                    |                    |
-| `i32x4.max_u`              |               `-msimd128` |    :heavy_check_mark: |                    |                    |
+| `i32x4.min_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i32x4.min_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i32x4.max_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i32x4.max_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i64x2.neg`                | `-munimplemented-simd128` |                       | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.shl`                | `-munimplemented-simd128` |                       | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.shr_s`              | `-munimplemented-simd128` |                       | :heavy_check_mark: | :heavy_check_mark: |
@@ -181,7 +181,7 @@
 
 [2] Tested on V8 7.5.0 (candidate). Requires flag `--experimental-wasm-simd`
 
-[3] Tip of tree WAVM as of Oct 23, 2019. Requires flag `--enable simd`
+[3] Tip of tree WAVM as of Dec 18, 2019. Requires flag `--enable simd`
 
 [4] Requires (case-insensitive) flag `-wasmsimd`
 
