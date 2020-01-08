@@ -62,6 +62,7 @@ let encode m =
     let vs32 i = vs64 (Int64.of_int32 i)
     let f32 x = u32 (F32.to_bits x)
     let f64 x = u64 (F64.to_bits x)
+    let v128 v = String.iter (put s) (V128.to_bits v)
 
     let len i =
       if Int32.to_int (Int32.of_int i) <> i then
@@ -225,7 +226,7 @@ let encode m =
       | Const {it = I64 c; _} -> op 0x42; vs64 c
       | Const {it = F32 c; _} -> op 0x43; f32 c
       | Const {it = F64 c; _} -> op 0x44; f64 c
-      | Const {it = V128 c; _} -> simd_op 0x02; Bytes.iter (put s) (V128.to_bits c)
+      | Const {it = V128 c; _} -> simd_op 0x02; v128 c
 
       | Test (I32 I32Op.Eqz) -> op 0x45
       | Test (I64 I64Op.Eqz) -> op 0x50

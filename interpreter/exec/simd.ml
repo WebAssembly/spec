@@ -20,6 +20,8 @@ sig
   val to_string : t -> string
   val bytewidth : int
   val of_strings : shape -> string list -> t
+  val of_bits : string -> t
+  val to_bits : t -> string
 end
 
 module type S =
@@ -33,14 +35,14 @@ sig
   val of_strings : shape -> string list -> t
 end
 
-module Make (Rep : RepType) : S with type bits = Rep.t =
+module Make (Rep : RepType) : S with type bits = string =
 struct
   type t = Rep.t
-  type bits = Rep.t
+  type bits = string
 
   let default = Rep.make Rep.bytewidth (chr 0)
   let to_string = Rep.to_string (* FIXME very very wrong *)
-  let to_bits x = x
-  let of_bits x = x
+  let of_bits = Rep.of_bits
+  let to_bits = Rep.to_bits
   let of_strings = Rep.of_strings
 end

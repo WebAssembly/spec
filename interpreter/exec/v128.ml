@@ -2,6 +2,8 @@ include Simd.Make
   (struct
     include Bytes
     let bytewidth = 16
+    let of_bits = Bytes.of_string
+    let to_bits = Bytes.to_string
 
     let of_strings shape ss =
       if List.length ss <> Simd.lanes shape then raise (Invalid_argument "wrong length");
