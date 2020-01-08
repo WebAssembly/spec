@@ -95,7 +95,7 @@ let encode m =
       | I64Type -> vs7 (-0x02)
       | F32Type -> vs7 (-0x03)
       | F64Type -> vs7 (-0x04)
-      | V128Type -> failwith "TODO v128"
+      | V128Type -> vs7 (-0x05)
 
     let elem_type = function
       | FuncRefType -> vs7 (-0x10)
@@ -134,6 +134,7 @@ let encode m =
     open Memory
 
     let op n = u8 n
+    let simd_op n = op 0xfd; op n
     let end_ () = op 0x0b
 
     let memop {align; offset; _} = vu32 (Int32.of_int align); vu32 offset
@@ -224,8 +225,7 @@ let encode m =
       | Const {it = I64 c; _} -> op 0x42; vs64 c
       | Const {it = F32 c; _} -> op 0x43; f32 c
       | Const {it = F64 c; _} -> op 0x44; f64 c
-      | Const {it = V128 c; _} ->
-        failwith "TODO v128"
+      | Const {it = V128 c; _} -> simd_op 0x02; Bytes.iter (put s) (V128.to_bits c)
 
       | Test (I32 I32Op.Eqz) -> op 0x45
       | Test (I64 I64Op.Eqz) -> op 0x50
