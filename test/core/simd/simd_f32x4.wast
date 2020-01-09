@@ -2331,6 +2331,9 @@
 (assert_malformed (module quote "(memory 1) (func (result v128) (i32x4.abs (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result v128) (i32x4.min (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result v128) (i32x4.max (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0)))") "unknown operator")
+(assert_malformed (module quote "(memory 1) (func (result v128) (i64x2.abs (v128.const i32x4 0 0 0 0)))") "unknown operator")
+(assert_malformed (module quote "(memory 1) (func (result v128) (i64x2.min (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0)))") "unknown operator")
+(assert_malformed (module quote "(memory 1) (func (result v128) (i64x2.max (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0)))") "unknown operator")
 
 ;; type check
 (assert_invalid (module (func (result v128) (f32x4.abs (i32.const 0)))) "type mismatch")

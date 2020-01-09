@@ -78,3 +78,14 @@ class AssertInvalid:
         }
 
         return arg_empty_test.format(**param_map)
+
+
+class AssertMalformed:
+    """Generate an assert_malformed test"""
+
+    @staticmethod
+    def get_unknown_op_test(op, result_type, *params):
+        malformed_template = '(assert_malformed (module quote "(memory 1) (func (result {result_type}) ({operator} {param}))") "unknown operator")'
+        return malformed_template.format(
+            operator=op, result_type=result_type, param=' '.join(params)
+        )

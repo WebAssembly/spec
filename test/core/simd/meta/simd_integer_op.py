@@ -4,6 +4,7 @@
 
 from simd_lane_value import LaneValue
 
+
 class IntegerSimpleOp:
     """Common integer simple ops:
         min_s, min_u, max_s, max_u
@@ -46,6 +47,15 @@ class IntegerSimpleOp:
                 return p1 if i1 <= i2 else p2
             else:
                 return p1 if i1 >= i2 else p2
+
+        elif op == 'avgr_u':
+            i1 = IntegerSimpleOp.get_valid_value(v1, lane_width, signed=False)
+            i2 = IntegerSimpleOp.get_valid_value(v2, lane_width, signed=False)
+            result = (i1 + i2 + 1) // 2
+            if base1 == 16 or base2 == 16:
+                return hex(result)
+            else:
+                return str(result)
 
         else:
             raise Exception('Unknown binary operation')

@@ -5,7 +5,7 @@ Generate [min_s, min_u, max_s, max_u] cases for i32x4, i16x8 and i8x16.
 """
 
 from simd import SIMD
-from test_assert import AssertReturn, AssertInvalid
+from test_assert import AssertReturn, AssertInvalid, AssertMalformed
 from simd_lane_value import LaneValue
 from simd_integer_op import IntegerSimpleOp as IntOp
 
@@ -17,7 +17,7 @@ class SimdLaneWiseInteger:
 
     BINARY_OPS = ('min_s', 'min_u', 'max_s', 'max_u',)
 
-    class_summary = """;; Tests for {lane_type} [min_s, min_u, max_s, max_u] operations."""
+    class_summary = """;; Tests for {lane_type} [min_s, min_u, max_s, max_u, avgr_u] operations."""
 
     def __init__(self):
 
@@ -246,21 +246,15 @@ class SimdLaneWiseInteger:
     @property
     def gen_test_case_unknown_operators(self):
         """generate unknown operators test cases"""
+        cases = ['\n\n;; Unknown operators']
 
-        if self.LANE_TYPE != 'i32x4':
-            return ''
-
-        cases = '\n\n;; Unknown operators'
-        lane_types = ('f32x4', 'i64x2',)
-        assert_template = '(assert_malformed (module quote "(memory 1) (func (result v128) ({lane_type}.{op} {param_1} {param_2}))") "unknown operator")'
-        for lane_type in lane_types:
-            for op in self.BINARY_OPS:
-                cases += '\n' + assert_template.format(lane_type=lane_type,
-                                                       op=op,
-                                                       param_1=SIMD.v128_const('0', self.LANE_TYPE),
-                                                       param_2=SIMD.v128_const('1', self.LANE_TYPE))
-
-        return cases
+        for op in self.UNKNOWN_OPS:
+            cases.append(AssertMalformed.get_unknown_op_test(
+                op, 'v128',
+                SIMD.v128_const('0', self.LANE_TYPE),
+                SIMD.v128_const('1', self.LANE_TYPE)
+            ))
+        return '\n'.join(cases)
 
     @property
     def gen_test_case_type_check(self):
@@ -373,14 +367,27 @@ class SimdLaneWiseInteger:
 
 class Simdi32x4Case(SimdLaneWiseInteger):
     LANE_TYPE = 'i32x4'
+    class_summary = """;; Tests for {lane_type} [min_s, min_u, max_s, max_u] operations."""
+
+    UNKNOWN_OPS = ('f32x4.min_s', 'f32x4.min_u', 'f32x4.max_s', 'f32x4.max_u',
+                   'i64x2.min_s', 'i64x2.min_u', 'i64x2.max_s', 'i64x2.max_u',
+                   'f64x2.min_s', 'f64x2.min_u', 'f64x2.max_s', 'f64x2.max_u')
 
 
 class Simdi16x8Case(SimdLaneWiseInteger):
     LANE_TYPE = 'i16x8'
 
+    BINARY_OPS = ('min_s', 'min_u', 'max_s', 'max_u', 'avgr_u')
+    UNKNOWN_OPS = ('i16x8.avgr', 'i16x8.avgr_s')
+
 
 class Simdi8x16Case(SimdLaneWiseInteger):
     LANE_TYPE = 'i8x16'
+
+    BINARY_OPS = ('min_s', 'min_u', 'max_s', 'max_u', 'avgr_u')
+    UNKNOWN_OPS = ('i32x4.avgr_u', 'f32x4.avgr_u',
+                   'i64x2.avgr_u', 'f64x2.avgr_u',
+                   'i8x16.avgr', 'i8x16.avgr_s')
 
 
 def gen_test_cases():
