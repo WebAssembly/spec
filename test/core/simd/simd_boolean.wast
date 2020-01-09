@@ -962,3 +962,54 @@
 (assert_malformed (module quote "(memory 1) (func (result i32) (f32x4.all_true (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result i32) (f64x2.any_true (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result i32) (f64x2.all_true (v128.const i32x4 0 0 0 0)))") "unknown operator")
+
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $i8x16.any_true-arg-empty (result v128)
+      (i8x16.any_true)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.all_true-arg-empty (result v128)
+      (i8x16.all_true)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.any_true-arg-empty (result v128)
+      (i16x8.any_true)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.all_true-arg-empty (result v128)
+      (i16x8.all_true)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.any_true-arg-empty (result v128)
+      (i32x4.any_true)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.all_true-arg-empty (result v128)
+      (i32x4.all_true)
+    )
+  )
+  "type mismatch"
+)

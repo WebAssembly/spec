@@ -42,6 +42,31 @@ class SimdSaturateArithmeticCases(SimdArithmeticCase):
 
         return '\n'.join(malformed_cases)
 
+    def argument_empty_cases(self):
+        """Test cases with empty argument.
+        """
+        cases = []
+
+        case_data = {
+            'op': '',
+            'extended_name': 'arg-empty',
+            'param_type': '',
+            'result_type': '(result v128)',
+            'params': '',
+        }
+
+        for op in self.BINARY_OPS:
+            case_data['op'] = '{lane_type}.{op}'.format(lane_type=self.LANE_TYPE, op=op)
+            case_data['extended_name'] = '1st-arg-empty'
+            case_data['params'] = SIMD.v128_const('0', self.LANE_TYPE)
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+            case_data['extended_name'] = 'arg-empty'
+            case_data['params'] = ''
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+        return '\n'.join(cases)
+
     def get_all_cases(self):
         case_data = {'lane_type': self.LANE_TYPE,
                      'normal_cases': self.get_normal_case(),

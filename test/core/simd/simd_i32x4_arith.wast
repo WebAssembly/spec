@@ -530,6 +530,65 @@
 (assert_invalid (module (func (result v128) (i32x4.sub (i32.const 0) (f32.const 0.0)))) "type mismatch")
 (assert_invalid (module (func (result v128) (i32x4.mul (i32.const 0) (f32.const 0.0)))) "type mismatch")
 
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $i32x4.neg-arg-empty (result v128)
+      (i32x4.neg)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.add-1st-arg-empty (result v128)
+      (i32x4.add (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.add-arg-empty (result v128)
+      (i32x4.add)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.sub-1st-arg-empty (result v128)
+      (i32x4.sub (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.sub-arg-empty (result v128)
+      (i32x4.sub)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.mul-1st-arg-empty (result v128)
+      (i32x4.mul (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.mul-arg-empty (result v128)
+      (i32x4.mul)
+    )
+  )
+  "type mismatch"
+)
+
 ;; combination
 (module
   (func (export "add-sub") (param v128 v128 v128) (result v128)

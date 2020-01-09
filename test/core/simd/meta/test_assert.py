@@ -12,31 +12,30 @@ TODO: Add more assertions
 # Generate assert_return to test
 class AssertReturn:
 
-    instruction = ''
-    instruction_param = ''
+    op = ''
+    params = ''
     expected_result = ''
 
-    def __init__(self, instruction, instruction_param, expected_result):
-        super(AssertReturn, self).__init__()
+    def __init__(self, op, params, expected_result):
 
         # Convert to list if got str
-        if isinstance(instruction_param, str):
-            instruction_param = [instruction_param]
+        if isinstance(params, str):
+            params = [params]
         if isinstance(expected_result, str):
             expected_result = [expected_result]
 
-        self.instruction = instruction
-        self.instruction_param = instruction_param
+        self.op = op
+        self.params = params
         self.expected_result = expected_result
 
     def __str__(self):
-        assert_return = '(assert_return (invoke "{}"'.format(self.instruction)
+        assert_return = '(assert_return (invoke "{}"'.format(self.op)
 
         head_len = len(assert_return)
 
         # Add write space to make the test case easier to read
         params = []
-        for param in self.instruction_param:
+        for param in self.params:
             white_space = ' '
             if len(params) != 0:
                 white_space = '\n ' + ' ' * head_len
@@ -50,3 +49,32 @@ class AssertReturn:
             results.append(white_space + result)
 
         return '{assert_head}{params}){expected_result})'.format(assert_head=assert_return, params=''.join(params), expected_result=''.join(results))
+
+
+# Generate assert_invalid to test
+class AssertInvalid:
+
+    @staticmethod
+    def get_arg_empty_test(op, extended_name, param_type, result_type, params):
+
+        arg_empty_test = '(assert_invalid' \
+                         '\n  (module' \
+                         '\n    (func ${op}-{extended_name}{param_type}{result_type}' \
+                         '\n      ({op}{params})' \
+                         '\n    )' \
+                         '\n  )' \
+                         '\n  "type mismatch"' \
+                         '\n)'
+
+        def str_with_space(input_str):
+            return (' ' if input_str else '') + input_str
+
+        param_map = {
+            'op': op,
+            'extended_name': extended_name,
+            'param_type': str_with_space(param_type),
+            'result_type': str_with_space(result_type),
+            'params': str_with_space(params),
+        }
+
+        return arg_empty_test.format(**param_map)

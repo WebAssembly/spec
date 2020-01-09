@@ -218,3 +218,39 @@
 (assert_malformed (module quote "(memory 1) (func (drop (i16x8.load_splat (i32.const 0))))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (drop (i32x4.load_splat (i32.const 0))))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (drop (i64x2.load_splat (i32.const 0))))") "unknown operator")
+
+
+;; Test operation with empty argument
+
+(assert_invalid
+  (module (memory 0)
+    (func $v8x16.load_splat-arg-empty (result v128)
+      (v8x16.load_splat)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 0)
+    (func $v16x8.load_splat-arg-empty (result v128)
+      (v16x8.load_splat)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 0)
+    (func $v32x4.load_splat-arg-empty (result v128)
+      (v32x4.load_splat)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 0)
+    (func $v64x2.load_splat-arg-empty (result v128)
+      (v64x2.load_splat)
+    )
+  )
+  "type mismatch"
+)

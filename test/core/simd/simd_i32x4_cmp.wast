@@ -1743,6 +1743,168 @@
 (assert_return (invoke "as-param"))
 
 
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $i32x4.eq-1st-arg-empty (result v128)
+      (i32x4.eq (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.eq-arg-empty (result v128)
+      (i32x4.eq)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.ne-1st-arg-empty (result v128)
+      (i32x4.ne (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.ne-arg-empty (result v128)
+      (i32x4.ne)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.lt_s-1st-arg-empty (result v128)
+      (i32x4.lt_s (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.lt_s-arg-empty (result v128)
+      (i32x4.lt_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.lt_u-1st-arg-empty (result v128)
+      (i32x4.lt_u (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.lt_u-arg-empty (result v128)
+      (i32x4.lt_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.le_s-1st-arg-empty (result v128)
+      (i32x4.le_s (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.le_s-arg-empty (result v128)
+      (i32x4.le_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.le_u-1st-arg-empty (result v128)
+      (i32x4.le_u (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.le_u-arg-empty (result v128)
+      (i32x4.le_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.gt_s-1st-arg-empty (result v128)
+      (i32x4.gt_s (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.gt_s-arg-empty (result v128)
+      (i32x4.gt_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.gt_u-1st-arg-empty (result v128)
+      (i32x4.gt_u (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.gt_u-arg-empty (result v128)
+      (i32x4.gt_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.ge_s-1st-arg-empty (result v128)
+      (i32x4.ge_s (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.ge_s-arg-empty (result v128)
+      (i32x4.ge_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.ge_u-1st-arg-empty (result v128)
+      (i32x4.ge_u (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.ge_u-arg-empty (result v128)
+      (i32x4.ge_u)
+    )
+  )
+  "type mismatch"
+)
 ;; Unknown operators
 
 (assert_malformed (module quote "(memory 1) (func (param $x v128) (param $y v128) (result v128) (i4x32.eq (local.get $x) (local.get $y)))") "unknown operator")
@@ -1755,3 +1917,4 @@
 (assert_malformed (module quote "(memory 1) (func (param $x v128) (param $y v128) (result v128) (i4x32.gt_u (local.get $x) (local.get $y)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (param $x v128) (param $y v128) (result v128) (i4x32.ge_s (local.get $x) (local.get $y)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (param $x v128) (param $y v128) (result v128) (i4x32.ge_u (local.get $x) (local.get $y)))") "unknown operator")
+

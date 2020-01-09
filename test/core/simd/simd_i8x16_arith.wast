@@ -355,6 +355,49 @@
 (assert_invalid (module (func (result v128) (i8x16.add (i32.const 0) (f32.const 0.0)))) "type mismatch")
 (assert_invalid (module (func (result v128) (i8x16.sub (i32.const 0) (f32.const 0.0)))) "type mismatch")
 
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $i8x16.neg-arg-empty (result v128)
+      (i8x16.neg)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.add-1st-arg-empty (result v128)
+      (i8x16.add (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.add-arg-empty (result v128)
+      (i8x16.add)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.sub-1st-arg-empty (result v128)
+      (i8x16.sub (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.sub-arg-empty (result v128)
+      (i8x16.sub)
+    )
+  )
+  "type mismatch"
+)
+
 ;; combination
 (module
   (func (export "add-sub") (param v128 v128 v128) (result v128)

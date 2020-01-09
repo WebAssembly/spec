@@ -254,7 +254,7 @@
 )
 (assert_invalid
   (module
-    (func $i16x8.min_s-all-args-empty (result v128)
+    (func $i16x8.min_s-arg-empty (result v128)
       (i16x8.min_s)
     )
   )
@@ -270,7 +270,7 @@
 )
 (assert_invalid
   (module
-    (func $i16x8.min_u-all-args-empty (result v128)
+    (func $i16x8.min_u-arg-empty (result v128)
       (i16x8.min_u)
     )
   )
@@ -286,7 +286,7 @@
 )
 (assert_invalid
   (module
-    (func $i16x8.max_s-all-args-empty (result v128)
+    (func $i16x8.max_s-arg-empty (result v128)
       (i16x8.max_s)
     )
   )
@@ -302,7 +302,7 @@
 )
 (assert_invalid
   (module
-    (func $i16x8.max_u-all-args-empty (result v128)
+    (func $i16x8.max_u-arg-empty (result v128)
       (i16x8.max_u)
     )
   )

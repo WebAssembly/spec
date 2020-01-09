@@ -1003,3 +1003,102 @@
 (assert_malformed (module quote "(memory 1) (func (result v128) (f32x4.shl   (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result v128) (f32x4.shr_s (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result v128) (f32x4.shr_u (v128.const i32x4 0 0 0 0)))") "unknown operator")
+
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $i8x16.shl-1st-arg-empty (result v128)
+      (i8x16.shl (i32.const 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.shl-last-arg-empty (result v128)
+      (i8x16.shl (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.shl-arg-empty (result v128)
+      (i8x16.shl)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.shr_u-1st-arg-empty (result v128)
+      (i16x8.shr_u (i32.const 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.shr_u-last-arg-empty (result v128)
+      (i16x8.shr_u (v128.const i16x8 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.shr_u-arg-empty (result v128)
+      (i16x8.shr_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.shr_s-1st-arg-empty (result v128)
+      (i32x4.shr_s (i32.const 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.shr_s-last-arg-empty (result v128)
+      (i32x4.shr_s (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.shr_s-arg-empty (result v128)
+      (i32x4.shr_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i64x2.shl-1st-arg-empty (result v128)
+      (i64x2.shl (i32.const 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i64x2.shr_u-last-arg-empty (result v128)
+      (i64x2.shr_u (v128.const i64x2 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i64x2.shr_s-arg-empty (result v128)
+      (i64x2.shr_s)
+    )
+  )
+  "type mismatch"
+)

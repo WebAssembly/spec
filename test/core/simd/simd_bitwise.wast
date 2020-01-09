@@ -710,3 +710,103 @@
 (assert_return (invoke "nested-v128.bitselect"))
 (assert_return (invoke "nested-v128.andnot"))
 (assert_return (invoke "as-param"))
+
+
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $v128.not-arg-empty (result v128)
+      (v128.not)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $v128.and-1st-arg-empty (result v128)
+      (v128.and (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $v128.and-arg-empty (result v128)
+      (v128.and)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $v128.or-1st-arg-empty (result v128)
+      (v128.or (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $v128.or-arg-empty (result v128)
+      (v128.or)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $v128.xor-1st-arg-empty (result v128)
+      (v128.xor (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $v128.xor-arg-empty (result v128)
+      (v128.xor)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $v128.andnot-1st-arg-empty (result v128)
+      (v128.andnot (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $v128.andnot-arg-empty (result v128)
+      (v128.andnot)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $v128.bitselect-1st-arg-empty (result v128)
+      (v128.bitselect (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $v128.bitselect-two-args-empty (result v128)
+      (v128.bitselect (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $v128.bitselect-arg-empty (result v128)
+      (v128.bitselect)
+    )
+  )
+  "type mismatch"
+)

@@ -9,7 +9,7 @@ via using variable test data set and subclass from sub test template
 
 import abc
 from simd import SIMD
-from test_assert import AssertReturn
+from test_assert import AssertReturn, AssertInvalid
 
 
 # Generate common comparison tests
@@ -369,6 +369,33 @@ class SimdCmpCase(object):
 
         return '\n'.join(cases)
 
+    def argument_empty_test(self):
+        """Test cases with empty argument.
+        """
+        cases = []
+
+        cases.append('\n;; Test operation with empty argument\n')
+
+        case_data = {
+            'op': '',
+            'extended_name': 'arg-empty',
+            'param_type': '',
+            'result_type': '(result v128)',
+            'params': '',
+        }
+
+        for op in self.BINARY_OPS:
+            case_data['op'] = '{lane_type}.{op}'.format(lane_type=self.LANE_TYPE, op=op)
+            case_data['extended_name'] = '1st-arg-empty'
+            case_data['params'] = SIMD.v128_const('0', self.LANE_TYPE)
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+            case_data['extended_name'] = 'arg-empty'
+            case_data['params'] = ''
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+        return '\n'.join(cases)
+
     # Generate all test cases
     def get_all_cases(self):
 
@@ -376,7 +403,7 @@ class SimdCmpCase(object):
                      'lane_type': self.LANE_TYPE}
 
         # Generate tests using the test template
-        return self.CASE_TXT.format(**case_data)
+        return self.CASE_TXT.format(**case_data) + self.argument_empty_test()
 
     # Generate test case file
     def gen_test_cases(self):

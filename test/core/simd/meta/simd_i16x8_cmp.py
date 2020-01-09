@@ -14,6 +14,8 @@ class Simdi16x8CmpCase(SimdCmpCase):
 
     LANE_TYPE = 'i16x8'
 
+    BINARY_OPS = ['eq', 'ne', 'lt_s', 'lt_u', 'le_s', 'le_u', 'gt_s', 'gt_u', 'ge_s', 'ge_u']
+
     # Overloads base class method and sets test data for i16x8.
     def get_case_data(self):
 

@@ -14,7 +14,7 @@ these arithmetic and saturate arithmetic operations.
 """
 
 from simd import SIMD
-from test_assert import AssertReturn
+from test_assert import AssertReturn, AssertInvalid
 
 
 class LaneNumber:
@@ -325,7 +325,40 @@ class SimdArithmeticCase:
                                                         operand_1='i32.const 0',
                                                         operand_2='f32.const 0.0'))
 
-        return '\n'.join(invalid_cases)
+        return '\n'.join(invalid_cases) + self.argument_empty_test()
+
+    def argument_empty_test(self):
+        """Test cases with empty argument.
+        """
+        cases = []
+
+        cases.append('\n\n;; Test operation with empty argument\n')
+
+        case_data = {
+            'op': '',
+            'extended_name': 'arg-empty',
+            'param_type': '',
+            'result_type': '(result v128)',
+            'params': '',
+        }
+
+        for op in self.UNARY_OPS:
+            case_data['op'] = '{lane_type}.{op}'.format(lane_type=self.LANE_TYPE, op=op)
+            case_data['extended_name'] = 'arg-empty'
+            case_data['params'] = ''
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+        for op in self.BINARY_OPS:
+            case_data['op'] = '{lane_type}.{op}'.format(lane_type=self.LANE_TYPE, op=op)
+            case_data['extended_name'] = '1st-arg-empty'
+            case_data['params'] = SIMD.v128_const('0', self.LANE_TYPE)
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+            case_data['extended_name'] = 'arg-empty'
+            case_data['params'] = ''
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+        return '\n'.join(cases)
 
     def get_combine_cases(self):
         combine_cases = [';; combination\n(module']

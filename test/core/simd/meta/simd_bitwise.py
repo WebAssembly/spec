@@ -5,13 +5,17 @@ This file is used for generating bitwise test cases
 """
 
 from simd import SIMD
-from test_assert import AssertReturn
+from test_assert import AssertReturn, AssertInvalid
 
 
 class SimdBitWise(SIMD):
     """
     Generate common tests
     """
+
+    UNARY_OPS = ('not',)
+    BINARY_OPS = ('and', 'or', 'xor', 'andnot',)
+    TERNARY_OPS = ('bitselect',)
 
     # Test case template
     CASE_TXT = """;; Test all the bitwise operators on major boundary values and all special values.
@@ -182,6 +186,7 @@ class SimdBitWise(SIMD):
         lst_nested_case_func = []
         lst_in_block_case_assert = []
         lst_nested_case_assert = []
+        lst_argument_empty_case = []
 
         for ipr in lst_ipr:
 
@@ -242,9 +247,59 @@ class SimdBitWise(SIMD):
                '{assert_in_block_cases}' \
                '{assert_of_nested_cases}' \
                '\n(assert_return (invoke "as-param"))\n'.format(in_block_cases=''.join(lst_in_block_case_func),
-                                                                nested_cases=''.join(lst_nested_case_func),
-                                                                assert_in_block_cases=''.join(lst_in_block_case_assert),
-                                                                assert_of_nested_cases=''.join(lst_nested_case_assert))
+                                                    nested_cases=''.join(lst_nested_case_func),
+                                                    assert_in_block_cases=''.join(lst_in_block_case_assert),
+                                                    assert_of_nested_cases=''.join(lst_nested_case_assert))
+
+    def get_argument_empty_case(self):
+        """
+        Generate argument empty cases
+        """
+
+        cases = []
+
+        param_1 = SIMD.v128_const('0', 'i32x4')
+
+        cases.append('\n\n;; Test operation with empty argument\n')
+
+        case_data = {
+            'op': '',
+            'extended_name': 'arg-empty',
+            'param_type': '',
+            'result_type': '(result v128)',
+            'params': '',
+        }
+
+        for op in self.UNARY_OPS:
+            case_data['op'] = 'v128.' + op
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+        for op in self.BINARY_OPS:
+            case_data['op'] = 'v128.' + op
+            case_data['extended_name'] = '1st-arg-empty'
+            case_data['params'] = param_1
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+            case_data['extended_name'] = 'arg-empty'
+            case_data['params'] = ''
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+        for op in self.TERNARY_OPS:
+            case_data['op'] = 'v128.' + op
+            case_data['extended_name'] = '1st-arg-empty'
+            case_data['params'] = param_1 + ' ' + param_1
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+            case_data['extended_name'] = 'two-args-empty'
+            case_data['params'] = param_1
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+            case_data['extended_name'] = 'arg-empty'
+            case_data['params'] = ''
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+        return '\n'.join(cases) + '\n'
+
 
     def get_all_cases(self):
         """
@@ -254,7 +309,7 @@ class SimdBitWise(SIMD):
         case_data = {'normal_case': self.get_normal_case()}
 
         # Add tests for unkonow operators for i32x4
-        return self.CASE_TXT.format(**case_data) + self.get_invalid_case() + self.get_combination_case()
+        return self.CASE_TXT.format(**case_data) + self.get_invalid_case() + self.get_combination_case() + self.get_argument_empty_case()
 
     def get_case_data(self):
         """

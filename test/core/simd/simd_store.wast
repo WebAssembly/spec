@@ -136,3 +136,31 @@
   (module (memory 1) (func (result v128) (v128.store (i32.const 0) (v128.const i32x4 0 0 0 0))))
   "type mismatch"
 )
+
+
+;; Test operation with empty argument
+
+(assert_invalid
+  (module (memory 0)
+    (func $v128.store-1st-arg-empty
+      (v128.store (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 0)
+    (func $v128.store-2nd-arg-empty
+      (v128.store (i32.const 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 0)
+    (func $v128.store-arg-empty
+      (v128.store)
+    )
+  )
+  "type mismatch"
+)

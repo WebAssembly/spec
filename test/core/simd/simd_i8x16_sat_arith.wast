@@ -601,6 +601,73 @@
 (assert_invalid (module (func (result v128) (i8x16.sub_saturate_s (i32.const 0) (f32.const 0.0)))) "type mismatch")
 (assert_invalid (module (func (result v128) (i8x16.sub_saturate_u (i32.const 0) (f32.const 0.0)))) "type mismatch")
 
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $i8x16.add_saturate_s-1st-arg-empty (result v128)
+      (i8x16.add_saturate_s (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.add_saturate_s-arg-empty (result v128)
+      (i8x16.add_saturate_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.add_saturate_u-1st-arg-empty (result v128)
+      (i8x16.add_saturate_u (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.add_saturate_u-arg-empty (result v128)
+      (i8x16.add_saturate_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.sub_saturate_s-1st-arg-empty (result v128)
+      (i8x16.sub_saturate_s (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.sub_saturate_s-arg-empty (result v128)
+      (i8x16.sub_saturate_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.sub_saturate_u-1st-arg-empty (result v128)
+      (i8x16.sub_saturate_u (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.sub_saturate_u-arg-empty (result v128)
+      (i8x16.sub_saturate_u)
+    )
+  )
+  "type mismatch"
+)
+
 ;; combination
 (module
   (func (export "sat-add_s-sub_s") (param v128 v128 v128) (result v128)

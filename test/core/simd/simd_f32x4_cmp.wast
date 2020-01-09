@@ -8066,3 +8066,102 @@
 (assert_return (invoke "nested-gt"))
 (assert_return (invoke "nested-ge"))
 (assert_return (invoke "as-param"))
+
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $f32x4.eq-1st-arg-empty (result v128)
+      (f32x4.eq (v128.const f32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.eq-arg-empty (result v128)
+      (f32x4.eq)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.ne-1st-arg-empty (result v128)
+      (f32x4.ne (v128.const f32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.ne-arg-empty (result v128)
+      (f32x4.ne)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.lt-1st-arg-empty (result v128)
+      (f32x4.lt (v128.const f32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.lt-arg-empty (result v128)
+      (f32x4.lt)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.le-1st-arg-empty (result v128)
+      (f32x4.le (v128.const f32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.le-arg-empty (result v128)
+      (f32x4.le)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.gt-1st-arg-empty (result v128)
+      (f32x4.gt (v128.const f32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.gt-arg-empty (result v128)
+      (f32x4.gt)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.ge-1st-arg-empty (result v128)
+      (f32x4.ge (v128.const f32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.ge-arg-empty (result v128)
+      (f32x4.ge)
+    )
+  )
+  "type mismatch"
+)

@@ -1488,3 +1488,198 @@
 (assert_return (invoke "i32x4_high_widen_narrow_us" (v128.const i32x4 -0x80000000 -0x7fffffff 0x7fffffff 0x8000000)
                                                     (v128.const i32x4 -0x80000000 -0x7fffffff 0x7fffffff 0x8000000))
                                                     (v128.const i32x4 0x8000 0x8000 0x7fff 0x7fff))
+
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $i32x4.trunc_sat_f32x4_s-arg-empty (result v128)
+      (i32x4.trunc_sat_f32x4_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.trunc_sat_f32x4_u-arg-empty (result v128)
+      (i32x4.trunc_sat_f32x4_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i64x2.trunc_sat_f64x2_s-arg-empty (result v128)
+      (i64x2.trunc_sat_f64x2_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i64x2.trunc_sat_f64x2_u-arg-empty (result v128)
+      (i64x2.trunc_sat_f64x2_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.convert_i32x4_s-arg-empty (result v128)
+      (f32x4.convert_i32x4_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.convert_i32x4_u-arg-empty (result v128)
+      (f32x4.convert_i32x4_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.convert_i64x2_s-arg-empty (result v128)
+      (f64x2.convert_i64x2_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.convert_i64x2_u-arg-empty (result v128)
+      (f64x2.convert_i64x2_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.narrow_i16x8_s-1st-arg-empty (result v128)
+      (i8x16.narrow_i16x8_s (v128.const i16x8 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.narrow_i16x8_s-arg-empty (result v128)
+      (i8x16.narrow_i16x8_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.narrow_i16x8_u-1st-arg-empty (result v128)
+      (i8x16.narrow_i16x8_u (v128.const i16x8 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.narrow_i16x8_u-arg-empty (result v128)
+      (i8x16.narrow_i16x8_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.narrow_i32x4_s-1st-arg-empty (result v128)
+      (i16x8.narrow_i32x4_s (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.narrow_i32x4_s-arg-empty (result v128)
+      (i16x8.narrow_i32x4_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.narrow_i32x4_u-1st-arg-empty (result v128)
+      (i16x8.narrow_i32x4_u (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.narrow_i32x4_u-arg-empty (result v128)
+      (i16x8.narrow_i32x4_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.widen_high_i8x16_s-arg-empty (result v128)
+      (i16x8.widen_high_i8x16_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.widen_high_i8x16_u-arg-empty (result v128)
+      (i16x8.widen_high_i8x16_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.widen_low_i8x16_s-arg-empty (result v128)
+      (i16x8.widen_low_i8x16_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.widen_low_i8x16_u-arg-empty (result v128)
+      (i16x8.widen_low_i8x16_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.widen_high_i16x8_s-arg-empty (result v128)
+      (i32x4.widen_high_i16x8_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.widen_high_i16x8_u-arg-empty (result v128)
+      (i32x4.widen_high_i16x8_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.widen_low_i16x8_s-arg-empty (result v128)
+      (i32x4.widen_low_i16x8_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.widen_low_i16x8_u-arg-empty (result v128)
+      (i32x4.widen_low_i16x8_u)
+    )
+  )
+  "type mismatch"
+)

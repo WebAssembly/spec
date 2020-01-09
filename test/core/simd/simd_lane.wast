@@ -846,3 +846,150 @@
 
 (assert_return (invoke "as-local_set-value-1" (v128.const i64x2 -1 -1)) (i64.const -1))
 (assert_return (invoke "as-global_set-value-3" (v128.const f64x2 0 0)(f64.const 3.14)) (v128.const f64x2 3.14 0))
+
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $i8x16.extract_lane_s-1st-arg-empty (result i32)
+      (i8x16.extract_lane_s (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.extract_lane_s-2nd-arg-empty (result i32)
+      (i8x16.extract_lane_s 0)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.extract_lane_s-arg-empty (result i32)
+      (i8x16.extract_lane_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.extract_lane_u-1st-arg-empty (result i32)
+      (i16x8.extract_lane_u (v128.const i16x8 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.extract_lane_u-2nd-arg-empty (result i32)
+      (i16x8.extract_lane_u 0)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.extract_lane_u-arg-empty (result i32)
+      (i16x8.extract_lane_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.extract_lane-1st-arg-empty (result i32)
+      (i32x4.extract_lane (v128.const i32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.extract_lane-2nd-arg-empty (result i32)
+      (i32x4.extract_lane 0)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.extract_lane-arg-empty (result i32)
+      (i32x4.extract_lane)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i64x2.extract_lane-1st-arg-empty (result i64)
+      (i64x2.extract_lane (v128.const i64x2 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i64x2.extract_lane-2nd-arg-empty (result i64)
+      (i64x2.extract_lane 0)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i64x2.extract_lane-arg-empty (result i64)
+      (i64x2.extract_lane)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.extract_lane-1st-arg-empty (result f32)
+      (f32x4.extract_lane (v128.const f32x4 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.extract_lane-2nd-arg-empty (result f32)
+      (f32x4.extract_lane 0)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.extract_lane-arg-empty (result f32)
+      (f32x4.extract_lane)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.extract_lane-1st-arg-empty (result f64)
+      (f64x2.extract_lane (v128.const f64x2 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.extract_lane-2nd-arg-empty (result f64)
+      (f64x2.extract_lane 0)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.extract_lane-arg-empty (result f64)
+      (f64x2.extract_lane)
+    )
+  )
+  "type mismatch"
+)

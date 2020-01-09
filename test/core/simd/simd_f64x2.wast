@@ -2388,6 +2388,49 @@
 (assert_invalid (module (func (result v128) (f64x2.min (i32.const 0) (f32.const 0.0)))) "type mismatch")
 (assert_invalid (module (func (result v128) (f64x2.max (i32.const 0) (f32.const 0.0)))) "type mismatch")
 
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $f64x2.abs-arg-empty (result v128)
+      (f64x2.abs)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.min-1st-arg-empty (result v128)
+      (f64x2.min (v128.const f64x2 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.min-arg-empty (result v128)
+      (f64x2.min)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.max-1st-arg-empty (result v128)
+      (f64x2.max (v128.const f64x2 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.max-arg-empty (result v128)
+      (f64x2.max)
+    )
+  )
+  "type mismatch"
+)
+
 ;; combination
 (module
   (func (export "max-min") (param v128 v128 v128) (result v128)

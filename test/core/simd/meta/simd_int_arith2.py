@@ -5,7 +5,7 @@ Generate [min_s, min_u, max_s, max_u] cases for i32x4, i16x8 and i8x16.
 """
 
 from simd import SIMD
-from test_assert import AssertReturn
+from test_assert import AssertReturn, AssertInvalid
 from simd_lane_value import LaneValue
 from simd_integer_op import IntegerSimpleOp as IntOp
 
@@ -319,31 +319,29 @@ class SimdLaneWiseInteger:
     def gen_test_case_empty_argument(self):
         """generate empty argument test cases"""
 
-        assert_1st_empyt_template = '\n(assert_invalid' \
-                                    '\n  (module' \
-                                    '\n    (func ${lane_type}.{op}-1st-arg-empty (result v128)' \
-                                    '\n      ({lane_type}.{op} {param_1})' \
-                                    '\n    )' \
-                                    '\n  )' \
-                                    '\n  "type mismatch"' \
-                                    '\n)'
-        assert_all_empty_template = '\n(assert_invalid' \
-                                    '\n  (module' \
-                                    '\n    (func ${lane_type}.{op}-all-args-empty (result v128)' \
-                                    '\n      ({lane_type}.{op})' \
-                                    '\n    )' \
-                                    '\n  )' \
-                                    '\n  "type mismatch"' \
-                                    '\n)'
+        cases = []
 
-        cases = ''
+        cases.append('\n\n;; Test operation with empty argument\n')
 
-        cases += '\n\n;; Test operation with empty argument\n'
+        case_data = {
+            'op': '',
+            'extended_name': 'arg-empty',
+            'param_type': '',
+            'result_type': '(result v128)',
+            'params': '',
+        }
+
         for op in self.BINARY_OPS:
-            cases += assert_1st_empyt_template.format(lane_type=self.LANE_TYPE, op=op, param_1=SIMD.v128_const('0', self.LANE_TYPE))
-            cases += assert_all_empty_template.format(lane_type=self.LANE_TYPE, op=op)
+            case_data['op'] = '{lane_type}.{op}'.format(lane_type=self.LANE_TYPE, op=op)
+            case_data['extended_name'] = '1st-arg-empty'
+            case_data['params'] = SIMD.v128_const('0', self.LANE_TYPE)
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
 
-        return cases
+            case_data['extended_name'] = 'arg-empty'
+            case_data['params'] = ''
+            cases.append(AssertInvalid.get_arg_empty_test(**case_data))
+
+        return '\n'.join(cases)
 
     @property
     def gen_funcs(self):

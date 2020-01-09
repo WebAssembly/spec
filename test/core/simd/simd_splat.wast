@@ -229,7 +229,7 @@
     (i8x16.sub_saturate_u (i8x16.splat (local.get 0)) (i8x16.splat (local.get 1))))
   (func (export "as-i16x8_sub_saturate_u-operands") (param i32 i32) (result v128)
     (i16x8.sub_saturate_u (i16x8.splat (local.get 0)) (i16x8.splat (local.get 1))))
-  
+
   ;; Bit shifts
   (func (export "as-i8x16_shr_s-operand") (param i32 i32) (result v128)
     (i8x16.shr_s (i8x16.splat (local.get 0)) (local.get 1)))
@@ -376,3 +376,55 @@
 (assert_return (invoke "as-return-value2" (i64.const 0xABCD)) (v128.const i64x2 0xABCD 0xABCD))
 (assert_return (invoke "as-local_set-value2" (i64.const 0x10000)) (v128.const i64x2 0x10000 0x10000))
 (assert_return (invoke "as-global_set-value2" (f64.const 1.0)) (v128.const f64x2 1.0 1.0))
+
+
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $i8x16.splat-arg-empty (result v128)
+      (i8x16.splat)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i16x8.splat-arg-empty (result v128)
+      (i16x8.splat)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i32x4.splat-arg-empty (result v128)
+      (i32x4.splat)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f32x4.splat-arg-empty (result v128)
+      (f32x4.splat)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i64x2.splat-arg-empty (result v128)
+      (i64x2.splat)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.splat-arg-empty (result v128)
+      (f64x2.splat)
+    )
+  )
+  "type mismatch"
+)

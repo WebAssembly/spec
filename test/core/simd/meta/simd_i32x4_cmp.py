@@ -14,6 +14,8 @@ class Simdi32x4CmpCase(SimdCmpCase):
 
     LANE_TYPE = 'i32x4'
 
+    BINARY_OPS = ['eq', 'ne', 'lt_s', 'lt_u', 'le_s', 'le_u', 'gt_s', 'gt_u', 'ge_s', 'ge_u']
+
     # Overload base class method and set test data for i32x4.
     def get_case_data(self):
 

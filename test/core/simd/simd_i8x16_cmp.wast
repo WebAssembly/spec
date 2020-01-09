@@ -1682,3 +1682,166 @@
 (assert_return (invoke "nested-ge_s"))
 (assert_return (invoke "as-param"))
 
+
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $i8x16.eq-1st-arg-empty (result v128)
+      (i8x16.eq (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.eq-arg-empty (result v128)
+      (i8x16.eq)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.ne-1st-arg-empty (result v128)
+      (i8x16.ne (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.ne-arg-empty (result v128)
+      (i8x16.ne)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.lt_s-1st-arg-empty (result v128)
+      (i8x16.lt_s (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.lt_s-arg-empty (result v128)
+      (i8x16.lt_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.lt_u-1st-arg-empty (result v128)
+      (i8x16.lt_u (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.lt_u-arg-empty (result v128)
+      (i8x16.lt_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.le_s-1st-arg-empty (result v128)
+      (i8x16.le_s (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.le_s-arg-empty (result v128)
+      (i8x16.le_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.le_u-1st-arg-empty (result v128)
+      (i8x16.le_u (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.le_u-arg-empty (result v128)
+      (i8x16.le_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.gt_s-1st-arg-empty (result v128)
+      (i8x16.gt_s (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.gt_s-arg-empty (result v128)
+      (i8x16.gt_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.gt_u-1st-arg-empty (result v128)
+      (i8x16.gt_u (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.gt_u-arg-empty (result v128)
+      (i8x16.gt_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.ge_s-1st-arg-empty (result v128)
+      (i8x16.ge_s (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.ge_s-arg-empty (result v128)
+      (i8x16.ge_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.ge_u-1st-arg-empty (result v128)
+      (i8x16.ge_u (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $i8x16.ge_u-arg-empty (result v128)
+      (i8x16.ge_u)
+    )
+  )
+  "type mismatch"
+)

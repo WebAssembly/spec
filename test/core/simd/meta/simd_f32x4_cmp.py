@@ -16,6 +16,9 @@ from simd_compare import SimdCmpCase
 class Simdf32x4CmpCase(SimdCmpCase):
 
     LANE_TYPE = 'f32x4'
+
+    BINARY_OPS = ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+
     # Test template, using this template to generate tests with variable test datas.
     CASE_TXT = """;; Test all the {lane_type} comparison operators on major boundary values and all special values.
 

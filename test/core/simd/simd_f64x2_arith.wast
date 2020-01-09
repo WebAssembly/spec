@@ -5306,6 +5306,89 @@
 (assert_invalid (module (func (result v128) (f64x2.mul (i64.const 0) (f64.const 0.0)))) "type mismatch")
 (assert_invalid (module (func (result v128) (f64x2.div (i64.const 0) (f64.const 0.0)))) "type mismatch")
 
+;; Test operation with empty argument
+
+(assert_invalid
+  (module
+    (func $f64x2.neg-arg-empty (result v128)
+      (f64x2.neg)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.sqrt-arg-empty (result v128)
+      (f64x2.sqrt)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.add-1st-arg-empty (result v128)
+      (f64x2.add (v128.const f64x2 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.add-arg-empty (result v128)
+      (f64x2.add)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.sub-1st-arg-empty (result v128)
+      (f64x2.sub (v128.const f64x2 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.sub-arg-empty (result v128)
+      (f64x2.sub)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.mul-1st-arg-empty (result v128)
+      (f64x2.mul (v128.const f64x2 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.mul-arg-empty (result v128)
+      (f64x2.mul)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.div-1st-arg-empty (result v128)
+      (f64x2.div (v128.const f64x2 0 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $f64x2.div-arg-empty (result v128)
+      (f64x2.div)
+    )
+  )
+  "type mismatch"
+)
+
 ;; combination
 (module
   (func (export "add-sub") (param v128 v128 v128) (result v128)

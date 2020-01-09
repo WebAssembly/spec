@@ -220,7 +220,59 @@
 (assert_invalid (module (memory 0) (func (result v128) (i64x2.load32x2_s (v128.const i32x4 0 0 0 0)))) "type mismatch")
 (assert_invalid (module (memory 0) (func (result v128) (i64x2.load32x2_u (v128.const i32x4 0 0 0 0)))) "type mismatch")
 
-;; unknown operator
+;; Test operation with empty argument
+
+(assert_invalid
+  (module (memory 0)
+    (func $i16x8.load8x8_s-arg-empty (result v128)
+      (i16x8.load8x8_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 0)
+    (func $i16x8.load8x8_u-arg-empty (result v128)
+      (i16x8.load8x8_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 0)
+    (func $i32x4.load16x4_s-arg-empty (result v128)
+      (i32x4.load16x4_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 0)
+    (func $i32x4.load16x4_u-arg-empty (result v128)
+      (i32x4.load16x4_u)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 0)
+    (func $i64x2.load32x2_s-arg-empty (result v128)
+      (i64x2.load32x2_s)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module (memory 0)
+    (func $i64x2.load32x2_u-arg-empty (result v128)
+      (i64x2.load32x2_u)
+    )
+  )
+  "type mismatch"
+)
+
+;; Unknown operator
+
 (assert_malformed (module quote "(memory 1) (func (drop (i16x8.load16x4_s (i32.const 0))))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (drop (i16x8.load16x4_u (i32.const 0))))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (drop (i32x4.load32x2_s (i32.const 0))))") "unknown operator")
