@@ -217,7 +217,8 @@ Note that a caught exception can be rethrown using the `rethrow` instruction.
 The `rethrow` instruction takes the exception associated with the `exnref` on
 top of the stack, and rethrows the exception. A rethrow has the same effect as a
 throw, other than an exception is not created. Rather, the referenced exception
-on top of the stack is popped and then thrown.
+on top of the stack is popped and then thrown. The `rethrow` instruction traps
+if the value on the top of the stack is null.
 
 ### Exception data extraction
 
@@ -271,7 +272,8 @@ end $end
 ```
 
 If the query fails, the control flow falls through, and no values are pushed
-onto the stack.
+onto the stack. The `br_on_exn` instruction traps if the value on the top of the
+stack is null.
 
 ### Stack traces
 
