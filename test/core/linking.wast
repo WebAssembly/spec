@@ -20,17 +20,17 @@
 (assert_return (invoke $Nf "call Mf.call") (i32.const 2))
 
 (module
-  (import "spectest" "print" (func $f (param i32)))
+  (import "spectest" "print_i32" (func $f (param i32)))
   (export "print" (func $f))
 )
 (register "reexport_f")
 (assert_unlinkable
   (module (import "reexport_f" "print" (func (param i64))))
-  "type mismatch"
+  "incompatible import type"
 )
 (assert_unlinkable
   (module (import "reexport_f" "print" (func (param i32) (result i32))))
-  "type mismatch"
+  "incompatible import type"
 )
 
 
@@ -38,17 +38,30 @@
 
 (module $Mg
   (global $glob (export "glob") i32 (i32.const 42))
-  (func (export "get") (result i32) (get_global $glob))
+  (func (export "get") (result i32) (global.get $glob))
+
+  ;; export mutable globals
+  (global $mut_glob (export "mut_glob") (mut i32) (i32.const 142))
+  (func (export "get_mut") (result i32) (global.get $mut_glob))
+  (func (export "set_mut") (param i32) (global.set $mut_glob (local.get 0)))
 )
 (register "Mg" $Mg)
 
 (module $Ng
   (global $x (import "Mg" "glob") i32)
+  (global $mut_glob (import "Mg" "mut_glob") (mut i32))
   (func $f (import "Mg" "get") (result i32))
+  (func $get_mut (import "Mg" "get_mut") (result i32))
+  (func $set_mut (import "Mg" "set_mut") (param i32))
+
   (export "Mg.glob" (global $x))
   (export "Mg.get" (func $f))
   (global $glob (export "glob") i32 (i32.const 43))
-  (func (export "get") (result i32) (get_global $glob))
+  (func (export "get") (result i32) (global.get $glob))
+
+  (export "Mg.mut_glob" (global $mut_glob))
+  (export "Mg.get_mut" (func $get_mut))
+  (export "Mg.set_mut" (func $set_mut))
 )
 
 (assert_return (get $Mg "glob") (i32.const 42))
@@ -58,6 +71,89 @@
 (assert_return (invoke $Ng "Mg.get") (i32.const 42))
 (assert_return (invoke $Ng "get") (i32.const 43))
 
+(assert_return (get $Mg "mut_glob") (i32.const 142))
+(assert_return (get $Ng "Mg.mut_glob") (i32.const 142))
+(assert_return (invoke $Mg "get_mut") (i32.const 142))
+(assert_return (invoke $Ng "Mg.get_mut") (i32.const 142))
+
+(assert_return (invoke $Mg "set_mut" (i32.const 241)))
+(assert_return (get $Mg "mut_glob") (i32.const 241))
+(assert_return (get $Ng "Mg.mut_glob") (i32.const 241))
+(assert_return (invoke $Mg "get_mut") (i32.const 241))
+(assert_return (invoke $Ng "Mg.get_mut") (i32.const 241))
+
+
+(assert_unlinkable
+  (module (import "Mg" "mut_glob" (global i32)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "Mg" "glob" (global (mut i32))))
+  "incompatible import type"
+)
+
+
+(module $Mref_ex
+  (global (export "g-const-null") nullref (ref.null))
+  (global (export "g-var-null") (mut nullref) (ref.null))
+  (global (export "g-const-func") funcref (ref.null))
+  (global (export "g-var-func") (mut funcref) (ref.null))
+  (global (export "g-const-any") anyref (ref.null))
+  (global (export "g-var-any") (mut anyref) (ref.null))
+)
+(register "Mref_ex" $Mref_ex)
+
+(module $Mref_im
+  (global (import "Mref_ex" "g-const-null") nullref)
+  (global (import "Mref_ex" "g-const-null") funcref)
+  (global (import "Mref_ex" "g-const-null") anyref)
+  (global (import "Mref_ex" "g-const-func") funcref)
+  (global (import "Mref_ex" "g-const-func") anyref)
+  (global (import "Mref_ex" "g-const-any") anyref)
+
+  (global (import "Mref_ex" "g-var-null") (mut nullref))
+  (global (import "Mref_ex" "g-var-func") (mut funcref))
+  (global (import "Mref_ex" "g-var-any") (mut anyref))
+)
+
+(assert_unlinkable
+  (module (global (import "Mref_ex" "g-const-func") nullref))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (global (import "Mref_ex" "g-const-any") nullref))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (global (import "Mref_ex" "g-const-any") funcref))
+  "incompatible import type"
+)
+
+(assert_unlinkable
+  (module (global (import "Mref_ex" "g-var-null") (mut funcref)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (global (import "Mref_ex" "g-var-null") (mut anyref)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (global (import "Mref_ex" "g-var-func") (mut nullref)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (global (import "Mref_ex" "g-var-func") (mut anyref)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (global (import "Mref_ex" "g-var-any") (mut nullref)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (global (import "Mref_ex" "g-var-any") (mut funcref)))
+  "incompatible import type"
+)
+
 
 ;; Tables
 
@@ -65,13 +161,13 @@
   (type (func (result i32)))
   (type (func))
 
-  (table (export "tab") 10 anyfunc)
+  (table (export "tab") 10 funcref)
   (elem (i32.const 2) $g $g $g $g)
   (func $g (result i32) (i32.const 4))
   (func (export "h") (result i32) (i32.const -4))
 
   (func (export "call") (param i32) (result i32)
-    (call_indirect 0 (get_local 0))
+    (call_indirect (type 0) (local.get 0))
   )
 )
 (register "Mt" $Mt)
@@ -83,15 +179,15 @@
   (func $f (import "Mt" "call") (param i32) (result i32))
   (func $h (import "Mt" "h") (result i32))
 
-  (table anyfunc (elem $g $g $g $h $f))
+  (table funcref (elem $g $g $g $h $f))
   (func $g (result i32) (i32.const 5))
 
   (export "Mt.call" (func $f))
   (func (export "call Mt.call") (param i32) (result i32)
-    (call $f (get_local 0))
+    (call $f (local.get 0))
   )
   (func (export "call") (param i32) (result i32)
-    (call_indirect 1 (get_local 0))
+    (call_indirect (type 1) (local.get 0))
   )
 )
 
@@ -122,12 +218,12 @@
   (type (func (result i32)))
 
   (func $h (import "Mt" "h") (result i32))
-  (table (import "Mt" "tab") 5 anyfunc)
+  (table (import "Mt" "tab") 5 funcref)
   (elem (i32.const 1) $i $h)
   (func $i (result i32) (i32.const 6))
 
   (func (export "call") (param i32) (result i32)
-    (call_indirect 0 (get_local 0))
+    (call_indirect (type 0) (local.get 0))
   )
 )
 
@@ -157,14 +253,22 @@
 (assert_trap (invoke $Ot "call" (i32.const 20)) "undefined")
 
 (module
-  (table (import "Mt" "tab") 0 anyfunc)
+  (table (import "Mt" "tab") 0 funcref)
   (elem (i32.const 9) $f)
   (func $f)
 )
 
+(module $G1 (global (export "g") i32 (i32.const 5)))
+(register "G1" $G1)
+(module $G2
+  (global (import "G1" "g") i32)
+  (global (export "g") i32 (global.get 0))
+)
+(assert_return (get $G2 "g") (i32.const 5))
+
 (assert_unlinkable
   (module
-    (table (import "Mt" "tab") 0 anyfunc)
+    (table (import "Mt" "tab") 0 funcref)
     (elem (i32.const 10) $f)
     (func $f)
   )
@@ -173,7 +277,7 @@
 
 (assert_unlinkable
   (module
-    (table (import "Mt" "tab") 10 anyfunc)
+    (table (import "Mt" "tab") 10 funcref)
     (memory (import "Mt" "mem") 1)  ;; does not exist
     (func $f (result i32) (i32.const 0))
     (elem (i32.const 7) $f)
@@ -185,7 +289,7 @@
 
 (assert_unlinkable
   (module
-    (table (import "Mt" "tab") 10 anyfunc)
+    (table (import "Mt" "tab") 10 funcref)
     (func $f (result i32) (i32.const 0))
     (elem (i32.const 7) $f)
     (elem (i32.const 12) $f)  ;; out of bounds
@@ -196,7 +300,7 @@
 
 (assert_unlinkable
   (module
-    (table (import "Mt" "tab") 10 anyfunc)
+    (table (import "Mt" "tab") 10 funcref)
     (func $f (result i32) (i32.const 0))
     (elem (i32.const 7) $f)
     (memory 1)
@@ -207,6 +311,45 @@
 (assert_trap (invoke $Mt "call" (i32.const 7)) "uninitialized")
 
 
+(module $Mtable_ex
+  (table $t1 (export "t-null") 1 nullref)
+  (table $t2 (export "t-func") 1 funcref)
+  (table $t3 (export "t-any") 1 anyref)
+)
+(register "Mtable_ex" $Mtable_ex)
+
+(module
+  (table (import "Mtable_ex" "t-null") 1 nullref)
+  (table (import "Mtable_ex" "t-func") 1 funcref)
+  (table (import "Mtable_ex" "t-any") 1 anyref)
+)
+
+(assert_unlinkable
+  (module (table (import "Mtable_ex" "t-null") 1 funcref))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (table (import "Mtable_ex" "t-null") 1 anyref))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (table (import "Mtable_ex" "t-func") 1 nullref))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (table (import "Mtable_ex" "t-func") 1 anyref))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (table (import "Mtable_ex" "t-any") 1 nullref))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (table (import "Mtable_ex" "t-any") 1 funcref))
+  "incompatible import type"
+)
+
+
 ;; Memories
 
 (module $Mm
@@ -214,7 +357,7 @@
   (data (i32.const 10) "\00\01\02\03\04\05\06\07\08\09")
 
   (func (export "load") (param $a i32) (result i32)
-    (i32.load8_u (get_local 0))
+    (i32.load8_u (local.get 0))
   )
 )
 (register "Mm" $Mm)
@@ -227,7 +370,7 @@
 
   (export "Mm.load" (func $loadM))
   (func (export "load") (param $a i32) (result i32)
-    (i32.load8_u (get_local 0))
+    (i32.load8_u (local.get 0))
   )
 )
 
@@ -240,7 +383,7 @@
   (data (i32.const 5) "\a0\a1\a2\a3\a4\a5\a6\a7")
 
   (func (export "load") (param $a i32) (result i32)
-    (i32.load8_u (get_local 0))
+    (i32.load8_u (local.get 0))
   )
 )
 
@@ -266,7 +409,7 @@
   (memory (import "Mm" "mem") 1 8)
 
   (func (export "grow") (param $a i32) (result i32)
-    (grow_memory (get_local 0))
+    (memory.grow (local.get 0))
   )
 )
 
@@ -283,7 +426,7 @@
   (module
     (func $host (import "spectest" "print"))
     (memory (import "Mm" "mem") 1)
-    (table (import "Mm" "tab") 0 anyfunc)  ;; does not exist
+    (table (import "Mm" "tab") 0 funcref)  ;; does not exist
     (data (i32.const 0) "abc")
   )
   "unknown import"
@@ -304,10 +447,44 @@
   (module
     (memory (import "Mm" "mem") 1)
     (data (i32.const 0) "abc")
-    (table 0 anyfunc)
+    (table 0 funcref)
     (func)
     (elem (i32.const 0) 0) ;; out of bounds
   )
   "elements segment does not fit"
 )
 (assert_return (invoke $Mm "load" (i32.const 0)) (i32.const 0))
+
+;; Store is modified if the start function traps.
+(module $Ms
+  (type $t (func (result i32)))
+  (memory (export "memory") 1)
+  (table (export "table") 1 funcref)
+  (func (export "get memory[0]") (type $t)
+    (i32.load8_u (i32.const 0))
+  )
+  (func (export "get table[0]") (type $t)
+    (call_indirect (type $t) (i32.const 0))
+  )
+)
+(register "Ms" $Ms)
+
+(assert_trap
+  (module
+    (import "Ms" "memory" (memory 1))
+    (import "Ms" "table" (table 1 funcref))
+    (data (i32.const 0) "hello")
+    (elem (i32.const 0) $f)
+    (func $f (result i32)
+      (i32.const 0xdead)
+    )
+    (func $main
+      (unreachable)
+    )
+    (start $main)
+  )
+  "unreachable"
+)
+
+(assert_return (invoke $Ms "get memory[0]") (i32.const 104))  ;; 'h'
+(assert_return (invoke $Ms "get table[0]") (i32.const 0xdead))

@@ -7,14 +7,26 @@ holds a
 [proposal](https://github.com/WebAssembly/exception-handling/blob/master/proposals/Exceptions.md) for
 adding exception handling to WebAssembly.
 
-The repository is a copy
-of [WebAssembly/spec](https://github.com/WebAssembly/spec).
+The repository is a clone
+of [WebAssembly/spec](https://github.com/WebAssembly/spec), and is rebased on the spec of its dependent proposal [WebAssembly/reference-types](https://github.com/WebAssembly/reference-types).
 
-The remainder of the document is contents of the
-original [README.md](https://github.com/WebAssembly/spec/blob/master/README.md)
+The remainder of the document is contents of the [README.md](https://github.com/WebAssembly/reference-types/blob/master/README.md)
 document of that repository.
 
-## spec
+# Reference Types Proposal for WebAssembly
+
+[![Build Status](https://travis-ci.org/WebAssembly/reference-types.svg?branch=master)](https://travis-ci.org/WebAssembly/reference-types)
+
+This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
+It is meant for discussion, prototype specification and implementation of a proposal to add support for basic reference types to WebAssembly.
+
+* See the [overview](proposals/reference-types/Overview.md) for a summary of the proposal.
+
+* See the [modified spec](https://webassembly.github.io/reference-types/core/) for details.
+
+Original `README` from upstream repository follows...
+
+# spec
 
 This repository holds a prototypical reference implementation for WebAssembly,
 which is currently serving as the official specification. Eventually, we expect

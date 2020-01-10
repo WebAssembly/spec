@@ -1,11 +1,30 @@
 language: c++
+language: python
+python:
+  - "2.7"
 
-sudo: off
+sudo: on
 
-install: ./interpreter/travis/install-ocaml.sh
+before_install:
+  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  - sudo apt-get update -qq
 
-script: ./interpreter/travis/build-test.sh
+install:
+  - ./interpreter/meta/travis/install-ocaml.sh
+  - sudo pip install sphinx==1.7.9
+  - sudo apt-get install texlive-full yarn
+  - git clone https://github.com/tabatkins/bikeshed.git
+  - pip install --editable $PWD/bikeshed
+  - bikeshed update
 
-os:
-  - linux
-  - osx
+script:
+  - ./interpreter/meta/travis/build-test.sh
+  - bash ./document/travis-deploy.sh
+
+os: linux
+
+env:
+  global:
+    - ENCRYPTION_LABEL: "5d9ec396f41d"
+    - COMMIT_AUTHOR_EMAIL: "noreply@webassembly.org"

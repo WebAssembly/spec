@@ -6,7 +6,7 @@ Status: ED
 Level: 1
 TR: https://www.w3.org/TR/wasm-js-api-1/
 ED: https://webassembly.github.io/spec/js-api/
-Editor: Daniel Ehrenberg (Igalia)
+Editor: Ms2ger (Igalia)
 Repository: WebAssembly/spec
 Markup Shorthands: css no, markdown yes
 Abstract: This document provides an explicit JavaScript API for interacting with WebAssembly.
@@ -85,7 +85,10 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: the Number value; url: sec-ecmascript-language-types-number-type
         text: NumberToRawBytes; url: sec-numbertorawbytes
         text: Built-in Function Objects; url: sec-built-in-function-objects
-urlPrefix: https://webassembly.github.io/reference-types/core/; spec: WebAssembly; type: dfn
+        text: NativeError Object Structure; url: sec-nativeerror-object-structure
+    type: abstract-op
+        text: CreateMethodProperty; url: sec-createmethodproperty
+urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
     url: valid/modules.html#valid-module
         text: valid
         text: WebAssembly module validation
@@ -149,6 +152,7 @@ urlPrefix: https://webassembly.github.io/reference-types/core/; spec: WebAssembl
     url: syntax/types.html#syntax-reftype
         text: anyref
         text: funcref
+        text: nullref
     text: function element; url: exec/runtime.html#syntax-funcelem
     text: import component; url: syntax/modules.html#imports
     text: external value; url: exec/runtime.html#syntax-externval
@@ -174,6 +178,9 @@ urlPrefix: https://webassembly.github.io/reference-types/core/; spec: WebAssembl
     text: 𝗆𝗈𝖽𝗎𝗅𝖾; url: exec/runtime.html#syntax-frame
     text: 𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌; url: exec/runtime.html#syntax-moduleinst
     text: sequence; url: syntax/conventions.html#grammar-notation
+urlPrefix: https://heycam.github.io/webidl/; spec: WebIDL
+    type: dfn
+        text: create a namespace object; url: create-a-namespace-object
 </pre>
 
 <pre class='link-defaults'>
@@ -183,8 +190,14 @@ spec:infra; type:dfn; for:set; text:append
 spec:ecmascript; type:exception; for:ECMAScript; text:TypeError
 spec:ecmascript; type:exception; for:ECMAScript; text:RangeError
 spec:ecmascript; type:interface; for:ECMAScript; text:ArrayBuffer
-spec:promises-guide-1; type:dfn; text:resolve
+spec:webidl; type:dfn; text:resolve
 </pre>
+
+<style>
+emu-const {
+    font-family: serif;
+}
+</style>
 
 This API privides a way to access WebAssembly [[WEBASSEMBLY]] through a bridge to explicitly construct modules from JavaScript [[ECMASCRIPT]].
 
@@ -692,6 +705,7 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
 
 <pre class="idl">
 enum TableKind {
+  "nullref",
   "anyref",
   "anyfunc",
   // Note: More values may be added in future iterations,
@@ -856,6 +870,10 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |s| equals "i64", return [=𝗂𝟨𝟦=].
     1. If |s| equals "f32", return [=𝖿𝟥𝟤=].
     1. If |s| equals "f64", return [=𝖿𝟨𝟦=].
+    1. If |s| equals "anyref", return [=anyref=].
+    1. If |s| equals "funcref", return [=funcref=].
+    1. If |s| equals "nullref", return [=nullref=].
+    1. Assert: This step is not reached.
 </div>
 
 <div algorithm>
@@ -864,7 +882,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |valuetype| equals [=𝗂𝟨𝟦=], return [=𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. If |valuetype| equals [=𝖿𝟥𝟤=], return [=𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍=] 0.
     1. If |valuetype| equals [=𝖿𝟨𝟦=], return [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] 0.
-    1. Assert: This step is not reached.
+    1. Else, return [=ref.null=].
 </div>
 
 <div algorithm>
@@ -986,12 +1004,11 @@ Note: [=call an Exported Function|Calling an Exported Function=] executes in the
 Note: Exported Functions do not have a \[[Construct]] method and thus it is not possible to call one with the `new` operator.
 
 <div algorithm>
-  To <dfn>run a host function</dfn> from the JavaScript object |func| and type |functype|, perform the following steps:
+  To <dfn>run a host function</dfn> from the JavaScript object |func|, type |functype|, and [=list=] of [=WebAssembly values=] |arguments|, perform the following steps:
 
     1. Let [|parameters|] → [|results|] be |functype|.
     1. Assert: |results|'s [=list/size=] is at most one.
     1. If either |parameters| or |results| contains [=𝗂𝟨𝟦=], throw a {{TypeError}}.
-    1. Let |arguments| be a [=list=] of the arguments of the invocation of this function.
     1. Let |jsArguments| be an empty [=list=].
     1. For each |arg| in |arguments|,
         1. [=list/Append=] ! [=ToJSValue=](|arg|) to |jsArguments|.
@@ -1003,15 +1020,16 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 <div algorithm>
   To <dfn>create a host function</dfn> from the JavaScript object |func| and type |functype|, perform the following steps:
 
-    1. Let |hostfunc| be a [=host function=] which performs the following steps when called:
-        1. Let |result| be the result of [=run a host function|running a host function=] from |func| and |functype|.
-        1. Assert: |result|.\[[Type]] is throw or return.
-        1. If |result|.\[[Type]] is [=throw=], then trigger a WebAssembly trap, and propagate |result|.\[[Value]] to the enclosing JavaScript.
+    1. Assert: [=IsCallable=](|func|).
+    1. Let |hostfunc| be a [=host function=] which performs the following steps when called with arguments |arguments|:
+        1. Let |result| be the result of [=run a host function|running a host function=] from |func|, |functype|, and |arguments|.
+        1. Assert: |result|.\[[Type]] is <emu-const>throw</emu-const> or <emu-const>return</emu-const>.
+        1. If |result|.\[[Type]] is <emu-const>throw</emu-const>, then trigger a WebAssembly trap, and propagate |result|.\[[Value]] to the enclosing JavaScript.
         1. Otherwise, return |result|.\[[Value]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
-    1. Return |funcaddr|
+    1. Return |funcaddr|.
 </div>
 
 <div algorithm>
@@ -1051,11 +1069,14 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|, |error|) coerces a Java
 1. If |type| is [=𝖿𝟨𝟦=],
     1. Let |f64| be ? [=ToNumber=](|v|).
     1. Return [=𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍=] |f64|.
+1. Assert: |type| is a reference type.
 1. If |type| is [=anyref=],
-    1. Return the result of [=allocating a host address=] for |v|.
+    1. Do nothing.
 1. If |type| is [=funcref=],
     1. If |v| is not an [=Exported function=] or null, throw |error|.
-    1. Return the result of [=allocating a host address=] for |v|.
+1. If |type| is [=nullref=],
+    1. If |v| is not null, throw |error|.
+1. Return the result of [=allocating a host address=] for |v|.
 
 </div>
 
@@ -1077,21 +1098,23 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|, |error|) coerces a Java
 
 <h3 id="error-objects">Error Objects</h3>
 
-WebAssembly defines the following Error classes: {{CompileError}}, {{LinkError}}, and {{RuntimeError}}. WebAssembly errors have the following custom bindings:
-- Unlike normal interface types, the interface prototype object for these exception classes must have as its \[[Prototype]] the intrinsic object [=%ErrorPrototype%=].
-- The constructor and properties of WebAssembly errors is as specified for {{NativeError}}.
-- If an implementation gives native Error objects special powers or nonstandard properties (such as a stack property), it should also expose those on these exception instances.
+WebAssembly defines the following Error classes: <dfn exception>CompileError</dfn>, <dfn exception>LinkError</dfn>, and <dfn exception>RuntimeError</dfn>.
 
-<pre class='idl'>
-[LegacyNamespace=WebAssembly]
-interface CompileError { };
+<div algorithm="create the WebAssembly namespace object">
+When the [=namespace object=] for the {{WebAssembly}} namespace is [=create a namespace object|created=], the following steps must be run:
 
-[LegacyNamespace=WebAssembly]
-interface LinkError { };
+1.  Let |namespaceObject| the [=namespace object=].
+1.  [=list/iterate|For each=] |error| of « "CompileError", "LinkError", "RuntimeError" »,
+    1.  Let |constructor| be a new object, implementing the [=NativeError Object Structure=], with <var ignore>NativeError</var> set to |error|.
+    1.  ! [$CreateMethodProperty$](|namespaceObject|, |error|,  |constructor|).
 
-[LegacyNamespace=WebAssembly]
-interface RuntimeError { };
-</pre>
+</div>
+
+Note: This defines {{CompileError}}, {{LinkError}}, and {{RuntimeError}} classes on the {{WebAssembly}} namespace, which are produced by the APIs defined in this specification.
+They expose the same interface as native JavaScript errors like {{TypeError}} and {{RangeError}}.
+
+Note: It is not currently possible to define this behavior using Web IDL.
+
 
 <h2 id="errors">Error Condition Mappings to JavaScript</h2>
 

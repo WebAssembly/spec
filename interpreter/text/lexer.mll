@@ -18,26 +18,34 @@ let error_nest start lexbuf msg =
   lexbuf.Lexing.lex_start_p <- start;
   error lexbuf msg
 
-let text s =
+let string s =
   let b = Buffer.create (String.length s) in
   let i = ref 1 in
   while !i < String.length s - 1 do
     let c = if s.[!i] <> '\\' then s.[!i] else
       match (incr i; s.[!i]) with
       | 'n' -> '\n'
+      | 'r' -> '\r'
       | 't' -> '\t'
       | '\\' -> '\\'
       | '\'' -> '\''
       | '\"' -> '\"'
-      | d ->
+      | 'u' ->
+        let j = !i + 2 in
+        i := String.index_from s j '}';
+        let n = int_of_string ("0x" ^ String.sub s j (!i - j)) in
+        let bs = Utf8.encode [n] in
+        Buffer.add_substring b bs 0 (String.length bs - 1);
+        bs.[String.length bs - 1]
+      | h ->
         incr i;
-        Char.chr (int_of_string ("0x" ^ String.make 1 d ^ String.make 1 s.[!i]))
+        Char.chr (int_of_string ("0x" ^ String.make 1 h ^ String.make 1 s.[!i]))
     in Buffer.add_char b c;
     incr i
   done;
   Buffer.contents b
 
-let value_type = function
+let num_type = function
   | "i32" -> Types.I32Type
   | "i64" -> Types.I64Type
   | "f32" -> Types.F32Type
@@ -80,31 +88,54 @@ let ext e s u =
 let opt = Lib.Option.get
 }
 
-let space = [' ''\t']
+let sign = '+' | '-'
 let digit = ['0'-'9']
 let hexdigit = ['0'-'9''a'-'f''A'-'F']
-let letter = ['a'-'z''A'-'Z']
-let symbol = ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.']
-let tick = '\''
-let escape = ['n''t''\\''\'''\"']
-let character =
-  [^'"''\\''\x00'-'\x1f''\x7f'] | '\\'escape | '\\'hexdigit hexdigit
+let num = digit ('_'? digit)*
+let hexnum = hexdigit ('_'? hexdigit)*
 
-let sign = ('+' | '-')
-let num = digit+
-let hexnum = "0x" hexdigit+
-let nat = num | hexnum
+let letter = ['a'-'z''A'-'Z']
+let symbol =
+  ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
+
+let space = [' ''\t''\n''\r']
+let ascii = ['\x00'-'\x7f']
+let ascii_no_nl = ['\x00'-'\x09''\x0b'-'\x7f']
+let utf8cont = ['\x80'-'\xbf']
+let utf8enc =
+    ['\xc2'-'\xdf'] utf8cont
+  | ['\xe0'] ['\xa0'-'\xbf'] utf8cont
+  | ['\xed'] ['\x80'-'\x9f'] utf8cont
+  | ['\xe1'-'\xec''\xee'-'\xef'] utf8cont utf8cont
+  | ['\xf0'] ['\x90'-'\xbf'] utf8cont utf8cont
+  | ['\xf4'] ['\x80'-'\x8f'] utf8cont utf8cont
+  | ['\xf1'-'\xf3'] utf8cont utf8cont utf8cont
+let utf8 = ascii | utf8enc
+let utf8_no_nl = ascii_no_nl | utf8enc
+
+let escape = ['n''r''t''\\''\'''\"']
+let character =
+    [^'"''\\''\x00'-'\x1f''\x7f'-'\xff']
+  | utf8enc
+  | '\\'escape
+  | '\\'hexdigit hexdigit 
+  | "\\u{" hexnum '}'
+
+let nat = num | "0x" hexnum
 let int = sign nat
+let frac = num
+let hexfrac = hexnum
 let float =
-    sign? num '.' digit*
-  | sign? num ('.' digit*)? ('e' | 'E') sign? num
-  | sign? "0x" hexdigit+ '.'? hexdigit* ('e' | 'E' | 'p') sign? digit+
+    sign? num '.' frac?
+  | sign? num ('.' frac?)? ('e' | 'E') sign? num
+  | sign? "0x" hexnum '.' hexfrac?
+  | sign? "0x" hexnum ('.' hexfrac?)? ('p' | 'P') sign? num
   | sign? "inf"
-  | sign? "infinity"
   | sign? "nan"
-  | sign? "nan:0x" hexdigit+
-let text = '"' character* '"'
-let name = '$' (letter | digit | '_' | tick | symbol)+
+  | sign? "nan:" "0x" hexnum
+let string = '"' character* '"'
+let name = '$' (letter | digit | '_' | symbol)+
+let reserved = ([^'\"''('')'';'] # space)+  (* hack for table size *)
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
@@ -117,17 +148,24 @@ let mem_size = "8" | "16" | "32"
 rule token = parse
   | "(" { LPAR }
   | ")" { RPAR }
+
   | nat as s { NAT s }
   | int as s { INT s }
   | float as s { FLOAT s }
-  | text as s { TEXT (text s) }
-  | '"'character*('\n'|eof) { error lexbuf "unclosed text literal" }
+
+  | string as s { STRING (string s) }
+  | '"'character*('\n'|eof) { error lexbuf "unclosed string literal" }
   | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
-    { error lexbuf "illegal control character in text literal" }
+    { error lexbuf "illegal control character in string literal" }
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
-  | (nxx as t) { VALUE_TYPE (value_type t) }
+  | "anyref" { ANYREF }
+  | "funcref" { FUNCREF }
+  | "nullref" { NULLREF }
+  | (nxx as t) { NUM_TYPE (num_type t) }
+  | "mut" { MUT }
+
   | (nxx as t)".const"
     { let open Source in
       CONST (numop t
@@ -140,8 +178,10 @@ rule token = parse
         (fun s -> let n = F64.of_string s.it in
           f64_const (n @@ s.at), Values.F64 n))
     }
-  | "anyfunc" { ANYFUNC }
-  | "mut" { MUT }
+  | "ref.null" { REF_NULL }
+  | "ref.func" { REF_FUNC }
+  | "ref.host" { REF_HOST }
+  | "ref.is_null" { REF_IS_NULL }
 
   | "nop" { NOP }
   | "unreachable" { UNREACHABLE }
@@ -160,11 +200,17 @@ rule token = parse
   | "call" { CALL }
   | "call_indirect" { CALL_INDIRECT }
 
-  | "get_local" { GET_LOCAL }
-  | "set_local" { SET_LOCAL }
-  | "tee_local" { TEE_LOCAL }
-  | "get_global" { GET_GLOBAL }
-  | "set_global" { SET_GLOBAL }
+  | "local.get" { LOCAL_GET }
+  | "local.set" { LOCAL_SET }
+  | "local.tee" { LOCAL_TEE }
+  | "global.get" { GLOBAL_GET }
+  | "global.set" { GLOBAL_SET }
+
+  | "table.get" { TABLE_GET }
+  | "table.set" { TABLE_SET }
+  | "table.size" { TABLE_SIZE }
+  | "table.grow" { TABLE_GROW }
+  | "table.fill" { TABLE_FILL }
 
   | (nxx as t)".load"
     { LOAD (fun a o ->
@@ -255,34 +301,34 @@ rule token = parse
   | (fxx as t)".gt" { COMPARE (floatop t f32_gt f64_gt) }
   | (fxx as t)".ge" { COMPARE (floatop t f32_ge f64_ge) }
 
-  | "i32.wrap/i64" { CONVERT i32_wrap_i64 }
-  | "i64.extend_s/i32" { CONVERT i64_extend_s_i32 }
-  | "i64.extend_u/i32" { CONVERT i64_extend_u_i32 }
-  | "f32.demote/f64" { CONVERT f32_demote_f64 }
-  | "f64.promote/f32" { CONVERT f64_promote_f32 }
-  | (ixx as t)".trunc_s/f32"
-    { CONVERT (intop t i32_trunc_s_f32 i64_trunc_s_f32) }
-  | (ixx as t)".trunc_u/f32"
-    { CONVERT (intop t i32_trunc_u_f32 i64_trunc_u_f32) }
-  | (ixx as t)".trunc_s/f64"
-    { CONVERT (intop t i32_trunc_s_f64 i64_trunc_s_f64) }
-  | (ixx as t)".trunc_u/f64"
-    { CONVERT (intop t i32_trunc_u_f64 i64_trunc_u_f64) }
-  | (fxx as t)".convert_s/i32"
-    { CONVERT (floatop t f32_convert_s_i32 f64_convert_s_i32) }
-  | (fxx as t)".convert_u/i32"
-    { CONVERT (floatop t f32_convert_u_i32 f64_convert_u_i32) }
-  | (fxx as t)".convert_s/i64"
-    { CONVERT (floatop t f32_convert_s_i64 f64_convert_s_i64) }
-  | (fxx as t)".convert_u/i64"
-    { CONVERT (floatop t f32_convert_u_i64 f64_convert_u_i64) }
-  | "f32.reinterpret/i32" { CONVERT f32_reinterpret_i32 }
-  | "f64.reinterpret/i64" { CONVERT f64_reinterpret_i64 }
-  | "i32.reinterpret/f32" { CONVERT i32_reinterpret_f32 }
-  | "i64.reinterpret/f64" { CONVERT i64_reinterpret_f64 }
+  | "i32.wrap_i64" { CONVERT i32_wrap_i64 }
+  | "i64.extend_i32_s" { CONVERT i64_extend_i32_s }
+  | "i64.extend_i32_u" { CONVERT i64_extend_i32_u }
+  | "f32.demote_f64" { CONVERT f32_demote_f64 }
+  | "f64.promote_f32" { CONVERT f64_promote_f32 }
+  | (ixx as t)".trunc_f32_s"
+    { CONVERT (intop t i32_trunc_f32_s i64_trunc_f32_s) }
+  | (ixx as t)".trunc_f32_u"
+    { CONVERT (intop t i32_trunc_f32_u i64_trunc_f32_u) }
+  | (ixx as t)".trunc_f64_s"
+    { CONVERT (intop t i32_trunc_f64_s i64_trunc_f64_s) }
+  | (ixx as t)".trunc_f64_u"
+    { CONVERT (intop t i32_trunc_f64_u i64_trunc_f64_u) }
+  | (fxx as t)".convert_i32_s"
+    { CONVERT (floatop t f32_convert_i32_s f64_convert_i32_s) }
+  | (fxx as t)".convert_i32_u"
+    { CONVERT (floatop t f32_convert_i32_u f64_convert_i32_u) }
+  | (fxx as t)".convert_i64_s"
+    { CONVERT (floatop t f32_convert_i64_s f64_convert_i64_s) }
+  | (fxx as t)".convert_i64_u"
+    { CONVERT (floatop t f32_convert_i64_u f64_convert_i64_u) }
+  | "f32.reinterpret_i32" { CONVERT f32_reinterpret_i32 }
+  | "f64.reinterpret_i64" { CONVERT f64_reinterpret_i64 }
+  | "i32.reinterpret_f32" { CONVERT i32_reinterpret_f32 }
+  | "i64.reinterpret_f64" { CONVERT i64_reinterpret_f64 }
 
-  | "current_memory" { CURRENT_MEMORY }
-  | "grow_memory" { GROW_MEMORY }
+  | "memory.size" { MEMORY_SIZE }
+  | "memory.grow" { MEMORY_GROW }
 
   | "type" { TYPE }
   | "func" { FUNC }
@@ -291,7 +337,6 @@ rule token = parse
   | "result" { RESULT }
   | "local" { LOCAL }
   | "global" { GLOBAL }
-  | "module" { MODULE }
   | "table" { TABLE }
   | "memory" { MEMORY }
   | "elem" { ELEM }
@@ -299,6 +344,10 @@ rule token = parse
   | "offset" { OFFSET }
   | "import" { IMPORT }
   | "export" { EXPORT }
+
+  | "module" { MODULE }
+  | "binary" { BIN }
+  | "quote" { QUOTE }
 
   | "script" { SCRIPT }
   | "register" { REGISTER }
@@ -310,6 +359,8 @@ rule token = parse
   | "assert_return" { ASSERT_RETURN }
   | "assert_return_canonical_nan" { ASSERT_RETURN_CANONICAL_NAN }
   | "assert_return_arithmetic_nan" { ASSERT_RETURN_ARITHMETIC_NAN }
+  | "assert_return_ref" { ASSERT_RETURN_REF }
+  | "assert_return_func" { ASSERT_RETURN_FUNC }
   | "assert_trap" { ASSERT_TRAP }
   | "assert_exhaustion" { ASSERT_EXHAUSTION }
   | "input" { INPUT }
@@ -317,17 +368,22 @@ rule token = parse
 
   | name as s { VAR s }
 
-  | ";;"[^'\n']*eof { EOF }
-  | ";;"[^'\n']*'\n' { Lexing.new_line lexbuf; token lexbuf }
+  | ";;"utf8_no_nl*eof { EOF }
+  | ";;"utf8_no_nl*'\n' { Lexing.new_line lexbuf; token lexbuf }
+  | ";;"utf8_no_nl* { token lexbuf (* causes error on following position *) }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
-  | space { token lexbuf }
+  | space#'\n' { token lexbuf }
   | '\n' { Lexing.new_line lexbuf; token lexbuf }
   | eof { EOF }
-  | _ { error lexbuf "unknown operator" }
+
+  | reserved { error lexbuf "unknown operator" }
+  | utf8 { error lexbuf "malformed operator" }
+  | _ { error lexbuf "malformed UTF-8 encoding" }
 
 and comment start = parse
   | ";)" { () }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; comment start lexbuf }
   | '\n' { Lexing.new_line lexbuf; comment start lexbuf }
   | eof { error_nest start lexbuf "unclosed comment" }
-  | _ { comment start lexbuf }
+  | utf8 { comment start lexbuf }
+  | _ { error lexbuf "malformed UTF-8 encoding" }
