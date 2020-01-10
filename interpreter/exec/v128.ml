@@ -1,9 +1,8 @@
 include Simd.Make
   (struct
-    include Bytes
+    include String
     let bytewidth = 16
-    let of_bits = Bytes.of_string
-    let to_bits = Bytes.to_string
+    let to_string s = s
 
     let of_strings shape ss =
       if List.length ss <> Simd.lanes shape then raise (Invalid_argument "wrong length");
@@ -28,5 +27,5 @@ include Simd.Make
         List.iteri (fun i s -> set_int32_le b (i * 4) (F32.to_bits (F32.of_string s))) ss
       | Simd.F64x2 ->
         List.iteri (fun i s -> set_int64_le b (i * 8) (F64.to_bits (F64.of_string s))) ss);
-      b
+      Bytes.to_string b
   end)
