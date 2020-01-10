@@ -41,6 +41,9 @@ The following conventions are adopted in defining grammar rules for abstract syn
 
 * Some productions are augmented with side conditions in parentheses, ":math:`(\iff \X{condition})`", that provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
+* If the same meta variable or non-terminal symbol appears multiple times in a production, then all those occurrences must have the same instantiation.
+  (This is a shorthand for a side condition requiring multiple different variables to be equal.)
+
 
 .. _notation-epsilon:
 .. _notation-length:
@@ -81,6 +84,7 @@ Moreover, the following conventions are employed:
   then the occurrences of :math:`x` in a sequence written :math:`(A_1~x~A_2)^n` are assumed to be in point-wise correspondence with :math:`x^n`
   (similarly for :math:`x^\ast`, :math:`x^+`, :math:`x^?`).
   This implicitly expresses a form of mapping syntactic constructions over a sequence.
+
 
 Productions of the following form are interpreted as *records* that map a fixed set of fields :math:`\K{field}_i` to "values" :math:`A_i`, respectively:
 

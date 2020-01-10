@@ -243,17 +243,17 @@ The |LOCALTEE| instruction is like |LOCALSET| but also returns its argument.
 
 .. index:: ! table instruction, table, table index, trap
    pair: abstract syntax; instruction
+.. _syntax-instr-table:
 .. _syntax-table.get:
 .. _syntax-table.set:
 .. _syntax-table.size:
 .. _syntax-table.grow:
 .. _syntax-table.fill:
-.. _syntax-instr-table:
 
 Table Instructions
 ~~~~~~~~~~~~~~~~~~
 
-Instructions in this group are concerned with accessing :ref:`tables <syntax-table>`.
+Instructions in this group are concerned with tables :ref:`table <syntax-table>`.
 
 .. math::
    \begin{array}{llcl}
@@ -264,6 +264,9 @@ Instructions in this group are concerned with accessing :ref:`tables <syntax-tab
      \TABLESIZE~\tableidx \\&&|&
      \TABLEGROW~\tableidx \\&&|&
      \TABLEFILL~\tableidx \\
+     \TABLECOPY \\&&|&
+     \TABLEINIT~\elemidx \\&&|&
+     \ELEMDROP~\elemidx \\
    \end{array}
 
 The |TABLEGET| and |TABLESET| instructions load or store an element in a table, respectively.
@@ -273,6 +276,10 @@ The |TABLEGROW| instruction grows table by a given delta and returns the previou
 It also takes an initialization value for the newly allocated entries.
 
 The |TABLEFILL| instruction sets all entries in a range to a given value.
+
+The |TABLECOPY| instruction copies elements from a source table region to a possibly overlapping destination region.
+The |TABLEINIT| instruction copies elements from a :ref:`passive element segment <syntax-elem>` into a table.
+The |ELEMDROP| instruction prevents further use of a passive element segment. This instruction is intended to be used as an optimization hint. After an element segment is dropped its elements can no longer be retrieved, so the memory used by this segment may be freed.
 
 An additional instruction that accesses a table is the :ref:`control instruction <syntax-instr-control>` |CALLINDIRECT|.
 
@@ -306,7 +313,11 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
      \K{i}\X{nn}\K{.}\STORE\K{16}~\memarg ~|~
      \K{i64.}\STORE\K{32}~\memarg \\&&|&
      \MEMORYSIZE \\&&|&
-     \MEMORYGROW \\
+     \MEMORYGROW \\&&|&
+     \MEMORYFILL \\&&|&
+     \MEMORYCOPY \\&&|&
+     \MEMORYINIT~\dataidx \\&&|&
+     \DATADROP~\dataidx \\
    \end{array}
 
 Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
@@ -324,6 +335,11 @@ A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside th
 The |MEMORYSIZE| instruction returns the current size of a memory.
 The |MEMORYGROW| instruction grows memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
 Both instructions operate in units of :ref:`page size <page-size>`.
+
+The |MEMORYFILL| instruction sets all values in a region to a given byte.
+The |MEMORYCOPY| instruction copies data from a source memory region to a possibly overlapping destination region.
+The |MEMORYINIT| instruction copies data from a :ref:`passive data segment <syntax-data>` into a memory.
+The |DATADROP| instruction prevents further use of a passive data segment. This instruction is intended to be used as an optimization hint. After a data segment is dropped its data can no longer be retrieved, so the memory used by this segment may be freed.
 
 .. note::
    In the current version of WebAssembly,

@@ -1,6 +1,7 @@
 (module
   (table $t2 2 anyref)
-  (table $t3 3 funcref) (elem $t3 (i32.const 1) $dummy)
+  (table $t3 3 funcref)
+  (elem (table $t3) (i32.const 1) func $dummy)
   (func $dummy)
 
   (func (export "init") (param $r anyref)

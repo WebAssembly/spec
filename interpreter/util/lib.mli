@@ -30,6 +30,7 @@ sig
   val nth : 'a list -> int32 -> 'a (* raises Failure *)
   val take : int32 -> 'a list -> 'a list (* raises Failure *)
   val drop : int32 -> 'a list -> 'a list (* raises Failure *)
+  val mapi : (int32 -> 'a -> 'b) -> 'a list -> 'b list
 end
 
 module Array32 :

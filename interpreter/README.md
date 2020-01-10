@@ -229,10 +229,17 @@ op:
   table.size <var>
   table.grow <var>
   table.fill <var>
+  table.copy
+  table.init <var>
+  elem.drop <var>
   <val_type>.load((8|16|32)_<sign>)? <offset>? <align>?
   <val_type>.store(8|16|32)? <offset>? <align>?
   memory.size
   memory.grow
+  memory.fill
+  memory.copy
+  memory.init <var>
+  data.drop <var>
   ref.null
   ref.isnull
   ref.func <var>

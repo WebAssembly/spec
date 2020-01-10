@@ -6,6 +6,7 @@ open Values
 type size = int32  (* number of pages *)
 type address = int64
 type offset = int32
+type count = int32
 
 type pack_size = Pack8 | Pack16 | Pack32
 type extension = SX | ZX

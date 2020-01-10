@@ -39,6 +39,9 @@ let table_set x = TableSet x
 let table_size x = TableSize x
 let table_grow x = TableGrow x
 let table_fill x = TableFill x
+let table_copy x y = TableCopy (x, y)
+let table_init x y = TableInit (x, y)
+let elem_drop x = ElemDrop x
 
 let i32_load align offset = Load {ty = I32Type; align; offset; sz = None}
 let i64_load align offset = Load {ty = I64Type; align; offset; sz = None}
@@ -79,6 +82,13 @@ let i64_store16 align offset =
   Store {ty = I64Type; align; offset; sz = Some Pack16}
 let i64_store32 align offset =
   Store {ty = I64Type; align; offset; sz = Some Pack32}
+
+let memory_size = MemorySize
+let memory_grow = MemoryGrow
+let memory_fill = MemoryFill
+let memory_copy = MemoryCopy
+let memory_init x = MemoryInit x
+let data_drop x = DataDrop x
 
 let i32_clz = Unary (I32 I32Op.Clz)
 let i32_ctz = Unary (I32 I32Op.Ctz)
@@ -207,7 +217,3 @@ let i32_reinterpret_f32 = Convert (I32 I32Op.ReinterpretFloat)
 let i64_reinterpret_f64 = Convert (I64 I64Op.ReinterpretFloat)
 let f32_reinterpret_i32 = Convert (F32 F32Op.ReinterpretInt)
 let f64_reinterpret_i64 = Convert (F64 F64Op.ReinterpretInt)
-
-let memory_size = MemorySize
-let memory_grow = MemoryGrow
-

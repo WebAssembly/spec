@@ -251,10 +251,17 @@ let rec instr e =
     | TableSize x -> "table.size " ^ var x, []
     | TableGrow x -> "table.grow " ^ var x, []
     | TableFill x -> "table.fill " ^ var x, []
+    | TableCopy (x, y) -> "table.copy", []  (*TODO*)
+    | TableInit (x, y) -> "table.init " ^ var y, []  (*TODO*)
+    | ElemDrop x -> "elem.drop " ^ var x, []
     | Load op -> loadop op, []
     | Store op -> storeop op, []
     | MemorySize -> "memory.size", []
     | MemoryGrow -> "memory.grow", []
+    | MemoryFill -> "memory.fill", []
+    | MemoryCopy -> "memory.copy", []
+    | MemoryInit x -> "memory.init " ^ var x, []
+    | DataDrop x -> "data.drop " ^ var x, []
     | RefNull -> "ref.null", []
     | RefIsNull -> "ref.is_null", []
     | RefFunc x -> "ref.func " ^ var x, []
@@ -266,8 +273,10 @@ let rec instr e =
     | Convert op -> cvtop op, []
   in Node (head, inner)
 
-let const c =
-  list instr c.it
+let const head c =
+  match c.it with
+  | [e] -> instr e
+  | es -> Node (head, list instr c.it)
 
 
 (* Functions *)
@@ -301,15 +310,44 @@ let memory off i mem =
   let {mtype = MemoryType lim} = mem.it in
   Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
 
-let segment head dat seg =
-  let {index; offset; init} = seg.it in
-  Node (head, atom var index :: Node ("offset", const offset) :: dat init)
+let is_elem_kind = function
+  | FuncRefType -> true
+  | _ -> false
 
-let elems seg =
-  segment "elem" (list (atom var)) seg
+let elem_kind = function
+  | FuncRefType -> "func"
+  | _ -> assert false
+
+let is_elem_index e =
+  match e.it with
+  | [{it = RefFunc _; _}] -> true
+  | _ -> false
+
+let elem_index e =
+  match e.it with
+  | [{it = RefFunc x; _}] -> atom var x
+  | _ -> assert false
+
+let segment_mode category mode =
+  match mode.it with
+  | Passive -> []
+  | Active {index; offset} ->
+    (if index.it = 0l then [] else [Node (category, [atom var index])]) @
+    [const "offset" offset]
+
+let elem seg =
+  let {etype; einit; emode} = seg.it in
+  Node ("elem",
+    segment_mode "table" emode @
+    if is_elem_kind etype && List.for_all is_elem_index einit then
+      atom elem_kind etype :: list elem_index einit
+    else
+      atom ref_type etype :: list (const "item") einit
+  )
 
 let data seg =
-  segment "data" break_bytes seg
+  let {dinit; dmode} = seg.it in
+  Node ("data", segment_mode "memory" dmode @ break_bytes dinit)
 
 
 (* Modules *)
@@ -346,8 +384,8 @@ let export ex =
   Node ("export", [atom name n; export_desc edesc])
 
 let global off i g =
-  let {gtype; value} = g.it in
-  Node ("global $" ^ nat (off + i), global_type gtype :: const value)
+  let {gtype; ginit} = g.it in
+  Node ("global $" ^ nat (off + i), global_type gtype :: list instr ginit.it)
 
 
 (* Modules *)
@@ -371,8 +409,8 @@ let module_with_var_opt x_opt m =
     listi (func_with_index !fx) m.it.funcs @
     list export m.it.exports @
     opt start m.it.start @
-    list elems m.it.elems @
-    list data m.it.data
+    list elem m.it.elems @
+    list data m.it.datas
   )
 
 let binary_module_with_var_opt x_opt bs =

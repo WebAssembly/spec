@@ -30,6 +30,17 @@ let type_of_value = function
   | Ref r -> RefType (type_of_ref r)
 
 
+(* Projections *)
+
+let as_num = function
+  | Num n -> n
+  | Ref _ -> failwith "as_num"
+
+let as_ref = function
+  | Num _ -> failwith "as_ref"
+  | Ref r -> r
+
+
 (* Defaults *)
 
 let default_num = function

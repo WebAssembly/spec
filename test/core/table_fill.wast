@@ -51,8 +51,8 @@
   "out of bounds"
 )
 (assert_return (invoke "get" (i32.const 7)) (ref.null))
-(assert_return (invoke "get" (i32.const 8)) (ref.host 6))
-(assert_return (invoke "get" (i32.const 9)) (ref.host 6))
+(assert_return (invoke "get" (i32.const 8)) (ref.host 4))
+(assert_return (invoke "get" (i32.const 9)) (ref.null))
 
 (assert_trap
   (invoke "fill" (i32.const 11) (ref.null) (i32.const 0))

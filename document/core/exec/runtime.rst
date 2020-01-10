@@ -93,7 +93,9 @@ Store
 ~~~~~
 
 The *store* represents all global state that can be manipulated by WebAssembly programs.
-It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
+It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>`, :ref:`element segments <syntax-eleminst>`, and :ref:`data segments <syntax-datainst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
+
+It is an invariant of the semantics that no element or data instance is :ref:`addressed <syntax-addr>` from anywhere else but the owning module instances.
 
 Syntactically, the store is defined as a :ref:`record <notation-record>` listing the existing instances of each category:
 
@@ -104,7 +106,9 @@ Syntactically, the store is defined as a :ref:`record <notation-record>` listing
      \SFUNCS & \funcinst^\ast, \\
      \STABLES & \tableinst^\ast, \\
      \SMEMS & \meminst^\ast, \\
-     \SGLOBALS & \globalinst^\ast ~\} \\
+     \SGLOBALS & \globalinst^\ast, \\
+     \SELEMS & \eleminst^\ast, \\
+     \SDATAS & \datainst^\ast ~\} \\
      \end{array}
    \end{array}
 
@@ -120,28 +124,34 @@ Convention
 * The meta variable :math:`S` ranges over stores where clear from context.
 
 
-.. index:: ! address, store, function instance, table instance, memory instance, global instance, embedder
+.. index:: ! address, store, function instance, table instance, memory instance, global instance, element instance, data instance, embedder
    pair: abstract syntax; function address
    pair: abstract syntax; table address
    pair: abstract syntax; memory address
    pair: abstract syntax; global address
+   pair: abstract syntax; element address
+   pair: abstract syntax; data address
    pair: abstract syntax; host address
    pair: function; address
    pair: table; address
    pair: memory; address
    pair: global; address
+   pair: element; address
+   pair: data; address
    pair: host; address
 .. _syntax-funcaddr:
 .. _syntax-tableaddr:
 .. _syntax-memaddr:
 .. _syntax-globaladdr:
+.. _syntax-elemaddr:
+.. _syntax-dataaddr:
 .. _syntax-hostaddr:
 .. _syntax-addr:
 
 Addresses
 ~~~~~~~~~
 
-:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
+:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>`, :ref:`element instances <syntax-eleminst>`, and :ref:`data instances <syntax-datainst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
 These are simply indices into the respective store component.
 In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *host addresses*.
 
@@ -156,6 +166,10 @@ In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *h
    \production{(memory address)} & \memaddr &::=&
      \addr \\
    \production{(global address)} & \globaladdr &::=&
+     \addr \\
+   \production{(element address)} & \elemaddr &::=&
+     \addr \\
+   \production{(data address)} & \dataaddr &::=&
      \addr \\
    \production{(host address)} & \hostaddr &::=&
      \addr \\
@@ -176,7 +190,7 @@ even where this identity is not observable from within WebAssembly code itself
    hence logical addresses can be arbitrarily large natural numbers.
 
 
-.. index:: ! instance, function type, function instance, table instance, memory instance, global instance, export instance, table address, memory address, global address, index, name
+.. index:: ! instance, function type, function instance, table instance, memory instance, global instance, element instance, data instance, export instance, table address, memory address, global address, element address, data address, index, name
    pair: abstract syntax; module instance
    pair: module; instance
 .. _syntax-moduleinst:
@@ -197,6 +211,8 @@ and collects runtime representations of all entities that are imported, defined,
      \MITABLES & \tableaddr^\ast, \\
      \MIMEMS & \memaddr^\ast, \\
      \MIGLOBALS & \globaladdr^\ast, \\
+     \MIELEMS & \elemaddr^\ast, \\
+     \MIDATAS & \dataaddr^\ast, \\
      \MIEXPORTS & \exportinst^\ast ~\} \\
      \end{array}
    \end{array}
@@ -310,6 +326,42 @@ The value of mutable globals can be mutated through :ref:`variable instructions 
 It is an invariant of the semantics that the value has a type :ref:`matching <match-valtype>` the :ref:`value type <syntax-valtype>` of :math:`\globaltype`.
 
 
+.. index:: ! element instance, element segment, embedder, element expression
+   pair: abstract syntax; element instance
+   pair: element; instance
+.. _syntax-eleminst:
+
+Element Instances
+~~~~~~~~~~~~~~~~~
+
+An *element instance* is the runtime representation of an :ref:`element segment <syntax-elem>`.
+It holds a vector of references and their common :ref:`type <syntax-reftype>`.
+
+.. math::
+  \begin{array}{llll}
+  \production{(element instance)} & \eleminst &::=&
+    \{ \EITYPE~\reftype, \EIELEM~\vec(\funcelem) \} \\
+  \end{array}
+
+
+.. index:: ! data instance, data segment, embedder, byte
+  pair: abstract syntax; data instance
+  pair: data; instance
+.. _syntax-datainst:
+
+Data Instances
+~~~~~~~~~~~~~~
+
+An *data instance* is the runtime representation of a :ref:`data segment <syntax-data>`.
+It holds a vector of :ref:`bytes <syntax-byte>`.
+
+.. math::
+  \begin{array}{llll}
+  \production{(data instance)} & \datainst &::=&
+    \{ \DIDATA~\vec(\byte) \} \\
+  \end{array}
+
+
 .. index:: ! export instance, export, name, external value
    pair: abstract syntax; export instance
    pair: export; instance
@@ -362,8 +414,6 @@ It filters out entries of a specific kind in an order-preserving fashion:
 * :math:`\evmems(\externval^\ast) = [\memaddr ~|~ (\EVMEM~\memaddr) \in \externval^\ast]`
 
 * :math:`\evglobals(\externval^\ast) = [\globaladdr ~|~ (\EVGLOBAL~\globaladdr) \in \externval^\ast]`
-
-
 
 .. index:: ! stack, ! frame, ! label, instruction, store, activation, function, call, local, module instance
    pair: abstract syntax; frame
@@ -461,8 +511,6 @@ Conventions
 .. _syntax-trap:
 .. _syntax-reffuncaddr:
 .. _syntax-invoke:
-.. _syntax-init_elem:
-.. _syntax-init_data:
 .. _syntax-instr-admin:
 
 Administrative Instructions
@@ -481,8 +529,6 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
      \REFFUNCADDR~\funcaddr \\ &&|&
      \REFHOST~\hostaddr \\ &&|&
      \INVOKE~\funcaddr \\ &&|&
-     \INITELEM~\tableaddr~\u32~\funcidx^\ast \\ &&|&
-     \INITDATA~\memaddr~\u32~\byte^\ast \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
      \FRAME_n\{\frame\}~\instr^\ast~\END \\
    \end{array}
@@ -494,11 +540,6 @@ The |REFFUNCADDR| instruction represents :ref:`function reference values <syntax
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.
-
-The |INITELEM| and |INITDATA| instructions perform initialization of :ref:`element <syntax-elem>` and :ref:`data <syntax-data>` segments during module :ref:`instantiation <exec-instantiation>`.
-
-.. note::
-   The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.
 
 The |LABEL| and |FRAME| instructions model :ref:`labels <syntax-label>` and :ref:`frames <syntax-frame>` :ref:`"on the stack" <exec-notation>`.
 Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instr-seq>` with an |END| marker.

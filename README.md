@@ -9,7 +9,9 @@ It is meant for discussion, prototype specification and implementation of a prop
 
 * See the [modified spec](https://webassembly.github.io/reference-types/core/) for details.
 
-Original `README` from upstream repository follows...
+The repository is now based on the [bulk operations proposal](proposals/bulk-memory-operations/Overview.md) and includes all respective changes.
+
+Original README from upstream repository follows...
 
 # spec
 
