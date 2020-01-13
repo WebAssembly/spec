@@ -469,6 +469,22 @@ let action act =
   | Get (x_opt, name) ->
     Node ("get" ^ access x_opt name, [])
 
+let nan = function
+  | CanonicalNan -> "nan:canonical"
+  | ArithmeticNan -> "nan:arithmetic"
+
+let result res =
+  match res.it with
+  | LitResult lit -> value lit
+  | NanResult nanop ->
+    (match nanop.it with
+    | Values.I32 _ | Values.I64 _ -> assert false
+    | Values.F32 n -> Node ("f32.const " ^ nan n, [])
+    | Values.F64 n -> Node ("f64.const " ^ nan n, [])
+    )
+  | RefResult -> Node ("ref", [])
+  | FuncResult -> Node ("ref.func", [])
+
 let assertion mode ass =
   match ass.it with
   | AssertMalformed (def, re) ->
@@ -479,16 +495,8 @@ let assertion mode ass =
     Node ("assert_unlinkable", [definition mode None def; Atom (string re)])
   | AssertUninstantiable (def, re) ->
     Node ("assert_trap", [definition mode None def; Atom (string re)])
-  | AssertReturn (act, vs) ->
-    Node ("assert_return", action act :: List.map value vs)
-  | AssertReturnCanonicalNaN act ->
-    Node ("assert_return_canonical_nan", [action act])
-  | AssertReturnArithmeticNaN act ->
-    Node ("assert_return_arithmetic_nan", [action act])
-  | AssertReturnRef act ->
-    Node ("assert_return_ref", [action act])
-  | AssertReturnFunc act ->
-    Node ("assert_return_func", [action act])
+  | AssertReturn (act, results) ->
+    Node ("assert_return", action act :: List.map result results)
   | AssertTrap (act, re) ->
     Node ("assert_trap", [action act; Atom (string re)])
   | AssertExhaustion (act, re) ->

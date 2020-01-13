@@ -14,17 +14,24 @@ and action' =
   | Invoke of var option * Ast.name * value list
   | Get of var option * Ast.name
 
+type nanop = nanop' Source.phrase
+and nanop' = (unit, unit, nan, nan) Values.op
+and nan = CanonicalNan | ArithmeticNan
+
+type result = result' Source.phrase
+and result' =
+  | LitResult of Values.value Source.phrase
+  | NanResult of nanop
+  | RefResult
+  | FuncResult
+
 type assertion = assertion' Source.phrase
 and assertion' =
   | AssertMalformed of definition * string
   | AssertInvalid of definition * string
   | AssertUnlinkable of definition * string
   | AssertUninstantiable of definition * string
-  | AssertReturn of action * value list
-  | AssertReturnCanonicalNaN of action
-  | AssertReturnArithmeticNaN of action
-  | AssertReturnRef of action
-  | AssertReturnFunc of action
+  | AssertReturn of action * result list
   | AssertTrap of action * string
   | AssertExhaustion of action * string
 

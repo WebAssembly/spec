@@ -240,10 +240,42 @@ let print_module x_opt m =
   List.iter (print_export m) m.it.Ast.exports;
   flush_all ()
 
-let print_result vs =
+let print_values vs =
   let ts = List.map Values.type_of_value vs in
   Printf.printf "%s : %s\n"
     (Values.string_of_values vs) (Types.string_of_value_types ts);
+  flush_all ()
+
+let string_of_nan = function
+  | CanonicalNan -> "nan:canonical"
+  | ArithmeticNan -> "nan:arithmetic"
+
+let type_of_result r =
+  match r with
+  | LitResult v -> Values.type_of_value v.it
+  | NanResult n -> Types.NumType (Values.type_of_num n.it)
+  | RefResult -> Types.RefType Types.AnyRefType
+  | FuncResult -> Types.RefType Types.FuncRefType
+
+let string_of_result r =
+  match r with
+  | LitResult v -> Values.string_of_value v.it
+  | NanResult nanop ->
+    (match nanop.it with
+    | Values.I32 _ | Values.I64 _ -> assert false
+    | Values.F32 n | Values.F64 n -> string_of_nan n
+    )
+  | RefResult -> "ref"
+  | FuncResult -> "func"
+
+let string_of_results = function
+  | [r] -> string_of_result r
+  | rs -> "[" ^ String.concat " " (List.map string_of_result rs) ^ "]"
+
+let print_results rs =
+  let ts = List.map type_of_result rs in
+  Printf.printf "%s : %s\n"
+    (string_of_results rs) (Types.string_of_value_types ts);
   flush_all ()
 
 
@@ -283,7 +315,7 @@ let lookup_registry module_name item_name _t =
 
 (* Running *)
 
-let rec run_definition def =
+let rec run_definition def : Ast.module_ =
   match def.it with
   | Textual m -> m
   | Encoded (name, bs) ->
@@ -294,7 +326,7 @@ let rec run_definition def =
     let def' = Parse.string_to_module s in
     run_definition def'
 
-let run_action act =
+let run_action act : Values.value list =
   match act.it with
   | Invoke (x_opt, name, vs) ->
     trace ("Invoking function \"" ^ Ast.string_of_name name ^ "\"...");
@@ -322,10 +354,41 @@ let run_action act =
     | None -> Assert.error act.at "undefined export"
     )
 
-let assert_result at correct got print_expect expect =
-  if not correct then begin
-    print_string "Result: "; print_result got;
-    print_string "Expect: "; print_expect expect;
+let assert_result at got expect =
+  let open Values in
+  if
+    List.length got <> List.length expect ||
+    List.exists2 (fun v r ->
+      match r with
+      | LitResult v' -> v <> v'.it
+      | NanResult nanop ->
+        (match nanop.it, v with
+        | F32 CanonicalNan, Num (F32 z) ->
+          z <> F32.pos_nan && z <> F32.neg_nan
+        | F64 CanonicalNan, Num (F64 z) ->
+          z <> F64.pos_nan && z <> F64.neg_nan
+        | F32 ArithmeticNan, Num (F32 z) ->
+          let pos_nan = F32.to_bits F32.pos_nan in
+          Int32.logand (F32.to_bits z) pos_nan <> pos_nan
+        | F64 ArithmeticNan, Num (F64 z) ->
+          let pos_nan = F64.to_bits F64.pos_nan in
+          Int64.logand (F64.to_bits z) pos_nan <> pos_nan
+        | _, _ -> false
+        )
+      | RefResult ->
+        (match v with
+        | Ref ref -> ref = NullRef
+        | _ -> true
+        )
+      | FuncResult ->
+        (match v with
+        | Ref (Instance.FuncRef _) -> false
+        | _ -> true
+        )
+    ) got expect
+  then begin
+    print_string "Result: "; print_values got;
+    print_string "Expect: "; print_results expect;
     Assert.error at "wrong return values"
   end
 
@@ -386,57 +449,11 @@ let run_assertion ass =
     | _ -> Assert.error ass.at "expected instantiation error"
     )
 
-  | AssertReturn (act, vs) ->
+  | AssertReturn (act, rs) ->
     trace ("Asserting return...");
     let got_vs = run_action act in
-    let expect_vs = List.map (fun v -> v.it) vs in
-    assert_result ass.at (got_vs = expect_vs) got_vs print_result expect_vs
-
-  | AssertReturnCanonicalNaN act ->
-    trace ("Asserting return...");
-    let got_vs = run_action act in
-    let is_canonical_nan =
-      let open Values in
-      match got_vs with
-      | [Num (F32 got_f32)] -> got_f32 = F32.pos_nan || got_f32 = F32.neg_nan
-      | [Num (F64 got_f64)] -> got_f64 = F64.pos_nan || got_f64 = F64.neg_nan
-      | _ -> false
-    in assert_result ass.at is_canonical_nan got_vs print_endline "nan"
-
-  | AssertReturnArithmeticNaN act ->
-    trace ("Asserting return...");
-    let got_vs = run_action act in
-    let is_arithmetic_nan =
-      let open Values in
-      match got_vs with
-      | [Num (F32 got_f32)] ->
-        let pos_nan = F32.to_bits F32.pos_nan in
-        Int32.logand (F32.to_bits got_f32) pos_nan = pos_nan
-      | [Num (F64 got_f64)] ->
-        let pos_nan = F64.to_bits F64.pos_nan in
-        Int64.logand (F64.to_bits got_f64) pos_nan = pos_nan
-      | _ -> false
-    in assert_result ass.at is_arithmetic_nan got_vs print_endline "nan"
-
-  | AssertReturnRef act ->
-    trace ("Asserting return...");
-    let got_vs = run_action act in
-    let is_ref =
-      let open Values in
-      match got_vs with
-      | [Ref r] -> r <> NullRef
-      | _ -> false
-    in assert_result ass.at is_ref got_vs print_endline "ref"
-
-  | AssertReturnFunc act ->
-    trace ("Asserting return...");
-    let got_vs = run_action act in
-    let is_func =
-      let open Values in
-      match got_vs with
-      | [Ref r] -> r <> NullRef
-      | _ -> false
-    in assert_result ass.at is_func got_vs print_endline "func"
+    let expect_rs = List.map (fun r -> r.it) rs in
+    assert_result ass.at got_vs expect_rs
 
   | AssertTrap (act, re) ->
     trace ("Asserting trap...");
@@ -488,7 +505,7 @@ let rec run_command cmd =
     quote := cmd :: !quote;
     if not !Flags.dry then begin
       let vs = run_action act in
-      if vs <> [] then print_result vs
+      if vs <> [] then print_values vs
     end
 
   | Assertion ass ->
