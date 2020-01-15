@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
-  <meta content="Bikeshed version 183d4d29e1c92c00aaf58a92ad55ea0b5af9866f" name="generator">
+  <meta content="Bikeshed version 1c30f364edf130f99c9528d3fcb3db571f91958f" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
-  <meta content="f21eb1db0d57f67570c01e1c344e15aac4e7aeae" name="document-revision">
+  <meta content="0adbf148b8ae7e069425c1623d03d22e91e0bbe0" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-01-07">7 January 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-01-15">15 January 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -315,6 +315,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
     <li><a href="#streaming-modules"><span class="secno">1</span> <span class="content">Streaming Module Compilation and Instantiation</span></a>
     <li><a href="#serialization"><span class="secno">2</span> <span class="content">Serialization</span></a>
     <li><a href="#conventions"><span class="secno">3</span> <span class="content">Developer-Facing Display Conventions</span></a>
+    <li><a href="#mediaType"><span class="secno">4</span> <span class="content">Media-type Registration</span></a>
     <li>
      <a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
      <ol class="toc">
@@ -499,6 +500,54 @@ stack frame representations; this allows engines to continue using their
 existing formats for JavaScript (which existing code may already be depending
 on) while still printing WebAssembly frames in a format consistent with
 JavaScript.</p>
+   <h2 class="heading settled" data-level="4" id="mediaType"><span class="secno">4. </span><span class="content">Media-type Registration</span><a class="self-link" href="#mediaType"></a></h2>
+   <p>This section will be submitted to the Internet Engineering Steering Group (IESG) for
+review, approval, and registration with IANA.</p>
+   <p>application/wasm</p>
+   <dl>
+    <dt>Type name:
+    <dd>application
+    <dt>Subtype name:
+    <dd>wasm
+    <dt>Required parameters:
+    <dd>None
+    <dt>Optional parameters:
+    <dd>None
+    <dt>Encoding considerations:
+    <dd>None (this is a binary format)
+    <dt>Security considerations:
+    <dd>See see WebAssembly Core Security Considerations<br> https://www.w3.org/TR/wasm-core/#security-considerations%E2%91%A0
+    <dt>Interoperability considerations:
+    <dd>See see WebAssembly Core Conformance<br> https://www.w3.org/TR/wasm-core/#conformance
+    <dt>Published specification:
+     https://www.w3.org/TR/wasm-core-1/
+ https://www.w3.org/TR/wasm-js-api-1/
+ https://www.w3.org/TR/wasm-web-api-1/ 
+    <dt>Applications that use this media type:
+    <dd>Web browsers and runtime systems
+    <dt>Additional information:
+    <dd>
+     <dl>
+      <dt>Magic number(s):
+      <dd>0x00 0x61 0x73 0x6D
+      <dt>File extension(s):
+      <dd>.wasm
+      <dt>Macintosh file type code(s):
+      <dd>None
+     </dl>
+    <dt>Person &amp; email address to contact for further information:
+    <dd>
+     Eric Prud’hommeaux 
+     <ericU00040w3.org></ericU00040w3.org>
+    <dt>Intended usage:
+    <dd>Common
+    <dt>Restrictions on usage:
+    <dd>None
+    <dt>Author(s):
+    <dd>W3C’s Web Assembly Working Group
+    <dt>Change controller:
+    <dd>W3C
+   </dl>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content"> Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="heading settled" id="document-conventions"><span class="content"> Document conventions</span><a class="self-link" href="#document-conventions"></a></h3>
