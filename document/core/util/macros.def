@@ -3,11 +3,11 @@
 .. External Standards
 .. ------------------
 
-.. |WasmDraft| replace:: http://webassembly.github.io/spec/core/
-.. _WasmDraft: http://webassembly.github.io/spec/core/
+.. |WasmDraft| replace:: http://webassembly.github.io/bulk-memory-operations/core/
+.. _WasmDraft: http://webassembly.github.io/bulk-memory-operations/core/
 
-.. |WasmIssues| replace:: http://github.com/webassembly/spec/issues/
-.. _WasmIssues: http://github.com/webassembly/spec/issues/
+.. |WasmIssues| replace:: http://github.com/webassembly/bulk-memory-operations/issues/
+.. _WasmIssues: http://github.com/webassembly/bulk-memory-operations/issues/
 
 .. |IEEE754| replace:: IEEE 754-2019
 .. _IEEE754: https://ieeexplore.ieee.org/document/8766229

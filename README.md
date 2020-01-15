@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/WebAssembly/spec.svg?branch=master)](https://travis-ci.org/WebAssembly/spec)
+[![Build Status](https://travis-ci.org/WebAssembly/bulk-memory-operations.svg?branch=master)](https://travis-ci.org/WebAssembly/bulk-memory-operations)
 
 # Bulk Memory Operations Proposal for WebAssembly
 
