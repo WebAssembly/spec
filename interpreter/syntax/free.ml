@@ -62,9 +62,9 @@ let list free xs = List.fold_left union empty (List.map free xs)
 let rec instr (e : instr) =
   match e.it with
   | Unreachable | Nop | Drop | Select _ -> empty
-  | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | RefNull | RefIsNull -> empty
   | RefFunc x -> funcs (var x)
+  | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (_, es) | Loop (_, es) -> block es
   | If (_, es1, es2) -> block es1 ++ block es2
   | Br x | BrIf x -> labels (var x)
@@ -74,15 +74,15 @@ let rec instr (e : instr) =
   | CallIndirect (x, y) -> tables (var x) ++ types (var y)
   | LocalGet x | LocalSet x | LocalTee x -> locals (var x)
   | GlobalGet x | GlobalSet x -> globals (var x)
-  | Load _ | Store _ | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
-    memories zero
-  | MemoryInit x -> memories zero ++ datas (var x)
   | TableGet x | TableSet x | TableSize x | TableGrow x | TableFill x ->
     tables (var x)
   | TableCopy (x, y) -> tables (var x) ++ tables (var y)
   | TableInit (x, y) -> tables (var x) ++ elems (var y)
-  | DataDrop x -> datas (var x)
   | ElemDrop x -> elems (var x)
+  | Load _ | Store _ | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
+    memories zero
+  | MemoryInit x -> memories zero ++ datas (var x)
+  | DataDrop x -> datas (var x)
 
 and block (es : instr list) =
   let free = list instr es in {free with labels = shift free.labels}
@@ -96,7 +96,7 @@ let memory (m : memory) = empty
 
 let segment_mode f (m : segment_mode) =
   match m.it with
-  | Passive -> empty
+  | Passive | Declarative -> empty
   | Active {index; offset} -> f (var index) ++ const offset
 
 let elem (s : elem_segment) =

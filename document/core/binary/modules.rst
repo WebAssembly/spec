@@ -333,20 +333,24 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
        &\Rightarrow& \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EPASSIVE \} \\ &&|&
      \hex{02}~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
+     \hex{03}~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
+       &\Rightarrow& \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARATIVE \} \\ &&|&
      \hex{04}~~e{:}\Bexpr~~\X{el}^\ast{:}\Bvec(\Bexpr)
        &\Rightarrow& \{ \ETYPE~\FUNCREF, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
      \hex{05}~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
        &\Rightarrow& \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EPASSIVE \} \\ &&|&
      \hex{06}~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\
+       &\Rightarrow& \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
+     \hex{07}~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
+       &\Rightarrow& \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARATIVE \} \\
    \production{element kind} & \Belemkind &::=&
      \hex{00} &\Rightarrow& \FUNCREF \\
    \end{array}
 
 .. note::
    The initial byte can be interpreted as a bitfield.
-   Bit 0 indicates a passive segment,
-   bit 1 indicates the presence of an explicit table index for an active segment,
+   Bit 0 indicates a passive or declarative segment,
+   bit 1 indicates the presence of an explicit table index for an active segment and otherwise distinguishes passive from declarative segments,
    bit 2 indicates the use of element type and element :ref:`expressions <binary-expr>` instead of element kind and element indices.
 
    Additional element kinds may be added in future versions of WebAssembly.

@@ -651,6 +651,9 @@ let active_zero s =
   let offset = const s in
   Active {index; offset}
 
+let declarative s =
+  Declarative
+
 let elem_index s =
   let x = at var s in
   [Source.(ref_func x @@ x.at)]
@@ -676,6 +679,11 @@ let elem s =
     let etype = elem_kind s in
     let einit = vec (at elem_index) s in
     {etype; einit; emode}
+  | 0x03l ->
+    let emode = at declarative s in
+    let etype = elem_kind s in
+    let einit = vec (at elem_index) s in
+    {etype; einit; emode}
   | 0x04l ->
     let emode = at active_zero s in
     let einit = vec const s in
@@ -687,6 +695,11 @@ let elem s =
     {etype; einit; emode}
   | 0x06l ->
     let emode = at active s in
+    let etype = ref_type s in
+    let einit = vec const s in
+    {etype; einit; emode}
+  | 0x07l ->
+    let emode = at declarative s in
     let etype = ref_type s in
     let einit = vec const s in
     {etype; einit; emode}

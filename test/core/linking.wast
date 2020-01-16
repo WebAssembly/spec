@@ -129,6 +129,7 @@
   "incompatible import type"
 )
 
+
 (assert_unlinkable
   (module (global (import "Mref_ex" "g-var-null") (mut funcref)))
   "incompatible import type"

@@ -501,7 +501,9 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
      \text{(}~\text{elem}~~\Tid^?~~(et, y^\ast){:}\Telemlist~\text{)} \\ &&& \qquad
        \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EPASSIVE \} \\ &&|&
      \text{(}~\text{elem}~~\Tid^?~~x{:}\Ttableuse_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~(et, y^\ast){:}\Telemlist~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\
+       \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&&
+     \text{(}~\text{elem}~~\Tid^?~~\text{declare}~~(et, y^\ast){:}\Telemlist~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EDECLARATIVE \} \\
    \production{element list} & \Telemlist &::=&
      t{:}\Treftype~~y^\ast{:}\Tvec(\Telemexpr_I) \qquad\Rightarrow\quad ( \ETYPE~t, \EINIT~y^\ast ) \\
    \production{element expression} & \Telemexpr &::=&

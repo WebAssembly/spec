@@ -63,6 +63,17 @@
   (elem $a24 (i32.const 0) funcref (ref.func $f) (ref.null))
   (elem $a25 (i32.const 0) func $f $f)
   (elem $a26 (i32.const 0) $f $f)
+
+  ;; Declarative
+  (elem declare funcref)
+  (elem declare funcref (ref.func $f) (ref.func $f) (ref.null) (ref.func $g))
+  (elem declare func)
+  (elem declare func $f $f $g $g)
+
+  (elem $d1 declare funcref)
+  (elem $d2 declare funcref (ref.func $f) (ref.func $f) (ref.null) (ref.func $g))
+  (elem $d3 declare func)
+  (elem $d4 declare func $f $f $g $g)
 )
 
 (module
@@ -71,6 +82,8 @@
 
   (table $t funcref (elem (ref.func $f) (ref.null) (ref.func $g)))
 )
+
+
 ;; Basic use
 
 (module
@@ -293,6 +306,28 @@
   )
   "out of bounds"
 )
+
+;; Implicitly dropped elements
+
+(module
+  (table 10 funcref)
+  (elem $e (i32.const 0) func $f)
+  (func $f)
+  (func (export "init")
+    (table.init $e (i32.const 0) (i32.const 0) (i32.const 1))
+  )
+)
+(assert_trap (invoke "init") "out of bounds")
+
+(module
+  (table 10 funcref)
+  (elem $e declare func $f)
+  (func $f)
+  (func (export "init")
+    (table.init $e (i32.const 0) (i32.const 0) (i32.const 1))
+  )
+)
+(assert_trap (invoke "init") "out of bounds")
 
 ;; Element without table
 

@@ -217,6 +217,18 @@ Element segments :math:`\elem` are not classified by any type but merely checked
      C; \X{et} \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} \ok
    }
 
+:math:`\EDECLARATIVE`
+.....................
+
+* The element mode is valid for any :ref:`reference type <syntax-reftype>` :math:`\X{et}`.
+
+.. math::
+   \frac{
+   }{
+     C; \X{et} \vdashelemmode \EDECLARATIVE \ok
+   }
+
+
 
 .. index:: data, memory, memory index, expression, byte
    pair: validation; data
@@ -278,7 +290,7 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
      \qquad
      C \vdashexprconst \expr \const
    }{
-     C \vdashelemmode \EACTIVE~\{ \DMEM~x, \DOFFSET~\expr \} \ok
+     C \vdashelemmode \DACTIVE~\{ \DMEM~x, \DOFFSET~\expr \} \ok
    }
 
 
@@ -529,6 +541,8 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C.\CRETURN` is empty.
 
+  * :math:`C.\CREFS` is the set :math:`\freefuncidx(\module.\MELEMS)`, i.e., the set of :ref:`function indices <syntax-funcidx>` occurring in any of the module's :ref:`element segments <syntax-elem>`.
+
 * Let :math:`C'` be the :ref:`context <context>` where :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)` and all other fields are empty.
 
 * Under the context :math:`C`:
@@ -614,7 +628,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \qquad
      \X{igt}^\ast = \etglobals(\X{it}^\ast)
      \\
-     C = \{ \CTYPES~\functype^\ast, \CFUNCS~\X{ift}^\ast~\X{ft}^\ast, \CTABLES~\X{itt}^\ast~\X{tt}^\ast, \CMEMS~\X{imt}^\ast~\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast~\X{gt}^\ast, \CELEMS~{\ok}^{N_e}, \CDATAS~{\ok}^{N_d} \}
+     C = \{ \CTYPES~\functype^\ast, \CFUNCS~\X{ift}^\ast~\X{ft}^\ast, \CTABLES~\X{itt}^\ast~\X{tt}^\ast, \CMEMS~\X{imt}^\ast~\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast~\X{gt}^\ast, \CELEMS~{\ok}^{N_e}, \CDATAS~{\ok}^{N_d}, \CREFS~\freefuncidx(\elem^{N_e}) \}
      \\
      C' = \{ \CGLOBALS~\X{igt}^\ast \}
      \qquad
@@ -630,8 +644,8 @@ Instead, the context :math:`C` for validation of the module's content is constru
          \MTABLES~\table^\ast,
          \MMEMS~\mem^\ast,
          \MGLOBALS~\global^\ast, \\
-         \MELEMS~\elem^\ast,
-         \MDATAS~\data^\ast,
+         \MELEMS~\elem^{N_e},
+         \MDATAS~\data^{N_d},
          \MSTART~\start^?,
          \MIMPORTS~\import^\ast,
          \MEXPORTS~\export^\ast \} : \X{it}^\ast \to \X{et}^\ast \\

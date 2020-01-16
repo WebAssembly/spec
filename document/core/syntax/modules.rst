@@ -106,10 +106,10 @@ Conventions
 
 * The meta variables :math:`x, y` range over indices in any of the other index spaces.
 
-* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`.
+* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`. We sometimes reinterpret this set as the :ref:`vector <syntax-vec>` of its elements.
 
 .. note::
-   For example, if :math:`\instr^\ast` is :math:`(\DATADROP~x) (\MEMORYINIT~y)`, then :math:`\freedataidx(\instr^\ast) = \{x, y\}`.
+   For example, if :math:`\instr^\ast` is :math:`(\DATADROP~x) (\MEMORYINIT~y)`, then :math:`\freedataidx(\instr^\ast) = \{x, y\}`, or equivalently, the vector :math:`x~y`.
 
 
 .. index:: ! type definition, type index, function type
@@ -242,10 +242,12 @@ Globals are referenced through :ref:`global indices <syntax-globalidx>`,
 starting with the smallest index not referencing a global :ref:`import <syntax-import>`.
 
 
-.. index:: ! element, active, passive, element index, table, table index, expression, constant, function index, vector
+.. index:: ! element, ! element mode, ! active, ! passive, ! declarative, element index, table, table index, expression, constant, function index, vector
    pair: abstract syntax; element
+   pair: abstract syntax; element mode
    single: table; element
    single: element; segment
+   single: element; mode
 .. _syntax-elem:
 .. _syntax-elemmode:
 
@@ -257,9 +259,10 @@ The initial contents of a table is uninitialized. *Element segments* can be used
 The |MELEMS| component of a module defines a vector of element segments.
 Each element segment defines an :ref:`reference type <syntax-reftype>` and a corresponding list of :ref:`constant <valid-constant>` element :ref:`expressions <syntax-expr>`.
 
-Element segments have a mode that identifies them as either *passive* or *active*.
+Element segments have a mode that identifies them as either *passive*, *active*, or *declarative*.
 A passive element segment's elements can be copied to a table using the |TABLEINIT| instruction.
 An active element segment copies its elements into a table during :ref:`instantiation <exec-instantiation>`, as specified by a :ref:`table index <syntax-tableidx>` and a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>` defining an offset into that table.
+A declarative element segment is not available at runtime but merely serves to forward-declare references that are formed in code with instructions like :math:`REFFUNC`.
 
 .. math::
    \begin{array}{llll}
@@ -267,7 +270,8 @@ An active element segment copies its elements into a table during :ref:`instanti
      \{ \ETYPE~\reftype, \EINIT~\vec(\expr), \EMODE~\elemmode \} \\
    \production{element segment mode} & \elemmode &::=&
      \EPASSIVE \\&&|&
-     \EACTIVE~\{ \ETABLE~\tableidx, \EOFFSET~\expr \} \\
+     \EACTIVE~\{ \ETABLE~\tableidx, \EOFFSET~\expr \} \\&&|&
+     \EDECLARATIVE \\
    \end{array}
 
 The |EOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.

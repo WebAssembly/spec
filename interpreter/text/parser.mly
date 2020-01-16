@@ -176,7 +176,7 @@ let inline_type_explicit (c : context) x ft at =
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token REF_ANY REF_NULL REF_FUNC REF_HOST REF_IS_NULL
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
-%token TABLE ELEM MEMORY DATA OFFSET ITEM IMPORT EXPORT
+%token TABLE ELEM MEMORY DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
@@ -687,6 +687,11 @@ elem :
       fun () ->
       { etype = (fst $6); einit = (snd $6) c;
         emode = Active {index = $4 c table; offset = $5 c} @@ at } @@ at }
+  | LPAR ELEM bind_var_opt DECLARE elem_list RPAR
+    { let at = at () in
+      fun c -> ignore ($3 c anon_elem bind_elem);
+      fun () ->
+      { etype = (fst $5); einit = (snd $5) c; emode = Declarative @@ at } @@ at }
   | LPAR ELEM bind_var_opt offset elem_list RPAR  /* Sugar */
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);

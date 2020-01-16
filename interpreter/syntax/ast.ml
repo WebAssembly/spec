@@ -151,6 +151,7 @@ type segment_mode = segment_mode' Source.phrase
 and segment_mode' =
   | Passive
   | Active of {index : var; offset : const}
+  | Declarative
 
 type elem_segment = elem_segment' Source.phrase
 and elem_segment' =

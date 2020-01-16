@@ -3,20 +3,20 @@
 .. External Standards
 .. ------------------
 
-.. |WasmDraft| replace:: http://webassembly.github.io/spec/core/
-.. _WasmDraft: http://webassembly.github.io/spec/core/
+.. |WasmDraft| replace:: https://webassembly.github.io/reference-types/core/
+.. _WasmDraft: https://webassembly.github.io/reference-types/core/
 
-.. |WasmIssues| replace:: http://github.com/webassembly/spec/issues/
-.. _WasmIssues: http://github.com/webassembly/spec/issues/
+.. |WasmIssues| replace:: https://github.com/webassembly/reference-types/issues/
+.. _WasmIssues: https://github.com/webassembly/reference-types/issues/
 
 .. |IEEE754| replace:: IEEE 754-2019
 .. _IEEE754: https://ieeexplore.ieee.org/document/8766229
 
 .. |Unicode| replace:: Unicode
-.. _Unicode: http://www.unicode.org/versions/latest/
+.. _Unicode: https://www.unicode.org/versions/latest/
 
 .. |ASCII| replace:: ASCII
-.. _ASCII: http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d
+.. _ASCII: https://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d
 
 
 .. External Definitions
@@ -273,8 +273,9 @@
 .. |ETYPE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{type}}
 .. |EINIT| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{init}}
 .. |EMODE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{mode}}
-.. |EPASSIVE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{passive}}
-.. |EACTIVE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{active}}
+.. |EPASSIVE| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\K{passive}}
+.. |EACTIVE| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\K{active}}
+.. |EDECLARATIVE| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\K{declarative}}
 .. |ETABLE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{table}}
 .. |EOFFSET| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{offset}}
 
@@ -782,6 +783,7 @@
 .. |CLOCALS| mathdef:: \xref{valid/conventions}{context}{\K{locals}}
 .. |CLABELS| mathdef:: \xref{valid/conventions}{context}{\K{labels}}
 .. |CRETURN| mathdef:: \xref{valid/conventions}{context}{\K{return}}
+.. |CREFS| mathdef:: \xref{valid/conventions}{context}{\K{refs}}
 
 
 .. Judgments

@@ -26,12 +26,15 @@ type context =
   locals : value_type list;
   results : value_type list;
   labels : stack_type list;
+  refs : Free.t;
 }
 
 let empty_context =
   { types = []; funcs = []; tables = []; memories = [];
     globals = []; datas = []; elems = [];
-    locals = []; results = []; labels = [] }
+    locals = []; results = []; labels = [];
+    refs = Free.empty
+  }
 
 let lookup category list x =
   try Lib.List32.nth list x.it with Failure _ ->
@@ -46,6 +49,13 @@ let data (c : context) x = lookup "data segment" c.datas x
 let elem (c : context) x = lookup "elem segment" c.elems x
 let local (c : context) x = lookup "local" c.locals x
 let label (c : context) x = lookup "label" c.labels x
+
+let refer category (s : Free.Set.t) x =
+  if not (Free.Set.mem x.it s) then
+    error x.at
+      ("undeclared " ^ category ^ " reference " ^ Int32.to_string x.it)
+
+let refer_func (c : context) x = refer "function" c.refs.Free.funcs x
 
 
 (* Stack typing *)
@@ -334,6 +344,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
 
   | RefFunc x ->
     let _ft = func c x in
+    refer_func c x;
     [] --> [RefType FuncRefType]
 
   | Const v ->
@@ -479,6 +490,7 @@ let check_elem_mode (c : context) (t : ref_type) (mode : segment_mode) =
     require (match_ref_type t et) mode.at
       "type mismatch in active element segment";
     check_const c offset (NumType I32Type)
+  | Declarative -> ()
 
 let check_elem (c : context) (seg : elem_segment) =
   let {etype; einit; emode} = seg.it in
@@ -491,6 +503,7 @@ let check_data_mode (c : context) (mode : segment_mode) =
   | Active {index; offset} ->
     ignore (memory c index);
     check_const c offset (NumType I32Type)
+  | Declarative -> assert false
 
 let check_data (c : context) (seg : data_segment) =
   let {dinit; dmode} = seg.it in
@@ -545,7 +558,10 @@ let check_module (m : module_) =
   in
   let c0 =
     List.fold_right check_import imports
-      {empty_context with types = List.map (fun ty -> ty.it) types}
+      { empty_context with
+        refs = Free.list Free.elem elems;
+        types = List.map (fun ty -> ty.it) types;
+      }
   in
   let c1 =
     { c0 with

@@ -334,10 +334,11 @@ let segment_mode category mode =
   | Active {index; offset} ->
     (if index.it = 0l then [] else [Node (category, [atom var index])]) @
     [const "offset" offset]
+  | Declarative -> [Atom "declare"]
 
-let elem seg =
+let elem i seg =
   let {etype; einit; emode} = seg.it in
-  Node ("elem",
+  Node ("elem $" ^ nat i,
     segment_mode "table" emode @
     if is_elem_kind etype && List.for_all is_elem_index einit then
       atom elem_kind etype :: list elem_index einit
@@ -345,9 +346,9 @@ let elem seg =
       atom ref_type etype :: list (const "item") einit
   )
 
-let data seg =
+let data i seg =
   let {dinit; dmode} = seg.it in
-  Node ("data", segment_mode "memory" dmode @ break_bytes dinit)
+  Node ("data $" ^ nat i, segment_mode "memory" dmode @ break_bytes dinit)
 
 
 (* Modules *)
@@ -409,8 +410,8 @@ let module_with_var_opt x_opt m =
     listi (func_with_index !fx) m.it.funcs @
     list export m.it.exports @
     opt start m.it.start @
-    list elem m.it.elems @
-    list data m.it.datas
+    listi elem m.it.elems @
+    listi data m.it.datas
   )
 
 let binary_module_with_var_opt x_opt bs =

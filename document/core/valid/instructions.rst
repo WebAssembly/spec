@@ -198,11 +198,15 @@ Reference Instructions
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
+* The :ref:`function index <syntax-funcidx>` :math:`x` must be contained in :math:`C.\CREFS`.
+
 * The instruction is valid with type :math:`[] \to [\FUNCREF]`.
 
 .. math::
    \frac{
      C.\CFUNCS[x] = \functype
+     \qquad
+     x \in C.\CREFS
    }{
      C \vdashinstr \REFFUNC~x : [] \to [\FUNCREF]
    }

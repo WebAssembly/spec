@@ -524,6 +524,8 @@ let encode m =
         | Active {index; offset} ->
           vu32 0x02l;
           var index; const offset; elem_kind etype; vec elem_index einit
+        | Declarative ->
+          vu32 0x03l; elem_kind etype; vec elem_index einit
       else
         match emode.it with
         | Passive ->
@@ -532,6 +534,8 @@ let encode m =
           vu32 0x04l; const offset; vec const einit
         | Active {index; offset} ->
           vu32 0x06l; var index; const offset; ref_type etype; vec const einit
+        | Declarative ->
+          vu32 0x07l; ref_type etype; vec const einit
 
     let elem_section elems =
       section 9 (vec elem) elems (elems <> [])
@@ -546,6 +550,8 @@ let encode m =
         vu32 0x00l; const offset; string dinit
       | Active {index; offset} ->
         vu32 0x02l; var index; const offset; string dinit
+      | Declarative ->
+        assert false
 
     let data_section datas =
       section 11 (vec data) datas (datas <> [])

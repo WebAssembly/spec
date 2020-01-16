@@ -32,3 +32,5 @@ val import : Ast.import -> t
 val start : Ast.var option -> t
 
 val module_ : Ast.module_ -> t
+
+val list : ('a -> t) -> 'a list -> t
