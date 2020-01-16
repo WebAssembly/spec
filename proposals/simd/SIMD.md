@@ -859,8 +859,6 @@ Lane-wise IEEE `squareRoot`.
 ### Integer to floating point
 * `f32x4.convert_i32x4_s(a: v128) -> v128`
 * `f32x4.convert_i32x4_u(a: v128) -> v128`
-* `f64x2.convert_i64x2_s(a: v128) -> v128`
-* `f64x2.convert_i64x2_u(a: v128) -> v128`
 
 Lane-wise conversion from integer to floating point. Some integer values will be
 rounded.
@@ -868,8 +866,6 @@ rounded.
 ### Floating point to integer with saturation
 * `i32x4.trunc_sat_f32x4_s(a: v128) -> v128`
 * `i32x4.trunc_sat_f32x4_u(a: v128) -> v128`
-* `i64x2.trunc_sat_f64x2_s(a: v128) -> v128`
-* `i64x2.trunc_sat_f64x2_u(a: v128) -> v128`
 
 Lane-wise saturating conversion from floating point to integer using the IEEE
 `convertToIntegerTowardZero` function. If any input lane is a NaN, the
