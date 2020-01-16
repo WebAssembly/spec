@@ -57,6 +57,7 @@ type code = value stack * admin_instr list
 and admin_instr = admin_instr' phrase
 and admin_instr' =
   | Plain of instr'
+  | Refer of ref_
   | Invoke of func_inst
   | Trapping of string
   | Returning of value stack
@@ -240,20 +241,43 @@ let rec step (c : config) : config =
           vs', []
         else
           let _ = assert (I32.lt_u i 0xffff_ffffl) in
-          Ref r :: Num (I32 i) :: Num (I32 (I32.sub n 1l)) ::
-            Ref r :: Num (I32 (I32.add i 1l)) :: vs',
-          [Plain (TableSet x) @@ e.at; Plain (TableFill x) @@ e.at]
+          vs', List.map (at e.at) [
+            Plain (Const (I32 i @@ e.at));
+            Refer r;
+            Plain (TableSet x);
+            Plain (Const (I32 (I32.add i 1l) @@ e.at));
+            Refer r;
+            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (TableFill x);
+          ]
 
       | TableCopy (x, y), Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
         if table_oob frame x d n || table_oob frame y s n then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
         else if n = 0l then
           vs', []
-        else
-          (* TODO: turn into small-step, but needs reference values *)
-          let tab = table frame.inst x in  (*TODO*)
-          (try Table.copy tab d s n; vs', []
-          with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
+        else if d <= s then
+          vs', List.map (at e.at) [
+            Plain (Const (I32 d @@ e.at));
+            Plain (Const (I32 s @@ e.at));
+            Plain (TableGet y);
+            Plain (TableSet x);
+            Plain (Const (I32 (I32.add d 1l) @@ e.at));
+            Plain (Const (I32 (I32.add s 1l) @@ e.at));
+            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (TableCopy (x, y));
+          ]
+        else (* d > s *)
+          vs', List.map (at e.at) [
+            Plain (Const (I32 (I32.add d 1l) @@ e.at));
+            Plain (Const (I32 (I32.add s 1l) @@ e.at));
+            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (TableCopy (x, y));
+            Plain (Const (I32 d @@ e.at));
+            Plain (Const (I32 s @@ e.at));
+            Plain (TableGet y);
+            Plain (TableSet x);
+          ]
 
       | TableInit (x, y), Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
         if table_oob frame x d n || elem_oob frame y s n then
@@ -261,11 +285,16 @@ let rec step (c : config) : config =
         else if n = 0l then
           vs', []
         else
-          (* TODO: turn into small-step, but needs reference values *)
-          let tab = table frame.inst x in
           let seg = !(elem frame.inst y) in
-          (try Table.init tab seg d s n; vs', []
-          with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
+          vs', List.map (at e.at) [
+            Plain (Const (I32 d @@ e.at));
+            Refer (List.nth seg (Int32.to_int s));
+            Plain (TableSet x);
+            Plain (Const (I32 (I32.add d 1l) @@ e.at));
+            Plain (Const (I32 (I32.add s 1l) @@ e.at));
+            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (TableInit (x, y));
+          ]
 
       | ElemDrop x, vs ->
         let seg = elem frame.inst x in
@@ -420,6 +449,9 @@ let rec step (c : config) : config =
         Crash.error e.at
           ("missing or ill-typed operand on stack (" ^ s1 ^ " : " ^ s2 ^ ")")
       )
+
+    | Refer r, vs ->
+      Ref r :: vs, []
 
     | Trapping msg, vs ->
       assert false

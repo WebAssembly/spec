@@ -505,7 +505,7 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
    \production{element list} & \Telemlist &::=&
      t{:}\Treftype~~y^\ast{:}\Tvec(\Telemexpr_I) \qquad\Rightarrow\quad ( \ETYPE~t, \EINIT~y^\ast ) \\
    \production{element expression} & \Telemexpr &::=&
-     \text{(}~e{:}\Tinstr~\text{)}
+     \text{(}~\text{item}~~e{:}\Texpr~\text{)}
        \quad\Rightarrow\quad e \\
    \production{table use} & \Ttableuse_I &::=&
      \text{(}~\text{table}~~x{:}\Ttableidx_I ~\text{)}
@@ -516,13 +516,16 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
 Abbreviations
 .............
 
-As an abbreviation, a single instruction may occur in place of the offset of an active element segment:
+As an abbreviation, a single instruction may occur in place of the offset of an active element segment or as an element expression:
 
 .. math::
    \begin{array}{llcll}
    \production{element offset} &
      \Tinstr &\equiv&
-     \text{(}~\text{offset}~~\Tinstr~\text{)}
+     \text{(}~\text{offset}~~\Tinstr~\text{)} \\
+   \production{element item} &
+     \Tinstr &\equiv&
+     \text{(}~\text{item}~~\Tinstr~\text{)} \\
    \end{array}
 
 Also, the element list may be written as just a sequence of :ref:`function indices <text-funcidx>`:
@@ -534,7 +537,7 @@ Also, the element list may be written as just a sequence of :ref:`function indic
      \text{funcref}~~\Tvec(\text{(}~\text{ref.func}~~\Tfuncidx_I~\text{)})
    \end{array}
 
-Also, a table use can be omitted, defaulting to :math:`\T{0}`.
+A table use can be omitted, defaulting to :math:`\T{0}`.
 Furthermore, for backwards compatibility with earlier versions of WebAssembly, if the table use is omitted, the :math:`\text{func}` keyword can be omitted as well.
 
 .. math::

@@ -630,21 +630,21 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 6. Let :math:`(\reff^\ast)^\ast` be the list of :ref:`reference <syntax-ref>` vectors determined by the :ref:`element segments <syntax-elem>` in :math:`\module`. These may be calculated as follows.
 
-    .. todo:: TODO desugar funcelem
+    a. Let :math:`\moduleinst_{\F{im}}` be the auxiliary module :ref:`instance <syntax-moduleinst>` :math:`\{\MIGLOBALS~\evglobals(\externval^n)\}` that only consists of the imported globals.
 
-    a. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS`, and for each element :ref:`expression <syntax-expr>` :math:`\expr_{ij}` in :math:`\elem_i.\EINIT`, do:
+    b. Let :math:`F_{\F{im}}` be the auxiliary :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~\moduleinst_{\F{im}}, \ALOCALS~\epsilon \}`.
 
-       i. If :math:`\expr_{ij}` is of the form :math:`\REFNULL`, then let the :ref:`function element <syntax-funcelem>` :math:`\funcelem_{ij}` be :math:`\epsilon`.
+    c. Push the frame :math:`F_{\F{im}}` to the stack.
 
-       ii. Else, :math:`\expr_{ij}` is of the form is :math:`\REFFUNC~\funcidx_{ij}`.
+    d. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS`, and for each element :ref:`expression <syntax-expr>` :math:`\expr_{ij}` in :math:`\elem_i.\EINIT`, do:
 
-       iii. Assert: due to :ref:`validation <valid-elem>`, :math:`\moduleinst.\MIFUNCS[\funcidx_{ij}]` exists.
+       i. Let :math:`\reff_{ij}` be the result of :ref:`evaluating <exec-expr>` the initializer expression :math:`\expr_{ij}`.
 
-       iv. Let the :ref:`function element <syntax-funcelem>` :math:`\funcelem_{ij}` be the :ref:`function address <syntax-funcaddr>` :math:`\moduleinst.\MIFUNCS[\funcidx_{ij}]`.
+    e. Pop the frame :math:`F_{\F{im}}` from the stack.
 
-    b. Let :math:`\funcelem^\ast_i` be the concatenation of function elements :math:`\funcelem_{ij}` in order of index :math:`j`.
+    f. Let :math:`\reff^\ast_i` be the concatenation of function elements :math:`\reff_{ij}` in order of index :math:`j`.
 
-    c. Let :math:`(\funcelem^\ast)^\ast` be the concatenation of function element vectors :math:`\funcelem^\ast_i` in order of index :math:`i`.
+    g. Let :math:`(\reff^\ast)^\ast` be the concatenation of function element vectors :math:`\reff^\ast_i` in order of index :math:`i`.
 
 7. Let :math:`\moduleinst` be a new module instance :ref:`allocated <alloc-module>` from :math:`\module` in store :math:`S` with imports :math:`\externval^n`, global initializer values :math:`\val^\ast`, and element segment contents :math:`(\reff^\ast)^\ast`, and let :math:`S'` be the extended store produced by module allocation.
 
@@ -711,10 +711,13 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& \module.\MGLOBALS = \global^\ast \\
      &\wedge& \module.\MELEMS = \elem^n \\
      &\wedge& \module.\MDATAS = \data^m \\
-     &\wedge& \module.\MSTART = \start^? \\[1ex]
-     &\wedge& S', \moduleinst = \allocmodule(S, \module, \externval^k, \val^\ast) \\
+     &\wedge& \module.\MSTART = \start^? \\
+     &\wedge& (\expr_{\F{g}} = \global.GINIT)^\ast \\
+     &\wedge& (\expr_{\F{e}}^\ast = \elem.EINIT)^n \\[1ex]
+     &\wedge& S', \moduleinst = \allocmodule(S, \module, \externval^k, \val^\ast, (\reff^\ast)^n) \\
      &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
-     &\wedge& (S'; F; \global.\GINIT \stepto^\ast S'; F; \val~\END)^\ast \\
+     &\wedge& (S'; F; \expr_{\F{g}} \stepto^\ast S'; F; \val~\END)^\ast \\
+     &\wedge& ((S'; F; \expr_{\F{e}} \stepto^\ast S'; F; \reff~\END)^\ast)^n \\
      &\wedge& (\tableaddr = \moduleinst.\MITABLES[\elem.\ETABLE])^\ast \\
      &\wedge& (\memaddr = \moduleinst.\MIMEMS[\data.\DMEM])^\ast \\
      &\wedge& (\funcaddr = \moduleinst.\MIFUNCS[\start.\SFUNC])^?)

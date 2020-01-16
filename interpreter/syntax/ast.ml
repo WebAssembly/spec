@@ -63,7 +63,7 @@ type storeop = Memory.pack_size memop
 (* Expressions *)
 
 type var = int32 Source.phrase
-type literal = Values.num Source.phrase
+type num = Values.num Source.phrase
 type name = int list
 
 type instr = instr' Source.phrase
@@ -105,7 +105,7 @@ and instr' =
   | RefNull                           (* null reference *)
   | RefIsNull                         (* null test *)
   | RefFunc of var                    (* function reference *)
-  | Const of literal                  (* constant *)
+  | Const of num                      (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)
   | Unary of unop                     (* unary numeric operator *)

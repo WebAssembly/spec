@@ -8,7 +8,7 @@
 
   ;; Passive
   (elem funcref)
-  (elem funcref (ref.func $f) (ref.func $f) (ref.null) (ref.func $g))
+  (elem funcref (ref.func $f) (item ref.func $f) (item (ref.null)) (ref.func $g))
   (elem func)
   (elem func $f $f $g $g)
 

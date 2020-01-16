@@ -633,11 +633,11 @@ Table Instructions
 
 2. Assert: due to :ref:`validation <valid-table.fill>`, :math:`F.\AMODULE.\MITABLES[x]` exists.
 
-3. Let :math:`a` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[x]`.
+3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[x]`.
 
-4. Assert: due to :ref:`validation <valid-table.fill>`, :math:`S.\STABLES[a]` exists.
+4. Assert: due to :ref:`validation <valid-table.fill>`, :math:`S.\STABLES[\X{ta}]` exists.
 
-5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[a]`.
+5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
 
 6. Assert: due to :ref:`validation <valid-table.fill>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
@@ -693,50 +693,56 @@ Table Instructions
 
 .. _exec-table.copy:
 
-:math:`\TABLECOPY`
-..................
-
-.. todo:: TODO: multi tables
+:math:`\TABLECOPY~x~y`
+......................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-table.copy>`, :math:`F.\AMODULE.\MITABLES[0]` exists.
+2. Assert: due to :ref:`validation <valid-table.copy>`, :math:`F.\AMODULE.\MITABLES[x]` exists.
 
-3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[0]`.
+3. Let :math:`\X{ta}_x` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[x]`.
 
-4. Assert: due to :ref:`validation <valid-table.copy>`, :math:`S.\STABLES[\X{ta}]` exists.
+4. Assert: due to :ref:`validation <valid-table.copy>`, :math:`S.\STABLES[\X{ta}_x]` exists.
 
-5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
+5. Let :math:`\X{tab}_x` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}_x]`.
 
-6. Assert: due to :ref:`validation <valid-table.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+6. Assert: due to :ref:`validation <valid-table.copy>`, :math:`F.\AMODULE.\MITABLES[y]` exists.
 
-7. Pop the value :math:`\I32.\CONST~n` from the stack.
+7. Let :math:`\X{ta}_y` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[y]`.
 
-8. Assert: due to :ref:`validation <valid-table.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+8. Assert: due to :ref:`validation <valid-table.copy>`, :math:`S.\STABLES[\X{ta}_y]` exists.
 
-9. Pop the value :math:`\I32.\CONST~s` from the stack.
+9. Let :math:`\X{tab}_y` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}_y]`.
 
 10. Assert: due to :ref:`validation <valid-table.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-11. Pop the value :math:`\I32.\CONST~d` from the stack.
+11. Pop the value :math:`\I32.\CONST~n` from the stack.
 
-12. If :math:`s + n` is larger than the length of :math:`\X{tab}.\TIELEM` or :math:`d + n` is larger than the length of :math:`\X{tab}.\TIELEM`, then:
+12. Assert: due to :ref:`validation <valid-table.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+13. Pop the value :math:`\I32.\CONST~s` from the stack.
+
+14. Assert: due to :ref:`validation <valid-table.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+15. Pop the value :math:`\I32.\CONST~d` from the stack.
+
+16. If :math:`s + n` is larger than the length of :math:`\X{tab}_y.\TIELEM` or :math:`d + n` is larger than the length of :math:`\X{tab}_x.\TIELEM`, then:
 
     a. Trap.
 
-13. If :math:`n = 0`, then:
+17. If :math:`n = 0`, then:
 
    a. Return.
 
-14. If :math:`d \leq s`, then:
+18. If :math:`d \leq s`, then:
 
    a. Push the value :math:`\I32.\CONST~d` to the stack.
 
    b. Push the value :math:`\I32.\CONST~s` to the stack.
 
-   c. Execute the instruction :math:`\TABLEGET`.
+   c. Execute the instruction :math:`\TABLEGET~y`.
 
-   d. Execute the instruction :math:`\TABLESET`.
+   d. Execute the instruction :math:`\TABLESET~x`.
 
    e. Assert: due to the earlier check against the table size, :math:`d+1 < 2^{32}`.
 
@@ -746,7 +752,7 @@ Table Instructions
 
    h. Push the value :math:`\I32.\CONST~(s+1)` to the stack.
 
-15. Else:
+19. Else:
 
    a. Assert: due to the earlier check against the table size, :math:`d+n-1 < 2^{32}`.
 
@@ -756,48 +762,48 @@ Table Instructions
 
    d. Push the value :math:`\I32.\CONST~(s+n-1)` to the stack.
 
-   c. Execute the instruction :math:`\TABLEGET`.
+   c. Execute the instruction :math:`\TABLEGET~y`.
 
-   f. Execute the instruction :math:`\TABLESET`.
+   f. Execute the instruction :math:`\TABLESET~x`.
 
    g. Push the value :math:`\I32.\CONST~d` to the stack.
 
    h. Push the value :math:`\I32.\CONST~s` to the stack.
 
-16. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
+20. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
 
-17. Execute the instruction :math:`\TABLECOPY`.
+21. Execute the instruction :math:`\TABLECOPY~x~y`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~\TABLECOPY
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\TABLECOPY~x~y)
      \quad\stepto\quad S; F; \TRAP
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & s + n > |S.\STABLES[F.\AMODULE.\MITABLES[0]].\TIELEM| \\
-      \vee & d + n > |S.\STABLES[F.\AMODULE.\MITABLES[0]].\TIELEM|) \\
+     (\iff & s + n > |S.\STABLES[F.\AMODULE.\MITABLES[y]].\TIELEM| \\
+      \vee & d + n > |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM|) \\
      \end{array}
    \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~\TABLECOPY
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\TABLECOPY~x~y)
      \quad\stepto\quad S; F; \epsilon
      \\ \qquad
      (\otherwise)
    \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~\TABLECOPY
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\TABLECOPY~x~y)
      \quad\stepto\quad S; F;
        \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d)~(\I32.\CONST~s)~\TABLEGET~\TABLESET \\
-       (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~\TABLECOPY \\
+       (\I32.\CONST~d)~(\I32.\CONST~s)~(\TABLEGET~y)~(\TABLESET~x) \\
+       (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\TABLECOPY~x~y) \\
        \end{array}
      \\ \qquad
      (\otherwise, \iff d \leq s)
    \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~\TABLECOPY
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\TABLECOPY~x~y)
      \quad\stepto\quad S; F;
        \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d+n-1)~(\I32.\CONST~s+n-1)~\TABLEGET~\TABLESET \\
-       (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~\TABLECOPY \\
+       (\I32.\CONST~d+n-1)~(\I32.\CONST~s+n-1)~(\TABLEGET~y)~(\TABLESET~x) \\
+       (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\TABLECOPY~x~y) \\
        \end{array}
      \\ \qquad
      (\otherwise, \iff d > s) \\
@@ -806,24 +812,22 @@ Table Instructions
 
 .. _exec-table.init:
 
-:math:`\TABLEINIT~x`
-....................
-
-.. todo:: TODO: multi tables
+:math:`\TABLEINIT~x~y`
+......................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-table.init>`, :math:`F.\AMODULE.\MITABLES[0]` exists.
+2. Assert: due to :ref:`validation <valid-table.init>`, :math:`F.\AMODULE.\MITABLES[x]` exists.
 
-3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[0]`.
+3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[x]`.
 
 4. Assert: due to :ref:`validation <valid-table.init>`, :math:`S.\STABLES[\X{ta}]` exists.
 
 5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
 
-6. Assert: due to :ref:`validation <valid-table.init>`, :math:`F.\AMODULE.\MIELEMS[x]` exists.
+6. Assert: due to :ref:`validation <valid-table.init>`, :math:`F.\AMODULE.\MIELEMS[y]` exists.
 
-7. Let :math:`\X{ea}` be the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[x]`.
+7. Let :math:`\X{ea}` be the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[y]`.
 
 8. Assert: due to :ref:`validation <valid-table.init>`, :math:`S.\SELEMS[\X{ea}]` exists.
 
@@ -849,13 +853,13 @@ Table Instructions
 
     a. Return.
 
-18. Let :math:`\funcelem` be the :ref:`function element <syntax-funcelem>` :math:`\X{elem}.\EIELEM[s]`.
+18. Let :math:`\val` be the :ref:`reference value <syntax-ref>` :math:`\X{elem}.\EIELEM[s]`.
 
 19. Push the value :math:`\I32.\CONST~d` to the stack.
 
-20. Push the value :math:`\funcelem` to the stack.
+20. Push the value :math:`\val` to the stack.
 
-21. Execute the instruction :math:`\TABLESET`.
+21. Execute the instruction :math:`\TABLESET~x`.
 
 22. Assert: due to the earlier check against the table size, :math:`d+1 < 2^{32}`.
 
@@ -867,32 +871,32 @@ Table Instructions
 
 26. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
 
-27. Execute the instruction :math:`\TABLEINIT~x`.
+27. Execute the instruction :math:`\TABLEINIT~x~y`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\TABLEINIT~x)
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\TABLEINIT~x~y)
      \quad\stepto\quad S; F; \TRAP
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & s + n > |S.\SELEMS[F.\AMODULE.\MIELEMS[x]].\EIELEM| \\
+     (\iff & s + n > |S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM| \\
       \vee & d + n > |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM|) \\
      \end{array}
    \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\TABLEINIT~x)
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\TABLEINIT~x~y)
      \quad\stepto\quad S; F; \epsilon
      \\ \qquad
      (\otherwise)
    \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\TABLEINIT~x)
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\TABLEINIT~x~y)
      \quad\stepto\quad S; F;
        \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d)~\funcelem~(\TABLESET~x) \\
-       (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\TABLEINIT~x) \\
+       (\I32.\CONST~d)~\val~(\TABLESET~x) \\
+       (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\TABLEINIT~x~y) \\
        \end{array}
      \\ \qquad
-     (\otherwise, \iff \funcelem = S.\SELEMS[F.\AMODULE.\MIELEMS[x]].\EIELEM[s]) \\
+     (\otherwise, \iff \val = S.\SELEMS[F.\AMODULE.\MIELEMS[x]].\EIELEM[s]) \\
    \end{array}
 
 

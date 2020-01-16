@@ -117,6 +117,8 @@ New/extended instructions:
     - and `$x : table t'`
     - and `t' <: funcref`
 
+* In all instructions, table indices can be omitted and default to 0.
+
 Note:
 - In the binary format, space for the additional table indices is already reserved.
 - For backwards compatibility, all table indices may be omitted in the text format, in which case they default to 0 (for `table.copy`, both indices must be either present or absent).

@@ -216,7 +216,7 @@ op:
   br_table <var>+
   return
   call <var>
-  call_indirect <var> <func_type>
+  call_indirect <var>? <func_type>
   drop
   select
   local.get <var>
@@ -224,13 +224,13 @@ op:
   local.tee <var>
   global.get <var>
   global.set <var>
-  table.get <var>
-  table.set <var>
-  table.size <var>
-  table.grow <var>
-  table.fill <var>
-  table.copy
-  table.init <var>
+  table.get <var>?
+  table.set <var>?
+  table.size <var>?
+  table.grow <var>?
+  table.fill <var>?
+  table.copy <var>? <var>?
+  table.init <var>? <var>
   elem.drop <var>
   <val_type>.load((8|16|32)_<sign>)? <offset>? <align>?
   <val_type>.store(8|16|32)? <offset>? <align>?
@@ -263,15 +263,18 @@ global:  ( global <name>? <global_type> <instr>* )
 table:   ( table <name>? <table_type> )
          ( table <name>? ( export <string> ) <...> )                        ;; = (export <string> (table <N>)) (table <name>? <...>)
          ( table <name>? ( import <string> <string> ) <table_type> )        ;; = (import <name>? <string> <string> (table <table_type>))
-         ( table <name>? ( export <string> )* <ref_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )* <size> <size> <ref_type>) (elem (i32.const 0) <var>*)
-elem:    ( elem <var>? (offset <instr>* ) <var>* )
-         ( elem <var>? <expr> <var>* )                                      ;; = (elem <var>? (offset <expr>) <var>*)
+         ( table <name>? ( export <string> )* <ref_type> ( elem <var>* ) )  ;; = (table <name>? ( export <string> )* <size> <size> <ref_type>) (elem (i32.const 0) <var>*)
+elem:    ( elem <name>? ( table <var> )? <offset> <ref_type> <item>* )
+         ( elem <name>? ( table <var> )? <offset> func <var>* )             ;; = (elem <name>? ( table <var> )? <offset> funcref (ref.func <var>)*)
+offset:  ( offset <instr>* )
+         <expr>                                                             ;; = ( offset <expr> )
+item:    ( item <instr>* )
+         <expr>                                                             ;; = ( item <expr> )
 memory:  ( memory <name>? <memory_type> )
          ( memory <name>? ( export <string> ) <...> )                       ;; = (export <string> (memory <N>))+ (memory <name>? <...>)
          ( memory <name>? ( import <string> <string> ) <memory_type> )      ;; = (import <name>? <string> <string> (memory <memory_type>))
          ( memory <name>? ( export <string> )* ( data <string>* ) )         ;; = (memory <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
-data:    ( data <var>? ( offset <instr>* ) <string>* )
-         ( data <var>? <expr> <string>* )                                   ;; = (data <var>? (offset <expr>) <string>*)
+data:    ( data <name>? ( memory <var> )? <offset> <string>* )
 
 start:   ( start <var> )
 

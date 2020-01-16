@@ -258,7 +258,6 @@ but within certain :ref:`constraints <exec-invoke-host>` that ensure the integri
 .. index:: ! table instance, table, function address, table type, embedder, element segment
    pair: abstract syntax; table instance
    pair: table; instance
-.. _syntax-funcelem:
 .. _syntax-tableinst:
 
 Table Instances
@@ -340,7 +339,7 @@ It holds a vector of references and their common :ref:`type <syntax-reftype>`.
 .. math::
   \begin{array}{llll}
   \production{(element instance)} & \eleminst &::=&
-    \{ \EITYPE~\reftype, \EIELEM~\vec(\funcelem) \} \\
+    \{ \EITYPE~\reftype, \EIELEM~\vec(\reff) \} \\
   \end{array}
 
 

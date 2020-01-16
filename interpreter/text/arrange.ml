@@ -251,8 +251,8 @@ let rec instr e =
     | TableSize x -> "table.size " ^ var x, []
     | TableGrow x -> "table.grow " ^ var x, []
     | TableFill x -> "table.fill " ^ var x, []
-    | TableCopy (x, y) -> "table.copy", []  (*TODO*)
-    | TableInit (x, y) -> "table.init " ^ var y, []  (*TODO*)
+    | TableCopy (x, y) -> "table.copy " ^ var x ^ " " ^ var y, []
+    | TableInit (x, y) -> "table.init " ^ var x ^ " " ^ var y, []
     | ElemDrop x -> "elem.drop " ^ var x, []
     | Load op -> loadop op, []
     | Store op -> storeop op, []
@@ -265,7 +265,7 @@ let rec instr e =
     | RefNull -> "ref.null", []
     | RefIsNull -> "ref.is_null", []
     | RefFunc x -> "ref.func " ^ var x, []
-    | Const lit -> constop lit ^ " " ^ num lit, []
+    | Const n -> constop n ^ " " ^ num n, []
     | Test op -> testop op, []
     | Compare op -> relop op, []
     | Unary op -> unop op, []

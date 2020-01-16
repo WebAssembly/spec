@@ -286,8 +286,6 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 .. index:: element instance, reference
 .. _valid-eleminst:
 
-.. todo:: TODO: adjust elem instances
-
 :ref:`Element Instances <syntax-eleminst>` :math:`\{ \EIELEM~\X{fa}^\ast \}`
 ............................................................................
 
@@ -303,7 +301,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    \frac{
      (S \vdash \reff : t')^\ast
      \qquad
-     (\vdashreftypematch t' \matchesvaltype t)^n
+     (\vdashreftypematch t' \matchesvaltype t)^\ast
    }{
      S \vdasheleminst \{ \EITYPE~t, \EIELEM~\reff^\ast \} \ok
    }

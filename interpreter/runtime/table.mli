@@ -23,8 +23,3 @@ val grow : table -> size -> ref_ -> unit
 val load : table -> index -> ref_ (* raises Bounds *)
 val store : table -> index -> ref_ -> unit (* raises Type, Bounds *)
 val blit : table -> index -> ref_ list -> unit (* raises Bounds *)
-
-(*TODO: remove*)
-val init :
-  table -> ref_ list -> index -> index -> count -> unit (* raises Bounds *)
-val copy : table -> index -> index -> count -> unit (* raises Bounds *)

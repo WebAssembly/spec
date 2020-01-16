@@ -903,7 +903,6 @@
 .. |moduleinst| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\X{moduleinst}}
 .. |funcinst| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\X{funcinst}}
 .. |tableinst| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\X{tableinst}}
-.. |funcelem| mathdef:: \xref{exec/runtime}{syntax-funcelem}{\X{funcelem}}
 .. |meminst| mathdef:: \xref{exec/runtime}{syntax-meminst}{\X{meminst}}
 .. |globalinst| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\X{globalinst}}
 .. |eleminst| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\X{eleminst}}

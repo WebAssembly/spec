@@ -215,9 +215,27 @@ Table Instructions
      \text{table.size}~~x{:}\Ttableidx_I &\Rightarrow& \TABLESIZE~x \\ &&|&
      \text{table.grow}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEGROW~x \\ &&|&
      \text{table.fill}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEFILL~x \\
-     \text{table.copy} &\Rightarrow& \TABLECOPY \\ &&|&
-     \text{table.init}~~x{:}\Telemidx_I &\Rightarrow& \TABLEINIT~x \\ &&|&
+     \text{table.copy}~~x{:}\Ttableidx_I~~y{:}\Ttableidx_I &\Rightarrow& \TABLECOPY~x~y \\ &&|&
+     \text{table.init}~~x{:}\Ttableidx_I~~y{:}\Telemidx_I &\Rightarrow& \TABLEINIT~x~y \\ &&|&
      \text{elem.drop}~~x{:}\Telemidx_I &\Rightarrow& \ELEMDROP~x \\
+   \end{array}
+
+
+Abbreviations
+.............
+
+For backwards compatibility, all :math:`table indices <syntax-tableidx>` may be omitted from table instructions, defaulting to :math:`0`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} &
+     \text{table.get} &\equiv& \text{table.get}~~\text{0} \\ &&|&
+     \text{table.set} &\equiv& \text{table.set}~~\text{0} \\ &&|&
+     \text{table.size} &\equiv& \text{table.size}~~\text{0} \\ &&|&
+     \text{table.grow} &\equiv& \text{table.grow}~~\text{0} \\ &&|&
+     \text{table.fill} &\equiv& \text{table.fill}~~\text{0} \\ &&|&
+     \text{table.copy} &\equiv& \text{table.copy}~~\text{0}~~\text{0} \\ &&|&
+     \text{table.init}~~x{:}\Telemidx_I &\equiv& \text{table.init}~~\text{0}~~x{:}\Telemidx_I \\ &&|&
    \end{array}
 
 

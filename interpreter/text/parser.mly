@@ -36,7 +36,7 @@ let ati i =
 
 (* Literals *)
 
-let literal f s =
+let num f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
 let nanop f nan =
@@ -176,7 +176,7 @@ let inline_type_explicit (c : context) x ft at =
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token REF_ANY REF_NULL REF_FUNC REF_HOST REF_IS_NULL
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
-%token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT
+%token TABLE ELEM MEMORY DATA OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
@@ -274,7 +274,7 @@ type_use :
 
 /* Immediates */
 
-literal :
+num :
   | NAT { $1 @@ at () }
   | INT { $1 @@ at () }
   | FLOAT { $1 @@ at () }
@@ -352,9 +352,17 @@ plain_instr :
   | TABLE_SIZE var { fun c -> table_size ($2 c table) }
   | TABLE_GROW var { fun c -> table_grow ($2 c table) }
   | TABLE_FILL var { fun c -> table_fill ($2 c table) }
-  | TABLE_COPY { let at = ati 1 in fun c -> table_copy (0l @@ at) (0l @@ at) }
-  | TABLE_INIT var /*TODO*/
-    { let at = ati 1 in fun c -> table_init (0l @@ at) ($2 c elem) }
+  | TABLE_COPY var var { fun c -> table_copy ($2 c table) ($3 c table) }
+  | TABLE_INIT var var { fun c -> table_init ($2 c table) ($3 c elem) }
+  | TABLE_GET { let at = at () in fun c -> table_get (0l @@ at) }  /* Sugar */
+  | TABLE_SET { let at = at () in fun c -> table_set (0l @@ at) }  /* Sugar */
+  | TABLE_SIZE { let at = at () in fun c -> table_size (0l @@ at) }  /* Sugar */
+  | TABLE_GROW { let at = at () in fun c -> table_grow (0l @@ at) }  /* Sugar */
+  | TABLE_FILL { let at = at () in fun c -> table_fill (0l @@ at) }  /* Sugar */
+  | TABLE_COPY  /* Sugar */
+    { let at = at () in fun c -> table_copy (0l @@ at) (0l @@ at) }
+  | TABLE_INIT var  /* Sugar */
+    { let at = at () in fun c -> table_init (0l @@ at) ($2 c elem) }
   | ELEM_DROP var { fun c -> elem_drop ($2 c elem) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
@@ -367,7 +375,7 @@ plain_instr :
   | REF_NULL { fun c -> ref_null }
   | REF_IS_NULL { fun c -> ref_is_null }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
-  | CONST literal { fun c -> fst (literal $1 $2) }
+  | CONST num { fun c -> fst (num $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
   | UNARY { fun c -> $1 }
@@ -648,7 +656,7 @@ elem_kind :
   | FUNC { FuncRefType }
 
 elem_expr :
-  /* TODO: | LPAR ITEM const_expr RPAR { $3 } */
+  | LPAR ITEM const_expr RPAR { $3 }
   | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
 
 elem_expr_list :
@@ -733,16 +741,16 @@ data :
     { let at = at () in
       fun c -> ignore ($3 c anon_data bind_data);
       fun () -> {dinit = $4; dmode = Passive @@ at} @@ at }
- | LPAR DATA bind_var_opt memory_use offset string_list RPAR
-   { let at = at () in
-     fun c -> ignore ($3 c anon_data bind_data);
-     fun () ->
-     {dinit = $6; dmode = Active {index = $4 c memory; offset = $5 c} @@ at} @@ at }
- | LPAR DATA bind_var_opt offset string_list RPAR  /* Sugar */
-   { let at = at () in
-     fun c -> ignore ($3 c anon_data bind_data);
-     fun () ->
-     {dinit = $5; dmode = Active {index = 0l @@ at; offset = $4 c} @@ at} @@ at }
+  | LPAR DATA bind_var_opt memory_use offset string_list RPAR
+    { let at = at () in
+      fun c -> ignore ($3 c anon_data bind_data);
+      fun () ->
+      {dinit = $6; dmode = Active {index = $4 c memory; offset = $5 c} @@ at} @@ at }
+  | LPAR DATA bind_var_opt offset string_list RPAR  /* Sugar */
+    { let at = at () in
+      fun c -> ignore ($3 c anon_data bind_data);
+      fun () ->
+      {dinit = $5; dmode = Active {index = 0l @@ at; offset = $4 c} @@ at} @@ at }
 
 memory :
   | LPAR MEMORY bind_var_opt memory_fields RPAR
@@ -972,7 +980,7 @@ meta :
   | LPAR OUTPUT script_var_opt RPAR { Output ($3, None) @@ at () }
 
 const :
-  | LPAR CONST literal RPAR { Values.Num (snd (literal $2 $3)) @@ at () }
+  | LPAR CONST num RPAR { Values.Num (snd (num $2 $3)) @@ at () }
   | LPAR REF_NULL RPAR { Values.Ref Values.NullRef @@ at () }
   | LPAR REF_HOST NAT RPAR { Values.Ref (HostRef (nat32 $3 (ati 3))) @@ at () }
 
