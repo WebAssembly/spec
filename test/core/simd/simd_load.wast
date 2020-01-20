@@ -182,31 +182,7 @@
   (module (memory 1) (func (drop (v128.load (local.get 2)))))
   "unknown local 2"
 )
-
-
-;; Test operation with empty argument
-
 (assert_invalid
-  (module
-    (func $v128.const-arg-empty (result v128)
-      (v128.const)
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $v128.const-1st-arg-empty (result v128)
-      (v128.const 0 0 0 0)
-    )
-  )
-  "type mismatch"
-)
-(assert_invalid
-  (module
-    (func $v128.const-2nd-arg-empty (result v128)
-      (v128.const i32x4)
-    )
-  )
+  (module (memory 1) (func (drop (v128.load))))
   "type mismatch"
 )
