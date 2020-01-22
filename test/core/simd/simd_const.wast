@@ -229,6 +229,10 @@
 )
 
 (assert_malformed
+  (module quote "(func (v128.const 0 0 0 0) drop)")
+  "unexpected token"
+)
+(assert_malformed
   (module quote "(func (v128.const i8x16) drop)")
   "wrong number of lane literals"
 )
