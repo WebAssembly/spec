@@ -336,3 +336,30 @@ tbl_init(tbl_init_len*4, tbl_init_len*4, tbl_init_len, 0xFFFFFFF0);
 // We arithmetically overflow the segment limit but not the table limit
 tbl_init(tbl_init_len, tbl_init_len, tbl_init_len, 0xFFFFFFFC, Math.floor(tbl_init_len/2));
 
+// Test that the elem segment index is properly encoded as an unsigned (not
+// signed) LEB.
+print(
+`
+(module
+  (table 1 funcref)
+  ;; 65 elem segments. 64 is the smallest positive number that is encoded
+  ;; differently as a signed LEB.
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref)
+  (func (table.init 64 (i32.const 0) (i32.const 0) (i32.const 0))))
+`)

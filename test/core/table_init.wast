@@ -1750,3 +1750,27 @@
 (assert_trap (invoke "test" (i32.const 13)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 14)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 15)) "uninitialized element")
+
+(module
+  (table 1 funcref)
+  ;; 65 elem segments. 64 is the smallest positive number that is encoded
+  ;; differently as a signed LEB.
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref) (elem funcref) (elem funcref) (elem funcref)
+  (elem funcref)
+  (func (table.init 64 (i32.const 0) (i32.const 0) (i32.const 0))))
+
