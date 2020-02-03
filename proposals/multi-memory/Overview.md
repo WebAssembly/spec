@@ -13,6 +13,8 @@ There are a number of use case scenarios for using multiple memories in a single
 
 * *Security.* A module may want to separate public memory that is shared with the outside to exchange data, from private memory that is kept encapsulated inside the module.
 
+* *Isolation.* Even internal to a single module it is beneficial to have both and be able separate memory that is shared between multiple threads from memory used in a single-threaded manner.
+
 * *Persistence.* An application may want to keep some of its memory state persistent between runs, e.g., by storing it in a file. But it may not want to do that for all its memory, so separating lifetimes via multiple memories is a natural setup.
 
 * *Linking.* There are a number of tools out there that can merge multiple Wasm modules into one, as a form of static linking. This is possible in almost all cases, except when the set of modules defines more than one memory. Allowing multiple memories in a single module closes this unfortunate gap.
