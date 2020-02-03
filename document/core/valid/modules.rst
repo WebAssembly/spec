@@ -543,7 +543,15 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C.\CREFS` is the set :math:`\freefuncidx(\module.\MELEMS)`, i.e., the set of :ref:`function indices <syntax-funcidx>` occurring in any of the module's :ref:`element segments <syntax-elem>`.
 
-* Let :math:`C'` be the :ref:`context <context>` where :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)` and all other fields are empty.
+* Let :math:`C'` be the :ref:`context <context>` where:
+
+  * :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)`,
+
+  * :math:`C'.\CFUNCS` is the same as :math:`C.\CFUNCS`,
+
+  * :math:`C'.\CREFS` is the same as :math:`C.\CREFS`,
+
+  * all other fields are empty.
 
 * Under the context :math:`C`:
 
@@ -630,7 +638,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \\
      C = \{ \CTYPES~\functype^\ast, \CFUNCS~\X{ift}^\ast~\X{ft}^\ast, \CTABLES~\X{itt}^\ast~\X{tt}^\ast, \CMEMS~\X{imt}^\ast~\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast~\X{gt}^\ast, \CELEMS~{\ok}^{N_e}, \CDATAS~{\ok}^{N_d}, \CREFS~\freefuncidx(\elem^{N_e}) \}
      \\
-     C' = \{ \CGLOBALS~\X{igt}^\ast \}
+     C' = \{ \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad
      |C.\CMEMS| \leq 1
      \qquad
@@ -661,7 +669,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
    All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
    Globals, however, are not recursive.
-   The effect of defining the limited context :math:`C'` for validating the module's globals is that their initialization expressions can only access imported globals and nothing else.
+   The effect of defining the limited context :math:`C'` for validating the module's globals is that their initialization expressions can only access functions and imported globals and nothing else.
 
 .. note::
    The restriction on the number of memories may be lifted in future versions of WebAssembly.
