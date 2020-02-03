@@ -40,10 +40,10 @@
   )
 
   (func (export "join-nullref") (param i32) (result anyref)
-    (select (result anyref) (ref.null) (ref.null) (local.get 0))
+    (select (result nullref) (ref.null) (ref.null) (local.get 0))
   )
   (func (export "join-funcref") (param i32) (result anyref)
-    (select (result anyref)
+    (select (result funcref)
       (table.get $tab (i32.const 0))
       (ref.null)
       (local.get 0)
