@@ -917,10 +917,10 @@
   "type mismatch"
 )
 (assert_invalid
-  (module quote
-    "(func $i8x16.extract_lane_s-2nd-arg-empty (result i32)"
-    "  (i8x16.extract_lane_s 0)"
-    ")"
+  (module
+    (func $i8x16.extract_lane_s-2nd-arg-empty (result i32)
+      (i8x16.extract_lane_s 0)
+    )
   )
   "type mismatch"
 )
@@ -941,10 +941,10 @@
   "type mismatch"
 )
 (assert_invalid
-  (module quote
-    "(func $i16x8.extract_lane_u-2nd-arg-empty (result i32)"
-    "  (i16x8.extract_lane_u 0)"
-    ")"
+  (module
+    (func $i16x8.extract_lane_u-2nd-arg-empty (result i32)
+      (i16x8.extract_lane_u 0)
+    )
   )
   "type mismatch"
 )
