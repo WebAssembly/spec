@@ -261,7 +261,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [I32Type; I32Type; I32Type] --> []
 
   | ElemDrop x ->
-    ignore (table c (0l @@ e.at));
     ignore (elem c x);
     [] --> []
 
@@ -295,7 +294,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [I32Type; I32Type; I32Type] --> []
 
   | DataDrop x ->
-    ignore (memory c (0l @@ e.at));
     ignore (data c x);
     [] --> []
 

@@ -189,7 +189,7 @@
    (module
      (func (export "test")
        (data.drop 0)))
-   "unknown memory 0")
+   "unknown data segment")
 
 (assert_invalid
   (module
