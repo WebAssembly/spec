@@ -92,6 +92,7 @@
 | `i8x16.max_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i8x16.max_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i8x16.avgr_u`             |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i8x16.abs`                |                           |                       |                    |                    |
 | `i16x8.neg`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.any_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.all_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -110,6 +111,7 @@
 | `i16x8.max_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i16x8.max_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i16x8.avgr_u`             |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i16x8.abs`                |                           |                       |                    |                    |
 | `i32x4.neg`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.any_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.all_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -123,6 +125,7 @@
 | `i32x4.min_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i32x4.max_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i32x4.max_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
+| `i32x4.abs`                |                           |                       |                    |                    |
 | `i64x2.neg`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.shl`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.shr_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |

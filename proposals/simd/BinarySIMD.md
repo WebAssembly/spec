@@ -199,3 +199,6 @@ The `v8x16.shuffle` instruction has 16 bytes after `simdop`.
 | `v128.andnot`              |    `0xd8`| -                  |
 | `i8x16.avgr_u`             |    `0xd9`|                    |
 | `i16x8.avgr_u`             |    `0xda`|                    |
+| `i8x16.abs`                |    `0xe1`| -                  |
+| `i16x8.abs`                |    `0xe2`| -                  |
+| `i32x4.abs`                |    `0xe3`| -                  |

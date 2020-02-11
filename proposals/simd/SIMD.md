@@ -503,6 +503,18 @@ def S.avgr_u(a, b):
     return S.lanewise_binary(S.RoundingAverage, S.AsUnsigned(a), S.AsUnsigned(b))
 ```
 
+### Lane-wise integer absolute value
+* `i8x16.abs(a: v128) -> v128`
+* `i16x8.abs(a: v128) -> v128`
+* `i32x4.abs(a: v128) -> v128`
+
+Lane-wise wrapping absolute value.
+
+```python
+def S.abs(a):
+    return S.lanewise_unary(abs, S.AsSigned(a))
+```
+
 ## Bit shifts
 
 ### Left shift by scalar
@@ -791,7 +803,7 @@ def S.neg(a):
     return S.lanewise_unary(ieee.negate, a)
 ```
 
-### Absolute value
+### Floating-point absolute value
 * `f32x4.abs(a: v128) -> v128`
 * `f64x2.abs(a: v128) -> v128`
 
