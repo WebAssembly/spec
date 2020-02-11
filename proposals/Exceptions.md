@@ -414,10 +414,10 @@ appear immediately after the global section.
 ##### Event section
 
 The `event` section is the named section 'event'. For ease of validation, this
-section comes after the [global
-section](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#global-section)
-and before the [export
-section](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#export-section).
+section comes after the [memory
+section](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#memory-section)
+and before the [global
+section](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#global-section).
 So the list of all sections will be:
 
 | Section Name | Code | Description |
@@ -427,8 +427,8 @@ So the list of all sections will be:
 | Function | `3` | Function declarations |
 | Table | `4` | Indirect function table and other tables |
 | Memory | `5` | Memory attributes |
-| Global | `6` | Global declarations |
 | Event | `13` | Event declarations |
+| Global | `6` | Global declarations |
 | Export | `7` | Exports |
 | Start | `8` | Start function declaration |
 | Element | `9` | Elements section |
