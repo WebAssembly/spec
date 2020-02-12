@@ -341,8 +341,6 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. If [=IsCallable=](|v|) is false, throw a {{LinkError}} exception.
             1. If |v| has a \[[FunctionAddress]] internal slot, and therefore is an [=Exported Function=],
                 1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
-
-                Note: The signature is checked by [=module_instantiate=] invoked below.
             1. Otherwise,
                 1. [=Create a host function=] from |v| and |functype|, and let |funcaddr| be the result.
                 1. Let |index| be the number of external functions in |imports|. This value |index| is known as the <dfn>index of the host function</dfn> |funcaddr|.
@@ -363,16 +361,18 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. [=list/Append=] |externglobal| to |imports|.
         1. If |externtype| is of the form [=𝗆𝖾𝗆=] <var ignore>memtype</var>,
             1. If |v| is not a {{Memory}} object, throw a {{LinkError}} exception.
-            1. Note: [=module_instantiate=] invoked below will check the imported {{Memory}}'s size against the importing module's requirements.
             1. Let |externmem| be the [=external value=] [=external value|𝗆𝖾𝗆=] |v|.\[[Memory]].
             1. [=list/Append=] |externmem| to |imports|.
         1. If |externtype| is of the form [=𝗍𝖺𝖻𝗅𝖾=] <var ignore>tabletype</var>,
             1. If |v| is not a {{Table}} instance, throw a {{LinkError}} exception.
-            1. Note: The table's length, etc. is checked by [=module_instantiate=] invoked below.
             1. Let |tableaddr| be |v|.\[[Table]].
             1. Let |externtable| be the [=external value=] [=external value|𝗍𝖺𝖻𝗅𝖾=] |tableaddr|.
             1. [=list/Append=] |externtable| to |imports|.
     1. Return |imports|.
+
+Note: This algorithm only verifies the right kind of JavaScript values are passed.
+The verification of WebAssembly type requirements is deferred to the
+"[=instantiate the core of a WebAssembly module=]" algorithm.
 </div>
 
 <div algorithm>
