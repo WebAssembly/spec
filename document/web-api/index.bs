@@ -57,8 +57,9 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
 urlPrefix: https://webassembly.github.io/spec/js-api/; spec: WASMJS
     type: namespace
         text: WebAssembly; url: #namespacedef-webassembly
+    type: exception
+        text: CompileError; url: #exceptiondef-compileerror
     type: interface
-        text: CompileError; url: #compileerror
         text: Module; url: #module
         text: WebAssemblyInstantiatedSource; url: #dictdef-webassemblyinstantiatedsource
     type: dfn
