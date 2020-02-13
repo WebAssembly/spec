@@ -431,7 +431,7 @@ Table Instructions
 
 .. math::
    \frac{
-     C.\CTABLES[x] = t
+     C.\CTABLES[x] = \tabletype
    }{
      C \vdashinstr \TABLESIZE~x : [] \to [\I32]
    }
@@ -450,7 +450,7 @@ Table Instructions
 
 .. math::
    \frac{
-     C.\CTABLES[x] = t
+     C.\CTABLES[x] = \limits~t
    }{
      C \vdashinstr \TABLEGROW~x : [t~\I32] \to [\I32]
    }
@@ -469,7 +469,7 @@ Table Instructions
 
 .. math::
    \frac{
-     C.\CTABLES[x] = t
+     C.\CTABLES[x] = \limits~t
    }{
      C \vdashinstr \TABLEFILL~x : [\I32~t~\I32] \to []
    }
@@ -477,39 +477,59 @@ Table Instructions
 
 .. _valid-table.copy:
 
-:math:`\TABLECOPY`
-.....................
+:math:`\TABLECOPY~x~y`
+......................
 
-* The table :math:`C.\CTABLES[0]` must be defined in the context.
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Let :math:`\limits_1~t_1` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* The table :math:`C.\CTABLES[y]` must be defined in the context.
+
+* Let :math:`\limits_2~t_2` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[y]`.
+
+* The :ref:`reference type <syntax-reftype>` :math:`t_2` must :ref:`match <match-reftype>` :math:`t_1`.
 
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
 .. math::
    \frac{
-     C.\CTABLES[0] = \tabletype
+     C.\CTABLES[x] = \limits_1~t_1
+     \qquad
+     C.\CTABLES[x] = \limits_2~t_2
+     \qquad
+     \vdashreftypematch t_2 \matchesvaltype t_1
    }{
-     C \vdashinstr \TABLECOPY : [\I32~\I32~\I32] \to []
+     C \vdashinstr \TABLECOPY~x~y : [\I32~\I32~\I32] \to []
    }
 
 
 .. _valid-table.init:
 
-:math:`\TABLEINIT~x`
-.....................
+:math:`\TABLEINIT~x~y`
+......................
 
-* The table :math:`C.\CTABLES[0]` must be defined in the context.
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* The element segment :math:`C.\CELEMS[x]` must be defined in the context.
+* Let :math:`\limits~t_1` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* The element segment :math:`C.\CELEMS[y]` must be defined in the context.
+
+* Let :math:`t_2` be the :ref:`reference type <syntax-reftype>` :math:`C.\CELEMS[y]`.
+
+* The :ref:`reference type <syntax-reftype>` :math:`t_2` must :ref:`match <match-reftype>` :math:`t_1`.
 
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
 .. math::
    \frac{
-     C.\CTABLES[0] = \tabletype
+     C.\CTABLES[x] = \limits_1~t_1
      \qquad
-     C.\CELEMS[x] = {\ok}
+     C.\CELEMS[y] = t_2
+     \qquad
+     \vdashreftypematch t_2 \matchesvaltype t_1
    }{
-     C \vdashinstr \TABLEINIT~x : [\I32~\I32~\I32] \to []
+     C \vdashinstr \TABLEINIT~x~y : [\I32~\I32~\I32] \to []
    }
 
 
@@ -524,7 +544,7 @@ Table Instructions
 
 .. math::
    \frac{
-     C.\CELEMS[x] = {\ok}
+     C.\CELEMS[x] = t
    }{
      C \vdashinstr \ELEMDROP~x : [] \to []
    }

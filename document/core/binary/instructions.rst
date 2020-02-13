@@ -157,9 +157,9 @@ Table Instructions
      \hex{FC}~\hex{0F}~~x{:}\Btableidx &\Rightarrow& \TABLEGROW~x \\ &&|&
      \hex{FC}~\hex{10}~~x{:}\Btableidx &\Rightarrow& \TABLESIZE~x \\ &&|&
      \hex{FC}~\hex{11}~~x{:}\Btableidx &\Rightarrow& \TABLEFILL~x \\
-     \hex{FC}~\hex{0C}~~\hex{00}~x{:}\Belemidx &\Rightarrow& \TABLEINIT~x \\ &&|&
+     \hex{FC}~\hex{0C}~~x{:}\Btableidx~~y{:}\Belemidx &\Rightarrow& \TABLEINIT~x~y \\ &&|&
      \hex{FC}~\hex{0D}~~x{:}\Belemidx &\Rightarrow& \ELEMDROP~x \\ &&|&
-     \hex{FC}~\hex{0E}~~\hex{00}~~\hex{00} &\Rightarrow& \TABLECOPY \\
+     \hex{FC}~\hex{0E}~~x{:}\Btableidx~~y{:}\Btableidx &\Rightarrow& \TABLECOPY~x~y \\
    \end{array}
 
 

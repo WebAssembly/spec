@@ -145,10 +145,10 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
 Element Segments
 ~~~~~~~~~~~~~~~~
 
-Element segments :math:`\elem` are not classified by any type but merely checked for well-formedness.
+Element segments :math:`\elem` are classified by the :ref:`reference type <syntax-reftype>` of their elements.
 
-:math:`\{ \ETYPE~et, \EINIT~e^\ast, \EMODE~\elemmode \}`
-........................................................
+:math:`\{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \}`
+.......................................................
 
 * For each :math:`e_i` in :math:`e^\ast`,
 
@@ -156,9 +156,11 @@ Element segments :math:`\elem` are not classified by any type but merely checked
 
   * The expression :math:`e_i` must be :ref:`constant <valid-const>`.
 
-* The element mode :math:`\elemmode` must be valid for :ref:`reference type <syntax-reftype>` :math:`\X{et}`.
+* The element mode :math:`\elemmode` must be valid with :ref:`reference type <syntax-reftype>` :math:`t'`.
 
-* Then the element segment is valid.
+* The :ref:`reference type <syntax-reftype>` :math:`t` must :ref:`match <match-reftype>` the reference type :math:`t'`.
+
+* Then the element segment is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
 
 .. math::
@@ -167,9 +169,11 @@ Element segments :math:`\elem` are not classified by any type but merely checked
      \qquad
      (C \vdashexprconst e \const)^\ast
      \qquad
-     C; \X{et} \vdashelemmode \elemmode \ok
+     C \vdashelemmode \elemmode : t'
+     \qquad
+     \vdashreftypematch t \matchesvaltype t'
    }{
-     C \vdashelem \{ \ETYPE~et, \EINIT~e^\ast, \EMODE~\elemmode \} \ok
+     C \vdashelem \{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \} : t
    }
 
 
@@ -178,12 +182,12 @@ Element segments :math:`\elem` are not classified by any type but merely checked
 :math:`\EPASSIVE`
 .................
 
-* The element mode is valid for any :ref:`reference type <syntax-reftype>` :math:`\X{et}`.
+* The element mode is valid with any :ref:`reference type <syntax-reftype>`.
 
 .. math::
    \frac{
    }{
-     C; \X{et} \vdashelemmode \EPASSIVE \ok
+     C \vdashelemmode \EPASSIVE : \reftype
    }
 
 
@@ -194,38 +198,34 @@ Element segments :math:`\elem` are not classified by any type but merely checked
 
 * Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The :ref:`reference type <syntax-reftype>` :math:`\X{et}` must :ref:`match <match-reftype>` the reference type :math:`t`.
-
 * The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
 
 * The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
-* Then the element mode is valid for :ref:`reference type <syntax-reftype>` :math:`\X{et}`.
+* Then the element mode is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
      C.\CTABLES[x] = \limits~t
-     \qquad
-     \vdashreftypematch \X{et} \matchesvaltype t
      \\
      C \vdashexpr \expr : [\I32]
      \qquad
      C \vdashexprconst \expr \const
      \end{array}
    }{
-     C; \X{et} \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} \ok
+     C \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} : t 
    }
 
 :math:`\EDECLARATIVE`
 .....................
 
-* The element mode is valid for any :ref:`reference type <syntax-reftype>` :math:`\X{et}`.
+* The element mode is valid with any :ref:`reference type <syntax-reftype>`.
 
 .. math::
    \frac{
    }{
-     C; \X{et} \vdashelemmode \EDECLARATIVE \ok
+     C \vdashelemmode \EDECLARATIVE : \reftype
    }
 
 
@@ -290,7 +290,7 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
      \qquad
      C \vdashexprconst \expr \const
    }{
-     C \vdashelemmode \DACTIVE~\{ \DMEM~x, \DOFFSET~\expr \} \ok
+     C \vdashdatamode \DACTIVE~\{ \DMEM~x, \DOFFSET~\expr \} \ok
    }
 
 
@@ -531,7 +531,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
   * :math:`C.\CGLOBALS` is :math:`\etglobals(\X{it}^\ast)` concatenated with :math:`\X{gt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}^\ast` as determined below,
 
-  * :math:`C.\CELEMS` is :math:`{\ok}^{N_e}`, where :math:`N_e` is the length of the vector :math:`\module.\MELEMS`,
+  * :math:`C.\CELEMS` is :math:`{\X{rt}}^\ast` as determined below,
 
   * :math:`C.\CDATAS` is :math:`{\ok}^{N_d}`, where :math:`N_d` is the length of the vector :math:`\module.\MDATAS`,
 
@@ -573,7 +573,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
       the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
 
   * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
-    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>`.
+    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
 
   * For each :math:`\data_i` in :math:`\module.\MDATAS`,
     the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
@@ -599,6 +599,8 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
 * Let :math:`\X{gt}^\ast` be the concatenation of the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}_i`, in index order.
 
+* Let :math:`\X{rt}^\ast` be the concatenation of the :ref:`referense types <syntax-reftype>` :math:`\X{rt}_i`, in index order.
+
 * Let :math:`\X{it}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{it}_i` of the imports, in index order.
 
 * Let :math:`\X{et}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{et}_i` of the exports, in index order.
@@ -618,7 +620,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \quad
      (C' \vdashglobal \global : \X{gt})^\ast
      \\
-     (C \vdashelem \elem \ok)^{N_e}
+     (C \vdashelem \elem : \X{rt})^\ast
      \quad
      (C \vdashdata \data \ok)^{N_d}
      \quad
@@ -636,7 +638,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \qquad
      \X{igt}^\ast = \etglobals(\X{it}^\ast)
      \\
-     C = \{ \CTYPES~\functype^\ast, \CFUNCS~\X{ift}^\ast~\X{ft}^\ast, \CTABLES~\X{itt}^\ast~\X{tt}^\ast, \CMEMS~\X{imt}^\ast~\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast~\X{gt}^\ast, \CELEMS~{\ok}^{N_e}, \CDATAS~{\ok}^{N_d}, \CREFS~\freefuncidx(\elem^{N_e}) \}
+     C = \{ \CTYPES~\functype^\ast, \CFUNCS~\X{ift}^\ast~\X{ft}^\ast, \CTABLES~\X{itt}^\ast~\X{tt}^\ast, \CMEMS~\X{imt}^\ast~\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast~\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^{N_d}, \CREFS~\freefuncidx(\elem^\ast) \}
      \\
      C' = \{ \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad
@@ -652,7 +654,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
          \MTABLES~\table^\ast,
          \MMEMS~\mem^\ast,
          \MGLOBALS~\global^\ast, \\
-         \MELEMS~\elem^{N_e},
+         \MELEMS~\elem^\ast,
          \MDATAS~\data^{N_d},
          \MSTART~\start^?,
          \MIMPORTS~\import^\ast,

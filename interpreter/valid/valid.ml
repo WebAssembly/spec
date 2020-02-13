@@ -21,8 +21,8 @@ type context =
   tables : table_type list;
   memories : memory_type list;
   globals : global_type list;
+  elems : ref_type list;
   datas : unit list;
-  elems : unit list;
   locals : value_type list;
   results : value_type list;
   labels : stack_type list;
@@ -31,7 +31,7 @@ type context =
 
 let empty_context =
   { types = []; funcs = []; tables = []; memories = [];
-    globals = []; datas = []; elems = [];
+    globals = []; elems = []; datas = [];
     locals = []; results = []; labels = [];
     refs = Free.empty
   }
@@ -45,8 +45,8 @@ let func (c : context) x = lookup "function" c.funcs x
 let table (c : context) x = lookup "table" c.tables x
 let memory (c : context) x = lookup "memory" c.memories x
 let global (c : context) x = lookup "global" c.globals x
-let data (c : context) x = lookup "data segment" c.datas x
 let elem (c : context) x = lookup "elem segment" c.elems x
+let data (c : context) x = lookup "data segment" c.datas x
 let local (c : context) x = lookup "local" c.locals x
 let label (c : context) x = lookup "label" c.labels x
 
@@ -288,13 +288,19 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [NumType I32Type; RefType t; NumType I32Type] --> []
 
   | TableCopy (x, y) ->
-    ignore (table c x);
-    ignore (table c y);
+    let TableType (_lim1, t1) = table c x in
+    let TableType (_lim2, t2) = table c y in
+    require (match_ref_type t2 t1) x.at
+      ("type mismatch: source element type " ^ string_of_ref_type t1 ^
+       " does not match destination element type " ^ string_of_ref_type t2);
     [NumType I32Type; NumType I32Type; NumType I32Type] --> []
 
   | TableInit (x, y) ->
-    ignore (table c x);
-    ignore (elem c y);
+    let TableType (_lim1, t1) = table c x in
+    let t2 = elem c y in
+    require (match_ref_type t2 t1) x.at
+      ("type mismatch: source element type " ^ string_of_ref_type t1 ^
+       " does not match destination element type " ^ string_of_ref_type t2);
     [NumType I32Type; NumType I32Type; NumType I32Type] --> []
 
   | ElemDrop x ->
@@ -568,8 +574,8 @@ let check_module (m : module_) =
       funcs = c0.funcs @ List.map (fun f -> type_ c0 f.it.ftype) funcs;
       tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
       memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
-      elems = List.map (fun _ -> ()) elems;
-      datas = List.map (fun _ -> ()) datas;
+      elems = List.map (fun elem -> elem.it.etype) elems;
+      datas = List.map (fun _data -> ()) datas;
     }
   in
   let c =
