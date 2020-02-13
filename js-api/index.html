@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version 8bc2fccb49a45a0af18c5e75ce18049d75f824b6" name="generator">
+  <meta content="Bikeshed version b43aa594f5014ff14748da1aace9afaa73d2b3e6" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="c9355bf6141d3299f0679d6dac6ba458c564b00e" name="document-revision">
+  <meta content="a80c80470d5e1ee3b9b23ec074a0892f3fd5f16b" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -271,7 +271,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-02-05">5 February 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-02-13">13 February 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -520,14 +520,14 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
      <li data-md>
       <p>Let <var>imports</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval">external value</a>s.</p>
      <li data-md>
-      <p>For each (<var>moduleName</var>, <var>componentName</var>, <var>externtype</var>) in <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-imports" id="ref-for-embed-module-imports">module_imports</a>(<var>module</var>), do</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate">For each</a> (<var>moduleName</var>, <var>componentName</var>, <var>externtype</var>) of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-imports" id="ref-for-embed-module-imports">module_imports</a>(<var>module</var>),</p>
       <ol>
        <li data-md>
         <p>Let <var>o</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-get-o-p" id="ref-for-sec-get-o-p">Get</a>(<var>importObject</var>, <var>moduleName</var>).</p>
        <li data-md>
         <p>If <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values">Type</a>(<var>o</var>) is not Object, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①">TypeError</a></code> exception.</p>
        <li data-md>
-        <p>Let <var>v</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-get-o-p" id="ref-for-sec-get-o-p①">Get</a>(<var>o</var>, <var>componentName</var>)</p>
+        <p>Let <var>v</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-get-o-p" id="ref-for-sec-get-o-p①">Get</a>(<var>o</var>, <var>componentName</var>).</p>
        <li data-md>
         <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types">𝖿𝗎𝗇𝖼</a> <var>functype</var>,</p>
         <ol>
@@ -562,7 +562,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
            <li data-md>
             <p>If <var>valtype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror①">LinkError</a></code> exception.</p>
            <li data-md>
-            <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue">ToWebAssemblyValue</a>(<var>v</var>, <var>valtype</var>)</p>
+            <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue">ToWebAssemblyValue</a>(<var>v</var>, <var>valtype</var>).</p>
            <li data-md>
             <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store">associated store</a>.</p>
            <li data-md>
@@ -571,10 +571,10 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
             <p>Set the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent①">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①">associated store</a> to <var>store</var>.</p>
           </ol>
          <li data-md>
-          <p>If <var>v</var> is a <code class="idl"><a data-link-type="idl" href="#global" id="ref-for-global①">Global</a></code> instance,</p>
+          <p>Otherwise, if <var>v</var> <a data-link-type="dfn" href="https://heycam.github.io/webidl/#implements" id="ref-for-implements">implements</a> <code class="idl"><a data-link-type="idl" href="#global" id="ref-for-global①">Global</a></code>,</p>
           <ol>
            <li data-md>
-            <p>Let <var>globaladdr</var> be <var>v</var>.[[Global]]</p>
+            <p>Let <var>globaladdr</var> be <var>v</var>.[[Global]].</p>
           </ol>
          <li data-md>
           <p>Otherwise,</p>
@@ -600,14 +600,14 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
           <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append②">Append</a> <var>externmem</var> to <var>imports</var>.</p>
         </ol>
        <li data-md>
-        <p>Otherwise, <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types③">𝗍𝖺𝖻𝗅𝖾</a> <var>tabletype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types③">𝗍𝖺𝖻𝗅𝖾</a> <var>tabletype</var>,</p>
         <ol>
          <li data-md>
           <p>If <var>v</var> is not a <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table①">Table</a></code> instance, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror④">LinkError</a></code> exception.</p>
          <li data-md>
           <p class="note" role="note"><span>Note:</span> The table’s length, etc. is checked by <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-instantiate" id="ref-for-embed-module-instantiate②">module_instantiate</a> invoked below.</p>
          <li data-md>
-          <p>Let <var>tableaddr</var> be <var>v</var>.[[Table]]</p>
+          <p>Let <var>tableaddr</var> be <var>v</var>.[[Table]].</p>
          <li data-md>
           <p>Let <var>externtable</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑥">external value</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑦">𝗍𝖺𝖻𝗅𝖾</a> <var>tableaddr</var>.</p>
          <li data-md>
@@ -624,7 +624,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
      <li data-md>
       <p>Let <var>exportsObject</var> be ! <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-objectcreate" id="ref-for-sec-objectcreate">ObjectCreate</a>(null).</p>
      <li data-md>
-      <p>For each pair (<var>name</var>, <var>externtype</var>) in <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-exports" id="ref-for-embed-module-exports">module_exports</a>(<var>module</var>),</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①">For each</a> (<var>name</var>, <var>externtype</var>) of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-exports" id="ref-for-embed-module-exports">module_exports</a>(<var>module</var>),</p>
       <ol>
        <li data-md>
         <p>Let <var>externval</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-instance-export" id="ref-for-embed-instance-export">instance_export</a>(<var>instance</var>, <var>name</var>).</p>
@@ -775,7 +775,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="instantiate-a-promise-of-a-module">instantiate a promise of a module</dfn> <var>promiseOfModule</var> with imports <var>importObject</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://heycam.github.io/webidl/#a-new-promise" id="ref-for-a-new-promise②">a new promise</a></p>
+      <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://heycam.github.io/webidl/#a-new-promise" id="ref-for-a-new-promise②">a new promise</a>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://heycam.github.io/webidl/#upon-fulfillment" id="ref-for-upon-fulfillment">Upon fulfillment</a> of <var>promiseOfModule</var> with value <var>module</var>:</p>
       <ol>
@@ -865,7 +865,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      <li data-md>
       <p>Let <var>exports</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a>.</p>
      <li data-md>
-      <p>For each (<var>name</var>, <var>type</var>) in <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-exports" id="ref-for-embed-module-exports①">module_exports</a>(<var>module</var>)</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②">For each</a> (<var>name</var>, <var>type</var>) of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-exports" id="ref-for-embed-module-exports①">module_exports</a>(<var>module</var>),</p>
       <ol>
        <li data-md>
         <p>Let <var>kind</var> be the <a data-link-type="dfn" href="#string-value-of-the-extern-type" id="ref-for-string-value-of-the-extern-type">string value of the extern type</a> <var>type</var>.</p>
@@ -886,7 +886,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      <li data-md>
       <p>Let <var>imports</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②">list</a>.</p>
      <li data-md>
-      <p>For each (<var>moduleName</var>, <var>name</var>, <var>type</var>) in <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-imports" id="ref-for-embed-module-imports①">module_imports</a>(<var>module</var>),</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate③">For each</a> (<var>moduleName</var>, <var>name</var>, <var>type</var>) of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-imports" id="ref-for-embed-module-imports①">module_imports</a>(<var>module</var>),</p>
       <ol>
        <li data-md>
         <p>Let <var>kind</var> be the <a data-link-type="dfn" href="#string-value-of-the-extern-type" id="ref-for-string-value-of-the-extern-type①">string value of the extern type</a> <var>type</var>.</p>
@@ -907,7 +907,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      <li data-md>
       <p>Let <var>customSections</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a> of <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects①">ArrayBuffer</a></code>s.</p>
      <li data-md>
-      <p>For each <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/binary/modules.html#custom-section" id="ref-for-custom-section">custom section</a> <var>customSection</var> in <var>bytes</var>, interpreted according to the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/binary/modules.html#binary-module" id="ref-for-binary-module">module grammar</a>,</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate④">For each</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/binary/modules.html#custom-section" id="ref-for-custom-section">custom section</a> <var>customSection</var> of <var>bytes</var>, interpreted according to the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/binary/modules.html#binary-module" id="ref-for-binary-module">module grammar</a>,</p>
       <ol>
        <li data-md>
         <p>Let <var>name</var> be the <code>name</code> of <var>customSection</var>, <a data-link-type="dfn" href="https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail" id="ref-for-utf-8-decode-without-bom-or-fail">decoded as UTF-8</a>.</p>
@@ -1003,7 +1003,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      <li data-md>
       <p class="assertion">Assert: <var>map</var>[<var>memaddr</var>] doesn’t <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">exist</a>.</p>
      <li data-md>
-      <p>Let <var>buffer</var> be a the result of <a data-link-type="dfn" href="#create-a-memory-buffer" id="ref-for-create-a-memory-buffer">creating a memory buffer</a> from <var>memaddr</var>.</p>
+      <p>Let <var>buffer</var> be the result of <a data-link-type="dfn" href="#create-a-memory-buffer" id="ref-for-create-a-memory-buffer">creating a memory buffer</a> from <var>memaddr</var>.</p>
      <li data-md>
       <p>Set <var>memory</var>.[[Memory]] to <var>memaddr</var>.</p>
      <li data-md>
@@ -1035,13 +1035,13 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="constructor" data-export data-lt="Memory(descriptor)|constructor(descriptor)" id="dom-memory-memory"><code>Memory(<var>descriptor</var>)</code></dfn> constructor, when invoked, performs the following steps: 
     <ol>
      <li data-md>
-      <p>let <var>initial</var> be <var>descriptor</var>["initial"].</p>
+      <p>Let <var>initial</var> be <var>descriptor</var>["initial"].</p>
      <li data-md>
       <p>If <var>descriptor</var>["maximum"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present">present</a>, let <var>maximum</var> be <var>descriptor</var>["maximum"]; otherwise, let <var>maximum</var> be empty.</p>
      <li data-md>
       <p>If <var>maximum</var> is not empty and <var>maximum</var> &lt; <var>initial</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror">RangeError</a></code> exception.</p>
      <li data-md>
-      <p>Let <var>memtype</var> be { min <var>initial</var>, max <var>maximum</var> }</p>
+      <p>Let <var>memtype</var> be { min <var>initial</var>, max <var>maximum</var> }.</p>
      <li data-md>
       <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent⑥">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store④">associated store</a>.</p>
      <li data-md>
@@ -1064,7 +1064,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      <li data-md>
       <p>Perform ! <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer">DetachArrayBuffer</a>(<var>memory</var>.[[BufferObject]], "WebAssembly.Memory").</p>
      <li data-md>
-      <p>Let <var>buffer</var> be a the result of <a data-link-type="dfn" href="#create-a-memory-buffer" id="ref-for-create-a-memory-buffer①">creating a memory buffer</a> from <var>memaddr</var>.</p>
+      <p>Let <var>buffer</var> be the result of <a data-link-type="dfn" href="#create-a-memory-buffer" id="ref-for-create-a-memory-buffer①">creating a memory buffer</a> from <var>memaddr</var>.</p>
      <li data-md>
       <p>Set <var>memory</var>.[[BufferObject]] to <var>buffer</var>.</p>
     </ol>
@@ -1094,7 +1094,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
    <div class="algorithm" data-algorithm="memory.grow">
     <ol>
      <li data-md>
-      <p>If the top of the stack is not <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> (−1), then:</p>
+      <p>If the top of the stack is not <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> (−1),</p>
       <ol>
        <li data-md>
         <p>Let <var>frame</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/conventions.html#exec-notation-textual" id="ref-for-exec-notation-textual">current frame</a>.</p>
@@ -1181,7 +1181,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Table" data-dfn-type="constructor" data-export data-lt="Table(descriptor)|constructor(descriptor)" id="dom-table-table"><code>Table(<var>descriptor</var>)</code></dfn> constructor, when invoked, performs the following steps: 
     <ol>
      <li data-md>
-      <p>let <var>initial</var> be <var>descriptor</var>["initial"].</p>
+      <p>Let <var>initial</var> be <var>descriptor</var>["initial"].</p>
      <li data-md>
       <p>If <var>descriptor</var>["maximum"] is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present①">present</a>, let <var>maximum</var> be <var>descriptor</var>["maximum"]; otherwise, let <var>maximum</var> be empty.</p>
      <li data-md>
@@ -1211,7 +1211,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
       <p>Let <var>result</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-grow" id="ref-for-embed-table-grow">table_grow</a>(<var>store</var>, <var>tableaddr</var>, <var>delta</var>).</p>
      <li data-md>
       <p>If <var>result</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①⓪">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror④">RangeError</a></code> exception.</p>
-      <p class="note" role="note"><span>Note:</span> The above exception may happen due to either insufficient memory or an invalid size parameter.</p>
+      <p class="note" role="note"><span>Note:</span> The above exception can happen due to either insufficient memory or an invalid size parameter.</p>
      <li data-md>
       <p>Set the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent①⑦">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①②">associated store</a> to <var>result</var>.</p>
      <li data-md>
@@ -1227,7 +1227,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      <li data-md>
       <p>Let <var>values</var> be <strong>this</strong>.[[Values]].</p>
      <li data-md>
-      <p>Let <var>size</var> be the length of <var>values</var>.</p>
+      <p>Let <var>size</var> be the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a> of <var>values</var>.</p>
      <li data-md>
       <p>If <var>index</var> ≥ <var>size</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑤">RangeError</a></code> exception.</p>
      <li data-md>
@@ -1261,8 +1261,6 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
       <p>Set the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent①⑨">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①④">associated store</a> to <var>store</var>.</p>
      <li data-md>
       <p>Set <var>values</var>[<var>index</var>] to <var>value</var>.</p>
-     <li data-md>
-      <p>Return undefined.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="3.5" id="globals"><span class="secno">3.5. </span><span class="content">Globals</span><a class="self-link" href="#globals"></a></h3>
@@ -1364,7 +1362,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
       <p>If <var>v</var> is undefined,</p>
       <ol>
        <li data-md>
-        <p>let <var>value</var> be <a data-link-type="dfn" href="#defaultvalue" id="ref-for-defaultvalue">DefaultValue</a>(<var>valuetype</var>).</p>
+        <p>Let <var>value</var> be <a data-link-type="dfn" href="#defaultvalue" id="ref-for-defaultvalue">DefaultValue</a>(<var>valuetype</var>).</p>
       </ol>
      <li data-md>
       <p>Otherwise,</p>
@@ -1527,7 +1525,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let <var>i</var> be 0.</p>
      <li data-md>
-      <p>For each type <var>t</var> of <var>parameters</var>,</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑤">For each</a> <var>t</var> of <var>parameters</var>,</p>
       <ol>
        <li data-md>
         <p>If the length of <var>argValues</var> > <var>i</var>, let <var>arg</var> be <var>argValues</var>[<var>i</var>].</p>
@@ -1560,13 +1558,13 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let [<var>parameters</var>] → [<var>results</var>] be <var>functype</var>.</p>
      <li data-md>
-      <p class="assertion">Assert: <var>results</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a> is at most one.</p>
+      <p class="assertion">Assert: <var>results</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size①">size</a> is at most one.</p>
      <li data-md>
       <p>If either <var>parameters</var> or <var>results</var> contains <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①③">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">TypeError</a></code>.</p>
      <li data-md>
       <p>Let <var>jsArguments</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑧">list</a>.</p>
      <li data-md>
-      <p>For each <var>arg</var> in <var>arguments</var>,</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑥">For each</a> <var>arg</var> of <var>arguments</var>,</p>
       <ol>
        <li data-md>
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑨">Append</a> ! <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue②">ToJSValue</a>(<var>arg</var>) to <var>jsArguments</var>.</p>
@@ -1574,9 +1572,9 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let <var>ret</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-call" id="ref-for-sec-call">Call</a>(<var>func</var>, undefined, <var>jsArguments</var>).</p>
      <li data-md>
-      <p>If <var>results</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-is-empty" id="ref-for-list-is-empty">is empty</a>, return undefined.</p>
+      <p>If <var>results</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-is-empty" id="ref-for-list-is-empty">is empty</a>, return « ».</p>
      <li data-md>
-      <p>Otherwise, return ? <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue④">ToWebAssemblyValue</a>(<var>ret</var>, <var>results</var>[0]).</p>
+      <p>Otherwise, return « ? <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue④">ToWebAssemblyValue</a>(<var>ret</var>, <var>results</var>[0]) ».</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="create a host function">
@@ -1607,7 +1605,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
     </ol>
    </div>
    <div class="algorithm" data-algorithm="ToJSValue">
-     The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tojsvalue">ToJSValue</dfn>(<var>w</var>) coerces a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑥">WebAssembly value</a> to a JavaScript value performs the following steps: 
+     The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tojsvalue">ToJSValue</dfn>(<var>w</var>) coerces a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑥">WebAssembly value</a> to a JavaScript value by performing the following steps: 
     <ol>
      <li data-md>
       <p class="assertion">Assert: <var>w</var> is not of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑦">𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> <var>i64</var>.</p>
@@ -1659,7 +1657,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let <var>namespaceObject</var> the <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-namespace-object" id="ref-for-dfn-namespace-object①">namespace object</a>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate">For each</a> <var>error</var> of « "CompileError", "LinkError", "RuntimeError" »,</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑦">For each</a> <var>error</var> of « "CompileError", "LinkError", "RuntimeError" »,</p>
       <ol>
        <li data-md>
         <p>Let <var>constructor</var> be a new object, implementing the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-nativeerror-object-structure" id="ref-for-sec-nativeerror-object-structure">NativeError Object Structure</a>, with <var>NativeError</var> set to <var>error</var>.</p>
@@ -2140,7 +2138,10 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside class="dfn-panel" data-for="term-for-list-iterate">
    <a href="https://infra.spec.whatwg.org/#list-iterate">https://infra.spec.whatwg.org/#list-iterate</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-iterate">3.7. Error Objects</a>
+    <li><a href="#ref-for-list-iterate">3. The WebAssembly Namespace</a> <a href="#ref-for-list-iterate①">(2)</a>
+    <li><a href="#ref-for-list-iterate②">3.1. Modules</a> <a href="#ref-for-list-iterate③">(2)</a> <a href="#ref-for-list-iterate④">(3)</a>
+    <li><a href="#ref-for-list-iterate⑤">3.6. Exported Functions</a> <a href="#ref-for-list-iterate⑥">(2)</a>
+    <li><a href="#ref-for-list-iterate⑦">3.7. Error Objects</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list">
@@ -2170,7 +2171,8 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside class="dfn-panel" data-for="term-for-list-size">
    <a href="https://infra.spec.whatwg.org/#list-size">https://infra.spec.whatwg.org/#list-size</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-size">3.6. Exported Functions</a>
+    <li><a href="#ref-for-list-size">3.4. Tables</a>
+    <li><a href="#ref-for-list-size①">3.6. Exported Functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-addresses">
@@ -2676,6 +2678,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-dfn-get-buffer-source-copy③">3.1. Modules</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-implements">
+   <a href="https://heycam.github.io/webidl/#implements">https://heycam.github.io/webidl/#implements</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-implements">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-namespace-object">
    <a href="https://heycam.github.io/webidl/#dfn-namespace-object">https://heycam.github.io/webidl/#dfn-namespace-object</a><b>Referenced in:</b>
    <ul>
@@ -2876,6 +2884,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-idl-boolean" style="color:initial">boolean</span>
      <li><span class="dfn-paneled" id="term-for-create-a-namespace-object" style="color:initial">create a namespace object</span>
      <li><span class="dfn-paneled" id="term-for-dfn-get-buffer-source-copy" style="color:initial">get a copy of the buffer source</span>
+     <li><span class="dfn-paneled" id="term-for-implements" style="color:initial">implements</span>
      <li><span class="dfn-paneled" id="term-for-dfn-namespace-object" style="color:initial">namespace object</span>
      <li><span class="dfn-paneled" id="term-for-new" style="color:initial">new</span>
      <li><span class="dfn-paneled" id="term-for-idl-object" style="color:initial">object</span>
