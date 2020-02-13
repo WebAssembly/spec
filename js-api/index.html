@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version b43aa594f5014ff14748da1aace9afaa73d2b3e6" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="80bd75a7a95252eabf422d5168cd426079ebdf51" name="document-revision">
+  <meta content="ba87cd7028e18b14a2d1e4e3f074c6a08e8c9791" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -1721,7 +1721,8 @@ In practice, an implementation may run out of resources for valid modules below 
     <li>The maximum size of a table is 10000000.
     <li>The maximum number of table entries in any table initialization is 10000000.
     <li>The maximum number of memories, including declared or imported memories, is 1.
-    <li>The initial or maximum number of pages for any memory, declared or imported, is at most 32767.
+    <li>The initial number of pages for any memory, declared or imported, is at most 32767.
+    <li>The maximum number of pages for any memory, declared or imported, is at most 65536.
     <li>The maximum number of parameters to any function is 1000.
     <li>The maximum number of return values for any function is 1.
     <li>The maximum size of a function body, including locals declarations, is 7654321 bytes.
