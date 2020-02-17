@@ -591,7 +591,7 @@ Memory Instructions
 
 8. Pop the value :math:`\I32.\CONST~n` from the stack.
 
-9. Let :math:`\X{err}` be the |i32| value :math:`2^{32}-1`, for which :math:`\signed_{32}^{-1}(\X{err})` is :math:`-1`.
+9. Let :math:`\X{err}` be the |i32| value :math:`2^{32}-1`, for which :math:`\signed_{32}(\X{err})` is :math:`-1`.
 
 10. Either, try :ref:`growing <grow-mem>` :math:`\X{mem}` by :math:`n` :ref:`pages <page-size>`:
 
