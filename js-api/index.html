@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version b43aa594f5014ff14748da1aace9afaa73d2b3e6" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="876fc31d4a1c16c00414644e590d368897fceebc" name="document-revision">
+  <meta content="42a58e02e3eec56815dd01c12ed20b2358fb2c8a" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -539,7 +539,6 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
            <li data-md>
             <p>Let <var>funcaddr</var> be the value of <var>v</var>’s [[FunctionAddress]] internal slot.</p>
           </ol>
-          <p class="note" role="note"><span>Note:</span> The signature is checked by <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-instantiate" id="ref-for-embed-module-instantiate">module_instantiate</a> invoked below.</p>
          <li data-md>
           <p>Otherwise,</p>
           <ol>
@@ -593,8 +592,6 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
          <li data-md>
           <p>If <var>v</var> is not a <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory②">Memory</a></code> object, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror③">LinkError</a></code> exception.</p>
          <li data-md>
-          <p class="note" role="note"><span>Note:</span> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-instantiate" id="ref-for-embed-module-instantiate①">module_instantiate</a> invoked below will check the imported <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory③">Memory</a></code>'s size against the importing module’s requirements.</p>
-         <li data-md>
           <p>Let <var>externmem</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval④">external value</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑤">𝗆𝖾𝗆</a> <var>v</var>.[[Memory]].</p>
          <li data-md>
           <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append②">Append</a> <var>externmem</var> to <var>imports</var>.</p>
@@ -604,8 +601,6 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
         <ol>
          <li data-md>
           <p>If <var>v</var> is not a <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table①">Table</a></code> instance, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror④">LinkError</a></code> exception.</p>
-         <li data-md>
-          <p class="note" role="note"><span>Note:</span> The table’s length, etc. is checked by <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-instantiate" id="ref-for-embed-module-instantiate②">module_instantiate</a> invoked below.</p>
          <li data-md>
           <p>Let <var>tableaddr</var> be <var>v</var>.[[Table]].</p>
          <li data-md>
@@ -617,6 +612,9 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
      <li data-md>
       <p>Return <var>imports</var>.</p>
     </ol>
+    <p class="note" role="note"><span>Note:</span> This algorithm only verifies the right kind of JavaScript values are passed.
+The verification of WebAssembly type requirements is deferred to the
+"<a data-link-type="dfn" href="#instantiate-the-core-of-a-webassembly-module" id="ref-for-instantiate-the-core-of-a-webassembly-module">instantiate the core of a WebAssembly module</a>" algorithm.</p>
    </div>
    <div class="algorithm" data-algorithm="create an exports object">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-an-exports-object">create an exports object</dfn> from a WebAssembly module <var>module</var> and instance <var>instance</var>, perform the following steps: 
@@ -707,7 +705,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
      <li data-md>
       <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent②">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②">associated store</a>.</p>
      <li data-md>
-      <p>Let <var>result</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-instantiate" id="ref-for-embed-module-instantiate③">module_instantiate</a>(<var>store</var>, <var>module</var>, <var>imports</var>).</p>
+      <p>Let <var>result</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-instantiate" id="ref-for-embed-module-instantiate">module_instantiate</a>(<var>store</var>, <var>module</var>, <var>imports</var>).</p>
      <li data-md>
       <p>If <var>result</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑦">error</a>, throw an appropriate exception type:</p>
       <ul>
@@ -740,7 +738,7 @@ If this operation throws an exception, catch it, <a data-link-type="dfn" href="h
       <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task①">Queue a task</a> to perform the following steps:</p>
       <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="#instantiate-the-core-of-a-webassembly-module" id="ref-for-instantiate-the-core-of-a-webassembly-module">Instantiate the core of a WebAssembly module</a> <var>module</var> with <var>imports</var>, and let <var>instance</var> be the result.
+        <p><a data-link-type="dfn" href="#instantiate-the-core-of-a-webassembly-module" id="ref-for-instantiate-the-core-of-a-webassembly-module①">Instantiate the core of a WebAssembly module</a> <var>module</var> with <var>imports</var>, and let <var>instance</var> be the result.
 If this throws an exception, catch it, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#reject" id="ref-for-reject①">reject</a> <var>promise</var> with the exception, and terminate these substeps.</p>
        <li data-md>
         <p>Let <var>instanceObject</var> be a <a data-link-type="dfn" href="https://heycam.github.io/webidl/#new" id="ref-for-new">new</a> <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance②">Instance</a></code>.</p>
@@ -762,7 +760,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      <li data-md>
       <p><a data-link-type="dfn" href="#read-the-imports" id="ref-for-read-the-imports①">Read the imports</a> of <var>module</var> with imports <var>importObject</var>, and let <var>imports</var> be the result.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="#instantiate-the-core-of-a-webassembly-module" id="ref-for-instantiate-the-core-of-a-webassembly-module①">Instantiate the core of a WebAssembly module</a> <var>module</var> with <var>imports</var>, and let <var>instance</var> be the result.</p>
+      <p><a data-link-type="dfn" href="#instantiate-the-core-of-a-webassembly-module" id="ref-for-instantiate-the-core-of-a-webassembly-module②">Instantiate the core of a WebAssembly module</a> <var>module</var> with <var>imports</var>, and let <var>instance</var> be the result.</p>
      <li data-md>
       <p>Let <var>instanceObject</var> be a <a data-link-type="dfn" href="https://heycam.github.io/webidl/#new" id="ref-for-new①">new</a> <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance③">Instance</a></code>.</p>
      <li data-md>
@@ -954,7 +952,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      <li data-md>
       <p><a data-link-type="dfn" href="#read-the-imports" id="ref-for-read-the-imports②">Read the imports</a> of <var>module</var> with imports <var>importObject</var>, and let <var>imports</var> be the result.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="#instantiate-the-core-of-a-webassembly-module" id="ref-for-instantiate-the-core-of-a-webassembly-module②">Instantiate the core of a WebAssembly module</a> <var>module</var> with <var>imports</var>, and let <var>instance</var> be the result.</p>
+      <p><a data-link-type="dfn" href="#instantiate-the-core-of-a-webassembly-module" id="ref-for-instantiate-the-core-of-a-webassembly-module③">Instantiate the core of a WebAssembly module</a> <var>module</var> with <var>imports</var>, and let <var>instance</var> be the result.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="#initialize-an-instance-object" id="ref-for-initialize-an-instance-object②">Initialize</a> <strong>this</strong> from <var>module</var> and <var>instance</var>.</p>
     </ol>
@@ -974,7 +972,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
 };
 </pre>
    <div>
-     A <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory④">Memory</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances" id="ref-for-memory-instances①">memory instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance⑤">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑤">Memory</a></code> object has the following internal slots: 
+     A <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory③">Memory</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances" id="ref-for-memory-instances①">memory instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance⑤">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory④">Memory</a></code> object has the following internal slots: 
     <ul>
      <li data-md>
       <p>[[Memory]] : a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr①">memory address</a></p>
@@ -1024,7 +1022,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
         <p>Return <var>map</var>[<var>memaddr</var>].</p>
       </ol>
      <li data-md>
-      <p>Let <var>memory</var> be a <a data-link-type="dfn" href="https://heycam.github.io/webidl/#new" id="ref-for-new②">new</a> <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑥">Memory</a></code>.</p>
+      <p>Let <var>memory</var> be a <a data-link-type="dfn" href="https://heycam.github.io/webidl/#new" id="ref-for-new②">new</a> <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑤">Memory</a></code>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="#initialize-a-memory-object" id="ref-for-initialize-a-memory-object">Initialize</a> <var>memory</var> from <var>memaddr</var>.</p>
      <li data-md>
@@ -1107,7 +1105,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
       </ol>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="buffer"> The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="attribute" data-export id="dom-memory-buffer"><code>buffer</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑦">Memory</a></code> returns <strong>this</strong>.[[BufferObject]]. </div>
+   <div class="algorithm" data-algorithm="buffer"> The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="attribute" data-export id="dom-memory-buffer"><code>buffer</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑥">Memory</a></code> returns <strong>this</strong>.[[BufferObject]]. </div>
    <h3 class="heading settled" data-level="3.4" id="tables"><span class="secno">3.4. </span><span class="content">Tables</span><a class="self-link" href="#tables"></a></h3>
 <pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-tablekind"><code><c- g>TableKind</c-></code></dfn> {
   <dfn class="idl-code" data-dfn-for="TableKind" data-dfn-type="enum-value" data-export id="dom-tablekind-anyfunc"><code><c- s>"anyfunc"</c-></code><a class="self-link" href="#dom-tablekind-anyfunc"></a></dfn>,
@@ -1691,7 +1689,7 @@ The particular exception here is implementation-defined in both cases.</p>
     <a class="self-link" href="#issue-7eafcf54"></a> A failed allocation of a large table or memory may either result in 
     <ul>
      <li data-md>
-      <p>a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror①⓪">RangeError</a></code>, as specified in the <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑧">Memory</a></code> <code class="idl"><a data-link-type="idl" href="#dom-memory-grow" id="ref-for-dom-memory-grow①">grow()</a></code> and <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table⑥">Table</a></code> <code class="idl"><a data-link-type="idl" href="#dom-table-grow" id="ref-for-dom-table-grow①">grow()</a></code> operations</p>
+      <p>a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror①⓪">RangeError</a></code>, as specified in the <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑦">Memory</a></code> <code class="idl"><a data-link-type="idl" href="#dom-memory-grow" id="ref-for-dom-memory-grow①">grow()</a></code> and <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table⑥">Table</a></code> <code class="idl"><a data-link-type="idl" href="#dom-table-grow" id="ref-for-dom-table-grow①">grow()</a></code> operations</p>
      <li data-md>
       <p>returning -1 as the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/instructions.html#exec-memory-grow" id="ref-for-exec-memory-grow①">memory.grow</a> instruction</p>
      <li data-md>
@@ -2378,7 +2376,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside class="dfn-panel" data-for="term-for-embed-module-instantiate">
    <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-instantiate">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-instantiate</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-embed-module-instantiate">3. The WebAssembly Namespace</a> <a href="#ref-for-embed-module-instantiate①">(2)</a> <a href="#ref-for-embed-module-instantiate②">(3)</a> <a href="#ref-for-embed-module-instantiate③">(4)</a>
+    <li><a href="#ref-for-embed-module-instantiate">3. The WebAssembly Namespace</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-embed-module-validate">
@@ -3166,8 +3164,8 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside class="dfn-panel" data-for="instantiate-the-core-of-a-webassembly-module">
    <b><a href="#instantiate-the-core-of-a-webassembly-module">#instantiate-the-core-of-a-webassembly-module</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-instantiate-the-core-of-a-webassembly-module">3. The WebAssembly Namespace</a> <a href="#ref-for-instantiate-the-core-of-a-webassembly-module①">(2)</a>
-    <li><a href="#ref-for-instantiate-the-core-of-a-webassembly-module②">3.2. Instances</a>
+    <li><a href="#ref-for-instantiate-the-core-of-a-webassembly-module">3. The WebAssembly Namespace</a> <a href="#ref-for-instantiate-the-core-of-a-webassembly-module①">(2)</a> <a href="#ref-for-instantiate-the-core-of-a-webassembly-module②">(3)</a>
+    <li><a href="#ref-for-instantiate-the-core-of-a-webassembly-module③">3.2. Instances</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="asynchronously-instantiate-a-webassembly-module">
@@ -3319,9 +3317,9 @@ In practice, an implementation may run out of resources for valid modules below 
    <ul>
     <li><a href="#ref-for-memory">2.1. Interaction of the WebAssembly Store with JavaScript</a>
     <li><a href="#ref-for-memory①">2.2. WebAssembly JS Object Caches</a>
-    <li><a href="#ref-for-memory②">3. The WebAssembly Namespace</a> <a href="#ref-for-memory③">(2)</a>
-    <li><a href="#ref-for-memory④">3.3. Memories</a> <a href="#ref-for-memory⑤">(2)</a> <a href="#ref-for-memory⑥">(3)</a> <a href="#ref-for-memory⑦">(4)</a>
-    <li><a href="#ref-for-memory⑧">4.2. Out of Memory</a>
+    <li><a href="#ref-for-memory②">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-memory③">3.3. Memories</a> <a href="#ref-for-memory④">(2)</a> <a href="#ref-for-memory⑤">(3)</a> <a href="#ref-for-memory⑥">(4)</a>
+    <li><a href="#ref-for-memory⑦">4.2. Out of Memory</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="create-a-memory-buffer">
