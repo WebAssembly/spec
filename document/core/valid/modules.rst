@@ -599,7 +599,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
 * Let :math:`\X{gt}^\ast` be the concatenation of the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}_i`, in index order.
 
-* Let :math:`\X{rt}^\ast` be the concatenation of the :ref:`referense types <syntax-reftype>` :math:`\X{rt}_i`, in index order.
+* Let :math:`\X{rt}^\ast` be the concatenation of the :ref:`reference types <syntax-reftype>` :math:`\X{rt}_i`, in index order.
 
 * Let :math:`\X{it}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{it}_i` of the imports, in index order.
 
