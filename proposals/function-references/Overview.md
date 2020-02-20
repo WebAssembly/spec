@@ -265,7 +265,7 @@ TODO.
 
 ## JS API
 
-Based on the JS type reflection proposal.
+Based on the [JS type reflection proposal](https://github.com/WebAssembly/js-types).
 
 ### Type Representation
 
