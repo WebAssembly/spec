@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
-  <meta content="Bikeshed version b43aa594f5014ff14748da1aace9afaa73d2b3e6" name="generator">
+  <meta content="Bikeshed version 88b3cbba77902db95c397d955c49b1c470eef38b" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
-  <meta content="fdcde1d7fbdb64057f5b2290865c2e9744617710" name="document-revision">
+  <meta content="5cc5c69844d879016fc81ba0654c6f02244c315b" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -266,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-02-17">17 February 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-02-25">25 February 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -359,7 +359,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
     <p class="note" role="note"><span>Note:</span> This algorithm accepts a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response③">Response</a></code> object, or a
     promise for one, and compiles and instantiates the resulting bytes of the response. This compilation
     can be performed in the background and in a streaming manner. If the <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response④">Response</a></code> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/#cors-same-origin" id="ref-for-cors-same-origin">CORS-same-origin</a>, does not represent an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status">ok status</a>, or does not match the <code>`application/wasm`</code> MIME type, the returned promise will be rejected with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code>; if
-    compilation or instantiation fails, the returned promise will be rejected with a <code class="idl"><a data-link-type="idl" href="https://webassembly.github.io/spec/js-api/#compileerror" id="ref-for-compileerror">CompileError</a></code> or other relevant error type, depending on the cause of failure.</p>
+    compilation or instantiation fails, the returned promise will be rejected with a <code class="idl"><a data-link-type="idl" href="https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror" id="ref-for-exceptiondef-compileerror">CompileError</a></code> or other relevant error type, depending on the cause of failure.</p>
     <ol>
      <li data-md>
       <p>Let <var>returnValue</var> be <a data-link-type="dfn" href="https://heycam.github.io/webidl/#a-new-promise" id="ref-for-a-new-promise">a new promise</a></p>
@@ -690,10 +690,10 @@ review, approval, and registration with IANA.</p>
     <li><a href="#ref-for-sub-serialization">2. Serialization</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-compileerror">
-   <a href="https://webassembly.github.io/spec/js-api/#compileerror">https://webassembly.github.io/spec/js-api/#compileerror</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-exceptiondef-compileerror">
+   <a href="https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror">https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-compileerror">1. Streaming Module Compilation and Instantiation</a>
+    <li><a href="#ref-for-exceptiondef-compileerror">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-module">
@@ -846,7 +846,7 @@ review, approval, and registration with IANA.</p>
    <li>
     <a data-link-type="biblio">[WASMJS]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-compileerror" style="color:initial">CompileError</span>
+     <li><span class="dfn-paneled" id="term-for-exceptiondef-compileerror" style="color:initial">CompileError</span>
      <li><span class="dfn-paneled" id="term-for-module" style="color:initial">Module</span>
      <li><span class="dfn-paneled" id="term-for-namespacedef-webassembly" style="color:initial">WebAssembly</span>
      <li><span class="dfn-paneled" id="term-for-dictdef-webassemblyinstantiatedsource" style="color:initial">WebAssemblyInstantiatedSource</span>
