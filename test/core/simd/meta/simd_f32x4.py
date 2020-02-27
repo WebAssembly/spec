@@ -352,9 +352,6 @@ class Simdf32x4Case(Simdf32x4ArithmeticCase):
 
         for lane_type in ['i8x16', 'i16x8', 'i32x4', 'i64x2']:
 
-            for op in self.UNARY_OPS:
-                cases.append(tpl_assert.format(lane_type=lane_type, op=op, value=self.v128_const('i32x4', '0')))
-
             for op in self.BINARY_OPS:
                 cases.append(tpl_assert.format(lane_type=lane_type, op=op, value=' '.join([self.v128_const('i32x4', '0')]*2)))
 

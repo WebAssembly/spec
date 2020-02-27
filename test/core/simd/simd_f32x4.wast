@@ -2322,16 +2322,12 @@
 
 ;; Unknown operators
 
-(assert_malformed (module quote "(memory 1) (func (result v128) (i8x16.abs (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result v128) (i8x16.min (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result v128) (i8x16.max (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0)))") "unknown operator")
-(assert_malformed (module quote "(memory 1) (func (result v128) (i16x8.abs (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result v128) (i16x8.min (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result v128) (i16x8.max (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0)))") "unknown operator")
-(assert_malformed (module quote "(memory 1) (func (result v128) (i32x4.abs (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result v128) (i32x4.min (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result v128) (i32x4.max (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0)))") "unknown operator")
-(assert_malformed (module quote "(memory 1) (func (result v128) (i64x2.abs (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result v128) (i64x2.min (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0)))") "unknown operator")
 (assert_malformed (module quote "(memory 1) (func (result v128) (i64x2.max (v128.const i32x4 0 0 0 0) (v128.const i32x4 0 0 0 0)))") "unknown operator")
 

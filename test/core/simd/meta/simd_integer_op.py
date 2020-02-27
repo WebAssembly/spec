@@ -7,14 +7,40 @@ from simd_lane_value import LaneValue
 
 class IntegerSimpleOp:
     """Common integer simple ops:
-        min_s, min_u, max_s, max_u
+        min_s, min_u, max_s, max_u, avgr_u, abs
     """
 
     @staticmethod
+    def unary_op(op: str, p: str, lane_width: int) -> str:
+        """Unary operation on p with the operation specified by op
+
+        :param op: abs
+        :param p: a hex or decimal integer literal string
+        :lane_width: bit number of each lane in SIMD v128
+        :return:
+        """
+        if '0x' in p:
+            base = 16
+        else:
+            base = 10
+        v = int(p, base)
+
+        if op == 'abs':
+            result = IntegerSimpleOp.get_valid_value(v, lane_width)
+            if result >= 0:
+                return p
+            else:
+                if base == 16:
+                    return hex(-result)
+                else:
+                    return str(-result)
+        else:
+            raise Exception('Unknown unary operation')
+
     def binary_op(op: str, p1: str, p2: str, lane_width: int) -> str:
         """Binary operation on p1 and p2 with the operation specified by op
 
-        :param op: min_s, min_u, max_s, max_u
+        :param op: min_s, min_u, max_s, max_u, avgr_u
         :param p1: a hex or decimal integer literal string
         :param p2: a hex or decimal integer literal string
         :lane_width: bit number of each lane in SIMD v128
