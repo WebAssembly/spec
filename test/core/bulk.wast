@@ -179,7 +179,6 @@
 ;; Test that the data segment index is properly encoded as an unsigned (not
 ;; signed) LEB.
 (module
-  (memory 1)
   ;; 65 data segments. 64 is the smallest positive number that is encoded
   ;; differently as a signed LEB.
   (data "") (data "") (data "") (data "") (data "") (data "") (data "") (data "")
@@ -192,6 +191,9 @@
   (data "") (data "") (data "") (data "") (data "") (data "") (data "") (data "")
   (data "")
   (func (data.drop 64)))
+
+;; No memory is required for the data.drop instruction.
+(module (data "goodbye") (func (data.drop 0)))
 
 ;; table.init
 (module
@@ -270,7 +272,6 @@
 ;; Test that the elem segment index is properly encoded as an unsigned (not
 ;; signed) LEB.
 (module
-  (table 1 funcref)
   ;; 65 elem segments. 64 is the smallest positive number that is encoded
   ;; differently as a signed LEB.
   (elem funcref) (elem funcref) (elem funcref) (elem funcref)
@@ -291,6 +292,9 @@
   (elem funcref) (elem funcref) (elem funcref) (elem funcref)
   (elem funcref)
   (func (elem.drop 64)))
+
+;; No table is required for the elem.drop instruction.
+(module (elem funcref (ref.func 0)) (func (elem.drop 0)))
 
 ;; table.copy
 (module
