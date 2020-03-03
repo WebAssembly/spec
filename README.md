@@ -1,3 +1,17 @@
+[![Build Status](https://travis-ci.org/WebAssembly/memory64.svg?branch=master)](https://travis-ci.org/WebAssembly/memory64)
+
+# Memory64 Proposal for WebAssembly
+
+This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
+It is meant for discussion, prototype specification and implementation of a proposal to
+add support for 64-bit memory indexes to WebAssembly.
+
+* See the [overview](proposals/memory64/Overview.md) for a summary of the proposal.
+
+* See the [modified spec](https://webassembly.github.io/memory64/) for details.
+
+Original `README` from upstream repository follows...
+
 [![Build Status](https://travis-ci.org/WebAssembly/spec.svg?branch=master)](https://travis-ci.org/WebAssembly/spec)
 
 # spec
