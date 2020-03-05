@@ -10,10 +10,15 @@ on the second proposal, which uses first-class exception types, mainly based on
 the reasoning that it is more expressive and also more extendible to other kinds
 of events.
 
-This proposal requires the [reference types
-proposal](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md)
-as a prerequisite, since the [`exnref`](#the-exception-reference-data-type) type
-should be represented as a subtype of `anyref`.
+This proposal requires the following proposals as prerequisites.
+
+- The [reference types proposal](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md),
+  since the [`exnref`](#the-exception-reference-data-type) type should be represented as a subtype of `anyref`.
+
+- The [multi-value proposal](https://github.com/WebAssembly/multi-value/blob/master/proposals/multi-value/Overview.md),
+  since otherwise the [`br_on_exn`](#exception-data-extraction) instruction would only work with exceptions that contain one value.
+  Moreover, by using [multi-value](https://github.com/WebAssembly/multi-value/blob/master/proposals/multi-value/Overview.md),
+  the [`try` blocks](#try-and-catch-blocks) may use values already in the stack, and also push multiple values onto the stack.
 
 ---
 
@@ -152,7 +157,7 @@ instruction. That is, a try block is sequence of instructions having the
 following form:
 
 ```
-try block_type
+try blocktype
   instruction*
 catch
   instruction*
@@ -316,7 +321,7 @@ document](https://github.com/WebAssembly/spec/blob/master/document/core/instruct
 The following rules are added to *instructions*:
 
 ```
-  try resulttype instruction* catch instruction* end |
+  try blocktype instruction* catch instruction* end |
   throw except_index |
   rethrow |
   br_on_exn label except_index
@@ -487,7 +492,7 @@ throws, and rethrows as follows:
 
 | Name | Opcode | Immediates | Description |
 | ---- | ---- | ---- | ---- |
-| `try` | `0x06` | sig : `block_type` | begins a block which can handle thrown exceptions |
+| `try` | `0x06` | sig : `blocktype` | begins a block which can handle thrown exceptions |
 | `catch` | `0x07` | | begins the catch block of the try block |
 | `throw` | `0x08` | index : `varint32` | Creates an exception defined by the exception `index`and then throws it |
 | `rethrow` | `0x09` | | Pops the `exnref` on top of the stack and throws it |
