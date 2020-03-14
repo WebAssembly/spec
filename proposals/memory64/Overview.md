@@ -36,52 +36,66 @@ have to support 32-bit memory addresses in their ABI.
 ### Structure
 
 * The [limits][syntax limits] structure is changed to use `u64`
-  - `limits ::= {min u64, max u64?}
+  - `limits ::= {min u64, max u64?}`
 
 * The [memory type][syntax memtype] structure is extended to have an index type
   - `memtype ::= limits valtype`
 
 * The [memarg][syntax memarg] immediate is changed to allow a 64-bit offset
-  - `memarg ::= {offset u64, align u32}
+  - `memarg ::= {offset u64, align u32}`
 
 
 ### Validation
 
 * [Memory page limits][valid limits] are extended for `i64` indexes
-  - ```⊦ limits : 2<sup>16</sup>
-       ⊦ limits i32 ok```
-  - ```⊦ limits : 2<sup>48</sup>
-       ⊦ limits i64 ok```
+  - ```
+    ⊦ limits : 2<sup>16</sup>
+    ⊦ limits i32 ok
+    ```
+  - ```
+    ⊦ limits : 2<sup>48</sup>
+    ⊦ limits i64 ok
+    ```
 
 * All [memory instructions][valid meminst] are changed to use the index type,
   and the offset must also be in range of the index type
   - t.load memarg
-    - ```C.mems[0] = limits it   2<sup>memarg.align</sup> <= |t|/8   memarg.offset < 2<sup>|it|</sup>
-         C ⊦ t.load memarg : [it] → [t]```
+    - ```
+      C.mems[0] = limits it   2<sup>memarg.align</sup> <= |t|/8   memarg.offset < 2<sup>|it|</sup>
+      C ⊦ t.load memarg : [it] → [t]
+      ```
   - t.loadN_sx memarg
-    - ```C.mems[0] = limits it   2<sup>memarg.align</sup> <= N/8   memarg.offset < 2<sup>|it|</sup>
-         C ⊦ t.loadN_sx memarg : [it] → [t]```
+    - ```
+      C.mems[0] = limits it   2<sup>memarg.align</sup> <= N/8   memarg.offset < 2<sup>|it|</sup>
+      C ⊦ t.loadN_sx memarg : [it] → [t]
+      ```
   - t.store memarg
-    - ```C.mems[0] = limits it   2<sup>memarg.align</sup> <= |t|/8   memarg.offset < 2<sup>|it|</sup>
-         C ⊦ t.store memarg : [it t] → []```
+    - ```
+      C.mems[0] = limits it   2<sup>memarg.align</sup> <= |t|/8   memarg.offset < 2<sup>|it|</sup>
+      C ⊦ t.store memarg : [it t] → []
+      ```
   - t.storeN_sx memarg
-    - ```C.mems[0] = limits it   2<sup>memarg.align</sup> <= N/8   memarg.offset < 2<sup>|it|</sup>
-         C ⊦ t.storeN_sx memarg : [it t] → []```
+    - ```
+      C.mems[0] = limits it   2<sup>memarg.align</sup> <= N/8   memarg.offset < 2<sup>|it|</sup>
+      C ⊦ t.storeN_sx memarg : [it t] → []
+      ```
   - memory.size
-    - ```C.mems[0] = limits it
-         C ⊦ memory.size : [] → [it]```
+    - ```
+      C.mems[0] = limits it
+      C ⊦ memory.size : [] → [it]
+      ```
   - memory.grow
-    - ```C.mems[0] = limits it
-         C ⊦ memory.grow : [it] → [it]```
+    - ```
+      C.mems[0] = limits it
+      C ⊦ memory.grow : [it] → [it]
+      ```
   - (and similar for memory instructions from other proposals)
 
-* The memarg immediate's offset now must be validated, depending on the index
-  type
-  - ```memarg.offset <= i_N
-
 * [Data segment validation][valid data] uses the index type
-  - ```C.mems[0] = limits it   C ⊦ expr: [it]   C ⊦ expr const
-       C ⊦ {data x, offset expr, init b*} ok```
+  - ```
+    C.mems[0] = limits it   C ⊦ expr: [it]   C ⊦ expr const
+    C ⊦ {data x, offset expr, init b*} ok
+    ```
 
 
 ### Execution
@@ -103,8 +117,9 @@ have to support 32-bit memory addresses in their ABI.
   2<sup>64</sup> - 1, and to return 2<sup>64</sup>-1 when `memory.grow` fails.
 
 * [Memory import matching][exec memmatch] requires that the index type matches
-  - ``` ⊦ limits_1 <= limits_2   it_1 = it_2
-        ⊦ mem limits_1 it_1 <= mem limits_2 it_2
+  - ```
+    ⊦ limits_1 <= limits_2   it_1 = it_2
+    ⊦ mem limits_1 it_1 <= mem limits_2 it_2
     ```
 
 
@@ -112,17 +127,21 @@ have to support 32-bit memory addresses in their ABI.
 
 * The [limits][binary limits] structure also encodes an additional value to
   indicate the index type
-  - ```limits ::= 0x00 n:u32        ⇒ {min n, max ϵ}, 0
-               |  0x01 n:u32 m:u32  ⇒ {min n, max ϵ}, 0
-               |  0x02 n:u32        ⇒ {min n, max ϵ}, 1  ;; from threads proposal
-               |  0x03 n:u32 m:u32  ⇒ {min n, max n}, 1  ;; from threads proposal
-               |  0x04 n:u64        ⇒ {min n, max ϵ}, 2
-               |  0x05 n:u64 m:u64  ⇒ {min n, max n}, 2```
+  - ```
+    limits ::= 0x00 n:u32        ⇒ {min n, max ϵ}, 0
+            |  0x01 n:u32 m:u32  ⇒ {min n, max ϵ}, 0
+            |  0x02 n:u32        ⇒ {min n, max ϵ}, 1  ;; from threads proposal
+            |  0x03 n:u32 m:u32  ⇒ {min n, max n}, 1  ;; from threads proposal
+            |  0x04 n:u64        ⇒ {min n, max ϵ}, 2
+            |  0x05 n:u64 m:u64  ⇒ {min n, max n}, 2
+    ```
 
 * The [memory type][binary memtype] structure is extended to use this limits
   encoding
-  - ```memtype ::= lim, 0:limits ⇒ lim i32
-                |  lim, 2:limits ⇒ lim i64```
+  - ```
+    memtype ::= lim, 0:limits ⇒ lim i32
+             |  lim, 2:limits ⇒ lim i64
+    ```
 
 * The [memarg][binary memarg]'s offset is read as `u64`
   - `memarg ::= a:u32 o:u64`
@@ -131,9 +150,11 @@ have to support 32-bit memory addresses in their ABI.
 
 *  The [memory type][text memtype] definition is extended to allow an optional
    index type, which must be either `i32` or `i64`
-   - ```memtype ::= lim:limits      ⇒ lim i32
-                 |  'i32' lim:limits  ⇒ lim i32
-                 |  'i64' lim:limits  ⇒ lim i64```
+   - ```
+     memtype ::= lim:limits      ⇒ lim i32
+              |  'i32' lim:limits  ⇒ lim i32
+              |  'i64' lim:limits  ⇒ lim i64
+     ```
 
 
 [memory object]: https://webassembly.github.io/spec/core/syntax/modules.html#memories
