@@ -49,11 +49,13 @@ have to support 32-bit memory addresses in their ABI.
 
 * [Memory page limits][valid limits] are extended for `i64` indexes
   - ```
-    ⊦ limits : 2<sup>16</sup>
+    ⊦ limits : 2**16
+    ----------------
     ⊦ limits i32 ok
     ```
   - ```
-    ⊦ limits : 2<sup>48</sup>
+    ⊦ limits : 2**48
+    ----------------
     ⊦ limits i64 ok
     ```
 
@@ -61,32 +63,38 @@ have to support 32-bit memory addresses in their ABI.
   and the offset must also be in range of the index type
   - t.load memarg
     - ```
-      C.mems[0] = limits it   2<sup>memarg.align</sup> <= |t|/8   memarg.offset < 2<sup>|it|</sup>
-      C ⊦ t.load memarg : [it] → [t]
+      C.mems[0] = limits it   2**memarg.align <= |t|/8   memarg.offset < 2**|it|
+      --------------------------------------------------------------------------
+                          C ⊦ t.load memarg : [it] → [t]
       ```
   - t.loadN_sx memarg
     - ```
-      C.mems[0] = limits it   2<sup>memarg.align</sup> <= N/8   memarg.offset < 2<sup>|it|</sup>
-      C ⊦ t.loadN_sx memarg : [it] → [t]
+      C.mems[0] = limits it   2**memarg.align <= N/8   memarg.offset < 2**|it|
+      ------------------------------------------------------------------------
+                        C ⊦ t.loadN_sx memarg : [it] → [t]
       ```
   - t.store memarg
     - ```
-      C.mems[0] = limits it   2<sup>memarg.align</sup> <= |t|/8   memarg.offset < 2<sup>|it|</sup>
-      C ⊦ t.store memarg : [it t] → []
+      C.mems[0] = limits it   2**memarg.align <= |t|/8   memarg.offset < 2**|it|
+      --------------------------------------------------------------------------
+                         C ⊦ t.store memarg : [it t] → []
       ```
   - t.storeN_sx memarg
     - ```
-      C.mems[0] = limits it   2<sup>memarg.align</sup> <= N/8   memarg.offset < 2<sup>|it|</sup>
-      C ⊦ t.storeN_sx memarg : [it t] → []
+      C.mems[0] = limits it   2**memarg.align <= N/8   memarg.offset < 2**|it|
+      ------------------------------------------------------------------------
+                       C ⊦ t.storeN_sx memarg : [it t] → []
       ```
   - memory.size
     - ```
-      C.mems[0] = limits it
+         C.mems[0] = limits it
+      ---------------------------
       C ⊦ memory.size : [] → [it]
       ```
   - memory.grow
     - ```
-      C.mems[0] = limits it
+          C.mems[0] = limits it
+      -----------------------------
       C ⊦ memory.grow : [it] → [it]
       ```
   - (and similar for memory instructions from other proposals)
@@ -94,7 +102,8 @@ have to support 32-bit memory addresses in their ABI.
 * [Data segment validation][valid data] uses the index type
   - ```
     C.mems[0] = limits it   C ⊦ expr: [it]   C ⊦ expr const
-    C ⊦ {data x, offset expr, init b*} ok
+    -------------------------------------------------------
+          C ⊦ {data x, offset expr, init b*} ok
     ```
 
 
@@ -118,7 +127,8 @@ have to support 32-bit memory addresses in their ABI.
 
 * [Memory import matching][exec memmatch] requires that the index type matches
   - ```
-    ⊦ limits_1 <= limits_2   it_1 = it_2
+      ⊦ limits_1 <= limits_2   it_1 = it_2
+    ----------------------------------------
     ⊦ mem limits_1 it_1 <= mem limits_2 it_2
     ```
 
@@ -151,7 +161,7 @@ have to support 32-bit memory addresses in their ABI.
 *  The [memory type][text memtype] definition is extended to allow an optional
    index type, which must be either `i32` or `i64`
    - ```
-     memtype ::= lim:limits      ⇒ lim i32
+     memtype ::= lim:limits        ⇒ lim i32
               |  'i32' lim:limits  ⇒ lim i32
               |  'i64' lim:limits  ⇒ lim i64
      ```
