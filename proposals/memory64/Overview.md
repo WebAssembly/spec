@@ -38,8 +38,11 @@ have to support 32-bit memory addresses in their ABI.
 * The [limits][syntax limits] structure is changed to use `u64`
   - `limits ::= {min u64, max u64?}`
 
+* A new `idxtype` can be either `i32` or `i64`
+  - `idxtype ::= i32 | i64`
+
 * The [memory type][syntax memtype] structure is extended to have an index type
-  - `memtype ::= limits valtype`
+  - `memtype ::= limits idxtype`
 
 * The [memarg][syntax memarg] immediate is changed to allow a 64-bit offset
   - `memarg ::= {offset u64, align u32}`
@@ -122,8 +125,10 @@ have to support 32-bit memory addresses in their ABI.
   - `memory.grow`
   - (spec text omitted)
 
-* [memory.grow][exec memgrow] is changed to check for a size greater than
-  2<sup>64</sup> - 1, and to return 2<sup>64</sup>-1 when `memory.grow` fails.
+* [memory.grow][exec memgrow] has behavior that depends on the index type:
+  - for `i32`: no change
+  - for `i64`: check for a size greater than 2<sup>64</sup> - 1, and return
+    2<sup>64</sup> - 1 when `memory.grow` fails.
 
 * [Memory import matching][exec memmatch] requires that the index type matches
   - ```
