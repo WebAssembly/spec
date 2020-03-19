@@ -1,17 +1,18 @@
 {
 open Parser
 open Operators
+open Source
 
 let convert_pos pos =
-  { Source.file = pos.Lexing.pos_fname;
-    Source.line = pos.Lexing.pos_lnum;
-    Source.column = pos.Lexing.pos_cnum - pos.Lexing.pos_bol
+  { file = pos.Lexing.pos_fname;
+    line = pos.Lexing.pos_lnum;
+    column = pos.Lexing.pos_cnum - pos.Lexing.pos_bol
   }
 
 let region lexbuf =
   let left = convert_pos (Lexing.lexeme_start_p lexbuf) in
   let right = convert_pos (Lexing.lexeme_end_p lexbuf) in
-  {Source.left = left; Source.right = right}
+  {left = left; right = right}
 
 let error lexbuf msg = raise (Script.Syntax (region lexbuf, msg))
 let error_nest start lexbuf msg =
@@ -44,46 +45,6 @@ let string s =
     incr i
   done;
   Buffer.contents b
-
-let value_type = function
-  | "i32" -> Types.I32Type
-  | "i64" -> Types.I64Type
-  | "f32" -> Types.F32Type
-  | "f64" -> Types.F64Type
-  | _ -> assert false
-
-let intop t i32 i64 =
-  match t with
-  | "i32" -> i32
-  | "i64" -> i64
-  | _ -> assert false
-
-let floatop t f32 f64 =
-  match t with
-  | "f32" -> f32
-  | "f64" -> f64
-  | _ -> assert false
-
-let numop t i32 i64 f32 f64 =
-  match t with
-  | "i32" -> i32
-  | "i64" -> i64
-  | "f32" -> f32
-  | "f64" -> f64
-  | _ -> assert false
-
-let memsz sz m8 m16 m32 =
-  match sz with
-  | "8" -> m8
-  | "16" -> m16
-  | "32" -> m32
-  | _ -> assert false
-
-let ext e s u =
-  match e with
-  | 's' -> s
-  | 'u' -> u
-  | _ -> assert false
 
 let opt = Lib.Option.get
 }
@@ -135,10 +96,12 @@ let float =
   | sign? "nan:" "0x" hexnum
 let string = '"' character* '"'
 
-let id = (letter | digit | '_' | symbol)+
-let name = '$' id
+let idchar = letter | digit | '_' | symbol
+let name = idchar+
+let id = '$' name
 
-let reserved = ';' | ([^'\"''('')'';'] # space)+  (* hack for table size *)
+let keyword = ['a'-'z'] (letter | digit | '_' | '.')+
+let reserved = name | ',' | ';' | '[' | ']' | '{' | '}'
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
@@ -163,200 +126,254 @@ rule token = parse
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
-  | (nxx as t) { VALUE_TYPE (value_type t) }
-  | (nxx as t)".const"
-    { let open Source in
-      CONST (numop t
-        (fun s -> let n = I32.of_string s.it in
-          i32_const (n @@ s.at), Values.I32 n)
-        (fun s -> let n = I64.of_string s.it in
-          i64_const (n @@ s.at), Values.I64 n)
-        (fun s -> let n = F32.of_string s.it in
-          f32_const (n @@ s.at), Values.F32 n)
-        (fun s -> let n = F64.of_string s.it in
-          f64_const (n @@ s.at), Values.F64 n))
+  | keyword as s
+    { match s with
+      | "i32" -> VALUE_TYPE Types.I32Type
+      | "i64" -> VALUE_TYPE Types.I64Type
+      | "f32" -> VALUE_TYPE Types.F32Type
+      | "f64" -> VALUE_TYPE Types.F64Type
+      | "funcref" -> FUNCREF
+      | "mut" -> MUT
+
+      | "nop" -> NOP
+      | "unreachable" -> UNREACHABLE
+      | "drop" -> DROP
+      | "block" -> BLOCK
+      | "loop" -> LOOP
+      | "end" -> END
+      | "br" -> BR
+      | "br_if" -> BR_IF
+      | "br_table" -> BR_TABLE
+      | "return" -> RETURN
+      | "if" -> IF
+      | "then" -> THEN
+      | "else" -> ELSE
+      | "select" -> SELECT
+      | "call" -> CALL
+      | "call_indirect" -> CALL_INDIRECT
+
+      | "local.get" -> LOCAL_GET
+      | "local.set" -> LOCAL_SET
+      | "local.tee" -> LOCAL_TEE
+      | "global.get" -> GLOBAL_GET
+      | "global.set" -> GLOBAL_SET
+
+      | "i32.load" -> LOAD (fun a o -> i32_load (opt a 2) o)
+      | "i64.load" -> LOAD (fun a o -> i64_load (opt a 3) o)
+      | "f32.load" -> LOAD (fun a o -> f32_load (opt a 2) o)
+      | "f64.load" -> LOAD (fun a o -> f64_load (opt a 3) o)
+      | "i32.store" -> STORE (fun a o -> i32_store (opt a 2) o)
+      | "i64.store" -> STORE (fun a o -> i64_store (opt a 3) o)
+      | "f32.store" -> STORE (fun a o -> f32_store (opt a 2) o)
+      | "f64.store" -> STORE (fun a o -> f64_store (opt a 3) o)
+
+      | "i32.load8_u" -> LOAD (fun a o -> i32_load8_u (opt a 0) o)
+      | "i32.load8_s" -> LOAD (fun a o -> i32_load8_s (opt a 0) o)
+      | "i32.load16_u" -> LOAD (fun a o -> i32_load16_u (opt a 1) o)
+      | "i32.load16_s" -> LOAD (fun a o -> i32_load16_s (opt a 1) o)
+      | "i64.load8_u" -> LOAD (fun a o -> i64_load8_u (opt a 0) o)
+      | "i64.load8_s" -> LOAD (fun a o -> i64_load8_s (opt a 0) o)
+      | "i64.load16_u" -> LOAD (fun a o -> i64_load16_u (opt a 1) o)
+      | "i64.load16_s" -> LOAD (fun a o -> i64_load16_s (opt a 1) o)
+      | "i64.load32_u" -> LOAD (fun a o -> i64_load32_u (opt a 2) o)
+      | "i64.load32_s" -> LOAD (fun a o -> i64_load32_s (opt a 2) o)
+
+      | "i32.store8" -> LOAD (fun a o -> i32_store8 (opt a 0) o)
+      | "i32.store16" -> LOAD (fun a o -> i32_store16 (opt a 1) o)
+      | "i64.store8" -> LOAD (fun a o -> i64_store8 (opt a 0) o)
+      | "i64.store16" -> LOAD (fun a o -> i64_store16 (opt a 1) o)
+      | "i64.store32" -> LOAD (fun a o -> i64_store32 (opt a 2) o)
+
+      | "i32.const" ->
+        CONST (fun s ->
+          let n = I32.of_string s.it in i32_const (n @@ s.at), Values.I32 n)
+      | "i64.const" ->
+        CONST (fun s ->
+          let n = I64.of_string s.it in i64_const (n @@ s.at), Values.I64 n)
+      | "f32.const" ->
+        CONST (fun s ->
+          let n = F32.of_string s.it in f32_const (n @@ s.at), Values.F32 n)
+      | "f64.const" ->
+        CONST (fun s ->
+          let n = F64.of_string s.it in f64_const (n @@ s.at), Values.F64 n)
+
+      | "i32.clz" -> UNARY i32_clz
+      | "i32.ctz" -> UNARY i32_ctz
+      | "i32.popcnt" -> UNARY i32_popcnt
+      | "i64.clz" -> UNARY i64_clz
+      | "i64.ctz" -> UNARY i64_ctz
+      | "i64.popcnt" -> UNARY i64_popcnt
+
+      | "f32.neg" -> UNARY f32_neg
+      | "f32.abs" -> UNARY f32_abs
+      | "f32.sqrt" -> UNARY f32_sqrt
+      | "f32.ceil" -> UNARY f32_ceil
+      | "f32.floor" -> UNARY f32_floor
+      | "f32.trunc" -> UNARY f32_trunc
+      | "f32.nearest" -> UNARY f32_nearest
+      | "f64.neg" -> UNARY f64_neg
+      | "f64.abs" -> UNARY f64_abs
+      | "f64.sqrt" -> UNARY f64_sqrt
+      | "f64.ceil" -> UNARY f64_ceil
+      | "f64.floor" -> UNARY f64_floor
+      | "f64.trunc" -> UNARY f64_trunc
+      | "f64.nearest" -> UNARY f64_nearest
+
+      | "i32.add" -> BINARY i32_add
+      | "i32.sub" -> BINARY i32_sub
+      | "i32.mul" -> BINARY i32_mul
+      | "i32.div_u" -> BINARY i32_div_u
+      | "i32.div_s" -> BINARY i32_div_s
+      | "i32.rem_u" -> BINARY i32_rem_u
+      | "i32.rem_s" -> BINARY i32_rem_s
+      | "i32.and" -> BINARY i32_and
+      | "i32.or" -> BINARY i32_or
+      | "i32.xor" -> BINARY i32_xor
+      | "i32.shl" -> BINARY i32_shl
+      | "i32.shr_u" -> BINARY i32_shr_u
+      | "i32.shr_s" -> BINARY i32_shr_s
+      | "i32.rotl" -> BINARY i32_rotl
+      | "i32.rotr" -> BINARY i32_rotr
+      | "i64.add" -> BINARY i64_add
+      | "i64.sub" -> BINARY i64_sub
+      | "i64.mul" -> BINARY i64_mul
+      | "i64.div_u" -> BINARY i64_div_u
+      | "i64.div_s" -> BINARY i64_div_s
+      | "i64.rem_u" -> BINARY i64_rem_u
+      | "i64.rem_s" -> BINARY i64_rem_s
+      | "i64.and" -> BINARY i64_and
+      | "i64.or" -> BINARY i64_or
+      | "i64.xor" -> BINARY i64_xor
+      | "i64.shl" -> BINARY i64_shl
+      | "i64.shr_u" -> BINARY i64_shr_u
+      | "i64.shr_s" -> BINARY i64_shr_s
+      | "i64.rotl" -> BINARY i64_rotl
+      | "i64.rotr" -> BINARY i64_rotr
+
+      | "f32.add" -> BINARY f32_add
+      | "f32.sub" -> BINARY f32_sub
+      | "f32.mul" -> BINARY f32_mul
+      | "f32.div" -> BINARY f32_div
+      | "f32.min" -> BINARY f32_min
+      | "f32.max" -> BINARY f32_max
+      | "f32.copysign" -> BINARY f32_copysign
+      | "f64.add" -> BINARY f64_add
+      | "f64.sub" -> BINARY f64_sub
+      | "f64.mul" -> BINARY f64_mul
+      | "f64.div" -> BINARY f64_div
+      | "f64.min" -> BINARY f64_min
+      | "f64.max" -> BINARY f64_max
+      | "f64.copysign" -> BINARY f64_copysign
+
+      | "i32.eqz" -> TEST i32_eqz
+      | "i64.eqz" -> TEST i64_eqz
+
+      | "i32.eq" -> COMPARE i32_eq
+      | "i32.ne" -> COMPARE i32_ne
+      | "i32.lt_u" -> COMPARE i32_lt_u
+      | "i32.lt_s" -> COMPARE i32_lt_s
+      | "i32.le_u" -> COMPARE i32_le_u
+      | "i32.le_s" -> COMPARE i32_le_s
+      | "i32.gt_u" -> COMPARE i32_gt_u
+      | "i32.gt_s" -> COMPARE i32_gt_s
+      | "i32.ge_u" -> COMPARE i32_ge_u
+      | "i32.ge_s" -> COMPARE i32_ge_s
+      | "i64.eq" -> COMPARE i64_eq
+      | "i64.ne" -> COMPARE i64_ne
+      | "i64.lt_u" -> COMPARE i64_lt_u
+      | "i64.lt_s" -> COMPARE i64_lt_s
+      | "i64.le_u" -> COMPARE i64_le_u
+      | "i64.le_s" -> COMPARE i64_le_s
+      | "i64.gt_u" -> COMPARE i64_gt_u
+      | "i64.gt_s" -> COMPARE i64_gt_s
+      | "i64.ge_u" -> COMPARE i64_ge_u
+      | "i64.ge_s" -> COMPARE i64_ge_s
+
+      | "f32.eq" -> COMPARE f32_eq
+      | "f32.ne" -> COMPARE f32_ne
+      | "f32.lt" -> COMPARE f32_lt
+      | "f32.le" -> COMPARE f32_le
+      | "f32.gt" -> COMPARE f32_gt
+      | "f32.ge" -> COMPARE f32_ge
+      | "f64.eq" -> COMPARE f64_eq
+      | "f64.ne" -> COMPARE f64_ne
+      | "f64.lt" -> COMPARE f64_lt
+      | "f64.le" -> COMPARE f64_le
+      | "f64.gt" -> COMPARE f64_gt
+      | "f64.ge" -> COMPARE f64_ge
+
+      | "i32.wrap_i64" -> CONVERT i32_wrap_i64
+      | "i64.extend_i32_s" -> CONVERT i64_extend_i32_s
+      | "i64.extend_i32_u" -> CONVERT i64_extend_i32_u
+      | "f32.demote_f64" -> CONVERT f32_demote_f64
+      | "f64.promote_f32" -> CONVERT f64_promote_f32
+      | "i32.trunc_f32_u" -> CONVERT i32_trunc_f32_u
+      | "i32.trunc_f32_s" -> CONVERT i32_trunc_f32_s
+      | "i64.trunc_f32_u" -> CONVERT i64_trunc_f32_u
+      | "i64.trunc_f32_s" -> CONVERT i64_trunc_f32_s
+      | "i32.trunc_f64_u" -> CONVERT i32_trunc_f64_u
+      | "i32.trunc_f64_s" -> CONVERT i32_trunc_f64_s
+      | "i64.trunc_f64_u" -> CONVERT i64_trunc_f64_u
+      | "i64.trunc_f64_s" -> CONVERT i64_trunc_f64_s
+      | "f32.convert_i32_u" -> CONVERT f32_convert_i32_u
+      | "f32.convert_i32_s" -> CONVERT f32_convert_i32_s
+      | "f64.convert_i32_u" -> CONVERT f64_convert_i32_u
+      | "f64.convert_i32_s" -> CONVERT f64_convert_i32_s
+      | "f32.convert_i64_u" -> CONVERT f32_convert_i64_u
+      | "f32.convert_i64_s" -> CONVERT f32_convert_i64_s
+      | "f64.convert_i64_u" -> CONVERT f64_convert_i64_u
+      | "f64.convert_i64_s" -> CONVERT f64_convert_i64_s
+      | "f32.reinterpret_i32" -> CONVERT f32_reinterpret_i32
+      | "f64.reinterpret_i64" -> CONVERT f64_reinterpret_i64
+      | "i32.reinterpret_f32" -> CONVERT i32_reinterpret_f32
+      | "i64.reinterpret_f64" -> CONVERT i64_reinterpret_f64
+
+      | "memory.size" -> MEMORY_SIZE
+      | "memory.grow" -> MEMORY_GROW
+
+      | "type" -> TYPE
+      | "func" -> FUNC
+      | "param" -> PARAM
+      | "result" -> RESULT
+      | "start" -> START
+      | "local" -> LOCAL
+      | "global" -> GLOBAL
+      | "table" -> TABLE
+      | "memory" -> MEMORY
+      | "elem" -> ELEM
+      | "data" -> DATA
+      | "offset" -> OFFSET
+      | "import" -> IMPORT
+      | "export" -> EXPORT
+
+      | "module" -> MODULE
+      | "binary" -> BIN
+      | "quote" -> QUOTE
+
+      | "script" -> SCRIPT
+      | "register" -> REGISTER
+      | "invoke" -> INVOKE
+      | "get" -> GET
+      | "assert_malformed" -> ASSERT_MALFORMED
+      | "assert_invalid" -> ASSERT_INVALID
+      | "assert_unlinkable" -> ASSERT_UNLINKABLE
+      | "assert_return" -> ASSERT_RETURN
+      | "assert_return_canonical_nan" -> ASSERT_RETURN_CANONICAL_NAN
+      | "assert_return_arithmetic_nan" -> ASSERT_RETURN_ARITHMETIC_NAN
+      | "assert_trap" -> ASSERT_TRAP
+      | "assert_exhaustion" -> ASSERT_EXHAUSTION
+      | "input" -> INPUT
+      | "output" -> OUTPUT
+
+      | _ -> error lexbuf "unknown operator"
     }
-  | "funcref" { FUNCREF }
-  | "mut" { MUT }
-
-  | "nop" { NOP }
-  | "unreachable" { UNREACHABLE }
-  | "drop" { DROP }
-  | "block" { BLOCK }
-  | "loop" { LOOP }
-  | "end" { END }
-  | "br" { BR }
-  | "br_if" { BR_IF }
-  | "br_table" { BR_TABLE }
-  | "return" { RETURN }
-  | "if" { IF }
-  | "then" { THEN }
-  | "else" { ELSE }
-  | "select" { SELECT }
-  | "call" { CALL }
-  | "call_indirect" { CALL_INDIRECT }
-
-  | "local.get" { LOCAL_GET }
-  | "local.set" { LOCAL_SET }
-  | "local.tee" { LOCAL_TEE }
-  | "global.get" { GLOBAL_GET }
-  | "global.set" { GLOBAL_SET }
-
-  | (nxx as t)".load"
-    { LOAD (fun a o ->
-        numop t (i32_load (opt a 2)) (i64_load (opt a 3))
-                (f32_load (opt a 2)) (f64_load (opt a 3)) o) }
-  | (nxx as t)".store"
-    { STORE (fun a o ->
-        numop t (i32_store (opt a 2)) (i64_store (opt a 3))
-                (f32_store (opt a 2)) (f64_store (opt a 3)) o) }
-  | (ixx as t)".load"(mem_size as sz)"_"(sign as s)
-    { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
-      LOAD (fun a o ->
-        intop t
-          (memsz sz
-            (ext s i32_load8_s i32_load8_u (opt a 0))
-            (ext s i32_load16_s i32_load16_u (opt a 1))
-            (fun _ -> unreachable) o)
-          (memsz sz
-            (ext s i64_load8_s i64_load8_u (opt a 0))
-            (ext s i64_load16_s i64_load16_u (opt a 1))
-            (ext s i64_load32_s i64_load32_u (opt a 2)) o)) }
-  | (ixx as t)".store"(mem_size as sz)
-    { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
-      STORE (fun a o ->
-        intop t
-          (memsz sz
-            (i32_store8 (opt a 0))
-            (i32_store16 (opt a 1))
-            (fun _ -> unreachable) o)
-          (memsz sz
-            (i64_store8 (opt a 0))
-            (i64_store16 (opt a 1))
-            (i64_store32 (opt a 2)) o)) }
 
   | "offset="(nat as s) { OFFSET_EQ_NAT s }
   | "align="(nat as s) { ALIGN_EQ_NAT s }
 
-  | (ixx as t)".clz" { UNARY (intop t i32_clz i64_clz) }
-  | (ixx as t)".ctz" { UNARY (intop t i32_ctz i64_ctz) }
-  | (ixx as t)".popcnt" { UNARY (intop t i32_popcnt i64_popcnt) }
-  | (fxx as t)".neg" { UNARY (floatop t f32_neg f64_neg) }
-  | (fxx as t)".abs" { UNARY (floatop t f32_abs f64_abs) }
-  | (fxx as t)".sqrt" { UNARY (floatop t f32_sqrt f64_sqrt) }
-  | (fxx as t)".ceil" { UNARY (floatop t f32_ceil f64_ceil) }
-  | (fxx as t)".floor" { UNARY (floatop t f32_floor f64_floor) }
-  | (fxx as t)".trunc" { UNARY (floatop t f32_trunc f64_trunc) }
-  | (fxx as t)".nearest" { UNARY (floatop t f32_nearest f64_nearest) }
+  | id as s { VAR s }
 
-  | (ixx as t)".add" { BINARY (intop t i32_add i64_add) }
-  | (ixx as t)".sub" { BINARY (intop t i32_sub i64_sub) }
-  | (ixx as t)".mul" { BINARY (intop t i32_mul i64_mul) }
-  | (ixx as t)".div_s" { BINARY (intop t i32_div_s i64_div_s) }
-  | (ixx as t)".div_u" { BINARY (intop t i32_div_u i64_div_u) }
-  | (ixx as t)".rem_s" { BINARY (intop t i32_rem_s i64_rem_s) }
-  | (ixx as t)".rem_u" { BINARY (intop t i32_rem_u i64_rem_u) }
-  | (ixx as t)".and" { BINARY (intop t i32_and i64_and) }
-  | (ixx as t)".or" { BINARY (intop t i32_or i64_or) }
-  | (ixx as t)".xor" { BINARY (intop t i32_xor i64_xor) }
-  | (ixx as t)".shl" { BINARY (intop t i32_shl i64_shl) }
-  | (ixx as t)".shr_s" { BINARY (intop t i32_shr_s i64_shr_s) }
-  | (ixx as t)".shr_u" { BINARY (intop t i32_shr_u i64_shr_u) }
-  | (ixx as t)".rotl" { BINARY (intop t i32_rotl i64_rotl) }
-  | (ixx as t)".rotr" { BINARY (intop t i32_rotr i64_rotr) }
-  | (fxx as t)".add" { BINARY (floatop t f32_add f64_add) }
-  | (fxx as t)".sub" { BINARY (floatop t f32_sub f64_sub) }
-  | (fxx as t)".mul" { BINARY (floatop t f32_mul f64_mul) }
-  | (fxx as t)".div" { BINARY (floatop t f32_div f64_div) }
-  | (fxx as t)".min" { BINARY (floatop t f32_min f64_min) }
-  | (fxx as t)".max" { BINARY (floatop t f32_max f64_max) }
-  | (fxx as t)".copysign" { BINARY (floatop t f32_copysign f64_copysign) }
-
-  | (ixx as t)".eqz" { TEST (intop t i32_eqz i64_eqz) }
-
-  | (ixx as t)".eq" { COMPARE (intop t i32_eq i64_eq) }
-  | (ixx as t)".ne" { COMPARE (intop t i32_ne i64_ne) }
-  | (ixx as t)".lt_s" { COMPARE (intop t i32_lt_s i64_lt_s) }
-  | (ixx as t)".lt_u" { COMPARE (intop t i32_lt_u i64_lt_u) }
-  | (ixx as t)".le_s" { COMPARE (intop t i32_le_s i64_le_s) }
-  | (ixx as t)".le_u" { COMPARE (intop t i32_le_u i64_le_u) }
-  | (ixx as t)".gt_s" { COMPARE (intop t i32_gt_s i64_gt_s) }
-  | (ixx as t)".gt_u" { COMPARE (intop t i32_gt_u i64_gt_u) }
-  | (ixx as t)".ge_s" { COMPARE (intop t i32_ge_s i64_ge_s) }
-  | (ixx as t)".ge_u" { COMPARE (intop t i32_ge_u i64_ge_u) }
-  | (fxx as t)".eq" { COMPARE (floatop t f32_eq f64_eq) }
-  | (fxx as t)".ne" { COMPARE (floatop t f32_ne f64_ne) }
-  | (fxx as t)".lt" { COMPARE (floatop t f32_lt f64_lt) }
-  | (fxx as t)".le" { COMPARE (floatop t f32_le f64_le) }
-  | (fxx as t)".gt" { COMPARE (floatop t f32_gt f64_gt) }
-  | (fxx as t)".ge" { COMPARE (floatop t f32_ge f64_ge) }
-
-  | "i32.wrap_i64" { CONVERT i32_wrap_i64 }
-  | "i64.extend_i32_s" { CONVERT i64_extend_i32_s }
-  | "i64.extend_i32_u" { CONVERT i64_extend_i32_u }
-  | "f32.demote_f64" { CONVERT f32_demote_f64 }
-  | "f64.promote_f32" { CONVERT f64_promote_f32 }
-  | (ixx as t)".trunc_f32_s"
-    { CONVERT (intop t i32_trunc_f32_s i64_trunc_f32_s) }
-  | (ixx as t)".trunc_f32_u"
-    { CONVERT (intop t i32_trunc_f32_u i64_trunc_f32_u) }
-  | (ixx as t)".trunc_f64_s"
-    { CONVERT (intop t i32_trunc_f64_s i64_trunc_f64_s) }
-  | (ixx as t)".trunc_f64_u"
-    { CONVERT (intop t i32_trunc_f64_u i64_trunc_f64_u) }
-  | (fxx as t)".convert_i32_s"
-    { CONVERT (floatop t f32_convert_i32_s f64_convert_i32_s) }
-  | (fxx as t)".convert_i32_u"
-    { CONVERT (floatop t f32_convert_i32_u f64_convert_i32_u) }
-  | (fxx as t)".convert_i64_s"
-    { CONVERT (floatop t f32_convert_i64_s f64_convert_i64_s) }
-  | (fxx as t)".convert_i64_u"
-    { CONVERT (floatop t f32_convert_i64_u f64_convert_i64_u) }
-  | "f32.reinterpret_i32" { CONVERT f32_reinterpret_i32 }
-  | "f64.reinterpret_i64" { CONVERT f64_reinterpret_i64 }
-  | "i32.reinterpret_f32" { CONVERT i32_reinterpret_f32 }
-  | "i64.reinterpret_f64" { CONVERT i64_reinterpret_f64 }
-
-  | "memory.size" { MEMORY_SIZE }
-  | "memory.grow" { MEMORY_GROW }
-
-  | "type" { TYPE }
-  | "func" { FUNC }
-  | "start" { START }
-  | "param" { PARAM }
-  | "result" { RESULT }
-  | "local" { LOCAL }
-  | "global" { GLOBAL }
-  | "table" { TABLE }
-  | "memory" { MEMORY }
-  | "elem" { ELEM }
-  | "data" { DATA }
-  | "offset" { OFFSET }
-  | "import" { IMPORT }
-  | "export" { EXPORT }
-
-  | "module" { MODULE }
-  | "binary" { BIN }
-  | "quote" { QUOTE }
-
-  | "script" { SCRIPT }
-  | "register" { REGISTER }
-  | "invoke" { INVOKE }
-  | "get" { GET }
-  | "assert_malformed" { ASSERT_MALFORMED }
-  | "assert_invalid" { ASSERT_INVALID }
-  | "assert_unlinkable" { ASSERT_UNLINKABLE }
-  | "assert_return" { ASSERT_RETURN }
-  | "assert_return_canonical_nan" { ASSERT_RETURN_CANONICAL_NAN }
-  | "assert_return_arithmetic_nan" { ASSERT_RETURN_ARITHMETIC_NAN }
-  | "assert_trap" { ASSERT_TRAP }
-  | "assert_exhaustion" { ASSERT_EXHAUSTION }
-  | "input" { INPUT }
-  | "output" { OUTPUT }
-
-  | name as s { VAR s }
-
-  | "(@"id { annot (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
+  | "(@"name { annot (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
   | "(@" { error lexbuf "malformed annotation id" }
 
   | ";;"utf8_no_nl*eof { EOF }
@@ -368,7 +385,7 @@ rule token = parse
   | eof { EOF }
 
   | reserved { error lexbuf "unknown operator" }
-  | utf8 { error lexbuf "malformed operator" }
+  | utf8 { error lexbuf "illegal character" }
   | _ { error lexbuf "malformed UTF-8 encoding" }
 
 and annot start = parse
@@ -380,7 +397,6 @@ and annot start = parse
   | int { annot start lexbuf }
   | float { annot start lexbuf }
   | id { annot start lexbuf }
-  | name { annot start lexbuf }
   | string { annot start lexbuf }
   | '"'character*('\n'|eof) { error lexbuf "unclosed string literal" }
   | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
@@ -395,6 +411,7 @@ and annot start = parse
   | space#'\n' { annot start lexbuf }
   | '\n' { Lexing.new_line lexbuf; annot start lexbuf }
   | eof { error_nest start lexbuf "unclosed annotation" }
+  | utf8 { error lexbuf "illegal character" }
   | _ { error lexbuf "malformed UTF-8 encoding" }
 
 and comment start = parse

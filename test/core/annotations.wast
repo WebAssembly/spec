@@ -1,4 +1,5 @@
 (@a)
+
 (@aas-3!@$d-@#4)
 (@@) (@$) (@+) (@0) (@.) (@!$@#$23414@#$)
 (@a x y z)
@@ -13,6 +14,9 @@
   ;; bla)
   ;; bla (@x
 )
+
+(assert_malformed (module quote "(@a Heiße Würstchen)") "illegal character")
+(assert_malformed (module quote "(@a )") "illegal character")
 
 (assert_malformed (module quote "( @a)") "unknown operator")
 
