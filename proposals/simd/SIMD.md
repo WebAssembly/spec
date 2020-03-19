@@ -6,6 +6,21 @@ current popular instruction set architectures.
 
 See also [The binary encoding of SIMD instructions](BinarySIMD.md).
 
+## Motivation
+
+WebAssembly aims to take advantage of [common hardware capabilities](https://github.com/WebAssembly/design/blob/master/Portability.md#assumptions-for-efficient-execution)
+for near native speed. The motivation for this proposal is to introduce
+WebAssembly operations that map to commonly available [SIMD](https://en.wikipedia.org/wiki/SIMD)
+instructions in hardware. 
+
+SIMD instructions in hardware work by performing simultaneous computations over
+packed data in one instruction. These are commonly used to improve performance
+for multimedia applications. The set of SIMD instructions in hardware is large, 
+and varies across different versions of hardware. This proposal is comprised
+of a portable subset of operations that in most cases map to commonly used
+instructions in mordern hardware. 
+
+
 # Types
 
 WebAssembly is extended with a new `v128` value type and a number of new kinds
