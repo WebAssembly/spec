@@ -414,7 +414,7 @@ or defined:
 #### High-level structure
 
 A new `event` section is introduced and is named `event`. If included, it must
-appear immediately after the global section.
+appear immediately after the memory section.
 
 ##### Event section
 
