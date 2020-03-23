@@ -224,7 +224,8 @@ function get(instance, name) {
     if (instance.isError())
         return instance;
 
-    return ValueResult(instance.value.exports[name]);
+    let v = instance.value.exports[name];
+    return ValueResult((v instanceof WebAssembly.Global) ? v.value : v);
 }
 
 function exports(name, instance) {
