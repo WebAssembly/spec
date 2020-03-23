@@ -57,7 +57,7 @@ let nat32 s at =
   try I32.of_string_u s with Failure _ -> error at "i32 constant out of range"
 
 let name s at =
-  try Utf8.decode s with Utf8.Utf8 -> error at "invalid UTF-8 encoding"
+  try Utf8.decode s with Utf8.Utf8 -> error at "malformed UTF-8 encoding"
 
 
 (* Symbolic variables *)
