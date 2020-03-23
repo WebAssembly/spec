@@ -470,6 +470,11 @@
   "type mismatch"
 )
 
+(assert_invalid
+  (module (type $t (func)) (func $type-local-no-default (local (ref $t))))
+  "non-defaultable local type"
+)
+
 
 ;; Invalid typing of parameters
 

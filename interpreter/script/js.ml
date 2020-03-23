@@ -250,7 +250,7 @@ let value v =
   | Values.Ref _ -> assert false
 
 let invoke ft vs at =
-  [ft @@ at], FuncImport (subject_type_idx @@ at) @@ at,
+  [FuncDefType ft @@ at], FuncImport (subject_type_idx @@ at) @@ at,
   List.concat (List.map value vs) @ [Call (subject_idx @@ at) @@ at]
 
 let get t at =
@@ -311,15 +311,19 @@ let assert_return ress ts at =
         BrIf (0l @@ at) @@ at ]
   in [], List.flatten (List.rev_map test ress)
 
+let i32_type = NumType I32Type
+let anyref_type = RefType AnyRefType
+let func_def_type ins out at = FuncDefType (FuncType (ins, out)) @@ at
+
 let wrap item_name wrap_action wrap_assertion at =
   let itypes, idesc, action = wrap_action at in
   let locals, assertion = wrap_assertion at in
   let types =
-    (FuncType ([], []) @@ at) ::
-    (FuncType ([NumType I32Type], [RefType AnyRefType]) @@ at) ::
-    (FuncType ([RefType AnyRefType], [NumType I32Type]) @@ at) ::
-    (FuncType ([RefType AnyRefType], [NumType I32Type]) @@ at) ::
-    (FuncType ([RefType AnyRefType; RefType AnyRefType], [NumType I32Type]) @@ at) ::
+    func_def_type [] [] at ::
+    func_def_type [i32_type] [anyref_type] at ::
+    func_def_type [anyref_type] [i32_type] at ::
+    func_def_type [anyref_type] [i32_type] at ::
+    func_def_type [anyref_type; anyref_type] [i32_type] at ::
     itypes
   in
   let imports =

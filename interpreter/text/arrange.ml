@@ -66,7 +66,9 @@ let stack_type ts = decls "result" ts
 let func_type (FuncType (ins, out)) =
   Node ("func", decls "param" ins @ decls "result" out)
 
-let struct_type = func_type
+let def_type dt =
+  match dt with
+  | FuncDefType ft -> func_type ft
 
 let limits nat {min; max} =
   String.concat " " (nat min :: opt nat max)
@@ -239,8 +241,10 @@ let rec instr e =
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
+    | CallRef -> "call_ref", []
     | CallIndirect (x, y) ->
       "call_indirect " ^ var x, [Node ("type " ^ var y, [])]
+    | ReturnCallRef -> "return_call_ref", []
     | LocalGet x -> "local.get " ^ var x, []
     | LocalSet x -> "local.set " ^ var x, []
     | LocalTee x -> "local.tee " ^ var x, []
@@ -285,7 +289,7 @@ let func_with_name name f =
   let {ftype; locals; body} = f.it in
   Node ("func" ^ name,
     [Node ("type " ^ var ftype, [])] @
-    decls "local" locals @
+    decls "local" (List.map Source.it locals) @
     list instr body
   )
 
@@ -353,8 +357,8 @@ let data i seg =
 
 (* Modules *)
 
-let typedef i ty =
-  Node ("type $" ^ nat i, [struct_type ty.it])
+let type_ i ty =
+  Node ("type $" ^ nat i, [def_type ty.it])
 
 let import_desc fx tx mx gx d =
   match d.it with
@@ -402,7 +406,7 @@ let module_with_var_opt x_opt m =
   let gx = ref 0 in
   let imports = list (import fx tx mx gx) m.it.imports in
   Node ("module" ^ var_opt x_opt,
-    listi typedef m.it.types @
+    listi type_ m.it.types @
     imports @
     listi (table !tx) m.it.tables @
     listi (memory !mx) m.it.memories @

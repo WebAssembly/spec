@@ -50,7 +50,8 @@ let default_num = function
   | F64Type -> F64 F64.zero
 
 let default_ref = function
-  | _ -> NullRef
+  | AnyRefType | NullRefType | FuncRefType | DefRefType (Nullable, _) -> NullRef
+  | DefRefType (NonNullable, _) -> assert false
 
 let default_value = function
   | NumType t' -> Num (default_num t')

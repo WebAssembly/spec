@@ -2,7 +2,7 @@ open Types
 
 type module_inst =
 {
-  types : func_type list;
+  types : def_type list;
   funcs : func_inst list;
   tables : table_inst list;
   memories : memory_inst list;
@@ -34,7 +34,14 @@ type Values.ref_ += FuncRef of func_inst
 let () =
   let type_of_ref' = !Values.type_of_ref' in
   Values.type_of_ref' := function
-    | FuncRef _ -> FuncRefType
+    | FuncRef func ->
+      (* TODO *)
+      let x =
+        match func with
+        | Func.AstFunc (_, _, f) -> f.Source.it.Ast.ftype.Source.it
+        | Func.HostFunc _ -> 0l  (* HACK! *)
+      in
+      DefRefType (NonNullable, x)
     | r -> type_of_ref' r
 
 let () =

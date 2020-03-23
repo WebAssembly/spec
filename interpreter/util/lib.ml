@@ -1,6 +1,7 @@
 module Fun =
 struct
   let id x = x
+  let flip f x y = f y x
   let curry f x y = f (x, y)
   let uncurry f (x, y) = f x y
 
@@ -202,4 +203,16 @@ struct
   let app f = function
     | Some x -> f x
     | None -> ()
+end
+
+module Promise =
+struct
+  type 'a t = 'a option ref
+
+  exception Promise
+
+  let make () = ref None
+  let fulfill p x = if !p = None then p := Some x else raise Promise
+  let value_opt p = !p
+  let value p = match !p with Some x -> x | None -> raise Promise
 end

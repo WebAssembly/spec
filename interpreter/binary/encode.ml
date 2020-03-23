@@ -97,9 +97,11 @@ let encode m =
       | F64Type -> vs7 (-0x04)
 
     let ref_type = function
-      | FuncRefType -> vs7 (-0x10)
-      | AnyRefType -> vs7 (-0x11)
-      | NullRefType -> vs7 (-0x12)
+      | FuncRefType -> vs32 (-0x10l)
+      | AnyRefType -> vs32 (-0x11l)
+      | NullRefType -> vs32 (-0x12l)
+      | DefRefType (NonNullable, x) -> vs32 x
+      | DefRefType (Nullable, x) -> vs32 (-0x14l); vu32 x
 
     let value_type = function
       | NumType t -> num_type t
@@ -133,6 +135,10 @@ let encode m =
     let global_type = function
       | GlobalType (t, mut) -> value_type t; mutability mut
 
+    let def_type = function
+      | FuncDefType ft -> func_type ft
+
+
     (* Expressions *)
 
     open Source
@@ -164,7 +170,9 @@ let encode m =
       | BrTable (xs, x) -> op 0x0e; vec var xs; var x
       | Return -> op 0x0f
       | Call x -> op 0x10; var x
+      | CallRef -> op 0x14
       | CallIndirect (x, y) -> op 0x11; var y; var x
+      | ReturnCallRef -> op 0x15
 
       | Drop -> op 0x1a
       | Select None -> op 0x1b
@@ -404,7 +412,7 @@ let encode m =
       end
 
     (* Type section *)
-    let type_ t = func_type t.it
+    let type_ t = def_type t.it
 
     let type_section ts =
       section 1 (vec type_) ts (ts <> [])
@@ -476,11 +484,11 @@ let encode m =
     (* Code section *)
     let compress ts =
       let combine t = function
-        | (t', n) :: ts when t = t' -> (t, n + 1) :: ts
+        | (t', n) :: ts when t.it = t'.it -> (t, n + 1) :: ts
         | ts -> (t, 1) :: ts
       in List.fold_right combine ts []
 
-    let local (t, n) = len n; value_type t
+    let local (t, n) = len n; value_type t.it
 
     let code f =
       let {locals; body; _} = f.it in

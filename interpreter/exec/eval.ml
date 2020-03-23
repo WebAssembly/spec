@@ -61,6 +61,7 @@ and admin_instr' =
   | Invoke of func_inst
   | Trapping of string
   | Returning of value stack
+  | ReturningInvoke of value stack * func_inst
   | Breaking of int32 * value stack
   | Label of int * instr list * code
   | Frame of int * frame * code
@@ -89,6 +90,8 @@ let global (inst : module_inst) x = lookup "global" inst.globals x
 let elem (inst : module_inst) x = lookup "element segment" inst.elems x
 let data (inst : module_inst) x = lookup "data segment" inst.datas x
 let local (frame : frame) x = lookup "local" frame.locals x
+
+let func_type (inst : module_inst) x = as_func_def_type (type_ inst x)
 
 let any_ref inst x i at =
   try Table.load (table inst x) i with Table.Bounds ->
@@ -180,12 +183,25 @@ let rec step (c : config) : config =
       | Call x, vs ->
         vs, [Invoke (func frame.inst x) @@ e.at]
 
+      | CallRef, Ref NullRef :: vs ->
+        vs, [Trapping "null function reference" @@ e.at]
+
+      | CallRef, Ref (FuncRef func) :: vs ->
+        vs, [Invoke func @@ e.at]
+
       | CallIndirect (x, y), Num (I32 i) :: vs ->
         let func = func_ref frame.inst x i e.at in
-        if type_ frame.inst y <> Func.type_of func then
+        if func_type frame.inst y <> Func.type_of func then
           vs, [Trapping "indirect call type mismatch" @@ e.at]
         else
           vs, [Invoke func @@ e.at]
+
+      | ReturnCallRef, vs ->
+        (match (step {c with code = (vs, [Plain CallRef @@ e.at])}).code with
+        | vs', [{it = Invoke a; at}] -> vs', [ReturningInvoke (vs', a) @@ at]
+        | vs', [{it = Trapping s; at}] -> vs', [Trapping s @@ at]
+        | _ -> assert false
+        )
 
       | Drop, v :: vs' ->
         vs', []
@@ -241,7 +257,7 @@ let rec step (c : config) : config =
           vs', []
         else
           let _ = assert (I32.lt_u i 0xffff_ffffl) in
-          vs', List.map (at e.at) [
+          vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 i @@ e.at));
             Refer r;
             Plain (TableSet x);
@@ -257,7 +273,7 @@ let rec step (c : config) : config =
         else if n = 0l then
           vs', []
         else if d <= s then
-          vs', List.map (at e.at) [
+          vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
             Plain (TableGet y);
@@ -268,7 +284,7 @@ let rec step (c : config) : config =
             Plain (TableCopy (x, y));
           ]
         else (* d > s *)
-          vs', List.map (at e.at) [
+          vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -286,7 +302,7 @@ let rec step (c : config) : config =
           vs', []
         else
           let seg = !(elem frame.inst y) in
-          vs', List.map (at e.at) [
+          vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 d @@ e.at));
             Refer (List.nth seg (Int32.to_int s));
             Plain (TableSet x);
@@ -340,7 +356,7 @@ let rec step (c : config) : config =
         else if n = 0l then
           vs', []
         else
-          vs', List.map (at e.at) [
+          vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 i @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Store
@@ -357,7 +373,7 @@ let rec step (c : config) : config =
         else if n = 0l then
           vs', []
         else if d <= s then
-          vs', List.map (at e.at) [
+          vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
             Plain (Load
@@ -370,7 +386,7 @@ let rec step (c : config) : config =
             Plain (MemoryCopy);
           ]
         else (* d > s *)
-          vs', List.map (at e.at) [
+          vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -391,7 +407,7 @@ let rec step (c : config) : config =
         else
           let seg = !(data frame.inst x) in
           let b = Int32.of_int (Char.code seg.[Int32.to_int s]) in
-          vs', List.map (at e.at) [
+          vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 b @@ e.at));
             Plain (Store
@@ -456,7 +472,8 @@ let rec step (c : config) : config =
     | Trapping msg, vs ->
       assert false
 
-    | Returning vs', vs ->
+    | Returning _, vs
+    | ReturningInvoke _, vs ->
       Crash.error e.at "undefined frame"
 
     | Breaking (k, vs'), vs ->
@@ -470,6 +487,9 @@ let rec step (c : config) : config =
 
     | Label (n, es0, (vs', {it = Returning vs0; at} :: es')), vs ->
       vs, [Returning vs0 @@ at]
+
+    | Label (n, es0, (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
+      vs, [ReturningInvoke (vs0, f) @@ at]
 
     | Label (n, es0, (vs', {it = Breaking (0l, vs0); at} :: es')), vs ->
       take n vs0 e.at @ vs, List.map plain es0
@@ -490,6 +510,10 @@ let rec step (c : config) : config =
     | Frame (n, frame', (vs', {it = Returning vs0; at} :: es')), vs ->
       take n vs0 e.at @ vs, []
 
+    | Frame (n, frame', (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
+      let FuncType (ins, out) = Func.type_of f in
+      take (List.length ins) vs0 e.at @ vs, [Invoke f @@ at]
+
     | Frame (n, frame', code'), vs ->
       let c' = step {frame = frame'; code = code'; budget = c.budget - 1} in
       vs, [Frame (n, c'.frame, c'.code) @@ e.at]
@@ -503,7 +527,8 @@ let rec step (c : config) : config =
       let args, vs' = take n vs e.at, drop n vs e.at in
       (match func with
       | Func.AstFunc (t, inst', f) ->
-        let locals' = List.rev args @ List.map default_value f.it.locals in
+        let ts = List.map Source.it f.it.locals in
+        let locals' = List.rev args @ List.map default_value ts in
         let code' = [], [Plain (Block (out, f.it.body)) @@ f.at] in
         let frame' = {inst = !inst'; locals = List.map ref locals'} in
         vs', [Frame (List.length out, frame', code') @@ e.at]
@@ -534,7 +559,7 @@ let invoke (func : func_inst) (vs : value list) : value list =
   let FuncType (ins, out) = Func.type_of func in
   if List.length vs <> List.length ins then
     Crash.error at "wrong number of arguments";
-  if not (List.for_all2 (fun v -> match_value_type (type_of_value v)) vs ins) then
+  if not (List.for_all2 (fun v -> Match.match_value_type [] (* TODO *) [] (type_of_value v)) vs ins) then
     Crash.error at "wrong types of arguments";
   let c = config empty_module_inst (List.rev vs) [Invoke func @@ at] in
   try List.rev (eval c) with Stack_overflow ->
@@ -550,7 +575,7 @@ let eval_const (inst : module_inst) (const : const) : value =
 (* Modules *)
 
 let create_func (inst : module_inst) (f : func) : func_inst =
-  Func.alloc (type_ inst f.it.ftype) (ref inst) f
+  Func.alloc (func_type inst f.it.ftype) (ref inst) f
 
 let create_table (inst : module_inst) (tab : table) : table_inst =
   let {ttype} = tab.it in
@@ -586,7 +611,7 @@ let create_data (inst : module_inst) (seg : data_segment) : data_inst =
 
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   : module_inst =
-  if not (match_extern_type (extern_type_of ext) (import_type m im)) then
+  if not (Match.match_extern_type [] (* TODO *) [] (extern_type_of ext) (import_type m im)) then
     Link.error im.at "incompatible import type";
   match ext with
   | ExternFunc func -> {inst with funcs = func :: inst.funcs}

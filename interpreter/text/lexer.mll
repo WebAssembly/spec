@@ -161,8 +161,11 @@ rule token = parse
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
   | "anyref" { ANYREF }
-  | "funcref" { FUNCREF }
   | "nullref" { NULLREF }
+  | "funcref" { FUNCREF }
+  | "ref" { REF }
+  | "any" { ANY }
+  | "null" { NULL }
   | (nxx as t) { NUM_TYPE (num_type t) }
   | "mut" { MUT }
 
@@ -198,7 +201,9 @@ rule token = parse
   | "else" { ELSE }
   | "select" { SELECT }
   | "call" { CALL }
+  | "call_ref" { CALL_REF }
   | "call_indirect" { CALL_INDIRECT }
+  | "return_call_ref" { RETURN_CALL_REF }
 
   | "local.get" { LOCAL_GET }
   | "local.set" { LOCAL_SET }

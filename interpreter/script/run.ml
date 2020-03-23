@@ -337,7 +337,7 @@ let run_action act : Values.value list =
       if List.length vs <> List.length ins then
         Script.error act.at "wrong number of arguments";
       List.iter2 (fun v t ->
-        if not (Types.match_value_type (Values.type_of_value v.it) t) then
+        if not (Match.match_value_type [] (* TODO *) [] (Values.type_of_value v.it) t) then
           Script.error v.at "wrong type of argument"
       ) vs ins;
       Eval.invoke f (List.map (fun v -> v.it) vs)

@@ -26,7 +26,9 @@ let if_ ts es1 es2 = If (ts, es1, es2)
 
 let return = Return
 let call x = Call x
+let call_ref = CallRef
 let call_indirect x y = CallIndirect (x, y)
+let return_call_ref = ReturnCallRef
 
 let local_get x = LocalGet x
 let local_set x = LocalSet x

@@ -4,9 +4,9 @@
 
 This proposal adds function references that are typed and can be called directly. Unlike `funcref` and the existing `call_indirect` instruction, typed function references need not be stored into a table to be called (though they can). A typed function reference can be formed from any function index.
 
-The proposal distinguished regular and optional (nullable) function reference. The former cannot be null, and a call through them does not require any runtime check.
+The proposal distinguished regular and nullable function reference. The former cannot be null, and a call through them does not require any runtime check.
 
-The proposal has instructions for producing and consuming (calling) function references. It also includes instruction for testing and converting between regular and optional references.
+The proposal has instructions for producing and consuming (calling) function references. It also includes instruction for testing and converting between regular and nullable references.
 
 Typed references have no canonical default value, because they cannot be null. To enable storing them in locals, which so far depend on default values for initialisation, the proposal also introduces a new instruction `let` for block-scoped locals whose initialisation values are taken from the operand stack.
 
@@ -32,11 +32,11 @@ Note: In a Wasm engine, function references (whether first-class or as table ent
 
 * This proposal is based on the [reference types proposal](https://github.com/WebAssembly/reference-types))
 
-* Add a new form of *typed reference type* `ref $t` and a nullable variant `ref (opt $t)`, where `$t` is a type index; can be used as both a value type or an element type for tables
+* Add a new form of *typed reference type* `ref $t` and a nullable variant `ref (null $t)`, where `$t` is a type index; can be used as both a value type or an element type for tables
 
-* Add an instruction `ref.as_non_null` that converts an optional reference to a non-optional one or traps if null
+* Add an instruction `ref.as_non_null` that converts an nullable reference to a non-nullable one or traps if null
 
-* Add an instruction `br_on_null` that converts an optional reference to a non-optional one or branches if null
+* Add an instruction `br_on_null` that converts an nullable reference to a non-nullable one or branches if null
 
 * Add an instruction `call_ref` for calling a function through a `ref $t`
 
@@ -124,14 +124,14 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 
 A *constructed type* denotes a user-defined or pre-defined data type that is not a primitive scalar:
 
-* `constype ::= opt? <typeidx> | any | func | null`
-  - `(opt? $t) ok` iff `$t` is defined in the context
+* `constype ::= null? <typeidx> | any | func | null`
+  - `(null? $t) ok` iff `$t` is defined in the context
   - `any ok` and `func ok` and `null ok`, always
   - Note: `null` is only on internal type
 
 * In the binary encoding,
-  - the non-optional `<typeidx>` type is encoded as a (positive) signed LEB
-  - `opt` is given a new (negative) type opcode, follosed by the unsigned LEB
+  - the non-nullable `<typeidx>` type is encoded as a (positive) signed LEB
+  - `(null <typidx>)` given a new (negative) type opcode, wed by the unsigned LEB
   - the others use the same (negative) opcodes as the existing `anyref`, `funcref`, respectively
 
 
@@ -167,15 +167,15 @@ The following rules, now defined in terms of constructed types, replace and exte
   - `null <: func`
 
 * Any nullable type is a subtype of `any` and a supertype of `null`
-  - `(opt $t) <: any`
-  - `null <: (opt $t)`
+  - `(null $t) <: any`
+  - `null <: (null $t)`
 
 * Any concrete type is a subtype of the respective nullable type (and thereby of `any`)
-  - `$t <: (opt $t)`
+  - `$t <: (null $t)`
   - Note: concrete types are *not* supertypes of `null`, i.e., not nullable
 
 * Any nullable function type (and thereby any function type) is a subtype of `func`
-  - `(opt $t) <: func`
+  - `(null $t) <: func`
      - iff `$t = <functype>`
 
 * Note: Function types themselves are invariant for now. This may be relaxed in future extensions.
@@ -218,15 +218,15 @@ The following rules, now defined in terms of constructed types, replace and exte
 
 #### Optional References
 
-* `ref.as_non_null` converts an optional reference to a non-optional one
-  - `ref.as_non_null : [(ref opt $t)] -> [(ref $t)]`
+* `ref.as_non_null` converts an nullable reference to a non-null one
+  - `ref.as_non_null : [(ref null $t)] -> [(ref $t)]`
     - iff `$t` is defined
   - traps on `null`
 
 * `br_on_null` checks for null and branches
-  - `br_on_null $l : [(ref opt $t)] -> [(ref $t)]`
+  - `br_on_null $l : [(ref null $t)] -> [(ref $t)]`
     - iff `$t` is defined
-  - branches to `$l` on `null`, otherwise returns operand as non-optional
+  - branches to `$l` on `null`, otherwise returns operand as non-null
 
 * Note: `ref.is_null` already exists via the [reference types proposal](https://github.com/WebAssembly/reference-types)
 
@@ -258,6 +258,11 @@ TODO: This assumes that let-bound locals are mutable. Should they be?
   - `(table <tabletype>)` is shorthand for `(table <tabletype> (ref.null))`
 
 
+### Tables
+
+TODO: how to initialise tables of non-null element type (init value? init segment?).
+
+
 ## Binary Format
 
 TODO.
@@ -273,7 +278,7 @@ Based on the [JS type reflection proposal](https://github.com/WebAssembly/js-typ
   - `type ValueType = ... | {ref: ConsType}`
 
 * A `ConsType` can be described by a suitable union type
-  - `type ConsType = "any" | "func" | {def: DefType, opt: bool}`
+  - `type ConsType = "any" | "func" | {def: DefType, nullable: bool}`
 
 
 ### Value Conversions
@@ -282,9 +287,9 @@ Based on the [JS type reflection proposal](https://github.com/WebAssembly/js-typ
 
 In addition to the rules for basic reference types:
 
-* Any function that is an instance of `WebAssembly.Function` with type `<functype>` is allowed as `ref <functype>` or `ref opt <functype>`.
+* Any function that is an instance of `WebAssembly.Function` with type `<functype>` is allowed as `ref <functype>` or `ref null <functype>`.
 
-* The `null` value is allowed as `ref opt $t`.
+* The `null` value is allowed as `ref null $t`.
 
 
 ### Constructors

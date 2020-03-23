@@ -3,7 +3,7 @@
  * syntactic elements, associated with the types defined here and in a few
  * other places:
  *
- *   x : var
+ *   x : idx
  *   v : value
  *   e : instrr
  *   f : func
@@ -62,7 +62,7 @@ type storeop = Memory.pack_size memop
 
 (* Expressions *)
 
-type var = int32 Source.phrase
+type idx = int32 Source.phrase
 type num = Values.num Source.phrase
 type name = int list
 
@@ -75,36 +75,38 @@ and instr' =
   | Block of stack_type * instr list  (* execute in sequence *)
   | Loop of stack_type * instr list   (* loop header *)
   | If of stack_type * instr list * instr list  (* conditional *)
-  | Br of var                         (* break to n-th surrounding label *)
-  | BrIf of var                       (* conditional break *)
-  | BrTable of var list * var         (* indexed break *)
+  | Br of idx                         (* break to n-th surrounding label *)
+  | BrIf of idx                       (* conditional break *)
+  | BrTable of idx list * idx         (* indexed break *)
   | Return                            (* break from function body *)
-  | Call of var                       (* call function *)
-  | CallIndirect of var * var         (* call function through table *)
-  | LocalGet of var                   (* read local variable *)
-  | LocalSet of var                   (* write local variable *)
-  | LocalTee of var                   (* write local variable and keep value *)
-  | GlobalGet of var                  (* read global variable *)
-  | GlobalSet of var                  (* write global variable *)
-  | TableGet of var                   (* read table element *)
-  | TableSet of var                   (* write table element *)
-  | TableSize of var                  (* size of table *)
-  | TableGrow of var                  (* grow table *)
-  | TableFill of var                  (* fill table range with value *)
-  | TableCopy of var * var            (* copy table range *)
-  | TableInit of var * var            (* initialize table range from segment *)
-  | ElemDrop of var                   (* drop passive element segment *)
+  | Call of idx                       (* call function *)
+  | CallRef                           (* call function through reference *)
+  | CallIndirect of idx * idx         (* call function through table *)
+  | ReturnCallRef                     (* tail call through reference *)
+  | LocalGet of idx                   (* read local idxiable *)
+  | LocalSet of idx                   (* write local idxiable *)
+  | LocalTee of idx                   (* write local idxiable and keep value *)
+  | GlobalGet of idx                  (* read global idxiable *)
+  | GlobalSet of idx                  (* write global idxiable *)
+  | TableGet of idx                   (* read table element *)
+  | TableSet of idx                   (* write table element *)
+  | TableSize of idx                  (* size of table *)
+  | TableGrow of idx                  (* grow table *)
+  | TableFill of idx                  (* fill table with unique value *)
+  | TableCopy of idx * idx            (* copy table range *)
+  | TableInit of idx * idx            (* initialize table range from segment *)
+  | ElemDrop of idx                   (* drop passive element segment *)
   | Load of loadop                    (* read memory at address *)
   | Store of storeop                  (* write memory at address *)
   | MemorySize                        (* size of memory *)
   | MemoryGrow                        (* grow memory *)
   | MemoryFill                        (* fill memory range with value *)
   | MemoryCopy                        (* copy memory ranges *)
-  | MemoryInit of var                 (* initialize memory range from segment *)
-  | DataDrop of var                   (* drop passive data segment *)
+  | MemoryInit of idx                 (* initialize memory range from segment *)
+  | DataDrop of idx                   (* drop passive data segment *)
   | RefNull                           (* null reference *)
   | RefIsNull                         (* null test *)
-  | RefFunc of var                    (* function reference *)
+  | RefFunc of idx                    (* function reference *)
   | Const of num                      (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)
@@ -124,11 +126,14 @@ and global' =
   ginit : const;
 }
 
+type local = local' Source.phrase
+and local' = value_type
+
 type func = func' Source.phrase
 and func' =
 {
-  ftype : var;
-  locals : value_type list;
+  ftype : idx;
+  locals : local list;
   body : instr list;
 }
 
@@ -150,7 +155,7 @@ and memory' =
 type segment_mode = segment_mode' Source.phrase
 and segment_mode' =
   | Passive
-  | Active of {index : var; offset : const}
+  | Active of {index : idx; offset : const}
   | Declarative
 
 type elem_segment = elem_segment' Source.phrase
@@ -171,14 +176,14 @@ and data_segment' =
 
 (* Modules *)
 
-type type_ = func_type Source.phrase
+type type_ = def_type Source.phrase
 
 type export_desc = export_desc' Source.phrase
 and export_desc' =
-  | FuncExport of var
-  | TableExport of var
-  | MemoryExport of var
-  | GlobalExport of var
+  | FuncExport of idx
+  | TableExport of idx
+  | MemoryExport of idx
+  | GlobalExport of idx
 
 type export = export' Source.phrase
 and export' =
@@ -189,7 +194,7 @@ and export' =
 
 type import_desc = import_desc' Source.phrase
 and import_desc' =
-  | FuncImport of var
+  | FuncImport of idx
   | TableImport of table_type
   | MemoryImport of memory_type
   | GlobalImport of global_type
@@ -210,7 +215,7 @@ and module_' =
   tables : table list;
   memories : memory list;
   funcs : func list;
-  start : var option;
+  start : idx option;
   elems : elem_segment list;
   datas : data_segment list;
   imports : import list;
@@ -236,8 +241,8 @@ let empty_module =
 
 open Source
 
-let func_type_for (m : module_) (x : var) : func_type =
-  (Lib.List32.nth m.it.types x.it).it
+let func_type_for (m : module_) (x : idx) : func_type =
+  as_func_def_type (Lib.List32.nth m.it.types x.it).it
 
 let import_type (m : module_) (im : import) : extern_type =
   let {idesc; _} = im.it in
