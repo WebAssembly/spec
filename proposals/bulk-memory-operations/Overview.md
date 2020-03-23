@@ -448,6 +448,6 @@ segments in the `Data` section:
 | ----- | ---- | ----------- |
 | count | `varuint32` | count of data segments in `Data` section |
 
-It is a validation error if `count` is not equal to the number of data segments
-in the `Data` section. It is also a validation error if the `DataCount` section
+The binary is malformed if `count` is not equal to the number of data segments
+in the `Data` section. The binary is also malformed if the `DataCount` section
 is omitted and a `memory.init` or `data.drop` instruction is used.
