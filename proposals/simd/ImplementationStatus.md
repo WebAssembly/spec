@@ -92,7 +92,7 @@
 | `i8x16.max_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i8x16.max_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i8x16.avgr_u`             |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
-| `i8x16.abs`                |                           |                       | :heavy_check_mark: |                    |
+| `i8x16.abs`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i16x8.neg`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.any_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.all_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -111,7 +111,7 @@
 | `i16x8.max_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i16x8.max_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i16x8.avgr_u`             |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
-| `i16x8.abs`                |                           |                       | :heavy_check_mark: |                    |
+| `i16x8.abs`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i32x4.neg`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.any_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.all_true`           |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -125,7 +125,7 @@
 | `i32x4.min_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i32x4.max_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i32x4.max_u`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
-| `i32x4.abs`                |                           |                       | :heavy_check_mark: |                    |
+| `i32x4.abs`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i64x2.neg`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.shl`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.shr_s`              |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -176,7 +176,7 @@
 | `i32x4.widen_low_i16x8_u`  |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 | `i32x4.widen_high_i16x8_u` |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: |                    |
 
-[1] Tip of tree LLVM as of February 7, 2020
+[1] Tip of tree LLVM as of March 23, 2020
 
 [2] Tested on V8 8.1.0 (candidate). Requires flag `--experimental-wasm-simd`
 
