@@ -26,7 +26,7 @@ function emit_a() {
 // value 0 to 9 indicating the function called, or will throw an exception if
 // the table entry is empty.
 
-function emit_b(insn) {
+function emit_b(insn, table) {
     print(
 `
 (module
@@ -36,11 +36,12 @@ function emit_b(insn) {
   (import "a" "ef2" (func (result i32)))
   (import "a" "ef3" (func (result i32)))
   (import "a" "ef4" (func (result i32)))    ;; index 4
-  (table 30 30 funcref)
-  (elem (i32.const 2) 3 1 4 1)
+  (table $t0 30 30 funcref)
+  (table $t1 30 30 funcref)
+  (elem (table $t${table}) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
-  (elem (i32.const 12) 7 5 2 3 6)
+  (elem (table $t${table}) (i32.const 12) func 7 5 2 3 6)
   (elem funcref
     (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
   (func (result i32) (i32.const 5))  ;; index 5
@@ -51,7 +52,7 @@ function emit_b(insn) {
   (func (export "test")
     ${insn})
   (func (export "check") (param i32) (result i32)
-    (call_indirect (type 0) (local.get 0)))
+    (call_indirect $t${table} (type 0) (local.get 0)))
 )
 `);
 }
@@ -61,8 +62,8 @@ function emit_b(insn) {
 // indirect calls, one for each element of |expected_result_vector|.  The
 // results are compared to those in the vector.
 
-function tab_test(instruction, expected_result_vector) {
-    emit_b(instruction);
+function tab_test(instruction, table, expected_result_vector) {
+    emit_b(instruction, table);
     print(`(invoke "test")`);
     for (let i = 0; i < expected_result_vector.length; i++) {
         let expected = expected_result_vector[i];
@@ -80,26 +81,31 @@ emit_a();
 // to count through the vector entries when debugging.
 let e = undefined;
 
-// Passive init that overwrites all-null entries
-tab_test("(table.init 1 (i32.const 7) (i32.const 0) (i32.const 4))",
-         [e,e,3,1,4, 1,e,2,7,1, 8,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
+for ( let table of [0, 1] ) {
+    // Passive init that overwrites all-null entries
+    tab_test(`(table.init $t${table} 1 (i32.const 7) (i32.const 0) (i32.const 4))`,
+             table,
+             [e,e,3,1,4, 1,e,2,7,1, 8,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
-// Passive init that overwrites existing active-init-created entries
-tab_test("(table.init 3 (i32.const 15) (i32.const 1) (i32.const 3))",
-         [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 9,2,7,e,e, e,e,e,e,e, e,e,e,e,e]);
+    // Passive init that overwrites existing active-init-created entries
+    tab_test(`(table.init $t${table} 3 (i32.const 15) (i32.const 1) (i32.const 3))`,
+             table,
+             [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 9,2,7,e,e, e,e,e,e,e, e,e,e,e,e]);
 
-// Perform active and passive initialisation and then multiple copies
-tab_test(`(table.init 1 (i32.const 7) (i32.const 0) (i32.const 4))
-    (elem.drop 1)
-    (table.init 3 (i32.const 15) (i32.const 1) (i32.const 3))
-    (elem.drop 3)
-    (table.copy (i32.const 20) (i32.const 15) (i32.const 5))
-    (table.copy (i32.const 21) (i32.const 29) (i32.const 1))
-    (table.copy (i32.const 24) (i32.const 10) (i32.const 1))
-    (table.copy (i32.const 13) (i32.const 11) (i32.const 4))
-    (table.copy (i32.const 19) (i32.const 20) (i32.const 5))`,
-         [e,e,3,1,4, 1,e,2,7,1, 8,e,7,e,7, 5,2,7,e,9, e,7,e,8,8, e,e,e,e,e]);
-
+    // Perform active and passive initialisation and then multiple copies
+    tab_test(
+        `(table.init $t${table} 1 (i32.const 7) (i32.const 0) (i32.const 4))
+         (elem.drop 1)
+         (table.init $t${table} 3 (i32.const 15) (i32.const 1) (i32.const 3))
+         (elem.drop 3)
+         (table.copy $t${table} ${table} (i32.const 20) (i32.const 15) (i32.const 5))
+         (table.copy $t${table} ${table} (i32.const 21) (i32.const 29) (i32.const 1))
+         (table.copy $t${table} ${table} (i32.const 24) (i32.const 10) (i32.const 1))
+         (table.copy $t${table} ${table} (i32.const 13) (i32.const 11) (i32.const 4))
+         (table.copy $t${table} ${table} (i32.const 19) (i32.const 20) (i32.const 5))`,
+        table,
+        [e,e,3,1,4, 1,e,2,7,1, 8,e,7,e,7, 5,2,7,e,9, e,7,e,8,8, e,e,e,e,e]);
+}
 
 // elem.drop requires a table, minimally
 print(
@@ -141,15 +147,19 @@ print(
   "unknown table 0")
 `);
 
-function do_test(insn1, insn2, errText)
+let tab0_len = 30;
+let tab1_len = 28;
+
+function do_test(insn1, insn2, table, errText)
 {
     print(`
 (module
-  (table 30 30 funcref)
-  (elem (i32.const 2) 3 1 4 1)
+  (table $t0 ${tab0_len} ${tab0_len} funcref)
+  (table $t1 ${tab1_len} ${tab1_len} funcref)
+  (elem (table $t${table}) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
-  (elem (i32.const 12) 7 5 2 3 6)
+  (elem (table $t${table}) (i32.const 12) func 7 5 2 3 6)
   (elem funcref
     (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
   (func (result i32) (i32.const 0))
@@ -173,20 +183,20 @@ function do_test(insn1, insn2, errText)
     }
 }
 
-function tab_test1(insn1, errText) {
-    do_test(insn1, "", errText);
+function tab_test1(insn1, table, errText) {
+    do_test(insn1, "", table, errText);
 }
 
 function tab_test2(insn1, insn2, errText) {
-    do_test(insn1, insn2, errText);
+    do_test(insn1, insn2, 0, errText);
 }
 
 // drop with elem seg ix indicating an active segment
-tab_test1("(elem.drop 2)",
+tab_test1("(elem.drop 2)", 0,
           undefined);
 
 // init with elem seg ix indicating an active segment
-tab_test1("(table.init 2 (i32.const 12) (i32.const 1) (i32.const 1))",
+tab_test1("(table.init 2 (i32.const 12) (i32.const 1) (i32.const 1))", 0,
           "out of bounds");
 
 // init, using an elem seg ix more than once is OK
@@ -206,46 +216,58 @@ tab_test2("(elem.drop 1)",
           "out of bounds");
 
 // init: seg ix is valid passive, but length to copy > len of seg
-tab_test1("(table.init 1 (i32.const 12) (i32.const 0) (i32.const 5))",
+tab_test1("(table.init 1 (i32.const 12) (i32.const 0) (i32.const 5))", 0,
           "out of bounds");
 
 // init: seg ix is valid passive, but implies copying beyond end of seg
-tab_test1("(table.init 1 (i32.const 12) (i32.const 2) (i32.const 3))",
+tab_test1("(table.init 1 (i32.const 12) (i32.const 2) (i32.const 3))", 0,
           "out of bounds");
 
-// init: seg ix is valid passive, but implies copying beyond end of dst
-tab_test1("(table.init 1 (i32.const 28) (i32.const 1) (i32.const 3))",
-          "out of bounds");
+// Tables are of different length with t1 shorter than t0, to test that we're not
+// using t0's limit for t1's bound
 
-// init: seg ix is valid passive, zero len, and src offset out of bounds at the
-// end of the table - this is allowed
-tab_test1("(table.init 1 (i32.const 12) (i32.const 4) (i32.const 0))",
-          undefined);
+for ( let [table, oobval] of [[0,30],[1,28]] ) {
+    // init: seg ix is valid passive, but implies copying beyond end of dst
+    tab_test1(`(table.init $t${table} 1 (i32.const ${oobval-2}) (i32.const 1) (i32.const 3))`,
+              table,
+              "out of bounds");
 
-// init: seg ix is valid passive, zero len, and src offset out of bounds past the
-// end of the table - this is not allowed
-tab_test1("(table.init 1 (i32.const 12) (i32.const 5) (i32.const 0))",
-          "out of bounds");
+    // init: seg ix is valid passive, zero len, and src offset out of bounds at the
+    // end of the table - this is allowed
+    tab_test1(`(table.init $t${table} 1 (i32.const 12) (i32.const 4) (i32.const 0))`,
+              table,
+              undefined);
 
-// init: seg ix is valid passive, zero len, and dst offset out of bounds at the
-// end of the table - this is allowed
-tab_test1("(table.init 1 (i32.const 30) (i32.const 2) (i32.const 0))",
-          undefined);
+    // init: seg ix is valid passive, zero len, and src offset out of bounds past the
+    // end of the table - this is not allowed
+    tab_test1(`(table.init $t${table} 1 (i32.const 12) (i32.const 5) (i32.const 0))`,
+              table,
+              "out of bounds");
 
-// init: seg ix is valid passive, zero len, and dst offset out of bounds past the
-// end of the table - this is not allowed
-tab_test1("(table.init 1 (i32.const 31) (i32.const 2) (i32.const 0))",
-          "out of bounds");
+    // init: seg ix is valid passive, zero len, and dst offset out of bounds at the
+    // end of the table - this is allowed
+    tab_test1(`(table.init $t${table} 1 (i32.const ${oobval}) (i32.const 2) (i32.const 0))`,
+              table,
+              undefined);
 
-// init: seg ix is valid passive, zero len, and dst and src offsets out of bounds
-// at the end of the table - this is allowed
-tab_test1("(table.init 1 (i32.const 30) (i32.const 4) (i32.const 0))",
-          undefined);
+    // init: seg ix is valid passive, zero len, and dst offset out of bounds past the
+    // end of the table - this is not allowed
+    tab_test1(`(table.init $t${table} 1 (i32.const ${oobval+1}) (i32.const 2) (i32.const 0))`,
+              table,
+              "out of bounds");
 
-// init: seg ix is valid passive, zero len, and src/dst offset out of bounds past the
-// end of the table - this is not allowed
-tab_test1("(table.init 1 (i32.const 31) (i32.const 5) (i32.const 0))",
-          "out of bounds");
+    // init: seg ix is valid passive, zero len, and dst and src offsets out of bounds
+    // at the end of the table - this is allowed
+    tab_test1(`(table.init $t${table} 1 (i32.const ${oobval}) (i32.const 4) (i32.const 0))`,
+              table,
+              undefined);
+
+    // init: seg ix is valid passive, zero len, and src/dst offset out of bounds past the
+    // end of the table - this is not allowed
+    tab_test1(`(table.init $t${table} 1 (i32.const ${oobval+1}) (i32.const 5) (i32.const 0))`,
+              table,
+              "out of bounds");
+}
 
 // invalid argument types
 {
