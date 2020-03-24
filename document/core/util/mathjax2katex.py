@@ -1,7 +1,7 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: latin-1 -*-
 
-import Queue
+import queue
 import os
 import re
 import shelve
@@ -239,7 +239,7 @@ def Main():
       q.task_done()
       sys.stderr.write('.')
 
-  q = Queue.Queue()
+  q = queue.Queue()
   for i in range(40):
     t = threading.Thread(target=Worker)
     t.daemon = True
