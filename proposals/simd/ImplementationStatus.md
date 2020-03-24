@@ -135,7 +135,7 @@
 | `i64x2.mul`                |                           |                       | :heavy_check_mark: |                    |
 | `f32x4.abs`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `f32x4.neg`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| `f32x4.sqrt`               | `-munimplemented-simd128` |                       | :heavy_check_mark: | :heavy_check_mark: |
+| `f32x4.sqrt`               |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `f32x4.add`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `f32x4.sub`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | `f32x4.mul`                |               `-msimd128` |    :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
