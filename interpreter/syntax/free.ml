@@ -86,12 +86,12 @@ let rec instr (e : instr) =
   match e.it with
   | Unreachable | Nop | Drop -> empty
   | Select tso -> list value_type (Lib.Option.get tso [])
-  | RefNull | RefIsNull -> empty
+  | RefNull | RefIsNull | RefAsNonNull -> empty
   | RefFunc x -> funcs (idx x)
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (ts, es) | Loop (ts, es) -> list value_type ts ++ block es
   | If (ts, es1, es2) -> list value_type ts ++ block es1 ++ block es2
-  | Br x | BrIf x -> labels (idx x)
+  | Br x | BrIf x | BrOnNull x -> labels (idx x)
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
   | Return | CallRef | ReturnCallRef -> empty
   | Call x -> funcs (idx x)

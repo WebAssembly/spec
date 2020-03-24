@@ -457,6 +457,8 @@ let rec instr s =
   | 0xd0 -> ref_null
   | 0xd1 -> ref_is_null
   | 0xd2 -> ref_func (at var s)
+  | 0xd3 -> ref_as_non_null
+  | 0xd4 -> br_on_null (at var s)
 
   | 0xfc as b1 ->
     (match op s with

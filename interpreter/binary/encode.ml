@@ -168,6 +168,7 @@ let encode m =
       | Br x -> op 0x0c; var x
       | BrIf x -> op 0x0d; var x
       | BrTable (xs, x) -> op 0x0e; vec var xs; var x
+      | BrOnNull x -> op 0xd4; var x
       | Return -> op 0x0f
       | Call x -> op 0x10; var x
       | CallRef -> op 0x14
@@ -243,6 +244,7 @@ let encode m =
 
       | RefNull -> op 0xd0
       | RefIsNull -> op 0xd1
+      | RefAsNonNull -> op 0xd3
       | RefFunc x -> op 0xd2; var x
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c

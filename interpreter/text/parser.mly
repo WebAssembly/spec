@@ -170,7 +170,8 @@ let inline_func_type_explicit (c : context) x ft at =
 %token NAT INT FLOAT STRING VAR
 %token ANYREF NULLREF FUNCREF REF ANY NULL OPT NUM_TYPE MUT
 %token UNREACHABLE NOP DROP SELECT
-%token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE
+%token BLOCK END IF THEN ELSE LOOP
+%token BR BR_IF BR_TABLE BR_ON_NULL
 %token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
@@ -178,7 +179,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token MEMORY_SIZE MEMORY_GROW MEMORY_FILL MEMORY_COPY MEMORY_INIT DATA_DROP
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
-%token REF_ANY REF_NULL REF_FUNC REF_HOST REF_IS_NULL
+%token REF_ANY REF_NULL REF_FUNC REF_HOST REF_IS_NULL REF_AS_NON_NULL
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
@@ -354,6 +355,7 @@ plain_instr :
   | BR_TABLE var var_list
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
+  | BR_ON_NULL var { fun c -> br_on_null ($2 c label) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF { fun c -> call_ref }
@@ -390,6 +392,7 @@ plain_instr :
   | DATA_DROP var { fun c -> data_drop ($2 c data) }
   | REF_NULL { fun c -> ref_null }
   | REF_IS_NULL { fun c -> ref_is_null }
+  | REF_AS_NON_NULL { fun c -> ref_as_non_null }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
   | CONST num { fun c -> fst (num $1 $2) }
   | TEST { fun c -> $1 }

@@ -185,6 +185,7 @@ rule token = parse
   | "ref.func" { REF_FUNC }
   | "ref.host" { REF_HOST }
   | "ref.is_null" { REF_IS_NULL }
+  | "ref.as_non_null" { REF_AS_NON_NULL }
 
   | "nop" { NOP }
   | "unreachable" { UNREACHABLE }
@@ -195,6 +196,7 @@ rule token = parse
   | "br" { BR }
   | "br_if" { BR_IF }
   | "br_table" { BR_TABLE }
+  | "br_on_null" { BR_ON_NULL }
   | "return" { RETURN }
   | "if" { IF }
   | "then" { THEN }

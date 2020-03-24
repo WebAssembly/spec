@@ -224,8 +224,9 @@ The following rules, now defined in terms of constructed types, replace and exte
   - traps on `null`
 
 * `br_on_null` checks for null and branches
-  - `br_on_null $l : [(ref null $t)] -> [(ref $t)]`
+  - `br_on_null $l : [t* (ref null $t)] -> [t* (ref $t)]`
     - iff `$t` is defined
+    - and `$l : [t*]`
   - branches to `$l` on `null`, otherwise returns operand as non-null
 
 * Note: `ref.is_null` already exists via the [reference types proposal](https://github.com/WebAssembly/reference-types)

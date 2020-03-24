@@ -177,6 +177,12 @@ let rec step (c : config) : config =
         else
           vs', [Plain (Br (Lib.List32.nth xs i)) @@ e.at]
 
+      | BrOnNull x, Ref r :: vs' ->
+        if r = NullRef then
+          vs', [Plain (Br x) @@ e.at]
+        else
+          Ref r :: vs', []
+
       | Return, vs ->
         [], [Returning vs @@ e.at]
 
@@ -431,6 +437,12 @@ let rec step (c : config) : config =
           Num (I32 1l) :: vs', []
         else
           Num (I32 0l) :: vs', []
+
+      | RefAsNonNull, Ref r :: vs' ->
+        if r = NullRef then
+          vs', [Trapping "null reference" @@ e.at]
+        else
+          Ref r :: vs', []
 
       | RefFunc x, vs' ->
         let f = func frame.inst x in

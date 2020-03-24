@@ -294,6 +294,15 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     List.iter (fun x' -> check_stack c ts (label c x') x'.at) xs;
     (ts @ [NumType I32Type]) -->... []
 
+  | BrOnNull x ->
+    (match peek 0 s with
+    | RefType (DefRefType (nul, y)) ->
+      (label c x @ [RefType (DefRefType (nul, y))]) -->
+      (label c x @ [RefType (DefRefType (NonNullable, y))])
+    | _ ->
+      [] -->... []
+    )
+
   | Return ->
     c.results -->... []
 
@@ -427,6 +436,14 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
 
   | RefIsNull ->
     [RefType AnyRefType] --> [NumType I32Type]
+
+  | RefAsNonNull ->
+    (match peek 0 s with
+    | RefType (DefRefType (nul, x)) ->
+      [RefType (DefRefType (nul, x))] --> [RefType (DefRefType (NonNullable, x))]
+    | _ ->
+      [] -->... []
+    )
 
   | RefFunc x ->
     let ft = func c x in

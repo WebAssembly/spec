@@ -318,3 +318,20 @@
   )
   "type mismatch"
 )
+
+
+;; Unreachable typing.
+
+(module
+  (type $t (func (param i32) (result i32)))
+  (elem func $f)
+  (func $f (param i32) (result i32) (local.get 0))
+  (global $f (ref $t) (ref.func $f))
+
+  (func (export "unreachable") (result i32)
+    (unreachable)
+    (return_call_ref)
+  )
+)
+
+(assert_trap (invoke "unreachable") "unreachable")
