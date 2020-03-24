@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: latin-1 -*-
 
-import Queue
+import queue
 import os
 import re
 import shelve
