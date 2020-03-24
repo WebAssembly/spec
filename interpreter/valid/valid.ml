@@ -139,8 +139,8 @@ let check_stack (c : context) ts1 ts2 at =
   require
     (List.length ts1 = List.length ts2 &&
       List.for_all2 (Match.match_value_type c.types []) ts1 ts2) at
-    ("type mismatch: operator requires " ^ string_of_value_types ts2 ^
-     " but stack has " ^ string_of_value_types ts1)
+    ("type mismatch: operator requires " ^ string_of_stack_type ts2 ^
+     " but stack has " ^ string_of_stack_type ts1)
 
 let pop c (ell1, ts1) (ell2, ts2) at =
   let n1 = List.length ts1 in
@@ -322,10 +322,11 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     (match peek 0 s with
     | RefType (DefRefType (nul, x)) ->
       let FuncType (ins, out) = func_type c (x @@ e.at) in
-      require (out = c.results) e.at "type mismatch in function result";
+      require (Match.match_stack_type c.types [] out c.results) e.at
+        "type mismatch in function result";
       (ins @ [RefType (DefRefType (nul, x))]) -->... []
-    | _ ->
-      [BotType] -->... []
+    | BotType -> [] -->... []
+    | _ -> [BotType] --> []
     )
 
   | LocalGet x ->
@@ -473,8 +474,8 @@ and check_block (c : context) (es : instr list) (ts : stack_type) at =
   let s = check_seq c es in
   let s' = pop c (stack ts) s at in
   require (snd s' = []) at
-    ("type mismatch: operator requires " ^ string_of_value_types ts ^
-     " but stack has " ^ string_of_value_types (snd s))
+    ("type mismatch: operator requires " ^ string_of_stack_type ts ^
+     " but stack has " ^ string_of_stack_type (snd s))
 
 
 (* Functions & Constants *)

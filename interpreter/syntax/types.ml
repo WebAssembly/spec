@@ -97,7 +97,7 @@ let string_of_value_type = function
   | RefType t -> string_of_ref_type t
   | BotType -> "impossible"
 
-let string_of_value_types = function
+let string_of_stack_type = function
   | [t] -> string_of_value_type t
   | ts -> "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
 
@@ -117,7 +117,7 @@ let string_of_global_type = function
   | GlobalType (t, Mutable) -> "(mut " ^ string_of_value_type t ^ ")"
 
 let string_of_func_type (FuncType (ins, out)) =
-  string_of_value_types ins ^ " -> " ^ string_of_value_types out
+  string_of_stack_type ins ^ " -> " ^ string_of_stack_type out
 
 let string_of_extern_type = function
   | ExternFuncType ft -> "func " ^ string_of_func_type ft

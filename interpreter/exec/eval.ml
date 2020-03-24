@@ -186,15 +186,15 @@ let rec step (c : config) : config =
       | CallRef, Ref NullRef :: vs ->
         vs, [Trapping "null function reference" @@ e.at]
 
-      | CallRef, Ref (FuncRef func) :: vs ->
-        vs, [Invoke func @@ e.at]
+      | CallRef, Ref (FuncRef f) :: vs ->
+        vs, [Invoke f @@ e.at]
 
       | CallIndirect (x, y), Num (I32 i) :: vs ->
-        let func = func_ref frame.inst x i e.at in
-        if func_type frame.inst y <> Func.type_of func then
-          vs, [Trapping "indirect call type mismatch" @@ e.at]
+        let f = func_ref frame.inst x i e.at in
+        if Match.eq_func_type [] (* TODO *) [] (func_type frame.inst y) (Func.type_of f) then
+          vs, [Invoke f @@ e.at]
         else
-          vs, [Invoke func @@ e.at]
+          vs, [Trapping "indirect call type mismatch" @@ e.at]
 
       | ReturnCallRef, vs ->
         (match (step {c with code = (vs, [Plain CallRef @@ e.at])}).code with
@@ -461,7 +461,7 @@ let rec step (c : config) : config =
 
       | _ ->
         let s1 = string_of_values (List.rev vs) in
-        let s2 = string_of_value_types (List.map type_of_value (List.rev vs)) in
+        let s2 = string_of_stack_type (List.map type_of_value (List.rev vs)) in
         Crash.error e.at
           ("missing or ill-typed operand on stack (" ^ s1 ^ " : " ^ s2 ^ ")")
       )

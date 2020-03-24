@@ -243,7 +243,7 @@ let print_module x_opt m =
 let print_values vs =
   let ts = List.map Values.type_of_value vs in
   Printf.printf "%s : %s\n"
-    (Values.string_of_values vs) (Types.string_of_value_types ts);
+    (Values.string_of_values vs) (Types.string_of_stack_type ts);
   flush_all ()
 
 let string_of_nan = function
@@ -275,7 +275,7 @@ let string_of_results = function
 let print_results rs =
   let ts = List.map type_of_result rs in
   Printf.printf "%s : %s\n"
-    (string_of_results rs) (Types.string_of_value_types ts);
+    (string_of_results rs) (Types.string_of_stack_type ts);
   flush_all ()
 
 
