@@ -238,6 +238,10 @@ let check_memop (c : context) (memop : 'a memop) get_sz at =
  * declarative typing rules.
  *)
 
+let check_local (c : context) (t : local) =
+  check_value_type c t.it t.at;
+  require (defaultable_value_type t.it) t.at "non-defaultable local type"
+
 let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   match e.it with
   | Unreachable ->
@@ -280,6 +284,18 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     check_block {c with labels = ts :: c.labels} es1 ts e.at;
     check_block {c with labels = ts :: c.labels} es2 ts e.at;
     [NumType I32Type] --> ts
+
+  | Let (ts, locals, es) ->
+    List.iter (fun t -> check_value_type c t e.at) ts;
+    check_arity (List.length ts) e.at;
+    List.iter (check_local c) locals;
+    let c' =
+      { c with
+        labels = ts :: c.labels;
+        locals = List.map Source.it locals @ c.locals;
+      }
+    in check_block c' es ts e.at;
+    List.map Source.it locals --> ts
 
   | Br x ->
     label c x -->... []
@@ -511,10 +527,6 @@ and check_block (c : context) (es : instr list) (ts : stack_type) at =
 
 let check_type (c : context) (t : type_) =
   check_def_type c t.it t.at
-
-let check_local (c : context) (t : local) =
-  check_value_type c t.it t.at;
-  require (defaultable_value_type t.it) t.at "non-defaultable local type"
 
 let check_func (c : context) (f : func) =
   let {ftype; locals; body} = f.it in

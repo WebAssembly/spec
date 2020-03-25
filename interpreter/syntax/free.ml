@@ -73,6 +73,8 @@ let value_type = function
   | RefType t -> ref_type t
   | BotType -> empty
 
+let block_type bt = list value_type bt
+
 let func_type (FuncType (ins, out)) =
   list value_type ins ++ list value_type out
 let global_type (GlobalType (t, _mut)) = value_type t
@@ -89,8 +91,11 @@ let rec instr (e : instr) =
   | RefNull | RefIsNull | RefAsNonNull -> empty
   | RefFunc x -> funcs (idx x)
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
-  | Block (ts, es) | Loop (ts, es) -> list value_type ts ++ block es
-  | If (ts, es1, es2) -> list value_type ts ++ block es1 ++ block es2
+  | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
+  | If (bt, es1, es2) -> block_type bt ++ block es1 ++ block es2
+  | Let (bt, ts, es) ->
+    let free = block_type bt ++ block es in
+    {free with locals = Lib.Fun.repeat (List.length ts) shift free.locals}
   | Br x | BrIf x | BrOnNull x -> labels (idx x)
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
   | Return | CallRef | ReturnCallRef -> empty

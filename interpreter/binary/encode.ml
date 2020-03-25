@@ -153,17 +153,26 @@ let encode m =
 
     let var x = vu32 x.it
 
+    let local (t, n) = len n; value_type t.it
+    let locals locs =
+      let combine t = function
+        | (t', n) :: ts when t.it = t'.it -> (t, n + 1) :: ts
+        | ts -> (t, 1) :: ts
+      in vec local (List.fold_right combine locs [])
+
     let rec instr e =
       match e.it with
       | Unreachable -> op 0x00
       | Nop -> op 0x01
 
-      | Block (ts, es) -> op 0x02; stack_type ts; list instr es; end_ ()
-      | Loop (ts, es) -> op 0x03; stack_type ts; list instr es; end_ ()
-      | If (ts, es1, es2) ->
-        op 0x04; stack_type ts; list instr es1;
+      | Block (bt, es) -> op 0x02; stack_type bt; list instr es; end_ ()
+      | Loop (bt, es) -> op 0x03; stack_type bt; list instr es; end_ ()
+      | If (bt, es1, es2) ->
+        op 0x04; stack_type bt; list instr es1;
         if es2 <> [] then op 0x05;
         list instr es2; end_ ()
+      | Let (bt, locs, es) ->
+        op 0x16; stack_type bt; locals locs; list instr es; end_ ()
 
       | Br x -> op 0x0c; var x
       | BrIf x -> op 0x0d; var x
@@ -484,19 +493,11 @@ let encode m =
       section 8 (opt var) xo (xo <> None)
 
     (* Code section *)
-    let compress ts =
-      let combine t = function
-        | (t', n) :: ts when t.it = t'.it -> (t, n + 1) :: ts
-        | ts -> (t, 1) :: ts
-      in List.fold_right combine ts []
-
-    let local (t, n) = len n; value_type t.it
-
     let code f =
-      let {locals; body; _} = f.it in
+      let {locals = locs; body; _} = f.it in
       let g = gap32 () in
       let p = pos s in
-      vec local (compress locals);
+      locals locs;
       list instr body;
       end_ ();
       patch_gap32 g (pos s - p)

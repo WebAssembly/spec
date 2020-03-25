@@ -230,11 +230,14 @@ let rec instr e =
     | Select None -> "select", []
     | Select (Some []) -> "select", [Node ("result", [])]
     | Select (Some ts) -> "select", decls "result" ts
-    | Block (ts, es) -> "block", stack_type ts @ list instr es
-    | Loop (ts, es) -> "loop", stack_type ts @ list instr es
-    | If (ts, es1, es2) ->
-      "if", stack_type ts @
+    | Block (bt, es) -> "block", stack_type bt @ list instr es
+    | Loop (bt, es) -> "loop", stack_type bt @ list instr es
+    | If (bt, es1, es2) ->
+      "if", stack_type bt @
         [Node ("then", list instr es1); Node ("else", list instr es2)]
+    | Let (bt, locals, es) ->
+      "let", stack_type bt @ decls "local" (List.map Source.it locals) @
+        list instr es
     | Br x -> "br " ^ var x, []
     | BrIf x -> "br_if " ^ var x, []
     | BrTable (xs, x) ->

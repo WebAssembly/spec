@@ -6,7 +6,7 @@ struct
   let uncurry f (x, y) = f x y
 
   let rec repeat n f x =
-    if n = 0 then () else (f x; repeat (n - 1) f x)
+    if n = 0 then x else repeat (n - 1) f (f x)
 end
 
 module Int =

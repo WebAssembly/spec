@@ -184,7 +184,10 @@ align: align=(1|2|4|8|...)
 cvtop: trunc | extend | wrap | ...
 
 num_type: i32 | i64 | f32 | f64
-ref_type: anyref | funcref | nullref
+ref_type: ( ref any ) | ( ref func ) | ( ref null ) | ( ref null? <var> )
+  | anyref     ;; = (ref any)
+  | funcref    ;; = (ref func)
+  | nullref    ;; = (ref null)
 val_type: num_type | ref_type
 block_type : ( result <val_type>* )*
 func_type:   ( type <var> )? <param>* <result>*
@@ -199,6 +202,7 @@ expr:
   ( loop <name>? <block_type> <instr>* )
   ( if <name>? <block_type> ( then <instr>* ) ( else <instr>* )? )
   ( if <name>? <block_type> <expr>+ ( then <instr>* ) ( else <instr>* )? ) ;; = <expr>+ (if <name>? <block_type> (then <instr>*) (else <instr>*)?)
+  ( let <name>? <block_type> <local>* <instr>* )
 
 instr:
   <expr>
@@ -207,6 +211,7 @@ instr:
   loop <name>? <block_type> <instr>* end <name>?                     ;; = (loop <name>? <block_type> <instr>*)
   if <name>? <block_type> <instr>* end <name>?                       ;; = (if <name>? <block_type> (then <instr>*))
   if <name>? <block_type> <instr>* else <name>? <instr>* end <name>? ;; = (if <name>? <block_type> (then <instr>*) (else <instr>*))
+  let <name>? <block_type> <local>* <instr>* end <name>?             ;; = (let <name>? <block_type> <local>* <instr>*)
 
 op:
   unreachable
@@ -214,9 +219,12 @@ op:
   br <var>
   br_if <var>
   br_table <var>+
+  br_on_null <var>
   return
   call <var>
   call_indirect <var>? <func_type>
+  call_ref
+  return_call_ref
   drop
   select
   local.get <var>
@@ -241,7 +249,8 @@ op:
   memory.init <var>
   data.drop <var>
   ref.null
-  ref.isnull
+  ref.is_null
+  ref_as_non_null
   ref.func <var>
   <val_type>.const <value>
   <val_type>.<unop>

@@ -59,12 +59,13 @@ and admin_instr' =
   | Plain of instr'
   | Refer of ref_
   | Invoke of func_inst
+  | Label of int * instr list * code
+  | Local of int * value list * code
+  | Frame of int * module_inst * code
   | Trapping of string
   | Returning of value stack
   | ReturningInvoke of value stack * func_inst
   | Breaking of int32 * value stack
-  | Label of int * instr list * code
-  | Frame of int * frame * code
 
 type config =
 {
@@ -77,6 +78,11 @@ let frame inst locals = {inst; locals}
 let config inst vs es = {frame = frame inst []; code = vs, es; budget = 300}
 
 let plain e = Plain e.it @@ e.at
+
+let is_jumping e =
+  match e.it with
+  | Trapping _ | Returning _ | ReturningInvoke _ | Breaking _ -> true
+  | _ -> false
 
 let lookup category list x =
   try Lib.List32.nth list x.it with Failure _ ->
@@ -108,6 +114,8 @@ let take n (vs : 'a stack) at =
 
 let drop n (vs : 'a stack) at =
   try Lib.List.drop n vs with Failure _ -> Crash.error at "stack underflow"
+
+let split n (vs : 'a stack) at = take n vs at, drop n vs at
 
 
 (* Evaluation *)
@@ -161,6 +169,14 @@ let rec step (c : config) : config =
           vs', [Plain (Block (ts, es2)) @@ e.at]
         else
           vs', [Plain (Block (ts, es1)) @@ e.at]
+
+      | Let (bt, locals, es'), vs ->
+        let vs0, vs' = split (List.length locals) vs e.at in
+        vs', [
+          Local (List.length bt, List.rev vs0,
+            ([], [Plain (Block (bt, es')) @@ e.at])
+          ) @@ e.at
+        ]
 
       | Br x, vs ->
         [], [Breaking (x.it, vs) @@ e.at]
@@ -494,56 +510,62 @@ let rec step (c : config) : config =
     | Label (n, es0, (vs', [])), vs ->
       vs' @ vs, []
 
-    | Label (n, es0, (vs', {it = Trapping msg; at} :: es')), vs ->
-      vs, [Trapping msg @@ at]
-
-    | Label (n, es0, (vs', {it = Returning vs0; at} :: es')), vs ->
-      vs, [Returning vs0 @@ at]
-
-    | Label (n, es0, (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
-      vs, [ReturningInvoke (vs0, f) @@ at]
-
     | Label (n, es0, (vs', {it = Breaking (0l, vs0); at} :: es')), vs ->
       take n vs0 e.at @ vs, List.map plain es0
 
     | Label (n, es0, (vs', {it = Breaking (k, vs0); at} :: es')), vs ->
       vs, [Breaking (Int32.sub k 1l, vs0) @@ at]
 
+    | Label (n, es0, (vs', e' :: es')), vs when is_jumping e' ->
+      vs, [e']
+
     | Label (n, es0, code'), vs ->
       let c' = step {c with code = code'} in
       vs, [Label (n, es0, c'.code) @@ e.at]
 
-    | Frame (n, frame', (vs', [])), vs ->
+    | Local (n, vs0, (vs', [])), vs ->
       vs' @ vs, []
 
-    | Frame (n, frame', (vs', {it = Trapping msg; at} :: es')), vs ->
+    | Local (n, vs0, (vs', e' :: es')), vs when is_jumping e' ->
+      vs, [e']
+
+    | Local (n, vs0, code'), vs ->
+      let frame' = {c.frame with locals = List.map ref vs0 @ c.frame.locals} in
+      let c' = step {c with frame = frame'; code = code'} in
+      let vs0' = List.map (!) (take (List.length vs0) c'.frame.locals e.at) in
+      vs, [Local (n, vs0', c'.code) @@ e.at]
+
+    | Frame (n, inst, (vs', [])), vs ->
+      vs' @ vs, []
+
+    | Frame (n, inst, (vs', {it = Trapping msg; at} :: es')), vs ->
       vs, [Trapping msg @@ at]
 
-    | Frame (n, frame', (vs', {it = Returning vs0; at} :: es')), vs ->
+    | Frame (n, inst, (vs', {it = Returning vs0; at} :: es')), vs ->
       take n vs0 e.at @ vs, []
 
-    | Frame (n, frame', (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
+    | Frame (n, inst, (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
       let FuncType (ins, out) = Func.type_of f in
       take (List.length ins) vs0 e.at @ vs, [Invoke f @@ at]
 
-    | Frame (n, frame', code'), vs ->
+    | Frame (n, inst, code'), vs ->
+      let frame' = {inst; locals = []} in
       let c' = step {frame = frame'; code = code'; budget = c.budget - 1} in
-      vs, [Frame (n, c'.frame, c'.code) @@ e.at]
+      vs, [Frame (n, inst, c'.code) @@ e.at]
 
     | Invoke func, vs when c.budget = 0 ->
       Exhaustion.error e.at "call stack exhausted"
 
     | Invoke func, vs ->
       let FuncType (ins, out) = Func.type_of func in
-      let n = List.length ins in
-      let args, vs' = take n vs e.at, drop n vs e.at in
+      let args, vs' = split (List.length ins) vs e.at in
       (match func with
       | Func.AstFunc (t, inst', f) ->
         let ts = List.map Source.it f.it.locals in
-        let locals' = List.rev args @ List.map default_value ts in
-        let code' = [], [Plain (Block (out, f.it.body)) @@ f.at] in
-        let frame' = {inst = !inst'; locals = List.map ref locals'} in
-        vs', [Frame (List.length out, frame', code') @@ e.at]
+        let locals' = List.map (fun t -> t @@ f.at) ins @ f.it.locals in
+        let vs0 = List.rev args @ List.map default_value ts in
+        let es0 = [Plain (Let (out, locals', f.it.body)) @@ f.at] in
+        vs', [Frame (List.length out, !inst', (List.rev vs0, es0)) @@ e.at]
 
       | Func.HostFunc (t, f) ->
         try List.rev (f (List.rev args)) @ vs', []

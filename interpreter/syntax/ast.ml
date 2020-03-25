@@ -66,6 +66,9 @@ type idx = int32 Source.phrase
 type num = Values.num Source.phrase
 type name = int list
 
+type local = local' Source.phrase
+and local' = value_type
+
 type instr = instr' Source.phrase
 and instr' =
   | Unreachable                       (* trap unconditionally *)
@@ -74,7 +77,8 @@ and instr' =
   | Select of value_type list option  (* branchless conditional *)
   | Block of stack_type * instr list  (* execute in sequence *)
   | Loop of stack_type * instr list   (* loop header *)
-  | If of stack_type * instr list * instr list  (* conditional *)
+  | If of stack_type * instr list * instr list   (* conditional *)
+  | Let of stack_type * local list * instr list  (* local bindings *)
   | Br of idx                         (* break to n-th surrounding label *)
   | BrIf of idx                       (* conditional break *)
   | BrTable of idx list * idx         (* indexed break *)
@@ -127,9 +131,6 @@ and global' =
   gtype : global_type;
   ginit : const;
 }
-
-type local = local' Source.phrase
-and local' = value_type
 
 type func = func' Source.phrase
 and func' =

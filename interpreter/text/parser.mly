@@ -66,6 +66,8 @@ module VarMap = Map.Make(String)
 
 type space = {mutable map : int32 VarMap.t; mutable count : int32}
 let empty () = {map = VarMap.empty; count = 0l}
+let scoped n space =
+  {map = VarMap.map (Int32.add n) space.map; count = space.count}
 
 type types = {space : space; mutable list : type_ list}
 let empty_types () = {space = empty (); list = []}
@@ -73,17 +75,16 @@ let empty_types () = {space = empty (); list = []}
 type context =
   { types : types; tables : space; memories : space;
     funcs : space; locals : space; globals : space;
-    data : space; elems : space;
-    labels : int32 VarMap.t }
+    datas : space; elems : space; labels : space }
 
 let empty_context () =
   { types = empty_types (); tables = empty (); memories = empty ();
     funcs = empty (); locals = empty (); globals = empty ();
-    data = empty (); elems = empty ();
-    labels = VarMap.empty }
+    datas = empty (); elems = empty (); labels = empty () }
 
-let enter_func (c : context) =
-  {c with labels = VarMap.empty; locals = empty ()}
+let enter_func (c : context) = {c with labels = empty (); locals = empty ()}
+let enter_block (c : context) = {c with labels = scoped 1l c.labels}
+let enter_let (c : context) = {c with locals = empty ()}
 
 let lookup category space x =
   try VarMap.find x.it space.map
@@ -96,10 +97,8 @@ let global (c : context) x = lookup "global" c.globals x
 let table (c : context) x = lookup "table" c.tables x
 let memory (c : context) x = lookup "memory" c.memories x
 let elem (c : context) x = lookup "elem segment" c.elems x
-let data (c : context) x = lookup "data segment" c.data x
-let label (c : context) x =
-  try VarMap.find x.it c.labels
-  with Not_found -> error x.at ("unknown label " ^ x.it)
+let data (c : context) x = lookup "data segment" c.datas x
+let label (c : context) x = lookup "label" c.labels x
 
 let func_type (c : context) x =
   match (Lib.List32.nth c.types.list x.it).it with
@@ -108,25 +107,39 @@ let func_type (c : context) x =
 
 
 let bind category space x =
-  if VarMap.mem x.it space.map then
-    error x.at ("duplicate " ^ category ^ " " ^ x.it);
   let i = space.count in
-  space.map <- VarMap.add x.it space.count space.map;
   space.count <- Int32.add space.count 1l;
   if space.count = 0l then 
     error x.at ("too many " ^ category ^ " bindings");
   i
+let bind_abs category space x =
+  if VarMap.mem x.it space.map then
+    error x.at ("duplicate " ^ category ^ " " ^ x.it);
+  let i = bind category space x in
+  space.map <- VarMap.add x.it i space.map;
+  i
+let bind_rel category space x =
+  ignore (bind category space x);
+  space.map <- VarMap.add x.it 0l space.map;
+  0l
 
-let bind_type (c : context) x = bind "type" c.types.space x
-let bind_func (c : context) x = bind "function" c.funcs x
-let bind_local (c : context) x = bind "local" c.locals x
-let bind_global (c : context) x = bind "global" c.globals x
-let bind_table (c : context) x = bind "table" c.tables x
-let bind_memory (c : context) x = bind "memory" c.memories x
-let bind_elem (c : context) x = bind "elem segment" c.elems x
-let bind_data (c : context) x = bind "data segment" c.data x
-let bind_label (c : context) x =
-  {c with labels = VarMap.add x.it 0l (VarMap.map (Int32.add 1l) c.labels)}
+let bind_type (c : context) x = bind_abs "type" c.types.space x
+let bind_func (c : context) x = bind_abs "function" c.funcs x
+let bind_local (c : context) x = bind_abs "local" c.locals x
+let bind_global (c : context) x = bind_abs "global" c.globals x
+let bind_table (c : context) x = bind_abs "table" c.tables x
+let bind_memory (c : context) x = bind_abs "memory" c.memories x
+let bind_elem (c : context) x = bind_abs "elem segment" c.elems x
+let bind_data (c : context) x = bind_abs "data segment" c.datas x
+let bind_label (c : context) x = bind_rel "label" c.labels x
+
+let merge_locals (c : context) (c' : context) at =
+  let count = c.locals.count in
+  c.locals.count <- Int32.add count c'.locals.count;
+  if c.locals.count < c'.locals.count then
+    error at ("too many local bindings");
+  c.locals.map <- VarMap.union (fun x i1 i2 -> Some i1)
+    c.locals.map (scoped count c'.locals).map
 
 let define_type (c : context) (ty : type_) =
   assert (c.types.space.count > Lib.List32.length c.types.list);
@@ -147,9 +160,8 @@ let anon_global (c : context) = anon "global" c.globals 1l
 let anon_table (c : context) = anon "table" c.tables 1l
 let anon_memory (c : context) = anon "memory" c.memories 1l
 let anon_elem (c : context) = anon "elem segment" c.elems 1l
-let anon_data (c : context) = anon "data segment" c.data 1l
-let anon_label (c : context) =
-  {c with labels = VarMap.map (Int32.add 1l) c.labels}
+let anon_data (c : context) = anon "data segment" c.datas 1l
+let anon_label (c : context) = anon "label" c.labels 1l
 
 let inline_func_type (c : context) ft at =
   let dt = FuncDefType ft in
@@ -170,7 +182,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token NAT INT FLOAT STRING VAR
 %token ANYREF NULLREF FUNCREF REF ANY NULL OPT NUM_TYPE MUT
 %token UNREACHABLE NOP DROP SELECT
-%token BLOCK END IF THEN ELSE LOOP
+%token BLOCK END IF THEN ELSE LOOP LET
 %token BR BR_IF BR_TABLE BR_ON_NULL
 %token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
@@ -313,12 +325,12 @@ labeling_opt :
   | /* empty */ %prec LOW
     { fun c xs ->
       List.iter (fun x -> error x.at "mismatching label") xs;
-      anon_label c }
+      let c' = enter_block c in ignore (anon_label c'); c' }
   | bind_var
     { fun c xs ->
       List.iter
         (fun x -> if x.it <> $1.it then error x.at "mismatching label") xs;
-      bind_label c $1 }
+      let c' = enter_block c in ignore (bind_label c' $1); c' }
 
 labeling_end_opt :
   | /* empty */ %prec LOW { [] }
@@ -499,14 +511,42 @@ block_instr :
   | IF labeling_opt block ELSE labeling_end_opt instr_list END labeling_end_opt
     { fun c -> let c' = $2 c ($5 @ $8) in
       let ts, es1 = $3 c' in if_ ts es1 ($6 c') }
+  | LET labeling_opt let_block END labeling_end_opt
+    { fun c -> let c' = enter_let ($2 c $5) in
+      let ts, ls, es = $3 c c' in let_ ts ls es }
 
 block_type :
-  | LPAR RESULT value_type RPAR { fun c -> [$3 c] }
+  | LPAR RESULT value_type_list RPAR { fun c -> snd $3 c }
 
 block :
   | block_type instr_list
     { fun c -> $1 c, $2 c }
   | instr_list { fun c -> [], $1 c }
+
+let_block :
+  | block_type let_body
+    { let at = at () in
+      fun c c' -> let ls, es = $2 c c' at in $1 c, ls, es }
+  | let_body
+    { let at = at () in
+      fun c c' -> let ls, es = $1 c c' at in [], ls, es }
+
+let_body :
+  | instr_list
+    { fun c c' at -> merge_locals c' c at; [], $1 c' }
+  | LPAR LOCAL local_type_list RPAR let_body
+    { fun c c' at -> ignore (anon_locals c' (fst $3));
+      let ls, es = $5 c c' at in snd $3 c @ ls, es }
+  | LPAR LOCAL bind_var local_type RPAR let_body  /* Sugar */
+    { fun c c' at -> ignore (bind_local c' $3);
+      let ls, es = $6 c c' at in $4 c :: ls, es }
+
+local_type :
+  | value_type { let at = at () in fun c -> $1 c @@ at }
+
+local_type_list :
+  | /* empty */ { 0, fun c -> [] }
+  | local_type local_type_list { fst $2 + 1, fun c -> $1 c :: snd $2 c }
 
 expr :  /* Sugar */
   | LPAR expr1 RPAR
@@ -528,6 +568,9 @@ expr1 :  /* Sugar */
   | IF labeling_opt if_block
     { fun c -> let c' = $2 c [] in
       let ts, (es, es1, es2) = $3 c c' in es, if_ ts es1 es2 }
+  | LET labeling_opt let_block
+    { fun c -> let c' = enter_let ($2 c []) in
+      let ts, ls, es = $3 c c' in [], let_ ts ls es }
 
 select_expr_results :
   | LPAR RESULT value_type_list RPAR select_expr_results
@@ -651,21 +694,14 @@ func_result_body :
 
 func_body :
   | instr_list
-    { fun c -> let c' = anon_label c in
-      {ftype = -1l @@ at(); locals = []; body = $1 c'} }
+    { fun c -> ignore (anon_label c);
+      {ftype = -1l @@ at(); locals = []; body = $1 c} }
   | LPAR LOCAL local_type_list RPAR func_body
     { fun c -> ignore (anon_locals c (fst $3)); let f = $5 c in
       {f with locals = snd $3 c @ f.locals} }
   | LPAR LOCAL bind_var local_type RPAR func_body  /* Sugar */
     { fun c -> ignore (bind_local c $3); let f = $6 c in
       {f with locals = $4 c :: f.locals} }
-
-local_type :
-  | value_type { let at = at () in fun c -> $1 c @@ at }
-
-local_type_list :
-  | /* empty */ { 0, fun c -> [] }
-  | local_type local_type_list { fst $2 + 1, fun c -> $1 c :: snd $2 c }
 
 
 /* Tables, Memories & Globals */

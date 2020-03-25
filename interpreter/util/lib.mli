@@ -7,7 +7,7 @@ sig
   val curry : ('a * 'b -> 'c) -> ('a -> 'b -> 'c)
   val uncurry : ('a -> 'b -> 'c) -> ('a * 'b -> 'c)
 
-  val repeat : int -> ('a -> unit) -> 'a -> unit
+  val repeat : int -> ('a -> 'a) -> 'a -> 'a
 end
 
 module List :

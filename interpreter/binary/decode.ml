@@ -215,6 +215,19 @@ let memop s =
   let offset = vu32 s in
   Int32.to_int align, offset
 
+let local s =
+  let n = vu32 s in
+  let t = at value_type s in
+  n, t
+
+let locals s =
+  let pos = pos s in
+  let nts = vec local s in
+  let ns = List.map (fun (n, _) -> I64_convert.extend_i32_u n) nts in
+  require (I64.lt_u (List.fold_left I64.add 0L ns) 0x1_0000_0000L)
+    s pos "too many locals";
+  List.flatten (List.map (Lib.Fun.uncurry Lib.List32.make) nts)
+
 let rec instr s =
   let pos = pos s in
   match op s with
@@ -222,26 +235,26 @@ let rec instr s =
   | 0x01 -> nop
 
   | 0x02 ->
-    let ts = stack_type s in
-    let es' = instr_block s in
+    let bt = stack_type s in
+    let es = instr_block s in
     end_ s;
-    block ts es'
+    block bt es
   | 0x03 ->
-    let ts = stack_type s in
-    let es' = instr_block s in
+    let bt = stack_type s in
+    let es = instr_block s in
     end_ s;
-    loop ts es'
+    loop bt es
   | 0x04 ->
-    let ts = stack_type s in
+    let bt = stack_type s in
     let es1 = instr_block s in
     if peek s = Some 0x05 then begin
       expect 0x05 s "ELSE or END opcode expected";
       let es2 = instr_block s in
       end_ s;
-      if_ ts es1 es2
+      if_ bt es1 es2
     end else begin
       end_ s;
-      if_ ts es1 []
+      if_ bt es1 []
     end
 
   | 0x05 -> error s pos "misplaced ELSE opcode"
@@ -267,7 +280,14 @@ let rec instr s =
   | 0x14 -> call_ref
   | 0x15 -> return_call_ref
 
-  | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
+  | 0x16 ->
+    let bt = stack_type s in
+    let locs = locals s in
+    let es = instr_block s in
+    end_ s;
+    let_ bt locs es
+
+  | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
   | 0x1a -> drop
   | 0x1b -> select None
@@ -628,18 +648,8 @@ let start_section s =
 
 (* Code section *)
 
-let local s =
-  let n = vu32 s in
-  let t = at value_type s in
-  n, t
-
 let code _ s =
-  let pos = pos s in
-  let nts = vec local s in
-  let ns = List.map (fun (n, _) -> I64_convert.extend_i32_u n) nts in
-  require (I64.lt_u (List.fold_left I64.add 0L ns) 0x1_0000_0000L)
-    s pos "too many locals";
-  let locals = List.flatten (List.map (Lib.Fun.uncurry Lib.List32.make) nts) in
+  let locals = locals s in
   let body = instr_block s in
   end_ s;
   {locals; body; ftype = Source.((-1l) @@ Source.no_region)}
