@@ -111,9 +111,11 @@ class MathdefDirective(Replace):
 
 def setup(app):
   app.add_node(math,
+               override = True,
                html = (ext_html_visit_math, None),
                latex = (ext_latex_visit_math, None))
   app.add_node(displaymath,
+               override = True,
                html = (ext_html_visit_displaymath, None),
                latex = (ext_latex_visit_displaymath, None))
   app.add_role('math', ext_math_role)
