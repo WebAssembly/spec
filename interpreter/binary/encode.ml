@@ -172,7 +172,7 @@ let encode m =
         if es2 <> [] then op 0x05;
         list instr es2; end_ ()
       | Let (bt, locs, es) ->
-        op 0x16; stack_type bt; locals locs; list instr es; end_ ()
+        op 0x17; stack_type bt; locals locs; list instr es; end_ ()
 
       | Br x -> op 0x0c; var x
       | BrIf x -> op 0x0d; var x
@@ -183,6 +183,7 @@ let encode m =
       | CallRef -> op 0x14
       | CallIndirect (x, y) -> op 0x11; var y; var x
       | ReturnCallRef -> op 0x15
+      | FuncBind x -> op 0x16; var x
 
       | Drop -> op 0x1a
       | Select None -> op 0x1b

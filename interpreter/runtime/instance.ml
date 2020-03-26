@@ -39,7 +39,7 @@ let () =
       let x =
         match func with
         | Func.AstFunc (_, _, f) -> f.Source.it.Ast.ftype.Source.it
-        | Func.HostFunc _ -> 0l  (* HACK! *)
+        | _ -> 0l  (* HACK! *)
       in
       DefRefType (NonNullable, x)
     | r -> type_of_ref' r

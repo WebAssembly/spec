@@ -78,6 +78,13 @@ struct
     | n, _::xs' when n > 0 -> drop (n - 1) xs'
     | _ -> failwith "drop"
 
+  let rec split n xs = split' n [] xs
+  and split' n xs ys =
+    match n, ys with
+    | 0, _ -> List.rev xs, ys
+    | n, y::ys' when n > 0 -> split' (n - 1) (y::xs) ys'
+    | _ -> failwith "split"
+
   let rec last = function
     | x::[] -> x
     | _::xs -> last xs

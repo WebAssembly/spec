@@ -1,5 +1,7 @@
 (module
   ;; Auxiliary
+  (type $dummy (func))
+  (elem declare func $dummy)
   (func $dummy)
   (func $consume (param i32))
   (func $produce (result i32) (i32.const 7))
@@ -68,6 +70,9 @@
       (call $consume (local.get $y2))
     )
     (drop)
+
+    (ref.func $dummy)
+    (let (local (ref $dummy)))
   )
 
   (func $pow (export "pow") (param $x i64) (param $n i32) (result i64)

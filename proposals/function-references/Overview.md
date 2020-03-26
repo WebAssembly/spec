@@ -81,7 +81,7 @@ The following function calls it and then applies the result twice:
 ```wasm
 (func $main (result i32)
   (call $mk-adder (i32.const 7))
-  (let (local $f (ref $i32-i32)) (result i32)  ;; binds $f to top of stack
+  (let (result i32) (local $f (ref $i32-i32))  ;; binds $f to top of stack
     (i32.mul
       (call_ref (i32.const 10) (local.get $f))
       (call_ref (i32.const 12) (local.get $f))
@@ -211,9 +211,11 @@ The following rules, now defined in terms of constructed types, replace and exte
      - and `t2* <: C.result`
 
 * Optional extension: `func.bind` creates or extends a closure by binding one or several parameters
-  - `func.bind $t' : [t1^n (ref $t)] -> [(ref $t')]`
-    - iff `$t = [t1^n t1'*] -> [t2*]`
-    - and `$t' = [t1'*] -> [t2*]`
+  - `func.bind $t' : [t0* (ref $t)] -> [(ref $t')]`
+    - iff `$t = [t0* t1*] -> [t2*]`
+    - and `$t' = [t1'*] -> [t2'*]`
+    - and `t1'* <: t1*`
+    - and `t2* <: t2'*`
 
 
 #### Optional References

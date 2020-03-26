@@ -216,6 +216,8 @@ instr:
 op:
   unreachable
   nop
+  drop
+  select
   br <var>
   br_if <var>
   br_table <var>+
@@ -225,8 +227,7 @@ op:
   call_indirect <var>? <func_type>
   call_ref
   return_call_ref
-  drop
-  select
+  func.bind <func_type>
   local.get <var>
   local.set <var>
   local.tee <var>
