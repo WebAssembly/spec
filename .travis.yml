@@ -12,7 +12,7 @@ before_install:
 
 install:
   - ./interpreter/meta/travis/install-ocaml.sh
-  - sudo pip install sphinx==1.7.9
+  - sudo pip install sphinx==2.3.0
   - sudo apt-get install texlive-full yarn
   - git clone https://github.com/tabatkins/bikeshed.git
   - pip install --editable $PWD/bikeshed
