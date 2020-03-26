@@ -210,3 +210,18 @@
 (assert_return (invoke "i64_load32_s" (i64.const 0x3456436598bacdef)) (i64.const 0xffffffff98bacdef))
 (assert_return (invoke "i64_load32_u" (i64.const 0xfedcba9856346543)) (i64.const 0x56346543))
 (assert_return (invoke "i64_load32_u" (i64.const 0x3456436598bacdef)) (i64.const 0x98bacdef))
+
+;; Duplicate identifier errors
+
+(assert_malformed (module quote
+  "(memory $foo 1)"
+  "(memory $foo 1)")
+  "duplicate memory")
+(assert_malformed (module quote
+  "(import \"\" \"\" (memory $foo 1))"
+  "(memory $foo 1)")
+  "duplicate memory")
+(assert_malformed (module quote
+  "(import \"\" \"\" (memory $foo 1))"
+  "(import \"\" \"\" (memory $foo 1))")
+  "duplicate memory")

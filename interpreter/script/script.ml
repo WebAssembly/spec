@@ -11,15 +11,22 @@ and action' =
   | Invoke of var option * Ast.name * Ast.literal list
   | Get of var option * Ast.name
 
+type nanop = nanop' Source.phrase
+and nanop' = (unit, unit, nan, nan) Values.op
+and nan = CanonicalNan | ArithmeticNan
+
+type result = result' Source.phrase
+and result' =
+  | LitResult of Ast.literal
+  | NanResult of nanop
+
 type assertion = assertion' Source.phrase
 and assertion' =
   | AssertMalformed of definition * string
   | AssertInvalid of definition * string
   | AssertUnlinkable of definition * string
   | AssertUninstantiable of definition * string
-  | AssertReturn of action * Ast.literal list
-  | AssertReturnCanonicalNaN of action
-  | AssertReturnArithmeticNaN of action
+  | AssertReturn of action * result list
   | AssertTrap of action * string
   | AssertExhaustion of action * string
 

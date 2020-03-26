@@ -119,7 +119,7 @@ let vec f s = let n = len32 s in list f n s
 let name s =
   let pos = pos s in
   try Utf8.decode (string s) with Utf8.Utf8 ->
-    error s pos "invalid UTF-8 encoding"
+    error s pos "malformed UTF-8 encoding"
 
 let sized f s =
   let size = len32 s in
@@ -139,12 +139,12 @@ let value_type s =
   | -0x02 -> I64Type
   | -0x03 -> F32Type
   | -0x04 -> F64Type
-  | _ -> error s (pos s - 1) "invalid value type"
+  | _ -> error s (pos s - 1) "malformed value type"
 
 let elem_type s =
   match vs7 s with
   | -0x10 -> FuncRefType
-  | _ -> error s (pos s - 1) "invalid element type"
+  | _ -> error s (pos s - 1) "malformed element type"
 
 let stack_type s =
   match peek s with
@@ -157,7 +157,7 @@ let func_type s =
     let ins = vec value_type s in
     let out = vec value_type s in
     FuncType (ins, out)
-  | _ -> error s (pos s - 1) "invalid function type"
+  | _ -> error s (pos s - 1) "malformed function type"
 
 let limits vu s =
   let has_max = bool s in
@@ -178,7 +178,7 @@ let mutability s =
   match u8 s with
   | 0 -> Immutable
   | 1 -> Mutable
-  | _ -> error s (pos s - 1) "invalid mutability"
+  | _ -> error s (pos s - 1) "malformed mutability"
 
 let global_type s =
   let t = value_type s in
@@ -199,7 +199,7 @@ let zero_flag s = expect 0x00 s "zero flag expected"
 
 let memop s =
   let align = vu32 s in
-  require (I32.le_u align 32l) s (pos s - 1) "invalid memop flags";
+  require (I32.le_u align 32l) s (pos s - 1) "malformed memop flags";
   let offset = vu32 s in
   Int32.to_int align, offset
 
@@ -487,7 +487,7 @@ let id s =
     | 10 -> `CodeSection
     | 11 -> `DataSection
     | 12 -> `DataCountSection
-    | _ -> error s (pos s) "invalid section id"
+    | _ -> error s (pos s) "malformed section id"
     ) bo
 
 let section_with_size tag f default s =
@@ -515,7 +515,7 @@ let import_desc s =
   | 0x01 -> TableImport (table_type s)
   | 0x02 -> MemoryImport (memory_type s)
   | 0x03 -> GlobalImport (global_type s)
-  | _ -> error s (pos s - 1) "invalid import kind"
+  | _ -> error s (pos s - 1) "malformed import kind"
 
 let import s =
   let module_name = name s in
@@ -572,7 +572,7 @@ let export_desc s =
   | 0x01 -> TableExport (at var s)
   | 0x02 -> MemoryExport (at var s)
   | 0x03 -> GlobalExport (at var s)
-  | _ -> error s (pos s - 1) "invalid export kind"
+  | _ -> error s (pos s - 1) "malformed export kind"
 
 let export s =
   let name = name s in

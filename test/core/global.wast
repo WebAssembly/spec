@@ -310,9 +310,9 @@
       "\0a\67\6c\6f\62\61\6c\5f\69\33\32" ;; "global_i32"
       "\03"                          ;; GlobalImport
       "\7f"                          ;; i32
-      "\02"                          ;; invalid mutability
+      "\02"                          ;; malformed mutability
   )
-  "invalid mutability"
+  "malformed mutability"
 )
 (assert_malformed
   (module binary
@@ -323,9 +323,9 @@
       "\0a\67\6c\6f\62\61\6c\5f\69\33\32" ;; "global_i32"
       "\03"                          ;; GlobalImport
       "\7f"                          ;; i32
-      "\ff"                          ;; invalid mutability
+      "\ff"                          ;; malformed mutability
   )
-  "invalid mutability"
+  "malformed mutability"
 )
 
 (module
@@ -337,11 +337,11 @@
     "\06\86\80\80\80\00"  ;; global section
       "\01"               ;; length 1
       "\7f"               ;; i32
-      "\02"               ;; invalid mutability
+      "\02"               ;; malformed mutability
       "\41\00"            ;; i32.const 0
       "\0b"               ;; end
   )
-  "invalid mutability"
+  "malformed mutability"
 )
 (assert_malformed
   (module binary
@@ -349,11 +349,11 @@
     "\06\86\80\80\80\00"  ;; global section
       "\01"               ;; length 1
       "\7f"               ;; i32
-      "\ff"               ;; invalid mutability
+      "\ff"               ;; malformed mutability
       "\41\00"            ;; i32.const 0
       "\0b"               ;; end
   )
-  "invalid mutability"
+  "malformed mutability"
 )
 
 
@@ -480,3 +480,18 @@
   )
   "type mismatch"
 )
+
+;; Duplicate identifier errors
+
+(assert_malformed (module quote
+  "(global $foo i32 (i32.const 0))"
+  "(global $foo i32 (i32.const 0))")
+  "duplicate global")
+(assert_malformed (module quote
+  "(import \"\" \"\" (global $foo i32))"
+  "(global $foo i32 (i32.const 0))")
+  "duplicate global")
+(assert_malformed (module quote
+  "(import \"\" \"\" (global $foo i32))"
+  "(import \"\" \"\" (global $foo i32))")
+  "duplicate global")

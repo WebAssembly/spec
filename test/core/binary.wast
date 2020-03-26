@@ -770,7 +770,7 @@
     ;; function 0
     "\02\00"
     "\0b")                     ;; end
-  "invalid element type")
+  "malformed element type")
 
 ;; passive element segment containing opcode ref.func
 (module binary
@@ -1184,7 +1184,7 @@
     "\02"                                   ;; break depth for default
     "\0b\0b\0b"                             ;; end
   )
-  "invalid value type"
+  "malformed value type"
 )
 
 ;; Start section

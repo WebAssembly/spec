@@ -30,6 +30,8 @@ sig
   type bits
   val pos_nan : t
   val neg_nan : t
+  val is_inf : t -> bool
+  val is_nan : t -> bool
   val of_float : float -> t
   val to_float : t -> float
   val of_string : string -> t

@@ -526,7 +526,7 @@ That way, the end of the inner instruction sequence is known when part of an out
    When |END| is reached, i.e., the inner instruction sequence has been reduced to the empty sequence -- or rather, a sequence of :math:`n` |CONST| instructions representing the resulting values -- then the |LABEL| instruction is eliminated courtesy of its own :ref:`reduction rule <exec-label>`:
 
    .. math::
-      \LABEL_n\{\instr^n\}~\val^\ast~\END \quad\stepto\quad \val^n
+      \LABEL_m\{\instr^\ast\}~\val^n~\END \quad\stepto\quad \val^n
 
    This can be interpreted as removing the label from the stack and only leaving the locally accumulated operand values.
 

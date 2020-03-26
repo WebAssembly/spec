@@ -243,23 +243,23 @@ op:
 
 func:    ( func <name>? <func_type> <local>* <instr>* )
          ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)
-         ( func <name>? ( import <string> <string> ) <func_type>)           ;; = (import <name>? <string> <string> (func <func_type>))
+         ( func <name>? ( import <string> <string> ) <func_type>)           ;; = (import <string> <string> (func <name>? <func_type>))
 param:   ( param <val_type>* ) | ( param <name> <val_type> )
 result:  ( result <val_type>* )
 local:   ( local <val_type>* ) | ( local <name> <val_type> )
 
 global:  ( global <name>? <global_type> <instr>* )
          ( global <name>? ( export <string> ) <...> )                       ;; = (export <string> (global <N>)) (global <name>? <...>)
-         ( global <name>? ( import <string> <string> ) <global_type> )      ;; = (import <name>? <string> <string> (global <global_type>))
+         ( global <name>? ( import <string> <string> ) <global_type> )      ;; = (import <string> <string> (global <name>? <global_type>))
 table:   ( table <name>? <table_type> )
          ( table <name>? ( export <string> ) <...> )                        ;; = (export <string> (table <N>)) (table <name>? <...>)
-         ( table <name>? ( import <string> <string> ) <table_type> )        ;; = (import <name>? <string> <string> (table <table_type>))
+         ( table <name>? ( import <string> <string> ) <table_type> )        ;; = (import <string> <string> (table <name>? <table_type>))
          ( table <name>? ( export <string> )* <elem_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )* <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
 elem:    ( elem <var>? (offset <instr>* ) <var>* )
          ( elem <var>? <expr> <var>* )                                      ;; = (elem <var>? (offset <expr>) <var>*)
 memory:  ( memory <name>? <memory_type> )
          ( memory <name>? ( export <string> ) <...> )                       ;; = (export <string> (memory <N>))+ (memory <name>? <...>)
-         ( memory <name>? ( import <string> <string> ) <memory_type> )      ;; = (import <name>? <string> <string> (memory <memory_type>))
+         ( memory <name>? ( import <string> <string> ) <memory_type> )      ;; = (import <string> <string> (memory <name>? <memory_type>))
          ( memory <name>? ( export <string> )* ( data <string>* ) )         ;; = (memory <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
 data:    ( data <var>? ( offset <instr>* ) <string>* )
          ( data <var>? <expr> <string>* )                                   ;; = (data <var>? (offset <expr>) <string>*)
@@ -331,15 +331,21 @@ action:
   ( get <name>? <string> )                   ;; get global export
 
 assertion:
-  ( assert_return <action> <expr>* )         ;; assert action has expected results
-  ( assert_return_canonical_nan <action> )   ;; assert action results in NaN in a canonical form
-  ( assert_return_arithmetic_nan <action> )  ;; assert action results in NaN with 1 in MSB of fraction field
+  ( assert_return <action> <result>* )       ;; assert action has expected results
   ( assert_trap <action> <failure> )         ;; assert action traps with given failure string
   ( assert_exhaustion <action> <failure> )   ;; assert action exhausts system resources
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
   ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
+
+result:
+  ( <val_type>.const <numpat> )
+
+numpat:
+  <value>                                    ;; literal result
+  nan:canonical                              ;; NaN in canonical form
+  nan:arithmetic                             ;; NaN with 1 in MSB of payload
 
 meta:
   ( script <name>? <script> )                ;; name a subscript
