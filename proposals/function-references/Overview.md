@@ -34,9 +34,9 @@ Note: In a Wasm engine, function references (whether first-class or as table ent
 
 * Add a new form of *typed reference type* `ref $t` and a nullable variant `ref (null $t)`, where `$t` is a type index; can be used as both a value type or an element type for tables
 
-* Add an instruction `ref.as_non_null` that converts an nullable reference to a non-nullable one or traps if null
+* Add an instruction `ref.as_non_null` that converts a nullable reference to a non-nullable one or traps if null
 
-* Add an instruction `br_on_null` that converts an nullable reference to a non-nullable one or branches if null
+* Add an instruction `br_on_null` that converts a nullable reference to a non-nullable one or branches if null
 
 * Add an instruction `call_ref` for calling a function through a `ref $t`
 
@@ -220,7 +220,7 @@ The following rules, now defined in terms of constructed types, replace and exte
 
 #### Optional References
 
-* `ref.as_non_null` converts an nullable reference to a non-null one
+* `ref.as_non_null` converts a nullable reference to a non-null one
   - `ref.as_non_null : [(ref null $t)] -> [(ref $t)]`
     - iff `$t` is defined
   - traps on `null`
@@ -261,12 +261,34 @@ TODO: This assumes that let-bound locals are mutable. Should they be?
   - `(table <tabletype>)` is shorthand for `(table <tabletype> (ref.null))`
 
 
-### Tables
-
-TODO: how to initialise tables of non-null element type (init value? init segment?).
-
-
 ## Binary Format
+
+### Types
+
+#### Reference Types
+
+The opcode for reference types is generalised to an `s33`.
+
+| Opcode | Type            | Parameters |
+| ------ | --------------- | ---------- |
+| i >= 0 | `(ref i)`       |            |
+| -0x10  | `funcref`       |            |
+| -0x11  | `anyref`        |            |
+| -0x12  | `nullref`       |            |
+| -0x14  | `(ref null $t)` | `$t : u32` |
+
+### Instructions
+
+| Opcode | Instruction              | Immediates |
+| ------ | ------------------------ | ---------- |
+| 0x14   | `call_ref`               |            |
+| 0x15   | `return_call_ref`        |            |
+| 0x16   | `func.bind (type $t)`    | `$t : u32` |
+| 0x17   | `let <bt> <locals>`      | `bt : blocktype, locals : (as in functions)` |
+| 0xd3   | `ref.as_non_null`        |            |
+| 0xd4   | `br_on_null $l`          | `$l : u32` |
+
+### Tables
 
 TODO.
 
