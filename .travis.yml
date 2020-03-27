@@ -16,7 +16,6 @@ addons:
 
 install:
   - pip install Sphinx==2.3.0
-  - sudo apt-get install texlive-full yarn
   - git clone https://github.com/tabatkins/bikeshed.git
   - pip install --editable $PWD/bikeshed
   - bikeshed update
