@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Instructions &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Modules" href="modules.html" />
@@ -66,13 +65,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -110,8 +107,8 @@ The following grammar handles the corresponding update to the <a class="referenc
   \epsilon &amp;\Rightarrow&amp; \{\href{../text/conventions.html#text-context}{\mathsf{labels}}~(\epsilon)\} \href{../syntax/conventions.html#notation-compose}{\oplus} I \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The new label entry is inserted at the <em>beginning</em> of the label list in the identifier context.
+<p class="admonition-title">Note</p>
+<p>The new label entry is inserted at the <em>beginning</em> of the label list in the identifier context.
 This effectively shifts all existing labels up by one,
 mirroring the fact that control instructions are indexed relatively not absolutely.</p>
 </div>
@@ -150,8 +147,8 @@ The same label identifier may optionally be repeated after the corresponding <sp
     &amp; (\mathrel{\mbox{if}} I' = \{\}) \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The side condition stating that the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate nohighlight">\(I'\)</span> must be empty in the rule for <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> enforces that no identifier can be bound in any <span class="math notranslate nohighlight">\(\href{../text/types.html#text-functype}{\mathtt{param}}\)</span> declaration appearing in the type annotation.</p>
+<p class="admonition-title">Note</p>
+<p>The side condition stating that the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate nohighlight">\(I'\)</span> must be empty in the rule for <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> enforces that no identifier can be bound in any <span class="math notranslate nohighlight">\(\href{../text/types.html#text-functype}{\mathtt{param}}\)</span> declaration appearing in the type annotation.</p>
 </div>
 <div class="section" id="abbreviations">
 <h3>Abbreviations<a class="headerlink" href="#abbreviations" title="Permalink to this headline">¶</a></h3>
@@ -421,14 +418,14 @@ Such a folded instruction can appear anywhere a regular instruction can.</p>
       \href{../text/instructions.html#text-foldedinstr}{\mathtt{foldedinstr}}^\ast~~\def\mathdef1923#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1923{if}~~\href{../text/instructions.html#text-label}{\mathtt{label}}~~\href{../text/types.html#text-resulttype}{\mathtt{resulttype}} &amp;\hspace{-1ex} \href{../text/instructions.html#text-instr}{\mathtt{instr}}_1^\ast~~\def\mathdef1924#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1924{else}~~(\href{../text/instructions.html#text-instr}{\mathtt{instr}}_2^\ast)^?~\def\mathdef1925#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1925{end} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>For example, the instruction sequence</p>
 <div class="math notranslate nohighlight">
 \[\mathtt{(local.get~\$x)~(i32.const~2)~i32.add~(i32.const~3)~i32.mul}\]</div>
 <p>can be folded into</p>
 <div class="math notranslate nohighlight">
 \[\mathtt{(i32.mul~(i32.add~(local.get~\$x)~(i32.const~2))~(i32.const~3))}\]</div>
-<p class="last">Folded instructions are solely syntactic sugar,
+<p>Folded instructions are solely syntactic sugar,
 no additional syntactic or type-based checking is implied.</p>
 </div>
 </div>

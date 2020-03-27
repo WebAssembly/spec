@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Conventions &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Lexical Format" href="lexical.html" />
@@ -66,13 +65,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -104,26 +101,26 @@ Files with this extension are assumed to be encoded in UTF-8, as per <a class="r
 They mirror the conventions used for <a class="reference internal" href="../syntax/conventions.html#grammar"><span class="std std-ref">abstract syntax</span></a> and for the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>.
 In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, <span class="math notranslate nohighlight">\(\mathtt{typewriter}\)</span> font is adopted for the former.</p>
 <ul class="simple">
-<li>Terminal symbols are either literal strings of characters enclosed in quotes
+<li><p>Terminal symbols are either literal strings of characters enclosed in quotes
 or expressed as <a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a> scalar values: <span class="math notranslate nohighlight">\(\def\mathdef1637#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1637{module}\)</span>, <span class="math notranslate nohighlight">\(\def\mathdef1638#1{\mathrm{U{+}#1}}\mathdef1638{0A}\)</span>.
-(All characters written literally are unambiguously drawn from the 7-bit <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> subset of Unicode.)</li>
-<li>Nonterminal symbols are written in typewriter font: <span class="math notranslate nohighlight">\(\mathtt{valtype}, \mathtt{instr}\)</span>.</li>
-<li><span class="math notranslate nohighlight">\(T^n\)</span> is a sequence of <span class="math notranslate nohighlight">\(n\geq 0\)</span> iterations  of <span class="math notranslate nohighlight">\(T\)</span>.</li>
-<li><span class="math notranslate nohighlight">\(T^\ast\)</span> is a possibly empty sequence of iterations of <span class="math notranslate nohighlight">\(T\)</span>.
-(This is a shorthand for <span class="math notranslate nohighlight">\(T^n\)</span> used where <span class="math notranslate nohighlight">\(n\)</span> is not relevant.)</li>
-<li><span class="math notranslate nohighlight">\(T^+\)</span> is a sequence of one or more iterations of <span class="math notranslate nohighlight">\(T\)</span>.
-(This is a shorthand for <span class="math notranslate nohighlight">\(T^n\)</span> where <span class="math notranslate nohighlight">\(n \geq 1\)</span>.)</li>
-<li><span class="math notranslate nohighlight">\(T^?\)</span> is an optional occurrence of <span class="math notranslate nohighlight">\(T\)</span>.
-(This is a shorthand for <span class="math notranslate nohighlight">\(T^n\)</span> where <span class="math notranslate nohighlight">\(n \leq 1\)</span>.)</li>
-<li><span class="math notranslate nohighlight">\(x{:}T\)</span> denotes the same language as the nonterminal <span class="math notranslate nohighlight">\(T\)</span>, but also binds the variable <span class="math notranslate nohighlight">\(x\)</span> to the attribute synthesized for <span class="math notranslate nohighlight">\(T\)</span>.</li>
-<li>Productions are written <span class="math notranslate nohighlight">\(\mathtt{sym} ::= T_1 \Rightarrow A_1 ~|~ \dots ~|~ T_n \Rightarrow A_n\)</span>, where each <span class="math notranslate nohighlight">\(A_i\)</span> is the attribute that is synthesized for <span class="math notranslate nohighlight">\(\mathtt{sym}\)</span> in the given case, usually from attribute variables bound in <span class="math notranslate nohighlight">\(T_i\)</span>.</li>
-<li>Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.</li>
+(All characters written literally are unambiguously drawn from the 7-bit <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> subset of Unicode.)</p></li>
+<li><p>Nonterminal symbols are written in typewriter font: <span class="math notranslate nohighlight">\(\mathtt{valtype}, \mathtt{instr}\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(T^n\)</span> is a sequence of <span class="math notranslate nohighlight">\(n\geq 0\)</span> iterations  of <span class="math notranslate nohighlight">\(T\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(T^\ast\)</span> is a possibly empty sequence of iterations of <span class="math notranslate nohighlight">\(T\)</span>.
+(This is a shorthand for <span class="math notranslate nohighlight">\(T^n\)</span> used where <span class="math notranslate nohighlight">\(n\)</span> is not relevant.)</p></li>
+<li><p><span class="math notranslate nohighlight">\(T^+\)</span> is a sequence of one or more iterations of <span class="math notranslate nohighlight">\(T\)</span>.
+(This is a shorthand for <span class="math notranslate nohighlight">\(T^n\)</span> where <span class="math notranslate nohighlight">\(n \geq 1\)</span>.)</p></li>
+<li><p><span class="math notranslate nohighlight">\(T^?\)</span> is an optional occurrence of <span class="math notranslate nohighlight">\(T\)</span>.
+(This is a shorthand for <span class="math notranslate nohighlight">\(T^n\)</span> where <span class="math notranslate nohighlight">\(n \leq 1\)</span>.)</p></li>
+<li><p><span class="math notranslate nohighlight">\(x{:}T\)</span> denotes the same language as the nonterminal <span class="math notranslate nohighlight">\(T\)</span>, but also binds the variable <span class="math notranslate nohighlight">\(x\)</span> to the attribute synthesized for <span class="math notranslate nohighlight">\(T\)</span>.</p></li>
+<li><p>Productions are written <span class="math notranslate nohighlight">\(\mathtt{sym} ::= T_1 \Rightarrow A_1 ~|~ \dots ~|~ T_n \Rightarrow A_n\)</span>, where each <span class="math notranslate nohighlight">\(A_i\)</span> is the attribute that is synthesized for <span class="math notranslate nohighlight">\(\mathtt{sym}\)</span> in the given case, usually from attribute variables bound in <span class="math notranslate nohighlight">\(T_i\)</span>.</p></li>
+<li><p>Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.</p></li>
 </ul>
 <ul class="simple" id="text-syntactic">
-<li>A distinction is made between <em>lexical</em> and <em>syntactic</em> productions. For the latter, arbitrary <a class="reference internal" href="lexical.html#text-space"><span class="std std-ref">white space</span></a> is allowed in any place where the grammar contains spaces. The productions defining <a class="reference internal" href="lexical.html#text-lexical"><span class="std std-ref">lexical syntax</span></a> and the syntax of <a class="reference internal" href="values.html#text-value"><span class="std std-ref">values</span></a> are considered lexical, all others are syntactic.</li>
+<li><p>A distinction is made between <em>lexical</em> and <em>syntactic</em> productions. For the latter, arbitrary <a class="reference internal" href="lexical.html#text-space"><span class="std std-ref">white space</span></a> is allowed in any place where the grammar contains spaces. The productions defining <a class="reference internal" href="lexical.html#text-lexical"><span class="std std-ref">lexical syntax</span></a> and the syntax of <a class="reference internal" href="values.html#text-value"><span class="std std-ref">values</span></a> are considered lexical, all others are syntactic.</p></li>
 </ul>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>For example, the <a class="reference internal" href="types.html#text-valtype"><span class="std std-ref">textual grammar</span></a> for <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> is given as follows:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcll&#64;{\qquad\qquad}l}
@@ -140,7 +137,7 @@ or expressed as <a class="reference external" href="http://www.unicode.org/versi
   n{:}\href{../text/values.html#text-int}{\def\mathdef1625#1{{\mathtt{u}#1}}\mathdef1625{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~\epsilon \} \\ &amp;&amp;|&amp;
   n{:}\href{../text/values.html#text-int}{\def\mathdef1625#1{{\mathtt{u}#1}}\mathdef1625{\mathtt{32}}}~~m{:}\href{../text/values.html#text-int}{\def\mathdef1625#1{{\mathtt{u}#1}}\mathdef1625{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m \} \\
 \end{array}\end{split}\]</div>
-<p class="last">The variables <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(m\)</span> name the attributes of the respective <span class="math notranslate nohighlight">\(\href{../text/values.html#text-int}{\def\mathdef1625#1{{\mathtt{u}#1}}\mathdef1625{\mathtt{32}}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> those parse into.
+<p>The variables <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(m\)</span> name the attributes of the respective <span class="math notranslate nohighlight">\(\href{../text/values.html#text-int}{\def\mathdef1625#1{{\mathtt{u}#1}}\mathdef1625{\mathtt{32}}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> those parse into.
 The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.</p>
 </div>
 </div>

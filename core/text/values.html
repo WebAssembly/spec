@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Values &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Types" href="types.html" />
@@ -66,13 +65,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -168,8 +165,8 @@ Moreover, their value must lie within the range of the respective type.</p>
 (that is, a numeric value must not overflow to <span class="math notranslate nohighlight">\(\pm\mbox{infinity}\)</span>),
 but it may be <a class="reference internal" href="../exec/numerics.html#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Rounding can be prevented by using hexadecimal notation with no more significant bits than supported by the required type.</p>
+<p class="admonition-title">Note</p>
+<p>Rounding can be prevented by using hexadecimal notation with no more significant bits than supported by the required type.</p>
 </div>
 <p>Floating-point values may also be written as constants for <em>infinity</em> or <em>canonical NaN</em> (<em>not a number</em>).
 Furthermore, arbitrary NaN values may be expressed by providing an explicit payload value.</p>
@@ -229,8 +226,8 @@ A name string must form a valid UTF-8 encoding as defined by <a class="reference
   b^\ast{:}\href{../text/values.html#text-string}{\mathtt{string}} &amp;\Rightarrow&amp; c^\ast &amp; (\mathrel{\mbox{if}} b^\ast = \href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(c^\ast)) \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Presuming the source text is itself encoded correctly,
+<p class="admonition-title">Note</p>
+<p>Presuming the source text is itself encoded correctly,
 strings that do not contain any uses of hexadecimal byte escapes are always valid names.</p>
 </div>
 </div>

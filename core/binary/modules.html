@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Modules &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Text Format" href="../text/index.html" />
@@ -65,13 +64,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -90,8 +87,8 @@
 Most sections correspond to one component of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> record,
 except that <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function definitions</span></a> are split into two sections, separating their type declarations in the <a class="reference internal" href="#binary-funcsec"><span class="std std-ref">function section</span></a> from their bodies in the <a class="reference internal" href="#binary-codesec"><span class="std std-ref">code section</span></a>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This separation enables <em>parallel</em> and <em>streaming</em> compilation of the functions in a module.</p>
+<p class="admonition-title">Note</p>
+<p>This separation enables <em>parallel</em> and <em>streaming</em> compilation of the functions in a module.</p>
 </div>
 <div class="section" id="indices">
 <span id="binary-index"></span><span id="binary-labelidx"></span><span id="binary-localidx"></span><span id="binary-globalidx"></span><span id="binary-memidx"></span><span id="binary-tableidx"></span><span id="binary-funcidx"></span><span id="binary-typeidx"></span><span id="index-0"></span><h2>Indices<a class="headerlink" href="#indices" title="Permalink to this headline">¶</a></h2>
@@ -111,9 +108,9 @@ except that <a class="reference internal" href="../syntax/modules.html#syntax-fu
 <span id="binary-section"></span><span id="index-1"></span><h2>Sections<a class="headerlink" href="#sections" title="Permalink to this headline">¶</a></h2>
 <p>Each section consists of</p>
 <ul class="simple">
-<li>a one-byte section <em>id</em>,</li>
-<li>the <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{u32}}\)</span> <em>size</em> of the contents, in bytes,</li>
-<li>the actual <em>contents</em>, whose structure is depended on the section id.</li>
+<li><p>a one-byte section <em>id</em>,</p></li>
+<li><p>the <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{u32}}\)</span> <em>size</em> of the contents, in bytes,</p></li>
+<li><p>the actual <em>contents</em>, whose structure is depended on the section id.</p></li>
 </ul>
 <p>Every section is optional; an omitted section is equivalent to the section being present with empty contents.</p>
 <p>The following parameterized grammar rule defines the generic structure of a section with id <span class="math notranslate nohighlight">\(N\)</span> and contents described by the grammar <span class="math notranslate nohighlight">\(\mathtt{B}\)</span>.</p>
@@ -127,58 +124,58 @@ except that <a class="reference internal" href="../syntax/modules.html#syntax-fu
 <p>For most sections, the contents <span class="math notranslate nohighlight">\(\mathtt{B}\)</span> encodes a <a class="reference internal" href="conventions.html#binary-vec"><span class="std std-ref">vector</span></a>.
 In these cases, the empty result <span class="math notranslate nohighlight">\(\epsilon\)</span> is interpreted as the empty vector.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Other than for unknown <a class="reference internal" href="#binary-customsec"><span class="std std-ref">custom sections</span></a>,
+<p class="admonition-title">Note</p>
+<p>Other than for unknown <a class="reference internal" href="#binary-customsec"><span class="std std-ref">custom sections</span></a>,
 the <span class="math notranslate nohighlight">\(\mathit{size}\)</span> is not required for decoding, but can be used to skip sections when navigating through a binary.
 The module is malformed if the size does not match the length of the binary contents <span class="math notranslate nohighlight">\(\mathtt{B}\)</span>.</p>
 </div>
 <p>The following section ids are used:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="5%" />
-<col width="95%" />
+<col style="width: 5%" />
+<col style="width: 95%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Id</th>
-<th class="head">Section</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Id</p></th>
+<th class="head"><p>Section</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>0</td>
-<td><a class="reference internal" href="#binary-customsec"><span class="std std-ref">custom section</span></a></td>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p><a class="reference internal" href="#binary-customsec"><span class="std std-ref">custom section</span></a></p></td>
 </tr>
-<tr class="row-odd"><td>1</td>
-<td><a class="reference internal" href="#binary-typesec"><span class="std std-ref">type section</span></a></td>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p><a class="reference internal" href="#binary-typesec"><span class="std std-ref">type section</span></a></p></td>
 </tr>
-<tr class="row-even"><td>2</td>
-<td><a class="reference internal" href="#binary-importsec"><span class="std std-ref">import section</span></a></td>
+<tr class="row-even"><td><p>2</p></td>
+<td><p><a class="reference internal" href="#binary-importsec"><span class="std std-ref">import section</span></a></p></td>
 </tr>
-<tr class="row-odd"><td>3</td>
-<td><a class="reference internal" href="#binary-funcsec"><span class="std std-ref">function section</span></a></td>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p><a class="reference internal" href="#binary-funcsec"><span class="std std-ref">function section</span></a></p></td>
 </tr>
-<tr class="row-even"><td>4</td>
-<td><a class="reference internal" href="#binary-tablesec"><span class="std std-ref">table section</span></a></td>
+<tr class="row-even"><td><p>4</p></td>
+<td><p><a class="reference internal" href="#binary-tablesec"><span class="std std-ref">table section</span></a></p></td>
 </tr>
-<tr class="row-odd"><td>5</td>
-<td><a class="reference internal" href="#binary-memsec"><span class="std std-ref">memory section</span></a></td>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p><a class="reference internal" href="#binary-memsec"><span class="std std-ref">memory section</span></a></p></td>
 </tr>
-<tr class="row-even"><td>6</td>
-<td><a class="reference internal" href="#binary-globalsec"><span class="std std-ref">global section</span></a></td>
+<tr class="row-even"><td><p>6</p></td>
+<td><p><a class="reference internal" href="#binary-globalsec"><span class="std std-ref">global section</span></a></p></td>
 </tr>
-<tr class="row-odd"><td>7</td>
-<td><a class="reference internal" href="#binary-exportsec"><span class="std std-ref">export section</span></a></td>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p><a class="reference internal" href="#binary-exportsec"><span class="std std-ref">export section</span></a></p></td>
 </tr>
-<tr class="row-even"><td>8</td>
-<td><a class="reference internal" href="#binary-startsec"><span class="std std-ref">start section</span></a></td>
+<tr class="row-even"><td><p>8</p></td>
+<td><p><a class="reference internal" href="#binary-startsec"><span class="std std-ref">start section</span></a></p></td>
 </tr>
-<tr class="row-odd"><td>9</td>
-<td><a class="reference internal" href="#binary-elemsec"><span class="std std-ref">element section</span></a></td>
+<tr class="row-odd"><td><p>9</p></td>
+<td><p><a class="reference internal" href="#binary-elemsec"><span class="std std-ref">element section</span></a></p></td>
 </tr>
-<tr class="row-even"><td>10</td>
-<td><a class="reference internal" href="#binary-codesec"><span class="std std-ref">code section</span></a></td>
+<tr class="row-even"><td><p>10</p></td>
+<td><p><a class="reference internal" href="#binary-codesec"><span class="std std-ref">code section</span></a></p></td>
 </tr>
-<tr class="row-odd"><td>11</td>
-<td><a class="reference internal" href="#binary-datasec"><span class="std std-ref">data section</span></a></td>
+<tr class="row-odd"><td><p>11</p></td>
+<td><p><a class="reference internal" href="#binary-datasec"><span class="std std-ref">data section</span></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -196,8 +193,8 @@ Their contents consist of a <a class="reference internal" href="../syntax/values
   \href{../binary/values.html#binary-name}{\mathtt{name}}~~\href{../binary/values.html#binary-byte}{\mathtt{byte}}^\ast \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If an implementation interprets the data of a custom section, then errors in that data, or the placement of the section, must not invalidate the module.</p>
+<p class="admonition-title">Note</p>
+<p>If an implementation interprets the data of a custom section, then errors in that data, or the placement of the section, must not invalidate the module.</p>
 </div>
 </div>
 <div class="section" id="type-section">
@@ -327,17 +324,18 @@ They represent the <span class="math notranslate nohighlight">\(\href{../syntax/
 The <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-func}{\mathsf{type}}\)</span> fields of the respective functions are encoded separately in the <a class="reference internal" href="#binary-funcsec"><span class="std std-ref">function section</span></a>.</p>
 <p>The encoding of each code entry consists of</p>
 <ul class="simple">
-<li>the <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{u32}}\)</span> <em>size</em> of the function code in bytes,</li>
-<li>the actual <em>function code</em>, which in turn consists of<ul>
-<li>the declaration of <em>locals</em>,</li>
-<li>the function <em>body</em> as an <a class="reference internal" href="instructions.html#binary-expr"><span class="std std-ref">expression</span></a>.</li>
+<li><p>the <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{u32}}\)</span> <em>size</em> of the function code in bytes,</p></li>
+<li><p>the actual <em>function code</em>, which in turn consists of</p>
+<ul>
+<li><p>the declaration of <em>locals</em>,</p></li>
+<li><p>the function <em>body</em> as an <a class="reference internal" href="instructions.html#binary-expr"><span class="std std-ref">expression</span></a>.</p></li>
 </ul>
 </li>
 </ul>
 <p>Local declarations are compressed into a vector whose entries consist of</p>
 <ul class="simple">
-<li>a <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{u32}}\)</span> <em>count</em>,</li>
-<li>a <a class="reference internal" href="types.html#binary-valtype"><span class="std std-ref">value type</span></a>,</li>
+<li><p>a <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{u32}}\)</span> <em>count</em>,</p></li>
+<li><p>a <a class="reference internal" href="types.html#binary-valtype"><span class="std std-ref">value type</span></a>,</p></li>
 </ul>
 <p>denoting <em>count</em> locals of the same value type.</p>
 <div class="math notranslate nohighlight">
@@ -359,8 +357,8 @@ The <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#sy
 The meta function <span class="math notranslate nohighlight">\(\href{../syntax/conventions.html#notation-concat}{\mathrm{concat}}((t^\ast)^\ast)\)</span> concatenates all sequences <span class="math notranslate nohighlight">\(t_i^\ast\)</span> in <span class="math notranslate nohighlight">\((t^\ast)^\ast\)</span>.
 Any code for which the length of the resulting sequence is out of bounds of the maximum size of a <a class="reference internal" href="../syntax/conventions.html#syntax-vec"><span class="std std-ref">vector</span></a> is malformed.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Like with <a class="reference internal" href="#binary-section"><span class="std std-ref">sections</span></a>, the code <span class="math notranslate nohighlight">\(\mathit{size}\)</span> is not needed for decoding, but can be used to skip functions when navigating through a binary.
+<p class="admonition-title">Note</p>
+<p>Like with <a class="reference internal" href="#binary-section"><span class="std std-ref">sections</span></a>, the code <span class="math notranslate nohighlight">\(\mathit{size}\)</span> is not needed for decoding, but can be used to skip functions when navigating through a binary.
 The module is malformed if a size does not match the length of the respective function code.</p>
 </div>
 </div>
@@ -436,8 +434,8 @@ All sections can be empty.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\href{../syntax/modules.html#syntax-func}{\mathit{func}}^n[i] = \{ \href{../syntax/modules.html#syntax-func}{\mathsf{type}}~\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}^n[i], \href{../syntax/modules.html#syntax-func}{\mathsf{locals}}~t_i^\ast, \href{../syntax/modules.html#syntax-func}{\mathsf{body}}~e_i \} ) \\\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The version of the WebAssembly binary format may increase in the future
+<p class="admonition-title">Note</p>
+<p>The version of the WebAssembly binary format may increase in the future
 if backward-incompatible changes have to be made to the format.
 However, such changes are expected to occur very infrequently, if ever.
 The binary format is intended to be forward-compatible,

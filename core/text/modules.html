@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Modules &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Appendix" href="../appendix/index.html" />
@@ -66,13 +65,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -156,10 +153,10 @@ The following auxiliary function extracts optional identifiers from parameters:<
 \mathrm{id}(\def\mathdef2035#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2035{(}~\def\mathdef2036#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2036{param}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef2037#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2037{)}) &amp;=&amp; \href{../text/values.html#text-id}{\mathtt{id}}^? \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>Both productions overlap for the case that the function type is <span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.
 However, in that case, they also produce the same results, so that the choice is immaterial.</p>
-<p class="last">The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate nohighlight">\(I'\)</span> ensures that the parameters do not contain duplicate identifier.</p>
+<p>The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate nohighlight">\(I'\)</span> ensures that the parameters do not contain duplicate identifier.</p>
 </div>
 <div class="section" id="abbreviations">
 <span id="text-typeuse-abbrev"></span><h3>Abbreviations<a class="headerlink" href="#abbreviations" title="Permalink to this headline">¶</a></h3>
@@ -222,8 +219,8 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
 \mathrm{id}(\def\mathdef2068#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2068{(}~\def\mathdef2069#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2069{local}~\href{../text/values.html#text-id}{\mathtt{id}}^?~\dots~\def\mathdef2070#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2070{)}) &amp;=&amp; \href{../text/values.html#text-id}{\mathtt{id}}^? \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate nohighlight">\(I''\)</span> ensures that parameters and locals do not contain duplicate identifiers.</p>
+<p class="admonition-title">Note</p>
+<p>The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate nohighlight">\(I''\)</span> ensures that parameters and locals do not contain duplicate identifiers.</p>
 </div>
 <span class="target" id="index-5"></span><div class="section" id="text-func-abbrev">
 <span id="index-6"></span><span id="id2"></span><h3>Abbreviations<a class="headerlink" href="#text-func-abbrev" title="Permalink to this headline">¶</a></h3>
@@ -382,8 +379,8 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     &amp;\Rightarrow&amp; \{ \href{../syntax/modules.html#syntax-start}{\mathsf{func}}~x \} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">At most one start function may occur in a module,
+<p class="admonition-title">Note</p>
+<p>At most one start function may occur in a module,
 which is ensured by a suitable side condition on the <span class="math notranslate nohighlight">\(\href{../text/modules.html#text-module}{\mathtt{module}}\)</span> grammar.</p>
 </div>
 </div>
@@ -397,8 +394,8 @@ which is ensured by a suitable side condition on the <span class="math notransla
     \Rightarrow\quad \{ \href{../syntax/modules.html#syntax-elem}{\mathsf{table}}~x, \href{../syntax/modules.html#syntax-elem}{\mathsf{offset}}~e, \href{../syntax/modules.html#syntax-elem}{\mathsf{init}}~y^\ast \} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly, the only valid table index is 0
+<p class="admonition-title">Note</p>
+<p>In the current version of WebAssembly, the only valid table index is 0
 or a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">table identifier</span></a> resolving to the same value.</p>
 </div>
 <div class="section" id="id7">
@@ -434,8 +431,8 @@ The data is written as a <a class="reference internal" href="values.html#text-st
   (b^\ast{:}\href{../text/values.html#text-string}{\mathtt{string}})^\ast \quad\Rightarrow\quad \href{../syntax/conventions.html#notation-concat}{\mathrm{concat}}((b^\ast)^\ast) \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly, the only valid memory index is 0
+<p class="admonition-title">Note</p>
+<p>In the current version of WebAssembly, the only valid memory index is 0
 or a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">memory identifier</span></a> resolving to the same value.</p>
 </div>
 <div class="section" id="id8">
@@ -465,8 +462,8 @@ All definitions and their respective bound <a class="reference internal" href="v
 <p>A module may optionally bind an <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifier</span></a> that names the module.
 The name serves a documentary role only.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Tools may include the module name in the <a class="reference internal" href="../appendix/custom.html#binary-namesec"><span class="std std-ref">name section</span></a> of the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>.</p>
+<p class="admonition-title">Note</p>
+<p>Tools may include the module name in the <a class="reference internal" href="../appendix/custom.html#binary-namesec"><span class="std std-ref">name section</span></a> of the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>.</p>
 </div>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lll}
@@ -494,15 +491,15 @@ The name serves a documentary role only.</p>
 \end{array}\end{split}\]</div>
 <p>The following restrictions are imposed on the composition of <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">modules</span></a>: <span class="math notranslate nohighlight">\(m_1 \href{../syntax/conventions.html#notation-compose}{\oplus} m_2\)</span> is defined if and only if</p>
 <ul class="simple">
-<li><span class="math notranslate nohighlight">\(m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{start}} = \epsilon \vee m_2.\href{../syntax/modules.html#syntax-module}{\mathsf{start}} = \epsilon\)</span></li>
-<li><span class="math notranslate nohighlight">\(m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{funcs}} = m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{tables}} = m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{mems}} = m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{globals}} = \epsilon \vee m_2.\href{../syntax/modules.html#syntax-module}{\mathsf{imports}} = \epsilon\)</span></li>
+<li><p><span class="math notranslate nohighlight">\(m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{start}} = \epsilon \vee m_2.\href{../syntax/modules.html#syntax-module}{\mathsf{start}} = \epsilon\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{funcs}} = m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{tables}} = m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{mems}} = m_1.\href{../syntax/modules.html#syntax-module}{\mathsf{globals}} = \epsilon \vee m_2.\href{../syntax/modules.html#syntax-module}{\mathsf{imports}} = \epsilon\)</span></p></li>
 </ul>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>The first condition ensures that there is at most one start function.
 The second condition enforces that all <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> must occur before any regular definition of a <a class="reference internal" href="#text-func"><span class="std std-ref">function</span></a>, <a class="reference internal" href="#text-table"><span class="std std-ref">table</span></a>, <a class="reference internal" href="#text-mem"><span class="std std-ref">memory</span></a>, or <a class="reference internal" href="#text-global"><span class="std std-ref">global</span></a>,
 thereby maintaining the ordering of the respective <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index spaces</span></a>.</p>
-<p class="last">The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate nohighlight">\(I\)</span> in the grammar for <span class="math notranslate nohighlight">\(\href{../text/modules.html#text-module}{\mathtt{module}}\)</span> ensures that no namespace contains duplicate identifiers.</p>
+<p>The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate nohighlight">\(I\)</span> in the grammar for <span class="math notranslate nohighlight">\(\href{../text/modules.html#text-module}{\mathtt{module}}\)</span> ensures that no namespace contains duplicate identifiers.</p>
 </div>
 <p>The definition of the initial <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate nohighlight">\(I\)</span> uses the following auxiliary definition which maps each relevant definition to a singular context with one (possibly empty) identifier:</p>
 <div class="math notranslate nohighlight">

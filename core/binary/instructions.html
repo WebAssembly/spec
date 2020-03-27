@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Instructions &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Modules" href="modules.html" />
@@ -65,13 +64,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -91,8 +88,8 @@ Each opcode is represented by a single byte,
 and is followed by the instruction’s immediate arguments, where present.
 The only exception are <a class="reference internal" href="#binary-instr-control"><span class="std std-ref">structured control instructions</span></a>, which consist of several opcodes bracketing their nested instruction sequences.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Gaps in the byte code ranges for encoding instructions are reserved for future extensions.</p>
+<p class="admonition-title">Note</p>
+<p>Gaps in the byte code ranges for encoding instructions are reserved for future extensions.</p>
 </div>
 <div class="section" id="control-instructions">
 <span id="binary-instr-control"></span><span id="index-1"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
@@ -120,12 +117,12 @@ The only exception are <a class="reference internal" href="#binary-instr-control
   \def\mathdef667#1{\mathtt{0x#1}}\mathdef667{11}~~x{:}\href{../binary/modules.html#binary-typeidx}{\mathtt{typeidx}}~~\def\mathdef668#1{\mathtt{0x#1}}\mathdef668{00} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}~x \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span> opcode <span class="math notranslate nohighlight">\(\def\mathdef669#1{\mathtt{0x#1}}\mathdef669{05}\)</span> in the encoding of an <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> instruction can be omitted if the following instruction sequence is empty.</p>
+<p class="admonition-title">Note</p>
+<p>The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span> opcode <span class="math notranslate nohighlight">\(\def\mathdef669#1{\mathtt{0x#1}}\mathdef669{05}\)</span> in the encoding of an <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> instruction can be omitted if the following instruction sequence is empty.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In future versions of WebAssembly, the zero byte occurring in the encoding
+<p class="admonition-title">Note</p>
+<p>In future versions of WebAssembly, the zero byte occurring in the encoding
 of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> instruction may be used to index additional tables.</p>
 </div>
 </div>
@@ -187,8 +184,8 @@ of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions
   \def\mathdef702#1{\mathtt{0x#1}}\mathdef702{40}~~\def\mathdef703#1{\mathtt{0x#1}}\mathdef703{00} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.size}}\)</span> and <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}}\)</span> instructions may be used to index additional memories.</p>
+<p class="admonition-title">Note</p>
+<p>In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.size}}\)</span> and <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}}\)</span> instructions may be used to index additional memories.</p>
 </div>
 </div>
 <div class="section" id="numeric-instructions">

@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Lexical Format &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Values" href="values.html" />
@@ -66,13 +65,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -99,8 +96,8 @@ Characters are assumed to be represented as valid <a class="reference external" 
   \def\mathdef1963#1{\mathrm{U{+}#1}}\mathdef1963{00} ~|~ \dots ~|~ \def\mathdef1964#1{\mathrm{U{+}#1}}\mathdef1964{D7FF} ~|~ \def\mathdef1965#1{\mathrm{U{+}#1}}\mathdef1965{E000} ~|~ \dots ~|~ \def\mathdef1966#1{\mathrm{U{+}#1}}\mathdef1966{10FFFF} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">While source text may contain any Unicode character in <a class="reference internal" href="#text-comment"><span class="std std-ref">comments</span></a> or <a class="reference internal" href="values.html#text-string"><span class="std std-ref">string</span></a> literals,
+<p class="admonition-title">Note</p>
+<p>While source text may contain any Unicode character in <a class="reference internal" href="#text-comment"><span class="std std-ref">comments</span></a> or <a class="reference internal" href="values.html#text-string"><span class="std std-ref">string</span></a> literals,
 the rest of the grammar is formed exclusively from the characters supported by the 7-bit <a class="reference external" href="http://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> subset of Unicode.</p>
 </div>
 </div>
@@ -125,8 +122,8 @@ but except for strings, they cannot themselves contain whitespace.</p>
 <p>The set of <em>keyword</em> tokens is defined implicitly, by all occurrences of a <a class="reference internal" href="conventions.html#text-grammar"><span class="std std-ref">terminal symbol</span></a> in literal form, such as <span class="math notranslate nohighlight">\(\def\mathdef1971#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1971{keyword}\)</span>, in a <a class="reference internal" href="conventions.html#text-syntactic"><span class="std std-ref">syntactic</span></a> production of this chapter.</p>
 <p>Any token that does not fall into any of the other categories is considered <em>reserved</em>, and cannot occur in source text.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The effect of defining the set of reserved tokens is that all tokens must be separated by either parentheses or <a class="reference internal" href="#text-space"><span class="std std-ref">white space</span></a>.
+<p class="admonition-title">Note</p>
+<p>The effect of defining the set of reserved tokens is that all tokens must be separated by either parentheses or <a class="reference internal" href="#text-space"><span class="std std-ref">white space</span></a>.
 For example, <span class="math notranslate nohighlight">\(\def\mathdef1972#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1972{0\$x}\)</span> is a single reserved token.
 Consequently, it is not recognized as two separate tokens <span class="math notranslate nohighlight">\(\def\mathdef1973#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1973{0}\)</span> and <span class="math notranslate nohighlight">\(\def\mathdef1974#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1974{\$x}\)</span>, but instead disallowed.
 This property of tokenization is not affected by the fact that the definition of reserved tokens overlaps with other token classes.</p>
@@ -169,8 +166,8 @@ Block comments can be nested.</p>
 <p>Here, the pseudo token <span class="math notranslate nohighlight">\(\mathtt{eof}\)</span> indicates the end of the input.
 The <em>look-ahead</em> restrictions on the productions for <span class="math notranslate nohighlight">\(\href{../text/lexical.html#text-comment}{\mathtt{blockchar}}\)</span> disambiguate the grammar such that only well-bracketed uses of block comment delimiters are allowed.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Any formatting and control characters are allowed inside comments.</p>
+<p class="admonition-title">Note</p>
+<p>Any formatting and control characters are allowed inside comments.</p>
 </div>
 </div>
 </div>

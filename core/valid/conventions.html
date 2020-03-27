@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Conventions &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Types" href="types.html" />
@@ -64,13 +63,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -91,12 +88,12 @@ Only valid modules can be <a class="reference internal" href="../exec/modules.ht
 For each piece of abstract syntax, there is a typing rule that specifies the constraints that apply to it.
 All rules are given in two <em>equivalent</em> forms:</p>
 <ol class="arabic simple">
-<li>In <em>prose</em>, describing the meaning in intuitive form.</li>
-<li>In <em>formal notation</em>, describing the rule in mathematical form. <a class="footnote-reference" href="#cite-pldi2017" id="id1">[1]</a></li>
+<li><p>In <em>prose</em>, describing the meaning in intuitive form.</p></li>
+<li><p>In <em>formal notation</em>, describing the rule in mathematical form. <a class="footnote-reference brackets" href="#cite-pldi2017" id="id1">1</a></p></li>
 </ol>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The prose and formal rules are equivalent,
+<p class="admonition-title">Note</p>
+<p>The prose and formal rules are equivalent,
 so that understanding of the formal notation is <em>not</em> required to read this specification.
 The formalism offers a more concise description in notation that is used widely in programming languages semantics and is readily amenable to mathematical proof.</p>
 </div>
@@ -108,14 +105,14 @@ The skeleton of a sound and complete algorithm for type-checking instruction seq
 <p>Validity of an individual definition is specified relative to a <em>context</em>,
 which collects relevant information about the surrounding <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> and the definitions in scope:</p>
 <ul class="simple">
-<li><em>Types</em>: the list of types defined in the current module.</li>
-<li><em>Functions</em>: the list of functions declared in the current module, represented by their function type.</li>
-<li><em>Tables</em>: the list of tables declared in the current module, represented by their table type.</li>
-<li><em>Memories</em>: the list of memories declared in the current module, represented by their memory type.</li>
-<li><em>Globals</em>: the list of globals declared in the current module, represented by their global type.</li>
-<li><em>Locals</em>: the list of locals declared in the current function (including parameters), represented by their value type.</li>
-<li><em>Labels</em>: the stack of labels accessible from the current position, represented by their result type.</li>
-<li><em>Return</em>: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.</li>
+<li><p><em>Types</em>: the list of types defined in the current module.</p></li>
+<li><p><em>Functions</em>: the list of functions declared in the current module, represented by their function type.</p></li>
+<li><p><em>Tables</em>: the list of tables declared in the current module, represented by their table type.</p></li>
+<li><p><em>Memories</em>: the list of memories declared in the current module, represented by their memory type.</p></li>
+<li><p><em>Globals</em>: the list of globals declared in the current module, represented by their global type.</p></li>
+<li><p><em>Locals</em>: the list of locals declared in the current function (including parameters), represented by their value type.</p></li>
+<li><p><em>Labels</em>: the stack of labels accessible from the current position, represented by their result type.</p></li>
+<li><p><em>Return</em>: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.</p></li>
 </ul>
 <p>In other words, a context contains a sequence of suitable <a class="reference internal" href="../syntax/types.html#syntax-type"><span class="std std-ref">types</span></a> for each <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>,
 describing each defined entry in that space.
@@ -138,12 +135,12 @@ The label stack is the only part of the context that changes as validation of an
 \end{array}\end{split}\]</div>
 <p id="notation-extend">In addition to field access written <span class="math notranslate nohighlight">\(C.\mathsf{field}\)</span> the following notation is adopted for manipulating contexts:</p>
 <ul class="simple">
-<li>When spelling out a context, empty fields are omitted.</li>
-<li><span class="math notranslate nohighlight">\(C,\mathsf{field}\,A^\ast\)</span> denotes the same context as <span class="math notranslate nohighlight">\(C\)</span> but with the elements <span class="math notranslate nohighlight">\(A^\ast\)</span> prepended to its <span class="math notranslate nohighlight">\(\mathsf{field}\)</span> component sequence.</li>
+<li><p>When spelling out a context, empty fields are omitted.</p></li>
+<li><p><span class="math notranslate nohighlight">\(C,\mathsf{field}\,A^\ast\)</span> denotes the same context as <span class="math notranslate nohighlight">\(C\)</span> but with the elements <span class="math notranslate nohighlight">\(A^\ast\)</span> prepended to its <span class="math notranslate nohighlight">\(\mathsf{field}\)</span> component sequence.</p></li>
 </ul>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">We use <a class="reference internal" href="../syntax/conventions.html#notation-index"><span class="std std-ref">indexing notation</span></a> like <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[i]\)</span> to look up indices in their respective <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a> in the context.
+<p class="admonition-title">Note</p>
+<p>We use <a class="reference internal" href="../syntax/conventions.html#notation-index"><span class="std std-ref">indexing notation</span></a> like <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[i]\)</span> to look up indices in their respective <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a> in the context.
 Context extension notation <span class="math notranslate nohighlight">\(C,\mathsf{field}\,A\)</span> is primarily used to locally extend <em>relative</em> index spaces, such as <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label indices</span></a>.
 Accordingly, the notation is defined to append at the <em>front</em> of the respective sequence, introducing a new relative index <span class="math notranslate nohighlight">\(0\)</span> and shifting the existing ones.</p>
 </div>
@@ -155,31 +152,29 @@ The rules not only state constraints defining when a phrase is valid,
 they also classify it with a type.
 The following conventions are adopted in stating these rules.</p>
 <ul>
-<li><p class="first">A phrase <span class="math notranslate nohighlight">\(A\)</span> is said to be “valid with type <span class="math notranslate nohighlight">\(T\)</span>”
+<li><p>A phrase <span class="math notranslate nohighlight">\(A\)</span> is said to be “valid with type <span class="math notranslate nohighlight">\(T\)</span>”
 if and only if all constraints expressed by the respective rules are met.
 The form of <span class="math notranslate nohighlight">\(T\)</span> depends on what <span class="math notranslate nohighlight">\(A\)</span> is.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">For example, if <span class="math notranslate nohighlight">\(A\)</span> is a <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a>,
+<p class="admonition-title">Note</p>
+<p>For example, if <span class="math notranslate nohighlight">\(A\)</span> is a <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a>,
 then  <span class="math notranslate nohighlight">\(T\)</span> is a <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a>;
 for an <span class="math notranslate nohighlight">\(A\)</span> that is a <a class="reference internal" href="../syntax/modules.html#syntax-global"><span class="std std-ref">global</span></a>,
 <span class="math notranslate nohighlight">\(T\)</span> is a <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a>;
 and so on.</p>
 </div>
 </li>
-<li><p class="first">The rules implicitly assume a given <a class="reference internal" href="#context"><span class="std std-ref">context</span></a> <span class="math notranslate nohighlight">\(C\)</span>.</p>
-</li>
-<li><p class="first">In some places, this context is locally extended to a context <span class="math notranslate nohighlight">\(C'\)</span> with additional entries.
-The formulation “Under context <span class="math notranslate nohighlight">\(C'\)</span>, … <em>statement</em> …” is adopted to express that the following statement must apply under the assumptions embodied in the extended context.</p>
-</li>
+<li><p>The rules implicitly assume a given <a class="reference internal" href="#context"><span class="std std-ref">context</span></a> <span class="math notranslate nohighlight">\(C\)</span>.</p></li>
+<li><p>In some places, this context is locally extended to a context <span class="math notranslate nohighlight">\(C'\)</span> with additional entries.
+The formulation “Under context <span class="math notranslate nohighlight">\(C'\)</span>, … <em>statement</em> …” is adopted to express that the following statement must apply under the assumptions embodied in the extended context.</p></li>
 </ul>
 </div>
 <div class="section" id="formal-notation">
 <span id="valid-notation"></span><span id="index-2"></span><h2>Formal Notation<a class="headerlink" href="#formal-notation" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This section gives a brief explanation of the notation for specifying typing rules formally.
-For the interested reader, a more thorough introduction can be found in respective text books. <a class="footnote-reference" href="#cite-tapl" id="id2">[2]</a></p>
+<p class="admonition-title">Note</p>
+<p>This section gives a brief explanation of the notation for specifying typing rules formally.
+For the interested reader, a more thorough introduction can be found in respective text books. <a class="footnote-reference brackets" href="#cite-tapl" id="id2">2</a></p>
 </div>
 <p>The proposition that a phrase <span class="math notranslate nohighlight">\(A\)</span> has a respective type <span class="math notranslate nohighlight">\(T\)</span> is written <span class="math notranslate nohighlight">\(A : T\)</span>.
 In general, however, typing is dependent on a context <span class="math notranslate nohighlight">\(C\)</span>.
@@ -198,7 +193,7 @@ Some rules have no premises; they are <em>axioms</em> whose conclusion holds unc
 The conclusion always is a judgment <span class="math notranslate nohighlight">\(C \vdash A : T\)</span>,
 and there is one respective rule for each relevant construct <span class="math notranslate nohighlight">\(A\)</span> of the abstract syntax.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>For example, the typing rule for the <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction can be given as an axiom:</p>
 <div class="math notranslate nohighlight">
 \[\frac{
@@ -228,25 +223,21 @@ a recursive rule, where the premise is itself a typing judgement:</p>
 }{
   C \vdash \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
 }\]</div>
-<p class="last">A <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> instruction is only valid when the instruction sequence in its body is.
+<p>A <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> instruction is only valid when the instruction sequence in its body is.
 Moreover, the result type must match the block’s annotation <span class="math notranslate nohighlight">\([t^?]\)</span>.
 If so, then the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> instruction has the same type as the body.
 Inside the body an additional label of the same type is available,
 which is expressed by extending the context <span class="math notranslate nohighlight">\(C\)</span> with the additional label information for the premise.</p>
 </div>
-<table class="docutils footnote" frame="void" id="cite-pldi2017" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>The semantics is derived from the following article:
-Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. <a class="reference external" href="https://dl.acm.org/citation.cfm?doid=3062341.3062363">Bringing the Web up to Speed with WebAssembly</a>. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.</td></tr>
-</tbody>
-</table>
-<table class="docutils footnote" frame="void" id="cite-tapl" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>For example: Benjamin Pierce. <a class="reference external" href="https://www.cis.upenn.edu/~bcpierce/tapl/">Types and Programming Languages</a>. The MIT Press 2002</td></tr>
-</tbody>
-</table>
+<dl class="footnote brackets">
+<dt class="label" id="cite-pldi2017"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>The semantics is derived from the following article:
+Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. <a class="reference external" href="https://dl.acm.org/citation.cfm?doid=3062341.3062363">Bringing the Web up to Speed with WebAssembly</a>. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.</p>
+</dd>
+<dt class="label" id="cite-tapl"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>For example: Benjamin Pierce. <a class="reference external" href="https://www.cis.upenn.edu/~bcpierce/tapl/">Types and Programming Languages</a>. The MIT Press 2002</p>
+</dd>
+</dl>
 </div>
 </div>
 

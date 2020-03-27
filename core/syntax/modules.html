@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Modules &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Validation" href="../valid/index.html" />
@@ -65,13 +64,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -127,8 +124,8 @@ The indices of these imports precede the indices of other definitions in the sam
 <div class="section" id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The meta variable <span class="math notranslate nohighlight">\(l\)</span> ranges over label indices.</li>
-<li>The meta variables <span class="math notranslate nohighlight">\(x, y\)</span> range over indices in any of the other index spaces.</li>
+<li><p>The meta variable <span class="math notranslate nohighlight">\(l\)</span> ranges over label indices.</p></li>
+<li><p>The meta variables <span class="math notranslate nohighlight">\(x, y\)</span> range over indices in any of the other index spaces.</p></li>
 </ul>
 </div>
 </div>
@@ -138,8 +135,8 @@ The indices of these imports precede the indices of other definitions in the sam
 <p>All function types used in a module must be defined in this component.
 They are referenced by <a class="reference internal" href="#syntax-typeidx"><span class="std std-ref">type indices</span></a>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Future versions of WebAssembly may add additional forms of type definitions.</p>
+<p class="admonition-title">Note</p>
+<p>Future versions of WebAssembly may add additional forms of type definitions.</p>
 </div>
 </div>
 <div class="section" id="functions">
@@ -174,8 +171,8 @@ The <span class="math notranslate nohighlight">\(\href{../syntax/types.html#synt
 starting with the smallest index not referencing a table <a class="reference internal" href="#syntax-import"><span class="std std-ref">import</span></a>.
 Most constructs implicitly reference table index <span class="math notranslate nohighlight">\(0\)</span>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly, at most one table may be defined or imported in a single module,
+<p class="admonition-title">Note</p>
+<p>In the current version of WebAssembly, at most one table may be defined or imported in a single module,
 and <em>all</em> constructs implicitly reference this table <span class="math notranslate nohighlight">\(0\)</span>.
 This restriction may be lifted in future versions.</p>
 </div>
@@ -196,8 +193,8 @@ Both are in units of <a class="reference internal" href="../exec/runtime.html#pa
 starting with the smallest index not referencing a memory <a class="reference internal" href="#syntax-import"><span class="std std-ref">import</span></a>.
 Most constructs implicitly reference memory index <span class="math notranslate nohighlight">\(0\)</span>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly, at most one memory may be defined or imported in a single module,
+<p class="admonition-title">Note</p>
+<p>In the current version of WebAssembly, at most one memory may be defined or imported in a single module,
 and <em>all</em> constructs implicitly reference this memory <span class="math notranslate nohighlight">\(0\)</span>.
 This restriction may be lifted in future versions.</p>
 </div>
@@ -227,8 +224,8 @@ The <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#sy
 \end{array}\end{split}\]</div>
 <p>The <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-elem}{\mathsf{offset}}\)</span> is given by a <a class="reference internal" href="../valid/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly, at most one table is allowed in a module.
+<p class="admonition-title">Note</p>
+<p>In the current version of WebAssembly, at most one table is allowed in a module.
 Consequently, the only valid <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}}\)</span> is <span class="math notranslate nohighlight">\(0\)</span>.</p>
 </div>
 </div>
@@ -243,8 +240,8 @@ The <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#sy
 \end{array}\end{split}\]</div>
 <p>The <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-data}{\mathsf{offset}}\)</span> is given by a <a class="reference internal" href="../valid/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expression</span></a>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly, at most one memory is allowed in a module.
+<p class="admonition-title">Note</p>
+<p>In the current version of WebAssembly, at most one memory is allowed in a module.
 Consequently, the only valid <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}}\)</span> is <span class="math notranslate nohighlight">\(0\)</span>.</p>
 </div>
 </div>
@@ -257,8 +254,8 @@ Consequently, the only valid <span class="math notranslate nohighlight">\(\href{
   \{ \href{../syntax/modules.html#syntax-start}{\mathsf{func}}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} \} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The start function is intended for initializing the state of a module.
+<p class="admonition-title">Note</p>
+<p>The start function is intended for initializing the state of a module.
 The module and its exports are not accessible before this initialization has completed.</p>
 </div>
 </div>
@@ -282,10 +279,10 @@ which are referenced through a respective descriptor.</p>
 <h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The following auxiliary notation is defined for sequences of exports, filtering out indices of a specific kind in an order-preserving fashion:</p>
 <ul class="simple">
-<li><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathrm{funcs}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} ~|~ \href{../syntax/modules.html#syntax-exportdesc}{\mathsf{func}}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\href{../syntax/modules.html#syntax-export}{\mathsf{desc}})^\ast]\)</span></li>
-<li><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathrm{tables}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} ~|~ \href{../syntax/modules.html#syntax-exportdesc}{\mathsf{table}}~\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\href{../syntax/modules.html#syntax-export}{\mathsf{desc}})^\ast]\)</span></li>
-<li><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathrm{mems}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} ~|~ \href{../syntax/modules.html#syntax-exportdesc}{\mathsf{mem}}~\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\href{../syntax/modules.html#syntax-export}{\mathsf{desc}})^\ast]\)</span></li>
-<li><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathrm{globals}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \href{../syntax/modules.html#syntax-exportdesc}{\mathsf{global}}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\href{../syntax/modules.html#syntax-export}{\mathsf{desc}})^\ast]\)</span></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathrm{funcs}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} ~|~ \href{../syntax/modules.html#syntax-exportdesc}{\mathsf{func}}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\href{../syntax/modules.html#syntax-export}{\mathsf{desc}})^\ast]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathrm{tables}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} ~|~ \href{../syntax/modules.html#syntax-exportdesc}{\mathsf{table}}~\href{../syntax/modules.html#syntax-tableidx}{\mathit{tableidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\href{../syntax/modules.html#syntax-export}{\mathsf{desc}})^\ast]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathrm{mems}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} ~|~ \href{../syntax/modules.html#syntax-exportdesc}{\mathsf{mem}}~\href{../syntax/modules.html#syntax-memidx}{\mathit{memidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\href{../syntax/modules.html#syntax-export}{\mathsf{desc}})^\ast]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-exportdesc}{\mathrm{globals}}(\href{../syntax/modules.html#syntax-export}{\mathit{export}}^\ast) = [\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} ~|~ \href{../syntax/modules.html#syntax-exportdesc}{\mathsf{global}}~\href{../syntax/modules.html#syntax-globalidx}{\mathit{globalidx}} \in (\href{../syntax/modules.html#syntax-export}{\mathit{export}}.\href{../syntax/modules.html#syntax-export}{\mathsf{desc}})^\ast]\)</span></p></li>
 </ul>
 </div>
 </div>
@@ -308,8 +305,8 @@ Each import is specified by a descriptor with a respective type that a definitio
 <p>Every import defines an index in the respective <a class="reference internal" href="#syntax-index"><span class="std std-ref">index space</span></a>.
 In each index space, the indices of imports go before the first index of any definition contained in the module itself.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Unlike export names, import names are not necessarily unique.
+<p class="admonition-title">Note</p>
+<p>Unlike export names, import names are not necessarily unique.
 It is possible to import the same <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-import}{\mathsf{module}}\)</span>/<span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-import}{\mathsf{name}}\)</span> pair multiple times;
 such imports may even have different type descriptions, including different kinds of entities.
 A module with such imports can still be instantiated depending on the specifics of how an <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedder</span></a> allows resolving and supplying imports.

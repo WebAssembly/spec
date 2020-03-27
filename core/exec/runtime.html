@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Runtime Structure &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Numerics" href="numerics.html" />
@@ -65,13 +64,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -113,14 +110,14 @@ It is either a sequence of <a class="reference internal" href="#syntax-val"><spa
   \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly, a result can consist of at most one value.</p>
+<p class="admonition-title">Note</p>
+<p>In the current version of WebAssembly, a result can consist of at most one value.</p>
 </div>
 </div>
 <div class="section" id="store">
 <span id="syntax-store"></span><span id="index-3"></span><span id="id1"></span><h2>Store<a class="headerlink" href="#store" title="Permalink to this headline">¶</a></h2>
 <p>The <em>store</em> represents all global state that can be manipulated by WebAssembly programs.
-It consists of the runtime representation of all <em>instances</em> of <a class="reference internal" href="#syntax-funcinst"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="#syntax-tableinst"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="#syntax-meminst"><span class="std std-ref">memories</span></a>, and <a class="reference internal" href="#syntax-globalinst"><span class="std std-ref">globals</span></a> that have been <a class="reference internal" href="modules.html#alloc"><span class="std std-ref">allocated</span></a> during the life time of the abstract machine. <a class="footnote-reference" href="#gc" id="id2">[1]</a></p>
+It consists of the runtime representation of all <em>instances</em> of <a class="reference internal" href="#syntax-funcinst"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="#syntax-tableinst"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="#syntax-meminst"><span class="std std-ref">memories</span></a>, and <a class="reference internal" href="#syntax-globalinst"><span class="std std-ref">globals</span></a> that have been <a class="reference internal" href="modules.html#alloc"><span class="std std-ref">allocated</span></a> during the life time of the abstract machine. <a class="footnote-reference brackets" href="#gc" id="id2">1</a></p>
 <p>Syntactically, the store is defined as a <a class="reference internal" href="../syntax/conventions.html#notation-record"><span class="std std-ref">record</span></a> listing the existing instances of each category:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
@@ -132,18 +129,17 @@ It consists of the runtime representation of all <em>instances</em> of <a class=
   \href{../exec/runtime.html#syntax-store}{\mathsf{globals}} &amp; \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}^\ast ~\} \\
   \end{array}
 \end{array}\end{split}\]</div>
-<table class="docutils footnote" frame="void" id="gc" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td>In practice, implementations may apply techniques like garbage collection to remove objects from the store that are no longer referenced.
+<dl class="footnote brackets">
+<dt class="label" id="gc"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>
+<dd><p>In practice, implementations may apply techniques like garbage collection to remove objects from the store that are no longer referenced.
 However, such techniques are not semantically observable,
-and hence outside the scope of this specification.</td></tr>
-</tbody>
-</table>
+and hence outside the scope of this specification.</p>
+</dd>
+</dl>
 <div class="section" id="convention">
 <h3>Convention<a class="headerlink" href="#convention" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The meta variable <span class="math notranslate nohighlight">\(S\)</span> ranges over stores where clear from context.</li>
+<li><p>The meta variable <span class="math notranslate nohighlight">\(S\)</span> ranges over stores where clear from context.</p></li>
 </ul>
 </div>
 </div>
@@ -168,13 +164,13 @@ These are simply indices into the respective store component.</p>
 even where this identity is not observable from within WebAssembly code itself
 (such as for <a class="reference internal" href="#syntax-funcinst"><span class="std std-ref">function instances</span></a> or immutable <a class="reference internal" href="#syntax-globalinst"><span class="std std-ref">globals</span></a>).</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>Addresses are <em>dynamic</em>, globally unique references to runtime objects,
 in contrast to <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a>,
 which are <em>static</em>, module-local references to their original definitions.
 A <em>memory address</em> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}\)</span> denotes the abstract address <em>of</em> a memory <em>instance</em> in the store,
 not an offset <em>inside</em> a memory instance.</p>
-<p class="last">There is no specific limit on the number of allocations of store objects,
+<p>There is no specific limit on the number of allocations of store objects,
 hence logical addresses can be arbitrarily large natural numbers.</p>
 </div>
 </div>
@@ -217,8 +213,8 @@ For the purpose of this specification, it is assumed that when <a class="referen
 a host function behaves non-deterministically,
 but within certain <a class="reference internal" href="instructions.html#exec-invoke-host"><span class="std std-ref">constraints</span></a> that ensure the integrity of the runtime.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Function instances are immutable, and their identity is not observable by WebAssembly code.
+<p class="admonition-title">Note</p>
+<p>Function instances are immutable, and their identity is not observable by WebAssembly code.
 However, the <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedder</span></a> might provide implicit or explicit means for distinguishing their <a class="reference internal" href="#syntax-funcaddr"><span class="std std-ref">addresses</span></a>.</p>
 </div>
 </div>
@@ -237,8 +233,8 @@ Function elements can be mutated through the execution of an <a class="reference
 \end{array}\end{split}\]</div>
 <p>It is an invariant of the semantics that the length of the element vector never exceeds the maximum size, if present.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Other table elements may be added in future versions of WebAssembly.</p>
+<p class="admonition-title">Note</p>
+<p>Other table elements may be added in future versions of WebAssembly.</p>
 </div>
 </div>
 <div class="section" id="memory-instances">
@@ -293,10 +289,10 @@ It is an <a class="reference internal" href="#syntax-addr"><span class="std std-
 <p>The following auxiliary notation is defined for sequences of external values.
 It filters out entries of a specific kind in an order-preserving fashion:</p>
 <ul class="simple">
-<li><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathrm{funcs}}(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast) = [\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} ~|~ (\href{../exec/runtime.html#syntax-externval}{\mathsf{func}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}) \in \href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast]\)</span></li>
-<li><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathrm{tables}}(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast) = [\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}} ~|~ (\href{../exec/runtime.html#syntax-externval}{\mathsf{table}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}) \in \href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast]\)</span></li>
-<li><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathrm{mems}}(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast) = [\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}} ~|~ (\href{../exec/runtime.html#syntax-externval}{\mathsf{mem}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}) \in \href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast]\)</span></li>
-<li><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathrm{globals}}(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast) = [\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}} ~|~ (\href{../exec/runtime.html#syntax-externval}{\mathsf{global}}~\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) \in \href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast]\)</span></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathrm{funcs}}(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast) = [\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} ~|~ (\href{../exec/runtime.html#syntax-externval}{\mathsf{func}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}) \in \href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathrm{tables}}(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast) = [\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}} ~|~ (\href{../exec/runtime.html#syntax-externval}{\mathsf{table}}~\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}) \in \href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathrm{mems}}(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast) = [\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}} ~|~ (\href{../exec/runtime.html#syntax-externval}{\mathsf{mem}}~\href{../exec/runtime.html#syntax-memaddr}{\mathit{memaddr}}) \in \href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathrm{globals}}(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast) = [\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}} ~|~ (\href{../exec/runtime.html#syntax-externval}{\mathsf{global}}~\href{../exec/runtime.html#syntax-globaladdr}{\mathit{globaladdr}}) \in \href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^\ast]\)</span></p></li>
 </ul>
 </div>
 </div>
@@ -305,15 +301,15 @@ It filters out entries of a specific kind in an order-preserving fashion:</p>
 <p>Besides the <a class="reference internal" href="#store"><span class="std std-ref">store</span></a>, most <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> interact with an implicit <em>stack</em>.
 The stack contains three kinds of entries:</p>
 <ul class="simple">
-<li><em>Values</em>: the <em>operands</em> of instructions.</li>
-<li><em>Labels</em>: active <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instructions</span></a> that can be targeted by branches.</li>
-<li><em>Activations</em>: the <em>call frames</em> of active <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a> calls.</li>
+<li><p><em>Values</em>: the <em>operands</em> of instructions.</p></li>
+<li><p><em>Labels</em>: active <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instructions</span></a> that can be targeted by branches.</p></li>
+<li><p><em>Activations</em>: the <em>call frames</em> of active <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a> calls.</p></li>
 </ul>
 <p>These entries can occur on the stack in any order during the execution of a program.
 Stack entries are described by abstract syntax as follows.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">It is possible to model the WebAssembly semantics using separate stacks for operands, control constructs, and calls.
+<p class="admonition-title">Note</p>
+<p>It is possible to model the WebAssembly semantics using separate stacks for operands, control constructs, and calls.
 However, because the stacks are interdependent, additional book keeping about associated stack heights would be required.
 For the purpose of this specification, an interleaved representation is simpler.</p>
 </div>
@@ -331,7 +327,7 @@ For the purpose of this specification, an interleaved representation is simpler.
 \end{array}\end{split}\]</div>
 <p>Intuitively, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> is the <em>continuation</em> to execute when the branch is taken, in place of the original control construct.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>For example, a loop label has the form</p>
 <div class="math notranslate nohighlight">
 \[\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}~[t^?]~\dots~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\}\]</div>
@@ -339,7 +335,7 @@ For the purpose of this specification, an interleaved representation is simpler.
 Conversely, a simple block label has the form</p>
 <div class="math notranslate nohighlight">
 \[\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\epsilon\}\]</div>
-<p class="last">When branching, the empty continuation ends the targeted block, such that execution can proceed with consecutive instructions.</p>
+<p>When branching, the empty continuation ends the targeted block, such that execution can proceed with consecutive instructions.</p>
 </div>
 </div>
 <div class="section" id="activations-and-frames">
@@ -359,12 +355,12 @@ and a reference to the function’s own <a class="reference internal" href="#syn
 <div class="section" id="id5">
 <h3>Conventions<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The meta variable <span class="math notranslate nohighlight">\(L\)</span> ranges over labels where clear from context.</li>
-<li>The meta variable <span class="math notranslate nohighlight">\(F\)</span> ranges over frames where clear from context.</li>
+<li><p>The meta variable <span class="math notranslate nohighlight">\(L\)</span> ranges over labels where clear from context.</p></li>
+<li><p>The meta variable <span class="math notranslate nohighlight">\(F\)</span> ranges over frames where clear from context.</p></li>
 </ul>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly, the arities of labels and frames cannot be larger than <span class="math notranslate nohighlight">\(1\)</span>.
+<p class="admonition-title">Note</p>
+<p>In the current version of WebAssembly, the arities of labels and frames cannot be larger than <span class="math notranslate nohighlight">\(1\)</span>.
 This may be generalized in future versions.</p>
 </div>
 </div>
@@ -372,8 +368,8 @@ This may be generalized in future versions.</p>
 <div class="section" id="administrative-instructions">
 <span id="syntax-instr-admin"></span><span id="syntax-init-data"></span><span id="syntax-init-elem"></span><span id="syntax-invoke"></span><span id="syntax-trap"></span><span id="index-13"></span><h2>Administrative Instructions<a class="headerlink" href="#administrative-instructions" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This section is only relevant for the <a class="reference internal" href="conventions.html#exec-notation"><span class="std std-ref">formal notation</span></a>.</p>
+<p class="admonition-title">Note</p>
+<p>This section is only relevant for the <a class="reference internal" href="conventions.html#exec-notation"><span class="std std-ref">formal notation</span></a>.</p>
 </div>
 <p>In order to express the reduction of <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">traps</span></a>, <a class="reference internal" href="../syntax/instructions.html#syntax-call"><span class="std std-ref">calls</span></a>, and <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">control instructions</span></a>, the syntax of instructions is extended to include the following <em>administrative instructions</em>:</p>
 <div class="math notranslate nohighlight">
@@ -393,14 +389,14 @@ Traps are bubbled up through nested instruction sequences, ultimately reducing t
 It unifies the handling of different forms of calls.</p>
 <p>The <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-init-elem}{\mathsf{init\_elem}}\)</span> and <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-init-data}{\mathsf{init\_data}}\)</span> instructions perform initialization of <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element</span></a> and <a class="reference internal" href="../syntax/modules.html#syntax-data"><span class="std std-ref">data</span></a> segments during module <a class="reference internal" href="modules.html#exec-instantiation"><span class="std std-ref">instantiation</span></a>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.</p>
+<p class="admonition-title">Note</p>
+<p>The reason for splitting instantiation into individual reduction steps is to provide a semantics that is compatible with future extensions like threads.</p>
 </div>
 <p>The <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\)</span> and <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}\)</span> instructions model <a class="reference internal" href="#syntax-label"><span class="std std-ref">labels</span></a> and <a class="reference internal" href="#syntax-frame"><span class="std std-ref">frames</span></a> <a class="reference internal" href="conventions.html#exec-notation"><span class="std std-ref">“on the stack”</span></a>.
 Moreover, the administrative syntax maintains the nesting structure of the original <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instruction</span></a> or <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function body</span></a> and their <a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">instruction sequences</span></a> with an <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> marker.
 That way, the end of the inner instruction sequence is known when part of an outer sequence.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>For example, the <a class="reference internal" href="instructions.html#exec-block"><span class="std std-ref">reduction rule</span></a> for <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> is:</p>
 <div class="math notranslate nohighlight">
 \[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^n]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\href{../exec/conventions.html#formal-notation}{\hookrightarrow}\quad
@@ -410,7 +406,7 @@ which can be interpreted as “pushing” the label on the stack.
 When <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> is reached, i.e., the inner instruction sequence has been reduced to the empty sequence – or rather, a sequence of <span class="math notranslate nohighlight">\(n\)</span> <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions representing the resulting values – then the <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\)</span> instruction is eliminated courtesy of its own <a class="reference internal" href="instructions.html#exec-label"><span class="std std-ref">reduction rule</span></a>:</p>
 <div class="math notranslate nohighlight">
 \[\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_m\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~\href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\href{../exec/conventions.html#formal-notation}{\hookrightarrow}\quad \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n\]</div>
-<p class="last">This can be interpreted as removing the label from the stack and only leaving the locally accumulated operand values.</p>
+<p>This can be interpreted as removing the label from the stack and only leaving the locally accumulated operand values.</p>
 </div>
 <div class="section" id="block-contexts">
 <span id="syntax-ctxt-block"></span><span id="index-14"></span><h3>Block Contexts<a class="headerlink" href="#block-contexts" title="Permalink to this headline">¶</a></h3>
@@ -424,11 +420,11 @@ When <span class="math notranslate nohighlight">\(\href{../syntax/instructions.h
 \end{array}\end{split}\]</div>
 <p>This definition allows to index active labels surrounding a <a class="reference internal" href="../syntax/instructions.html#syntax-br"><span class="std std-ref">branch</span></a> or <a class="reference internal" href="../syntax/instructions.html#syntax-return"><span class="std std-ref">return</span></a> instruction.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>For example, the <a class="reference internal" href="instructions.html#exec-br"><span class="std std-ref">reduction</span></a> of a simple branch can be defined as follows:</p>
 <div class="math notranslate nohighlight">
 \[\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_0\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~\href{../exec/runtime.html#syntax-ctxt-block}{B}^l[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br}}~l]~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \quad\href{../exec/conventions.html#formal-notation}{\hookrightarrow}\quad \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\]</div>
-<p class="last">Here, the hole <span class="math notranslate nohighlight">\([\_]\)</span> of the context is instantiated with a branch instruction.
+<p>Here, the hole <span class="math notranslate nohighlight">\([\_]\)</span> of the context is instantiated with a branch instruction.
 When a branch occurs,
 this rule replaces the targeted label and associated instruction sequence with the label’s continuation.
 The selected label is identified through the <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label index</span></a> <span class="math notranslate nohighlight">\(l\)</span>, which corresponds to the number of surrounding <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\)</span> instructions that must be hopped over – which is exactly the count encoded in the index of a block context.</p>
@@ -447,8 +443,8 @@ that operates relative to a current <a class="reference internal" href="#syntax-
   \href{../exec/runtime.html#syntax-frame}{\mathit{frame}}; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The current version of WebAssembly is single-threaded,
+<p class="admonition-title">Note</p>
+<p>The current version of WebAssembly is single-threaded,
 but configurations with multiple threads may be supported in the future.</p>
 </div>
 </div>
@@ -475,7 +471,7 @@ S; F; \href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}_n\{F'\}~\href{../
 <p>Reduction terminates when a thread’s instruction sequence has been reduced to a <a class="reference internal" href="#syntax-result"><span class="std std-ref">result</span></a>,
 that is, either a sequence of <a class="reference internal" href="#syntax-val"><span class="std std-ref">values</span></a> or to a <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}\)</span>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>The restriction on evaluation contexts rules out contexts like <span class="math notranslate nohighlight">\([\_]\)</span> and <span class="math notranslate nohighlight">\(\epsilon~[\_]~\epsilon\)</span> for which <span class="math notranslate nohighlight">\(E[\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}] = \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}\)</span>.</p>
 <p>For an example of reduction under evaluation contexts, consider the following instruction sequence.</p>
 <div class="math notranslate nohighlight">
@@ -483,7 +479,7 @@ that is, either a sequence of <a class="reference internal" href="#syntax-val"><
 <p>This can be decomposed into <span class="math notranslate nohighlight">\(E[(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_2)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}}]\)</span> where</p>
 <div class="math notranslate nohighlight">
 \[E = (\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_1)~[\_]~(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_3)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}}\]</div>
-<p class="last">Moreover, this is the <em>only</em> possible choice of evaluation context where the contents of the hole matches the left-hand side of a reduction rule.</p>
+<p>Moreover, this is the <em>only</em> possible choice of evaluation context where the contents of the hole matches the left-hand side of a reduction rule.</p>
 </div>
 </div>
 </div>

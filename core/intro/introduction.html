@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Introduction &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Overview" href="overview.html" />
@@ -62,13 +61,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -83,7 +80,7 @@
             
   <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>WebAssembly (abbreviated Wasm <a class="footnote-reference" href="#wasm" id="id1">[1]</a>) is a <em>safe, portable, low-level code format</em>
+<p>WebAssembly (abbreviated Wasm <a class="footnote-reference brackets" href="#wasm" id="id1">1</a>) is a <em>safe, portable, low-level code format</em>
 designed for efficient execution and compact representation.
 Its main goal is to enable high performance applications on the Web, but it does not make any Web-specific assumptions or provide Web-specific features, so it can be employed in other environments as well.</p>
 <p>WebAssembly is an open standard developed by a <a class="reference external" href="https://www.w3.org/community/webassembly/">W3C Community Group</a>.</p>
@@ -93,39 +90,37 @@ It is intended that it will be superseded by new incremental releases with addit
 <span id="goals"></span><h2>Design Goals<a class="headerlink" href="#design-goals" title="Permalink to this headline">¶</a></h2>
 <p id="index-0">The design goals of WebAssembly are the following:</p>
 <ul class="simple">
-<li>Fast, safe, and portable <em>semantics</em>:<ul>
-<li><strong>Fast</strong>: executes with near native code performance, taking advantage of capabilities common to all contemporary hardware.</li>
-<li><strong>Safe</strong>: code is validated and executes in a memory-safe <a class="footnote-reference" href="#memorysafe" id="id2">[2]</a>, sandboxed environment preventing data corruption or security breaches.</li>
-<li><strong>Well-defined</strong>: fully and precisely defines valid programs and their behavior in a way that is easy to reason about informally and formally.</li>
-<li><strong>Hardware-independent</strong>: can be compiled on all modern architectures, desktop or mobile devices and embedded systems alike.</li>
-<li><strong>Language-independent</strong>: does not privilege any particular language, programming model, or object model.</li>
-<li><strong>Platform-independent</strong>: can be embedded in browsers, run as a stand-alone VM, or integrated in other environments.</li>
-<li><strong>Open</strong>: programs can interoperate with their environment in a simple and universal manner.</li>
+<li><p>Fast, safe, and portable <em>semantics</em>:</p>
+<ul>
+<li><p><strong>Fast</strong>: executes with near native code performance, taking advantage of capabilities common to all contemporary hardware.</p></li>
+<li><p><strong>Safe</strong>: code is validated and executes in a memory-safe <a class="footnote-reference brackets" href="#memorysafe" id="id2">2</a>, sandboxed environment preventing data corruption or security breaches.</p></li>
+<li><p><strong>Well-defined</strong>: fully and precisely defines valid programs and their behavior in a way that is easy to reason about informally and formally.</p></li>
+<li><p><strong>Hardware-independent</strong>: can be compiled on all modern architectures, desktop or mobile devices and embedded systems alike.</p></li>
+<li><p><strong>Language-independent</strong>: does not privilege any particular language, programming model, or object model.</p></li>
+<li><p><strong>Platform-independent</strong>: can be embedded in browsers, run as a stand-alone VM, or integrated in other environments.</p></li>
+<li><p><strong>Open</strong>: programs can interoperate with their environment in a simple and universal manner.</p></li>
 </ul>
 </li>
-<li>Efficient and portable <em>representation</em>:<ul>
-<li><strong>Compact</strong>: has a binary format that is fast to transmit by being smaller than typical text or native code formats.</li>
-<li><strong>Modular</strong>: programs can be split up in smaller parts that can be transmitted, cached, and consumed separately.</li>
-<li><strong>Efficient</strong>: can be decoded, validated, and compiled in a fast single pass, equally with either just-in-time (JIT) or ahead-of-time (AOT) compilation.</li>
-<li><strong>Streamable</strong>: allows decoding, validation, and compilation to begin as soon as possible, before all data has been seen.</li>
-<li><strong>Parallelizable</strong>: allows decoding, validation, and compilation to be split into many independent parallel tasks.</li>
-<li><strong>Portable</strong>: makes no architectural assumptions that are not broadly supported across modern hardware.</li>
+<li><p>Efficient and portable <em>representation</em>:</p>
+<ul>
+<li><p><strong>Compact</strong>: has a binary format that is fast to transmit by being smaller than typical text or native code formats.</p></li>
+<li><p><strong>Modular</strong>: programs can be split up in smaller parts that can be transmitted, cached, and consumed separately.</p></li>
+<li><p><strong>Efficient</strong>: can be decoded, validated, and compiled in a fast single pass, equally with either just-in-time (JIT) or ahead-of-time (AOT) compilation.</p></li>
+<li><p><strong>Streamable</strong>: allows decoding, validation, and compilation to begin as soon as possible, before all data has been seen.</p></li>
+<li><p><strong>Parallelizable</strong>: allows decoding, validation, and compilation to be split into many independent parallel tasks.</p></li>
+<li><p><strong>Portable</strong>: makes no architectural assumptions that are not broadly supported across modern hardware.</p></li>
 </ul>
 </li>
 </ul>
 <p>WebAssembly code is also intended to be easy to inspect and debug, especially in environments like web browsers, but such features are beyond the scope of this specification.</p>
-<table class="docutils footnote" frame="void" id="wasm" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>A contraction of “WebAssembly”, not an acronym, hence not using all-caps.</td></tr>
-</tbody>
-</table>
-<table class="docutils footnote" frame="void" id="memorysafe" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>No program can break WebAssembly’s memory model. Of course, it cannot guarantee that an unsafe language compiling to WebAssembly does not corrupt its own memory layout, e.g. inside WebAssembly’s linear memory.</td></tr>
-</tbody>
-</table>
+<dl class="footnote brackets">
+<dt class="label" id="wasm"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>A contraction of “WebAssembly”, not an acronym, hence not using all-caps.</p>
+</dd>
+<dt class="label" id="memorysafe"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>No program can break WebAssembly’s memory model. Of course, it cannot guarantee that an unsafe language compiling to WebAssembly does not corrupt its own memory layout, e.g. inside WebAssembly’s linear memory.</p>
+</dd>
+</dl>
 </div>
 <div class="section" id="scope">
 <span id="id3"></span><h2>Scope<a class="headerlink" href="#scope" title="Permalink to this headline">¶</a></h2>
@@ -151,14 +146,14 @@ In environments where this is a concern, an embedder may have to put suitable mi
 <span id="index-2"></span><span id="id4"></span><h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <p>WebAssembly depends on two existing standards:</p>
 <ul class="simple">
-<li><a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a>, for the representation of <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">floating-point data</span></a> and the semantics of respective <a class="reference internal" href="../exec/numerics.html#float-ops"><span class="std std-ref">numeric operations</span></a>.</li>
-<li><a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a>, for the representation of import/export <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">names</span></a> and the <a class="reference internal" href="../text/index.html#text"><span class="std std-ref">text format</span></a>.</li>
+<li><p><a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a>, for the representation of <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">floating-point data</span></a> and the semantics of respective <a class="reference internal" href="../exec/numerics.html#float-ops"><span class="std std-ref">numeric operations</span></a>.</p></li>
+<li><p><a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a>, for the representation of import/export <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">names</span></a> and the <a class="reference internal" href="../text/index.html#text"><span class="std std-ref">text format</span></a>.</p></li>
 </ul>
 <p>However, to make this specification self-contained, relevant aspects of the aforementioned standards are defined and formalized as part of this specification,
 such as the <a class="reference internal" href="../exec/numerics.html#aux-fbits"><span class="std std-ref">binary representation</span></a> and <a class="reference internal" href="../exec/numerics.html#aux-ieee"><span class="std std-ref">rounding</span></a> of floating-point values, and the <a class="reference internal" href="../syntax/values.html#syntax-char"><span class="std std-ref">value range</span></a> and <a class="reference internal" href="../binary/values.html#binary-utf8"><span class="std std-ref">UTF-8 encoding</span></a> of Unicode characters.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The aforementioned standards are the authoritative source of all respective definitions.
+<p class="admonition-title">Note</p>
+<p>The aforementioned standards are the authoritative source of all respective definitions.
 Formalizations given in this specification are intended to match these definitions.
 Any discrepancy in the syntax or semantics described is to be considered an error.</p>
 </div>

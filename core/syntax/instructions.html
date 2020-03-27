@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Instructions &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Modules" href="modules.html" />
@@ -65,13 +64,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -90,8 +87,8 @@
 Its computational model is based on a <em>stack machine</em> in that instructions manipulate values on an implicit <em>operand stack</em>,
 consuming (popping) argument values and producing or returning (pushing) result values.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly,
+<p class="admonition-title">Note</p>
+<p>In the current version of WebAssembly,
 at most one result value can be pushed by a single instruction.
 This restriction may be lifted in future versions.</p>
 </div>
@@ -182,13 +179,13 @@ These operations closely match respective operations available in hardware.</p>
 <p>Numeric instructions are divided by <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">value type</span></a>.
 For each type, several subcategories can be distinguished:</p>
 <ul class="simple">
-<li><em>Constants</em>: return a static constant.</li>
-<li><em>Unary Operations</em>: consume one operand and produce one result of the respective type.</li>
-<li><em>Binary Operations</em>: consume two operands and produce one result of the respective type.</li>
-<li><em>Tests</em>: consume one operand of the respective type and produce a Boolean integer result.</li>
-<li><em>Comparisons</em>: consume two operands of the respective type and produce a Boolean integer result.</li>
-<li><em>Conversions</em>: consume a value of one type and produce a result of another
-(the source type of the conversion is the one after the “<span class="math notranslate nohighlight">\(\mathsf{\_}\)</span>”).</li>
+<li><p><em>Constants</em>: return a static constant.</p></li>
+<li><p><em>Unary Operations</em>: consume one operand and produce one result of the respective type.</p></li>
+<li><p><em>Binary Operations</em>: consume two operands and produce one result of the respective type.</p></li>
+<li><p><em>Tests</em>: consume one operand of the respective type and produce a Boolean integer result.</p></li>
+<li><p><em>Comparisons</em>: consume two operands of the respective type and produce a Boolean integer result.</p></li>
+<li><p><em>Conversions</em>: consume a value of one type and produce a result of another
+(the source type of the conversion is the one after the “<span class="math notranslate nohighlight">\(\mathsf{\_}\)</span>”).</p></li>
 </ul>
 <p>Some integer instructions come in two flavors,
 where a signedness annotation <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> distinguishes whether the operands are to be <a class="reference internal" href="../exec/numerics.html#aux-signed"><span class="std std-ref">interpreted</span></a> as <a class="reference internal" href="values.html#syntax-uint"><span class="std std-ref">unsigned</span></a> or <a class="reference internal" href="values.html#syntax-sint"><span class="std std-ref">signed</span></a> integers.
@@ -272,15 +269,15 @@ In the case of loads, a sign extension mode <span class="math notranslate nohigh
 All values are read and written in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order.
 A <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> results if any of the accessed memory bytes lies outside the address range implied by the memory’s current size.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Future version of WebAssembly might provide memory instructions with 64 bit address ranges.</p>
+<p class="admonition-title">Note</p>
+<p>Future version of WebAssembly might provide memory instructions with 64 bit address ranges.</p>
 </div>
 <p>The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.size}}\)</span> instruction returns the current size of a memory.
 The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}}\)</span> instruction grows memory by a given delta and returns the previous size, or <span class="math notranslate nohighlight">\(-1\)</span> if enough memory cannot be allocated.
 Both instructions operate in units of <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly,
+<p class="admonition-title">Note</p>
+<p>In the current version of WebAssembly,
 all memory instructions implicitly operate on <a class="reference internal" href="modules.html#syntax-mem"><span class="std std-ref">memory</span></a> <a class="reference internal" href="modules.html#syntax-memidx"><span class="std std-ref">index</span></a> <span class="math notranslate nohighlight">\(0\)</span>.
 This restriction may be lifted in future versions.</p>
 </div>
@@ -323,8 +320,8 @@ In case of <span class="math notranslate nohighlight">\(\href{../syntax/instruct
 resuming execution after the matching <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span>.
 In case of <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}\)</span> it is a <em>backward jump</em> to the beginning of the loop.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This enforces <em>structured control flow</em>.
+<p class="admonition-title">Note</p>
+<p>This enforces <em>structured control flow</em>.
 Intuitively, a branch targeting a <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> or <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> behaves like a <span class="math notranslate nohighlight">\(\mathsf{break}\)</span> statement in most C-like languages,
 while a branch targeting a <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{loop}}\)</span> behaves like a <span class="math notranslate nohighlight">\(\mathsf{continue}\)</span> statement.</p>
 </div>
@@ -340,8 +337,8 @@ The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.ht
 Since tables may contain function elements of heterogeneous type <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-elemtype}{\mathsf{funcref}}\)</span>,
 the callee is dynamically checked against the <a class="reference internal" href="types.html#syntax-functype"><span class="std std-ref">function type</span></a> indexed by the instruction’s immediate, and the call aborted with a <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> if it does not match.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the current version of WebAssembly,
+<p class="admonition-title">Note</p>
+<p>In the current version of WebAssembly,
 <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> implicitly operates on <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">table</span></a> <a class="reference internal" href="modules.html#syntax-tableidx"><span class="std std-ref">index</span></a> <span class="math notranslate nohighlight">\(0\)</span>.
 This restriction may be lifted in future versions.</p>
 </div>

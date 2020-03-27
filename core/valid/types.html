@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Types &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Instructions" href="instructions.html" />
@@ -64,13 +63,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -90,16 +87,17 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
 <div class="section" id="limits">
 <span id="valid-limits"></span><span id="index-0"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">Limits</span></a> must have meaningful bounds that are within a given range.</p>
-<div class="section" id="id1">
-<h3><span class="math notranslate nohighlight">\(\{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^? \}\)</span><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="xref-syntax-types-syntax-limits-mathsf-min-n-xref-syntax-types-syntax-limits-mathsf-max-m">
+<h3><span class="math notranslate nohighlight">\(\{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m^? \}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-limits-mathsf-min-n-xref-syntax-types-syntax-limits-mathsf-max-m" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The value of <span class="math notranslate nohighlight">\(n\)</span> must not be larger than <span class="math notranslate nohighlight">\(k\)</span>.</li>
-<li>If the maximum <span class="math notranslate nohighlight">\(m^?\)</span> is not empty, then:<ul>
-<li>Its value must not be larger than <span class="math notranslate nohighlight">\(k\)</span>.</li>
-<li>Its value must not be smaller than <span class="math notranslate nohighlight">\(n\)</span>.</li>
+<li><p>The value of <span class="math notranslate nohighlight">\(n\)</span> must not be larger than <span class="math notranslate nohighlight">\(k\)</span>.</p></li>
+<li><p>If the maximum <span class="math notranslate nohighlight">\(m^?\)</span> is not empty, then:</p>
+<ul>
+<li><p>Its value must not be larger than <span class="math notranslate nohighlight">\(k\)</span>.</p></li>
+<li><p>Its value must not be smaller than <span class="math notranslate nohighlight">\(n\)</span>.</p></li>
 </ul>
 </li>
-<li>Then the limit is valid within range <span class="math notranslate nohighlight">\(k\)</span>.</li>
+<li><p>Then the limit is valid within range <span class="math notranslate nohighlight">\(k\)</span>.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
@@ -116,11 +114,11 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
 <div class="section" id="function-types">
 <span id="valid-functype"></span><span id="index-1"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">Function types</span></a> may not specify more than one result.</p>
-<div class="section" id="id2">
-<h3><span class="math notranslate nohighlight">\([t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^m]\)</span><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="t-1-n-xref-syntax-types-syntax-functype-rightarrow-t-2-m">
+<h3><span class="math notranslate nohighlight">\([t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^m]\)</span><a class="headerlink" href="#t-1-n-xref-syntax-types-syntax-functype-rightarrow-t-2-m" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The arity <span class="math notranslate nohighlight">\(m\)</span> must not be larger than <span class="math notranslate nohighlight">\(1\)</span>.</li>
-<li>Then the function type is valid.</li>
+<li><p>The arity <span class="math notranslate nohighlight">\(m\)</span> must not be larger than <span class="math notranslate nohighlight">\(1\)</span>.</p></li>
+<li><p>Then the function type is valid.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
@@ -128,18 +126,18 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
   \href{../valid/types.html#valid-functype}{\vdash} [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?] \mathrel{\mbox{ok}}
 }\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The restriction to at most one result may be removed in future versions of WebAssembly.</p>
+<p class="admonition-title">Note</p>
+<p>The restriction to at most one result may be removed in future versions of WebAssembly.</p>
 </div>
 </div>
 </div>
 <div class="section" id="table-types">
 <span id="valid-tabletype"></span><span id="index-2"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id3">
-<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}\)</span><a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="xref-syntax-types-syntax-limits-mathit-limits-xref-syntax-types-syntax-elemtype-mathit-elemtype">
+<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-limits-mathit-limits-xref-syntax-types-syntax-elemtype-mathit-elemtype" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The limits <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}\)</span> must be <a class="reference internal" href="#valid-limits"><span class="std std-ref">valid</span></a> within range <span class="math notranslate nohighlight">\(2^{32}\)</span>.</li>
-<li>Then the table type is valid.</li>
+<li><p>The limits <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}\)</span> must be <a class="reference internal" href="#valid-limits"><span class="std std-ref">valid</span></a> within range <span class="math notranslate nohighlight">\(2^{32}\)</span>.</p></li>
+<li><p>Then the table type is valid.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
@@ -151,11 +149,11 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
 </div>
 <div class="section" id="memory-types">
 <span id="valid-memtype"></span><span id="index-3"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id4">
-<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}\)</span><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="xref-syntax-types-syntax-limits-mathit-limits">
+<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-limits-mathit-limits" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The limits <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}\)</span> must be <a class="reference internal" href="#valid-limits"><span class="std std-ref">valid</span></a> within range <span class="math notranslate nohighlight">\(2^{16}\)</span>.</li>
-<li>Then the memory type is valid.</li>
+<li><p>The limits <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}\)</span> must be <a class="reference internal" href="#valid-limits"><span class="std std-ref">valid</span></a> within range <span class="math notranslate nohighlight">\(2^{16}\)</span>.</p></li>
+<li><p>Then the memory type is valid.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
@@ -167,10 +165,10 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
 </div>
 <div class="section" id="global-types">
 <span id="valid-globaltype"></span><span id="index-4"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id5">
-<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}\)</span><a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="xref-syntax-types-syntax-mut-mathit-mut-xref-syntax-types-syntax-valtype-mathit-valtype">
+<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-mut-mathit-mut-xref-syntax-types-syntax-valtype-mathit-valtype" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The global type is valid.</li>
+<li><p>The global type is valid.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
@@ -181,11 +179,11 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
 </div>
 <div class="section" id="external-types">
 <span id="valid-externtype"></span><span id="index-5"></span><h2>External Types<a class="headerlink" href="#external-types" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id6">
-<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span><a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="xref-syntax-types-syntax-externtype-mathsf-func-xref-syntax-types-syntax-functype-mathit-functype">
+<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-externtype-mathsf-func-xref-syntax-types-syntax-functype-mathit-functype" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span> must be <a class="reference internal" href="#valid-functype"><span class="std std-ref">valid</span></a>.</li>
-<li>Then the external type is valid.</li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span> must be <a class="reference internal" href="#valid-functype"><span class="std std-ref">valid</span></a>.</p></li>
+<li><p>Then the external type is valid.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
@@ -194,11 +192,11 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
   \href{../valid/types.html#valid-externtype}{\vdash} \href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}} \mathrel{\mbox{ok}}
 }\]</div>
 </div>
-<div class="section" id="id7">
-<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span><a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="xref-syntax-types-syntax-externtype-mathsf-table-xref-syntax-types-syntax-tabletype-mathit-tabletype">
+<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-externtype-mathsf-table-xref-syntax-types-syntax-tabletype-mathit-tabletype" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span> must be <a class="reference internal" href="#valid-tabletype"><span class="std std-ref">valid</span></a>.</li>
-<li>Then the external type is valid.</li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span> must be <a class="reference internal" href="#valid-tabletype"><span class="std std-ref">valid</span></a>.</p></li>
+<li><p>Then the external type is valid.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
@@ -207,11 +205,11 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
   \href{../valid/types.html#valid-externtype}{\vdash} \href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}} \mathrel{\mbox{ok}}
 }\]</div>
 </div>
-<div class="section" id="id8">
-<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span><a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="xref-syntax-types-syntax-externtype-mathsf-mem-xref-syntax-types-syntax-memtype-mathit-memtype">
+<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-externtype-mathsf-mem-xref-syntax-types-syntax-memtype-mathit-memtype" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span> must be <a class="reference internal" href="#valid-memtype"><span class="std std-ref">valid</span></a>.</li>
-<li>Then the external type is valid.</li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span> must be <a class="reference internal" href="#valid-memtype"><span class="std std-ref">valid</span></a>.</p></li>
+<li><p>Then the external type is valid.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
@@ -220,11 +218,11 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
   \href{../valid/types.html#valid-externtype}{\vdash} \href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}} \mathrel{\mbox{ok}}
 }\]</div>
 </div>
-<div class="section" id="id9">
-<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span><a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="xref-syntax-types-syntax-externtype-mathsf-global-xref-syntax-types-syntax-globaltype-mathit-globaltype">
+<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-externtype-mathsf-global-xref-syntax-types-syntax-globaltype-mathit-globaltype" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span> must be <a class="reference internal" href="#valid-globaltype"><span class="std std-ref">valid</span></a>.</li>
-<li>Then the external type is valid.</li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span> must be <a class="reference internal" href="#valid-globaltype"><span class="std std-ref">valid</span></a>.</p></li>
+<li><p>Then the external type is valid.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{

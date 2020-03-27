@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Values &#8212; WebAssembly 1.0</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +11,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Types" href="types.html" />
@@ -65,13 +64,11 @@
 </ul>
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -126,12 +123,12 @@ As an additional constraint, the total number of bytes encoding a value of type 
   n{:}\href{../binary/values.html#binary-int}{\def\mathdef942#1{{\mathtt{s}#1}}\mathdef942{N}} &amp;\Rightarrow&amp; i &amp; (\mathrel{\mbox{if}} n = \href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_{\href{../syntax/values.html#syntax-int}{\mathit{i}N}}(i))
 \end{array}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>The side conditions <span class="math notranslate nohighlight">\(N &gt; 7\)</span> in the productions for non-terminal bytes of the <span class="math notranslate nohighlight">\(\def\mathdef977#1{{\mathit{u#1}}}\mathdef977{}\)</span> and <span class="math notranslate nohighlight">\(\def\mathdef978#1{{\mathit{s#1}}}\mathdef978{}\)</span> encodings restrict the encoding’s length.
 However, “trailing zeros” are still allowed within these bounds.
 For example, <span class="math notranslate nohighlight">\(\def\mathdef979#1{\mathtt{0x#1}}\mathdef979{03}\)</span> and <span class="math notranslate nohighlight">\(\def\mathdef980#1{\mathtt{0x#1}}\mathdef980{83}~\def\mathdef981#1{\mathtt{0x#1}}\mathdef981{00}\)</span> are both well-formed encodings for the value <span class="math notranslate nohighlight">\(3\)</span> as a <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{u8}}\)</span>.
 Similarly, either of <span class="math notranslate nohighlight">\(\def\mathdef982#1{\mathtt{0x#1}}\mathdef982{7e}\)</span> and <span class="math notranslate nohighlight">\(\def\mathdef983#1{\mathtt{0x#1}}\mathdef983{FE}~\def\mathdef984#1{\mathtt{0x#1}}\mathdef984{7F}\)</span> and <span class="math notranslate nohighlight">\(\def\mathdef985#1{\mathtt{0x#1}}\mathdef985{FE}~\def\mathdef986#1{\mathtt{0x#1}}\mathdef986{FF}~\def\mathdef987#1{\mathtt{0x#1}}\mathdef987{7F}\)</span> are well-formed encodings of the value <span class="math notranslate nohighlight">\(-2\)</span> as a <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{s16}}\)</span>.</p>
-<p class="last">The side conditions on the value <span class="math notranslate nohighlight">\(n\)</span> of terminal bytes further enforce that
+<p>The side conditions on the value <span class="math notranslate nohighlight">\(n\)</span> of terminal bytes further enforce that
 any unused bits in these bytes must be <span class="math notranslate nohighlight">\(0\)</span> for positive values and <span class="math notranslate nohighlight">\(1\)</span> for negative ones.
 For example, <span class="math notranslate nohighlight">\(\def\mathdef988#1{\mathtt{0x#1}}\mathdef988{83}~\def\mathdef989#1{\mathtt{0x#1}}\mathdef989{10}\)</span> is malformed as a <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{u8}}\)</span> encoding.
 Similarly, both <span class="math notranslate nohighlight">\(\def\mathdef990#1{\mathtt{0x#1}}\mathdef990{83}~\def\mathdef991#1{\mathtt{0x#1}}\mathdef991{3E}\)</span> and <span class="math notranslate nohighlight">\(\def\mathdef992#1{\mathtt{0x#1}}\mathdef992{FF}~\def\mathdef993#1{\mathtt{0x#1}}\mathdef993{7B}\)</span> are malformed as <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{s8}}\)</span> encodings.</p>
@@ -184,8 +181,8 @@ Similarly, both <span class="math notranslate nohighlight">\(\def\mathdef990#1{\
 \mathrel{\mbox{where}} b_2, b_3, b_4 &lt; \def\mathdef1012#1{\mathtt{0x#1}}\mathdef1012{C0} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Unlike in some other formats, name strings are not 0-terminated.</p>
+<p class="admonition-title">Note</p>
+<p>Unlike in some other formats, name strings are not 0-terminated.</p>
 </div>
 </div>
 </div>
