@@ -5,14 +5,13 @@
 
 from sphinx.ext.mathbase import math
 from sphinx.ext.mathbase import displaymath
-from sphinx.ext.mathbase import math_role
 from sphinx.ext.mathbase import MathDirective
-from sphinx.ext.mathbase import latex_visit_math
-from sphinx.ext.mathbase import latex_visit_displaymath
 from sphinx.ext.mathjax import html_visit_math
 from sphinx.ext.mathjax import html_visit_displaymath
 from sphinx.util.texescape import tex_escape_map, tex_replace_map
+from docutils import nodes, utils
 from docutils.parsers.rst.directives.misc import Replace
+from docutils.parsers.rst.roles import math_role
 from six import text_type
 import re
 
@@ -25,8 +24,8 @@ def html_hyperlink(file, id):
   return '\\href{#%s}' % (id.replace('_', '-'))
 
 def html_transform_math_xref(node):
-  node['latex'] = \
-    xref_re.sub(lambda m: html_hyperlink(m.group(1), m.group(2)), node['latex'])
+  new_text = xref_re.sub(lambda m: html_hyperlink(m.group(1), m.group(2)), node.astext())
+  node.children[0] = nodes.Text(new_text)
 
 def ext_html_visit_math(self, node):
   html_transform_math_xref(node)
@@ -44,12 +43,35 @@ def latex_hyperlink(file, id):
   return '\\hyperref[%s:%s]' % (file, id)
 
 def latex_transform_math_xref(node):
-  node['latex'] = \
-    xref_re.sub(lambda m: latex_hyperlink(m.group(1), m.group(2)), node['latex'])
+  new_text = xref_re.sub(lambda m: latex_hyperlink(m.group(1), m.group(2)), node.astext())
+  node.children[0] = nodes.Text(new_text)
+
+def latex_visit_math(self, node):
+  if self.in_title:
+      self.body.append(r'\protect\(%s\protect\)' % node.astext())
+  else:
+      self.body.append(r'\(%s\)' % node.astext())
+  raise nodes.SkipNode
 
 def ext_latex_visit_math(self, node):
   latex_transform_math_xref(node)
   latex_visit_math(self, node)
+
+def latex_visit_displaymath(self, node):
+  if node.get('label'):
+      label = "equation:%s:%s" % (node['docname'], node['label'])
+  else:
+      label = None
+
+  if node.get('nowrap'):
+      if label:
+          self.body.append(r'\label{%s}' % label)
+      self.body.append(node.astext())
+  else:
+      from sphinx.util.math import wrap_displaymath
+      self.body.append(wrap_displaymath(node.astext(), label,
+                                        self.builder.config.math_number_all))
+  raise nodes.SkipNode
 
 def ext_latex_visit_displaymath(self, node):
   latex_transform_math_xref(node)
@@ -80,8 +102,7 @@ def replace_mathdefs(doc, s):
 
 def ext_math_role(role, raw, text, line, inliner, options = {}, content = []):
   text = replace_mathdefs(inliner.document, raw.split('`')[1])
-  return math_role(role, raw, text, line, inliner, options = options,
-                   content = content)
+  return [math(raw, text)], []
 
 class ExtMathDirective(MathDirective):
   def run(self):
@@ -116,9 +137,11 @@ class MathdefDirective(Replace):
 
 def setup(app):
   app.add_node(math,
+               override = True,
                html = (ext_html_visit_math, None),
                latex = (ext_latex_visit_math, None))
   app.add_node(displaymath,
+               override = True,
                html = (ext_html_visit_displaymath, None),
                latex = (ext_latex_visit_displaymath, None))
   app.add_role('math', ext_math_role)
