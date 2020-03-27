@@ -251,7 +251,7 @@ is equivalent to
 ```
 where `(t.default)` is `(t.const 0)` for numeric types `t`, and `(ref.null)` for reference types.
 
-TODO: This assumes that let-bound locals are mutable. Should they be?
+The rule also implies that let-bound locals are mutable.
 
 
 ### Tables

@@ -140,6 +140,33 @@
       )
     )
   )
+
+  (func (export "mutate") (param $x1 i64) (param $x2 i64) (result i64)
+    (local $y1 i64)
+    (local $y2 i64)
+
+    (i64.const 0) (i64.const 0)
+    (let (result i64) (local $z1 i64) (local $z2 i64)
+      (i64.const 0) (i64.const 0)
+      (let (result i64) (local $u1 i64) (local $u2 i64)
+        (local.set $y1 (i64.const 5))
+        (local.set $y2 (i64.const 7))
+        (local.set $z1 (i64.const 11))
+        (local.set $z2 (i64.const 13))
+        (local.set $u1 (i64.const 17))
+        (local.set $u2 (i64.const 19))
+        (i64.const 0)
+        (i64.add (call $pow (local.get $u1) (i32.const 0)))  ;; 17^0 =      1
+        (i64.add (call $pow (local.get $u2) (i32.const 1)))  ;; 19^1 =     19
+        (i64.add (call $pow (local.get $z1) (i32.const 2)))  ;; 11^2 =    121
+        (i64.add (call $pow (local.get $z2) (i32.const 3)))  ;; 13^3 =   2197
+        (i64.add (call $pow (local.get $x1) (i32.const 4)))  ;;  2^4 =     16
+        (i64.add (call $pow (local.get $x2) (i32.const 5)))  ;;  3^5 =    243
+        (i64.add (call $pow (local.get $y1) (i32.const 6)))  ;;  5^6 =  15625
+        (i64.add (call $pow (local.get $y2) (i32.const 7)))  ;;  7^7 = 823543
+      )
+    )
+  )
 )
 
 (assert_return (invoke "syntax" (i32.const 1) (i64.const 2)))
@@ -155,6 +182,7 @@
 
 (assert_return (invoke "semantics-idx" (i64.const 2) (i64.const 3)) (i64.const 841_765))
 (assert_return (invoke "semantics-sym" (i64.const 2) (i64.const 3)) (i64.const 841_765))
+(assert_return (invoke "mutate" (i64.const 2) (i64.const 3)) (i64.const 841_765))
 
 
 ;; Shadowing.
