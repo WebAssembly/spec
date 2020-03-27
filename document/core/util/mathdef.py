@@ -41,6 +41,8 @@ def latex_transform_math_xref(node):
   new_text = xref_re.sub(lambda m: latex_hyperlink(m.group(1), m.group(2)), node.astext())
   node.children[0] = nodes.Text(new_text)
 
+# TODO: this is duplicated from sphinx.writers.latex.LaTeXTranslator, figure out
+# a better way to extend it so that we don't have to duplicate this code.
 def latex_visit_math(self, node):
   if self.in_title:
       self.body.append(r'\protect\(%s\protect\)' % node.astext())
@@ -52,6 +54,8 @@ def ext_latex_visit_math(self, node):
   latex_transform_math_xref(node)
   latex_visit_math(self, node)
 
+# TODO: this is duplicated from sphinx.writers.latex.LaTeXTranslator, figure out
+# a better way to extend it so that we don't have to duplicate this code.
 def latex_visit_displaymath(self, node):
   if node.get('label'):
       label = "equation:%s:%s" % (node['docname'], node['label'])
@@ -120,6 +124,7 @@ class MathdefDirective(Replace):
     doc = self.state.document
     if not hasattr(doc, 'mathdefs'):
       doc.mathdefs = {}
+    # TODO: we don't ever hit the case where len(self.content) > 1
     for i, s in enumerate(self.content):
       self.content[i] = replace_mathdefs(doc, s)
     doc.mathdefs[name] = [arity, ''.join(self.content)]
