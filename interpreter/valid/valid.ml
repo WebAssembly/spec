@@ -310,11 +310,11 @@ and check_block (c : context) (es : instr list) (ts : stack_type) at =
 (* Types *)
 
 let check_limits {min; max} range at msg =
-  require (I64.le_u (Int64.of_int32 min) range) at msg;
+  require (I32.le_u min range) at msg;
   match max with
   | None -> ()
   | Some max ->
-    require (I64.le_u (Int64.of_int32 max) range) at msg;
+    require (I32.le_u max range) at msg;
     require (I32.le_u min max) at
       "size minimum must not be greater than maximum"
 
@@ -329,11 +329,11 @@ let check_func_type (ft : func_type) at =
 
 let check_table_type (tt : table_type) at =
   let TableType (lim, _) = tt in
-  check_limits lim 0x1_0000_0000L at "table size must be at most 2^32"
+  check_limits lim 0xffff_ffffl at "table size must be at most 2^32-1"
 
 let check_memory_type (mt : memory_type) at =
   let MemoryType lim = mt in
-  check_limits lim 0x1_0000L at
+  check_limits lim 0x1_0000l at
     "memory size must be at most 65536 pages (4GiB)"
 
 let check_global_type (gt : global_type) at =
