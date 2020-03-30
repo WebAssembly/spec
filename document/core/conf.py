@@ -478,3 +478,9 @@ epub_exclude_files = ['search.html']
 rst_prolog = """
 .. include:: /""" + pwd + """/util/macros.def
 """
+
+# https://www.sphinx-doc.org/en/master/usage/extensions/math.html#confval-mathjax_config
+# https://docs.mathjax.org/en/latest/options/input/tex.html#the-configuration-block
+mathjax_config = {
+    'tex': { 'maxBuffer': 30*1024 },
+}
