@@ -480,7 +480,7 @@ rst_prolog = """
 """
 
 # https://www.sphinx-doc.org/en/master/usage/extensions/math.html#confval-mathjax_config
-# https://docs.mathjax.org/en/latest/options/input/tex.html#the-configuration-block
+# http://docs.mathjax.org/en/v2.7-latest/options/input-processors/TeX.html
 mathjax_config = {
     'TeX': { 'MAXBUFFER': 30*1024 },
 }
