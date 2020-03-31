@@ -41,7 +41,7 @@ let num f s =
 
 let nanop f nan =
   let open Source in
-  let open Values in
+  let open Value in
   match snd (f ("0" @@ no_region)) with
   | F32 _ -> F32 nan.it @@ nan.at
   | F64 _ -> F64 nan.it @@ nan.at
@@ -208,7 +208,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<string> STRING
 %token<string> VAR
 %token<Types.num_type> NUM_TYPE
-%token<string Source.phrase -> Ast.instr' * Values.num> CONST
+%token<string Source.phrase -> Ast.instr' * Value.num> CONST
 %token<Ast.instr'> UNARY
 %token<Ast.instr'> BINARY
 %token<Ast.instr'> TEST
@@ -248,7 +248,8 @@ null_opt :
   | NULL { Nullable }
 
 ref_type :
-  | LPAR REF null_opt var RPAR { fun c -> DefRefType ($3, ($4 c type_).it) }
+  | LPAR REF null_opt var RPAR
+    { fun c -> DefRefType ($3, SynVar ($4 c type_).it) }
   | LPAR REF ANY RPAR { fun c -> AnyRefType }
   | LPAR REF NULL RPAR { fun c -> NullRefType }
   | LPAR REF FUNC RPAR { fun c -> FuncRefType }
@@ -1067,9 +1068,9 @@ meta :
   | LPAR OUTPUT script_var_opt RPAR { Output ($3, None) @@ at () }
 
 const :
-  | LPAR CONST num RPAR { Values.Num (snd (num $2 $3)) @@ at () }
-  | LPAR REF_NULL RPAR { Values.Ref Values.NullRef @@ at () }
-  | LPAR REF_HOST NAT RPAR { Values.Ref (HostRef (nat32 $3 (ati 3))) @@ at () }
+  | LPAR CONST num RPAR { Value.Num (snd (num $2 $3)) @@ at () }
+  | LPAR REF_NULL RPAR { Value.Ref Value.NullRef @@ at () }
+  | LPAR REF_HOST NAT RPAR { Value.Ref (HostRef (nat32 $3 (ati 3))) @@ at () }
 
 const_list :
   | /* empty */ { [] }

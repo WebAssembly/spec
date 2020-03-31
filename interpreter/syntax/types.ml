@@ -1,19 +1,23 @@
 (* Types *)
 
-type var = Int32.t
+type name = int list
 
-type nullability = NonNullable | Nullable
-type num_type = I32Type | I64Type | F32Type | F64Type
-type ref_type =
+and syn_var = int32
+and sem_var = def_type Lib.Promise.t
+and var = SynVar of syn_var | SemVar of sem_var
+
+and nullability = NonNullable | Nullable
+and num_type = I32Type | I64Type | F32Type | F64Type
+and ref_type =
   | NullRefType
   | AnyRefType
   | FuncRefType
   | DefRefType of nullability * var
 
-type value_type = NumType of num_type | RefType of ref_type | BotType
-type stack_type = value_type list
-type func_type = FuncType of stack_type * stack_type
-type def_type = FuncDefType of func_type
+and value_type = NumType of num_type | RefType of ref_type | BotType
+and stack_type = value_type list
+and func_type = FuncType of stack_type * stack_type
+and def_type = FuncDefType of func_type
 
 type 'a limits = {min : 'a; max : 'a option}
 type mutability = Immutable | Mutable
@@ -26,6 +30,11 @@ type extern_type =
   | ExternMemoryType of memory_type
   | ExternGlobalType of global_type
 
+type export_type = ExportType of extern_type * name
+type import_type = ImportType of extern_type * name * name
+type module_type =
+  ModuleType of def_type list * import_type list * export_type list
+
 
 (* Projections *)
 
@@ -33,8 +42,23 @@ let as_func_def_type (dt : def_type) : func_type =
   match dt with
   | FuncDefType ft -> ft
 
+let extern_type_of_import_type (ImportType (et, _, _)) = et
+let extern_type_of_export_type (ExportType (et, _)) = et
+
+
+(* Allocation *)
+
+let alloc_uninit () = Lib.Promise.make ()
+let init p dt = Lib.Promise.fulfill p dt
+let alloc dt = let p = alloc_uninit () in init p dt; p
+
+let def_of x = Lib.Promise.value x
+
 
 (* Attributes *)
+
+let is_syn_var = function SynVar _ -> true | _ -> false
+let is_sem_var = function SemVar _ -> true | _ -> false
 
 let size = function
   | I32Type | F32Type -> 4
@@ -73,33 +97,128 @@ let globals =
   Lib.List.map_filter (function ExternGlobalType t -> Some t | _ -> None)
 
 
+(* Conversion *)
+
+let sem_var_type c = function
+  | SynVar x -> SemVar (Lib.List32.nth c x)
+  | SemVar _ -> assert false
+
+let sem_num_type c t = t
+
+let sem_ref_type c = function
+  | NullRefType -> NullRefType
+  | AnyRefType -> AnyRefType
+  | FuncRefType -> FuncRefType
+  | DefRefType (nul, x) -> DefRefType (nul, sem_var_type c x)
+
+let sem_value_type c = function
+  | NumType t -> NumType (sem_num_type c t)
+  | RefType t -> RefType (sem_ref_type c t)
+  | BotType -> BotType
+
+let sem_stack_type c ts =
+ List.map (sem_value_type c) ts
+
+
+let sem_memory_type c (MemoryType lim) =
+  MemoryType lim
+
+let sem_table_type c (TableType (lim, t)) =
+  TableType (lim, sem_ref_type c t)
+
+let sem_global_type c (GlobalType (t, mut)) =
+  GlobalType (sem_value_type c t, mut)
+
+let sem_func_type c (FuncType (ins, out)) =
+  FuncType (sem_stack_type c ins, sem_stack_type c out)
+
+let sem_extern_type c = function
+  | ExternFuncType ft -> ExternFuncType (sem_func_type c ft)
+  | ExternTableType tt -> ExternTableType (sem_table_type c tt)
+  | ExternMemoryType mt -> ExternMemoryType (sem_memory_type c mt)
+  | ExternGlobalType gt -> ExternGlobalType (sem_global_type c gt)
+
+
+let sem_def_type c = function
+  | FuncDefType ft -> FuncDefType (sem_func_type c ft)
+
+
+let sem_export_type c (ExportType (et, name)) =
+  ExportType (sem_extern_type c et, name)
+
+let sem_import_type c (ImportType (et, module_name, name)) =
+  ImportType (sem_extern_type c et, module_name, name)
+
+let sem_module_type (ModuleType (dts, its, ets)) =
+  let c = List.map (fun _ -> alloc_uninit ()) dts in
+  List.iter2 (fun x dt -> init x (sem_def_type c dt)) c dts;
+  let its = List.map (sem_import_type c) its in
+  let ets = List.map (sem_export_type c) ets in
+  ModuleType ([], its, ets)
+
+
 (* String conversion *)
 
-let string_of_nullability = function
+let string_of_name n =
+  let b = Buffer.create 16 in
+  let escape uc =
+    if uc < 0x20 || uc >= 0x7f then
+      Buffer.add_string b (Printf.sprintf "\\u{%02x}" uc)
+    else begin
+      let c = Char.chr uc in
+      if c = '\"' || c = '\\' then Buffer.add_char b '\\';
+      Buffer.add_char b c
+    end
+  in
+  List.iter escape n;
+  Buffer.contents b
+
+let rec string_of_var =
+  let inner = ref false in
+  function
+  | SynVar x -> Int32.to_string x
+  | SemVar x ->
+    if !inner then "..." else
+    ( inner := true;
+      try
+        let s = string_of_def_type (def_of x) in
+        inner := false; "(" ^ s ^ ")"
+      with exn -> inner := false; raise exn
+    )
+
+and string_of_nullability = function
   | NonNullable -> ""
   | Nullable -> "null "
 
-let string_of_num_type = function
+and string_of_num_type = function
   | I32Type -> "i32"
   | I64Type -> "i64"
   | F32Type -> "f32"
   | F64Type -> "f64"
 
-let string_of_ref_type = function
+and string_of_ref_type = function
   | NullRefType -> "nullref"
   | AnyRefType -> "anyref"
   | FuncRefType -> "funcref"
   | DefRefType (nul, x) ->
-    "(ref " ^ string_of_nullability nul ^ Int32.to_string x ^ ")"
+    "(ref " ^ string_of_nullability nul ^ string_of_var x ^ ")"
 
-let string_of_value_type = function
+and string_of_value_type = function
   | NumType t -> string_of_num_type t
   | RefType t -> string_of_ref_type t
   | BotType -> "impossible"
 
-let string_of_stack_type = function
+and string_of_stack_type = function
   | [t] -> string_of_value_type t
   | ts -> "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
+
+
+and string_of_func_type = function
+  | FuncType (ins, out) ->
+    string_of_stack_type ins ^ " -> " ^ string_of_stack_type out
+
+and string_of_def_type = function
+  | FuncDefType ft -> "func " ^ string_of_func_type ft
 
 
 let string_of_limits {min; max} =
@@ -116,11 +235,23 @@ let string_of_global_type = function
   | GlobalType (t, Immutable) -> string_of_value_type t
   | GlobalType (t, Mutable) -> "(mut " ^ string_of_value_type t ^ ")"
 
-let string_of_func_type (FuncType (ins, out)) =
-  string_of_stack_type ins ^ " -> " ^ string_of_stack_type out
-
 let string_of_extern_type = function
   | ExternFuncType ft -> "func " ^ string_of_func_type ft
   | ExternTableType tt -> "table " ^ string_of_table_type tt
   | ExternMemoryType mt -> "memory " ^ string_of_memory_type mt
   | ExternGlobalType gt -> "global " ^ string_of_global_type gt
+
+
+let string_of_export_type (ExportType (et, name)) =
+  "\"" ^ string_of_name name ^ "\" : " ^ string_of_extern_type et
+
+let string_of_import_type (ImportType (et, module_name, name)) =
+  "\"" ^ string_of_name module_name ^ "\" \"" ^
+    string_of_name name ^ "\" : " ^ string_of_extern_type et
+
+let string_of_module_type (ModuleType (dts, its, ets)) =
+  String.concat "" (
+    List.mapi (fun i dt -> "type " ^ string_of_int i ^ " = " ^ string_of_def_type dt ^ "\n") dts @
+    List.map (fun it -> "import " ^ string_of_import_type it ^ "\n") its @
+    List.map (fun et -> "export " ^ string_of_export_type et ^ "\n") ets
+  )

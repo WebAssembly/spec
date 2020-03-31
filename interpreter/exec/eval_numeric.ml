@@ -1,5 +1,5 @@
 open Types
-open Values
+open Value
 
 
 (* Injection & projection *)
@@ -44,7 +44,7 @@ end
 
 (* Int operators *)
 
-module IntOp (IXX : Int.S) (Num : NumType with type t = IXX.t) =
+module IntOp (IXX : Ixx.S) (Num : NumType with type t = IXX.t) =
 struct
   open Ast.IntOp
   open Num
@@ -101,7 +101,7 @@ module I64Op = IntOp (I64) (I64Num)
 
 (* Float operators *)
 
-module FloatOp (FXX : Float.S) (Num : NumType with type t = FXX.t) =
+module FloatOp (FXX : Fxx.S) (Num : NumType with type t = FXX.t) =
 struct
   open Ast.FloatOp
   open Num

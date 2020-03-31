@@ -1,7 +1,7 @@
+open Types
+open Value
 open Bigarray
 open Lib.Bigarray
-open Types
-open Values
 
 type size = int32  (* number of pages *)
 type address = int64
@@ -125,7 +125,7 @@ let store_num mem a o n =
     | I64 x -> x
     | F32 x -> Int64.of_int32 (F32.to_bits x)
     | F64 x -> F64.to_bits x
-  in storen mem a o (Types.size (Values.type_of_num n)) x
+  in storen mem a o (Types.size (Value.type_of_num n)) x
 
 let extend x n = function
   | ZX -> x
@@ -141,7 +141,7 @@ let load_packed sz ext mem a o t =
   | _ -> raise Type
 
 let store_packed sz mem a o n =
-  assert (packed_size sz <= Types.size (Values.type_of_num n));
+  assert (packed_size sz <= Types.size (Value.type_of_num n));
   let w = packed_size sz in
   let x =
     match n with

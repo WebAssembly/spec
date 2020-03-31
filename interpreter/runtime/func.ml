@@ -1,19 +1,19 @@
 open Types
-open Values
+open Value
 
 type 'inst t = 'inst func
 and 'inst func =
-  | AstFunc of func_type * 'inst * Ast.func
-  | HostFunc of func_type * (value list -> value list)
-  | ClosureFunc of 'inst func * value list
+  | AstFunc of sem_var * 'inst * Ast.func
+  | HostFunc of sem_var * (value list -> value list)
+  | ClosureFunc of sem_var * 'inst func * value list
 
-let alloc ft inst f = AstFunc (ft, inst, f)
-let alloc_host ft f = HostFunc (ft, f)
-let alloc_closure func vs = ClosureFunc (func, vs)
+let alloc x inst f = AstFunc (x, inst, f)
+let alloc_host x f = HostFunc (x, f)
+let alloc_closure x func vs = ClosureFunc (x, func, vs)
 
-let rec type_of = function
-  | AstFunc (ft, _, _) -> ft
-  | HostFunc (ft, _) -> ft
-  | ClosureFunc (f, vs) ->
-    let FuncType (ins, out) = type_of f in
-    FuncType (Lib.List.drop (List.length vs) ins, out)
+let type_inst_of = function
+  | AstFunc (x, _, _) -> x
+  | HostFunc (x, _) -> x
+  | ClosureFunc (x, f, vs) -> x
+
+let type_of f = as_func_def_type (def_of (type_inst_of f))

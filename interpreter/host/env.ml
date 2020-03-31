@@ -4,8 +4,8 @@
  * we have agreement on what libc should look like.
  *)
 
-open Values
 open Types
+open Value
 open Instance
 
 
@@ -39,8 +39,10 @@ let exit vs =
   exit (int (single vs))
 
 
-let lookup name t =
-  match Utf8.encode name, t with
-  | "abort", ExternFuncType t -> ExternFunc (Func.alloc_host t abort)
-  | "exit", ExternFuncType t -> ExternFunc (Func.alloc_host t exit)
+let lookup name et =
+  match Utf8.encode name, et with
+  | "abort", ExternFuncType ft ->
+    ExternFunc (Func.alloc_host (Types.alloc (FuncDefType ft)) abort)
+  | "exit", ExternFuncType ft ->
+    ExternFunc (Func.alloc_host (Types.alloc (FuncDefType ft)) exit)
   | _ -> raise Not_found

@@ -1,7 +1,7 @@
 type var = string Source.phrase
 
-type Values.ref_ += HostRef of int32
-type value = Values.value Source.phrase
+type Value.ref_ += HostRef of int32
+type value = Value.t Source.phrase
 
 type definition = definition' Source.phrase
 and definition' =
@@ -15,12 +15,12 @@ and action' =
   | Get of var option * Ast.name
 
 type nanop = nanop' Source.phrase
-and nanop' = (unit, unit, nan, nan) Values.op
+and nanop' = (unit, unit, nan, nan) Value.op
 and nan = CanonicalNan | ArithmeticNan
 
 type result = result' Source.phrase
 and result' =
-  | LitResult of Values.value Source.phrase
+  | LitResult of Value.t Source.phrase
   | NanResult of nanop
   | RefResult
   | FuncResult
@@ -55,13 +55,13 @@ exception Syntax of Source.region * string
 
 
 let () =
-  let type_of_ref' = !Values.type_of_ref' in
-  Values.type_of_ref' := function
+  let type_of_ref' = !Value.type_of_ref' in
+  Value.type_of_ref' := function
     | HostRef _ -> Types.AnyRefType
     | r -> type_of_ref' r
 
 let () =
-  let string_of_ref' = !Values.string_of_ref' in
-  Values.string_of_ref' := function
+  let string_of_ref' = !Value.string_of_ref' in
+  Value.string_of_ref' := function
     | HostRef n -> "ref " ^ Int32.to_string n
     | r -> string_of_ref' r

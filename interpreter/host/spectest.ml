@@ -3,7 +3,7 @@
  *)
 
 open Types
-open Values
+open Value
 open Instance
 
 
@@ -21,12 +21,11 @@ let global (GlobalType (t, _) as gt) =
 let table =
   Table.alloc (TableType ({min = 10l; max = Some 20l}, FuncRefType)) NullRef
 let memory = Memory.alloc (MemoryType {min = 1l; max = Some 2l})
-let func f t = Func.alloc_host t (f t)
+let func f ft = Func.alloc_host (Types.alloc (FuncDefType ft)) (f ft)
 
 let print_value v =
   Printf.printf "%s : %s\n"
-    (Values.string_of_value v)
-    (Types.string_of_value_type (Values.type_of_value v))
+    (string_of_value v) (string_of_value_type (type_of_value v))
 
 let print (FuncType (_, out)) vs =
   List.iter print_value vs;

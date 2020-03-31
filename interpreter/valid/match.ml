@@ -1,7 +1,21 @@
 open Types
 
-type context = def_type list
+type context = Types.def_type list
 type assump = (var * var) list
+
+
+let lookup c = function
+  | SynVar x -> Lib.List32.nth c x
+  | SemVar x -> def_of x
+
+let equal_var x y =
+  match x, y with
+  | SynVar x', SynVar y' -> x' = y'
+  | SemVar x', SemVar y' -> x' == y'
+  | _ -> assert false
+
+let assuming a (x1, x2) =
+  List.find_opt (fun (y1, y2) -> equal_var x1 y1 && equal_var x2 y2) a <> None
 
 
 (* Equivalence *)
@@ -38,6 +52,15 @@ and eq_stack_type c a ts1 ts2 =
 and eq_func_type c a (FuncType (ts11, ts12)) (FuncType (ts21, ts22)) =
   eq_stack_type c a ts11 ts21 && eq_stack_type c a ts12 ts22
 
+and eq_def_type c a dt1 dt2 =
+  match dt1, dt2 with
+  | FuncDefType ft1, FuncDefType ft2 -> eq_func_type c a ft1 ft2
+
+and eq_var_type c a x1 x2 =
+  equal_var x1 x2 || assuming a (x1, x2) ||
+  eq_def_type c ((x1, x2)::a) (lookup c x1) (lookup c x2)
+
+
 and eq_table_type c a (TableType (lim1, t1)) (TableType (lim2, t2)) =
   eq_limits c a lim1 lim2 && eq_ref_type c a t1 t2
 
@@ -54,14 +77,6 @@ and eq_extern_type c a et1 et2 =
   | ExternMemoryType mt1, ExternMemoryType mt2 -> eq_memory_type c a mt1 mt2
   | ExternGlobalType gt1, ExternGlobalType gt2 -> eq_global_type c a gt1 gt2
   | _, _ -> false
-
-and eq_def_type c a dt1 dt2 =
-  match dt1, dt2 with
-  | FuncDefType ft1, FuncDefType ft2 -> eq_func_type c a ft1 ft2
-
-and eq_var_type c a x1 x2 =
-  x1 = x2 (* TODO *) || List.mem (x1, x2) a ||
-  eq_def_type c ((x1, x2)::a) (Lib.List32.nth c x1) (Lib.List32.nth c x2)
 
 
 (* Subtyping *)
@@ -129,5 +144,5 @@ and match_def_type c a dt1 dt2 =
   eq_def_type c [] dt1 dt2
 
 and match_var_type c a x1 x2 =
-  x1 = x2 (* TODO *) || List.mem (x1, x2) a ||
-  match_def_type c ((x1, x2)::a) (Lib.List32.nth c x1) (Lib.List32.nth c x2)
+  equal_var x1 x2 || assuming a (x1, x2) ||
+  match_def_type c ((x1, x2)::a) (lookup c x1) (lookup c x2)

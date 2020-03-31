@@ -1,6 +1,7 @@
 open Ast
 open Source
 open Types
+open Match
 
 
 (* Errors *)
@@ -17,7 +18,7 @@ let require b at s = if not b then error at s
 type context =
 {
   types : def_type list;
-  funcs : func_type list;
+  funcs : syn_var list;
   tables : table_type list;
   memories : memory_type list;
   globals : global_type list;
@@ -41,7 +42,7 @@ let lookup category list x =
     error x.at ("unknown " ^ category ^ " " ^ Int32.to_string x.it)
 
 let type_ (c : context) x = lookup "type" c.types x
-let func (c : context) x = lookup "function" c.funcs x
+let func_var (c : context) x = lookup "function" c.funcs x
 let table (c : context) x = lookup "table" c.tables x
 let memory (c : context) x = lookup "memory" c.memories x
 let global (c : context) x = lookup "global" c.globals x
@@ -53,6 +54,8 @@ let label (c : context) x = lookup "label" c.labels x
 let func_type (c : context) x =
   match type_ c x with
   | FuncDefType ft -> ft
+
+let func (c : context) x = func_type c (func_var c x @@ x.at)
 
 let refer category (s : Free.Set.t) x =
   if not (Free.Set.mem x.it s) then
@@ -82,7 +85,8 @@ let check_num_type (c : context) (t : num_type) at =
 let check_ref_type (c : context) (t : ref_type) at =
   match t with
   | AnyRefType | NullRefType | FuncRefType -> ()
-  | DefRefType (_nul, x) -> ignore (func_type c (x @@ at))
+  | DefRefType (_nul, SynVar x) -> ignore (func_type c (x @@ at))
+  | DefRefType (_nul, SemVar _) -> assert false
 
 let check_value_type (c : context) (t : value_type) at =
   match t with
@@ -138,7 +142,7 @@ let (-->...) ts1 ts2 = {ins = Ellipses, ts1; outs = Ellipses, ts2}
 let check_stack (c : context) ts1 ts2 at =
   require
     (List.length ts1 = List.length ts2 &&
-      List.for_all2 (Match.match_value_type c.types []) ts1 ts2) at
+      List.for_all2 (match_value_type c.types []) ts1 ts2) at
     ("type mismatch: operator requires " ^ string_of_stack_type ts2 ^
      " but stack has " ^ string_of_stack_type ts1)
 
@@ -161,14 +165,14 @@ let peek i (ell, ts) =
 
 (* Type Synthesis *)
 
-let type_num = Values.type_of_num
-let type_unop = Values.type_of_num
-let type_binop = Values.type_of_num
-let type_testop = Values.type_of_num
-let type_relop = Values.type_of_num
+let type_num = Value.type_of_num
+let type_unop = Value.type_of_num
+let type_binop = Value.type_of_num
+let type_testop = Value.type_of_num
+let type_relop = Value.type_of_num
 
 let type_cvtop at = function
-  | Values.I32 cvtop ->
+  | Value.I32 cvtop ->
     let open I32Op in
     (match cvtop with
     | ExtendSI32 | ExtendUI32 -> error at "invalid conversion"
@@ -176,7 +180,7 @@ let type_cvtop at = function
     | TruncSF32 | TruncUF32 | ReinterpretFloat -> F32Type
     | TruncSF64 | TruncUF64 -> F64Type
     ), I32Type
-  | Values.I64 cvtop ->
+  | Value.I64 cvtop ->
     let open I64Op in
     (match cvtop with
     | ExtendSI32 | ExtendUI32 -> I32Type
@@ -184,7 +188,7 @@ let type_cvtop at = function
     | TruncSF32 | TruncUF32 -> F32Type
     | TruncSF64 | TruncUF64 | ReinterpretFloat -> F64Type
     ), I64Type
-  | Values.F32 cvtop ->
+  | Value.F32 cvtop ->
     let open F32Op in
     (match cvtop with
     | ConvertSI32 | ConvertUI32 | ReinterpretInt -> I32Type
@@ -192,7 +196,7 @@ let type_cvtop at = function
     | PromoteF32 -> error at "invalid conversion"
     | DemoteF64 -> F64Type
     ), F32Type
-  | Values.F64 cvtop ->
+  | Value.F64 cvtop ->
     let open F64Op in
     (match cvtop with
     | ConvertSI32 | ConvertUI32 -> I32Type
@@ -329,9 +333,9 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
 
   | CallRef ->
     (match peek 0 s with
-    | RefType (DefRefType (nul, x)) ->
+    | RefType (DefRefType (nul, SynVar x)) ->
       let FuncType (ins, out) = func_type c (x @@ e.at) in
-      (ins @ [RefType (DefRefType (nul, x))]) --> out
+      (ins @ [RefType (DefRefType (nul, SynVar x))]) --> out
     | BotType -> [] -->... []
     | _ -> [RefType NullRefType] -->... []
     )
@@ -339,37 +343,39 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | CallIndirect (x, y) ->
     let TableType (lim, t) = table c x in
     let FuncType (ins, out) = func_type c y in
-    require (Match.match_ref_type c.types [] t FuncRefType) x.at
+    require (match_ref_type c.types [] t FuncRefType) x.at
       ("type mismatch: instruction requires table of functions" ^
        " but table has " ^ string_of_ref_type t);
     (ins @ [NumType I32Type]) --> out
 
   | ReturnCallRef ->
     (match peek 0 s with
-    | RefType (DefRefType (nul, x)) ->
+    | RefType (DefRefType (nul, SynVar x)) ->
       let FuncType (ins, out) = func_type c (x @@ e.at) in
-      require (Match.match_stack_type c.types [] out c.results) e.at
+      require (match_stack_type c.types [] out c.results) e.at
         "type mismatch in function result";
-      (ins @ [RefType (DefRefType (nul, x))]) -->... []
+      (ins @ [RefType (DefRefType (nul, SynVar x))]) -->... []
     | BotType -> [] -->... []
     | _ -> [RefType NullRefType] -->... []
     )
 
   | FuncBind x ->
     (match peek 0 s with
-    | RefType (DefRefType (nul, y)) ->
+    | RefType (DefRefType (nul, SynVar y)) ->
       let FuncType (ins, out) = func_type c (y @@ e.at) in
       let FuncType (ins', _) as ft' = func_type c x in
       require (List.length ins >= List.length ins') x.at
         "type mismatch in function arguments";
       let ts1, ts2 = Lib.List.split (List.length ins - List.length ins') ins in
-      (* TODO: not necessary if we can insert the new semantic FuncType below *)
-      require (Match.match_func_type c.types [] (FuncType (ts2, out)) ft') e.at
+      (* TODO: not necessary if we could insert the new semantic FuncType below *)
+      require (match_func_type c.types [] (FuncType (ts2, out)) ft') e.at
         "type mismatch in function type";
-      (ts1 @ [RefType (DefRefType (nul, y))]) -->
-      [RefType (DefRefType (NonNullable, x.it))]
-    | BotType -> [] -->... [RefType (DefRefType (NonNullable, x.it))]
-    | _ -> [RefType NullRefType] -->... [RefType (DefRefType (NonNullable, x.it))]
+      (ts1 @ [RefType (DefRefType (nul, SynVar y))]) -->
+      [RefType (DefRefType (NonNullable, SynVar x.it))]
+    | BotType -> [] -->... [RefType (DefRefType (NonNullable, SynVar x.it))]
+    | _ ->
+      [RefType NullRefType] -->...
+        [RefType (DefRefType (NonNullable, SynVar x.it))]
     )
 
   | LocalGet x ->
@@ -413,7 +419,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | TableCopy (x, y) ->
     let TableType (_lim1, t1) = table c x in
     let TableType (_lim2, t2) = table c y in
-    require (Match.match_ref_type c.types [] t2 t1) x.at
+    require (match_ref_type c.types [] t2 t1) x.at
       ("type mismatch: source element type " ^ string_of_ref_type t1 ^
        " does not match destination element type " ^ string_of_ref_type t2);
     [NumType I32Type; NumType I32Type; NumType I32Type] --> []
@@ -421,7 +427,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | TableInit (x, y) ->
     let TableType (_lim1, t1) = table c x in
     let t2 = elem c y in
-    require (Match.match_ref_type c.types [] t2 t1) x.at
+    require (match_ref_type c.types [] t2 t1) x.at
       ("type mismatch: source element type " ^ string_of_ref_type t1 ^
        " does not match destination element type " ^ string_of_ref_type t2);
     [NumType I32Type; NumType I32Type; NumType I32Type] --> []
@@ -480,11 +486,9 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     )
 
   | RefFunc x ->
-    let ft = func c x in
+    let y = func_var c x in
     refer_func c x;
-    (* TODO *)
-    let y = Lib.Option.force (Lib.List.index_where (Match.eq_def_type c.types [] (FuncDefType ft)) c.types) in
-    [] --> [RefType (DefRefType (NonNullable, Int32.of_int y))]
+    [] --> [RefType (DefRefType (NonNullable, SynVar y))]
 
   | Const v ->
     let t = NumType (type_num v.it) in
@@ -588,7 +592,7 @@ let check_elem_mode (c : context) (t : ref_type) (mode : segment_mode) =
   | Passive -> ()
   | Active {index; offset} ->
     let TableType (_, et) = table c index in
-    require (Match.match_ref_type c.types [] t et) mode.at
+    require (match_ref_type c.types [] t et) mode.at
       "type mismatch in active element segment";
     check_const c offset (NumType I32Type)
   | Declarative -> ()
@@ -630,7 +634,8 @@ let check_import (im : import) (c : context) : context =
   let {module_name = _; item_name = _; idesc} = im.it in
   match idesc.it with
   | FuncImport x ->
-    {c with funcs = func_type c x :: c.funcs}
+    ignore (func_type c x);
+    {c with funcs = x.it :: c.funcs}
   | TableImport tt ->
     check_table_type c tt idesc.at;
     {c with tables = tt :: c.tables}
@@ -654,6 +659,7 @@ let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
   require (not (NameSet.mem name set)) ex.at "duplicate export name";
   NameSet.add name set
 
+
 let check_module (m : module_) =
   let
     { types; imports; tables; memories; globals; funcs; start; elems; datas;
@@ -668,7 +674,7 @@ let check_module (m : module_) =
   in
   let c1 =
     { c0 with
-      funcs = c0.funcs @ List.map (fun f -> func_type c0 f.it.ftype) funcs;
+      funcs = c0.funcs @ List.map (fun f -> ignore (func_type c0 f.it.ftype); f.it.ftype.it) funcs;
       tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
       memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
       elems = List.map (fun elem -> elem.it.etype) elems;

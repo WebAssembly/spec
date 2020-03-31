@@ -1,5 +1,5 @@
-open Values
 open Types
+open Value
 open Instance
 open Ast
 open Source
@@ -37,8 +37,8 @@ let numeric_error at = function
   | Numeric_error.InvalidConversionToInteger -> "invalid conversion to integer"
   | Eval_numeric.TypeError (i, v, t) ->
     Crash.error at
-      ("type error, expected " ^ Types.string_of_num_type t ^ " as operand " ^
-       string_of_int i ^ ", got " ^ Types.string_of_num_type (type_of_num v))
+      ("type error, expected " ^ string_of_num_type t ^ " as operand " ^
+       string_of_int i ^ ", got " ^ string_of_num_type (type_of_num v))
   | exn -> raise exn
 
 
@@ -97,7 +97,7 @@ let elem (inst : module_inst) x = lookup "element segment" inst.elems x
 let data (inst : module_inst) x = lookup "data segment" inst.datas x
 let local (frame : frame) x = lookup "local" frame.locals x
 
-let func_type (inst : module_inst) x = as_func_def_type (type_ inst x)
+let func_type (inst : module_inst) x = as_func_def_type (def_of (type_ inst x))
 
 let any_ref inst x i at =
   try Table.load (table inst x) i with Table.Bounds ->
@@ -213,7 +213,9 @@ let rec step (c : config) : config =
 
       | CallIndirect (x, y), Num (I32 i) :: vs ->
         let f = func_ref frame.inst x i e.at in
-        if Match.eq_func_type [] (* TODO *) [] (func_type frame.inst y) (Func.type_of f) then
+        if
+          Match.eq_func_type [] [] (func_type frame.inst y) (Func.type_of f)
+        then
           vs, [Invoke f @@ e.at]
         else
           vs, [Trapping "indirect call type mismatch" @@ e.at]
@@ -238,7 +240,7 @@ let rec step (c : config) : config =
           try split (List.length ins - List.length ins') vs e.at
           with Failure _ -> Crash.error e.at "type mismatch at function bind"
         in
-        let f' = Func.alloc_closure f args in
+        let f' = Func.alloc_closure (type_ frame.inst x) f args in
         Ref (FuncRef f') :: vs', []
 
       | Drop, v :: vs' ->
@@ -576,19 +578,20 @@ let rec step (c : config) : config =
       let FuncType (ins, out) = Func.type_of f in
       let args, vs' = split (List.length ins) vs e.at in
       (match f with
-      | Func.AstFunc (ft, inst', func) ->
+      | Func.AstFunc (_, inst', func) ->
         let {locals; body; _} = func.it in
-        let ts = List.map Source.it locals in
-        let locals' = List.map (fun t -> t @@ func.at) ins @ locals in
+        let m = Lib.Promise.value inst' in
+        let ts = List.map (fun t -> Types.sem_value_type m.types t.it) locals in
         let vs0 = List.rev args @ List.map default_value ts in
+        let locals' = List.map (fun t -> t @@ func.at) ins @ locals in
         let es0 = [Plain (Let (out, locals', body)) @@ func.at] in
-        vs', [Frame (List.length out, !inst', (List.rev vs0, es0)) @@ e.at]
+        vs', [Frame (List.length out, m, (List.rev vs0, es0)) @@ e.at]
 
-      | Func.HostFunc (_ft, f) ->
+      | Func.HostFunc (_, f) ->
         (try List.rev (f (List.rev args)) @ vs', []
         with Crash (_, msg) -> Crash.error e.at msg)
 
-      | Func.ClosureFunc (f', args') ->
+      | Func.ClosureFunc (_, f', args') ->
         args @ args' @ vs', [Invoke f' @@ e.at]
       )
   in {c with code = vs', es' @ List.tl es}
@@ -611,14 +614,14 @@ let rec eval (c : config) : value stack =
 let rec at_func = function
  | Func.AstFunc (_, _, f) -> f.at
  | Func.HostFunc _ -> no_region
- | Func.ClosureFunc (func, _) -> at_func func
+ | Func.ClosureFunc (_, func, _) -> at_func func
 
 let invoke (func : func_inst) (vs : value list) : value list =
   let at = at_func func in
   let FuncType (ins, out) = Func.type_of func in
   if List.length vs <> List.length ins then
     Crash.error at "wrong number of arguments";
-  if not (List.for_all2 (fun v -> Match.match_value_type [] (* TODO *) [] (type_of_value v)) vs ins) then
+  if not (List.for_all2 (fun v -> Match.match_value_type [] [] (type_of_value v)) vs ins) then
     Crash.error at "wrong types of arguments";
   let c = config empty_module_inst (List.rev vs) [Invoke func @@ at] in
   try List.rev (eval c) with Stack_overflow ->
@@ -633,21 +636,24 @@ let eval_const (inst : module_inst) (const : const) : value =
 
 (* Modules *)
 
+let create_type (_ : type_) : type_inst =
+  Types.alloc_uninit ()
+
 let create_func (inst : module_inst) (f : func) : func_inst =
-  Func.alloc (func_type inst f.it.ftype) (ref inst) f
+  Func.alloc (type_ inst f.it.ftype) (Lib.Promise.make ()) f
 
 let create_table (inst : module_inst) (tab : table) : table_inst =
   let {ttype} = tab.it in
-  Table.alloc ttype NullRef
+  Table.alloc (Types.sem_table_type inst.types ttype) NullRef
 
 let create_memory (inst : module_inst) (mem : memory) : memory_inst =
   let {mtype} = mem.it in
-  Memory.alloc mtype
+  Memory.alloc (Types.sem_memory_type inst.types mtype)
 
 let create_global (inst : module_inst) (glob : global) : global_inst =
   let {gtype; ginit} = glob.it in
   let v = eval_const inst ginit in
-  Global.alloc gtype v
+  Global.alloc (Types.sem_global_type inst.types gtype) v
 
 let create_export (inst : module_inst) (ex : export) : export_inst =
   let {name; edesc} = ex.it in
@@ -670,7 +676,10 @@ let create_data (inst : module_inst) (seg : data_segment) : data_inst =
 
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   : module_inst =
-  if not (Match.match_extern_type [] (* TODO *) [] (extern_type_of ext) (import_type m im)) then
+  let it = extern_type_of_import_type (import_type_of m im) in
+  let et = Types.sem_extern_type inst.types it in
+  let et' = extern_type_of inst.types ext in
+  if not (Match.match_extern_type [] [] et' et) then
     Link.error im.at "incompatible import type";
   match ext with
   | ExternFunc func -> {inst with funcs = func :: inst.funcs}
@@ -678,9 +687,13 @@ let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   | ExternMemory mem -> {inst with memories = mem :: inst.memories}
   | ExternGlobal glob -> {inst with globals = glob :: inst.globals}
 
+
+let init_type (inst : module_inst) (type_ : type_) (x : type_inst) =
+  Types.init x (Types.sem_def_type inst.types type_.it)
+
 let init_func (inst : module_inst) (func : func_inst) =
   match func with
-  | Func.AstFunc (_, inst_ref, _) -> inst_ref := inst
+  | Func.AstFunc (_, inst_prom, _) -> Lib.Promise.fulfill inst_prom inst
   | _ -> assert false
 
 let run_elem i elem =
@@ -724,24 +737,23 @@ let init (m : module_) (exts : extern list) : module_inst =
   in
   if List.length exts <> List.length imports then
     Link.error m.at "wrong number of imports provided for initialisation";
-  let inst0 =
-    { (List.fold_right2 (add_import m) exts imports empty_module_inst) with
-      types = List.map (fun type_ -> type_.it) types }
-  in
-  let fs = List.map (create_func inst0) funcs in
-  let inst1 = {inst0 with funcs = inst0.funcs @ fs} in
-  let inst2 =
-    { inst1 with
-      tables = inst1.tables @ List.map (create_table inst1) tables;
-      memories = inst1.memories @ List.map (create_memory inst1) memories;
-      globals = inst1.globals @ List.map (create_global inst1) globals;
+  let inst0 = {empty_module_inst with types = List.map create_type types} in
+  List.iter2 (init_type inst0) types inst0.types;
+  let inst1 = List.fold_right2 (add_import m) exts imports inst0 in
+  let fs = List.map (create_func inst1) funcs in
+  let inst2 = {inst1 with funcs = inst1.funcs @ fs} in
+  let inst3 =
+    { inst2 with
+      tables = inst2.tables @ List.map (create_table inst2) tables;
+      memories = inst2.memories @ List.map (create_memory inst2) memories;
+      globals = inst2.globals @ List.map (create_global inst2) globals;
     }
   in
   let inst =
-    { inst2 with
-      exports = List.map (create_export inst2) exports;
-      elems = List.map (create_elem inst2) elems;
-      datas = List.map (create_data inst2) datas;
+    { inst3 with
+      exports = List.map (create_export inst3) exports;
+      elems = List.map (create_elem inst3) elems;
+      datas = List.map (create_data inst3) datas;
     }
   in
   List.iter (init_func inst) fs;

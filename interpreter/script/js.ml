@@ -1,5 +1,6 @@
 open Types
 open Ast
+open Value
 open Script
 open Source
 
@@ -180,9 +181,9 @@ type exports = extern_type NameMap.t
 type modules = {mutable env : exports Map.t; mutable current : int}
 
 let exports m : exports =
-  List.fold_left
-    (fun map exp -> NameMap.add exp.it.name (export_type m exp) map)
-    NameMap.empty m.it.exports
+  let ets = List.map (export_type_of m) m.it.exports in
+  List.fold_left (fun map (ExportType (et, name)) -> NameMap.add name et map)
+    NameMap.empty ets
 
 let modules () : modules = {env = Map.empty; current = 0}
 
@@ -218,36 +219,36 @@ let eq_ref_idx = 4l
 let subject_type_idx = 5l
 
 let eq_of = function
-  | I32Type -> Values.I32 I32Op.Eq
-  | I64Type -> Values.I64 I64Op.Eq
-  | F32Type -> Values.F32 F32Op.Eq
-  | F64Type -> Values.F64 F64Op.Eq
+  | I32Type -> I32 I32Op.Eq
+  | I64Type -> I64 I64Op.Eq
+  | F32Type -> F32 F32Op.Eq
+  | F64Type -> F64 F64Op.Eq
 
 let and_of = function
-  | I32Type | F32Type -> Values.I32 I32Op.And
-  | I64Type | F64Type -> Values.I64 I64Op.And
+  | I32Type | F32Type -> I32 I32Op.And
+  | I64Type | F64Type -> I64 I64Op.And
 
 let reinterpret_of = function
   | I32Type -> I32Type, Nop
   | I64Type -> I64Type, Nop
-  | F32Type -> I32Type, Convert (Values.I32 I32Op.ReinterpretFloat)
-  | F64Type -> I64Type, Convert (Values.I64 I64Op.ReinterpretFloat)
+  | F32Type -> I32Type, Convert (I32 I32Op.ReinterpretFloat)
+  | F64Type -> I64Type, Convert (I64 I64Op.ReinterpretFloat)
 
 let canonical_nan_of = function
-  | I32Type | F32Type -> Values.I32 (F32.to_bits F32.pos_nan)
-  | I64Type | F64Type -> Values.I64 (F64.to_bits F64.pos_nan)
+  | I32Type | F32Type -> I32 (F32.to_bits F32.pos_nan)
+  | I64Type | F64Type -> I64 (F64.to_bits F64.pos_nan)
 
 let abs_mask_of = function
-  | I32Type | F32Type -> Values.I32 Int32.max_int
-  | I64Type | F64Type -> Values.I64 Int64.max_int
+  | I32Type | F32Type -> I32 Int32.max_int
+  | I64Type | F64Type -> I64 Int64.max_int
 
 let value v =
   match v.it with
-  | Values.Num num -> [Const (num @@ v.at) @@ v.at]
-  | Values.Ref Values.NullRef -> [RefNull @@ v.at]
-  | Values.Ref (HostRef n) ->
-    [Const (Values.I32 n @@ v.at) @@ v.at; Call (hostref_idx @@ v.at) @@ v.at]
-  | Values.Ref _ -> assert false
+  | Num num -> [Const (num @@ v.at) @@ v.at]
+  | Ref NullRef -> [RefNull @@ v.at]
+  | Ref (HostRef n) ->
+    [Const (I32 n @@ v.at) @@ v.at; Call (hostref_idx @@ v.at) @@ v.at]
+  | Ref _ -> assert false
 
 let invoke ft vs at =
   [FuncDefType ft @@ at], FuncImport (subject_type_idx @@ at) @@ at,
@@ -262,52 +263,52 @@ let run ts at =
 let assert_return ress ts at =
   let test res =
     match res.it with
-    | LitResult {it = Values.Num num; at = at'} ->
-      let t', reinterpret = reinterpret_of (Values.type_of_num num) in
+    | LitResult {it = Num num; at = at'} ->
+      let t', reinterpret = reinterpret_of (type_of_num num) in
       [ reinterpret @@ at;
         Const (num @@ at')  @@ at;
         reinterpret @@ at;
         Compare (eq_of t') @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
+        Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | LitResult {it = Values.Ref Values.NullRef; _} ->
+    | LitResult {it = Ref NullRef; _} ->
       [ RefIsNull @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
+        Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | LitResult {it = Values.Ref (HostRef n); _} ->
-      [ Const (Values.I32 n @@ at) @@ at;
+    | LitResult {it = Ref (HostRef n); _} ->
+      [ Const (I32 n @@ at) @@ at;
         Call (hostref_idx @@ at) @@ at;
         Call (eq_ref_idx @@ at)  @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
+        Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | LitResult {it = Values.Ref _; _} ->
+    | LitResult {it = Ref _; _} ->
       assert false
     | NanResult nanop ->
       let nan =
         match nanop.it with
-        | Values.I32 _ | Values.I64 _ -> assert false
-        | Values.F32 n | Values.F64 n -> n
+        | I32 _ | I64 _ -> assert false
+        | F32 n | F64 n -> n
       in
       let nan_bitmask_of =
         match nan with
         | CanonicalNan -> abs_mask_of (* must only differ from the canonical NaN in its sign bit *)
         | ArithmeticNan -> canonical_nan_of (* can be any NaN that's one everywhere the canonical NaN is one *)
       in
-      let t = Values.type_of_num nanop.it in
+      let t = type_of_num nanop.it in
       let t', reinterpret = reinterpret_of t in
       [ reinterpret @@ at;
         Const (nan_bitmask_of t' @@ at) @@ at;
         Binary (and_of t') @@ at;
         Const (canonical_nan_of t' @@ at) @@ at;
         Compare (eq_of t') @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
+        Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult ->
       [ RefIsNull @@ at;
         BrIf (0l @@ at) @@ at ]
     | FuncResult ->
       [ Call (is_funcref_idx @@ at) @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
+        Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
   in [], List.flatten (List.rev_map test ress)
 
@@ -405,7 +406,6 @@ let of_float z =
   | s -> s
 
 let of_value v =
-  let open Values in
   match v.it with
   | Num (I32 i) -> I32.to_string_s i
   | Num (I64 i) -> "int64(\"" ^ I64.to_string_s i ^ "\")"
@@ -424,8 +424,8 @@ let of_result res =
   | LitResult value -> of_value value
   | NanResult nanop ->
     (match nanop.it with
-    | Values.I32 _ | Values.I64 _ -> assert false
-    | Values.F32 n | Values.F64 n -> of_nan n
+    | I32 _ | I64 _ -> assert false
+    | F32 n | F64 n -> of_nan n
     )
   | RefResult -> "\"ref.any\""
   | FuncResult -> "\"ref.func\""

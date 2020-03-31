@@ -12,6 +12,18 @@ type ref_ = ..
 type ref_ += NullRef
 
 type value = Num of num | Ref of ref_
+type t = value
+
+
+(* Projections *)
+
+let as_num = function
+  | Num n -> n
+  | Ref _ -> failwith "as_num"
+
+let as_ref = function
+  | Num _ -> failwith "as_ref"
+  | Ref r -> r
 
 
 (* Typing *)
@@ -28,17 +40,6 @@ let type_of_ref r = !type_of_ref' r
 let type_of_value = function
   | Num n -> NumType (type_of_num n)
   | Ref r -> RefType (type_of_ref r)
-
-
-(* Projections *)
-
-let as_num = function
-  | Num n -> n
-  | Ref _ -> failwith "as_num"
-
-let as_ref = function
-  | Num _ -> failwith "as_ref"
-  | Ref r -> r
 
 
 (* Defaults *)
