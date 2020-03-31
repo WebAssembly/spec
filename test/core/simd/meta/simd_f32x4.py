@@ -192,6 +192,7 @@ class Simdf32x4Case(Simdf32x4ArithmeticCase):
         # Add test for operations with constant operands
         for key in lst_oprt_with_const_assert:
 
+            op_name = self.full_op_name(key)
             case_cnt = 0
             for case_data in lst_oprt_with_const_assert[key]:
 

@@ -46,12 +46,12 @@
   (func (export "f64x2.abs_with_const_36") (result v128) (f64x2.abs (v128.const f64x2 -2 -3)))
 )
 
-;; f64x2.abs const vs const
+;; f64x2.min const vs const
 (assert_return (invoke "f64x2.min_with_const_0") (v128.const f64x2 0 1))
 (assert_return (invoke "f64x2.min_with_const_1") (v128.const f64x2 1 -3))
 (assert_return (invoke "f64x2.min_with_const_2") (v128.const f64x2 0 1))
 (assert_return (invoke "f64x2.min_with_const_3") (v128.const f64x2 2 3))
-;; f64x2.abs param vs const
+;; f64x2.min param vs const
 (assert_return (invoke "f64x2.min_with_const_4") (v128.const f64x2 0x00 0x01))
 (assert_return (invoke "f64x2.min_with_const_5") (v128.const f64x2 0x01 0x80000000))
 (assert_return (invoke "f64x2.min_with_const_6") (v128.const f64x2 0x00 0x01))
@@ -72,12 +72,12 @@
                                                  (v128.const f64x2 0x00 0x01))
 (assert_return (invoke "f64x2.min_with_const_16" (v128.const f64x2 0x02 0x80000000))
                                                  (v128.const f64x2 0x02 0x80000000))
-;; f64x2.abs const vs const
+;; f64x2.max const vs const
 (assert_return (invoke "f64x2.max_with_const_18") (v128.const f64x2 0 2))
 (assert_return (invoke "f64x2.max_with_const_19") (v128.const f64x2 2 3))
 (assert_return (invoke "f64x2.max_with_const_20") (v128.const f64x2 0 1))
 (assert_return (invoke "f64x2.max_with_const_21") (v128.const f64x2 2 3))
-;; f64x2.abs param vs const
+;; f64x2.max param vs const
 (assert_return (invoke "f64x2.max_with_const_22") (v128.const f64x2 0x00 0x02))
 (assert_return (invoke "f64x2.max_with_const_23") (v128.const f64x2 0x02 2147483648))
 (assert_return (invoke "f64x2.max_with_const_24") (v128.const f64x2 0x00 0x01))

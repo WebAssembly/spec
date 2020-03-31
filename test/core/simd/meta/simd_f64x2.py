@@ -209,6 +209,7 @@ class Simdf64x2Case(Simdf32x4Case):
         # Add test for operations with constant operands
         for key in const_test_data:
 
+            op_name = self.full_op_name(key)
             case_cnt = 0
             for case_data in const_test_data[key]:
 

@@ -29,12 +29,12 @@
   (func (export "f32x4.abs_with_const") (result v128) (f32x4.abs (v128.const f32x4 -0 -1 -2 -3)))
 )
 
-;; f32x4.abs const vs const
+;; f32x4.min const vs const
 (assert_return (invoke "f32x4.min_with_const_0") (v128.const f32x4 0 1 1 -3))
 (assert_return (invoke "f32x4.min_with_const_1") (v128.const f32x4 0 1 2 3))
 (assert_return (invoke "f32x4.min_with_const_2") (v128.const f32x4 0x00 0x01 0x01 0x80000000))
 (assert_return (invoke "f32x4.min_with_const_3") (v128.const f32x4 0x00 0x01 0x02 0x80000000))
-;; f32x4.abs param vs const
+;; f32x4.min param vs const
 (assert_return (invoke "f32x4.min_with_const_5" (v128.const f32x4 0 2 1 3))
                                                 (v128.const f32x4 0 1 1 -3))
 (assert_return (invoke "f32x4.min_with_const_6" (v128.const f32x4 0 1 2 3))
@@ -43,12 +43,12 @@
                                                 (v128.const f32x4 0x00 0x01 0x01 0x80000000))
 (assert_return (invoke "f32x4.min_with_const_8" (v128.const f32x4 0x00 0x01 0x02 0x80000000))
                                                 (v128.const f32x4 0x00 0x01 0x02 0x80000000))
-;; f32x4.abs const vs const
+;; f32x4.max const vs const
 (assert_return (invoke "f32x4.max_with_const_10") (v128.const f32x4 0 2 2 3))
 (assert_return (invoke "f32x4.max_with_const_11") (v128.const f32x4 0 1 2 3))
 (assert_return (invoke "f32x4.max_with_const_12") (v128.const f32x4 0x00 0x02 0x02 2147483648))
 (assert_return (invoke "f32x4.max_with_const_13") (v128.const f32x4 0x00 0x01 0x02 0x80000000))
-;; f32x4.abs param vs const
+;; f32x4.max param vs const
 (assert_return (invoke "f32x4.max_with_const_15" (v128.const f32x4 0 2 1 3))
                                                  (v128.const f32x4 0 2 2 3))
 (assert_return (invoke "f32x4.max_with_const_16" (v128.const f32x4 0 1 2 3))
