@@ -636,7 +636,7 @@
     "\0a\04\01"                             ;; code section
     "\02\00\0b"                             ;; function body
   )
-  "invalid value type"
+  "malformed value type"
 )
 
 ;; 1 elem segment declared, 2 given
@@ -777,7 +777,7 @@
     "\02"                                   ;; break depth for default
     "\0b\0b\0b"                             ;; end
   )
-  "invalid value type"
+  "malformed value type"
 )
 
 ;; Start section
