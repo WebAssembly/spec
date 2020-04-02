@@ -362,7 +362,8 @@ function get(instance, name) {
   const loc = new Error().stack.toString().replace("Error", "");
   chain = Promise.all([instance, chain]).then(
     values => {
-      return values[0].exports[name];
+      let v = values[0].exports[name];
+      return (v instanceof WebAssembly.Global) ? v.value : v;
     },
     _ => {
       uniqueTest(_ => {

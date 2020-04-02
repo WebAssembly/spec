@@ -21,7 +21,6 @@ WPT_URL_PREFIX = '/resources'
 # Helpers.
 def run(*cmd):
     return subprocess.run(cmd,
-                          text=True,
                           stdout=subprocess.PIPE,
                           stderr=subprocess.STDOUT,
                           universal_newlines=True)
