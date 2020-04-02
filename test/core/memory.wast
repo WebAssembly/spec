@@ -1,5 +1,7 @@
 ;; Test memory section structure
 
+(module (memory 0))
+(module (memory 1))
 (module (memory 0 0))
 (module (memory 0 1))
 (module (memory 1 256))
@@ -72,6 +74,19 @@
 (assert_invalid
   (module (memory 0 4294967295))
   "memory size must be at most 65536 pages (4GiB)"
+)
+
+(assert_malformed
+  (module quote "(memory 0x1_0000_0000)")
+  "i32 constant out of range"
+)
+(assert_malformed
+  (module quote "(memory 0x1_0000_0000 0x1_0000_0000)")
+  "i32 constant out of range"
+)
+(assert_malformed
+  (module quote "(memory 0 0x1_0000_0000)")
+  "i32 constant out of range"
 )
 
 (module
@@ -210,3 +225,18 @@
 (assert_return (invoke "i64_load32_s" (i64.const 0x3456436598bacdef)) (i64.const 0xffffffff98bacdef))
 (assert_return (invoke "i64_load32_u" (i64.const 0xfedcba9856346543)) (i64.const 0x56346543))
 (assert_return (invoke "i64_load32_u" (i64.const 0x3456436598bacdef)) (i64.const 0x98bacdef))
+
+;; Duplicate identifier errors
+
+(assert_malformed (module quote
+  "(memory $foo 1)"
+  "(memory $foo 1)")
+  "duplicate memory")
+(assert_malformed (module quote
+  "(import \"\" \"\" (memory $foo 1))"
+  "(memory $foo 1)")
+  "duplicate memory")
+(assert_malformed (module quote
+  "(import \"\" \"\" (memory $foo 1))"
+  "(import \"\" \"\" (memory $foo 1))")
+  "duplicate memory")

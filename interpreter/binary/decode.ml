@@ -119,7 +119,7 @@ let vec f s = let n = len32 s in list f n s
 let name s =
   let pos = pos s in
   try Utf8.decode (string s) with Utf8.Utf8 ->
-    error s pos "invalid UTF-8 encoding"
+    error s pos "malformed UTF-8 encoding"
 
 let sized f s =
   let size = len32 s in
@@ -139,14 +139,14 @@ let num_type s =
   | -0x02 -> I64Type
   | -0x03 -> F32Type
   | -0x04 -> F64Type
-  | _ -> error s (pos s - 1) "invalid number type"
+  | _ -> error s (pos s - 1) "malformed number type"
 
 let ref_type s =
   match vs7 s with
   | -0x10 -> FuncRefType
   | -0x11 -> AnyRefType
   | -0x12 -> NullRefType
-  | _ -> error s (pos s - 1) "invalid reference type"
+  | _ -> error s (pos s - 1) "malformed reference type"
 
 let value_type s =
   match peek s with
@@ -164,7 +164,7 @@ let func_type s =
     let ins = vec value_type s in
     let out = vec value_type s in
     FuncType (ins, out)
-  | _ -> error s (pos s - 1) "invalid function type"
+  | _ -> error s (pos s - 1) "malformed function type"
 
 let limits vu s =
   let has_max = bool s in
@@ -185,7 +185,7 @@ let mutability s =
   match u8 s with
   | 0 -> Immutable
   | 1 -> Mutable
-  | _ -> error s (pos s - 1) "invalid mutability"
+  | _ -> error s (pos s - 1) "malformed mutability"
 
 let global_type s =
   let t = value_type s in
@@ -206,7 +206,7 @@ let zero_flag s = expect 0x00 s "zero flag expected"
 
 let memop s =
   let align = vu32 s in
-  require (I32.le_u align 32l) s (pos s - 1) "invalid memop flags";
+  require (I32.le_u align 32l) s (pos s - 1) "malformed memop flags";
   let offset = vu32 s in
   Int32.to_int align, offset
 
@@ -512,7 +512,7 @@ let id s =
     | 10 -> `CodeSection
     | 11 -> `DataSection
     | 12 -> `DataCountSection
-    | _ -> error s (pos s) "invalid section id"
+    | _ -> error s (pos s) "malformed section id"
     ) bo
 
 let section_with_size tag f default s =
@@ -540,7 +540,7 @@ let import_desc s =
   | 0x01 -> TableImport (table_type s)
   | 0x02 -> MemoryImport (memory_type s)
   | 0x03 -> GlobalImport (global_type s)
-  | _ -> error s (pos s - 1) "invalid import kind"
+  | _ -> error s (pos s - 1) "malformed import kind"
 
 let import s =
   let module_name = name s in
@@ -597,7 +597,7 @@ let export_desc s =
   | 0x01 -> TableExport (at var s)
   | 0x02 -> MemoryExport (at var s)
   | 0x03 -> GlobalExport (at var s)
-  | _ -> error s (pos s - 1) "invalid export kind"
+  | _ -> error s (pos s - 1) "malformed export kind"
 
 let export s =
   let name = name s in
@@ -661,7 +661,7 @@ let elem_index s =
 let elem_kind s =
   match u8 s with
   | 0x00 -> FuncRefType
-  | _ -> error s (pos s - 1) "invalid element kind"
+  | _ -> error s (pos s - 1) "malformed element kind"
 
 let elem s =
   match vu32 s with
@@ -703,7 +703,7 @@ let elem s =
     let etype = ref_type s in
     let einit = vec const s in
     {etype; einit; emode}
-  | _ -> error s (pos s - 1) "invalid elements segment kind"
+  | _ -> error s (pos s - 1) "malformed elements segment kind"
 
 let elem_section s =
   section `ElemSection (vec (at elem)) [] s
@@ -725,7 +725,7 @@ let data s =
     let dmode = at active s in
     let dinit = string s in
     {dinit; dmode}
-  | _ -> error s (pos s - 1) "invalid data segment kind"
+  | _ -> error s (pos s - 1) "malformed data segment kind"
 
 let data_section s =
   section `DataSection (vec (at data)) [] s

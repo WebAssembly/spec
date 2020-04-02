@@ -949,10 +949,6 @@ Control Instructions
 
    The |BRTABLE| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
-   Furthermore, the :ref:`result type <syntax-resulttype>` :math:`[t^?]` is also chosen non-deterministically in this rule.
-   In a :ref:`type checking algorithm <algo-valid>`, the greatest lower bound of the involved label types can be picked as a principal type,
-   and it is a type error if that bound does not exist.
-
 
 .. _valid-return:
 
