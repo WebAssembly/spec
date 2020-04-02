@@ -9,8 +9,7 @@ const kJSEmbeddingMaxExports = 100000;
 const kJSEmbeddingMaxGlobals = 1000000;
 const kJSEmbeddingMaxDataSegments = 100000;
 
-const kJSEmbeddingMaxInitialMemoryPages = 32767;
-const kJSEmbeddingMaxMaximumMemoryPages = 65536;
+const kJSEmbeddingMaxMemoryPages = 65536;
 const kJSEmbeddingMaxModuleSize = 1024 * 1024 * 1024;  // = 1 GiB
 const kJSEmbeddingMaxFunctionSize = 7654321;
 const kJSEmbeddingMaxFunctionLocals = 50000;
@@ -110,22 +109,22 @@ testLimit("data segments", 1, kJSEmbeddingMaxDataSegments, (builder, count) => {
         }
     });
 
-testLimit("initial declared memory pages", 1, kJSEmbeddingMaxInitialMemoryPages,
+testLimit("initial declared memory pages", 1, kJSEmbeddingMaxMemoryPages,
           (builder, count) => {
             builder.addMemory(count, undefined, false, false);
           });
 
-testLimit("maximum declared memory pages", 1, kJSEmbeddingMaxMaximumMemoryPages,
+testLimit("maximum declared memory pages", 1, kJSEmbeddingMaxMemoryPages,
           (builder, count) => {
             builder.addMemory(1, count, false, false);
           });
 
-testLimit("initial imported memory pages", 1, kJSEmbeddingMaxInitialMemoryPages,
+testLimit("initial imported memory pages", 1, kJSEmbeddingMaxMemoryPages,
           (builder, count) => {
             builder.addImportedMemory("mod", "mem", count, undefined);
           });
 
-testLimit("maximum imported memory pages", 1, kJSEmbeddingMaxMaximumMemoryPages,
+testLimit("maximum imported memory pages", 1, kJSEmbeddingMaxMemoryPages,
           (builder, count) => {
             builder.addImportedMemory("mod", "mem", 1, count);
           });
