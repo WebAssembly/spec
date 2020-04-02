@@ -1077,7 +1077,7 @@
     ;; function 0
     "\02\00"
     "\0b")                     ;; end
-  "invalid reference type")
+  "malformed reference type")
 
 ;; passive element segment containing opcode ref.func
 (module binary
