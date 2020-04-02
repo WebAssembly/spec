@@ -467,4 +467,4 @@ let command mode cmd =
   | Assertion ass -> assertion mode ass
   | Meta _ -> assert false
 
-let script mode scr = List.concat_map (command mode) scr
+let script mode scr = Lib.List.concat_map (command mode) scr
