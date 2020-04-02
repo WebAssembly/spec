@@ -518,7 +518,7 @@ where:
    S', \globaladdr^\ast &=& \allocglobal^\ast(S_3, (\global.\GTYPE)^\ast, \val^\ast)
      \qquad\quad~ (\where \global^\ast = \module.\MGLOBALS) \\
    \exportinst^\ast &=& \{ \EINAME~(\export.\ENAME), \EIVALUE~\externval_{\F{ex}} \}^\ast
-     \quad (\where \export^\ast = \module.\MEXPORTS) \\[1ex]
+     \quadd (\where \export^\ast = \module.\MEXPORTS) \\[1ex]
    \evfuncs(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIFUNCS[x])^\ast
      \qquad~ (\where x^\ast = \edfuncs(\module.\MEXPORTS)) \\
    \evtables(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MITABLES[x])^\ast

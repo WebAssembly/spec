@@ -375,12 +375,20 @@ let module_ = module_with_var_opt None
 
 (* Scripts *)
 
-let literal lit =
+let literal mode lit =
   match lit.it with
-  | Values.I32 i -> Node ("i32.const " ^ I32.to_string_s i, [])
-  | Values.I64 i -> Node ("i64.const " ^ I64.to_string_s i, [])
-  | Values.F32 z -> Node ("f32.const " ^ F32.to_string z, [])
-  | Values.F64 z -> Node ("f64.const " ^ F64.to_string z, [])
+  | Values.I32 i ->
+    let f = if mode = `Binary then I32.to_hex_string else I32.to_string_s in
+    Node ("i32.const " ^ f i, [])
+  | Values.I64 i ->
+    let f = if mode = `Binary then I64.to_hex_string else I64.to_string_s in
+    Node ("i64.const " ^ f i, [])
+  | Values.F32 z ->
+    let f = if mode = `Binary then F32.to_hex_string else F32.to_string in
+    Node ("f32.const " ^ f z, [])
+  | Values.F64 z ->
+    let f = if mode = `Binary then F64.to_hex_string else F64.to_string in
+    Node ("f64.const " ^ f z, [])
 
 let definition mode x_opt def =
   try
@@ -410,10 +418,10 @@ let definition mode x_opt def =
 let access x_opt n =
   String.concat " " [var_opt x_opt; name n]
 
-let action act =
+let action mode act =
   match act.it with
   | Invoke (x_opt, name, lits) ->
-    Node ("invoke" ^ access x_opt name, List.map literal lits)
+    Node ("invoke" ^ access x_opt name, List.map (literal mode) lits)
   | Get (x_opt, name) ->
     Node ("get" ^ access x_opt name, [])
 
@@ -421,9 +429,9 @@ let nan = function
   | CanonicalNan -> "nan:canonical"
   | ArithmeticNan -> "nan:arithmetic"
 
-let result res =
+let result mode res =
   match res.it with
-  | LitResult lit -> literal lit
+  | LitResult lit -> literal mode lit
   | NanResult nanop ->
     match nanop.it with
     | Values.I32 _ | Values.I64 _ -> assert false
@@ -433,27 +441,30 @@ let result res =
 let assertion mode ass =
   match ass.it with
   | AssertMalformed (def, re) ->
-    Node ("assert_malformed", [definition `Original None def; Atom (string re)])
+    (match mode, def.it with
+    | `Binary, Quoted _ -> []
+    | _ ->
+      [Node ("assert_malformed", [definition `Original None def; Atom (string re)])]
+    )
   | AssertInvalid (def, re) ->
-    Node ("assert_invalid", [definition mode None def; Atom (string re)])
+    [Node ("assert_invalid", [definition mode None def; Atom (string re)])]
   | AssertUnlinkable (def, re) ->
-    Node ("assert_unlinkable", [definition mode None def; Atom (string re)])
+    [Node ("assert_unlinkable", [definition mode None def; Atom (string re)])]
   | AssertUninstantiable (def, re) ->
-    Node ("assert_trap", [definition mode None def; Atom (string re)])
+    [Node ("assert_trap", [definition mode None def; Atom (string re)])]
   | AssertReturn (act, results) ->
-    Node ("assert_return", action act :: List.map result results)
+    [Node ("assert_return", action mode act :: List.map (result mode) results)]
   | AssertTrap (act, re) ->
-    Node ("assert_trap", [action act; Atom (string re)])
+    [Node ("assert_trap", [action mode act; Atom (string re)])]
   | AssertExhaustion (act, re) ->
-    Node ("assert_exhaustion", [action act; Atom (string re)])
+    [Node ("assert_exhaustion", [action mode act; Atom (string re)])]
 
 let command mode cmd =
   match cmd.it with
-  | Module (x_opt, def) -> definition mode x_opt def
-  | Register (n, x_opt) ->
-    Node ("register " ^ name n ^ var_opt x_opt, [])
-  | Action act -> action act
+  | Module (x_opt, def) -> [definition mode x_opt def]
+  | Register (n, x_opt) -> [Node ("register " ^ name n ^ var_opt x_opt, [])]
+  | Action act -> [action mode act]
   | Assertion ass -> assertion mode ass
   | Meta _ -> assert false
 
-let script mode scr = List.map (command mode) scr
+let script mode scr = List.concat_map (command mode) scr
