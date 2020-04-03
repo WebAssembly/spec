@@ -7,7 +7,7 @@ Generate [min_s, min_u, max_s, max_u] cases for i32x4, i16x8 and i8x16.
 from simd import SIMD
 from test_assert import AssertReturn, AssertInvalid, AssertMalformed
 from simd_lane_value import LaneValue
-from simd_integer_op import IntegerSimpleOp as IntOp
+from simd_integer_op import ArithmeticOp
 
 
 class SimdLaneWiseInteger:
@@ -239,20 +239,22 @@ class SimdLaneWiseInteger:
         cnt = 0
         cases = '\n\n;; Const vs const'
         for op in self.BINARY_OPS:
+            o = ArithmeticOp(op)
             for param_1, param_2 in self.get_binary_test_data_with_const:
                 result = []
                 for idx in range(0, len(param_1)):
-                    result.append(IntOp.binary_op(op, param_1[idx], param_2[idx], self.lane_width))
+                    result.append(o.binary_op(param_1[idx], param_2[idx], self.LANE_VALUE))
                 cases += '\n' + str(AssertReturn('{lane_type}.{op}_with_const_{cnt}'.format(lane_type=self.LANE_TYPE, op=op, cnt=cnt),
                                                  [],
                                                  SIMD.v128_const(result, self.LANE_TYPE)))
                 cnt += 1
 
         for op in self.UNARY_OPS:
+            o = ArithmeticOp(op)
             for param in self.get_unary_complex_test_data:
                 result = []
                 for idx in range(0, len(param)):
-                    result.append(IntOp.unary_op(op, param[idx], self.lane_width))
+                    result.append(o.unary_op(param[idx], self.LANE_VALUE))
                 cases += '\n' + str(AssertReturn('{lane_type}.{op}_with_const_{cnt}'.format(lane_type=self.LANE_TYPE, op=op, cnt=cnt),
                                                  [],
                                                  SIMD.v128_const(result, self.LANE_TYPE)))
@@ -260,10 +262,11 @@ class SimdLaneWiseInteger:
 
         cases += '\n\n;; Param vs const'
         for op in self.BINARY_OPS:
+            o = ArithmeticOp(op)
             for param_1, param_2 in self.get_binary_test_data_with_const:
                 result = []
                 for idx in range(0, len(param_1)):
-                    result.append(IntOp.binary_op(op, param_1[idx], param_2[idx], self.lane_width))
+                    result.append(o.binary_op(param_1[idx], param_2[idx], self.LANE_VALUE))
                 cases += '\n' + str(AssertReturn('{lane_type}.{op}_with_const_{cnt}'.format(lane_type=self.LANE_TYPE, op=op, cnt=cnt),
                                                  [SIMD.v128_const(param_2, self.LANE_TYPE)],
                                                  SIMD.v128_const(result, self.LANE_TYPE)))
@@ -279,10 +282,11 @@ class SimdLaneWiseInteger:
         def gen_binary(case_data):
             cases = ''
             for op in self.BINARY_OPS:
+                o = ArithmeticOp(op)
                 for param_1, param_2 in case_data:
                     result = []
                     for idx in range(0, len(param_1)):
-                        result.append(IntOp.binary_op(op, param_1[idx], param_2[idx], self.lane_width))
+                        result.append(o.binary_op(param_1[idx], param_2[idx], self.LANE_VALUE))
                     cases += '\n' + str(AssertReturn('{lane_type}.{op}'.format(lane_type=self.LANE_TYPE, op=op),
                                                      [SIMD.v128_const(param_1, self.LANE_TYPE), SIMD.v128_const(param_2, self.LANE_TYPE)],
                                                      SIMD.v128_const(result, self.LANE_TYPE)))
@@ -291,10 +295,11 @@ class SimdLaneWiseInteger:
         def gen_unary(case_data):
             cases = ''
             for op in self.UNARY_OPS:
+                o = ArithmeticOp(op)
                 for param in case_data:
                     result = []
                     for idx in range(0, len(param)):
-                        result.append(IntOp.unary_op(op, param[idx], self.lane_width))
+                        result.append(o.unary_op(param[idx], self.LANE_VALUE))
                     cases += '\n' + str(AssertReturn('{lane_type}.{op}'.format(lane_type=self.LANE_TYPE, op=op),
                                                      [SIMD.v128_const(param, self.LANE_TYPE)],
                                                      SIMD.v128_const(result, self.LANE_TYPE)))
@@ -406,10 +411,12 @@ class SimdLaneWiseInteger:
         unary_ops.reverse()
         for op1 in self.BINARY_OPS:
             """binary vs binary"""
+            o1 = ArithmeticOp(op1)
             for op2 in binary_ops:
+                o2 = ArithmeticOp(op2)
                 result = []
-                ret = IntOp.binary_op(op2, '0', '1', self.lane_width)
-                ret = IntOp.binary_op(op1, ret, '2', self.lane_width)
+                ret = o2.binary_op('0', '1', self.LANE_VALUE)
+                ret = o1.binary_op(ret, '2', self.LANE_VALUE)
                 result.append(ret)
 
                 cases += '\n' + str(AssertReturn('{lane_type}.{op1}-{lane_type}.{op2}'.format(lane_type=self.LANE_TYPE, op1=op1, op2=op2),
@@ -419,9 +426,10 @@ class SimdLaneWiseInteger:
                                                  SIMD.v128_const(result, self.LANE_TYPE)))
             for op2 in self.UNARY_OPS:
                 """binary vs unary"""
+                o2 = ArithmeticOp(op2)
                 result1 = []
-                ret1 = IntOp.unary_op(op2, '-1', self.lane_width)
-                ret1 = IntOp.binary_op(op1, ret1, '0', self.lane_width)
+                ret1 = o2.unary_op('-1', self.LANE_VALUE)
+                ret1 = o1.binary_op(ret1, '0', self.LANE_VALUE)
                 result1.append(ret1)
                 cases += '\n' + str(AssertReturn('{lane_type}.{op1}-{lane_type}.{op2}'.format(lane_type=self.LANE_TYPE, op1=op1, op2=op2),
                                                  [SIMD.v128_const('-1', self.LANE_TYPE),
@@ -429,8 +437,8 @@ class SimdLaneWiseInteger:
                                                  SIMD.v128_const(result1, self.LANE_TYPE)))
                 """unary vs binary"""
                 result2 = []
-                ret2 = IntOp.binary_op(op1, '0', '-1', self.lane_width)
-                ret2 = IntOp.unary_op(op2, ret2, self.lane_width)
+                ret2 = o1.binary_op('0', '-1', self.LANE_VALUE)
+                ret2 = o2.unary_op(ret2, self.LANE_VALUE)
                 result2.append(ret2)
                 cases += '\n' + str(AssertReturn('{lane_type}.{op1}-{lane_type}.{op2}'.format(lane_type=self.LANE_TYPE, op1=op2, op2=op1),
                                                  [SIMD.v128_const('0', self.LANE_TYPE),
@@ -438,10 +446,12 @@ class SimdLaneWiseInteger:
                                                  SIMD.v128_const(result2, self.LANE_TYPE)))
         for op1 in self.UNARY_OPS:
             """unary vs unary"""
+            o1 = ArithmeticOp(op1)
             for op2 in unary_ops:
+                o2 = ArithmeticOp(op2)
                 result3 = []
-                ret3 = IntOp.unary_op(op1, '-1', self.lane_width)
-                ret3 = IntOp.unary_op(op2, ret3, self.lane_width)
+                ret3 = o1.unary_op('-1', self.LANE_VALUE)
+                ret3 = o2.unary_op(ret3, self.LANE_VALUE)
                 result3.append(ret3)
                 cases += '\n' + str(AssertReturn('{lane_type}.{op1}-{lane_type}.{op2}'.format(lane_type=self.LANE_TYPE, op1=op1, op2=op2),
                                                  [SIMD.v128_const('-1', self.LANE_TYPE)],

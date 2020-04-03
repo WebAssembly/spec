@@ -8,154 +8,32 @@ operation cases. It provides a skeleton to generate the normal, invalid and
 combined cases. Subclasses only provide the test data sets. In some special
 cases, you may need to override the methods in base class to fulfill your
 case generation.
-
-Class LaneNumber and ArithmeticOp are used for calculating the results of
-these arithmetic and saturate arithmetic operations.
 """
 
 from simd import SIMD
 from test_assert import AssertReturn, AssertInvalid
+from simd_lane_value import LaneValue
+from simd_integer_op import ArithmeticOp
 
 
-class LaneNumber:
-    """This class stands for the number represented by a line in v128.
-    Suppose a bit length of the lane is n, then:
-    For signed integer:
-        minimum = -pow(2, n - 1), maximum = pow(2, n - 1) - 1
-    For unsigned integer:
-        minimum = 0, maximum = pow(2, n) - 1
-    The bit length of the lane can be 8, 16, 32, 64"""
-    def __init__(self, length):
-        """length: bit number of each lane in SIMD v128"""
-        self.lane_len = length
-
-    @property
-    def min(self):
-        return -pow(2, self.lane_len - 1)
-
-    @property
-    def max(self):
-        return pow(2, self.lane_len - 1) - 1
-
-    @property
-    def mask(self):
-        return pow(2, self.lane_len) - 1
-
-    @property
-    def mod(self):
-        return pow(2, self.lane_len)
-
-    @property
-    def quarter(self):
-        return pow(2, self.lane_len - 2)
-
-
-i8 = LaneNumber(8)
-i16 = LaneNumber(16)
-i32 = LaneNumber(32)
-i64 = LaneNumber(64)
-
-
-class ArithmeticOp:
-    """This class stands for an SIMD integer operator, with one or
-    more operands. The methods are some kind of arithmetic with the
-    operands.
-    """
-    def __init__(self, op):
-        self.op = op
-
-    @staticmethod
-    def get_valid_lane(value, lane):
-        """Get the valid integer number of value in the specified lane size.
-        """
-        value &= lane.mask
-        if value > lane.max:
-            return value - lane.mod
-        if value < lane.min:
-            return value + lane.mod
-        return value
-
-    def saturate(self, p1, p2, lane):
-        """Get the result of saturate arithmetic operation of 2 operands.
-        Supports both signed and unsigned number.
-        """
-        if self.op.endswith('saturate_s'):
-            if p1 > lane.max:
-                p1 -= lane.mod
-            if p2 > lane.max:
-                p2 -= lane.mod
-
-            if self.op.startswith('add'):
-                value = p1 + p2
-            if self.op.startswith('sub'):
-                value = p1 - p2
-
-            if value > lane.max:
-                return lane.max
-            if value < lane.min:
-                return lane.min
-
-        if self.op.endswith('saturate_u'):
-            if p1 < 0:
-                p1 += lane.mod
-            if p2 < 0:
-                p2 += lane.mod
-            if self.op.startswith('add'):
-                value = p1 + p2
-            if self.op.startswith('sub'):
-                value = p1 - p2
-
-            if value > lane.mask:
-                return lane.mask
-            if value < 0:
-                return 0
-
-        return value
-
-    def unary_op(self, p, lane):
-        """General unary arithmetic operation."""
-        if isinstance(p, str) and '0x' in p:
-            p = int(p, base=16)
-        if self.op == 'neg':
-            value = -p
-        return self.get_valid_lane(value, lane)
-
-    def binary_op(self, p1, p2, lane, float_repr=False):
-        """General binary arithmetic operation for 2 numbers."""
-        if isinstance(p1, str) and '0x' in p1:
-            p1 = int(p1, base=16)
-        if isinstance(p2, str) and '0x' in p2:
-            p2 = int(p2, base=16)
-
-        if float_repr:
-            p2 &= lane.mask
-
-        if self.op == 'add':
-            value = (p1 + p2)
-        elif self.op == 'sub':
-            value = (p1 - p2)
-        elif self.op == 'mul':
-            value = (p1 * p2)
-        elif 'saturate' in self.op:
-            return self.saturate(p1, p2, lane)
-        else:
-            raise Exception('Unsupported operator: %s' % self.op)
-
-        return self.get_valid_lane(value, lane)
+i8 = LaneValue(8)
+i16 = LaneValue(16)
+i32 = LaneValue(32)
+i64 = LaneValue(64)
 
 
 class SimdArithmeticCase:
 
     UNARY_OPS = ('neg',)
     BINARY_OPS = ('add', 'sub', 'mul')
-    LANE_NUMBER = {'i8x16': i8, 'i16x8': i16, 'i32x4': i32, 'i64x2': i64}
+    LANE_VALUE = {'i8x16': i8, 'i16x8': i16, 'i32x4': i32, 'i64x2': i64}
 
     def __str__(self):
         return self.get_all_cases()
 
     @property
     def lane(self):
-        return self.LANE_NUMBER.get(self.LANE_TYPE)
+        return self.LANE_VALUE.get(self.LANE_TYPE)
 
     @property
     def normal_unary_op_test_data(self):
