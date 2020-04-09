@@ -9,11 +9,6 @@ WebAssembly code consists of sequences of *instructions*.
 Its computational model is based on a *stack machine* in that instructions manipulate values on an implicit *operand stack*,
 consuming (popping) argument values and producing or returning (pushing) result values.
 
-.. note::
-   In the current version of WebAssembly,
-   at most one result value can be pushed by a single instruction.
-   This restriction may be lifted in future versions.
-
 In addition to dynamic operands from the stack, some instructions also have static *immediate* arguments,
 typically :ref:`indices <syntax-index>` or type annotations,
 which are part of the instruction itself.
@@ -274,8 +269,11 @@ Both instructions operate in units of :ref:`page size <page-size>`.
    This restriction may be lifted in future versions.
 
 
-.. index:: ! control instruction, ! structured control, ! label, ! block, ! branch, ! unwinding, result type, label index, function index, type index, vector, trap, function, table, function type
+.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, result type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
    pair: abstract syntax; instruction
+   pair: abstract syntax; block type
+   pair: block; type
+.. _syntax-blocktype:
 .. _syntax-nop:
 .. _syntax-unreachable:
 .. _syntax-block:
@@ -297,13 +295,15 @@ Instructions in this group affect the flow of control.
 
 .. math::
    \begin{array}{llcl}
+   \production{block type} & \blocktype &::=&
+     \typeidx ~|~ \valtype^? \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \NOP \\&&|&
      \UNREACHABLE \\&&|&
-     \BLOCK~\resulttype~\instr^\ast~\END \\&&|&
-     \LOOP~\resulttype~\instr^\ast~\END \\&&|&
-     \IF~\resulttype~\instr^\ast~\ELSE~\instr^\ast~\END \\&&|&
+     \BLOCK~\blocktype~\instr^\ast~\END \\&&|&
+     \LOOP~\blocktype~\instr^\ast~\END \\&&|&
+     \IF~\blocktype~\instr^\ast~\ELSE~\instr^\ast~\END \\&&|&
      \BR~\labelidx \\&&|&
      \BRIF~\labelidx \\&&|&
      \BRTABLE~\vec(\labelidx)~\labelidx \\&&|&
@@ -319,7 +319,9 @@ The |UNREACHABLE| instruction causes an unconditional :ref:`trap <trap>`.
 The |BLOCK|, |LOOP| and |IF| instructions are *structured* instructions.
 They bracket nested sequences of instructions, called *blocks*, terminated with, or separated by, |END| or |ELSE| pseudo-instructions.
 As the grammar prescribes, they must be well-nested.
-A structured instruction can produce a value as described by the annotated :ref:`result type <syntax-resulttype>`.
+
+A structured instruction can consume *input* and produce *output* on the operand stack according to its annotated *block type*.
+It is given either as a :ref:`type index <syntax-funcidx>` that refers to a suitable :ref:`function type <syntax-functype>`, or as an optional :ref:`value type <syntax-valtype>` inline, which is a shorthand for the function type :math:`[] \to [\valtype^?]`.
 
 Each structured control instruction introduces an implicit *label*.
 Labels are targets for branch instructions that reference them with :ref:`label indices <syntax-labelidx>`.
@@ -345,7 +347,9 @@ Branch instructions come in several flavors:
 and |BRTABLE| performs an indirect branch through an operand indexing into the label vector that is an immediate to the instruction, or to a default target if the operand is out of bounds.
 The |RETURN| instruction is a shortcut for an unconditional branch to the outermost block, which implicitly is the body of the current function.
 Taking a branch *unwinds* the operand stack up to the height where the targeted structured control instruction was entered.
-However, forward branches that target a control instruction with a non-empty result type consume matching operands first and push them back on the operand stack after unwinding, as a result for the terminated structured instruction.
+However, branches may additionally consume operands themselves, which they push back on the operand stack after unwinding.
+Forward branches require operands according to the output of the targeted block's type, i.e., represent the values produced by the terminated block.
+Backward branches require operands according to the input of the targeted block's type, i.e., represent the values consumed by the restarted block.
 
 The |CALL| instruction invokes another :ref:`function <syntax-func>`, consuming the necessary arguments from the stack and returning the result values of the call.
 The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>`.

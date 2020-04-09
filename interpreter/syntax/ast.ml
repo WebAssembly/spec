@@ -68,15 +68,17 @@ type var = int32 Source.phrase
 type literal = Values.value Source.phrase
 type name = int list
 
+type block_type = VarBlockType of var | ValBlockType of value_type option
+
 type instr = instr' Source.phrase
 and instr' =
   | Unreachable                       (* trap unconditionally *)
   | Nop                               (* do nothing *)
   | Drop                              (* forget a value *)
   | Select                            (* branchless conditional *)
-  | Block of stack_type * instr list  (* execute in sequence *)
-  | Loop of stack_type * instr list   (* loop header *)
-  | If of stack_type * instr list * instr list  (* conditional *)
+  | Block of block_type * instr list  (* execute in sequence *)
+  | Loop of block_type * instr list   (* loop header *)
+  | If of block_type * instr list * instr list  (* conditional *)
   | Br of var                         (* break to n-th surrounding label *)
   | BrIf of var                       (* conditional break *)
   | BrTable of var list * var         (* indexed break *)
