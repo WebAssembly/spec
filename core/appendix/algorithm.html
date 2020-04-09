@@ -102,7 +102,8 @@ the latter surrounding <a class="reference internal" href="../syntax/instruction
 
 <span class="k">type</span> <span class="nf">ctrl_stack</span> = stack(ctrl_frame)
 <span class="k">type</span> <span class="nf">ctrl_frame</span> = {
-  <span class="nf">label_types</span> : list(val_type)
+  <span class="nf">opcode</span> : opcode
+  <span class="nf">start_types</span> : list(val_type)
   <span class="nf">end_types</span> : list(val_type)
   <span class="nf">height</span> : nat
   <span class="nf">unreachable</span> : bool
@@ -110,12 +111,7 @@ the latter surrounding <a class="reference internal" href="../syntax/instruction
 </pre></div>
 </div>
 <p>For each value, the operand stack records its <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a>, or <code class="code docutils literal notranslate"><span class="pre">Unknown</span></code> when the type is not known.</p>
-<p>For each entered block, the control stack records a <em>control frame</em> with the type of the associated <a class="reference internal" href="../exec/runtime.html#syntax-label"><span class="std std-ref">label</span></a> (used to type-check branches), the result type of the block (used to check its result), the height of the operand stack at the start of the block (used to check that operands do not underflow the current block), and a flag recording whether the remainder of the block is unreachable (used to handle <a class="reference internal" href="../valid/instructions.html#polymorphism"><span class="std std-ref">stack-polymorphic</span></a> typing after branches).</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In the presentation of this algorithm, multiple values are supported for the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result types</span></a> classifying blocks and labels.
-With the current version of WebAssembly, the <code class="code docutils literal notranslate"><span class="pre">list</span></code> could be simplified to an optional value.</p>
-</div>
+<p>For each entered block, the control stack records a <em>control frame</em> with the originating opcode, the types on the top of the operand stack at the start and end of the block (used to check its result as well as branches), the height of the operand stack at the start of the block (used to check that operands do not underflow the current block), and a flag recording whether the remainder of the block is unreachable (used to handle <a class="reference internal" href="../valid/instructions.html#polymorphism"><span class="std std-ref">stack-polymorphic</span></a> typing after branches).</p>
 <p>For the purpose of presenting the algorithm, the operand and control stacks are simply maintained as global variables:</p>
 <div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nf">opds</span> : opd_stack
 <span class="k">var</span> <span class="nf">ctrls</span> : ctrl_stack
@@ -156,17 +152,21 @@ The more specific type is returned.</p>
 so that <code class="code docutils literal notranslate"><span class="pre">ctrls[0]</span></code> accesses the element pushed last.</p>
 </div>
 <p>The control stack is likewise manipulated through auxiliary functions:</p>
-<div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">func</span> <span class="nf">push_ctrl</span>(<span class="nf">label</span> : list(val_type), <span class="nf">out</span> : list(val_type)) =
-  <span class="k">let</span> <span class="nf">frame</span> = ctrl_frame(label, out, opds.size(), false)
+<div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">func</span> <span class="nf">push_ctrl</span>(<span class="nf">opcode</span> : opcode, <span class="k">in</span> : list(val_type), <span class="nf">out</span> : list(val_type)) =
+  <span class="k">let</span> <span class="nf">frame</span> = ctrl_frame(opcode, <span class="k">in</span>, out, opds.size(), false)
   ctrls.push(frame)
+  push_opds(<span class="k">in</span>)
 
-<span class="k">func</span> <span class="nf">pop_ctrl</span>() : list(val_type) =
+<span class="k">func</span> <span class="nf">pop_ctrl</span>() : ctrl_frame =
   error_if(ctrls.is_empty())
   <span class="k">let</span> <span class="nf">frame</span> = ctrls[0]
   pop_opds(frame.end_types)
   error_if(opds.size() =/= frame.height)
   ctrls.pop()
-  <span class="k">return</span> frame.end_types
+  <span class="k">return</span> frame
+
+<span class="k">func</span> <span class="nf">label_types</span>(<span class="nf">frame</span> : ctrl_frame) : list(val_types) =
+  <span class="k">return</span> (if frame.opcode == loop then frame.start_types else frame.end_types)
 
 <span class="k">func</span> <span class="nf">unreachable</span>() =
   opds.resize(ctrls[0].height)
@@ -178,6 +178,7 @@ It allocates a new frame record recording them along with the current height of 
 <p>Popping a frame first checks that the control stack is not empty.
 It then verifies that the operand stack contains the right types of values expected at the end of the exited block and pops them off the operand stack.
 Afterwards, it checks that the stack has shrunk back to its initial height.</p>
+<p>The type of the <a class="reference internal" href="../exec/runtime.html#syntax-label"><span class="std std-ref">label</span></a> associated with a control frame is either that of the stack at the start or the end of the frame, determined by the opcode that it originates from.</p>
 <p>Finally, the current frame can be marked as unreachable.
 In that case, all existing operand types are purged from the operand stack, in order to allow for the <a class="reference internal" href="../valid/instructions.html#polymorphism"><span class="std std-ref">stack-polymorphism</span></a> logic in <code class="code docutils literal notranslate"><span class="pre">pop_opd</span></code> to take effect.</p>
 <div class="admonition note">
@@ -215,41 +216,45 @@ That is an easy addition and therefore omitted from this presentation.</p>
     <span class="k">case</span> (unreachable)
       unreachable()
 
-    <span class="k">case</span> (block t*)
-      push_ctrl([t*], [t*])
+    <span class="k">case</span> (block t1*-&gt;t2*)
+      pop_opds([t1*])
+      push_ctrl(block, [t1*], [t2*])
 
-    <span class="k">case</span> (loop t*)
-      push_ctrl([], [t*])
+    <span class="k">case</span> (loop t1*-&gt;t2*)
+      pop_opds([t1*])
+      push_ctrl(loop, [t1*], [t2*])
 
-    <span class="k">case</span> (if t*)
+    <span class="k">case</span> (if t1*-&gt;t2*)
       pop_opd(I32)
-      push_ctrl([t*], [t*])
+      pop_opds([t1*])
+      push_ctrl(if, [t1*], [t2*])
 
     <span class="k">case</span> (end)
-      <span class="k">let</span> <span class="nf">results</span> = pop_ctrl()
-      push_opds(results)
+      <span class="k">let</span> <span class="nf">frame</span> = pop_ctrl()
+      push_opds(frame.end_types)
 
     <span class="k">case</span> (else)
-      <span class="k">let</span> <span class="nf">results</span> = pop_ctrl()
-      push_ctrl(results, results)
+      <span class="k">let</span> <span class="nf">frame</span> = pop_ctrl()
+      error_if(frame.opcode =/= <span class="k">if</span>)
+      push_ctrl(else, frame.start_types, frame.end_types)
 
     <span class="k">case</span> (br n)
       error_if(ctrls.size() &lt; n)
-      pop_opds(ctrls[n].label_types)
+      pop_opds(label_types(ctrls[n]))
       unreachable()
 
     <span class="k">case</span> (br_if n)
       error_if(ctrls.size() &lt; n)
       pop_opd(I32)
-      pop_opds(ctrls[n].label_types)
-      push_opds(ctrls[n].label_types)
+      pop_opds(label_types(ctrls[n]))
+      push_opds(label_types(ctrls[n]))
 
     <span class="k">case</span> (br_table n* m)
       error_if(ctrls.size() &lt; m)
       <span class="k">foreach</span> (n <span class="k">in</span> n*)
-        error_if(ctrls.size() &lt; n || ctrls[n].label_types =/= ctrls[m].label_types)
+        error_if(ctrls.size() &lt; n || label_types(ctrls[n]) =/= label_types(ctrls[m]))
       pop_opd(I32)
-      pop_opds(ctrls[m].label_types)
+      pop_opds(label_types(ctrls[m]))
       unreachable()
 </pre></div>
 </div>

@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version 831bcbdc, updated Thu Apr 2 11:59:45 2020 -0700" name="generator">
+  <meta content="Bikeshed version 3d0743c8, updated Mon Apr 6 16:15:57 2020 +0200" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="704d9d9e9c861fdb957c3d5e928f1d046a31497e" name="document-revision">
+  <meta content="484180ba3d9d7638ba1cb400b699ffede796927c" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -271,7 +271,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-04-04">4 April 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-04-09">9 April 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1539,36 +1539,70 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>If <var>ret</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①④">error</a>, throw an exception. This exception should be a WebAssembly <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror①">RuntimeError</a></code> exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.</p>
      <li data-md>
-      <p>If <var>ret</var> is empty, return undefined.</p>
+      <p>Let <var>outArity</var> be the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a> of <var>ret</var>.</p>
      <li data-md>
-      <p>Otherwise, return <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①">ToJSValue</a>(<var>v</var>), where <var>v</var> is the singular element of <var>ret</var>.</p>
+      <p>If <var>outArity</var> is 0, return undefined.</p>
+     <li data-md>
+      <p>Otherwise, if <var>outArity</var> is 1, return <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①">ToJSValue</a>(<var>v</var>), where <var>v</var> is the singular element of <var>ret</var>.</p>
+     <li data-md>
+      <p>Otherwise,</p>
+      <ol>
+       <li data-md>
+        <p>Let <var>values</var> be a new, empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑥">list</a>.</p>
+       <li data-md>
+        <p>For each <var>r</var> in <var>ret</var>, <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-append" id="ref-for-concept-node-append">append</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue②">ToJSValue</a>(<var>r</var>) to <var>values</var>.</p>
+       <li data-md>
+        <p>Return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-createarrayfromlist" id="ref-for-sec-createarrayfromlist">CreateArrayFromList</a>(<var>values</var>).</p>
+      </ol>
     </ol>
    </div>
    <p class="note" role="note"><span>Note:</span> <a data-link-type="dfn" href="#call-an-exported-function" id="ref-for-call-an-exported-function①">Calling an Exported Function</a> executes in the [[Realm]] of the callee Exported Function, as per the definition of <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-built-in-function-objects" id="ref-for-sec-built-in-function-objects①">built-in function objects</a>.</p>
    <p class="note" role="note"><span>Note:</span> Exported Functions do not have a [[Construct]] method and thus it is not possible to call one with the <code>new</code> operator.</p>
    <div class="algorithm" data-algorithm="run a host function">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="run-a-host-function">run a host function</dfn> from the JavaScript object <var>func</var>, type <var>functype</var>, and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑥">list</a> of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑤">WebAssembly values</a> <var>arguments</var>, perform the following steps: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="run-a-host-function">run a host function</dfn> from the JavaScript object <var>func</var>, type <var>functype</var>, and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑦">list</a> of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑤">WebAssembly values</a> <var>arguments</var>, perform the following steps: 
     <ol>
      <li data-md>
       <p>Let [<var>parameters</var>] → [<var>results</var>] be <var>functype</var>.</p>
      <li data-md>
-      <p class="assertion">Assert: <var>results</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a> is at most one.</p>
-     <li data-md>
       <p>If either <var>parameters</var> or <var>results</var> contains <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①③">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">TypeError</a></code>.</p>
      <li data-md>
-      <p>Let <var>jsArguments</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑦">list</a>.</p>
+      <p>Let <var>arguments</var> be a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑧">list</a> of the arguments of the invocation of this function.</p>
+     <li data-md>
+      <p>Let <var>jsArguments</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑨">list</a>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑥">For each</a> <var>arg</var> of <var>arguments</var>,</p>
       <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑧">Append</a> ! <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue②">ToJSValue</a>(<var>arg</var>) to <var>jsArguments</var>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑧">Append</a> ! <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue③">ToJSValue</a>(<var>arg</var>) to <var>jsArguments</var>.</p>
       </ol>
      <li data-md>
       <p>Let <var>ret</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-call" id="ref-for-sec-call">Call</a>(<var>func</var>, undefined, <var>jsArguments</var>).</p>
      <li data-md>
       <p>If <var>results</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-is-empty" id="ref-for-list-is-empty">is empty</a>, return « ».</p>
      <li data-md>
-      <p>Otherwise, return « ? <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue④">ToWebAssemblyValue</a>(<var>ret</var>, <var>results</var>[0]) ».</p>
+      <p>Otherwise, if <var>results</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size①">size</a> is 1, return « ? <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue④">ToWebAssemblyValue</a>(<var>ret</var>, <var>results</var>[0]) ».</p>
+     <li data-md>
+      <p>Otherwise,</p>
+      <ol>
+       <li data-md>
+        <p>Let <var>method</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-getmethod" id="ref-for-sec-getmethod">GetMethod</a>(<var>ret</var>, <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-well-known-symbols" id="ref-for-sec-well-known-symbols">@@iterator</a>).</p>
+       <li data-md>
+        <p>If <var>method</var> is undefined, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-throw" id="ref-for-dfn-throw">throw</a> a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">TypeError</a></code>.</p>
+       <li data-md>
+        <p>Let <var>values</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-iterabletolist" id="ref-for-sec-iterabletolist">IterableToList</a>(<var>ret</var>, <var>method</var>).</p>
+       <li data-md>
+        <p>Let <var>wasmValues</var> be a new, empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①⓪">list</a>.</p>
+       <li data-md>
+        <p>If <var>values</var> and <var>results</var> do not have the same length, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①⓪">TypeError</a></code>.</p>
+       <li data-md>
+        <p>For each <var>value</var> and <var>resultType</var> in <var>values</var> and <var>results</var>, paired linearly,</p>
+        <ol>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑨">Append</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑤">ToWebAssemblyValue</a>(<var>value</var>, <var>resultType</var>) to <var>wasmValues</var>.</p>
+        </ol>
+       <li data-md>
+        <p>Return <var>wasmValues</var>.</p>
+      </ol>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="create a host function">
@@ -1661,7 +1695,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
     </ol>
    </div>
    <p class="note" role="note"><span>Note:</span> This defines <code class="idl"><a data-link-type="idl" href="#exceptiondef-compileerror" id="ref-for-exceptiondef-compileerror②">CompileError</a></code>, <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror⑥">LinkError</a></code>, and <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror②">RuntimeError</a></code> classes on the <code class="idl"><a data-link-type="idl" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑥">WebAssembly</a></code> namespace, which are produced by the APIs defined in this specification.
-They expose the same interface as native JavaScript errors like <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">TypeError</a></code> and <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑧">RangeError</a></code>.</p>
+They expose the same interface as native JavaScript errors like <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①①">TypeError</a></code> and <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑧">RangeError</a></code>.</p>
    <p class="note" role="note"><span>Note:</span> It is not currently possible to define this behavior using Web IDL.</p>
    <h2 class="heading settled" data-level="4" id="errors"><span class="secno">4. </span><span class="content">Error Condition Mappings to JavaScript</span><a class="self-link" href="#errors"></a></h2>
    <p>Running WebAssembly programs encounter certain events which halt execution of the WebAssembly code.
@@ -1716,8 +1750,8 @@ In practice, an implementation may run out of resources for valid modules below 
     <li>The maximum number of table entries in any table initialization is 10000000.
     <li>The maximum number of memories, including declared or imported memories, is 1.
     <li>The initial or maximum number of pages for any memory, declared or imported, is at most 65536.
-    <li>The maximum number of parameters to any function is 1000.
-    <li>The maximum number of return values for any function is 1.
+    <li>The maximum number of parameters to any function or block is 1000.
+    <li>The maximum number of return values for any function or block is 1000.
     <li>The maximum size of a function body, including locals declarations, is 7654321 bytes.
     <li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50000.
    </ul>
@@ -1895,10 +1929,22 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#namespacedef-webassembly">WebAssembly</a><span>, in §3</span>
    <li><a href="#dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a><span>, in §3</span>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-concept-node-append">
+   <a href="https://dom.spec.whatwg.org/#concept-node-append">https://dom.spec.whatwg.org/#concept-node-append</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-node-append">3.6. Exported Functions</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-sec-properties-of-the-function-prototype-object">
    <a href="https://tc39.github.io/ecma262/#sec-properties-of-the-function-prototype-object">https://tc39.github.io/ecma262/#sec-properties-of-the-function-prototype-object</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-properties-of-the-function-prototype-object">3.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-well-known-symbols">
+   <a href="https://tc39.github.io/ecma262/#sec-well-known-symbols">https://tc39.github.io/ecma262/#sec-well-known-symbols</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-well-known-symbols">3.6. Exported Functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-arraybuffer-objects">
@@ -1931,8 +1977,8 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror">3. The WebAssembly Namespace</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror①">(2)</a>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror②">3.4. Tables</a>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror③">3.5. Globals</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror④">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑤">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">(4)</a>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">3.6. Exported Functions</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">(2)</a>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">3.7. Error Objects</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">3.6. Exported Functions</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror①⓪">(4)</a>
+    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror①①">3.7. Error Objects</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-agent">
@@ -1959,6 +2005,12 @@ In practice, an implementation may run out of resources for valid modules below 
    <a href="https://tc39.github.io/ecma262/#sec-call">https://tc39.github.io/ecma262/#sec-call</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-call">3.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-createarrayfromlist">
+   <a href="https://tc39.github.io/ecma262/#sec-createarrayfromlist">https://tc39.github.io/ecma262/#sec-createarrayfromlist</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-createarrayfromlist">3.6. Exported Functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-createbuiltinfunction">
@@ -1998,11 +2050,23 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-sec-get-o-p">3. The WebAssembly Namespace</a> <a href="#ref-for-sec-get-o-p①">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-getmethod">
+   <a href="https://tc39.github.io/ecma262/#sec-getmethod">https://tc39.github.io/ecma262/#sec-getmethod</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-getmethod">3.6. Exported Functions</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-sec-iscallable">
    <a href="https://tc39.github.io/ecma262/#sec-iscallable">https://tc39.github.io/ecma262/#sec-iscallable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-iscallable">3. The WebAssembly Namespace</a>
     <li><a href="#ref-for-sec-iscallable①">3.6. Exported Functions</a> <a href="#ref-for-sec-iscallable②">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-iterabletolist">
+   <a href="https://tc39.github.io/ecma262/#sec-iterabletolist">https://tc39.github.io/ecma262/#sec-iterabletolist</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-iterabletolist">3.6. Exported Functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-nativeerror-object-structure">
@@ -2110,7 +2174,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <ul>
     <li><a href="#ref-for-list-append">3. The WebAssembly Namespace</a> <a href="#ref-for-list-append①">(2)</a> <a href="#ref-for-list-append②">(3)</a> <a href="#ref-for-list-append③">(4)</a>
     <li><a href="#ref-for-list-append④">3.1. Modules</a> <a href="#ref-for-list-append⑤">(2)</a> <a href="#ref-for-list-append⑥">(3)</a>
-    <li><a href="#ref-for-list-append⑦">3.6. Exported Functions</a> <a href="#ref-for-list-append⑧">(2)</a>
+    <li><a href="#ref-for-list-append⑦">3.6. Exported Functions</a> <a href="#ref-for-list-append⑧">(2)</a> <a href="#ref-for-list-append⑨">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-map-exists">
@@ -2142,7 +2206,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <ul>
     <li><a href="#ref-for-list">3. The WebAssembly Namespace</a>
     <li><a href="#ref-for-list①">3.1. Modules</a> <a href="#ref-for-list②">(2)</a> <a href="#ref-for-list③">(3)</a>
-    <li><a href="#ref-for-list④">3.6. Exported Functions</a> <a href="#ref-for-list⑤">(2)</a> <a href="#ref-for-list⑥">(3)</a> <a href="#ref-for-list⑦">(4)</a>
+    <li><a href="#ref-for-list④">3.6. Exported Functions</a> <a href="#ref-for-list⑤">(2)</a> <a href="#ref-for-list⑥">(3)</a> <a href="#ref-for-list⑦">(4)</a> <a href="#ref-for-list⑧">(5)</a> <a href="#ref-for-list⑨">(6)</a> <a href="#ref-for-list①⓪">(7)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ordered-map">
@@ -2163,7 +2227,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside class="dfn-panel" data-for="term-for-list-size">
    <a href="https://infra.spec.whatwg.org/#list-size">https://infra.spec.whatwg.org/#list-size</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-size">3.6. Exported Functions</a>
+    <li><a href="#ref-for-list-size">3.6. Exported Functions</a> <a href="#ref-for-list-size①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-addresses">
@@ -2715,6 +2779,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-resolve">3. The WebAssembly Namespace</a> <a href="#ref-for-resolve①">(2)</a> <a href="#ref-for-resolve②">(3)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-throw">
+   <a href="https://heycam.github.io/webidl/#dfn-throw">https://heycam.github.io/webidl/#dfn-throw</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-throw">3.6. Exported Functions</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-idl-unsigned-long">
    <a href="https://heycam.github.io/webidl/#idl-unsigned-long">https://heycam.github.io/webidl/#idl-unsigned-long</a><b>Referenced in:</b>
    <ul>
@@ -2737,9 +2807,15 @@ In practice, an implementation may run out of resources for valid modules below 
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
+    <a data-link-type="biblio">[DOM]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-concept-node-append" style="color:initial">append</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[ECMASCRIPT]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-sec-properties-of-the-function-prototype-object" style="color:initial">%functionprototype%</span>
+     <li><span class="dfn-paneled" id="term-for-sec-well-known-symbols" style="color:initial">@@iterator</span>
      <li><span class="dfn-paneled" id="term-for-sec-arraybuffer-objects" style="color:initial">ArrayBuffer</span>
      <li><span class="dfn-paneled" id="term-for-sec-createmethodproperty" style="color:initial">CreateMethodProperty</span>
      <li><span class="dfn-paneled" id="term-for-sec-native-error-types-used-in-this-standard-rangeerror" style="color:initial">RangeError</span>
@@ -2748,13 +2824,16 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-sec-agent-clusters" style="color:initial">agent cluster</span>
      <li><span class="dfn-paneled" id="term-for-sec-built-in-function-objects" style="color:initial">built-in function objects</span>
      <li><span class="dfn-paneled" id="term-for-sec-call" style="color:initial">call</span>
+     <li><span class="dfn-paneled" id="term-for-sec-createarrayfromlist" style="color:initial">createarrayfromlist</span>
      <li><span class="dfn-paneled" id="term-for-sec-createbuiltinfunction" style="color:initial">createbuiltinfunction</span>
      <li><span class="dfn-paneled" id="term-for-sec-createdataproperty" style="color:initial">createdataproperty</span>
      <li><span class="dfn-paneled" id="term-for-current-realm" style="color:initial">current realm</span>
      <li><span class="dfn-paneled" id="term-for-sec-data-blocks" style="color:initial">data block</span>
      <li><span class="dfn-paneled" id="term-for-sec-detacharraybuffer" style="color:initial">detacharraybuffer</span>
      <li><span class="dfn-paneled" id="term-for-sec-get-o-p" style="color:initial">get</span>
+     <li><span class="dfn-paneled" id="term-for-sec-getmethod" style="color:initial">getmethod</span>
      <li><span class="dfn-paneled" id="term-for-sec-iscallable" style="color:initial">iscallable</span>
+     <li><span class="dfn-paneled" id="term-for-sec-iterabletolist" style="color:initial">iterabletolist</span>
      <li><span class="dfn-paneled" id="term-for-sec-nativeerror-object-structure" style="color:initial">nativeerror object structure</span>
      <li><span class="dfn-paneled" id="term-for-sec-numbertorawbytes" style="color:initial">numbertorawbytes</span>
      <li><span class="dfn-paneled" id="term-for-sec-objectcreate" style="color:initial">objectcreate</span>
@@ -2881,6 +2960,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-idl-object" style="color:initial">object</span>
      <li><span class="dfn-paneled" id="term-for-reject" style="color:initial">reject</span>
      <li><span class="dfn-paneled" id="term-for-resolve" style="color:initial">resolve</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-throw" style="color:initial">throw</span>
      <li><span class="dfn-paneled" id="term-for-idl-unsigned-long" style="color:initial">unsigned long</span>
      <li><span class="dfn-paneled" id="term-for-upon-fulfillment" style="color:initial">upon fulfillment</span>
      <li><span class="dfn-paneled" id="term-for-upon-rejection" style="color:initial">upon rejection</span>
@@ -2889,6 +2969,8 @@ In practice, an implementation may run out of resources for valid modules below 
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-dom">[DOM]
+   <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/">DOM Standard</a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-ecmascript">[ECMASCRIPT]
    <dd><a href="https://tc39.es/ecma262/">ECMAScript Language Specification</a>. URL: <a href="https://tc39.es/ecma262/">https://tc39.es/ecma262/</a>
    <dt id="biblio-encoding">[ENCODING]
@@ -3530,7 +3612,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <b><a href="#tojsvalue">#tojsvalue</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-tojsvalue">3.5. Globals</a>
-    <li><a href="#ref-for-tojsvalue①">3.6. Exported Functions</a> <a href="#ref-for-tojsvalue②">(2)</a>
+    <li><a href="#ref-for-tojsvalue①">3.6. Exported Functions</a> <a href="#ref-for-tojsvalue②">(2)</a> <a href="#ref-for-tojsvalue③">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="towebassemblyvalue">
@@ -3538,7 +3620,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <ul>
     <li><a href="#ref-for-towebassemblyvalue">3. The WebAssembly Namespace</a>
     <li><a href="#ref-for-towebassemblyvalue①">3.5. Globals</a> <a href="#ref-for-towebassemblyvalue②">(2)</a>
-    <li><a href="#ref-for-towebassemblyvalue③">3.6. Exported Functions</a> <a href="#ref-for-towebassemblyvalue④">(2)</a>
+    <li><a href="#ref-for-towebassemblyvalue③">3.6. Exported Functions</a> <a href="#ref-for-towebassemblyvalue④">(2)</a> <a href="#ref-for-towebassemblyvalue⑤">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="exceptiondef-compileerror">

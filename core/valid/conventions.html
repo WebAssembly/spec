@@ -122,7 +122,7 @@ The label stack is the only part of the context that changes as validation of an
 <p>More concretely, contexts are defined as <a class="reference internal" href="../syntax/conventions.html#notation-record"><span class="std std-ref">records</span></a> <span class="math notranslate nohighlight">\(C\)</span> with abstract syntax:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef2525#1{{}}\mathdef2525{(context)} &amp; C &amp;::=&amp;
+\def\mathdef2619#1{{}}\mathdef2619{(context)} &amp; C &amp;::=&amp;
   \begin{array}[t]{l&#64;{~}ll}
   \{ &amp; \href{../valid/conventions.html#context}{\mathsf{types}} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
      &amp; \href{../valid/conventions.html#context}{\mathsf{funcs}} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
@@ -220,14 +220,16 @@ and the instruction is ill-typed.</p>
 a recursive rule, where the premise is itself a typing judgement:</p>
 <div class="math notranslate nohighlight">
 \[\frac{
-  C,\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\,[t^?] \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+  C \vdash \href{../syntax/instructions.html#syntax-blocktype}{\mathit{blocktype}} : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
+  \qquad
+  C,\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\,[t_2^\ast] \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
 }{
-  C \vdash \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~[t^?]~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+  C \vdash \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~\href{../syntax/instructions.html#syntax-blocktype}{\mathit{blocktype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
 }\]</div>
 <p>A <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> instruction is only valid when the instruction sequence in its body is.
-Moreover, the result type must match the block’s annotation <span class="math notranslate nohighlight">\([t^?]\)</span>.
+Moreover, the result type must match the block’s annotation <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-blocktype}{\mathit{blocktype}}\)</span>.
 If so, then the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> instruction has the same type as the body.
-Inside the body an additional label of the same type is available,
+Inside the body an additional label of the corresponding result type is available,
 which is expressed by extending the context <span class="math notranslate nohighlight">\(C\)</span> with the additional label information for the premise.</p>
 </div>
 <dl class="footnote brackets">

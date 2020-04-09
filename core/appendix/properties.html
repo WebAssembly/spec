@@ -371,16 +371,16 @@ This type is absent (<span class="math notranslate nohighlight">\(\epsilon\)</sp
 <ul class="simple">
 <li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math notranslate nohighlight">\(S\)</span> must be <a class="reference internal" href="#valid-store"><span class="std std-ref">valid</span></a>.</p></li>
 <li><p>Under no allowed return type,
-the <a class="reference internal" href="../exec/runtime.html#syntax-thread"><span class="std std-ref">thread</span></a> <span class="math notranslate nohighlight">\(T\)</span> must be <a class="reference internal" href="#valid-thread"><span class="std std-ref">valid</span></a> with some <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t^?]\)</span>.</p></li>
-<li><p>Then the configuration is valid with the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t^?]\)</span>.</p></li>
+the <a class="reference internal" href="../exec/runtime.html#syntax-thread"><span class="std std-ref">thread</span></a> <span class="math notranslate nohighlight">\(T\)</span> must be <a class="reference internal" href="#valid-thread"><span class="std std-ref">valid</span></a> with some <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t^\ast]\)</span>.</p></li>
+<li><p>Then the configuration is valid with the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t^\ast]\)</span>.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
   \href{../appendix/properties.html#valid-store}{\vdash} S \mathrel{\mbox{ok}}
   \qquad
-  S; \epsilon \href{../appendix/properties.html#valid-thread}{\vdash} T : [t^?]
+  S; \epsilon \href{../appendix/properties.html#valid-thread}{\vdash} T : [t^\ast]
 }{
-  \href{../appendix/properties.html#valid-config}{\vdash} S; T : [t^?]
+  \href{../appendix/properties.html#valid-config}{\vdash} S; T : [t^\ast]
 }\]</div>
 </div>
 <div class="section" id="threads-f-xref-syntax-instructions-syntax-instr-mathit-instr-ast">
@@ -390,16 +390,16 @@ the <a class="reference internal" href="../exec/runtime.html#syntax-thread"><spa
 <li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-frame"><span class="std std-ref">frame</span></a> <span class="math notranslate nohighlight">\(F\)</span> must be <a class="reference internal" href="#valid-frame"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a> <span class="math notranslate nohighlight">\(C\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(C'\)</span> be the same <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a> as <span class="math notranslate nohighlight">\(C\)</span>, but with <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> set to <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^?\)</span>.</p></li>
 <li><p>Under context <span class="math notranslate nohighlight">\(C'\)</span>,
-the instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be <a class="reference internal" href="../valid/instructions.html#valid-instr-seq"><span class="std std-ref">valid</span></a> with some type <span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]\)</span>.</p></li>
-<li><p>Then the thread is valid with the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t^?]\)</span>.</p></li>
+the instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be <a class="reference internal" href="../valid/instructions.html#valid-instr-seq"><span class="std std-ref">valid</span></a> with some type <span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^\ast]\)</span>.</p></li>
+<li><p>Then the thread is valid with the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t^\ast]\)</span>.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
   S \href{../appendix/properties.html#valid-frame}{\vdash} F : C
   \qquad
-  S; C,\href{../valid/conventions.html#context}{\mathsf{return}}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^? \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^?]
+  S; C,\href{../valid/conventions.html#context}{\mathsf{return}}~\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^? \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t^\ast]
 }{
-  S; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^? \href{../appendix/properties.html#valid-thread}{\vdash} F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [t^?]
+  S; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^? \href{../appendix/properties.html#valid-thread}{\vdash} F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [t^\ast]
 }\]</div>
 </div>
 <div class="section" id="frames-xref-exec-runtime-syntax-frame-mathsf-locals-xref-exec-runtime-syntax-val-mathit-val-ast-xref-exec-runtime-syntax-frame-mathsf-module-xref-exec-runtime-syntax-moduleinst-mathit-moduleinst">
@@ -489,19 +489,19 @@ To that end, all previous typing judgements <span class="math notranslate nohigh
 <div class="section" id="xref-exec-runtime-syntax-label-mathsf-label-n-xref-syntax-instructions-syntax-instr-mathit-instr-0-ast-xref-syntax-instructions-syntax-instr-mathit-instr-ast-xref-syntax-instructions-syntax-instr-control-mathsf-end">
 <span id="index-19"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_0^\ast\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span><a class="headerlink" href="#xref-exec-runtime-syntax-label-mathsf-label-n-xref-syntax-instructions-syntax-instr-mathit-instr-0-ast-xref-syntax-instructions-syntax-instr-mathit-instr-ast-xref-syntax-instructions-syntax-instr-control-mathsf-end" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>The instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_0^\ast\)</span> must be <a class="reference internal" href="../valid/instructions.html#valid-instr-seq"><span class="std std-ref">valid</span></a> with some type <span class="math notranslate nohighlight">\([t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]\)</span>.</p></li>
+<li><p>The instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_0^\ast\)</span> must be <a class="reference internal" href="../valid/instructions.html#valid-instr-seq"><span class="std std-ref">valid</span></a> with some type <span class="math notranslate nohighlight">\([t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^*]\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(C'\)</span> be the same <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a> as <span class="math notranslate nohighlight">\(C\)</span>, but with the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t_1^n]\)</span> prepended to the <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{labels}}\)</span> vector.</p></li>
 <li><p>Under context <span class="math notranslate nohighlight">\(C'\)</span>,
-the instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be <a class="reference internal" href="../valid/instructions.html#valid-instr-seq"><span class="std std-ref">valid</span></a> with type <span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]\)</span>.</p></li>
-<li><p>Then the compound instruction is valid with type <span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]\)</span>.</p></li>
+the instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be <a class="reference internal" href="../valid/instructions.html#valid-instr-seq"><span class="std std-ref">valid</span></a> with type <span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^*]\)</span>.</p></li>
+<li><p>Then the compound instruction is valid with type <span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^*]\)</span>.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
-  S; C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_0^\ast : [t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]
+  S; C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_0^\ast : [t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^*]
   \qquad
-  S; C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[t_1^n] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]
+  S; C,\href{../valid/conventions.html#context}{\mathsf{labels}}\,[t_1^n] \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^*]
 }{
-  S; C \href{../appendix/properties.html#valid-instr-admin}{\vdash} \href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_0^\ast\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]
+  S; C \href{../appendix/properties.html#valid-instr-admin}{\vdash} \href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_0^\ast\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^*]
 }\]</div>
 </div>
 <div class="section" id="xref-exec-runtime-syntax-frame-mathsf-frame-n-f-xref-syntax-instructions-syntax-instr-mathit-instr-ast-xref-syntax-instructions-syntax-instr-control-mathsf-end">

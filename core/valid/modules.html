@@ -87,36 +87,32 @@
 Furthermore, most definitions are themselves classified with a suitable type.</p>
 <div class="section" id="functions">
 <span id="valid-func"></span><span id="valid-local"></span><span id="index-0"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
-<p>Functions <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> of the form <span class="math notranslate nohighlight">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]\)</span>.</p>
+<p>Functions <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}\)</span> are classified by <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> of the form <span class="math notranslate nohighlight">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>.</p>
 <div class="section" id="xref-syntax-modules-syntax-func-mathsf-type-x-xref-syntax-modules-syntax-func-mathsf-locals-t-ast-xref-syntax-modules-syntax-func-mathsf-body-xref-syntax-instructions-syntax-expr-mathit-expr">
 <h3><span class="math notranslate nohighlight">\(\{ \href{../syntax/modules.html#syntax-func}{\mathsf{type}}~x, \href{../syntax/modules.html#syntax-func}{\mathsf{locals}}~t^\ast, \href{../syntax/modules.html#syntax-func}{\mathsf{body}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \}\)</span><a class="headerlink" href="#xref-syntax-modules-syntax-func-mathsf-type-x-xref-syntax-modules-syntax-func-mathsf-locals-t-ast-xref-syntax-modules-syntax-func-mathsf-body-xref-syntax-instructions-syntax-expr-mathit-expr" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The type <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span> must be defined in the context.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[x]\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(C'\)</span> be the same <a class="reference internal" href="conventions.html#context"><span class="std std-ref">context</span></a> as <span class="math notranslate nohighlight">\(C\)</span>,
 but with:</p>
 <ul>
 <li><p><span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{locals}}\)</span> set to the sequence of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math notranslate nohighlight">\(t_1^\ast~t^\ast\)</span>, concatenating parameters and locals,</p></li>
-<li><p><span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{labels}}\)</span> set to the singular sequence containing only <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t_2^?]\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> set to the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t_2^?]\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{labels}}\)</span> set to the singular sequence containing only <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t_2^\ast]\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{return}}\)</span> set to the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t_2^\ast]\)</span>.</p></li>
 </ul>
 </li>
 <li><p>Under the context <span class="math notranslate nohighlight">\(C'\)</span>,
-the expression <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be valid with type <span class="math notranslate nohighlight">\(t_2^?\)</span>.</p></li>
-<li><p>Then the function definition is valid with type <span class="math notranslate nohighlight">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]\)</span>.</p></li>
+the expression <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be valid with type <span class="math notranslate nohighlight">\([t_2^\ast]\)</span>.</p></li>
+<li><p>Then the function definition is valid with type <span class="math notranslate nohighlight">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
-  C.\href{../valid/conventions.html#context}{\mathsf{types}}[x] = [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]
+  C.\href{../valid/conventions.html#context}{\mathsf{types}}[x] = [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
   \qquad
-  C,\href{../valid/conventions.html#context}{\mathsf{locals}}\,t_1^\ast~t^\ast,\href{../valid/conventions.html#context}{\mathsf{labels}}~[t_2^?],\href{../valid/conventions.html#context}{\mathsf{return}}~[t_2^?] \href{../valid/instructions.html#valid-expr}{\vdash} \href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} : [t_2^?]
+  C,\href{../valid/conventions.html#context}{\mathsf{locals}}\,t_1^\ast~t^\ast,\href{../valid/conventions.html#context}{\mathsf{labels}}~[t_2^\ast],\href{../valid/conventions.html#context}{\mathsf{return}}~[t_2^\ast] \href{../valid/instructions.html#valid-expr}{\vdash} \href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} : [t_2^\ast]
 }{
-  C \href{../valid/modules.html#valid-func}{\vdash} \{ \href{../syntax/modules.html#syntax-func}{\mathsf{type}}~x, \href{../syntax/modules.html#syntax-func}{\mathsf{locals}}~t^\ast, \href{../syntax/modules.html#syntax-func}{\mathsf{body}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \} : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?]
+  C \href{../valid/modules.html#valid-func}{\vdash} \{ \href{../syntax/modules.html#syntax-func}{\mathsf{type}}~x, \href{../syntax/modules.html#syntax-func}{\mathsf{locals}}~t^\ast, \href{../syntax/modules.html#syntax-func}{\mathsf{body}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \} : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
 }\]</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The restriction on the length of the result types <span class="math notranslate nohighlight">\(t_2^\ast\)</span> may be lifted in future versions of WebAssembly.</p>
-</div>
 </div>
 </div>
 <div class="section" id="tables">

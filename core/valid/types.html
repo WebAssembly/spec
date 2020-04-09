@@ -84,7 +84,8 @@
   <div class="section" id="types">
 <h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
 <p>Most <a class="reference internal" href="../syntax/types.html#syntax-type"><span class="std std-ref">types</span></a> are universally valid.
-However, restrictions apply to <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> as well as the <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a> of <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table types</span></a> and <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory types</span></a>, which must be checked during validation.</p>
+However, restrictions apply to <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a>, which must be checked during validation.
+Moreover, <a class="reference internal" href="../syntax/instructions.html#syntax-blocktype"><span class="std std-ref">block types</span></a> are converted to plain <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> for ease of processing.</p>
 <div class="section" id="limits">
 <span id="valid-limits"></span><span id="index-0"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">Limits</span></a> must have meaningful bounds that are within a given range.</p>
@@ -112,28 +113,51 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
 }\]</div>
 </div>
 </div>
-<div class="section" id="function-types">
-<span id="valid-functype"></span><span id="index-1"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">Function types</span></a> may not specify more than one result.</p>
-<div class="section" id="t-1-n-xref-syntax-types-syntax-functype-rightarrow-t-2-m">
-<h3><span class="math notranslate nohighlight">\([t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^m]\)</span><a class="headerlink" href="#t-1-n-xref-syntax-types-syntax-functype-rightarrow-t-2-m" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="block-types">
+<span id="valid-blocktype"></span><span id="index-1"></span><h2>Block Types<a class="headerlink" href="#block-types" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/instructions.html#syntax-blocktype"><span class="std std-ref">Block types</span></a> may be expressed in one of two forms, both of which are converted to plain <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a> by the following rules.</p>
+<div class="section" id="xref-syntax-modules-syntax-typeidx-mathit-typeidx">
+<h3><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}\)</span><a class="headerlink" href="#xref-syntax-modules-syntax-typeidx-mathit-typeidx" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>The arity <span class="math notranslate nohighlight">\(m\)</span> must not be larger than <span class="math notranslate nohighlight">\(1\)</span>.</p></li>
-<li><p>Then the function type is valid.</p></li>
+<li><p>The type <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}]\)</span> must be defined in the context.</p></li>
+<li><p>Then the block type is valid as <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}]\)</span>.</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{types}}[\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}] = \href{../syntax/types.html#syntax-functype}{\mathit{functype}}
+}{
+  C \href{../valid/types.html#valid-blocktype}{\vdash} \href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}} : \href{../syntax/types.html#syntax-functype}{\mathit{functype}}
+}\]</div>
+</div>
+<div class="section" id="xref-syntax-types-syntax-valtype-mathit-valtype">
+<h3><span class="math notranslate nohighlight">\([\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^?]\)</span><a class="headerlink" href="#xref-syntax-types-syntax-valtype-mathit-valtype" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>The block type is valid as <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^?]\)</span>.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
 }{
-  \href{../valid/types.html#valid-functype}{\vdash} [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^?] \mathrel{\mbox{ok}}
+  C \href{../valid/types.html#valid-blocktype}{\vdash} [\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^?] : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^?]
 }\]</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The restriction to at most one result may be removed in future versions of WebAssembly.</p>
 </div>
+</div>
+<div class="section" id="function-types">
+<span id="valid-functype"></span><span id="index-2"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">Function types</span></a> are always valid.</p>
+<div class="section" id="t-1-n-xref-syntax-types-syntax-functype-rightarrow-t-2-m">
+<h3><span class="math notranslate nohighlight">\([t_1^n] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^m]\)</span><a class="headerlink" href="#t-1-n-xref-syntax-types-syntax-functype-rightarrow-t-2-m" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>The function type is valid.</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{
+}{
+  \href{../valid/types.html#valid-functype}{\vdash} [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast] \mathrel{\mbox{ok}}
+}\]</div>
 </div>
 </div>
 <div class="section" id="table-types">
-<span id="valid-tabletype"></span><span id="index-2"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
+<span id="valid-tabletype"></span><span id="index-3"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="xref-syntax-types-syntax-limits-mathit-limits-xref-syntax-types-syntax-elemtype-mathit-elemtype">
 <h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}~\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-limits-mathit-limits-xref-syntax-types-syntax-elemtype-mathit-elemtype" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -149,7 +173,7 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
 </div>
 </div>
 <div class="section" id="memory-types">
-<span id="valid-memtype"></span><span id="index-3"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this headline">¶</a></h2>
+<span id="valid-memtype"></span><span id="index-4"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="xref-syntax-types-syntax-limits-mathit-limits">
 <h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-limits-mathit-limits" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -165,7 +189,7 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
 </div>
 </div>
 <div class="section" id="global-types">
-<span id="valid-globaltype"></span><span id="index-4"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Permalink to this headline">¶</a></h2>
+<span id="valid-globaltype"></span><span id="index-5"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="xref-syntax-types-syntax-mut-mathit-mut-xref-syntax-types-syntax-valtype-mathit-valtype">
 <h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-mut-mathit-mut-xref-syntax-types-syntax-valtype-mathit-valtype" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -179,7 +203,7 @@ However, restrictions apply to <a class="reference internal" href="../syntax/typ
 </div>
 </div>
 <div class="section" id="external-types">
-<span id="valid-externtype"></span><span id="index-5"></span><h2>External Types<a class="headerlink" href="#external-types" title="Permalink to this headline">¶</a></h2>
+<span id="valid-externtype"></span><span id="index-6"></span><h2>External Types<a class="headerlink" href="#external-types" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="xref-syntax-types-syntax-externtype-mathsf-func-xref-syntax-types-syntax-functype-mathit-functype">
 <h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-externtype-mathsf-func-xref-syntax-types-syntax-functype-mathit-functype" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
