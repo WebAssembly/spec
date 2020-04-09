@@ -59,6 +59,7 @@ sig
   val clz : t -> t
   val ctz : t -> t
   val popcnt : t -> t
+  val extend_s : int -> t -> t
   val eqz : t -> bool
   val eq : t -> t -> bool
   val ne : t -> t -> bool
@@ -202,6 +203,10 @@ struct
         let acc' = if and_ n Rep.one = Rep.one then acc + 1 else acc in
         loop acc' (i - 1) (Rep.shift_right_logical n 1)
     in Rep.of_int (loop 0 Rep.bitwidth x)
+
+  let extend_s n x =
+    let shift = Rep.bitwidth - n in
+    Rep.shift_right (Rep.shift_left x shift) shift
 
   let eqz x = x = Rep.zero
 

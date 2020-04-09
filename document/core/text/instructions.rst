@@ -421,6 +421,16 @@ Numeric Instructions
      \text{f64.reinterpret\_i64} &\Rightarrow& \F64.\REINTERPRET\K{\_}\I64 \\
    \end{array}
 
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+     \text{i32.extend8\_s} &\Rightarrow& \I32.\EXTEND\K{8\_s} \\ &&|&
+     \text{i32.extend16\_s} &\Rightarrow& \I32.\EXTEND\K{16\_s} \\ &&|&
+     \text{i64.extend8\_s} &\Rightarrow& \I64.\EXTEND\K{8\_s} \\ &&|&
+     \text{i64.extend16\_s} &\Rightarrow& \I64.\EXTEND\K{16\_s} \\ &&|&
+     \text{i64.extend32\_s} &\Rightarrow& \I64.\EXTEND\K{32\_s} \\
+   \end{array}
+
 
 .. index:: ! folded instruction, S-expression
 .. _text-foldedinstr:

@@ -445,6 +445,12 @@ let rec instr s =
   | 0xbe -> f32_reinterpret_i32
   | 0xbf -> f64_reinterpret_i64
 
+  | 0xc0 -> i32_extend8_s
+  | 0xc1 -> i32_extend16_s
+  | 0xc2 -> i64_extend8_s
+  | 0xc3 -> i64_extend16_s
+  | 0xc4 -> i64_extend32_s
+
   | 0xfc -> math_prefix s
 
   | b -> illegal s pos b

@@ -381,6 +381,17 @@ The saturating truncation instructions all have a one byte prefix.
    \end{array}
 
 
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+     \hex{C0} &\Rightarrow& \I32.\EXTEND\K{8\_s} \\ &&|&
+     \hex{C1} &\Rightarrow& \I32.\EXTEND\K{16\_s} \\ &&|&
+     \hex{C2} &\Rightarrow& \I64.\EXTEND\K{8\_s} \\ &&|&
+     \hex{C3} &\Rightarrow& \I64.\EXTEND\K{16\_s} \\ &&|&
+     \hex{C4} &\Rightarrow& \I64.\EXTEND\K{32\_s} \\
+   \end{array}
+
+
 .. index:: expression
    pair: binary format; expression
    single: expression; constant
