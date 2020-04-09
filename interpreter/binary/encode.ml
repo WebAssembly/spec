@@ -60,6 +60,7 @@ let encode m =
     let vu32 i = vu64 Int64.(logand (of_int32 i) 0xffffffffL)
     let vs7 i = vs64 (Int64.of_int i)
     let vs32 i = vs64 (Int64.of_int32 i)
+    let vs33 i = vs64 (I64_convert.extend_i32_s i)
     let f32 x = u32 (F32.to_bits x)
     let f64 x = u64 (F64.to_bits x)
 
@@ -99,15 +100,9 @@ let encode m =
     let elem_type = function
       | FuncRefType -> vs7 (-0x10)
 
-    let stack_type = function
-      | [] -> vs7 (-0x40)
-      | [t] -> value_type t
-      | _ ->
-        Code.error Source.no_region
-          "cannot encode stack type with arity > 1 (yet)"
-
+    let stack_type = vec value_type
     let func_type = function
-      | FuncType (ins, out) -> vs7 (-0x20); vec value_type ins; vec value_type out
+      | FuncType (ins, out) -> vs7 (-0x20); stack_type ins; stack_type out
 
     let limits vu {min; max} =
       bool (max <> None); vu min; opt vu max
@@ -138,15 +133,20 @@ let encode m =
 
     let var x = vu32 x.it
 
+    let block_type = function
+      | VarBlockType x -> vs33 x.it
+      | ValBlockType None -> vs7 (-0x40)
+      | ValBlockType (Some t) -> value_type t
+
     let rec instr e =
       match e.it with
       | Unreachable -> op 0x00
       | Nop -> op 0x01
 
-      | Block (ts, es) -> op 0x02; stack_type ts; list instr es; end_ ()
-      | Loop (ts, es) -> op 0x03; stack_type ts; list instr es; end_ ()
-      | If (ts, es1, es2) ->
-        op 0x04; stack_type ts; list instr es1;
+      | Block (bt, es) -> op 0x02; block_type bt; list instr es; end_ ()
+      | Loop (bt, es) -> op 0x03; block_type bt; list instr es; end_ ()
+      | If (bt, es1, es2) ->
+        op 0x04; block_type bt; list instr es1;
         if es2 <> [] then op 0x05;
         list instr es2; end_ ()
 

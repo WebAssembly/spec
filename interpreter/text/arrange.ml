@@ -61,8 +61,6 @@ let elem_type t = string_of_elem_type t
 
 let decls kind ts = tab kind (atom value_type) ts
 
-let stack_type ts = decls "result" ts
-
 let func_type (FuncType (ins, out)) =
   Node ("func", decls "param" ins @ decls "result" out)
 
@@ -224,6 +222,10 @@ let var x = nat32 x.it
 let value v = string_of_value v.it
 let constop v = value_type (type_of v.it) ^ ".const"
 
+let block_type = function
+  | VarBlockType x -> [Node ("type " ^ var x, [])]
+  | ValBlockType ts -> decls "result" (list_of_opt ts)
+
 let rec instr e =
   let head, inner =
     match e.it with
@@ -231,10 +233,10 @@ let rec instr e =
     | Nop -> "nop", []
     | Drop -> "drop", []
     | Select -> "select", []
-    | Block (ts, es) -> "block", stack_type ts @ list instr es
-    | Loop (ts, es) -> "loop", stack_type ts @ list instr es
-    | If (ts, es1, es2) ->
-      "if", stack_type ts @
+    | Block (bt, es) -> "block", block_type bt @ list instr es
+    | Loop (bt, es) -> "loop", block_type bt @ list instr es
+    | If (bt, es1, es2) ->
+      "if", block_type bt @
         [Node ("then", list instr es1); Node ("else", list instr es2)]
     | Br x -> "br " ^ var x, []
     | BrIf x -> "br_if " ^ var x, []

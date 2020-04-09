@@ -13,12 +13,12 @@ let unreachable = Unreachable
 let nop = Nop
 let drop = Drop
 let select = Select
-let block ts es = Block (ts, es)
-let loop ts es = Loop (ts, es)
+let block bt es = Block (bt, es)
+let loop bt es = Loop (bt, es)
+let if_ bt es1 es2 = If (bt, es1, es2)
 let br x = Br x
 let br_if x = BrIf x
 let br_table xs x = BrTable (xs, x)
-let if_ ts es1 es2 = If (ts, es1, es2)
 
 let return = Return
 let call x = Call x
