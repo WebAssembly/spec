@@ -1464,6 +1464,62 @@ Conversions
    It is not defined for NaNs, infinities, or values for which the result is out of range.
 
 
+.. _op-trunc_u_sat:
+
+:math:`\truncusat_{M,N}(z)`
+...........................
+
+* If :math:`z` is a NaN, then return :math:`0`.
+
+* Else if :math:`z` is negative infinity, then return :math:`0`.
+
+* Else if :math:`z` is positive infinity, then return :math:`2^N - 1`.
+
+* Else if :math:`\trunc(z)` is less than :math:`0`, then return :math:`0`.
+
+* Else if :math:`\trunc(z)` is greater than :math:`2^N - 1`, then return :math:`2^N - 1`.
+
+* Else, return :math:`\trunc(z)`.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \truncusat_{M,N}(\pm \NAN(n)) &=& 0 \\
+   \truncusat_{M,N}(- \infty) &=& 0 \\
+   \truncusat_{M,N}(+ \infty) &=& 2^N - 1 \\
+   \truncusat_{M,N}(- q) &=& 0 & (\iff \trunc(- q) < 0) \\
+   \truncusat_{M,N}(+ q) &=& 2^N - 1 & (\iff \trunc(+ q) > 2^N - 1) \\
+   \truncusat_{M,N}(\pm q) &=& \trunc(\pm q) & (otherwise) \\
+   \end{array}
+
+
+.. _op-trunc_s_sat:
+
+:math:`\truncssat_{M,N}(z)`
+...........................
+
+* If :math:`z` is a NaN, then return :math:`0`.
+
+* Else if :math:`z` is negative infinity, then return :math:`-2^{N-1}`.
+
+* Else if :math:`z` is positive infinity, then return :math:`2^{N-1} - 1`.
+
+* Else if :math:`\trunc(z)` is less than :math:`-2^{N-1}`, then return :math:`-2^{N-1}`.
+
+* Else if :math:`\trunc(z)` is greater than :math:`2^{N-1} - 1`, then return :math:`2^{N-1} - 1`.
+
+* Else, return :math:`\trunc(z)`.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \truncssat_{M,N}(\pm \NAN(n)) &=& 0 \\
+   \truncssat_{M,N}(- \infty) &=& -2^{N-1} \\
+   \truncssat_{M,N}(+ \infty) &=& 2^{N-1}-1 \\
+   \truncssat_{M,N}(- q) &=& -2^{N-1} & (\iff \trunc(- q) < -2^{N-1}) \\
+   \truncssat_{M,N}(+ q) &=& 2^{N-1} - 1 & (\iff \trunc(+ q) > 2^{N-1} - 1) \\
+   \truncssat_{M,N}(\pm q) &=& \trunc(\pm q) & (otherwise) \\
+   \end{array}
+
+
 .. _op-promote:
 
 :math:`\promote_{M,N}(z)`
