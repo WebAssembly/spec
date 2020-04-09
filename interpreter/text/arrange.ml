@@ -75,6 +75,15 @@ let global_type = function
   | GlobalType (t, Immutable) -> atom string_of_value_type t
   | GlobalType (t, Mutable) -> Node ("mut", [atom string_of_value_type t])
 
+let pack_size = function
+  | Pack8 -> "8"
+  | Pack16 -> "16"
+  | Pack32 -> "32"
+
+let extension = function
+  | SX -> "_s"
+  | ZX -> "_u"
+
 
 (* Operators *)
 
@@ -101,6 +110,7 @@ struct
     | Clz -> "clz"
     | Ctz -> "ctz"
     | Popcnt -> "popcnt"
+    | ExtendS sz -> "extend" ^ pack_size sz ^ "_s"
 
   let binop xx = function
     | Add -> "add"
@@ -191,15 +201,6 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
-let pack_size = function
-  | Memory.Pack8 -> "8"
-  | Memory.Pack16 -> "16"
-  | Memory.Pack32 -> "32"
-
-let extension = function
-  | Memory.SX -> "_s"
-  | Memory.ZX -> "_u"
-
 let memop name {ty; align; offset; _} sz =
   value_type ty ^ "." ^ name ^
   (if offset = 0l then "" else " offset=" ^ nat32 offset) ^
@@ -209,12 +210,12 @@ let loadop op =
   match op.sz with
   | None -> memop "load" op (size op.ty)
   | Some (sz, ext) ->
-    memop ("load" ^ pack_size sz ^ extension ext) op (Memory.packed_size sz)
+    memop ("load" ^ pack_size sz ^ extension ext) op (packed_size sz)
 
 let storeop op =
   match op.sz with
   | None -> memop "store" op (size op.ty)
-  | Some sz -> memop ("store" ^ pack_size sz) op (Memory.packed_size sz)
+  | Some sz -> memop ("store" ^ pack_size sz) op (packed_size sz)
 
 
 (* Expressions *)

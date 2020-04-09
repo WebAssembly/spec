@@ -238,6 +238,9 @@ rule token = parse
   | (ixx as t)".clz" { UNARY (intop t i32_clz i64_clz) }
   | (ixx as t)".ctz" { UNARY (intop t i32_ctz i64_ctz) }
   | (ixx as t)".popcnt" { UNARY (intop t i32_popcnt i64_popcnt) }
+  | (ixx as t)".extend8_s" { UNARY (intop t i32_extend8_s i64_extend8_s) }
+  | (ixx as t)".extend16_s" { UNARY (intop t i32_extend16_s i64_extend16_s) }
+  | "i64.extend32_s" { UNARY i64_extend32_s }
   | (fxx as t)".neg" { UNARY (floatop t f32_neg f64_neg) }
   | (fxx as t)".abs" { UNARY (floatop t f32_abs f64_abs) }
   | (fxx as t)".sqrt" { UNARY (floatop t f32_sqrt f64_sqrt) }

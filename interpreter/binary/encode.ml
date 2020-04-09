@@ -130,7 +130,6 @@ let encode m =
     open Source
     open Ast
     open Values
-    open Memory
 
     let op n = u8 n
     let end_ () = op 0x0b
@@ -260,10 +259,16 @@ let encode m =
       | Unary (I32 I32Op.Clz) -> op 0x67
       | Unary (I32 I32Op.Ctz) -> op 0x68
       | Unary (I32 I32Op.Popcnt) -> op 0x69
+      | Unary (I32 (I32Op.ExtendS Pack8)) -> op 0xc0
+      | Unary (I32 (I32Op.ExtendS Pack16)) -> op 0xc1
+      | Unary (I32 (I32Op.ExtendS Pack32)) -> assert false
 
       | Unary (I64 I64Op.Clz) -> op 0x79
       | Unary (I64 I64Op.Ctz) -> op 0x7a
       | Unary (I64 I64Op.Popcnt) -> op 0x7b
+      | Unary (I64 (I64Op.ExtendS Pack8)) -> op 0xc2
+      | Unary (I64 (I64Op.ExtendS Pack16)) -> op 0xc3
+      | Unary (I64 (I64Op.ExtendS Pack32)) -> op 0xc4
 
       | Unary (F32 F32Op.Abs) -> op 0x8b
       | Unary (F32 F32Op.Neg) -> op 0x8c

@@ -23,7 +23,7 @@ open Types
 
 module IntOp =
 struct
-  type unop = Clz | Ctz | Popcnt
+  type unop = Clz | Ctz | Popcnt | ExtendS of pack_size
   type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
              | And | Or | Xor | Shl | ShrS | ShrU | Rotl | Rotr
   type testop = Eqz
@@ -58,8 +58,8 @@ type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
 
 type 'a memop =
   {ty : value_type; align : int; offset : Memory.offset; sz : 'a option}
-type loadop = (Memory.pack_size * Memory.extension) memop
-type storeop = Memory.pack_size memop
+type loadop = (pack_size * extension) memop
+type storeop = pack_size memop
 
 
 (* Expressions *)

@@ -139,15 +139,23 @@ let type_cvtop at = function
 
 (* Expressions *)
 
+let check_pack sz t at =
+  require (packed_size sz < size t) at "invalid sign extension"
+
+let check_unop unop at =
+  match unop with
+  | Values.I32 (IntOp.ExtendS sz) | Values.I64 (IntOp.ExtendS sz) ->
+    check_pack sz (Values.type_of unop) at
+  | _ -> ()
+
 let check_memop (c : context) (memop : 'a memop) get_sz at =
   ignore (memory c (0l @@ at));
   let size =
     match get_sz memop.sz with
     | None -> size memop.ty
     | Some sz ->
-      require (memop.ty = I64Type || sz <> Memory.Pack32) at
-        "memory size too big";
-      Memory.packed_size sz
+      check_pack sz memop.ty at;
+      packed_size sz
   in
   require (1 lsl memop.align <= size) at
     "alignment must not be larger than natural"
@@ -279,6 +287,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [t; t] --> [I32Type]
 
   | Unary unop ->
+    check_unop unop e.at;
     let t = type_unop unop in
     [t] --> [t]
 

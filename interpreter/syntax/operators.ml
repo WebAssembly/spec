@@ -1,7 +1,6 @@
 open Source
 open Types
 open Values
-open Memory
 open Ast
 
 
@@ -206,6 +205,12 @@ let i32_reinterpret_f32 = Convert (I32 I32Op.ReinterpretFloat)
 let i64_reinterpret_f64 = Convert (I64 I64Op.ReinterpretFloat)
 let f32_reinterpret_i32 = Convert (F32 F32Op.ReinterpretInt)
 let f64_reinterpret_i64 = Convert (F64 F64Op.ReinterpretInt)
+
+let i32_extend8_s = Unary (I32 (I32Op.ExtendS Pack8))
+let i32_extend16_s = Unary (I32 (I32Op.ExtendS Pack16))
+let i64_extend8_s = Unary (I64 (I64Op.ExtendS Pack8))
+let i64_extend16_s = Unary (I64 (I64Op.ExtendS Pack16))
+let i64_extend32_s = Unary (I64 (I64Op.ExtendS Pack32))
 
 let memory_size = MemorySize
 let memory_grow = MemoryGrow
