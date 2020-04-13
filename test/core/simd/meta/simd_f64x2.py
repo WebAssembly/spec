@@ -7,6 +7,7 @@ Generate f64x2 [abs, min, max] cases.
 from simd_f32x4 import Simdf32x4Case
 from simd_f32x4_arith import Simdf32x4ArithmeticCase
 from test_assert import AssertReturn
+from simd import SIMD
 
 
 class Simdf64x2Case(Simdf32x4Case):
@@ -208,7 +209,6 @@ class Simdf64x2Case(Simdf32x4Case):
 
         # Add test for operations with constant operands
         for key in const_test_data:
-
             op_name = self.full_op_name(key)
             case_cnt = 0
             for case_data in const_test_data[key]:
@@ -273,38 +273,40 @@ class Simdf64x2Case(Simdf32x4Case):
 
         for op in self.BINARY_OPS:
             op_name = self.full_op_name(op)
-            for p1 in self.FLOAT_NUMBERS:
-                for p2 in self.FLOAT_NUMBERS:
-                    result = self.floatOp.binary_op(op, p1, p2)
+            for operand1 in self.FLOAT_NUMBERS:
+                for operand2 in self.FLOAT_NUMBERS:
+                    result = self.floatOp.binary_op(op, operand1, operand2)
                     if 'nan' not in result:
                         # Normal floating point numbers as the results
-                        binary_test_data.append(['assert_return', op_name, p1, p2, result])
+                        binary_test_data.append([op_name, operand1, operand2, result])
                     else:
                         # Since the results contain the 'nan' string, the result literals would be
                         # nan:canonical
-                        binary_test_data.append(['assert_return', op_name, p1, p2, 'nan:canonical'])
+                        binary_test_data.append([op_name, operand1, operand2, 'nan:canonical'])
 
-            for p1 in self.NAN_NUMBERS:
-                for p2 in self.FLOAT_NUMBERS:
-                    if 'nan:' in p1 or 'nan:' in p2:
+            for operand1 in self.NAN_NUMBERS:
+                for operand2 in self.FLOAT_NUMBERS:
+                    if 'nan:' in operand1 or 'nan:' in operand2:
                         # When the arguments contain 'nan:', the result literal is nan:arithmetic
-                        binary_test_data.append(['assert_return', op_name, p1, p2, 'nan:arithmetic'])
+                        binary_test_data.append([op_name, operand1, operand2, 'nan:arithmetic'])
                     else:
                         # No 'nan' string found, then the result literal is nan:canonical
-                        binary_test_data.append(['assert_return', op_name, p1, p2, 'nan:canonical'])
-                for p2 in self.NAN_NUMBERS:
-                    if 'nan:' in p1 or 'nan:' in p2:
-                        binary_test_data.append(['assert_return', op_name, p1, p2, 'nan:arithmetic'])
+                        binary_test_data.append([op_name, operand1, operand2, 'nan:canonical'])
+                for operand2 in self.NAN_NUMBERS:
+                    if 'nan:' in operand1 or 'nan:' in operand2:
+                        binary_test_data.append([op_name, operand1, operand2, 'nan:arithmetic'])
                     else:
-                        binary_test_data.append(['assert_return', op_name, p1, p2, 'nan:canonical'])
+                        binary_test_data.append([op_name, operand1, operand2, 'nan:canonical'])
 
-            for p1 in self.LITERAL_NUMBERS:
-                for p2 in self.LITERAL_NUMBERS:
-                    result = self.floatOp.binary_op(op, p1, p2, hex_form=False)
-                    binary_test_data.append(['assert_return', op_name, p1, p2, result])
+            for operand1 in self.LITERAL_NUMBERS:
+                for operand2 in self.LITERAL_NUMBERS:
+                    result = self.floatOp.binary_op(op, operand1, operand2, hex_form=False)
+                    binary_test_data.append([op_name, operand1, operand2, result])
 
         for case in binary_test_data:
-            cases.append(self.single_binary_test(case))
+            cases.append(str(AssertReturn(case[0],
+                        [SIMD.v128_const(elem, self.LANE_TYPE) for elem in case[1:-1]],
+                        SIMD.v128_const(case[-1], self.LANE_TYPE))))
 
         # Test opposite signs of zero
         lst_oppo_signs_0 = [
@@ -367,10 +369,12 @@ class Simdf64x2Case(Simdf32x4Case):
                 hex_literal = False
             result = self.floatOp.unary_op('abs', p, hex_form=hex_literal)
             # Abs operation is valid for all the floating point numbers
-            unary_test_data.append(['assert_return', op_name, p, result])
+            unary_test_data.append([ op_name, p, result])
 
         for case in unary_test_data:
-            cases.append(self.single_unary_test(case))
+            cases.append(str(AssertReturn(case[0],
+                        [SIMD.v128_const(c, self.LANE_TYPE) for c in case[1:-1]],
+                        SIMD.v128_const(case[-1], self.LANE_TYPE))))
 
         return '\n'.join(cases)
 

@@ -258,39 +258,16 @@ class SimdArithmeticCase:
                                                            op1=func_parts[0],
                                                            op2=func_parts[1]))
         combine_cases.append(')\n')
-        ternary_case_template = ('(assert_return (invoke "{func}" ',
-                                 '(v128.const {lane_type_1} {val_1})',
-                                 '(v128.const {lane_type_2} {val_2})',
-                                 '(v128.const {lane_type_3} {val_3}))',
-                                 '(v128.const {lane_type_4} {val_4}))')
+
         for func, test in sorted(self.combine_ternary_arith_test_data.items()):
-            line_head = ternary_case_template[0].format(func=func)
-            line_head_len = len(line_head)
-            blank_head = ' ' * line_head_len
-            combine_cases.append('\n'.join([
-                line_head + ternary_case_template[1].format(
-                    lane_type_1=self.LANE_TYPE, val_1=' '.join(test[0])),
-                blank_head + ternary_case_template[2].format(
-                    lane_type_2=self.LANE_TYPE, val_2=' '.join(test[1])),
-                blank_head + ternary_case_template[3].format(
-                    lane_type_3=self.LANE_TYPE, val_3=' '.join(test[2])),
-                blank_head + ternary_case_template[4].format(
-                    lane_type_4=self.LANE_TYPE, val_4=' '.join(test[3]))]))
-        binary_case_template = ('(assert_return (invoke "{func}" ',
-                                '(v128.const {lane_type_1} {val_1})',
-                                '(v128.const {lane_type_2} {val_2}))',
-                                '(v128.const {lane_type_3} {val_3}))')
+            combine_cases.append(str(AssertReturn(func,
+                                 [SIMD.v128_const(elem, self.LANE_TYPE) for elem in test[:-1]],
+                                 SIMD.v128_const(test[-1], self.LANE_TYPE))))
         for func, test in sorted(self.combine_binary_arith_test_data.items()):
-            line_head = binary_case_template[0].format(func=func)
-            line_head_len = len(line_head)
-            blank_head = ' ' * line_head_len
-            combine_cases.append('\n'.join([
-                line_head + binary_case_template[1].format(
-                    lane_type_1=self.LANE_TYPE, val_1=' '.join(test[0])),
-                blank_head + binary_case_template[2].format(
-                    lane_type_2=self.LANE_TYPE, val_2=' '.join(test[1])),
-                blank_head + binary_case_template[3].format(
-                    lane_type_3=self.LANE_TYPE, val_3=' '.join(test[2]))]))
+            combine_cases.append(str(AssertReturn(func,
+                                 [SIMD.v128_const(elem, self.LANE_TYPE) for elem in test[:-1]],
+                                 SIMD.v128_const(test[-1], self.LANE_TYPE))))
+
         return '\n'.join(combine_cases)
 
     def get_normal_case(self):

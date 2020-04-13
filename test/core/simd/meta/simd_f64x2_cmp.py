@@ -11,6 +11,8 @@ test datas.
 
 from simd_arithmetic import SimdArithmeticCase
 from simd_float_op import FloatingPointCmpOp
+from test_assert import AssertReturn
+from simd import SIMD
 
 
 class Simdf64x2CmpCase(SimdArithmeticCase):
@@ -32,14 +34,7 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
 
     )
     FLOAT_NUMBERS_NORMAL = ('-1', '0', '1', '2.0')
-
     NAN_NUMBERS = ('nan', '-nan', 'nan:0x4000000000000', '-nan:0x4000000000000')
-
-    binary_params_template = ('({assert_type} (invoke "{func}" ', '{operand_1}', '{operand_2})', '{expected_result})')
-    unary_param_template = ('({assert_type} (invoke "{func}" ', '{operand})', '{expected_result})')
-    binary_nan_template = ('({assert_type} (invoke "{func}" ', '{operand_1}', '{operand_2}))')
-    unary_nan_template = ('({assert_type} (invoke "{func}" ', '{operand}))')
-
 
     def full_op_name(self, op_name):
         return self.LANE_TYPE + '.' + op_name
@@ -56,67 +51,6 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
     @property
     def combine_binary_arith_test_data(self):
         return ['f64x2.eq', 'f64x2.ne', 'f64x2.lt', 'f64x2.le', 'f64x2.gt', 'f64x2.ge']
-
-    def single_binary_test(self, case):
-        """Format a test case in 2 or 3 lines
-
-        :param case: list of elements about the test case
-        :return: test cases with 2 v128.const f64x2 operands, 3 lines at most
-        """
-        op_name = case[1]
-        arg1 = self.v128_const(self.LANE_TYPE, case[2])
-        arg2 = self.v128_const(self.LANE_TYPE, case[3])
-
-        if len(case) == 4:
-            line_head = self.binary_nan_template[0].format(assert_type=case[0], func=op_name)
-            line_head_len = len(line_head)
-            blank_head = ' ' * line_head_len
-            lines = [
-                line_head + self.binary_nan_template[1].format(operand_1=arg1),
-                blank_head + self.binary_nan_template[2].format(operand_2=arg2)
-            ]
-        elif len(case) == 5:
-            line_head = self.binary_params_template[0].format(assert_type=case[0], func=op_name)
-            line_head_len = len(line_head)
-            blank_head = ' ' * line_head_len
-            result = self.v128_const('i64x2', case[-1])
-            lines = [
-                line_head + self.binary_params_template[1].format(operand_1=arg1),
-                blank_head + self.binary_params_template[2].format(operand_2=arg2),
-                blank_head + self.binary_params_template[3].format(expected_result=result)
-            ]
-        else:
-            raise Exception('Invalid format for the test case!')
-
-        return '\n'.join(lines)
-
-    def single_unary_test(self, case):
-        """Format a test case in 1 line or 2 lines
-
-        :param case: list of elements about the test case
-        :return: test cases with 2 v128.const f64x2 operands, 2 lines at most
-        """
-        op_name = case[1]
-        arg = self.v128_const(self.LANE_TYPE, case[2])
-
-        if len(case) == 3:
-            line_head = self.unary_nan_template[0].format(assert_type=case[0], func=op_name)
-            lines = [
-                line_head + self.unary_nan_template[1].format(operand=arg)
-            ]
-        elif len(case) == 4:
-            line_head = self.unary_param_template[0].format(assert_type=case[0], func=op_name)
-            line_head_len = len(line_head)
-            blank_head = ' ' * line_head_len
-            result = self.v128_const(self.LANE_TYPE, case[-1])
-            lines = [
-                line_head + self.unary_param_template[1].format(operand=arg),
-                blank_head + self.unary_param_template[2].format(expected_result=result)
-            ]
-        else:
-            raise Exception('Invalid format for the test case!')
-
-        return '\n'.join(lines)
 
     def get_combine_cases(self):
         combine_cases = [';; combination\n(module (memory 1)']
@@ -218,33 +152,37 @@ class Simdf64x2CmpCase(SimdArithmeticCase):
 
         for op in self.BINARY_OPS:
             op_name = self.full_op_name(op)
-            for p1 in self.FLOAT_NUMBERS_SPECIAL:
-                for p2 in self.FLOAT_NUMBERS_SPECIAL + self.NAN_NUMBERS:
-                    result = self.floatOp.binary_op(op, p1, p2)
-                    binary_test_data.append(['assert_return', op_name, p1, p2, result])
+            for operand1 in self.FLOAT_NUMBERS_SPECIAL:
+                for operand2 in self.FLOAT_NUMBERS_SPECIAL + self.NAN_NUMBERS:
+                    result = self.floatOp.binary_op(op, operand1, operand2)
+                    binary_test_data.append([op_name, operand1, operand2, result])
 
-            for p1 in self.LITERAL_NUMBERS:
-                for p2 in self.LITERAL_NUMBERS:
-                    result = self.floatOp.binary_op(op, p1, p2)
-                    binary_test_data.append(['assert_return', op_name, p1, p2, result])
+            for operand1 in self.LITERAL_NUMBERS:
+                for operand2 in self.LITERAL_NUMBERS:
+                    result = self.floatOp.binary_op(op, operand1, operand2)
+                    binary_test_data.append([op_name, operand1, operand2, result])
 
-            for p1 in self.NAN_NUMBERS:
-                for p2 in self.FLOAT_NUMBERS_SPECIAL + self.NAN_NUMBERS:
-                    result = self.floatOp.binary_op(op, p1, p2)
-                    binary_test_data.append(['assert_return', op_name, p1, p2, result])
+            for operand1 in self.NAN_NUMBERS:
+                for operand2 in self.FLOAT_NUMBERS_SPECIAL + self.NAN_NUMBERS:
+                    result = self.floatOp.binary_op(op, operand1, operand2)
+                    binary_test_data.append([op_name, operand1, operand2, result])
 
         for op in self.BINARY_OPS:
             op_name = self.full_op_name(op)
-            for p1 in self.FLOAT_NUMBERS_NORMAL:
-                for p2 in self.FLOAT_NUMBERS_NORMAL:
-                    result = self.floatOp.binary_op(op, p1, p2)
-                    binary_test_data.append(['assert_return', op_name, p1, p2, result])
+            for operand1 in self.FLOAT_NUMBERS_NORMAL:
+                for operand2 in self.FLOAT_NUMBERS_NORMAL:
+                    result = self.floatOp.binary_op(op, operand1, operand2)
+                    binary_test_data.append([op_name, operand1, operand2, result])
 
         for case in binary_test_data:
-            cases.append(self.single_binary_test(case))
+            cases.append(str(AssertReturn(case[0],
+                        [SIMD.v128_const(elem, self.LANE_TYPE) for elem in case[1:-1]],
+                        SIMD.v128_const(case[-1], 'i64x2'))))
 
         for case in unary_test_data:
-            cases.append(self.single_unary_test(case))
+            cases.append(str(AssertReturn(case[0],
+                        [SIMD.v128_const(elem, self.LANE_TYPE) for elem in case[1:-1]],
+                        SIMD.v128_const(case[-1], 'i64x2'))))
 
         self.get_unknown_operator_case(cases)
 

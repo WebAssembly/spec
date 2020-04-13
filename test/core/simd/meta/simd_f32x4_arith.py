@@ -6,6 +6,8 @@ Generate f32x4 floating-point arithmetic operation cases.
 
 from simd_arithmetic import SimdArithmeticCase
 from simd_float_op import FloatingPointArithOp
+from test_assert import AssertReturn
+from simd import SIMD
 
 
 class F32ArithOp(FloatingPointArithOp):
@@ -36,10 +38,6 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
                        '0x0123456789ABCDEF.019aFp+019', '0x0123456789ABCDEF.019aFp-019'
     )
     NAN_NUMBERS = ('nan', '-nan', 'nan:0x200000', '-nan:0x200000')
-    binary_params_template = ('({assert_type} (invoke "{func}" ', '{operand_1}', '{operand_2})', '{expected_result})')
-    unary_param_template = ('({assert_type} (invoke "{func}" ', '{operand})', '{expected_result})')
-    binary_nan_template = ('({assert_type} (invoke "{func}" ', '{operand_1}', '{operand_2}))')
-    unary_nan_template = ('({assert_type} (invoke "{func}" ', '{operand}))')
 
     def full_op_name(self, op_name):
         return self.LANE_TYPE + '.' + op_name
@@ -106,67 +104,6 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
             ]
         }
 
-    def single_binary_test(self, case):
-        """Format a test case in 2 or 3 lines
-
-        :param case: list of elements about the test case
-        :return: test cases with 2 v128.const f32x4 operands, 3 lines at most
-        """
-        op_name = case[1]
-        arg1 = self.v128_const(self.LANE_TYPE, case[2])
-        arg2 = self.v128_const(self.LANE_TYPE, case[3])
-
-        if len(case) == 4:
-            line_head = self.binary_nan_template[0].format(assert_type=case[0], func=op_name)
-            line_head_len = len(line_head)
-            blank_head = ' ' * line_head_len
-            lines = [
-                line_head + self.binary_nan_template[1].format(operand_1=arg1),
-                blank_head + self.binary_nan_template[2].format(operand_2=arg2)
-            ]
-        elif len(case) == 5:
-            line_head = self.binary_params_template[0].format(assert_type=case[0], func=op_name)
-            line_head_len = len(line_head)
-            blank_head = ' ' * line_head_len
-            result = self.v128_const(self.LANE_TYPE, case[-1])
-            lines = [
-                line_head + self.binary_params_template[1].format(operand_1=arg1),
-                blank_head + self.binary_params_template[2].format(operand_2=arg2),
-                blank_head + self.binary_params_template[3].format(expected_result=result)
-            ]
-        else:
-            raise Exception('Invalid format for the test case!')
-
-        return '\n'.join(lines)
-
-    def single_unary_test(self, case):
-        """Format a test case in 1 line or 2 lines
-
-        :param case: list of elements about the test case
-        :return: test cases with 2 v128.const f32x4 operands, 2 lines at most
-        """
-        op_name = case[1]
-        arg = self.v128_const(self.LANE_TYPE, case[2])
-
-        if len(case) == 3:
-            line_head = self.unary_nan_template[0].format(assert_type=case[0], func=op_name)
-            lines = [
-                line_head + self.unary_nan_template[1].format(operand=arg)
-            ]
-        elif len(case) == 4:
-            line_head = self.unary_param_template[0].format(assert_type=case[0], func=op_name)
-            line_head_len = len(line_head)
-            blank_head = ' ' * line_head_len
-            result = self.v128_const(self.LANE_TYPE, case[-1])
-            lines = [
-                line_head + self.unary_param_template[1].format(operand=arg),
-                blank_head + self.unary_param_template[2].format(expected_result=result)
-            ]
-        else:
-            raise Exception('Invalid format for the test case!')
-
-        return '\n'.join(lines)
-
     def get_normal_case(self):
         """Normal test cases from WebAssembly core tests
         """
@@ -176,68 +113,73 @@ class Simdf32x4ArithmeticCase(SimdArithmeticCase):
 
         for op in self.BINARY_OPS:
             op_name = self.full_op_name(op)
-            for p1 in self.FLOAT_NUMBERS:
-                for p2 in self.FLOAT_NUMBERS:
-                    result = self.floatOp.binary_op(op, p1, p2)
+            for operand1 in self.FLOAT_NUMBERS:
+                for operand2 in self.FLOAT_NUMBERS:
+                    result = self.floatOp.binary_op(op, operand1, operand2)
                     if 'nan' not in result:
                         # Normal floating point numbers as the results
-                        binary_test_data.append(['assert_return', op_name, p1, p2, result])
+                        binary_test_data.append([op_name, operand1, operand2, result])
                     else:
                         # Since the results contain the 'nan' string, the result literals would be
                         # nan:canonical
-                        binary_test_data.append(['assert_return', op_name, p1, p2, 'nan:canonical'])
+                        binary_test_data.append([op_name, operand1, operand2, 'nan:canonical'])
 
-            for p1 in self.NAN_NUMBERS:
-                for p2 in self.FLOAT_NUMBERS:
-                    if 'nan:' in p1 or 'nan:' in p2:
+            for operand1 in self.NAN_NUMBERS:
+                for operand2 in self.FLOAT_NUMBERS:
+                    if 'nan:' in operand1 or 'nan:' in operand2:
                         # When the arguments contain 'nan:', the result literal is nan:arithmetic
                         # Consider the different order of arguments as different cases.
-                        binary_test_data.append(['assert_return', op_name, p1, p2, 'nan:arithmetic'])
-                        binary_test_data.append(['assert_return', op_name, p2, p1, 'nan:arithmetic'])
+                        binary_test_data.append([op_name, operand1, operand2, 'nan:arithmetic'])
+                        binary_test_data.append([op_name, operand2, operand1, 'nan:arithmetic'])
                     else:
                         # No 'nan' string found, then the result literal is nan:canonical.
-                        binary_test_data.append(['assert_return', op_name, p1, p2, 'nan:canonical'])
-                        binary_test_data.append(['assert_return', op_name, p2, p1, 'nan:canonical'])
-                for p2 in self.NAN_NUMBERS:
-                    if 'nan:' in p1 or 'nan:' in p2:
-                        binary_test_data.append(['assert_return', op_name, p1, p2, 'nan:arithmetic'])
+                        binary_test_data.append([op_name, operand1, operand2, 'nan:canonical'])
+                        binary_test_data.append([op_name, operand2, operand1, 'nan:canonical'])
+                for operand2 in self.NAN_NUMBERS:
+                    if 'nan:' in operand1 or 'nan:' in operand2:
+                        binary_test_data.append([op_name, operand1, operand2, 'nan:arithmetic'])
                     else:
-                        binary_test_data.append(['assert_return', op_name, p1, p2, 'nan:canonical'])
+                        binary_test_data.append([op_name, operand1, operand2, 'nan:canonical'])
 
-            for p in self.LITERAL_NUMBERS:
+            for operand in self.LITERAL_NUMBERS:
                 if self.LANE_TYPE == 'f32x4':
-                    result = self.floatOp.binary_op(op, p, p, single_prec=True)
+                    single_precision = True
                 else:
-                    result = self.floatOp.binary_op(op, p, p)
-                binary_test_data.append(['assert_return', op_name, p, p, result])
+                    single_precision = False
+                result = self.floatOp.binary_op(op, operand, operand, single_prec=single_precision)
+                binary_test_data.append([op_name, operand, operand, result])
 
         for case in binary_test_data:
-            cases.append(self.single_binary_test(case))
+            cases.append(str(AssertReturn(case[0],
+                        [SIMD.v128_const(elem, self.LANE_TYPE) for elem in case[1:-1]],
+                        SIMD.v128_const(case[-1], self.LANE_TYPE))))
 
-        for p in self.FLOAT_NUMBERS + self.NAN_NUMBERS + self.LITERAL_NUMBERS:
-            if 'nan:' in p:
-                unary_test_data.append(['assert_return', op_name, p, 'nan:arithmetic'])
-            elif 'nan' in p:
-                unary_test_data.append(['assert_return', op_name, p, 'nan:canonical'])
+        for operand in self.FLOAT_NUMBERS + self.NAN_NUMBERS + self.LITERAL_NUMBERS:
+            if 'nan:' in operand:
+                unary_test_data.append([op_name, operand, 'nan:arithmetic'])
+            elif 'nan' in operand:
+                unary_test_data.append([op_name, operand, 'nan:canonical'])
             else:
                 # Normal floating point numbers for sqrt operation
                 op_name = self.full_op_name('sqrt')
-                result = self.floatOp.float_sqrt(p)
+                result = self.floatOp.float_sqrt(operand)
                 if 'nan' not in result:
                     # Get the sqrt value correctly
-                    unary_test_data.append(['assert_return', op_name, p, result])
+                    unary_test_data.append([op_name, operand, result])
                 else:
                     #
-                    unary_test_data.append(['assert_return', op_name, p, 'nan:canonical'])
+                    unary_test_data.append([op_name, operand, 'nan:canonical'])
 
-        for p in self.FLOAT_NUMBERS + self.NAN_NUMBERS + self.LITERAL_NUMBERS:
+        for operand in self.FLOAT_NUMBERS + self.NAN_NUMBERS + self.LITERAL_NUMBERS:
             op_name = self.full_op_name('neg')
-            result = self.floatOp.float_neg(p)
+            result = self.floatOp.float_neg(operand)
             # Neg operation is valid for all the floating point numbers
-            unary_test_data.append(['assert_return', op_name, p, result])
+            unary_test_data.append([op_name, operand, result])
 
         for case in unary_test_data:
-            cases.append(self.single_unary_test(case))
+            cases.append(str(AssertReturn(case[0],
+                        [SIMD.v128_const(elem, self.LANE_TYPE) for elem in case[1:-1]],
+                        SIMD.v128_const(case[-1], self.LANE_TYPE))))
 
         self.mixed_nan_test(cases)
 
