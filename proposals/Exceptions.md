@@ -314,7 +314,7 @@ out of memory are implementation-defined.)
 ## Changes to the text format
 
 This section describes change in the [instruction syntax
-document](https://github.com/WebAssembly/spec/blob/master/document/core/instructions.rst).
+document](https://github.com/WebAssembly/spec/blob/master/document/core/text/instructions.rst).
 
 ### New instructions
 
