@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
-  <meta content="Bikeshed version 3d0743c8, updated Mon Apr 6 16:15:57 2020 +0200" name="generator">
+  <meta content="Bikeshed version 34b5d8b0, updated Mon Apr 20 13:04:45 2020 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
-  <meta content="484180ba3d9d7638ba1cb400b699ffede796927c" name="document-revision">
+  <meta content="d0e2a6d61989e2edeadd862e926bd36342b616af" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -266,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-04-09">9 April 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-04-21">21 April 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -344,8 +344,8 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
       <c- b>Promise</c->&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①"><c- n>Response</c-></a>> <dfn class="idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-source"><code><c- g>source</c-></code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-source"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-object" id="ref-for-idl-object"><c- b>object</c-></a> <dfn class="idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-importobject"><code><c- g>importObject</c-></code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-importobject"></a></dfn>);
 };
 </pre>
-   <div class="algorithm" data-algorithm="compileStreaming(source)"> The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export id="dom-webassembly-compilestreaming"><code>compileStreaming(<var>source</var>)</code></dfn> method, when invoked, returns the result of <a data-link-type="dfn" href="#compile-a-potential-webassembly-response" id="ref-for-compile-a-potential-webassembly-response">compiling a potential WebAssembly response</a> with <var>source</var>. </div>
-   <div class="algorithm" data-algorithm="instantiateStreaming(source, importObject)">
+   <div class="algorithm" data-algorithm="compileStreaming(source)" data-algorithm-for="WebAssembly"> The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export id="dom-webassembly-compilestreaming"><code>compileStreaming(<var>source</var>)</code></dfn> method, when invoked, returns the result of <a data-link-type="dfn" href="#compile-a-potential-webassembly-response" id="ref-for-compile-a-potential-webassembly-response">compiling a potential WebAssembly response</a> with <var>source</var>. </div>
+   <div class="algorithm" data-algorithm="instantiateStreaming(source, importObject)" data-algorithm-for="WebAssembly">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export data-lt="instantiateStreaming(source, importObject)|instantiateStreaming(source)" id="dom-webassembly-instantiatestreaming"><code>instantiateStreaming(<var>source</var>, <var>importObject</var>)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>

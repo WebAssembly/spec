@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version 3d0743c8, updated Mon Apr 6 16:15:57 2020 +0200" name="generator">
+  <meta content="Bikeshed version 34b5d8b0, updated Mon Apr 20 13:04:45 2020 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="484180ba3d9d7638ba1cb400b699ffede796927c" name="document-revision">
+  <meta content="d0e2a6d61989e2edeadd862e926bd36342b616af" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -271,7 +271,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-04-09">9 April 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-04-21">21 April 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -439,7 +439,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
       <p>Return <var>module</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="validate(bytes)">
+   <div class="algorithm" data-algorithm="validate(bytes)" data-algorithm-for="WebAssembly">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export id="dom-webassembly-validate"><code>validate(<var>bytes</var>)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -503,7 +503,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
       <p>Return <var>promise</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="compile(bytes)">
+   <div class="algorithm" data-algorithm="compile(bytes)" data-algorithm-for="WebAssembly">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export id="dom-webassembly-compile"><code>compile(<var>bytes</var>)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -795,7 +795,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
     </ol>
     <p class="note" role="note"><span>Note:</span> It would be valid to perform certain parts of the instantiation <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>, but several parts need to happen in the event loop, including JavaScript operations to access the <var>importObject</var> and execution of the start function.</p>
    </div>
-   <div class="algorithm" data-algorithm="instantiate(bytes, importObject)">
+   <div class="algorithm" data-algorithm="instantiate(bytes, importObject)" data-algorithm-for="WebAssembly">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export data-lt="instantiate(bytes, importObject)|instantiate(bytes)" id="dom-webassembly-instantiate"><code>instantiate(<var>bytes</var>, <var>importObject</var>)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -806,7 +806,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
       <p><a data-link-type="dfn" href="#instantiate-a-promise-of-a-module" id="ref-for-instantiate-a-promise-of-a-module">Instantiate</a> <var>promiseOfModule</var> with imports <var>importObject</var> and return the result.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="instantiate(moduleObject, importObject)">
+   <div class="algorithm" data-algorithm="instantiate(moduleObject, importObject)" data-algorithm-for="WebAssembly">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export data-lt="instantiate(moduleObject, importObject)|instantiate(moduleObject)" id="dom-webassembly-instantiate-moduleobject-importobject"><code>instantiate(<var>moduleObject</var>, <var>importObject</var>)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -855,7 +855,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
       <p>"global" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①①">𝗀𝗅𝗈𝖻𝖺𝗅</a> globaltype</p>
     </ul>
    </div>
-   <div class="algorithm" data-algorithm="exports(moduleObject)">
+   <div class="algorithm" data-algorithm="exports(moduleObject)" data-algorithm-for="Module">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Module" data-dfn-type="method" data-export id="dom-module-exports"><code>exports(<var>moduleObject</var>)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -876,7 +876,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
       <p>Return <var>exports</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="imports(moduleObject)">
+   <div class="algorithm" data-algorithm="imports(moduleObject)" data-algorithm-for="Module">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Module" data-dfn-type="method" data-export id="dom-module-imports"><code>imports(<var>moduleObject</var>)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -897,7 +897,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
       <p>Return <var>imports</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="customSections(moduleObject, sectionName)">
+   <div class="algorithm" data-algorithm="customSections(moduleObject, sectionName)" data-algorithm-for="Module">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Module" data-dfn-type="method" data-export id="dom-module-customsections"><code>customSections(<var>moduleObject</var>, <var>sectionName</var>)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -922,7 +922,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
       <p>Return <var>customSections</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="Module(bytes)">
+   <div class="algorithm" data-algorithm="Module(bytes)" data-algorithm-for="Module">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Module" data-dfn-type="constructor" data-export data-lt="Module(bytes)|constructor(bytes)" id="dom-module-module"><code>Module(<var>bytes</var>)</code></dfn> constructor, when invoked, performs the follwing steps: 
     <ol>
      <li data-md>
@@ -944,7 +944,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-object" id="ref-for-idl-object③"><c- b>object</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="object" href="#dom-instance-exports" id="ref-for-dom-instance-exports"><c- g>exports</c-></a>;
 };
 </pre>
-   <div class="algorithm" data-algorithm="Instance(module, importObject)">
+   <div class="algorithm" data-algorithm="Instance(module, importObject)" data-algorithm-for="Instance">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Instance" data-dfn-type="constructor" data-export data-lt="Instance(module, importObject)|constructor(module, importObject)|Instance(module)|constructor(module)" id="dom-instance-instance"><code>Instance(<var>module</var>, <var>importObject</var>)</code></dfn> constructor, when invoked, runs the following steps: 
     <ol>
      <li data-md>
@@ -957,7 +957,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
       <p><a data-link-type="dfn" href="#initialize-an-instance-object" id="ref-for-initialize-an-instance-object②">Initialize</a> <strong>this</strong> from <var>module</var> and <var>instance</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="exports"> The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Instance" data-dfn-type="attribute" data-export id="dom-instance-exports"><code>exports</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance④">Instance</a></code> returns <strong>this</strong>.[[Exports]]. </div>
+   <div class="algorithm" data-algorithm="exports" data-algorithm-for="Instance"> The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Instance" data-dfn-type="attribute" data-export id="dom-instance-exports"><code>exports</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance④">Instance</a></code> returns <strong>this</strong>.[[Exports]]. </div>
    <h3 class="heading settled" data-level="3.3" id="memories"><span class="secno">3.3. </span><span class="content">Memories</span><a class="self-link" href="#memories"></a></h3>
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-memorydescriptor"><code><c- g>MemoryDescriptor</c-></code></dfn> {
   <c- b>required</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#EnforceRange" id="ref-for-EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-unsigned-long" id="ref-for-idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="MemoryDescriptor" data-dfn-type="dict-member" data-export data-type="[EnforceRange] unsigned long " id="dom-memorydescriptor-initial"><code><c- g>initial</c-></code><a class="self-link" href="#dom-memorydescriptor-initial"></a></dfn>;
@@ -1029,7 +1029,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
       <p>Return <var>memory</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="Memory(descriptor)">
+   <div class="algorithm" data-algorithm="Memory(descriptor)" data-algorithm-for="Memory">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="constructor" data-export data-lt="Memory(descriptor)|constructor(descriptor)" id="dom-memory-memory"><code>Memory(<var>descriptor</var>)</code></dfn> constructor, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -1105,7 +1105,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
       </ol>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="buffer"> The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="attribute" data-export id="dom-memory-buffer"><code>buffer</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑥">Memory</a></code> returns <strong>this</strong>.[[BufferObject]]. </div>
+   <div class="algorithm" data-algorithm="buffer" data-algorithm-for="Memory"> The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="attribute" data-export id="dom-memory-buffer"><code>buffer</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑥">Memory</a></code> returns <strong>this</strong>.[[BufferObject]]. </div>
    <h3 class="heading settled" data-level="3.4" id="tables"><span class="secno">3.4. </span><span class="content">Tables</span><a class="self-link" href="#tables"></a></h3>
 <pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-tablekind"><code><c- g>TableKind</c-></code></dfn> {
   <dfn class="idl-code" data-dfn-for="TableKind" data-dfn-type="enum-value" data-export id="dom-tablekind-anyfunc"><code><c- s>"anyfunc"</c-></code><a class="self-link" href="#dom-tablekind-anyfunc"></a></dfn>,
@@ -1163,7 +1163,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Return <var>table</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="Table(descriptor)">
+   <div class="algorithm" data-algorithm="Table(descriptor)" data-algorithm-for="Table">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Table" data-dfn-type="constructor" data-export data-lt="Table(descriptor)|constructor(descriptor)" id="dom-table-table"><code>Table(<var>descriptor</var>)</code></dfn> constructor, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -1204,7 +1204,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Return <var>initialSize</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="length">
+   <div class="algorithm" data-algorithm="length" data-algorithm-for="Table">
      The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Table" data-dfn-type="attribute" data-export id="dom-table-length"><code>length</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table⑤">Table</a></code>, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -1215,7 +1215,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-size" id="ref-for-embed-table-size①">table_size</a>(<var>store</var>, <var>tableaddr</var>).</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="get(index)">
+   <div class="algorithm" data-algorithm="get(index)" data-algorithm-for="Table">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Table" data-dfn-type="method" data-export id="dom-table-get"><code>get(<var>index</var>)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -1232,7 +1232,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Return <var>function</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="set(index, value)">
+   <div class="algorithm" data-algorithm="set(index, value)" data-algorithm-for="Table">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Table" data-dfn-type="method" data-export id="dom-table-set"><code>set(<var>index</var>, <var>value</var>)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -1345,7 +1345,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p class="assertion">Assert: This step is not reached.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="Global(descriptor, v)">
+   <div class="algorithm" data-algorithm="Global(descriptor, v)" data-algorithm-for="Global">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Global" data-dfn-type="constructor" data-export data-lt="Global(descriptor, v)|constructor(descriptor, v)|Global(descriptor)|constructor(descriptor)" id="dom-global-global"><code>Global(<var>descriptor</var>, <var>v</var>)</code></dfn> constructor, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -1395,7 +1395,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Return <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue">ToJSValue</a>(<var>value</var>).</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="value">
+   <div class="algorithm" data-algorithm="value" data-algorithm-for="Global">
      The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Global" data-dfn-type="attribute" data-export id="dom-global-value"><code>value</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#global" id="ref-for-global⑥">Global</a></code>, when invoked, performs the following steps: 
     <ol>
      <li data-md>
@@ -1423,7 +1423,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Set the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⓪">associated store</a> to <var>store</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="valueOf()">
+   <div class="algorithm" data-algorithm="valueOf()" data-algorithm-for="Global">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Global" data-dfn-type="method" data-export id="dom-global-valueof"><code>valueOf()</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>
