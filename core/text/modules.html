@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Modules &#8212; WebAssembly 1.0</title>
+    <title>Modules &#8212; WebAssembly 1.1</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -172,7 +172,7 @@ In that case, a <a class="reference internal" href="../syntax/modules.html#synta
 <p>where <span class="math notranslate nohighlight">\(x\)</span> is the smallest existing <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> whose definition in the current module is the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\([t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>.
 If no such index exists, then a new <a class="reference internal" href="types.html#text-type"><span class="std std-ref">type definition</span></a> of the form</p>
 <div class="math notranslate nohighlight">
-\[\def\mathdef2133#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2133{(}~\def\mathdef2134#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2134{type}~~\def\mathdef2135#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2135{(}~\def\mathdef2136#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2136{func}~~\href{../text/types.html#text-functype}{\mathtt{param}}^\ast~~\href{../text/types.html#text-functype}{\mathtt{result}}~\def\mathdef2137#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2137{)}~\def\mathdef2138#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2138{)}\]</div>
+\[\def\mathdef2133#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2133{(}~\def\mathdef2134#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2134{type}~~\def\mathdef2135#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2135{(}~\def\mathdef2136#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2136{func}~~\href{../text/types.html#text-functype}{\mathtt{param}}^\ast~~\href{../text/types.html#text-functype}{\mathtt{result}}^\ast~\def\mathdef2137#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2137{)}~\def\mathdef2138#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2138{)}\]</div>
 <p>is inserted at the end of the module.</p>
 <p>Abbreviations are expanded in the order they appear, such that previously inserted type definitions are reused by consecutive expansions.</p>
 </div>

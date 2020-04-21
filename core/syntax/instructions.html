@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Instructions &#8212; WebAssembly 1.0</title>
+    <title>Instructions &#8212; WebAssembly 1.1</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -114,8 +114,9 @@ These operations closely match respective operations available in hardware.</p>
   \mathsf{f}\mathit{nn}\mathsf{.}\href{../syntax/instructions.html#syntax-frelop}{\mathit{frelop}} \\&amp;&amp;|&amp;
   \mathsf{i}\mathit{nn}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}\mathsf{8\_s} ~|~
   \mathsf{i}\mathit{nn}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}\mathsf{16\_s} ~|~
-  \mathsf{i64.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}\mathsf{\_i32}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
+  \mathsf{i64.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}\mathsf{32\_s} \\&amp;&amp;|&amp;
   \mathsf{i32.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{wrap}}\mathsf{\_i64} ~|~
+  \mathsf{i64.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}\mathsf{\_i32}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} ~|~
   \mathsf{i}\mathit{nn}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_f}\mathit{mm}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} \\&amp;&amp;|&amp;
   \mathsf{i}\mathit{nn}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_sat\_f}\mathit{mm}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} \\&amp;&amp;|&amp;
   \mathsf{f32.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{demote}}\mathsf{\_f64} ~|~
@@ -196,7 +197,7 @@ For the other integer instructions, the use of two’s complement for the signed
 \def\mathdef1519#1{{}}\mathdef1519{unary operator} &amp; \href{../syntax/instructions.html#syntax-unop}{\mathit{unop}} &amp;::=&amp;
   \href{../syntax/instructions.html#syntax-iunop}{\mathit{iunop}} ~|~
   \href{../syntax/instructions.html#syntax-funop}{\mathit{funop}} ~|~
-  \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}{N}\mathsf{\_s} ~|~ \\
+  \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}{N}\mathsf{\_s} \\
 \def\mathdef1519#1{{}}\mathdef1519{binary operator} &amp; \href{../syntax/instructions.html#syntax-binop}{\mathit{binop}} &amp;::=&amp; \href{../syntax/instructions.html#syntax-ibinop}{\mathit{ibinop}} ~|~ \href{../syntax/instructions.html#syntax-fbinop}{\mathit{fbinop}} \\
 \def\mathdef1519#1{{}}\mathdef1519{test operator} &amp; \href{../syntax/instructions.html#syntax-testop}{\mathit{testop}} &amp;::=&amp; \href{../syntax/instructions.html#syntax-itestop}{\mathit{itestop}} \\
 \def\mathdef1519#1{{}}\mathdef1519{relational operator} &amp; \href{../syntax/instructions.html#syntax-relop}{\mathit{relop}} &amp;::=&amp; \href{../syntax/instructions.html#syntax-irelop}{\mathit{irelop}} ~|~ \href{../syntax/instructions.html#syntax-frelop}{\mathit{frelop}} \\
