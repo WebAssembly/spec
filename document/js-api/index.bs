@@ -296,12 +296,10 @@ Note:
     1. Return true.
 </div>
 
-<div>
 A {{Module}} object represents a single WebAssembly module. Each {{Module}} object has the following internal slots:
 
     * \[[Module]] : a WebAssembly [=module=]
     * \[[Bytes]] : the source bytes of \[[Module]].
-</div>
 
 <div algorithm>
   To <dfn>construct a WebAssembly module object</dfn> from a module |module| and source bytes |bytes|, perform the following steps:
@@ -389,7 +387,7 @@ The verification of WebAssembly type requirements is deferred to the
             1. Let [=external value|𝖿𝗎𝗇𝖼=] |funcaddr| be |externval|.
             1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
             1. Let |value| be |func|.
-        1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] <var ignore>globaltype</var>,
+        1. If |externtype| is of the form [=𝗀𝗅𝗈𝖻𝖺𝗅=] <var ignore>mut</var> <var ignore>globaltype</var>,
             1. Assert: |externval| is of the form [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr|.
             1. Let [=external value|𝗀𝗅𝗈𝖻𝖺𝗅=] |globaladdr| be |externval|.
             1. Let |global| be [=create a global object|a new Global object=] created from |globaladdr|.
@@ -465,7 +463,7 @@ The verification of WebAssembly type requirements is deferred to the
     1. Let |promise| be [=a new promise=].
     1. [=Upon fulfillment=] of |promiseOfModule| with value |module|:
         1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, [=reject=] |promise| with the exception, and abort these substeps.
-        1. Let |result| be a {{WebAssemblyInstantiatedSource}} dictionary with {{WebAssemblyInstantiatedSource/module}} set to |module| and {{WebAssemblyInstantiatedSource/instance}} set to |instance|.
+        1. Let |result| be the {{WebAssemblyInstantiatedSource}} value «[ "{{WebAssemblyInstantiatedSource/module}}" → |module|, "{{WebAssemblyInstantiatedSource/instance}}" → |instance| ]».
         1. [=Resolve=] |promise| with |result|.
     1. [=Upon rejection=] of |promiseOfModule| with reason |reason|:
         1. [=Reject=] |promise| with |reason|.
@@ -533,8 +531,8 @@ interface Module {
     1. Let |exports| be an empty [=list=].
     1. [=list/iterate|For each=] (|name|, |type|) of [=module_exports=](|module|),
         1. Let |kind| be the [=string value of the extern type=] |type|.
-        1. Let |obj| be a new {{ModuleExportDescriptor}} dictionary with {{ModuleExportDescriptor/name}} |name| and {{ModuleExportDescriptor/kind}} |kind|.
-        1. [=list/Append=] |obj| to the end of |exports|.
+        1. Let |obj| be «[ "{{ModuleExportDescriptor/name}}" → |name|, "{{ModuleExportDescriptor/kind}}" → |kind| ]».
+        1. [=list/Append=] |obj| to |exports|.
     1. Return |exports|.
 </div>
 
@@ -544,8 +542,8 @@ interface Module {
     1. Let |imports| be an empty [=list=].
     1. [=list/iterate|For each=] (|moduleName|, |name|, |type|) of [=module_imports=](|module|),
         1. Let |kind| be the [=string value of the extern type=] |type|.
-        1. Let |obj| be a new {{ModuleImportDescriptor}} dictionary with {{ModuleImportDescriptor/module}} |moduleName|, {{ModuleImportDescriptor/name}} |name| and {{ModuleImportDescriptor/kind}} |kind|.
-        1. [=list/Append=] |obj| to the end of |imports|.
+        1. Let |obj| be «[ "{{ModuleImportDescriptor/module}}" → |moduleName|, "{{ModuleImportDescriptor/name}}" → |name|, "{{ModuleImportDescriptor/kind}}" → |kind| ]».
+        1. [=list/Append=] |obj| to |imports|.
     1. Return |imports|.
 </div>
 
@@ -609,14 +607,12 @@ interface Memory {
 };
 </pre>
 
-<div>
 A {{Memory}} object represents a single [=memory instance=]
 which can be simultaneously referenced by multiple {{Instance}} objects. Each
 {{Memory}} object has the following internal slots:
 
     * \[[Memory]] : a [=memory address=]
     * \[[BufferObject]] : an {{ArrayBuffer}} whose [=Data Block=] is [=identified with=] the above memory address
-</div>
 
 <div algorithm>
     To <dfn>create a memory buffer</dfn> from a [=memory address=] |memaddr|, perform the following steps:
@@ -827,13 +823,11 @@ interface Global {
 };
 </pre>
 
-<div>
 A {{Global}} object represents a single [=global instance=]
 which can be simultaneously referenced by multiple {{Instance}} objects. Each
 {{Global}} object has one internal slot:
 
     * \[[Global]] : a [=global address=]
-</div>
 
 <div algorithm>
     To <dfn>initialize a global object</dfn> |global| from a [=global address=] |globaladdr|, perform the following steps:
@@ -903,7 +897,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     The setter of the value attribute of {{Global}}, when invoked, performs the following steps:
     1. Let |store| be the current agent's [=associated store=].
     1. Let |globaladdr| be **this**.\[[Global]].
-    1. Let |globaltype| be [=global_type=](|store|, |globaladdr|), where |globaltype| is of the form |mut| |valuetype|.
+    1. Let |mut| |valuetype| be [=global_type=](|store|, |globaladdr|).
     1. If |mut| is [=const=], throw a {{TypeError}}.
     1. If |valuetype| is [=𝗂𝟨𝟦=], throw a {{TypeError}}.
     1. Let |value| be [=ToWebAssemblyValue=](**the given value**, |valuetype|).
