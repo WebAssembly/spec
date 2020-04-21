@@ -370,7 +370,6 @@ binscript: <cmd>*
 cmd:
   <module>                                   ;; define, validate, and initialize module
   ( register <string> <name>? )              ;; register module for imports
-module with given failure string
   <action>                                   ;; perform action and print results
   <assertion>                                ;; assert result of an action
 
