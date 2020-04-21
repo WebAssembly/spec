@@ -106,17 +106,17 @@ let type_cvtop at = function
     (match cvtop with
     | ExtendSI32 | ExtendUI32 -> error at "invalid conversion"
     | WrapI64 -> I64Type
-    | TruncSF32 | TruncUF32 | TruncSSatF32 | TruncUSatF32
+    | TruncSF32 | TruncUF32 | TruncSatSF32 | TruncSatUF32
     | ReinterpretFloat -> F32Type
-    | TruncSF64 | TruncUF64 | TruncSSatF64 | TruncUSatF64 -> F64Type
+    | TruncSF64 | TruncUF64 | TruncSatSF64 | TruncSatUF64 -> F64Type
     ), I32Type
   | Values.I64 cvtop ->
     let open I64Op in
     (match cvtop with
     | ExtendSI32 | ExtendUI32 -> I32Type
     | WrapI64 -> error at "invalid conversion"
-    | TruncSF32 | TruncUF32 | TruncSSatF32 | TruncUSatF32 -> F32Type
-    | TruncSF64 | TruncUF64 | TruncSSatF64 | TruncUSatF64
+    | TruncSF32 | TruncUF32 | TruncSatSF32 | TruncSatUF32 -> F32Type
+    | TruncSF64 | TruncUF64 | TruncSatSF64 | TruncSatUF64
     | ReinterpretFloat -> F64Type
     ), I64Type
   | Values.F32 cvtop ->

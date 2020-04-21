@@ -614,14 +614,14 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. _op-iextendn_s:
 
-:math:`\iextendns_N(i)`
+:math:`\iextendMs_N(i)`
 .......................
 
 * Return :math:`\extends_{M,N}(i)`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \iextendns_{N}(i) &=& \extends_{M,N}(i) \\
+   \iextendMs_{N}(i) &=& \extends_{M,N}(i) \\
    \end{array}
 
 
@@ -1477,9 +1477,9 @@ Conversions
    It is not defined for NaNs, infinities, or values for which the result is out of range.
 
 
-.. _op-trunc_u_sat:
+.. _op-trunc_sat_u:
 
-:math:`\truncusat_{M,N}(z)`
+:math:`\truncsatu_{M,N}(z)`
 ...........................
 
 * If :math:`z` is a NaN, then return :math:`0`.
@@ -1496,18 +1496,18 @@ Conversions
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \truncusat_{M,N}(\pm \NAN(n)) &=& 0 \\
-   \truncusat_{M,N}(- \infty) &=& 0 \\
-   \truncusat_{M,N}(+ \infty) &=& 2^N - 1 \\
-   \truncusat_{M,N}(- q) &=& 0 & (\iff \trunc(- q) < 0) \\
-   \truncusat_{M,N}(+ q) &=& 2^N - 1 & (\iff \trunc(+ q) > 2^N - 1) \\
-   \truncusat_{M,N}(\pm q) &=& \trunc(\pm q) & (otherwise) \\
+   \truncsatu_{M,N}(\pm \NAN(n)) &=& 0 \\
+   \truncsatu_{M,N}(- \infty) &=& 0 \\
+   \truncsatu_{M,N}(+ \infty) &=& 2^N - 1 \\
+   \truncsatu_{M,N}(- q) &=& 0 & (\iff \trunc(- q) < 0) \\
+   \truncsatu_{M,N}(+ q) &=& 2^N - 1 & (\iff \trunc(+ q) > 2^N - 1) \\
+   \truncsatu_{M,N}(\pm q) &=& \trunc(\pm q) & (otherwise) \\
    \end{array}
 
 
-.. _op-trunc_s_sat:
+.. _op-trunc_sat_s:
 
-:math:`\truncssat_{M,N}(z)`
+:math:`\truncsats_{M,N}(z)`
 ...........................
 
 * If :math:`z` is a NaN, then return :math:`0`.
@@ -1524,12 +1524,12 @@ Conversions
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \truncssat_{M,N}(\pm \NAN(n)) &=& 0 \\
-   \truncssat_{M,N}(- \infty) &=& -2^{N-1} \\
-   \truncssat_{M,N}(+ \infty) &=& 2^{N-1}-1 \\
-   \truncssat_{M,N}(- q) &=& -2^{N-1} & (\iff \trunc(- q) < -2^{N-1}) \\
-   \truncssat_{M,N}(+ q) &=& 2^{N-1} - 1 & (\iff \trunc(+ q) > 2^{N-1} - 1) \\
-   \truncssat_{M,N}(\pm q) &=& \trunc(\pm q) & (otherwise) \\
+   \truncsats_{M,N}(\pm \NAN(n)) &=& 0 \\
+   \truncsats_{M,N}(- \infty) &=& -2^{N-1} \\
+   \truncsats_{M,N}(+ \infty) &=& 2^{N-1}-1 \\
+   \truncsats_{M,N}(- q) &=& -2^{N-1} & (\iff \trunc(- q) < -2^{N-1}) \\
+   \truncsats_{M,N}(+ q) &=& 2^{N-1} - 1 & (\iff \trunc(+ q) > 2^{N-1} - 1) \\
+   \truncsats_{M,N}(\pm q) &=& \trunc(\pm q) & (otherwise) \\
    \end{array}
 
 

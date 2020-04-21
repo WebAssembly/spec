@@ -61,8 +61,9 @@ These operations closely match respective operations available in hardware.
      \K{f}\X{nn}\K{.}\frelop \\&&|&
      \K{i}\X{nn}\K{.}\EXTEND\K{8\_s} ~|~
      \K{i}\X{nn}\K{.}\EXTEND\K{16\_s} ~|~
-     \K{i64.}\EXTEND\K{\_i32}\K{\_}\sx ~|~
+     \K{i64.}\EXTEND\K{32\_s} \\&&|&
      \K{i32.}\WRAP\K{\_i64} ~|~
+     \K{i64.}\EXTEND\K{\_i32}\K{\_}\sx ~|~
      \K{i}\X{nn}\K{.}\TRUNC\K{\_f}\X{mm}\K{\_}\sx \\&&|&
      \K{i}\X{nn}\K{.}\TRUNC\K{\_sat\_f}\X{mm}\K{\_}\sx \\&&|&
      \K{f32.}\DEMOTE\K{\_f64} ~|~
@@ -153,7 +154,7 @@ Occasionally, it is convenient to group operators together according to the foll
    \production{unary operator} & \unop &::=&
      \iunop ~|~
      \funop ~|~
-     \EXTEND{N}\K{\_s} ~|~ \\
+     \EXTEND{N}\K{\_s} \\
    \production{binary operator} & \binop &::=& \ibinop ~|~ \fbinop \\
    \production{test operator} & \testop &::=& \itestop \\
    \production{relational operator} & \relop &::=& \irelop ~|~ \frelop \\
