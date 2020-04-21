@@ -98,12 +98,12 @@ Floating-Point
        &\Rightarrow& p \\ &&|&
      p{:}\Tnum~\text{.}~q{:}\Tfrac
        &\Rightarrow& p+q \\ &&|&
-     p{:}\Tnum~(\text{E}~|~\text{e})~{\pm}{:}\Tsign~e{:}\Tnum
+     p{:}\Tnum~\text{.}^?~(\text{E}~|~\text{e})~{\pm}{:}\Tsign~e{:}\Tnum
        &\Rightarrow& p\cdot 10^{\pm e} \\ &&|&
      p{:}\Tnum~\text{.}~q{:}\Tfrac~(\text{E}~|~\text{e})~{\pm}{:}\Tsign~e{:}\Tnum
        &\Rightarrow& (p+q)\cdot 10^{\pm e} \\
    \production{hexadecimal floating-point number} & \Thexfloat &::=&
-     \text{0x}~p{:}\Thexnum~\text{.}
+     \text{0x}~p{:}\Thexnum~\text{.}^?
        &\Rightarrow& p \\ &&|&
      \text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac
        &\Rightarrow& p+q \\ &&|&
