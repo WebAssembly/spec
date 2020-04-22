@@ -272,6 +272,7 @@ let rec instr e =
     | Unary op -> unop op, []
     | Binary op -> binop op, []
     | Convert op -> cvtop op, []
+    | ExtractLane op -> failwith "TODO v128"
   in Node (head, inner)
 
 let const c =

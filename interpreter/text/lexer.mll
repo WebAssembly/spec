@@ -73,6 +73,18 @@ let numop t i32 i64 f32 f64 =
   | "f64" -> f64
   | _ -> assert false
 
+let unimplemented_simd = fun _ -> failwith "unimplemented simd"
+
+let simdop s i8x16 i16x8 i32x4 i64x2 f32x4 f64x2 =
+  match s with
+  | "i8x16" -> i8x16
+  | "i16x8" -> i16x8
+  | "i32x4" -> i32x4
+  | "i64x2" -> i64x2
+  | "f32x4" -> f32x4
+  | "f64x2" -> f64x2
+  | _ -> assert false
+
 let memsz sz m8 m16 m32 =
   match sz with
   | "8" -> m8
@@ -212,6 +224,10 @@ rule token = parse
   | "global.get" { GLOBAL_GET }
   | "global.set" { GLOBAL_SET }
 
+  | (simd_shape as s)".extract_lane"
+    { EXTRACT_LANE (fun imm ->
+        simdop s unimplemented_simd unimplemented_simd i32x4_extract_lane
+                 unimplemented_simd f32x4_extract_lane unimplemented_simd imm) }
   | (nxx as t)".load"
     { LOAD (fun a o ->
         numop t (i32_load (opt a 2)) (i64_load (opt a 3))
@@ -364,6 +380,15 @@ rule token = parse
   | "input" { INPUT }
   | "output" { OUTPUT }
 
+  | (simd_shape as s)".min"
+    { if s != "f32x4" || s != "f64x2" then error lexbuf "unknown operator";
+      BINARY (simdop s unreachable unreachable unreachable unreachable f32x4_min unreachable) }
+  | (simd_shape as s)".max"
+    { if s != "f32x4" || s != "f64x2" then error lexbuf "unknown operator";
+      BINARY (simdop s unreachable unreachable unreachable unreachable f32x4_max unreachable) }
+  | (simd_shape as s)".abs"
+    { if s = "i64x2" then error lexbuf "unknown operator";
+      UNARY (simdop s unreachable unreachable unreachable unreachable f32x4_abs unreachable) }
   | (simd_shape as s) { SIMD_SHAPE (simd_shape s) }
 
   | name as s { VAR s }

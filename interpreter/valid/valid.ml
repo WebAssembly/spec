@@ -289,6 +289,11 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let t1, t2 = type_cvtop e.at cvtop in
     [t1] --> [t2]
 
+  | ExtractLane (V128Op.I32x4ExtractLane _) ->
+    [V128Type] --> [I32Type]
+  | ExtractLane (V128Op.F32x4ExtractLane _) ->
+    [V128Type] --> [F32Type]
+
 and check_seq (c : context) (es : instr list) : infer_stack_type =
   match es with
   | [] ->
