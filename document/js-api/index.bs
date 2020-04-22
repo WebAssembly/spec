@@ -976,7 +976,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
     1. Let |outArity| be the [=list/size=] of |ret|.
     1. If |outArity| is 0, return undefined.
-    1. Otherwise, if |outArity| is 1, return [=ToJSValue=](|v|), where |v| is the singular element of |ret|.
+    1. Otherwise, if |outArity| is 1, return [=ToJSValue=](|ret|[0]).
     1. Otherwise,
         1. Let |values| be a new, empty [=list=].
         1. For each |r| in |ret|, [=list/append=] [=ToJSValue=](|r|) to |values|.
@@ -992,7 +992,6 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 
     1. Let [|parameters|] → [|results|] be |functype|.
     1. If either |parameters| or |results| contains [=i64=], throw a {{TypeError}}.
-    1. Let |arguments| be a [=list=] of the arguments of the invocation of this function.
     1. Let |jsArguments| be an empty [=list=].
     1. [=list/iterate|For each=] |arg| of |arguments|,
         1. [=list/Append=] ! [=ToJSValue=](|arg|) to |jsArguments|.
