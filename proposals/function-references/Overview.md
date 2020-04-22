@@ -237,7 +237,7 @@ The following rules, now defined in terms of constructed types, replace and exte
 #### Local Bindings
 
 * `let <blocktype> (local <valtype>)* <instr>* end` locally binds operands to variables
-  - `let bt (local t)* instr* end : [t* t1*] -> [t2*]`
+  - `let bt (local t)* instr* end : [t1* t*] -> [t2*]`
     - iff `bt = [t1*] -> [t2*]`
     - and `instr* : bt` under a context with `locals` extended with `t*` and `labels` extended with `[t2*]`
 
