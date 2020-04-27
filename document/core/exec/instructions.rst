@@ -1131,7 +1131,7 @@ Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 2. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
 
-3. Assert: due to :ref:`validation <valid-return_call>`, there are at least :math:`m` values on the top of the stack.
+3. Assert: due to :ref:`validation <valid-return_call>`, there are at least :math:`n` values on the top of the stack.
 
 4. Pop the results :math:`\val^n` from the stack.
 
