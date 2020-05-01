@@ -381,10 +381,10 @@ rule token = parse
   | "output" { OUTPUT }
 
   | (simd_shape as s)".min"
-    { if s != "f32x4" || s != "f64x2" then error lexbuf "unknown operator";
+    { if s <> "f32x4" && s <> "f64x2" then error lexbuf "unknown operator";
       BINARY (simdop s unreachable unreachable unreachable unreachable f32x4_min unreachable) }
   | (simd_shape as s)".max"
-    { if s != "f32x4" || s != "f64x2" then error lexbuf "unknown operator";
+    { if s <> "f32x4" && s <> "f64x2" then error lexbuf "unknown operator";
       BINARY (simdop s unreachable unreachable unreachable unreachable f32x4_max unreachable) }
   | (simd_shape as s)".abs"
     { if s = "i64x2" then error lexbuf "unknown operator";
