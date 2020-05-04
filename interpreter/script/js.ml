@@ -222,7 +222,7 @@ let run ts at =
 let assert_return ress ts at =
   let test res =
     match res.it with
-    | LitResult lit ->
+    | NumResult { it = LitPat lit; _ } ->
       let t', reinterpret = reinterpret_of (Values.type_of lit.it) in
       [ reinterpret @@ at;
         Const lit @@ at;
@@ -230,7 +230,7 @@ let assert_return ress ts at =
         Compare (eq_of t') @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | NanResult nanop ->
+    | NumResult { it = NanPat nanop; _ } ->
       let nan =
         match nanop.it with
         | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
@@ -250,6 +250,7 @@ let assert_return ress ts at =
         Compare (eq_of t') @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
+    | SimdResult _ -> failwith "unimplemented"
   in [], List.flatten (List.rev_map test ress)
 
 let wrap module_name item_name wrap_action wrap_assertion at =
@@ -329,8 +330,9 @@ let of_nan = function
 
 let of_result res =
   match res.it with
-  | LitResult lit -> of_literal lit
-  | NanResult nanop ->
+  | NumResult { it = LitPat lit; _ } -> of_literal lit
+  | SimdResult _ -> failwith "unimplemented"
+  | NumResult { it = NanPat nanop; _ } ->
     match nanop.it with
     | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
     | Values.F32 n | Values.F64 n -> of_nan n

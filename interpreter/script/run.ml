@@ -250,16 +250,23 @@ let string_of_nan = function
 
 let type_of_result r =
   match r with
-  | LitResult v -> Values.type_of v.it
-  | NanResult n -> Values.type_of n.it
+  | NumResult { it = LitPat v ; _ } -> Values.type_of v.it
+  | NumResult { it = NanPat v ; _ } -> Values.type_of v.it
+  | SimdResult (_, _) -> let open Types in V128Type
 
-let string_of_result r =
-  match r with
-  | LitResult v -> Values.string_of_value v.it
-  | NanResult nanop ->
+let string_of_num_pat (p : num_pat) =
+  match p.it with
+  | LitPat v -> Values.string_of_value v.it
+  | NanPat nanop ->
     match nanop.it with
     | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
     | Values.F32 n | Values.F64 n -> string_of_nan n
+
+let string_of_result r =
+  match r with
+  | NumResult v -> string_of_num_pat v
+  | SimdResult (shape, vs) ->
+    String.concat " " (List.map string_of_num_pat vs)
 
 let string_of_results = function
   | [r] -> string_of_result r
@@ -340,24 +347,44 @@ let run_action act : Values.value list =
     | None -> Assert.error act.at "undefined export"
     )
 
-let assert_result at got expect =
+
+let assert_num_pat at v p =
   let open Values in
+  match p.it with
+    | (LitPat v') -> v <> v'.it
+    | (NanPat nanop) ->
+      match nanop.it, v with
+      | F32 CanonicalNan, F32 z -> z <> F32.pos_nan && z <> F32.neg_nan
+      | F64 CanonicalNan, F64 z -> z <> F64.pos_nan && z <> F64.neg_nan
+      | F32 ArithmeticNan, F32 z ->
+        let pos_nan = F32.to_bits F32.pos_nan in
+        Int32.logand (F32.to_bits z) pos_nan <> pos_nan
+      | F64 ArithmeticNan, F64 z ->
+        let pos_nan = F64.to_bits F64.pos_nan in
+        Int64.logand (F64.to_bits z) pos_nan <> pos_nan
+      | _, _ -> false
+
+let assert_result at got expect =
   if
     List.length got <> List.length expect ||
     List.exists2 (fun v r ->
       match r with
-      | LitResult v' -> v <> v'.it
-      | NanResult nanop ->
-        match nanop.it, v with
-        | F32 CanonicalNan, F32 z -> z <> F32.pos_nan && z <> F32.neg_nan
-        | F64 CanonicalNan, F64 z -> z <> F64.pos_nan && z <> F64.neg_nan
-        | F32 ArithmeticNan, F32 z ->
-          let pos_nan = F32.to_bits F32.pos_nan in
-          Int32.logand (F32.to_bits z) pos_nan <> pos_nan
-        | F64 ArithmeticNan, F64 z ->
-          let pos_nan = F64.to_bits F64.pos_nan in
-          Int64.logand (F64.to_bits z) pos_nan <> pos_nan
-        | _, _ -> false
+      | NumResult v' -> assert_num_pat at v v'
+      | SimdResult (shape, vs) ->
+        begin
+            let open Values in
+            let open Simd in
+            match shape, v with
+            | F32x4, V128 v ->
+                    let l0 = F32 (V128.f32x4_extract_lane 0 v) in
+                    let l1 = F32 (V128.f32x4_extract_lane 1 v) in
+                    let l2 = F32 (V128.f32x4_extract_lane 2 v) in
+                    let l3 = F32 (V128.f32x4_extract_lane 3 v) in
+                      List.exists2 (fun v r ->
+                          assert_num_pat at v r
+                      ) [l0; l1; l2; l3]  vs
+            | _ -> failwith "impossible"
+        end
     ) got expect
   then begin
     print_string "Result: "; print_values got;
