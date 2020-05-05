@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
-  <meta content="Bikeshed version 34fcd986, updated Sun May 3 08:04:32 2020 -0700" name="generator">
+  <meta content="Bikeshed version 4be3a54e, updated Mon May 4 06:47:10 2020 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="65a37e19b4aa4ffb76034ad6727bab74b071df9d" name="document-revision">
+  <meta content="c7d300502e529975c6930ce563deadadf3d8102d" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -271,7 +271,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-05-04">4 May 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-05-05">5 May 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -292,7 +292,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="p-summary" data-fill-with="abstract">
    <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
    <p>This document provides an explicit JavaScript API for interacting with WebAssembly.</p>
-    Part of a collection of related documents:
+    This is part of a collection of related documents:
 the <a href="https://www.w3.org/TR/wasm-core/">Core WebAssembly Specification</a>,
 the <a href="https://www.w3.org/TR/wasm-js-api/">WebAssembly JS Interface</a>,
 and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>. 
@@ -452,15 +452,13 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
       <p>Return true.</p>
     </ol>
    </div>
-   <div>
-     A <code class="idl"><a data-link-type="idl" href="#module" id="ref-for-module③">Module</a></code> object represents a single WebAssembly module. Each <code class="idl"><a data-link-type="idl" href="#module" id="ref-for-module④">Module</a></code> object has the following internal slots: 
-    <ul>
-     <li data-md>
-      <p>[[Module]] : a WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module" id="ref-for-syntax-module">module</a></p>
-     <li data-md>
-      <p>[[Bytes]] : the source bytes of [[Module]].</p>
-    </ul>
-   </div>
+   <p>A <code class="idl"><a data-link-type="idl" href="#module" id="ref-for-module③">Module</a></code> object represents a single WebAssembly module. Each <code class="idl"><a data-link-type="idl" href="#module" id="ref-for-module④">Module</a></code> object has the following internal slots:</p>
+   <ul>
+    <li data-md>
+     <p>[[Module]] : a WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module" id="ref-for-syntax-module">module</a></p>
+    <li data-md>
+     <p>[[Bytes]] : the source bytes of [[Module]].</p>
+   </ul>
    <div class="algorithm" data-algorithm="construct a WebAssembly module object">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="construct-a-webassembly-module-object">construct a WebAssembly module object</dfn> from a module <var>module</var> and source bytes <var>bytes</var>, perform the following steps: 
     <ol>
@@ -516,7 +514,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="read-the-imports">read the imports</dfn> from a WebAssembly module <var>module</var> from imports object <var>importObject</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>If <var>module</var>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module" id="ref-for-syntax-module①">𝗂𝗆𝗉𝗈𝗋𝗍𝗌</a> is not an empty list, and <var>importObject</var> is undefined, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> exception.</p>
+      <p>If <var>module</var>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module" id="ref-for-syntax-module①">imports</a> is not an empty list, and <var>importObject</var> is undefined, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> exception.</p>
      <li data-md>
       <p>Let <var>imports</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval">external value</a>s.</p>
      <li data-md>
@@ -529,7 +527,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
        <li data-md>
         <p>Let <var>v</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-get-o-p" id="ref-for-sec-get-o-p①">Get</a>(<var>o</var>, <var>componentName</var>).</p>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types">𝖿𝗎𝗇𝖼</a> <var>functype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types">func</a> <var>functype</var>,</p>
         <ol>
          <li data-md>
           <p>If <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-iscallable" id="ref-for-sec-iscallable">IsCallable</a>(<var>v</var>) is false, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror">LinkError</a></code> exception.</p>
@@ -548,18 +546,18 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
             <p>Let <var>index</var> be the number of external functions in <var>imports</var>. This value <var>index</var> is known as the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="index-of-the-host-function">index of the host function</dfn> <var>funcaddr</var>.</p>
           </ol>
          <li data-md>
-          <p>Let <var>externfunc</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①">external value</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval②">𝖿𝗎𝗇𝖼</a> <var>funcaddr</var>.</p>
+          <p>Let <var>externfunc</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①">external value</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval②">func</a> <var>funcaddr</var>.</p>
          <li data-md>
           <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">Append</a> <var>externfunc</var> to <var>imports</var>.</p>
         </ol>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①">𝗀𝗅𝗈𝖻𝖺𝗅</a> <var>mut</var> <var>valtype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①">global</a> <var>mut</var> <var>valtype</var>,</p>
         <ol>
          <li data-md>
           <p>If <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values①">Type</a>(<var>v</var>) is Number,</p>
           <ol>
            <li data-md>
-            <p>If <var>valtype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror①">LinkError</a></code> exception.</p>
+            <p>If <var>valtype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype">i64</a>, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror①">LinkError</a></code> exception.</p>
            <li data-md>
             <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue">ToWebAssemblyValue</a>(<var>v</var>, <var>valtype</var>).</p>
            <li data-md>
@@ -582,29 +580,29 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
             <p>Throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror②">LinkError</a></code> exception.</p>
           </ol>
          <li data-md>
-          <p>Let <var>externglobal</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval③">𝗀𝗅𝗈𝖻𝖺𝗅</a> <var>globaladdr</var>.</p>
+          <p>Let <var>externglobal</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval③">global</a> <var>globaladdr</var>.</p>
          <li data-md>
           <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①">Append</a> <var>externglobal</var> to <var>imports</var>.</p>
         </ol>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types②">𝗆𝖾𝗆</a> <var>memtype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types②">mem</a> <var>memtype</var>,</p>
         <ol>
          <li data-md>
           <p>If <var>v</var> is not a <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory②">Memory</a></code> object, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror③">LinkError</a></code> exception.</p>
          <li data-md>
-          <p>Let <var>externmem</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval④">external value</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑤">𝗆𝖾𝗆</a> <var>v</var>.[[Memory]].</p>
+          <p>Let <var>externmem</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval④">external value</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑤">mem</a> <var>v</var>.[[Memory]].</p>
          <li data-md>
           <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append②">Append</a> <var>externmem</var> to <var>imports</var>.</p>
         </ol>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types③">𝗍𝖺𝖻𝗅𝖾</a> <var>tabletype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types③">table</a> <var>tabletype</var>,</p>
         <ol>
          <li data-md>
           <p>If <var>v</var> is not a <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table①">Table</a></code> instance, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror④">LinkError</a></code> exception.</p>
          <li data-md>
           <p>Let <var>tableaddr</var> be <var>v</var>.[[Table]].</p>
          <li data-md>
-          <p>Let <var>externtable</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑥">external value</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑦">𝗍𝖺𝖻𝗅𝖾</a> <var>tableaddr</var>.</p>
+          <p>Let <var>externtable</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑥">external value</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑦">table</a> <var>tableaddr</var>.</p>
          <li data-md>
           <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append③">Append</a> <var>externtable</var> to <var>imports</var>.</p>
         </ol>
@@ -629,48 +627,48 @@ The verification of WebAssembly type requirements is deferred to the
        <li data-md>
         <p class="assertion">Assert: <var>externval</var> is not <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑥">error</a>.</p>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types④">𝖿𝗎𝗇𝖼</a> <var>functype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types④">func</a> <var>functype</var>,</p>
         <ol>
          <li data-md>
-          <p class="assertion">Assert: <var>externval</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑧">𝖿𝗎𝗇𝖼</a> <var>funcaddr</var>.</p>
+          <p class="assertion">Assert: <var>externval</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑧">func</a> <var>funcaddr</var>.</p>
          <li data-md>
-          <p>Let <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑨">𝖿𝗎𝗇𝖼</a> <var>funcaddr</var> be <var>externval</var>.</p>
+          <p>Let <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑨">func</a> <var>funcaddr</var> be <var>externval</var>.</p>
          <li data-md>
           <p>Let <var>func</var> be the result of creating <a data-link-type="dfn" href="#a-new-exported-function" id="ref-for-a-new-exported-function">a new Exported Function</a> from <var>funcaddr</var>.</p>
          <li data-md>
           <p>Let <var>value</var> be <var>func</var>.</p>
         </ol>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑤">𝗀𝗅𝗈𝖻𝖺𝗅</a> <var>globaltype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑤">global</a> <var>mut</var> <var>globaltype</var>,</p>
         <ol>
          <li data-md>
-          <p class="assertion">Assert: <var>externval</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①⓪">𝗀𝗅𝗈𝖻𝖺𝗅</a> <var>globaladdr</var>.</p>
+          <p class="assertion">Assert: <var>externval</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①⓪">global</a> <var>globaladdr</var>.</p>
          <li data-md>
-          <p>Let <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①①">𝗀𝗅𝗈𝖻𝖺𝗅</a> <var>globaladdr</var> be <var>externval</var>.</p>
+          <p>Let <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①①">global</a> <var>globaladdr</var> be <var>externval</var>.</p>
          <li data-md>
           <p>Let <var>global</var> be <a data-link-type="dfn" href="#create-a-global-object" id="ref-for-create-a-global-object">a new Global object</a> created from <var>globaladdr</var>.</p>
          <li data-md>
           <p>Let <var>value</var> be <var>global</var>.</p>
         </ol>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑥">𝗆𝖾𝗆</a> <var>memtype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑥">mem</a> <var>memtype</var>,</p>
         <ol>
          <li data-md>
-          <p class="assertion">Assert: <var>externval</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①②">𝗆𝖾𝗆</a> <var>memaddr</var>.</p>
+          <p class="assertion">Assert: <var>externval</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①②">mem</a> <var>memaddr</var>.</p>
          <li data-md>
-          <p>Let <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①③">𝗆𝖾𝗆</a> <var>memaddr</var> be <var>externval</var>.</p>
+          <p>Let <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①③">mem</a> <var>memaddr</var> be <var>externval</var>.</p>
          <li data-md>
           <p>Let <var>memory</var> be <a data-link-type="dfn" href="#create-a-memory-object" id="ref-for-create-a-memory-object">a new Memory object</a> created from <var>memaddr</var>.</p>
          <li data-md>
           <p>Let <var>value</var> be <var>memory</var>.</p>
         </ol>
        <li data-md>
-        <p>Otherwise, <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑦">𝗍𝖺𝖻𝗅𝖾</a> <var>tabletype</var>,</p>
+        <p>Otherwise, <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑦">table</a> <var>tabletype</var>,</p>
         <ol>
          <li data-md>
-          <p class="assertion">Assert: <var>externval</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①④">𝗍𝖺𝖻𝗅𝖾</a> <var>tableaddr</var>.</p>
+          <p class="assertion">Assert: <var>externval</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①④">table</a> <var>tableaddr</var>.</p>
          <li data-md>
-          <p>Let <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①⑤">𝗍𝖺𝖻𝗅𝖾</a> <var>tableaddr</var> be <var>externval</var>.</p>
+          <p>Let <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①⑤">table</a> <var>tableaddr</var> be <var>externval</var>.</p>
          <li data-md>
           <p>Let <var>table</var> be <a data-link-type="dfn" href="#create-a-table-object" id="ref-for-create-a-table-object">a new Table object</a> created from <var>tableaddr</var>.</p>
          <li data-md>
@@ -780,7 +778,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
        <li data-md>
         <p><a data-link-type="dfn" href="#instantiate-a-webassembly-module" id="ref-for-instantiate-a-webassembly-module">Instantiate the WebAssembly module</a> <var>module</var> importing <var>importObject</var>, and let <var>instance</var> be the result.  If this throws an exception, catch it, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#reject" id="ref-for-reject③">reject</a> <var>promise</var> with the exception, and abort these substeps.</p>
        <li data-md>
-        <p>Let <var>result</var> be a <code class="idl"><a data-link-type="idl" href="#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a></code> dictionary with <code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-module" id="ref-for-dom-webassemblyinstantiatedsource-module">module</a></code> set to <var>module</var> and <code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-instance" id="ref-for-dom-webassemblyinstantiatedsource-instance">instance</a></code> set to <var>instance</var>.</p>
+        <p>Let <var>result</var> be the <code class="idl"><a data-link-type="idl" href="#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a></code> value «[ "<code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-module" id="ref-for-dom-webassemblyinstantiatedsource-module">module</a></code>" → <var>module</var>, "<code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-instance" id="ref-for-dom-webassemblyinstantiatedsource-instance">instance</a></code>" → <var>instance</var> ]».</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://heycam.github.io/webidl/#resolve" id="ref-for-resolve②">Resolve</a> <var>promise</var> with <var>result</var>.</p>
       </ol>
@@ -846,13 +844,13 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
      The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="string-value-of-the-extern-type">string value of the extern type</dfn> <var>type</var> is 
     <ul>
      <li data-md>
-      <p>"function" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑧">𝖿𝗎𝗇𝖼</a> functype</p>
+      <p>"function" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑧">func</a> functype</p>
      <li data-md>
-      <p>"table" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑨">𝗍𝖺𝖻𝗅𝖾</a> tabletype</p>
+      <p>"table" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑨">table</a> tabletype</p>
      <li data-md>
-      <p>"memory" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①⓪">𝗆𝖾𝗆</a> memtype</p>
+      <p>"memory" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①⓪">mem</a> memtype</p>
      <li data-md>
-      <p>"global" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①①">𝗀𝗅𝗈𝖻𝖺𝗅</a> globaltype</p>
+      <p>"global" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①①">global</a> globaltype</p>
     </ul>
    </div>
    <div class="algorithm" data-algorithm="exports(moduleObject)" data-algorithm-for="Module">
@@ -868,9 +866,9 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
        <li data-md>
         <p>Let <var>kind</var> be the <a data-link-type="dfn" href="#string-value-of-the-extern-type" id="ref-for-string-value-of-the-extern-type">string value of the extern type</a> <var>type</var>.</p>
        <li data-md>
-        <p>Let <var>obj</var> be a new <code class="idl"><a data-link-type="idl" href="#dictdef-moduleexportdescriptor" id="ref-for-dictdef-moduleexportdescriptor①">ModuleExportDescriptor</a></code> dictionary with <code class="idl"><a data-link-type="idl" href="#dom-moduleexportdescriptor-name" id="ref-for-dom-moduleexportdescriptor-name">name</a></code> <var>name</var> and <code class="idl"><a data-link-type="idl" href="#dom-moduleexportdescriptor-kind" id="ref-for-dom-moduleexportdescriptor-kind">kind</a></code> <var>kind</var>.</p>
+        <p>Let <var>obj</var> be «[ "<code class="idl"><a data-link-type="idl" href="#dom-moduleexportdescriptor-name" id="ref-for-dom-moduleexportdescriptor-name">name</a></code>" → <var>name</var>, "<code class="idl"><a data-link-type="idl" href="#dom-moduleexportdescriptor-kind" id="ref-for-dom-moduleexportdescriptor-kind">kind</a></code>" → <var>kind</var> ]».</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append④">Append</a> <var>obj</var> to the end of <var>exports</var>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append④">Append</a> <var>obj</var> to <var>exports</var>.</p>
       </ol>
      <li data-md>
       <p>Return <var>exports</var>.</p>
@@ -889,9 +887,9 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
        <li data-md>
         <p>Let <var>kind</var> be the <a data-link-type="dfn" href="#string-value-of-the-extern-type" id="ref-for-string-value-of-the-extern-type①">string value of the extern type</a> <var>type</var>.</p>
        <li data-md>
-        <p>Let <var>obj</var> be a new <code class="idl"><a data-link-type="idl" href="#dictdef-moduleimportdescriptor" id="ref-for-dictdef-moduleimportdescriptor①">ModuleImportDescriptor</a></code> dictionary with <code class="idl"><a data-link-type="idl" href="#dom-moduleimportdescriptor-module" id="ref-for-dom-moduleimportdescriptor-module">module</a></code> <var>moduleName</var>, <code class="idl"><a data-link-type="idl" href="#dom-moduleimportdescriptor-name" id="ref-for-dom-moduleimportdescriptor-name">name</a></code> <var>name</var> and <code class="idl"><a data-link-type="idl" href="#dom-moduleimportdescriptor-kind" id="ref-for-dom-moduleimportdescriptor-kind">kind</a></code> <var>kind</var>.</p>
+        <p>Let <var>obj</var> be «[ "<code class="idl"><a data-link-type="idl" href="#dom-moduleimportdescriptor-module" id="ref-for-dom-moduleimportdescriptor-module">module</a></code>" → <var>moduleName</var>, "<code class="idl"><a data-link-type="idl" href="#dom-moduleimportdescriptor-name" id="ref-for-dom-moduleimportdescriptor-name">name</a></code>" → <var>name</var>, "<code class="idl"><a data-link-type="idl" href="#dom-moduleimportdescriptor-kind" id="ref-for-dom-moduleimportdescriptor-kind">kind</a></code>" → <var>kind</var> ]».</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑤">Append</a> <var>obj</var> to the end of <var>imports</var>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑤">Append</a> <var>obj</var> to <var>imports</var>.</p>
       </ol>
      <li data-md>
       <p>Return <var>imports</var>.</p>
@@ -971,15 +969,13 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects③"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="ArrayBuffer" href="#dom-memory-buffer" id="ref-for-dom-memory-buffer"><c- g>buffer</c-></a>;
 };
 </pre>
-   <div>
-     A <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory③">Memory</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances" id="ref-for-memory-instances①">memory instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance⑤">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory④">Memory</a></code> object has the following internal slots: 
-    <ul>
-     <li data-md>
-      <p>[[Memory]] : a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr①">memory address</a></p>
-     <li data-md>
-      <p>[[BufferObject]] : an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects④">ArrayBuffer</a></code> whose <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-data-blocks" id="ref-for-sec-data-blocks①">Data Block</a> is <a data-link-type="dfn" href="#identified-with" id="ref-for-identified-with">identified with</a> the above memory address</p>
-    </ul>
-   </div>
+   <p>A <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory③">Memory</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances" id="ref-for-memory-instances①">memory instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance⑤">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory④">Memory</a></code> object has the following internal slots:</p>
+   <ul>
+    <li data-md>
+     <p>[[Memory]] : a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr①">memory address</a></p>
+    <li data-md>
+     <p>[[BufferObject]] : an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects④">ArrayBuffer</a></code> whose <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-data-blocks" id="ref-for-sec-data-blocks①">Data Block</a> is <a data-link-type="dfn" href="#identified-with" id="ref-for-identified-with">identified with</a> the above memory address</p>
+   </ul>
    <div class="algorithm" data-algorithm="create a memory buffer">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-memory-buffer">create a memory buffer</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr②">memory address</a> <var>memaddr</var>, perform the following steps: 
     <ol>
@@ -1092,14 +1088,14 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://hey
    <div class="algorithm" data-algorithm="memory.grow">
     <ol>
      <li data-md>
-      <p>If the top of the stack is not <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> (−1),</p>
+      <p>If the top of the stack is not <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values">i32.const</a> (−1),</p>
       <ol>
        <li data-md>
         <p>Let <var>frame</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/conventions.html#exec-notation-textual" id="ref-for-exec-notation-textual">current frame</a>.</p>
        <li data-md>
-        <p class="assertion">Assert: due to validation, <var>frame</var>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame" id="ref-for-syntax-frame">𝗆𝗈𝖽𝗎𝗅𝖾</a>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst" id="ref-for-syntax-moduleinst">𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌</a>[0] exists.</p>
+        <p class="assertion">Assert: due to validation, <var>frame</var>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame" id="ref-for-syntax-frame">module</a>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst" id="ref-for-syntax-moduleinst">memaddrs</a>[0] exists.</p>
        <li data-md>
-        <p>Let <var>memaddr</var> be the memory address <var>frame</var>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame" id="ref-for-syntax-frame①">𝗆𝗈𝖽𝗎𝗅𝖾</a>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst" id="ref-for-syntax-moduleinst①">𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌</a>[0].</p>
+        <p>Let <var>memaddr</var> be the memory address <var>frame</var>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame" id="ref-for-syntax-frame①">module</a>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst" id="ref-for-syntax-moduleinst①">memaddrs</a>[0].</p>
        <li data-md>
         <p><a data-link-type="dfn" href="#reset-the-memory-buffer" id="ref-for-reset-the-memory-buffer①">Reset the memory buffer</a> of <var>memaddr</var>.</p>
       </ol>
@@ -1173,7 +1169,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>If <var>maximum</var> is not empty and <var>maximum</var> &lt; <var>initial</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">RangeError</a></code> exception.</p>
      <li data-md>
-      <p>Let <var>type</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype">table type</a> {<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype①">𝗆𝗂𝗇</a> <var>initial</var>, <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype②">𝗆𝖺𝗑</a> <var>maximum</var>} <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype③">𝖺𝗇𝗒𝖿𝗎𝗇𝖼</a>.</p>
+      <p>Let <var>type</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype">table type</a> {<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype①">min</a> <var>initial</var>, <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype②">ma𝗑</a> <var>maximum</var>} <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype③">an𝗒func</a>.</p>
      <li data-md>
       <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent①③">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑧">associated store</a>.</p>
      <li data-md>
@@ -1278,13 +1274,11 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
   <c- b>attribute</c-> <c- b>any</c-> <a class="idl-code" data-link-type="attribute" data-type="any" href="#dom-global-value" id="ref-for-dom-global-value"><c- g>value</c-></a>;
 };
 </pre>
-   <div>
-     A <code class="idl"><a data-link-type="idl" href="#global" id="ref-for-global②">Global</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#global-instances" id="ref-for-global-instances">global instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance⑦">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#global" id="ref-for-global③">Global</a></code> object has one internal slot: 
-    <ul>
-     <li data-md>
-      <p>[[Global]] : a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-globaladdr" id="ref-for-syntax-globaladdr①">global address</a></p>
-    </ul>
-   </div>
+   <p>A <code class="idl"><a data-link-type="idl" href="#global" id="ref-for-global②">Global</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#global-instances" id="ref-for-global-instances">global instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance⑦">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#global" id="ref-for-global③">Global</a></code> object has one internal slot:</p>
+   <ul>
+    <li data-md>
+     <p>[[Global]] : a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-globaladdr" id="ref-for-syntax-globaladdr①">global address</a></p>
+   </ul>
    <div class="algorithm" data-algorithm="initialize a global object">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-a-global-object">initialize a global object</dfn> <var>global</var> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-globaladdr" id="ref-for-syntax-globaladdr②">global address</a> <var>globaladdr</var>, perform the following steps: 
     <ol>
@@ -1321,26 +1315,26 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tovaluetype">ToValueType</dfn>(<var>s</var>) performs the following steps: 
     <ol>
      <li data-md>
-      <p>If <var>s</var> equals "i32", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①">𝗂𝟥𝟤</a>.</p>
+      <p>If <var>s</var> equals "i32", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①">i32</a>.</p>
      <li data-md>
-      <p>If <var>s</var> equals "i64", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype②">𝗂𝟨𝟦</a>.</p>
+      <p>If <var>s</var> equals "i64", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype②">i64</a>.</p>
      <li data-md>
-      <p>If <var>s</var> equals "f32", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype③">𝖿𝟥𝟤</a>.</p>
+      <p>If <var>s</var> equals "f32", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype③">f32</a>.</p>
      <li data-md>
-      <p>If <var>s</var> equals "f64", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype④">𝖿𝟨𝟦</a>.</p>
+      <p>If <var>s</var> equals "f64", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype④">f64</a>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="DefaultValue">
      The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="defaultvalue">DefaultValue</dfn>(<var>valuetype</var>) performs the following steps: 
     <ol>
      <li data-md>
-      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑤">𝗂𝟥𝟤</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> 0.</p>
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑤">i32</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①">i32.const</a> 0.</p>
      <li data-md>
-      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑥">𝗂𝟨𝟦</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②">𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> 0.</p>
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑥">i64</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②">i64.const</a> 0.</p>
      <li data-md>
-      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑦">𝖿𝟥𝟤</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values③">𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> 0.</p>
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑦">f32</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values③">f32.const</a> 0.</p>
      <li data-md>
-      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑧">𝖿𝟨𝟦</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values④">𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> 0.</p>
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑧">f64</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values④">f64.const</a> 0.</p>
      <li data-md>
       <p class="assertion">Assert: This step is not reached.</p>
     </ol>
@@ -1362,7 +1356,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>If <var>valuetype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑨">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a></code> exception.</p>
+        <p>If <var>valuetype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype⑨">i64</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a></code> exception.</p>
        <li data-md>
         <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①">ToWebAssemblyValue</a>(<var>v</var>, <var>valuetype</var>).</p>
       </ol>
@@ -1388,7 +1382,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>Let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-global-type" id="ref-for-embed-global-type">global_type</a>(<var>store</var>, <var>globaladdr</var>).</p>
      <li data-md>
-      <p>If <var>globaltype</var> is of the form <var>mut</var> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①⓪">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror④">TypeError</a></code>.</p>
+      <p>If <var>globaltype</var> is of the form <var>mut</var> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①⓪">i64</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror④">TypeError</a></code>.</p>
      <li data-md>
       <p>Let <var>value</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-global-read" id="ref-for-embed-global-read">global_read</a>(<var>store</var>, <var>globaladdr</var>).</p>
      <li data-md>
@@ -1408,11 +1402,11 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>Let <var>globaladdr</var> be <strong>this</strong>.[[Global]].</p>
      <li data-md>
-      <p>Let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-global-type" id="ref-for-embed-global-type①">global_type</a>(<var>store</var>, <var>globaladdr</var>), where <var>globaltype</var> is of the form <var>mut</var> <var>valuetype</var>.</p>
+      <p>Let <var>mut</var> <var>valuetype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-global-type" id="ref-for-embed-global-type①">global_type</a>(<var>store</var>, <var>globaladdr</var>).</p>
      <li data-md>
       <p>If <var>mut</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut③">const</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑤">TypeError</a></code>.</p>
      <li data-md>
-      <p>If <var>valuetype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①①">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">TypeError</a></code>.</p>
+      <p>If <var>valuetype</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①①">i64</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">TypeError</a></code>.</p>
      <li data-md>
       <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue②">ToWebAssemblyValue</a>(<strong>the given value</strong>, <var>valuetype</var>).</p>
      <li data-md>
@@ -1440,9 +1434,9 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent②③">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②②">associated store</a>.</p>
      <li data-md>
-      <p>Let <var>funcinst</var> be <var>store</var>.𝖿𝗎𝗇𝖼𝗌[<var>funcaddr</var>].</p>
+      <p>Let <var>funcinst</var> be <var>store</var>.funcs[<var>funcaddr</var>].</p>
      <li data-md>
-      <p>If <var>funcinst</var> is of the form {𝗍𝗒𝗉𝖾 <var>functype</var>, 𝗁𝗈𝗌𝗍𝖼𝗈𝖽𝖾 <var>hostfunc</var>},</p>
+      <p>If <var>funcinst</var> is of the form {t𝗒pe <var>functype</var>, 𝗁ostcode <var>hostfunc</var>},</p>
       <ol>
        <li data-md>
         <p class="assertion">Assert: <var>hostfunc</var> is a JavaScript object and <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-iscallable" id="ref-for-sec-iscallable①">IsCallable</a>(<var>hostfunc</var>) is true.</p>
@@ -1453,11 +1447,11 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>Let <var>moduleinst</var> be <var>funcinst</var>.𝗆𝗈𝖽𝗎𝗅𝖾.</p>
+        <p>Let <var>moduleinst</var> be <var>funcinst</var>.module.</p>
        <li data-md>
-        <p class="assertion">Assert: <var>funcaddr</var> is contained in <var>moduleinst</var>.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌.</p>
+        <p class="assertion">Assert: <var>funcaddr</var> is contained in <var>moduleinst</var>.funcaddrs.</p>
        <li data-md>
-        <p>Let <var>index</var> be the index of <var>moduleinst</var>.𝖿𝗎𝗇𝖼𝖺𝖽𝖽𝗋𝗌 where <var>funcaddr</var> is found.</p>
+        <p>Let <var>index</var> be the index of <var>moduleinst</var>.funcaddrs where <var>funcaddr</var> is found.</p>
       </ol>
      <li data-md>
       <p>Return ! <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-tostring" id="ref-for-sec-tostring">ToString</a>(<var>index</var>).</p>
@@ -1512,7 +1506,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let [<var>parameters</var>] → [<var>results</var>] be <var>functype</var>.</p>
      <li data-md>
-      <p>If <var>parameters</var> or <var>results</var> contains an <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①②">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">TypeError</a></code>.</p>
+      <p>If <var>parameters</var> or <var>results</var> contains an <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①②">i64</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">TypeError</a></code>.</p>
       <p class="note" role="note"><span>Note:</span> the above error is thrown each time the [[Call]] method is invoked.</p>
      <li data-md>
       <p>Let <var>args</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a> of WebAssembly values.</p>
@@ -1543,7 +1537,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>If <var>outArity</var> is 0, return undefined.</p>
      <li data-md>
-      <p>Otherwise, if <var>outArity</var> is 1, return <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①">ToJSValue</a>(<var>v</var>), where <var>v</var> is the singular element of <var>ret</var>.</p>
+      <p>Otherwise, if <var>outArity</var> is 1, return <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①">ToJSValue</a>(<var>ret</var>[0]).</p>
      <li data-md>
       <p>Otherwise,</p>
       <ol>
@@ -1564,11 +1558,9 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let [<var>parameters</var>] → [<var>results</var>] be <var>functype</var>.</p>
      <li data-md>
-      <p>If either <var>parameters</var> or <var>results</var> contains <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①③">𝗂𝟨𝟦</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">TypeError</a></code>.</p>
+      <p>If either <var>parameters</var> or <var>results</var> contains <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①③">i64</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑧">TypeError</a></code>.</p>
      <li data-md>
-      <p>Let <var>arguments</var> be a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑧">list</a> of the arguments of the invocation of this function.</p>
-     <li data-md>
-      <p>Let <var>jsArguments</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑨">list</a>.</p>
+      <p>Let <var>jsArguments</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑧">list</a>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑥">For each</a> <var>arg</var> of <var>arguments</var>,</p>
       <ol>
@@ -1578,9 +1570,11 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let <var>ret</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-call" id="ref-for-sec-call">Call</a>(<var>func</var>, undefined, <var>jsArguments</var>).</p>
      <li data-md>
-      <p>If <var>results</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-is-empty" id="ref-for-list-is-empty">is empty</a>, return « ».</p>
+      <p>Let <var>resultsSize</var> be <var>results</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size①">size</a>.</p>
      <li data-md>
-      <p>Otherwise, if <var>results</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size①">size</a> is 1, return « ? <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue④">ToWebAssemblyValue</a>(<var>ret</var>, <var>results</var>[0]) ».</p>
+      <p>If <var>resultsSize</var> is 0, return « ».</p>
+     <li data-md>
+      <p>Otherwise, if <var>resultsSize</var> is 1, return « ? <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue④">ToWebAssemblyValue</a>(<var>ret</var>, <var>results</var>[0]) ».</p>
      <li data-md>
       <p>Otherwise,</p>
       <ol>
@@ -1591,9 +1585,9 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
        <li data-md>
         <p>Let <var>values</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-iterabletolist" id="ref-for-sec-iterabletolist">IterableToList</a>(<var>ret</var>, <var>method</var>).</p>
        <li data-md>
-        <p>Let <var>wasmValues</var> be a new, empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①⓪">list</a>.</p>
+        <p>Let <var>wasmValues</var> be a new, empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑨">list</a>.</p>
        <li data-md>
-        <p>If <var>values</var> and <var>results</var> do not have the same length, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①⓪">TypeError</a></code>.</p>
+        <p>If <var>values</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size②">size</a> is not <var>resultsSize</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①⓪">TypeError</a></code> exception.</p>
        <li data-md>
         <p>For each <var>value</var> and <var>resultType</var> in <var>values</var> and <var>results</var>, paired linearly,</p>
         <ol>
@@ -1636,13 +1630,13 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tojsvalue">ToJSValue</dfn>(<var>w</var>) coerces a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑥">WebAssembly value</a> to a JavaScript value by performing the following steps: 
     <ol>
      <li data-md>
-      <p class="assertion">Assert: <var>w</var> is not of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑦">𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> <var>i64</var>.</p>
+      <p class="assertion">Assert: <var>w</var> is not of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑦">i64.const</a> <var>i64</var>.</p>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑧">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>i32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type">the Number value</a> for <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed">signed_32</a>(<var>i32</var>).</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑧">i32.const</a> <var>i32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type">the Number value</a> for <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed">signed_32</a>(<var>i32</var>).</p>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑨">𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>f32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type①">the Number value</a> for <var>f32</var>.</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑨">f32.const</a> <var>f32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type①">the Number value</a> for <var>f32</var>.</p>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⓪">𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> <var>f64</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type②">the Number value</a> for <var>f64</var>.</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⓪">f64.const</a> <var>f64</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type②">the Number value</a> for <var>f64</var>.</p>
     </ol>
     <p class="note" role="note"><span>Note:</span> Number values which are equal to NaN may have various observable NaN payloads; see <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-numbertorawbytes" id="ref-for-sec-numbertorawbytes">NumberToRawBytes</a> for details.</p>
    </div>
@@ -1650,30 +1644,30 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="towebassemblyvalue">ToWebAssemblyValue</dfn>(<var>v</var>, <var>type</var>) coerce a JavaScript value to a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①①">WebAssembly value</a> performs the following steps: 
     <ol>
      <li data-md>
-      <p class="assertion">Assert: <var>type</var> is not <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①④">𝗂𝟨𝟦</a>.</p>
+      <p class="assertion">Assert: <var>type</var> is not <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①④">i64</a>.</p>
      <li data-md>
-      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①⑤">𝗂𝟥𝟤</a>,</p>
+      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①⑤">i32</a>,</p>
       <ol>
        <li data-md>
         <p>Let <var>i32</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-toint32" id="ref-for-sec-toint32">ToInt32</a>(<var>v</var>).</p>
        <li data-md>
-        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①②">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>i32</var>.</p>
+        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①②">i32.const</a> <var>i32</var>.</p>
       </ol>
      <li data-md>
-      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①⑥">𝖿𝟥𝟤</a>,</p>
+      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①⑥">f32</a>,</p>
       <ol>
        <li data-md>
         <p>Let <var>f32</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-tonumber" id="ref-for-sec-tonumber">ToNumber</a>(<var>v</var>) rounded to the nearest representable value using IEEE 754-2008 round to nearest, ties to even mode.</p>
        <li data-md>
-        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①③">𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</a> <var>f32</var>.</p>
+        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①③">f32.const</a> <var>f32</var>.</p>
       </ol>
      <li data-md>
-      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①⑦">𝖿𝟨𝟦</a>,</p>
+      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype" id="ref-for-syntax-valtype①⑦">f64</a>,</p>
       <ol>
        <li data-md>
         <p>Let <var>f64</var> be ? <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-tonumber" id="ref-for-sec-tonumber①">ToNumber</a>(<var>v</var>).</p>
        <li data-md>
-        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①④">𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</a> <var>f64</var>.</p>
+        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①④">f64.const</a> <var>f64</var>.</p>
       </ol>
     </ol>
    </div>
@@ -2180,12 +2174,6 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-map-exists⑨">3.6. Exported Functions</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-list-is-empty">
-   <a href="https://infra.spec.whatwg.org/#list-is-empty">https://infra.spec.whatwg.org/#list-is-empty</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-list-is-empty">3.6. Exported Functions</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-list-iterate">
    <a href="https://infra.spec.whatwg.org/#list-iterate">https://infra.spec.whatwg.org/#list-iterate</a><b>Referenced in:</b>
    <ul>
@@ -2200,7 +2188,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <ul>
     <li><a href="#ref-for-list">3. The WebAssembly Namespace</a>
     <li><a href="#ref-for-list①">3.1. Modules</a> <a href="#ref-for-list②">(2)</a> <a href="#ref-for-list③">(3)</a>
-    <li><a href="#ref-for-list④">3.6. Exported Functions</a> <a href="#ref-for-list⑤">(2)</a> <a href="#ref-for-list⑥">(3)</a> <a href="#ref-for-list⑦">(4)</a> <a href="#ref-for-list⑧">(5)</a> <a href="#ref-for-list⑨">(6)</a> <a href="#ref-for-list①⓪">(7)</a>
+    <li><a href="#ref-for-list④">3.6. Exported Functions</a> <a href="#ref-for-list⑤">(2)</a> <a href="#ref-for-list⑥">(3)</a> <a href="#ref-for-list⑦">(4)</a> <a href="#ref-for-list⑧">(5)</a> <a href="#ref-for-list⑨">(6)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ordered-map">
@@ -2221,7 +2209,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside class="dfn-panel" data-for="term-for-list-size">
    <a href="https://infra.spec.whatwg.org/#list-size">https://infra.spec.whatwg.org/#list-size</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-size">3.6. Exported Functions</a> <a href="#ref-for-list-size①">(2)</a>
+    <li><a href="#ref-for-list-size">3.6. Exported Functions</a> <a href="#ref-for-list-size①">(2)</a> <a href="#ref-for-list-size②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-addresses">
@@ -2272,6 +2260,45 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-syntax-externval">3. The WebAssembly Namespace</a> <a href="#ref-for-syntax-externval①">(2)</a> <a href="#ref-for-syntax-externval②">(3)</a> <a href="#ref-for-syntax-externval③">(4)</a> <a href="#ref-for-syntax-externval④">(5)</a> <a href="#ref-for-syntax-externval⑤">(6)</a> <a href="#ref-for-syntax-externval⑥">(7)</a> <a href="#ref-for-syntax-externval⑦">(8)</a> <a href="#ref-for-syntax-externval⑧">(9)</a> <a href="#ref-for-syntax-externval⑨">(10)</a> <a href="#ref-for-syntax-externval①⓪">(11)</a> <a href="#ref-for-syntax-externval①①">(12)</a> <a href="#ref-for-syntax-externval①②">(13)</a> <a href="#ref-for-syntax-externval①③">(14)</a> <a href="#ref-for-syntax-externval①④">(15)</a> <a href="#ref-for-syntax-externval①⑤">(16)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-valtype">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a> <a href="#ref-for-syntax-valtype⑥">(6)</a> <a href="#ref-for-syntax-valtype⑦">(7)</a> <a href="#ref-for-syntax-valtype⑧">(8)</a> <a href="#ref-for-syntax-valtype⑨">(9)</a> <a href="#ref-for-syntax-valtype①⓪">(10)</a> <a href="#ref-for-syntax-valtype①①">(11)</a>
+    <li><a href="#ref-for-syntax-valtype①②">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype①③">(2)</a> <a href="#ref-for-syntax-valtype①④">(3)</a> <a href="#ref-for-syntax-valtype①⑤">(4)</a> <a href="#ref-for-syntax-valtype①⑥">(5)</a> <a href="#ref-for-syntax-valtype①⑦">(6)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-values">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-values">3.3. Memories</a>
+    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a>
+    <li><a href="#ref-for-values⑤">3.6. Exported Functions</a> <a href="#ref-for-values⑥">(2)</a> <a href="#ref-for-values⑦">(3)</a> <a href="#ref-for-values⑧">(4)</a> <a href="#ref-for-values⑨">(5)</a> <a href="#ref-for-values①⓪">(6)</a> <a href="#ref-for-values①①">(7)</a> <a href="#ref-for-values①②">(8)</a> <a href="#ref-for-values①③">(9)</a> <a href="#ref-for-values①④">(10)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-valtype">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a> <a href="#ref-for-syntax-valtype⑥">(6)</a> <a href="#ref-for-syntax-valtype⑦">(7)</a> <a href="#ref-for-syntax-valtype⑧">(8)</a> <a href="#ref-for-syntax-valtype⑨">(9)</a> <a href="#ref-for-syntax-valtype①⓪">(10)</a> <a href="#ref-for-syntax-valtype①①">(11)</a>
+    <li><a href="#ref-for-syntax-valtype①②">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype①③">(2)</a> <a href="#ref-for-syntax-valtype①④">(3)</a> <a href="#ref-for-syntax-valtype①⑤">(4)</a> <a href="#ref-for-syntax-valtype①⑥">(5)</a> <a href="#ref-for-syntax-valtype①⑦">(6)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-values">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-values">3.3. Memories</a>
+    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a>
+    <li><a href="#ref-for-values⑤">3.6. Exported Functions</a> <a href="#ref-for-values⑥">(2)</a> <a href="#ref-for-values⑦">(3)</a> <a href="#ref-for-values⑧">(4)</a> <a href="#ref-for-values⑨">(5)</a> <a href="#ref-for-values①⓪">(6)</a> <a href="#ref-for-values①①">(7)</a> <a href="#ref-for-values①②">(8)</a> <a href="#ref-for-values①③">(9)</a> <a href="#ref-for-values①④">(10)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-external-types">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">https://webassembly.github.io/spec/core/syntax/types.html#external-types</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-external-types">3. The WebAssembly Namespace</a> <a href="#ref-for-external-types①">(2)</a> <a href="#ref-for-external-types②">(3)</a> <a href="#ref-for-external-types③">(4)</a> <a href="#ref-for-external-types④">(5)</a> <a href="#ref-for-external-types⑤">(6)</a> <a href="#ref-for-external-types⑥">(7)</a> <a href="#ref-for-external-types⑦">(8)</a>
+    <li><a href="#ref-for-external-types⑧">3.1. Modules</a> <a href="#ref-for-external-types⑨">(2)</a> <a href="#ref-for-external-types①⓪">(3)</a> <a href="#ref-for-external-types①①">(4)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-embed-func-alloc">
    <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-func-alloc">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-func-alloc</a><b>Referenced in:</b>
    <ul>
@@ -2301,6 +2328,13 @@ In practice, an implementation may run out of resources for valid modules below 
    <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcelem">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcelem</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-syntax-funcelem">3.4. Tables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-external-types">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">https://webassembly.github.io/spec/core/syntax/types.html#external-types</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-external-types">3. The WebAssembly Namespace</a> <a href="#ref-for-external-types①">(2)</a> <a href="#ref-for-external-types②">(3)</a> <a href="#ref-for-external-types③">(4)</a> <a href="#ref-for-external-types④">(5)</a> <a href="#ref-for-external-types⑤">(6)</a> <a href="#ref-for-external-types⑥">(7)</a> <a href="#ref-for-external-types⑦">(8)</a>
+    <li><a href="#ref-for-external-types⑧">3.1. Modules</a> <a href="#ref-for-external-types⑨">(2)</a> <a href="#ref-for-external-types①⓪">(3)</a> <a href="#ref-for-external-types①①">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-syntax-globaladdr">
@@ -2347,16 +2381,61 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-syntax-hostfunc">3.6. Exported Functions</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-valtype">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a> <a href="#ref-for-syntax-valtype⑥">(6)</a> <a href="#ref-for-syntax-valtype⑦">(7)</a> <a href="#ref-for-syntax-valtype⑧">(8)</a> <a href="#ref-for-syntax-valtype⑨">(9)</a> <a href="#ref-for-syntax-valtype①⓪">(10)</a> <a href="#ref-for-syntax-valtype①①">(11)</a>
+    <li><a href="#ref-for-syntax-valtype①②">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype①③">(2)</a> <a href="#ref-for-syntax-valtype①④">(3)</a> <a href="#ref-for-syntax-valtype①⑤">(4)</a> <a href="#ref-for-syntax-valtype①⑥">(5)</a> <a href="#ref-for-syntax-valtype①⑦">(6)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-values">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-values">3.3. Memories</a>
+    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a>
+    <li><a href="#ref-for-values⑤">3.6. Exported Functions</a> <a href="#ref-for-values⑥">(2)</a> <a href="#ref-for-values⑦">(3)</a> <a href="#ref-for-values⑧">(4)</a> <a href="#ref-for-values⑨">(5)</a> <a href="#ref-for-values①⓪">(6)</a> <a href="#ref-for-values①①">(7)</a> <a href="#ref-for-values①②">(8)</a> <a href="#ref-for-values①③">(9)</a> <a href="#ref-for-values①④">(10)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-valtype">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a> <a href="#ref-for-syntax-valtype⑥">(6)</a> <a href="#ref-for-syntax-valtype⑦">(7)</a> <a href="#ref-for-syntax-valtype⑧">(8)</a> <a href="#ref-for-syntax-valtype⑨">(9)</a> <a href="#ref-for-syntax-valtype①⓪">(10)</a> <a href="#ref-for-syntax-valtype①①">(11)</a>
+    <li><a href="#ref-for-syntax-valtype①②">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype①③">(2)</a> <a href="#ref-for-syntax-valtype①④">(3)</a> <a href="#ref-for-syntax-valtype①⑤">(4)</a> <a href="#ref-for-syntax-valtype①⑥">(5)</a> <a href="#ref-for-syntax-valtype①⑦">(6)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-values">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-values">3.3. Memories</a>
+    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a>
+    <li><a href="#ref-for-values⑤">3.6. Exported Functions</a> <a href="#ref-for-values⑥">(2)</a> <a href="#ref-for-values⑦">(3)</a> <a href="#ref-for-values⑧">(4)</a> <a href="#ref-for-values⑨">(5)</a> <a href="#ref-for-values①⓪">(6)</a> <a href="#ref-for-values①①">(7)</a> <a href="#ref-for-values①②">(8)</a> <a href="#ref-for-values①③">(9)</a> <a href="#ref-for-values①④">(10)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-syntax-import">
    <a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-import">https://webassembly.github.io/spec/core/syntax/modules.html#syntax-import</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-syntax-import">6. Security and Privacy Considerations</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-module">
+   <a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module">https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-module">3. The WebAssembly Namespace</a> <a href="#ref-for-syntax-module①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-embed-instance-export">
    <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-instance-export">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-instance-export</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-embed-instance-export">3. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-external-types">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">https://webassembly.github.io/spec/core/syntax/types.html#external-types</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-external-types">3. The WebAssembly Namespace</a> <a href="#ref-for-external-types①">(2)</a> <a href="#ref-for-external-types②">(3)</a> <a href="#ref-for-external-types③">(4)</a> <a href="#ref-for-external-types④">(5)</a> <a href="#ref-for-external-types⑤">(6)</a> <a href="#ref-for-external-types⑥">(7)</a> <a href="#ref-for-external-types⑦">(8)</a>
+    <li><a href="#ref-for-external-types⑧">3.1. Modules</a> <a href="#ref-for-external-types⑨">(2)</a> <a href="#ref-for-external-types①⓪">(3)</a> <a href="#ref-for-external-types①①">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-embed-mem-alloc">
@@ -2375,6 +2454,12 @@ In practice, an implementation may run out of resources for valid modules below 
    <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-size">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-size</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-embed-mem-size">3.3. Memories</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-moduleinst">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-moduleinst">3.3. Memories</a> <a href="#ref-for-syntax-moduleinst①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-syntax-memaddr">
@@ -2398,10 +2483,10 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-exec-memory-grow①">4.2. Out of Memory</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-syntax-module">
-   <a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module">https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-syntax-frame">
+   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-syntax-module">3. The WebAssembly Namespace</a> <a href="#ref-for-syntax-module①">(2)</a>
+    <li><a href="#ref-for-syntax-frame">3.3. Memories</a> <a href="#ref-for-syntax-frame①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-binary-module">
@@ -2464,6 +2549,13 @@ In practice, an implementation may run out of resources for valid modules below 
    <a href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-store-init">https://webassembly.github.io/spec/core/appendix/embedding.html#embed-store-init</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-embed-store-init">2.1. Interaction of the WebAssembly Store with JavaScript</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-external-types">
+   <a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">https://webassembly.github.io/spec/core/syntax/types.html#external-types</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-external-types">3. The WebAssembly Namespace</a> <a href="#ref-for-external-types①">(2)</a> <a href="#ref-for-external-types②">(3)</a> <a href="#ref-for-external-types③">(4)</a> <a href="#ref-for-external-types④">(5)</a> <a href="#ref-for-external-types⑤">(6)</a> <a href="#ref-for-external-types⑥">(7)</a> <a href="#ref-for-external-types⑦">(8)</a>
+    <li><a href="#ref-for-external-types⑧">3.1. Modules</a> <a href="#ref-for-external-types⑨">(2)</a> <a href="#ref-for-external-types①⓪">(3)</a> <a href="#ref-for-external-types①①">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-syntax-tableaddr">
@@ -2542,116 +2634,6 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-values">3.3. Memories</a>
     <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a>
     <li><a href="#ref-for-values⑤">3.6. Exported Functions</a> <a href="#ref-for-values⑥">(2)</a> <a href="#ref-for-values⑦">(3)</a> <a href="#ref-for-values⑧">(4)</a> <a href="#ref-for-values⑨">(5)</a> <a href="#ref-for-values①⓪">(6)</a> <a href="#ref-for-values①①">(7)</a> <a href="#ref-for-values①②">(8)</a> <a href="#ref-for-values①③">(9)</a> <a href="#ref-for-values①④">(10)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-external-types">
-   <a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">https://webassembly.github.io/spec/core/syntax/types.html#external-types</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-external-types">3. The WebAssembly Namespace</a> <a href="#ref-for-external-types①">(2)</a> <a href="#ref-for-external-types②">(3)</a> <a href="#ref-for-external-types③">(4)</a> <a href="#ref-for-external-types④">(5)</a> <a href="#ref-for-external-types⑤">(6)</a> <a href="#ref-for-external-types⑥">(7)</a> <a href="#ref-for-external-types⑦">(8)</a>
-    <li><a href="#ref-for-external-types⑧">3.1. Modules</a> <a href="#ref-for-external-types⑨">(2)</a> <a href="#ref-for-external-types①⓪">(3)</a> <a href="#ref-for-external-types①①">(4)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-syntax-valtype">
-   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a>
-    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a> <a href="#ref-for-syntax-valtype⑥">(6)</a> <a href="#ref-for-syntax-valtype⑦">(7)</a> <a href="#ref-for-syntax-valtype⑧">(8)</a> <a href="#ref-for-syntax-valtype⑨">(9)</a> <a href="#ref-for-syntax-valtype①⓪">(10)</a> <a href="#ref-for-syntax-valtype①①">(11)</a>
-    <li><a href="#ref-for-syntax-valtype①②">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype①③">(2)</a> <a href="#ref-for-syntax-valtype①④">(3)</a> <a href="#ref-for-syntax-valtype①⑤">(4)</a> <a href="#ref-for-syntax-valtype①⑥">(5)</a> <a href="#ref-for-syntax-valtype①⑦">(6)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-values">
-   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-values">3.3. Memories</a>
-    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a>
-    <li><a href="#ref-for-values⑤">3.6. Exported Functions</a> <a href="#ref-for-values⑥">(2)</a> <a href="#ref-for-values⑦">(3)</a> <a href="#ref-for-values⑧">(4)</a> <a href="#ref-for-values⑨">(5)</a> <a href="#ref-for-values①⓪">(6)</a> <a href="#ref-for-values①①">(7)</a> <a href="#ref-for-values①②">(8)</a> <a href="#ref-for-values①③">(9)</a> <a href="#ref-for-values①④">(10)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-syntax-valtype">
-   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a>
-    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a> <a href="#ref-for-syntax-valtype⑥">(6)</a> <a href="#ref-for-syntax-valtype⑦">(7)</a> <a href="#ref-for-syntax-valtype⑧">(8)</a> <a href="#ref-for-syntax-valtype⑨">(9)</a> <a href="#ref-for-syntax-valtype①⓪">(10)</a> <a href="#ref-for-syntax-valtype①①">(11)</a>
-    <li><a href="#ref-for-syntax-valtype①②">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype①③">(2)</a> <a href="#ref-for-syntax-valtype①④">(3)</a> <a href="#ref-for-syntax-valtype①⑤">(4)</a> <a href="#ref-for-syntax-valtype①⑥">(5)</a> <a href="#ref-for-syntax-valtype①⑦">(6)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-values">
-   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-values">3.3. Memories</a>
-    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a>
-    <li><a href="#ref-for-values⑤">3.6. Exported Functions</a> <a href="#ref-for-values⑥">(2)</a> <a href="#ref-for-values⑦">(3)</a> <a href="#ref-for-values⑧">(4)</a> <a href="#ref-for-values⑨">(5)</a> <a href="#ref-for-values①⓪">(6)</a> <a href="#ref-for-values①①">(7)</a> <a href="#ref-for-values①②">(8)</a> <a href="#ref-for-values①③">(9)</a> <a href="#ref-for-values①④">(10)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-external-types">
-   <a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">https://webassembly.github.io/spec/core/syntax/types.html#external-types</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-external-types">3. The WebAssembly Namespace</a> <a href="#ref-for-external-types①">(2)</a> <a href="#ref-for-external-types②">(3)</a> <a href="#ref-for-external-types③">(4)</a> <a href="#ref-for-external-types④">(5)</a> <a href="#ref-for-external-types⑤">(6)</a> <a href="#ref-for-external-types⑥">(7)</a> <a href="#ref-for-external-types⑦">(8)</a>
-    <li><a href="#ref-for-external-types⑧">3.1. Modules</a> <a href="#ref-for-external-types⑨">(2)</a> <a href="#ref-for-external-types①⓪">(3)</a> <a href="#ref-for-external-types①①">(4)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-syntax-module">
-   <a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module">https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-syntax-module">3. The WebAssembly Namespace</a> <a href="#ref-for-syntax-module①">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-syntax-valtype">
-   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a>
-    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a> <a href="#ref-for-syntax-valtype⑥">(6)</a> <a href="#ref-for-syntax-valtype⑦">(7)</a> <a href="#ref-for-syntax-valtype⑧">(8)</a> <a href="#ref-for-syntax-valtype⑨">(9)</a> <a href="#ref-for-syntax-valtype①⓪">(10)</a> <a href="#ref-for-syntax-valtype①①">(11)</a>
-    <li><a href="#ref-for-syntax-valtype①②">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype①③">(2)</a> <a href="#ref-for-syntax-valtype①④">(3)</a> <a href="#ref-for-syntax-valtype①⑤">(4)</a> <a href="#ref-for-syntax-valtype①⑥">(5)</a> <a href="#ref-for-syntax-valtype①⑦">(6)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-values">
-   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-values">3.3. Memories</a>
-    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a>
-    <li><a href="#ref-for-values⑤">3.6. Exported Functions</a> <a href="#ref-for-values⑥">(2)</a> <a href="#ref-for-values⑦">(3)</a> <a href="#ref-for-values⑧">(4)</a> <a href="#ref-for-values⑨">(5)</a> <a href="#ref-for-values①⓪">(6)</a> <a href="#ref-for-values①①">(7)</a> <a href="#ref-for-values①②">(8)</a> <a href="#ref-for-values①③">(9)</a> <a href="#ref-for-values①④">(10)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-syntax-valtype">
-   <a href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype">https://webassembly.github.io/spec/core/syntax/types.html#syntax-valtype</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-syntax-valtype">3. The WebAssembly Namespace</a>
-    <li><a href="#ref-for-syntax-valtype①">3.5. Globals</a> <a href="#ref-for-syntax-valtype②">(2)</a> <a href="#ref-for-syntax-valtype③">(3)</a> <a href="#ref-for-syntax-valtype④">(4)</a> <a href="#ref-for-syntax-valtype⑤">(5)</a> <a href="#ref-for-syntax-valtype⑥">(6)</a> <a href="#ref-for-syntax-valtype⑦">(7)</a> <a href="#ref-for-syntax-valtype⑧">(8)</a> <a href="#ref-for-syntax-valtype⑨">(9)</a> <a href="#ref-for-syntax-valtype①⓪">(10)</a> <a href="#ref-for-syntax-valtype①①">(11)</a>
-    <li><a href="#ref-for-syntax-valtype①②">3.6. Exported Functions</a> <a href="#ref-for-syntax-valtype①③">(2)</a> <a href="#ref-for-syntax-valtype①④">(3)</a> <a href="#ref-for-syntax-valtype①⑤">(4)</a> <a href="#ref-for-syntax-valtype①⑥">(5)</a> <a href="#ref-for-syntax-valtype①⑦">(6)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-values">
-   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-values">3.3. Memories</a>
-    <li><a href="#ref-for-values①">3.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a>
-    <li><a href="#ref-for-values⑤">3.6. Exported Functions</a> <a href="#ref-for-values⑥">(2)</a> <a href="#ref-for-values⑦">(3)</a> <a href="#ref-for-values⑧">(4)</a> <a href="#ref-for-values⑨">(5)</a> <a href="#ref-for-values①⓪">(6)</a> <a href="#ref-for-values①①">(7)</a> <a href="#ref-for-values①②">(8)</a> <a href="#ref-for-values①③">(9)</a> <a href="#ref-for-values①④">(10)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-external-types">
-   <a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">https://webassembly.github.io/spec/core/syntax/types.html#external-types</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-external-types">3. The WebAssembly Namespace</a> <a href="#ref-for-external-types①">(2)</a> <a href="#ref-for-external-types②">(3)</a> <a href="#ref-for-external-types③">(4)</a> <a href="#ref-for-external-types④">(5)</a> <a href="#ref-for-external-types⑤">(6)</a> <a href="#ref-for-external-types⑥">(7)</a> <a href="#ref-for-external-types⑦">(8)</a>
-    <li><a href="#ref-for-external-types⑧">3.1. Modules</a> <a href="#ref-for-external-types⑨">(2)</a> <a href="#ref-for-external-types①⓪">(3)</a> <a href="#ref-for-external-types①①">(4)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-syntax-moduleinst">
-   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-syntax-moduleinst">3.3. Memories</a> <a href="#ref-for-syntax-moduleinst①">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-syntax-frame">
-   <a href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame">https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-syntax-frame">3.3. Memories</a> <a href="#ref-for-syntax-frame①">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-external-types">
-   <a href="https://webassembly.github.io/spec/core/syntax/types.html#external-types">https://webassembly.github.io/spec/core/syntax/types.html#external-types</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-external-types">3. The WebAssembly Namespace</a> <a href="#ref-for-external-types①">(2)</a> <a href="#ref-for-external-types②">(3)</a> <a href="#ref-for-external-types③">(4)</a> <a href="#ref-for-external-types④">(5)</a> <a href="#ref-for-external-types⑤">(6)</a> <a href="#ref-for-external-types⑥">(7)</a> <a href="#ref-for-external-types⑦">(8)</a>
-    <li><a href="#ref-for-external-types⑧">3.1. Modules</a> <a href="#ref-for-external-types⑨">(2)</a> <a href="#ref-for-external-types①⓪">(3)</a> <a href="#ref-for-external-types①①">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-BufferSource">
@@ -2853,7 +2835,6 @@ In practice, an implementation may run out of resources for valid modules below 
     <ul>
      <li><span class="dfn-paneled" id="term-for-list-append" style="color:initial">append</span>
      <li><span class="dfn-paneled" id="term-for-map-exists" style="color:initial">exist</span>
-     <li><span class="dfn-paneled" id="term-for-list-is-empty" style="color:initial">is empty</span>
      <li><span class="dfn-paneled" id="term-for-list-iterate" style="color:initial">iterate</span>
      <li><span class="dfn-paneled" id="term-for-list" style="color:initial">list</span>
      <li><span class="dfn-paneled" id="term-for-ordered-map" style="color:initial">ordered map</span>
@@ -2870,11 +2851,17 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-binary-customsec" style="color:initial">customsec</span>
      <li><span class="dfn-paneled" id="term-for-embed-error" style="color:initial">error</span>
      <li><span class="dfn-paneled" id="term-for-syntax-externval" style="color:initial">external value</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-valtype" style="color:initial">f32</span>
+     <li><span class="dfn-paneled" id="term-for-values" style="color:initial">f32.const</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-valtype①" style="color:initial">f64</span>
+     <li><span class="dfn-paneled" id="term-for-values①" style="color:initial">f64.const</span>
+     <li><span class="dfn-paneled" id="term-for-external-types" style="color:initial">func</span>
      <li><span class="dfn-paneled" id="term-for-embed-func-alloc" style="color:initial">func_alloc</span>
      <li><span class="dfn-paneled" id="term-for-embed-func-invoke" style="color:initial">func_invoke</span>
      <li><span class="dfn-paneled" id="term-for-embed-func-type" style="color:initial">func_type</span>
      <li><span class="dfn-paneled" id="term-for-syntax-funcaddr" style="color:initial">function address</span>
      <li><span class="dfn-paneled" id="term-for-syntax-funcelem" style="color:initial">function element</span>
+     <li><span class="dfn-paneled" id="term-for-external-types①" style="color:initial">global</span>
      <li><span class="dfn-paneled" id="term-for-syntax-globaladdr" style="color:initial">global address</span>
      <li><span class="dfn-paneled" id="term-for-global-instances" style="color:initial">global instance</span>
      <li><span class="dfn-paneled" id="term-for-embed-global-alloc" style="color:initial">global_alloc</span>
@@ -2882,15 +2869,22 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-embed-global-type" style="color:initial">global_type</span>
      <li><span class="dfn-paneled" id="term-for-embed-global-write" style="color:initial">global_write</span>
      <li><span class="dfn-paneled" id="term-for-syntax-hostfunc" style="color:initial">host function</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-valtype②" style="color:initial">i32</span>
+     <li><span class="dfn-paneled" id="term-for-values②" style="color:initial">i32.const</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-valtype③" style="color:initial">i64</span>
+     <li><span class="dfn-paneled" id="term-for-values③" style="color:initial">i64.const</span>
      <li><span class="dfn-paneled" id="term-for-syntax-import" style="color:initial">import</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-module" style="color:initial">imports</span>
      <li><span class="dfn-paneled" id="term-for-embed-instance-export" style="color:initial">instance_export</span>
+     <li><span class="dfn-paneled" id="term-for-external-types②" style="color:initial">mem</span>
      <li><span class="dfn-paneled" id="term-for-embed-mem-alloc" style="color:initial">mem_alloc</span>
      <li><span class="dfn-paneled" id="term-for-embed-mem-grow" style="color:initial">mem_grow</span>
      <li><span class="dfn-paneled" id="term-for-embed-mem-size" style="color:initial">mem_size</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-moduleinst" style="color:initial">memaddrs</span>
      <li><span class="dfn-paneled" id="term-for-syntax-memaddr" style="color:initial">memory address</span>
      <li><span class="dfn-paneled" id="term-for-memory-instances" style="color:initial">memory instance</span>
      <li><span class="dfn-paneled" id="term-for-exec-memory-grow" style="color:initial">memory.grow</span>
-     <li><span class="dfn-paneled" id="term-for-syntax-module" style="color:initial">module</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-frame" style="color:initial">module <small>(for frame)</small></span>
      <li><span class="dfn-paneled" id="term-for-binary-module" style="color:initial">module grammar</span>
      <li><span class="dfn-paneled" id="term-for-embed-module-decode" style="color:initial">module_decode</span>
      <li><span class="dfn-paneled" id="term-for-embed-module-exports" style="color:initial">module_exports</span>
@@ -2901,6 +2895,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-aux-signed" style="color:initial">signed_32</span>
      <li><span class="dfn-paneled" id="term-for-syntax-store" style="color:initial">store</span>
      <li><span class="dfn-paneled" id="term-for-embed-store-init" style="color:initial">store_init</span>
+     <li><span class="dfn-paneled" id="term-for-external-types③" style="color:initial">table</span>
      <li><span class="dfn-paneled" id="term-for-syntax-tableaddr" style="color:initial">table address</span>
      <li><span class="dfn-paneled" id="term-for-table-instances" style="color:initial">table instance</span>
      <li><span class="dfn-paneled" id="term-for-syntax-tabletype" style="color:initial">table type</span>
@@ -2912,22 +2907,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-valid-module" style="color:initial">valid</span>
      <li><span class="dfn-paneled" id="term-for-syntax-mut①" style="color:initial">var</span>
      <li><span class="dfn-paneled" id="term-for-valid-module①" style="color:initial">webassembly module validation</span>
-     <li><span class="dfn-paneled" id="term-for-values" style="color:initial">webassembly value</span>
-     <li><span class="dfn-paneled" id="term-for-external-types" style="color:initial">𝖿𝗎𝗇𝖼</span>
-     <li><span class="dfn-paneled" id="term-for-syntax-valtype" style="color:initial">𝖿𝟥𝟤</span>
-     <li><span class="dfn-paneled" id="term-for-values①" style="color:initial">𝖿𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</span>
-     <li><span class="dfn-paneled" id="term-for-syntax-valtype①" style="color:initial">𝖿𝟨𝟦</span>
-     <li><span class="dfn-paneled" id="term-for-values②" style="color:initial">𝖿𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</span>
-     <li><span class="dfn-paneled" id="term-for-external-types①" style="color:initial">𝗀𝗅𝗈𝖻𝖺𝗅</span>
-     <li><span class="dfn-paneled" id="term-for-syntax-module①" style="color:initial">𝗂𝗆𝗉𝗈𝗋𝗍𝗌</span>
-     <li><span class="dfn-paneled" id="term-for-syntax-valtype②" style="color:initial">𝗂𝟥𝟤</span>
-     <li><span class="dfn-paneled" id="term-for-values③" style="color:initial">𝗂𝟥𝟤.𝖼𝗈𝗇𝗌𝗍</span>
-     <li><span class="dfn-paneled" id="term-for-syntax-valtype③" style="color:initial">𝗂𝟨𝟦</span>
-     <li><span class="dfn-paneled" id="term-for-values④" style="color:initial">𝗂𝟨𝟦.𝖼𝗈𝗇𝗌𝗍</span>
-     <li><span class="dfn-paneled" id="term-for-external-types②" style="color:initial">𝗆𝖾𝗆</span>
-     <li><span class="dfn-paneled" id="term-for-syntax-moduleinst" style="color:initial">𝗆𝖾𝗆𝖺𝖽𝖽𝗋𝗌</span>
-     <li><span class="dfn-paneled" id="term-for-syntax-frame" style="color:initial">𝗆𝗈𝖽𝗎𝗅𝖾</span>
-     <li><span class="dfn-paneled" id="term-for-external-types③" style="color:initial">𝗍𝖺𝖻𝗅𝖾</span>
+     <li><span class="dfn-paneled" id="term-for-values④" style="color:initial">webassembly value</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
@@ -3267,7 +3247,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside class="dfn-panel" data-for="dictdef-moduleexportdescriptor">
    <b><a href="#dictdef-moduleexportdescriptor">#dictdef-moduleexportdescriptor</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dictdef-moduleexportdescriptor">3.1. Modules</a> <a href="#ref-for-dictdef-moduleexportdescriptor①">(2)</a>
+    <li><a href="#ref-for-dictdef-moduleexportdescriptor">3.1. Modules</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-moduleexportdescriptor-name">
@@ -3285,7 +3265,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside class="dfn-panel" data-for="dictdef-moduleimportdescriptor">
    <b><a href="#dictdef-moduleimportdescriptor">#dictdef-moduleimportdescriptor</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dictdef-moduleimportdescriptor">3.1. Modules</a> <a href="#ref-for-dictdef-moduleimportdescriptor①">(2)</a>
+    <li><a href="#ref-for-dictdef-moduleimportdescriptor">3.1. Modules</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-moduleimportdescriptor-module">
