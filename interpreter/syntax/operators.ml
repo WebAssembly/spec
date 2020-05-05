@@ -210,3 +210,7 @@ let f32x4_extract_lane imm = ExtractLane (V128Op.F32x4ExtractLane imm)
 let f32x4_min = Binary (V128 V128Op.F32x4Min)
 let f32x4_max = Binary (V128 V128Op.F32x4Max)
 let f32x4_abs = Unary (V128 V128Op.F32x4Abs)
+
+let f64x2_min = Binary (V128 V128Op.F64x2Min)
+let f64x2_max = Binary (V128 V128Op.F64x2Max)
+let f64x2_abs = Unary (V128 V128Op.F64x2Abs)

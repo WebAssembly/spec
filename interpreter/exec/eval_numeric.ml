@@ -128,11 +128,14 @@ struct
   let unop op =
     fun v -> match op with
       | F32x4Abs -> to_value (SXX.f32x4_abs (of_value 1 v))
+      | F64x2Abs -> to_value (SXX.f64x2_abs (of_value 1 v))
 
   let binop op =
     let f = match op with
       | F32x4Min -> SXX.f32x4_min
       | F32x4Max -> SXX.f32x4_max
+      | F64x2Min -> SXX.f64x2_min
+      | F64x2Max -> SXX.f64x2_max
     in fun v1 v2 -> to_value (f (of_value 1 v1) (of_value 2 v2))
 
   (* FIXME *)

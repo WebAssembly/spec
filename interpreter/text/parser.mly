@@ -880,7 +880,12 @@ result :
   | const { NumResult (LitPat $1 @@ at ()) @@ at () }
   | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ ati 3)) @@ ati 3) @@ at () }
   | LPAR V128_CONST SIMD_SHAPE numpat numpat numpat numpat RPAR {
+      if ($3 <> Simd.F32x4) then error (ati 3) "invalid SIMD shape";
       SimdResult ($3, [$4 $3; $5 $3; $6 $3; $7 $3]) @@ at ()
+  }
+  | LPAR V128_CONST SIMD_SHAPE numpat numpat RPAR {
+      if ($3 <> Simd.F64x2) then error (ati 3) "invalid SIMD shape";
+      SimdResult ($3, [$4 $3; $5 $3]) @@ at ()
   }
 
 result_list :

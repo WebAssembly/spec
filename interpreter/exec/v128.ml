@@ -11,8 +11,16 @@ include Simd.Make
       List.map (fun i -> F32.of_bits (Bytes.get_int32_le (Bytes.of_string s) i)) Simd.f32x4_indices
 
     let of_f32x4 fs =
-      let b = create bytewidth in
+      let b = Bytes.create bytewidth in
       List.iter2 (fun i f -> Bytes.set_int32_le b i (F32.to_bits f)) Simd.f32x4_indices fs;
+      Bytes.to_string b
+
+    let to_f64x2 s =
+      List.map (fun i -> F64.of_bits (Bytes.get_int64_le (Bytes.of_string s) i)) Simd.f64x2_indices
+
+    let of_f64x2 fs =
+      let b = Bytes.create bytewidth in
+      List.iter2 (fun i f -> Bytes.set_int64_le b i (F64.to_bits f)) Simd.f64x2_indices fs;
       Bytes.to_string b
 
     let of_strings shape ss =

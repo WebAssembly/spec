@@ -12,6 +12,7 @@ let lanes shape =
   | F64x2 -> 2
 
 let f32x4_indices = [0; 4; 8; 12]
+let f64x2_indices = [0; 8]
 
 module type RepType =
 sig
@@ -27,6 +28,9 @@ sig
 
   val to_f32x4 : t -> F32.t list
   val of_f32x4 : F32.t list -> t
+
+  val to_f64x2 : t -> F64.t list
+  val of_f64x2 : F64.t list -> t
 end
 
 module type S =
@@ -45,6 +49,11 @@ sig
   val f32x4_max : t -> t -> t
   val f32x4_abs : t -> t
   val f32x4_extract_lane : int -> t -> F32.t
+
+  val f64x2_min : t -> t -> t
+  val f64x2_max : t -> t -> t
+  val f64x2_abs : t -> t
+  val f64x2_extract_lane : int -> t -> F64.t
 end
 
 module Make (Rep : RepType) : S with type bits = Rep.t =
@@ -73,4 +82,16 @@ struct
   let f32x4_min = f32x4_binop F32.min
   let f32x4_max = f32x4_binop F32.max
   let f32x4_abs x = f32x4_unop F32.abs x
+
+  let to_f64x2 = Rep.to_f64x2
+  let of_f64x2 = Rep.of_f64x2
+  let f64x2_unop f x =
+    of_f64x2 (List.map f (to_f64x2 x))
+  let f64x2_binop f x y =
+    of_f64x2 (List.map2 f (to_f64x2 x) (to_f64x2 y))
+
+  let f64x2_extract_lane i x = List.nth (to_f64x2 x) i
+  let f64x2_min = f64x2_binop F64.min
+  let f64x2_max = f64x2_binop F64.max
+  let f64x2_abs x = f64x2_unop F64.abs x
 end
