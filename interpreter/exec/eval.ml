@@ -97,7 +97,7 @@ let any_ref inst x i at =
 let func_ref inst x i at =
   match any_ref inst x i at with
   | FuncRef f -> f
-  | NullRef -> Trap.error at ("uninitialized element " ^ Int32.to_string i)
+  | NullRef _ -> Trap.error at ("uninitialized element " ^ Int32.to_string i)
   | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
 
 let take n (vs : 'a stack) at =
@@ -407,14 +407,16 @@ let rec step (c : config) : config =
         seg := "";
         vs, []
 
-      | RefNull, vs' ->
-        Ref NullRef :: vs', []
+      | RefNull t, vs' ->
+        Ref (NullRef t) :: vs', []
 
-      | RefIsNull, Ref r :: vs' ->
-        if r = NullRef then
+      | RefIsNull _, Ref r :: vs' ->
+        (match r with
+        | NullRef _ ->
           Num (I32 1l) :: vs', []
-        else
+        | _ ->
           Num (I32 0l) :: vs', []
+        )
 
       | RefFunc x, vs' ->
         let f = func frame.inst x in
@@ -534,7 +536,7 @@ let invoke (func : func_inst) (vs : value list) : value list =
   let FuncType (ins, out) = Func.type_of func in
   if List.length vs <> List.length ins then
     Crash.error at "wrong number of arguments";
-  if not (List.for_all2 (fun v -> match_value_type (type_of_value v)) vs ins) then
+  if not (List.for_all2 (fun v -> (=) (type_of_value v)) vs ins) then
     Crash.error at "wrong types of arguments";
   let c = config empty_module_inst (List.rev vs) [Invoke func @@ at] in
   try List.rev (eval c) with Stack_overflow ->
@@ -554,7 +556,8 @@ let create_func (inst : module_inst) (f : func) : func_inst =
 
 let create_table (inst : module_inst) (tab : table) : table_inst =
   let {ttype} = tab.it in
-  Table.alloc ttype NullRef
+  let TableType (_lim, t) = ttype in
+  Table.alloc ttype (NullRef t)
 
 let create_memory (inst : module_inst) (mem : memory) : memory_inst =
   let {mtype} = mem.it in

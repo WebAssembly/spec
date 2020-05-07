@@ -110,15 +110,15 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 .. _valid-ref:
 
-:ref:`Null References <syntax-ref>` :math:`\REFNULL`
-....................................................
+:ref:`Null References <syntax-ref>` :math:`\REFNULL~t`
+......................................................
 
-* The value is valid with :ref:`reference type <syntax-reftype>` :math:`\NULLREF`.
+* The value is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
 .. math::
    \frac{
    }{
-     S \vdashval \REFNULL : \NULLREF
+     S \vdashval \REFNULL~t : t
    }
 
 
@@ -137,15 +137,15 @@ The following auxiliary typing rules specify this typing relation relative to a 
    }
 
 
-:ref:`Host References <syntax-ref.host>` :math:`\REFHOST~a`
-...........................................................
+:ref:`External References <syntax-ref.extern>` :math:`\REFEXTERNADDR~a`
+.......................................................................
 
-* The value is valid with :ref:`reference type <syntax-reftype>` :math:`\ANYREF`.
+* The value is valid with :ref:`reference type <syntax-reftype>` :math:`\EXTERNREF`.
 
 .. math::
    \frac{
    }{
-     S \vdashval \REFHOST~a : \ANYREF
+     S \vdashval \REFEXTERNADDR~a : \EXTERNREF
    }
 
 
@@ -447,7 +447,10 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 
 3. For each :ref:`table <syntax-table>` :math:`\table_i` in :math:`\module.\MTABLES`, do:
 
-   a. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` resulting from :ref:`allocating <alloc-table>` :math:`\table_i.\TTYPE`.
+   a. Let :math:`\limits_i~t_i` be the :ref:`table type <syntax-tabletype>` :math:`\table_i.\TTYPE`.
+
+   b. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` resulting from :ref:`allocating <alloc-table>` :math:`\table_i.\TTYPE`
+   with initialization value :math:`\REFNULL~t_i`.
 
 4. For each :ref:`memory <syntax-mem>` :math:`\mem_i` in :math:`\module.\MMEMS`, do:
 
@@ -526,8 +529,9 @@ where:
      \MIEXPORTS~\exportinst^\ast ~\}
      \end{array} \\[1ex]
    S_1, \funcaddr^\ast &=& \allocfunc^\ast(S, \module.\MFUNCS, \moduleinst) \\
-   S_2, \tableaddr^\ast &=& \alloctable^\ast(S_1, (\table.\TTYPE)^\ast, \REFNULL)
-     \qquad\qquad\qquad~ (\where \table^\ast = \module.\MTABLES) \\
+   S_2, \tableaddr^\ast &=& \alloctable^\ast(S_1, (\table.\TTYPE)^\ast, \REFNULL~t)
+     \qquad\qquad\qquad~ (\where \table^\ast = \module.\MTABLES \\ &&
+     \qquad\qquad\qquad~~ \wedge (\table.\TTYPE)^\ast = (\limits~t)^\ast) \\
    S_3, \memaddr^\ast &=& \allocmem^\ast(S_2, (\mem.\MTYPE)^\ast)
      \qquad\qquad\qquad~ (\where \mem^\ast = \module.\MMEMS) \\
    S_4, \globaladdr^\ast &=& \allocglobal^\ast(S_3, (\global.\GTYPE)^\ast, \val^\ast)

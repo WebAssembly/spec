@@ -76,8 +76,8 @@ Reference Instructions
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
-     \hex{D0} &\Rightarrow& \REFNULL \\ &&|&
-     \hex{D1} &\Rightarrow& \REFISNULL \\ &&|&
+     \hex{D0}~~t{:}\Breftype &\Rightarrow& \REFNULL~t \\ &&|&
+     \hex{D1}~~t{:}\Breftype &\Rightarrow& \REFISNULL~t \\ &&|&
      \hex{D2}~~x{:}\Bfuncidx &\Rightarrow& \REFFUNC~x \\
    \end{array}
 

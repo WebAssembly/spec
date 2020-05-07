@@ -166,29 +166,31 @@ Reference Instructions
 
 .. _valid-ref.null:
 
-:math:`\REFNULL`
-................
+:math:`\REFNULL~t`
+..................
 
-* The instruction is valid with type :math:`[] \to [\NULLREF]`.
+* The instruction is valid with type :math:`[] \to [t]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \REFNULL : [] \to [\NULLREF]
+     C \vdashinstr \REFNULL~t : [] \to [t]
    }
 
+.. note::
+   In future versions of WebAssembly, there may be reference types for which no null reference is allowed.
 
 .. _valid-ref.is_null:
 
-:math:`\REFISNULL`
-..................
+:math:`\REFISNULL~t`
+....................
 
-* The instruction is valid with type :math:`[\ANYREF] \to [\I32]`.
+* The instruction is valid with type :math:`[t] \to [\I32]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \REFISNULL : [\ANYREF] \to [\I32]
+     C \vdashinstr \REFISNULL~t : [t] \to [\I32]
    }
 
 .. _valid-ref.func:
@@ -251,7 +253,7 @@ Parametric Instructions
 
 * Else:
 
-  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`value type <syntax-valtype>` :math:`t` that :ref:`matches <match-valtype>` some :ref:`number type <syntax-numtype>`.
+  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`number type <syntax-numtype>` :math:`t`.
 
 .. math::
    \frac{
@@ -260,7 +262,7 @@ Parametric Instructions
    }
    \qquad
    \frac{
-     \vdashvaltypematch t \matchesvaltype \numtype
+     t = \numtype
    }{
      C \vdashinstr \SELECT : [t~t~\I32] \to [t]
    }
@@ -488,17 +490,15 @@ Table Instructions
 
 * Let :math:`\limits_2~t_2` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[y]`.
 
-* The :ref:`reference type <syntax-reftype>` :math:`t_2` must :ref:`match <match-reftype>` :math:`t_1`.
+* The :ref:`reference type <syntax-reftype>` :math:`t_1` must be the same as :math:`t_2`.
 
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits_1~t_1
+     C.\CTABLES[x] = \limits_1~t
      \qquad
-     C.\CTABLES[x] = \limits_2~t_2
-     \qquad
-     \vdashreftypematch t_2 \matchesvaltype t_1
+     C.\CTABLES[x] = \limits_2~t
    }{
      C \vdashinstr \TABLECOPY~x~y : [\I32~\I32~\I32] \to []
    }
@@ -517,17 +517,15 @@ Table Instructions
 
 * Let :math:`t_2` be the :ref:`reference type <syntax-reftype>` :math:`C.\CELEMS[y]`.
 
-* The :ref:`reference type <syntax-reftype>` :math:`t_2` must :ref:`match <match-reftype>` :math:`t_1`.
+* The :ref:`reference type <syntax-reftype>` :math:`t_1` must be the same as :math:`t_2`.
 
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits_1~t_1
+     C.\CTABLES[x] = \limits_1~t
      \qquad
-     C.\CELEMS[y] = t_2
-     \qquad
-     \vdashreftypematch t_2 \matchesvaltype t_1
+     C.\CELEMS[y] = t
    }{
      C \vdashinstr \TABLEINIT~x~y : [\I32~\I32~\I32] \to []
    }
@@ -926,20 +924,16 @@ Control Instructions
 * For all :math:`l_i` in :math:`l^\ast`,
   the label :math:`C.\CLABELS[l_i]` must be defined in the context.
 
-* There must be a :ref:`result type <syntax-resulttype>` :math:`[t^?]`, such that:
-
-  * The result type :math:`[t^?]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_N]`.
-
-  * For all :math:`l_i` in :math:`l^\ast`,
-    the result type :math:`[t^?]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_i]`.
+* For all :math:`l_i` in :math:`l^\ast`,
+  :math:`C.\CLABELS[l_i]` must be :math:`[t^?]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^?~\I32] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     (\vdashresulttypematch [t^?] \matchesresulttype C.\CLABELS[l])^\ast
+     (C.\CLABELS[l] = [t^?])^\ast
      \qquad
-     \vdashresulttypematch [t^?] \matchesresulttype C.\CLABELS[l_N]
+     C.\CLABELS[l_N] = [t^?]
    }{
      C \vdashinstr \BRTABLE~l^\ast~l_N : [t_1^\ast~t^?~\I32] \to [t_2^\ast]
    }
@@ -1002,7 +996,7 @@ Control Instructions
 
 * Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The :ref:`reference type <syntax-reftype>` :math:`t` must :ref:`match <match-reftype>` type |FUNCREF|.
+* The :ref:`reference type <syntax-reftype>` :math:`t` must be |FUNCREF|.
 
 * The type :math:`C.\CTYPES[y]` must be defined in the context.
 
@@ -1012,9 +1006,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~t
-     \qquad
-     \vdashvaltypematch t \leq \FUNCREF
+     C.\CTABLES[x] = \limits~\FUNCREF
      \qquad
      C.\CTYPES[y] = [t_1^\ast] \to [t_2^\ast]
    }{
@@ -1054,17 +1046,13 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
   for some sequences of :ref:`value types <syntax-valtype>` :math:`t^\ast` and :math:`t_3^\ast`.
 
 * There must be a sequence of :ref:`value types <syntax-valtype>` :math:`t_0^\ast`,
-  such that :math:`t_2^\ast = t_0^\ast~{t'}^\ast` where the type sequence :math:`{t'}^\ast` is as long as :math:`t^\ast`.
-
-* For each :ref:`value type <syntax-valtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding type :math:`t_i` in :math:`t^\ast`, the type :math:`t'_i` must :ref:`match <match-valtype>` :math:`t_i`.
+  such that :math:`t_2^\ast = t_0^\ast~t^\ast`.
 
 * Then the combined instruction sequence is valid with type :math:`[t_1^\ast] \to [t_0^\ast~t_3^\ast]`.
 
 .. math::
    \frac{
-     C \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_0^\ast~{t'}^\ast]
-     \qquad
-     (\vdashvaltypematch t' \matchesvaltype t)^\ast
+     C \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_0^\ast~t^\ast]
      \qquad
      C \vdashinstr \instr_N : [t^\ast] \to [t_3^\ast]
    }{

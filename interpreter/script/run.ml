@@ -254,8 +254,7 @@ let type_of_result r =
   match r with
   | LitResult v -> Values.type_of_value v.it
   | NanResult n -> Types.NumType (Values.type_of_num n.it)
-  | RefResult -> Types.RefType Types.AnyRefType
-  | FuncResult -> Types.RefType Types.FuncRefType
+  | RefResult t -> Types.RefType t
 
 let string_of_result r =
   match r with
@@ -265,8 +264,7 @@ let string_of_result r =
     | Values.I32 _ | Values.I64 _ -> assert false
     | Values.F32 n | Values.F64 n -> string_of_nan n
     )
-  | RefResult -> "ref"
-  | FuncResult -> "func"
+  | RefResult t -> Types.string_of_refed_type t
 
 let string_of_results = function
   | [r] -> string_of_result r
@@ -337,7 +335,7 @@ let run_action act : Values.value list =
       if List.length vs <> List.length ins then
         Script.error act.at "wrong number of arguments";
       List.iter2 (fun v t ->
-        if not (Types.match_value_type (Values.type_of_value v.it) t) then
+        if Values.type_of_value v.it <> t then
           Script.error v.at "wrong type of argument"
       ) vs ins;
       Eval.invoke f (List.map (fun v -> v.it) vs)
@@ -375,14 +373,10 @@ let assert_result at got expect =
           Int64.logand (F64.to_bits z) pos_nan <> pos_nan
         | _, _ -> false
         )
-      | RefResult ->
-        (match v with
-        | Ref ref -> ref = NullRef
-        | _ -> true
-        )
-      | FuncResult ->
-        (match v with
-        | Ref (Instance.FuncRef _) -> false
+      | RefResult t ->
+        (match t, v with
+        | Types.FuncRefType, Ref (Instance.FuncRef _)
+        | Types.ExternRefType, Ref (ExternRef _) -> false
         | _ -> true
         )
     ) got expect

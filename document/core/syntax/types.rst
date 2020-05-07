@@ -54,18 +54,12 @@ Reference Types
 .. math::
    \begin{array}{llll}
    \production{reference type} & \reftype &::=&
-     \ANYREF ~|~ \FUNCREF ~|~ \NULLREF \\
+     \FUNCREF ~|~ \EXTERNREF \\
    \end{array}
-
-The type |ANYREF| denotes the infinite union of all references, and thereby a :ref:`supertype <match-reftype>` of all other reference types.
 
 The type |FUNCREF| denotes the infinite union of all references to :ref:`functions <syntax-func>`, regardless of their :ref:`function types <syntax-functype>`.
 
-The type |NULLREF| only contains a single value: the :ref:`null <syntax-ref.null>` reference.
-It is a :ref:`subtype <match-reftype>` of all other reference types.
-
-.. note::
-   Future versions of WebAssembly may include reference types that do not include null and hence are not supertypes of |NULLREF|.
+The type |EXTERNREF| denotes the infinite union of all references to objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
 
 Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
@@ -80,16 +74,12 @@ Value Types
 ~~~~~~~~~~~
 
 *Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
-They are either :ref:`number types <syntax-numtype>`, :ref:`reference type <syntax-reftype>`, or the unique *bottom type*, written :math:`\BOT`.
-
-The type :math:`\BOT` is a :ref:`subtype <match-valtype>` of all other types.
-By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
-it only occurs during :ref:`validation <valid>`.
+They are either :ref:`number types <syntax-numtype>` or :ref:`reference types <syntax-reftype>`.
 
 .. math::
    \begin{array}{llll}
    \production{value type} & \valtype &::=&
-     \numtype ~|~ \reftype ~|~ \BOT \\
+     \numtype ~|~ \reftype \\
    \end{array}
 
 Conventions

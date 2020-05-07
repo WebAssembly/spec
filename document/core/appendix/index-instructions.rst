@@ -215,8 +215,8 @@ Instruction                             Binary Opcode       Type                
 (reserved)                              :math:`\hex{CD}`                                                  
 (reserved)                              :math:`\hex{CE}`                                                  
 (reserved)                              :math:`\hex{CF}`                                                  
-:math:`\REFNULL`                        :math:`\hex{D0}`    :math:`[] \to [\NULLREF]`                   :ref:`validation <valid-ref.null>`        :ref:`execution <exec-ref.null>`
-:math:`\REFISNULL`                      :math:`\hex{D1}`    :math:`[\ANYREF] \to [\I32]`                :ref:`validation <valid-ref.is_null>`     :ref:`execution <exec-ref.is_null>`
+:math:`\REFNULL~t`                      :math:`\hex{D0}`    :math:`[] \to [t]`                          :ref:`validation <valid-ref.null>`        :ref:`execution <exec-ref.null>`
+:math:`\REFISNULL~t`                    :math:`\hex{D1}`    :math:`[t] \to [\I32]`                      :ref:`validation <valid-ref.is_null>`     :ref:`execution <exec-ref.is_null>`
 :math:`\REFFUNC~x`                      :math:`\hex{D2}`    :math:`[] \to [\FUNCREF]`                   :ref:`validation <valid-ref.func>`        :ref:`execution <exec-ref.func>`
 :math:`\MEMORYINIT`                     :math:`\hex{FC08}`  :math:`[\I32~\I32~\I32] \to []`             :ref:`validation <valid-memory.init>`     :ref:`execution <exec-memory.init>`
 :math:`\DATADROP`                       :math:`\hex{FC09}`  :math:`[] \to []`                           :ref:`validation <valid-data.drop>`       :ref:`execution <exec-data.drop>`

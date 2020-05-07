@@ -144,8 +144,7 @@ let num_type s =
 let ref_type s =
   match vs7 s with
   | -0x10 -> FuncRefType
-  | -0x11 -> AnyRefType
-  | -0x12 -> NullRefType
+  | -0x11 -> ExternRefType
   | _ -> error s (pos s - 1) "malformed reference type"
 
 let value_type s =
@@ -444,8 +443,8 @@ let rec instr s =
   | 0xc0 | 0xc1 | 0xc2 | 0xc3 | 0xc4 | 0xc5 | 0xc6 | 0xc7
   | 0xc8 | 0xc9 | 0xca | 0xcb | 0xcc | 0xcd | 0xce | 0xcf as b -> illegal s pos b
 
-  | 0xd0 -> ref_null
-  | 0xd1 -> ref_is_null
+  | 0xd0 -> ref_null (ref_type s)
+  | 0xd1 -> ref_is_null (ref_type s)
   | 0xd2 -> ref_func (at var s)
 
   | 0xfc as b1 ->

@@ -1,6 +1,6 @@
 type var = string Source.phrase
 
-type Values.ref_ += HostRef of int32
+type Values.ref_ += ExternRef of int32
 type value = Values.value Source.phrase
 
 type definition = definition' Source.phrase
@@ -22,8 +22,7 @@ type result = result' Source.phrase
 and result' =
   | LitResult of Values.value Source.phrase
   | NanResult of nanop
-  | RefResult
-  | FuncResult
+  | RefResult of Types.ref_type
 
 type assertion = assertion' Source.phrase
 and assertion' =
@@ -57,11 +56,11 @@ exception Syntax of Source.region * string
 let () =
   let type_of_ref' = !Values.type_of_ref' in
   Values.type_of_ref' := function
-    | HostRef _ -> Types.AnyRefType
+    | ExternRef _ -> Types.ExternRefType
     | r -> type_of_ref' r
 
 let () =
   let string_of_ref' = !Values.string_of_ref' in
   Values.string_of_ref' := function
-    | HostRef n -> "ref " ^ Int32.to_string n
+    | ExternRef n -> "ref " ^ Int32.to_string n
     | r -> string_of_ref' r

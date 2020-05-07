@@ -160,9 +160,9 @@ rule token = parse
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
-  | "anyref" { ANYREF }
+  | "extern" { EXTERN }
+  | "externref" { EXTERNREF }
   | "funcref" { FUNCREF }
-  | "nullref" { NULLREF }
   | (nxx as t) { NUM_TYPE (num_type t) }
   | "mut" { MUT }
 
@@ -180,7 +180,7 @@ rule token = parse
     }
   | "ref.null" { REF_NULL }
   | "ref.func" { REF_FUNC }
-  | "ref.host" { REF_HOST }
+  | "ref.extern" { REF_EXTERN }
   | "ref.is_null" { REF_IS_NULL }
 
   | "nop" { NOP }
@@ -370,7 +370,6 @@ rule token = parse
   | "assert_exhaustion" { ASSERT_EXHAUSTION }
   | "nan:canonical" { NAN Script.CanonicalNan }
   | "nan:arithmetic" { NAN Script.ArithmeticNan }
-  | "ref.any" { REF_ANY }
   | "input" { INPUT }
   | "output" { OUTPUT }
 

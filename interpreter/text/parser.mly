@@ -164,7 +164,7 @@ let inline_type_explicit (c : context) x ft at =
 
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
-%token ANYREF NULLREF FUNCREF NUM_TYPE MUT
+%token NUM_TYPE FUNCREF EXTERNREF EXTERN MUT
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
@@ -174,7 +174,7 @@ let inline_type_explicit (c : context) x ft at =
 %token MEMORY_SIZE MEMORY_GROW MEMORY_FILL MEMORY_COPY MEMORY_INIT DATA_DROP
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
-%token REF_ANY REF_NULL REF_FUNC REF_HOST REF_IS_NULL
+%token REF_NULL REF_FUNC REF_EXTERN REF_IS_NULL
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
@@ -226,10 +226,13 @@ string_list :
 
 /* Types */
 
+ref_kind :
+  | FUNC { FuncRefType }
+  | EXTERN { ExternRefType }
+
 ref_type :
-  | ANYREF { AnyRefType }
   | FUNCREF { FuncRefType }
-  | NULLREF { NullRefType }
+  | EXTERNREF { ExternRefType }
 
 value_type :
   | NUM_TYPE { NumType $1 }
@@ -372,8 +375,8 @@ plain_instr :
   | MEMORY_COPY { fun c -> memory_copy }
   | MEMORY_INIT var { fun c -> memory_init ($2 c data) }
   | DATA_DROP var { fun c -> data_drop ($2 c data) }
-  | REF_NULL { fun c -> ref_null }
-  | REF_IS_NULL { fun c -> ref_is_null }
+  | REF_NULL ref_kind { fun c -> ref_null $2 }
+  | REF_IS_NULL ref_kind { fun c -> ref_is_null $2 }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
   | CONST num { fun c -> fst (num $1 $2) }
   | TEST { fun c -> $1 }
@@ -986,8 +989,8 @@ meta :
 
 const :
   | LPAR CONST num RPAR { Values.Num (snd (num $2 $3)) @@ at () }
-  | LPAR REF_NULL RPAR { Values.Ref Values.NullRef @@ at () }
-  | LPAR REF_HOST NAT RPAR { Values.Ref (HostRef (nat32 $3 (ati 3))) @@ at () }
+  | LPAR REF_NULL ref_kind RPAR { Values.Ref (Values.NullRef $3) @@ at () }
+  | LPAR REF_EXTERN NAT RPAR { Values.Ref (ExternRef (nat32 $3 (ati 3))) @@ at () }
 
 const_list :
   | /* empty */ { [] }
@@ -996,8 +999,8 @@ const_list :
 result :
   | const { LitResult $1 @@ at () }
   | LPAR CONST NAN RPAR { NanResult (nanop $2 ($3 @@ ati 3)) @@ at () }
-  | LPAR REF_ANY RPAR { RefResult @@ at () }
-  | LPAR REF_FUNC RPAR { FuncResult @@ at () }
+  | LPAR REF_FUNC RPAR { RefResult FuncRefType @@ at () }
+  | LPAR REF_EXTERN RPAR { RefResult ExternRefType @@ at () }
 
 result_list :
   | /* empty */ { [] }

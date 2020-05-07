@@ -98,13 +98,11 @@ let encode m =
 
     let ref_type = function
       | FuncRefType -> vs7 (-0x10)
-      | AnyRefType -> vs7 (-0x11)
-      | NullRefType -> vs7 (-0x12)
+      | ExternRefType -> vs7 (-0x11)
 
     let value_type = function
       | NumType t -> num_type t
       | RefType t -> ref_type t
-      | BotType -> assert false
 
     let stack_type = function
       | [] -> vs7 (-0x40)
@@ -233,8 +231,8 @@ let encode m =
       | MemoryInit x -> op 0xfc; op 0x08; var x; u8 0x00
       | DataDrop x -> op 0xfc; op 0x09; var x
 
-      | RefNull -> op 0xd0
-      | RefIsNull -> op 0xd1
+      | RefNull t -> op 0xd0; ref_type t
+      | RefIsNull t -> op 0xd1; ref_type t
       | RefFunc x -> op 0xd2; var x
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c

@@ -9,7 +9,7 @@ type ('i32, 'i64, 'f32, 'f64) op =
 type num = (I32.t, I64.t, F32.t, F64.t) op
 
 type ref_ = ..
-type ref_ += NullRef
+type ref_ += NullRef of ref_type
 
 type value = Num of num | Ref of ref_
 
@@ -22,7 +22,7 @@ let type_of_num = function
   | F32 _ -> F32Type
   | F64 _ -> F64Type
 
-let type_of_ref' = ref (function NullRef -> NullRefType | _ -> AnyRefType)
+let type_of_ref' = ref (function NullRef t -> t | _ -> assert false)
 let type_of_ref r = !type_of_ref' r
 
 let type_of_value = function
@@ -50,12 +50,11 @@ let default_num = function
   | F64Type -> F64 F64.zero
 
 let default_ref = function
-  | _ -> NullRef
+  | t -> NullRef t
 
 let default_value = function
   | NumType t' -> Num (default_num t')
   | RefType t' -> Ref (default_ref t')
-  | BotType -> assert false
 
 
 (* Conversion *)
@@ -68,7 +67,7 @@ let string_of_num = function
   | F32 z -> F32.to_string z
   | F64 z -> F64.to_string z
 
-let string_of_ref' = ref (function NullRef -> "null" | _ -> "ref")
+let string_of_ref' = ref (function NullRef t -> "null" | _ -> "ref")
 let string_of_ref r = !string_of_ref' r
 
 let string_of_value = function

@@ -156,9 +156,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
   * The expression :math:`e_i` must be :ref:`constant <valid-const>`.
 
-* The element mode :math:`\elemmode` must be valid with :ref:`reference type <syntax-reftype>` :math:`t'`.
-
-* The :ref:`reference type <syntax-reftype>` :math:`t` must :ref:`match <match-reftype>` the reference type :math:`t'`.
+* The element mode :math:`\elemmode` must be valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
 * Then the element segment is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
@@ -169,9 +167,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
      \qquad
      (C \vdashexprconst e \const)^\ast
      \qquad
-     C \vdashelemmode \elemmode : t'
-     \qquad
-     \vdashreftypematch t \matchesvaltype t'
+     C \vdashelemmode \elemmode : t
    }{
      C \vdashelem \{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \} : t
    }
@@ -214,7 +210,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
      C \vdashexprconst \expr \const
      \end{array}
    }{
-     C \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} : t 
+     C \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} : t
    }
 
 :math:`\EDECLARATIVE`

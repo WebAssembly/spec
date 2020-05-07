@@ -183,8 +183,8 @@ Instructions in this group are concerned with accessing :ref:`references <syntax
    \begin{array}{llcl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
-     \REFNULL \\&&|&
-     \REFISNULL \\&&|&
+     \REFNULL~\reftype \\&&|&
+     \REFISNULL~\reftype \\&&|&
      \REFFUNC~\funcidx \\
    \end{array}
 

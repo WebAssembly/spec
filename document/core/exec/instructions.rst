@@ -192,10 +192,10 @@ Reference Instructions
 
 .. _exec-ref.null:
 
-:math:`\REFNULL`
-................
+:math:`\REFNULL~t`
+..................
 
-1. Push the value :math:`\REFNULL` to the stack.
+1. Push the value :math:`\REFNULL~t` to the stack.
 
 .. note::
    No formal reduction rule is required for this instruction, since the |REFNULL| instruction is already a :ref:`value <syntax-val>`.
@@ -203,14 +203,14 @@ Reference Instructions
 
 .. _exec-ref.is_null:
 
-:math:`\REFISNULL`
-..................
+:math:`\REFISNULL~t`
+....................
 
 1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 2. Pop the value :math:`\val` from the stack.
 
-3. If :math:`\val` is |REFNULL|, then:
+3. If :math:`\val` is :math:`\REFNULL~t`, then:
 
    a. Push the value :math:`\I32.\CONST~1` to the stack.
 
@@ -220,10 +220,10 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val~\REFISNULL &\stepto& \I32.\CONST~1
-     & (\iff \val = \REFNULL) \\
-   \val~\REFISNULL &\stepto& \I32.\CONST~0
-     & (\iff \val \neq \REFNULL) \\
+   \val~\REFISNULL~t &\stepto& \I32.\CONST~1
+     & (\iff \val = \REFNULL~t) \\
+   \val~\REFISNULL~t &\stepto& \I32.\CONST~0
+     & (\otherwise) \\
    \end{array}
 
 
@@ -1768,7 +1768,7 @@ Control Instructions
 
 11. Let :math:`r` be the :ref:`reference <syntax-ref>` :math:`\X{tab}.\TIELEM[i]`.
 
-12. If :math:`r` is |REFNULL|, then:
+12. If :math:`r` is :math:`\REFNULL~t`, then:
 
     a. Trap.
 

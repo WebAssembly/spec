@@ -179,9 +179,8 @@
 .. |F32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32}}
 .. |F64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64}}
 
-.. |ANYREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{anyref}}
 .. |FUNCREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{funcref}}
-.. |NULLREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{nullref}}
+.. |EXTERNREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{externref}}
 
 .. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
 .. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{const}}
@@ -659,6 +658,7 @@
 
 .. |Tnumtype| mathdef:: \xref{text/types}{text-numtype}{\T{numtype}}
 .. |Treftype| mathdef:: \xref{text/types}{text-reftype}{\T{reftype}}
+.. |Trefedtype| mathdef:: \xref{text/types}{text-refedtype}{\T{refedtype}}
 .. |Tvaltype| mathdef:: \xref{text/types}{text-valtype}{\T{valtype}}
 .. |Tresulttype| mathdef:: \xref{text/types}{text-resulttype}{\T{resulttype}}
 .. |Tblocktype| mathdef:: \xref{text/types}{text-blocktype}{\T{blocktype}}
@@ -767,8 +767,6 @@
 
 .. |ok| mathdef:: \mathrel{\mbox{ok}}
 .. |const| mathdef:: \xref{valid/instructions}{valid-constant}{\mathrel{\mbox{const}}}
-.. |matchesvaltype| mathdef:: \xref{valid/types}{match-valtype}{\leq}
-.. |matchesresulttype| mathdef:: \xref{valid/types}{match-resulttype}{\leq}
 
 
 .. Contexts
@@ -794,11 +792,6 @@
 .. |vdashmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\vdash}
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
 .. |vdashexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\vdash}
-
-.. |vdashnumtypematch| mathdef:: \xref{valid/types}{match-numtype}{\vdash}
-.. |vdashreftypematch| mathdef:: \xref{valid/types}{match-reftype}{\vdash}
-.. |vdashvaltypematch| mathdef:: \xref{valid/types}{match-valtype}{\vdash}
-.. |vdashresulttypematch| mathdef:: \xref{valid/types}{match-resulttype}{\vdash}
 
 .. |vdashinstr| mathdef:: \xref{valid/instructions}{valid-instr}{\vdash}
 .. |vdashinstrseq| mathdef:: \xref{valid/instructions}{valid-instr-seq}{\vdash}
@@ -857,7 +850,7 @@
 .. |globaladdr| mathdef:: \xref{exec/runtime}{syntax-globaladdr}{\X{globaladdr}}
 .. |elemaddr| mathdef:: \xref{exec/runtime}{syntax-elemaddr}{\X{elemaddr}}
 .. |dataaddr| mathdef:: \xref{exec/runtime}{syntax-dataaddr}{\X{dataaddr}}
-.. |hostaddr| mathdef:: \xref{exec/runtime}{syntax-hostaddr}{\X{hostaddr}}
+.. |externaddr| mathdef:: \xref{exec/runtime}{syntax-externaddr}{\X{externaddr}}
 
 .. Instances, terminals
 
@@ -954,7 +947,7 @@
 .. Administrative Instructions, terminals
 
 .. |REFFUNCADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref}}
-.. |REFHOST| mathdef:: \xref{exec/runtime}{syntax-ref.host}{\K{ref{.}host}}
+.. |REFEXTERNADDR| mathdef:: \xref{exec/runtime}{syntax-ref.extern}{\K{ref{.}extern}}
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
 

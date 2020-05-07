@@ -178,13 +178,14 @@ var: <nat> | <name>
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
 relop: eq | ne | lt | ...
-sign:  s|u
+sign:  s | u
 offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc | extend | wrap | ...
 
 num_type: i32 | i64 | f32 | f64
-ref_type: anyref | funcref | nullref
+ref_kind: func | extern
+ref_type: funcref | externref
 val_type: num_type | ref_type
 block_type : ( result <val_type>* )*
 func_type:   ( type <var> )? <param>* <result>*
@@ -240,8 +241,8 @@ op:
   memory.copy
   memory.init <var>
   data.drop <var>
-  ref.null
-  ref.isnull
+  ref.null <ref_kind>
+  ref.is_null <ref_kind>
   ref.func <var>
   <val_type>.const <value>
   <val_type>.<unop>
@@ -349,7 +350,7 @@ action:
 
 const:
   ( <num_type>.const <num> )                 ;; number value
-  ( ref.null )                               ;; null reference
+  ( ref.null <ref_kind> )                    ;; null reference
   ( ref.host <nat> )                         ;; host reference
 
 assertion:
@@ -363,7 +364,7 @@ assertion:
 
 result:
   ( <val_type>.const <numpat> )
-  ( ref.any )
+  ( ref.extern )
   ( ref.func )
 
 numpat:

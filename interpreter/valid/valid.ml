@@ -70,25 +70,32 @@ let refer_func (c : context) x = refer "function" c.refs.Free.funcs x
  *)
 
 type ellipses = NoEllipses | Ellipses
-type infer_stack_type = ellipses * value_type list
+type infer_stack_type = ellipses * value_type option list
 type op_type = {ins : infer_stack_type; outs : infer_stack_type}
 
-let stack ts = (NoEllipses, ts)
-let (-->) ts1 ts2 = {ins = NoEllipses, ts1; outs = NoEllipses, ts2}
-let (-->...) ts1 ts2 = {ins = Ellipses, ts1; outs = Ellipses, ts2}
+let known = List.map (fun t -> Some t)
+let stack ts = (NoEllipses, known ts)
+let (-~>) ts1 ts2 = {ins = NoEllipses, ts1; outs = NoEllipses, ts2}
+let (-->) ts1 ts2 = {ins = NoEllipses, known ts1; outs = NoEllipses, known ts2}
+let (-->...) ts1 ts2 = {ins = Ellipses, known ts1; outs = Ellipses, known ts2}
 
+let string_of_infer_type t =
+  Lib.Option.get (Lib.Option.map string_of_value_type t) "_"
+let string_of_infer_types ts =
+  "[" ^ String.concat " " (List.map string_of_infer_type ts) ^ "]"
+
+let eq_ty t1 t2 = (t1 = t2 || t1 = None || t2 = None)
 let check_stack ts1 ts2 at =
-  require
-    (List.length ts1 = List.length ts2 && List.for_all2 match_value_type ts1 ts2) at
-    ("type mismatch: operator requires " ^ string_of_stack_type ts2 ^
-     " but stack has " ^ string_of_stack_type ts1)
+  require (List.length ts1 = List.length ts2 && List.for_all2 eq_ty ts1 ts2) at
+    ("type mismatch: operator requires " ^ string_of_infer_types ts1 ^
+     " but stack has " ^ string_of_infer_types ts2)
 
 let pop (ell1, ts1) (ell2, ts2) at =
   let n1 = List.length ts1 in
   let n2 = List.length ts2 in
   let n = min n1 n2 in
   let n3 = if ell2 = Ellipses then (n1 - n) else 0 in
-  check_stack (Lib.List.make n3 BotType @ Lib.List.drop (n2 - n) ts2) ts1 at;
+  check_stack ts1 (Lib.List.make n3 None @ Lib.List.drop (n2 - n) ts2) at;
   (ell2, if ell1 = Ellipses then [] else Lib.List.take (n2 - n) ts2)
 
 let push (ell1, ts1) (ell2, ts2) =
@@ -97,7 +104,7 @@ let push (ell1, ts1) (ell2, ts2) =
   ts2 @ ts1
 
 let peek i (ell, ts) =
-  try List.nth (List.rev ts) i with Failure _ -> BotType
+  try List.nth (List.rev ts) i with Failure _ -> None
 
 
 (* Type Synthesis *)
@@ -191,14 +198,14 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [] --> []
 
   | Drop ->
-    [peek 0 s] --> []
+    [peek 0 s] -~> []
 
   | Select None ->
     let t = peek 1 s in
-    require (is_num_type t) e.at
+    require (match t with None -> true | Some t -> is_num_type t) e.at
       ("type mismatch: instruction requires numeric type" ^
-       " but stack has " ^ string_of_value_type t);
-    [t; t; NumType I32Type] --> [t]
+       " but stack has " ^ string_of_infer_type t);
+    [t; t; Some (NumType I32Type)] -~> [t]
 
   | Select (Some ts) ->
     check_arity (List.length ts) e.at;
@@ -228,10 +235,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     (label c x @ [NumType I32Type]) --> label c x
 
   | BrTable (xs, x) ->
-    let n = List.length (label c x) in
-    let ts = Lib.List.table n (fun i -> peek (i + 1) s) in
-    check_stack ts (label c x) x.at;
-    List.iter (fun x' -> check_stack ts (label c x') x'.at) xs;
+    let ts = label c x in
+    List.iter (fun x' -> check_stack (known ts) (known (label c x')) x'.at) xs;
     (ts @ [NumType I32Type]) -->... []
 
   | Return ->
@@ -244,7 +249,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | CallIndirect (x, y) ->
     let TableType (lim, t) = table c x in
     let FuncType (ins, out) = type_ c y in
-    require (match_ref_type t FuncRefType) x.at
+    require (t = FuncRefType) x.at
       ("type mismatch: instruction requires table of functions" ^
        " but table has " ^ string_of_ref_type t);
     (ins @ [NumType I32Type]) --> out
@@ -290,7 +295,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | TableCopy (x, y) ->
     let TableType (_lim1, t1) = table c x in
     let TableType (_lim2, t2) = table c y in
-    require (match_ref_type t2 t1) x.at
+    require (t1 = t2) x.at
       ("type mismatch: source element type " ^ string_of_ref_type t1 ^
        " does not match destination element type " ^ string_of_ref_type t2);
     [NumType I32Type; NumType I32Type; NumType I32Type] --> []
@@ -298,7 +303,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | TableInit (x, y) ->
     let TableType (_lim1, t1) = table c x in
     let t2 = elem c y in
-    require (match_ref_type t2 t1) x.at
+    require (t1 = t2) x.at
       ("type mismatch: source element type " ^ string_of_ref_type t1 ^
        " does not match destination element type " ^ string_of_ref_type t2);
     [NumType I32Type; NumType I32Type; NumType I32Type] --> []
@@ -342,11 +347,11 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     ignore (data c x);
     [] --> []
 
-  | RefNull ->
-    [] --> [RefType NullRefType]
+  | RefNull t ->
+    [] --> [RefType t]
 
-  | RefIsNull ->
-    [RefType AnyRefType] --> [NumType I32Type]
+  | RefIsNull t ->
+    [RefType t] --> [NumType I32Type]
 
   | RefFunc x ->
     let _ft = func c x in
@@ -393,7 +398,7 @@ and check_block (c : context) (es : instr list) (ts : stack_type) at =
   let s' = pop (stack ts) s at in
   require (snd s' = []) at
     ("type mismatch: operator requires " ^ string_of_stack_type ts ^
-     " but stack has " ^ string_of_stack_type (snd s))
+     " but stack has " ^ string_of_infer_types (snd s))
 
 
 (* Types *)
@@ -417,7 +422,6 @@ let check_value_type (t : value_type) at =
   match t with
   | NumType t' -> check_num_type t' at
   | RefType t' -> check_ref_type t' at
-  | BotType -> ()
 
 let check_func_type (ft : func_type) at =
   let FuncType (ins, out) = ft in
@@ -466,7 +470,7 @@ let check_func (c : context) (f : func) =
 
 let is_const (c : context) (e : instr) =
   match e.it with
-  | RefNull
+  | RefNull _
   | RefFunc _
   | Const _ -> true
   | GlobalGet x -> let GlobalType (_, mut) = global c x in mut = Immutable
@@ -493,7 +497,7 @@ let check_elem_mode (c : context) (t : ref_type) (mode : segment_mode) =
   | Passive -> ()
   | Active {index; offset} ->
     let TableType (_, et) = table c index in
-    require (match_ref_type t et) mode.at
+    require (t = et) mode.at
       "type mismatch in active element segment";
     check_const c offset (NumType I32Type)
   | Declarative -> ()
