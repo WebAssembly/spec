@@ -17,12 +17,20 @@ type extern_type =
   | ExternMemoryType of memory_type
   | ExternGlobalType of global_type
 
+type pack_size = Pack8 | Pack16 | Pack32
+type extension = SX | ZX
+
 
 (* Attributes *)
 
 let size = function
   | I32Type | F32Type -> 4
   | I64Type | F64Type -> 8
+
+let packed_size = function
+  | Pack8 -> 1
+  | Pack16 -> 2
+  | Pack32 -> 4
 
 let is_num_type = function
   | NumType _ -> true

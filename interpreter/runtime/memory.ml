@@ -8,9 +8,6 @@ type address = int64
 type offset = int32
 type count = int32
 
-type pack_size = Pack8 | Pack16 | Pack32
-type extension = SX | ZX
-
 type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
 type memory = {mutable ty : memory_type; mutable content : memory'}
 type t = memory
@@ -22,11 +19,6 @@ exception SizeLimit
 exception OutOfMemory
 
 let page_size = 0x10000L (* 64 KiB *)
-
-let packed_size = function
-  | Pack8 -> 1
-  | Pack16 -> 2
-  | Pack32 -> 4
 
 let valid_limits {min; max} =
   match max with

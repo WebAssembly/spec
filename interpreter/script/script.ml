@@ -1,7 +1,7 @@
 type var = string Source.phrase
 
 type Values.ref_ += ExternRef of int32
-type value = Values.value Source.phrase
+type literal = Values.value Source.phrase
 
 type definition = definition' Source.phrase
 and definition' =
@@ -11,16 +11,16 @@ and definition' =
 
 type action = action' Source.phrase
 and action' =
-  | Invoke of var option * Ast.name * value list
+  | Invoke of var option * Ast.name * literal list
   | Get of var option * Ast.name
 
 type nanop = nanop' Source.phrase
-and nanop' = (unit, unit, nan, nan) Values.op
+and nanop' = (Lib.void, Lib.void, nan, nan) Values.op
 and nan = CanonicalNan | ArithmeticNan
 
 type result = result' Source.phrase
 and result' =
-  | LitResult of Values.value Source.phrase
+  | LitResult of literal
   | NanResult of nanop
   | RefResult of Types.ref_type
 

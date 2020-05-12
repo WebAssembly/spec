@@ -1,7 +1,6 @@
 open Source
 open Types
 open Values
-open Memory
 open Ast
 
 
@@ -17,12 +16,12 @@ let unreachable = Unreachable
 let nop = Nop
 let drop = Drop
 let select t = Select t
-let block ts es = Block (ts, es)
-let loop ts es = Loop (ts, es)
+let block bt es = Block (bt, es)
+let loop bt es = Loop (bt, es)
+let if_ bt es1 es2 = If (bt, es1, es2)
 let br x = Br x
 let br_if x = BrIf x
 let br_table xs x = BrTable (xs, x)
-let if_ ts es1 es2 = If (ts, es1, es2)
 
 let return = Return
 let call x = Call x
@@ -192,11 +191,21 @@ let f64_le = Compare (F64 F64Op.Le)
 let f64_gt = Compare (F64 F64Op.Gt)
 let f64_ge = Compare (F64 F64Op.Ge)
 
+let i32_extend8_s = Unary (I32 (I32Op.ExtendS Pack8))
+let i32_extend16_s = Unary (I32 (I32Op.ExtendS Pack16))
+let i64_extend8_s = Unary (I64 (I64Op.ExtendS Pack8))
+let i64_extend16_s = Unary (I64 (I64Op.ExtendS Pack16))
+let i64_extend32_s = Unary (I64 (I64Op.ExtendS Pack32))
+
 let i32_wrap_i64 = Convert (I32 I32Op.WrapI64)
 let i32_trunc_f32_s = Convert (I32 I32Op.TruncSF32)
 let i32_trunc_f32_u = Convert (I32 I32Op.TruncUF32)
 let i32_trunc_f64_s = Convert (I32 I32Op.TruncSF64)
 let i32_trunc_f64_u = Convert (I32 I32Op.TruncUF64)
+let i32_trunc_sat_f32_s = Convert (I32 I32Op.TruncSatSF32)
+let i32_trunc_sat_f32_u = Convert (I32 I32Op.TruncSatUF32)
+let i32_trunc_sat_f64_s = Convert (I32 I32Op.TruncSatSF64)
+let i32_trunc_sat_f64_u = Convert (I32 I32Op.TruncSatUF64)
 let i64_extend_i32_s = Convert (I64 I64Op.ExtendSI32)
 let i64_extend_i32_u = Convert (I64 I64Op.ExtendUI32)
 let i64_trunc_f32_s = Convert (I64 I64Op.TruncSF32)
@@ -207,6 +216,10 @@ let f32_convert_i32_s = Convert (F32 F32Op.ConvertSI32)
 let f32_convert_i32_u = Convert (F32 F32Op.ConvertUI32)
 let f32_convert_i64_s = Convert (F32 F32Op.ConvertSI64)
 let f32_convert_i64_u = Convert (F32 F32Op.ConvertUI64)
+let i64_trunc_sat_f32_s = Convert (I64 I64Op.TruncSatSF32)
+let i64_trunc_sat_f32_u = Convert (I64 I64Op.TruncSatUF32)
+let i64_trunc_sat_f64_s = Convert (I64 I64Op.TruncSatSF64)
+let i64_trunc_sat_f64_u = Convert (I64 I64Op.TruncSatUF64)
 let f32_demote_f64 = Convert (F32 F32Op.DemoteF64)
 let f64_convert_i32_s = Convert (F64 F64Op.ConvertSI32)
 let f64_convert_i32_u = Convert (F64 F64Op.ConvertUI32)

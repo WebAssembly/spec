@@ -100,6 +100,7 @@ let vu1 s = Int64.to_int (vuN 1 s)
 let vu32 s = Int64.to_int32 (vuN 32 s)
 let vs7 s = Int64.to_int (vsN 7 s)
 let vs32 s = Int64.to_int32 (vsN 32 s)
+let vs33 s = I32_convert.wrap_i64 (vsN 33 s)
 let vs64 s = vsN 64 s
 let f32 s = F32.of_bits (u32 s)
 let f64 s = F64.of_bits (u64 s)
@@ -152,16 +153,12 @@ let value_type s =
   | Some n when n > 0x70 -> NumType (num_type s)
   | _ -> RefType (ref_type s)
 
-let stack_type s =
-  match peek s with
-  | Some 0x40 -> skip 1 s; []
-  | _ -> [value_type s]
-
+let stack_type s = vec value_type s
 let func_type s =
   match vs7 s with
   | -0x20 ->
-    let ins = vec value_type s in
-    let out = vec value_type s in
+    let ins = stack_type s in
+    let out = stack_type s in
     FuncType (ins, out)
   | _ -> error s (pos s - 1) "malformed function type"
 
@@ -209,6 +206,12 @@ let memop s =
   let offset = vu32 s in
   Int32.to_int align, offset
 
+let block_type s =
+  match peek s with
+  | Some 0x40 -> skip 1 s; ValBlockType None
+  | Some b when b land 0xc0 = 0x40 -> ValBlockType (Some (value_type s))
+  | _ -> VarBlockType (at vs33 s)
+
 let rec instr s =
   let pos = pos s in
   match op s with
@@ -216,26 +219,26 @@ let rec instr s =
   | 0x01 -> nop
 
   | 0x02 ->
-    let ts = stack_type s in
+    let bt = block_type s in
     let es' = instr_block s in
     end_ s;
-    block ts es'
+    block bt es'
   | 0x03 ->
-    let ts = stack_type s in
+    let bt = block_type s in
     let es' = instr_block s in
     end_ s;
-    loop ts es'
+    loop bt es'
   | 0x04 ->
-    let ts = stack_type s in
+    let bt = block_type s in
     let es1 = instr_block s in
     if peek s = Some 0x05 then begin
       expect 0x05 s "ELSE or END opcode expected";
       let es2 = instr_block s in
       end_ s;
-      if_ ts es1 es2
+      if_ bt es1 es2
     end else begin
       end_ s;
-      if_ ts es1 []
+      if_ bt es1 []
     end
 
   | 0x05 -> error s pos "misplaced ELSE opcode"
@@ -440,8 +443,14 @@ let rec instr s =
   | 0xbe -> f32_reinterpret_i32
   | 0xbf -> f64_reinterpret_i64
 
-  | 0xc0 | 0xc1 | 0xc2 | 0xc3 | 0xc4 | 0xc5 | 0xc6 | 0xc7
-  | 0xc8 | 0xc9 | 0xca | 0xcb | 0xcc | 0xcd | 0xce | 0xcf as b -> illegal s pos b
+  | 0xc0 -> i32_extend8_s
+  | 0xc1 -> i32_extend16_s
+  | 0xc2 -> i64_extend8_s
+  | 0xc3 -> i64_extend16_s
+  | 0xc4 -> i64_extend32_s
+
+  | 0xc5 | 0xc6 | 0xc7 | 0xc8 | 0xc9 | 0xca | 0xcb
+  | 0xcc | 0xcd | 0xce | 0xcf as b -> illegal s pos b
 
   | 0xd0 -> ref_null (ref_type s)
   | 0xd1 -> ref_is_null (ref_type s)
@@ -449,8 +458,14 @@ let rec instr s =
 
   | 0xfc as b1 ->
     (match op s with
-    | 0x00 | 0x01 | 0x02 | 0x03 | 0x04 | 0x05 | 0x06 | 0x07 as b2 ->
-      illegal2 s pos b1 b2
+    | 0x00 -> i32_trunc_sat_f32_s
+    | 0x01 -> i32_trunc_sat_f32_u
+    | 0x02 -> i32_trunc_sat_f64_s
+    | 0x03 -> i32_trunc_sat_f64_u
+    | 0x04 -> i64_trunc_sat_f32_s
+    | 0x05 -> i64_trunc_sat_f32_u
+    | 0x06 -> i64_trunc_sat_f64_s
+    | 0x07 -> i64_trunc_sat_f64_u
 
     | 0x08 ->
       let x = at var s in

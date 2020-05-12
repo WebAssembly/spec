@@ -62,8 +62,6 @@ let value_type t = string_of_value_type t
 
 let decls kind ts = tab kind (atom value_type) ts
 
-let stack_type ts = decls "result" ts
-
 let func_type (FuncType (ins, out)) =
   Node ("func", decls "param" ins @ decls "result" out)
 
@@ -75,6 +73,15 @@ let limits nat {min; max} =
 let global_type = function
   | GlobalType (t, Immutable) -> atom string_of_value_type t
   | GlobalType (t, Mutable) -> Node ("mut", [atom string_of_value_type t])
+
+let pack_size = function
+  | Pack8 -> "8"
+  | Pack16 -> "16"
+  | Pack32 -> "32"
+
+let extension = function
+  | SX -> "_s"
+  | ZX -> "_u"
 
 
 (* Operators *)
@@ -102,6 +109,7 @@ struct
     | Clz -> "clz"
     | Ctz -> "ctz"
     | Popcnt -> "popcnt"
+    | ExtendS sz -> "extend" ^ pack_size sz ^ "_s"
 
   let binop xx = function
     | Add -> "add"
@@ -128,6 +136,10 @@ struct
     | TruncUF32 -> "trunc_f32_u"
     | TruncSF64 -> "trunc_f64_s"
     | TruncUF64 -> "trunc_f64_u"
+    | TruncSatSF32 -> "trunc_sat_f32_s"
+    | TruncSatUF32 -> "trunc_sat_f32_u"
+    | TruncSatSF64 -> "trunc_sat_f64_s"
+    | TruncSatUF64 -> "trunc_sat_f64_u"
     | ReinterpretFloat -> "reinterpret_f" ^ xx
 end
 
@@ -188,15 +200,6 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
-let pack_size = function
-  | Memory.Pack8 -> "8"
-  | Memory.Pack16 -> "16"
-  | Memory.Pack32 -> "32"
-
-let extension = function
-  | Memory.SX -> "_s"
-  | Memory.ZX -> "_u"
-
 let memop name {ty; align; offset; _} sz =
   num_type ty ^ "." ^ name ^
   (if offset = 0l then "" else " offset=" ^ nat32 offset) ^
@@ -206,12 +209,12 @@ let loadop op =
   match op.sz with
   | None -> memop "load" op (size op.ty)
   | Some (sz, ext) ->
-    memop ("load" ^ pack_size sz ^ extension ext) op (Memory.packed_size sz)
+    memop ("load" ^ pack_size sz ^ extension ext) op (packed_size sz)
 
 let storeop op =
   match op.sz with
   | None -> memop "store" op (size op.ty)
-  | Some sz -> memop ("store" ^ pack_size sz) op (Memory.packed_size sz)
+  | Some sz -> memop ("store" ^ pack_size sz) op (packed_size sz)
 
 
 (* Expressions *)
@@ -219,6 +222,10 @@ let storeop op =
 let var x = nat32 x.it
 let num v = string_of_num v.it
 let constop v = num_type (type_of_num v.it) ^ ".const"
+
+let block_type = function
+  | VarBlockType x -> [Node ("type " ^ var x, [])]
+  | ValBlockType ts -> decls "result" (list_of_opt ts)
 
 let rec instr e =
   let head, inner =
@@ -229,10 +236,10 @@ let rec instr e =
     | Select None -> "select", []
     | Select (Some []) -> "select", [Node ("result", [])]
     | Select (Some ts) -> "select", decls "result" ts
-    | Block (ts, es) -> "block", stack_type ts @ list instr es
-    | Loop (ts, es) -> "loop", stack_type ts @ list instr es
-    | If (ts, es1, es2) ->
-      "if", stack_type ts @
+    | Block (bt, es) -> "block", block_type bt @ list instr es
+    | Loop (bt, es) -> "loop", block_type bt @ list instr es
+    | If (bt, es1, es2) ->
+      "if", block_type bt @
         [Node ("then", list instr es1); Node ("else", list instr es2)]
     | Br x -> "br " ^ var x, []
     | BrIf x -> "br_if " ^ var x, []
@@ -426,15 +433,26 @@ let module_ = module_with_var_opt None
 
 (* Scripts *)
 
-let value v =
-  match v.it with
-  | Num (Values.I32 i) -> Node ("i32.const " ^ I32.to_string_s i, [])
-  | Num (Values.I64 i) -> Node ("i64.const " ^ I64.to_string_s i, [])
-  | Num (Values.F32 z) -> Node ("f32.const " ^ F32.to_string z, [])
-  | Num (Values.F64 z) -> Node ("f64.const " ^ F64.to_string z, [])
-  | Ref (NullRef t) -> Node ("ref.null", [Atom (refed_type t)])
-  | Ref (ExternRef n) -> Node ("ref.extern " ^ Int32.to_string n, [])
-  | _ -> assert false
+let literal mode lit =
+  match lit.it with
+  | Num (Values.I32 i) ->
+    let f = if mode = `Binary then I32.to_hex_string else I32.to_string_s in
+    Node ("i32.const " ^ f i, [])
+  | Num (Values.I64 i) ->
+    let f = if mode = `Binary then I64.to_hex_string else I64.to_string_s in
+    Node ("i64.const " ^ f i, [])
+  | Num (Values.F32 z) ->
+    let f = if mode = `Binary then F32.to_hex_string else F32.to_string in
+    Node ("f32.const " ^ f z, [])
+  | Num (Values.F64 z) ->
+    let f = if mode = `Binary then F64.to_hex_string else F64.to_string in
+    Node ("f64.const " ^ f z, [])
+  | Ref (NullRef t) ->
+    Node ("ref.null " ^ refed_type t, [])
+  | Ref (ExternRef n) ->
+    Node ("ref.extern " ^ nat32 n, [])
+  | Ref _ ->
+    assert false
 
 let definition mode x_opt def =
   try
@@ -464,10 +482,10 @@ let definition mode x_opt def =
 let access x_opt n =
   String.concat " " [var_opt x_opt; name n]
 
-let action act =
+let action mode act =
   match act.it with
-  | Invoke (x_opt, name, vs) ->
-    Node ("invoke" ^ access x_opt name, List.map value vs)
+  | Invoke (x_opt, name, lits) ->
+    Node ("invoke" ^ access x_opt name, List.map (literal mode) lits)
   | Get (x_opt, name) ->
     Node ("get" ^ access x_opt name, [])
 
@@ -475,9 +493,9 @@ let nan = function
   | CanonicalNan -> "nan:canonical"
   | ArithmeticNan -> "nan:arithmetic"
 
-let result res =
+let result mode res =
   match res.it with
-  | LitResult lit -> value lit
+  | LitResult lit -> literal mode lit
   | NanResult nanop ->
     (match nanop.it with
     | Values.I32 _ | Values.I64 _ -> assert false
@@ -489,27 +507,30 @@ let result res =
 let assertion mode ass =
   match ass.it with
   | AssertMalformed (def, re) ->
-    Node ("assert_malformed", [definition `Original None def; Atom (string re)])
+    (match mode, def.it with
+    | `Binary, Quoted _ -> []
+    | _ ->
+      [Node ("assert_malformed", [definition `Original None def; Atom (string re)])]
+    )
   | AssertInvalid (def, re) ->
-    Node ("assert_invalid", [definition mode None def; Atom (string re)])
+    [Node ("assert_invalid", [definition mode None def; Atom (string re)])]
   | AssertUnlinkable (def, re) ->
-    Node ("assert_unlinkable", [definition mode None def; Atom (string re)])
+    [Node ("assert_unlinkable", [definition mode None def; Atom (string re)])]
   | AssertUninstantiable (def, re) ->
-    Node ("assert_trap", [definition mode None def; Atom (string re)])
+    [Node ("assert_trap", [definition mode None def; Atom (string re)])]
   | AssertReturn (act, results) ->
-    Node ("assert_return", action act :: List.map result results)
+    [Node ("assert_return", action mode act :: List.map (result mode) results)]
   | AssertTrap (act, re) ->
-    Node ("assert_trap", [action act; Atom (string re)])
+    [Node ("assert_trap", [action mode act; Atom (string re)])]
   | AssertExhaustion (act, re) ->
-    Node ("assert_exhaustion", [action act; Atom (string re)])
+    [Node ("assert_exhaustion", [action mode act; Atom (string re)])]
 
 let command mode cmd =
   match cmd.it with
-  | Module (x_opt, def) -> definition mode x_opt def
-  | Register (n, x_opt) ->
-    Node ("register " ^ name n ^ var_opt x_opt, [])
-  | Action act -> action act
+  | Module (x_opt, def) -> [definition mode x_opt def]
+  | Register (n, x_opt) -> [Node ("register " ^ name n ^ var_opt x_opt, [])]
+  | Action act -> [action mode act]
   | Assertion ass -> assertion mode ass
   | Meta _ -> assert false
 
-let script mode scr = List.map (command mode) scr
+let script mode scr = Lib.List.concat_map (command mode) scr

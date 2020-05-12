@@ -9,9 +9,6 @@ type address = int64
 type offset = int32
 type count = int32
 
-type pack_size = Pack8 | Pack16 | Pack32
-type extension = SX | ZX
-
 exception Type
 exception Bounds
 exception SizeOverflow
@@ -19,7 +16,6 @@ exception SizeLimit
 exception OutOfMemory
 
 val page_size : int64
-val packed_size : pack_size -> int
 
 val alloc : memory_type -> memory (* raises Type, SizeOverflow, OutOfMemory *)
 val type_of : memory -> memory_type

@@ -88,7 +88,7 @@ Conventions
 * The meta variable :math:`t` ranges over value types or subclasses thereof where clear from context.
 
 
-.. index:: ! result type, value type, instruction, execution, block
+.. index:: ! result type, value type, instruction, execution, function
    pair: abstract syntax; result type
    pair: result; type
 .. _syntax-resulttype:
@@ -96,21 +96,17 @@ Conventions
 Result Types
 ~~~~~~~~~~~~
 
-*Result types* classify the result of :ref:`executing <exec-instr>` :ref:`instructions <syntax-instr>` or :ref:`blocks <syntax-instr-control>`,
+*Result types* classify the result of :ref:`executing <exec-instr>` :ref:`instructions <syntax-instr>` or :ref:`functions <syntax-func>`,
 which is a sequence of values written with brackets.
 
 .. math::
    \begin{array}{llll}
    \production{result type} & \resulttype &::=&
-     [\valtype^?] \\
+     [\vec(\valtype)] \\
    \end{array}
 
-.. note::
-   In the current version of WebAssembly, at most one value is allowed as a result.
-   However, this may be generalized to sequences of values in future versions.
 
-
-.. index:: ! function type, value type, vector, function, parameter, result
+.. index:: ! function type, value type, vector, function, parameter, result, result type
    pair: abstract syntax; function type
    pair: function; type
 .. _syntax-functype:
@@ -119,18 +115,14 @@ Function Types
 ~~~~~~~~~~~~~~
 
 *Function types* classify the signature of :ref:`functions <syntax-func>`,
-mapping a vector of parameters to a vector of results, written as follows.
+mapping a vector of parameters to a vector of results.
+They are also used to classify the inputs and outputs of :ref:`instructions <syntax-instr>`.
 
 .. math::
    \begin{array}{llll}
    \production{function type} & \functype &::=&
-     [\vec(\valtype)] \to [\vec(\valtype)] \\
+     \resulttype \to \resulttype \\
    \end{array}
-
-.. note::
-   In the current version of WebAssembly,
-   the length of the result type vector of a :ref:`valid <valid-functype>` function type may be at most :math:`1`.
-   This restriction may be removed in future versions.
 
 
 .. index:: ! limits, memory type, table type

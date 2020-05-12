@@ -431,17 +431,17 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
 * The :ref:`store <syntax-store>` :math:`S` must be :ref:`valid <valid-store>`.
 
 * Under no allowed return type,
-  the :ref:`thread <syntax-thread>` :math:`T` must be :ref:`valid <valid-thread>` with some :ref:`result type <syntax-resulttype>` :math:`[t^?]`.
+  the :ref:`thread <syntax-thread>` :math:`T` must be :ref:`valid <valid-thread>` with some :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
 
-* Then the configuration is valid with the :ref:`result type <syntax-resulttype>` :math:`[t^?]`.
+* Then the configuration is valid with the :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
 
 .. math::
    \frac{
      \vdashstore S \ok
      \qquad
-     S; \epsilon \vdashthread T : [t^?]
+     S; \epsilon \vdashthread T : [t^\ast]
    }{
-     \vdashconfig S; T : [t^?]
+     \vdashconfig S; T : [t^\ast]
    }
 
 
@@ -458,17 +458,17 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with |CRETURN| set to :math:`\resulttype^?`.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[] \to [t^?]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[] \to [t^\ast]`.
 
-* Then the thread is valid with the :ref:`result type <syntax-resulttype>` :math:`[t^?]`.
+* Then the thread is valid with the :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
 
 .. math::
    \frac{
      S \vdashframe F : C
      \qquad
-     S; C,\CRETURN~\resulttype^? \vdashinstrseq \instr^\ast : [] \to [t^?]
+     S; C,\CRETURN~\resulttype^? \vdashinstrseq \instr^\ast : [] \to [t^\ast]
    }{
-     S; \resulttype^? \vdashthread F; \instr^\ast : [t^?]
+     S; \resulttype^? \vdashthread F; \instr^\ast : [t^\ast]
    }
 
 
@@ -576,22 +576,22 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END`
 ..................................................
 
-* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \to [t_2^?]`.
+* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \to [t_2^*]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^n]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^?]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^*]`.
 
-* Then the compound instruction is valid with type :math:`[] \to [t_2^?]`.
+* Then the compound instruction is valid with type :math:`[] \to [t_2^*]`.
 
 .. math::
    \frac{
-     S; C \vdashinstrseq \instr_0^\ast : [t_1^n] \to [t_2^?]
+     S; C \vdashinstrseq \instr_0^\ast : [t_1^n] \to [t_2^*]
      \qquad
-     S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \to [t_2^?]
+     S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \to [t_2^*]
    }{
-     S; C \vdashadmininstr \LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END : [] \to [t_2^?]
+     S; C \vdashadmininstr \LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END : [] \to [t_2^*]
    }
 
 

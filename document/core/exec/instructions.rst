@@ -1526,70 +1526,92 @@ Control Instructions
 
 .. _exec-block:
 
-:math:`\BLOCK~[t^?]~\instr^\ast~\END`
-.....................................
+:math:`\BLOCK~\blocktype~\instr^\ast~\END`
+..........................................
 
-1. Let :math:`n` be the arity :math:`|t^?|` of the :ref:`result type <syntax-resulttype>` :math:`t^?`.
+1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
 
-2. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
 
-3. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\instr^\ast` with label :math:`L`.
+3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
+
+4. Assert: due to :ref:`validation <valid-block>`, there are at least :math:`m` values on the top of the stack.
+
+5. Pop the values :math:`\val^m` from the stack.
+
+6. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \BLOCK~[t^n]~\instr^\ast~\END &\stepto&
-     \LABEL_n\{\epsilon\}~\instr^\ast~\END
+   F; \val^m~\BLOCK~\X{bt}~\instr^\ast~\END &\stepto&
+     F; \LABEL_n\{\epsilon\}~\val^m~\instr^\ast~\END
+     & (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 
 
 .. _exec-loop:
 
-:math:`\LOOP~[t^?]~\instr^\ast~\END`
-....................................
+:math:`\LOOP~\blocktype~\instr^\ast~\END`
+.........................................
 
-1. Let :math:`L` be the label whose arity is :math:`0` and whose continuation is the start of the loop.
+1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
 
-2. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\instr^\ast` with label :math:`L`.
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
+
+3. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is the start of the loop.
+
+4. Assert: due to :ref:`validation <valid-loop>`, there are at least :math:`m` values on the top of the stack.
+
+5. Pop the values :math:`\val^m` from the stack.
+
+6. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \LOOP~[t^?]~\instr^\ast~\END &\stepto&
-     \LABEL_0\{\LOOP~[t^?]~\instr^\ast~\END\}~\instr^\ast~\END
+   F; \val^m~\LOOP~\X{bt}~\instr^\ast~\END &\stepto&
+     F; \LABEL_m\{\LOOP~\X{bt}~\instr^\ast~\END\}~\val^m~\instr^\ast~\END
+     & (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 
 
 .. _exec-if:
 
-:math:`\IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
-........................................................
+:math:`\IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
+.............................................................
 
-1. Assert: due to :ref:`validation <valid-if>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
 
-2. Pop the value :math:`\I32.\CONST~c` from the stack.
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
 
-3. Let :math:`n` be the arity :math:`|t^?|` of the :ref:`result type <syntax-resulttype>` :math:`t^?`.
+3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the |IF| instruction.
 
-4. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the |IF| instruction.
+4. Assert: due to :ref:`validation <valid-if>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-5. If :math:`c` is non-zero, then:
+5. Pop the value :math:`\I32.\CONST~c` from the stack.
 
-   a. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\instr_1^\ast` with label :math:`L`.
+6. Assert: due to :ref:`validation <valid-if>`, there are at least :math:`m` values on the top of the stack.
 
-6. Else:
+7. Pop the values :math:`\val^m` from the stack.
 
-   a. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\instr_2^\ast` with label :math:`L`.
+8. If :math:`c` is non-zero, then:
+
+   a. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr_1^\ast` with label :math:`L`.
+
+9. Else:
+
+   a. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr_2^\ast` with label :math:`L`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   (\I32.\CONST~c)~\IF~[t^n]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     \LABEL_n\{\epsilon\}~\instr_1^\ast~\END
-     & (\iff c \neq 0) \\
-   (\I32.\CONST~c)~\IF~[t^n]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     \LABEL_n\{\epsilon\}~\instr_2^\ast~\END
-     & (\iff c = 0) \\
+   F; \val^m~(\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
+     F; \LABEL_n\{\epsilon\}~\val^m~\instr_1^\ast~\END
+     & (\iff c \neq 0 \wedge \expand_F(\X{bt}) = [t_1^m] \to [t_2^n]) \\
+   F; \val^m~(\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
+     F; \LABEL_n\{\epsilon\}~\val^m~\instr_2^\ast~\END
+     & (\iff c = 0 \wedge \expand_F(\X{bt}) = [t_1^m] \to [t_2^n]) \\
    \end{array}
 
 
@@ -1884,33 +1906,34 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 3. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\FITYPE`.
 
-4. Assert: due to :ref:`validation <valid-call>`, :math:`m \leq 1`.
+4. Let :math:`t^\ast` be the list of :ref:`value types <syntax-valtype>` :math:`f.\FICODE.\FLOCALS`.
 
-5. Let :math:`t^\ast` be the list of :ref:`value types <syntax-valtype>` :math:`f.\FICODE.\FLOCALS`.
+5. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\FICODE.\FBODY`.
 
-6. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\FICODE.\FBODY`.
+6. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
 
-7. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
+7. Pop the values :math:`\val^n` from the stack.
 
-8. Pop the values :math:`\val^n` from the stack.
+8. Let :math:`\val_0^\ast` be the list of zero values of types :math:`t^\ast`.
 
 9. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~f.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
 
 10. Push the activation of :math:`F` with arity :math:`m` to the stack.
 
-11. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t_2^m]~\instr^\ast~\END`.
+11. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
+
+12. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; \val^n~(\INVOKE~a) &\stepto& S; \FRAME_m\{F\}~\BLOCK~[t_2^m]~\instr^\ast~\END~\END
+   S; \val^n~(\INVOKE~a) &\stepto& S; \FRAME_m\{F\}~\LABEL_m\{\}~\instr^\ast~\END~\END
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\SFUNCS[a] = f \\
      \wedge & f.\FITYPE = [t_1^n] \to [t_2^m] \\
-     \wedge & m \leq 1 \\
      \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~t^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(\default_t)^k \})
      \end{array} \\

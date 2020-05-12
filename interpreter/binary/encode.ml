@@ -60,6 +60,7 @@ let encode m =
     let vu32 i = vu64 Int64.(logand (of_int32 i) 0xffffffffL)
     let vs7 i = vs64 (Int64.of_int i)
     let vs32 i = vs64 (Int64.of_int32 i)
+    let vs33 i = vs64 (I64_convert.extend_i32_s i)
     let f32 x = u32 (F32.to_bits x)
     let f64 x = u64 (F64.to_bits x)
 
@@ -104,16 +105,9 @@ let encode m =
       | NumType t -> num_type t
       | RefType t -> ref_type t
 
-    let stack_type = function
-      | [] -> vs7 (-0x40)
-      | [t] -> value_type t
-      | _ ->
-        Code.error Source.no_region
-          "cannot encode stack type with arity > 1 (yet)"
-
     let func_type = function
-      | FuncType (ins, out) ->
-        vs7 (-0x20); vec value_type ins; vec value_type out
+      | FuncType (ts1, ts2) ->
+        vs7 (-0x20); vec value_type ts1; vec value_type ts2
 
     let limits vu {min; max} =
       bool (max <> None); vu min; opt vu max
@@ -136,7 +130,6 @@ let encode m =
     open Source
     open Ast
     open Values
-    open Memory
 
     let op n = u8 n
     let end_ () = op 0x0b
@@ -145,15 +138,20 @@ let encode m =
 
     let var x = vu32 x.it
 
+    let block_type = function
+      | VarBlockType x -> vs33 x.it
+      | ValBlockType None -> vs7 (-0x40)
+      | ValBlockType (Some t) -> value_type t
+
     let rec instr e =
       match e.it with
       | Unreachable -> op 0x00
       | Nop -> op 0x01
 
-      | Block (ts, es) -> op 0x02; stack_type ts; list instr es; end_ ()
-      | Loop (ts, es) -> op 0x03; stack_type ts; list instr es; end_ ()
-      | If (ts, es1, es2) ->
-        op 0x04; stack_type ts; list instr es1;
+      | Block (bt, es) -> op 0x02; block_type bt; list instr es; end_ ()
+      | Loop (bt, es) -> op 0x03; block_type bt; list instr es; end_ ()
+      | If (bt, es1, es2) ->
+        op 0x04; block_type bt; list instr es1;
         if es2 <> [] then op 0x05;
         list instr es2; end_ ()
 
@@ -284,10 +282,16 @@ let encode m =
       | Unary (I32 I32Op.Clz) -> op 0x67
       | Unary (I32 I32Op.Ctz) -> op 0x68
       | Unary (I32 I32Op.Popcnt) -> op 0x69
+      | Unary (I32 (I32Op.ExtendS Pack8)) -> op 0xc0
+      | Unary (I32 (I32Op.ExtendS Pack16)) -> op 0xc1
+      | Unary (I32 (I32Op.ExtendS Pack32)) -> assert false
 
       | Unary (I64 I64Op.Clz) -> op 0x79
       | Unary (I64 I64Op.Ctz) -> op 0x7a
       | Unary (I64 I64Op.Popcnt) -> op 0x7b
+      | Unary (I64 (I64Op.ExtendS Pack8)) -> op 0xc2
+      | Unary (I64 (I64Op.ExtendS Pack16)) -> op 0xc3
+      | Unary (I64 (I64Op.ExtendS Pack32)) -> op 0xc4
 
       | Unary (F32 F32Op.Abs) -> op 0x8b
       | Unary (F32 F32Op.Neg) -> op 0x8c
@@ -360,6 +364,10 @@ let encode m =
       | Convert (I32 I32Op.TruncUF32) -> op 0xa9
       | Convert (I32 I32Op.TruncSF64) -> op 0xaa
       | Convert (I32 I32Op.TruncUF64) -> op 0xab
+      | Convert (I32 I32Op.TruncSatSF32) -> op 0xfc; op 0x00
+      | Convert (I32 I32Op.TruncSatUF32) -> op 0xfc; op 0x01
+      | Convert (I32 I32Op.TruncSatSF64) -> op 0xfc; op 0x02
+      | Convert (I32 I32Op.TruncSatUF64) -> op 0xfc; op 0x03
       | Convert (I32 I32Op.ReinterpretFloat) -> op 0xbc
 
       | Convert (I64 I64Op.ExtendSI32) -> op 0xac
@@ -369,6 +377,10 @@ let encode m =
       | Convert (I64 I64Op.TruncUF32) -> op 0xaf
       | Convert (I64 I64Op.TruncSF64) -> op 0xb0
       | Convert (I64 I64Op.TruncUF64) -> op 0xb1
+      | Convert (I64 I64Op.TruncSatSF32) -> op 0xfc; op 0x04
+      | Convert (I64 I64Op.TruncSatUF32) -> op 0xfc; op 0x05
+      | Convert (I64 I64Op.TruncSatSF64) -> op 0xfc; op 0x06
+      | Convert (I64 I64Op.TruncSatUF64) -> op 0xfc; op 0x07
       | Convert (I64 I64Op.ReinterpretFloat) -> op 0xbd
 
       | Convert (F32 F32Op.ConvertSI32) -> op 0xb2

@@ -54,6 +54,7 @@ struct
       | Clz -> IXX.clz
       | Ctz -> IXX.ctz
       | Popcnt -> IXX.popcnt
+      | ExtendS sz -> IXX.extend_s (8 * packed_size sz)
     in fun v -> to_num (f (of_num 1 v))
 
   let binop op =
@@ -154,13 +155,17 @@ struct
   let cvtop op v =
     let i = match op with
       | WrapI64 -> I32_convert.wrap_i64 (I64Num.of_num 1 v)
-      | TruncSF32 -> I32_convert.trunc_f32_s (F32Num.of_num 1 v)
       | TruncUF32 -> I32_convert.trunc_f32_u (F32Num.of_num 1 v)
-      | TruncSF64 -> I32_convert.trunc_f64_s (F64Num.of_num 1 v)
+      | TruncSF32 -> I32_convert.trunc_f32_s (F32Num.of_num 1 v)
       | TruncUF64 -> I32_convert.trunc_f64_u (F64Num.of_num 1 v)
+      | TruncSF64 -> I32_convert.trunc_f64_s (F64Num.of_num 1 v)
+      | TruncSatUF32 -> I32_convert.trunc_sat_f32_u (F32Num.of_num 1 v)
+      | TruncSatSF32 -> I32_convert.trunc_sat_f32_s (F32Num.of_num 1 v)
+      | TruncSatUF64 -> I32_convert.trunc_sat_f64_u (F64Num.of_num 1 v)
+      | TruncSatSF64 -> I32_convert.trunc_sat_f64_s (F64Num.of_num 1 v)
       | ReinterpretFloat -> I32_convert.reinterpret_f32 (F32Num.of_num 1 v)
-      | ExtendSI32 -> raise (TypeError (1, v, I32Type))
       | ExtendUI32 -> raise (TypeError (1, v, I32Type))
+      | ExtendSI32 -> raise (TypeError (1, v, I32Type))
     in I32Num.to_num i
 end
 
@@ -170,12 +175,16 @@ struct
 
   let cvtop op v =
     let i = match op with
-      | ExtendSI32 -> I64_convert.extend_i32_s (I32Num.of_num 1 v)
       | ExtendUI32 -> I64_convert.extend_i32_u (I32Num.of_num 1 v)
-      | TruncSF32 -> I64_convert.trunc_f32_s (F32Num.of_num 1 v)
+      | ExtendSI32 -> I64_convert.extend_i32_s (I32Num.of_num 1 v)
       | TruncUF32 -> I64_convert.trunc_f32_u (F32Num.of_num 1 v)
-      | TruncSF64 -> I64_convert.trunc_f64_s (F64Num.of_num 1 v)
+      | TruncSF32 -> I64_convert.trunc_f32_s (F32Num.of_num 1 v)
       | TruncUF64 -> I64_convert.trunc_f64_u (F64Num.of_num 1 v)
+      | TruncSF64 -> I64_convert.trunc_f64_s (F64Num.of_num 1 v)
+      | TruncSatUF32 -> I64_convert.trunc_sat_f32_u (F32Num.of_num 1 v)
+      | TruncSatSF32 -> I64_convert.trunc_sat_f32_s (F32Num.of_num 1 v)
+      | TruncSatUF64 -> I64_convert.trunc_sat_f64_u (F64Num.of_num 1 v)
+      | TruncSatSF64 -> I64_convert.trunc_sat_f64_s (F64Num.of_num 1 v)
       | ReinterpretFloat -> I64_convert.reinterpret_f64 (F64Num.of_num 1 v)
       | WrapI64 -> raise (TypeError (1, v, I64Type))
     in I64Num.to_num i

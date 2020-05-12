@@ -140,7 +140,7 @@ where :math:`x` is the smallest existing :ref:`type index <syntax-typeidx>` whos
 If no such index exists, then a new :ref:`type definition <text-type>` of the form
 
 .. math::
-   \text{(}~\text{type}~~\text{(}~\text{func}~~\Tparam^\ast~~\Tresult~\text{)}~\text{)}
+   \text{(}~\text{type}~~\text{(}~\text{func}~~\Tparam^\ast~~\Tresult^\ast~\text{)}~\text{)}
 
 is inserted at the end of the module.
 

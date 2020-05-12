@@ -474,22 +474,43 @@ call_instr_results_instr :
 
 block_instr :
   | BLOCK labeling_opt block END labeling_end_opt
-    { fun c -> let c' = $2 c $5 in let ts, es = $3 c' in block ts es }
+    { fun c -> let c' = $2 c $5 in let bt, es = $3 c' in block bt es }
   | LOOP labeling_opt block END labeling_end_opt
-    { fun c -> let c' = $2 c $5 in let ts, es = $3 c' in loop ts es }
+    { fun c -> let c' = $2 c $5 in let bt, es = $3 c' in loop bt es }
   | IF labeling_opt block END labeling_end_opt
-    { fun c -> let c' = $2 c $5 in let ts, es = $3 c' in if_ ts es [] }
+    { fun c -> let c' = $2 c $5 in let bt, es = $3 c' in if_ bt es [] }
   | IF labeling_opt block ELSE labeling_end_opt instr_list END labeling_end_opt
     { fun c -> let c' = $2 c ($5 @ $8) in
       let ts, es1 = $3 c' in if_ ts es1 ($6 c') }
 
-block_type :
-  | LPAR RESULT value_type RPAR { [$3] }
-
 block :
-  | block_type instr_list
-    { fun c -> $1, $2 c }
-  | instr_list { fun c -> [], $1 c }
+  | type_use block_param_body
+    { let at1 = ati 1 in
+      fun c ->
+      VarBlockType (inline_type_explicit c ($1 c type_) (fst $2) at1),
+      snd $2 c }
+  | block_param_body  /* Sugar */
+    { let at = at () in
+      fun c ->
+      let bt =
+        match fst $1 with
+        | FuncType ([], []) -> ValBlockType None
+        | FuncType ([], [t]) -> ValBlockType (Some t)
+        | ft ->  VarBlockType (inline_type c ft at)
+      in bt, snd $1 c }
+
+block_param_body :
+  | block_result_body { $1 }
+  | LPAR PARAM value_type_list RPAR block_param_body
+    { let FuncType (ins, out) = fst $5 in
+      FuncType ($3 @ ins, out), snd $5 }
+
+block_result_body :
+  | instr_list { FuncType ([], []), $1 }
+  | LPAR RESULT value_type_list RPAR block_result_body
+    { let FuncType (ins, out) = fst $5 in
+      FuncType (ins, $3 @ out), snd $5 }
+
 
 expr :  /* Sugar */
   | LPAR expr1 RPAR
@@ -505,12 +526,12 @@ expr1 :  /* Sugar */
     { let at1 = ati 1 in
       fun c -> let x, es = $2 c in es, call_indirect (0l @@ at1) x }
   | BLOCK labeling_opt block
-    { fun c -> let c' = $2 c [] in let ts, es = $3 c' in [], block ts es }
+    { fun c -> let c' = $2 c [] in let bt, es = $3 c' in [], block bt es }
   | LOOP labeling_opt block
-    { fun c -> let c' = $2 c [] in let ts, es = $3 c' in [], loop ts es }
+    { fun c -> let c' = $2 c [] in let bt, es = $3 c' in [], loop bt es }
   | IF labeling_opt if_block
     { fun c -> let c' = $2 c [] in
-      let ts, (es, es1, es2) = $3 c c' in es, if_ ts es1 es2 }
+      let bt, (es, es1, es2) = $3 c c' in es, if_ bt es1 es2 }
 
 select_expr_results :
   | LPAR RESULT value_type_list RPAR select_expr_results
@@ -544,8 +565,32 @@ call_expr_results :
 
 
 if_block :
-  | block_type if_block { fun c c' -> let ts, ess = $2 c c' in $1 @ ts, ess }
-  | if_ { fun c c' -> [], $1 c c' }
+  | type_use if_block_param_body
+    { let at = at () in
+      fun c c' ->
+      VarBlockType (inline_type_explicit c ($1 c type_) (fst $2) at),
+      snd $2 c c' }
+  | if_block_param_body  /* Sugar */
+    { let at = at () in
+      fun c c' ->
+      let bt =
+        match fst $1 with
+        | FuncType ([], []) -> ValBlockType None
+        | FuncType ([], [t]) -> ValBlockType (Some t)
+        | ft ->  VarBlockType (inline_type c ft at)
+      in bt, snd $1 c c' }
+
+if_block_param_body :
+  | if_block_result_body { $1 }
+  | LPAR PARAM value_type_list RPAR if_block_param_body
+    { let FuncType (ins, out) = fst $5 in
+      FuncType ($3 @ ins, out), snd $5 }
+
+if_block_result_body :
+  | if_ { FuncType ([], []), $1 }
+  | LPAR RESULT value_type_list RPAR if_block_result_body
+    { let FuncType (ins, out) = fst $5 in
+      FuncType (ins, $3 @ out), snd $5 }
 
 if_ :
   | expr if_
@@ -580,24 +625,24 @@ func :
 func_fields :
   | type_use func_fields_body
     { fun c x at ->
-      let t = inline_type_explicit c ($1 c type_) (fst $2) at in
-      [{(snd $2 (enter_func c)) with ftype = t} @@ at], [], [] }
+      let y = inline_type_explicit c ($1 c type_) (fst $2) at in
+      [{(snd $2 (enter_func c)) with ftype = y} @@ at], [], [] }
   | func_fields_body  /* Sugar */
     { fun c x at ->
-      let t = inline_type c (fst $1) at in
-      [{(snd $1 (enter_func c)) with ftype = t} @@ at], [], [] }
+      let y = inline_type c (fst $1) at in
+      [{(snd $1 (enter_func c)) with ftype = y} @@ at], [], [] }
   | inline_import type_use func_fields_import  /* Sugar */
     { fun c x at ->
-      let t = inline_type_explicit c ($2 c type_) $3 at in
+      let y = inline_type_explicit c ($2 c type_) $3 at in
       [],
       [{ module_name = fst $1; item_name = snd $1;
-         idesc = FuncImport t @@ at } @@ at ], [] }
+         idesc = FuncImport y @@ at } @@ at ], [] }
   | inline_import func_fields_import  /* Sugar */
     { fun c x at ->
-      let t = inline_type c $2 at in
+      let y = inline_type c $2 at in
       [],
       [{ module_name = fst $1; item_name = snd $1;
-         idesc = FuncImport t @@ at } @@ at ], [] }
+         idesc = FuncImport y @@ at } @@ at ], [] }
   | inline_export func_fields  /* Sugar */
     { fun c x at ->
       let fns, ims, exs = $2 c x at in fns, ims, $1 (FuncExport x) c :: exs }

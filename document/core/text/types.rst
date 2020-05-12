@@ -56,23 +56,6 @@ Value Types
    \end{array}
 
 
-.. index:: result type, value type
-   pair: text format; result type
-.. _text-resulttype:
-
-Result Types
-~~~~~~~~~~~~
-
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{result type} & \Tresulttype &::=&
-     (t{:}\Tresult)^? &\Rightarrow& [t^?] \\
-   \end{array}
-
-.. note::
-   In future versions of WebAssembly, this scheme may be extended to support multiple results or more general result types.
-
-
 .. index:: function type, value type, result type
    pair: text format; function type
 .. _text-param:
@@ -94,6 +77,7 @@ Function Types
      \text{(}~\text{result}~~t{:}\Tvaltype~\text{)}
        &\Rightarrow& t \\
    \end{array}
+
 
 Abbreviations
 .............

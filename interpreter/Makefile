@@ -126,7 +126,7 @@ debugtest/%:	$(UNOPT)
 
 run/%:		$(OPT)
 		./$(OPT) $(@:run/%=../test/core/%.wast)
-debug/%:		$(UNOPT)
+debug/%:	$(UNOPT)
 		./$(UNOPT) $(@:debug/%=../test/core/%.wast)
 
 

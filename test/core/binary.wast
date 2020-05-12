@@ -1491,7 +1491,7 @@
     "\02"                                   ;; break depth for default
     "\0b\0b\0b"                             ;; end
   )
-  "malformed reference type"
+  "unexpected end"
 )
 
 ;; Start section

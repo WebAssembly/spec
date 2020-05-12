@@ -43,7 +43,8 @@ the latter surrounding :ref:`structured control instructions <syntax-instr-contr
 
    type ctrl_stack = stack(ctrl_frame)
    type ctrl_frame = {
-     label_types : list(val_type)
+     opcode : opcode
+     start_types : list(val_type)
      end_types : list(val_type)
      height : nat
      unreachable : bool
@@ -52,11 +53,7 @@ the latter surrounding :ref:`structured control instructions <syntax-instr-contr
 For each value, the value stack records its :ref:`value type <syntax-valtype>`, or :code:`Unknown` when the type is not known.
 
 
-For each entered block, the control stack records a *control frame* with the type of the associated :ref:`label <syntax-label>` (used to type-check branches), the result type of the block (used to check its result), the height of the operand stack at the start of the block (used to check that operands do not underflow the current block), and a flag recording whether the remainder of the block is unreachable (used to handle :ref:`stack-polymorphic <polymorphism>` typing after branches).
-
-.. note::
-   In the presentation of this algorithm, multiple values are supported for the :ref:`result types <syntax-resulttype>` classifying blocks and labels.
-   With the current version of WebAssembly, the :code:`list` could be simplified to an optional value.
+For each entered block, the control stack records a *control frame* with the originating opcode, the types on the top of the operand stack at the start and end of the block (used to check its result as well as branches), the height of the operand stack at the start of the block (used to check that operands do not underflow the current block), and a flag recording whether the remainder of the block is unreachable (used to handle :ref:`stack-polymorphic <polymorphism>` typing after branches).
 
 For the purpose of presenting the algorithm, the operand and control stacks are simply maintained as global variables:
 
@@ -112,17 +109,21 @@ The control stack is likewise manipulated through auxiliary functions:
 
 .. code-block:: pseudo
 
-   func push_ctrl(label : list(val_type), out : list(val_type)) =
-     let frame = ctrl_frame(label, out, vals.size(), false)
+   func push_ctrl(opcode : opcode, in : list(val_type), out : list(val_type)) =
+     let frame = ctrl_frame(opcode, in, out, vals.size(), false)
      ctrls.push(frame)
+     push_vals(in)
 
-   func pop_ctrl() : list(val_type) =
+   func pop_ctrl() : ctrl_frame =
      error_if(ctrls.is_empty())
      let frame = ctrls[0]
      pop_vals(frame.end_types)
      error_if(vals.size() =/= frame.height)
      ctrls.pop()
-     return frame.end_types
+     return frame
+
+   func label_types(frame : ctrl_frame) : list(val_types) =
+     return (if frame.opcode == loop then frame.start_types else frame.end_types)
 
    func unreachable() =
      vals.resize(ctrls[0].height)
@@ -134,6 +135,8 @@ It allocates a new frame record recording them along with the current height of 
 Popping a frame first checks that the control stack is not empty.
 It then verifies that the operand stack contains the right types of values expected at the end of the exited block and pops them off the operand stack.
 Afterwards, it checks that the stack has shrunk back to its initial height.
+
+The type of the :ref:`label <syntax-label>` associated with a control frame is either that of the stack at the start or the end of the frame, determined by the opcode that it originates from.
 
 Finally, the current frame can be marked as unreachable.
 In that case, all existing operand types are purged from the value stack, in order to allow for the :ref:`stack-polymorphism <polymorphism>` logic in :code:`pop_val` to take effect.
@@ -185,41 +188,45 @@ Other instructions are checked in a similar manner.
        case (unreachable)
          unreachable()
 
-       case (block t*)
-         push_ctrl([t*], [t*])
+       case (block t1*->t2*)
+         pop_vals([t1*])
+         push_ctrl(block, [t1*], [t2*])
 
-       case (loop t*)
-         push_ctrl([], [t*])
+       case (loop t1*->t2*)
+         pop_vals([t1*])
+         push_ctrl(loop, [t1*], [t2*])
 
-       case (if t*)
+       case (if t1*->t2*)
          pop_val(I32)
-         push_ctrl([t*], [t*])
+         pop_vals([t1*])
+         push_ctrl(if, [t1*], [t2*])
 
        case (end)
-         let results = pop_ctrl()
-         push_vals(results)
+         let frame = pop_ctrl()
+         push_vals(frame.end_types)
 
        case (else)
-         let results = pop_ctrl()
-         push_ctrl(results, results)
+         let frame = pop_ctrl()
+         error_if(frame.opcode =/= if)
+         push_ctrl(else, frame.start_types, frame.end_types)
 
        case (br n)
          error_if(ctrls.size() < n)
-         pop_vals(ctrls[n].label_types)
+         pop_vals(label_types(ctrls[n]))
          unreachable()
 
        case (br_if n)
          error_if(ctrls.size() < n)
          pop_val(I32)
-         pop_vals(ctrls[n].label_types)
-         push_vals(ctrls[n].label_types)
+         pop_vals(label_types(ctrls[n]))
+         push_vals(label_types(ctrls[n]))
 
        case (br_table n* m)
          error_if(ctrls.size() < m)
          foreach (n in n*)
-           error_if(ctrls.size() < n || ctrls[n].label_types =/= ctrls[m].label_types)
+           error_if(ctrls.size() < n || label_types(ctrls[n]) =/= label_types(ctrls[m]))
          pop_val(I32)
-         pop_vals(ctrls[m].label_types)
+         pop_vals(label_types(ctrls[m]))
          unreachable()
 
 .. note::

@@ -261,6 +261,9 @@ rule token = parse
   | (ixx as t)".clz" { UNARY (intop t i32_clz i64_clz) }
   | (ixx as t)".ctz" { UNARY (intop t i32_ctz i64_ctz) }
   | (ixx as t)".popcnt" { UNARY (intop t i32_popcnt i64_popcnt) }
+  | (ixx as t)".extend8_s" { UNARY (intop t i32_extend8_s i64_extend8_s) }
+  | (ixx as t)".extend16_s" { UNARY (intop t i32_extend16_s i64_extend16_s) }
+  | "i64.extend32_s" { UNARY i64_extend32_s }
   | (fxx as t)".neg" { UNARY (floatop t f32_neg f64_neg) }
   | (fxx as t)".abs" { UNARY (floatop t f32_abs f64_abs) }
   | (fxx as t)".sqrt" { UNARY (floatop t f32_sqrt f64_sqrt) }
@@ -324,6 +327,14 @@ rule token = parse
     { CONVERT (intop t i32_trunc_f64_s i64_trunc_f64_s) }
   | (ixx as t)".trunc_f64_u"
     { CONVERT (intop t i32_trunc_f64_u i64_trunc_f64_u) }
+  | (ixx as t)".trunc_sat_f32_s"
+    { CONVERT (intop t i32_trunc_sat_f32_s i64_trunc_sat_f32_s) }
+  | (ixx as t)".trunc_sat_f32_u"
+    { CONVERT (intop t i32_trunc_sat_f32_u i64_trunc_sat_f32_u) }
+  | (ixx as t)".trunc_sat_f64_s"
+    { CONVERT (intop t i32_trunc_sat_f64_s i64_trunc_sat_f64_s) }
+  | (ixx as t)".trunc_sat_f64_u"
+    { CONVERT (intop t i32_trunc_sat_f64_u i64_trunc_sat_f64_u) }
   | (fxx as t)".convert_i32_s"
     { CONVERT (floatop t f32_convert_i32_s f64_convert_i32_s) }
   | (fxx as t)".convert_i32_u"
