@@ -233,8 +233,8 @@ op:
   table.copy <var>? <var>?
   table.init <var>? <var>
   elem.drop <var>
-  <val_type>.load((8|16|32)_<sign>)? <offset>? <align>?
-  <val_type>.store(8|16|32)? <offset>? <align>?
+  <num_type>.load((8|16|32)_<sign>)? <offset>? <align>?
+  <num_type>.store(8|16|32)? <offset>? <align>?
   memory.size
   memory.grow
   memory.fill
@@ -244,12 +244,12 @@ op:
   ref.null <ref_kind>
   ref.is_null <ref_kind>
   ref.func <var>
-  <val_type>.const <value>
-  <val_type>.<unop>
-  <val_type>.<binop>
-  <val_type>.<testop>
-  <val_type>.<relop>
-  <val_type>.<cvtop>_<val_type>(_<sign>)?
+  <num_type>.const <value>
+  <num_type>.<unop>
+  <num_type>.<binop>
+  <num_type>.<testop>
+  <num_type>.<relop>
+  <num_type>.<cvtop>_<num_type>(_<sign>)?
 
 func:    ( func <name>? <func_type> <local>* <instr>* )
          ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)
@@ -362,11 +362,11 @@ assertion:
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
 result:
-  ( <val_type>.const <numpat> )
+  ( <num_type>.const <num_pat> )
   ( ref.extern )
   ( ref.func )
 
-numpat:
+num_pat:
   <value>                                    ;; literal result
   nan:canonical                              ;; NaN in canonical form
   nan:arithmetic                             ;; NaN with 1 in MSB of payload
@@ -421,9 +421,11 @@ assertion:
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
 result:
-  ( <val_type>.const <numpat> )
+  ( <num_type>.const <num_pat> )
+  ( ref.extern )
+  ( ref.func )
 
-numpat:
+num_pat:
   <value>                                    ;; literal result
   nan:canonical                              ;; NaN in canonical form
   nan:arithmetic                             ;; NaN with 1 in MSB of payload
