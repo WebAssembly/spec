@@ -503,7 +503,7 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
    \production{element list} & \Telemlist &::=&
      et{:}\Telemtype~~y^\ast{:}\Tvec(\Telemexpr_I) \qquad\Rightarrow\quad ( \ETYPE~et, \EINIT~y^\ast ) \\
    \production{element expression} & \Telemexpr &::=&
-     \text{(}~\text{ref.null}~\text{)} \\ &&|&
+     \text{(}~\text{ref.null}~~\text{func}~\text{)} \\ &&|&
      \text{(}~\text{ref.func}~~\Tfuncidx_I~\text{)} \\
    \production{table use} & \Ttableuse_I &::=&
      \text{(}~\text{table}~~x{:}\Ttableidx_I ~\text{)}

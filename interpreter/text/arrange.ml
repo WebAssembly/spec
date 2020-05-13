@@ -307,7 +307,7 @@ let elem_index el =
 
 let elem_expr el =
   match el.it with
-  | RefNull -> Node ("ref.null", [])
+  | RefNull -> Node ("ref.null", [atom elem_kind FuncRefType])
   | RefFunc x -> Node ("ref.func", [atom var x])
 
 let segment_mode category mode =

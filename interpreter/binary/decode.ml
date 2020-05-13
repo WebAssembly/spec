@@ -636,7 +636,10 @@ let elem_kind s =
 
 let elem_expr s =
   match u8 s with
-  | 0xd0 -> end_ s; ref_null
+  | 0xd0 ->
+    expect 0x70 s "funcref expected";
+    end_ s;
+    ref_null
   | 0xd2 ->
     let x = at var s in
     end_ s;

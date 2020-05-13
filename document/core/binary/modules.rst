@@ -343,7 +343,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
    \production{element kind} & \Belemkind &::=&
      \hex{00} &\Rightarrow& \FUNCREF \\
    \production{element expression} & \Belemexpr &::=&
-     \hex{D0}~\hex{0B} &\Rightarrow& \REFNULL~\END \\ &&|&
+     \hex{D0}~\hex{70}~\hex{0B} &\Rightarrow& \REFNULL~\END \\ &&|&
      \hex{D2}~x{:}\Bfuncidx~\hex{0B} &\Rightarrow& (\REFFUNC~x)~\END \\
    \end{array}
 

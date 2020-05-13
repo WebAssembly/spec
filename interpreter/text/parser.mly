@@ -591,7 +591,7 @@ elem_kind :
   | FUNC { FuncRefType }
 
 elem_expr :
-  | LPAR REF_NULL RPAR { let at = at () in fun c -> ref_null @@ at }
+  | LPAR REF_NULL elem_kind RPAR { let at = at () in fun c -> ref_null @@ at }
   | LPAR REF_FUNC var RPAR { let at = at () in fun c -> ref_func ($3 c func) @@ at }
 
 elem_expr_list :

@@ -482,7 +482,7 @@ let encode m =
 
     let elem_expr e =
       match e.it with
-      | RefNull -> u8 0xd0; end_ ()
+      | RefNull -> u8 0xd0; u8 0x70; end_ ()
       | RefFunc x -> u8 0xd2; var x; end_ ()
 
     let elem_index e =
