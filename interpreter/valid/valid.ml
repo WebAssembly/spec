@@ -584,7 +584,7 @@ let check_module (m : module_) =
   let c0 =
     List.fold_right check_import imports
       { empty_context with
-        refs = Free.list Free.elem elems;
+        refs = Free.module_ ({m.it with funcs = []; start = None} @@ m.at);
         types = List.map (fun ty -> ty.it) types;
       }
   in
