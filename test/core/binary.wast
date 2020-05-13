@@ -1184,7 +1184,7 @@
     "\02"                                   ;; break depth for default
     "\0b\0b\0b"                             ;; end
   )
-  "malformed value type"
+  "unexpected end"
 )
 
 ;; Start section

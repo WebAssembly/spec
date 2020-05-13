@@ -68,7 +68,7 @@ logo = 'static/webassembly.png'
 # built documents.
 #
 # The short X.Y version.
-version = u'1.0'
+version = u'1.1'
 # The full version, including alpha/beta/rc tags.
 release = version + ''
 
@@ -478,3 +478,9 @@ epub_exclude_files = ['search.html']
 rst_prolog = """
 .. include:: /""" + pwd + """/util/macros.def
 """
+
+# https://www.sphinx-doc.org/en/master/usage/extensions/math.html#confval-mathjax_config
+# http://docs.mathjax.org/en/v2.7-latest/options/input-processors/TeX.html
+mathjax_config = {
+    'TeX': { 'MAXBUFFER': 30*1024 },
+}
