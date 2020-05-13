@@ -1077,7 +1077,7 @@
     ;; function 0
     "\02\00"
     "\0b")                     ;; end
-  "invalid reference type")
+  "malformed reference type")
 
 ;; passive element segment containing opcode ref.func
 (module binary
@@ -1116,10 +1116,10 @@
 
   "\05\03\01\00\00"          ;; Memory section
 
-  "\09\06\01"                ;; Element section with one segment
+  "\09\07\01"                ;; Element section with one segment
   "\05\70"                   ;; Passive, funcref
   "\01"                      ;; 1 element
-  "\d0\0b"                   ;; ref.null, end
+  "\d0\70\0b"                ;; ref.null, end
 
   "\0a\04\01"                ;; Code section
 
@@ -1350,7 +1350,7 @@
     "\0a\04\01"                             ;; code section
     "\02\00\0b"                             ;; function body
   )
-  "invalid elements segment kind"
+  "malformed elements segment kind"
 )
 
 ;; 1 elem segment declared, 2 given
@@ -1523,3 +1523,4 @@
   )
   "junk after last section"
 )
+

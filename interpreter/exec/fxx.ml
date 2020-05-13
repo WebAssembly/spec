@@ -36,6 +36,7 @@ sig
   val to_float : t -> float
   val of_string : string -> t
   val to_string : t -> string
+  val to_hex_string : t -> string
   val of_bits : bits -> t
   val to_bits : t -> bits
   val add : t -> t -> t
@@ -322,35 +323,43 @@ struct
   (* String conversion that groups digits for readability *)
 
   let is_digit c = '0' <= c && c <= '9'
-  let isnt_digit c = not (is_digit c)
+  let is_hex_digit c = is_digit c || 'a' <= c && c <= 'f'
 
-  let rec add_digits buf s i j k =
+  let rec add_digits buf s i j k n =
     if i < j then begin
       if k = 0 then Buffer.add_char buf '_';
       Buffer.add_char buf s.[i];
-      add_digits buf s (i + 1) j ((k + 2) mod 3)
+      add_digits buf s (i + 1) j ((k + n - 1) mod n) n
     end
 
-  let group_digits s =
+  let group_digits is_digit n s =
+    let isnt_digit c = not (is_digit c) in
     let len = String.length s in
-    let mant = Lib.Option.get (Lib.String.find_from_opt is_digit s 0) len in
+    let x = Lib.Option.get (Lib.String.find_from_opt ((=) 'x') s 0) 0 in
+    let mant = Lib.Option.get (Lib.String.find_from_opt is_digit s x) len in
     let point = Lib.Option.get (Lib.String.find_from_opt isnt_digit s mant) len in
     let frac = Lib.Option.get (Lib.String.find_from_opt is_digit s point) len in
     let exp = Lib.Option.get (Lib.String.find_from_opt isnt_digit s frac) len in
-    let buf = Buffer.create (len*4/3) in
+    let buf = Buffer.create (len*(n+1)/n) in
     Buffer.add_substring buf s 0 mant;
-    add_digits buf s mant point ((point - mant) mod 3 + 3);
+    add_digits buf s mant point ((point - mant) mod n + n) n;
     Buffer.add_substring buf s point (frac - point);
-    add_digits buf s frac exp 3;
+    add_digits buf s frac exp n n;
     Buffer.add_substring buf s exp (len - exp);
     Buffer.contents buf
 
-  let to_string x =
+  let to_string' convert is_digit n x =
     (if x < Rep.zero then "-" else "") ^
     if is_nan x then
       let payload = Rep.logand (abs x) (Rep.lognot bare_nan) in
-      "nan:0x" ^ Rep.to_hex_string payload
+      "nan:0x" ^ group_digits is_hex_digit 4 (Rep.to_hex_string payload)
     else
-      let s = Printf.sprintf "%.17g" (to_float (abs x)) in
-      group_digits (if s.[String.length s - 1] = '.' then s ^ "0" else s)
+      let s = convert (to_float (abs x)) in
+      group_digits is_digit n
+        (if s.[String.length s - 1] = '.' then s ^ "0" else s)
+
+  let to_string = to_string' (Printf.sprintf "%.17g") is_digit 3
+  let to_hex_string x =
+    if is_inf x then to_string x else
+    to_string' (Printf.sprintf "%h") is_hex_digit 4 x
 end

@@ -9,8 +9,6 @@
     (i32.add (local.get $x) (i32.const 1))
   )
 
-  (global anyref (ref.func $f))
-  (global anyref (ref.func $g))
   (global funcref (ref.func $f))
   (global funcref (ref.func $g))
   (global $v (mut funcref) (ref.func $f))
@@ -26,13 +24,13 @@
   (func $ff2)
 
   (func (export "is_null-f") (result i32)
-    (ref.is_null (ref.func $f))
+    (ref.is_null func (ref.func $f))
   )
   (func (export "is_null-g") (result i32)
-    (ref.is_null (ref.func $g))
+    (ref.is_null func (ref.func $g))
   )
   (func (export "is_null-v") (result i32)
-    (ref.is_null (global.get $v))
+    (ref.is_null func (global.get $v))
   )
 
   (func (export "set-f") (global.set $v (ref.func $f)))

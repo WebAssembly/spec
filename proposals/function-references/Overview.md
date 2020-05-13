@@ -40,7 +40,7 @@ Note: In a Wasm engine, function references (whether first-class or as table ent
 
 * Add an instruction `call_ref` for calling a function through a `ref $t`
 
-* Refine the instruction `func.ref $f` to return a typed function reference
+* Refine the instruction `ref.func $f` to return a typed function reference
 
 * Optionally add an instruction `func.bind` to create a closure
 
@@ -64,7 +64,7 @@ The function `$hof` takes a function pointer as parameter, and is invoked by `$c
 )
 
 (func $caller (result i32)
-  (call $hof (func.ref $inc))
+  (call $hof (ref.func $inc))
 )
 ```
 
@@ -73,7 +73,7 @@ The function `$mk-adder` returns a closure of another function:
 (func $add (param i32 i32) (result i32) (i32.add (local.get 0) (local.get 1)))
 
 (func $mk-adder (param $i i32) (result (ref $i32-i32))
-  (func.bind $i32-i32 (local.get $i) (func.ref $add))
+  (func.bind $i32-i32 (local.get $i) (ref.func $add))
 )
 ```
 
@@ -97,7 +97,7 @@ It is also possible to create a typed function table:
 ```
 Such a table can neither contain `null` entries nor functions of another type. Any use of `call_indirect` on this table does hence avoid all runtime checks beyond the basic bounds check. By using multiple tables, each one can be given a homogeneous type. The table can be initialised by growing it (provding an explicit initialiser value. (Open Question: we could also extend table definitions to provide an explicit initialiser.)
 
-Typed references are a subtype of `funcref`, so they can also be used as untyped references. All previous uses of `func.ref` remain valid:
+Typed references are a subtype of `funcref`, so they can also be used as untyped references. All previous uses of `ref.func` remain valid:
 ```wasm
 (func $f (param i32))
 (func $g)
@@ -106,16 +106,16 @@ Typed references are a subtype of `funcref`, so they can also be used as untyped
 (table 10 funcref)
 
 (func $init
-  (table.set (i32.const 0) (func.ref $f))
-  (table.set (i32.const 1) (func.ref $g))
-  (table.set (i32.const 2) (func.ref $h))
+  (table.set (i32.const 0) (ref.func $f))
+  (table.set (i32.const 1) (ref.func $g))
+  (table.set (i32.const 2) (ref.func $h))
 )
 ```
 
 
 ## Language
 
-Based on [reference types proposal](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md), which introduces type `anyref` and `funcref`.
+Based on [reference types proposal](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md), which introduces types `funcref` and `externref`.
 
 
 ### Types
@@ -124,26 +124,36 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 
 A *constructed type* denotes a user-defined or pre-defined data type that is not a primitive scalar:
 
-* `constype ::= null? <typeidx> | any | func | null`
-  - `(null? $t) ok` iff `$t` is defined in the context
-  - `any ok` and `func ok` and `null ok`, always
-  - Note: `null` is only on internal type
+* `constype ::= <typeidx> | func | extern`
+  - `$t ok` iff `$t` is defined in the context
+  - `func ok` and `extern ok`, always
 
 * In the binary encoding,
-  - the non-nullable `<typeidx>` type is encoded as a (positive) signed LEB
-  - `(null <typidx>)` given a new (negative) type opcode, wed by the unsigned LEB
-  - the others use the same (negative) opcodes as the existing `anyref`, `funcref`, respectively
+  - the `<typeidx>` type is encoded as a (positive) signed LEB
+  - the others use the same (negative) opcodes as the existing `funcref`, `externref`, respectively
+
+
+#### Reference types
+
+A *reference type* denotes the type of a reference to some data. It may either include or exclude null:
+
+* `null? <constype>` is a reference type
+  - `reftype ::= null? <constype>`
+  - `null? <constype> ok` iff `<constype> ok`
+
+* In the binary encoding,
+  - null and non-null variant are distinguished by two new (negative) type opcodes
 
 
 #### Value Types
 
-* `ref <constype>` is a new reference type
-  - `reftype ::= ... | ref <constype>`
-  - `(ref <constype>) ok` iff `<constype> ok`
+* `ref <reftype>` is a new value type
+  - `valtype ::= ... | ref <reftype>`
+  - `(ref <reftype>) ok` iff `<reftype> ok`
 
-* Reference types now *all* take the form `ref <constype>`
-  - `anyref`, `funcref`, `nullref` are reinterpreted as abbreviations for `(ref any)`, `(ref func)`, `(ref null)`, respectively
-  - Note: this refactoring allows using `any` and `func` as constructed types, which is relevant for future extensions such as [type imports](https://github.com/WebAssembly/proposal-type-imports/proposals/type-imports/Overview.md)
+* Reference types now *all* take the form `ref null? <constype>`
+  - `funcref` and `externref` are reinterpreted as abbreviations (in both binary and text format) for `(ref null func)` and `(ref null extern)`, respectively
+  - Note: this refactoring allows using `func` and `extern` as constructed types, which is relevant for future extensions such as [type imports](https://github.com/WebAssembly/proposal-type-imports/proposals/type-imports/Overview.md)
 
 
 #### Subtyping
@@ -154,28 +164,26 @@ The following rules, now defined in terms of constructed types, replace and exte
 
 ##### Value Types
 
+* Reference types are covariant
+  - `(ref <reftype1>) <: (ref <reftype2>)`
+    - iff `<reftype1> <: <reftype2>`
+
+##### Value Types
+
 * Reference types are covariant in the referenced constructed type
-  - `(ref <constype1>) <: (ref <constype2>)`
+  - `null <constype1> <: null <constype2>`
+    - iff `<constype1> <: <constype2>`
+  - `<constype1> <: <constype2>`
+    - iff `<constype1> <: <constype2>`
+
+* Non-null types are subtypes of possibly-null types
+  - `<constype1> <: null <constype2>`
     - iff `<constype1> <: <constype2>`
 
 ##### Constructed Types
 
-* Type `func` is a subtype of `any`
-  - `func <: any`
-
-* Type `null` is a subtype of `func`
-  - `null <: func`
-
-* Any nullable type is a subtype of `any` and a supertype of `null`
-  - `(null $t) <: any`
-  - `null <: (null $t)`
-
-* Any concrete type is a subtype of the respective nullable type (and thereby of `any`)
-  - `$t <: (null $t)`
-  - Note: concrete types are *not* supertypes of `null`, i.e., not nullable
-
-* Any nullable function type (and thereby any function type) is a subtype of `func`
-  - `(null $t) <: func`
+* Any function type is a subtype of `func`
+  - `$t <: func`
      - iff `$t = <functype>`
 
 * Note: Function types themselves are invariant for now. This may be relaxed in future extensions.
@@ -185,11 +193,11 @@ The following rules, now defined in terms of constructed types, replace and exte
 
 * Any numeric value type is defaultable (to 0)
 
-* A reference value type is defaultable (to `null`) if it is not of the form `ref $t`
+* A reference value type is defaultable (to `null`) iff it is of the form `ref null $t`
 
 * Function-level locals must have a type that is defaultable.
 
-* Table definitions with a type that is not defaultable must have an initialiser value. (Imports are not affected.)
+* TODO: Table definitions with a type that is not defaultable must have an initialiser value. (Imports are not affected.)
 
 
 ### Instructions
@@ -202,32 +210,35 @@ The following rules, now defined in terms of constructed types, replace and exte
   - this is a *constant instruction*
 
 * `call_ref` calls a function through a reference
-  - `call_ref : [t1* (ref $t)] -> [t2*]`
+  - `call_ref : [t1* (ref null $t)] -> [t2*]`
      - iff `$t = [t1*] -> [t2*]`
+  - traps on `null`
 
 * With the [tail call proposal](https://github.com/WebAssembly/tail-call/blob/master/proposals/tail-call/Overview.md), there will also be `return_call_ref`:
-  - `return_call_ref : [t1* (ref $t)] -> [t2*]`
+  - `return_call_ref : [t1* (ref null $t)] -> [t2*]`
      - iff `$t = [t1*] -> [t2*]`
      - and `t2* <: C.result`
+  - traps on `null`
 
 * Optional extension: `func.bind` creates or extends a closure by binding one or several parameters
-  - `func.bind $t' : [t0* (ref $t)] -> [(ref $t')]`
+  - `func.bind $t' : [t0* (ref null $t)] -> [(ref $t')]`
     - iff `$t = [t0* t1*] -> [t2*]`
     - and `$t' = [t1'*] -> [t2'*]`
     - and `t1'* <: t1*`
     - and `t2* <: t2'*`
+  - traps on `null`
 
 
 #### Optional References
 
-* `ref.as_non_null` converts a nullable reference to a non-null one
-  - `ref.as_non_null : [(ref null $t)] -> [(ref $t)]`
-    - iff `$t` is defined
+* `ref.as_non_null <constype>` converts a nullable reference to a non-null one
+  - `ref.as_non_null ct: [(ref null ct)] -> [(ref ct)]`
+    - iff `ct ok` is defined
   - traps on `null`
 
 * `br_on_null` checks for null and branches
-  - `br_on_null $l : [t* (ref null $t)] -> [t* (ref $t)]`
-    - iff `$t` is defined
+  - `br_on_null $l : [t* (ref null ct)] -> [t* (ref ct)]`
+    - iff `ct ok` is defined
     - and `$l : [t*]`
   - branches to `$l` on `null`, otherwise returns operand as non-null
 
@@ -256,7 +267,7 @@ The rule also implies that let-bound locals are mutable.
 
 ### Tables
 
-* Table definitions have an initialiser value: `(table <tabletype> <constexpr>)`
+* TODO: Table definitions have an initialiser value: `(table <tabletype> <constexpr>)`
   - `(table <limits> <reftype> <constexpr>) ok` iff `<limits> <reftype> ok` and `<constexpr> : <reftype>`
   - `(table <tabletype>)` is shorthand for `(table <tabletype> (ref.null))`
 
@@ -272,10 +283,10 @@ The opcode for reference types is generalised to an `s33`.
 | Opcode | Type            | Parameters |
 | ------ | --------------- | ---------- |
 | i >= 0 | `(ref i)`       |            |
-| -0x10  | `funcref`       |            |
-| -0x11  | `anyref`        |            |
-| -0x12  | `nullref`       |            |
-| -0x14  | `(ref null $t)` | `$t : u32` |
+| -0x10  | `func`          |            |
+| -0x11  | `extern`        |            |
+| -0x14  | `null $t`       | `$t : u32` |
+| -0x15  | `$t`            | `$t : u32` |
 
 ### Instructions
 
@@ -285,7 +296,7 @@ The opcode for reference types is generalised to an `s33`.
 | 0x15   | `return_call_ref`        |            |
 | 0x16   | `func.bind (type $t)`    | `$t : u32` |
 | 0x17   | `let <bt> <locals>`      | `bt : blocktype, locals : (as in functions)` |
-| 0xd3   | `ref.as_non_null`        |            |
+| 0xd3   | `ref.as_non_null ct`     |  ct : constype |
 | 0xd4   | `br_on_null $l`          | `$l : u32` |
 
 ### Tables
@@ -299,11 +310,11 @@ Based on the [JS type reflection proposal](https://github.com/WebAssembly/js-typ
 
 ### Type Representation
 
-* A `ValueType` can be described by an object of the form `{ref: ConsType}`
-  - `type ValueType = ... | {ref: ConsType}`
+* A `ValueType` can be described by an object of the form `{ref: ConsType, ...}`
+  - `type ValueType = ... | {ref: ConsType, nullable: bool}`
 
 * A `ConsType` can be described by a suitable union type
-  - `type ConsType = "any" | "func" | {def: DefType, nullable: bool}`
+  - `type ConsType = "func" | "extern" | DefType`
 
 
 ### Value Conversions
@@ -314,7 +325,9 @@ In addition to the rules for basic reference types:
 
 * Any function that is an instance of `WebAssembly.Function` with type `<functype>` is allowed as `ref <functype>` or `ref null <functype>`.
 
-* The `null` value is allowed as `ref null $t`.
+* Any non-null value is allowed as `ref extern`.
+
+* The `null` value is allowed as `ref null ct`.
 
 
 ### Constructors

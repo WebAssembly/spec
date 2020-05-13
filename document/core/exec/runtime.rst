@@ -11,7 +11,7 @@ Runtime Structure
    pair: abstract syntax; value
 .. _syntax-num:
 .. _syntax-ref:
-.. _syntax-ref.host:
+.. _syntax-ref.extern:
 .. _syntax-val:
 
 Values
@@ -25,7 +25,7 @@ It is convenient to reuse the same notation as for the |CONST| :ref:`instruction
 
 References other than null are represented with additional :ref:`administrative instructions <syntax-instr-admin>`.
 They either are *function references*, pointing to a specific :ref:`function address <syntax-funcaddr>`,
-or *host references* pointing to an uninterpreted form of :ref:`host address <syntax-hostaddr>` that can be defined by the :ref:`embedder <embedder>`.
+or *external references* pointing to an uninterpreted form of :ref:`extern address <syntax-externaddr>` that can be defined by the :ref:`embedder <embedder>` to represent its own objects.
 
 .. math::
    \begin{array}{llcl}
@@ -35,9 +35,9 @@ or *host references* pointing to an uninterpreted form of :ref:`host address <sy
      \F32.\CONST~\f32 \\&&|&
      \F64.\CONST~\f64 \\
    \production{(reference)} & \reff &::=&
-     \REFNULL \\&&|&
+     \REFNULL~t \\&&|&
      \REFFUNCADDR~\funcaddr \\&&|&
-     \REFHOST~\hostaddr \\
+     \REFEXTERNADDR~\externaddr \\
    \production{(value)} & \val &::=&
      \num ~|~ \reff \\
    \end{array}
@@ -53,7 +53,7 @@ it is the respective value :math:`0` for :ref:`number types <syntax-numtype>` an
 .. math::
    \begin{array}{lcl@{\qquad}l}
    \default_t &=& t{.}\CONST~0 & (\iff t = \numtype) \\
-   \default_t &=& \REFNULL & (\iff t = \reftype) \\
+   \default_t &=& \REFNULL~t & (\iff t = \reftype) \\
    \end{array}
 
 
@@ -145,7 +145,7 @@ Convention
 .. _syntax-globaladdr:
 .. _syntax-elemaddr:
 .. _syntax-dataaddr:
-.. _syntax-hostaddr:
+.. _syntax-externaddr:
 .. _syntax-addr:
 
 Addresses
@@ -171,7 +171,7 @@ In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *h
      \addr \\
    \production{(data address)} & \dataaddr &::=&
      \addr \\
-   \production{(host address)} & \hostaddr &::=&
+   \production{(extern address)} & \externaddr &::=&
      \addr \\
    \end{array}
 
@@ -414,6 +414,7 @@ It filters out entries of a specific kind in an order-preserving fashion:
 
 * :math:`\evglobals(\externval^\ast) = [\globaladdr ~|~ (\EVGLOBAL~\globaladdr) \in \externval^\ast]`
 
+
 .. index:: ! stack, ! frame, ! label, instruction, store, activation, function, call, local, module instance
    pair: abstract syntax; frame
    pair: abstract syntax; label
@@ -465,7 +466,7 @@ Intuitively, :math:`\instr^\ast` is the *continuation* to execute when the branc
    For example, a loop label has the form
 
    .. math::
-      \LABEL_n\{\LOOP~[t^?]~\dots~\END\}
+      \LABEL_n\{\LOOP~\dots~\END\}
 
    When performing a branch to this label, this executes the loop, effectively restarting it from the beginning.
    Conversely, a simple block label has the form
@@ -500,9 +501,13 @@ Conventions
 
 * The meta variable :math:`F` ranges over frames where clear from context.
 
-.. note::
-   In the current version of WebAssembly, the arities of labels and frames cannot be larger than :math:`1`.
-   This may be generalized in future versions.
+* The following auxiliary definition takes a :ref:`block type <syntax-blocktype>` and looks up the :ref:`function type <syntax-functype>` that it denotes in the current frame:
+
+.. math::
+   \begin{array}{lll}
+   \expand_F(\typeidx) &=& F.\AMODULE.\MITYPES[\typeidx] \\
+   \expand_F([\valtype^?]) &=& [] \to [\valtype^?] \\
+   \end{array}
 
 
 .. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap, call, memory, memory instance, table, table instance, element, data, segment
@@ -526,7 +531,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
      \dots \\ &&|&
      \TRAP \\ &&|&
      \REFFUNCADDR~\funcaddr \\ &&|&
-     \REFHOST~\hostaddr \\ &&|&
+     \REFEXTERNADDR~\externaddr \\ &&|&
      \INVOKE~\funcaddr \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
      \FRAME_n\{\frame\}~\instr^\ast~\END \\
@@ -535,7 +540,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
 The |TRAP| instruction represents the occurrence of a trap.
 Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single |TRAP| instruction, signalling abrupt termination.
 
-The |REFFUNCADDR| instruction represents :ref:`function reference values <syntax-ref.func>`. Similarly, |REFHOST| represents :ref:`host references <syntax-ref.host>`.
+The |REFFUNCADDR| instruction represents :ref:`function reference values <syntax-ref.func>`. Similarly, |REFEXTERNADDR| represents :ref:`external references <syntax-ref.extern>`.
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.
@@ -556,7 +561,7 @@ That way, the end of the inner instruction sequence is known when part of an out
    When |END| is reached, i.e., the inner instruction sequence has been reduced to the empty sequence -- or rather, a sequence of :math:`n` |CONST| instructions representing the resulting values -- then the |LABEL| instruction is eliminated courtesy of its own :ref:`reduction rule <exec-label>`:
 
    .. math::
-      \LABEL_n\{\instr^n\}~\val^\ast~\END \quad\stepto\quad \val^n
+      \LABEL_m\{\instr^\ast\}~\val^n~\END \quad\stepto\quad \val^n
 
    This can be interpreted as removing the label from the stack and only leaving the locally accumulated operand values.
 

@@ -1,3 +1,5 @@
+type void
+
 module Fun =
 struct
   let id x = x
@@ -110,6 +112,10 @@ struct
       match f x with
       | None -> map_filter f xs
       | Some y -> y :: map_filter f xs
+
+  let rec concat_map f = function
+    | [] -> []
+    | x::xs -> f x @ concat_map f xs
 end
 
 module List32 =

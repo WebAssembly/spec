@@ -25,6 +25,7 @@ Number Types
 .. index:: reference type
    pair: text format; reference type
 .. _text-reftype:
+.. _text-refedtype:
 
 Reference Types
 ~~~~~~~~~~~~~~~
@@ -32,9 +33,11 @@ Reference Types
 .. math::
    \begin{array}{llcll@{\qquad\qquad}l}
    \production{reference type} & \Treftype &::=&
-     \text{anyref} &\Rightarrow& \ANYREF \\ &&|&
      \text{funcref} &\Rightarrow& \FUNCREF \\ &&|&
-     \text{nullref} &\Rightarrow& \NULLREF \\
+     \text{externref} &\Rightarrow& \EXTERNREF \\
+   \production{referenced type} & \Trefedtype &::=&
+     \text{func} &\Rightarrow& \FUNCREF \\ &&|&
+     \text{extern} &\Rightarrow& \EXTERNREF \\
    \end{array}
 
 
@@ -51,23 +54,6 @@ Value Types
      t{:}\Tnumtype &\Rightarrow& t \\ &&|&
      t{:}\Treftype &\Rightarrow& t \\
    \end{array}
-
-
-.. index:: result type, value type
-   pair: text format; result type
-.. _text-resulttype:
-
-Result Types
-~~~~~~~~~~~~
-
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{result type} & \Tresulttype &::=&
-     (t{:}\Tresult)^? &\Rightarrow& [t^?] \\
-   \end{array}
-
-.. note::
-   In future versions of WebAssembly, this scheme may be extended to support multiple results or more general result types.
 
 
 .. index:: function type, value type, result type
@@ -91,6 +77,7 @@ Function Types
      \text{(}~\text{result}~~t{:}\Tvaltype~\text{)}
        &\Rightarrow& t \\
    \end{array}
+
 
 Abbreviations
 .............

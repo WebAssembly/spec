@@ -54,18 +54,12 @@ Reference Types
 .. math::
    \begin{array}{llll}
    \production{reference type} & \reftype &::=&
-     \ANYREF ~|~ \FUNCREF ~|~ \NULLREF \\
+     \FUNCREF ~|~ \EXTERNREF \\
    \end{array}
-
-The type |ANYREF| denotes the infinite union of all references, and thereby a :ref:`supertype <match-reftype>` of all other reference types.
 
 The type |FUNCREF| denotes the infinite union of all references to :ref:`functions <syntax-func>`, regardless of their :ref:`function types <syntax-functype>`.
 
-The type |NULLREF| only contains a single value: the :ref:`null <syntax-ref.null>` reference.
-It is a :ref:`subtype <match-reftype>` of all other reference types.
-
-.. note::
-   Future versions of WebAssembly may include reference types that do not include null and hence are not supertypes of |NULLREF|.
+The type |EXTERNREF| denotes the infinite union of all references to objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
 
 Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
@@ -84,7 +78,7 @@ They are either :ref:`number types <syntax-numtype>`, :ref:`reference type <synt
 
 The type :math:`\BOT` is a :ref:`subtype <match-valtype>` of all other types.
 By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
-it only occurs during :ref:`validation <valid>`.
+it only occurs during :ref:`validation <valid>`, as a possible operand type for instructions.
 
 .. math::
    \begin{array}{llll}
@@ -98,7 +92,7 @@ Conventions
 * The meta variable :math:`t` ranges over value types or subclasses thereof where clear from context.
 
 
-.. index:: ! result type, value type, instruction, execution, block
+.. index:: ! result type, value type, instruction, execution, function
    pair: abstract syntax; result type
    pair: result; type
 .. _syntax-resulttype:
@@ -106,21 +100,17 @@ Conventions
 Result Types
 ~~~~~~~~~~~~
 
-*Result types* classify the result of :ref:`executing <exec-instr>` :ref:`instructions <syntax-instr>` or :ref:`blocks <syntax-instr-control>`,
+*Result types* classify the result of :ref:`executing <exec-instr>` :ref:`instructions <syntax-instr>` or :ref:`functions <syntax-func>`,
 which is a sequence of values written with brackets.
 
 .. math::
    \begin{array}{llll}
    \production{result type} & \resulttype &::=&
-     [\valtype^?] \\
+     [\vec(\valtype)] \\
    \end{array}
 
-.. note::
-   In the current version of WebAssembly, at most one value is allowed as a result.
-   However, this may be generalized to sequences of values in future versions.
 
-
-.. index:: ! function type, value type, vector, function, parameter, result
+.. index:: ! function type, value type, vector, function, parameter, result, result type
    pair: abstract syntax; function type
    pair: function; type
 .. _syntax-functype:
@@ -129,18 +119,14 @@ Function Types
 ~~~~~~~~~~~~~~
 
 *Function types* classify the signature of :ref:`functions <syntax-func>`,
-mapping a vector of parameters to a vector of results, written as follows.
+mapping a vector of parameters to a vector of results.
+They are also used to classify the inputs and outputs of :ref:`instructions <syntax-instr>`.
 
 .. math::
    \begin{array}{llll}
    \production{function type} & \functype &::=&
-     [\vec(\valtype)] \to [\vec(\valtype)] \\
+     \resulttype \to \resulttype \\
    \end{array}
-
-.. note::
-   In the current version of WebAssembly,
-   the length of the result type vector of a :ref:`valid <valid-functype>` function type may be at most :math:`1`.
-   This restriction may be removed in future versions.
 
 
 .. index:: ! limits, memory type, table type

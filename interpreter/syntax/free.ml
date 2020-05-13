@@ -68,16 +68,21 @@ let var_type = function
 let num_type = function
   | I32Type | I64Type | F32Type | F64Type -> empty
 
+let refed_type = function
+  | FuncRefType | ExternRefType -> empty
+  | DefRefType x -> var_type x
+
 let ref_type = function
-  | AnyRefType | FuncRefType | NullRefType -> empty
-  | DefRefType (_, x) -> var_type x
+  | (_, t) -> refed_type t
 
 let value_type = function
   | NumType t -> num_type t
   | RefType t -> ref_type t
   | BotType -> empty
 
-let block_type bt = list value_type bt
+let block_type = function
+  | VarBlockType x -> var_type x
+  | ValBlockType _ -> empty
 
 let func_type (FuncType (ins, out)) =
   list value_type ins ++ list value_type out
@@ -92,7 +97,7 @@ let rec instr (e : instr) =
   match e.it with
   | Unreachable | Nop | Drop -> empty
   | Select tso -> list value_type (Lib.Option.get tso [])
-  | RefNull | RefIsNull | RefAsNonNull -> empty
+  | RefNull t | RefIsNull t | RefAsNonNull t -> refed_type t
   | RefFunc x -> funcs (idx x)
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es

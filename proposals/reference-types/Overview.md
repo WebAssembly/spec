@@ -7,7 +7,7 @@ TODO: more text, motivation, explanation
 Motivation:
 
 * Easier and more efficient interop with host environment (see e.g. the [Interface Types proposal](https://github.com/WebAssembly/interface-types/blob/master/proposals/interface-types/Explainer.md))
-  - allow host references to be represented directly by type `anyref` (see [here](https://github.com/WebAssembly/interface-types/issues/9))
+  - allow host references to be represented directly by type `externref` (see [here](https://github.com/WebAssembly/interface-types/issues/9))
   - without having to go through tables, allocating slots, and maintaining index bijections at the boundaries
 
 * Basic manipulation of tables inside Wasm
@@ -25,8 +25,7 @@ by repurposing tables as a general memory for opaque data types
 Get the most important parts soon!
 
 Summary:
-
-* Add new types `anyref` and `nullref` that can be used as both a value types and a table element types.
+* Add new type `externref` that can be used as both a value types and a table element type.
 
 * Also allow `funcref` as a value type.
 
@@ -47,8 +46,8 @@ Notes:
 
 Typing extensions:
 
-* Introduce `anyref`, `funcref`, and `nullref` as a new class of *reference types*.
-  - `reftype ::= anyref | funcref | nullref`
+* Introduce `funcref` and `externref` as a new class of *reference types*.
+  - `reftype ::= funcref | externref`
 
 * Value types (of locals, globals, function parameters and results) can now be either numeric types or reference types.
   - `numtype ::= i32 | i64 | f32 | f64`
@@ -58,21 +57,17 @@ Typing extensions:
 * Element types (of tables) are equated with reference types.
   - `elemtype ::= <reftype>`
 
-* Introduce a simple subtype relation between reference types.
-  - reflexive transitive closure of the following rules
-  - `t <: anyref` for all reftypes `t`
-  - `nullref <: anyref` and `nullref <: funcref`
-  - Note: No rule `nullref <: t` for all reftypes `t` -- while that is derivable from the above given the current set of types it might not hold for future reference types which don't allow null.
-
 
 New/extended instructions:
 
 * The new instruction `ref.null` evaluates to the null reference constant.
-  - `ref.null : [] -> [nullref]`
+  - `ref.null rt : [] -> [rtref]`
+    - iff `rt = func` or `rt = extern`
   - allowed in constant expressions
 
 * The new instruction `ref.is_null` checks for null.
-  - `ref.is_null : [anyref] -> [i32]`
+  - `ref.is_null rt : [rtref] -> [i32]`
+    - iff `rt = func` or `rt = extern`
 
 * The new instruction `ref.func` creates a reference to a given function.
   - `ref.func $x : [] -> [funcref]`
@@ -137,12 +132,25 @@ Table extensions:
 
 API extensions:
 
-* Any JS value can be passed as `anyref` to a Wasm function, stored in a global, or in a table.
+* Any JS value can be passed as `externref` to a Wasm function, stored in a global, or in a table.
 
 * Any Wasm exported function object or `null` can be passed as `funcref` to a Wasm function, stored in a global, or in a table.
 
 
 ## Possible Future Extensions
+
+
+### Subtyping
+
+Motivation:
+
+* Enable various extensions (see below).
+
+Additions:
+
+* Introduce a simple subtype relation between reference types.
+  - reflexive transitive closure of the following rules
+  - `t <: anyref` for all reftypes `t`
 
 
 ### Equality on references
@@ -159,7 +167,6 @@ Additions:
   - `reftype ::= ... | eqref`
 * It is a subtype of `anyref`
   - `eqref < anyref`
-  - `nullref < eqref`
 * Add `ref.eq` instruction.
   - `ref.eq : [eqref eqref] -> [i32]`
 

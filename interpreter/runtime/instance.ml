@@ -35,7 +35,7 @@ type Value.ref_ += FuncRef of func_inst
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | FuncRef f -> DefRefType (NonNullable, SemVar (Func.type_inst_of f))
+    | FuncRef f -> DefRefType (SemVar (Func.type_inst_of f))
     | r -> type_of_ref' r
 
 let () =

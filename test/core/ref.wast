@@ -5,14 +5,14 @@
 
   (func
     (param
-      anyref
       funcref
-      nullref
-      (ref any)
+      externref
       (ref func)
-      (ref null)
+      (ref extern)
       (ref 0)
       (ref $t)
+      (ref null func)
+      (ref null extern)
       (ref null 0)
       (ref null $t)
     )
@@ -32,7 +32,7 @@
 )
 
 (assert_invalid
-  (module (global $global-invalid (ref null 1) (ref.null)))
+  (module (global $global-invalid (ref null 1) (ref.null 1)))
   "unknown type"
 )
 
@@ -60,11 +60,11 @@
 )
 
 (assert_invalid
-  (module (func $block-result-invalid (drop (block (result (ref 1))))))
+  (module (func $block-result-invalid (drop (block (result (ref 1)) (unreachable)))))
   "unknown type"
 )
 (assert_invalid
-  (module (func $loop-result-invalid (drop (loop (result (ref 1))))))
+  (module (func $loop-result-invalid (drop (loop (result (ref 1)) (unreachable)))))
   "unknown type"
 )
 (assert_invalid

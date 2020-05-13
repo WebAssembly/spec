@@ -15,6 +15,7 @@ Construct                                        Judgement
 ===============================================  ===============================================================================
 :ref:`Limits <valid-limits>`                     :math:`\vdashlimits \limits : k`
 :ref:`Function type <valid-functype>`            :math:`\vdashfunctype \functype \ok`
+:ref:`Block type <valid-blocktype>`              :math:`\vdashblocktype \blocktype \ok`
 :ref:`Table type <valid-tabletype>`              :math:`\vdashtabletype \tabletype \ok`
 :ref:`Memory type <valid-memtype>`               :math:`\vdashmemtype \memtype \ok`
 :ref:`Global type <valid-globaltype>`            :math:`\vdashglobaltype \globaltype \ok`
@@ -82,10 +83,6 @@ Matching
 ===============================================  ===============================================================================
 Construct                                        Judgement
 ===============================================  ===============================================================================
-:ref:`Number type <match-numtype>`               :math:`\vdashnumtypematch \numtype_1 \matchesvaltype \numtype_2`
-:ref:`Reference type <match-reftype>`            :math:`\vdashreftypematch \reftype_1 \matchesvaltype \reftype_2`
-:ref:`Value type <match-valtype>`                :math:`\vdashvaltypematch \valtype_1 \matchesvaltype \valtype_2`
-:ref:`Result type <match-resulttype>`            :math:`\vdashresulttypematch [t_1^?] \matchesresulttype [t_2^?]`
 :ref:`External type <match-externtype>`          :math:`\vdashexterntypematch \externtype_1 \matchesexterntype \externtype_2`
 :ref:`Limits <match-limits>`                     :math:`\vdashlimitsmatch \limits_1 \matcheslimits \limits_2`
 ===============================================  ===============================================================================
