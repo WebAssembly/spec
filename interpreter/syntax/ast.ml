@@ -47,8 +47,21 @@ end
 (* FIXME *)
 module SimdOp =
 struct
-  type unop = F32x4Abs | F64x2Abs
-  type binop = F32x4Min | F32x4Max | F64x2Min | F64x2Max
+  type iunop = TodoIunop
+  type ibinop = TodoIbinop
+  type funop = Abs
+  type fbinop = Min | Max
+
+  type ('i8x16, 'i16x8, 'i32x4, 'i64x2, 'f32x4, 'f64x2) v128op =
+    | I8x16 of 'i8x16
+    | I16x8 of 'i16x8
+    | I32x4 of 'i32x4
+    | I64x2 of 'i64x2
+    | F32x4 of 'f32x4
+    | F64x2 of 'f64x2
+
+  type unop = (iunop, iunop, iunop, iunop, funop, funop) v128op
+  type binop = (ibinop, ibinop, ibinop, ibinop, fbinop, fbinop) v128op
   type testop = TodoTestOp
   type relop = TodoRelOp
   type cvtop = TodoCvtOp

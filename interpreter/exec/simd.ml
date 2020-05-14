@@ -33,6 +33,18 @@ sig
   val of_f64x2 : F64.t list -> t
 end
 
+(* This signature defines the types and operations SIMD floats can expose. *)
+module type Float =
+sig
+  type t
+  type lane
+
+  val abs : t -> t
+  val min : t -> t -> t
+  val max : t -> t -> t
+  val extract_lane : int -> t -> lane
+end
+
 module type S =
 sig
   type t
@@ -45,15 +57,10 @@ sig
 
   val i32x4_extract_lane : int -> t -> I32.t
 
-  val f32x4_min : t -> t -> t
-  val f32x4_max : t -> t -> t
-  val f32x4_abs : t -> t
-  val f32x4_extract_lane : int -> t -> F32.t
-
-  val f64x2_min : t -> t -> t
-  val f64x2_max : t -> t -> t
-  val f64x2_abs : t -> t
-  val f64x2_extract_lane : int -> t -> F64.t
+  (* We need type t = t to ensure that all submodule types are S.t,
+   * then callers don't have to change *)
+  module F32x4 : Float with type t = t and type lane = F32.t
+  module F64x2 : Float with type t = t and type lane = F64.t
 end
 
 module Make (Rep : RepType) : S with type bits = Rep.t =
@@ -71,27 +78,29 @@ struct
 
   let i32x4_extract_lane i x = List.nth (to_i32x4 x) i
 
-  let to_f32x4 = Rep.to_f32x4
-  let of_f32x4 = Rep.of_f32x4
-  let f32x4_unop f x =
-    of_f32x4 (List.map f (to_f32x4 x))
-  let f32x4_binop f x y =
-    of_f32x4 (List.map2 f (to_f32x4 x) (to_f32x4 y))
+  module MakeFloat (Float : Float.S) (Convert : sig
+      val to_shape : Rep.t -> Float.t list
+      val of_shape : Float.t list -> Rep.t
+    end) : Float with type t = Rep.t and type lane = Float.t =
+  struct
+    type t = Rep.t
+    type lane = Float.t
+    let unop f x = Convert.of_shape (List.map f (Convert.to_shape x))
+    let binop f x y = Convert.of_shape (List.map2 f (Convert.to_shape x) (Convert.to_shape y))
+    let abs = unop Float.abs
+    let min = binop Float.min
+    let max = binop Float.max
+    let extract_lane i s = List.nth (Convert.to_shape s) i
+  end
 
-  let f32x4_extract_lane i x = List.nth (to_f32x4 x) i
-  let f32x4_min = f32x4_binop F32.min
-  let f32x4_max = f32x4_binop F32.max
-  let f32x4_abs x = f32x4_unop F32.abs x
+  module F32x4 = MakeFloat (F32) (struct
+      let to_shape = Rep.to_f32x4
+      let of_shape = Rep.of_f32x4
+    end)
 
-  let to_f64x2 = Rep.to_f64x2
-  let of_f64x2 = Rep.of_f64x2
-  let f64x2_unop f x =
-    of_f64x2 (List.map f (to_f64x2 x))
-  let f64x2_binop f x y =
-    of_f64x2 (List.map2 f (to_f64x2 x) (to_f64x2 y))
+  module F64x2 = MakeFloat (F64) (struct
+      let to_shape = Rep.to_f64x2
+      let of_shape = Rep.of_f64x2
+    end)
 
-  let f64x2_extract_lane i x = List.nth (to_f64x2 x) i
-  let f64x2_min = f64x2_binop F64.min
-  let f64x2_max = f64x2_binop F64.max
-  let f64x2_abs x = f64x2_unop F64.abs x
 end
