@@ -14,7 +14,7 @@ Furthermore, most definitions are themselves classified with a suitable type.
 Functions
 ~~~~~~~~~
 
-Functions :math:`\func` are classified by :ref:`function types <syntax-functype>` of the form :math:`[t_1^\ast] \to [t_2^?]`.
+Functions :math:`\func` are classified by :ref:`function types <syntax-functype>` of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 
 :math:`\{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \}`
@@ -22,33 +22,30 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^?]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`,
   but with:
 
   * |CLOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
 
-  * |CLABELS| set to the singular sequence containing only :ref:`result type <syntax-valtype>` :math:`[t_2^?]`.
+  * |CLABELS| set to the singular sequence containing only :ref:`result type <syntax-valtype>` :math:`[t_2^\ast]`.
 
-  * |CRETURN| set to the :ref:`result type <syntax-valtype>` :math:`[t_2^?]`.
+  * |CRETURN| set to the :ref:`result type <syntax-valtype>` :math:`[t_2^\ast]`.
 
 * Under the context :math:`C'`,
-  the expression :math:`\expr` must be valid with type :math:`t_2^?`.
+  the expression :math:`\expr` must be valid with type :math:`[t_2^\ast]`.
 
-* Then the function definition is valid with type :math:`[t_1^\ast] \to [t_2^?]`.
+* Then the function definition is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\CTYPES[x] = [t_1^\ast] \to [t_2^?]
+     C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
      \qquad
-     C,\CLOCALS\,t_1^\ast~t^\ast,\CLABELS~[t_2^?],\CRETURN~[t_2^?] \vdashexpr \expr : [t_2^?]
+     C,\CLOCALS\,t_1^\ast~t^\ast,\CLABELS~[t_2^\ast],\CRETURN~[t_2^\ast] \vdashexpr \expr : [t_2^\ast]
    }{
-     C \vdashfunc \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : [t_1^\ast] \to [t_2^?]
+     C \vdashfunc \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : [t_1^\ast] \to [t_2^\ast]
    }
-
-.. note::
-   The restriction on the length of the result types :math:`t_2^\ast` may be lifted in future versions of WebAssembly.
 
 
 .. index:: table, table type
@@ -156,7 +153,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
   * The expression :math:`e_i` must be :ref:`constant <valid-const>`.
 
-* The element mode :math:`\elemmode` must be valid with :ref:`reference type <syntax-reftype>` :math:`t'`.
+* The element mode :math:`\elemmode` must be valid with some :ref:`reference type <syntax-reftype>` :math:`t'`.
 
 * The :ref:`reference type <syntax-reftype>` :math:`t` must :ref:`match <match-reftype>` the reference type :math:`t'`.
 
@@ -214,7 +211,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
      C \vdashexprconst \expr \const
      \end{array}
    }{
-     C \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} : t 
+     C \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} : t
    }
 
 :math:`\EDECLARATIVE`
@@ -533,7 +530,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C.\CELEMS` is :math:`{\X{rt}}^\ast` as determined below,
 
-  * :math:`C.\CDATAS` is :math:`{\ok}^{N_d}`, where :math:`N_d` is the length of the vector :math:`\module.\MDATAS`,
+  * :math:`C.\CDATAS` is :math:`{\ok}^n`, where :math:`n` is the length of the vector :math:`\module.\MDATAS`,
 
   * :math:`C.\CLOCALS` is empty,
 
@@ -541,7 +538,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C.\CRETURN` is empty.
 
-  * :math:`C.\CREFS` is the set :math:`\freefuncidx(\module.\MELEMS)`, i.e., the set of :ref:`function indices <syntax-funcidx>` occurring in any of the module's :ref:`element segments <syntax-elem>`.
+  * :math:`C.\CREFS` is the set :math:`\freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)`, i.e., the set of :ref:`function indices <syntax-funcidx>` occurring in the module, except in its :ref:`functions <syntax-func>` or :ref:`start function <syntax-start>`.
 
 * Let :math:`C'` be the :ref:`context <context>` where:
 
@@ -610,7 +607,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     (\vdashfunctype \functype \ok)^\ast
+     (\vdashfunctype \type \ok)^\ast
      \quad
      (C \vdashfunc \func : \X{ft})^\ast
      \quad
@@ -622,7 +619,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \\
      (C \vdashelem \elem : \X{rt})^\ast
      \quad
-     (C \vdashdata \data \ok)^{N_d}
+     (C \vdashdata \data \ok)^n
      \quad
      (C \vdashstart \start \ok)^?
      \quad
@@ -638,28 +635,32 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \qquad
      \X{igt}^\ast = \etglobals(\X{it}^\ast)
      \\
-     C = \{ \CTYPES~\functype^\ast, \CFUNCS~\X{ift}^\ast~\X{ft}^\ast, \CTABLES~\X{itt}^\ast~\X{tt}^\ast, \CMEMS~\X{imt}^\ast~\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast~\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^{N_d}, \CREFS~\freefuncidx(\elem^\ast) \}
+     x^\ast = \freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)
+     \\
+     C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
      C' = \{ \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad
      |C.\CMEMS| \leq 1
      \qquad
      (\export.\ENAME)^\ast ~\F{disjoint}
-     \end{array}
-   }{
-     \vdashmodule \{
+     \\
+     \module = \{
        \begin{array}[t]{@{}l@{}}
-         \MTYPES~\functype^\ast,
+         \MTYPES~\type^\ast,
          \MFUNCS~\func^\ast,
          \MTABLES~\table^\ast,
          \MMEMS~\mem^\ast,
          \MGLOBALS~\global^\ast, \\
          \MELEMS~\elem^\ast,
-         \MDATAS~\data^{N_d},
+         \MDATAS~\data^n,
          \MSTART~\start^?,
          \MIMPORTS~\import^\ast,
-         \MEXPORTS~\export^\ast \} : \X{it}^\ast \to \X{et}^\ast \\
+         \MEXPORTS~\export^\ast \}
        \end{array}
+     \end{array}
+   }{
+     \vdashmodule \module : \X{it}^\ast \to \X{et}^\ast
    }
 
 .. note::

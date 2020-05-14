@@ -120,7 +120,7 @@ let vec f s = let n = len32 s in list f n s
 let name s =
   let pos = pos s in
   try Utf8.decode (string s) with Utf8.Utf8 ->
-    error s pos "invalid UTF-8 encoding"
+    error s pos "malformed UTF-8 encoding"
 
 let sized f s =
   let size = len32 s in
@@ -140,34 +140,38 @@ let num_type s =
   | -0x02 -> I64Type
   | -0x03 -> F32Type
   | -0x04 -> F64Type
-  | _ -> error s (pos s - 1) "invalid number type"
+  | _ -> error s (pos s - 1) "malformed number type"
 
-let ref_type s =
+let refed_type s =
+  let pos = pos s in
   match vs33 s with
   | -0x10l -> FuncRefType
-  | -0x11l -> AnyRefType
-  | -0x12l -> NullRefType
-  | -0x14l -> DefRefType (Nullable, SynVar (vu32 s))
-  | i when i >= 0l -> DefRefType (NonNullable, SynVar i)
-  | _ -> error s (pos s - 1) "invalid reference type"
+  | -0x11l -> ExternRefType
+  | i when i >= 0l -> DefRefType (SynVar i)
+  | _ -> error s pos "malformed reference type"
+
+let ref_type s =
+  let pos = pos s in
+  match vs33 s with
+  | -0x10l -> (Nullable, FuncRefType)
+  | -0x11l -> (Nullable, ExternRefType)
+  | -0x14l -> (Nullable, refed_type s)
+  | -0x15l -> (NonNullable, refed_type s)
+  | _ -> error s pos "malformed reference type"
 
 let value_type s =
   match peek s with
   | Some n when n > 0x70 -> NumType (num_type s)
   | _ -> RefType (ref_type s)
 
-let stack_type s =
-  match peek s with
-  | Some 0x40 -> skip 1 s; []
-  | _ -> [value_type s]
-
+let stack_type s = vec value_type s
 let func_type s =
   match vs7 s with
   | -0x20 ->
-    let ins = vec value_type s in
-    let out = vec value_type s in
+    let ins = stack_type s in
+    let out = stack_type s in
     FuncType (ins, out)
-  | _ -> error s (pos s - 1) "invalid function type"
+  | _ -> error s (pos s - 1) "malformed function type"
 
 let limits vu s =
   let has_max = bool s in
@@ -188,7 +192,7 @@ let mutability s =
   match u8 s with
   | 0 -> Immutable
   | 1 -> Mutable
-  | _ -> error s (pos s - 1) "invalid mutability"
+  | _ -> error s (pos s - 1) "malformed mutability"
 
 let global_type s =
   let t = value_type s in
@@ -212,9 +216,15 @@ let zero_flag s = expect 0x00 s "zero flag expected"
 
 let memop s =
   let align = vu32 s in
-  require (I32.le_u align 32l) s (pos s - 1) "invalid memop flags";
+  require (I32.le_u align 32l) s (pos s - 1) "malformed memop flags";
   let offset = vu32 s in
   Int32.to_int align, offset
+
+let block_type s =
+  match peek s with
+  | Some 0x40 -> skip 1 s; ValBlockType None
+  | Some b when b land 0xc0 = 0x40 -> ValBlockType (Some (value_type s))
+  | _ -> VarBlockType (SynVar (vs33 s))
 
 let local s =
   let n = vu32 s in
@@ -236,17 +246,17 @@ let rec instr s =
   | 0x01 -> nop
 
   | 0x02 ->
-    let bt = stack_type s in
-    let es = instr_block s in
+    let bt = block_type s in
+    let es' = instr_block s in
     end_ s;
-    block bt es
+    block bt es'
   | 0x03 ->
-    let bt = stack_type s in
-    let es = instr_block s in
+    let bt = block_type s in
+    let es' = instr_block s in
     end_ s;
-    loop bt es
+    loop bt es'
   | 0x04 ->
-    let bt = stack_type s in
+    let bt = block_type s in
     let es1 = instr_block s in
     if peek s = Some 0x05 then begin
       expect 0x05 s "ELSE or END opcode expected";
@@ -283,7 +293,7 @@ let rec instr s =
   | 0x16 -> func_bind (at var s)
 
   | 0x17 ->
-    let bt = stack_type s in
+    let bt = block_type s in
     let locs = locals s in
     let es = instr_block s in
     end_ s;
@@ -473,19 +483,31 @@ let rec instr s =
   | 0xbe -> f32_reinterpret_i32
   | 0xbf -> f64_reinterpret_i64
 
-  | 0xc0 | 0xc1 | 0xc2 | 0xc3 | 0xc4 | 0xc5 | 0xc6 | 0xc7
-  | 0xc8 | 0xc9 | 0xca | 0xcb | 0xcc | 0xcd | 0xce | 0xcf as b -> illegal s pos b
+  | 0xc0 -> i32_extend8_s
+  | 0xc1 -> i32_extend16_s
+  | 0xc2 -> i64_extend8_s
+  | 0xc3 -> i64_extend16_s
+  | 0xc4 -> i64_extend32_s
 
-  | 0xd0 -> ref_null
-  | 0xd1 -> ref_is_null
+  | 0xc5 | 0xc6 | 0xc7 | 0xc8 | 0xc9 | 0xca | 0xcb
+  | 0xcc | 0xcd | 0xce | 0xcf as b -> illegal s pos b
+
+  | 0xd0 -> ref_null (refed_type s)
+  | 0xd1 -> ref_is_null (refed_type s)
   | 0xd2 -> ref_func (at var s)
-  | 0xd3 -> ref_as_non_null
+  | 0xd3 -> ref_as_non_null (refed_type s)
   | 0xd4 -> br_on_null (at var s)
 
   | 0xfc as b1 ->
     (match op s with
-    | 0x00 | 0x01 | 0x02 | 0x03 | 0x04 | 0x05 | 0x06 | 0x07 as b2 ->
-      illegal2 s pos b1 b2
+    | 0x00 -> i32_trunc_sat_f32_s
+    | 0x01 -> i32_trunc_sat_f32_u
+    | 0x02 -> i32_trunc_sat_f64_s
+    | 0x03 -> i32_trunc_sat_f64_u
+    | 0x04 -> i64_trunc_sat_f32_s
+    | 0x05 -> i64_trunc_sat_f32_u
+    | 0x06 -> i64_trunc_sat_f64_s
+    | 0x07 -> i64_trunc_sat_f64_u
 
     | 0x08 ->
       let x = at var s in
@@ -546,7 +568,7 @@ let id s =
     | 10 -> `CodeSection
     | 11 -> `DataSection
     | 12 -> `DataCountSection
-    | _ -> error s (pos s) "invalid section id"
+    | _ -> error s (pos s) "malformed section id"
     ) bo
 
 let section_with_size tag f default s =
@@ -574,7 +596,7 @@ let import_desc s =
   | 0x01 -> TableImport (table_type s)
   | 0x02 -> MemoryImport (memory_type s)
   | 0x03 -> GlobalImport (global_type s)
-  | _ -> error s (pos s - 1) "invalid import kind"
+  | _ -> error s (pos s - 1) "malformed import kind"
 
 let import s =
   let module_name = name s in
@@ -631,7 +653,7 @@ let export_desc s =
   | 0x01 -> TableExport (at var s)
   | 0x02 -> MemoryExport (at var s)
   | 0x03 -> GlobalExport (at var s)
-  | _ -> error s (pos s - 1) "invalid export kind"
+  | _ -> error s (pos s - 1) "malformed export kind"
 
 let export s =
   let name = name s in
@@ -684,15 +706,15 @@ let elem_index s =
 
 let elem_kind s =
   match u8 s with
-  | 0x00 -> FuncRefType
-  | _ -> error s (pos s - 1) "invalid element kind"
+  | 0x00 -> (NonNullable, FuncRefType)
+  | _ -> error s (pos s - 1) "malformed element kind"
 
 let elem s =
   match vu32 s with
   | 0x00l ->
     let emode = at active_zero s in
     let einit = vec (at elem_index) s in
-    {etype = FuncRefType; einit; emode}
+    {etype = (NonNullable, FuncRefType); einit; emode}
   | 0x01l ->
     let emode = at passive s in
     let etype = elem_kind s in
@@ -711,7 +733,7 @@ let elem s =
   | 0x04l ->
     let emode = at active_zero s in
     let einit = vec const s in
-    {etype = FuncRefType; einit; emode}
+    {etype = (NonNullable, FuncRefType); einit; emode}
   | 0x05l ->
     let emode = at passive s in
     let etype = ref_type s in
@@ -727,7 +749,7 @@ let elem s =
     let etype = ref_type s in
     let einit = vec const s in
     {etype; einit; emode}
-  | _ -> error s (pos s - 1) "invalid elements segment kind"
+  | _ -> error s (pos s - 1) "malformed elements segment kind"
 
 let elem_section s =
   section `ElemSection (vec (at elem)) [] s
@@ -749,7 +771,7 @@ let data s =
     let dmode = at active s in
     let dinit = string s in
     {dinit; dmode}
-  | _ -> error s (pos s - 1) "invalid data segment kind"
+  | _ -> error s (pos s - 1) "malformed data segment kind"
 
 let data_section s =
   section `DataSection (vec (at data)) [] s

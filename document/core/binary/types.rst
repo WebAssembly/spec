@@ -42,8 +42,7 @@ Reference Types
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{reference type} & \Breftype &::=&
      \hex{70} &\Rightarrow& \FUNCREF \\ &&|&
-     \hex{6F} &\Rightarrow& \ANYREF \\ &&|&
-     \hex{6E} &\Rightarrow& \NULLREF \\
+     \hex{6F} &\Rightarrow& \EXTERNREF \\
    \end{array}
 
 
@@ -66,26 +65,24 @@ Value Types
 .. note::
    The type :math:`\BOT` cannot occur in a module.
 
+   Value types can occur in contexts where :ref:`type indices <syntax-typeidx>` are also allowed, such as in the case of :ref:`block types <binary-blocktype>`.
+   Thus, the binary format for types corresponds to the |SignedLEB128|_ :ref:`encoding <binary-sint>` of small negative :math:`\sN` values, so that they can coexist with (positive) type indices in the future.
+
 
 .. index:: result type, value type
    pair: binary format; result type
-.. _binary-blocktype:
 .. _binary-resulttype:
 
 Result Types
 ~~~~~~~~~~~~
 
-The only :ref:`result types <syntax-resulttype>` occurring in the binary format are the types of blocks. These are encoded in special compressed form, by either the byte :math:`\hex{40}` indicating the empty type or as a single :ref:`value type <binary-valtype>`.
+:ref:`Result types <syntax-resulttype>` are encoded by the respective :ref:`vectors <binary-vec>` of :ref:`value types `<binary-valtype>`.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{result type} & \Bblocktype &::=&
-     \hex{40} &\Rightarrow& [] \\ &&|&
-     t{:}\Bvaltype &\Rightarrow& [t] \\
+   \production{result type} & \Bresulttype &::=&
+     t^\ast{:\,}\Bvec(\Bvaltype) &\Rightarrow& [t^\ast] \\
    \end{array}
-
-.. note::
-   In future versions of WebAssembly, this scheme may be extended to support multiple results or more general block types.
 
 
 .. index:: function type, value type, result type
@@ -100,8 +97,8 @@ Function Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{function type} & \Bfunctype &::=&
-     \hex{60}~~t_1^\ast{:\,}\Bvec(\Bvaltype)~~t_2^\ast{:\,}\Bvec(\Bvaltype)
-       &\Rightarrow& [t_1^\ast] \to [t_2^\ast] \\
+     \hex{60}~~\X{rt}_1{:\,}\Bresulttype~~\X{rt}_2{:\,}\Bresulttype
+       &\Rightarrow& \X{rt}_1 \to \X{rt}_2 \\
    \end{array}
 
 

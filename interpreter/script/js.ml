@@ -11,25 +11,28 @@ let harness =
 {|
 'use strict';
 
-let hostrefs = {};
-let hostsym = Symbol("hostref");
-function hostref(s) {
-  if (! (s in hostrefs)) hostrefs[s] = {[hostsym]: s};
-  return hostrefs[s];
+let externrefs = {};
+let externsym = Symbol("externref");
+function externref(s) {
+  if (! (s in externrefs)) externrefs[s] = {[externsym]: s};
+  return externrefs[s];
 }
-function is_hostref(x) {
-  return (x !== null && hostsym in x) ? 1 : 0;
+function is_externref(x) {
+  return (x !== null && externsym in x) ? 1 : 0;
 }
 function is_funcref(x) {
   return typeof x === "function" ? 1 : 0;
 }
-function eq_ref(x, y) {
+function eq_externref(x, y) {
+  return x === y ? 1 : 0;
+}
+function eq_funcref(x, y) {
   return x === y ? 1 : 0;
 }
 
 let spectest = {
-  hostref: hostref,
-  is_hostref: is_hostref,
+  externref: externref,
+  is_externref: is_externref,
   is_funcref: is_funcref,
   eq_ref: eq_ref,
   print: console.log.bind(console),
@@ -142,31 +145,47 @@ function assert_exhaustion(action) {
   throw new Error("Wasm resource exhaustion expected");
 }
 
-function assert_return(action, expected) {
+function assert_return(action, ...expected) {
   let actual = action();
-  switch (expected) {
-    case "nan:canonical":
-    case "nan:arithmetic":
-      // Note that JS can't reliably distinguish different NaN values,
-      // so there's no good way to test that it's a canonical NaN.
-      if (!Number.isNaN(actual)) {
-        throw new Error("Wasm NaN return value expected, got " + actual);
-      };
-      return;
-    case "ref.func":
-      if (typeof actual !== "function") {
-        throw new Error("Wasm function return value expected, got " + actual);
-      };
-      return;
-    case "ref.any":
-      if (actual === null) {
-        throw new Error("Wasm reference return value expected, got " + actual);
-      };
-      return;
-    default:
-      if (!Object.is(actual, expected)) {
-        throw new Error("Wasm return value " + expected + " expected, got " + actual);
-      };
+  if (actual === undefined) {
+    actual = [];
+  } else if (!Array.isArray(actual)) {
+    actual = [actual];
+  }
+  if (actual.length !== expected.length) {
+    throw new Error(expected.length + " value(s) expected, got " + actual.length);
+  }
+  for (let i = 0; i < actual.length; ++i) {
+    switch (expected[i]) {
+      case "nan:canonical":
+      case "nan:arithmetic":
+      case "nan:any":
+        // Note that JS can't reliably distinguish different NaN values,
+        // so there's no good way to test that it's a canonical NaN.
+        if (!Number.isNaN(actual[i])) {
+          throw new Error("Wasm return value NaN expected, got " + actual[i]);
+        };
+        return;
+      case "ref.func":
+        if (typeof actual !== "function") {
+          throw new Error("Wasm function return value expected, got " + actual);
+        };
+        return;
+      case "ref.extern":
+        if (actual === null) {
+          throw new Error("Wasm reference return value expected, got " + actual);
+        };
+        return;
+      case "ref.null":
+        if (actual !== null) {
+          throw new Error("Wasm null return value expected, got " + actual);
+        };
+        return;
+      default:
+        if (!Object.is(actual[i], expected[i])) {
+          throw new Error("Wasm return value " + expected[i] + " expected, got " + actual[i]);
+        };
+    }
   }
 }
 |}
@@ -212,11 +231,12 @@ let lookup (mods : modules) x_opt name at =
 (* Wrappers *)
 
 let subject_idx = 0l
-let hostref_idx = 1l
-let _is_hostref_idx = 2l
+let externref_idx = 1l
+let is_externref_idx = 2l
 let is_funcref_idx = 3l
-let eq_ref_idx = 4l
-let subject_type_idx = 5l
+let eq_externref_idx = 4l
+let _eq_funcref_idx = 5l
+let subject_type_idx = 6l
 
 let eq_of = function
   | I32Type -> I32 I32Op.Eq
@@ -245,9 +265,9 @@ let abs_mask_of = function
 let value v =
   match v.it with
   | Num num -> [Const (num @@ v.at) @@ v.at]
-  | Ref NullRef -> [RefNull @@ v.at]
-  | Ref (HostRef n) ->
-    [Const (I32 n @@ v.at) @@ v.at; Call (hostref_idx @@ v.at) @@ v.at]
+  | Ref (NullRef t) -> [RefNull t @@ v.at]
+  | Ref (ExternRef n) ->
+    [Const (I32 n @@ v.at) @@ v.at; Call (externref_idx @@ v.at) @@ v.at]
   | Ref _ -> assert false
 
 let invoke ft vs at =
@@ -271,14 +291,14 @@ let assert_return ress ts at =
         Compare (eq_of t') @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | LitResult {it = Ref NullRef; _} ->
-      [ RefIsNull @@ at;
+    | LitResult {it = Ref (NullRef t); _} ->
+      [ RefIsNull t @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | LitResult {it = Ref (HostRef n); _} ->
+    | LitResult {it = Ref (ExternRef n); _} ->
       [ Const (I32 n @@ at) @@ at;
-        Call (hostref_idx @@ at) @@ at;
-        Call (eq_ref_idx @@ at)  @@ at;
+        Call (externref_idx @@ at) @@ at;
+        Call (eq_externref_idx @@ at)  @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | LitResult {it = Ref _; _} ->
@@ -303,17 +323,23 @@ let assert_return ress ts at =
         Compare (eq_of t') @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | RefResult ->
-      [ RefIsNull @@ at;
-        BrIf (0l @@ at) @@ at ]
-    | FuncResult ->
-      [ Call (is_funcref_idx @@ at) @@ at;
+    | RefResult t ->
+      let is_ref_idx =
+        match t with
+        | FuncRefType -> is_funcref_idx
+        | ExternRefType -> is_externref_idx
+        | DefRefType _ -> is_funcref_idx
+      in
+      [ Call (is_ref_idx @@ at) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
+    | NullResult ->
+      [ BrOnNull (0l @@ at) @@ at ]
   in [], List.flatten (List.rev_map test ress)
 
 let i32_type = NumType I32Type
-let anyref_type = RefType AnyRefType
+let funcref_type = RefType (Nullable, FuncRefType)
+let externref_type = RefType (Nullable, ExternRefType)
 let func_def_type ins out at = FuncDefType (FuncType (ins, out)) @@ at
 
 let wrap item_name wrap_action wrap_assertion at =
@@ -321,22 +347,25 @@ let wrap item_name wrap_action wrap_assertion at =
   let locals, assertion = wrap_assertion at in
   let types =
     func_def_type [] [] at ::
-    func_def_type [i32_type] [anyref_type] at ::
-    func_def_type [anyref_type] [i32_type] at ::
-    func_def_type [anyref_type] [i32_type] at ::
-    func_def_type [anyref_type; anyref_type] [i32_type] at ::
+    func_def_type [i32_type] [externref_type] at ::
+    func_def_type [externref_type] [i32_type] at ::
+    func_def_type [funcref_type] [i32_type] at ::
+    func_def_type [externref_type; externref_type] [i32_type] at ::
+    func_def_type [funcref_type; funcref_type] [i32_type] at ::
     itypes
   in
   let imports =
     [ {module_name = Utf8.decode "module"; item_name; idesc} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "hostref";
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "externref";
        idesc = FuncImport (1l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_hostref";
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_externref";
        idesc = FuncImport (2l @@ at) @@ at} @@ at;
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_funcref";
        idesc = FuncImport (3l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_ref";
-       idesc = FuncImport (4l @@ at) @@ at} @@ at ]
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_externref";
+       idesc = FuncImport (4l @@ at) @@ at} @@ at;
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_funcref";
+       idesc = FuncImport (5l @@ at) @@ at} @@ at ]
   in
   let item =
     List.fold_left
@@ -347,7 +376,7 @@ let wrap item_name wrap_action wrap_assertion at =
   let edesc = FuncExport item @@ at in
   let exports = [{name = Utf8.decode "run"; edesc} @@ at] in
   let body =
-    [ Block ([], action @ assertion @ [Return @@ at]) @@ at;
+    [ Block (ValBlockType None, action @ assertion @ [Return @@ at]) @@ at;
       Unreachable @@ at ]
   in
   let funcs = [{ftype = 0l @@ at; locals; body} @@ at] in
@@ -411,8 +440,8 @@ let of_value v =
   | Num (I64 i) -> "int64(\"" ^ I64.to_string_s i ^ "\")"
   | Num (F32 z) -> of_float (F32.to_float z)
   | Num (F64 z) -> of_float (F64.to_float z)
-  | Ref NullRef -> "null"
-  | Ref (HostRef n) -> "hostref(" ^ Int32.to_string n ^ ")"
+  | Ref (NullRef _) -> "null"
+  | Ref (ExternRef n) -> "externref(" ^ Int32.to_string n ^ ")"
   | _ -> assert false
 
 let of_nan = function
@@ -427,8 +456,8 @@ let of_result res =
     | I32 _ | I64 _ -> assert false
     | F32 n | F64 n -> of_nan n
     )
-  | RefResult -> "\"ref.any\""
-  | FuncResult -> "\"ref.func\""
+  | RefResult t -> "\"ref." ^ string_of_refed_type t ^ "\""
+  | NullResult -> "\"ref.null\""
 
 let rec of_definition def =
   match def.it with

@@ -230,8 +230,8 @@ let type_of_result r =
   match r with
   | LitResult v -> Value.type_of_value v.it
   | NanResult n -> Types.NumType (Value.type_of_num n.it)
-  | RefResult -> Types.RefType Types.AnyRefType
-  | FuncResult -> Types.RefType Types.FuncRefType
+  | RefResult t -> Types.(RefType (NonNullable, t))
+  | NullResult -> Types.(RefType (Nullable, ExternRefType))
 
 let string_of_result r =
   match r with
@@ -241,8 +241,8 @@ let string_of_result r =
     | Value.I32 _ | Value.I64 _ -> assert false
     | Value.F32 n | Value.F64 n -> string_of_nan n
     )
-  | RefResult -> "ref"
-  | FuncResult -> "func"
+  | RefResult t -> Types.string_of_refed_type t
+  | NullResult -> "null"
 
 let string_of_results = function
   | [r] -> string_of_result r
@@ -350,14 +350,15 @@ let assert_result at got expect =
           Int64.logand (F64.to_bits z) pos_nan <> pos_nan
         | _, _ -> false
         )
-      | RefResult ->
-        (match v with
-        | Ref ref -> ref = NullRef
+      | RefResult t ->
+        (match t, v with
+        | Types.FuncRefType, Ref (Instance.FuncRef _)
+        | Types.ExternRefType, Ref (ExternRef _) -> false
         | _ -> true
         )
-      | FuncResult ->
+      | NullResult ->
         (match v with
-        | Ref (Instance.FuncRef _) -> false
+        | Ref (NullRef _) -> false
         | _ -> true
         )
     ) got expect

@@ -8,7 +8,7 @@
     (func.bind (type $unop) (local.get $i) (ref.func $add))
   )
 
-  (global $f (mut (ref null $unop)) (ref.null))
+  (global $f (mut (ref null $unop)) (ref.null $unop))
 
   (func (export "make") (param $i i32)
     (global.set $f (call $mk-adder (local.get $i)))
@@ -29,7 +29,7 @@
   )
 
   (func (export "null") (result i32)
-    (func.bind (type $unop) (i32.const 1) (ref.null))
+    (func.bind (type $unop) (i32.const 1) (ref.null $unop))
     (drop)
   )
 )
@@ -366,8 +366,8 @@
 (assert_invalid
   (module
     (type $ii (func (param i32) (result i32)))
-    (type $fl (func (param i32 anyref) (result (ref null $ii))))
-    (type $fu (func (param i32 (ref $ii)) (result anyref)))
+    (type $fl (func (param i32 funcref) (result (ref null $ii))))
+    (type $fu (func (param i32 (ref $ii)) (result funcref)))
 
     (elem declare func $sqr $f)
     (func $sqr (param i32) (result i32) (i32.mul (local.get 0) (local.get 0)))
@@ -381,8 +381,8 @@
 (assert_invalid
   (module
     (type $ii (func (param i32) (result i32)))
-    (type $fl (func (param i32 anyref) (result (ref null $ii))))
-    (type $fu' (func (param (ref $ii)) (result anyref)))
+    (type $fl (func (param i32 funcref) (result (ref null $ii))))
+    (type $fu' (func (param (ref $ii)) (result funcref)))
 
     (elem declare func $sqr $f)
     (func $sqr (param i32) (result i32) (i32.mul (local.get 0) (local.get 0)))
@@ -399,7 +399,7 @@
 (module
   (type $t (func))
   (func (export "null") (result (ref $t))
-    (ref.null)
+    (ref.null $t)
     (func.bind)
   )
 )
@@ -408,36 +408,39 @@
 (module
   (type $t (func (param f32)))
   (func (export "null") (result (ref $t))
-    (ref.null)
+    (ref.null $t)
     (func.bind (type $t))
   )
 )
 (assert_trap (invoke "null") "null function")
 
 (module
-  (type $t (func))
-  (func (export "null") (result (ref $t))
+  (type $t0 (func))
+  (type $t1 (func (param i64)))
+  (func (export "null") (result (ref $t0))
     (i64.const 0)
-    (ref.null)
+    (ref.null $t1)
     (func.bind)
   )
 )
 (assert_trap (invoke "null") "null function")
 
 (module
-  (type $t (func (param f32)))
-  (func (export "null") (result (ref $t))
+  (type $t0 (func))
+  (type $t1 (func (param i64)))
+  (func (export "null") (result (ref $t0))
     (i64.const 0)
-    (ref.null)
-    (func.bind (type $t))
+    (ref.null $t1)
+    (func.bind (type $t0))
   )
 )
 (assert_trap (invoke "null") "null function")
 
 (assert_invalid
   (module
+    (type $t (func (result f32)))
     (func (export "null") (result i32)
-      (ref.null)
+      (ref.null $t)
       (func.bind)
     )
   )

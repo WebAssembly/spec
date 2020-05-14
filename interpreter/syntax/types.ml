@@ -8,11 +8,8 @@ and var = SynVar of syn_var | SemVar of sem_var
 
 and nullability = NonNullable | Nullable
 and num_type = I32Type | I64Type | F32Type | F64Type
-and ref_type =
-  | NullRefType
-  | AnyRefType
-  | FuncRefType
-  | DefRefType of nullability * var
+and ref_type = nullability * refed_type
+and refed_type = FuncRefType | ExternRefType | DefRefType of var
 
 and value_type = NumType of num_type | RefType of ref_type | BotType
 and stack_type = value_type list
@@ -35,34 +32,23 @@ type import_type = ImportType of extern_type * name * name
 type module_type =
   ModuleType of def_type list * import_type list * export_type list
 
-
-(* Projections *)
-
-let as_func_def_type (dt : def_type) : func_type =
-  match dt with
-  | FuncDefType ft -> ft
-
-let extern_type_of_import_type (ImportType (et, _, _)) = et
-let extern_type_of_export_type (ExportType (et, _)) = et
-
-
-(* Allocation *)
-
-let alloc_uninit () = Lib.Promise.make ()
-let init p dt = Lib.Promise.fulfill p dt
-let alloc dt = let p = alloc_uninit () in init p dt; p
-
-let def_of x = Lib.Promise.value x
+type pack_size = Pack8 | Pack16 | Pack32
+type extension = SX | ZX
 
 
 (* Attributes *)
 
-let is_syn_var = function SynVar _ -> true | _ -> false
-let is_sem_var = function SemVar _ -> true | _ -> false
-
 let size = function
   | I32Type | F32Type -> 4
   | I64Type | F64Type -> 8
+
+let packed_size = function
+  | Pack8 -> 1
+  | Pack16 -> 2
+  | Pack32 -> 4
+
+let is_syn_var = function SynVar _ -> true | SemVar _ -> false
+let is_sem_var = function SemVar _ -> true | SynVar _ -> false
 
 let is_num_type = function
   | NumType _ | BotType -> true
@@ -76,13 +62,22 @@ let defaultable_num_type = function
   | _ -> true
 
 let defaultable_ref_type = function
-  | AnyRefType | NullRefType | FuncRefType | DefRefType (Nullable, _) -> true
-  | DefRefType (NonNullable, _) -> false
+  | (nul, _) -> nul = Nullable
 
 let defaultable_value_type = function
   | NumType t -> defaultable_num_type t
   | RefType t -> defaultable_ref_type t
-  | BotType -> false
+  | BotType -> assert false
+
+
+(* Projections *)
+
+let as_func_def_type (dt : def_type) : func_type =
+  match dt with
+  | FuncDefType ft -> ft
+
+let extern_type_of_import_type (ImportType (et, _, _)) = et
+let extern_type_of_export_type (ExportType (et, _)) = et
 
 
 (* Filters *)
@@ -97,6 +92,15 @@ let globals =
   Lib.List.map_filter (function ExternGlobalType t -> Some t | _ -> None)
 
 
+(* Allocation *)
+
+let alloc_uninit () = Lib.Promise.make ()
+let init p dt = Lib.Promise.fulfill p dt
+let alloc dt = let p = alloc_uninit () in init p dt; p
+
+let def_of x = Lib.Promise.value x
+
+
 (* Conversion *)
 
 let sem_var_type c = function
@@ -105,11 +109,13 @@ let sem_var_type c = function
 
 let sem_num_type c t = t
 
-let sem_ref_type c = function
-  | NullRefType -> NullRefType
-  | AnyRefType -> AnyRefType
+let sem_refed_type c = function
   | FuncRefType -> FuncRefType
-  | DefRefType (nul, x) -> DefRefType (nul, sem_var_type c x)
+  | ExternRefType -> ExternRefType
+  | DefRefType x -> DefRefType (sem_var_type c x)
+
+let sem_ref_type c = function
+  | (nul, t) -> (nul, sem_refed_type c t)
 
 let sem_value_type c = function
   | NumType t -> NumType (sem_num_type c t)
@@ -196,17 +202,19 @@ and string_of_num_type = function
   | F32Type -> "f32"
   | F64Type -> "f64"
 
+and string_of_refed_type = function
+  | FuncRefType -> "func"
+  | ExternRefType -> "extern"
+  | DefRefType x -> string_of_var x
+
 and string_of_ref_type = function
-  | NullRefType -> "nullref"
-  | AnyRefType -> "anyref"
-  | FuncRefType -> "funcref"
-  | DefRefType (nul, x) ->
-    "(ref " ^ string_of_nullability nul ^ string_of_var x ^ ")"
+  | (nul, t) ->
+    "(ref " ^ string_of_nullability nul ^ string_of_refed_type t ^ ")"
 
 and string_of_value_type = function
   | NumType t -> string_of_num_type t
   | RefType t -> string_of_ref_type t
-  | BotType -> "impossible"
+  | BotType -> "(unreachable)"
 
 and string_of_stack_type = function
   | [t] -> string_of_value_type t

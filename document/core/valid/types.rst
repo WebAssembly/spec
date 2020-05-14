@@ -1,10 +1,12 @@
 Types
------
+----
 
 Most :ref:`types <syntax-type>` are universally valid.
 However, restrictions apply to :ref:`function types <syntax-functype>` as well as the :ref:`limits <syntax-limits>` of :ref:`table types <syntax-tabletype>` and :ref:`memory types <syntax-memtype>`, which must be checked during validation.
 
 On :ref:`value types <syntax-valtype>`, a simple notion of subtyping is defined.
+
+Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`function types <syntax-functype>` for ease of processing.
 
 
 .. index:: limits
@@ -42,6 +44,43 @@ Limits
    }
 
 
+.. index:: block type
+   pair: validation; block type
+   single: abstract syntax; block type
+.. _valid-blocktype:
+
+Block Types
+~~~~~~~~~~~
+
+:ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to plain :ref:`function types <syntax-functype>` by the following rules.
+
+:math:`\typeidx`
+................
+
+* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
+
+* Then the block type is valid as :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
+
+.. math::
+   \frac{
+     C.\CTYPES[\typeidx] = \functype
+   }{
+     C \vdashblocktype \typeidx : \functype
+   }
+
+
+:math:`[\valtype^?]`
+....................
+
+* The block type is valid as :ref:`function type <syntax-functype>` :math:`[] \to [\valtype^?]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashblocktype [\valtype^?] : [] \to [\valtype^?]
+   }
+
+
 .. index:: function type
    pair: validation; function type
    single: abstract syntax; function type
@@ -50,23 +89,18 @@ Limits
 Function Types
 ~~~~~~~~~~~~~~
 
-:ref:`Function types <syntax-functype>` may not specify more than one result.
+:ref:`Function types <syntax-functype>` are always valid.
 
 :math:`[t_1^n] \to [t_2^m]`
 ...........................
 
-* The arity :math:`m` must not be larger than :math:`1`.
-
-* Then the function type is valid.
+* The function type is valid.
 
 .. math::
    \frac{
    }{
-     \vdashfunctype [t_1^\ast] \to [t_2^?] \ok
+     \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok
    }
-
-.. note::
-   The restriction to at most one result may be removed in future versions of WebAssembly.
 
 
 .. index:: table type, reference type, limits
@@ -198,8 +232,8 @@ External Types
    }{
      \vdashexterntype \ETGLOBAL~\globaltype \ok
    }
-
-
+ 
+ 
 .. index:: subtyping
 
 Value Subtyping
@@ -224,6 +258,7 @@ A :ref:`number type <syntax-numtype>` :math:`\numtype_1` matches a :ref:`number 
    }
 
 
+
 .. index:: reference type
 
 .. _match-reftype:
@@ -235,25 +270,11 @@ A :ref:`reference type <syntax-reftype>` :math:`\reftype_1` matches a :ref:`refe
 
 * Either both :math:`\reftype_1` and :math:`\reftype_2` are the same.
 
-* Or :math:`\reftype_1` is |NULLREF|.
-
-* Or :math:`\reftype_2` is |ANYREF|.
-
 .. math::
    ~\\[-1ex]
    \frac{
    }{
      \vdashreftypematch \reftype \matchesvaltype \reftype
-   }
-   \qquad
-   \frac{
-   }{
-     \vdashreftypematch \NULLREF \matchesvaltype \reftype
-   }
-   \qquad
-   \frac{
-   }{
-     \vdashreftypematch \reftype \matchesvaltype \ANYREF
    }
 
 
@@ -286,18 +307,16 @@ Result Types
 ............
 
 Subtyping is lifted to :ref:`result types <syntax-resulttype>` in a pointwise manner.
-That is, a :ref:`result type <syntax-resulttype>` :math:`[t_1^?]` matches a :ref:`result type <syntax-resulttype>` :math:`[t_2^?]` if and only if:
+That is, a :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` matches a :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` if and only if:
 
-* Either both :math:`t_1^?` and :math:`t_2^?` are empty.
-
-* Or :ref:`value type <syntax-valtype>` :math:`t_1` :ref:`matches <match-valtype>` :ref:`value type <syntax-valtype>` :math:`t_2`.
+* Every :ref:`value type <syntax-valtype>` :math:`t_1` in :math:`[t_1^\ast]` :ref:`matches <match-valtype>` the corresponding :ref:`value type <syntax-valtype>` :math:`t_2` in :math:`[t_2^\ast]`.
 
 .. math::
    ~\\[-1ex]
    \frac{
-     (\vdashvaltypematch t_1 \matchesvaltype t_2)^?
+     (\vdashvaltypematch t_1 \matchesvaltype t_2)^\ast
    }{
-     \vdashresulttypematch [t_1^?] \matchesresulttype [t_2^?]
+     \vdashresulttypematch [t_1^\ast] \matchesresulttype [t_2^ast]
    }
 
 
@@ -417,7 +436,7 @@ Globals
 An :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~(\mut_1~t_1)` matches :math:`\ETGLOBAL~(\mut_2~t_2)` if and only if:
 
 * Either both :math:`\mut_1` and :math:`\mut_2` are |MVAR| and :math:`t_1` and :math:`t_2` are the same.
-
+ 
 * Or both :math:`\mut_1` and :math:`\mut_2` are |MCONST| and :math:`t_1` :ref:`matches <match-valtype>` :math:`t_2`.
 
 .. math::

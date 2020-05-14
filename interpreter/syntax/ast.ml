@@ -5,7 +5,7 @@
  *
  *   x : idx
  *   v : value
- *   e : instrr
+ *   e : instr
  *   f : func
  *   m : module_
  *
@@ -25,13 +25,14 @@ open Types
 
 module IntOp =
 struct
-  type unop = Clz | Ctz | Popcnt
+  type unop = Clz | Ctz | Popcnt | ExtendS of pack_size
   type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
              | And | Or | Xor | Shl | ShrS | ShrU | Rotl | Rotr
   type testop = Eqz
   type relop = Eq | Ne | LtS | LtU | GtS | GtU | LeS | LeU | GeS | GeU
   type cvtop = ExtendSI32 | ExtendUI32 | WrapI64
              | TruncSF32 | TruncUF32 | TruncSF64 | TruncUF64
+             | TruncSatSF32 | TruncSatUF32 | TruncSatSF64 | TruncSatUF64
              | ReinterpretFloat
 end
 
@@ -58,8 +59,8 @@ type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Value.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Value.op
 
 type 'a memop = {ty : num_type; align : int; offset : int32; sz : 'a option}
-type loadop = (Memory.pack_size * Memory.extension) memop
-type storeop = Memory.pack_size memop
+type loadop = (pack_size * extension) memop
+type storeop = pack_size memop
 
 
 (* Expressions *)
@@ -71,16 +72,18 @@ type name = Types.name
 type local = local' Source.phrase
 and local' = value_type
 
+type block_type = VarBlockType of var | ValBlockType of value_type option
+
 type instr = instr' Source.phrase
 and instr' =
   | Unreachable                       (* trap unconditionally *)
   | Nop                               (* do nothing *)
   | Drop                              (* forget a value *)
   | Select of value_type list option  (* branchless conditional *)
-  | Block of stack_type * instr list  (* execute in sequence *)
-  | Loop of stack_type * instr list   (* loop header *)
-  | If of stack_type * instr list * instr list   (* conditional *)
-  | Let of stack_type * local list * instr list  (* local bindings *)
+  | Block of block_type * instr list  (* execute in sequence *)
+  | Loop of block_type * instr list   (* loop header *)
+  | If of block_type * instr list * instr list   (* conditional *)
+  | Let of block_type * local list * instr list  (* local bindings *)
   | Br of idx                         (* break to n-th surrounding label *)
   | BrIf of idx                       (* conditional break *)
   | BrTable of idx list * idx         (* indexed break *)
@@ -112,9 +115,9 @@ and instr' =
   | MemoryCopy                        (* copy memory ranges *)
   | MemoryInit of idx                 (* initialize memory range from segment *)
   | DataDrop of idx                   (* drop passive data segment *)
-  | RefNull                           (* null reference *)
-  | RefIsNull                         (* null test *)
-  | RefAsNonNull                      (* null cast *)
+  | RefNull of refed_type             (* null reference *)
+  | RefIsNull of refed_type           (* null test *)
+  | RefAsNonNull of refed_type        (* null cast *)
   | RefFunc of idx                    (* function reference *)
   | Const of num                      (* constant *)
   | Test of testop                    (* numeric test *)

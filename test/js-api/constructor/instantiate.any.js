@@ -1,28 +1,7 @@
-// META: global=jsshell
+// META: global=window,dedicatedworker,jsshell
 // META: script=/wasm/jsapi/wasm-module-builder.js
 // META: script=/wasm/jsapi/assertions.js
 // META: script=/wasm/jsapi/instanceTestFactory.js
-
-function assert_WebAssemblyInstantiatedSource(actual, expected_exports={}) {
-  assert_equals(Object.getPrototypeOf(actual), Object.prototype,
-                "Prototype");
-  assert_true(Object.isExtensible(actual), "Extensibility");
-
-  const module = Object.getOwnPropertyDescriptor(actual, "module");
-  assert_equals(typeof module, "object", "module: type of descriptor");
-  assert_true(module.writable, "module: writable");
-  assert_true(module.enumerable, "module: enumerable");
-  assert_true(module.configurable, "module: configurable");
-  assert_equals(Object.getPrototypeOf(module.value), WebAssembly.Module.prototype,
-                "module: prototype");
-
-  const instance = Object.getOwnPropertyDescriptor(actual, "instance");
-  assert_equals(typeof instance, "object", "instance: type of descriptor");
-  assert_true(instance.writable, "instance: writable");
-  assert_true(instance.enumerable, "instance: enumerable");
-  assert_true(instance.configurable, "instance: configurable");
-  assert_Instance(instance.value, expected_exports);
-}
 
 let emptyModuleBinary;
 setup(() => {
@@ -30,7 +9,7 @@ setup(() => {
 });
 
 promise_test(t => {
-  return promise_rejects(t, new TypeError(), WebAssembly.instantiate());
+  return promise_rejects_js(t, TypeError, WebAssembly.instantiate());
 }, "Missing arguments");
 
 promise_test(() => {
@@ -66,7 +45,7 @@ promise_test(t => {
     Array.from(emptyModuleBinary),
   ];
   return Promise.all(invalidArguments.map(argument => {
-    return promise_rejects(t, new TypeError(), WebAssembly.instantiate(argument),
+    return promise_rejects_js(t, TypeError, WebAssembly.instantiate(argument),
                            `instantiate(${format_value(argument)})`);
   }));
 }, "Invalid arguments");
@@ -156,7 +135,12 @@ promise_test(() => {
 
 promise_test(t => {
   const buffer = new Uint8Array();
-  return promise_rejects(t, new WebAssembly.CompileError(), WebAssembly.instantiate(buffer));
+  return promise_rejects_js(t, WebAssembly.CompileError, WebAssembly.instantiate(buffer));
+}, "Empty buffer");
+
+promise_test(t => {
+  const buffer = new Uint8Array(Array.from(emptyModuleBinary).concat([0, 0]));
+  return promise_rejects_js(t, WebAssembly.CompileError, WebAssembly.instantiate(buffer));
 }, "Invalid code");
 
 promise_test(() => {

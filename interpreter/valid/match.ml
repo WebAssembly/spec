@@ -32,17 +32,20 @@ let eq_limits c a lim1 lim2 =
 let rec eq_num_type c a t1 t2 =
   t1 = t2
 
+and eq_refed_type c a t1 t2 =
+  match t1, t2 with
+  | DefRefType x1, DefRefType x2 -> eq_var_type c a x1 x2
+  | _, _ -> t1 = t2
+
 and eq_ref_type c a t1 t2 =
   match t1, t2 with
-  | DefRefType (nul1, x1), DefRefType (nul2, x2) ->
-    eq_nullability c a nul1 nul2 && eq_var_type c a x1 x2
-  | _, _ -> t1 = t2
+  | (nul1, t1'), (nul2, t2') ->
+    eq_nullability c a nul1 nul2 && eq_refed_type c a t1' t2'
 
 and eq_value_type c a t1 t2 =
   match t1, t2 with
   | NumType t1', NumType t2' -> eq_num_type c a t1' t2'
   | RefType t1', RefType t2' -> eq_ref_type c a t1' t2'
-  | BotType, BotType -> true
   | _, _ -> false
 
 and eq_stack_type c a ts1 ts2 =
@@ -96,15 +99,19 @@ let match_limits c a lim1 lim2 =
 let rec match_num_type c a t1 t2 =
   t1 = t2
 
+and match_refed_type c a t1 t2 =
+  match t1, t2 with
+  | DefRefType x1, FuncRefType ->
+    (match lookup c x1 with
+    | FuncDefType _ -> true
+    )
+  | DefRefType x1, DefRefType x2 -> match_var_type c a x1 x2
+  | _, _ -> eq_refed_type c [] t1 t2
+
 and match_ref_type c a t1 t2 =
   match t1, t2 with
-  | _, AnyRefType -> true
-  | NullRefType, DefRefType (nul, _) -> nul = Nullable
-  | NullRefType, FuncRefType -> true
-  | DefRefType (_, x1), FuncRefType -> true
-  | DefRefType (nul1, x1), DefRefType (nul2, x2) ->
-    match_nullability c a nul1 nul2 && match_var_type c a x1 x2
-  | _, _ -> eq_ref_type c [] t1 t2
+  | (nul1, t1'), (nul2, t2') ->
+    match_nullability c a nul1 nul2 && match_refed_type c a t1' t2'
 
 and match_value_type c a t1 t2 =
   match t1, t2 with

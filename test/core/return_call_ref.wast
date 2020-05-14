@@ -2,6 +2,7 @@
 
 (module
   ;; Auxiliary definitions
+  (type $proc (func))
   (type $-i32 (func (result i32)))
   (type $-i64 (func (result i64)))
   (type $-f32 (func (result f32)))
@@ -99,7 +100,7 @@
   ;; Null
 
   (func (export "null")
-    (return_call_ref (ref.null))
+    (return_call_ref (ref.null $proc))
   )
 
   ;; Recursion
@@ -211,61 +212,16 @@
 
 (module
   (type $t (func))
-  (elem declare func $f00 $f11 $f22 $f33 $f44)
-  (func $f00 (result (ref null)) (return_call_ref (ref.func $f00)))
+  (elem declare func $f11 $f22 $f33 $f44)
   (func $f11 (result (ref $t)) (return_call_ref (ref.func $f11)))
-  (func $f20 (result (ref null $t)) (return_call_ref (ref.func $f00)))
   (func $f21 (result (ref null $t)) (return_call_ref (ref.func $f11)))
   (func $f22 (result (ref null $t)) (return_call_ref (ref.func $f22)))
-  (func $f30 (result (ref func)) (return_call_ref (ref.func $f00)))
   (func $f31 (result (ref func)) (return_call_ref (ref.func $f11)))
-  (func $f32 (result (ref func)) (return_call_ref (ref.func $f22)))
   (func $f33 (result (ref func)) (return_call_ref (ref.func $f33)))
-  (func $f40 (result (ref any)) (return_call_ref (ref.func $f00)))
-  (func $f41 (result (ref any)) (return_call_ref (ref.func $f11)))
-  (func $f42 (result (ref any)) (return_call_ref (ref.func $f22)))
-  (func $f43 (result (ref any)) (return_call_ref (ref.func $f33)))
-  (func $f44 (result (ref any)) (return_call_ref (ref.func $f44)))
-)
-
-(assert_invalid
-  (module
-    (type $t (func))
-    (elem declare func $f11)
-    (func $f01 (result (ref null)) (return_call_ref (ref.func $f11)))
-    (func $f11 (result (ref $t)) (return_call_ref (ref.func $f11)))
-  )
-  "type mismatch"
-)
-
-(assert_invalid
-  (module
-    (type $t (func))
-    (elem declare func $f22)
-    (func $f02 (result (ref null)) (return_call_ref (ref.func $f22)))
-    (func $f22 (result (ref null $t)) (return_call_ref (ref.func $f22)))
-  )
-  "type mismatch"
-)
-
-(assert_invalid
-  (module
-    (type $t (func))
-    (elem declare func $f33)
-    (func $f03 (result (ref null)) (return_call_ref (ref.func $f33)))
-    (func $f33 (result (ref func)) (return_call_ref (ref.func $f33)))
-  )
-  "type mismatch"
-)
-
-(assert_invalid
-  (module
-    (type $t (func))
-    (elem declare func $f44)
-    (func $f04 (result (ref null)) (return_call_ref (ref.func $f44)))
-    (func $f44 (result (ref any)) (return_call_ref (ref.func $f44)))
-  )
-  "type mismatch"
+  (func $f41 (result (ref null func)) (return_call_ref (ref.func $f11)))
+  (func $f42 (result (ref null func)) (return_call_ref (ref.func $f22)))
+  (func $f43 (result (ref null func)) (return_call_ref (ref.func $f33)))
+  (func $f44 (result (ref null func)) (return_call_ref (ref.func $f44)))
 )
 
 (assert_invalid
@@ -293,7 +249,7 @@
     (type $t (func))
     (elem declare func $f44)
     (func $f14 (result (ref $t)) (return_call_ref (ref.func $f44)))
-    (func $f44 (result (ref any)) (return_call_ref (ref.func $f44)))
+    (func $f44 (result (ref null func)) (return_call_ref (ref.func $f44)))
   )
   "type mismatch"
 )
@@ -313,7 +269,7 @@
     (type $t (func))
     (elem declare func $f44)
     (func $f24 (result (ref null $t)) (return_call_ref (ref.func $f44)))
-    (func $f44 (result (ref any)) (return_call_ref (ref.func $f44)))
+    (func $f44 (result (ref null func)) (return_call_ref (ref.func $f44)))
   )
   "type mismatch"
 )
@@ -322,41 +278,13 @@
   (module
     (elem declare func $f44)
     (func $f34 (result (ref func)) (return_call_ref (ref.func $f44)))
-    (func $f44 (result (ref any)) (return_call_ref (ref.func $f44)))
+    (func $f44 (result (ref null func)) (return_call_ref (ref.func $f44)))
   )
   "type mismatch"
 )
 
 
-;; Null and unreachable typing.
-
-(module
-  (func (export "null") (result i32)
-    (ref.null)
-    (return_call_ref)
-  )
-)
-(assert_trap (invoke "null") "null function")
-
-(module
-  (func (export "null") (result i32)
-    (i64.const 0)
-    (ref.null)
-    (return_call_ref)
-  )
-)
-(assert_trap (invoke "null") "null function")
-
-(module
-  (func (export "null") (result i32)
-    (i64.const 0)
-    (ref.null)
-    (return_call_ref)
-    (i32.const 0)
-  )
-)
-(assert_trap (invoke "null") "null function")
-
+;; Unreachable typing.
 
 (module
   (func (export "unreachable") (result i32)

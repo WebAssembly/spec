@@ -166,29 +166,31 @@ Reference Instructions
 
 .. _valid-ref.null:
 
-:math:`\REFNULL`
-................
+:math:`\REFNULL~t`
+..................
 
-* The instruction is valid with type :math:`[] \to [\NULLREF]`.
+* The instruction is valid with type :math:`[] \to [t]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \REFNULL : [] \to [\NULLREF]
+     C \vdashinstr \REFNULL~t : [] \to [t]
    }
 
+.. note::
+   In future versions of WebAssembly, there may be reference types for which no null reference is allowed.
 
 .. _valid-ref.is_null:
 
-:math:`\REFISNULL`
-..................
+:math:`\REFISNULL~t`
+....................
 
-* The instruction is valid with type :math:`[\ANYREF] \to [\I32]`.
+* The instruction is valid with type :math:`[t] \to [\I32]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \REFISNULL : [\ANYREF] \to [\I32]
+     C \vdashinstr \REFISNULL~t : [t] \to [\I32]
    }
 
 .. _valid-ref.func:
@@ -747,7 +749,7 @@ Memory Instructions
    }
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism, context
+.. index:: control instructions, structured control, label, block, branch, block type, label index, function index, type index, vector, polymorphism, context
    pair: validation; instruction
    single: abstract syntax; instruction
 .. _valid-label:
@@ -789,85 +791,88 @@ Control Instructions
 
 .. _valid-block:
 
-:math:`\BLOCK~[t^?]~\instr^\ast~\END`
-.....................................
+:math:`\BLOCK~\blocktype~\instr^\ast~\END`
+..........................................
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |CLABELS| vector.
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
-* Then the compound instruction is valid with type :math:`[] \to [t^?]`.
+* Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C,\CLABELS\,[t^?] \vdashinstrseq \instr^\ast : [] \to [t^?]
+     C \vdashblocktype \blocktype : [t_1^\ast] \to [t_2^\ast]
+     \qquad
+     C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdashinstr \BLOCK~[t^?]~\instr^\ast~\END : [] \to [t^?]
+     C \vdashinstr \BLOCK~\blocktype~\instr^\ast~\END : [t_1^\ast] \to [t_2^\ast]
    }
 
 .. note::
-   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^?]` inserts the new label type at index :math:`0`, shifting all others.
-
-   The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the block was entered.
-   This may be generalized in future versions of WebAssembly.
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^\ast]` inserts the new label type at index :math:`0`, shifting all others.
 
 
 .. _valid-loop:
 
-:math:`\LOOP~[t^?]~\instr^\ast~\END`
-....................................
+:math:`\LOOP~\blocktype~\instr^\ast~\END`
+.........................................
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the empty :ref:`result type <syntax-resulttype>` :math:`[]` prepended to the |CLABELS| vector.
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
-* Then the compound instruction is valid with type :math:`[] \to [t^?]`.
+* Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C,\CLABELS\,[] \vdashinstrseq \instr^\ast : [] \to [t^?]
+     C \vdashblocktype \blocktype : [t_1^\ast] \to [t_2^\ast]
+     \qquad
+     C,\CLABELS\,[t_1^\ast] \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdashinstr \LOOP~[t^?]~\instr^\ast~\END : [] \to [t^?]
+     C \vdashinstr \LOOP~\blocktype~\instr^\ast~\END : [t_1^\ast] \to [t_2^\ast]
    }
 
 .. note::
-   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[]` inserts the new label type at index :math:`0`, shifting all others.
-
-   The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the loop was entered.
-   This may be generalized in future versions of WebAssembly.
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^\ast]` inserts the new label type at index :math:`0`, shifting all others.
 
 
 .. _valid-if:
 
-:math:`\IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
-........................................................
+:math:`\IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
+.............................................................
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t^?]` prepended to the |CLABELS| vector.
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
+  the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`.
+  the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
-* Then the compound instruction is valid with type :math:`[\I32] \to [t^?]`.
+* Then the compound instruction is valid with type :math:`[t_1^\ast~\I32] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C,\CLABELS\,[t^?] \vdashinstrseq \instr_1^\ast : [] \to [t^?]
+     C \vdashblocktype \blocktype : [t_1^\ast] \to [t_2^\ast]
      \qquad
-     C,\CLABELS\,[t^?] \vdashinstrseq \instr_2^\ast : [] \to [t^?]
+     C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr_1^\ast : [t_1^\ast] \to [t_2^\ast]
+     \qquad
+     C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr_2^\ast : [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdashinstr \IF~[t^?]~\instr_1^\ast~\ELSE~\instr_2^\ast~\END : [\I32] \to [t^?]
+     C \vdashinstr \IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast~\END : [t_1^\ast~\I32] \to [t_2^\ast]
    }
 
 .. note::
-   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^?]` inserts the new label type at index :math:`0`, shifting all others.
-
-   The fact that the nested instruction sequence :math:`\instr^\ast` must have type :math:`[] \to [t^?]` implies that it cannot access operands that have been pushed on the stack before the conditional was entered.
-   This may be generalized in future versions of WebAssembly.
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^\ast]` inserts the new label type at index :math:`0`, shifting all others.
 
 
 .. _valid-br:
@@ -877,15 +882,15 @@ Control Instructions
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
+* Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
 
-* Then the instruction is valid with type :math:`[t_1^\ast~t^?] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* Then the instruction is valid with type :math:`[t_1^\ast~t^\ast] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     C.\CLABELS[l] = [t^?]
+     C.\CLABELS[l] = [t^\ast]
    }{
-     C \vdashinstr \BR~l : [t_1^\ast~t^?] \to [t_2^\ast]
+     C \vdashinstr \BR~l : [t_1^\ast~t^\ast] \to [t_2^\ast]
    }
 
 .. note::
@@ -901,15 +906,15 @@ Control Instructions
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
+* Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
 
-* Then the instruction is valid with type :math:`[t^?~\I32] \to [t^?]`.
+* Then the instruction is valid with type :math:`[t^\ast~\I32] \to [t^\ast]`.
 
 .. math::
    \frac{
-     C.\CLABELS[l] = [t^?]
+     C.\CLABELS[l] = [t^\ast]
    }{
-     C \vdashinstr \BRIF~l : [t^?~\I32] \to [t^?]
+     C \vdashinstr \BRIF~l : [t^\ast~\I32] \to [t^\ast]
    }
 
 .. note::
@@ -923,25 +928,27 @@ Control Instructions
 
 * The label :math:`C.\CLABELS[l_N]` must be defined in the context.
 
+* Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l_N]`.
+
 * For all :math:`l_i` in :math:`l^\ast`,
   the label :math:`C.\CLABELS[l_i]` must be defined in the context.
 
-* There must be a :ref:`result type <syntax-resulttype>` :math:`[t^?]`, such that:
+* There must be a :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, such that:
 
-  * The result type :math:`[t^?]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_N]`.
+  * The result type :math:`[t^\ast]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_N]`.
 
   * For all :math:`l_i` in :math:`l^\ast`,
-    the result type :math:`[t^?]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_i]`.
+    the result type :math:`[t^\ast]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_i]`.
 
-* Then the instruction is valid with type :math:`[t_1^\ast~t^?~\I32] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* Then the instruction is valid with type :math:`[t_1^\ast~t^\ast~\I32] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     (\vdashresulttypematch [t^?] \matchesresulttype C.\CLABELS[l])^\ast
+     (\vdashresulttypematch [t^\ast] \matchesresulttype C.\CLABELS[l])^\ast
      \qquad
-     \vdashresulttypematch [t^?] \matchesresulttype C.\CLABELS[l_N]
+     \vdashresulttypematch [t^\ast] \matchesresulttype C.\CLABELS[l_N]
    }{
-     C \vdashinstr \BRTABLE~l^\ast~l_N : [t_1^\ast~t^?~\I32] \to [t_2^\ast]
+     C \vdashinstr \BRTABLE~l^\ast~l_N : [t_1^\ast~t^\ast~\I32] \to [t_2^\ast]
    }
 
 .. note::
@@ -949,9 +956,9 @@ Control Instructions
 
    The |BRTABLE| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
-   Furthermore, the :ref:`result type <syntax-resulttype>` :math:`[t^?]` is also chosen non-deterministically in this rule.
-   In a :ref:`type checking algorithm <algo-valid>`, the greatest lower bound of the involved label types can be picked as a principal type,
-   and it is a type error if that bound does not exist.
+   Furthermore, the :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` is also chosen non-deterministically in this rule.
+   Although it may seem necessary to compute :math:`[t^\ast]` as the greatest lower bound of all label types in practice,
+   a simple :ref:`linear algorithm <algo-valid>` does not require this.
 
 
 .. _valid-return:
@@ -961,15 +968,15 @@ Control Instructions
 
 * The return type :math:`C.\CRETURN` must not be absent in the context.
 
-* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\CRETURN`.
+* Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\CRETURN`.
 
-* Then the instruction is valid with type :math:`[t_1^\ast~t^?] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* Then the instruction is valid with type :math:`[t_1^\ast~t^\ast] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     C.\CRETURN = [t^?]
+     C.\CRETURN = [t^\ast]
    }{
-     C \vdashinstr \RETURN : [t_1^\ast~t^?] \to [t_2^\ast]
+     C \vdashinstr \RETURN : [t_1^\ast~t^\ast] \to [t_2^\ast]
    }
 
 .. note::
@@ -1076,7 +1083,7 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
    }
 
 
-.. index:: expression
+.. index:: expression, result type
    pair: validation; expression
    single: abstract syntax; expression
    single: expression; constant
@@ -1085,22 +1092,22 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
 Expressions
 ~~~~~~~~~~~
 
-Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttype>` of the form :math:`[t^?]`.
+Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttype>` of the form :math:`[t^\ast]`.
 
 
 :math:`\instr^\ast~\END`
 ........................
 
-* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^?]`,
-  for some optional :ref:`value type <syntax-valtype>` :math:`t^?`.
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^\ast]`,
+  for some :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
 
-* Then the expression is valid with :ref:`result type <syntax-resulttype>` :math:`[t^?]`.
+* Then the expression is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
 
 .. math::
    \frac{
-     C \vdashinstrseq \instr^\ast : [] \to [t^?]
+     C \vdashinstrseq \instr^\ast : [] \to [t^\ast]
    }{
-     C \vdashexpr \instr^\ast~\END : [t^?]
+     C \vdashexpr \instr^\ast~\END : [t^\ast]
    }
 
 
