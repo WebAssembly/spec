@@ -43,7 +43,7 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Locals*: the list of locals declared in the current function (including parameters), represented by their value type.
 * *Labels*: the stack of labels accessible from the current position, represented by their result type.
 * *Return*: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.
-* *References*: the list of :ref:`function indices <syntax-funcidx>` that occur in element segments and can hence be used to form references elsewhere.
+* *References*: the list of :ref:`function indices <syntax-funcidx>` that occur in the module outside functions and can hence be used to form references inside them.
 
 In other words, a context contains a sequence of suitable :ref:`types <syntax-type>` for each :ref:`index space <syntax-index>`,
 describing each defined entry in that space.

@@ -530,7 +530,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C.\CELEMS` is :math:`{\X{rt}}^\ast` as determined below,
 
-  * :math:`C.\CDATAS` is :math:`{\ok}^{N_d}`, where :math:`N_d` is the length of the vector :math:`\module.\MDATAS`,
+  * :math:`C.\CDATAS` is :math:`{\ok}^n`, where :math:`n` is the length of the vector :math:`\module.\MDATAS`,
 
   * :math:`C.\CLOCALS` is empty,
 
@@ -538,7 +538,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C.\CRETURN` is empty.
 
-  * :math:`C.\CREFS` is the set :math:`\freefuncidx(\module.\MELEMS)`, i.e., the set of :ref:`function indices <syntax-funcidx>` occurring in any of the module's :ref:`element segments <syntax-elem>`.
+  * :math:`C.\CREFS` is the set :math:`\freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)`, i.e., the set of :ref:`function indices <syntax-funcidx>` occurring in the module, except in its :ref:`functions <syntax-func>` or :ref:`start function <syntax-start>`.
 
 * Let :math:`C'` be the :ref:`context <context>` where:
 
@@ -607,7 +607,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     (\vdashfunctype \functype \ok)^\ast
+     (\vdashfunctype \type \ok)^\ast
      \quad
      (C \vdashfunc \func : \X{ft})^\ast
      \quad
@@ -619,7 +619,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \\
      (C \vdashelem \elem : \X{rt})^\ast
      \quad
-     (C \vdashdata \data \ok)^{N_d}
+     (C \vdashdata \data \ok)^n
      \quad
      (C \vdashstart \start \ok)^?
      \quad
@@ -635,28 +635,32 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \qquad
      \X{igt}^\ast = \etglobals(\X{it}^\ast)
      \\
-     C = \{ \CTYPES~\functype^\ast, \CFUNCS~\X{ift}^\ast~\X{ft}^\ast, \CTABLES~\X{itt}^\ast~\X{tt}^\ast, \CMEMS~\X{imt}^\ast~\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast~\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^{N_d}, \CREFS~\freefuncidx(\elem^\ast) \}
+     x^\ast = \freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)
+     \\
+     C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
      C' = \{ \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad
      |C.\CMEMS| \leq 1
      \qquad
      (\export.\ENAME)^\ast ~\F{disjoint}
-     \end{array}
-   }{
-     \vdashmodule \{
+     \\
+     \module = \{
        \begin{array}[t]{@{}l@{}}
-         \MTYPES~\functype^\ast,
+         \MTYPES~\type^\ast,
          \MFUNCS~\func^\ast,
          \MTABLES~\table^\ast,
          \MMEMS~\mem^\ast,
          \MGLOBALS~\global^\ast, \\
          \MELEMS~\elem^\ast,
-         \MDATAS~\data^{N_d},
+         \MDATAS~\data^n,
          \MSTART~\start^?,
          \MIMPORTS~\import^\ast,
-         \MEXPORTS~\export^\ast \} : \X{it}^\ast \to \X{et}^\ast \\
+         \MEXPORTS~\export^\ast \}
        \end{array}
+     \end{array}
+   }{
+     \vdashmodule \module : \X{it}^\ast \to \X{et}^\ast
    }
 
 .. note::
