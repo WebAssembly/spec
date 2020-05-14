@@ -152,7 +152,7 @@ let encode m =
     let var x = vu32 x.it
 
     let block_type = function
-      | ValBlockType None -> vs33 (-0x40)
+      | ValBlockType None -> vs33 (-0x40l)
       | ValBlockType (Some t) -> value_type t
       | VarBlockType (SynVar x) -> vs33 x
       | VarBlockType (SemVar _) -> assert false
