@@ -221,11 +221,10 @@ let memop s =
   Int32.to_int align, offset
 
 let block_type s =
-Printf.printf "[decode bt 0x%x]" (Lib.Option.get (peek s) (-1));
   match peek s with
   | Some 0x40 -> skip 1 s; ValBlockType None
   | Some b when b land 0xc0 = 0x40 -> ValBlockType (Some (value_type s))
-  | _ -> Printf.printf "[var]"; VarBlockType (SynVar (vs33 s))
+  | _ -> VarBlockType (SynVar (vs33 s))
 
 let local s =
   let n = vu32 s in

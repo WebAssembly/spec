@@ -152,10 +152,9 @@ let encode m =
     let var x = vu32 x.it
 
     let block_type = function
-x -> Printf.printf "[encode bt]"; match x with
-      | ValBlockType None -> vs7 (-0x40)
+      | ValBlockType None -> vs33 (-0x40)
       | ValBlockType (Some t) -> value_type t
-      | VarBlockType (SynVar x) -> Printf.printf "[var]"; vs33 x
+      | VarBlockType (SynVar x) -> vs33 x
       | VarBlockType (SemVar _) -> assert false
 
     let local (t, n) = len n; value_type t.it
