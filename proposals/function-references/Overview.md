@@ -133,27 +133,21 @@ A *constructed type* denotes a user-defined or pre-defined data type that is not
   - the others use the same (negative) opcodes as the existing `funcref`, `externref`, respectively
 
 
-#### Reference types
+#### Reference Types
 
 A *reference type* denotes the type of a reference to some data. It may either include or exclude null:
 
-* `null? <constype>` is a reference type
-  - `reftype ::= null? <constype>`
-  - `null? <constype> ok` iff `<constype> ok`
-
-* In the binary encoding,
-  - null and non-null variant are distinguished by two new (negative) type opcodes
-
-
-#### Value Types
-
-* `ref <reftype>` is a new value type
-  - `valtype ::= ... | ref <reftype>`
-  - `(ref <reftype>) ok` iff `<reftype> ok`
+* `(ref null? <constype>)` is a new form of reference type
+  - `reftype ::= ref null? <constype>`
+  - `ref null? <constype> ok` iff `<constype> ok`
 
 * Reference types now *all* take the form `ref null? <constype>`
   - `funcref` and `externref` are reinterpreted as abbreviations (in both binary and text format) for `(ref null func)` and `(ref null extern)`, respectively
   - Note: this refactoring allows using `func` and `extern` as constructed types, which is relevant for future extensions such as [type imports](https://github.com/WebAssembly/proposal-type-imports/proposals/type-imports/Overview.md)
+
+* In the binary encoding,
+  - null and non-null variant are distinguished by two new (negative) type opcodes
+  - the opcodes for `funcref` and `externref` continue to exist as shorthands as described above
 
 
 #### Subtyping
@@ -162,22 +156,16 @@ Greatest fixpoint (co-inductive interpretation) of the given rules (implying ref
 
 The following rules, now defined in terms of constructed types, replace and extend the rules for [basic reference types](https://github.com/WebAssembly/reference-types/proposals/reference-types/Overview.md#subtyping).
 
-##### Value Types
-
-* Reference types are covariant
-  - `(ref <reftype1>) <: (ref <reftype2>)`
-    - iff `<reftype1> <: <reftype2>`
-
-##### Value Types
+##### Reference Types
 
 * Reference types are covariant in the referenced constructed type
-  - `null <constype1> <: null <constype2>`
+  - `(ref null <constype1>) <: (ref null <constype2>)`
     - iff `<constype1> <: <constype2>`
-  - `<constype1> <: <constype2>`
+  - `(ref <constype1>) <: (ref <constype2>)`
     - iff `<constype1> <: <constype2>`
 
 * Non-null types are subtypes of possibly-null types
-  - `<constype1> <: null <constype2>`
+  - `(ref <constype1>) <: (ref null <constype2>)`
     - iff `<constype1> <: <constype2>`
 
 ##### Constructed Types
