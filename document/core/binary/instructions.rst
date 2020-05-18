@@ -374,6 +374,16 @@ All other numeric instructions are plain opcodes without any immediates.
      \hex{BF} &\Rightarrow& \F64.\REINTERPRET\K{\_}\I64 \\
    \end{array}
 
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+     \hex{C0} &\Rightarrow& \I32.\EXTEND\K{8\_s} \\ &&|&
+     \hex{C1} &\Rightarrow& \I32.\EXTEND\K{16\_s} \\ &&|&
+     \hex{C2} &\Rightarrow& \I64.\EXTEND\K{8\_s} \\ &&|&
+     \hex{C3} &\Rightarrow& \I64.\EXTEND\K{16\_s} \\ &&|&
+     \hex{C4} &\Rightarrow& \I64.\EXTEND\K{32\_s} \\
+   \end{array}
+
 .. _binary-cvtop-trunc-sat:
 
 The saturating truncation instructions all have a one byte prefix.
@@ -389,17 +399,6 @@ The saturating truncation instructions all have a one byte prefix.
      \hex{FC}~\hex{05} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
      \hex{FC}~\hex{06} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
      \hex{FC}~\hex{07} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_u} \\
-   \end{array}
-
-
-.. math::
-   \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
-     \hex{C0} &\Rightarrow& \I32.\EXTEND\K{8\_s} \\ &&|&
-     \hex{C1} &\Rightarrow& \I32.\EXTEND\K{16\_s} \\ &&|&
-     \hex{C2} &\Rightarrow& \I64.\EXTEND\K{8\_s} \\ &&|&
-     \hex{C3} &\Rightarrow& \I64.\EXTEND\K{16\_s} \\ &&|&
-     \hex{C4} &\Rightarrow& \I64.\EXTEND\K{32\_s} \\
    \end{array}
 
 
