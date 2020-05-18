@@ -127,12 +127,16 @@ struct
 
   let unop op =
     fun v -> match op with
+      | I32x4 Neg -> to_value (SXX.I32x4.neg (of_value 1 v))
       | F32x4 Abs -> to_value (SXX.F32x4.abs (of_value 1 v))
       | F64x2 Abs -> to_value (SXX.F64x2.abs (of_value 1 v))
       | _ -> failwith "TODO v128 unimplemented unop"
 
   let binop op =
     let f = match op with
+      | I32x4 Add -> SXX.I32x4.add
+      | I32x4 Sub -> SXX.I32x4.sub
+      | I32x4 Mul -> SXX.I32x4.mul
       | F32x4 Min -> SXX.F32x4.min
       | F32x4 Max -> SXX.F32x4.max
       | F64x2 Min -> SXX.F64x2.min

@@ -40,6 +40,7 @@ sig
 
   val zero : t
 
+  val neg : t -> t
   val add : t -> t -> t
   val sub : t -> t -> t
   val mul : t -> t -> t
@@ -112,6 +113,8 @@ struct
   let zero = Rep.zero
   let one = Rep.one
   let ten = Rep.of_int 10
+
+  let neg = Rep.neg
 
   (* add, sub, and mul are sign-agnostic and do not trap on overflow. *)
   let add = Rep.add

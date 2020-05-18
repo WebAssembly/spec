@@ -42,6 +42,10 @@ sig
   type lane
 
   val extract_lane : int -> t -> lane
+  val neg : t -> t
+  val add : t -> t -> t
+  val sub : t -> t -> t
+  val mul : t -> t -> t
 end
 
 (* This signature defines the types and operations SIMD floats can expose. *)
@@ -65,6 +69,7 @@ sig
   val of_bits : bits -> t
   val to_bits : t -> bits
   val of_strings : shape -> string list -> t
+  val to_i32x4 : t -> I32.t list
 
   (* We need type t = t to ensure that all submodule types are S.t,
    * then callers don't have to change *)
@@ -83,6 +88,7 @@ struct
   let of_bits x = x
   let to_bits x = x
   let of_strings = Rep.of_strings
+  let to_i32x4 = Rep.to_i32x4
 
   module MakeFloat (Float : Float.S) (Convert : sig
       val to_shape : Rep.t -> Float.t list
@@ -101,15 +107,23 @@ struct
 
   module MakeInt (Int : Int.S) (Convert : sig
       val to_shape : Rep.t -> Int.t list
+      val of_shape : Int.t list -> Rep.t
     end) : Int with type t = Rep.t and type lane = Int.t =
   struct
     type t = Rep.t
     type lane = Int.t
     let extract_lane i s = List.nth (Convert.to_shape s) i
+    let unop f x = Convert.of_shape (List.map f (Convert.to_shape x))
+    let binop f x y = Convert.of_shape (List.map2 f (Convert.to_shape x) (Convert.to_shape y))
+    let neg = unop Int.neg
+    let add = binop Int.add
+    let sub = binop Int.sub
+    let mul = binop Int.mul
   end
 
   module I32x4 = MakeInt (I32) (struct
       let to_shape = Rep.to_i32x4
+      let of_shape = Rep.of_i32x4
     end)
 
   module F32x4 = MakeFloat (F32) (struct

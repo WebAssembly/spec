@@ -58,9 +58,10 @@ let simd_lane_nan shape l at =
 let simd_lane_lit shape l at =
   let open Simd in
   match shape with
+  | I32x4 -> LitPat (Values.I32 (I32.of_string l) @@ at) @@ at
   | F32x4 -> LitPat (Values.F32 (F32.of_string l) @@ at) @@ at
   | F64x2 -> LitPat (Values.F64 (F64.of_string l) @@ at) @@ at
-  | _ -> error at "invalid simd constant"
+  | _ -> error at "unimplemented simd lane lit"
 
 let nanop f nan =
   let open Source in
@@ -880,11 +881,11 @@ result :
   | const { NumResult (LitPat $1 @@ at ()) @@ at () }
   | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ ati 3)) @@ ati 3) @@ at () }
   | LPAR V128_CONST SIMD_SHAPE numpat numpat numpat numpat RPAR {
-      if ($3 <> Simd.F32x4) then error (ati 3) "invalid SIMD shape";
+      if ($3 <> Simd.F32x4 && $3 <> Simd.I32x4) then error (ati 3) "unimplemented SIMD shape";
       SimdResult ($3, [$4 $3; $5 $3; $6 $3; $7 $3]) @@ at ()
   }
   | LPAR V128_CONST SIMD_SHAPE numpat numpat RPAR {
-      if ($3 <> Simd.F64x2) then error (ati 3) "invalid SIMD shape";
+      if ($3 <> Simd.F64x2) then error (ati 3) "unimplemented SIMD shape";
       SimdResult ($3, [$4 $3; $5 $3]) @@ at ()
   }
 
