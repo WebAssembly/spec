@@ -11,7 +11,8 @@ let lanes shape =
   | F32x4 -> 4
   | F64x2 -> 2
 
-let f32x4_indices = [0; 4; 8; 12]
+let i32x4_indices = [0; 4; 8; 12]
+let f32x4_indices = i32x4_indices
 let f64x2_indices = [0; 8]
 
 module type RepType =
@@ -25,12 +26,22 @@ sig
   val of_strings : shape -> string list -> t
 
   val to_i32x4 : t -> I32.t list
+  val of_i32x4 : I32.t list -> t
 
   val to_f32x4 : t -> F32.t list
   val of_f32x4 : F32.t list -> t
 
   val to_f64x2 : t -> F64.t list
   val of_f64x2 : F64.t list -> t
+end
+
+(* This signature defines the types and operations SIMD ints can expose. *)
+module type Int =
+sig
+  type t
+  type lane
+
+  val extract_lane : int -> t -> lane
 end
 
 (* This signature defines the types and operations SIMD floats can expose. *)
@@ -55,10 +66,9 @@ sig
   val to_bits : t -> bits
   val of_strings : shape -> string list -> t
 
-  val i32x4_extract_lane : int -> t -> I32.t
-
   (* We need type t = t to ensure that all submodule types are S.t,
    * then callers don't have to change *)
+  module I32x4 : Int with type t = t and type lane = I32.t
   module F32x4 : Float with type t = t and type lane = F32.t
   module F64x2 : Float with type t = t and type lane = F64.t
 end
@@ -74,10 +84,6 @@ struct
   let to_bits x = x
   let of_strings = Rep.of_strings
 
-  let to_i32x4 = Rep.to_i32x4
-
-  let i32x4_extract_lane i x = List.nth (to_i32x4 x) i
-
   module MakeFloat (Float : Float.S) (Convert : sig
       val to_shape : Rep.t -> Float.t list
       val of_shape : Float.t list -> Rep.t
@@ -92,6 +98,19 @@ struct
     let max = binop Float.max
     let extract_lane i s = List.nth (Convert.to_shape s) i
   end
+
+  module MakeInt (Int : Int.S) (Convert : sig
+      val to_shape : Rep.t -> Int.t list
+    end) : Int with type t = Rep.t and type lane = Int.t =
+  struct
+    type t = Rep.t
+    type lane = Int.t
+    let extract_lane i s = List.nth (Convert.to_shape s) i
+  end
+
+  module I32x4 = MakeInt (I32) (struct
+      let to_shape = Rep.to_i32x4
+    end)
 
   module F32x4 = MakeFloat (F32) (struct
       let to_shape = Rep.to_f32x4

@@ -151,7 +151,7 @@ struct
     | F32x4ExtractLane imm ->
       (F32Op.to_value (SXX.F32x4.extract_lane imm (of_value 1 v)))
     | I32x4ExtractLane imm ->
-      (I32Op.to_value (SXX.i32x4_extract_lane imm (of_value 1 v)))
+      (I32Op.to_value (SXX.I32x4.extract_lane imm (of_value 1 v)))
 end
 
 module V128Op = SimdOp (V128) (Values.V128Value)
