@@ -331,18 +331,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     List.iter (fun x' -> check_stack c ts (label c x') x'.at) xs;
     (ts @ [NumType I32Type]) -->... []
 
-  | BrOnNull x ->
-    (match peek 0 s with
-    | RefType (nul, t') ->
-      (label c x @ [RefType (nul, t')]) -->
-        (label c x @ [RefType (NonNullable, t')])
-    | BotType ->
-      [] -->... []
-    | t ->
-      error e.at
-        ("type mismatch: instruction requires reference type" ^
-         " but stack has " ^ string_of_value_type t);
-    )
+  | BrOnNull (x, t) ->
+    check_refed_type c t e.at;
+    (label c x @ [RefType (Nullable, t)]) -->
+      (label c x @ [RefType (NonNullable, t)])
 
   | Return ->
     c.results -->... []
@@ -459,8 +451,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let TableType (_lim1, t1) = table c x in
     let t2 = elem c y in
     require (match_ref_type c.types [] t2 t1) x.at
-      ("type mismatch: source element type " ^ string_of_ref_type t1 ^
-       " does not match destination element type " ^ string_of_ref_type t2);
+      ("type mismatch: element segment's type " ^ string_of_ref_type t1 ^
+       " does not match table's element type " ^ string_of_ref_type t2);
     [NumType I32Type; NumType I32Type; NumType I32Type] --> []
 
   | ElemDrop x ->
@@ -620,7 +612,8 @@ let check_elem_mode (c : context) (t : ref_type) (mode : segment_mode) =
   | Active {index; offset} ->
     let TableType (_, et) = table c index in
     require (match_ref_type c.types [] t et) mode.at
-      "type mismatch in active element segment";
+      ("type mismatch: element segment's type " ^ string_of_ref_type t ^
+       " does not match table's element type " ^ string_of_ref_type et);
     check_const c offset (NumType I32Type)
   | Declarative -> ()
 

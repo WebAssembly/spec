@@ -100,7 +100,7 @@
   ;; Null
 
   (func (export "null")
-    (return_call_ref (ref.null $proc))
+    (return_call_ref (ref.null (type $proc)))
   )
 
   ;; Recursion

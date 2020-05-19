@@ -181,7 +181,7 @@ let encode m =
       | Br x -> op 0x0c; var x
       | BrIf x -> op 0x0d; var x
       | BrTable (xs, x) -> op 0x0e; vec var xs; var x
-      | BrOnNull x -> op 0xd4; var x
+      | BrOnNull (x, t) -> op 0xd4; var x; refed_type t
       | Return -> op 0x0f
       | Call x -> op 0x10; var x
       | CallRef -> op 0x14

@@ -281,7 +281,7 @@ let run ts at =
   [], []
 
 let assert_return ress ts at =
-  let test res =
+  let test (res, t) =
     match res.it with
     | LitResult {it = Num num; at = at'} ->
       let t', reinterpret = reinterpret_of (type_of_num num) in
@@ -334,8 +334,13 @@ let assert_return ress ts at =
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | NullResult ->
-      [ BrOnNull (0l @@ at) @@ at ]
-  in [], List.flatten (List.rev_map test ress)
+      (match t with
+      | RefType (_, t') ->
+        [ BrOnNull (0l @@ at, t') @@ at ]
+      | _ ->
+        [ Br (0l @@ at) @@ at ]
+      )
+  in [], List.flatten (List.rev_map test (List.combine ress ts))
 
 let i32_type = NumType I32Type
 let funcref_type = RefType (Nullable, FuncRefType)

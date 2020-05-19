@@ -124,8 +124,8 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 
 A *constructed type* denotes a user-defined or pre-defined data type that is not a primitive scalar:
 
-* `constype ::= <typeidx> | func | extern`
-  - `$t ok` iff `$t` is defined in the context
+* `constype ::= (type <typeidx>) | func | extern`
+  - `(type $t) ok` iff `$t` is defined in the context
   - `func ok` and `extern ok`, always
 
 * In the binary encoding,
@@ -144,6 +144,7 @@ A *reference type* denotes the type of a reference to some data. It may either i
 * Reference types now *all* take the form `ref null? <constype>`
   - `funcref` and `externref` are reinterpreted as abbreviations (in both binary and text format) for `(ref null func)` and `(ref null extern)`, respectively
   - Note: this refactoring allows using `func` and `extern` as constructed types, which is relevant for future extensions such as [type imports](https://github.com/WebAssembly/proposal-type-imports/proposals/type-imports/Overview.md)
+  - `(ref null? (type $t))` can be abbreviated to `(ref null? $t)` in the text format
 
 * In the binary encoding,
   - null and non-null variant are distinguished by two new (negative) type opcodes
@@ -224,10 +225,10 @@ The following rules, now defined in terms of constructed types, replace and exte
     - iff `ct ok` is defined
   - traps on `null`
 
-* `br_on_null` checks for null and branches
-  - `br_on_null $l : [t* (ref null ct)] -> [t* (ref ct)]`
-    - iff `ct ok` is defined
-    - and `$l : [t*]`
+* `br_on_null $l <constype>` checks for null and branches
+  - `br_on_null $l ct : [t* (ref null ct)] -> [t* (ref ct)]`
+    - iff `$l : [t*]`
+    - and `ct ok`
   - branches to `$l` on `null`, otherwise returns operand as non-null
 
 * Note: `ref.is_null` already exists via the [reference types proposal](https://github.com/WebAssembly/reference-types)

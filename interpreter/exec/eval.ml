@@ -208,7 +208,7 @@ let rec step (c : config) : config =
         else
           vs', [Plain (Br (Lib.List32.nth xs i)) @@ e.at]
 
-      | BrOnNull x, Ref r :: vs' ->
+      | BrOnNull (x, _), Ref r :: vs' ->
         (match r with
         | NullRef _ ->
           vs', [Plain (Br x) @@ e.at]

@@ -250,11 +250,13 @@ null_opt :
 refed_type :
   | FUNC { fun c -> FuncRefType }
   | EXTERN { fun c -> ExternRefType }
-  | var { fun c -> DefRefType (SynVar ($1 c type_).it) }
+  | LPAR TYPE var RPAR { fun c -> DefRefType (SynVar ($3 c type_).it) }
 
 ref_type :
   | LPAR REF null_opt refed_type RPAR { fun c -> ($3, $4 c) }
-  | FUNCREF { fun c -> (Nullable, FuncRefType) }      /* Sugar */
+  | LPAR REF null_opt var RPAR  /* Sugar */
+    { fun c -> ($3, DefRefType (SynVar ($4 c type_).it)) }
+  | FUNCREF { fun c -> (Nullable, FuncRefType) }  /* Sugar */
   | EXTERNREF { fun c -> (Nullable, ExternRefType) }  /* Sugar */
 
 value_type :
@@ -368,7 +370,7 @@ plain_instr :
   | BR_TABLE var var_list
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
-  | BR_ON_NULL var { fun c -> br_on_null ($2 c label) }
+  | BR_ON_NULL var refed_type { fun c -> br_on_null ($2 c label) ($3 c) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF { fun c -> call_ref }

@@ -184,9 +184,10 @@ align: align=(1|2|4|8|...)
 cvtop: trunc | extend | wrap | ...
 
 num_type: i32 | i64 | f32 | f64
-refed_type: func | extern | <var>
+refed_type: func | extern | (type <var>)
 ref_type:
   ( ref null? <refed_type> )
+  ( ref null? <var> )         ;; = (ref null (type <var>))
   funcref                     ;; = (ref null func)
   externref                   ;; = (ref null extern)
 
@@ -223,7 +224,7 @@ op:
   br <var>
   br_if <var>
   br_table <var>+
-  br_on_null <var>
+  br_on_null <var> <refed_type>
   return
   call <var>
   call_indirect <var>? <func_type>
@@ -372,13 +373,8 @@ assertion:
   ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
-<<<<<<< HEAD
 result_pat:
-  ( <val_type>.const <num_pat> )
-=======
-result:
   ( <num_type>.const <num_pat> )
->>>>>>> upstream/master
   ( ref.extern )
   ( ref.func )
   ( ref.null )
@@ -437,18 +433,11 @@ assertion:
   ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
-<<<<<<< HEAD
 result_pat:
-  ( <val_type>.const <num_pat> )
-  ( ref.extern )
-  ( ref.func )
-  ( ref.null )
-=======
-result:
   ( <num_type>.const <num_pat> )
   ( ref.extern )
   ( ref.func )
->>>>>>> upstream/master
+  ( ref.null )
 
 num_pat:
   <value>                                    ;; literal result

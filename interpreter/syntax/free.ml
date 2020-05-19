@@ -105,8 +105,9 @@ let rec instr (e : instr) =
   | Let (bt, ts, es) ->
     let free = block_type bt ++ block es in
     {free with locals = Lib.Fun.repeat (List.length ts) shift free.locals}
-  | Br x | BrIf x | BrOnNull x -> labels (idx x)
+  | Br x | BrIf x -> labels (idx x)
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
+  | BrOnNull (x, t) -> labels (idx x) ++ refed_type t
   | Return | CallRef | ReturnCallRef -> empty
   | Call x -> funcs (idx x)
   | CallIndirect (x, y) -> tables (idx x) ++ types (idx y)

@@ -205,7 +205,7 @@ and string_of_num_type = function
 and string_of_refed_type = function
   | FuncRefType -> "func"
   | ExternRefType -> "extern"
-  | DefRefType x -> string_of_var x
+  | DefRefType x -> "(type " ^ string_of_var x ^ ")"
 
 and string_of_ref_type = function
   | (nul, t) ->

@@ -26,7 +26,7 @@ let let_ bt ts es = Let (bt, ts, es)
 let br x = Br x
 let br_if x = BrIf x
 let br_table xs x = BrTable (xs, x)
-let br_on_null x = BrOnNull x
+let br_on_null x t = BrOnNull (x, t)
 
 let return = Return
 let call x = Call x

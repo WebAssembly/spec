@@ -249,7 +249,7 @@ let rec instr e =
     | BrIf x -> "br_if " ^ var x, []
     | BrTable (xs, x) ->
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
-    | BrOnNull x -> "br_on_null " ^ var x, []
+    | BrOnNull (x, t) -> "br_on_null " ^ var x, [Atom (refed_type t)]
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallRef -> "call_ref", []

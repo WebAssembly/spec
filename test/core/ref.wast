@@ -9,10 +9,14 @@
       externref
       (ref func)
       (ref extern)
+      (ref (type 0))
+      (ref (type $t))
       (ref 0)
       (ref $t)
       (ref null func)
       (ref null extern)
+      (ref null (type 0))
+      (ref null (type $t))
       (ref null 0)
       (ref null $t)
     )
@@ -32,7 +36,7 @@
 )
 
 (assert_invalid
-  (module (global $global-invalid (ref null 1) (ref.null 1)))
+  (module (global $global-invalid (ref null 1) (ref.null (type 1))))
   "unknown type"
 )
 

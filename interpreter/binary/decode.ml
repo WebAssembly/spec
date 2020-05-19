@@ -496,7 +496,10 @@ let rec instr s =
   | 0xd1 -> ref_is_null (refed_type s)
   | 0xd2 -> ref_func (at var s)
   | 0xd3 -> ref_as_non_null (refed_type s)
-  | 0xd4 -> br_on_null (at var s)
+  | 0xd4 ->
+    let x = at var s in
+    let t = refed_type s in
+    br_on_null x t
 
   | 0xfc as b1 ->
     (match op s with
