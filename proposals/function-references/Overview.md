@@ -172,7 +172,7 @@ The following rules, now defined in terms of constructed types, replace and exte
 ##### Constructed Types
 
 * Any function type is a subtype of `func`
-  - `$t <: func`
+  - `(type $t) <: func`
      - iff `$t = <functype>`
 
 * Note: Function types themselves are invariant for now. This may be relaxed in future extensions.
@@ -267,15 +267,23 @@ The rule also implies that let-bound locals are mutable.
 
 #### Reference Types
 
-The opcode for reference types is generalised to an `s33`.
+| Opcode | Type            | Parameters |
+| ------ | --------------- | ---------- |
+| -0x10  | `funcref`       |            |
+| -0x11  | `externref`     |            |
+| -0x14  | `(ref null ct)` | `$t : constype` |
+| -0x15  | `(ref ct)`      | `$t : constype` |
+
+#### Constructed Types
+
+The opcode for constructed types is encoded as an `s33`.
 
 | Opcode | Type            | Parameters |
 | ------ | --------------- | ---------- |
-| i >= 0 | `(ref i)`       |            |
+| i >= 0 | `(type i)`      |            |
 | -0x10  | `func`          |            |
 | -0x11  | `extern`        |            |
-| -0x14  | `null $t`       | `$t : u32` |
-| -0x15  | `$t`            | `$t : u32` |
+
 
 ### Instructions
 
@@ -286,7 +294,7 @@ The opcode for reference types is generalised to an `s33`.
 | 0x16   | `func.bind (type $t)`    | `$t : u32` |
 | 0x17   | `let <bt> <locals>`      | `bt : blocktype, locals : (as in functions)` |
 | 0xd3   | `ref.as_non_null ct`     |  ct : constype |
-| 0xd4   | `br_on_null $l`          | `$l : u32` |
+| 0xd4   | `br_on_null $l ct`       | `$l : u32`, ct : constype |
 
 ### Tables
 
