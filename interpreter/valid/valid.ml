@@ -316,8 +316,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let TableType (_lim1, t1) = table c x in
     let t2 = elem c y in
     require (t1 = t2) x.at
-      ("type mismatch: source element type " ^ string_of_ref_type t1 ^
-       " does not match destination element type " ^ string_of_ref_type t2);
+      ("type mismatch: element segment's type " ^ string_of_ref_type t1 ^
+       " does not match table's element type " ^ string_of_ref_type t2);
     [NumType I32Type; NumType I32Type; NumType I32Type] --> []
 
   | ElemDrop x ->
@@ -511,7 +511,8 @@ let check_elem_mode (c : context) (t : ref_type) (mode : segment_mode) =
   | Active {index; offset} ->
     let TableType (_, et) = table c index in
     require (t = et) mode.at
-      "type mismatch in active element segment";
+      ("type mismatch: element segment's type " ^ string_of_ref_type t ^
+       " does not match table's element type " ^ string_of_ref_type et);
     check_const c offset (NumType I32Type)
   | Declarative -> ()
 
