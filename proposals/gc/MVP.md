@@ -9,9 +9,9 @@ See [overview](Overview.md) for background.
 
 Based on the following proposals:
 
-* [reference types](https://github.com/WebAssembly/reference-types), which introduces type `anyref` etc.
+* [reference types](https://github.com/WebAssembly/reference-types), which introduces references types
 
-* [typed function references](https://github.com/WebAssembly/function-references), which introduces types `(ref $t)` and `(optref $t)` etc.
+* [typed function references](https://github.com/WebAssembly/function-references), which introduces typed references `(ref null? $t)` etc.
 
 * [type imports](https://github.com/WebAssembly/proposal-type-imports), which allows type definitionss to be imported and exported
 
@@ -20,19 +20,47 @@ All three proposals are prerequisites.
 
 ### Types
 
-#### Value Types
+#### Constructed Types
 
-* `eqref` is a new reference type
-  - `reftype ::= ... | eqref`
+[Constructed types](https://github.com/WebAssembly/reference-types/blob/master/proposals/function-references/Overview.md) classify the target of a reference and are extended:
 
-* `i31ref` is a new reference type
-  - `reftype ::= ... | i31ref`
+* `any` is a new constructed type
+  - `constype ::= ... | any`
+  - the common supertype of all referencable types
 
-* `rtt <typeuse>` is a new reference type that is a runtime representation of type `<typeuse>` (see [Runtime types](#runtime-types))
-  - `reftype ::= ... | rtt <typeuse>`
+* `eq` is a new constructed type
+  - `constype ::= ... | eq`
+  - the common supertype of all referencable types on which comparison (`ref.eq`) is allowed
+
+* `i31` is a new constructed type
+  - `constype ::= ... | 31`
+  - the type of unboxed scalars
+
+* `rtt <constype>` is a new constructed type that is a runtime representation of the static type `<constype>` (see [Runtime types](#runtime-types))
+  - `constype ::= ... | rtt <constype>`
   - `rtt t ok` iff `t ok`
 
-* Note: types `anyref` and `funcref` already exist via [reference types proposal](https://github.com/WebAssembly/reference-types), and `ref $t` and `optref $t` via [typed references](https://github.com/WebAssembly/function-references)
+* `constype ::= ... | any | eq | i31 | (rtt <constype>)`
+  - `any` is the common supertype of all referencable types
+  - `eq` is the common supertype of  all referencable types on which equality (`ref.eq`) is allowed
+  - `i31` denotes an unboxed scalar
+  - `(rtt ct)` denotes a runtime type representation for type `ct`
+
+* Note: constructed types `func` and `extern` already exist via [reference types proposal](https://github.com/WebAssembly/reference-types), and `(ref null? $t)` via [typed references](https://github.com/WebAssembly/function-references)
+
+
+#### Reference Types
+
+New abbreviations are introduced for reference types in binary and text format, corresponding to `funcref` and `externref`:
+
+* `anyref` is a new reference type
+  - `anyref == (ref null any)`
+
+* `eqref` is a new reference type
+  - `eqref == (ref null eq)`
+
+* `i31ref` is a new reference type
+  - `i31ref == (ref i31)`
 
 
 #### Type Definitions
@@ -46,7 +74,6 @@ All three proposals are prerequisites.
 
 * `arraytype` describes an array with dynamically indexed fields
   - `arraytype ::= array <fieldtype>`
-  - `<fieldtype> = mut <storagetype>`
   - Note: in the MVP, all arrays must be defined as mutable
 
 * `fieldtype` describes a struct or array field and whether it is mutable
@@ -59,65 +86,32 @@ All three proposals are prerequisites.
   - `unpacked(pt) = i32`
 
 
-#### Type Uses
-
-A *type use* denotes a user-defined or pre-defined data type:
-
-* `typeuse ::= <typeidx> | any | func | eq | i31 | rtt`
-
-* In the binary encoding,
-  - the `<typeidx>` is encoded as a (positive) signed LEB
-  - the others use the same (negative) opcodes as `anyref`, `funcref`, `eqref`, `i31ref`, `rtt`, respectively
-
-
-#### Imports
-
-* `type <typetype>` is an import description with an upper bound
-  - `importdesc ::= ... | type <typetype>`
-  - Note: `type` may get additional parameters in the future
-
-* `typetype` describes the type of a type import, and is either an upper bound or a type equivalence
-  - `typetype ::= sub <typeuse> | eq <typeuse>`
-
-* Type imports have indices prepended to the type index space, similar to other imports.
-  - Note: due to bounds, type imports can be mutually recursive with other type imports as well as regular type definitions. Hence they have to be validated together with the type section.
-
-
-#### Exports
-
-* `type <typeidx>` is an export description
-  - `exportdesc ::= ... | type <typeidx>`
-  - `type $t ok` iff `$t` is defined in the context
-
-
 #### Subtyping
 
 Greatest fixpoint (co-inductive interpretation) of the given rules (implying reflexivity and transitivity).
 
-In addition to the rules for [basic](https://github.com/WebAssembly/reference-types/proposals/reference-types/Overview.md#subtyping), and [typed](https://github.com/WebAssembly/function-references/proposals/function-references/Overview.md#subtyping) reference types:
+##### Constructed Types
 
-* `eqref` is a subtype of `anyref`
-  - `eqref <: anyref`
-  - Note: `i31ref` and `funcref` are *not* a subtypes of `eqref`, i.e., those types do not expose reference equality
+In addition to the [existing rules](https://github.com/WebAssembly/function-references/proposals/function-references/Overview.md#subtyping) for constructed types:
 
-* `nullref` is a subtype of `eqref`
-  - `nullref <: eqref`
+* every type is a subtype of `any`
+  - `t <: any`
 
-* `i31ref` is a subtype of `anyref`
-  - `i31ref <: anyref`
-  - Note: `i31ref` is *not* a supertype of `nullref`, i.e., nut nullable
+* `i31ref` is a subtype of `eqref`
+  - `i31 <: eq`
 
-* Any optional reference type (and thereby respective concrete reference type) is a subtype of `eqref` if its not a function
-  - `optref $t <: eqref`
+* Any concrete type is a subtype of `eq` if its not a function
+  - `(type $t) <: eq`
      - if `$t = <structtype>` or `$t = <arraytype>`
-     - or `$t = type rt` and `rt <: eqref`
+     - or `$t = type rt` and `rt <: eq` (imports)
   - TODO: provide a way to make data types non-eq, especially immutable ones
 
-* Concrete and optional reference types are covariant
-  - `ref $t1 <: ref $t2`
-     - iff `$t1 <: $t2`
-  - `optref $t1 <: optref $t2`
-     - iff `$t1 <: $t2`
+* `rtt t` is a subtype of `any`
+  - `rtt t <: any`
+  - Note: `rtt t1` is *not* a subtype of `rtt t2`, even if `t1` is a subtype of `t2`; such subtyping would be unsound, since RTTs are used in both co- and contravariant roles (e.g., both when constructing and consuming a reference)
+
+
+##### Defined Types
 
 * Structure types support width and depth subtyping
   - `struct <fieldtype1>* <fieldtype1'>* <: struct <fieldtype2>*`
@@ -132,10 +126,6 @@ In addition to the rules for [basic](https://github.com/WebAssembly/reference-ty
     - iff `<valtype1> <: <valtype2>`
   - `var <valtype> <: var <valtype>`
   - Note: mutable fields are *not* subtypes of immutable ones, so `const` really means constant, not read-only
-
-* `rtt t` is a subtype of `anyref`
-  - `rtt t <: anyref`
-  - Note: `rtt t1` is *not* a subtype of `rtt t2`, even if `t1` is a subtype of `t2`; such subtyping would be unsound, since RTTs are used in both co- and contravariant roles (e.g., both when constructing and consuming a reference)
 
 
 ### Runtime
@@ -154,7 +144,7 @@ In addition to the rules for [basic](https://github.com/WebAssembly/reference-ty
 
 * Validation requires that each parent type is a representative of a static supertype of its child; runtime subtyping hence is a sub-relation of static subtyping (a graph with fewer nodes and edges).
 
-* At the same time, runtime subtyping forms a linear hierarchy such that the relation can be checked efficiently using standard implementation techniques (it is a tree-shaped graph).
+* At the same time, runtime subtyping forms a linear hierarchy such that the relation can be checked efficiently using standard implementation techniques (the runtime subtype hierarchy is a tree-shaped graph).
 
 
 #### Values
@@ -183,12 +173,12 @@ Perhaps add the following short-hands:
 
 * `ref.is_func` checks whether a reference is a function
   - `ref.is_func : [anyref] -> [i32]`
-  - equivalent to `(rtt.get funcref) (ref.test)`
+  - equivalent to `(rtt.canon func) (ref.test)`
 
 * `ref.as_func` converts to a function reference
   - `ref.as_func : [anyref] -> [funcref]`
   - traps if reference is not a function
-  - equivalent to `(rtt.get funcref) (ref.cast)`
+  - equivalent to `(rtt.canon func) (ref.cast)`
 
 
 #### Structures
@@ -196,16 +186,23 @@ Perhaps add the following short-hands:
 * `struct.new <typeidx>` allocates a structure of type `$t` and initialises its fields with given values
   - `struct.new $t : [t*] -> [(ref $t)]`
     - iff `$t = struct (mut t)*`
-  - equivalent to `struct.new_sub $t (rtt.get anyref)`
+  - equivalent to `struct.new_with_rtt $t (rtt.canon any)`
 
-* `struct.new_sub <typeidx>` allocates a structure of type `$t` with RTT information determining its [runtime type](#values) and initialises its fields with given values
-  - `struct.new_sub $t : [(rtt t') t*] -> [(ref $t)]`
+* `struct.new_with_rtt <typeidx>` allocates a structure of type `$t` with RTT information determining its [runtime type](#values) and initialises its fields with given values
+  - `struct.new_with_rtt $t : [(rtt t') t*] -> [(ref $t)]`
     - iff `$t = struct (mut t)*`
-    - and `ref $t <: t'`
+    - and `(type $t) <: t'`
 
 * `struct.new_default <typeidx>` allocates a structure of type `$t` and initialises its fields with default values
   - `struct.new_default $t : [] -> [(ref $t)]`
     - iff `$t = struct (mut t)*`
+    - and all `t*` are defaultable
+  - equivalent to `struct.new_default_with_rtt $t (rtt.canon any)`
+
+* `struct.new_default_with_rtt <typeidx>` allocates a structure of type `$t` and initialises its fields with default values
+  - `struct.new_default_with_rtt $t : [(rtt t')] -> [(ref $t)]`
+    - iff `$t = struct (mut t)*`
+    - and `(type $t) <: t'`
     - and all `t*` are defaultable
 
 * `struct.get_<sx>? <typeidx> <fieldidx>` reads field `$x` from a structure
@@ -226,18 +223,25 @@ Perhaps add the following short-hands:
 
 * `array.new <typeidx>` allocates an array of type `$t` and initialises its fields with a given value
   - `array.new $t : [t i32] -> [(ref $t)]`
-    - iff `$t = array (mut t)`
-  - equivalent to `array.new_sub $t (rtt.get anyref)`
+    - iff `$t = array (var t)`
+  - equivalent to `array.new_with_rtt $t (rtt.canon any)`
 
-* `array.new_sub <typeidx> <typeuse>` allocates a array of type `$t` with RTT information determining its [runtime type](#values)
-  - `array.new_sub $t t' : [(rtt t') t i32] -> [(ref $t)]`
-    - iff `$t = array (mut t)`
-    - and `ref $t <: t'`
+* `array.new_with_rtt <typeidx>` allocates a array of type `$t` with RTT information determining its [runtime type](#values)
+  - `array.new_with_rtt $t : [(rtt t') t i32] -> [(ref $t)]`
+    - iff `$t = array (var t)`
+    - and `(type $t) <: t'`
 
 * `array.new_default <typeidx>` allocates an array of type `$t` and initialises its fields with the default value
   - `array.new_default $t : [i32] -> [(ref $t)]`
-    - iff `$t = array (mut t)`
+    - iff `$t = array (var t)`
     - and `t` is defaultable
+
+* `array.new_default_with_rtt <typeidx>` allocates an array of type `$t` and initialises its fields with the default value
+  - `array.new_default_with_rtt $t : [(rtt t') i32] -> [(ref $t)]`
+    - iff `$t = array (var t)`
+    - and `(type $t) <: t'`
+    - and `t` is defaultable
+  - equivalent to `array.new_default_with_rtt $t (rtt.canon any)`
 
 * `array.get_<sx>? <typeidx>` reads an element from an array
   - `array.get_<sx>? $t : [(optref $t) i32] -> [t]`
@@ -275,23 +279,23 @@ Perhaps also the following short-hands:
 
 * `ref.is_i31` checks whether a reference is an i31
   - `ref.is_i31 : [anyref] -> [i32]`
-  - equivalent to `(rtt.get i31ref) (ref.test)`
+  - equivalent to `(rtt.canon i31) (ref.test)`
 
 * `ref.as_i31` converts to an integer reference
   - `ref.as_i31 : [anyref] -> [i31ref]`
   - traps if reference is not an integer
-  - equivalent to `(rtt.get i31ref) (ref.cast)`
+  - equivalent to `(rtt.canon i31) (ref.cast)`
 
 
 #### Runtime Types
 
-* `rtt.get <typeuse>` returns the RTT of the specified type
-  - `rtt.get t : [] -> [(rtt t)]`
+* `rtt.canon <constype>` returns the RTT of the specified type
+  - `rtt.canon t : [] -> [(rtt t)]`
   - multiple invocations of this instruction yield the same observable RTTs
   - this is a *constant instruction*
-  - equivalent to `(rtt.sub t (rtt.get anyref))`, except when `t` itself is `anyref`
+  - equivalent to `(rtt.sub t (rtt.canon any))`, except when `t` itself is `any`
 
-* `rtt.sub <typeuse>` returns the RTT of the specified type as a sub-RTT of a given parent RTT operand
+* `rtt.sub <constype>` returns the RTT of the specified type as a sub-RTT of a given parent RTT operand
   - `rtt.sub t : [(rtt t')] -> [(rtt t)]`
     - iff `t <: t'`
   - multiple invocations of this instruction with the same operand yield the same observable RTTs
