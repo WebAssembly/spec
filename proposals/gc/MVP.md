@@ -9,7 +9,7 @@ See [overview](Overview.md) for background.
 
 Based on the following proposals:
 
-* [reference types](https://github.com/WebAssembly/reference-types), which introduces references types
+* [reference types](https://github.com/WebAssembly/reference-types), which introduces reference types
 
 * [typed function references](https://github.com/WebAssembly/function-references), which introduces typed references `(ref null? $t)` etc.
 
@@ -22,15 +22,15 @@ All three proposals are prerequisites.
 
 #### Constructed Types
 
-[Constructed types](https://github.com/WebAssembly/reference-types/blob/master/proposals/function-references/Overview.md) classify the target of a reference and are extended:
+[Constructed types](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md#types) classify the target of a reference and are extended:
 
 * `any` is a new constructed type
   - `constype ::= ... | any`
-  - the common supertype of all referencable types
+  - the common supertype of all referenceable types
 
 * `eq` is a new constructed type
   - `constype ::= ... | eq`
-  - the common supertype of all referencable types on which comparison (`ref.eq`) is allowed
+  - the common supertype of all referenceable types on which comparison (`ref.eq`) is allowed
 
 * `i31` is a new constructed type
   - `constype ::= ... | 31`
