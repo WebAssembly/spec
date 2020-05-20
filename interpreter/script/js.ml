@@ -33,6 +33,8 @@ let spectest = {
   externref: externref,
   is_externref: is_externref,
   is_funcref: is_funcref,
+  eq_externref: eq_externref,
+  eq_funcref: eq_funcref,
   print: console.log.bind(console),
   print_i32: console.log.bind(console),
   print_i32_f32: console.log.bind(console),
