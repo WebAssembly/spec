@@ -1571,7 +1571,7 @@
   "\07\0f\01\0b"                             ;; export section
   "\70\61\72\73\65\5f\69\38\78\31\36\00\00"  ;; export name (parse_i8x16)
   "\0a\16\01"                                ;; code   section
-  "\14\00\fd\02"                             ;; func body
+  "\14\00\fd\0c"                             ;; func body
   "\00\00\00\00"                             ;; data lane 0~3   (0,    0,    0,    0)
   "\80\80\80\80"                             ;; data lane 4~7   (-128, -128, -128, -128)
   "\ff\ff\ff\ff"                             ;; data lane 8~11  (0xff, 0xff, 0xff, 0xff)
@@ -1588,7 +1588,7 @@
   "\07\0f\01\0b"                             ;; export section
   "\70\61\72\73\65\5f\69\31\36\78\38\00\00"  ;; export name (parse_i16x8)
   "\0a\16\01"                                ;; code   section
-  "\14\00\fd\02"                             ;; func body
+  "\14\00\fd\0c"                             ;; func body
   "\00\00\00\00"                             ;; data lane 0, 1 (0,      0)
   "\00\80\00\80"                             ;; data lane 2, 3 (-32768, -32768)
   "\ff\ff\ff\ff"                             ;; data lane 4, 5 (65535,  65535)
@@ -1605,7 +1605,7 @@
   "\07\0f\01\0b"                             ;; export section
   "\70\61\72\73\65\5f\69\33\32\78\34\00\00"  ;; export name (parse_i32x4)
   "\0a\16\01"                                ;; code   section
-  "\14\00\fd\02"                             ;; func body
+  "\14\00\fd\0c"                             ;; func body
   "\d1\ff\ff\ff"                             ;; data lane 0 (4294967249)
   "\d1\ff\ff\ff"                             ;; data lane 1 (4294967249)
   "\d1\ff\ff\ff"                             ;; data lane 2 (4294967249)
@@ -1622,7 +1622,7 @@
   "\07\0f\01\0b"                             ;; export section
   "\70\61\72\73\65\5f\69\36\34\78\32\00\00"  ;; export name (parse_i64x2)
   "\0a\16\01"                                ;; code   section
-  "\14\00\fd\02"                             ;; func body
+  "\14\00\fd\0c"                             ;; func body
   "\ff\ff\ff\ff\ff\ff\ff\7f"                 ;; data lane 0 (9223372036854775807)
   "\ff\ff\ff\ff\ff\ff\ff\7f"                 ;; data lane 1 (9223372036854775807)
   "\0b"                                      ;; end
@@ -1639,7 +1639,7 @@
   "\07\0f\01\0b"                             ;; export section
   "\70\61\72\73\65\5f\66\33\32\78\34\00\00"  ;; export name (parse_f32x4)
   "\0a\16\01"                                ;; code   section
-  "\14\00\fd\02"                             ;; func body
+  "\14\00\fd\0c"                             ;; func body
   "\00\00\80\4f"                             ;; data lane 0 (4294967249)
   "\00\00\80\4f"                             ;; data lane 1 (4294967249)
   "\00\00\80\4f"                             ;; data lane 2 (4294967249)
@@ -1656,7 +1656,7 @@
   "\07\0f\01\0b"                             ;; export section
   "\70\61\72\73\65\5f\66\36\34\78\32\00\00"  ;; export name (parse_f64x2)
   "\0a\16\01"                                ;; code   section
-  "\14\00\fd\02"                             ;; func body
+  "\14\00\fd\0c"                             ;; func body
   "\ff\ff\ff\ff\ff\ff\ef\7f"                 ;; data lane 0 (0x1.fffffffffffffp+1023)
   "\ff\ff\ff\ff\ff\ff\ef\7f"                 ;; data lane 1 (0x1.fffffffffffffp+1023)
   "\0b"                                      ;; end
