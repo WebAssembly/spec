@@ -745,7 +745,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let |initial| be |descriptor|["initial"].
     1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be |descriptor|["maximum"]; otherwise, let |maximum| be empty.
     1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
-    1. Let |type| be the [=table type=] {[=table type|min=] |initial|, [=table type|ma𝗑=] |maximum|} [=table type|an𝗒func=].
+    1. Let |type| be the [=table type=] {[=table type|min=] |initial|, [=table type|max=] |maximum|} [=table type|anyfunc=].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |tableaddr|) be [=table_alloc=](|store|, |type|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
@@ -922,7 +922,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
 
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |funcinst| be |store|.funcs[|funcaddr|].
-    1. If |funcinst| is of the form {t𝗒pe <var ignore>functype</var>, 𝗁ostcode |hostfunc|},
+    1. If |funcinst| is of the form {type <var ignore>functype</var>, hostcode |hostfunc|},
         1. Assert: |hostfunc| is a JavaScript object and [=IsCallable=](|hostfunc|) is true.
         1. Let |index| be the [=index of the host function=] |funcaddr|.
     1. Otherwise,
