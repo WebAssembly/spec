@@ -1016,7 +1016,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
     1. Assert: [=IsCallable=](|func|).
     1. Let |hostfunc| be a [=host function=] which performs the following steps when called with arguments |arguments|:
         1. Let |result| be the result of [=run a host function|running a host function=] from |func|, |functype|, and |arguments|.
-        1. Assert: |result|.\[[Type]] is <emu-const>throw</emu-const> or <emu-const>return</emu-const>.
+        1. Assert: |result|.\[[Type]] is <emu-const>throw</emu-const> or <emu-const>normal</emu-const>.
         1. If |result|.\[[Type]] is <emu-const>throw</emu-const>, then trigger a WebAssembly trap, and propagate |result|.\[[Value]] to the enclosing JavaScript.
         1. Otherwise, return |result|.\[[Value]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
