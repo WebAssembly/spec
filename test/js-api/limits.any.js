@@ -2,6 +2,7 @@
 // META: script=/wasm/jsapi/wasm-module-builder.js
 // META: timeout=long
 
+// Static limits
 const kJSEmbeddingMaxTypes = 1000000;
 const kJSEmbeddingMaxFunctions = 1000000;
 const kJSEmbeddingMaxImports = 100000;
@@ -9,16 +10,18 @@ const kJSEmbeddingMaxExports = 100000;
 const kJSEmbeddingMaxGlobals = 1000000;
 const kJSEmbeddingMaxDataSegments = 100000;
 
-const kJSEmbeddingMaxMemoryPages = 65536;
 const kJSEmbeddingMaxModuleSize = 1024 * 1024 * 1024;  // = 1 GiB
 const kJSEmbeddingMaxFunctionSize = 7654321;
 const kJSEmbeddingMaxFunctionLocals = 50000;
 const kJSEmbeddingMaxFunctionParams = 1000;
 const kJSEmbeddingMaxFunctionReturns = 1;
-const kJSEmbeddingMaxTableSize = 10000000;
 const kJSEmbeddingMaxElementSegments = 10000000;
 const kJSEmbeddingMaxTables = 1;
 const kJSEmbeddingMaxMemories = 1;
+
+// Dynamic limits
+const kJSEmbeddingMaxMemoryPages = 65536;
+const kJSEmbeddingMaxTableSize = 10000000;
 
 // This function runs the {gen} function with the values {min}, {limit}, and
 // {limit+1}, assuming that values below and including the limit should
@@ -109,26 +112,6 @@ testLimit("data segments", 1, kJSEmbeddingMaxDataSegments, (builder, count) => {
         }
     });
 
-testLimit("initial declared memory pages", 1, kJSEmbeddingMaxMemoryPages,
-          (builder, count) => {
-            builder.addMemory(count, undefined, false, false);
-          });
-
-testLimit("maximum declared memory pages", 1, kJSEmbeddingMaxMemoryPages,
-          (builder, count) => {
-            builder.addMemory(1, count, false, false);
-          });
-
-testLimit("initial imported memory pages", 1, kJSEmbeddingMaxMemoryPages,
-          (builder, count) => {
-            builder.addImportedMemory("mod", "mem", count, undefined);
-          });
-
-testLimit("maximum imported memory pages", 1, kJSEmbeddingMaxMemoryPages,
-          (builder, count) => {
-            builder.addImportedMemory("mod", "mem", 1, count);
-          });
-
 testLimit("function size", 2, kJSEmbeddingMaxFunctionSize, (builder, count) => {
         const type = builder.addType(kSig_v_v);
         const nops = count - 2;
@@ -167,30 +150,81 @@ testLimit("function returns", 0, kJSEmbeddingMaxFunctionReturns, (builder, count
         const type = builder.addType({params: [], results: array});
     });
 
-testLimit("initial table size", 1, kJSEmbeddingMaxTableSize, (builder, count) => {
-        builder.setTableBounds(count, undefined);
-    });
-
-testLimit("maximum table size", 1, kJSEmbeddingMaxTableSize, (builder, count) => {
-        builder.setTableBounds(1, count);
-    });
-
 testLimit("element segments", 1, kJSEmbeddingMaxElementSegments, (builder, count) => {
         builder.setTableBounds(1, 1);
         const array = [];
         for (let i = 0; i < count; i++) {
-            builder.addElementSegment(0, false, array, false);
+            builder.addElementSegment(0, false, false, array);
         }
     });
 
 testLimit("tables", 0, kJSEmbeddingMaxTables, (builder, count) => {
-        for (let i = 0; i < count; i++) {
-            builder.addImportedTable("", "", 1, 1);
-        }
-    });
+  for (let i = 0; i < count; i++) {
+    builder.addImportedTable("", "", 1, 1);
+  }
+});
 
 testLimit("memories", 0, kJSEmbeddingMaxMemories, (builder, count) => {
-        for (let i = 0; i < count; i++) {
-            builder.addImportedMemory("", "", 1, 1, false);
-        }
-    });
+  for (let i = 0; i < count; i++) {
+    builder.addImportedMemory("", "", 1, 1, false);
+  }
+});
+
+// This function runs the {gen} function with the value {limit+1}. Even with
+// this value, validation and compilation should succeed. An error should only
+// happen during instantiation or runtime.
+function testDynamicLimit(name, limit, test_instantiation, gen) {
+  function get_buffer(count) {
+    const builder = new WasmModuleBuilder();
+    gen(builder, count);
+    return builder.toBuffer();
+  }
+
+  const buffer = get_buffer(limit + 1);
+
+  test(() => { assert_true(WebAssembly.validate(buffer)); },
+       `Validate ${name} beyond its dynamic limit`);
+
+  test(() => { new WebAssembly.Module(buffer); },
+       `Compile ${name} beyond its dynamic limit`);
+
+  promise_test(t => { return WebAssembly.compile(buffer); },
+               `Async compile ${name} beyond its dynamic limit.`);
+
+  if (test_instantiation) {
+    test(() => {
+      const compiled_module = new WebAssembly.Module(buffer);
+      assert_throws(new WebAssembly.RuntimeError(),
+                    () => new WebAssembly.Instance(compiled_module, {}));
+    }, `Instantiate ${name} over limit`);
+
+    promise_test(t => {
+      return promise_rejects(t, new WebAssembly.RuntimeError(),
+                             WebAssembly.instantiate(buffer, {}));
+    }, `Async instantiate ${name} over limit`);
+  }
+}
+
+testDynamicLimit(
+    "initial declared memory pages", kJSEmbeddingMaxMemoryPages, true,
+    (builder, count) => { builder.addMemory(count, undefined, false, false); });
+
+testDynamicLimit(
+    "maximum declared memory pages", kJSEmbeddingMaxMemoryPages, false,
+    (builder, count) => { builder.addMemory(1, count, false, false); });
+
+testDynamicLimit(
+    "initial imported memory pages", kJSEmbeddingMaxMemoryPages, false,
+    (builder,
+     count) => { builder.addImportedMemory("mod", "mem", count, undefined); });
+
+testDynamicLimit(
+    "maximum imported memory pages", kJSEmbeddingMaxMemoryPages, false,
+    (builder, count) => { builder.addImportedMemory("mod", "mem", 1, count); });
+
+testDynamicLimit(
+    "initial table size", kJSEmbeddingMaxTableSize, true,
+    (builder, count) => { builder.setTableBounds(count, undefined); });
+
+testDynamicLimit("maximum table size", kJSEmbeddingMaxTableSize, false,
+                 (builder, count) => { builder.setTableBounds(1, count); });
