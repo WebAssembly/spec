@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version 56380d92, updated Thu May 21 13:35:10 2020 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="951e2617026d4c4d75adc240a542e862cdc74e45" name="document-revision">
+  <meta content="a7a1856cc8e0e9cb6378acb083bb9c43494d05b1" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -1729,7 +1729,7 @@ The particular exception here is implementation-defined in both cases.</p>
    <h2 class="heading settled" data-level="5" id="limits"><span class="secno">5. </span><span class="content">Implementation-defined Limits</span><a class="self-link" href="#limits"></a></h2>
    <p>The WebAssembly core specification allows an implementation to define limits on the syntactic structure of the module.
 While each embedding of WebAssembly may choose to define its own limits, for predictability the standard WebAssembly JavaScript Interface described in this document defines the following exact limits.
-An implementation must reject a module that exceeds these limits with a <code class="idl"><a data-link-type="idl" href="#exceptiondef-compileerror" id="ref-for-exceptiondef-compileerror③">CompileError</a></code>.
+An implementation must reject a module that exceeds one of the following limits with a <code class="idl"><a data-link-type="idl" href="#exceptiondef-compileerror" id="ref-for-exceptiondef-compileerror③">CompileError</a></code>:
 In practice, an implementation may run out of resources for valid modules below these limits.</p>
    <ul>
     <li>The maximum size of a module is 1073741824 bytes (1 GiB).
@@ -1740,14 +1740,18 @@ In practice, an implementation may run out of resources for valid modules below 
     <li>The maximum number of globals defined in a module is 1000000.
     <li>The maximum number of data segments defined in a module is 100000.
     <li>The maximum number of tables, including declared or imported tables, is 1.
-    <li>The maximum size of a table is 10000000.
     <li>The maximum number of table entries in any table initialization is 10000000.
     <li>The maximum number of memories, including declared or imported memories, is 1.
-    <li>The initial or maximum number of pages for any memory, declared or imported, is at most 65536.
     <li>The maximum number of parameters to any function or block is 1000.
     <li>The maximum number of return values for any function or block is 1000.
     <li>The maximum size of a function body, including locals declarations, is 7654321 bytes.
     <li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50000.
+   </ul>
+   <p>An implementation must throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror③">RuntimeError</a></code> if one of the following limits is exceeded during runtime:
+In practice, an implementation may run out of resources for valid modules below these limits.</p>
+   <ul>
+    <li>The maximum size of a table is 10000000.
+    <li>The maximum number of pages of a memory is 65536.
    </ul>
    <h2 class="heading settled" data-level="6" id="security-considerations"><span class="secno">6. </span><span class="content">Security and Privacy Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
    <p><em>This section is non-normative.</em></p>
@@ -3612,6 +3616,7 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-exceptiondef-runtimeerror">3. The WebAssembly Namespace</a>
     <li><a href="#ref-for-exceptiondef-runtimeerror①">3.6. Exported Functions</a>
     <li><a href="#ref-for-exceptiondef-runtimeerror②">3.7. Error Objects</a>
+    <li><a href="#ref-for-exceptiondef-runtimeerror③">5. Implementation-defined Limits</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
