@@ -31,7 +31,10 @@ let argspec = Arg.align
   "-h", Arg.Clear Flags.harness, " exclude harness for JS conversion";
   "-d", Arg.Set Flags.dry, " dry, do not run program";
   "-t", Arg.Set Flags.trace, " trace execution";
-  "-v", Arg.Unit banner, " show version"
+  "-v", Arg.Unit banner, " show version";
+  "-r", Arg.Set_int Flags.max_recursion_depth,
+    " configure maximum recursion depth (default is " ^
+    string_of_int !Flags.max_recursion_depth ^ ")"
 ]
 
 let () =

@@ -80,6 +80,7 @@ where `file`, depending on its extension, either should be a binary (`.wasm`) or
 By default, the interpreter validates all modules.
 The `-u` option selects "unchecked mode", which skips validation and runs code as is.
 Runtime type errors will be captured and reported appropriately.
+The `-r` option may be used to explicitly set the maximum recursion depth.
 
 #### Converting Modules or Scripts
 
