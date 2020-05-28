@@ -648,6 +648,24 @@ def S.all_true(a):
     return 1
 ```
 
+## Bitmask extraction
+
+* `i8x16.bitmask(a: v128) -> i32`
+* `i16x8.bitmask(a: v128) -> i32`
+* `i32x4.bitmask(a: v128) -> i32`
+
+These operations extract the high bit for each lane in `a` and produce a scalar
+mask with all bits concatenated.
+
+```python
+def S.bitmask(a):
+    result = 0
+    for i in range(S.Lanes):
+        if a[i] < 0:
+            result = result | (1 << i)
+    return result
+```
+
 ## Comparisons
 
 The comparison operations all compare two vectors lane-wise, and produce a mask

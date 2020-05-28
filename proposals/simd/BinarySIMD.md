@@ -114,6 +114,7 @@ The `v8x16.shuffle` instruction has 16 bytes after `simdop`.
 | `i8x16.neg`                |    `0x61`| -                  |
 | `i8x16.any_true`           |    `0x62`| -                  |
 | `i8x16.all_true`           |    `0x63`| -                  |
+| `i8x16.bitmask`            |    `0x64`| -                  |
 | `i8x16.narrow_i16x8_s`     |    `0x65`| -                  |
 | `i8x16.narrow_i16x8_u`     |    `0x66`| -                  |
 | `i8x16.shl`                |    `0x6b`| -                  |
@@ -134,6 +135,7 @@ The `v8x16.shuffle` instruction has 16 bytes after `simdop`.
 | `i16x8.neg`                |    `0x81`| -                  |
 | `i16x8.any_true`           |    `0x82`| -                  |
 | `i16x8.all_true`           |    `0x83`| -                  |
+| `i16x8.bitmask`            |    `0x84`| -                  |
 | `i16x8.narrow_i32x4_s`     |    `0x85`| -                  |
 | `i16x8.narrow_i32x4_u`     |    `0x86`| -                  |
 | `i16x8.widen_low_i8x16_s`  |    `0x87`| -                  |
@@ -159,6 +161,7 @@ The `v8x16.shuffle` instruction has 16 bytes after `simdop`.
 | `i32x4.neg`                |    `0xa1`| -                  |
 | `i32x4.any_true`           |    `0xa2`| -                  |
 | `i32x4.all_true`           |    `0xa3`| -                  |
+| `i32x4.bitmask`            |    `0xa4`| -                  |
 | `i32x4.widen_low_i16x8_s`  |    `0xa7`| -                  |
 | `i32x4.widen_high_i16x8_s` |    `0xa8`| -                  |
 | `i32x4.widen_low_i16x8_u`  |    `0xa9`| -                  |
