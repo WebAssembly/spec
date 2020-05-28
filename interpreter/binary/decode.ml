@@ -142,21 +142,21 @@ let num_type s =
   | -0x04 -> F64Type
   | _ -> error s (pos s - 1) "malformed number type"
 
-let refed_type s =
+let heap_type s =
   let pos = pos s in
   match vs33 s with
-  | -0x10l -> FuncRefType
-  | -0x11l -> ExternRefType
-  | i when i >= 0l -> DefRefType (SynVar i)
-  | _ -> error s pos "malformed reference type"
+  | -0x10l -> FuncHeapType
+  | -0x11l -> ExternHeapType
+  | i when i >= 0l -> DefHeapType (SynVar i)
+  | _ -> error s pos "malformed heap type"
 
 let ref_type s =
   let pos = pos s in
   match vs33 s with
-  | -0x10l -> (Nullable, FuncRefType)
-  | -0x11l -> (Nullable, ExternRefType)
-  | -0x14l -> (Nullable, refed_type s)
-  | -0x15l -> (NonNullable, refed_type s)
+  | -0x10l -> (Nullable, FuncHeapType)
+  | -0x11l -> (Nullable, ExternHeapType)
+  | -0x14l -> (Nullable, heap_type s)
+  | -0x15l -> (NonNullable, heap_type s)
   | _ -> error s pos "malformed reference type"
 
 let value_type s =
@@ -492,13 +492,13 @@ let rec instr s =
   | 0xc5 | 0xc6 | 0xc7 | 0xc8 | 0xc9 | 0xca | 0xcb
   | 0xcc | 0xcd | 0xce | 0xcf as b -> illegal s pos b
 
-  | 0xd0 -> ref_null (refed_type s)
-  | 0xd1 -> ref_is_null (refed_type s)
+  | 0xd0 -> ref_null (heap_type s)
+  | 0xd1 -> ref_is_null (heap_type s)
   | 0xd2 -> ref_func (at var s)
-  | 0xd3 -> ref_as_non_null (refed_type s)
+  | 0xd3 -> ref_as_non_null (heap_type s)
   | 0xd4 ->
     let x = at var s in
-    let t = refed_type s in
+    let t = heap_type s in
     br_on_null x t
 
   | 0xfc as b1 ->
@@ -709,7 +709,7 @@ let elem_index s =
 
 let elem_kind s =
   match u8 s with
-  | 0x00 -> (NonNullable, FuncRefType)
+  | 0x00 -> (NonNullable, FuncHeapType)
   | _ -> error s (pos s - 1) "malformed element kind"
 
 let elem s =
@@ -717,7 +717,7 @@ let elem s =
   | 0x00l ->
     let emode = at active_zero s in
     let einit = vec (at elem_index) s in
-    {etype = (NonNullable, FuncRefType); einit; emode}
+    {etype = (NonNullable, FuncHeapType); einit; emode}
   | 0x01l ->
     let emode = at passive s in
     let etype = elem_kind s in
@@ -736,7 +736,7 @@ let elem s =
   | 0x04l ->
     let emode = at active_zero s in
     let einit = vec const s in
-    {etype = (NonNullable, FuncRefType); einit; emode}
+    {etype = (NonNullable, FuncHeapType); einit; emode}
   | 0x05l ->
     let emode = at passive s in
     let etype = ref_type s in

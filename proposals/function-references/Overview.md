@@ -120,11 +120,11 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 
 ### Types
 
-#### Constructed Types
+#### Heap Types
 
-A *constructed type* denotes a user-defined or pre-defined data type that is not a primitive scalar:
+A *heap type* denotes a user-defined or pre-defined data type that is not a primitive scalar:
 
-* `constype ::= (type <typeidx>) | func | extern`
+* `heaptype ::= (type <typeidx>) | func | extern`
   - `(type $t) ok` iff `$t` is defined in the context
   - `func ok` and `extern ok`, always
 
@@ -137,13 +137,13 @@ A *constructed type* denotes a user-defined or pre-defined data type that is not
 
 A *reference type* denotes the type of a reference to some data. It may either include or exclude null:
 
-* `(ref null? <constype>)` is a new form of reference type
-  - `reftype ::= ref null? <constype>`
-  - `ref null? <constype> ok` iff `<constype> ok`
+* `(ref null? <heaptype>)` is a new form of reference type
+  - `reftype ::= ref null? <heaptype>`
+  - `ref null? <heaptype> ok` iff `<heaptype> ok`
 
-* Reference types now *all* take the form `ref null? <constype>`
+* Reference types now *all* take the form `ref null? <heaptype>`
   - `funcref` and `externref` are reinterpreted as abbreviations (in both binary and text format) for `(ref null func)` and `(ref null extern)`, respectively
-  - Note: this refactoring allows using `func` and `extern` as constructed types, which is relevant for future extensions such as [type imports](https://github.com/WebAssembly/proposal-type-imports/proposals/type-imports/Overview.md)
+  - Note: this refactoring allows using `func` and `extern` as heap types, which is relevant for future extensions such as [type imports](https://github.com/WebAssembly/proposal-type-imports/proposals/type-imports/Overview.md)
   - `(ref null? (type $t))` can be abbreviated to `(ref null? $t)` in the text format
 
 * In the binary encoding,
@@ -155,19 +155,19 @@ A *reference type* denotes the type of a reference to some data. It may either i
 
 Greatest fixpoint (co-inductive interpretation) of the given rules (implying reflexivity and transitivity).
 
-The following rules, now defined in terms of constructed types, replace and extend the rules for [basic reference types](https://github.com/WebAssembly/reference-types/proposals/reference-types/Overview.md#subtyping).
+The following rules, now defined in terms of heap types, replace and extend the rules for [basic reference types](https://github.com/WebAssembly/reference-types/proposals/reference-types/Overview.md#subtyping).
 
 ##### Reference Types
 
-* Reference types are covariant in the referenced constructed type
-  - `(ref null <constype1>) <: (ref null <constype2>)`
-    - iff `<constype1> <: <constype2>`
-  - `(ref <constype1>) <: (ref <constype2>)`
-    - iff `<constype1> <: <constype2>`
+* Reference types are covariant in the referenced heap type
+  - `(ref null <heaptype1>) <: (ref null <heaptype2>)`
+    - iff `<heaptype1> <: <heaptype2>`
+  - `(ref <heaptype1>) <: (ref <heaptype2>)`
+    - iff `<heaptype1> <: <heaptype2>`
 
 * Non-null types are subtypes of possibly-null types
-  - `(ref <constype1>) <: (ref null <constype2>)`
-    - iff `<constype1> <: <constype2>`
+  - `(ref <heaptype1>) <: (ref null <heaptype2>)`
+    - iff `<heaptype1> <: <heaptype2>`
 
 ##### Constructed Types
 
@@ -220,15 +220,15 @@ The following rules, now defined in terms of constructed types, replace and exte
 
 #### Optional References
 
-* `ref.as_non_null <constype>` converts a nullable reference to a non-null one
-  - `ref.as_non_null ct: [(ref null ct)] -> [(ref ct)]`
-    - iff `ct ok` is defined
+* `ref.as_non_null <heaptype>` converts a nullable reference to a non-null one
+  - `ref.as_non_null ht: [(ref null ht)] -> [(ref ht)]`
+    - iff `ht ok` is defined
   - traps on `null`
 
-* `br_on_null $l <constype>` checks for null and branches
-  - `br_on_null $l ct : [t* (ref null ct)] -> [t* (ref ct)]`
+* `br_on_null $l <heaptype>` checks for null and branches
+  - `br_on_null $l ht : [t* (ref null ht)] -> [t* (ref ht)]`
     - iff `$l : [t*]`
-    - and `ct ok`
+    - and `ht ok`
   - branches to `$l` on `null`, otherwise returns operand as non-null
 
 * Note: `ref.is_null` already exists via the [reference types proposal](https://github.com/WebAssembly/reference-types)
@@ -271,12 +271,12 @@ The rule also implies that let-bound locals are mutable.
 | ------ | --------------- | ---------- |
 | -0x10  | `funcref`       |            |
 | -0x11  | `externref`     |            |
-| -0x14  | `(ref null ct)` | `$t : constype` |
-| -0x15  | `(ref ct)`      | `$t : constype` |
+| -0x14  | `(ref null ht)` | `$t : heaptype` |
+| -0x15  | `(ref ht)`      | `$t : heaptype` |
 
-#### Constructed Types
+#### Heap Types
 
-The opcode for constructed types is encoded as an `s33`.
+The opcode for heap types is encoded as an `s33`.
 
 | Opcode | Type            | Parameters |
 | ------ | --------------- | ---------- |
@@ -293,8 +293,8 @@ The opcode for constructed types is encoded as an `s33`.
 | 0x15   | `return_call_ref`        |            |
 | 0x16   | `func.bind (type $t)`    | `$t : u32` |
 | 0x17   | `let <bt> <locals>`      | `bt : blocktype, locals : (as in functions)` |
-| 0xd3   | `ref.as_non_null ct`     |  ct : constype |
-| 0xd4   | `br_on_null $l ct`       | `$l : u32`, ct : constype |
+| 0xd3   | `ref.as_non_null ht`     |  ht : heaptype |
+| 0xd4   | `br_on_null $l ht`       | `$l : u32`, ht : heaptype |
 
 ### Tables
 
@@ -322,9 +322,9 @@ In addition to the rules for basic reference types:
 
 * Any function that is an instance of `WebAssembly.Function` with type `<functype>` is allowed as `ref <functype>` or `ref null <functype>`.
 
-* Any non-null value is allowed as `ref extern`.
+* Any non-null external reference is allowed as `ref extern`.
 
-* The `null` value is allowed as `ref null ct`.
+* The `null` value is allowed as `ref null ht`.
 
 
 ### Constructors

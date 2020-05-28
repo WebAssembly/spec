@@ -9,7 +9,7 @@ type ('i32, 'i64, 'f32, 'f64) op =
 type num = (I32.t, I64.t, F32.t, F64.t) op
 
 type ref_ = ..
-type ref_ += NullRef of refed_type
+type ref_ += NullRef of heap_type
 
 type value = Num of num | Ref of ref_
 type t = value

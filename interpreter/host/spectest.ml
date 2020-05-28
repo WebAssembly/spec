@@ -19,8 +19,8 @@ let global (GlobalType (t, _) as gt) =
   in Global.alloc gt v
 
 let table =
-  Table.alloc (TableType ({min = 10l; max = Some 20l}, (Nullable, FuncRefType)))
-    (NullRef FuncRefType)
+  Table.alloc (TableType ({min = 10l; max = Some 20l}, (Nullable, FuncHeapType)))
+    (NullRef FuncHeapType)
 let memory = Memory.alloc (MemoryType {min = 1l; max = Some 2l})
 let func f ft = Func.alloc_host (Types.alloc (FuncDefType ft)) (f ft)
 

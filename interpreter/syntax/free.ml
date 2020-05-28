@@ -68,12 +68,12 @@ let var_type = function
 let num_type = function
   | I32Type | I64Type | F32Type | F64Type -> empty
 
-let refed_type = function
-  | FuncRefType | ExternRefType -> empty
-  | DefRefType x -> var_type x
+let heap_type = function
+  | FuncHeapType | ExternHeapType -> empty
+  | DefHeapType x -> var_type x
 
 let ref_type = function
-  | (_, t) -> refed_type t
+  | (_, t) -> heap_type t
 
 let value_type = function
   | NumType t -> num_type t
@@ -97,7 +97,7 @@ let rec instr (e : instr) =
   match e.it with
   | Unreachable | Nop | Drop -> empty
   | Select tso -> list value_type (Lib.Option.get tso [])
-  | RefNull t | RefIsNull t | RefAsNonNull t -> refed_type t
+  | RefNull t | RefIsNull t | RefAsNonNull t -> heap_type t
   | RefFunc x -> funcs (idx x)
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
@@ -107,7 +107,7 @@ let rec instr (e : instr) =
     {free with locals = Lib.Fun.repeat (List.length ts) shift free.locals}
   | Br x | BrIf x -> labels (idx x)
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
-  | BrOnNull (x, t) -> labels (idx x) ++ refed_type t
+  | BrOnNull (x, t) -> labels (idx x) ++ heap_type t
   | Return | CallRef | ReturnCallRef -> empty
   | Call x -> funcs (idx x)
   | CallIndirect (x, y) -> tables (idx x) ++ types (idx y)

@@ -326,9 +326,9 @@ let assert_return ress ts at =
     | RefResult t ->
       let is_ref_idx =
         match t with
-        | FuncRefType -> is_funcref_idx
-        | ExternRefType -> is_externref_idx
-        | DefRefType _ -> is_funcref_idx
+        | FuncHeapType -> is_funcref_idx
+        | ExternHeapType -> is_externref_idx
+        | DefHeapType _ -> is_funcref_idx
       in
       [ Call (is_ref_idx @@ at) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
@@ -343,8 +343,8 @@ let assert_return ress ts at =
   in [], List.flatten (List.rev_map test (List.combine ress ts))
 
 let i32_type = NumType I32Type
-let funcref_type = RefType (Nullable, FuncRefType)
-let externref_type = RefType (Nullable, ExternRefType)
+let funcref_type = RefType (Nullable, FuncHeapType)
+let externref_type = RefType (Nullable, ExternHeapType)
 let func_def_type ins out at = FuncDefType (FuncType (ins, out)) @@ at
 
 let wrap item_name wrap_action wrap_assertion at =
@@ -461,7 +461,7 @@ let of_result res =
     | I32 _ | I64 _ -> assert false
     | F32 n | F64 n -> of_nan n
     )
-  | RefResult t -> "\"ref." ^ string_of_refed_type t ^ "\""
+  | RefResult t -> "\"ref." ^ string_of_heap_type t ^ "\""
   | NullResult -> "\"ref.null\""
 
 let rec of_definition def =

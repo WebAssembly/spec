@@ -231,7 +231,7 @@ let type_of_result r =
   | LitResult v -> Value.type_of_value v.it
   | NanResult n -> Types.NumType (Value.type_of_num n.it)
   | RefResult t -> Types.(RefType (NonNullable, t))
-  | NullResult -> Types.(RefType (Nullable, ExternRefType))
+  | NullResult -> Types.(RefType (Nullable, ExternHeapType))
 
 let string_of_result r =
   match r with
@@ -241,7 +241,7 @@ let string_of_result r =
     | Value.I32 _ | Value.I64 _ -> assert false
     | Value.F32 n | Value.F64 n -> string_of_nan n
     )
-  | RefResult t -> Types.string_of_refed_type t
+  | RefResult t -> Types.string_of_heap_type t
   | NullResult -> "null"
 
 let string_of_results = function
@@ -352,8 +352,8 @@ let assert_result at got expect =
         )
       | RefResult t ->
         (match t, v with
-        | Types.FuncRefType, Ref (Instance.FuncRef _)
-        | Types.ExternRefType, Ref (ExternRef _) -> false
+        | Types.FuncHeapType, Ref (Instance.FuncRef _)
+        | Types.ExternHeapType, Ref (ExternRef _) -> false
         | _ -> true
         )
       | NullResult ->

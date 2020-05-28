@@ -57,7 +57,7 @@ let break_string s =
 
 let num_type t = string_of_num_type t
 let ref_type t = string_of_ref_type t
-let refed_type t = string_of_refed_type t
+let heap_type t = string_of_heap_type t
 let value_type t = string_of_value_type t
 
 let decls kind ts = tab kind (atom value_type) ts
@@ -249,7 +249,7 @@ let rec instr e =
     | BrIf x -> "br_if " ^ var x, []
     | BrTable (xs, x) ->
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
-    | BrOnNull (x, t) -> "br_on_null " ^ var x, [Atom (refed_type t)]
+    | BrOnNull (x, t) -> "br_on_null " ^ var x, [Atom (heap_type t)]
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallRef -> "call_ref", []
@@ -278,9 +278,9 @@ let rec instr e =
     | MemoryCopy -> "memory.copy", []
     | MemoryInit x -> "memory.init " ^ var x, []
     | DataDrop x -> "data.drop " ^ var x, []
-    | RefNull t -> "ref.null", [Atom (refed_type t)]
-    | RefIsNull t -> "ref.is_null", [Atom (refed_type t)]
-    | RefAsNonNull t -> "ref.as_non_null", [Atom (refed_type t)]
+    | RefNull t -> "ref.null", [Atom (heap_type t)]
+    | RefIsNull t -> "ref.is_null", [Atom (heap_type t)]
+    | RefAsNonNull t -> "ref.as_non_null", [Atom (heap_type t)]
     | RefFunc x -> "ref.func " ^ var x, []
     | Const n -> constop n ^ " " ^ num n, []
     | Test op -> testop op, []
@@ -328,11 +328,11 @@ let memory off i mem =
   Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
 
 let is_elem_kind = function
-  | (NonNullable, FuncRefType) -> true
+  | (NonNullable, FuncHeapType) -> true
   | _ -> false
 
 let elem_kind = function
-  | (NonNullable, FuncRefType) -> "func"
+  | (NonNullable, FuncHeapType) -> "func"
   | _ -> assert false
 
 let is_elem_index e =
@@ -457,7 +457,7 @@ let literal mode lit =
     let f = if mode = `Binary then F64.to_hex_string else F64.to_string in
     Node ("f64.const " ^ f z, [])
   | Ref (Value.NullRef t) ->
-    Node ("ref.null " ^ refed_type t, [])
+    Node ("ref.null " ^ heap_type t, [])
   | Ref (Script.ExternRef n) ->
     Node ("ref.extern " ^ nat32 n, [])
   | Ref _ ->
@@ -511,7 +511,7 @@ let result mode res =
     | F32 n -> Node ("f32.const " ^ nan n, [])
     | F64 n -> Node ("f64.const " ^ nan n, [])
     )
-  | RefResult t -> Node ("ref." ^ refed_type t, [])
+  | RefResult t -> Node ("ref." ^ heap_type t, [])
   | NullResult -> Node ("ref.null", [])
 
 let assertion mode ass =

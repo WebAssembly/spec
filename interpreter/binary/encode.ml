@@ -97,17 +97,17 @@ let encode m =
       | F32Type -> vs7 (-0x03)
       | F64Type -> vs7 (-0x04)
 
-    let refed_type = function
-      | FuncRefType -> vs7 (-0x10)
-      | ExternRefType -> vs7 (-0x11)
-      | DefRefType (SynVar x) -> vs33 x
-      | DefRefType (SemVar _) -> assert false
+    let heap_type = function
+      | FuncHeapType -> vs7 (-0x10)
+      | ExternHeapType -> vs7 (-0x11)
+      | DefHeapType (SynVar x) -> vs33 x
+      | DefHeapType (SemVar _) -> assert false
 
     let ref_type = function
-      | (Nullable, FuncRefType) -> vs32 (-0x10l)
-      | (Nullable, ExternRefType) -> vs32 (-0x11l)
-      | (Nullable, t) -> vs33 (-0x14l); refed_type t
-      | (NonNullable, t) -> vs33 (-0x15l); refed_type t
+      | (Nullable, FuncHeapType) -> vs32 (-0x10l)
+      | (Nullable, ExternHeapType) -> vs32 (-0x11l)
+      | (Nullable, t) -> vs33 (-0x14l); heap_type t
+      | (NonNullable, t) -> vs33 (-0x15l); heap_type t
 
     let value_type = function
       | NumType t -> num_type t
@@ -181,7 +181,7 @@ let encode m =
       | Br x -> op 0x0c; var x
       | BrIf x -> op 0x0d; var x
       | BrTable (xs, x) -> op 0x0e; vec var xs; var x
-      | BrOnNull (x, t) -> op 0xd4; var x; refed_type t
+      | BrOnNull (x, t) -> op 0xd4; var x; heap_type t
       | Return -> op 0x0f
       | Call x -> op 0x10; var x
       | CallRef -> op 0x14
@@ -256,9 +256,9 @@ let encode m =
       | MemoryInit x -> op 0xfc; op 0x08; var x; u8 0x00
       | DataDrop x -> op 0xfc; op 0x09; var x
 
-      | RefNull t -> op 0xd0; refed_type t
-      | RefIsNull t -> op 0xd1; refed_type t
-      | RefAsNonNull t -> op 0xd3; refed_type t
+      | RefNull t -> op 0xd0; heap_type t
+      | RefIsNull t -> op 0xd1; heap_type t
+      | RefAsNonNull t -> op 0xd3; heap_type t
       | RefFunc x -> op 0xd2; var x
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c
@@ -526,11 +526,11 @@ let encode m =
 
     (* Element section *)
     let is_elem_kind = function
-      | (NonNullable, FuncRefType) -> true
+      | (NonNullable, FuncHeapType) -> true
       | _ -> false
 
     let elem_kind = function
-      | (NonNullable, FuncRefType) -> u8 0x00
+      | (NonNullable, FuncHeapType) -> u8 0x00
       | _ -> assert false
 
     let is_elem_index e =

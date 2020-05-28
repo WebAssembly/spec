@@ -32,15 +32,15 @@ let eq_limits c a lim1 lim2 =
 let rec eq_num_type c a t1 t2 =
   t1 = t2
 
-and eq_refed_type c a t1 t2 =
+and eq_heap_type c a t1 t2 =
   match t1, t2 with
-  | DefRefType x1, DefRefType x2 -> eq_var_type c a x1 x2
+  | DefHeapType x1, DefHeapType x2 -> eq_var_type c a x1 x2
   | _, _ -> t1 = t2
 
 and eq_ref_type c a t1 t2 =
   match t1, t2 with
   | (nul1, t1'), (nul2, t2') ->
-    eq_nullability c a nul1 nul2 && eq_refed_type c a t1' t2'
+    eq_nullability c a nul1 nul2 && eq_heap_type c a t1' t2'
 
 and eq_value_type c a t1 t2 =
   match t1, t2 with
@@ -99,19 +99,19 @@ let match_limits c a lim1 lim2 =
 let rec match_num_type c a t1 t2 =
   t1 = t2
 
-and match_refed_type c a t1 t2 =
+and match_heap_type c a t1 t2 =
   match t1, t2 with
-  | DefRefType x1, FuncRefType ->
+  | DefHeapType x1, FuncHeapType ->
     (match lookup c x1 with
     | FuncDefType _ -> true
     )
-  | DefRefType x1, DefRefType x2 -> match_var_type c a x1 x2
-  | _, _ -> eq_refed_type c [] t1 t2
+  | DefHeapType x1, DefHeapType x2 -> match_var_type c a x1 x2
+  | _, _ -> eq_heap_type c [] t1 t2
 
 and match_ref_type c a t1 t2 =
   match t1, t2 with
   | (nul1, t1'), (nul2, t2') ->
-    match_nullability c a nul1 nul2 && match_refed_type c a t1' t2'
+    match_nullability c a nul1 nul2 && match_heap_type c a t1' t2'
 
 and match_value_type c a t1 t2 =
   match t1, t2 with

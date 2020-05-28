@@ -481,7 +481,7 @@ let rec step (c : config) : config =
         vs, []
 
       | RefNull t, vs' ->
-        Ref (NullRef (sem_refed_type c.frame.inst.types t)) :: vs', []
+        Ref (NullRef (sem_heap_type c.frame.inst.types t)) :: vs', []
 
       | RefIsNull _, Ref r :: vs' ->
         (match r with

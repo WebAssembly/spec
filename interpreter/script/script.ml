@@ -22,7 +22,7 @@ type result = result' Source.phrase
 and result' =
   | LitResult of literal
   | NanResult of nanop
-  | RefResult of Types.refed_type
+  | RefResult of Types.heap_type
   | NullResult
 
 type assertion = assertion' Source.phrase
@@ -57,7 +57,7 @@ exception Syntax of Source.region * string
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | ExternRef _ -> Types.ExternRefType
+    | ExternRef _ -> Types.ExternHeapType
     | r -> type_of_ref' r
 
 let () =

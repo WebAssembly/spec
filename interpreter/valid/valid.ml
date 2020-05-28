@@ -79,15 +79,15 @@ let check_limits {min; max} range at msg =
 let check_num_type (c : context) (t : num_type) at =
   ()
 
-let check_refed_type (c : context) (t : refed_type) at =
+let check_heap_type (c : context) (t : heap_type) at =
   match t with
-  | FuncRefType | ExternRefType -> ()
-  | DefRefType (SynVar x) -> ignore (func_type c (x @@ at))
-  | DefRefType (SemVar _) -> assert false
+  | FuncHeapType | ExternHeapType -> ()
+  | DefHeapType (SynVar x) -> ignore (func_type c (x @@ at))
+  | DefHeapType (SemVar _) -> assert false
 
 let check_ref_type (c : context) (t : ref_type) at =
   match t with
-  | (_nul, t') -> check_refed_type c t' at
+  | (_nul, t') -> check_heap_type c t' at
 
 let check_value_type (c : context) (t : value_type) at =
   match t with
@@ -332,7 +332,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     (ts @ [NumType I32Type]) -->... []
 
   | BrOnNull (x, t) ->
-    check_refed_type c t e.at;
+    check_heap_type c t e.at;
     (label c x @ [RefType (Nullable, t)]) -->
       (label c x @ [RefType (NonNullable, t)])
 
@@ -345,9 +345,9 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
 
   | CallRef ->
     (match peek 0 s with
-    | RefType (nul, DefRefType (SynVar x)) ->
+    | RefType (nul, DefHeapType (SynVar x)) ->
       let FuncType (ts1, ts2) = func_type c (x @@ e.at) in
-      (ts1 @ [RefType (nul, DefRefType (SynVar x))]) --> ts2
+      (ts1 @ [RefType (nul, DefHeapType (SynVar x))]) --> ts2
     | BotType ->
       [] -->... []
     | t ->
@@ -359,20 +359,20 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | CallIndirect (x, y) ->
     let TableType (lim, t) = table c x in
     let FuncType (ts1, ts2) = func_type c y in
-    require (match_ref_type c.types [] t (Nullable, FuncRefType)) x.at
+    require (match_ref_type c.types [] t (Nullable, FuncHeapType)) x.at
       ("type mismatch: instruction requires table of function type" ^
        " but table has element type " ^ string_of_ref_type t);
     (ts1 @ [NumType I32Type]) --> ts2
 
   | ReturnCallRef ->
     (match peek 0 s with
-    | RefType (nul, DefRefType (SynVar x)) ->
+    | RefType (nul, DefHeapType (SynVar x)) ->
       let FuncType (ts1, ts2) = func_type c (x @@ e.at) in
       require (match_stack_type c.types [] ts2 c.results) e.at
         ("type mismatch: current function requires result type " ^
          string_of_stack_type c.results ^
          " but callee returns " ^ string_of_stack_type ts2);
-      (ts1 @ [RefType (nul, DefRefType (SynVar x))]) -->... []
+      (ts1 @ [RefType (nul, DefHeapType (SynVar x))]) -->... []
     | BotType ->
       [] -->... []
     | t ->
@@ -383,7 +383,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
 
   | FuncBind x ->
     (match peek 0 s with
-    | RefType (nul, DefRefType (SynVar y)) ->
+    | RefType (nul, DefHeapType (SynVar y)) ->
       let FuncType (ts1, ts2) = func_type c (y @@ e.at) in
       let FuncType (ts1', _) as ft' = func_type c x in
       require (List.length ts1 >= List.length ts1') x.at
@@ -391,10 +391,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
       let ts11, ts12 = Lib.List.split (List.length ts1 - List.length ts1') ts1 in
       require (match_func_type c.types [] (FuncType (ts12, ts2)) ft') e.at
         "type mismatch in function type";
-      (ts11 @ [RefType (nul, DefRefType (SynVar y))]) -->
-        [RefType (NonNullable, DefRefType (SynVar x.it))]
+      (ts11 @ [RefType (nul, DefHeapType (SynVar y))]) -->
+        [RefType (NonNullable, DefHeapType (SynVar x.it))]
     | BotType ->
-      [] -->... [RefType (NonNullable, DefRefType (SynVar x.it))]
+      [] -->... [RefType (NonNullable, DefHeapType (SynVar x.it))]
     | t ->
       error e.at
         ("type mismatch: instruction requires function reference" ^
@@ -493,21 +493,21 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [] --> []
 
   | RefNull t ->
-    check_refed_type c t e.at;
+    check_heap_type c t e.at;
     [] --> [RefType (Nullable, t)]
 
   | RefIsNull t ->
-    check_refed_type c t e.at;
+    check_heap_type c t e.at;
     [RefType (Nullable, t)] --> [NumType I32Type]
 
   | RefAsNonNull t ->
-    check_refed_type c t e.at;
+    check_heap_type c t e.at;
     [RefType (Nullable, t)] --> [RefType (NonNullable, t)]
 
   | RefFunc x ->
     let y = func_var c x in
     refer_func c x;
-    [] --> [RefType (NonNullable, DefRefType (SynVar y))]
+    [] --> [RefType (NonNullable, DefHeapType (SynVar y))]
 
   | Const v ->
     let t = NumType (type_num v.it) in

@@ -247,17 +247,17 @@ null_opt :
   | /* empty */ { NonNullable }
   | NULL { Nullable }
 
-refed_type :
-  | FUNC { fun c -> FuncRefType }
-  | EXTERN { fun c -> ExternRefType }
-  | LPAR TYPE var RPAR { fun c -> DefRefType (SynVar ($3 c type_).it) }
+heap_type :
+  | FUNC { fun c -> FuncHeapType }
+  | EXTERN { fun c -> ExternHeapType }
+  | LPAR TYPE var RPAR { fun c -> DefHeapType (SynVar ($3 c type_).it) }
 
 ref_type :
-  | LPAR REF null_opt refed_type RPAR { fun c -> ($3, $4 c) }
+  | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
   | LPAR REF null_opt var RPAR  /* Sugar */
-    { fun c -> ($3, DefRefType (SynVar ($4 c type_).it)) }
-  | FUNCREF { fun c -> (Nullable, FuncRefType) }  /* Sugar */
-  | EXTERNREF { fun c -> (Nullable, ExternRefType) }  /* Sugar */
+    { fun c -> ($3, DefHeapType (SynVar ($4 c type_).it)) }
+  | FUNCREF { fun c -> (Nullable, FuncHeapType) }  /* Sugar */
+  | EXTERNREF { fun c -> (Nullable, ExternHeapType) }  /* Sugar */
 
 value_type :
   | NUM_TYPE { fun c -> NumType $1 }
@@ -370,7 +370,7 @@ plain_instr :
   | BR_TABLE var var_list
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
-  | BR_ON_NULL var refed_type { fun c -> br_on_null ($2 c label) ($3 c) }
+  | BR_ON_NULL var heap_type { fun c -> br_on_null ($2 c label) ($3 c) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF { fun c -> call_ref }
@@ -405,9 +405,9 @@ plain_instr :
   | MEMORY_COPY { fun c -> memory_copy }
   | MEMORY_INIT var { fun c -> memory_init ($2 c data) }
   | DATA_DROP var { fun c -> data_drop ($2 c data) }
-  | REF_NULL refed_type { fun c -> ref_null ($2 c) }
-  | REF_IS_NULL refed_type { fun c -> ref_is_null ($2 c) }
-  | REF_AS_NON_NULL refed_type { fun c -> ref_as_non_null ($2 c) }
+  | REF_NULL heap_type { fun c -> ref_null ($2 c) }
+  | REF_IS_NULL heap_type { fun c -> ref_is_null ($2 c) }
+  | REF_AS_NON_NULL heap_type { fun c -> ref_as_non_null ($2 c) }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
   | CONST num { fun c -> fst (num $1 $2) }
   | TEST { fun c -> $1 }
@@ -803,7 +803,7 @@ offset :
   | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
 
 elem_kind :
-  | FUNC { (NonNullable, FuncRefType) }
+  | FUNC { (NonNullable, FuncHeapType) }
 
 elem_expr :
   | LPAR ITEM const_expr RPAR { $3 }
@@ -852,7 +852,7 @@ elem :
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () ->
-      { etype = (NonNullable, FuncRefType); einit = $5 c func;
+      { etype = (NonNullable, FuncHeapType); einit = $5 c func;
         emode = Active {index = 0l @@ at; offset = $4 c} @@ at } @@ at }
 
 table :
@@ -1149,7 +1149,7 @@ meta :
 
 const :
   | LPAR CONST num RPAR { Value.Num (snd (num $2 $3)) @@ at () }
-  | LPAR REF_NULL refed_type RPAR
+  | LPAR REF_NULL heap_type RPAR
     { Value.Ref (Value.NullRef ($3 (empty_context ()))) @@ at () }
   | LPAR REF_EXTERN NAT RPAR { Value.Ref (ExternRef (nat32 $3 (ati 3))) @@ at () }
 
@@ -1160,8 +1160,8 @@ const_list :
 result :
   | const { LitResult $1 @@ at () }
   | LPAR CONST NAN RPAR { NanResult (nanop $2 ($3 @@ ati 3)) @@ at () }
-  | LPAR REF_FUNC RPAR { RefResult FuncRefType @@ at () }
-  | LPAR REF_EXTERN RPAR { RefResult ExternRefType @@ at () }
+  | LPAR REF_FUNC RPAR { RefResult FuncHeapType @@ at () }
+  | LPAR REF_EXTERN RPAR { RefResult ExternHeapType @@ at () }
   | LPAR REF_NULL RPAR { NullResult @@ at () }
 
 result_list :

@@ -184,9 +184,9 @@ align: align=(1|2|4|8|...)
 cvtop: trunc | extend | wrap | ...
 
 num_type: i32 | i64 | f32 | f64
-refed_type: func | extern | (type <var>)
+heap_type: func | extern | (type <var>)
 ref_type:
-  ( ref null? <refed_type> )
+  ( ref null? <heap_type> )
   ( ref null? <var> )         ;; = (ref null (type <var>))
   funcref                     ;; = (ref null func)
   externref                   ;; = (ref null extern)
@@ -224,7 +224,7 @@ op:
   br <var>
   br_if <var>
   br_table <var>+
-  br_on_null <var> <refed_type>
+  br_on_null <var> <heap_type>
   return
   call <var>
   call_indirect <var>? <func_type>
@@ -252,9 +252,9 @@ op:
   memory.copy
   memory.init <var>
   data.drop <var>
-  ref.null <refed_type>
-  ref.is_null <refed_type>
-  ref_as_non_null <refed_type>
+  ref.null <heap_type>
+  ref.is_null <heap_type>
+  ref_as_non_null <heap_type>
   ref.func <var>
   <num_type>.const <value>
   <num_type>.<unop>

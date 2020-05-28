@@ -8,8 +8,8 @@ and var = SynVar of syn_var | SemVar of sem_var
 
 and nullability = NonNullable | Nullable
 and num_type = I32Type | I64Type | F32Type | F64Type
-and ref_type = nullability * refed_type
-and refed_type = FuncRefType | ExternRefType | DefRefType of var
+and ref_type = nullability * heap_type
+and heap_type = FuncHeapType | ExternHeapType | DefHeapType of var
 
 and value_type = NumType of num_type | RefType of ref_type | BotType
 and stack_type = value_type list
@@ -109,13 +109,13 @@ let sem_var_type c = function
 
 let sem_num_type c t = t
 
-let sem_refed_type c = function
-  | FuncRefType -> FuncRefType
-  | ExternRefType -> ExternRefType
-  | DefRefType x -> DefRefType (sem_var_type c x)
+let sem_heap_type c = function
+  | FuncHeapType -> FuncHeapType
+  | ExternHeapType -> ExternHeapType
+  | DefHeapType x -> DefHeapType (sem_var_type c x)
 
 let sem_ref_type c = function
-  | (nul, t) -> (nul, sem_refed_type c t)
+  | (nul, t) -> (nul, sem_heap_type c t)
 
 let sem_value_type c = function
   | NumType t -> NumType (sem_num_type c t)
@@ -202,14 +202,14 @@ and string_of_num_type = function
   | F32Type -> "f32"
   | F64Type -> "f64"
 
-and string_of_refed_type = function
-  | FuncRefType -> "func"
-  | ExternRefType -> "extern"
-  | DefRefType x -> "(type " ^ string_of_var x ^ ")"
+and string_of_heap_type = function
+  | FuncHeapType -> "func"
+  | ExternHeapType -> "extern"
+  | DefHeapType x -> "(type " ^ string_of_var x ^ ")"
 
 and string_of_ref_type = function
   | (nul, t) ->
-    "(ref " ^ string_of_nullability nul ^ string_of_refed_type t ^ ")"
+    "(ref " ^ string_of_nullability nul ^ string_of_heap_type t ^ ")"
 
 and string_of_value_type = function
   | NumType t -> string_of_num_type t
