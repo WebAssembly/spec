@@ -50,9 +50,9 @@ JavaScript applications can access the SIMD values in WebAssembly module memory 
 ## Prior work
 The current proposal builds on top of the [SIMD.js TC39 proposal](https://github.com/tc39/ecmascript_simd), which is no longer under active development. The SIMD.js proposal was abandoned for a few reasons:
 
-Significant performance cliffs hidden within its high level abstractions making it challenging for real world applications to gain consistent benefits.
-Gains only seen in carefully crafted asm.js code, which is not representative of the majority of JavaScript code in the wild.
-High cost of implementation and optimization in engines that outweighed performance wins.
+* Significant performance cliffs hidden within its high level abstractions making it challenging for real world applications to gain consistent benefits.
+* Gains only seen in carefully crafted asm.js code, which is not representative of the majority of JavaScript code in the wild.
+* High cost of implementation and optimization in engines that outweighed performance wins.
 
 Most of these were offset by the low level abstractions in WebAssembly, where we observed consistent performance across multiple architectures on real world applications.
 https://github.com/tc39/ecmascript_simd
