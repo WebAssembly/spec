@@ -187,9 +187,10 @@ let rec step (c : config) : config =
       | Let (bt, locals, es'), vs ->
         let vs0, vs' = split (List.length locals) vs e.at in
         let FuncType (ts1, ts2) = block_type c.frame.inst bt e.at in
-        vs', [
+        let vs1, vs2 = split (List.length ts1) vs' e.at in
+        vs2, [
           Local (List.length ts2, List.rev vs0,
-            ([], [Plain (Block (bt, es')) @@ e.at])
+            (vs1, [Plain (Block (bt, es')) @@ e.at])
           ) @@ e.at
         ]
 
@@ -566,7 +567,7 @@ let rec step (c : config) : config =
       vs' @ vs, []
 
     | Local (n, vs0, (vs', e' :: es')), vs when is_jumping e' ->
-      vs, [e']
+      vs' @ vs, [e']
 
     | Local (n, vs0, code'), vs ->
       let frame' = {c.frame with locals = List.map ref vs0 @ c.frame.locals} in

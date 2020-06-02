@@ -29,6 +29,11 @@
     (let (local) (call $dummy) (call $dummy) (br 0))
     (let $l (local) (call $dummy) (call $dummy) (br $l))
 
+    (i32.const 1)
+    (f32.const 2)
+    (let $l (param i32) (result i64) (local f32) (br $l (i64.const 3)))
+    (drop)
+
     (let (result i32) (call $dummy) (call $produce) (call $dummy))
     (drop)
     (let $l (result i32) (call $dummy) (call $produce) (call $dummy))

@@ -253,6 +253,8 @@ where `(t.default)` is `(t.const 0)` for numeric types `t`, and `(ref.null)` for
 
 The rule also implies that let-bound locals are mutable.
 
+Like all other block instructions, `let` binds a label
+
 
 ### Tables
 
