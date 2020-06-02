@@ -78,12 +78,12 @@ function test_bad_imports(t) {
     [WebAssembly.Global, "WebAssembly.Global"],
     [WebAssembly.Global.prototype, "WebAssembly.Global.prototype"],
     [Object.create(WebAssembly.Global.prototype), "Object.create(WebAssembly.Global.prototype)"],
-    [new WebAssembly.Global({value: "f32"}), "WebAssembly.Global object (wrong value type)"],
   ];
 
   for (const type of ["i32", "i64", "f32", "f64"]) {
     const extendedNonGlobals = nonGlobals.concat([
-      type === "i64" ? [0, "Number"] : [0n, "BigInt"]
+      type === "i64" ? [0, "Number"] : [0n, "BigInt"],
+      [new WebAssembly.Global({value: type === "f32" ? "f64" : "f32"}), "WebAssembly.Global object (wrong value type)"],
     ]);
     for (const [value, name = format_value(value)] of extendedNonGlobals) {
       t(`Importing an ${type} global with an incorrectly-typed value: ${name}`,
