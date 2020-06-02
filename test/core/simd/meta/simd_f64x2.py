@@ -144,13 +144,13 @@ class Simdf64x2Case(Simdf32x4Case):
             [
                 'f64x2.min',
                 [['nan', '0'], ['0', '1']],
-                [['nan', '0']],
+                [['nan:canonical', '0']],
                 ['f64x2', 'f64x2', 'f64x2']
             ],
             [
                 'f64x2.min',
                 [['0', '1'], ['-nan', '0']],
-                [['-nan', '0']],
+                [['nan:canonical', '0']],
                 ['f64x2', 'f64x2', 'f64x2']
             ],
             [
