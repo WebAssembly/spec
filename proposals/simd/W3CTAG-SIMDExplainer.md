@@ -1,7 +1,7 @@
 # WASM SIMD Web Platform explainer
 
 ## User benefits
-Modern processors support running multiple common computations in a single operation, so that instead of multiplying a number with a number, you can add (or multiple, subtract etc) the individual components of a fixed sized vector instead.
+Modern processors support running multiple common computations in a single operation, so that instead of multiplying a number with a number, you can add (or multiply, subtract, etc.) the individual components of a fixed sized vector instead.
 
 ##### Scalar operation #####
 
@@ -36,9 +36,9 @@ Aw + Bw = Cw
 
 
 
-This feature is called [Single Instruction Multiple Data (SIMD)](https://en.wikipedia.org/wiki/SIMD), and though there exist hardware that supports vector lengths up to 512 bits, 128-bit SIMD is the most common and is supported across common hardware architectures.
+This feature is called [Single Instruction Multiple Data (SIMD)](https://en.wikipedia.org/wiki/SIMD), and though there hardware support exists for vector lengths up to 512 bits, 128-bit SIMD is the most common and is supported across common hardware architectures.
 
-SIMD has driven large speed ups in certain cases such as image manipulation, video encoding/decoding, machine learning, game engines and physics engines etc[3] - with some of these use-cases not being usable without SIMD support, making SIMD support for the web platform essential for achieving near-native speed with certain native applications.
+SIMD has driven large speed ups in certain cases such as image manipulation, video encoding/decoding, machine learning, game engines and physics engines etc - with some of these use-cases not being usable without SIMD support, making SIMD support for the web platform essential for achieving near-native speed with certain native applications.
 
 This proposal outlines exposing a commonly available subset of 128-bit SIMD hardware instructions through WebAssembly.
 
@@ -55,7 +55,7 @@ The current proposal builds on top of the [SIMD.js TC39 proposal](https://github
 * High cost of implementation and optimization in engines that outweighed performance wins.
 
 Most of these were offset by the low level abstractions in WebAssembly, where we observed consistent performance across multiple architectures on real world applications.
-https://github.com/tc39/ecmascript_simd
+
 ## References
 [1] GitHub repo: https://github.com/WebAssembly/simd
 
@@ -68,3 +68,5 @@ https://github.com/tc39/ecmascript_simd
 [5] External status/issue trackers for this feature: https://www.chromestatus.com/feature/6533147810332672
 
 [6] SIMD.js: https://github.com/tc39/ecmascript_simd 
+
+[7] W3C Tag design reviews - WebAssembly SIMD : https://github.com/w3ctag/design-reviews/issues/487
