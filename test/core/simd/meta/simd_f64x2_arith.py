@@ -118,7 +118,7 @@ class Simdf64x2ArithmeticCase(Simdf32x4ArithmeticCase):
                 ('nan:arithmetic', '2.0'),
             ],
             'sub_arith': [
-                ('1.0', '-1.0'), ('-nan', '1.0'), ('nan', '-2.0'),
+                ('1.0', '-1.0'), ('-nan', '1.0'), ('nan:canonical', '-2.0'),
             ],
             'mul_mixed': [
                 ('nan:0x8000000000000', '1.0'), ('2.0', 'nan'),
