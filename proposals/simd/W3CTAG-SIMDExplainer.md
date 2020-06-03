@@ -36,7 +36,7 @@ Aw + Bw = Cw
 
 
 
-This feature is called [Single Instruction Multiple Data (SIMD)](https://en.wikipedia.org/wiki/SIMD), and though there hardware support exists for vector lengths up to 512 bits, 128-bit SIMD is the most common and is supported across common hardware architectures.
+This feature is called [Single Instruction Multiple Data (SIMD)](https://en.wikipedia.org/wiki/SIMD), and though hardware support exists for vector lengths up to 512 bits, 128-bit SIMD is the most common and is supported across common hardware architectures.
 
 SIMD has driven large speed ups in certain cases such as image manipulation, video encoding/decoding, machine learning, game engines and physics engines etc - with some of these use-cases not being usable without SIMD support, making SIMD support for the web platform essential for achieving near-native speed with certain native applications.
 
