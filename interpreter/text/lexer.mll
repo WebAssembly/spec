@@ -389,6 +389,18 @@ rule token = parse
   | (simd_shape as s)".sub"
     { if s <> "i32x4" then error lexbuf "unknown operator";
       BINARY (simdop s unreachable unreachable i32x4_sub unreachable unreachable unreachable) }
+  | (simd_shape as s)".min_s"
+    { if s <> "i32x4" then error lexbuf "unknown operator";
+      BINARY (simdop s unreachable unreachable i32x4_min_s unreachable unreachable unreachable) }
+  | (simd_shape as s)".min_u"
+    { if s <> "i32x4" then error lexbuf "unknown operator";
+      BINARY (simdop s unreachable unreachable i32x4_min_u unreachable unreachable unreachable) }
+  | (simd_shape as s)".max_s"
+    { if s <> "i32x4" then error lexbuf "unknown operator";
+      BINARY (simdop s unreachable unreachable i32x4_max_s unreachable unreachable unreachable) }
+  | (simd_shape as s)".max_u"
+    { if s <> "i32x4" then error lexbuf "unknown operator";
+      BINARY (simdop s unreachable unreachable i32x4_max_u unreachable unreachable unreachable) }
   | (simd_shape as s)".mul"
     { if s <> "i32x4" then error lexbuf "unknown operator";
       BINARY (simdop s unreachable unreachable i32x4_mul unreachable unreachable unreachable) }
@@ -399,8 +411,8 @@ rule token = parse
     { if s <> "f32x4" && s <> "f64x2" then error lexbuf "unknown operator";
       BINARY (simdop s unreachable unreachable unreachable unreachable f32x4_max f64x2_max) }
   | (simd_shape as s)".abs"
-    { if s = "i64x2" then error lexbuf "unknown operator";
-      UNARY (simdop s unreachable unreachable unreachable unreachable f32x4_abs f64x2_abs) }
+    { if s <> "i32x4" && s <> "f32x4" && s <> "f64x2" then error lexbuf "unknown operator";
+      UNARY (simdop s unreachable unreachable i32x4_abs unreachable f32x4_abs f64x2_abs) }
   | (simd_shape as s) { SIMD_SHAPE (simd_shape s) }
 
   | name as s { VAR s }

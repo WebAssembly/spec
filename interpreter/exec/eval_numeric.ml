@@ -125,8 +125,9 @@ struct
   let to_value = Value.to_value
   let of_value = of_arg Value.of_value
 
-  let unop op =
+  let unop (op : unop) =
     fun v -> match op with
+      | I32x4 Abs -> to_value (SXX.I32x4.abs (of_value 1 v))
       | I32x4 Neg -> to_value (SXX.I32x4.neg (of_value 1 v))
       | F32x4 Abs -> to_value (SXX.F32x4.abs (of_value 1 v))
       | F64x2 Abs -> to_value (SXX.F64x2.abs (of_value 1 v))
@@ -136,6 +137,10 @@ struct
     let f = match op with
       | I32x4 Add -> SXX.I32x4.add
       | I32x4 Sub -> SXX.I32x4.sub
+      | I32x4 MinS -> SXX.I32x4.min_s
+      | I32x4 MinU -> SXX.I32x4.min_u
+      | I32x4 MaxS -> SXX.I32x4.max_s
+      | I32x4 MaxU -> SXX.I32x4.max_u
       | I32x4 Mul -> SXX.I32x4.mul
       | F32x4 Min -> SXX.F32x4.min
       | F32x4 Max -> SXX.F32x4.max

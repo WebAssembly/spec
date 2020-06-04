@@ -42,9 +42,14 @@ sig
   type lane
 
   val extract_lane : int -> t -> lane
+  val abs : t -> t
   val neg : t -> t
   val add : t -> t -> t
   val sub : t -> t -> t
+  val min_s : t -> t -> t
+  val min_u : t -> t -> t
+  val max_s : t -> t -> t
+  val max_u : t -> t -> t
   val mul : t -> t -> t
 end
 
@@ -115,10 +120,16 @@ struct
     let extract_lane i s = List.nth (Convert.to_shape s) i
     let unop f x = Convert.of_shape (List.map f (Convert.to_shape x))
     let binop f x y = Convert.of_shape (List.map2 f (Convert.to_shape x) (Convert.to_shape y))
+    let abs = unop Int.abs
     let neg = unop Int.neg
     let add = binop Int.add
     let sub = binop Int.sub
     let mul = binop Int.mul
+    let choose f x y = if f x y then x else y
+    let min_s = binop (choose Int.le_s)
+    let min_u = binop (choose Int.le_u)
+    let max_s = binop (choose Int.ge_s)
+    let max_u = binop (choose Int.ge_u)
   end
 
   module I32x4 = MakeInt (I32) (struct

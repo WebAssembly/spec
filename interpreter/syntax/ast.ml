@@ -47,8 +47,8 @@ end
 (* FIXME *)
 module SimdOp =
 struct
-  type iunop = Neg
-  type ibinop = Add | Sub | Mul
+  type iunop = Abs | Neg
+  type ibinop = Add | Sub | MinS | MinU | MaxS | MaxU | Mul
   type funop = Abs
   type fbinop = Min | Max
 
