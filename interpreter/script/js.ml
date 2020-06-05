@@ -120,22 +120,32 @@ function assert_exhaustion(action) {
   throw new Error("Wasm resource exhaustion expected");
 }
 
-function assert_return(action, expected) {
+function assert_return(action, ...expected) {
   let actual = action();
-  switch (expected) {
-    case "nan:canonical":
-    case "nan:arithmetic":
-    case "nan:any":
-      // Note that JS can't reliably distinguish different NaN values,
-      // so there's no good way to test that it's a canonical NaN.
-      if (!Number.isNaN(actual)) {
-        throw new Error("Wasm return value NaN expected, got " + actual);
-      };
-      return;
-    default:
-      if (!Object.is(actual, expected)) {
-        throw new Error("Wasm return value " + expected + " expected, got " + actual);
-      };
+  if (actual === undefined) {
+    actual = [];
+  } else if (!Array.isArray(actual)) {
+    actual = [actual];
+  }
+  if (actual.length !== expected.length) {
+    throw new Error(expected.length + " value(s) expected, got " + actual.length);
+  }
+  for (let i = 0; i < actual.length; ++i) {
+    switch (expected[i]) {
+      case "nan:canonical":
+      case "nan:arithmetic":
+      case "nan:any":
+        // Note that JS can't reliably distinguish different NaN values,
+        // so there's no good way to test that it's a canonical NaN.
+        if (!Number.isNaN(actual[i])) {
+          throw new Error("Wasm return value NaN expected, got " + actual[i]);
+        };
+        return;
+      default:
+        if (!Object.is(actual[i], expected[i])) {
+          throw new Error("Wasm return value " + expected[i] + " expected, got " + actual[i]);
+        };
+    }
   }
 }
 |}
@@ -256,7 +266,7 @@ let wrap module_name item_name wrap_action wrap_assertion at =
   let edesc = FuncExport item @@ at in
   let exports = [{name = Utf8.decode "run"; edesc} @@ at] in
   let body =
-    [ Block ([], action @ assertion @ [Return @@ at]) @@ at;
+    [ Block (ValBlockType None, action @ assertion @ [Return @@ at]) @@ at;
       Unreachable @@ at ]
   in
   let funcs = [{ftype = 0l @@ at; locals; body} @@ at] in

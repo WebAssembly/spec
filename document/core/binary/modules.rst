@@ -117,7 +117,7 @@ Their contents consist of a :ref:`name <syntax-name>` further identifying the cu
    \end{array}
 
 .. note::
-   If an implementation interprets the contents of a custom section, then errors in that contents, or the placement of the section, must not invalidate the module.
+   If an implementation interprets the data of a custom section, then errors in that data, or the placement of the section, must not invalidate the module.
 
 
 .. index:: ! type section, type definition

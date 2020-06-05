@@ -168,15 +168,17 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
 
    .. math::
       \frac{
-        C,\LABEL\,[t^?] \vdash \instr^\ast : [] \to [t^?]
+        C \vdash \blocktype : [t_1^\ast] \to [t_2^\ast]
+        \qquad
+        C,\LABEL\,[t_2^\ast] \vdash \instr^\ast : [t_1^\ast] \to [t_2^\ast]
       }{
-        C \vdash \BLOCK~[t^?]~\instr^\ast~\END : [] \to [t^?]
+        C \vdash \BLOCK~\blocktype~\instr^\ast~\END : [t_1^\ast] \to [t_2^\ast]
       }
 
    A |BLOCK| instruction is only valid when the instruction sequence in its body is.
-   Moreover, the result type must match the block's annotation :math:`[t^?]`.
+   Moreover, the result type must match the block's annotation :math:`\blocktype`.
    If so, then the |BLOCK| instruction has the same type as the body.
-   Inside the body an additional label of the same type is available,
+   Inside the body an additional label of the corresponding result type is available,
    which is expressed by extending the context :math:`C` with the additional label information for the premise.
 
 
