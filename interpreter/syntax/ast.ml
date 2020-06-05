@@ -61,16 +61,17 @@ type 'a memop =
 type loadop = (pack_size * extension) memop
 type storeop = pack_size memop
 
+open Source
 
 (* Expressions *)
 
-type var = int32 Source.phrase
-type literal = Values.value Source.phrase
+type var = int32 phrase
+type literal = Values.value phrase
 type name = int list
 
 type block_type = VarBlockType of var | ValBlockType of value_type option
 
-type instr = instr' Source.phrase
+type instr = instr' phrase
 and instr' =
   | Unreachable                       (* trap unconditionally *)
   | Nop                               (* do nothing *)
@@ -101,19 +102,18 @@ and instr' =
   | Binary of binop                   (* binary numeric operator *)
   | Convert of cvtop                  (* conversion *)
 
-
 (* Globals & Functions *)
 
-type const = instr list Source.phrase
+type const = instr list phrase
 
-type global = global' Source.phrase
+type global = global' phrase
 and global' =
 {
   gtype : global_type;
   value : const;
 }
 
-type func = func' Source.phrase
+type func = func' phrase
 and func' =
 {
   ftype : var;
@@ -124,19 +124,19 @@ and func' =
 
 (* Tables & Memories *)
 
-type table = table' Source.phrase
+type table = table' phrase
 and table' =
 {
   ttype : table_type;
 }
 
-type memory = memory' Source.phrase
+type memory = memory' phrase
 and memory' =
 {
   mtype : memory_type;
 }
 
-type 'data segment = 'data segment' Source.phrase
+type 'data segment = 'data segment' phrase
 and 'data segment' =
 {
   index : var;
@@ -150,30 +150,30 @@ type memory_segment = string segment
 
 (* Modules *)
 
-type type_ = func_type Source.phrase
+type type_ = func_type phrase
 
-type export_desc = export_desc' Source.phrase
+type export_desc = export_desc' phrase
 and export_desc' =
   | FuncExport of var
   | TableExport of var
   | MemoryExport of var
   | GlobalExport of var
 
-type export = export' Source.phrase
+type export = export' phrase
 and export' =
 {
   name : name;
   edesc : export_desc;
 }
 
-type import_desc = import_desc' Source.phrase
+type import_desc = import_desc' phrase
 and import_desc' =
   | FuncImport of var
   | TableImport of table_type
   | MemoryImport of memory_type
   | GlobalImport of global_type
 
-type import = import' Source.phrase
+type import = import' phrase
 and import' =
 {
   module_name : name;
@@ -181,7 +181,7 @@ and import' =
   idesc : import_desc;
 }
 
-type module_ = module_' Source.phrase
+type module_ = module_' phrase
 and module_' =
 {
   types : type_ list;
@@ -213,7 +213,6 @@ let empty_module =
   exports = [];
 }
 
-open Source
 
 let func_type_for (m : module_) (x : var) : func_type =
   (Lib.List32.nth m.it.types x.it).it
