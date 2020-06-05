@@ -49,8 +49,8 @@ module SimdOp =
 struct
   type iunop = Abs | Neg
   type ibinop = Add | Sub | MinS | MinU | MaxS | MaxU | Mul
-  type funop = Abs
-  type fbinop = Min | Max
+  type funop = Abs | Neg | Sqrt
+  type fbinop = Add | Sub | Mul | Div | Min | Max
 
   type ('i8x16, 'i16x8, 'i32x4, 'i64x2, 'f32x4, 'f64x2) v128op =
     | I8x16 of 'i8x16

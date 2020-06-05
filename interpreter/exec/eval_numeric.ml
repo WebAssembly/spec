@@ -130,10 +130,12 @@ struct
       | I32x4 Abs -> to_value (SXX.I32x4.abs (of_value 1 v))
       | I32x4 Neg -> to_value (SXX.I32x4.neg (of_value 1 v))
       | F32x4 Abs -> to_value (SXX.F32x4.abs (of_value 1 v))
+      | F32x4 Neg -> to_value (SXX.F32x4.neg (of_value 1 v))
+      | F32x4 Sqrt -> to_value (SXX.F32x4.sqrt (of_value 1 v))
       | F64x2 Abs -> to_value (SXX.F64x2.abs (of_value 1 v))
       | _ -> failwith "TODO v128 unimplemented unop"
 
-  let binop op =
+  let binop (op : binop) =
     let f = match op with
       | I32x4 Add -> SXX.I32x4.add
       | I32x4 Sub -> SXX.I32x4.sub
@@ -142,11 +144,15 @@ struct
       | I32x4 MaxS -> SXX.I32x4.max_s
       | I32x4 MaxU -> SXX.I32x4.max_u
       | I32x4 Mul -> SXX.I32x4.mul
+      | F32x4 Add -> SXX.F32x4.add
+      | F32x4 Sub -> SXX.F32x4.sub
+      | F32x4 Mul -> SXX.F32x4.mul
+      | F32x4 Div -> SXX.F32x4.div
       | F32x4 Min -> SXX.F32x4.min
       | F32x4 Max -> SXX.F32x4.max
       | F64x2 Min -> SXX.F64x2.min
       | F64x2 Max -> SXX.F64x2.max
-      | _ -> failwith "TODO v128 unimplemented unop"
+      | _ -> failwith "TODO v128 unimplemented binop"
     in fun v1 v2 -> to_value (f (of_value 1 v1) (of_value 2 v2))
 
   (* FIXME *)

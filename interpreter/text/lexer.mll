@@ -85,6 +85,12 @@ let simdop s i8x16 i16x8 i32x4 i64x2 f32x4 f64x2 =
   | "f64x2" -> f64x2
   | _ -> assert false
 
+let simd_float_op s f32x4 f64x2 =
+  match s with
+  | "f32x4" -> f32x4
+  | "f64x2" -> f64x2
+  | _ -> assert false
+
 let memsz sz m8 m16 m32 =
   match sz with
   | "8" -> m8
@@ -167,7 +173,9 @@ let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
 let mem_size = "8" | "16" | "32"
-let simd_shape = "i8x16" | "i16x8" | "i32x4" | "i64x2" | "f32x4" | "f64x2"
+let simd_int_shape = "i8x16" | "i16x8" | "i32x4" | "i64x2"
+let simd_float_shape = "f32x4" | "f64x2"
+let simd_shape = simd_int_shape | simd_float_shape
 
 rule token = parse
   | "(" { LPAR }
@@ -381,14 +389,17 @@ rule token = parse
   | "output" { OUTPUT }
 
   | (simd_shape as s)".neg"
-    { if s <> "i32x4" then error lexbuf "unknown operator";
-      UNARY (simdop s unreachable unreachable i32x4_neg unreachable unreachable unreachable) }
+    { if s <> "i32x4" && s <> "f32x4" then error lexbuf "unknown operator";
+      UNARY (simdop s unreachable unreachable i32x4_neg unreachable f32x4_neg unreachable) }
+  | (simd_float as s)".sqrt"
+    { if s <> "f32x4" then error lexbuf "unknown operator";
+      UNARY (simdfloatop s f32x4_sqrt unreachable) }
   | (simd_shape as s)".add"
-    { if s <> "i32x4" then error lexbuf "unknown operator";
-      BINARY (simdop s unreachable unreachable i32x4_add unreachable unreachable unreachable) }
+    { if s <> "i32x4" && s <> "f32x4" then error lexbuf "unknown operator";
+      BINARY (simdop s unreachable unreachable i32x4_add unreachable f32x4_add unreachable) }
   | (simd_shape as s)".sub"
-    { if s <> "i32x4" then error lexbuf "unknown operator";
-      BINARY (simdop s unreachable unreachable i32x4_sub unreachable unreachable unreachable) }
+    { if s <> "i32x4" && s <> "f32x4"  then error lexbuf "unknown operator";
+      BINARY (simdop s unreachable unreachable i32x4_sub unreachable f32x4_sub unreachable) }
   | (simd_shape as s)".min_s"
     { if s <> "i32x4" then error lexbuf "unknown operator";
       BINARY (simdop s unreachable unreachable i32x4_min_s unreachable unreachable unreachable) }
@@ -402,8 +413,11 @@ rule token = parse
     { if s <> "i32x4" then error lexbuf "unknown operator";
       BINARY (simdop s unreachable unreachable i32x4_max_u unreachable unreachable unreachable) }
   | (simd_shape as s)".mul"
-    { if s <> "i32x4" then error lexbuf "unknown operator";
-      BINARY (simdop s unreachable unreachable i32x4_mul unreachable unreachable unreachable) }
+    { if s <> "i32x4" && s <> "f32x4" then error lexbuf "unknown operator";
+      BINARY (simdop s unreachable unreachable i32x4_mul unreachable f32x4_mul unreachable) }
+  | (simd_float as s)".div"
+    { if s <> "f32x4" then error lexbuf "unknown operator";
+      BINARY (simdfloatop s f32x4_div unreachable) }
   | (simd_shape as s)".min"
     { if s <> "f32x4" && s <> "f64x2" then error lexbuf "unknown operator";
       BINARY (simdop s unreachable unreachable unreachable unreachable f32x4_min f64x2_min) }

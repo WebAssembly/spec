@@ -60,6 +60,12 @@ sig
   type lane
 
   val abs : t -> t
+  val neg : t -> t
+  val sqrt : t -> t
+  val add : t -> t -> t
+  val sub : t -> t -> t
+  val mul : t -> t -> t
+  val div : t -> t -> t
   val min : t -> t -> t
   val max : t -> t -> t
   val extract_lane : int -> t -> lane
@@ -105,6 +111,12 @@ struct
     let unop f x = Convert.of_shape (List.map f (Convert.to_shape x))
     let binop f x y = Convert.of_shape (List.map2 f (Convert.to_shape x) (Convert.to_shape y))
     let abs = unop Float.abs
+    let neg = unop Float.neg
+    let sqrt = unop Float.sqrt
+    let add = binop Float.add
+    let sub = binop Float.sub
+    let mul = binop Float.mul
+    let div = binop Float.div
     let min = binop Float.min
     let max = binop Float.max
     let extract_lane i s = List.nth (Convert.to_shape s) i
