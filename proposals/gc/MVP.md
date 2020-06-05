@@ -201,14 +201,12 @@ Perhaps add the following short-hands:
 #### Structures
 
 * `struct.new_with_rtt <typeidx>` allocates a structure with RTT information determining its [runtime type](#values) and initialises its fields with given values
-  - `struct.new_with_rtt $t : [(rtt n t) t'*] -> [(ref t)]`
-    - iff `t == (type $t)`
-    - and`$t = struct (mut t')*`
+  - `struct.new_with_rtt $t : [(rtt n $t) t'*] -> [(ref $t)]`
+    - iff `$t = struct (mut t')*`
 
 * `struct.new_default_with_rtt <typeidx>` allocates a structure of type `$t` and initialises its fields with default values
-  - `struct.new_default_with_rtt $t : [(rtt n t)] -> [(ref t)]`
-    - iff `t == (type $t)`
-    - and `$t = struct (mut t')*`
+  - `struct.new_default_with_rtt $t : [(rtt n $t)] -> [(ref $t)]`
+    - iff `$t = struct (mut t')*`
     - and all `t'*` are defaultable
 
 * `struct.get_<sx>? <typeidx> <fieldidx>` reads field `$x` from a structure
@@ -228,14 +226,12 @@ Perhaps add the following short-hands:
 #### Arrays
 
 * `array.new_with_rtt <typeidx>` allocates a array with RTT information determining its [runtime type](#values)
-  - `array.new_with_rtt $t : [(rtt n t) t' i32] -> [(ref t)]`
-    - iff `t == (type $t)`
-    - and `$t = array (var t')`
+  - `array.new_with_rtt $t : [(rtt n $t) t' i32] -> [(ref $t)]`
+    - iff `$t = array (var t')`
 
 * `array.new_default_with_rtt <typeidx>` allocates an array and initialises its fields with the default value
-  - `array.new_default_with_rtt $t : [(rtt n t) i32] -> [(ref t)]`
-    - iff `t == (type $t)`
-    - and `$t = array (var t')`
+  - `array.new_default_with_rtt $t : [(rtt n $t) i32] -> [(ref $t)]`
+    - iff `$t = array (var t')`
     - and `t'` is defaultable
 
 * `array.get_<sx>? <typeidx>` reads an element from an array
