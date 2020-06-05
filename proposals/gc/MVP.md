@@ -20,33 +20,27 @@ All three proposals are prerequisites.
 
 ### Types
 
-#### Constructed Types
+#### Heap Types
 
-[Constructed types](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md#types) classify the target of a reference and are extended:
+[Heap types](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md#types) classify the target of a reference and are extended:
 
-* `any` is a new constructed type
-  - `constype ::= ... | any`
+* `any` is a new heap type
+  - `heaptype ::= ... | any`
   - the common supertype of all referenceable types
 
-* `eq` is a new constructed type
-  - `constype ::= ... | eq`
+* `eq` is a new heap type
+  - `heaptype ::= ... | eq`
   - the common supertype of all referenceable types on which comparison (`ref.eq`) is allowed
 
-* `i31` is a new constructed type
-  - `constype ::= ... | 31`
+* `i31` is a new heap type
+  - `heaptype ::= ... | i31`
   - the type of unboxed scalars
 
-* `rtt <constype>` is a new constructed type that is a runtime representation of the static type `<constype>` (see [Runtime types](#runtime-types))
-  - `constype ::= ... | rtt <constype>`
-  - `rtt t ok` iff `t ok`
+* `rtt <n> <heaptype>` is a new heap type that is a runtime representation of the static type `<heaptype>` and has `n` dynamic supertypes (see [Runtime types](#runtime-types))
+  - `heaptype ::= ... | rtt <heaptype>`
+  - `rtt n t ok` iff `t ok`
 
-* `constype ::= ... | any | eq | i31 | (rtt <constype>)`
-  - `any` is the common supertype of all referencable types
-  - `eq` is the common supertype of  all referencable types on which equality (`ref.eq`) is allowed
-  - `i31` denotes an unboxed scalar
-  - `(rtt ct)` denotes a runtime type representation for type `ct`
-
-* Note: constructed types `func` and `extern` already exist via [reference types proposal](https://github.com/WebAssembly/reference-types), and `(ref null? $t)` via [typed references](https://github.com/WebAssembly/function-references)
+* Note: heap types `func` and `extern` already exist via [reference types proposal](https://github.com/WebAssembly/reference-types), and `(ref null? $t)` via [typed references](https://github.com/WebAssembly/function-references)
 
 
 #### Reference Types
@@ -90,9 +84,9 @@ New abbreviations are introduced for reference types in binary and text format, 
 
 Greatest fixpoint (co-inductive interpretation) of the given rules (implying reflexivity and transitivity).
 
-##### Constructed Types
+##### Heap Types
 
-In addition to the [existing rules](https://github.com/WebAssembly/function-references/proposals/function-references/Overview.md#subtyping) for constructed types:
+In addition to the [existing rules](https://github.com/WebAssembly/function-references/proposals/function-references/Overview.md#subtyping) for heap types:
 
 * every type is a subtype of `any`
   - `t <: any`
@@ -106,9 +100,9 @@ In addition to the [existing rules](https://github.com/WebAssembly/function-refe
      - or `$t = type rt` and `rt <: eq` (imports)
   - TODO: provide a way to make data types non-eq, especially immutable ones
 
-* `rtt t` is a subtype of `any`
-  - `rtt t <: any`
-  - Note: `rtt t1` is *not* a subtype of `rtt t2`, even if `t1` is a subtype of `t2`; such subtyping would be unsound, since RTTs are used in both co- and contravariant roles (e.g., both when constructing and consuming a reference)
+* `rtt n t` is a subtype of `any`
+  - `rtt n t <: any`
+  - Note: `rtt n t1` is *not* a subtype of `rtt n t2`, even if `t1` is a subtype of `t2`; such subtyping would be unsound, since RTTs are used in both co- and contravariant roles (e.g., both when constructing and consuming a reference)
 
 
 ##### Defined Types
@@ -132,31 +126,54 @@ In addition to the [existing rules](https://github.com/WebAssembly/function-refe
 
 #### Runtime Types
 
-* Runtime types (RTTs) are explicit values representing types at runtime; a value of type `rtt <t>` is a dynamic representative of static type `<t>`.
+* Runtime types (RTTs) are explicit values representing types at runtime; a value of type `rtt <n> <heaptype>` is a dynamic representative of static type `<heaptype>`.
 
 * All RTTs are explicitly created and all operations involving dynamic type information (like casts) operate on explicit RTT operands.
 
 * There is a runtime subtyping hierarchy on RTTs; creating an RTT requires providing a *parent type* in the form of an existing RTT; the RTT for `anyref` is the root of this hierarchy.
 
-* An RTT t1 is a *sub-RTT* of another RTT t2 iff either of the following holds:
+* An RTT value t1 is a *sub-RTT* of another RTT value t2 iff either of the following holds:
   - t1 and t2 represent the same static type, or
   - t1 has a parent that is a sub-RTT of t2.
+
+* The count `<n>` in the static type of an RTT value denotes the length of the supertype chain, i.e., its "inheritance depth" (not counting `anyref`, which always is at the top). This information enables efficient implementation of runtime casts in an engine.
 
 * Validation requires that each parent type is a representative of a static supertype of its child; runtime subtyping hence is a sub-relation of static subtyping (a graph with fewer nodes and edges).
 
 * At the same time, runtime subtyping forms a linear hierarchy such that the relation can be checked efficiently using standard implementation techniques (the runtime subtype hierarchy is a tree-shaped graph).
 
+Note: RTT values correspond to type descriptors or "shape" objects as they exist in various engines. Moreover, runtime casts along the hierachy encoded in these values can be implemented in an engine efficiently by including a vector of its (direct and indirect) super-RTTs in each RTT value (with itself as the last entry). The value `<n>` then denotes the length of this vector. A subtype check between two RTT values can be implemented as follows using such a representation. Assume RTT value v1 has static type `(rtt n1 t1)` and v2 has type `(rtt n2 t2)`. To check whether v1 denotes a sub-RTT of v2, first verify that `n1 >= n2`. Then compare v2 to the n2-th entry in v1's supertype vector. If they are equal, v1 is a sub-RTT. For casts, the static type of v1 (taken from the object to cast) is not known at compile time, so `n1 >= n2` becomes a dynamic check as well.
+
+Example: Consider three types and corresponding RTTs:
+```
+(type $A (struct))
+(type $B (struct (field i32)))
+(type $C (struct (field i32 i64)))
+
+(global $rttA (rtt 1 $A) (rtt.sub $A (rtt.canon any)))
+(global $rttB (rtt 2 $B) (rtt.sub $B (global.get $rttA)))
+(global $rttC (rtt 3 $C) (rtt.sub $C (global.get $rttB)))
+```
+Here, `$rttA` would carry supertype vector `[$rttA]`, `$rttB` has `[$rttA, $rttB]`, and `$rttC` has `[$rttA, $rttB, $rttC]`.
+
+Now consider a function that casts a `$B` to a `$C`:
+```
+(func $castBtoC (param $x (ref $B)) (result (ref $C))
+  (ref.cast (local.get $x) (global.get $rttC))
+)
+```
+This can compile to machine code that (1) reads the RTT from `$x`, (2) checks that the length of its supertype table is >= 3, and (3) pointer-compares table[2] against `$rttC`.
+
 
 #### Values
 
-* Creating a structure or array optionally allows supplying a suitable RTT to represent its runtime type; it defaults to `anyref` if none is given.
+* Creating a structure or array optionally allows supplying a suitable RTT value to represent its runtime type; it is `any` if none is given.
 
 * Each reference value has an associated runtime type:
-  - For structures or arrays, it is the RTT provided upon creation, or `anyref` if none.
-  - For `i31ref` references it is the RTT for `i31ref`.
-  - For `null` it is the RTT for `nullref`.
+  - For structures or arrays, it is the RTT value provided upon creation, or `anyref` if none.
+  - For `i31ref` references it is the RTT value for `i31ref`.
 
-* The so-defined runtime type is the only type information that can be discovered about a reference value at runtime; a structure or array with RTT `anyref` thereby is fully opaque to runtime type checks (and an implementation may choose to optimize away its RTT).
+* The so-defined runtime type is the only type information that can be discovered about a reference value at runtime; a structure or array with RTT `any` thereby is fully opaque to runtime type checks (and an implementation may choose to optimize away its RTT).
 
 
 ### Instructions
@@ -183,37 +200,26 @@ Perhaps add the following short-hands:
 
 #### Structures
 
-* `struct.new <typeidx>` allocates a structure of type `$t` and initialises its fields with given values
-  - `struct.new $t : [t*] -> [(ref $t)]`
-    - iff `$t = struct (mut t)*`
-  - equivalent to `struct.new_with_rtt $t (rtt.canon any)`
-
-* `struct.new_with_rtt <typeidx>` allocates a structure of type `$t` with RTT information determining its [runtime type](#values) and initialises its fields with given values
-  - `struct.new_with_rtt $t : [(rtt t') t*] -> [(ref $t)]`
-    - iff `$t = struct (mut t)*`
-    - and `(type $t) <: t'`
-
-* `struct.new_default <typeidx>` allocates a structure of type `$t` and initialises its fields with default values
-  - `struct.new_default $t : [] -> [(ref $t)]`
-    - iff `$t = struct (mut t)*`
-    - and all `t*` are defaultable
-  - equivalent to `struct.new_default_with_rtt $t (rtt.canon any)`
+* `struct.new_with_rtt <typeidx>` allocates a structure with RTT information determining its [runtime type](#values) and initialises its fields with given values
+  - `struct.new_with_rtt $t : [(rtt n t) t'*] -> [(ref t)]`
+    - iff `t == (type $t)`
+    - and`$t = struct (mut t')*`
 
 * `struct.new_default_with_rtt <typeidx>` allocates a structure of type `$t` and initialises its fields with default values
-  - `struct.new_default_with_rtt $t : [(rtt t')] -> [(ref $t)]`
-    - iff `$t = struct (mut t)*`
-    - and `(type $t) <: t'`
-    - and all `t*` are defaultable
+  - `struct.new_default_with_rtt $t : [(rtt n t)] -> [(ref t)]`
+    - iff `t == (type $t)`
+    - and `$t = struct (mut t')*`
+    - and all `t'*` are defaultable
 
 * `struct.get_<sx>? <typeidx> <fieldidx>` reads field `$x` from a structure
-  - `struct.get_<sx>? $t i : [(optref $t)] -> [t]`
+  - `struct.get_<sx>? $t i : [(ref null $t)] -> [t]`
     - iff `$t = struct (mut1 t1)^i (mut ti) (mut2 t2)*`
     - and `t = unpacked(ti)`
     - and `_<sx>` present iff `t =/= ti`
   - traps on `null`
 
 * `struct.set <typeidx> <fieldidx>` writes field `$x` of a structure
-  - `struct.set $t i : [(optref $t) ti] -> []`
+  - `struct.set $t i : [(ref null $t) ti] -> []`
     - iff `$t = struct (mut1 t1)^i (var ti) (mut2 t2)*`
     - and `t = unpacked(ti)`
   - traps on `null`
@@ -221,43 +227,32 @@ Perhaps add the following short-hands:
 
 #### Arrays
 
-* `array.new <typeidx>` allocates an array of type `$t` and initialises its fields with a given value
-  - `array.new $t : [t i32] -> [(ref $t)]`
-    - iff `$t = array (var t)`
-  - equivalent to `array.new_with_rtt $t (rtt.canon any)`
+* `array.new_with_rtt <typeidx>` allocates a array with RTT information determining its [runtime type](#values)
+  - `array.new_with_rtt $t : [(rtt n t) t' i32] -> [(ref t)]`
+    - iff `t == (type $t)`
+    - and `$t = array (var t')`
 
-* `array.new_with_rtt <typeidx>` allocates a array of type `$t` with RTT information determining its [runtime type](#values)
-  - `array.new_with_rtt $t : [(rtt t') t i32] -> [(ref $t)]`
-    - iff `$t = array (var t)`
-    - and `(type $t) <: t'`
-
-* `array.new_default <typeidx>` allocates an array of type `$t` and initialises its fields with the default value
-  - `array.new_default $t : [i32] -> [(ref $t)]`
-    - iff `$t = array (var t)`
-    - and `t` is defaultable
-
-* `array.new_default_with_rtt <typeidx>` allocates an array of type `$t` and initialises its fields with the default value
-  - `array.new_default_with_rtt $t : [(rtt t') i32] -> [(ref $t)]`
-    - iff `$t = array (var t)`
-    - and `(type $t) <: t'`
-    - and `t` is defaultable
-  - equivalent to `array.new_default_with_rtt $t (rtt.canon any)`
+* `array.new_default_with_rtt <typeidx>` allocates an array and initialises its fields with the default value
+  - `array.new_default_with_rtt $t : [(rtt n t) i32] -> [(ref t)]`
+    - iff `t == (type $t)`
+    - and `$t = array (var t')`
+    - and `t'` is defaultable
 
 * `array.get_<sx>? <typeidx>` reads an element from an array
-  - `array.get_<sx>? $t : [(optref $t) i32] -> [t]`
+  - `array.get_<sx>? $t : [(ref null $t) i32] -> [t]`
     - iff `$t = array (mut t')`
     - and `t = unpacked(t')`
     - and `_<sx>` present iff `t =/= t'`
   - traps on `null` or if the dynamic index is out of bounds
 
 * `array.set <typeidx>` writes an element to an array
-  - `array.set $t : [(optref $t) i32 t] -> []`
+  - `array.set $t : [(ref null $t) i32 t] -> []`
     - iff `$t = array (var t')`
     - and `t = unpacked(t')`
   - traps on `null` or if the dynamic index is out of bounds
 
 * `array.len <typeidx>` inquires the length of an array
-  - `array.len $t : [(optref $t)] -> [i32]`
+  - `array.len $t : [(ref null $t)] -> [i32]`
     - iff `$t = array (mut t)`
   - traps on `null`
 
@@ -289,36 +284,39 @@ Perhaps also the following short-hands:
 
 #### Runtime Types
 
-* `rtt.canon <constype>` returns the RTT of the specified type
-  - `rtt.canon t : [] -> [(rtt t)]`
+* `rtt.canon <heaptype>` returns the RTT of the specified type
+  - `rtt.canon t : [] -> [(rtt n t)]`
+  - `n = 0` iff `t = any`, and `n = 1` otherwise
   - multiple invocations of this instruction yield the same observable RTTs
   - this is a *constant instruction*
-  - equivalent to `(rtt.sub t (rtt.canon any))`, except when `t` itself is `any`
+  - equivalent to `(rtt.sub 1 any t (rtt.canon any))`, except when `t` itself is `any`
 
-* `rtt.sub <constype>` returns the RTT of the specified type as a sub-RTT of a given parent RTT operand
-  - `rtt.sub t : [(rtt t')] -> [(rtt t)]`
-    - iff `t <: t'`
+* `rtt.sub <n> <heaptype1> <heaptype2>` returns an RTT for `heaptype2` as a sub-RTT of a the parent RTT operand for `heaptype1`
+  - `rtt.sub n t1 t2 : [(rtt n t1)] -> [(rtt (n+1) t2)]`
+    - iff `t2 <: t1`
   - multiple invocations of this instruction with the same operand yield the same observable RTTs
   - this is a *constant instruction*
+
+TODO: Add the ability to generate new (non-canonical) RTT values to implement casting in nominal type hierarchies.
 
 
 #### Casts
 
-* `ref.test` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given RTT
-  - `ref.test : [t (rtt t')] -> [i32]`
-     - iff `t' <: t <: anyref`
-  - returns 1 if the first operand's runtime type is a sub-RTT of the RTT operand, 0 otherwise
+* `ref.test <heaptype1> <heaptype2>` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given RTT
+  - `ref.test t1 t2 : [(ref null t1) (rtt n t2)] -> [i32]`
+     - iff `t2 <: t1`
+  - returns 1 if the first operand is not null and its runtime type is a sub-RTT of the RTT operand, 0 otherwise
 
-* `ref.cast` casts a reference value down to a type given by a RTT representation
-  - `ref.cast : [t (rtt t')] -> [t']`
-     - iff `t' <: t <: anyref`
-  - traps if the first operand's runtime type is not a sub-RTT of the RTT operand
+* `ref.cast <heaptype1> <heaptype2>` casts a reference value down to a type given by a RTT representation
+  - `ref.cast t1 t2 : [(ref null t1) (rtt n t2)] -> [(ref t2)]`
+     - iff `t2 <: t1`
+  - traps if the first operand is null or its runtime type is not a sub-RTT of the RTT operand
 
-* `br_on_cast <labelidx>` branches if a value can be cast down to a given reference type
-  - `br_on_cast $l : [t (rtt t')] -> [t]`
-    - iff `t' <: t <: anyref`
-    - and `$l : [t']`
-  - branches iff the first operand's runtime type is a sub-RTT of the RTT operand
+* `br_on_cast <labelidx> <heaptype1> <heaptype2>` branches if a value can be cast down to a given reference type
+  - `br_on_cast $l t1 t2 : [(ref null t1) (rtt n t2)] -> [(ref null t1)]`
+    - iff `t2 <: t1`
+    - and `$l : [(ref t2)]`
+  - branches iff the first operand is not null and its runtime type is a sub-RTT of the RTT operand
   - passes cast operand along with branch
 
 
