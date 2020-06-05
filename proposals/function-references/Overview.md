@@ -220,6 +220,14 @@ The following rules, now defined in terms of heap types, replace and extend the 
 
 #### Optional References
 
+* `ref.null <heaptype>` is generalised to take a `<heaptype>` immediate
+  - `ref.null ht: [] -> [(ref null ht)]`
+    - iff `ht ok` is defined
+
+* `ref.is_null <heaptype>` is generalised to take a `<heaptype>` immediate
+  - `ref.is_null ht: [(ref null ht)] -> [i32]`
+    - iff `ht ok` is defined
+
 * `ref.as_non_null <heaptype>` converts a nullable reference to a non-null one
   - `ref.as_non_null ht: [(ref null ht)] -> [(ref ht)]`
     - iff `ht ok` is defined
