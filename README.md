@@ -16,3 +16,7 @@ should take place in
 [the WebAssembly design repository](https://github.com/WebAssembly/design)
 first, so that this spec repository can remain focused. And please follow the
 [guidelines for contributing](Contributing.md).
+
+# citing
+
+for citing webassembly in LaTeX, use [the contents of this file](w3spec.bib)
