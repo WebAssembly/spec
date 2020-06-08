@@ -133,6 +133,8 @@ struct
       | F32x4 Neg -> to_value (SXX.F32x4.neg (of_value 1 v))
       | F32x4 Sqrt -> to_value (SXX.F32x4.sqrt (of_value 1 v))
       | F64x2 Abs -> to_value (SXX.F64x2.abs (of_value 1 v))
+      | F64x2 Neg -> to_value (SXX.F64x2.neg (of_value 1 v))
+      | F64x2 Sqrt -> to_value (SXX.F64x2.sqrt (of_value 1 v))
       | _ -> failwith "TODO v128 unimplemented unop"
 
   let binop (op : binop) =
@@ -150,6 +152,10 @@ struct
       | F32x4 Div -> SXX.F32x4.div
       | F32x4 Min -> SXX.F32x4.min
       | F32x4 Max -> SXX.F32x4.max
+      | F64x2 Add -> SXX.F64x2.add
+      | F64x2 Sub -> SXX.F64x2.sub
+      | F64x2 Mul -> SXX.F64x2.mul
+      | F64x2 Div -> SXX.F64x2.div
       | F64x2 Min -> SXX.F64x2.min
       | F64x2 Max -> SXX.F64x2.max
       | _ -> failwith "TODO v128 unimplemented binop"
