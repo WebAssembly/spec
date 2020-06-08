@@ -19,4 +19,4 @@ first, so that this spec repository can remain focused. And please follow the
 
 # citing
 
-for citing webassembly in LaTeX, use [the contents of this file](WASM-specs.bib)
+For citing WebAssembly in LaTeX, use [this bibtex file](wasm-specs.bib).
