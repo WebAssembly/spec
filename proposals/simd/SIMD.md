@@ -773,7 +773,8 @@ def S.load(memarg):
 * `v32x4.load_splat(memarg) -> v128`
 * `v64x2.load_splat(memarg) -> v128`
 
-Load a single element and splat to all lanes of a `v128` vector.
+Load a single element and splat to all lanes of a `v128` vector. The natural
+alignment is the size of the element loaded.
 
 ```python
 def S.load_splat(memarg):
@@ -790,7 +791,8 @@ def S.load_splat(memarg):
 * `i64x2.load32x2_s(memarg) -> v128`: load two 32-bit integers and sign extend each one to a 64-bit lane
 * `i64x2.load32x2_u(memarg) -> v128`: load two 32-bit integers and zero extend each one to a 64-bit lane
 
-Fetch consecutive integers up to 32-bit wide and produce a vector with lanes up to 64 bits.
+Fetch consecutive integers up to 32-bit wide and produce a vector with lanes up
+to 64 bits. The natural alignment is 8 bytes.
 
 ```python
 def S.load_extend(ext, memarg):
