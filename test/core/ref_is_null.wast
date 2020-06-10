@@ -74,3 +74,12 @@
   (func (param $r (ref func)) (drop (ref.is_null (local.get $r))))
   (func (param $r (ref extern)) (drop (ref.is_null (local.get $r))))
 )
+
+(assert_invalid
+  (module (func $ref-vs-num (param i32) (ref.is_null (local.get 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $ref-vs-empty (ref.is_null)))
+  "type mismatch"
+)
