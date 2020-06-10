@@ -220,17 +220,13 @@ The following rules, now defined in terms of heap types, replace and extend the 
 
 #### Optional References
 
-* `ref.null <heaptype>` is generalised to take a `<heaptype>` immediate
+* `ref.null` is generalised to take a `<heaptype>` immediate
   - `ref.null ht: [] -> [(ref null ht)]`
-    - iff `ht ok` is defined
-
-* `ref.is_null <heaptype>` is generalised to take a `<heaptype>` immediate
-  - `ref.is_null ht: [(ref null ht)] -> [i32]`
-    - iff `ht ok` is defined
+    - iff `ht ok`
 
 * `ref.as_non_null <heaptype>` converts a nullable reference to a non-null one
   - `ref.as_non_null ht: [(ref null ht)] -> [(ref ht)]`
-    - iff `ht ok` is defined
+    - iff `ht ok`
   - traps on `null`
 
 * `br_on_null $l <heaptype>` checks for null and branches
@@ -293,7 +289,6 @@ The opcode for heap types is encoded as an `s33`.
 | i >= 0 | `(type i)`      |            |
 | -0x10  | `func`          |            |
 | -0x11  | `extern`        |            |
-
 
 ### Instructions
 
