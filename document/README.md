@@ -24,6 +24,8 @@ Please make sure to only use that once a change has approval.
 
 ## Step by step guide to building the spec
 
+### Checking out the repository
+
 Make sure this repository was cloned with `--recursive`:
 
 ```
@@ -41,6 +43,8 @@ The rest of these instructions assume you are in the directory where is README i
 ```
 cd spec/document
 ```
+
+### Prerequisites
 
 You will need `python3.7`, and `pip`. `pip` should come with Python, if not follow [these installation instructions for `pip`](https://pip.pypa.io/en/stable/installing/), or check your system package manager for `pip3`.
 
@@ -61,11 +65,15 @@ Install Python dependencies:
 pip install Sphinx==2.4.4
 ```
 
+### Building the multi-page HTML document
+
 You can now build the [multi-page html document](https://webassembly.github.io/spec/core/):
 
 ```
 make -C core html
 ```
+
+### Building the single-page HTML document
 
 To build the [single-page W3C version](https://webassembly.github.io/spec/core/bikeshed/), there are more dependencies to install:
 
@@ -82,4 +90,29 @@ You will also need `npm` and `yarn` for all the LaTeX goodness. `npm` might alre
 npm install -g yarn
 cd document/core
 make -C core bikeshed
+```
+
+### Building the PDF
+
+To build the [PDF](https://webassembly.github.io/spec/core/_download/WebAssembly.pdf), you will need `texlive-full` installed, install it using your system package manager:
+
+```
+apt install texlive-full
+make -C core pdf
+```
+
+### Building the JavaScript Embedding API
+
+To build the [JavaScript Embedding API](https://webassembly.github.io/spec/js-api/index.html), you will need `bikeshed` as describe in the section [Building the single-page HTML document](#building-the-single-page-html-document):
+
+```
+make -C js-api
+```
+
+### Building the Web Embedding API
+
+To build the [Web Embedding API](https://webassembly.github.io/spec/web-api/index.html), you will need `bikeshed` as describe in the section [Building the single-page HTML document](#building-the-single-page-html-document):
+
+```
+make -C web-api
 ```
