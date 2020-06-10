@@ -103,7 +103,7 @@ let push (ell1, ts1) (ell2, ts2) =
   (if ell1 = Ellipses || ell2 = Ellipses then Ellipses else NoEllipses),
   ts2 @ ts1
 
-let peek i (ell, ts) at =
+let peek i (ell, ts) =
   try List.nth (List.rev ts) i with Failure _ -> None
 
 
@@ -211,10 +211,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [] --> []
 
   | Drop ->
-    [peek 0 s e.at] -~> []
+    [peek 0 s] -~> []
 
   | Select None ->
-    let t = peek 1 s e.at in
+    let t = peek 1 s in
     require (match t with None -> true | Some t -> is_num_type t) e.at
       ("type mismatch: instruction requires numeric type" ^
        " but stack has " ^ string_of_infer_type t);
@@ -361,7 +361,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [] --> [RefType t]
 
   | RefIsNull ->
-    let t = peek 0 s e.at in
+    let t = peek 0 s in
     require (match t with None -> true | Some t -> is_ref_type t) e.at
       ("type mismatch: instruction requires reference type" ^
        " but stack has " ^ string_of_infer_type t);
