@@ -114,13 +114,13 @@ Table Types
 :math:`\limits~\reftype`
 ........................
 
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{32}`.
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{32}-1`.
 
 * Then the table type is valid.
 
 .. math::
    \frac{
-     \vdashlimits \limits : 2^{32}
+     \vdashlimits \limits : 2^{32} - 1
    }{
      \vdashtabletype \limits~\reftype \ok
    }

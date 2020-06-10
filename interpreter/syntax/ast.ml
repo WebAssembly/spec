@@ -116,7 +116,7 @@ and instr' =
   | MemoryInit of idx                 (* initialize memory range from segment *)
   | DataDrop of idx                   (* drop passive data segment *)
   | RefNull of heap_type              (* null reference *)
-  | RefIsNull of heap_type            (* null test *)
+  | RefIsNull                         (* null test *)
   | RefAsNonNull of heap_type         (* null cast *)
   | RefFunc of idx                    (* function reference *)
   | Const of num                      (* constant *)

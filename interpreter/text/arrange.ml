@@ -279,7 +279,7 @@ let rec instr e =
     | MemoryInit x -> "memory.init " ^ var x, []
     | DataDrop x -> "data.drop " ^ var x, []
     | RefNull t -> "ref.null", [Atom (heap_type t)]
-    | RefIsNull t -> "ref.is_null", [Atom (heap_type t)]
+    | RefIsNull -> "ref.is_null", []
     | RefAsNonNull t -> "ref.as_non_null", [Atom (heap_type t)]
     | RefFunc x -> "ref.func " ^ var x, []
     | Const n -> constop n ^ " " ^ num n, []

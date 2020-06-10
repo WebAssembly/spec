@@ -3,13 +3,13 @@
   (func $dummy)
 
   (func $f1 (export "funcref") (param $x funcref) (result i32)
-    (ref.is_null func (local.get $x))
+    (ref.is_null (local.get $x))
   )
   (func $f2 (export "externref") (param $x externref) (result i32)
-    (ref.is_null extern (local.get $x))
+    (ref.is_null (local.get $x))
   )
   (func $f3 (param $x (ref null $t)) (result i32)
-    (ref.is_null (type $t) (local.get $x))
+    (ref.is_null (local.get $x))
   )
   (func $f3' (export "ref-null") (result i32)
     (call $f3 (ref.null (type $t)))
@@ -70,7 +70,7 @@
 
 (module
   (type $t (func))
-  (func (param $r (ref $t)) (drop (ref.is_null (type $t) (local.get $r))))
-  (func (param $r (ref func)) (drop (ref.is_null func (local.get $r))))
-  (func (param $r (ref extern)) (drop (ref.is_null extern (local.get $r))))
+  (func (param $r (ref $t)) (drop (ref.is_null (local.get $r))))
+  (func (param $r (ref func)) (drop (ref.is_null (local.get $r))))
+  (func (param $r (ref extern)) (drop (ref.is_null (local.get $r))))
 )

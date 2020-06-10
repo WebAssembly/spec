@@ -493,7 +493,7 @@ let rec instr s =
   | 0xcc | 0xcd | 0xce | 0xcf as b -> illegal s pos b
 
   | 0xd0 -> ref_null (heap_type s)
-  | 0xd1 -> ref_is_null (heap_type s)
+  | 0xd1 -> ref_is_null
   | 0xd2 -> ref_func (at var s)
   | 0xd3 -> ref_as_non_null (heap_type s)
   | 0xd4 ->

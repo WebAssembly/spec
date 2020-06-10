@@ -406,7 +406,7 @@ plain_instr :
   | MEMORY_INIT var { fun c -> memory_init ($2 c data) }
   | DATA_DROP var { fun c -> data_drop ($2 c data) }
   | REF_NULL heap_type { fun c -> ref_null ($2 c) }
-  | REF_IS_NULL heap_type { fun c -> ref_is_null ($2 c) }
+  | REF_IS_NULL { fun c -> ref_is_null }
   | REF_AS_NON_NULL heap_type { fun c -> ref_as_non_null ($2 c) }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
   | CONST num { fun c -> fst (num $1 $2) }

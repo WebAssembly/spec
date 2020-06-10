@@ -60,6 +60,11 @@ Typing extensions:
 
 New/extended instructions:
 
+* The `select` instruction now optionally takes a value type immediate. Only annotated `select` can be used with reference types.
+  - `select : [t t i32] -> [t]`
+    - iff `t` is a `numtype`
+  - `select t : [t t i32] -> [t]`
+
 * The new instruction `ref.null` evaluates to the null reference constant.
   - `ref.null rt : [] -> [rtref]`
     - iff `rt = func` or `rt = extern`

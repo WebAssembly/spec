@@ -496,9 +496,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     check_heap_type c t e.at;
     [] --> [RefType (Nullable, t)]
 
-  | RefIsNull t ->
-    check_heap_type c t e.at;
-    [RefType (Nullable, t)] --> [NumType I32Type]
+  | RefIsNull ->
+    let t = peek 0 s in
+    require (is_ref_type t) e.at
+      ("type mismatch: instruction requires reference type" ^
+       " but stack has " ^ string_of_value_type t);
+    [t] --> [NumType I32Type]
 
   | RefAsNonNull t ->
     check_heap_type c t e.at;

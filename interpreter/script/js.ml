@@ -34,7 +34,8 @@ let spectest = {
   externref: externref,
   is_externref: is_externref,
   is_funcref: is_funcref,
-  eq_ref: eq_ref,
+  eq_externref: eq_externref,
+  eq_funcref: eq_funcref,
   print: console.log.bind(console),
   print_i32: console.log.bind(console),
   print_i32_f32: console.log.bind(console),
@@ -292,7 +293,7 @@ let assert_return ress ts at =
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | LitResult {it = Ref (NullRef t); _} ->
-      [ RefIsNull t @@ at;
+      [ RefIsNull @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | LitResult {it = Ref (ExternRef n); _} ->

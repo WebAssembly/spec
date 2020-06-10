@@ -24,13 +24,13 @@
   (func $ff2)
 
   (func (export "is_null-f") (result i32)
-    (ref.is_null func (ref.func $f))
+    (ref.is_null (ref.func $f))
   )
   (func (export "is_null-g") (result i32)
-    (ref.is_null func (ref.func $g))
+    (ref.is_null (ref.func $g))
   )
   (func (export "is_null-v") (result i32)
-    (ref.is_null func (global.get $v))
+    (ref.is_null (global.get $v))
   )
 
   (func (export "set-f") (global.set $v (ref.func $f)))

@@ -257,7 +257,7 @@ let encode m =
       | DataDrop x -> op 0xfc; op 0x09; var x
 
       | RefNull t -> op 0xd0; heap_type t
-      | RefIsNull t -> op 0xd1; heap_type t
+      | RefIsNull -> op 0xd1
       | RefAsNonNull t -> op 0xd3; heap_type t
       | RefFunc x -> op 0xd2; var x
 
