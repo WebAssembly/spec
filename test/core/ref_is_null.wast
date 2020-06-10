@@ -47,3 +47,12 @@
 
 (assert_return (invoke "funcref-elem" (i32.const 1)) (i32.const 1))
 (assert_return (invoke "externref-elem" (i32.const 1)) (i32.const 1))
+
+(assert_invalid
+  (module (func $ref-vs-num (param i32) (ref.is_null (local.get 0))))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $ref-vs-empty (ref.is_null)))
+  "type mismatch"
+)

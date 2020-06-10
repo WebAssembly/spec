@@ -87,7 +87,7 @@ let string_of_infer_types ts =
 let eq_ty t1 t2 = (t1 = t2 || t1 = None || t2 = None)
 let check_stack ts1 ts2 at =
   require (List.length ts1 = List.length ts2 && List.for_all2 eq_ty ts1 ts2) at
-    ("type mismatch: operator requires " ^ string_of_infer_types ts1 ^
+    ("type mismatch: instruction requires " ^ string_of_infer_types ts1 ^
      " but stack has " ^ string_of_infer_types ts2)
 
 let pop (ell1, ts1) (ell2, ts2) at =
@@ -103,8 +103,14 @@ let push (ell1, ts1) (ell2, ts2) =
   (if ell1 = Ellipses || ell2 = Ellipses then Ellipses else NoEllipses),
   ts2 @ ts1
 
-let peek i (ell, ts) =
-  try List.nth (List.rev ts) i with Failure _ -> None
+let peek i (ell, ts) at =
+  try
+    List.nth (List.rev ts) i
+  with Failure _ ->
+    require (ell = Ellipses) at
+      ("type mismatch: instruction requires at least " ^ string_of_int (i + 1) ^
+       " operand(s) but stack has " ^ string_of_infer_types ts);
+    None
 
 
 (* Type Synthesis *)
@@ -211,10 +217,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [] --> []
 
   | Drop ->
-    [peek 0 s] -~> []
+    [peek 0 s e.at] -~> []
 
   | Select None ->
-    let t = peek 1 s in
+    let t = peek 1 s e.at in
     require (match t with None -> true | Some t -> is_num_type t) e.at
       ("type mismatch: instruction requires numeric type" ^
        " but stack has " ^ string_of_infer_type t);
@@ -361,7 +367,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [] --> [RefType t]
 
   | RefIsNull ->
-    let t = peek 1 s in
+    let t = peek 0 s e.at in
     require (match t with None -> true | Some t -> is_ref_type t) e.at
       ("type mismatch: instruction requires reference type" ^
        " but stack has " ^ string_of_infer_type t);
