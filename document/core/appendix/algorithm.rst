@@ -21,21 +21,50 @@ The algorithm is expressed in typed pseudo code whose semantics is intended to b
 Data Structures
 ~~~~~~~~~~~~~~~
 
-Types are representable as an enumeration.
-A simple subtyping check can be defined on these types.
+Types are representable as a set of enumerations.
 
 .. code-block:: pseudo
 
-   type val_type = I32 | I64 | F32 | F64 | Funcref | Externref | Bot
+   type num_type = I32 | I64 | F32 | F64
+   type heap_type = Def(idx : nat) | Func | Extern
+   type ref_type = Ref(heap : heap_type, null : bool)
+   type val_type = num_type | ref_type | Bot
 
    func is_num(t : val_type) : bool =
      return t = I32 || t = I64 || t = F32 || t = F64 || t = Bot
 
    func is_ref(t : val_type) : bool =
-     return t = Funcref || t = Externref || t = Bot
+     return t = not (is_num t) || t = Bot
+
+Equivalence and subtyping checks can be defined on these types.
+
+.. code-block:: pseudo
+
+   func eq_def(n1, n2) =
+     ...  // check that both type definitions are equivalent (TODO)
+
+   func matches_null(null1 : bool, null2 : bool) : bool =
+     return null1 = null2 || null2
+
+   func matches_heap(t1 : heap_type, t2 : heap_type) : bool =
+     switch (t1, t2)
+       case (Def(n1), Def(n2))
+         return eq_def(n1, n2)
+       case (Def(_), Func)
+         return true
+       case (_, _)
+         return t1 = t2
+
+   func matches_ref(t1 : ref_type, t2 : ref_type) : bool =
+     return matches_heap(t1.heap, t2.heap) && matches_null(t1.null, t2.null)
 
    func matches(t1 : val_type, t2 : val_type) : bool =
-     return t1 = t2 || t1 = Bot
+     return
+       (is_num t1 && is_num t2 & t1 = t2) ||
+       (is_ref t1 && is_ref t2 & matches_ref(t1, t2)) ||
+       t1 = Bot
+
+.. todo:: Update text
 
 The algorithm uses two separate stacks: the *value stack* and the *control stack*.
 The former tracks the :ref:`types <syntax-valtype>` of operand values on the :ref:`stack <stack>`,
@@ -72,10 +101,20 @@ However, these variables are not manipulated directly by the main checking funct
    func push_val(type : val_type) =
      vals.push(type)
 
-   func pop_val() : val_type | Unknown =
+   func pop_val() : val_type =
      if (vals.size() = ctrls[0].height && ctrls[0].unreachable) return Bot
      error_if(vals.size() = ctrls[0].height)
      return vals.pop()
+
+   func pop_num() : num_type | Bot =
+     let actual = pop_val()
+     error_if(not is_num(actual))
+     return actual
+
+   func pop_ref() : ref_type | Bot =
+     let actual = pop_val()
+     error_if(not is_ref(actual))
+     return actual
 
    func pop_val(expect : val_type) : val_type =
      let actual = pop_val()
@@ -174,9 +213,8 @@ Other instructions are checked in a similar manner.
 
        case (select)
          pop_val(I32)
-         let t1 = pop_val()
-         let t2 = pop_val()
-         error_if(not (is_num(t1) && is_num(t2)))
+         let t1 = pop_num()
+         let t2 = pop_num()
          error_if(t1 =/= t2 && t1 =/= Bot && t2 =/= Bot)
          push_val(if (t1 = Bot) t2 else t1)
 
@@ -185,6 +223,14 @@ Other instructions are checked in a similar manner.
          pop_val(t)
          pop_val(t)
          push_val(t)
+
+       case (ref.is_null)
+         pop_ref()
+         push_val(I32)
+
+       case (ref.as_non_null ht)
+         pop_ref()
+         push_val(Ref(ht, false))
 
        case (unreachable)
          unreachable()
@@ -232,6 +278,21 @@ Other instructions are checked in a similar manner.
            push_vals(pop_vals(label_types(ctrls[n])))
          pop_vals(label_types(ctrls[m]))
          unreachable()
+
+       case (br_on_null n ht)
+         error_if(ctrls.size() < n)
+         pop_ref()
+         pop_vals(label_types(ctrls[n]))
+         push_vals(label_types(ctrls[n]))
+         push_val(Ref(ht, false))
+
+       case (call_ref)
+         let rt = pop_ref()
+         if (rt =/= Bot)
+           error_if(not is_def(rt.heap))
+           let t1*->t2* = lookup_def(rt.heap.def)  // TODO
+           pop_vals(t1*)
+           push_vals(t2*)
 
 .. note::
    It is an invariant under the current WebAssembly instruction set that an operand of :code:`Unknown` type is never duplicated on the stack.
