@@ -23,7 +23,12 @@ instr ::= ...
 ```
 
 Some SIMD instructions have additional immediate operands following `simdop`.
-The `v8x16.shuffle` instruction has 16 bytes after `simdop`.
+These immediate operands are encoded as individual bytes.
+For example, the `v8x16.shuffle` instruction has 16 bytes after `simdop`.
+
+In the description below, `LaneIdx{I}` indicates the maximum value of the byte.
+For example, `LaneIdx16` is a byte with values in the range 0-15 (inclusive).
+
 
 | Instruction                | `simdop` | Immediate operands |
 | ---------------------------|---------:|--------------------|
