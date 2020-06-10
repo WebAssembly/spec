@@ -36,10 +36,10 @@ If you have already cloned but without `--recursive`, you can delete and re-clon
 git submodule update --init --recursive
 ```
 
-The rest of these instructions assume you are in the root of this repository:
+The rest of these instructions assume you are in the directory where is README is:
 
 ```
-cd spec
+cd spec/document
 ```
 
 You will need `python3.7`, and `pip`. `pip` should come with Python, if not follow [these installation instructions for `pip`](https://pip.pypa.io/en/stable/installing/), or check your system package manager for `pip3`.
@@ -64,8 +64,7 @@ pip install Sphinx==2.4.4
 You can now build the [multi-page html document](https://webassembly.github.io/spec/core/):
 
 ```
-cd document/core
-make html
+make -C core html
 ```
 
 To build the [single-page W3C version](https://webassembly.github.io/spec/core/bikeshed/), there are more dependencies to install:
@@ -82,5 +81,5 @@ You will also need `npm` and `yarn` for all the LaTeX goodness. `npm` might alre
 ```
 npm install -g yarn
 cd document/core
-make bikeshed
+make -C core bikeshed
 ```
