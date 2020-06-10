@@ -104,13 +104,7 @@ let push (ell1, ts1) (ell2, ts2) =
   ts2 @ ts1
 
 let peek i (ell, ts) at =
-  try
-    List.nth (List.rev ts) i
-  with Failure _ ->
-    require (ell = Ellipses) at
-      ("type mismatch: instruction requires at least " ^ string_of_int (i + 1) ^
-       " operand(s) but stack has " ^ string_of_infer_types ts);
-    None
+  try List.nth (List.rev ts) i with Failure _ -> None
 
 
 (* Type Synthesis *)
