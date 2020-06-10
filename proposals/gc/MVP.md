@@ -36,10 +36,6 @@ All three proposals are prerequisites.
   - `heaptype ::= ... | i31`
   - the type of unboxed scalars
 
-* `rtt <n> <heaptype>` is a new heap type that is a runtime representation of the static type `<heaptype>` and has `n` dynamic supertypes (see [Runtime types](#runtime-types))
-  - `heaptype ::= ... | rtt <heaptype>`
-  - `rtt n t ok` iff `t ok`
-
 * Note: heap types `func` and `extern` already exist via [reference types proposal](https://github.com/WebAssembly/reference-types), and `(ref null? $t)` via [typed references](https://github.com/WebAssembly/function-references)
 
 
@@ -55,6 +51,13 @@ New abbreviations are introduced for reference types in binary and text format, 
 
 * `i31ref` is a new reference type
   - `i31ref == (ref i31)`
+
+
+#### Value Types
+
+* `rtt <n> <heaptype>` is a new value type that is a runtime representation of the static type `<heaptype>` and has `n` dynamic supertypes (see [Runtime types](#runtime-types))
+  - `valtype ::= ... | rtt <n> <heaptype>`
+  - `rtt n t ok` iff `t ok`
 
 
 #### Type Definitions
@@ -99,6 +102,9 @@ In addition to the [existing rules](https://github.com/WebAssembly/function-refe
      - if `$t = <structtype>` or `$t = <arraytype>`
      - or `$t = type rt` and `rt <: eq` (imports)
   - TODO: provide a way to make data types non-eq, especially immutable ones
+
+
+#### Value Types
 
 * `rtt n t` is a subtype of `any`
   - `rtt n t <: any`
@@ -201,7 +207,7 @@ Perhaps add the following short-hands:
 #### Structures
 
 * `struct.new_with_rtt <typeidx>` allocates a structure with RTT information determining its [runtime type](#values) and initialises its fields with given values
-  - `struct.new_with_rtt $t : [(rtt n $t) t'*] -> [(ref $t)]`
+  - `struct.new_with_rtt $t : [t'* (rtt n $t)] -> [(ref $t)]`
     - iff `$t = struct (mut t')*`
 
 * `struct.new_default_with_rtt <typeidx>` allocates a structure of type `$t` and initialises its fields with default values
@@ -226,11 +232,11 @@ Perhaps add the following short-hands:
 #### Arrays
 
 * `array.new_with_rtt <typeidx>` allocates a array with RTT information determining its [runtime type](#values)
-  - `array.new_with_rtt $t : [(rtt n $t) t' i32] -> [(ref $t)]`
+  - `array.new_with_rtt $t : [t' i32 (rtt n $t)] -> [(ref $t)]`
     - iff `$t = array (var t')`
 
 * `array.new_default_with_rtt <typeidx>` allocates an array and initialises its fields with the default value
-  - `array.new_default_with_rtt $t : [(rtt n $t) i32] -> [(ref $t)]`
+  - `array.new_default_with_rtt $t : [i32 (rtt n $t)] -> [(ref $t)]`
     - iff `$t = array (var t')`
     - and `t'` is defaultable
 
@@ -318,7 +324,83 @@ TODO: Add the ability to generate new (non-canonical) RTT values to implement ca
 
 ## Binary Format
 
-TODO.
+### Types
+
+This extends the [encodings](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md#types-1) from the typed function references proposal.
+
+#### Storage Types
+
+| Opcode | Type            |
+| ------ | --------------- |
+| -0x06  | `i8`            |
+| -0x07  | `i16`           |
+
+#### Reference Types
+
+| Opcode | Type            | Parameters | Note |
+| ------ | --------------- | ---------- | ---- |
+| -0x10  | `funcref`       |            | from reftype proposal |
+| -0x11  | `externref`     |            | from reftype proposal |
+| -0x12  | `anyref`        |            | |
+| -0x13  | `eqref`         |            | |
+| -0x14  | `(ref null ht)` | `ht : heaptype (s33)` | from funcref proposal |
+| -0x15  | `(ref ht)`      | `ht : heaptype (s33)` | from funcref proposal |
+| -0x16  | `i31ref`        |            | |
+| -0x17  | `(rtt n ht)`    | `n : u32`, `ht : heaptype (s33)` | |
+
+#### Heap Types
+
+The opcode for heap types is encoded as an `s33`.
+
+| Opcode | Type            | Parameters | Note |
+| ------ | --------------- | ---------- | ---- |
+| i >= 0 | `(type i)`      |            | from funcref proposal |
+| -0x10  | `func`          |            | from funcref proposal |
+| -0x11  | `extern`        |            | from funcref proposal |
+| -0x12  | `any`           |            | |
+| -0x13  | `eq`            |            | |
+| -0x17  | `i31`           |            | |
+
+#### Defined Types
+
+| Opcode | Type            | Parameters |
+| ------ | --------------- | ---------- |
+| -0x21  | `struct ft*`    | `ft* : vec(fieldtype)` |
+| -0x22  | `array ft`      | `ft : fieldtype`       |
+
+#### Field Types
+
+| Type            | Parameters |
+| --------------- | ---------- |
+| `field t mut`   | `t : storagetype`, `mut : mutability` |
+
+
+### Instructions
+
+| Opcode | Type            | Parameters |
+| ------ | --------------- | ---------- |
+| 0xd5   | `ref.eq`        |            |
+| 0xfb01 | `struct.new_with_rtt $t` | `$t : typeidx` |
+| 0xfb02 | `struct.new_default_with_rtt $t` | `$t : typeidx` |
+| 0xfb03 | `struct.get $t i` | `$t : typeidx`, `i : fieldidx` |
+| 0xfb04 | `struct.get_s $t i` | `$t : typeidx`, `i : fieldidx` |
+| 0xfb05 | `struct.get_u $t i` | `$t : typeidx`, `i : fieldidx` |
+| 0xfb06 | `struct.set $t i` | `$t : typeidx`, `i : fieldidx` |
+| 0xfb11 | `array.new_with_rtt $t` | `$t : typeidx` |
+| 0xfb12 | `array.new_default_with_rtt $t` | `$t : typeidx` |
+| 0xfb13 | `array.get $t` | `$t : typeidx` |
+| 0xfb14 | `array.get_s $t` | `$t : typeidx` |
+| 0xfb15 | `array.get_u $t` | `$t : typeidx` |
+| 0xfb16 | `array.set $t` | `$t : typeidx` |
+| 0xfb17 | `array.len $t` | `$t : typeidx` |
+| 0xfb20 | `i31.new` |  |
+| 0xfb21 | `i31.get_s` |  |
+| 0xfb22 | `i31.get_u` |  |
+| 0xfb30 | `rtt.canon ht` | `ht : heaptype` |
+| 0xfb31 | `rtt.sub n ht1 ht2` | `n : u32`, `ht1 : heaptype`, `ht2 : heaptype` |
+| 0xfb40 | `ref.test ht1 ht2` | `ht1 : heaptype`, `ht2 : heaptype` |
+| 0xfb41 | `ref.cast ht1 ht2` | `ht1 : heaptype`, `ht2 : heaptype` |
+| 0xfb42 | `br_on_cast $l ht1 ht2` | `$l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
 
 
 ## JS API
