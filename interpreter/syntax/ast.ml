@@ -106,7 +106,7 @@ and instr' =
   | MemoryInit of var                 (* initialize memory range from segment *)
   | DataDrop of var                   (* drop passive data segment *)
   | RefNull of ref_type               (* null reference *)
-  | RefIsNull of ref_type             (* null test *)
+  | RefIsNull                         (* null test *)
   | RefFunc of var                    (* function reference *)
   | Const of num                      (* constant *)
   | Test of testop                    (* numeric test *)

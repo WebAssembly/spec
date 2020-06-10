@@ -10,7 +10,7 @@ let f32_const n = Const (F32 n.it @@ n.at)
 let f64_const n = Const (F64 n.it @@ n.at)
 let ref_func x = RefFunc x
 let ref_null t = RefNull t
-let ref_is_null t = RefIsNull t
+let ref_is_null = RefIsNull
 
 let unreachable = Unreachable
 let nop = Nop

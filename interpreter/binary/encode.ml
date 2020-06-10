@@ -230,7 +230,7 @@ let encode m =
       | DataDrop x -> op 0xfc; op 0x09; var x
 
       | RefNull t -> op 0xd0; ref_type t
-      | RefIsNull t -> op 0xd1; ref_type t
+      | RefIsNull -> op 0xd1
       | RefFunc x -> op 0xd2; var x
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c

@@ -203,8 +203,8 @@ Reference Instructions
 
 .. _exec-ref.is_null:
 
-:math:`\REFISNULL~t`
-....................
+:math:`\REFISNULL`
+..................
 
 1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
@@ -220,9 +220,9 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val~\REFISNULL~t &\stepto& \I32.\CONST~1
+   \val~\REFISNULL &\stepto& \I32.\CONST~1
      & (\iff \val = \REFNULL~t) \\
-   \val~\REFISNULL~t &\stepto& \I32.\CONST~0
+   \val~\REFISNULL &\stepto& \I32.\CONST~0
      & (\otherwise) \\
    \end{array}
 

@@ -360,8 +360,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | RefNull t ->
     [] --> [RefType t]
 
-  | RefIsNull t ->
-    [RefType t] --> [NumType I32Type]
+  | RefIsNull ->
+    let t = peek 1 s in
+    require (match t with None -> true | Some t -> is_ref_type t) e.at
+      ("type mismatch: instruction requires reference type" ^
+       " but stack has " ^ string_of_infer_type t);
+    [t] -~> [Some (NumType I32Type)]
 
   | RefFunc x ->
     let _ft = func c x in

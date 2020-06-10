@@ -287,7 +287,7 @@ let assert_return ress ts at =
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | LitResult {it = Values.Ref (Values.NullRef t); _} ->
-      [ RefIsNull t @@ at;
+      [ RefIsNull @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | LitResult {it = Values.Ref (ExternRef n); _} ->

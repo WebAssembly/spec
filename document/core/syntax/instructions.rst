@@ -187,7 +187,7 @@ Instructions in this group are concerned with accessing :ref:`references <syntax
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \REFNULL~\reftype \\&&|&
-     \REFISNULL~\reftype \\&&|&
+     \REFISNULL \\&&|&
      \REFFUNC~\funcidx \\
    \end{array}
 

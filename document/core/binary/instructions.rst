@@ -91,7 +91,7 @@ Reference Instructions
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{D0}~~t{:}\Breftype &\Rightarrow& \REFNULL~t \\ &&|&
-     \hex{D1}~~t{:}\Breftype &\Rightarrow& \REFISNULL~t \\ &&|&
+     \hex{D1} &\Rightarrow& \REFISNULL \\ &&|&
      \hex{D2}~~x{:}\Bfuncidx &\Rightarrow& \REFFUNC~x \\
    \end{array}
 

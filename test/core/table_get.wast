@@ -17,7 +17,7 @@
   )
 
   (func (export "is_null-funcref") (param $i i32) (result i32)
-    (ref.is_null func (call $f3 (local.get $i)))
+    (ref.is_null (call $f3 (local.get $i)))
   )
 )
 

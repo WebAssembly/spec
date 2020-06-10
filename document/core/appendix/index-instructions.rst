@@ -221,7 +221,7 @@ Instruction                                Binary Opcode              Type      
 (reserved)                                 :math:`\hex{CE}`                                                  
 (reserved)                                 :math:`\hex{CF}`                                                  
 :math:`\REFNULL~t`                         :math:`\hex{D0}`           :math:`[] \to [t]`                             :ref:`validation <valid-ref.null>`        :ref:`execution <exec-ref.null>`
-:math:`\REFISNULL~t`                       :math:`\hex{D1}`           :math:`[t] \to [\I32]`                         :ref:`validation <valid-ref.is_null>`     :ref:`execution <exec-ref.is_null>`
+:math:`\REFISNULL`                         :math:`\hex{D1}`           :math:`[t] \to [\I32]`                         :ref:`validation <valid-ref.is_null>`     :ref:`execution <exec-ref.is_null>`
 :math:`\REFFUNC~x`                         :math:`\hex{D2}`           :math:`[] \to [\FUNCREF]`                      :ref:`validation <valid-ref.func>`        :ref:`execution <exec-ref.func>`
 (reserved)                                 :math:`\hex{D3}`                                                  
 (reserved)                                 :math:`\hex{D4}`                                                  
