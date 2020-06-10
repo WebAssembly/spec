@@ -75,7 +75,7 @@ make -C core html
 
 ### Building the single-page HTML document
 
-To build the [single-page W3C version](https://webassembly.github.io/spec/core/bikeshed/), there are more dependencies to install:
+To build the [single-page W3C version](https://webassembly.github.io/spec/core/bikeshed/), there are more dependencies to install. First, get [Bikeshed](https://github.com/tabatkins/bikeshed):
 
 ```
 # cd back to root of git directory
@@ -94,7 +94,7 @@ make -C core bikeshed
 
 ### Building the PDF
 
-To build the [PDF](https://webassembly.github.io/spec/core/_download/WebAssembly.pdf), you will need `texlive-full` installed, install it using your system package manager:
+To build the [PDF](https://webassembly.github.io/spec/core/_download/WebAssembly.pdf), you will need `texlive-full`, install it using your system package manager:
 
 ```
 apt install texlive-full
