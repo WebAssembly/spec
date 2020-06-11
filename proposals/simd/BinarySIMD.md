@@ -26,8 +26,8 @@ Some SIMD instructions have additional immediate operands following `simdop`.
 These immediate operands are encoded as individual bytes.
 For example, the `v8x16.shuffle` instruction has 16 bytes after `simdop`.
 
-In the description below, `LaneIdx{I}` indicates the maximum value of the byte.
-For example, `LaneIdx16` is a byte with values in the range 0-15 (inclusive).
+In the description below, `ImmLaneIdx{I}` indicates the maximum value of the byte.
+For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 
 
 | Instruction                | `simdop` | Immediate operands |
@@ -45,7 +45,7 @@ For example, `LaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `v64x2.load_splat`         |    `0x0a`| m:memarg           |
 | `v128.store`               |    `0x0b`| m:memarg           |
 | `v128.const`               |    `0x0c`| i:ImmByte[16]      |
-| `v8x16.shuffle`            |    `0x0d`| s:LaneIdx32[16]    |
+| `v8x16.shuffle`            |    `0x0d`| s:ImmLaneIdx32[16] |
 | `v8x16.swizzle`            |    `0x0e`| -                  |
 | `i8x16.splat`              |    `0x0f`| -                  |
 | `i16x8.splat`              |    `0x10`| -                  |
@@ -53,20 +53,20 @@ For example, `LaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `i64x2.splat`              |    `0x12`| -                  |
 | `f32x4.splat`              |    `0x13`| -                  |
 | `f64x2.splat`              |    `0x14`| -                  |
-| `i8x16.extract_lane_s`     |    `0x15`| i:LaneIdx16        |
-| `i8x16.extract_lane_u`     |    `0x16`| i:LaneIdx16        |
-| `i8x16.replace_lane`       |    `0x17`| i:LaneIdx16        |
-| `i16x8.extract_lane_s`     |    `0x18`| i:LaneIdx8         |
-| `i16x8.extract_lane_u`     |    `0x19`| i:LaneIdx8         |
-| `i16x8.replace_lane`       |    `0x1a`| i:LaneIdx8         |
-| `i32x4.extract_lane`       |    `0x1b`| i:LaneIdx4         |
-| `i32x4.replace_lane`       |    `0x1c`| i:LaneIdx4         |
-| `i64x2.extract_lane`       |    `0x1d`| i:LaneIdx2         |
-| `i64x2.replace_lane`       |    `0x1e`| i:LaneIdx2         |
-| `f32x4.extract_lane`       |    `0x1f`| i:LaneIdx4         |
-| `f32x4.replace_lane`       |    `0x20`| i:LaneIdx4         |
-| `f64x2.extract_lane`       |    `0x21`| i:LaneIdx2         |
-| `f64x2.replace_lane`       |    `0x22`| i:LaneIdx2         |
+| `i8x16.extract_lane_s`     |    `0x15`| i:ImmLaneIdx16     |
+| `i8x16.extract_lane_u`     |    `0x16`| i:ImmLaneIdx16     |
+| `i8x16.replace_lane`       |    `0x17`| i:ImmLaneIdx16     |
+| `i16x8.extract_lane_s`     |    `0x18`| i:ImmLaneIdx8      |
+| `i16x8.extract_lane_u`     |    `0x19`| i:ImmLaneIdx8      |
+| `i16x8.replace_lane`       |    `0x1a`| i:ImmLaneIdx8      |
+| `i32x4.extract_lane`       |    `0x1b`| i:ImmLaneIdx4      |
+| `i32x4.replace_lane`       |    `0x1c`| i:ImmLaneIdx4      |
+| `i64x2.extract_lane`       |    `0x1d`| i:ImmLaneIdx2      |
+| `i64x2.replace_lane`       |    `0x1e`| i:ImmLaneIdx2      |
+| `f32x4.extract_lane`       |    `0x1f`| i:ImmLaneIdx4      |
+| `f32x4.replace_lane`       |    `0x20`| i:ImmLaneIdx4      |
+| `f64x2.extract_lane`       |    `0x21`| i:ImmLaneIdx2      |
+| `f64x2.replace_lane`       |    `0x22`| i:ImmLaneIdx2      |
 | `i8x16.eq`                 |    `0x23`| -                  |
 | `i8x16.ne`                 |    `0x24`| -                  |
 | `i8x16.lt_s`               |    `0x25`| -                  |
