@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import print_function
 import argparse
@@ -12,8 +12,7 @@ import sys
 
 ownDir = os.path.dirname(os.path.abspath(sys.argv[0]))
 inputDir = ownDir
-expectDir = "expected-output"
-outputDir = os.path.join(inputDir, "output")
+outputDir = os.path.join(inputDir, "_output")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--wasm", metavar="<wasm-command>", default=os.path.join(os.getcwd(), "wasm"))
@@ -27,6 +26,15 @@ wasmCommand = arguments.wasm
 jsCommand = arguments.js
 outputDir = arguments.out
 inputFiles = arguments.file if arguments.file else glob.glob(os.path.join(inputDir, "*.wast"))
+
+if not os.path.exists(wasmCommand):
+  sys.stderr.write("""\
+Error: The executable '%s' does not exist.
+Provide the correct path with the '--wasm' flag.
+
+""" % (wasmCommand))
+  parser.print_help()
+  sys.exit(1)
 
 
 class RunTests(unittest.TestCase):
@@ -51,37 +59,38 @@ class RunTests(unittest.TestCase):
   def _runTestFile(self, inputPath):
     dir, inputFile = os.path.split(inputPath)
     outputPath = os.path.join(outputDir, inputFile)
-    expectPath = os.path.join(dir, os.path.join(expectDir, inputFile))
 
     # Run original file
     expectedExitCode = 1 if ".fail." in inputFile else 0
     logPath = self._auxFile(outputPath + ".log")
     self._runCommand(('%s "%s"') % (wasmCommand, inputPath), logPath, expectedExitCode)
-    self._compareFile(expectPath + ".log", logPath)
 
     if expectedExitCode != 0:
       return
 
-    # Convert to binary and validate again
+    # Convert to binary and run again
     wasmPath = self._auxFile(outputPath + ".bin.wast")
     logPath = self._auxFile(wasmPath + ".log")
     self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, inputPath, wasmPath), logPath)
-    self._runCommand(('%s -d "%s"') % (wasmCommand, wasmPath), logPath)
+    self._runCommand(('%s "%s"') % (wasmCommand, wasmPath), logPath)
 
-    # Convert back to text and validate again
+    # Convert back to text and run again
     wastPath = self._auxFile(wasmPath + ".wast")
     logPath = self._auxFile(wastPath + ".log")
     self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, wasmPath, wastPath), logPath)
-    self._runCommand(('%s -d "%s" ') % (wasmCommand, wastPath), logPath)
+    self._runCommand(('%s "%s"') % (wasmCommand, wastPath), logPath)
 
     # Convert back to binary once more and compare
     wasm2Path = self._auxFile(wastPath + ".bin.wast")
     logPath = self._auxFile(wasm2Path + ".log")
     self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, wastPath, wasm2Path), logPath)
-    self._runCommand(('%s -d "%s"') % (wasmCommand, wasm2Path), logPath)
-    # TODO: The binary should stay the same, but OCaml's float-string conversions are inaccurate.
-    # Once we upgrade to OCaml 4.03, use sprintf "%s" for printing floats.
-    # self._compareFile(wasmPath, wasm2Path)
+    self._compareFile(wasmPath, wasm2Path)
+
+    # Convert back to text once more and compare
+    wast2Path = self._auxFile(wasm2Path + ".wast")
+    logPath = self._auxFile(wast2Path + ".log")
+    self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, wasm2Path, wast2Path), logPath)
+    self._compareFile(wastPath, wast2Path)
 
     # Convert to JavaScript
     jsPath = self._auxFile(outputPath.replace(".wast", ".js"))

@@ -5,7 +5,7 @@
   (type $i64_T (func (param i64 i64) (result i32)))
   (type $f32_T (func (param f32 f32) (result i32)))
   (type $f64_T (func (param f64 f64) (result i32)))
-  (table anyfunc
+  (table funcref
     (elem $i32_t0 $i32_t1 $i64_t0 $i64_t1 $f32_t0 $f32_t1 $f64_t0 $f64_t1)
   )
 
@@ -88,7 +88,7 @@
   (func (export "i32_store8") (result i32) (call $reset) (i32.store8 (call $i32_left) (call $i32_right)) (call $get))
   (func (export "i32_store16") (result i32) (call $reset) (i32.store16 (call $i32_left) (call $i32_right)) (call $get))
   (func (export "i32_call") (result i32) (call $reset) (call $i32_dummy (call $i32_left) (call $i32_right)) (call $get))
-  (func (export "i32_call_indirect") (result i32) (call $reset) (drop (call_indirect $i32_T (call $i32_left) (call $i32_right) (call $i32_callee))) (call $get))
+  (func (export "i32_call_indirect") (result i32) (call $reset) (drop (call_indirect (type $i32_T) (call $i32_left) (call $i32_right) (call $i32_callee))) (call $get))
   (func (export "i32_select") (result i32) (call $reset) (drop (select (call $i32_left) (call $i32_right) (call $i32_bool))) (call $get))
 
   (func (export "i64_add") (result i32) (call $reset) (drop (i64.add (call $i64_left) (call $i64_right))) (call $get))
@@ -119,7 +119,7 @@
   (func (export "i64_store16") (result i32) (call $reset) (i64.store16 (call $i32_left) (call $i64_right)) (call $get))
   (func (export "i64_store32") (result i32) (call $reset) (i64.store32 (call $i32_left) (call $i64_right)) (call $get))
   (func (export "i64_call") (result i32) (call $reset) (call $i64_dummy (call $i64_left) (call $i64_right)) (call $get))
-  (func (export "i64_call_indirect") (result i32) (call $reset) (drop (call_indirect $i64_T (call $i64_left) (call $i64_right) (call $i64_callee))) (call $get))
+  (func (export "i64_call_indirect") (result i32) (call $reset) (drop (call_indirect (type $i64_T) (call $i64_left) (call $i64_right) (call $i64_callee))) (call $get))
   (func (export "i64_select") (result i32) (call $reset) (drop (select (call $i64_left) (call $i64_right) (call $i64_bool))) (call $get))
 
   (func (export "f32_add") (result i32) (call $reset) (drop (f32.add (call $f32_left) (call $f32_right))) (call $get))
@@ -137,7 +137,7 @@
   (func (export "f32_max") (result i32) (call $reset) (drop (f32.max (call $f32_left) (call $f32_right))) (call $get))
   (func (export "f32_store") (result i32) (call $reset) (f32.store (call $i32_left) (call $f32_right)) (call $get))
   (func (export "f32_call") (result i32) (call $reset) (call $f32_dummy (call $f32_left) (call $f32_right)) (call $get))
-  (func (export "f32_call_indirect") (result i32) (call $reset) (drop (call_indirect $f32_T (call $f32_left) (call $f32_right) (call $f32_callee))) (call $get))
+  (func (export "f32_call_indirect") (result i32) (call $reset) (drop (call_indirect (type $f32_T) (call $f32_left) (call $f32_right) (call $f32_callee))) (call $get))
   (func (export "f32_select") (result i32) (call $reset) (drop (select (call $f32_left) (call $f32_right) (call $f32_bool))) (call $get))
 
   (func (export "f64_add") (result i32) (call $reset) (drop (f64.add (call $f64_left) (call $f64_right))) (call $get))
@@ -155,21 +155,21 @@
   (func (export "f64_max") (result i32) (call $reset) (drop (f64.max (call $f64_left) (call $f64_right))) (call $get))
   (func (export "f64_store") (result i32) (call $reset) (f64.store (call $i32_left) (call $f64_right)) (call $get))
   (func (export "f64_call") (result i32) (call $reset) (call $f64_dummy (call $f64_left) (call $f64_right)) (call $get))
-  (func (export "f64_call_indirect") (result i32) (call $reset) (drop (call_indirect $f64_T (call $f64_left) (call $f64_right) (call $f64_callee))) (call $get))
+  (func (export "f64_call_indirect") (result i32) (call $reset) (drop (call_indirect (type $f64_T) (call $f64_left) (call $f64_right) (call $f64_callee))) (call $get))
   (func (export "f64_select") (result i32) (call $reset) (drop (select (call $f64_left) (call $f64_right) (call $f64_bool))) (call $get))
 
   (func (export "br_if") (result i32)
-    (block i32
+    (block (result i32)
       (call $reset)
       (drop (br_if 0 (call $i32_left) (i32.and (call $i32_right) (i32.const 0))))
       (call $get)
     )
   )
   (func (export "br_table") (result i32)
-    (block $a i32
+    (block $a (result i32)
       (call $reset)
       (drop
-        (block $b i32
+        (block $b (result i32)
           (br_table $a $b (call $i32_left) (call $i32_right))
         )
       )
