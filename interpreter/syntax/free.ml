@@ -69,7 +69,7 @@ let num_type = function
   | I32Type | I64Type | F32Type | F64Type -> empty
 
 let heap_type = function
-  | FuncHeapType | ExternHeapType -> empty
+  | FuncHeapType | ExternHeapType | BotHeapType -> empty
   | DefHeapType x -> var_type x
 
 let ref_type = function
@@ -97,8 +97,8 @@ let rec instr (e : instr) =
   match e.it with
   | Unreachable | Nop | Drop -> empty
   | Select tso -> list value_type (Lib.Option.get tso [])
-  | RefIsNull -> empty
-  | RefNull t | RefAsNonNull t -> heap_type t
+  | RefIsNull | RefAsNonNull -> empty
+  | RefNull t -> heap_type t
   | RefFunc x -> funcs (idx x)
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
@@ -106,9 +106,8 @@ let rec instr (e : instr) =
   | Let (bt, ts, es) ->
     let free = block_type bt ++ block es in
     {free with locals = Lib.Fun.repeat (List.length ts) shift free.locals}
-  | Br x | BrIf x -> labels (idx x)
+  | Br x | BrIf x | BrOnNull x -> labels (idx x)
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
-  | BrOnNull (x, t) -> labels (idx x) ++ heap_type t
   | Return | CallRef | ReturnCallRef -> empty
   | Call x -> funcs (idx x)
   | CallIndirect (x, y) -> tables (idx x) ++ types (idx y)

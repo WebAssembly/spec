@@ -330,14 +330,15 @@ let assert_return ress ts at =
         | FuncHeapType -> is_funcref_idx
         | ExternHeapType -> is_externref_idx
         | DefHeapType _ -> is_funcref_idx
+        | BotHeapType -> assert false
       in
       [ Call (is_ref_idx @@ at) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | NullResult ->
       (match t with
-      | RefType (_, t') ->
-        [ BrOnNull (0l @@ at, t') @@ at ]
+      | RefType _ ->
+        [ BrOnNull (0l @@ at) @@ at ]
       | _ ->
         [ Br (0l @@ at) @@ at ]
       )

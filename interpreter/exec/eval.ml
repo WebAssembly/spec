@@ -209,7 +209,7 @@ let rec step (c : config) : config =
         else
           vs', [Plain (Br (Lib.List32.nth xs i)) @@ e.at]
 
-      | BrOnNull (x, _), Ref r :: vs' ->
+      | BrOnNull x, Ref r :: vs' ->
         (match r with
         | NullRef _ ->
           vs', [Plain (Br x) @@ e.at]
@@ -492,7 +492,7 @@ let rec step (c : config) : config =
           Num (I32 0l) :: vs', []
         )
 
-      | RefAsNonNull _, Ref r :: vs' ->
+      | RefAsNonNull, Ref r :: vs' ->
         (match r with
         | NullRef _ ->
           vs', [Trapping "null reference" @@ e.at]

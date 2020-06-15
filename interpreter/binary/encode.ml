@@ -102,6 +102,7 @@ let encode m =
       | ExternHeapType -> vs7 (-0x11)
       | DefHeapType (SynVar x) -> vs33 x
       | DefHeapType (SemVar _) -> assert false
+      | BotHeapType -> assert false
 
     let ref_type = function
       | (Nullable, FuncHeapType) -> vs32 (-0x10l)
@@ -181,7 +182,7 @@ let encode m =
       | Br x -> op 0x0c; var x
       | BrIf x -> op 0x0d; var x
       | BrTable (xs, x) -> op 0x0e; vec var xs; var x
-      | BrOnNull (x, t) -> op 0xd4; var x; heap_type t
+      | BrOnNull x -> op 0xd4; var x
       | Return -> op 0x0f
       | Call x -> op 0x10; var x
       | CallRef -> op 0x14
@@ -258,7 +259,7 @@ let encode m =
 
       | RefNull t -> op 0xd0; heap_type t
       | RefIsNull -> op 0xd1
-      | RefAsNonNull t -> op 0xd3; heap_type t
+      | RefAsNonNull -> op 0xd3
       | RefFunc x -> op 0xd2; var x
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c

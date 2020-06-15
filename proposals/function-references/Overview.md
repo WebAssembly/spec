@@ -224,13 +224,13 @@ The following rules, now defined in terms of heap types, replace and extend the 
   - `ref.null ht: [] -> [(ref null ht)]`
     - iff `ht ok`
 
-* `ref.as_non_null <heaptype>` converts a nullable reference to a non-null one
-  - `ref.as_non_null ht: [(ref null ht)] -> [(ref ht)]`
+* `ref.as_non_null` converts a nullable reference to a non-null one
+  - `ref.as_non_null : [(ref null ht)] -> [(ref ht)]`
     - iff `ht ok`
   - traps on `null`
 
-* `br_on_null $l <heaptype>` checks for null and branches
-  - `br_on_null $l ht : [t* (ref null ht)] -> [t* (ref ht)]`
+* `br_on_null $l` checks for null and branches
+  - `br_on_null $l : [t* (ref null ht)] -> [t* (ref ht)]`
     - iff `$l : [t*]`
     - and `ht ok`
   - branches to `$l` on `null`, otherwise returns operand as non-null
@@ -298,8 +298,8 @@ The opcode for heap types is encoded as an `s33`.
 | 0x15   | `return_call_ref`        |            |
 | 0x16   | `func.bind (type $t)`    | `$t : u32` |
 | 0x17   | `let <bt> <locals>`      | `bt : blocktype, locals : (as in functions)` |
-| 0xd3   | `ref.as_non_null ht`     |  ht : heaptype |
-| 0xd4   | `br_on_null $l ht`       | `$l : u32`, ht : heaptype |
+| 0xd3   | `ref.as_non_null`        |            |
+| 0xd4   | `br_on_null $l`          | `$l : u32` |
 
 ### Tables
 

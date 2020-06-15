@@ -9,7 +9,8 @@ and var = SynVar of syn_var | SemVar of sem_var
 and nullability = NonNullable | Nullable
 and num_type = I32Type | I64Type | F32Type | F64Type
 and ref_type = nullability * heap_type
-and heap_type = FuncHeapType | ExternHeapType | DefHeapType of var
+and heap_type =
+  FuncHeapType | ExternHeapType | DefHeapType of var | BotHeapType
 
 and value_type = NumType of num_type | RefType of ref_type | BotType
 and stack_type = value_type list
@@ -113,6 +114,7 @@ let sem_heap_type c = function
   | FuncHeapType -> FuncHeapType
   | ExternHeapType -> ExternHeapType
   | DefHeapType x -> DefHeapType (sem_var_type c x)
+  | BotHeapType -> BotHeapType
 
 let sem_ref_type c = function
   | (nul, t) -> (nul, sem_heap_type c t)
@@ -206,6 +208,7 @@ and string_of_heap_type = function
   | FuncHeapType -> "func"
   | ExternHeapType -> "extern"
   | DefHeapType x -> "(type " ^ string_of_var x ^ ")"
+  | BotHeapType -> "unreachable"
 
 and string_of_ref_type = function
   | (nul, t) ->

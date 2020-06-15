@@ -26,7 +26,7 @@ Types are representable as a set of enumerations.
 .. code-block:: pseudo
 
    type num_type = I32 | I64 | F32 | F64
-   type heap_type = Def(idx : nat) | Func | Extern
+   type heap_type = Def(idx : nat) | Func | Extern | Bot
    type ref_type = Ref(heap : heap_type, null : bool)
    type val_type = num_type | ref_type | Bot
 
@@ -51,6 +51,8 @@ Equivalence and subtyping checks can be defined on these types.
        case (Def(n1), Def(n2))
          return eq_def(n1, n2)
        case (Def(_), Func)
+         return true
+       case (Bot, _)
          return true
        case (_, _)
          return t1 = t2
@@ -111,9 +113,10 @@ However, these variables are not manipulated directly by the main checking funct
      error_if(not is_num(actual))
      return actual
 
-   func pop_ref() : ref_type | Bot =
+   func pop_ref() : ref_type =
      let actual = pop_val()
      error_if(not is_ref(actual))
+     if actual = Bot then return Ref(Bot, false)
      return actual
 
    func pop_val(expect : val_type) : val_type =
@@ -228,9 +231,9 @@ Other instructions are checked in a similar manner.
          pop_ref()
          push_val(I32)
 
-       case (ref.as_non_null ht)
-         pop_ref()
-         push_val(Ref(ht, false))
+       case (ref.as_non_null)
+         let rt = pop_ref()
+         push_val(Ref(rt.heap, false))
 
        case (unreachable)
          unreachable()
@@ -279,16 +282,16 @@ Other instructions are checked in a similar manner.
          pop_vals(label_types(ctrls[m]))
          unreachable()
 
-       case (br_on_null n ht)
+       case (br_on_null n)
          error_if(ctrls.size() < n)
-         pop_ref()
+         let rt = pop_ref()
          pop_vals(label_types(ctrls[n]))
          push_vals(label_types(ctrls[n]))
-         push_val(Ref(ht, false))
+         push_val(Ref(rt.heap, false))
 
        case (call_ref)
          let rt = pop_ref()
-         if (rt =/= Bot)
+         if (rt.heap =/= Bot)
            error_if(not is_def(rt.heap))
            let t1*->t2* = lookup_def(rt.heap.def)  // TODO
            pop_vals(t1*)

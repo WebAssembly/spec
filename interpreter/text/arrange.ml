@@ -249,7 +249,7 @@ let rec instr e =
     | BrIf x -> "br_if " ^ var x, []
     | BrTable (xs, x) ->
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
-    | BrOnNull (x, t) -> "br_on_null " ^ var x, [Atom (heap_type t)]
+    | BrOnNull x -> "br_on_null " ^ var x, []
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallRef -> "call_ref", []
@@ -280,7 +280,7 @@ let rec instr e =
     | DataDrop x -> "data.drop " ^ var x, []
     | RefNull t -> "ref.null", [Atom (heap_type t)]
     | RefIsNull -> "ref.is_null", []
-    | RefAsNonNull t -> "ref.as_non_null", [Atom (heap_type t)]
+    | RefAsNonNull -> "ref.as_non_null", []
     | RefFunc x -> "ref.func " ^ var x, []
     | Const n -> constop n ^ " " ^ num n, []
     | Test op -> testop op, []

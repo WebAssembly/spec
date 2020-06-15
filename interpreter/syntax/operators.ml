@@ -11,7 +11,7 @@ let f64_const n = Const (F64 n.it @@ n.at)
 let ref_func x = RefFunc x
 let ref_null t = RefNull t
 let ref_is_null = RefIsNull
-let ref_as_non_null t = RefAsNonNull t
+let ref_as_non_null = RefAsNonNull
 
 let unreachable = Unreachable
 let nop = Nop
@@ -26,7 +26,7 @@ let let_ bt ts es = Let (bt, ts, es)
 let br x = Br x
 let br_if x = BrIf x
 let br_table xs x = BrTable (xs, x)
-let br_on_null x t = BrOnNull (x, t)
+let br_on_null x = BrOnNull x
 
 let return = Return
 let call x = Call x

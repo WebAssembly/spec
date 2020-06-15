@@ -370,7 +370,7 @@ plain_instr :
   | BR_TABLE var var_list
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
-  | BR_ON_NULL var heap_type { fun c -> br_on_null ($2 c label) ($3 c) }
+  | BR_ON_NULL var { fun c -> br_on_null ($2 c label) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF { fun c -> call_ref }
@@ -407,7 +407,7 @@ plain_instr :
   | DATA_DROP var { fun c -> data_drop ($2 c data) }
   | REF_NULL heap_type { fun c -> ref_null ($2 c) }
   | REF_IS_NULL { fun c -> ref_is_null }
-  | REF_AS_NON_NULL heap_type { fun c -> ref_as_non_null ($2 c) }
+  | REF_AS_NON_NULL { fun c -> ref_as_non_null }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
   | CONST num { fun c -> fst (num $1 $2) }
   | TEST { fun c -> $1 }
