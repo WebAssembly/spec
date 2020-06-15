@@ -78,13 +78,13 @@
 (assert_return (invoke "get") (i32.const 70))
 
 (module
-  (func $print_i32 (import "spectest" "print_i32") (param i32))
+  (func $print_i32 (import "spectest" "print") (param i32))
   (func $main (call $print_i32 (i32.const 1)))
   (start 1)
 )
 
 (module
-  (func $print_i32 (import "spectest" "print_i32") (param i32))
+  (func $print_i32 (import "spectest" "print") (param i32))
   (func $main (call $print_i32 (i32.const 2)))
   (start $main)
 )
@@ -97,9 +97,4 @@
 (assert_trap
   (module (func $main (unreachable)) (start $main))
   "unreachable"
-)
-
-(assert_malformed
-  (module quote "(module (func $a (unreachable)) (func $b (unreachable)) (start $a) (start $b))")
-  "multiple start sections"
 )

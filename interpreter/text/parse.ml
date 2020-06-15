@@ -1,5 +1,5 @@
 type 'a start =
-  | Module : (Script.var option * Script.definition) start
+  | Module : Script.definition start
   | Script : Script.script start
   | Script1 : Script.script start
 
@@ -25,4 +25,4 @@ let string_to start s =
   parse "string" lexbuf start
 
 let string_to_script s = string_to Script s
-let string_to_module s = snd (string_to Module s)
+let string_to_module s = string_to Module s

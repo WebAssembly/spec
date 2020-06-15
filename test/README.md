@@ -1,9 +1,12 @@
-This directory contains the WebAssembly test suite. It is split into three
+This directory contains the WebAssembly test suite. It is split into two
 directories:
 
 * [`core/`](core/), tests for the core semantics
 * [`js-api/`](js-api/), tests for the JavaScript API.
 * [`html/`](html/), tests for the JavaScript API in a DOM environment.
+
+A [landing page](out/index.html) contains a condensed version made of all
+these tests, converted to HTML.
 
 A list of to-do's can be found [here](Todo.md).
 
@@ -17,7 +20,7 @@ runnning all of them in HTML.
 
 The HTML tests are just [Web Platform Tests](http://testthewebforward.org)
 using the
-[testharness.js](https://web-platform-tests.org/writing-tests/testharness-api.html)
+[testharness.js](http://testthewebforward.org/docs/testharness-library.html)
 library.
 
 Each wast test gets its equivalent JS test, and each JS test (including wast
