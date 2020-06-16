@@ -24,26 +24,6 @@ Please make sure to only use that once a change has approval.
 
 ## Step by step guide to building the spec
 
-### Checking out the repository
-
-Make sure this repository was cloned with `--recursive`:
-
-```
-git clone --recursive https://github.com/WebAssembly/spec
-```
-
-If you have already cloned but without `--recursive`, you can delete and re-clone, or `cd` into `spec` and run:
-
-```
-git submodule update --init --recursive
-```
-
-The rest of these instructions assume you are in the directory where is README is:
-
-```
-cd spec/document
-```
-
 ### Prerequisites
 
 You will need `python3.7`, and `pip`. `pip` should come with Python, if not follow [these installation instructions for `pip`](https://pip.pypa.io/en/stable/installing/), or check your system package manager for `pip3`.
@@ -63,6 +43,26 @@ Install Python dependencies:
 
 ```
 pip install Sphinx==2.4.4
+```
+
+### Checking out the repository
+
+Make sure this repository was cloned with `--recursive`:
+
+```
+git clone --recursive https://github.com/WebAssembly/spec
+```
+
+If you have already cloned but without `--recursive`, you can delete and re-clone, or `cd` into `spec` and run:
+
+```
+git submodule update --init --recursive
+```
+
+The rest of these instructions assume you are in the directory where is README is:
+
+```
+cd spec/document
 ```
 
 ### Building the multi-page HTML document
