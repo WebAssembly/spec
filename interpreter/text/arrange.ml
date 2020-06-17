@@ -290,15 +290,15 @@ let memory off i mem =
   let {mtype = MemoryType lim} = mem.it in
   Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
 
-let segment head dat seg =
+let segment head category dat seg =
   let {index; offset; init} = seg.it in
-  Node (head, atom var index :: Node ("offset", const offset) :: dat init)
+  Node (head, Node (category, [atom var index]) :: Node ("offset", const offset) :: dat init)
 
 let elems seg =
-  segment "elem" (list (atom var)) seg
+  segment "elem" "table" (list (atom var)) seg
 
 let data seg =
-  segment "data" break_bytes seg
+  segment "data" "memory" break_bytes seg
 
 
 (* Modules *)

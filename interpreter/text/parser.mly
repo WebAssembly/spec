@@ -558,9 +558,9 @@ offset :
   | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
 
 elem :
-  | LPAR ELEM var offset var_list RPAR
+  | LPAR ELEM LPAR TABLE var RPAR offset var_list RPAR
     { let at = at () in
-      fun c -> {index = $3 c table; offset = $4 c; init = $5 c func} @@ at }
+      fun c -> {index = $5 c table; offset = $7 c; init = $8 c func} @@ at }
   | LPAR ELEM offset var_list RPAR  /* Sugar */
     { let at = at () in
       fun c -> {index = 0l @@ at; offset = $3 c; init = $4 c func} @@ at }
@@ -590,9 +590,9 @@ table_fields :
       [], [] }
 
 data :
-  | LPAR DATA var offset string_list RPAR
+  | LPAR DATA LPAR MEMORY var RPAR offset string_list RPAR
     { let at = at () in
-      fun c -> {index = $3 c memory; offset = $4 c; init = $5} @@ at }
+      fun c -> {index = $5 c memory; offset = $7 c; init = $8} @@ at }
   | LPAR DATA offset string_list RPAR  /* Sugar */
     { let at = at () in
       fun c -> {index = 0l @@ at; offset = $3 c; init = $4} @@ at }
