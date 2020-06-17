@@ -135,11 +135,14 @@ Table extensions:
   - For backwards compatibility, the index may be omitted in the text format, in which case it defaults to 0.
 
 
-API extensions:
+JS API extensions:
 
 * Any JS value can be passed as `externref` to a Wasm function, stored in a global, or in a table.
 
 * Any Wasm exported function object or `null` can be passed as `funcref` to a Wasm function, stored in a global, or in a table.
+
+* The `WebAssembly.Table#grow` method takes an additional initialisation argument.
+  - optional for backwards compatibility, defaults to default value of respective type
 
 
 ## Possible Future Extensions
@@ -211,11 +214,6 @@ Additions:
   - Note: reference types are not necessarily subtypes of `eqref`, including functions
 
 * Typed function references cannot be null!
-
-* The `table.grow` instruction (see the [bulk operation proposal](https://github.com/WebAssembly/bulk-memory-operations/blob/master/proposals/bulk-memory-operations/Overview.md)) needs to take an initialisation argument.
-
-* Likewise `WebAssembly.Table#grow` takes an additional initialisation argument.
-  - optional for backwards compatibility, defaults to `null`
 
 
 ### Type Import/Export
