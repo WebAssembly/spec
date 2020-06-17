@@ -877,16 +877,19 @@ numpat :
   | literal { fun s -> simd_lane_lit s $1.it $1.at }
   | NAN { fun s -> simd_lane_nan s $1 (ati 3) }
 
+numpat_list:
+  | /* empty */ { [] }
+  | numpat numpat_list { $1 :: $2 }
+
 result :
   | const { NumResult (LitPat $1 @@ at ()) @@ at () }
   | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ ati 3)) @@ ati 3) @@ at () }
-  | LPAR V128_CONST SIMD_SHAPE numpat numpat numpat numpat RPAR {
-      if ($3 <> Simd.F32x4 && $3 <> Simd.I32x4) then error (ati 3) "unimplemented SIMD shape";
-      SimdResult ($3, [$4 $3; $5 $3; $6 $3; $7 $3]) @@ at ()
-  }
-  | LPAR V128_CONST SIMD_SHAPE numpat numpat RPAR {
-      if ($3 <> Simd.F64x2) then error (ati 3) "unimplemented SIMD shape";
-      SimdResult ($3, [$4 $3; $5 $3]) @@ at ()
+  | LPAR V128_CONST SIMD_SHAPE numpat_list RPAR {
+    if Simd.lanes $3 <> List.length $4 then error (at ()) "wrong number of lane literals";
+    match $3 with
+    | Simd.I32x4 | Simd.F32x4 | Simd.F64x2 ->
+      SimdResult ($3, List.map (fun lit -> lit $3) ($4)) @@ at ()
+    | _ -> error (ati 3) "unimplemented SIMD shape"
   }
 
 result_list :
