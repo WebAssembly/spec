@@ -11,6 +11,7 @@ let lanes shape =
   | F32x4 -> 4
   | F64x2 -> 2
 
+let i16x8_indices = [0; 2; 4; 6; 8; 10; 12; 14]
 let i32x4_indices = [0; 4; 8; 12]
 let f32x4_indices = i32x4_indices
 let f64x2_indices = [0; 8]
@@ -24,6 +25,9 @@ sig
   val to_string : t -> string
   val bytewidth : int
   val of_strings : shape -> string list -> t
+
+  val to_i16x8 : t -> I16.t list
+  val of_i16x8 : I16.t list -> t
 
   val to_i32x4 : t -> I32.t list
   val of_i32x4 : I32.t list -> t
@@ -80,10 +84,12 @@ sig
   val of_bits : bits -> t
   val to_bits : t -> bits
   val of_strings : shape -> string list -> t
+  val to_i16x8 : t -> I16.t list
   val to_i32x4 : t -> I32.t list
 
   (* We need type t = t to ensure that all submodule types are S.t,
    * then callers don't have to change *)
+  module I16x8 : Int with type t = t and type lane = I16.t
   module I32x4 : Int with type t = t and type lane = I32.t
   module F32x4 : Float with type t = t and type lane = F32.t
   module F64x2 : Float with type t = t and type lane = F64.t
@@ -99,6 +105,7 @@ struct
   let of_bits x = x
   let to_bits x = x
   let of_strings = Rep.of_strings
+  let to_i16x8 = Rep.to_i16x8
   let to_i32x4 = Rep.to_i32x4
 
   module MakeFloat (Float : Float.S) (Convert : sig
@@ -143,6 +150,11 @@ struct
     let max_s = binop (choose Int.ge_s)
     let max_u = binop (choose Int.ge_u)
   end
+
+  module I16x8 = MakeInt (I16) (struct
+      let to_shape = Rep.to_i16x8
+      let of_shape = Rep.of_i16x8
+    end)
 
   module I32x4 = MakeInt (I32) (struct
       let to_shape = Rep.to_i32x4

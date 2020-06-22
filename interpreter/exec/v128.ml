@@ -4,6 +4,14 @@ include Simd.Make
     let bytewidth = 16
     let to_string s = s
 
+    let to_i16x8 s =
+      List.map (fun i -> I16.of_bits (Int32.of_int (Bytes.get_int16_le (Bytes.of_string s) i))) Simd.i16x8_indices
+
+    let of_i16x8 fs =
+      let b = Bytes.create bytewidth in
+      List.iter2 (fun i f -> Bytes.set_int16_le b i (Int32.to_int (I16.to_bits f))) Simd.i16x8_indices fs;
+      Bytes.to_string b
+
     let to_i32x4 s =
       List.map (fun i -> I32.of_bits (Bytes.get_int32_le (Bytes.of_string s) i)) Simd.f32x4_indices
 
@@ -42,7 +50,7 @@ include Simd.Make
       | Simd.I8x16 ->
         List.iteri (fun i s -> set_uint8 b i (i8_of_string s)) ss
       | Simd.I16x8 ->
-        List.iteri (fun i s -> set_uint16_le b (i * 2) (i16_of_string s)) ss
+        List.iteri (fun i s -> set_int16_le b (i * 2) (i16_of_string s)) ss
       | Simd.I32x4 ->
         List.iteri (fun i s -> set_int32_le b (i * 4) (I32.of_string s)) ss
       | Simd.I64x2 ->

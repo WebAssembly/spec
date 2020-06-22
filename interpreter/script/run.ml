@@ -375,6 +375,11 @@ let assert_result at got expect =
             let open Values in
             let open Simd in
             match shape, v with
+            | I16x8, V128 v ->
+              List.exists2
+                (fun v r -> assert_num_pat at v r)
+                (List.mapi (fun i x -> I32 (V128.I16x8.extract_lane i v)) i16x8_indices)
+                vs
             | I32x4, V128 v ->
               let l0 = I32 (V128.I32x4.extract_lane 0 v) in
               let l1 = I32 (V128.I32x4.extract_lane 1 v) in

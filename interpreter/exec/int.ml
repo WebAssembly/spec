@@ -239,6 +239,23 @@ struct
 
   let max_upper, max_lower = divrem_u Rep.minus_one ten
 
+  let sign_extend i =
+    (* This module is used with I32 and I64, but the bitwidth can be less
+     * than that, e.g. for I16. When used for smaller integers, the stored value
+     * needs to be signed extened, e.g. parsing -1 into a I16 (backed by Int32)
+     * shoud have all high bits set. We can do that by logor with a mask,
+     * where the mask is minus_one left shifted by bitwidth. But if bitwidth
+     * matches the number of bits of Rep, the shift will be incorrect.
+     *   -1 (Int32) << 32 = -1
+     * Then the logor will be also wrong. So we check and bail out early.
+     * *)
+    if Rep.add Rep.max_int Rep.one = Rep.min_int then i else
+    let sign_bit = Rep.logand (Rep.of_int (1 lsl (Rep.bitwidth - 1))) i in
+    if sign_bit = Rep.zero then i else
+    (* Build a sign-extension mask *)
+    let sign_mask = (Rep.shift_left Rep.minus_one Rep.bitwidth) in
+    Rep.logor sign_mask i
+
   let of_string s =
     let open Rep in
     let len = String.length s in
@@ -263,13 +280,16 @@ struct
       else parse_dec i zero
     in
     require (len > 0);
-    match s.[0] with
-    | '+' -> parse_int 1
-    | '-' ->
-      let n = parse_int 1 in
-      require (ge_s (sub n one) minus_one);
-      Rep.neg n
-    | _ -> parse_int 0
+    let parsed =
+      match s.[0] with
+      | '+' -> parse_int 1
+      | '-' ->
+        let n = parse_int 1 in
+        require (ge_s (sub n one) minus_one);
+        Rep.neg n
+      | _ -> parse_int 0
+    in
+    sign_extend parsed
 
   let of_string_s s =
     let n = of_string s in

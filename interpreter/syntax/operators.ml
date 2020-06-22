@@ -204,6 +204,11 @@ let memory_size = MemorySize
 let memory_grow = MemoryGrow
 
 (* SIMD *)
+let i16x8_neg = Unary (V128 (V128Op.I16x8 V128Op.Neg))
+let i16x8_add = Binary (V128 (V128Op.I16x8 V128Op.Add))
+let i16x8_sub = Binary (V128 (V128Op.I16x8 V128Op.Sub))
+let i16x8_mul = Binary (V128 (V128Op.I16x8 V128Op.Mul))
+
 let i32x4_extract_lane imm = ExtractLane (V128Op.I32x4ExtractLane imm)
 let i32x4_abs = Unary (V128 (V128Op.I32x4 V128Op.Abs))
 let i32x4_neg = Unary (V128 (V128Op.I32x4 V128Op.Neg))
