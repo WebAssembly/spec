@@ -1018,8 +1018,15 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
   To <dfn>create a host function</dfn> from the JavaScript object |func| and type |functype|, perform the following steps:
 
     1. Assert: [=IsCallable=](|func|).
+    1. Let |stored settings| be the [=incumbent settings object=].
     1. Let |hostfunc| be a [=host function=] which performs the following steps when called with arguments |arguments|:
+        1. Let |realm| be |func|'s [=associated Realm=].
+        1. Let |relevant settings| be |realm|'s [=Realm/settings object=].
+        1. [=Prepare to run script=] with |relevant settings|.
+        1. [=Prepare to run a callback=] with |stored settings|.
         1. Let |result| be the result of [=run a host function|running a host function=] from |func|, |functype|, and |arguments|.
+        1. [=Clean up after running a callback=] with |stored settings|.
+        1. [=Clean up after running script=] with |relevant settings|.
         1. Assert: |result|.\[[Type]] is <emu-const>throw</emu-const> or <emu-const>normal</emu-const>.
         1. If |result|.\[[Type]] is <emu-const>throw</emu-const>, then trigger a WebAssembly trap, and propagate |result|.\[[Value]] to the enclosing JavaScript.
         1. Otherwise, return |result|.\[[Value]].
