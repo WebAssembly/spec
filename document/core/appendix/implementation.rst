@@ -43,6 +43,8 @@ An implementation may impose restrictions on the following dimensions of a modul
 * the number of :ref:`exports <syntax-export>` from a :ref:`module <syntax-module>`
 * the number of parameters in a :ref:`function type <syntax-functype>`
 * the number of results in a :ref:`function type <syntax-functype>`
+* the number of parameters in a :ref:`block type <syntax-blocktype>`
+* the number of results in a :ref:`block type <syntax-blocktype>`
 * the number of :ref:`locals <syntax-local>` in a :ref:`function <syntax-func>`
 * the size of a :ref:`function <syntax-func>` body
 * the size of a :ref:`structured control instruction <syntax-instr-control>`

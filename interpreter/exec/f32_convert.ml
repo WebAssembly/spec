@@ -28,20 +28,20 @@ let convert_i32_u x =
  * Values that are too large would get rounded when represented in f64,
  * but double rounding via i64->f64->f32 can produce inaccurate results.
  * Hence, for large values we shift right but make sure to accumulate the lost
- * bits in the least signifant bit, such that rounding still is correct.
+ * bits in the least significant bit, such that rounding still is correct.
  *)
 let convert_i64_s x =
   F32.of_float Int64.(
     if abs x < 0x10_0000_0000_0000L then to_float x else
     let r = if logand x 0xfffL = 0L then 0L else 1L in
-    to_float (logor (shift_right x 12) r) *. (* TODO(ocaml-4.03): 0x1p12 *) 4096.0
+    to_float (logor (shift_right x 12) r) *. 0x1p12
   )
 
 let convert_i64_u x =
   F32.of_float Int64.(
     if I64.lt_u x 0x10_0000_0000_0000L then to_float x else
     let r = if logand x 0xfffL = 0L then 0L else 1L in
-    to_float (logor (shift_right_logical x 12) r) *. (* TODO(ocaml-4.03): 0x1p12 *) 4096.0
+    to_float (logor (shift_right_logical x 12) r) *. 0x1p12
   )
 
 let reinterpret_i32 = F32.of_bits

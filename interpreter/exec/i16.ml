@@ -8,4 +8,6 @@ include Int.Make (struct
 
   let min_int = Int32.of_int (-32768)
   let max_int = Int32.of_int 32767
+  (* TODO incorrect for negative values. *)
+  let to_hex_string = Printf.sprintf "%lx"
 end)
