@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version 76c0936a, updated Fri Jun 12 19:44:53 2020 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="c3a982a4bba81fecb2f490c7bf9c553fd56c0b0f" name="document-revision">
+  <meta content="ca61ec9df4fb66ff7a187891e012d06adb6c1a88" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -271,7 +271,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-06-17">17 June 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-06-24">24 June 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1609,10 +1609,24 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p class="assertion">Assert: <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-iscallable" id="ref-for-sec-iscallable②">IsCallable</a>(<var>func</var>).</p>
      <li data-md>
+      <p>Let <var>stored settings</var> be the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#incumbent-settings-object" id="ref-for-incumbent-settings-object">incumbent settings object</a>.</p>
+     <li data-md>
       <p>Let <var>hostfunc</var> be a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-hostfunc" id="ref-for-syntax-hostfunc">host function</a> which performs the following steps when called with arguments <var>arguments</var>:</p>
       <ol>
        <li data-md>
+        <p>Let <var>realm</var> be <var>func</var>’s <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-associated-realm" id="ref-for-dfn-associated-realm">associated Realm</a>.</p>
+       <li data-md>
+        <p>Let <var>relevant settings</var> be <var>realm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-settings-object" id="ref-for-concept-realm-settings-object">settings object</a>.</p>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-script" id="ref-for-prepare-to-run-script">Prepare to run script</a> with <var>relevant settings</var>.</p>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-a-callback" id="ref-for-prepare-to-run-a-callback">Prepare to run a callback</a> with <var>stored settings</var>.</p>
+       <li data-md>
         <p>Let <var>result</var> be the result of <a data-link-type="dfn" href="#run-a-host-function" id="ref-for-run-a-host-function">running a host function</a> from <var>func</var>, <var>functype</var>, and <var>arguments</var>.</p>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-a-callback" id="ref-for-clean-up-after-running-a-callback">Clean up after running a callback</a> with <var>stored settings</var>.</p>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-script" id="ref-for-clean-up-after-running-script">Clean up after running script</a> with <var>relevant settings</var>.</p>
        <li data-md>
         <p class="assertion">Assert: <var>result</var>.[[Type]] is <emu-const>throw</emu-const> or <emu-const>normal</emu-const>.</p>
        <li data-md>
@@ -2171,16 +2185,52 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-utf-8-decode-without-bom-or-fail">4.1. Modules</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-clean-up-after-running-a-callback">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-a-callback">https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-a-callback</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-clean-up-after-running-a-callback">4.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-clean-up-after-running-script">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-script">https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-script</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-clean-up-after-running-script">4.6. Exported Functions</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-in-parallel">
    <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-in-parallel">4. The WebAssembly Namespace</a> <a href="#ref-for-in-parallel①">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-incumbent-settings-object">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#incumbent-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#incumbent-settings-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-incumbent-settings-object">4.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-prepare-to-run-a-callback">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-a-callback">https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-a-callback</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prepare-to-run-a-callback">4.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-prepare-to-run-script">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-script">https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-script</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prepare-to-run-script">4.6. Exported Functions</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-queue-a-task">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task">https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-queue-a-task">4. The WebAssembly Namespace</a> <a href="#ref-for-queue-a-task①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-realm-settings-object">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-settings-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-realm-settings-object">4.6. Exported Functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-task-source">
@@ -2738,6 +2788,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-a-new-promise">4. The WebAssembly Namespace</a> <a href="#ref-for-a-new-promise①">(2)</a> <a href="#ref-for-a-new-promise②">(3)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-associated-realm">
+   <a href="https://heycam.github.io/webidl/#dfn-associated-realm">https://heycam.github.io/webidl/#dfn-associated-realm</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-associated-realm">4.6. Exported Functions</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-idl-boolean">
    <a href="https://heycam.github.io/webidl/#idl-boolean">https://heycam.github.io/webidl/#idl-boolean</a><b>Referenced in:</b>
    <ul>
@@ -2871,8 +2927,14 @@ In practice, an implementation may run out of resources for valid modules below 
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-clean-up-after-running-a-callback" style="color:initial">clean up after running a callback</span>
+     <li><span class="dfn-paneled" id="term-for-clean-up-after-running-script" style="color:initial">clean up after running script</span>
      <li><span class="dfn-paneled" id="term-for-in-parallel" style="color:initial">in parallel</span>
+     <li><span class="dfn-paneled" id="term-for-incumbent-settings-object" style="color:initial">incumbent settings object</span>
+     <li><span class="dfn-paneled" id="term-for-prepare-to-run-a-callback" style="color:initial">prepare to run a callback</span>
+     <li><span class="dfn-paneled" id="term-for-prepare-to-run-script" style="color:initial">prepare to run script</span>
      <li><span class="dfn-paneled" id="term-for-queue-a-task" style="color:initial">queue a task</span>
+     <li><span class="dfn-paneled" id="term-for-concept-realm-settings-object" style="color:initial">settings object</span>
      <li><span class="dfn-paneled" id="term-for-task-source" style="color:initial">task source</span>
     </ul>
    <li>
@@ -2967,6 +3029,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-LegacyNamespace" style="color:initial">LegacyNamespace</span>
      <li><span class="dfn-paneled" id="term-for-idl-USVString" style="color:initial">USVString</span>
      <li><span class="dfn-paneled" id="term-for-a-new-promise" style="color:initial">a new promise</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-associated-realm" style="color:initial">associated realm</span>
      <li><span class="dfn-paneled" id="term-for-idl-boolean" style="color:initial">boolean</span>
      <li><span class="dfn-paneled" id="term-for-create-a-namespace-object" style="color:initial">create a namespace object</span>
      <li><span class="dfn-paneled" id="term-for-dfn-get-buffer-source-copy" style="color:initial">get a copy of the buffer source</span>
