@@ -15,6 +15,7 @@ sig
   val mul : t -> t -> t
   val div : t -> t -> t (* raises Division_by_zero *)
   val rem : t -> t -> t (* raises Division_by_zero *)
+  val avgr_u : t -> t -> t
 
   val logand : t -> t -> t
   val lognot : t -> t
@@ -51,6 +52,7 @@ sig
   val div_u : t -> t -> t (* raises IntegerDivideByZero *)
   val rem_s : t -> t -> t (* raises IntegerDivideByZero *)
   val rem_u : t -> t -> t (* raises IntegerDivideByZero *)
+  val avgr_u : t -> t -> t
   val and_ : t -> t -> t
   val or_ : t -> t -> t
   val xor : t -> t -> t
@@ -150,6 +152,8 @@ struct
   let rem_u x y =
     let q, r = divrem_u x y in r
 
+  let avgr_u = Rep.avgr_u
+
   let and_ = Rep.logand
   let or_ = Rep.logor
   let xor = Rep.logxor
@@ -246,6 +250,7 @@ struct
 
   let max_upper, max_lower = divrem_u Rep.minus_one ten
 
+  let needs_extend = Rep.of_int (1 lsl (Rep.bitwidth - 1)) = Rep.min_int
   let sign_extend i =
     (* This module is used with I32 and I64, but the bitwidth can be less
      * than that, e.g. for I16. When used for smaller integers, the stored value
@@ -256,7 +261,7 @@ struct
      *   -1 (Int32) << 32 = -1
      * Then the logor will be also wrong. So we check and bail out early.
      * *)
-    if Rep.add Rep.max_int Rep.one = Rep.min_int then i else
+    if needs_extend then i else
     let sign_bit = Rep.logand (Rep.of_int (1 lsl (Rep.bitwidth - 1))) i in
     if sign_bit = Rep.zero then i else
     (* Build a sign-extension mask *)

@@ -6,8 +6,13 @@ include Int.Make (struct
 
   let bitwidth = 16
 
-  let min_int = Int32.of_int (-32768)
-  let max_int = Int32.of_int 32767
   (* TODO incorrect for negative values. *)
   let to_hex_string = Printf.sprintf "%lx"
+
+  let avgr_u x y =
+    (* Mask top bits to treat the value as unsigned. *)
+    let mask = Int32.of_int 0xffff in
+    let x_u16 = logand mask x in
+    let y_u16 = logand mask y in
+    Int32.div (Int32.add (Int32.add x_u16 y_u16) one) (Int32.of_int 2)
 end)

@@ -5,4 +5,5 @@ include Int.Make
     include Int64
     let bitwidth = 64
     let to_hex_string = Printf.sprintf "%Lx"
+    let avgr_u x y = failwith "unimplemented i64x2.avgr_u"
   end)

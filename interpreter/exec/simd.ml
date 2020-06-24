@@ -55,6 +55,7 @@ sig
   val max_s : t -> t -> t
   val max_u : t -> t -> t
   val mul : t -> t -> t
+  val avgr_u : t -> t -> t
 end
 
 (* This signature defines the types and operations SIMD floats can expose. *)
@@ -149,6 +150,9 @@ struct
     let min_u = binop (choose Int.le_u)
     let max_s = binop (choose Int.ge_s)
     let max_u = binop (choose Int.ge_u)
+    (* The result of avgr_u will not overflow this type, but the intermediate might,
+     * so have the Int type implement it so they can extend it accordingly *)
+    let avgr_u = binop Int.avgr_u
   end
 
   module I16x8 = MakeInt (I16) (struct

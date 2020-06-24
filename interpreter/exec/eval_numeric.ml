@@ -129,6 +129,7 @@ struct
   let unop (op : unop) =
     fun v -> match op with
       | I16x8 Neg -> to_value (SXX.I16x8.neg (of_value 1 v))
+      | I16x8 Abs -> to_value (SXX.I16x8.abs (of_value 1 v))
       | I32x4 Abs -> to_value (SXX.I32x4.abs (of_value 1 v))
       | I32x4 Neg -> to_value (SXX.I32x4.neg (of_value 1 v))
       | F32x4 Abs -> to_value (SXX.F32x4.abs (of_value 1 v))
@@ -144,6 +145,11 @@ struct
       | I16x8 Add -> SXX.I16x8.add
       | I16x8 Sub -> SXX.I16x8.sub
       | I16x8 Mul -> SXX.I16x8.mul
+      | I16x8 MinS -> SXX.I16x8.min_s
+      | I16x8 MinU -> SXX.I16x8.min_u
+      | I16x8 MaxS -> SXX.I16x8.max_s
+      | I16x8 MaxU -> SXX.I16x8.max_u
+      | I16x8 AvgrU -> SXX.I16x8.avgr_u
       | I32x4 Add -> SXX.I32x4.add
       | I32x4 Sub -> SXX.I32x4.sub
       | I32x4 MinS -> SXX.I32x4.min_s
