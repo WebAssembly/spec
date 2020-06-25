@@ -343,3 +343,156 @@ In addition to the rules for basic reference types:
 * The `Table` constructor gets an additional optional argument `init` that is used to initialise the table slots. It defaults to `null`. A `TypeError` is produced if the argument is omitted and the table's element type is not defaultable.
 
 * The `Table` method `grow` gets an additional optional argument `init` that is used to initialise the new table slots. It defaults to `null`. A `TypeError` is produced if the argument is omitted and the table's element type is not defaultable.
+
+
+
+## Possible Extension: Function Subtyping
+
+In the future (especially with the [GC proposal](https://github.com/WebAssembly/gc/blob/master/proposals/gc/Overview.md)) it will be desirable to allow the usual subtyping rules on function types.
+This is relevant, for example, to encode [method tables](https://github.com/WebAssembly/gc/blob/master/proposals/gc/Overview.md#objects-and-method-tables).
+
+While doing so, the semantics of static and dynamic type checks need to remain coherent.
+That is, both static and dynamic type checking (as well as link-time checks) must use the same subtype relation.
+Otherwise, values of a subtype would not always be substitutable for values of a supertype, thereby breaking a fundemental property of subtyping and various transformations and optimisations relying on substitutability.
+
+At the same time, care has to be taken to not damage the performance of existing instructions.
+In particular, `call_indirect` performs a runtime type check over (structural) function types that is expected to be no more expensive than a single pointer comparison.
+That effectively rules out allowing any form of subtyping to kick in for this check.
+
+
+### Exact Types
+
+This tension with `call_indirect` can be resolved by distinguishing function types that have further subtypes and those that don't.
+The latter are sometimes called _exact_ types.
+
+Exact types might come in handy in a few other circumstances,
+so we could distinguish the two forms in a generic manner by enriching heap types with a flag as follows:
+
+* `heaptype ::= (type exact? <typeidx>) | func | extern`
+
+Exact types are themselves subtypes of corresponding non-exact types,
+but the crucial difference is that they do not have further subtypes themselves.
+That is, the following subtype rules would be defined on heap types:
+
+* `(type exact? $t) <: (type $t')`
+  - iff `$t = <functype>` and `$t' = <functype'>`
+  - and `<functype> <: <functype'>`
+
+* `(type exact $t) <: (type exact $t')`
+  - iff `$t = <functype>` and `$t' = <functype'>`
+  - and `<functype> == <functype'>`
+
+in combination with the canonical rules for function subtyping itself:
+
+* `[t1*]->[t2*] <: [t1'*]->[t2'*]`
+  - iff `(t1' <: t1)*`
+  - and `(t2 <: t2')*`
+
+(and appropriate rules for other types that may be added to the type section in the future).
+
+With this:
+
+* The type of each function definition is interpreted as its exact type.
+
+* The type annotation on `call_indirect` is interpreted as an exact type.
+  (It would also be possible to extend `call_indirect` to allow either choice, leaving it to to the producer to make the trade-off between performance and flexibility.)
+
+* For imports and references, every module can decide individually where it requires an exact type.
+
+For any import or reference in a module's interface that flows into a function table on which it invokes `call_indirect`, the module can thereby enforce exact types that are guaranteed to succeed the signature check.
+
+
+### Example
+
+Consider:
+```
+(module $A
+  (type $proc (func))
+  (func (export "f") (result funcref) ...)
+  (func (export "g") (result (ref $proc)) ...)
+)
+
+(module $B
+  (type $th (func (result funcref)))
+  (func $h (import "..." "h") (type exact $th))
+
+  (table $tab funcref (elem $h))
+
+  (func $call
+    ...
+    (call_indirect $th (i32.const 0))
+    ...
+  )
+
+  (func $update (param $f (ref exact $th))
+    (table.set (local.get $f) (i32.const 0))
+  )
+)
+```
+In module `$B`, the imported function `$h` requires an exact type match.
+That ensures that a client cannot supply a function of a subtype,
+such as `A.g`,
+which would break the use of `call_indirect` in `$call`.
+An attempt to do so will fail at link time.
+Passing `A.f` would be accepted, however.
+
+Similarly, `$update` can only be passed a reference with exact type,
+again ensuring that `$call` will not fail unexpectedly subsequently.
+
+If a function import (or reference) never interferes with `call_indirect`, however, then the import can have a more flexible type:
+```
+(module $C
+  (type $th (func (result funcref)))
+  (func $h (import "..." "h") (type $th))
+
+  (func $k (result (ref $th))
+    (call $h)
+  )
+)
+```
+Here, the laxer import type is okay: for `$h`, any function that returns a subtype of `funcref` is fine, since all choices will satisfy the result type `(ref $th)` of function `$k` performing the call.
+
+More generally, the following imports are well-typed:
+```
+(module
+  (type $proc (func))
+  (type $tf (func (result funcref)))
+  (type $tg (func (result (ref $proc))))
+
+  (func $h1 (import "A" "g") (type $tg))
+  (func $h2 (import "A" "g") (type exact $tg))
+  (func $h3 (import "A" "g") (type $tf))
+  ;; (func $h4 (import "A" "g") (type exact $tf))   ;; fails to link!
+)
+```
+
+Note that the use of exact types for imports or references flowing into a function table is not _enforced_ by the type system.
+It is the producer's responsibility to protect its interface with suitably narrow types.
+
+
+### Backwards Compatibility and Textual Syntax
+
+For exposition, we assumed above that exact types are a new construct,
+denoted by an explicit flag.
+However, such a design would still change the meaning of existing type expressions (by suddenly allowing subtyping) and would hence not be backwards compatible, for the reasons stated above.
+
+To avoid breaking existing modules when operating in new environments that support subtyping, we must preserve the current subtype-less, i.e. exact, meaning of the pre-existing function types -- at least in the binary format.
+Subtypable function references/imports must be introduced as the new construct.
+
+It's a slightly different question what to do for the text format, however.
+To maintain full backwards compatibility, the flag would likewise need to be inverted:
+instead of an optional `exact` flag we'd have an optional `sub` flag with the opposite meaning:
+
+* `heaptype ::= (type sub? <typeidx>) | func | extern`
+
+In the binary format it doesn't really matter which way both alternatives are encoded.
+But for the text format, this inversion will be rather annoying:
+the normal use case is to allow subtyping;
+but to express that, every import or reference type will have to explicitly state `sub`.
+
+One possibility might be to keep the `exact` syntax above for the text format,
+and effectively change the interpretation of the existing syntax.
+That means that existing text format programs using e.g. function imports would change their meaning, and running wasm/wat converters would produce different results.
+In particular, rebuilding a binary from a pre-existing text file may produce a binary with weaker interface requirements.
+
+Is the risk involved in that worth taking? How much of a problem do we think this would be?
