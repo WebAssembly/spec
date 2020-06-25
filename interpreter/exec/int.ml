@@ -15,7 +15,6 @@ sig
   val mul : t -> t -> t
   val div : t -> t -> t (* raises Division_by_zero *)
   val rem : t -> t -> t (* raises Division_by_zero *)
-  val avgr_u : t -> t -> t
 
   val logand : t -> t -> t
   val lognot : t -> t
@@ -27,6 +26,13 @@ sig
 
   val of_int : int -> t
   val to_int : t -> int
+  (* Required for operations that need to extend to a larger type, such as
+   * avgr_u. Cast to int64, perform the operations, then convert back to t.
+   * We don't have such operations onf I64, so using int64 is safe. We
+   * cannot use int, because on 32-bit platforms int cannot represent
+   * all values of int32. *)
+  val of_int64: int64 -> t
+  val to_int64: t -> int64
   val to_string : t -> string
   val to_hex_string : t -> string
 
@@ -152,7 +158,13 @@ struct
   let rem_u x y =
     let q, r = divrem_u x y in r
 
-  let avgr_u = Rep.avgr_u
+  let avgr_u x y =
+    let open Int64 in
+    (* Mask with bottom #bitwidth bits set *)
+    let mask = (shift_right_logical minus_one (64 - Rep.bitwidth)) in
+    let x64 = (logand mask (Rep.to_int64 x)) in
+    let y64 = (logand mask (Rep.to_int64 y)) in
+    Rep.of_int64 (div (add (add x64 y64) one) (of_int 2))
 
   let and_ = Rep.logand
   let or_ = Rep.logor
