@@ -106,16 +106,18 @@ let type_cvtop at = function
     (match cvtop with
     | ExtendSI32 | ExtendUI32 -> error at "invalid conversion"
     | WrapI64 -> I64Type
-    | TruncSF32 | TruncUF32 | ReinterpretFloat -> F32Type
-    | TruncSF64 | TruncUF64 -> F64Type
+    | TruncSF32 | TruncUF32 | TruncSatSF32 | TruncSatUF32
+    | ReinterpretFloat -> F32Type
+    | TruncSF64 | TruncUF64 | TruncSatSF64 | TruncSatUF64 -> F64Type
     ), I32Type
   | Values.I64 cvtop ->
     let open I64Op in
     (match cvtop with
     | ExtendSI32 | ExtendUI32 -> I32Type
     | WrapI64 -> error at "invalid conversion"
-    | TruncSF32 | TruncUF32 -> F32Type
-    | TruncSF64 | TruncUF64 | ReinterpretFloat -> F64Type
+    | TruncSF32 | TruncUF32 | TruncSatSF32 | TruncSatUF32 -> F32Type
+    | TruncSF64 | TruncUF64 | TruncSatSF64 | TruncSatUF64
+    | ReinterpretFloat -> F64Type
     ), I64Type
   | Values.F32 cvtop ->
     let open F32Op in
@@ -138,21 +140,26 @@ let type_cvtop at = function
 
 (* Expressions *)
 
+let check_pack sz t at =
+  require (packed_size sz < size t) at "invalid sign extension"
+
+let check_unop unop at =
+  match unop with
+  | Values.I32 (IntOp.ExtendS sz) | Values.I64 (IntOp.ExtendS sz) ->
+    check_pack sz (Values.type_of unop) at
+  | _ -> ()
+
 let check_memop (c : context) (memop : 'a memop) get_sz at =
   ignore (memory c (0l @@ at));
   let size =
     match get_sz memop.sz with
     | None -> size memop.ty
     | Some sz ->
-      require (memop.ty = I64Type || sz <> Memory.Pack32) at
-        "memory size too big";
-      Memory.packed_size sz
+      check_pack sz memop.ty at;
+      packed_size sz
   in
   require (1 lsl memop.align <= size) at
     "alignment must not be larger than natural"
-
-let check_arity n at =
-  require (n <= 1) at "invalid result arity, larger than 1 is not (yet) allowed"
 
 
 (*
@@ -175,6 +182,12 @@ let check_arity n at =
  * declarative typing rules.
  *)
 
+let check_block_type (c : context) (bt : block_type) : func_type =
+  match bt with
+  | VarBlockType x -> type_ c x
+  | ValBlockType None -> FuncType ([], [])
+  | ValBlockType (Some t) -> FuncType ([], [t])
+
 let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   match e.it with
   | Unreachable ->
@@ -190,21 +203,21 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let t = peek 1 s in
     [t; t; Some I32Type] -~> [t]
 
-  | Block (ts, es) ->
-    check_arity (List.length ts) e.at;
-    check_block {c with labels = ts :: c.labels} es ts e.at;
-    [] --> ts
+  | Block (bt, es) ->
+    let FuncType (ts1, ts2) as ft = check_block_type c bt in
+    check_block {c with labels = ts2 :: c.labels} es ft e.at;
+    ts1 --> ts2
 
-  | Loop (ts, es) ->
-    check_arity (List.length ts) e.at;
-    check_block {c with labels = [] :: c.labels} es ts e.at;
-    [] --> ts
+  | Loop (bt, es) ->
+    let FuncType (ts1, ts2) as ft = check_block_type c bt in
+    check_block {c with labels = ts1 :: c.labels} es ft e.at;
+    ts1 --> ts2
 
-  | If (ts, es1, es2) ->
-    check_arity (List.length ts) e.at;
-    check_block {c with labels = ts :: c.labels} es1 ts e.at;
-    check_block {c with labels = ts :: c.labels} es2 ts e.at;
-    [I32Type] --> ts
+  | If (bt, es1, es2) ->
+    let FuncType (ts1, ts2) as ft = check_block_type c bt in
+    check_block {c with labels = ts2 :: c.labels} es1 ft e.at;
+    check_block {c with labels = ts2 :: c.labels} es2 ft e.at;
+    (ts1 @ [I32Type]) --> ts2
 
   | Br x ->
     label c x -->... []
@@ -228,8 +241,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     ignore (table c (0l @@ e.at));
     let FuncType (ins, out) = type_ c x in
     (ins @ [I32Type]) --> out
-
-
 
   | LocalGet x ->
     [] --> [local c x]
@@ -278,6 +289,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [t; t] --> [I32Type]
 
   | Unary unop ->
+    check_unop unop e.at;
     let t = type_unop unop in
     [t] --> [t]
 
@@ -294,22 +306,24 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | ExtractLane (V128Op.F32x4ExtractLane _) ->
     [V128Type] --> [F32Type]
 
-and check_seq (c : context) (es : instr list) : infer_stack_type =
+and check_seq (c : context) (s : infer_stack_type) (es : instr list)
+  : infer_stack_type =
   match es with
   | [] ->
-    stack []
+    s
 
   | _ ->
     let es', e = Lib.List.split_last es in
-    let s = check_seq c es' in
-    let {ins; outs} = check_instr c e s in
-    push outs (pop ins s e.at)
+    let s' = check_seq c s es' in
+    let {ins; outs} = check_instr c e s' in
+    push outs (pop ins s' e.at)
 
-and check_block (c : context) (es : instr list) (ts : stack_type) at =
-  let s = check_seq c es in
-  let s' = pop (stack ts) s at in
+and check_block (c : context) (es : instr list) (ft : func_type) at =
+  let FuncType (ts1, ts2) = ft in
+  let s = check_seq c (stack ts1) es in
+  let s' = pop (stack ts2) s at in
   require (snd s' = []) at
-    ("type mismatch: operator requires " ^ string_of_stack_type ts ^
+    ("type mismatch: block requires " ^ string_of_stack_type ts2 ^
      " but stack has " ^ string_of_infer_types (snd s))
 
 
@@ -330,8 +344,7 @@ let check_value_type (t : value_type) at =
 let check_func_type (ft : func_type) at =
   let FuncType (ins, out) = ft in
   List.iter (fun t -> check_value_type t at) ins;
-  List.iter (fun t -> check_value_type t at) out;
-  check_arity (List.length out) at
+  List.iter (fun t -> check_value_type t at) out
 
 let check_table_type (tt : table_type) at =
   let TableType (lim, _) = tt in
@@ -345,6 +358,10 @@ let check_memory_type (mt : memory_type) at =
 let check_global_type (gt : global_type) at =
   let GlobalType (t, mut) = gt in
   check_value_type t at
+
+
+let check_type (t : type_) =
+  check_func_type t.it t.at
 
 
 (* Functions & Constants *)
@@ -361,14 +378,11 @@ let check_global_type (gt : global_type) at =
  *   x : variable
  *)
 
-let check_type (t : type_) =
-  check_func_type t.it t.at
-
 let check_func (c : context) (f : func) =
   let {ftype; locals; body} = f.it in
   let FuncType (ins, out) = type_ c ftype in
   let c' = {c with locals = ins @ locals; results = out; labels = [out]} in
-  check_block c' body out f.at
+  check_block c' body (FuncType ([], out)) f.at
 
 
 let is_const (c : context) (e : instr) =
@@ -380,7 +394,7 @@ let is_const (c : context) (e : instr) =
 let check_const (c : context) (const : const) (t : value_type) =
   require (List.for_all (is_const c) const.it) const.at
     "constant expression required";
-  check_block c const.it [t] const.at
+  check_block c const.it (FuncType ([], [t])) const.at
 
 
 (* Tables, Memories, & Globals *)

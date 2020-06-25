@@ -24,6 +24,7 @@ struct
       | Clz -> IXX.clz
       | Ctz -> IXX.ctz
       | Popcnt -> IXX.popcnt
+      | ExtendS sz -> IXX.extend_s (8 * packed_size sz)
     in fun v -> to_value (f (of_value 1 v))
 
   let binop op =
@@ -194,6 +195,10 @@ struct
     | TruncUF32 -> I32 (I32_convert.trunc_f32_u (F32Op.of_value 1 v))
     | TruncSF64 -> I32 (I32_convert.trunc_f64_s (F64Op.of_value 1 v))
     | TruncUF64 -> I32 (I32_convert.trunc_f64_u (F64Op.of_value 1 v))
+    | TruncSatSF32 -> I32 (I32_convert.trunc_sat_f32_s (F32Op.of_value 1 v))
+    | TruncSatUF32 -> I32 (I32_convert.trunc_sat_f32_u (F32Op.of_value 1 v))
+    | TruncSatSF64 -> I32 (I32_convert.trunc_sat_f64_s (F64Op.of_value 1 v))
+    | TruncSatUF64 -> I32 (I32_convert.trunc_sat_f64_u (F64Op.of_value 1 v))
     | ReinterpretFloat -> I32 (I32_convert.reinterpret_f32 (F32Op.of_value 1 v))
     | ExtendSI32 -> raise (TypeError (1, v, I32Type))
     | ExtendUI32 -> raise (TypeError (1, v, I32Type))
@@ -211,6 +216,10 @@ struct
     | TruncUF32 -> I64 (I64_convert.trunc_f32_u (F32Op.of_value 1 v))
     | TruncSF64 -> I64 (I64_convert.trunc_f64_s (F64Op.of_value 1 v))
     | TruncUF64 -> I64 (I64_convert.trunc_f64_u (F64Op.of_value 1 v))
+    | TruncSatSF32 -> I64 (I64_convert.trunc_sat_f32_s (F32Op.of_value 1 v))
+    | TruncSatUF32 -> I64 (I64_convert.trunc_sat_f32_u (F32Op.of_value 1 v))
+    | TruncSatSF64 -> I64 (I64_convert.trunc_sat_f64_s (F64Op.of_value 1 v))
+    | TruncSatUF64 -> I64 (I64_convert.trunc_sat_f64_u (F64Op.of_value 1 v))
     | ReinterpretFloat -> I64 (I64_convert.reinterpret_f64 (F64Op.of_value 1 v))
     | WrapI64 -> raise (TypeError (1, v, I64Type))
 end

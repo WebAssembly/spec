@@ -6,16 +6,22 @@ dist: bionic
 addons:
   apt:
     sources:
+      - sourceline: 'ppa:avsm/ppa'
       - sourceline: 'deb https://dl.yarnpkg.com/debian/ stable main'
         key_url: 'https://dl.yarnpkg.com/debian/pubkey.gpg'
+    update: true
     packages:
-      - ocaml
-      - ocamlbuild
+      - opam
       - texlive-full
       - yarn
 
 install:
-  - pip install Sphinx==2.3.0
+  - opam init --auto-setup --compiler=4.07.1
+  - eval $(opam env)
+  - opam --version
+  - ocaml --version
+  - opam install --yes ocamlbuild.0.14.0
+  - pip install Sphinx==2.4.4
   - git clone https://github.com/tabatkins/bikeshed.git
   - pip install --editable $PWD/bikeshed
   - bikeshed update

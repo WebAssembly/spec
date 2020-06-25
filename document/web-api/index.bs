@@ -273,7 +273,7 @@ application/wasm
  <dd>None</dd>
 </dl></dd>
 <dt>Person & email address to contact for further information:</dt>
- <dd>Eric Prud'hommeaux <eric@w3.org></dd>
+ <dd>Eric Prud'hommeaux &lt;eric@w3.org></dd>
 <dt>Intended usage:</dt>
  <dd>Common</dd>
 <dt>Restrictions on usage:</dt>

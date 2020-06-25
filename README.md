@@ -40,4 +40,6 @@ should take place in
 first, so that this spec repository can remain focused. And please follow the
 [guidelines for contributing](Contributing.md).
 
+# citing
 
+For citing WebAssembly in LaTeX, use [this bibtex file](wasm-specs.bib).
