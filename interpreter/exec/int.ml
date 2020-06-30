@@ -28,7 +28,7 @@ sig
   val to_int : t -> int
   (* Required for operations that need to extend to a larger type, such as
    * avgr_u. Cast to int64, perform the operations, then convert back to t.
-   * We don't have such operations onf I64, so using int64 is safe. We
+   * We don't have such operations on I64, so using int64 is safe. We
    * cannot use int, because on 32-bit platforms int cannot represent
    * all values of int32. *)
   val of_int64: int64 -> t
@@ -161,9 +161,9 @@ struct
   let avgr_u x y =
     let open Int64 in
     (* Mask with bottom #bitwidth bits set *)
-    let mask = (shift_right_logical minus_one (64 - Rep.bitwidth)) in
-    let x64 = (logand mask (Rep.to_int64 x)) in
-    let y64 = (logand mask (Rep.to_int64 y)) in
+    let mask = shift_right_logical minus_one (64 - Rep.bitwidth) in
+    let x64 = logand mask (Rep.to_int64 x) in
+    let y64 = logand mask (Rep.to_int64 y) in
     Rep.of_int64 (div (add (add x64 y64) one) (of_int 2))
 
   let and_ = Rep.logand
@@ -266,8 +266,8 @@ struct
   let sign_extend i =
     (* This module is used with I32 and I64, but the bitwidth can be less
      * than that, e.g. for I16. When used for smaller integers, the stored value
-     * needs to be signed extened, e.g. parsing -1 into a I16 (backed by Int32)
-     * shoud have all high bits set. We can do that by logor with a mask,
+     * needs to be signed extended, e.g. parsing -1 into a I16 (backed by Int32)
+     * should have all high bits set. We can do that by logor with a mask,
      * where the mask is minus_one left shifted by bitwidth. But if bitwidth
      * matches the number of bits of Rep, the shift will be incorrect.
      *   -1 (Int32) << 32 = -1
