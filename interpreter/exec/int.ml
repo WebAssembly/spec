@@ -26,6 +26,13 @@ sig
 
   val of_int : int -> t
   val to_int : t -> int
+  (* Required for operations that need to extend to a larger type, such as
+   * avgr_u. Cast to int64, perform the operations, then convert back to t.
+   * We don't have such operations on I64, so using int64 is safe. We
+   * cannot use int, because on 32-bit platforms int cannot represent
+   * all values of int32. *)
+  val of_int64: int64 -> t
+  val to_int64: t -> int64
   val to_string : t -> string
   val to_hex_string : t -> string
 
@@ -51,6 +58,7 @@ sig
   val div_u : t -> t -> t (* raises IntegerDivideByZero *)
   val rem_s : t -> t -> t (* raises IntegerDivideByZero *)
   val rem_u : t -> t -> t (* raises IntegerDivideByZero *)
+  val avgr_u : t -> t -> t
   val and_ : t -> t -> t
   val or_ : t -> t -> t
   val xor : t -> t -> t
@@ -150,6 +158,14 @@ struct
   let rem_u x y =
     let q, r = divrem_u x y in r
 
+  let avgr_u x y =
+    let open Int64 in
+    (* Mask with bottom #bitwidth bits set *)
+    let mask = shift_right_logical minus_one (64 - Rep.bitwidth) in
+    let x64 = logand mask (Rep.to_int64 x) in
+    let y64 = logand mask (Rep.to_int64 y) in
+    Rep.of_int64 (div (add (add x64 y64) one) (of_int 2))
+
   let and_ = Rep.logand
   let or_ = Rep.logor
   let xor = Rep.logxor
@@ -246,17 +262,18 @@ struct
 
   let max_upper, max_lower = divrem_u Rep.minus_one ten
 
+  let needs_extend = Rep.of_int (1 lsl (Rep.bitwidth - 1)) = Rep.min_int
   let sign_extend i =
     (* This module is used with I32 and I64, but the bitwidth can be less
      * than that, e.g. for I16. When used for smaller integers, the stored value
-     * needs to be signed extened, e.g. parsing -1 into a I16 (backed by Int32)
-     * shoud have all high bits set. We can do that by logor with a mask,
+     * needs to be signed extended, e.g. parsing -1 into a I16 (backed by Int32)
+     * should have all high bits set. We can do that by logor with a mask,
      * where the mask is minus_one left shifted by bitwidth. But if bitwidth
      * matches the number of bits of Rep, the shift will be incorrect.
      *   -1 (Int32) << 32 = -1
      * Then the logor will be also wrong. So we check and bail out early.
      * *)
-    if Rep.add Rep.max_int Rep.one = Rep.min_int then i else
+    if needs_extend then i else
     let sign_bit = Rep.logand (Rep.of_int (1 lsl (Rep.bitwidth - 1))) i in
     if sign_bit = Rep.zero then i else
     (* Build a sign-extension mask *)
