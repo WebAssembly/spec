@@ -11,11 +11,6 @@ let lanes shape =
   | F32x4 -> 4
   | F64x2 -> 2
 
-let i16x8_indices = [0; 2; 4; 6; 8; 10; 12; 14]
-let i32x4_indices = [0; 4; 8; 12]
-let f32x4_indices = i32x4_indices
-let f64x2_indices = [0; 8]
-
 module type RepType =
 sig
   type t
@@ -25,6 +20,9 @@ sig
   val to_string : t -> string
   val bytewidth : int
   val of_strings : shape -> string list -> t
+
+  val to_i8x16 : t -> I8.t list
+  val of_i8x16 : I8.t list -> t
 
   val to_i16x8 : t -> I16.t list
   val of_i16x8 : I16.t list -> t
@@ -90,6 +88,7 @@ sig
 
   (* We need type t = t to ensure that all submodule types are S.t,
    * then callers don't have to change *)
+  module I8x16 : Int with type t = t and type lane = I8.t
   module I16x8 : Int with type t = t and type lane = I16.t
   module I32x4 : Int with type t = t and type lane = I32.t
   module F32x4 : Float with type t = t and type lane = F32.t
@@ -154,6 +153,11 @@ struct
      * so have the Int type implement it so they can extend it accordingly *)
     let avgr_u = binop Int.avgr_u
   end
+
+  module I8x16 = MakeInt (I8) (struct
+      let to_shape = Rep.to_i8x16
+      let of_shape = Rep.of_i8x16
+    end)
 
   module I16x8 = MakeInt (I16) (struct
       let to_shape = Rep.to_i16x8

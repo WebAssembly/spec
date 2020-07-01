@@ -4,36 +4,44 @@ include Simd.Make
     let bytewidth = 16
     let to_string s = s
 
+    let to_i8x16 s =
+      List.init 16 (fun i -> (Int32.of_int (Bytes.get_int8 (Bytes.of_string s) i)))
+
+    let of_i8x16 fs =
+      let b = Bytes.create bytewidth in
+      List.iteri (fun i f -> Bytes.set_int8 b i (Int32.to_int f)) fs;
+      Bytes.to_string b
+
     let to_i16x8 s =
-      List.map (fun i -> I16.of_bits (Int32.of_int (Bytes.get_int16_le (Bytes.of_string s) i))) Simd.i16x8_indices
+      List.init 8 (fun i -> Int32.of_int (Bytes.get_int16_le (Bytes.of_string s) (i*2)))
 
     let of_i16x8 fs =
       let b = Bytes.create bytewidth in
-      List.iter2 (fun i f -> Bytes.set_int16_le b i (Int32.to_int (I16.to_bits f))) Simd.i16x8_indices fs;
+      List.iteri (fun i f -> Bytes.set_int16_le b (i*2) (Int32.to_int f)) fs;
       Bytes.to_string b
 
     let to_i32x4 s =
-      List.map (fun i -> I32.of_bits (Bytes.get_int32_le (Bytes.of_string s) i)) Simd.f32x4_indices
+      List.init 4 (fun i -> I32.of_bits (Bytes.get_int32_le (Bytes.of_string s) (i*4)))
 
     let of_i32x4 fs =
       let b = Bytes.create bytewidth in
-      List.iter2 (fun i f -> Bytes.set_int32_le b i (I32.to_bits f)) Simd.i32x4_indices fs;
+      List.iteri (fun i f -> Bytes.set_int32_le b (i*4) (I32.to_bits f)) fs;
       Bytes.to_string b
 
     let to_f32x4 s =
-      List.map (fun i -> F32.of_bits (Bytes.get_int32_le (Bytes.of_string s) i)) Simd.f32x4_indices
+      List.init 4 (fun i -> F32.of_bits (Bytes.get_int32_le (Bytes.of_string s) (i*4)))
 
     let of_f32x4 fs =
       let b = Bytes.create bytewidth in
-      List.iter2 (fun i f -> Bytes.set_int32_le b i (F32.to_bits f)) Simd.f32x4_indices fs;
+      List.iteri (fun i f -> Bytes.set_int32_le b (i*4) (F32.to_bits f)) fs;
       Bytes.to_string b
 
     let to_f64x2 s =
-      List.map (fun i -> F64.of_bits (Bytes.get_int64_le (Bytes.of_string s) i)) Simd.f64x2_indices
+      List.init 2 (fun i -> F64.of_bits (Bytes.get_int64_le (Bytes.of_string s) (i*8)))
 
     let of_f64x2 fs =
       let b = Bytes.create bytewidth in
-      List.iter2 (fun i f -> Bytes.set_int64_le b i (F64.to_bits f)) Simd.f64x2_indices fs;
+      List.iteri (fun i f -> Bytes.set_int64_le b (i*8) (F64.to_bits f)) fs;
       Bytes.to_string b
 
     let of_strings shape ss =
