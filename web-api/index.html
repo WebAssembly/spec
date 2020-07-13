@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
-  <meta content="Bikeshed version 04c91f0f, updated Mon Jun 29 08:51:04 2020 +0200" name="generator">
+  <meta content="Bikeshed version fa7080de, updated Fri Jul 10 17:43:01 2020 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
-  <meta content="acdb0ac2dbc7402ce10f63042c476091eebf25ac" name="document-revision">
+  <meta content="bd511b2bb92328110407f77072caa7d1191db184" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -266,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-07-01">1 July 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-07-13">13 July 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -505,46 +505,60 @@ JavaScript.</p>
 review, approval, and registration with IANA.</p>
    <p>application/wasm</p>
    <dl>
-    <dt>Type name:
+    <dt>Type Name:
     <dd>application
-    <dt>Subtype name:
+    <dt>Subtype Name:
     <dd>wasm
-    <dt>Required parameters:
+    <dt>Required Parameters:
     <dd>None
-    <dt>Optional parameters:
+    <dt>Optional Parameters:
     <dd>None
-    <dt>Encoding considerations:
-    <dd>None (this is a binary format)
-    <dt>Security considerations:
+    <dt>Encoding Considerations:
+    <dd>binary
+    <dt>Security Considerations:
     <dd>See see WebAssembly Core Security Considerations<br> https://www.w3.org/TR/wasm-core/#security-considerations%E2%91%A0
-    <dt>Interoperability considerations:
+    <dt>Interoperability Considerations:
     <dd>See see WebAssembly Core Conformance<br> https://www.w3.org/TR/wasm-core/#conformance
     <dt>Published specification:
      https://www.w3.org/TR/wasm-core-1/
  https://www.w3.org/TR/wasm-js-api-1/
  https://www.w3.org/TR/wasm-web-api-1/ 
-    <dt>Applications that use this media type:
-    <dd>Web browsers and runtime systems
+    <dt>Application Usage:
+    <dd>The application/wasm media type is already in use as the type used to describe WebAssembly files when sent over HTTP to be executed by browsers, which is a common scenario. Additionally, several WebAssembly runtimes that take advantage of the safety and portability while targeting efficient execution and compact representation.
+    <dt>Fragment Identifier Considerations:
+    <dd>None
+    <dt>Restrictions on usage:
+    <dd>None
+    <dt>Provisional Registrations:
+    <dd>N/A
     <dt>Additional information:
     <dd>
      <dl>
+      <dt>Deprecated alias names for this type:
+      <dd>None
       <dt>Magic number(s):
       <dd>0x00 0x61 0x73 0x6D
       <dt>File extension(s):
       <dd>.wasm
       <dt>Macintosh file type code(s):
       <dd>None
+      <dt>Object Identifier(s) or OID(s):
+      <dd>None
      </dl>
-    <dt>Person &amp; email address to contact for further information:
-    <dd>Eric Prud’hommeaux &lt;eric@w3.org>
     <dt>Intended usage:
     <dd>Common
-    <dt>Restrictions on usage:
-    <dd>None
-    <dt>Author(s):
-    <dd>W3C’s Web Assembly Working Group
-    <dt>Change controller:
-    <dd>W3C
+    <dt>Other Information &amp; Comments:
+    <dd>Common
+    <dt>Contact Person:
+    <dd>
+     <dl>
+      <dt>Contact Name:
+      <dd>Eric Prud’hommeaux
+      <dt>Contact Email Address:
+      <dd>eric@w3.org
+      <dt>Author/Change Controller:
+      <dd>W3C
+     </dl>
    </dl>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content"> Conformance</span><a class="self-link" href="#conformance"></a></h2>
