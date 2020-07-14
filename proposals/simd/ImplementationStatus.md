@@ -12,7 +12,7 @@
 | `v32x4.load_splat`         |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `v64x2.load_splat`         |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `v128.store`               |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `v128.const`               | `-munimplemented-simd128` |                    |                    |                    | :heavy_check_mark: |
+| `v128.const`               | `-munimplemented-simd128` | :heavy_check_mark: [6] |                    |                    | :heavy_check_mark: |
 | `v8x16.shuffle`            |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `v8x16.swizzle`            |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i8x16.splat`              |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
@@ -87,7 +87,7 @@
 | `i8x16.neg`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i8x16.any_true`           |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i8x16.all_true`           |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `i8x16.bitmask`            | `-munimplemented-simd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `i8x16.bitmask`            | `-munimplemented-simd128` | :heavy_check_mark: [6] |                    |                    | :heavy_check_mark: |
 | `i8x16.narrow_i16x8_s`     |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i8x16.narrow_i16x8_u`     |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i8x16.shl`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
@@ -108,7 +108,7 @@
 | `i16x8.neg`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i16x8.any_true`           |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i16x8.all_true`           |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `i16x8.bitmask`            | `-munimplemented-simd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `i16x8.bitmask`            | `-munimplemented-simd128` | :heavy_check_mark: [6] |                    |                    | :heavy_check_mark: |
 | `i16x8.narrow_i32x4_s`     |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i16x8.narrow_i32x4_u`     |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i16x8.widen_low_i8x16_s`  |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
@@ -134,7 +134,7 @@
 | `i32x4.neg`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.any_true`           |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.all_true`           |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `i32x4.bitmask`            | `-munimplemented-simd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `i32x4.bitmask`            | `-munimplemented-simd128` | :heavy_check_mark: [6] |                    |                    | :heavy_check_mark: |
 | `i32x4.widen_low_i16x8_s`  |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.widen_high_i16x8_s` |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.widen_low_i16x8_u`  |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
@@ -181,10 +181,12 @@
 
 [1] Tip of tree LLVM as of May 20, 2020
 
-[2] V8 8.4.268. Requires flag `--experimental-wasm-simd`
+[2] V8 8.6.136. Requires flag `--experimental-wasm-simd`
 
 [3] Not known to be updated after latest renumbering. Requires flag `--enable simd`
 
 [4] Not known to be updated after latest renumbering. Requires (case-insensitive) flag `-wasmsimd`
 
 [5] Firefox Nightly x64/x86 SSE4.1+ only, disable in about:config under `javascript.options.wasm_simd`
+
+[6] Will only be in Chrome M87 onwards.
