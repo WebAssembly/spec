@@ -220,6 +220,12 @@ let memory_grow = MemoryGrow
 let i8x16_neg = Unary (V128 (V128Op.I8x16 V128Op.Neg))
 let i8x16_add = Binary (V128 (V128Op.I8x16 V128Op.Add))
 let i8x16_sub = Binary (V128 (V128Op.I8x16 V128Op.Sub))
+let i8x16_abs = Unary (V128 (V128Op.I8x16 V128Op.Abs))
+let i8x16_min_s = Binary (V128 (V128Op.I8x16 V128Op.MinS))
+let i8x16_min_u = Binary (V128 (V128Op.I8x16 V128Op.MinU))
+let i8x16_max_s = Binary (V128 (V128Op.I8x16 V128Op.MaxS))
+let i8x16_max_u = Binary (V128 (V128Op.I8x16 V128Op.MaxU))
+let i8x16_avgr_u = Binary (V128 (V128Op.I8x16 V128Op.AvgrU))
 
 let i16x8_neg = Unary (V128 (V128Op.I16x8 V128Op.Neg))
 let i16x8_add = Binary (V128 (V128Op.I16x8 V128Op.Add))
