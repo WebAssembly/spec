@@ -30,6 +30,9 @@ sig
   val to_i32x4 : t -> I32.t list
   val of_i32x4 : I32.t list -> t
 
+  val to_i64x2 : t -> I64.t list
+  val of_i64x2 : I64.t list -> t
+
   val to_f32x4 : t -> F32.t list
   val of_f32x4 : F32.t list -> t
 
@@ -91,6 +94,7 @@ sig
   module I8x16 : Int with type t = t and type lane = I8.t
   module I16x8 : Int with type t = t and type lane = I16.t
   module I32x4 : Int with type t = t and type lane = I32.t
+  module I64x2 : Int with type t = t and type lane = I64.t
   module F32x4 : Float with type t = t and type lane = F32.t
   module F64x2 : Float with type t = t and type lane = F64.t
 end
@@ -167,6 +171,11 @@ struct
   module I32x4 = MakeInt (I32) (struct
       let to_shape = Rep.to_i32x4
       let of_shape = Rep.of_i32x4
+    end)
+
+  module I64x2 = MakeInt (I64) (struct
+      let to_shape = Rep.to_i64x2
+      let of_shape = Rep.of_i64x2
     end)
 
   module F32x4 = MakeFloat (F32) (struct

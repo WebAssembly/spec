@@ -61,9 +61,9 @@ let simd_lane_lit shape l at =
   | I8x16 -> LitPat (Values.I32 (I8.of_string l) @@ at) @@ at
   | I16x8 -> LitPat (Values.I32 (I16.of_string l) @@ at) @@ at
   | I32x4 -> LitPat (Values.I32 (I32.of_string l) @@ at) @@ at
+  | I64x2 -> LitPat (Values.I64 (I64.of_string l) @@ at) @@ at
   | F32x4 -> LitPat (Values.F32 (F32.of_string l) @@ at) @@ at
   | F64x2 -> LitPat (Values.F64 (F64.of_string l) @@ at) @@ at
-  | _ -> error at "unimplemented simd lane lit"
 
 let nanop f nan =
   let open Source in
@@ -933,10 +933,7 @@ result :
   | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ ati 3)) @@ ati 3) @@ at () }
   | LPAR V128_CONST SIMD_SHAPE numpat_list RPAR {
     if Simd.lanes $3 <> List.length $4 then error (at ()) "wrong number of lane literals";
-    match $3 with
-    | Simd.I8x16 | Simd.I16x8 | Simd.I32x4 | Simd.F32x4 | Simd.F64x2 ->
-      SimdResult ($3, List.map (fun lit -> lit $3) ($4)) @@ at ()
-    | _ -> error (ati 3) "unimplemented SIMD shape"
+    SimdResult ($3, List.map (fun lit -> lit $3) ($4)) @@ at ()
   }
 
 result_list :

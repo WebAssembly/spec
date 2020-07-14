@@ -393,6 +393,11 @@ let assert_result at got expect =
                 List.exists2 (fun v r ->
                     assert_num_pat at v r
                 ) [l0; l1; l2; l3]  vs
+            | I64x2, V128 v ->
+              List.exists2
+                (fun v r -> assert_num_pat at v r)
+                (List.init 2 (fun i -> I64 (V128.I64x2.extract_lane i v)))
+                vs
             | F32x4, V128 v ->
               let l0 = F32 (V128.F32x4.extract_lane 0 v) in
               let l1 = F32 (V128.F32x4.extract_lane 1 v) in

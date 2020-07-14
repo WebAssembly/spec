@@ -134,6 +134,7 @@ struct
       | I16x8 Abs -> to_value (SXX.I16x8.abs (of_value 1 v))
       | I32x4 Abs -> to_value (SXX.I32x4.abs (of_value 1 v))
       | I32x4 Neg -> to_value (SXX.I32x4.neg (of_value 1 v))
+      | I64x2 Neg -> to_value (SXX.I64x2.neg (of_value 1 v))
       | F32x4 Abs -> to_value (SXX.F32x4.abs (of_value 1 v))
       | F32x4 Neg -> to_value (SXX.F32x4.neg (of_value 1 v))
       | F32x4 Sqrt -> to_value (SXX.F32x4.sqrt (of_value 1 v))
@@ -166,6 +167,9 @@ struct
       | I32x4 MaxS -> SXX.I32x4.max_s
       | I32x4 MaxU -> SXX.I32x4.max_u
       | I32x4 Mul -> SXX.I32x4.mul
+      | I64x2 Add -> SXX.I64x2.add
+      | I64x2 Sub -> SXX.I64x2.sub
+      | I64x2 Mul -> SXX.I64x2.mul
       | F32x4 Add -> SXX.F32x4.add
       | F32x4 Sub -> SXX.F32x4.sub
       | F32x4 Mul -> SXX.F32x4.mul

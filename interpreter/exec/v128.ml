@@ -28,6 +28,14 @@ include Simd.Make
       List.iteri (fun i f -> Bytes.set_int32_le b (i*4) (I32.to_bits f)) fs;
       Bytes.to_string b
 
+    let to_i64x2 s =
+      List.init 2 (fun i -> I64.of_bits (Bytes.get_int64_le (Bytes.of_string s) (i*8)))
+
+    let of_i64x2 fs =
+      let b = Bytes.create bytewidth in
+      List.iteri (fun i f -> Bytes.set_int64_le b (i*8) (I64.to_bits f)) fs;
+      Bytes.to_string b
+
     let to_f32x4 s =
       List.init 4 (fun i -> F32.of_bits (Bytes.get_int32_le (Bytes.of_string s) (i*4)))
 
