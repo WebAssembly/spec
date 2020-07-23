@@ -250,12 +250,10 @@ null_opt :
 heap_type :
   | FUNC { fun c -> FuncHeapType }
   | EXTERN { fun c -> ExternHeapType }
-  | LPAR TYPE var RPAR { fun c -> DefHeapType (SynVar ($3 c type_).it) }
+  | var { fun c -> DefHeapType (SynVar ($1 c type_).it) }
 
 ref_type :
   | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
-  | LPAR REF null_opt var RPAR  /* Sugar */
-    { fun c -> ($3, DefHeapType (SynVar ($4 c type_).it)) }
   | FUNCREF { fun c -> (Nullable, FuncHeapType) }  /* Sugar */
   | EXTERNREF { fun c -> (Nullable, ExternHeapType) }  /* Sugar */
 

@@ -11,7 +11,7 @@
   (elem func $f)
   (func $f (result i32) (i32.const 7))
 
-  (func (export "nullable-null") (result i32) (call $n (ref.null (type $t))))
+  (func (export "nullable-null") (result i32) (call $n (ref.null $t)))
   (func (export "nonnullable-f") (result i32) (call $nn (ref.func $f)))
   (func (export "nullable-f") (result i32) (call $n (ref.func $f)))
 
@@ -32,7 +32,7 @@
   (module
     (type $t (func (result i32)))
     (func $g (param $r (ref $t)) (drop (ref.as_non_null (local.get $r))))
-    (func (call $g (ref.null (type $t))))
+    (func (call $g (ref.null $t)))
   )
   "type mismatch"
 )

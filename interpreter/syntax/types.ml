@@ -207,7 +207,7 @@ and string_of_num_type = function
 and string_of_heap_type = function
   | FuncHeapType -> "func"
   | ExternHeapType -> "extern"
-  | DefHeapType x -> "(type " ^ string_of_var x ^ ")"
+  | DefHeapType x -> string_of_var x
   | BotHeapType -> "unreachable"
 
 and string_of_ref_type = function

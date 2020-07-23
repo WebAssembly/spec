@@ -12,7 +12,7 @@
     (ref.is_null (local.get $x))
   )
   (func $f3' (export "ref-null") (result i32)
-    (call $f3 (ref.null (type $t)))
+    (call $f3 (ref.null $t))
   )
 
   (table $t1 2 funcref)
@@ -27,7 +27,7 @@
   (func (export "deinit")
     (table.set $t1 (i32.const 1) (ref.null func))
     (table.set $t2 (i32.const 1) (ref.null extern))
-    (table.set $t3 (i32.const 1) (ref.null (type $t)))
+    (table.set $t3 (i32.const 1) (ref.null $t))
   )
 
   (func (export "funcref-elem") (param $x i32) (result i32)

@@ -1286,7 +1286,7 @@
   (func (export "meet-nullref") (param i32) (result (ref null func))
     (block $l1 (result (ref null func))
       (block $l2 (result (ref null $t))
-        (br_table $l1 $l2 $l1 (ref.null (type $t)) (local.get 0))
+        (br_table $l1 $l2 $l1 (ref.null $t) (local.get 0))
       )
     )
   )

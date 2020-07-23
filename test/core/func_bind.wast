@@ -8,7 +8,7 @@
     (func.bind (type $unop) (local.get $i) (ref.func $add))
   )
 
-  (global $f (mut (ref null $unop)) (ref.null (type $unop)))
+  (global $f (mut (ref null $unop)) (ref.null $unop))
 
   (func (export "make") (param $i i32)
     (global.set $f (call $mk-adder (local.get $i)))
@@ -29,7 +29,7 @@
   )
 
   (func (export "null") (result i32)
-    (func.bind (type $unop) (i32.const 1) (ref.null (type $unop)))
+    (func.bind (type $unop) (i32.const 1) (ref.null $unop))
     (drop)
   )
 )
@@ -350,10 +350,10 @@
 
     (i32.add
       (call_ref (i32.const 2)
-        (call_indirect $t (type $fl) (i32.const 0) (ref.null (type $fl)) (i32.const 0))
+        (call_indirect $t (type $fl) (i32.const 0) (ref.null $fl) (i32.const 0))
       )
       (call_ref (i32.const 3)
-        (call_indirect $t (type $fl') (ref.null (type $fl')) (i32.const 1))
+        (call_indirect $t (type $fl') (ref.null $fl') (i32.const 1))
       )
     )
   )
@@ -399,7 +399,7 @@
 (module
   (type $t (func))
   (func (export "null") (result (ref $t))
-    (ref.null (type $t))
+    (ref.null $t)
     (func.bind)
   )
 )
@@ -408,7 +408,7 @@
 (module
   (type $t (func (param f32)))
   (func (export "null") (result (ref $t))
-    (ref.null (type $t))
+    (ref.null $t)
     (func.bind (type $t))
   )
 )
@@ -419,7 +419,7 @@
   (type $t1 (func (param i64)))
   (func (export "null") (result (ref $t0))
     (i64.const 0)
-    (ref.null (type $t1))
+    (ref.null $t1)
     (func.bind)
   )
 )
@@ -430,7 +430,7 @@
   (type $t1 (func (param i64)))
   (func (export "null") (result (ref $t0))
     (i64.const 0)
-    (ref.null (type $t1))
+    (ref.null $t1)
     (func.bind (type $t0))
   )
 )
@@ -440,7 +440,7 @@
   (module
     (type $t (func (result f32)))
     (func (export "null") (result i32)
-      (ref.null (type $t))
+      (ref.null $t)
       (func.bind)
     )
   )

@@ -124,8 +124,8 @@ Based on [reference types proposal](https://github.com/WebAssembly/reference-typ
 
 A *heap type* denotes a user-defined or pre-defined data type that is not a primitive scalar:
 
-* `heaptype ::= (type <typeidx>) | func | extern`
-  - `(type $t) ok` iff `$t` is defined in the context
+* `heaptype ::= <typeidx> | func | extern`
+  - `$t ok` iff `$t` is defined in the context
   - `func ok` and `extern ok`, always
 
 * In the binary encoding,
@@ -144,7 +144,6 @@ A *reference type* denotes the type of a reference to some data. It may either i
 * Reference types now *all* take the form `ref null? <heaptype>`
   - `funcref` and `externref` are reinterpreted as abbreviations (in both binary and text format) for `(ref null func)` and `(ref null extern)`, respectively
   - Note: this refactoring allows using `func` and `extern` as heap types, which is relevant for future extensions such as [type imports](https://github.com/WebAssembly/proposal-type-imports/proposals/type-imports/Overview.md)
-  - `(ref null? (type $t))` can be abbreviated to `(ref null? $t)` in the text format
 
 * In the binary encoding,
   - null and non-null variant are distinguished by two new (negative) type opcodes
@@ -172,7 +171,7 @@ The following rules, now defined in terms of heap types, replace and extend the 
 ##### Constructed Types
 
 * Any function type is a subtype of `func`
-  - `(type $t) <: func`
+  - `$t <: func`
      - iff `$t = <functype>`
 
 * Note: Function types themselves are invariant for now. This may be relaxed in future extensions.
@@ -286,7 +285,7 @@ The opcode for heap types is encoded as an `s33`.
 
 | Opcode | Type            | Parameters |
 | ------ | --------------- | ---------- |
-| i >= 0 | `(type i)`      |            |
+| i >= 0 | i               |            |
 | -0x10  | `func`          |            |
 | -0x11  | `extern`        |            |
 
@@ -368,17 +367,17 @@ The latter are sometimes called _exact_ types.
 Exact types might come in handy in a few other circumstances,
 so we could distinguish the two forms in a generic manner by enriching heap types with a flag as follows:
 
-* `heaptype ::= (type exact? <typeidx>) | func | extern`
+* `heaptype ::= exact? <typeidx> | func | extern`
 
 Exact types are themselves subtypes of corresponding non-exact types,
 but the crucial difference is that they do not have further subtypes themselves.
 That is, the following subtype rules would be defined on heap types:
 
-* `(type exact? $t) <: (type $t')`
+* `exact? $t <: $t'`
   - iff `$t = <functype>` and `$t' = <functype'>`
   - and `<functype> <: <functype'>`
 
-* `(type exact $t) <: (type exact $t')`
+* `exact $t <: exact $t'`
   - iff `$t = <functype>` and `$t' = <functype'>`
   - and `<functype> == <functype'>`
 
@@ -483,7 +482,7 @@ It's a slightly different question what to do for the text format, however.
 To maintain full backwards compatibility, the flag would likewise need to be inverted:
 instead of an optional `exact` flag we'd have an optional `sub` flag with the opposite meaning:
 
-* `heaptype ::= (type sub? <typeidx>) | func | extern`
+* `heaptype ::= sub? <typeidx> | func | extern`
 
 In the binary format it doesn't really matter which way both alternatives are encoded.
 But for the text format, this inversion will be rather annoying:

@@ -17,7 +17,7 @@
   (elem func $f)
   (func $f (result i32) (i32.const 7))
 
-  (func (export "nullable-null") (result i32) (call $n (ref.null (type $t))))
+  (func (export "nullable-null") (result i32) (call $n (ref.null $t)))
   (func (export "nonnullable-f") (result i32) (call $nn (ref.func $f)))
   (func (export "nullable-f") (result i32) (call $n (ref.func $f)))
 
@@ -39,7 +39,7 @@
   (module
     (type $t (func (result i32)))
     (func $g (param $r (ref $t)) (drop (br_on_null 0 (local.get $r))))
-    (func (call $g (ref.null (type $t))))
+    (func (call $g (ref.null $t)))
   )
   "type mismatch"
 )
@@ -57,14 +57,14 @@
   (elem func $f)
   (func $f (param i32) (result i32) (i32.mul (local.get 0) (local.get 0)))
 
-  (func $a (param $n i32) (param $r (ref null (type $t))) (result i32)
+  (func $a (param $n i32) (param $r (ref null $t)) (result i32)
     (block $l (result i32)
       (return (call_ref (br_on_null $l (local.get $n) (local.get $r))))
     )
   )
 
   (func (export "args-null") (param $n i32) (result i32)
-    (call $a (local.get $n) (ref.null (type $t)))
+    (call $a (local.get $n) (ref.null $t))
   )
   (func (export "args-f") (param $n i32) (result i32)
     (call $a (local.get $n) (ref.func $f))

@@ -19,7 +19,7 @@
   )
 
   (func (export "null") (result i32)
-    (call_ref (i32.const 1) (ref.null (type $ii)))
+    (call_ref (i32.const 1) (ref.null $ii))
   )
 
   ;; Recursion
