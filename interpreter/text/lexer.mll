@@ -411,6 +411,16 @@ rule token = parse
   | "input" { INPUT }
   | "output" { OUTPUT }
 
+  | vxxx".not"
+    { UNARY v128_not }
+  | vxxx".and"
+    { UNARY v128_and }
+  | vxxx".andnot"
+    { UNARY v128_andnot }
+  | vxxx".or"
+    { UNARY v128_or }
+  | vxxx".xor"
+    { UNARY v128_xor }
   | (simd_shape as s)".neg"
     { UNARY (simdop s i8x16_neg i16x8_neg i32x4_neg i64x2_neg f32x4_neg f64x2_neg) }
   | (simd_float_shape as s)".sqrt" { UNARY (simd_float_op s f32x4_sqrt f64x2_sqrt) }

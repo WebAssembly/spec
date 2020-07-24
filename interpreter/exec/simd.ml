@@ -77,6 +77,17 @@ sig
   val extract_lane : int -> t -> lane
 end
 
+module type Vec =
+sig
+  type t
+
+  val lognot : t -> t
+  val and_ : t -> t -> t
+  val or_ : t -> t -> t
+  val xor : t -> t -> t
+  val andnot : t -> t -> t
+end
+
 module type S =
 sig
   type t
@@ -97,6 +108,7 @@ sig
   module I64x2 : Int with type t = t and type lane = I64.t
   module F32x4 : Float with type t = t and type lane = F32.t
   module F64x2 : Float with type t = t and type lane = F64.t
+  module V128 : Vec with type t = t
 end
 
 module Make (Rep : RepType) : S with type bits = Rep.t =
@@ -111,6 +123,20 @@ struct
   let of_strings = Rep.of_strings
   let to_i16x8 = Rep.to_i16x8
   let to_i32x4 = Rep.to_i32x4
+
+  module V128 : Vec with type t = Rep.t = struct
+    type t = Rep.t
+    let to_shape = Rep.to_i64x2
+    let of_shape = Rep.of_i64x2
+    let unop f x = of_shape (List.map f (to_shape x))
+    let binop f x y = of_shape (List.map2 f (to_shape x) (to_shape y))
+    let lognot = unop I64.lognot
+    let and_ = binop I64.and_
+    let or_ = binop I64.or_
+    let xor = binop I64.xor
+    let andnot = binop (fun x y -> I64.and_ x (I64.lognot y))
+  end
+
 
   module MakeFloat (Float : Float.S) (Convert : sig
       val to_shape : Rep.t -> Float.t list
