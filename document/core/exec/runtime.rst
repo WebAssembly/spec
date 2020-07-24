@@ -7,14 +7,14 @@ Runtime Structure
 :ref:`Store <store>`, :ref:`stack <stack>`, and other *runtime structure* forming the WebAssembly abstract machine, such as :ref:`values <syntax-val>` or :ref:`module instances <syntax-moduleinst>`, are made precise in terms of additional auxiliary syntax.
 
 
-.. index:: ! value, constant, value type, integer, floating-point
+.. index:: ! value, constant, value type, integer, floating-point, simd
    pair: abstract syntax; value
 .. _syntax-val:
 
 Values
 ~~~~~~
 
-WebAssembly computations manipulate *values* of the four basic :ref:`value types <syntax-valtype>`: :ref:`integers <syntax-int>` and :ref:`floating-point data <syntax-float>` of 32 or 64 bit width each, respectively.
+WebAssembly computations manipulate *values* of the five basic :ref:`value types <syntax-valtype>`: :ref:`integers <syntax-int>` and :ref:`floating-point data <syntax-float>` of 32 or 64 bit width each  respectively, and :ref:`SIMD data <syntax-simd>` of 128 bit width.
 
 In most places of the semantics, values of different types can occur.
 In order to avoid ambiguities, values are therefore represented with an abstract syntax that makes their type explicit.
@@ -26,7 +26,8 @@ It is convenient to reuse the same notation as for the |CONST| :ref:`instruction
      \I32.\CONST~\i32 \\&&|&
      \I64.\CONST~\i64 \\&&|&
      \F32.\CONST~\f32 \\&&|&
-     \F64.\CONST~\f64
+     \F64.\CONST~\f64 \\&&|&
+     \V128.\CONST~\i128
    \end{array}
 
 

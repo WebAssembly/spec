@@ -20,7 +20,8 @@ Value Types
      \hex{7F} &\Rightarrow& \I32 \\ &&|&
      \hex{7E} &\Rightarrow& \I64 \\ &&|&
      \hex{7D} &\Rightarrow& \F32 \\ &&|&
-     \hex{7C} &\Rightarrow& \F64 \\
+     \hex{7C} &\Rightarrow& \F64 \\ &&|&
+     \hex{7B} &\Rightarrow& \V128 \\
    \end{array}
 
 .. note::

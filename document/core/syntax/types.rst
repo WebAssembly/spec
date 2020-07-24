@@ -22,7 +22,7 @@ Value Types
 .. math::
    \begin{array}{llll}
    \production{value type} & \valtype &::=&
-     \I32 ~|~ \I64 ~|~ \F32 ~|~ \F64 \\
+     \I32 ~|~ \I64 ~|~ \F32 ~|~ \F64 ~|~ \V128 \\
    \end{array}
 
 The types |I32| and |I64| classify 32 and 64 bit integers, respectively.
@@ -31,13 +31,17 @@ Integers are not inherently signed or unsigned, their interpretation is determin
 The types |F32| and |F64| classify 32 and 64 bit floating-point data, respectively.
 They correspond to the respective binary floating-point representations, also known as *single* and *double* precision, as defined by the |IEEE754|_ standard (Section 3.3).
 
+The type |V128| corresponds to a 128 bit vector of packed integer or floating-point data. The packed data
+can be interpreted as signed or unsigned integers, single or double precision floating-point
+values, or a single 128 bit type. The interpretation is determined by individual operations.
+
 Conventions
 ...........
 
 * The meta variable :math:`t` ranges over value types where clear from context.
 
 * The notation :math:`|t|` denotes the *bit width* of a value type.
-  That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.
+  That is, :math:`|\I32| = |\F32| = 32`, :math:`|\I64| = |\F64| = 64`, and :math:`|\V128| = 128`.
 
 
 .. index:: ! result type, value type, instruction, execution, function

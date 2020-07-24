@@ -18,7 +18,8 @@ Value Types
      \text{i32} &\Rightarrow& \I32 \\ &&|&
      \text{i64} &\Rightarrow& \I64 \\ &&|&
      \text{f32} &\Rightarrow& \F32 \\ &&|&
-     \text{f64} &\Rightarrow& \F64 \\
+     \text{f64} &\Rightarrow& \F64 \\ &&|&
+     \text{v128} &\Rightarrow& \V128 \\
    \end{array}
 
 

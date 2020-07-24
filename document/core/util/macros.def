@@ -149,6 +149,7 @@
 .. |i16| mathdef:: \xref{syntax/values}{syntax-int}{\X{i16}}
 .. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\X{i32}}
 .. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\X{i64}}
+.. |i128| mathdef:: \xref{syntax/values}{syntax-int}{\X{i128}}
 
 .. |fN| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}N}
 .. |fNmag| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\X{Nmag}}
@@ -176,6 +177,7 @@
 .. |I64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i64}}
 .. |F32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32}}
 .. |F64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64}}
+.. |V128| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{v128}}
 
 .. |FUNCREF| mathdef:: \xref{syntax/types}{syntax-elemtype}{\K{funcref}}
 
