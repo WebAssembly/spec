@@ -350,6 +350,8 @@ let encode m =
       | Binary (F64 F64Op.CopySign) -> op 0xa6
       | Binary (V128 _) -> failwith "TODO v128"
 
+      | Ternary (_) -> failwith "TODO v128"
+
       | Convert (I32 I32Op.ExtendSI32) -> assert false
       | Convert (I32 I32Op.ExtendUI32) -> assert false
       | Convert (I32 I32Op.WrapI64) -> op 0xa7

@@ -57,6 +57,8 @@ sig
   val max_u : t -> t -> t
   val mul : t -> t -> t
   val avgr_u : t -> t -> t
+  val any_true : t -> bool
+  val all_true : t -> bool
 end
 
 (* This signature defines the types and operations SIMD floats can expose. *)
@@ -86,6 +88,7 @@ sig
   val or_ : t -> t -> t
   val xor : t -> t -> t
   val andnot : t -> t -> t
+  val bitselect : t -> t -> t -> t
 end
 
 module type S =
@@ -135,6 +138,10 @@ struct
     let or_ = binop I64.or_
     let xor = binop I64.xor
     let andnot = binop (fun x y -> I64.and_ x (I64.lognot y))
+    let bitselect v1 v2 c =
+      let v2_andnot_c = andnot v2 c in
+      let v1_and_c = binop I64.and_ v1 c in
+      binop I64.or_ v1_and_c v2_andnot_c
   end
 
 
@@ -182,6 +189,9 @@ struct
     (* The result of avgr_u will not overflow this type, but the intermediate might,
      * so have the Int type implement it so they can extend it accordingly *)
     let avgr_u = binop Int.avgr_u
+    let reduceop f a s = List.fold_left (fun a b -> f a (b <> Int.zero)) a (Convert.to_shape s)
+    let any_true = reduceop (||) false
+    let all_true = reduceop (&&) true
   end
 
   module I8x16 = MakeInt (I8) (struct

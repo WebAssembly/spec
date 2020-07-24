@@ -297,6 +297,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let t = type_binop binop in
     [t; t] --> [t]
 
+  | Ternary ternop ->
+    let t = V128Type in
+    [t; t; t] --> [t]
+
   | Convert cvtop ->
     let t1, t2 = type_cvtop e.at cvtop in
     [t1] --> [t2]

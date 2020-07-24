@@ -190,8 +190,16 @@ struct
       | _ -> failwith "TODO v128 unimplemented binop"
     in fun v1 v2 -> to_value (f (of_value 1 v1) (of_value 2 v2))
 
-  (* FIXME *)
-  let testop op = failwith "TODO v128 unimplemented testop"
+  let testop (op : testop) =
+    let f = match op with
+    | I8x16 AnyTrue -> SXX.I8x16.any_true
+    | I8x16 AllTrue -> SXX.I8x16.all_true
+    | I16x8 AnyTrue -> SXX.I16x8.any_true
+    | I16x8 AllTrue -> SXX.I16x8.all_true
+    | I32x4 AnyTrue -> SXX.I32x4.any_true
+    | I32x4 AllTrue -> SXX.I32x4.all_true
+    | _ -> assert false
+    in fun v -> f (of_value 1 v)
 
   (* FIXME *)
   let relop op = failwith "TODO v128 unimplemented relop"
@@ -202,6 +210,11 @@ struct
       (F32Op.to_value (SXX.F32x4.extract_lane imm (of_value 1 v)))
     | I32x4ExtractLane imm ->
       (I32Op.to_value (SXX.I32x4.extract_lane imm (of_value 1 v)))
+
+  let ternop op =
+    let f = match op with
+    | Bitselect -> SXX.V128.bitselect
+    in fun v1 v2 v3 -> to_value (f (of_value 1 v1) (of_value 2 v2) (of_value 3 v3))
 end
 
 module V128Op = SimdOp (V128) (Values.V128Value)
@@ -289,6 +302,7 @@ struct
 end
 
 let eval_extractop extractop v = V128Op.extractop extractop v
+let eval_ternop ternop v= V128Op.ternop ternop v
 
 (* Dispatch *)
 

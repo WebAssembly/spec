@@ -278,6 +278,7 @@ let rec instr e =
     | Compare op -> relop op, []
     | Unary op -> unop op, []
     | Binary op -> binop op, []
+    | Ternary op -> failwith "TODO v128 ternary op"
     | Convert op -> cvtop op, []
     | ExtractLane op -> failwith "TODO v128"
   in Node (head, inner)

@@ -54,6 +54,7 @@ struct
   type fbinop = Add | Sub | Mul | Div | Min | Max
   type vunop = Not
   type vbinop = And | Or | Xor | AndNot
+  type vtestop = AnyTrue | AllTrue
 
   type ('i8x16, 'i16x8, 'i32x4, 'i64x2, 'f32x4, 'f64x2, 'v128) v128op =
     | I8x16 of 'i8x16
@@ -66,7 +67,8 @@ struct
 
   type unop = (iunop, iunop, iunop, iunop, funop, funop, vunop) v128op
   type binop = (ibinop, ibinop, ibinop, ibinop, fbinop, fbinop, vbinop) v128op
-  type testop = TodoTestOp
+  type testop = (vtestop, vtestop, vtestop, vtestop, vtestop, vtestop, vtestop) v128op
+  type ternop = Bitselect
   type relop = TodoRelOp
   type cvtop = TodoCvtOp
   type extractop = I32x4ExtractLane of int | F32x4ExtractLane of int
@@ -84,6 +86,8 @@ type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop, V128Op.te
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop, V128Op.relop) Values.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop, V128Op.cvtop) Values.op
 type extractop = V128Op.extractop
+(* Ternary operators only exist for V128 types for now *)
+type ternop = V128Op.ternop
 
 type 'a memop =
   {ty : value_type; align : int; offset : Memory.offset; sz : 'a option}
@@ -128,8 +132,9 @@ and instr' =
   | Compare of relop                  (* numeric comparison *)
   | Unary of unop                     (* unary numeric operator *)
   | Binary of binop                   (* binary numeric operator *)
+  | Ternary of ternop                 (* ternary numeric operator *)
   | Convert of cvtop                  (* conversion *)
-  | ExtractLane of extractop              (* extract lane from v128 value *)
+  | ExtractLane of extractop          (* extract lane from v128 value *)
 
 
 (* Globals & Functions *)

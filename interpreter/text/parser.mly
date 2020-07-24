@@ -185,7 +185,7 @@ let inline_type_explicit (c : context) x ft at =
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token EXTRACT_LANE
-%token CONST V128_CONST UNARY BINARY TEST COMPARE CONVERT
+%token CONST V128_CONST UNARY BINARY TERNARY TEST COMPARE CONVERT
 %token UNREACHABLE MEMORY_SIZE MEMORY_GROW
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA OFFSET IMPORT EXPORT TABLE
@@ -206,6 +206,7 @@ let inline_type_explicit (c : context) x ft at =
 %token<string Source.phrase -> Ast.instr' * Values.value> CONST
 %token<Ast.instr'> UNARY
 %token<Ast.instr'> BINARY
+%token<Ast.instr'> TERNARY
 %token<Ast.instr'> TEST
 %token<Ast.instr'> COMPARE
 %token<Ast.instr'> CONVERT
@@ -369,6 +370,7 @@ plain_instr :
   | COMPARE { fun c -> $1 }
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
+  | TERNARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
   | EXTRACT_LANE NAT { let at = at () in fun c -> $1 (nat $2 at) }
 
