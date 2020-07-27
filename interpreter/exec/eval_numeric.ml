@@ -293,12 +293,17 @@ end
 
 module V128CvtOp =
 struct
-  (* TODO
   open Ast.SimdOp
-  *)
 
-  (* FIXME *)
-  let cvtop op v = failwith "TODO v128"
+  let cvtop op v : value =
+    match op with
+    | I8x16 Splat -> V128 (V128.I8x16.splat (I32Op.of_value 1 v))
+    | I16x8 Splat -> V128 (V128.I16x8.splat (I32Op.of_value 1 v))
+    | I32x4 Splat -> V128 (V128.I32x4.splat (I32Op.of_value 1 v))
+    | I64x2 Splat -> V128 (V128.I64x2.splat (I64Op.of_value 1 v))
+    | F32x4 Splat -> V128 (V128.F32x4.splat (F32Op.of_value 1 v))
+    | F64x2 Splat -> V128 (V128.F64x2.splat (F64Op.of_value 1 v))
+    | _ -> assert false
 end
 
 let eval_extractop extractop v = V128Op.extractop extractop v

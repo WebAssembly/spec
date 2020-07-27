@@ -46,6 +46,7 @@ sig
   type t
   type lane
 
+  val splat : lane -> t
   val extract_lane : int -> t -> lane
   val abs : t -> t
   val neg : t -> t
@@ -67,6 +68,8 @@ sig
   type t
   type lane
 
+  val splat : lane -> t
+  val extract_lane : int -> t -> lane
   val abs : t -> t
   val neg : t -> t
   val sqrt : t -> t
@@ -76,7 +79,6 @@ sig
   val div : t -> t -> t
   val min : t -> t -> t
   val max : t -> t -> t
-  val extract_lane : int -> t -> lane
 end
 
 module type Vec =
@@ -148,6 +150,7 @@ struct
   module MakeFloat (Float : Float.S) (Convert : sig
       val to_shape : Rep.t -> Float.t list
       val of_shape : Float.t list -> Rep.t
+      val num_lanes : int
     end) : Float with type t = Rep.t and type lane = Float.t =
   struct
     type t = Rep.t
@@ -163,16 +166,19 @@ struct
     let div = binop Float.div
     let min = binop Float.min
     let max = binop Float.max
+    let splat x = Convert.of_shape (List.init Convert.num_lanes (fun i -> x))
     let extract_lane i s = List.nth (Convert.to_shape s) i
   end
 
   module MakeInt (Int : Int.S) (Convert : sig
       val to_shape : Rep.t -> Int.t list
       val of_shape : Int.t list -> Rep.t
+      val num_lanes : int
     end) : Int with type t = Rep.t and type lane = Int.t =
   struct
     type t = Rep.t
     type lane = Int.t
+    let splat x = Convert.of_shape (List.init Convert.num_lanes (fun i -> x))
     let extract_lane i s = List.nth (Convert.to_shape s) i
     let unop f x = Convert.of_shape (List.map f (Convert.to_shape x))
     let binop f x y = Convert.of_shape (List.map2 f (Convert.to_shape x) (Convert.to_shape y))
@@ -197,31 +203,37 @@ struct
   module I8x16 = MakeInt (I8) (struct
       let to_shape = Rep.to_i8x16
       let of_shape = Rep.of_i8x16
+      let num_lanes = lanes I8x16
     end)
 
   module I16x8 = MakeInt (I16) (struct
       let to_shape = Rep.to_i16x8
       let of_shape = Rep.of_i16x8
+      let num_lanes = lanes I16x8
     end)
 
   module I32x4 = MakeInt (I32) (struct
       let to_shape = Rep.to_i32x4
       let of_shape = Rep.of_i32x4
+      let num_lanes = lanes I32x4
     end)
 
   module I64x2 = MakeInt (I64) (struct
       let to_shape = Rep.to_i64x2
       let of_shape = Rep.of_i64x2
+      let num_lanes = lanes I64x2
     end)
 
   module F32x4 = MakeFloat (F32) (struct
       let to_shape = Rep.to_f32x4
       let of_shape = Rep.of_f32x4
+      let num_lanes = lanes F32x4
     end)
 
   module F64x2 = MakeFloat (F64) (struct
       let to_shape = Rep.to_f64x2
       let of_shape = Rep.of_f64x2
+      let num_lanes = lanes F64x2
     end)
 
 end

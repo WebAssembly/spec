@@ -244,6 +244,9 @@ rule token = parse
   | "global.get" { GLOBAL_GET }
   | "global.set" { GLOBAL_SET }
 
+  | (simd_shape as s)".splat"
+    { SPLAT (simdop s i8x16_splat i16x8_splat i32x4_splat
+                      i64x2_splat f32x4_splat f64x2_splat) }
   | (simd_shape as s)".extract_lane"
     { EXTRACT_LANE (fun imm ->
         simdop s unimplemented_simd unimplemented_simd i32x4_extract_lane

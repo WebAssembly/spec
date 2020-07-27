@@ -70,7 +70,8 @@ struct
   type testop = (vtestop, vtestop, vtestop, vtestop, vtestop, vtestop, vtestop) v128op
   type ternop = Bitselect
   type relop = TodoRelOp
-  type cvtop = TodoCvtOp
+  type vcvtop = Splat
+  type cvtop = (vcvtop, vcvtop, vcvtop, vcvtop, vcvtop, vcvtop, vcvtop) v128op
   type extractop = I32x4ExtractLane of int | F32x4ExtractLane of int
 end
 

@@ -135,7 +135,15 @@ let type_cvtop at = function
     | PromoteF32 -> F32Type
     | DemoteF64 -> error at "invalid conversion"
     ), F64Type
-  | Values.V128 cvtop -> failwith "TODO v128"
+  | Values.V128 cvtop ->
+    let open V128Op in
+    (match cvtop with
+    | I8x16 Splat | I16x8 Splat | I32x4 Splat -> I32Type
+    | I64x2 Splat -> I64Type
+    | F32x4 Splat -> F32Type
+    | F64x2 Splat -> F64Type
+    | V128 Splat -> error at "invalid conversion"
+    ), V128Type
 
 
 (* Expressions *)
