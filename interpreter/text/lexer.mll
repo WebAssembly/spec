@@ -126,6 +126,10 @@ let simd_shape = function
 let only shapes s lexbuf =
   if not (List.mem s shapes) then
     error lexbuf "unknown operator"
+
+let except shapes s lexbuf =
+  if (List.mem s shapes) then
+    error lexbuf "unknown operator"
 }
 
 let sign = '+' | '-'
@@ -414,6 +418,36 @@ rule token = parse
   | "input" { INPUT }
   | "output" { OUTPUT }
 
+  | (simd_shape as s)".eq"
+    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
+      BINARY (simdop s i8x16_eq i16x8_eq i32x4_eq unreachable unreachable unreachable) }
+  | (simd_shape as s)".ne"
+    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
+      BINARY (simdop s i8x16_ne i16x8_ne i32x4_ne unreachable unreachable unreachable) }
+  | (simd_int_shape as s)".lt_s"
+    { except ["i64x2"] s lexbuf;
+      BINARY (simd_int_op s i8x16_lt_s i16x8_lt_s i32x4_lt_s unreachable) }
+  | (simd_int_shape as s)".lt_u"
+    { except ["i64x2"] s lexbuf;
+      BINARY (simd_int_op s i8x16_lt_u i16x8_lt_u i32x4_lt_u unreachable) }
+  | (simd_int_shape as s)".le_s"
+    { except ["i64x2"] s lexbuf;
+      BINARY (simd_int_op s i8x16_le_s i16x8_le_s i32x4_le_s unreachable) }
+  | (simd_int_shape as s)".le_u"
+    { except ["i64x2"] s lexbuf;
+      BINARY (simd_int_op s i8x16_le_u i16x8_le_u i32x4_le_u unreachable) }
+  | (simd_int_shape as s)".gt_s"
+    { except ["i64x2"] s lexbuf;
+      BINARY (simd_int_op s i8x16_gt_s i16x8_gt_s i32x4_gt_s unreachable) }
+  | (simd_int_shape as s)".gt_u"
+    { except ["i64x2"] s lexbuf;
+      BINARY (simd_int_op s i8x16_gt_u i16x8_gt_u i32x4_gt_u unreachable) }
+  | (simd_int_shape as s)".ge_s"
+    { except ["i64x2"] s lexbuf;
+      BINARY (simd_int_op s i8x16_ge_s i16x8_ge_s i32x4_ge_s unreachable) }
+  | (simd_int_shape as s)".ge_u"
+    { except ["i64x2"] s lexbuf;
+      BINARY (simd_int_op s i8x16_ge_u i16x8_ge_u i32x4_ge_u unreachable) }
   | vxxx".not" { UNARY v128_not }
   | vxxx".and" { UNARY v128_and }
   | vxxx".andnot" { UNARY v128_andnot }

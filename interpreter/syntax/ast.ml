@@ -50,6 +50,7 @@ module SimdOp =
 struct
   type iunop = Abs | Neg
   type ibinop = Add | Sub | MinS | MinU | MaxS | MaxU | Mul | AvgrU
+              | Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
   type funop = Abs | Neg | Sqrt
   type fbinop = Add | Sub | Mul | Div | Min | Max
   type vunop = Not

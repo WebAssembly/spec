@@ -146,6 +146,16 @@ struct
 
   let binop (op : binop) =
     let f = match op with
+      | I8x16 Eq -> SXX.I8x16.eq
+      | I8x16 Ne -> SXX.I8x16.ne
+      | I8x16 LtS -> SXX.I8x16.lt_s
+      | I8x16 LtU -> SXX.I8x16.lt_u
+      | I8x16 LeS -> SXX.I8x16.le_s
+      | I8x16 LeU -> SXX.I8x16.le_u
+      | I8x16 GtS -> SXX.I8x16.gt_s
+      | I8x16 GtU -> SXX.I8x16.gt_u
+      | I8x16 GeS -> SXX.I8x16.ge_s
+      | I8x16 GeU -> SXX.I8x16.ge_u
       | I8x16 Add -> SXX.I8x16.add
       | I8x16 Sub -> SXX.I8x16.sub
       | I8x16 MinS -> SXX.I8x16.min_s
@@ -153,6 +163,16 @@ struct
       | I8x16 MaxS -> SXX.I8x16.max_s
       | I8x16 MaxU -> SXX.I8x16.max_u
       | I8x16 AvgrU -> SXX.I8x16.avgr_u
+      | I16x8 Eq -> SXX.I16x8.eq
+      | I16x8 Ne -> SXX.I16x8.ne
+      | I16x8 LtS -> SXX.I16x8.lt_s
+      | I16x8 LtU -> SXX.I16x8.lt_u
+      | I16x8 LeS -> SXX.I16x8.le_s
+      | I16x8 LeU -> SXX.I16x8.le_u
+      | I16x8 GtS -> SXX.I16x8.gt_s
+      | I16x8 GtU -> SXX.I16x8.gt_u
+      | I16x8 GeS -> SXX.I16x8.ge_s
+      | I16x8 GeU -> SXX.I16x8.ge_u
       | I16x8 Add -> SXX.I16x8.add
       | I16x8 Sub -> SXX.I16x8.sub
       | I16x8 Mul -> SXX.I16x8.mul
@@ -168,6 +188,16 @@ struct
       | I32x4 MaxS -> SXX.I32x4.max_s
       | I32x4 MaxU -> SXX.I32x4.max_u
       | I32x4 Mul -> SXX.I32x4.mul
+      | I32x4 Eq -> SXX.I32x4.eq
+      | I32x4 Ne -> SXX.I32x4.ne
+      | I32x4 LtS -> SXX.I32x4.lt_s
+      | I32x4 LtU -> SXX.I32x4.lt_u
+      | I32x4 LeS -> SXX.I32x4.le_s
+      | I32x4 LeU -> SXX.I32x4.le_u
+      | I32x4 GtS -> SXX.I32x4.gt_s
+      | I32x4 GtU -> SXX.I32x4.gt_u
+      | I32x4 GeS -> SXX.I32x4.ge_s
+      | I32x4 GeU -> SXX.I32x4.ge_u
       | I64x2 Add -> SXX.I64x2.add
       | I64x2 Sub -> SXX.I64x2.sub
       | I64x2 Mul -> SXX.I64x2.mul

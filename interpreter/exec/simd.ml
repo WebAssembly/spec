@@ -48,6 +48,16 @@ sig
 
   val splat : lane -> t
   val extract_lane : int -> t -> lane
+  val eq : t -> t -> t
+  val ne : t -> t -> t
+  val lt_s : t -> t -> t
+  val lt_u : t -> t -> t
+  val le_s : t -> t -> t
+  val le_u : t -> t -> t
+  val gt_s : t -> t -> t
+  val gt_u : t -> t -> t
+  val ge_s : t -> t -> t
+  val ge_u : t -> t -> t
   val abs : t -> t
   val neg : t -> t
   val add : t -> t -> t
@@ -184,6 +194,17 @@ struct
     let extract_lane i s = List.nth (Convert.to_shape s) i
     let unop f x = Convert.of_shape (List.map f (Convert.to_shape x))
     let binop f x y = Convert.of_shape (List.map2 f (Convert.to_shape x) (Convert.to_shape y))
+    let cmp f x y = if f x y then (Int.of_int_s (-1)) else Int.zero
+    let eq = binop (cmp Int.eq)
+    let ne = binop (cmp Int.ne)
+    let lt_s = binop (cmp Int.lt_s)
+    let lt_u = binop (cmp Int.lt_u)
+    let le_s = binop (cmp Int.le_s)
+    let le_u = binop (cmp Int.le_u)
+    let gt_s = binop (cmp Int.gt_s)
+    let gt_u = binop (cmp Int.gt_u)
+    let ge_s = binop (cmp Int.ge_s)
+    let ge_u = binop (cmp Int.ge_u)
     let abs = unop Int.abs
     let neg = unop Int.neg
     let add = binop Int.add
