@@ -865,9 +865,10 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <span id="op-fsqrt"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fsqrt}{\mathrm{fsqrt}}_N(z)\)</span><a class="headerlink" href="#xref-exec-numerics-op-fsqrt-mathrm-fsqrt-n-z" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>If <span class="math notranslate nohighlight">\(z\)</span> is a NaN, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z\}\)</span>.</p></li>
-<li><p>Else if <span class="math notranslate nohighlight">\(z\)</span> has a negative sign, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</p></li>
+<li><p>Else if <span class="math notranslate nohighlight">\(z\)</span> is negative infinity, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</p></li>
 <li><p>Else if <span class="math notranslate nohighlight">\(z\)</span> is positive infinity, then return positive infinity.</p></li>
 <li><p>Else if <span class="math notranslate nohighlight">\(z\)</span> is a zero, then return that zero.</p></li>
+<li><p>Else if <span class="math notranslate nohighlight">\(z\)</span> has a negative sign, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</p></li>
 <li><p>Else return the square root of <span class="math notranslate nohighlight">\(z\)</span>.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
