@@ -60,6 +60,8 @@ sig
   val avgr_u : t -> t -> t
   val any_true : t -> bool
   val all_true : t -> bool
+  val shl : t -> I32.t -> t
+  val shr_s : t -> I32.t -> t
 end
 
 (* This signature defines the types and operations SIMD floats can expose. *)
@@ -198,6 +200,12 @@ struct
     let reduceop f a s = List.fold_left (fun a b -> f a (b <> Int.zero)) a (Convert.to_shape s)
     let any_true = reduceop (||) false
     let all_true = reduceop (&&) true
+    let shl v s =
+      let shift = Int.of_int_u (Int32.to_int s) in
+      unop (fun a -> Int.shl a shift) v
+    let shr_s v s =
+      let shift = Int.of_int_u (Int32.to_int s) in
+      unop (fun a -> Int.shr_s a shift) v
   end
 
   module I8x16 = MakeInt (I8) (struct

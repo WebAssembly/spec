@@ -73,6 +73,8 @@ struct
   type vcvtop = Splat
   type cvtop = (vcvtop, vcvtop, vcvtop, vcvtop, vcvtop, vcvtop, vcvtop) v128op
   type extractop = I32x4ExtractLane of int | F32x4ExtractLane of int
+  type shift = Shl | ShrS | ShrU
+  type shiftop = (shift, shift, shift, shift, shift, shift, shift) v128op
 end
 
 module I32Op = IntOp
@@ -89,6 +91,7 @@ type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop, V128Op.cvtop) 
 type extractop = V128Op.extractop
 (* Ternary operators only exist for V128 types for now *)
 type ternop = V128Op.ternop
+type shiftop = V128Op.shiftop
 
 type 'a memop =
   {ty : value_type; align : int; offset : Memory.offset; sz : 'a option}
@@ -136,6 +139,7 @@ and instr' =
   | Ternary of ternop                 (* ternary numeric operator *)
   | Convert of cvtop                  (* conversion *)
   | ExtractLane of extractop          (* extract lane from v128 value *)
+  | SimdShift of shiftop              (* shifts for v128 value *)
 
 
 (* Globals & Functions *)

@@ -398,6 +398,8 @@ let encode m =
       | ExtractLane (V128Op.I32x4ExtractLane imm) -> failwith "TODO v128"
       | ExtractLane (V128Op.F32x4ExtractLane imm) -> failwith "TODO v128"
 
+      | SimdShift (_) -> failwith "TODO v128"
+
     let const c =
       list instr c.it; end_ ()
 

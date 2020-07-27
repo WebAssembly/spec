@@ -274,6 +274,10 @@ let rec step (c : config) : config =
         (try Eval_numeric.eval_extractop extractop v :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
+      | SimdShift shiftop, s :: v :: vs' ->
+        (try Eval_numeric.eval_shiftop shiftop v s :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
       | _ ->
         let s1 = string_of_values (List.rev vs) in
         let s2 = string_of_value_types (List.map type_of (List.rev vs)) in

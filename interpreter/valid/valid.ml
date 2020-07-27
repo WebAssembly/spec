@@ -318,6 +318,9 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | ExtractLane (V128Op.F32x4ExtractLane _) ->
     [V128Type] --> [F32Type]
 
+  | SimdShift _ ->
+    [V128Type; I32Type] --> [V128Type]
+
 and check_seq (c : context) (s : infer_stack_type) (es : instr list)
   : infer_stack_type =
   match es with

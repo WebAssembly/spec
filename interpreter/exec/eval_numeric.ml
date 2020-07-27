@@ -215,6 +215,19 @@ struct
     let f = match op with
     | Bitselect -> SXX.V128.bitselect
     in fun v1 v2 v3 -> to_value (f (of_value 1 v1) (of_value 2 v2) (of_value 3 v3))
+
+  let shiftop (op : shiftop) =
+    let f = match op with
+    | I8x16 Shl -> SXX.I8x16.shl
+    | I8x16 ShrS -> SXX.I8x16.shr_s
+    | I16x8 Shl -> SXX.I16x8.shl
+    | I16x8 ShrS -> SXX.I16x8.shr_s
+    | I32x4 Shl -> SXX.I32x4.shl
+    | I32x4 ShrS -> SXX.I32x4.shr_s
+    | I64x2 Shl -> SXX.I64x2.shl
+    | I64x2 ShrS -> SXX.I64x2.shr_s
+    | _ -> failwith "unimplemented shr_u"
+    in fun v s -> to_value (f (of_value 1 v) (of_arg I32Value.of_value 2 s))
 end
 
 module V128Op = SimdOp (V128) (Values.V128Value)
@@ -307,7 +320,8 @@ struct
 end
 
 let eval_extractop extractop v = V128Op.extractop extractop v
-let eval_ternop ternop v= V128Op.ternop ternop v
+let eval_ternop ternop v = V128Op.ternop ternop v
+let eval_shiftop shiftop v = V128Op.shiftop shiftop v
 
 (* Dispatch *)
 
