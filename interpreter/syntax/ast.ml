@@ -53,6 +53,7 @@ struct
               | Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
   type funop = Abs | Neg | Sqrt
   type fbinop = Add | Sub | Mul | Div | Min | Max
+              | Eq | Ne | Lt | Le | Gt | Ge
   type vunop = Not
   type vbinop = And | Or | Xor | AndNot
   type vtestop = AnyTrue | AllTrue

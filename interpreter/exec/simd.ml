@@ -82,6 +82,12 @@ sig
 
   val splat : lane -> t
   val extract_lane : int -> t -> lane
+  val eq : t -> t -> t
+  val ne : t -> t -> t
+  val lt : t -> t -> t
+  val le : t -> t -> t
+  val gt : t -> t -> t
+  val ge : t -> t -> t
   val abs : t -> t
   val neg : t -> t
   val sqrt : t -> t
@@ -169,6 +175,14 @@ struct
     type lane = Float.t
     let unop f x = Convert.of_shape (List.map f (Convert.to_shape x))
     let binop f x y = Convert.of_shape (List.map2 f (Convert.to_shape x) (Convert.to_shape y))
+    let all_ones = Float.of_float (Int64.float_of_bits (Int64.minus_one))
+    let cmp f x y = if f x y then all_ones else Float.zero
+    let eq = binop (cmp Float.eq)
+    let ne = binop (cmp Float.ne)
+    let lt = binop (cmp Float.lt)
+    let le = binop (cmp Float.le)
+    let gt = binop (cmp Float.gt)
+    let ge = binop (cmp Float.ge)
     let abs = unop Float.abs
     let neg = unop Float.neg
     let sqrt = unop Float.sqrt

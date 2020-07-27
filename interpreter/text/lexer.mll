@@ -419,11 +419,11 @@ rule token = parse
   | "output" { OUTPUT }
 
   | (simd_shape as s)".eq"
-    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
-      BINARY (simdop s i8x16_eq i16x8_eq i32x4_eq unreachable unreachable unreachable) }
+    { except ["i64x2"] s lexbuf;
+      BINARY (simdop s i8x16_eq i16x8_eq i32x4_eq unreachable f32x4_eq f64x2_eq) }
   | (simd_shape as s)".ne"
-    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
-      BINARY (simdop s i8x16_ne i16x8_ne i32x4_ne unreachable unreachable unreachable) }
+    { except ["i64x2"] s lexbuf;
+      BINARY (simdop s i8x16_ne i16x8_ne i32x4_ne unreachable f32x4_ne f64x2_ne) }
   | (simd_int_shape as s)".lt_s"
     { except ["i64x2"] s lexbuf;
       BINARY (simd_int_op s i8x16_lt_s i16x8_lt_s i32x4_lt_s unreachable) }
@@ -448,6 +448,10 @@ rule token = parse
   | (simd_int_shape as s)".ge_u"
     { except ["i64x2"] s lexbuf;
       BINARY (simd_int_op s i8x16_ge_u i16x8_ge_u i32x4_ge_u unreachable) }
+  | (simd_float_shape as s)".lt" { BINARY (simd_float_op s f32x4_lt f64x2_lt) }
+  | (simd_float_shape as s)".le" { BINARY (simd_float_op s f32x4_le f64x2_le) }
+  | (simd_float_shape as s)".gt" { BINARY (simd_float_op s f32x4_gt f64x2_gt) }
+  | (simd_float_shape as s)".ge" { BINARY (simd_float_op s f32x4_ge f64x2_ge) }
   | vxxx".not" { UNARY v128_not }
   | vxxx".and" { UNARY v128_and }
   | vxxx".andnot" { UNARY v128_andnot }

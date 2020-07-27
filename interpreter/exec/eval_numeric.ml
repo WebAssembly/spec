@@ -201,12 +201,24 @@ struct
       | I64x2 Add -> SXX.I64x2.add
       | I64x2 Sub -> SXX.I64x2.sub
       | I64x2 Mul -> SXX.I64x2.mul
+      | F32x4 Eq -> SXX.F32x4.eq
+      | F32x4 Ne -> SXX.F32x4.ne
+      | F32x4 Lt -> SXX.F32x4.lt
+      | F32x4 Le -> SXX.F32x4.le
+      | F32x4 Gt -> SXX.F32x4.gt
+      | F32x4 Ge -> SXX.F32x4.ge
       | F32x4 Add -> SXX.F32x4.add
       | F32x4 Sub -> SXX.F32x4.sub
       | F32x4 Mul -> SXX.F32x4.mul
       | F32x4 Div -> SXX.F32x4.div
       | F32x4 Min -> SXX.F32x4.min
       | F32x4 Max -> SXX.F32x4.max
+      | F64x2 Eq -> SXX.F64x2.eq
+      | F64x2 Ne -> SXX.F64x2.ne
+      | F64x2 Lt -> SXX.F64x2.lt
+      | F64x2 Le -> SXX.F64x2.le
+      | F64x2 Gt -> SXX.F64x2.gt
+      | F64x2 Ge -> SXX.F64x2.ge
       | F64x2 Add -> SXX.F64x2.add
       | F64x2 Sub -> SXX.F64x2.sub
       | F64x2 Mul -> SXX.F64x2.mul
