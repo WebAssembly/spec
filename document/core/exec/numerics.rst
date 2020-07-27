@@ -1058,11 +1058,13 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * If :math:`z` is a NaN, then return an element of :math:`\nans_N\{z\}`.
 
-* Else if :math:`z` has a negative sign, then return an element of :math:`\nans_N\{\}`.
+* Else if :math:`z` is negative infinity, then return an element of :math:`\nans_N\{\}`.
 
 * Else if :math:`z` is positive infinity, then return positive infinity.
 
 * Else if :math:`z` is a zero, then return that zero.
+
+* Else if :math:`z` has a negative sign, then return an element of :math:`\nans_N\{\}`.
 
 * Else return the square root of :math:`z`.
 
