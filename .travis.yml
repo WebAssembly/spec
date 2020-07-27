@@ -16,7 +16,7 @@ addons:
       - yarn
 
 install:
-  - opam init --auto-setup --compiler=4.07.1
+  - opam init --auto-setup --compiler=4.08.1
   - eval $(opam env)
   - opam --version
   - ocaml --version
