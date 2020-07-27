@@ -374,6 +374,7 @@ plain_instr :
   | BINARY { fun c -> $1 }
   | TERNARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
+  | SPLAT { fun c -> $1 }
   | EXTRACT_LANE NAT { let at = at () in fun c -> $1 (nat $2 at) }
   | SHIFT { fun c -> $1 }
 
