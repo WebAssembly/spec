@@ -34,9 +34,11 @@ Reference Types
    \begin{array}{llcll@{\qquad\qquad}l}
    \production{reference type} & \Treftype &::=&
      \text{funcref} &\Rightarrow& \FUNCREF \\ &&|&
+     \text{exnref} &\Rightarrow& \EXNREF \\ &&|&
      \text{externref} &\Rightarrow& \EXTERNREF \\
    \production{referenced type} & \Trefedtype &::=&
      \text{func} &\Rightarrow& \FUNCREF \\ &&|&
+     \text{exn} &\Rightarrow& \EXNREF \\ &&|&
      \text{extern} &\Rightarrow& \EXTERNREF \\
    \end{array}
 

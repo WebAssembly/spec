@@ -117,21 +117,22 @@ Each event has an `attribute` and a `type`. Currently, the attribute can only
 specify that the event is an exception. In the future, additional attribute
 values may be added when other events are added to WebAssembly.
 
-The type of an event is denoted by an index to a function signature defined in
-the `type` section. The parameters of the function signature defines the list of
-values associated with the exception event. The result type must be 'void'.
-
-An `event tag` is a value to distinguish different events, while an `event
-index` is a numeric name to refer to an (imported or defined) event tag within a
-module (see [event index space](#event-index-space) for details).
+To allow for such a future extension possibility, we reserve a byte in the binary
+format of an exception definition, set to 0 to denote an exception attribute,
+but for the moment we won't use the term event in the formal spec.
 
 ### Exceptions
 
 An `exception` is an internal construct in WebAssembly . WebAssembly exceptions
-are defined in the `event` and import sections of a module. Each event (with an
-exception attribute) defines an `exception`. The event index is also called the
-`exception index`. Similarly, the corresponding event tag is called an
-`exception tag`.
+are defined in the `exception` and import sections of a module.
+
+The type of an exception is denoted by an index to a function signature defined in
+the `type` section. The parameters of the function signature define the list of
+values associated with the exception. The result type must be empty.
+
+An `exception tag` is a value to distinguish different exceptions, while an `exception
+index` is a numeric name to refer to an (imported or defined) exception tag within a
+module (see [exception index space](#exception-index-space) for details).
 
 Exception indices are used by:
 
@@ -322,9 +323,9 @@ The following rules are added to *instructions*:
 
 ```
   try blocktype instruction* catch instruction* end |
-  throw except_index |
+  throw (exception except_index) |
   rethrow |
-  br_on_exn label except_index
+  br_on_exn label (exception except_index)
 ```
 
 Like the `block`, `loop`, and `if` instructions, the `try` instruction is
@@ -341,18 +342,18 @@ tags.
 This section describes change in the [Modules
 document](https://github.com/WebAssembly/design/blob/master/Modules.md).
 
-### Event index space
+### Exception index space
 
-The `event index space` indexes all imported and internally-defined events,
+The `exception index space` indexes all imported and internally-defined exceptions,
 assigning monotonically-increasing indices based on the order defined in the
-import and event sections. Thus, the index space starts at zero with imported
-events, followed by internally-defined events in the [event
-section](#event-section).
+import and exception sections. Thus, the index space starts at zero with imported
+exceptions, followed by internally-defined exceptions in the
+[exception section](#exception-section).
 
-The event index space defines the (module) static version of runtime event tags.
-For event indices that are not imported/exported, the corresponding event tag is
-guaranteed to be unique over all loaded modules. Events that are imported or
-exported alias the respective events defined elsewhere, and use the same tag.
+The exception index space defines the (module) static version of runtime exception tags.
+For exception indices that are not imported/exported, the corresponding exception tag is
+guaranteed to be unique over all loaded modules. Exceptions that are imported or
+exported alias the respective exceptions defined elsewhere, and use the same tag.
 
 ## Changes to the binary model
 
@@ -378,19 +379,19 @@ above.
 
 #### Other Types
 
-##### event_type
+##### exception_type
 
-The set of event attributes are:
+We reserve a bit to denote the exception attribute:
 
 | Name      | Value |
 |-----------|-------|
 | Exception | 0     |
 
-Each event type has the fields:
+Each exception type has the fields:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `attribute` | `varuint32` | The attribute of the event. |
+| `attribute` | `varuint32` | The attribute of an exception. |
 | `type` | `varuint32` | The type index for its corresponding type signature |
 
 ##### external_kind
@@ -406,19 +407,19 @@ or defined:
 [definition](Modules.md#linear-memory-section)
 * `3` indicating a `Global` [import](Modules.md#imports) or
 [definition](Modules.md#global-section)
-* `4` indicating an `Event` [import](#import-section) or
-[definition](#event-section)
+* `4` indicating an `Exception` [import](#import-section) or
+[definition](#exception-section)
 
 ### Module structure
 
 #### High-level structure
 
-A new `event` section is introduced and is named `event`. If included, it must
+A new `exception` section is introduced and is named `exception`. If included, it must
 appear immediately after the memory section.
 
-##### Event section
+##### Exception section
 
-The `event` section is the named section 'event'. For ease of validation, this
+The `exception` section is the named section 'exception'. For ease of validation, this
 section comes after the [memory
 section](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#memory-section)
 and before the [global
@@ -432,7 +433,7 @@ So the list of all sections will be:
 | Function | `3` | Function declarations |
 | Table | `4` | Indirect function table and other tables |
 | Memory | `5` | Memory attributes |
-| Event | `13` | Event declarations |
+| Exception | `13` | Exception declarations |
 | Global | `6` | Global declarations |
 | Export | `7` | Exports |
 | Start | `8` | Start function declaration |
@@ -440,34 +441,34 @@ So the list of all sections will be:
 | Code | `10` | Function bodies (code) |
 | Data | `11` | Data segments |
 
-The event section declares a list of event types as follows:
+The exception section declares a list of exception types as follows:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| count | `varuint32` | count of the number of events to follow |
-| type | `event_type*` | The definitions of the event types |
+| count | `varuint32` | count of the number of exceptions to follow |
+| type | `exception_type*` | The definitions of the exception types |
 
 ##### Import section
 
-The import section is extended to include event definitions by extending an
+The import section is extended to include exception definitions by extending an
 `import_entry` as follows:
 
-If the `kind` is `Event`:
+If the `kind` is `Exception`:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `type` | `event_type` | the event being imported |
+| `type` | `exception_type` | the exception being imported |
 
 ##### Export section
 
-The export section is extended to reference event types by extending an
+The export section is extended to reference exception types by extending an
 `export_entry` as follows:
 
-If the `kind` is `Event`:
+If the `kind` is `Exception`:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `index` | `varuint32` | the index into the corresponding event index space |
+| `index` | `varuint32` | the index into the corresponding exception index space |
 
 ##### Name section
 
@@ -478,12 +479,12 @@ follows:
 | --------- | ---- | ----------- |
 | [Function](#function-names) | `1` | Assigns names to functions |
 | [Local](#local-names) | `2` | Assigns names to locals in functions |
-| [Event](#event-names) | `3` | Assigns names to event types |
+| [Exception](#exception-names) | `3` | Assigns names to exception types |
 
-###### Event names
+###### Exception names
 
-The event names subsection is a `name_map` which assigns names to a subset of
-the event indices (Used for both imports and module-defined).
+The exception names subsection is a `name_map` which assigns names to a subset of
+the exception indices (Used for both imports and module-defined).
 
 ### Control flow operators
 

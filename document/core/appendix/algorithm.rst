@@ -25,13 +25,13 @@ Types are representable as an enumeration.
 
 .. code-block:: pseudo
 
-   type val_type = I32 | I64 | F32 | F64 | Funcref | Externref
+   type val_type = I32 | I64 | F32 | F64 | Funcref | Exnref | Externref
 
    func is_num(t : val_type) : bool =
      return t = I32 || t = I64 || t = F32 || t = F64
 
    func is_ref(t : val_type) : bool =
-     return t = Funcref || t = Externref
+     return t = Funcref || t = Exnref || t = Externref
 
 The algorithm uses two separate stacks: the *value stack* and the *control stack*.
 The former tracks the :ref:`types <syntax-valtype>` of operand values on the :ref:`stack <stack>`,
@@ -209,6 +209,15 @@ Other instructions are checked in a similar manner.
          let frame = pop_ctrl()
          error_if(frame.opcode =/= if)
          push_ctrl(else, frame.start_types, frame.end_types)
+
+       case (try t1*->t2*)
+         pop_vals([t1*])
+         push_ctrl(try, [t1*], [t2*])
+
+       case (catch)
+         let frame = pop_ctrl()
+         error_if(frame.opcode =/= try)
+         push_ctrl(catch, [exnref], frame.end_types)
 
        case (br n)
          error_if(ctrls.size() < n)

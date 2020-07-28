@@ -24,7 +24,7 @@ That is, they only formulate the constraints, they do not define an algorithm.
 The skeleton of a sound and complete algorithm for type-checking instruction sequences according to this specification is provided in the :ref:`appendix <algo-valid>`.
 
 
-.. index:: ! context, function type, table type, memory type, global type, value type, result type, index space, module, function
+.. index:: ! context, function type, table type, memory type, exception type, global type, value type, result type, index space, module, function, exception
 .. _context:
 
 Contexts
@@ -37,6 +37,7 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Functions*: the list of functions declared in the current module, represented by their function type.
 * *Tables*: the list of tables declared in the current module, represented by their table type.
 * *Memories*: the list of memories declared in the current module, represented by their memory type.
+* *Exceptions*: the list of exceptions declared in the current module, represented by their exception type.
 * *Globals*: the list of globals declared in the current module, represented by their global type.
 * *Element Segments*: the list of element segments declared in the current module, represented by their element type.
 * *Data Segments*: the list of data segments declared in the current module, each represented by an |ok| entry.
@@ -60,6 +61,7 @@ More concretely, contexts are defined as :ref:`records <notation-record>` :math:
         & \CFUNCS & \functype^\ast, \\
         & \CTABLES & \tabletype^\ast, \\
         & \CMEMS & \memtype^\ast, \\
+	& \CEXNS & \exntype^\ast, \\
         & \CGLOBALS & \globaltype^\ast, \\
         & \CELEMS & \reftype^\ast, \\
         & \CDATAS & {\ok}^\ast, \\

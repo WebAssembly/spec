@@ -76,7 +76,7 @@ Store
 
 .. math::
    \begin{array}{lclll}
-   \F{store\_init}() &=& \{ \SFUNCS~\epsilon,~ \SMEMS~\epsilon,~ \STABLES~\epsilon,~ \SGLOBALS~\epsilon \} \\
+   \F{store\_init}() &=& \{ \SFUNCS~\epsilon,~ \SMEMS~\epsilon, ~\SEXNS~\epsilon,~ \STABLES~\epsilon,~ \SGLOBALS~\epsilon \} \\
    \end{array}
 
 
@@ -538,6 +538,28 @@ Memories
    \F{mem\_grow}(S, a, n) &=& \ERROR && (\otherwise) \\
    \end{array}
 
+
+.. index:: exception, exception address, store, exception instance, exception type, function type
+.. _embed-exn:
+
+Exceptions
+~~~~~~~~~~
+
+.. _embedd-exn-alloc:
+
+:math:`\F{exn\_alloc}(\store, \exntype) : (\store, \exnaddr)`
+.............................................................
+
+1. Pre-condition: :math:`exntype` is :ref:`valid <valid-exntype>`.
+
+2. Let :math:`\exnaddr` be the result of :ref:`allocating an exception <alloc-exn>` in :math:`\store` with :ref:`exception type <syntax-exntype>` :math:`\exntype`.
+
+3. Return the new store paired with :math:`\exnaddr`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{exn\_alloc}(S, \X{et}) &=& (S', \X{a}) && (\iff \allocexn(S, \X{et}) = S', \X{a}) \\
+   \end{array}
 
 
 .. index:: global, global address, store, global instance, global type, value

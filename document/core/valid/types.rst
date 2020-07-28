@@ -2,7 +2,7 @@ Types
 -----
 
 Most :ref:`types <syntax-type>` are universally valid.
-However, restrictions apply to :ref:`limits <syntax-limits>`, which must be checked during validation.
+However, restrictions apply to :ref:`exception types <syntax-exntype>` and to :ref:`limits <syntax-limits>`, which must be checked during validation.
 Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`function types <syntax-functype>` for ease of processing.
 
 
@@ -146,6 +146,31 @@ Memory Types
    }
 
 
+.. index:: exception type, function type
+   pair: validation; exception type
+   single: abstract syntax; exception type
+.. _valid-exntype:
+
+Exception Types
+~~~~~~~~~~~~~~~
+
+:math:`[t_1^n] \to [t_2^m]`
+...........................
+
+* The :ref:`function type <syntax-functype>` :math:`[t_1^n] \to [t_2^m]` must be :ref:`valid <valid-functype>`.
+
+* The type sequence :math:`t_2^m` must be empty.
+
+* Then the exception type is valid.
+
+.. math::
+   \frac{
+     \vdashfunctype [t^n] \to [] \ok
+   }{
+     \vdashexntype [t^n] \to [] \ok
+   }
+
+
 .. index:: global type, value type, mutability
    pair: validation; global type
    single: abstract syntax; global type
@@ -214,6 +239,20 @@ External Types
      \vdashmemtype \memtype \ok
    }{
      \vdashexterntype \ETMEM~\memtype \ok
+   }
+
+:math:`\ETEXN~\exntype`
+.......................
+
+* The :ref:`exception type <syntax-exntype>` :math:`\exntype` must be :ref:`valid <valid-exntype>`.
+
+* Then the external type is valid.
+
+.. math::
+   \frac{
+     \vdashexntype \exntype \ok
+   }{
+     \vdashexterntype \ETEXN~\exntype \ok
    }
 
 :math:`\ETGLOBAL~\globaltype`
@@ -335,6 +374,23 @@ An :ref:`external type <syntax-externtype>` :math:`\ETMEM~\limits_1` matches :ma
      \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
    }{
      \vdashexterntypematch \ETMEM~\limits_1 \matchesexterntype \ETMEM~\limits_2
+   }
+
+
+.. index:: exception type, value type
+.. _match-exntype:
+
+Exceptions
+..........
+
+An :ref:`external type <syntax-externtype>` :math:`\ETEXN~\exntype_1` matches :math:`\ETEXN~\exntype_2`  if and only if:
+
+* Both :math:`\ETEXN~\exntype_1` and :math:`\ETEXN~\exntype_2` are the same.
+
+.. math::
+   \frac{
+   }{
+     \vdashexterntypematch \ETEXN~\exntype \matchesexterntype \ETEXN~\exntype
    }
 
 

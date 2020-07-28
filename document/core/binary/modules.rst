@@ -9,11 +9,12 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    This separation enables *parallel* and *streaming* compilation of the functions in a module.
 
 
-.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index
+.. index:: index, type index, function index, table index, memory index, exception index, global index, element index, data index, local index, label index
    pair: binary format; type index
    pair: binary format; function index
    pair: binary format; table index
    pair: binary format; memory index
+   pair: binary format; exception index
    pair: binary format; global index
    pair: binary format; element index
    pair: binary format; data index
@@ -23,6 +24,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
 .. _binary-funcidx:
 .. _binary-tableidx:
 .. _binary-memidx:
+.. _binary-exnidx:
 .. _binary-globalidx:
 .. _binary-elemidx:
 .. _binary-dataidx:
@@ -41,6 +43,7 @@ All :ref:`indices <syntax-index>` are encoded with their respective value.
    \production{function index} & \Bfuncidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{table index} & \Btableidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{memory index} & \Bmemidx &::=& x{:}\Bu32 &\Rightarrow& x \\
+   \production{exception index} & \Bexnidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{global index} & \Bglobalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{element index} & \Belemidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{data index} & \Bdataidx &::=& x{:}\Bu32 &\Rightarrow& x \\
@@ -100,6 +103,7 @@ Id  Section
 10  :ref:`code section <binary-codesec>`           
 11  :ref:`data section <binary-datasec>`           
 12  :ref:`data count section <binary-datacountsec>`
+13  :ref:`exception section <binary-exnsec>`
 ==  ===============================================
 
 
@@ -146,7 +150,7 @@ It decodes into a vector of :ref:`function types <syntax-functype>` that represe
    \end{array}
 
 
-.. index:: ! import section, import, name, function type, table type, memory type, global type
+.. index:: ! import section, import, name, function type, table type, memory type, global type, exception type
    pair: binary format; import
    pair: section; import
 .. _binary-import:
@@ -170,7 +174,8 @@ It decodes into a vector of :ref:`imports <syntax-import>` that represent the |M
      \hex{00}~~x{:}\Btypeidx &\Rightarrow& \IDFUNC~x \\ &&|&
      \hex{01}~~\X{tt}{:}\Btabletype &\Rightarrow& \IDTABLE~\X{tt} \\ &&|&
      \hex{02}~~\X{mt}{:}\Bmemtype &\Rightarrow& \IDMEM~\X{mt} \\ &&|&
-     \hex{03}~~\X{gt}{:}\Bglobaltype &\Rightarrow& \IDGLOBAL~\X{gt} \\
+     \hex{03}~~\X{gt}{:}\Bglobaltype &\Rightarrow& \IDGLOBAL~\X{gt} \\ &&|&
+     \hex{04}~~\X{et}{:}\Bexn &\Rightarrow& \IDEXN~\X{et} \\
    \end{array}
 
 
@@ -257,7 +262,7 @@ It decodes into a vector of :ref:`globals <syntax-global>` that represent the |M
    \end{array}
 
 
-.. index:: ! export section, export, name, index, function index, table index, memory index, global index
+.. index:: ! export section, export, name, index, function index, table index, memory index, exception index, global index
    pair: binary format; export
    pair: section; export
 .. _binary-export:
@@ -281,7 +286,8 @@ It decodes into a vector of :ref:`exports <syntax-export>` that represent the |M
      \hex{00}~~x{:}\Bfuncidx &\Rightarrow& \EDFUNC~x \\ &&|&
      \hex{01}~~x{:}\Btableidx &\Rightarrow& \EDTABLE~x \\ &&|&
      \hex{02}~~x{:}\Bmemidx &\Rightarrow& \EDMEM~x \\ &&|&
-     \hex{03}~~x{:}\Bglobalidx &\Rightarrow& \EDGLOBAL~x \\
+     \hex{03}~~x{:}\Bglobalidx &\Rightarrow& \EDGLOBAL~x \\ &&|&
+     \hex{04}~~x{:}\Bexnidx &\Rightarrow& \EDEXN~x \\
    \end{array}
 
 
@@ -328,21 +334,21 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
      \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg} \\
    \production{element segment} & \Belem &::=&
      \hex{00}~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \ETYPE~\FUNCREF, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
+       &\Rightarrow& \{ \EELEMTYPE~\FUNCREF, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
      \hex{01}~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EPASSIVE \} \\ &&|&
+       &\Rightarrow& \{ \EELEMTYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EPASSIVE \} \\ &&|&
      \hex{02}~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
+       &\Rightarrow& \{ \EELEMTYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
      \hex{03}~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARATIVE \} \\ &&|&
+       &\Rightarrow& \{ \EELEMTYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARATIVE \} \\ &&|&
      \hex{04}~~e{:}\Bexpr~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \{ \ETYPE~\FUNCREF, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
+       &\Rightarrow& \{ \EELEMTYPE~\FUNCREF, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
      \hex{05}~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EPASSIVE \} \\ &&|&
+       &\Rightarrow& \{ \EELEMTYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EPASSIVE \} \\ &&|&
      \hex{06}~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
+       &\Rightarrow& \{ \EELEMTYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
      \hex{07}~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARATIVE \} \\
+       &\Rightarrow& \{ \EELEMTYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARATIVE \} \\
    \production{element kind} & \Belemkind &::=&
      \hex{00} &\Rightarrow& \FUNCREF \\
    \end{array}
@@ -476,7 +482,29 @@ It decodes into an optional :ref:`u32 <syntax-uint>` that represents the number 
    instead of deferring validation.
 
 
-.. index:: module, section, type definition, function type, function, table, memory, global, element, data, start function, import, export, context, version
+.. index:: ! exception section, exception, exception type, function type index
+   pair: binary format; exception
+   pair: section; exception
+.. _binary-exn:
+.. _binary-exnsec:
+
+Exception Section
+~~~~~~~~~~~~~~~~~
+
+The *exception section* has the id 13.
+It decodes into a vector of :ref:`exceptions <syntax-exn>` that represent the |MEXNS|
+component of a :ref:`module <syntax-module>`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{exception section} & \Bexnsec &::=&
+     \X{exception}^\ast{:}\Bsection_{13}(\Bvec(\Bexn)) &\Rightarrow& \X{exception}^\ast \\
+   \production{exception} & \Bexn &::=&
+     \hex{00}~~\X{x}{:}\Btypeidx &\Rightarrow& \{ \ETYPE~\X{x} \} \\
+   \end{array}
+
+
+.. index:: module, section, type definition, function type, function, table, memory, exception, global, element, data, start function, import, export, context, version
    pair: binary format; module
 .. _binary-magic:
 .. _binary-version:
@@ -518,6 +546,8 @@ Furthermore, it must be present if any :math:`data index <syntax-dataidx>` occur
      \Bcustomsec^\ast \\ &&&
      \mem^\ast{:\,}\Bmemsec \\ &&&
      \Bcustomsec^\ast \\ &&&
+     \exn^\ast{:\,}\Bexnsec \\ &&&
+     \Bcustomsec^\ast \\ &&&
      \global^\ast{:\,}\Bglobalsec \\ &&&
      \Bcustomsec^\ast \\ &&&
      \export^\ast{:\,}\Bexportsec \\ &&&
@@ -538,6 +568,7 @@ Furthermore, it must be present if any :math:`data index <syntax-dataidx>` occur
        \MFUNCS~\func^n, \\
        \MTABLES~\table^\ast, \\
        \MMEMS~\mem^\ast, \\
+       \MEXNS~\exn^\ast, \\
        \MGLOBALS~\global^\ast, \\
        \MELEMS~\elem^\ast, \\
        \MDATAS~\data^m, \\

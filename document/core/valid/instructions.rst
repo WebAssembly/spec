@@ -746,7 +746,7 @@ Memory Instructions
    }
 
 
-.. index:: control instructions, structured control, label, block, branch, block type, label index, function index, type index, vector, polymorphism, context
+.. index:: control instructions, structured control, label, block, branch, block type, label index, function index, type index, exception index, vector, polymorphism, context
    pair: validation; instruction
    single: abstract syntax; instruction
 .. _valid-label:
@@ -870,6 +870,113 @@ Control Instructions
 
 .. note::
    The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^\ast]` inserts the new label type at index :math:`0`, shifting all others.
+
+
+
+.. _valid-try:
+
+:math:`\TRY~\blocktype~\instr_1^\ast~\CATCH~\instr_2^\ast~\END`
+...............................................................
+
+
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
+
+* Under context :math:`C'`,
+  the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Under context :math:`C'`,
+  the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[\EXNREF] \to [t_2^\ast]`.
+
+* Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+.. math::
+   \frac{
+     \begin{array}{lll}
+     C \vdashblocktype \blocktype : [t_1^\ast] \to [t_2^\ast] & \qquad & \\
+     C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr_1^\ast : [t_1^\ast] \to [t_2^\ast]
+     & \qquad &
+     C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr_2^\ast : [\EXNREF] \to [t_2^\ast]\\
+     \end{array}
+   }{
+     C \vdashinstr \TRY~\blocktype~\instr_1^\ast~\CATCH~\instr_2^\ast~\END : [t_1^\ast] \to [t_2^\ast]
+   }
+
+.. note::
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t_2^\ast]` inserts the new label type at index :math:`0`, shifting all others.
+
+
+.. _valid-throw:
+
+:math:`\THROW~x`
+................
+
+* The exception :math:`C.\CEXNS[x]` must be defined in the context.
+
+* Let :math:`[t^\ast] \to []` be its :ref:`exception type <syntax-exntype>`.
+
+* Then the instruction is valid with type :math:`[t_1^\ast t^\ast] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+
+.. math::
+   \frac{
+     C.\CEXNS[x] = [t^\ast] \to []
+   }{
+     C \vdashinstr \THROW~x : [t_1^\ast t^\ast] \to [t_2^\ast]
+   }
+
+
+.. note::
+   The |THROW| instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+
+.. _valid-rethrow:
+
+:math:`\RETHROW`
+................
+
+* The instruction is valid with type :math:`[t_1^\ast \EXNREF] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \RETHROW : [t_1^\ast \EXNREF] \to [t_2^\ast]
+   }
+
+
+.. note::
+   The |RETHROW| instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+
+.. _valid-br_on_exn:
+
+:math:`\BRONEXN~l~x`
+....................
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* The exception :math:`C.\CEXNS[x]` must be defined in the context.
+
+* Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
+
+* Assert: the exception :math:`C.\CEXNS[x]` is :math:`[t'^\ast]\to[]`.
+
+* The type sequence :math:`t'^\ast` must be the same as the type sequence :math:`t^\ast`.
+
+* Then the instruction is valid with type :math:`[\EXNREF]\to[\EXNREF]`
+
+.. math::
+   \frac{
+     C.\CLABELS[l]=[t^\ast]
+     \qquad
+     C.\CEXNS[x]=[t^\ast]\to[]
+   }{
+     C \vdashinstr \BRONEXN~l~x : [\EXNREF]\to[\EXNREF]
+   }
+
+.. note::
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
+
 
 
 .. _valid-br:

@@ -98,6 +98,36 @@ Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>`.
    }
 
 
+.. index:: exception, exception type, function type
+   pair: validation; exception
+   single: abstract syntax; exception
+.. _valid-exn:
+
+Exceptions
+~~~~~~~~~~
+
+Exceptions :math:`\exn` are classified by their :ref:`exception type <syntax-exntype>`,
+which contains an index to a :ref:`function type <syntax-functype>` with empty result.
+
+:math:`\{ \ETYPE~x \}`
+......................
+
+* The type :math:`C.\CTYPES[x]` must be defined in the context.
+
+* Let :math:`[t^\ast] \to [t'^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+
+* The sequence :math:`t'^\ast` must be empty.
+
+* Then the exception definition is valid with :ref:`exception type <syntax-exntype>` :math:`[t^\ast]\to[]`.
+
+.. math::
+   \frac{
+     C.\CTYPES[x] = [t^\ast] \to []
+   }{
+     C \vdashexn \{ \ETYPE~x \} : [t^\ast]\to[]
+   }
+
+
 .. index:: global, global type, expression
    pair: validation; global
    single: abstract syntax; global
@@ -144,8 +174,8 @@ Element Segments
 
 Element segments :math:`\elem` are classified by the :ref:`reference type <syntax-reftype>` of their elements.
 
-:math:`\{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \}`
-.......................................................
+:math:`\{ \EELEMTYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \}`
+...........................................................
 
 * For each :math:`e_i` in :math:`e^\ast`,
 
@@ -166,7 +196,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
      \qquad
      C \vdashelemmode \elemmode : t
    }{
-     C \vdashelem \{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \} : t
+     C \vdashelem \{ \EELEMTYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \} : t
    }
 
 
@@ -315,7 +345,7 @@ Start function declarations :math:`\start` are not classified by any type.
    }
 
 
-.. index:: export, name, index, function index, table index, memory index, global index
+.. index:: export, name, index, function index, table index, memory index, exception index, global index
    pair: validation; export
    single: abstract syntax; export
 .. _valid-exportdesc:
@@ -387,6 +417,21 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
    }
 
 
+:math:`\EDEXN~x`
+................
+
+* The exception :math:`C.\CEXNS[x]` must be defined in the context.
+
+* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETEXN~C.\CEXNS[x]`.
+
+.. math::
+   \frac{
+     C.\CEXNS[x] = \exntype
+   }{
+     C \vdashexportdesc \EDEXN~x : \ETEXN~\exntype
+   }
+
+
 :math:`\EDGLOBAL~x`
 ...................
 
@@ -402,7 +447,7 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
    }
 
 
-.. index:: import, name, function type, table type, memory type, global type
+.. index:: import, name, function type, table type, memory type, exception type, global type
    pair: validation; import
    single: abstract syntax; import
 .. _valid-importdesc:
@@ -476,6 +521,26 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
    }
 
 
+:math:`\IDEXN~\exn`
+...................
+
+* Let :math:`\{ \ETYPE~x \}` be the exception :math:`\exn`.
+
+* The type :math:`C.\CTYPES[x]` must be defined in the context.
+
+* The :ref:`exception type <syntax-exntype>` :math:`C.\CTYPES[x]` must be a :ref:`valid exception type <valid-exntype>`.
+
+* Then the import description is valid with type :math:`\ETEXN~C.\CTYPES[x]`.
+
+.. math::
+   \frac{
+     \vdashexntype C.\CTYPES[x] \ok
+   }{
+     C \vdashimportdesc \IDEXN~\{ \ETYPE~x \} : \ETEXN~C.\CTYPES[x]
+   }
+
+
+
 :math:`\IDGLOBAL~\globaltype`
 .............................
 
@@ -491,7 +556,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
    }
 
 
-.. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
+.. index:: module, type definition, function type, function, table, memory, exception, global, element, data, start function, import, export, context
    pair: validation; module
    single: abstract syntax; module
 .. _valid-module:
@@ -521,6 +586,9 @@ Instead, the context :math:`C` for validation of the module's content is constru
   * :math:`C.\CMEMS` is :math:`\etmems(\X{it}^\ast)` concatenated with :math:`\X{mt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`memory types <syntax-memtype>` :math:`\X{mt}^\ast` as determined below,
 
+  * :math:`C.\CEXNS` is :math:`\etexns(\X{it}^\ast)` concatenated with :math:`\X{exnt}^\ast`,
+    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`exception types <syntax-exntype>` :math:`\X{exnt}^\ast` as determined below,
+
   * :math:`C.\CGLOBALS` is :math:`\etglobals(\X{it}^\ast)` concatenated with :math:`\X{gt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}^\ast` as determined below,
 
@@ -544,6 +612,8 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C'.\CREFS` is the same as :math:`C.\CREFS`,
 
+  * :math:`C'.\CEXNS` is the same as :math:`C.\CEXNS`,
+
   * all other fields are empty.
 
 * Under the context :math:`C`:
@@ -559,6 +629,9 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
     the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\X{mt}_i`.
+
+  * For each :math:`\exn_i` in :math:`\module.\MEXNS`,
+    the definition :math:`\exn_i` must be :ref:`valid <valid-exn>` with an :ref:`exception type <syntax-exntype>` :math:`\X{exnt}_i`.
 
   * For each :math:`\global_i` in :math:`\module.\MGLOBALS`:
 
@@ -590,6 +663,8 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
 * Let :math:`\X{mt}^\ast` be the concatenation of the internal :ref:`memory types <syntax-memtype>` :math:`\X{mt}_i`, in index order.
 
+* Let :math:`\X{exnt}^\ast` be the concatenation of the internal :ref:`exception types <syntax-exntype>` :math:`\X{exnt}_i`, in index order.
+
 * Let :math:`\X{gt}^\ast` be the concatenation of the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}_i`, in index order.
 
 * Let :math:`\X{rt}^\ast` be the concatenation of the :ref:`reference types <syntax-reftype>` :math:`\X{rt}_i`, in index order.
@@ -611,8 +686,10 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \quad
      (C \vdashmem \mem : \X{mt})^\ast
      \quad
-     (C' \vdashglobal \global : \X{gt})^\ast
+     (C \vdashexn \exn : \X{exnt})^\ast
      \\
+     (C' \vdashglobal \global : \X{gt})^\ast
+     \quad
      (C \vdashelem \elem : \X{rt})^\ast
      \quad
      (C \vdashdata \data \ok)^n
@@ -620,23 +697,26 @@ Instead, the context :math:`C` for validation of the module's content is constru
      (C \vdashstart \start \ok)^?
      \quad
      (C \vdashimport \import : \X{it})^\ast
-     \quad
-     (C \vdashexport \export : \X{et})^\ast
      \\
+     (C \vdashexport \export : \X{et})^\ast
+     \qquad
      \X{ift}^\ast = \etfuncs(\X{it}^\ast)
      \qquad
      \X{itt}^\ast = \ettables(\X{it}^\ast)
      \qquad
      \X{imt}^\ast = \etmems(\X{it}^\ast)
+     \\
+     \X{iet}^\ast = \etexns(\X{it}^\ast)
      \qquad
      \X{igt}^\ast = \etglobals(\X{it}^\ast)
      \\
      x^\ast = \freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)
      \\
-     C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
+     C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CEXNS~\X{iet}^\ast\,\X{exnt}^\ast,\\
+        \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
-     C' = \{ \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
-     \qquad
+     C' = \{ \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS), \CEXNS~(C.\CEXNS) \} \qquad
+     \\
      |C.\CMEMS| \leq 1
      \qquad
      (\export.\ENAME)^\ast ~\F{disjoint}
@@ -647,6 +727,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
          \MFUNCS~\func^\ast,
          \MTABLES~\table^\ast,
          \MMEMS~\mem^\ast,
+         \MEXNS~\exn^\ast,
          \MGLOBALS~\global^\ast, \\
          \MELEMS~\elem^\ast,
          \MDATAS~\data^n,

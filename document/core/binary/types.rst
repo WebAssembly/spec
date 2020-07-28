@@ -42,6 +42,7 @@ Reference Types
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{reference type} & \Breftype &::=&
      \hex{70} &\Rightarrow& \FUNCREF \\ &&|&
+     \hex{68} &\Rightarrow& \EXNREF \\ &&|&
      \hex{6F} &\Rightarrow& \EXTERNREF \\
    \end{array}
 
@@ -168,3 +169,25 @@ Global Types
      \hex{00} &\Rightarrow& \MCONST \\ &&|&
      \hex{01} &\Rightarrow& \MVAR \\
    \end{array}
+
+
+.. index:: exception type, function type
+   pair: binary format; exception type
+.. _binary-exntype:
+
+Exception Types
+~~~~~~~~~~~~~~~
+
+:ref:`Exception types <syntax-exntype>` are encoded by their function type.
+
+.. math::
+   \begin{array}{llclll}
+   \production{exception type} & \Bexntype &::=&
+     \hex{00}~~ft{:}\Bfunctype &\Rightarrow& ft \\
+   \end{array}
+
+The |Bfunctype| of an exception must have an empty result.
+
+.. note::
+   In future versions of WebAssembly,
+   the preceding zero byte may encode additional flags.

@@ -350,7 +350,7 @@ The |DATADROP| instruction prevents further use of a passive data segment. This 
    This restriction may be lifted in future versions.
 
 
-.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, result type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
+.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, result type, label index, function index, type index, exception index, vector, trap, function, table, exception, function type, value type, type index, exception index
    pair: abstract syntax; instruction
    pair: abstract syntax; block type
    pair: block; type
@@ -360,6 +360,10 @@ The |DATADROP| instruction prevents further use of a passive data segment. This 
 .. _syntax-block:
 .. _syntax-loop:
 .. _syntax-if:
+.. _syntax-try:
+.. _syntax-throw:
+.. _syntax-rethrow:
+.. _syntax-br_on_exn:
 .. _syntax-br:
 .. _syntax-br_if:
 .. _syntax-br_table:
@@ -385,6 +389,10 @@ Instructions in this group affect the flow of control.
      \BLOCK~\blocktype~\instr^\ast~\END \\&&|&
      \LOOP~\blocktype~\instr^\ast~\END \\&&|&
      \IF~\blocktype~\instr^\ast~\ELSE~\instr^\ast~\END \\&&|&
+     \TRY~\blocktype~instr^\ast~\CATCH~\instr^\ast~\END \\&&|&
+     \THROW~\exnidx \\&&|&
+     \RETHROW \\&&|&
+     \BRONEXN~\labelidx~\exnidx \\&&|&
      \BR~\labelidx \\&&|&
      \BRIF~\labelidx \\&&|&
      \BRTABLE~\vec(\labelidx)~\labelidx \\&&|&
@@ -397,9 +405,12 @@ The |NOP| instruction does nothing.
 
 The |UNREACHABLE| instruction causes an unconditional :ref:`trap <trap>`.
 
-The |BLOCK|, |LOOP| and |IF| instructions are *structured* instructions.
-They bracket nested sequences of instructions, called *blocks*, terminated with, or separated by, |END| or |ELSE| pseudo-instructions.
+The |BLOCK|, |LOOP|, |IF|, and |TRY| instructions are *structured* instructions.
+They bracket nested sequences of instructions, called *blocks*, terminated with, or separated by, either |END|, |ELSE|, or |CATCH| pseudo-instructions.
 As the grammar prescribes, they must be well-nested.
+
+The instructions |TRY|, |THROW|, |RETHROW|, and |BRONEXN| are concerned with handling exceptions.
+The |THROW| and |RETHROW| instructions alter control flow by searching for the catching-try block, if any.
 
 A structured instruction can consume *input* and produce *output* on the operand stack according to its annotated *block type*.
 It is given either as a :ref:`type index <syntax-funcidx>` that refers to a suitable :ref:`function type <syntax-functype>`, or as an optional :ref:`value type <syntax-valtype>` inline, which is a shorthand for the function type :math:`[] \to [\valtype^?]`.
@@ -425,6 +436,7 @@ In case of |LOOP| it is a *backward jump* to the beginning of the loop.
 Branch instructions come in several flavors:
 |BR| performs an unconditional branch,
 |BRIF| performs a conditional branch,
+|BRONEXN| performs a branch if the exception on the stack matches the specified exception index,
 and |BRTABLE| performs an indirect branch through an operand indexing into the label vector that is an immediate to the instruction, or to a default target if the operand is out of bounds.
 The |RETURN| instruction is a shortcut for an unconditional branch to the outermost block, which implicitly is the body of the current function.
 Taking a branch *unwinds* the operand stack up to the height where the targeted structured control instruction was entered.

@@ -13,11 +13,11 @@ Instruction                                Binary Opcode              Type      
 :math:`\LOOP~\X{bt}`                       :math:`\hex{03}`           :math:`[t_1^\ast] \to [t_2^\ast]`              :ref:`validation <valid-loop>`            :ref:`execution <exec-loop>`
 :math:`\IF~\X{bt}`                         :math:`\hex{04}`           :math:`[t_1^\ast] \to [t_2^\ast]`              :ref:`validation <valid-if>`              :ref:`execution <exec-if>`
 :math:`\ELSE`                              :math:`\hex{05}`
-(reserved)                                 :math:`\hex{06}`
-(reserved)                                 :math:`\hex{07}`
-(reserved)                                 :math:`\hex{08}`
-(reserved)                                 :math:`\hex{09}`
-(reserved)                                 :math:`\hex{0A}`
+:math:`\TRY~\X{bt}`                        :math:`\hex{06}`           :math:`[t_1^\ast] \to [t_2^\ast]`              :ref:`validation <valid-try>`             :ref:`execution <exec-try>`
+:math:`\CATCH`                             :math:`\hex{07}`
+:math:`\THROW~x`                           :math:`\hex{08}`           :math:`[t_1^\ast~t^\ast] \to [t_2^\ast]`       :ref:`validation <valid-throw>`           :ref:`execution <exec-throw>`
+:math:`\RETHROW`                           :math:`\hex{09}`           :math:`[t_1^\ast~\EXNREF] \to [t_2^\ast]`      :ref:`validation <valid-rethrow>`         :ref:`execution <exec-rethrow>`
+:math:`\BRONEXN~l~x`                       :math:`\hex{0A}`           :math:`[\EXNREF] \to [\EXNREF]`                :ref:`validation <valid-br_on_exn>`       :ref:`execution <exec-br_on_exn>`
 :math:`\END`                               :math:`\hex{0B}`
 :math:`\BR~l`                              :math:`\hex{0C}`           :math:`[t_1^\ast~t^\ast] \to [t_2^\ast]`       :ref:`validation <valid-br>`              :ref:`execution <exec-br>`
 :math:`\BRIF~l`                            :math:`\hex{0D}`           :math:`[t^\ast~\I32] \to [t^\ast]`             :ref:`validation <valid-br_if>`           :ref:`execution <exec-br_if>`

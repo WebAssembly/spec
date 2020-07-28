@@ -41,7 +41,7 @@ Conventions
   That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.
 
 
-.. index:: ! reference type, reference, table, function, function type, null
+.. index:: ! reference type, reference, table, function, function type, exception, exception type, null
    pair: abstract syntax; reference type
    pair: reference; type
 .. _syntax-reftype:
@@ -54,10 +54,12 @@ Reference Types
 .. math::
    \begin{array}{llll}
    \production{reference type} & \reftype &::=&
-     \FUNCREF ~|~ \EXTERNREF \\
+     \FUNCREF ~|~ \EXNREF ~|~ \EXTERNREF \\
    \end{array}
 
 The type |FUNCREF| denotes the infinite union of all references to :ref:`functions <syntax-func>`, regardless of their :ref:`function types <syntax-functype>`.
+
+The type |EXNREF| denotes a caught :ref:`exception <syntax-exn>`.
 
 The type |EXTERNREF| denotes the infinite union of all references to objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
 
@@ -190,6 +192,28 @@ The limits are given in numbers of entries.
    In future versions of WebAssembly, additional element types may be introduced.
 
 
+.. index:: ! exception, exception type, function type
+   pair: abstract syntax; exception
+   single: exception; type
+.. _syntax-exntype:
+
+Exception Types
+~~~~~~~~~~~~~~~
+
+*Exception types* classify the signature of :ref:`exceptions <syntax-exn>` with a function type.
+
+.. math::
+   \begin{array}{llll}
+   \production{exception type} &\exntype &::=& \functype \\
+   \end{array}
+
+The parameters of |functype| define the list of values associated with the exception.
+Furthermore, it is an invariant of the semantics that every |functype| in a :ref:`valid <valid-exntype>` exception type has an empty result type.
+
+.. note::
+   Future versions of WebAssembly may allow non-empty result types in exceptions.
+
+
 .. index:: ! global type, ! mutability, value type, global, mutability
    pair: abstract syntax; global type
    pair: abstract syntax; mutability
@@ -213,7 +237,7 @@ Global Types
    \end{array}
 
 
-.. index:: ! external type, function type, table type, memory type, global type, import, external value
+.. index:: ! external type, function type, table type, memory type, exception type, global type, import, external value
    pair: abstract syntax; external type
    pair: external; type
 .. _syntax-externtype:
@@ -229,6 +253,7 @@ External Types
      \ETFUNC~\functype ~|~
      \ETTABLE~\tabletype ~|~
      \ETMEM~\memtype ~|~
+     \ETEXN~\exntype ~|~
      \ETGLOBAL~\globaltype \\
    \end{array}
 
@@ -244,5 +269,7 @@ It filters out entries of a specific kind in an order-preserving fashion:
 * :math:`\ettables(\externtype^\ast) = [\tabletype ~|~ (\ETTABLE~\tabletype) \in \externtype^\ast]`
 
 * :math:`\etmems(\externtype^\ast) = [\memtype ~|~ (\ETMEM~\memtype) \in \externtype^\ast]`
+
+* :math:`\etexns(\externtype^\ast) = [\exntype ~|~ (\ETEXN~\exntype) \in \externtype^\ast]`
 
 * :math:`\etglobals(\externtype^\ast) = [\globaltype ~|~ (\ETGLOBAL~\globaltype) \in \externtype^\ast]`
