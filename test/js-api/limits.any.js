@@ -277,6 +277,10 @@ testDynamicLimit(
     });
 
 test(() => {
+  assert_throws(
+      new RangeError(),
+      () => new WebAssembly.Memory({initial : kJSEmbeddingMaxMemoryPages + 1}));
+
   let memory = new WebAssembly.Memory(
       {initial : 1, maximum : kJSEmbeddingMaxMemoryPages + 1});
   assert_throws(new RangeError(),
@@ -284,6 +288,11 @@ test(() => {
 }, `Grow WebAssembly.Memory object beyond the embedder-defined limit`);
 
 test(() => {
+  assert_throws(
+      new RangeError(),
+      () => new WebAssembly.Table(
+          {element : "anyfunc", initial : kJSEmbeddingMaxTableSize + 1}));
+
   let memory = new WebAssembly.Table(
       {initial : 1, maximum : kJSEmbeddingMaxTableSize + 1, element: "anyfunc"});
   assert_throws(new RangeError(),
