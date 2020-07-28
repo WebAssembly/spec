@@ -10,13 +10,13 @@ const kJSEmbeddingMaxExports = 100000;
 const kJSEmbeddingMaxGlobals = 1000000;
 const kJSEmbeddingMaxDataSegments = 100000;
 
-const kJSEmbeddingMaxModuleSize = 1024 * 1024 * 1024;  // = 1 GiB
+const kJSEmbeddingMaxModuleSize = 1024 * 1024 * 1024; // = 1 GiB
 const kJSEmbeddingMaxFunctionSize = 7654321;
 const kJSEmbeddingMaxFunctionLocals = 50000;
 const kJSEmbeddingMaxFunctionParams = 1000;
-const kJSEmbeddingMaxFunctionReturns = 1;
+const kJSEmbeddingMaxFunctionReturns = 1000;
 const kJSEmbeddingMaxElementSegments = 10000000;
-const kJSEmbeddingMaxTables = 1;
+const kJSEmbeddingMaxTables = 100000;
 const kJSEmbeddingMaxMemories = 1;
 
 // Dynamic limits
@@ -37,42 +37,37 @@ function testLimit(name, min, limit, gen) {
   const buffer_with_limit = get_buffer(limit);
   const buffer_with_limit_plus_1 = get_buffer(limit + 1);
 
-  test(() => {
-    assert_true(WebAssembly.validate(buffer_with_min));
-  }, `Validate ${name} minimum`);
-  test(() => {
-    assert_true(WebAssembly.validate(buffer_with_limit));
-  }, `Validate ${name} limit`);
-  test(() => {
-    assert_false(WebAssembly.validate(buffer_with_limit_plus_1));
-  }, `Validate ${name} over limit`);
+  test(() => { assert_true(WebAssembly.validate(buffer_with_min)); },
+       `Validate ${name} minimum`);
+  test(() => { assert_true(WebAssembly.validate(buffer_with_limit)); },
+       `Validate ${name} limit`);
+  test(() => { assert_false(WebAssembly.validate(buffer_with_limit_plus_1)); },
+       `Validate ${name} over limit`);
 
+  test(() => { new WebAssembly.Module(buffer_with_min); },
+       `Compile ${name} minimum`);
+  test(() => { new WebAssembly.Module(buffer_with_limit); },
+       `Compile ${name} limit`);
   test(() => {
-    new WebAssembly.Module(buffer_with_min);
-  }, `Compile ${name} minimum`);
-  test(() => {
-    new WebAssembly.Module(buffer_with_limit);
-  }, `Compile ${name} limit`);
-  test(() => {
-    assert_throws(new WebAssembly.CompileError(), () => new WebAssembly.Module(buffer_with_limit_plus_1));
+    assert_throws(new WebAssembly.CompileError(),
+                  () => new WebAssembly.Module(buffer_with_limit_plus_1));
   }, `Compile ${name} over limit`);
 
+  promise_test(t => { return WebAssembly.compile(buffer_with_min); },
+               `Async compile ${name} minimum`);
+  promise_test(t => { return WebAssembly.compile(buffer_with_limit); },
+               `Async compile ${name} limit`);
   promise_test(t => {
-    return WebAssembly.compile(buffer_with_min);
-  }, `Async compile ${name} minimum`);
-  promise_test(t => {
-    return WebAssembly.compile(buffer_with_limit);
-  }, `Async compile ${name} limit`);
-  promise_test(t => {
-    return promise_rejects(t, new WebAssembly.CompileError(), WebAssembly.compile(buffer_with_limit_plus_1));
+    return promise_rejects(t, new WebAssembly.CompileError(),
+                           WebAssembly.compile(buffer_with_limit_plus_1));
   }, `Async compile ${name} over limit`);
 }
 
 testLimit("types", 1, kJSEmbeddingMaxTypes, (builder, count) => {
-        for (let i = 0; i < count; i++) {
-            builder.addType(kSig_i_i);
-        }
-    });
+  for (let i = 0; i < count; i++) {
+    builder.addType(kSig_i_i);
+  }
+});
 
 testLimit("functions", 1, kJSEmbeddingMaxFunctions, (builder, count) => {
         const type = builder.addType(kSig_v_v);
@@ -83,80 +78,86 @@ testLimit("functions", 1, kJSEmbeddingMaxFunctions, (builder, count) => {
     });
 
 testLimit("imports", 1, kJSEmbeddingMaxImports, (builder, count) => {
-        const type = builder.addType(kSig_v_v);
-        for (let i = 0; i < count; i++) {
-            builder.addImport("", "", type);
-        }
-    });
+  const type = builder.addType(kSig_v_v);
+  for (let i = 0; i < count; i++) {
+    builder.addImport("", "", type);
+  }
+});
 
 testLimit("exports", 1, kJSEmbeddingMaxExports, (builder, count) => {
-        const type = builder.addType(kSig_v_v);
-        const f = builder.addFunction(/*name=*/ undefined, type);
-        f.addBody([]);
-        for (let i = 0; i < count; i++) {
-            builder.addExport("f" + i, f.index);
-        }
-    });
+  const type = builder.addType(kSig_v_v);
+  const f = builder.addFunction(/*name=*/ undefined, type);
+  f.addBody([]);
+  for (let i = 0; i < count; i++) {
+    builder.addExport("f" + i, f.index);
+  }
+});
 
 testLimit("globals", 1, kJSEmbeddingMaxGlobals, (builder, count) => {
-        for (let i = 0; i < count; i++) {
-            builder.addGlobal(kWasmI32, true);
-        }
-    });
+  for (let i = 0; i < count; i++) {
+    builder.addGlobal(kWasmI32, true);
+  }
+});
 
 testLimit("data segments", 1, kJSEmbeddingMaxDataSegments, (builder, count) => {
-        const data = [];
-        builder.addMemory(1, 1, false, false);
-        for (let i = 0; i < count; i++) {
-            builder.addDataSegment(0, data);
-        }
-    });
+  const data = [];
+  builder.addMemory(1, 1, false, false);
+  for (let i = 0; i < count; i++) {
+    builder.addDataSegment(0, data);
+  }
+});
 
 testLimit("function size", 2, kJSEmbeddingMaxFunctionSize, (builder, count) => {
-        const type = builder.addType(kSig_v_v);
-        const nops = count - 2;
-        const array = new Array(nops);
-        for (let i = 0; i < nops; i++) array[i] = kExprNop;
-        builder.addFunction(undefined, type).addBody(array);
-    });
+  const type = builder.addType(kSig_v_v);
+  const nops = count - 2;
+  const array = new Array(nops);
+  for (let i = 0; i < nops; i++)
+    array[i] = kExprNop;
+  builder.addFunction(undefined, type).addBody(array);
+});
 
-testLimit("function locals", 1, kJSEmbeddingMaxFunctionLocals, (builder, count) => {
-        const type = builder.addType(kSig_v_v);
-        builder.addFunction(undefined, type)
-          .addLocals({i32_count: count})
-          .addBody([]);
-    });
+testLimit("function locals", 1, kJSEmbeddingMaxFunctionLocals,
+          (builder, count) => {
+            const type = builder.addType(kSig_v_v);
+            builder.addFunction(undefined, type)
+                .addLocals({i32_count : count})
+                .addBody([]);
+          });
 
-testLimit("function params", 1, kJSEmbeddingMaxFunctionParams, (builder, count) => {
-        const array = new Array(count);
-        for (let i = 0; i < count; i++) {
-            array[i] = kWasmI32;
-        }
-        const type = builder.addType({params: array, results: []});
-    });
+testLimit("function params", 1, kJSEmbeddingMaxFunctionParams,
+          (builder, count) => {
+            const array = new Array(count);
+            for (let i = 0; i < count; i++) {
+              array[i] = kWasmI32;
+            }
+            const type = builder.addType({params : array, results : []});
+          });
 
-testLimit("function params+locals", 1, kJSEmbeddingMaxFunctionLocals - 2, (builder, count) => {
-        const type = builder.addType(kSig_i_ii);
-        builder.addFunction(undefined, type)
-          .addLocals({i32_count: count})
-          .addBody([kExprUnreachable]);
-    });
+testLimit("function params+locals", 1, kJSEmbeddingMaxFunctionLocals - 2,
+          (builder, count) => {
+            const type = builder.addType(kSig_i_ii);
+            builder.addFunction(undefined, type)
+                .addLocals({i32_count : count})
+                .addBody([ kExprUnreachable ]);
+          });
 
-testLimit("function returns", 0, kJSEmbeddingMaxFunctionReturns, (builder, count) => {
-        const array = new Array(count);
-        for (let i = 0; i < count; i++) {
-            array[i] = kWasmI32;
-        }
-        const type = builder.addType({params: [], results: array});
-    });
+testLimit("function returns", 0, kJSEmbeddingMaxFunctionReturns,
+          (builder, count) => {
+            const array = new Array(count);
+            for (let i = 0; i < count; i++) {
+              array[i] = kWasmI32;
+            }
+            const type = builder.addType({params : [], results : array});
+          });
 
-testLimit("element segments", 1, kJSEmbeddingMaxElementSegments, (builder, count) => {
-        builder.setTableBounds(1, 1);
-        const array = [];
-        for (let i = 0; i < count; i++) {
-            builder.addElementSegment(0, false, false, array);
-        }
-    });
+testLimit("element segments", 1, kJSEmbeddingMaxElementSegments,
+          (builder, count) => {
+            builder.setTableBounds(1, 1);
+            const array = [];
+            for (let i = 0; i < count; i++) {
+              builder.addElementSegment(0, false, false, array);
+            }
+          });
 
 testLimit("tables", 0, kJSEmbeddingMaxTables, (builder, count) => {
   for (let i = 0; i < count; i++) {
@@ -170,17 +171,18 @@ testLimit("memories", 0, kJSEmbeddingMaxMemories, (builder, count) => {
   }
 });
 
-// This function runs the {gen} function with the value {limit+1}. Even with
-// this value, validation and compilation should succeed. An error should only
-// happen during instantiation or runtime.
-function testDynamicLimit(name, limit, test_instantiation, gen) {
-  function get_buffer(count) {
-    const builder = new WasmModuleBuilder();
-    gen(builder, count);
-    return builder.toBuffer();
-  }
-
-  const buffer = get_buffer(limit + 1);
+const instantiationShouldFail = 1;
+const instantiationShouldSucceed = 2;
+const instantiationNotPossible = 3;
+// This function tries to compile and instantiate the module produced
+// with {gen}. Compilation should work, an error should only happen during
+// instantiation or runtime. If {instantiationResult} is
+// {instantiationShouldSucceed}, then {gen} should generate a function called
+// "grow" which grows the tested aspect and returns "-1" if growing fails.
+function testDynamicLimit(name, instantiationResult, imports, gen) {
+  const builder = new WasmModuleBuilder();
+  gen(builder);
+  const buffer = builder.toBuffer();
 
   test(() => { assert_true(WebAssembly.validate(buffer)); },
        `Validate ${name} beyond its dynamic limit`);
@@ -191,40 +193,100 @@ function testDynamicLimit(name, limit, test_instantiation, gen) {
   promise_test(t => { return WebAssembly.compile(buffer); },
                `Async compile ${name} beyond its dynamic limit.`);
 
-  if (test_instantiation) {
-    test(() => {
-      const compiled_module = new WebAssembly.Module(buffer);
-      assert_throws(new WebAssembly.RuntimeError(),
-                    () => new WebAssembly.Instance(compiled_module, {}));
-    }, `Instantiate ${name} over limit`);
+  test(() => {
+    const compiled_module = new WebAssembly.Module(buffer);
+    if (instantiationResult == instantiationShouldFail) {
+      assert_throws(new RangeError(),
+                    () => new WebAssembly.Instance(compiled_module, imports));
+    } else if (instantiationResult == instantiationShouldSucceed) {
+       const instance = new WebAssembly.Instance(compiled_module, imports);
+       assertEquals(-1, instance.exports.grow());
+    }
+  }, `Instantiate ${name} over limit`);
 
-    promise_test(t => {
-      return promise_rejects(t, new WebAssembly.RuntimeError(),
-                             WebAssembly.instantiate(buffer, {}));
-    }, `Async instantiate ${name} over limit`);
-  }
+  promise_test(t => {
+    if (instantiationResult == instantiationShouldFail) {
+      return Promise.resolve();
+      return promise_rejects(t, new RangeError(),
+                             WebAssembly.instantiate(buffer, imports));
+    } else if (instantiationResult == instantiationShouldSucceed) {
+      return WebAssembly.instantiate(buffer, imports)
+          .then(({instance}) => { assertEquals(-1, instance.exports.grow()); });
+    } else {
+      return Promise.resolve();
+    }
+  }, `Async instantiate ${name} over limit`);
 }
 
 testDynamicLimit(
-    "initial declared memory pages", kJSEmbeddingMaxMemoryPages, true,
-    (builder, count) => { builder.addMemory(count, undefined, false, false); });
+    "initial declared memory pages", instantiationShouldFail, {}, (builder) => {
+      builder.addMemory(kJSEmbeddingMaxMemoryPages + 1, undefined, false);
+    });
+
+testDynamicLimit("maximum declared memory pages", instantiationShouldSucceed, {},
+                 (builder) => {
+                   builder.addMemory(1, kJSEmbeddingMaxMemoryPages + 1, false);
+                   builder.addFunction("grow", kSig_i_v)
+                       .addBody([
+                         ...wasmI32Const(kJSEmbeddingMaxMemoryPages),
+                         kExprMemoryGrow, kMemoryZero
+                       ])
+                       .exportFunc();
+                 });
+
+testDynamicLimit("initial imported memory pages", instantiationNotPossible, {},
+                 (builder) => {
+                   builder.addImportedMemory(
+                       "mod", "mem", kJSEmbeddingMaxMemoryPages + 1, undefined);
+                 });
+
+testDynamicLimit("maximum imported memory pages", instantiationNotPossible,
+                 {
+                   mod : {
+                     mem : new WebAssembly.Table({
+                       initial : 1,
+                       maximum : kJSEmbeddingMaxTableSize + 1,
+                       element : "anyfunc"
+                     })
+                   }
+                 },
+                 (builder) => {
+                   builder.addImportedMemory("mod", "mem", 1,
+                                             kJSEmbeddingMaxMemoryPages + 1);
+                   builder.addFunction("grow", kSig_v_v)
+                       .addBody([
+                         ...wasmI32Const(kJSEmbeddingMaxMemoryPages),
+                         kExprMemoryGrow, kMemoryZero, kExprDrop
+                       ])
+                       .exportFunc();
+                 });
+
+testDynamicLimit("initial table size", instantiationShouldFail, {}, (builder) => {
+  builder.setTableBounds(kJSEmbeddingMaxTableSize + 1, undefined);
+});
 
 testDynamicLimit(
-    "maximum declared memory pages", kJSEmbeddingMaxMemoryPages, false,
-    (builder, count) => { builder.addMemory(1, count, false, false); });
+    "maximum table size", instantiationShouldSucceed, {}, (builder) => {
+      builder.setTableBounds(1, kJSEmbeddingMaxTableSize + 1);
+      builder.addFunction("grow", kSig_i_v)
+          .addBody([
+            kExprRefFunc, 0, ...wasmI32Const(kJSEmbeddingMaxTableSize),
+            kNumericPrefix, kExprTableGrow, kTableZero
+          ])
+          .exportFunc();
+    });
 
-testDynamicLimit(
-    "initial imported memory pages", kJSEmbeddingMaxMemoryPages, false,
-    (builder,
-     count) => { builder.addImportedMemory("mod", "mem", count, undefined); });
+test(() => {
+  let memory = new WebAssembly.Memory(
+      {initial : 1, maximum : kJSEmbeddingMaxMemoryPages + 1});
+  assert_throws(new RangeError(),
+                () => memory.grow(kJSEmbeddingMaxMemoryPages));
+}, `Grow WebAssembly.Memory object beyond the embedder-defined limit`);
 
-testDynamicLimit(
-    "maximum imported memory pages", kJSEmbeddingMaxMemoryPages, false,
-    (builder, count) => { builder.addImportedMemory("mod", "mem", 1, count); });
+test(() => {
+  let memory = new WebAssembly.Table(
+      {initial : 1, maximum : kJSEmbeddingMaxTableSize + 1, element: "anyfunc"});
+  assert_throws(new RangeError(),
+                () => memory.grow(kJSEmbeddingMaxTableSize));
+}, `Grow WebAssembly.Table object beyond the embedder-defined limit`);
 
-testDynamicLimit(
-    "initial table size", kJSEmbeddingMaxTableSize, true,
-    (builder, count) => { builder.setTableBounds(count, undefined); });
-
-testDynamicLimit("maximum table size", kJSEmbeddingMaxTableSize, false,
-                 (builder, count) => { builder.setTableBounds(1, count); });
