@@ -16,7 +16,7 @@ const kJSEmbeddingMaxFunctionLocals = 50000;
 const kJSEmbeddingMaxFunctionParams = 1000;
 const kJSEmbeddingMaxFunctionReturns = 1000;
 const kJSEmbeddingMaxElementSegments = 10000000;
-const kJSEmbeddingMaxTables = 100000;
+const kJSEmbeddingMaxTables = 1;
 const kJSEmbeddingMaxMemories = 1;
 
 // Dynamic limits
@@ -268,10 +268,11 @@ testDynamicLimit("initial table size", instantiationShouldFail, {}, (builder) =>
 testDynamicLimit(
     "maximum table size", instantiationShouldSucceed, {}, (builder) => {
       builder.setTableBounds(1, kJSEmbeddingMaxTableSize + 1);
+      // table.grow requires the reference types proposal. Instead we just
+      // return -1.
       builder.addFunction("grow", kSig_i_v)
           .addBody([
-            kExprRefFunc, 0, ...wasmI32Const(kJSEmbeddingMaxTableSize),
-            kNumericPrefix, kExprTableGrow, kTableZero
+            ...wasmI32Const(-1)
           ])
           .exportFunc();
     });
