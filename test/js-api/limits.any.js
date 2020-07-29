@@ -20,7 +20,6 @@ const kJSEmbeddingMaxTables = 1;
 const kJSEmbeddingMaxMemories = 1;
 
 // Dynamic limits
-const kJSEmbeddingMaxMemoryPages = 65536;
 const kJSEmbeddingMaxTableSize = 10000000;
 
 // This function runs the {gen} function with the values {min}, {limit}, and
@@ -173,7 +172,6 @@ testLimit("memories", 0, kJSEmbeddingMaxMemories, (builder, count) => {
 
 const instantiationShouldFail = 1;
 const instantiationShouldSucceed = 2;
-const instantiationNotPossible = 3;
 // This function tries to compile and instantiate the module produced
 // with {gen}. Compilation should work, an error should only happen during
 // instantiation or runtime. If {instantiationResult} is
@@ -218,49 +216,6 @@ function testDynamicLimit(name, instantiationResult, imports, gen) {
   }, `Async instantiate ${name} over limit`);
 }
 
-testDynamicLimit(
-    "initial declared memory pages", instantiationShouldFail, {}, (builder) => {
-      builder.addMemory(kJSEmbeddingMaxMemoryPages + 1, undefined, false);
-    });
-
-testDynamicLimit("maximum declared memory pages", instantiationShouldSucceed, {},
-                 (builder) => {
-                   builder.addMemory(1, kJSEmbeddingMaxMemoryPages + 1, false);
-                   builder.addFunction("grow", kSig_i_v)
-                       .addBody([
-                         ...wasmI32Const(kJSEmbeddingMaxMemoryPages),
-                         kExprMemoryGrow, kMemoryZero
-                       ])
-                       .exportFunc();
-                 });
-
-testDynamicLimit("initial imported memory pages", instantiationNotPossible, {},
-                 (builder) => {
-                   builder.addImportedMemory(
-                       "mod", "mem", kJSEmbeddingMaxMemoryPages + 1, undefined);
-                 });
-
-testDynamicLimit("maximum imported memory pages", instantiationNotPossible,
-                 {
-                   mod : {
-                     mem : new WebAssembly.Table({
-                       initial : 1,
-                       maximum : kJSEmbeddingMaxTableSize + 1,
-                       element : "anyfunc"
-                     })
-                   }
-                 },
-                 (builder) => {
-                   builder.addImportedMemory("mod", "mem", 1,
-                                             kJSEmbeddingMaxMemoryPages + 1);
-                   builder.addFunction("grow", kSig_v_v)
-                       .addBody([
-                         ...wasmI32Const(kJSEmbeddingMaxMemoryPages),
-                         kExprMemoryGrow, kMemoryZero, kExprDrop
-                       ])
-                       .exportFunc();
-                 });
-
 testDynamicLimit("initial table size", instantiationShouldFail, {}, (builder) => {
   builder.setTableBounds(kJSEmbeddingMaxTableSize + 1, undefined);
 });
@@ -276,17 +231,6 @@ testDynamicLimit(
           ])
           .exportFunc();
     });
-
-test(() => {
-  assert_throws(
-      new RangeError(),
-      () => new WebAssembly.Memory({initial : kJSEmbeddingMaxMemoryPages + 1}));
-
-  let memory = new WebAssembly.Memory(
-      {initial : 1, maximum : kJSEmbeddingMaxMemoryPages + 1});
-  assert_throws(new RangeError(),
-                () => memory.grow(kJSEmbeddingMaxMemoryPages));
-}, `Grow WebAssembly.Memory object beyond the embedder-defined limit`);
 
 test(() => {
   assert_throws(
