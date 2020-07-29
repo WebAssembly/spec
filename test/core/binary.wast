@@ -44,13 +44,6 @@
 (assert_malformed (module binary "\00asm\00\00\01\00") "unknown binary version")
 (assert_malformed (module binary "\00asm\00\00\00\01") "unknown binary version")
 
-;; Invalid section id.
-(assert_malformed (module binary "\00asm" "\01\00\00\00" "\0c\00") "invalid section id")
-(assert_malformed (module binary "\00asm" "\01\00\00\00" "\7f\00") "invalid section id")
-(assert_malformed (module binary "\00asm" "\01\00\00\00" "\80\00\01\00") "invalid section id")
-(assert_malformed (module binary "\00asm" "\01\00\00\00" "\81\00\01\00") "invalid section id")
-(assert_malformed (module binary "\00asm" "\01\00\00\00" "\ff\00\01\00") "invalid section id")
-
 
 ;; call_indirect reserved byte equal to zero.
 (assert_malformed
