@@ -97,23 +97,26 @@ let storen mem a o n x =
   in loop (effective_address a o) n x
 
 let load_value mem a o t =
-  let n = loadn mem a o (Types.size t) in
   match t with
-  | I32Type -> I32 (Int64.to_int32 n)
-  | I64Type -> I64 n
-  | F32Type -> F32 (F32.of_bits (Int64.to_int32 n))
-  | F64Type -> F64 (F64.of_bits n)
-  | V128Type -> failwith "TODO v128"
+  | V128Type ->
+      V128 (V128.of_bits (load_bytes mem (effective_address a o) (Types.size t)))
+  | _ ->
+    let n = loadn mem a o (Types.size t) in
+    match t with
+    | I32Type -> I32 (Int64.to_int32 n)
+    | I64Type -> I64 n
+    | F32Type -> F32 (F32.of_bits (Int64.to_int32 n))
+    | F64Type -> F64 (F64.of_bits n)
+    | _ -> assert false
 
 let store_value mem a o v =
-  let x =
-    match v with
-    | I32 x -> Int64.of_int32 x
-    | I64 x -> x
-    | F32 x -> Int64.of_int32 (F32.to_bits x)
-    | F64 x -> F64.to_bits x
-    | V128 x -> failwith "TODO v128" (* FIXME V128.to_bits x requires store to accept something other than int64 *)
-  in storen mem a o (Types.size (Values.type_of v)) x
+  let store = storen mem a o (Types.size (Values.type_of v)) in
+  match v with
+  | I32 x -> store (Int64.of_int32 x)
+  | I64 x -> store x
+  | F32 x -> store (Int64.of_int32 (F32.to_bits x))
+  | F64 x -> store (F64.to_bits x)
+  | V128 x -> store_bytes mem (effective_address a o) (V128.to_bits x)
 
 let extend x n = function
   | ZX -> x

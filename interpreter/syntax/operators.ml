@@ -217,6 +217,8 @@ let memory_size = MemorySize
 let memory_grow = MemoryGrow
 
 (* SIMD *)
+let v128_load align offset = Load {ty = V128Type; align; offset; sz = None}
+let v128_store align offset = Store {ty = V128Type; align; offset; sz = None}
 let v128_not = Unary (V128 (V128Op.V128 V128Op.Not))
 let v128_and = Binary (V128 (V128Op.V128 V128Op.And))
 let v128_andnot = Binary (V128 (V128Op.V128 V128Op.AndNot))

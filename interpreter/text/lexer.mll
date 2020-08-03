@@ -65,12 +65,13 @@ let floatop t f32 f64 =
   | "f64" -> f64
   | _ -> assert false
 
-let numop t i32 i64 f32 f64 =
+let numop t i32 i64 f32 f64 v128 =
   match t with
   | "i32" -> i32
   | "i64" -> i64
   | "f32" -> f32
   | "f64" -> f64
+  | "v128" -> v128
   | _ -> assert false
 
 let unimplemented_simd = fun _ -> failwith "unimplemented simd"
@@ -220,7 +221,8 @@ rule token = parse
         (fun s -> let n = F32.of_string s.it in
           f32_const (n @@ s.at), Values.F32 n)
         (fun s -> let n = F64.of_string s.it in
-          f64_const (n @@ s.at), Values.F64 n))
+          f64_const (n @@ s.at), Values.F64 n)
+        unimplemented_simd)
     }
   | "funcref" { FUNCREF }
   | "mut" { MUT }
@@ -263,11 +265,13 @@ rule token = parse
   | (nxx as t)".load"
     { LOAD (fun a o ->
         numop t (i32_load (opt a 2)) (i64_load (opt a 3))
-                (f32_load (opt a 2)) (f64_load (opt a 3)) o) }
+                (f32_load (opt a 2)) (f64_load (opt a 3))
+                (v128_load (opt a 4)) o) }
   | (nxx as t)".store"
     { STORE (fun a o ->
         numop t (i32_store (opt a 2)) (i64_store (opt a 3))
-                (f32_store (opt a 2)) (f64_store (opt a 3)) o) }
+                (f32_store (opt a 2)) (f64_store (opt a 3))
+                (v128_store (opt a 4)) o) }
   | (ixx as t)".load"(mem_size as sz)"_"(sign as s)
     { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
       LOAD (fun a o ->
