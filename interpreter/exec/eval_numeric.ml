@@ -247,11 +247,17 @@ struct
   let relop op = failwith "TODO v128 unimplemented relop"
 
   let extractop op v =
+    let v128 = of_value 1 v in
     match op with
-    | F32x4ExtractLane imm ->
-      (F32Op.to_value (SXX.F32x4.extract_lane imm (of_value 1 v)))
-    | I32x4ExtractLane imm ->
-      (I32Op.to_value (SXX.I32x4.extract_lane imm (of_value 1 v)))
+    | I8x16 (SX, imm) -> (I32Op.to_value (SXX.I8x16.extract_lane_s imm v128))
+    | I8x16 (ZX, imm) -> (I32Op.to_value (SXX.I8x16.extract_lane_u imm v128))
+    | I16x8 (SX, imm) -> (I32Op.to_value (SXX.I16x8.extract_lane_s imm v128))
+    | I16x8 (ZX, imm) -> (I32Op.to_value (SXX.I16x8.extract_lane_u imm v128))
+    | I32x4 (_, imm) -> (I32Op.to_value (SXX.I32x4.extract_lane_s imm v128))
+    | I64x2 (_, imm) -> (I64Op.to_value (SXX.I64x2.extract_lane_s imm v128))
+    | F32x4 (_, imm) -> (F32Op.to_value (SXX.F32x4.extract_lane imm v128))
+    | F64x2 (_, imm) -> (F64Op.to_value (SXX.F64x2.extract_lane imm v128))
+    | _ -> assert false
 
   let ternop op =
     let f = match op with

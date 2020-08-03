@@ -270,7 +270,7 @@ let rec step (c : config) : config =
         (try Eval_numeric.eval_cvtop cvtop v :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | ExtractLane extractop, v :: vs' ->
+      | SimdExtract extractop, v :: vs' ->
         (try Eval_numeric.eval_extractop extractop v :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 

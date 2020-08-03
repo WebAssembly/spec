@@ -84,6 +84,7 @@ sig
   val ge_s : t -> t -> bool
   val ge_u : t -> t -> bool
 
+  val as_unsigned : t -> t
   val of_int_s : int -> t
   val of_int_u : int -> t
   val of_string_s : string -> t
@@ -244,6 +245,16 @@ struct
   let gt_u x y = cmp_u x (>) y
   let ge_s x y = x >= y
   let ge_u x y = cmp_u x (>=) y
+
+  (*
+   * When Int is used to store a smaller int, it is stored in signed extended
+   * form. Some instructions require the unsigned form, which requires masking
+   * away the top 32-bitwidth bits.
+   *)
+  let as_unsigned x = 
+    (* Mask with bottom #bitwidth bits set *)
+    let mask = Rep.(shift_right_logical minus_one (32 - Rep.bitwidth)) in
+    Rep.logand x mask
 
   let of_int_s = Rep.of_int
   let of_int_u i = and_ (Rep.of_int i) (or_ (shl (Rep.of_int max_int) one) one)

@@ -145,6 +145,14 @@ let type_cvtop at = function
     | V128 Splat -> error at "invalid conversion"
     ), V128Type
 
+let type_extract_lane = function
+  | V128Op.I8x16 _ -> I32Type
+  | V128Op.I16x8 _ -> I32Type
+  | V128Op.I32x4 _ -> I32Type
+  | V128Op.I64x2 _ -> I64Type
+  | V128Op.F32x4 _ -> F32Type
+  | V128Op.F64x2 _ -> F64Type
+  | V128Op.V128 _ -> V128Type
 
 (* Expressions *)
 
@@ -169,6 +177,16 @@ let check_memop (c : context) (memop : 'a memop) get_sz at =
   require (1 lsl memop.align <= size) at
     "alignment must not be larger than natural"
 
+let check_simd_lane_idx op at =
+  let max, idx = match op with
+    | V128Op.I8x16 (_, idx) -> 16, idx
+    | V128Op.I16x8 (_, idx) -> 8, idx
+    | V128Op.I32x4 (_, idx) -> 4, idx
+    | V128Op.I64x2 (_, idx) -> 2, idx
+    | V128Op.F32x4 (_, idx) -> 4, idx
+    | V128Op.F64x2 (_, idx) -> 2, idx
+    | V128Op.V128 (_, idx) -> 1, idx
+  in require (idx < max) at "invalid lane index"
 
 (*
  * Conventions:
@@ -313,10 +331,11 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let t1, t2 = type_cvtop e.at cvtop in
     [t1] --> [t2]
 
-  | ExtractLane (V128Op.I32x4ExtractLane _) ->
-    [V128Type] --> [I32Type]
-  | ExtractLane (V128Op.F32x4ExtractLane _) ->
-    [V128Type] --> [F32Type]
+  | SimdExtract (V128Op.V128 _) -> assert false
+  | SimdExtract extractop ->
+    check_simd_lane_idx extractop e.at;
+    let t = type_extract_lane extractop in
+    [V128Type] --> [t]
 
   | SimdShift _ ->
     [V128Type; I32Type] --> [V128Type]

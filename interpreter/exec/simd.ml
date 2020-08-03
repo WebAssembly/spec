@@ -47,7 +47,8 @@ sig
   type lane
 
   val splat : lane -> t
-  val extract_lane : int -> t -> lane
+  val extract_lane_s : int -> t -> lane
+  val extract_lane_u : int -> t -> lane
   val eq : t -> t -> t
   val ne : t -> t -> t
   val lt_s : t -> t -> t
@@ -205,7 +206,8 @@ struct
     type t = Rep.t
     type lane = Int.t
     let splat x = Convert.of_shape (List.init Convert.num_lanes (fun i -> x))
-    let extract_lane i s = List.nth (Convert.to_shape s) i
+    let extract_lane_s i s = List.nth (Convert.to_shape s) i
+    let extract_lane_u i s = Int.as_unsigned (extract_lane_s i s)
     let unop f x = Convert.of_shape (List.map f (Convert.to_shape x))
     let binop f x y = Convert.of_shape (List.map2 f (Convert.to_shape x) (Convert.to_shape y))
     let cmp f x y = if f x y then (Int.of_int_s (-1)) else Int.zero

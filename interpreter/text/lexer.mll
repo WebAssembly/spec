@@ -254,7 +254,12 @@ rule token = parse
   | (simd_shape as s)".extract_lane"
     { EXTRACT_LANE (fun imm ->
         simdop s unimplemented_simd unimplemented_simd i32x4_extract_lane
-                 unimplemented_simd f32x4_extract_lane unimplemented_simd imm) }
+                 i64x2_extract_lane f32x4_extract_lane f64x2_extract_lane imm) }
+  | (("i8x16"|"i16x8") as t)".extract_lane_"(sign as s)
+    { EXTRACT_LANE (fun imm ->
+        if t = "i8x16"
+        then ext s i8x16_extract_lane_s i8x16_extract_lane_u imm
+        else ext s i16x8_extract_lane_s i16x8_extract_lane_u imm )}
   | (nxx as t)".load"
     { LOAD (fun a o ->
         numop t (i32_load (opt a 2)) (i64_load (opt a 3))
