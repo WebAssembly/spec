@@ -51,6 +51,7 @@ struct
   type iunop = Abs | Neg
   type ibinop = Add | Sub | MinS | MinU | MaxS | MaxU | Mul | AvgrU
               | Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
+              | Swizzle
   type funop = Abs | Neg | Sqrt
   type fbinop = Add | Sub | Mul | Div | Min | Max
               | Eq | Ne | Lt | Le | Gt | Ge

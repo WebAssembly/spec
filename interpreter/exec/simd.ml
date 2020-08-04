@@ -133,6 +133,9 @@ sig
   module F32x4 : Float with type t = t and type lane = F32.t
   module F64x2 : Float with type t = t and type lane = F64.t
   module V128 : Vec with type t = t
+  module V8x16 : sig
+    val swizzle : t -> t -> t
+  end
 end
 
 module Make (Rep : RepType) : S with type bits = Rep.t =
@@ -243,6 +246,19 @@ struct
     let shr_s v s =
       let shift = Int.of_int_u (Int32.to_int s) in
       unop (fun a -> Int.shr_s a shift) v
+  end
+
+  module V8x16 = struct
+    let swizzle value index =
+      let vs = Rep.to_i8x16 value in
+      let is = Rep.to_i8x16 index in
+      let select i =
+        Option.(
+          value
+            (bind (Int32.unsigned_to_int i) (List.nth_opt vs))
+            ~default:Int32.zero)
+      in
+      Rep.of_i8x16 (List.map select is)
   end
 
   module I8x16 = MakeInt (I8) (struct

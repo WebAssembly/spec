@@ -461,6 +461,7 @@ rule token = parse
   | (simd_float_shape as s)".le" { BINARY (simd_float_op s f32x4_le f64x2_le) }
   | (simd_float_shape as s)".gt" { BINARY (simd_float_op s f32x4_gt f64x2_gt) }
   | (simd_float_shape as s)".ge" { BINARY (simd_float_op s f32x4_ge f64x2_ge) }
+  | "v8x16.swizzle" { BINARY v8x16_swizzle }
   | vxxx".not" { UNARY v128_not }
   | vxxx".and" { UNARY v128_and }
   | vxxx".andnot" { UNARY v128_andnot }
