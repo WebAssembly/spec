@@ -48,11 +48,11 @@ end
 (* FIXME *)
 module SimdOp =
 struct
-  type iunop = Abs | Neg
+  type iunop = Abs | Neg | TruncSatF32x4S | TruncSatF32x4U
   type ibinop = Add | Sub | MinS | MinU | MaxS | MaxU | Mul | AvgrU
               | Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
               | Swizzle
-  type funop = Abs | Neg | Sqrt
+  type funop = Abs | Neg | Sqrt | ConvertI32x4S | ConvertI32x4U
   type fbinop = Add | Sub | Mul | Div | Min | Max
               | Eq | Ne | Lt | Le | Gt | Ge
   type vunop = Not

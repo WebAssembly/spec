@@ -509,6 +509,10 @@ rule token = parse
   | (simd_int_shape as s)".avgr_u"
     { only ["i8x16"; "i16x8"] s lexbuf;
       UNARY (simd_int_op s i8x16_avgr_u i16x8_avgr_u unreachable unreachable) }
+  | "i32x4.trunc_sat_f32x4_"(sign as s)
+  { UNARY (ext s i32x4_trunc_sat_f32x4_s i32x4_trunc_sat_f32x4_u) }
+  | "f32x4.convert_i32x4_"(sign as s)
+  { UNARY (ext s f32x4_convert_i32x4_s f32x4_convert_i32x4_u) }
   | (simd_shape as s) { SIMD_SHAPE (simd_shape s) }
 
   | name as s { VAR s }

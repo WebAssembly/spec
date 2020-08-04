@@ -136,6 +136,14 @@ sig
   module V8x16 : sig
     val swizzle : t -> t -> t
   end
+  module I32x4_convert : sig
+    val trunc_f32x4_s : t -> t
+    val trunc_f32x4_u : t -> t
+  end
+  module F32x4_convert : sig
+    val convert_i32x4_s : t -> t
+    val convert_i32x4_u : t -> t
+  end
 end
 
 module Make (Rep : RepType) : S with type bits = Rep.t =
@@ -297,4 +305,15 @@ struct
       let num_lanes = lanes F64x2
     end)
 
+  module I32x4_convert = struct
+    let convert_using f v = Rep.of_i32x4 (List.map f (Rep.to_f32x4 v))
+    let trunc_f32x4_s = convert_using I32_convert.trunc_f32_s
+    let trunc_f32x4_u = convert_using I32_convert.trunc_f32_u
+  end
+
+  module F32x4_convert = struct
+    let convert_using f v = Rep.of_f32x4 (List.map f (Rep.to_i32x4 v))
+    let convert_i32x4_s = convert_using F32_convert.convert_i32_s
+    let convert_i32x4_u = convert_using F32_convert.convert_i32_u
+  end
 end
