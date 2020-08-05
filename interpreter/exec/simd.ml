@@ -49,6 +49,7 @@ sig
   val splat : lane -> t
   val extract_lane_s : int -> t -> lane
   val extract_lane_u : int -> t -> lane
+  val replace_lane : int -> t -> lane -> t
   val eq : t -> t -> t
   val ne : t -> t -> t
   val lt_s : t -> t -> t
@@ -83,6 +84,7 @@ sig
 
   val splat : lane -> t
   val extract_lane : int -> t -> lane
+  val replace_lane : int -> t -> lane -> t
   val eq : t -> t -> t
   val ne : t -> t -> t
   val lt : t -> t -> t
@@ -186,7 +188,13 @@ struct
     type t = Rep.t
     type lane = Float.t
     let unop f x = Convert.of_shape (List.map f (Convert.to_shape x))
+    let unopi f x = Convert.of_shape (List.mapi f (Convert.to_shape x))
     let binop f x y = Convert.of_shape (List.map2 f (Convert.to_shape x) (Convert.to_shape y))
+
+    let splat x = Convert.of_shape (List.init Convert.num_lanes (fun i -> x))
+    let extract_lane i s = List.nth (Convert.to_shape s) i
+    let replace_lane i v x = unopi (fun j y -> if j = i then x else y) v
+
     let all_ones = Float.of_float (Int64.float_of_bits (Int64.minus_one))
     let cmp f x y = if f x y then all_ones else Float.zero
     let eq = binop (cmp Float.eq)
@@ -204,8 +212,6 @@ struct
     let div = binop Float.div
     let min = binop Float.min
     let max = binop Float.max
-    let splat x = Convert.of_shape (List.init Convert.num_lanes (fun i -> x))
-    let extract_lane i s = List.nth (Convert.to_shape s) i
   end
 
   module MakeInt (Int : Int.S) (Convert : sig
@@ -216,11 +222,15 @@ struct
   struct
     type t = Rep.t
     type lane = Int.t
+    let unop f x = Convert.of_shape (List.map f (Convert.to_shape x))
+    let unopi f x = Convert.of_shape (List.mapi f (Convert.to_shape x))
+    let binop f x y = Convert.of_shape (List.map2 f (Convert.to_shape x) (Convert.to_shape y))
+
     let splat x = Convert.of_shape (List.init Convert.num_lanes (fun i -> x))
     let extract_lane_s i s = List.nth (Convert.to_shape s) i
     let extract_lane_u i s = Int.as_unsigned (extract_lane_s i s)
-    let unop f x = Convert.of_shape (List.map f (Convert.to_shape x))
-    let binop f x y = Convert.of_shape (List.map2 f (Convert.to_shape x) (Convert.to_shape y))
+    let replace_lane i v x = unopi (fun j y -> if j = i then x else y) v
+
     let cmp f x y = if f x y then (Int.of_int_s (-1)) else Int.zero
     let eq = binop (cmp Int.eq)
     let ne = binop (cmp Int.ne)

@@ -274,6 +274,10 @@ let rec step (c : config) : config =
         (try Eval_numeric.eval_extractop extractop v :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
+      | SimdReplace replaceop, r :: v :: vs' ->
+        (try Eval_numeric.eval_replaceop replaceop v r :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
       | SimdShift shiftop, s :: v :: vs' ->
         (try Eval_numeric.eval_shiftop shiftop v s :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])

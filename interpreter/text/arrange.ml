@@ -281,6 +281,7 @@ let rec instr e =
     | Ternary op -> failwith "TODO v128 ternary op"
     | Convert op -> cvtop op, []
     | SimdExtract op -> failwith "TODO v128"
+    | SimdReplace op -> failwith "TODO v128"
     | SimdShift op -> failwith "TODO v128"
   in Node (head, inner)
 

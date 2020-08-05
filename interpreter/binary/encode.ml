@@ -397,6 +397,8 @@ let encode m =
 
       | SimdExtract _ -> failwith "TODO v128"
 
+      | SimdReplace _ -> failwith "TODO v128"
+
       | SimdShift (_) -> failwith "TODO v128"
 
     let const c =

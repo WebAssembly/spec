@@ -145,7 +145,7 @@ let type_cvtop at = function
     | V128 Splat -> error at "invalid conversion"
     ), V128Type
 
-let type_extract_lane = function
+let type_simd_lane = function
   | V128Op.I8x16 _ -> I32Type
   | V128Op.I16x8 _ -> I32Type
   | V128Op.I32x4 _ -> I32Type
@@ -334,8 +334,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | SimdExtract (V128Op.V128 _) -> assert false
   | SimdExtract extractop ->
     check_simd_lane_idx extractop e.at;
-    let t = type_extract_lane extractop in
+    let t = type_simd_lane extractop in
     [V128Type] --> [t]
+
+  | SimdReplace replaceop ->
+    let t = type_simd_lane replaceop in
+    [V128Type; t] --> [V128Type]
 
   | SimdShift _ ->
     [V128Type; I32Type] --> [V128Type]

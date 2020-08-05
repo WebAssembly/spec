@@ -79,6 +79,7 @@ struct
       extension (* used for extracting I8 and I16 *)
     * int       (* lane index *)
   type extractop = (extract, extract, extract, extract, extract, extract, extract) v128op
+  type replaceop = (int, int, int, int, int, int, int) v128op
   type shift = Shl | ShrS | ShrU
   type shiftop = (shift, shift, shift, shift, shift, shift, shift) v128op
 end
@@ -95,6 +96,7 @@ type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop, V128Op.te
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop, V128Op.relop) Values.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop, V128Op.cvtop) Values.op
 type extractop = V128Op.extractop
+type replaceop = V128Op.replaceop
 (* Ternary operators only exist for V128 types for now *)
 type ternop = V128Op.ternop
 type shiftop = V128Op.shiftop
@@ -145,6 +147,7 @@ and instr' =
   | Ternary of ternop                 (* ternary numeric operator *)
   | Convert of cvtop                  (* conversion *)
   | SimdExtract of extractop          (* extract lane from v128 value *)
+  | SimdReplace of replaceop          (* replace lane of v128 value *)
   | SimdShift of shiftop              (* shifts for v128 value *)
 
 

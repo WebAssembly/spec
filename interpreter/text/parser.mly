@@ -184,7 +184,7 @@ let inline_type_explicit (c : context) x ft at =
 %token CALL CALL_INDIRECT RETURN
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
-%token SPLAT EXTRACT_LANE SHIFT
+%token SPLAT EXTRACT_LANE REPLACE_LANE SHIFT
 %token CONST V128_CONST UNARY BINARY TERNARY TEST COMPARE CONVERT
 %token UNREACHABLE MEMORY_SIZE MEMORY_GROW
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
@@ -213,6 +213,7 @@ let inline_type_explicit (c : context) x ft at =
 %token<int option -> Memory.offset -> Ast.instr'> LOAD
 %token<Ast.instr'> SPLAT
 %token<int -> Ast.instr'> EXTRACT_LANE
+%token<int -> Ast.instr'> REPLACE_LANE
 %token<int option -> Memory.offset -> Ast.instr'> STORE
 %token<string> OFFSET_EQ_NAT
 %token<string> ALIGN_EQ_NAT
@@ -376,6 +377,7 @@ plain_instr :
   | CONVERT { fun c -> $1 }
   | SPLAT { fun c -> $1 }
   | EXTRACT_LANE NAT { let at = at () in fun c -> $1 (nat $2 at) }
+  | REPLACE_LANE NAT { let at = at () in fun c -> $1 (nat $2 at) }
   | SHIFT { fun c -> $1 }
 
 

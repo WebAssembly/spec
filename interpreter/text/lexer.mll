@@ -262,6 +262,9 @@ rule token = parse
         if t = "i8x16"
         then ext s i8x16_extract_lane_s i8x16_extract_lane_u imm
         else ext s i16x8_extract_lane_s i16x8_extract_lane_u imm )}
+  | (simd_shape as s)".replace_lane"
+    { REPLACE_LANE (simdop s i8x16_replace_lane i16x8_replace_lane i32x4_replace_lane
+                             i64x2_replace_lane f32x4_replace_lane f64x2_replace_lane) }
   | (nxx as t)".load"
     { LOAD (fun a o ->
         numop t (i32_load (opt a 2)) (i64_load (opt a 3))
