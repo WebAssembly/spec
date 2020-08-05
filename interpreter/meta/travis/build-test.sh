@@ -7,6 +7,4 @@ set -x
 # from anywhere.
 cd $(dirname ${BASH_SOURCE[0]})/../..
 
-export PATH=$PWD/../ocaml/install/bin:$PATH
-
 make all

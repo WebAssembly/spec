@@ -30,10 +30,13 @@ sig
   type bits
   val pos_nan : t
   val neg_nan : t
+  val is_inf : t -> bool
+  val is_nan : t -> bool
   val of_float : float -> t
   val to_float : t -> float
   val of_string : string -> t
   val to_string : t -> string
+  val to_hex_string : t -> string
   val of_bits : bits -> t
   val to_bits : t -> bits
   val add : t -> t -> t
@@ -135,17 +138,17 @@ struct
   let mul x y = binary x ( *.) y
   let div x y = binary x (/.) y
 
-  let sqrt  x = unary Pervasives.sqrt x
+  let sqrt  x = unary Stdlib.sqrt x
 
-  let ceil  x = unary Pervasives.ceil x
-  let floor x = unary Pervasives.floor x
+  let ceil  x = unary Stdlib.ceil x
+  let floor x = unary Stdlib.floor x
 
   let trunc x =
     let xf = to_float x in
     (* preserve the sign of zero *)
     if xf = 0.0 then x else
     (* trunc is either ceil or floor depending on which one is toward zero *)
-    let f = if xf < 0.0 then Pervasives.ceil xf else Pervasives.floor xf in
+    let f = if xf < 0.0 then Stdlib.ceil xf else Stdlib.floor xf in
     let result = of_float f in
     if is_nan result then determine_unary_nan result else result
 
@@ -154,13 +157,13 @@ struct
     (* preserve the sign of zero *)
     if xf = 0.0 then x else
     (* nearest is either ceil or floor depending on which is nearest or even *)
-    let u = Pervasives.ceil xf in
-    let d = Pervasives.floor xf in
+    let u = Stdlib.ceil xf in
+    let d = Stdlib.floor xf in
     let um = abs_float (xf -. u) in
     let dm = abs_float (xf -. d) in
     let u_or_d =
       um < dm ||
-      um = dm && let h = u /. 2. in Pervasives.floor h = h
+      um = dm && let h = u /. 2. in Stdlib.floor h = h
     in
     let f = if u_or_d then u else d in
     let result = of_float f in
@@ -229,8 +232,8 @@ struct
       | n -> n
 
   let compare_mantissa_str hex s1 s2 =
-    let s1' = String.uppercase s1 in
-    let s2' = String.uppercase s2 in
+    let s1' = String.uppercase_ascii s1 in
+    let s2' = String.uppercase_ascii s2 in
     compare_mantissa_str' hex s1' (skip_zeroes s1' 0) s2' (skip_zeroes s2' 0)
 
   (*
@@ -264,7 +267,7 @@ struct
       if not hex then Printf.sprintf "%.*g" (String.length s) z else
       let m = logor (logand bits 0xf_ffff_ffff_ffffL) 0x10_0000_0000_0000L in
       (* Shift mantissa to match msb position in most significant hex digit *)
-      let i = skip_zeroes (String.uppercase s) 0 in
+      let i = skip_zeroes (String.uppercase_ascii s) 0 in
       if i = String.length s then Printf.sprintf "%.*g" (String.length s) z else
       let sh =
         match s.[i] with '1' -> 0 | '2'..'3' -> 1 | '4'..'7' -> 2 | _ -> 3 in
@@ -297,14 +300,7 @@ struct
       else
         Rep.logor x bare_nan
     else
-      (* TODO(ocmal-4.03): replace buffer hack with this:
       let s' = String.concat "" (String.split_on_char '_' s) in
-      *)
-      let buf = Buffer.create (String.length s) in
-      for i = 0 to String.length s - 1 do
-        if s.[i] <> '_' then Buffer.add_char buf s.[i]
-      done;
-      let s' = Buffer.contents buf in
       let x = of_float (float_of_string_prevent_double_rounding s') in
       if is_inf x then failwith "of_string" else x
 
@@ -320,35 +316,43 @@ struct
   (* String conversion that groups digits for readability *)
 
   let is_digit c = '0' <= c && c <= '9'
-  let isnt_digit c = not (is_digit c)
+  let is_hex_digit c = is_digit c || 'a' <= c && c <= 'f'
 
-  let rec add_digits buf s i j k =
+  let rec add_digits buf s i j k n =
     if i < j then begin
       if k = 0 then Buffer.add_char buf '_';
       Buffer.add_char buf s.[i];
-      add_digits buf s (i + 1) j ((k + 2) mod 3)
+      add_digits buf s (i + 1) j ((k + n - 1) mod n) n
     end
 
-  let group_digits s =
+  let group_digits is_digit n s =
+    let isnt_digit c = not (is_digit c) in
     let len = String.length s in
-    let mant = Lib.Option.get (Lib.String.find_from_opt is_digit s 0) len in
+    let x = Lib.Option.get (Lib.String.find_from_opt ((=) 'x') s 0) 0 in
+    let mant = Lib.Option.get (Lib.String.find_from_opt is_digit s x) len in
     let point = Lib.Option.get (Lib.String.find_from_opt isnt_digit s mant) len in
     let frac = Lib.Option.get (Lib.String.find_from_opt is_digit s point) len in
     let exp = Lib.Option.get (Lib.String.find_from_opt isnt_digit s frac) len in
-    let buf = Buffer.create (len*4/3) in
+    let buf = Buffer.create (len*(n+1)/n) in
     Buffer.add_substring buf s 0 mant;
-    add_digits buf s mant point ((point - mant) mod 3 + 3);
+    add_digits buf s mant point ((point - mant) mod n + n) n;
     Buffer.add_substring buf s point (frac - point);
-    add_digits buf s frac exp 3;
+    add_digits buf s frac exp n n;
     Buffer.add_substring buf s exp (len - exp);
     Buffer.contents buf
 
-  let to_string x =
+  let to_string' convert is_digit n x =
     (if x < Rep.zero then "-" else "") ^
     if is_nan x then
       let payload = Rep.logand (abs x) (Rep.lognot bare_nan) in
-      "nan:0x" ^ Rep.to_hex_string payload
+      "nan:0x" ^ group_digits is_hex_digit 4 (Rep.to_hex_string payload)
     else
-      let s = Printf.sprintf "%.17g" (to_float (abs x)) in
-      group_digits (if s.[String.length s - 1] = '.' then s ^ "0" else s)
+      let s = convert (to_float (abs x)) in
+      group_digits is_digit n
+        (if s.[String.length s - 1] = '.' then s ^ "0" else s)
+
+  let to_string = to_string' (Printf.sprintf "%.17g") is_digit 3
+  let to_hex_string x =
+    if is_inf x then to_string x else
+    to_string' (Printf.sprintf "%h") is_hex_digit 4 x
 end
