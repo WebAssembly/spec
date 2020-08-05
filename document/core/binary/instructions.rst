@@ -386,19 +386,20 @@ All other numeric instructions are plain opcodes without any immediates.
 
 .. _binary-cvtop-trunc-sat:
 
-The saturating truncation instructions all have a one byte prefix.
+The saturating truncation instructions all have a one byte prefix,
+whereas the actual opcode is encoded by a variable-length :ref:`unsigned integer <binary-u32>`.
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots && \phantom{thisshouldbeenough} \\&&|&
-     \hex{FC}~\hex{00} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
-     \hex{FC}~\hex{01} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
-     \hex{FC}~\hex{02} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
-     \hex{FC}~\hex{03} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_u} \\ &&|&
-     \hex{FC}~\hex{04} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
-     \hex{FC}~\hex{05} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
-     \hex{FC}~\hex{06} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
-     \hex{FC}~\hex{07} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_u} \\
+     \hex{FC}~~0{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
+     \hex{FC}~~1{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
+     \hex{FC}~~2{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
+     \hex{FC}~~3{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_u} \\ &&|&
+     \hex{FC}~~4{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
+     \hex{FC}~~5{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
+     \hex{FC}~~6{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
+     \hex{FC}~~7{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_u} \\
    \end{array}
 
 
