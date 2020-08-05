@@ -100,7 +100,51 @@ have to support 32-bit memory addresses in their ABI.
       -----------------------------
       C ⊦ memory.grow : [it] → [it]
       ```
+  - memory.fill
+    - ```
+          C.mems[0] = limits it
+      -----------------------------
+      C ⊦ memory.fill : [it i32 it] → []
+      ```
+  - memory.copy
+    - ```
+          C.mems[0] = limits it
+      -----------------------------
+      C ⊦ memory.copy : [it it it] → []
+      ```
+  - memory.init x
+    - ```
+          C.mems[0] = limits it   C.datas[x] = ok
+      -------------------------------------------
+          C ⊦ memory.init : [it i32 i32] → []
+      ```
   - (and similar for memory instructions from other proposals)
+
+* The [Multi-memory proposal][multi memory] extends each of these instructions
+  with one or two memory index immediates. The index type for that memory will
+  be used. For example,
+  - memory.size x
+    - ```
+         C.mems[x] = limits it
+      ---------------------------
+      C ⊦ memory.size x : [] → [it]
+      ```
+
+  `memory.copy` has two memory index immediates, so will have multiple possible
+  signatures:
+  - memory.copy d s
+    - ```
+          C.mems[d] = limits it_d   C.mems[s] = limits it_s
+      --------------------------------------------------------
+          C ⊦ memory.copy d s : [it_d it_s f(it_d, it_s)] → []
+
+      where:
+
+        f(i32, i32) = i32
+        f(i64, i32) = i32
+        f(i32, i64) = i32
+        f(i64, i64) = i64
+      ```
 
 * [Data segment validation][valid data] uses the index type
   - ```
@@ -163,13 +207,23 @@ have to support 32-bit memory addresses in their ABI.
 
 ### Text format
 
+*  There is a new index type:
+   - ```
+     indextype ::= 'i32' | 'i64'
+     ```
+
 *  The [memory type][text memtype] definition is extended to allow an optional
    index type, which must be either `i32` or `i64`
    - ```
-     memtype ::= lim:limits        ⇒ lim i32
-              |  'i32' lim:limits  ⇒ lim i32
-              |  'i64' lim:limits  ⇒ lim i64
+     memtype ::= lim:limits               ⇒ lim i32
+              |  it:indextype lim:limits  ⇒ lim it
      ```
+
+* The [memory abbreviation][text memabbrev] definition is extended to allow an
+  optional index type too, which must be either `i32` or `i64`
+  - ```
+    '(' 'memory' id? index_type? '(' 'data' b_n:datastring ')' ')' === ...
+    ```
 
 
 [memory object]: https://webassembly.github.io/spec/core/syntax/modules.html#memories
@@ -192,3 +246,5 @@ have to support 32-bit memory addresses in their ABI.
 [binary memtype]: https://webassembly.github.io/spec/core/binary/types.html#memory-types
 [binary memarg]: https://webassembly.github.io/spec/core/binary/instructions.html#binary-memarg
 [text memtype]: https://webassembly.github.io/spec/core/text/types.html#text-memtype
+[text memabbrev]: https://webassembly.github.io/spec/core/text/modules.html#text-mem-abbrev
+[multi memory]: https://github.com/webassembly/multi-memory
