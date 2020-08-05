@@ -205,16 +205,16 @@ let block_type s =
 
 let math_prefix s =
   let pos = pos s in
-  match op s with
-  | 0x00 -> i32_trunc_sat_f32_s
-  | 0x01 -> i32_trunc_sat_f32_u
-  | 0x02 -> i32_trunc_sat_f64_s
-  | 0x03 -> i32_trunc_sat_f64_u
-  | 0x04 -> i64_trunc_sat_f32_s
-  | 0x05 -> i64_trunc_sat_f32_u
-  | 0x06 -> i64_trunc_sat_f64_s
-  | 0x07 -> i64_trunc_sat_f64_u
-  | b -> illegal s pos b
+  match vu32 s with
+  | 0x00l -> i32_trunc_sat_f32_s
+  | 0x01l -> i32_trunc_sat_f32_u
+  | 0x02l -> i32_trunc_sat_f64_s
+  | 0x03l -> i32_trunc_sat_f64_u
+  | 0x04l -> i64_trunc_sat_f32_s
+  | 0x05l -> i64_trunc_sat_f32_u
+  | 0x06l -> i64_trunc_sat_f64_s
+  | 0x07l -> i64_trunc_sat_f64_u
+  | n -> illegal s pos (I32.to_int_u n)
 
 let rec instr s =
   let pos = pos s in

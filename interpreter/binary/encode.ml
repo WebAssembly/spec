@@ -341,10 +341,10 @@ let encode m =
       | Convert (I32 I32Op.TruncUF32) -> op 0xa9
       | Convert (I32 I32Op.TruncSF64) -> op 0xaa
       | Convert (I32 I32Op.TruncUF64) -> op 0xab
-      | Convert (I32 I32Op.TruncSatSF32) -> op 0xfc; op 0x00
-      | Convert (I32 I32Op.TruncSatUF32) -> op 0xfc; op 0x01
-      | Convert (I32 I32Op.TruncSatSF64) -> op 0xfc; op 0x02
-      | Convert (I32 I32Op.TruncSatUF64) -> op 0xfc; op 0x03
+      | Convert (I32 I32Op.TruncSatSF32) -> op 0xfc; vu32 0x00l
+      | Convert (I32 I32Op.TruncSatUF32) -> op 0xfc; vu32 0x01l
+      | Convert (I32 I32Op.TruncSatSF64) -> op 0xfc; vu32 0x02l
+      | Convert (I32 I32Op.TruncSatUF64) -> op 0xfc; vu32 0x03l
       | Convert (I32 I32Op.ReinterpretFloat) -> op 0xbc
 
       | Convert (I64 I64Op.ExtendSI32) -> op 0xac
@@ -354,10 +354,10 @@ let encode m =
       | Convert (I64 I64Op.TruncUF32) -> op 0xaf
       | Convert (I64 I64Op.TruncSF64) -> op 0xb0
       | Convert (I64 I64Op.TruncUF64) -> op 0xb1
-      | Convert (I64 I64Op.TruncSatSF32) -> op 0xfc; op 0x04
-      | Convert (I64 I64Op.TruncSatUF32) -> op 0xfc; op 0x05
-      | Convert (I64 I64Op.TruncSatSF64) -> op 0xfc; op 0x06
-      | Convert (I64 I64Op.TruncSatUF64) -> op 0xfc; op 0x07
+      | Convert (I64 I64Op.TruncSatSF32) -> op 0xfc; vu32 0x04l
+      | Convert (I64 I64Op.TruncSatUF32) -> op 0xfc; vu32 0x05l
+      | Convert (I64 I64Op.TruncSatSF64) -> op 0xfc; vu32 0x06l
+      | Convert (I64 I64Op.TruncSatUF64) -> op 0xfc; vu32 0x07l
       | Convert (I64 I64Op.ReinterpretFloat) -> op 0xbd
 
       | Convert (F32 F32Op.ConvertSI32) -> op 0xb2
