@@ -177,6 +177,7 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 
 * Each reference value has an associated runtime type:
   - For structures or arrays, it is the RTT value provided upon creation, or `anyref` if none.
+  - For functions, it is the RTT value for the function's type.
   - For `i31ref` references it is the RTT value for `i31ref`.
 
 * The so-defined runtime type is the only type information that can be discovered about a reference value at runtime; a structure or array with RTT `any` thereby is fully opaque to runtime type checks (and an implementation may choose to optimize away its RTT).
