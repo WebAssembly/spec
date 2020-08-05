@@ -90,6 +90,8 @@ sig
   val of_string_s : string -> t
   val of_string_u : string -> t
   val of_string : string -> t
+  val to_int_s : t -> int
+  val to_int_u : t -> int
   val to_string_s : t -> string
   val to_string_u : t -> string
   val to_hex_string : t -> string
@@ -246,6 +248,8 @@ struct
   let ge_s x y = x >= y
   let ge_u x y = cmp_u x (>=) y
 
+  let to_int_s = Rep.to_int
+  let to_int_u i = Rep.to_int i land (Rep.to_int Rep.max_int lsl 1) lor 1
   (*
    * When Int is used to store a smaller int, it is stored in signed extended
    * form. Some instructions require the unsigned form, which requires masking
