@@ -475,7 +475,7 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
 .. math::
    \begin{array}{llclll}
    \production{element segment} & \Telem_I &::=&
-     \text{(}~\text{elem}~~x{:}\Ttableidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
+     \text{(}~\text{elem}~~\text{(}~table~~x{:}\Ttableidx_I~\text{)}~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
        \Rightarrow\quad \{ \ETABLE~x, \EOFFSET~e, \EINIT~y^\ast \} \\
    \end{array}
 
@@ -503,7 +503,7 @@ Also, the table index can be omitted, defaulting to :math:`\T{0}`.
    \production{element segment} &
     \text{(}~\text{elem}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
        &\equiv&
-     \text{(}~\text{elem}~~0~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+     \text{(}~\text{elem}~~\text{(}~table~~0~\text{)}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
    \end{array}
 
 As another abbreviation, element segments may also be specified inline with :ref:`table <text-table>` definitions; see the respective section.
@@ -525,7 +525,7 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
 .. math::
    \begin{array}{llclll}
    \production{data segment} & \Tdata_I &::=&
-     \text{(}~\text{data}~~x{:}\Tmemidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
+     \text{(}~\text{data}~~\text{(}~\text{memory}~~x{:}\Tmemidx_I~\text{)}~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
        \Rightarrow\quad \{ \DMEM~x', \DOFFSET~e, \DINIT~b^\ast \} \\[1ex]
    \production{data string} & \Tdatastring &::=&
      (b^\ast{:}\Tstring)^\ast \quad\Rightarrow\quad \concat((b^\ast)^\ast) \\
@@ -555,7 +555,7 @@ Also, the memory index can be omitted, defaulting to :math:`\T{0}`.
    \production{data segment} &
     \text{(}~\text{data}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
        &\equiv&
-     \text{(}~\text{data}~~0~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+     \text{(}~\text{data}~~\text{(}~\text{memory}~0~\text{)}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
    \end{array}
 
 As another abbreviation, data segments may also be specified inline with :ref:`memory <text-mem>` definitions; see the respective section.
