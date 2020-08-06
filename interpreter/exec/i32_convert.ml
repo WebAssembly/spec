@@ -27,7 +27,7 @@ let trunc_f64_s x =
     raise Numeric_error.InvalidConversionToInteger
   else
     let xf = F64.to_float x in
-    if xf >= -.Int32.(to_float min_int) || xf < Int32.(to_float min_int) then
+    if xf >= -.Int32.(to_float min_int) || xf <= Int32.(to_float min_int) -. 1.0 then
       raise Numeric_error.IntegerOverflow
     else
       Int32.of_float xf
