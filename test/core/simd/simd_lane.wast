@@ -393,35 +393,38 @@
   (v128.const i64x2 01_234_567_890_123_456_789_0 0x0_1234_5678_90AB_cdef))
   (v128.const i32x4 0xeb1f_0ad2 0xab54_a98c 0x90ab_cdef 0x1234_5678))
 
+;; Syntax errors for negative values
+
+(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_s  -1 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_u  -1 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_s  -1 (v128.const i16x8 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_u  -1 (v128.const i16x8 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result i32) (i32x4.extract_lane  -1 (v128.const i32x4 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result f32) (f32x4.extract_lane  -1 (v128.const f32x4 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (i8x16.replace_lane  -1 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (i16x8.replace_lane  -1 (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (i32x4.replace_lane  -1 (v128.const i32x4 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (f32x4.replace_lane  -1 (v128.const f32x4 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (result i64) (i64x2.extract_lane  -1 (v128.const i64x2 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result f64) (f64x2.extract_lane  -1 (v128.const f64x2 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (i64x2.replace_lane  -1 (v128.const i64x2 0 0) (i64.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (f64x2.replace_lane  -1 (v128.const f64x2 0 0) (f64.const 1)))") "unexpected token")
+
 ;; Malformed lane index value
 
-(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_s  -1 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "malformed lane index")
 (assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_s 256 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_u  -1 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "malformed lane index")
 (assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_u 256 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_s  -1 (v128.const i16x8 0 0 0 0 0 0 0 0)))") "malformed lane index")
 (assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_s 256 (v128.const i16x8 0 0 0 0 0 0 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_u  -1 (v128.const i16x8 0 0 0 0 0 0 0 0)))") "malformed lane index")
 (assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_u 256 (v128.const i16x8 0 0 0 0 0 0 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result i32) (i32x4.extract_lane  -1 (v128.const i32x4 0 0 0 0)))") "malformed lane index")
 (assert_malformed (module quote "(func (result i32) (i32x4.extract_lane 256 (v128.const i32x4 0 0 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result f32) (f32x4.extract_lane  -1 (v128.const f32x4 0 0 0 0)))") "malformed lane index")
 (assert_malformed (module quote "(func (result f32) (f32x4.extract_lane 256 (v128.const f32x4 0 0 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result v128) (i8x16.replace_lane  -1 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))") "malformed lane index")
 (assert_malformed (module quote "(func (result v128) (i8x16.replace_lane 256 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))") "malformed lane index")
-(assert_malformed (module quote "(func (result v128) (i16x8.replace_lane  -1 (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1)))") "malformed lane index")
 (assert_malformed (module quote "(func (result v128) (i16x8.replace_lane 256 (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1)))") "malformed lane index")
-(assert_malformed (module quote "(func (result v128) (i32x4.replace_lane  -1 (v128.const i32x4 0 0 0 0) (i32.const 1)))") "malformed lane index")
 (assert_malformed (module quote "(func (result v128) (i32x4.replace_lane 256 (v128.const i32x4 0 0 0 0) (i32.const 1)))") "malformed lane index")
-(assert_malformed (module quote "(func (result v128) (f32x4.replace_lane  -1 (v128.const f32x4 0 0 0 0) (i32.const 1)))") "malformed lane index")
 (assert_malformed (module quote "(func (result v128) (f32x4.replace_lane 256 (v128.const f32x4 0 0 0 0) (i32.const 1)))") "malformed lane index")
-(assert_malformed (module quote "(func (result i64) (i64x2.extract_lane  -1 (v128.const i64x2 0 0)))") "malformed lane index")
 (assert_malformed (module quote "(func (result i64) (i64x2.extract_lane 256 (v128.const i64x2 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result f64) (f64x2.extract_lane  -1 (v128.const f64x2 0 0)))") "malformed lane index")
 (assert_malformed (module quote "(func (result f64) (f64x2.extract_lane 256 (v128.const f64x2 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result v128) (i64x2.replace_lane  -1 (v128.const i64x2 0 0) (i64.const 1)))") "malformed lane index")
 (assert_malformed (module quote "(func (result v128) (i64x2.replace_lane 256 (v128.const i64x2 0 0) (i64.const 1)))") "malformed lane index")
-(assert_malformed (module quote "(func (result v128) (f64x2.replace_lane  -1 (v128.const f64x2 0 0) (f64.const 1)))") "malformed lane index")
 (assert_malformed (module quote "(func (result v128) (f64x2.replace_lane 256 (v128.const f64x2 0 0) (f64.const 1)))") "malformed lane index")
 
 ;; Invalid lane index value
@@ -568,43 +571,34 @@
 
 ;; Pass params as the lane index
 
-(assert_malformed (module quote "(func (param i32) (result i32) (i8x16.extract_lane_s (local.get 0) (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param i32) (result i32) (i8x16.extract_lane_u (local.get 0) (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param i32) (result i32) (i16x8.extract_lane_s (local.get 0) (v128.const i16x8 0 0 0 0 0 0 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param i32) (result i32) (i16x8.extract_lane_u (local.get 0) (v128.const i16x8 0 0 0 0 0 0 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param i32) (result i32) (i32x4.extract_lane (local.get 0) (v128.const i32x4 0 0 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param i32) (result f32) (f32x4.extract_lane (local.get 0) (v128.const f32x4 0 0 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param i32) (result v128) (i8x16.replace_lane (local.get 0) (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param i32) (result v128) (i16x8.replace_lane (local.get 0) (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param i32) (result v128) (i32x4.replace_lane (local.get 0) (v128.const i32x4 0 0 0 0) (i32.const 1)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param i32) (result v128) (f32x4.replace_lane (local.get 0) (v128.const f32x4 0 0 0 0) (f32.const 1.0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param v128) (result v128) "
-  "(v8x16.shuffle (local.get 0) "
-  "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "expected i8 literal")
+(assert_malformed (module quote "(func (param i32) (result i32) (i8x16.extract_lane_s (local.get 0) (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (param i32) (result i32) (i8x16.extract_lane_u (local.get 0) (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (param i32) (result i32) (i16x8.extract_lane_s (local.get 0) (v128.const i16x8 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (param i32) (result i32) (i16x8.extract_lane_u (local.get 0) (v128.const i16x8 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (param i32) (result i32) (i32x4.extract_lane (local.get 0) (v128.const i32x4 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (param i32) (result f32) (f32x4.extract_lane (local.get 0) (v128.const f32x4 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (param i32) (result v128) (i8x16.replace_lane (local.get 0) (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (param i32) (result v128) (i16x8.replace_lane (local.get 0) (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (param i32) (result v128) (i32x4.replace_lane (local.get 0) (v128.const i32x4 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (param i32) (result v128) (f32x4.replace_lane (local.get 0) (v128.const f32x4 0 0 0 0) (f32.const 1.0)))") "unexpected token")
 
-(assert_malformed (module quote "(func (param i32) (result i64) (i64x2.extract_lane (local.get 0) (v128.const i64x2 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param i32) (result f64) (f64x2.extract_lane (local.get 0) (v128.const f64x2 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param i32) (result v128) (i64x2.replace_lane (local.get 0) (v128.const i64x2 0 0) (i64.const 1)))") "expected i8 literal")
-(assert_malformed (module quote "(func (param i32) (result v128) (f64x2.replace_lane (local.get 0) (v128.const f64x2 0 0) (f64.const 1.0)))") "expected i8 literal")
+(assert_malformed (module quote "(func (param i32) (result i64) (i64x2.extract_lane (local.get 0) (v128.const i64x2 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (param i32) (result f64) (f64x2.extract_lane (local.get 0) (v128.const f64x2 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (param i32) (result v128) (i64x2.replace_lane (local.get 0) (v128.const i64x2 0 0) (i64.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (param i32) (result v128) (f64x2.replace_lane (local.get 0) (v128.const f64x2 0 0) (f64.const 1.0)))") "unexpected token")
 
 ;; Pass non-literal as the lane index
 
-(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_s 1.5 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_u nan (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_s inf (v128.const i16x8 0 0 0 0 0 0 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_u -inf (v128.const i16x8 0 0 0 0 0 0 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (result i32) (i32x4.extract_lane nan (v128.const i32x4 0 0 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (result f32) (f32x4.extract_lane nan (v128.const f32x4 0 0 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (result v128) (i8x16.replace_lane -2.5 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))") "expected i8 literal")
-(assert_malformed (module quote "(func (result v128) (i16x8.replace_lane nan (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1)))") "expected i8 literal")
-(assert_malformed (module quote "(func (result v128) (i32x4.replace_lane inf (v128.const i32x4 0 0 0 0) (i32.const 1)))") "expected i8 literal")
-(assert_malformed (module quote "(func (result v128) (f32x4.replace_lane -inf (v128.const f32x4 0 0 0 0) (f32.const 1.1)))") "expected i8 literal")
-
-(assert_malformed (module quote "(func (result i64) (i64x2.extract_lane nan (v128.const i64x2 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (result f64) (f64x2.extract_lane nan (v128.const f64x2 0 0)))") "expected i8 literal")
-(assert_malformed (module quote "(func (result v128) (i64x2.replace_lane inf (v128.const i64x2 0 0) (i64.const 1)))") "expected i8 literal")
-(assert_malformed (module quote "(func (result v128) (f64x2.replace_lane -inf (v128.const f64x2 0 0) (f64.const 1.1)))") "expected i8 literal")
+(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_s 1.5 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_u nan (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_s inf (v128.const i16x8 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_u -inf (v128.const i16x8 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result i32) (i32x4.extract_lane nan (v128.const i32x4 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result f32) (f32x4.extract_lane nan (v128.const f32x4 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (i8x16.replace_lane -2.5 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (i16x8.replace_lane nan (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (i32x4.replace_lane inf (v128.const i32x4 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (f32x4.replace_lane -inf (v128.const f32x4 0 0 0 0) (f32.const 1.1)))") "unexpected token")
 
 ;; v8x16.shuffle expects a 16-byte literals as first argument
 (assert_malformed (module quote "(func (result v128) "
@@ -882,29 +876,29 @@
 (assert_return (invoke "as-local_set-value-1" (v128.const i64x2 -1 -1)) (i64.const -1))
 (assert_return (invoke "as-global_set-value-3" (v128.const f64x2 0 0)(f64.const 3.14)) (v128.const f64x2 3.14 0))
 
+;; Non-nat lane index
+
+(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_u +0x0f (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result f32) (f32x4.extract_lane +03 (v128.const f32x4 0 0 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result i64) (i64x2.extract_lane +1 (v128.const i64x2 0 0)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (i8x16.replace_lane +015 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (i16x8.replace_lane +0x7 (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (i32x4.replace_lane +3 (v128.const i32x4 0 0 0 0) (i32.const 1)))") "unexpected token")
+(assert_malformed (module quote "(func (result v128) (f64x2.replace_lane +0x01 (v128.const f64x2 0 0) (f64.const 1.0)))") "unexpected token")
+
 ;; Lane index literal
 
 (module (func (result i32) (i8x16.extract_lane_s 0x0f (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))))
-(module (func (result i32) (i8x16.extract_lane_u +0x0f (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))))
 (module (func (result i32) (i16x8.extract_lane_s 0x07 (v128.const i16x8 0 0 0 0 0 0 0 0))))
 (module (func (result i32) (i16x8.extract_lane_u 0x0_7 (v128.const i16x8 0 0 0 0 0 0 0 0))))
 (module (func (result i32) (i32x4.extract_lane 03 (v128.const i32x4 0 0 0 0))))
-(module (func (result f32) (f32x4.extract_lane +03 (v128.const f32x4 0 0 0 0))))
-(module (func (result i64) (i64x2.extract_lane +1 (v128.const i64x2 0 0))))
 (module (func (result f64) (f64x2.extract_lane 0x1 (v128.const f64x2 0 0))))
-(module (func (result v128) (i8x16.replace_lane +015 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1))))
-(module (func (result v128) (i16x8.replace_lane +0x7 (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1))))
-(module (func (result v128) (i32x4.replace_lane +3 (v128.const i32x4 0 0 0 0) (i32.const 1))))
 (module (func (result v128) (f32x4.replace_lane 0x3 (v128.const f32x4 0 0 0 0) (f32.const 1.0))))
 (module (func (result v128) (i64x2.replace_lane 01 (v128.const i64x2 0 0) (i64.const 1))))
-(module (func (result v128) (f64x2.replace_lane +0x01 (v128.const f64x2 0 0) (f64.const 1.0))))
-(module (func (result v128) (v8x16.shuffle 0x00 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x1e 0x1f
-    (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) (v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))
-)
 
 ;; 1.0 is malformed lane index
 
-(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_s 1.0 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "malformed lane index")
+(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_s 1.0 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "unexpected token")
 
 ;; Test operation with empty argument
 
@@ -914,7 +908,7 @@
     "  (i8x16.extract_lane_s (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_invalid
   (module
@@ -930,7 +924,7 @@
     "  (i8x16.extract_lane_s)"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_malformed
   (module quote
@@ -938,7 +932,7 @@
     "  (i16x8.extract_lane_u (v128.const i16x8 0 0 0 0 0 0 0 0))"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_invalid
   (module
@@ -954,7 +948,7 @@
     "  (i16x8.extract_lane_u)"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_malformed
   (module quote
@@ -962,7 +956,7 @@
     "  (i32x4.extract_lane (v128.const i32x4 0 0 0 0))"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_invalid
   (module
@@ -978,7 +972,7 @@
     "  (i32x4.extract_lane)"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_malformed
   (module quote
@@ -986,7 +980,7 @@
     "  (i64x2.extract_lane (v128.const i64x2 0 0))"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_invalid
   (module
@@ -1002,7 +996,7 @@
     "  (i64x2.extract_lane)"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_malformed
   (module quote
@@ -1010,7 +1004,7 @@
     "  (f32x4.extract_lane (v128.const f32x4 0 0 0 0))"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_invalid
   (module
@@ -1026,7 +1020,7 @@
     "  (f32x4.extract_lane)"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_malformed
   (module quote
@@ -1034,7 +1028,7 @@
     "  (f64x2.extract_lane (v128.const f64x2 0 0))"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_invalid
   (module
@@ -1050,7 +1044,7 @@
     "  (f64x2.extract_lane)"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_malformed
   (module quote
@@ -1058,7 +1052,7 @@
     "  (i8x16.replace_lane (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1))"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_invalid
   (module
@@ -1082,7 +1076,7 @@
     "  (i8x16.replace_lane)"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_malformed
   (module quote
@@ -1090,7 +1084,7 @@
     "  (i16x8.replace_lane (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1))"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_invalid
   (module
@@ -1114,7 +1108,7 @@
     "  (i16x8.replace_lane)"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_malformed
   (module quote
@@ -1122,7 +1116,7 @@
     "  (i32x4.replace_lane (v128.const i32x4 0 0 0 0) (i32.const 1))"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_invalid
   (module
@@ -1146,7 +1140,7 @@
     "  (i32x4.replace_lane)"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_malformed
   (module quote
@@ -1154,7 +1148,7 @@
     "  (f32x4.replace_lane (v128.const f32x4 0 0 0 0) (f32.const 1.0))"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_invalid
   (module
@@ -1178,7 +1172,7 @@
     "  (f32x4.replace_lane)"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_malformed
   (module quote
@@ -1186,7 +1180,7 @@
     "  (i64x2.replace_lane (v128.const i64x2 0 0) (i64.const 1))"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_invalid
   (module
@@ -1210,7 +1204,7 @@
     "  (i64x2.replace_lane)"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_malformed
   (module quote
@@ -1218,7 +1212,7 @@
     "  (f64x2.replace_lane (v128.const f64x2 0 0) (f64.const 1.0))"
     ")"
   )
-  "type mismatch"
+  "unexpected token"
 )
 (assert_invalid
   (module
