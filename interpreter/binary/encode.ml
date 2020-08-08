@@ -567,6 +567,8 @@ let encode m =
       | SimdBitmask V128Op.(I32x4 Bitmask) -> simd_op 0xa4l
       | SimdBitmask (_) -> assert false
 
+      | _ -> assert false
+
     let const c =
       list instr c.it; end_ ()
 

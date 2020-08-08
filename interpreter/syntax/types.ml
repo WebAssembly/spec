@@ -16,7 +16,7 @@ type extern_type =
   | ExternMemoryType of memory_type
   | ExternGlobalType of global_type
 
-type pack_size = Pack8 | Pack16 | Pack32
+type pack_size = Pack8 | Pack16 | Pack32 | Pack64 | Pack8x8 | Pack16x4 | Pack32x2
 type extension = SX | ZX
 
 
@@ -31,7 +31,7 @@ let packed_size = function
   | Pack8 -> 1
   | Pack16 -> 2
   | Pack32 -> 4
-
+  | Pack64 | Pack8x8 | Pack16x4 | Pack32x2 -> 8
 
 (* Subtyping *)
 

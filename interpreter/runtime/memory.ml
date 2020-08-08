@@ -122,6 +122,23 @@ let extend x n = function
   | ZX -> x
   | SX -> let sh = 64 - 8 * n in Int64.(shift_right (shift_left x sh) sh)
 
+let load_simd_packed sz ext x =
+  let b = Bytes.create 16 in
+  Bytes.set_int64_le b 0 x;
+  let v = V128.of_bits (Bytes.to_string b) in
+  match sz, ext with
+  | (Pack8x8, SX) -> V128 (V128.I16x8_convert.widen_low_s v)
+  | (Pack8x8, ZX) -> V128 (V128.I16x8_convert.widen_low_u v)
+  | (Pack16x4, SX) -> V128 (V128.I32x4_convert.widen_low_s v)
+  | (Pack16x4, ZX) -> V128 (V128.I32x4_convert.widen_low_u v)
+  | (Pack32x2, SX) -> V128 (V128.I64x2_convert.widen_low_s v)
+  | (Pack32x2, ZX) -> V128 (V128.I64x2_convert.widen_low_u v)
+  | (Pack8, ZX) -> V128 (V128.I8x16.splat (I8.of_int_s (Int64.to_int x)))
+  | (Pack16, ZX) -> V128 (V128.I16x8.splat (I16.of_int_s (Int64.to_int x)))
+  | (Pack32, ZX) -> V128 (V128.I32x4.splat (I32.of_int_s (Int64.to_int x)))
+  | (Pack64, ZX) -> V128 (V128.I64x2.splat x)
+  | _ -> assert false
+
 let load_packed sz ext mem a o t =
   assert (packed_size sz <= Types.size t);
   let n = packed_size sz in
@@ -129,6 +146,7 @@ let load_packed sz ext mem a o t =
   match t with
   | I32Type -> I32 (Int64.to_int32 x)
   | I64Type -> I64 x
+  | V128Type -> load_simd_packed sz ext x
   | _ -> raise Type
 
 let store_packed sz mem a o v =

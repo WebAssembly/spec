@@ -175,6 +175,10 @@ sig
     val widen_low_u : t -> t
     val widen_high_u : t -> t
   end
+  module I64x2_convert : sig
+    val widen_low_s : t -> t
+    val widen_low_u : t -> t
+  end
   module F32x4_convert : sig
     val convert_i32x4_s : t -> t
     val convert_i32x4_u : t -> t
@@ -403,6 +407,16 @@ struct
     let widen_high_s = widen Lib.List.drop 0xffffffffl
     let widen_low_u = widen Lib.List.take 0xffffl
     let widen_high_u = widen Lib.List.drop 0xffffl
+  end
+
+  module I64x2_convert = struct
+    let widen mask x =
+      Rep.of_i64x2
+        (List.map
+           (fun i32 -> Int64.(logand mask (of_int32 i32)))
+           (Lib.List.take 2 (Rep.to_i32x4 x)))
+    let widen_low_s = widen 0xffffffffffffffffL
+    let widen_low_u = widen 0xffffffffL
   end
 
   module F32x4_convert = struct

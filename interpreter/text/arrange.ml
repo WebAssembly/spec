@@ -77,6 +77,10 @@ let pack_size = function
   | Pack8 -> "8"
   | Pack16 -> "16"
   | Pack32 -> "32"
+  | Pack64 -> "64"
+  | Pack8x8 -> "8x8"
+  | Pack16x4 -> "16x4"
+  | Pack32x2 -> "32x2"
 
 let extension = function
   | SX -> "_s"
