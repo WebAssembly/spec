@@ -165,6 +165,12 @@ let check_unop unop at =
     check_pack sz (Values.type_of unop) at
   | _ -> ()
 
+let check_binop binop at =
+  match binop with
+  | Values.V128 V128Op.(I8x16 (Shuffle imms)) ->
+      if List.for_all ((>) 32) imms then () else error at "invalid lane index"
+  | _ -> ()
+
 let check_memop (c : context) (memop : 'a memop) get_sz at =
   ignore (memory c (0l @@ at));
   let size =
@@ -326,6 +332,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [t] --> [t]
 
   | Binary binop ->
+    check_binop binop e.at;
     let t = type_binop binop in
     [t; t] --> [t]
 

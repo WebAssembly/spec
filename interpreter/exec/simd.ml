@@ -137,6 +137,7 @@ sig
   module V128 : Vec with type t = t
   module V8x16 : sig
     val swizzle : t -> t -> t
+    val shuffle : t -> t -> int list -> t
   end
   module I32x4_convert : sig
     val trunc_sat_f32x4_s : t -> t
@@ -277,6 +278,12 @@ struct
             ~default:Int32.zero)
       in
       Rep.of_i8x16 (List.map select is)
+    let shuffle x y imms =
+      let xs = Rep.to_i8x16 x in
+      let ys = Rep.to_i8x16 y in
+      let joined = List.append xs ys in
+      let result = List.map (fun i -> List.nth joined i) imms in
+      Rep.of_i8x16 result
   end
 
   module I8x16 = MakeInt (I8) (struct

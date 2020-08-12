@@ -71,6 +71,11 @@ let simd_lane_index s at =
     if n >= 0 && n < 256 then n else raise (Failure "")
   with Failure _ -> error at "malformed lane index"
 
+let shuffle_literal ss at =
+  if not (List.length ss = 16) then
+    error at "invalid lane length";
+  List.map (fun s -> simd_lane_index s.it s.at) ss
+
 let nanop f nan =
   let open Source in
   let open Values in
@@ -190,7 +195,7 @@ let inline_type_explicit (c : context) x ft at =
 %token CALL CALL_INDIRECT RETURN
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
-%token SPLAT EXTRACT_LANE REPLACE_LANE SHIFT
+%token SPLAT EXTRACT_LANE REPLACE_LANE SHIFT SHUFFLE
 %token CONST V128_CONST UNARY BINARY TERNARY TEST COMPARE CONVERT
 %token UNREACHABLE MEMORY_SIZE MEMORY_GROW
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
@@ -385,6 +390,7 @@ plain_instr :
   | EXTRACT_LANE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
   | REPLACE_LANE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
   | SHIFT { fun c -> $1 }
+  | SHUFFLE literal_list { let at = at () in fun c -> v8x16_shuffle (shuffle_literal $2 at) }
 
 
 call_instr :

@@ -151,6 +151,7 @@ struct
   let binop (op : binop) =
     let f = match op with
       | I8x16 Swizzle -> SXX.V8x16.swizzle
+      | I8x16 (Shuffle imms) -> fun a b -> SXX.V8x16.shuffle a b imms
       | I8x16 Eq -> SXX.I8x16.eq
       | I8x16 Ne -> SXX.I8x16.ne
       | I8x16 LtS -> SXX.I8x16.lt_s
