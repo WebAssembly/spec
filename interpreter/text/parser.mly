@@ -65,6 +65,12 @@ let simd_lane_lit shape l at =
   | F32x4 -> LitPat (Values.F32 (F32.of_string l) @@ at) @@ at
   | F64x2 -> LitPat (Values.F64 (F64.of_string l) @@ at) @@ at
 
+let simd_lane_index s at =
+  try
+    let n = int_of_string s in
+    if n >= 0 && n < 256 then n else raise (Failure "")
+  with Failure _ -> error at "malformed lane index"
+
 let nanop f nan =
   let open Source in
   let open Values in
@@ -376,8 +382,8 @@ plain_instr :
   | TERNARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
   | SPLAT { fun c -> $1 }
-  | EXTRACT_LANE NAT { let at = at () in fun c -> $1 (nat $2 at) }
-  | REPLACE_LANE NAT { let at = at () in fun c -> $1 (nat $2 at) }
+  | EXTRACT_LANE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
+  | REPLACE_LANE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
   | SHIFT { fun c -> $1 }
 
 

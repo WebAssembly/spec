@@ -254,7 +254,8 @@ rule token = parse
     { SPLAT (simdop s i8x16_splat i16x8_splat i32x4_splat
                       i64x2_splat f32x4_splat f64x2_splat) }
   | (simd_shape as s)".extract_lane"
-    { EXTRACT_LANE (fun imm ->
+    { except ["i8x16"; "i16x8"] s lexbuf;
+      EXTRACT_LANE (fun imm ->
         simdop s unimplemented_simd unimplemented_simd i32x4_extract_lane
                  i64x2_extract_lane f32x4_extract_lane f64x2_extract_lane imm) }
   | (("i8x16"|"i16x8") as t)".extract_lane_"(sign as s)

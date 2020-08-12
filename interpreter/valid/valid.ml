@@ -177,16 +177,22 @@ let check_memop (c : context) (memop : 'a memop) get_sz at =
   require (1 lsl memop.align <= size) at
     "alignment must not be larger than natural"
 
-let check_simd_lane_idx op at =
-  let max, idx = match op with
-    | V128Op.I8x16 (_, idx) -> 16, idx
-    | V128Op.I16x8 (_, idx) -> 8, idx
-    | V128Op.I32x4 (_, idx) -> 4, idx
-    | V128Op.I64x2 (_, idx) -> 2, idx
-    | V128Op.F32x4 (_, idx) -> 4, idx
-    | V128Op.F64x2 (_, idx) -> 2, idx
-    | V128Op.V128 (_, idx) -> 1, idx
-  in require (idx < max) at "invalid lane index"
+let check_simd_lane_index get_lane op at =
+  let max, op' = match op with
+    | V128Op.I8x16 op' -> 16, op'
+    | V128Op.I16x8 op' -> 8, op'
+    | V128Op.I32x4 op' -> 4, op'
+    | V128Op.I64x2 op' -> 2, op'
+    | V128Op.F32x4 op' -> 4, op'
+    | V128Op.F64x2 op' -> 2, op'
+    | V128Op.V128 op' -> assert false
+  in require (get_lane op' < max) at "invalid lane index"
+
+let check_simd_extract_lane_index op at =
+  check_simd_lane_index snd op at
+
+let check_simd_replace_lane_index op at =
+  check_simd_lane_index Fun.id op at
 
 (*
  * Conventions:
@@ -333,11 +339,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
 
   | SimdExtract (V128Op.V128 _) -> assert false
   | SimdExtract extractop ->
-    check_simd_lane_idx extractop e.at;
+    check_simd_extract_lane_index extractop e.at;
     let t = type_simd_lane extractop in
     [V128Type] --> [t]
 
   | SimdReplace replaceop ->
+    check_simd_replace_lane_index replaceop e.at;
     let t = type_simd_lane replaceop in
     [V128Type; t] --> [V128Type]
 
