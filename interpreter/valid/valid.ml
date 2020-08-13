@@ -168,7 +168,8 @@ let check_unop unop at =
 let check_binop binop at =
   match binop with
   | Values.V128 V128Op.(I8x16 (Shuffle imms)) ->
-      if List.for_all ((>) 32) imms then () else error at "invalid lane index"
+    if List.exists ((<=) 32) imms then
+      error at "invalid lane index"
   | _ -> ()
 
 let check_memop (c : context) (memop : 'a memop) get_sz at =

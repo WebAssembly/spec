@@ -66,10 +66,9 @@ let simd_lane_lit shape l at =
   | F64x2 -> LitPat (Values.F64 (F64.of_string l) @@ at) @@ at
 
 let simd_lane_index s at =
-  try
-    let n = int_of_string s in
-    if n >= 0 && n < 256 then n else raise (Failure "")
-  with Failure _ -> error at "malformed lane index"
+  match int_of_string s with
+  | n when 0 <= n && n < 256 -> n
+  | _ | exception Failure _ -> error at "malformed lane index"
 
 let shuffle_literal ss at =
   if not (List.length ss = 16) then
