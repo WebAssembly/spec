@@ -74,6 +74,10 @@ sig
   val all_true : t -> bool
   val shl : t -> I32.t -> t
   val shr_s : t -> I32.t -> t
+  val add_sat_s : t -> t -> t
+  val add_sat_u : t -> t -> t
+  val sub_sat_s : t -> t -> t
+  val sub_sat_u : t -> t -> t
 end
 
 (* This signature defines the types and operations SIMD floats can expose. *)
@@ -281,6 +285,10 @@ struct
     let shr_s v s =
       let shift = Int.of_int_u (Int32.to_int s) in
       unop (fun a -> Int.shr_s a shift) v
+    let add_sat_s = binop Int.add_sat_s
+    let add_sat_u = binop Int.add_sat_u
+    let sub_sat_s = binop Int.sub_sat_s
+    let sub_sat_u = binop Int.sub_sat_u
   end
 
   module V8x16 = struct
@@ -338,23 +346,21 @@ struct
       let num_lanes = lanes F64x2
     end)
 
-  let clamp low high x = min (max x low) high
-
   (* Narrow two v128 into one v128 by using to_shape on both operands,
-   * concatenating them, clamping the element to between low and high,
+   * concatenating them, saturating the wider type to the narrower type,
    * then of_shape to reconstruct a v128. *)
-  let narrow to_shape of_shape low high x y =
+  let narrow to_shape of_shape sat_op x y =
     let xy = (to_shape x) @ (to_shape y) in
-    of_shape (List.map (clamp low high) xy)
+    of_shape (List.map sat_op xy)
 
   module I8x16_convert = struct
-    let narrow_s = narrow Rep.to_i16x8 Rep.of_i8x16 (-128l) 127l
-    let narrow_u = narrow Rep.to_i16x8 Rep.of_i8x16 0l 255l
+    let narrow_s = narrow Rep.to_i16x8 Rep.of_i8x16 I8.saturate_s
+    let narrow_u = narrow Rep.to_i16x8 Rep.of_i8x16 I8.saturate_u
   end
 
   module I16x8_convert = struct
-    let narrow_s = narrow Rep.to_i32x4 Rep.of_i16x8 (-32768l) 32767l
-    let narrow_u = narrow Rep.to_i32x4 Rep.of_i16x8 0l 65535l
+    let narrow_s = narrow Rep.to_i32x4 Rep.of_i16x8 I16.saturate_s
+    let narrow_u = narrow Rep.to_i32x4 Rep.of_i16x8 I16.saturate_u
 
     let widen take_or_drop mask x =
       Rep.of_i16x8 (List.map (Int32.logand mask) (take_or_drop 8 (Rep.to_i8x16 x)))
@@ -362,6 +368,7 @@ struct
     let widen_high_s = widen Lib.List.drop 0xffffffffl
     let widen_low_u = widen Lib.List.take 0xffl
     let widen_high_u = widen Lib.List.drop 0xffl
+
   end
 
   module I32x4_convert = struct

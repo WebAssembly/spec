@@ -85,6 +85,15 @@ sig
   val ge_u : t -> t -> bool
 
   val as_unsigned : t -> t
+
+  (* Saturating arithmetic, used for small ints. *)
+  val saturate_s : t -> t
+  val saturate_u : t -> t
+  val add_sat_s : t -> t -> t
+  val add_sat_u : t -> t -> t
+  val sub_sat_s : t -> t -> t
+  val sub_sat_u : t -> t -> t
+
   val of_int_s : int -> t
   val of_int_u : int -> t
   val of_string_s : string -> t
@@ -248,8 +257,6 @@ struct
   let ge_s x y = x >= y
   let ge_u x y = cmp_u x (>=) y
 
-  let to_int_s = Rep.to_int
-  let to_int_u i = Rep.to_int i land (Rep.to_int Rep.max_int lsl 1) lor 1
   (*
    * When Int is used to store a smaller int, it is stored in signed extended
    * form. Some instructions require the unsigned form, which requires masking
@@ -259,6 +266,24 @@ struct
     (* Mask with bottom #bitwidth bits set *)
     let mask = Rep.(shift_right_logical minus_one (32 - Rep.bitwidth)) in
     Rep.logand x mask
+
+  (* We don't override min_int and max_int since those are used
+   * by other functions (like parsing), and rely on it being
+   * min/max for int32 *)
+  (* The smallest signed |bitwidth|-bits int. *)
+  let low_int = Rep.shift_left Rep.minus_one (Rep.bitwidth - 1)
+  (* The largest signed |bitwidth|-bits int. *)
+  let high_int = Rep.logxor low_int Rep.minus_one
+  let saturate_s x = min (max x low_int) high_int
+  let saturate_u x = min (max x Rep.zero) (as_unsigned Rep.minus_one)
+
+  let add_sat_s x y = saturate_s (add x y)
+  let add_sat_u x y = saturate_u (add (as_unsigned x) (as_unsigned y))
+  let sub_sat_s x y = saturate_s (sub x y)
+  let sub_sat_u x y = saturate_u (sub (as_unsigned x) (as_unsigned y))
+
+  let to_int_s = Rep.to_int
+  let to_int_u i = Rep.to_int i land (Rep.to_int Rep.max_int lsl 1) lor 1
 
   let of_int_s = Rep.of_int
   let of_int_u i = and_ (Rep.of_int i) (or_ (shl (Rep.of_int max_int) one) one)

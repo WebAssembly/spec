@@ -173,7 +173,11 @@ struct
       | I8x16 NarrowS -> SXX.I8x16_convert.narrow_s
       | I8x16 NarrowU -> SXX.I8x16_convert.narrow_u
       | I8x16 Add -> SXX.I8x16.add
+      | I8x16 AddSatS -> SXX.I8x16.add_sat_s
+      | I8x16 AddSatU -> SXX.I8x16.add_sat_u
       | I8x16 Sub -> SXX.I8x16.sub
+      | I8x16 SubSatS -> SXX.I8x16.sub_sat_s
+      | I8x16 SubSatU -> SXX.I8x16.sub_sat_u
       | I8x16 MinS -> SXX.I8x16.min_s
       | I8x16 MinU -> SXX.I8x16.min_u
       | I8x16 MaxS -> SXX.I8x16.max_s
@@ -192,7 +196,11 @@ struct
       | I16x8 NarrowS -> SXX.I16x8_convert.narrow_s
       | I16x8 NarrowU -> SXX.I16x8_convert.narrow_u
       | I16x8 Add -> SXX.I16x8.add
+      | I16x8 AddSatS -> SXX.I16x8.add_sat_s
+      | I16x8 AddSatU -> SXX.I16x8.add_sat_u
       | I16x8 Sub -> SXX.I16x8.sub
+      | I16x8 SubSatS -> SXX.I16x8.sub_sat_s
+      | I16x8 SubSatU -> SXX.I16x8.sub_sat_u
       | I16x8 Mul -> SXX.I16x8.mul
       | I16x8 MinS -> SXX.I16x8.min_s
       | I16x8 MinU -> SXX.I16x8.min_u

@@ -531,6 +531,15 @@ rule token = parse
   | "i32x4.widen_high_i16x8_"(sign as s)
   { UNARY (ext s i32x4_widen_high_i16x8_s i32x4_widen_high_i16x8_u) }
 
+  | "i8x16.add_saturate_"(sign as s)
+  { BINARY (ext s i8x16_add_saturate_s i8x16_add_saturate_u) }
+  | "i8x16.sub_saturate_"(sign as s)
+  { BINARY (ext s i8x16_sub_saturate_s i8x16_sub_saturate_u) }
+  | "i16x8.add_saturate_"(sign as s)
+  { BINARY (ext s i16x8_add_saturate_s i16x8_add_saturate_u) }
+  | "i16x8.sub_saturate_"(sign as s)
+  { BINARY (ext s i16x8_sub_saturate_s i16x8_sub_saturate_u) }
+
   | (simd_shape as s) { SIMD_SHAPE (simd_shape s) }
 
   | name as s { VAR s }
