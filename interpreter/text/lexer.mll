@@ -518,6 +518,19 @@ rule token = parse
   { UNARY (ext s i32x4_trunc_sat_f32x4_s i32x4_trunc_sat_f32x4_u) }
   | "f32x4.convert_i32x4_"(sign as s)
   { UNARY (ext s f32x4_convert_i32x4_s f32x4_convert_i32x4_u) }
+  | "i8x16.narrow_i16x8_"(sign as s)
+  { BINARY (ext s i8x16_narrow_i16x8_s i8x16_narrow_i16x8_u) }
+  | "i16x8.narrow_i32x4_"(sign as s)
+  { BINARY (ext s i16x8_narrow_i32x4_s i16x8_narrow_i32x4_u) }
+  | "i16x8.widen_low_i8x16_"(sign as s)
+  { UNARY (ext s i16x8_widen_low_i8x16_s i16x8_widen_low_i8x16_u) }
+  | "i16x8.widen_high_i8x16_"(sign as s)
+  { UNARY (ext s i16x8_widen_high_i8x16_s i16x8_widen_high_i8x16_u) }
+  | "i32x4.widen_low_i16x8_"(sign as s)
+  { UNARY (ext s i32x4_widen_low_i16x8_s i32x4_widen_low_i16x8_u) }
+  | "i32x4.widen_high_i16x8_"(sign as s)
+  { UNARY (ext s i32x4_widen_high_i16x8_s i32x4_widen_high_i16x8_u) }
+
   | (simd_shape as s) { SIMD_SHAPE (simd_shape s) }
 
   | name as s { VAR s }

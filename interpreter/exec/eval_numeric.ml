@@ -132,8 +132,16 @@ struct
       | I8x16 Abs -> to_value (SXX.I8x16.abs (of_value 1 v))
       | I16x8 Neg -> to_value (SXX.I16x8.neg (of_value 1 v))
       | I16x8 Abs -> to_value (SXX.I16x8.abs (of_value 1 v))
+      | I16x8 WidenLowS -> to_value (SXX.I16x8_convert.widen_low_s (of_value 1 v))
+      | I16x8 WidenHighS -> to_value (SXX.I16x8_convert.widen_high_s (of_value 1 v))
+      | I16x8 WidenLowU -> to_value (SXX.I16x8_convert.widen_low_u (of_value 1 v))
+      | I16x8 WidenHighU -> to_value (SXX.I16x8_convert.widen_high_u (of_value 1 v))
       | I32x4 Abs -> to_value (SXX.I32x4.abs (of_value 1 v))
       | I32x4 Neg -> to_value (SXX.I32x4.neg (of_value 1 v))
+      | I32x4 WidenLowS -> to_value (SXX.I32x4_convert.widen_low_s (of_value 1 v))
+      | I32x4 WidenHighS -> to_value (SXX.I32x4_convert.widen_high_s (of_value 1 v))
+      | I32x4 WidenLowU -> to_value (SXX.I32x4_convert.widen_low_u (of_value 1 v))
+      | I32x4 WidenHighU -> to_value (SXX.I32x4_convert.widen_high_u (of_value 1 v))
       | I32x4 TruncSatF32x4S -> to_value (SXX.I32x4_convert.trunc_sat_f32x4_s (of_value 1 v))
       | I32x4 TruncSatF32x4U -> to_value (SXX.I32x4_convert.trunc_sat_f32x4_u (of_value 1 v))
       | I64x2 Neg -> to_value (SXX.I64x2.neg (of_value 1 v))
@@ -162,6 +170,8 @@ struct
       | I8x16 GtU -> SXX.I8x16.gt_u
       | I8x16 GeS -> SXX.I8x16.ge_s
       | I8x16 GeU -> SXX.I8x16.ge_u
+      | I8x16 NarrowS -> SXX.I8x16_convert.narrow_s
+      | I8x16 NarrowU -> SXX.I8x16_convert.narrow_u
       | I8x16 Add -> SXX.I8x16.add
       | I8x16 Sub -> SXX.I8x16.sub
       | I8x16 MinS -> SXX.I8x16.min_s
@@ -179,6 +189,8 @@ struct
       | I16x8 GtU -> SXX.I16x8.gt_u
       | I16x8 GeS -> SXX.I16x8.ge_s
       | I16x8 GeU -> SXX.I16x8.ge_u
+      | I16x8 NarrowS -> SXX.I16x8_convert.narrow_s
+      | I16x8 NarrowU -> SXX.I16x8_convert.narrow_u
       | I16x8 Add -> SXX.I16x8.add
       | I16x8 Sub -> SXX.I16x8.sub
       | I16x8 Mul -> SXX.I16x8.mul
