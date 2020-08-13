@@ -2,7 +2,6 @@ include Simd.Make
   (struct
     include String
     let bytewidth = 16
-    let to_string s = s
 
     let to_i8x16 s =
       List.init 16 (fun i -> (Int32.of_int (Bytes.get_int8 (Bytes.of_string s) i)))
@@ -76,4 +75,15 @@ include Simd.Make
       | Simd.F64x2 ->
         List.iteri (fun i s -> set_int64_le b (i * 8) (F64.to_bits (F64.of_string s))) ss);
       Bytes.to_string b
+
+    (* This is needed for generating text format. In the text format, we can specify a shape,
+     * like "v128.const i8x16", but the binary format does not keep the shape, so we have to
+     * pick one when converting to text. Arbitrary pick i32x4, and make sure to be consistent.
+     *)
+    let to_string s =
+      let i32x4 = to_i32x4 s in
+      String.concat " " (List.map I32.to_string_s i32x4)
+    let to_hex_string s =
+      let i32x4 = to_i32x4 s in
+      String.concat " " (List.map I32.to_hex_string i32x4)
   end)

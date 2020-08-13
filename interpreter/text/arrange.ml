@@ -185,38 +185,48 @@ struct
 end
 
 (* FIXME *)
-module VectorOp =
+module SimdOp =
 struct
-  (* TODO
-  open Ast.FloatOp
-  *)
+  open Ast.SimdOp
 
   let testop xx = fun _ -> failwith "TODO v128"
 
   let relop xx = fun _ -> failwith "TODO v128"
 
-  let unop xx = fun _ -> failwith "TODO v128"
+  let unop xx (op : unop) = match op with
+    | I32x4 Neg -> "i32x4.neg"
+    | _ -> failwith "Unimplemented v128 unop"
 
-  let binop xx = fun _ -> failwith "TODO v128"
+  let binop xx (op : binop) = match op with
+    | I32x4 Add -> "i32x4.add"
+    | I32x4 Sub -> "i32x4.sub"
+    | I32x4 Mul -> "i32x4.mul"
+    | _ -> failwith "Unimplemented v128 unop"
 
   let cvtop xx = fun _ -> failwith "TODO v128"
 end
 
-let oper (intop, floatop, vectop) op =
-  value_type (type_of op) ^ "." ^
-  (match op with
-  | I32 o -> intop "32" o
-  | I64 o -> intop "64" o
-  | F32 o -> floatop "32" o
-  | F64 o -> floatop "64" o
-  | V128 o -> vectop "128" o
-  )
+let oper (intop, floatop, simdop) op =
+  (* v128 operations don't need to be prefixed by the type,
+   * each instruction will specify their prefix (shape).
+   *)
+  let prefix = match op with
+    | V128 o -> ""
+    | _ -> value_type (type_of op) ^ "."
+  in
+  let ops = match op with
+    | I32 o -> intop "32" o
+    | I64 o -> intop "64" o
+    | F32 o -> floatop "32" o
+    | F64 o -> floatop "64" o
+    | V128 o -> simdop "128" o
+  in prefix ^ ops
 
-let unop = oper (IntOp.unop, FloatOp.unop, VectorOp.unop)
-let binop = oper (IntOp.binop, FloatOp.binop, VectorOp.binop)
-let testop = oper (IntOp.testop, FloatOp.testop, VectorOp.testop)
-let relop = oper (IntOp.relop, FloatOp.relop, VectorOp.relop)
-let cvtop = oper (IntOp.cvtop, FloatOp.cvtop, VectorOp.cvtop)
+let unop = oper (IntOp.unop, FloatOp.unop, SimdOp.unop)
+let binop = oper (IntOp.binop, FloatOp.binop, SimdOp.binop)
+let testop = oper (IntOp.testop, FloatOp.testop, SimdOp.testop)
+let relop = oper (IntOp.relop, FloatOp.relop, SimdOp.relop)
+let cvtop = oper (IntOp.cvtop, FloatOp.cvtop, SimdOp.cvtop)
 
 let memop name {ty; align; offset; _} sz =
   value_type ty ^ "." ^ name ^
@@ -239,7 +249,11 @@ let storeop op =
 
 let var x = nat32 x.it
 let value v = string_of_value v.it
-let constop v = value_type (type_of v.it) ^ ".const"
+let constop v =
+  let shape = match v.it with
+    | V128 _ -> "i32x4 "
+    | _ -> ""
+  in value_type (type_of v.it) ^ ".const " ^ shape
 
 let block_type = function
   | VarBlockType x -> [Node ("type " ^ var x, [])]
@@ -273,7 +287,7 @@ let rec instr e =
     | Store op -> storeop op, []
     | MemorySize -> "memory.size", []
     | MemoryGrow -> "memory.grow", []
-    | Const lit -> constop lit ^ " " ^ value lit, []
+    | Const lit -> constop lit ^ value lit, []
     | Test op -> testop op, []
     | Compare op -> relop op, []
     | Unary op -> unop op, []
@@ -405,23 +419,20 @@ let module_ = module_with_var_opt None
 
 (* Scripts *)
 
+(* Converts a value to string depending on mode. *)
 let literal mode lit =
+  let choose_mode bin not_bin = if mode = `Binary then bin else not_bin in
   match lit.it with
-  | Values.I32 i ->
-    let f = if mode = `Binary then I32.to_hex_string else I32.to_string_s in
-    Node ("i32.const " ^ f i, [])
-  | Values.I64 i ->
-    let f = if mode = `Binary then I64.to_hex_string else I64.to_string_s in
-    Node ("i64.const " ^ f i, [])
-  | Values.F32 z ->
-    let f = if mode = `Binary then F32.to_hex_string else F32.to_string in
-    Node ("f32.const " ^ f z, [])
-  | Values.F64 z ->
-    let f = if mode = `Binary then F64.to_hex_string else F64.to_string in
-    Node ("f64.const " ^ f z, [])
-  | Values.V128 v -> 
-    let f = if mode = `Binary then (failwith "unimplemented v128 binary mode") else V128.to_string in
-    Node ("v128.const " ^ f v, [])
+  | Values.I32 i -> choose_mode I32.to_hex_string I32.to_string_s i
+  | Values.I64 i -> choose_mode I64.to_hex_string I64.to_string_s i
+  | Values.F32 z -> choose_mode F32.to_hex_string F32.to_string z
+  | Values.F64 z -> choose_mode F64.to_hex_string F64.to_string z
+  | Values.V128 v -> choose_mode V128.to_hex_string V128.to_string v
+
+(* Converts a literal into a constant instruction. *)
+let constant mode lit =
+  let lit_string = literal mode lit in
+  Node (constop lit ^ lit_string, [])
 
 let definition mode x_opt def =
   try
@@ -454,7 +465,7 @@ let access x_opt n =
 let action mode act =
   match act.it with
   | Invoke (x_opt, name, lits) ->
-    Node ("invoke" ^ access x_opt name, List.map (literal mode) lits)
+    Node ("invoke" ^ access x_opt name, List.map (constant mode) lits)
   | Get (x_opt, name) ->
     Node ("get" ^ access x_opt name, [])
 
@@ -464,16 +475,30 @@ let nan = function
 
 let result_numpat mode res =
     match res with
-    | LitPat lit -> literal mode lit
+    | LitPat lit -> constant mode lit
     | NanPat nanop ->
-        match nanop.it with
-        | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
-        | Values.F32 n -> Node ("f32.const " ^ nan n, [])
-        | Values.F64 n -> Node ("f64.const " ^ nan n, [])
+      match nanop.it with
+      | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
+      | Values.F32 n -> Node ("f32.const " ^ nan n, [])
+      | Values.F64 n -> Node ("f64.const " ^ nan n, [])
+
+let result_simd mode res shape pats =
+  (* A different text generation for SIMD, since the literals within
+   * a SimdResult do not need the i32.const instruction *)
+  let num_pat mode res =
+    match res.it with
+    | LitPat lit -> literal mode lit
+    | NanPat {it = Values.F32 n; _}
+    | NanPat {it = Values.F64 n; _} -> nan n
+    | _ -> assert false
+  in
+  let lits = (List.map (num_pat mode) pats) in
+  let tokens = ["v128.const"; Simd.string_of_shape shape;] @ lits in
+  Node (String.concat " " tokens, [])
 
 let result mode res =
   match res.it with
-  | SimdResult _ -> failwith "unimplemented"
+  | SimdResult (shape, pats) -> result_simd mode res shape pats
   | NumResult n -> result_numpat mode n.it
 
 let assertion mode ass =

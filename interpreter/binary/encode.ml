@@ -129,7 +129,7 @@ let encode m =
     open Values
 
     let op n = u8 n
-    let simd_op n = op 0xfd; op n
+    let simd_op n = op 0xfd; vu32 n
     let end_ () = op 0x0b
 
     let memop {align; offset; _} = vu32 (Int32.of_int align); vu32 offset
@@ -197,10 +197,8 @@ let encode m =
         op 0x35; memop mo
       | Load {ty = F32Type | F64Type; sz = Some _; _} ->
         assert false
-      | Load {ty = V128Type; sz = None; _} ->
-        failwith "TODO v128"
-      | Load {ty = V128Type; sz = Some _; _} ->
-        failwith "TODO v128"
+      | Load ({ty = V128Type; _} as mo) ->
+        simd_op 0x00l; memop mo
 
       | Store ({ty = I32Type; sz = None; _} as mo) -> op 0x36; memop mo
       | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x37; memop mo
@@ -213,10 +211,8 @@ let encode m =
       | Store ({ty = I64Type; sz = Some Pack16; _} as mo) -> op 0x3d; memop mo
       | Store ({ty = I64Type; sz = Some Pack32; _} as mo) -> op 0x3e; memop mo
       | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
-      | Store {ty = V128Type; sz = None; _} ->
-        failwith "TODO v128"
-      | Store {ty = V128Type; sz = Some _; _} ->
-        failwith "TODO v128"
+      | Store ({ty = V128Type; _} as mo) ->
+        simd_op 0x0bl; memop mo
 
       | MemorySize -> op 0x3f; u8 0x00
       | MemoryGrow -> op 0x40; u8 0x00
@@ -225,7 +221,7 @@ let encode m =
       | Const {it = I64 c; _} -> op 0x42; vs64 c
       | Const {it = F32 c; _} -> op 0x43; f32 c
       | Const {it = F64 c; _} -> op 0x44; f64 c
-      | Const {it = V128 c; _} -> simd_op 0x02; v128 c
+      | Const {it = V128 c; _} -> simd_op 0x0cl; v128 c
 
       | Test (I32 I32Op.Eqz) -> op 0x45
       | Test (I64 I64Op.Eqz) -> op 0x50
@@ -299,7 +295,9 @@ let encode m =
       | Unary (F64 F64Op.Trunc) -> op 0x9d
       | Unary (F64 F64Op.Nearest) -> op 0x9e
       | Unary (F64 F64Op.Sqrt) -> op 0x9f
-      | Unary (V128 _) -> failwith "TODO v128"
+
+      | Unary (V128 V128Op.(I32x4 Neg)) -> simd_op 0xa1l
+      | Unary (V128 _) -> failwith "unimplemented V128 Unary op"
 
       | Binary (I32 I32Op.Add) -> op 0x6a
       | Binary (I32 I32Op.Sub) -> op 0x6b
@@ -348,6 +346,10 @@ let encode m =
       | Binary (F64 F64Op.Min) -> op 0xa4
       | Binary (F64 F64Op.Max) -> op 0xa5
       | Binary (F64 F64Op.CopySign) -> op 0xa6
+
+      | Binary (V128 V128Op.(I32x4 Add)) -> simd_op 0xael
+      | Binary (V128 V128Op.(I32x4 Sub)) -> simd_op 0xb1l
+      | Binary (V128 V128Op.(I32x4 Mul)) -> simd_op 0xb5l
       | Binary (V128 _) -> failwith "TODO v128"
 
       | Ternary (_) -> failwith "TODO v128"

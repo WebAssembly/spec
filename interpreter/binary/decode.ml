@@ -102,6 +102,7 @@ let vs33 s = I32_convert.wrap_i64 (vsN 33 s)
 let vs64 s = vsN 64 s
 let f32 s = F32.of_bits (u32 s)
 let f64 s = F64.of_bits (u64 s)
+let v128 s = V128.of_bits (get_string (Types.size Types.V128Type) s)
 
 let len32 s =
   let pos = pos s in
@@ -138,6 +139,7 @@ let value_type s =
   | -0x02 -> I64Type
   | -0x03 -> F32Type
   | -0x04 -> F64Type
+  | -0x05 -> V128Type
   | _ -> error s (pos s - 1) "malformed value type"
 
 let elem_type s =
@@ -214,6 +216,16 @@ let math_prefix s =
   | 0x05l -> i64_trunc_sat_f32_u
   | 0x06l -> i64_trunc_sat_f64_s
   | 0x07l -> i64_trunc_sat_f64_u
+  | n -> illegal s pos (I32.to_int_u n)
+
+let simd_prefix s =
+  let pos = pos s in
+  match vu32 s with
+  | 0x0cl -> v128_const (at v128 s)
+  | 0xa1l -> i32x4_neg
+  | 0xael -> i32x4_add
+  | 0xb1l -> i32x4_sub
+  | 0xb5l -> i32x4_mul
   | n -> illegal s pos (I32.to_int_u n)
 
 let rec instr s =
@@ -455,6 +467,7 @@ let rec instr s =
   | 0xc4 -> i64_extend32_s
 
   | 0xfc -> math_prefix s
+  | 0xfd -> simd_prefix s
 
   | b -> illegal s pos b
 

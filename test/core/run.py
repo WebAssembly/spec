@@ -92,12 +92,13 @@ class RunTests(unittest.TestCase):
     self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, wasm2Path, wast2Path), logPath)
     self._compareFile(wastPath, wast2Path)
 
-    # Convert to JavaScript
-    jsPath = self._auxFile(outputPath.replace(".wast", ".js"))
-    logPath = self._auxFile(jsPath + ".log")
-    self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, inputPath, jsPath), logPath)
-    if jsCommand != None:
-      self._runCommand(('%s "%s"') % (jsCommand, jsPath), logPath)
+    # Convert to JavaScript, SIMD has no JS support at all, so don't generate JS files.
+    if 'simd' not in outputPath:
+        jsPath = self._auxFile(outputPath.replace(".wast", ".js"))
+        logPath = self._auxFile(jsPath + ".log")
+        self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, inputPath, jsPath), logPath)
+        if jsCommand != None:
+          self._runCommand(('%s "%s"') % (jsCommand, jsPath), logPath)
 
 
 if __name__ == "__main__":
