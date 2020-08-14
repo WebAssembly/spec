@@ -222,10 +222,34 @@ let simd_prefix s =
   let pos = pos s in
   match vu32 s with
   | 0x0cl -> v128_const (at v128 s)
+  | 0x60l -> i8x16_abs
+  | 0x61l -> i8x16_neg
+  | 0x6el -> i8x16_add
+  | 0x71l -> i8x16_sub
+  | 0x76l -> i8x16_min_s
+  | 0x77l -> i8x16_min_u
+  | 0x78l -> i8x16_max_s
+  | 0x79l -> i8x16_max_u
+  | 0x7bl -> i8x16_avgr_u
+  | 0x80l -> i16x8_abs
+  | 0x81l -> i16x8_neg
+  | 0x8el -> i16x8_add
+  | 0x91l -> i16x8_sub
+  | 0x95l -> i16x8_mul
+  | 0x96l -> i16x8_min_s
+  | 0x97l -> i16x8_min_u
+  | 0x98l -> i16x8_max_s
+  | 0x99l -> i16x8_max_u
+  | 0x9bl -> i16x8_avgr_u
+  | 0xa0l -> i32x4_abs
   | 0xa1l -> i32x4_neg
   | 0xael -> i32x4_add
   | 0xb1l -> i32x4_sub
   | 0xb5l -> i32x4_mul
+  | 0xb6l -> i32x4_min_s
+  | 0xb7l -> i32x4_min_u
+  | 0xb8l -> i32x4_max_s
+  | 0xb9l -> i32x4_max_u
   | n -> illegal s pos (I32.to_int_u n)
 
 let rec instr s =
