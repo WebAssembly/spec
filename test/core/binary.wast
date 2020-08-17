@@ -582,6 +582,37 @@
   "unexpected end of section or function"
 )
 
+;; Malformed table limits flag
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\03\01"                           ;; table section with one entry
+      "\70"                                 ;; anyfunc
+      "\02"                                 ;; malformed table limits flag
+  )
+  "integer too large"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\04\01"                           ;; table section with one entry
+      "\70"                                 ;; anyfunc
+      "\02"                                 ;; malformed table limits flag
+      "\00"                                 ;; dummy byte
+  )
+  "integer too large"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\06\01"                           ;; table section with one entry
+      "\70"                                 ;; anyfunc
+      "\81\00"                              ;; malformed table limits flag as LEB128
+      "\00\00"                              ;; dummy bytes
+  )
+  "integer too large"
+)
+
 ;; Memory count can be zero
 (module binary
     "\00asm" "\01\00\00\00"
@@ -596,6 +627,43 @@
       ;; "\00\00"                           ;; memory 0 (missed)
   )
   "unexpected end of section or function"
+)
+
+;; Malformed memory limits flag
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\02\01"                           ;; memory section with one entry
+      "\02"                                 ;; malformed memory limits flag
+  )
+  "integer too large"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\03\01"                           ;; memory section with one entry
+      "\02"                                 ;; malformed memory limits flag
+      "\00"                                 ;; dummy byte
+  )
+  "integer too large"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\05\01"                           ;; memory section with one entry
+      "\81\00"                              ;; malformed memory limits flag as LEB128
+      "\00\00"                              ;; dummy bytes
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\05\01"                           ;; memory section with one entry
+      "\81\01"                              ;; malformed memory limits flag as LEB128
+      "\00\00"                              ;; dummy bytes
+  )
+  "integer representation too long"
 )
 
 ;; Global count can be zero
