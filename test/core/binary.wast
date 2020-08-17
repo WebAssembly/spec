@@ -457,6 +457,71 @@
     "\02\01\00"                             ;; import count can be zero
 )
 
+;; Malformed import kind
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\04\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\04"                                 ;; malformed import kind
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\05\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\04"                                 ;; malformed import kind
+      "\00"                                 ;; dummy byte
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\04\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\05"                                 ;; malformed import kind
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\05\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\05"                                 ;; malformed import kind
+      "\00"                                 ;; dummy byte
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\04\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\80"                                 ;; malformed import kind
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\05\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\80"                                 ;; malformed import kind
+      "\00"                                 ;; dummy byte
+  )
+  "malformed import kind"
+)
+
 ;; 2 import declared, 1 given
 (assert_malformed
   (module binary
