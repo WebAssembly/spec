@@ -4,6 +4,13 @@
 
 See [overview](Overview.md) for background.
 
+The functionality provided with this first version of GC support for Wasm is intentionally limited in the spirit of a "a minimal viable product" (MVP).
+As a rough guideline, it includes only essential functionality and avoids features that may provide better performance in some cases, but whose lack can be worked around in a reasonable manner.
+
+In particular, it is expected that compiling to this minimal functionality will require a substantial number of runtime casts that may be eliminated by future extensions.
+A range of such extensions are discussed in the [Post-MVP](Post-MVP.md) document.
+Most of them are expected to be added before GC support can be considered reasonably "complete".
+
 
 ## Language
 
@@ -216,14 +223,14 @@ Perhaps add the following short-hands:
     - iff `$t = struct (mut t')*`
     - and all `t'*` are defaultable
 
-* `struct.get_<sx>? <typeidx> <fieldidx>` reads field `$x` from a structure
+* `struct.get_<sx>? <typeidx> <fieldidx>` reads field `i` from a structure
   - `struct.get_<sx>? $t i : [(ref null $t)] -> [t]`
     - iff `$t = struct (mut1 t1)^i (mut ti) (mut2 t2)*`
     - and `t = unpacked(ti)`
     - and `_<sx>` present iff `t =/= ti`
   - traps on `null`
 
-* `struct.set <typeidx> <fieldidx>` writes field `$x` of a structure
+* `struct.set <typeidx> <fieldidx>` writes field `i` of a structure
   - `struct.set $t i : [(ref null $t) ti] -> []`
     - iff `$t = struct (mut1 t1)^i (var ti) (mut2 t2)*`
     - and `t = unpacked(ti)`
@@ -232,7 +239,7 @@ Perhaps add the following short-hands:
 
 #### Arrays
 
-* `array.new_with_rtt <typeidx>` allocates a array with RTT information determining its [runtime type](#values)
+* `array.new_with_rtt <typeidx>` allocates an array with RTT information determining its [runtime type](#values)
   - `array.new_with_rtt $t : [t' i32 (rtt n $t)] -> [(ref $t)]`
     - iff `$t = array (var t')`
 
