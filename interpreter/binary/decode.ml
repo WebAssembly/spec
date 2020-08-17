@@ -250,6 +250,10 @@ let simd_prefix s =
   | 0xb7l -> i32x4_min_u
   | 0xb8l -> i32x4_max_s
   | 0xb9l -> i32x4_max_u
+  | 0xc1l -> i64x2_neg
+  | 0xcel -> i64x2_add
+  | 0xd1l -> i64x2_sub
+  | 0xd5l -> i64x2_mul
   | n -> illegal s pos (I32.to_int_u n)
 
 let rec instr s =
