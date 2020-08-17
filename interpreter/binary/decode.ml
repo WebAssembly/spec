@@ -223,6 +223,36 @@ let simd_prefix s =
   match vu32 s with
   | 0x00l -> let a, o = memop s in v128_load a o
   | 0x0cl -> v128_const (at v128 s)
+  | 0x23l -> i8x16_eq
+  | 0x24l -> i8x16_ne
+  | 0x25l -> i8x16_lt_s
+  | 0x26l -> i8x16_lt_u
+  | 0x27l -> i8x16_gt_s
+  | 0x28l -> i8x16_gt_u
+  | 0x29l -> i8x16_le_s
+  | 0x2al -> i8x16_le_u
+  | 0x2bl -> i8x16_ge_s
+  | 0x2cl -> i8x16_ge_u
+  | 0x2dl -> i16x8_eq
+  | 0x2el -> i16x8_ne
+  | 0x2fl -> i16x8_lt_s
+  | 0x30l -> i16x8_lt_u
+  | 0x31l -> i16x8_gt_s
+  | 0x32l -> i16x8_gt_u
+  | 0x33l -> i16x8_le_s
+  | 0x34l -> i16x8_le_u
+  | 0x35l -> i16x8_ge_s
+  | 0x36l -> i16x8_ge_u
+  | 0x37l -> i32x4_eq
+  | 0x38l -> i32x4_ne
+  | 0x39l -> i32x4_lt_s
+  | 0x3al -> i32x4_lt_u
+  | 0x3bl -> i32x4_gt_s
+  | 0x3cl -> i32x4_gt_u
+  | 0x3dl -> i32x4_le_s
+  | 0x3el -> i32x4_le_u
+  | 0x3fl -> i32x4_ge_s
+  | 0x40l -> i32x4_ge_u
   | 0x41l -> f32x4_eq
   | 0x42l -> f32x4_ne
   | 0x43l -> f32x4_lt
