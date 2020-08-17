@@ -387,7 +387,7 @@ All other numeric instructions are plain opcodes without any immediates.
 .. _binary-cvtop-trunc-sat:
 
 The saturating truncation instructions all have a one byte prefix,
-whereas the actual opcode is encoded by a variable-length :ref:`unsigned integer <binary-u32>`.
+whereas the actual opcode is encoded by a variable-length :ref:`unsigned integer <binary-uint>`.
 
 .. math::
    \begin{array}{llclll}
