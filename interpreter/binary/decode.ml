@@ -221,7 +221,14 @@ let math_prefix s =
 let simd_prefix s =
   let pos = pos s in
   match vu32 s with
+  | 0x00l -> let a, o = memop s in v128_load a o
   | 0x0cl -> v128_const (at v128 s)
+  | 0x41l -> f32x4_eq
+  | 0x42l -> f32x4_ne
+  | 0x43l -> f32x4_lt
+  | 0x44l -> f32x4_gt
+  | 0x45l -> f32x4_le
+  | 0x46l -> f32x4_ge
   | 0x60l -> i8x16_abs
   | 0x61l -> i8x16_neg
   | 0x6el -> i8x16_add
@@ -254,6 +261,15 @@ let simd_prefix s =
   | 0xcel -> i64x2_add
   | 0xd1l -> i64x2_sub
   | 0xd5l -> i64x2_mul
+  | 0xe0l -> f32x4_abs
+  | 0xe1l -> f32x4_neg
+  | 0xe3l -> f32x4_sqrt
+  | 0xe4l -> f32x4_add
+  | 0xe5l -> f32x4_sub
+  | 0xe6l -> f32x4_mul
+  | 0xe7l -> f32x4_div
+  | 0xe8l -> f32x4_min
+  | 0xe9l -> f32x4_max
   | n -> illegal s pos (I32.to_int_u n)
 
 let rec instr s =

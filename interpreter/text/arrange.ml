@@ -201,6 +201,9 @@ struct
     | I32x4 Abs -> "i32x4.abs"
     | I32x4 Neg -> "i32x4.neg"
     | I64x2 Neg -> "i64x2.neg"
+    | F32x4 Abs -> "f32x4.abs"
+    | F32x4 Neg -> "f32x4.neg"
+    | F32x4 Sqrt -> "f32x4.sqrt"
     | _ -> failwith "Unimplemented v128 unop"
 
   let binop xx (op : binop) = match op with
@@ -229,6 +232,18 @@ struct
     | I64x2 Add -> "i64x2.add"
     | I64x2 Sub -> "i64x2.sub"
     | I64x2 Mul -> "i64x2.mul"
+    | F32x4 Eq -> "f32x4.eq"
+    | F32x4 Ne -> "f32x4.ne"
+    | F32x4 Lt -> "f32x4.lt"
+    | F32x4 Le -> "f32x4.le"
+    | F32x4 Gt -> "f32x4.gt"
+    | F32x4 Ge -> "f32x4.ge"
+    | F32x4 Add -> "f32x4.add"
+    | F32x4 Sub -> "f32x4.sub"
+    | F32x4 Mul -> "f32x4.mul"
+    | F32x4 Div -> "f32x4.div"
+    | F32x4 Min -> "f32x4.min"
+    | F32x4 Max -> "f32x4.max"
     | _ -> failwith "Unimplemented v128 binop"
 
   let cvtop xx = fun _ -> failwith "TODO v128"
