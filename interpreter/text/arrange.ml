@@ -189,7 +189,14 @@ module SimdOp =
 struct
   open Ast.SimdOp
 
-  let testop xx = fun _ -> failwith "TODO v128"
+  let testop xx = function
+    | I8x16 AnyTrue -> "i8x16.any_true"
+    | I8x16 AllTrue -> "i8x16.all_true"
+    | I16x8 AnyTrue -> "i16x8.any_true"
+    | I16x8 AllTrue -> "i16x8.all_true"
+    | I32x4 AnyTrue -> "i32x4.any_true"
+    | I32x4 AllTrue -> "i32x4.all_true"
+    | _ -> assert false
 
   let relop xx = fun _ -> failwith "TODO v128"
 

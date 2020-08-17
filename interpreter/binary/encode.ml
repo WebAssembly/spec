@@ -227,6 +227,12 @@ let encode m =
       | Test (I64 I64Op.Eqz) -> op 0x50
       | Test (F32 _) -> assert false
       | Test (F64 _) -> assert false
+      | Test (V128 V128Op.(I8x16 AnyTrue)) -> simd_op 0x62l
+      | Test (V128 V128Op.(I8x16 AllTrue)) -> simd_op 0x63l
+      | Test (V128 V128Op.(I16x8 AnyTrue)) -> simd_op 0x82l
+      | Test (V128 V128Op.(I16x8 AllTrue)) -> simd_op 0x83l
+      | Test (V128 V128Op.(I32x4 AnyTrue)) -> simd_op 0xa2l
+      | Test (V128 V128Op.(I32x4 AllTrue)) -> simd_op 0xa3l
       | Test (V128 _) -> assert false
 
       | Compare (I32 I32Op.Eq) -> op 0x46
