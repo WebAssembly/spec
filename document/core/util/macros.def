@@ -873,7 +873,7 @@
 
 .. Stack, meta functions
 
-.. |expand| mathdef:: \xref{exec/runtime}{syntax-frame}{\F{expand}}
+.. |expand| mathdef:: \xref{exec/runtime}{exec-expand}{\F{expand}}
 
 
 .. Administrative Instructions, terminals
