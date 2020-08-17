@@ -306,6 +306,9 @@ let encode m =
       | Unary (V128 V128Op.(F32x4 Abs)) -> simd_op 0xe0l
       | Unary (V128 V128Op.(F32x4 Neg)) -> simd_op 0xe1l
       | Unary (V128 V128Op.(F32x4 Sqrt)) -> simd_op 0xe3l
+      | Unary (V128 V128Op.(F64x2 Abs)) -> simd_op 0xecl
+      | Unary (V128 V128Op.(F64x2 Neg)) -> simd_op 0xedl
+      | Unary (V128 V128Op.(F64x2 Sqrt)) -> simd_op 0xefl
       | Unary (V128 _) -> failwith "unimplemented V128 Unary op"
 
       | Binary (I32 I32Op.Add) -> op 0x6a
@@ -393,6 +396,18 @@ let encode m =
       | Binary (V128 V128Op.(F32x4 Div)) -> simd_op 0xe7l
       | Binary (V128 V128Op.(F32x4 Min)) -> simd_op 0xe8l
       | Binary (V128 V128Op.(F32x4 Max)) -> simd_op 0xe9l
+      | Binary (V128 V128Op.(F64x2 Eq)) -> simd_op 0x47l
+      | Binary (V128 V128Op.(F64x2 Ne)) -> simd_op 0x48l
+      | Binary (V128 V128Op.(F64x2 Lt)) -> simd_op 0x49l
+      | Binary (V128 V128Op.(F64x2 Gt)) -> simd_op 0x4al
+      | Binary (V128 V128Op.(F64x2 Le)) -> simd_op 0x4bl
+      | Binary (V128 V128Op.(F64x2 Ge)) -> simd_op 0x4cl
+      | Binary (V128 V128Op.(F64x2 Add)) -> simd_op 0xf0l
+      | Binary (V128 V128Op.(F64x2 Sub)) -> simd_op 0xf1l
+      | Binary (V128 V128Op.(F64x2 Mul)) -> simd_op 0xf2l
+      | Binary (V128 V128Op.(F64x2 Div)) -> simd_op 0xf3l
+      | Binary (V128 V128Op.(F64x2 Min)) -> simd_op 0xf4l
+      | Binary (V128 V128Op.(F64x2 Max)) -> simd_op 0xf5l
       | Binary (V128 _) -> failwith "TODO v128"
 
       | Ternary (_) -> failwith "TODO v128"

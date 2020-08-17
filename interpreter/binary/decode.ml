@@ -229,6 +229,12 @@ let simd_prefix s =
   | 0x44l -> f32x4_gt
   | 0x45l -> f32x4_le
   | 0x46l -> f32x4_ge
+  | 0x47l -> f64x2_eq
+  | 0x48l -> f64x2_ne
+  | 0x49l -> f64x2_lt
+  | 0x4al -> f64x2_gt
+  | 0x4bl -> f64x2_le
+  | 0x4cl -> f64x2_ge
   | 0x60l -> i8x16_abs
   | 0x61l -> i8x16_neg
   | 0x6el -> i8x16_add
@@ -270,6 +276,15 @@ let simd_prefix s =
   | 0xe7l -> f32x4_div
   | 0xe8l -> f32x4_min
   | 0xe9l -> f32x4_max
+  | 0xecl -> f64x2_abs
+  | 0xedl -> f64x2_neg
+  | 0xefl -> f64x2_sqrt
+  | 0xf0l -> f64x2_add
+  | 0xf1l -> f64x2_sub
+  | 0xf2l -> f64x2_mul
+  | 0xf3l -> f64x2_div
+  | 0xf4l -> f64x2_min
+  | 0xf5l -> f64x2_max
   | n -> illegal s pos (I32.to_int_u n)
 
 let rec instr s =
