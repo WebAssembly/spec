@@ -353,8 +353,8 @@ and a reference to the function’s own <a class="reference internal" href="#syn
 \end{array}\end{split}\]</div>
 <p>The values of the locals are mutated by respective <a class="reference internal" href="../syntax/instructions.html#syntax-instr-variable"><span class="std std-ref">variable instructions</span></a>.</p>
 </div>
-<div class="section" id="id5">
-<h3>Conventions<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="exec-expand">
+<span id="id5"></span><h3>Conventions<a class="headerlink" href="#exec-expand" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The meta variable <span class="math notranslate nohighlight">\(L\)</span> ranges over labels where clear from context.</p></li>
 <li><p>The meta variable <span class="math notranslate nohighlight">\(F\)</span> ranges over frames where clear from context.</p></li>
@@ -362,8 +362,8 @@ and a reference to the function’s own <a class="reference internal" href="#syn
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lll}
-\href{../exec/runtime.html#syntax-frame}{\mathrm{expand}}_F(\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}) &amp;=&amp; F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{types}}[\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}] \\
-\href{../exec/runtime.html#syntax-frame}{\mathrm{expand}}_F([\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^?]) &amp;=&amp; [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^?] \\
+\href{../exec/runtime.html#exec-expand}{\mathrm{expand}}_F(\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}) &amp;=&amp; F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{types}}[\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}] \\
+\href{../exec/runtime.html#exec-expand}{\mathrm{expand}}_F([\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^?]) &amp;=&amp; [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^?] \\
 \end{array}\end{split}\]</div>
 </div>
 </div>
