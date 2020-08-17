@@ -207,6 +207,7 @@ struct
     | F64x2 Abs -> "f64x2.abs"
     | F64x2 Neg -> "f64x2.neg"
     | F64x2 Sqrt -> "f64x2.sqrt"
+    | V128 Not -> "v128.not"
     | _ -> failwith "Unimplemented v128 unop"
 
   let binop xx (op : binop) = match op with
@@ -289,7 +290,14 @@ struct
     | F64x2 Div -> "f64x2.div"
     | F64x2 Min -> "f64x2.min"
     | F64x2 Max -> "f64x2.max"
+    | V128 And -> "v128.and"
+    | V128 AndNot -> "v128.andnot"
+    | V128 Or -> "v128.or"
+    | V128 Xor -> "v128.xor"
     | _ -> failwith "Unimplemented v128 binop"
+
+  let ternop (op : ternop) = match op with
+    | Bitselect -> "v128.bitselect"
 
   let cvtop xx = fun _ -> failwith "TODO v128"
 end
@@ -315,6 +323,7 @@ let binop = oper (IntOp.binop, FloatOp.binop, SimdOp.binop)
 let testop = oper (IntOp.testop, FloatOp.testop, SimdOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop, SimdOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop, SimdOp.cvtop)
+let ternop = SimdOp.ternop
 
 let memop name {ty; align; offset; _} sz =
   value_type ty ^ "." ^ name ^
@@ -380,7 +389,7 @@ let rec instr e =
     | Compare op -> relop op, []
     | Unary op -> unop op, []
     | Binary op -> binop op, []
-    | Ternary op -> failwith "TODO v128 ternary op"
+    | Ternary op -> ternop op, []
     | Convert op -> cvtop op, []
     | SimdExtract op -> failwith "TODO v128"
     | SimdReplace op -> failwith "TODO v128"

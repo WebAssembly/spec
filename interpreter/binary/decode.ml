@@ -265,6 +265,12 @@ let simd_prefix s =
   | 0x4al -> f64x2_gt
   | 0x4bl -> f64x2_le
   | 0x4cl -> f64x2_ge
+  | 0x4dl -> v128_not
+  | 0x4el -> v128_and
+  | 0x4fl -> v128_andnot
+  | 0x50l -> v128_or
+  | 0x51l -> v128_xor
+  | 0x52l -> v128_bitselect
   | 0x60l -> i8x16_abs
   | 0x61l -> i8x16_neg
   | 0x6el -> i8x16_add

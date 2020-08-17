@@ -296,6 +296,7 @@ let encode m =
       | Unary (F64 F64Op.Nearest) -> op 0x9e
       | Unary (F64 F64Op.Sqrt) -> op 0x9f
 
+      | Unary (V128 V128Op.(V128 Not)) -> simd_op 0x4dl
       | Unary (V128 V128Op.(I8x16 Abs)) -> simd_op 0x60l
       | Unary (V128 V128Op.(I8x16 Neg)) -> simd_op 0x61l
       | Unary (V128 V128Op.(I16x8 Abs)) -> simd_op 0x80l
@@ -438,9 +439,14 @@ let encode m =
       | Binary (V128 V128Op.(F64x2 Div)) -> simd_op 0xf3l
       | Binary (V128 V128Op.(F64x2 Min)) -> simd_op 0xf4l
       | Binary (V128 V128Op.(F64x2 Max)) -> simd_op 0xf5l
+      | Binary (V128 V128Op.(V128 And)) -> simd_op 0x4el
+      | Binary (V128 V128Op.(V128 AndNot)) -> simd_op 0x4fl
+      | Binary (V128 V128Op.(V128 Or)) -> simd_op 0x50l
+      | Binary (V128 V128Op.(V128 Xor)) -> simd_op 0x51l
       | Binary (V128 _) -> failwith "TODO v128"
 
-      | Ternary (_) -> failwith "TODO v128"
+
+      | Ternary (V128Op.Bitselect) -> simd_op 0x52l
 
       | Convert (I32 I32Op.ExtendSI32) -> assert false
       | Convert (I32 I32Op.ExtendUI32) -> assert false
