@@ -224,15 +224,28 @@ let simd_prefix s =
   | 0x00l -> let a, o = memop s in v128_load a o
   | 0x0bl -> let a, o = memop s in v128_store a o
   | 0x0cl -> v128_const (at v128 s)
+  | 0x0dl -> v8x16_shuffle (List.init 16 (fun x -> u8 s))
   | 0x0el -> v8x16_swizzle
+  | 0x0fl -> i8x16_splat
+  | 0x10l -> i16x8_splat
+  | 0x11l -> i32x4_splat
+  | 0x12l -> i64x2_splat
+  | 0x13l -> f32x4_splat
+  | 0x14l -> f64x2_splat
   | 0x15l -> let imm = u8 s in i8x16_extract_lane_s imm
   | 0x16l -> let imm = u8 s in i8x16_extract_lane_u imm
+  | 0x17l -> let imm = u8 s in i8x16_replace_lane imm
   | 0x18l -> let imm = u8 s in i16x8_extract_lane_s imm
   | 0x19l -> let imm = u8 s in i16x8_extract_lane_u imm
+  | 0x1al -> let imm = u8 s in i16x8_replace_lane imm
   | 0x1bl -> let imm = u8 s in i32x4_extract_lane imm
+  | 0x1cl -> let imm = u8 s in i32x4_replace_lane imm
   | 0x1dl -> let imm = u8 s in i64x2_extract_lane imm
+  | 0x1el -> let imm = u8 s in i64x2_replace_lane imm
   | 0x1fl -> let imm = u8 s in f32x4_extract_lane imm
+  | 0x20l -> let imm = u8 s in f32x4_replace_lane imm
   | 0x21l -> let imm = u8 s in f64x2_extract_lane imm
+  | 0x22l -> let imm = u8 s in f64x2_replace_lane imm
   | 0x23l -> i8x16_eq
   | 0x24l -> i8x16_ne
   | 0x25l -> i8x16_lt_s

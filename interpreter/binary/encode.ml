@@ -370,6 +370,7 @@ let encode m =
       | Binary (F64 F64Op.Max) -> op 0xa5
       | Binary (F64 F64Op.CopySign) -> op 0xa6
 
+      | Binary (V128 V128Op.(I8x16 (Shuffle imms))) -> simd_op 0x0dl; List.iter u8 imms
       | Binary (V128 V128Op.(I8x16 Swizzle)) -> simd_op 0x0el
       | Binary (V128 V128Op.(I8x16 Eq)) -> simd_op 0x23l
       | Binary (V128 V128Op.(I8x16 Ne)) -> simd_op 0x24l
@@ -500,7 +501,14 @@ let encode m =
       | Convert (F64 F64Op.PromoteF32) -> op 0xbb
       | Convert (F64 F64Op.DemoteF64) -> assert false
       | Convert (F64 F64Op.ReinterpretInt) -> op 0xbf
-      | Convert (V128 _) -> failwith "TODO v128 convert"
+
+      | Convert (V128 (V128Op.I8x16 V128Op.Splat)) -> simd_op 0x0fl;
+      | Convert (V128 (V128Op.I16x8 V128Op.Splat)) -> simd_op 0x10l;
+      | Convert (V128 (V128Op.I32x4 V128Op.Splat)) -> simd_op 0x11l;
+      | Convert (V128 (V128Op.I64x2 V128Op.Splat)) -> simd_op 0x12l;
+      | Convert (V128 (V128Op.F32x4 V128Op.Splat)) -> simd_op 0x13l;
+      | Convert (V128 (V128Op.F64x2 V128Op.Splat)) -> simd_op 0x14l;
+      | Convert (V128 _) -> assert false
 
       | SimdExtract (V128Op.I8x16 (SX, imm)) -> simd_op 0x15l; u8 imm
       | SimdExtract (V128Op.I8x16 (ZX, imm)) -> simd_op 0x16l; u8 imm
@@ -512,7 +520,13 @@ let encode m =
       | SimdExtract (V128Op.F64x2 (ZX, imm)) -> simd_op 0x21l; u8 imm
       | SimdExtract _ -> assert false
 
-      | SimdReplace _ -> failwith "TODO v128 replace "
+      | SimdReplace (V128Op.I8x16 imm) -> simd_op 0x17l; u8 imm
+      | SimdReplace (V128Op.I16x8 imm) -> simd_op 0x1al; u8 imm
+      | SimdReplace (V128Op.I32x4 imm) -> simd_op 0x1cl; u8 imm
+      | SimdReplace (V128Op.I64x2 imm) -> simd_op 0x1el; u8 imm
+      | SimdReplace (V128Op.F32x4 imm) -> simd_op 0x20l; u8 imm
+      | SimdReplace (V128Op.F64x2 imm) -> simd_op 0x22l; u8 imm
+      | SimdReplace _ -> assert false
 
       | SimdShift (V128Op.(I8x16 Shl)) -> simd_op 0x6bl
       | SimdShift (_) -> failwith "TODO v128 shift"

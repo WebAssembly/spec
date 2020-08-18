@@ -222,6 +222,7 @@ struct
     | _ -> failwith "Unimplemented v128 unop"
 
   let binop xx (op : binop) = match op with
+    | I8x16 (Shuffle imms) -> "v8x16.shuffle " ^ (String.concat " " (List.map nat imms))
     | I8x16 Swizzle -> "v8x16.swizzle"
     | I8x16 Eq -> "i8x16.eq"
     | I8x16 Ne -> "i8x16.ne"
@@ -311,7 +312,14 @@ struct
   let ternop (op : ternop) = match op with
     | Bitselect -> "v128.bitselect"
 
-  let cvtop xx = fun _ -> failwith "TODO v128"
+  let cvtop xx = function
+    | I8x16 Splat -> "i8x16.splat"
+    | I16x8 Splat -> "i16x8.splat"
+    | I32x4 Splat -> "i32x4.splat"
+    | I64x2 Splat -> "i64x2.splat"
+    | F32x4 Splat -> "f32x4.splat"
+    | F64x2 Splat -> "f64x2.splat"
+    | _ -> assert false
 
   let extractop = function
     | I8x16 (SX, imm) -> "i8x16.extract_lane_s " ^ (nat imm)
@@ -322,6 +330,15 @@ struct
     | I64x2 (ZX, imm) -> "i64x2.extract_lane " ^ (nat imm)
     | F32x4 (ZX, imm) -> "f32x4.extract_lane " ^ (nat imm)
     | F64x2 (ZX, imm) -> "f64x2.extract_lane " ^ (nat imm)
+    | _ -> assert false
+
+  let replaceop = function
+    | I8x16 imm -> "i8x16.replace_lane " ^ (nat imm)
+    | I16x8 imm -> "i16x8.replace_lane " ^ (nat imm)
+    | I32x4 imm -> "i32x4.replace_lane " ^ (nat imm)
+    | I64x2 imm -> "i64x2.replace_lane " ^ (nat imm)
+    | F32x4 imm -> "f32x4.replace_lane " ^ (nat imm)
+    | F64x2 imm -> "f64x2.replace_lane " ^ (nat imm)
     | _ -> assert false
 
   let shiftop = function
@@ -420,7 +437,7 @@ let rec instr e =
     | Ternary op -> ternop op, []
     | Convert op -> cvtop op, []
     | SimdExtract op -> SimdOp.extractop op, []
-    | SimdReplace op -> failwith "TODO v128"
+    | SimdReplace op -> SimdOp.replaceop op, []
     | SimdShift op -> SimdOp.shiftop op, []
   in Node (head, inner)
 
