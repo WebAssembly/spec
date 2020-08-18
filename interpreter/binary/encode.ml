@@ -316,6 +316,10 @@ let encode m =
       | Unary (V128 V128Op.(F64x2 Abs)) -> simd_op 0xecl
       | Unary (V128 V128Op.(F64x2 Neg)) -> simd_op 0xedl
       | Unary (V128 V128Op.(F64x2 Sqrt)) -> simd_op 0xefl
+      | Unary (V128 V128Op.(I32x4 TruncSatF32x4S)) -> simd_op 0xf8l
+      | Unary (V128 V128Op.(I32x4 TruncSatF32x4U)) -> simd_op 0xf9l
+      | Unary (V128 V128Op.(F32x4 ConvertI32x4S)) -> simd_op 0xfal
+      | Unary (V128 V128Op.(F32x4 ConvertI32x4U)) -> simd_op 0xfbl
       | Unary (V128 _) -> failwith "unimplemented V128 Unary op"
 
       | Binary (I32 I32Op.Add) -> op 0x6a
@@ -366,6 +370,7 @@ let encode m =
       | Binary (F64 F64Op.Max) -> op 0xa5
       | Binary (F64 F64Op.CopySign) -> op 0xa6
 
+      | Binary (V128 V128Op.(I8x16 Swizzle)) -> simd_op 0x0el
       | Binary (V128 V128Op.(I8x16 Eq)) -> simd_op 0x23l
       | Binary (V128 V128Op.(I8x16 Ne)) -> simd_op 0x24l
       | Binary (V128 V128Op.(I8x16 LtS)) -> simd_op 0x25l
@@ -495,13 +500,22 @@ let encode m =
       | Convert (F64 F64Op.PromoteF32) -> op 0xbb
       | Convert (F64 F64Op.DemoteF64) -> assert false
       | Convert (F64 F64Op.ReinterpretInt) -> op 0xbf
-      | Convert (V128 _) -> failwith "TODO v128"
+      | Convert (V128 _) -> failwith "TODO v128 convert"
 
-      | SimdExtract _ -> failwith "TODO v128"
+      | SimdExtract (V128Op.I8x16 (SX, imm)) -> simd_op 0x15l; u8 imm
+      | SimdExtract (V128Op.I8x16 (ZX, imm)) -> simd_op 0x16l; u8 imm
+      | SimdExtract (V128Op.I16x8 (SX, imm)) -> simd_op 0x18l; u8 imm
+      | SimdExtract (V128Op.I16x8 (ZX, imm)) -> simd_op 0x19l; u8 imm
+      | SimdExtract (V128Op.I32x4 (ZX, imm)) -> simd_op 0x1bl; u8 imm
+      | SimdExtract (V128Op.I64x2 (ZX, imm)) -> simd_op 0x1dl; u8 imm
+      | SimdExtract (V128Op.F32x4 (ZX, imm)) -> simd_op 0x1fl; u8 imm
+      | SimdExtract (V128Op.F64x2 (ZX, imm)) -> simd_op 0x21l; u8 imm
+      | SimdExtract _ -> assert false
 
-      | SimdReplace _ -> failwith "TODO v128"
+      | SimdReplace _ -> failwith "TODO v128 replace "
 
-      | SimdShift (_) -> failwith "TODO v128"
+      | SimdShift (V128Op.(I8x16 Shl)) -> simd_op 0x6bl
+      | SimdShift (_) -> failwith "TODO v128 shift"
 
     let const c =
       list instr c.it; end_ ()

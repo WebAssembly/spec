@@ -222,7 +222,17 @@ let simd_prefix s =
   let pos = pos s in
   match vu32 s with
   | 0x00l -> let a, o = memop s in v128_load a o
+  | 0x0bl -> let a, o = memop s in v128_store a o
   | 0x0cl -> v128_const (at v128 s)
+  | 0x0el -> v8x16_swizzle
+  | 0x15l -> let imm = u8 s in i8x16_extract_lane_s imm
+  | 0x16l -> let imm = u8 s in i8x16_extract_lane_u imm
+  | 0x18l -> let imm = u8 s in i16x8_extract_lane_s imm
+  | 0x19l -> let imm = u8 s in i16x8_extract_lane_u imm
+  | 0x1bl -> let imm = u8 s in i32x4_extract_lane imm
+  | 0x1dl -> let imm = u8 s in i64x2_extract_lane imm
+  | 0x1fl -> let imm = u8 s in f32x4_extract_lane imm
+  | 0x21l -> let imm = u8 s in f64x2_extract_lane imm
   | 0x23l -> i8x16_eq
   | 0x24l -> i8x16_ne
   | 0x25l -> i8x16_lt_s
@@ -275,6 +285,7 @@ let simd_prefix s =
   | 0x61l -> i8x16_neg
   | 0x62l -> i8x16_any_true
   | 0x63l -> i8x16_all_true
+  | 0x6bl -> i8x16_shl
   | 0x6el -> i8x16_add
   | 0x71l -> i8x16_sub
   | 0x76l -> i8x16_min_s
@@ -327,6 +338,10 @@ let simd_prefix s =
   | 0xf3l -> f64x2_div
   | 0xf4l -> f64x2_min
   | 0xf5l -> f64x2_max
+  | 0xf8l -> i32x4_trunc_sat_f32x4_s
+  | 0xf9l -> i32x4_trunc_sat_f32x4_u
+  | 0xfal -> f32x4_convert_i32x4_s
+  | 0xfbl -> f32x4_convert_i32x4_u
   | n -> illegal s pos (I32.to_int_u n)
 
 let rec instr s =

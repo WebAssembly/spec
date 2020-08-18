@@ -207,10 +207,14 @@ struct
     | I16x8 Neg -> "i16x8.neg"
     | I32x4 Abs -> "i32x4.abs"
     | I32x4 Neg -> "i32x4.neg"
+    | I32x4 TruncSatF32x4S -> "i32x4.trunc_sat_f32x4_s"
+    | I32x4 TruncSatF32x4U -> "i32x4.trunc_sat_f32x4_u"
     | I64x2 Neg -> "i64x2.neg"
     | F32x4 Abs -> "f32x4.abs"
     | F32x4 Neg -> "f32x4.neg"
     | F32x4 Sqrt -> "f32x4.sqrt"
+    | F32x4 ConvertI32x4S -> "f32x4.convert_i32x4_s"
+    | F32x4 ConvertI32x4U -> "f32x4.convert_i32x4_u"
     | F64x2 Abs -> "f64x2.abs"
     | F64x2 Neg -> "f64x2.neg"
     | F64x2 Sqrt -> "f64x2.sqrt"
@@ -218,6 +222,7 @@ struct
     | _ -> failwith "Unimplemented v128 unop"
 
   let binop xx (op : binop) = match op with
+    | I8x16 Swizzle -> "v8x16.swizzle"
     | I8x16 Eq -> "i8x16.eq"
     | I8x16 Ne -> "i8x16.ne"
     | I8x16 LtS -> "i8x16.lt_s"
@@ -307,6 +312,22 @@ struct
     | Bitselect -> "v128.bitselect"
 
   let cvtop xx = fun _ -> failwith "TODO v128"
+
+  let extractop = function
+    | I8x16 (SX, imm) -> "i8x16.extract_lane_s " ^ (nat imm)
+    | I8x16 (ZX, imm) -> "i8x16.extract_lane_u " ^ (nat imm)
+    | I16x8 (SX, imm) -> "i16x8.extract_lane_s " ^ (nat imm)
+    | I16x8 (ZX, imm) -> "i16x8.extract_lane_u " ^ (nat imm)
+    | I32x4 (ZX, imm) -> "i32x4.extract_lane " ^ (nat imm)
+    | I64x2 (ZX, imm) -> "i64x2.extract_lane " ^ (nat imm)
+    | F32x4 (ZX, imm) -> "f32x4.extract_lane " ^ (nat imm)
+    | F64x2 (ZX, imm) -> "f64x2.extract_lane " ^ (nat imm)
+    | _ -> assert false
+
+  let shiftop = function
+    | I8x16 Shl -> "i8x16.shl"
+    | _ -> assert false
+
 end
 
 let oper (intop, floatop, simdop) op =
@@ -398,9 +419,9 @@ let rec instr e =
     | Binary op -> binop op, []
     | Ternary op -> ternop op, []
     | Convert op -> cvtop op, []
-    | SimdExtract op -> failwith "TODO v128"
+    | SimdExtract op -> SimdOp.extractop op, []
     | SimdReplace op -> failwith "TODO v128"
-    | SimdShift op -> failwith "TODO v128"
+    | SimdShift op -> SimdOp.shiftop op, []
   in Node (head, inner)
 
 let const c =
