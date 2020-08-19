@@ -307,8 +307,16 @@ let encode m =
       | Unary (V128 V128Op.(I8x16 Neg)) -> simd_op 0x61l
       | Unary (V128 V128Op.(I16x8 Abs)) -> simd_op 0x80l
       | Unary (V128 V128Op.(I16x8 Neg)) -> simd_op 0x81l
+      | Unary (V128 V128Op.(I16x8 WidenLowS)) -> simd_op 0x87l
+      | Unary (V128 V128Op.(I16x8 WidenHighS)) -> simd_op 0x88l
+      | Unary (V128 V128Op.(I16x8 WidenLowU)) -> simd_op 0x89l
+      | Unary (V128 V128Op.(I16x8 WidenHighU)) -> simd_op 0x8al
       | Unary (V128 V128Op.(I32x4 Abs)) -> simd_op 0xa0l
       | Unary (V128 V128Op.(I32x4 Neg)) -> simd_op 0xa1l
+      | Unary (V128 V128Op.(I32x4 WidenLowS)) -> simd_op 0xa7l
+      | Unary (V128 V128Op.(I32x4 WidenHighS)) -> simd_op 0xa8l
+      | Unary (V128 V128Op.(I32x4 WidenLowU)) -> simd_op 0xa9l
+      | Unary (V128 V128Op.(I32x4 WidenHighU)) -> simd_op 0xaal
       | Unary (V128 V128Op.(I64x2 Neg)) -> simd_op 0xc1l
       | Unary (V128 V128Op.(F32x4 Abs)) -> simd_op 0xe0l
       | Unary (V128 V128Op.(F32x4 Neg)) -> simd_op 0xe1l
@@ -382,6 +390,8 @@ let encode m =
       | Binary (V128 V128Op.(I8x16 LeU)) -> simd_op 0x2al
       | Binary (V128 V128Op.(I8x16 GeS)) -> simd_op 0x2bl
       | Binary (V128 V128Op.(I8x16 GeU)) -> simd_op 0x2cl
+      | Binary (V128 V128Op.(I8x16 NarrowS)) -> simd_op 0x65l
+      | Binary (V128 V128Op.(I8x16 NarrowU)) -> simd_op 0x66l
       | Binary (V128 V128Op.(I8x16 Add)) -> simd_op 0x6el
       | Binary (V128 V128Op.(I8x16 Sub)) -> simd_op 0x71l
       | Binary (V128 V128Op.(I8x16 MinS)) -> simd_op 0x76l
@@ -399,6 +409,8 @@ let encode m =
       | Binary (V128 V128Op.(I16x8 LeU)) -> simd_op 0x34l
       | Binary (V128 V128Op.(I16x8 GeS)) -> simd_op 0x35l
       | Binary (V128 V128Op.(I16x8 GeU)) -> simd_op 0x36l
+      | Binary (V128 V128Op.(I16x8 NarrowS)) -> simd_op 0x85l
+      | Binary (V128 V128Op.(I16x8 NarrowU)) -> simd_op 0x86l
       | Binary (V128 V128Op.(I16x8 Add)) -> simd_op 0x8el
       | Binary (V128 V128Op.(I16x8 Sub)) -> simd_op 0x91l
       | Binary (V128 V128Op.(I16x8 Mul)) -> simd_op 0x95l

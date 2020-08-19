@@ -299,6 +299,8 @@ let simd_prefix s =
   | 0x62l -> i8x16_any_true
   | 0x63l -> i8x16_all_true
   | 0x6bl -> i8x16_shl
+  | 0x65l -> i8x16_narrow_i16x8_s
+  | 0x66l -> i8x16_narrow_i16x8_u
   | 0x6el -> i8x16_add
   | 0x71l -> i8x16_sub
   | 0x76l -> i8x16_min_s
@@ -310,6 +312,12 @@ let simd_prefix s =
   | 0x81l -> i16x8_neg
   | 0x82l -> i16x8_any_true
   | 0x83l -> i16x8_all_true
+  | 0x85l -> i16x8_narrow_i32x4_s
+  | 0x86l -> i16x8_narrow_i32x4_u
+  | 0x87l -> i16x8_widen_low_i8x16_s
+  | 0x88l -> i16x8_widen_high_i8x16_s
+  | 0x89l -> i16x8_widen_low_i8x16_u
+  | 0x8al -> i16x8_widen_high_i8x16_u
   | 0x8el -> i16x8_add
   | 0x91l -> i16x8_sub
   | 0x95l -> i16x8_mul
@@ -322,6 +330,10 @@ let simd_prefix s =
   | 0xa1l -> i32x4_neg
   | 0xa2l -> i32x4_any_true
   | 0xa3l -> i32x4_all_true
+  | 0xa7l -> i32x4_widen_low_i16x8_s
+  | 0xa8l -> i32x4_widen_high_i16x8_s
+  | 0xa9l -> i32x4_widen_low_i16x8_u
+  | 0xaal -> i32x4_widen_high_i16x8_u
   | 0xael -> i32x4_add
   | 0xb1l -> i32x4_sub
   | 0xb5l -> i32x4_mul
