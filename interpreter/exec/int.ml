@@ -194,8 +194,15 @@ struct
   let shr_s x y =
     shift Rep.shift_right x y
 
+  (* Check if we are storing smaller ints. *)
+  let needs_extend = (shl one (Rep.of_int (Rep.bitwidth - 1))) <> Rep.min_int
+
   let shr_u x y =
-    shift Rep.shift_right_logical x y
+    (* If we are storing smaller ints, we need to mask out the high bits. *)
+    let mask = if not needs_extend then Rep.minus_one
+    else Rep.lognot (Rep.shift_left Rep.minus_one (Rep.bitwidth)) in
+    let result = shift Rep.shift_right_logical (Rep.logand x mask) y in
+    result
 
   (* We must mask the count to implement rotates via shifts. *)
   let clamp_rotate_count n =
@@ -304,7 +311,6 @@ struct
 
   let max_upper, max_lower = divrem_u Rep.minus_one ten
 
-  let needs_extend = Rep.of_int (1 lsl (Rep.bitwidth - 1)) = Rep.min_int
   let sign_extend i =
     (* This module is used with I32 and I64, but the bitwidth can be less
      * than that, e.g. for I16. When used for smaller integers, the stored value
@@ -315,7 +321,7 @@ struct
      *   -1 (Int32) << 32 = -1
      * Then the logor will be also wrong. So we check and bail out early.
      * *)
-    if needs_extend then i else
+    if not needs_extend then i else
     let sign_bit = Rep.logand (Rep.of_int (1 lsl (Rep.bitwidth - 1))) i in
     if sign_bit = Rep.zero then i else
     (* Build a sign-extension mask *)

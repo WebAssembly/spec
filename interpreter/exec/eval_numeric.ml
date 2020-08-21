@@ -305,12 +305,16 @@ struct
     let f = match op with
     | I8x16 Shl -> SXX.I8x16.shl
     | I8x16 ShrS -> SXX.I8x16.shr_s
+    | I8x16 ShrU -> SXX.I8x16.shr_u
     | I16x8 Shl -> SXX.I16x8.shl
     | I16x8 ShrS -> SXX.I16x8.shr_s
+    | I16x8 ShrU -> SXX.I16x8.shr_u
     | I32x4 Shl -> SXX.I32x4.shl
     | I32x4 ShrS -> SXX.I32x4.shr_s
+    | I32x4 ShrU -> SXX.I32x4.shr_u
     | I64x2 Shl -> SXX.I64x2.shl
     | I64x2 ShrS -> SXX.I64x2.shr_s
+    | I64x2 ShrU -> SXX.I64x2.shr_u
     | _ -> failwith "unimplemented shr_u"
     in fun v s -> to_value (f (of_value 1 v) (of_arg I32Value.of_value 2 s))
 end

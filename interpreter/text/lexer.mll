@@ -511,6 +511,8 @@ rule token = parse
     { SHIFT (simd_int_op s i8x16_shl i16x8_shl i32x4_shl i64x2_shl) }
   | (simd_int_shape as s)".shr_s"
     { SHIFT (simd_int_op s i8x16_shr_s i16x8_shr_s i32x4_shr_s i64x2_shr_s) }
+  | (simd_int_shape as s)".shr_u"
+    { SHIFT (simd_int_op s i8x16_shr_u i16x8_shr_u i32x4_shr_u i64x2_shr_u) }
   | (simd_int_shape as s)".avgr_u"
     { only ["i8x16"; "i16x8"] s lexbuf;
       UNARY (simd_int_op s i8x16_avgr_u i16x8_avgr_u unreachable unreachable) }

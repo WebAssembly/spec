@@ -83,6 +83,7 @@ sig
   val all_true : t -> bool
   val shl : t -> I32.t -> t
   val shr_s : t -> I32.t -> t
+  val shr_u : t -> I32.t -> t
   val add_sat_s : t -> t -> t
   val add_sat_u : t -> t -> t
   val sub_sat_s : t -> t -> t
@@ -296,6 +297,9 @@ struct
     let shr_s v s =
       let shift = Int.of_int_u (Int32.to_int s) in
       unop (fun a -> Int.shr_s a shift) v
+    let shr_u v s =
+      let shift = Int.of_int_u (Int32.to_int s) in
+      unop (fun a -> Int.shr_u a shift) v
     let add_sat_s = binop Int.add_sat_s
     let add_sat_u = binop Int.add_sat_u
     let sub_sat_s = binop Int.sub_sat_s
