@@ -393,7 +393,11 @@ let encode m =
       | Binary (V128 V128Op.(I8x16 NarrowS)) -> simd_op 0x65l
       | Binary (V128 V128Op.(I8x16 NarrowU)) -> simd_op 0x66l
       | Binary (V128 V128Op.(I8x16 Add)) -> simd_op 0x6el
+      | Binary (V128 V128Op.(I8x16 AddSatS)) -> simd_op 0x6fl
+      | Binary (V128 V128Op.(I8x16 AddSatU)) -> simd_op 0x70l
       | Binary (V128 V128Op.(I8x16 Sub)) -> simd_op 0x71l
+      | Binary (V128 V128Op.(I8x16 SubSatS)) -> simd_op 0x72l
+      | Binary (V128 V128Op.(I8x16 SubSatU)) -> simd_op 0x73l
       | Binary (V128 V128Op.(I8x16 MinS)) -> simd_op 0x76l
       | Binary (V128 V128Op.(I8x16 MinU)) -> simd_op 0x77l
       | Binary (V128 V128Op.(I8x16 MaxS)) -> simd_op 0x78l
@@ -412,7 +416,11 @@ let encode m =
       | Binary (V128 V128Op.(I16x8 NarrowS)) -> simd_op 0x85l
       | Binary (V128 V128Op.(I16x8 NarrowU)) -> simd_op 0x86l
       | Binary (V128 V128Op.(I16x8 Add)) -> simd_op 0x8el
+      | Binary (V128 V128Op.(I16x8 AddSatS)) -> simd_op 0x8fl
+      | Binary (V128 V128Op.(I16x8 AddSatU)) -> simd_op 0x90l
       | Binary (V128 V128Op.(I16x8 Sub)) -> simd_op 0x91l
+      | Binary (V128 V128Op.(I16x8 SubSatS)) -> simd_op 0x92l
+      | Binary (V128 V128Op.(I16x8 SubSatU)) -> simd_op 0x93l
       | Binary (V128 V128Op.(I16x8 Mul)) -> simd_op 0x95l
       | Binary (V128 V128Op.(I16x8 MinS)) -> simd_op 0x96l
       | Binary (V128 V128Op.(I16x8 MinU)) -> simd_op 0x97l
@@ -540,7 +548,12 @@ let encode m =
       | SimdReplace (V128Op.F64x2 imm) -> simd_op 0x22l; u8 imm
       | SimdReplace _ -> assert false
 
-      | SimdShift (V128Op.(I8x16 Shl)) -> simd_op 0x6bl
+      | SimdShift V128Op.(I8x16 Shl) -> simd_op 0x6bl
+      | SimdShift V128Op.(I8x16 ShrS) -> simd_op 0x6cl
+      | SimdShift V128Op.(I16x8 Shl) -> simd_op 0x8bl
+      | SimdShift V128Op.(I16x8 ShrS) -> simd_op 0x8cl
+      | SimdShift V128Op.(I32x4 Shl) -> simd_op 0xabl
+      | SimdShift V128Op.(I32x4 ShrS) -> simd_op 0xacl
       | SimdShift (_) -> failwith "TODO v128 shift"
 
     let const c =

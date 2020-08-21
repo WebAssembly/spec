@@ -265,7 +265,11 @@ struct
     | I8x16 NarrowS -> "i8x16.narrow_i16x8_s"
     | I8x16 NarrowU -> "i8x16.narrow_i16x8_u"
     | I8x16 Add -> "i8x16.add"
+    | I8x16 AddSatS -> "i8x16.add_saturate_s"
+    | I8x16 AddSatU -> "i8x16.add_saturate_u"
     | I8x16 Sub -> "i8x16.sub"
+    | I8x16 SubSatS -> "i8x16.sub_saturate_s"
+    | I8x16 SubSatU -> "i8x16.sub_saturate_u"
     | I8x16 MinS -> "i8x16.min_s"
     | I8x16 MinU -> "i8x16.min_u"
     | I8x16 MaxS -> "i8x16.max_s"
@@ -274,7 +278,11 @@ struct
     | I16x8 NarrowS -> "i16x8.narrow_i32x4_s"
     | I16x8 NarrowU -> "i16x8.narrow_i32x4_u"
     | I16x8 Add -> "i16x8.add"
+    | I16x8 AddSatS -> "i16x8.add_saturate_s"
+    | I16x8 AddSatU -> "i16x8.add_saturate_u"
     | I16x8 Sub -> "i16x8.sub"
+    | I16x8 SubSatS -> "i16x8.sub_saturate_s"
+    | I16x8 SubSatU -> "i16x8.sub_saturate_u"
     | I16x8 Mul -> "i16x8.mul"
     | I16x8 MinS -> "i16x8.min_s"
     | I16x8 MinU -> "i16x8.min_u"
@@ -355,6 +363,11 @@ struct
 
   let shiftop = function
     | I8x16 Shl -> "i8x16.shl"
+    | I8x16 ShrS -> "i8x16.shr_s"
+    | I16x8 Shl -> "i16x8.shl"
+    | I16x8 ShrS -> "i16x8.shr_s"
+    | I32x4 Shl -> "i32x4.shl"
+    | I32x4 ShrS -> "i32x4.shr_s"
     | _ -> assert false
 
 end
