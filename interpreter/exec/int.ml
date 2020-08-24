@@ -195,14 +195,14 @@ struct
     shift Rep.shift_right x y
 
   (* Check if we are storing smaller ints. *)
-  let needs_extend = (shl one (Rep.of_int (Rep.bitwidth - 1))) <> Rep.min_int
+  let needs_extend = shl one (Rep.of_int (Rep.bitwidth - 1)) <> Rep.min_int
 
   let shr_u x y =
     (* If we are storing smaller ints, we need to mask out the high bits. *)
-    let mask = if not needs_extend then Rep.minus_one
-    else Rep.lognot (Rep.shift_left Rep.minus_one (Rep.bitwidth)) in
-    let result = shift Rep.shift_right_logical (Rep.logand x mask) y in
-    result
+    let mask =
+      if not needs_extend then Rep.minus_one else
+      Rep.lognot (Rep.shift_left Rep.minus_one (Rep.bitwidth))
+    in shift Rep.shift_right_logical (Rep.logand x mask) y
 
   (* We must mask the count to implement rotates via shifts. *)
   let clamp_rotate_count n =
