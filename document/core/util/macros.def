@@ -129,6 +129,7 @@
 .. |sX#1| mathdef:: {\X{s#1}}
 .. |iX#1| mathdef:: {\X{i#1}}
 .. |fX#1| mathdef:: {\X{f#1}}
+.. |vX#1| mathdef:: {\X{v#1}}
 
 .. |uN| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}N}
 .. |uM| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}M}
@@ -378,6 +379,16 @@
 .. |DEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{demote}}
 .. |REINTERPRET| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{reinterpret}}
 
+.. |SHUFFLE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{shuffle}}
+.. |SWIZZLE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{swizzle}}
+.. |SPLAT| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{splat}}
+.. |EXTRACTLANE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{extract\_lane}}
+.. |REPLACELANE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{replace\_lane}}
+.. |BITMASK| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{bitmask}}
+.. |NARROW| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{narrow}}
+.. |WIDEN| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{widen}}
+.. |AVGRU| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{avgr\_u}}
+
 
 .. Instructions, non-terminals
 
@@ -396,6 +407,21 @@
 .. |fbinop| mathdef:: \xref{syntax/instructions}{syntax-fbinop}{\X{fbinop}}
 .. |ftestop| mathdef:: \xref{syntax/instructions}{syntax-ftestop}{\X{ftestop}}
 .. |frelop| mathdef:: \xref{syntax/instructions}{syntax-frelop}{\X{frelop}}
+
+.. |laneidx| mathdef:: \xref{syntax/instructions}{syntax-laneidx}{\X{laneidx}}
+.. |vsunop| mathdef:: \xref{syntax/instructions}{syntax-vsunop}{\X{vsunop}}
+.. |vsbinop| mathdef:: \xref{syntax/instructions}{syntax-vsbinop}{\X{vsbinop}}
+.. |vsternop| mathdef:: \xref{syntax/instructions}{syntax-vsternop}{\X{vsternop}}
+.. |vtestop| mathdef:: \xref{syntax/instructions}{syntax-vtestop}{\X{vtestop}}
+.. |vshiftop| mathdef:: \xref{syntax/instructions}{syntax-vshiftop}{\X{vshiftop}}
+.. |viunop| mathdef:: \xref{syntax/instructions}{syntax-viunop}{\X{viunop}}
+.. |vibinop| mathdef:: \xref{syntax/instructions}{syntax-vibinop}{\X{vibinop}}
+.. |viminmaxop| mathdef:: \xref{syntax/instructions}{syntax-viminmaxop}{\X{viminmaxop}}
+.. |vsatbinop| mathdef:: \xref{syntax/instructions}{syntax-vsatbinop}{\X{vsatbinop}}
+.. |vfunop| mathdef:: \xref{syntax/instructions}{syntax-vfunop}{\X{vfunop}}
+.. |vfbinop| mathdef:: \xref{syntax/instructions}{syntax-vfbinop}{\X{vfbinop}}
+.. |virelop| mathdef:: \xref{syntax/instructions}{syntax-virelop}{\X{virelop}}
+.. |vfrelop| mathdef:: \xref{syntax/instructions}{syntax-vfrelop}{\X{vfrelop}}
 
 .. |sx| mathdef:: \xref{syntax/instructions}{syntax-sx}{\X{sx}}
 .. |memarg| mathdef:: \xref{syntax/instructions}{syntax-memarg}{\X{memarg}}

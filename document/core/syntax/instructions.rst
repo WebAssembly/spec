@@ -170,6 +170,180 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
+.. index:: ! simd instruction, fixed-width simd, value, value type
+   pair: abstract syntax; instruction
+.. _syntax-laneidx:
+.. _syntax-vsunop:
+.. _syntax-vsbinop:
+.. _syntax-vsternop:
+.. _syntax-vtestop:
+.. _syntax-virelop:
+.. _syntax-vfrelop:
+.. _syntax-vshiftop:
+.. _syntax-viunop:
+.. _syntax-vibinop:
+.. _syntax-viminmaxop:
+.. _syntax-vsatbinop:
+.. _syntax-vfunop:
+.. _syntax-vfbinop:
+.. _syntax-instr-simd:
+
+SIMD Instructions
+~~~~~~~~~~~~~~~~~
+
+SIMD instructions provide basic operations over :ref:`values <syntax-value>` of type |V128|.
+
+.. math::
+   \begin{array}{llcl}
+   \production{ishape} & \X{ixx} &::=&
+     \K{i8x16} ~|~ \K{i16x8} ~|~ \K{i32x4} ~|~ \K{i64x2} \\
+   \production{fshape} & \X{fxx} &::=&
+     \K{f32x4} ~|~ \K{f64x2} \\
+   \production{vshape} & \X{vxx} &::=&
+     \X{ixx} ~|~ \X{fxx} \\
+   \production{lane index} & \laneidx &::=& \byte \\
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \K{v128.}\CONST~\xref{syntax/values}{syntax-simd}{\vX{\X{nnn}}} \\&&|&
+     \K{v128.}\vsunop \\&&|&
+     \K{v128.}\vsbinop \\&&|&
+     \K{v128.}\vsternop \\&&|&
+     \K{i8x16.}\SHUFFLE~\laneidx^{16} \\&&|&
+     \K{i8x16.}\SWIZZLE \\&&|&
+     \X{vxx}\K{.}\SPLAT \\&&|&
+     \K{i8x16.}\EXTRACTLANE\K{\_}\sx~\laneidx ~|~
+     \K{i16x8.}\EXTRACTLANE\K{\_}\sx~\laneidx \\&&|&
+     \K{i32x4.}\EXTRACTLANE~\laneidx ~|~
+     \K{i64x2.}\EXTRACTLANE~\laneidx \\&&|&
+     \X{fxx}\K{.}\EXTRACTLANE~\laneidx \\&&|&
+     \X{vxx}\K{.}\REPLACELANE~\laneidx \\&&|&
+     \X{ixx}\K{.}\virelop \\&&|&
+     \X{fxx}\K{.}\vfrelop \\&&|&
+     \K{i8x16.}\viunop ~|~
+     \K{i16x8.}\viunop ~|~
+     \K{i32x4.}\viunop \\&&|&
+     \K{i64x2.}\NEG \\&&|&
+     \X{fxx.}\vfunop \\&&|&
+     \K{i8x16.}\vtestop ~|~
+     \K{i16x8.}\vtestop ~|~
+     \K{i32x4.}\vtestop \\&&|&
+     \K{i8x16.}\BITMASK ~|~
+     \K{i16x8.}\BITMASK ~|~
+     \K{i32x4.}\BITMASK \\&&|&
+     \K{i8x16.}\NARROW\K{\_i16x8\_}\sx ~|~
+     \K{i16x8.}\NARROW\K{\_i32x4\_}\sx \\&&|&
+     \K{i16x8.}\WIDEN\K{\_low}\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\WIDEN\K{\_low}\K{\_i16x8\_}\sx \\&&|&
+     \K{i16x8.}\WIDEN\K{\_high}\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\WIDEN\K{\_high}\K{\_i16x8\_}\sx \\&&|&
+     \X{ixx}\K{.}\vshiftop \\&&|&
+     \X{ixx}\K{.}\vibinop \\&&|&
+     \K{i8x16.}\viminmaxop ~|~
+     \K{i16x8.}\viminmaxop ~|~
+     \K{i32x4.}\viminmaxop \\&&|&
+     \K{i8x16.}\vsatbinop ~|~
+     \K{i16x8.}\vsatbinop \\&&|&
+     \K{i16x8.}\K{mul} ~|~
+     \K{i32x4.}\K{mul} ~|~
+     \K{i64x2.}\K{mul} \\&&|&
+     \K{i8x16.}\AVGRU ~|~
+     \K{i16x8.}\AVGRU \\&&|&
+     \X{fxx.}\vfbinop \\&&|&
+     \K{i32x4.}\TRUNC\K{\_sat\_f32x4\_}\sx ~|~
+     \K{f32x4.}\CONVERT\K{\_i32x4\_}\sx \\&&|&
+     \dots \\
+   \production{SIMD unary operator} & \vsunop &::=&
+     \K{not} \\
+   \production{SIMD binary operator} & \vsbinop &::=&
+     \K{and} ~|~
+     \K{andnot} ~|~
+     \K{or} ~|~
+     \K{xor} \\
+   \production{SIMD ternary operator} & \vsternop &::=&
+     \K{bitselect} \\
+   \production{SIMD test operator} & \vtestop &::=&
+     \K{any\_true} ~|~
+     \K{all\_true} \\
+   \production{SIMD integer relational operator} & \virelop &::=&
+     \K{eq} ~|~
+     \K{ne} ~|~
+     \K{lt\_}\sx ~|~
+     \K{gt\_}\sx ~|~
+     \K{le\_}\sx ~|~
+     \K{ge\_}\sx \\
+   \production{SIMD floating-point relational operator} & \vfrelop &::=&
+     \K{eq} ~|~
+     \K{ne} ~|~
+     \K{lt} ~|~
+     \K{gt} ~|~
+     \K{le} ~|~
+     \K{ge} \\
+   \production{SIMD integer shift operator} & \vshiftop &::=&
+     \K{shl} ~|~
+     \K{shr\_s} ~|~
+     \K{shr\_u} \\
+   \production{SIMD integer unary operator} & \viunop &::=&
+     \K{abs} ~|~
+     \K{neg} \\
+   \production{SIMD integer binary operator} & \vibinop &::=&
+     \K{add} ~|~
+     \K{sub} \\
+   \production{SIMD integer binary min/max operator} & \viminmaxop &::=&
+     \K{min\_}\sx ~|~
+     \K{max\_}\sx \\
+   \production{SIMD integer saturating binary operator} & \vsatbinop &::=&
+     \K{add\_sat\_}\sx ~|~
+     \K{sub\_sat\_}\sx \\
+   \production{SIMD floating-point unary operator} & \vfunop &::=&
+     \K{abs} ~|~
+     \K{neg} ~|~
+     \K{sqrt} \\
+   \production{SIMD floating-point binary operator} & \vfbinop &::=&
+     \K{add} ~|~
+     \K{sub} ~|~
+     \K{mul} ~|~
+     \K{div} ~|~
+     \K{min} ~|~
+     \K{max} \\
+   \end{array}
+
+SIMD instructions have a naming convention involving a prefix that
+determines how their operands will be interpreted.
+This prefix describes the *shape* of the operand,
+written :math:`t\K{x}N`, and consisting of a packed numeric type :math:`t` and the number of *lanes* :math:`N` of that type.
+Operations are performed point-wise on the values of each lane.
+
+.. note::
+   For example, the shape :math:`\K{i32x4}` interprets the operand
+   as four |i32| values, packed into an |i128|.
+   The bitwidth of the numeric type :math:`t` times :math:`N` always is 128.
+
+Instructions prefixed with :math:`\K{v128}` do not involve a specific interpretation, and treat the |V128| as an |i128| value or a vector of 128 individual bits.
+
+SIMD instructions can be grouped into several subcategories:
+
+* *Constants*: return a static constant.
+
+* *Unary Operations*: consume one |V128| operand and produce one |V128| result.
+
+* *Binary Operations*: consume two |V128| operands and produce one |V128| result.
+
+* *Ternary Operations*: consume three |V128| operands and produce one |V128| result.
+
+* *Tests*: consume one |V128| operand and produce a Boolean integer result.
+
+* *Shifts*: consume a |v128| operand and a |i32| operand, producing one |V128| result.
+
+* *Splats*: consume a value of numeric type and produce a |V128| result of a specified shape.
+
+* *Extract lanes*: consume a |V128| operand and return the numeric value in a given lane.
+
+* *Replace lanes*: consume a |V128| operand and a numeric value for a given lane, and produce a |V128| result.
+
+Some SIMD instructions have a signedness annotation |sx| which distinguishes whether the elements in the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
+For the other SIMD instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
+
+
 .. index:: ! parametric instruction, value type
    pair: abstract syntax; instruction
 .. _syntax-instr-parametric:
@@ -235,15 +409,24 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \K{i}\X{nn}\K{.}\LOAD~\memarg ~|~
-     \K{f}\X{nn}\K{.}\LOAD~\memarg \\&&|&
+     \K{f}\X{nn}\K{.}\LOAD~\memarg ~|~
+     \K{v128.}\LOAD~\memarg \\&&|&
      \K{i}\X{nn}\K{.}\STORE~\memarg ~|~
-     \K{f}\X{nn}\K{.}\STORE~\memarg \\&&|&
+     \K{f}\X{nn}\K{.}\STORE~\memarg ~|~
+     \K{v128.}\STORE~\memarg \\&&|&
      \K{i}\X{nn}\K{.}\LOAD\K{8\_}\sx~\memarg ~|~
      \K{i}\X{nn}\K{.}\LOAD\K{16\_}\sx~\memarg ~|~
      \K{i64.}\LOAD\K{32\_}\sx~\memarg \\&&|&
      \K{i}\X{nn}\K{.}\STORE\K{8}~\memarg ~|~
      \K{i}\X{nn}\K{.}\STORE\K{16}~\memarg ~|~
      \K{i64.}\STORE\K{32}~\memarg \\&&|&
+     \K{v128.}\LOAD\K{8x8}\_\sx~\memarg ~|~
+     \K{v128.}\LOAD\K{16x4}\_\sx~\memarg ~|~
+     \K{v128.}\LOAD\K{32x2}\_\sx~\memarg \\&&|&
+     \K{v128.}\LOAD\K{8\_splat}~\memarg ~|~
+     \K{v128.}\LOAD\K{16\_splat}~\memarg \\&&|&
+     \K{v128.}\LOAD\K{32\_splat}~\memarg ~|~
+     \K{v128.}\LOAD\K{64\_splat}~\memarg \\&&|&
      \MEMORYSIZE \\&&|&
      \MEMORYGROW \\
    \end{array}
@@ -252,6 +435,8 @@ Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`
 They all take a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
 Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-valtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
+
+SIMD loads can specify a shape that is half the :ref:`bit width <syntax-valtype>` of |V128|. Each lane is half its usual size, and the sign extension mode |sx| then specifies how the smaller lane is extended to the larger lane. Alternatively, SIMD loads can perform a *splat*, such that only a single lane of the specified storage size is loaded, and the result is duplicated to all lanes.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
 All values are read and written in |LittleEndian|_ byte order.
