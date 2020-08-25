@@ -317,6 +317,14 @@ struct
     | I64x2 ShrU -> SXX.I64x2.shr_u
     | _ -> failwith "unimplemented shr_u"
     in fun v s -> to_value (f (of_value 1 v) (of_arg I32Value.of_value 2 s))
+
+  let bitmaskop (op : bitmaskop) v =
+    let f = match op with
+    | I8x16 Bitmask -> SXX.I8x16.bitmask
+    | I16x8 Bitmask -> SXX.I16x8.bitmask
+    | I32x4 Bitmask -> SXX.I32x4.bitmask
+    | _ -> assert false
+    in I32 (f (of_value 1 v))
 end
 
 module V128Op = SimdOp (V128) (Values.V128Value)
@@ -412,6 +420,7 @@ let eval_extractop extractop v = V128Op.extractop extractop v
 let eval_replaceop replaceop = V128Op.replaceop replaceop
 let eval_ternop ternop v = V128Op.ternop ternop v
 let eval_shiftop shiftop v = V128Op.shiftop shiftop v
+let eval_bitmaskop bitmaskop v = V128Op.bitmaskop bitmaskop v
 
 (* Dispatch *)
 

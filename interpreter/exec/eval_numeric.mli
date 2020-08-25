@@ -11,3 +11,4 @@ val eval_extractop : Ast.extractop -> value -> value
 val eval_replaceop : Ast.replaceop -> value -> value -> value
 val eval_ternop : Ast.ternop -> value -> value -> value -> value
 val eval_shiftop : Ast.shiftop -> value -> value -> value
+val eval_bitmaskop : Ast.bitmaskop -> value -> value

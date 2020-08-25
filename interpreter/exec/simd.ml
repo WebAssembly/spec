@@ -81,6 +81,7 @@ sig
   val avgr_u : t -> t -> t
   val any_true : t -> bool
   val all_true : t -> bool
+  val bitmask : t -> Int32.t
   val shl : t -> I32.t -> t
   val shr_s : t -> I32.t -> t
   val shr_u : t -> I32.t -> t
@@ -291,6 +292,11 @@ struct
     let reduceop f a s = List.fold_left (fun a b -> f a (b <> Int.zero)) a (Convert.to_shape s)
     let any_true = reduceop (||) false
     let all_true = reduceop (&&) true
+    (* Extract top bits using signed-comparision with zero *)
+    let bitmask x =
+      let xs = Convert.to_shape x in
+      let negs = List.map (fun x -> if Int.(lt_s x zero) then Int32.one else Int32.zero) xs in
+      List.fold_left (fun a b -> Int32.(logor b (shift_left a 1))) Int32.zero negs
     let shl v s =
       let shift = Int.of_int_u (Int32.to_int s) in
       unop (fun a -> Int.shl a shift) v

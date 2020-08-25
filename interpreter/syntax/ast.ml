@@ -84,6 +84,8 @@ struct
   type replaceop = (int, int, int, int, int, int, int) v128op
   type shift = Shl | ShrS | ShrU
   type shiftop = (shift, shift, shift, shift, shift, shift, shift) v128op
+  type bitmask = Bitmask
+  type bitmaskop = (bitmask, bitmask, bitmask, bitmask, bitmask, bitmask, bitmask) v128op
 end
 
 module I32Op = IntOp
@@ -102,6 +104,7 @@ type replaceop = V128Op.replaceop
 (* Ternary operators only exist for V128 types for now *)
 type ternop = V128Op.ternop
 type shiftop = V128Op.shiftop
+type bitmaskop = V128Op.bitmaskop
 
 type 'a memop =
   {ty : value_type; align : int; offset : Memory.offset; sz : 'a option}
@@ -151,6 +154,7 @@ and instr' =
   | SimdExtract of extractop          (* extract lane from v128 value *)
   | SimdReplace of replaceop          (* replace lane of v128 value *)
   | SimdShift of shiftop              (* shifts for v128 value *)
+  | SimdBitmask of bitmaskop          (* bitmask for v128 value *)
 
 
 (* Globals & Functions *)

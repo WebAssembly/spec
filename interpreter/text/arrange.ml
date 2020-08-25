@@ -464,6 +464,7 @@ let rec instr e =
     | SimdExtract op -> SimdOp.extractop op, []
     | SimdReplace op -> SimdOp.replaceop op, []
     | SimdShift op -> SimdOp.shiftop op, []
+    | SimdBitmask op -> failwith "unimplemented simd bitmask"
   in Node (head, inner)
 
 let const c =
