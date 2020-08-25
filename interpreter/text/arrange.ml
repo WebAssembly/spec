@@ -594,18 +594,20 @@ let module_ = module_with_var_opt None
 (* Scripts *)
 
 (* Converts a value to string depending on mode. *)
-let literal mode lit =
+let literal mode lit shape =
   let choose_mode bin not_bin = if mode = `Binary then bin else not_bin in
-  match lit.it with
-  | Values.I32 i -> choose_mode I32.to_hex_string I32.to_string_s i
-  | Values.I64 i -> choose_mode I64.to_hex_string I64.to_string_s i
-  | Values.F32 z -> choose_mode F32.to_hex_string F32.to_string z
-  | Values.F64 z -> choose_mode F64.to_hex_string F64.to_string z
-  | Values.V128 v -> choose_mode V128.to_hex_string V128.to_string v
+  match lit.it, shape with
+  | Values.I32 i, Some Simd.I8x16 -> choose_mode I8.to_hex_string I8.to_string_s i
+  | Values.I32 i, Some Simd.I16x8 -> choose_mode I16.to_hex_string I16.to_string_s i
+  | Values.I32 i, _ -> choose_mode I32.to_hex_string I32.to_string_s i
+  | Values.I64 i, _ -> choose_mode I64.to_hex_string I64.to_string_s i
+  | Values.F32 z, _ -> choose_mode F32.to_hex_string F32.to_string z
+  | Values.F64 z, _ -> choose_mode F64.to_hex_string F64.to_string z
+  | Values.V128 v, _ -> choose_mode V128.to_hex_string V128.to_string v
 
 (* Converts a literal into a constant instruction. *)
 let constant mode lit =
-  let lit_string = literal mode lit in
+  let lit_string = literal mode lit None in
   Node (constop lit ^ lit_string, [])
 
 let definition mode x_opt def =
@@ -661,7 +663,7 @@ let result_simd mode res shape pats =
    * a SimdResult do not need the i32.const instruction *)
   let num_pat mode res =
     match res.it with
-    | LitPat lit -> literal mode lit
+    | LitPat lit -> literal mode lit (Some shape)
     | NanPat {it = Values.F32 n; _}
     | NanPat {it = Values.F64 n; _} -> nan n
     | _ -> assert false
