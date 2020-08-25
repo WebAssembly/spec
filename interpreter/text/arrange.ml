@@ -370,6 +370,12 @@ struct
     | I32x4 ShrS -> "i32x4.shr_s"
     | _ -> assert false
 
+  let bitmaskop = function
+    | I8x16 Bitmask -> "i8x16.bitmask"
+    | I16x8 Bitmask -> "i16x8.bitmask"
+    | I32x4 Bitmask -> "i32x4.bitmask"
+    | _ -> assert false
+
 end
 
 let oper (intop, floatop, simdop) op =
@@ -464,7 +470,7 @@ let rec instr e =
     | SimdExtract op -> SimdOp.extractop op, []
     | SimdReplace op -> SimdOp.replaceop op, []
     | SimdShift op -> SimdOp.shiftop op, []
-    | SimdBitmask op -> failwith "unimplemented simd bitmask"
+    | SimdBitmask op -> SimdOp.bitmaskop op, []
   in Node (head, inner)
 
 let const c =

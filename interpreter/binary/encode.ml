@@ -556,7 +556,10 @@ let encode m =
       | SimdShift V128Op.(I32x4 ShrS) -> simd_op 0xacl
       | SimdShift (_) -> failwith "TODO v128 shift"
 
-      | SimdBitmask (_) -> failwith "TODO v128 bitmask"
+      | SimdBitmask V128Op.(I8x16 Bitmask) -> simd_op 0x64l
+      | SimdBitmask V128Op.(I16x8 Bitmask) -> simd_op 0x84l
+      | SimdBitmask V128Op.(I32x4 Bitmask) -> simd_op 0xa4l
+      | SimdBitmask (_) -> assert false
 
     let const c =
       list instr c.it; end_ ()
