@@ -71,8 +71,7 @@ New/extended instructions:
   - allowed in constant expressions
 
 * The new instruction `ref.is_null` checks for null.
-  - `ref.is_null rt : [rtref] -> [i32]`
-    - iff `rt = func` or `rt = extern`
+  - `ref.is_null : [rtref] -> [i32]`
 
 * The new instruction `ref.func` creates a reference to a given function.
   - `ref.func $x : [] -> [funcref]`
