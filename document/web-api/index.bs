@@ -84,6 +84,7 @@ This document builds off of the WebAssembly specification [[WEBASSEMBLY]] and th
 <h2 id="streaming-modules">Streaming Module Compilation and Instantiation</h2>
 
 <pre class="idl">
+[Exposed=(Window,Worker)]
 partial namespace WebAssembly {
   Promise&lt;Module> compileStreaming(Promise&lt;Response> source);
   Promise&lt;WebAssemblyInstantiatedSource> instantiateStreaming(

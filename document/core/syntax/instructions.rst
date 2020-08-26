@@ -22,11 +22,6 @@ The following sections group instructions into a number of different categories.
    pair: abstract syntax; instruction
 .. _syntax-sx:
 .. _syntax-const:
-.. _syntax-unop:
-.. _syntax-binop:
-.. _syntax-testop:
-.. _syntax-relop:
-.. _syntax-cvtop:
 .. _syntax-iunop:
 .. _syntax-ibinop:
 .. _syntax-itestop:
@@ -143,6 +138,12 @@ Some integer instructions come in two flavors,
 where a signedness annotation |sx| distinguishes whether the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
 For the other integer instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
 
+
+.. _syntax-unop:
+.. _syntax-binop:
+.. _syntax-testop:
+.. _syntax-relop:
+.. _syntax-cvtop:
 
 Conventions
 ...........
