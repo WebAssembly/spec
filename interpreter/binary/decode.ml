@@ -301,6 +301,7 @@ let simd_prefix s =
   | 0x64l -> i8x16_bitmask
   | 0x6bl -> i8x16_shl
   | 0x6cl -> i8x16_shr_s
+  | 0x6dl -> i8x16_shr_u
   | 0x65l -> i8x16_narrow_i16x8_s
   | 0x66l -> i8x16_narrow_i16x8_u
   | 0x6el -> i8x16_add
@@ -327,6 +328,7 @@ let simd_prefix s =
   | 0x8al -> i16x8_widen_high_i8x16_u
   | 0x8bl -> i16x8_shl
   | 0x8cl -> i16x8_shr_s
+  | 0x8dl -> i16x8_shr_u
   | 0x8el -> i16x8_add
   | 0x8fl -> i16x8_add_saturate_s
   | 0x90l -> i16x8_add_saturate_u
@@ -350,6 +352,7 @@ let simd_prefix s =
   | 0xaal -> i32x4_widen_high_i16x8_u
   | 0xabl -> i32x4_shl
   | 0xacl -> i32x4_shr_s
+  | 0xadl -> i32x4_shr_u
   | 0xael -> i32x4_add
   | 0xb1l -> i32x4_sub
   | 0xb5l -> i32x4_mul
@@ -360,6 +363,7 @@ let simd_prefix s =
   | 0xc1l -> i64x2_neg
   | 0xcbl -> i64x2_shl
   | 0xccl -> i64x2_shr_s
+  | 0xcdl -> i64x2_shr_u
   | 0xcel -> i64x2_add
   | 0xd1l -> i64x2_sub
   | 0xd5l -> i64x2_mul

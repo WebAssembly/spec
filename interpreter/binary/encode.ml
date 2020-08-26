@@ -550,11 +550,17 @@ let encode m =
 
       | SimdShift V128Op.(I8x16 Shl) -> simd_op 0x6bl
       | SimdShift V128Op.(I8x16 ShrS) -> simd_op 0x6cl
+      | SimdShift V128Op.(I8x16 ShrU) -> simd_op 0x6dl
       | SimdShift V128Op.(I16x8 Shl) -> simd_op 0x8bl
       | SimdShift V128Op.(I16x8 ShrS) -> simd_op 0x8cl
+      | SimdShift V128Op.(I16x8 ShrU) -> simd_op 0x8dl
       | SimdShift V128Op.(I32x4 Shl) -> simd_op 0xabl
       | SimdShift V128Op.(I32x4 ShrS) -> simd_op 0xacl
-      | SimdShift (_) -> failwith "TODO v128 shift"
+      | SimdShift V128Op.(I32x4 ShrU) -> simd_op 0xadl
+      | SimdShift V128Op.(I64x2 Shl) -> simd_op 0xcbl
+      | SimdShift V128Op.(I64x2 ShrS) -> simd_op 0xccl
+      | SimdShift V128Op.(I64x2 ShrU) -> simd_op 0xcdl
+      | SimdShift (_) -> assert false
 
       | SimdBitmask V128Op.(I8x16 Bitmask) -> simd_op 0x64l
       | SimdBitmask V128Op.(I16x8 Bitmask) -> simd_op 0x84l

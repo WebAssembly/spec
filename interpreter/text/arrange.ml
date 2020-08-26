@@ -364,10 +364,16 @@ struct
   let shiftop = function
     | I8x16 Shl -> "i8x16.shl"
     | I8x16 ShrS -> "i8x16.shr_s"
+    | I8x16 ShrU -> "i8x16.shr_u"
     | I16x8 Shl -> "i16x8.shl"
     | I16x8 ShrS -> "i16x8.shr_s"
+    | I16x8 ShrU -> "i16x8.shr_u"
     | I32x4 Shl -> "i32x4.shl"
     | I32x4 ShrS -> "i32x4.shr_s"
+    | I32x4 ShrU -> "i32x4.shr_u"
+    | I64x2 Shl -> "i64x2.shl"
+    | I64x2 ShrS -> "i64x2.shr_s"
+    | I64x2 ShrU -> "i64x2.shr_u"
     | _ -> assert false
 
   let bitmaskop = function
