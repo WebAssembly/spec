@@ -131,16 +131,6 @@ let load_packed sz ext mem a o t =
   | I64Type -> I64 x
   | _ -> raise Type
 
-let store_packed sz mem a o v =
-  assert (packed_size sz <= Types.size (Values.type_of v));
-  let n = packed_size sz in
-  let x =
-    match v with
-    | I32 x -> Int64.of_int32 x
-    | I64 x -> x
-    | _ -> raise Type
-  in storen mem a o n x
-
 let load_simd_packed simd_load mem a o t =
   let ext = match simd_load with
     | PackExtend (_, ext) -> ext
@@ -163,3 +153,13 @@ let load_simd_packed simd_load mem a o t =
   | PackSplat (Pack32) -> V128 (V128.I32x4.splat (I32.of_int_s (Int64.to_int x)))
   | PackSplat (Pack64) -> V128 (V128.I64x2.splat x)
   | _ -> assert false
+
+let store_packed sz mem a o v =
+  assert (packed_size sz <= Types.size (Values.type_of v));
+  let n = packed_size sz in
+  let x =
+    match v with
+    | I32 x -> Int64.of_int32 x
+    | I64 x -> x
+    | _ -> raise Type
+  in storen mem a o n x
