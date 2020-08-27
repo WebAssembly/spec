@@ -132,12 +132,9 @@ let load_packed sz ext mem a o t =
   | _ -> raise Type
 
 let load_simd_packed simd_load mem a o t =
-  let ext = match simd_load with
-    | PackExtend (_, ext) -> ext
-    | _ -> ZX
-  in
   let n = packed_simd_size simd_load in
-  let x = extend (loadn mem a o n) n ext in
+  assert (n <= Types.size t);
+  let x = loadn mem a o n in
   let b = Bytes.create 16 in
   Bytes.set_int64_le b 0 x;
   let v = V128.of_bits (Bytes.to_string b) in
