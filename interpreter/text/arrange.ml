@@ -78,9 +78,6 @@ let pack_size = function
   | Pack16 -> "16"
   | Pack32 -> "32"
   | Pack64 -> "64"
-  | Pack8x8 -> "8x8"
-  | Pack16x4 -> "16x4"
-  | Pack32x2 -> "32x2"
 
 let extension = function
   | SX -> "_s"
@@ -467,6 +464,7 @@ let rec instr e =
     | GlobalGet x -> "global.get " ^ var x, []
     | GlobalSet x -> "global.set " ^ var x, []
     | Load op -> loadop op, []
+    | SimdLoad op -> failwith "unimplemented SimdLoad arrange"
     | Store op -> storeop op, []
     | MemorySize -> "memory.size", []
     | MemoryGrow -> "memory.grow", []
