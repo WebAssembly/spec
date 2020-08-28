@@ -133,9 +133,9 @@ Each variant of :ref:`table instruction <syntax-instr-table>` is encoded with a 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
-     \hex{FC}~\hex{0C}~~x{:}\Belemidx~\hex{00} &\Rightarrow& \TABLEINIT~x \\ &&|&
-     \hex{FC}~\hex{0D}~~x{:}\Belemidx &\Rightarrow& \ELEMDROP~x \\ &&|&
-     \hex{FC}~\hex{0E}~~\hex{00}~~\hex{00} &\Rightarrow& \TABLECOPY \\
+     \hex{FC}~~12{:}\Bu32~~x{:}\Belemidx~\hex{00} &\Rightarrow& \TABLEINIT~x \\ &&|&
+     \hex{FC}~~13{:}\Bu32~~x{:}\Belemidx &\Rightarrow& \ELEMDROP~x \\ &&|&
+     \hex{FC}~~14{:}\Bu32~~\hex{00}~~\hex{00} &\Rightarrow& \TABLECOPY \\
    \end{array}
 
 .. note::
@@ -193,10 +193,10 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
      \hex{3E}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
      \hex{3F}~~\hex{00} &\Rightarrow& \MEMORYSIZE \\ &&|&
      \hex{40}~~\hex{00} &\Rightarrow& \MEMORYGROW \\ &&|&
-     \hex{FC}~\hex{08}~~x{:}\Bdataidx~\hex{00} &\Rightarrow& \MEMORYINIT~x \\ &&|&
-     \hex{FC}~\hex{09}~~x{:}\Bdataidx &\Rightarrow& \DATADROP~x \\ &&|&
-     \hex{FC}~\hex{0A}~~\hex{00}~~\hex{00} &\Rightarrow& \MEMORYCOPY \\ &&|&
-     \hex{FC}~\hex{0B}~~\hex{00} &\Rightarrow& \MEMORYFILL \\
+     \hex{FC}~~8{:}\Bu32~~x{:}\Bdataidx~\hex{00} &\Rightarrow& \MEMORYINIT~x \\ &&|&
+     \hex{FC}~~9{:}\Bu32~~x{:}\Bdataidx &\Rightarrow& \DATADROP~x \\ &&|&
+     \hex{FC}~~10{:}\Bu32~~\hex{00}~~\hex{00} &\Rightarrow& \MEMORYCOPY \\ &&|&
+     \hex{FC}~~11{:}\Bu32~~\hex{00} &\Rightarrow& \MEMORYFILL \\
    \end{array}
 
 .. note::
