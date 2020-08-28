@@ -44,251 +44,12 @@
 (assert_malformed (module binary "\00asm\00\00\01\00") "unknown binary version")
 (assert_malformed (module binary "\00asm\00\00\00\01") "unknown binary version")
 
-;; Unsigned LEB128 can have non-minimal length
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\05\04\01"                          ;; Memory section with 1 entry
-  "\00\82\00"                          ;; no max, minimum 2
-)
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\05\07\01"                          ;; Memory section with 1 entry
-  "\00\82\80\80\80\00"                 ;; no max, minimum 2
-)
-
-;; Signed LEB128 can have non-minimal length
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\06\07\01"                          ;; Global section with 1 entry
-  "\7f\00"                             ;; i32, immutable
-  "\41\80\00"                          ;; i32.const 0
-  "\0b"                                ;; end
-)
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\06\07\01"                          ;; Global section with 1 entry
-  "\7f\00"                             ;; i32, immutable
-  "\41\ff\7f"                          ;; i32.const -1
-  "\0b"                                ;; end
-)
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\06\0a\01"                          ;; Global section with 1 entry
-  "\7f\00"                             ;; i32, immutable
-  "\41\80\80\80\80\00"                 ;; i32.const 0
-  "\0b"                                ;; end
-)
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\06\0a\01"                          ;; Global section with 1 entry
-  "\7f\00"                             ;; i32, immutable
-  "\41\ff\ff\ff\ff\7f"                 ;; i32.const -1
-  "\0b"                                ;; end
-)
-
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\06\07\01"                          ;; Global section with 1 entry
-  "\7e\00"                             ;; i64, immutable
-  "\42\80\00"                          ;; i64.const 0 with unused bits set
-  "\0b"                                ;; end
-)
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\06\07\01"                          ;; Global section with 1 entry
-  "\7e\00"                             ;; i64, immutable
-  "\42\ff\7f"                          ;; i64.const -1 with unused bits unset
-  "\0b"                                ;; end
-)
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\06\0f\01"                          ;; Global section with 1 entry
-  "\7e\00"                             ;; i64, immutable
-  "\42\80\80\80\80\80\80\80\80\80\00"  ;; i64.const 0 with unused bits set
-  "\0b"                                ;; end
-)
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\06\0f\01"                          ;; Global section with 1 entry
-  "\7e\00"                             ;; i64, immutable
-  "\42\ff\ff\ff\ff\ff\ff\ff\ff\ff\7f"  ;; i64.const -1 with unused bits unset
-  "\0b"                                ;; end
-)
-
-;; Data segment memory index can have non-minimal length
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\05\03\01"                          ;; Memory section with 1 entry
-  "\00\00"                             ;; no max, minimum 0
-  "\0b\07\01"                          ;; Data section with 1 entry
-  "\80\00"                             ;; Memory index 0, encoded with 2 bytes
-  "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
-)
-
-;; Element segment table index can have non-minimal length
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\04\04\01"                          ;; Table section with 1 entry
-  "\70\00\00"                          ;; no max, minimum 0, funcref
-  "\09\09\01"                          ;; Element section with 1 entry
-  "\02\80\00"                          ;; Table index 0, encoded with 2 bytes
-  "\41\00\0b\00\00"                    ;; (i32.const 0) with no elements
-)
-
-;; Unsigned LEB128 must not be overlong
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\05\08\01"                          ;; Memory section with 1 entry
-    "\00\82\80\80\80\80\00"              ;; no max, minimum 2 with one byte too many
-  )
-  "integer representation too long"
-)
-
-;; Signed LEB128 must not be overlong
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\0b\01"                          ;; Global section with 1 entry
-    "\7f\00"                             ;; i32, immutable
-    "\41\80\80\80\80\80\00"              ;; i32.const 0 with one byte too many
-    "\0b"                                ;; end
-  )
-  "integer representation too long"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\0b\01"                          ;; Global section with 1 entry
-    "\7f\00"                             ;; i32, immutable
-    "\41\ff\ff\ff\ff\ff\7f"              ;; i32.const -1 with one byte too many
-    "\0b"                                ;; end
-  )
-  "integer representation too long"
-)
-
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\10\01"                          ;; Global section with 1 entry
-    "\7e\00"                             ;; i64, immutable
-    "\42\80\80\80\80\80\80\80\80\80\80\00"  ;; i64.const 0 with one byte too many
-    "\0b"                                ;; end
-  )
-  "integer representation too long"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\10\01"                          ;; Global section with 1 entry
-    "\7e\00"                             ;; i64, immutable
-    "\42\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\7f"  ;; i64.const -1 with one byte too many
-    "\0b"                                ;; end
-  )
-  "integer representation too long"
-)
-
-;; Unsigned LEB128s zero-extend
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\05\07\01"                          ;; Memory section with 1 entry
-    "\00\82\80\80\80\70"                 ;; no max, minimum 2 with unused bits set
-  )
-  "integer too large"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\05\07\01"                          ;; Memory section with 1 entry
-    "\00\82\80\80\80\40"                 ;; no max, minimum 2 with some unused bits set
-  )
-  "integer too large"
-)
-
-;; Signed LEB128s sign-extend
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\0a\01"                          ;; Global section with 1 entry
-    "\7f\00"                             ;; i32, immutable
-    "\41\80\80\80\80\70"                 ;; i32.const 0 with unused bits set
-    "\0b"                                ;; end
-  )
-  "integer too large"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\0a\01"                          ;; Global section with 1 entry
-    "\7f\00"                             ;; i32, immutable
-    "\41\ff\ff\ff\ff\0f"                 ;; i32.const -1 with unused bits unset
-    "\0b"                                ;; end
-  )
-  "integer too large"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\0a\01"                          ;; Global section with 1 entry
-    "\7f\00"                             ;; i32, immutable
-    "\41\80\80\80\80\1f"                 ;; i32.const 0 with some unused bits set
-    "\0b"                                ;; end
-  )
-  "integer too large"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\0a\01"                          ;; Global section with 1 entry
-    "\7f\00"                             ;; i32, immutable
-    "\41\ff\ff\ff\ff\4f"                 ;; i32.const -1 with some unused bits unset
-    "\0b"                                ;; end
-  )
-  "integer too large"
-)
-
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\0f\01"                          ;; Global section with 1 entry
-    "\7e\00"                             ;; i64, immutable
-    "\42\80\80\80\80\80\80\80\80\80\7e"  ;; i64.const 0 with unused bits set
-    "\0b"                                ;; end
-  )
-  "integer too large"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\0f\01"                          ;; Global section with 1 entry
-    "\7e\00"                             ;; i64, immutable
-    "\42\ff\ff\ff\ff\ff\ff\ff\ff\ff\01"  ;; i64.const -1 with unused bits unset
-    "\0b"                                ;; end
-  )
-  "integer too large"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\0f\01"                          ;; Global section with 1 entry
-    "\7e\00"                             ;; i64, immutable
-    "\42\80\80\80\80\80\80\80\80\80\02"  ;; i64.const 0 with some unused bits set
-    "\0b"                                ;; end
-  )
-  "integer too large"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\0f\01"                          ;; Global section with 1 entry
-    "\7e\00"                             ;; i64, immutable
-    "\42\ff\ff\ff\ff\ff\ff\ff\ff\ff\41"  ;; i64.const -1 with some unused bits unset
-    "\0b"                                ;; end
-  )
-  "integer too large"
-)
-
+;; Invalid section id.
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\0d\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\7f\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\80\00\01\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\81\00\01\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\ff\00\01\00") "malformed section id")
 
 ;; call_indirect reserved byte equal to zero.
 (assert_malformed
@@ -857,6 +618,71 @@
     "\02\01\00"                             ;; import count can be zero
 )
 
+;; Malformed import kind
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\04\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\04"                                 ;; malformed import kind
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\05\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\04"                                 ;; malformed import kind
+      "\00"                                 ;; dummy byte
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\04\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\05"                                 ;; malformed import kind
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\05\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\05"                                 ;; malformed import kind
+      "\00"                                 ;; dummy byte
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\04\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\80"                                 ;; malformed import kind
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\05\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\80"                                 ;; malformed import kind
+      "\00"                                 ;; dummy byte
+  )
+  "malformed import kind"
+)
+
 ;; 2 import declared, 1 given
 (assert_malformed
   (module binary
@@ -917,6 +743,37 @@
   "unexpected end of section or function"
 )
 
+;; Malformed table limits flag
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\03\01"                           ;; table section with one entry
+      "\70"                                 ;; anyfunc
+      "\02"                                 ;; malformed table limits flag
+  )
+  "integer too large"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\04\01"                           ;; table section with one entry
+      "\70"                                 ;; anyfunc
+      "\02"                                 ;; malformed table limits flag
+      "\00"                                 ;; dummy byte
+  )
+  "integer too large"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\06\01"                           ;; table section with one entry
+      "\70"                                 ;; anyfunc
+      "\81\00"                              ;; malformed table limits flag as LEB128
+      "\00\00"                              ;; dummy bytes
+  )
+  "integer too large"
+)
+
 ;; Memory count can be zero
 (module binary
     "\00asm" "\01\00\00\00"
@@ -931,6 +788,43 @@
       ;; "\00\00"                           ;; memory 0 (missed)
   )
   "unexpected end of section or function"
+)
+
+;; Malformed memory limits flag
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\02\01"                           ;; memory section with one entry
+      "\02"                                 ;; malformed memory limits flag
+  )
+  "integer too large"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\03\01"                           ;; memory section with one entry
+      "\02"                                 ;; malformed memory limits flag
+      "\00"                                 ;; dummy byte
+  )
+  "integer too large"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\05\01"                           ;; memory section with one entry
+      "\81\00"                              ;; malformed memory limits flag as LEB128
+      "\00\00"                              ;; dummy bytes
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\05\01"                           ;; memory section with one entry
+      "\81\01"                              ;; malformed memory limits flag as LEB128
+      "\00\00"                              ;; dummy bytes
+  )
+  "integer representation too long"
 )
 
 ;; Global count can be zero
@@ -1141,28 +1035,6 @@
   "\0e\00"                                  ;; br_table target count can be zero
   "\02"                                     ;; break depth for default
   "\0b\0b\0b"                               ;; end
-)
-
-;; 2 br_table target declared, 1 given
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\01\04\01"                             ;; type section
-    "\60\00\00"                             ;; type 0
-    "\03\02\01\00"                          ;; func section
-    "\0a\12\01"                             ;; code section
-    "\10\00"                                ;; func 0
-    "\02\40"                                ;; block 0
-    "\41\01"                                ;; condition of if 0
-    "\04\40"                                ;; if 0
-    "\41\01"                                ;; index of br_table element
-    "\0e\02"                                ;; br_table with inconsistent target count (2 declared, 1 given)
-    "\00"                                   ;; break depth 0
-    ;; "\01"                                ;; break depth 1 (missed)
-    "\02"                                   ;; break depth for default
-    "\0b\0b\0b"                             ;; end
-  )
-  "unexpected end of section or function"
 )
 
 ;; 1 br_table target declared, 2 given

@@ -134,8 +134,8 @@ let float =
   | sign? "nan"
   | sign? "nan:" "0x" hexnum
 let string = '"' character* '"'
-let name = '$' (letter | digit | '_' | symbol)+
-let reserved = ([^'\"''('')'';'] # space)+  (* hack for table size *)
+let reserved = (letter | digit | '_' | symbol)+
+let name = '$' reserved
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
