@@ -90,10 +90,17 @@ and instr' =
   | LocalTee of var                   (* write local variable and keep value *)
   | GlobalGet of var                  (* read global variable *)
   | GlobalSet of var                  (* write global variable *)
+  | TableCopy                         (* copy elements between table regions *)
+  | TableInit of var                  (* initialize table from segment *)
+  | ElemDrop of var                   (* drop passive element segment *)
   | Load of loadop                    (* read memory at address *)
   | Store of storeop                  (* write memory at address *)
   | MemorySize                        (* size of linear memory *)
   | MemoryGrow                        (* grow linear memory *)
+  | MemoryFill                        (* fill memory region with value *)
+  | MemoryCopy                        (* copy memory regions *)
+  | MemoryInit of var                 (* initialize memory from segment *)
+  | DataDrop of var                   (* drop passive data segment *)
   | Const of literal                  (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)
@@ -110,7 +117,7 @@ type global = global' Source.phrase
 and global' =
 {
   gtype : global_type;
-  value : const;
+  ginit : const;
 }
 
 type func = func' Source.phrase
@@ -136,16 +143,30 @@ and memory' =
   mtype : memory_type;
 }
 
-type 'data segment = 'data segment' Source.phrase
-and 'data segment' =
+type segment_mode = segment_mode' Source.phrase
+and segment_mode' =
+  | Passive
+  | Active of {index : var; offset : const}
+
+type elem_expr = elem_expr' Source.phrase
+and elem_expr' =
+  | RefNull
+  | RefFunc of var
+
+type elem_segment = elem_segment' Source.phrase
+and elem_segment' =
 {
-  index : var;
-  offset : const;
-  init : 'data;
+  etype : elem_type;
+  einit : elem_expr list;
+  emode : segment_mode;
 }
 
-type table_segment = var list segment
-type memory_segment = string segment
+type data_segment = data_segment' Source.phrase
+and data_segment' =
+{
+  dinit : string;
+  dmode : segment_mode;
+}
 
 
 (* Modules *)
@@ -190,8 +211,8 @@ and module_' =
   memories : memory list;
   funcs : func list;
   start : var option;
-  elems : var list segment list;
-  data : string segment list;
+  elems : elem_segment list;
+  datas : data_segment list;
   imports : import list;
   exports : export list;
 }
@@ -207,8 +228,8 @@ let empty_module =
   memories = [];
   funcs = [];
   start = None;
-  elems  = [];
-  data = [];
+  elems = [];
+  datas = [];
   imports = [];
   exports = [];
 }
@@ -258,3 +279,4 @@ let string_of_name n =
   in
   List.iter escape n;
   Buffer.contents b
+

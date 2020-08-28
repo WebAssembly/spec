@@ -2,6 +2,7 @@ open Types
 
 type size = int32
 type index = int32
+type count = int32
 
 type elem = ..
 type elem += Uninitialized
@@ -48,7 +49,24 @@ let load tab i =
 let store tab i v =
   try Lib.Array32.set tab.content i v with Invalid_argument _ -> raise Bounds
 
-let blit tab offset elems =
-  let data = Array.of_list elems in
-  try Lib.Array32.blit data 0l tab.content offset (Lib.Array32.length data)
-  with Invalid_argument _ -> raise Bounds
+let init tab es d s n =
+  let rec loop es d s n =
+    match s, n, es with
+    | s, 0l, _ -> ()
+    | 0l, n, e::es' ->
+      store tab d e;
+      loop es' (Int32.add d 1l) 0l (Int32.sub n 1l)
+    | s, n, _::es' -> loop es' d (Int32.sub s 1l) n
+    | _ -> raise Bounds
+  in loop es d s n
+
+let copy tab d s n =
+  let rec loop d s n dx =
+    if I32.gt_u n 0l then begin
+      store tab d (load tab s);
+      loop (Int32.add d dx) (Int32.add s dx) (Int32.sub n 1l) dx
+    end
+  in (if s < d then
+    loop Int32.(add d (sub n 1l)) Int32.(add s (sub n 1l)) n (-1l)
+  else
+    loop d s n 1l)

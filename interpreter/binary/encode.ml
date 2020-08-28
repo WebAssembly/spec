@@ -166,6 +166,10 @@ let encode m =
       | GlobalGet x -> op 0x23; var x
       | GlobalSet x -> op 0x24; var x
 
+      | TableCopy -> op 0xfc; op 0x0e; u8 0x00; u8 0x00
+      | TableInit x -> op 0xfc; op 0x0c; var x; u8 0x00
+      | ElemDrop x -> op 0xfc; op 0x0d; var x
+
       | Load ({ty = I32Type; sz = None; _} as mo) -> op 0x28; memop mo
       | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x29; memop mo
       | Load ({ty = F32Type; sz = None; _} as mo) -> op 0x2a; memop mo
@@ -209,6 +213,10 @@ let encode m =
 
       | MemorySize -> op 0x3f; u8 0x00
       | MemoryGrow -> op 0x40; u8 0x00
+      | MemoryFill -> op 0xfc; op 0x0b; u8 0x00
+      | MemoryCopy -> op 0xfc; op 0x0a; u8 0x00; u8 0x00
+      | MemoryInit x -> op 0xfc; op 0x08; var x; u8 0x00
+      | DataDrop x -> op 0xfc; op 0x09; var x
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c
       | Const {it = I64 c; _} -> op 0x42; vs64 c
@@ -435,8 +443,8 @@ let encode m =
 
     (* Global section *)
     let global g =
-      let {gtype; value} = g.it in
-      global_type gtype; const value
+      let {gtype; ginit} = g.it in
+      global_type gtype; const ginit
 
     let global_section gs =
       section 6 (vec global) gs (gs <> [])
@@ -482,22 +490,64 @@ let encode m =
       section 10 (vec code) fs (fs <> [])
 
     (* Element section *)
-    let segment dat seg =
-      let {index; offset; init} = seg.it in
-      var index; const offset; dat init
+    let elem_kind = function
+      | FuncRefType -> u8 0x00
 
-    let table_segment seg =
-      segment (vec var) seg
+    let elem_expr e =
+      match e.it with
+      | RefNull -> u8 0xd0; u8 0x70; end_ ()
+      | RefFunc x -> u8 0xd2; var x; end_ ()
+
+    let elem_index e =
+      match e.it with
+      | RefNull -> assert false
+      | RefFunc x -> var x
+
+    let is_func_ref e = match e.it with RefFunc _ -> true | _ -> false
+
+    let elem seg =
+      let {etype; einit; emode} = seg.it in
+      let has_indices = List.for_all is_func_ref einit in
+      match emode.it with
+      | Passive ->
+        if has_indices then
+          (vu32 0x01l; elem_kind etype; vec elem_index einit)
+        else
+          (vu32 0x05l; elem_type etype; vec elem_expr einit)
+      | Active {index; offset} ->
+        match index.it = 0l, etype = FuncRefType, has_indices with
+        | true, true, true ->
+          vu32 0x00l; const offset; vec elem_index einit
+        | true, true, false ->
+          vu32 0x04l; const offset; vec elem_expr einit
+        | _, _, true ->
+          vu32 0x02l;
+          var index; const offset; elem_kind etype; vec elem_index einit
+        | _, _, false ->
+          vu32 0x06l;
+          var index; const offset; elem_type etype; vec elem_expr einit
 
     let elem_section elems =
-      section 9 (vec table_segment) elems (elems <> [])
+      section 9 (vec elem) elems (elems <> [])
 
     (* Data section *)
-    let memory_segment seg =
-      segment string seg
+    let data seg =
+      let {dinit; dmode} = seg.it in
+      match dmode.it with
+      | Passive ->
+        vu32 0x01l; string dinit
+      | Active {index; offset} ->
+        if index.it = 0l then
+          (vu32 0x00l; const offset; string dinit)
+        else
+          (vu32 0x02l; var index; const offset; string dinit)
 
-    let data_section data =
-      section 11 (vec memory_segment) data (data <> [])
+    let data_section datas =
+      section 11 (vec data) datas (datas <> [])
+
+    (* Data count section *)
+    let data_count_section datas m =
+      section 12 len (List.length datas) Free.((module_ m).datas <> Set.empty)
 
     (* Module *)
 
@@ -513,7 +563,8 @@ let encode m =
       export_section m.it.exports;
       start_section m.it.start;
       elem_section m.it.elems;
+      data_count_section m.it.datas m;
       code_section m.it.funcs;
-      data_section m.it.data
+      data_section m.it.datas
   end
   in E.module_ m; to_string s

@@ -176,6 +176,22 @@ Variable Instructions
    \end{array}
 
 
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+.. _text-table.copy:
+.. _text-table.init:
+.. _text-elem.drop:
+
+.. math::
+   \begin{array}{llcllll}
+   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
+     \text{table.copy} &\Rightarrow& \TABLECOPY \\ &&|&
+     \text{table.init}~~x{:}\Telemidx_I &\Rightarrow& \TABLEINIT~x \\ &&|&
+     \text{elem.drop}~~x{:}\Telemidx_I &\Rightarrow& \ELEMDROP~x \\
+   \end{array}
+
+
 .. index:: memory instruction, memory index
    pair: text format; instruction
 .. _text-instr-memory:
@@ -190,6 +206,10 @@ Memory Instructions
 .. _text-storen:
 .. _text-memory.size:
 .. _text-memory.grow:
+.. _text-memory.fill:
+.. _text-memory.copy:
+.. _text-memory.init:
+.. _text-data.drop:
 
 The offset and alignment immediates to memory instructions are optional.
 The offset defaults to :math:`\T{0}`, the alignment to the storage size of the respective memory access, which is its *natural alignment*.
@@ -230,7 +250,11 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
      \text{i64.store16}~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
      \text{i64.store32}~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
      \text{memory.size} &\Rightarrow& \MEMORYSIZE \\ &&|&
-     \text{memory.grow} &\Rightarrow& \MEMORYGROW \\
+     \text{memory.grow} &\Rightarrow& \MEMORYGROW \\ &&|&
+     \text{memory.fill} &\Rightarrow& \MEMORYFILL \\ &&|&
+     \text{memory.copy} &\Rightarrow& \MEMORYCOPY \\ &&|&
+     \text{memory.init}~~x{:}\Tdataidx_I &\Rightarrow& \MEMORYINIT~x \\ &&|&
+     \text{data.drop}~~x{:}\Tdataidx_I &\Rightarrow& \DATADROP~x \\
    \end{array}
 
 

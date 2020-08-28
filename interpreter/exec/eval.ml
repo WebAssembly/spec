@@ -17,6 +17,10 @@ exception Trap = Trap.Error
 exception Crash = Crash.Error (* failure that cannot happen in valid code *)
 exception Exhaustion = Exhaustion.Error
 
+let table_error at = function
+  | Table.Bounds -> "out of bounds table access"
+  | exn -> raise exn
+
 let memory_error at = function
   | Memory.Bounds -> "out of bounds memory access"
   | Memory.SizeOverflow -> "memory size overflow"
@@ -78,9 +82,11 @@ let func (inst : module_inst) x = lookup "function" inst.funcs x
 let table (inst : module_inst) x = lookup "table" inst.tables x
 let memory (inst : module_inst) x = lookup "memory" inst.memories x
 let global (inst : module_inst) x = lookup "global" inst.globals x
+let elem (inst : module_inst) x = lookup "element segment" inst.elems x
+let data (inst : module_inst) x = lookup "data segment" inst.datas x
 let local (frame : frame) x = lookup "local" frame.locals x
 
-let elem inst x i at =
+let any_elem inst x i at =
   match Table.load (table inst x) i with
   | Table.Uninitialized ->
     Trap.error at ("uninitialized element " ^ Int32.to_string i)
@@ -89,7 +95,7 @@ let elem inst x i at =
     Trap.error at ("undefined element " ^ Int32.to_string i)
 
 let func_elem inst x i at =
-  match elem inst x i at with
+  match any_elem inst x i at with
   | FuncElem f -> f
   | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
 
@@ -120,6 +126,22 @@ let drop n (vs : 'a stack) at =
  *   vs : value stack
  *   c : config
  *)
+
+let mem_oob frame x i n =
+  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
+    (Memory.bound (memory frame.inst x))
+
+let data_oob frame x i n =
+  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
+    (I64.of_int_u (String.length !(data frame.inst x)))
+
+let table_oob frame x i n =
+  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
+    (I64_convert.extend_i32_u (Table.size (table frame.inst x)))
+
+let elem_oob frame x i n =
+  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
+    (I64.of_int_u (List.length !(elem frame.inst x)))
 
 let rec step (c : config) : config =
   let {frame; code = vs, es; _} = c in
@@ -209,24 +231,56 @@ let rec step (c : config) : config =
         with Global.NotMutable -> Crash.error e.at "write to immutable global"
            | Global.Type -> Crash.error e.at "type mismatch at global write")
 
+      | TableCopy, I32 n :: I32 s :: I32 d :: vs'
+        when table_oob frame (0l @@ e.at) s n || table_oob frame (0l @@ e.at) d n ->
+        vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
+
+      | TableCopy, I32 0l :: I32 s :: I32 d :: vs' ->
+        vs', []
+
+      (* TODO: turn into small-step, but needs reference values *)
+      | TableCopy, I32 n :: I32 s :: I32 d :: vs' ->
+        let tab = table frame.inst (0l @@ e.at) in
+        (try Table.copy tab d s n; vs', []
+        with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
+
+      | TableInit x, I32 n :: I32 s :: I32 d :: vs'
+        when table_oob frame (0l @@ e.at) d n || elem_oob frame x s n ->
+        vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
+
+      | TableInit x, I32 0l :: I32 s :: I32 d :: vs' ->
+        vs', []
+
+      (* TODO: turn into small-step, but needs reference values *)
+      | TableInit x, I32 n :: I32 s :: I32 d :: vs' ->
+        let tab = table frame.inst (0l @@ e.at) in
+        let seg = !(elem frame.inst x) in
+        (try Table.init tab seg d s n; vs', []
+        with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
+
+      | ElemDrop x, vs ->
+        let seg = elem frame.inst x in
+        seg := [];
+        vs, []
+
       | Load {offset; ty; sz; _}, I32 i :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_i32_u i in
+        let a = I64_convert.extend_i32_u i in
         (try
           let v =
             match sz with
-            | None -> Memory.load_value mem addr offset ty
-            | Some (sz, ext) -> Memory.load_packed sz ext mem addr offset ty
+            | None -> Memory.load_value mem a offset ty
+            | Some (sz, ext) -> Memory.load_packed sz ext mem a offset ty
           in v :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
       | Store {offset; sz; _}, v :: I32 i :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_i32_u i in
+        let a = I64_convert.extend_i32_u i in
         (try
           (match sz with
-          | None -> Memory.store_value mem addr offset v
-          | Some sz -> Memory.store_packed sz mem addr offset v
+          | None -> Memory.store_value mem a offset v
+          | Some sz -> Memory.store_packed sz mem a offset v
           );
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
@@ -242,6 +296,86 @@ let rec step (c : config) : config =
           try Memory.grow mem delta; old_size
           with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
         in I32 result :: vs', []
+
+      | MemoryFill, I32 n :: v :: I32 i :: vs'
+        when mem_oob frame (0l @@ e.at) i n ->
+        vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
+
+      | MemoryFill, I32 0l :: v :: I32 i :: vs' ->
+        vs', []
+
+      | MemoryFill, I32 n :: v :: I32 i :: vs' ->
+        vs', List.map (at e.at) [
+          Plain (Const (I32 i @@ e.at));
+          Plain (Const (v @@ e.at));
+          Plain (Store
+            {ty = I32Type; align = 0; offset = 0l; sz = Some Pack8});
+          Plain (Const (I32 (I32.add i 1l) @@ e.at));
+          Plain (Const (v @@ e.at));
+          Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+          Plain (MemoryFill);
+        ]
+
+      | MemoryCopy, I32 n :: I32 s :: I32 d :: vs'
+        when mem_oob frame (0l @@ e.at) s n || mem_oob frame (0l @@ e.at) d n ->
+        vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
+
+      | MemoryCopy, I32 0l :: I32 s :: I32 d :: vs' ->
+        vs', []
+
+      | MemoryCopy, I32 n :: I32 s :: I32 d :: vs' when d <= s ->
+        vs', List.map (at e.at) [
+          Plain (Const (I32 d @@ e.at));
+          Plain (Const (I32 s @@ e.at));
+          Plain (Load
+            {ty = I32Type; align = 0; offset = 0l; sz = Some (Pack8, ZX)});
+          Plain (Store
+            {ty = I32Type; align = 0; offset = 0l; sz = Some Pack8});
+          Plain (Const (I32 (I32.add d 1l) @@ e.at));
+          Plain (Const (I32 (I32.add s 1l) @@ e.at));
+          Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+          Plain (MemoryCopy);
+        ]
+
+      | MemoryCopy, I32 n :: I32 s :: I32 d :: vs' when s < d ->
+        vs', List.map (at e.at) [
+          Plain (Const (I32 (I32.add d 1l) @@ e.at));
+          Plain (Const (I32 (I32.add s 1l) @@ e.at));
+          Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+          Plain (MemoryCopy);
+          Plain (Const (I32 d @@ e.at));
+          Plain (Const (I32 s @@ e.at));
+          Plain (Load
+            {ty = I32Type; align = 0; offset = 0l; sz = Some (Pack8, ZX)});
+          Plain (Store
+            {ty = I32Type; align = 0; offset = 0l; sz = Some Pack8});
+        ]
+
+      | MemoryInit x, I32 n :: I32 s :: I32 d :: vs'
+        when mem_oob frame (0l @@ e.at) d n || data_oob frame x s n ->
+        vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
+
+      | MemoryInit x, I32 0l :: I32 s :: I32 d :: vs' ->
+        vs', []
+
+      | MemoryInit x, I32 n :: I32 s :: I32 d :: vs' ->
+        let seg = !(data frame.inst x) in
+        let b = Int32.of_int (Char.code seg.[Int32.to_int s]) in
+        vs', List.map (at e.at) [
+          Plain (Const (I32 d @@ e.at));
+          Plain (Const (I32 b @@ e.at));
+          Plain (
+            Store {ty = I32Type; align = 0; offset = 0l; sz = Some Pack8});
+          Plain (Const (I32 (I32.add d 1l) @@ e.at));
+          Plain (Const (I32 (I32.add s 1l) @@ e.at));
+          Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+          Plain (MemoryInit x);
+        ]
+
+      | DataDrop x, vs ->
+        let seg = data frame.inst x in
+        seg := "";
+        vs, []
 
       | Const v, vs ->
         v.it :: vs, []
@@ -364,11 +498,6 @@ let eval_const (inst : module_inst) (const : const) : value =
   | [v] -> v
   | vs -> Crash.error const.at "wrong number of results on stack"
 
-let i32 (v : value) at =
-  match v with
-  | I32 i -> i
-  | _ -> Crash.error at "type error: i32 value expected"
-
 
 (* Modules *)
 
@@ -384,8 +513,8 @@ let create_memory (inst : module_inst) (mem : memory) : memory_inst =
   Memory.alloc mtype
 
 let create_global (inst : module_inst) (glob : global) : global_inst =
-  let {gtype; value} = glob.it in
-  let v = eval_const inst value in
+  let {gtype; ginit} = glob.it in
+  let v = eval_const inst ginit in
   Global.alloc gtype v
 
 let create_export (inst : module_inst) (ex : export) : export_inst =
@@ -398,33 +527,20 @@ let create_export (inst : module_inst) (ex : export) : export_inst =
     | GlobalExport x -> ExternGlobal (global inst x)
   in name, ext
 
+let elem_list inst init =
+  let to_elem el =
+    match el.it with
+    | RefNull -> Table.Uninitialized
+    | RefFunc x -> FuncElem (func inst x)
+  in List.map to_elem init
 
-let init_func (inst : module_inst) (func : func_inst) =
-  match func with
-  | Func.AstFunc (_, inst_ref, _) -> inst_ref := inst
-  | _ -> assert false
+let create_elem (inst : module_inst) (seg : elem_segment) : elem_inst =
+  let {etype; einit; _} = seg.it in
+  ref (elem_list inst einit)
 
-let init_table (inst : module_inst) (seg : table_segment) =
-  let {index; offset = const; init} = seg.it in
-  let tab = table inst index in
-  let offset = i32 (eval_const inst const) const.at in
-  let end_ = Int32.(add offset (of_int (List.length init))) in
-  let bound = Table.size tab in
-  if I32.lt_u bound end_ || I32.lt_u end_ offset then
-    Link.error seg.at "elements segment does not fit table";
-  fun () ->
-    Table.blit tab offset (List.map (fun x -> FuncElem (func inst x)) init)
-
-let init_memory (inst : module_inst) (seg : memory_segment) =
-  let {index; offset = const; init} = seg.it in
-  let mem = memory inst index in
-  let offset' = i32 (eval_const inst const) const.at in
-  let offset = I64_convert.extend_i32_u offset' in
-  let end_ = Int64.(add offset (of_int (String.length init))) in
-  let bound = Memory.bound mem in
-  if I64.lt_u bound end_ || I64.lt_u end_ offset then
-    Link.error seg.at "data segment does not fit memory";
-  fun () -> Memory.store_bytes mem offset init
+let create_data (inst : module_inst) (seg : data_segment) : data_inst =
+  let {dinit; _} = seg.it in
+  ref dinit
 
 
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
@@ -437,10 +553,44 @@ let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   | ExternMemory mem -> {inst with memories = mem :: inst.memories}
   | ExternGlobal glob -> {inst with globals = glob :: inst.globals}
 
+let init_func (inst : module_inst) (func : func_inst) =
+  match func with
+  | Func.AstFunc (_, inst_ref, _) -> inst_ref := inst
+  | _ -> assert false
+
+let run_elem i elem =
+  match elem.it.emode.it with
+  | Passive -> []
+  | Active {index; offset} ->
+    let at = elem.it.emode.at in
+    let x = i @@ at in
+    offset.it @ [
+      Const (I32 0l @@ at) @@ at;
+      Const (I32 (Lib.List32.length elem.it.einit) @@ at) @@ at;
+      TableInit x @@ at;
+      ElemDrop x @@ at
+    ]
+
+let run_data i data =
+  match data.it.dmode.it with
+  | Passive -> []
+  | Active {index; offset} ->
+    let at = data.it.dmode.at in
+    let x = i @@ at in
+    offset.it @ [
+      Const (I32 0l @@ at) @@ at;
+      Const (I32 (Int32.of_int (String.length data.it.dinit)) @@ at) @@ at;
+      MemoryInit x @@ at;
+      DataDrop x @@ at
+    ]
+
+let run_start start =
+  [Call start @@ start.at]
+
 let init (m : module_) (exts : extern list) : module_inst =
   let
     { imports; tables; memories; globals; funcs; types;
-      exports; elems; data; start
+      exports; elems; datas; start
     } = m.it
   in
   if List.length exts <> List.length imports then
@@ -458,11 +608,16 @@ let init (m : module_) (exts : extern list) : module_inst =
       globals = inst0.globals @ List.map (create_global inst0) globals;
     }
   in
-  let inst = {inst1 with exports = List.map (create_export inst1) exports} in
+  let inst =
+    { inst1 with
+      exports = List.map (create_export inst1) exports;
+      elems = List.map (create_elem inst1) elems;
+      datas = List.map (create_data inst1) datas;
+    }
+  in
   List.iter (init_func inst) fs;
-  let init_elems = List.map (init_table inst) elems in
-  let init_datas = List.map (init_memory inst) data in
-  List.iter (fun f -> f ()) init_elems;
-  List.iter (fun f -> f ()) init_datas;
-  Lib.Option.app (fun x -> ignore (invoke (func inst x) [])) start;
+  let es_elem = List.concat (Lib.List32.mapi run_elem elems) in
+  let es_data = List.concat (Lib.List32.mapi run_data datas) in
+  let es_start = Lib.Option.get (Lib.Option.map run_start start) [] in
+  ignore (eval (config inst [] (List.map plain (es_elem @ es_data @ es_start))));
   inst

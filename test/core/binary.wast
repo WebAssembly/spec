@@ -45,12 +45,11 @@
 (assert_malformed (module binary "\00asm\00\00\00\01") "unknown binary version")
 
 ;; Invalid section id.
-(assert_malformed (module binary "\00asm" "\01\00\00\00" "\0c\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\0d\00") "malformed section id")
 (assert_malformed (module binary "\00asm" "\01\00\00\00" "\7f\00") "malformed section id")
 (assert_malformed (module binary "\00asm" "\01\00\00\00" "\80\00\01\00") "malformed section id")
 (assert_malformed (module binary "\00asm" "\01\00\00\00" "\81\00\01\00") "malformed section id")
 (assert_malformed (module binary "\00asm" "\01\00\00\00" "\ff\00\01\00") "malformed section id")
-
 
 ;; call_indirect reserved byte equal to zero.
 (assert_malformed
@@ -421,6 +420,168 @@
   "\0a\01\00"  ;; Code section with 0 functions
 )
 
+;; Fewer passive segments than datacount
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\0c\01\03"                   ;; Datacount section with value "3"
+    "\0b\05\02"                   ;; Data section with two entries
+    "\01\00"                      ;; Passive data section
+    "\01\00")                     ;; Passive data section
+  "data count and data section have inconsistent lengths")
+
+;; More passive segments than datacount
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\0c\01\01"                   ;; Datacount section with value "1"
+    "\0b\05\02"                   ;; Data section with two entries
+    "\01\00"                      ;; Passive data section
+    "\01\00")                     ;; Passive data section
+  "data count and data section have inconsistent lengths")
+
+;; memory.init requires a datacount section
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+
+    "\01\04\01\60\00\00"       ;; Type section
+    "\03\02\01\00"             ;; Function section
+    "\05\03\01\00\00"          ;; Memory section
+    "\0a\0e\01"                ;; Code section
+
+    ;; function 0
+    "\0c\00"
+    "\41\00"                   ;; zero args
+    "\41\00"
+    "\41\00"
+    "\fc\08\00\00"             ;; memory.init
+    "\0b"
+
+    "\0b\03\01\01\00"          ;; Data section
+  )                            ;; end
+  "data count section required")
+
+;; data.drop requires a datacount section
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+
+    "\01\04\01\60\00\00"       ;; Type section
+    "\03\02\01\00"             ;; Function section
+    "\05\03\01\00\00"          ;; Memory section
+    "\0a\07\01"                ;; Code section
+
+    ;; function 0
+    "\05\00"
+    "\fc\09\00"                ;; data.drop
+    "\0b"
+
+    "\0b\03\01\01\00"          ;; Data section
+  )                            ;; end
+  "data count section required")
+
+;; passive element segment containing opcode other than ref.func or ref.null
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+
+    "\01\04\01\60\00\00"       ;; Type section
+
+    "\03\02\01\00"             ;; Function section
+
+    "\04\04\01"                ;; Table section with 1 entry
+    "\70\00\00"                ;; no max, minimum 0, funcref
+
+    "\05\03\01\00\00"          ;; Memory section
+
+    "\09\07\01"                ;; Element section with one segment
+    "\05\70"                   ;; Passive, funcref
+    "\01"                      ;; 1 element
+    "\d3\00\0b"                ;; bad opcode, index 0, end
+
+    "\0a\04\01"                ;; Code section
+
+    ;; function 0
+    "\02\00"
+    "\0b")                     ;; end
+  "invalid elem")
+
+;; passive element segment containing type other than funcref
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+
+    "\01\04\01\60\00\00"       ;; Type section
+
+    "\03\02\01\00"             ;; Function section
+
+    "\04\04\01"                ;; Table section with 1 entry
+    "\70\00\00"                ;; no max, minimum 0, funcref
+
+    "\05\03\01\00\00"          ;; Memory section
+
+    "\09\07\01"                ;; Element section with one segment
+    "\05\7f"                   ;; Passive, i32
+    "\01"                      ;; 1 element
+    "\d2\00\0b"                ;; ref.func, index 0, end
+
+    "\0a\04\01"                ;; Code section
+
+    ;; function 0
+    "\02\00"
+    "\0b")                     ;; end
+  "malformed element type")
+
+;; passive element segment containing opcode ref.func
+(module binary
+  "\00asm" "\01\00\00\00"
+
+  "\01\04\01\60\00\00"       ;; Type section
+
+  "\03\02\01\00"             ;; Function section
+
+  "\04\04\01"                ;; Table section with 1 entry
+  "\70\00\00"                ;; no max, minimum 0, funcref
+
+  "\05\03\01\00\00"          ;; Memory section
+
+  "\09\07\01"                ;; Element section with one segment
+  "\05\70"                   ;; Passive, funcref
+  "\01"                      ;; 1 element
+  "\d2\00\0b"                ;; ref.func, index 0, end
+
+  "\0a\04\01"                ;; Code section
+
+  ;; function 0
+  "\02\00"
+  "\0b")                     ;; end
+
+;; passive element segment containing opcode ref.null
+(module binary
+  "\00asm" "\01\00\00\00"
+
+  "\01\04\01\60\00\00"       ;; Type section
+
+  "\03\02\01\00"             ;; Function section
+
+  "\04\04\01"                ;; Table section with 1 entry
+  "\70\00\00"                ;; no max, minimum 0, funcref
+
+  "\05\03\01\00\00"          ;; Memory section
+
+  "\09\07\01"                ;; Element section with one segment
+  "\05\70"                   ;; Passive, funcref
+  "\01"                      ;; 1 element
+  "\d0\70\0b"                ;; ref.null, end
+
+  "\0a\04\01"                ;; Code section
+
+  ;; function 0
+  "\02\00"
+  "\0b")                     ;; end
+
+
 ;; Type count can be zero
 (module binary
   "\00asm" "\01\00\00\00"
@@ -776,7 +937,7 @@
     "\0a\04\01"                             ;; code section
     "\02\00\0b"                             ;; function body
   )
-  "unexpected end"
+  "invalid elements segment kind"
 )
 
 ;; 1 elem segment declared, 2 given

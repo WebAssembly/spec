@@ -54,6 +54,8 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 
 * Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
+* If the same meta variable or non-terminal symbol appears multiple times in a production (in the syntax or in an attribute), then all those occurrences must have the same instantiation.
+
 .. _text-syntactic:
 
 * A distinction is made between *lexical* and *syntactic* productions. For the latter, arbitrary :ref:`white space <text-space>` is allowed in any place where the grammar contains spaces. The productions defining :ref:`lexical syntax <text-lexical>` and the syntax of :Ref:`values <text-value>` are considered lexical, all others are syntactic.
@@ -122,6 +124,8 @@ It is convenient to define identifier contexts as :ref:`records <notation-record
         & \ITABLES & (\Tid^?)^\ast, \\
         & \IMEMS & (\Tid^?)^\ast, \\
         & \IGLOBALS & (\Tid^?)^\ast, \\
+        & \IELEM & (\Tid^?)^\ast, \\
+        & \IDATA & (\Tid^?)^\ast, \\
         & \ILOCALS & (\Tid^?)^\ast, \\
         & \ILABELS & (\Tid^?)^\ast, \\
         & \ITYPEDEFS & \functype^\ast ~\} \\

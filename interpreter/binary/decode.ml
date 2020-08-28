@@ -190,6 +190,7 @@ let var s = vu32 s
 
 let op s = u8 s
 let end_ s = expect 0x0b s "END opcode expected"
+let zero_flag s = expect 0x00 s "zero flag expected"
 
 let memop s =
   let align = vu32 s in
@@ -214,6 +215,18 @@ let math_prefix s =
   | 0x05l -> i64_trunc_sat_f32_u
   | 0x06l -> i64_trunc_sat_f64_s
   | 0x07l -> i64_trunc_sat_f64_u
+  | 0x08l ->
+    let x = at var s in
+    zero_flag s; memory_init x
+  | 0x09l -> data_drop (at var s)
+  | 0x0al -> zero_flag s; zero_flag s; memory_copy
+  | 0x0bl -> zero_flag s; memory_fill
+
+  | 0x0cl ->
+    let x = at var s in
+    zero_flag s; table_init x
+  | 0x0dl -> elem_drop (at var s)
+  | 0x0el -> zero_flag s; zero_flag s; table_copy
   | n -> illegal s pos (I32.to_int_u n)
 
 let rec instr s =
@@ -260,8 +273,7 @@ let rec instr s =
   | 0x10 -> call (at var s)
   | 0x11 ->
     let x = at var s in
-    expect 0x00 s "zero flag expected";
-    call_indirect x
+    zero_flag s; call_indirect x
 
   | 0x12 | 0x13 | 0x14 | 0x15 | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
@@ -303,12 +315,8 @@ let rec instr s =
   | 0x3d -> let a, o = memop s in i64_store16 a o
   | 0x3e -> let a, o = memop s in i64_store32 a o
 
-  | 0x3f ->
-    expect 0x00 s "zero flag expected";
-    memory_size
-  | 0x40 ->
-    expect 0x00 s "zero flag expected";
-    memory_grow
+  | 0x3f -> zero_flag s; memory_size
+  | 0x40 -> zero_flag s; memory_grow
 
   | 0x41 -> i32_const (at vs32 s)
   | 0x42 -> i64_const (at vs64 s)
@@ -491,6 +499,7 @@ let id s =
     | 9 -> `ElemSection
     | 10 -> `CodeSection
     | 11 -> `DataSection
+    | 12 -> `DataCountSection
     | _ -> error s (pos s) "malformed section id"
     ) bo
 
@@ -561,8 +570,8 @@ let memory_section s =
 
 let global s =
   let gtype = global_type s in
-  let value = const s in
-  {gtype; value}
+  let ginit = const s in
+  {gtype; ginit}
 
 let global_section s =
   section `GlobalSection (vec (at global)) [] s
@@ -617,26 +626,104 @@ let code_section s =
 
 (* Element section *)
 
-let segment dat s =
+let passive s =
+  Passive
+
+let active s =
   let index = at var s in
   let offset = const s in
-  let init = dat s in
-  {index; offset; init}
+  Active {index; offset}
 
-let table_segment s =
-  segment (vec (at var)) s
+let active_zero s =
+  let index = Source.(0l @@ Source.no_region) in
+  let offset = const s in
+  Active {index; offset}
+
+let elem_index s =
+  ref_func (at var s)
+
+let elem_kind s =
+  match u8 s with
+  | 0x00 -> FuncRefType
+  | _ -> error s (pos s - 1) "invalid element kind"
+
+let elem_expr s =
+  match u8 s with
+  | 0xd0 ->
+    expect 0x70 s "funcref expected";
+    end_ s;
+    ref_null
+  | 0xd2 ->
+    let x = at var s in
+    end_ s;
+    ref_func x
+  | _ -> error s (pos s - 1) "invalid element expression"
+
+let elem s =
+  match vu32 s with
+  | 0x00l ->
+    let emode = at active_zero s in
+    let einit = vec (at elem_index) s in
+    {etype = FuncRefType; einit; emode}
+  | 0x01l ->
+    let emode = at passive s in
+    let etype = elem_kind s in
+    let einit = vec (at elem_index) s in
+    {etype; einit; emode}
+  | 0x02l ->
+    let emode = at active s in
+    let etype = elem_kind s in
+    let einit = vec (at elem_index) s in
+    {etype; einit; emode}
+  | 0x04l ->
+    let emode = at active_zero s in
+    let einit = vec (at elem_expr) s in
+    {etype = FuncRefType; einit; emode}
+  | 0x05l ->
+    let emode = at passive s in
+    let etype = elem_type s in
+    let einit = vec (at elem_expr) s in
+    {etype; einit; emode}
+  | 0x06l ->
+    let emode = at active s in
+    let etype = elem_type s in
+    let einit = vec (at elem_expr) s in
+    {etype; einit; emode}
+  | _ -> error s (pos s - 1) "invalid elements segment kind"
 
 let elem_section s =
-  section `ElemSection (vec (at table_segment)) [] s
+  section `ElemSection (vec (at elem)) [] s
 
 
 (* Data section *)
 
-let memory_segment s =
-  segment string s
+let data s =
+  match vu32 s with
+  | 0x00l ->
+    let dmode = at active_zero s in
+    let dinit = string s in
+    {dinit; dmode}
+  | 0x01l ->
+    let dmode = at passive s in
+    let dinit = string s in
+    {dinit; dmode}
+  | 0x02l ->
+    let dmode = at active s in
+    let dinit = string s in
+    {dinit; dmode}
+  | _ -> error s (pos s - 1) "invalid data segment kind"
 
 let data_section s =
-  section `DataSection (vec (at memory_segment)) [] s
+  section `DataSection (vec (at data)) [] s
+
+
+(* DataCount section *)
+
+let data_count s =
+  Some (vu32 s)
+
+let data_count_section s =
+  section `DataCountSection data_count None s
 
 
 (* Custom section *)
@@ -679,17 +766,24 @@ let module_ s =
   iterate custom_section s;
   let elems = elem_section s in
   iterate custom_section s;
+  let data_count = data_count_section s in
+  iterate custom_section s;
   let func_bodies = code_section s in
   iterate custom_section s;
-  let data = data_section s in
+  let datas = data_section s in
   iterate custom_section s;
   require (pos s = len s) s (len s) "junk after last section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";
+  require (data_count = None || data_count = Some (Lib.List32.length datas))
+    s (len s) "data count and data section have inconsistent lengths";
+  require (data_count <> None ||
+    List.for_all Free.(fun f -> (func f).datas = Set.empty) func_bodies)
+    s (len s) "data count section required";
   let funcs =
     List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
       func_types func_bodies
-  in {types; tables; memories; globals; funcs; imports; exports; elems; data; start}
+  in {types; tables; memories; globals; funcs; imports; exports; elems; datas; start}
 
 
 let decode name bs = at module_ (stream name bs)

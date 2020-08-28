@@ -142,38 +142,94 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
 Element Segments
 ~~~~~~~~~~~~~~~~
 
-Element segments :math:`\elem` are not classified by a type.
+Element segments :math:`\elem` are not classified by any type but merely checked for well-formedness.
 
-:math:`\{ \ETABLE~x, \EOFFSET~\expr, \EINIT~y^\ast \}`
-......................................................
+:math:`\{ \ETYPE~et, \EINIT~e^\ast, \EMODE~\elemmode \}`
+........................................................
 
-* The table :math:`C.\CTABLES[x]` must be defined in the context.
+* For each :math:`e_i` in :math:`e^\ast`,
 
-* Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+  * The element expression :math:`e_i` must be :ref:`valid <valid-elemexpr>`.
 
-* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |FUNCREF|.
-
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
-
-* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
-
-* For each :math:`y_i` in :math:`y^\ast`,
-  the function :math:`C.\CFUNCS[y]` must be defined in the context.
+* The element mode :math:`\elemmode` must be valid.
 
 * Then the element segment is valid.
 
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~\FUNCREF
+     (C \vdashelemexpr e \ok)^\ast
+     \qquad
+     C; \X{et} \vdashelemmode \elemmode \ok
+   }{
+     C \vdashelem \{ \ETYPE~et, \EINIT~e^\ast, \EMODE~\elemmode \} \ok
+   }
+
+
+.. _valid-elemexpr:
+
+:math:`\elemexpr`
+.................
+
+* An element expression must be:
+
+  * either of the form :math:`\REFNULL~\END`,
+
+  * or of the form :math:`(\REFFUNC~x)~\END`, in which case :math:`C.\CFUNCS[x]` must be defined in the context.
+
+.. math::
+   \frac{
+   }{
+     C \vdashelemexpr \REFNULL~\END \ok
+   }
+   \qquad
+   \frac{
+     C.\CFUNCS[x] = \functype
+   }{
+     C \vdashelemexpr (\REFFUNC~x)~\END \ok
+   }
+
+
+.. _valid-elemmode:
+
+:math:`\EPASSIVE`
+.................
+
+* The element mode is valid.
+
+.. math::
+   \frac{
+   }{
+     C; \X{et} \vdashelemmode \EPASSIVE \ok
+   }
+
+
+:math:`\EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \}`
+................................................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* The :ref:`element type <syntax-elemtype>` :math:`\X{et}` of the segment must match :math:`\elemtype`.
+
+* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
+
+* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
+
+* Then the element mode is valid.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = \limits~\elemtype
+     \qquad
+     \X{et} = \elemtype
      \qquad
      C \vdashexpr \expr : [\I32]
      \qquad
      C \vdashexprconst \expr \const
-     \qquad
-     (C.\CFUNCS[y] = \functype)^\ast
    }{
-     C \vdashelem \{ \ETABLE~x, \EOFFSET~\expr, \EINIT~y^\ast \} \ok
+     C; \X{et} \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} \ok
    }
 
 
@@ -187,10 +243,39 @@ Element segments :math:`\elem` are not classified by a type.
 Data Segments
 ~~~~~~~~~~~~~
 
-Data segments :math:`\data` are not classified by any type.
+Data segments :math:`\data` are not classified by any type but merely checked for well-formedness.
 
-:math:`\{ \DMEM~x, \DOFFSET~\expr, \DINIT~b^\ast \}`
+:math:`\{ \DINIT~b^\ast, \DMODE~\datamode \}`
 ....................................................
+
+* The data mode :math:`\datamode` must be valid.
+
+* Then the data segment is valid.
+
+.. math::
+   \frac{
+     C \vdashdatamode \datamode \ok
+   }{
+     C \vdashdata \{ \DINIT~b^\ast, \DMODE~\datamode \} \ok
+   }
+
+
+.. _valid-datamode:
+
+:math:`\DPASSIVE`
+.................
+
+* The data mode is valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashdatamode \DPASSIVE \ok
+   }
+
+
+:math:`\DACTIVE~\{ \DMEM~x, \DOFFSET~\expr \}`
+..............................................
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -198,8 +283,7 @@ Data segments :math:`\data` are not classified by any type.
 
 * The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
-* Then the data segment is valid.
-
+* Then the data mode is valid.
 
 .. math::
    \frac{
@@ -209,7 +293,7 @@ Data segments :math:`\data` are not classified by any type.
      \qquad
      C \vdashexprconst \expr \const
    }{
-     C \vdashdata \{ \DMEM~x, \DOFFSET~\expr, \DINIT~b^\ast \} \ok
+     C \vdashelemmode \EACTIVE~\{ \DMEM~x, \DOFFSET~\expr \} \ok
    }
 
 
@@ -450,6 +534,10 @@ Instead, the context :math:`C` for validation of the module's content is constru
   * :math:`C.\CGLOBALS` is :math:`\etglobals(\X{it}^\ast)` concatenated with :math:`\X{gt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}^\ast` as determined below,
 
+  * :math:`C.\CELEMS` is :math:`{\ok}^{N_e}`, where :math:`N_e` is the length of the vector :math:`\module.\MELEMS`,
+
+  * :math:`C.\CDATAS` is :math:`{\ok}^{N_d}`, where :math:`N_d` is the length of the vector :math:`\module.\MDATAS`,
+
   * :math:`C.\CLOCALS` is empty,
 
   * :math:`C.\CLABELS` is empty,
@@ -477,10 +565,10 @@ Instead, the context :math:`C` for validation of the module's content is constru
     * Under the context :math:`C'`,
       the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
 
-  * For each :math:`\elem_i` in :math:`\module.\MELEM`,
+  * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
     the segment :math:`\elem_i` must be :ref:`valid <valid-elem>`.
 
-  * For each :math:`\data_i` in :math:`\module.\MDATA`,
+  * For each :math:`\data_i` in :math:`\module.\MDATAS`,
     the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
 
   * If :math:`\module.\MSTART` is non-empty,
@@ -525,9 +613,9 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \quad
      (C' \vdashglobal \global : \X{gt})^\ast
      \\
-     (C \vdashelem \elem \ok)^\ast
+     (C \vdashelem \elem \ok)^{N_e}
      \quad
-     (C \vdashdata \data \ok)^\ast
+     (C \vdashdata \data \ok)^{N_d}
      \quad
      (C \vdashstart \start \ok)^?
      \quad
@@ -543,7 +631,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \qquad
      \X{igt}^\ast = \etglobals(\X{it}^\ast)
      \\
-     C = \{ \CTYPES~\functype^\ast, \CFUNCS~\X{ift}^\ast~\X{ft}^\ast, \CTABLES~\X{itt}^\ast~\X{tt}^\ast, \CMEMS~\X{imt}^\ast~\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast~\X{gt}^\ast \}
+     C = \{ \CTYPES~\functype^\ast, \CFUNCS~\X{ift}^\ast~\X{ft}^\ast, \CTABLES~\X{itt}^\ast~\X{tt}^\ast, \CMEMS~\X{imt}^\ast~\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast~\X{gt}^\ast, \CELEMS~{\ok}^{N_e}, \CDATAS~{\ok}^{N_d} \}
      \\
      C' = \{ \CGLOBALS~\X{igt}^\ast \}
      \qquad
@@ -561,8 +649,8 @@ Instead, the context :math:`C` for validation of the module's content is constru
          \MTABLES~\table^\ast,
          \MMEMS~\mem^\ast,
          \MGLOBALS~\global^\ast, \\
-         \MELEM~\elem^\ast,
-         \MDATA~\data^\ast,
+         \MELEMS~\elem^\ast,
+         \MDATAS~\data^\ast,
          \MSTART~\start^?,
          \MIMPORTS~\import^\ast,
          \MEXPORTS~\export^\ast \} : \X{it}^\ast \to \X{et}^\ast \\
