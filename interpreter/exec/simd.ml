@@ -142,6 +142,11 @@ sig
   val to_i16x8 : t -> I16.t list
   val to_i32x4 : t -> I32.t list
 
+  val of_i8x16 : I32.t list -> t
+  val of_i16x8 : I32.t list -> t
+  val of_i32x4 : I32.t list -> t
+  val of_i64x2 : I64.t list -> t
+
   (* We need type t = t to ensure that all submodule types are S.t,
    * then callers don't have to change *)
   module I8x16 : Int with type t = t and type lane = I8.t
@@ -194,6 +199,11 @@ struct
   let of_strings = Rep.of_strings
   let to_i16x8 = Rep.to_i16x8
   let to_i32x4 = Rep.to_i32x4
+
+  let of_i8x16 = Rep.of_i8x16
+  let of_i16x8 = Rep.of_i16x8
+  let of_i32x4 = Rep.of_i32x4
+  let of_i64x2 = Rep.of_i64x2
 
   module V128 : Vec with type t = Rep.t = struct
     type t = Rep.t
