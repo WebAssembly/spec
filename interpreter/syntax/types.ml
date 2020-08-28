@@ -19,8 +19,10 @@ type extern_type =
 type pack_size = Pack8 | Pack16 | Pack32 | Pack64
 type extension = SX | ZX
 type pack_simd =
-  | PackSplat of pack_size
-  | PackExtend of pack_size * extension
+  | PackSplat
+  | Pack8x8 of extension
+  | Pack16x4 of extension
+  | Pack32x2 of extension
 
 (* Attributes *)
 
@@ -34,14 +36,6 @@ let packed_size = function
   | Pack16 -> 2
   | Pack32 -> 4
   | Pack64 -> 8
-
-let packed_simd_size = function
-  | PackSplat sx -> packed_size sx
-  | PackExtend _ -> 8
-
-let pack_size_of_pack_simd = function
-  | PackSplat sx -> sx
-  | PackExtend _ -> Pack64
 
 (* Subtyping *)
 

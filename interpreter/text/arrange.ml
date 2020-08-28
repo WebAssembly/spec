@@ -465,6 +465,7 @@ let rec instr e =
     | GlobalSet x -> "global.set " ^ var x, []
     | Load op -> loadop op, []
     | SimdLoad op -> failwith "unimplemented SimdLoad arrange"
+    | SimdStore op -> failwith "unimplemented SimdStore arrange"
     | Store op -> storeop op, []
     | MemorySize -> "memory.size", []
     | MemoryGrow -> "memory.grow", []

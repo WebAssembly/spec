@@ -227,7 +227,7 @@ let rec step (c : config) : config =
           let v =
             match sz with
             | None -> Memory.load_value mem addr offset ty
-            | Some (simd_load) -> Memory.load_simd_packed simd_load mem addr offset ty
+            | Some (pack_size, simd_load) -> Memory.load_simd_packed pack_size simd_load mem addr offset ty
           in v :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
@@ -239,6 +239,14 @@ let rec step (c : config) : config =
           | None -> Memory.store_value mem addr offset v
           | Some sz -> Memory.store_packed sz mem addr offset v
           );
+          vs', []
+        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
+
+      | SimdStore {offset; sz; _}, v :: I32 i :: vs' ->
+        let mem = memory frame.inst (0l @@ e.at) in
+        let addr = I64_convert.extend_i32_u i in
+        (try
+          Memory.store_value mem addr offset v;
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 

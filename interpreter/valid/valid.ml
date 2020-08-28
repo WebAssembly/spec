@@ -304,11 +304,15 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [I32Type] --> [memop.ty]
 
   | SimdLoad memop ->
-    check_memop c memop (Lib.Option.map pack_size_of_pack_simd) e.at;
+    check_memop c memop (Lib.Option.map fst) e.at;
     [I32Type] --> [memop.ty]
 
   | Store memop ->
     check_memop c memop (fun sz -> sz) e.at;
+    [I32Type; memop.ty] --> []
+
+  | SimdStore memop ->
+    check_memop c memop (fun _ -> None) e.at;
     [I32Type; memop.ty] --> []
 
   | MemorySize ->

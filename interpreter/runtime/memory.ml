@@ -131,24 +131,24 @@ let load_packed sz ext mem a o t =
   | I64Type -> I64 x
   | _ -> raise Type
 
-let load_simd_packed simd_load mem a o t =
-  let n = packed_simd_size simd_load in
+let load_simd_packed pack_size simd_load mem a o t =
+  let n = packed_size pack_size in
   assert (n <= Types.size t);
   let x = loadn mem a o n in
   let b = Bytes.create 16 in
   Bytes.set_int64_le b 0 x;
   let v = V128.of_bits (Bytes.to_string b) in
-  match simd_load with
-  | PackExtend (Pack8, SX) -> V128 (V128.I16x8_convert.widen_low_s v)
-  | PackExtend (Pack8, ZX) -> V128 (V128.I16x8_convert.widen_low_u v)
-  | PackExtend (Pack16, SX) -> V128 (V128.I32x4_convert.widen_low_s v)
-  | PackExtend (Pack16, ZX) -> V128 (V128.I32x4_convert.widen_low_u v)
-  | PackExtend (Pack32, SX) -> V128 (V128.I64x2_convert.widen_low_s v)
-  | PackExtend (Pack32, ZX) -> V128 (V128.I64x2_convert.widen_low_u v)
-  | PackSplat (Pack8) -> V128 (V128.I8x16.splat (I8.of_int_s (Int64.to_int x)))
-  | PackSplat (Pack16) -> V128 (V128.I16x8.splat (I16.of_int_s (Int64.to_int x)))
-  | PackSplat (Pack32) -> V128 (V128.I32x4.splat (I32.of_int_s (Int64.to_int x)))
-  | PackSplat (Pack64) -> V128 (V128.I64x2.splat x)
+  match pack_size, simd_load with
+  | Pack64, Pack8x8 SX -> V128 (V128.I16x8_convert.widen_low_s v)
+  | Pack64, Pack8x8 ZX -> V128 (V128.I16x8_convert.widen_low_u v)
+  | Pack64, Pack16x4 SX -> V128 (V128.I32x4_convert.widen_low_s v)
+  | Pack64, Pack16x4 ZX -> V128 (V128.I32x4_convert.widen_low_u v)
+  | Pack64, Pack32x2 SX -> V128 (V128.I64x2_convert.widen_low_s v)
+  | Pack64, Pack32x2 ZX -> V128 (V128.I64x2_convert.widen_low_u v)
+  | Pack8, PackSplat -> V128 (V128.I8x16.splat (I8.of_int_s (Int64.to_int x)))
+  | Pack16, PackSplat -> V128 (V128.I16x8.splat (I16.of_int_s (Int64.to_int x)))
+  | Pack32, PackSplat -> V128 (V128.I32x4.splat (I32.of_int_s (Int64.to_int x)))
+  | Pack64, PackSplat -> V128 (V128.I64x2.splat x)
   | _ -> assert false
 
 let store_packed sz mem a o v =

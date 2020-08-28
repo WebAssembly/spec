@@ -219,26 +219,26 @@ let memory_grow = MemoryGrow
 (* SIMD *)
 let v128_load align offset = SimdLoad {ty = V128Type; align; offset; sz = None}
 let i16x8_load8x8_s align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (PackExtend (Pack8, SX))}
+  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack8x8 SX)}
 let i16x8_load8x8_u align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (PackExtend (Pack8, ZX))}
+  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack8x8 ZX)}
 let i32x4_load16x4_s align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (PackExtend (Pack16, SX))}
+  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack16x4 SX)}
 let i32x4_load16x4_u align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (PackExtend (Pack16, ZX))}
+  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack16x4 ZX)}
 let i64x2_load32x2_s align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (PackExtend (Pack32, SX))}
+  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack32x2 SX)}
 let i64x2_load32x2_u align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (PackExtend (Pack32, ZX))}
+  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack32x2 ZX)}
 let v8x16_load_splat align offset =
-  SimdLoad {ty= V128Type; align; offset; sz = Some (PackSplat Pack8)}
+  SimdLoad {ty= V128Type; align; offset; sz = Some (Pack8, PackSplat)}
 let v16x8_load_splat align offset =
-  SimdLoad {ty= V128Type; align; offset; sz = Some (PackSplat Pack16)}
+  SimdLoad {ty= V128Type; align; offset; sz = Some (Pack16, PackSplat)}
 let v32x4_load_splat align offset =
-  SimdLoad {ty= V128Type; align; offset; sz = Some (PackSplat Pack32)}
+  SimdLoad {ty= V128Type; align; offset; sz = Some (Pack32, PackSplat)}
 let v64x2_load_splat align offset =
-  SimdLoad {ty= V128Type; align; offset; sz = Some (PackSplat Pack64)}
-let v128_store align offset = Store {ty = V128Type; align; offset; sz = None}
+  SimdLoad {ty= V128Type; align; offset; sz = Some (Pack64, PackSplat)}
+let v128_store align offset = SimdStore {ty = V128Type; align; offset; sz = None}
 
 let v128_not = Unary (V128 (V128Op.V128 V128Op.Not))
 let v128_and = Binary (V128 (V128Op.V128 V128Op.And))
