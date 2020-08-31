@@ -310,7 +310,7 @@ struct
     let bitmask x =
       let xs = Convert.to_shape x in
       let negs = List.map (fun x -> if Int.(lt_s x zero) then Int32.one else Int32.zero) xs in
-      List.fold_left (fun a b -> Int32.(logor b (shift_left a 1))) Int32.zero negs
+      List.fold_right (fun a b -> Int32.(logor a (shift_left b 1))) negs Int32.zero
     let shl v s =
       let shift = Int.of_int_u (Int32.to_int s) in
       unop (fun a -> Int.shl a shift) v

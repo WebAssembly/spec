@@ -54,7 +54,7 @@
 (assert_return (invoke "i8x16.bitmask" (v128.const i8x16 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF))
                                         (i32.const 0x0000FFFF))
 (assert_return (invoke "i8x16.bitmask" (v128.const i8x16 -1 0 1 2 3 4 5 6 7 8 9 0xA 0xB 0xC 0xD 0xF))
-                                        (i32.const 0x00008000))
+                                        (i32.const 0x00000001))
 
 ;; i16x8
 (assert_return (invoke "i16x8.any_true" (v128.const i16x8 0 0 0 0 0 0 0 0))
@@ -104,7 +104,7 @@
 (assert_return (invoke "i16x8.bitmask" (v128.const i16x8 0xFFFF 0xFFFF 0xFFFF 0xFFFF 0xFFFF 0xFFFF 0xFFFF 0xFFFF))
                                         (i32.const 0x000000FF))
 (assert_return (invoke "i16x8.bitmask" (v128.const i16x8 -1 0 1 2 0xB 0xC 0xD 0xF))
-                                        (i32.const 0x00000080))
+                                        (i32.const 0x00000001))
 
 ;; i32x4
 (assert_return (invoke "i32x4.any_true" (v128.const i32x4 0 0 0 0))
@@ -154,7 +154,7 @@
 (assert_return (invoke "i32x4.bitmask" (v128.const i32x4 0xFFFFFFFF 0xFFFFFFFF 0xFFFFFFFF 0xFFFFFFFF))
                                         (i32.const 0x0000000F))
 (assert_return (invoke "i32x4.bitmask" (v128.const i32x4 -1 0 1 0xF))
-                                        (i32.const 0x00000008))
+                                        (i32.const 0x00000001))
 
 ;; Combination
 
