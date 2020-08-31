@@ -197,8 +197,29 @@ let encode m =
         op 0x35; memop mo
       | Load {ty = F32Type | F64Type; sz = Some _; _} ->
         assert false
-      | Load ({ty = V128Type; _} as mo) ->
+
+      | SimdLoad ({ty = V128Type; sz = None; _} as mo) ->
         simd_op 0x00l; memop mo
+      | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack8x8 SX); _} as mo) ->
+        simd_op 0x01l; memop mo
+      | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack8x8 ZX); _} as mo) ->
+        simd_op 0x02l; memop mo
+      | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack16x4 SX); _} as mo) ->
+        simd_op 0x03l; memop mo
+      | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack16x4 ZX); _} as mo) ->
+        simd_op 0x04l; memop mo
+      | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack32x2 SX); _} as mo) ->
+        simd_op 0x05l; memop mo
+      | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack32x2 ZX); _} as mo) ->
+        simd_op 0x06l; memop mo
+      | SimdLoad ({ty= V128Type; sz = Some (Pack8, PackSplat); _} as mo) ->
+        simd_op 0x07l; memop mo
+      | SimdLoad ({ty= V128Type; sz = Some (Pack16, PackSplat); _} as mo) ->
+        simd_op 0x08l; memop mo
+      | SimdLoad ({ty= V128Type; sz = Some (Pack32, PackSplat); _} as mo) ->
+        simd_op 0x09l; memop mo
+      | SimdLoad ({ty= V128Type; sz = Some (Pack64, PackSplat); _} as mo) ->
+        simd_op 0x0al; memop mo
 
       | Store ({ty = I32Type; sz = None; _} as mo) -> op 0x36; memop mo
       | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x37; memop mo
@@ -211,8 +232,8 @@ let encode m =
       | Store ({ty = I64Type; sz = Some Pack16; _} as mo) -> op 0x3d; memop mo
       | Store ({ty = I64Type; sz = Some Pack32; _} as mo) -> op 0x3e; memop mo
       | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
-      | Store ({ty = V128Type; _} as mo) ->
-        simd_op 0x0bl; memop mo
+
+      | SimdStore ({ty = V128Type; _} as mo) -> simd_op 0x0bl; memop mo
 
       | MemorySize -> op 0x3f; u8 0x00
       | MemoryGrow -> op 0x40; u8 0x00
