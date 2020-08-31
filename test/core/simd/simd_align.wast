@@ -105,7 +105,7 @@
   (module quote
     "(memory 1) (func (drop (v128.load align=-1 (i32.const 0))))"
   )
-  "alignment must be a power of two"
+  "unknown operator"
 )
 (assert_malformed
   (module quote
@@ -123,7 +123,7 @@
   (module quote
     "(memory 1) (func (v128.store align=-1 (i32.const 0) (v128.const i32x4 0 0 0 0)))"
   )
-  "alignment must be a power of two"
+  "unknown operator"
 )
 (assert_malformed
   (module quote
@@ -141,7 +141,7 @@
   (module quote
     "(memory 1) (func (result v128) (i16x8.load8x8_s align=-1 (i32.const 0)))"
   )
-  "alignment must be a power of two"
+  "unknown operator"
 )
 (assert_malformed
   (module quote
@@ -159,7 +159,7 @@
   (module quote
     "(memory 1) (func (result v128) (i16x8.load8x8_u align=-1 (i32.const 0)))"
   )
-  "alignment must be a power of two"
+  "unknown operator"
 )
 (assert_malformed
   (module quote
@@ -177,7 +177,7 @@
   (module quote
     "(memory 1) (func (result v128) (i32x4.load16x4_s align=-1 (i32.const 0)))"
   )
-  "alignment must be a power of two"
+  "unknown operator"
 )
 (assert_malformed
   (module quote
@@ -195,7 +195,7 @@
   (module quote
     "(memory 1) (func (result v128) (i32x4.load16x4_u align=-1 (i32.const 0)))"
   )
-  "alignment must be a power of two"
+  "unknown operator"
 )
 (assert_malformed
   (module quote
@@ -213,7 +213,7 @@
   (module quote
     "(memory 1) (func (result v128) (i64x2.load32x2_s align=-1 (i32.const 0)))"
   )
-  "alignment must be a power of two"
+  "unknown operator"
 )
 (assert_malformed
   (module quote
@@ -231,7 +231,7 @@
   (module quote
     "(memory 1) (func (result v128) (i64x2.load32x2_u align=-1 (i32.const 0)))"
   )
-  "alignment must be a power of two"
+  "unknown operator"
 )
 (assert_malformed
   (module quote
@@ -249,7 +249,7 @@
   (module quote
     "(memory 1) (func (result v128) (v8x16.load_splat align=-1 (i32.const 0)))"
   )
-  "alignment must be a power of two"
+  "unknown operator"
 )
 (assert_malformed
   (module quote
@@ -261,7 +261,7 @@
   (module quote
     "(memory 1) (func (result v128) (v16x8.load_splat align=-1 (i32.const 0)))"
   )
-  "alignment must be a power of two"
+  "unknown operator"
 )
 (assert_malformed
   (module quote
@@ -273,7 +273,7 @@
   (module quote
     "(memory 1) (func (result v128) (v32x4.load_splat align=-1 (i32.const 0)))"
   )
-  "alignment must be a power of two"
+  "unknown operator"
 )
 (assert_malformed
   (module quote
@@ -291,7 +291,7 @@
   (module quote
     "(memory 1) (func (result v128) (v64x2.load_splat align=-1 (i32.const 0)))"
   )
-  "alignment must be a power of two"
+  "unknown operator"
 )
 (assert_malformed
   (module quote
