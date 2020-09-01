@@ -22,10 +22,14 @@ parser.add_argument("file", nargs='*')
 arguments = parser.parse_args()
 sys.argv = sys.argv[:1]
 
+main_test_files = glob.glob(os.path.join(inputDir, "*.wast"))
+# SIMD test files are in a subdirectory.
+simd_test_files = glob.glob(os.path.join(inputDir, "simd", "*.wast"))
+
 wasmCommand = arguments.wasm
 jsCommand = arguments.js
 outputDir = arguments.out
-inputFiles = arguments.file if arguments.file else glob.glob(os.path.join(inputDir, "*.wast"))
+inputFiles = arguments.file if arguments.file else main_test_files + simd_test_files
 
 if not os.path.exists(wasmCommand):
   sys.stderr.write("""\
