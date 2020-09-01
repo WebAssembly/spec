@@ -247,8 +247,8 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{i16x8.}\K{mul} ~|~
      \K{i32x4.}\K{mul} ~|~
      \K{i64x2.}\K{mul} \\&&|&
-     \K{i8x16.}\AVGRU ~|~
-     \K{i16x8.}\AVGRU \\&&|&
+     \K{i8x16.}\AVGR\K{\_u} ~|~
+     \K{i16x8.}\AVGR\K{\_u} \\&&|&
      \X{fxx.}\vfbinop \\&&|&
      \K{i32x4.}\TRUNC\K{\_sat\_f32x4\_}\sx ~|~
      \K{f32x4.}\CONVERT\K{\_i32x4\_}\sx \\&&|&
