@@ -652,6 +652,8 @@
 .. |Ts64| mathdef:: \xref{text/values}{text-int}{\TsX{\T{64}}}
 
 .. |TiN| mathdef:: \xref{text/values}{text-int}{\TiX{N}}
+.. |Ti8| mathdef:: \xref{text/values}{text-int}{\TiX{\T{8}}}
+.. |Ti16| mathdef:: \xref{text/values}{text-int}{\TiX{\T{16}}}
 .. |Ti32| mathdef:: \xref{text/values}{text-int}{\TiX{\T{32}}}
 .. |Ti64| mathdef:: \xref{text/values}{text-int}{\TiX{\T{64}}}
 

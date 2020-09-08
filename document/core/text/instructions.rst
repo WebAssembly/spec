@@ -447,6 +447,304 @@ Numeric Instructions
    \end{array}
 
 
+.. index:: simd instruction
+   pair: text format; instruction
+.. _text-instr-simd:
+
+SIMD Instructions
+~~~~~~~~~~~~~~~~~~~~
+
+SIMD memory instructions have optional offset and alignment immediates, like the :ref:`memory instructions <text-memarg>`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Tplaininstr_I &::=& \dots \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\ &&|&
+     \text{v128.load}~~m{:}\Tmemarg_{16} &\Rightarrow& \V128.\LOAD~m \\ &&|&
+     \text{i16x8.load8x8\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \I16X8.\LOAD\K{8x8\_s}~m \\ &&|&
+     \text{i16x8.load8x8\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \I16X8.\LOAD\K{8x8\_u}~m \\ &&|&
+     \text{i32x4.load16x4\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \I32X4.\LOAD\K{16x4\_s}~m \\ &&|&
+     \text{i32x4.load16x4\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \I32X4.\LOAD\K{16x4\_u}~m \\ &&|&
+     \text{i64x2.load32x2\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \I64X2.\LOAD\K{32x2\_s}~m \\ &&|&
+     \text{i64x2.load32x2\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \I64X2.\LOAD\K{32x2\_u}~m \\ &&|&
+     \text{i8x16.load\_splat}~~m{:}\Tmemarg_1 &\Rightarrow& \I8X16.\LOAD\K{\_splat}~m \\ &&|&
+     \text{i16x8.load\_splat}~~m{:}\Tmemarg_2 &\Rightarrow& \I16X8.\LOAD\K{\_splat}~m \\ &&|&
+     \text{i32x4.load\_splat}~~m{:}\Tmemarg_4 &\Rightarrow& \I32X4.\LOAD\K{\_splat}~m \\ &&|&
+     \text{i64x2.load\_splat}~~m{:}\Tmemarg_8 &\Rightarrow& \I64X2.\LOAD\K{\_splat}~m \\ &&|&
+     \text{v128.store}~~m{:}\Tmemarg_{16} &\Rightarrow& \V128.\STORE~m \\
+   \end{array}
+
+SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descriptor, which determines how the following values are parsed.
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{v128.const}~~\text{i8x16}~~(n{:}\Ti8)^{16} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{i8}(n^{16})) \\ &&|&
+     \text{v128.const}~~\text{i16x8}~~(n{:}\Ti16)^{8} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{i16}(n^8)) \\ &&|&
+     \text{v128.const}~~\text{i32x4}~~(n{:}\Ti32)^{4} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{i32}(n^4)) \\ &&|&
+     \text{v128.const}~~\text{i64x2}~~(n{:}\Ti64)^{2} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{i64}(n^2)) \\ &&|&
+     \text{v128.const}~~\text{f32x4}~~(z{:}\Tf32)^{4} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{f32}(z^4)) \\ &&|&
+     \text{v128.const}~~\text{f64x2}~~(z{:}\Tf64)^{2} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{f64}(z^2)) \\ &&|&
+     \text{i8x16.shuffle}~~(laneidx{:}\Tu8)^{16} &\Rightarrow& \I8X16.\SHUFFLE~laneidx^{16} \\ &&|&
+     \text{i8x16.swizzle} &\Rightarrow& \I8X16.\SWIZZLE\\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i8x16.splat} &\Rightarrow& \I8X16.\SPLAT\\ &&|&
+     \text{i16x8.splat} &\Rightarrow& \I16X8.\SPLAT\\ &&|&
+     \text{i32x4.splat} &\Rightarrow& \I32X4.\SPLAT\\ &&|&
+     \text{i64x2.splat} &\Rightarrow& \I64X2.\SPLAT\\ &&|&
+     \text{f32x4.splat} &\Rightarrow& \F32X4.\SPLAT\\ &&|&
+     \text{f64x2.splat} &\Rightarrow& \F64X2.\SPLAT\\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i8x16.extract\_lane\_s}~~laneidx{:}\Tu8 &\Rightarrow& \I8X16.\EXTRACTLANE\K{\_s}~laneidx \\ &&|&
+     \text{i8x16.extract\_lane\_u}~~laneidx{:}\Tu8 &\Rightarrow& \I8X16.\EXTRACTLANE\K{\_u}~laneidx \\ &&|&
+     \text{i8x16.replace\_lane}~~laneidx{:}\Tu8 &\Rightarrow& \I8X16.\REPLACELANE~laneidx \\ &&|&
+     \text{i16x8.extract\_lane\_s}~~laneidx{:}\Tu8 &\Rightarrow& \I16X8.\EXTRACTLANE\K{\_s}~laneidx \\ &&|&
+     \text{i16x8.extract\_lane\_u}~~laneidx{:}\Tu8 &\Rightarrow& \I16X8.\EXTRACTLANE\K{\_u}~laneidx \\ &&|&
+     \text{i16x8.replace\_lane}~~laneidx{:}\Tu8 &\Rightarrow& \I16X8.\REPLACELANE~laneidx \\ &&|&
+     \text{i32x4.extract\_lane}~~laneidx{:}\Tu8 &\Rightarrow& \I32X4.\EXTRACTLANE~laneidx \\ &&|&
+     \text{i32x4.replace\_lane}~~laneidx{:}\Tu8 &\Rightarrow& \I32X4.\REPLACELANE~laneidx \\ &&|&
+     \text{i64x2.extract\_lane}~~laneidx{:}\Tu8 &\Rightarrow& \I64X2.\EXTRACTLANE~laneidx \\ &&|&
+     \text{i64x2.replace\_lane}~~laneidx{:}\Tu8 &\Rightarrow& \I64X2.\REPLACELANE~laneidx \\ &&|&
+     \text{f32x4.extract\_lane}~~laneidx{:}\Tu8 &\Rightarrow& \F32X4.\EXTRACTLANE~laneidx \\ &&|&
+     \text{f32x4.replace\_lane}~~laneidx{:}\Tu8 &\Rightarrow& \F32X4.\REPLACELANE~laneidx \\ &&|&
+     \text{f64x2.extract\_lane}~~laneidx{:}\Tu8 &\Rightarrow& \F64X2.\EXTRACTLANE~laneidx \\ &&|&
+     \text{f64x2.replace\_lane}~~laneidx{:}\Tu8 &\Rightarrow& \F64X2.\REPLACELANE~laneidx \\
+   \end{array}
+
+.. _text-virelop:
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i8x16.eq} &\Rightarrow& \I8X16.\VEQ\\ &&|&
+     \text{i8x16.ne} &\Rightarrow& \I8X16.\VNE\\ &&|&
+     \text{i8x16.lt\_s} &\Rightarrow& \I8X16.\VLT\K{\_s}\\ &&|&
+     \text{i8x16.lt\_u} &\Rightarrow& \I8X16.\VLT\K{\_u}\\ &&|&
+     \text{i8x16.gt\_s} &\Rightarrow& \I8X16.\VGT\K{\_s}\\ &&|&
+     \text{i8x16.gt\_u} &\Rightarrow& \I8X16.\VGT\K{\_u}\\ &&|&
+     \text{i8x16.le\_s} &\Rightarrow& \I8X16.\VLE\K{\_s}\\ &&|&
+     \text{i8x16.le\_u} &\Rightarrow& \I8X16.\VLE\K{\_u}\\ &&|&
+     \text{i8x16.ge\_s} &\Rightarrow& \I8X16.\VGE\K{\_s}\\ &&|&
+     \text{i8x16.ge\_u} &\Rightarrow& \I8X16.\VGE\K{\_u}\\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i16x8.eq} &\Rightarrow& \I16X8.\VEQ\\ &&|&
+     \text{i16x8.ne} &\Rightarrow& \I16X8.\VNE\\ &&|&
+     \text{i16x8.lt\_s} &\Rightarrow& \I16X8.\VLT\K{\_s}\\ &&|&
+     \text{i16x8.lt\_u} &\Rightarrow& \I16X8.\VLT\K{\_u}\\ &&|&
+     \text{i16x8.gt\_s} &\Rightarrow& \I16X8.\VGT\K{\_s}\\ &&|&
+     \text{i16x8.gt\_u} &\Rightarrow& \I16X8.\VGT\K{\_u}\\ &&|&
+     \text{i16x8.le\_s} &\Rightarrow& \I16X8.\VLE\K{\_s}\\ &&|&
+     \text{i16x8.le\_u} &\Rightarrow& \I16X8.\VLE\K{\_u}\\ &&|&
+     \text{i16x8.ge\_s} &\Rightarrow& \I16X8.\VGE\K{\_s}\\ &&|&
+     \text{i16x8.ge\_u} &\Rightarrow& \I16X8.\VGE\K{\_u}\\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i32x4.eq} &\Rightarrow& \I32X4.\VEQ\\ &&|&
+     \text{i32x4.ne} &\Rightarrow& \I32X4.\VNE\\ &&|&
+     \text{i32x4.lt\_s} &\Rightarrow& \I32X4.\VLT\K{\_s}\\ &&|&
+     \text{i32x4.lt\_u} &\Rightarrow& \I32X4.\VLT\K{\_u}\\ &&|&
+     \text{i32x4.gt\_s} &\Rightarrow& \I32X4.\VGT\K{\_s}\\ &&|&
+     \text{i32x4.gt\_u} &\Rightarrow& \I32X4.\VGT\K{\_u}\\ &&|&
+     \text{i32x4.le\_s} &\Rightarrow& \I32X4.\VLE\K{\_s}\\ &&|&
+     \text{i32x4.le\_u} &\Rightarrow& \I32X4.\VLE\K{\_u}\\ &&|&
+     \text{i32x4.ge\_s} &\Rightarrow& \I32X4.\VGE\K{\_s}\\ &&|&
+     \text{i32x4.ge\_u} &\Rightarrow& \I32X4.\VGE\K{\_u}\\
+   \end{array}
+
+.. _text-vfrelop:
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{f32x4.eq} &\Rightarrow& \F32X4.\VEQ\\ &&|&
+     \text{f32x4.ne} &\Rightarrow& \F32X4.\VNE\\ &&|&
+     \text{f32x4.lt} &\Rightarrow& \F32X4.\VLT\\ &&|&
+     \text{f32x4.gt} &\Rightarrow& \F32X4.\VGT\\ &&|&
+     \text{f32x4.le} &\Rightarrow& \F32X4.\VLE\\ &&|&
+     \text{f32x4.ge} &\Rightarrow& \F32X4.\VGE\\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{f64x2.eq} &\Rightarrow& \F64X2.\VEQ\\ &&|&
+     \text{f64x2.ne} &\Rightarrow& \F64X2.\VNE\\ &&|&
+     \text{f64x2.lt} &\Rightarrow& \F64X2.\VLT\\ &&|&
+     \text{f64x2.gt} &\Rightarrow& \F64X2.\VGT\\ &&|&
+     \text{f64x2.le} &\Rightarrow& \F64X2.\VLE\\ &&|&
+     \text{f64x2.ge} &\Rightarrow& \F64X2.\VGE\\
+   \end{array}
+
+.. _text-vsunop:
+.. _text-vsbinop:
+.. _text-vsternop:
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{v128.not} &\Rightarrow& \V128.\VNOT\\ &&|&
+     \text{v128.and} &\Rightarrow& \V128.\VAND\\ &&|&
+     \text{v128.andnot} &\Rightarrow& \V128.\VANDNOT\\ &&|&
+     \text{v128.or} &\Rightarrow& \V128.\VOR\\ &&|&
+     \text{v128.xor} &\Rightarrow& \V128.\VXOR\\ &&|&
+     \text{v128.bitselect} &\Rightarrow& \V128.\BITSELECT
+   \end{array}
+
+.. _text-vtestop:
+.. _text-vshiftop:
+.. _text-viunop:
+.. _text-vibinop:
+.. _text-viminmaxop:
+.. _text-vsatbinop:
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i8x16.abs} &\Rightarrow& \I8X16.\VABS\\ &&|&
+     \text{i8x16.neg} &\Rightarrow& \I8X16.\VNEG\\ &&|&
+     \text{i8x16.any\_true} &\Rightarrow& \I8X16.\ANYTRUE\\ &&|&
+     \text{i8x16.all\_true} &\Rightarrow& \I8X16.\ALLTRUE\\ &&|&
+     \text{i8x16.bitmask} &\Rightarrow& \I8X16.\BITMASK\\ &&|&
+     \text{i8x16.narrow\_i16x8\_s} &\Rightarrow& \I8X16.\NARROW\K{\_i16x8\_s}\\ &&|&
+     \text{i8x16.narrow\_i16x8\_u} &\Rightarrow& \I8X16.\NARROW\K{\_i16x8\_u}\\ &&|&
+     \text{i8x16.shl} &\Rightarrow& \I8X16.\VSHL\\ &&|&
+     \text{i8x16.shr\_s} &\Rightarrow& \I8X16.\VSHR\K{\_s}\\ &&|&
+     \text{i8x16.shr\_u} &\Rightarrow& \I8X16.\VSHR\K{\_u}\\ &&|&
+     \text{i8x16.add} &\Rightarrow& \I8X16.\VADD\\ &&|&
+     \text{i8x16.add\_sat\_s} &\Rightarrow& \I8X16.\VADD\K{\_sat\_s}\\ &&|&
+     \text{i8x16.add\_sat\_u} &\Rightarrow& \I8X16.\VADD\K{\_sat\_u}\\ &&|&
+     \text{i8x16.sub} &\Rightarrow& \I8X16.\VSUB\\ &&|&
+     \text{i8x16.sub\_sat\_s} &\Rightarrow& \I8X16.\VSUB\K{\_sat\_s}\\ &&|&
+     \text{i8x16.sub\_sat\_u} &\Rightarrow& \I8X16.\VSUB\K{\_sat\_u}\\ &&|&
+     \text{i8x16.min\_s} &\Rightarrow& \I8X16.\VMIN\K{\_s}\\ &&|&
+     \text{i8x16.min\_u} &\Rightarrow& \I8X16.\VMIN\K{\_u}\\ &&|&
+     \text{i8x16.max\_s} &\Rightarrow& \I8X16.\VMAX\K{\_s}\\ &&|&
+     \text{i8x16.max\_u} &\Rightarrow& \I8X16.\VMAX\K{\_u}\\ &&|&
+     \text{i8x16.avgr\_u} &\Rightarrow& \I8X16.\AVGR\K{\_u}\\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i16x8.abs} &\Rightarrow& \I16X8.\VABS\\ &&|&
+     \text{i16x8.neg} &\Rightarrow& \I16X8.\VNEG\\ &&|&
+     \text{i16x8.any\_true} &\Rightarrow& \I16X8.\ANYTRUE\\ &&|&
+     \text{i16x8.all\_true} &\Rightarrow& \I16X8.\ALLTRUE\\ &&|&
+     \text{i16x8.bitmask} &\Rightarrow& \I16X8.\BITMASK\\ &&|&
+     \text{i16x8.narrow\_i32x4\_s} &\Rightarrow& \I16X8.\NARROW\K{\_i32x4\_s}\\ &&|&
+     \text{i16x8.narrow\_i32x4\_u} &\Rightarrow& \I16X8.\NARROW\K{\_i32x4\_u}\\ &&|&
+     \text{i16x8.widen\_low\_i8x16\_s} &\Rightarrow& \I16X8.\WIDEN\K{\_low\_i8x16\_s}\\ &&|&
+     \text{i16x8.widen\_high\_i8x16\_s} &\Rightarrow& \I16X8.\WIDEN\K{\_high\_i8x16\_s}\\ &&|&
+     \text{i16x8.widen\_low\_i8x16\_u} &\Rightarrow& \I16X8.\WIDEN\K{\_low\_i8x16\_u}\\ &&|&
+     \text{i16x8.widen\_high\_i8x16\_u} &\Rightarrow& \I16X8.\WIDEN\K{\_high\_i8x16\_u}\\ &&|&
+     \text{i16x8.shl} &\Rightarrow& \I16X8.\VSHL\\ &&|&
+     \text{i16x8.shr\_s} &\Rightarrow& \I16X8.\VSHR\K{\_s}\\ &&|&
+     \text{i16x8.shr\_u} &\Rightarrow& \I16X8.\VSHR\K{\_u}\\ &&|&
+     \text{i16x8.add} &\Rightarrow& \I16X8.\VADD\\ &&|&
+     \text{i16x8.add\_sat\_s} &\Rightarrow& \I16X8.\VADD\K{\_sat\_s}\\ &&|&
+     \text{i16x8.add\_sat\_u} &\Rightarrow& \I16X8.\VADD\K{\_sat\_u}\\ &&|&
+     \text{i16x8.sub} &\Rightarrow& \I16X8.\VSUB\\ &&|&
+     \text{i16x8.sub\_sat\_s} &\Rightarrow& \I16X8.\VSUB\K{\_sat\_s}\\ &&|&
+     \text{i16x8.sub\_sat\_u} &\Rightarrow& \I16X8.\VSUB\K{\_sat\_u}\\ &&|&
+     \text{i16x8.mul} &\Rightarrow& \I16X8.\VMUL\\ &&|&
+     \text{i16x8.min\_s} &\Rightarrow& \I16X8.\VMIN\K{\_s}\\ &&|&
+     \text{i16x8.min\_u} &\Rightarrow& \I16X8.\VMIN\K{\_u}\\ &&|&
+     \text{i16x8.max\_s} &\Rightarrow& \I16X8.\VMAX\K{\_s}\\ &&|&
+     \text{i16x8.max\_u} &\Rightarrow& \I16X8.\VMAX\K{\_u}\\ &&|&
+     \text{i16x8.avgr\_u} &\Rightarrow& \I16X8.\AVGR\K{\_u}\\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i32x4.abs} &\Rightarrow& \I32X4.\VABS\\ &&|&
+     \text{i32x4.neg} &\Rightarrow& \I32X4.\VNEG\\ &&|&
+     \text{i32x4.any\_true} &\Rightarrow& \I32X4.\ANYTRUE\\ &&|&
+     \text{i32x4.all\_true} &\Rightarrow& \I32X4.\ALLTRUE\\ &&|&
+     \text{i32x4.bitmask} &\Rightarrow& \I32X4.\BITMASK\\ &&|&
+     \text{i32x4.widen\_low\_i16x8\_s} &\Rightarrow& \I32X4.\WIDEN\K{\_low\_i16x8\_s}\\ &&|&
+     \text{i32x4.widen\_high\_i16x8\_s} &\Rightarrow& \I32X4.\WIDEN\K{\_high\_i16x8\_s}\\ &&|&
+     \text{i32x4.widen\_low\_i16x8\_u} &\Rightarrow& \I32X4.\WIDEN\K{\_low\_i16x8\_u}\\ &&|&
+     \text{i32x4.widen\_high\_i16x8\_u} &\Rightarrow& \I32X4.\WIDEN\K{\_high\_i16x8\_u}\\ &&|&
+     \text{i32x4.shl} &\Rightarrow& \I32X4.\VSHL\\ &&|&
+     \text{i32x4.shr\_s} &\Rightarrow& \I32X4.\VSHR\K{\_s}\\ &&|&
+     \text{i32x4.shr\_u} &\Rightarrow& \I32X4.\VSHR\K{\_u}\\ &&|&
+     \text{i32x4.add} &\Rightarrow& \I32X4.\VADD\\ &&|&
+     \text{i32x4.sub} &\Rightarrow& \I32X4.\VSUB\\ &&|&
+     \text{i32x4.mul} &\Rightarrow& \I32X4.\VMUL\\ &&|&
+     \text{i32x4.min\_s} &\Rightarrow& \I32X4.\VMIN\K{\_s}\\ &&|&
+     \text{i32x4.min\_u} &\Rightarrow& \I32X4.\VMIN\K{\_u}\\ &&|&
+     \text{i32x4.max\_s} &\Rightarrow& \I32X4.\VMAX\K{\_s}\\ &&|&
+     \text{i32x4.max\_u} &\Rightarrow& \I32X4.\VMAX\K{\_u}\\
+  \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i64x2.neg} &\Rightarrow& \I64X2.\VNEG\\ &&|&
+     \text{i64x2.shl} &\Rightarrow& \I64X2.\VSHL\\ &&|&
+     \text{i64x2.shr\_s} &\Rightarrow& \I64X2.\VSHR\K{\_s}\\ &&|&
+     \text{i64x2.shr\_u} &\Rightarrow& \I64X2.\VSHR\K{\_u}\\ &&|&
+     \text{i64x2.add} &\Rightarrow& \I64X2.\VADD\\ &&|&
+     \text{i64x2.sub} &\Rightarrow& \I64X2.\VSUB\\ &&|&
+     \text{i64x2.mul} &\Rightarrow& \I64X2.\VMUL\\
+  \end{array}
+
+.. _text-vfunop:
+.. _text-vfbinop:
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{f32x4.abs} &\Rightarrow& \F32X4.\VABS\\ &&|&
+     \text{f32x4.neg} &\Rightarrow& \F32X4.\VNEG\\ &&|&
+     \text{f32x4.sqrt} &\Rightarrow& \F32X4.\VSQRT\\ &&|&
+     \text{f32x4.add} &\Rightarrow& \F32X4.\VADD\\ &&|&
+     \text{f32x4.sub} &\Rightarrow& \F32X4.\VSUB\\ &&|&
+     \text{f32x4.mul} &\Rightarrow& \F32X4.\VMUL\\ &&|&
+     \text{f32x4.div} &\Rightarrow& \F32X4.\VDIV\\ &&|&
+     \text{f32x4.min} &\Rightarrow& \F32X4.\VMIN\\ &&|&
+     \text{f32x4.max} &\Rightarrow& \F32X4.\VMAX\\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{f64x2.abs} &\Rightarrow& \F64X2.\VABS\\ &&|&
+     \text{f64x2.neg} &\Rightarrow& \F64X2.\VNEG\\ &&|&
+     \text{f64x2.sqrt} &\Rightarrow& \F64X2.\VSQRT\\ &&|&
+     \text{f64x2.add} &\Rightarrow& \F64X2.\VADD\\ &&|&
+     \text{f64x2.sub} &\Rightarrow& \F64X2.\VSUB\\ &&|&
+     \text{f64x2.mul} &\Rightarrow& \F64X2.\VMUL\\ &&|&
+     \text{f64x2.div} &\Rightarrow& \F64X2.\VDIV\\ &&|&
+     \text{f64x2.min} &\Rightarrow& \F64X2.\VMIN\\ &&|&
+     \text{f64x2.max} &\Rightarrow& \F64X2.\VMAX\\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i32x4.trunc\_sat\_f32x4\_s} &\Rightarrow& \I32X4.\TRUNC\K{\_sat\_f32x4\_s}\\ &&|&
+     \text{i32x4.trunc\_sat\_f32x4\_u} &\Rightarrow& \I32X4.\TRUNC\K{\_sat\_f32x4\_u}\\ &&|&
+     \text{f32x4.convert\_i32x4\_s} &\Rightarrow& \F32X4.\CONVERT\K{\_i32x4\_s}\\ &&|&
+     \text{f32x4.convert\_i32x4\_u} &\Rightarrow& \F32X4.\CONVERT\K{\_i32x4\_u}\\
+   \end{array}
+
+
 .. index:: ! folded instruction, S-expression
 .. _text-foldedinstr:
 

@@ -308,6 +308,8 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{max} \\
    \end{array}
 
+.. _syntax-simd-shape:
+
 SIMD instructions have a naming convention involving a prefix that
 determines how their operands will be interpreted.
 This prefix describes the *shape* of the operand,

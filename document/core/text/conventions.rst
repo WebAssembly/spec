@@ -67,7 +67,8 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
        \text{i32} &\Rightarrow& \I32 \\ &&|&
        \text{i64} &\Rightarrow& \I64 \\ &&|&
        \text{f32} &\Rightarrow& \F32 \\ &&|&
-       \text{f64} &\Rightarrow& \F64 \\
+       \text{f64} &\Rightarrow& \F64 \\ &&|&
+       \text{v128} &\Rightarrow& \V128 \\
      \end{array}
 
    The :ref:`textual grammar <text-limits>` for :ref:`limits <syntax-limits>` is defined as follows:   
