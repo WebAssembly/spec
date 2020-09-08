@@ -1,16 +1,16 @@
 | Memory instruction | opcode |
 | ------------------ | ------ |
 | v128.load          | 0x00   |
-| i16x8.load8x8_s    | 0x01   |
-| i16x8.load8x8_u    | 0x02   |
-| i32x4.load16x4_s   | 0x03   |
-| i32x4.load16x4_u   | 0x04   |
-| i64x2.load32x2_s   | 0x05   |
-| i64x2.load32x2_u   | 0x06   |
-| v8x16.load_splat   | 0x07   |
-| v16x8.load_splat   | 0x08   |
-| v32x4.load_splat   | 0x09   |
-| v64x2.load_splat   | 0x0a   |
+| v128.load8x8_s     | 0x01   |
+| v128.load8x8_u     | 0x02   |
+| v128.load16x4_s    | 0x03   |
+| v128.load16x4_u    | 0x04   |
+| v128.load32x2_s    | 0x05   |
+| v128.load32x2_u    | 0x06   |
+| v128.load8_splat   | 0x07   |
+| v128.load16_splat  | 0x08   |
+| v128.load32_splat  | 0x09   |
+| v128.load64_splat  | 0x0a   |
 | v128.store         | 0x0b   |
 
 | Basic operation | opcode |

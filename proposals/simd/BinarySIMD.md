@@ -33,16 +33,16 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | Instruction                | `simdop` | Immediate operands |
 | ---------------------------|---------:|--------------------|
 | `v128.load`                |    `0x00`| m:memarg           |
-| `i16x8.load8x8_s`          |    `0x01`| m:memarg           |
-| `i16x8.load8x8_u`          |    `0x02`| m:memarg           |
-| `i32x4.load16x4_s`         |    `0x03`| m:memarg           |
-| `i32x4.load16x4_u`         |    `0x04`| m:memarg           |
-| `i64x2.load32x2_s`         |    `0x05`| m:memarg           |
-| `i64x2.load32x2_u`         |    `0x06`| m:memarg           |
-| `v8x16.load_splat`         |    `0x07`| m:memarg           |
-| `v16x8.load_splat`         |    `0x08`| m:memarg           |
-| `v32x4.load_splat`         |    `0x09`| m:memarg           |
-| `v64x2.load_splat`         |    `0x0a`| m:memarg           |
+| `v128.load8x8_s`           |    `0x01`| m:memarg           |
+| `v128.load8x8_u`           |    `0x02`| m:memarg           |
+| `v128.load16x4_s`          |    `0x03`| m:memarg           |
+| `v128.load16x4_u`          |    `0x04`| m:memarg           |
+| `v128.load32x2_s`          |    `0x05`| m:memarg           |
+| `v128.load32x2_u`          |    `0x06`| m:memarg           |
+| `v128.load8_splat`         |    `0x07`| m:memarg           |
+| `v128.load16_splat`        |    `0x08`| m:memarg           |
+| `v128.load32_splat`        |    `0x09`| m:memarg           |
+| `v128.load64_splat`        |    `0x0a`| m:memarg           |
 | `v128.store`               |    `0x0b`| m:memarg           |
 | `v128.const`               |    `0x0c`| i:ImmByte[16]      |
 | `i8x16.shuffle`            |    `0x0d`| s:ImmLaneIdx32[16] |

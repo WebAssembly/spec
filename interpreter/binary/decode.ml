@@ -222,16 +222,16 @@ let simd_prefix s =
   let pos = pos s in
   match vu32 s with
   | 0x00l -> let a, o = memop s in v128_load a o
-  | 0x01l -> let a, o = memop s in i16x8_load8x8_s a o
-  | 0x02l -> let a, o = memop s in i16x8_load8x8_u a o
-  | 0x03l -> let a, o = memop s in i32x4_load16x4_s a o
-  | 0x04l -> let a, o = memop s in i32x4_load16x4_u a o
-  | 0x05l -> let a, o = memop s in i64x2_load32x2_s a o
-  | 0x06l -> let a, o = memop s in i64x2_load32x2_u a o
-  | 0x07l -> let a, o = memop s in v8x16_load_splat a o
-  | 0x08l -> let a, o = memop s in v16x8_load_splat a o
-  | 0x09l -> let a, o = memop s in v32x4_load_splat a o
-  | 0x0al -> let a, o = memop s in v64x2_load_splat a o
+  | 0x01l -> let a, o = memop s in v128_load8x8_s a o
+  | 0x02l -> let a, o = memop s in v128_load8x8_u a o
+  | 0x03l -> let a, o = memop s in v128_load16x4_s a o
+  | 0x04l -> let a, o = memop s in v128_load16x4_u a o
+  | 0x05l -> let a, o = memop s in v128_load32x2_s a o
+  | 0x06l -> let a, o = memop s in v128_load32x2_u a o
+  | 0x07l -> let a, o = memop s in v128_load8_splat a o
+  | 0x08l -> let a, o = memop s in v128_load16_splat a o
+  | 0x09l -> let a, o = memop s in v128_load32_splat a o
+  | 0x0al -> let a, o = memop s in v128_load64_splat a o
   | 0x0bl -> let a, o = memop s in v128_store a o
   | 0x0cl -> v128_const (at v128 s)
   | 0x0dl -> i8x16_shuffle (List.init 16 (fun x -> u8 s))

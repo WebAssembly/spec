@@ -1,16 +1,16 @@
 | Instruction                | LLVM[1]                   | V8[2]              | WAVM[3]            | ChakraCore[4]      | SpiderMonkey[5]    |
 | ---------------------------|---------------------------|--------------------|--------------------|--------------------|--------------------|
 | `v128.load`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `i16x8.load8x8_s`          |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `i16x8.load8x8_u`          |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `i32x4.load16x4_s`         |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `i32x4.load16x4_u`         |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `i64x2.load32x2_s`         |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `i64x2.load32x2_u`         |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `v8x16.load_splat`         |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `v16x8.load_splat`         |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `v32x4.load_splat`         |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `v64x2.load_splat`         |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `v128.load8x8_s`           |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `v128.load8x8_u`           |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `v128.load16x4_s`          |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `v128.load16x4_u`          |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `v128.load32x2_s`          |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `v128.load32x2_u`          |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `v128.load8_splat`         |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `v128.load16_splat`        |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `v128.load32_splat`        |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `v128.load64_splat`        |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `v128.store`               |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `v128.const`               | `-munimplemented-simd128` | :heavy_check_mark: [6] |                    |                    | :heavy_check_mark: |
 | `i8x16.shuffle`            |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |

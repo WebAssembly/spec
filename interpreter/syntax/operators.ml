@@ -218,25 +218,25 @@ let memory_grow = MemoryGrow
 
 (* SIMD *)
 let v128_load align offset = SimdLoad {ty = V128Type; align; offset; sz = None}
-let i16x8_load8x8_s align offset =
+let v128_load8x8_s align offset =
   SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack8x8 SX)}
-let i16x8_load8x8_u align offset =
+let v128_load8x8_u align offset =
   SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack8x8 ZX)}
-let i32x4_load16x4_s align offset =
+let v128_load16x4_s align offset =
   SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack16x4 SX)}
-let i32x4_load16x4_u align offset =
+let v128_load16x4_u align offset =
   SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack16x4 ZX)}
-let i64x2_load32x2_s align offset =
+let v128_load32x2_s align offset =
   SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack32x2 SX)}
-let i64x2_load32x2_u align offset =
+let v128_load32x2_u align offset =
   SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack32x2 ZX)}
-let v8x16_load_splat align offset =
+let v128_load8_splat align offset =
   SimdLoad {ty= V128Type; align; offset; sz = Some (Pack8, PackSplat)}
-let v16x8_load_splat align offset =
+let v128_load16_splat align offset =
   SimdLoad {ty= V128Type; align; offset; sz = Some (Pack16, PackSplat)}
-let v32x4_load_splat align offset =
+let v128_load32_splat align offset =
   SimdLoad {ty= V128Type; align; offset; sz = Some (Pack32, PackSplat)}
-let v64x2_load_splat align offset =
+let v128_load64_splat align offset =
   SimdLoad {ty= V128Type; align; offset; sz = Some (Pack64, PackSplat)}
 let v128_store align offset = SimdStore {ty = V128Type; align; offset; sz = None}
 

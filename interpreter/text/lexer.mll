@@ -288,20 +288,20 @@ rule token = parse
             (ext s i64_load8_s i64_load8_u (opt a 0))
             (ext s i64_load16_s i64_load16_u (opt a 1))
             (ext s i64_load32_s i64_load32_u (opt a 2)) o)) }
-  | "i16x8.load8x8_"(sign as s)
-  { LOAD (fun a o -> (ext s i16x8_load8x8_s i16x8_load8x8_u (opt a 3)) o) }
-  | "i32x4.load16x4_"(sign as s)
-  { LOAD (fun a o -> (ext s i32x4_load16x4_s i32x4_load16x4_u (opt a 3)) o) }
-  | "i64x2.load32x2_"(sign as s)
-  { LOAD (fun a o -> (ext s i64x2_load32x2_s i64x2_load32x2_u (opt a 3)) o) }
-  | "v8x16.load_splat"
-  { LOAD (fun a o -> (v8x16_load_splat (opt a 0)) o) }
-  | "v16x8.load_splat"
-  { LOAD (fun a o -> (v16x8_load_splat (opt a 1)) o) }
-  | "v32x4.load_splat"
-  { LOAD (fun a o -> (v32x4_load_splat (opt a 2)) o) }
-  | "v64x2.load_splat"
-  { LOAD (fun a o -> (v64x2_load_splat (opt a 3)) o) }
+  | "v128.load8x8_"(sign as s)
+  { LOAD (fun a o -> (ext s v128_load8x8_s v128_load8x8_u (opt a 3)) o) }
+  | "v128.load16x4_"(sign as s)
+  { LOAD (fun a o -> (ext s v128_load16x4_s v128_load16x4_u (opt a 3)) o) }
+  | "v128.load32x2_"(sign as s)
+  { LOAD (fun a o -> (ext s v128_load32x2_s v128_load32x2_u (opt a 3)) o) }
+  | "v128.load8_splat"
+  { LOAD (fun a o -> (v128_load8_splat (opt a 0)) o) }
+  | "v128.load16_splat"
+  { LOAD (fun a o -> (v128_load16_splat (opt a 1)) o) }
+  | "v128.load32_splat"
+  { LOAD (fun a o -> (v128_load32_splat (opt a 2)) o) }
+  | "v128.load64_splat"
+  { LOAD (fun a o -> (v128_load64_splat (opt a 3)) o) }
   | (ixx as t)".store"(mem_size as sz)
     { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
       STORE (fun a o ->

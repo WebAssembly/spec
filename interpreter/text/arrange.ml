@@ -409,8 +409,8 @@ let cvtop = oper (IntOp.cvtop, FloatOp.cvtop, SimdOp.cvtop)
 let ternop = SimdOp.ternop
 
 (* Temporary wart here while we finalize the names of SIMD loads and extends. *)
-let memop ?(type_in_name=true) name {ty; align; offset; _} sz =
-  (if type_in_name then value_type ty ^ "." else "") ^ name ^
+let memop name {ty; align; offset; _} sz =
+  value_type ty ^ "." ^ name ^
   (if offset = 0l then "" else " offset=" ^ nat32 offset) ^
   (if 1 lsl align = sz then "" else " align=" ^ nat (1 lsl align))
 
@@ -424,18 +424,18 @@ let simd_loadop (op : simd_loadop) =
   match op.sz with
   | None -> memop "load" op (size op.ty)
   | Some (sz, pack_simd) ->
-    let prefix, suffix, ext =
+    let suffix =
       (match sz, pack_simd with
-      | Pack64, Pack8x8 ext -> "i16x8", "8x8", extension ext
-      | Pack64, Pack16x4 ext -> "i32x4", "16x4", extension ext
-      | Pack64, Pack32x2 ext -> "i64x2", "32x2", extension ext
-      | Pack8, PackSplat -> "v8x16", "_splat", ""
-      | Pack16, PackSplat -> "v16x8", "_splat", ""
-      | Pack32, PackSplat -> "v32x4", "_splat", ""
-      | Pack64, PackSplat -> "v64x2", "_splat", ""
+      | Pack64, Pack8x8 ext -> "8x8" ^ extension ext
+      | Pack64, Pack16x4 ext -> "16x4" ^ extension ext
+      | Pack64, Pack32x2 ext -> "32x2" ^ extension ext
+      | Pack8, PackSplat -> "8_splat"
+      | Pack16, PackSplat -> "16_splat"
+      | Pack32, PackSplat -> "32_splat"
+      | Pack64, PackSplat -> "64_splat"
       | _ -> assert false
       ) in
-    memop ~type_in_name:false (prefix ^ ".load" ^ suffix ^ ext) op (packed_size sz)
+    memop ("load" ^ suffix) op (packed_size sz)
 
 let storeop op =
   match op.sz with
