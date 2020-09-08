@@ -61,21 +61,21 @@
 
   ;; Swizzle and shuffle
   (func (export "v8x16_swizzle") (param v128 v128) (result v128)
-    (v8x16.swizzle (local.get 0) (local.get 1)))
+    (i8x16.swizzle (local.get 0) (local.get 1)))
   (func (export "v8x16_shuffle-1") (param v128 v128) (result v128)
-    (v8x16.shuffle  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 (local.get 0) (local.get 1)))
+    (i8x16.shuffle  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 (local.get 0) (local.get 1)))
   (func (export "v8x16_shuffle-2") (param v128 v128) (result v128)
-    (v8x16.shuffle 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 (local.get 0) (local.get 1)))
+    (i8x16.shuffle 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 (local.get 0) (local.get 1)))
   (func (export "v8x16_shuffle-3") (param v128 v128) (result v128)
-    (v8x16.shuffle 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 (local.get 0) (local.get 1)))
+    (i8x16.shuffle 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 (local.get 0) (local.get 1)))
   (func (export "v8x16_shuffle-4") (param v128 v128) (result v128)
-    (v8x16.shuffle 15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0 (local.get 0) (local.get 1)))
+    (i8x16.shuffle 15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0 (local.get 0) (local.get 1)))
   (func (export "v8x16_shuffle-5") (param v128 v128) (result v128)
-    (v8x16.shuffle  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 (local.get 0) (local.get 1)))
+    (i8x16.shuffle  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 (local.get 0) (local.get 1)))
   (func (export "v8x16_shuffle-6") (param v128 v128) (result v128)
-    (v8x16.shuffle 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 (local.get 0) (local.get 1)))
+    (i8x16.shuffle 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 (local.get 0) (local.get 1)))
   (func (export "v8x16_shuffle-7") (param v128 v128) (result v128)
-    (v8x16.shuffle  0  0  0  0  0  0  0  0 16 16 16 16 16 16 16 16 (local.get 0) (local.get 1)))
+    (i8x16.shuffle  0  0  0  0  0  0  0  0 16 16 16 16 16 16 16 16 (local.get 0) (local.get 1)))
 )
 
 (assert_return (invoke "i8x16_extract_lane_s-first" (v128.const i8x16 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) (i32.const 127))
@@ -501,33 +501,33 @@
 
 ;; Invalid types for swizzle and shuffle values
 (assert_invalid (module (func (result v128)
-  (v8x16.swizzle (i32.const 1) (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)))) "type mismatch")
+  (i8x16.swizzle (i32.const 1) (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)))) "type mismatch")
 (assert_invalid (module (func (result v128)
-  (v8x16.swizzle (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) (i32.const 2)))) "type mismatch")
+  (i8x16.swizzle (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) (i32.const 2)))) "type mismatch")
 (assert_invalid (module (func (result v128)
-  (v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (f32.const 3.0)
+  (i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (f32.const 3.0)
   (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)))) "type mismatch")
 (assert_invalid (module (func (result v128)
-  (v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+  (i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
   (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) (f32.const 4.0)))) "type mismatch")
 
-;; v8x16.shuffle: the 1st argument must be 16-byte literals in 0..32
+;; i8x16.shuffle: the 1st argument must be 16-byte literals in 0..32
 (assert_malformed (module quote "(func (param v128) (result v128)"
-  "(v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 (local.get 0) (local.get 0)))")
+  "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 (local.get 0) (local.get 0)))")
   "invalid lane length")
 (assert_malformed (module quote "(func (param v128) (result v128)"
-  "(v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 (local.get 0) (local.get 0)))")
+  "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 (local.get 0) (local.get 0)))")
   "invalid lane length")
 (assert_malformed (module quote "(func (result v128)"
-  "(v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 -1"
+  "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 -1"
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)"
   "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
 (assert_malformed (module quote "(func (result v128)"
-  "(v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 256"
+  "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 256"
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)"
   "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
 (assert_invalid (module (func (result v128)
-  (v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 255
+  (i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 255
   (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)
   (v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))) "invalid lane index")
 
@@ -543,21 +543,21 @@
 
 ;; Old shuffle instruction names will not work
 (assert_malformed (module quote "(func (result v128) "
-  "(v8x16.shuffle1 (v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
+  "(i8x16.shuffle1 (v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)))")
   "unknown operator")
 (assert_malformed (module quote "(func (result v128) "
-  "(v8x16.shuffle2_imm  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 "
+  "(i8x16.shuffle2_imm  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 "
   "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
   "(v128.const i8x16 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31)))")
   "unknown operator")
-;; v8x16 not i8x16
+;; i8x16 not v8x16
 (assert_malformed (module quote "(func (result v128) "
-  "(i8x16.swizzle (v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
+  "(v8x16.swizzle (v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)))")
   "unknown operator")
 (assert_malformed (module quote "(func (result v128) "
-  "(i8x16.shuffle  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 "
+  "(v8x16.shuffle  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 "
   "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
   "(v128.const i8x16 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31)))")
   "unknown operator")
@@ -596,29 +596,29 @@
 (assert_malformed (module quote "(func (result v128) (i32x4.replace_lane inf (v128.const i32x4 0 0 0 0) (i32.const 1)))") "unexpected token")
 (assert_malformed (module quote "(func (result v128) (f32x4.replace_lane -inf (v128.const f32x4 0 0 0 0) (f32.const 1.1)))") "unexpected token")
 
-;; v8x16.shuffle expects a 16-byte literals as first argument
+;; i8x16.shuffle expects a 16-byte literals as first argument
 (assert_malformed (module quote "(func (result v128) "
-  "(v8x16.shuffle (v128.const i8x16 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31) "
+  "(i8x16.shuffle (v128.const i8x16 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31) "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
   "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "invalid lane length")
 (assert_malformed (module quote "(func (result v128) "
-  "(v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15.0) "
+  "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15.0) "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
   "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
 (assert_malformed (module quote "(func (result v128) "
-  "(v8x16.shuffle 0.5 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
+  "(i8x16.shuffle 0.5 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
   "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
 (assert_malformed (module quote "(func (result v128) "
-  "(v8x16.shuffle -inf 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
+  "(i8x16.shuffle -inf 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
   "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
 (assert_malformed (module quote "(func (result v128) "
-  "(v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 inf) "
+  "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 inf) "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
   "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
 (assert_malformed (module quote "(func (result v128) "
-  "(v8x16.shuffle nan 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
+  "(i8x16.shuffle nan 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
   "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
 
@@ -664,9 +664,9 @@
 
   ;; i8x16.replace outputs as shuffle operand
   (func (export "as-v8x16_swizzle-operand") (param v128 i32 v128) (result v128)
-    (v8x16.swizzle (i8x16.replace_lane 0 (local.get 0) (local.get 1)) (local.get 2)))
+    (i8x16.swizzle (i8x16.replace_lane 0 (local.get 0) (local.get 1)) (local.get 2)))
   (func (export "as-v8x16_shuffle-operands") (param v128 i32 v128 i32) (result v128)
-    (v8x16.shuffle 16 1 18 3 20 5 22 7 24 9 26 11 28 13 30 15
+    (i8x16.shuffle 16 1 18 3 20 5 22 7 24 9 26 11 28 13 30 15
       (i8x16.replace_lane 0 (local.get 0) (local.get 1))
       (i8x16.replace_lane 15 (local.get 2) (local.get 3))))
 )
@@ -726,10 +726,10 @@
     (i64x2.add (i64x2.replace_lane 0 (local.get 0) (local.get 1)) (i64x2.replace_lane 1 (local.get 2) (local.get 3))))
 
   (func (export "swizzle-as-i8x16_add-operands") (param v128 v128 v128 v128) (result v128)
-    (i8x16.add (v8x16.swizzle (local.get 0) (local.get 1)) (v8x16.swizzle (local.get 2) (local.get 3))))
+    (i8x16.add (i8x16.swizzle (local.get 0) (local.get 1)) (i8x16.swizzle (local.get 2) (local.get 3))))
   (func (export "shuffle-as-i8x16_sub-operands") (param v128 v128 v128 v128) (result v128)
-    (i8x16.sub (v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (local.get 0) (local.get 1))
-      (v8x16.shuffle 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 (local.get 2) (local.get 3))))
+    (i8x16.sub (i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (local.get 0) (local.get 1))
+      (i8x16.shuffle 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 (local.get 2) (local.get 3))))
 
   ;; Boolean horizontal reductions
   (func (export "as-i8x16_any_true-operand") (param v128 i32) (result i32)
@@ -742,9 +742,9 @@
     (i32x4.any_true (i64x2.replace_lane 0 (local.get 0) (local.get 1))))
 
   (func (export "swizzle-as-i8x16_all_true-operands") (param v128 v128) (result i32)
-    (i8x16.all_true (v8x16.swizzle (local.get 0) (local.get 1))))
+    (i8x16.all_true (i8x16.swizzle (local.get 0) (local.get 1))))
   (func (export "shuffle-as-i8x16_any_true-operands") (param v128 v128) (result i32)
-    (i8x16.any_true (v8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (local.get 0) (local.get 1))))
+    (i8x16.any_true (i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (local.get 0) (local.get 1))))
 )
 
 (assert_return (invoke "as-i8x16_splat-operand" (v128.const i8x16 0xff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) (v128.const i8x16 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1))
@@ -842,9 +842,9 @@
     (return (global.get $g)))
 
    (func (export "as-return-value-2") (param v128 v128) (result v128)
-    (return (v8x16.swizzle (local.get 0) (local.get 1))))
+    (return (i8x16.swizzle (local.get 0) (local.get 1))))
   (func (export "as-global_set-value-2") (param v128 v128) (result v128)
-    (global.set $h (v8x16.shuffle 0 1 2 3 4 5 6 7 24 25 26 27 28 29 30 31 (local.get 0) (local.get 1)))
+    (global.set $h (i8x16.shuffle 0 1 2 3 4 5 6 7 24 25 26 27 28 29 30 31 (local.get 0) (local.get 1)))
     (return (global.get $h)))
 
   (func (export "as-local_set-value-1") (param v128) (result i64) (local i64)
@@ -1236,8 +1236,8 @@
 )
 (assert_malformed
   (module quote
-    "(func $v8x16.shuffle-1st-arg-empty (result v128)"
-    "  (v8x16.shuffle"
+    "(func $i8x16.shuffle-1st-arg-empty (result v128)"
+    "  (i8x16.shuffle"
     "    (v128.const i8x16 0 1 2 3 5 6 6 7 8 9 10 11 12 13 14 15)"
     "    (v128.const i8x16 1 2 3 5 6 6 7 8 9 10 11 12 13 14 15 16)"
     "  )"
@@ -1247,8 +1247,8 @@
 )
 (assert_invalid
   (module
-    (func $v8x16.shuffle-2nd-arg-empty (result v128)
-      (v8x16.shuffle 0 1 2 3 5 6 6 7 8 9 10 11 12 13 14 15
+    (func $i8x16.shuffle-2nd-arg-empty (result v128)
+      (i8x16.shuffle 0 1 2 3 5 6 6 7 8 9 10 11 12 13 14 15
         (v128.const i8x16 1 2 3 5 6 6 7 8 9 10 11 12 13 14 15 16)
       )
     )
@@ -1257,8 +1257,8 @@
 )
 (assert_malformed
   (module quote
-    "(func $v8x16.shuffle-arg-empty (result v128)"
-    "  (v8x16.shuffle)"
+    "(func $i8x16.shuffle-arg-empty (result v128)"
+    "  (i8x16.shuffle)"
     ")"
   )
   "invalid lane length"

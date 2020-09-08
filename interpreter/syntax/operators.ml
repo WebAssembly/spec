@@ -247,8 +247,8 @@ let v128_or = Binary (V128 (V128Op.V128 V128Op.Or))
 let v128_xor = Binary (V128 (V128Op.V128 V128Op.Xor))
 let v128_bitselect = Ternary (V128Op.Bitselect)
 
-let v8x16_swizzle = Binary (V128 V128Op.(I8x16 Swizzle))
-let v8x16_shuffle imms = Binary (V128 V128Op.(I8x16 (Shuffle imms)))
+let i8x16_swizzle = Binary (V128 V128Op.(I8x16 Swizzle))
+let i8x16_shuffle imms = Binary (V128 V128Op.(I8x16 (Shuffle imms)))
 
 let i8x16_splat = Convert (V128 (V128Op.I8x16 V128Op.Splat))
 let i8x16_extract_lane_s imm = SimdExtract (V128Op.I8x16 (SX, imm))

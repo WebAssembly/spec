@@ -234,8 +234,8 @@ let simd_prefix s =
   | 0x0al -> let a, o = memop s in v64x2_load_splat a o
   | 0x0bl -> let a, o = memop s in v128_store a o
   | 0x0cl -> v128_const (at v128 s)
-  | 0x0dl -> v8x16_shuffle (List.init 16 (fun x -> u8 s))
-  | 0x0el -> v8x16_swizzle
+  | 0x0dl -> i8x16_shuffle (List.init 16 (fun x -> u8 s))
+  | 0x0el -> i8x16_swizzle
   | 0x0fl -> i8x16_splat
   | 0x10l -> i16x8_splat
   | 0x11l -> i32x4_splat

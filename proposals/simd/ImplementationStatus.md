@@ -13,8 +13,8 @@
 | `v64x2.load_splat`         |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `v128.store`               |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `v128.const`               | `-munimplemented-simd128` | :heavy_check_mark: [6] |                    |                    | :heavy_check_mark: |
-| `v8x16.shuffle`            |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `v8x16.swizzle`            |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `i8x16.shuffle`            |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `i8x16.swizzle`            |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i8x16.splat`              |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i16x8.splat`              |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.splat`              |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |

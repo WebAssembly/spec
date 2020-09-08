@@ -231,8 +231,8 @@ struct
     | _ -> failwith "Unimplemented v128 unop"
 
   let binop xx (op : binop) = match op with
-    | I8x16 (Shuffle imms) -> "v8x16.shuffle " ^ (String.concat " " (List.map nat imms))
-    | I8x16 Swizzle -> "v8x16.swizzle"
+    | I8x16 (Shuffle imms) -> "i8x16.shuffle " ^ (String.concat " " (List.map nat imms))
+    | I8x16 Swizzle -> "i8x16.swizzle"
     | I8x16 Eq -> "i8x16.eq"
     | I8x16 Ne -> "i8x16.ne"
     | I8x16 LtS -> "i8x16.lt_s"

@@ -188,7 +188,7 @@
   (func (export "as-f32x4_extract_lane_s-operand-last") (param f32) (result f32)
     (f32x4.extract_lane 3 (f32x4.splat (local.get 0))))
   (func (export "as-v8x16_swizzle-operands") (param i32) (param i32) (result v128)
-    (v8x16.swizzle (i8x16.splat (local.get 0)) (i8x16.splat (local.get 1))))
+    (i8x16.swizzle (i8x16.splat (local.get 0)) (i8x16.splat (local.get 1))))
   (func (export "as-i64x2_extract_lane-operand-first") (param i64) (result i64)
     (i64x2.extract_lane 0 (i64x2.splat (local.get 0))))
   (func (export "as-i64x2_extract_lane-operand-last") (param i64) (result i64)

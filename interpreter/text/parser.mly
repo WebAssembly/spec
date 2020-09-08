@@ -400,7 +400,7 @@ plain_instr :
   | EXTRACT_LANE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
   | REPLACE_LANE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
   | SHIFT { fun c -> $1 }
-  | SHUFFLE literal_list { let at = at () in fun c -> v8x16_shuffle (shuffle_literal $2 at) }
+  | SHUFFLE literal_list { let at = at () in fun c -> i8x16_shuffle (shuffle_literal $2 at) }
 
 
 call_instr :

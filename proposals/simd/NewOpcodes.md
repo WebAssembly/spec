@@ -16,8 +16,8 @@
 | Basic operation | opcode |
 | ----------------| ------ |
 | v128.const      | 0x0c   |
-| v8x16.shuffle   | 0x0d   |
-| v8x16.swizzle   | 0x0e   |
+| i8x16.shuffle   | 0x0d   |
+| i8x16.swizzle   | 0x0e   |
 
 | Splat operation | opcode |
 | --------------- | ------ |

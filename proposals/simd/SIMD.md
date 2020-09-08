@@ -300,7 +300,7 @@ The input lane value, `x`, is interpreted the same way as for the splat
 instructions. For the `i8` and `i16` lanes, the high bits of `x` are ignored.
 
 ### Shuffling using immediate indices
-* `v8x16.shuffle(a: v128, b: v128, imm: ImmLaneIdx32[16]) -> v128`
+* `i8x16.shuffle(a: v128, b: v128, imm: ImmLaneIdx32[16]) -> v128`
 
 Returns a new vector with lanes selected from the lanes of the two input vectors
 `a` and `b` specified in the 16 byte wide immediate mode operand `imm`. This
@@ -320,7 +320,7 @@ def S.shuffle(a, b, s):
 ```
 
 ### Swizzling using variable indices
-* `v8x16.swizzle(a: v128, s: v128) -> v128`
+* `i8x16.swizzle(a: v128, s: v128) -> v128`
 
 Returns a new vector with lanes selected from the lanes of the first input
 vector `a` specified in the second input vector `s`. The indices `i` in range

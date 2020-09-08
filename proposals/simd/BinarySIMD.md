@@ -24,7 +24,7 @@ instr ::= ...
 
 Some SIMD instructions have additional immediate operands following `simdop`.
 These immediate operands are encoded as individual bytes.
-For example, the `v8x16.shuffle` instruction has 16 bytes after `simdop`.
+For example, the `i8x16.shuffle` instruction has 16 bytes after `simdop`.
 
 In the description below, `ImmLaneIdx{I}` indicates the maximum value of the byte.
 For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
@@ -45,8 +45,8 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `v64x2.load_splat`         |    `0x0a`| m:memarg           |
 | `v128.store`               |    `0x0b`| m:memarg           |
 | `v128.const`               |    `0x0c`| i:ImmByte[16]      |
-| `v8x16.shuffle`            |    `0x0d`| s:ImmLaneIdx32[16] |
-| `v8x16.swizzle`            |    `0x0e`| -                  |
+| `i8x16.shuffle`            |    `0x0d`| s:ImmLaneIdx32[16] |
+| `i8x16.swizzle`            |    `0x0e`| -                  |
 | `i8x16.splat`              |    `0x0f`| -                  |
 | `i16x8.splat`              |    `0x10`| -                  |
 | `i32x4.splat`              |    `0x11`| -                  |
