@@ -315,11 +315,11 @@ let simd_prefix s =
   | 0x65l -> i8x16_narrow_i16x8_s
   | 0x66l -> i8x16_narrow_i16x8_u
   | 0x6el -> i8x16_add
-  | 0x6fl -> i8x16_add_saturate_s
-  | 0x70l -> i8x16_add_saturate_u
+  | 0x6fl -> i8x16_add_sat_s
+  | 0x70l -> i8x16_add_sat_u
   | 0x71l -> i8x16_sub
-  | 0x72l -> i8x16_sub_saturate_s
-  | 0x73l -> i8x16_sub_saturate_u
+  | 0x72l -> i8x16_sub_sat_s
+  | 0x73l -> i8x16_sub_sat_u
   | 0x76l -> i8x16_min_s
   | 0x77l -> i8x16_min_u
   | 0x78l -> i8x16_max_s
@@ -340,11 +340,11 @@ let simd_prefix s =
   | 0x8cl -> i16x8_shr_s
   | 0x8dl -> i16x8_shr_u
   | 0x8el -> i16x8_add
-  | 0x8fl -> i16x8_add_saturate_s
-  | 0x90l -> i16x8_add_saturate_u
+  | 0x8fl -> i16x8_add_sat_s
+  | 0x90l -> i16x8_add_sat_u
   | 0x91l -> i16x8_sub
-  | 0x92l -> i16x8_sub_saturate_s
-  | 0x93l -> i16x8_sub_saturate_u
+  | 0x92l -> i16x8_sub_sat_s
+  | 0x93l -> i16x8_sub_sat_u
   | 0x95l -> i16x8_mul
   | 0x96l -> i16x8_min_s
   | 0x97l -> i16x8_min_u

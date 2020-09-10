@@ -93,11 +93,11 @@
 | i8x16.shr_s          | 0x6c   | i16x8.shr_s              | 0x8c   | i32x4.shr_s              | 0xac   | i64x2.shr_s | 0xcc   |
 | i8x16.shr_u          | 0x6d   | i16x8.shr_u              | 0x8d   | i32x4.shr_u              | 0xad   | i64x2.shr_u | 0xcd   |
 | i8x16.add            | 0x6e   | i16x8.add                | 0x8e   | i32x4.add                | 0xae   | i64x2.add   | 0xce   |
-| i8x16.add_saturate_s | 0x6f   | i16x8.add_saturate_s     | 0x8f   | ---- add_sat ----        | 0xaf   | ----        | 0xcf   |
-| i8x16.add_saturate_u | 0x70   | i16x8.add_saturate_u     | 0x90   | ---- add_sat ----        | 0xb0   | ----        | 0xd0   |
+| i8x16.add_sat_s      | 0x6f   | i16x8.add_sat_s          | 0x8f   | ---- add_sat ----        | 0xaf   | ----        | 0xcf   |
+| i8x16.add_sat_u      | 0x70   | i16x8.add_sat_u          | 0x90   | ---- add_sat ----        | 0xb0   | ----        | 0xd0   |
 | i8x16.sub            | 0x71   | i16x8.sub                | 0x91   | i32x4.sub                | 0xb1   | i64x2.sub   | 0xd1   |
-| i8x16.sub_saturate_s | 0x72   | i16x8.sub_saturate_s     | 0x92   | ---- sub_sat ----        | 0xb2   | ----        | 0xd2   |
-| i8x16.sub_saturate_u | 0x73   | i16x8.sub_saturate_u     | 0x93   | ---- sub_sat ----        | 0xb3   | ----        | 0xd3   |
+| i8x16.sub_sat_s      | 0x72   | i16x8.sub_sat_s          | 0x92   | ---- sub_sat ----        | 0xb2   | ----        | 0xd2   |
+| i8x16.sub_sat_u      | 0x73   | i16x8.sub_sat_u          | 0x93   | ---- sub_sat ----        | 0xb3   | ----        | 0xd3   |
 | ---- dot ----        | 0x74   | ---- dot ----            | 0x94   | ---- dot ----            | 0xb4   | ----        | 0xd4   |
 | ---- mul ----        | 0x75   | i16x8.mul                | 0x95   | i32x4.mul                | 0xb5   | i64x2.mul   | 0xd5   |
 | i8x16.min_s          | 0x76   | i16x8.min_s              | 0x96   | i32x4.min_s              | 0xb6   | ----        | 0xd6   |

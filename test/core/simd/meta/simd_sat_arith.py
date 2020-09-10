@@ -11,8 +11,8 @@ from simd import SIMD
 
 class SimdSaturateArithmeticCases(SimdArithmeticCase):
     UNARY_OPS = ()
-    BINARY_OPS = ('add_saturate_s', 'add_saturate_u',
-                  'sub_saturate_s', 'sub_saturate_u')
+    BINARY_OPS = ('add_sat_s', 'add_sat_u',
+                  'sub_sat_s', 'sub_sat_u')
     malformed_template = '(assert_malformed (module quote\n    "(func (result v128) ' \
                          '({lane_type}.{op} ({operand_1}) ({operand_2})))")\n    "unknown operator")'
 
@@ -39,7 +39,7 @@ class SimdSaturateArithmeticCases(SimdArithmeticCase):
         # for saturating integer arithmetic operation
         for op in inst_ops:
             malformed_cases.append(self.malformed_template.format(
-                lane_type=self.LANE_TYPE, op='_'.join([op, 'saturate']),
+                lane_type=self.LANE_TYPE, op='_'.join([op, 'sat']),
                 operand_1=self.v128_const(self.LANE_TYPE, '1'), operand_2=self.v128_const(self.LANE_TYPE, '2')))
 
         return '\n'.join(malformed_cases)
@@ -139,8 +139,8 @@ class SimdSaturateArithmeticCases(SimdArithmeticCase):
                               '(local.get 2)))'
         for func in sorted(self.combine_ternary_arith_test_data):
             func_parts = func.split('-')
-            op1 = func_parts[1].replace('_', '_saturate_')
-            op2 = func_parts[2].replace('_', '_saturate_')
+            op1 = func_parts[1].replace('_', '_sat_')
+            op2 = func_parts[2].replace('_', '_sat_')
             combine_cases.append(ternary_func_template.format(func=func,
                                                             lane=self.LANE_TYPE,
                                                             op1=op1,
@@ -149,7 +149,7 @@ class SimdSaturateArithmeticCases(SimdArithmeticCase):
                              '    ({lane}.{op1} ({lane}.{op2} (local.get 0)) (local.get 1)))'
         for func in sorted(self.combine_binary_arith_test_data):
             func_parts = func.split('-')
-            op1 = func_parts[1].replace('_', '_saturate_')
+            op1 = func_parts[1].replace('_', '_sat_')
             combine_cases.append(binary_func_template.format(func=func,
                                                            lane=self.LANE_TYPE,
                                                            op1=op1,
@@ -197,28 +197,28 @@ class SimdI8x16SaturateArithmeticCases(SimdSaturateArithmeticCases):
     @property
     def i8x16_f32x4_test_data(self):
         return {
-            'i8x16.add_saturate_s': [
+            'i8x16.add_sat_s': [
                 [['0x80', '-0.0'], '0x80', ['i8x16', 'f32x4', 'i8x16']],
                 [['1', '+inf'], ['0x01', '0x01', '0x81', '0x7f'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', '-inf'], ['0x01', '0x01', '0x81', '0'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', 'nan'], ['0x01', '0x01', '0xc1', '0x7f'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', '-nan'], ['0x01', '0x01', '0xc1', '0'] * 4, ['i8x16', 'f32x4', 'i8x16']]
             ],
-            'i8x16.add_saturate_u': [
+            'i8x16.add_sat_u': [
                 [['0x80', '-0.0'], ['0x80', '0x80', '0x80', '0xff'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', '+inf'], ['0x01', '0x01', '0x81', '0x80'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', '-inf'], ['0x01', '0x01', '0x81', '0xff'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', 'nan'], ['0x01', '0x01', '0xc1', '0x80'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', '-nan'], ['0x01', '0x01', '0xc1', '0xff'] * 4, ['i8x16', 'f32x4', 'i8x16']],
             ],
-            'i8x16.sub_saturate_s': [
+            'i8x16.sub_sat_s': [
                 [['0x80', '-0.0'], ['0x80', '0x80', '0x80', '0'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', '+inf'], ['0x01', '0x01', '0x7f', '0x82'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', '-inf'], ['0x01', '0x01', '0x7f', '0x02'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', 'nan'], ['0x01', '0x01', '0x41', '0x82'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', '-nan'], ['0x01', '0x01', '0x41', '0x02'] * 4, ['i8x16', 'f32x4', 'i8x16']],
             ],
-            'i8x16.sub_saturate_u': [
+            'i8x16.sub_sat_u': [
                 [['0x80', '-0.0'], ['0x80', '0x80', '0x80', '0'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', '+inf'], ['0x01', '0x01', '0', '0'] * 4, ['i8x16', 'f32x4', 'i8x16']],
                 [['1', '-inf'], ['0x01', '0x01', '0', '0'] * 4, ['i8x16', 'f32x4', 'i8x16']],
@@ -230,19 +230,19 @@ class SimdI8x16SaturateArithmeticCases(SimdSaturateArithmeticCases):
     @property
     def combine_dec_hex_test_data(self):
         return {
-            'i8x16.add_saturate_s': [
+            'i8x16.add_sat_s': [
                 [[['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'],
                   ['0', '0xff', '0xfe', '0xfd', '0xfc', '0xfb', '0xfa', '0xf9', '0xf8', '0xf7', '0xf6', '0xf5',
                    '0xf4', '0xf3', '0xf2', '0xf1']],
                  ['0'] * 16, ['i8x16', 'i8x16', 'i8x16']]
             ],
-            'i8x16.add_saturate_u': [
+            'i8x16.add_sat_u': [
                 [[['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'],
                   ['0', '0xff', '0xfe', '0xfd', '0xfc', '0xfb', '0xfa', '0xf9', '0xf8', '0xf7', '0xf6', '0xf5',
                    '0xf4', '0xf3', '0xf2', '0xf1']],
                  ['0'] + ['0xff'] * 15, ['i8x16', 'i8x16', 'i8x16']]
             ],
-            'i8x16.sub_saturate_s': [
+            'i8x16.sub_sat_s': [
                 [[['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'],
                   ['0', '0xff', '0xfe', '0xfd', '0xfc', '0xfb', '0xfa', '0xf9', '0xf8', '0xf7', '0xf6', '0xf5',
                    '0xf4', '0xf3', '0xf2', '0xf1']],
@@ -250,7 +250,7 @@ class SimdI8x16SaturateArithmeticCases(SimdSaturateArithmeticCases):
                   '0x18', '0x1a', '0x1c', '0x1e'],
                  ['i8x16', 'i8x16', 'i8x16']]
             ],
-            'i8x16.sub_saturate_u': [
+            'i8x16.sub_sat_u': [
                 [[['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'],
                   ['0', '0xff', '0xfe', '0xfd', '0xfc', '0xfb', '0xfa', '0xf9', '0xf8', '0xf7', '0xf6', '0xf5',
                    '0xf4', '0xf3', '0xf2', '0xf1']],
@@ -262,19 +262,19 @@ class SimdI8x16SaturateArithmeticCases(SimdSaturateArithmeticCases):
     @property
     def range_test_data(self):
         return {
-            'i8x16.add_saturate_s': [
+            'i8x16.add_sat_s': [
                 [[[str(i) for i in range(16)], [str(i * 2) for i in range(16)]],
                  [str(i * 3) for i in range(16)], ['i8x16', 'i8x16', 'i8x16']]
             ],
-            'i8x16.add_saturate_u': [
+            'i8x16.add_sat_u': [
                 [[[str(i) for i in range(16)], [str(i * 2) for i in range(16)]],
                  [str(i * 3) for i in range(16)], ['i8x16', 'i8x16', 'i8x16']]
             ],
-            'i8x16.sub_saturate_s': [
+            'i8x16.sub_sat_s': [
                 [[[str(i) for i in range(16)], [str(i * 2) for i in range(16)]],
                  [str(-i) for i in range(16)], ['i8x16', 'i8x16', 'i8x16']]
             ],
-            'i8x16.sub_saturate_u': [
+            'i8x16.sub_sat_u': [
                 [[[str(i) for i in range(16)], [str(i * 2) for i in range(16)]],
                  ['0'] * 16, ['i8x16', 'i8x16', 'i8x16']]
             ],
@@ -295,7 +295,7 @@ class SimdI8x16SaturateArithmeticCases(SimdSaturateArithmeticCases):
             for op in ['add', 'sub']:
                 for suffix in ['s', 'u']:
                     malformed_cases.append(self.malformed_template.format(
-                        lane_type=prefix, op='_'.join([op, 'saturate', suffix]),
+                        lane_type=prefix, op='_'.join([op, 'sat', suffix]),
                         operand_1=self.v128_const(prefix, '0', lane_len=4),
                         operand_2=self.v128_const(prefix, '0', lane_len=4)
                     ))
@@ -330,25 +330,25 @@ class SimdI16x8SaturateArithmeticCases(SimdSaturateArithmeticCases):
     @property
     def underscore_literal_test_data(self):
         return {
-            'i16x8.add_saturate_s': [
+            'i16x8.add_sat_s': [
                 [['012_345', '032_123'], '032_767', ['i16x8'] * 3],
                 [['012_345', '056_789'], '03_598', ['i16x8'] * 3],
                 [['0x0_1234', '0x0_5678'], '0x0_68ac', ['i16x8'] * 3],
                 [['0x0_90AB', '0x0_cdef'], '-0x0_8000', ['i16x8'] * 3]
             ],
-            'i16x8.add_saturate_u': [
+            'i16x8.add_sat_u': [
                 [['012_345', '056_789'], '065_535', ['i16x8'] * 3],
                 [['012_345', '-012_345'], '065_535', ['i16x8'] * 3],
                 [['0x0_1234', '0x0_5678'], '0x0_68ac', ['i16x8'] * 3],
                 [['0x0_90AB', '0x0_cdef'], '0x0_ffff', ['i16x8'] * 3]
             ],
-            'i16x8.sub_saturate_s': [
+            'i16x8.sub_sat_s': [
                 [['012_345', '056_789'], '021_092', ['i16x8'] * 3],
                 [['012_345', '-012_345'], '024_690', ['i16x8'] * 3],
                 [['0x0_1234', '0x0_5678'], '0x0_bbbc', ['i16x8'] * 3],
                 [['0x0_90AB', '-0x1234'], '0xa2df', ['i16x8'] * 3]
             ],
-            'i16x8.sub_saturate_u': [
+            'i16x8.sub_sat_u': [
                 [['012_345', '056_789'], '0', ['i16x8'] * 3],
                 [['056_789', '-12_345'], '03_598', ['i16x8'] * 3],
                 [['0x0_1234', '-0x0_5678'], '0', ['i16x8'] * 3],
@@ -359,28 +359,28 @@ class SimdI16x8SaturateArithmeticCases(SimdSaturateArithmeticCases):
     @property
     def i16x8_f32x4_test_data(self):
         return {
-            'i16x8.add_saturate_s': [
+            'i16x8.add_sat_s': [
                 [['0x8000', '-0.0'], '0x8000', ['i16x8', 'f32x4', 'i16x8']],
                 [['1', '+inf'], ['0x01', '0x7f81'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', '-inf'], ['0x01', '0xff81'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', 'nan'], ['0x01', '0x7fc1'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', '-nan'], ['0x01', '0xffc1'] * 4, ['i16x8', 'f32x4', 'i16x8']]
             ],
-            'i16x8.add_saturate_u': [
+            'i16x8.add_sat_u': [
                 [['0x8000', '-0.0'], ['0x8000', '0xffff'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', '+inf'], ['0x01', '0x7f81'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', '-inf'], ['0x01', '0xff81'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', 'nan'], ['0x01', '0x7fc1'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', 'nan'], ['0x01', '0x7fc1'] * 4, ['i16x8', 'f32x4', 'i16x8']]
             ],
-            'i16x8.sub_saturate_s': [
+            'i16x8.sub_sat_s': [
                 [['0x8000', '-0.0'], ['0x8000', '0'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', '+inf'], ['0x01', '0x8081'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', '-inf'], ['0x01', '0x81'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', 'nan'], ['0x01', '0x8041'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', '-nan'], ['0x01', '0x41'] * 4, ['i16x8', 'f32x4', 'i16x8']]
             ],
-            'i16x8.sub_saturate_u': [
+            'i16x8.sub_sat_u': [
                 [['0x8000', '-0.0'], ['0x8000', '0'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', '+inf'], ['0x01', '0'] * 4, ['i16x8', 'f32x4', 'i16x8']],
                 [['1', '-inf'], ['0x01', '0'] * 4, ['i16x8', 'f32x4', 'i16x8']],
@@ -392,22 +392,22 @@ class SimdI16x8SaturateArithmeticCases(SimdSaturateArithmeticCases):
     @property
     def combine_dec_hex_test_data(self):
         return {
-            'i16x8.add_saturate_s': [
+            'i16x8.add_sat_s': [
                 [[['0', '1', '2', '3', '4', '5', '6', '7'],
                   ['0', '0xffff', '0xfffe', '0xfffd', '0xfffc', '0xfffb', '0xfffa', '0xfff9']],
                  ['0'] * 8, ['i16x8'] * 3]
             ],
-            'i16x8.add_saturate_u': [
+            'i16x8.add_sat_u': [
                 [[['0', '1', '2', '3', '4', '5', '6', '7'],
                   ['0', '0xffff', '0xfffe', '0xfffd', '0xfffc', '0xfffb', '0xfffa', '0xfff9']],
                  ['0'] + ['0xffff'] * 7, ['i16x8'] * 3]
             ],
-            'i16x8.sub_saturate_s': [
+            'i16x8.sub_sat_s': [
                 [[['0', '1', '2', '3', '4', '5', '6', '7'],
                   ['0', '0xffff', '0xfffe', '0xfffd', '0xfffc', '0xfffb', '0xfffa', '0xfff9']],
                  ['0', '2', '4', '6', '8', '10', '12', '14'], ['i16x8'] * 3]
             ],
-            'i16x8.sub_saturate_u': [
+            'i16x8.sub_sat_u': [
                 [[['0', '1', '2', '3', '4', '5', '6', '7'],
                   ['0', '0xffff', '0xfffe', '0xfffd', '0xfffc', '0xfffb', '0xfffa', '0xfff9']],
                  ['0'] * 8, ['i16x8'] * 3]
@@ -417,19 +417,19 @@ class SimdI16x8SaturateArithmeticCases(SimdSaturateArithmeticCases):
     @property
     def range_test_data(self):
         return {
-            'i16x8.add_saturate_s': [
+            'i16x8.add_sat_s': [
                 [[[str(i) for i in range(8)], [str(i * 2) for i in range(8)]],
                  [str(i * 3) for i in range(8)], ['i16x8'] * 3]
             ],
-            'i16x8.add_saturate_u': [
+            'i16x8.add_sat_u': [
                 [[[str(i) for i in range(8)], [str(i * 2) for i in range(8)]],
                  [str(i * 3) for i in range(8)], ['i16x8'] * 3]
             ],
-            'i16x8.sub_saturate_s': [
+            'i16x8.sub_sat_s': [
                 [[[str(i) for i in range(8)], [str(i * 2) for i in range(8)]],
                  [str(-i) for i in range(8)], ['i16x8'] * 3]
             ],
-            'i16x8.sub_saturate_u': [
+            'i16x8.sub_sat_u': [
                 [[[str(i) for i in range(8)], [str(i * 2) for i in range(8)]],
                  ['0'] * 8, ['i16x8'] * 3]
             ]

@@ -433,40 +433,40 @@ def S.UnsignedSaturate(x):
 ```
 
 ### Saturating integer addition
-* `i8x16.add_saturate_s(a: v128, b: v128) -> v128`
-* `i8x16.add_saturate_u(a: v128, b: v128) -> v128`
-* `i16x8.add_saturate_s(a: v128, b: v128) -> v128`
-* `i16x8.add_saturate_u(a: v128, b: v128) -> v128`
+* `i8x16.add_sat_s(a: v128, b: v128) -> v128`
+* `i8x16.add_sat_u(a: v128, b: v128) -> v128`
+* `i16x8.add_sat_s(a: v128, b: v128) -> v128`
+* `i16x8.add_sat_u(a: v128, b: v128) -> v128`
 
 Lane-wise saturating addition:
 
 ```python
-def S.add_saturate_s(a, b):
+def S.add_sat_s(a, b):
     def addsat(x, y):
         return S.SignedSaturate(x + y)
     return S.lanewise_binary(addsat, S.AsSigned(a), S.AsSigned(b))
 
-def S.add_saturate_u(a, b):
+def S.add_sat_u(a, b):
     def addsat(x, y):
         return S.UnsignedSaturate(x + y)
     return S.lanewise_binary(addsat, S.AsUnsigned(a), S.AsUnsigned(b))
 ```
 
 ### Saturating integer subtraction
-* `i8x16.sub_saturate_s(a: v128, b: v128) -> v128`
-* `i8x16.sub_saturate_u(a: v128, b: v128) -> v128`
-* `i16x8.sub_saturate_s(a: v128, b: v128) -> v128`
-* `i16x8.sub_saturate_u(a: v128, b: v128) -> v128`
+* `i8x16.sub_sat_s(a: v128, b: v128) -> v128`
+* `i8x16.sub_sat_u(a: v128, b: v128) -> v128`
+* `i16x8.sub_sat_s(a: v128, b: v128) -> v128`
+* `i16x8.sub_sat_u(a: v128, b: v128) -> v128`
 
 Lane-wise saturating subtraction:
 
 ```python
-def S.sub_saturate_s(a, b):
+def S.sub_sat_s(a, b):
     def subsat(x, y):
         return S.SignedSaturate(x - y)
     return S.lanewise_binary(subsat, S.AsSigned(a), S.AsSigned(b))
 
-def S.sub_saturate_u(a, b):
+def S.sub_sat_u(a, b):
     def subsat(x, y):
         return S.UnsignedSaturate(x - y)
     return S.lanewise_binary(subsat, S.AsUnsigned(a), S.AsUnsigned(b))

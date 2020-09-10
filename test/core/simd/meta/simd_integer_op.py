@@ -12,8 +12,8 @@ class ArithmeticOp:
     may be required for the operations.
     The following operators are covered:
     add, sub, mul, neg,
-    add_saturate_s, add_saturate_u,
-    sub_saturate_s, sub_saturate_u,
+    add_sat_s, add_sat_u,
+    sub_sat_s, sub_sat_u,
     min_s, min_u, max_s, max_u, avgr_u, abs
     """
     def __init__(self, op: str):
@@ -45,7 +45,7 @@ class ArithmeticOp:
         """Get the result of saturating arithmetic operation on 2 operands.
         The operands can be both signed or unsigned. The following ops
         are covered:
-        add_saturate_s, sub_saturate_s, add_saturate_u, sub_saturate_u,
+        add_sat_s, sub_sat_s, add_sat_u, sub_sat_u,
 
         Saturating arithmetic can make sure:
         When the operation result is less than the minimum, return the minimum.
@@ -56,7 +56,7 @@ class ArithmeticOp:
         :param lane: the LaneValue instance of a lane in v128
         :return: the result of the saturating arithmetic operation
         """
-        if self.op.endswith('saturate_s'):
+        if self.op.endswith('sat_s'):
             if operand1 > lane.max:
                 operand1 -= lane.mod
             if operand2 > lane.max:
@@ -72,7 +72,7 @@ class ArithmeticOp:
             if value < lane.min:
                 return lane.min
 
-        if self.op.endswith('saturate_u'):
+        if self.op.endswith('sat_u'):
             if operand1 < 0:
                 operand1 += lane.mod
             if operand2 < 0:
@@ -127,8 +127,8 @@ class ArithmeticOp:
 
         Supported ops:
         add, sub, mul,
-        add_saturate_s, add_saturate_u,
-        sub_saturate_s, sub_saturate_u,
+        add_sat_s, add_sat_u,
+        sub_sat_s, sub_sat_u,
         min_s, min_u, max_s, max_u, avgr_u
 
         :param operand1: the operand 1, integer or literal string in hex or decimal format
@@ -155,7 +155,7 @@ class ArithmeticOp:
             value = v1 - v2
         elif self.op == 'mul':
             value = v1 * v2
-        elif 'saturate' in self.op:
+        elif 'sat' in self.op:
             value = self._saturate(v1, v2, lane)
             if self.op.endswith('_u'):
                 result_signed = False
