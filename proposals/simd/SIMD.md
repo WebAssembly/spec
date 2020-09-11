@@ -867,6 +867,18 @@ Lane-wise minimum value, propagating NaNs.
 
 Lane-wise maximum value, propagating NaNs.
 
+### Pseudo-minimum
+* `f32x4.pmin(a: v128, b: v128) -> v128`
+* `f64x2.pmin(a: v128, b: v128) -> v128`
+
+Lane-wise minimum value, defined as `b < a ? b : a`.
+
+### Pseudo-maximum
+* `f32x4.pmax(a: v128, b: v128) -> v128`
+* `f64x2.pmax(a: v128, b: v128) -> v128`
+
+Lane-wise maximum value, defined as `a < b ? b : a`.
+
 ## Floating-point arithmetic
 
 The floating-point arithmetic operations are all lane-wise versions of the
