@@ -188,6 +188,14 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `i64x2.add`                |    `0xce`| -                  |
 | `i64x2.sub`                |    `0xd1`| -                  |
 | `i64x2.mul`                |    `0xd5`| -                  |
+| `f32x4.ceil`               |    `0xd8`| -                  |
+| `f32x4.floor`              |    `0xd9`| -                  |
+| `f32x4.trunc`              |    `0xda`| -                  |
+| `f32x4.nearest`            |    `0xdb`| -                  |
+| `f64x2.ceil`               |    `0xdc`| -                  |
+| `f64x2.floor`              |    `0xdd`| -                  |
+| `f64x2.trunc`              |    `0xde`| -                  |
+| `f64x2.nearest`            |    `0xdf`| -                  |
 | `f32x4.abs`                |    `0xe0`| -                  |
 | `f32x4.neg`                |    `0xe1`| -                  |
 | `f32x4.sqrt`               |    `0xe3`| -                  |

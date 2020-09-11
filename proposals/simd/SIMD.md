@@ -914,6 +914,30 @@ Lane-wise IEEE `multiplication`.
 
 Lane-wise IEEE `squareRoot`.
 
+### Round to integer above (ceiling)
+* `f32x4.ceil(a: v128) -> v128`
+* `f64x2.ceil(a: v128) -> v128`
+
+Lane-wise rounding to the nearest integral value not smaller than the input.
+
+### Round to integer below (floor)
+* `f32x4.floor(a: v128) -> v128`
+* `f64x2.floor(a: v128) -> v128`
+
+Lane-wise rounding to the nearest integral value not greater than the input.
+
+### Round to integer toward zero (truncate to integer)
+* `f32x4.trunc(a: v128) -> v128`
+* `f64x2.trunc(a: v128) -> v128`
+
+Lane-wise rounding to the nearest integral value with the magnitude not larger than the input.
+
+### Round to nearest integer, ties to even
+* `f32x4.nearest(a: v128) -> v128`
+* `f64x2.nearest(a: v128) -> v128`
+
+Lane-wise rounding to the nearest integral value; if two values are equally near, rounds to the even one.
+
 ## Conversions
 ### Integer to floating point
 * `f32x4.convert_i32x4_s(a: v128) -> v128`

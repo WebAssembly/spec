@@ -165,6 +165,10 @@
 | `f32x4.div`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f32x4.min`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f32x4.max`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `f32x4.ceil`               |                           |                    |                    |                    |                    |
+| `f32x4.floor`              |                           |                    |                    |                    |                    |
+| `f32x4.trunc`              |                           |                    |                    |                    |                    |
+| `f32x4.nearest`            |                           |                    |                    |                    |                    |
 | `f64x2.abs`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f64x2.neg`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f64x2.sqrt`               |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
@@ -174,6 +178,10 @@
 | `f64x2.div`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f64x2.min`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f64x2.max`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `f64x2.ceil`               |                           |                    |                    |                    |                    |
+| `f64x2.floor`              |                           |                    |                    |                    |                    |
+| `f64x2.trunc`              |                           |                    |                    |                    |                    |
+| `f64x2.nearest`            |                           |                    |                    |                    |                    |
 | `i32x4.trunc_sat_f32x4_s`  |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.trunc_sat_f32x4_u`  |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f32x4.convert_i32x4_s`    |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
