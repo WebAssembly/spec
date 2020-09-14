@@ -191,7 +191,7 @@ Instructions in this group are concerned with accessing :ref:`references <syntax
      \REFFUNC~\funcidx \\
    \end{array}
 
-These instruction produce a null value, check for a null value, or compare two references, respectively.
+These instruction produce a null value, check for a null value, or produce a reference to a given function, respectively.
 
 
 .. index:: ! parametric instruction, value type
