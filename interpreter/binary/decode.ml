@@ -377,6 +377,14 @@ let simd_prefix s =
   | 0xcel -> i64x2_add
   | 0xd1l -> i64x2_sub
   | 0xd5l -> i64x2_mul
+  | 0xd8l -> f32x4_ceil
+  | 0xd9l -> f32x4_floor
+  | 0xdal -> f32x4_trunc
+  | 0xdbl -> f32x4_nearest
+  | 0xdcl -> f64x2_ceil
+  | 0xddl -> f64x2_floor
+  | 0xdel -> f64x2_trunc
+  | 0xdfl -> f64x2_nearest
   | 0xe0l -> f32x4_abs
   | 0xe1l -> f32x4_neg
   | 0xe3l -> f32x4_sqrt

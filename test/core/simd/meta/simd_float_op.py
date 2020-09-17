@@ -253,3 +253,52 @@ class FloatingPointCmpOp(FloatingPointOp):
             return '-1' if f1 >= f2 else '0'
         else:
             raise Exception('Unknown binary operation')
+
+
+class FloatingPointRoundingOp(FloatingPointOp):
+    def unary_op(self, op: str, p1: str, hex_form=True) -> str:
+        """Unnary operation on p1 with the operation specified by op
+
+        :param op: ceil, floor, trunc, nearest
+        :param p1: float number in hex
+        :return:
+        """
+        if '0x' in p1:
+            f1 = float.fromhex(p1)
+        else:
+            f1 = float(p1)
+
+        if 'nan' in p1:
+            return 'nan'
+
+        if 'inf' in p1:
+            return p1
+
+        # The rounding ops don't treat -0.0 correctly, e.g.:
+        # math.ceil(-0.4) returns +0.0, so copy the sign.
+        elif op == 'ceil':
+            r = math.copysign(math.ceil(f1), f1)
+            if hex_form:
+                return r.hex()
+            else:
+                return str(r)
+        elif op == 'floor':
+            r = math.copysign(math.floor(f1), f1)
+            if hex_form:
+                return r.hex()
+            else:
+                return str(r)
+        elif op == 'trunc':
+            r = math.copysign(math.trunc(f1), f1)
+            if hex_form:
+                return r.hex()
+            else:
+                return str(r)
+        elif op == 'nearest':
+            r = math.copysign(round(f1), f1)
+            if hex_form:
+                return r.hex()
+            else:
+                return str(r)
+        else:
+            raise Exception('Unknown binary operation')

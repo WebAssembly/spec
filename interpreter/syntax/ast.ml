@@ -54,7 +54,9 @@ struct
               | Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
               | Swizzle | Shuffle of int list | NarrowS | NarrowU
               | AddSatS | AddSatU | SubSatS | SubSatU
-  type funop = Abs | Neg | Sqrt | ConvertI32x4S | ConvertI32x4U
+  type funop = Abs | Neg | Sqrt
+             | Ceil | Floor | Trunc | Nearest
+             | ConvertI32x4S | ConvertI32x4U
   type fbinop = Add | Sub | Mul | Div | Min | Max
               | Eq | Ne | Lt | Le | Gt | Ge
   type vunop = Not

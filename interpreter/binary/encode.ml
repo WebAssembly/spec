@@ -339,6 +339,14 @@ let encode m =
       | Unary (V128 V128Op.(I32x4 WidenLowU)) -> simd_op 0xa9l
       | Unary (V128 V128Op.(I32x4 WidenHighU)) -> simd_op 0xaal
       | Unary (V128 V128Op.(I64x2 Neg)) -> simd_op 0xc1l
+      | Unary (V128 V128Op.(F32x4 Ceil)) -> simd_op 0xd8l
+      | Unary (V128 V128Op.(F32x4 Floor)) -> simd_op 0xd9l
+      | Unary (V128 V128Op.(F32x4 Trunc)) -> simd_op 0xdal
+      | Unary (V128 V128Op.(F32x4 Nearest)) -> simd_op 0xdbl
+      | Unary (V128 V128Op.(F64x2 Ceil)) -> simd_op 0xdcl
+      | Unary (V128 V128Op.(F64x2 Floor)) -> simd_op 0xddl
+      | Unary (V128 V128Op.(F64x2 Trunc)) -> simd_op 0xdel
+      | Unary (V128 V128Op.(F64x2 Nearest)) -> simd_op 0xdfl
       | Unary (V128 V128Op.(F32x4 Abs)) -> simd_op 0xe0l
       | Unary (V128 V128Op.(F32x4 Neg)) -> simd_op 0xe1l
       | Unary (V128 V128Op.(F32x4 Sqrt)) -> simd_op 0xe3l

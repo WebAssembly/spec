@@ -26,6 +26,8 @@ SUBMODULES = (
     'simd_f32x4',
     'simd_f64x2',
     'simd_int_arith2',
+    'simd_f32x4_rounding',
+    'simd_f64x2_rounding',
 )
 
 

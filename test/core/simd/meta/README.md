@@ -22,6 +22,8 @@ Currently it only support following simd test files generation.
 - 'simd_i16x8_sat_arith.wast'
 - 'simd_f32x4.wast'
 - 'simd_f64x2.wast'
+- 'simd_f32x4_rounding'
+- 'simd_f64x2_rounding'
 
 
 Usage:

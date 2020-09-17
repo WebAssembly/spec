@@ -109,6 +109,10 @@ sig
   val abs : t -> t
   val neg : t -> t
   val sqrt : t -> t
+  val ceil : t -> t
+  val floor : t -> t
+  val trunc : t -> t
+  val nearest : t -> t
   val add : t -> t -> t
   val sub : t -> t -> t
   val mul : t -> t -> t
@@ -254,6 +258,10 @@ struct
     let abs = unop Float.abs
     let neg = unop Float.neg
     let sqrt = unop Float.sqrt
+    let ceil = unop Float.ceil
+    let floor = unop Float.floor
+    let trunc = unop Float.trunc
+    let nearest = unop Float.nearest
     let add = binop Float.add
     let sub = binop Float.sub
     let mul = binop Float.mul
