@@ -112,7 +112,7 @@ type loadop = (pack_size * extension) memop
 type storeop = pack_size memop
 
 type simd_loadop = (pack_size * pack_simd) memop
-type empty = |
+type empty
 type simd_storeop = empty memop
 
 (* Expressions *)
