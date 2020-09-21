@@ -202,7 +202,7 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{f32x4} ~|~ \K{f64x2} \\
    \production{vshape} & \X{vxx} &::=&
      \X{ixx} ~|~ \X{fxx} \\
-   \production{lane index} & \laneidx &::=& \byte \\
+   \production{lane index} & \laneidx &::=& \u8 \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \K{v128.}\CONST~\xref{syntax/values}{syntax-simd}{\vX{\X{nnn}}} \\&&|&

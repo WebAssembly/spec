@@ -411,7 +411,7 @@ SIMD Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
 All variants of :ref:`SIMD instructions <syntax-instr-simd>` are represented by separate byte codes.
-The all have a one byte prefix, whereas the actual opcode is encoded by a variable-length :ref:`unsigned integer <binary-uint>`.
+They all have a one byte prefix, whereas the actual opcode is encoded by a variable-length :ref:`unsigned integer <binary-uint>`.
 
 SIMD loads and stores are followed by the encoding of their |memarg| immediate.
 
@@ -442,34 +442,37 @@ The |VCONST| instruction is followed by 16 immediate bytes, which are converted 
    \end{array}
 
 .. _binary-vternop:
+.. _binary-laneidx:
 
-The |SHUFFLE| instruction is also followed by 16 immediate bytes:
+The |SHUFFLE| instruction is also followed by the encoding of 16 |laneidx| immediates.
 
 .. math::
    \begin{array}{llclll}
+   \production{lane index} & \Blaneidx &::=&
+     l{:}\Bu8 &\Rightarrow& l \\
    \production{instruction} & \Binstr &::=& \dots \\&&|&
-     \hex{FD}~~13{:}\Bu32~~(b{:}\Bbyte)^{16} &\Rightarrow& \I8X16.\SHUFFLE~b^{16} \\
+     \hex{FD}~~13{:}\Bu32~~(l{:}\Blaneidx)^{16} &\Rightarrow& \I8X16.\SHUFFLE~l^{16} \\
    \end{array}
 
-|EXTRACTLANE| and |REPLACELANE| instructions are followed by 1 immediate byte.
+|EXTRACTLANE| and |REPLACELANE| instructions are followed by the encoding of a |laneidx| immediate.
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\&&|&
-     \hex{FD}~~21{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \I8X16.\EXTRACTLANE\K{\_s}~b \\ &&|&
-     \hex{FD}~~22{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \I8X16.\EXTRACTLANE\K{\_u}~b \\ &&|&
-     \hex{FD}~~23{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \I8X16.\REPLACELANE~b \\ &&|&
-     \hex{FD}~~24{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \I16X8.\EXTRACTLANE\K{\_s}~b \\ &&|&
-     \hex{FD}~~25{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \I16X8.\EXTRACTLANE\K{\_u}~b \\ &&|&
-     \hex{FD}~~26{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \I16X8.\REPLACELANE~b \\ &&|&
-     \hex{FD}~~27{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \I32X4.\EXTRACTLANE~b \\ &&|&
-     \hex{FD}~~28{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \I32X4.\REPLACELANE~b \\ &&|&
-     \hex{FD}~~29{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \I64X2.\EXTRACTLANE~b \\ &&|&
-     \hex{FD}~~30{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \I64X2.\REPLACELANE~b \\ &&|&
-     \hex{FD}~~31{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \F32X4.\EXTRACTLANE~b \\ &&|&
-     \hex{FD}~~32{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \F32X4.\REPLACELANE~b \\ &&|&
-     \hex{FD}~~33{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \F64X2.\EXTRACTLANE~b \\ &&|&
-     \hex{FD}~~34{:}\Bu32~~b{:}\Bbyte &\Rightarrow& \F64X2.\REPLACELANE~b \\
+     \hex{FD}~~21{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I8X16.\EXTRACTLANE\K{\_s}~l \\ &&|&
+     \hex{FD}~~22{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I8X16.\EXTRACTLANE\K{\_u}~l \\ &&|&
+     \hex{FD}~~23{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I8X16.\REPLACELANE~l \\ &&|&
+     \hex{FD}~~24{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I16X8.\EXTRACTLANE\K{\_s}~l \\ &&|&
+     \hex{FD}~~25{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I16X8.\EXTRACTLANE\K{\_u}~l \\ &&|&
+     \hex{FD}~~26{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I16X8.\REPLACELANE~l \\ &&|&
+     \hex{FD}~~27{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I32X4.\EXTRACTLANE~l \\ &&|&
+     \hex{FD}~~28{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I32X4.\REPLACELANE~l \\ &&|&
+     \hex{FD}~~29{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I64X2.\EXTRACTLANE~l \\ &&|&
+     \hex{FD}~~30{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I64X2.\REPLACELANE~l \\ &&|&
+     \hex{FD}~~31{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F32X4.\EXTRACTLANE~l \\ &&|&
+     \hex{FD}~~32{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F32X4.\REPLACELANE~l \\ &&|&
+     \hex{FD}~~33{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F64X2.\EXTRACTLANE~l \\ &&|&
+     \hex{FD}~~34{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F64X2.\REPLACELANE~l \\
    \end{array}
 
 All other SIMD instructions are plain opcodes without any immediates.
