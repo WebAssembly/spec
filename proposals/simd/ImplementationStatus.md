@@ -165,10 +165,12 @@
 | `f32x4.div`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f32x4.min`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f32x4.max`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `f32x4.ceil`               |                           |                    |                    |                    |                    |
-| `f32x4.floor`              |                           |                    |                    |                    |                    |
-| `f32x4.trunc`              |                           |                    |                    |                    |                    |
-| `f32x4.nearest`            |                           |                    |                    |                    |                    |
+| `f32x4.pmin`               |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `f32x4.pmax`               |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `f32x4.ceil`               |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `f32x4.floor`              |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `f32x4.trunc`              |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `f32x4.nearest`            |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f64x2.abs`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f64x2.neg`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f64x2.sqrt`               |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
@@ -178,10 +180,12 @@
 | `f64x2.div`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f64x2.min`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f64x2.max`                |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `f64x2.ceil`               |                           |                    |                    |                    |                    |
-| `f64x2.floor`              |                           |                    |                    |                    |                    |
-| `f64x2.trunc`              |                           |                    |                    |                    |                    |
-| `f64x2.nearest`            |                           |                    |                    |                    |                    |
+| `f64x2.pmin`               |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `f64x2.pmax`               |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `f64x2.ceil`               |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `f64x2.floor`              |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `f64x2.trunc`              |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `f64x2.nearest`            |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.trunc_sat_f32x4_s`  |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.trunc_sat_f32x4_u`  |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f32x4.convert_i32x4_s`    |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
@@ -189,7 +193,7 @@
 
 [1] Tip of tree LLVM as of May 20, 2020
 
-[2] V8 8.6.136. Requires flag `--experimental-wasm-simd`
+[2] V8 8.7.153. Requires flag `--experimental-wasm-simd`
 
 [3] Not known to be updated after latest renumbering. Requires flag `--enable simd`
 
