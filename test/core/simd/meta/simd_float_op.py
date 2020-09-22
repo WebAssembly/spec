@@ -135,7 +135,7 @@ class FloatingPointArithOp(FloatingPointOp):
 
 
 class FloatingPointSimpleOp(FloatingPointOp):
-    """Common simple ops for both f32x4 and f64x2: abs, min, max"""
+    """Common simple ops for both f32x4 and f64x2: abs, min, max, pmin, pmax"""
 
     def binary_op(self, op: str, p1: str, p2: str, hex_form=True) -> str:
         """Binary operation on p1 and p2 with the operation specified by op
@@ -163,6 +163,21 @@ class FloatingPointSimpleOp(FloatingPointOp):
 
         if '-nan' in [p1, p2]:
             return '-nan'
+
+        # pmin and pmax semantics follow C++'s std::min std::max
+        if op == 'pmin':
+            r = f2 if f2 < f1 else f1
+            if hex_form:
+                return r.hex()
+            else:
+                return str(r)
+
+        if op == 'pmax':
+            r = f2 if f1 < f2 else f1
+            if hex_form:
+                return r.hex()
+            else:
+                return str(r)
 
         if op == 'min':
             if '-0x0p+0' in [p1, p2] and '0x0p+0' in [p1, p2]:

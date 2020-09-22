@@ -488,6 +488,8 @@ let encode m =
       | Binary (V128 V128Op.(F32x4 Div)) -> simd_op 0xe7l
       | Binary (V128 V128Op.(F32x4 Min)) -> simd_op 0xe8l
       | Binary (V128 V128Op.(F32x4 Max)) -> simd_op 0xe9l
+      | Binary (V128 V128Op.(F32x4 Pmin)) -> simd_op 0xeal
+      | Binary (V128 V128Op.(F32x4 Pmax)) -> simd_op 0xebl
       | Binary (V128 V128Op.(F64x2 Eq)) -> simd_op 0x47l
       | Binary (V128 V128Op.(F64x2 Ne)) -> simd_op 0x48l
       | Binary (V128 V128Op.(F64x2 Lt)) -> simd_op 0x49l
@@ -500,6 +502,8 @@ let encode m =
       | Binary (V128 V128Op.(F64x2 Div)) -> simd_op 0xf3l
       | Binary (V128 V128Op.(F64x2 Min)) -> simd_op 0xf4l
       | Binary (V128 V128Op.(F64x2 Max)) -> simd_op 0xf5l
+      | Binary (V128 V128Op.(F64x2 Pmin)) -> simd_op 0xf6l
+      | Binary (V128 V128Op.(F64x2 Pmax)) -> simd_op 0xf7l
       | Binary (V128 V128Op.(V128 And)) -> simd_op 0x4el
       | Binary (V128 V128Op.(V128 AndNot)) -> simd_op 0x4fl
       | Binary (V128 V128Op.(V128 Or)) -> simd_op 0x50l

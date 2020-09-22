@@ -119,6 +119,8 @@ sig
   val div : t -> t -> t
   val min : t -> t -> t
   val max : t -> t -> t
+  val pmin : t -> t -> t
+  val pmax : t -> t -> t
 end
 
 module type Vec =
@@ -268,6 +270,8 @@ struct
     let div = binop Float.div
     let min = binop Float.min
     let max = binop Float.max
+    let pmin = binop (fun x y -> if Float.lt y x then y else x)
+    let pmax = binop (fun x y -> if Float.lt x y then y else x)
   end
 
   module MakeInt (Int : Int.S) (Convert : sig

@@ -494,6 +494,8 @@ rule token = parse
   | (simd_float_shape as s)".floor" { UNARY (simd_float_op s f32x4_floor f64x2_floor) }
   | (simd_float_shape as s)".trunc" { UNARY (simd_float_op s f32x4_trunc f64x2_trunc) }
   | (simd_float_shape as s)".nearest" { UNARY (simd_float_op s f32x4_nearest f64x2_nearest) }
+  | (simd_float_shape as s)".pmin" { BINARY (simd_float_op s f32x4_pmin f64x2_pmin) }
+  | (simd_float_shape as s)".pmax" { BINARY (simd_float_op s f32x4_pmax f64x2_pmax) }
   | (simd_shape as s)".add"
     { BINARY (simdop s i8x16_add i16x8_add i32x4_add i64x2_add f32x4_add f64x2_add) }
   | (simd_shape as s)".sub"

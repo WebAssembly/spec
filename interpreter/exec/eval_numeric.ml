@@ -247,6 +247,8 @@ struct
       | F32x4 Div -> SXX.F32x4.div
       | F32x4 Min -> SXX.F32x4.min
       | F32x4 Max -> SXX.F32x4.max
+      | F32x4 Pmin -> SXX.F32x4.pmin
+      | F32x4 Pmax -> SXX.F32x4.pmax
       | F64x2 Eq -> SXX.F64x2.eq
       | F64x2 Ne -> SXX.F64x2.ne
       | F64x2 Lt -> SXX.F64x2.lt
@@ -259,6 +261,8 @@ struct
       | F64x2 Div -> SXX.F64x2.div
       | F64x2 Min -> SXX.F64x2.min
       | F64x2 Max -> SXX.F64x2.max
+      | F64x2 Pmin -> SXX.F64x2.pmin
+      | F64x2 Pmax -> SXX.F64x2.pmax
       | V128 And -> SXX.V128.and_
       | V128 Or -> SXX.V128.or_
       | V128 Xor -> SXX.V128.xor

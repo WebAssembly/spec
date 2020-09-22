@@ -394,6 +394,8 @@ let simd_prefix s =
   | 0xe7l -> f32x4_div
   | 0xe8l -> f32x4_min
   | 0xe9l -> f32x4_max
+  | 0xeal -> f32x4_pmin
+  | 0xebl -> f32x4_pmax
   | 0xecl -> f64x2_abs
   | 0xedl -> f64x2_neg
   | 0xefl -> f64x2_sqrt
@@ -403,6 +405,8 @@ let simd_prefix s =
   | 0xf3l -> f64x2_div
   | 0xf4l -> f64x2_min
   | 0xf5l -> f64x2_max
+  | 0xf6l -> f64x2_pmin
+  | 0xf7l -> f64x2_pmax
   | 0xf8l -> i32x4_trunc_sat_f32x4_s
   | 0xf9l -> i32x4_trunc_sat_f32x4_u
   | 0xfal -> f32x4_convert_i32x4_s
