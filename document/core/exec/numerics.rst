@@ -1675,6 +1675,38 @@ This non-deterministic result is expressed by the following auxiliary function p
    \end{array}
 
 
+.. _op-fpmin:
+
+:math:`\fpmin_N(z_1, z_2)`
+..........................
+
+* If :math:`z_2` is less than :math:`z_1` then return :math:`z_2`.
+
+* Else return :math:`z_1`.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \fpmin_N(z_1, z_2) &=& z_2 & (\iff \flt_N(z_2, z_1) = 1) \\
+   \fpmin_N(z_1, z_2) &=& z_1 & (\otherwise)
+   \end{array}
+
+
+.. _op-fpmax:
+
+:math:`\fpmax_N(z_1, z_2)`
+..........................
+
+* If :math:`z_1` is less than :math:`z_2` then return :math:`z_2`.
+
+* Else return :math:`z_1`.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \fpmax_N(z_1, z_2) &=& z_2 & (\iff \flt_N(z_1, z_2) = 1) \\
+   \fpmax_N(z_1, z_2) &=& z_1 & (\otherwise)
+   \end{array}
+
+
 .. _convert-ops:
 
 Conversions

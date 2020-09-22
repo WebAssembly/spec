@@ -420,6 +420,8 @@
 .. |VDIV| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{div}}
 .. |VMIN| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{min}}
 .. |VMAX| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{max}}
+.. |VPMIN| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{pmin}}
+.. |VPMAX| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{pmax}}
 .. |NARROW| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{narrow}}
 .. |WIDEN| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{widen}}
 .. |AVGR| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{avgr}}
@@ -1056,6 +1058,8 @@
 .. |fgt| mathdef:: \xref{exec/numerics}{op-fgt}{\F{fgt}}
 .. |fle| mathdef:: \xref{exec/numerics}{op-fle}{\F{fle}}
 .. |fge| mathdef:: \xref{exec/numerics}{op-fge}{\F{fge}}
+.. |fpmin| mathdef:: \xref{exec/numerics}{op-fpmin}{\F{fpmin}}
+.. |fpmax| mathdef:: \xref{exec/numerics}{op-fpmax}{\F{fpmax}}
 
 .. |extend| mathdef:: \xref{exec/numerics}{op-extend_u}{\F{extend}}
 .. |extendu| mathdef:: \xref{exec/numerics}{op-extend_u}{\F{extend}^{\K{u}}}

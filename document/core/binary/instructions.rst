@@ -730,7 +730,9 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~230{:}\Bu32 &\Rightarrow& \F32X4.\VMUL \\ &&|&
      \hex{FD}~~231{:}\Bu32 &\Rightarrow& \F32X4.\VDIV \\ &&|&
      \hex{FD}~~232{:}\Bu32 &\Rightarrow& \F32X4.\VMIN \\ &&|&
-     \hex{FD}~~233{:}\Bu32 &\Rightarrow& \F32X4.\VMAX \\
+     \hex{FD}~~233{:}\Bu32 &\Rightarrow& \F32X4.\VMAX \\ &&|&
+     \hex{FD}~~234{:}\Bu32 &\Rightarrow& \F32X4.\VPMIN \\ &&|&
+     \hex{FD}~~235{:}\Bu32 &\Rightarrow& \F32X4.\VPMAX \\
    \end{array}
 
 .. math::
@@ -744,7 +746,9 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~242{:}\Bu32 &\Rightarrow& \F64X2.\VMUL \\ &&|&
      \hex{FD}~~243{:}\Bu32 &\Rightarrow& \F64X2.\VDIV \\ &&|&
      \hex{FD}~~244{:}\Bu32 &\Rightarrow& \F64X2.\VMIN \\ &&|&
-     \hex{FD}~~245{:}\Bu32 &\Rightarrow& \F64X2.\VMAX \\
+     \hex{FD}~~245{:}\Bu32 &\Rightarrow& \F64X2.\VMAX \\ &&|&
+     \hex{FD}~~245{:}\Bu32 &\Rightarrow& \F64X2.\VPMIN \\ &&|&
+     \hex{FD}~~246{:}\Bu32 &\Rightarrow& \F64X2.\VPMAX \\
    \end{array}
 
 .. math::

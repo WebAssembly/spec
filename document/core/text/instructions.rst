@@ -763,7 +763,9 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{f32x4.mul} &\Rightarrow& \F32X4.\VMUL\\ &&|&
      \text{f32x4.div} &\Rightarrow& \F32X4.\VDIV\\ &&|&
      \text{f32x4.min} &\Rightarrow& \F32X4.\VMIN\\ &&|&
-     \text{f32x4.max} &\Rightarrow& \F32X4.\VMAX\\
+     \text{f32x4.max} &\Rightarrow& \F32X4.\VMAX\\ &&|&
+     \text{f32x4.pmin} &\Rightarrow& \F32X4.\VPMIN\\ &&|&
+     \text{f32x4.pmax} &\Rightarrow& \F32X4.\VPMAX\\
    \end{array}
 
 .. math::
@@ -777,7 +779,9 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{f64x2.mul} &\Rightarrow& \F64X2.\VMUL\\ &&|&
      \text{f64x2.div} &\Rightarrow& \F64X2.\VDIV\\ &&|&
      \text{f64x2.min} &\Rightarrow& \F64X2.\VMIN\\ &&|&
-     \text{f64x2.max} &\Rightarrow& \F64X2.\VMAX\\
+     \text{f64x2.max} &\Rightarrow& \F64X2.\VMAX\\ &&|&
+     \text{f64x2.pmin} &\Rightarrow& \F64X2.\VPMIN\\ &&|&
+     \text{f64x2.pmax} &\Rightarrow& \F64X2.\VPMAX\\
    \end{array}
 
 .. math::
