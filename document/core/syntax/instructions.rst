@@ -298,14 +298,20 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
    \production{SIMD floating-point unary operator} & \vfunop &::=&
      \K{abs} ~|~
      \K{neg} ~|~
-     \K{sqrt} \\
+     \K{sqrt} ~|~
+     \K{ceil} ~|~
+     \K{floor} ~|~
+     \K{trunc} ~|~
+     \K{nearest} \\
    \production{SIMD floating-point binary operator} & \vfbinop &::=&
      \K{add} ~|~
      \K{sub} ~|~
      \K{mul} ~|~
      \K{div} ~|~
      \K{min} ~|~
-     \K{max} \\
+     \K{max} ~|~
+     \K{pmin} ~|~
+     \K{pmax} \\
    \end{array}
 
 .. _syntax-simd-shape:
