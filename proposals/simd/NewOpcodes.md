@@ -119,8 +119,8 @@
 | f32x4.div       | 0xe7   | f64x2.div       | 0xf3   |
 | f32x4.min       | 0xe8   | f64x2.min       | 0xf4   |
 | f32x4.max       | 0xe9   | f64x2.max       | 0xf5   |
-| ---- pmin ----  | 0xea   | ---- pmin ----  | 0xf6   |
-| ---- pmax ----  | 0xeb   | ---- pmax ----  | 0xf7   |
+| f32x4.pmin      | 0xea   | f64x2.pmin      | 0xf6   |
+| f32x4.pmax      | 0xeb   | f64x2.pmax      | 0xf7   |
 
 | Conversion Op           | opcode |
 | ----------------------- | ------ |
