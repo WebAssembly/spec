@@ -442,16 +442,24 @@
 .. |ftestop| mathdef:: \xref{syntax/instructions}{syntax-ftestop}{\X{ftestop}}
 .. |frelop| mathdef:: \xref{syntax/instructions}{syntax-frelop}{\X{frelop}}
 
+.. |ishape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\X{ishape}}
+.. |fshape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\X{fshape}}
+.. |shape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\X{shape}}
+
+.. |vunop| mathdef:: \xref{syntax/instructions}{syntax-vunop}{\X{vunop}}
+.. |vbinop| mathdef:: \xref{syntax/instructions}{syntax-vbinop}{\X{vbinop}}
+.. |vternop| mathdef:: \xref{syntax/instructions}{syntax-vternop}{\X{vternop}}
+
 .. |laneidx| mathdef:: \xref{syntax/instructions}{syntax-laneidx}{\X{laneidx}}
 .. |vsunop| mathdef:: \xref{syntax/instructions}{syntax-vsunop}{\X{vsunop}}
 .. |vsbinop| mathdef:: \xref{syntax/instructions}{syntax-vsbinop}{\X{vsbinop}}
 .. |vsternop| mathdef:: \xref{syntax/instructions}{syntax-vsternop}{\X{vsternop}}
-.. |vtestop| mathdef:: \xref{syntax/instructions}{syntax-vtestop}{\X{vtestop}}
+.. |vitestop| mathdef:: \xref{syntax/instructions}{syntax-vitestop}{\X{vitestop}}
 .. |vshiftop| mathdef:: \xref{syntax/instructions}{syntax-vshiftop}{\X{vshiftop}}
 .. |viunop| mathdef:: \xref{syntax/instructions}{syntax-viunop}{\X{viunop}}
 .. |vibinop| mathdef:: \xref{syntax/instructions}{syntax-vibinop}{\X{vibinop}}
 .. |viminmaxop| mathdef:: \xref{syntax/instructions}{syntax-viminmaxop}{\X{viminmaxop}}
-.. |vsatbinop| mathdef:: \xref{syntax/instructions}{syntax-vsatbinop}{\X{vsatbinop}}
+.. |visatbinop| mathdef:: \xref{syntax/instructions}{syntax-visatbinop}{\X{visatbinop}}
 .. |vfunop| mathdef:: \xref{syntax/instructions}{syntax-vfunop}{\X{vfunop}}
 .. |vfbinop| mathdef:: \xref{syntax/instructions}{syntax-vfbinop}{\X{vfbinop}}
 .. |virelop| mathdef:: \xref{syntax/instructions}{syntax-virelop}{\X{virelop}}
@@ -821,6 +829,9 @@
 .. |vdashimport| mathdef:: \xref{valid/modules}{valid-import}{\vdash}
 .. |vdashimportdesc| mathdef:: \xref{valid/modules}{valid-importdesc}{\vdash}
 .. |vdashmodule| mathdef:: \xref{valid/modules}{valid-module}{\vdash}
+
+.. |unpacked| mathdef:: \xref{valid/instructions}{aux-unpacked}{\F{unpacked}}
+.. |lanes| mathdef:: \xref{valid/instructions}{aux-lanes}{\F{lanes}}
 
 
 .. Execution

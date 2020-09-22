@@ -575,7 +575,7 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~82{:}\Bu32 &\Rightarrow& \V128.\BITSELECT
    \end{array}
 
-.. _binary-vtestop:
+.. _binary-vitestop:
 .. _binary-vshiftop:
 .. _binary-viunop:
 .. _binary-vibinop:

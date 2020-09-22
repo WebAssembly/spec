@@ -174,17 +174,21 @@ Occasionally, it is convenient to group operators together according to the foll
 .. index:: ! simd instruction, fixed-width simd, value, value type
    pair: abstract syntax; instruction
 .. _syntax-laneidx:
+.. _syntax-shape:
+.. _syntax-vunop:
+.. _syntax-vbinop:
+.. _syntax-vternop:
 .. _syntax-vsunop:
 .. _syntax-vsbinop:
 .. _syntax-vsternop:
-.. _syntax-vtestop:
+.. _syntax-vitestop:
 .. _syntax-virelop:
 .. _syntax-vfrelop:
 .. _syntax-vshiftop:
 .. _syntax-viunop:
 .. _syntax-vibinop:
 .. _syntax-viminmaxop:
-.. _syntax-vsatbinop:
+.. _syntax-visatbinop:
 .. _syntax-vfunop:
 .. _syntax-vfbinop:
 .. _syntax-instr-simd:
@@ -196,38 +200,38 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
 
 .. math::
    \begin{array}{llcl}
-   \production{ishape} & \X{ixx} &::=&
+   \production{ishape} & \ishape &::=&
      \K{i8x16} ~|~ \K{i16x8} ~|~ \K{i32x4} ~|~ \K{i64x2} \\
-   \production{fshape} & \X{fxx} &::=&
+   \production{fshape} & \fshape &::=&
      \K{f32x4} ~|~ \K{f64x2} \\
-   \production{vshape} & \X{vxx} &::=&
-     \X{ixx} ~|~ \X{fxx} \\
+   \production{shape} & \shape &::=&
+     \ishape ~|~ \fshape \\
    \production{lane index} & \laneidx &::=& \u8 \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
-     \K{v128.}\CONST~\xref{syntax/values}{syntax-simd}{\vX{\X{nnn}}} \\&&|&
+     \K{v128.}\VCONST~\i128 \\&&|&
      \K{v128.}\vsunop \\&&|&
      \K{v128.}\vsbinop \\&&|&
      \K{v128.}\vsternop \\&&|&
      \K{i8x16.}\SHUFFLE~\laneidx^{16} \\&&|&
      \K{i8x16.}\SWIZZLE \\&&|&
-     \X{vxx}\K{.}\SPLAT \\&&|&
+     \shape\K{.}\SPLAT \\&&|&
      \K{i8x16.}\EXTRACTLANE\K{\_}\sx~\laneidx ~|~
      \K{i16x8.}\EXTRACTLANE\K{\_}\sx~\laneidx \\&&|&
      \K{i32x4.}\EXTRACTLANE~\laneidx ~|~
      \K{i64x2.}\EXTRACTLANE~\laneidx \\&&|&
-     \X{fxx}\K{.}\EXTRACTLANE~\laneidx \\&&|&
-     \X{vxx}\K{.}\REPLACELANE~\laneidx \\&&|&
-     \X{ixx}\K{.}\virelop \\&&|&
-     \X{fxx}\K{.}\vfrelop \\&&|&
+     \fshape\K{.}\EXTRACTLANE~\laneidx \\&&|&
+     \shape\K{.}\REPLACELANE~\laneidx \\&&|&
+     \ishape\K{.}\virelop \\&&|&
+     \fshape\K{.}\vfrelop \\&&|&
      \K{i8x16.}\viunop ~|~
      \K{i16x8.}\viunop ~|~
      \K{i32x4.}\viunop \\&&|&
      \K{i64x2.}\NEG \\&&|&
-     \X{fxx.}\vfunop \\&&|&
-     \K{i8x16.}\vtestop ~|~
-     \K{i16x8.}\vtestop ~|~
-     \K{i32x4.}\vtestop \\&&|&
+     \fshape\K{.}\vfunop \\&&|&
+     \K{i8x16.}\vitestop ~|~
+     \K{i16x8.}\vitestop ~|~
+     \K{i32x4.}\vitestop \\&&|&
      \K{i8x16.}\BITMASK ~|~
      \K{i16x8.}\BITMASK ~|~
      \K{i32x4.}\BITMASK \\&&|&
@@ -237,21 +241,21 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{i32x4.}\WIDEN\K{\_low}\K{\_i16x8\_}\sx \\&&|&
      \K{i16x8.}\WIDEN\K{\_high}\K{\_i8x16\_}\sx ~|~
      \K{i32x4.}\WIDEN\K{\_high}\K{\_i16x8\_}\sx \\&&|&
-     \X{ixx}\K{.}\vshiftop \\&&|&
-     \X{ixx}\K{.}\vibinop \\&&|&
+     \ishape\K{.}\vshiftop \\&&|&
+     \ishape\K{.}\vibinop \\&&|&
      \K{i8x16.}\viminmaxop ~|~
      \K{i16x8.}\viminmaxop ~|~
      \K{i32x4.}\viminmaxop \\&&|&
-     \K{i8x16.}\vsatbinop ~|~
-     \K{i16x8.}\vsatbinop \\&&|&
+     \K{i8x16.}\visatbinop ~|~
+     \K{i16x8.}\visatbinop \\&&|&
      \K{i16x8.}\K{mul} ~|~
      \K{i32x4.}\K{mul} ~|~
      \K{i64x2.}\K{mul} \\&&|&
      \K{i8x16.}\AVGR\K{\_u} ~|~
      \K{i16x8.}\AVGR\K{\_u} \\&&|&
-     \X{fxx.}\vfbinop \\&&|&
-     \K{i32x4.}\TRUNC\K{\_sat\_f32x4\_}\sx ~|~
-     \K{f32x4.}\CONVERT\K{\_i32x4\_}\sx \\&&|&
+     \fshape\K{.}\vfbinop \\&&|&
+     \K{i32x4.}\VTRUNC\K{\_sat\_f32x4\_}\sx \\ &&|&
+     \K{f32x4.}\VCONVERT\K{\_i32x4\_}\sx \\&&|&
      \dots \\
    \production{SIMD unary operator} & \vsunop &::=&
      \K{not} \\
@@ -262,7 +266,7 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{xor} \\
    \production{SIMD ternary operator} & \vsternop &::=&
      \K{bitselect} \\
-   \production{SIMD test operator} & \vtestop &::=&
+   \production{SIMD test operator} & \vitestop &::=&
      \K{any\_true} ~|~
      \K{all\_true} \\
    \production{SIMD integer relational operator} & \virelop &::=&
@@ -292,7 +296,7 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
    \production{SIMD integer binary min/max operator} & \viminmaxop &::=&
      \K{min\_}\sx ~|~
      \K{max\_}\sx \\
-   \production{SIMD integer saturating binary operator} & \vsatbinop &::=&
+   \production{SIMD integer saturating binary operator} & \visatbinop &::=&
      \K{add\_sat\_}\sx ~|~
      \K{sub\_sat\_}\sx \\
    \production{SIMD floating-point unary operator} & \vfunop &::=&
@@ -351,6 +355,31 @@ SIMD instructions can be grouped into several subcategories:
 
 Some SIMD instructions have a signedness annotation |sx| which distinguishes whether the elements in the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
 For the other SIMD instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
+
+
+Conventions
+...........
+
+Occasionally, it is convenient to group operators together according to the following grammar shorthands:
+
+.. math::
+   \begin{array}{llll}
+   \production{unary operator} & \vunop &::=&
+     \viunop ~|~
+     \vfunop \\&&|&
+     \VNEG ~|~
+     \WIDEN \\
+   \production{binary operator} & \vbinop &::=&
+     \vibinop ~|~ \vfbinop \\&&|&
+     \virelop ~|~ \vfrelop \\&&|&
+     \viminmaxop ~|~ \visatbinop \\&&|&
+     \SWIZZLE ~|~
+     \NARROW ~|~
+     \VMUL ~|~
+     \AVGR\K{\_u} ~|~
+     \VTRUNC ~|~
+     \VCONVERT \\
+   \end{array}
 
 
 .. index:: ! parametric instruction, value type
