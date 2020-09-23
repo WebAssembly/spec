@@ -214,14 +214,14 @@
   (func (export "test")
     (data.drop 0)
     (memory.init 0 (i32.const 1234) (i32.const 1) (i32.const 1))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
    (memory 1)
    (data (i32.const 0) "\37")
    (func (export "test")
      (memory.init 0 (i32.const 1234) (i32.const 1) (i32.const 1))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (assert_invalid
   (module
@@ -250,28 +250,28 @@
     (data "\37")
   (func (export "test")
     (memory.init 0 (i32.const 1234) (i32.const 0) (i32.const 5))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory 1)
     (data "\37")
   (func (export "test")
     (memory.init 0 (i32.const 1234) (i32.const 2) (i32.const 3))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory 1)
     (data "\37")
   (func (export "test")
     (memory.init 0 (i32.const 0xFFFE) (i32.const 1) (i32.const 3))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory 1)
     (data "\37")
   (func (export "test")
     (memory.init 0 (i32.const 1234) (i32.const 4) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory 1)
@@ -285,7 +285,7 @@
     (data "\37")
   (func (export "test")
     (memory.init 0 (i32.const 0x10001) (i32.const 0) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory 1)
@@ -306,7 +306,7 @@
     (data "\37")
   (func (export "test")
     (memory.init 0 (i32.const 0x10001) (i32.const 4) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (assert_invalid
   (module
@@ -831,7 +831,7 @@
     (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 
 (assert_trap (invoke "run" (i32.const 65528) (i32.const 16))
-              "out of bounds")
+              "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))
@@ -854,7 +854,7 @@
     (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 
 (assert_trap (invoke "run" (i32.const 65527) (i32.const 16))
-              "out of bounds")
+              "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))
@@ -877,7 +877,7 @@
     (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 
 (assert_trap (invoke "run" (i32.const 65472) (i32.const 30))
-              "out of bounds")
+              "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))
@@ -900,7 +900,7 @@
     (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 
 (assert_trap (invoke "run" (i32.const 65473) (i32.const 31))
-              "out of bounds")
+              "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))
@@ -923,7 +923,7 @@
     (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 
 (assert_trap (invoke "run" (i32.const 65528) (i32.const 4294967040))
-              "out of bounds")
+              "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))
@@ -946,7 +946,7 @@
     (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 
 (assert_trap (invoke "run" (i32.const 0) (i32.const 4294967292))
-              "out of bounds")
+              "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))

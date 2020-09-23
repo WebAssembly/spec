@@ -211,7 +211,7 @@
     (func $f)
     (elem (i32.const 0) $f)
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 
 (assert_trap
@@ -220,7 +220,7 @@
     (func $f)
     (elem (i32.const 0) $f)
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 
 (assert_trap
@@ -229,7 +229,7 @@
     (func $f)
     (elem (i32.const 0) $f)
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 
 (assert_trap
@@ -237,7 +237,7 @@
     (table 0 funcref)
     (elem (i32.const 1))
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 (assert_trap
   (module
@@ -245,7 +245,7 @@
     (func $f)
     (elem (i32.const 10) $f)
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 (assert_trap
   (module
@@ -253,7 +253,7 @@
     (func $f)
     (elem (i32.const 10) $f)
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 
 (assert_trap
@@ -262,7 +262,7 @@
     (func $f)
     (elem (i32.const 10) $f)
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 (assert_trap
   (module
@@ -270,7 +270,7 @@
     (func $f)
     (elem (i32.const 10) $f)
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 
 (assert_trap
@@ -279,7 +279,7 @@
     (func $f)
     (elem (i32.const -1) $f)
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 (assert_trap
   (module
@@ -287,7 +287,7 @@
     (func $f)
     (elem (i32.const -1) $f)
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 
 (assert_trap
@@ -296,7 +296,7 @@
     (func $f)
     (elem (i32.const -10) $f)
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 (assert_trap
   (module
@@ -304,7 +304,7 @@
     (func $f)
     (elem (i32.const -10) $f)
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 
 ;; Implicitly dropped elements
@@ -317,7 +317,7 @@
     (table.init $e (i32.const 0) (i32.const 0) (i32.const 1))
   )
 )
-(assert_trap (invoke "init") "out of bounds")
+(assert_trap (invoke "init") "out of bounds table access")
 
 (module
   (table 10 funcref)
@@ -327,7 +327,7 @@
     (table.init $e (i32.const 0) (i32.const 0) (i32.const 1))
   )
 )
-(assert_trap (invoke "init") "out of bounds")
+(assert_trap (invoke "init") "out of bounds table access")
 
 ;; Element without table
 

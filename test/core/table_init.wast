@@ -450,7 +450,7 @@
   (func (export "test")
     (table.init 2 (i32.const 12) (i32.const 1) (i32.const 1))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds table access")
 
 (module
   (table $t0 30 30 funcref)
@@ -522,7 +522,7 @@
   (func (export "test")
     (elem.drop 1)
     (table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds table access")
 
 (module
   (table $t0 30 30 funcref)
@@ -546,7 +546,7 @@
   (func (export "test")
     (table.init 1 (i32.const 12) (i32.const 0) (i32.const 5))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds table access")
 
 (module
   (table $t0 30 30 funcref)
@@ -570,7 +570,7 @@
   (func (export "test")
     (table.init 1 (i32.const 12) (i32.const 2) (i32.const 3))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds table access")
 
 (module
   (table $t0 30 30 funcref)
@@ -594,7 +594,7 @@
   (func (export "test")
     (table.init $t0 1 (i32.const 28) (i32.const 1) (i32.const 3))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds table access")
 
 (module
   (table $t0 30 30 funcref)
@@ -642,7 +642,7 @@
   (func (export "test")
     (table.init $t0 1 (i32.const 12) (i32.const 5) (i32.const 0))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds table access")
 
 (module
   (table $t0 30 30 funcref)
@@ -690,7 +690,7 @@
   (func (export "test")
     (table.init $t0 1 (i32.const 31) (i32.const 2) (i32.const 0))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds table access")
 
 (module
   (table $t0 30 30 funcref)
@@ -738,7 +738,7 @@
   (func (export "test")
     (table.init $t0 1 (i32.const 31) (i32.const 5) (i32.const 0))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds table access")
 
 (module
   (table $t0 30 30 funcref)
@@ -762,7 +762,7 @@
   (func (export "test")
     (table.init $t1 1 (i32.const 26) (i32.const 1) (i32.const 3))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds table access")
 
 (module
   (table $t0 30 30 funcref)
@@ -810,7 +810,7 @@
   (func (export "test")
     (table.init $t1 1 (i32.const 12) (i32.const 5) (i32.const 0))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds table access")
 
 (module
   (table $t0 30 30 funcref)
@@ -858,7 +858,7 @@
   (func (export "test")
     (table.init $t1 1 (i32.const 29) (i32.const 2) (i32.const 0))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds table access")
 
 (module
   (table $t0 30 30 funcref)
@@ -906,7 +906,7 @@
   (func (export "test")
     (table.init $t1 1 (i32.const 29) (i32.const 5) (i32.const 0))
     ))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds table access")
 
 (assert_invalid
   (module
@@ -1503,7 +1503,7 @@
     (call_indirect (type 0) (local.get $n)))
   (func (export "run") (param $offs i32) (param $len i32)
     (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
-(assert_trap (invoke "run" (i32.const 24) (i32.const 16)) "out of bounds")
+(assert_trap (invoke "run" (i32.const 24) (i32.const 16)) "out of bounds table access")
 (assert_trap (invoke "test" (i32.const 0)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 1)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 2)) "uninitialized element")
@@ -1565,7 +1565,7 @@
     (call_indirect (type 0) (local.get $n)))
   (func (export "run") (param $offs i32) (param $len i32)
     (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
-(assert_trap (invoke "run" (i32.const 25) (i32.const 16)) "out of bounds")
+(assert_trap (invoke "run" (i32.const 25) (i32.const 16)) "out of bounds table access")
 (assert_trap (invoke "test" (i32.const 0)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 1)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 2)) "uninitialized element")
@@ -1627,7 +1627,7 @@
     (call_indirect (type 0) (local.get $n)))
   (func (export "run") (param $offs i32) (param $len i32)
     (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
-(assert_trap (invoke "run" (i32.const 96) (i32.const 32)) "out of bounds")
+(assert_trap (invoke "run" (i32.const 96) (i32.const 32)) "out of bounds table access")
 (assert_trap (invoke "test" (i32.const 0)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 1)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 2)) "uninitialized element")
@@ -1817,7 +1817,7 @@
     (call_indirect (type 0) (local.get $n)))
   (func (export "run") (param $offs i32) (param $len i32)
     (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
-(assert_trap (invoke "run" (i32.const 97) (i32.const 31)) "out of bounds")
+(assert_trap (invoke "run" (i32.const 97) (i32.const 31)) "out of bounds table access")
 (assert_trap (invoke "test" (i32.const 0)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 1)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 2)) "uninitialized element")
@@ -2007,7 +2007,7 @@
     (call_indirect (type 0) (local.get $n)))
   (func (export "run") (param $offs i32) (param $len i32)
     (table.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
-(assert_trap (invoke "run" (i32.const 48) (i32.const 4294967280)) "out of bounds")
+(assert_trap (invoke "run" (i32.const 48) (i32.const 4294967280)) "out of bounds table access")
 (assert_trap (invoke "test" (i32.const 0)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 1)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 2)) "uninitialized element")
@@ -2101,7 +2101,7 @@
     (call_indirect (type 0) (local.get $n)))
   (func (export "run") (param $offs i32) (param $len i32)
     (table.init 0 (local.get $offs) (i32.const 8) (local.get $len))))
-(assert_trap (invoke "run" (i32.const 0) (i32.const 4294967292)) "out of bounds")
+(assert_trap (invoke "run" (i32.const 0) (i32.const 4294967292)) "out of bounds table access")
 (assert_trap (invoke "test" (i32.const 0)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 1)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 2)) "uninitialized element")
