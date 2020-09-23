@@ -27,7 +27,7 @@ the latter surrounding :ref:`structured control instructions <syntax-instr-contr
 
 .. code-block:: pseudo
 
-   type val_type = I32 | I64 | F32 | F64
+   type val_type = I32 | I64 | F32 | F64 | V128
 
    type opd_stack = stack(val_type | Unknown)
 
