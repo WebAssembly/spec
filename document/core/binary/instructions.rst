@@ -449,7 +449,7 @@ The |SHUFFLE| instruction is also followed by the encoding of 16 |laneidx| immed
 .. math::
    \begin{array}{llclll}
    \production{lane index} & \Blaneidx &::=&
-     l{:}\Bu8 &\Rightarrow& l \\
+     l{:}\Bbyte &\Rightarrow& l \\
    \production{instruction} & \Binstr &::=& \dots \\&&|&
      \hex{FD}~~13{:}\Bu32~~(l{:}\Blaneidx)^{16} &\Rightarrow& \I8X16.\SHUFFLE~l^{16} \\
    \end{array}
