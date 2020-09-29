@@ -291,7 +291,7 @@ let encode m =
       | Compare (F64 F64Op.Gt) -> op 0x64
       | Compare (F64 F64Op.Le) -> op 0x65
       | Compare (F64 F64Op.Ge) -> op 0x66
-      | Compare (V128 _) -> failwith "TODO v128"
+      | Compare (V128 _) -> assert false
 
       | Unary (I32 I32Op.Clz) -> op 0x67
       | Unary (I32 I32Op.Ctz) -> op 0x68
@@ -508,8 +508,6 @@ let encode m =
       | Binary (V128 V128Op.(V128 AndNot)) -> simd_op 0x4fl
       | Binary (V128 V128Op.(V128 Or)) -> simd_op 0x50l
       | Binary (V128 V128Op.(V128 Xor)) -> simd_op 0x51l
-      | Binary (V128 _) -> failwith "TODO v128"
-
 
       | Ternary (V128Op.Bitselect) -> simd_op 0x52l
 

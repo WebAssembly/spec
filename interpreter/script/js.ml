@@ -195,29 +195,29 @@ let eq_of = function
   | I64Type -> Values.I64 I64Op.Eq
   | F32Type -> Values.F32 F32Op.Eq
   | F64Type -> Values.F64 F64Op.Eq
-  | V128Type -> failwith "TODO v128"
+  | V128Type -> assert false
 
 let and_of = function
   | I32Type | F32Type -> Values.I32 I32Op.And
   | I64Type | F64Type -> Values.I64 I64Op.And
-  | V128Type -> failwith "TODO v128"
+  | V128Type -> Values.V128 V128Op.(V128 And)
 
 let reinterpret_of = function
   | I32Type -> I32Type, Nop
   | I64Type -> I64Type, Nop
   | F32Type -> I32Type, Convert (Values.I32 I32Op.ReinterpretFloat)
   | F64Type -> I64Type, Convert (Values.I64 I64Op.ReinterpretFloat)
-  | V128Type -> failwith "TODO v128"
+  | V128Type -> assert false
 
 let canonical_nan_of = function
   | I32Type | F32Type -> Values.I32 (F32.to_bits F32.pos_nan)
   | I64Type | F64Type -> Values.I64 (F64.to_bits F64.pos_nan)
-  | V128Type -> failwith "TODO v128"
+  | V128Type -> assert false
 
 let abs_mask_of = function
   | I32Type | F32Type -> Values.I32 Int32.max_int
   | I64Type | F64Type -> Values.I64 Int64.max_int
-  | V128Type -> failwith "TODO v128"
+  | V128Type -> assert false
 
 let invoke ft lits at =
   [ft @@ at], FuncImport (1l @@ at) @@ at,
@@ -290,7 +290,7 @@ let assert_return ress ts at =
       in
       [
         Const (Values.V128 mask @@ at) @@ at;
-        Binary (Values.V128 V128Op.(V128 And)) @@ at;
+        Binary (and_of V128Type) @@ at;
         Const (Values.V128 expected @@ at) @@ at;
         Binary (Values.V128 V128Op.(I8x16 Eq)) @@ at;
         (* If all lanes are non-zero, then they are equal *)

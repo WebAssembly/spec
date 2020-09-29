@@ -199,7 +199,7 @@ struct
     | I32x4 AllTrue -> "i32x4.all_true"
     | _ -> assert false
 
-  let relop xx = fun _ -> failwith "TODO v128"
+  let relop xx = assert false
 
   let unop xx (op : unop) = match op with
     | I8x16 Neg -> "i8x16.neg"

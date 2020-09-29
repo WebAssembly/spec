@@ -162,7 +162,7 @@ struct
       | F64x2 Trunc -> to_value (SXX.F64x2.trunc (of_value 1 v))
       | F64x2 Nearest -> to_value (SXX.F64x2.nearest (of_value 1 v))
       | V128 Not -> to_value (SXX.V128.lognot (of_value 1 v))
-      | _ -> failwith "TODO v128 unimplemented unop"
+      | _ -> assert false
 
   let binop (op : binop) =
     let f = match op with
@@ -267,7 +267,7 @@ struct
       | V128 Or -> SXX.V128.or_
       | V128 Xor -> SXX.V128.xor
       | V128 AndNot -> SXX.V128.andnot
-      | _ -> failwith "TODO v128 unimplemented binop"
+      | _ -> assert false
     in fun v1 v2 -> to_value (f (of_value 1 v1) (of_value 2 v2))
 
   let testop (op : testop) =
@@ -281,8 +281,7 @@ struct
     | _ -> assert false
     in fun v -> f (of_value 1 v)
 
-  (* FIXME *)
-  let relop op = failwith "TODO v128 unimplemented relop"
+  let relop op = assert false
 
   let extractop op v =
     let v128 = of_value 1 v in
