@@ -787,8 +787,23 @@
     "\09\07\02"                             ;; elem with inconsistent segment count (2 declared, 1 given)
     "\00\41\00\0b\01\00"                    ;; elem 0
     ;; "\00\41\00\0b\01\00"                 ;; elem 1 (missed)
-    "\0a\04\01"                             ;; code section
-    "\02\00\0b"                             ;; function body
+  )
+  "unexpected end"
+)
+
+;; 2 elem segment declared, 1.5 given
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01"                             ;; type section
+    "\60\00\00"                             ;; type 0
+    "\03\02\01\00"                          ;; func section
+    "\04\04\01"                             ;; table section
+    "\70\00\01"                             ;; table 0
+    "\09\07\02"                             ;; elem with inconsistent segment count (2 declared, 1 given)
+    "\00\41\00\0b\01\00"                    ;; elem 0
+    "\00\41\00"                             ;; elem 1 (partial)
+    ;; "\0b\01\00"                          ;; elem 1 (missing part)
   )
   "unexpected end"
 )
