@@ -27,11 +27,11 @@ Types are representable as an enumeration.
 
    type val_type = I32 | I64 | F32 | F64 | Funcref | Externref
 
-   func is_num(t : val_type) : bool =
-     return t = I32 || t = I64 || t = F32 || t = F64
+   func is_num(t : val_type | Unknown) : bool =
+     return t = I32 || t = I64 || t = F32 || t = F64 || t = Unknown
 
-   func is_ref(t : val_type) : bool =
-     return t = Funcref || t = Externref
+   func is_ref(t : val_type | Unknown) : bool =
+     return t = Funcref || t = Externref || t = Unknown
 
 The algorithm uses two separate stacks: the *value stack* and the *control stack*.
 The former tracks the :ref:`types <syntax-valtype>` of operand values on the :ref:`stack <stack>`,
@@ -51,7 +51,6 @@ the latter surrounding :ref:`structured control instructions <syntax-instr-contr
    }
 
 For each value, the value stack records its :ref:`value type <syntax-valtype>`, or :code:`Unknown` when the type is not known.
-
 
 For each entered block, the control stack records a *control frame* with the originating opcode, the types on the top of the operand stack at the start and end of the block (used to check its result as well as branches), the height of the operand stack at the start of the block (used to check that operands do not underflow the current block), and a flag recording whether the remainder of the block is unreachable (used to handle :ref:`stack-polymorphic <polymorphism>` typing after branches).
 
@@ -222,12 +221,16 @@ Other instructions are checked in a similar manner.
          push_vals(label_types(ctrls[n]))
 
        case (br_table n* m)
-         error_if(ctrls.size() < m)
-         foreach (n in n*)
-           error_if(ctrls.size() < n || label_types(ctrls[n]) =/= label_types(ctrls[m]))
          pop_val(I32)
-         pop_vals(label_types(ctrls[m]))
+         error_if(ctrls.size() < m)
+         let arity = label_types(ctrls[m]).size()
+         foreach (n in n*)
+           error_if(ctrls.size() < n)
+           error_if(label_types(ctrls[n]).size() =/= arity)
+           push_vals(pop_vals(label_types(ctrls[n])))
+         pop_vals(label_types(ctrls[m]))
          unreachable()
+
 
 .. note::
    It is an invariant under the current WebAssembly instruction set that an operand of :code:`Unknown` type is never duplicated on the stack.

@@ -209,6 +209,9 @@
 
 .. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
 
+.. |stacktype| mathdef:: \xref{syntax/types}{syntax-stacktype}{\X{stacktype}}
+.. |opdtype| mathdef:: \xref{syntax/types}{syntax-opdtype}{\X{opdtype}}
+
 
 .. Types, meta functions
 
