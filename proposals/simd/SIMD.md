@@ -325,7 +325,7 @@ def S.shuffle(a, b, s):
 Returns a new vector with lanes selected from the lanes of the first input
 vector `a` specified in the second input vector `s`. The indices `i` in range
 `[0, 15]` select the `i`-th element of `a`. For indices outside of the range
-the resulting lane is 0.
+the resulting lane is initialized to 0.
 
 ```python
 def S.swizzle(a, s):
