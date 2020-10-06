@@ -13,12 +13,15 @@ of events.
 This proposal requires the following proposals as prerequisites.
 
 - The [reference types proposal](https://github.com/WebAssembly/reference-types/blob/master/proposals/reference-types/Overview.md),
-  since the [`exnref`](#the-exception-reference-data-type) type should be represented as a subtype of `anyref`.
+  since the [`exnref`](#the-exception-reference-data-type) type should be
+  represented as a subtype of `anyref`.
 
 - The [multi-value proposal](https://github.com/WebAssembly/multi-value/blob/master/proposals/multi-value/Overview.md),
-  since otherwise the [`br_on_exn`](#exception-data-extraction) instruction would only work with exceptions that contain one value.
-  Moreover, by using [multi-value](https://github.com/WebAssembly/multi-value/blob/master/proposals/multi-value/Overview.md),
-  the [`try` blocks](#try-and-catch-blocks) may use values already in the stack, and also push multiple values onto the stack.
+  since otherwise the [`br_on_exn`](#exception-data-extraction) instruction
+  would only work with exceptions that contain one value. Moreover, by using
+  [multi-value](https://github.com/WebAssembly/multi-value/blob/master/proposals/multi-value/Overview.md),
+  the [`try` blocks](#try-and-catch-blocks) may use values already in the stack,
+  and also push multiple values onto the stack.
 
 ---
 
@@ -117,22 +120,23 @@ Each event has an `attribute` and a `type`. Currently, the attribute can only
 specify that the event is an exception. In the future, additional attribute
 values may be added when other events are added to WebAssembly.
 
-To allow for such a future extension possibility, we reserve a byte in the binary
-format of an exception definition, set to 0 to denote an exception attribute,
-but for the moment we won't use the term event in the formal spec.
+To allow for such a future extension possibility, we reserve a byte in the
+binary format of an exception definition, set to 0 to denote an exception
+attribute, but for the moment we won't use the term event in the formal spec.
 
 ### Exceptions
 
-An `exception` is an internal construct in WebAssembly . WebAssembly exceptions
-are defined in the `exception` and import sections of a module.
+An `exception` is an internal construct in WebAssembly. WebAssembly exceptions
+are defined in the event and import sections of a module.
 
-The type of an exception is denoted by an index to a function signature defined in
-the `type` section. The parameters of the function signature define the list of
-values associated with the exception. The result type must be empty.
+The type of an exception is denoted by an index to a function signature defined
+in the `type` section. The parameters of the function signature define the list
+of values associated with the exception. The result type must be empty.
 
-An `exception tag` is a value to distinguish different exceptions, while an `exception
-index` is a numeric name to refer to an (imported or defined) exception tag within a
-module (see [exception index space](#exception-index-space) for details).
+An `exception tag` is a value to distinguish different exceptions, while an
+`exception index` is a numeric name to refer to an (imported or defined)
+exception tag within a module (see [exception index
+space](#exception-index-space) for details).
 
 Exception indices are used by:
 
@@ -344,16 +348,17 @@ document](https://github.com/WebAssembly/design/blob/master/Modules.md).
 
 ### Exception index space
 
-The `exception index space` indexes all imported and internally-defined exceptions,
-assigning monotonically-increasing indices based on the order defined in the
-import and exception sections. Thus, the index space starts at zero with imported
-exceptions, followed by internally-defined exceptions in the
+The `exception index space` indexes all imported and internally-defined
+exceptions, assigning monotonically-increasing indices based on the order
+defined in the import and exception sections. Thus, the index space starts at
+zero with imported exceptions, followed by internally-defined exceptions in the
 [exception section](#exception-section).
 
-The exception index space defines the (module) static version of runtime exception tags.
-For exception indices that are not imported/exported, the corresponding exception tag is
-guaranteed to be unique over all loaded modules. Exceptions that are imported or
-exported alias the respective exceptions defined elsewhere, and use the same tag.
+The exception index space defines the (module) static version of runtime
+exception tags. For exception indices that are not imported/exported, the
+corresponding exception tag is guaranteed to be unique over all loaded modules.
+Exceptions that are imported or exported alias the respective exceptions defined
+elsewhere, and use the same tag.
 
 ## Changes to the binary model
 
@@ -414,13 +419,13 @@ or defined:
 
 #### High-level structure
 
-A new `exception` section is introduced and is named `exception`. If included, it must
-appear immediately after the memory section.
+A new `exception` section is introduced and is named `exception`. If included,
+it must appear immediately after the memory section.
 
 ##### Exception section
 
-The `exception` section is the named section 'exception'. For ease of validation, this
-section comes after the [memory
+The `exception` section is the named section 'exception'. For ease of
+validation, this section comes after the [memory
 section](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#memory-section)
 and before the [global
 section](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#global-section).
@@ -483,8 +488,8 @@ follows:
 
 ###### Exception names
 
-The exception names subsection is a `name_map` which assigns names to a subset of
-the exception indices (Used for both imports and module-defined).
+The exception names subsection is a `name_map` which assigns names to a subset
+of the exception indices (Used for both imports and module-defined).
 
 ### Control flow operators
 
