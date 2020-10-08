@@ -11,6 +11,15 @@ See draft spec at [webassembly.github.io/annotations](https://webassembly.github
 
 Original `README` from upstream repository follows...
 
+# Branch hinting Proposal for WebAssembly
+
+This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
+It is meant for discussion, prototype specification and implementation of a proposal to add a branch-hinting instruction to WebAssembly.
+
+See the [overview](proposals/branch-hinting/Overview.md) for a summary of the proposal.
+
+Original `README` from upstream repository follows...
+
 # spec
 
 This repository holds a prototypical reference implementation for WebAssembly,
