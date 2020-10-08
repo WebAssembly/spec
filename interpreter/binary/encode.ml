@@ -509,8 +509,6 @@ let encode m =
       | Binary (V128 V128Op.(V128 Or)) -> simd_op 0x50l
       | Binary (V128 V128Op.(V128 Xor)) -> simd_op 0x51l
 
-      | Ternary (V128Op.Bitselect) -> simd_op 0x52l
-
       | Convert (I32 I32Op.ExtendSI32) -> assert false
       | Convert (I32 I32Op.ExtendUI32) -> assert false
       | Convert (I32 I32Op.WrapI64) -> op 0xa7
@@ -560,6 +558,8 @@ let encode m =
       | Convert (V128 (V128Op.F32x4 V128Op.Splat)) -> simd_op 0x13l;
       | Convert (V128 (V128Op.F64x2 V128Op.Splat)) -> simd_op 0x14l;
       | Convert (V128 _) -> assert false
+
+      | SimdTernary (V128Op.Bitselect) -> simd_op 0x52l
 
       | SimdExtract (V128Op.I8x16 (SX, imm)) -> simd_op 0x15l; u8 imm
       | SimdExtract (V128Op.I8x16 (ZX, imm)) -> simd_op 0x16l; u8 imm

@@ -281,28 +281,28 @@ let rec step (c : config) : config =
         (try Eval_numeric.eval_binop binop v1 v2 :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | Ternary ternop, v3 :: v2 :: v1 :: vs' ->
-        (try Eval_numeric.eval_ternop ternop v1 v2 v3 :: vs', []
-        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
-
       | Convert cvtop, v :: vs' ->
         (try Eval_numeric.eval_cvtop cvtop v :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
+      | SimdTernary ternop, v3 :: v2 :: v1 :: vs' ->
+        (try Eval_simd.eval_ternop ternop v1 v2 v3 :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
       | SimdExtract extractop, v :: vs' ->
-        (try Eval_numeric.eval_extractop extractop v :: vs', []
+        (try Eval_simd.eval_extractop extractop v :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | SimdReplace replaceop, r :: v :: vs' ->
-        (try Eval_numeric.eval_replaceop replaceop v r :: vs', []
+        (try Eval_simd.eval_replaceop replaceop v r :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | SimdShift shiftop, s :: v :: vs' ->
-        (try Eval_numeric.eval_shiftop shiftop v s :: vs', []
+        (try Eval_simd.eval_shiftop shiftop v s :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | SimdBitmask bitmaskop, v :: vs' ->
-        (try Eval_numeric.eval_bitmaskop bitmaskop v :: vs', []
+        (try Eval_simd.eval_bitmaskop bitmaskop v :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | _ ->

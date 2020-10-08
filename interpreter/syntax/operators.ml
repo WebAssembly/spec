@@ -245,7 +245,7 @@ let v128_and = Binary (V128 V128Op.(V128 And))
 let v128_andnot = Binary (V128 V128Op.(V128 AndNot))
 let v128_or = Binary (V128 V128Op.(V128 Or))
 let v128_xor = Binary (V128 V128Op.(V128 Xor))
-let v128_bitselect = Ternary (V128Op.Bitselect)
+let v128_bitselect = SimdTernary (V128Op.Bitselect)
 
 let i8x16_swizzle = Binary (V128 V128Op.(I8x16 Swizzle))
 let i8x16_shuffle imms = Binary (V128 V128Op.(I8x16 (Shuffle imms)))
