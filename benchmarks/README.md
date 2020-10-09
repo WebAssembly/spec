@@ -2,11 +2,12 @@
 
 Idea: use `br_on_null` to "simulate" the branch hinting instruction.
 This works because currently v8 assumes that the branch will not be taken when it
-encounters a `br_on_null`, and puts the target of the branch in a "deferred" block.
+encounters a `br_on_null`, and puts the target of the branch in a "deferred" block
+(if the `br_on_null` is the only way to reach the target).
 
-The result is similar to what we expect a `branch_hint` instruction before a normal branch to do.
+The result is similar to what we expect a `branch_hint` instruction before a normal branch would do.
 
-This simple test case features a hot loop with a condition in the middle which is always false.
+This simple test case features a hot loop with a condition in the middle which is almost always false.
 It is around 30% faster when using `br_on_null`, compared to a normal `br_if`.
 
 Since standard tools like wat2wasm don't work with `br_on_null` yet, the binary wasm had to be manually patched
