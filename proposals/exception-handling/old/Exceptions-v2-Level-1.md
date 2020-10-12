@@ -12,7 +12,7 @@ levels, and either:
 
 This document supersedes the original [Exceptions Proposal].
 
-[Exceptions Proposal]: https://github.com/WebAssembly/exception-handling/blob/master/proposals/old/Exceptions.md
+[Exceptions Proposal]: Exceptions-v1.md
 
 ## Overview
 

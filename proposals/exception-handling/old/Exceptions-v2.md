@@ -1,10 +1,7 @@
 # Exception handling
 
-There were two alternative proposals
-([1st](https://github.com/WebAssembly/exception-handling/blob/master/proposals/old/Exceptions.md)
-and
-[2nd](https://github.com/WebAssembly/exception-handling/blob/master/proposals/old/Level-1.md))
-for the design of exception handling and we
+There were two alternative proposals ([1st](Exceptions-v1.md) and
+[2nd](Exceptions-v2-Level-1.md)) for the design of exception handling and we
 [decided](https://github.com/WebAssembly/meetings/blob/master/2018/TPAC.md#exception-handling-ben-titzer)
 on the second proposal, which uses first-class exception types, mainly based on
 the reasoning that it is more expressive and also more extendible to other kinds
