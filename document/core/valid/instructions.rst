@@ -1,4 +1,4 @@
-.. index:: instruction, function type, context, value, operand stack, ! polymorphism
+.. index:: instruction, function type, context, value, operand stack, ! polymorphism, ! bottom type
 .. _valid-instr:
 .. _syntax-stacktype:
 .. _syntax-opdtype:
