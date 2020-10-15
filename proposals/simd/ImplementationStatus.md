@@ -199,6 +199,6 @@
 
 [4] Not known to be updated after latest renumbering. Requires (case-insensitive) flag `-wasmsimd`
 
-[5] Firefox Nightly x64/x86 SSE4.1+ only, disable in about:config under `javascript.options.wasm_simd`
+[5] Firefox x64/x86 SSE4.1+ only, enabled in Nightly, disabled in other channels, control in about:config under `javascript.options.wasm_simd`
 
 [6] Will only be in Chrome M87 onwards.
