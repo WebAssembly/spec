@@ -390,9 +390,9 @@ struct
     | _ -> assert false
 
   let bitmaskop = function
-    | I8x16 Bitmask -> "i8x16.bitmask"
-    | I16x8 Bitmask -> "i16x8.bitmask"
-    | I32x4 Bitmask -> "i32x4.bitmask"
+    | Simd.I8x16 -> "i8x16.bitmask"
+    | Simd.I16x8 -> "i16x8.bitmask"
+    | Simd.I32x4 -> "i32x4.bitmask"
     | _ -> assert false
 
 end

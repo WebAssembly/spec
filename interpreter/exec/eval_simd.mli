@@ -10,6 +10,6 @@ val cvtop : Ast.V128Op.cvtop -> value -> value
 
 val eval_ternop : Ast.V128Op.ternop -> value -> value -> value -> value
 val eval_shiftop : Ast.V128Op.shiftop -> value -> value -> value
-val eval_bitmaskop : Ast.V128Op.bitmaskop -> value -> value
+val eval_bitmaskop : Simd.shape -> value -> value
 val eval_extractop : Ast.V128Op.extractop -> value -> value
 val eval_replaceop : Ast.V128Op.replaceop -> value -> value -> value

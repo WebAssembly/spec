@@ -215,11 +215,11 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
     | _ -> failwith "unimplemented shr_u"
     in fun v s -> to_value (f (of_value 1 v) (of_arg I32Value.of_value 2 s))
 
-  let bitmaskop (op : bitmaskop) v =
+  let bitmaskop (op : Simd.shape) v =
     let f = match op with
-    | I8x16 Bitmask -> SXX.I8x16.bitmask
-    | I16x8 Bitmask -> SXX.I16x8.bitmask
-    | I32x4 Bitmask -> SXX.I32x4.bitmask
+    | Simd.I8x16 -> SXX.I8x16.bitmask
+    | Simd.I16x8 -> SXX.I16x8.bitmask
+    | Simd.I32x4 -> SXX.I32x4.bitmask
     | _ -> assert false
     in I32 (f (of_value 1 v))
 

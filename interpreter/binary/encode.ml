@@ -593,9 +593,9 @@ let encode m =
       | SimdShift V128Op.(I64x2 ShrU) -> simd_op 0xcdl
       | SimdShift (_) -> assert false
 
-      | SimdBitmask V128Op.(I8x16 Bitmask) -> simd_op 0x64l
-      | SimdBitmask V128Op.(I16x8 Bitmask) -> simd_op 0x84l
-      | SimdBitmask V128Op.(I32x4 Bitmask) -> simd_op 0xa4l
+      | SimdBitmask Simd.I8x16 -> simd_op 0x64l
+      | SimdBitmask Simd.I16x8 -> simd_op 0x84l
+      | SimdBitmask Simd.I32x4 -> simd_op 0xa4l
       | SimdBitmask (_) -> assert false
 
       | _ -> assert false
