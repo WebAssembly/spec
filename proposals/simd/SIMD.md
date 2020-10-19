@@ -395,6 +395,11 @@ def S.mul(a, b):
     return S.lanewise_binary(mul, a, b)
 ```
 
+### Integer dot product
+* `i32x4.dot_i16x8_s(a: v128, b: v128) -> v128`
+
+Lane-wise multiply signed 16-bit integers in the two input vectors and add adjacent pairs of the full 32-bit results.
+
 ### Integer negation
 * `i8x16.neg(a: v128) -> v128`
 * `i16x8.neg(a: v128) -> v128`
