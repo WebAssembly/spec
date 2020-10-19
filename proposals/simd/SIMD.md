@@ -766,6 +766,24 @@ def S.load(memarg):
     return S.from_bytes(memory[memarg.offset:memarg.offset + 16])
 ```
 
+### Load and Zero-Pad
+
+* `v128.load32_zero(memarg) -> v128`
+* `v128.load64_zero(memarg) -> v128`
+
+Load a single 32-bit or 64-bit element into the lowest bits of a `v128` vector,
+and initialize all other bits of the `v128` vector to zero.
+
+```python
+def S.load32_zero(memarg):
+    return S.from_bytes(memory[memarg.offset:memarg.offset + 4])
+```
+
+```python
+def S.load64_zero(memarg):
+    return S.from_bytes(memory[memarg.offset:memarg.offset + 8])
+```
+
 ### Load and Splat
 
 * `v128.load8_splat(memarg) -> v128`

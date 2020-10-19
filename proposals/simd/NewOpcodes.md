@@ -12,6 +12,8 @@
 | v128.load32_splat  | 0x09   |
 | v128.load64_splat  | 0x0a   |
 | v128.store         | 0x0b   |
+| v128.load32_zero   | 0xfc   |
+| v128.load64_zero   | 0xfd   |
 
 | Basic operation | opcode |
 | ----------------| ------ |

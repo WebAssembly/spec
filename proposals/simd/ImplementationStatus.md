@@ -190,6 +190,8 @@
 | `i32x4.trunc_sat_f32x4_u`  |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f32x4.convert_i32x4_s`    |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `f32x4.convert_i32x4_u`    |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `v128.load32_zero`         |                           |                    |                    |                    |                    |
+| `v128.load64_zero`         |                           |                    |                    |                    |                    |
 
 [1] Tip of tree LLVM as of May 20, 2020
 
