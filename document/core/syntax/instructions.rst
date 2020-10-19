@@ -266,7 +266,7 @@ Instructions in this group are concerned with tables :ref:`table <syntax-table>`
      \TABLESET~\tableidx \\&&|&
      \TABLESIZE~\tableidx \\&&|&
      \TABLEGROW~\tableidx \\&&|&
-     \TABLEFILL~\tableidx \\
+     \TABLEFILL~\tableidx \\&&|&
      \TABLECOPY \\&&|&
      \TABLEINIT~\elemidx \\&&|&
      \ELEMDROP~\elemidx \\
