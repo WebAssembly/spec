@@ -199,7 +199,7 @@ let var s = vu32 s
 
 let op s = u8 s
 let end_ s = expect 0x0b s "END opcode expected"
-let zero_flag s = expect 0x00 s "zero flag expected"
+let zero s = expect 0x00 s "zero byte expected"
 
 let memop s =
   let align = vu32 s in
@@ -303,8 +303,8 @@ let rec instr s =
   | 0x3d -> let a, o = memop s in i64_store16 a o
   | 0x3e -> let a, o = memop s in i64_store32 a o
 
-  | 0x3f -> zero_flag s; memory_size
-  | 0x40 -> zero_flag s; memory_grow
+  | 0x3f -> zero s; memory_size
+  | 0x40 -> zero s; memory_grow
 
   | 0x41 -> i32_const (at vs32 s)
   | 0x42 -> i64_const (at vs64 s)
@@ -470,10 +470,10 @@ let rec instr s =
 
     | 0x08l ->
       let x = at var s in
-      zero_flag s; memory_init x
+      zero s; memory_init x
     | 0x09l -> data_drop (at var s)
-    | 0x0al -> zero_flag s; zero_flag s; memory_copy
-    | 0x0bl -> zero_flag s; memory_fill
+    | 0x0al -> zero s; zero s; memory_copy
+    | 0x0bl -> zero s; memory_fill
 
     | 0x0cl ->
       let y = at var s in

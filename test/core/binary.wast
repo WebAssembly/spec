@@ -314,7 +314,6 @@
   "integer too large"
 )
 
-
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -756,7 +755,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 ;; memory.grow reserved byte should not be a "long" LEB128 zero.
@@ -776,7 +775,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 ;; Same as above for 3, 4, and 5-byte zero encodings.
@@ -796,7 +795,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 (assert_malformed
@@ -815,7 +814,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 (assert_malformed
@@ -834,7 +833,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 ;; memory.size reserved byte equal to zero.
@@ -853,7 +852,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 ;; memory.size reserved byte should not be a "long" LEB128 zero.
@@ -872,7 +871,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 ;; Same as above for 3, 4, and 5-byte zero encodings.
@@ -891,7 +890,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 (assert_malformed
@@ -909,7 +908,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 (assert_malformed
@@ -927,7 +926,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 ;; No more than 2^32 locals.
