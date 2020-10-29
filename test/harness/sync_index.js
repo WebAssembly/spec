@@ -331,37 +331,45 @@ function assert_exhaustion(action) {
     }, "A wast module that must exhaust the stack space.");
 }
 
-function assert_return(action, expected) {
-    if (expected instanceof Result) {
-        if (expected.isError())
-            return;
-        expected = expected.value;
-    }
-
+function assert_return(action, ...expected) {
     let result = action();
-
     _assert(result instanceof Result);
 
     uniqueTest(() => {
         assert_true(!result.isError(), `expected success result, got: ${result.value}.`);
         let actual = result.value;
-        switch (expected) {
-        case "nan:canonical":
-        case "nan:arithmetic":
-            // Note that JS can't reliably distinguish different NaN values,
-            // so there's no good way to test that it's a canonical NaN.
-            assert_true(Number.isNaN(actual), `expected NaN, observed ${actual}.`);
-            return;
-        case "ref.func":
-            assert_true(typeof actual === "function", `expected Wasm function, got ${actual}`);
-            return;
-        case "ref.any":
-            assert_true(actual !== null, `expected Wasm reference, got ${actual}`);
-            return;
-        default:
-            assert_equals(actual, expected);
+        if (actual === undefined) {
+            actual = [];
+        } else if (!Array.isArray(actual)) {
+            actual = [actual];
         }
-
+        if (actual.length !== expected.length) {
+            throw new Error(expected.length + " value(s) expected, got " + actual.length);
+        }
+        for (let i = 0; i < actual.length; ++i) {
+            if (expected[i] instanceof Result) {
+                if (expected[i].isError())
+                    return;
+                expected[i] = expected[i].value;
+            }
+            switch (expected[i]) {
+                case "nan:canonical":
+                case "nan:arithmetic":
+                case "nan:any":
+                    // Note that JS can't reliably distinguish different NaN values,
+                    // so there's no good way to test that it's a canonical NaN.
+                    assert_true(Number.isNaN(actual[i]), `expected NaN, observed ${actual[i]}.`);
+                    return;
+                case "ref.func":
+                    assert_true(typeof actual[i] === "function", `expected Wasm function, got ${actual[i]}`);
+                    return;
+                case "ref.extern":
+                    assert_true(actual[i] !== null, `expected Wasm reference, got ${actual[i]}`);
+                    return;
+                default:
+                    assert_equals(actual[i], expected[i]);
+            }
+        }
     }, "A wast module that must return a particular value.");
 }
 

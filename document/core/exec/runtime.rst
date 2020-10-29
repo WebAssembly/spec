@@ -494,6 +494,8 @@ and a reference to the function's own :ref:`module instance <syntax-moduleinst>`
 The values of the locals are mutated by respective :ref:`variable instructions <syntax-instr-variable>`.
 
 
+.. _exec-expand:
+
 Conventions
 ...........
 

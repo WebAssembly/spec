@@ -15,7 +15,7 @@ The text format defines modules in S-expression syntax. Moreover, it is generali
 
 ## Building
 
-You'll need OCaml 4.02 or higher. An easy way to get this on Linux is to download the [source tarball from our mirror of the ocaml website](https://wasm.storage.googleapis.com/ocaml-4.02.2.tar.gz) and do the configure / make dance.  On macOS, with [Homebrew](http://brew.sh/) installed, simply `brew install ocaml ocamlbuild`.
+You'll need OCaml 4.07 or higher. Instructions for installing a recent version of OCaml on multiple platforms are available [here](https://ocaml.org/docs/install.html). On most platforms, the recommended way is through [OPAM](https://ocaml.org/docs/install.html#OPAM).
 
 Once you have OCaml, simply do
 
@@ -43,17 +43,20 @@ That builds `all`, plus updates `winmake.bat`.
 
 #### Building on Windows
 
-We recommend a pre-built installer. With [this one](https://protz.github.io/ocaml-installer/) you have two options:
+The instructions depend on how you [installed OCaml on Windows](https://ocaml.org/docs/install.html#Windows).
 
-1. Bare OCaml. If you just want to build the interpreter and don't care about modifying it, you don't need to install the Cygwin core that comes with the installer. Just install OCaml itself and run
+1. *Cygwin*: If you want to build a native code executable, or want to hack on the interpreter (i.e., use incremental compilation), then you need to install the Cygwin core that is included with the OCaml installer. Then you can build the interpreter using `make` in the Cygwin terminal, as described above.
+
+2. *Windows Subsystem for Linux* (WSL): You can build the interpreter using `make`, as described above.
+
+3. *From source*: If you just want to build the interpreter and don't care about modifying it, you don't need to install the Cygwin core that comes with the installer. Just install OCaml itself and run
 ```
 winmake.bat
 ```
 in a Windows shell, which creates a program named `wasm`. Note that this will be a byte code executable only, i.e., somewhat slower.
 
-2. OCaml + Cygwin. If you want to build a native code executable, or want to hack on the interpreter (i.e., use incremental compilation), then you need to install the Cygwin core that is included with the OCaml installer. Then you can build the interpreter using `make` in the Cygwin terminal, as described above.
+In any way, in order to run the test suite you'll need to have Python installed. If you used Option 3, you can invoke the test runner `runtests.py` directly instead of doing it through `make`.
 
-Either way, in order to run the test suite you'll need to have Python installed. If you used Option 1, you can invoke the test runner `runtests.py` directly instead of doing it through `make`.
 
 
 #### Cross-compiling the Interpreter to JavaScript ####

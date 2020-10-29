@@ -138,17 +138,17 @@ struct
   let mul x y = binary x ( *.) y
   let div x y = binary x (/.) y
 
-  let sqrt  x = unary Pervasives.sqrt x
+  let sqrt  x = unary Stdlib.sqrt x
 
-  let ceil  x = unary Pervasives.ceil x
-  let floor x = unary Pervasives.floor x
+  let ceil  x = unary Stdlib.ceil x
+  let floor x = unary Stdlib.floor x
 
   let trunc x =
     let xf = to_float x in
     (* preserve the sign of zero *)
     if xf = 0.0 then x else
     (* trunc is either ceil or floor depending on which one is toward zero *)
-    let f = if xf < 0.0 then Pervasives.ceil xf else Pervasives.floor xf in
+    let f = if xf < 0.0 then Stdlib.ceil xf else Stdlib.floor xf in
     let result = of_float f in
     if is_nan result then determine_unary_nan result else result
 
@@ -157,13 +157,13 @@ struct
     (* preserve the sign of zero *)
     if xf = 0.0 then x else
     (* nearest is either ceil or floor depending on which is nearest or even *)
-    let u = Pervasives.ceil xf in
-    let d = Pervasives.floor xf in
+    let u = Stdlib.ceil xf in
+    let d = Stdlib.floor xf in
     let um = abs_float (xf -. u) in
     let dm = abs_float (xf -. d) in
     let u_or_d =
       um < dm ||
-      um = dm && let h = u /. 2. in Pervasives.floor h = h
+      um = dm && let h = u /. 2. in Stdlib.floor h = h
     in
     let f = if u_or_d then u else d in
     let result = of_float f in
@@ -232,8 +232,8 @@ struct
       | n -> n
 
   let compare_mantissa_str hex s1 s2 =
-    let s1' = String.uppercase s1 in
-    let s2' = String.uppercase s2 in
+    let s1' = String.uppercase_ascii s1 in
+    let s2' = String.uppercase_ascii s2 in
     compare_mantissa_str' hex s1' (skip_zeroes s1' 0) s2' (skip_zeroes s2' 0)
 
   (*
@@ -267,7 +267,7 @@ struct
       if not hex then Printf.sprintf "%.*g" (String.length s) z else
       let m = logor (logand bits 0xf_ffff_ffff_ffffL) 0x10_0000_0000_0000L in
       (* Shift mantissa to match msb position in most significant hex digit *)
-      let i = skip_zeroes (String.uppercase s) 0 in
+      let i = skip_zeroes (String.uppercase_ascii s) 0 in
       if i = String.length s then Printf.sprintf "%.*g" (String.length s) z else
       let sh =
         match s.[i] with '1' -> 0 | '2'..'3' -> 1 | '4'..'7' -> 2 | _ -> 3 in
@@ -300,14 +300,7 @@ struct
       else
         Rep.logor x bare_nan
     else
-      (* TODO(ocmal-4.03): replace buffer hack with this:
       let s' = String.concat "" (String.split_on_char '_' s) in
-      *)
-      let buf = Buffer.create (String.length s) in
-      for i = 0 to String.length s - 1 do
-        if s.[i] <> '_' then Buffer.add_char buf s.[i]
-      done;
-      let s' = Buffer.contents buf in
       let x = of_float (float_of_string_prevent_double_rounding s') in
       if is_inf x then failwith "of_string" else x
 
