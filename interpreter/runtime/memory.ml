@@ -133,9 +133,9 @@ let load_packed sz ext mem a o t =
 
 let load_simd_packed pack_size simd_load mem a o t =
   let n = packed_size pack_size in
-  assert (n <= Types.size t);
+  assert (n < Types.size t);
   let x = loadn mem a o n in
-  let b = Bytes.create 16 in
+  let b = Bytes.make 16 '\x00' in
   Bytes.set_int64_le b 0 x;
   let v = V128.of_bits (Bytes.to_string b) in
   match pack_size, simd_load with
@@ -149,6 +149,8 @@ let load_simd_packed pack_size simd_load mem a o t =
   | Pack16, PackSplat -> V128 (V128.I16x8.splat (I16.of_int_s (Int64.to_int x)))
   | Pack32, PackSplat -> V128 (V128.I32x4.splat (I32.of_int_s (Int64.to_int x)))
   | Pack64, PackSplat -> V128 (V128.I64x2.splat x)
+  | Pack32, PackZero -> V128 v
+  | Pack64, PackZero -> V128 v
   | _ -> assert false
 
 let store_packed sz mem a o v =

@@ -238,6 +238,12 @@ let v128_load32_splat align offset =
   SimdLoad {ty= V128Type; align; offset; sz = Some (Pack32, PackSplat)}
 let v128_load64_splat align offset =
   SimdLoad {ty= V128Type; align; offset; sz = Some (Pack64, PackSplat)}
+
+let v128_load32_zero align offset =
+  SimdLoad {ty= V128Type; align; offset; sz = Some (Pack32, PackZero)}
+let v128_load64_zero align offset =
+  SimdLoad {ty= V128Type; align; offset; sz = Some (Pack64, PackZero)}
+
 let v128_store align offset = SimdStore {ty = V128Type; align; offset; sz = None}
 
 let v128_not = Unary (V128 V128Op.(V128 Not))

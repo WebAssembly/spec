@@ -23,6 +23,7 @@ type pack_simd =
   | Pack8x8 of extension
   | Pack16x4 of extension
   | Pack32x2 of extension
+  | PackZero
 
 (* Attributes *)
 

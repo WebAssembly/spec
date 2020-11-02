@@ -302,6 +302,10 @@ rule token = parse
   { LOAD (fun a o -> (v128_load32_splat (opt a 2)) o) }
   | "v128.load64_splat"
   { LOAD (fun a o -> (v128_load64_splat (opt a 3)) o) }
+  | "v128.load32_zero"
+  { LOAD (fun a o -> (v128_load32_zero (opt a 2)) o) }
+  | "v128.load64_zero"
+  { LOAD (fun a o -> (v128_load64_zero (opt a 3)) o) }
   | (ixx as t)".store"(mem_size as sz)
     { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
       STORE (fun a o ->
