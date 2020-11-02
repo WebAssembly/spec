@@ -220,6 +220,10 @@ let encode m =
         simd_op 0x09l; memop mo
       | SimdLoad ({ty= V128Type; sz = Some (Pack64, PackSplat); _} as mo) ->
         simd_op 0x0al; memop mo
+      | SimdLoad ({ty= V128Type; sz = Some (Pack32, PackZero); _} as mo) ->
+        simd_op 0xfcl; memop mo
+      | SimdLoad ({ty= V128Type; sz = Some (Pack64, PackZero); _} as mo) ->
+        simd_op 0xfdl; memop mo
 
       | Store ({ty = I32Type; sz = None; _} as mo) -> op 0x36; memop mo
       | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x37; memop mo

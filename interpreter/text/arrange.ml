@@ -445,6 +445,8 @@ let simd_loadop (op : simd_loadop) =
       | Pack16, PackSplat -> "16_splat"
       | Pack32, PackSplat -> "32_splat"
       | Pack64, PackSplat -> "64_splat"
+      | Pack32, PackZero -> "32_zero"
+      | Pack64, PackZero -> "64_zero"
       | _ -> assert false
       ) in
     memop ("load" ^ suffix) op (packed_size sz)

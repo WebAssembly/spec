@@ -411,6 +411,8 @@ let simd_prefix s =
   | 0xf9l -> i32x4_trunc_sat_f32x4_u
   | 0xfal -> f32x4_convert_i32x4_s
   | 0xfbl -> f32x4_convert_i32x4_u
+  | 0xfcl -> let a, o = memop s in v128_load32_zero a o
+  | 0xfdl -> let a, o = memop s in v128_load64_zero a o
   | n -> illegal s pos (I32.to_int_u n)
 
 let rec instr s =
