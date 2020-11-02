@@ -52,6 +52,20 @@
 (assert_malformed (module binary "\00asm" "\01\00\00\00" "\ff\00\01\00") "malformed section id")
 
 
+;; Type section with signed LEB128 encoded type
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01"                     ;; Type section id
+    "\05"                     ;; Type section length
+    "\01"                     ;; Types vector length
+    "\e0\7f"                  ;; Malformed functype, -0x20 in signed LEB128 encoding
+    "\00\00"
+  )
+  "integer representation too long"
+)
+
+
 ;; call_indirect reserved byte equal to zero.
 (assert_malformed
   (module binary
