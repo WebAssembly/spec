@@ -663,7 +663,7 @@
 
 .. |Tnumtype| mathdef:: \xref{text/types}{text-numtype}{\T{numtype}}
 .. |Treftype| mathdef:: \xref{text/types}{text-reftype}{\T{reftype}}
-.. |Trefedtype| mathdef:: \xref{text/types}{text-refedtype}{\T{refedtype}}
+.. |Theaptype| mathdef:: \xref{text/types}{text-heaptype}{\T{heaptype}}
 .. |Tvaltype| mathdef:: \xref{text/types}{text-valtype}{\T{valtype}}
 .. |Tfunctype| mathdef:: \xref{text/types}{text-functype}{\T{functype}}
 
