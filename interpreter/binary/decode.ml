@@ -30,6 +30,7 @@ module Code = Error.Make ()
 exception Code = Code.Error
 
 let string_of_byte b = Printf.sprintf "%02x" b
+let string_of_multi n = Printf.sprintf "%02lx" n
 
 let position s pos = Source.({file = s.name; line = -1; column = pos})
 let region s left right =
@@ -47,8 +48,8 @@ let skip n = guard (skip n)
 
 let expect b s msg = require (guard get s = b) s (pos s - 1) msg
 let illegal s pos b = error s pos ("illegal opcode " ^ string_of_byte b)
-let illegal2 s pos b1 b2 =
-  error s pos ("illegal opcode " ^ string_of_byte b1 ^ " " ^ string_of_byte b2)
+let illegal2 s pos b n =
+  error s pos ("illegal opcode " ^ string_of_byte b ^ " " ^ string_of_multi n)
 
 let at f s =
   let left = pos s in
@@ -198,7 +199,7 @@ let var s = vu32 s
 
 let op s = u8 s
 let end_ s = expect 0x0b s "END opcode expected"
-let zero_flag s = expect 0x00 s "zero flag expected"
+let zero s = expect 0x00 s "zero byte expected"
 
 let memop s =
   let align = vu32 s in
@@ -302,8 +303,8 @@ let rec instr s =
   | 0x3d -> let a, o = memop s in i64_store16 a o
   | 0x3e -> let a, o = memop s in i64_store32 a o
 
-  | 0x3f -> zero_flag s; memory_size
-  | 0x40 -> zero_flag s; memory_grow
+  | 0x3f -> zero s; memory_size
+  | 0x40 -> zero s; memory_grow
 
   | 0x41 -> i32_const (at vs32 s)
   | 0x42 -> i64_const (at vs64 s)
@@ -456,38 +457,38 @@ let rec instr s =
   | 0xd1 -> ref_is_null
   | 0xd2 -> ref_func (at var s)
 
-  | 0xfc as b1 ->
-    (match op s with
-    | 0x00 -> i32_trunc_sat_f32_s
-    | 0x01 -> i32_trunc_sat_f32_u
-    | 0x02 -> i32_trunc_sat_f64_s
-    | 0x03 -> i32_trunc_sat_f64_u
-    | 0x04 -> i64_trunc_sat_f32_s
-    | 0x05 -> i64_trunc_sat_f32_u
-    | 0x06 -> i64_trunc_sat_f64_s
-    | 0x07 -> i64_trunc_sat_f64_u
+  | 0xfc as b ->
+    (match vu32 s with
+    | 0x00l -> i32_trunc_sat_f32_s
+    | 0x01l -> i32_trunc_sat_f32_u
+    | 0x02l -> i32_trunc_sat_f64_s
+    | 0x03l -> i32_trunc_sat_f64_u
+    | 0x04l -> i64_trunc_sat_f32_s
+    | 0x05l -> i64_trunc_sat_f32_u
+    | 0x06l -> i64_trunc_sat_f64_s
+    | 0x07l -> i64_trunc_sat_f64_u
 
-    | 0x08 ->
+    | 0x08l ->
       let x = at var s in
-      zero_flag s; memory_init x
-    | 0x09 -> data_drop (at var s)
-    | 0x0a -> zero_flag s; zero_flag s; memory_copy
-    | 0x0b -> zero_flag s; memory_fill
+      zero s; memory_init x
+    | 0x09l -> data_drop (at var s)
+    | 0x0al -> zero s; zero s; memory_copy
+    | 0x0bl -> zero s; memory_fill
 
-    | 0x0c ->
+    | 0x0cl ->
       let y = at var s in
       let x = at var s in
       table_init x y
-    | 0x0d -> elem_drop (at var s)
-    | 0x0e ->
+    | 0x0dl -> elem_drop (at var s)
+    | 0x0el ->
       let x = at var s in
       let y = at var s in
       table_copy x y
-    | 0x0f -> table_grow (at var s)
-    | 0x10 -> table_size (at var s)
-    | 0x11 -> table_fill (at var s)
+    | 0x0fl -> table_grow (at var s)
+    | 0x10l -> table_size (at var s)
+    | 0x11l -> table_fill (at var s)
 
-    | b2 -> illegal2 s pos b1 b2
+    | n -> illegal2 s pos b n
     )
 
   | b -> illegal s pos b
