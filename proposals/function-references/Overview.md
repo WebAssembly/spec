@@ -32,7 +32,7 @@ Note: In a Wasm engine, function references (whether first-class or as table ent
 
 * This proposal is based on the [reference types proposal](https://github.com/WebAssembly/reference-types))
 
-* Add a new form of *typed reference type* `ref $t` and a nullable variant `ref (null $t)`, where `$t` is a type index; can be used as both a value type or an element type for tables
+* Add a new form of *typed reference type* `ref $t` and a nullable variant `(ref null $t)`, where `$t` is a type index; can be used as both a value type or an element type for tables
 
 * Add an instruction `ref.as_non_null` that converts a nullable reference to a non-nullable one or traps if null
 
