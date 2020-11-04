@@ -367,6 +367,7 @@ let i32x4_max_u = Binary (V128 V128Op.(I32x4 MaxU))
 let i32x4_mul = Binary (V128 V128Op.(I32x4 Mul))
 let i32x4_trunc_sat_f32x4_s = Unary (V128 V128Op.(I32x4 TruncSatF32x4S))
 let i32x4_trunc_sat_f32x4_u = Unary (V128 V128Op.(I32x4 TruncSatF32x4U))
+let i32x4_dot_i16x8_s = Binary (V128 V128Op.(I32x4 DotI16x8S))
 
 let i64x2_splat = Convert (V128 V128Op.(I64x2 Splat))
 let i64x2_extract_lane imm = SimdExtract (V128Op.I64x2 (ZX, imm))

@@ -569,6 +569,9 @@ rule token = parse
   | "i16x8.sub_sat_"(sign as s)
   { BINARY (ext s i16x8_sub_sat_s i16x8_sub_sat_u) }
 
+  | "i32x4.dot_i16x8_s"
+  { BINARY i32x4_dot_i16x8_s }
+
   | (simd_shape as s) { SIMD_SHAPE (simd_shape s) }
 
   | name as s { VAR s }

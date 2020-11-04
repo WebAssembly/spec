@@ -305,6 +305,7 @@ struct
     | I32x4 MinU -> "i32x4.min_u"
     | I32x4 MaxS -> "i32x4.max_s"
     | I32x4 MaxU -> "i32x4.max_u"
+    | I32x4 DotI16x8S -> "i32x4.dot_i16x8_s"
     | I64x2 Add -> "i64x2.add"
     | I64x2 Sub -> "i64x2.sub"
     | I64x2 Mul -> "i64x2.mul"

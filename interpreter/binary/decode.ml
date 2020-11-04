@@ -370,6 +370,7 @@ let simd_prefix s =
   | 0xb7l -> i32x4_min_u
   | 0xb8l -> i32x4_max_s
   | 0xb9l -> i32x4_max_u
+  | 0xbal -> i32x4_dot_i16x8_s
   | 0xc1l -> i64x2_neg
   | 0xcbl -> i64x2_shl
   | 0xccl -> i64x2_shr_s

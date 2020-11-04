@@ -26,6 +26,7 @@ Currently it only support following simd test files generation.
 - 'simd_f64x2_rounding'
 - 'simd_f32x4_pmin_pmax'
 - 'simd_f64x2_pmin_pmax'
+- 'simd_i32x4_dot_i16x8'
 
 
 Usage:

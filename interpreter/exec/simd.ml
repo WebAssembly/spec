@@ -185,6 +185,7 @@ sig
     val widen_high_s : t -> t
     val widen_low_u : t -> t
     val widen_high_u : t -> t
+    val dot_i16x8_s : t -> t -> t
   end
   module I64x2_convert : sig
     val widen_low_s : t -> t
@@ -429,6 +430,17 @@ struct
     let widen_high_s = widen Lib.List.drop 0xffffffffl
     let widen_low_u = widen Lib.List.take 0xffffl
     let widen_high_u = widen Lib.List.drop 0xffffl
+
+    let dot_i16x8_s x y =
+      let xs = Rep.to_i16x8 x in
+      let ys = Rep.to_i16x8 y in
+      let rec dot xs ys =
+        match xs, ys with
+        | x1::x2::xss, y1::y2::yss ->
+          Int32.(add (mul x1 y1) (mul x2 y2)) :: dot xss yss
+        | [], [] -> []
+        | _, _ -> assert false
+      in Rep.of_i32x4 (dot xs ys)
   end
 
   module I64x2_convert = struct
