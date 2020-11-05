@@ -20,7 +20,7 @@ Based on the following proposals:
 
 * [typed function references](https://github.com/WebAssembly/function-references), which introduces typed references `(ref null? $t)` etc.
 
-* [type imports](https://github.com/WebAssembly/proposal-type-imports), which allows type definitionss to be imported and exported
+* [type imports](https://github.com/WebAssembly/proposal-type-imports), which allows type definitions to be imported and exported
 
 All three proposals are prerequisites.
 
