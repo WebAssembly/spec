@@ -10,13 +10,8 @@
       i32.const 1
       i32.sub
       i32.eq
+      nop
       if
-        block
-          local.get 2
-          drop
-          nop
-          br 0
-        end
         local.get 1
         call 0
       end
