@@ -21,7 +21,7 @@ Since standard tools like wat2wasm don't work with `br_on_null` yet, let alone b
 
 run the benchmark:
 
-$D8_PATH/d8 --experimental-wasm-gc --experimental-wasm-typed_funcref test.js
+`$D8_PATH/d8 --experimental-wasm-gc --experimental-wasm-typed_funcref test.js`
 
 Useful d8 options:
 	- --print-wasm-code to see the generated assembly code
