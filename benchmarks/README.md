@@ -24,9 +24,9 @@ run the benchmark:
 `$D8_PATH/d8 --experimental-wasm-gc --experimental-wasm-typed_funcref test.js`
 
 Useful d8 options:
-	- --print-wasm-code to see the generated assembly code
-	- --trace-wasm-ast-end=100 to dump the AST of the wasm file, since normal dump tools do not work with br_on_null
+- `--print-wasm-code` to see the generated assembly code
+- `--trace-wasm-ast-end=100` to dump the AST of the wasm file, since normal dump tools do not work with br_on_null
 
-NOTE: In order to run the branch hinting version, you need a modified v8 (see [this repo](https://github.com/yuri91/v8/tree/branch_hinting)).
+NOTE: In order to run the branch hinting version, you need a modified v8 (see [this repo](https://github.com/yuri91/v8)).
 
-If you don't want to do that, just comment that entry and test only the br_on_null version (results are similar but a bit worse due to the extra overhead).
+If you don't want to do that, just comment that entry and test only the `br_on_null` version (results are similar but a bit worse due to the extra overhead).
