@@ -3,7 +3,7 @@
   (import "i" "import" (func (;0;) (type 0)))
   (memory (;0;) 1 1)
   (func $test (type 0)
-    (local i32 i64 f64)
+    (local i32)
     loop
       local.get 1
       local.get 0
