@@ -852,7 +852,7 @@
     "\41\00"                   ;; i32.const 0
     "\41\03"                   ;; i32.const 3
     "\36"                      ;; i32.store
-    "\03"                      ;; alignment 2
+    "\02"                      ;; alignment 2
     "\82\80\80\80\10"          ;; offset 2 with unused bits set
     "\0b"                      ;; end
   )
