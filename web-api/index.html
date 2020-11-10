@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
-  <meta content="Bikeshed version adf8655b, updated Thu Oct 29 16:15:09 2020 -0700" name="generator">
+  <meta content="Bikeshed version fc62265b, updated Mon Nov 9 15:03:56 2020 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
-  <meta content="eae22f678a26cc9a44e8f2eadf67858d181def55" name="document-revision">
+  <meta content="780479ff242701186dc488552224eab8e2569c93" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -69,114 +69,6 @@ pre .property::before, pre .property::after {
 
 [data-link-type=biblio] {
     white-space: pre;
-}</style>
-<style>/* style-colors */
-
-/* Any --*-text not paired with a --*-bg is assumed to have a transparent bg */
-html {
-    color: black;
-    color: var(--text);
-    background-color: white;
-    background-color: var(--bg);
-}
-:root {
-    color-scheme: light dark;
-
-    --text: black;
-    --bg: white;
-
-    --logo-bg: #1a5e9a;
-    --logo-active-bg: #c00;
-    --logo-text: white;
-
-    --tocnav-normal-text: #707070;
-    --tocnav-normal-bg: var(--bg);
-    --tocnav-hover-text: var(--tocnav-normal-text);
-    --tocnav-hover-bg: #f8f8f8;
-    --tocnav-active-text: #c00;
-    --tocnav-active-bg: var(--tocnav-normal-bg);
-
-    --tocsidebar-text: var(--text);
-    --tocsidebar-bg: #f7f8f9;
-    --tocsidebar-shadow: rgba(0,0,0,.1);
-    --tocsidebar-heading-text: hsla(203,20%,40%,.7);
-
-    --toclink-text: var(--text);
-    --toclink-underline: #3980b5;
-    --toclink-visited-text: var(--toclink-text);
-    --toclink-visited-underline: #054572;
-
-    --heading-text: #005a9c;
-
-    --hr-text: var(--text);
-
-    --algo-border: #def;
-
-    --del-text: red;
-    --del-bg: transparent;
-    --ins-text: #080;
-    --ins-bg: transparent;
-
-    --a-normal-text: #034575;
-    --a-normal-underline: #707070;
-    --a-visited-text: var(--a-normal-text);
-    --a-visited-underline: #bbb;
-    --a-hover-bg: rgba(75%, 75%, 75%, .25);
-    --a-active-text: #c00;
-    --a-active-underline: #c00;
-
-    --blockquote-border: silver;
-    --blockquote-bg: transparent;
-    --blockquote-text: currentcolor;
-
-    --issue-border: #e05252;
-    --issue-bg: #fbe9e9;
-    --issue-text: var(--text);
-    --issueheading-text: #831616;
-
-    --example-border: #e0cb52;
-    --example-bg: #fcfaee;
-    --example-text: var(--text);
-    --exampleheading-text: #574b0f;
-
-    --note-border: #52e052;
-    --note-bg: #e9fbe9;
-    --note-text: var(--text);
-    --noteheading-text: hsl(120, 70%, 30%);
-    --notesummary-underline: silver;
-
-    --assertion-border: #aaa;
-    --assertion-bg: #eee;
-    --assertion-text: black;
-
-    --advisement-border: orange;
-    --advisement-bg: #fec;
-    --advisement-text: var(--text);
-    --advisementheading-text: #b35f00;
-
-    --warning-border: red;
-    --warning-bg: hsla(40,100%,50%,0.95);
-    --warning-text: var(--text);
-
-    --def-border: #8ccbf2;
-    --def-bg: #def;
-    --def-text: var(--text);
-    --defrow-border: #bbd7e9;
-
-    --datacell-border: silver;
-
-    --indexinfo-text: #707070;
-
-    --indextable-hover-text: black;
-    --indextable-hover-bg: #f7f8f9;
-
-    --outdatedspec-bg: rgba(0, 0, 0, .5);
-    --outdatedspec-text: black;
-    --outdated-bg: maroon;
-    --outdated-text: white;
-    --outdated-shadow: red;
-
-    --editedrec-bg: darkorange;
 }</style>
 <style>/* style-counters */
 
@@ -389,7 +281,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-11-02">2 November 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-11-10">10 November 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
