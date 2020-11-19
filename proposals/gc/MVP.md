@@ -382,10 +382,12 @@ RTT-based casts can only be performed with respect to concrete types, and requir
   - returns 1 if the first operand is not null and its runtime type is a sub-RTT of the RTT operand, 0 otherwise
 
 * `ref.cast <typeidx>` casts a reference value down to a type given by a RTT representation
-  - `ref.cast $t : [(ref null ht) (rtt n? $t)] -> [(ref $t)]`
+  - `ref.cast $t : [(ref null1? ht) (rtt n? $t)] -> [(ref null2? $t)]`
     - iff `ht <: data` or `ht <: func`
     - and `(type $t) <: ht`
-  - traps if the first operand is null or its runtime type is not a sub-RTT of the RTT operand
+    - and `null1? = null2?`
+  - returns null if the first operand is null
+  - traps if the first operand is not null and its runtime type is not a sub-RTT of the RTT operand
 
 * `br_on_cast <labelidx> <typeidx>` branches if a value can be cast down to a given reference type
   - `br_on_cast $l $t : [(ref null ht) (rtt n? $t)] -> [(ref null ht)]`
