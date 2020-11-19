@@ -14,6 +14,7 @@ See [overview](Overview.md) for addition background.
 * [Type parameters](#type-parameters) (polymorphism, generics)
 * [Variants](#variants) (a.k.a. disjoint unions or tagging)
 * [Static fields](#static-fields) (meta structures)
+* [Custom function RTTs](#custom-function-RTTs)
 * [Threads and shared references](#threads-and-shared-references)
 * [Weak references](#weak-references)
 
@@ -517,6 +518,15 @@ The basic idea would be introducing a notion of _static fields_ in a form of imm
 There are various ways in which this could be modelled, details are TBD.
 
 **Why Post-MVP:** Such a feature only saves space, so isn't critical for the MVP. Furthermore, there isn't much precedent for exposing such a mechanism to user code in low-level form, so no obvious design philosophy to follow.
+
+
+## Custom Function RTTs
+
+For backwards compatibility, the RTT embedded in a function behaves as if it was created by `rtt.canon`.
+It might be useful to customise this semantics and allow programs to pick other RTTs, e.g., ones that have dynamic supertypes.
+
+To this end, the syntax of function definitions could be extended to include an initialiser expression denoting the desired RTT.
+The current form omitting it would be a shorthand for the canonical choice.
 
 
 ## Threads and Shared References
