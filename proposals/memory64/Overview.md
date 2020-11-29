@@ -188,11 +188,11 @@ have to support 32-bit memory addresses in their ABI.
   indicate the index type
   - ```
     limits ::= 0x00 n:u32        ⇒ {min n, max ϵ}, 0
-            |  0x01 n:u32 m:u32  ⇒ {min n, max ϵ}, 0
+            |  0x01 n:u32 m:u32  ⇒ {min n, max m}, 0
             |  0x02 n:u32        ⇒ {min n, max ϵ}, 1  ;; from threads proposal
-            |  0x03 n:u32 m:u32  ⇒ {min n, max n}, 1  ;; from threads proposal
+            |  0x03 n:u32 m:u32  ⇒ {min n, max m}, 1  ;; from threads proposal
             |  0x04 n:u64        ⇒ {min n, max ϵ}, 2
-            |  0x05 n:u64 m:u64  ⇒ {min n, max n}, 2
+            |  0x05 n:u64 m:u64  ⇒ {min n, max m}, 2
     ```
 
 * The [memory type][binary memtype] structure is extended to use this limits
