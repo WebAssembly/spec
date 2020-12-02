@@ -426,7 +426,7 @@ Structures are *managed* -- i.e., garbage-collected -- so manual deallocation is
 *Array* types define aggregates with _homogeneous elements_ that are _dynamically indexed_:
 ```
 (type $vector (array (mut f64)))
-(type $matrix (array (type $vector)))
+(type $matrix (array (ref $vector)))
 ```
 Array types are used by forming reference types.
 For now, we assume that all array types have a ([flexible](#flexible-aggregates)) length dynamically computed at allocation time.
