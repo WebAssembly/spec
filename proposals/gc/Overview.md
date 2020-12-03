@@ -641,7 +641,7 @@ def_type       ::=  <data_type> | <func_type>
 ```
 where `value_type` is the type usable for parameters, local variables and the operand stack, and `def_type` describes the types that can be defined in the type section.
 
-Note that an additional restruction on the above grammar is that array fields must be mutable.
+Note that for the MVP, an additional restriction on the above grammar is that array fields must be mutable.
 
 ### Type Recursion
 
