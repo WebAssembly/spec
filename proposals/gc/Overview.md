@@ -426,7 +426,7 @@ Structures are *managed* -- i.e., garbage-collected -- so manual deallocation is
 *Array* types define aggregates with _homogeneous elements_ that are _dynamically indexed_:
 ```
 (type $vector (array (mut f64)))
-(type $matrix (array (type $vector)))
+(type $matrix (array (mut (ref $vector))))
 ```
 Array types are used by forming reference types.
 For now, we assume that all array types have a ([flexible](#flexible-aggregates)) length dynamically computed at allocation time.
@@ -465,7 +465,7 @@ Like structures, arrays are garbage-collected.
 Structure and array fields can have a packed *storage type* `i8` or `i16`:
 ```
 (type $s (struct (field $a i8) (field $b i16)))
-(type $buf (array i8))
+(type $buf (array (mut i8)))
 ```
 Loads of packed fields require a sign extension mode:
 ```
@@ -641,6 +641,7 @@ def_type       ::=  <data_type> | <func_type>
 ```
 where `value_type` is the type usable for parameters, local variables and the operand stack, and `def_type` describes the types that can be defined in the type section.
 
+Note that for the MVP, an additional restriction on the above grammar is that array fields must be mutable.
 
 ### Type Recursion
 
