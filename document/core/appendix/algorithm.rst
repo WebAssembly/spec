@@ -66,8 +66,6 @@ Equivalence and subtyping checks can be defined on these types.
        (is_ref t1 && is_ref t2 & matches_ref(t1, t2)) ||
        t1 = Bot
 
-.. todo:: Update text
-
 The algorithm uses two separate stacks: the *value stack* and the *control stack*.
 The former tracks the :ref:`types <syntax-valtype>` of operand values on the :ref:`stack <stack>`,
 the latter surrounding :ref:`structured control instructions <syntax-instr-control>` and their associated :ref:`blocks <syntax-instr-control>`.
@@ -85,8 +83,7 @@ the latter surrounding :ref:`structured control instructions <syntax-instr-contr
      unreachable : bool
    }
 
-For each value, the value stack records its :ref:`value type <syntax-valtype>`.
-
+For each value, the value stack records its :ref:`value type <syntax-valtype>`. 
 For each entered block, the control stack records a *control frame* with the originating opcode, the types on the top of the operand stack at the start and end of the block (used to check its result as well as branches), the height of the operand stack at the start of the block (used to check that operands do not underflow the current block), and a flag recording whether the remainder of the block is unreachable (used to handle :ref:`stack-polymorphic <polymorphism>` typing after branches).
 
 For the purpose of presenting the algorithm, the operand and control stacks are simply maintained as global variables:
@@ -296,6 +293,7 @@ Other instructions are checked in a similar manner.
            let t1*->t2* = lookup_def(rt.heap.def)  // TODO
            pop_vals(t1*)
            push_vals(t2*)
+
 
 .. note::
    It is an invariant under the current WebAssembly instruction set that an operand of :code:`Unknown` type is never duplicated on the stack.

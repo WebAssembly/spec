@@ -48,7 +48,7 @@
 
 (assert_trap
   (invoke "fill" (i32.const 8) (ref.extern 6) (i32.const 3))
-  "out of bounds"
+  "out of bounds table access"
 )
 (assert_return (invoke "get" (i32.const 7)) (ref.null extern))
 (assert_return (invoke "get" (i32.const 8)) (ref.extern 4))
@@ -56,12 +56,12 @@
 
 (assert_trap
   (invoke "fill" (i32.const 11) (ref.null extern) (i32.const 0))
-  "out of bounds"
+  "out of bounds table access"
 )
 
 (assert_trap
   (invoke "fill" (i32.const 11) (ref.null extern) (i32.const 10))
-  "out of bounds"
+  "out of bounds table access"
 )
 
 

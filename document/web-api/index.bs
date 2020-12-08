@@ -84,6 +84,7 @@ This document builds off of the WebAssembly specification [[WEBASSEMBLY]] and th
 <h2 id="streaming-modules">Streaming Module Compilation and Instantiation</h2>
 
 <pre class="idl">
+[Exposed=(Window,Worker)]
 partial namespace WebAssembly {
   Promise&lt;Module> compileStreaming(Promise&lt;Response> source);
   Promise&lt;WebAssemblyInstantiatedSource> instantiateStreaming(
@@ -241,44 +242,57 @@ review, approval, and registration with IANA.
 application/wasm
 
 <dl>
-<dt>Type name:</dt>
+<dt>Type Name:</dt>
  <dd>application</dd>
-<dt>Subtype name:</dt>
+<dt>Subtype Name:</dt>
  <dd>wasm</dd>
-<dt>Required parameters:</dt>
+<dt>Required Parameters:</dt>
  <dd>None</dd>
-<dt>Optional parameters:</dt>
+<dt>Optional Parameters:</dt>
  <dd>None</dd>
-<dt>Encoding considerations:</dt>
- <dd>None (this is a binary format)</dd>
-<dt>Security considerations:</dt>
+<dt>Encoding Considerations:</dt>
+ <dd>binary</dd>
+<dt>Security Considerations:</dt>
  <dd>See see WebAssembly Core Security Considerations<br/>
  https://www.w3.org/TR/wasm-core/#security-considerations%E2%91%A0</dd>
-<dt>Interoperability considerations:</dt>
+<dt>Interoperability Considerations:</dt>
  <dd>See see WebAssembly Core Conformance<br/>
  https://www.w3.org/TR/wasm-core/#conformance</dd>
 <dt>Published specification:</dt>
  https://www.w3.org/TR/wasm-core-1/
  https://www.w3.org/TR/wasm-js-api-1/
  https://www.w3.org/TR/wasm-web-api-1/
-<dt>Applications that use this media type:</dt>
- <dd>Web browsers and runtime systems</dd>
+<dt>Application Usage:</dt>
+ <dd>The application/wasm media type is already in use as the type used to describe WebAssembly files when sent over HTTP to be executed by browsers, which is a common scenario. Additionally, several WebAssembly runtimes that take advantage of the safety and portability while targeting efficient execution and compact representation.</dd>
+<dt>Fragment Identifier Considerations:</dt>
+ <dd>None</dd>
+<dt>Restrictions on usage:</dt>
+ <dd>None</dd>
+<dt>Provisional Registrations:</dt>
+ <dd>N/A</dd>
 <dt>Additional information:</dt>
 <dd><dl>
+ <dt>Deprecated alias names for this type:</dt>
+ <dd>None</dd>
  <dt>Magic number(s):</dt>
  <dd>0x00 0x61 0x73 0x6D</dd>
  <dt>File extension(s):</dt>
  <dd>.wasm</dd>
  <dt>Macintosh file type code(s):</dt>
  <dd>None</dd>
+ <dt>Object Identifier(s) or OID(s):</dt>
+ <dd>None</dd>
 </dl></dd>
-<dt>Person & email address to contact for further information:</dt>
- <dd>Eric Prud'hommeaux &lt;eric@w3.org></dd>
 <dt>Intended usage:</dt>
  <dd>Common</dd>
-<dt>Restrictions on usage:</dt>
- <dd>None</dd>
-<dt>Author(s):</dt>
- <dd>W3C's Web Assembly Working Group</dd>
-<dt>Change controller:</dt>
+<dt>Other Information &amp; Comments:</dt>
+ <dd>Common</dd>
+<dt>Contact Person:</dt>
+<dd><dl>
+ <dt>Contact Name:</dt>
+ <dd>Eric Prud'hommeaux</dd>
+ <dt>Contact Email Address:</dt>
+ <dd>eric@w3.org</dd>
+ <dt>Author/Change Controller:</dt>
  <dd>W3C</dd>
+</dl></dd>

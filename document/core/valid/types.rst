@@ -1,5 +1,5 @@
 Types
-----
+-----
 
 Most :ref:`types <syntax-type>` are universally valid.
 However, restrictions apply to :ref:`function types <syntax-functype>` as well as the :ref:`limits <syntax-limits>` of :ref:`table types <syntax-tabletype>` and :ref:`memory types <syntax-memtype>`, which must be checked during validation.

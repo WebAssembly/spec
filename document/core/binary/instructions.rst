@@ -168,12 +168,12 @@ Table Instructions
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{25}~~x{:}\Btableidx &\Rightarrow& \TABLEGET~x \\ &&|&
      \hex{26}~~x{:}\Btableidx &\Rightarrow& \TABLESET~x \\ &&|&
-     \hex{FC}~\hex{0F}~~x{:}\Btableidx &\Rightarrow& \TABLEGROW~x \\ &&|&
-     \hex{FC}~\hex{10}~~x{:}\Btableidx &\Rightarrow& \TABLESIZE~x \\ &&|&
-     \hex{FC}~\hex{11}~~x{:}\Btableidx &\Rightarrow& \TABLEFILL~x \\
-     \hex{FC}~\hex{0C}~~y{:}\Belemidx~~x{:}\Btableidx &\Rightarrow& \TABLEINIT~x~y \\ &&|&
-     \hex{FC}~\hex{0D}~~x{:}\Belemidx &\Rightarrow& \ELEMDROP~x \\ &&|&
-     \hex{FC}~\hex{0E}~~x{:}\Btableidx~~y{:}\Btableidx &\Rightarrow& \TABLECOPY~x~y \\
+     \hex{FC}~~12{:}\Bu32~~y{:}\Belemidx~~x{:}\Btableidx &\Rightarrow& \TABLEINIT~x~y \\ &&|&
+     \hex{FC}~~13{:}\Bu32~~x{:}\Belemidx &\Rightarrow& \ELEMDROP~x \\ &&|&
+     \hex{FC}~~14{:}\Bu32~~x{:}\Btableidx~~y{:}\Btableidx &\Rightarrow& \TABLECOPY~x~y \\
+     \hex{FC}~~15{:}\Bu32~~x{:}\Btableidx &\Rightarrow& \TABLEGROW~x \\ &&|&
+     \hex{FC}~~16{:}\Bu32~~x{:}\Btableidx &\Rightarrow& \TABLESIZE~x \\ &&|&
+     \hex{FC}~~17{:}\Bu32~~x{:}\Btableidx &\Rightarrow& \TABLEFILL~x \\
    \end{array}
 
 
@@ -228,10 +228,10 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
      \hex{3E}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
      \hex{3F}~~\hex{00} &\Rightarrow& \MEMORYSIZE \\ &&|&
      \hex{40}~~\hex{00} &\Rightarrow& \MEMORYGROW \\ &&|&
-     \hex{FC}~\hex{08}~~x{:}\Bdataidx~~\hex{00} &\Rightarrow& \MEMORYINIT~x \\ &&|&
-     \hex{FC}~\hex{09}~~x{:}\Bdataidx &\Rightarrow& \DATADROP~x \\ &&|&
-     \hex{FC}~\hex{0A}~~\hex{00}~~\hex{00} &\Rightarrow& \MEMORYCOPY \\ &&|&
-     \hex{FC}~\hex{0B}~~\hex{00} &\Rightarrow& \MEMORYFILL \\
+     \hex{FC}~~8{:}\Bu32~~x{:}\Bdataidx~\hex{00} &\Rightarrow& \MEMORYINIT~x \\ &&|&
+     \hex{FC}~~9{:}\Bu32~~x{:}\Bdataidx &\Rightarrow& \DATADROP~x \\ &&|&
+     \hex{FC}~~10{:}\Bu32~~\hex{00}~~\hex{00} &\Rightarrow& \MEMORYCOPY \\ &&|&
+     \hex{FC}~~11{:}\Bu32~~\hex{00} &\Rightarrow& \MEMORYFILL \\
    \end{array}
 
 .. note::
@@ -438,24 +438,6 @@ All other numeric instructions are plain opcodes without any immediates.
      \hex{BF} &\Rightarrow& \F64.\REINTERPRET\K{\_}\I64 \\
    \end{array}
 
-.. _binary-cvtop-trunc-sat:
-
-The saturating truncation instructions all have a one byte prefix.
-
-.. math::
-   \begin{array}{llclll}
-   \production{instruction} & \Binstr &::=& \dots && \phantom{thisshouldbeenough} \\&&|&
-     \hex{FC}~\hex{00} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
-     \hex{FC}~\hex{01} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
-     \hex{FC}~\hex{02} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
-     \hex{FC}~\hex{03} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_u} \\ &&|&
-     \hex{FC}~\hex{04} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
-     \hex{FC}~\hex{05} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
-     \hex{FC}~\hex{06} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
-     \hex{FC}~\hex{07} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_u} \\
-   \end{array}
-
-
 .. math::
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
@@ -464,6 +446,24 @@ The saturating truncation instructions all have a one byte prefix.
      \hex{C2} &\Rightarrow& \I64.\EXTEND\K{8\_s} \\ &&|&
      \hex{C3} &\Rightarrow& \I64.\EXTEND\K{16\_s} \\ &&|&
      \hex{C4} &\Rightarrow& \I64.\EXTEND\K{32\_s} \\
+   \end{array}
+
+.. _binary-cvtop-trunc-sat:
+
+The saturating truncation instructions all have a one byte prefix,
+whereas the actual opcode is encoded by a variable-length :ref:`unsigned integer <binary-uint>`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Binstr &::=& \dots && \phantom{thisshouldbeenough} \\&&|&
+     \hex{FC}~~0{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
+     \hex{FC}~~1{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
+     \hex{FC}~~2{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
+     \hex{FC}~~3{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_u} \\ &&|&
+     \hex{FC}~~4{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
+     \hex{FC}~~5{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
+     \hex{FC}~~6{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
+     \hex{FC}~~7{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_u} \\
    \end{array}
 
 

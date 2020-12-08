@@ -65,7 +65,7 @@ Reference types are *opaque*, meaning that neither their size nor their bit patt
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
 
 
-.. index:: ! value type, number type, reference type, ! bottom type
+.. index:: ! value type, number type, reference type
    pair: abstract syntax; value type
    pair: value; type
 .. _syntax-valtype:

@@ -25,7 +25,7 @@ Number Types
 .. index:: reference type
    pair: text format; reference type
 .. _text-reftype:
-.. _text-refedtype:
+.. _text-heaptype:
 
 Reference Types
 ~~~~~~~~~~~~~~~
@@ -35,7 +35,7 @@ Reference Types
    \production{reference type} & \Treftype &::=&
      \text{funcref} &\Rightarrow& \FUNCREF \\ &&|&
      \text{externref} &\Rightarrow& \EXTERNREF \\
-   \production{referenced type} & \Trefedtype &::=&
+   \production{heap type} & \Theaptype &::=&
      \text{func} &\Rightarrow& \FUNCREF \\ &&|&
      \text{extern} &\Rightarrow& \EXTERNREF \\
    \end{array}

@@ -1,4 +1,4 @@
-.. index:: instruction, function type, context, value, operand stack, ! polymorphism
+.. index:: instruction, function type, context, value, operand stack, ! polymorphism, ! bottom type
 .. _valid-instr:
 
 Instructions
@@ -1099,14 +1099,17 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
 :math:`\instr^\ast~\END`
 ........................
 
-* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^\ast]`,
-  for some :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some :ref:`type <syntax-functype>` :math:`[] \to [t^\ast]`.
+
+* For each :ref:`value type <syntax-valtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding :ref:`value type <syntax-valtype>` type :math:`t_i` in :math:`t^\ast`, :math:`t'_i` :ref:`matches <match-valtype>` :math:`t_i`.
 
 * Then the expression is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
 
 .. math::
    \frac{
-     C \vdashinstrseq \instr^\ast : [] \to [t^\ast]
+     C \vdashinstrseq \instr^\ast : [] \to [{t'}^\ast]
+     \qquad
+     (\vdashvaltypematch t' \matchesvaltype t)^\ast
    }{
      C \vdashexpr \instr^\ast~\END : [t^\ast]
    }

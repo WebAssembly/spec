@@ -348,7 +348,7 @@
     (i32.load8_u (local.get 0))))
 
 (assert_trap (invoke "run" (i32.const 65516) (i32.const 0) (i32.const 40))
-             "out of bounds")
+             "out of bounds memory access")
 
 (assert_return (invoke "load8_u" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "load8_u" (i32.const 1)) (i32.const 1))
@@ -709,7 +709,7 @@
     (i32.load8_u (local.get 0))))
 
 (assert_trap (invoke "run" (i32.const 65515) (i32.const 0) (i32.const 39))
-             "out of bounds")
+             "out of bounds memory access")
 
 (assert_return (invoke "load8_u" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "load8_u" (i32.const 1)) (i32.const 1))
@@ -1071,7 +1071,7 @@
     (i32.load8_u (local.get 0))))
 
 (assert_trap (invoke "run" (i32.const 0) (i32.const 65516) (i32.const 40))
-             "out of bounds")
+             "out of bounds memory access")
 
 (assert_return (invoke "load8_u" (i32.const 198)) (i32.const 0))
 (assert_return (invoke "load8_u" (i32.const 397)) (i32.const 0))
@@ -1432,7 +1432,7 @@
     (i32.load8_u (local.get 0))))
 
 (assert_trap (invoke "run" (i32.const 0) (i32.const 65515) (i32.const 39))
-             "out of bounds")
+             "out of bounds memory access")
 
 (assert_return (invoke "load8_u" (i32.const 198)) (i32.const 0))
 (assert_return (invoke "load8_u" (i32.const 397)) (i32.const 0))
@@ -1794,7 +1794,7 @@
     (i32.load8_u (local.get 0))))
 
 (assert_trap (invoke "run" (i32.const 65516) (i32.const 65486) (i32.const 40))
-             "out of bounds")
+             "out of bounds memory access")
 
 (assert_return (invoke "load8_u" (i32.const 198)) (i32.const 0))
 (assert_return (invoke "load8_u" (i32.const 397)) (i32.const 0))
@@ -2155,7 +2155,7 @@
     (i32.load8_u (local.get 0))))
 
 (assert_trap (invoke "run" (i32.const 65486) (i32.const 65516) (i32.const 40))
-             "out of bounds")
+             "out of bounds memory access")
 
 (assert_return (invoke "load8_u" (i32.const 198)) (i32.const 0))
 (assert_return (invoke "load8_u" (i32.const 397)) (i32.const 0))
@@ -2516,7 +2516,7 @@
     (i32.load8_u (local.get 0))))
 
 (assert_trap (invoke "run" (i32.const 65516) (i32.const 65506) (i32.const 40))
-             "out of bounds")
+             "out of bounds memory access")
 
 (assert_return (invoke "load8_u" (i32.const 198)) (i32.const 0))
 (assert_return (invoke "load8_u" (i32.const 397)) (i32.const 0))
@@ -2877,7 +2877,7 @@
     (i32.load8_u (local.get 0))))
 
 (assert_trap (invoke "run" (i32.const 65506) (i32.const 65516) (i32.const 40))
-             "out of bounds")
+             "out of bounds memory access")
 
 (assert_return (invoke "load8_u" (i32.const 198)) (i32.const 0))
 (assert_return (invoke "load8_u" (i32.const 397)) (i32.const 0))
@@ -3238,7 +3238,7 @@
     (i32.load8_u (local.get 0))))
 
 (assert_trap (invoke "run" (i32.const 65516) (i32.const 65516) (i32.const 40))
-             "out of bounds")
+             "out of bounds memory access")
 
 (assert_return (invoke "load8_u" (i32.const 198)) (i32.const 0))
 (assert_return (invoke "load8_u" (i32.const 397)) (i32.const 0))
@@ -3599,7 +3599,7 @@
     (i32.load8_u (local.get 0))))
 
 (assert_trap (invoke "run" (i32.const 0) (i32.const 65516) (i32.const 4294963200))
-             "out of bounds")
+             "out of bounds memory access")
 
 (assert_return (invoke "load8_u" (i32.const 198)) (i32.const 0))
 (assert_return (invoke "load8_u" (i32.const 397)) (i32.const 0))
@@ -3960,7 +3960,7 @@
     (i32.load8_u (local.get 0))))
 
 (assert_trap (invoke "run" (i32.const 65516) (i32.const 61440) (i32.const 4294967040))
-             "out of bounds")
+             "out of bounds memory access")
 
 (assert_return (invoke "load8_u" (i32.const 198)) (i32.const 0))
 (assert_return (invoke "load8_u" (i32.const 397)) (i32.const 0))
@@ -4816,25 +4816,25 @@
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0xFF00) (i32.const 0x8000) (i32.const 257))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0xFFFFFF00) (i32.const 0x4000) (i32.const 257))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x8000) (i32.const 0xFF00) (i32.const 257))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
  (memory 1 1)
  (func (export "test")
    (memory.copy (i32.const 0x4000) (i32.const 0xFFFFFF00) (i32.const 257))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory 1 1)
@@ -4870,7 +4870,7 @@
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x20000) (i32.const 0x7000) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory 1 1)
@@ -4882,7 +4882,7 @@
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x9000) (i32.const 0x20000) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory 1 1)
@@ -4894,7 +4894,7 @@
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x20000) (i32.const 0x20000) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory 1 1)

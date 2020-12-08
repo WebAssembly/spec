@@ -202,12 +202,12 @@ let encode m =
 
       | TableGet x -> op 0x25; var x
       | TableSet x -> op 0x26; var x
-      | TableSize x -> op 0xfc; op 0x10; var x
-      | TableGrow x -> op 0xfc; op 0x0f; var x
-      | TableFill x -> op 0xfc; op 0x11; var x
-      | TableCopy (x, y) -> op 0xfc; op 0x0e; var x; var y
-      | TableInit (x, y) -> op 0xfc; op 0x0c; var y; var x
-      | ElemDrop x -> op 0xfc; op 0x0d; var x
+      | TableSize x -> op 0xfc; vu32 0x10l; var x
+      | TableGrow x -> op 0xfc; vu32 0x0fl; var x
+      | TableFill x -> op 0xfc; vu32 0x11l; var x
+      | TableCopy (x, y) -> op 0xfc; vu32 0x0el; var x; var y
+      | TableInit (x, y) -> op 0xfc; vu32 0x0cl; var y; var x
+      | ElemDrop x -> op 0xfc; vu32 0x0dl; var x
 
       | Load ({ty = I32Type; sz = None; _} as mo) -> op 0x28; memop mo
       | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x29; memop mo
@@ -252,10 +252,10 @@ let encode m =
 
       | MemorySize -> op 0x3f; u8 0x00
       | MemoryGrow -> op 0x40; u8 0x00
-      | MemoryFill -> op 0xfc; op 0x0b; u8 0x00
-      | MemoryCopy -> op 0xfc; op 0x0a; u8 0x00; u8 0x00
-      | MemoryInit x -> op 0xfc; op 0x08; var x; u8 0x00
-      | DataDrop x -> op 0xfc; op 0x09; var x
+      | MemoryFill -> op 0xfc; vu32 0x0bl; u8 0x00
+      | MemoryCopy -> op 0xfc; vu32 0x0al; u8 0x00; u8 0x00
+      | MemoryInit x -> op 0xfc; vu32 0x08l; var x; u8 0x00
+      | DataDrop x -> op 0xfc; vu32 0x09l; var x
 
       | RefNull t -> op 0xd0; heap_type t
       | RefIsNull -> op 0xd1
@@ -393,10 +393,10 @@ let encode m =
       | Convert (I32 I32Op.TruncUF32) -> op 0xa9
       | Convert (I32 I32Op.TruncSF64) -> op 0xaa
       | Convert (I32 I32Op.TruncUF64) -> op 0xab
-      | Convert (I32 I32Op.TruncSatSF32) -> op 0xfc; op 0x00
-      | Convert (I32 I32Op.TruncSatUF32) -> op 0xfc; op 0x01
-      | Convert (I32 I32Op.TruncSatSF64) -> op 0xfc; op 0x02
-      | Convert (I32 I32Op.TruncSatUF64) -> op 0xfc; op 0x03
+      | Convert (I32 I32Op.TruncSatSF32) -> op 0xfc; vu32 0x00l
+      | Convert (I32 I32Op.TruncSatUF32) -> op 0xfc; vu32 0x01l
+      | Convert (I32 I32Op.TruncSatSF64) -> op 0xfc; vu32 0x02l
+      | Convert (I32 I32Op.TruncSatUF64) -> op 0xfc; vu32 0x03l
       | Convert (I32 I32Op.ReinterpretFloat) -> op 0xbc
 
       | Convert (I64 I64Op.ExtendSI32) -> op 0xac
@@ -406,10 +406,10 @@ let encode m =
       | Convert (I64 I64Op.TruncUF32) -> op 0xaf
       | Convert (I64 I64Op.TruncSF64) -> op 0xb0
       | Convert (I64 I64Op.TruncUF64) -> op 0xb1
-      | Convert (I64 I64Op.TruncSatSF32) -> op 0xfc; op 0x04
-      | Convert (I64 I64Op.TruncSatUF32) -> op 0xfc; op 0x05
-      | Convert (I64 I64Op.TruncSatSF64) -> op 0xfc; op 0x06
-      | Convert (I64 I64Op.TruncSatUF64) -> op 0xfc; op 0x07
+      | Convert (I64 I64Op.TruncSatSF32) -> op 0xfc; vu32 0x04l
+      | Convert (I64 I64Op.TruncSatUF32) -> op 0xfc; vu32 0x05l
+      | Convert (I64 I64Op.TruncSatSF64) -> op 0xfc; vu32 0x06l
+      | Convert (I64 I64Op.TruncSatUF64) -> op 0xfc; vu32 0x07l
       | Convert (I64 I64Op.ReinterpretFloat) -> op 0xbd
 
       | Convert (F32 F32Op.ConvertSI32) -> op 0xb2

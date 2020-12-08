@@ -22,11 +22,6 @@ The following sections group instructions into a number of different categories.
    pair: abstract syntax; instruction
 .. _syntax-sx:
 .. _syntax-const:
-.. _syntax-unop:
-.. _syntax-binop:
-.. _syntax-testop:
-.. _syntax-relop:
-.. _syntax-cvtop:
 .. _syntax-iunop:
 .. _syntax-ibinop:
 .. _syntax-itestop:
@@ -144,6 +139,12 @@ where a signedness annotation |sx| distinguishes whether the operands are to be 
 For the other integer instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
 
 
+.. _syntax-unop:
+.. _syntax-binop:
+.. _syntax-testop:
+.. _syntax-relop:
+.. _syntax-cvtop:
+
 Conventions
 ...........
 
@@ -191,7 +192,7 @@ Instructions in this group are concerned with accessing :ref:`references <syntax
      \REFFUNC~\funcidx \\
    \end{array}
 
-These instruction produce a null value, check for a null value, or compare two references, respectively.
+These instruction produce a null value, check for a null value, or produce a reference to a given function, respectively.
 
 
 .. index:: ! parametric instruction, value type
@@ -266,7 +267,7 @@ Instructions in this group are concerned with tables :ref:`table <syntax-table>`
      \TABLESET~\tableidx \\&&|&
      \TABLESIZE~\tableidx \\&&|&
      \TABLEGROW~\tableidx \\&&|&
-     \TABLEFILL~\tableidx \\
+     \TABLEFILL~\tableidx \\&&|&
      \TABLECOPY \\&&|&
      \TABLEINIT~\elemidx \\&&|&
      \ELEMDROP~\elemidx \\
