@@ -159,11 +159,10 @@ Numeric Instructions
    single: abstract syntax; instruction
 
 .. _valid-instr-simd:
+.. _aux-unpacked:
 
 SIMD Instructions
 ~~~~~~~~~~~~~~~~~
-
-.. _aux-unpacked:
 
 SIMD instructions can have a prefix to describe the :ref:`shape <syntax-simd-shape>` of the operand. Packed numeric types, |I8| and |I16|, are not :ref:`value type <syntax-valtype>`, we define an auxiliary function to map such packed types into value types:
 
@@ -175,13 +174,13 @@ SIMD instructions can have a prefix to describe the :ref:`shape <syntax-simd-sha
    \end{array}
 
 
-We also define an auxiliary function to get number of packed numeric types in a |V128|:
+We also define an auxiliary function to get number of packed numeric types in a |V128|, *dimension*:
 
-.. _aux-lanes:
+.. _aux-dim:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \lanes(t\K{x}N) &=& N
+   \dim(t\K{x}N) &=& N
    \end{array}
 
 
@@ -274,30 +273,29 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-simd-extract-lane:
-.. _valid-simd-extract-lane-sx:
+.. _valid-simd-extract_lane:
 
 :math:`\shape\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx`
 ...................................................
 
-* The lane index :math:`\laneidx` must be smaller than :math:`\lanes(\shape)`.
+* The lane index :math:`\laneidx` must be smaller than :math:`\dim(\shape)`.
 
 * The instruction is valid with type :math:`[\V128] \to [\unpacked(\shape)]`.
 
 .. math::
    \frac{
-     \laneidx < \lanes(\shape)
+     \laneidx < \dim(\shape)
    }{
      C \vdashinstr t\K{x}N\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx : [\V128] \to [\unpacked(\shape)]
    }
 
 
-.. _valid-simd-replace-lane:
+.. _valid-simd-replace_lane:
 
 :math:`\shape\K{.}\REPLACELANE~\laneidx`
 ........................................
 
-* The lane index :math:`\laneidx` must be smaller than :math:`\lanes(\shape)`.
+* The lane index :math:`\laneidx` must be smaller than :math:`\dim(\shape)`.
 
 * Let :math:`t` be :math:`\unpacked(\shape)`.
 
@@ -305,7 +303,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
 
 .. math::
    \frac{
-     \laneidx < \lanes(\shape)
+     \laneidx < \dim(\shape)
    }{
      C \vdashinstr \shape\K{.}\REPLACELANE~\laneidx : [\V128~\unpacked(\shape)] \to [\V128]
    }
@@ -378,6 +376,49 @@ We also define an auxiliary function to get number of packed numeric types in a 
    \frac{
    }{
      C \vdashinstr \shape\K{.}\vitestop : [\V128] \to [\I32]
+   }
+
+
+.. _valid-vcvtop:
+
+:math:`\shape\K{.}\vcvtop\K{\_}\shape\K{\_}\sx`
+.....................................................
+
+* The instruction is valid with type :math:`[\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vcvtop\K{\_}\shape\K{\_}\sx : [\V128] \to [\V128]
+   }
+
+
+.. _valid-vwiden:
+
+:math:`\shape\K{.}\vwiden\K{\_}\shape\K{\_}\sx`
+...............................................
+
+* The instruction is valid with type :math:`[\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vwiden\K{\_}\shape\K{\_}\sx : [\V128] \to [\V128]
+   }
+
+
+
+.. _valid-narrow:
+
+:math:`\shape\K{.}\NARROW\K{\_}\shape\K{\_}\sx`
+...............................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\NARROW\K{\_}\shape\K{\_}\sx : [\V128~\V128] \to [\V128]
    }
 
 

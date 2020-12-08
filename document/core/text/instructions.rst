@@ -609,7 +609,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{v128.bitselect} &\Rightarrow& \V128.\BITSELECT
    \end{array}
 
-.. _text-vtestop:
+.. _text-vitestop:
 .. _text-vshiftop:
 .. _text-viunop:
 .. _text-vibinop:

@@ -145,6 +145,7 @@
 .. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\X{s32}}
 .. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\X{s64}}
 
+.. |iM| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}M}
 .. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}N}
 .. |i8| mathdef:: \xref{syntax/values}{syntax-int}{\X{i8}}
 .. |i16| mathdef:: \xref{syntax/values}{syntax-int}{\X{i16}}
@@ -185,6 +186,7 @@
 .. |I64X2| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i64x2}}
 .. |F32X4| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32x4}}
 .. |F64X2| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64x2}}
+.. |I128| mathdef:: \K{i128}
 
 .. |FUNCREF| mathdef:: \xref{syntax/types}{syntax-elemtype}{\K{funcref}}
 
@@ -449,6 +451,8 @@
 .. |vunop| mathdef:: \xref{syntax/instructions}{syntax-vunop}{\X{vunop}}
 .. |vbinop| mathdef:: \xref{syntax/instructions}{syntax-vbinop}{\X{vbinop}}
 .. |vternop| mathdef:: \xref{syntax/instructions}{syntax-vternop}{\X{vternop}}
+.. |vwiden| mathdef:: \xref{syntax/instructions}{syntax-vwiden}{\X{vwiden}}
+.. |vcvtop| mathdef:: \xref{syntax/instructions}{syntax-vcvtop}{\X{vcvtop}}
 
 .. |laneidx| mathdef:: \xref{syntax/instructions}{syntax-laneidx}{\X{laneidx}}
 .. |vsunop| mathdef:: \xref{syntax/instructions}{syntax-vsunop}{\X{vsunop}}
@@ -831,7 +835,7 @@
 .. |vdashmodule| mathdef:: \xref{valid/modules}{valid-module}{\vdash}
 
 .. |unpacked| mathdef:: \xref{valid/instructions}{aux-unpacked}{\F{unpacked}}
-.. |lanes| mathdef:: \xref{valid/instructions}{aux-lanes}{\F{lanes}}
+.. |dim| mathdef:: \xref{valid/instructions}{aux-dim}{\F{dim}}
 
 
 .. Execution
@@ -988,7 +992,9 @@
 .. |idivs| mathdef:: \xref{exec/numerics}{op-idiv_s}{\F{idiv\_s}}
 .. |iremu| mathdef:: \xref{exec/numerics}{op-irem_u}{\F{irem\_u}}
 .. |irems| mathdef:: \xref{exec/numerics}{op-irem_s}{\F{irem\_s}}
+.. |inot| mathdef:: \xref{exec/numerics}{op-inot}{\F{inot}}
 .. |iand| mathdef:: \xref{exec/numerics}{op-iand}{\F{iand}}
+.. |iandnot| mathdef:: \xref{exec/numerics}{op-iandnot}{\F{iandnot}}
 .. |ior| mathdef:: \xref{exec/numerics}{op-ior}{\F{ior}}
 .. |ixor| mathdef:: \xref{exec/numerics}{op-ixor}{\F{ixor}}
 .. |ishl| mathdef:: \xref{exec/numerics}{op-ishl}{\F{ishl}}
@@ -1011,6 +1017,18 @@
 .. |igeu| mathdef:: \xref{exec/numerics}{op-ige_u}{\F{ige\_u}}
 .. |iges| mathdef:: \xref{exec/numerics}{op-ige_s}{\F{ige\_s}}
 .. |iextendMs| mathdef:: \xref{exec/numerics}{op-iextendn_s}{\F{iextend}M\F{\_s}}
+.. |ibitselect| mathdef:: \xref{exec/numerics}{op-ibitselect}{\F{ibitselect}}
+.. |iabs| mathdef:: \xref{exec/numerics}{op-iabs}{\F{iabs}}
+.. |ineg| mathdef:: \xref{exec/numerics}{op-ineg}{\F{ineg}}
+.. |iminu| mathdef:: \xref{exec/numerics}{op-imin_u}{\F{imin\_u}}
+.. |imins| mathdef:: \xref{exec/numerics}{op-imin_s}{\F{imin\_s}}
+.. |imaxu| mathdef:: \xref{exec/numerics}{op-imax_u}{\F{imax\_u}}
+.. |imaxs| mathdef:: \xref{exec/numerics}{op-imax_s}{\F{imax\_s}}
+.. |iaddsatu| mathdef:: \xref{exec/numerics}{op-iaddsat_u}{\F{iaddsat\_u}}
+.. |iaddsats| mathdef:: \xref{exec/numerics}{op-iaddsat_s}{\F{iaddsat\_s}}
+.. |isubsatu| mathdef:: \xref{exec/numerics}{op-isubsat_u}{\F{isubsat\_u}}
+.. |isubsats| mathdef:: \xref{exec/numerics}{op-isubsat_s}{\F{isubsat\_s}}
+.. |iavgru| mathdef:: \xref{exec/numerics}{op-iavgr_u}{\F{iavgr\_u}}
 
 .. |fadd| mathdef:: \xref{exec/numerics}{op-fadd}{\F{fadd}}
 .. |fsub| mathdef:: \xref{exec/numerics}{op-fsub}{\F{fsub}}
@@ -1046,6 +1064,9 @@
 .. |convertu| mathdef:: \xref{exec/numerics}{op-convert_u}{\F{convert}^{\K{u}}}
 .. |converts| mathdef:: \xref{exec/numerics}{op-convert_s}{\F{convert}^{\K{s}}}
 .. |reinterpret| mathdef:: \xref{exec/numerics}{op-reinterpret}{\F{reinterpret}}
+.. |narrow| mathdef:: \xref{exec/numerics}{op-narrow_u}{\F{narrow}}
+.. |narrowu| mathdef:: \xref{exec/numerics}{op-narrow_u}{\F{narrow}^{\K{u}}}
+.. |narrows| mathdef:: \xref{exec/numerics}{op-narrow_s}{\F{narrow}^{\K{s}}}
 
 
 .. Numerics, meta functions
@@ -1063,6 +1084,10 @@
 .. |ieee| mathdef:: \xref{exec/numerics}{aux-ieee}{\F{float}}
 .. |nans| mathdef:: \xref{exec/numerics}{aux-nans}{\F{nans}}
 .. |trunc| mathdef:: \xref{exec/numerics}{aux-trunc}{\F{trunc}}
+.. |satu| mathdef:: \xref{exec/numerics}{aux-sat_u}{\F{sat}^{\K{u}}}
+.. |sats| mathdef:: \xref{exec/numerics}{aux-sat_s}{\F{sat}^{\K{s}}}
+
+.. |lanes| mathdef:: \xref{exec/numerics}{aux-lanes}{\F{lanes}}
 
 
 .. Other meta functions
