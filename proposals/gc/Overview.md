@@ -144,7 +144,7 @@ The above could map to
 )
 
 (func $g
-  (array.new $vec3d (i64.const 1) (i32.const 3))
+  (array.new $vec3d (i32.const 3) (f64.const 1))
   (let (local $v (ref $vec3d))
     (array.set $vec3d (local.get $v) (i32.const 2) (i32.const 5))
     (array.get $vec3d (local.get $v) (i32.const 1))
@@ -448,7 +448,7 @@ A trap occurs if the index is out of bounds.
 Arrays are *allocated* with the `array.new` instruction that takes a length and an initialization value as operands, yielding a reference:
 ```
 (func $g
-  (call $f (array.new $vector (i32.const 0) (f64.const 3.14)))
+  (call $f (array.new $vector (i32.const 1) (f64.const 3.14)))
 )
 ```
 
