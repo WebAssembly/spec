@@ -6,7 +6,7 @@ Note: Basic support for simple [reference types](https://github.com/WebAssembly/
 
 See [MVP](MVP.md) for a concrete v1 proposal and [Post-MVP](Post-MVP.md) for possible future features.
 
-WARNING: Some contents of this document may have gotten out of sync with the [MVP](MVP.md) design.
+WARNING: Some contents of this document may have gotten out of sync with the [MVP](MVP.md) design, which is more up-to-date.
 
 
 ### Motivation
@@ -724,16 +724,15 @@ For safety, down casts have to be checked at runtime by the engine. Down casts h
 ```
 This instruction checks whether the runtime type stored in `<operand>` is a runtime subtype of the runtime type represented by the second operand.
 
-In order to cast down the type of a struct or array, the aggregate itself must be equipped with a suitable RTT. Attaching runtime type information to aggregates happens at allocation time but is optional. If no RTT is attached then their runtime type is treated as if it was `anyref` and a down cast to a more specific type will fail. Such aggregates can prevent client code from rediscovering their real type, enforcing a form of parametricity. They can also be optimised more aggressively (e.g., via flattening optimisations), since the VM knows that any possible additional fields forgotten via subtyping can never be rediscovered.
-
-A runtime type is an expression of type `rtt <type>`, which is another form of opaque reference type. It represents the static type `<type>` at runtime.
+In order to cast down the type of a struct or array, the aggregate itself must be equipped with a suitable RTT. Attaching runtime type information to aggregates happens at allocation time.
+A runtime type is an expression of type `rtt <type>`, which is another form of opaque value type. It represents the static type `<type>` at runtime.
 In its plain form, a runtime type is obtained using the instruction `rtt.get`
 ```
-(rtt.get <type>)
+(rtt.canon <type>)
 ```
-For example, this can be used to cast down from `anyref` to a concrete type:
+For example, this can be used to cast down from `dataref` to a concrete type:
 ```
-(ref.cast (<operand>) (rtt.get <type>))
+(ref.cast (<operand>) (rtt.canon <type>))
 ```
 
 More generally, runtime type checks can verify a subtype relation between runtime types.
@@ -772,7 +771,7 @@ There are a number of reasons to make RTTs explicit:
 
 * It makes all data and cost (in space and time) involved in casting explicit, which is a desirable property for an "assembly" language.
 
-* It allows to make RTT information optional: for example, structs that are not involved in any casts do not need to pay the overhead of carrying runtime type information (depending on specifics of the GC implementation strategy). For some languages that may mean that they never need to introduce any RTTs.
+* It allows more choice in producers' use of RTT information, including making it optional (post-MVP), in accordance with the pay-as-you-go principle: for example, structs that are not involved in any casts do not need to pay the overhead of carrying runtime type information (depending on specifics of the GC implementation strategy). Some languages may never need to introduce any RTTs at all.
 
 * Most importantly, making RTTs explicit separates the concerns of casting from Wasm-level polymorphism, i.e., [type parameters and fields](#type-paraemters-and-fields). Type parameters can thus be treated as purely a validation artifact with no bearing on runtime. This property, known as parametricity, drastically simplifies the implementation of such type parameterisation and avoids the substantial hidden costs of reified generics that would otherwise hvae to be paid for every single use of type parameters (short of non-trivial cross-procedural dataflow analysis in the engine).
 
