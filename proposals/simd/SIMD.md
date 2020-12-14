@@ -416,6 +416,38 @@ def S.neg(a):
     return S.lanewise_unary(neg, a)
 ```
 
+## Extended integer arithmetic
+
+### Extended integer multiplication
+* `i16x8.extmul_low_i8x16_s(a: v128, b: v128) -> v128`
+* `i16x8.extmul_high_i8x16_s(a: v128, b: v128) -> v128`
+* `i16x8.extmul_low_i8x16_u(a: v128, b: v128) -> v128`
+* `i16x8.extmul_high_i8x16_u(a: v128, b: v128) -> v128`
+* `i32x4.extmul_low_i16x8_s(a: v128, b: v128) -> v128`
+* `i32x4.extmul_high_i16x8_s(a: v128, b: v128) -> v128`
+* `i32x4.extmul_low_i16x8_u(a: v128, b: v128) -> v128`
+* `i32x4.extmul_high_i16x8_u(a: v128, b: v128) -> v128`
+* `i64x2.extmul_low_i32x4_s(a: v128, b: v128) -> v128`
+* `i64x2.extmul_high_i32x4_s(a: v128, b: v128) -> v128`
+* `i64x2.extmul_low_i32x4_u(a: v128, b: v128) -> v128`
+* `i64x2.extmul_high_i32x4_u(a: v128, b: v128) -> v128`
+
+Lane-wise integer extended multiplication producing twice wider result than the inputs.
+
+These instructions provide a more performant equivalent to the following composite operations:
+- `i16x8.extmul_low_i8x16_s(a, b)` is equivalent to `i16x8.mul(i16x8.widen_low_i8x16_s(a), i16x8.widen_low_i8x16_s(b))`.
+- `i16x8.extmul_high_i8x16_s(a, b)` is equivalent to `i16x8.mul(i16x8.widen_high_i8x16_s(a), i16x8.widen_high_i8x16_s(b))`.
+- `i16x8.extmul_low_i8x16_u(a, b)` is equivalent to `i16x8.mul(i16x8.widen_low_i8x16_u(a), i16x8.widen_low_i8x16_u(b))`.
+- `i16x8.extmul_high_i8x16_u(a, b)` is equivalent to `i16x8.mul(i16x8.widen_high_i8x16_u(a), i16x8.widen_high_i8x16_u(b))`.
+- `i32x4.extmul_low_i16x8_s(a, b)` is equivalent to `i32x4.mul(i32x4.widen_low_i16x8_s(a), i32x4.widen_low_i16x8_s(b))`.
+- `i32x4.extmul_high_i16x8_s(a, b)` is equivalent to `i32x4.mul(i32x4.widen_high_i16x8_s(a), i32x4.widen_high_i16x8_s(b))`.
+- `i32x4.extmul_low_i16x8_u(a, b)` is equivalent to `i32x4.mul(i32x4.widen_low_i16x8_u(a), i32x4.widen_low_i16x8_u(b))`.
+- `i32x4.extmul_high_i16x8_u(a, b)` is equivalent to `i32x4.mul(i32x4.widen_high_i16x8_u(a), i32x4.widen_high_i16x8_u(b))`.
+- `i64x2.extmul_low_i32x4_s(a, b)` is equivalent to `i64x2.mul(i64x2.widen_low_i32x4_s(a), i64x2.widen_low_i32x4_s(b))`.
+- `i64x2.extmul_high_i32x4_s(a, b)` is equivalent to `i64x2.mul(i64x2.widen_high_i32x4_s(a), i64x2.widen_high_i32x4_s(b))`.
+- `i64x2.extmul_low_i32x4_u(a, b)` is equivalent to `i64x2.mul(i64x2.widen_low_i32x4_u(a), i64x2.widen_low_i32x4_u(b))`.
+- `i64x2.extmul_high_i32x4_u(a, b)` is equivalent to `i64x2.mul(i64x2.widen_high_i32x4_u(a), i64x2.widen_high_i32x4_u(b))`.
+
 ## Saturating integer arithmetic
 
 Saturating integer arithmetic behaves differently on signed and unsigned lanes.
