@@ -356,6 +356,68 @@
   "malformed mutability"
 )
 
+;; global.get with invalid index
+(assert_invalid
+  (module (func (result i32) (global.get 0)))
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (global i32 (i32.const 0))
+    (func (result i32) (global.get 1))
+  )
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (import "spectest" "global_i32" (global i32))
+    (func (result i32) (global.get 1))
+  )
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (import "spectest" "global_i32" (global i32))
+    (global i32 (i32.const 0))
+    (func (result i32) (global.get 2))
+  )
+  "unknown global"
+)
+
+;; global.set with invalid index
+(assert_invalid
+  (module (func (i32.const 0) (global.set 0)))
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (global i32 (i32.const 0))
+    (func (i32.const 0) (global.set 1))
+  )
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (import "spectest" "global_i32" (global i32))
+    (func (i32.const 0) (global.set 1))
+  )
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (import "spectest" "global_i32" (global i32))
+    (global i32 (i32.const 0))
+    (func (i32.const 0) (global.set 2))
+  )
+  "unknown global"
+)
+
 
 (assert_invalid
   (module
