@@ -429,6 +429,8 @@ SIMD loads and stores are followed by the encoding of their |memarg| immediate.
      \hex{FD}~~8{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{16\_splat}~m \\ &&|&
      \hex{FD}~~9{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{32\_splat}~m \\ &&|&
      \hex{FD}~~10{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{64\_splat}~m \\ &&|&
+     \hex{FD}~~252{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{\_zero}~m \\ &&|&
+     \hex{FD}~~253{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{\_zero}~m \\ &&|&
      \hex{FD}~~11{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\STORE~m \\
    \end{array}
 

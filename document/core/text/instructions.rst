@@ -470,6 +470,8 @@ SIMD memory instructions have optional offset and alignment immediates, like the
      \text{v128.load16\_splat}~~m{:}\Tmemarg_2 &\Rightarrow& \V128.\LOAD\K{16\_splat}~m \\ &&|&
      \text{v128.load32\_splat}~~m{:}\Tmemarg_4 &\Rightarrow& \V128.\LOAD\K{32\_splat}~m \\ &&|&
      \text{v128.load64\_splat}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{64\_splat}~m \\ &&|&
+     \text{v128.load32\_zero}~~m{:}\Tmemarg_4 &\Rightarrow& \V128.\LOAD\K{32\_zero}~m \\ &&|&
+     \text{v128.load64\_zero}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{64\_zero}~m \\ &&|&
      \text{v128.store}~~m{:}\Tmemarg_{16} &\Rightarrow& \V128.\STORE~m \\
    \end{array}
 

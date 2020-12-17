@@ -727,6 +727,27 @@ Memory Instructions
    }
 
 
+.. _valid-load-zero:
+
+:math:`\K{v128.}\LOAD{N}\K{\_zero}~\memarg`
+...............................................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} \leq N/8
+   }{
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_zero}~\memarg : [\I32] \to [\V128]
+   }
+
+
 .. _valid-memory.size:
 
 :math:`\MEMORYSIZE`

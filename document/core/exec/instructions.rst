@@ -1125,6 +1125,61 @@ Memory Instructions
    \end{array}
 
 
+.. _exec-load-zero:
+
+:math:`\V128\K{.}\LOAD{N}\K{\_zero}~\memarg`
+.............................................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+
+4. Assert: due to :ref:`validation <valid-load-extend>`, :math:`S.\SMEMS[a]` exists.
+
+5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
+
+6. Assert: due to :ref:`validation <valid-load-extend>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+7. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
+
+9. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+
+    a. Trap.
+
+10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]`.
+
+11. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
+
+12. Let :math:`c` be the result of :math:`\extendu_{N,128}(n)`.
+
+13. Push the value :math:`\V128.\CONST~c` to the stack.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~(\V128\K{.}\LOAD{N}\K{\_zero}~\memarg) &\stepto& S; F; (\V128.\CONST~c)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
+     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
+     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8]) \\
+     \wedge & c = \extendu_{N,128}(n)
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~k)~(\V128.\LOAD{N}\K{\_zero}~\memarg) &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise) \\
+   \end{array}
+
+
 .. _exec-store:
 .. _exec-storen:
 
