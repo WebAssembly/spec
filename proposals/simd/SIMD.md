@@ -349,7 +349,7 @@ def S.Reduce(x):
 ```
 
 There is no integer division operation provided here. This operation is not
-commonly part of bit 128-bit SIMD ISAs.
+commonly part of 128-bit SIMD ISAs.
 
 ### Integer addition
 * `i8x16.add(a: v128, b: v128) -> v128`
