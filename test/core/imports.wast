@@ -10,6 +10,7 @@
   (func (export "func-i64->i64") (param i64) (result i64) (local.get 0))
   (global (export "global-i32") i32 (i32.const 55))
   (global (export "global-f32") f32 (f32.const 44))
+  (global (export "global-mut-i64") (mut i64) (i64.const 66))
   (table (export "table-10-inf") 10 funcref)
   ;; (table (export "table-10-20") 10 20 funcref)
   (memory (export "memory-2-inf") 2)
@@ -230,6 +231,7 @@
 
 (module (import "test" "global-i32" (global i32)))
 (module (import "test" "global-f32" (global f32)))
+(module (import "test" "global-mut-i64" (global (mut i64))))
 
 (assert_unlinkable
   (module (import "test" "unknown" (global i32)))
@@ -270,6 +272,22 @@
 )
 (assert_unlinkable
   (module (import "test" "global-f32" (global (mut f32))))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "global-mut-i64" (global (mut i32))))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "global-mut-i64" (global (mut f32))))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "global-mut-i64" (global (mut f64))))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "global-mut-i64" (global i64)))
   "incompatible import type"
 )
 
