@@ -241,6 +241,39 @@
 )
 
 (assert_unlinkable
+  (module (import "test" "global-i32" (global i64)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "global-i32" (global f32)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "global-i32" (global f64)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "global-i32" (global (mut i32))))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "global-f32" (global i32)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "global-f32" (global i64)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "global-f32" (global f64)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test" "global-f32" (global (mut f32))))
+  "incompatible import type"
+)
+
+(assert_unlinkable
   (module (import "test" "func" (global i32)))
   "incompatible import type"
 )
