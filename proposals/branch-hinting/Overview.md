@@ -29,23 +29,42 @@ This repo contains the current work toward a spec, and the benchmarks.
 
 ### Design
 
-This proposal introduces 1 new instruction:
+This proposal introduces a new custom section named "branchHints".
 
- - `branch_hint`
+The section, if present, must appear before the code section (this can help a
+streaming compiler to make use of the hints).
 
-The semantic of the instruction is a `nop`, but the engine can use this information
-when compiling the branch instruction following `branch_hint`.
+The content of the section consists of a sequence of subsections.
 
-### Encoding
+Each subsection corresponds to one function and consists of:
 
-The encoding for the new instruction is the following:
+- the u32 index of the function
+- the u32 number of branch hints contained in the subsection
+- the list of branch hints for the function
 
-| Name | Opcode | Immediate | Description |
-| ---- | ---- | ---- | ---- |
-| `branch_hint` | `0xXX` | index: `varint32` | The following branching instruction is very likely to take branch `index` |
+Each element N of the list of hints implicitly refers to the Nth `br` or `br_if` 
+instruction in the function. It is ok to list less hints than branches instruction
+in the function;
 
-### Open questions
+Each element consists of a byte indicating what the hint for that particular branch
+is:
 
-- Should it be a validation error to have a `branch_hint` not followed by a branch instruction? Or with an immediate with a value out of range?
-- What kind of branches are supported? (what about `br_table`? should it support multiple preceding `branch_hint` instructions?)
-- Would it be better to implement this functionality through custom sections, instead of a new instruction?
+| value | meaning      |
+|-------|--------------|
+| 0     | no hint      |
+| 1     | likely false |
+| 2     | likely true  |
+
+
+### Open issues
+
+Using the number of branch instructions as an implicit index has the advantage
+of saving space and simplifying validation (compared to, say, an explicit byte index).
+
+But it has the disadvantage that if in the future we want to expand the set of instructions
+that are hintable, old programs may find themselves with an invalid or misleading
+hinting section.
+
+A middle ground could be using the number of total instructions.
+While not as space-saving, and requiring more validation than the current approach, it
+is still much better than using a byte offset, while being more future proof.
