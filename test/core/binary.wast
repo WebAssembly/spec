@@ -52,6 +52,20 @@
 (assert_malformed (module binary "\00asm" "\01\00\00\00" "\ff\00\01\00") "malformed section id")
 
 
+;; Type section with signed LEB128 encoded type
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01"                     ;; Type section id
+    "\05"                     ;; Type section length
+    "\01"                     ;; Types vector length
+    "\e0\7f"                  ;; Malformed functype, -0x20 in signed LEB128 encoding
+    "\00\00"
+  )
+  "integer representation too long"
+)
+
+
 ;; call_indirect reserved byte equal to zero.
 (assert_malformed
   (module binary
@@ -773,8 +787,23 @@
     "\09\07\02"                             ;; elem with inconsistent segment count (2 declared, 1 given)
     "\00\41\00\0b\01\00"                    ;; elem 0
     ;; "\00\41\00\0b\01\00"                 ;; elem 1 (missed)
-    "\0a\04\01"                             ;; code section
-    "\02\00\0b"                             ;; function body
+  )
+  "unexpected end"
+)
+
+;; 2 elem segment declared, 1.5 given
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01"                             ;; type section
+    "\60\00\00"                             ;; type 0
+    "\03\02\01\00"                          ;; func section
+    "\04\04\01"                             ;; table section
+    "\70\00\01"                             ;; table 0
+    "\09\07\02"                             ;; elem with inconsistent segment count (2 declared, 1 given)
+    "\00\41\00\0b\01\00"                    ;; elem 0
+    "\00\41\00"                             ;; elem 1 (partial)
+    ;; "\0b\01\00"                          ;; elem 1 (missing part)
   )
   "unexpected end"
 )

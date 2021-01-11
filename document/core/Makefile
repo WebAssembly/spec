@@ -89,8 +89,12 @@ bikeshed-keep:
 	  echo Downloaded Bikeshed.
 
 
+.PHONY: index
+index:
+	(cd appendix; ./gen-index-instructions.py)
+
 .PHONY: pdf
-pdf:	latexpdf
+pdf:	index latexpdf
 	mkdir -p $(BUILDDIR)/html/$(DOWNLOADDIR)
 	ln -f $(BUILDDIR)/latex/$(NAME).pdf $(BUILDDIR)/html/$(DOWNLOADDIR)/$(NAME).pdf
 
@@ -101,7 +105,7 @@ clean:
 	rm -rf $(STATICDIR)
 
 .PHONY: html
-html:
+html: index
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	for file in `ls $(BUILDDIR)/html/*.html`; \
 	do \
