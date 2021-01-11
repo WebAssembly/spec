@@ -1567,9 +1567,7 @@
     (func (param i32) (result i32)
       (loop (result i32)
         (block (result i32)
-          i32.const 1
-          local.get 0
-          br_table 0 1
+          (br_table 0 1 (i32.const 1) (local.get 0))
         )
       )
     )
@@ -1581,9 +1579,7 @@
     (func (param i32) (result i32)
       (block (result i32)
         (loop (result i32)
-          i32.const 1
-          local.get 0
-          br_table 0 1
+          (br_table 0 1 (i32.const 1) (local.get 0))
         )
       )
     )
