@@ -1065,6 +1065,10 @@ def S.narrow_T_u(a, b):
 * `i32x4.widen_high_i16x8_s(a: v128) -> v128`
 * `i32x4.widen_low_i16x8_u(a: v128) -> v128`
 * `i32x4.widen_high_i16x8_u(a: v128) -> v128`
+* `i64x2.widen_low_i32x4_s(a: v128) -> v128`
+* `i64x2.widen_high_i32x4_s(a: v128) -> v128`
+* `i64x2.widen_low_i32x4_u(a: v128) -> v128`
+* `i64x2.widen_high_i32x4_u(a: v128) -> v128`
 
 Converts low or high half of the smaller lane vector to a larger lane vector,
 sign extended or zero (unsigned) extended.

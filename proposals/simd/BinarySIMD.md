@@ -184,6 +184,10 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `i32x4.dot_i16x8_s`         |    `0xba`| -                  |
 | `i64x2.neg`                 |    `0xc1`| -                  |
 | `i64x2.bitmask`             |    `0xc4`| -                  |
+| `i64x2.widen_low_i32x4_s`   |    `0xc7`| -                  |
+| `i64x2.widen_high_i32x4_s`  |    `0xc8`| -                  |
+| `i64x2.widen_low_i32x4_u`   |    `0xc9`| -                  |
+| `i64x2.widen_high_i32x4_u`  |    `0xca`| -                  |
 | `i64x2.shl`                 |    `0xcb`| -                  |
 | `i64x2.shr_s`               |    `0xcc`| -                  |
 | `i64x2.shr_u`               |    `0xcd`| -                  |

@@ -159,6 +159,10 @@
 | `i64x2.add`                 |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.sub`                 |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.mul`                 |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `i64x2.widen_low_i32x4_s`   |                           |                    |                    |                    |                    |
+| `i64x2.widen_high_i32x4_s`  |                           |                    |                    |                    |                    |
+| `i64x2.widen_low_i32x4_u`   |                           |                    |                    |                    |                    |
+| `i64x2.widen_high_i32x4_u`  |                           |                    |                    |                    |                    |
 | `f32x4.abs`                 |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `f32x4.neg`                 |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `f32x4.sqrt`                |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
