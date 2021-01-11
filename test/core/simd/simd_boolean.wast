@@ -12,6 +12,8 @@
   (func (export "i32x4.any_true") (param $0 v128) (result i32) (v128.any_true (local.get $0)))
   (func (export "i32x4.all_true") (param $0 v128) (result i32) (i32x4.all_true (local.get $0)))
   (func (export "i32x4.bitmask") (param $0 v128) (result i32) (i32x4.bitmask (local.get $0)))
+
+  (func (export "i64x2.bitmask") (param $0 v128) (result i32) (i64x2.bitmask (local.get $0)))
 )
 
 ;; i8x16
@@ -154,6 +156,11 @@
 (assert_return (invoke "i32x4.bitmask" (v128.const i32x4 0xFFFFFFFF 0xFFFFFFFF 0xFFFFFFFF 0xFFFFFFFF))
                                         (i32.const 0x0000000F))
 (assert_return (invoke "i32x4.bitmask" (v128.const i32x4 -1 0 1 0xF))
+                                        (i32.const 0x00000001))
+
+(assert_return (invoke "i64x2.bitmask" (v128.const i64x2 0xFFFFFFFF_FFFFFFFF 0xFFFFFFFF_FFFFFFFF))
+                                        (i32.const 0x00000003))
+(assert_return (invoke "i64x2.bitmask" (v128.const i64x2 -1 0xF))
                                         (i32.const 0x00000001))
 
 ;; Combination

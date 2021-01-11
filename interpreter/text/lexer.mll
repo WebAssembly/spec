@@ -536,8 +536,7 @@ rule token = parse
     { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
       UNARY (simd_int_op s i8x16_all_true i16x8_all_true i32x4_all_true unreachable) }
   | (simd_int_shape as s)".bitmask"
-    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
-      UNARY (simd_int_op s i8x16_bitmask i16x8_bitmask i32x4_bitmask unreachable) }
+    { UNARY (simd_int_op s i8x16_bitmask i16x8_bitmask i32x4_bitmask i64x2_bitmask) }
   | (simd_int_shape as s)".shl"
     { SHIFT (simd_int_op s i8x16_shl i16x8_shl i32x4_shl i64x2_shl) }
   | (simd_int_shape as s)".shr_s"

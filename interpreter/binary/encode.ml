@@ -622,6 +622,7 @@ let encode m =
       | SimdBitmask Simd.I8x16 -> simd_op 0x64l
       | SimdBitmask Simd.I16x8 -> simd_op 0x84l
       | SimdBitmask Simd.I32x4 -> simd_op 0xa4l
+      | SimdBitmask Simd.I64x2 -> simd_op 0xc4l
       | SimdBitmask (_) -> assert false
 
       | _ -> assert false

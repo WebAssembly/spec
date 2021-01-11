@@ -406,6 +406,7 @@ struct
     | Simd.I8x16 -> "i8x16.bitmask"
     | Simd.I16x8 -> "i16x8.bitmask"
     | Simd.I32x4 -> "i32x4.bitmask"
+    | Simd.I64x2 -> "i64x2.bitmask"
     | _ -> assert false
 
 end

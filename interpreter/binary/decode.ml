@@ -395,6 +395,7 @@ let simd_prefix s =
   | 0xbfl -> i32x4_extmul_high_i16x8_u
   | 0xc0l -> i64x2_eq
   | 0xc1l -> i64x2_neg
+  | 0xc4l -> i64x2_bitmask
   | 0xcbl -> i64x2_shl
   | 0xccl -> i64x2_shr_s
   | 0xcdl -> i64x2_shr_u

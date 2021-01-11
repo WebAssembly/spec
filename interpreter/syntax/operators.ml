@@ -390,6 +390,7 @@ let i64x2_replace_lane imm = SimdReplace (V128Op.I64x2 imm)
 let i64x2_eq = Binary (V128 V128Op.(I64x2 Eq))
 let i64x2_ne = Binary (V128 V128Op.(I64x2 Ne))
 let i64x2_neg = Unary (V128 V128Op.(I64x2 Neg))
+let i64x2_bitmask = SimdBitmask Simd.I64x2
 let i64x2_add = Binary (V128 V128Op.(I64x2 Add))
 let i64x2_sub = Binary (V128 V128Op.(I64x2 Sub))
 let i64x2_mul = Binary (V128 V128Op.(I64x2 Mul))

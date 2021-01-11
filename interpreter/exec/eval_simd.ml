@@ -233,6 +233,7 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
     | Simd.I8x16 -> SXX.I8x16.bitmask
     | Simd.I16x8 -> SXX.I16x8.bitmask
     | Simd.I32x4 -> SXX.I32x4.bitmask
+    | Simd.I64x2 -> SXX.I64x2.bitmask
     | _ -> assert false
     in I32 (f (of_value 1 v))
 
