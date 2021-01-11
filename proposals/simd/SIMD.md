@@ -703,6 +703,7 @@ def S.all_true(a):
 * `i8x16.bitmask(a: v128) -> i32`
 * `i16x8.bitmask(a: v128) -> i32`
 * `i32x4.bitmask(a: v128) -> i32`
+* `i64x2.bitmask(a: v128) -> i32`
 
 These operations extract the high bit for each lane in `a` and produce a scalar
 mask with all bits concatenated.

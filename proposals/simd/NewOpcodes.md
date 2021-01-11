@@ -78,36 +78,36 @@
 | v128.xor       | 0x51   |
 | v128.bitselect | 0x52   |
 
-| i8x16 Op             | opcode | i16x8 Op                 | opcode | i32x4 Op                 | opcode | i64x2 Op    | opcode |
-| -------------------- | ------ | ------------------------ | ------ | ------------------------ | ------ | ----------- | ------ |
-| i8x16.abs            | 0x60   | i16x8.abs                | 0x80   | i32x4.abs                | 0xa0   | ----        | 0xc0   |
-| i8x16.neg            | 0x61   | i16x8.neg                | 0x81   | i32x4.neg                | 0xa1   | i64x2.neg   | 0xc1   |
-| i8x16.any_true       | 0x62   | i16x8.any_true           | 0x82   | i32x4.any_true           | 0xa2   | ----        | 0xc2   |
-| i8x16.all_true       | 0x63   | i16x8.all_true           | 0x83   | i32x4.all_true           | 0xa3   | ----        | 0xc3   |
-| i8x16.bitmask        | 0x64   | i16x8.bitmask            | 0x84   | i32x4.bitmask            | 0xa4   | ----        | 0xc4   |
-| i8x16.narrow_i16x8_s | 0x65   | i16x8.narrow_i32x4_s     | 0x85   | ---- narrow ----         | 0xa5   | ----        | 0xc5   |
-| i8x16.narrow_i16x8_u | 0x66   | i16x8.narrow_i32x4_u     | 0x86   | ---- narrow ----         | 0xa6   | ----        | 0xc6   |
-| ---- widen ----      | 0x67   | i16x8.widen_low_i8x16_s  | 0x87   | i32x4.widen_low_i16x8_s  | 0xa7   | ----        | 0xc7   |
-| ---- widen ----      | 0x68   | i16x8.widen_high_i8x16_s | 0x88   | i32x4.widen_high_i16x8_s | 0xa8   | ----        | 0xc8   |
-| ---- widen ----      | 0x69   | i16x8.widen_low_i8x16_u  | 0x89   | i32x4.widen_low_i16x8_u  | 0xa9   | ----        | 0xc9   |
-| ---- widen ----      | 0x6a   | i16x8.widen_high_i8x16_u | 0x8a   | i32x4.widen_high_i16x8_u | 0xaa   | ----        | 0xca   |
-| i8x16.shl            | 0x6b   | i16x8.shl                | 0x8b   | i32x4.shl                | 0xab   | i64x2.shl   | 0xcb   |
-| i8x16.shr_s          | 0x6c   | i16x8.shr_s              | 0x8c   | i32x4.shr_s              | 0xac   | i64x2.shr_s | 0xcc   |
-| i8x16.shr_u          | 0x6d   | i16x8.shr_u              | 0x8d   | i32x4.shr_u              | 0xad   | i64x2.shr_u | 0xcd   |
-| i8x16.add            | 0x6e   | i16x8.add                | 0x8e   | i32x4.add                | 0xae   | i64x2.add   | 0xce   |
-| i8x16.add_sat_s      | 0x6f   | i16x8.add_sat_s          | 0x8f   | ---- add_sat ----        | 0xaf   | ----        | 0xcf   |
-| i8x16.add_sat_u      | 0x70   | i16x8.add_sat_u          | 0x90   | ---- add_sat ----        | 0xb0   | ----        | 0xd0   |
-| i8x16.sub            | 0x71   | i16x8.sub                | 0x91   | i32x4.sub                | 0xb1   | i64x2.sub   | 0xd1   |
-| i8x16.sub_sat_s      | 0x72   | i16x8.sub_sat_s          | 0x92   | ---- sub_sat ----        | 0xb2   | ----        | 0xd2   |
-| i8x16.sub_sat_u      | 0x73   | i16x8.sub_sat_u          | 0x93   | ---- sub_sat ----        | 0xb3   | ----        | 0xd3   |
-| -------------        | 0x74   | -------------            | 0x94   | -------------            | 0xb4   | ----        | 0xd4   |
-| ---- mul ----        | 0x75   | i16x8.mul                | 0x95   | i32x4.mul                | 0xb5   | i64x2.mul   | 0xd5   |
-| i8x16.min_s          | 0x76   | i16x8.min_s              | 0x96   | i32x4.min_s              | 0xb6   | ----        | 0xd6   |
-| i8x16.min_u          | 0x77   | i16x8.min_u              | 0x97   | i32x4.min_u              | 0xb7   | ----        | 0xd7   |
-| i8x16.max_s          | 0x78   | i16x8.max_s              | 0x98   | i32x4.max_s              | 0xb8   | ----        | 0xd8   |
-| i8x16.max_u          | 0x79   | i16x8.max_u              | 0x99   | i32x4.max_u              | 0xb9   | ----        | 0xd9   |
-| ----------------     | 0x7a   | ----------------         | 0x9a   | i32x4.dot_i16x8_s        | 0xba   | ----        | 0xda   |
-| i8x16.avgr_u         | 0x7b   | i16x8.avgr_u             | 0x9b   | ---- avgr_u ----         | 0xbb   | ----        | 0xdb   |
+| i8x16 Op             | opcode | i16x8 Op                 | opcode | i32x4 Op                 | opcode | i64x2 Op      | opcode |
+| -------------------- | ------ | ------------------------ | ------ | ------------------------ | ------ | ------------- | ------ |
+| i8x16.abs            | 0x60   | i16x8.abs                | 0x80   | i32x4.abs                | 0xa0   | ----          | 0xc0   |
+| i8x16.neg            | 0x61   | i16x8.neg                | 0x81   | i32x4.neg                | 0xa1   | i64x2.neg     | 0xc1   |
+| i8x16.any_true       | 0x62   | i16x8.any_true           | 0x82   | i32x4.any_true           | 0xa2   | ----          | 0xc2   |
+| i8x16.all_true       | 0x63   | i16x8.all_true           | 0x83   | i32x4.all_true           | 0xa3   | ----          | 0xc3   |
+| i8x16.bitmask        | 0x64   | i16x8.bitmask            | 0x84   | i32x4.bitmask            | 0xa4   | i64x2.bitmask | 0xc4   |
+| i8x16.narrow_i16x8_s | 0x65   | i16x8.narrow_i32x4_s     | 0x85   | ---- narrow ----         | 0xa5   | ----          | 0xc5   |
+| i8x16.narrow_i16x8_u | 0x66   | i16x8.narrow_i32x4_u     | 0x86   | ---- narrow ----         | 0xa6   | ----          | 0xc6   |
+| ---- widen ----      | 0x67   | i16x8.widen_low_i8x16_s  | 0x87   | i32x4.widen_low_i16x8_s  | 0xa7   | ----          | 0xc7   |
+| ---- widen ----      | 0x68   | i16x8.widen_high_i8x16_s | 0x88   | i32x4.widen_high_i16x8_s | 0xa8   | ----          | 0xc8   |
+| ---- widen ----      | 0x69   | i16x8.widen_low_i8x16_u  | 0x89   | i32x4.widen_low_i16x8_u  | 0xa9   | ----          | 0xc9   |
+| ---- widen ----      | 0x6a   | i16x8.widen_high_i8x16_u | 0x8a   | i32x4.widen_high_i16x8_u | 0xaa   | ----          | 0xca   |
+| i8x16.shl            | 0x6b   | i16x8.shl                | 0x8b   | i32x4.shl                | 0xab   | i64x2.shl     | 0xcb   |
+| i8x16.shr_s          | 0x6c   | i16x8.shr_s              | 0x8c   | i32x4.shr_s              | 0xac   | i64x2.shr_s   | 0xcc   |
+| i8x16.shr_u          | 0x6d   | i16x8.shr_u              | 0x8d   | i32x4.shr_u              | 0xad   | i64x2.shr_u   | 0xcd   |
+| i8x16.add            | 0x6e   | i16x8.add                | 0x8e   | i32x4.add                | 0xae   | i64x2.add     | 0xce   |
+| i8x16.add_sat_s      | 0x6f   | i16x8.add_sat_s          | 0x8f   | ---- add_sat ----        | 0xaf   | ----          | 0xcf   |
+| i8x16.add_sat_u      | 0x70   | i16x8.add_sat_u          | 0x90   | ---- add_sat ----        | 0xb0   | ----          | 0xd0   |
+| i8x16.sub            | 0x71   | i16x8.sub                | 0x91   | i32x4.sub                | 0xb1   | i64x2.sub     | 0xd1   |
+| i8x16.sub_sat_s      | 0x72   | i16x8.sub_sat_s          | 0x92   | ---- sub_sat ----        | 0xb2   | ----          | 0xd2   |
+| i8x16.sub_sat_u      | 0x73   | i16x8.sub_sat_u          | 0x93   | ---- sub_sat ----        | 0xb3   | ----          | 0xd3   |
+| -------------        | 0x74   | -------------            | 0x94   | -------------            | 0xb4   | ----          | 0xd4   |
+| ---- mul ----        | 0x75   | i16x8.mul                | 0x95   | i32x4.mul                | 0xb5   | i64x2.mul     | 0xd5   |
+| i8x16.min_s          | 0x76   | i16x8.min_s              | 0x96   | i32x4.min_s              | 0xb6   | ----          | 0xd6   |
+| i8x16.min_u          | 0x77   | i16x8.min_u              | 0x97   | i32x4.min_u              | 0xb7   | ----          | 0xd7   |
+| i8x16.max_s          | 0x78   | i16x8.max_s              | 0x98   | i32x4.max_s              | 0xb8   | ----          | 0xd8   |
+| i8x16.max_u          | 0x79   | i16x8.max_u              | 0x99   | i32x4.max_u              | 0xb9   | ----          | 0xd9   |
+| ----------------     | 0x7a   | ----------------         | 0x9a   | i32x4.dot_i16x8_s        | 0xba   | ----          | 0xda   |
+| i8x16.avgr_u         | 0x7b   | i16x8.avgr_u             | 0x9b   | ---- avgr_u ----         | 0xbb   | ----          | 0xdb   |
 
 | f32x4 Op        | opcode | f64x2 Op        | opcode |
 | --------------- | ------ | --------------- | ------ |
