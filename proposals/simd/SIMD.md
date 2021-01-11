@@ -509,6 +509,19 @@ def S.sub_sat_u(a, b):
     return S.lanewise_binary(subsat, S.AsUnsigned(a), S.AsUnsigned(b))
 ```
 
+### Saturating integer Q-format rounding multiplication
+
+* `i16x8.q15mulr_sat_s(a: v128, b: v128) -> v128`
+
+Lane-wise saturating rounding multiplication in Q15 format:
+
+```python
+def S.q15mulr_sat_s(a, b):
+    def subq15mulr(x, y):
+        return S.SignedSaturate((x * y + 0x4000) >> 15)
+    return S.lanewise_binary(subsat, S.AsSigned(a), S.AsSigned(b))
+```
+
 ### Lane-wise integer minimum
 * `i8x16.min_s(a: v128, b: v128) -> v128`
 * `i8x16.min_u(a: v128, b: v128) -> v128`

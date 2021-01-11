@@ -161,7 +161,7 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `i16x8.min_u`               |    `0x97`| -                  |
 | `i16x8.max_s`               |    `0x98`| -                  |
 | `i16x8.max_u`               |    `0x99`| -                  |
-| `i16x8.avgr_u`              |    `0x9b`|                    |
+| `i16x8.avgr_u`              |    `0x9b`| -                  |
 | `i32x4.abs`                 |    `0xa0`| -                  |
 | `i32x4.neg`                 |    `0xa1`| -                  |
 | `i32x4.any_true`            |    `0xa2`| -                  |
@@ -237,3 +237,4 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `i64x2.extmul_high_i32x4_s` |   `0x119`| -                  |
 | `i64x2.extmul_low_i32x4_u`  |   `0x11a`| -                  |
 | `i64x2.extmul_high_i32x4_u` |   `0x11b`| -                  |
+| `i16x8.q15mulr_sat_s`       |     `TBD`| -                  |

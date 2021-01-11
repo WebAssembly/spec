@@ -130,6 +130,7 @@
 | `i16x8.max_s`               |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i16x8.max_u`               |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i16x8.avgr_u`              |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `i16x8.q15mulr_sat_s`       |                           |                    |                    |                    |                    |
 | `i32x4.abs`                 |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.neg`                 |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.any_true`            |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
