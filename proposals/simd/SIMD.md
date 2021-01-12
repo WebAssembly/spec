@@ -841,6 +841,16 @@ def S.load_splat(memarg):
     return S.splat(S.LaneType.from_bytes(val_bytes))
 ```
 
+### Load Lane
+
+* `v128.load8_lane(m: memarg, x: v128, imm: ImmLaneIdx16) -> v128`
+* `v128.load16_lane(m: memarg, x: v128, imm: ImmLaneIdx8) -> v128`
+* `v128.load32_lane(m: memarg, x: v128, imm: ImmLaneIdx4) -> v128`
+* `v128.load64_lane(m: memarg, x: v128, imm: ImmLaneIdx2) -> v128`
+
+Load a single element from `m` into the lane of `x` specified in the immediate
+mode operand `imm`. The values of all other lanes of `x` are bypassed as is.
+
 ### Load and Extend
 
 * `v128.load8x8_s(memarg) -> v128`: load eight 8-bit integers and sign extend each one to a 16-bit lane
@@ -878,6 +888,15 @@ Store a `v128` vector to the given heap address.
 def S.store(memarg, a):
     memory[memarg.offset:memarg.offset + 16] = bytes(a)
 ```
+
+### Store Lane
+
+* `v128.store8_lane(m: memarg, data: v128, imm: ImmLaneIdx16)`
+* `v128.store16_lane(m: memarg, data: v128, imm: ImmLaneIdx8)`
+* `v128.store32_lane(m: memarg, data: v128, imm: ImmLaneIdx4)`
+* `v128.store64_lane(m: memarg, data: v128, imm: ImmLaneIdx2)`
+
+Store into `m` the lane of `data` specified in the immediate mode operand `imm`.
 
 ## Floating-point sign bit operations
 

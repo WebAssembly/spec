@@ -209,6 +209,14 @@
 | `i64x2.extmul_low_i32x4_u`  |                           |                    |                    |                    |                    |
 | `i64x2.extmul_high_i32x4_u` |                           |                    |                    |                    |                    |
 | `v128.any_true`             |                           |                    |                    |                    |                    |
+| `v128.load8_lane`           |                           |                    |                    |                    |                    |
+| `v128.load16_lane`          |                           |                    |                    |                    |                    |
+| `v128.load32_lane`          |                           |                    |                    |                    |                    |
+| `v128.load64_lane`          |                           |                    |                    |                    |                    |
+| `v128.store8_lane`          |                           |                    |                    |                    |                    |
+| `v128.store16_lane`         |                           |                    |                    |                    |                    |
+| `v128.store32_lane`         |                           |                    |                    |                    |                    |
+| `v128.store64_lane`         |                           |                    |                    |                    |                    |
 
 [1] Tip of tree LLVM as of May 20, 2020
 
