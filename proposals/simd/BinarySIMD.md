@@ -117,7 +117,6 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `v128.bitselect`            |    `0x52`| -                  |
 | `i8x16.abs`                 |    `0x60`| -                  |
 | `i8x16.neg`                 |    `0x61`| -                  |
-| `i8x16.any_true`            |    `0x62`| -                  |
 | `i8x16.all_true`            |    `0x63`| -                  |
 | `i8x16.bitmask`             |    `0x64`| -                  |
 | `i8x16.narrow_i16x8_s`      |    `0x65`| -                  |
@@ -138,7 +137,6 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `i8x16.avgr_u`              |    `0x7b`| -                  |
 | `i16x8.abs`                 |    `0x80`| -                  |
 | `i16x8.neg`                 |    `0x81`| -                  |
-| `i16x8.any_true`            |    `0x82`| -                  |
 | `i16x8.all_true`            |    `0x83`| -                  |
 | `i16x8.bitmask`             |    `0x84`| -                  |
 | `i16x8.narrow_i32x4_s`      |    `0x85`| -                  |
@@ -164,7 +162,6 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `i16x8.avgr_u`              |    `0x9b`| -                  |
 | `i32x4.abs`                 |    `0xa0`| -                  |
 | `i32x4.neg`                 |    `0xa1`| -                  |
-| `i32x4.any_true`            |    `0xa2`| -                  |
 | `i32x4.all_true`            |    `0xa3`| -                  |
 | `i32x4.bitmask`             |    `0xa4`| -                  |
 | `i32x4.widen_low_i16x8_s`   |    `0xa7`| -                  |
@@ -243,3 +240,4 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `i64x2.extmul_low_i32x4_u`  |   `0x11a`| -                  |
 | `i64x2.extmul_high_i32x4_u` |   `0x11b`| -                  |
 | `i16x8.q15mulr_sat_s`       |     `TBD`| -                  |
+| `v128.any_true`             |     `TBD`| -                  |

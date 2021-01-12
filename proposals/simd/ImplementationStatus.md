@@ -85,7 +85,6 @@
 | `v128.bitselect`            |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i8x16.abs`                 |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i8x16.neg`                 |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| `i8x16.any_true`            |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i8x16.all_true`            |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i8x16.bitmask`             | `-munimplemented-simd128` | :heavy_check_mark: [6] |                |                    | :heavy_check_mark: |
 | `i8x16.narrow_i16x8_s`      |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
@@ -106,7 +105,6 @@
 | `i8x16.avgr_u`              |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i16x8.abs`                 |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i16x8.neg`                 |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| `i16x8.any_true`            |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.all_true`            |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.bitmask`             | `-munimplemented-simd128` | :heavy_check_mark: [6] |                |                    | :heavy_check_mark: |
 | `i16x8.narrow_i32x4_s`      |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
@@ -133,7 +131,6 @@
 | `i16x8.q15mulr_sat_s`       |                           |                    |                    |                    |                    |
 | `i32x4.abs`                 |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.neg`                 |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| `i32x4.any_true`            |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.all_true`            |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.bitmask`             | `-munimplemented-simd128` | :heavy_check_mark: [6] |                |                    | :heavy_check_mark: |
 | `i32x4.widen_low_i16x8_s`   |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
@@ -211,6 +208,7 @@
 | `i64x2.extmul_high_i32x4_s` |                           |                    |                    |                    |                    |
 | `i64x2.extmul_low_i32x4_u`  |                           |                    |                    |                    |                    |
 | `i64x2.extmul_high_i32x4_u` |                           |                    |                    |                    |                    |
+| `v128.any_true`             |                           |                    |                    |                    |                    |
 
 [1] Tip of tree LLVM as of May 20, 2020
 

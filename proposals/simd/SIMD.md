@@ -668,20 +668,10 @@ rather than selecting bits controlled by a control mask vector.
 These operations reduce all the lanes of an integer vector to a single scalar
 0 or 1 value. A lane is considered "true" if it is non-zero.
 
-### Any lane true
-* `i8x16.any_true(a: v128) -> i32`
-* `i16x8.any_true(a: v128) -> i32`
-* `i32x4.any_true(a: v128) -> i32`
+### Any bit true
+* `v128.any_true(a: v128) -> i32`
 
-These functions return 1 if any lane in `a` is non-zero, 0 otherwise.
-
-```python
-def S.any_true(a):
-    for i in range(S.Lanes):
-        if a[i] != 0:
-            return 1
-    return 0
-```
+These functions return 1 if any bit in `a` is non-zero, 0 otherwise.
 
 ### All lanes true
 * `i8x16.all_true(a: v128) -> i32`
