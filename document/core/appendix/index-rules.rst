@@ -15,6 +15,7 @@ Construct                                        Judgement
 ===============================================  ===============================================================================
 :ref:`Limits <valid-limits>`                     :math:`\vdashlimits \limits : k`
 :ref:`Function type <valid-functype>`            :math:`\vdashfunctype \functype \ok`
+:ref:`Block type <valid-blocktype>`              :math:`\vdashblocktype \blocktype \ok`
 :ref:`Table type <valid-tabletype>`              :math:`\vdashtabletype \tabletype \ok`
 :ref:`Memory type <valid-memtype>`               :math:`\vdashmemtype \memtype \ok`
 :ref:`Global type <valid-globaltype>`            :math:`\vdashglobaltype \globaltype \ok`

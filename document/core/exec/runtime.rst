@@ -329,7 +329,6 @@ It filters out entries of a specific kind in an order-preserving fashion:
 * :math:`\evglobals(\externval^\ast) = [\globaladdr ~|~ (\EVGLOBAL~\globaladdr) \in \externval^\ast]`
 
 
-
 .. index:: ! stack, ! frame, ! label, instruction, store, activation, function, call, local, module instance
    pair: abstract syntax; frame
    pair: abstract syntax; label
@@ -381,7 +380,7 @@ Intuitively, :math:`\instr^\ast` is the *continuation* to execute when the branc
    For example, a loop label has the form
 
    .. math::
-      \LABEL_n\{\LOOP~[t^?]~\dots~\END\}
+      \LABEL_n\{\LOOP~\dots~\END\}
 
    When performing a branch to this label, this executes the loop, effectively restarting it from the beginning.
    Conversely, a simple block label has the form
@@ -409,6 +408,8 @@ and a reference to the function's own :ref:`module instance <syntax-moduleinst>`
 The values of the locals are mutated by respective :ref:`variable instructions <syntax-instr-variable>`.
 
 
+.. _exec-expand:
+
 Conventions
 ...........
 
@@ -416,9 +417,13 @@ Conventions
 
 * The meta variable :math:`F` ranges over frames where clear from context.
 
-.. note::
-   In the current version of WebAssembly, the arities of labels and frames cannot be larger than :math:`1`.
-   This may be generalized in future versions.
+* The following auxiliary definition takes a :ref:`block type <syntax-blocktype>` and looks up the :ref:`function type <syntax-functype>` that it denotes in the current frame:
+
+.. math::
+   \begin{array}{lll}
+   \expand_F(\typeidx) &=& F.\AMODULE.\MITYPES[\typeidx] \\
+   \expand_F([\valtype^?]) &=& [] \to [\valtype^?] \\
+   \end{array}
 
 
 .. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap, call, memory, memory instance, table, table instance, element, data, segment
@@ -476,7 +481,7 @@ That way, the end of the inner instruction sequence is known when part of an out
    When |END| is reached, i.e., the inner instruction sequence has been reduced to the empty sequence -- or rather, a sequence of :math:`n` |CONST| instructions representing the resulting values -- then the |LABEL| instruction is eliminated courtesy of its own :ref:`reduction rule <exec-label>`:
 
    .. math::
-      \LABEL_n\{\instr^n\}~\val^\ast~\END \quad\stepto\quad \val^n
+      \LABEL_m\{\instr^\ast\}~\val^n~\END \quad\stepto\quad \val^n
 
    This can be interpreted as removing the label from the stack and only leaving the locally accumulated operand values.
 

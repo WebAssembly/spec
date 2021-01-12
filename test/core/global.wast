@@ -244,6 +244,11 @@
   "global is immutable"
 )
 
+(assert_invalid
+  (module (import "spectest" "global_i32" (global i32)) (func (global.set 0 (i32.const 1))))
+  "global is immutable"
+)
+
 ;; mutable globals can be exported
 (module (global (mut f32) (f32.const 0)) (export "a" (global 0)))
 (module (global (export "a") (mut f32) (f32.const 0)))
@@ -310,9 +315,9 @@
       "\0a\67\6c\6f\62\61\6c\5f\69\33\32" ;; "global_i32"
       "\03"                          ;; GlobalImport
       "\7f"                          ;; i32
-      "\02"                          ;; invalid mutability
+      "\02"                          ;; malformed mutability
   )
-  "invalid mutability"
+  "malformed mutability"
 )
 (assert_malformed
   (module binary
@@ -323,9 +328,9 @@
       "\0a\67\6c\6f\62\61\6c\5f\69\33\32" ;; "global_i32"
       "\03"                          ;; GlobalImport
       "\7f"                          ;; i32
-      "\ff"                          ;; invalid mutability
+      "\ff"                          ;; malformed mutability
   )
-  "invalid mutability"
+  "malformed mutability"
 )
 
 (module
@@ -337,11 +342,11 @@
     "\06\86\80\80\80\00"  ;; global section
       "\01"               ;; length 1
       "\7f"               ;; i32
-      "\02"               ;; invalid mutability
+      "\02"               ;; malformed mutability
       "\41\00"            ;; i32.const 0
       "\0b"               ;; end
   )
-  "invalid mutability"
+  "malformed mutability"
 )
 (assert_malformed
   (module binary
@@ -349,11 +354,73 @@
     "\06\86\80\80\80\00"  ;; global section
       "\01"               ;; length 1
       "\7f"               ;; i32
-      "\ff"               ;; invalid mutability
+      "\ff"               ;; malformed mutability
       "\41\00"            ;; i32.const 0
       "\0b"               ;; end
   )
-  "invalid mutability"
+  "malformed mutability"
+)
+
+;; global.get with invalid index
+(assert_invalid
+  (module (func (result i32) (global.get 0)))
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (global i32 (i32.const 0))
+    (func (result i32) (global.get 1))
+  )
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (import "spectest" "global_i32" (global i32))
+    (func (result i32) (global.get 1))
+  )
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (import "spectest" "global_i32" (global i32))
+    (global i32 (i32.const 0))
+    (func (result i32) (global.get 2))
+  )
+  "unknown global"
+)
+
+;; global.set with invalid index
+(assert_invalid
+  (module (func (i32.const 0) (global.set 0)))
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (global i32 (i32.const 0))
+    (func (i32.const 0) (global.set 1))
+  )
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (import "spectest" "global_i32" (global i32))
+    (func (i32.const 0) (global.set 1))
+  )
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (import "spectest" "global_i32" (global i32))
+    (global i32 (i32.const 0))
+    (func (i32.const 0) (global.set 2))
+  )
+  "unknown global"
 )
 
 

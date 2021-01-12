@@ -132,7 +132,7 @@ where :math:`x` is the smallest existing :ref:`type index <syntax-typeidx>` whos
 If no such index exists, then a new :ref:`type definition <text-type>` of the form
 
 .. math::
-   \text{(}~\text{type}~~\text{(}~\text{func}~~\Tparam^\ast~~\Tresult~\text{)}~\text{)}
+   \text{(}~\text{type}~~\text{(}~\text{func}~~\Tparam^\ast~~\Tresult^\ast~\text{)}~\text{)}
 
 is inserted at the end of the module.
 
@@ -422,13 +422,13 @@ The syntax for exports mirrors their :ref:`abstract syntax <syntax-export>` dire
      \text{(}~\text{export}~~\X{nm}{:}\Tname~~d{:}\Texportdesc_I~\text{)}
        &\Rightarrow& \{ \ENAME~\X{nm}, \EDESC~d \} \\
    \production{export description} & \Texportdesc_I &::=&
-     \text{(}~\text{func}~~x{:}\Bfuncidx_I~\text{)}
+     \text{(}~\text{func}~~x{:}\Tfuncidx_I~\text{)}
        &\Rightarrow& \EDFUNC~x \\ &&|&
-     \text{(}~\text{table}~~x{:}\Btableidx_I~\text{)}
+     \text{(}~\text{table}~~x{:}\Ttableidx_I~\text{)}
        &\Rightarrow& \EDTABLE~x \\ &&|&
-     \text{(}~\text{memory}~~x{:}\Bmemidx_I~\text{)}
+     \text{(}~\text{memory}~~x{:}\Tmemidx_I~\text{)}
        &\Rightarrow& \EDMEM~x \\ &&|&
-     \text{(}~\text{global}~~x{:}\Bglobalidx_I~\text{)}
+     \text{(}~\text{global}~~x{:}\Tglobalidx_I~\text{)}
        &\Rightarrow& \EDGLOBAL~x \\
    \end{array}
 

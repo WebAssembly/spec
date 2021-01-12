@@ -10,14 +10,10 @@ STATICDIR     = _static
 DOWNLOADDIR   = _download
 NAME          = WebAssembly
 
-# Hack until we have moved to more recent Sphinx.
-OLDMATHJAX    = https://cdn.mathjax.org/mathjax/latest/MathJax.js
-NEWMATHJAX    = https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js
-
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
-ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
+ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(SPHINXOPTS) .
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
@@ -93,8 +89,12 @@ bikeshed-keep:
 	  echo Downloaded Bikeshed.
 
 
+.PHONY: index
+index:
+	(cd appendix; ./gen-index-instructions.py)
+
 .PHONY: pdf
-pdf:	latexpdf
+pdf:	index latexpdf
 	mkdir -p $(BUILDDIR)/html/$(DOWNLOADDIR)
 	ln -f $(BUILDDIR)/latex/$(NAME).pdf $(BUILDDIR)/html/$(DOWNLOADDIR)/$(NAME).pdf
 
@@ -105,22 +105,16 @@ clean:
 	rm -rf $(STATICDIR)
 
 .PHONY: html
-html:
+html: index
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	for file in `ls $(BUILDDIR)/html/*.html`; \
 	do \
 	  sed s:BASEDIR:.:g <$$file >$$file.out; \
 	  mv -f $$file.out $$file; \
-	  sed s~$(OLDMATHJAX)~$(NEWMATHJAX)~g <$$file >$$file.out; \
-	  mv -f $$file.out $$file; \
 	done
 	for file in `ls $(BUILDDIR)/html/*/*.html`; \
 	do \
 	  sed s:BASEDIR:..:g <$$file >$$file.out; \
-	  sed 's;<body; <script type="text/javascript">MathJax.Hub.Config({TeX: {MAXBUFFER: 30*1024}})</script><body;' \
-	    <$$file.out >$$file; \
-	  rm -f $$file.out; \
-	  sed s~$(OLDMATHJAX)~$(NEWMATHJAX)~g <$$file >$$file.out; \
 	  mv -f $$file.out $$file; \
 	done
 	@echo
