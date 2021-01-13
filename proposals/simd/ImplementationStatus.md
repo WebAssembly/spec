@@ -149,7 +149,7 @@
 | `i32x4.max_u`               |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.dot_i16x8_s`         |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i64x2.neg`                 |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
-| `i64x2.bitmask`             |                           |                    |                    |                    |                    |
+| `i64x2.bitmask`             |                           | :heavy_check_mark: |                    |                    |                    |
 | `i64x2.shl`                 |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.shr_s`               |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.shr_u`               |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
@@ -196,18 +196,18 @@
 | `f32x4.convert_i32x4_u`     |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `v128.load32_zero`          |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `v128.load64_zero`          |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
-| `i16x8.extmul_low_i8x16_s`  |                           |                    |                    |                    |                    |
-| `i16x8.extmul_high_i8x16_s` |                           |                    |                    |                    |                    |
-| `i16x8.extmul_low_i8x16_u`  |                           |                    |                    |                    |                    |
-| `i16x8.extmul_high_i8x16_u` |                           |                    |                    |                    |                    |
-| `i32x4.extmul_low_i16x8_s`  |                           |                    |                    |                    |                    |
-| `i32x4.extmul_high_i16x8_s` |                           |                    |                    |                    |                    |
-| `i32x4.extmul_low_i16x8_u`  |                           |                    |                    |                    |                    |
-| `i32x4.extmul_high_i16x8_u` |                           |                    |                    |                    |                    |
-| `i64x2.extmul_low_i32x4_s`  |                           |                    |                    |                    |                    |
-| `i64x2.extmul_high_i32x4_s` |                           |                    |                    |                    |                    |
-| `i64x2.extmul_low_i32x4_u`  |                           |                    |                    |                    |                    |
-| `i64x2.extmul_high_i32x4_u` |                           |                    |                    |                    |                    |
+| `i16x8.extmul_low_i8x16_s`  |                           | :heavy_check_mark: |                    |                    |                    |
+| `i16x8.extmul_high_i8x16_s` |                           | :heavy_check_mark: |                    |                    |                    |
+| `i16x8.extmul_low_i8x16_u`  |                           | :heavy_check_mark: |                    |                    |                    |
+| `i16x8.extmul_high_i8x16_u` |                           | :heavy_check_mark: |                    |                    |                    |
+| `i32x4.extmul_low_i16x8_s`  |                           | :heavy_check_mark: |                    |                    |                    |
+| `i32x4.extmul_high_i16x8_s` |                           | :heavy_check_mark: |                    |                    |                    |
+| `i32x4.extmul_low_i16x8_u`  |                           | :heavy_check_mark: |                    |                    |                    |
+| `i32x4.extmul_high_i16x8_u` |                           | :heavy_check_mark: |                    |                    |                    |
+| `i64x2.extmul_low_i32x4_s`  |                           | :heavy_check_mark: |                    |                    |                    |
+| `i64x2.extmul_high_i32x4_s` |                           | :heavy_check_mark: |                    |                    |                    |
+| `i64x2.extmul_low_i32x4_u`  |                           | :heavy_check_mark: |                    |                    |                    |
+| `i64x2.extmul_high_i32x4_u` |                           | :heavy_check_mark: |                    |                    |                    |
 | `v128.any_true`             |                           |                    |                    |                    |                    |
 | `v128.load8_lane`           |                           |                    |                    |                    |                    |
 | `v128.load16_lane`          |                           |                    |                    |                    |                    |
@@ -220,7 +220,7 @@
 
 [1] Tip of tree LLVM as of May 20, 2020
 
-[2] V8 8.8.218. Requires flag `--experimental-wasm-simd`
+[2] V8 8.9.238. Requires flag `--experimental-wasm-simd`
 
 [3] Not known to be updated after latest renumbering. Requires flag `--enable simd`
 
