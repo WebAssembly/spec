@@ -350,45 +350,6 @@
   "zero flag expected"
 )
 
-;; Local count can be 2^32-1.
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\01\04\01\60\00\00"       ;; Type section
-  "\03\02\01\00"             ;; Function section
-  "\0a\0a\01"                ;; Code section
-
-  ;; function 0
-  "\08\01"
-  "\ff\ff\ff\ff\0f\7f"       ;; 0xFFFFFFFF i32
-  "\0b"                      ;; end
-)
-
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\01\04\01\60\00\00"       ;; Type section
-  "\03\02\01\00"             ;; Function section
-  "\0a\0c\01"                ;; Code section
-
-  ;; function 0
-  "\0a\02"
-  "\fd\ff\ff\ff\0f\7f"       ;; 0xFFFFFFFD i32
-  "\02\7e"                   ;; 0x00000002 i64
-  "\0b"                      ;; end
-)
-
-(module binary
-  "\00asm" "\01\00\00\00"
-  "\01\06\01\60\02\7f\7f\00" ;; Type section: (param i32 i32)
-  "\03\02\01\00"             ;; Function section
-  "\0a\0a\01"                ;; Code section
-
-  ;; function 0
-  "\08\01"
-  "\fd\ff\ff\ff\0f\7f"       ;; 0xFFFFFFFD i32
-  "\0b"                      ;; end
-)
-
-
 ;; Local number is unsigned 32 bit
 (assert_malformed
   (module binary
