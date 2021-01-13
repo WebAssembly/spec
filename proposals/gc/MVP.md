@@ -185,8 +185,12 @@ Note: In the future, this hierarchy could be refined to distinguish compound dat
 
 * There is a runtime subtyping hierarchy on RTTs; creating an RTT allows providing a *parent type* in the form of an existing RTT.
 
+* An RTT value r1 is *equal* to another RTT value r2 iff they both represent the same static type and either of the following holds:
+  - r1 and r2 both have no parents, or
+  - r1 and r2 both have equal RTT values as parents.
+
 * An RTT value r1 is a *sub-RTT* of another RTT value r2 iff either of the following holds:
-  - r1 and r2 represent the same static type, or
+  - r1 and r2 are equal RTT values, or
   - r1 has a parent that is a sub-RTT of r2.
 
 * The count `<n>` in the static type of an RTT value, if present, denotes the length of the supertype chain, i.e., its "inheritance depth" of _concrete types_ (not counting abstract supertypes like `dataref` or `anyref`, which are always at the top of the hierarchy). If this information is present, it enables more efficient implementation of runtime casts in an engine; if it is absent (e.g., to abstract the depth of a subtype graph), then the engine has to read it from the dynamic RTT value.
@@ -195,7 +199,7 @@ Note: In the future, this hierarchy could be refined to distinguish compound dat
 
 * At the same time, runtime subtyping forms a linear hierarchy such that the relation can be checked efficiently using standard implementation techniques (the runtime subtype hierarchy is a tree-shaped graph).
 
-Note: RTT values correspond to type descriptors or "shape" objects as they exist in various engines. Moreover, runtime casts along the hierachy encoded in these values can be implemented in an engine efficiently by using well-known techniques such as including a vector of its (direct and indirect) super-RTTs in each RTT value (with itself as the last entry). The value `<n>` then denotes the length of this vector. A subtype check between two RTT values can be implemented as follows using such a representation. Assume RTT value v1 has static type `(rtt n1? $t1)` and v2 has type `(rtt n2? $t2)`. To check whether v1 denotes a sub-RTT of v2, first verify that `n1 >= n2` -- if both `n1` and `n2` are known statically, this can be performed at compile time; if either is not statically known, it has to be read from the respective RTT value dynamically, and `n1 >= n2` becomes a dynamic check. Then compare v2 to the n2-th entry in v1's supertype vector. If they are equal, v1 is a sub-RTT.
+Note: RTT values correspond to type descriptors or "shape" objects as they exist in various engines. RTT equality can be implemented as a single pointer test by memoising RTT values. More interestingly, runtime casts along the hierachy encoded in these values can be implemented in an engine efficiently by using well-known techniques such as including a vector of its (direct and indirect) super-RTTs in each RTT value (with itself as the last entry). The value `<n>` then denotes the length of this vector. A subtype check between two RTT values can be implemented as follows using such a representation. Assume RTT value v1 has static type `(rtt n1? $t1)` and v2 has type `(rtt n2? $t2)`. To check whether v1 denotes a sub-RTT of v2, first verify that `n1 >= n2` -- if both `n1` and `n2` are known statically, this can be performed at compile time; if either is not statically known, it has to be read from the respective RTT value dynamically, and `n1 >= n2` becomes a dynamic check. Then compare v2 to the n2-th entry in v1's supertype vector. If they are equal, v1 is a sub-RTT.
 In the case of actual casts, the static type of RTT v1 (obtained from the value to cast) is not known at compile time, so `n1` is dynamic as well.
 (Note that `$t1` and `$t2` are not relevant for the dynamic semantics, but merely for validation.)
 
