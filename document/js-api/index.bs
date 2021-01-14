@@ -155,6 +155,7 @@ urlPrefix: https://webassembly.github.io/reference-types/core/; spec: WebAssembl
         text: f32
         text: f64
     url: syntax/types.html#syntax-reftype
+        text: reftype
         text: funcref
         text: externref
     text: function element; url: exec/runtime.html#syntax-funcelem
@@ -765,6 +766,8 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
 <div algorithm>
     The <dfn constructor for="Table">Table(|descriptor|, |value|)</dfn> constructor, when invoked, performs the following steps:
     1. Let |elementType| be [=ToValueType=](|descriptor|["element"]).
+    1. If |elementType| is not a [=reftype=],
+        1. [=Throw=] a {{TypeError}} exception.
     1. Let |initial| be |descriptor|["initial"].
     1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be |descriptor|["maximum"]; otherwise, let |maximum| be empty.
     1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
