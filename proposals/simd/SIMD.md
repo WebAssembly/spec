@@ -519,7 +519,7 @@ Lane-wise saturating rounding multiplication in Q15 format:
 def S.q15mulr_sat_s(a, b):
     def subq15mulr(x, y):
         return S.SignedSaturate((x * y + 0x4000) >> 15)
-    return S.lanewise_binary(subsat, S.AsSigned(a), S.AsSigned(b))
+    return S.lanewise_binary(subq15mulr, S.AsSigned(a), S.AsSigned(b))
 ```
 
 ### Lane-wise integer minimum
