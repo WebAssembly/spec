@@ -460,16 +460,16 @@ SIMD memory instructions have optional offset and alignment immediates, like the
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\ &&|&
      \text{v128.load}~~m{:}\Tmemarg_{16} &\Rightarrow& \V128.\LOAD~m \\ &&|&
-     \text{i16x8.load8x8\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \I16X8.\LOAD\K{8x8\_s}~m \\ &&|&
-     \text{i16x8.load8x8\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \I16X8.\LOAD\K{8x8\_u}~m \\ &&|&
-     \text{i32x4.load16x4\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \I32X4.\LOAD\K{16x4\_s}~m \\ &&|&
-     \text{i32x4.load16x4\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \I32X4.\LOAD\K{16x4\_u}~m \\ &&|&
-     \text{i64x2.load32x2\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \I64X2.\LOAD\K{32x2\_s}~m \\ &&|&
-     \text{i64x2.load32x2\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \I64X2.\LOAD\K{32x2\_u}~m \\ &&|&
-     \text{i8x16.load\_splat}~~m{:}\Tmemarg_1 &\Rightarrow& \I8X16.\LOAD\K{\_splat}~m \\ &&|&
-     \text{i16x8.load\_splat}~~m{:}\Tmemarg_2 &\Rightarrow& \I16X8.\LOAD\K{\_splat}~m \\ &&|&
-     \text{i32x4.load\_splat}~~m{:}\Tmemarg_4 &\Rightarrow& \I32X4.\LOAD\K{\_splat}~m \\ &&|&
-     \text{i64x2.load\_splat}~~m{:}\Tmemarg_8 &\Rightarrow& \I64X2.\LOAD\K{\_splat}~m \\ &&|&
+     \text{v128.load8x8\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{8x8\_s}~m \\ &&|&
+     \text{v128.load8x8\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{8x8\_u}~m \\ &&|&
+     \text{v128.load16x4\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{16x4\_s}~m \\ &&|&
+     \text{v128.load16x4\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{16x4\_u}~m \\ &&|&
+     \text{v128.load32x2\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{32x2\_s}~m \\ &&|&
+     \text{v128.load32x2\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{32x2\_u}~m \\ &&|&
+     \text{v128.load8\_splat}~~m{:}\Tmemarg_1 &\Rightarrow& \V128.\LOAD\K{8\_splat}~m \\ &&|&
+     \text{v128.load16\_splat}~~m{:}\Tmemarg_2 &\Rightarrow& \V128.\LOAD\K{16\_splat}~m \\ &&|&
+     \text{v128.load32\_splat}~~m{:}\Tmemarg_4 &\Rightarrow& \V128.\LOAD\K{32\_splat}~m \\ &&|&
+     \text{v128.load64\_splat}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{64\_splat}~m \\ &&|&
      \text{v128.store}~~m{:}\Tmemarg_{16} &\Rightarrow& \V128.\STORE~m \\
    \end{array}
 
