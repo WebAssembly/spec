@@ -35,14 +35,23 @@ have to support 32-bit memory addresses in their ABI.
 
 ### Structure
 
-* The [limits][syntax limits] structure is changed to use `u64`
-  - `limits ::= {min u64, max u64?}`
-
 * A new `idxtype` can be either `i32` or `i64`
   - `idxtype ::= i32 | i64`
 
+* The [limits][syntax limits] structure is parameterised by index syntax
+  - `limits_iv ::= {min iv, max iv?}`
+  The parameter is omitted where it is immaterial.
+
+* The [table type][syntax tabletype] continues to use i32 indices
+  - `tabletype ::= limits_i32 elemtype`
+
 * The [memory type][syntax memtype] structure is extended to have an index type
-  - `memtype ::= limits idxtype`
+  - `memtype ::= idxtype limits_iv  (iff idxtype = type(iv))`
+  - where
+    ```
+    type(\i32) = \I32
+    type(\i64) = \I64
+    ```
 
 * The [memarg][syntax memarg] immediate is changed to allow a 64-bit offset
   - `memarg ::= {offset u64, align u32}`
@@ -50,71 +59,83 @@ have to support 32-bit memory addresses in their ABI.
 
 ### Validation
 
-* [Memory page limits][valid limits] are extended for `i64` indexes
+* Index types are classified by their value range:
   - ```
-    ⊦ limits : 2**16
     ----------------
-    ⊦ limits i32 ok
+    ⊦ i32 : 2**16
     ```
   - ```
-    ⊦ limits : 2**48
     ----------------
-    ⊦ limits i64 ok
+    ⊦ i64 : 2**48
+    ```
+
+* [Memory page limits][valid limits] are classified by their index types
+  - ```
+    ⊦ it : k    n <= k    (m <= k)?    (n < m)?
+    -------------------------------------------
+    ⊦ { min n, max m? } : it
+    ```
+
+* Memory types are validated accordingly:
+  - ```
+    ⊦ limits : it
+    --------------
+    ⊦ it limits ok
     ```
 
 * All [memory instructions][valid meminst] are changed to use the index type,
   and the offset must also be in range of the index type
   - t.load memarg
     - ```
-      C.mems[0] = limits it   2**memarg.align <= |t|/8   memarg.offset < 2**|it|
+      C.mems[0] = it limits   2**memarg.align <= |t|/8   memarg.offset < 2**|it|
       --------------------------------------------------------------------------
                           C ⊦ t.load memarg : [it] → [t]
       ```
   - t.loadN_sx memarg
     - ```
-      C.mems[0] = limits it   2**memarg.align <= N/8   memarg.offset < 2**|it|
+      C.mems[0] = it limits   2**memarg.align <= N/8   memarg.offset < 2**|it|
       ------------------------------------------------------------------------
                         C ⊦ t.loadN_sx memarg : [it] → [t]
       ```
   - t.store memarg
     - ```
-      C.mems[0] = limits it   2**memarg.align <= |t|/8   memarg.offset < 2**|it|
+      C.mems[0] = it limits   2**memarg.align <= |t|/8   memarg.offset < 2**|it|
       --------------------------------------------------------------------------
                          C ⊦ t.store memarg : [it t] → []
       ```
   - t.storeN_sx memarg
     - ```
-      C.mems[0] = limits it   2**memarg.align <= N/8   memarg.offset < 2**|it|
+      C.mems[0] = it limits   2**memarg.align <= N/8   memarg.offset < 2**|it|
       ------------------------------------------------------------------------
                        C ⊦ t.storeN_sx memarg : [it t] → []
       ```
   - memory.size
     - ```
-         C.mems[0] = limits it
+         C.mems[0] = it limits
       ---------------------------
       C ⊦ memory.size : [] → [it]
       ```
   - memory.grow
     - ```
-          C.mems[0] = limits it
+          C.mems[0] = it limits
       -----------------------------
       C ⊦ memory.grow : [it] → [it]
       ```
   - memory.fill
     - ```
-          C.mems[0] = limits it
+          C.mems[0] = it limits
       -----------------------------
       C ⊦ memory.fill : [it i32 it] → []
       ```
   - memory.copy
     - ```
-          C.mems[0] = limits it
+          C.mems[0] = it limits
       -----------------------------
       C ⊦ memory.copy : [it it it] → []
       ```
   - memory.init x
     - ```
-          C.mems[0] = limits it   C.datas[x] = ok
+          C.mems[0] = it limits   C.datas[x] = ok
       -------------------------------------------
           C ⊦ memory.init : [it i32 i32] → []
       ```
@@ -125,7 +146,7 @@ have to support 32-bit memory addresses in their ABI.
   be used. For example,
   - memory.size x
     - ```
-         C.mems[x] = limits it
+         C.mems[x] = it limits
       ---------------------------
       C ⊦ memory.size x : [] → [it]
       ```
@@ -134,21 +155,14 @@ have to support 32-bit memory addresses in their ABI.
   signatures:
   - memory.copy d s
     - ```
-          C.mems[d] = limits it_d   C.mems[s] = limits it_s
-      --------------------------------------------------------
-          C ⊦ memory.copy d s : [it_d it_s f(it_d, it_s)] → []
-
-      where:
-
-        f(i32, i32) = i32
-        f(i64, i32) = i32
-        f(i32, i64) = i32
-        f(i64, i64) = i64
+      C.mems[d] = iN limits   C.mems[s] = iM limits    K = min {N, M}
+      ---------------------------------------------------------------
+          C ⊦ memory.copy d s : [iN iM iK] → []
       ```
 
 * [Data segment validation][valid data] uses the index type
   - ```
-    C.mems[0] = limits it   C ⊦ expr: [it]   C ⊦ expr const
+    C.mems[0] = it limits   C ⊦ expr: [it]   C ⊦ expr const
     -------------------------------------------------------
           C ⊦ {data x, offset expr, init b*} ok
     ```
@@ -176,9 +190,9 @@ have to support 32-bit memory addresses in their ABI.
 
 * [Memory import matching][exec memmatch] requires that the index type matches
   - ```
-      ⊦ limits_1 <= limits_2   it_1 = it_2
+      it_1 = it_2   ⊦ limits_1 <= limits_2
     ----------------------------------------
-    ⊦ mem limits_1 it_1 <= mem limits_2 it_2
+    ⊦ mem it_1 limits_1 <= mem it_2 limits_2
     ```
 
 
@@ -187,19 +201,20 @@ have to support 32-bit memory addresses in their ABI.
 * The [limits][binary limits] structure also encodes an additional value to
   indicate the index type
   - ```
-    limits ::= 0x00 n:u32        ⇒ {min n, max ϵ}, 0
-            |  0x01 n:u32 m:u32  ⇒ {min n, max m}, 0
-            |  0x02 n:u32        ⇒ {min n, max ϵ}, 1  ;; from threads proposal
-            |  0x03 n:u32 m:u32  ⇒ {min n, max m}, 1  ;; from threads proposal
-            |  0x04 n:u64        ⇒ {min n, max ϵ}, 2
-            |  0x05 n:u64 m:u64  ⇒ {min n, max m}, 2
+    limits ::= 0x00 n:u32        ⇒ i32, {min n, max ϵ}, 0
+            |  0x01 n:u32 m:u32  ⇒ i32, {min n, max m}, 0
+            |  0x02 n:u32        ⇒ i32, {min n, max ϵ}, 1  ;; from threads proposal
+            |  0x03 n:u32 m:u32  ⇒ i32, {min n, max m}, 1  ;; from threads proposal
+            |  0x04 n:u64        ⇒ i64, {min n, max ϵ}, 0
+            |  0x05 n:u64 m:u64  ⇒ i64, {min n, max m}, 0
+            |  0x06 n:u32        ⇒ i64, {min n, max ϵ}, 1  ;; from threads proposal
+            |  0x07 n:u32 m:u32  ⇒ i64, {min n, max m}, 1  ;; from threads proposal
     ```
 
 * The [memory type][binary memtype] structure is extended to use this limits
   encoding
   - ```
-    memtype ::= lim, 0:limits ⇒ lim i32
-             |  lim, 2:limits ⇒ lim i64
+    memtype ::= (it, lim, _):limits ⇒ it lim
     ```
 
 * The [memarg][binary memarg]'s offset is read as `u64`
@@ -209,14 +224,15 @@ have to support 32-bit memory addresses in their ABI.
 
 *  There is a new index type:
    - ```
-     indextype ::= 'i32' | 'i64'
+     idxtype ::= 'i32' ⇒ i32
+              |  'i64' ⇒ i64
      ```
 
 *  The [memory type][text memtype] definition is extended to allow an optional
    index type, which must be either `i32` or `i64`
    - ```
-     memtype ::= lim:limits               ⇒ lim i32
-              |  it:indextype lim:limits  ⇒ lim it
+     memtype ::= lim:limits             ⇒ i32 lim
+              |  it:idxtype lim:limits  ⇒ it lim
      ```
 
 * The [memory abbreviation][text memabbrev] definition is extended to allow an
@@ -233,6 +249,7 @@ have to support 32-bit memory addresses in their ABI.
 [memory instructions]: https://webassembly.github.io/spec/core/syntax/instructions.html#memory-instructions
 [ISA]: https://en.wikipedia.org/wiki/Instruction_set_architecture
 [syntax limits]: https://webassembly.github.io/spec/core/syntax/types.html#syntax-limits
+[syntax tabletype]: https://webassembly.github.io/spec/core/syntax/types.html#table-types
 [syntax memtype]: https://webassembly.github.io/spec/core/syntax/types.html#memory-types
 [syntax memarg]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-memarg
 [valid limits]: https://webassembly.github.io/spec/core/valid/types.html#limits
