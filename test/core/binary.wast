@@ -364,7 +364,7 @@
     "\02\7e"                   ;; 0x00000002 i64
     "\0b"                      ;; end
   )
-  "integer representation too long"
+  "integer too large"
 )
 
 ;; No more than 2^32-1 locals.
