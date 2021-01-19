@@ -223,7 +223,7 @@ For example, `D.g`:
   )
 )
 ```
-The addition of [type parameters and fields](#type-parameters-and-fields) may later avoid this cast.
+The addition of [type fields](Post-MVP.md#type-parameters) may later avoid this cast.
 
 
 ### Closures
@@ -288,7 +288,7 @@ Needs:
 * down casts
 
 The down cast for the closure environment is necessary to go from the abstract closure type to the concrete.
-Statically type checking this would require (first-class) [type fields](#type-parameters-and-fields), a.k.a. existential types.
+Statically type checking this would require (first-class) [type fields](Post-MVP.md#type-parameters), a.k.a. existential types.
 
 Note that this example shows just one way to represent closures (with flattened closure environment).
 The proposal provides all necessary primitives allowing high-level language compilers to choose other representations.
@@ -335,7 +335,7 @@ Unless willing to implement runtime code specialisation (like C# / .NET) a type-
 
 The usual implementation technique is a uniform representation, potentially refined with local unboxing and type specialisation optimisations.
 
-The MVP proposal does not directly support parametric polymorphism (see the discussion of [type parameters and fields](#type-parameters-and-fields) below for its discussion as an extension).
+The MVP proposal does not directly support parametric polymorphism (see the discussion of [type parameters](Post-MVP.md#type-parameters)).
 However, compilation with a uniform representation can still be achieved in this proposal by consistently using the type  `anyref`, which is the super type of all references, and then down-cast from there:
 ```
 (type $pair (struct anyref anyref))
@@ -376,7 +376,7 @@ However, compilation with a uniform representation can still be achieved in this
 Note how type [`i31ref`](#tagged-integers) avoids Boolean values to be heap-allocated.
 Also note how a down cast is necessary to recover the original type after a value has been passed through (the compiled form of) a polymorphic function like `g` -- the compiler knows the type but Wasm does not.
 
-(Future versions of Wasm should support [type parameters](#type-parameters-and-fields) to make such use cases more efficient and avoid the excessive use of runtime types to compile source language polymorphism, but for the GC MVP this provides the necessary expressiveness.)
+(Future versions of Wasm should support [type parameters](Post-MVP.md#type-parameters) to make such use cases more efficient and avoid the excessive use of runtime types to compile source language polymorphism, but for the GC MVP this provides the necessary expressiveness.)
 
 Needs:
 * `anyref`
@@ -773,7 +773,7 @@ There are a number of reasons to make RTTs explicit:
 
 * It allows more choice in producers' use of RTT information, including making it optional (post-MVP), in accordance with the pay-as-you-go principle: for example, structs that are not involved in any casts do not need to pay the overhead of carrying runtime type information (depending on specifics of the GC implementation strategy). Some languages may never need to introduce any RTTs at all.
 
-* Most importantly, making RTTs explicit separates the concerns of casting from Wasm-level polymorphism, i.e., [type parameters and fields](#type-paraemters-and-fields). Type parameters can thus be treated as purely a validation artifact with no bearing on runtime. This property, known as parametricity, drastically simplifies the implementation of such type parameterisation and avoids the substantial hidden costs of reified generics that would otherwise hvae to be paid for every single use of type parameters (short of non-trivial cross-procedural dataflow analysis in the engine).
+* Most importantly, making RTTs explicit separates the concerns of casting from Wasm-level polymorphism, i.e., [type parameters](Post-MVP.md#type-parameters). Type parameters can thus be treated as purely a validation artifact with no bearing on runtime. This property, known as parametricity, drastically simplifies the implementation of such type parameterisation and avoids the substantial hidden costs of reified generics that would otherwise hvae to be paid for every single use of type parameters (short of non-trivial cross-procedural dataflow analysis in the engine).
 
 
 ## Future Extensions
