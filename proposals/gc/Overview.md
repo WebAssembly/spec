@@ -617,7 +617,7 @@ Being reference types, unboxed scalars can be cast into `anyref`, and can partic
 
 To avoid portability hazards, the value range of `i31ref` has to be restricted to at most 31 bits, since that is the widest range that can be guaranteed to be efficiently representable on all platforms.
 
-Note: As a future extension, Wasm could also introduce wider integer references, such as `i32ref`. However, these sometimes will have to be boxed on some platforms, introducing the unpredictable cost of possible "hidden" allocation upon creation or branching upon access. They hence serve a different use case. Note also that such values can already equivalently be expressed in this proposal as structs with a single `i32` field, which implementations may choose to optimise accordingly (singleton structs that have no [runtime type information](#casting-and-runtime-types) can be flattened by engines).
+Note: As a future extension, Wasm could also introduce wider integer references, such as `i32ref`. However, these sometimes will have to be boxed on some platforms, introducing the unpredictable cost of possible "hidden" allocation upon creation or branching upon access. They hence serve a different use case.
 
 
 ## Type Structure
