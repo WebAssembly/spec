@@ -363,6 +363,36 @@ The `input` and `output` meta commands determine the requested file format from 
 The interpreter supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, all actions and assertions are ignored.
 It also supports an "unchecked" mode (flag `-u`), in which module definitions are not validated before use.
 
+
+### Spectest host module
+
+When running scripts, the interpreter predefines a simple host module named `"spectest"` that has the following module type:
+```
+(module
+  (global (export "global_i32") i32)
+  (global (export "global_i64") i64)
+  (global (export "global_f32") f32)
+  (global (export "global_f64") f64)
+
+  (table (export "table") 10 20 funcref)
+
+  (memory (export "memory") 1 2)
+
+  (func (export "print"))
+  (func (export "print_i32") (param i32))
+  (func (export "print_i64") (param i64))
+  (func (export "print_f32") (param f32))
+  (func (export "print_f64") (param f64))
+  (func (export "print_i32_f32") (param i32 f32))
+  (func (export "print_f64_f64") (param f64 f64))
+)
+```
+The `print` functions are assumes to print the respective values to stdout (followed by a newline) and can be used to produce some output.
+
+Note: This module predates the `register` command and should no longer be needed for new tests.
+We might remove it in the future, so consider it deprecated.
+
+
 ### Binary Scripts
 
 The grammar of binary scripts is a subset of the grammar for general scripts:
