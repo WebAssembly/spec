@@ -350,7 +350,24 @@
   "zero flag expected"
 )
 
-;; No more than 2^32 locals.
+;; Local number is unsigned 32 bit
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section
+    "\03\02\01\00"             ;; Function section
+    "\0a\0c\01"                ;; Code section
+
+    ;; function 0
+    "\0a\02"
+    "\80\80\80\80\10\7f"       ;; 0x100000000 i32
+    "\02\7e"                   ;; 0x00000002 i64
+    "\0b"                      ;; end
+  )
+  "integer too large"
+)
+
+;; No more than 2^32-1 locals.
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -362,6 +379,24 @@
     "\0a\02"
     "\ff\ff\ff\ff\0f\7f"       ;; 0xFFFFFFFF i32
     "\02\7e"                   ;; 0x00000002 i64
+    "\0b"                      ;; end
+  )
+  "too many locals"
+)
+
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\06\01\60\02\7f\7f\00" ;; Type section: (param i32 i32)
+    "\03\02\01\00"             ;; Function section
+    "\0a\1c\01"                ;; Code section
+
+    ;; function 0
+    "\1a\04"
+    "\80\80\80\80\04\7f"       ;; 0x40000000 i32
+    "\80\80\80\80\04\7e"       ;; 0x40000000 i64
+    "\80\80\80\80\04\7d"       ;; 0x40000000 f32
+    "\80\80\80\80\04\7c"       ;; 0x40000000 f64
     "\0b"                      ;; end
   )
   "too many locals"
