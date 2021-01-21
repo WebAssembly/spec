@@ -393,7 +393,7 @@ However, it may be substantially slower on some hardware.</p>
 <li><p>If <span class="math notranslate nohighlight">\(N\)</span> and <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> are part of the instruction, then:</p>
 <ol class="loweralpha simple">
 <li><p>Let <span class="math notranslate nohighlight">\(n\)</span> be the integer for which <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\mathit{i}N}}(n) = b^\ast\)</span>.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\(c\)</span> be the result of computing <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-extend-u}{\mathrm{extend}}\mathrm{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}_{N,|t|}(n)\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(c\)</span> be the result of computing <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-extend-u}{\mathrm{extend}}^{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}_{N,|t|}(n)\)</span>.</p></li>
 </ol>
 </li>
 <li><p>Else:</p>
@@ -418,7 +418,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 \\[1ex]
 \begin{array}{lcl&#64;{\qquad}l}
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(t.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{N}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}) &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp;
-  S; F; (t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../exec/numerics.html#op-extend-u}{\mathrm{extend}}\mathrm{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}_{N,|t|}(n))
+  S; F; (t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../exec/numerics.html#op-extend-u}{\mathrm{extend}}^{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}_{N,|t|}(n))
 \end{array}
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
