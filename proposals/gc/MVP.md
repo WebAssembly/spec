@@ -325,38 +325,46 @@ Tentatively, support a type of guaranteed unboxed scalars.
   - `ref.is_i31 : [anyref] -> [i32]`
 
 * `br_on_func <labelidx>` branches if a reference is a function
-  - `br_on_func $l : [anyref] -> [anyref]`
-    - iff `$l : [funcref]`
+  - `br_on_func $l : [t] -> [t]`
+    - iff `$l : [t']`
+    - and `t <: anyref`
+    - and `(ref func) <: t'`
   - passes operand along with branch as a function
 
 * `br_on_data <labelidx>` branches if a reference is compound data
-  - `br_on_data $l : [anyref] -> [anyref]`
-    - iff `$l : [dataref]`
-  - passes operand along with branch as a function
+  - `br_on_data $l : [t] -> [t]`
+    - iff `$l : [t']`
+    - and `t <: anyref`
+    - and `(ref data) <: t'`
+  - passes operand along with branch as data
 
 * `br_on_i31 <labelidx>` branches if a reference is an integer
-  - `br_on_func $l : [anyref] -> [anyref]`
-    - iff `$l : [i31ref]`
-  - passes operand along with branch as a function
+  - `br_on_i31 $l : [t] -> [t]`
+    - iff `$l : [t']`
+    - and `t <: anyref`
+    - and `(ref i31) <: t'`
+  - passes operand along with branch as a scalar
 
 * `ref.as_func` converts to a function reference
-  - `ref.as_func : [anyref] -> [funcref]`
+  - `ref.as_func : [anyref] -> [(ref func)]`
   - traps if reference is not a function
   - equivalent to `(block $l (param anyref) (result funcref) (br_on_func $l) (unreachable))`
 
 * `ref.as_data` converts to a data reference
-  - `ref.as_data : [anyref] -> [dataref]`
+  - `ref.as_data : [anyref] -> [(ref data)]`
   - traps if reference is not compound data
   - equivalent to `(block $l (param anyref) (result dataref) (br_on_data $l) (unreachable))`
 
 * `ref.as_i31` converts to an integer reference
-  - `ref.as_i31 : [anyref] -> [i31ref]`
+  - `ref.as_i31 : [anyref] -> [(ref i31)]`
   - traps if reference is not an integer
   - equivalent to `(block $l (param anyref) (result i31ref) (br_on_i31 $l) (unreachable))`
 
 Note: The [reference types](https://github.com/WebAssembly/reference-types) and [typed function references](https://github.com/WebAssembly/function-references)already introduce similar `ref.is_null` and `br_on_null` instructions.
 
 Note: There are no instructions to check for `externref`, since that can consist of a diverse set of different object representations that would be costly to check for exhaustively.
+
+Note: The `br_on_*` instructions allow an operand of unrelated reference type, even though this cannot possibly succeed. That's because subtyping allows to forget that information, so by the subtype substitutibility property, it would be accepted in any case. The given typing rules merely allow this type to also propagate to the result, which avoids the need to compute a least upper bound between the operand type and the target type in the typing algorithm.
 
 
 #### Runtime Types
@@ -379,29 +387,27 @@ TODO: Add the ability to generate new (non-canonical) RTT values to implement ca
 
 RTT-based casts can only be performed with respect to concrete types, and require a data or function reference as input, which are known to carry an RTT.
 
-* `ref.test <typeidx>` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given RTT
-  - `ref.test $t : [(ref null ht) (rtt n? $t)] -> [i32]`
-    - iff `ht <: data` or `ht <: func`
-    - and `(type $t) <: ht`
+* `ref.test` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given RTT
+  - `ref.test : [t' (rtt n? $t)] -> [i32]`
+    - iff `t' <: dataref` or `t' <: funcref`
   - returns 1 if the first operand is not null and its runtime type is a sub-RTT of the RTT operand, 0 otherwise
 
-* `ref.cast <typeidx>` casts a reference value down to a type given by a RTT representation
-  - `ref.cast $t : [(ref null1? ht) (rtt n? $t)] -> [(ref null2? $t)]`
+* `ref.cast` casts a reference value down to a type given by a RTT representation
+  - `ref.cast : [(ref null1? ht) (rtt n? $t)] -> [(ref null2? $t)]`
     - iff `ht <: data` or `ht <: func`
-    - and `(type $t) <: ht`
     - and `null1? = null2?`
   - returns null if the first operand is null
   - traps if the first operand is not null and its runtime type is not a sub-RTT of the RTT operand
 
-* `br_on_cast <labelidx> <typeidx>` branches if a value can be cast down to a given reference type
-  - `br_on_cast $l $t : [(ref null ht) (rtt n? $t)] -> [(ref null ht)]`
-    - iff `ht <: data` or `ht <: func`
-    - and `(type $t) <: ht`
-    - and `$l : [(ref $t)]`
+* `br_on_cast <labelidx>` branches if a value can be cast down to a given reference type
+  - `br_on_cast $l : [t (rtt n? $t')] -> [t]`
+    - iff `$l : [t']`
+    - and `t <: dataref` or `t <: funcref`
+    - and `(ref $t) <: t'`
   - branches iff the first operand is not null and its runtime type is a sub-RTT of the RTT operand
   - passes cast operand along with branch
 
-Note: The condition `(type $t) <: ht` isn't needed for soundness of any of the above instructions. If false, the check merely is statically known to fail. Should it be removed?
+Note: These instructions allow an operand of unrelated reference type, even though this cannot possibly succeed. The reasoning is the same as for classification instructions.
 
 
 #### Constant Expressions
@@ -439,6 +445,7 @@ This extends the [encodings](https://github.com/WebAssembly/function-references/
 | -0x16  | `i31ref`        |            | |
 | -0x17  | `(rtt n $t)`    | `n : u32`, `$t : typeidx` | |
 | -0x18  | `(rtt $t)`      | `$t : typeidx` | |
+| -0x19  | `dataref`       |            | |
 
 #### Heap Types
 
@@ -452,6 +459,7 @@ The opcode for heap types is encoded as an `s33`.
 | -0x12  | `any`           |            | |
 | -0x13  | `eq`            |            | |
 | -0x16  | `i31`           |            | |
+| -0x19  | `data`          |            | |
 
 #### Defined Types
 
