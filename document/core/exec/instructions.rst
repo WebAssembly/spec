@@ -424,7 +424,7 @@ Memory Instructions
 
     a. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
 
-    b. Let :math:`c` be the result of computing :math:`\extend^\sx_{N,|t|}(n)`.
+    b. Let :math:`c` be the result of computing :math:`\extend^{\sx}_{N,|t|}(n)`.
 
 13. Else:
 
@@ -447,7 +447,7 @@ Memory Instructions
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(t.\LOAD{N}\K{\_}\sx~\memarg) &\stepto&
-     S; F; (t.\CONST~\extend^\sx_{N,|t|}(n))
+     S; F; (t.\CONST~\extend^{\sx}_{N,|t|}(n))
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
