@@ -389,7 +389,7 @@ RTT-based casts can only be performed with respect to concrete types, and requir
 
 * `ref.test` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given RTT
   - `ref.test : [t' (rtt n? $t)] -> [i32]`
-    - iff `t' <: dataref` or `t' <: funcref`
+    - iff `t <: (ref null data)` or `t <: (ref null func)`
   - returns 1 if the first operand is not null and its runtime type is a sub-RTT of the RTT operand, 0 otherwise
 
 * `ref.cast` casts a reference value down to a type given by a RTT representation
@@ -402,7 +402,7 @@ RTT-based casts can only be performed with respect to concrete types, and requir
 * `br_on_cast <labelidx>` branches if a value can be cast down to a given reference type
   - `br_on_cast $l : [t (rtt n? $t')] -> [t]`
     - iff `$l : [t']`
-    - and `t <: dataref` or `t <: funcref`
+    - and `t <: (ref null data)` or `t <: (ref null func)`
     - and `(ref $t') <: t'`
   - branches iff the first operand is not null and its runtime type is a sub-RTT of the RTT operand
   - passes cast operand along with branch
