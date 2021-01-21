@@ -403,7 +403,7 @@ RTT-based casts can only be performed with respect to concrete types, and requir
   - `br_on_cast $l : [t (rtt n? $t')] -> [t]`
     - iff `$l : [t']`
     - and `t <: dataref` or `t <: funcref`
-    - and `(ref $t) <: t'`
+    - and `(ref $t') <: t'`
   - branches iff the first operand is not null and its runtime type is a sub-RTT of the RTT operand
   - passes cast operand along with branch
 
