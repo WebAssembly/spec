@@ -306,7 +306,7 @@ let simd_prefix s =
   | 0x52l -> v128_bitselect
   | 0x60l -> i8x16_abs
   | 0x61l -> i8x16_neg
-  | 0x62l -> i8x16_any_true
+  | 0x62l -> v128_any_true
   | 0x63l -> i8x16_all_true
   | 0x64l -> i8x16_bitmask
   | 0x6bl -> i8x16_shl
@@ -327,7 +327,6 @@ let simd_prefix s =
   | 0x7bl -> i8x16_avgr_u
   | 0x80l -> i16x8_abs
   | 0x81l -> i16x8_neg
-  | 0x82l -> i16x8_any_true
   | 0x83l -> i16x8_all_true
   | 0x84l -> i16x8_bitmask
   | 0x85l -> i16x8_narrow_i32x4_s
@@ -353,7 +352,6 @@ let simd_prefix s =
   | 0x9bl -> i16x8_avgr_u
   | 0xa0l -> i32x4_abs
   | 0xa1l -> i32x4_neg
-  | 0xa2l -> i32x4_any_true
   | 0xa3l -> i32x4_all_true
   | 0xa4l -> i32x4_bitmask
   | 0xa7l -> i32x4_widen_low_i16x8_s

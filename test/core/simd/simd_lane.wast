@@ -733,18 +733,18 @@
 
   ;; Boolean horizontal reductions
   (func (export "as-i8x16_any_true-operand") (param v128 i32) (result i32)
-    (i8x16.any_true (i8x16.replace_lane 0 (local.get 0) (local.get 1))))
+    (v128.any_true (i8x16.replace_lane 0 (local.get 0) (local.get 1))))
   (func (export "as-i16x8_any_true-operand") (param v128 i32) (result i32)
-    (i16x8.any_true (i16x8.replace_lane 0 (local.get 0) (local.get 1))))
+    (v128.any_true (i16x8.replace_lane 0 (local.get 0) (local.get 1))))
   (func (export "as-i32x4_any_true-operand1") (param v128 i32) (result i32)
-    (i32x4.any_true (i32x4.replace_lane 0 (local.get 0) (local.get 1))))
+    (v128.any_true (i32x4.replace_lane 0 (local.get 0) (local.get 1))))
   (func (export "as-i32x4_any_true-operand2") (param v128 i64) (result i32)
-    (i32x4.any_true (i64x2.replace_lane 0 (local.get 0) (local.get 1))))
+    (v128.any_true (i64x2.replace_lane 0 (local.get 0) (local.get 1))))
 
   (func (export "swizzle-as-i8x16_all_true-operands") (param v128 v128) (result i32)
     (i8x16.all_true (i8x16.swizzle (local.get 0) (local.get 1))))
   (func (export "shuffle-as-i8x16_any_true-operands") (param v128 v128) (result i32)
-    (i8x16.any_true (i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (local.get 0) (local.get 1))))
+    (v128.any_true (i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (local.get 0) (local.get 1))))
 )
 
 (assert_return (invoke "as-i8x16_splat-operand" (v128.const i8x16 0xff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) (v128.const i8x16 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1))
