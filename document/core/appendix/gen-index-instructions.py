@@ -471,7 +471,7 @@ INSTRUCTIONS = [
     Instruction(r'\I32X4.\VMAX\K{\_s}', r'\hex{FD}~~184', r'[\V128~\V128] \to [\V128]', r'validation <valid-vbinop>', r'execution <exec-vbinop>', r'operator <op-imax_s>'),
     Instruction(r'\I32X4.\VMAX\K{\_u}', r'\hex{FD}~~185', r'[\V128~\V128] \to [\V128]', r'validation <valid-vbinop>', r'execution <exec-vbinop>', r'operator <op-imax_u>'),
     Instruction(r'\I64X2.\VNEG', r'\hex{FD}~~193', r'[\V128] \to [\V128]', r'validation <valid-vunop>', r'execution <exec-vunop>', r'operator <op-ineg>'),
-    Instruction(r'\I64x2.\BITMASK', r'\hex{FD}~~196', r'[\V128] \to [\I32]', r'validation <valid-simd-bitmask>', r'execution <exec-simd-bitmask>'),
+    Instruction(r'\I64X2.\BITMASK', r'\hex{FD}~~196', r'[\V128] \to [\I32]', r'validation <valid-simd-bitmask>', r'execution <exec-simd-bitmask>'),
     Instruction(r'\I64X2.\VSHL', r'\hex{FD}~~203', r'[\V128~\I32] \to [\V128]', r'validation <valid-vshiftop>', r'execution <exec-vshiftop>', r'operator <op-ishl>'),
     Instruction(r'\I64X2.\VSHR\K{\_s}', r'\hex{FD}~~204', r'[\V128~\I32] \to [\V128]', r'validation <valid-vshiftop>', r'execution <exec-vshiftop>', r'operator <op-ishr_s>'),
     Instruction(r'\I64X2.\VSHR\K{\_u}', r'\hex{FD}~~205', r'[\V128~\I32] \to [\V128]', r'validation <valid-vshiftop>', r'execution <exec-vshiftop>', r'operator <op-ishr_u>'),
