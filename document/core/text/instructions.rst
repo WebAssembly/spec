@@ -606,7 +606,8 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{v128.andnot} &\Rightarrow& \V128.\VANDNOT\\ &&|&
      \text{v128.or} &\Rightarrow& \V128.\VOR\\ &&|&
      \text{v128.xor} &\Rightarrow& \V128.\VXOR\\ &&|&
-     \text{v128.bitselect} &\Rightarrow& \V128.\BITSELECT
+     \text{v128.bitselect} &\Rightarrow& \V128.\BITSELECT\\ &&|&
+     \text{v128.any\_true} &\Rightarrow& \V128.\ANYTRUE
    \end{array}
 
 .. _text-vitestop:
@@ -621,7 +622,6 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
    \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i8x16.abs} &\Rightarrow& \I8X16.\VABS\\ &&|&
      \text{i8x16.neg} &\Rightarrow& \I8X16.\VNEG\\ &&|&
-     \text{i8x16.any\_true} &\Rightarrow& \I8X16.\ANYTRUE\\ &&|&
      \text{i8x16.all\_true} &\Rightarrow& \I8X16.\ALLTRUE\\ &&|&
      \text{i8x16.bitmask} &\Rightarrow& \I8X16.\BITMASK\\ &&|&
      \text{i8x16.narrow\_i16x8\_s} &\Rightarrow& \I8X16.\NARROW\K{\_i16x8\_s}\\ &&|&
@@ -647,7 +647,6 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
    \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i16x8.abs} &\Rightarrow& \I16X8.\VABS\\ &&|&
      \text{i16x8.neg} &\Rightarrow& \I16X8.\VNEG\\ &&|&
-     \text{i16x8.any\_true} &\Rightarrow& \I16X8.\ANYTRUE\\ &&|&
      \text{i16x8.all\_true} &\Rightarrow& \I16X8.\ALLTRUE\\ &&|&
      \text{i16x8.bitmask} &\Rightarrow& \I16X8.\BITMASK\\ &&|&
      \text{i16x8.narrow\_i32x4\_s} &\Rightarrow& \I16X8.\NARROW\K{\_i32x4\_s}\\ &&|&
@@ -678,7 +677,6 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
    \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i32x4.abs} &\Rightarrow& \I32X4.\VABS\\ &&|&
      \text{i32x4.neg} &\Rightarrow& \I32X4.\VNEG\\ &&|&
-     \text{i32x4.any\_true} &\Rightarrow& \I32X4.\ANYTRUE\\ &&|&
      \text{i32x4.all\_true} &\Rightarrow& \I32X4.\ALLTRUE\\ &&|&
      \text{i32x4.bitmask} &\Rightarrow& \I32X4.\BITMASK\\ &&|&
      \text{i32x4.widen\_low\_i16x8\_s} &\Rightarrow& \I32X4.\WIDEN\K{\_low\_i16x8\_s}\\ &&|&

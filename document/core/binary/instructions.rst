@@ -572,7 +572,8 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~79{:}\Bu32 &\Rightarrow& \V128.\VANDNOT \\ &&|&
      \hex{FD}~~80{:}\Bu32 &\Rightarrow& \V128.\VOR \\ &&|&
      \hex{FD}~~81{:}\Bu32 &\Rightarrow& \V128.\VXOR \\ &&|&
-     \hex{FD}~~82{:}\Bu32 &\Rightarrow& \V128.\BITSELECT
+     \hex{FD}~~82{:}\Bu32 &\Rightarrow& \V128.\BITSELECT \\ &&|&
+     \hex{FD}~~98{:}\Bu32 &\Rightarrow& \V128.\ANYTRUE \\ &&|&
    \end{array}
 
 .. _binary-vitestop:
@@ -587,7 +588,6 @@ All other SIMD instructions are plain opcodes without any immediates.
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~96{:}\Bu32 &\Rightarrow& \I8X16.\VABS \\ &&|&
      \hex{FD}~~97{:}\Bu32 &\Rightarrow& \I8X16.\VNEG \\ &&|&
-     \hex{FD}~~98{:}\Bu32 &\Rightarrow& \I8X16.\ANYTRUE \\ &&|&
      \hex{FD}~~99{:}\Bu32 &\Rightarrow& \I8X16.\ALLTRUE \\ &&|&
      \hex{FD}~~100{:}\Bu32 &\Rightarrow& \I8X16.\BITMASK \\ &&|&
      \hex{FD}~~101{:}\Bu32 &\Rightarrow& \I8X16.\NARROW\K{\_i16x8\_s} \\ &&|&
@@ -613,7 +613,6 @@ All other SIMD instructions are plain opcodes without any immediates.
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~128{:}\Bu32 &\Rightarrow& \I16X8.\VABS \\ &&|&
      \hex{FD}~~129{:}\Bu32 &\Rightarrow& \I16X8.\VNEG \\ &&|&
-     \hex{FD}~~130{:}\Bu32 &\Rightarrow& \I16X8.\ANYTRUE \\ &&|&
      \hex{FD}~~131{:}\Bu32 &\Rightarrow& \I16X8.\ALLTRUE \\ &&|&
      \hex{FD}~~132{:}\Bu32 &\Rightarrow& \I16X8.\BITMASK \\ &&|&
      \hex{FD}~~133{:}\Bu32 &\Rightarrow& \I16X8.\NARROW\K{\_i32x4\_s} \\ &&|&
@@ -644,7 +643,6 @@ All other SIMD instructions are plain opcodes without any immediates.
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~160{:}\Bu32 &\Rightarrow& \I32X4.\VABS \\ &&|&
      \hex{FD}~~161{:}\Bu32 &\Rightarrow& \I32X4.\VNEG \\ &&|&
-     \hex{FD}~~162{:}\Bu32 &\Rightarrow& \I32X4.\ANYTRUE \\ &&|&
      \hex{FD}~~163{:}\Bu32 &\Rightarrow& \I32X4.\ALLTRUE \\ &&|&
      \hex{FD}~~164{:}\Bu32 &\Rightarrow& \I32X4.\BITMASK \\ &&|&
      \hex{FD}~~167{:}\Bu32 &\Rightarrow& \I32X4.\WIDEN\K{\_low\_i16x8\_s} \\ &&|&

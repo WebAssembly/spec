@@ -240,6 +240,20 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
+.. _valid-any-true:
+
+:math:`\V128\K{.}\ANYTRUE`
+............................
+
+* The instruction is valid with type :math:`[\V128] \to [\I32]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \V128\K{.}\ANYTRUE : [\V128] \to [\I32]
+   }
+
+
 .. _valid-simd-shuffle:
 
 :math:`\K{i8x16.}\SHUFFLE~\laneidx^{16}`
