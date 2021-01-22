@@ -701,7 +701,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i64x2.neg} &\Rightarrow& \I64X2.\VNEG\\ &&|&
-     \text{i64x2.bitmask} &\Rightarrow& \I64x2.\BITMASK\\ &&|&
+     \text{i64x2.bitmask} &\Rightarrow& \I64X2.\BITMASK\\ &&|&
      \text{i64x2.shl} &\Rightarrow& \I64X2.\VSHL\\ &&|&
      \text{i64x2.shr\_s} &\Rightarrow& \I64X2.\VSHR\K{\_s}\\ &&|&
      \text{i64x2.shr\_u} &\Rightarrow& \I64X2.\VSHR\K{\_u}\\ &&|&
