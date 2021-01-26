@@ -413,6 +413,21 @@
   "type mismatch"
 )
 
+;; Third operand must be i32
+
+(assert_invalid
+  (module (func (select (i32.const 1) (i32.const 1) (i64.const 1)) drop))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (select (i32.const 1) (i32.const 1) (f32.const 1)) drop))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (select (i32.const 1) (i32.const 1) (f64.const 1)) drop))
+  "type mismatch"
+)
+
 ;; Result of select has type of first two operands
 
 (assert_invalid
