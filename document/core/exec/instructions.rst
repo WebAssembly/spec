@@ -207,7 +207,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    respectively.
 
 
-.. _exec-simd-const:
+.. _exec-vconst:
 
 :math:`\V128\K{.}\VCONST~c`
 ...........................
