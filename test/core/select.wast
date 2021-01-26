@@ -412,3 +412,10 @@
   )
   "type mismatch"
 )
+
+;; Result of select has type of first two operands
+
+(assert_invalid
+  (module (func (result i32) (select (i64.const 1) (i64.const 1) (i32.const 1))))
+  "type mismatch"
+)
