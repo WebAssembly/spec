@@ -225,6 +225,15 @@ let encode m =
       | SimdLoad ({ty= V128Type; sz = Some (Pack64, PackZero); _} as mo) ->
         simd_op 0xfdl; memop mo
 
+      | SimdLoadLane ({ty = V128Type; sz = Some Pack8; _} as mo, i) ->
+        simd_op 0x58l; memop mo; u8 i;
+      | SimdLoadLane ({ty = V128Type; sz = Some Pack16; _} as mo, i) ->
+        simd_op 0x59l; memop mo; u8 i;
+      | SimdLoadLane ({ty = V128Type; sz = Some Pack32; _} as mo, i) ->
+        simd_op 0x5al; memop mo; u8 i;
+      | SimdLoadLane ({ty = V128Type; sz = Some Pack64; _} as mo, i) ->
+        simd_op 0x5bl; memop mo; u8 i;
+
       | Store ({ty = I32Type; sz = None; _} as mo) -> op 0x36; memop mo
       | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x37; memop mo
       | Store ({ty = F32Type; sz = None; _} as mo) -> op 0x38; memop mo

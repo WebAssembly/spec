@@ -31,6 +31,7 @@ SUBMODULES = (
     'simd_f32x4_pmin_pmax',
     'simd_f64x2_pmin_pmax',
     'simd_i32x4_dot_i16x8',
+    'simd_load_lane',
 )
 
 

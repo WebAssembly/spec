@@ -239,6 +239,15 @@ let v128_load32_splat align offset =
 let v128_load64_splat align offset =
   SimdLoad {ty= V128Type; align; offset; sz = Some (Pack64, PackSplat)}
 
+let v128_load8_lane align offset imm =
+  SimdLoadLane ({ty = V128Type; align; offset; sz = Some Pack8}, imm)
+let v128_load16_lane align offset imm =
+  SimdLoadLane ({ty = V128Type; align; offset; sz = Some Pack16}, imm)
+let v128_load32_lane align offset imm =
+  SimdLoadLane ({ty = V128Type; align; offset; sz = Some Pack32}, imm)
+let v128_load64_lane align offset imm =
+  SimdLoadLane ({ty = V128Type; align; offset; sz = Some Pack64}, imm)
+
 let v128_load32_zero align offset =
   SimdLoad {ty= V128Type; align; offset; sz = Some (Pack32, PackZero)}
 let v128_load64_zero align offset =

@@ -304,6 +304,22 @@ let simd_prefix s =
   | 0x50l -> v128_or
   | 0x51l -> v128_xor
   | 0x52l -> v128_bitselect
+  | 0x58l ->
+    let a, o = memop s in
+    let lane = u8 s in
+    v128_load8_lane a o lane
+  | 0x59l ->
+    let a, o = memop s in
+    let lane = u8 s in
+    v128_load16_lane a o lane
+  | 0x5al ->
+    let a, o = memop s in
+    let lane = u8 s in
+    v128_load32_lane a o lane
+  | 0x5bl ->
+    let a, o = memop s in
+    let lane = u8 s in
+    v128_load64_lane a o lane
   | 0x60l -> i8x16_abs
   | 0x61l -> i8x16_neg
   | 0x62l -> v128_any_true

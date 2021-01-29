@@ -36,8 +36,10 @@ val load_packed :
   pack_size -> extension -> memory -> address -> offset -> value_type -> value
     (* raises Type, Bounds *)
 val load_simd_packed :
-  pack_size -> pack_simd -> memory -> address -> offset -> value_type -> value
+  pack_size -> pack_simd -> memory -> address -> offset -> value_type -> V128.t
     (* raises Type, Bounds *)
+val load_simd_lane :
+  V128.t -> pack_size -> memory -> address -> offset -> value_type -> int (* lane index *) -> V128.t
 val store_packed :
   pack_size -> memory -> address -> offset -> value -> unit
     (* raises Type, Bounds *)

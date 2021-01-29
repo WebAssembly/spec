@@ -22,7 +22,7 @@ class SIMD:
             value: constant data, string or list,
             lane_type: lane type, [i32, i64, f32, f64]
         """
-        return SIMD.CONST.format(value_type=value_type, value=''.join(value))
+        return SIMD.CONST.format(value_type=value_type, value=''.join(str(value)))
 
     @staticmethod
     def v128_const(value, lane_type):
