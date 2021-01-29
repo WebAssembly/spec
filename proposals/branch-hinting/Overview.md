@@ -42,29 +42,12 @@ Each subsection corresponds to one function and consists of:
 - the u32 number of branch hints contained in the subsection
 - the list of branch hints for the function
 
-Each element N of the list of hints implicitly refers to the Nth `br` or `br_if` 
-instruction in the function. It is ok to list less hints than branches instruction
-in the function;
-
-Each element consists of a byte indicating what the hint for that particular branch
-is:
+Each element of the branch hints list consists of:
+- the u32 byte offset of the hinted istruction from the beginning of the function
+- A byte indicating the direction of the hint:
 
 | value | meaning      |
 |-------|--------------|
-| 0     | no hint      |
-| 1     | likely false |
-| 2     | likely true  |
+| 0     | likely false |
+| 1     | likely true  |
 
-
-### Open issues
-
-Using the number of branch instructions as an implicit index has the advantage
-of saving space and simplifying validation (compared to, say, an explicit byte index).
-
-But it has the disadvantage that if in the future we want to expand the set of instructions
-that are hintable, old programs may find themselves with an invalid or misleading
-hinting section.
-
-A middle ground could be using the number of total instructions.
-While not as space-saving, and requiring more validation than the current approach, it
-is still much better than using a byte offset, while being more future proof.
