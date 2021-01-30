@@ -250,3 +250,4 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `v128.store32_lane`         |     `TBD`| m:memarg, i:ImmLaneIdx4  |
 | `v128.store64_lane`         |     `TBD`| m:memarg, i:ImmLaneIdx2  |
 | `i64x2.eq`                  |     `TBD`| -                        |
+| `i64x2.ne`                  |     `TBD`| -                        |

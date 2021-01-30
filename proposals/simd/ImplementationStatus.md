@@ -218,6 +218,7 @@
 | `v128.store16_lane`         |                           |                    |                    |                    |                    |
 | `v128.store32_lane`         |                           |                    |                    |                    |                    |
 | `v128.store64_lane`         |                           |                    |                    |                    |                    |
+| `i64x2.ne`                  |                           |                    |                    |                    |                    |
 
 [1] Tip of tree LLVM as of May 20, 2020
 
