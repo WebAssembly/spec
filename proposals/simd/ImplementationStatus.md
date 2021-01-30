@@ -148,6 +148,7 @@
 | `i32x4.max_s`               |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.max_u`               |               `-msimd128` | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
 | `i32x4.dot_i16x8_s`         |                           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |
+| `i64x2.eq`                  |                           |                    |                    |                    |                    |
 | `i64x2.neg`                 |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
 | `i64x2.bitmask`             |                           | :heavy_check_mark: |                    |                    |                    |
 | `i64x2.shl`                 |               `-msimd128` | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |
