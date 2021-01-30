@@ -677,6 +677,7 @@ These functions return 1 if any bit in `a` is non-zero, 0 otherwise.
 * `i8x16.all_true(a: v128) -> i32`
 * `i16x8.all_true(a: v128) -> i32`
 * `i32x4.all_true(a: v128) -> i32`
+* `i64x2.all_true(a: v128) -> i32`
 
 These functions return 1 if all lanes in `a` are non-zero, 0 otherwise.
 

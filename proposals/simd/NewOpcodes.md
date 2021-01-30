@@ -83,7 +83,7 @@
 | i8x16.abs            | 0x60   | i16x8.abs                | 0x80   | i32x4.abs                | 0xa0   | -------------            | 0xc0   |
 | i8x16.neg            | 0x61   | i16x8.neg                | 0x81   | i32x4.neg                | 0xa1   | i64x2.neg                | 0xc1   |
 | -------------        | 0x62   | -------------            | 0x82   | -------------            | 0xa2   | -------------            | 0xc2   |
-| i8x16.all_true       | 0x63   | i16x8.all_true           | 0x83   | i32x4.all_true           | 0xa3   | -------------            | 0xc3   |
+| i8x16.all_true       | 0x63   | i16x8.all_true           | 0x83   | i32x4.all_true           | 0xa3   | (i64x2.all_true) [TBD]   | 0xc3   |
 | i8x16.bitmask        | 0x64   | i16x8.bitmask            | 0x84   | i32x4.bitmask            | 0xa4   | i64x2.bitmask            | 0xc4   |
 | i8x16.narrow_i16x8_s | 0x65   | i16x8.narrow_i32x4_s     | 0x85   | ---- narrow ----         | 0xa5   | -------------            | 0xc5   |
 | i8x16.narrow_i16x8_u | 0x66   | i16x8.narrow_i32x4_u     | 0x86   | ---- narrow ----         | 0xa6   | -------------            | 0xc6   |
