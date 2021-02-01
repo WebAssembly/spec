@@ -1020,22 +1020,55 @@ Lane-wise rounding to the nearest integral value with the magnitude not larger t
 Lane-wise rounding to the nearest integral value; if two values are equally near, rounds to the even one.
 
 ## Conversions
-### Integer to floating point
+### Integer to single-precision floating point
 * `f32x4.convert_i32x4_s(a: v128) -> v128`
 * `f32x4.convert_i32x4_u(a: v128) -> v128`
 
-Lane-wise conversion from integer to floating point. Some integer values will be
-rounded.
+Lane-wise conversion from integer to floating point. Integer values not
+representable as single-precision floating-point numbers will be rounded to the
+nearest-even representable number.
 
-### Floating point to integer with saturation
+### Integer to double-precision floating point
+* `f64x2.convert_low_i32x4_s(a: v128) -> v128`
+* `f64x2.convert_low_i32x4_u(a: v128) -> v128`
+
+Lane-wise conversion from integer to floating point.
+
+### Single-precision floating point to integer with saturation
 * `i32x4.trunc_sat_f32x4_s(a: v128) -> v128`
 * `i32x4.trunc_sat_f32x4_u(a: v128) -> v128`
 
-Lane-wise saturating conversion from floating point to integer using the IEEE
-`convertToIntegerTowardZero` function. If any input lane is a NaN, the
-resulting lane is 0. If the rounded integer value of a lane is outside the
-range of the destination type, the result is saturated to the nearest
+Lane-wise saturating conversion from single-precision floating point to integer
+using the IEEE `convertToIntegerTowardZero` function. If any input lane is a
+NaN, the resulting lane is 0. If the rounded integer value of a lane is outside
+the range of the destination type, the result is saturated to the nearest
 representable integer value.
+
+### Double-precision floating point to integer with saturation
+* `i32x4.trunc_sat_f64x2_s_zero(a: v128) -> v128`
+* `i32x4.trunc_sat_f64x2_u_zero(a: v128) -> v128`
+
+Saturating conversion of the two double-precision floating point lanes to two
+lower integer lanes using the IEEE `convertToIntegerTowardZero` function. The
+two higher lanes of the result are initialized to zero. If any input lane is a
+NaN, the resulting lane is 0. If the rounded integer value of a lane is outside
+the range of the destination type, the result is saturated to the nearest
+representable integer value.
+
+### Double-precision floating point to single-precision
+* `f32x4.demote_f64x2_zero(a: v128) -> v128`
+
+Conversion of the two double-precision floating point lanes to two lower
+single-precision lanes of the result. The two higher lanes of the result are
+initialized to zero. If the conversion result is not representable as a
+single-precision floating point number, it is rounded to the nearest-even
+representable number.
+
+### Single-precision floating point to double-precision
+* `f64x2.promote_low_f32x4(a: v128) -> v128`
+
+Conversion of the two lower single-precision floating point lanes to the two
+double-precision lanes of the result.
 
 ### Integer to integer narrowing
 * `i8x16.narrow_i16x8_s(a: v128, b: v128) -> v128`
