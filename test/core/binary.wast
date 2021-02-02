@@ -602,19 +602,19 @@
       "\00asm" "\01\00\00\00"
       "\05\03\01"                           ;; table section with one entry
       "\70"                                 ;; anyfunc
-      "\02"                                 ;; malformed table limits flag
+      "\08"                                 ;; malformed table limits flag
   )
-  "integer too large"
+  "malformed limits flags"
 )
 (assert_malformed
   (module binary
       "\00asm" "\01\00\00\00"
       "\05\04\01"                           ;; table section with one entry
       "\70"                                 ;; anyfunc
-      "\02"                                 ;; malformed table limits flag
+      "\08"                                 ;; malformed table limits flag
       "\00"                                 ;; dummy byte
   )
-  "integer too large"
+  "malformed limits flags"
 )
 (assert_malformed
   (module binary
@@ -624,7 +624,7 @@
       "\81\00"                              ;; malformed table limits flag as LEB128
       "\00\00"                              ;; dummy bytes
   )
-  "integer too large"
+  "malformed limits flags"
 )
 
 ;; Memory count can be zero
@@ -648,18 +648,18 @@
   (module binary
       "\00asm" "\01\00\00\00"
       "\05\02\01"                           ;; memory section with one entry
-      "\02"                                 ;; malformed memory limits flag
+      "\08"                                 ;; malformed memory limits flag
   )
-  "integer too large"
+  "malformed limits flags"
 )
 (assert_malformed
   (module binary
       "\00asm" "\01\00\00\00"
       "\05\03\01"                           ;; memory section with one entry
-      "\02"                                 ;; malformed memory limits flag
+      "\08"                                 ;; malformed memory limits flag
       "\00"                                 ;; dummy byte
   )
-  "integer too large"
+  "malformed limits flags"
 )
 (assert_malformed
   (module binary
@@ -668,7 +668,7 @@
       "\81\00"                              ;; malformed memory limits flag as LEB128
       "\00\00"                              ;; dummy bytes
   )
-  "integer representation too long"
+  "malformed limits flags"
 )
 (assert_malformed
   (module binary
@@ -677,7 +677,7 @@
       "\81\01"                              ;; malformed memory limits flag as LEB128
       "\00\00"                              ;; dummy bytes
   )
-  "integer representation too long"
+  "malformed limits flags"
 )
 
 ;; Global count can be zero

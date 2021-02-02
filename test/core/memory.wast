@@ -76,17 +76,17 @@
   "memory size must be at most 65536 pages (4GiB)"
 )
 
-(assert_malformed
+(assert_invalid
   (module quote "(memory 0x1_0000_0000)")
-  "i32 constant out of range"
+  "memory size must be at most 65536 pages (4GiB)"
 )
-(assert_malformed
+(assert_invalid
   (module quote "(memory 0x1_0000_0000 0x1_0000_0000)")
-  "i32 constant out of range"
+  "memory size must be at most 65536 pages (4GiB)"
 )
-(assert_malformed
+(assert_invalid
   (module quote "(memory 0 0x1_0000_0000)")
-  "i32 constant out of range"
+  "memory size must be at most 65536 pages (4GiB)"
 )
 
 (module

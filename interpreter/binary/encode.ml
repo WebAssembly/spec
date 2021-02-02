@@ -56,7 +56,6 @@ let encode m =
       if -64L <= i && i < 64L then u8 b
       else (u8 (b lor 0x80); vs64 (Int64.shift_right i 7))
 
-    let vu1 i = vu64 Int64.(logand (of_int i) 1L)
     let vu32 i = vu64 Int64.(logand (of_int32 i) 0xffffffffL)
     let vs7 i = vs64 (Int64.of_int i)
     let vs32 i = vs64 (Int64.of_int32 i)
@@ -64,13 +63,14 @@ let encode m =
     let f32 x = u32 (F32.to_bits x)
     let f64 x = u64 (F64.to_bits x)
 
+    let flag b i = if b then 1 lsl i else 0
+
     let len i =
       if Int32.to_int (Int32.of_int i) <> i then
         Code.error Source.no_region
           "cannot encode length with more than 32 bit";
       vu32 (Int32.of_int i)
 
-    let bool b = vu1 (if b then 1 else 0)
     let string bs = len (String.length bs); put_string s bs
     let name n = string (Utf8.encode n)
     let list f xs = List.iter f xs
@@ -104,14 +104,15 @@ let encode m =
     let func_type = function
       | FuncType (ins, out) -> vs7 (-0x20); stack_type ins; stack_type out
 
-    let limits vu {min; max} =
-      bool (max <> None); vu min; opt vu max
+    let limits vu {min; max} it =
+      let flags = flag (max <> None) 0 + flag (it = I64IndexType) 2 in
+      u8 flags; vu min; opt vu max
 
     let table_type = function
-      | TableType (lim, t) -> elem_type t; limits vu32 lim
+      | TableType (lim, t) -> elem_type t; limits vu32 lim I32IndexType
 
     let memory_type = function
-      | MemoryType lim -> limits vu32 lim
+      | MemoryType (lim, it) -> limits vu64 lim it
 
     let mutability = function
       | Immutable -> u8 0
@@ -129,7 +130,7 @@ let encode m =
     let op n = u8 n
     let end_ () = op 0x0b
 
-    let memop {align; offset; _} = vu32 (Int32.of_int align); vu32 offset
+    let memop {align; offset; _} = vu32 (Int32.of_int align); vu64 offset
 
     let var x = vu32 x.it
 

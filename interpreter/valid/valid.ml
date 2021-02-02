@@ -149,7 +149,7 @@ let check_unop unop at =
   | _ -> ()
 
 let check_memop (c : context) (memop : 'a memop) get_sz at =
-  ignore (memory c (0l @@ at));
+  let MemoryType (lim, it) = memory c (0l @@ at) in
   let size =
     match get_sz memop.sz with
     | None -> size memop.ty
@@ -158,7 +158,11 @@ let check_memop (c : context) (memop : 'a memop) get_sz at =
       packed_size sz
   in
   require (1 lsl memop.align <= size) at
-    "alignment must not be larger than natural"
+    "alignment must not be larger than natural";
+  if it = I32IndexType then
+    require (I64.lt_u memop.offset 0x1_0000_0000L) at
+      "offset out of range";
+  it
 
 
 (*
@@ -260,20 +264,20 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [t] --> []
 
   | Load memop ->
-    check_memop c memop (Lib.Option.map fst) e.at;
-    [I32Type] --> [memop.ty]
+    let it = check_memop c memop (Lib.Option.map fst) e.at in
+    [value_type_of_index_type it] --> [memop.ty]
 
   | Store memop ->
-    check_memop c memop (fun sz -> sz) e.at;
-    [I32Type; memop.ty] --> []
+    let it = check_memop c memop (fun sz -> sz) e.at in
+    [value_type_of_index_type it; memop.ty] --> []
 
   | MemorySize ->
-    ignore (memory c (0l @@ e.at));
-    [] --> [I32Type]
+    let MemoryType (_, it) = memory c (0l @@ e.at) in
+    [] --> [value_type_of_index_type it]
 
   | MemoryGrow ->
-    ignore (memory c (0l @@ e.at));
-    [I32Type] --> [I32Type]
+    let MemoryType (_, it) = memory c (0l @@ e.at) in
+    [value_type_of_index_type it] --> [value_type_of_index_type it]
 
   | Const v ->
     let t = type_value v.it in
@@ -323,13 +327,13 @@ and check_block (c : context) (es : instr list) (ft : func_type) at =
 
 (* Types *)
 
-let check_limits {min; max} range at msg =
-  require (I32.le_u min range) at msg;
+let check_limits le_u {min; max} range at msg =
+  require (le_u min range) at msg;
   match max with
   | None -> ()
   | Some max ->
-    require (I32.le_u max range) at msg;
-    require (I32.le_u min max) at
+    require (le_u max range) at msg;
+    require (le_u min max) at
       "size minimum must not be greater than maximum"
 
 let check_value_type (t : value_type) at =
@@ -342,12 +346,17 @@ let check_func_type (ft : func_type) at =
 
 let check_table_type (tt : table_type) at =
   let TableType (lim, _) = tt in
-  check_limits lim 0xffff_ffffl at "table size must be at most 2^32-1"
+  check_limits I32.le_u lim 0xffff_ffffl at "table size must be at most 2^32-1"
 
 let check_memory_type (mt : memory_type) at =
-  let MemoryType lim = mt in
-  check_limits lim 0x1_0000l at
-    "memory size must be at most 65536 pages (4GiB)"
+  let MemoryType (lim, it) = mt in
+  match it with
+  | I32IndexType ->
+    check_limits I64.le_u lim 0x1_0000L at
+      "memory size must be at most 65536 pages (4GiB)"
+  | I64IndexType ->
+    check_limits I64.le_u lim 0x1_0000_0000_0000L at
+      "memory size must be at most 48 bits of pages"
 
 let check_global_type (gt : global_type) at =
   let GlobalType (t, mut) = gt in

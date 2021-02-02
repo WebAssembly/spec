@@ -56,6 +56,9 @@ let nat s at =
 let nat32 s at =
   try I32.of_string_u s with Failure _ -> error at "i32 constant out of range"
 
+let nat64 s at =
+  try I64.of_string_u s with Failure _ -> error at "i64 constant out of range"
+
 let name s at =
   try Utf8.decode s with Utf8.Utf8 -> error at "malformed UTF-8 encoding"
 
@@ -106,7 +109,6 @@ let label (c : context) x =
 let func_type (c : context) x =
   try (Lib.List32.nth c.types.list x.it).it
   with Failure _ -> error x.at ("unknown type " ^ Int32.to_string x.it)
-
 
 let anon category space n =
   let i = space.count in
@@ -161,6 +163,19 @@ let inline_type_explicit (c : context) x ft at =
   else if ft <> func_type c x then
     error at "inline function type does not match explicit type";
   x
+
+let index_type t at =
+  match t with
+  | I32Type -> I32IndexType
+  | I64Type -> I64IndexType
+  | _ -> error at "illegal memory index type"
+
+let memory_data init it c x at =
+  let size = Int64.(div (add (of_int (String.length init)) 65535L) 65536L) in
+  [{mtype = MemoryType ({min = size; max = Some size}, it)} @@ at],
+  [{index = x;
+    offset = [i32_const (0l @@ at) @@ at] @@ at; init} @@ at],
+  [], []
 
 %}
 
@@ -249,14 +264,19 @@ func_type :
     { let FuncType (ins, out) = $6 in FuncType ($4 :: ins, out) }
 
 table_type :
-  | limits elem_type { TableType ($1, $2) }
+  | limits32 elem_type { TableType ($1, $2) }
 
 memory_type :
-  | limits { MemoryType $1 }
+  | VALUE_TYPE limits64 { MemoryType ($2, index_type $1 (at ())) }
+  | limits64 { MemoryType ($1, I32IndexType) }
 
-limits :
+limits32 :
   | NAT { {min = nat32 $1 (ati 1); max = None} }
   | NAT NAT { {min = nat32 $1 (ati 1); max = Some (nat32 $2 (ati 2))} }
+
+limits64 :
+  | NAT { {min = nat64 $1 (ati 1); max = None} }
+  | NAT NAT { {min = nat64 $1 (ati 1); max = Some (nat64 $2 (ati 2))} }
 
 type_use :
   | LPAR TYPE var RPAR { $3 }
@@ -300,8 +320,8 @@ labeling_end_opt :
   | bind_var { [$1] }
 
 offset_opt :
-  | /* empty */ { 0l }
-  | OFFSET_EQ_NAT { nat32 $1 (at ()) }
+  | /* empty */ { 0L }
+  | OFFSET_EQ_NAT { nat64 $1 (at ()) }
 
 align_opt :
   | /* empty */ { None }
@@ -676,12 +696,9 @@ memory_fields :
     { fun c x at -> let mems, data, ims, exs = $2 c x at in
       mems, data, ims, $1 (MemoryExport x) c :: exs }
   | LPAR DATA string_list RPAR  /* Sugar */
-    { fun c x at ->
-      let size = Int32.(div (add (of_int (String.length $3)) 65535l) 65536l) in
-      [{mtype = MemoryType {min = size; max = Some size}} @@ at],
-      [{index = x;
-        offset = [i32_const (0l @@ at) @@ at] @@ at; init = $3} @@ at],
-      [], [] }
+    { memory_data $3 I32IndexType }
+  | VALUE_TYPE LPAR DATA string_list RPAR  /* Sugar */
+    { memory_data $4 (index_type $1 (at ())) }
 
 global :
   | LPAR GLOBAL bind_var_opt global_fields RPAR

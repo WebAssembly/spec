@@ -4,9 +4,9 @@ open Values
 type memory
 type t = memory
 
-type size = int32  (* number of pages *)
+type size = int64  (* number of pages *)
 type address = int64
-type offset = int32
+type offset = int64
 
 exception Type
 exception Bounds
@@ -18,8 +18,11 @@ val page_size : int64
 
 val alloc : memory_type -> memory (* raises SizeOverflow, OutOfMemory *)
 val type_of : memory -> memory_type
+val index_of : memory -> index_type
 val size : memory -> size
 val bound : memory -> address
+val value_of_address : index_type -> address -> value
+val address_of_value : value -> address
 val grow : memory -> size -> unit
   (* raises SizeLimit, SizeOverflow, OutOfMemory *)
 

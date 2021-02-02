@@ -10,6 +10,7 @@ open Sexpr
 
 let nat n = I32.to_string_u (I32.of_int_u n)
 let nat32 = I32.to_string_u
+let nat64 = I64.to_string_u
 
 let add_hex_char buf c = Printf.bprintf buf "\\%02x" (Char.code c)
 let add_char buf = function
@@ -56,6 +57,8 @@ let break_string s =
 (* Types *)
 
 let value_type t = string_of_value_type t
+
+let index_type t = string_of_value_type (value_type_of_index_type t)
 
 let elem_type t = string_of_elem_type t
 
@@ -201,7 +204,7 @@ let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
 let memop name {ty; align; offset; _} sz =
   value_type ty ^ "." ^ name ^
-  (if offset = 0l then "" else " offset=" ^ nat32 offset) ^
+  (if offset = 0L then "" else " offset=" ^ nat64 offset) ^
   (if 1 lsl align = sz then "" else " align=" ^ nat (1 lsl align))
 
 let loadop op =
@@ -294,8 +297,9 @@ let table off i tab =
   )
 
 let memory off i mem =
-  let {mtype = MemoryType lim} = mem.it in
-  Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
+  let {mtype = MemoryType (lim, it)} = mem.it in
+  Node ("memory $" ^ nat (off + i) ^  " " ^ index_type it ^ " " ^
+        limits nat64 lim, [])
 
 let segment head dat seg =
   let {index; offset; init} = seg.it in

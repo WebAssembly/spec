@@ -1,6 +1,7 @@
 (* Types *)
 
 type value_type = I32Type | I64Type | F32Type | F64Type
+type index_type = I32IndexType | I64IndexType
 type elem_type = FuncRefType
 type stack_type = value_type list
 type func_type = FuncType of stack_type * stack_type
@@ -8,7 +9,7 @@ type func_type = FuncType of stack_type * stack_type
 type 'a limits = {min : 'a; max : 'a option}
 type mutability = Immutable | Mutable
 type table_type = TableType of Int32.t limits * elem_type
-type memory_type = MemoryType of Int32.t limits
+type memory_type = MemoryType of Int64.t limits * index_type
 type global_type = GlobalType of value_type * mutability
 type extern_type =
   | ExternFuncType of func_type
@@ -31,24 +32,28 @@ let packed_size = function
   | Pack16 -> 2
   | Pack32 -> 4
 
+let value_type_of_index_type = function
+  | I32IndexType -> I32Type
+  | I64IndexType -> I64Type
+
 
 (* Subtyping *)
 
-let match_limits lim1 lim2 =
-  I32.ge_u lim1.min lim2.min &&
+let match_limits ge lim1 lim2 =
+  ge lim1.min lim2.min &&
   match lim1.max, lim2.max with
   | _, None -> true
   | None, Some _ -> false
-  | Some i, Some j -> I32.le_u i j
+  | Some i, Some j -> ge j i
 
 let match_func_type ft1 ft2 =
   ft1 = ft2
 
 let match_table_type (TableType (lim1, et1)) (TableType (lim2, et2)) =
-  et1 = et2 && match_limits lim1 lim2
+  et1 = et2 && match_limits I32.ge_u lim1 lim2
 
-let match_memory_type (MemoryType lim1) (MemoryType lim2) =
-  match_limits lim1 lim2
+let match_memory_type (MemoryType (lim1, it1)) (MemoryType (lim2, it2)) =
+  it1 = it2 && match_limits I64.ge_u lim1 lim2
 
 let match_global_type gt1 gt2 =
   gt1 = gt2
@@ -89,15 +94,19 @@ let string_of_value_types = function
 let string_of_elem_type = function
   | FuncRefType -> "funcref"
 
-let string_of_limits {min; max} =
-  I32.to_string_u min ^
-  (match max with None -> "" | Some n -> " " ^ I32.to_string_u n)
+let string_of_limits to_string {min; max} =
+  to_string min ^
+  (match max with None -> "" | Some n -> " " ^ to_string n)
 
 let string_of_memory_type = function
-  | MemoryType lim -> string_of_limits lim
+  | MemoryType (lim, it) ->
+    string_of_value_type (value_type_of_index_type it) ^
+    " " ^ string_of_limits I64.to_string_u lim
+
 
 let string_of_table_type = function
-  | TableType (lim, t) -> string_of_limits lim ^ " " ^ string_of_elem_type t
+  | TableType (lim, t) -> string_of_limits I32.to_string_u lim ^ " " ^
+                          string_of_elem_type t
 
 let string_of_global_type = function
   | GlobalType (t, Immutable) -> string_of_value_type t

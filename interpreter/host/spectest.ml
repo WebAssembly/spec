@@ -17,7 +17,7 @@ let global (GlobalType (t, _) as gt) =
   in Global.alloc gt v
 
 let table = Table.alloc (TableType ({min = 10l; max = Some 20l}, FuncRefType))
-let memory = Memory.alloc (MemoryType {min = 1l; max = Some 2l})
+let memory = Memory.alloc (MemoryType ({min = 1L; max = Some 2L}, I32IndexType))
 let func f t = Func.alloc_host t (f t)
 
 let print_value v =

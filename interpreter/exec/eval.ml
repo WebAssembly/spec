@@ -209,9 +209,9 @@ let rec step (c : config) : config =
         with Global.NotMutable -> Crash.error e.at "write to immutable global"
            | Global.Type -> Crash.error e.at "type mismatch at global write")
 
-      | Load {offset; ty; sz; _}, I32 i :: vs' ->
+      | Load {offset; ty; sz; _}, a :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_i32_u i in
+        let addr = Memory.address_of_value a in
         (try
           let v =
             match sz with
@@ -220,9 +220,9 @@ let rec step (c : config) : config =
           in v :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | Store {offset; sz; _}, v :: I32 i :: vs' ->
+      | Store {offset; sz; _}, v :: a :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_i32_u i in
+        let addr = Memory.address_of_value a in
         (try
           (match sz with
           | None -> Memory.store_value mem addr offset v
@@ -233,15 +233,15 @@ let rec step (c : config) : config =
 
       | MemorySize, vs ->
         let mem = memory frame.inst (0l @@ e.at) in
-        I32 (Memory.size mem) :: vs, []
+        Memory.value_of_address (Memory.index_of mem) (Memory.size mem) :: vs, []
 
-      | MemoryGrow, I32 delta :: vs' ->
+      | MemoryGrow, delta :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let old_size = Memory.size mem in
         let result =
-          try Memory.grow mem delta; old_size
-          with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
-        in I32 result :: vs', []
+          try Memory.grow mem (Memory.address_of_value delta); old_size
+          with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1L
+        in (Memory.value_of_address (Memory.index_of mem) result) :: vs', []
 
       | Const v, vs ->
         v.it :: vs, []

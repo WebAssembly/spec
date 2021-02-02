@@ -3,12 +3,12 @@ open Lib.Bigarray
 open Types
 open Values
 
-type size = int32  (* number of pages *)
+type size = int64  (* number of pages *)
 type address = int64
-type offset = int32
+type offset = int64
 
 type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
-type memory = {mutable content : memory'; max : size option}
+type memory = {mutable content : memory'; max : size option; it : index_type}
 type t = memory
 
 exception Type
@@ -21,36 +21,47 @@ let page_size = 0x10000L (* 64 KiB *)
 
 let within_limits n = function
   | None -> true
-  | Some max -> I32.le_u n max
+  | Some max -> I64.le_u n max
 
-let create n =
-  if I32.gt_u n 0x10000l then raise SizeOverflow else
+let create n it =
+  if I64.gt_u n 0x10000L && it = I32IndexType then raise SizeOverflow else
   try
-    let size = Int64.(mul (of_int32 n) page_size) in
+    let size = Int64.(mul n page_size) in
     let mem = Array1_64.create Int8_unsigned C_layout size in
     Array1.fill mem 0;
     mem
   with Out_of_memory -> raise OutOfMemory
 
-let alloc (MemoryType {min; max}) =
+let alloc (MemoryType ({min; max}, it)) =
   assert (within_limits min max);
-  {content = create min; max}
+  {content = create min it; max; it}
 
 let bound mem =
   Array1_64.dim mem.content
 
 let size mem =
-  Int64.(to_int32 (div (bound mem) page_size))
+  Int64.(div (bound mem) page_size)
 
 let type_of mem =
-  MemoryType {min = size mem; max = mem.max}
+  MemoryType ({min = size mem; max = mem.max}, mem.it)
+
+let index_of mem = mem.it
+
+let value_of_address it x =
+  if it = I64IndexType then I64 (x) else I32 (Int64.to_int32 x)
+
+let address_of_value x =
+  match x with
+  | I64 i -> i
+  | I32 i -> I64_convert.extend_i32_u i
+  | _ -> raise Type
 
 let grow mem delta =
   let old_size = size mem in
-  let new_size = Int32.add old_size delta in
-  if I32.gt_u old_size new_size then raise SizeOverflow else
+  let new_size = Int64.add old_size delta in
+  if I64.gt_u old_size new_size then raise SizeOverflow else
   if not (within_limits new_size mem.max) then raise SizeLimit else
-  let after = create new_size in
+  let after = create new_size mem.it in
   let dim = Array1_64.dim mem.content in
   Array1.blit (Array1_64.sub mem.content 0L dim) (Array1_64.sub after 0L dim);
   mem.content <- after
@@ -74,7 +85,7 @@ let store_bytes mem a bs =
   done
 
 let effective_address a o =
-  let ea = Int64.(add a (of_int32 o)) in
+  let ea = Int64.(add a o) in
   if I64.lt_u ea a then raise Bounds;
   ea
 
@@ -91,7 +102,7 @@ let storen mem a o n x =
   assert (n > 0 && n <= 8);
   let rec loop a n x =
     if n > 0 then begin
-      Int64.(loop (add a 1L) (n - 1) (shift_right x 8));
+      Int64.(loop (effective_address a 1L) (n - 1) (shift_right x 8));
       store_byte mem a (Int64.to_int x land 0xff)
     end
   in loop (effective_address a o) n x

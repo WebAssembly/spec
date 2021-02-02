@@ -216,8 +216,8 @@
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\05\08\01"                          ;; Memory section with 1 entry
-    "\00\82\80\80\80\80\00"              ;; no max, minimum 2 with one byte too many
+    "\05\08\01"                             ;; Memory section with 1 entry
+    "\00\82\80\80\80\80\80\80\80\80\80\00"  ;; no max, minimum 2 with one byte too many
   )
   "integer representation too long"
 )
@@ -226,7 +226,7 @@
     "\00asm" "\01\00\00\00"
     "\05\0a\01"                          ;; Memory section with 1 entry
     "\01\82\00"                          ;; minimum 2
-    "\82\80\80\80\80\00"                 ;; max 2 with one byte too many
+    "\82\80\80\80\80\80\80\80\80\80\00"  ;; max 2 with one byte too many
   )
   "integer representation too long"
 )
@@ -413,7 +413,7 @@
     "\41\00"                   ;; i32.const 0
     "\28"                      ;; i32.load
     "\02"                      ;; alignment 2
-    "\82\80\80\80\80\00"       ;; offset 2 with one byte too many
+    "\82\80\80\80\80\80\80\80\80\80\00"  ;; offset 2 with one byte too many
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
@@ -471,7 +471,7 @@
     "\41\03"                   ;; i32.const 3
     "\36"                      ;; i32.store
     "\02"                      ;; alignment 2
-    "\82\80\80\80\80\00"       ;; offset 2 with one byte too many
+    "\82\80\80\80\80\80\80\80\80\80\00"  ;; offset 2 with one byte too many
     "\0b"                      ;; end
   )
   "integer representation too long"
@@ -525,7 +525,7 @@
   (module binary
     "\00asm" "\01\00\00\00"
     "\05\07\01"                          ;; Memory section with 1 entry
-    "\00\82\80\80\80\70"                 ;; no max, minimum 2 with unused bits set
+    "\00\82\80\80\80\80\80\80\80\80\70"  ;; no max, minimum 2 with unused bits set
   )
   "integer too large"
 )
@@ -533,7 +533,7 @@
   (module binary
     "\00asm" "\01\00\00\00"
     "\05\07\01"                          ;; Memory section with 1 entry
-    "\00\82\80\80\80\40"                 ;; no max, minimum 2 with some unused bits set
+    "\00\82\80\80\80\80\80\80\80\80\40"  ;; no max, minimum 2 with some unused bits set
   )
   "integer too large"
 )
@@ -542,7 +542,7 @@
     "\00asm" "\01\00\00\00"
     "\05\09\01"                          ;; Memory section with 1 entry
     "\01\82\00"                          ;; minimum 2
-    "\82\80\80\80\10"                    ;; max 2 with unused bits set
+    "\82\80\80\80\80\80\80\80\80\10"     ;; max 2 with unused bits set
   )
   "integer too large"
 )
@@ -551,7 +551,7 @@
     "\00asm" "\01\00\00\00"
     "\05\09\01"                          ;; Memory section with 1 entry
     "\01\82\00"                          ;; minimum 2
-    "\82\80\80\80\40"                    ;; max 2 with some unused bits set
+    "\82\80\80\80\80\80\80\80\80\40"     ;; max 2 with some unused bits set
   )
   "integer too large"
 )
@@ -739,7 +739,7 @@
     "\41\00"                   ;; i32.const 0
     "\28"                      ;; i32.load
     "\02"                      ;; alignment 2
-    "\82\80\80\80\10"          ;; offset 2 with unused bits set
+    "\82\80\80\80\80\80\80\80\80\10"  ;; offset 2 with unused bits set
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
@@ -758,7 +758,7 @@
     "\41\00"                   ;; i32.const 0
     "\28"                      ;; i32.load
     "\02"                      ;; alignment 2
-    "\82\80\80\80\40"          ;; offset 2 with some unused bits set
+    "\82\80\80\80\80\80\80\80\80\40"  ;; offset 2 with some unused bits set
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
@@ -853,7 +853,7 @@
     "\41\03"                   ;; i32.const 3
     "\36"                      ;; i32.store
     "\02"                      ;; alignment 2
-    "\82\80\80\80\10"          ;; offset 2 with unused bits set
+    "\82\80\80\80\80\80\80\80\80\10"  ;; offset 2 with unused bits set
     "\0b"                      ;; end
   )
   "integer too large"
@@ -873,7 +873,7 @@
     "\41\03"                   ;; i32.const 3
     "\36"                      ;; i32.store
     "\02"                      ;; alignment 2
-    "\82\80\80\80\40"          ;; offset 2 with some unused bits set
+    "\82\80\80\80\80\80\80\80\80\40"  ;; offset 2 with some unused bits set
     "\0b"                      ;; end
   )
   "integer too large"
