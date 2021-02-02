@@ -385,11 +385,13 @@ let simd_prefix s =
   | 0xb8l -> i32x4_max_s
   | 0xb9l -> i32x4_max_u
   | 0xbal -> i32x4_dot_i16x8_s
+  | 0xc0l -> i64x2_eq
   | 0xc1l -> i64x2_neg
   | 0xcbl -> i64x2_shl
   | 0xccl -> i64x2_shr_s
   | 0xcdl -> i64x2_shr_u
   | 0xcel -> i64x2_add
+  | 0xd0l -> i64x2_ne
   | 0xd1l -> i64x2_sub
   | 0xd5l -> i64x2_mul
   | 0xd8l -> f32x4_ceil

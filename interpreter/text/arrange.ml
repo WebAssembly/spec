@@ -269,6 +269,8 @@ struct
     | I32x4 LeU -> "i32x4.le_u"
     | I32x4 GeS -> "i32x4.ge_s"
     | I32x4 GeU -> "i32x4.ge_u"
+    | I64x2 Eq -> "i64x2.eq"
+    | I64x2 Ne -> "i64x2.ne"
     | I8x16 NarrowS -> "i8x16.narrow_i16x8_s"
     | I8x16 NarrowU -> "i8x16.narrow_i16x8_u"
     | I8x16 Add -> "i8x16.add"

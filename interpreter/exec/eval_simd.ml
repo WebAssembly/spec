@@ -119,6 +119,8 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
       | I32x4 GeS -> SXX.I32x4.ge_s
       | I32x4 GeU -> SXX.I32x4.ge_u
       | I32x4 DotI16x8S -> SXX.I32x4_convert.dot_i16x8_s
+      | I64x2 Eq -> SXX.I64x2.eq
+      | I64x2 Ne -> SXX.I64x2.ne
       | I64x2 Add -> SXX.I64x2.add
       | I64x2 Sub -> SXX.I64x2.sub
       | I64x2 Mul -> SXX.I64x2.mul

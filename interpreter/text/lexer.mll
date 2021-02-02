@@ -458,11 +458,9 @@ rule token = parse
   | "output" { OUTPUT }
 
   | (simd_shape as s)".eq"
-    { except ["i64x2"] s lexbuf;
-      BINARY (simdop s i8x16_eq i16x8_eq i32x4_eq unreachable f32x4_eq f64x2_eq) }
+    { BINARY (simdop s i8x16_eq i16x8_eq i32x4_eq i64x2_eq f32x4_eq f64x2_eq) }
   | (simd_shape as s)".ne"
-    { except ["i64x2"] s lexbuf;
-      BINARY (simdop s i8x16_ne i16x8_ne i32x4_ne unreachable f32x4_ne f64x2_ne) }
+    { BINARY (simdop s i8x16_ne i16x8_ne i32x4_ne i64x2_ne f32x4_ne f64x2_ne) }
   | (simd_int_shape as s)".lt_s"
     { except ["i64x2"] s lexbuf;
       BINARY (simd_int_op s i8x16_lt_s i16x8_lt_s i32x4_lt_s unreachable) }
