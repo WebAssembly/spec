@@ -14,7 +14,6 @@ function readModule(path)
 
 const modules = [
 	{path: 'test.wasm', desc: "vanilla code"},
-	{path: 'test_brnull.wasm', desc: "br_on_null hack"},
 	{path: 'test_hint.wasm', desc: "branch hinting proposal"},
 ];
 function doBench(m)
