@@ -796,6 +796,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |result| be [=table_read=](|store|, |tableaddr|, |index|).
     1. If |result| is [=error=], throw a {{RangeError}} exception.
+    1. If |result| is ε, return null.
     1. Let |function| be the result of creating [=a new Exported Function=] from |result|.
     1. Return |function|.
 </div>
@@ -803,7 +804,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
 <div algorithm>
     The <dfn method for="Table">set(|index|, |value|)</dfn> method, when invoked, performs the following steps:
     1. Let |tableaddr| be **this**.\[[Table]].
-    1. If |value| is null, let |funcaddr| be an empty [=function element=].
+    1. If |value| is null, let |funcaddr| be ε.
     1. Otherwise,
         1. If |value| does not have a \[[FunctionAddress]] internal slot, throw a {{TypeError}} exception.
         1. Let |funcaddr| be |value|.\[[FunctionAddress]].
