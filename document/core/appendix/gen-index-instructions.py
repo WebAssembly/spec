@@ -474,6 +474,7 @@ INSTRUCTIONS = [
     Instruction(r'\I64X2.\VSHR\K{\_s}', r'\hex{FD}~~204', r'[\V128~\I32] \to [\V128]', r'valid-vshiftop', r'exec-vshiftop', r'op-ishr_s'),
     Instruction(r'\I64X2.\VSHR\K{\_u}', r'\hex{FD}~~205', r'[\V128~\I32] \to [\V128]', r'valid-vshiftop', r'exec-vshiftop', r'op-ishr_u'),
     Instruction(r'\I64X2.\VADD', r'\hex{FD}~~206', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-iadd'),
+    Instruction(r'\I64X2.\ALLTRUE', r'\hex{FD}~~207', r'[\V128] \to [\I32]', r'valid-vitestop', r'exec-vitestop'),
     Instruction(r'\I64X2.\VSUB', r'\hex{FD}~~209', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-isub'),
     Instruction(r'\I64X2.\VMUL', r'\hex{FD}~~213', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-imul'),
     Instruction(r'\F32X4.\VABS', r'\hex{FD}~~224', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-fabs'),

@@ -672,6 +672,7 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~204{:}\Bu32 &\Rightarrow& \I64X2.\VSHR\K{\_s} \\ &&|&
      \hex{FD}~~205{:}\Bu32 &\Rightarrow& \I64X2.\VSHR\K{\_u} \\ &&|&
      \hex{FD}~~206{:}\Bu32 &\Rightarrow& \I64X2.\VADD \\ &&|&
+     \hex{FD}~~207{:}\Bu32 &\Rightarrow& \I64X2.\ALLTRUE \\ &&|&
      \hex{FD}~~209{:}\Bu32 &\Rightarrow& \I64X2.\VSUB \\ &&|&
      \hex{FD}~~213{:}\Bu32 &\Rightarrow& \I64X2.\VMUL \\
   \end{array}
