@@ -113,7 +113,7 @@ $(WINMAKE):	clean
 # Executing test suite
 
 TESTDIR =	../test/core
-TESTFILES =	$(shell cd $(TESTDIR); ls *.wast)
+TESTFILES =	$(shell cd $(TESTDIR); ls *.wast; ls */*.wast)
 TESTS =		$(TESTFILES:%.wast=%)
 
 .PHONY:		test debugtest partest
@@ -138,7 +138,7 @@ partest: 	$(TESTS:%=quiettest/%)
 
 quiettest/%:	$(OPT)
 		@ ( \
-		  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@F:%=$(TESTDIR)/%.wast) && \
+		  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@:quiettest/%=$(TESTDIR)/%.wast) && \
 		  rm $(@F).out \
 		) || \
 		cat $(@F).out || rm $(@F).out || exit 1
