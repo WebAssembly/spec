@@ -55,6 +55,7 @@ struct
               | Swizzle | Shuffle of int list | NarrowS | NarrowU
               | AddSatS | AddSatU | SubSatS | SubSatU
               | DotI16x8S
+              | ExtMulLowS | ExtMulHighS | ExtMulLowU | ExtMulHighU
   type funop = Abs | Neg | Sqrt
              | Ceil | Floor | Trunc | Nearest
              | ConvertI32x4S | ConvertI32x4U

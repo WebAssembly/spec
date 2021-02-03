@@ -36,13 +36,26 @@ class SimdArithmeticCase:
         return self.LANE_VALUE.get(self.LANE_TYPE)
 
     @property
+    def dst_lane(self):
+        return self.lane
+
+    @property
+    def src_lane(self):
+        # Used for arithmetic that extends the lane, e.g. i16x8 lanes, which
+        # are extended multiply to i32x4.
+        if hasattr(self, 'SRC_LANE_TYPE'):
+            return self.LANE_VALUE.get(self.SRC_LANE_TYPE)
+        else:
+            return self.lane
+
+    @property
     def normal_unary_op_test_data(self):
-        lane = self.lane
+        lane = self.src_lane
         return [0, 1, -1, lane.max - 1, lane.min + 1, lane.min, lane.max, lane.mask]
 
     @property
     def normal_binary_op_test_data(self):
-        lane = self.lane
+        lane = self.src_lane
         return [
             (0, 0),
             (0, 1),
@@ -170,7 +183,7 @@ class SimdArithmeticCase:
             for data_group, v128_forms in self.bin_test_data:
                 for data in data_group:
                     case_data.append([op_name, [str(data[0]), str(data[1])],
-                                      str(o.binary_op(data[0], data[1], self.lane)),
+                                      str(o.binary_op(data[0], data[1], self.src_lane, self.dst_lane)),
                                      v128_forms])
             for data_group in self.full_bin_test_data:
                 for data in data_group.get(op_name):
@@ -183,7 +196,7 @@ class SimdArithmeticCase:
             for data_group, v128_forms in self.unary_test_data:
                 for data in data_group:
                     case_data.append([op_name, [str(data)],
-                                      str(o.unary_op(data, self.lane)),
+                                      str(o.unary_op(data, self.dst_lane)),
                                       v128_forms])
 
         return case_data

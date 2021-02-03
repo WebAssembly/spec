@@ -101,6 +101,10 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
       | I16x8 MaxS -> SXX.I16x8.max_s
       | I16x8 MaxU -> SXX.I16x8.max_u
       | I16x8 AvgrU -> SXX.I16x8.avgr_u
+      | I16x8 ExtMulLowS -> SXX.I16x8_convert.extmul_low_s
+      | I16x8 ExtMulHighS -> SXX.I16x8_convert.extmul_high_s
+      | I16x8 ExtMulLowU -> SXX.I16x8_convert.extmul_low_u
+      | I16x8 ExtMulHighU -> SXX.I16x8_convert.extmul_high_u
       | I32x4 Add -> SXX.I32x4.add
       | I32x4 Sub -> SXX.I32x4.sub
       | I32x4 MinS -> SXX.I32x4.min_s
@@ -121,9 +125,17 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
       | I32x4 DotI16x8S -> SXX.I32x4_convert.dot_i16x8_s
       | I64x2 Eq -> SXX.I64x2.eq
       | I64x2 Ne -> SXX.I64x2.ne
+      | I32x4 ExtMulLowS -> SXX.I32x4_convert.extmul_low_s
+      | I32x4 ExtMulHighS -> SXX.I32x4_convert.extmul_high_s
+      | I32x4 ExtMulLowU -> SXX.I32x4_convert.extmul_low_u
+      | I32x4 ExtMulHighU -> SXX.I32x4_convert.extmul_high_u
       | I64x2 Add -> SXX.I64x2.add
       | I64x2 Sub -> SXX.I64x2.sub
       | I64x2 Mul -> SXX.I64x2.mul
+      | I64x2 ExtMulLowS -> SXX.I64x2_convert.extmul_low_s
+      | I64x2 ExtMulHighS -> SXX.I64x2_convert.extmul_high_s
+      | I64x2 ExtMulLowU -> SXX.I64x2_convert.extmul_low_u
+      | I64x2 ExtMulHighU -> SXX.I64x2_convert.extmul_high_u
       | F32x4 Eq -> SXX.F32x4.eq
       | F32x4 Ne -> SXX.F32x4.ne
       | F32x4 Lt -> SXX.F32x4.lt

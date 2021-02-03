@@ -15,6 +15,7 @@ class ArithmeticOp:
     add_sat_s, add_sat_u,
     sub_sat_s, sub_sat_u,
     min_s, min_u, max_s, max_u, avgr_u, abs
+    ext_mul_s, ext_mul_u
     """
     def __init__(self, op: str):
         self.op = op
@@ -121,7 +122,7 @@ class ArithmeticOp:
 
         return str(result)
 
-    def binary_op(self, operand1, operand2, lane):
+    def binary_op(self, operand1, operand2, src_lane, dst_lane=None):
         """General integer arithmetic and saturating arithmetic operations
         with 2 operands.
 
@@ -130,12 +131,15 @@ class ArithmeticOp:
         add_sat_s, add_sat_u,
         sub_sat_s, sub_sat_u,
         min_s, min_u, max_s, max_u, avgr_u
+        ext_mul_s, ext_mul_u (same as mul)
 
         :param operand1: the operand 1, integer or literal string in hex or decimal format
         :param operand2: the operand 2, integer or literal string in hex or decimal format
-        :param lane: the LaneValue instance of a lane in v128
+        :param src_lane: the LaneValue instance of a lane in v128
         :return: the string of the result of <p1 self.op p2> in hex or decimal format
         """
+        if not dst_lane:
+            dst_lane = src_lane
         v1 = operand1
         v2 = operand2
         base1 = base2 = 10
@@ -155,27 +159,35 @@ class ArithmeticOp:
             value = v1 - v2
         elif self.op == 'mul':
             value = v1 * v2
+        elif self.op.startswith('extmul_'):
+            if self.op.endswith('s'):
+                i1 = self.get_valid_value(v1, src_lane)
+                i2 = self.get_valid_value(v2, src_lane)
+            else:
+                i1 = self.get_valid_value(v1, src_lane, signed=False)
+                i2 = self.get_valid_value(v2, src_lane, signed=False)
+            value = i1 * i2
         elif 'sat' in self.op:
-            value = self._saturate(v1, v2, lane)
+            value = self._saturate(v1, v2, src_lane)
             if self.op.endswith('_u'):
                 result_signed = False
         elif self.op in ['min_s', 'max_s']:
-            i1 = self.get_valid_value(v1, lane)
-            i2 = self.get_valid_value(v2, lane)
+            i1 = self.get_valid_value(v1, src_lane)
+            i2 = self.get_valid_value(v2, src_lane)
             if self.op == 'min_s':
                 return operand1 if i1 <= i2 else operand2
             else:
                 return operand1 if i1 >= i2 else operand2
         elif self.op in ['min_u', 'max_u']:
-            i1 = self.get_valid_value(v1, lane, signed=False)
-            i2 = self.get_valid_value(v2, lane, signed=False)
+            i1 = self.get_valid_value(v1, src_lane, signed=False)
+            i2 = self.get_valid_value(v2, src_lane, signed=False)
             if self.op == 'min_u':
                 return operand1 if i1 <= i2 else operand2
             else:
                 return operand1 if i1 >= i2 else operand2
         elif self.op == 'avgr_u':
-            i1 = self.get_valid_value(v1, lane, signed=False)
-            i2 = self.get_valid_value(v2, lane, signed=False)
+            i1 = self.get_valid_value(v1, src_lane, signed=False)
+            i2 = self.get_valid_value(v2, src_lane, signed=False)
             result = (i1 + i2 + 1) // 2
             if base1 == 16 or base2 == 16:
                 return hex(result)
@@ -184,5 +196,5 @@ class ArithmeticOp:
         else:
             raise Exception('Unknown binary operation')
 
-        result = self.get_valid_value(value, lane, signed=result_signed)
+        result = self.get_valid_value(value, dst_lane, signed=result_signed)
         return str(result)
