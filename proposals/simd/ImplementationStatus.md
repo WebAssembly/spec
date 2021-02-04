@@ -226,6 +226,7 @@
 | `i32x4.trunc_sat_f64x2_u_zero` |                           |                    |                    |                    |                    |
 | `f32x4.demote_f64x2_zero`      |                           |                    |                    |                    |                    |
 | `f64x2.promote_low_f32x4`      |                           |                    |                    |                    |                    |
+| `i8x16.popcnt`              |                           |                    |                    |                    |                    |
 
 [1] Tip of tree LLVM as of May 20, 2020
 

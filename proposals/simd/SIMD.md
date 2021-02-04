@@ -662,6 +662,15 @@ Note that the normal WebAssembly `select` instruction also works with vector
 types. It selects between two whole vectors controlled by a single scalar value,
 rather than selecting bits controlled by a control mask vector.
 
+### Lane-wise Population Count
+* `i8x16.popcnt(v: v128) -> v128`
+
+Count the number of bits set to one within each lane.
+
+```python
+def S.popcnt(v):
+    return S.lanewise_unary(popcnt, v)
+```
 
 ## Boolean horizontal reductions
 
