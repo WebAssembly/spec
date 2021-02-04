@@ -28,6 +28,16 @@ class SimdArithmeticCase:
     BINARY_OPS = ('add', 'sub', 'mul')
     LANE_VALUE = {'i8x16': i8, 'i16x8': i16, 'i32x4': i32, 'i64x2': i64}
 
+    TEST_FUNC_TEMPLATE_HEADER = (
+            ';; Tests for {} arithmetic operations on major boundary values and all special values.\n\n')
+
+    def op_name(self, op):
+        """ Full instruction name.
+        Subclasses can overwrite to provide custom instruction names that don't
+        fit the default of {shape}.{op}.
+        """
+        return '{lane_type}.{op}'.format(lane_type=self.LANE_TYPE, op=op)
+
     def __str__(self):
         return self.get_all_cases()
 
@@ -150,15 +160,14 @@ class SimdArithmeticCase:
 
     def gen_test_func_template(self):
         template = [
-            ';; Tests for {} arithmetic operations on major boundary values and all special values.\n\n'.format(
-                self.LANE_TYPE), '(module']
+                self.TEST_FUNC_TEMPLATE_HEADER.format(self.LANE_TYPE), '(module']
 
         for op in self.BINARY_OPS:
-            template.append('  (func (export "{lane_type}.%s") (param v128 v128) (result v128) '
-                            '({lane_type}.%s (local.get 0) (local.get 1)))' % (op, op))
+            template.append('  (func (export "{op}") (param v128 v128) (result v128) '
+                            '({op} (local.get 0) (local.get 1)))'.format(op=self.op_name(op)))
         for op in self.UNARY_OPS:
-            template.append('  (func (export "{lane_type}.%s") (param v128) (result v128) '
-                            '({lane_type}.%s (local.get 0)))' % (op, op))
+            template.append('  (func (export "{op}") (param v128) (result v128) '
+                            '({op} (local.get 0)))'.format(op=self.op_name(op)))
 
         template.append(')\n')
         return template
@@ -203,16 +212,18 @@ class SimdArithmeticCase:
 
     def get_invalid_cases(self):
         invalid_cases = [';; type check']
+
         unary_template = '(assert_invalid (module (func (result v128) '\
-                         '({lane_type}.{op} ({operand})))) "type mismatch")'
+                         '({name} ({operand})))) "type mismatch")'
         binary_template = '(assert_invalid (module (func (result v128) '\
-                          '({lane_type}.{op} ({operand_1}) ({operand_2})))) "type mismatch")'
+                          '({name} ({operand_1}) ({operand_2})))) "type mismatch")'
+
 
         for op in self.UNARY_OPS:
-            invalid_cases.append(unary_template.format(lane_type=self.LANE_TYPE, op=op,
+            invalid_cases.append(unary_template.format(name=self.op_name(op),
                                                        operand='i32.const 0'))
         for op in self.BINARY_OPS:
-            invalid_cases.append(binary_template.format(lane_type=self.LANE_TYPE, op=op,
+            invalid_cases.append(binary_template.format(name=self.op_name(op),
                                                         operand_1='i32.const 0',
                                                         operand_2='f32.const 0.0'))
 
@@ -234,13 +245,13 @@ class SimdArithmeticCase:
         }
 
         for op in self.UNARY_OPS:
-            case_data['op'] = '{lane_type}.{op}'.format(lane_type=self.LANE_TYPE, op=op)
+            case_data['op'] = self.op_name(op)
             case_data['extended_name'] = 'arg-empty'
             case_data['params'] = ''
             cases.append(AssertInvalid.get_arg_empty_test(**case_data))
 
         for op in self.BINARY_OPS:
-            case_data['op'] = '{lane_type}.{op}'.format(lane_type=self.LANE_TYPE, op=op)
+            case_data['op'] = self.op_name(op)
             case_data['extended_name'] = '1st-arg-empty'
             case_data['params'] = SIMD.v128_const('0', self.LANE_TYPE)
             cases.append(AssertInvalid.get_arg_empty_test(**case_data))

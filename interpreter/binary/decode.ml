@@ -396,6 +396,10 @@ let simd_prefix s =
   | 0xc0l -> i64x2_eq
   | 0xc1l -> i64x2_neg
   | 0xc4l -> i64x2_bitmask
+  | 0xc7l -> i64x2_widen_low_i32x4_s
+  | 0xc8l -> i64x2_widen_high_i32x4_s
+  | 0xc9l -> i64x2_widen_low_i32x4_u
+  | 0xcal -> i64x2_widen_high_i32x4_u
   | 0xcbl -> i64x2_shl
   | 0xccl -> i64x2_shr_s
   | 0xcdl -> i64x2_shr_u

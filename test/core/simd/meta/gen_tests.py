@@ -34,6 +34,7 @@ SUBMODULES = (
     'simd_i32x4_dot_i16x8',
     'simd_load_lane',
     'simd_ext_mul',
+    'simd_int_to_int_widen',
 )
 
 
