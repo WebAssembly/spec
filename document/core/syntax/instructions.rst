@@ -243,8 +243,10 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{i16x8.}\NARROW\K{\_i32x4\_}\sx \\&&|&
      \K{i16x8.}\WIDEN\K{\_low}\K{\_i8x16\_}\sx ~|~
      \K{i32x4.}\WIDEN\K{\_low}\K{\_i16x8\_}\sx \\&&|&
+     \K{i64x2.}\WIDEN\K{\_low}\K{\_i32x4\_}\sx \\&&|&
      \K{i16x8.}\WIDEN\K{\_high}\K{\_i8x16\_}\sx ~|~
      \K{i32x4.}\WIDEN\K{\_high}\K{\_i16x8\_}\sx \\&&|&
+     \K{i64x2.}\WIDEN\K{\_high}\K{\_i32x4\_}\sx \\&&|&
      \ishape\K{.}\vshiftop \\&&|&
      \ishape\K{.}\vibinop \\&&|&
      \K{i8x16.}\viminmaxop ~|~
