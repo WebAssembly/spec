@@ -448,6 +448,27 @@ These instructions provide a more performant equivalent to the following composi
 - `i64x2.extmul_low_i32x4_u(a, b)` is equivalent to `i64x2.mul(i64x2.widen_low_i32x4_u(a), i64x2.widen_low_i32x4_u(b))`.
 - `i64x2.extmul_high_i32x4_u(a, b)` is equivalent to `i64x2.mul(i64x2.widen_high_i32x4_u(a), i64x2.widen_high_i32x4_u(b))`.
 
+### Extended pairwise integer addition
+* `i16x8.extadd_pairwise_i8x16_s(a: v128) -> v128`
+* `i16x8.extadd_pairwise_i8x16_u(a: v128) -> v128`
+* `i32x4.extadd_pairwise_i16x8_s(a: v128) -> v128`
+* `i32x4.extadd_pairwise_i16x8_u(a: v128) -> v128`
+
+Lane-wise integer extended pairwise addition producing extended results (twice wider results than the inputs).
+
+```python
+def S.extadd_pairwise_T(ext, a):
+    result = S.New()
+    for i in range(S.Lanes):
+        result[i] = ext(a[i*2]) + ext(a[i*2+1])
+
+def S.extadd_pairwise_T_s(a):
+    return S.extadd_pairwise_T(Sext, a)
+
+def S.extadd_pairwise_T_u(a):
+    return S.extadd_pairwise_T(Zext, a)
+```
+
 ## Saturating integer arithmetic
 
 Saturating integer arithmetic behaves differently on signed and unsigned lanes.
