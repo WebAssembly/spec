@@ -251,6 +251,10 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `v128.store64_lane`             |     `TBD`| m:memarg, i:ImmLaneIdx2  |
 | `i64x2.eq`                      |     `TBD`| -                        |
 | `i64x2.ne`                      |     `TBD`| -                        |
+| `i64x2.lt_s`                    |     `TBD`| -                        |
+| `i64x2.gt_s`                    |     `TBD`| -                        |
+| `i64x2.le_s`                    |     `TBD`| -                        |
+| `i64x2.ge_s`                    |     `TBD`| -                        |
 | `i64x2.all_true`                |     `TBD`| -                        |
 | `f64x2.convert_low_i32x4_s`     |     `TBD`| -                        |
 | `f64x2.convert_low_i32x4_u`     |     `TBD`| -                        |

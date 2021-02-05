@@ -231,6 +231,10 @@
 | `i16x8.extadd_pairwise_i8x16_u` |                           |                    |                    |                    |                    |
 | `i32x4.extadd_pairwise_i16x8_s` |                           |                    |                    |                    |                    |
 | `i32x4.extadd_pairwise_i16x8_u` |                           |                    |                    |                    |                    |
+| `i64x2.lt_s`                    |                           |                    |                    |                    |                    |
+| `i64x2.gt_s`                    |                           |                    |                    |                    |                    |
+| `i64x2.le_s`                    |                           |                    |                    |                    |                    |
+| `i64x2.ge_s`                    |                           |                    |                    |                    |                    |
 
 [1] Tip of tree LLVM as of May 20, 2020
 
