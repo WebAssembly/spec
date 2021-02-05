@@ -593,6 +593,7 @@ def S.avgr_u(a, b):
 * `i8x16.abs(a: v128) -> v128`
 * `i16x8.abs(a: v128) -> v128`
 * `i32x4.abs(a: v128) -> v128`
+* `i64x2.abs(a: v128) -> v128`
 
 Lane-wise wrapping absolute value.
 
