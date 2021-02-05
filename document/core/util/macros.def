@@ -407,6 +407,7 @@
 .. |VGE| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{ge}}
 .. |VABS| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{abs}}
 .. |VNEG| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{neg}}
+.. |VPOPCNT| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{popcnt}}
 .. |ANYTRUE| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{any\_true}}
 .. |ALLTRUE| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{all\_true}}
 .. |BITMASK| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{bitmask}}
