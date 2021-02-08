@@ -376,7 +376,7 @@ Note: The `br_on_*` instructions allow an operand of unrelated reference type, e
 
 * `rtt.sub <typeidx>` returns an RTT for `typeidx` as a sub-RTT of a the parent RTT operand
   - `rtt.sub $t : [(rtt n $t')] -> [(rtt (n+1) $t)]`
-    - iff `t2 <: t1`
+    - iff `t <: t'`
   - multiple invocations of this instruction with the same operand yield the same observable RTTs
   - this is a *constant instruction*
 
