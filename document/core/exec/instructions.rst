@@ -725,6 +725,57 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
 
 
+.. _exec-simd-extmul:
+
+:math:`t_2\K{x}N\K{.}\EXTMUL\_\K{low}\_t_1\K{x}M\_\sx` and :math:`t_2\K{x}N\K{.}\EXTMUL\_\K{high}\_t_1\K{x}M\_\sx`
+..................................................................................................................
+
+1. Assert: due to :ref:`validation <valid-vitestop>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+4. If :math:`\K{low}` is part of the instruction, then:
+
+   a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[0 \slice N]`.
+
+   b. Let :math:`j^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_2)[0 \slice N]`.
+
+5. Else:
+
+   a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[N \slice N]`.
+
+   b. Let :math:`j^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_2)[N \slice N]`.
+
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{M,N}(i^\ast), \extend^{\sx}_{M,N}(j^\ast)))`
+
+8. Push the value :math:`\V128.\VCONST~c` onto the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\EXTMUL\_\K{low}\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[0 \slice N] \\
+     \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[0 \slice N] \\
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{M,N}(i^\ast), \extend^{\sx}_{M,N}(j^\ast)))
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\EXTMUL\_\K{high}\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[N \slice N] \\
+     \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[N \slice N] \\
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{M,N}(i^\ast), \extend^{\sx}_{M,N}(j^\ast)))
+     \end{array}
+   \end{array}
+
+
 .. index:: parametric instructions, value
    pair: execution; instruction
    single: abstract syntax; instruction

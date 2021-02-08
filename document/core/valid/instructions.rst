@@ -450,6 +450,20 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
+.. _valid-simd-vextmul:
+
+:math:`\ishape\K{.}\vextmul\K{\_}\ishape\K{\_}\sx`
+..................................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape\K{.}\EXTMUL\K{\_}\ishape\K{\_}\sx : [\V128~\V128] \to [\V128]
+   }
+
+
 .. index:: parametric instructions, value type, polymorphism
    pair: validation; instruction
    single: abstract syntax; instruction

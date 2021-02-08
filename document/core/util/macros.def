@@ -422,6 +422,7 @@
 .. |NARROW| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{narrow}}
 .. |WIDEN| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{widen}}
 .. |AVGR| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{avgr}}
+.. |EXTMUL| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{extmul}}
 .. |VTRUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{trunc}}
 .. |VCONVERT| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{convert}}
 
@@ -453,6 +454,7 @@
 .. |vternop| mathdef:: \xref{syntax/instructions}{syntax-vternop}{\X{vternop}}
 .. |vwiden| mathdef:: \xref{syntax/instructions}{syntax-vwiden}{\X{vwiden}}
 .. |vcvtop| mathdef:: \xref{syntax/instructions}{syntax-vcvtop}{\X{vcvtop}}
+.. |vextmul| mathdef:: \xref{syntax/instructions}{syntax-vextmul}{\X{vextmul}}
 
 .. |laneidx| mathdef:: \xref{syntax/instructions}{syntax-laneidx}{\X{laneidx}}
 .. |vsunop| mathdef:: \xref{syntax/instructions}{syntax-vsunop}{\X{vsunop}}
