@@ -744,7 +744,7 @@ Memory Instructions
 .. _valid-load-zero:
 
 :math:`\K{v128.}\LOAD{N}\K{\_zero}~\memarg`
-...............................................
+...........................................
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
@@ -759,6 +759,55 @@ Memory Instructions
      2^{\memarg.\ALIGN} \leq N/8
    }{
      C \vdashinstr \K{v128.}\LOAD{N}\K{\_zero}~\memarg : [\I32] \to [\V128]
+   }
+
+
+.. _valid-load-lane:
+
+:math:`\K{v128.}\LOAD{N}\K{\_lane}~\memarg~\laneidx`
+....................................................
+
+* The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+     \laneidx < 128/N
+     \qquad
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} < N/8
+   }{
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_lane}~\memarg~\laneidx : [\I32~\V128] \to [\V128]
+   }
+
+.. _valid-store-lane:
+
+:math:`\K{v128.}\STORE{N}\K{\_lane}~\memarg~\laneidx`
+.....................................................
+
+* The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+     \laneidx < 128/N
+     \qquad
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} < N/8
+   }{
+     C \vdashinstr \K{v128.}\STORE{N}\K{\_lane}~\memarg~\laneidx : [\I32~\V128] \to []
    }
 
 

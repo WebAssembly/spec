@@ -454,6 +454,7 @@ The |LOCALTEE| instruction is like |LOCALSET| but also returns its argument.
 .. _syntax-loadn:
 .. _syntax-storen:
 .. _syntax-memarg:
+.. _syntax-lanewidth:
 .. _syntax-instr-memory:
 
 Memory Instructions
@@ -465,6 +466,8 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
    \begin{array}{llcl}
    \production{memory immediate} & \memarg &::=&
      \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
+   \production{lane width} & \lanewidth &::=&
+     8 ~|~ 16 ~|~ 32 ~|~ 64 \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \K{i}\X{nn}\K{.}\LOAD~\memarg ~|~
@@ -482,12 +485,11 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
      \K{v128.}\LOAD\K{8x8}\_\sx~\memarg ~|~
      \K{v128.}\LOAD\K{16x4}\_\sx~\memarg ~|~
      \K{v128.}\LOAD\K{32x2}\_\sx~\memarg \\&&|&
-     \K{v128.}\LOAD\K{8\_splat}~\memarg ~|~
-     \K{v128.}\LOAD\K{16\_splat}~\memarg \\&&|&
-     \K{v128.}\LOAD\K{32\_splat}~\memarg ~|~
-     \K{v128.}\LOAD\K{64\_splat}~\memarg \\&&|&
+     \K{v128.}\LOAD\lanewidth\K{\_splat}~\memarg \\&&|&
      \K{v128.}\LOAD\K{32\_zero}~\memarg ~|~
      \K{v128.}\LOAD\K{64\_zero}~\memarg \\&&|&
+     \K{v128.}\LOAD\lanewidth\K{\_lane}~\memarg~\laneidx ~|~
+     \K{v128.}\STORE\lanewidth\K{\_lane}~\memarg~\laneidx \\&&|&
      \MEMORYSIZE \\&&|&
      \MEMORYGROW \\
    \end{array}
