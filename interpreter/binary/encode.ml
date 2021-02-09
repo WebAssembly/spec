@@ -503,6 +503,10 @@ let encode m =
       | Binary (V128 V128Op.(I64x2 Mul)) -> simd_op 0xd5l
       | Binary (V128 V128Op.(I64x2 Eq)) -> simd_op 0xc0l
       | Binary (V128 V128Op.(I64x2 Ne)) -> simd_op 0xd0l
+      | Binary (V128 V128Op.(I64x2 LtS)) -> simd_op 0x74l
+      | Binary (V128 V128Op.(I64x2 GtS)) -> simd_op 0x7al
+      | Binary (V128 V128Op.(I64x2 LeS)) -> simd_op 0xeel
+      | Binary (V128 V128Op.(I64x2 GeS)) -> simd_op 0xe2l
       | Binary (V128 V128Op.(I64x2 ExtMulLowS)) -> simd_op 0xd2l
       | Binary (V128 V128Op.(I64x2 ExtMulHighS)) -> simd_op 0xd3l
       | Binary (V128 V128Op.(I64x2 ExtMulLowU)) -> simd_op 0xd6l

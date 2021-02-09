@@ -336,10 +336,12 @@ let simd_prefix s =
   | 0x71l -> i8x16_sub
   | 0x72l -> i8x16_sub_sat_s
   | 0x73l -> i8x16_sub_sat_u
+  | 0x74l -> i64x2_lt_s
   | 0x76l -> i8x16_min_s
   | 0x77l -> i8x16_min_u
   | 0x78l -> i8x16_max_s
   | 0x79l -> i8x16_max_u
+  | 0x7al -> i64x2_gt_s
   | 0x7bl -> i8x16_avgr_u
   | 0x7cl -> i8x16_popcnt
   | 0x80l -> i16x8_abs
@@ -422,6 +424,7 @@ let simd_prefix s =
   | 0xdfl -> f64x2_nearest
   | 0xe0l -> f32x4_abs
   | 0xe1l -> f32x4_neg
+  | 0xe2l -> i64x2_ge_s
   | 0xe3l -> f32x4_sqrt
   | 0xe4l -> f32x4_add
   | 0xe5l -> f32x4_sub
@@ -433,6 +436,7 @@ let simd_prefix s =
   | 0xebl -> f32x4_pmax
   | 0xecl -> f64x2_abs
   | 0xedl -> f64x2_neg
+  | 0xeel -> i64x2_le_s
   | 0xefl -> f64x2_sqrt
   | 0xf0l -> f64x2_add
   | 0xf1l -> f64x2_sub

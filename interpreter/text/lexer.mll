@@ -462,26 +462,22 @@ rule token = parse
   | (simd_shape as s)".ne"
     { BINARY (simdop s i8x16_ne i16x8_ne i32x4_ne i64x2_ne f32x4_ne f64x2_ne) }
   | (simd_int_shape as s)".lt_s"
-    { except ["i64x2"] s lexbuf;
-      BINARY (simd_int_op s i8x16_lt_s i16x8_lt_s i32x4_lt_s unreachable) }
+    { BINARY (simd_int_op s i8x16_lt_s i16x8_lt_s i32x4_lt_s i64x2_lt_s) }
   | (simd_int_shape as s)".lt_u"
     { except ["i64x2"] s lexbuf;
       BINARY (simd_int_op s i8x16_lt_u i16x8_lt_u i32x4_lt_u unreachable) }
   | (simd_int_shape as s)".le_s"
-    { except ["i64x2"] s lexbuf;
-      BINARY (simd_int_op s i8x16_le_s i16x8_le_s i32x4_le_s unreachable) }
+    { BINARY (simd_int_op s i8x16_le_s i16x8_le_s i32x4_le_s i64x2_le_s) }
   | (simd_int_shape as s)".le_u"
     { except ["i64x2"] s lexbuf;
       BINARY (simd_int_op s i8x16_le_u i16x8_le_u i32x4_le_u unreachable) }
   | (simd_int_shape as s)".gt_s"
-    { except ["i64x2"] s lexbuf;
-      BINARY (simd_int_op s i8x16_gt_s i16x8_gt_s i32x4_gt_s unreachable) }
+    { BINARY (simd_int_op s i8x16_gt_s i16x8_gt_s i32x4_gt_s i64x2_gt_s) }
   | (simd_int_shape as s)".gt_u"
     { except ["i64x2"] s lexbuf;
       BINARY (simd_int_op s i8x16_gt_u i16x8_gt_u i32x4_gt_u unreachable) }
   | (simd_int_shape as s)".ge_s"
-    { except ["i64x2"] s lexbuf;
-      BINARY (simd_int_op s i8x16_ge_s i16x8_ge_s i32x4_ge_s unreachable) }
+    { BINARY (simd_int_op s i8x16_ge_s i16x8_ge_s i32x4_ge_s i64x2_ge_s) }
   | (simd_int_shape as s)".ge_u"
     { except ["i64x2"] s lexbuf;
       BINARY (simd_int_op s i8x16_ge_u i16x8_ge_u i32x4_ge_u unreachable) }
