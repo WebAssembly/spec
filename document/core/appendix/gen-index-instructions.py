@@ -469,6 +469,7 @@ INSTRUCTIONS = [
     Instruction(r'\I32X4.\VMIN\K{\_u}', r'\hex{FD}~~183', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-imin_u'),
     Instruction(r'\I32X4.\VMAX\K{\_s}', r'\hex{FD}~~184', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-imax_s'),
     Instruction(r'\I32X4.\VMAX\K{\_u}', r'\hex{FD}~~185', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-imax_u'),
+    Instruction(r'\I64X2.\VABS', r'\hex{FD}~~162', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-iabs'),
     Instruction(r'\I64X2.\VNEG', r'\hex{FD}~~193', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-ineg'),
     Instruction(r'\I64X2.\BITMASK', r'\hex{FD}~~196', r'[\V128] \to [\I32]', r'valid-simd-bitmask', r'exec-simd-bitmask'),
     Instruction(r'\I64X2.\WIDEN\K{\_low\_i32x4\_s}', r'\hex{FD}~~199', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-simd-widen'),

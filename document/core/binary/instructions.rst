@@ -667,6 +667,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 .. math::
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+     \hex{FD}~~162{:}\Bu32 &\Rightarrow& \I64X2.\VABS \\ &&|&
      \hex{FD}~~193{:}\Bu32 &\Rightarrow& \I64X2.\VNEG \\ &&|&
      \hex{FD}~~196{:}\Bu32 &\Rightarrow& \I64X2.\BITMASK \\ &&|&
      \hex{FD}~~199{:}\Bu32 &\Rightarrow& \I64X2.\WIDEN\K{\_low\_i32x4\_s} \\ &&|&
