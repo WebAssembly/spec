@@ -71,6 +71,7 @@ sig
   val ge_u : t -> t -> t
   val abs : t -> t
   val neg : t -> t
+  val popcnt : t -> t
   val add : t -> t -> t
   val sub : t -> t -> t
   val min_s : t -> t -> t
@@ -319,6 +320,7 @@ struct
     let ge_u = binop (cmp Int.ge_u)
     let abs = unop Int.abs
     let neg = unop Int.neg
+    let popcnt = unop Int.popcnt
     let add = binop Int.add
     let sub = binop Int.sub
     let mul = binop Int.mul

@@ -50,6 +50,7 @@ module SimdOp =
 struct
   type iunop = Abs | Neg | TruncSatF32x4S | TruncSatF32x4U
               | WidenLowS | WidenLowU | WidenHighS | WidenHighU
+              | Popcnt
   type ibinop = Add | Sub | MinS | MinU | MaxS | MaxU | Mul | AvgrU
               | Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
               | Swizzle | Shuffle of int list | NarrowS | NarrowU

@@ -117,6 +117,9 @@ class ArithmeticOp:
                 result = -result
             if base == 16:
                 return hex(result)
+        elif self.op == 'popcnt':
+            result = self.get_valid_value(v, lane)
+            return str(bin(result % lane.mod).count('1'))
         else:
             raise Exception('Unknown unary operation')
 

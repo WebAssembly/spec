@@ -16,6 +16,7 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
     fun v -> match op with
       | I8x16 Neg -> to_value (SXX.I8x16.neg (of_value 1 v))
       | I8x16 Abs -> to_value (SXX.I8x16.abs (of_value 1 v))
+      | I8x16 Popcnt -> to_value (SXX.I8x16.popcnt (of_value 1 v))
       | I16x8 Neg -> to_value (SXX.I16x8.neg (of_value 1 v))
       | I16x8 Abs -> to_value (SXX.I16x8.abs (of_value 1 v))
       | I16x8 WidenLowS -> to_value (SXX.I16x8_convert.widen_low_s (of_value 1 v))

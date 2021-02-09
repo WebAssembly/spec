@@ -341,6 +341,7 @@ let simd_prefix s =
   | 0x78l -> i8x16_max_s
   | 0x79l -> i8x16_max_u
   | 0x7bl -> i8x16_avgr_u
+  | 0x7cl -> i8x16_popcnt
   | 0x80l -> i16x8_abs
   | 0x81l -> i16x8_neg
   | 0x83l -> i16x8_all_true

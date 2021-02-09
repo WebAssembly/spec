@@ -337,6 +337,7 @@ let encode m =
       | Unary (V128 V128Op.(V128 Not)) -> simd_op 0x4dl
       | Unary (V128 V128Op.(I8x16 Abs)) -> simd_op 0x60l
       | Unary (V128 V128Op.(I8x16 Neg)) -> simd_op 0x61l
+      | Unary (V128 V128Op.(I8x16 Popcnt)) -> simd_op 0x7cl
       | Unary (V128 V128Op.(I16x8 Abs)) -> simd_op 0x80l
       | Unary (V128 V128Op.(I16x8 Neg)) -> simd_op 0x81l
       | Unary (V128 V128Op.(I16x8 WidenLowS)) -> simd_op 0x87l

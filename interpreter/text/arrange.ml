@@ -202,6 +202,7 @@ struct
   let unop xx (op : unop) = match op with
     | I8x16 Neg -> "i8x16.neg"
     | I8x16 Abs -> "i8x16.abs"
+    | I8x16 Popcnt -> "i8x16.popcnt"
     | I16x8 Abs -> "i16x8.abs"
     | I16x8 Neg -> "i16x8.neg"
     | I16x8 WidenLowS -> "i16x8.widen_low_i8x16_s"

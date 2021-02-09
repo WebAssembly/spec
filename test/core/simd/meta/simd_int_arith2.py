@@ -450,8 +450,8 @@ class SimdLaneWiseInteger:
             for op2 in unary_ops:
                 o2 = ArithmeticOp(op2)
                 result3 = []
-                ret3 = o1.unary_op('-1', self.LANE_VALUE)
-                ret3 = o2.unary_op(ret3, self.LANE_VALUE)
+                ret3 = o2.unary_op('-1', self.LANE_VALUE)
+                ret3 = o1.unary_op(ret3, self.LANE_VALUE)
                 result3.append(ret3)
                 cases += '\n' + str(AssertReturn('{lane_type}.{op1}-{lane_type}.{op2}'.format(lane_type=self.LANE_TYPE, op1=op1, op2=op2),
                                                  [SIMD.v128_const('-1', self.LANE_TYPE)],
@@ -543,6 +543,7 @@ class Simdi16x8Case(SimdLaneWiseInteger):
 class Simdi8x16Case(SimdLaneWiseInteger):
     LANE_TYPE = 'i8x16'
 
+    UNARY_OPS = ('abs','popcnt')
     BINARY_OPS = ('min_s', 'min_u', 'max_s', 'max_u', 'avgr_u')
     UNKNOWN_BINARY_OPS = ('i32x4.avgr_u', 'f32x4.avgr_u',
                    'i64x2.avgr_u', 'f64x2.avgr_u',
