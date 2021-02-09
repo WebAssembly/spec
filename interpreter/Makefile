@@ -113,7 +113,8 @@ $(WINMAKE):	clean
 # Executing test suite
 
 TESTDIR =	../test/core
-TESTFILES =	$(shell cd $(TESTDIR); ls *.wast; ls */*.wast)
+# Skip _output directory, since that's a tmp directory, and list all other wast files.
+TESTFILES =	$(shell cd $(TESTDIR); ls *.wast; ls [a-z]*/*.wast)
 TESTS =		$(TESTFILES:%.wast=%)
 
 .PHONY:		test debugtest partest
