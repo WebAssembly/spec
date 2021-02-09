@@ -325,25 +325,25 @@ Tentatively, support a type of guaranteed unboxed scalars.
   - `ref.is_i31 : [anyref] -> [i32]`
 
 * `br_on_func <labelidx>` branches if a reference is a function
-  - `br_on_func $l : [t] -> [t]`
-    - iff `$l : [t']`
+  - `br_on_func $l : [t0* t] -> [t0* t]`
+    - iff `$l : [t0* t']`
     - and `t <: anyref`
     - and `(ref func) <: t'`
-  - passes operand along with branch as a function
+  - passes operand along with branch as a function, plus possible extra args
 
 * `br_on_data <labelidx>` branches if a reference is compound data
-  - `br_on_data $l : [t] -> [t]`
-    - iff `$l : [t']`
+  - `br_on_data $l : [t0* t] -> [t0* t]`
+    - iff `$l : [t0* t']`
     - and `t <: anyref`
     - and `(ref data) <: t'`
-  - passes operand along with branch as data
+  - passes operand along with branch as data, plus possible extra args
 
 * `br_on_i31 <labelidx>` branches if a reference is an integer
-  - `br_on_i31 $l : [t] -> [t]`
-    - iff `$l : [t']`
+  - `br_on_i31 $l : [t0* t] -> [t0* t]`
+    - iff `$l : [t0* t']`
     - and `t <: anyref`
     - and `(ref i31) <: t'`
-  - passes operand along with branch as a scalar
+  - passes operand along with branch as a scalar, plus possible extra args
 
 * `ref.as_func` converts to a function reference
   - `ref.as_func : [anyref] -> [(ref func)]`
@@ -400,12 +400,12 @@ RTT-based casts can only be performed with respect to concrete types, and requir
   - traps if the first operand is not null and its runtime type is not a sub-RTT of the RTT operand
 
 * `br_on_cast <labelidx>` branches if a value can be cast down to a given reference type
-  - `br_on_cast $l : [t (rtt n? $t')] -> [t]`
-    - iff `$l : [t']`
+  - `br_on_cast $l : [t0* t (rtt n? $t')] -> [t0* t]`
+    - iff `$l : [t0* t']`
     - and `t <: (ref null data)` or `t <: (ref null func)`
     - and `(ref $t') <: t'`
   - branches iff the first operand is not null and its runtime type is a sub-RTT of the RTT operand
-  - passes cast operand along with branch
+  - passes cast operand along with branch, plus possible extra args
 
 Note: These instructions allow an operand of unrelated reference type, even though this cannot possibly succeed. The reasoning is the same as for classification instructions.
 
