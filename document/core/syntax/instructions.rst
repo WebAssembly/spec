@@ -221,7 +221,15 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{i64x2.}\EXTRACTLANE~\laneidx \\&&|&
      \fshape\K{.}\EXTRACTLANE~\laneidx \\&&|&
      \shape\K{.}\REPLACELANE~\laneidx \\&&|&
-     \ishape\K{.}\virelop \\&&|&
+     \K{i8x16}\K{.}\virelop ~|~
+     \K{i16x8}\K{.}\virelop ~|~
+     \K{i32x4}\K{.}\virelop \\&&|&
+     \K{i64x2.}\K{eq} ~|~
+     \K{i64x2.}\K{ne} \\&&|&
+     \K{i64x2.}\K{lt\_s} ~|~
+     \K{i64x2.}\K{gt\_s} ~|~
+     \K{i64x2.}\K{le\_s} ~|~
+     \K{i64x2.}\K{ge\_s} \\&&|&
      \fshape\K{.}\vfrelop \\&&|&
      \K{i8x16.}\viunop ~|~
      \K{i16x8.}\viunop ~|~
