@@ -538,6 +538,17 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~64{:}\Bu32 &\Rightarrow& \I32X4.\VGE\K{\_u} \\
    \end{array}
 
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+     \hex{FD}~~192{:}\Bu32 &\Rightarrow& \I64X2.\VEQ \\ &&|&
+     \hex{FD}~~208{:}\Bu32 &\Rightarrow& \I64X2.\VNE \\ &&|&
+     \hex{FD}~~116{:}\Bu32 &\Rightarrow& \I64X2.\VLT\K{\_s} \\ &&|&
+     \hex{FD}~~122{:}\Bu32 &\Rightarrow& \I64X2.\VGT\K{\_s} \\ &&|&
+     \hex{FD}~~238{:}\Bu32 &\Rightarrow& \I64X2.\VLE\K{\_s} \\ &&|&
+     \hex{FD}~~226{:}\Bu32 &\Rightarrow& \I64X2.\VGE\K{\_s} \\ &&|&
+   \end{array}
+
 .. _binary-vfrelop:
 
 .. math::

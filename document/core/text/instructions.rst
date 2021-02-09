@@ -572,6 +572,17 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{i32x4.ge\_u} &\Rightarrow& \I32X4.\VGE\K{\_u}\\
    \end{array}
 
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i64x2.eq} &\Rightarrow& \I64X2.\VEQ\\ &&|&
+     \text{i64x2.ne} &\Rightarrow& \I64X2.\VNE\\ &&|&
+     \text{i64x2.lt\_s} &\Rightarrow& \I64X2.\VLT\K{\_s}\\ &&|&
+     \text{i64x2.gt\_s} &\Rightarrow& \I64X2.\VGT\K{\_s}\\ &&|&
+     \text{i64x2.le\_s} &\Rightarrow& \I64X2.\VLE\K{\_s}\\ &&|&
+     \text{i64x2.ge\_s} &\Rightarrow& \I64X2.\VGE\K{\_s}\\ &&|&
+   \end{array}
+
 .. _text-vfrelop:
 
 .. math::
