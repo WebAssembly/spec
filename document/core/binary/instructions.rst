@@ -668,6 +668,10 @@ All other SIMD instructions are plain opcodes without any immediates.
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~193{:}\Bu32 &\Rightarrow& \I64X2.\VNEG \\ &&|&
      \hex{FD}~~196{:}\Bu32 &\Rightarrow& \I64X2.\BITMASK \\ &&|&
+     \hex{FD}~~199{:}\Bu32 &\Rightarrow& \I64X2.\WIDEN\K{\_low\_i32x4\_s} \\ &&|&
+     \hex{FD}~~200{:}\Bu32 &\Rightarrow& \I64X2.\WIDEN\K{\_high\_i32x4\_s} \\ &&|&
+     \hex{FD}~~201{:}\Bu32 &\Rightarrow& \I64X2.\WIDEN\K{\_low\_i32x4\_u} \\ &&|&
+     \hex{FD}~~202{:}\Bu32 &\Rightarrow& \I64X2.\WIDEN\K{\_high\_i32x4\_u} \\ &&|&
      \hex{FD}~~203{:}\Bu32 &\Rightarrow& \I64X2.\VSHL \\ &&|&
      \hex{FD}~~204{:}\Bu32 &\Rightarrow& \I64X2.\VSHR\K{\_s} \\ &&|&
      \hex{FD}~~205{:}\Bu32 &\Rightarrow& \I64X2.\VSHR\K{\_u} \\ &&|&
