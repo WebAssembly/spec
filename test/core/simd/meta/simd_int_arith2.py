@@ -523,6 +523,14 @@ class SimdLaneWiseInteger:
             fp.write(self.get_all_cases())
 
 
+class Simdi64x2Case(SimdLaneWiseInteger):
+    LANE_TYPE = 'i64x2'
+    class_summary = """;; Tests for {lane_type} [abs] operations."""
+    BINARY_OPS = ()
+
+    UNKNOWN_BINARY_OPS = ()
+
+
 class Simdi32x4Case(SimdLaneWiseInteger):
     LANE_TYPE = 'i32x4'
     class_summary = """;; Tests for {lane_type} [min_s, min_u, max_s, max_u, abs] operations."""
@@ -537,7 +545,6 @@ class Simdi16x8Case(SimdLaneWiseInteger):
 
     BINARY_OPS = ('min_s', 'min_u', 'max_s', 'max_u', 'avgr_u')
     UNKNOWN_BINARY_OPS = ('i16x8.avgr', 'i16x8.avgr_s')
-    UNKNOWN_UNARY_OPS = ('i64x2.abs',)
 
 
 class Simdi8x16Case(SimdLaneWiseInteger):
@@ -551,6 +558,9 @@ class Simdi8x16Case(SimdLaneWiseInteger):
 
 
 def gen_test_cases():
+    simd_i64x2_case = Simdi64x2Case()
+    simd_i64x2_case.gen_test_cases()
+
     simd_i32x4_case = Simdi32x4Case()
     simd_i32x4_case.gen_test_cases()
 

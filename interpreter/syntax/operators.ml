@@ -398,6 +398,7 @@ let i64x2_lt_s = Binary (V128 V128Op.(I64x2 LtS))
 let i64x2_le_s = Binary (V128 V128Op.(I64x2 LeS))
 let i64x2_gt_s = Binary (V128 V128Op.(I64x2 GtS))
 let i64x2_ge_s = Binary (V128 V128Op.(I64x2 GeS))
+let i64x2_abs = Unary (V128 V128Op.(I64x2 Abs))
 let i64x2_neg = Unary (V128 V128Op.(I64x2 Neg))
 let i64x2_bitmask = SimdBitmask Simd.I64x2
 let i64x2_add = Binary (V128 V128Op.(I64x2 Add))
