@@ -425,6 +425,7 @@ INSTRUCTIONS = [
     Instruction(r'\I8X16.\VMAX\K{\_s}', r'\hex{FD}~~120', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-imax_s'),
     Instruction(r'\I8X16.\VMAX\K{\_u}', r'\hex{FD}~~121', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-imax_u'),
     Instruction(r'\I8X16.\AVGR\K{\_u}', r'\hex{FD}~~123', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-iavgr_u'),
+    Instruction(r'\I8X16.\VPOPCNT', r'\hex{FD}~~124', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-ipopcnt'),
     Instruction(r'\I16X8.\VABS', r'\hex{FD}~~128', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-iabs'),
     Instruction(r'\I16X8.\VNEG', r'\hex{FD}~~129', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-ineg'),
     Instruction(r'\I16X8.\ALLTRUE', r'\hex{FD}~~131', r'[\V128] \to [\I32]', r'valid-vitestop', r'exec-vitestop'),

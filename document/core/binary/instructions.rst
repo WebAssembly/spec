@@ -607,7 +607,8 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~119{:}\Bu32 &\Rightarrow& \I8X16.\VMIN\K{\_u} \\ &&|&
      \hex{FD}~~120{:}\Bu32 &\Rightarrow& \I8X16.\VMAX\K{\_s} \\ &&|&
      \hex{FD}~~121{:}\Bu32 &\Rightarrow& \I8X16.\VMAX\K{\_u} \\ &&|&
-     \hex{FD}~~123{:}\Bu32 &\Rightarrow& \I8X16.\AVGR\K{\_u} \\
+     \hex{FD}~~123{:}\Bu32 &\Rightarrow& \I8X16.\AVGR\K{\_u} \\ &&|&
+     \hex{FD}~~124{:}\Bu32 &\Rightarrow& \I8X16.\VPOPCNT \\
    \end{array}
 
 .. math::

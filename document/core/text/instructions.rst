@@ -641,7 +641,8 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{i8x16.min\_u} &\Rightarrow& \I8X16.\VMIN\K{\_u}\\ &&|&
      \text{i8x16.max\_s} &\Rightarrow& \I8X16.\VMAX\K{\_s}\\ &&|&
      \text{i8x16.max\_u} &\Rightarrow& \I8X16.\VMAX\K{\_u}\\ &&|&
-     \text{i8x16.avgr\_u} &\Rightarrow& \I8X16.\AVGR\K{\_u}\\
+     \text{i8x16.avgr\_u} &\Rightarrow& \I8X16.\AVGR\K{\_u}\\ &&|&
+     \text{i8x16.popcnt} &\Rightarrow& \I8X16.\VPOPCNT\\
    \end{array}
 
 .. math::
