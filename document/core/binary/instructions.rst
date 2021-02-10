@@ -415,8 +415,12 @@ They all have a one byte prefix, whereas the actual opcode is encoded by a varia
 
 SIMD loads and stores are followed by the encoding of their |memarg| immediate.
 
+.. _binary-laneidx:
+
 .. math::
    \begin{array}{llclll}
+   \production{lane index} & \Blaneidx &::=&
+     l{:}\Bbyte &\Rightarrow& l \\
    \production{instruction} & \Binstr &::=& \dots \\&&|&
      \hex{FD}~~0{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD~m \\ &&|&
      \hex{FD}~~1{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{8x8\_s}~m \\ &&|&
@@ -431,7 +435,15 @@ SIMD loads and stores are followed by the encoding of their |memarg| immediate.
      \hex{FD}~~10{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{64\_splat}~m \\ &&|&
      \hex{FD}~~252{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{\_zero}~m \\ &&|&
      \hex{FD}~~253{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{\_zero}~m \\ &&|&
-     \hex{FD}~~11{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\STORE~m \\
+     \hex{FD}~~11{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\STORE~m \\ &&|&
+     \hex{FD}~~88{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\LOAD\K{8\_lane}~m~l \\ &&|&
+     \hex{FD}~~89{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\LOAD\K{16\_lane}~m~l \\ &&|&
+     \hex{FD}~~90{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\LOAD\K{32\_lane}~m~l \\ &&|&
+     \hex{FD}~~91{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\LOAD\K{64\_lane}~m~l \\ &&|&
+     \hex{FD}~~92{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\STORE\K{8\_lane}~m~l \\ &&|&
+     \hex{FD}~~93{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\STORE\K{16\_lane}~m~l \\ &&|&
+     \hex{FD}~~94{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\STORE\K{32\_lane}~m~l \\ &&|&
+     \hex{FD}~~95{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\STORE\K{64\_lane}~m~l \\
    \end{array}
 
 The |VCONST| instruction is followed by 16 immediate bytes, which are converted into a |i128| in |littleendian| byte order:
@@ -444,14 +456,11 @@ The |VCONST| instruction is followed by 16 immediate bytes, which are converted 
    \end{array}
 
 .. _binary-vternop:
-.. _binary-laneidx:
 
 The |SHUFFLE| instruction is also followed by the encoding of 16 |laneidx| immediates.
 
 .. math::
    \begin{array}{llclll}
-   \production{lane index} & \Blaneidx &::=&
-     l{:}\Bbyte &\Rightarrow& l \\
    \production{instruction} & \Binstr &::=& \dots \\&&|&
      \hex{FD}~~13{:}\Bu32~~(l{:}\Blaneidx)^{16} &\Rightarrow& \I8X16.\SHUFFLE~l^{16} \\
    \end{array}

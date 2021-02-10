@@ -472,7 +472,15 @@ SIMD memory instructions have optional offset and alignment immediates, like the
      \text{v128.load64\_splat}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{64\_splat}~m \\ &&|&
      \text{v128.load32\_zero}~~m{:}\Tmemarg_4 &\Rightarrow& \V128.\LOAD\K{32\_zero}~m \\ &&|&
      \text{v128.load64\_zero}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{64\_zero}~m \\ &&|&
-     \text{v128.store}~~m{:}\Tmemarg_{16} &\Rightarrow& \V128.\STORE~m \\
+     \text{v128.store}~~m{:}\Tmemarg_{16} &\Rightarrow& \V128.\STORE~m \\ &&|&
+     \text{v128.load8\_lane}~~m{:}\Tmemarg_1~~laneidx{:}\Tu8 &\Rightarrow& \V128.\LOAD\K{8\_lane}~m~laneidx \\ &&|&
+     \text{v128.load16\_lane}~~m{:}\Tmemarg_2~~laneidx{:}\Tu8 &\Rightarrow& \V128.\LOAD\K{16\_lane}~m~laneidx \\ &&|&
+     \text{v128.load32\_lane}~~m{:}\Tmemarg_4~~laneidx{:}\Tu8 &\Rightarrow& \V128.\LOAD\K{32\_lane}~m~laneidx \\ &&|&
+     \text{v128.load64\_lane}~~m{:}\Tmemarg_8~~laneidx{:}\Tu8 &\Rightarrow& \V128.\LOAD\K{64\_lane}~m~laneidx \\ &&|&
+     \text{v128.store8\_lane}~~m{:}\Tmemarg_1~~laneidx{:}\Tu8 &\Rightarrow& \V128.\STORE\K{8\_lane}~m~laneidx \\ &&|&
+     \text{v128.store16\_lane}~~m{:}\Tmemarg_2~~laneidx{:}\Tu8 &\Rightarrow& \V128.\STORE\K{16\_lane}~m~laneidx \\ &&|&
+     \text{v128.store32\_lane}~~m{:}\Tmemarg_4~~laneidx{:}\Tu8 &\Rightarrow& \V128.\STORE\K{32\_lane}~m~laneidx \\ &&|&
+     \text{v128.store64\_lane}~~m{:}\Tmemarg_8~~laneidx{:}\Tu8 &\Rightarrow& \V128.\STORE\K{64\_lane}~m~laneidx \\
    \end{array}
 
 SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descriptor, which determines how the following values are parsed.
