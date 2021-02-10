@@ -683,7 +683,11 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{i16x8.min\_u} &\Rightarrow& \I16X8.\VMIN\K{\_u}\\ &&|&
      \text{i16x8.max\_s} &\Rightarrow& \I16X8.\VMAX\K{\_s}\\ &&|&
      \text{i16x8.max\_u} &\Rightarrow& \I16X8.\VMAX\K{\_u}\\ &&|&
-     \text{i16x8.avgr\_u} &\Rightarrow& \I16X8.\AVGR\K{\_u}\\
+     \text{i16x8.avgr\_u} &\Rightarrow& \I16X8.\AVGR\K{\_u}\\ &&|&
+     \text{i16x8.extmul\_low\_i8x16\_s} &\Rightarrow& \I16X8.\EXTMUL\K{\_low\_i8x16\_s}\\ &&|&
+     \text{i16x8.extmul\_high\_i8x16\_s} &\Rightarrow& \I16X8.\EXTMUL\K{\_high\_i8x16\_s}\\ &&|&
+     \text{i16x8.extmul\_low\_i8x16\_u} &\Rightarrow& \I16X8.\EXTMUL\K{\_low\_i8x16\_u}\\ &&|&
+     \text{i16x8.extmul\_high\_i8x16\_u} &\Rightarrow& \I16X8.\EXTMUL\K{\_high\_i8x16\_u}\\
    \end{array}
 
 .. math::
@@ -706,7 +710,11 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{i32x4.min\_s} &\Rightarrow& \I32X4.\VMIN\K{\_s}\\ &&|&
      \text{i32x4.min\_u} &\Rightarrow& \I32X4.\VMIN\K{\_u}\\ &&|&
      \text{i32x4.max\_s} &\Rightarrow& \I32X4.\VMAX\K{\_s}\\ &&|&
-     \text{i32x4.max\_u} &\Rightarrow& \I32X4.\VMAX\K{\_u}\\
+     \text{i32x4.max\_u} &\Rightarrow& \I32X4.\VMAX\K{\_u}\\ &&|&
+     \text{i32x4.extmul\_low\_i16x8\_s} &\Rightarrow& \I32X4.\EXTMUL\K{\_low\_i16x8\_s}\\ &&|&
+     \text{i32x4.extmul\_high\_i16x8\_s} &\Rightarrow& \I32X4.\EXTMUL\K{\_high\_i16x8\_s}\\ &&|&
+     \text{i32x4.extmul\_low\_i16x8\_u} &\Rightarrow& \I32X4.\EXTMUL\K{\_low\_i16x8\_u}\\ &&|&
+     \text{i32x4.extmul\_high\_i16x8\_u} &\Rightarrow& \I32X4.\EXTMUL\K{\_high\_i16x8\_u}\\
   \end{array}
 
 .. math::
@@ -725,7 +733,11 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{i64x2.shr\_u} &\Rightarrow& \I64X2.\VSHR\K{\_u}\\ &&|&
      \text{i64x2.add} &\Rightarrow& \I64X2.\VADD\\ &&|&
      \text{i64x2.sub} &\Rightarrow& \I64X2.\VSUB\\ &&|&
-     \text{i64x2.mul} &\Rightarrow& \I64X2.\VMUL\\
+     \text{i64x2.mul} &\Rightarrow& \I64X2.\VMUL\\ &&|&
+     \text{i64x2.extmul\_low\_i32x4\_s} &\Rightarrow& \I64X2.\EXTMUL\K{\_low\_i32x4\_s}\\ &&|&
+     \text{i64x2.extmul\_high\_i32x4\_s} &\Rightarrow& \I64X2.\EXTMUL\K{\_high\_i32x4\_s}\\ &&|&
+     \text{i64x2.extmul\_low\_i32x4\_u} &\Rightarrow& \I64X2.\EXTMUL\K{\_low\_i32x4\_u}\\ &&|&
+     \text{i64x2.extmul\_high\_i32x4\_u} &\Rightarrow& \I64X2.\EXTMUL\K{\_high\_i32x4\_u}\\
   \end{array}
 
 .. _text-vfunop:

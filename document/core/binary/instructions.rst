@@ -649,7 +649,11 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~151{:}\Bu32 &\Rightarrow& \I16X8.\VMIN\K{\_u} \\ &&|&
      \hex{FD}~~152{:}\Bu32 &\Rightarrow& \I16X8.\VMAX\K{\_s} \\ &&|&
      \hex{FD}~~153{:}\Bu32 &\Rightarrow& \I16X8.\VMAX\K{\_u} \\ &&|&
-     \hex{FD}~~155{:}\Bu32 &\Rightarrow& \I16X8.\AVGR\K{\_u} \\
+     \hex{FD}~~155{:}\Bu32 &\Rightarrow& \I16X8.\AVGR\K{\_u} \\ &&|&
+     \hex{FD}~~154{:}\Bu32 &\Rightarrow& \I16X8.\EXTMUL\K{\_low\_i8x16\_s}\\ &&|&
+     \hex{FD}~~157{:}\Bu32 &\Rightarrow& \I16X8.\EXTMUL\K{\_high\_i8x16\_s}\\ &&|&
+     \hex{FD}~~158{:}\Bu32 &\Rightarrow& \I16X8.\EXTMUL\K{\_low\_i8x16\_u}\\ &&|&
+     \hex{FD}~~159{:}\Bu32 &\Rightarrow& \I16X8.\EXTMUL\K{\_high\_i8x16\_u}\\
    \end{array}
 
 .. math::
@@ -672,7 +676,11 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~182{:}\Bu32 &\Rightarrow& \I32X4.\VMIN\K{\_s} \\ &&|&
      \hex{FD}~~183{:}\Bu32 &\Rightarrow& \I32X4.\VMIN\K{\_u} \\ &&|&
      \hex{FD}~~184{:}\Bu32 &\Rightarrow& \I32X4.\VMAX\K{\_s} \\ &&|&
-     \hex{FD}~~185{:}\Bu32 &\Rightarrow& \I32X4.\VMAX\K{\_u} \\
+     \hex{FD}~~185{:}\Bu32 &\Rightarrow& \I32X4.\VMAX\K{\_u} \\ &&|&
+     \hex{FD}~~187{:}\Bu32 &\Rightarrow& \I32X4.\EXTMUL\K{\_low\_i16x8\_s}\\ &&|&
+     \hex{FD}~~189{:}\Bu32 &\Rightarrow& \I32X4.\EXTMUL\K{\_high\_i16x8\_s}\\ &&|&
+     \hex{FD}~~190{:}\Bu32 &\Rightarrow& \I32X4.\EXTMUL\K{\_low\_i16x8\_u}\\ &&|&
+     \hex{FD}~~191{:}\Bu32 &\Rightarrow& \I32X4.\EXTMUL\K{\_high\_i16x8\_u}\\
   \end{array}
 
 .. math::
@@ -691,7 +699,11 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~206{:}\Bu32 &\Rightarrow& \I64X2.\VADD \\ &&|&
      \hex{FD}~~207{:}\Bu32 &\Rightarrow& \I64X2.\ALLTRUE \\ &&|&
      \hex{FD}~~209{:}\Bu32 &\Rightarrow& \I64X2.\VSUB \\ &&|&
-     \hex{FD}~~213{:}\Bu32 &\Rightarrow& \I64X2.\VMUL \\
+     \hex{FD}~~213{:}\Bu32 &\Rightarrow& \I64X2.\VMUL \\ &&|&
+     \hex{FD}~~210{:}\Bu32 &\Rightarrow& \I64X2.\EXTMUL\K{\_low\_i32x4\_s}\\ &&|&
+     \hex{FD}~~211{:}\Bu32 &\Rightarrow& \I64X2.\EXTMUL\K{\_high\_i32x4\_s}\\ &&|&
+     \hex{FD}~~214{:}\Bu32 &\Rightarrow& \I64X2.\EXTMUL\K{\_low\_i32x4\_u}\\ &&|&
+     \hex{FD}~~215{:}\Bu32 &\Rightarrow& \I64X2.\EXTMUL\K{\_high\_i32x4\_u}\\
   \end{array}
 
 .. _binary-vfunop:

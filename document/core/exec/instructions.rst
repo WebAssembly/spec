@@ -725,7 +725,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
 
 
-.. _exec-simd-extmul:
+.. _exec-simd-vextmul:
 
 :math:`t_2\K{x}N\K{.}\EXTMUL\_\K{low}\_t_1\K{x}M\_\sx` and :math:`t_2\K{x}N\K{.}\EXTMUL\_\K{high}\_t_1\K{x}M\_\sx`
 ..................................................................................................................
