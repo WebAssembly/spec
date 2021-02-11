@@ -153,16 +153,6 @@ let load_simd_packed pack_size simd_load mem a o t =
   | Pack64, PackZero -> v
   | _ -> assert false
 
-let load_simd_lane v pack_size mem a o t laneidx =
-  let n = packed_size pack_size in
-  assert (n < Types.size t);
-  let x = loadn mem a o n in
-  match pack_size with
-  | Pack8 -> V128.I8x16.replace_lane laneidx v (Int64.to_int32 x)
-  | Pack16 -> V128.I16x8.replace_lane laneidx v (Int64.to_int32 x)
-  | Pack32 -> V128.I32x4.replace_lane laneidx v (Int64.to_int32 x)
-  | Pack64 -> V128.I64x2.replace_lane laneidx v x
-
 let store_packed sz mem a o v =
   assert (packed_size sz <= Types.size (Values.type_of v));
   let n = packed_size sz in

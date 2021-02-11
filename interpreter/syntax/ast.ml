@@ -151,6 +151,7 @@ and instr' =
   | SimdLoad of simd_loadop           (* read memory at address *)
   | SimdLoadLane of simd_laneop       (* read single lane at address *)
   | SimdStore of simd_storeop         (* write memory at address *)
+  | SimdStoreLane of simd_laneop      (* write single lane to address *)
   | MemorySize                        (* size of linear memory *)
   | MemoryGrow                        (* grow linear memory *)
   | Const of literal                  (* constant *)

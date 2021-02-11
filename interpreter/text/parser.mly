@@ -204,7 +204,7 @@ let inline_type_explicit (c : context) x ft at =
 %token NOP DROP BLOCK END IF THEN ELSE SELECT LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
-%token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT SIMD_LOAD_LANE
+%token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT SIMD_LOAD_LANE SIMD_STORE_LANE
 %token SPLAT EXTRACT_LANE REPLACE_LANE SHIFT SHUFFLE
 %token CONST V128_CONST UNARY BINARY TERNARY TEST COMPARE CONVERT
 %token UNREACHABLE MEMORY_SIZE MEMORY_GROW
@@ -233,6 +233,7 @@ let inline_type_explicit (c : context) x ft at =
 %token<Ast.instr'> CONVERT
 %token<int option -> Memory.offset -> Ast.instr'> LOAD
 %token<int option -> Memory.offset -> int -> Ast.instr'> SIMD_LOAD_LANE
+%token<int option -> Memory.offset -> int -> Ast.instr'> SIMD_STORE_LANE
 %token<Ast.instr'> SPLAT
 %token<int -> Ast.instr'> EXTRACT_LANE
 %token<int -> Ast.instr'> REPLACE_LANE
@@ -387,6 +388,7 @@ plain_instr :
   | GLOBAL_SET var { fun c -> global_set ($2 c global) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | SIMD_LOAD_LANE offset_opt align_opt NAT { let at = at () in fun c -> $1 $3 $2 (simd_lane_index $4 at) }
+  | SIMD_STORE_LANE offset_opt align_opt NAT { let at = at () in fun c -> $1 $3 $2 (simd_lane_index $4 at) }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
   | MEMORY_SIZE { fun c -> memory_size }
   | MEMORY_GROW { fun c -> memory_grow }

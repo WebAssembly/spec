@@ -289,31 +289,39 @@ rule token = parse
             (ext s i64_load16_s i64_load16_u (opt a 1))
             (ext s i64_load32_s i64_load32_u (opt a 2)) o)) }
   | "v128.load8x8_"(sign as s)
-  { LOAD (fun a o -> (ext s v128_load8x8_s v128_load8x8_u (opt a 3)) o) }
+    { LOAD (fun a o -> (ext s v128_load8x8_s v128_load8x8_u (opt a 3)) o) }
   | "v128.load16x4_"(sign as s)
-  { LOAD (fun a o -> (ext s v128_load16x4_s v128_load16x4_u (opt a 3)) o) }
+    { LOAD (fun a o -> (ext s v128_load16x4_s v128_load16x4_u (opt a 3)) o) }
   | "v128.load32x2_"(sign as s)
-  { LOAD (fun a o -> (ext s v128_load32x2_s v128_load32x2_u (opt a 3)) o) }
+    { LOAD (fun a o -> (ext s v128_load32x2_s v128_load32x2_u (opt a 3)) o) }
   | "v128.load8_splat"
-  { LOAD (fun a o -> (v128_load8_splat (opt a 0)) o) }
+    { LOAD (fun a o -> (v128_load8_splat (opt a 0)) o) }
   | "v128.load16_splat"
-  { LOAD (fun a o -> (v128_load16_splat (opt a 1)) o) }
+    { LOAD (fun a o -> (v128_load16_splat (opt a 1)) o) }
   | "v128.load32_splat"
-  { LOAD (fun a o -> (v128_load32_splat (opt a 2)) o) }
+    { LOAD (fun a o -> (v128_load32_splat (opt a 2)) o) }
   | "v128.load64_splat"
-  { LOAD (fun a o -> (v128_load64_splat (opt a 3)) o) }
+    { LOAD (fun a o -> (v128_load64_splat (opt a 3)) o) }
   | "v128.load32_zero"
-  { LOAD (fun a o -> (v128_load32_zero (opt a 2)) o) }
+    { LOAD (fun a o -> (v128_load32_zero (opt a 2)) o) }
   | "v128.load64_zero"
-  { LOAD (fun a o -> (v128_load64_zero (opt a 3)) o) }
+    { LOAD (fun a o -> (v128_load64_zero (opt a 3)) o) }
   | "v128.load8_lane"
-  { SIMD_LOAD_LANE (fun a o i -> (v128_load8_lane (opt a 0)) o i) }
+    { SIMD_LOAD_LANE (fun a o i -> (v128_load8_lane (opt a 0)) o i) }
   | "v128.load16_lane"
-  { SIMD_LOAD_LANE (fun a o i -> (v128_load16_lane (opt a 1)) o i) }
+    { SIMD_LOAD_LANE (fun a o i -> (v128_load16_lane (opt a 1)) o i) }
   | "v128.load32_lane"
-  { SIMD_LOAD_LANE (fun a o i -> (v128_load32_lane (opt a 2)) o i) }
+    { SIMD_LOAD_LANE (fun a o i -> (v128_load32_lane (opt a 2)) o i) }
   | "v128.load64_lane"
-  { SIMD_LOAD_LANE (fun a o i -> (v128_load64_lane (opt a 3)) o i) }
+    { SIMD_LOAD_LANE (fun a o i -> (v128_load64_lane (opt a 3)) o i) }
+  | "v128.store8_lane"
+    { SIMD_STORE_LANE (fun a o i -> (v128_store8_lane (opt a 0)) o i) }
+  | "v128.store16_lane"
+    { SIMD_STORE_LANE (fun a o i -> (v128_store16_lane (opt a 1)) o i) }
+  | "v128.store32_lane"
+    { SIMD_STORE_LANE (fun a o i -> (v128_store32_lane (opt a 2)) o i) }
+  | "v128.store64_lane"
+    { SIMD_STORE_LANE (fun a o i -> (v128_store64_lane (opt a 3)) o i) }
   | (ixx as t)".store"(mem_size as sz)
     { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
       STORE (fun a o ->

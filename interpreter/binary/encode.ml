@@ -248,6 +248,15 @@ let encode m =
 
       | SimdStore ({ty = V128Type; _} as mo) -> simd_op 0x0bl; memop mo
 
+      | SimdStoreLane ({ty = V128Type; sz = Some Pack8; _} as mo, i) ->
+        simd_op 0x5cl; memop mo; u8 i;
+      | SimdStoreLane ({ty = V128Type; sz = Some Pack16; _} as mo, i) ->
+        simd_op 0x5dl; memop mo; u8 i;
+      | SimdStoreLane ({ty = V128Type; sz = Some Pack32; _} as mo, i) ->
+        simd_op 0x5el; memop mo; u8 i;
+      | SimdStoreLane ({ty = V128Type; sz = Some Pack64; _} as mo, i) ->
+        simd_op 0x5fl; memop mo; u8 i;
+
       | MemorySize -> op 0x3f; u8 0x00
       | MemoryGrow -> op 0x40; u8 0x00
 
