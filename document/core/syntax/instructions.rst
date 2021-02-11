@@ -236,6 +236,7 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{i32x4.}\viunop ~|~
      \K{i64x2.}\viunop \\&&|&
      \K{i8x16.}\VPOPCNT \\&&|&
+     \K{i16x8.}\Q15MULRSAT\K{\_s} \\ &&|&
      \fshape\K{.}\vfunop \\&&|&
      \ishape\K{.}\vitestop \\ &&|&
      \ishape\K{.}\BITMASK \\ &&|&
@@ -390,7 +391,8 @@ Occasionally, it is convenient to group operators together according to the foll
      \viminmaxop ~|~ \visatbinop \\&&|&
      \SWIZZLE ~|~
      \VMUL ~|~
-     \AVGR\K{\_u} \\
+     \AVGR\K{\_u} ~|~
+     \Q15MULRSAT\K{\_s} \\
    \production{conversion operator} & \vcvtop &::=&
      \VTRUNC\K{\_sat} ~|~
      \VCONVERT \\

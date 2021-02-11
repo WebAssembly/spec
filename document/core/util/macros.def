@@ -426,6 +426,7 @@
 .. |EXTMUL| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{extmul}}
 .. |VTRUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{trunc}}
 .. |VCONVERT| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{convert}}
+.. |Q15MULRSAT| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{q15mulr\_sat}}
 
 
 .. Instructions, non-terminals
@@ -1033,6 +1034,7 @@
 .. |isubsatu| mathdef:: \xref{exec/numerics}{op-isubsat_u}{\F{isubsat\_u}}
 .. |isubsats| mathdef:: \xref{exec/numerics}{op-isubsat_s}{\F{isubsat\_s}}
 .. |iavgru| mathdef:: \xref{exec/numerics}{op-iavgr_u}{\F{iavgr\_u}}
+.. |iq15mulrsats| mathdef:: \xref{exec/numerics}{op-iq15mulrsat_s}{\F{iq15mulrsat\_s}}
 
 .. |fadd| mathdef:: \xref{exec/numerics}{op-fadd}{\F{fadd}}
 .. |fsub| mathdef:: \xref{exec/numerics}{op-fsub}{\F{fsub}}

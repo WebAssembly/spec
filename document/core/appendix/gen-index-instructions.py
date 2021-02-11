@@ -457,6 +457,7 @@ INSTRUCTIONS = [
     Instruction(r'\I16X8.\VMAX\K{\_s}', r'\hex{FD}~~152', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-imax_s'),
     Instruction(r'\I16X8.\VMAX\K{\_u}', r'\hex{FD}~~153', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-imax_u'),
     Instruction(r'\I16X8.\AVGR\K{\_u}', r'\hex{FD}~~155', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-iavgr_u'),
+    Instruction(r'\I16X8.\Q15MULRSAT\K{\_s}', r'\hex{FD}~~156', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-iq15mulrsat_s'),
     Instruction(r'\I16X8.\EXTMUL\K{\_low\_i8x16\_s}', r'\hex{FD}~~154', r'[\V128~\V128] \to [\V128]', r'valid-simd-vextmul', r'exec-simd-vextmul'),
     Instruction(r'\I16X8.\EXTMUL\K{\_high\_i8x16\_s}', r'\hex{FD}~~157', r'[\V128~\V128] \to [\V128]', r'valid-simd-vextmul', r'exec-simd-vextmul'),
     Instruction(r'\I16X8.\EXTMUL\K{\_low\_i8x16\_u}', r'\hex{FD}~~158', r'[\V128~\V128] \to [\V128]', r'valid-simd-vextmul', r'exec-simd-vextmul'),

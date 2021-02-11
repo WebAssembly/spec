@@ -897,7 +897,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 .. _op-iavgr_u:
 
 :math:`\iavgru_N(i_1, i_2)`
-.............................
+...........................
 
 * Let :math:`j` be the result of adding :math:`i_1`, :math:`i_2`, and :math:`1`.
 
@@ -909,6 +909,17 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
    \end{array}
 
 
+.. _op-iq15mulrsat_s:
+
+:math:`\iq15mulrsats_N(i_1, i_2)`
+.................................
+
+* Return the result of :math:`\sats_N(\ishrs_N(i_1 \cdot i_2 + 2^{14}, 15))`.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \iq15mulrsats_N(i_1, i_2) &=& \sats_N(\ishrs_N(i_1 \cdot i_2 + 2^{14}, 15))
+   \end{array}
 
 
 .. index:: floating-point, IEEE 754
