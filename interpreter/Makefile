@@ -112,22 +112,36 @@ $(WINMAKE):	clean
 
 # Executing test suite
 
-.PHONY:		test debugtest
+TESTDIR =	../test/core
+TESTFILES =	$(shell cd $(TESTDIR); ls *.wast)
+TESTS =		$(TESTFILES:%.wast=%)
+
+.PHONY:		test debugtest partest
 
 test:		$(OPT)
-		../test/core/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',)
+		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',)
 debugtest:	$(UNOPT)
-		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',)
+		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',)
 
 test/%:		$(OPT)
-		../test/core/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
+		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$(@F).wast
 debugtest/%:	$(UNOPT)
-		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(@:debugtest/%=../test/core/%.wast)
+		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$(@F).wast
 
 run/%:		$(OPT)
-		./$(OPT) $(@:run/%=../test/core/%.wast)
+		./$(OPT) $(TESTDIR)/$(@F).wast
 debug/%:	$(UNOPT)
-		./$(UNOPT) $(@:debug/%=../test/core/%.wast)
+		./$(UNOPT) $(TESTDIR)/$(@F).wast
+
+partest: 	$(TESTS:%=quiettest/%)
+		@echo All tests passed.
+
+quiettest/%:	$(OPT)
+		@ ( \
+		  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@F:%=$(TESTDIR)/%.wast) && \
+		  rm $(@F).out \
+		) || \
+		cat $(@F).out || rm $(@F).out || exit 1
 
 
 # Miscellaneous targets
