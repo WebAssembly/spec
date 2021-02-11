@@ -148,8 +148,8 @@ In that case, all existing operand types are purged from the value stack, in ord
 
 .. index:: opcode
 
-Validation of Instruction Sequences
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Validation of Opcode Sequences
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following function shows the validation of a number of representative instructions that manipulate the stack.
 Other instructions are checked in a similar manner.
