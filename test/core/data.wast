@@ -303,7 +303,7 @@
     "\05\03\01"                             ;; memory section
     "\00\00"                                ;; memory 0
     "\0b\07\01"                             ;; data section
-    "\02\01\41\00\0b"                       ;; data segment 0 for memory 1
+    "\02\01\41\00\0b"                       ;; active data segment 0 for memory 1
     "\00"                                   ;; empty vec(byte)
   )
   "unknown memory 1"
@@ -314,7 +314,7 @@
   (module binary
     "\00asm" "\01\00\00\00"
     "\0b\06\01"                             ;; data section
-    "\00\41\00\0b"                          ;; data segment 0 for memory 0
+    "\00\41\00\0b"                          ;; active data segment 0 for memory 0
     "\00"                                   ;; empty vec(byte)
   )
   "unknown memory 0"
@@ -325,7 +325,7 @@
   (module binary
     "\00asm" "\01\00\00\00"
     "\0b\07\01"                             ;; data section
-    "\02\01\41\00\0b"                       ;; data segment 0 for memory 1
+    "\02\01\41\00\0b"                       ;; active data segment 0 for memory 1
     "\00"                                   ;; empty vec(byte)
   )
   "unknown memory 1"
@@ -383,6 +383,40 @@
 )
 
 (assert_invalid
+  (module 
+    (memory 1)
+    (data (offset (;empty instruction sequence;)))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (memory 1)
+    (data (offset (i32.const 0) (i32.const 0)))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (global (import "test" "global-i32") i32)
+    (memory 1)
+    (data (offset (global.get 0) (global.get 0)))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (global (import "test" "global-i32") i32)
+    (memory 1)
+    (data (offset (global.get 0) (i32.const 0)))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
   (module
     (memory 1)
     (data (i32.ctz (i32.const 0)))
@@ -419,3 +453,29 @@
 ;;   (module (memory 1) (data (global.get $g)) (global $g (mut i32) (i32.const 0)))
 ;;   "constant expression required"
 ;; )
+
+(assert_invalid
+   (module 
+     (memory 1)
+     (data (global.get 0))
+   )
+   "unknown global 0"
+)
+
+(assert_invalid
+   (module
+     (global (import "test" "global-i32") i32)
+     (memory 1)
+     (data (global.get 1))
+   )
+   "unknown global 1"
+)
+
+(assert_invalid
+   (module 
+     (global (import "test" "global-mut-i32") (mut i32))
+     (memory 1)
+     (data (global.get 0))
+   )
+   "constant expression required"
+)

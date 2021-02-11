@@ -319,7 +319,7 @@ INSTRUCTIONS = [
     Instruction(r'\I32.\TRUNC\K{\_sat\_}\F64\K{\_u}', r'\hex{FC}~\hex{03}', r'[\F64] \to [\I32]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat_u'),
     Instruction(r'\I64.\TRUNC\K{\_sat\_}\F32\K{\_s}', r'\hex{FC}~\hex{04}', r'[\F32] \to [\I64]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat_s'),
     Instruction(r'\I64.\TRUNC\K{\_sat\_}\F32\K{\_u}', r'\hex{FC}~\hex{05}', r'[\F32] \to [\I64]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat_u'),
-    Instruction(r'\I64.\TRUNC\K{\_sat}\_\F64\K{\_s}', r'\hex{FC}~\hex{06}', r'[\F64] \to [\I64]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat_s'),
+    Instruction(r'\I64.\TRUNC\K{\_sat\_}\F64\K{\_s}', r'\hex{FC}~\hex{06}', r'[\F64] \to [\I64]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat_s'),
     Instruction(r'\I64.\TRUNC\K{\_sat\_}\F64\K{\_u}', r'\hex{FC}~\hex{07}', r'[\F64] \to [\I64]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat_u'),
     Instruction(r'\MEMORYINIT', r'\hex{FC}~\hex{08}', r'[\I32~\I32~\I32] \to []', r'valid-memory.init', r'exec-memory.init'),
     Instruction(r'\DATADROP', r'\hex{FC}~\hex{09}', r'[] \to []', r'valid-data.drop', r'exec-data.drop'),
