@@ -959,6 +959,23 @@
   "integer too large"
 )
 
+;; Local number is unsigned 32 bit
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section
+    "\03\02\01\00"             ;; Function section
+    "\0a\0c\01"                ;; Code section
+
+    ;; function 0
+    "\0a\02"
+    "\80\80\80\80\10\7f"       ;; 0x100000000 i32
+    "\02\7e"                   ;; 0x00000002 i64
+    "\0b"                      ;; end
+  )
+  "integer too large"
+)
+
 ;; No more than 2^32-1 locals.
 (assert_malformed
   (module binary
