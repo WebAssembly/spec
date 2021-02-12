@@ -791,10 +791,16 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 .. math::
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
-     \text{i32x4.trunc\_sat\_f32x4\_s} &\Rightarrow& \I32X4.\TRUNC\K{\_sat\_f32x4\_s}\\ &&|&
-     \text{i32x4.trunc\_sat\_f32x4\_u} &\Rightarrow& \I32X4.\TRUNC\K{\_sat\_f32x4\_u}\\ &&|&
+     \text{i32x4.trunc\_sat\_f32x4\_s} &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f32x4\_s}\\ &&|&
+     \text{i32x4.trunc\_sat\_f32x4\_u} &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f32x4\_u}\\ &&|&
+     \text{i32x4.trunc\_sat\_f64x2\_s\_zero} &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f64x2\_s\_zero}\\ &&|&
+     \text{i32x4.trunc\_sat\_f64x2\_u\_zero} &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f64x2\_u\_zero}\\ &&|&
      \text{f32x4.convert\_i32x4\_s} &\Rightarrow& \F32X4.\CONVERT\K{\_i32x4\_s}\\ &&|&
-     \text{f32x4.convert\_i32x4\_u} &\Rightarrow& \F32X4.\CONVERT\K{\_i32x4\_u}\\
+     \text{f32x4.convert\_i32x4\_u} &\Rightarrow& \F32X4.\CONVERT\K{\_i32x4\_u}\\ &&|&
+     \text{f64x2.convert\_low\_i32x4\_s} &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_s}\\  &&|&
+     \text{f64x2.convert\_low\_i32x4\_u} &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_u}\\ &&|&
+     \text{f32x4.demote\_f64x2\_zero} &\Rightarrow& \F32X4.\VDEMOTE\K{\_f64x2\_zero}\\ &&|&
+     \text{f64x2.promote\_low\_f32x4} &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\ &&|&
    \end{array}
 
 

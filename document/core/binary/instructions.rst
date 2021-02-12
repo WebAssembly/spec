@@ -762,7 +762,13 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~248{:}\Bu32 &\Rightarrow& \I32X4.\TRUNC\K{\_sat\_f32x4\_s} \\ &&|&
      \hex{FD}~~249{:}\Bu32 &\Rightarrow& \I32X4.\TRUNC\K{\_sat\_f32x4\_u} \\ &&|&
      \hex{FD}~~250{:}\Bu32 &\Rightarrow& \F32X4.\CONVERT\K{\_i32x4\_s} \\ &&|&
-     \hex{FD}~~251{:}\Bu32 &\Rightarrow& \F32X4.\CONVERT\K{\_i32x4\_u} \\
+     \hex{FD}~~251{:}\Bu32 &\Rightarrow& \F32X4.\CONVERT\K{\_i32x4\_u} \\ &&|&
+     \hex{FD}~~85{:}\Bu32 &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f64x2\_s\_zero}\\ &&|&
+     \hex{FD}~~86{:}\Bu32 &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f64x2\_u\_zero}\\ &&|&
+     \hex{FD}~~83{:}\Bu32 &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_s}\\  &&|&
+     \hex{FD}~~84{:}\Bu32 &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_u}\\ &&|&
+     \hex{FD}~~87{:}\Bu32 &\Rightarrow& \F32X4.\VDEMOTE\K{\_f64x2\_zero}\\ &&|&
+     \hex{FD}~~105{:}\Bu32 &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\
    \end{array}
 
 

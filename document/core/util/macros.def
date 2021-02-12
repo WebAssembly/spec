@@ -431,6 +431,8 @@
 .. |VCONVERT| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{convert}}
 .. |Q15MULRSAT| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{q15mulr\_sat}}
 .. |EXTADDPAIRWISE| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{extadd\_pairwise}}
+.. |VDEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{demote}}
+.. |VPROMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{promote}}
 
 
 .. Instructions, non-terminals
@@ -458,7 +460,6 @@
 .. |vunop| mathdef:: \xref{syntax/instructions}{syntax-vunop}{\X{vunop}}
 .. |vbinop| mathdef:: \xref{syntax/instructions}{syntax-vbinop}{\X{vbinop}}
 .. |vternop| mathdef:: \xref{syntax/instructions}{syntax-vternop}{\X{vternop}}
-.. |vextend| mathdef:: \xref{syntax/instructions}{syntax-vextend}{\X{vextend}}
 .. |vcvtop| mathdef:: \xref{syntax/instructions}{syntax-vcvtop}{\X{vcvtop}}
 .. |vextmul| mathdef:: \xref{syntax/instructions}{syntax-vextmul}{\X{vextmul}}
 

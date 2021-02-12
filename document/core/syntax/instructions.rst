@@ -270,8 +270,9 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{i16x8.}\EXTADDPAIRWISE\K{\_i8x16\_}\sx ~|~
      \K{i32x4.}\EXTADDPAIRWISE\K{\_i16x8\_}\sx \\ &&|&
      \fshape\K{.}\vfbinop \\&&|&
-     \K{i32x4.}\VTRUNC\K{\_sat\_f32x4\_}\sx \\ &&|&
-     \K{f32x4.}\VCONVERT\K{\_i32x4\_}\sx \\&&|&
+     \K{i32x4.}\VTRUNC\K{\_sat\_f32x4\_}\sx ~|~ \K{i32x4.}\VTRUNC\K{\_sat\_f64x2\_}\sx\K{\_zero} \\&&|&
+     \K{f32x4.}\VCONVERT\K{\_i32x4\_}\sx ~|~ \K{f32x4.}\VDEMOTE\K{\_f64x2\_zero} \\&&|&
+     \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}sx ~|~ \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\&&|&
      \dots \\
    \production{SIMD unary operator} & \vsunop &::=&
      \K{not} \\
@@ -374,7 +375,7 @@ For the other SIMD instructions, the use of two's complement for the signed inte
 
 .. _syntax-vunop:
 .. _syntax-vbinop:
-.. _syntax-vextend:
+.. _syntax-vcvtop:
 .. _syntax-vextmul:
 .. _syntax-vcvtop:
 
@@ -399,13 +400,13 @@ Occasionally, it is convenient to group operators together according to the foll
      \Q15MULRSAT\K{\_s} \\
    \production{conversion operator} & \vcvtop &::=&
      \VTRUNC\K{\_sat} ~|~
-     \VCONVERT \\
-   \production{extend operator} & \vextend &::=&
-     \VEXTEND\K{\_low\_}\shape\K{\_}\sx ~|~
-     \VEXTEND\K{\_high\_}\shape\K{\_}\sx \\
+     \VEXTEND ~|~
+     \VCONVERT ~|~
+     \VDEMOTE ~|~
+     \VPROMOTE \\
    \production{extmul operator} & \vextmul &::=&
-     \EXTMUL\K{\_low\_}\ishape\K{\_}\sx ~|~
-     \EXTMUL\K{\_high\_}\ishape\K{\_}\sx \\
+     \EXTMUL\K{\_low} ~|~
+     \EXTMUL\K{\_high} \\
    \end{array}
 
 
