@@ -306,6 +306,7 @@ let simd_prefix s =
   | 0x52l -> v128_bitselect
   | 0x55l -> i32x4_trunc_sat_f64x2_s_zero
   | 0x56l -> i32x4_trunc_sat_f64x2_u_zero
+  | 0x57l -> f32x4_demote_f64x2_zero
   | 0x58l ->
     let a, o = memop s in
     let lane = u8 s in
@@ -348,6 +349,7 @@ let simd_prefix s =
   | 0x6dl -> i8x16_shr_u
   | 0x65l -> i8x16_narrow_i16x8_s
   | 0x66l -> i8x16_narrow_i16x8_u
+  | 0x69l -> f64x2_promote_low_f32x4
   | 0x6el -> i8x16_add
   | 0x6fl -> i8x16_add_sat_s
   | 0x70l -> i8x16_add_sat_u

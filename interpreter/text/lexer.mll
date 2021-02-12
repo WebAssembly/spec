@@ -554,6 +554,10 @@ rule token = parse
   { UNARY (ext s i32x4_trunc_sat_f32x4_s i32x4_trunc_sat_f32x4_u) }
   | "i32x4.trunc_sat_f64x2_"(sign as s)"_zero"
   { UNARY (ext s i32x4_trunc_sat_f64x2_s_zero i32x4_trunc_sat_f64x2_u_zero) }
+  | "f64x2.promote_low_f32x4"
+    { UNARY f64x2_promote_low_f32x4 }
+  | "f32x4.demote_f64x2_zero"
+    { UNARY f32x4_demote_f64x2_zero }
   | "f32x4.convert_i32x4_"(sign as s)
   { UNARY (ext s f32x4_convert_i32x4_s f32x4_convert_i32x4_u) }
   | "i8x16.narrow_i16x8_"(sign as s)

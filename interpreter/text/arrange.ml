@@ -230,6 +230,7 @@ struct
     | F32x4 Floor -> "f32x4.floor"
     | F32x4 Trunc -> "f32x4.trunc"
     | F32x4 Nearest -> "f32x4.nearest"
+    | F32x4 DemoteF64x2Zero  -> "f32x4.demote_f64x2_zero"
     | F64x2 Ceil -> "f64x2.ceil"
     | F64x2 Floor -> "f64x2.floor"
     | F64x2 Trunc -> "f64x2.trunc"
@@ -242,6 +243,7 @@ struct
     | F64x2 Abs -> "f64x2.abs"
     | F64x2 Neg -> "f64x2.neg"
     | F64x2 Sqrt -> "f64x2.sqrt"
+    | F64x2 PromoteLowF32x4  -> "f64x2.promote_low_f32x4"
     | V128 Not -> "v128.not"
     | _ -> failwith "Unimplemented v128 unop"
 

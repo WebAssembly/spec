@@ -50,6 +50,7 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
       | F32x4 Nearest -> to_value (SXX.F32x4.nearest (of_value 1 v))
       | F32x4 ConvertI32x4S -> to_value (SXX.F32x4_convert.convert_i32x4_s (of_value 1 v))
       | F32x4 ConvertI32x4U -> to_value (SXX.F32x4_convert.convert_i32x4_u (of_value 1 v))
+      | F32x4 DemoteF64x2Zero -> to_value (SXX.F32x4_convert.demote_f64x2_zero (of_value 1 v))
       | F64x2 Abs -> to_value (SXX.F64x2.abs (of_value 1 v))
       | F64x2 Neg -> to_value (SXX.F64x2.neg (of_value 1 v))
       | F64x2 Sqrt -> to_value (SXX.F64x2.sqrt (of_value 1 v))
@@ -57,6 +58,7 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
       | F64x2 Floor -> to_value (SXX.F64x2.floor (of_value 1 v))
       | F64x2 Trunc -> to_value (SXX.F64x2.trunc (of_value 1 v))
       | F64x2 Nearest -> to_value (SXX.F64x2.nearest (of_value 1 v))
+      | F64x2 PromoteLowF32x4 -> to_value (SXX.F64x2_convert.promote_low_f32x4 (of_value 1 v))
       | V128 Not -> to_value (SXX.V128.lognot (of_value 1 v))
       | _ -> assert false
 

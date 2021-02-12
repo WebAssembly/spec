@@ -60,6 +60,7 @@ struct
   type funop = Abs | Neg | Sqrt
              | Ceil | Floor | Trunc | Nearest
              | ConvertI32x4S | ConvertI32x4U
+             | DemoteF64x2Zero | PromoteLowF32x4
   type fbinop = Add | Sub | Mul | Div | Min | Max | Pmin | Pmax
               | Eq | Ne | Lt | Le | Gt | Ge
   type vunop = Not
