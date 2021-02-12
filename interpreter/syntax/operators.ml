@@ -413,6 +413,7 @@ let i64x2_ge_s = Binary (V128 V128Op.(I64x2 GeS))
 let i64x2_abs = Unary (V128 V128Op.(I64x2 Abs))
 let i64x2_neg = Unary (V128 V128Op.(I64x2 Neg))
 let i64x2_bitmask = SimdBitmask Simd.I64x2
+let i64x2_all_true = Test (V128 V128Op.(I64x2 AllTrue))
 let i64x2_add = Binary (V128 V128Op.(I64x2 Add))
 let i64x2_sub = Binary (V128 V128Op.(I64x2 Sub))
 let i64x2_mul = Binary (V128 V128Op.(I64x2 Mul))

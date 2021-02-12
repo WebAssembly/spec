@@ -538,8 +538,7 @@ rule token = parse
   | "i8x16.popcnt"
     { UNARY i8x16_popcnt }
   | (simd_int_shape as s)".all_true"
-    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
-      UNARY (simd_int_op s i8x16_all_true i16x8_all_true i32x4_all_true unreachable) }
+    { UNARY (simd_int_op s i8x16_all_true i16x8_all_true i32x4_all_true i64x2_all_true) }
   | (simd_int_shape as s)".bitmask"
     { UNARY (simd_int_op s i8x16_bitmask i16x8_bitmask i32x4_bitmask i64x2_bitmask) }
   | (simd_int_shape as s)".shl"

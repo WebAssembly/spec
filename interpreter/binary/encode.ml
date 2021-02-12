@@ -274,6 +274,7 @@ let encode m =
       | Test (V128 V128Op.(I8x16 AllTrue)) -> simd_op 0x63l
       | Test (V128 V128Op.(I16x8 AllTrue)) -> simd_op 0x83l
       | Test (V128 V128Op.(I32x4 AllTrue)) -> simd_op 0xa3l
+      | Test (V128 V128Op.(I64x2 AllTrue)) -> simd_op 0xcfl
       | Test (V128 _) -> assert false
 
       | Compare (I32 I32Op.Eq) -> op 0x46

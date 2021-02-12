@@ -194,6 +194,7 @@ struct
     | I8x16 AllTrue -> "i8x16.all_true"
     | I16x8 AllTrue -> "i16x8.all_true"
     | I32x4 AllTrue -> "i32x4.all_true"
+    | I64x2 AllTrue -> "i64x2.all_true"
     | V128 AnyTrue -> "v128.any_true"
     | _ -> assert false
 

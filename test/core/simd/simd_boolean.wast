@@ -13,6 +13,7 @@
   (func (export "i32x4.all_true") (param $0 v128) (result i32) (i32x4.all_true (local.get $0)))
   (func (export "i32x4.bitmask") (param $0 v128) (result i32) (i32x4.bitmask (local.get $0)))
 
+  (func (export "i64x2.all_true") (param $0 v128) (result i32) (i64x2.all_true (local.get $0)))
   (func (export "i64x2.bitmask") (param $0 v128) (result i32) (i64x2.bitmask (local.get $0)))
 )
 
@@ -158,6 +159,25 @@
 (assert_return (invoke "i32x4.bitmask" (v128.const i32x4 -1 0 1 0xF))
                                         (i32.const 0x00000001))
 
+;; i64x2
+(assert_return (invoke "i64x2.all_true" (v128.const i64x2 0 0))
+                                        (i32.const 0))
+(assert_return (invoke "i64x2.all_true" (v128.const i64x2 0 1))
+                                        (i32.const 0))
+(assert_return (invoke "i64x2.all_true" (v128.const i64x2 1 0))
+                                        (i32.const 0))
+(assert_return (invoke "i64x2.all_true" (v128.const i64x2 1 1))
+                                        (i32.const 1))
+(assert_return (invoke "i64x2.all_true" (v128.const i64x2 -1 0))
+                                        (i32.const 0))
+(assert_return (invoke "i64x2.all_true" (v128.const i64x2 0x00 0x00))
+                                        (i32.const 0))
+(assert_return (invoke "i64x2.all_true" (v128.const i64x2 0xFF 0xFF))
+                                        (i32.const 1))
+(assert_return (invoke "i64x2.all_true" (v128.const i64x2 0xAB 0xAB))
+                                        (i32.const 1))
+(assert_return (invoke "i64x2.all_true" (v128.const i64x2 0x55 0x55))
+                                        (i32.const 1))
 (assert_return (invoke "i64x2.bitmask" (v128.const i64x2 0xFFFFFFFF_FFFFFFFF 0xFFFFFFFF_FFFFFFFF))
                                         (i32.const 0x00000003))
 (assert_return (invoke "i64x2.bitmask" (v128.const i64x2 -1 0xF))

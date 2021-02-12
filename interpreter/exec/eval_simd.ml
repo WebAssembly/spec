@@ -192,6 +192,7 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
     | I8x16 AllTrue -> SXX.I8x16.all_true
     | I16x8 AllTrue -> SXX.I16x8.all_true
     | I32x4 AllTrue -> SXX.I32x4.all_true
+    | I64x2 AllTrue -> SXX.I64x2.all_true
     | _ -> assert false
     in fun v -> f (of_value 1 v)
 
