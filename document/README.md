@@ -88,7 +88,7 @@ You will also need `npm` and `yarn` for all the LaTeX goodness. `npm` might alre
 
 ```
 npm install -g yarn
-cd document/core
+cd document
 make -C core bikeshed
 ```
 
