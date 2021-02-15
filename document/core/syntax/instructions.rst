@@ -268,8 +268,8 @@ Instructions in this group are concerned with tables :ref:`table <syntax-table>`
      \TABLESIZE~\tableidx \\&&|&
      \TABLEGROW~\tableidx \\&&|&
      \TABLEFILL~\tableidx \\&&|&
-     \TABLECOPY \\&&|&
-     \TABLEINIT~\elemidx \\&&|&
+     \TABLECOPY~\tableidx~\tableidx \\&&|&
+     \TABLEINIT~\tableidx~\elemidx \\&&|&
      \ELEMDROP~\elemidx \\
    \end{array}
 
@@ -281,7 +281,7 @@ It also takes an initialization value for the newly allocated entries.
 
 The |TABLEFILL| instruction sets all entries in a range to a given value.
 
-The |TABLECOPY| instruction copies elements from a source table region to a possibly overlapping destination region.
+The |TABLECOPY| instruction copies elements from a source table region to a possibly overlapping destination region; the first index denotes the destination.
 The |TABLEINIT| instruction copies elements from a :ref:`passive element segment <syntax-elem>` into a table.
 The |ELEMDROP| instruction prevents further use of a passive element segment. This instruction is intended to be used as an optimization hint. After an element segment is dropped its elements can no longer be retrieved, so the memory used by this segment may be freed.
 

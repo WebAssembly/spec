@@ -170,7 +170,7 @@ Table Instructions
      \hex{26}~~x{:}\Btableidx &\Rightarrow& \TABLESET~x \\ &&|&
      \hex{FC}~~12{:}\Bu32~~y{:}\Belemidx~~x{:}\Btableidx &\Rightarrow& \TABLEINIT~x~y \\ &&|&
      \hex{FC}~~13{:}\Bu32~~x{:}\Belemidx &\Rightarrow& \ELEMDROP~x \\ &&|&
-     \hex{FC}~~14{:}\Bu32~~x{:}\Btableidx~~y{:}\Btableidx &\Rightarrow& \TABLECOPY~x~y \\
+     \hex{FC}~~14{:}\Bu32~~x{:}\Btableidx~~y{:}\Btableidx &\Rightarrow& \TABLECOPY~x~y \\ &&|&
      \hex{FC}~~15{:}\Bu32~~x{:}\Btableidx &\Rightarrow& \TABLEGROW~x \\ &&|&
      \hex{FC}~~16{:}\Bu32~~x{:}\Btableidx &\Rightarrow& \TABLESIZE~x \\ &&|&
      \hex{FC}~~17{:}\Bu32~~x{:}\Btableidx &\Rightarrow& \TABLEFILL~x \\
