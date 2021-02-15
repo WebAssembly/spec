@@ -57,7 +57,7 @@ The section contains a vector of *function hints* each representing the branch h
 
 Each *function hints* structure consists of
 
-* the funcidx of the function the hints are referring to,
+* the index of the function the hints are referring to,
 * a vector of *branch hints* for the function.
 
 Each *branch hint* structure consists of

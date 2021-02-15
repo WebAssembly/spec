@@ -1267,6 +1267,11 @@
 .. |Bfuncnamesubsec| mathdef:: \xref{appendix/custom}{binary-funcnamesec}{\B{funcnamesubsec}}
 .. |Blocalnamesubsec| mathdef:: \xref{appendix/custom}{binary-localnamesec}{\B{localnamesubsec}}
 
+.. Branch Hints Section, non-terminals
+
+.. |Bfuncbranchhints| mathdef:: \xref{appendix/custom}{binary-branchhintssec}{\B{funcbranchhints}}
+.. |Bbranchhint| mathdef:: \xref{appendix/custom}{binary-branchhintsec}{\B{branchhint}}
+.. |Bbranchhintkind| mathdef:: \xref{appendix/custom}{binary-branchhintsec}{\B{branchhintkind}}
 
 .. Annotations
 .. -----------
