@@ -67,6 +67,6 @@ Each *branch hint* structure consists of
 
 | value | meaning           |
 |-------|-------------------|
-| 0     | likely taken      |
-| 1     | likely not taken  |
+| 0     | likely not taken  |
+| 1     | likely  taken     |
 
