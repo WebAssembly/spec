@@ -354,6 +354,7 @@ let i16x8_extmul_low_i8x16_s = Binary (V128 V128Op.(I16x8 ExtMulLowS))
 let i16x8_extmul_high_i8x16_s = Binary (V128 V128Op.(I16x8 ExtMulHighS))
 let i16x8_extmul_low_i8x16_u = Binary (V128 V128Op.(I16x8 ExtMulLowU))
 let i16x8_extmul_high_i8x16_u = Binary (V128 V128Op.(I16x8 ExtMulHighU))
+let i16x8_q15mulr_sat_s = Binary (V128 V128Op.(I16x8 Q15MulRSatS))
 
 let i32x4_splat = Convert (V128 V128Op.(I32x4 Splat))
 let i32x4_extract_lane imm = SimdExtract (V128Op.I32x4 (ZX, imm))

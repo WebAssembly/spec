@@ -596,6 +596,8 @@ rule token = parse
     { BINARY (ext s i64x2_extmul_low_i32x4_s i64x2_extmul_low_i32x4_u) }
   | "i64x2.extmul_high_i32x4_"(sign as s)
     { BINARY (ext s i64x2_extmul_high_i32x4_s i64x2_extmul_high_i32x4_u) }
+  | "i16x8.q15mulr_sat_s"
+    { BINARY i16x8_q15mulr_sat_s }
 
   | (simd_shape as s) { SIMD_SHAPE (simd_shape s) }
 

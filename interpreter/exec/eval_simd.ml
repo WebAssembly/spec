@@ -111,6 +111,7 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
       | I16x8 ExtMulHighS -> SXX.I16x8_convert.extmul_high_s
       | I16x8 ExtMulLowU -> SXX.I16x8_convert.extmul_low_u
       | I16x8 ExtMulHighU -> SXX.I16x8_convert.extmul_high_u
+      | I16x8 Q15MulRSatS -> SXX.I16x8.q15mulr_sat_s
       | I32x4 Add -> SXX.I32x4.add
       | I32x4 Sub -> SXX.I32x4.sub
       | I32x4 MinS -> SXX.I32x4.min_s

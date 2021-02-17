@@ -55,7 +55,7 @@ struct
               | Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
               | Swizzle | Shuffle of int list | NarrowS | NarrowU
               | AddSatS | AddSatU | SubSatS | SubSatU
-              | DotI16x8S
+              | DotI16x8S | Q15MulRSatS
               | ExtMulLowS | ExtMulHighS | ExtMulLowU | ExtMulHighU
   type funop = Abs | Neg | Sqrt
              | Ceil | Floor | Trunc | Nearest

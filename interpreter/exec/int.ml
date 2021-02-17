@@ -93,6 +93,7 @@ sig
   val add_sat_u : t -> t -> t
   val sub_sat_s : t -> t -> t
   val sub_sat_u : t -> t -> t
+  val q15mulr_sat_s : t -> t -> t
 
   val of_int_s : int -> t
   val of_int_u : int -> t
@@ -288,6 +289,14 @@ struct
   let add_sat_u x y = saturate_u (add (as_unsigned x) (as_unsigned y))
   let sub_sat_s x y = saturate_s (sub x y)
   let sub_sat_u x y = saturate_u (sub (as_unsigned x) (as_unsigned y))
+
+  let q15mulr_sat_s x y =
+    (* mul x64 y64 can overflow int64 when both are int32 min, but this is only
+     * used by i16x8, so we are fine for now. *)
+    assert (Rep.bitwidth < 32);
+    let x64 = Rep.to_int64 x in
+    let y64 = Rep.to_int64 y in
+    Rep.of_int64 Int64.((shift_right (add (mul x64 y64) 0x4000L) 15))
 
   let to_int_s = Rep.to_int
   let to_int_u i = Rep.to_int i land (Rep.to_int Rep.max_int lsl 1) lor 1

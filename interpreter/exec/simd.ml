@@ -90,6 +90,7 @@ sig
   val add_sat_u : t -> t -> t
   val sub_sat_s : t -> t -> t
   val sub_sat_u : t -> t -> t
+  val q15mulr_sat_s : t -> t -> t
 end
 
 (* This signature defines the types and operations SIMD floats can expose. *)
@@ -353,6 +354,8 @@ struct
     let add_sat_u = binop Int.add_sat_u
     let sub_sat_s = binop Int.sub_sat_s
     let sub_sat_u = binop Int.sub_sat_u
+    (* The intermediate will overflow lane.t, so have Int implement this. *)
+    let q15mulr_sat_s = binop Int.q15mulr_sat_s
   end
 
   module V8x16 = struct

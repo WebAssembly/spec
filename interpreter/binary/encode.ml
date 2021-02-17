@@ -486,6 +486,7 @@ let encode m =
       | Binary (V128 V128Op.(I16x8 ExtMulHighS)) -> simd_op 0x9dl
       | Binary (V128 V128Op.(I16x8 ExtMulLowU)) -> simd_op 0x9el
       | Binary (V128 V128Op.(I16x8 ExtMulHighU)) -> simd_op 0x9fl
+      | Binary (V128 V128Op.(I16x8 Q15MulRSatS)) -> simd_op 0x9cl
       | Binary (V128 V128Op.(I32x4 Add)) -> simd_op 0xael
       | Binary (V128 V128Op.(I32x4 Sub)) -> simd_op 0xb1l
       | Binary (V128 V128Op.(I32x4 MinS)) -> simd_op 0xb6l

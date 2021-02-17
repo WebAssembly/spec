@@ -133,8 +133,9 @@ class ArithmeticOp:
         add, sub, mul,
         add_sat_s, add_sat_u,
         sub_sat_s, sub_sat_u,
-        min_s, min_u, max_s, max_u, avgr_u
-        ext_mul_s, ext_mul_u (same as mul)
+        min_s, min_u, max_s, max_u, avgr_u,
+        ext_mul_s, ext_mul_u (same as mul),
+        q15mulr_sat_s
 
         :param operand1: the operand 1, integer or literal string in hex or decimal format
         :param operand2: the operand 2, integer or literal string in hex or decimal format
@@ -170,6 +171,12 @@ class ArithmeticOp:
                 i1 = self.get_valid_value(v1, src_lane, signed=False)
                 i2 = self.get_valid_value(v2, src_lane, signed=False)
             value = i1 * i2
+        elif self.op == 'q15mulr_sat_s':
+            # This should be before 'sat' case.
+            i1 = ArithmeticOp.get_valid_value(v1, src_lane)
+            i2 = ArithmeticOp.get_valid_value(v2, src_lane)
+            result = (i1 * i2 + 0x4000) >> 15
+            return ArithmeticOp.get_valid_value(result, src_lane)
         elif 'sat' in self.op:
             value = self._saturate(v1, v2, src_lane)
             if self.op.endswith('_u'):

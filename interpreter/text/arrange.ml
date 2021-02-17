@@ -312,6 +312,7 @@ struct
     | I16x8 ExtMulHighS -> "i16x8.extmul_high_i8x16_s"
     | I16x8 ExtMulLowU -> "i16x8.extmul_low_i8x16_u"
     | I16x8 ExtMulHighU -> "i16x8.extmul_high_i8x16_u"
+    | I16x8 Q15MulRSatS -> "i16x8.q15mulr_sat_s"
     | I32x4 Add -> "i32x4.add"
     | I32x4 Sub -> "i32x4.sub"
     | I32x4 Mul -> "i32x4.mul"
