@@ -388,6 +388,8 @@ let encode m =
       | Unary (V128 V128Op.(F32x4 ConvertI32x4U)) -> simd_op 0xfbl
       | Unary (V128 V128Op.(F32x4 DemoteF64x2Zero)) -> simd_op 0x57l
       | Unary (V128 V128Op.(F64x2 PromoteLowF32x4)) -> simd_op 0x69l
+      | Unary (V128 V128Op.(F64x2 ConvertI32x4S)) -> simd_op 0x53l
+      | Unary (V128 V128Op.(F64x2 ConvertI32x4U)) -> simd_op 0x54l
       | Unary (V128 _) -> failwith "unimplemented V128 Unary op"
 
       | Binary (I32 I32Op.Add) -> op 0x6a

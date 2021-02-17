@@ -560,6 +560,8 @@ rule token = parse
     { UNARY f32x4_demote_f64x2_zero }
   | "f32x4.convert_i32x4_"(sign as s)
   { UNARY (ext s f32x4_convert_i32x4_s f32x4_convert_i32x4_u) }
+  | "f64x2.convert_low_i32x4_"(sign as s)
+  { UNARY (ext s f64x2_convert_low_i32x4_s f64x2_convert_low_i32x4_u) }
   | "i8x16.narrow_i16x8_"(sign as s)
   { BINARY (ext s i8x16_narrow_i16x8_s i8x16_narrow_i16x8_u) }
   | "i16x8.narrow_i32x4_"(sign as s)

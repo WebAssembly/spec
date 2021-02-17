@@ -217,6 +217,8 @@ sig
 
   module F64x2_convert : sig
     val promote_low_f32x4 : t -> t
+    val convert_i32x4_s : t -> t
+    val convert_i32x4_u : t -> t
   end
 end
 
@@ -509,6 +511,9 @@ struct
   end
 
   module F64x2_convert = struct
+    let convert f v = Rep.of_f64x2 (List.map f (Lib.List.take 2 (Rep.to_i32x4 v)))
+    let convert_i32x4_s = convert F64_convert.convert_i32_s
+    let convert_i32x4_u = convert F64_convert.convert_i32_u
     let promote_low_f32x4 v =
       Rep.(of_f64x2 (List.map F64_convert.promote_f32 (Lib.List.take 2 (to_f32x4 v))))
   end

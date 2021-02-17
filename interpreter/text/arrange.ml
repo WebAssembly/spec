@@ -244,6 +244,8 @@ struct
     | F64x2 Neg -> "f64x2.neg"
     | F64x2 Sqrt -> "f64x2.sqrt"
     | F64x2 PromoteLowF32x4  -> "f64x2.promote_low_f32x4"
+    | F64x2 ConvertI32x4S -> "f64x2.convert_low_i32x4_s"
+    | F64x2 ConvertI32x4U -> "f64x2.convert_low_i32x4_u"
     | V128 Not -> "v128.not"
     | _ -> failwith "Unimplemented v128 unop"
 

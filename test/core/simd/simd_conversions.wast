@@ -7,6 +7,11 @@
   (func (export "f32x4.convert_i32x4_u") (param v128) (result v128)
     (f32x4.convert_i32x4_u (local.get 0)))
 
+  (func (export "f64x2.convert_low_i32x4_s") (param v128) (result v128)
+    (f64x2.convert_low_i32x4_s (local.get 0)))
+  (func (export "f64x2.convert_low_i32x4_u") (param v128) (result v128)
+    (f64x2.convert_low_i32x4_u (local.get 0)))
+
   ;; Integer to integer narrowing
   (func (export "i8x16.narrow_i16x8_s") (param v128 v128) (result v128)
     (i8x16.narrow_i16x8_s (local.get 0) (local.get 1)))
@@ -241,6 +246,36 @@
                                                (v128.const f32x4 16777220.0 16777220.0 16777220.0 16777220.0))
 (assert_return (invoke "f32x4.convert_i32x4_u" (v128.const i32x4 0 -1 0x7fffffff 0x80000000))
                                                (v128.const f32x4 0.0 4294967295.0 2147483647.0 2147483648.0))
+
+;; f64x2.convert_i32x4_s
+;; constants copied from test/core/conversions.wast.
+
+(assert_return (invoke "f64x2.convert_low_i32x4_s" (v128.const i32x4 1 1 0 0))
+                                                   (v128.const f64x2 1.0 1.0))
+(assert_return (invoke "f64x2.convert_low_i32x4_s" (v128.const i32x4 -1 -1 0 0))
+                                                   (v128.const f64x2 -1.0 -1.0))
+(assert_return (invoke "f64x2.convert_low_i32x4_s" (v128.const i32x4 0 0 0 0))
+                                                   (v128.const f64x2 0.0 0.0))
+(assert_return (invoke "f64x2.convert_low_i32x4_s" (v128.const i32x4 2147483647 2147483647 0 0))
+                                                   (v128.const f64x2 2147483647 2147483647))
+(assert_return (invoke "f64x2.convert_low_i32x4_s" (v128.const i32x4 -2147483648 -2147483648 0 0))
+                                                   (v128.const f64x2 -2147483648 -2147483648))
+(assert_return (invoke "f64x2.convert_low_i32x4_s" (v128.const i32x4 987654321 987654321 0 0))
+                                                   (v128.const f64x2 987654321 987654321))
+
+;; f64x2.convert_i32x4_u
+;; constants copied from test/core/conversions.wast.
+
+(assert_return (invoke "f64x2.convert_low_i32x4_u" (v128.const i32x4 1 1 0 0))
+                                                   (v128.const f64x2 1.0 1.0))
+(assert_return (invoke "f64x2.convert_low_i32x4_u" (v128.const i32x4 0 0 0 0))
+                                                   (v128.const f64x2 0.0 0.0))
+(assert_return (invoke "f64x2.convert_low_i32x4_u" (v128.const i32x4 2147483647 2147483647 0 0))
+                                                   (v128.const f64x2 2147483647 2147483647))
+(assert_return (invoke "f64x2.convert_low_i32x4_u" (v128.const i32x4 -2147483648 -2147483648 0 0))
+                                                   (v128.const f64x2 2147483648 2147483648))
+(assert_return (invoke "f64x2.convert_low_i32x4_u" (v128.const i32x4 0xffffffff 0xffffffff 0 0))
+                                                   (v128.const f64x2 4294967295.0 4294967295.0))
 
 ;; Integer to integer narrowing
 ;; i8x16.narrow_i16x8_s
