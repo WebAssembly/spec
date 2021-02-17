@@ -40,9 +40,9 @@ instruction:
 
  - `i32.add`
  - `i32.sub`
+ - `i32.mul`
  - `i64.add`
  - `i64.sub`
- - `i32.mul`
  - `i64.mul`
 
 [spec]: https://webassembly.github.io/spec/core/valid/instructions.html#constant-expressions
