@@ -15,6 +15,20 @@ class FloatingPointOp:
     def binary_op(self, op: str, p1: str, p2: str) -> str:
         pass
 
+    def of_string(self, value: str) -> float:
+        if '0x' in value:
+            return float.fromhex(value)
+        else:
+            return float(value)
+
+    def is_hex(self, value:str) -> bool:
+        return '0x' in value
+
+    def to_single_precision(self, value: float) -> str:
+        # Python only has doubles, when reading in float, we need to convert to
+        # single-precision first.
+        return struct.unpack('f', struct.pack('f', value))[0]
+
 
 class FloatingPointArithOp(FloatingPointOp):
     """Common arithmetic ops for both f32x4 and f64x2:
@@ -29,19 +43,9 @@ class FloatingPointArithOp(FloatingPointOp):
         :param p2: float number in hex
         :return:
         """
-        if '0x' in p1 or '0x' in p2:
-            hex_form = True
-        else:
-            hex_form = False
-
-        if '0x' in p1:
-            f1 = float.fromhex(p1)
-        else:
-            f1 = float(p1)
-        if '0x' in p2:
-            f2 = float.fromhex(p2)
-        else:
-            f2 = float(p2)
+        hex_form = self.is_hex(p1) or self.is_hex(p2)
+        f1 = self.of_string(p1)
+        f2 = self.of_string(p2)
 
         if op == 'add':
             if 'inf' in p1 and 'inf' in p2 and p1 != p2:
@@ -145,15 +149,8 @@ class FloatingPointSimpleOp(FloatingPointOp):
         :param p2: float number in hex
         :return:
         """
-        if '0x' in p1:
-            f1 = float.fromhex(p1)
-        else:
-            f1 = float(p1)
-
-        if '0x' in p2:
-            f2 = float.fromhex(p2)
-        else:
-            f2 = float(p2)
+        f1 = self.of_string(p1)
+        f2 = self.of_string(p2)
 
         if '-nan' in [p1, p2] and 'nan' in [p1, p2]:
             return p1
@@ -205,10 +202,7 @@ class FloatingPointSimpleOp(FloatingPointOp):
         :param p1: float number in hex
         :return:
         """
-        if '0x' in p1:
-            f1 = float.fromhex(p1)
-        else:
-            f1 = float(p1)
+        f1 = self.of_string(p1)
         if op == 'abs':
             if hex_form:
                 return abs(f1).hex()
@@ -239,15 +233,8 @@ class FloatingPointCmpOp(FloatingPointOp):
         if 'nan' in p1.lower() or 'nan' in p2.lower():
             return '0'
 
-        if '0x' in p1:
-            f1 = float.fromhex(p1)
-        else:
-            f1 = float(p1)
-
-        if '0x' in p2:
-            f2 = float.fromhex(p2)
-        else:
-            f2 = float(p2)
+        f1 = self.of_string(p1)
+        f2 = self.of_string(p2)
 
         if op == 'eq':
             return '-1' if f1 == f2 else '0'
@@ -278,10 +265,7 @@ class FloatingPointRoundingOp(FloatingPointOp):
         :param p1: float number in hex
         :return:
         """
-        if '0x' in p1:
-            f1 = float.fromhex(p1)
-        else:
-            f1 = float(p1)
+        f1 = self.of_string(p1)
 
         if 'nan' in p1:
             return 'nan'

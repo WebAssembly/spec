@@ -120,6 +120,12 @@ class ArithmeticOp:
         elif self.op == 'popcnt':
             result = self.get_valid_value(v, lane)
             return str(bin(result % lane.mod).count('1'))
+        elif self.op == 'sat_s':
+            # Don't call get_valid_value, it will truncate results.
+            return max(lane.min, min(v, lane.max))
+        elif self.op == 'sat_u':
+            # Don't call get_valid_value, it will truncate results.
+            return max(0, min(v, lane.mask))
         else:
             raise Exception('Unknown unary operation')
 

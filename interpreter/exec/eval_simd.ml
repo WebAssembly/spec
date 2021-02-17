@@ -31,6 +31,10 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
       | I32x4 WidenHighU -> to_value (SXX.I32x4_convert.widen_high_u (of_value 1 v))
       | I32x4 TruncSatF32x4S -> to_value (SXX.I32x4_convert.trunc_sat_f32x4_s (of_value 1 v))
       | I32x4 TruncSatF32x4U -> to_value (SXX.I32x4_convert.trunc_sat_f32x4_u (of_value 1 v))
+      | I32x4 TruncSatF64x2SZero ->
+        to_value (SXX.I32x4_convert.trunc_sat_f64x2_s_zero (of_value 1 v))
+      | I32x4 TruncSatF64x2UZero ->
+        to_value (SXX.I32x4_convert.trunc_sat_f64x2_u_zero (of_value 1 v))
       | I64x2 Abs -> to_value (SXX.I64x2.abs (of_value 1 v))
       | I64x2 Neg -> to_value (SXX.I64x2.neg (of_value 1 v))
       | I64x2 WidenLowS -> to_value (SXX.I64x2_convert.widen_low_s (of_value 1 v))

@@ -381,6 +381,8 @@ let encode m =
       | Unary (V128 V128Op.(F64x2 Sqrt)) -> simd_op 0xefl
       | Unary (V128 V128Op.(I32x4 TruncSatF32x4S)) -> simd_op 0xf8l
       | Unary (V128 V128Op.(I32x4 TruncSatF32x4U)) -> simd_op 0xf9l
+      | Unary (V128 V128Op.(I32x4 TruncSatF64x2SZero)) -> simd_op 0x55l
+      | Unary (V128 V128Op.(I32x4 TruncSatF64x2UZero)) -> simd_op 0x56l
       | Unary (V128 V128Op.(F32x4 ConvertI32x4S)) -> simd_op 0xfal
       | Unary (V128 V128Op.(F32x4 ConvertI32x4U)) -> simd_op 0xfbl
       | Unary (V128 _) -> failwith "unimplemented V128 Unary op"

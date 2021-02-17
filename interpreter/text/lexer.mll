@@ -553,6 +553,8 @@ rule token = parse
       UNARY (simd_int_op s i8x16_avgr_u i16x8_avgr_u unreachable unreachable) }
   | "i32x4.trunc_sat_f32x4_"(sign as s)
   { UNARY (ext s i32x4_trunc_sat_f32x4_s i32x4_trunc_sat_f32x4_u) }
+  | "i32x4.trunc_sat_f64x2_"(sign as s)"_zero"
+  { UNARY (ext s i32x4_trunc_sat_f64x2_s_zero i32x4_trunc_sat_f64x2_u_zero) }
   | "f32x4.convert_i32x4_"(sign as s)
   { UNARY (ext s f32x4_convert_i32x4_s f32x4_convert_i32x4_u) }
   | "i8x16.narrow_i16x8_"(sign as s)

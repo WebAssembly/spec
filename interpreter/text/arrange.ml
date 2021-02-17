@@ -217,6 +217,8 @@ struct
     | I32x4 WidenHighU -> "i32x4.widen_high_i16x8_u"
     | I32x4 TruncSatF32x4S -> "i32x4.trunc_sat_f32x4_s"
     | I32x4 TruncSatF32x4U -> "i32x4.trunc_sat_f32x4_u"
+    | I32x4 TruncSatF64x2SZero -> "i32x4.trunc_sat_f64x2_s_zero"
+    | I32x4 TruncSatF64x2UZero -> "i32x4.trunc_sat_f64x2_u_zero"
     | I64x2 Abs -> "i64x2.abs"
     | I64x2 Neg -> "i64x2.neg"
     | I64x2 WidenLowS -> "i64x2.widen_low_i32x4_s"
