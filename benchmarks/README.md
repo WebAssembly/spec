@@ -16,10 +16,9 @@ We are benchmarking 2 similar wasm modules, all exporting a 'test' function:
 
 run the benchmark:
 
-`$D8_PATH/d8 --experimental-wasm-gc --experimental-wasm-typed_funcref test.js`
+`$D8_PATH/d8 test.js`
 
 Useful d8 options:
 - `--print-wasm-code` to see the generated assembly code
-- `--trace-wasm-ast-end=100` to dump the AST of the wasm file, since normal dump tools do not work with br_on_null
 
 NOTE: In order to run the branch hinting version, you need a modified v8 (see [this repo](https://github.com/yuri91/v8)).
