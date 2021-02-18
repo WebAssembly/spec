@@ -381,8 +381,8 @@ let check_func (c : context) (f : func) =
 
 let is_const (c : context) (e : instr) =
   match e.it with
-  | Const _ -> true
-  | Binary (Values.I32 I32Op.(Add | Sub | Mul)) -> true
+  | Const _
+  | Binary (Values.I32 I32Op.(Add | Sub | Mul))
   | Binary (Values.I64 I64Op.(Add | Sub | Mul)) -> true
   | GlobalGet x -> let GlobalType (_, mut) = global c x in mut = Immutable
   | _ -> false
