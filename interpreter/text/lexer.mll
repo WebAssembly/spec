@@ -606,6 +606,11 @@ rule token = parse
   | "i16x8.q15mulr_sat_s"
     { BINARY i16x8_q15mulr_sat_s }
 
+  | "i16x8.extadd_pairwise_i8x16_"(sign as s)
+    { UNARY (ext s i16x8_extadd_pairwise_i8x16_s i16x8_extadd_pairwise_i8x16_u) }
+  | "i32x4.extadd_pairwise_i16x8_"(sign as s)
+    { UNARY (ext s i32x4_extadd_pairwise_i16x8_s i32x4_extadd_pairwise_i16x8_u) }
+
   | (simd_shape as s) { SIMD_SHAPE (simd_shape s) }
 
   | name as s { VAR s }

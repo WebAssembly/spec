@@ -38,6 +38,7 @@ SUBMODULES = (
     'simd_int_to_int_widen',
     'simd_int_trunc_sat_float',
     'simd_i16x8_q15mulr_sat_s',
+    'simd_extadd_pairwise',
 )
 
 

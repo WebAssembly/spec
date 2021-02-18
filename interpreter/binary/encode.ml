@@ -354,12 +354,16 @@ let encode m =
       | Unary (V128 V128Op.(I16x8 WidenHighS)) -> simd_op 0x88l
       | Unary (V128 V128Op.(I16x8 WidenLowU)) -> simd_op 0x89l
       | Unary (V128 V128Op.(I16x8 WidenHighU)) -> simd_op 0x8al
+      | Unary (V128 V128Op.(I16x8 ExtAddPairwiseS)) -> simd_op 0xc2l
+      | Unary (V128 V128Op.(I16x8 ExtAddPairwiseU)) -> simd_op 0xc3l
       | Unary (V128 V128Op.(I32x4 Abs)) -> simd_op 0xa0l
       | Unary (V128 V128Op.(I32x4 Neg)) -> simd_op 0xa1l
       | Unary (V128 V128Op.(I32x4 WidenLowS)) -> simd_op 0xa7l
       | Unary (V128 V128Op.(I32x4 WidenHighS)) -> simd_op 0xa8l
       | Unary (V128 V128Op.(I32x4 WidenLowU)) -> simd_op 0xa9l
       | Unary (V128 V128Op.(I32x4 WidenHighU)) -> simd_op 0xaal
+      | Unary (V128 V128Op.(I32x4 ExtAddPairwiseS)) -> simd_op 0xa5l
+      | Unary (V128 V128Op.(I32x4 ExtAddPairwiseU)) -> simd_op 0xa6l
       | Unary (V128 V128Op.(I64x2 Abs)) -> simd_op 0xa2l
       | Unary (V128 V128Op.(I64x2 Neg)) -> simd_op 0xc1l
       | Unary (V128 V128Op.(I64x2 WidenLowS)) -> simd_op 0xc7l

@@ -183,6 +183,8 @@ sig
     val extmul_high_s : t -> t -> t
     val extmul_low_u : t -> t -> t
     val extmul_high_u : t -> t -> t
+    val extadd_pairwise_s : t -> t
+    val extadd_pairwise_u : t -> t
   end
   module I32x4_convert : sig
     val trunc_sat_f32x4_s : t -> t
@@ -198,6 +200,8 @@ sig
     val extmul_high_s : t -> t -> t
     val extmul_low_u : t -> t -> t
     val extmul_high_u : t -> t -> t
+    val extadd_pairwise_s : t -> t
+    val extadd_pairwise_u : t -> t
   end
   module I64x2_convert : sig
     val widen_low_s : t -> t
@@ -438,17 +442,23 @@ struct
     let narrow_s = narrow Rep.to_i32x4 Rep.of_i16x8 I16.saturate_s
     let narrow_u = narrow Rep.to_i32x4 Rep.of_i16x8 I16.saturate_u
 
-    let widen take_or_drop mask x =
-      Rep.of_i16x8 (List.map (Int32.logand mask) (take_or_drop 8 (Rep.to_i8x16 x)))
-    let widen_low_s = widen Lib.List.take 0xffffffffl
-    let widen_high_s = widen Lib.List.drop 0xffffffffl
-    let widen_low_u = widen Lib.List.take 0xffl
-    let widen_high_u = widen Lib.List.drop 0xffl
+    let ext_s = Int32.logand 0xffffffffl
+    let ext_u = Int32.logand 0xffl
+
+    let widen take_or_drop ext x = Rep.of_i16x8 (List.map ext (take_or_drop 8 (Rep.to_i8x16 x)))
+    let widen_low_s = widen Lib.List.take ext_s
+    let widen_high_s = widen Lib.List.drop ext_s
+    let widen_low_u = widen Lib.List.take ext_u
+    let widen_high_u = widen Lib.List.drop ext_u
 
     let extmul_low_s x y = I16x8.mul (widen_low_s x) (widen_low_s y)
     let extmul_high_s x y = I16x8.mul (widen_high_s x) (widen_high_s y)
     let extmul_low_u x y = I16x8.mul (widen_low_u x) (widen_low_u y)
     let extmul_high_u x y = I16x8.mul (widen_high_u x) (widen_high_u y)
+
+    let extadd ext x y = Int32.add (ext x) (ext y)
+    let extadd_pairwise_s x = Rep.of_i16x8 (Lib.List.pairwise (extadd ext_s) (Rep.to_i8x16 x))
+    let extadd_pairwise_u x = Rep.of_i16x8 (Lib.List.pairwise (extadd ext_u) (Rep.to_i8x16 x))
   end
 
   module I32x4_convert = struct
@@ -461,12 +471,15 @@ struct
     let trunc_sat_f64x2_s_zero = convert_zero I32_convert.trunc_sat_f64_s
     let trunc_sat_f64x2_u_zero = convert_zero I32_convert.trunc_sat_f64_u
 
-    let widen take_or_drop mask x =
-      Rep.of_i32x4 (List.map (Int32.logand mask) (take_or_drop 4 (Rep.to_i16x8 x)))
-    let widen_low_s = widen Lib.List.take 0xffffffffl
-    let widen_high_s = widen Lib.List.drop 0xffffffffl
-    let widen_low_u = widen Lib.List.take 0xffffl
-    let widen_high_u = widen Lib.List.drop 0xffffl
+    let ext_s = Int32.logand 0xffffffffl
+    let ext_u = Int32.logand 0xffffl
+
+    let widen take_or_drop ext x =
+      Rep.of_i32x4 (List.map ext (take_or_drop 4 (Rep.to_i16x8 x)))
+    let widen_low_s = widen Lib.List.take ext_s
+    let widen_high_s = widen Lib.List.drop ext_s
+    let widen_low_u = widen Lib.List.take ext_u
+    let widen_high_u = widen Lib.List.drop ext_u
 
     let dot_i16x8_s x y =
       let xs = Rep.to_i16x8 x in
@@ -483,6 +496,10 @@ struct
     let extmul_high_s x y = I32x4.mul (widen_high_s x) (widen_high_s y)
     let extmul_low_u x y = I32x4.mul (widen_low_u x) (widen_low_u y)
     let extmul_high_u x y = I32x4.mul (widen_high_u x) (widen_high_u y)
+
+    let extadd ext x y = Int32.add (ext x) (ext y)
+    let extadd_pairwise_s x = Rep.of_i32x4 (Lib.List.pairwise (extadd ext_s) (Rep.to_i16x8 x))
+    let extadd_pairwise_u x = Rep.of_i32x4 (Lib.List.pairwise (extadd ext_u) (Rep.to_i16x8 x))
   end
 
   module I64x2_convert = struct

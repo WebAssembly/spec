@@ -401,6 +401,8 @@ let simd_prefix s =
   | 0xa2l -> i64x2_abs
   | 0xa3l -> i32x4_all_true
   | 0xa4l -> i32x4_bitmask
+  | 0xa5l -> i32x4_extadd_pairwise_i16x8_s
+  | 0xa6l -> i32x4_extadd_pairwise_i16x8_u
   | 0xa7l -> i32x4_widen_low_i16x8_s
   | 0xa8l -> i32x4_widen_high_i16x8_s
   | 0xa9l -> i32x4_widen_low_i16x8_u
@@ -422,6 +424,8 @@ let simd_prefix s =
   | 0xbfl -> i32x4_extmul_high_i16x8_u
   | 0xc0l -> i64x2_eq
   | 0xc1l -> i64x2_neg
+  | 0xc2l -> i16x8_extadd_pairwise_i8x16_s
+  | 0xc3l -> i16x8_extadd_pairwise_i8x16_u
   | 0xc4l -> i64x2_bitmask
   | 0xc7l -> i64x2_widen_low_i32x4_s
   | 0xc8l -> i64x2_widen_high_i32x4_s

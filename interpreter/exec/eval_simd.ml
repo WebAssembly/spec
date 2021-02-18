@@ -23,6 +23,8 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
       | I16x8 WidenHighS -> to_value (SXX.I16x8_convert.widen_high_s (of_value 1 v))
       | I16x8 WidenLowU -> to_value (SXX.I16x8_convert.widen_low_u (of_value 1 v))
       | I16x8 WidenHighU -> to_value (SXX.I16x8_convert.widen_high_u (of_value 1 v))
+      | I16x8 ExtAddPairwiseS -> to_value (SXX.I16x8_convert.extadd_pairwise_s (of_value 1 v))
+      | I16x8 ExtAddPairwiseU -> to_value (SXX.I16x8_convert.extadd_pairwise_u (of_value 1 v))
       | I32x4 Abs -> to_value (SXX.I32x4.abs (of_value 1 v))
       | I32x4 Neg -> to_value (SXX.I32x4.neg (of_value 1 v))
       | I32x4 WidenLowS -> to_value (SXX.I32x4_convert.widen_low_s (of_value 1 v))
@@ -35,6 +37,8 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
         to_value (SXX.I32x4_convert.trunc_sat_f64x2_s_zero (of_value 1 v))
       | I32x4 TruncSatF64x2UZero ->
         to_value (SXX.I32x4_convert.trunc_sat_f64x2_u_zero (of_value 1 v))
+      | I32x4 ExtAddPairwiseS -> to_value (SXX.I32x4_convert.extadd_pairwise_s (of_value 1 v))
+      | I32x4 ExtAddPairwiseU -> to_value (SXX.I32x4_convert.extadd_pairwise_u (of_value 1 v))
       | I64x2 Abs -> to_value (SXX.I64x2.abs (of_value 1 v))
       | I64x2 Neg -> to_value (SXX.I64x2.neg (of_value 1 v))
       | I64x2 WidenLowS -> to_value (SXX.I64x2_convert.widen_low_s (of_value 1 v))

@@ -22,6 +22,7 @@ sig
   val index_where : ('a -> bool) -> 'a list -> int option
   val map_filter : ('a -> 'b option) -> 'a list -> 'b list
   val concat_map : ('a -> 'b list) -> 'a list -> 'b list
+  val pairwise : ('a -> 'a -> 'b) -> 'a list -> 'b list
 end
 
 module List32 :
