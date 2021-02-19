@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Generates all integer-to-integer widening test cases.
+Generates all integer-to-integer extension test cases.
 """
 
 from simd import SIMD
@@ -9,25 +9,25 @@ from simd_arithmetic import SimdArithmeticCase
 from test_assert import AssertReturn, AssertInvalid
 
 
-class SimdIntToIntWiden(SimdArithmeticCase):
+class SimdIntToIntExtend(SimdArithmeticCase):
     LANE_TYPE = ""  # unused, can be anything
     BINARY_OPS = ()
     UNARY_OPS = (
-        "i16x8.widen_high_i8x16_s",
-        "i16x8.widen_high_i8x16_u",
-        "i16x8.widen_low_i8x16_s",
-        "i16x8.widen_low_i8x16_u",
-        "i32x4.widen_high_i16x8_s",
-        "i32x4.widen_high_i16x8_u",
-        "i32x4.widen_low_i16x8_s",
-        "i32x4.widen_low_i16x8_u",
-        "i64x2.widen_high_i32x4_s",
-        "i64x2.widen_high_i32x4_u",
-        "i64x2.widen_low_i32x4_s",
-        "i64x2.widen_low_i32x4_u",
+        "i16x8.extend_high_i8x16_s",
+        "i16x8.extend_high_i8x16_u",
+        "i16x8.extend_low_i8x16_s",
+        "i16x8.extend_low_i8x16_u",
+        "i32x4.extend_high_i16x8_s",
+        "i32x4.extend_high_i16x8_u",
+        "i32x4.extend_low_i16x8_s",
+        "i32x4.extend_low_i16x8_u",
+        "i64x2.extend_high_i32x4_s",
+        "i64x2.extend_high_i32x4_u",
+        "i64x2.extend_low_i32x4_s",
+        "i64x2.extend_low_i32x4_u",
     )
 
-    TEST_FUNC_TEMPLATE_HEADER = ";; Tests for int-to-int widening operations.\n"
+    TEST_FUNC_TEMPLATE_HEADER = ";; Tests for int-to-int extension operations.\n"
 
     def op_name(self, op):
         # Override base class implementation, since the lane type is already
@@ -96,7 +96,7 @@ class SimdIntToIntWiden(SimdArithmeticCase):
         return "\n".join(cases)
 
     def gen_test_cases(self):
-        wast_filename = "../simd_int_to_int_widen.wast"
+        wast_filename = "../simd_int_to_int_extend.wast"
         with open(wast_filename, "w") as fp:
             fp.write(self.get_all_cases())
 
@@ -105,8 +105,8 @@ class SimdIntToIntWiden(SimdArithmeticCase):
 
 
 def gen_test_cases():
-    simd_int_to_int_widen = SimdIntToIntWiden()
-    simd_int_to_int_widen.gen_test_cases()
+    simd_int_to_int_extend = SimdIntToIntExtend()
+    simd_int_to_int_extend.gen_test_cases()
 
 
 if __name__ == "__main__":

@@ -139,12 +139,12 @@ let load_simd_packed pack_size simd_load mem a o t =
   Bytes.set_int64_le b 0 x;
   let v = V128.of_bits (Bytes.to_string b) in
   match pack_size, simd_load with
-  | Pack64, Pack8x8 SX -> V128.I16x8_convert.widen_low_s v
-  | Pack64, Pack8x8 ZX -> V128.I16x8_convert.widen_low_u v
-  | Pack64, Pack16x4 SX -> V128.I32x4_convert.widen_low_s v
-  | Pack64, Pack16x4 ZX -> V128.I32x4_convert.widen_low_u v
-  | Pack64, Pack32x2 SX -> V128.I64x2_convert.widen_low_s v
-  | Pack64, Pack32x2 ZX -> V128.I64x2_convert.widen_low_u v
+  | Pack64, Pack8x8 SX -> V128.I16x8_convert.extend_low_s v
+  | Pack64, Pack8x8 ZX -> V128.I16x8_convert.extend_low_u v
+  | Pack64, Pack16x4 SX -> V128.I32x4_convert.extend_low_s v
+  | Pack64, Pack16x4 ZX -> V128.I32x4_convert.extend_low_u v
+  | Pack64, Pack32x2 SX -> V128.I64x2_convert.extend_low_s v
+  | Pack64, Pack32x2 ZX -> V128.I64x2_convert.extend_low_u v
   | Pack8, PackSplat -> V128.I8x16.splat (I8.of_int_s (Int64.to_int x))
   | Pack16, PackSplat -> V128.I16x8.splat (I16.of_int_s (Int64.to_int x))
   | Pack32, PackSplat -> V128.I32x4.splat (I32.of_int_s (Int64.to_int x))

@@ -566,18 +566,18 @@ rule token = parse
   { BINARY (ext s i8x16_narrow_i16x8_s i8x16_narrow_i16x8_u) }
   | "i16x8.narrow_i32x4_"(sign as s)
   { BINARY (ext s i16x8_narrow_i32x4_s i16x8_narrow_i32x4_u) }
-  | "i16x8.widen_low_i8x16_"(sign as s)
-  { UNARY (ext s i16x8_widen_low_i8x16_s i16x8_widen_low_i8x16_u) }
-  | "i16x8.widen_high_i8x16_"(sign as s)
-  { UNARY (ext s i16x8_widen_high_i8x16_s i16x8_widen_high_i8x16_u) }
-  | "i32x4.widen_low_i16x8_"(sign as s)
-  { UNARY (ext s i32x4_widen_low_i16x8_s i32x4_widen_low_i16x8_u) }
-  | "i32x4.widen_high_i16x8_"(sign as s)
-  { UNARY (ext s i32x4_widen_high_i16x8_s i32x4_widen_high_i16x8_u) }
-  | "i64x2.widen_low_i32x4_"(sign as s)
-  { UNARY (ext s i64x2_widen_low_i32x4_s i64x2_widen_low_i32x4_u) }
-  | "i64x2.widen_high_i32x4_"(sign as s)
-  { UNARY (ext s i64x2_widen_high_i32x4_s i64x2_widen_high_i32x4_u) }
+  | "i16x8.extend_low_i8x16_"(sign as s)
+    { UNARY (ext s i16x8_extend_low_i8x16_s i16x8_extend_low_i8x16_u) }
+  | "i16x8.extend_high_i8x16_"(sign as s)
+    { UNARY (ext s i16x8_extend_high_i8x16_s i16x8_extend_high_i8x16_u) }
+  | "i32x4.extend_low_i16x8_"(sign as s)
+    { UNARY (ext s i32x4_extend_low_i16x8_s i32x4_extend_low_i16x8_u) }
+  | "i32x4.extend_high_i16x8_"(sign as s)
+    { UNARY (ext s i32x4_extend_high_i16x8_s i32x4_extend_high_i16x8_u) }
+  | "i64x2.extend_low_i32x4_"(sign as s)
+    { UNARY (ext s i64x2_extend_low_i32x4_s i64x2_extend_low_i32x4_u) }
+  | "i64x2.extend_high_i32x4_"(sign as s)
+    { UNARY (ext s i64x2_extend_high_i32x4_s i64x2_extend_high_i32x4_u) }
 
   | "i8x16.add_sat_"(sign as s)
   { BINARY (ext s i8x16_add_sat_s i8x16_add_sat_u) }

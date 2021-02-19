@@ -49,7 +49,7 @@ end
 module SimdOp =
 struct
   type iunop = Abs | Neg | TruncSatF32x4S | TruncSatF32x4U
-              | WidenLowS | WidenLowU | WidenHighS | WidenHighU
+              | ExtendLowS | ExtendLowU | ExtendHighS | ExtendHighU
               | Popcnt | TruncSatF64x2SZero | TruncSatF64x2UZero
               | ExtAddPairwiseS | ExtAddPairwiseU
   type ibinop = Add | Sub | MinS | MinU | MaxS | MaxU | Mul | AvgrU
