@@ -195,6 +195,14 @@ have to support 32-bit memory addresses in their ABI.
     ⊦ mem it_1 limits_1 <= mem it_2 limits_2
     ```
 
+* Bounds checking is required to be the same as for 32-bit memories, that is,
+  the index + offset (a `u65`) of a load or store operation is required to be
+  checked against the current memory size and trap if out of range.
+
+  It is expected that the cost of this check remains low, if an implementation
+  can implement the index check with a branch, and the offset separately using a
+  guard page for all smaller offsets. Repeated accesses over the same index and
+  different offsets allow simple elimination of subsequent checks.
 
 ### Binary format
 
