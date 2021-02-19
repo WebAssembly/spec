@@ -12,7 +12,9 @@ resulted.
 
 The [proposed semantics](proposals/simd/SIMD.md) has the details.
 
-Note: this proposal is still being worked out, and rate of changes is high, please consult the [implementation status document](proposals/simd/ImplementationStatus.md) to get an idea of the state of implementation across toolchains and embedders.
+Note: Consult the [implementation status document](proposals/simd/ImplementationStatus.md) to get an idea of the state of implementation across toolchains and embedders.
+
+Usage documentation is being collected at https://emscripten.org/docs/porting/simd.html (make PRs [here](https://github.com/emscripten-core/emscripten/blob/master/site/source/docs/porting/simd.rst)) and may be moved to a more vendor-neutral location in the future.
 
 [Design issue](https://github.com/WebAssembly/proposals/issues/1)
 
