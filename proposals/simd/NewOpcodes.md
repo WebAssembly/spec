@@ -104,10 +104,10 @@
 | i8x16.bitmask                 | 0x64   | i16x8.bitmask             | 0x84   | i32x4.bitmask             | 0xa4   | i64x2.bitmask             | 0xc4   |
 | i8x16.narrow_i16x8_s          | 0x65   | i16x8.narrow_i32x4_s      | 0x85   | ---- narrow ----          | 0xa5   | -------------             | 0xc5   |
 | i8x16.narrow_i16x8_u          | 0x66   | i16x8.narrow_i32x4_u      | 0x86   | ---- narrow ----          | 0xa6   | -------------             | 0xc6   |
-| f32x4.ceil                    | 0x67   | i16x8.widen_low_i8x16_s   | 0x87   | i32x4.widen_low_i16x8_s   | 0xa7   | i64x2.widen_low_i32x4_s   | 0xc7   |
-| f32x4.floor                   | 0x68   | i16x8.widen_high_i8x16_s  | 0x88   | i32x4.widen_high_i16x8_s  | 0xa8   | i64x2.widen_high_i32x4_s  | 0xc8   |
-| f32x4.trunc                   | 0x69   | i16x8.widen_low_i8x16_u   | 0x89   | i32x4.widen_low_i16x8_u   | 0xa9   | i64x2.widen_low_i32x4_u   | 0xc9   |
-| f32x4.nearest                 | 0x6a   | i16x8.widen_high_i8x16_u  | 0x8a   | i32x4.widen_high_i16x8_u  | 0xaa   | i64x2.widen_high_i32x4_u  | 0xca   |
+| f32x4.ceil                    | 0x67   | i16x8.extend_low_i8x16_s  | 0x87   | i32x4.extend_low_i16x8_s  | 0xa7   | i64x2.extend_low_i32x4_s  | 0xc7   |
+| f32x4.floor                   | 0x68   | i16x8.extend_high_i8x16_s | 0x88   | i32x4.extend_high_i16x8_s | 0xa8   | i64x2.extend_high_i32x4_s | 0xc8   |
+| f32x4.trunc                   | 0x69   | i16x8.extend_low_i8x16_u  | 0x89   | i32x4.extend_low_i16x8_u  | 0xa9   | i64x2.extend_low_i32x4_u  | 0xc9   |
+| f32x4.nearest                 | 0x6a   | i16x8.extend_high_i8x16_u | 0x8a   | i32x4.extend_high_i16x8_u | 0xaa   | i64x2.extend_high_i32x4_u | 0xca   |
 | i8x16.shl                     | 0x6b   | i16x8.shl                 | 0x8b   | i32x4.shl                 | 0xab   | i64x2.shl                 | 0xcb   |
 | i8x16.shr_s                   | 0x6c   | i16x8.shr_s               | 0x8c   | i32x4.shr_s               | 0xac   | i64x2.shr_s               | 0xcc   |
 | i8x16.shr_u                   | 0x6d   | i16x8.shr_u               | 0x8d   | i32x4.shr_u               | 0xad   | i64x2.shr_u               | 0xcd   |

@@ -671,9 +671,9 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
 
 
-.. _exec-simd-widen:
+.. _exec-simd-extend:
 
-:math:`t_2\K{x}N\K{.}\WIDEN\_\K{low}\_t_1\K{x}M\_\sx`
+:math:`t_2\K{x}N\K{.}\VEXTEND\_\K{low}\_t_1\K{x}M\_\sx`
 .....................................................
 
 1. Assert: due to :ref:`validation <valid-vitestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
@@ -689,7 +689,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\WIDEN\_\K{low}\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\VEXTEND\_\K{low}\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -699,7 +699,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
 
 
-:math:`t_2\K{x}N\K{.}\WIDEN\_\K{high}\_t_1\K{x}M\_\sx`
+:math:`t_2\K{x}N\K{.}\VEXTEND\_\K{high}\_t_1\K{x}M\_\sx`
 ......................................................
 
 1. Assert: due to :ref:`validation <valid-vitestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
@@ -715,7 +715,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\WIDEN\_\K{high}\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\VEXTEND\_\K{high}\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}

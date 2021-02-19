@@ -640,10 +640,10 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~132{:}\Bu32 &\Rightarrow& \I16X8.\BITMASK \\ &&|&
      \hex{FD}~~133{:}\Bu32 &\Rightarrow& \I16X8.\NARROW\K{\_i32x4\_s} \\ &&|&
      \hex{FD}~~134{:}\Bu32 &\Rightarrow& \I16X8.\NARROW\K{\_i32x4\_u} \\ &&|&
-     \hex{FD}~~135{:}\Bu32 &\Rightarrow& \I16X8.\WIDEN\K{\_low\_i8x16\_s} \\ &&|&
-     \hex{FD}~~136{:}\Bu32 &\Rightarrow& \I16X8.\WIDEN\K{\_high\_i8x16\_s} \\ &&|&
-     \hex{FD}~~137{:}\Bu32 &\Rightarrow& \I16X8.\WIDEN\K{\_low\_i8x16\_u} \\ &&|&
-     \hex{FD}~~138{:}\Bu32 &\Rightarrow& \I16X8.\WIDEN\K{\_high\_i8x16\_u} \\ &&|&
+     \hex{FD}~~135{:}\Bu32 &\Rightarrow& \I16X8.\VEXTEND\K{\_low\_i8x16\_s} \\ &&|&
+     \hex{FD}~~136{:}\Bu32 &\Rightarrow& \I16X8.\VEXTEND\K{\_high\_i8x16\_s} \\ &&|&
+     \hex{FD}~~137{:}\Bu32 &\Rightarrow& \I16X8.\VEXTEND\K{\_low\_i8x16\_u} \\ &&|&
+     \hex{FD}~~138{:}\Bu32 &\Rightarrow& \I16X8.\VEXTEND\K{\_high\_i8x16\_u} \\ &&|&
      \hex{FD}~~139{:}\Bu32 &\Rightarrow& \I16X8.\VSHL \\ &&|&
      \hex{FD}~~140{:}\Bu32 &\Rightarrow& \I16X8.\VSHR\K{\_s} \\ &&|&
      \hex{FD}~~141{:}\Bu32 &\Rightarrow& \I16X8.\VSHR\K{\_u} \\ &&|&
@@ -673,10 +673,10 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~161{:}\Bu32 &\Rightarrow& \I32X4.\VNEG \\ &&|&
      \hex{FD}~~163{:}\Bu32 &\Rightarrow& \I32X4.\ALLTRUE \\ &&|&
      \hex{FD}~~164{:}\Bu32 &\Rightarrow& \I32X4.\BITMASK \\ &&|&
-     \hex{FD}~~167{:}\Bu32 &\Rightarrow& \I32X4.\WIDEN\K{\_low\_i16x8\_s} \\ &&|&
-     \hex{FD}~~168{:}\Bu32 &\Rightarrow& \I32X4.\WIDEN\K{\_high\_i16x8\_s} \\ &&|&
-     \hex{FD}~~169{:}\Bu32 &\Rightarrow& \I32X4.\WIDEN\K{\_low\_i16x8\_u} \\ &&|&
-     \hex{FD}~~170{:}\Bu32 &\Rightarrow& \I32X4.\WIDEN\K{\_high\_i16x8\_u} \\ &&|&
+     \hex{FD}~~167{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_s} \\ &&|&
+     \hex{FD}~~168{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_high\_i16x8\_s} \\ &&|&
+     \hex{FD}~~169{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_u} \\ &&|&
+     \hex{FD}~~170{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_high\_i16x8\_u} \\ &&|&
      \hex{FD}~~171{:}\Bu32 &\Rightarrow& \I32X4.\VSHL \\ &&|&
      \hex{FD}~~172{:}\Bu32 &\Rightarrow& \I32X4.\VSHR\K{\_s} \\ &&|&
      \hex{FD}~~173{:}\Bu32 &\Rightarrow& \I32X4.\VSHR\K{\_u} \\ &&|&
@@ -699,10 +699,10 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~162{:}\Bu32 &\Rightarrow& \I64X2.\VABS \\ &&|&
      \hex{FD}~~193{:}\Bu32 &\Rightarrow& \I64X2.\VNEG \\ &&|&
      \hex{FD}~~196{:}\Bu32 &\Rightarrow& \I64X2.\BITMASK \\ &&|&
-     \hex{FD}~~199{:}\Bu32 &\Rightarrow& \I64X2.\WIDEN\K{\_low\_i32x4\_s} \\ &&|&
-     \hex{FD}~~200{:}\Bu32 &\Rightarrow& \I64X2.\WIDEN\K{\_high\_i32x4\_s} \\ &&|&
-     \hex{FD}~~201{:}\Bu32 &\Rightarrow& \I64X2.\WIDEN\K{\_low\_i32x4\_u} \\ &&|&
-     \hex{FD}~~202{:}\Bu32 &\Rightarrow& \I64X2.\WIDEN\K{\_high\_i32x4\_u} \\ &&|&
+     \hex{FD}~~199{:}\Bu32 &\Rightarrow& \I64X2.\VEXTEND\K{\_low\_i32x4\_s} \\ &&|&
+     \hex{FD}~~200{:}\Bu32 &\Rightarrow& \I64X2.\VEXTEND\K{\_high\_i32x4\_s} \\ &&|&
+     \hex{FD}~~201{:}\Bu32 &\Rightarrow& \I64X2.\VEXTEND\K{\_low\_i32x4\_u} \\ &&|&
+     \hex{FD}~~202{:}\Bu32 &\Rightarrow& \I64X2.\VEXTEND\K{\_high\_i32x4\_u} \\ &&|&
      \hex{FD}~~203{:}\Bu32 &\Rightarrow& \I64X2.\VSHL \\ &&|&
      \hex{FD}~~204{:}\Bu32 &\Rightarrow& \I64X2.\VSHR\K{\_s} \\ &&|&
      \hex{FD}~~205{:}\Bu32 &\Rightarrow& \I64X2.\VSHR\K{\_u} \\ &&|&

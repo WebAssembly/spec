@@ -242,12 +242,12 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \ishape\K{.}\BITMASK \\ &&|&
      \K{i8x16.}\NARROW\K{\_i16x8\_}\sx ~|~
      \K{i16x8.}\NARROW\K{\_i32x4\_}\sx \\&&|&
-     \K{i16x8.}\WIDEN\K{\_low}\K{\_i8x16\_}\sx ~|~
-     \K{i32x4.}\WIDEN\K{\_low}\K{\_i16x8\_}\sx \\&&|&
-     \K{i64x2.}\WIDEN\K{\_low}\K{\_i32x4\_}\sx \\&&|&
-     \K{i16x8.}\WIDEN\K{\_high}\K{\_i8x16\_}\sx ~|~
-     \K{i32x4.}\WIDEN\K{\_high}\K{\_i16x8\_}\sx \\&&|&
-     \K{i64x2.}\WIDEN\K{\_high}\K{\_i32x4\_}\sx \\&&|&
+     \K{i16x8.}\VEXTEND\K{\_low}\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\VEXTEND\K{\_low}\K{\_i16x8\_}\sx \\&&|&
+     \K{i64x2.}\VEXTEND\K{\_low}\K{\_i32x4\_}\sx \\&&|&
+     \K{i16x8.}\VEXTEND\K{\_high}\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\VEXTEND\K{\_high}\K{\_i16x8\_}\sx \\&&|&
+     \K{i64x2.}\VEXTEND\K{\_high}\K{\_i32x4\_}\sx \\&&|&
      \ishape\K{.}\vshiftop \\&&|&
      \ishape\K{.}\vibinop \\&&|&
      \K{i8x16.}\viminmaxop ~|~
@@ -371,7 +371,7 @@ For the other SIMD instructions, the use of two's complement for the signed inte
 
 .. _syntax-vunop:
 .. _syntax-vbinop:
-.. _syntax-vwiden:
+.. _syntax-vextend:
 .. _syntax-vextmul:
 
 Conventions
@@ -396,9 +396,9 @@ Occasionally, it is convenient to group operators together according to the foll
    \production{conversion operator} & \vcvtop &::=&
      \VTRUNC\K{\_sat} ~|~
      \VCONVERT \\
-   \production{widen operator} & \vwiden &::=&
-     \WIDEN\K{\_low\_}\shape\K{\_}\sx ~|~
-     \WIDEN\K{\_high\_}\shape\K{\_}\sx \\
+   \production{extend operator} & \vextend &::=&
+     \VEXTEND\K{\_low\_}\shape\K{\_}\sx ~|~
+     \VEXTEND\K{\_high\_}\shape\K{\_}\sx \\
    \production{extmul operator} & \vextmul &::=&
      \EXTMUL\K{\_low\_}\ishape\K{\_}\sx ~|~
      \EXTMUL\K{\_high\_}\ishape\K{\_}\sx \\

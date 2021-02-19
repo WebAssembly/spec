@@ -435,18 +435,18 @@ def S.neg(a):
 Lane-wise integer extended multiplication producing twice wider result than the inputs.
 
 These instructions provide a more performant equivalent to the following composite operations:
-- `i16x8.extmul_low_i8x16_s(a, b)` is equivalent to `i16x8.mul(i16x8.widen_low_i8x16_s(a), i16x8.widen_low_i8x16_s(b))`.
-- `i16x8.extmul_high_i8x16_s(a, b)` is equivalent to `i16x8.mul(i16x8.widen_high_i8x16_s(a), i16x8.widen_high_i8x16_s(b))`.
-- `i16x8.extmul_low_i8x16_u(a, b)` is equivalent to `i16x8.mul(i16x8.widen_low_i8x16_u(a), i16x8.widen_low_i8x16_u(b))`.
-- `i16x8.extmul_high_i8x16_u(a, b)` is equivalent to `i16x8.mul(i16x8.widen_high_i8x16_u(a), i16x8.widen_high_i8x16_u(b))`.
-- `i32x4.extmul_low_i16x8_s(a, b)` is equivalent to `i32x4.mul(i32x4.widen_low_i16x8_s(a), i32x4.widen_low_i16x8_s(b))`.
-- `i32x4.extmul_high_i16x8_s(a, b)` is equivalent to `i32x4.mul(i32x4.widen_high_i16x8_s(a), i32x4.widen_high_i16x8_s(b))`.
-- `i32x4.extmul_low_i16x8_u(a, b)` is equivalent to `i32x4.mul(i32x4.widen_low_i16x8_u(a), i32x4.widen_low_i16x8_u(b))`.
-- `i32x4.extmul_high_i16x8_u(a, b)` is equivalent to `i32x4.mul(i32x4.widen_high_i16x8_u(a), i32x4.widen_high_i16x8_u(b))`.
-- `i64x2.extmul_low_i32x4_s(a, b)` is equivalent to `i64x2.mul(i64x2.widen_low_i32x4_s(a), i64x2.widen_low_i32x4_s(b))`.
-- `i64x2.extmul_high_i32x4_s(a, b)` is equivalent to `i64x2.mul(i64x2.widen_high_i32x4_s(a), i64x2.widen_high_i32x4_s(b))`.
-- `i64x2.extmul_low_i32x4_u(a, b)` is equivalent to `i64x2.mul(i64x2.widen_low_i32x4_u(a), i64x2.widen_low_i32x4_u(b))`.
-- `i64x2.extmul_high_i32x4_u(a, b)` is equivalent to `i64x2.mul(i64x2.widen_high_i32x4_u(a), i64x2.widen_high_i32x4_u(b))`.
+- `i16x8.extmul_low_i8x16_s(a, b)` is equivalent to `i16x8.mul(i16x8.extend_low_i8x16_s(a), i16x8.extend_low_i8x16_s(b))`.
+- `i16x8.extmul_high_i8x16_s(a, b)` is equivalent to `i16x8.mul(i16x8.extend_high_i8x16_s(a), i16x8.extend_high_i8x16_s(b))`.
+- `i16x8.extmul_low_i8x16_u(a, b)` is equivalent to `i16x8.mul(i16x8.extend_low_i8x16_u(a), i16x8.extend_low_i8x16_u(b))`.
+- `i16x8.extmul_high_i8x16_u(a, b)` is equivalent to `i16x8.mul(i16x8.extend_high_i8x16_u(a), i16x8.extend_high_i8x16_u(b))`.
+- `i32x4.extmul_low_i16x8_s(a, b)` is equivalent to `i32x4.mul(i32x4.extend_low_i16x8_s(a), i32x4.extend_low_i16x8_s(b))`.
+- `i32x4.extmul_high_i16x8_s(a, b)` is equivalent to `i32x4.mul(i32x4.extend_high_i16x8_s(a), i32x4.extend_high_i16x8_s(b))`.
+- `i32x4.extmul_low_i16x8_u(a, b)` is equivalent to `i32x4.mul(i32x4.extend_low_i16x8_u(a), i32x4.extend_low_i16x8_u(b))`.
+- `i32x4.extmul_high_i16x8_u(a, b)` is equivalent to `i32x4.mul(i32x4.extend_high_i16x8_u(a), i32x4.extend_high_i16x8_u(b))`.
+- `i64x2.extmul_low_i32x4_s(a, b)` is equivalent to `i64x2.mul(i64x2.extend_low_i32x4_s(a), i64x2.extend_low_i32x4_s(b))`.
+- `i64x2.extmul_high_i32x4_s(a, b)` is equivalent to `i64x2.mul(i64x2.extend_high_i32x4_s(a), i64x2.extend_high_i32x4_s(b))`.
+- `i64x2.extmul_low_i32x4_u(a, b)` is equivalent to `i64x2.mul(i64x2.extend_low_i32x4_u(a), i64x2.extend_low_i32x4_u(b))`.
+- `i64x2.extmul_high_i32x4_u(a, b)` is equivalent to `i64x2.mul(i64x2.extend_high_i32x4_u(a), i64x2.extend_high_i32x4_u(b))`.
 
 ### Extended pairwise integer addition
 * `i16x8.extadd_pairwise_i8x16_s(a: v128) -> v128`
@@ -1136,43 +1136,43 @@ def S.narrow_T_u(a, b):
     return result
 ```
 
-### Integer to integer widening
-* `i16x8.widen_low_i8x16_s(a: v128) -> v128`
-* `i16x8.widen_high_i8x16_s(a: v128) -> v128`
-* `i16x8.widen_low_i8x16_u(a: v128) -> v128`
-* `i16x8.widen_high_i8x16_u(a: v128) -> v128`
-* `i32x4.widen_low_i16x8_s(a: v128) -> v128`
-* `i32x4.widen_high_i16x8_s(a: v128) -> v128`
-* `i32x4.widen_low_i16x8_u(a: v128) -> v128`
-* `i32x4.widen_high_i16x8_u(a: v128) -> v128`
-* `i64x2.widen_low_i32x4_s(a: v128) -> v128`
-* `i64x2.widen_high_i32x4_s(a: v128) -> v128`
-* `i64x2.widen_low_i32x4_u(a: v128) -> v128`
-* `i64x2.widen_high_i32x4_u(a: v128) -> v128`
+### Integer to integer extension
+* `i16x8.extend_low_i8x16_s(a: v128) -> v128`
+* `i16x8.extend_high_i8x16_s(a: v128) -> v128`
+* `i16x8.extend_low_i8x16_u(a: v128) -> v128`
+* `i16x8.extend_high_i8x16_u(a: v128) -> v128`
+* `i32x4.extend_low_i16x8_s(a: v128) -> v128`
+* `i32x4.extend_high_i16x8_s(a: v128) -> v128`
+* `i32x4.extend_low_i16x8_u(a: v128) -> v128`
+* `i32x4.extend_high_i16x8_u(a: v128) -> v128`
+* `i64x2.extend_low_i32x4_s(a: v128) -> v128`
+* `i64x2.extend_high_i32x4_s(a: v128) -> v128`
+* `i64x2.extend_low_i32x4_u(a: v128) -> v128`
+* `i64x2.extend_high_i32x4_u(a: v128) -> v128`
 
 Converts low or high half of the smaller lane vector to a larger lane vector,
 sign extended or zero (unsigned) extended.
 
 ```python
-def S.widen_low_T(ext, a):
+def S.extend_low_T(ext, a):
     result = S.New()
     for i in range(S.Lanes):
         result[i] = ext(a[i])
 
-def S.widen_high_T(ext, a):
+def S.extend_high_T(ext, a):
     result = S.New()
     for i in range(S.Lanes):
         result[i] = ext(a[S.Lanes + i])
 
-def S.widen_low_T_s(a):
-    return S.widen_low_T(Sext, a)
+def S.extend_low_T_s(a):
+    return S.extend_low_T(Sext, a)
 
-def S.widen_high_T_s(a):
-    return S.widen_high_T(Sext, a)
+def S.extend_high_T_s(a):
+    return S.extend_high_T(Sext, a)
 
-def S.widen_low_T_u(a):
-    return S.widen_low_T(Zext, a)
+def S.extend_low_T_u(a):
+    return S.extend_low_T(Zext, a)
 
-def S.widen_high_T_u(a):
-    return S.widen_high_T(Zext, a)
+def S.extend_high_T_u(a):
+    return S.extend_high_T(Zext, a)
 ```

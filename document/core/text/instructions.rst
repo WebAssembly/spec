@@ -673,10 +673,10 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{i16x8.bitmask} &\Rightarrow& \I16X8.\BITMASK\\ &&|&
      \text{i16x8.narrow\_i32x4\_s} &\Rightarrow& \I16X8.\NARROW\K{\_i32x4\_s}\\ &&|&
      \text{i16x8.narrow\_i32x4\_u} &\Rightarrow& \I16X8.\NARROW\K{\_i32x4\_u}\\ &&|&
-     \text{i16x8.widen\_low\_i8x16\_s} &\Rightarrow& \I16X8.\WIDEN\K{\_low\_i8x16\_s}\\ &&|&
-     \text{i16x8.widen\_high\_i8x16\_s} &\Rightarrow& \I16X8.\WIDEN\K{\_high\_i8x16\_s}\\ &&|&
-     \text{i16x8.widen\_low\_i8x16\_u} &\Rightarrow& \I16X8.\WIDEN\K{\_low\_i8x16\_u}\\ &&|&
-     \text{i16x8.widen\_high\_i8x16\_u} &\Rightarrow& \I16X8.\WIDEN\K{\_high\_i8x16\_u}\\ &&|&
+     \text{i16x8.extend\_low\_i8x16\_s} &\Rightarrow& \I16X8.\VEXTEND\K{\_low\_i8x16\_s}\\ &&|&
+     \text{i16x8.extend\_high\_i8x16\_s} &\Rightarrow& \I16X8.\VEXTEND\K{\_high\_i8x16\_s}\\ &&|&
+     \text{i16x8.extend\_low\_i8x16\_u} &\Rightarrow& \I16X8.\VEXTEND\K{\_low\_i8x16\_u}\\ &&|&
+     \text{i16x8.extend\_high\_i8x16\_u} &\Rightarrow& \I16X8.\VEXTEND\K{\_high\_i8x16\_u}\\ &&|&
      \text{i16x8.shl} &\Rightarrow& \I16X8.\VSHL\\ &&|&
      \text{i16x8.shr\_s} &\Rightarrow& \I16X8.\VSHR\K{\_s}\\ &&|&
      \text{i16x8.shr\_u} &\Rightarrow& \I16X8.\VSHR\K{\_u}\\ &&|&
@@ -706,10 +706,10 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{i32x4.neg} &\Rightarrow& \I32X4.\VNEG\\ &&|&
      \text{i32x4.all\_true} &\Rightarrow& \I32X4.\ALLTRUE\\ &&|&
      \text{i32x4.bitmask} &\Rightarrow& \I32X4.\BITMASK\\ &&|&
-     \text{i32x4.widen\_low\_i16x8\_s} &\Rightarrow& \I32X4.\WIDEN\K{\_low\_i16x8\_s}\\ &&|&
-     \text{i32x4.widen\_high\_i16x8\_s} &\Rightarrow& \I32X4.\WIDEN\K{\_high\_i16x8\_s}\\ &&|&
-     \text{i32x4.widen\_low\_i16x8\_u} &\Rightarrow& \I32X4.\WIDEN\K{\_low\_i16x8\_u}\\ &&|&
-     \text{i32x4.widen\_high\_i16x8\_u} &\Rightarrow& \I32X4.\WIDEN\K{\_high\_i16x8\_u}\\ &&|&
+     \text{i32x4.extend\_low\_i16x8\_s} &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_s}\\ &&|&
+     \text{i32x4.extend\_high\_i16x8\_s} &\Rightarrow& \I32X4.\VEXTEND\K{\_high\_i16x8\_s}\\ &&|&
+     \text{i32x4.extend\_low\_i16x8\_u} &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_u}\\ &&|&
+     \text{i32x4.extend\_high\_i16x8\_u} &\Rightarrow& \I32X4.\VEXTEND\K{\_high\_i16x8\_u}\\ &&|&
      \text{i32x4.shl} &\Rightarrow& \I32X4.\VSHL\\ &&|&
      \text{i32x4.shr\_s} &\Rightarrow& \I32X4.\VSHR\K{\_s}\\ &&|&
      \text{i32x4.shr\_u} &\Rightarrow& \I32X4.\VSHR\K{\_u}\\ &&|&
@@ -733,10 +733,10 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{i64x2.neg} &\Rightarrow& \I64X2.\VNEG\\ &&|&
      \text{i64x2.all\_true} &\Rightarrow& \I64X2.\ALLTRUE\\ &&|&
      \text{i64x2.bitmask} &\Rightarrow& \I64X2.\BITMASK\\ &&|&
-     \text{i64x2.widen\_low\_i32x4\_s} &\Rightarrow& \I64X2.\WIDEN\K{\_low\_i32x4\_s} \\ &&|&
-     \text{i64x2.widen\_high\_i32x4\_s} &\Rightarrow& \I64X2.\WIDEN\K{\_high\_i32x4\_s} \\ &&|&
-     \text{i64x2.widen\_low\_i32x4\_u} &\Rightarrow& \I64X2.\WIDEN\K{\_low\_i32x4\_u} \\ &&|&
-     \text{i64x2.widen\_high\_i32x4\_u} &\Rightarrow& \I64X2.\WIDEN\K{\_high\_i32x4\_u} \\ &&|&
+     \text{i64x2.extend\_low\_i32x4\_s} &\Rightarrow& \I64X2.\VEXTEND\K{\_low\_i32x4\_s} \\ &&|&
+     \text{i64x2.extend\_high\_i32x4\_s} &\Rightarrow& \I64X2.\VEXTEND\K{\_high\_i32x4\_s} \\ &&|&
+     \text{i64x2.extend\_low\_i32x4\_u} &\Rightarrow& \I64X2.\VEXTEND\K{\_low\_i32x4\_u} \\ &&|&
+     \text{i64x2.extend\_high\_i32x4\_u} &\Rightarrow& \I64X2.\VEXTEND\K{\_high\_i32x4\_u} \\ &&|&
      \text{i64x2.shl} &\Rightarrow& \I64X2.\VSHL\\ &&|&
      \text{i64x2.shr\_s} &\Rightarrow& \I64X2.\VSHR\K{\_s}\\ &&|&
      \text{i64x2.shr\_u} &\Rightarrow& \I64X2.\VSHR\K{\_u}\\ &&|&
