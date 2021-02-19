@@ -192,14 +192,14 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `i64x2.add`                     |    `0xce`| -                        |
 | `i64x2.sub`                     |    `0xd1`| -                        |
 | `i64x2.mul`                     |    `0xd5`| -                        |
-| `f32x4.ceil`                    |    `0xd8`| -                        |
-| `f32x4.floor`                   |    `0xd9`| -                        |
-| `f32x4.trunc`                   |    `0xda`| -                        |
-| `f32x4.nearest`                 |    `0xdb`| -                        |
-| `f64x2.ceil`                    |    `0xdc`| -                        |
-| `f64x2.floor`                   |    `0xdd`| -                        |
-| `f64x2.trunc`                   |    `0xde`| -                        |
-| `f64x2.nearest`                 |    `0xdf`| -                        |
+| `f32x4.ceil`                    |    `0x67`| -                        |
+| `f32x4.floor`                   |    `0x68`| -                        |
+| `f32x4.trunc`                   |    `0x69`| -                        |
+| `f32x4.nearest`                 |    `0x6a`| -                        |
+| `f64x2.ceil`                    |    `0x74`| -                        |
+| `f64x2.floor`                   |    `0x75`| -                        |
+| `f64x2.trunc`                   |    `0x7a`| -                        |
+| `f64x2.nearest`                 |    `0x94`| -                        |
 | `f32x4.abs`                     |    `0xe0`| -                        |
 | `f32x4.neg`                     |    `0xe1`| -                        |
 | `f32x4.sqrt`                    |    `0xe3`| -                        |
@@ -226,45 +226,45 @@ For example, `ImmLaneIdx16` is a byte with values in the range 0-15 (inclusive).
 | `i32x4.trunc_sat_f32x4_u`       |    `0xf9`| -                        |
 | `f32x4.convert_i32x4_s`         |    `0xfa`| -                        |
 | `f32x4.convert_i32x4_u`         |    `0xfb`| -                        |
-| `v128.load32_zero`              |    `0xfc`| -                        |
-| `v128.load64_zero`              |    `0xfd`| -                        |
-| `i16x8.extmul_low_i8x16_s`      |   `0x110`| -                        |
-| `i16x8.extmul_high_i8x16_s`     |   `0x111`| -                        |
-| `i16x8.extmul_low_i8x16_u`      |   `0x112`| -                        |
-| `i16x8.extmul_high_i8x16_u`     |   `0x113`| -                        |
-| `i32x4.extmul_low_i16x8_s`      |   `0x114`| -                        |
-| `i32x4.extmul_high_i16x8_s`     |   `0x115`| -                        |
-| `i32x4.extmul_low_i16x8_u`      |   `0x116`| -                        |
-| `i32x4.extmul_high_i16x8_u`     |   `0x117`| -                        |
-| `i64x2.extmul_low_i32x4_s`      |   `0x118`| -                        |
-| `i64x2.extmul_high_i32x4_s`     |   `0x119`| -                        |
-| `i64x2.extmul_low_i32x4_u`      |   `0x11a`| -                        |
-| `i64x2.extmul_high_i32x4_u`     |   `0x11b`| -                        |
-| `i16x8.q15mulr_sat_s`           |     `TBD`| -                        |
-| `v128.any_true`                 |     `TBD`| -                        |
-| `v128.load8_lane`               |     `TBD`| m:memarg, i:ImmLaneIdx16 |
-| `v128.load16_lane`              |     `TBD`| m:memarg, i:ImmLaneIdx8  |
-| `v128.load32_lane`              |     `TBD`| m:memarg, i:ImmLaneIdx4  |
-| `v128.load64_lane`              |     `TBD`| m:memarg, i:ImmLaneIdx2  |
-| `v128.store8_lane`              |     `TBD`| m:memarg, i:ImmLaneIdx16 |
-| `v128.store16_lane`             |     `TBD`| m:memarg, i:ImmLaneIdx8  |
-| `v128.store32_lane`             |     `TBD`| m:memarg, i:ImmLaneIdx4  |
-| `v128.store64_lane`             |     `TBD`| m:memarg, i:ImmLaneIdx2  |
-| `i64x2.eq`                      |     `TBD`| -                        |
-| `i64x2.ne`                      |     `TBD`| -                        |
-| `i64x2.lt_s`                    |     `TBD`| -                        |
-| `i64x2.gt_s`                    |     `TBD`| -                        |
-| `i64x2.le_s`                    |     `TBD`| -                        |
-| `i64x2.ge_s`                    |     `TBD`| -                        |
-| `i64x2.all_true`                |     `TBD`| -                        |
-| `f64x2.convert_low_i32x4_s`     |     `TBD`| -                        |
-| `f64x2.convert_low_i32x4_u`     |     `TBD`| -                        |
-| `i32x4.trunc_sat_f64x2_s_zero`  |     `TBD`| -                        |
-| `i32x4.trunc_sat_f64x2_u_zero`  |     `TBD`| -                        |
-| `f32x4.demote_f64x2_zero`       |     `TBD`| -                        |
-| `f64x2.promote_low_f32x4`       |     `TBD`| -                        |
-| `i8x16.popcnt`                  |     `TBD`| -                        |
-| `i16x8.extadd_pairwise_i8x16_s` |     `TBD`| -                        |
-| `i16x8.extadd_pairwise_i8x16_u` |     `TBD`| -                        |
-| `i32x4.extadd_pairwise_i16x8_s` |     `TBD`| -                        |
-| `i32x4.extadd_pairwise_i16x8_u` |     `TBD`| -                        |
+| `v128.load32_zero`              |    `0x5c`| -                        |
+| `v128.load64_zero`              |    `0x5d`| -                        |
+| `i16x8.extmul_low_i8x16_s`      |    `0x9c`| -                        |
+| `i16x8.extmul_high_i8x16_s`     |    `0x9d`| -                        |
+| `i16x8.extmul_low_i8x16_u`      |    `0x9e`| -                        |
+| `i16x8.extmul_high_i8x16_u`     |    `0x9f`| -                        |
+| `i32x4.extmul_low_i16x8_s`      |    `0xbc`| -                        |
+| `i32x4.extmul_high_i16x8_s`     |    `0xbd`| -                        |
+| `i32x4.extmul_low_i16x8_u`      |    `0xbe`| -                        |
+| `i32x4.extmul_high_i16x8_u`     |    `0xbf`| -                        |
+| `i64x2.extmul_low_i32x4_s`      |    `0xdc`| -                        |
+| `i64x2.extmul_high_i32x4_s`     |    `0xdd`| -                        |
+| `i64x2.extmul_low_i32x4_u`      |    `0xde`| -                        |
+| `i64x2.extmul_high_i32x4_u`     |    `0xdf`| -                        |
+| `i16x8.q15mulr_sat_s`           |    `0x82`| -                        |
+| `v128.any_true`                 |    `0x53`| -                        |
+| `v128.load8_lane`               |    `0x54`| m:memarg, i:ImmLaneIdx16 |
+| `v128.load16_lane`              |    `0x55`| m:memarg, i:ImmLaneIdx8  |
+| `v128.load32_lane`              |    `0x56`| m:memarg, i:ImmLaneIdx4  |
+| `v128.load64_lane`              |    `0x57`| m:memarg, i:ImmLaneIdx2  |
+| `v128.store8_lane`              |    `0x58`| m:memarg, i:ImmLaneIdx16 |
+| `v128.store16_lane`             |    `0x59`| m:memarg, i:ImmLaneIdx8  |
+| `v128.store32_lane`             |    `0x5a`| m:memarg, i:ImmLaneIdx4  |
+| `v128.store64_lane`             |    `0x5b`| m:memarg, i:ImmLaneIdx2  |
+| `i64x2.eq`                      |    `0xd6`| -                        |
+| `i64x2.ne`                      |    `0xd7`| -                        |
+| `i64x2.lt_s`                    |    `0xd8`| -                        |
+| `i64x2.gt_s`                    |    `0xd9`| -                        |
+| `i64x2.le_s`                    |    `0xda`| -                        |
+| `i64x2.ge_s`                    |    `0xdb`| -                        |
+| `i64x2.all_true`                |    `0xc3`| -                        |
+| `f64x2.convert_low_i32x4_s`     |    `0xfe`| -                        |
+| `f64x2.convert_low_i32x4_u`     |    `0xff`| -                        |
+| `i32x4.trunc_sat_f64x2_s_zero`  |    `0xfc`| -                        |
+| `i32x4.trunc_sat_f64x2_u_zero`  |    `0xfd`| -                        |
+| `f32x4.demote_f64x2_zero`       |    `0x5e`| -                        |
+| `f64x2.promote_low_f32x4`       |    `0x5f`| -                        |
+| `i8x16.popcnt`                  |    `0x62`| -                        |
+| `i16x8.extadd_pairwise_i8x16_s` |    `0x7c`| -                        |
+| `i16x8.extadd_pairwise_i8x16_u` |    `0x7d`| -                        |
+| `i32x4.extadd_pairwise_i16x8_s` |    `0x7e`| -                        |
+| `i32x4.extadd_pairwise_i16x8_u` |    `0x7f`| -                        |
