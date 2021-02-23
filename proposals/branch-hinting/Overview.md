@@ -11,6 +11,8 @@ a specific path.
 This allows the engine to make better decisions for code layout (improving instruction cache hits)
 and register allocation.
 
+See [Motivation](/proposals/branch-hinting/Motivation.md) for more information.
+
 
 ### Background
 
