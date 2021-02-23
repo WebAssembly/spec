@@ -115,7 +115,7 @@
 
   (func (export "test")
     (memory.fill (i32.const 0x20000) (i32.const 0x55) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory 1 1)
@@ -636,7 +636,7 @@
     (memory.fill (local.get $offs) (local.get $val) (local.get $len))))
 
 (assert_trap (invoke "run" (i32.const 65280) (i32.const 37) (i32.const 512))
-              "out of bounds")
+              "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))
@@ -658,7 +658,7 @@
     (memory.fill (local.get $offs) (local.get $val) (local.get $len))))
 
 (assert_trap (invoke "run" (i32.const 65279) (i32.const 37) (i32.const 514))
-              "out of bounds")
+              "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))
@@ -680,7 +680,7 @@
     (memory.fill (local.get $offs) (local.get $val) (local.get $len))))
 
 (assert_trap (invoke "run" (i32.const 65279) (i32.const 37) (i32.const 4294967295))
-              "out of bounds")
+              "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i32.const 0) (i32.const 1) (i32.const 0))
                (i32.const -1))

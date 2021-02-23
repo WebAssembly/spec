@@ -1,13 +1,39 @@
-.. index:: instruction, function type, context, value, operand stack, ! polymorphism
+.. index:: instruction, function type, context, value, operand stack, ! polymorphism, ! bottom type
 .. _valid-instr:
+.. _syntax-stacktype:
+.. _syntax-opdtype:
 
 Instructions
 ------------
 
-:ref:`Instructions <syntax-instr>` are classified by :ref:`function types <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`
-that describe how they manipulate the :ref:`operand stack <stack>`.
-The types describe the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
+:ref:`Instructions <syntax-instr>` are classified by *stack types* :math:`[t_1^\ast] \to [t_2^\ast]` that describe how instructions manipulate the :ref:`operand stack <stack>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{stack type} & \stacktype &::=&
+     [\opdtype^\ast] \to [\opdtype^\ast] \\
+   \production{operand type} & \opdtype &::=&
+     \valtype ~|~ \bot \\
+   \end{array}
+
+The types describe the required input stack with *operand types* :math:`t_1^\ast` that an instruction pops off
 and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
+Stack types are akin to :ref:`function types <syntax-functype>`,
+except that they allow individual operands to be classified as :math:`\bot` (*bottom*), indicating that the type is unconstrained.
+As an auxiliary notion, an operand type :math:`t_1` *matches* another operand type :math:`t_2`, if :math:`t_1` is either :math:`\bot` or equal to :math:`t_2`.
+
+.. _match-opdtype:
+
+.. math::
+   \frac{
+   }{
+     \vdash t \leq t
+   }
+   \qquad
+   \frac{
+   }{
+     \vdash \bot \leq t
+   }
 
 .. note::
    For example, the instruction :math:`\I32.\ADD` has type :math:`[\I32~\I32] \to [\I32]`,
@@ -254,7 +280,7 @@ Parametric Instructions
 
 * Else:
 
-  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`number type <syntax-numtype>` :math:`t`.
+  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`operand type <syntax-opdtype>` :math:`t` that :ref:`matches <match-opdtype>` some :ref:`number type <syntax-numtype>`.
 
 .. math::
    \frac{
@@ -263,7 +289,7 @@ Parametric Instructions
    }
    \qquad
    \frac{
-     t = \numtype
+     \vdash t \leq \numtype
    }{
      C \vdashinstr \SELECT : [t~t~\I32] \to [t]
    }
@@ -1140,7 +1166,7 @@ Empty Instruction Sequence: :math:`\epsilon`
 ............................................
 
 * The empty instruction sequence is valid with type :math:`[t^\ast] \to [t^\ast]`,
-  for any sequence of :ref:`value types <syntax-valtype>` :math:`t^\ast`.
+  for any sequence of :ref:`operand types <syntax-opdtype>` :math:`t^\ast`.
 
 .. math::
    \frac{
@@ -1159,13 +1185,17 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
   for some sequences of :ref:`value types <syntax-valtype>` :math:`t^\ast` and :math:`t_3^\ast`.
 
 * There must be a sequence of :ref:`value types <syntax-valtype>` :math:`t_0^\ast`,
-  such that :math:`t_2^\ast = t_0^\ast~t^\ast`.
+  such that :math:`t_2^\ast = t_0^\ast~{t'}^\ast` where the type sequence :math:`{t'}^\ast` is as long as :math:`t^\ast`.
+
+* For each :ref:`operand type <syntax-opdtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding type :math:`t_i` in :math:`t^\ast`, :math:`t'_i` :ref:`matches <match-opdtype>` :math:`t_i`.
 
 * Then the combined instruction sequence is valid with type :math:`[t_1^\ast] \to [t_0^\ast~t_3^\ast]`.
 
 .. math::
    \frac{
-     C \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_0^\ast~t^\ast]
+     C \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_0^\ast~{t'}^\ast]
+     \qquad
+     (\vdash t' \leq t)^\ast
      \qquad
      C \vdashinstr \instr_N : [t^\ast] \to [t_3^\ast]
    }{
@@ -1188,14 +1218,17 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
 :math:`\instr^\ast~\END`
 ........................
 
-* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^\ast]`,
-  for some :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some :ref:`stack type <syntax-stacktype>` :math:`[] \to [t'^\ast]`.
+
+* For each :ref:`operand type <syntax-opdtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding :ref:`value type <syntax-valtype>` type :math:`t_i` in :math:`t^\ast`, :math:`t'_i` :ref:`matches <match-opdtype>` :math:`t_i`.
 
 * Then the expression is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
 
 .. math::
    \frac{
-     C \vdashinstrseq \instr^\ast : [] \to [t^\ast]
+     C \vdashinstrseq \instr^\ast : [] \to [{t'}^\ast]
+     \qquad
+     (\vdash t' \leq t)^\ast
    }{
      C \vdashexpr \instr^\ast~\END : [t^\ast]
    }

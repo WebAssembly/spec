@@ -112,7 +112,7 @@ def ReplaceMath(cache, data):
   if p.returncode != 0:
     sys.stderr.write('BEFORE:\n' + old + '\n')
     sys.stderr.write('AFTER:\n' + data + '\n')
-    return ''
+    raise Exception()
   ret = ret.strip()
   ret = ret[ret.find('<span class="katex-html"'):]
   ret = '<span class="katex-display"><span class="katex">' + ret
@@ -225,8 +225,10 @@ def Main():
   sys.stderr.write('Processing %d fragments.\n' % len(fixups))
 
   done_fixups = []
+  success = True
 
   def Worker():
+    nonlocal success
     while True:
       cls_before, cls_after, spans, mth, start, end = q.get()
       try:
@@ -234,13 +236,13 @@ def Main():
                  spans + ReplaceMath(cache, mth) + '<')
         done_fixups.append((start, end, fixed))
       except Exception:
-        sys.stderr.write('!!! Error processing fragment')
+        success = False
 
       q.task_done()
       sys.stderr.write('.')
 
   q = queue.Queue()
-  for i in range(40):
+  for i in range(len(os.sched_getaffinity(0))):
     t = threading.Thread(target=Worker)
     t.daemon = True
     t.start()
@@ -248,6 +250,11 @@ def Main():
   for item in fixups:
     q.put(item)
   q.join()
+
+  if not success:
+      sys.stderr.write('\n!!! Error processing fragments\n')
+      cache.close()
+      sys.exit(1)
 
   result = []
   last = 0

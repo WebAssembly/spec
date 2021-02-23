@@ -44,6 +44,13 @@
 (assert_malformed (module binary "\00asm\00\00\01\00") "unknown binary version")
 (assert_malformed (module binary "\00asm\00\00\00\01") "unknown binary version")
 
+;; Invalid section id.
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\0d\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\7f\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\80\00\01\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\81\00\01\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\ff\00\01\00") "malformed section id")
+
 ;; Unsigned LEB128 can have non-minimal length
 (module binary
   "\00asm" "\01\00\00\00"
@@ -151,6 +158,19 @@
   "\09\09\01"                          ;; Element section with 1 entry
   "\02\80\00"                          ;; Table index 0, encoded with 2 bytes
   "\41\00\0b\00\00"                    ;; (i32.const 0) with no elements
+)
+
+;; Type section with signed LEB128 encoded type
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01"                     ;; Type section id
+    "\05"                     ;; Type section length
+    "\01"                     ;; Types vector length
+    "\e0\7f"                  ;; Malformed functype, -0x20 in signed LEB128 encoding
+    "\00\00"
+  )
+  "integer representation too long"
 )
 
 ;; Unsigned LEB128 must not be overlong
@@ -306,7 +326,6 @@
   )
   "integer too large"
 )
-
 
 (assert_malformed
   (module binary
@@ -749,7 +768,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 ;; memory.grow reserved byte should not be a "long" LEB128 zero.
@@ -769,7 +788,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 ;; Same as above for 3, 4, and 5-byte zero encodings.
@@ -789,7 +808,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 (assert_malformed
@@ -808,7 +827,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 (assert_malformed
@@ -827,7 +846,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 ;; memory.size reserved byte equal to zero.
@@ -846,7 +865,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 ;; memory.size reserved byte should not be a "long" LEB128 zero.
@@ -865,7 +884,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 ;; Same as above for 3, 4, and 5-byte zero encodings.
@@ -884,7 +903,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 (assert_malformed
@@ -902,7 +921,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
 (assert_malformed
@@ -920,10 +939,44 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "zero flag expected"
+  "zero byte expected"
 )
 
-;; No more than 2^32 locals.
+;; Local number is unsigned 32 bit
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section
+    "\03\02\01\00"             ;; Function section
+    "\0a\0c\01"                ;; Code section
+
+    ;; function 0
+    "\0a\02"
+    "\80\80\80\80\10\7f"       ;; 0x100000000 i32
+    "\02\7e"                   ;; 0x00000002 i64
+    "\0b"                      ;; end
+  )
+  "integer too large"
+)
+
+;; Local number is unsigned 32 bit
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section
+    "\03\02\01\00"             ;; Function section
+    "\0a\0c\01"                ;; Code section
+
+    ;; function 0
+    "\0a\02"
+    "\80\80\80\80\10\7f"       ;; 0x100000000 i32
+    "\02\7e"                   ;; 0x00000002 i64
+    "\0b"                      ;; end
+  )
+  "integer too large"
+)
+
+;; No more than 2^32-1 locals.
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -935,6 +988,24 @@
     "\0a\02"
     "\ff\ff\ff\ff\0f\7f"       ;; 0xFFFFFFFF i32
     "\02\7e"                   ;; 0x00000002 i64
+    "\0b"                      ;; end
+  )
+  "too many locals"
+)
+
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\06\01\60\02\7f\7f\00" ;; Type section: (param i32 i32)
+    "\03\02\01\00"             ;; Function section
+    "\0a\1c\01"                ;; Code section
+
+    ;; function 0
+    "\1a\04"
+    "\80\80\80\80\04\7f"       ;; 0x40000000 i32
+    "\80\80\80\80\04\7e"       ;; 0x40000000 i64
+    "\80\80\80\80\04\7d"       ;; 0x40000000 f32
+    "\80\80\80\80\04\7c"       ;; 0x40000000 f64
     "\0b"                      ;; end
   )
   "too many locals"
@@ -1206,6 +1277,71 @@
     "\02\01\00"                             ;; import count can be zero
 )
 
+;; Malformed import kind
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\04\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\04"                                 ;; malformed import kind
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\05\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\04"                                 ;; malformed import kind
+      "\00"                                 ;; dummy byte
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\04\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\05"                                 ;; malformed import kind
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\05\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\05"                                 ;; malformed import kind
+      "\00"                                 ;; dummy byte
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\04\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\80"                                 ;; malformed import kind
+  )
+  "malformed import kind"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\05\01"                           ;; import section with single entry
+      "\00"                                 ;; string length 0
+      "\00"                                 ;; string length 0
+      "\80"                                 ;; malformed import kind
+      "\00"                                 ;; dummy byte
+  )
+  "malformed import kind"
+)
+
 ;; 2 import declared, 1 given
 (assert_malformed
   (module binary
@@ -1266,6 +1402,37 @@
   "unexpected end of section or function"
 )
 
+;; Malformed table limits flag
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\03\01"                           ;; table section with one entry
+      "\70"                                 ;; anyfunc
+      "\02"                                 ;; malformed table limits flag
+  )
+  "integer too large"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\04\01"                           ;; table section with one entry
+      "\70"                                 ;; anyfunc
+      "\02"                                 ;; malformed table limits flag
+      "\00"                                 ;; dummy byte
+  )
+  "integer too large"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\06\01"                           ;; table section with one entry
+      "\70"                                 ;; anyfunc
+      "\81\00"                              ;; malformed table limits flag as LEB128
+      "\00\00"                              ;; dummy bytes
+  )
+  "integer too large"
+)
+
 ;; Memory count can be zero
 (module binary
     "\00asm" "\01\00\00\00"
@@ -1280,6 +1447,43 @@
       ;; "\00\00"                           ;; memory 0 (missed)
   )
   "unexpected end of section or function"
+)
+
+;; Malformed memory limits flag
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\02\01"                           ;; memory section with one entry
+      "\02"                                 ;; malformed memory limits flag
+  )
+  "integer too large"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\03\01"                           ;; memory section with one entry
+      "\02"                                 ;; malformed memory limits flag
+      "\00"                                 ;; dummy byte
+  )
+  "integer too large"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\05\01"                           ;; memory section with one entry
+      "\81\00"                              ;; malformed memory limits flag as LEB128
+      "\00\00"                              ;; dummy bytes
+  )
+  "integer representation too long"
+)
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\05\01"                           ;; memory section with one entry
+      "\81\01"                              ;; malformed memory limits flag as LEB128
+      "\00\00"                              ;; dummy bytes
+  )
+  "integer representation too long"
 )
 
 ;; Global count can be zero
@@ -1389,10 +1593,25 @@
     "\09\07\02"                             ;; elem with inconsistent segment count (2 declared, 1 given)
     "\00\41\00\0b\01\00"                    ;; elem 0
     ;; "\00\41\00\0b\01\00"                 ;; elem 1 (missed)
-    "\0a\04\01"                             ;; code section
-    "\02\00\0b"                             ;; function body
   )
-  "malformed elements segment kind"
+  "unexpected end"
+)
+
+;; 2 elem segment declared, 1.5 given
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01"                             ;; type section
+    "\60\00\00"                             ;; type 0
+    "\03\02\01\00"                          ;; func section
+    "\04\04\01"                             ;; table section
+    "\70\00\01"                             ;; table 0
+    "\09\07\02"                             ;; elem with inconsistent segment count (2 declared, 1 given)
+    "\00\41\00\0b\01\00"                    ;; elem 0
+    "\00\41\00"                             ;; elem 1 (partial)
+    ;; "\0b\01\00"                          ;; elem 1 (missing part)
+  )
+  "unexpected end"
 )
 
 ;; 1 elem segment declared, 2 given
@@ -1490,28 +1709,6 @@
   "\0e\00"                                  ;; br_table target count can be zero
   "\02"                                     ;; break depth for default
   "\0b\0b\0b"                               ;; end
-)
-
-;; 2 br_table target declared, 1 given
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\01\04\01"                             ;; type section
-    "\60\00\00"                             ;; type 0
-    "\03\02\01\00"                          ;; func section
-    "\0a\12\01"                             ;; code section
-    "\10\00"                                ;; func 0
-    "\02\40"                                ;; block 0
-    "\41\01"                                ;; condition of if 0
-    "\04\40"                                ;; if 0
-    "\41\01"                                ;; index of br_table element
-    "\0e\02"                                ;; br_table with inconsistent target count (2 declared, 1 given)
-    "\00"                                   ;; break depth 0
-    ;; "\01"                                ;; break depth 1 (missed)
-    "\02"                                   ;; break depth for default
-    "\0b\0b\0b"                             ;; end
-  )
-  "unexpected end of section or function"
 )
 
 ;; 1 br_table target declared, 2 given

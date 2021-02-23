@@ -169,11 +169,11 @@
 (invoke "drop_passive")
 (invoke "drop_passive")
 (assert_return (invoke "init_passive" (i32.const 0)))
-(assert_trap (invoke "init_passive" (i32.const 1)) "out of bounds")
+(assert_trap (invoke "init_passive" (i32.const 1)) "out of bounds memory access")
 (invoke "init_passive" (i32.const 0))
 (invoke "drop_active")
 (assert_return (invoke "init_active" (i32.const 0)))
-(assert_trap (invoke "init_active" (i32.const 1)) "out of bounds")
+(assert_trap (invoke "init_active" (i32.const 1)) "out of bounds memory access")
 (invoke "init_active" (i32.const 0))
 
 ;; Test that the data segment index is properly encoded as an unsigned (not
@@ -262,11 +262,11 @@
 (invoke "drop_passive")
 (invoke "drop_passive")
 (assert_return (invoke "init_passive" (i32.const 0)))
-(assert_trap (invoke "init_passive" (i32.const 1)) "out of bounds")
+(assert_trap (invoke "init_passive" (i32.const 1)) "out of bounds table access")
 (invoke "init_passive" (i32.const 0))
 (invoke "drop_active")
 (assert_return (invoke "init_active" (i32.const 0)))
-(assert_trap (invoke "init_active" (i32.const 1)) "out of bounds")
+(assert_trap (invoke "init_active" (i32.const 1)) "out of bounds table access")
 (invoke "init_active" (i32.const 0))
 
 ;; Test that the elem segment index is properly encoded as an unsigned (not
@@ -346,6 +346,6 @@
 
 ;; Fail on out-of-bounds when copying 0 elements outside of table.
 (assert_trap (invoke "copy" (i32.const 11) (i32.const 0) (i32.const 0))
-  "out of bounds")
+  "out of bounds table access")
 (assert_trap (invoke "copy" (i32.const 0) (i32.const 11) (i32.const 0))
-  "out of bounds")
+  "out of bounds table access")

@@ -77,6 +77,7 @@ let known = List.map (fun t -> Some t)
 let stack ts = (NoEllipses, known ts)
 let (-~>) ts1 ts2 = {ins = NoEllipses, ts1; outs = NoEllipses, ts2}
 let (-->) ts1 ts2 = {ins = NoEllipses, known ts1; outs = NoEllipses, known ts2}
+let (-~>...) ts1 ts2 = {ins = Ellipses, ts1; outs = Ellipses, ts2}
 let (-->...) ts1 ts2 = {ins = Ellipses, known ts1; outs = Ellipses, known ts2}
 
 let string_of_infer_type t =
@@ -247,9 +248,11 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     (label c x @ [NumType I32Type]) --> label c x
 
   | BrTable (xs, x) ->
-    let ts = label c x in
-    List.iter (fun x' -> check_stack (known ts) (known (label c x')) x'.at) xs;
-    (ts @ [NumType I32Type]) -->... []
+    let n = List.length (label c x) in
+    let ts = Lib.List.table n (fun i -> peek (n - i) s) in
+    check_stack ts (known (label c x)) x.at;
+    List.iter (fun x' -> check_stack ts (known (label c x')) x'.at) xs;
+    (ts @ [Some (NumType I32Type)]) -~>... []
 
   | Return ->
     c.results -->... []

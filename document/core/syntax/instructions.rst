@@ -22,11 +22,6 @@ The following sections group instructions into a number of different categories.
    pair: abstract syntax; instruction
 .. _syntax-sx:
 .. _syntax-const:
-.. _syntax-unop:
-.. _syntax-binop:
-.. _syntax-testop:
-.. _syntax-relop:
-.. _syntax-cvtop:
 .. _syntax-iunop:
 .. _syntax-ibinop:
 .. _syntax-itestop:
@@ -144,6 +139,12 @@ where a signedness annotation |sx| distinguishes whether the operands are to be 
 For the other integer instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
 
 
+.. _syntax-unop:
+.. _syntax-binop:
+.. _syntax-testop:
+.. _syntax-relop:
+.. _syntax-cvtop:
+
 Conventions
 ...........
 
@@ -191,7 +192,7 @@ Instructions in this group are concerned with accessing :ref:`references <syntax
      \REFFUNC~\funcidx \\
    \end{array}
 
-These instruction produce a null value, check for a null value, or compare two references, respectively.
+These instruction produce a null value, check for a null value, or produce a reference to a given function, respectively.
 
 
 .. index:: ! parametric instruction, value type
@@ -266,9 +267,9 @@ Instructions in this group are concerned with tables :ref:`table <syntax-table>`
      \TABLESET~\tableidx \\&&|&
      \TABLESIZE~\tableidx \\&&|&
      \TABLEGROW~\tableidx \\&&|&
-     \TABLEFILL~\tableidx \\
-     \TABLECOPY \\&&|&
-     \TABLEINIT~\elemidx \\&&|&
+     \TABLEFILL~\tableidx \\&&|&
+     \TABLECOPY~\tableidx~\tableidx \\&&|&
+     \TABLEINIT~\tableidx~\elemidx \\&&|&
      \ELEMDROP~\elemidx \\
    \end{array}
 
@@ -280,7 +281,7 @@ It also takes an initialization value for the newly allocated entries.
 
 The |TABLEFILL| instruction sets all entries in a range to a given value.
 
-The |TABLECOPY| instruction copies elements from a source table region to a possibly overlapping destination region.
+The |TABLECOPY| instruction copies elements from a source table region to a possibly overlapping destination region; the first index denotes the destination.
 The |TABLEINIT| instruction copies elements from a :ref:`passive element segment <syntax-elem>` into a table.
 The |ELEMDROP| instruction prevents further use of a passive element segment. This instruction is intended to be used as an optimization hint. After an element segment is dropped its elements can no longer be retrieved, so the memory used by this segment may be freed.
 
