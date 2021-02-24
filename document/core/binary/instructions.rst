@@ -663,7 +663,9 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~156{:}\Bu32 &\Rightarrow& \I16X8.\Q15MULRSAT\K{\_s} \\ &&|&
      \hex{FD}~~157{:}\Bu32 &\Rightarrow& \I16X8.\EXTMUL\K{\_high\_i8x16\_s}\\ &&|&
      \hex{FD}~~158{:}\Bu32 &\Rightarrow& \I16X8.\EXTMUL\K{\_low\_i8x16\_u}\\ &&|&
-     \hex{FD}~~159{:}\Bu32 &\Rightarrow& \I16X8.\EXTMUL\K{\_high\_i8x16\_u}\\
+     \hex{FD}~~159{:}\Bu32 &\Rightarrow& \I16X8.\EXTMUL\K{\_high\_i8x16\_u}\\ &&|&
+     \hex{FD}~~194{:}\Bu32 &\Rightarrow& \I16X8.\EXTADDPAIRWISE\K{\_i8x16\_s}\\ &&|&
+     \hex{FD}~~195{:}\Bu32 &\Rightarrow& \I16X8.\EXTADDPAIRWISE\K{\_i8x16\_u}\\
    \end{array}
 
 .. math::
@@ -673,6 +675,8 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~161{:}\Bu32 &\Rightarrow& \I32X4.\VNEG \\ &&|&
      \hex{FD}~~163{:}\Bu32 &\Rightarrow& \I32X4.\ALLTRUE \\ &&|&
      \hex{FD}~~164{:}\Bu32 &\Rightarrow& \I32X4.\BITMASK \\ &&|&
+     \hex{FD}~~165{:}\Bu32 &\Rightarrow& \I32X4.\EXTADDPAIRWISE\K{\_i16x8\_s}\\ &&|&
+     \hex{FD}~~166{:}\Bu32 &\Rightarrow& \I32X4.\EXTADDPAIRWISE\K{\_i16x8\_u}\\ &&|&
      \hex{FD}~~167{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_s} \\ &&|&
      \hex{FD}~~168{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_high\_i16x8\_s} \\ &&|&
      \hex{FD}~~169{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_u} \\ &&|&

@@ -696,7 +696,9 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{i16x8.extmul\_low\_i8x16\_s} &\Rightarrow& \I16X8.\EXTMUL\K{\_low\_i8x16\_s}\\ &&|&
      \text{i16x8.extmul\_high\_i8x16\_s} &\Rightarrow& \I16X8.\EXTMUL\K{\_high\_i8x16\_s}\\ &&|&
      \text{i16x8.extmul\_low\_i8x16\_u} &\Rightarrow& \I16X8.\EXTMUL\K{\_low\_i8x16\_u}\\ &&|&
-     \text{i16x8.extmul\_high\_i8x16\_u} &\Rightarrow& \I16X8.\EXTMUL\K{\_high\_i8x16\_u}\\
+     \text{i16x8.extmul\_high\_i8x16\_u} &\Rightarrow& \I16X8.\EXTMUL\K{\_high\_i8x16\_u}\\ &&|&
+     \text{i16x8.extadd\_pairwise\_i8x16\_s} &\Rightarrow& \I16X8.\EXTADDPAIRWISE\K{\_i8x16\_s}\\ &&|&
+     \text{i16x8.extadd\_pairwise\_i8x16\_u} &\Rightarrow& \I16X8.\EXTADDPAIRWISE\K{\_i8x16\_u}\\
    \end{array}
 
 .. math::
@@ -706,6 +708,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{i32x4.neg} &\Rightarrow& \I32X4.\VNEG\\ &&|&
      \text{i32x4.all\_true} &\Rightarrow& \I32X4.\ALLTRUE\\ &&|&
      \text{i32x4.bitmask} &\Rightarrow& \I32X4.\BITMASK\\ &&|&
+     \text{i32x4.extadd\_pairwise\_i16x8\_s} &\Rightarrow& \I32X4.\EXTADDPAIRWISE\K{\_i16x8\_s}\\ &&|&
      \text{i32x4.extend\_low\_i16x8\_s} &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_s}\\ &&|&
      \text{i32x4.extend\_high\_i16x8\_s} &\Rightarrow& \I32X4.\VEXTEND\K{\_high\_i16x8\_s}\\ &&|&
      \text{i32x4.extend\_low\_i16x8\_u} &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_u}\\ &&|&

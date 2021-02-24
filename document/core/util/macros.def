@@ -430,6 +430,7 @@
 .. |VTRUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{trunc}}
 .. |VCONVERT| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{convert}}
 .. |Q15MULRSAT| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{q15mulr\_sat}}
+.. |EXTADDPAIRWISE| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{extadd\_pairwise}}
 
 
 .. Instructions, non-terminals

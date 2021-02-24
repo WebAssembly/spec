@@ -674,7 +674,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 .. _exec-simd-extend:
 
 :math:`t_2\K{x}N\K{.}\VEXTEND\_\K{low}\_t_1\K{x}M\_\sx`
-.....................................................
+.......................................................
 
 1. Assert: due to :ref:`validation <valid-vitestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
@@ -700,7 +700,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 
 
 :math:`t_2\K{x}N\K{.}\VEXTEND\_\K{high}\_t_1\K{x}M\_\sx`
-......................................................
+........................................................
 
 1. Assert: due to :ref:`validation <valid-vitestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
@@ -805,6 +805,37 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
      (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[N \slice N] \\
      \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[N \slice N] \\
      \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{M,N}(i^\ast), \extend^{\sx}_{M,N}(j^\ast)))
+     \end{array}
+   \end{array}
+
+
+.. _exec-simd-extaddpairwise:
+
+:math:`t_2\K{x}N\K{.}\EXTADDPAIRWISE\_t_1\K{x}M\_\sx`
+.....................................................
+
+1. Assert: due to :ref:`validation <valid-vitestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+3. Let :math:`(i_1~i_2)^\ast` be the sequence :math:`\extend^{\sx}_{M,N}(\lanes_{t_1\K{x}M}(c_1))`.
+
+4. Let :math:`j^\ast` be the result of computing :math:`\iadd_{N}(i_1, i_2)^\ast`.
+
+5. Let `c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+
+6. Push the value :math:`\V128.\VCONST~c` to the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\EXTADDPAIRWISE\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & (i_1~i_2)^\ast = \extend^{\sx}_{M,N}(\lanes_{t_1\K{x}M}(c_1)) \\
+     \wedge & j^\ast = \iadd_{N}(i_1, i_2)^\ast \\
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(j^\ast)
      \end{array}
    \end{array}
 

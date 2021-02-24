@@ -267,6 +267,8 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{i32x4.}\EXTMUL\K{\_high}\K{\_i16x8\_}\sx \\&&|&
      \K{i64x2.}\EXTMUL\K{\_low}\K{\_i32x4\_}\sx ~|~
      \K{i64x2.}\EXTMUL\K{\_high}\K{\_i32x4\_}\sx \\&&|&
+     \K{i16x8.}\EXTADDPAIRWISE\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\EXTADDPAIRWISE\K{\_i16x8\_}\sx \\ &&|&
      \fshape\K{.}\vfbinop \\&&|&
      \K{i32x4.}\VTRUNC\K{\_sat\_f32x4\_}\sx \\ &&|&
      \K{f32x4.}\VCONVERT\K{\_i32x4\_}\sx \\&&|&
@@ -374,6 +376,7 @@ For the other SIMD instructions, the use of two's complement for the signed inte
 .. _syntax-vbinop:
 .. _syntax-vextend:
 .. _syntax-vextmul:
+.. _syntax-vcvtop:
 
 Conventions
 ...........
