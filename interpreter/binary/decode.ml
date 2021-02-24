@@ -14,6 +14,7 @@ let stream name bs = {name; bytes = bs; pos = ref 0}
 let len s = String.length s.bytes
 let pos s = !(s.pos)
 let eos s = (pos s = len s)
+let reset s pos = s.pos := pos
 
 let check n s = if pos s + n > len s then raise EOS
 let skip n s = if n < 0 then raise EOS else check n s; s.pos := !(s.pos) + n
@@ -117,6 +118,8 @@ let string s = let n = len32 s in get_string n s
 let rec list f n s = if n = 0 then [] else let x = f s in x :: list f (n - 1) s
 let opt f b s = if b then Some (f s) else None
 let vec f s = let n = len32 s in list f n s
+let either f1 f2 s =
+  let pos = pos s in try f1 s with Code _ -> reset s pos; f2 s
 
 let name s =
   let pos = pos s in
@@ -161,18 +164,20 @@ let ref_type s =
   | _ -> error s pos "malformed reference type"
 
 let value_type s =
-  match peek s with
-  | Some n when n > 0x70 -> NumType (num_type s)
-  | _ -> RefType (ref_type s)
+  either (fun s -> NumType (num_type s)) (fun s -> RefType (ref_type s)) s
 
 let stack_type s = vec value_type s
+
 let func_type s =
+  let ins = stack_type s in
+  let out = stack_type s in
+  FuncType (ins, out)
+
+let def_type s =
   match vs7 s with
-  | -0x20 ->
-    let ins = stack_type s in
-    let out = stack_type s in
-    FuncType (ins, out)
-  | _ -> error s (pos s - 1) "malformed function type"
+  | -0x20 -> FuncDefType (func_type s)
+  | _ -> error s (pos s - 1) "malformed definition type"
+
 
 let limits vu s =
   let has_max = bool s in
@@ -199,9 +204,6 @@ let global_type s =
   let t = value_type s in
   let mut = mutability s in
   GlobalType (t, mut)
-
-let def_type s =
-  FuncDefType (func_type s)
 
 
 (* Decode instructions *)
@@ -574,7 +576,7 @@ let id s =
 
 let section_with_size tag f default s =
   match id s with
-  | Some tag' when tag' = tag -> ignore (u8 s); sized f s
+  | Some tag' when tag' = tag -> skip 1 s; sized f s
   | _ -> default
 
 let section tag f default s =
