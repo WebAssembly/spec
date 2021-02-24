@@ -651,42 +651,49 @@ Table Instructions
 
 11. Pop the value :math:`\I32.\CONST~i` from the stack.
 
+12. If :math:`i + n` is larger than the length of :math:`\X{tab}.\TIELEM`, then:
+
+    a. Trap.
+
 12. If :math:`n` is :math:`0`, then:
 
-    a. If :math:`i` is larger than the length of :math:`\X{tab}.\TIELEM`, then:
+    a. Return.
 
-       i. Trap.
+13. Push the value :math:`\I32.CONST~i` to the stack.
 
-12. Else:
+14. Push the value :math:`\val` to the stack.
 
-    a. Push the value :math:`\I32.CONST~i` to the stack.
+15. Execute the instruction :math:`\TABLESET~x`.
 
-    b. Push the value :math:`\val` to the stack.
+16. Push the value :math:`\I32.CONST~(i+1)` to the stack.
 
-    c. Execute the instruction :math:`\TABLESET~x`.
+17. Push the value :math:`\val` to the stack.
 
-    d. Push the value :math:`\I32.CONST~(i+1)` to the stack.
+18. Push the value :math:`\I32.CONST~(n-1)` to the stack.
 
-    e. Push the value :math:`\val` to the stack.
-
-    f. Push the value :math:`\I32.CONST~(n-1)` to the stack.
-
-    c. Execute the instruction :math:`\TABLEFILL~x`.
+19. Execute the instruction :math:`\TABLEFILL~x`.
 
 .. math::
    \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~(n+1))~(\TABLEFILL~x) &\stepto& S'; F; (\I32.\CONST~i)~\val~(\TABLESET~x)~(\I32.\CONST~(i+1))~\val~(\I32.\CONST~n)~(\TABLEFILL~x)
-   \end{array} \\
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~0)~(\TABLEFILL~x) &\stepto& S'; F; \epsilon
-   \end{array}
-   \\ \qquad
-     (\iff i \leq |\STABLES[F.\AMODULE.\MITABLES[x]]|) \\
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~0)~(\TABLEFILL~x) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
+   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~n)~(\TABLEFILL~x)
+     \quad\stepto\quad S; F; \TRAP
+     \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & i + n > |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM|) \\
+     \end{array}
+   \\[1ex]
+   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~0)~(\TABLEFILL~x)
+     \quad\stepto\quad S; F; \epsilon
+     \\ \qquad
+     (\otherwise)
+   \\[1ex]
+   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~n+1)~(\TABLEFILL~x)
+     \quad\stepto\quad S; F;
+       \begin{array}[t]{@{}l@{}}
+       (\I32.\CONST~i)~\val~(\TABLESET~x) \\
+       (\I32.\CONST~i+1)~\val~(\I32.\CONST~n)~(\TABLEFILL~x) \\
+       \end{array}
+     \\ \qquad
      (\otherwise) \\
    \end{array}
 
@@ -979,7 +986,7 @@ Memory Instructions
 
     a. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
 
-    b. Let :math:`c` be the result of computing :math:`\extend\F{\_}\sx_{N,|t|}(n)`.
+    b. Let :math:`c` be the result of computing :math:`\extend^{\sx}_{N,|t|}(n)`.
 
 13. Else:
 
@@ -1002,7 +1009,7 @@ Memory Instructions
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(t.\LOAD{N}\K{\_}\sx~\memarg) &\stepto&
-     S; F; (t.\CONST~\extend\F{\_}\sx_{N,|t|}(n))
+     S; F; (t.\CONST~\extend^{\sx}_{N,|t|}(n))
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}

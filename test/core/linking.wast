@@ -170,23 +170,23 @@
 (assert_return (invoke $Nt "call" (i32.const 2)) (i32.const 5))
 (assert_return (invoke $Nt "call Mt.call" (i32.const 2)) (i32.const 4))
 
-(assert_trap (invoke $Mt "call" (i32.const 1)) "uninitialized")
-(assert_trap (invoke $Nt "Mt.call" (i32.const 1)) "uninitialized")
+(assert_trap (invoke $Mt "call" (i32.const 1)) "uninitialized element")
+(assert_trap (invoke $Nt "Mt.call" (i32.const 1)) "uninitialized element")
 (assert_return (invoke $Nt "call" (i32.const 1)) (i32.const 5))
-(assert_trap (invoke $Nt "call Mt.call" (i32.const 1)) "uninitialized")
+(assert_trap (invoke $Nt "call Mt.call" (i32.const 1)) "uninitialized element")
 
-(assert_trap (invoke $Mt "call" (i32.const 0)) "uninitialized")
-(assert_trap (invoke $Nt "Mt.call" (i32.const 0)) "uninitialized")
+(assert_trap (invoke $Mt "call" (i32.const 0)) "uninitialized element")
+(assert_trap (invoke $Nt "Mt.call" (i32.const 0)) "uninitialized element")
 (assert_return (invoke $Nt "call" (i32.const 0)) (i32.const 5))
-(assert_trap (invoke $Nt "call Mt.call" (i32.const 0)) "uninitialized")
+(assert_trap (invoke $Nt "call Mt.call" (i32.const 0)) "uninitialized element")
 
-(assert_trap (invoke $Mt "call" (i32.const 20)) "undefined")
-(assert_trap (invoke $Nt "Mt.call" (i32.const 20)) "undefined")
-(assert_trap (invoke $Nt "call" (i32.const 7)) "undefined")
-(assert_trap (invoke $Nt "call Mt.call" (i32.const 20)) "undefined")
+(assert_trap (invoke $Mt "call" (i32.const 20)) "undefined element")
+(assert_trap (invoke $Nt "Mt.call" (i32.const 20)) "undefined element")
+(assert_trap (invoke $Nt "call" (i32.const 7)) "undefined element")
+(assert_trap (invoke $Nt "call Mt.call" (i32.const 20)) "undefined element")
 
 (assert_return (invoke $Nt "call" (i32.const 3)) (i32.const -4))
-(assert_trap (invoke $Nt "call" (i32.const 4)) "indirect call")
+(assert_trap (invoke $Nt "call" (i32.const 4)) "indirect call type mismatch")
 
 (module $Ot
   (type (func (result i32)))
@@ -218,13 +218,13 @@
 (assert_return (invoke $Nt "call Mt.call" (i32.const 1)) (i32.const 6))
 (assert_return (invoke $Ot "call" (i32.const 1)) (i32.const 6))
 
-(assert_trap (invoke $Mt "call" (i32.const 0)) "uninitialized")
-(assert_trap (invoke $Nt "Mt.call" (i32.const 0)) "uninitialized")
+(assert_trap (invoke $Mt "call" (i32.const 0)) "uninitialized element")
+(assert_trap (invoke $Nt "Mt.call" (i32.const 0)) "uninitialized element")
 (assert_return (invoke $Nt "call" (i32.const 0)) (i32.const 5))
-(assert_trap (invoke $Nt "call Mt.call" (i32.const 0)) "uninitialized")
-(assert_trap (invoke $Ot "call" (i32.const 0)) "uninitialized")
+(assert_trap (invoke $Nt "call Mt.call" (i32.const 0)) "uninitialized element")
+(assert_trap (invoke $Ot "call" (i32.const 0)) "uninitialized element")
 
-(assert_trap (invoke $Ot "call" (i32.const 20)) "undefined")
+(assert_trap (invoke $Ot "call" (i32.const 20)) "undefined element")
 
 (module
   (table (import "Mt" "tab") 0 funcref)
@@ -246,7 +246,7 @@
     (elem (i32.const 10) $f)
     (func $f)
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 
 (assert_unlinkable
@@ -259,7 +259,7 @@
   )
   "unknown import"
 )
-(assert_trap (invoke $Mt "call" (i32.const 7)) "uninitialized")
+(assert_trap (invoke $Mt "call" (i32.const 7)) "uninitialized element")
 
 ;; Unlike in the v1 spec, active element segments stored before an
 ;; out-of-bounds access persist after the instantiation failure.
@@ -270,10 +270,10 @@
     (elem (i32.const 7) $f)
     (elem (i32.const 8) $f $f $f $f $f)  ;; (partially) out of bounds
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 (assert_return (invoke $Mt "call" (i32.const 7)) (i32.const 0))
-(assert_trap (invoke $Mt "call" (i32.const 8)) "uninitialized")
+(assert_trap (invoke $Mt "call" (i32.const 8)) "uninitialized element")
 
 (assert_trap
   (module
@@ -283,7 +283,7 @@
     (memory 1)
     (data (i32.const 0x10000) "d")  ;; out of bounds
   )
-  "out of bounds"
+  "out of bounds memory access"
 )
 (assert_return (invoke $Mt "call" (i32.const 7)) (i32.const 0))
 
@@ -361,7 +361,7 @@
     (memory (import "Mm" "mem") 0)
     (data (i32.const 0x10000) "a")
   )
-  "out of bounds"
+  "out of bounds memory access"
 )
 
 (module $Pm
@@ -401,7 +401,7 @@
     (data (i32.const 0) "abc")
     (data (i32.const 327670) "zzzzzzzzzzzzzzzzzz") ;; (partially) out of bounds
   )
-  "out of bounds"
+  "out of bounds memory access"
 )
 (assert_return (invoke $Mm "load" (i32.const 0)) (i32.const 97))
 (assert_return (invoke $Mm "load" (i32.const 327670)) (i32.const 0))
@@ -414,7 +414,7 @@
     (func)
     (elem (i32.const 0) 0)  ;; out of bounds
   )
-  "out of bounds"
+  "out of bounds table access"
 )
 (assert_return (invoke $Mm "load" (i32.const 0)) (i32.const 97))
 

@@ -38,13 +38,15 @@ let lookup name t =
   match Utf8.encode name, t with
   | "print", _ -> ExternFunc (func print (FuncType ([], [])))
   | "print_i32", _ -> ExternFunc (func print (FuncType ([NumType I32Type], [])))
+  | "print_i64", _ -> ExternFunc (func print (FuncType ([NumType I64Type], [])))
+  | "print_f32", _ -> ExternFunc (func print (FuncType ([NumType F32Type], [])))
+  | "print_f64", _ -> ExternFunc (func print (FuncType ([NumType F64Type], [])))
   | "print_i32_f32", _ ->
     ExternFunc (func print (FuncType ([NumType I32Type; NumType F32Type], [])))
   | "print_f64_f64", _ ->
     ExternFunc (func print (FuncType ([NumType F64Type; NumType F64Type], [])))
-  | "print_f32", _ -> ExternFunc (func print (FuncType ([NumType F32Type], [])))
-  | "print_f64", _ -> ExternFunc (func print (FuncType ([NumType F64Type], [])))
   | "global_i32", _ -> ExternGlobal (global (GlobalType (NumType I32Type, Immutable)))
+  | "global_i64", _ -> ExternGlobal (global (GlobalType (NumType I64Type, Immutable)))
   | "global_f32", _ -> ExternGlobal (global (GlobalType (NumType F32Type, Immutable)))
   | "global_f64", _ -> ExternGlobal (global (GlobalType (NumType F64Type, Immutable)))
   | "table", _ -> ExternTable table

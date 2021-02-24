@@ -548,6 +548,8 @@ expressed syntactically as an :ref:`instruction <syntax-instr>` sequence:
 Intuitively, :math:`\instr^\ast` is the *continuation* to execute
 when the handler catches a thrown exception.
 
+.. _exec-expand:
+
 Conventions
 ...........
 
