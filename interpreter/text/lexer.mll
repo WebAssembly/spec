@@ -45,7 +45,7 @@ let string s =
   done;
   Buffer.contents b
 
-let value_type = function
+let num_type = function
   | "i32" -> Types.I32Type
   | "i64" -> Types.I64Type
   | "f32" -> Types.F32Type
@@ -91,8 +91,8 @@ let opt = Lib.Option.get
 let sign = '+' | '-'
 let digit = ['0'-'9']
 let hexdigit = ['0'-'9''a'-'f''A'-'F']
-let num = digit+
-let hexnum = hexdigit+
+let num = digit ('_'? digit)*
+let hexnum = hexdigit ('_'? hexdigit)*
 
 let letter = ['a'-'z''A'-'Z']
 let symbol =
@@ -123,17 +123,19 @@ let character =
 
 let nat = num | "0x" hexnum
 let int = sign nat
+let frac = num
+let hexfrac = hexnum
 let float =
-    sign? num '.' digit*
-  | sign? num ('.' digit*)? ('e' | 'E') sign? num
-  | sign? "0x" hexnum '.' hexdigit*
-  | sign? "0x" hexnum ('.' hexdigit*)? ('p' | 'P') sign? num
+    sign? num '.' frac?
+  | sign? num ('.' frac?)? ('e' | 'E') sign? num
+  | sign? "0x" hexnum '.' hexfrac?
+  | sign? "0x" hexnum ('.' hexfrac?)? ('p' | 'P') sign? num
   | sign? "inf"
   | sign? "nan"
   | sign? "nan:" "0x" hexnum
 let string = '"' character* '"'
-let name = '$' (letter | digit | '_' | symbol)+
-let reserved = ([^'\"''('')'';'] # space)+  (* hack for table size *)
+let reserved = (letter | digit | '_' | symbol)+
+let name = '$' reserved
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
@@ -158,44 +160,75 @@ rule token = parse
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
-  | (nxx as t) { VALUE_TYPE (value_type t) }
+  | "ref" { REF }
+  | "null" { NULL }
+  | "extern" { EXTERN }
+  | "externref" { EXTERNREF }
+  | "funcref" { FUNCREF }
+  | (nxx as t) { NUM_TYPE (num_type t) }
+  | "mut" { MUT }
+
   | (nxx as t)".const"
     { let open Source in
       CONST (numop t
         (fun s -> let n = I32.of_string s.it in
-          i32_const (n @@ s.at), Values.I32 n)
+          i32_const (n @@ s.at), Value.I32 n)
         (fun s -> let n = I64.of_string s.it in
-          i64_const (n @@ s.at), Values.I64 n)
+          i64_const (n @@ s.at), Value.I64 n)
         (fun s -> let n = F32.of_string s.it in
-          f32_const (n @@ s.at), Values.F32 n)
+          f32_const (n @@ s.at), Value.F32 n)
         (fun s -> let n = F64.of_string s.it in
-          f64_const (n @@ s.at), Values.F64 n))
+          f64_const (n @@ s.at), Value.F64 n))
     }
-  | "anyfunc" { ANYFUNC }
-  | "mut" { MUT }
+  | "ref.null" { REF_NULL }
+  | "ref.func" { REF_FUNC }
+  | "ref.extern" { REF_EXTERN }
+  | "ref.is_null" { REF_IS_NULL }
+  | "ref.as_non_null" { REF_AS_NON_NULL }
 
   | "nop" { NOP }
   | "unreachable" { UNREACHABLE }
   | "drop" { DROP }
   | "block" { BLOCK }
   | "loop" { LOOP }
+  | "let" { LET }
   | "end" { END }
   | "br" { BR }
   | "br_if" { BR_IF }
   | "br_table" { BR_TABLE }
+  | "br_on_null" { BR_ON_NULL }
   | "return" { RETURN }
   | "if" { IF }
   | "then" { THEN }
   | "else" { ELSE }
   | "select" { SELECT }
   | "call" { CALL }
+  | "call_ref" { CALL_REF }
   | "call_indirect" { CALL_INDIRECT }
+  | "return_call_ref" { RETURN_CALL_REF }
+  | "func.bind" { FUNC_BIND }
 
-  | "get_local" { GET_LOCAL }
-  | "set_local" { SET_LOCAL }
-  | "tee_local" { TEE_LOCAL }
-  | "get_global" { GET_GLOBAL }
-  | "set_global" { SET_GLOBAL }
+  | "local.get" { LOCAL_GET }
+  | "local.set" { LOCAL_SET }
+  | "local.tee" { LOCAL_TEE }
+  | "global.get" { GLOBAL_GET }
+  | "global.set" { GLOBAL_SET }
+
+  | "table.get" { TABLE_GET }
+  | "table.set" { TABLE_SET }
+  | "table.size" { TABLE_SIZE }
+  | "table.grow" { TABLE_GROW }
+  | "table.fill" { TABLE_FILL }
+  | "table.copy" { TABLE_COPY }
+  | "table.init" { TABLE_INIT }
+  | "elem.drop" { ELEM_DROP }
+
+  | "memory.size" { MEMORY_SIZE }
+  | "memory.grow" { MEMORY_GROW }
+  | "memory.fill" { MEMORY_FILL }
+  | "memory.copy" { MEMORY_COPY }
+  | "memory.init" { MEMORY_INIT }
+  | "data.drop" { DATA_DROP }
 
   | (nxx as t)".load"
     { LOAD (fun a o ->
@@ -236,6 +269,9 @@ rule token = parse
   | (ixx as t)".clz" { UNARY (intop t i32_clz i64_clz) }
   | (ixx as t)".ctz" { UNARY (intop t i32_ctz i64_ctz) }
   | (ixx as t)".popcnt" { UNARY (intop t i32_popcnt i64_popcnt) }
+  | (ixx as t)".extend8_s" { UNARY (intop t i32_extend8_s i64_extend8_s) }
+  | (ixx as t)".extend16_s" { UNARY (intop t i32_extend16_s i64_extend16_s) }
+  | "i64.extend32_s" { UNARY i64_extend32_s }
   | (fxx as t)".neg" { UNARY (floatop t f32_neg f64_neg) }
   | (fxx as t)".abs" { UNARY (floatop t f32_abs f64_abs) }
   | (fxx as t)".sqrt" { UNARY (floatop t f32_sqrt f64_sqrt) }
@@ -286,34 +322,39 @@ rule token = parse
   | (fxx as t)".gt" { COMPARE (floatop t f32_gt f64_gt) }
   | (fxx as t)".ge" { COMPARE (floatop t f32_ge f64_ge) }
 
-  | "i32.wrap/i64" { CONVERT i32_wrap_i64 }
-  | "i64.extend_s/i32" { CONVERT i64_extend_s_i32 }
-  | "i64.extend_u/i32" { CONVERT i64_extend_u_i32 }
-  | "f32.demote/f64" { CONVERT f32_demote_f64 }
-  | "f64.promote/f32" { CONVERT f64_promote_f32 }
-  | (ixx as t)".trunc_s/f32"
-    { CONVERT (intop t i32_trunc_s_f32 i64_trunc_s_f32) }
-  | (ixx as t)".trunc_u/f32"
-    { CONVERT (intop t i32_trunc_u_f32 i64_trunc_u_f32) }
-  | (ixx as t)".trunc_s/f64"
-    { CONVERT (intop t i32_trunc_s_f64 i64_trunc_s_f64) }
-  | (ixx as t)".trunc_u/f64"
-    { CONVERT (intop t i32_trunc_u_f64 i64_trunc_u_f64) }
-  | (fxx as t)".convert_s/i32"
-    { CONVERT (floatop t f32_convert_s_i32 f64_convert_s_i32) }
-  | (fxx as t)".convert_u/i32"
-    { CONVERT (floatop t f32_convert_u_i32 f64_convert_u_i32) }
-  | (fxx as t)".convert_s/i64"
-    { CONVERT (floatop t f32_convert_s_i64 f64_convert_s_i64) }
-  | (fxx as t)".convert_u/i64"
-    { CONVERT (floatop t f32_convert_u_i64 f64_convert_u_i64) }
-  | "f32.reinterpret/i32" { CONVERT f32_reinterpret_i32 }
-  | "f64.reinterpret/i64" { CONVERT f64_reinterpret_i64 }
-  | "i32.reinterpret/f32" { CONVERT i32_reinterpret_f32 }
-  | "i64.reinterpret/f64" { CONVERT i64_reinterpret_f64 }
-
-  | "current_memory" { CURRENT_MEMORY }
-  | "grow_memory" { GROW_MEMORY }
+  | "i32.wrap_i64" { CONVERT i32_wrap_i64 }
+  | "i64.extend_i32_s" { CONVERT i64_extend_i32_s }
+  | "i64.extend_i32_u" { CONVERT i64_extend_i32_u }
+  | "f32.demote_f64" { CONVERT f32_demote_f64 }
+  | "f64.promote_f32" { CONVERT f64_promote_f32 }
+  | (ixx as t)".trunc_f32_s"
+    { CONVERT (intop t i32_trunc_f32_s i64_trunc_f32_s) }
+  | (ixx as t)".trunc_f32_u"
+    { CONVERT (intop t i32_trunc_f32_u i64_trunc_f32_u) }
+  | (ixx as t)".trunc_f64_s"
+    { CONVERT (intop t i32_trunc_f64_s i64_trunc_f64_s) }
+  | (ixx as t)".trunc_f64_u"
+    { CONVERT (intop t i32_trunc_f64_u i64_trunc_f64_u) }
+  | (ixx as t)".trunc_sat_f32_s"
+    { CONVERT (intop t i32_trunc_sat_f32_s i64_trunc_sat_f32_s) }
+  | (ixx as t)".trunc_sat_f32_u"
+    { CONVERT (intop t i32_trunc_sat_f32_u i64_trunc_sat_f32_u) }
+  | (ixx as t)".trunc_sat_f64_s"
+    { CONVERT (intop t i32_trunc_sat_f64_s i64_trunc_sat_f64_s) }
+  | (ixx as t)".trunc_sat_f64_u"
+    { CONVERT (intop t i32_trunc_sat_f64_u i64_trunc_sat_f64_u) }
+  | (fxx as t)".convert_i32_s"
+    { CONVERT (floatop t f32_convert_i32_s f64_convert_i32_s) }
+  | (fxx as t)".convert_i32_u"
+    { CONVERT (floatop t f32_convert_i32_u f64_convert_i32_u) }
+  | (fxx as t)".convert_i64_s"
+    { CONVERT (floatop t f32_convert_i64_s f64_convert_i64_s) }
+  | (fxx as t)".convert_i64_u"
+    { CONVERT (floatop t f32_convert_i64_u f64_convert_i64_u) }
+  | "f32.reinterpret_i32" { CONVERT f32_reinterpret_i32 }
+  | "f64.reinterpret_i64" { CONVERT f64_reinterpret_i64 }
+  | "i32.reinterpret_f32" { CONVERT i32_reinterpret_f32 }
+  | "i64.reinterpret_f64" { CONVERT i64_reinterpret_f64 }
 
   | "type" { TYPE }
   | "func" { FUNC }
@@ -326,7 +367,9 @@ rule token = parse
   | "memory" { MEMORY }
   | "elem" { ELEM }
   | "data" { DATA }
+  | "declare" { DECLARE }
   | "offset" { OFFSET }
+  | "item" { ITEM }
   | "import" { IMPORT }
   | "export" { EXPORT }
 
@@ -342,10 +385,10 @@ rule token = parse
   | "assert_invalid" { ASSERT_INVALID }
   | "assert_unlinkable" { ASSERT_UNLINKABLE }
   | "assert_return" { ASSERT_RETURN }
-  | "assert_return_canonical_nan" { ASSERT_RETURN_CANONICAL_NAN }
-  | "assert_return_arithmetic_nan" { ASSERT_RETURN_ARITHMETIC_NAN }
   | "assert_trap" { ASSERT_TRAP }
   | "assert_exhaustion" { ASSERT_EXHAUSTION }
+  | "nan:canonical" { NAN Script.CanonicalNan }
+  | "nan:arithmetic" { NAN Script.ArithmeticNan }
   | "input" { INPUT }
   | "output" { OUTPUT }
 

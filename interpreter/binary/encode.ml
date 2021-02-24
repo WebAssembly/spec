@@ -60,6 +60,7 @@ let encode m =
     let vu32 i = vu64 Int64.(logand (of_int32 i) 0xffffffffL)
     let vs7 i = vs64 (Int64.of_int i)
     let vs32 i = vs64 (Int64.of_int32 i)
+    let vs33 i = vs64 (I64_convert.extend_i32_s i)
     let f32 x = u32 (F32.to_bits x)
     let f64 x = u64 (F64.to_bits x)
 
@@ -90,30 +91,39 @@ let encode m =
 
     open Types
 
-    let value_type = function
+    let num_type = function
       | I32Type -> vs7 (-0x01)
       | I64Type -> vs7 (-0x02)
       | F32Type -> vs7 (-0x03)
       | F64Type -> vs7 (-0x04)
 
-    let elem_type = function
-      | AnyFuncType -> vs7 (-0x10)
+    let heap_type = function
+      | FuncHeapType -> vs7 (-0x10)
+      | ExternHeapType -> vs7 (-0x11)
+      | DefHeapType (SynVar x) -> vs33 x
+      | DefHeapType (SemVar _) -> assert false
+      | BotHeapType -> assert false
 
-    let stack_type = function
-      | [] -> vs7 (-0x40)
-      | [t] -> value_type t
-      | _ ->
-        Code.error Source.no_region
-          "cannot encode stack type with arity > 1 (yet)"
+    let ref_type = function
+      | (Nullable, FuncHeapType) -> vs32 (-0x10l)
+      | (Nullable, ExternHeapType) -> vs32 (-0x11l)
+      | (Nullable, t) -> vs33 (-0x14l); heap_type t
+      | (NonNullable, t) -> vs33 (-0x15l); heap_type t
+
+    let value_type = function
+      | NumType t -> num_type t
+      | RefType t -> ref_type t
+      | BotType -> assert false
 
     let func_type = function
-      | FuncType (ins, out) -> vs7 (-0x20); vec value_type ins; vec value_type out
+      | FuncType (ts1, ts2) ->
+        vs7 (-0x20); vec value_type ts1; vec value_type ts2
 
     let limits vu {min; max} =
       bool (max <> None); vu min; opt vu max
 
     let table_type = function
-      | TableType (lim, t) -> elem_type t; limits vu32 lim
+      | TableType (lim, t) -> ref_type t; limits vu32 lim
 
     let memory_type = function
       | MemoryType lim -> limits vu32 lim
@@ -125,12 +135,15 @@ let encode m =
     let global_type = function
       | GlobalType (t, mut) -> value_type t; mutability mut
 
+    let def_type = function
+      | FuncDefType ft -> func_type ft
+
+
     (* Expressions *)
 
     open Source
     open Ast
-    open Values
-    open Memory
+    open Value
 
     let op n = u8 n
     let end_ () = op 0x0b
@@ -139,59 +152,88 @@ let encode m =
 
     let var x = vu32 x.it
 
+    let block_type = function
+      | ValBlockType None -> vs33 (-0x40l)
+      | ValBlockType (Some t) -> value_type t
+      | VarBlockType (SynVar x) -> vs33 x
+      | VarBlockType (SemVar _) -> assert false
+
+    let local (t, n) = len n; value_type t.it
+    let locals locs =
+      let combine t = function
+        | (t', n) :: ts when t.it = t'.it -> (t, n + 1) :: ts
+        | ts -> (t, 1) :: ts
+      in vec local (List.fold_right combine locs [])
+
     let rec instr e =
       match e.it with
       | Unreachable -> op 0x00
       | Nop -> op 0x01
 
-      | Block (ts, es) -> op 0x02; stack_type ts; list instr es; end_ ()
-      | Loop (ts, es) -> op 0x03; stack_type ts; list instr es; end_ ()
-      | If (ts, es1, es2) ->
-        op 0x04; stack_type ts; list instr es1;
+      | Block (bt, es) -> op 0x02; block_type bt; list instr es; end_ ()
+      | Loop (bt, es) -> op 0x03; block_type bt; list instr es; end_ ()
+      | If (bt, es1, es2) ->
+        op 0x04; block_type bt; list instr es1;
         if es2 <> [] then op 0x05;
         list instr es2; end_ ()
+      | Let (bt, locs, es) ->
+        op 0x17; block_type bt; locals locs; list instr es; end_ ()
 
       | Br x -> op 0x0c; var x
       | BrIf x -> op 0x0d; var x
       | BrTable (xs, x) -> op 0x0e; vec var xs; var x
+      | BrOnNull x -> op 0xd4; var x
       | Return -> op 0x0f
       | Call x -> op 0x10; var x
-      | CallIndirect x -> op 0x11; var x; u8 0x00
+      | CallRef -> op 0x14
+      | CallIndirect (x, y) -> op 0x11; var y; var x
+      | ReturnCallRef -> op 0x15
+      | FuncBind x -> op 0x16; var x
 
       | Drop -> op 0x1a
-      | Select -> op 0x1b
+      | Select None -> op 0x1b
+      | Select (Some ts) -> op 0x1c; vec value_type ts
 
-      | GetLocal x -> op 0x20; var x
-      | SetLocal x -> op 0x21; var x
-      | TeeLocal x -> op 0x22; var x
-      | GetGlobal x -> op 0x23; var x
-      | SetGlobal x -> op 0x24; var x
+      | LocalGet x -> op 0x20; var x
+      | LocalSet x -> op 0x21; var x
+      | LocalTee x -> op 0x22; var x
+      | GlobalGet x -> op 0x23; var x
+      | GlobalSet x -> op 0x24; var x
+
+      | TableGet x -> op 0x25; var x
+      | TableSet x -> op 0x26; var x
+      | TableSize x -> op 0xfc; vu32 0x10l; var x
+      | TableGrow x -> op 0xfc; vu32 0x0fl; var x
+      | TableFill x -> op 0xfc; vu32 0x11l; var x
+      | TableCopy (x, y) -> op 0xfc; vu32 0x0el; var x; var y
+      | TableInit (x, y) -> op 0xfc; vu32 0x0cl; var y; var x
+      | ElemDrop x -> op 0xfc; vu32 0x0dl; var x
 
       | Load ({ty = I32Type; sz = None; _} as mo) -> op 0x28; memop mo
       | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x29; memop mo
       | Load ({ty = F32Type; sz = None; _} as mo) -> op 0x2a; memop mo
       | Load ({ty = F64Type; sz = None; _} as mo) -> op 0x2b; memop mo
-      | Load ({ty = I32Type; sz = Some (Mem8, SX); _} as mo) ->
+      | Load ({ty = I32Type; sz = Some (Pack8, SX); _} as mo) ->
         op 0x2c; memop mo
-      | Load ({ty = I32Type; sz = Some (Mem8, ZX); _} as mo) ->
+      | Load ({ty = I32Type; sz = Some (Pack8, ZX); _} as mo) ->
         op 0x2d; memop mo
-      | Load ({ty = I32Type; sz = Some (Mem16, SX); _} as mo) ->
+      | Load ({ty = I32Type; sz = Some (Pack16, SX); _} as mo) ->
         op 0x2e; memop mo
-      | Load ({ty = I32Type; sz = Some (Mem16, ZX); _} as mo) ->
+      | Load ({ty = I32Type; sz = Some (Pack16, ZX); _} as mo) ->
         op 0x2f; memop mo
-      | Load {ty = I32Type; sz = Some (Mem32, _); _} ->
+      | Load {ty = I32Type; sz = Some (Pack32, _); _} ->
         assert false
-      | Load ({ty = I64Type; sz = Some (Mem8, SX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack8, SX); _} as mo) ->
         op 0x30; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem8, ZX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack8, ZX); _} as mo) ->
         op 0x31; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem16, SX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack16, SX); _} as mo) ->
         op 0x32; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem16, ZX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack16, ZX); _} as mo) ->
         op 0x33; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem32, SX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack32, SX); _} as mo) ->
         op 0x34; memop mo
-      | Load ({ty = I64Type; sz = Some (Mem32, ZX); _} as mo) ->
+      | Load ({ty = I64Type; sz = Some (Pack32, ZX); _} as mo) ->
         op 0x35; memop mo
       | Load {ty = F32Type | F64Type; sz = Some _; _} ->
         assert false
@@ -200,16 +242,25 @@ let encode m =
       | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x37; memop mo
       | Store ({ty = F32Type; sz = None; _} as mo) -> op 0x38; memop mo
       | Store ({ty = F64Type; sz = None; _} as mo) -> op 0x39; memop mo
-      | Store ({ty = I32Type; sz = Some Mem8; _} as mo) -> op 0x3a; memop mo
-      | Store ({ty = I32Type; sz = Some Mem16; _} as mo) -> op 0x3b; memop mo
-      | Store {ty = I32Type; sz = Some Mem32; _} -> assert false
-      | Store ({ty = I64Type; sz = Some Mem8; _} as mo) -> op 0x3c; memop mo
-      | Store ({ty = I64Type; sz = Some Mem16; _} as mo) -> op 0x3d; memop mo
-      | Store ({ty = I64Type; sz = Some Mem32; _} as mo) -> op 0x3e; memop mo
+      | Store ({ty = I32Type; sz = Some Pack8; _} as mo) -> op 0x3a; memop mo
+      | Store ({ty = I32Type; sz = Some Pack16; _} as mo) -> op 0x3b; memop mo
+      | Store {ty = I32Type; sz = Some Pack32; _} -> assert false
+      | Store ({ty = I64Type; sz = Some Pack8; _} as mo) -> op 0x3c; memop mo
+      | Store ({ty = I64Type; sz = Some Pack16; _} as mo) -> op 0x3d; memop mo
+      | Store ({ty = I64Type; sz = Some Pack32; _} as mo) -> op 0x3e; memop mo
       | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
 
-      | CurrentMemory -> op 0x3f; u8 0x00
-      | GrowMemory -> op 0x40; u8 0x00
+      | MemorySize -> op 0x3f; u8 0x00
+      | MemoryGrow -> op 0x40; u8 0x00
+      | MemoryFill -> op 0xfc; vu32 0x0bl; u8 0x00
+      | MemoryCopy -> op 0xfc; vu32 0x0al; u8 0x00; u8 0x00
+      | MemoryInit x -> op 0xfc; vu32 0x08l; var x; u8 0x00
+      | DataDrop x -> op 0xfc; vu32 0x09l; var x
+
+      | RefNull t -> op 0xd0; heap_type t
+      | RefIsNull -> op 0xd1
+      | RefAsNonNull -> op 0xd3
+      | RefFunc x -> op 0xd2; var x
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c
       | Const {it = I64 c; _} -> op 0x42; vs64 c
@@ -260,10 +311,16 @@ let encode m =
       | Unary (I32 I32Op.Clz) -> op 0x67
       | Unary (I32 I32Op.Ctz) -> op 0x68
       | Unary (I32 I32Op.Popcnt) -> op 0x69
+      | Unary (I32 (I32Op.ExtendS Pack8)) -> op 0xc0
+      | Unary (I32 (I32Op.ExtendS Pack16)) -> op 0xc1
+      | Unary (I32 (I32Op.ExtendS Pack32)) -> assert false
 
       | Unary (I64 I64Op.Clz) -> op 0x79
       | Unary (I64 I64Op.Ctz) -> op 0x7a
       | Unary (I64 I64Op.Popcnt) -> op 0x7b
+      | Unary (I64 (I64Op.ExtendS Pack8)) -> op 0xc2
+      | Unary (I64 (I64Op.ExtendS Pack16)) -> op 0xc3
+      | Unary (I64 (I64Op.ExtendS Pack32)) -> op 0xc4
 
       | Unary (F32 F32Op.Abs) -> op 0x8b
       | Unary (F32 F32Op.Neg) -> op 0x8c
@@ -336,6 +393,10 @@ let encode m =
       | Convert (I32 I32Op.TruncUF32) -> op 0xa9
       | Convert (I32 I32Op.TruncSF64) -> op 0xaa
       | Convert (I32 I32Op.TruncUF64) -> op 0xab
+      | Convert (I32 I32Op.TruncSatSF32) -> op 0xfc; vu32 0x00l
+      | Convert (I32 I32Op.TruncSatUF32) -> op 0xfc; vu32 0x01l
+      | Convert (I32 I32Op.TruncSatSF64) -> op 0xfc; vu32 0x02l
+      | Convert (I32 I32Op.TruncSatUF64) -> op 0xfc; vu32 0x03l
       | Convert (I32 I32Op.ReinterpretFloat) -> op 0xbc
 
       | Convert (I64 I64Op.ExtendSI32) -> op 0xac
@@ -345,6 +406,10 @@ let encode m =
       | Convert (I64 I64Op.TruncUF32) -> op 0xaf
       | Convert (I64 I64Op.TruncSF64) -> op 0xb0
       | Convert (I64 I64Op.TruncUF64) -> op 0xb1
+      | Convert (I64 I64Op.TruncSatSF32) -> op 0xfc; vu32 0x04l
+      | Convert (I64 I64Op.TruncSatUF32) -> op 0xfc; vu32 0x05l
+      | Convert (I64 I64Op.TruncSatSF64) -> op 0xfc; vu32 0x06l
+      | Convert (I64 I64Op.TruncSatUF64) -> op 0xfc; vu32 0x07l
       | Convert (I64 I64Op.ReinterpretFloat) -> op 0xbd
 
       | Convert (F32 F32Op.ConvertSI32) -> op 0xb2
@@ -378,7 +443,7 @@ let encode m =
       end
 
     (* Type section *)
-    let type_ t = func_type t.it
+    let type_ t = def_type t.it
 
     let type_section ts =
       section 1 (vec type_) ts (ts <> [])
@@ -422,8 +487,8 @@ let encode m =
 
     (* Global section *)
     let global g =
-      let {gtype; value} = g.it in
-      global_type gtype; const value
+      let {gtype; ginit} = g.it in
+      global_type gtype; const ginit
 
     let global_section gs =
       section 6 (vec global) gs (gs <> [])
@@ -448,19 +513,11 @@ let encode m =
       section 8 (opt var) xo (xo <> None)
 
     (* Code section *)
-    let compress ts =
-      let combine t = function
-        | (t', n) :: ts when t = t' -> (t, n + 1) :: ts
-        | ts -> (t, 1) :: ts
-      in List.fold_right combine ts []
-
-    let local (t, n) = len n; value_type t
-
     let code f =
-      let {locals; body; _} = f.it in
+      let {locals = locs; body; _} = f.it in
       let g = gap32 () in
       let p = pos s in
-      vec local (compress locals);
+      locals locs;
       list instr body;
       end_ ();
       patch_gap32 g (pos s - p)
@@ -469,25 +526,72 @@ let encode m =
       section 10 (vec code) fs (fs <> [])
 
     (* Element section *)
-    let segment dat seg =
-      let {index; offset; init} = seg.it in
-      var index; const offset; dat init
+    let is_elem_kind = function
+      | (NonNullable, FuncHeapType) -> true
+      | _ -> false
 
-    let table_segment seg =
-      segment (vec var) seg
+    let elem_kind = function
+      | (NonNullable, FuncHeapType) -> u8 0x00
+      | _ -> assert false
+
+    let is_elem_index e =
+      match e.it with
+      | [{it = RefFunc _; _}] -> true
+      | _ -> false
+
+    let elem_index e =
+      match e.it with
+      | [{it = RefFunc x; _}] -> var x
+      | _ -> assert false
+
+    let elem seg =
+      let {etype; einit; emode} = seg.it in
+      if is_elem_kind etype && List.for_all is_elem_index einit then
+        match emode.it with
+        | Passive ->
+          vu32 0x01l; elem_kind etype; vec elem_index einit
+        | Active {index; offset} when index.it = 0l ->
+          vu32 0x00l; const offset; vec elem_index einit
+        | Active {index; offset} ->
+          vu32 0x02l;
+          var index; const offset; elem_kind etype; vec elem_index einit
+        | Declarative ->
+          vu32 0x03l; elem_kind etype; vec elem_index einit
+      else
+        match emode.it with
+        | Passive ->
+          vu32 0x05l; ref_type etype; vec const einit
+        | Active {index; offset} when index.it = 0l && is_elem_kind etype ->
+          vu32 0x04l; const offset; vec const einit
+        | Active {index; offset} ->
+          vu32 0x06l; var index; const offset; ref_type etype; vec const einit
+        | Declarative ->
+          vu32 0x07l; ref_type etype; vec const einit
 
     let elem_section elems =
-      section 9 (vec table_segment) elems (elems <> [])
+      section 9 (vec elem) elems (elems <> [])
 
     (* Data section *)
-    let memory_segment seg =
-      segment string seg
+    let data seg =
+      let {dinit; dmode} = seg.it in
+      match dmode.it with
+      | Passive ->
+        vu32 0x01l; string dinit
+      | Active {index; offset} when index.it = 0l ->
+        vu32 0x00l; const offset; string dinit
+      | Active {index; offset} ->
+        vu32 0x02l; var index; const offset; string dinit
+      | Declarative ->
+        assert false
 
-    let data_section data =
-      section 11 (vec memory_segment) data (data <> [])
+    let data_section datas =
+      section 11 (vec data) datas (datas <> [])
+
+    (* Data count section *)
+    let data_count_section datas m =
+      section 12 len (List.length datas) Free.((module_ m).datas <> Set.empty)
 
     (* Module *)
-
     let module_ m =
       u32 0x6d736100l;
       u32 version;
@@ -500,7 +604,8 @@ let encode m =
       export_section m.it.exports;
       start_section m.it.start;
       elem_section m.it.elems;
+      data_count_section m.it.datas m;
       code_section m.it.funcs;
-      data_section m.it.data
+      data_section m.it.datas
   end
   in E.module_ m; to_string s

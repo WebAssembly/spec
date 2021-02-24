@@ -1,11 +1,11 @@
 ;; Failures in unreachable code.
 
 (assert_invalid
-  (module (func $local-index (unreachable) (drop (get_local 0))))
+  (module (func $local-index (unreachable) (drop (local.get 0))))
   "unknown local"
 )
 (assert_invalid
-  (module (func $global-index (unreachable) (drop (get_global 0))))
+  (module (func $global-index (unreachable) (drop (global.get 0))))
   "unknown global"
 )
 (assert_invalid
@@ -196,6 +196,18 @@
   "type mismatch"
 )
 (assert_invalid
+  (module (func $type-unary-num-vs-void-in-loop-after-unreachable
+    (unreachable) (loop (drop (i32.eqz (nop))))
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-unary-num-vs-void-in-i32-loop-after-unreachable
+    (unreachable) (loop (result i32) (i32.eqz (nop)))
+  ))
+  "type mismatch"
+)
+(assert_invalid
   (module (func $type-unary-num-vs-num-after-unreachable
     (unreachable) (drop (i32.eqz (f32.const 1)))
   ))
@@ -246,6 +258,24 @@
 (assert_invalid
   (module (func $type-func-value-num-vs-num-after-unreachable (result i32)
     (unreachable) (f32.const 0)
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-unary-num-vs-void-in-if-after-unreachable
+    (unreachable) (if (i32.const 0) (then (drop (i32.eqz (nop)))))
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-unary-num-vs-void-in-else-after-unreachable
+    (unreachable) (if (i32.const 0) (then (nop)) (else (drop (i32.eqz (nop)))))
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-unary-num-vs-void-in-else-after-unreachable-if
+    (if (i32.const 0) (then (unreachable)) (else (drop (i32.eqz (nop)))))
   ))
   "type mismatch"
 )
@@ -457,6 +487,31 @@
   "type mismatch"
 )
 (assert_invalid
+  (module (func $type-br_if-num-vs-void-after-unreachable (result i32)
+    (block (result i32)
+      (block (unreachable) (br_if 1 (i32.const 0) (i32.const 0)))
+    )
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-br_if-num-vs-num-after-unreachable (result i32)
+    (block (result i32)
+      (block (result f32) (unreachable) (br_if 1 (i32.const 0) (i32.const 0)))
+      (drop) (i32.const 0)
+    )
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $type-br_if-num2-vs-num-after-unreachable (result i32)
+    (block (result i32)
+      (unreachable) (br_if 0 (i32.const 0) (i32.const 0)) (i32.const 0)
+    )
+  ))
+  "type mismatch"
+)
+(assert_invalid
   (module (func $type-br_table-num-vs-num-after-unreachable
     (block (br_table 0 (unreachable) (f32.const 1)))
   ))
@@ -477,20 +532,6 @@
       )
       (drop)
     )
-  ))
-  "type mismatch"
-)
-(assert_invalid
-  (module (func $type-br_table-label-num-vs-label-num-after-unreachable
-    (block (result f64)
-      (block (result f32)
-        (unreachable)
-        (br_table 0 1 1 (i32.const 1))
-      )
-      (drop)
-      (f64.const 0)
-    )
-    (drop)
   ))
   "type mismatch"
 )
@@ -621,5 +662,45 @@
   (module (func $type-cont-last-num-vs-empty (result i32)
     (loop (br 0 (i32.const 0)))
   ))
+  "type mismatch"
+)
+
+(assert_invalid
+  (module (func $tee-local-unreachable-value
+    (local i32)
+    (local.tee 0 (unreachable))
+  ))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func $br_if-unreachable (result i32)
+    (block (result i32)
+      (block
+        (br_if 1 (unreachable) (i32.const 0))
+      )
+      (i32.const 0)
+    )
+  ))
+  "type mismatch"
+)
+(assert_invalid 
+  (module
+    (func $type-br_if-after-unreachable (result i64)
+      (unreachable)
+      (br_if 0)
+      (i64.extend_i32_u)
+    )
+  )
+ "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (func $type-after-ref.as_non_null
+      (unreachable)
+      (ref.as_non_null)
+      (f32.abs)
+    )
+  )
   "type mismatch"
 )

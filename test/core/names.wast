@@ -597,6 +597,19 @@
   (func (export "⸎") (result i32) (i32.const 469))
   (func (export "\14") (result i32) (i32.const 470)) ;; ¶ in CP437
   (func (export "☙") (result i32) (i32.const 471))
+  (func (export "⸿") (result i32) (i32.const 472))
+  (func (export "〇") (result i32) (i32.const 473))
+  (func (export "๛") (result i32) (i32.const 474))
+
+  ;; Test an unusual character.
+  (func (export "ꙮ") (result i32) (i32.const 475))
+
+  ;; Test the three characters whose normalization forms under NFC, NFD, NFKC,
+  ;; and NFKD are all different.
+  ;; http://unicode.org/faq/normalization.html#6
+  (func (export "ϓ") (result i32) (i32.const 476))
+  (func (export "ϔ") (result i32) (i32.const 477))
+  (func (export "ẛ") (result i32) (i32.const 478))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -1071,15 +1084,22 @@
 (assert_return (invoke "⸎") (i32.const 469))
 (assert_return (invoke "\14") (i32.const 470))
 (assert_return (invoke "☙") (i32.const 471))
+(assert_return (invoke "⸿") (i32.const 472))
+(assert_return (invoke "〇") (i32.const 473))
+(assert_return (invoke "๛") (i32.const 474))
+(assert_return (invoke "ꙮ") (i32.const 475))
+(assert_return (invoke "ϓ") (i32.const 476))
+(assert_return (invoke "ϔ") (i32.const 477))
+(assert_return (invoke "ẛ") (i32.const 478))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,
   ;; exports, functions and parameters.
-  (import "spectest" "print" (func (param i32)))
-  (func (import "spectest" "print") (param i32))
+  (import "spectest" "print_i32" (func (param i32)))
+  (func (import "spectest" "print_i32") (param i32))
   (func (param i32) (param i32)
-    (call 0 (get_local 0))
-    (call 1 (get_local 1))
+    (call 0 (local.get 0))
+    (call 1 (local.get 1))
   )
   (export "print32" (func 2))
 )

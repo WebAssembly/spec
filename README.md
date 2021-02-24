@@ -1,4 +1,17 @@
-[![Build Status](https://travis-ci.org/WebAssembly/spec.svg?branch=master)](https://travis-ci.org/WebAssembly/spec)
+[![Build Status](https://travis-ci.org/WebAssembly/function-references.svg?branch=master)](https://travis-ci.org/WebAssembly/function-references)
+
+# Function Reference Types Proposal for WebAssembly
+
+This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
+It is meant for discussion, prototype specification and implementation of a proposal to add support for basic function reference types to WebAssembly.
+
+* See the [overview](proposals/function-references/Overview.md) for a summary of the proposal.
+
+* See the [modified spec](https://webassembly.github.io/function-references/core) for details.  (Note, link is 404.)
+
+The repository is now based on the [bulk operations proposal](proposals/bulk-memory-operations/Overview.md) and includes all respective changes.
+
+Original README from upstream repository follows...
 
 # GC Proposal for WebAssembly
 
@@ -30,3 +43,7 @@ should take place in
 [the WebAssembly design repository](https://github.com/WebAssembly/design)
 first, so that this spec repository can remain focused. And please follow the
 [guidelines for contributing](Contributing.md).
+
+# citing
+
+For citing WebAssembly in LaTeX, use [this bibtex file](wasm-specs.bib).

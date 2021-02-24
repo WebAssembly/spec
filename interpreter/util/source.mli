@@ -9,3 +9,5 @@ val string_of_pos : pos -> string
 val string_of_region : region -> string
 
 val (@@) : 'a -> region -> 'a phrase
+val it : 'a phrase -> 'a
+val at : 'a phrase -> region
