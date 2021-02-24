@@ -82,7 +82,7 @@ let check_num_type (c : context) (t : num_type) at =
 let check_heap_type (c : context) (t : heap_type) at =
   match t with
   | FuncHeapType | ExternHeapType -> ()
-  | DefHeapType (SynVar x) -> ignore (func_type c (x @@ at))
+  | DefHeapType (SynVar x) -> ignore (type_ c (x @@ at))
   | DefHeapType (SemVar _) | BotHeapType -> assert false
 
 let check_ref_type (c : context) (t : ref_type) at =
