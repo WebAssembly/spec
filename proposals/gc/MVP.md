@@ -47,6 +47,11 @@ All three proposals are prerequisites.
   - `heaptype ::= ... | i31`
   - the type of unboxed scalars
 
+* `rtt <n>? <typeidx>` is a new heap type that is a runtime representation of the static type `<typeidx>`
+  - `heaptype ::= ... | rtt <n>? <typeidx>`
+  - `rtt n? t ok` iff `t ok`
+  - the constant `n`, if present, encodes the static knowledge that this type has `n` dynamic supertypes (see [Runtime types](#runtime-types))
+
 * Note: heap types `func` and `extern` already exist via [reference types proposal](https://github.com/WebAssembly/reference-types), and `(ref null? $t)` via [typed references](https://github.com/WebAssembly/function-references)
 
 We distinguish these *abstract* heap types from *concrete* heap types `(type $t)`.
@@ -70,13 +75,8 @@ New abbreviations are introduced for reference types in binary and text format, 
 * `i31ref` is a new reference type
   - `i31ref == (ref i31)`
 
-
-#### Value Types
-
-* `rtt <n>? <typeidx>` is a new value type that is a runtime representation of the static type `<typeidx>`
-  - `valtype ::= ... | rtt <n>? <typeidx>`
-  - `rtt n? t ok` iff `t ok`
-  - the constant `n`, if present, encodes the static knowledge that this type has `n` dynamic supertypes (see [Runtime types](#runtime-types))
+* `rtt <n>? <typeidx>` is a new reference type
+  - `(rtt <n>? $t) == (ref (rtt <n>? $t))`
 
 
 #### Type Definitions
@@ -130,6 +130,14 @@ In addition to the [existing rules](https://github.com/WebAssembly/function-refe
      - if `$t = <functype>`
      - or `$t = type ht` and `rt <: func` (imports)
 
+* `rtt n? $t` is a subtype of `eq`
+  - `rtt n? $t <: eq`
+
+* `rtt n $t` is a subtype of `rtt $t`
+  - `rtt n $t1 <: rtt $t2`
+    - if `$t1 == $t2`
+  - Note: `rtt n? $t1` is *not* a subtype of `rtt n? $t2`, if `$t1` is merely a subtype of `$t2`; such covariant subtyping would be unsound, since RTTs are used in both co- and contravariant roles (e.g., both when constructing and consuming a reference)
+
 Note: This creates a hierarchy of *abstract* Wasm heap types that looks as follows.
 ```
       any
@@ -139,6 +147,7 @@ Note: This creates a hierarchy of *abstract* Wasm heap types that looks as follo
 i31  data
 ```
 All *concrete* heap types (of the form `(type $t)`) are situated below either `data` or `func`.
+RTTs are below `eq`.
 
 In addition, the abstract heap type `extern` is also a subtype of `any`.
 Its interpretation is defined by the host environment.
@@ -148,14 +157,6 @@ The possible outcomes of such an operation hence depend on the host environment.
 (For example, in a JavaScript embedding, `externref` could be inhabited by all JS values -- which is a natural choice, because JavaScript is untyped; but some of its values are JS-side representations of Wasm values per the JS API, and those can also be observed as `data` or `func` references. Another possible interpretation could be that `data` is disjoint from `extern`, which would be determined by the coercions allowed by the JS API at the JS/Wasm boundary. While such an interpretation is probably not attractive for JavaScript, it would be natural in other embeddings such as the C/C++ API, where different references are represented with different host types.)
 
 Note: In the future, this hierarchy could be refined to distinguish compound data types that are not subtypes of `eq`.
-
-
-##### Value Types
-
-* `rtt n $t` is a subtype of `rtt $t`
-  - `rtt n $t1 <: rtt $t2`
-    - if `$t1 == $t2`
-  - Note: `rtt n? $t1` is *not* a subtype of `rtt n? $t2`, if `$t1` is merely a subtype of `$t2`; such covariant subtyping would be unsound, since RTTs are used in both co- and contravariant roles (e.g., both when constructing and consuming a reference)
 
 
 ##### Defined Types
@@ -436,16 +437,16 @@ This extends the [encodings](https://github.com/WebAssembly/function-references/
 
 | Opcode | Type            | Parameters | Note |
 | ------ | --------------- | ---------- | ---- |
-| -0x10  | `funcref`       |            | from reftype proposal |
-| -0x11  | `externref`     |            | from reftype proposal |
-| -0x12  | `anyref`        |            | |
-| -0x13  | `eqref`         |            | |
+| -0x10  | `funcref`       |            | shorthand, from reftype proposal |
+| -0x11  | `externref`     |            | shorthand, from reftype proposal |
+| -0x12  | `anyref`        |            | shorthand |
+| -0x13  | `eqref`         |            | shorthand |
 | -0x14  | `(ref null ht)` | `ht : heaptype (s33)` | from funcref proposal |
 | -0x15  | `(ref ht)`      | `ht : heaptype (s33)` | from funcref proposal |
-| -0x16  | `i31ref`        |            | |
-| -0x17  | `(rtt n $t)`    | `n : u32`, `$t : typeidx` | |
-| -0x18  | `(rtt $t)`      | `$t : typeidx` | |
-| -0x19  | `dataref`       |            | |
+| -0x16  | `i31ref`        |            | shorthand |
+| -0x17  | `(rtt n $t)`    | `n : u32`, `i : typeidx` | shorthand |
+| -0x18  | `(rtt $t)`      | `i : typeidx` | shorthand |
+| -0x19  | `dataref`       |            | shorthand |
 
 #### Heap Types
 
@@ -459,6 +460,8 @@ The opcode for heap types is encoded as an `s33`.
 | -0x12  | `any`           |            | |
 | -0x13  | `eq`            |            | |
 | -0x16  | `i31`           |            | |
+| -0x17  | `(rtt n i)`     | `n : u32`, `i : typeidx` | |
+| -0x18  | `(rtt i)`       | `i : typeidx` | |
 | -0x19  | `data`          |            | |
 
 #### Defined Types
