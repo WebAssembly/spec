@@ -68,10 +68,7 @@ class ArithmeticOp:
             if self.op.startswith('sub'):
                 value = operand1 - operand2
 
-            if value > lane.max:
-                return lane.max
-            if value < lane.min:
-                return lane.min
+            return lane.sat_s(value)
 
         if self.op.endswith('sat_u'):
             if operand1 < 0:
@@ -83,10 +80,7 @@ class ArithmeticOp:
             if self.op.startswith('sub'):
                 value = operand1 - operand2
 
-            if value > lane.mask:
-                return lane.mask
-            if value < 0:
-                return 0
+            return lane.sat_u(value)
 
         return value
 
@@ -122,10 +116,10 @@ class ArithmeticOp:
             return str(bin(result % lane.mod).count('1'))
         elif self.op == 'sat_s':
             # Don't call get_valid_value, it will truncate results.
-            return max(lane.min, min(v, lane.max))
+            return lane.sat_s(v)
         elif self.op == 'sat_u':
             # Don't call get_valid_value, it will truncate results.
-            return max(0, min(v, lane.mask))
+            return lane.sat_u(v)
         else:
             raise Exception('Unknown unary operation')
 
@@ -181,8 +175,7 @@ class ArithmeticOp:
             # This should be before 'sat' case.
             i1 = ArithmeticOp.get_valid_value(v1, src_lane)
             i2 = ArithmeticOp.get_valid_value(v2, src_lane)
-            result = (i1 * i2 + 0x4000) >> 15
-            return ArithmeticOp.get_valid_value(result, src_lane)
+            return src_lane.sat_s((i1 * i2 + 0x4000) >> 15)
         elif 'sat' in self.op:
             value = self._saturate(v1, v2, src_lane)
             if self.op.endswith('_u'):

@@ -30,3 +30,9 @@ class LaneValue:
     @property
     def quarter(self):
         return pow(2, self.lane_width - 2)
+
+    def sat_s(self, v):
+        return max(self.min, min(v, self.max))
+
+    def sat_u(self, v):
+        return max(0, min(v, self.mask))
