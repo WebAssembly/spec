@@ -164,7 +164,7 @@ class SimdI32x4TruncSatF64x2Case(SimdConversionCase):
     UNARY_OPS = ("trunc_sat_f64x2_s_zero", "trunc_sat_f64x2_u_zero")
 
     def to_results(self, value: str):
-        return ["0", value]
+        return [value, "0"]
 
 
 def gen_test_cases():
