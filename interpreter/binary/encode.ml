@@ -91,6 +91,10 @@ let encode m =
 
     open Types
 
+    let mutability = function
+      | Immutable -> u8 0
+      | Mutable -> u8 1
+
     let num_type = function
       | I32Type -> vs7 (-0x01)
       | I64Type -> vs7 (-0x02)
@@ -98,10 +102,17 @@ let encode m =
       | F64Type -> vs7 (-0x04)
 
     let heap_type = function
+      | AnyHeapType -> vs7 (-0x12)
+      | EqHeapType -> vs7 (-0x13)
+      | I31HeapType -> vs7 (-0x16)
+      | DataHeapType -> vs7 (-0x19)
       | FuncHeapType -> vs7 (-0x10)
       | ExternHeapType -> vs7 (-0x11)
       | DefHeapType (SynVar x) -> vs33 x
       | DefHeapType (SemVar _) -> assert false
+      | RttHeapType (SynVar x, None) -> vs7 (-0x18); vs33 x
+      | RttHeapType (SynVar x, Some n) -> vs7 (-0x17); vs32 n; vs33 x
+      | RttHeapType (SemVar _, _) -> assert false
       | BotHeapType -> assert false
 
     let ref_type = function
@@ -115,10 +126,29 @@ let encode m =
       | RefType t -> ref_type t
       | BotType -> assert false
 
+    let packed_type = function
+      | I8Type -> vs7 (-0x06)
+      | I16Type -> vs7 (-0x07)
+
+    let storage_type = function
+      | ValueStorageType t -> value_type t
+      | PackedStorageType t -> packed_type t
+
+    let field_type = function
+      | FieldType (t, mut) -> storage_type t; mutability mut
+
+    let struct_type = function
+      | StructType fts -> vec field_type fts
+
+    let array_type = function
+      | ArrayType ft -> field_type ft
+
     let func_type = function
       | FuncType (ts1, ts2) -> vec value_type ts1; vec value_type ts2
 
     let def_type = function
+      | StructDefType st -> vs7 (-0x21); struct_type st
+      | ArrayDefType at -> vs7 (-0x22); array_type at
       | FuncDefType ft -> vs7 (-0x20); func_type ft
 
     let limits vu {min; max} =
@@ -129,10 +159,6 @@ let encode m =
 
     let memory_type = function
       | MemoryType lim -> limits vu32 lim
-
-    let mutability = function
-      | Immutable -> u8 0
-      | Mutable -> u8 1
 
     let global_type = function
       | GlobalType (t, mut) -> value_type t; mutability mut

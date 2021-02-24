@@ -54,6 +54,7 @@ let label (c : context) x = lookup "label" c.labels x
 let func_type (c : context) x =
   match type_ c x with
   | FuncDefType ft -> ft
+  | _ -> error x.at ("non-function type " ^ Int32.to_string x.it)
 
 let func (c : context) x = func_type c (func_var c x @@ x.at)
 
@@ -81,9 +82,12 @@ let check_num_type (c : context) (t : num_type) at =
 
 let check_heap_type (c : context) (t : heap_type) at =
   match t with
+  | AnyHeapType | EqHeapType | I31HeapType | DataHeapType
   | FuncHeapType | ExternHeapType -> ()
   | DefHeapType (SynVar x) -> ignore (type_ c (x @@ at))
-  | DefHeapType (SemVar _) | BotHeapType -> assert false
+  | RttHeapType (SynVar x, _) -> ignore (type_ c (x @@ at))
+  | DefHeapType (SemVar _) | RttHeapType (SemVar _, _) | BotHeapType ->
+    assert false
 
 let check_ref_type (c : context) (t : ref_type) at =
   match t with
@@ -94,6 +98,26 @@ let check_value_type (c : context) (t : value_type) at =
   | NumType t' -> check_num_type c t' at
   | RefType t' -> check_ref_type c t' at
   | BotType -> ()
+
+let check_packed_type (c : context) (t : packed_type) at =
+  ()
+
+let check_storage_type (c : context) (st : storage_type) at =
+  match st with
+  | ValueStorageType t -> check_value_type c t at
+  | PackedStorageType t -> check_packed_type c t at
+
+let check_field_type (c : context) (ft : field_type) at =
+  let FieldType (st, _mut) = ft in
+  check_storage_type c st at
+
+let check_struct_type (c : context) (st : struct_type) at =
+  let StructType fts = st in
+  List.iter (fun ft -> check_field_type c ft at) fts
+
+let check_array_type (c : context) (rt : array_type) at =
+  let ArrayType ft = rt in
+  check_field_type c ft at
 
 let check_func_type (c : context) (ft : func_type) at =
   let FuncType (ts1, ts2) = ft in
@@ -112,13 +136,15 @@ let check_memory_type (c : context) (mt : memory_type) at =
     "memory size must be at most 65536 pages (4GiB)"
 
 let check_global_type (c : context) (gt : global_type) at =
-  let GlobalType (t, mut) = gt in
+  let GlobalType (t, _mut) = gt in
   check_value_type c t at
+
 
 let check_def_type (c : context) (dt : def_type) at =
   match dt with
+  | StructDefType st -> check_struct_type c st at
+  | ArrayDefType rt -> check_array_type c rt at
   | FuncDefType ft -> check_func_type c ft at
-
 
 let check_type (c : context) (t : type_) =
   check_def_type c t.it t.at

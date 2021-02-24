@@ -17,25 +17,37 @@ function externref(s) {
   if (! (s in externrefs)) externrefs[s] = {[externsym]: s};
   return externrefs[s];
 }
-function is_externref(x) {
-  return (x !== null && externsym in x) ? 1 : 0;
+function is_anyref(x) {
+  return x !== null ? 1 : 0;
+}
+function is_eqref(x) {
+  return x !== null ? 1 : 0;  // TODO
+}
+function is_i31ref(x) {
+  return typeof x === "number" && (x | 0x7fffffff) === x ? 1 : 0;
+}
+function is_dataref(x) {
+  return x !== null && typeof x !== "function" ? 1 : 0;
 }
 function is_funcref(x) {
   return typeof x === "function" ? 1 : 0;
 }
-function eq_externref(x, y) {
-  return x === y ? 1 : 0;
+function is_externref(x) {
+  return (x !== null && externsym in x) ? 1 : 0;
 }
-function eq_funcref(x, y) {
+function eq_ref(x, y) {
   return x === y ? 1 : 0;
 }
 
 let spectest = {
   externref: externref,
-  is_externref: is_externref,
+  is_anyref: is_anyref,
+  is_eqref: is_eqref,
+  is_i31ref: is_i31ref,
+  is_dataref: is_dataref,
   is_funcref: is_funcref,
-  eq_externref: eq_externref,
-  eq_funcref: eq_funcref,
+  is_externref: is_externref,
+  eq_ref: eq_ref,
   print: console.log.bind(console),
   print_i32: console.log.bind(console),
   print_i32_f32: console.log.bind(console),
@@ -235,9 +247,12 @@ let subject_idx = 0l
 let externref_idx = 1l
 let is_externref_idx = 2l
 let is_funcref_idx = 3l
-let eq_externref_idx = 4l
-let _eq_funcref_idx = 5l
-let subject_type_idx = 6l
+let is_dataref_idx = 4l
+let is_i31ref_idx = 5l
+let is_eqref_idx = 6l
+let is_anyref_idx = 7l
+let eq_ref_idx = 8l
+let subject_type_idx = 9l
 
 let eq_of = function
   | I32Type -> I32 I32Op.Eq
@@ -299,7 +314,7 @@ let assert_return ress ts at =
     | LitResult {it = Ref (ExternRef n); _} ->
       [ Const (I32 n @@ at) @@ at;
         Call (externref_idx @@ at) @@ at;
-        Call (eq_externref_idx @@ at)  @@ at;
+        Call (eq_ref_idx @@ at)  @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | LitResult {it = Ref _; _} ->
@@ -327,9 +342,14 @@ let assert_return ress ts at =
     | RefResult t ->
       let is_ref_idx =
         match t with
+        | AnyHeapType -> is_anyref_idx
+        | EqHeapType -> is_eqref_idx
+        | I31HeapType -> is_i31ref_idx
+        | DataHeapType -> is_dataref_idx
         | FuncHeapType -> is_funcref_idx
         | ExternHeapType -> is_externref_idx
-        | DefHeapType _ -> is_funcref_idx
+        | DefHeapType _ -> is_anyref_idx (* TODO *)
+        | RttHeapType _ -> is_anyref_idx (* TODO *)
         | BotHeapType -> assert false
       in
       [ Call (is_ref_idx @@ at) @@ at;
@@ -345,7 +365,8 @@ let assert_return ress ts at =
   in [], List.flatten (List.rev_map test (List.combine ress ts))
 
 let i32_type = NumType I32Type
-let funcref_type = RefType (Nullable, FuncHeapType)
+let anyref_type = RefType (Nullable, AnyHeapType)
+let eqref_type = RefType (Nullable, EqHeapType)
 let externref_type = RefType (Nullable, ExternHeapType)
 let func_def_type ins out at = FuncDefType (FuncType (ins, out)) @@ at
 
@@ -355,10 +376,8 @@ let wrap item_name wrap_action wrap_assertion at =
   let types =
     func_def_type [] [] at ::
     func_def_type [i32_type] [externref_type] at ::
-    func_def_type [externref_type] [i32_type] at ::
-    func_def_type [funcref_type] [i32_type] at ::
-    func_def_type [externref_type; externref_type] [i32_type] at ::
-    func_def_type [funcref_type; funcref_type] [i32_type] at ::
+    func_def_type [anyref_type] [i32_type] at ::
+    func_def_type [eqref_type; eqref_type] [i32_type] at ::
     itypes
   in
   let imports =
@@ -368,11 +387,18 @@ let wrap item_name wrap_action wrap_assertion at =
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_externref";
        idesc = FuncImport (2l @@ at) @@ at} @@ at;
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_funcref";
+       idesc = FuncImport (2l @@ at) @@ at} @@ at;
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_dataref";
+       idesc = FuncImport (2l @@ at) @@ at} @@ at;
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_i31ref";
+       idesc = FuncImport (2l @@ at) @@ at} @@ at;
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_eqref";
+       idesc = FuncImport (2l @@ at) @@ at} @@ at;
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_anyref";
+       idesc = FuncImport (2l @@ at) @@ at} @@ at;
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_ref";
        idesc = FuncImport (3l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_externref";
-       idesc = FuncImport (4l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_funcref";
-       idesc = FuncImport (5l @@ at) @@ at} @@ at ]
+    ]
   in
   let item =
     List.fold_left

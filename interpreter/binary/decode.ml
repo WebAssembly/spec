@@ -138,6 +138,12 @@ let sized f s =
 
 open Types
 
+let mutability s =
+  match u8 s with
+  | 0 -> Immutable
+  | 1 -> Mutable
+  | _ -> error s (pos s - 1) "malformed mutability"
+
 let num_type s =
   match vs7 s with
   | -0x01 -> I32Type
@@ -151,6 +157,12 @@ let heap_type s =
   match vs33 s with
   | -0x10l -> FuncHeapType
   | -0x11l -> ExternHeapType
+  | -0x12l -> AnyHeapType
+  | -0x13l -> EqHeapType
+  | -0x16l -> I31HeapType
+  | -0x17l -> let n = vu32 s in RttHeapType (SynVar (vs33 s), Some n)
+  | -0x18l -> RttHeapType (SynVar (vs33 s), None)
+  | -0x19l -> DataHeapType
   | i when i >= 0l -> DefHeapType (SynVar i)
   | _ -> error s pos "malformed heap type"
 
@@ -159,14 +171,40 @@ let ref_type s =
   match vs33 s with
   | -0x10l -> (Nullable, FuncHeapType)
   | -0x11l -> (Nullable, ExternHeapType)
+  | -0x12l -> (Nullable, AnyHeapType)
+  | -0x13l -> (Nullable, EqHeapType)
   | -0x14l -> (Nullable, heap_type s)
   | -0x15l -> (NonNullable, heap_type s)
+  | -0x16l -> (Nullable, I31HeapType)
+  | -0x19l -> (Nullable, DataHeapType)
   | _ -> error s pos "malformed reference type"
 
 let value_type s =
   either (fun s -> NumType (num_type s)) (fun s -> RefType (ref_type s)) s
 
 let stack_type s = vec value_type s
+
+let packed_type s =
+  let pos = pos s in
+  match vs33 s with
+  | -0x06l -> I8Type
+  | -0x07l -> I16Type
+  | _ -> error s pos "malformed storage type"
+
+let storage_type s =
+  either (fun s -> ValueStorageType (value_type s))
+    (fun s -> PackedStorageType (packed_type s)) s
+
+let field_type s =
+  let t = storage_type s in
+  let mut = mutability s in
+  FieldType (t, mut)
+
+let struct_type s =
+  StructType (vec field_type s)
+
+let array_type s =
+  ArrayType (field_type s)
 
 let func_type s =
   let ins = stack_type s in
@@ -176,8 +214,9 @@ let func_type s =
 let def_type s =
   match vs7 s with
   | -0x20 -> FuncDefType (func_type s)
+  | -0x21 -> StructDefType (struct_type s)
+  | -0x22 -> ArrayDefType (array_type s)
   | _ -> error s (pos s - 1) "malformed definition type"
-
 
 let limits vu s =
   let has_max = bool s in
@@ -193,12 +232,6 @@ let table_type s =
 let memory_type s =
   let lim = limits vu32 s in
   MemoryType lim
-
-let mutability s =
-  match u8 s with
-  | 0 -> Immutable
-  | 1 -> Mutable
-  | _ -> error s (pos s - 1) "malformed mutability"
 
 let global_type s =
   let t = value_type s in

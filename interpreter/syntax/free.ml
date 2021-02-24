@@ -73,8 +73,9 @@ let num_type = function
   | I32Type | I64Type | F32Type | F64Type -> empty
 
 let heap_type = function
+  | AnyHeapType | EqHeapType | I31HeapType | DataHeapType
   | FuncHeapType | ExternHeapType | BotHeapType -> empty
-  | DefHeapType x -> var_type x
+  | DefHeapType x | RttHeapType (x, _) -> var_type x
 
 let ref_type = function
   | (_, t) -> heap_type t
@@ -84,14 +85,26 @@ let value_type = function
   | RefType t -> ref_type t
   | BotType -> empty
 
-let func_type (FuncType (ins, out)) =
-  list value_type ins ++ list value_type out
+let packed_type t = empty
+
+let storage_type = function
+  | ValueStorageType t -> value_type t
+  | PackedStorageType t -> packed_type t
+
+let field_type (FieldType (st, _)) = storage_type st
+
+let struct_type (StructType fts) = list field_type fts
+let array_type (ArrayType ft) = field_type ft
+let func_type (FuncType (ins, out)) = list value_type ins ++ list value_type out
+
+let def_type = function
+  | StructDefType st -> struct_type st
+  | ArrayDefType at -> array_type at
+  | FuncDefType ft -> func_type ft
+
 let global_type (GlobalType (t, _mut)) = value_type t
 let table_type (TableType (_lim, t)) = ref_type t
 let memory_type (MemoryType (_lim)) = empty
-
-let def_type = function
-  | FuncDefType ft -> func_type ft
 
 let rec instr (e : instr) =
   match e.it with

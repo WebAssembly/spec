@@ -52,6 +52,11 @@ let num_type = function
   | "f64" -> Types.F64Type
   | _ -> assert false
 
+let packed_type = function
+  | "i8" -> Types.I8Type
+  | "i16" -> Types.I16Type
+  | _ -> assert false
+
 let intop t i32 i64 =
   match t with
   | "i32" -> i32
@@ -140,6 +145,7 @@ let name = '$' reserved
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
 let nxx = ixx | fxx
+let pixx = "i" ("8" | "16")
 let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
@@ -161,12 +167,25 @@ rule token = parse
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
   | "ref" { REF }
+  | "rtt" { RTT }
   | "null" { NULL }
+  | "any" { ANY }
+  | "anyref" { ANYREF }
+  | "eq" { EQ }
+  | "eqref" { EQREF }
+  | "i31" { I31 }
+  | "i31ref" { I31REF }
+  | "data" { DATA }
+  | "dataref" { DATAREF }
   | "extern" { EXTERN }
   | "externref" { EXTERNREF }
   | "funcref" { FUNCREF }
   | (nxx as t) { NUM_TYPE (num_type t) }
+  | (pixx as t) { PACKED_TYPE (packed_type t) }
   | "mut" { MUT }
+  | "field" { FIELD }
+  | "struct" { STRUCT }
+  | "array" { ARRAY }
 
   | (nxx as t)".const"
     { let open Source in

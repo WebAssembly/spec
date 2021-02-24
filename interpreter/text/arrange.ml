@@ -55,26 +55,41 @@ let break_string s =
 
 (* Types *)
 
+let mutability node = function
+  | Immutable -> node
+  | Mutable -> Node ("mut", [node])
+
 let num_type t = string_of_num_type t
 let ref_type t = string_of_ref_type t
 let heap_type t = string_of_heap_type t
 let value_type t = string_of_value_type t
+let storage_type t = string_of_storage_type t
 
 let decls kind ts = tab kind (atom value_type) ts
+
+let field_type (FieldType (t, mut)) =
+  mutability (atom storage_type t) mut
+
+let struct_type (StructType fts) =
+  Node ("struct", list (fun ft -> Node ("field", [field_type ft])) fts)
+
+let array_type (ArrayType ft) =
+  Node ("array", [field_type ft])
 
 let func_type (FuncType (ins, out)) =
   Node ("func", decls "param" ins @ decls "result" out)
 
 let def_type dt =
   match dt with
+  | StructDefType st -> struct_type st
+  | ArrayDefType at -> array_type at
   | FuncDefType ft -> func_type ft
 
 let limits nat {min; max} =
   String.concat " " (nat min :: opt nat max)
 
-let global_type = function
-  | GlobalType (t, Immutable) -> atom string_of_value_type t
-  | GlobalType (t, Mutable) -> Node ("mut", [atom string_of_value_type t])
+let global_type (GlobalType (t, mut)) =
+  mutability (atom string_of_value_type t) mut
 
 let pack_size = function
   | Pack8 -> "8"

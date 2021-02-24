@@ -6,19 +6,40 @@ and syn_var = int32
 and sem_var = def_type Lib.Promise.t
 and var = SynVar of syn_var | SemVar of sem_var
 
+and mutability = Immutable | Mutable
 and nullability = NonNullable | Nullable
+
 and num_type = I32Type | I64Type | F32Type | F64Type
 and ref_type = nullability * heap_type
 and heap_type =
-  FuncHeapType | ExternHeapType | DefHeapType of var | BotHeapType
+  | AnyHeapType
+  | EqHeapType
+  | I31HeapType
+  | DataHeapType
+  | FuncHeapType
+  | ExternHeapType
+  | DefHeapType of var
+  | RttHeapType of var * int32 option
+  | BotHeapType
 
 and value_type = NumType of num_type | RefType of ref_type | BotType
 and stack_type = value_type list
+
+and packed_type = I8Type | I16Type
+and storage_type =
+  ValueStorageType of value_type | PackedStorageType of packed_type
+and field_type = FieldType of storage_type * mutability
+
+and struct_type = StructType of field_type list
+and array_type = ArrayType of field_type
 and func_type = FuncType of stack_type * stack_type
-and def_type = FuncDefType of func_type
+
+and def_type =
+  | StructDefType of struct_type
+  | ArrayDefType of array_type
+  | FuncDefType of func_type
 
 type 'a limits = {min : 'a; max : 'a option}
-type mutability = Immutable | Mutable
 type table_type = TableType of Int32.t limits * ref_type
 type memory_type = MemoryType of Int32.t limits
 type global_type = GlobalType of value_type * mutability
@@ -48,6 +69,11 @@ let packed_size = function
   | Pack16 -> 2
   | Pack32 -> 4
 
+let unpacked_type = function
+  | ValueStorageType t -> t
+  | PackedStorageType _ -> NumType I32Type
+
+
 let is_syn_var = function SynVar _ -> true | SemVar _ -> false
 let is_sem_var = function SemVar _ -> true | SynVar _ -> false
 
@@ -58,6 +84,7 @@ let is_num_type = function
 let is_ref_type = function
   | NumType _ -> false
   | RefType _ | BotType -> true
+
 
 let defaultable_num_type = function
   | _ -> true
@@ -76,6 +103,7 @@ let defaultable_value_type = function
 let as_func_def_type (dt : def_type) : func_type =
   match dt with
   | FuncDefType ft -> ft
+  | _ -> assert false
 
 let extern_type_of_import_type (ImportType (et, _, _)) = et
 let extern_type_of_export_type (ExportType (et, _)) = et
@@ -109,11 +137,17 @@ let sem_var_type c = function
   | SemVar _ -> assert false
 
 let sem_num_type c t = t
+let sem_packed_type c t = t
 
 let sem_heap_type c = function
+  | AnyHeapType -> AnyHeapType
+  | EqHeapType -> EqHeapType
+  | I31HeapType -> I31HeapType
+  | DataHeapType -> DataHeapType
   | FuncHeapType -> FuncHeapType
   | ExternHeapType -> ExternHeapType
   | DefHeapType x -> DefHeapType (sem_var_type c x)
+  | RttHeapType (x, no) -> RttHeapType (sem_var_type c x, no)
   | BotHeapType -> BotHeapType
 
 let sem_ref_type c = function
@@ -127,6 +161,27 @@ let sem_value_type c = function
 let sem_stack_type c ts =
  List.map (sem_value_type c) ts
 
+let sem_storage_type c = function
+  | ValueStorageType t -> ValueStorageType (sem_value_type c t)
+  | PackedStorageType t -> PackedStorageType (sem_packed_type c t)
+
+let sem_field_type c = function
+  | FieldType (t, mut) -> FieldType (sem_storage_type c t, mut)
+
+let sem_struct_type c = function
+  | StructType ts -> StructType (List.map (sem_field_type c) ts)
+
+let sem_array_type c = function
+  | ArrayType t -> ArrayType (sem_field_type c t)
+
+let sem_func_type c (FuncType (ins, out)) =
+  FuncType (sem_stack_type c ins, sem_stack_type c out)
+
+let sem_def_type c = function
+  | StructDefType st -> StructDefType (sem_struct_type c st)
+  | ArrayDefType at -> ArrayDefType (sem_array_type c at)
+  | FuncDefType ft -> FuncDefType (sem_func_type c ft)
+
 
 let sem_memory_type c (MemoryType lim) =
   MemoryType lim
@@ -137,18 +192,11 @@ let sem_table_type c (TableType (lim, t)) =
 let sem_global_type c (GlobalType (t, mut)) =
   GlobalType (sem_value_type c t, mut)
 
-let sem_func_type c (FuncType (ins, out)) =
-  FuncType (sem_stack_type c ins, sem_stack_type c out)
-
 let sem_extern_type c = function
   | ExternFuncType ft -> ExternFuncType (sem_func_type c ft)
   | ExternTableType tt -> ExternTableType (sem_table_type c tt)
   | ExternMemoryType mt -> ExternMemoryType (sem_memory_type c mt)
   | ExternGlobalType gt -> ExternGlobalType (sem_global_type c gt)
-
-
-let sem_def_type c = function
-  | FuncDefType ft -> FuncDefType (sem_func_type c ft)
 
 
 let sem_export_type c (ExportType (et, name)) =
@@ -198,6 +246,10 @@ and string_of_nullability = function
   | NonNullable -> ""
   | Nullable -> "null "
 
+and string_of_mutability s = function
+  | Immutable -> s
+  | Mutable -> "(mut " ^ s ^ ")"
+
 and string_of_num_type = function
   | I32Type -> "i32"
   | I64Type -> "i64"
@@ -205,9 +257,16 @@ and string_of_num_type = function
   | F64Type -> "f64"
 
 and string_of_heap_type = function
+  | AnyHeapType -> "any"
+  | EqHeapType -> "eq"
+  | I31HeapType -> "i31"
+  | DataHeapType -> "data"
   | FuncHeapType -> "func"
   | ExternHeapType -> "extern"
   | DefHeapType x -> string_of_var x
+  | RttHeapType (x, None) -> "(rtt " ^ string_of_var x ^ ")"
+  | RttHeapType (x, Some n) ->
+    "(rtt " ^ Int32.to_string n ^ " " ^ string_of_var x ^ ")"
   | BotHeapType -> "unreachable"
 
 and string_of_ref_type = function
@@ -224,11 +283,31 @@ and string_of_stack_type = function
   | ts -> "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
 
 
+and string_of_packed_type = function
+  | I8Type -> "i8"
+  | I16Type -> "i16"
+
+and string_of_storage_type = function
+  | ValueStorageType t -> string_of_value_type t
+  | PackedStorageType t -> string_of_packed_type t
+
+and string_of_field_type = function
+  | FieldType (t, mut) -> string_of_mutability (string_of_storage_type t) mut
+
+and string_of_struct_type = function
+  | StructType fts ->
+    String.concat " " (List.map (fun ft -> "(field " ^ string_of_field_type ft ^ ")") fts)
+
+and string_of_array_type = function
+  | ArrayType ft -> string_of_field_type ft
+
 and string_of_func_type = function
   | FuncType (ins, out) ->
     string_of_stack_type ins ^ " -> " ^ string_of_stack_type out
 
 and string_of_def_type = function
+  | StructDefType st -> "struct " ^ string_of_struct_type st
+  | ArrayDefType at -> "array " ^ string_of_array_type at
   | FuncDefType ft -> "func " ^ string_of_func_type ft
 
 
@@ -243,8 +322,7 @@ let string_of_table_type = function
   | TableType (lim, t) -> string_of_limits lim ^ " " ^ string_of_ref_type t
 
 let string_of_global_type = function
-  | GlobalType (t, Immutable) -> string_of_value_type t
-  | GlobalType (t, Mutable) -> "(mut " ^ string_of_value_type t ^ ")"
+  | GlobalType (t, mut) -> string_of_mutability (string_of_value_type t) mut
 
 let string_of_extern_type = function
   | ExternFuncType ft -> "func " ^ string_of_func_type ft

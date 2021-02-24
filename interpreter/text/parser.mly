@@ -141,6 +141,7 @@ let label (c : context) x = lookup "label " c.labels x
 let func_type (c : context) x =
   match (Lib.List32.nth c.types.list x.it).it with
   | FuncDefType ft -> ft
+  | _ -> error x.at ("non-function type " ^ Int32.to_string x.it)
   | exception Failure _ -> error x.at ("unknown type " ^ Int32.to_string x.it)
 
 
@@ -207,7 +208,10 @@ let inline_func_type_explicit (c : context) x ft at =
 
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
-%token NUM_TYPE FUNCREF EXTERNREF REF EXTERN NULL MUT
+%token NUM_TYPE PACKED_TYPE
+%token ANYREF EQREF I31REF DATAREF FUNCREF EXTERNREF
+%token ANY EQ I31 DATA REF RTT EXTERN NULL
+%token MUT FIELD STRUCT ARRAY
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP LET
 %token BR BR_IF BR_TABLE BR_ON_NULL
@@ -235,6 +239,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<string> STRING
 %token<string> VAR
 %token<Types.num_type> NUM_TYPE
+%token<Types.packed_type> PACKED_TYPE
 %token<string Source.phrase -> Ast.instr' * Value.num> CONST
 %token<Ast.instr'> UNARY
 %token<Ast.instr'> BINARY
@@ -275,14 +280,32 @@ null_opt :
   | NULL { Nullable }
 
 heap_type :
+  | ANY { fun c -> AnyHeapType }
+  | EQ { fun c -> EqHeapType }
+  | I31 { fun c -> I31HeapType }
+  | DATA { fun c -> DataHeapType }
   | FUNC { fun c -> FuncHeapType }
   | EXTERN { fun c -> ExternHeapType }
   | var { fun c -> DefHeapType (SynVar ($1 c type_).it) }
+  | LPAR RTT var RPAR  /* Sugar */
+    { fun c -> RttHeapType (SynVar ($3 c type_).it, None) }
+  | LPAR RTT NAT var RPAR  /* Sugar */
+    { let n = nat32 $3 (ati 3) in
+      fun c -> RttHeapType (SynVar ($4 c type_).it, Some n) }
 
 ref_type :
   | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
+  | ANYREF { fun c -> (Nullable, AnyHeapType) }  /* Sugar */
+  | EQREF { fun c -> (Nullable, EqHeapType) }  /* Sugar */
+  | I31REF { fun c -> (Nullable, I31HeapType) }  /* Sugar */
+  | DATAREF { fun c -> (Nullable, DataHeapType) }  /* Sugar */
   | FUNCREF { fun c -> (Nullable, FuncHeapType) }  /* Sugar */
   | EXTERNREF { fun c -> (Nullable, ExternHeapType) }  /* Sugar */
+  | LPAR RTT var RPAR  /* Sugar */
+    { fun c -> (NonNullable, RttHeapType (SynVar ($3 c type_).it, None)) }
+  | LPAR RTT NAT var RPAR  /* Sugar */
+    { let n = nat32 $3 (ati 3) in
+      fun c -> (NonNullable, RttHeapType (SynVar ($4 c type_).it, Some n)) }
 
 value_type :
   | NUM_TYPE { fun c -> NumType $1 }
@@ -296,8 +319,30 @@ global_type :
   | value_type { fun c -> GlobalType ($1 c, Immutable) }
   | LPAR MUT value_type RPAR { fun c -> GlobalType ($3 c, Mutable) }
 
-def_type :
-  | LPAR FUNC func_type RPAR { fun c -> FuncDefType ($3 c) }
+storage_type :
+  | value_type { fun c -> ValueStorageType ($1 c) }
+  | PACKED_TYPE { fun c -> PackedStorageType $1 }
+
+field_type :
+  | storage_type { fun c -> FieldType ($1 c, Immutable) }
+  | LPAR MUT storage_type RPAR { fun c -> FieldType ($3 c, Mutable) }
+
+field_type_list :
+  | /* empty */ { fun c -> [] }
+  | field_type field_type_list { fun c -> $1 c :: $2 c }
+
+struct_field_list :
+  | /* empty */ { fun c -> [] }
+  | LPAR FIELD field_type_list RPAR struct_field_list { fun c -> $3 c @ $5 c }
+  | LPAR FIELD bind_var field_type RPAR struct_field_list
+    { (* TODO: handle field names *)
+      fun c -> $4 c :: $6 c }
+
+struct_type :
+  | struct_field_list { fun c -> StructType ($1 c) }
+
+array_type :
+  | field_type { fun c -> ArrayType ($1 c) }
 
 func_type :
   | /* empty */
@@ -312,6 +357,11 @@ func_type :
   | LPAR PARAM bind_var value_type RPAR func_type  /* Sugar */
     { fun c -> let FuncType (ins, out) = $6 c in
       FuncType ($4 c :: ins, out) }
+
+def_type :
+  | LPAR STRUCT struct_type RPAR { fun c -> StructDefType ($3 c) }
+  | LPAR ARRAY array_type RPAR { fun c -> ArrayDefType ($3 c) }
+  | LPAR FUNC func_type RPAR { fun c -> FuncDefType ($3 c) }
 
 table_type :
   | limits ref_type { fun c -> TableType ($1, $2 c) }
