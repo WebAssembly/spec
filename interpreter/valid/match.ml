@@ -149,7 +149,8 @@ and match_extern_type c a et1 et2 =
   | _, _ -> false
 
 and match_def_type c a dt1 dt2 =
-  eq_def_type c [] dt1 dt2
+  match dt1, dt2 with
+  | FuncDefType ft1, FuncDefType ft2 -> match_func_type c a ft1 ft2
 
 and match_var_type c a x1 x2 =
   equal_var x1 x2 || assuming a (x1, x2) ||

@@ -65,6 +65,10 @@ let var_type = function
   | SynVar x -> types (idx' x)
   | SemVar _ -> assert false
 
+let block_type = function
+  | VarBlockType x -> var_type x
+  | ValBlockType _ -> empty
+
 let num_type = function
   | I32Type | I64Type | F32Type | F64Type -> empty
 
@@ -79,10 +83,6 @@ let value_type = function
   | NumType t -> num_type t
   | RefType t -> ref_type t
   | BotType -> empty
-
-let block_type = function
-  | VarBlockType x -> var_type x
-  | ValBlockType _ -> empty
 
 let func_type (FuncType (ins, out)) =
   list value_type ins ++ list value_type out
