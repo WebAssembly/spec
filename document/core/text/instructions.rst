@@ -720,6 +720,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{i32x4.min\_u} &\Rightarrow& \I32X4.\VMIN\K{\_u}\\ &&|&
      \text{i32x4.max\_s} &\Rightarrow& \I32X4.\VMAX\K{\_s}\\ &&|&
      \text{i32x4.max\_u} &\Rightarrow& \I32X4.\VMAX\K{\_u}\\ &&|&
+     \text{i32x4.dot\_i16x8\_s} &\Rightarrow& \I32X4.\DOT\K{\_i16x8\_s}\\ &&|&
      \text{i32x4.extmul\_low\_i16x8\_s} &\Rightarrow& \I32X4.\EXTMUL\K{\_low\_i16x8\_s}\\ &&|&
      \text{i32x4.extmul\_high\_i16x8\_s} &\Rightarrow& \I32X4.\EXTMUL\K{\_high\_i16x8\_s}\\ &&|&
      \text{i32x4.extmul\_low\_i16x8\_u} &\Rightarrow& \I32X4.\EXTMUL\K{\_low\_i16x8\_u}\\ &&|&

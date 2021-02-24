@@ -725,6 +725,39 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
 
 
+.. _exec-simd-dot:
+
+:math:`\K{i32x4.}\DOT\K{\_i16x8\_s}`
+....................................
+
+1. Assert: due to :ref:`validation <valid-vitestop>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+4. Let :math:`(i_1~i_2)^\ast` be the result of computing :math:`\imul_{32}(\extend^s_{16,32}(\lanes_{\I16X8}(c_1)), \extend^s_{16,32}(\lanes_{\I16X8}(c_2)))`
+
+5. Let :math:`j^\ast` be the result of computing :math:`\iadd_{32}(i_1, i_2)^\ast`.
+
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\I32X4}(j^\ast)`.
+
+8. Push the value :math:`\V128.\VCONST~c` onto the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i32x4.}\DOT\K{\_i16x8\_s} &\stepto& (\V128\K{.}\VCONST~c) \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & (i_1~i_2)^\ast = \imul_{32}(\extend^s_{16,32}(\lanes_{\I16X8}(c_1)), \extend^s_{16,32}(\lanes_{\I16X8}(c_2))) \\
+     \wedge & j^\ast = \iadd_{32}(i_1, i_2)^\ast \\
+     \wedge & c = \lanes^{-1}_{\I32X4}(j^\ast)
+     \end{array}
+   \end{array}
+
+
 .. _exec-simd-vextmul:
 
 :math:`t_2\K{x}N\K{.}\EXTMUL\_\K{low}\_t_1\K{x}M\_\sx` and :math:`t_2\K{x}N\K{.}\EXTMUL\_\K{high}\_t_1\K{x}M\_\sx`

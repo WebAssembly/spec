@@ -450,6 +450,20 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
+.. _valid-simd-dot:
+
+:math:`\K{i32x4.}\DOT\K{\_i16x8\_s}`
+....................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \K{i32x4.}\DOT\K{\_i16x8\_s} : [\V128~\V128] \to [\V128]
+   }
+
+
 .. _valid-simd-vextmul:
 
 :math:`\ishape\K{.}\vextmul\K{\_}\ishape\K{\_}\sx`

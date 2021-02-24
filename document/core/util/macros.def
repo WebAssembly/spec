@@ -425,6 +425,7 @@
 .. |NARROW| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{narrow}}
 .. |VEXTEND| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{extend}}
 .. |AVGR| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{avgr}}
+.. |DOT| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{dot}}
 .. |EXTMUL| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{extmul}}
 .. |VTRUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{trunc}}
 .. |VCONVERT| mathdef:: \xref{syntax/instructions}{syntax-instr-simd}{\K{convert}}

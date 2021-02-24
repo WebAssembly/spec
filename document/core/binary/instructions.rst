@@ -687,6 +687,7 @@ All other SIMD instructions are plain opcodes without any immediates.
      \hex{FD}~~183{:}\Bu32 &\Rightarrow& \I32X4.\VMIN\K{\_u} \\ &&|&
      \hex{FD}~~184{:}\Bu32 &\Rightarrow& \I32X4.\VMAX\K{\_s} \\ &&|&
      \hex{FD}~~185{:}\Bu32 &\Rightarrow& \I32X4.\VMAX\K{\_u} \\ &&|&
+     \hex{FD}~~186{:}\Bu32 &\Rightarrow& \I32X4.\DOT\K{\_i16x8\_s}\\ &&|&
      \hex{FD}~~187{:}\Bu32 &\Rightarrow& \I32X4.\EXTMUL\K{\_low\_i16x8\_s}\\ &&|&
      \hex{FD}~~189{:}\Bu32 &\Rightarrow& \I32X4.\EXTMUL\K{\_high\_i16x8\_s}\\ &&|&
      \hex{FD}~~190{:}\Bu32 &\Rightarrow& \I32X4.\EXTMUL\K{\_low\_i16x8\_u}\\ &&|&
