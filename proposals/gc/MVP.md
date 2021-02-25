@@ -307,11 +307,8 @@ Tentatively, support a type of guaranteed unboxed scalars.
   - `i31.new : [i32] -> [i31ref]`
   - this is a *constant instruction*
 
-* `i31.get_u` extracts the value, zero-extending
-  - `i31.get_u : [i31ref] -> [i32]`
-
-* `i31.get_s` extracts the value, sign-extending
-  - `i31.get_s : [i31ref] -> [i32]`
+* `i31.get_<sx>` extracts the value, zero- or sign-extending
+  - `i31.get_<sx> : [i31ref] -> [i32]`
 
 
 #### Classification
@@ -376,7 +373,7 @@ Note: The `br_on_*` instructions allow an operand of unrelated reference type, e
   - this is a *constant instruction*
 
 * `rtt.sub <typeidx>` returns an RTT for `typeidx` as a sub-RTT of a the parent RTT operand
-  - `rtt.sub $t : [(rtt n $t')] -> [(rtt (n+1) $t)]`
+  - `rtt.sub $t : [(rtt n? $t')] -> [(rtt (n+1)? $t)]`
     - iff `(type $t) <: (type $t')`
   - multiple invocations of this instruction with the same operand yield the same observable RTTs
   - this is a *constant instruction*
@@ -390,7 +387,7 @@ RTT-based casts can only be performed with respect to concrete types, and requir
 
 * `ref.test` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given RTT
   - `ref.test : [t' (rtt n? $t)] -> [i32]`
-    - iff `t <: (ref null data)` or `t <: (ref null func)`
+    - iff `t' <: (ref null data)` or `t' <: (ref null func)`
   - returns 1 if the first operand is not null and its runtime type is a sub-RTT of the RTT operand, 0 otherwise
 
 * `ref.cast` casts a reference value down to a type given by a RTT representation

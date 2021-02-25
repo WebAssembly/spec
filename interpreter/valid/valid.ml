@@ -56,6 +56,16 @@ let func_type (c : context) x =
   | FuncDefType ft -> ft
   | _ -> error x.at ("non-function type " ^ Int32.to_string x.it)
 
+let struct_type (c : context) x =
+  match type_ c x with
+  | StructDefType st -> st
+  | _ -> error x.at ("non-structure type " ^ Int32.to_string x.it)
+
+let array_type (c : context) x =
+  match type_ c x with
+  | ArrayDefType at -> at
+  | _ -> error x.at ("non-array type " ^ Int32.to_string x.it)
+
 let func (c : context) x = func_type c (func_var c x @@ x.at)
 
 let refer category (s : Free.Set.t) x =
@@ -254,6 +264,14 @@ let type_cvtop at = function
     | DemoteF64 -> error at "invalid conversion"
     ), F64Type
 
+let type_reftypeop op ht =
+  match op with
+  | NullOp -> ht
+  | I31Op -> I31HeapType
+  | DataOp -> DataHeapType
+  | FuncOp -> FuncHeapType
+  | RttOp -> assert false
+
 
 (* Expressions *)
 
@@ -371,10 +389,59 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     List.iter (fun x' -> check_stack c ts (label c x') x'.at) xs;
     (ts @ [NumType I32Type]) -->... []
 
+  | BrTest (x, RttOp) ->
+    (match peek_ref 0 s e.at with
+    | (_, RttHeapType (x', _)) as rtt ->
+      let t = peek 1 s in
+      require
+        ( match_value_type c.types [] t (RefType (Nullable, DataHeapType)) ||
+          match_value_type c.types [] t (RefType (Nullable, FuncHeapType)) ) e.at
+        ("type mismatch: instruction requires data or function reference type" ^
+         " but stack has " ^ string_of_stack_type [t; RefType rtt]);
+      let t' = RefType (NonNullable, DefHeapType x') in
+      require
+        ( label c x <> [] &&
+          match_value_type c.types [] t' (List.hd (label c x)) ) e.at
+        ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
+         " but label has " ^ string_of_stack_type (label c x));
+      let ts0 = List.tl (label c x) in
+      (ts0 @ [t; RefType rtt]) --> (ts0 @ [t])
+    | (_, BotHeapType) as rtt ->
+      let t = RefType (Nullable, BotHeapType) in
+      let t' = RefType (NonNullable, BotHeapType) in
+      require
+        ( label c x <> [] &&
+          match_value_type c.types [] t' (List.hd (label c x)) ) e.at
+        ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
+         " but label has " ^ string_of_stack_type (label c x));
+      let ts0 = List.tl (label c x) in
+      (ts0 @ [t; RefType rtt]) --> (ts0 @ [t])
+    | rt ->
+      error e.at
+        ("type mismatch: instruction requires RTT reference type" ^
+         " but stack has " ^ string_of_value_type (RefType rt))
+    )
+
   | BrTest (x, NullOp) ->
-    let (_, t) = peek_ref 0 s e.at in
-    (label c x @ [RefType (Nullable, t)]) -->
-      (label c x @ [RefType (NonNullable, t)])
+    let (_, ht) = peek_ref 0 s e.at in
+    (label c x @ [RefType (Nullable, ht)]) -->
+      (label c x @ [RefType (NonNullable, ht)])
+
+  | BrTest (x, reftypeop) ->
+    let (_, ht) as rt = peek_ref 0 s e.at in
+    let t' = RefType (NonNullable, type_reftypeop reftypeop ht) in
+    require
+      (match_value_type c.types [] (peek 0 s) (RefType (Nullable, AnyHeapType))) e.at
+      ("type mismatch: instruction requires type " ^
+        string_of_value_type (RefType (Nullable, AnyHeapType)) ^
+       " but stack has " ^ string_of_value_type (peek 0 s));
+    require
+      ( label c x <> [] &&
+        match_value_type c.types [] t' (List.hd (label c x)) ) e.at
+      ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
+       " but label has " ^ string_of_stack_type (label c x));
+    let ts0 = List.tl (label c x) in
+    (ts0 @ [RefType rt]) --> (ts0 @ [RefType rt])
 
   | Return ->
     c.results -->... []
@@ -541,13 +608,132 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     refer_func c x;
     [] --> [RefType (NonNullable, DefHeapType (SynVar y))]
 
-  | RefTest reftypeop ->
-    let rt = peek_ref 0 s e.at in
-    [RefType rt] --> [NumType I32Type]
+  | RefTest RttOp ->
+    (match peek_ref 0 s e.at with
+    | (_, RttHeapType _) as rtt ->
+      let t = peek 1 s in
+      require
+        ( match_value_type c.types [] t (RefType (Nullable, DataHeapType)) ||
+          match_value_type c.types [] t (RefType (Nullable, FuncHeapType)) ) e.at
+        ("type mismatch: instruction requires data or function reference type" ^
+         " but stack has " ^ string_of_stack_type [t; RefType rtt]);
+      [t; RefType rtt] --> [NumType I32Type]
+    | (_, BotHeapType) as rtt ->
+      [RefType (Nullable, BotHeapType); RefType rtt] --> [NumType I32Type]
+    | rt ->
+      error e.at
+        ("type mismatch: instruction requires RTT reference type" ^
+         " but stack has " ^ string_of_value_type (RefType rt))
+    )
 
-  | RefCast NullOp ->
-    let (_, t) = peek_ref 0 s e.at in
-    [RefType (Nullable, t)] --> [RefType (NonNullable, t)]
+  | RefTest reftypeop ->
+    [RefType (Nullable, AnyHeapType)] --> [NumType I32Type]
+
+  | RefCast RttOp ->
+    (match peek_ref 0 s e.at with
+    | (_, RttHeapType (x, _)) as rtt ->
+      let (nul, _) as rt = peek_ref 1 s e.at in
+      let t = RefType rt in
+      require
+        ( match_value_type c.types [] t (RefType (Nullable, DataHeapType)) ||
+          match_value_type c.types [] t (RefType (Nullable, FuncHeapType)) ) e.at
+        ("type mismatch: instruction requires data or function reference type" ^
+         " but stack has " ^ string_of_stack_type [t; RefType rtt]);
+      [t; RefType rtt] --> [RefType (nul, DefHeapType x)]
+    | (_, BotHeapType) as rtt ->
+      [RefType (Nullable, BotHeapType); RefType rtt] -->
+        [RefType (NonNullable, BotHeapType)]
+    | rt ->
+      error e.at
+        ("type mismatch: instruction requires RTT reference type" ^
+         " but stack has " ^ string_of_value_type (RefType rt))
+    )
+
+  | RefCast reftypeop ->
+    let (_, ht) = peek_ref 0 s e.at in
+    let ht' = type_reftypeop reftypeop ht in
+    [RefType (Nullable, AnyHeapType)] --> [RefType (NonNullable, ht')]
+
+  | RefEq ->
+    [RefType (Nullable, EqHeapType); RefType (Nullable, EqHeapType)] -->
+    [NumType I32Type]
+
+  | I31New ->
+    [NumType I32Type] --> [RefType (NonNullable, I31HeapType)]
+
+  | I31Get ext ->
+    [RefType (Nullable, I31HeapType)] --> [NumType I32Type]
+
+  | StructNew (x, initop) ->
+    let StructType fts = struct_type c x in
+    let ts = if initop = Implicit then [] else List.map unpacked_field_type fts in
+    (ts @ [RefType (NonNullable, RttHeapType (SynVar x.it, None))]) -->
+      [RefType (NonNullable, DefHeapType (SynVar x.it))]
+
+  | StructGet (x, y, exto) ->
+    let StructType fts = struct_type c x in
+    require (y.it < Lib.List32.length fts) y.at
+      ("unknown field " ^ Int32.to_string y.it);
+    let FieldType (st, _) = Lib.List32.nth fts y.it in
+    require ((exto <> None) == is_packed_storage_type st) y.at
+      ("field is " ^ (if exto = None then "packed" else "unpacked"));
+    let t = unpacked_storage_type st in
+    [RefType (Nullable, DefHeapType (SynVar x.it))] --> [t]
+
+  | StructSet (x, y) ->
+    let StructType fts = struct_type c x in
+    require (y.it < Lib.List32.length fts) y.at
+      ("unknown field " ^ Int32.to_string y.it);
+    let FieldType (st, mut) = Lib.List32.nth fts y.it in
+    require (mut == Mutable) y.at "field is immutable";
+    let t = unpacked_storage_type st in
+    [RefType (Nullable, DefHeapType (SynVar x.it)); t] --> []
+
+  | ArrayNew (x, initop) ->
+    let ArrayType ft = array_type c x in
+    let ts = if initop = Implicit then [] else [unpacked_field_type ft] in
+    (ts @ [RefType (NonNullable, RttHeapType (SynVar x.it, None))]) -->
+      [RefType (NonNullable, DefHeapType (SynVar x.it))]
+
+  | ArrayGet (x, exto) ->
+    let ArrayType (FieldType (st, _)) = array_type c x in
+    require ((exto <> None) == is_packed_storage_type st) e.at
+      ("array is " ^ (if exto = None then "packed" else "unpacked"));
+    let t = unpacked_storage_type st in
+    [RefType (Nullable, DefHeapType (SynVar x.it)); NumType I32Type] --> [t]
+
+  | ArraySet x ->
+    let ArrayType (FieldType (st, mut)) = array_type c x in
+    require (mut == Mutable) e.at "array is immutable";
+    let t = unpacked_storage_type st in
+    [RefType (Nullable, DefHeapType (SynVar x.it)); NumType I32Type; t] --> []
+
+  | ArrayLen x ->
+    let ArrayType _ = array_type c x in
+    [RefType (Nullable, DefHeapType (SynVar x.it))] --> [NumType I32Type]
+
+  | RttCanon x ->
+    ignore (type_ c x);
+    [] --> [RefType (NonNullable, RttHeapType (SynVar x.it, Some 0l))]
+
+  | RttSub x ->
+    (match peek_ref 0 s e.at with
+    | (nul, (RttHeapType (x', n_opt) as rtt)) ->
+      let dt = type_ c x in
+      let dt' = type_ c (as_syn_var x' @@ e.at) in
+      require (match_def_type c.types [] dt dt') e.at
+        ("type mismatch: instruction requires RTT supertype" ^
+         " but stack has " ^ string_of_value_type (RefType (nul, rtt)));
+      let n'_opt = Lib.Option.map (Int32.add 1l) n_opt in
+      [RefType (NonNullable, rtt)] -->
+        [RefType (NonNullable, RttHeapType (SynVar x.it, n'_opt))]
+    | (_, BotHeapType) as rtt ->
+      [RefType rtt] --> [RefType (NonNullable, BotHeapType)]
+    | rt ->
+      error e.at
+        ("type mismatch: instruction requires RTT reference type" ^
+         " but stack has " ^ string_of_value_type (RefType rt))
+    )
 
   | Const v ->
     let t = NumType (type_num v.it) in
@@ -573,9 +759,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | Convert cvtop ->
     let t1, t2 = type_cvtop e.at cvtop in
     [NumType t1] --> [NumType t2]
-
-  | _ ->
-    error e.at "not implemented yet"
 
 and check_seq (c : context) (s : infer_stack_type) (es : instr list)
   : infer_stack_type =
