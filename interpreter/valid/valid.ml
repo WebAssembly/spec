@@ -141,6 +141,7 @@ type op_type = {ins : infer_stack_type; outs : infer_stack_type}
 
 let stack ts = (NoEllipses, ts)
 let (-->) ts1 ts2 = {ins = NoEllipses, ts1; outs = NoEllipses, ts2}
+let (-->..) ts1 ts2 = {ins = Ellipses, ts1; outs = NoEllipses, ts2}
 let (-->...) ts1 ts2 = {ins = Ellipses, ts1; outs = Ellipses, ts2}
 
 let check_stack (c : context) ts1 ts2 at =
@@ -407,7 +408,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
       (ts11 @ [RefType (nul, DefHeapType (SynVar y))]) -->
         [RefType (NonNullable, DefHeapType (SynVar x.it))]
     | (_, BotHeapType) as rt ->
-      [RefType rt] -->... [RefType (NonNullable, DefHeapType (SynVar x.it))]
+      [RefType rt] -->.. [RefType (NonNullable, DefHeapType (SynVar x.it))]
     | rt ->
       error e.at
         ("type mismatch: instruction requires function reference type" ^
