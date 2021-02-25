@@ -363,7 +363,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
       (ts1 @ [RefType (nul, DefHeapType (SynVar x))]) --> ts2
     | (_, BotHeapType) ->
       [] -->... []
-    | _ -> assert false
+    | rt ->
+      error e.at
+        ("type mismatch: instruction requires function reference type" ^
+         " but stack has " ^ string_of_value_type (RefType rt))
     )
 
   | CallIndirect (x, y) ->
