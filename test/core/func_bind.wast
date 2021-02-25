@@ -527,3 +527,14 @@
   )
   "type mismatch"
 )
+
+(assert_invalid
+  (module
+    (type $t (func))
+    (func $f (param $r externref)
+      (func.bind (type $t) (local.get $r))
+      (drop)
+    )
+  )
+  "type mismatch"
+)

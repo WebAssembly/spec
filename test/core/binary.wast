@@ -1157,7 +1157,7 @@
     "\09\07\01"                ;; Element section with one segment
     "\05\70"                   ;; Passive, funcref
     "\01"                      ;; 1 element
-    "\d5\00\0b"                ;; bad opcode, index 0, end
+    "\ff\00\0b"                ;; bad opcode, index 0, end
 
     "\0a\04\01"                ;; Code section
 

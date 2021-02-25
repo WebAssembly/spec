@@ -62,6 +62,9 @@ type 'a memop = {ty : num_type; align : int; offset : int32; sz : 'a option}
 type loadop = (pack_size * extension) memop
 type storeop = pack_size memop
 
+type initop = Explicit | Implicit
+type reftypeop = NullOp | I31Op | DataOp | FuncOp | RttOp
+
 
 (* Expressions *)
 
@@ -87,7 +90,7 @@ and instr' =
   | Br of idx                         (* break to n-th surrounding label *)
   | BrIf of idx                       (* conditional break *)
   | BrTable of idx list * idx         (* indexed break *)
-  | BrOnNull of idx                   (* break on null *)
+  | BrTest of idx * reftypeop         (* break on type *)
   | Return                            (* break from function body *)
   | Call of idx                       (* call function *)
   | CallRef                           (* call function through reference *)
@@ -115,16 +118,28 @@ and instr' =
   | MemoryCopy                        (* copy memory ranges *)
   | MemoryInit of idx                 (* initialize memory range from segment *)
   | DataDrop of idx                   (* drop passive data segment *)
-  | RefNull of heap_type              (* null reference *)
-  | RefIsNull                         (* null test *)
-  | RefAsNonNull                      (* null cast *)
-  | RefFunc of idx                    (* function reference *)
   | Const of num                      (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)
   | Unary of unop                     (* unary numeric operator *)
   | Binary of binop                   (* binary numeric operator *)
   | Convert of cvtop                  (* conversion *)
+  | RefNull of heap_type              (* null reference *)
+  | RefFunc of idx                    (* function reference *)
+  | RefTest of reftypeop              (* type test *)
+  | RefCast of reftypeop              (* type cast *)
+  | RefEq                             (* reference equality *)
+  | I31New                            (* allocate scalar *)
+  | I31Get of extension               (* read scalar *)
+  | StructNew of idx * initop         (* allocate structure *)
+  | StructGet of idx * idx * extension option  (* read structure field *)
+  | StructSet of idx * idx            (* write structure field *)
+  | ArrayNew of idx * initop          (* allocate array *)
+  | ArrayGet of idx * extension option  (* read array slot *)
+  | ArraySet of idx                   (* write array slot *)
+  | ArrayLen of idx                   (* read array length *)
+  | RttCanon of idx                   (* allocate RTT *)
+  | RttSub of idx                     (* alllocate sub-RTT *)
 
 
 (* Globals & Functions *)

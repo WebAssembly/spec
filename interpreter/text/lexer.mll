@@ -202,8 +202,37 @@ rule token = parse
   | "ref.null" { REF_NULL }
   | "ref.func" { REF_FUNC }
   | "ref.extern" { REF_EXTERN }
-  | "ref.is_null" { REF_IS_NULL }
-  | "ref.as_non_null" { REF_AS_NON_NULL }
+
+  | "ref.is_null" { REF_TEST ref_is_null }
+  | "ref.is_i31" { REF_TEST ref_is_i31 }
+  | "ref.is_data" { REF_TEST ref_is_data }
+  | "ref.is_func" { REF_TEST ref_is_func }
+  | "ref.as_non_null" { REF_CAST ref_as_non_null }
+  | "ref.as_i31" { REF_CAST ref_as_i31 }
+  | "ref.as_data" { REF_CAST ref_as_data }
+  | "ref.as_func" { REF_CAST ref_as_data }
+  | "ref.test" { REF_TEST ref_test }
+  | "ref.cast" { REF_CAST ref_cast }
+  | "ref.eq" { REF_EQ }
+
+  | "i31.new" { I31_NEW }
+  | "i31.get_"(sign as s) { I31_GET (ext s i31_get_s i31_get_u) }
+
+  | "struct.new" { STRUCT_NEW struct_new }
+  | "struct.new_default" { STRUCT_NEW struct_new_default }
+  | "struct.get" { STRUCT_GET struct_get }
+  | "struct.get_"(sign as s) { STRUCT_GET (ext s struct_get_s struct_get_u) }
+  | "struct.set" { STRUCT_SET }
+
+  | "array.new" { ARRAY_NEW array_new }
+  | "array.new_default" { ARRAY_NEW array_new_default }
+  | "array.get" { ARRAY_GET array_get }
+  | "array.get_"(sign as s) { ARRAY_GET (ext s array_get_s array_get_u) }
+  | "array.set" { ARRAY_SET }
+  | "array.len" { ARRAY_LEN }
+
+  | "rtt.canon" { RTT_CANON }
+  | "rtt.sub" { RTT_SUB }
 
   | "nop" { NOP }
   | "unreachable" { UNREACHABLE }
@@ -215,7 +244,7 @@ rule token = parse
   | "br" { BR }
   | "br_if" { BR_IF }
   | "br_table" { BR_TABLE }
-  | "br_on_null" { BR_ON_NULL }
+  | "br_on_null" { BR_TEST br_on_null }
   | "return" { RETURN }
   | "if" { IF }
   | "then" { THEN }

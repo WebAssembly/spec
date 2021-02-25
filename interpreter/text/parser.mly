@@ -67,6 +67,8 @@ module VarMap = Map.Make(String)
 type space = {mutable map : int32 VarMap.t; mutable count : int32}
 let empty () = {map = VarMap.empty; count = 0l}
 
+let reset space = space.count <- 0l
+
 let shift category at n i =
   let i' = Int32.add i n in
    if I32.lt_u i' n then
@@ -89,19 +91,20 @@ type context =
   { types : types; tables : space; memories : space;
     funcs : space; locals : space; globals : space;
     datas : space; elems : space; labels : space;
-    deferred_locals : (unit -> unit) list ref
+    fields : space; deferred_locals : (unit -> unit) list ref
   }
 
 let empty_context () =
   { types = empty_types (); tables = empty (); memories = empty ();
     funcs = empty (); locals = empty (); globals = empty ();
     datas = empty (); elems = empty (); labels = empty ();
-    deferred_locals = ref []
+    fields = empty (); deferred_locals = ref []
   }
 
 let enter_block (c : context) at = {c with labels = scoped "label" 1l c.labels at}
 let enter_let (c : context) at = {c with locals = empty (); deferred_locals = ref []}
 let enter_func (c : context) at = {(enter_let c at) with labels = empty ()}
+let enter_struct (c : context) = reset c.fields; c
 
 let defer_locals (c : context) f =
   c.deferred_locals := (fun () -> ignore (f ())) :: !(c.deferred_locals)
@@ -137,6 +140,7 @@ let memory (c : context) x = lookup "memory" c.memories x
 let elem (c : context) x = lookup "elem segment" c.elems x
 let data (c : context) x = lookup "data segment" c.datas x
 let label (c : context) x = lookup "label " c.labels x
+let field (c : context) x = lookup "field " c.fields x
 
 let func_type (c : context) x =
   match (Lib.List32.nth c.types.list x.it).it with
@@ -166,6 +170,7 @@ let bind_memory (c : context) x = bind_abs "memory" c.memories x
 let bind_elem (c : context) x = bind_abs "elem segment" c.elems x
 let bind_data (c : context) x = bind_abs "data segment" c.datas x
 let bind_label (c : context) x = bind_rel "label" c.labels x
+let bind_field (c : context) x = bind_abs "field" c.fields x
 
 let define_type (c : context) (ty : type_) =
   assert (c.types.space.count > Lib.List32.length c.types.list);
@@ -182,6 +187,7 @@ let anon_memory (c : context) at = bind "memory" c.memories 1l at
 let anon_elem (c : context) at = bind "elem segment" c.elems 1l at
 let anon_data (c : context) at = bind "data segment" c.datas 1l at
 let anon_label (c : context) at = bind "label" c.labels 1l at
+let anon_fields (c : context) n at = bind "field" c.fields n at
 
 
 let inline_func_type (c : context) ft at =
@@ -214,7 +220,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token MUT FIELD STRUCT ARRAY
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP LET
-%token BR BR_IF BR_TABLE BR_ON_NULL
+%token BR BR_IF BR_TABLE BR_TEST
 %token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF FUNC_BIND
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
@@ -222,7 +228,10 @@ let inline_func_type_explicit (c : context) x ft at =
 %token MEMORY_SIZE MEMORY_GROW MEMORY_FILL MEMORY_COPY MEMORY_INIT DATA_DROP
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
-%token REF_NULL REF_FUNC REF_EXTERN REF_IS_NULL REF_AS_NON_NULL
+%token REF_NULL REF_FUNC REF_EXTERN REF_TEST REF_CAST REF_EQ
+%token I31_NEW I32_GET
+%token STRUCT_NEW STRUCT_GET STRUCT_SET ARRAY_NEW ARRAY_GET ARRAY_SET ARRAY_LEN
+%token RTT_CANON RTT_SUB
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
@@ -240,6 +249,12 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<string> VAR
 %token<Types.num_type> NUM_TYPE
 %token<Types.packed_type> PACKED_TYPE
+%token<Ast.instr'> REF_TEST REF_CAST
+%token<Ast.idx -> Ast.instr'> BR_TEST
+%token<Ast.instr'> I31_GET
+%token<Ast.idx -> Ast.idx -> Ast.instr'> STRUCT_GET
+%token<Ast.idx -> Ast.instr'> ARRAY_GET
+%token<Ast.idx -> Ast.instr'> STRUCT_NEW ARRAY_NEW
 %token<string Source.phrase -> Ast.instr' * Value.num> CONST
 %token<Ast.instr'> UNARY
 %token<Ast.instr'> BINARY
@@ -333,13 +348,15 @@ field_type_list :
 
 struct_field_list :
   | /* empty */ { fun c -> [] }
-  | LPAR FIELD field_type_list RPAR struct_field_list { fun c -> $3 c @ $5 c }
+  | LPAR FIELD field_type_list RPAR struct_field_list
+    { let at3 = ati 3 in
+      fun c -> let fts = $3 c in
+      ignore (anon_fields c (Lib.List32.length fts) at3); fts @ $5 c }
   | LPAR FIELD bind_var field_type RPAR struct_field_list
-    { (* TODO: handle field names *)
-      fun c -> $4 c :: $6 c }
+    { fun c -> ignore (bind_field c $3); $4 c :: $6 c }
 
 struct_type :
-  | struct_field_list { fun c -> StructType ($1 c) }
+  | struct_field_list { fun c -> let c' = enter_struct c in StructType ($1 c') }
 
 array_type :
   | field_type { fun c -> ArrayType ($1 c) }
@@ -447,7 +464,7 @@ plain_instr :
   | BR_TABLE var var_list
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
-  | BR_ON_NULL var { fun c -> br_on_null ($2 c label) }
+  | BR_TEST var { fun c -> br_on_null ($2 c label) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF { fun c -> call_ref }
@@ -483,9 +500,21 @@ plain_instr :
   | MEMORY_INIT var { fun c -> memory_init ($2 c data) }
   | DATA_DROP var { fun c -> data_drop ($2 c data) }
   | REF_NULL heap_type { fun c -> ref_null ($2 c) }
-  | REF_IS_NULL { fun c -> ref_is_null }
-  | REF_AS_NON_NULL { fun c -> ref_as_non_null }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
+  | REF_TEST { fun c -> $1 }
+  | REF_CAST { fun c -> $1 }
+  | REF_EQ { fun c -> ref_eq }
+  | I31_NEW { fun c -> i31_new }
+  | I31_GET { fun c -> $1 }
+  | STRUCT_NEW var { fun c -> $1 ($2 c type_) }
+  | STRUCT_GET var var { fun c -> $1 ($2 c type_) ($3 c field) }
+  | STRUCT_SET var var { fun c -> struct_set ($2 c type_) ($3 c field) }
+  | ARRAY_NEW var { fun c -> $1 ($2 c type_) }
+  | ARRAY_GET var { fun c -> $1 ($2 c type_) }
+  | ARRAY_SET var { fun c -> array_set ($2 c type_) }
+  | ARRAY_LEN var { fun c -> array_len ($2 c type_) }
+  | RTT_CANON var { fun c -> rtt_canon ($2 c type_) }
+  | RTT_SUB var { fun c -> rtt_sub ($2 c type_) }
   | CONST num { fun c -> fst (num $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }

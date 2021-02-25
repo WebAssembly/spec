@@ -40,6 +40,7 @@ let list_of_opt = function None -> [] | Some x -> [x]
 let list f xs = List.map f xs
 let listi f xs = List.mapi f xs
 let opt f xo = list f (list_of_opt xo)
+let opt_s f xo = Lib.Option.get (Lib.Option.map f xo) ""
 
 let tab head f xs = if xs = [] then [] else [Node (head, list f xs)]
 let atom f x = Atom (f x)
@@ -231,6 +232,11 @@ let storeop op =
   | None -> memop "store" op (size op.ty)
   | Some sz -> memop ("store" ^ pack_size sz) op (packed_size sz)
 
+let initop op =
+  match op with
+  | Explicit -> ""
+  | Implicit -> "_default"
+
 
 (* Expressions *)
 
@@ -264,7 +270,11 @@ let rec instr e =
     | BrIf x -> "br_if " ^ var x, []
     | BrTable (xs, x) ->
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
-    | BrOnNull x -> "br_on_null " ^ var x, []
+    | BrTest (x, NullOp) -> "br_on_null " ^ var x, []
+    | BrTest (x, I31Op) -> "br_on_i31 " ^ var x, []
+    | BrTest (x, DataOp) -> "br_on_data " ^ var x, []
+    | BrTest (x, FuncOp) -> "br_on_func " ^ var x, []
+    | BrTest (x, RttOp) -> "br_on_cast " ^ var x, []
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallRef -> "call_ref", []
@@ -294,9 +304,30 @@ let rec instr e =
     | MemoryInit x -> "memory.init " ^ var x, []
     | DataDrop x -> "data.drop " ^ var x, []
     | RefNull t -> "ref.null", [Atom (heap_type t)]
-    | RefIsNull -> "ref.is_null", []
-    | RefAsNonNull -> "ref.as_non_null", []
     | RefFunc x -> "ref.func " ^ var x, []
+    | RefTest NullOp -> "ref.is_null", []
+    | RefTest I31Op -> "ref.is_i31", []
+    | RefTest DataOp -> "ref.is_data", []
+    | RefTest FuncOp -> "ref.is_func", []
+    | RefTest RttOp -> "ref.test", []
+    | RefCast NullOp -> "ref.as_non_null", []
+    | RefCast I31Op -> "ref.as_i31", []
+    | RefCast DataOp -> "ref.as_data", []
+    | RefCast FuncOp -> "ref.as_func", []
+    | RefCast RttOp -> "ref.cast", []
+    | RefEq -> "ref.eq", []
+    | I31New -> "i31.new", []
+    | I31Get ext -> "i31.get" ^ extension ext, []
+    | StructNew (x, op) -> "struct.new" ^ initop op ^ " " ^ var x, []
+    | StructGet (x, y, exto) ->
+      "struct.get" ^ opt_s extension exto ^ " " ^ var x ^ " " ^ var y, []
+    | StructSet (x, y) -> "struct.set " ^ var x ^ " " ^ var y, []
+    | ArrayNew (x, op) -> "array.new" ^ initop op ^ " " ^ var x, []
+    | ArrayGet (x, exto) -> "array.get" ^ opt_s extension exto ^ " " ^ var x, []
+    | ArraySet x -> "array.set " ^ var x, []
+    | ArrayLen x -> "array.len " ^ var x, []
+    | RttCanon x -> "rtt.canon " ^ var x, []
+    | RttSub x -> "rtt.sub " ^ var x, []
     | Const n -> constop n ^ " " ^ num n, []
     | Test op -> testop op, []
     | Compare op -> relop op, []

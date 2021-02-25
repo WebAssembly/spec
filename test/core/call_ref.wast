@@ -191,3 +191,12 @@
   )
   "type mismatch"
 )
+
+(assert_invalid
+  (module
+    (func $f (param $r externref)
+      (call_ref (local.get $r))
+    )
+  )
+  "type mismatch"
+)

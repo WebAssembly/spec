@@ -533,6 +533,49 @@ let rec instr s =
   | 0xd2 -> ref_func (at var s)
   | 0xd3 -> ref_as_non_null
   | 0xd4 -> br_on_null (at var s)
+  | 0xd5 -> ref_eq
+
+  | 0xfb as b ->
+    (match vu32 s with
+    | 0x01l -> struct_new (at var s)
+    | 0x02l -> struct_new_default (at var s)
+    | 0x03l -> let x = at var s in let y = at var s in struct_get x y
+    | 0x04l -> let x = at var s in let y = at var s in struct_get_s x y
+    | 0x05l -> let x = at var s in let y = at var s in struct_get_u x y
+    | 0x06l -> let x = at var s in let y = at var s in struct_set x y
+
+    | 0x11l -> array_new (at var s)
+    | 0x12l -> array_new_default (at var s)
+    | 0x13l -> array_get (at var s)
+    | 0x14l -> array_get_s (at var s)
+    | 0x15l -> array_get_u (at var s)
+    | 0x16l -> array_set (at var s)
+    | 0x17l -> array_len (at var s)
+
+    | 0x20l -> i31_new
+    | 0x21l -> i31_get_s
+    | 0x22l -> i31_get_u
+
+    | 0x30l -> rtt_canon (at var s)
+    | 0x31l -> rtt_sub (at var s)
+
+    | 0x40l -> ref_test
+    | 0x41l -> ref_cast
+    | 0x42l -> br_on_cast (at var s)
+
+    | 0x50l -> ref_is_func
+    | 0x51l -> ref_is_data
+    | 0x52l -> ref_is_i31
+    | 0x58l -> ref_as_func
+    | 0x59l -> ref_as_data
+    | 0x5al -> ref_as_i31
+
+    | 0x60l -> br_on_func (at var s)
+    | 0x61l -> br_on_data (at var s)
+    | 0x62l -> br_on_i31 (at var s)
+
+    | n -> illegal2 s pos b n
+    )
 
   | 0xfc as b ->
     (match vu32 s with

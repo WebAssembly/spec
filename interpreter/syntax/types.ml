@@ -69,13 +69,24 @@ let packed_size = function
   | Pack16 -> 2
   | Pack32 -> 4
 
-let unpacked_type = function
+
+let is_packed_storage_type = function
+  | ValueStorageType _ -> false
+  | PackedStorageType _ -> true
+
+let unpacked_storage_type = function
   | ValueStorageType t -> t
   | PackedStorageType _ -> NumType I32Type
+
+let unpacked_field_type (FieldType (t, _)) = unpacked_storage_type t
 
 
 let is_syn_var = function SynVar _ -> true | SemVar _ -> false
 let is_sem_var = function SemVar _ -> true | SynVar _ -> false
+
+let as_syn_var = function SynVar x -> x | SemVar _ -> assert false
+let as_sem_var = function SemVar x -> x | SynVar _ -> assert false
+
 
 let is_num_type = function
   | NumType _ | BotType -> true
