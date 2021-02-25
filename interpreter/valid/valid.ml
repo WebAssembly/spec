@@ -167,6 +167,7 @@ type op_type = {ins : infer_stack_type; outs : infer_stack_type}
 
 let stack ts = (NoEllipses, ts)
 let (-->) ts1 ts2 = {ins = NoEllipses, ts1; outs = NoEllipses, ts2}
+let (-->..) ts1 ts2 = {ins = Ellipses, ts1; outs = NoEllipses, ts2}
 let (-->...) ts1 ts2 = {ins = Ellipses, ts1; outs = Ellipses, ts2}
 
 let check_stack (c : context) ts1 ts2 at =
@@ -387,9 +388,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     | (nul, DefHeapType (SynVar x)) ->
       let FuncType (ts1, ts2) = func_type c (x @@ e.at) in
       (ts1 @ [RefType (nul, DefHeapType (SynVar x))]) --> ts2
-    | (_, BotHeapType) ->
-      [] -->... []
-    | _ -> assert false
+    | (_, BotHeapType) as rt ->
+      [RefType rt] -->... []
+    | rt ->
+      error e.at
+        ("type mismatch: instruction requires function reference type" ^
+         " but stack has " ^ string_of_value_type (RefType rt))
     )
 
   | CallIndirect (x, y) ->
@@ -409,9 +413,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
          string_of_stack_type c.results ^
          " but callee returns " ^ string_of_stack_type ts2);
       (ts1 @ [RefType (nul, DefHeapType (SynVar x))]) -->... []
-    | (_, BotHeapType) ->
-      [] -->... []
-    | _ -> assert false
+    | (_, BotHeapType) as rt ->
+      [RefType rt] -->... []
+    | rt ->
+      error e.at
+        ("type mismatch: instruction requires function reference type" ^
+         " but stack has " ^ string_of_value_type (RefType rt))
     )
 
   | FuncBind x ->
@@ -426,9 +433,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
         "type mismatch in function type";
       (ts11 @ [RefType (nul, DefHeapType (SynVar y))]) -->
         [RefType (NonNullable, DefHeapType (SynVar x.it))]
-    | (_, BotHeapType) ->
-      [] -->... [RefType (NonNullable, DefHeapType (SynVar x.it))]
-    | _ -> assert false
+    | (_, BotHeapType) as rt ->
+      [RefType rt] -->.. [RefType (NonNullable, DefHeapType (SynVar x.it))]
+    | rt ->
+      error e.at
+        ("type mismatch: instruction requires function reference type" ^
+         " but stack has " ^ string_of_value_type (RefType rt))
     )
 
   | LocalGet x ->
@@ -527,8 +537,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     [] --> [RefType (Nullable, t)]
 
   | RefIsNull ->
-    let rt = peek_ref 0 s e.at in
-    [RefType rt] --> [NumType I32Type]
+    let (_, t) = peek_ref 0 s e.at in
+    [RefType (Nullable, t)] --> [NumType I32Type]
 
   | RefAsNonNull ->
     let (_, t) = peek_ref 0 s e.at in
