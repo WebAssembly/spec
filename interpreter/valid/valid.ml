@@ -385,7 +385,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
       (ts1 @ [RefType (nul, DefHeapType (SynVar x))]) -->... []
     | (_, BotHeapType) ->
       [] -->... []
-    | _ -> assert false
+    | rt ->
+      error e.at
+        ("type mismatch: instruction requires function reference type" ^
+         " but stack has " ^ string_of_value_type (RefType rt))
     )
 
   | FuncBind x ->
@@ -402,7 +405,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
         [RefType (NonNullable, DefHeapType (SynVar x.it))]
     | (_, BotHeapType) ->
       [] -->... [RefType (NonNullable, DefHeapType (SynVar x.it))]
-    | _ -> assert false
+    | rt ->
+      error e.at
+        ("type mismatch: instruction requires function reference type" ^
+         " but stack has " ^ string_of_value_type (RefType rt))
     )
 
   | LocalGet x ->
