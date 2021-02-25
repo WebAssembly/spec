@@ -110,16 +110,21 @@ let rec instr (e : instr) =
   match e.it with
   | Unreachable | Nop | Drop -> empty
   | Select tso -> list value_type (Lib.Option.get tso [])
-  | RefIsNull | RefAsNonNull -> empty
+  | RefTest _ | RefCast _ | RefEq -> empty
   | RefNull t -> heap_type t
   | RefFunc x -> funcs (idx x)
+  | I31New | I31Get _ -> empty
+  | StructNew (x, _) | ArrayNew (x, _) -> types (idx x)
+  | StructGet (x, _, _) | StructSet (x, _) -> types (idx x)
+  | ArrayGet (x, _) | ArraySet x | ArrayLen x -> types (idx x)
+  | RttCanon x | RttSub x -> types (idx x)
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
   | If (bt, es1, es2) -> block_type bt ++ block es1 ++ block es2
   | Let (bt, ts, es) ->
     let free = block_type bt ++ block es in
     {free with locals = Lib.Fun.repeat (List.length ts) shift free.locals}
-  | Br x | BrIf x | BrOnNull x -> labels (idx x)
+  | Br x | BrIf x | BrTest (x, _) -> labels (idx x)
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
   | Return | CallRef | ReturnCallRef -> empty
   | Call x -> funcs (idx x)

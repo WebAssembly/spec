@@ -209,7 +209,7 @@ let rec step (c : config) : config =
         else
           vs', [Plain (Br (Lib.List32.nth xs i)) @@ e.at]
 
-      | BrOnNull x, Ref r :: vs' ->
+      | BrTest (x, NullOp), Ref r :: vs' ->
         (match r with
         | NullRef _ ->
           vs', [Plain (Br x) @@ e.at]
@@ -484,7 +484,11 @@ let rec step (c : config) : config =
       | RefNull t, vs' ->
         Ref (NullRef (sem_heap_type c.frame.inst.types t)) :: vs', []
 
-      | RefIsNull, Ref r :: vs' ->
+      | RefFunc x, vs' ->
+        let f = func c.frame.inst x in
+        Ref (FuncRef f) :: vs', []
+
+      | RefTest NullOp, Ref r :: vs' ->
         (match r with
         | NullRef _ ->
           Num (I32 1l) :: vs', []
@@ -492,17 +496,13 @@ let rec step (c : config) : config =
           Num (I32 0l) :: vs', []
         )
 
-      | RefAsNonNull, Ref r :: vs' ->
+      | RefCast NullOp, Ref r :: vs' ->
         (match r with
         | NullRef _ ->
           vs', [Trapping "null reference" @@ e.at]
         | _ ->
           Ref r :: vs', []
         )
-
-      | RefFunc x, vs' ->
-        let f = func c.frame.inst x in
-        Ref (FuncRef f) :: vs', []
 
       | Const n, vs ->
         Num n.it :: vs, []

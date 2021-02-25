@@ -8,10 +8,8 @@ let i32_const n = Const (I32 n.it @@ n.at)
 let i64_const n = Const (I64 n.it @@ n.at)
 let f32_const n = Const (F32 n.it @@ n.at)
 let f64_const n = Const (F64 n.it @@ n.at)
-let ref_func x = RefFunc x
 let ref_null t = RefNull t
-let ref_is_null = RefIsNull
-let ref_as_non_null = RefAsNonNull
+let ref_func x = RefFunc x
 
 let unreachable = Unreachable
 let nop = Nop
@@ -26,7 +24,11 @@ let let_ bt ts es = Let (bt, ts, es)
 let br x = Br x
 let br_if x = BrIf x
 let br_table xs x = BrTable (xs, x)
-let br_on_null x = BrOnNull x
+let br_on_null x = BrTest (x, NullOp)
+let br_on_i31 x = BrTest (x, I31Op)
+let br_on_data x = BrTest (x, DataOp)
+let br_on_func x = BrTest (x, FuncOp)
+let br_on_cast x = BrTest (x, RttOp)
 
 let return = Return
 let call x = Call x
@@ -96,6 +98,38 @@ let memory_fill = MemoryFill
 let memory_copy = MemoryCopy
 let memory_init x = MemoryInit x
 let data_drop x = DataDrop x
+
+let ref_is_null = RefTest NullOp
+let ref_is_i31 = RefTest I31Op
+let ref_is_data = RefTest DataOp
+let ref_is_func = RefTest FuncOp
+let ref_test = RefTest RttOp
+let ref_as_non_null = RefCast NullOp
+let ref_as_i31 = RefCast I31Op
+let ref_as_data = RefCast DataOp
+let ref_as_func = RefCast FuncOp
+let ref_cast = RefCast RttOp
+let ref_eq = RefEq
+
+let i31_new = I31New
+let i31_get_u = I31Get ZX
+let i31_get_s = I31Get SX
+let struct_new x = StructNew (x, Explicit)
+let struct_new_default x = StructNew (x, Implicit)
+let struct_get x y = StructGet (x, y, None)
+let struct_get_u x y = StructGet (x, y, Some ZX)
+let struct_get_s x y = StructGet (x, y, Some SX)
+let struct_set x y = StructSet (x, y)
+let array_new x = ArrayNew (x, Explicit)
+let array_new_default x = ArrayNew (x, Implicit)
+let array_get x = ArrayGet (x, None)
+let array_get_u x = ArrayGet (x, Some ZX)
+let array_get_s x = ArrayGet (x, Some SX)
+let array_set x = ArraySet x
+let array_len x = ArrayLen x
+
+let rtt_canon x = RttCanon x
+let rtt_sub x = RttSub x
 
 let i32_clz = Unary (I32 I32Op.Clz)
 let i32_ctz = Unary (I32 I32Op.Ctz)

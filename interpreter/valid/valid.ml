@@ -371,7 +371,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     List.iter (fun x' -> check_stack c ts (label c x') x'.at) xs;
     (ts @ [NumType I32Type]) -->... []
 
-  | BrOnNull x ->
+  | BrTest (x, NullOp) ->
     let (_, t) = peek_ref 0 s e.at in
     (label c x @ [RefType (Nullable, t)]) -->
       (label c x @ [RefType (NonNullable, t)])
@@ -536,18 +536,18 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     check_heap_type c t e.at;
     [] --> [RefType (Nullable, t)]
 
-  | RefIsNull ->
-    let (_, t) = peek_ref 0 s e.at in
-    [RefType (Nullable, t)] --> [NumType I32Type]
-
-  | RefAsNonNull ->
-    let (_, t) = peek_ref 0 s e.at in
-    [RefType (Nullable, t)] --> [RefType (NonNullable, t)]
-
   | RefFunc x ->
     let y = func_var c x in
     refer_func c x;
     [] --> [RefType (NonNullable, DefHeapType (SynVar y))]
+
+  | RefTest reftypeop ->
+    let rt = peek_ref 0 s e.at in
+    [RefType rt] --> [NumType I32Type]
+
+  | RefCast NullOp ->
+    let (_, t) = peek_ref 0 s e.at in
+    [RefType (Nullable, t)] --> [RefType (NonNullable, t)]
 
   | Const v ->
     let t = NumType (type_num v.it) in
@@ -573,6 +573,9 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | Convert cvtop ->
     let t1, t2 = type_cvtop e.at cvtop in
     [NumType t1] --> [NumType t2]
+
+  | _ ->
+    error e.at "not implemented yet"
 
 and check_seq (c : context) (s : infer_stack_type) (es : instr list)
   : infer_stack_type =

@@ -246,13 +246,9 @@ let lookup (mods : modules) x_opt name at =
 let subject_idx = 0l
 let externref_idx = 1l
 let is_externref_idx = 2l
-let is_funcref_idx = 3l
-let is_dataref_idx = 4l
-let is_i31ref_idx = 5l
-let is_eqref_idx = 6l
-let is_anyref_idx = 7l
-let eq_ref_idx = 8l
-let subject_type_idx = 9l
+let is_eqref_idx = 3l
+let eq_ref_idx = 4l
+let subject_type_idx = 5l
 
 let eq_of = function
   | I32Type -> I32 I32Op.Eq
@@ -308,7 +304,7 @@ let assert_return ress ts at =
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | LitResult {it = Ref (NullRef t); _} ->
-      [ RefIsNull @@ at;
+      [ RefTest NullOp @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | LitResult {it = Ref (ExternRef n); _} ->
@@ -340,25 +336,25 @@ let assert_return ress ts at =
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult t ->
-      let is_ref_idx =
+      let is_ref =
         match t with
-        | AnyHeapType -> is_anyref_idx
-        | EqHeapType -> is_eqref_idx
-        | I31HeapType -> is_i31ref_idx
-        | DataHeapType -> is_dataref_idx
-        | FuncHeapType -> is_funcref_idx
-        | ExternHeapType -> is_externref_idx
-        | DefHeapType _ -> is_anyref_idx (* TODO *)
-        | RttHeapType _ -> is_anyref_idx (* TODO *)
+        | AnyHeapType -> Const (I32 1l @@ at)
+        | EqHeapType -> Call (is_eqref_idx @@ at)
+        | I31HeapType -> RefTest I31Op
+        | DataHeapType -> RefTest DataOp
+        | FuncHeapType -> RefTest FuncOp
+        | ExternHeapType -> Call (is_externref_idx @@ at)
+        | DefHeapType _ -> Const (I32 1l @@ at) (* TODO *)
+        | RttHeapType _ -> Const (I32 1l @@ at) (* TODO *)
         | BotHeapType -> assert false
       in
-      [ Call (is_ref_idx @@ at) @@ at;
+      [ is_ref @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | NullResult ->
       (match t with
       | RefType _ ->
-        [ BrOnNull (0l @@ at) @@ at ]
+        [ BrTest (0l @@ at, NullOp) @@ at ]
       | _ ->
         [ Br (0l @@ at) @@ at ]
       )
@@ -386,15 +382,7 @@ let wrap item_name wrap_action wrap_assertion at =
        idesc = FuncImport (1l @@ at) @@ at} @@ at;
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_externref";
        idesc = FuncImport (2l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_funcref";
-       idesc = FuncImport (2l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_dataref";
-       idesc = FuncImport (2l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_i31ref";
-       idesc = FuncImport (2l @@ at) @@ at} @@ at;
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_eqref";
-       idesc = FuncImport (2l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_anyref";
        idesc = FuncImport (2l @@ at) @@ at} @@ at;
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_ref";
        idesc = FuncImport (3l @@ at) @@ at} @@ at;

@@ -207,7 +207,12 @@ let encode m =
       | Br x -> op 0x0c; var x
       | BrIf x -> op 0x0d; var x
       | BrTable (xs, x) -> op 0x0e; vec var xs; var x
-      | BrOnNull x -> op 0xd4; var x
+      | BrTest (x, NullOp) -> op 0xd4; var x
+      | BrTest (x, I31Op) -> op 0xfb; op 0x62; var x
+      | BrTest (x, DataOp) -> op 0xfb; op 0x61; var x
+      | BrTest (x, FuncOp) -> op 0xfb; op 0x60; var x
+      | BrTest (x, RttOp) -> op 0xfb; op 0x42; var x
+
       | Return -> op 0x0f
       | Call x -> op 0x10; var x
       | CallRef -> op 0x14
@@ -283,9 +288,43 @@ let encode m =
       | DataDrop x -> op 0xfc; vu32 0x09l; var x
 
       | RefNull t -> op 0xd0; heap_type t
-      | RefIsNull -> op 0xd1
-      | RefAsNonNull -> op 0xd3
       | RefFunc x -> op 0xd2; var x
+
+      | RefTest NullOp -> op 0xd1
+      | RefTest I31Op -> op 0xfb; op 0x52
+      | RefTest DataOp -> op 0xfb; op 0x51
+      | RefTest FuncOp -> op 0xfb; op 0x50
+      | RefTest RttOp -> op 0xfb; op 0x40
+
+      | RefCast NullOp -> op 0xd3
+      | RefCast I31Op -> op 0xfb; op 0x5a
+      | RefCast DataOp -> op 0xfb; op 0x59
+      | RefCast FuncOp -> op 0xfb; op 0x58
+      | RefCast RttOp -> op 0xfb; op 0x41
+
+      | RefEq -> op 0xd5
+
+      | I31New -> op 0xfb; op 0x20
+      | I31Get SX -> op 0xfb; op 0x21
+      | I31Get ZX -> op 0xfb; op 0x22
+
+      | StructNew (x, Explicit) -> op 0xfb; op 0x01; var x
+      | StructNew (x, Implicit) -> op 0xfb; op 0x02; var x
+      | StructGet (x, y, None) -> op 0xfb; op 0x03; var x; var y
+      | StructGet (x, y, Some SX) -> op 0xfb; op 0x04; var x; var y
+      | StructGet (x, y, Some ZX) -> op 0xfb; op 0x05; var x; var y
+      | StructSet (x, y) -> op 0xfb; op 0x06; var x; var y
+
+      | ArrayNew (x, Explicit) -> op 0xfb; op 0x11; var x
+      | ArrayNew (x, Implicit) -> op 0xfb; op 0x12; var x
+      | ArrayGet (x, None) -> op 0xfb; op 0x13; var x
+      | ArrayGet (x, Some SX) -> op 0xfb; op 0x14; var x
+      | ArrayGet (x, Some ZX) -> op 0xfb; op 0x15; var x
+      | ArraySet x -> op 0xfb; op 0x16; var x
+      | ArrayLen x -> op 0xfb; op 0x17; var x
+
+      | RttCanon x -> op 0xfb; op 0x30; var x
+      | RttSub x -> op 0xfb; op 0x31; var x
 
       | Const {it = I32 c; _} -> op 0x41; vs32 c
       | Const {it = I64 c; _} -> op 0x42; vs64 c
