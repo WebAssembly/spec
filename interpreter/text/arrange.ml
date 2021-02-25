@@ -318,11 +318,11 @@ let rec instr e =
     | RefEq -> "ref.eq", []
     | I31New -> "i31.new", []
     | I31Get ext -> "i31.get" ^ extension ext, []
-    | StructNew (x, op) -> "struct.new" ^ initop op, []
+    | StructNew (x, op) -> "struct.new" ^ initop op ^ " " ^ var x, []
     | StructGet (x, y, exto) ->
       "struct.get" ^ opt_s extension exto ^ " " ^ var x ^ " " ^ var y, []
     | StructSet (x, y) -> "struct.set " ^ var x ^ " " ^ var y, []
-    | ArrayNew (x, op) -> "array.new" ^ initop op, []
+    | ArrayNew (x, op) -> "array.new" ^ initop op ^ " " ^ var x, []
     | ArrayGet (x, exto) -> "array.get" ^ opt_s extension exto ^ " " ^ var x, []
     | ArraySet x -> "array.set " ^ var x, []
     | ArrayLen x -> "array.len " ^ var x, []

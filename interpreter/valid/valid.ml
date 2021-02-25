@@ -666,6 +666,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
 
   | StructNew (x, initop) ->
     let StructType fts = struct_type c x in
+    require
+      ( initop = Explicit || List.for_all (fun ft ->
+          defaultable_value_type (unpacked_field_type ft)) fts ) e.at
+      ("field type is not defaultable");
     let ts = if initop = Implicit then [] else List.map unpacked_field_type fts in
     (ts @ [RefType (NonNullable, RttHeapType (SynVar x.it, None))]) -->
       [RefType (NonNullable, DefHeapType (SynVar x.it))]
@@ -691,6 +695,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
 
   | ArrayNew (x, initop) ->
     let ArrayType ft = array_type c x in
+    require
+      ( initop = Explicit ||
+        defaultable_value_type (unpacked_field_type ft) ) e.at
+      ("array type is not defaultable");
     let ts = if initop = Implicit then [] else [unpacked_field_type ft] in
     (ts @ [RefType (NonNullable, RttHeapType (SynVar x.it, None))]) -->
       [RefType (NonNullable, DefHeapType (SynVar x.it))]
@@ -812,7 +820,9 @@ let is_const (c : context) (e : instr) =
   match e.it with
   | RefNull _
   | RefFunc _
-  | Const _ -> true
+  | Const _
+  | RttCanon _
+  | RttSub _ -> true
   | GlobalGet x -> let GlobalType (_, mut) = global c x in mut = Immutable
   | _ -> false
 
