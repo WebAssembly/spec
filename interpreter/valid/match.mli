@@ -20,6 +20,7 @@ val eq_global_type : context -> assump -> global_type -> global_type -> bool
 val eq_extern_type : context -> assump -> extern_type -> extern_type -> bool
 
 val eq_def_type : context -> assump -> def_type -> def_type -> bool
+val eq_var_type : context -> assump -> var -> var -> bool
 
 
 (* Subtyping *)
@@ -38,3 +39,4 @@ val match_global_type : context -> assump -> global_type -> global_type -> bool
 val match_extern_type : context -> assump -> extern_type -> extern_type -> bool
 
 val match_def_type : context -> assump -> def_type -> def_type -> bool
+val match_var_type : context -> assump -> var -> var -> bool

@@ -53,8 +53,8 @@ let num_type = function
   | _ -> assert false
 
 let packed_type = function
-  | "i8" -> Types.I8Type
-  | "i16" -> Types.I16Type
+  | "i8" -> Types.Pack8
+  | "i16" -> Types.Pack16
   | _ -> assert false
 
 let intop t i32 i64 =
@@ -201,6 +201,8 @@ rule token = parse
     }
   | "ref.null" { REF_NULL }
   | "ref.func" { REF_FUNC }
+  | "ref.i31" { REF_I31 }
+  | "ref.data" { REF_DATA }
   | "ref.extern" { REF_EXTERN }
 
   | "ref.is_null" { REF_TEST ref_is_null }
@@ -210,7 +212,7 @@ rule token = parse
   | "ref.as_non_null" { REF_CAST ref_as_non_null }
   | "ref.as_i31" { REF_CAST ref_as_i31 }
   | "ref.as_data" { REF_CAST ref_as_data }
-  | "ref.as_func" { REF_CAST ref_as_data }
+  | "ref.as_func" { REF_CAST ref_as_func }
   | "ref.test" { REF_TEST ref_test }
   | "ref.cast" { REF_CAST ref_cast }
   | "ref.eq" { REF_EQ }
@@ -244,7 +246,11 @@ rule token = parse
   | "br" { BR }
   | "br_if" { BR_IF }
   | "br_table" { BR_TABLE }
-  | "br_on_null" { BR_TEST br_on_null }
+  | "br_on_null" { BR_CAST br_on_null }
+  | "br_on_i31" { BR_CAST br_on_i31 }
+  | "br_on_data" { BR_CAST br_on_data }
+  | "br_on_func" { BR_CAST br_on_func }
+  | "br_on_cast" { BR_CAST br_on_cast }
   | "return" { RETURN }
   | "if" { IF }
   | "then" { THEN }

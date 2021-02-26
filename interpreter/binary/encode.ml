@@ -127,8 +127,9 @@ let encode m =
       | BotType -> assert false
 
     let packed_type = function
-      | I8Type -> vs7 (-0x06)
-      | I16Type -> vs7 (-0x07)
+      | Pack8 -> vs7 (-0x06)
+      | Pack16 -> vs7 (-0x07)
+      | Pack32 -> assert false
 
     let storage_type = function
       | ValueStorageType t -> value_type t
@@ -207,11 +208,11 @@ let encode m =
       | Br x -> op 0x0c; var x
       | BrIf x -> op 0x0d; var x
       | BrTable (xs, x) -> op 0x0e; vec var xs; var x
-      | BrTest (x, NullOp) -> op 0xd4; var x
-      | BrTest (x, I31Op) -> op 0xfb; op 0x62; var x
-      | BrTest (x, DataOp) -> op 0xfb; op 0x61; var x
-      | BrTest (x, FuncOp) -> op 0xfb; op 0x60; var x
-      | BrTest (x, RttOp) -> op 0xfb; op 0x42; var x
+      | BrCast (x, NullOp) -> op 0xd4; var x
+      | BrCast (x, I31Op) -> op 0xfb; op 0x62; var x
+      | BrCast (x, DataOp) -> op 0xfb; op 0x61; var x
+      | BrCast (x, FuncOp) -> op 0xfb; op 0x60; var x
+      | BrCast (x, RttOp) -> op 0xfb; op 0x42; var x
 
       | Return -> op 0x0f
       | Call x -> op 0x10; var x

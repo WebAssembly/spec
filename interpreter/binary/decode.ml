@@ -187,8 +187,8 @@ let stack_type s = vec value_type s
 let packed_type s =
   let pos = pos s in
   match vs33 s with
-  | -0x06l -> I8Type
-  | -0x07l -> I16Type
+  | -0x06l -> Pack8
+  | -0x07l -> Pack16
   | _ -> error s pos "malformed storage type"
 
 let storage_type s =

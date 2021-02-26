@@ -220,7 +220,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token MUT FIELD STRUCT ARRAY
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP LET
-%token BR BR_IF BR_TABLE BR_TEST
+%token BR BR_IF BR_TABLE BR_CAST
 %token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF FUNC_BIND
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
@@ -228,7 +228,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token MEMORY_SIZE MEMORY_GROW MEMORY_FILL MEMORY_COPY MEMORY_INIT DATA_DROP
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
-%token REF_NULL REF_FUNC REF_EXTERN REF_TEST REF_CAST REF_EQ
+%token REF_NULL REF_FUNC REF_I31 REF_DATA REF_EXTERN REF_TEST REF_CAST REF_EQ
 %token I31_NEW I32_GET
 %token STRUCT_NEW STRUCT_GET STRUCT_SET ARRAY_NEW ARRAY_GET ARRAY_SET ARRAY_LEN
 %token RTT_CANON RTT_SUB
@@ -248,9 +248,9 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<string> STRING
 %token<string> VAR
 %token<Types.num_type> NUM_TYPE
-%token<Types.packed_type> PACKED_TYPE
+%token<Types.pack_size> PACKED_TYPE
 %token<Ast.instr'> REF_TEST REF_CAST
-%token<Ast.idx -> Ast.instr'> BR_TEST
+%token<Ast.idx -> Ast.instr'> BR_CAST
 %token<Ast.instr'> I31_GET
 %token<Ast.idx -> Ast.idx -> Ast.instr'> STRUCT_GET
 %token<Ast.idx -> Ast.instr'> ARRAY_GET
@@ -464,7 +464,7 @@ plain_instr :
   | BR_TABLE var var_list
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
-  | BR_TEST var { fun c -> br_on_null ($2 c label) }
+  | BR_CAST var { fun c -> $1 ($2 c label) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF { fun c -> call_ref }
@@ -1274,6 +1274,10 @@ const_list :
 result :
   | const { LitResult $1 @@ at () }
   | LPAR CONST NAN RPAR { NanResult (nanop $2 ($3 @@ ati 3)) @@ at () }
+  | LPAR REF RPAR { RefResult AnyHeapType @@ at () }
+  | LPAR REF_EQ RPAR { RefResult EqHeapType @@ at () }
+  | LPAR REF_I31 RPAR { RefResult I31HeapType @@ at () }
+  | LPAR REF_DATA RPAR { RefResult DataHeapType @@ at () }
   | LPAR REF_FUNC RPAR { RefResult FuncHeapType @@ at () }
   | LPAR REF_EXTERN RPAR { RefResult ExternHeapType @@ at () }
   | LPAR REF_NULL RPAR { NullResult @@ at () }

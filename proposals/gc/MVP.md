@@ -520,6 +520,10 @@ See [GC JS API document](MVP-JS.md) .
 
 ## Questions
 
+* Make rtt operands nullable?
+
+* Make `i31.new` a constant instruction. Others too?
+
 * Enable `i31` as a type definition.
 
 * Should reference types be generalised to *unions*, e.g., of the form `(ref null? i31? data? func? extern? $t?)`? Perhaps even allowing multiple concrete types?

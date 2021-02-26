@@ -25,6 +25,24 @@ let as_ref = function
   | Num _ -> failwith "as_ref"
   | Ref r -> r
 
+let is_null_ref = function
+  | NullRef _ -> true
+  | _ -> false
+
+
+(* Equality *)
+
+let eq_num n1 n2 = (n1 = n2)
+
+let eq_ref' = ref (fun r1 r2 -> r1 == r2 || is_null_ref r1 && is_null_ref r2)
+let eq_ref r1 r2 = !eq_ref' r1 r2
+
+let eq v1 v2 =
+  match v1, v2 with
+  | Num n1, Num n2 -> eq_num n1 n2
+  | Ref r1, Ref r2 -> eq_ref r1 r2
+  | _, _ -> false
+
 
 (* Typing *)
 
@@ -54,7 +72,7 @@ let default_num = function
 
 let default_ref = function
   | (Nullable, t) -> NullRef t
-  | (NonNullable, _) -> assert false
+  | (NonNullable, _) -> failwith "default_ref"
 
 let default_value = function
   | NumType t' -> Num (default_num t')

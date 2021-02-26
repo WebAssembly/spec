@@ -1,11 +1,11 @@
 open Types
 open Value
 
-type 'inst t = 'inst func
-and 'inst func =
+type 'inst func =
   | AstFunc of sem_var * 'inst * Ast.func
   | HostFunc of sem_var * (value list -> value list)
   | ClosureFunc of sem_var * 'inst func * value list
+type 'inst t = 'inst func
 
 let alloc x inst f = AstFunc (x, inst, f)
 let alloc_host x f = HostFunc (x, f)
@@ -17,3 +17,5 @@ let type_inst_of = function
   | ClosureFunc (x, _, _) -> x
 
 let type_of f = as_func_def_type (def_of (type_inst_of f))
+
+let read_rtt f = Rtt.alloc (type_inst_of f) None

@@ -354,7 +354,7 @@ let assert_return ress ts at =
     | NullResult ->
       (match t with
       | RefType _ ->
-        [ BrTest (0l @@ at, NullOp) @@ at ]
+        [ BrCast (0l @@ at, NullOp) @@ at ]
       | _ ->
         [ Br (0l @@ at) @@ at ]
       )

@@ -24,11 +24,11 @@ let let_ bt ts es = Let (bt, ts, es)
 let br x = Br x
 let br_if x = BrIf x
 let br_table xs x = BrTable (xs, x)
-let br_on_null x = BrTest (x, NullOp)
-let br_on_i31 x = BrTest (x, I31Op)
-let br_on_data x = BrTest (x, DataOp)
-let br_on_func x = BrTest (x, FuncOp)
-let br_on_cast x = BrTest (x, RttOp)
+let br_on_null x = BrCast (x, NullOp)
+let br_on_i31 x = BrCast (x, I31Op)
+let br_on_data x = BrCast (x, DataOp)
+let br_on_func x = BrCast (x, FuncOp)
+let br_on_cast x = BrCast (x, RttOp)
 
 let return = Return
 let call x = Call x

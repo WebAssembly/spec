@@ -352,6 +352,10 @@ let assert_result at got expect =
         )
       | RefResult t ->
         (match t, v with
+        | Types.AnyHeapType, Ref _
+        | Types.EqHeapType, Ref (I31.I31Ref _)
+        | Types.I31HeapType, Ref (I31.I31Ref _ | Data.DataRef _)
+        | Types.DataHeapType, Ref (Data.DataRef _)
         | Types.FuncHeapType, Ref (Instance.FuncRef _)
         | Types.ExternHeapType, Ref (ExternRef _) -> false
         | _ -> true

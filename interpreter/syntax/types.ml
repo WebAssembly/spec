@@ -9,6 +9,9 @@ and var = SynVar of syn_var | SemVar of sem_var
 and mutability = Immutable | Mutable
 and nullability = NonNullable | Nullable
 
+and pack_size = Pack8 | Pack16 | Pack32
+and extension = SX | ZX
+
 and num_type = I32Type | I64Type | F32Type | F64Type
 and ref_type = nullability * heap_type
 and heap_type =
@@ -25,9 +28,8 @@ and heap_type =
 and value_type = NumType of num_type | RefType of ref_type | BotType
 and stack_type = value_type list
 
-and packed_type = I8Type | I16Type
 and storage_type =
-  ValueStorageType of value_type | PackedStorageType of packed_type
+  ValueStorageType of value_type | PackedStorageType of pack_size
 and field_type = FieldType of storage_type * mutability
 
 and struct_type = StructType of field_type list
@@ -54,9 +56,6 @@ type import_type = ImportType of extern_type * name * name
 type module_type =
   ModuleType of def_type list * import_type list * export_type list
 
-type pack_size = Pack8 | Pack16 | Pack32
-type extension = SX | ZX
-
 
 (* Attributes *)
 
@@ -73,12 +72,6 @@ let packed_size = function
 let is_packed_storage_type = function
   | ValueStorageType _ -> false
   | PackedStorageType _ -> true
-
-let unpacked_storage_type = function
-  | ValueStorageType t -> t
-  | PackedStorageType _ -> NumType I32Type
-
-let unpacked_field_type (FieldType (t, _)) = unpacked_storage_type t
 
 
 let is_syn_var = function SynVar _ -> true | SemVar _ -> false
@@ -111,9 +104,26 @@ let defaultable_value_type = function
 
 (* Projections *)
 
+let unpacked_storage_type = function
+  | ValueStorageType t -> t
+  | PackedStorageType _ -> NumType I32Type
+
+let unpacked_field_type (FieldType (t, _)) = unpacked_storage_type t
+
+
 let as_func_def_type (dt : def_type) : func_type =
   match dt with
   | FuncDefType ft -> ft
+  | _ -> assert false
+
+let as_struct_def_type (dt : def_type) : struct_type =
+  match dt with
+  | StructDefType st -> st
+  | _ -> assert false
+
+let as_array_def_type (dt : def_type) : array_type =
+  match dt with
+  | ArrayDefType at -> at
   | _ -> assert false
 
 let extern_type_of_import_type (ImportType (et, _, _)) = et
@@ -148,7 +158,6 @@ let sem_var_type c = function
   | SemVar _ -> assert false
 
 let sem_num_type c t = t
-let sem_packed_type c t = t
 
 let sem_heap_type c = function
   | AnyHeapType -> AnyHeapType
@@ -174,7 +183,7 @@ let sem_stack_type c ts =
 
 let sem_storage_type c = function
   | ValueStorageType t -> ValueStorageType (sem_value_type c t)
-  | PackedStorageType t -> PackedStorageType (sem_packed_type c t)
+  | PackedStorageType sz -> PackedStorageType sz
 
 let sem_field_type c = function
   | FieldType (t, mut) -> FieldType (sem_storage_type c t, mut)
@@ -294,13 +303,9 @@ and string_of_stack_type = function
   | ts -> "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
 
 
-and string_of_packed_type = function
-  | I8Type -> "i8"
-  | I16Type -> "i16"
-
 and string_of_storage_type = function
   | ValueStorageType t -> string_of_value_type t
-  | PackedStorageType t -> string_of_packed_type t
+  | PackedStorageType sz -> "i" ^ string_of_int (8 * packed_size sz)
 
 and string_of_field_type = function
   | FieldType (t, mut) -> string_of_mutability (string_of_storage_type t) mut

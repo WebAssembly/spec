@@ -109,13 +109,10 @@ let check_value_type (c : context) (t : value_type) at =
   | RefType t' -> check_ref_type c t' at
   | BotType -> ()
 
-let check_packed_type (c : context) (t : packed_type) at =
-  ()
-
 let check_storage_type (c : context) (st : storage_type) at =
   match st with
   | ValueStorageType t -> check_value_type c t at
-  | PackedStorageType t -> check_packed_type c t at
+  | PackedStorageType sz -> assert (sz = Pack8 || sz = Pack16)
 
 let check_field_type (c : context) (ft : field_type) at =
   let FieldType (st, _mut) = ft in
@@ -389,7 +386,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     List.iter (fun x' -> check_stack c ts (label c x') x'.at) xs;
     (ts @ [NumType I32Type]) -->... []
 
-  | BrTest (x, RttOp) ->
+  | BrCast (x, RttOp) ->
     (match peek_ref 0 s e.at with
     | (_, RttHeapType (x', _)) as rtt ->
       let t = peek 1 s in
@@ -422,12 +419,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
          " but stack has " ^ string_of_value_type (RefType rt))
     )
 
-  | BrTest (x, NullOp) ->
+  | BrCast (x, NullOp) ->
     let (_, ht) = peek_ref 0 s e.at in
     (label c x @ [RefType (Nullable, ht)]) -->
       (label c x @ [RefType (NonNullable, ht)])
 
-  | BrTest (x, reftypeop) ->
+  | BrCast (x, reftypeop) ->
     let (_, ht) as rt = peek_ref 0 s e.at in
     let t' = RefType (NonNullable, type_reftypeop reftypeop ht) in
     require
@@ -700,7 +697,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
         defaultable_value_type (unpacked_field_type ft) ) e.at
       ("array type is not defaultable");
     let ts = if initop = Implicit then [] else [unpacked_field_type ft] in
-    (ts @ [RefType (NonNullable, RttHeapType (SynVar x.it, None))]) -->
+    (ts @ [NumType I32Type; RefType (NonNullable, RttHeapType (SynVar x.it, None))]) -->
       [RefType (NonNullable, DefHeapType (SynVar x.it))]
 
   | ArrayGet (x, exto) ->
@@ -818,9 +815,9 @@ let check_func (c : context) (f : func) =
 
 let is_const (c : context) (e : instr) =
   match e.it with
+  | Const _
   | RefNull _
   | RefFunc _
-  | Const _
   | RttCanon _
   | RttSub _ -> true
   | GlobalGet x -> let GlobalType (_, mut) = global c x in mut = Immutable
@@ -871,11 +868,12 @@ let check_data (c : context) (seg : data_segment) =
   let {dinit; dmode} = seg.it in
   check_data_mode c dmode
 
-let check_global (c : context) (glob : global) =
+let check_global (c : context) (glob : global) : context =
   let {gtype; ginit} = glob.it in
   check_global_type c gtype glob.at;
   let GlobalType (t, mut) = gtype in
-  check_const c ginit t
+  check_const c ginit t;
+  { c with globals = c.globals @ [gtype] }
 
 
 (* Modules *)
@@ -937,15 +935,12 @@ let check_module (m : module_) =
       datas = List.map (fun _data -> ()) datas;
     }
   in
-  let c =
-    { c1 with globals = c1.globals @ List.map (fun g -> g.it.gtype) globals }
-  in
   List.iter (check_type c1) types;
-  List.iter (check_global c1) globals;
-  List.iter (check_table c1) tables;
-  List.iter (check_memory c1) memories;
-  List.iter (check_elem c1) elems;
-  List.iter (check_data c1) datas;
+  let c = List.fold_left check_global c1 globals in
+  List.iter (check_table c) tables;
+  List.iter (check_memory c) memories;
+  List.iter (check_elem c) elems;
+  List.iter (check_data c) datas;
   List.iter (check_func c) funcs;
   check_start c start;
   ignore (List.fold_left (check_export c) NameSet.empty exports);

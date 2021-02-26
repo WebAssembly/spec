@@ -187,10 +187,14 @@ align: align=(1|2|4|8|...)
 cvtop: trunc | extend | wrap | ...
 
 num_type: i32 | i64 | f32 | f64
-heap_type: func | extern | (type <var>)
+heap_type: any | eq | i31 | data | func | extern | <var> | (rtt <nat>? <var>)
 ref_type:
-  ( ref null? <heap_type> )
-  ( ref null? <var> )         ;; = (ref null (type <var>))
+  ( ref null? <var> )
+  ( rtt <nat>? <var> )        ;; = (ref (rtt <nat>? <var>))
+  anyref                      ;; = (ref null any)
+  eqref                       ;; = (ref null eq)
+  i31ref                      ;; = (ref i31)
+  dataref                     ;; = (ref null data)
   funcref                     ;; = (ref null func)
   externref                   ;; = (ref null extern)
 
@@ -227,7 +231,11 @@ op:
   br <var>
   br_if <var>
   br_table <var>+
-  br_on_null <var> <heap_type>
+  br_on_null <var>
+  br_on_i31 <var>
+  br_on_data <var>
+  br_on_func <var>
+  br_cast <var>
   return
   call <var>
   call_indirect <var>? <func_type>
@@ -256,9 +264,29 @@ op:
   memory.init <var>
   data.drop <var>
   ref.null <heap_type>
-  ref.is_null <heap_type>
-  ref_as_non_null <heap_type>
   ref.func <var>
+  ref.is_null
+  ref.is_i31
+  ref.is_data
+  ref.is_func
+  ref.test
+  ref_as_non_null
+  ref_as_i31
+  ref_as_data
+  ref_as_func
+  ref.cast
+  ref.eq
+  i31.new
+  i31.get_<sign>
+  struct.new(_<default>)? <var>
+  struct.get(_<sign>)? <var> <var>
+  struct.set <var> <var>
+  array.new(_<default>)? <var>
+  array.get(_<sign>)? <var>
+  array.set <var>
+  array.len <var>
+  rtt.canon <var>
+  rtt.sub <var>
   <num_type>.const <value>
   <num_type>.<unop>
   <num_type>.<binop>
@@ -378,9 +406,12 @@ assertion:
 
 result_pat:
   ( <num_type>.const <num_pat> )
-  ( ref.extern )
-  ( ref.func )
+  ( ref )
+  ( ref.i31 )
+  ( ref.data )
   ( ref.null )
+  ( ref.func )
+  ( ref.extern )
 
 num_pat:
   <value>                                    ;; literal result
@@ -468,9 +499,12 @@ assertion:
 
 result_pat:
   ( <num_type>.const <num_pat> )
-  ( ref.extern )
-  ( ref.func )
+  ( ref )
+  ( ref.i31 )
+  ( ref.data )
   ( ref.null )
+  ( ref.func )
+  ( ref.extern )
 
 num_pat:
   <value>                                    ;; literal result

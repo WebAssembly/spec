@@ -98,6 +98,8 @@ let data (inst : module_inst) x = lookup "data segment" inst.datas x
 let local (frame : frame) x = lookup "local" frame.locals x
 
 let func_type (inst : module_inst) x = as_func_def_type (def_of (type_ inst x))
+let struct_type (inst : module_inst) x = as_struct_def_type (def_of (type_ inst x))
+let array_type (inst : module_inst) x = as_array_def_type (def_of (type_ inst x))
 
 let any_ref inst x i at =
   try Table.load (table inst x) i with Table.Bounds ->
@@ -209,12 +211,53 @@ let rec step (c : config) : config =
         else
           vs', [Plain (Br (Lib.List32.nth xs i)) @@ e.at]
 
-      | BrTest (x, NullOp), Ref r :: vs' ->
+      | BrCast (x, NullOp), Ref r :: vs' ->
         (match r with
         | NullRef _ ->
           vs', [Plain (Br x) @@ e.at]
         | _ ->
           Ref r :: vs', []
+        )
+
+      | BrCast (x, I31Op), Ref r :: vs' ->
+        (match r with
+        | I31.I31Ref _ ->
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        | _ ->
+          Ref r :: vs', []
+        )
+
+      | BrCast (x, DataOp), Ref r :: vs' ->
+        (match r with
+        | Data.DataRef _ ->
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        | _ ->
+          Ref r :: vs', []
+        )
+
+      | BrCast (x, FuncOp), Ref r :: vs' ->
+        (match r with
+        | FuncRef _ ->
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        | _ ->
+          Ref r :: vs', []
+        )
+
+      | BrCast (x, RttOp), Ref (NullRef _) :: vs' ->
+        vs', [Trapping "null RTT reference" @@ e.at]
+
+      | BrCast (x, RttOp), Ref (Rtt.RttRef rtt) :: Ref r :: vs' ->
+        (match r with
+        | NullRef _ ->
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        | Data.DataRef d when Rtt.match_rtt (Data.read_rtt d) rtt ->
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        | FuncRef f when Rtt.match_rtt (Func.read_rtt f) rtt ->
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        | Data.DataRef _ | FuncRef _ ->
+          Ref r :: vs', []
+        | _ ->
+          Crash.error e.at "wrong reference type"
         )
 
       | Return, vs ->
@@ -489,11 +532,30 @@ let rec step (c : config) : config =
         Ref (FuncRef f) :: vs', []
 
       | RefTest NullOp, Ref r :: vs' ->
+        value_of_bool (match r with NullRef _ -> true | _ -> false) :: vs', []
+
+      | RefTest I31Op, Ref r :: vs' ->
+        value_of_bool (match r with I31.I31Ref _ -> true | _ -> false) :: vs', []
+
+      | RefTest DataOp, Ref r :: vs' ->
+        value_of_bool (match r with Data.DataRef _ -> true | _ -> false) :: vs', []
+
+      | RefTest FuncOp, Ref r :: vs' ->
+        value_of_bool (match r with FuncRef _ -> true | _ -> false) :: vs', []
+
+      | RefTest RttOp, Ref (NullRef _) :: vs' ->
+        vs', [Trapping "null RTT reference" @@ e.at]
+
+      | RefTest RttOp, Ref (Rtt.RttRef rtt) :: Ref r :: vs' ->
         (match r with
         | NullRef _ ->
-          Num (I32 1l) :: vs', []
+          value_of_bool false :: vs', []
+        | Data.DataRef d ->
+          value_of_bool (Rtt.match_rtt (Data.read_rtt d) rtt) :: vs', []
+        | FuncRef f ->
+          value_of_bool (Rtt.match_rtt (Func.read_rtt f) rtt) :: vs', []
         | _ ->
-          Num (I32 0l) :: vs', []
+          Crash.error e.at "wrong reference type"
         )
 
       | RefCast NullOp, Ref r :: vs' ->
@@ -503,6 +565,145 @@ let rec step (c : config) : config =
         | _ ->
           Ref r :: vs', []
         )
+
+      | RefCast I31Op, Ref r :: vs' ->
+        (match r with
+        | I31.I31Ref _ ->
+          Ref r :: vs', []
+        | _ ->
+          vs', [Trapping "cast failure" @@ e.at]
+        )
+
+      | RefCast DataOp, Ref r :: vs' ->
+        (match r with
+        | Data.DataRef _ ->
+          Ref r :: vs', []
+        | _ ->
+          vs', [Trapping "cast failure" @@ e.at]
+        )
+
+      | RefCast FuncOp, Ref r :: vs' ->
+        (match r with
+        | FuncRef _ ->
+          Ref r :: vs', []
+        | _ ->
+          vs', [Trapping "cast failure" @@ e.at]
+        )
+
+      | RefCast RttOp, Ref (NullRef _) :: vs' ->
+        vs', [Trapping "null RTT reference" @@ e.at]
+
+      | RefCast RttOp, Ref (Rtt.RttRef rtt) :: Ref r :: vs' ->
+        (match r with
+        | NullRef _ ->
+          Ref r :: vs', []
+        | Data.DataRef d when Rtt.match_rtt (Data.read_rtt d) rtt ->
+          Ref r :: vs', []
+        | FuncRef f when Rtt.match_rtt (Func.read_rtt f) rtt ->
+          Ref r :: vs', []
+        | Data.DataRef _ | FuncRef _ ->
+          vs', [Trapping "cast failure" @@ e.at]
+        | _ ->
+          Crash.error e.at "wrong reference type"
+        )
+
+      | RefEq, Ref r1 :: Ref r2 :: vs' ->
+        value_of_bool (eq_ref r1 r2) :: vs', []
+
+      | I31New, Num (I32 i) :: vs' ->
+        Ref (I31.I31Ref (I31.of_i32 i)) :: vs', []
+
+      | I31Get ext, Ref (I31.I31Ref i) :: vs' ->
+        Num (I32 (I31.to_i32 ext i)) :: vs', []
+
+      | StructNew (x, initop), Ref (Rtt.RttRef rtt) :: vs' ->
+        let StructType fts = struct_type c.frame.inst x in
+        let args, vs'' =
+          match initop with
+          | Explicit ->
+            let args, vs'' = split (List.length fts) vs' e.at in
+            List.rev args, vs''
+          | Implicit ->
+            let ts = List.map unpacked_field_type fts in
+            try List.map default_value ts, vs'
+            with Failure _ -> Crash.error e.at "non-defaultable type"
+        in
+        let data = 
+          try Data.alloc_struct (type_ c.frame.inst x) rtt args
+          with Failure _ -> Crash.error e.at "type mismatch packing value"
+        in Ref (Data.DataRef data) :: vs'', []
+
+      | StructGet (x, y, exto), Ref (NullRef _) :: vs' ->
+        vs', [Trapping "null structure reference" @@ e.at]
+
+      | StructGet (x, y, exto), Ref Data.(DataRef (Struct (_, _, fs))) :: vs' ->
+        let f =
+          try Lib.List32.nth fs y.it
+          with Failure _ -> Crash.error y.at "undefined field"
+        in
+        (try Data.read_field f exto :: vs', []
+        with Failure _ -> Crash.error e.at "type mismatch reading field")
+
+      | StructSet (x, y), v :: Ref (NullRef _) :: vs' ->
+        vs', [Trapping "null structure reference" @@ e.at]
+
+      | StructSet (x, y), v :: Ref Data.(DataRef (Struct (_, _, fs))) :: vs' ->
+        let f =
+          try Lib.List32.nth fs y.it
+          with Failure _ -> Crash.error y.at "undefined field"
+        in
+        (try Data.write_field f v; vs', []
+        with Failure _ -> Crash.error e.at "type mismatch writing field")
+
+      | ArrayNew (x, initop), Ref (Rtt.RttRef rtt) :: Num (I32 n) :: vs' ->
+        let ArrayType (FieldType (st, _)) = array_type c.frame.inst x in
+        let arg, vs'' =
+          match initop with
+          | Explicit -> List.hd vs', List.tl vs'
+          | Implicit ->
+            try default_value (unpacked_storage_type st), vs'
+            with Failure _ -> Crash.error e.at "non-defaultable type"
+        in
+        let data = 
+          try Data.alloc_array (type_ c.frame.inst x) rtt n arg
+          with Failure _ -> Crash.error e.at "type mismatch packing value"
+        in Ref (Data.DataRef data) :: vs'', []
+
+      | ArrayGet (x, exto), Num (I32 i) :: Ref (NullRef _) :: vs' ->
+        vs', [Trapping "null array reference" @@ e.at]
+
+      | ArrayGet (x, exto), Num (I32 i) :: Ref Data.(DataRef (Array (_, _, fs))) :: vs'
+        when i >= Lib.List32.length fs ->
+        vs', [Trapping "out of bounds array access" @@ e.at]
+
+      | ArrayGet (x, exto), Num (I32 i) :: Ref Data.(DataRef (Array (_, _, fs))) :: vs' ->
+        (try Data.read_field (Lib.List32.nth fs i) exto :: vs', []
+        with Failure _ -> Crash.error e.at "type mismatch reading array")
+
+      | ArraySet x, v :: Num (I32 i) :: Ref (NullRef _) :: vs' ->
+        vs', [Trapping "null array reference" @@ e.at]
+
+      | ArraySet x, v :: Num (I32 i) :: Ref (Data.DataRef (Data.Array (_, _, fs))) :: vs'
+        when i >= Lib.List32.length fs ->
+        vs', [Trapping "out of bounds array access" @@ e.at]
+
+      | ArraySet x, v :: Num (I32 i) :: Ref (Data.DataRef (Data.Array (_, _, fs))) :: vs' ->
+        (try Data.write_field (Lib.List32.nth fs i) v; vs', []
+        with Failure _ -> Crash.error e.at "type mismatch writing array")
+
+      | ArrayLen x, Ref (NullRef _) :: vs' ->
+        vs', [Trapping "null array reference" @@ e.at]
+
+      | ArrayLen x, Ref (Data.DataRef (Data.Array (_, _, svs))) :: vs' ->
+        Num (I32 (Lib.List32.length svs)) :: vs', []
+
+      | RttCanon x, vs ->
+        let rtt = Rtt.alloc (type_ c.frame.inst x) None in
+        Ref (Rtt.RttRef rtt) :: vs, []
+
+      | RttSub x, Ref (Rtt.RttRef rtt') :: vs' ->
+        let rtt = Rtt.alloc (type_ c.frame.inst x) (Some rtt') in
+        Ref (Rtt.RttRef rtt) :: vs', []
 
       | Const n, vs ->
         Num n.it :: vs, []
@@ -673,10 +874,11 @@ let create_memory (inst : module_inst) (mem : memory) : memory_inst =
   let {mtype} = mem.it in
   Memory.alloc (Types.sem_memory_type inst.types mtype)
 
-let create_global (inst : module_inst) (glob : global) : global_inst =
+let create_global (inst : module_inst) (glob : global) : module_inst =
   let {gtype; ginit} = glob.it in
   let v = eval_const inst ginit in
-  Global.alloc (Types.sem_global_type inst.types gtype) v
+  let glob = Global.alloc (Types.sem_global_type inst.types gtype) v in
+  { inst with globals = inst.globals @ [glob] }
 
 let create_export (inst : module_inst) (ex : export) : export_inst =
   let {name; edesc} = ex.it in
@@ -765,18 +967,18 @@ let init (m : module_) (exts : extern list) : module_inst =
   let inst1 = List.fold_right2 (add_import m) exts imports inst0 in
   let fs = List.map (create_func inst1) funcs in
   let inst2 = {inst1 with funcs = inst1.funcs @ fs} in
-  let inst3 =
-    { inst2 with
-      tables = inst2.tables @ List.map (create_table inst2) tables;
-      memories = inst2.memories @ List.map (create_memory inst2) memories;
-      globals = inst2.globals @ List.map (create_global inst2) globals;
+  let inst3 = List.fold_left create_global inst2 globals in
+  let inst4 =
+    { inst3 with
+      tables = inst2.tables @ List.map (create_table inst3) tables;
+      memories = inst2.memories @ List.map (create_memory inst3) memories;
     }
   in
   let inst =
-    { inst3 with
-      exports = List.map (create_export inst3) exports;
-      elems = List.map (create_elem inst3) elems;
-      datas = List.map (create_data inst3) datas;
+    { inst4 with
+      exports = List.map (create_export inst4) exports;
+      elems = List.map (create_elem inst4) elems;
+      datas = List.map (create_data inst4) datas;
     }
   in
   List.iter (init_func inst) fs;
