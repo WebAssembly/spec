@@ -304,70 +304,78 @@ let simd_prefix s =
   | 0x50l -> v128_or
   | 0x51l -> v128_xor
   | 0x52l -> v128_bitselect
-  | 0x53l -> f64x2_convert_low_i32x4_s
-  | 0x54l -> f64x2_convert_low_i32x4_u
-  | 0x55l -> i32x4_trunc_sat_f64x2_s_zero
-  | 0x56l -> i32x4_trunc_sat_f64x2_u_zero
-  | 0x57l -> f32x4_demote_f64x2_zero
-  | 0x58l ->
+  | 0x53l -> v128_any_true
+  | 0x54l ->
     let a, o = memop s in
     let lane = u8 s in
     v128_load8_lane a o lane
-  | 0x59l ->
+  | 0x55l ->
     let a, o = memop s in
     let lane = u8 s in
     v128_load16_lane a o lane
-  | 0x5al ->
+  | 0x56l ->
     let a, o = memop s in
     let lane = u8 s in
     v128_load32_lane a o lane
-  | 0x5bl ->
+  | 0x57l ->
     let a, o = memop s in
     let lane = u8 s in
     v128_load64_lane a o lane
-  | 0x5cl ->
+  | 0x58l ->
     let a, o = memop s in
     let lane = u8 s in
     v128_store8_lane a o lane
-  | 0x5dl ->
+  | 0x59l ->
     let a, o = memop s in
     let lane = u8 s in
     v128_store16_lane a o lane
-  | 0x5el ->
+  | 0x5al ->
     let a, o = memop s in
     let lane = u8 s in
     v128_store32_lane a o lane
-  | 0x5fl ->
+  | 0x5bl ->
     let a, o = memop s in
     let lane = u8 s in
     v128_store64_lane a o lane
+  | 0x5cl -> let a, o = memop s in v128_load32_zero a o
+  | 0x5dl -> let a, o = memop s in v128_load64_zero a o
+  | 0x5el -> f32x4_demote_f64x2_zero
+  | 0x5fl -> f64x2_promote_low_f32x4
   | 0x60l -> i8x16_abs
   | 0x61l -> i8x16_neg
-  | 0x62l -> v128_any_true
+  | 0x62l -> i8x16_popcnt
   | 0x63l -> i8x16_all_true
   | 0x64l -> i8x16_bitmask
+  | 0x65l -> i8x16_narrow_i16x8_s
+  | 0x66l -> i8x16_narrow_i16x8_u
+  | 0x67l -> f32x4_ceil
+  | 0x68l -> f32x4_floor
+  | 0x69l -> f32x4_trunc
+  | 0x6al -> f32x4_nearest
   | 0x6bl -> i8x16_shl
   | 0x6cl -> i8x16_shr_s
   | 0x6dl -> i8x16_shr_u
-  | 0x65l -> i8x16_narrow_i16x8_s
-  | 0x66l -> i8x16_narrow_i16x8_u
-  | 0x69l -> f64x2_promote_low_f32x4
   | 0x6el -> i8x16_add
   | 0x6fl -> i8x16_add_sat_s
   | 0x70l -> i8x16_add_sat_u
   | 0x71l -> i8x16_sub
   | 0x72l -> i8x16_sub_sat_s
   | 0x73l -> i8x16_sub_sat_u
-  | 0x74l -> i64x2_lt_s
+  | 0x74l -> f64x2_ceil
+  | 0x75l -> f64x2_floor
   | 0x76l -> i8x16_min_s
   | 0x77l -> i8x16_min_u
   | 0x78l -> i8x16_max_s
   | 0x79l -> i8x16_max_u
-  | 0x7al -> i64x2_gt_s
+  | 0x7al -> f64x2_trunc
   | 0x7bl -> i8x16_avgr_u
-  | 0x7cl -> i8x16_popcnt
+  | 0x7cl -> i16x8_extadd_pairwise_i8x16_s
+  | 0x7dl -> i16x8_extadd_pairwise_i8x16_u
+  | 0x7el -> i32x4_extadd_pairwise_i16x8_s
+  | 0x7fl -> i32x4_extadd_pairwise_i16x8_u
   | 0x80l -> i16x8_abs
   | 0x81l -> i16x8_neg
+  | 0x82l -> i16x8_q15mulr_sat_s
   | 0x83l -> i16x8_all_true
   | 0x84l -> i16x8_bitmask
   | 0x85l -> i16x8_narrow_i32x4_s
@@ -385,24 +393,21 @@ let simd_prefix s =
   | 0x91l -> i16x8_sub
   | 0x92l -> i16x8_sub_sat_s
   | 0x93l -> i16x8_sub_sat_u
+  | 0x94l -> f64x2_nearest
   | 0x95l -> i16x8_mul
   | 0x96l -> i16x8_min_s
   | 0x97l -> i16x8_min_u
   | 0x98l -> i16x8_max_s
   | 0x99l -> i16x8_max_u
-  | 0x9al -> i16x8_extmul_low_i8x16_s
   | 0x9bl -> i16x8_avgr_u
-  | 0x9cl -> i16x8_q15mulr_sat_s
+  | 0x9cl -> i16x8_extmul_low_i8x16_s
   | 0x9dl -> i16x8_extmul_high_i8x16_s
   | 0x9el -> i16x8_extmul_low_i8x16_u
   | 0x9fl -> i16x8_extmul_high_i8x16_u
   | 0xa0l -> i32x4_abs
   | 0xa1l -> i32x4_neg
-  | 0xa2l -> i64x2_abs
   | 0xa3l -> i32x4_all_true
   | 0xa4l -> i32x4_bitmask
-  | 0xa5l -> i32x4_extadd_pairwise_i16x8_s
-  | 0xa6l -> i32x4_extadd_pairwise_i16x8_u
   | 0xa7l -> i32x4_extend_low_i16x8_s
   | 0xa8l -> i32x4_extend_high_i16x8_s
   | 0xa9l -> i32x4_extend_low_i16x8_u
@@ -418,14 +423,13 @@ let simd_prefix s =
   | 0xb8l -> i32x4_max_s
   | 0xb9l -> i32x4_max_u
   | 0xbal -> i32x4_dot_i16x8_s
-  | 0xbbl -> i32x4_extmul_low_i16x8_s
+  | 0xbcl -> i32x4_extmul_low_i16x8_s
   | 0xbdl -> i32x4_extmul_high_i16x8_s
   | 0xbel -> i32x4_extmul_low_i16x8_u
   | 0xbfl -> i32x4_extmul_high_i16x8_u
-  | 0xc0l -> i64x2_eq
+  | 0xc0l -> i64x2_abs
   | 0xc1l -> i64x2_neg
-  | 0xc2l -> i16x8_extadd_pairwise_i8x16_s
-  | 0xc3l -> i16x8_extadd_pairwise_i8x16_u
+  | 0xc3l -> i64x2_all_true
   | 0xc4l -> i64x2_bitmask
   | 0xc7l -> i64x2_extend_low_i32x4_s
   | 0xc8l -> i64x2_extend_high_i32x4_s
@@ -435,25 +439,20 @@ let simd_prefix s =
   | 0xccl -> i64x2_shr_s
   | 0xcdl -> i64x2_shr_u
   | 0xcel -> i64x2_add
-  | 0xcfl -> i64x2_all_true
-  | 0xd0l -> i64x2_ne
   | 0xd1l -> i64x2_sub
-  | 0xd2l -> i64x2_extmul_low_i32x4_s
-  | 0xd3l -> i64x2_extmul_high_i32x4_s
-  | 0xd6l -> i64x2_extmul_low_i32x4_u
-  | 0xd7l -> i64x2_extmul_high_i32x4_u
   | 0xd5l -> i64x2_mul
-  | 0xd8l -> f32x4_ceil
-  | 0xd9l -> f32x4_floor
-  | 0xdal -> f32x4_trunc
-  | 0xdbl -> f32x4_nearest
-  | 0xdcl -> f64x2_ceil
-  | 0xddl -> f64x2_floor
-  | 0xdel -> f64x2_trunc
-  | 0xdfl -> f64x2_nearest
+  | 0xd6l -> i64x2_eq
+  | 0xd7l -> i64x2_ne
+  | 0xd8l -> i64x2_lt_s
+  | 0xd9l -> i64x2_gt_s
+  | 0xdal -> i64x2_le_s
+  | 0xdbl -> i64x2_ge_s
+  | 0xdcl -> i64x2_extmul_low_i32x4_s
+  | 0xddl -> i64x2_extmul_high_i32x4_s
+  | 0xdel -> i64x2_extmul_low_i32x4_u
+  | 0xdfl -> i64x2_extmul_high_i32x4_u
   | 0xe0l -> f32x4_abs
   | 0xe1l -> f32x4_neg
-  | 0xe2l -> i64x2_ge_s
   | 0xe3l -> f32x4_sqrt
   | 0xe4l -> f32x4_add
   | 0xe5l -> f32x4_sub
@@ -465,7 +464,6 @@ let simd_prefix s =
   | 0xebl -> f32x4_pmax
   | 0xecl -> f64x2_abs
   | 0xedl -> f64x2_neg
-  | 0xeel -> i64x2_le_s
   | 0xefl -> f64x2_sqrt
   | 0xf0l -> f64x2_add
   | 0xf1l -> f64x2_sub
@@ -479,8 +477,10 @@ let simd_prefix s =
   | 0xf9l -> i32x4_trunc_sat_f32x4_u
   | 0xfal -> f32x4_convert_i32x4_s
   | 0xfbl -> f32x4_convert_i32x4_u
-  | 0xfcl -> let a, o = memop s in v128_load32_zero a o
-  | 0xfdl -> let a, o = memop s in v128_load64_zero a o
+  | 0xfcl -> i32x4_trunc_sat_f64x2_s_zero
+  | 0xfdl -> i32x4_trunc_sat_f64x2_u_zero
+  | 0xfel -> f64x2_convert_low_i32x4_s
+  | 0xffl -> f64x2_convert_low_i32x4_u
   | n -> illegal s pos (I32.to_int_u n)
 
 let rec instr s =
