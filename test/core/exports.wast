@@ -25,6 +25,16 @@
 (module $Other1)
 (assert_return (invoke $Func "e" (i32.const 42)) (i32.const 43))
 
+(module
+  (type (;0;) (func (result i32)))
+  (func (;0;) (type 0) (result i32) i32.const 42)
+  (export "a" (func 0))
+  (export "b" (func 0))
+  (export "c" (func 0)))
+(assert_return (invoke "a") (i32.const 42))
+(assert_return (invoke "b") (i32.const 42))
+(assert_return (invoke "c") (i32.const 42))
+
 (assert_invalid
   (module (export "a" (func 0)))
   "unknown function"
