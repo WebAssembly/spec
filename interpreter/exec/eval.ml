@@ -273,7 +273,7 @@ let rec step (c : config) : config =
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
         else if n = 0l then
           vs', []
-        else if d <= s then
+        else if I32.le_u d s then
           vs', List.map (at e.at) [
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
@@ -373,7 +373,7 @@ let rec step (c : config) : config =
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
         else if n = 0l then
           vs', []
-        else if d <= s then
+        else if I32.le_u d s then
           vs', List.map (at e.at) [
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
