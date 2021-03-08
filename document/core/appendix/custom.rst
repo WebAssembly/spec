@@ -360,12 +360,12 @@ The section contains a vector of *function branch hints* each representing the b
 Each *function function hints* structure consists of
 
 * the :ref:`function index <binary-funcidx>` of the function the hints are referring to,
+* a single 0 byte,
 * a vector of *branch hints* for the function.
 
 Each *branch hint* structure consists of
 
-* the |U32| byte offset of the hinted instruction from the first instruction of the function,
-* a byte indicating the meaning of the hint:
+* a |U32| indicating the meaning of the hint:
 
 =====  ===========================================
 Value  Meaning                                    
@@ -374,12 +374,15 @@ Value  Meaning
  0x01  branch likely taken
 =====  ===========================================
 
+* the |U32| byte offset of the hinted instruction from the first instruction of the function.
+
+
 .. math::
    \begin{array}{llclll}
    \production{function branch hints} & \Bfuncbranchhints &::=&
-     \Bfuncidx~\Bvec(\Bbranchhint) \\
+     \Bfuncidx~\hex{00}~\Bvec(\Bbranchhint) \\
    \production{branch hint} & \Bbranchhint &::=&
-     \X{instoff}{:}\Bu32~~\Bbranchhintkind \\
+     \Bbranchhintkind~~\X{instoff}{:}\Bu32 \\
    \production{branch hint kind} & \Bbranchhintkind &::=&
      \hex{00} \\ &&&
      \hex{01} \\

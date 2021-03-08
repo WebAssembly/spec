@@ -60,15 +60,17 @@ The section contains a vector of *function hints* each representing the branch h
 Each *function hints* structure consists of
 
 * the index of the function the hints are referring to,
+* a single 0 byte
 * a vector of *branch hints* for the function.
 
 Each *branch hint* structure consists of
 
-* the u32 byte offset of the hinted instruction from the first instruction of the function,
-* a byte indicating the meaning of the hint:
+* a u32 indicating the meaning of the hint:
 
 | value | meaning           |
 |-------|-------------------|
 | 0     | likely not taken  |
 | 1     | likely  taken     |
+
+* the u32 byte offset of the hinted instruction from the first instruction of the function
 
