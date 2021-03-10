@@ -8,11 +8,13 @@ let i32_const n = Const (I32 n.it @@ n.at)
 let i64_const n = Const (I64 n.it @@ n.at)
 let f32_const n = Const (F32 n.it @@ n.at)
 let f64_const n = Const (F64 n.it @@ n.at)
+let ref_null t = RefNull t
+let ref_func x = RefFunc x
 
 let unreachable = Unreachable
 let nop = Nop
 let drop = Drop
-let select = Select
+let select t = Select t
 let block bt es = Block (bt, es)
 let loop bt es = Loop (bt, es)
 let if_ bt es1 es2 = If (bt, es1, es2)
@@ -22,13 +24,22 @@ let br_table xs x = BrTable (xs, x)
 
 let return = Return
 let call x = Call x
-let call_indirect x = CallIndirect x
+let call_indirect x y = CallIndirect (x, y)
 
 let local_get x = LocalGet x
 let local_set x = LocalSet x
 let local_tee x = LocalTee x
 let global_get x = GlobalGet x
 let global_set x = GlobalSet x
+
+let table_get x = TableGet x
+let table_set x = TableSet x
+let table_size x = TableSize x
+let table_grow x = TableGrow x
+let table_fill x = TableFill x
+let table_copy x y = TableCopy (x, y)
+let table_init x y = TableInit (x, y)
+let elem_drop x = ElemDrop x
 
 let i32_load align offset = Load {ty = I32Type; align; offset; sz = None}
 let i64_load align offset = Load {ty = I64Type; align; offset; sz = None}
@@ -69,6 +80,15 @@ let i64_store16 align offset =
   Store {ty = I64Type; align; offset; sz = Some Pack16}
 let i64_store32 align offset =
   Store {ty = I64Type; align; offset; sz = Some Pack32}
+
+let memory_size = MemorySize
+let memory_grow = MemoryGrow
+let memory_fill = MemoryFill
+let memory_copy = MemoryCopy
+let memory_init x = MemoryInit x
+let data_drop x = DataDrop x
+
+let ref_is_null = RefIsNull
 
 let i32_clz = Unary (I32 I32Op.Clz)
 let i32_ctz = Unary (I32 I32Op.Ctz)
@@ -211,7 +231,3 @@ let i32_reinterpret_f32 = Convert (I32 I32Op.ReinterpretFloat)
 let i64_reinterpret_f64 = Convert (I64 I64Op.ReinterpretFloat)
 let f32_reinterpret_i32 = Convert (F32 F32Op.ReinterpretInt)
 let f64_reinterpret_i64 = Convert (F64 F64Op.ReinterpretInt)
-
-let memory_size = MemorySize
-let memory_grow = MemoryGrow
-

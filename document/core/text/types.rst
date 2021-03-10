@@ -5,7 +5,43 @@
 Types
 -----
 
-.. index:: value type
+.. index:: number type
+   pair: text format; number type
+.. _text-numtype:
+
+Number Types
+~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llcll@{\qquad\qquad}l}
+   \production{number type} & \Tnumtype &::=&
+     \text{i32} &\Rightarrow& \I32 \\ &&|&
+     \text{i64} &\Rightarrow& \I64 \\ &&|&
+     \text{f32} &\Rightarrow& \F32 \\ &&|&
+     \text{f64} &\Rightarrow& \F64 \\
+   \end{array}
+
+
+.. index:: reference type
+   pair: text format; reference type
+.. _text-reftype:
+.. _text-heaptype:
+
+Reference Types
+~~~~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llcll@{\qquad\qquad}l}
+   \production{reference type} & \Treftype &::=&
+     \text{funcref} &\Rightarrow& \FUNCREF \\ &&|&
+     \text{externref} &\Rightarrow& \EXTERNREF \\
+   \production{heap type} & \Theaptype &::=&
+     \text{func} &\Rightarrow& \FUNCREF \\ &&|&
+     \text{extern} &\Rightarrow& \EXTERNREF \\
+   \end{array}
+
+
+.. index:: value type, number type, reference type
    pair: text format; value type
 .. _text-valtype:
 
@@ -15,10 +51,8 @@ Value Types
 .. math::
    \begin{array}{llcll@{\qquad\qquad}l}
    \production{value type} & \Tvaltype &::=&
-     \text{i32} &\Rightarrow& \I32 \\ &&|&
-     \text{i64} &\Rightarrow& \I64 \\ &&|&
-     \text{f32} &\Rightarrow& \F32 \\ &&|&
-     \text{f64} &\Rightarrow& \F64 \\
+     t{:}\Tnumtype &\Rightarrow& t \\ &&|&
+     t{:}\Treftype &\Rightarrow& t \\
    \end{array}
 
 
@@ -90,10 +124,8 @@ Memory Types
    \end{array}
 
 
-.. index:: table type, element type, limits
+.. index:: table type, reference type, limits
    pair: text format; table type
-   pair: text format; element type
-.. _text-elemtype:
 .. _text-tabletype:
 
 Table Types
@@ -102,13 +134,8 @@ Table Types
 .. math::
    \begin{array}{llclll}
    \production{table type} & \Ttabletype &::=&
-     \X{lim}{:}\Tlimits~~\X{et}{:}\Telemtype &\Rightarrow& \X{lim}~\X{et} \\
-   \production{element type} & \Telemtype &::=&
-     \text{funcref} &\Rightarrow& \FUNCREF \\
+     \X{lim}{:}\Tlimits~~\X{et}{:}\Treftype &\Rightarrow& \X{lim}~\X{et} \\
    \end{array}
-
-.. note::
-   Additional element types may be introduced in future versions of WebAssembly.
 
 
 .. index:: global type, mutability, value type
