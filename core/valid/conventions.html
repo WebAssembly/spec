@@ -111,9 +111,12 @@ which collects relevant information about the surrounding <a class="reference in
 <li><p><em>Tables</em>: the list of tables declared in the current module, represented by their table type.</p></li>
 <li><p><em>Memories</em>: the list of memories declared in the current module, represented by their memory type.</p></li>
 <li><p><em>Globals</em>: the list of globals declared in the current module, represented by their global type.</p></li>
+<li><p><em>Element Segments</em>: the list of element segments declared in the current module, represented by their element type.</p></li>
+<li><p><em>Data Segments</em>: the list of data segments declared in the current module, each represented by an <span class="math notranslate nohighlight">\(\mathrel{\mbox{ok}}\)</span> entry.</p></li>
 <li><p><em>Locals</em>: the list of locals declared in the current function (including parameters), represented by their value type.</p></li>
 <li><p><em>Labels</em>: the stack of labels accessible from the current position, represented by their result type.</p></li>
 <li><p><em>Return</em>: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.</p></li>
+<li><p><em>References</em>: the list of <a class="reference internal" href="../syntax/modules.html#syntax-funcidx"><span class="std std-ref">function indices</span></a> that occur in the module outside functions and can hence be used to form references inside them.</p></li>
 </ul>
 <p>In other words, a context contains a sequence of suitable <a class="reference internal" href="../syntax/types.html#syntax-type"><span class="std std-ref">types</span></a> for each <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>,
 describing each defined entry in that space.
@@ -122,16 +125,19 @@ The label stack is the only part of the context that changes as validation of an
 <p>More concretely, contexts are defined as <a class="reference internal" href="../syntax/conventions.html#notation-record"><span class="std std-ref">records</span></a> <span class="math notranslate nohighlight">\(C\)</span> with abstract syntax:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef2662#1{{}}\mathdef2662{(context)} &amp; C &amp;::=&amp;
+\def\mathdef2822#1{{}}\mathdef2822{(context)} &amp; C &amp;::=&amp;
   \begin{array}[t]{l&#64;{~}ll}
   \{ &amp; \href{../valid/conventions.html#context}{\mathsf{types}} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
      &amp; \href{../valid/conventions.html#context}{\mathsf{funcs}} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
      &amp; \href{../valid/conventions.html#context}{\mathsf{tables}} &amp; \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}^\ast, \\
      &amp; \href{../valid/conventions.html#context}{\mathsf{mems}} &amp; \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}^\ast, \\
      &amp; \href{../valid/conventions.html#context}{\mathsf{globals}} &amp; \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}^\ast, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{elems}} &amp; \href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}^\ast, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{datas}} &amp; {\mathrel{\mbox{ok}}}^\ast, \\
      &amp; \href{../valid/conventions.html#context}{\mathsf{locals}} &amp; \href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^\ast, \\
      &amp; \href{../valid/conventions.html#context}{\mathsf{labels}} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^\ast, \\
-     &amp; \href{../valid/conventions.html#context}{\mathsf{return}} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^? ~\} \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{return}} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^?, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{refs}} &amp; \href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}^\ast ~\} \\
   \end{array}
 \end{array}\end{split}\]</div>
 <p id="notation-extend">In addition to field access written <span class="math notranslate nohighlight">\(C.\mathsf{field}\)</span> the following notation is adopted for manipulating contexts:</p>

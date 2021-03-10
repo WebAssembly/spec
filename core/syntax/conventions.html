@@ -105,6 +105,8 @@ All parts of this specification are defined in terms of this abstract syntax.</p
 <li><p>Productions are written <span class="math notranslate nohighlight">\(\mathit{sym} ::= A_1 ~|~ \dots ~|~ A_n\)</span>.</p></li>
 <li><p>Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, <span class="math notranslate nohighlight">\(\mathit{sym} ::= A_1 ~|~ \dots\)</span>, and starting continuations with ellipses, <span class="math notranslate nohighlight">\(\mathit{sym} ::= \dots ~|~ A_2\)</span>.</p></li>
 <li><p>Some productions are augmented with side conditions in parentheses, “<span class="math notranslate nohighlight">\((\mathrel{\mbox{if}} \mathit{condition})\)</span>”, that provide a shorthand for a combinatorial expansion of the production into many separate cases.</p></li>
+<li><p>If the same meta variable or non-terminal symbol appears multiple times in a production, then all those occurrences must have the same instantiation.
+(This is a shorthand for a side condition requiring multiple different variables to be equal.)</p></li>
 </ul>
 </div>
 <div class="section" id="auxiliary-notation">
@@ -157,7 +159,7 @@ where the <span class="math notranslate nohighlight">\(A\)</span> can either be 
 A vector can have at most <span class="math notranslate nohighlight">\(2^{32}-1\)</span> elements.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lllll}
-\def\mathdef1484#1{{}}\mathdef1484{vector} &amp; \href{../syntax/conventions.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
+\def\mathdef1545#1{{}}\mathdef1545{vector} &amp; \href{../syntax/conventions.html#syntax-vec}{\mathit{vec}}(A) &amp;::=&amp;
   A^n
   &amp; (\mathrel{\mbox{if}} n &lt; 2^{32})\\
 \end{array}\end{split}\]</div>
