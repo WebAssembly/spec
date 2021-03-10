@@ -65,10 +65,6 @@ let var_type = function
   | SynVar x -> types (idx' x)
   | SemVar _ -> assert false
 
-let block_type = function
-  | VarBlockType x -> var_type x
-  | ValBlockType _ -> empty
-
 let num_type = function
   | I32Type | I64Type | F32Type | F64Type -> empty
 
@@ -92,6 +88,10 @@ let memory_type (MemoryType (_lim)) = empty
 
 let def_type = function
   | FuncDefType ft -> func_type ft
+
+let block_type = function
+  | VarBlockType x -> var_type x
+  | ValBlockType _ -> empty
 
 let rec instr (e : instr) =
   match e.it with
