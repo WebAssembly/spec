@@ -59,14 +59,18 @@ let shift s = Set.map (Int32.add (-1l)) (Set.remove 0l s)
 let (++) = union
 let list free xs = List.fold_left union empty (List.map free xs)
 
+let block_type = function
+  | VarBlockType x -> types (var x)
+  | ValBlockType _ -> empty
+
 let rec instr (e : instr) =
   match e.it with
   | Unreachable | Nop | Drop | Select _ -> empty
   | RefNull _ | RefIsNull -> empty
   | RefFunc x -> funcs (var x)
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
-  | Block (_, es) | Loop (_, es) -> block es
-  | If (_, es1, es2) -> block es1 ++ block es2
+  | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
+  | If (bt, es1, es2) -> block_type bt ++ block es1 ++ block es2
   | Br x | BrIf x -> labels (var x)
   | BrTable (xs, x) -> list (fun x -> labels (var x)) (x::xs)
   | Return -> empty
