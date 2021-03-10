@@ -4,7 +4,7 @@
 # mathdef.py controlled by buildername.
 
 from sphinx.ext.mathbase import math
-from sphinx.ext.mathbase import MathDirective
+from sphinx.directives.patches import MathDirective
 from sphinx.ext.mathjax import html_visit_math
 from sphinx.ext.mathjax import html_visit_displaymath
 from sphinx.writers.html5 import HTML5Translator
