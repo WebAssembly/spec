@@ -229,7 +229,7 @@ Other instructions are checked in a similar manner.
            error_if(label_types(ctrls[n]).size() =/= arity)
            push_vals(pop_vals(label_types(ctrls[n])))
          pop_vals(label_types(ctrls[m]))
-         unreachable() 
+         unreachable()
 
 
 .. note::
