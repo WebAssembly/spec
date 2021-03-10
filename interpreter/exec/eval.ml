@@ -607,7 +607,11 @@ let create_data (inst : module_inst) (seg : data_segment) : data_inst =
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   : module_inst =
   if not (match_extern_type (extern_type_of ext) (import_type m im)) then
-    Link.error im.at "incompatible import type";
+    Link.error im.at ("incompatible import type for " ^
+      "\"" ^ Utf8.encode im.it.module_name ^ "\" " ^
+      "\"" ^ Utf8.encode im.it.item_name ^ "\": " ^
+      "expected " ^ Types.string_of_extern_type (import_type m im) ^
+      ", got " ^ Types.string_of_extern_type (extern_type_of ext));
   match ext with
   | ExternFunc func -> {inst with funcs = func :: inst.funcs}
   | ExternTable tab -> {inst with tables = tab :: inst.tables}
