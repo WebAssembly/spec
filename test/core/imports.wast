@@ -97,6 +97,26 @@
   "unknown type"
 )
 
+;; Export sharing name with import
+(module
+  (import "spectest" "print_i32" (func $imported_print (param i32)))
+  (func (export "print_i32") (param $i i32)
+    (call $imported_print (local.get $i))
+  )
+)
+
+(assert_return (invoke "print_i32" (i32.const 13)))
+
+;; Export sharing name with import
+(module
+  (import "spectest" "print_i32" (func $imported_print (param i32)))
+  (func (export "print_i32") (param $i i32) (param $j i32) (result i32)
+    (i32.add (local.get $i) (local.get $j))
+  )
+)
+
+(assert_return (invoke "print_i32" (i32.const 5) (i32.const 11)) (i32.const 16))
+
 (module (import "test" "func" (func)))
 (module (import "test" "func-i32" (func (param i32))))
 (module (import "test" "func-f32" (func (param f32))))
