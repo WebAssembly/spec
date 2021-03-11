@@ -375,6 +375,7 @@ For the other SIMD instructions, the use of two's complement for the signed inte
 
 .. _syntax-vunop:
 .. _syntax-vbinop:
+.. _syntax-vrelop:
 .. _syntax-vcvtop:
 .. _syntax-vextmul:
 
@@ -391,12 +392,13 @@ Occasionally, it is convenient to group operators together according to the foll
      \VPOPCNT \\
    \production{binary operator} & \vbinop &::=&
      \vibinop ~|~ \vfbinop \\&&|&
-     \virelop ~|~ \vfrelop \\&&|&
      \viminmaxop ~|~ \visatbinop \\&&|&
      \SWIZZLE ~|~
      \VMUL ~|~
      \AVGR\K{\_u} ~|~
      \Q15MULRSAT\K{\_s} \\
+   \production{simd relational operator} & \vrelop &::=&
+     \virelop ~|~ \vfrelop \\
    \production{conversion operator} & \vcvtop &::=&
      \VTRUNC\K{\_sat} ~|~
      \VEXTEND ~|~
