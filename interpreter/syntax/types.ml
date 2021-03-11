@@ -3,8 +3,8 @@
 type num_type = I32Type | I64Type | F32Type | F64Type
 type ref_type = FuncRefType | ExternRefType
 type value_type = NumType of num_type | RefType of ref_type
-type stack_type = value_type list
-type func_type = FuncType of stack_type * stack_type
+type result_type = value_type list
+type func_type = FuncType of result_type * result_type
 
 type 'a limits = {min : 'a; max : 'a option}
 type mutability = Immutable | Mutable
@@ -122,11 +122,11 @@ let string_of_global_type = function
   | GlobalType (t, Immutable) -> string_of_value_type t
   | GlobalType (t, Mutable) -> "(mut " ^ string_of_value_type t ^ ")"
 
-let string_of_stack_type ts =
+let string_of_result_type ts =
   "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
 
 let string_of_func_type (FuncType (ins, out)) =
-  string_of_stack_type ins ^ " -> " ^ string_of_stack_type out
+  string_of_result_type ins ^ " -> " ^ string_of_result_type out
 
 let string_of_extern_type = function
   | ExternFuncType ft -> "func " ^ string_of_func_type ft

@@ -154,12 +154,12 @@ let value_type s =
   | Some n when n > 0x70 -> NumType (num_type s)
   | _ -> RefType (ref_type s)
 
-let stack_type s = vec value_type s
+let result_type s = vec value_type s
 let func_type s =
   match vs7 s with
   | -0x20 ->
-    let ins = stack_type s in
-    let out = stack_type s in
+    let ins = result_type s in
+    let out = result_type s in
     FuncType (ins, out)
   | _ -> error s (pos s - 1) "malformed function type"
 
