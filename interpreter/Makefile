@@ -20,7 +20,7 @@ WINMAKE =	winmake.bat
 DIRS =		util syntax binary text valid runtime exec script host main
 LIBS =		bigarray
 FLAGS = 	-lexflags -ml -cflags '-w +a-4-27-42-44-45 -warn-error +a-3'
-OCBA =	ocamlbuild $(FLAGS) $(DIRS:%=-I %)
+OCBA =		ocamlbuild $(FLAGS) $(DIRS:%=-I %)
 OCB =		$(OCBA) $(LIBS:%=-libs %)
 JS =		# set to JS shell command to run JS tests
 

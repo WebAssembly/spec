@@ -1096,7 +1096,7 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
    }
 
 
-.. index:: expression,result type
+.. index:: expression, result type
    pair: validation; expression
    single: abstract syntax; expression
    single: expression; constant
