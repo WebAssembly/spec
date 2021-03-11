@@ -41,8 +41,8 @@ def Main():
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
-        <li class="nav-item nav-item-0"><a href="#">WebAssembly 1.0</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">WebAssembly 1.0</a></li> 
+        <li class="nav-item nav-item-0"><a href="#">WebAssembly 1.1</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">WebAssembly 1.1</a></li> 
       </ul>
     </div>  """, '')
 
