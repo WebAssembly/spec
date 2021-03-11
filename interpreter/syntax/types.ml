@@ -26,7 +26,7 @@ and heap_type =
   | BotHeapType
 
 and value_type = NumType of num_type | RefType of ref_type | BotType
-and stack_type = value_type list
+and result_type = value_type list
 
 and storage_type =
   ValueStorageType of value_type | PackedStorageType of pack_size
@@ -34,7 +34,7 @@ and field_type = FieldType of storage_type * mutability
 
 and struct_type = StructType of field_type list
 and array_type = ArrayType of field_type
-and func_type = FuncType of stack_type * stack_type
+and func_type = FuncType of result_type * result_type
 
 and def_type =
   | StructDefType of struct_type
@@ -252,7 +252,7 @@ let string_of_name n =
 let rec string_of_var =
   let inner = ref false in
   function
-  | SynVar x -> Int32.to_string x
+  | SynVar x -> I32.to_string_u x
   | SemVar x ->
     if !inner then "..." else
     ( inner := true;
@@ -287,7 +287,7 @@ and string_of_heap_type = function
   | RttHeapType (x, None) -> "(rtt " ^ string_of_var x ^ ")"
   | RttHeapType (x, Some n) ->
     "(rtt " ^ Int32.to_string n ^ " " ^ string_of_var x ^ ")"
-  | BotHeapType -> "unreachable"
+  | BotHeapType -> "something"
 
 and string_of_ref_type = function
   | (nul, t) ->
@@ -296,12 +296,10 @@ and string_of_ref_type = function
 and string_of_value_type = function
   | NumType t -> string_of_num_type t
   | RefType t -> string_of_ref_type t
-  | BotType -> "(unreachable)"
+  | BotType -> "(something)"
 
-and string_of_stack_type = function
-  | [t] -> string_of_value_type t
-  | ts -> "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
-
+and string_of_result_type ts =
+  "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
 
 and string_of_storage_type = function
   | ValueStorageType t -> string_of_value_type t
@@ -319,7 +317,7 @@ and string_of_array_type = function
 
 and string_of_func_type = function
   | FuncType (ins, out) ->
-    string_of_stack_type ins ^ " -> " ^ string_of_stack_type out
+    string_of_result_type ins ^ " -> " ^ string_of_result_type out
 
 and string_of_def_type = function
   | StructDefType st -> "struct " ^ string_of_struct_type st

@@ -220,7 +220,7 @@ let print_module x_opt m =
 let print_values vs =
   let ts = List.map Value.type_of_value vs in
   Printf.printf "%s : %s\n%!"
-    (Value.string_of_values vs) (Types.string_of_stack_type ts)
+    (Value.string_of_values vs) (Types.string_of_result_type ts)
 
 let string_of_nan = function
   | CanonicalNan -> "nan:canonical"
@@ -251,7 +251,7 @@ let string_of_results = function
 let print_results rs =
   let ts = List.map type_of_result rs in
   Printf.printf "%s : %s\n%!"
-    (string_of_results rs) (Types.string_of_stack_type ts)
+    (string_of_results rs) (Types.string_of_result_type ts)
 
 
 (* Configuration *)
