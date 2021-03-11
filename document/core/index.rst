@@ -4,7 +4,6 @@ WebAssembly Specification
 .. only:: html
 
    | Release |release| + tail calls (Draft, last updated |today|)
-   | Release |release| (Draft, |today|)
 
    | Editor: Andreas Rossberg
 
