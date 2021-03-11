@@ -16,7 +16,7 @@ Currently, only one dedicated custom section is defined, the :ref:`name section<
 Name Section
 ~~~~~~~~~~~~
 
-The *name section* is a :ref:`custom sections <binary-customsec>` whose name string is itself :math:`\text{name}`.
+The *name section* is a :ref:`custom section <binary-customsec>` whose name string is itself :math:`\text{name}`.
 The name section should appear only once in a module, and only after the :ref:`data section <binary-datasec>`.
 
 The purpose of this section is to attach printable names to definitions in a module, which e.g. can be used by a debugger or when parts of the module are to be rendered in :ref:`text form <text>`.
@@ -43,7 +43,10 @@ Each subsection consists of a
    \production{name section} & \Bnamesec &::=&
      \Bsection_0(\Bnamedata) \\
    \production{name data} & \Bnamedata &::=&
-     n{:}\Bname~~\Bnamesubsection^\ast & (\iff n = \text{name}) \\
+     n{:}\Bname & (\iff n = \text{name}) \\ &&&
+     \Bmodulenamesubsec^? \\ &&&
+     \Bfuncnamesubsec^? \\ &&&
+     \Blocalnamesubsec^? \\
    \production{name subsection} & \Bnamesubsection_N(\B{B}) &::=&
      N{:}\Bbyte~~\X{size}{:}\Bu32~~\B{B}
        & (\iff \X{size} = ||\B{B}||) \\
@@ -58,6 +61,8 @@ Id  Subsection
  1  :ref:`function names <binary-funcnamesec>`    
  2  :ref:`local names <binary-localnamesec>`
 ==  ===========================================
+
+Each subsection may occur at most once, and in order of increasing id.
 
 
 .. index:: ! name map, index, index space

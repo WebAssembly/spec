@@ -37,13 +37,21 @@ The following conventions are adopted in defining grammar rules for abstract syn
 
 * Productions are written :math:`\X{sym} ::= A_1 ~|~ \dots ~|~ A_n`.
 
+* Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, :math:`\X{sym} ::= A_1 ~|~ \dots`, and starting continuations with ellipses, :math:`\X{sym} ::= \dots ~|~ A_2`.
+
 * Some productions are augmented with side conditions in parentheses, ":math:`(\iff \X{condition})`", that provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
+* If the same meta variable or non-terminal symbol appears multiple times in a production, then all those occurrences must have the same instantiation.
+  (This is a shorthand for a side condition requiring multiple different variables to be equal.)
 
 
+.. _notation-epsilon:
+.. _notation-length:
+.. _notation-index:
 .. _notation-slice:
 .. _notation-replace:
 .. _notation-record:
+.. _notation-project:
 .. _notation-concat:
 .. _notation-compose:
 
@@ -61,7 +69,7 @@ When dealing with syntactic constructs the following notation is also used:
 * :math:`s[i \slice n]` denotes the sub-sequence :math:`s[i]~\dots~s[i+n-1]` of a sequence :math:`s`.
 
 * :math:`s \with [i] = A` denotes the same sequence as :math:`s`,
-  except that the :math:`i`-the element is replaced with :math:`A`.
+  except that the :math:`i`-th element is replaced with :math:`A`.
 
 * :math:`s \with [i \slice n] = A^n` denotes the same sequence as :math:`s`,
   except that the sub-sequence :math:`s[i \slice n]` is replaced with :math:`A^n`.
@@ -76,6 +84,7 @@ Moreover, the following conventions are employed:
   then the occurrences of :math:`x` in a sequence written :math:`(A_1~x~A_2)^n` are assumed to be in point-wise correspondence with :math:`x^n`
   (similarly for :math:`x^\ast`, :math:`x^+`, :math:`x^?`).
   This implicitly expresses a form of mapping syntactic constructions over a sequence.
+
 
 Productions of the following form are interpreted as *records* that map a fixed set of fields :math:`\K{field}_i` to "values" :math:`A_i`, respectively:
 

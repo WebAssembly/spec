@@ -88,24 +88,26 @@ Floating-Point
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{decimal floating-point fraction} & \Tfrac &::=&
-     \epsilon &\Rightarrow& 0 \\ &&|&
-     d{:}\Tdigit~~q{:}\Tfrac &\Rightarrow& (d+q)/10 \\ &&|&
-     d{:}\Tdigit~~\text{\_}~~p{:}\Tdigit~~q{:}\Tfrac &\Rightarrow& (d+(p+q)/10)/10 \\
+     d{:}\Tdigit &\Rightarrow& d/10 \\ &&|&
+     d{:}\Tdigit~~\text{\_}^?~~p{:}\Tfrac &\Rightarrow& (d+p/10)/10 \\
    \production{hexadecimal floating-point fraction} & \Thexfrac &::=&
-     \epsilon &\Rightarrow& 0 \\ &&|&
-     h{:}\Thexdigit~~q{:}\Thexfrac &\Rightarrow& (h+q)/16 \\ &&|&
-     h{:}\Thexdigit~~\text{\_}~~~~p{:}\Thexdigit~~q{:}\Thexfrac &\Rightarrow& (h+(p+q)/16)/16 \\
+     h{:}\Thexdigit &\Rightarrow& h/16 \\ &&|&
+     h{:}\Thexdigit~~\text{\_}^?~~p{:}\Thexfrac &\Rightarrow& (h+p/16)/16 \\
    \production{decimal floating-point number} & \Tfloat &::=&
+     p{:}\Tnum~\text{.}^?
+       &\Rightarrow& p \\ &&|&
      p{:}\Tnum~\text{.}~q{:}\Tfrac
        &\Rightarrow& p+q \\ &&|&
-     p{:}\Tnum~(\text{E}~|~\text{e})~{\pm}{:}\Tsign~e{:}\Tnum
+     p{:}\Tnum~\text{.}^?~(\text{E}~|~\text{e})~{\pm}{:}\Tsign~e{:}\Tnum
        &\Rightarrow& p\cdot 10^{\pm e} \\ &&|&
      p{:}\Tnum~\text{.}~q{:}\Tfrac~(\text{E}~|~\text{e})~{\pm}{:}\Tsign~e{:}\Tnum
        &\Rightarrow& (p+q)\cdot 10^{\pm e} \\
    \production{hexadecimal floating-point number} & \Thexfloat &::=&
+     \text{0x}~p{:}\Thexnum~\text{.}^?
+       &\Rightarrow& p \\ &&|&
      \text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac
        &\Rightarrow& p+q \\ &&|&
-     \text{0x}~p{:}\Thexnum~(\text{P}~|~\text{p})~{\pm}{:}\Tsign~e{:}\Tnum
+     \text{0x}~p{:}\Thexnum~\text{.}^?~(\text{P}~|~\text{p})~{\pm}{:}\Tsign~e{:}\Tnum
        &\Rightarrow& p\cdot 2^{\pm e} \\ &&|&
      \text{0x}~p{:}\Thexnum~\text{.}~q{:}\Thexfrac~(\text{P}~|~\text{p})~{\pm}{:}\Tsign~e{:}\Tnum
        &\Rightarrow& (p+q)\cdot 2^{\pm e}
@@ -167,7 +169,7 @@ except for hexadecimal escape sequences :math:`\textl\backslash hh\textr`, which
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{string character} & \Tstringchar &::=&
      c{:}\Tchar &\Rightarrow& c \qquad
-       & (\iff c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} c \neq \text{\backslash}) \\ &&|&
+       & (\iff c \geq \unicode{20} \wedge c \neq \unicode{7F} \wedge c \neq \text{"} \wedge c \neq \text{\backslash}) \\ &&|&
      \text{\backslash t} &\Rightarrow& \unicode{09} \\ &&|&
      \text{\backslash n} &\Rightarrow& \unicode{0A} \\ &&|&
      \text{\backslash r} &\Rightarrow& \unicode{0D} \\ &&|&
@@ -179,7 +181,7 @@ except for hexadecimal escape sequences :math:`\textl\backslash hh\textr`, which
    \end{array}
 
 
-.. index:: name, byte, character, code point
+.. index:: name, byte, character, character
    pair: text format; name
 .. _text-name:
 
@@ -187,7 +189,7 @@ Names
 ~~~~~
 
 :ref:`Names <syntax-name>` are strings denoting a literal character sequence. 
-A name string must form a valid UTF-8 encoding as defined by |Unicode|_ (Section 2.5) that is interpreted as a string of Unicode code points.
+A name string must form a valid UTF-8 encoding as defined by |Unicode|_ (Section 2.5) and is interpreted as a string of Unicode scalar values.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}

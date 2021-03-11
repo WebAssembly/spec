@@ -11,3 +11,12 @@ Appendix
    algorithm
    custom
    properties
+
+.. only:: singlehtml
+
+   .. toctree::
+
+      index-types
+      index-instructions
+      index-rules
+

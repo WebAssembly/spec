@@ -60,6 +60,7 @@ project = u'WebAssembly'
 title = u'WebAssembly Specification'
 copyright = u'2017, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
+editor = u'Andreas Rossberg (editor)'
 logo = 'static/webassembly.png'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -67,7 +68,7 @@ logo = 'static/webassembly.png'
 # built documents.
 #
 # The short X.Y version.
-version = u'1.0'
+version = u'1.1'
 # The full version, including alpha/beta/rc tags.
 release = version + ''
 
@@ -301,7 +302,7 @@ latex_documents = [
   ( master_doc,
     name + '.tex',
     title,
-    author,
+    author + '\\\\ \\hfill\\large ' + editor,
     'manual'
   ),
 ]
@@ -477,3 +478,9 @@ epub_exclude_files = ['search.html']
 rst_prolog = """
 .. include:: /""" + pwd + """/util/macros.def
 """
+
+# https://www.sphinx-doc.org/en/master/usage/extensions/math.html#confval-mathjax_config
+# http://docs.mathjax.org/en/v2.7-latest/options/input-processors/TeX.html
+mathjax_config = {
+    'TeX': { 'MAXBUFFER': 30*1024 },
+}

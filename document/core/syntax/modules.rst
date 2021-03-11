@@ -9,7 +9,7 @@ WebAssembly programs are organized into *modules*,
 which are the unit of deployment, loading, and compilation.
 A module collects definitions for :ref:`types <syntax-type>`, :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`.
 In addition, it can declare :ref:`imports <syntax-import>` and :ref:`exports <syntax-export>`
-and provide initialization logic in the form of :ref:`data <syntax-data>` and :ref:`element <syntax-elem>` segments or a :ref:`start function <syntax-start>`.
+and provide initialization in the form of :ref:`data <syntax-data>` and :ref:`element <syntax-elem>` segments, or a :ref:`start function <syntax-start>`.
 
 .. math::
    \begin{array}{lllll}
@@ -19,8 +19,8 @@ and provide initialization logic in the form of :ref:`data <syntax-data>` and :r
      \MTABLES~\vec(\table), \\&&&&
      \MMEMS~\vec(\mem), \\&&&&
      \MGLOBALS~\vec(\global), \\&&&&
-     \MELEM~\vec(\elem), \\&&&&
-     \MDATA~\vec(\data), \\&&&&
+     \MELEMS~\vec(\elem), \\&&&&
+     \MDATAS~\vec(\data), \\&&&&
      \MSTART~\start^?, \\&&&&
      \MIMPORTS~\vec(\import), \\&&&&
      \MEXPORTS~\vec(\export) \quad\} \\
@@ -29,12 +29,14 @@ and provide initialization logic in the form of :ref:`data <syntax-data>` and :r
 Each of the vectors -- and thus the entire module -- may be empty.
 
 
-.. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! local index, ! label index, function, global, table, memory, local, parameter, import
+.. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! local index, ! label index, ! element index, ! data index, function, global, table, memory, element, data, local, parameter, import
    pair: abstract syntax; type index
    pair: abstract syntax; function index
    pair: abstract syntax; table index
    pair: abstract syntax; memory index
    pair: abstract syntax; global index
+   pair: abstract syntax; element index
+   pair: abstract syntax; data index
    pair: abstract syntax; local index
    pair: abstract syntax; label index
    pair: type; index
@@ -42,6 +44,8 @@ Each of the vectors -- and thus the entire module -- may be empty.
    pair: table; index
    pair: memory; index
    pair: global; index
+   pair: element; index
+   pair: data; index
    pair: local; index
    pair: label; index
 .. _syntax-typeidx:
@@ -49,6 +53,8 @@ Each of the vectors -- and thus the entire module -- may be empty.
 .. _syntax-tableidx:
 .. _syntax-memidx:
 .. _syntax-globalidx:
+.. _syntax-elemidx:
+.. _syntax-dataidx:
 .. _syntax-localidx:
 .. _syntax-labelidx:
 .. _syntax-index:
@@ -66,6 +72,8 @@ Each class of definition has its own *index space*, as distinguished by the foll
    \production{table index} & \tableidx &::=& \u32 \\
    \production{memory index} & \memidx &::=& \u32 \\
    \production{global index} & \globalidx &::=& \u32 \\
+   \production{element index} & \elemidx &::=& \u32 \\
+   \production{data index} & \dataidx &::=& \u32 \\
    \production{local index} & \localidx &::=& \u32 \\
    \production{label index} & \labelidx &::=& \u32 \\
    \end{array}
@@ -73,17 +81,35 @@ Each class of definition has its own *index space*, as distinguished by the foll
 The index space for :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>` includes respective :ref:`imports <syntax-import>` declared in the same module.
 The indices of these imports precede the indices of other definitions in the same index space.
 
-The index space for :ref:`locals <syntax-local>` is only accessible inside a :ref:`function <syntax-func>` and includes the parameters and local variables of that function, which precede the other locals.
+Element indices reference :ref:`element segments <syntax-elem>` and data indices reference :ref:`data segments <syntax-data>`.
+
+The index space for :ref:`locals <syntax-local>` is only accessible inside a :ref:`function <syntax-func>` and includes the parameters of that function, which precede the local variables.
 
 Label indices reference :ref:`structured control instructions <syntax-instr-control>` inside an instruction sequence.
 
+
+.. _free-typeidx:
+.. _free-funcidx:
+.. _free-tableidx:
+.. _free-memidx:
+.. _free-globalidx:
+.. _free-elemidx:
+.. _free-dataidx:
+.. _free-localidx:
+.. _free-labelidx:
+.. _free-index:
 
 Conventions
 ...........
 
 * The meta variable :math:`l` ranges over label indices.
 
-* The meta variables :math:`x, y` ranges over indices in any of the other index spaces.
+* The meta variables :math:`x, y` range over indices in any of the other index spaces.
+
+* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`. We sometimes reinterpret this set as the :ref:`vector <syntax-vec>` of its elements.
+
+.. note::
+   For example, if :math:`\instr^\ast` is :math:`(\DATADROP~x) (\MEMORYINIT~y)`, then :math:`\freedataidx(\instr^\ast) = \{x, y\}`, or equivalently, the vector :math:`x~y`.
 
 
 .. index:: ! type definition, type index, function type
@@ -120,7 +146,7 @@ The |MFUNCS| component of a module defines a vector of *functions* with the foll
    \end{array}
 
 The |FTYPE| of a function declares its signature by reference to a :ref:`type <syntax-type>` defined in the module.
-The parameters of the function are referenced through 0-based :ref:`local indices <syntax-localidx>` in the function's body.
+The parameters of the function are referenced through 0-based :ref:`local indices <syntax-localidx>` in the function's body; they are mutable.
 
 The |FLOCALS| declare a vector of mutable local variables and their types.
 These variables are referenced through :ref:`local indices <syntax-localidx>` in the function's body.
@@ -147,7 +173,7 @@ The |MTABLES| component of a module defines a vector of *tables* described by th
      \{ \TTYPE~\tabletype \} \\
    \end{array}
 
-A table is a vector of opaque values of a particular table :ref:`element type <syntax-elemtype>`.
+A table is a vector of opaque values of a particular :ref:`reference type <syntax-reftype>`.
 The |LMIN| size in the :ref:`limits <syntax-limits>` of the table type specifies the initial size of that table, while its |LMAX|, if present, restricts the size to which it can grow later.
 
 Tables can be initialized through :ref:`element segments <syntax-elem>`.
@@ -216,50 +242,75 @@ Globals are referenced through :ref:`global indices <syntax-globalidx>`,
 starting with the smallest index not referencing a global :ref:`import <syntax-import>`.
 
 
-.. index:: ! element, table, table index, expression, constant, function index, vector
+.. index:: ! element, ! element mode, ! active, ! passive, ! declarative, element index, table, table index, expression, constant, function index, vector
    pair: abstract syntax; element
+   pair: abstract syntax; element mode
    single: table; element
    single: element; segment
+   single: element; mode
 .. _syntax-elem:
+.. _syntax-elemmode:
 
 Element Segments
 ~~~~~~~~~~~~~~~~
 
-The initial contents of a table is uninitialized.
-The |MELEM| component of a module defines a vector of *element segments* that initialize a subrange of a table at a given offset from a static :ref:`vector <syntax-vec>` of elements.
+The initial contents of a table is uninitialized. *Element segments* can be used to initialize a subrange of a table from a static :ref:`vector <syntax-vec>` of elements.
+
+The |MELEMS| component of a module defines a vector of element segments.
+Each element segment defines an :ref:`reference type <syntax-reftype>` and a corresponding list of :ref:`constant <valid-constant>` element :ref:`expressions <syntax-expr>`.
+
+Element segments have a mode that identifies them as either *passive*, *active*, or *declarative*.
+A passive element segment's elements can be copied to a table using the |TABLEINIT| instruction.
+An active element segment copies its elements into a table during :ref:`instantiation <exec-instantiation>`, as specified by a :ref:`table index <syntax-tableidx>` and a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>` defining an offset into that table.
+A declarative element segment is not available at runtime but merely serves to forward-declare references that are formed in code with instructions like :math:`REFFUNC`.
 
 .. math::
    \begin{array}{llll}
    \production{element segment} & \elem &::=&
-     \{ \ETABLE~\tableidx, \EOFFSET~\expr, \EINIT~\vec(\funcidx) \} \\
+     \{ \ETYPE~\reftype, \EINIT~\vec(\expr), \EMODE~\elemmode \} \\
+   \production{element segment mode} & \elemmode &::=&
+     \EPASSIVE \\&&|&
+     \EACTIVE~\{ \ETABLE~\tableidx, \EOFFSET~\expr \} \\&&|&
+     \EDECLARATIVE \\
    \end{array}
 
 The |EOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
 
+Element segments are referenced through :ref:`element indices <syntax-elemidx>`.
+
 .. note::
-   In the current version of WebAssembly, at most one table is allowed in a module.
-   Consequently, the only valid |tableidx| is :math:`0`.
+   In the current version of WebAssembly, only tables of element type |FUNCREF| can be initialized with an element segment.
+   This limitation may be lifted in the future.
 
 
-.. index:: ! data, memory, memory index, expression, constant, byte, vector
+.. index:: ! data, active, passive, data index, memory, memory index, expression, constant, byte, vector
    pair: abstract syntax; data
    single: memory; data
    single: data; segment
 .. _syntax-data:
+.. _syntax-datamode:
 
 Data Segments
 ~~~~~~~~~~~~~
 
-The initial contents of a :ref:`memory <syntax-mem>` are zero bytes.
-The |MDATA| component of a module defines a vector of *data segments* that initialize a range of memory at a given offset with a static :ref:`vector <syntax-vec>` of :ref:`bytes <syntax-byte>`.
+The initial contents of a :ref:`memory <syntax-mem>` are zero bytes. *Data segments* can be used to initialize a range of memory from a static :ref:`vector <syntax-vec>` of :ref:`bytes <syntax-byte>`.
+
+The |MDATAS| component of a module defines a vector of data segments.
+
+Like element segments, data segments have a mode that identifies them as either *passive* or *active*.
+A passive data segment's contents can be copied into a memory using the |MEMORYINIT| instruction.
+An active data segment copies its contents into a memory during :ref:`instantiation <exec-instantiation>`, as specified by a :ref:`memory index <syntax-memidx>` and a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>` defining an offset into that memory.
 
 .. math::
    \begin{array}{llll}
    \production{data segment} & \data &::=&
-     \{ \DMEM~\memidx, \DOFFSET~\expr, \DINIT~\vec(\byte) \} \\
+     \{ \DINIT~\vec(\byte), \DMODE~\datamode \} \\
+   \production{data segment mode} & \datamode &::=&
+     \DPASSIVE \\&&|&
+     \DACTIVE~\{ \DMEM~\memidx, \DOFFSET~\expr \} \\
    \end{array}
 
-The |DOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
+Data segments are referenced through :ref:`data indices <syntax-dataidx>`.
 
 .. note::
    In the current version of WebAssembly, at most one memory is allowed in a module.
@@ -273,13 +324,17 @@ The |DOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <s
 Start Function
 ~~~~~~~~~~~~~~
 
-The |MSTART| component of a module optionally declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <exec-instantiation>`, after :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` have been initialized.
+The |MSTART| component of a module declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <exec-instantiation>`, after :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` have been initialized.
 
 .. math::
    \begin{array}{llll}
    \production{start function} & \start &::=&
      \{ \SFUNC~\funcidx \} \\
    \end{array}
+
+.. note::
+   The start function is intended for initializing the state of a module.
+   The module and its exports are not accessible before this initialization has completed.
 
 
 .. index:: ! export, name, index, function index, table index, memory index, global index, function, table, memory, global, instantiation
@@ -310,9 +365,6 @@ The |MEXPORTS| component of a module defines a set of *exports* that become acce
 Each export is labeled by a unique :ref:`name <syntax-name>`.
 Exportable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`,
 which are referenced through a respective descriptor.
-
-.. note::
-   In the current version of WebAssembly, only *immutable* globals may be exported.
 
 
 Conventions
@@ -362,8 +414,6 @@ Every import defines an index in the respective :ref:`index space <syntax-index>
 In each index space, the indices of imports go before the first index of any definition contained in the module itself.
 
 .. note::
-   In the current version of WebAssembly, only *immutable* globals may be imported.
-
    Unlike export names, import names are not necessarily unique.
    It is possible to import the same |IMODULE|/|INAME| pair multiple times;
    such imports may even have different type descriptions, including different kinds of entities.

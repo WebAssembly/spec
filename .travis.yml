@@ -1,14 +1,27 @@
-language: c++
 language: python
 python:
-  - "2.7"
+  - "3.7"
+dist: bionic
 
-sudo: on
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:avsm/ppa'
+      - sourceline: 'deb https://dl.yarnpkg.com/debian/ stable main'
+        key_url: 'https://dl.yarnpkg.com/debian/pubkey.gpg'
+    update: true
+    packages:
+      - opam
+      - texlive-full
+      - yarn
 
 install:
-  - ./interpreter/meta/travis/install-ocaml.sh
-  - sudo pip install sphinx
-  - sudo apt-get install texlive-full
+  - opam init --auto-setup --compiler=4.07.1
+  - eval $(opam env)
+  - opam --version
+  - ocaml --version
+  - opam install --yes ocamlbuild.0.14.0
+  - pip install Sphinx==2.4.4
   - git clone https://github.com/tabatkins/bikeshed.git
   - pip install --editable $PWD/bikeshed
   - bikeshed update

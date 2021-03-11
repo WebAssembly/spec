@@ -26,6 +26,7 @@ sig
   val of_int : int -> t
   val to_int : t -> int
   val to_string : t -> string
+  val to_hex_string : t -> string
 
   val bitwidth : int
 end
@@ -58,6 +59,7 @@ sig
   val clz : t -> t
   val ctz : t -> t
   val popcnt : t -> t
+  val extend_s : int -> t -> t
   val eqz : t -> bool
   val eq : t -> t -> bool
   val ne : t -> t -> bool
@@ -75,8 +77,11 @@ sig
   val of_string_s : string -> t
   val of_string_u : string -> t
   val of_string : string -> t
+  val to_int_s : t -> int
+  val to_int_u : t -> int
   val to_string_s : t -> string
   val to_string_u : t -> string
+  val to_hex_string : t -> string
 end
 
 module Make (Rep : RepType) : S with type bits = Rep.t and type t = Rep.t =
@@ -175,7 +180,7 @@ struct
     let rec loop acc n =
       if n = Rep.zero then
         Rep.bitwidth
-      else if and_ n (Rep.shift_left Rep.one (Rep.bitwidth - 1)) = Rep.zero then
+      else if and_ n (Rep.shift_left Rep.one (Rep.bitwidth - 1)) = zero then
         loop (1 + acc) (Rep.shift_left n 1)
       else
         acc
@@ -194,12 +199,16 @@ struct
 
   let popcnt x =
     let rec loop acc i n =
-      if n = Rep.zero then
+      if i = 0 then
         acc
       else
         let acc' = if and_ n Rep.one = Rep.one then acc + 1 else acc in
         loop acc' (i - 1) (Rep.shift_right_logical n 1)
     in Rep.of_int (loop 0 Rep.bitwidth x)
+
+  let extend_s n x =
+    let shift = Rep.bitwidth - n in
+    Rep.shift_right (Rep.shift_left x shift) shift
 
   let eqz x = x = Rep.zero
 
@@ -214,15 +223,11 @@ struct
   let ge_s x y = x >= y
   let ge_u x y = cmp_u x (>=) y
 
+  let to_int_s = Rep.to_int
+  let to_int_u i = Rep.to_int i land (Rep.to_int Rep.max_int lsl 1) lor 1
+
   let of_int_s = Rep.of_int
   let of_int_u i = and_ (Rep.of_int i) (or_ (shl (Rep.of_int max_int) one) one)
-
-  let to_string_s = Rep.to_string
-  let to_string_u i =
-    if i >= Rep.zero then
-      to_string_s i
-    else
-      to_string_s (div_u i ten) ^ to_string_s (rem_u i ten)
 
   (* String conversion that allows leading signs and unsigned values *)
 
@@ -281,4 +286,30 @@ struct
     let n = of_string s in
     require (s.[0] != '+' && s.[0] != '-');
     n
+
+  (* String conversion that groups digits for readability *)
+
+  let rec add_digits buf s i j k n =
+    if i < j then begin
+      if k = 0 then Buffer.add_char buf '_';
+      Buffer.add_char buf s.[i];
+      add_digits buf s (i + 1) j ((k + n - 1) mod n) n
+    end
+
+  let group_digits n s =
+    let len = String.length s in
+    let num = if s.[0] = '-' then 1 else 0 in
+    let buf = Buffer.create (len*(n+1)/n) in
+    Buffer.add_substring buf s 0 num;
+    add_digits buf s num len ((len - num) mod n + n) n;
+    Buffer.contents buf
+
+  let to_string_s i = group_digits 3 (Rep.to_string i)
+  let to_string_u i =
+    if i >= Rep.zero then
+      group_digits 3 (Rep.to_string i)
+    else
+      group_digits 3 (Rep.to_string (div_u i ten) ^ Rep.to_string (rem_u i ten))
+
+  let to_hex_string i = "0x" ^ group_digits 4 (Rep.to_hex_string i)
 end

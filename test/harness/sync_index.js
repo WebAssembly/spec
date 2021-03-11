@@ -66,6 +66,25 @@ const EXPECT_INVALID = false;
 
 /* DATA **********************************************************************/
 
+let externrefs = {};
+let externsym = Symbol("externref");
+function externref(s) {
+  if (! (s in externrefs)) externrefs[s] = {[externsym]: s};
+  return externrefs[s];
+}
+function is_externref(x) {
+  return (x !== null && externsym in x) ? 1 : 0;
+}
+function is_funcref(x) {
+  return typeof x === "function" ? 1 : 0;
+}
+function eq_externref(x, y) {
+  return x === y ? 1 : 0;
+}
+function eq_funcref(x, y) {
+  return x === y ? 1 : 0;
+}
+
 let $$;
 
 // Default imports.
@@ -77,6 +96,11 @@ function reinitializeRegistry() {
         return;
 
     let spectest = {
+        externref: externref,
+        is_externref: is_externref,
+        is_funcref: is_funcref,
+        eq_externref: eq_externref,
+        eq_funcref: eq_funcref,
         print: console.log.bind(console),
         print_i32: console.log.bind(console),
         print_i32_f32: console.log.bind(console),
@@ -224,16 +248,17 @@ function get(instance, name) {
     if (instance.isError())
         return instance;
 
-    return ValueResult(instance.value.exports[name]);
+    let v = instance.value.exports[name];
+    return ValueResult((v instanceof WebAssembly.Global) ? v.value : v);
 }
 
-function exports(name, instance) {
+function exports(instance) {
     _assert(instance instanceof Result);
 
     if (instance.isError())
         return instance;
 
-    return ValueResult({ [name]: instance.value.exports });
+    return ValueResult({ module: instance.value.exports, spectest: registry.spectest });
 }
 
 function run(action) {
@@ -306,24 +331,47 @@ function assert_exhaustion(action) {
     }, "A wast module that must exhaust the stack space.");
 }
 
-function assert_return(action, expected) {
-    if (expected instanceof Result) {
-        if (expected.isError())
-            return;
-        expected = expected.value;
-    }
-
+function assert_return(action, ...expected) {
     let result = action();
-
     _assert(result instanceof Result);
 
     uniqueTest(() => {
         assert_true(!result.isError(), `expected success result, got: ${result.value}.`);
-        if (!result.isError()) {
-            assert_equals(result.value, expected);
-        };
+        let actual = result.value;
+        if (actual === undefined) {
+            actual = [];
+        } else if (!Array.isArray(actual)) {
+            actual = [actual];
+        }
+        if (actual.length !== expected.length) {
+            throw new Error(expected.length + " value(s) expected, got " + actual.length);
+        }
+        for (let i = 0; i < actual.length; ++i) {
+            if (expected[i] instanceof Result) {
+                if (expected[i].isError())
+                    return;
+                expected[i] = expected[i].value;
+            }
+            switch (expected[i]) {
+                case "nan:canonical":
+                case "nan:arithmetic":
+                case "nan:any":
+                    // Note that JS can't reliably distinguish different NaN values,
+                    // so there's no good way to test that it's a canonical NaN.
+                    assert_true(Number.isNaN(actual[i]), `expected NaN, observed ${actual[i]}.`);
+                    return;
+                case "ref.func":
+                    assert_true(typeof actual[i] === "function", `expected Wasm function, got ${actual[i]}`);
+                    return;
+                case "ref.extern":
+                    assert_true(actual[i] !== null, `expected Wasm reference, got ${actual[i]}`);
+                    return;
+                default:
+                    assert_equals(actual[i], expected[i]);
+            }
+        }
     }, "A wast module that must return a particular value.");
-};
+}
 
 function assert_return_nan(action) {
     let result = action();

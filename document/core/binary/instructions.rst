@@ -13,8 +13,9 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
    Gaps in the byte code ranges for encoding instructions are reserved for future extensions.
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
+.. index:: control instructions, structured control, label, block, branch, result type, value type, block type, label index, function index, type index, vector, polymorphism, LEB128
    pair: binary format; instruction
+   pair: binary format; block type
 .. _binary-instr-control:
 
 Control Instructions
@@ -22,6 +23,9 @@ Control Instructions
 
 :ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the instruction sequences forming nested blocks are terminated with explicit opcodes for |END| and |ELSE|.
 
+:ref:`Block types <syntax-blocktype>` are encoded in special compressed form, by either the byte :math:`\hex{40}` indicating the empty type, as a single :ref:`value type <binary-valtype>`, or as a :ref:`type index <binary-typeidx>` encoded as a positive :ref:`signed integer <binary-sint>`.
+
+.. _binary-blocktype:
 .. _binary-nop:
 .. _binary-unreachable:
 .. _binary-block:
@@ -37,45 +41,76 @@ Control Instructions
 .. _binary-return_call_indirect:
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llcllll}
+   \production{block type} & \Bblocktype &::=&
+     \hex{40} &\Rightarrow& \epsilon \\ &&|&
+     t{:}\Bvaltype &\Rightarrow& t \\ &&|&
+     x{:}\Bs33 &\Rightarrow& x & (\iff x \geq 0) \\
    \production{instruction} & \Binstr &::=&
      \hex{00} &\Rightarrow& \UNREACHABLE \\ &&|&
      \hex{01} &\Rightarrow& \NOP \\ &&|&
-     \hex{02}~~\X{rt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
-       &\Rightarrow& \BLOCK~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \hex{03}~~\X{rt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
-       &\Rightarrow& \LOOP~\X{rt}~\X{in}^\ast~\END \\ &&|&
-     \hex{04}~~\X{rt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
-       &\Rightarrow& \IF~\X{rt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
-     \hex{04}~~\X{rt}{:}\Bblocktype~~(\X{in}_1{:}\Binstr)^\ast~~
+     \hex{02}~~\X{bt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+       &\Rightarrow& \BLOCK~\X{bt}~\X{in}^\ast~\END \\ &&|&
+     \hex{03}~~\X{bt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+       &\Rightarrow& \LOOP~\X{bt}~\X{in}^\ast~\END \\ &&|&
+     \hex{04}~~\X{bt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+       &\Rightarrow& \IF~\X{bt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
+     \hex{04}~~\X{bt}{:}\Bblocktype~~(\X{in}_1{:}\Binstr)^\ast~~
        \hex{05}~~(\X{in}_2{:}\Binstr)^\ast~~\hex{0B}
-       &\Rightarrow& \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\ &&|&
+       &\Rightarrow& \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\ &&|&
      \hex{0C}~~l{:}\Blabelidx &\Rightarrow& \BR~l \\ &&|&
      \hex{0D}~~l{:}\Blabelidx &\Rightarrow& \BRIF~l \\ &&|&
      \hex{0E}~~l^\ast{:}\Bvec(\Blabelidx)~~l_N{:}\Blabelidx
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \hex{0F} &\Rightarrow& \RETURN \\ &&|&
      \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
-     \hex{11}~~x{:}\Btypeidx~~\hex{00} &\Rightarrow& \CALLINDIRECT~x \\ &&|&
+     \hex{11}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \CALLINDIRECT~x~y \\
      \hex{12}~~x{:}\Bfuncidx &\Rightarrow& \RETURNCALL~x \\ &&|&
-     \hex{13}~~x{:}\Btypeidx~~\hex{00} &\Rightarrow& \RETURNCALLINDIRECT~x \\
+     \hex{13}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \RETURNCALLINDIRECT~x~y \\
    \end{array}
 
 .. note::
    The |ELSE| opcode :math:`\hex{05}` in the encoding of an |IF| instruction can be omitted if the following instruction sequence is empty.
 
-.. note::
+   Unlike any :ref:`other occurrence <binary-typeidx>`, the :ref:`type index <syntax-typeidx>` in a :ref:`block type <syntax-blocktype>` is encoded as a positive :ref:`signed integer <syntax-sint>`, so that its |SignedLEB128| bit pattern cannot collide with the encoding of :ref:`value types <binary-valtype>` or the special code :math:`\hex{40}`, which correspond to the LEB128 encoding of negative integers.
+   To avoid any loss in the range of allowed indices, it is treated as a 33 bit signed integer. 
+
    In future versions of WebAssembly, the zero byte occurring in the encoding
    of the |CALLINDIRECT| and |RETURNCALLINDIRECT| instructions may be used to index additional tables.
 
-.. index:: value type, polymorphism
+
+.. index:: reference instruction
+   pair: binary format; instruction
+.. _binary-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+:ref:`Reference instructions <syntax-instr-ref>` are represented by single byte codes.
+
+.. _binary-ref.null:
+.. _binary-ref.isnull:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Binstr &::=& \dots \\ &&|&
+     \hex{D0}~~t{:}\Breftype &\Rightarrow& \REFNULL~t \\ &&|&
+     \hex{D1} &\Rightarrow& \REFISNULL \\ &&|&
+     \hex{D2}~~x{:}\Bfuncidx &\Rightarrow& \REFFUNC~x \\
+   \end{array}
+
+.. note::
+   These opcode assignments are preliminary.
+
+
+.. index:: parametric instruction, value type, polymorphism
    pair: binary format; instruction
 .. _binary-instr-parametric:
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Parametric instructions <syntax-instr-parametric>` are represented by single byte codes.
+:ref:`Parametric instructions <syntax-instr-parametric>` are represented by single byte codes, possibly followed by a type annotation.
 
 .. _binary-drop:
 .. _binary-select:
@@ -84,7 +119,8 @@ Parametric Instructions
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{1A} &\Rightarrow& \DROP \\ &&|&
-     \hex{1B} &\Rightarrow& \SELECT \\
+     \hex{1B} &\Rightarrow& \SELECT \\ &&|&
+     \hex{1C}~~t^\ast{:}\Bvec(\Bvaltype) &\Rightarrow& \SELECT~t^\ast \\
    \end{array}
 
 
@@ -97,20 +133,51 @@ Variable Instructions
 
 :ref:`Variable instructions <syntax-instr-variable>` are represented by byte codes followed by the encoding of the respective :ref:`index <syntax-index>`.
 
-.. _binary-get_local:
-.. _binary-set_local:
-.. _binary-tee_local:
-.. _binary-get_global:
-.. _binary-set_global:
+.. _binary-local.get:
+.. _binary-local.set:
+.. _binary-local.tee:
+.. _binary-global.get:
+.. _binary-global.set:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
-     \hex{20}~~x{:}\Blocalidx &\Rightarrow& \GETLOCAL~x \\ &&|&
-     \hex{21}~~x{:}\Blocalidx &\Rightarrow& \SETLOCAL~x \\ &&|&
-     \hex{22}~~x{:}\Blocalidx &\Rightarrow& \TEELOCAL~x \\ &&|&
-     \hex{23}~~x{:}\Bglobalidx &\Rightarrow& \GETGLOBAL~x \\ &&|&
-     \hex{24}~~x{:}\Bglobalidx &\Rightarrow& \SETGLOBAL~x \\
+     \hex{20}~~x{:}\Blocalidx &\Rightarrow& \LOCALGET~x \\ &&|&
+     \hex{21}~~x{:}\Blocalidx &\Rightarrow& \LOCALSET~x \\ &&|&
+     \hex{22}~~x{:}\Blocalidx &\Rightarrow& \LOCALTEE~x \\ &&|&
+     \hex{23}~~x{:}\Bglobalidx &\Rightarrow& \GLOBALGET~x \\ &&|&
+     \hex{24}~~x{:}\Bglobalidx &\Rightarrow& \GLOBALSET~x \\
+   \end{array}
+
+
+.. index:: table instruction, table index
+   pair: binary format; instruction
+.. _binary-instr-table:
+.. _binary-table.get:
+.. _binary-table.set:
+.. _binary-table.size:
+.. _binary-table.grow:
+.. _binary-table.fill:
+.. _binary-table.copy:
+.. _binary-table.init:
+.. _binary-elem.drop:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+:ref:`Table instructions <syntax-instr-table>` are represented by either single byte or two byte codes.
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Binstr &::=& \dots \\ &&|&
+     \hex{25}~~x{:}\Btableidx &\Rightarrow& \TABLEGET~x \\ &&|&
+     \hex{26}~~x{:}\Btableidx &\Rightarrow& \TABLESET~x \\ &&|&
+     \hex{FC}~~12{:}\Bu32~~y{:}\Belemidx~~x{:}\Btableidx &\Rightarrow& \TABLEINIT~x~y \\ &&|&
+     \hex{FC}~~13{:}\Bu32~~x{:}\Belemidx &\Rightarrow& \ELEMDROP~x \\ &&|&
+     \hex{FC}~~14{:}\Bu32~~x{:}\Btableidx~~y{:}\Btableidx &\Rightarrow& \TABLECOPY~x~y \\ &&|&
+     \hex{FC}~~15{:}\Bu32~~x{:}\Btableidx &\Rightarrow& \TABLEGROW~x \\ &&|&
+     \hex{FC}~~16{:}\Bu32~~x{:}\Btableidx &\Rightarrow& \TABLESIZE~x \\ &&|&
+     \hex{FC}~~17{:}\Bu32~~x{:}\Btableidx &\Rightarrow& \TABLEFILL~x \\
    \end{array}
 
 
@@ -128,8 +195,12 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
 .. _binary-loadn:
 .. _binary-store:
 .. _binary-storen:
-.. _binary-current_memory:
-.. _binary-grow_memory:
+.. _binary-memory.size:
+.. _binary-memory.grow:
+.. _binary-memory.fill:
+.. _binary-memory.copy:
+.. _binary-memory.init:
+.. _binary-data.drop:
 
 .. math::
    \begin{array}{llclll}
@@ -159,12 +230,16 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
      \hex{3C}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{8}~m \\ &&|&
      \hex{3D}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
      \hex{3E}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
-     \hex{3F}~~\hex{00} &\Rightarrow& \CURRENTMEMORY \\ &&|&
-     \hex{40}~~\hex{00} &\Rightarrow& \GROWMEMORY \\
+     \hex{3F}~~\hex{00} &\Rightarrow& \MEMORYSIZE \\ &&|&
+     \hex{40}~~\hex{00} &\Rightarrow& \MEMORYGROW \\ &&|&
+     \hex{FC}~~8{:}\Bu32~~x{:}\Bdataidx~\hex{00} &\Rightarrow& \MEMORYINIT~x \\ &&|&
+     \hex{FC}~~9{:}\Bu32~~x{:}\Bdataidx &\Rightarrow& \DATADROP~x \\ &&|&
+     \hex{FC}~~10{:}\Bu32~~\hex{00}~~\hex{00} &\Rightarrow& \MEMORYCOPY \\ &&|&
+     \hex{FC}~~11{:}\Bu32~~\hex{00} &\Rightarrow& \MEMORYFILL \\
    \end{array}
 
 .. note::
-   In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |CURRENTMEMORY| and |GROWMEMORY| instructions may be used to index additional memories.
+   In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |MEMORYSIZE|, |MEMORYGROW|, |MEMORYCOPY|, and |MEMORYFILL| instructions may be used to index additional memories.
 
 
 .. index:: numeric instruction
@@ -340,31 +415,59 @@ All other numeric instructions are plain opcodes without any immediates.
 .. math::
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
-     \hex{A7} &\Rightarrow& \I32.\WRAP\K{/}\I64 \\ &&|&
-     \hex{A8} &\Rightarrow& \I32.\TRUNC\K{\_s/}\F32 \\ &&|&
-     \hex{A9} &\Rightarrow& \I32.\TRUNC\K{\_u/}\F32 \\ &&|&
-     \hex{AA} &\Rightarrow& \I32.\TRUNC\K{\_s/}\F64 \\ &&|&
-     \hex{AB} &\Rightarrow& \I32.\TRUNC\K{\_u/}\F64 \\ &&|&
-     \hex{AC} &\Rightarrow& \I64.\EXTEND\K{\_s/}\I32 \\ &&|&
-     \hex{AD} &\Rightarrow& \I64.\EXTEND\K{\_u/}\I32 \\ &&|&
-     \hex{AE} &\Rightarrow& \I64.\TRUNC\K{\_s/}\F32 \\ &&|&
-     \hex{AF} &\Rightarrow& \I64.\TRUNC\K{\_u/}\F32 \\ &&|&
-     \hex{B0} &\Rightarrow& \I64.\TRUNC\K{\_s/}\F64 \\ &&|&
-     \hex{B1} &\Rightarrow& \I64.\TRUNC\K{\_u/}\F64 \\ &&|&
-     \hex{B2} &\Rightarrow& \F32.\CONVERT\K{\_s/}\I32 \\ &&|&
-     \hex{B3} &\Rightarrow& \F32.\CONVERT\K{\_u/}\I32 \\ &&|&
-     \hex{B4} &\Rightarrow& \F32.\CONVERT\K{\_s/}\I64 \\ &&|&
-     \hex{B5} &\Rightarrow& \F32.\CONVERT\K{\_u/}\I64 \\ &&|&
-     \hex{B6} &\Rightarrow& \F32.\DEMOTE\K{/}\F64 \\ &&|&
-     \hex{B7} &\Rightarrow& \F64.\CONVERT\K{\_s/}\I32 \\ &&|&
-     \hex{B8} &\Rightarrow& \F64.\CONVERT\K{\_u/}\I32 \\ &&|&
-     \hex{B9} &\Rightarrow& \F64.\CONVERT\K{\_s/}\I64 \\ &&|&
-     \hex{BA} &\Rightarrow& \F64.\CONVERT\K{\_u/}\I64 \\ &&|&
-     \hex{BB} &\Rightarrow& \F64.\PROMOTE\K{/}\F32 \\ &&|&
-     \hex{BC} &\Rightarrow& \I32.\REINTERPRET\K{/}\F32 \\ &&|&
-     \hex{BD} &\Rightarrow& \I64.\REINTERPRET\K{/}\F64 \\ &&|&
-     \hex{BE} &\Rightarrow& \F32.\REINTERPRET\K{/}\I32 \\ &&|&
-     \hex{BF} &\Rightarrow& \F64.\REINTERPRET\K{/}\I64 \\
+     \hex{A7} &\Rightarrow& \I32.\WRAP\K{\_}\I64 \\ &&|&
+     \hex{A8} &\Rightarrow& \I32.\TRUNC\K{\_}\F32\K{\_s} \\ &&|&
+     \hex{A9} &\Rightarrow& \I32.\TRUNC\K{\_}\F32\K{\_u} \\ &&|&
+     \hex{AA} &\Rightarrow& \I32.\TRUNC\K{\_}\F64\K{\_s} \\ &&|&
+     \hex{AB} &\Rightarrow& \I32.\TRUNC\K{\_}\F64\K{\_u} \\ &&|&
+     \hex{AC} &\Rightarrow& \I64.\EXTEND\K{\_}\I32\K{\_s} \\ &&|&
+     \hex{AD} &\Rightarrow& \I64.\EXTEND\K{\_}\I32\K{\_u} \\ &&|&
+     \hex{AE} &\Rightarrow& \I64.\TRUNC\K{\_}\F32\K{\_s} \\ &&|&
+     \hex{AF} &\Rightarrow& \I64.\TRUNC\K{\_}\F32\K{\_u} \\ &&|&
+     \hex{B0} &\Rightarrow& \I64.\TRUNC\K{\_}\F64\K{\_s} \\ &&|&
+     \hex{B1} &\Rightarrow& \I64.\TRUNC\K{\_}\F64\K{\_u} \\ &&|&
+     \hex{B2} &\Rightarrow& \F32.\CONVERT\K{\_}\I32\K{\_s} \\ &&|&
+     \hex{B3} &\Rightarrow& \F32.\CONVERT\K{\_}\I32\K{\_u} \\ &&|&
+     \hex{B4} &\Rightarrow& \F32.\CONVERT\K{\_}\I64\K{\_s} \\ &&|&
+     \hex{B5} &\Rightarrow& \F32.\CONVERT\K{\_}\I64\K{\_u} \\ &&|&
+     \hex{B6} &\Rightarrow& \F32.\DEMOTE\K{\_}\F64 \\ &&|&
+     \hex{B7} &\Rightarrow& \F64.\CONVERT\K{\_}\I32\K{\_s} \\ &&|&
+     \hex{B8} &\Rightarrow& \F64.\CONVERT\K{\_}\I32\K{\_u} \\ &&|&
+     \hex{B9} &\Rightarrow& \F64.\CONVERT\K{\_}\I64\K{\_s} \\ &&|&
+     \hex{BA} &\Rightarrow& \F64.\CONVERT\K{\_}\I64\K{\_u} \\ &&|&
+     \hex{BB} &\Rightarrow& \F64.\PROMOTE\K{\_}\F32 \\ &&|&
+     \hex{BC} &\Rightarrow& \I32.\REINTERPRET\K{\_}\F32 \\ &&|&
+     \hex{BD} &\Rightarrow& \I64.\REINTERPRET\K{\_}\F64 \\ &&|&
+     \hex{BE} &\Rightarrow& \F32.\REINTERPRET\K{\_}\I32 \\ &&|&
+     \hex{BF} &\Rightarrow& \F64.\REINTERPRET\K{\_}\I64 \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+     \hex{C0} &\Rightarrow& \I32.\EXTEND\K{8\_s} \\ &&|&
+     \hex{C1} &\Rightarrow& \I32.\EXTEND\K{16\_s} \\ &&|&
+     \hex{C2} &\Rightarrow& \I64.\EXTEND\K{8\_s} \\ &&|&
+     \hex{C3} &\Rightarrow& \I64.\EXTEND\K{16\_s} \\ &&|&
+     \hex{C4} &\Rightarrow& \I64.\EXTEND\K{32\_s} \\
+   \end{array}
+
+.. _binary-cvtop-trunc-sat:
+
+The saturating truncation instructions all have a one byte prefix,
+whereas the actual opcode is encoded by a variable-length :ref:`unsigned integer <binary-uint>`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Binstr &::=& \dots && \phantom{thisshouldbeenough} \\&&|&
+     \hex{FC}~~0{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
+     \hex{FC}~~1{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
+     \hex{FC}~~2{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
+     \hex{FC}~~3{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_u} \\ &&|&
+     \hex{FC}~~4{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
+     \hex{FC}~~5{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
+     \hex{FC}~~6{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
+     \hex{FC}~~7{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_u} \\
    \end{array}
 
 
