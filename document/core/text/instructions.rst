@@ -112,7 +112,7 @@ All other control instruction are represented verbatim.
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
-     \text{call\_indirect}~~x,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x
+     \text{call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x~y
        & (\iff I' = \{\}) \\
    \end{array}
 
@@ -133,8 +133,38 @@ The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitt
      \text{if}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{else}~~\text{end}
    \end{array}
 
+Also, for backwards compatibility, the table index to :math:`\text{call\_indirect}` can be omitted, defaulting to :math:`0`.
 
-.. index:: value type, polymorphism
+.. math::
+   \begin{array}{llclll}
+   \production{plain instruction} &
+     \text{call\_indirect}~~\Ttypeuse
+       &\equiv&
+     \text{call\_indirect}~~0~~\Ttypeuse
+   \end{array}
+
+
+.. index:: reference instruction
+   pair: text format; instruction
+.. _text-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. _text-ref.null:
+.. _text-ref.is_null:
+.. _text-ref.func:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
+     \text{ref.null}~~t{:}\Theaptype &\Rightarrow& \REFNULL~t \\ &&|&
+     \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
+     \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
+   \end{array}
+
+
+.. index:: parametric instruction, value type, polymorphism
    pair: text format; instruction
 .. _text-instr-parametric:
 
@@ -148,7 +178,7 @@ Parametric Instructions
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{drop} &\Rightarrow& \DROP \\ &&|&
-     \text{select} &\Rightarrow& \SELECT \\
+     \text{select}~((t{:}\Tresult)^\ast)^? &\Rightarrow& \SELECT~(t^\ast)^? \\
    \end{array}
 
 
@@ -176,6 +206,54 @@ Variable Instructions
    \end{array}
 
 
+.. index:: table instruction, table index
+   pair: text format; instruction
+.. _text-instr-table:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+.. _text-table.get:
+.. _text-table.set:
+.. _text-table.size:
+.. _text-table.grow:
+.. _text-table.fill:
+.. _text-table.copy:
+.. _text-table.init:
+.. _text-elem.drop:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
+     \text{table.get}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEGET~x \\ &&|&
+     \text{table.set}~~x{:}\Ttableidx_I &\Rightarrow& \TABLESET~x \\ &&|&
+     \text{table.size}~~x{:}\Ttableidx_I &\Rightarrow& \TABLESIZE~x \\ &&|&
+     \text{table.grow}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEGROW~x \\ &&|&
+     \text{table.fill}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEFILL~x \\ &&|&
+     \text{table.copy}~~x{:}\Ttableidx_I~~y{:}\Ttableidx_I &\Rightarrow& \TABLECOPY~x~y \\ &&|&
+     \text{table.init}~~x{:}\Ttableidx_I~~y{:}\Telemidx_I &\Rightarrow& \TABLEINIT~x~y \\ &&|&
+     \text{elem.drop}~~x{:}\Telemidx_I &\Rightarrow& \ELEMDROP~x \\
+   \end{array}
+
+
+Abbreviations
+.............
+
+For backwards compatibility, all :math:`table indices <syntax-tableidx>` may be omitted from table instructions, defaulting to :math:`0`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} &
+     \text{table.get} &\equiv& \text{table.get}~~\text{0} \\ &&|&
+     \text{table.set} &\equiv& \text{table.set}~~\text{0} \\ &&|&
+     \text{table.size} &\equiv& \text{table.size}~~\text{0} \\ &&|&
+     \text{table.grow} &\equiv& \text{table.grow}~~\text{0} \\ &&|&
+     \text{table.fill} &\equiv& \text{table.fill}~~\text{0} \\ &&|&
+     \text{table.copy} &\equiv& \text{table.copy}~~\text{0}~~\text{0} \\ &&|&
+     \text{table.init}~~x{:}\Telemidx_I &\equiv& \text{table.init}~~\text{0}~~x{:}\Telemidx_I \\
+   \end{array}
+
+
 .. index:: memory instruction, memory index
    pair: text format; instruction
 .. _text-instr-memory:
@@ -190,6 +268,10 @@ Memory Instructions
 .. _text-storen:
 .. _text-memory.size:
 .. _text-memory.grow:
+.. _text-memory.fill:
+.. _text-memory.copy:
+.. _text-memory.init:
+.. _text-data.drop:
 
 The offset and alignment immediates to memory instructions are optional.
 The offset defaults to :math:`\T{0}`, the alignment to the storage size of the respective memory access, which is its *natural alignment*.
@@ -230,7 +312,11 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
      \text{i64.store16}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\STORE\K{16}~x~m \\ &&|&
      \text{i64.store32}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\STORE\K{32}~x~m \\ &&|&
      \text{memory.size}~~x{:}\Tmemidx &\Rightarrow& \MEMORYSIZE~x \\ &&|&
-     \text{memory.grow}~~x{:}\Tmemidx &\Rightarrow& \MEMORYGROW~x \\
+     \text{memory.grow}~~x{:}\Tmemidx &\Rightarrow& \MEMORYGROW~x \\ &&|&
+     \text{memory.fill}~~x{:}\Tmemidx &\Rightarrow& \MEMORYFILL~x \\ &&|&
+     \text{memory.copy}~~x{:}\Tmemidx~~y{:}\Tmemidx &\Rightarrow& \MEMORYCOPY~x~y \\ &&|&
+     \text{memory.init}~~x{:}\Tmemidx~~y{:}\Tdataidx_I &\Rightarrow& \MEMORYINIT~x~y \\ &&|&
+     \text{data.drop}~~x{:}\Tdataidx_I &\Rightarrow& \DATADROP~x \\
    \end{array}
 
 
@@ -259,7 +345,16 @@ As an abbreviation, the memory index can be omitted in all memory instructions, 
      \text{memory.size}~~\text{0} \\&
     \text{memory.grow}
        &\equiv&
-     \text{memory.grow}~~\text{0} \\
+     \text{memory.grow}~~\text{0} \\&
+    \text{memory.fill}
+       &\equiv&
+     \text{memory.fill}~~\text{0} \\&
+    \text{memory.copy}
+       &\equiv&
+     \text{memory.copy}~~\text{0}~~\text{0} \\&
+    \text{memory.init}~~x{:}\Telemidx_I
+       &\equiv&
+     \text{memory.init}~~\text{0}~~x{:}\Telemidx_I
    \end{array}
 
 
@@ -435,20 +530,20 @@ Numeric Instructions
      \text{i32.trunc\_f32\_u} &\Rightarrow& \I32.\TRUNC\K{\_}\F32\K{\_u} \\ &&|&
      \text{i32.trunc\_f64\_s} &\Rightarrow& \I32.\TRUNC\K{\_}\F64\K{\_s} \\ &&|&
      \text{i32.trunc\_f64\_u} &\Rightarrow& \I32.\TRUNC\K{\_}\F64\K{\_u} \\ &&|&
-     \text{i32.trunc\_sat_f32\_s} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
-     \text{i32.trunc\_sat_f32\_u} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
-     \text{i32.trunc\_sat_f64\_s} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
-     \text{i32.trunc\_sat_f64\_u} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_u} \\ &&|&
+     \text{i32.trunc\_sat\_f32\_s} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
+     \text{i32.trunc\_sat\_f32\_u} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
+     \text{i32.trunc\_sat\_f64\_s} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
+     \text{i32.trunc\_sat\_f64\_u} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_u} \\ &&|&
      \text{i64.extend\_i32\_s} &\Rightarrow& \I64.\EXTEND\K{\_}\I32\K{\_s} \\ &&|&
      \text{i64.extend\_i32\_u} &\Rightarrow& \I64.\EXTEND\K{\_}\I32\K{\_u} \\ &&|&
      \text{i64.trunc\_f32\_s} &\Rightarrow& \I64.\TRUNC\K{\_}\F32\K{\_s} \\ &&|&
      \text{i64.trunc\_f32\_u} &\Rightarrow& \I64.\TRUNC\K{\_}\F32\K{\_u} \\ &&|&
      \text{i64.trunc\_f64\_s} &\Rightarrow& \I64.\TRUNC\K{\_}\F64\K{\_s} \\ &&|&
      \text{i64.trunc\_f64\_u} &\Rightarrow& \I64.\TRUNC\K{\_}\F64\K{\_u} \\ &&|&
-     \text{i64.trunc\_sat_f32\_s} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
-     \text{i64.trunc\_sat_f32\_u} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
-     \text{i64.trunc\_sat_f64\_s} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
-     \text{i64.trunc\_sat_f64\_u} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_u} \\ &&|&
+     \text{i64.trunc\_sat\_f32\_s} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
+     \text{i64.trunc\_sat\_f32\_u} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
+     \text{i64.trunc\_sat\_f64\_s} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
+     \text{i64.trunc\_sat\_f64\_u} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_u} \\ &&|&
      \text{f32.convert\_i32\_s} &\Rightarrow& \F32.\CONVERT\K{\_}\I32\K{\_s} \\ &&|&
      \text{f32.convert\_i32\_u} &\Rightarrow& \F32.\CONVERT\K{\_}\I32\K{\_u} \\ &&|&
      \text{f32.convert\_i64\_s} &\Rightarrow& \F32.\CONVERT\K{\_}\I64\K{\_s} \\ &&|&

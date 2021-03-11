@@ -413,8 +413,8 @@
 (assert_invalid
   (module
     (memory 0)
-    (func $type-size-i32-vs-empty
-      (memory.grow) (drop)
+    (func $type-size-empty-vs-i32 (result i32)
+      (memory.grow)
     )
   )
   "type mismatch"
@@ -422,9 +422,9 @@
 (assert_invalid
   (module
     (memory 0)
-    (func $type-size-i32-vs-empty-in-block
+    (func $type-size-empty-vs-i32-in-block (result i32)
       (i32.const 0)
-      (block (memory.grow) (drop))
+      (block (result i32) (memory.grow))
     )
   )
   "type mismatch"
@@ -432,9 +432,9 @@
 (assert_invalid
   (module
     (memory 0)
-    (func $type-size-i32-vs-empty-in-loop
+    (func $type-size-empty-vs-i32-in-loop (result i32)
       (i32.const 0)
-      (loop (memory.grow) (drop))
+      (loop (result i32) (memory.grow))
     )
   )
   "type mismatch"
@@ -442,9 +442,9 @@
 (assert_invalid
   (module
     (memory 0)
-    (func $type-size-i32-vs-empty-in-then
+    (func $type-size-empty-vs-i32-in-then (result i32)
       (i32.const 0) (i32.const 0)
-      (if (then (memory.grow) (drop)))
+      (if (result i32) (then (memory.grow)))
     )
   )
   "type mismatch"
@@ -462,8 +462,27 @@
 (assert_invalid
   (module
     (memory 1)
+    (func $type-size-f32-vs-i32 (result i32)
+      (memory.grow (f32.const 0))
+    )
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (memory 1)
+    (func $type-result-i32-vs-empty
+      (memory.grow (i32.const 0))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (memory 1)
     (func $type-result-i32-vs-f32 (result f32)
-      (memory.grow (i32.const 1))
+      (memory.grow (i32.const 0))
     )
   )
   "type mismatch"

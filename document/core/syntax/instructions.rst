@@ -22,11 +22,6 @@ The following sections group instructions into a number of different categories.
    pair: abstract syntax; instruction
 .. _syntax-sx:
 .. _syntax-const:
-.. _syntax-unop:
-.. _syntax-binop:
-.. _syntax-testop:
-.. _syntax-relop:
-.. _syntax-cvtop:
 .. _syntax-iunop:
 .. _syntax-ibinop:
 .. _syntax-itestop:
@@ -144,6 +139,12 @@ where a signedness annotation |sx| distinguishes whether the operands are to be 
 For the other integer instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
 
 
+.. _syntax-unop:
+.. _syntax-binop:
+.. _syntax-testop:
+.. _syntax-relop:
+.. _syntax-cvtop:
+
 Conventions
 ...........
 
@@ -170,6 +171,30 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
+.. index:: ! reference instruction, reference, null
+   pair: abstract syntax; instruction
+.. _syntax-ref.null:
+.. _syntax-ref.is_null:
+.. _syntax-ref.func:
+.. _syntax-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+Instructions in this group are concerned with accessing :ref:`references <syntax-reftype>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \REFNULL~\reftype \\&&|&
+     \REFISNULL \\&&|&
+     \REFFUNC~\funcidx \\
+   \end{array}
+
+These instruction produce a null value, check for a null value, or produce a reference to a given function, respectively.
+
+
 .. index:: ! parametric instruction, value type
    pair: abstract syntax; instruction
 .. _syntax-instr-parametric:
@@ -184,12 +209,16 @@ Instructions in this group can operate on operands of any :ref:`value type <synt
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \DROP \\&&|&
-     \SELECT
+     \SELECT~(\valtype^\ast)^? \\
    \end{array}
 
 The |DROP| instruction simply throws away a single operand.
 
 The |SELECT| instruction selects one of its first two operands based on whether its third operand is zero or not.
+It may include a :ref:`value type <syntax-valtype>` determining the type of these operands. If missing, the operands must be of :ref:`numeric type <syntax-numtype>`.
+
+.. note::
+   In future versions of WebAssembly, the type annotation on |SELECT| may allow for more than a single value being selected at the same time.
 
 
 .. index:: ! variable instruction, local, global, local index, global index
@@ -214,6 +243,49 @@ Variable instructions are concerned with access to :ref:`local <syntax-local>` o
 
 These instructions get or set the values of variables, respectively.
 The |LOCALTEE| instruction is like |LOCALSET| but also returns its argument.
+
+
+.. index:: ! table instruction, table, table index, trap
+   pair: abstract syntax; instruction
+.. _syntax-instr-table:
+.. _syntax-table.get:
+.. _syntax-table.set:
+.. _syntax-table.size:
+.. _syntax-table.grow:
+.. _syntax-table.fill:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+Instructions in this group are concerned with tables :ref:`table <syntax-table>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \TABLEGET~\tableidx \\&&|&
+     \TABLESET~\tableidx \\&&|&
+     \TABLESIZE~\tableidx \\&&|&
+     \TABLEGROW~\tableidx \\&&|&
+     \TABLEFILL~\tableidx \\&&|&
+     \TABLECOPY~\tableidx~\tableidx \\&&|&
+     \TABLEINIT~\tableidx~\elemidx \\&&|&
+     \ELEMDROP~\elemidx \\
+   \end{array}
+
+The |TABLEGET| and |TABLESET| instructions load or store an element in a table, respectively.
+
+The |TABLESIZE| instruction returns the current size of a table.
+The |TABLEGROW| instruction grows table by a given delta and returns the previous size, or :math:`-1` if enough space cannot be allocated.
+It also takes an initialization value for the newly allocated entries.
+
+The |TABLEFILL| instruction sets all entries in a range to a given value.
+
+The |TABLECOPY| instruction copies elements from a source table region to a possibly overlapping destination region; the first index denotes the destination.
+The |TABLEINIT| instruction copies elements from a :ref:`passive element segment <syntax-elem>` into a table.
+The |ELEMDROP| instruction prevents further use of a passive element segment. This instruction is intended to be used as an optimization hint. After an element segment is dropped its elements can no longer be retrieved, so the memory used by this segment may be freed.
+
+An additional instruction that accesses a table is the :ref:`control instruction <syntax-instr-control>` |CALLINDIRECT|.
 
 
 .. index:: ! memory instruction, memory, memory index, page size, little endian, trap
@@ -245,7 +317,11 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
      \K{i}\X{nn}\K{.}\STORE\K{16}~\memidx~\memarg ~|~
      \K{i64.}\STORE\K{32}~\memidx~\memarg \\&&|&
      \MEMORYSIZE~\memidx \\&&|&
-     \MEMORYGROW~\memidx \\
+     \MEMORYGROW~\memidx \\&&|&
+     \MEMORYFILL~\memidx \\&&|&
+     \MEMORYCOPY~\memidx~\memidx \\&&|&
+     \MEMORYINIT~\memidx~\dataidx \\&&|&
+     \DATADROP~\dataidx \\
    \end{array}
 
 Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
@@ -263,7 +339,10 @@ A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside th
 The |MEMORYSIZE| instruction returns the current size of a memory.
 The |MEMORYGROW| instruction grows a memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
 Both instructions operate in units of :ref:`page size <page-size>`.
-
+The |MEMORYFILL| instruction sets all values in a region of a memory to a given byte.
+The |MEMORYCOPY| instruction copies data from a source memory region to a possibly overlapping destination region in another or the same memory.
+The |MEMORYINIT| instruction copies data from a :ref:`passive data segment <syntax-data>` into a memory.
+The |DATADROP| instruction prevents further use of a passive data segment. This instruction is intended to be used as an optimization hint. After a data segment is dropped its data can no longer be retrieved, so the memory used by this segment may be freed.
 
 .. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, result type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
    pair: abstract syntax; instruction
@@ -305,7 +384,7 @@ Instructions in this group affect the flow of control.
      \BRTABLE~\vec(\labelidx)~\labelidx \\&&|&
      \RETURN \\&&|&
      \CALL~\funcidx \\&&|&
-     \CALLINDIRECT~\typeidx \\
+     \CALLINDIRECT~\tableidx~\typeidx \\
    \end{array}
 
 The |NOP| instruction does nothing.
@@ -348,14 +427,9 @@ Forward branches require operands according to the output of the targeted block'
 Backward branches require operands according to the input of the targeted block's type, i.e., represent the values consumed by the restarted block.
 
 The |CALL| instruction invokes another :ref:`function <syntax-func>`, consuming the necessary arguments from the stack and returning the result values of the call.
-The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>`.
-Since tables may contain function elements of heterogeneous type |FUNCREF|,
-the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's immediate, and the call aborted with a :ref:`trap <trap>` if it does not match.
-
-.. note::
-   In the current version of WebAssembly,
-   |CALLINDIRECT| implicitly operates on :ref:`table <syntax-table>` :ref:`index <syntax-tableidx>` :math:`0`.
-   This restriction may be lifted in future versions.
+The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>` that is denoted by a :ref:`table index <syntax-tableidx>` and must have type |FUNCREF|.
+Since it may contain functions of heterogeneous type,
+the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's second immediate, and the call is aborted with a :ref:`trap <trap>` if it does not match.
 
 
 .. index:: ! expression, constant, global, offset, element, data, instruction

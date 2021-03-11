@@ -19,8 +19,9 @@ WINMAKE =	winmake.bat
 
 DIRS =		util syntax binary text valid runtime exec script host main
 LIBS =		bigarray
-FLAGS = 	-cflags '-w +a-4-27-42-44-45 -warn-error +a-3'
-OCB =		ocamlbuild $(FLAGS) $(DIRS:%=-I %) $(LIBS:%=-libs %)
+FLAGS = 	-lexflags -ml -cflags '-w +a-4-27-42-44-45 -warn-error +a-3'
+OCBA =		ocamlbuild $(FLAGS) $(DIRS:%=-I %)
+OCB =		$(OCBA) $(LIBS:%=-libs %)
 JS =		# set to JS shell command to run JS tests
 
 
@@ -32,8 +33,8 @@ default:	opt
 debug:		unopt
 opt:		$(OPT)
 unopt:		$(UNOPT)
-libopt:		_build/$(LIB).cmx
-libunopt:	_build/$(LIB).cmo
+libopt:		_build/$(LIB).cmx _build/$(LIB).cmxa
+libunopt:	_build/$(LIB).cmo _build/$(LIB).cma
 jslib:		$(JSLIB)
 all:		unopt opt libunopt libopt test
 land:		$(WINMAKE) all
@@ -68,6 +69,7 @@ main.native:	_tags
 
 # Building library
 
+FILES =		$(shell ls $(DIRS:%=%/*.ml*))
 PACK =		$(shell echo `echo $(LIB) | sed 's/^\(.\).*$$/\\1/g' | tr [:lower:] [:upper:]``echo $(LIB) | sed 's/^.\(.*\)$$/\\1/g'`)
 
 .INTERMEDIATE:	$(LIB).mlpack
@@ -78,11 +80,21 @@ $(LIB).mlpack:	$(DIRS)
 		| sort | uniq \
 		>$@
 
-_build/$(LIB).cmo: $(LIB).mlpack _tags
+.INTERMEDIATE: $(LIB).mllib
+$(LIB).mllib:
+		echo Wasm >$@
+
+_build/$(LIB).cmo: $(FILES) $(LIB).mlpack _tags Makefile
 		$(OCB) -quiet $(LIB).cmo
 
-_build/$(LIB).cmx: $(LIB).mlpack _tags
+_build/$(LIB).cmx: $(FILES) $(LIB).mlpack _tags Makefile
 		$(OCB) -quiet $(LIB).cmx
+
+_build/$(LIB).cma: $(FILES) $(LIB).mlpack _tags Makefile
+		$(OCBA) -quiet $(LIB).cma
+
+_build/$(LIB).cmxa: $(FILES) $(LIB).mlpack _tags Makefile
+		$(OCBA) -quiet $(LIB).cmxa
 
 
 # Building JavaScript library
@@ -112,22 +124,36 @@ $(WINMAKE):	clean
 
 # Executing test suite
 
-.PHONY:		test debugtest
+TESTDIR =	../test/core
+TESTFILES =	$(shell cd $(TESTDIR); ls *.wast)
+TESTS =		$(TESTFILES:%.wast=%)
+
+.PHONY:		test debugtest partest
 
 test:		$(OPT)
-		../test/core/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',)
+		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',)
 debugtest:	$(UNOPT)
-		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',)
+		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',)
 
 test/%:		$(OPT)
-		../test/core/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@:test/%=../test/core/%.wast)
+		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$(@F).wast
 debugtest/%:	$(UNOPT)
-		../test/core/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(@:debugtest/%=../test/core/%.wast)
+		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$(@F).wast
 
 run/%:		$(OPT)
-		./$(OPT) $(@:run/%=../test/core/%.wast)
+		./$(OPT) $(TESTDIR)/$(@F).wast
 debug/%:	$(UNOPT)
-		./$(UNOPT) $(@:debug/%=../test/core/%.wast)
+		./$(UNOPT) $(TESTDIR)/$(@F).wast
+
+partest: 	$(TESTS:%=quiettest/%)
+		@echo All tests passed.
+
+quiettest/%:	$(OPT)
+		@ ( \
+		  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@F:%=$(TESTDIR)/%.wast) && \
+		  rm $(@F).out \
+		) || \
+		cat $(@F).out || rm $(@F).out || exit 1
 
 
 # Miscellaneous targets

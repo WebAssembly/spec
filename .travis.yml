@@ -34,5 +34,9 @@ os: linux
 
 env:
   global:
+<<<<<<< HEAD
     - ENCRYPTION_LABEL: "85778253acbe"
+=======
+    - ENCRYPTION_LABEL: "5d9ec396f41d"
+>>>>>>> reftype/master
     - COMMIT_AUTHOR_EMAIL: "noreply@webassembly.org"
