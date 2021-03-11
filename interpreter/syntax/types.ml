@@ -184,7 +184,7 @@ let string_of_name n =
 let rec string_of_var =
   let inner = ref false in
   function
-  | SynVar x -> Int32.to_string x
+  | SynVar x -> I32.to_string_u x
   | SemVar x ->
     if !inner then "..." else
     ( inner := true;
@@ -208,7 +208,7 @@ and string_of_heap_type = function
   | FuncHeapType -> "func"
   | ExternHeapType -> "extern"
   | DefHeapType x -> string_of_var x
-  | BotHeapType -> "unreachable"
+  | BotHeapType -> "something"
 
 and string_of_ref_type = function
   | (nul, t) ->
@@ -217,7 +217,7 @@ and string_of_ref_type = function
 and string_of_value_type = function
   | NumType t -> string_of_num_type t
   | RefType t -> string_of_ref_type t
-  | BotType -> "(unreachable)"
+  | BotType -> "(something)"
 
 and string_of_result_type ts =
   "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
