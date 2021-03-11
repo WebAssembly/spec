@@ -91,6 +91,10 @@ struct
 
   open Types
 
+  let var_type = function
+    | SynVar x -> vs33 x
+    | SemVar _ -> assert false
+
   let num_type = function
     | I32Type -> vs7 (-0x01)
     | I64Type -> vs7 (-0x02)
@@ -100,8 +104,7 @@ struct
   let heap_type = function
     | FuncHeapType -> vs7 (-0x10)
     | ExternHeapType -> vs7 (-0x11)
-    | DefHeapType (SynVar x) -> vs33 x
-    | DefHeapType (SemVar _) -> assert false
+    | DefHeapType x -> var_type x
     | BotHeapType -> assert false
 
   let ref_type = function
