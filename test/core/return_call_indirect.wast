@@ -144,6 +144,27 @@
     )
   )
 
+  ;; Multiple tables
+
+  (table $tab2 funcref (elem $tab-f1))
+  (table $tab3 funcref (elem $tab-f2))
+
+  (func $tab-f1 (result i32) (i32.const 0x133))
+  (func $tab-f2 (result i32) (i32.const 0x134))
+
+  (func (export "call-tab") (param $i i32) (result i32)
+    (if (i32.eq (local.get $i) (i32.const 0))
+      (then (return_call_indirect (type $out-i32) (i32.const 0)))
+    )
+    (if (i32.eq (local.get $i) (i32.const 1))
+      (then (return_call_indirect 1 (type $out-i32) (i32.const 0)))
+    )
+    (if (i32.eq (local.get $i) (i32.const 2))
+      (then (return_call_indirect $tab3 (type $out-i32) (i32.const 0)))
+    )
+    (i32.const 0)
+  )
+
   ;; Recursion
 
   (func $fac (export "fac") (type $over-i64)
@@ -222,6 +243,10 @@
 (assert_return (invoke "dispatch-structural" (i32.const 17)) (i64.const 9))
 (assert_trap (invoke "dispatch-structural" (i32.const 11)) "indirect call type mismatch")
 (assert_trap (invoke "dispatch-structural" (i32.const 16)) "indirect call type mismatch")
+
+(assert_return (invoke "call-tab" (i32.const 0)) (i32.const 0x132))
+(assert_return (invoke "call-tab" (i32.const 1)) (i32.const 0x133))
+(assert_return (invoke "call-tab" (i32.const 2)) (i32.const 0x134))
 
 (assert_return (invoke "fac" (i64.const 0)) (i64.const 1))
 (assert_return (invoke "fac" (i64.const 1)) (i64.const 1))
