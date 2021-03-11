@@ -1654,13 +1654,13 @@
 <td><p><a class="reference internal" href="../valid/instructions.html#valid-cvtop"><span class="std std-ref">validation</span></a></p></td>
 <td><p><a class="reference internal" href="../exec/instructions.html#exec-cvtop"><span class="std std-ref">execution</span></a>, <a class="reference internal" href="../exec/numerics.html#op-trunc-sat-u"><span class="std std-ref">operator</span></a></p></td>
 </tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.init}}\)</span></p></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.init}}~x\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\def\mathdef493#1{\mathtt{0x#1}}\mathdef493{FC}~\def\mathdef494#1{\mathtt{0x#1}}\mathdef494{08}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span></p></td>
 <td><p><a class="reference internal" href="../valid/instructions.html#valid-memory-init"><span class="std std-ref">validation</span></a></p></td>
 <td><p><a class="reference internal" href="../exec/instructions.html#exec-memory-init"><span class="std std-ref">execution</span></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{data.drop}}\)</span></p></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{data.drop}}~x\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\def\mathdef495#1{\mathtt{0x#1}}\mathdef495{FC}~\def\mathdef496#1{\mathtt{0x#1}}\mathdef496{09}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span></p></td>
 <td><p><a class="reference internal" href="../valid/instructions.html#valid-data-drop"><span class="std std-ref">validation</span></a></p></td>
@@ -1678,37 +1678,37 @@
 <td><p><a class="reference internal" href="../valid/instructions.html#valid-memory-fill"><span class="std std-ref">validation</span></a></p></td>
 <td><p><a class="reference internal" href="../exec/instructions.html#exec-memory-fill"><span class="std std-ref">execution</span></a></p></td>
 </tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.init}}\)</span></p></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.init}}~x~y\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\def\mathdef501#1{\mathtt{0x#1}}\mathdef501{FC}~\def\mathdef502#1{\mathtt{0x#1}}\mathdef502{0C}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span></p></td>
 <td><p><a class="reference internal" href="../valid/instructions.html#valid-table-init"><span class="std std-ref">validation</span></a></p></td>
 <td><p><a class="reference internal" href="../exec/instructions.html#exec-table-init"><span class="std std-ref">execution</span></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{elem.drop}}\)</span></p></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{elem.drop}}~x\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\def\mathdef503#1{\mathtt{0x#1}}\mathdef503{FC}~\def\mathdef504#1{\mathtt{0x#1}}\mathdef504{0D}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span></p></td>
 <td><p><a class="reference internal" href="../valid/instructions.html#valid-elem-drop"><span class="std std-ref">validation</span></a></p></td>
 <td><p><a class="reference internal" href="../exec/instructions.html#exec-elem-drop"><span class="std std-ref">execution</span></a></p></td>
 </tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.copy}}\)</span></p></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.copy}}~x~y\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\def\mathdef505#1{\mathtt{0x#1}}\mathdef505{FC}~\def\mathdef506#1{\mathtt{0x#1}}\mathdef506{0E}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span></p></td>
 <td><p><a class="reference internal" href="../valid/instructions.html#valid-table-copy"><span class="std std-ref">validation</span></a></p></td>
 <td><p><a class="reference internal" href="../exec/instructions.html#exec-table-copy"><span class="std std-ref">execution</span></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.grow}}\)</span></p></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.grow}}~x\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\def\mathdef507#1{\mathtt{0x#1}}\mathdef507{FC}~\def\mathdef508#1{\mathtt{0x#1}}\mathdef508{0F}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\([t~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span></p></td>
 <td><p><a class="reference internal" href="../valid/instructions.html#valid-table-grow"><span class="std std-ref">validation</span></a></p></td>
 <td><p><a class="reference internal" href="../exec/instructions.html#exec-table-grow"><span class="std std-ref">execution</span></a></p></td>
 </tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.size}}\)</span></p></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.size}}~x\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\def\mathdef509#1{\mathtt{0x#1}}\mathdef509{FC}~\def\mathdef510#1{\mathtt{0x#1}}\mathdef510{10}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span></p></td>
 <td><p><a class="reference internal" href="../valid/instructions.html#valid-table-size"><span class="std std-ref">validation</span></a></p></td>
 <td><p><a class="reference internal" href="../exec/instructions.html#exec-table-size"><span class="std std-ref">execution</span></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.fill}}\)</span></p></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.fill}}~x\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\def\mathdef511#1{\mathtt{0x#1}}\mathdef511{FC}~\def\mathdef512#1{\mathtt{0x#1}}\mathdef512{11}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~t~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span></p></td>
 <td><p><a class="reference internal" href="../valid/instructions.html#valid-table-fill"><span class="std std-ref">validation</span></a></p></td>
