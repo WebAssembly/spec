@@ -90,10 +90,10 @@ _build/$(LIB).cmo: $(FILES) $(LIB).mlpack _tags Makefile
 _build/$(LIB).cmx: $(FILES) $(LIB).mlpack _tags Makefile
 		$(OCB) -quiet $(LIB).cmx
 
-_build/$(LIB).cma: $(FILES) $(LIB).mlpack _tags Makefile
+_build/$(LIB).cma: $(FILES) $(LIB).mllib _tags Makefile
 		$(OCBA) -quiet $(LIB).cma
 
-_build/$(LIB).cmxa: $(FILES) $(LIB).mlpack _tags Makefile
+_build/$(LIB).cmxa: $(FILES) $(LIB).mllib _tags Makefile
 		$(OCBA) -quiet $(LIB).cmxa
 
 
