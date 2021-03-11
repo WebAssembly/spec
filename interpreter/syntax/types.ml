@@ -13,8 +13,8 @@ and heap_type =
   FuncHeapType | ExternHeapType | DefHeapType of var | BotHeapType
 
 and value_type = NumType of num_type | RefType of ref_type | BotType
-and stack_type = value_type list
-and func_type = FuncType of stack_type * stack_type
+and result_type = value_type list
+and func_type = FuncType of result_type * result_type
 and def_type = FuncDefType of func_type
 
 type 'a limits = {min : 'a; max : 'a option}
@@ -219,14 +219,12 @@ and string_of_value_type = function
   | RefType t -> string_of_ref_type t
   | BotType -> "(unreachable)"
 
-and string_of_stack_type = function
-  | [t] -> string_of_value_type t
-  | ts -> "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
-
+and string_of_result_type ts =
+  "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
 
 and string_of_func_type = function
   | FuncType (ins, out) ->
-    string_of_stack_type ins ^ " -> " ^ string_of_stack_type out
+    string_of_result_type ins ^ " -> " ^ string_of_result_type out
 
 and string_of_def_type = function
   | FuncDefType ft -> "func " ^ string_of_func_type ft

@@ -166,11 +166,11 @@ let ref_type s =
 let value_type s =
   either (fun s -> NumType (num_type s)) (fun s -> RefType (ref_type s)) s
 
-let stack_type s = vec value_type s
+let result_type s = vec value_type s
 
 let func_type s =
-  let ins = stack_type s in
-  let out = stack_type s in
+  let ins = result_type s in
+  let out = result_type s in
   FuncType (ins, out)
 
 let def_type s =
@@ -793,21 +793,28 @@ let data_count_section s =
 
 let custom size s =
   let start = pos s in
-  let _id = name s in
-  skip (size - (pos s - start)) s;
-  true
+  let id = name s in
+  let bs = get_string (size - (pos s - start)) s in
+  Some (id, bs)
 
 let custom_section s =
-  section_with_size `CustomSection custom false s
+  section_with_size `CustomSection custom None s
+
+let non_custom_section s =
+  match id s with
+  | None | Some `CustomSection -> None
+  | _ -> skip 1 s; sized skip s; Some ()
 
 
 (* Modules *)
 
-let rec iterate f s = if f s then iterate f s
+let rec iterate f s = if f s <> None then iterate f s
+
+let magic = 0x6d736100l
 
 let module_ s =
-  let magic = u32 s in
-  require (magic = 0x6d736100l) s 0 "magic header not detected";
+  let header = u32 s in
+  require (header = magic) s 0 "magic header not detected";
   let version = u32 s in
   require (version = Encode.version) s 4 "unknown binary version";
   iterate custom_section s;
@@ -850,3 +857,18 @@ let module_ s =
 
 
 let decode name bs = at module_ (stream name bs)
+
+let all_custom tag s =
+  let header = u32 s in
+  require (header = magic) s 0 "magic header not detected";
+  let version = u32 s in
+  require (version = Encode.version) s 4 "unknown binary version";
+  let rec collect () =
+    iterate non_custom_section s;
+    match custom_section s with
+    | None -> []
+    | Some (n, s) when n = tag -> s :: collect ()
+    | Some _ -> collect ()
+  in collect ()
+
+let decode_custom tag name bs = all_custom tag (stream name bs)

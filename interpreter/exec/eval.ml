@@ -529,7 +529,7 @@ let rec step (c : config) : config =
 
       | _ ->
         let s1 = string_of_values (List.rev vs) in
-        let s2 = string_of_stack_type (List.map type_of_value (List.rev vs)) in
+        let s2 = string_of_result_type (List.map type_of_value (List.rev vs)) in
         Crash.error e.at
           ("missing or ill-typed operand on stack (" ^ s1 ^ " : " ^ s2 ^ ")")
       )

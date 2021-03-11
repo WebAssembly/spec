@@ -26,7 +26,7 @@ type context =
   datas : unit list;
   locals : value_type list;
   results : value_type list;
-  labels : stack_type list;
+  labels : result_type list;
   refs : Free.t;
 }
 
@@ -95,10 +95,13 @@ let check_value_type (c : context) (t : value_type) at =
   | RefType t' -> check_ref_type c t' at
   | BotType -> ()
 
+let check_result_type (c : context) (ts : result_type) at =
+  List.iter (fun t -> check_value_type c t at) ts
+
 let check_func_type (c : context) (ft : func_type) at =
   let FuncType (ts1, ts2) = ft in
-  List.iter (fun t -> check_value_type c t at) ts1;
-  List.iter (fun t -> check_value_type c t at) ts2
+  check_result_type c ts1 at;
+  check_result_type c ts2 at
 
 let check_table_type (c : context) (tt : table_type) at =
   let TableType (lim, t) = tt in
@@ -136,8 +139,8 @@ let check_type (c : context) (t : type_) =
  *)
 
 type ellipses = NoEllipses | Ellipses
-type infer_stack_type = ellipses * value_type list
-type op_type = {ins : infer_stack_type; outs : infer_stack_type}
+type infer_result_type = ellipses * value_type list
+type op_type = {ins : infer_result_type; outs : infer_result_type}
 
 let stack ts = (NoEllipses, ts)
 let (-->) ts1 ts2 = {ins = NoEllipses, ts1; outs = NoEllipses, ts2}
@@ -148,8 +151,8 @@ let check_stack (c : context) ts1 ts2 at =
   require
     (List.length ts1 = List.length ts2 &&
       List.for_all2 (match_value_type c.types []) ts1 ts2) at
-    ("type mismatch: instruction requires " ^ string_of_stack_type ts2 ^
-     " but stack has " ^ string_of_stack_type ts1)
+    ("type mismatch: instruction requires " ^ string_of_result_type ts2 ^
+     " but stack has " ^ string_of_result_type ts1)
 
 let pop c (ell1, ts1) (ell2, ts2) at =
   let n1 = List.length ts1 in
@@ -260,7 +263,7 @@ let check_memop (c : context) (memop : 'a memop) get_sz at =
  *   es : instr list
  *   v  : value
  *   t  : value_type var
- *   ts : stack_type
+ *   ts : result_type
  *   x  : variable
  *
  * Note: To deal with the non-determinism in some of the declarative rules,
@@ -285,7 +288,7 @@ let check_local (c : context) (defaults : bool) (t : local) =
   require (not defaults || defaultable_value_type t.it) t.at
     "non-defaultable local type"
 
-let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
+let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type =
   match e.it with
   | Unreachable ->
     [] -->... []
@@ -302,7 +305,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
 
   | Select (Some ts) ->
     require (List.length ts = 1) e.at "invalid result arity other than 1 is not (yet) allowed";
-    List.iter (fun t -> check_value_type c t e.at) ts;
+    check_result_type c ts e.at;
     (ts @ ts @ [NumType I32Type]) --> ts
 
   | Block (bt, es) ->
@@ -382,10 +385,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     (match peek_ref 0 s e.at with
     | (nul, DefHeapType (SynVar x)) ->
       let FuncType (ts1, ts2) = func_type c (x @@ e.at) in
-      require (match_stack_type c.types [] ts2 c.results) e.at
+      require (match_result_type c.types [] ts2 c.results) e.at
         ("type mismatch: current function requires result type " ^
-         string_of_stack_type c.results ^
-         " but callee returns " ^ string_of_stack_type ts2);
+         string_of_result_type c.results ^
+         " but callee returns " ^ string_of_result_type ts2);
       (ts1 @ [RefType (nul, DefHeapType (SynVar x))]) -->... []
     | (_, BotHeapType) as rt ->
       [RefType rt] -->... []
@@ -548,8 +551,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let t1, t2 = type_cvtop e.at cvtop in
     [NumType t1] --> [NumType t2]
 
-and check_seq (c : context) (s : infer_stack_type) (es : instr list)
-  : infer_stack_type =
+and check_seq (c : context) (s : infer_result_type) (es : instr list)
+  : infer_result_type =
   match es with
   | [] ->
     s
@@ -565,8 +568,8 @@ and check_block (c : context) (es : instr list) (ft : func_type) at =
   let s = check_seq c (stack ts1) es in
   let s' = pop c (stack ts2) s at in
   require (snd s' = []) at
-    ("type mismatch: block requires " ^ string_of_stack_type ts2 ^
-     " but stack has " ^ string_of_stack_type (snd s))
+    ("type mismatch: block requires " ^ string_of_result_type ts2 ^
+     " but stack has " ^ string_of_result_type (snd s))
 
 
 (* Functions & Constants *)
