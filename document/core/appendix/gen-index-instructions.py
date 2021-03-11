@@ -333,6 +333,7 @@ INSTRUCTIONS = [
     Instruction(r'\TABLEFILL~x', r'\hex{FC}~\hex{11}', r'[\I32~t~\I32] \to []', r'valid-table.fill', r'exec-table.fill'),
 ]
 
+
 def ColumnWidth(n):
     return max([len(instr[n]) for instr in INSTRUCTIONS])
 
