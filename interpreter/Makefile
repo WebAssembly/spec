@@ -80,7 +80,7 @@ $(LIB).mlpack:	$(DIRS)
 		| sort | uniq \
 		>$@
 
-.INTERMEDIATE: $(LIB).mllib
+.INTERMEDIATE:	$(LIB).mllib
 $(LIB).mllib:
 		echo Wasm >$@
 
