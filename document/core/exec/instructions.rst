@@ -650,11 +650,11 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 
 3. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
-4. Let :math:`d_2^M` be the result of computing :math:`\narrow^{\sx}_{M,N}(\lanes_{t_1\K{x}M}(c_2))`.
+4. Let :math:`d_2^M` be the result of computing :math:`\narrow^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_2))`.
 
 5. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-6. Let :math:`d_1^M` be the result of computing :math:`\narrow^{\sx}_{M,N}(\lanes_{t_1\K{x}M}(c_1))`.
+6. Let :math:`d_1^M` be the result of computing :math:`\narrow^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))`.
 
 7. Let :math:`c` be the result of :math:`\lanes^{-1}_{t_2\K{x}N}(d_1^M~d_2^M)`.
 
@@ -667,8 +667,8 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & d_1^M = \narrow^{\sx}_{M,N}( \lanes_{t_1\K{x}M}(c_1)) \\
-     \wedge & d_2^M = \narrow^{\sx}_{M,N}( \lanes_{t_1\K{x}M}(c_2)) \\
+     (\iff & d_1^M = \narrow^{\sx}_{|t_1|,|t_2|}( \lanes_{t_1\K{x}M}(c_1)) \\
+     \wedge & d_2^M = \narrow^{\sx}_{|t_1|,|t_2|}( \lanes_{t_1\K{x}M}(c_2)) \\
      \wedge & c = \lanes^{-1}_{t_2\K{x}N}(d_1^M~d_2^M)
      \end{array}
    \end{array}
@@ -685,7 +685,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 
 3. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{M,N}(i^\ast))`
+4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast))`
 
 5. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
@@ -696,7 +696,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{M,N}(\lanes_{t_1\K{x}M}(c_1)))
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)))
      \end{array}
    \end{array}
 
@@ -716,7 +716,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 
    a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[N \slice N]`.
 
-5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{M,N}(i^\ast))`
+5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(i^\ast))`
 
 6. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
@@ -727,7 +727,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{M,N}(\lanes_{t_1\K{x}M}(c_1)[0 \slice N]))
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[0 \slice N]))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -735,7 +735,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{M,N}(\lanes_{t_1\K{x}M}(c_1)[N \slice N]))
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[N \slice N]))
      \end{array}
    \end{array}
 
@@ -749,7 +749,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 
 3. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{M,N}(i^\ast)~0^M)`
+4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(i^\ast)~0^M)`
 
 5. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
@@ -760,7 +760,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{M,N}(\lanes_{t_1\K{x}M}(c_1))~0^N)
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^N)
      \end{array}
    \end{array}
 
@@ -776,7 +776,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`(i_1~i_2)^\ast` be the result of computing :math:`\imul_{32}(\extend^s_{16,32}(\lanes_{\I16X8}(c_1)), \extend^s_{16,32}(\lanes_{\I16X8}(c_2)))`
+4. Let :math:`(i_1~i_2)^\ast` be the result of computing :math:`\imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2)))`
 
 5. Let :math:`j^\ast` be the result of computing :math:`\iadd_{32}(i_1, i_2)^\ast`.
 
@@ -791,7 +791,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & (i_1~i_2)^\ast = \imul_{32}(\extend^s_{16,32}(\lanes_{\I16X8}(c_1)), \extend^s_{16,32}(\lanes_{\I16X8}(c_2))) \\
+     (\iff & (i_1~i_2)^\ast = \imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2))) \\
      \wedge & j^\ast = \iadd_{32}(i_1, i_2)^\ast \\
      \wedge & c = \lanes^{-1}_{\I32X4}(j^\ast)
      \end{array}
@@ -821,7 +821,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 
    b. Let :math:`j^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_2)[N \slice N]`.
 
-6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{M,N}(i^\ast), \extend^{\sx}_{M,N}(j^\ast)))`
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))`
 
 8. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
@@ -834,7 +834,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[0 \slice N] \\
      \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[0 \slice N] \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{M,N}(i^\ast), \extend^{\sx}_{M,N}(j^\ast)))
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -844,7 +844,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[N \slice N] \\
      \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[N \slice N] \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{M,N}(i^\ast), \extend^{\sx}_{M,N}(j^\ast)))
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))
      \end{array}
    \end{array}
 
@@ -858,7 +858,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. Let :math:`(i_1~i_2)^\ast` be the sequence :math:`\extend^{\sx}_{M,N}(\lanes_{t_1\K{x}M}(c_1))`.
+3. Let :math:`(i_1~i_2)^\ast` be the sequence :math:`\extend^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))`.
 
 4. Let :math:`j^\ast` be the result of computing :math:`\iadd_{N}(i_1, i_2)^\ast`.
 
@@ -873,7 +873,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & (i_1~i_2)^\ast = \extend^{\sx}_{M,N}(\lanes_{t_1\K{x}M}(c_1)) \\
+     (\iff & (i_1~i_2)^\ast = \extend^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)) \\
      \wedge & j^\ast = \iadd_{N}(i_1, i_2)^\ast \\
      \wedge & c = \lanes^{-1}_{t_2\K{x}N}(j^\ast)
      \end{array}
