@@ -673,7 +673,7 @@ let rec step (c : config) : config =
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayGet (x, exto), Num (I32 i) :: Ref Data.(DataRef (Array (_, _, fs))) :: vs'
-        when i >= Lib.List32.length fs ->
+        when I32.ge_u i (Lib.List32.length fs) ->
         vs', [Trapping "out of bounds array access" @@ e.at]
 
       | ArrayGet (x, exto), Num (I32 i) :: Ref Data.(DataRef (Array (_, _, fs))) :: vs' ->
@@ -684,7 +684,7 @@ let rec step (c : config) : config =
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArraySet x, v :: Num (I32 i) :: Ref (Data.DataRef (Data.Array (_, _, fs))) :: vs'
-        when i >= Lib.List32.length fs ->
+        when I32.ge_u i (Lib.List32.length fs) ->
         vs', [Trapping "out of bounds array access" @@ e.at]
 
       | ArraySet x, v :: Num (I32 i) :: Ref (Data.DataRef (Data.Array (_, _, fs))) :: vs' ->

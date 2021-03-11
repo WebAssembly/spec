@@ -54,24 +54,24 @@ let label (c : context) x = lookup "label" c.labels x
 let func_type (c : context) x =
   match type_ c x with
   | FuncDefType ft -> ft
-  | _ -> error x.at ("non-function type " ^ Int32.to_string x.it)
+  | _ -> error x.at ("non-function type " ^ I32.to_string_u x.it)
 
 let struct_type (c : context) x =
   match type_ c x with
   | StructDefType st -> st
-  | _ -> error x.at ("non-structure type " ^ Int32.to_string x.it)
+  | _ -> error x.at ("non-structure type " ^ I32.to_string_u x.it)
 
 let array_type (c : context) x =
   match type_ c x with
   | ArrayDefType at -> at
-  | _ -> error x.at ("non-array type " ^ Int32.to_string x.it)
+  | _ -> error x.at ("non-array type " ^ I32.to_string_u x.it)
 
 let func (c : context) x = func_type c (func_var c x @@ x.at)
 
 let refer category (s : Free.Set.t) x =
   if not (Free.Set.mem x.it s) then
     error x.at
-      ("undeclared " ^ category ^ " reference " ^ Int32.to_string x.it)
+      ("undeclared " ^ category ^ " reference " ^ I32.to_string_u x.it)
 
 let refer_func (c : context) x = refer "function" c.refs.Free.funcs x
 
@@ -677,7 +677,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
   | StructGet (x, y, exto) ->
     let StructType fts = struct_type c x in
     require (y.it < Lib.List32.length fts) y.at
-      ("unknown field " ^ Int32.to_string y.it);
+      ("unknown field " ^ I32.to_string_u y.it);
     let FieldType (st, _) = Lib.List32.nth fts y.it in
     require ((exto <> None) == is_packed_storage_type st) y.at
       ("field is " ^ (if exto = None then "packed" else "unpacked"));
@@ -687,7 +687,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
   | StructSet (x, y) ->
     let StructType fts = struct_type c x in
     require (y.it < Lib.List32.length fts) y.at
-      ("unknown field " ^ Int32.to_string y.it);
+      ("unknown field " ^ I32.to_string_u y.it);
     let FieldType (st, mut) = Lib.List32.nth fts y.it in
     require (mut == Mutable) y.at "field is immutable";
     let t = unpacked_storage_type st in
