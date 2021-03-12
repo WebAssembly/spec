@@ -38,9 +38,12 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Tables*: the list of tables declared in the current module, represented by their table type.
 * *Memories*: the list of memories declared in the current module, represented by their memory type.
 * *Globals*: the list of globals declared in the current module, represented by their global type.
+* *Element Segments*: the list of element segments declared in the current module, represented by their element type.
+* *Data Segments*: the list of data segments declared in the current module, each represented by an |ok| entry.
 * *Locals*: the list of locals declared in the current function (including parameters), represented by their value type.
 * *Labels*: the stack of labels accessible from the current position, represented by their result type.
 * *Return*: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.
+* *References*: the list of :ref:`function indices <syntax-funcidx>` that occur in the module outside functions and can hence be used to form references inside them.
 
 In other words, a context contains a sequence of suitable :ref:`types <syntax-type>` for each :ref:`index space <syntax-index>`,
 describing each defined entry in that space.
@@ -58,9 +61,12 @@ More concretely, contexts are defined as :ref:`records <notation-record>` :math:
         & \CTABLES & \tabletype^\ast, \\
         & \CMEMS & \memtype^\ast, \\
         & \CGLOBALS & \globaltype^\ast, \\
+        & \CELEMS & \reftype^\ast, \\
+        & \CDATAS & {\ok}^\ast, \\
         & \CLOCALS & \valtype^\ast, \\
         & \CLABELS & \resulttype^\ast, \\
-        & \CRETURN & \resulttype^? ~\} \\
+        & \CRETURN & \resulttype^?, \\
+        & \CREFS & \funcidx^\ast ~\} \\
      \end{array}
    \end{array}
 

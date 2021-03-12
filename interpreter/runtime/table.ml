@@ -1,54 +1,60 @@
 open Types
+open Values
 
 type size = int32
 type index = int32
+type count = int32
 
-type elem = ..
-type elem += Uninitialized
-
-type table' = elem array
-type table =
-  {mutable content : table'; max : size option; elem_type : elem_type}
+type table = {mutable ty : table_type; mutable content : ref_ array}
 type t = table
 
+exception Type
 exception Bounds
 exception SizeOverflow
 exception SizeLimit
+exception OutOfMemory
 
-let within_limits size = function
+let valid_limits {min; max} =
+  match max with
   | None -> true
-  | Some max -> I32.le_u size max
+  | Some m -> I32.le_u min m
 
-let create size =
-  try Lib.Array32.make size Uninitialized
-  with Invalid_argument _ -> raise Out_of_memory
+let create size r =
+  try Lib.Array32.make size r
+  with Out_of_memory | Invalid_argument _ -> raise OutOfMemory
 
-let alloc (TableType ({min; max}, elem_type)) =
-  assert (within_limits min max);
-  {content = create min; max; elem_type}
+let alloc (TableType (lim, _) as ty) r =
+  if not (valid_limits lim) then raise Type;
+  {ty; content = create lim.min r}
 
 let size tab =
   Lib.Array32.length tab.content
 
 let type_of tab =
-  TableType ({min = size tab; max = tab.max}, tab.elem_type)
+  tab.ty
 
-let grow tab delta =
-  let old_size = size tab in
+let grow tab delta r =
+  let TableType (lim, t) = tab.ty in
+  assert (lim.min = size tab);
+  let old_size = lim.min in
   let new_size = Int32.add old_size delta in
   if I32.gt_u old_size new_size then raise SizeOverflow else
-  if not (within_limits new_size tab.max) then raise SizeLimit else
-  let after = create new_size in
+  let lim' = {lim with min = new_size} in
+  if not (valid_limits lim') then raise SizeLimit else
+  let after = create new_size r in
   Array.blit tab.content 0 after 0 (Array.length tab.content);
+  tab.ty <- TableType (lim', t);
   tab.content <- after
 
 let load tab i =
   try Lib.Array32.get tab.content i with Invalid_argument _ -> raise Bounds
 
-let store tab i v =
-  try Lib.Array32.set tab.content i v with Invalid_argument _ -> raise Bounds
+let store tab i r =
+  let TableType (lim, t) = tab.ty in
+  if type_of_ref r <> t then raise Type;
+  try Lib.Array32.set tab.content i r with Invalid_argument _ -> raise Bounds
 
-let blit tab offset elems =
-  let data = Array.of_list elems in
+let blit tab offset rs =
+  let data = Array.of_list rs in
   try Lib.Array32.blit data 0l tab.content offset (Lib.Array32.length data)
   with Invalid_argument _ -> raise Bounds

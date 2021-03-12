@@ -20,15 +20,17 @@ Construct                                        Judgement
 :ref:`Memory type <valid-memtype>`               :math:`\vdashmemtype \memtype \ok`
 :ref:`Global type <valid-globaltype>`            :math:`\vdashglobaltype \globaltype \ok`
 :ref:`External type <valid-externtype>`          :math:`\vdashexterntype \externtype \ok`
-:ref:`Instruction <valid-instr>`                 :math:`S;C \vdashinstr \instr : \functype`
-:ref:`Instruction sequence <valid-instr-seq>`    :math:`S;C \vdashinstrseq \instr^\ast : \functype`
+:ref:`Instruction <valid-instr>`                 :math:`S;C \vdashinstr \instr : \stacktype`
+:ref:`Instruction sequence <valid-instr-seq>`    :math:`S;C \vdashinstrseq \instr^\ast : \stacktype`
 :ref:`Expression <valid-expr>`                   :math:`C \vdashexpr \expr : \resulttype`
 :ref:`Function <valid-func>`                     :math:`C \vdashfunc \func : \functype`
 :ref:`Table <valid-table>`                       :math:`C \vdashtable \table : \tabletype`
 :ref:`Memory <valid-mem>`                        :math:`C \vdashmem \mem : \memtype`
 :ref:`Global <valid-global>`                     :math:`C \vdashglobal \global : \globaltype`
-:ref:`Element segment <valid-elem>`              :math:`C \vdashelem \elem \ok`
+:ref:`Element segment <valid-elem>`              :math:`C \vdashelem \elem : \reftype`
+:ref:`Element mode <valid-elemmode>`             :math:`C \vdashelemmode \elemmode : \reftype`
 :ref:`Data segment <valid-data>`                 :math:`C \vdashdata \data \ok`
+:ref:`Data mode <valid-datamode>`                :math:`C \vdashdatamode \datamode \ok`
 :ref:`Start function <valid-start>`              :math:`C \vdashstart \start \ok`
 :ref:`Export <valid-export>`                     :math:`C \vdashexport \export : \externtype`
 :ref:`Export description <valid-exportdesc>`     :math:`C \vdashexportdesc \exportdesc : \externtype`
@@ -46,13 +48,15 @@ Typing of Runtime Constructs
 ===============================================  ===============================================================================
 Construct                                        Judgement
 ===============================================  ===============================================================================
-:ref:`Value <valid-val>`                         :math:`\vdashval \val : \valtype`
-:ref:`Result <valid-result>`                     :math:`\vdashresult \result : \resulttype`
+:ref:`Value <valid-val>`                         :math:`S \vdashval \val : \valtype`
+:ref:`Result <valid-result>`                     :math:`S \vdashresult \result : \resulttype`
 :ref:`External value <valid-externval>`          :math:`S \vdashexternval \externval : \externtype`
 :ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \functype`
 :ref:`Table instance <valid-tableinst>`          :math:`S \vdashtableinst \tableinst : \tabletype`
 :ref:`Memory instance <valid-meminst>`           :math:`S \vdashmeminst \meminst : \memtype`
 :ref:`Global instance <valid-globalinst>`        :math:`S \vdashglobalinst \globalinst : \globaltype`
+:ref:`Element instance <valid-eleminst>`         :math:`S \vdasheleminst \eleminst \ok`
+:ref:`Data instance <valid-datainst>`            :math:`S \vdashdatainst \datainst \ok`
 :ref:`Export instance <valid-exportinst>`        :math:`S \vdashexportinst \exportinst \ok`
 :ref:`Module instance <valid-moduleinst>`        :math:`S \vdashmoduleinst \moduleinst : C`
 :ref:`Store <valid-store>`                       :math:`\vdashstore \store \ok`
@@ -73,14 +77,14 @@ Construct                                        Judgement
 ===============================================  ===============================================================================
 
 
-Import Matching
-~~~~~~~~~~~~~~~
+Matching
+~~~~~~~~
 
 ===============================================  ===============================================================================
 Construct                                        Judgement
 ===============================================  ===============================================================================
-:ref:`Limits <match-limits>`                     :math:`\vdashlimitsmatch \limits_1 \matches \limits_2`
-:ref:`External type <match-externtype>`          :math:`\vdashexterntypematch \externtype_1 \matches \externtype_2`
+:ref:`External type <match-externtype>`          :math:`\vdashexterntypematch \externtype_1 \matchesexterntype \externtype_2`
+:ref:`Limits <match-limits>`                     :math:`\vdashlimitsmatch \limits_1 \matcheslimits \limits_2`
 ===============================================  ===============================================================================
 
 
@@ -94,6 +98,8 @@ Construct                                        Judgement
 :ref:`Table instance <extend-tableinst>`         :math:`\vdashtableinstextends \tableinst_1 \extendsto \tableinst_2`
 :ref:`Memory instance <extend-meminst>`          :math:`\vdashmeminstextends \meminst_1 \extendsto \meminst_2`
 :ref:`Global instance <extend-globalinst>`       :math:`\vdashglobalinstextends \globalinst_1 \extendsto \globalinst_2`
+:ref:`Element instance <extend-eleminst>`         :math:`\vdasheleminstextends \eleminst_1 \extendsto \eleminst_2`
+:ref:`Data instance <extend-datainst>`           :math:`\vdashdatainstextends \datainst_1 \extendsto \datainst_2`
 :ref:`Store <extend-store>`                      :math:`\vdashstoreextends \store_1 \extendsto \store_2`
 ===============================================  ===============================================================================
 

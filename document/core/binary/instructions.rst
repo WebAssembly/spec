@@ -62,7 +62,7 @@ Control Instructions
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \hex{0F} &\Rightarrow& \RETURN \\ &&|&
      \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
-     \hex{11}~~x{:}\Btypeidx~~\hex{00} &\Rightarrow& \CALLINDIRECT~x \\
+     \hex{11}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \CALLINDIRECT~x~y \\
    \end{array}
 
 .. note::
@@ -75,14 +75,38 @@ Control Instructions
    of the |CALLINDIRECT| instruction may be used to index additional tables.
 
 
-.. index:: value type, polymorphism
+.. index:: reference instruction
+   pair: binary format; instruction
+.. _binary-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+:ref:`Reference instructions <syntax-instr-ref>` are represented by single byte codes.
+
+.. _binary-ref.null:
+.. _binary-ref.isnull:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Binstr &::=& \dots \\ &&|&
+     \hex{D0}~~t{:}\Breftype &\Rightarrow& \REFNULL~t \\ &&|&
+     \hex{D1} &\Rightarrow& \REFISNULL \\ &&|&
+     \hex{D2}~~x{:}\Bfuncidx &\Rightarrow& \REFFUNC~x \\
+   \end{array}
+
+.. note::
+   These opcode assignments are preliminary.
+
+
+.. index:: parametric instruction, value type, polymorphism
    pair: binary format; instruction
 .. _binary-instr-parametric:
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Parametric instructions <syntax-instr-parametric>` are represented by single byte codes.
+:ref:`Parametric instructions <syntax-instr-parametric>` are represented by single byte codes, possibly followed by a type annotation.
 
 .. _binary-drop:
 .. _binary-select:
@@ -91,7 +115,8 @@ Parametric Instructions
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{1A} &\Rightarrow& \DROP \\ &&|&
-     \hex{1B} &\Rightarrow& \SELECT \\
+     \hex{1B} &\Rightarrow& \SELECT \\ &&|&
+     \hex{1C}~~t^\ast{:}\Bvec(\Bvaltype) &\Rightarrow& \SELECT~t^\ast \\
    \end{array}
 
 
@@ -121,6 +146,37 @@ Variable Instructions
    \end{array}
 
 
+.. index:: table instruction, table index
+   pair: binary format; instruction
+.. _binary-instr-table:
+.. _binary-table.get:
+.. _binary-table.set:
+.. _binary-table.size:
+.. _binary-table.grow:
+.. _binary-table.fill:
+.. _binary-table.copy:
+.. _binary-table.init:
+.. _binary-elem.drop:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+:ref:`Table instructions <syntax-instr-table>` are represented by either single byte or two byte codes.
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Binstr &::=& \dots \\ &&|&
+     \hex{25}~~x{:}\Btableidx &\Rightarrow& \TABLEGET~x \\ &&|&
+     \hex{26}~~x{:}\Btableidx &\Rightarrow& \TABLESET~x \\ &&|&
+     \hex{FC}~~12{:}\Bu32~~y{:}\Belemidx~~x{:}\Btableidx &\Rightarrow& \TABLEINIT~x~y \\ &&|&
+     \hex{FC}~~13{:}\Bu32~~x{:}\Belemidx &\Rightarrow& \ELEMDROP~x \\ &&|&
+     \hex{FC}~~14{:}\Bu32~~x{:}\Btableidx~~y{:}\Btableidx &\Rightarrow& \TABLECOPY~x~y \\ &&|&
+     \hex{FC}~~15{:}\Bu32~~x{:}\Btableidx &\Rightarrow& \TABLEGROW~x \\ &&|&
+     \hex{FC}~~16{:}\Bu32~~x{:}\Btableidx &\Rightarrow& \TABLESIZE~x \\ &&|&
+     \hex{FC}~~17{:}\Bu32~~x{:}\Btableidx &\Rightarrow& \TABLEFILL~x \\
+   \end{array}
+
+
 .. index:: memory instruction, memory index
    pair: binary format; instruction
 .. _binary-instr-memory:
@@ -137,6 +193,10 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
 .. _binary-storen:
 .. _binary-memory.size:
 .. _binary-memory.grow:
+.. _binary-memory.fill:
+.. _binary-memory.copy:
+.. _binary-memory.init:
+.. _binary-data.drop:
 
 .. math::
    \begin{array}{llclll}
@@ -167,11 +227,15 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
      \hex{3D}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
      \hex{3E}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
      \hex{3F}~~\hex{00} &\Rightarrow& \MEMORYSIZE \\ &&|&
-     \hex{40}~~\hex{00} &\Rightarrow& \MEMORYGROW \\
+     \hex{40}~~\hex{00} &\Rightarrow& \MEMORYGROW \\ &&|&
+     \hex{FC}~~8{:}\Bu32~~x{:}\Bdataidx~\hex{00} &\Rightarrow& \MEMORYINIT~x \\ &&|&
+     \hex{FC}~~9{:}\Bu32~~x{:}\Bdataidx &\Rightarrow& \DATADROP~x \\ &&|&
+     \hex{FC}~~10{:}\Bu32~~\hex{00}~~\hex{00} &\Rightarrow& \MEMORYCOPY \\ &&|&
+     \hex{FC}~~11{:}\Bu32~~\hex{00} &\Rightarrow& \MEMORYFILL \\
    \end{array}
 
 .. note::
-   In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |MEMORYSIZE| and |MEMORYGROW| instructions may be used to index additional memories.
+   In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |MEMORYSIZE|, |MEMORYGROW|, |MEMORYCOPY|, and |MEMORYFILL| instructions may be used to index additional memories.
 
 
 .. index:: numeric instruction

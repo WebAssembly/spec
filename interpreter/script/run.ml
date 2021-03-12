@@ -4,6 +4,7 @@ open Source
 
 (* Errors & Tracing *)
 
+module Script = Error.Make ()
 module Abort = Error.Make ()
 module Assert = Error.Make ()
 module IO = Error.Make ()
@@ -112,6 +113,7 @@ let input_from get_script run =
   | Eval.Exhaustion (at, msg) -> error at "resource exhaustion" msg
   | Eval.Crash (at, msg) -> error at "runtime crash" msg
   | Encode.Code (at, msg) -> error at "encoding error" msg
+  | Script.Error (at, msg) -> error at "script error" msg
   | IO (at, msg) -> error at "i/o error" msg
   | Assert (at, msg) -> error at "assertion failure" msg
   | Abort _ -> false
@@ -239,7 +241,7 @@ let print_module x_opt m =
   flush_all ()
 
 let print_values vs =
-  let ts = List.map Values.type_of vs in
+  let ts = List.map Values.type_of_value vs in
   Printf.printf "%s : %s\n"
     (Values.string_of_values vs) (Types.string_of_value_types ts);
   flush_all ()
@@ -253,6 +255,7 @@ let type_of_result r =
   | NumResult { it = LitPat v ; _ } -> Values.type_of v.it
   | NumResult { it = NanPat v ; _ } -> Values.type_of v.it
   | SimdResult (_, _) -> let open Types in V128Type
+  | RefResult t -> Types.RefType t
 
 let string_of_num_pat (p : num_pat) =
   match p.it with
@@ -267,6 +270,7 @@ let string_of_result r =
   | NumResult v -> string_of_num_pat v
   | SimdResult (shape, vs) ->
     String.concat " " (List.map string_of_num_pat vs)
+  | RefResult t -> Types.RefType t
 
 let string_of_results = function
   | [r] -> string_of_result r
@@ -333,6 +337,13 @@ let run_action act : Values.value list =
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternFunc f) ->
+      let Types.FuncType (ins, out) = Func.type_of f in
+      if List.length vs <> List.length ins then
+        Script.error act.at "wrong number of arguments";
+      List.iter2 (fun v t ->
+        if Values.type_of_value v.it <> t then
+          Script.error v.at "wrong type of argument"
+      ) vs ins;
       Eval.invoke f (List.map (fun v -> v.it) vs)
     | Some _ -> Assert.error act.at "export is not a function"
     | None -> Assert.error act.at "undefined export"
@@ -414,6 +425,12 @@ let assert_result at got expect =
                 ) [l0; l1]  vs
             | _ -> failwith "impossible"
         end
+      | RefResult t ->
+        (match t, v with
+        | Types.FuncRefType, Ref (Instance.FuncRef _)
+        | Types.ExternRefType, Ref (ExternRef _) -> false
+        | _ -> true
+        )
     ) got expect
   then begin
     print_string "Result: "; print_values got;

@@ -59,6 +59,9 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 
 * Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
+* If the same meta variable or non-terminal symbol appears multiple times in a production (in the syntax or in an attribute), then all those occurrences must have the same instantiation.
+  (This is a shorthand for a side condition requiring multiple different variables to be equal.)
+
 .. note::
    For example, the :ref:`binary grammar <binary-valtype>` for :ref:`value types <syntax-valtype>` is given as follows:
 
