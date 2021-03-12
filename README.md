@@ -1,24 +1,21 @@
 [![Build Status](https://travis-ci.org/WebAssembly/function-references.svg?branch=master)](https://travis-ci.org/WebAssembly/function-references)
 
-# Function Reference Types Proposal for WebAssembly
-
-This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
-It is meant for discussion, prototype specification and implementation of a proposal to add support for basic function reference types to WebAssembly.
-
-* See the [overview](proposals/function-references/Overview.md) for a summary of the proposal.
-
-* See the [modified spec](https://webassembly.github.io/function-references/core) for details.  (Note, link is 404.)
-
-The repository is now based on the [bulk operations proposal](proposals/bulk-memory-operations/Overview.md) and includes all respective changes.
-
-Original README from upstream repository follows...
-
 # GC Proposal for WebAssembly
 
 This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
-It is meant for discussion, prototype specification and implementation of a proposal to add garbage collection support to WebAssembly.
+It is meant for discussion, prototype specification and implementation of a proposal to add garbage collection (GC) support to WebAssembly.
 
-See the [overview](proposals/gc/Overview.md) for a summary of the proposal.
+* See the [overview](proposals/gc/Overview.md) for a summary and rationale of the proposal.
+
+* See the [MVP](proposals/gc/MVP.md) for a draft specification of the concrete language extensions that are proposed for the first stage of GC support in Wasm.
+
+* See the [Post-MVP](proposals/gc/Post-MVP.md) for possible future extensions in later stages.
+
+<!--
+* See the [modified spec](https://webassembly.github.io/function-references/core) for details.  (Note, link is 404.)
+-->
+
+This repository is based on the [function references proposal](proposals/function-references/Overview.md) as a baseline and includes all respective changes.
 
 Original `README` from upstream repository follows...
 
