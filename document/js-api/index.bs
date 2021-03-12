@@ -843,7 +843,7 @@ enum ValueType {
   "i64",
   "f32",
   "f64",
-  "v128"
+  "v128",
   "externref",
   "anyfunc",
 };
