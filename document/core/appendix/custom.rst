@@ -379,6 +379,8 @@ Value  Meaning
 
 .. math::
    \begin{array}{llclll}
+   \production{branch hints section} & \Bbranchhintssec &::=&
+     \Bsection_0(\Bvec(\Bfuncbranchhints)) \\
    \production{function branch hints} & \Bfuncbranchhints &::=&
      \Bfuncidx~\hex{00}~\Bvec(\Bbranchhint) \\
    \production{branch hint} & \Bbranchhint &::=&

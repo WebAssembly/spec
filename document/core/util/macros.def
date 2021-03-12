@@ -1269,6 +1269,7 @@
 
 .. Branch Hints Section, non-terminals
 
+.. |Bbranchhintssec| mathdef:: \xref{appendix/custom}{binary-branchhintssec}{\B{branchhintssec}}
 .. |Bfuncbranchhints| mathdef:: \xref{appendix/custom}{binary-branchhintssec}{\B{funcbranchhints}}
 .. |Bbranchhint| mathdef:: \xref{appendix/custom}{binary-branchhintsec}{\B{branchhint}}
 .. |Bbranchhintkind| mathdef:: \xref{appendix/custom}{binary-branchhintsec}{\B{branchhintkind}}
