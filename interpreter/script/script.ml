@@ -20,7 +20,7 @@ and nan = CanonicalNan | ArithmeticNan
 
 type num_pat = num_pat' Source.phrase
 and num_pat' =
-  | LitPat of Ast.literal
+  | LitPat of literal
   | NanPat of nanop
 
 type result = result' Source.phrase

@@ -14,6 +14,53 @@ type ref_ += NullRef of ref_type
 type value = Num of num | Ref of ref_
 
 
+(* Injection & projection *)
+
+exception TypeError of int * num * num_type
+
+module type NumType =
+sig
+  type t
+  val to_num : t -> num
+  val of_num : int -> num -> t
+end
+
+module I32Num =
+struct
+  type t = I32.t
+  let to_num i = I32 i
+  let of_num n = function I32 i -> i | v -> raise (TypeError (n, v, I32Type))
+end
+
+module I64Num =
+struct
+  type t = I64.t
+  let to_num i = I64 i
+  let of_num n = function I64 i -> i | v -> raise (TypeError (n, v, I64Type))
+end
+
+module F32Num =
+struct
+  type t = F32.t
+  let to_num i = F32 i
+  let of_num n = function F32 z -> z | v -> raise (TypeError (n, v, F32Type))
+end
+
+module F64Num =
+struct
+  type t = F64.t
+  let to_num i = F64 i
+  let of_num n = function F64 z -> z | v -> raise (TypeError (n, v, F64Type))
+end
+
+module V128Num =
+struct
+  type t = V128.t
+  let to_num i = V128 i
+  let of_num n = function V128 z -> z | v -> raise (TypeError (n, v, V128Type))
+end
+
+
 (* Typing *)
 
 let type_of_num = function

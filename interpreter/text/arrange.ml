@@ -750,14 +750,16 @@ let literal mode lit shape =
   | Num (Values.F32 z), _ -> choose_mode F32.to_hex_string F32.to_string z
   | Num (Values.F64 z), _ -> choose_mode F64.to_hex_string F64.to_string z
   | Num (Values.V128 v), _ -> choose_mode V128.to_hex_string V128.to_string v
-  | Ref (NullRef t) -> ("ref.null " ^ refed_type t)
-  | Ref (ExternRef n) -> ("ref.extern " ^ nat32 n)
-  | Ref _ -> assert false
+  | Ref (NullRef t), _ -> ("ref.null " ^ refed_type t)
+  | Ref (ExternRef n), _ -> ("ref.extern " ^ nat32 n)
+  | Ref _, _ -> assert false
 
 (* Converts a literal into a constant instruction. *)
 let constant mode lit =
   let lit_string = literal mode lit None in
-  Node (constop lit ^ lit_string, [])
+  match lit.it with
+  | Num n -> Node (constop (n @@ lit.at) ^ lit_string, [])
+  | Ref _ -> Node (lit_string, [])
 
 let definition mode x_opt def =
   try

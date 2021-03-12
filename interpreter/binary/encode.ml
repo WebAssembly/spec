@@ -134,6 +134,7 @@ struct
   open Values
 
   let op n = u8 n
+  let simd_op n = op 0xfd; vu32 n
   let end_ () = op 0x0b
 
   let memop {align; offset; _} = vu32 (Int32.of_int align); vu32 offset
@@ -211,6 +212,10 @@ struct
       op 0x35; memop mo
     | Load {ty = F32Type | F64Type; sz = Some _; _} ->
       assert false
+    | Load {ty = I32Type | I64Type; sz = Some (Pack64, _); _} ->
+      assert false
+    | Load {ty = V128Type; _} ->
+      assert false
 
     | SimdLoad ({ty = V128Type; sz = None; _} as mo) ->
       simd_op 0x00l; memop mo
@@ -226,18 +231,19 @@ struct
       simd_op 0x05l; memop mo
     | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack32x2 ZX); _} as mo) ->
       simd_op 0x06l; memop mo
-    | SimdLoad ({ty= V128Type; sz = Some (Pack8, PackSplat); _} as mo) ->
+    | SimdLoad ({ty = V128Type; sz = Some (Pack8, PackSplat); _} as mo) ->
       simd_op 0x07l; memop mo
-    | SimdLoad ({ty= V128Type; sz = Some (Pack16, PackSplat); _} as mo) ->
+    | SimdLoad ({ty = V128Type; sz = Some (Pack16, PackSplat); _} as mo) ->
       simd_op 0x08l; memop mo
-    | SimdLoad ({ty= V128Type; sz = Some (Pack32, PackSplat); _} as mo) ->
+    | SimdLoad ({ty = V128Type; sz = Some (Pack32, PackSplat); _} as mo) ->
       simd_op 0x09l; memop mo
-    | SimdLoad ({ty= V128Type; sz = Some (Pack64, PackSplat); _} as mo) ->
+    | SimdLoad ({ty = V128Type; sz = Some (Pack64, PackSplat); _} as mo) ->
       simd_op 0x0al; memop mo
-    | SimdLoad ({ty= V128Type; sz = Some (Pack32, PackZero); _} as mo) ->
+    | SimdLoad ({ty = V128Type; sz = Some (Pack32, PackZero); _} as mo) ->
       simd_op 0x5cl; memop mo
-    | SimdLoad ({ty= V128Type; sz = Some (Pack64, PackZero); _} as mo) ->
+    | SimdLoad ({ty = V128Type; sz = Some (Pack64, PackZero); _} as mo) ->
       simd_op 0x5dl; memop mo
+    | SimdLoad _ -> assert false
 
     | SimdLoadLane ({ty = V128Type; sz = Some Pack8; _} as mo, i) ->
       simd_op 0x54l; memop mo; u8 i;
@@ -247,6 +253,7 @@ struct
       simd_op 0x56l; memop mo; u8 i;
     | SimdLoadLane ({ty = V128Type; sz = Some Pack64; _} as mo, i) ->
       simd_op 0x57l; memop mo; u8 i;
+    | SimdLoadLane _ -> assert false
 
     | Store ({ty = I32Type; sz = None; _} as mo) -> op 0x36; memop mo
     | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x37; memop mo
@@ -259,8 +266,11 @@ struct
     | Store ({ty = I64Type; sz = Some Pack16; _} as mo) -> op 0x3d; memop mo
     | Store ({ty = I64Type; sz = Some Pack32; _} as mo) -> op 0x3e; memop mo
     | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
+    | Store {ty = (I32Type | I64Type); sz = Some Pack64; _} -> assert false
+    | Store {ty = V128Type; _} -> assert false
 
     | SimdStore ({ty = V128Type; _} as mo) -> simd_op 0x0bl; memop mo
+    | SimdStore {ty = (I32Type | I64Type | F32Type | F64Type); _} -> assert false
 
     | SimdStoreLane ({ty = V128Type; sz = Some Pack8; _} as mo, i) ->
       simd_op 0x58l; memop mo; u8 i;
@@ -270,6 +280,7 @@ struct
       simd_op 0x5al; memop mo; u8 i;
     | SimdStoreLane ({ty = V128Type; sz = Some Pack64; _} as mo, i) ->
       simd_op 0x5bl; memop mo; u8 i;
+    | SimdStoreLane _ -> assert false
 
     | MemorySize -> op 0x3f; u8 0x00
     | MemoryGrow -> op 0x40; u8 0x00
@@ -292,6 +303,13 @@ struct
     | Test (I64 I64Op.Eqz) -> op 0x50
     | Test (F32 _) -> assert false
     | Test (F64 _) -> assert false
+    | Test (V128 V128Op.(V128  AnyTrue)) -> simd_op 0x53l
+    | Test (V128 V128Op.(I8x16 AllTrue)) -> simd_op 0x63l
+    | Test (V128 V128Op.(I16x8 AllTrue)) -> simd_op 0x83l
+    | Test (V128 V128Op.(I32x4 AllTrue)) -> simd_op 0xa3l
+    | Test (V128 V128Op.(I64x2 AllTrue)) -> simd_op 0xc3l
+    | Test (V128 V128Op.(V128  AllTrue)) -> assert false
+    | Test (V128 _) -> assert false
 
     | Compare (I32 I32Op.Eq) -> op 0x46
     | Compare (I32 I32Op.Ne) -> op 0x47
@@ -329,12 +347,15 @@ struct
     | Compare (F64 F64Op.Le) -> op 0x65
     | Compare (F64 F64Op.Ge) -> op 0x66
 
+    | Compare (V128 _) -> assert false
+
     | Unary (I32 I32Op.Clz) -> op 0x67
     | Unary (I32 I32Op.Ctz) -> op 0x68
     | Unary (I32 I32Op.Popcnt) -> op 0x69
     | Unary (I32 (I32Op.ExtendS Pack8)) -> op 0xc0
     | Unary (I32 (I32Op.ExtendS Pack16)) -> op 0xc1
     | Unary (I32 (I32Op.ExtendS Pack32)) -> assert false
+    | Unary (I32 (I32Op.ExtendS Pack64)) -> assert false
 
     | Unary (I64 I64Op.Clz) -> op 0x79
     | Unary (I64 I64Op.Ctz) -> op 0x7a
@@ -342,6 +363,7 @@ struct
     | Unary (I64 (I64Op.ExtendS Pack8)) -> op 0xc2
     | Unary (I64 (I64Op.ExtendS Pack16)) -> op 0xc3
     | Unary (I64 (I64Op.ExtendS Pack32)) -> op 0xc4
+    | Unary (I64 (I64Op.ExtendS Pack64)) -> assert false
 
     | Unary (F32 F32Op.Abs) -> op 0x8b
     | Unary (F32 F32Op.Neg) -> op 0x8c
@@ -580,6 +602,7 @@ struct
     | Binary (V128 V128Op.(V128 AndNot)) -> simd_op 0x4fl
     | Binary (V128 V128Op.(V128 Or)) -> simd_op 0x50l
     | Binary (V128 V128Op.(V128 Xor)) -> simd_op 0x51l
+    | Binary (V128 _) -> assert false
 
     | Convert (I32 I32Op.ExtendSI32) -> assert false
     | Convert (I32 I32Op.ExtendUI32) -> assert false

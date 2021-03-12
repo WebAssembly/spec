@@ -85,6 +85,9 @@ let rec instr (e : instr) =
   | ElemDrop x -> elems (var x)
   | Load _ | Store _ | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
     memories zero
+  | SimdLoad _ | SimdLoadLane _ | SimdStore _ | SimdStoreLane _
+  | SimdTernary _ | SimdExtract _ | SimdReplace _ | SimdShift _ | SimdBitmask _ ->
+    memories zero
   | MemoryInit x -> memories zero ++ datas (var x)
   | DataDrop x -> datas (var x)
 

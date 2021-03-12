@@ -373,13 +373,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
 
   | SimdLoad memop ->
     check_memop c memop (Lib.Option.map fst) e.at;
-    [I32Type] --> [memop.ty]
+    [NumType I32Type] --> [NumType memop.ty]
 
   | SimdLoadLane (memop, i) ->
     check_memop c memop (fun o -> o) e.at;
     let sz = Lib.Option.get memop.sz Pack8 in
     require (i < 16 / packed_size sz) e.at "invalid lane index";
-    [I32Type; V128Type] -->  [memop.ty]
+    [NumType I32Type; NumType V128Type] -->  [NumType memop.ty]
 
   | Store memop ->
     check_memop c memop (fun sz -> sz) e.at;
@@ -387,13 +387,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
 
   | SimdStore memop ->
     check_memop c memop (fun _ -> None) e.at;
-    [I32Type; memop.ty] --> []
+    [NumType I32Type; NumType memop.ty] --> []
 
   | SimdStoreLane (memop, i) ->
     check_memop c memop (fun o -> o) e.at;
     let sz = Lib.Option.get memop.sz Pack8 in
     require (i < 16 / packed_size sz) e.at "invalid lane index";
-    [I32Type; V128Type] -->  []
+    [NumType I32Type; NumType V128Type] -->  []
 
   | MemorySize ->
     let _mt = memory c (0l @@ e.at) in
@@ -453,6 +453,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     [t] --> [t]
 
   | Binary binop ->
+    check_binop binop e.at;
     let t = NumType (type_binop binop) in
     [t; t] --> [t]
 
@@ -461,25 +462,25 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     [NumType t1] --> [NumType t2]
 
   | SimdTernary ternop ->
-    let t = V128Type in
+    let t = NumType V128Type in
     [t; t; t] --> [t]
 
   | SimdExtract (V128Op.V128 _) -> assert false
   | SimdExtract extractop ->
     check_simd_extract_lane_index extractop e.at;
     let t = type_simd_lane extractop in
-    [V128Type] --> [t]
+    [NumType V128Type] --> [NumType t]
 
   | SimdReplace replaceop ->
     check_simd_replace_lane_index replaceop e.at;
     let t = type_simd_lane replaceop in
-    [V128Type; t] --> [V128Type]
+    [NumType V128Type; NumType t] --> [NumType V128Type]
 
   | SimdShift _ ->
-    [V128Type; I32Type] --> [V128Type]
+    [NumType V128Type; NumType I32Type] --> [NumType V128Type]
 
   | SimdBitmask _ ->
-    [V128Type] --> [I32Type]
+    [NumType V128Type] --> [NumType I32Type]
 
 and check_seq (c : context) (s : infer_result_type) (es : instr list)
   : infer_result_type =

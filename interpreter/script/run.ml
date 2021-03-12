@@ -252,9 +252,9 @@ let string_of_nan = function
 
 let type_of_result r =
   match r with
-  | NumResult { it = LitPat v ; _ } -> Values.type_of v.it
-  | NumResult { it = NanPat v ; _ } -> Values.type_of v.it
-  | SimdResult (_, _) -> let open Types in V128Type
+  | NumResult { it = LitPat v ; _ } -> Values.type_of_value v.it
+  | NumResult { it = NanPat v ; _ } -> Types.NumType (Values.type_of_num v.it)
+  | SimdResult (_, _) -> Types.NumType Types.V128Type
   | RefResult t -> Types.RefType t
 
 let string_of_num_pat (p : num_pat) =
@@ -270,7 +270,7 @@ let string_of_result r =
   | NumResult v -> string_of_num_pat v
   | SimdResult (shape, vs) ->
     String.concat " " (List.map string_of_num_pat vs)
-  | RefResult t -> Types.RefType t
+  | RefResult t -> Types.string_of_refed_type t
 
 let string_of_results = function
   | [r] -> string_of_result r
@@ -365,17 +365,18 @@ let assert_num_pat at v p =
     | (LitPat v') -> v <> v'.it
     | (NanPat nanop) ->
       match nanop.it, v with
-      | F32 CanonicalNan, F32 z -> z <> F32.pos_nan && z <> F32.neg_nan
-      | F64 CanonicalNan, F64 z -> z <> F64.pos_nan && z <> F64.neg_nan
-      | F32 ArithmeticNan, F32 z ->
+      | F32 CanonicalNan, Num (F32 z) -> z <> F32.pos_nan && z <> F32.neg_nan
+      | F64 CanonicalNan, Num (F64 z) -> z <> F64.pos_nan && z <> F64.neg_nan
+      | F32 ArithmeticNan, Num (F32 z) ->
         let pos_nan = F32.to_bits F32.pos_nan in
         Int32.logand (F32.to_bits z) pos_nan <> pos_nan
-      | F64 ArithmeticNan, F64 z ->
+      | F64 ArithmeticNan, Num (F64 z) ->
         let pos_nan = F64.to_bits F64.pos_nan in
         Int64.logand (F64.to_bits z) pos_nan <> pos_nan
       | _, _ -> false
 
 let assert_result at got expect =
+  let open Values in
   if
     List.length got <> List.length expect ||
     List.exists2 (fun v r ->
@@ -383,43 +384,42 @@ let assert_result at got expect =
       | NumResult v' -> assert_num_pat at v v'
       | SimdResult (shape, vs) ->
         begin
-            let open Values in
             let open Simd in
             match shape, v with
-            | I8x16, V128 v ->
+            | I8x16, Num (V128 v) ->
               List.exists2
                 (fun v r -> assert_num_pat at v r)
-                (List.init 16 (fun i -> I32 (V128.I8x16.extract_lane_s i v)))
+                (List.init 16 (fun i -> Num (I32 (V128.I8x16.extract_lane_s i v))))
                 vs
-            | I16x8, V128 v ->
+            | I16x8, Num (V128 v) ->
               List.exists2
                 (fun v r -> assert_num_pat at v r)
-                (List.init 8 (fun i -> I32 (V128.I16x8.extract_lane_s i v)))
+                (List.init 8 (fun i -> Num (I32 (V128.I16x8.extract_lane_s i v))))
                 vs
-            | I32x4, V128 v ->
-              let l0 = I32 (V128.I32x4.extract_lane_s 0 v) in
-              let l1 = I32 (V128.I32x4.extract_lane_s 1 v) in
-              let l2 = I32 (V128.I32x4.extract_lane_s 2 v) in
-              let l3 = I32 (V128.I32x4.extract_lane_s 3 v) in
+            | I32x4, Num (V128 v) ->
+              let l0 = Num (I32 (V128.I32x4.extract_lane_s 0 v)) in
+              let l1 = Num (I32 (V128.I32x4.extract_lane_s 1 v)) in
+              let l2 = Num (I32 (V128.I32x4.extract_lane_s 2 v)) in
+              let l3 = Num (I32 (V128.I32x4.extract_lane_s 3 v)) in
                 List.exists2 (fun v r ->
                     assert_num_pat at v r
                 ) [l0; l1; l2; l3]  vs
-            | I64x2, V128 v ->
+            | I64x2, Num (V128 v) ->
               List.exists2
                 (fun v r -> assert_num_pat at v r)
-                (List.init 2 (fun i -> I64 (V128.I64x2.extract_lane_s i v)))
+                (List.init 2 (fun i -> Num (I64 (V128.I64x2.extract_lane_s i v))))
                 vs
-            | F32x4, V128 v ->
-              let l0 = F32 (V128.F32x4.extract_lane 0 v) in
-              let l1 = F32 (V128.F32x4.extract_lane 1 v) in
-              let l2 = F32 (V128.F32x4.extract_lane 2 v) in
-              let l3 = F32 (V128.F32x4.extract_lane 3 v) in
+            | F32x4, Num (V128 v) ->
+              let l0 = Num (F32 (V128.F32x4.extract_lane 0 v)) in
+              let l1 = Num (F32 (V128.F32x4.extract_lane 1 v)) in
+              let l2 = Num (F32 (V128.F32x4.extract_lane 2 v)) in
+              let l3 = Num (F32 (V128.F32x4.extract_lane 3 v)) in
                 List.exists2 (fun v r ->
                     assert_num_pat at v r
                 ) [l0; l1; l2; l3]  vs
-            | F64x2, V128 v ->
-              let l0 = F64 (V128.F64x2.extract_lane 0 v) in
-              let l1 = F64 (V128.F64x2.extract_lane 1 v) in
+            | F64x2, Num (V128 v) ->
+              let l0 = Num (F64 (V128.F64x2.extract_lane 0 v)) in
+              let l1 = Num (F64 (V128.F64x2.extract_lane 1 v)) in
                 List.exists2 (fun v r ->
                     assert_num_pat at v r
                 ) [l0; l1]  vs
