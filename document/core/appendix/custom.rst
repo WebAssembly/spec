@@ -357,11 +357,14 @@ An implementation is not required to follow the hints, and this section can be e
 
 The section contains a vector of *function branch hints* each representing the branch hints for a single function.
 
-Each *function function hints* structure consists of
+Each *function branch hints* structure consists of
 
 * the :ref:`function index <binary-funcidx>` of the function the hints are referring to,
 * a single 0 byte,
 * a vector of *branch hints* for the function.
+
+Elements of the *function branch hints* vector must appear in increasing function index order,
+and a function index can appear at most once.
 
 Each *branch hint* structure consists of
 
@@ -375,6 +378,10 @@ Value  Meaning
 =====  ===========================================
 
 * the |U32| byte offset of the hinted instruction from the first instruction of the function.
+
+Elements of the *branch hints* vector must appear in increasing byte offset order,
+and a byte offset can appear at most once. A |BRIF| or |IF| instruction must be present
+in the code section at the specified offset.
 
 
 .. math::
