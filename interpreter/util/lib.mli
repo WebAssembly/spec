@@ -1,7 +1,10 @@
 (* Things that should be in the OCaml library... *)
 
+type void
+
 module Fun :
 sig
+  val id : 'a -> 'a
   val curry : ('a * 'b -> 'c) -> ('a -> 'b -> 'c)
   val uncurry : ('a -> 'b -> 'c) -> ('a * 'b -> 'c)
 
@@ -32,6 +35,7 @@ sig
   val nth : 'a list -> int32 -> 'a (* raises Failure *)
   val take : int32 -> 'a list -> 'a list (* raises Failure *)
   val drop : int32 -> 'a list -> 'a list (* raises Failure *)
+  val mapi : (int32 -> 'a -> 'b) -> 'a list -> 'b list
 end
 
 module Array32 :
@@ -60,6 +64,7 @@ end
 module Option :
 sig
   val get : 'a option -> 'a -> 'a
+  val force : 'a option -> 'a (* raises Invalid_argument *)
   val map : ('a -> 'b) -> 'a option -> 'b option
   val app : ('a -> unit) -> 'a option -> unit
 end

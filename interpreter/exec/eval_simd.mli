@@ -1,15 +1,13 @@
 open Values
 
-exception TypeError of int * value * Types.value_type
+val unop : Ast.V128Op.unop -> num -> num
+val binop : Ast.V128Op.binop -> num -> num -> num
+val testop : Ast.V128Op.testop -> num -> bool
+val relop : Ast.V128Op.relop -> num -> num -> bool
+val cvtop : Ast.V128Op.cvtop -> num -> num
 
-val unop : Ast.V128Op.unop -> value -> value
-val binop : Ast.V128Op.binop -> value -> value -> value
-val testop : Ast.V128Op.testop -> value -> bool
-val relop : Ast.V128Op.relop -> value -> value -> bool
-val cvtop : Ast.V128Op.cvtop -> value -> value
-
-val eval_ternop : Ast.V128Op.ternop -> value -> value -> value -> value
-val eval_shiftop : Ast.V128Op.shiftop -> value -> value -> value
-val eval_bitmaskop : Simd.shape -> value -> value
-val eval_extractop : Ast.V128Op.extractop -> value -> value
-val eval_replaceop : Ast.V128Op.replaceop -> value -> value -> value
+val eval_ternop : Ast.V128Op.ternop -> num -> num -> num -> num
+val eval_shiftop : Ast.V128Op.shiftop -> num -> num -> num
+val eval_bitmaskop : Simd.shape -> num -> num
+val eval_extractop : Ast.V128Op.extractop -> num -> num
+val eval_replaceop : Ast.V128Op.replaceop -> num -> num -> num

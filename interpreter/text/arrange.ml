@@ -55,9 +55,10 @@ let break_string s =
 
 (* Types *)
 
+let num_type t = string_of_num_type t
+let ref_type t = string_of_ref_type t
+let refed_type t = string_of_refed_type t
 let value_type t = string_of_value_type t
-
-let elem_type t = string_of_elem_type t
 
 let decls kind ts = tab kind (atom value_type) ts
 
@@ -185,7 +186,6 @@ struct
     | ReinterpretInt -> "reinterpret_i" ^ xx
 end
 
-(* FIXME *)
 module SimdOp =
 struct
   open Ast.SimdOp
@@ -439,7 +439,7 @@ let oper (intop, floatop, simdop) op =
    *)
   let prefix = match op with
     | V128 o -> ""
-    | _ -> value_type (type_of op) ^ "."
+    | _ -> num_type (type_of_num op) ^ "."
   in
   let ops = match op with
     | I32 o -> intop "32" o
@@ -458,7 +458,7 @@ let ternop = SimdOp.ternop
 
 (* Temporary wart here while we finalize the names of SIMD loads and extends. *)
 let memop name {ty; align; offset; _} sz =
-  value_type ty ^ "." ^ name ^
+  num_type ty ^ "." ^ name ^
   (if offset = 0l then "" else " offset=" ^ nat32 offset) ^
   (if 1 lsl align = sz then "" else " align=" ^ nat (1 lsl align))
 
@@ -513,12 +513,12 @@ let simd_storeop op =
 (* Expressions *)
 
 let var x = nat32 x.it
-let value v = string_of_value v.it
+let num v = string_of_num v.it
 let constop v =
   let shape = match v.it with
     | V128 _ -> "i32x4 "
     | _ -> ""
-  in value_type (type_of v.it) ^ ".const " ^ shape
+  in num_type (type_of_num v.it) ^ ".const " ^ shape
 
 let block_type = function
   | VarBlockType x -> [Node ("type " ^ var x, [])]
@@ -530,7 +530,9 @@ let rec instr e =
     | Unreachable -> "unreachable", []
     | Nop -> "nop", []
     | Drop -> "drop", []
-    | Select -> "select", []
+    | Select None -> "select", []
+    | Select (Some []) -> "select", [Node ("result", [])]
+    | Select (Some ts) -> "select", decls "result" ts
     | Block (bt, es) -> "block", block_type bt @ list instr es
     | Loop (bt, es) -> "loop", block_type bt @ list instr es
     | If (bt, es1, es2) ->
@@ -542,12 +544,21 @@ let rec instr e =
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
-    | CallIndirect x -> "call_indirect", [Node ("type " ^ var x, [])]
+    | CallIndirect (x, y) ->
+      "call_indirect " ^ var x, [Node ("type " ^ var y, [])]
     | LocalGet x -> "local.get " ^ var x, []
     | LocalSet x -> "local.set " ^ var x, []
     | LocalTee x -> "local.tee " ^ var x, []
     | GlobalGet x -> "global.get " ^ var x, []
     | GlobalSet x -> "global.set " ^ var x, []
+    | TableGet x -> "table.get " ^ var x, []
+    | TableSet x -> "table.set " ^ var x, []
+    | TableSize x -> "table.size " ^ var x, []
+    | TableGrow x -> "table.grow " ^ var x, []
+    | TableFill x -> "table.fill " ^ var x, []
+    | TableCopy (x, y) -> "table.copy " ^ var x ^ " " ^ var y, []
+    | TableInit (x, y) -> "table.init " ^ var x ^ " " ^ var y, []
+    | ElemDrop x -> "elem.drop " ^ var x, []
     | Load op -> loadop op, []
     | SimdLoad op -> simd_loadop op, []
     | SimdLoadLane op -> simd_laneop "load" op, []
@@ -556,7 +567,14 @@ let rec instr e =
     | Store op -> storeop op, []
     | MemorySize -> "memory.size", []
     | MemoryGrow -> "memory.grow", []
-    | Const lit -> constop lit ^ value lit, []
+    | MemoryFill -> "memory.fill", []
+    | MemoryCopy -> "memory.copy", []
+    | MemoryInit x -> "memory.init " ^ var x, []
+    | DataDrop x -> "data.drop " ^ var x, []
+    | RefNull t -> "ref.null", [Atom (refed_type t)]
+    | RefIsNull -> "ref.is_null", []
+    | RefFunc x -> "ref.func " ^ var x, []
+    | Const n -> constop n ^ " " ^ num n, []
     | Test op -> testop op, []
     | Compare op -> relop op, []
     | Unary op -> unop op, []
@@ -569,8 +587,10 @@ let rec instr e =
     | SimdBitmask op -> SimdOp.bitmaskop op, []
   in Node (head, inner)
 
-let const c =
-  list instr c.it
+let const head c =
+  match c.it with
+  | [e] -> instr e
+  | es -> Node (head, list instr c.it)
 
 
 (* Functions *)
@@ -597,22 +617,52 @@ let start x = Node ("start " ^ var x, [])
 let table off i tab =
   let {ttype = TableType (lim, t)} = tab.it in
   Node ("table $" ^ nat (off + i) ^ " " ^ limits nat32 lim,
-    [atom elem_type t]
+    [atom ref_type t]
   )
 
 let memory off i mem =
   let {mtype = MemoryType lim} = mem.it in
   Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
 
-let segment head dat seg =
-  let {index; offset; init} = seg.it in
-  Node (head, atom var index :: Node ("offset", const offset) :: dat init)
+let is_elem_kind = function
+  | FuncRefType -> true
+  | _ -> false
 
-let elems seg =
-  segment "elem" (list (atom var)) seg
+let elem_kind = function
+  | FuncRefType -> "func"
+  | _ -> assert false
 
-let data seg =
-  segment "data" break_bytes seg
+let is_elem_index e =
+  match e.it with
+  | [{it = RefFunc _; _}] -> true
+  | _ -> false
+
+let elem_index e =
+  match e.it with
+  | [{it = RefFunc x; _}] -> atom var x
+  | _ -> assert false
+
+let segment_mode category mode =
+  match mode.it with
+  | Passive -> []
+  | Active {index; offset} ->
+    (if index.it = 0l then [] else [Node (category, [atom var index])]) @
+    [const "offset" offset]
+  | Declarative -> [Atom "declare"]
+
+let elem i seg =
+  let {etype; einit; emode} = seg.it in
+  Node ("elem $" ^ nat i,
+    segment_mode "table" emode @
+    if is_elem_kind etype && List.for_all is_elem_index einit then
+      atom elem_kind etype :: list elem_index einit
+    else
+      atom ref_type etype :: list (const "item") einit
+  )
+
+let data i seg =
+  let {dinit; dmode} = seg.it in
+  Node ("data $" ^ nat i, segment_mode "memory" dmode @ break_bytes dinit)
 
 
 (* Modules *)
@@ -649,8 +699,8 @@ let export ex =
   Node ("export", [atom name n; export_desc edesc])
 
 let global off i g =
-  let {gtype; value} = g.it in
-  Node ("global $" ^ nat (off + i), global_type gtype :: const value)
+  let {gtype; ginit} = g.it in
+  Node ("global $" ^ nat (off + i), global_type gtype :: list instr ginit.it)
 
 
 (* Modules *)
@@ -674,8 +724,8 @@ let module_with_var_opt x_opt m =
     listi (func_with_index !fx) m.it.funcs @
     list export m.it.exports @
     opt start m.it.start @
-    list elems m.it.elems @
-    list data m.it.data
+    listi elem m.it.elems @
+    listi data m.it.datas
   )
 
 let binary_module_with_var_opt x_opt bs =
@@ -693,18 +743,23 @@ let module_ = module_with_var_opt None
 let literal mode lit shape =
   let choose_mode bin not_bin = if mode = `Binary then bin else not_bin in
   match lit.it, shape with
-  | Values.I32 i, Some Simd.I8x16 -> choose_mode I8.to_hex_string I8.to_string_s i
-  | Values.I32 i, Some Simd.I16x8 -> choose_mode I16.to_hex_string I16.to_string_s i
-  | Values.I32 i, _ -> choose_mode I32.to_hex_string I32.to_string_s i
-  | Values.I64 i, _ -> choose_mode I64.to_hex_string I64.to_string_s i
-  | Values.F32 z, _ -> choose_mode F32.to_hex_string F32.to_string z
-  | Values.F64 z, _ -> choose_mode F64.to_hex_string F64.to_string z
-  | Values.V128 v, _ -> choose_mode V128.to_hex_string V128.to_string v
+  | Num (Values.I32 i), Some Simd.I8x16 -> choose_mode I8.to_hex_string I8.to_string_s i
+  | Num (Values.I32 i), Some Simd.I16x8 -> choose_mode I16.to_hex_string I16.to_string_s i
+  | Num (Values.I32 i), _ -> choose_mode I32.to_hex_string I32.to_string_s i
+  | Num (Values.I64 i), _ -> choose_mode I64.to_hex_string I64.to_string_s i
+  | Num (Values.F32 z), _ -> choose_mode F32.to_hex_string F32.to_string z
+  | Num (Values.F64 z), _ -> choose_mode F64.to_hex_string F64.to_string z
+  | Num (Values.V128 v), _ -> choose_mode V128.to_hex_string V128.to_string v
+  | Ref (NullRef t), _ -> ("ref.null " ^ refed_type t)
+  | Ref (ExternRef n), _ -> ("ref.extern " ^ nat32 n)
+  | Ref _, _ -> assert false
 
 (* Converts a literal into a constant instruction. *)
 let constant mode lit =
   let lit_string = literal mode lit None in
-  Node (constop lit ^ lit_string, [])
+  match lit.it with
+  | Num n -> Node (constop (n @@ lit.at) ^ lit_string, [])
+  | Ref _ -> Node (lit_string, [])
 
 let definition mode x_opt def =
   try
@@ -772,6 +827,7 @@ let result mode res =
   match res.it with
   | SimdResult (shape, pats) -> result_simd mode res shape pats
   | NumResult n -> result_numpat mode n.it
+  | RefResult t -> Node ("ref." ^ refed_type t, [])
 
 let assertion mode ass =
   match ass.it with

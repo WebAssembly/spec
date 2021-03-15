@@ -9,19 +9,19 @@ Various entities in WebAssembly are classified by types.
 Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-instantiation>`, and possibly :ref:`execution <syntax-call_indirect>`.
 
 
-.. index:: ! value type, integer, floating-point, IEEE 754, bit width
-   pair: abstract syntax; value type
-   pair: value; type
-.. _syntax-valtype:
+.. index:: ! number type, integer, floating-point, IEEE 754, bit width, memory
+   pair: abstract syntax; number type
+   pair: number; type
+.. _syntax-numtype:
 
-Value Types
-~~~~~~~~~~~
+Number Types
+~~~~~~~~~~~~
 
-*Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
+*Number types* classify numeric values.
 
 .. math::
    \begin{array}{llll}
-   \production{value type} & \valtype &::=&
+   \production{number type} & \numtype &::=&
      \I32 ~|~ \I64 ~|~ \F32 ~|~ \F64 ~|~ \V128 \\
    \end{array}
 
@@ -35,13 +35,61 @@ The type |V128| corresponds to a 128 bit vector of packed integer or floating-po
 can be interpreted as signed or unsigned integers, single or double precision floating-point
 values, or a single 128 bit type. The interpretation is determined by individual operations.
 
+Number types are *transparent*, meaning that their bit patterns can be observed.
+Values of number type can be stored in :ref:`memories <syntax-mem>`.
+
 Conventions
 ...........
 
-* The meta variable :math:`t` ranges over value types where clear from context.
+* The notation :math:`|t|` denotes the *bit width* of a number type :math:`t`.
+  That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`, and :math:`|\V128| = 128`.
 
-* The notation :math:`|t|` denotes the *bit width* of a value type.
-  That is, :math:`|\I32| = |\F32| = 32`, :math:`|\I64| = |\F64| = 64`, and :math:`|\V128| = 128`.
+
+.. index:: ! reference type, reference, table, function, function type, null
+   pair: abstract syntax; reference type
+   pair: reference; type
+.. _syntax-reftype:
+
+Reference Types
+~~~~~~~~~~~~~~~
+
+*Reference types* classify first-class references to objects in the runtime :ref:`store <store>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{reference type} & \reftype &::=&
+     \FUNCREF ~|~ \EXTERNREF \\
+   \end{array}
+
+The type |FUNCREF| denotes the infinite union of all references to :ref:`functions <syntax-func>`, regardless of their :ref:`function types <syntax-functype>`.
+
+The type |EXTERNREF| denotes the infinite union of all references to objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
+
+Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
+Values of reference type can be stored in :ref:`tables <syntax-table>`.
+
+
+.. index:: ! value type, number type, reference type
+   pair: abstract syntax; value type
+   pair: value; type
+.. _syntax-valtype:
+
+Value Types
+~~~~~~~~~~~
+
+*Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
+They are either :ref:`number types <syntax-numtype>` or :ref:`reference types <syntax-reftype>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{value type} & \valtype &::=&
+     \numtype ~|~ \reftype \\
+   \end{array}
+
+Conventions
+...........
+
+* The meta variable :math:`t` ranges over value types or subclasses thereof where clear from context.
 
 
 .. index:: ! result type, value type, instruction, execution, function
@@ -53,7 +101,7 @@ Result Types
 ~~~~~~~~~~~~
 
 *Result types* classify the result of :ref:`executing <exec-instr>` :ref:`instructions <syntax-instr>` or :ref:`functions <syntax-func>`,
-which is a sequence of values written with brackets.
+which is a sequence of values, written with brackets.
 
 .. math::
    \begin{array}{llll}
@@ -122,33 +170,25 @@ The limits constrain the minimum and optionally the maximum size of a memory.
 The limits are given in units of :ref:`page size <page-size>`.
 
 
-.. index:: ! table type, ! element type, limits, table, element
+.. index:: ! table type, reference type, limits, table, element
    pair: abstract syntax; table type
-   pair: abstract syntax; element type
    pair: table; type
    pair: table; limits
-   pair: element; type
-.. _syntax-elemtype:
 .. _syntax-tabletype:
 
 Table Types
 ~~~~~~~~~~~
 
-*Table types* classify :ref:`tables <syntax-table>` over elements of *element types* within a size range.
+*Table types* classify :ref:`tables <syntax-table>` over elements of :ref:`reference type <syntax-reftype>` within a size range.
 
 .. math::
    \begin{array}{llll}
    \production{table type} & \tabletype &::=&
-     \limits~\elemtype \\
-   \production{element type} & \elemtype &::=&
-     \FUNCREF \\
+     \limits~\reftype \\
    \end{array}
 
 Like memories, tables are constrained by limits for their minimum and optionally maximum size.
 The limits are given in numbers of entries.
-
-The element type |FUNCREF| is the infinite union of all :ref:`function types <syntax-functype>`.
-A table of that type thus contains references to functions of heterogeneous type.
 
 .. note::
    In future versions of WebAssembly, additional element types may be introduced.

@@ -45,7 +45,7 @@ let string s =
   done;
   Buffer.contents b
 
-let value_type = function
+let num_type = function
   | "i32" -> Types.I32Type
   | "i64" -> Types.I64Type
   | "f32" -> Types.F32Type
@@ -209,8 +209,13 @@ rule token = parse
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
-  | (nxx as t) { VALUE_TYPE (value_type t) }
+  | "extern" { EXTERN }
+  | "externref" { EXTERNREF }
+  | "funcref" { FUNCREF }
+  | (nxx as t) { NUM_TYPE (num_type t) }
   | (vxxx)".const" { V128_CONST }
+  | "mut" { MUT }
+
   | (nxx as t)".const"
     { let open Source in
       CONST (numop t
@@ -224,8 +229,10 @@ rule token = parse
           f64_const (n @@ s.at), Values.F64 n)
         unimplemented_simd)
     }
-  | "funcref" { FUNCREF }
-  | "mut" { MUT }
+  | "ref.null" { REF_NULL }
+  | "ref.func" { REF_FUNC }
+  | "ref.extern" { REF_EXTERN }
+  | "ref.is_null" { REF_IS_NULL }
 
   | "nop" { NOP }
   | "unreachable" { UNREACHABLE }
@@ -250,22 +257,22 @@ rule token = parse
   | "global.get" { GLOBAL_GET }
   | "global.set" { GLOBAL_SET }
 
-  | (simd_shape as s)".splat"
-    { SPLAT (simdop s i8x16_splat i16x8_splat i32x4_splat
-                      i64x2_splat f32x4_splat f64x2_splat) }
-  | (simd_shape as s)".extract_lane"
-    { except ["i8x16"; "i16x8"] s lexbuf;
-      EXTRACT_LANE (fun imm ->
-        simdop s unimplemented_simd unimplemented_simd i32x4_extract_lane
-                 i64x2_extract_lane f32x4_extract_lane f64x2_extract_lane imm) }
-  | (("i8x16"|"i16x8") as t)".extract_lane_"(sign as s)
-    { EXTRACT_LANE (fun imm ->
-        if t = "i8x16"
-        then ext s i8x16_extract_lane_s i8x16_extract_lane_u imm
-        else ext s i16x8_extract_lane_s i16x8_extract_lane_u imm )}
-  | (simd_shape as s)".replace_lane"
-    { REPLACE_LANE (simdop s i8x16_replace_lane i16x8_replace_lane i32x4_replace_lane
-                             i64x2_replace_lane f32x4_replace_lane f64x2_replace_lane) }
+  | "table.get" { TABLE_GET }
+  | "table.set" { TABLE_SET }
+  | "table.size" { TABLE_SIZE }
+  | "table.grow" { TABLE_GROW }
+  | "table.fill" { TABLE_FILL }
+  | "table.copy" { TABLE_COPY }
+  | "table.init" { TABLE_INIT }
+  | "elem.drop" { ELEM_DROP }
+
+  | "memory.size" { MEMORY_SIZE }
+  | "memory.grow" { MEMORY_GROW }
+  | "memory.fill" { MEMORY_FILL }
+  | "memory.copy" { MEMORY_COPY }
+  | "memory.init" { MEMORY_INIT }
+  | "data.drop" { DATA_DROP }
+
   | (nxx as t)".load"
     { LOAD (fun a o ->
         numop t (i32_load (opt a 2)) (i64_load (opt a 3))
@@ -428,9 +435,6 @@ rule token = parse
   | "i32.reinterpret_f32" { CONVERT i32_reinterpret_f32 }
   | "i64.reinterpret_f64" { CONVERT i64_reinterpret_f64 }
 
-  | "memory.size" { MEMORY_SIZE }
-  | "memory.grow" { MEMORY_GROW }
-
   | "type" { TYPE }
   | "func" { FUNC }
   | "start" { START }
@@ -442,7 +446,9 @@ rule token = parse
   | "memory" { MEMORY }
   | "elem" { ELEM }
   | "data" { DATA }
+  | "declare" { DECLARE }
   | "offset" { OFFSET }
+  | "item" { ITEM }
   | "import" { IMPORT }
   | "export" { EXPORT }
 
@@ -465,6 +471,22 @@ rule token = parse
   | "input" { INPUT }
   | "output" { OUTPUT }
 
+  | (simd_shape as s)".splat"
+    { SPLAT (simdop s i8x16_splat i16x8_splat i32x4_splat
+                      i64x2_splat f32x4_splat f64x2_splat) }
+  | (simd_shape as s)".extract_lane"
+    { except ["i8x16"; "i16x8"] s lexbuf;
+      EXTRACT_LANE (fun imm ->
+        simdop s unimplemented_simd unimplemented_simd i32x4_extract_lane
+                 i64x2_extract_lane f32x4_extract_lane f64x2_extract_lane imm) }
+  | (("i8x16"|"i16x8") as t)".extract_lane_"(sign as s)
+    { EXTRACT_LANE (fun imm ->
+        if t = "i8x16"
+        then ext s i8x16_extract_lane_s i8x16_extract_lane_u imm
+        else ext s i16x8_extract_lane_s i16x8_extract_lane_u imm )}
+  | (simd_shape as s)".replace_lane"
+    { REPLACE_LANE (simdop s i8x16_replace_lane i16x8_replace_lane i32x4_replace_lane
+                             i64x2_replace_lane f32x4_replace_lane f64x2_replace_lane) }
   | (simd_shape as s)".eq"
     { BINARY (simdop s i8x16_eq i16x8_eq i32x4_eq i64x2_eq f32x4_eq f64x2_eq) }
   | (simd_shape as s)".ne"

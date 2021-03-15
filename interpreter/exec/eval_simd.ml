@@ -1,71 +1,64 @@
 open Types
 open Values
 
-exception TypeError of int * value * value_type
-
-let of_arg f n v = try f v with Value t -> raise (TypeError (n, v, t))
-
-module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
+module SimdOp (SXX : Simd.S) (Num : NumType with type t = SXX.t) = struct
   open Ast.SimdOp
-
-  let to_value = Value.to_value
-
-  let of_value = of_arg Value.of_value
+  open Num
 
   let unop (op : unop) =
     fun v -> match op with
-      | I8x16 Neg -> to_value (SXX.I8x16.neg (of_value 1 v))
-      | I8x16 Abs -> to_value (SXX.I8x16.abs (of_value 1 v))
-      | I8x16 Popcnt -> to_value (SXX.I8x16.popcnt (of_value 1 v))
-      | I16x8 Neg -> to_value (SXX.I16x8.neg (of_value 1 v))
-      | I16x8 Abs -> to_value (SXX.I16x8.abs (of_value 1 v))
-      | I16x8 ExtendLowS -> to_value (SXX.I16x8_convert.extend_low_s (of_value 1 v))
-      | I16x8 ExtendHighS -> to_value (SXX.I16x8_convert.extend_high_s (of_value 1 v))
-      | I16x8 ExtendLowU -> to_value (SXX.I16x8_convert.extend_low_u (of_value 1 v))
-      | I16x8 ExtendHighU -> to_value (SXX.I16x8_convert.extend_high_u (of_value 1 v))
-      | I16x8 ExtAddPairwiseS -> to_value (SXX.I16x8_convert.extadd_pairwise_s (of_value 1 v))
-      | I16x8 ExtAddPairwiseU -> to_value (SXX.I16x8_convert.extadd_pairwise_u (of_value 1 v))
-      | I32x4 Abs -> to_value (SXX.I32x4.abs (of_value 1 v))
-      | I32x4 Neg -> to_value (SXX.I32x4.neg (of_value 1 v))
-      | I32x4 ExtendLowS -> to_value (SXX.I32x4_convert.extend_low_s (of_value 1 v))
-      | I32x4 ExtendHighS -> to_value (SXX.I32x4_convert.extend_high_s (of_value 1 v))
-      | I32x4 ExtendLowU -> to_value (SXX.I32x4_convert.extend_low_u (of_value 1 v))
-      | I32x4 ExtendHighU -> to_value (SXX.I32x4_convert.extend_high_u (of_value 1 v))
-      | I32x4 TruncSatF32x4S -> to_value (SXX.I32x4_convert.trunc_sat_f32x4_s (of_value 1 v))
-      | I32x4 TruncSatF32x4U -> to_value (SXX.I32x4_convert.trunc_sat_f32x4_u (of_value 1 v))
+      | I8x16 Neg -> to_num (SXX.I8x16.neg (of_num 1 v))
+      | I8x16 Abs -> to_num (SXX.I8x16.abs (of_num 1 v))
+      | I8x16 Popcnt -> to_num (SXX.I8x16.popcnt (of_num 1 v))
+      | I16x8 Neg -> to_num (SXX.I16x8.neg (of_num 1 v))
+      | I16x8 Abs -> to_num (SXX.I16x8.abs (of_num 1 v))
+      | I16x8 ExtendLowS -> to_num (SXX.I16x8_convert.extend_low_s (of_num 1 v))
+      | I16x8 ExtendHighS -> to_num (SXX.I16x8_convert.extend_high_s (of_num 1 v))
+      | I16x8 ExtendLowU -> to_num (SXX.I16x8_convert.extend_low_u (of_num 1 v))
+      | I16x8 ExtendHighU -> to_num (SXX.I16x8_convert.extend_high_u (of_num 1 v))
+      | I16x8 ExtAddPairwiseS -> to_num (SXX.I16x8_convert.extadd_pairwise_s (of_num 1 v))
+      | I16x8 ExtAddPairwiseU -> to_num (SXX.I16x8_convert.extadd_pairwise_u (of_num 1 v))
+      | I32x4 Abs -> to_num (SXX.I32x4.abs (of_num 1 v))
+      | I32x4 Neg -> to_num (SXX.I32x4.neg (of_num 1 v))
+      | I32x4 ExtendLowS -> to_num (SXX.I32x4_convert.extend_low_s (of_num 1 v))
+      | I32x4 ExtendHighS -> to_num (SXX.I32x4_convert.extend_high_s (of_num 1 v))
+      | I32x4 ExtendLowU -> to_num (SXX.I32x4_convert.extend_low_u (of_num 1 v))
+      | I32x4 ExtendHighU -> to_num (SXX.I32x4_convert.extend_high_u (of_num 1 v))
+      | I32x4 TruncSatF32x4S -> to_num (SXX.I32x4_convert.trunc_sat_f32x4_s (of_num 1 v))
+      | I32x4 TruncSatF32x4U -> to_num (SXX.I32x4_convert.trunc_sat_f32x4_u (of_num 1 v))
       | I32x4 TruncSatF64x2SZero ->
-        to_value (SXX.I32x4_convert.trunc_sat_f64x2_s_zero (of_value 1 v))
+        to_num (SXX.I32x4_convert.trunc_sat_f64x2_s_zero (of_num 1 v))
       | I32x4 TruncSatF64x2UZero ->
-        to_value (SXX.I32x4_convert.trunc_sat_f64x2_u_zero (of_value 1 v))
-      | I32x4 ExtAddPairwiseS -> to_value (SXX.I32x4_convert.extadd_pairwise_s (of_value 1 v))
-      | I32x4 ExtAddPairwiseU -> to_value (SXX.I32x4_convert.extadd_pairwise_u (of_value 1 v))
-      | I64x2 Abs -> to_value (SXX.I64x2.abs (of_value 1 v))
-      | I64x2 Neg -> to_value (SXX.I64x2.neg (of_value 1 v))
-      | I64x2 ExtendLowS -> to_value (SXX.I64x2_convert.extend_low_s (of_value 1 v))
-      | I64x2 ExtendHighS -> to_value (SXX.I64x2_convert.extend_high_s (of_value 1 v))
-      | I64x2 ExtendLowU -> to_value (SXX.I64x2_convert.extend_low_u (of_value 1 v))
-      | I64x2 ExtendHighU -> to_value (SXX.I64x2_convert.extend_high_u (of_value 1 v))
-      | F32x4 Abs -> to_value (SXX.F32x4.abs (of_value 1 v))
-      | F32x4 Neg -> to_value (SXX.F32x4.neg (of_value 1 v))
-      | F32x4 Sqrt -> to_value (SXX.F32x4.sqrt (of_value 1 v))
-      | F32x4 Ceil -> to_value (SXX.F32x4.ceil (of_value 1 v))
-      | F32x4 Floor -> to_value (SXX.F32x4.floor (of_value 1 v))
-      | F32x4 Trunc -> to_value (SXX.F32x4.trunc (of_value 1 v))
-      | F32x4 Nearest -> to_value (SXX.F32x4.nearest (of_value 1 v))
-      | F32x4 ConvertI32x4S -> to_value (SXX.F32x4_convert.convert_i32x4_s (of_value 1 v))
-      | F32x4 ConvertI32x4U -> to_value (SXX.F32x4_convert.convert_i32x4_u (of_value 1 v))
-      | F32x4 DemoteF64x2Zero -> to_value (SXX.F32x4_convert.demote_f64x2_zero (of_value 1 v))
-      | F64x2 Abs -> to_value (SXX.F64x2.abs (of_value 1 v))
-      | F64x2 Neg -> to_value (SXX.F64x2.neg (of_value 1 v))
-      | F64x2 Sqrt -> to_value (SXX.F64x2.sqrt (of_value 1 v))
-      | F64x2 Ceil -> to_value (SXX.F64x2.ceil (of_value 1 v))
-      | F64x2 Floor -> to_value (SXX.F64x2.floor (of_value 1 v))
-      | F64x2 Trunc -> to_value (SXX.F64x2.trunc (of_value 1 v))
-      | F64x2 Nearest -> to_value (SXX.F64x2.nearest (of_value 1 v))
-      | F64x2 PromoteLowF32x4 -> to_value (SXX.F64x2_convert.promote_low_f32x4 (of_value 1 v))
-      | F64x2 ConvertI32x4S -> to_value (SXX.F64x2_convert.convert_i32x4_s (of_value 1 v))
-      | F64x2 ConvertI32x4U -> to_value (SXX.F64x2_convert.convert_i32x4_u (of_value 1 v))
-      | V128 Not -> to_value (SXX.V128.lognot (of_value 1 v))
+        to_num (SXX.I32x4_convert.trunc_sat_f64x2_u_zero (of_num 1 v))
+      | I32x4 ExtAddPairwiseS -> to_num (SXX.I32x4_convert.extadd_pairwise_s (of_num 1 v))
+      | I32x4 ExtAddPairwiseU -> to_num (SXX.I32x4_convert.extadd_pairwise_u (of_num 1 v))
+      | I64x2 Abs -> to_num (SXX.I64x2.abs (of_num 1 v))
+      | I64x2 Neg -> to_num (SXX.I64x2.neg (of_num 1 v))
+      | I64x2 ExtendLowS -> to_num (SXX.I64x2_convert.extend_low_s (of_num 1 v))
+      | I64x2 ExtendHighS -> to_num (SXX.I64x2_convert.extend_high_s (of_num 1 v))
+      | I64x2 ExtendLowU -> to_num (SXX.I64x2_convert.extend_low_u (of_num 1 v))
+      | I64x2 ExtendHighU -> to_num (SXX.I64x2_convert.extend_high_u (of_num 1 v))
+      | F32x4 Abs -> to_num (SXX.F32x4.abs (of_num 1 v))
+      | F32x4 Neg -> to_num (SXX.F32x4.neg (of_num 1 v))
+      | F32x4 Sqrt -> to_num (SXX.F32x4.sqrt (of_num 1 v))
+      | F32x4 Ceil -> to_num (SXX.F32x4.ceil (of_num 1 v))
+      | F32x4 Floor -> to_num (SXX.F32x4.floor (of_num 1 v))
+      | F32x4 Trunc -> to_num (SXX.F32x4.trunc (of_num 1 v))
+      | F32x4 Nearest -> to_num (SXX.F32x4.nearest (of_num 1 v))
+      | F32x4 ConvertI32x4S -> to_num (SXX.F32x4_convert.convert_i32x4_s (of_num 1 v))
+      | F32x4 ConvertI32x4U -> to_num (SXX.F32x4_convert.convert_i32x4_u (of_num 1 v))
+      | F32x4 DemoteF64x2Zero -> to_num (SXX.F32x4_convert.demote_f64x2_zero (of_num 1 v))
+      | F64x2 Abs -> to_num (SXX.F64x2.abs (of_num 1 v))
+      | F64x2 Neg -> to_num (SXX.F64x2.neg (of_num 1 v))
+      | F64x2 Sqrt -> to_num (SXX.F64x2.sqrt (of_num 1 v))
+      | F64x2 Ceil -> to_num (SXX.F64x2.ceil (of_num 1 v))
+      | F64x2 Floor -> to_num (SXX.F64x2.floor (of_num 1 v))
+      | F64x2 Trunc -> to_num (SXX.F64x2.trunc (of_num 1 v))
+      | F64x2 Nearest -> to_num (SXX.F64x2.nearest (of_num 1 v))
+      | F64x2 PromoteLowF32x4 -> to_num (SXX.F64x2_convert.promote_low_f32x4 (of_num 1 v))
+      | F64x2 ConvertI32x4S -> to_num (SXX.F64x2_convert.convert_i32x4_s (of_num 1 v))
+      | F64x2 ConvertI32x4U -> to_num (SXX.F64x2_convert.convert_i32x4_u (of_num 1 v))
+      | V128 Not -> to_num (SXX.V128.lognot (of_num 1 v))
       | _ -> assert false
 
   let binop (op : binop) =
@@ -192,7 +185,7 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
       | V128 Xor -> SXX.V128.xor
       | V128 AndNot -> SXX.V128.andnot
       | _ -> assert false
-    in fun v1 v2 -> to_value (f (of_value 1 v1) (of_value 2 v2))
+    in fun v1 v2 -> to_num (f (of_num 1 v1) (of_num 2 v2))
 
   let testop (op : testop) =
     let f = match op with
@@ -202,12 +195,12 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
     | I32x4 AllTrue -> SXX.I32x4.all_true
     | I64x2 AllTrue -> SXX.I64x2.all_true
     | _ -> assert false
-    in fun v -> f (of_value 1 v)
+    in fun v -> f (of_num 1 v)
 
   let relop op = assert false
 
   let extractop op v =
-    let v128 = of_value 1 v in
+    let v128 = of_num 1 v in
     match op with
     | I8x16 (SX, imm) -> (I32 (SXX.I8x16.extract_lane_s imm v128))
     | I8x16 (ZX, imm) -> (I32 (SXX.I8x16.extract_lane_u imm v128))
@@ -219,21 +212,21 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
     | F64x2 (_, imm) -> (F64 (SXX.F64x2.extract_lane imm v128))
     | _ -> assert false
 
-  let replaceop op v (r : Values.value) =
-    let v128 = of_value 1 v in
+  let replaceop op v (r : Values.num) =
+    let v128 = of_num 1 v in
     match op, r with
-    | I8x16 imm, I32 r -> to_value (SXX.I8x16.replace_lane imm v128 r)
-    | I16x8 imm, I32 r -> to_value (SXX.I16x8.replace_lane imm v128 r)
-    | I32x4 imm, I32 r -> to_value (SXX.I32x4.replace_lane imm v128 r)
-    | I64x2 imm, I64 r -> to_value (SXX.I64x2.replace_lane imm v128 r)
-    | F32x4 imm, F32 r -> to_value (SXX.F32x4.replace_lane imm v128 r)
-    | F64x2 imm, F64 r -> to_value (SXX.F64x2.replace_lane imm v128 r)
+    | I8x16 imm, I32 r -> to_num (SXX.I8x16.replace_lane imm v128 r)
+    | I16x8 imm, I32 r -> to_num (SXX.I16x8.replace_lane imm v128 r)
+    | I32x4 imm, I32 r -> to_num (SXX.I32x4.replace_lane imm v128 r)
+    | I64x2 imm, I64 r -> to_num (SXX.I64x2.replace_lane imm v128 r)
+    | F32x4 imm, F32 r -> to_num (SXX.F32x4.replace_lane imm v128 r)
+    | F64x2 imm, F64 r -> to_num (SXX.F64x2.replace_lane imm v128 r)
     | _ -> assert false
 
   let ternop op =
     let f = match op with
     | Bitselect -> SXX.V128.bitselect
-    in fun v1 v2 v3 -> to_value (f (of_value 1 v1) (of_value 2 v2) (of_value 3 v3))
+    in fun v1 v2 v3 -> to_num (f (of_num 1 v1) (of_num 2 v2) (of_num 3 v3))
 
   let shiftop (op : shiftop) =
     let f = match op with
@@ -250,7 +243,7 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
     | I64x2 ShrS -> SXX.I64x2.shr_s
     | I64x2 ShrU -> SXX.I64x2.shr_u
     | _ -> failwith "unimplemented shr_u"
-    in fun v s -> to_value (f (of_value 1 v) (of_arg I32Value.of_value 2 s))
+    in fun v s -> to_num (f (of_num 1 v) (I32Num.of_num 2 s))
 
   let bitmaskop (op : Simd.shape) v =
     let f = match op with
@@ -259,24 +252,24 @@ module SimdOp (SXX : Simd.S) (Value : ValueType with type t = SXX.t) = struct
     | Simd.I32x4 -> SXX.I32x4.bitmask
     | Simd.I64x2 -> SXX.I64x2.bitmask
     | _ -> assert false
-    in I32 (f (of_value 1 v))
+    in I32 (f (of_num 1 v))
 
 end
 
-module V128Op = SimdOp (V128) (Values.V128Value)
+module V128Op = SimdOp (V128) (Values.V128Num)
 
 module V128CvtOp =
 struct
   open Ast.SimdOp
 
-  let cvtop op v : value =
+  let cvtop op v : num =
     match op with
-    | I8x16 Splat -> V128 (V128.I8x16.splat (of_arg I32Value.of_value 1 v))
-    | I16x8 Splat -> V128 (V128.I16x8.splat (of_arg I32Value.of_value 1 v))
-    | I32x4 Splat -> V128 (V128.I32x4.splat (of_arg I32Value.of_value 1 v))
-    | I64x2 Splat -> V128 (V128.I64x2.splat (of_arg I64Value.of_value 1 v))
-    | F32x4 Splat -> V128 (V128.F32x4.splat (of_arg F32Value.of_value 1 v))
-    | F64x2 Splat -> V128 (V128.F64x2.splat (of_arg F64Value.of_value 1 v))
+    | I8x16 Splat -> V128Num.to_num (V128.I8x16.splat (I32Num.of_num 1 v))
+    | I16x8 Splat -> V128 (V128.I16x8.splat (I32Num.of_num 1 v))
+    | I32x4 Splat -> V128 (V128.I32x4.splat (I32Num.of_num 1 v))
+    | I64x2 Splat -> V128 (V128.I64x2.splat (I64Num.of_num 1 v))
+    | F32x4 Splat -> V128 (V128.F32x4.splat (F32Num.of_num 1 v))
+    | F64x2 Splat -> V128 (V128.F64x2.splat (F64Num.of_num 1 v))
     | _ -> assert false
 end
 
