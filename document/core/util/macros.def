@@ -3,11 +3,11 @@
 .. External Standards
 .. ------------------
 
-.. |WasmDraft| replace:: https://webassembly.github.io/spec/core/
-.. _WasmDraft: https://webassembly.github.io/spec/core/
+.. |WasmDraft| replace:: https://webassembly.github.io/relaxed-simd/core/
+.. _WasmDraft: https://webassembly.github.io/relaxed-simd/core/
 
-.. |WasmIssues| replace:: https://github.com/webassembly/spec/issues/
-.. _WasmIssues: https://github.com/webassembly/spec/issues/
+.. |WasmIssues| replace:: https://github.com/webassembly/relaxed-simd/issues/
+.. _WasmIssues: https://github.com/webassembly/relaxed-simd/issues/
 
 .. |IEEE754| replace:: IEEE 754-2019
 .. _IEEE754: https://ieeexplore.ieee.org/document/8766229

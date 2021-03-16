@@ -1,6 +1,16 @@
-[![Build Status](https://travis-ci.org/WebAssembly/spec.svg?branch=master)](https://travis-ci.org/WebAssembly/spec)
+[![Build Status](https://travis-ci.org/WebAssembly/relaxed-simd.svg?branch=master)](https://travis-ci.org/WebAssembly/relaxed-simd)
 
-# spec
+# Relaxed SIMD proposal for WebAssembly
+
+This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
+It is meant for discussion, prototype specification and implementation of a proposal to
+add support for SIMD instructions with relaxed determinism requirements to WebAssembly.
+
+* See the [overview](proposals/relaxed-simd/Overview.md) for a summary of the proposal.
+
+* See the [modified spec](https://webassembly.github.io/relaxed-simd/) for details.
+
+Original `README` from upstream repository follows…
 
 This repository holds the sources for the WebAssembly draft specification
 (to seed a future
