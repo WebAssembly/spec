@@ -813,7 +813,7 @@ let result_simd mode res shape pats =
   (* A different text generation for SIMD, since the literals within
    * a SimdResult do not need the i32.const instruction *)
   let num_pat mode res =
-    match res.it with
+    match res with
     | LitPat lit -> literal mode lit (Some shape)
     | NanPat {it = Values.F32 n; _}
     | NanPat {it = Values.F64 n; _} -> nan n
@@ -826,7 +826,7 @@ let result_simd mode res shape pats =
 let result mode res =
   match res.it with
   | SimdResult (shape, pats) -> result_simd mode res shape pats
-  | NumResult n -> result_numpat mode n.it
+  | NumResult n -> result_numpat mode n
   | RefResult t -> Node ("ref." ^ refed_type t, [])
 
 let assertion mode ass =

@@ -288,7 +288,7 @@ let assert_return ress ts at =
       | ArithmeticNan -> canonical_nan_of (* can be any NaN that's one everywhere the canonical NaN is one *)
     in
     match res.it with
-    | NumResult {it = LitPat {it = Values.Num num; at = at'}; _} ->
+    | NumResult (LitPat {it = Values.Num num; at = at'}) ->
       let t', reinterpret = reinterpret_of (Values.type_of_num num) in
       [ reinterpret @@ at;
         Const (num @@ at')  @@ at;
@@ -296,19 +296,19 @@ let assert_return ress ts at =
         Compare (eq_of t') @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | NumResult {it = LitPat {it = Values.Ref (Values.NullRef t); _}; _} ->
+    | NumResult (LitPat {it = Values.Ref (Values.NullRef t); _}) ->
       [ RefIsNull @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | NumResult {it = LitPat {it = Values.Ref (ExternRef n); _}; _} ->
+    | NumResult (LitPat {it = Values.Ref (ExternRef n); _}) ->
       [ Const (Values.I32 n @@ at) @@ at;
         Call (externref_idx @@ at) @@ at;
         Call (eq_externref_idx @@ at)  @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | NumResult {it = LitPat {it = Values.Ref _; _}; _} ->
+    | NumResult (LitPat {it = Values.Ref _; _}) ->
       assert false
-    | NumResult {it = NanPat nanop; _ } ->
+    | NumResult (NanPat nanop) ->
       let nan =
         match nanop.it with
         | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
@@ -339,7 +339,7 @@ let assert_return ress ts at =
         | NanPat {it = F64 nan; _} -> nan_bitmask_of nan I64Type, canonical_nan_of I64Type
         | _ -> assert false
       in
-      let masks, canons = List.split (List.map (fun p -> mask_and_canonical p.it) pats) in
+      let masks, canons = List.split (List.map (fun p -> mask_and_canonical p) pats) in
       let all_ones = V128.of_i32x4 (List.init 4 (fun _ -> Int32.minus_one)) in
       let mask, expected = match shape with
         | Simd.I8x16 -> all_ones, V128.of_i8x16 (List.map (I32Num.of_num 0) canons)
@@ -489,9 +489,9 @@ let of_numpat = function
 
 let of_result res =
   match res.it with
-  | NumResult n -> of_numpat n.it
+  | NumResult n -> of_numpat n
   | SimdResult (shape, pats) ->
-    Printf.sprintf "v128(\"%s\")" (String.concat " " (List.map (fun x -> of_numpat x.it) pats))
+    Printf.sprintf "v128(\"%s\")" (String.concat " " (List.map (fun x -> of_numpat x) pats))
   | RefResult t -> "\"ref." ^ string_of_refed_type t ^ "\""
 
 let rec of_definition def =
