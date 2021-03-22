@@ -27,3 +27,11 @@ Some instructions we would like to add:
 - Approximate reciprocal/reciprocal sqrt
 - Relaxed Swizzle (implementation defined out of bounds behavior)
 - Relaxed Rounding Q-format Multiplication (optional saturation)
+
+## References
+
+- Poll for phase 1
+  [presentation](https://docs.google.com/presentation/d/1Qnx0nbNTRYhMONLuKyygEduCXNOv3xtWODfXfYokx1Y/edit?usp=sharing)
+  and [meeting
+  notes](https://github.com/WebAssembly/meetings/blob/master/main/2021/CG-03-16.md)
+- [SIMD proposal](https://github.com/WebAssembly/simd)
