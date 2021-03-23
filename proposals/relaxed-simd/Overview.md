@@ -21,7 +21,16 @@ for more details.
 
 ## Overview
 
-Some instructions we would like to add:
+Broadly, there are three categories of instructions that fit into the Relaxed SIMD proposal:
+
+1. Integer instructions where the inputs are interpreted differently (e.g.
+   swizzle,  4-D dot-product)
+2. Floating-point instructions whose behavior for out-of-range and NaNs differ
+   (e.g. float-to-int conversions, float min/max)
+3. Floating-point instructions where the precision or order of operations
+   differ (e.g. FMA, reciprocal instructions, sum reduction)
+
+Example of some instructions we would like to add:
 
 - Fused Multiply Add (single rounding if hardware supports it, double rounding if not)
 - Approximate reciprocal/reciprocal sqrt
