@@ -108,6 +108,14 @@ In the above example, the same `fpenv` is exported by module `a`, and imported
 by module `b`, so instructions `(1)` and `(2)` will consistently return the
 same results when given the same inputs.
 
+## Instructions
+
+> This is a placeholder for instructions that this proposal adds.
+
+## Binary format
+
+> This is a placeholder for binary format of instructions and new constructs.
+
 ## References
 
 - Poll for phase 1
