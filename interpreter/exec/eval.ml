@@ -369,6 +369,11 @@ let i32 (v : value) at =
   | I32 i -> i
   | _ -> Crash.error at "type error: i32 value expected"
 
+let i32_64 (v : value) at =
+  match v with
+  | I32 i -> I64_convert.extend_i32_u i
+  | I64 i -> i
+  | _ -> Crash.error at "type error: i32 or i64 value expected"
 
 (* Modules *)
 
@@ -418,8 +423,7 @@ let init_table (inst : module_inst) (seg : table_segment) =
 let init_memory (inst : module_inst) (seg : memory_segment) =
   let {index; offset = const; init} = seg.it in
   let mem = memory inst index in
-  let offset' = i32 (eval_const inst const) const.at in
-  let offset = I64_convert.extend_i32_u offset' in
+  let offset = i32_64 (eval_const inst const) const.at in
   let end_ = Int64.(add offset (of_int (String.length init))) in
   let bound = Memory.bound mem in
   if I64.lt_u bound end_ || I64.lt_u end_ offset then

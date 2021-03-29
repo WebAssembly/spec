@@ -418,8 +418,8 @@ let check_elem (c : context) (seg : table_segment) =
 
 let check_data (c : context) (seg : memory_segment) =
   let {index; offset; init} = seg.it in
-  check_const c offset I32Type;
-  ignore (memory c index)
+  let MemoryType (_, it) = memory c index in
+  check_const c offset (value_type_of_index_type it)
 
 let check_global (c : context) (glob : global) =
   let {gtype; value} = glob.it in

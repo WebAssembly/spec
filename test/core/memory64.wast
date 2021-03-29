@@ -15,9 +15,9 @@
 (module (memory i64 (data "x")) (func (export "memsize") (result i64) (memory.size)))
 (assert_return (invoke "memsize") (i64.const 1))
 
-(assert_invalid (module (data (i32.const 0))) "unknown memory")
-(assert_invalid (module (data (i32.const 0) "")) "unknown memory")
-(assert_invalid (module (data (i32.const 0) "x")) "unknown memory")
+(assert_invalid (module (data (i64.const 0))) "unknown memory")
+(assert_invalid (module (data (i64.const 0) "")) "unknown memory")
+(assert_invalid (module (data (i64.const 0) "x")) "unknown memory")
 
 (assert_invalid
   (module (func (drop (f32.load (i64.const 0)))))
@@ -52,7 +52,7 @@
 
 (module
   (memory i64 1)
-  (data (i32.const 0) "ABC\a7D") (data (i32.const 20) "WASM")
+  (data (i64.const 0) "ABC\a7D") (data (i64.const 20) "WASM")
 
   ;; Data section
   (func (export "data") (result i32)

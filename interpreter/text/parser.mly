@@ -172,9 +172,12 @@ let index_type t at =
 
 let memory_data init it c x at =
   let size = Int64.(div (add (of_int (String.length init)) 65535L) 65536L) in
+  let instr = match it with
+    | I32IndexType -> i32_const (0l @@ at)
+    | I64IndexType -> i64_const (0L @@ at) in
   [{mtype = MemoryType ({min = size; max = Some size}, it)} @@ at],
   [{index = x;
-    offset = [i32_const (0l @@ at) @@ at] @@ at; init} @@ at],
+    offset = [instr @@ at] @@ at; init} @@ at],
   [], []
 
 %}
