@@ -136,6 +136,7 @@ class Simdi64x2CmpCase(SimdCmpCase):
         # dec vs dec
         case_data.append(['#', 'dec vs dec'])
         case_data.append(['le_s', ['-1', '-1'], '-1', ['i64x2', 'i64x2', 'i64x2']])
+        case_data.append(['le_s', [['0', '0'], ['0', '-1']], ['-1', '0'], ['i64x2', 'i64x2', 'i64x2']])
         case_data.append(['le_s', ['0', '0'], '-1', ['i64x2', 'i64x2', 'i64x2']])
         case_data.append(['le_s', ['18446744073709551615', '18446744073709551615'], '-1', ['i64x2', 'i64x2', 'i64x2']])
         case_data.append(['le_s', ['18446744073709551615', '-1'], '-1', ['i64x2', 'i64x2', 'i64x2']])
@@ -222,6 +223,7 @@ class Simdi64x2CmpCase(SimdCmpCase):
         # dec vs dec
         case_data.append(['#', 'dec vs dec'])
         case_data.append(['ge_s', ['-1', '-1'], '-1', ['i64x2', 'i64x2', 'i64x2']])
+        case_data.append(['ge_s', [['-1', '-1'], ['0', '-1']], ['0', '-1'], ['i64x2', 'i64x2', 'i64x2']])
         case_data.append(['ge_s', ['0', '0'], '-1', ['i64x2', 'i64x2', 'i64x2']])
         case_data.append(['ge_s', ['18446744073709551615', '18446744073709551615'], '-1', ['i64x2', 'i64x2', 'i64x2']])
         case_data.append(['ge_s', ['18446744073709551615', '-1'], '-1', ['i64x2', 'i64x2', 'i64x2']])
