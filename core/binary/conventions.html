@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Conventions &#8212; WebAssembly 1.1</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
@@ -82,7 +83,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="conventions">
+  <section id="conventions">
 <span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
 <p>The binary format for WebAssembly <a class="reference internal" href="../intro/overview.html#module"><span class="std std-ref">modules</span></a> is a dense linear <em>encoding</em> of their <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">abstract syntax</span></a>.
 <a class="footnote-reference brackets" href="#compression" id="id1">1</a></p>
@@ -107,7 +108,7 @@ and the recommended <a class="reference external" href="https://www.iana.org/ass
 However, such layers are outside the scope of the current specification.</p>
 </dd>
 </dl>
-<div class="section" id="grammar">
+<section id="grammar">
 <span id="binary-grammar"></span><span id="index-1"></span><h2>Grammar<a class="headerlink" href="#grammar" title="Permalink to this headline">¶</a></h2>
 <p>The following conventions are adopted in defining grammar rules for the binary format.
 They mirror the conventions used for <a class="reference internal" href="../syntax/conventions.html#grammar"><span class="std std-ref">abstract syntax</span></a>.
@@ -152,16 +153,16 @@ or the byte <span class="math notranslate nohighlight">\(\def\mathdef685#1{\math
 The variables <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(m\)</span> name the attributes of the respective <span class="math notranslate nohighlight">\(\href{../binary/values.html#binary-int}{\def\mathdef643#1{{\mathtt{u}#1}}\mathdef643{\mathtt{32}}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> those decode into.
 The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.</p>
 </div>
-</div>
-<div class="section" id="auxiliary-notation">
+</section>
+<section id="auxiliary-notation">
 <span id="binary-notation"></span><h2>Auxiliary Notation<a class="headerlink" href="#auxiliary-notation" title="Permalink to this headline">¶</a></h2>
 <p>When dealing with binary encodings the following notation is also used:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\epsilon\)</span> denotes the empty byte sequence.</p></li>
 <li><p><span class="math notranslate nohighlight">\(||B||\)</span> is the length of the byte sequence generated from the production <span class="math notranslate nohighlight">\(B\)</span> in a derivation.</p></li>
 </ul>
-</div>
-<div class="section" id="vectors">
+</section>
+<section id="vectors">
 <span id="binary-vec"></span><span id="index-2"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/conventions.html#syntax-vec"><span class="std std-ref">Vectors</span></a> are encoded with their <span class="math notranslate nohighlight">\(\href{../binary/values.html#binary-int}{\def\mathdef643#1{{\mathtt{u}#1}}\mathdef643{\mathtt{32}}}\)</span> length followed by the encoding of their element sequence.</p>
 <div class="math notranslate nohighlight">
@@ -169,8 +170,8 @@ The attribute of the complete production then is the abstract syntax for the lim
 \def\mathdef638#1{{}}\mathdef638{vector} &amp; \href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\mathtt{B}) &amp;::=&amp;
   n{:}\href{../binary/values.html#binary-int}{\def\mathdef643#1{{\mathtt{u}#1}}\mathdef643{\mathtt{32}}}~~(x{:}\mathtt{B})^n &amp;\Rightarrow&amp; x^n \\
 \end{array}\end{split}\]</div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

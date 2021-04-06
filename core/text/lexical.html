@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Lexical Format &#8212; WebAssembly 1.1</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
@@ -83,9 +84,9 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="lexical-format">
+  <section id="lexical-format">
 <span id="text-lexical"></span><span id="index-0"></span><h1>Lexical Format<a class="headerlink" href="#lexical-format" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="characters">
+<section id="characters">
 <span id="text-char"></span><span id="text-source"></span><span id="source"></span><span id="index-1"></span><h2>Characters<a class="headerlink" href="#characters" title="Permalink to this headline">¶</a></h2>
 <p>The text format assigns meaning to <em>source text</em>, which consists of a sequence of <em>characters</em>.
 Characters are assumed to be represented as valid <a class="reference external" href="https://www.unicode.org/versions/latest/">Unicode</a> (Section 2.4) <em>scalar values</em>.</p>
@@ -101,8 +102,8 @@ Characters are assumed to be represented as valid <a class="reference external" 
 <p>While source text may contain any Unicode character in <a class="reference internal" href="#text-comment"><span class="std std-ref">comments</span></a> or <a class="reference internal" href="values.html#text-string"><span class="std std-ref">string</span></a> literals,
 the rest of the grammar is formed exclusively from the characters supported by the 7-bit <a class="reference external" href="https://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> subset of Unicode.</p>
 </div>
-</div>
-<div class="section" id="tokens">
+</section>
+<section id="tokens">
 <span id="text-token"></span><span id="text-reserved"></span><span id="text-keyword"></span><span id="index-2"></span><h2>Tokens<a class="headerlink" href="#tokens" title="Permalink to this headline">¶</a></h2>
 <p>The character stream in the source text is divided, from left to right, into a sequence of <em>tokens</em>, as defined by the following grammar.</p>
 <div class="math notranslate nohighlight">
@@ -129,8 +130,8 @@ For example, <span class="math notranslate nohighlight">\(\def\mathdef2203#1{\mb
 Consequently, it is not recognized as two separate tokens <span class="math notranslate nohighlight">\(\def\mathdef2204#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2204{0}\)</span> and <span class="math notranslate nohighlight">\(\def\mathdef2205#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2205{\$x}\)</span>, but instead disallowed.
 This property of tokenization is not affected by the fact that the definition of reserved tokens overlaps with other token classes.</p>
 </div>
-</div>
-<div class="section" id="white-space">
+</section>
+<section id="white-space">
 <span id="text-space"></span><span id="text-format"></span><span id="index-3"></span><h2>White Space<a class="headerlink" href="#white-space" title="Permalink to this headline">¶</a></h2>
 <p><em>White space</em> is any sequence of literal space characters, formatting characters, or <a class="reference internal" href="#text-comment"><span class="std std-ref">comments</span></a>.
 The allowed formatting characters correspond to a subset of the <a class="reference external" href="https://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> <em>format effectors</em>, namely, <em>horizontal tabulation</em> (<span class="math notranslate nohighlight">\(\def\mathdef2206#1{\mathrm{U{+}#1}}\mathdef2206{09}\)</span>), <em>line feed</em> (<span class="math notranslate nohighlight">\(\def\mathdef2207#1{\mathrm{U{+}#1}}\mathdef2207{0A}\)</span>), and <em>carriage return</em> (<span class="math notranslate nohighlight">\(\def\mathdef2208#1{\mathrm{U{+}#1}}\mathdef2208{0D}\)</span>).</p>
@@ -142,8 +143,8 @@ The allowed formatting characters correspond to a subset of the <a class="refere
   \def\mathdef2210#1{\mathrm{U{+}#1}}\mathdef2210{09} ~|~ \def\mathdef2211#1{\mathrm{U{+}#1}}\mathdef2211{0A} ~|~ \def\mathdef2212#1{\mathrm{U{+}#1}}\mathdef2212{0D} \\
 \end{array}\end{split}\]</div>
 <p>The only relevance of white space is to separate <a class="reference internal" href="#text-token"><span class="std std-ref">tokens</span></a>. It is otherwise ignored.</p>
-</div>
-<div class="section" id="comments">
+</section>
+<section id="comments">
 <span id="text-comment"></span><span id="index-4"></span><h2>Comments<a class="headerlink" href="#comments" title="Permalink to this headline">¶</a></h2>
 <p>A <em>comment</em> can either be a <em>line comment</em>, started with a double semicolon <span class="math notranslate nohighlight">\(\def\mathdef2177#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2177{{;}{;}}\)</span> and extending to the end of the line,
 or a <em>block comment</em>, enclosed in delimiters <span class="math notranslate nohighlight">\(\def\mathdef2175#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2175{{(}{;}} \dots \def\mathdef2176#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2176{{;}{)}}\)</span>.
@@ -170,8 +171,8 @@ The <em>look-ahead</em> restrictions on the productions for <span class="math no
 <p class="admonition-title">Note</p>
 <p>Any formatting and control characters are allowed inside comments.</p>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

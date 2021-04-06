@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Modules &#8212; WebAssembly 1.1</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
@@ -82,16 +83,16 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="modules">
+  <section id="modules">
 <h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
 <p>For modules, the execution semantics primarily defines <a class="reference internal" href="#exec-instantiation"><span class="std std-ref">instantiation</span></a>, which <a class="reference internal" href="#alloc"><span class="std std-ref">allocates</span></a> instances for a module and its contained definitions, initializes <a class="reference internal" href="../syntax/modules.html#syntax-table"><span class="std std-ref">tables</span></a> and <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memories</span></a> from contained <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element</span></a> and <a class="reference internal" href="../syntax/modules.html#syntax-data"><span class="std std-ref">data</span></a> segments, and invokes the <a class="reference internal" href="../syntax/modules.html#syntax-start"><span class="std std-ref">start function</span></a> if present. It also includes <a class="reference internal" href="#exec-invocation"><span class="std std-ref">invocation</span></a> of exported functions.</p>
 <p>Instantiation depends on a number of auxiliary notions for <a class="reference internal" href="../valid/types.html#exec-import"><span class="std std-ref">type-checking imports</span></a> and <a class="reference internal" href="#alloc"><span class="std std-ref">allocating</span></a> instances.</p>
-<div class="section" id="external-typing">
+<section id="external-typing">
 <span id="valid-externval"></span><span id="index-0"></span><h2>External Typing<a class="headerlink" href="#external-typing" title="Permalink to this headline">¶</a></h2>
 <p>For the purpose of checking <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> against <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">imports</span></a>,
 such values are classified by <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external types</span></a>.
 The following auxiliary typing rules specify this typing relation relative to a <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math notranslate nohighlight">\(S\)</span> in which the referenced instances live.</p>
-<div class="section" id="xref-exec-runtime-syntax-externval-mathsf-func-a">
+<section id="xref-exec-runtime-syntax-externval-mathsf-func-a">
 <span id="valid-externval-func"></span><span id="index-1"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{func}}~a\)</span><a class="headerlink" href="#xref-exec-runtime-syntax-externval-mathsf-func-a" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The store entry <span class="math notranslate nohighlight">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[a]\)</span> must exist.</p></li>
@@ -102,8 +103,8 @@ The following auxiliary typing rules specify this typing relation relative to a 
 }{
   S \href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathsf{func}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[a].\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}
 }\]</div>
-</div>
-<div class="section" id="xref-exec-runtime-syntax-externval-mathsf-table-a">
+</section>
+<section id="xref-exec-runtime-syntax-externval-mathsf-table-a">
 <span id="valid-externval-table"></span><span id="index-2"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{table}}~a\)</span><a class="headerlink" href="#xref-exec-runtime-syntax-externval-mathsf-table-a" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The store entry <span class="math notranslate nohighlight">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a]\)</span> must exist.</p></li>
@@ -114,8 +115,8 @@ The following auxiliary typing rules specify this typing relation relative to a 
 }{
   S \href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathsf{table}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{table}}~S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}
 }\]</div>
-</div>
-<div class="section" id="xref-exec-runtime-syntax-externval-mathsf-mem-a">
+</section>
+<section id="xref-exec-runtime-syntax-externval-mathsf-mem-a">
 <span id="valid-externval-mem"></span><span id="index-3"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{mem}}~a\)</span><a class="headerlink" href="#xref-exec-runtime-syntax-externval-mathsf-mem-a" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The store entry <span class="math notranslate nohighlight">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a]\)</span> must exist.</p></li>
@@ -126,8 +127,8 @@ The following auxiliary typing rules specify this typing relation relative to a 
 }{
   S \href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathsf{mem}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{mem}}~S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a].\href{../exec/runtime.html#syntax-meminst}{\mathsf{type}}
 }\]</div>
-</div>
-<div class="section" id="xref-exec-runtime-syntax-externval-mathsf-global-a">
+</section>
+<section id="xref-exec-runtime-syntax-externval-mathsf-global-a">
 <span id="valid-externval-global"></span><span id="index-4"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{global}}~a\)</span><a class="headerlink" href="#xref-exec-runtime-syntax-externval-mathsf-global-a" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The store entry <span class="math notranslate nohighlight">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[a]\)</span> must exist.</p></li>
@@ -138,14 +139,14 @@ The following auxiliary typing rules specify this typing relation relative to a 
 }{
   S \href{../exec/modules.html#valid-externval}{\vdash} \href{../exec/runtime.html#syntax-externval}{\mathsf{global}}~a : \href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~S.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}[a].\href{../exec/runtime.html#syntax-globalinst}{\mathsf{type}}
 }\]</div>
-</div>
-</div>
-<div class="section" id="value-typing">
+</section>
+</section>
+<section id="value-typing">
 <span id="valid-val"></span><span id="index-5"></span><h2>Value Typing<a class="headerlink" href="#value-typing" title="Permalink to this headline">¶</a></h2>
 <p>For the purpose of checking argument <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">values</span></a> against the parameter types of exported <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">functions</span></a>,
 values are classified by <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a>.
 The following auxiliary typing rules specify this typing relation relative to a <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math notranslate nohighlight">\(S\)</span> in which possibly referenced addresses live.</p>
-<div class="section" id="numeric-values-t-xref-syntax-instructions-syntax-instr-numeric-mathsf-const-c">
+<section id="numeric-values-t-xref-syntax-instructions-syntax-instr-numeric-mathsf-const-c">
 <span id="valid-num"></span><h3><a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">Numeric Values</span></a> <span class="math notranslate nohighlight">\(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span><a class="headerlink" href="#numeric-values-t-xref-syntax-instructions-syntax-instr-numeric-mathsf-const-c" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The value is valid with <a class="reference internal" href="../syntax/types.html#syntax-numtype"><span class="std std-ref">number type</span></a> <span class="math notranslate nohighlight">\(t\)</span>.</p></li>
@@ -155,8 +156,8 @@ The following auxiliary typing rules specify this typing relation relative to a 
 }{
   S \href{../appendix/properties.html#valid-val}{\vdash} t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c : t
 }\]</div>
-</div>
-<div class="section" id="null-references-xref-syntax-instructions-syntax-instr-ref-mathsf-ref-null-t">
+</section>
+<section id="null-references-xref-syntax-instructions-syntax-instr-ref-mathsf-ref-null-t">
 <span id="valid-ref"></span><h3><a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">Null References</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}null}}~t\)</span><a class="headerlink" href="#null-references-xref-syntax-instructions-syntax-instr-ref-mathsf-ref-null-t" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The value is valid with <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\(t\)</span>.</p></li>
@@ -166,8 +167,8 @@ The following auxiliary typing rules specify this typing relation relative to a 
 }{
   S \href{../appendix/properties.html#valid-val}{\vdash} \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}null}}~t : t
 }\]</div>
-</div>
-<div class="section" id="function-references-xref-exec-runtime-syntax-ref-mathsf-ref-a">
+</section>
+<section id="function-references-xref-exec-runtime-syntax-ref-mathsf-ref-a">
 <h3><a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">Function References</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref}}~a\)</span><a class="headerlink" href="#function-references-xref-exec-runtime-syntax-ref-mathsf-ref-a" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external value</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathsf{func}}~a\)</span> must be <a class="reference internal" href="#valid-externval"><span class="std std-ref">valid</span></a>.</p></li>
@@ -179,8 +180,8 @@ The following auxiliary typing rules specify this typing relation relative to a 
 }{
   S \href{../appendix/properties.html#valid-val}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref}}~a : \href{../syntax/types.html#syntax-reftype}{\mathsf{funcref}}
 }\]</div>
-</div>
-<div class="section" id="external-references-xref-exec-runtime-syntax-ref-extern-mathsf-ref-extern-a">
+</section>
+<section id="external-references-xref-exec-runtime-syntax-ref-extern-mathsf-ref-extern-a">
 <h3><a class="reference internal" href="runtime.html#syntax-ref-extern"><span class="std std-ref">External References</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-ref.extern}{\mathsf{ref{.}extern}}~a\)</span><a class="headerlink" href="#external-references-xref-exec-runtime-syntax-ref-extern-mathsf-ref-extern-a" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The value is valid with <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-reftype}{\mathsf{externref}}\)</span>.</p></li>
@@ -190,12 +191,12 @@ The following auxiliary typing rules specify this typing relation relative to a 
 }{
   S \href{../appendix/properties.html#valid-val}{\vdash} \href{../exec/runtime.html#syntax-ref.extern}{\mathsf{ref{.}extern}}~a : \href{../syntax/types.html#syntax-reftype}{\mathsf{externref}}
 }\]</div>
-</div>
-</div>
-<div class="section" id="allocation">
+</section>
+</section>
+<section id="allocation">
 <span id="alloc"></span><span id="index-6"></span><h2>Allocation<a class="headerlink" href="#allocation" title="Permalink to this headline">¶</a></h2>
 <p>New instances of <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">functions</span></a>, <a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">tables</span></a>, <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memories</span></a>, and <a class="reference internal" href="runtime.html#syntax-globalinst"><span class="std std-ref">globals</span></a> are <em>allocated</em> in a <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math notranslate nohighlight">\(S\)</span>, as defined by the following auxiliary functions.</p>
-<div class="section" id="functions">
+<section id="functions">
 <span id="alloc-func"></span><span id="index-7"></span><h3><a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">Functions</span></a><a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a> to allocate and <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}\)</span> its <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">module instance</span></a>.</p></li>
@@ -215,8 +216,8 @@ The following auxiliary typing rules specify this typing relation relative to a 
 \href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}~\href{../syntax/types.html#syntax-functype}{\mathit{functype}}, \href{../exec/runtime.html#syntax-funcinst}{\mathsf{module}}~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}, \href{../exec/runtime.html#syntax-funcinst}{\mathsf{code}}~\href{../syntax/modules.html#syntax-func}{\mathit{func}} \} \\
 S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}~\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}\} \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="host-functions">
+</section>
+<section id="host-functions">
 <span id="alloc-hostfunc"></span><span id="index-8"></span><h3><a class="reference internal" href="runtime.html#syntax-hostfunc"><span class="std std-ref">Host Functions</span></a><a class="headerlink" href="#host-functions" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-hostfunc}{\mathit{hostfunc}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-hostfunc"><span class="std std-ref">host function</span></a> to allocate and <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}\)</span> its <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a>.</p></li>
@@ -239,8 +240,8 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 <p>Host functions are never allocated by the WebAssembly semantics itself,
 but may be allocated by the <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedder</span></a>.</p>
 </div>
-</div>
-<div class="section" id="tables">
+</section>
+<section id="tables">
 <span id="alloc-table"></span><span id="index-9"></span><h3><a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">Tables</span></a><a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> to allocate and <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}\)</span> the initialization value.</p></li>
@@ -259,8 +260,8 @@ but may be allocated by the <a class="reference internal" href="../intro/overvie
 \href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}, \href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}~\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}^n \} \\
 S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}~\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}\} \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="memories">
+</section>
+<section id="memories">
 <span id="alloc-mem"></span><span id="index-10"></span><h3><a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">Memories</span></a><a class="headerlink" href="#memories" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> to allocate.</p></li>
@@ -279,8 +280,8 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 \href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{type}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}, \href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}~(\def\mathdef1320#1{\mathtt{0x#1}}\mathdef1320{00})^{n \cdot 64\,\mathrm{Ki}} \} \\
 S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}~\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\} \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="globals">
+</section>
+<section id="globals">
 <span id="alloc-global"></span><span id="index-11"></span><h3><a class="reference internal" href="runtime.html#syntax-globalinst"><span class="std std-ref">Globals</span></a><a class="headerlink" href="#globals" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> to allocate and <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}\)</span> the <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">value</span></a> to initialize the global with.</p></li>
@@ -297,8 +298,8 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-globalinst}{\mathsf{type}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}, \href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}}~\href{../exec/runtime.html#syntax-val}{\mathit{val}} \} \\
 S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}~\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}\} \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="element-segments">
+</section>
+<section id="element-segments">
 <span id="alloc-elem"></span><span id="index-12"></span><h3><a class="reference internal" href="runtime.html#syntax-eleminst"><span class="std std-ref">Element segments</span></a><a class="headerlink" href="#element-segments" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}\)</span> be the elements’ type and <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}^\ast\)</span> the vector of <a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">references</span></a> to allocate.</p></li>
@@ -315,8 +316,8 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 \href{../exec/runtime.html#syntax-eleminst}{\mathit{eleminst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~\href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}~\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}^\ast \} \\
 S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{elems}}~\href{../exec/runtime.html#syntax-eleminst}{\mathit{eleminst}}\} \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="data-segments">
+</section>
+<section id="data-segments">
 <span id="alloc-data"></span><span id="index-13"></span><h3><a class="reference internal" href="runtime.html#syntax-datainst"><span class="std std-ref">Data segments</span></a><a class="headerlink" href="#data-segments" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}\)</span> be the vector of <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a> to allocate.</p></li>
@@ -333,8 +334,8 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 \href{../exec/runtime.html#syntax-datainst}{\mathit{datainst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-datainst}{\mathsf{data}}~\href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}} \} \\
 S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{datas}}~\href{../exec/runtime.html#syntax-datainst}{\mathit{datainst}}\} \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="growing-tables">
+</section>
+<section id="growing-tables">
 <span id="grow-table"></span><span id="index-14"></span><h3>Growing <a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">tables</span></a><a class="headerlink" href="#growing-tables" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> to grow, <span class="math notranslate nohighlight">\(n\)</span> the number of elements by which to grow it, and <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}\)</span> the initialization value.</p></li>
@@ -358,8 +359,8 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
     \wedge &amp; \href{../valid/types.html#valid-limits}{\vdash} \href{../syntax/types.html#syntax-limits}{\mathit{limits}}' \mathrel{\mbox{ok}} \\
     \end{array} \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="growing-memories">
+</section>
+<section id="growing-memories">
 <span id="grow-mem"></span><span id="index-15"></span><h3>Growing <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memories</span></a><a class="headerlink" href="#growing-memories" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> to grow and <span class="math notranslate nohighlight">\(n\)</span> the number of <a class="reference internal" href="runtime.html#page-size"><span class="std std-ref">pages</span></a> by which to grow it.</p></li>
@@ -384,8 +385,8 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
     \wedge &amp; \href{../valid/types.html#valid-limits}{\vdash} \href{../syntax/types.html#syntax-limits}{\mathit{limits}}' \mathrel{\mbox{ok}} \\
     \end{array} \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="alloc-module">
+</section>
+<section id="alloc-module">
 <span id="index-16"></span><span id="id1"></span><h3><a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">Modules</span></a><a class="headerlink" href="#alloc-module" title="Permalink to this headline">¶</a></h3>
 <p>The allocation function for <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">modules</span></a> requires a suitable list of <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> that are assumed to <a class="reference internal" href="../valid/types.html#match-externtype"><span class="std std-ref">match</span></a> the <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">import</span></a> vector of the module,
 a list of initialization <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> for the module’s <a class="reference internal" href="../syntax/modules.html#syntax-global"><span class="std std-ref">globals</span></a>,
@@ -502,9 +503,9 @@ S_{i+1}, a^n[i] &amp;=&amp; \mathrm{allocx}(S_i, X^n[i], \dots)
 <p>The definition of module allocation is mutually recursive with the allocation of its associated functions, because the resulting module instance <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}\)</span> is passed to the function allocator as an argument, in order to form the necessary closures.
 In an implementation, this recursion is easily unraveled by mutating one or the other in a secondary step.</p>
 </div>
-</div>
-</div>
-<div class="section" id="instantiation">
+</section>
+</section>
+<section id="instantiation">
 <span id="exec-instantiation"></span><span id="exec-module"></span><span id="index-17"></span><h2>Instantiation<a class="headerlink" href="#instantiation" title="Permalink to this headline">¶</a></h2>
 <p>Given a <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math notranslate nohighlight">\(S\)</span>, a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}\)</span> is instantiated with a list of <a class="reference internal" href="runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externval}{\mathit{externval}}^n\)</span> supplying the required imports as follows.</p>
 <p>Instantiation checks that the module is <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">valid</span></a> and the provided imports <a class="reference internal" href="../valid/types.html#match-externtype"><span class="std std-ref">match</span></a> the declared types,
@@ -651,8 +652,8 @@ Store mutation is not atomic;
 it happens in individual steps that may be interleaved with other threads.</p>
 <p><a class="reference internal" href="instructions.html#exec-expr"><span class="std std-ref">Evaluation</span></a> of <a class="reference internal" href="../valid/instructions.html#valid-constant"><span class="std std-ref">constant expressions</span></a> does not affect the store.</p>
 </div>
-</div>
-<div class="section" id="invocation">
+</section>
+<section id="invocation">
 <span id="exec-invocation"></span><span id="index-18"></span><h2>Invocation<a class="headerlink" href="#invocation" title="Permalink to this headline">¶</a></h2>
 <p>Once a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> has been <a class="reference internal" href="#exec-instantiation"><span class="std std-ref">instantiated</span></a>, any exported function can be <em>invoked</em> externally via its <a class="reference internal" href="runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span> in the <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math notranslate nohighlight">\(S\)</span> and an appropriate list <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span> of argument <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a>.</p>
 <p>Invocation may <em>fail</em> with an error if the arguments do not fit the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a>.
@@ -700,8 +701,8 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
   &amp;\wedge&amp; (S \href{../appendix/properties.html#valid-val}{\vdash} \href{../exec/runtime.html#syntax-val}{\mathit{val}} : t_1)^n \\
   &amp;\wedge&amp; F = \{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~\{\}, \href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\epsilon \}) \\
 \end{array}\end{split}\]</div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
