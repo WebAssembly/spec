@@ -516,7 +516,13 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 where:
 
 .. math::
-   \begin{array}{rlll}
+   \begin{array}{@{}rlll@{}}
+   \table^\ast &=& \module.\MTABLES \\
+   \mem^\ast &=& \module.\MMEMS \\
+   \global^\ast &=& \module.\MGLOBALS \\
+   \elem^\ast &=& \module.\MELEMS \\
+   \data^\ast &=& \module.\MDATAS \\
+   \export^\ast &=& \module.\MEXPORTS \\[1ex]
    \moduleinst &=& \{~
      \begin{array}[t]{@{}l@{}}
      \MITYPES~\module.\MTYPES, \\
@@ -528,28 +534,29 @@ where:
      \MIDATAS~\dataaddr^\ast, \\
      \MIEXPORTS~\exportinst^\ast ~\}
      \end{array} \\[1ex]
-   S_1, \funcaddr^\ast &=& \allocfunc^\ast(S, \module.\MFUNCS, \moduleinst) \\
-   S_2, \tableaddr^\ast &=& \alloctable^\ast(S_1, (\table.\TTYPE)^\ast, \REFNULL~t)
-     \qquad\qquad\qquad~ (\where \table^\ast = \module.\MTABLES \\ &&
-     \qquad\qquad\qquad~~ \wedge (\table.\TTYPE)^\ast = (\limits~t)^\ast) \\
-   S_3, \memaddr^\ast &=& \allocmem^\ast(S_2, (\mem.\MTYPE)^\ast)
-     \qquad\qquad\qquad~ (\where \mem^\ast = \module.\MMEMS) \\
-   S_4, \globaladdr^\ast &=& \allocglobal^\ast(S_3, (\global.\GTYPE)^\ast, \val^\ast)
-     \qquad\quad~ (\where \global^\ast = \module.\MGLOBALS) \\
-   S_5, \elemaddr^\ast &=& \allocelem^\ast(S_4, (\elem.\ETYPE)^\ast, (\reff^\ast)^\ast) \\
-     \qquad\quad~ (\where \elem^\ast = \module.\MELEMS) \\
-   S', \dataaddr^\ast &=& \allocdata^\ast(S_5, (\data.\DINIT)^\ast)
-     \qquad\qquad\qquad~ (\where \data^\ast = \module.\MDATAS) \\
-   \exportinst^\ast &=& \{ \EINAME~(\export.\ENAME), \EIVALUE~\externval_{\F{ex}} \}^\ast
-     \quad (\where \export^\ast = \module.\MEXPORTS) \\[1ex]
+   S_1, \funcaddr^\ast &=&
+     \allocfunc^\ast(S, \module.\MFUNCS, \moduleinst) \\
+   S_2, \tableaddr^\ast &=&
+     \alloctable^\ast(S_1, (\table.\TTYPE)^\ast, (\REFNULL~t)^\ast)
+     \quad (\where (\table.\TTYPE)^\ast = (\limits~t)^\ast) \\
+   S_3, \memaddr^\ast &=&
+     \allocmem^\ast(S_2, (\mem.\MTYPE)^\ast) \\
+   S_4, \globaladdr^\ast &=&
+     \allocglobal^\ast(S_3, (\global.\GTYPE)^\ast, \val^\ast) \\
+   S_5, \elemaddr^\ast &=&
+     \allocelem^\ast(S_4, (\elem.\ETYPE)^\ast, (\reff^\ast)^\ast) \\
+   S', \dataaddr^\ast &=&
+     \allocdata^\ast(S_5, (\data.\DINIT)^\ast) \\
+   \exportinst^\ast &=&
+     \{ \EINAME~(\export.\ENAME), \EIVALUE~\externval_{\F{ex}} \}^\ast \\[1ex]
    \evfuncs(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIFUNCS[x])^\ast
-     \qquad~ (\where x^\ast = \edfuncs(\module.\MEXPORTS)) \\
+     \qquad~ (\where x^\ast = \edfuncs(\export^\ast)) \\
    \evtables(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MITABLES[x])^\ast
-     \qquad (\where x^\ast = \edtables(\module.\MEXPORTS)) \\
+     \qquad (\where x^\ast = \edtables(\export^\ast)) \\
    \evmems(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIMEMS[x])^\ast
-     \qquad (\where x^\ast = \edmems(\module.\MEXPORTS)) \\
+     \qquad (\where x^\ast = \edmems(\export^\ast)) \\
    \evglobals(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIGLOBALS[x])^\ast
-     \qquad\!\!\! (\where x^\ast = \edglobals(\module.\MEXPORTS)) \\
+     \qquad\!\!\! (\where x^\ast = \edglobals(\export^\ast)) \\
    \end{array}
 
 .. scratch
@@ -571,7 +578,7 @@ Here, the notation :math:`\F{allocx}^\ast` is shorthand for multiple :ref:`alloc
    S_{i+1}, a^n[i] &=& \F{allocx}(S_i, X^n[i], \dots)
    \end{array}
 
-Moreover, if the dots :math:`\dots` are a sequence :math:`A^n` (as for globals), then the elements of this sequence are passed to the allocation function pointwise.
+Moreover, if the dots :math:`\dots` are a sequence :math:`A^n` (as for globals or tables), then the elements of this sequence are passed to the allocation function pointwise.
 
 .. note::
    The definition of module allocation is mutually recursive with the allocation of its associated functions, because the resulting module instance :math:`\moduleinst` is passed to the function allocator as an argument, in order to form the necessary closures.
