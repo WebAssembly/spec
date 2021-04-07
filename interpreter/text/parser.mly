@@ -51,20 +51,20 @@ let simd_literal shape ss at =
 let simd_lane_nan shape l at =
   let open Simd in
   match shape with
-  | F32x4 -> NanPat (Values.F32 l @@ at) @@ at
-  | F64x2 -> NanPat (Values.F64 l @@ at) @@ at
+  | F32x4 -> NanPat (Values.F32 l @@ at)
+  | F64x2 -> NanPat (Values.F64 l @@ at)
   | _ -> error at "invalid simd constant"
 
 let simd_lane_lit shape l at =
   let open Simd in
   let open Values in
   match shape with
-  | I8x16 -> LitPat (Num (I32 (I8.of_string l)) @@ at) @@ at
-  | I16x8 -> LitPat (Num (I32 (I16.of_string l)) @@ at) @@ at
-  | I32x4 -> LitPat (Num (I32 (I32.of_string l)) @@ at) @@ at
-  | I64x2 -> LitPat (Num (I64 (I64.of_string l)) @@ at) @@ at
-  | F32x4 -> LitPat (Num (F32 (F32.of_string l)) @@ at) @@ at
-  | F64x2 -> LitPat (Num (F64 (F64.of_string l)) @@ at) @@ at
+  | I8x16 -> LitPat (Num (I32 (I8.of_string l)) @@ at)
+  | I16x8 -> LitPat (Num (I32 (I16.of_string l)) @@ at)
+  | I32x4 -> LitPat (Num (I32 (I32.of_string l)) @@ at)
+  | I64x2 -> LitPat (Num (I64 (I64.of_string l)) @@ at)
+  | F32x4 -> LitPat (Num (F32 (F32.of_string l)) @@ at)
+  | F64x2 -> LitPat (Num (F64 (F64.of_string l)) @@ at)
 
 let simd_lane_index s at =
   match int_of_string s with
@@ -1127,8 +1127,8 @@ numpat_list:
   | numpat numpat_list { $1 :: $2 }
 
 result :
-  | const { NumResult (LitPat $1 @@ at ()) @@ at () }
-  | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ ati 3)) @@ at ()) @@ at () }
+  | const { NumResult (LitPat $1) @@ at () }
+  | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ ati 3))) @@ at () }
   | LPAR REF_FUNC RPAR { RefResult FuncRefType @@ at () }
   | LPAR REF_EXTERN RPAR { RefResult ExternRefType @@ at () }
   | LPAR V128_CONST SIMD_SHAPE numpat_list RPAR {

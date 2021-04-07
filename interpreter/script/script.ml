@@ -18,8 +18,7 @@ type nanop = nanop' Source.phrase
 and nanop' = (Lib.void, Lib.void, nan, nan, Lib.void) Values.op
 and nan = CanonicalNan | ArithmeticNan
 
-type num_pat = num_pat' Source.phrase
-and num_pat' =
+type num_pat =
   | LitPat of literal
   | NanPat of nanop
 

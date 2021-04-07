@@ -252,13 +252,13 @@ let string_of_nan = function
 
 let type_of_result r =
   match r with
-  | NumResult { it = LitPat v ; _ } -> Values.type_of_value v.it
-  | NumResult { it = NanPat v ; _ } -> Types.NumType (Values.type_of_num v.it)
+  | NumResult (LitPat v) -> Values.type_of_value v.it
+  | NumResult (NanPat v) -> Types.NumType (Values.type_of_num v.it)
   | SimdResult (_, _) -> Types.NumType Types.V128Type
   | RefResult t -> Types.RefType t
 
 let string_of_num_pat (p : num_pat) =
-  match p.it with
+  match p with
   | LitPat v -> Values.string_of_value v.it
   | NanPat nanop ->
     match nanop.it with
@@ -361,7 +361,7 @@ let run_action act : Values.value list =
 
 let assert_num_pat at v p =
   let open Values in
-  match p.it with
+  match p with
     | (LitPat v') -> v <> v'.it
     | (NanPat nanop) ->
       match nanop.it, v with
@@ -384,46 +384,25 @@ let assert_result at got expect =
       | NumResult v' -> assert_num_pat at v v'
       | SimdResult (shape, vs) ->
         begin
-            let open Simd in
-            match shape, v with
-            | I8x16, Num (V128 v) ->
-              List.exists2
-                (fun v r -> assert_num_pat at v r)
-                (List.init 16 (fun i -> Num (I32 (V128.I8x16.extract_lane_s i v))))
-                vs
-            | I16x8, Num (V128 v) ->
-              List.exists2
-                (fun v r -> assert_num_pat at v r)
-                (List.init 8 (fun i -> Num (I32 (V128.I16x8.extract_lane_s i v))))
-                vs
-            | I32x4, Num (V128 v) ->
-              let l0 = Num (I32 (V128.I32x4.extract_lane_s 0 v)) in
-              let l1 = Num (I32 (V128.I32x4.extract_lane_s 1 v)) in
-              let l2 = Num (I32 (V128.I32x4.extract_lane_s 2 v)) in
-              let l3 = Num (I32 (V128.I32x4.extract_lane_s 3 v)) in
-                List.exists2 (fun v r ->
-                    assert_num_pat at v r
-                ) [l0; l1; l2; l3]  vs
-            | I64x2, Num (V128 v) ->
-              List.exists2
-                (fun v r -> assert_num_pat at v r)
-                (List.init 2 (fun i -> Num (I64 (V128.I64x2.extract_lane_s i v))))
-                vs
-            | F32x4, Num (V128 v) ->
-              let l0 = Num (F32 (V128.F32x4.extract_lane 0 v)) in
-              let l1 = Num (F32 (V128.F32x4.extract_lane 1 v)) in
-              let l2 = Num (F32 (V128.F32x4.extract_lane 2 v)) in
-              let l3 = Num (F32 (V128.F32x4.extract_lane 3 v)) in
-                List.exists2 (fun v r ->
-                    assert_num_pat at v r
-                ) [l0; l1; l2; l3]  vs
-            | F64x2, Num (V128 v) ->
-              let l0 = Num (F64 (V128.F64x2.extract_lane 0 v)) in
-              let l1 = Num (F64 (V128.F64x2.extract_lane 1 v)) in
-                List.exists2 (fun v r ->
-                    assert_num_pat at v r
-                ) [l0; l1]  vs
-            | _ -> failwith "impossible"
+          let open Simd in
+          let assert_simd_result to_num extract v =
+            List.exists2
+              (assert_num_pat at)
+              (List.init (lanes shape) (fun i -> Num (to_num (extract i v)))) vs in
+          match shape, v with
+          | I8x16, Num (V128 v) ->
+            assert_simd_result I32Num.to_num V128.I8x16.extract_lane_s v
+          | I16x8, Num (V128 v) ->
+            assert_simd_result I32Num.to_num V128.I16x8.extract_lane_s v
+          | I32x4, Num (V128 v) ->
+            assert_simd_result I32Num.to_num V128.I32x4.extract_lane_s v
+          | I64x2, Num (V128 v) ->
+            assert_simd_result I64Num.to_num V128.I64x2.extract_lane_s v
+          | F32x4, Num (V128 v) ->
+            assert_simd_result F32Num.to_num V128.F32x4.extract_lane v
+          | F64x2, Num (V128 v) ->
+            assert_simd_result F64Num.to_num V128.F64x2.extract_lane v
+          | _ -> failwith "impossible"
         end
       | RefResult t ->
         (match t, v with
