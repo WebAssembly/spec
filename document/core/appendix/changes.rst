@@ -47,7 +47,7 @@ Generalized the result type of blocks and functions to allow for multiple values
 Reference types
 ...............
 
-Added |FUNCREF| and |EXTERNREF| as new value types and instructions to read and write such values in table [#proposal-reftype]_.
+Added |FUNCREF| and |EXTERNREF| as new value types and instructions to read and write such values as table entries [#proposal-reftype]_.
 
 * New :ref:`value types <syntax-valtype>`: :ref:`reference types <syntax-reftype>` |FUNCREF| and |EXTERNREF|
 
