@@ -1,19 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
     <title>Validation Algorithm &#8212; WebAssembly 1.1 (Draft 2021-04-08)</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"MAXBUFFER": 30720}})</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -75,7 +74,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="documentwrapper">
@@ -84,7 +83,7 @@
 
           <div class="body" role="main">
             
-  <section id="validation-algorithm">
+  <div class="section" id="validation-algorithm">
 <span id="algo-valid"></span><span id="index-0"></span><h1>Validation Algorithm<a class="headerlink" href="#validation-algorithm" title="Permalink to this headline">¶</a></h1>
 <p>The specification of WebAssembly <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">validation</span></a> is purely <em>declarative</em>.
 It describes the constraints that must be met by a <a class="reference internal" href="../valid/modules.html#valid-module"><span class="std std-ref">module</span></a> or <a class="reference internal" href="../valid/instructions.html#valid-instr"><span class="std std-ref">instruction</span></a> sequence to be valid.</p>
@@ -93,7 +92,7 @@ It describes the constraints that must be met by a <a class="reference internal"
 <p>In fact, the algorithm is expressed over the flat sequence of opcodes as occurring in the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>, and performs only a single pass over it.
 Consequently, it can be integrated directly into a decoder.</p>
 <p>The algorithm is expressed in typed pseudo code whose semantics is intended to be self-explanatory.</p>
-<section id="data-structures">
+<div class="section" id="data-structures">
 <span id="index-1"></span><h2>Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
 <p>Types are representable as an enumeration.</p>
 <div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> <span class="nf">val_type</span> = I32 | I64 | F32 | F64 | Funcref | Externref
@@ -200,8 +199,8 @@ In that case, all existing operand types are purged from the value stack, in ord
 That is necessary to detect invalid <a class="reference internal" href="../valid/instructions.html#polymorphism"><span class="std std-ref">examples</span></a> like <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}})~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}})\)</span>.
 However, a polymorphic stack cannot underflow, but instead generates <code class="code docutils literal notranslate"><span class="pre">Unknown</span></code> types as needed.</p>
 </div>
-</section>
-<section id="validation-of-opcode-sequences">
+</div>
+<div class="section" id="validation-of-opcode-sequences">
 <span id="index-2"></span><h2>Validation of Opcode Sequences<a class="headerlink" href="#validation-of-opcode-sequences" title="Permalink to this headline">¶</a></h2>
 <p>The following function shows the validation of a number of representative instructions that manipulate the stack.
 Other instructions are checked in a similar manner.</p>
@@ -288,8 +287,8 @@ That is an easy addition and therefore omitted from this presentation.</p>
 This would change if the language were extended with stack instructions like <code class="code docutils literal notranslate"><span class="pre">dup</span></code>.
 Under such an extension, the above algorithm would need to be refined by replacing the <code class="code docutils literal notranslate"><span class="pre">Unknown</span></code> type with proper <em>type variables</em> to ensure that all uses are consistent.</p>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
           </div>

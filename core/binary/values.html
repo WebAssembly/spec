@@ -1,19 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
     <title>Values &#8212; WebAssembly 1.1 (Draft 2021-04-08)</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"MAXBUFFER": 30720}})</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -74,7 +73,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="documentwrapper">
@@ -83,9 +82,9 @@
 
           <div class="body" role="main">
             
-  <section id="values">
+  <div class="section" id="values">
 <span id="binary-value"></span><span id="index-0"></span><h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
-<section id="bytes">
+<div class="section" id="bytes">
 <span id="binary-byte"></span><span id="index-1"></span><h2>Bytes<a class="headerlink" href="#bytes" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">Bytes</span></a> encode themselves.</p>
 <div class="math notranslate nohighlight">
@@ -95,8 +94,8 @@
   \dots \\ &amp;&amp;|&amp;
   \def\mathdef1168#1{\mathtt{0x#1}}\mathdef1168{FF} &amp;\Rightarrow&amp; \def\mathdef1169#1{\mathtt{0x#1}}\mathdef1169{FF} \\
 \end{array}\end{split}\]</div>
-</section>
-<section id="integers">
+</div>
+<div class="section" id="integers">
 <span id="binary-int"></span><span id="binary-uint"></span><span id="binary-sint"></span><span id="index-2"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
 <p>All <a class="reference internal" href="../syntax/values.html#syntax-int"><span class="std std-ref">integers</span></a> are encoded using the <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128">LEB128</a> variable-length integer encoding, in either unsigned or signed variant.</p>
 <p><a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">Unsigned integers</span></a> are encoded in <a class="reference external" href="https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128">unsigned LEB128</a> format.
@@ -135,8 +134,8 @@ any unused bits in these bytes must be <span class="math notranslate nohighlight
 For example, <span class="math notranslate nohighlight">\(\def\mathdef1183#1{\mathtt{0x#1}}\mathdef1183{83}~\def\mathdef1184#1{\mathtt{0x#1}}\mathdef1184{10}\)</span> is malformed as a <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{u8}}\)</span> encoding.
 Similarly, both <span class="math notranslate nohighlight">\(\def\mathdef1185#1{\mathtt{0x#1}}\mathdef1185{83}~\def\mathdef1186#1{\mathtt{0x#1}}\mathdef1186{3E}\)</span> and <span class="math notranslate nohighlight">\(\def\mathdef1187#1{\mathtt{0x#1}}\mathdef1187{FF}~\def\mathdef1188#1{\mathtt{0x#1}}\mathdef1188{7B}\)</span> are malformed as <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{s8}}\)</span> encodings.</p>
 </div>
-</section>
-<section id="floating-point">
+</div>
+<div class="section" id="floating-point">
 <span id="binary-float"></span><span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating-point</span></a> values are encoded directly by their <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a> (Section 3.4) bit pattern in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order:</p>
 <div class="math notranslate nohighlight">
@@ -144,8 +143,8 @@ Similarly, both <span class="math notranslate nohighlight">\(\def\mathdef1185#1{
 \def\mathdef1129#1{{}}\mathdef1129{floating-point value} &amp; \href{../binary/values.html#binary-float}{\def\mathdef1144#1{{\mathtt{f}#1}}\mathdef1144{N}} &amp;::=&amp;
   b^\ast{:\,}\href{../binary/values.html#binary-byte}{\mathtt{byte}}^{N/8} &amp;\Rightarrow&amp; \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-float}{\mathit{f}N}}^{-1}(b^\ast) \\
 \end{array}\end{split}\]</div>
-</section>
-<section id="names">
+</div>
+<div class="section" id="names">
 <span id="binary-name"></span><span id="binary-utf8"></span><span id="index-4"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">Names</span></a> are encoded as a <a class="reference internal" href="conventions.html#binary-vec"><span class="std std-ref">vector</span></a> of bytes containing the <a class="reference external" href="https://www.unicode.org/versions/latest/">Unicode</a> (Section 3.9) UTF-8 encoding of the name’s character sequence.</p>
 <div class="math notranslate nohighlight">
@@ -186,8 +185,8 @@ Similarly, both <span class="math notranslate nohighlight">\(\def\mathdef1185#1{
 <p class="admonition-title">Note</p>
 <p>Unlike in some other formats, name strings are not 0-terminated.</p>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
           </div>

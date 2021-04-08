@@ -4,7 +4,7 @@
  *
  * Sphinx JavaScript utilities for all documentation.
  *
- * :copyright: Copyright 2007-2021 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2019 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
@@ -29,14 +29,9 @@ if (!window.console || !console.firebug) {
 
 /**
  * small helper function to urldecode strings
- *
- * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent#Decoding_query_parameters_from_a_URL
  */
 jQuery.urldecode = function(x) {
-  if (!x) {
-    return x
-  }
-  return decodeURIComponent(x.replace(/\+/g, ' '));
+  return decodeURIComponent(x).replace(/\+/g, ' ');
 };
 
 /**
@@ -288,12 +283,10 @@ var Documentation = {
   },
 
   initOnKeyListeners: function() {
-    $(document).keydown(function(event) {
+    $(document).keyup(function(event) {
       var activeElementType = document.activeElement.tagName;
-      // don't navigate when in search box, textarea, dropdown or button
-      if (activeElementType !== 'TEXTAREA' && activeElementType !== 'INPUT' && activeElementType !== 'SELECT'
-          && activeElementType !== 'BUTTON' && !event.altKey && !event.ctrlKey && !event.metaKey
-          && !event.shiftKey) {
+      // don't navigate when in search box or textarea
+      if (activeElementType !== 'TEXTAREA' && activeElementType !== 'INPUT' && activeElementType !== 'SELECT') {
         switch (event.keyCode) {
           case 37: // left
             var prevHref = $('link[rel="prev"]').prop('href');
