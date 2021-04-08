@@ -72,7 +72,8 @@ logo = 'static/webassembly.png'
 version = u'1.1'
 # The full version, including alpha/beta/rc tags.
 draft = ' (Draft ' + date.today().strftime("%Y-%m-%d") + ')'
-release = version + draft
+proposal = ''
+release = version + proposal + draft
 
 # The name of the GitHub repository this resides in
 repo = 'spec'
