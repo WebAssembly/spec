@@ -3,11 +3,11 @@
 .. External Standards
 .. ------------------
 
-.. |WasmDraft| replace:: https://webassembly.github.io/spec/core/
-.. _WasmDraft: https://webassembly.github.io/spec/core/
+.. |WasmDraft| replace:: |pagelink|
+.. _WasmDraft: |pagelink|
 
-.. |WasmIssues| replace:: https://github.com/webassembly/spec/issues/
-.. _WasmIssues: https://github.com/webassembly/spec/issues/
+.. |WasmIssues| replace:: |issuelink|
+.. _WasmIssues: |issuelink|
 
 .. |IEEE754| replace:: IEEE 754-2019
 .. _IEEE754: https://ieeexplore.ieee.org/document/8766229
