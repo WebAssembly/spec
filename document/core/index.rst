@@ -3,7 +3,7 @@ WebAssembly Specification
 
 .. only:: html
 
-   | Release |release| + typed references (Draft, |today|)
+   | Release |release|
 
    | Editor: Andreas Rossberg
 

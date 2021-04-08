@@ -281,8 +281,8 @@
 
 .. |DINIT| mathdef:: \xref{syntax/modules}{syntax-data}{\K{init}}
 .. |DMODE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{mode}}
-.. |DPASSIVE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{passive}}
-.. |DACTIVE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{active}}
+.. |DPASSIVE| mathdef:: \xref{syntax/modules}{syntax-datamode}{\K{passive}}
+.. |DACTIVE| mathdef:: \xref{syntax/modules}{syntax-datamode}{\K{active}}
 .. |DMEM| mathdef:: \xref{syntax/modules}{syntax-data}{\K{memory}}
 .. |DOFFSET| mathdef:: \xref{syntax/modules}{syntax-data}{\K{offset}}
 
