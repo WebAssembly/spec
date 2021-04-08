@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Values &#8212; WebAssembly 1.1 (Draft 2021-04-08)</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"MAXBUFFER": 30720}})</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -73,7 +74,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="documentwrapper">
@@ -82,11 +83,11 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="values">
+  <section id="values">
 <span id="syntax-value"></span><span id="index-0"></span><h1>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h1>
 <p>WebAssembly programs operate on primitive numeric <em>values</em>.
 Moreover, in the definition of programs, immutable sequences of values occur to represent more complex data, such as text strings or other vectors.</p>
-<div class="section" id="bytes">
+<section id="bytes">
 <span id="syntax-byte"></span><span id="index-1"></span><h2>Bytes<a class="headerlink" href="#bytes" title="Permalink to this headline">¶</a></h2>
 <p>The simplest form of value are raw uninterpreted <em>bytes</em>.
 In the abstract syntax they are represented as hexadecimal literals.</p>
@@ -95,15 +96,15 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 \def\mathdef1769#1{{}}\mathdef1769{byte} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
   \def\mathdef1806#1{\mathtt{0x#1}}\mathdef1806{00} ~|~ \dots ~|~ \def\mathdef1807#1{\mathtt{0x#1}}\mathdef1807{FF} \\
 \end{array}\end{split}\]</div>
-<div class="section" id="conventions">
+<section id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The meta variable <span class="math notranslate nohighlight">\(b\)</span> ranges over bytes.</p></li>
 <li><p>Bytes are sometimes interpreted as natural numbers <span class="math notranslate nohighlight">\(n &lt; 256\)</span>.</p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="integers">
+</section>
+</section>
+<section id="integers">
 <span id="syntax-int"></span><span id="syntax-uint"></span><span id="syntax-sint"></span><span id="index-2"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
 <p>Different classes of <em>integers</em> with different value ranges are distinguished by their <em>bit width</em> <span class="math notranslate nohighlight">\(N\)</span> and by whether they are <em>unsigned</em> or <em>signed</em>.</p>
 <div class="math notranslate nohighlight">
@@ -123,16 +124,16 @@ However, some operations <a class="reference internal" href="../exec/numerics.ht
 <p>The main integer types occurring in this specification are <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{u32}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{u64}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{s32}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{s64}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{i8}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{i16}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{i32}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{i64}}\)</span>.
 However, other sizes occur as auxiliary constructions, e.g., in the definition of <a class="reference internal" href="#syntax-float"><span class="std std-ref">floating-point</span></a> numbers.</p>
 </div>
-<div class="section" id="id1">
+<section id="id1">
 <h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The meta variables <span class="math notranslate nohighlight">\(m, n, i\)</span> range over integers.</p></li>
 <li><p>Numbers may be denoted by simple arithmetics, as in the grammar above.
 In order to distinguish arithmetics like <span class="math notranslate nohighlight">\(2^N\)</span> from sequences like <span class="math notranslate nohighlight">\((1)^N\)</span>, the latter is distinguished with parentheses.</p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="floating-point">
+</section>
+</section>
+<section id="floating-point">
 <span id="syntax-float"></span><span id="syntax-payload"></span><span id="syntax-nan"></span><span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
 <p><em>Floating-point</em> data represents 32 or 64 bit values that correspond to the respective binary formats of the <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a> standard (Section 3.3).</p>
 <p>Every value has a <em>sign</em> and a <em>magnitude</em>.
@@ -168,14 +169,14 @@ No distinction is made between signalling and quiet NaNs.</p>
 <p class="admonition-title">Note</p>
 <p>In the abstract syntax, subnormals are distinguished by the leading 0 of the significand. The exponent of subnormals has the same value as the smallest possible exponent of a normal number. Only in the <a class="reference internal" href="../binary/values.html#binary-float"><span class="std std-ref">binary representation</span></a> the exponent of a subnormal is encoded differently than the exponent of any normal number.</p>
 </div>
-<div class="section" id="id2">
+<section id="id2">
 <h3>Conventions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The meta variable <span class="math notranslate nohighlight">\(z\)</span> ranges over floating-point values where clear from context.</p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="names">
+</section>
+</section>
+<section id="names">
 <span id="syntax-name"></span><span id="syntax-char"></span><span id="index-4"></span><h2>Names<a class="headerlink" href="#names" title="Permalink to this headline">¶</a></h2>
 <p><em>Names</em> are sequences of <em>characters</em>, which are <em>scalar values</em> as defined by <a class="reference external" href="https://www.unicode.org/versions/latest/">Unicode</a> (Section 2.4).</p>
 <div class="math notranslate nohighlight">
@@ -188,14 +189,14 @@ No distinction is made between signalling and quiet NaNs.</p>
 \end{array}\end{split}\]</div>
 <p>Due to the limitations of the <a class="reference internal" href="../binary/values.html#binary-name"><span class="std std-ref">binary format</span></a>,
 the length of a name is bounded by the length of its <a class="reference internal" href="../binary/values.html#binary-utf8"><span class="std std-ref">UTF-8</span></a> encoding.</p>
-<div class="section" id="convention">
+<section id="convention">
 <h3>Convention<a class="headerlink" href="#convention" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Characters (Unicode scalar values) are sometimes used interchangeably with natural numbers <span class="math notranslate nohighlight">\(n &lt; 1114112\)</span>.</p></li>
 </ul>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>

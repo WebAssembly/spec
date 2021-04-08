@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-04-08)</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"MAXBUFFER": 30720}})</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -73,7 +74,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="documentwrapper">
@@ -82,7 +83,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="instructions">
+  <section id="instructions">
 <span id="binary-instr"></span><span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">Instructions</span></a> are encoded by <em>opcodes</em>.
 Each opcode is represented by a single byte,
@@ -92,7 +93,7 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 <p class="admonition-title">Note</p>
 <p>Gaps in the byte code ranges for encoding instructions are reserved for future extensions.</p>
 </div>
-<div class="section" id="control-instructions">
+<section id="control-instructions">
 <span id="binary-instr-control"></span><span id="index-1"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">Control instructions</span></a> have varying encodings. For structured instructions, the instruction sequences forming nested blocks are terminated with explicit opcodes for <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> and <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span>.</p>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-blocktype"><span class="std std-ref">Block types</span></a> are encoded in special compressed form, by either the byte <span class="math notranslate nohighlight">\(\def\mathdef797#1{\mathtt{0x#1}}\mathdef797{40}\)</span> indicating the empty type, as a single <a class="reference internal" href="types.html#binary-valtype"><span class="std std-ref">value type</span></a>, or as a <a class="reference internal" href="modules.html#binary-typeidx"><span class="std std-ref">type index</span></a> encoded as a positive <a class="reference internal" href="values.html#binary-sint"><span class="std std-ref">signed integer</span></a>.</p>
@@ -130,8 +131,8 @@ To avoid any loss in the range of allowed indices, it is treated as a 33 bit sig
 <p>In future versions of WebAssembly, the zero byte occurring in the encoding
 of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> instruction may be used to index additional tables.</p>
 </div>
-</div>
-<div class="section" id="reference-instructions">
+</section>
+<section id="reference-instructions">
 <span id="binary-instr-ref"></span><span id="index-2"></span><h2>Reference Instructions<a class="headerlink" href="#reference-instructions" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-ref"><span class="std std-ref">Reference instructions</span></a> are represented by single byte codes.</p>
 <div class="math notranslate nohighlight" id="binary-ref-isnull">
@@ -145,8 +146,8 @@ of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions
 <p class="admonition-title">Note</p>
 <p>These opcode assignments are preliminary.</p>
 </div>
-</div>
-<div class="section" id="parametric-instructions">
+</section>
+<section id="parametric-instructions">
 <span id="binary-instr-parametric"></span><span id="index-3"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-parametric"><span class="std std-ref">Parametric instructions</span></a> are represented by single byte codes, possibly followed by a type annotation.</p>
 <div class="math notranslate nohighlight" id="binary-select">
@@ -156,8 +157,8 @@ of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions
   \def\mathdef822#1{\mathtt{0x#1}}\mathdef822{1B} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}} \\ &amp;&amp;|&amp;
   \def\mathdef823#1{\mathtt{0x#1}}\mathdef823{1C}~~t^\ast{:}\href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\href{../binary/types.html#binary-valtype}{\mathtt{valtype}}) &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}~t^\ast \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="variable-instructions">
+</section>
+<section id="variable-instructions">
 <span id="binary-instr-variable"></span><span id="index-4"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-variable"><span class="std std-ref">Variable instructions</span></a> are represented by byte codes followed by the encoding of the respective <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index</span></a>.</p>
 <div class="math notranslate nohighlight" id="binary-global-set">
@@ -169,8 +170,8 @@ of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions
   \def\mathdef827#1{\mathtt{0x#1}}\mathdef827{23}~~x{:}\href{../binary/modules.html#binary-globalidx}{\mathtt{globalidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{global.get}}~x \\ &amp;&amp;|&amp;
   \def\mathdef828#1{\mathtt{0x#1}}\mathdef828{24}~~x{:}\href{../binary/modules.html#binary-globalidx}{\mathtt{globalidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{global.set}}~x \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="table-instructions">
+</section>
+<section id="table-instructions">
 <span id="binary-elem-drop"></span><span id="binary-table-init"></span><span id="binary-table-copy"></span><span id="binary-table-fill"></span><span id="binary-table-grow"></span><span id="binary-table-size"></span><span id="binary-table-set"></span><span id="binary-table-get"></span><span id="binary-instr-table"></span><span id="index-5"></span><h2>Table Instructions<a class="headerlink" href="#table-instructions" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-table"><span class="std std-ref">Table instructions</span></a> are represented by either single byte or two byte codes.</p>
 <div class="math notranslate nohighlight">
@@ -185,8 +186,8 @@ of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions
   \def\mathdef835#1{\mathtt{0x#1}}\mathdef835{FC}~~16{:}\href{../binary/values.html#binary-int}{\def\mathdef765#1{{\mathtt{u}#1}}\mathdef765{\mathtt{32}}}~~x{:}\href{../binary/modules.html#binary-tableidx}{\mathtt{tableidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.size}}~x \\ &amp;&amp;|&amp;
   \def\mathdef836#1{\mathtt{0x#1}}\mathdef836{FC}~~17{:}\href{../binary/values.html#binary-int}{\def\mathdef765#1{{\mathtt{u}#1}}\mathdef765{\mathtt{32}}}~~x{:}\href{../binary/modules.html#binary-tableidx}{\mathtt{tableidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.fill}}~x \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="memory-instructions">
+</section>
+<section id="memory-instructions">
 <span id="binary-instr-memory"></span><span id="index-6"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
 <p>Each variant of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-memory"><span class="std std-ref">memory instruction</span></a> is encoded with a different byte code. Loads and stores are followed by the encoding of their <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span> immediate.</p>
 <div class="math notranslate nohighlight" id="binary-data-drop">
@@ -228,8 +229,8 @@ of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions
 <p class="admonition-title">Note</p>
 <p>In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.size}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.copy}}\)</span>, and <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.fill}}\)</span> instructions may be used to index additional memories.</p>
 </div>
-</div>
-<div class="section" id="numeric-instructions">
+</section>
+<section id="numeric-instructions">
 <span id="binary-instr-numeric"></span><span id="index-7"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
 <p>All variants of <a class="reference internal" href="../syntax/instructions.html#syntax-instr-numeric"><span class="std std-ref">numeric instructions</span></a> are represented by separate byte codes.</p>
 <p>The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions are followed by the respective literal.</p>
@@ -424,8 +425,8 @@ whereas the actual opcode is encoded by a variable-length <a class="reference in
   \def\mathdef1010#1{\mathtt{0x#1}}\mathdef1010{FC}~~6{:}\href{../binary/values.html#binary-int}{\def\mathdef765#1{{\mathtt{u}#1}}\mathdef765{\mathtt{32}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_sat\_}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}\mathsf{\_s} \\ &amp;&amp;|&amp;
   \def\mathdef1011#1{\mathtt{0x#1}}\mathdef1011{FC}~~7{:}\href{../binary/values.html#binary-int}{\def\mathdef765#1{{\mathtt{u}#1}}\mathdef765{\mathtt{32}}} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_sat\_}\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}\mathsf{\_u} \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="expressions">
+</section>
+<section id="expressions">
 <span id="binary-expr"></span><span id="index-8"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-expr"><span class="std std-ref">Expressions</span></a> are encoded by their instruction sequence terminated with an explicit <span class="math notranslate nohighlight">\(\def\mathdef1012#1{\mathtt{0x#1}}\mathdef1012{0B}\)</span> opcode for <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span>.</p>
 <div class="math notranslate nohighlight">
@@ -433,8 +434,8 @@ whereas the actual opcode is encoded by a variable-length <a class="reference in
 \def\mathdef760#1{{}}\mathdef760{expression} &amp; \href{../binary/instructions.html#binary-expr}{\mathtt{expr}} &amp;::=&amp;
   (\mathit{in}{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast~~\def\mathdef1013#1{\mathtt{0x#1}}\mathdef1013{0B} &amp;\Rightarrow&amp; \mathit{in}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\
 \end{array}\end{split}\]</div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

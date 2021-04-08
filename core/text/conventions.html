@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Conventions &#8212; WebAssembly 1.1 (Draft 2021-04-08)</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"MAXBUFFER": 30720}})</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -74,7 +75,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="documentwrapper">
@@ -83,7 +84,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="conventions">
+  <section id="conventions">
 <span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
 <p>The textual format for WebAssembly <a class="reference internal" href="../intro/overview.html#module"><span class="std std-ref">modules</span></a> is a rendering of their <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">abstract syntax</span></a> into <a class="reference external" href="https://en.wikipedia.org/wiki/S-expression">S-expressions</a>.</p>
 <p>Like the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>, the text format is defined by an <em>attribute grammar</em>.
@@ -96,7 +97,7 @@ that records bound <a class="reference internal" href="values.html#text-id"><spa
 However, it also defines a number of <em>abbreviations</em> that are “syntactic sugar” over the core syntax.</p>
 <p>The recommended extension for files containing WebAssembly modules in text format is “<span class="math notranslate nohighlight">\(\mathtt{.wat}\)</span>”.
 Files with this extension are assumed to be encoded in UTF-8, as per <a class="reference external" href="https://www.unicode.org/versions/latest/">Unicode</a> (Section 2.5).</p>
-<div class="section" id="grammar">
+<section id="grammar">
 <span id="text-grammar"></span><span id="index-1"></span><h2>Grammar<a class="headerlink" href="#grammar" title="Permalink to this headline">¶</a></h2>
 <p>The following conventions are adopted in defining grammar rules of the text format.
 They mirror the conventions used for <a class="reference internal" href="../syntax/conventions.html#grammar"><span class="std std-ref">abstract syntax</span></a> and for the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>.
@@ -142,16 +143,16 @@ or expressed as <a class="reference external" href="https://www.unicode.org/vers
 <p>The variables <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(m\)</span> name the attributes of the respective <span class="math notranslate nohighlight">\(\href{../text/values.html#text-int}{\def\mathdef1837#1{{\mathtt{u}#1}}\mathdef1837{\mathtt{32}}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> those parse into.
 The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.</p>
 </div>
-</div>
-<div class="section" id="abbreviations">
+</section>
+<section id="abbreviations">
 <span id="text-abbreviations"></span><span id="index-2"></span><h2>Abbreviations<a class="headerlink" href="#abbreviations" title="Permalink to this headline">¶</a></h2>
 <p>In addition to the core grammar, which corresponds directly to the <a class="reference internal" href="../syntax/index.html#syntax"><span class="std std-ref">abstract syntax</span></a>, the textual syntax also defines a number of <em>abbreviations</em> that can be used for convenience and readability.</p>
 <p>Abbreviations are defined by <em>rewrite rules</em> specifying their expansion into the core syntax:</p>
 <div class="math notranslate nohighlight">
 \[\mathit{abbreviation~syntax} \quad\equiv\quad \mathit{expanded~syntax}\]</div>
 <p>These expansions are assumed to be applied, recursively and in order of appearance, before applying the core grammar rules to construct the abstract syntax.</p>
-</div>
-<div class="section" id="contexts">
+</section>
+<section id="contexts">
 <span id="text-context"></span><span id="text-context-wf"></span><span id="index-3"></span><h2>Contexts<a class="headerlink" href="#contexts" title="Permalink to this headline">¶</a></h2>
 <p>The text format allows the use of symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> in place of <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a>.
 To resolve these identifiers into concrete indices,
@@ -177,13 +178,13 @@ In addition, the context records the types defined in the module, so that <a cla
 <p>For each index space, such a context contains the list of <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> assigned to the defined indices.
 Unnamed indices are associated with empty (<span class="math notranslate nohighlight">\(\epsilon\)</span>) entries in these lists.</p>
 <p>An identifier context is <em>well-formed</em> if no index space contains duplicate identifiers.</p>
-<div class="section" id="id1">
+<section id="id1">
 <h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>To avoid unnecessary clutter, empty components are omitted when writing out identifier contexts.
 For example, the record <span class="math notranslate nohighlight">\(\{\}\)</span> is shorthand for an <a class="reference internal" href="#text-context"><span class="std std-ref">identifier context</span></a> whose components are all empty.</p>
-</div>
-</div>
-<div class="section" id="vectors">
+</section>
+</section>
+<section id="vectors">
 <span id="text-vec"></span><span id="index-4"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/conventions.html#syntax-vec"><span class="std std-ref">Vectors</span></a> are written as plain sequences, but with a restriction on the length of these sequence.</p>
 <div class="math notranslate nohighlight">
@@ -191,8 +192,8 @@ For example, the record <span class="math notranslate nohighlight">\(\{\}\)</spa
 \def\mathdef1812#1{{}}\mathdef1812{vector} &amp; \href{../text/conventions.html#text-vec}{\mathtt{vec}}(\mathtt{A}) &amp;::=&amp;
   (x{:}\mathtt{A})^n &amp;\Rightarrow&amp; x^n &amp; (\mathrel{\mbox{if}} n &lt; 2^{32}) \\
 \end{array}\end{split}\]</div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

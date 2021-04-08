@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Custom Sections &#8212; WebAssembly 1.1 (Draft 2021-04-08)</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"MAXBUFFER": 30720}})</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -74,7 +75,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="documentwrapper">
@@ -83,13 +84,13 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="custom-sections">
+  <section id="custom-sections">
 <span id="index-0"></span><h1>Custom Sections<a class="headerlink" href="#custom-sections" title="Permalink to this headline">¶</a></h1>
 <p>This appendix defines dedicated <a class="reference internal" href="../binary/modules.html#binary-customsec"><span class="std std-ref">custom sections</span></a> for WebAssembly’s <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>.
 Such sections do not contribute to, or otherwise affect, the WebAssembly semantics, and like any custom section they may be ignored by an implementation.
 However, they provide useful meta data that implementations can make use of to improve user experience or take compilation hints.</p>
 <p>Currently, only one dedicated custom section is defined, the <a class="reference internal" href="#binary-namesec"><span class="std std-ref">name section</span></a>.</p>
-<div class="section" id="name-section">
+<section id="name-section">
 <span id="binary-namesec"></span><span id="index-1"></span><h2>Name Section<a class="headerlink" href="#name-section" title="Permalink to this headline">¶</a></h2>
 <p>The <em>name section</em> is a <a class="reference internal" href="../binary/modules.html#binary-customsec"><span class="std std-ref">custom section</span></a> whose name string is itself <span class="math notranslate nohighlight">\(\def\mathdef112#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef112{name}\)</span>.
 The name section should appear only once in a module, and only after the <a class="reference internal" href="../binary/modules.html#binary-datasec"><span class="std std-ref">data section</span></a>.</p>
@@ -99,7 +100,7 @@ The name section should appear only once in a module, and only after the <a clas
 <p>All <a class="reference internal" href="../binary/values.html#binary-name"><span class="std std-ref">names</span></a> are represented in <a class="reference external" href="https://www.unicode.org/versions/latest/">Unicode</a> encoded in UTF-8.
 Names need not be unique.</p>
 </div>
-<div class="section" id="subsections">
+<section id="subsections">
 <span id="binary-namesubsection"></span><h3>Subsections<a class="headerlink" href="#subsections" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference internal" href="../binary/modules.html#binary-customsec"><span class="std std-ref">data</span></a> of a name section consists of a sequence of <em>subsections</em>.
 Each subsection consists of a</p>
@@ -145,8 +146,8 @@ Each subsection consists of a</p>
 </tbody>
 </table>
 <p>Each subsection may occur at most once, and in order of increasing id.</p>
-</div>
-<div class="section" id="name-maps">
+</section>
+<section id="name-maps">
 <span id="binary-namemap"></span><span id="binary-indirectnamemap"></span><span id="index-2"></span><h3>Name Maps<a class="headerlink" href="#name-maps" title="Permalink to this headline">¶</a></h3>
 <p>A <em>name map</em> assigns <a class="reference internal" href="../syntax/values.html#syntax-name"><span class="std std-ref">names</span></a> to <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a> in a given <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>.
 It consists of a <a class="reference internal" href="../binary/conventions.html#binary-vec"><span class="std std-ref">vector</span></a> of index/name pairs in order of increasing index value.
@@ -168,8 +169,8 @@ Each primary index must be unique, and likewise each secondary index per individ
 \def\mathdef75#1{{}}\mathdef75{indirect name association} &amp; \href{../appendix/custom.html#binary-indirectnamemap}{\mathtt{indirectnameassoc}} &amp;::=&amp;
   \href{../binary/modules.html#binary-index}{\mathtt{idx}}~\href{../appendix/custom.html#binary-namemap}{\mathtt{namemap}} \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="module-names">
+</section>
+<section id="module-names">
 <span id="binary-modulenamesec"></span><span id="index-3"></span><h3>Module Names<a class="headerlink" href="#module-names" title="Permalink to this headline">¶</a></h3>
 <p>The <em>module name subsection</em> has the id 0.
 It simply consists of a single <a class="reference internal" href="../binary/values.html#binary-name"><span class="std std-ref">name</span></a> that is assigned to the module itself.</p>
@@ -178,8 +179,8 @@ It simply consists of a single <a class="reference internal" href="../binary/val
 \def\mathdef75#1{{}}\mathdef75{module name subsection} &amp; \href{../appendix/custom.html#binary-modulenamesec}{\mathtt{modulenamesubsec}} &amp;::=&amp;
   \href{../appendix/custom.html#binary-namesubsection}{\mathtt{namesubsection}}_0(\href{../binary/values.html#binary-name}{\mathtt{name}}) \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="function-names">
+</section>
+<section id="function-names">
 <span id="binary-funcnamesec"></span><span id="index-4"></span><h3>Function Names<a class="headerlink" href="#function-names" title="Permalink to this headline">¶</a></h3>
 <p>The <em>function name subsection</em> has the id 1.
 It consists of a <a class="reference internal" href="#binary-namemap"><span class="std std-ref">name map</span></a> assigning function names to <a class="reference internal" href="../syntax/modules.html#syntax-funcidx"><span class="std std-ref">function indices</span></a>.</p>
@@ -188,8 +189,8 @@ It consists of a <a class="reference internal" href="#binary-namemap"><span clas
 \def\mathdef75#1{{}}\mathdef75{function name subsection} &amp; \href{../appendix/custom.html#binary-funcnamesec}{\mathtt{funcnamesubsec}} &amp;::=&amp;
   \href{../appendix/custom.html#binary-namesubsection}{\mathtt{namesubsection}}_1(\href{../appendix/custom.html#binary-namemap}{\mathtt{namemap}}) \\
 \end{array}\end{split}\]</div>
-</div>
-<div class="section" id="local-names">
+</section>
+<section id="local-names">
 <span id="binary-localnamesec"></span><span id="index-5"></span><h3>Local Names<a class="headerlink" href="#local-names" title="Permalink to this headline">¶</a></h3>
 <p>The <em>local name subsection</em> has the id 2.
 It consists of an <a class="reference internal" href="#binary-indirectnamemap"><span class="std std-ref">indirect name map</span></a> assigning local names to <a class="reference internal" href="../syntax/modules.html#syntax-localidx"><span class="std std-ref">local indices</span></a> grouped by <a class="reference internal" href="../syntax/modules.html#syntax-funcidx"><span class="std std-ref">function indices</span></a>.</p>
@@ -198,9 +199,9 @@ It consists of an <a class="reference internal" href="#binary-indirectnamemap"><
 \def\mathdef75#1{{}}\mathdef75{local name subsection} &amp; \href{../appendix/custom.html#binary-localnamesec}{\mathtt{localnamesubsec}} &amp;::=&amp;
   \href{../appendix/custom.html#binary-namesubsection}{\mathtt{namesubsection}}_2(\href{../appendix/custom.html#binary-indirectnamemap}{\mathtt{indirectnamemap}}) \\
 \end{array}\end{split}\]</div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>
