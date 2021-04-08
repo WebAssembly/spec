@@ -42,24 +42,32 @@ Generalized the result type of blocks and functions to allow for multiple values
 * :ref:`Block types <syntax-blocktype>` can be arbitrary function types
 
 
-.. index:: value type, reference, reference type, instruction, table, element segment
+.. index:: value type, reference, reference type, instruction, element segment
 
 Reference types
 ...............
 
-Added |FUNCREF| and |EXTERNREF| as new value types and instructions to read and write such values as table entries [#proposal-reftype]_.
+Added |FUNCREF| and |EXTERNREF| as new value types and respective instructions [#proposal-reftype]_.
 
 * New :ref:`value types <syntax-valtype>`: :ref:`reference types <syntax-reftype>` |FUNCREF| and |EXTERNREF|
 
-* :ref:`Table types <syntax-tabletype>` allow :ref:`reference types <syntax-reftype>` as element types
-
 * New :ref:`reference instructions <syntax-instr-ref>`: |REFNULL|, |REFFUNC|, |REFISNULL|
 
-* New :ref:`table instructions <syntax-instr-table>`: |TABLEGET|, |TABLESET|, |TABLESIZE|, |TABLEGROW|
-
-* New :ref:`parametric instruction <syntax-instr-parametric>`: |SELECT| with type immediate
+* Enrich :ref:`parametric instruction <syntax-instr-parametric>`: |SELECT| with optional type immediate
 
 * New :ref:`declarative <syntax-elemmode>` form of :ref:`element segment <syntax-elem>`
+
+
+.. index:: reference, instruction, table, table type
+
+Table instructions
+..................
+
+Added instructions to directly access and modify tables [#proposal-reftype]_.
+
+* :ref:`Table types <syntax-tabletype>` allow any :ref:`reference type <syntax-reftype>` as element type
+
+* New :ref:`table instructions <syntax-instr-table>`: |TABLEGET|, |TABLESET|, |TABLESIZE|, |TABLEGROW|
 
 
 .. index:: table, instruction, table index, element segment
