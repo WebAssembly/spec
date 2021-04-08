@@ -41,6 +41,10 @@ div.admonition p.admonition-title {
   font-weight: bold;
 }
 
+div.math {
+  background-color: #F0F0F0;
+  padding: 3px 0 3px 0;
+}
 
 div.relations {
   display: block;
