@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>Modules &#8212; WebAssembly 1.1</title>
+    <title>Modules &#8212; WebAssembly 1.1 (Draft 2021-04-08)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -260,19 +260,19 @@ the expression <span class="math notranslate nohighlight">\(\href{../syntax/inst
   C \href{../valid/modules.html#valid-data}{\vdash} \{ \href{../syntax/modules.html#syntax-data}{\mathsf{init}}~b^\ast, \href{../syntax/modules.html#syntax-data}{\mathsf{mode}}~\href{../syntax/modules.html#syntax-datamode}{\mathit{datamode}} \} \mathrel{\mbox{ok}}
 }\]</div>
 </section>
-<section id="xref-syntax-modules-syntax-data-mathsf-passive">
-<span id="valid-datamode"></span><h3><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-data}{\mathsf{passive}}\)</span><a class="headerlink" href="#xref-syntax-modules-syntax-data-mathsf-passive" title="Permalink to this headline">¶</a></h3>
+<section id="xref-syntax-modules-syntax-datamode-mathsf-passive">
+<span id="valid-datamode"></span><h3><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-datamode}{\mathsf{passive}}\)</span><a class="headerlink" href="#xref-syntax-modules-syntax-datamode-mathsf-passive" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The data mode is valid.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
 }{
-  C \href{../valid/modules.html#valid-datamode}{\vdash} \href{../syntax/modules.html#syntax-data}{\mathsf{passive}} \mathrel{\mbox{ok}}
+  C \href{../valid/modules.html#valid-datamode}{\vdash} \href{../syntax/modules.html#syntax-datamode}{\mathsf{passive}} \mathrel{\mbox{ok}}
 }\]</div>
 </section>
-<section id="xref-syntax-modules-syntax-data-mathsf-active-xref-syntax-modules-syntax-data-mathsf-memory-x-xref-syntax-modules-syntax-data-mathsf-offset-xref-syntax-instructions-syntax-expr-mathit-expr">
-<h3><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-data}{\mathsf{active}}~\{ \href{../syntax/modules.html#syntax-data}{\mathsf{memory}}~x, \href{../syntax/modules.html#syntax-data}{\mathsf{offset}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \}\)</span><a class="headerlink" href="#xref-syntax-modules-syntax-data-mathsf-active-xref-syntax-modules-syntax-data-mathsf-memory-x-xref-syntax-modules-syntax-data-mathsf-offset-xref-syntax-instructions-syntax-expr-mathit-expr" title="Permalink to this headline">¶</a></h3>
+<section id="xref-syntax-modules-syntax-datamode-mathsf-active-xref-syntax-modules-syntax-data-mathsf-memory-x-xref-syntax-modules-syntax-data-mathsf-offset-xref-syntax-instructions-syntax-expr-mathit-expr">
+<h3><span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-datamode}{\mathsf{active}}~\{ \href{../syntax/modules.html#syntax-data}{\mathsf{memory}}~x, \href{../syntax/modules.html#syntax-data}{\mathsf{offset}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \}\)</span><a class="headerlink" href="#xref-syntax-modules-syntax-datamode-mathsf-active-xref-syntax-modules-syntax-data-mathsf-memory-x-xref-syntax-modules-syntax-data-mathsf-offset-xref-syntax-instructions-syntax-expr-mathit-expr" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The memory <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[x]\)</span> must be defined in the context.</p></li>
 <li><p>The expression <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>.</p></li>
@@ -287,7 +287,7 @@ the expression <span class="math notranslate nohighlight">\(\href{../syntax/inst
   \qquad
   C \href{../valid/instructions.html#valid-constant}{\vdash} \href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \href{../valid/instructions.html#valid-constant}{\mathrel{\mbox{const}}}
 }{
-  C \href{../valid/modules.html#valid-datamode}{\vdash} \href{../syntax/modules.html#syntax-data}{\mathsf{active}}~\{ \href{../syntax/modules.html#syntax-data}{\mathsf{memory}}~x, \href{../syntax/modules.html#syntax-data}{\mathsf{offset}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \} \mathrel{\mbox{ok}}
+  C \href{../valid/modules.html#valid-datamode}{\vdash} \href{../syntax/modules.html#syntax-datamode}{\mathsf{active}}~\{ \href{../syntax/modules.html#syntax-data}{\mathsf{memory}}~x, \href{../syntax/modules.html#syntax-data}{\mathsf{offset}}~\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}} \} \mathrel{\mbox{ok}}
 }\]</div>
 </section>
 </section>
