@@ -89,7 +89,7 @@ Added the ability to use multiple tables per module [#proposal-reftype]_.
 Bulk memory and table instructions
 ..................................
 
-Added instructions that modify ranges of memory or table entries  [#proposal-reftype]_ [#proposal-bulk]_
+Added instructions that modify ranges of memory or table entries [#proposal-reftype]_ [#proposal-bulk]_
 
 * New :ref:`memory instructions <syntax-instr-memory>`: |MEMORYFILL|, |MEMORYINIT|, |MEMORYCOPY|, |DATADROP|
 
