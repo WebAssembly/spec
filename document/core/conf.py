@@ -486,7 +486,7 @@ epub_exclude_files = ['search.html']
 
 # Macros
 rst_prolog = """
-.. |repolink| replace:: https://github.com/webassembly/""" + repo + """/issues/
+.. |issuelink| replace:: https://github.com/webassembly/""" + repo + """/issues/
 .. |pagelink| replace:: https://webassembly.github.io/""" + repo + """/core/
 .. include:: /""" + pwd + """/util/macros.def
 """

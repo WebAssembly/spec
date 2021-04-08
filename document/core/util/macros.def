@@ -6,8 +6,8 @@
 .. |WasmDraft| replace:: |pagelink|
 .. _WasmDraft: |pagelink|
 
-.. |WasmIssues| replace:: |repolink|
-.. _WasmIssues: |repolink|
+.. |WasmIssues| replace:: |issuelink|
+.. _WasmIssues: |issuelink|
 
 .. |IEEE754| replace:: IEEE 754-2019
 .. _IEEE754: https://ieeexplore.ieee.org/document/8766229
