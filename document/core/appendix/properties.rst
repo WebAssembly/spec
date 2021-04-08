@@ -360,7 +360,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Let :math:`\globaltype^\ast` be the concatenation of all :math:`\globaltype_i` in order.
 
-* Then the module instance is valid with :ref:`context <context>` :math:`\{\CTYPES~\functype^\ast, \CFUNCS~{\functype'}^\ast, \CTABLES~\tabletype^\ast, \CMEMS~\memtype^\ast, \CGLOBALS~\globaltype^\ast\}`.
+* | Then the module instance is valid with :ref:`context <context>`
+  | :math:`\{\CTYPES~\functype^\ast, \CFUNCS~{\functype'}^\ast, \CTABLES~\tabletype^\ast, \CMEMS~\memtype^\ast, \CGLOBALS~\globaltype^\ast\}`.
 
 .. math::
    ~\\[-1ex]

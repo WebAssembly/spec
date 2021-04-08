@@ -3,11 +3,11 @@
 .. External Standards
 .. ------------------
 
-.. |WasmDraft| replace:: https://webassembly.github.io/tail-call/core/
-.. _WasmDraft: https://webassembly.github.io/tail-call/core/
+.. |WasmDraft| replace:: |pagelink|
+.. _WasmDraft: |pagelink|
 
-.. |WasmIssues| replace:: https://github.com/webassembly/tail-call/issues/
-.. _WasmIssues: https://github.com/webassembly/tail-call/issues/
+.. |WasmIssues| replace:: |issuelink|
+.. _WasmIssues: |issuelink|
 
 .. |IEEE754| replace:: IEEE 754-2019
 .. _IEEE754: https://ieeexplore.ieee.org/document/8766229
@@ -282,8 +282,8 @@
 
 .. |DINIT| mathdef:: \xref{syntax/modules}{syntax-data}{\K{init}}
 .. |DMODE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{mode}}
-.. |DPASSIVE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{passive}}
-.. |DACTIVE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{active}}
+.. |DPASSIVE| mathdef:: \xref{syntax/modules}{syntax-datamode}{\K{passive}}
+.. |DACTIVE| mathdef:: \xref{syntax/modules}{syntax-datamode}{\K{active}}
 .. |DMEM| mathdef:: \xref{syntax/modules}{syntax-data}{\K{memory}}
 .. |DOFFSET| mathdef:: \xref{syntax/modules}{syntax-data}{\K{offset}}
 
