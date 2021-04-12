@@ -87,7 +87,7 @@ However, the special case of a type use that is syntactically empty or consists 
    \end{array}
 
 .. note::
-   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must be empty in the rule for |Ttypeuse| block types enforces that no identifier can be bound in any |Tparam| declaration for a block type.
+   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must only contain unnamed entries in the rule for |Ttypeuse| block types enforces that no identifier can be bound in any |Tparam| declaration for a block type.
 
 
 .. _text-nop:
@@ -117,7 +117,7 @@ All other control instruction are represented verbatim.
    \end{array}
 
 .. note::
-   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must be empty in the rule for |CALLINDIRECT| enforces that no identifier can be bound in any |Tparam| declaration appearing in the type annotation.
+   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must only contain unnamed entries in the rule for |CALLINDIRECT| enforces that no identifier can be bound in any |Tparam| declaration appearing in the type annotation.
 
 
 Abbreviations
