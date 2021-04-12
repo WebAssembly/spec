@@ -71,7 +71,7 @@ However, the special case of a type use that is syntactically empty or consists 
    &
    \begin{array}[t]{@{}lcll@{}}
      (t{:}\Tresult)^? &\Rightarrow& t^? \\
-     x,I'{:}\Ttypeuse_I &\Rightarrow& x & (\iff I' = \{\}) \\
+     x,I'{:}\Ttypeuse_I &\Rightarrow& x & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array} \\
    \production{block instruction} & \Tblockinstr_I &::=&
      \text{block}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
@@ -113,7 +113,7 @@ All other control instruction are represented verbatim.
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
      \text{call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x~y
-       & (\iff I' = \{\}) \\
+       & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array}
 
 .. note::
