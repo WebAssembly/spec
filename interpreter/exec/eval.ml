@@ -571,7 +571,8 @@ let rec step (c : config) : config =
         | I31.I31Ref _ ->
           Ref r :: vs', []
         | _ ->
-          vs', [Trapping "cast failure" @@ e.at]
+          vs', [Trapping ("cast failure, expected i31 but got " ^
+            string_of_value (Ref r)) @@ e.at]
         )
 
       | RefCast DataOp, Ref r :: vs' ->
@@ -579,7 +580,8 @@ let rec step (c : config) : config =
         | Data.DataRef _ ->
           Ref r :: vs', []
         | _ ->
-          vs', [Trapping "cast failure" @@ e.at]
+          vs', [Trapping ("cast failure, expected data but got " ^
+            string_of_value (Ref r)) @@ e.at]
         )
 
       | RefCast FuncOp, Ref r :: vs' ->
@@ -587,7 +589,8 @@ let rec step (c : config) : config =
         | FuncRef _ ->
           Ref r :: vs', []
         | _ ->
-          vs', [Trapping "cast failure" @@ e.at]
+          vs', [Trapping ("cast failure, expected func but got " ^
+            string_of_value (Ref r)) @@ e.at]
         )
 
       | RefCast RttOp, Ref (NullRef _) :: vs' ->
@@ -602,7 +605,9 @@ let rec step (c : config) : config =
         | FuncRef f when Rtt.match_rtt (Func.read_rtt f) rtt ->
           Ref r :: vs', []
         | Data.DataRef _ | FuncRef _ ->
-          vs', [Trapping "cast failure" @@ e.at]
+          vs', [Trapping ("cast failure, expected " ^
+            string_of_def_type (Rtt.def_type_of rtt) ^ " but got " ^
+            string_of_value (Ref r)) @@ e.at]
         | _ ->
           Crash.error e.at "wrong reference type"
         )

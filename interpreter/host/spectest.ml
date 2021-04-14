@@ -51,4 +51,5 @@ let lookup name t =
   | "global_f64", _ -> ExternGlobal (global (GlobalType (NumType F64Type, Immutable)))
   | "table", _ -> ExternTable table
   | "memory", _ -> ExternMemory memory
+  | "debug_print", ExternFuncType ft -> ExternFunc (func print ft)
   | _ -> raise Not_found
