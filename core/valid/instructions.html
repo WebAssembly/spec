@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-04-12)</title>
+    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-04-14)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -96,7 +96,8 @@
 and the provided output stack with result values of types <span class="math notranslate nohighlight">\(t_2^\ast\)</span> that it pushes back.
 Stack types are akin to <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function types</span></a>,
 except that they allow individual operands to be classified as <span class="math notranslate nohighlight">\(\bot\)</span> (<em>bottom</em>), indicating that the type is unconstrained.
-As an auxiliary notion, an operand type <span class="math notranslate nohighlight">\(t_1\)</span> <em>matches</em> another operand type <span class="math notranslate nohighlight">\(t_2\)</span>, if <span class="math notranslate nohighlight">\(t_1\)</span> is either <span class="math notranslate nohighlight">\(\bot\)</span> or equal to <span class="math notranslate nohighlight">\(t_2\)</span>.</p>
+As an auxiliary notion, an operand type <span class="math notranslate nohighlight">\(t_1\)</span> <em>matches</em> another operand type <span class="math notranslate nohighlight">\(t_2\)</span>, if <span class="math notranslate nohighlight">\(t_1\)</span> is either <span class="math notranslate nohighlight">\(\bot\)</span> or equal to <span class="math notranslate nohighlight">\(t_2\)</span>.
+This is extended to stack types in a point-wise manner.</p>
 <div class="math notranslate nohighlight" id="match-opdtype">
 \[\frac{
 }{
@@ -106,6 +107,12 @@ As an auxiliary notion, an operand type <span class="math notranslate nohighligh
 \frac{
 }{
   \vdash \bot \leq t
+}\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{
+  (\vdash t \leq t')^\ast
+}{
+  \vdash [t^\ast] \leq [{t'}^\ast]
 }\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -798,15 +805,20 @@ the instruction sequence <span class="math notranslate nohighlight">\(\href{../s
 <li><p>Let <span class="math notranslate nohighlight">\([t^\ast]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_N]\)</span>.</p></li>
 <li><p>For all <span class="math notranslate nohighlight">\(l_i\)</span> in <span class="math notranslate nohighlight">\(l^\ast\)</span>,
 the label <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_i]\)</span> must be defined in the context.</p></li>
+<li><p>There must be a <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t^\ast]\)</span>, such that:</p>
+<ul>
+<li><p>For each <a class="reference internal" href="#syntax-opdtype"><span class="std std-ref">operand type</span></a> <span class="math notranslate nohighlight">\(t_j\)</span> in <span class="math notranslate nohighlight">\(t^\ast\)</span> and corresponding type <span class="math notranslate nohighlight">\(t'_{Nj}\)</span> in <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_N]\)</span>, <span class="math notranslate nohighlight">\(t_j\)</span> <a class="reference internal" href="#match-opdtype"><span class="std std-ref">matches</span></a> <span class="math notranslate nohighlight">\(t'_{Nj}\)</span>.</p></li>
 <li><p>For all <span class="math notranslate nohighlight">\(l_i\)</span> in <span class="math notranslate nohighlight">\(l^\ast\)</span>,
-<span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_i]\)</span> must be <span class="math notranslate nohighlight">\([t^\ast]\)</span>.</p></li>
+and for each <a class="reference internal" href="#syntax-opdtype"><span class="std std-ref">operand type</span></a> <span class="math notranslate nohighlight">\(t_j\)</span> in <span class="math notranslate nohighlight">\(t^\ast\)</span> and corresponding type <span class="math notranslate nohighlight">\(t'_{ij}\)</span> in <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_i]\)</span>, <span class="math notranslate nohighlight">\(t_j\)</span> <a class="reference internal" href="#match-opdtype"><span class="std std-ref">matches</span></a> <span class="math notranslate nohighlight">\(t'_{ij}\)</span>.</p></li>
+</ul>
+</li>
 <li><p>Then the instruction is valid with type <span class="math notranslate nohighlight">\([t_1^\ast~t^\ast~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]\)</span>, for any sequences of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a> <span class="math notranslate nohighlight">\(t_1^\ast\)</span> and <span class="math notranslate nohighlight">\(t_2^\ast\)</span>.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
-  (C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l] = [t^\ast])^\ast
+  (\vdash [t^\ast] \leq C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l])^\ast
   \qquad
-  C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_N] = [t^\ast]
+  \vdash [t^\ast] \leq C.\href{../valid/conventions.html#context}{\mathsf{labels}}[l_N]
 }{
   C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{br\_table}}~l^\ast~l_N : [t_1^\ast~t^\ast~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
 }\]</div>
@@ -901,7 +913,7 @@ such that <span class="math notranslate nohighlight">\(t_2^\ast = t_0^\ast~{t'}^
 \[\frac{
   C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_0^\ast~{t'}^\ast]
   \qquad
-  (\vdash t' \leq t)^\ast
+  \vdash [{t'}^\ast] \leq [t^\ast]
   \qquad
   C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_N : [t^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_3^\ast]
 }{
@@ -923,7 +935,7 @@ such that <span class="math notranslate nohighlight">\(t_2^\ast = t_0^\ast~{t'}^
 \[\frac{
   C \href{../valid/instructions.html#valid-instr-seq}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [{t'}^\ast]
   \qquad
-  (\vdash t' \leq t)^\ast
+  \vdash [{t'}^\ast] \leq [t^\ast]
 }{
   C \href{../valid/instructions.html#valid-expr}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [t^\ast]
 }\]</div>
