@@ -4,9 +4,9 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-04-14)</title>
+    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-04-21)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -128,7 +128,7 @@ However, the special case of a type use that is syntactically empty or consists 
 &amp;
 \begin{array}[t]{&#64;{}lcll&#64;{}}
   (t{:}\href{../text/types.html#text-functype}{\mathtt{result}})^? &amp;\Rightarrow&amp; t^? \\
-  x,I'{:}\href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}_I &amp;\Rightarrow&amp; x &amp; (\mathrel{\mbox{if}} I' = \{\}) \\
+  x,I'{:}\href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}_I &amp;\Rightarrow&amp; x &amp; (\mathrel{\mbox{if}} I' = \{\href{../text/conventions.html#text-context}{\mathsf{locals}}~(\epsilon)^\ast\}) \\
 \end{array} \\
 \def\mathdef1892#1{{}}\mathdef1892{block instruction} &amp; \href{../text/instructions.html#text-blockinstr}{\mathtt{blockinstr}}_I &amp;::=&amp;
   \def\mathdef1929#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1929{block}~~I'{:}\href{../text/instructions.html#text-label}{\mathtt{label}}_I~~\mathit{bt}{:}\href{../text/instructions.html#text-blocktype}{\mathtt{blocktype}}~~(\mathit{in}{:}\href{../text/instructions.html#text-instr}{\mathtt{instr}}_{I'})^\ast~~\def\mathdef1930#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1930{end}~~\href{../text/values.html#text-id}{\mathtt{id}}^?
@@ -144,7 +144,7 @@ However, the special case of a type use that is syntactically empty or consists 
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The side condition stating that the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate nohighlight">\(I'\)</span> must be empty in the rule for <span class="math notranslate nohighlight">\(\href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}\)</span> block types enforces that no identifier can be bound in any <span class="math notranslate nohighlight">\(\href{../text/types.html#text-functype}{\mathtt{param}}\)</span> declaration for a block type.</p>
+<p>The side condition stating that the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate nohighlight">\(I'\)</span> must only contain unnamed entries in the rule for <span class="math notranslate nohighlight">\(\href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}\)</span> block types enforces that no identifier can be bound in any <span class="math notranslate nohighlight">\(\href{../text/types.html#text-functype}{\mathtt{param}}\)</span> declaration for a block type.</p>
 </div>
 <p id="text-call-indirect"><span id="text-call"></span><span id="text-return"></span><span id="text-br-table"></span><span id="text-br-if"></span><span id="text-br"></span><span id="text-unreachable"></span><span id="text-nop"></span>All other control instruction are represented verbatim.</p>
 <div class="math notranslate nohighlight">
@@ -159,11 +159,11 @@ However, the special case of a type use that is syntactically empty or consists 
   \def\mathdef1941#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1941{return} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{return}} \\ &amp;&amp;|&amp;
   \def\mathdef1942#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1942{call}~~x{:}\href{../text/modules.html#text-funcidx}{\mathtt{funcidx}}_I &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}~x \\ &amp;&amp;|&amp;
   \def\mathdef1943#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef1943{call\_indirect}~~x{:}\href{../text/modules.html#text-tableidx}{\mathtt{tableidx}}~~y,I'{:}\href{../text/modules.html#text-typeuse}{\mathtt{typeuse}}_I &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}~x~y
-    &amp; (\mathrel{\mbox{if}} I' = \{\}) \\
+    &amp; (\mathrel{\mbox{if}} I' = \{\href{../text/conventions.html#text-context}{\mathsf{locals}}~(\epsilon)^\ast\}) \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The side condition stating that the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate nohighlight">\(I'\)</span> must be empty in the rule for <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> enforces that no identifier can be bound in any <span class="math notranslate nohighlight">\(\href{../text/types.html#text-functype}{\mathtt{param}}\)</span> declaration appearing in the type annotation.</p>
+<p>The side condition stating that the <a class="reference internal" href="conventions.html#text-context"><span class="std std-ref">identifier context</span></a> <span class="math notranslate nohighlight">\(I'\)</span> must only contain unnamed entries in the rule for <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> enforces that no identifier can be bound in any <span class="math notranslate nohighlight">\(\href{../text/types.html#text-functype}{\mathtt{param}}\)</span> declaration appearing in the type annotation.</p>
 </div>
 <section id="abbreviations">
 <h3>Abbreviations<a class="headerlink" href="#abbreviations" title="Permalink to this headline">¶</a></h3>

@@ -4,9 +4,9 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-04-14)</title>
+    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-04-21)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -128,8 +128,6 @@ The only exception are <a class="reference internal" href="#binary-instr-control
 <p>The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{else}}\)</span> opcode <span class="math notranslate nohighlight">\(\def\mathdef816#1{\mathtt{0x#1}}\mathdef816{05}\)</span> in the encoding of an <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{if}}\)</span> instruction can be omitted if the following instruction sequence is empty.</p>
 <p>Unlike any <a class="reference internal" href="modules.html#binary-typeidx"><span class="std std-ref">other occurrence</span></a>, the <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> in a <a class="reference internal" href="../syntax/instructions.html#syntax-blocktype"><span class="std std-ref">block type</span></a> is encoded as a positive <a class="reference internal" href="../syntax/values.html#syntax-sint"><span class="std std-ref">signed integer</span></a>, so that its signed LEB128 bit pattern cannot collide with the encoding of <a class="reference internal" href="types.html#binary-valtype"><span class="std std-ref">value types</span></a> or the special code <span class="math notranslate nohighlight">\(\def\mathdef817#1{\mathtt{0x#1}}\mathdef817{40}\)</span>, which correspond to the LEB128 encoding of negative integers.
 To avoid any loss in the range of allowed indices, it is treated as a 33 bit signed integer.</p>
-<p>In future versions of WebAssembly, the zero byte occurring in the encoding
-of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span> instruction may be used to index additional tables.</p>
 </div>
 </section>
 <section id="reference-instructions">
@@ -142,10 +140,6 @@ of the <span class="math notranslate nohighlight">\(\href{../syntax/instructions
   \def\mathdef819#1{\mathtt{0x#1}}\mathdef819{D1} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}is\_null}} \\ &amp;&amp;|&amp;
   \def\mathdef820#1{\mathtt{0x#1}}\mathdef820{D2}~~x{:}\href{../binary/modules.html#binary-funcidx}{\mathtt{funcidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}func}}~x \\
 \end{array}\end{split}\]</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>These opcode assignments are preliminary.</p>
-</div>
 </section>
 <section id="parametric-instructions">
 <span id="binary-instr-parametric"></span><span id="index-3"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
