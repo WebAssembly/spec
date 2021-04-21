@@ -245,7 +245,7 @@ Functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{func}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{func}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
@@ -290,7 +290,7 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
        \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)}~~
        \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Telemlist~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 .. math::
@@ -300,7 +300,7 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
        \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)}~~
        \text{(}~\text{elem}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Texpr)~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
@@ -314,7 +314,7 @@ Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-exp
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{table}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{table}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline elements segment.
@@ -359,7 +359,7 @@ A :ref:`data segment <text-data>` can be given inline with a memory definition, 
        \text{(}~\text{memory}~~\Tid'~~m~~m~\text{)}~~
        \text{(}~\text{data}~~\text{(}~\text{memory}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
    \end{array}
 
 Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
@@ -374,7 +374,7 @@ Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-e
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{memory}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{memory}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline data segment.
@@ -418,7 +418,7 @@ Globals can be defined as :ref:`imports <text-import>` or :ref:`exports <text-ex
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{global}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{global}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
