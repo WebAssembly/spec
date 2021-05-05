@@ -71,14 +71,14 @@ let reset space = space.count <- 0l
 
 let shift category at n i =
   let i' = Int32.add i n in
-   if I32.lt_u i' n then
-     error at ("too many " ^ category ^ " bindings");
-   i'
+  if I32.lt_u i' n then
+    error at ("too many " ^ category ^ " bindings");
+  i'
 
 let bind category space n at =
-   let i = space.count in
-   space.count <- shift category at n i;
-   i
+  let i = space.count in
+  space.count <- shift category at n i;
+  i
 
 let scoped category n space at =
   {map = VarMap.map (shift category at n) space.map; count = space.count}

@@ -176,6 +176,8 @@ let ref_type s =
   | -0x14l -> (Nullable, heap_type s)
   | -0x15l -> (NonNullable, heap_type s)
   | -0x16l -> (Nullable, I31HeapType)
+  | -0x17l -> let n = vu32 s in (Nullable, RttHeapType (SynVar (vs33 s), Some n))
+  | -0x18l -> (Nullable, RttHeapType (SynVar (vs33 s), None))
   | -0x19l -> (Nullable, DataHeapType)
   | _ -> error s pos "malformed reference type"
 

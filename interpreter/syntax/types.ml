@@ -250,16 +250,16 @@ let string_of_name n =
   Buffer.contents b
 
 let rec string_of_var =
-  let inner = ref false in
+  let inner = ref 0 in
   function
   | SynVar x -> I32.to_string_u x
   | SemVar x ->
-    if !inner then "..." else
-    ( inner := true;
+    if !inner > 3 then "..." else
+    ( incr inner;
       try
         let s = string_of_def_type (def_of x) in
-        inner := false; "(" ^ s ^ ")"
-      with exn -> inner := false; raise exn
+        decr inner; "(" ^ s ^ ")"
+      with exn -> inner := 0; raise exn
     )
 
 and string_of_nullability = function
