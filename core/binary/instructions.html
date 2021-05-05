@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-04-21)</title>
+    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-05-05)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -167,7 +167,7 @@ To avoid any loss in the range of allowed indices, it is treated as a 33 bit sig
 </section>
 <section id="table-instructions">
 <span id="binary-elem-drop"></span><span id="binary-table-init"></span><span id="binary-table-copy"></span><span id="binary-table-fill"></span><span id="binary-table-grow"></span><span id="binary-table-size"></span><span id="binary-table-set"></span><span id="binary-table-get"></span><span id="binary-instr-table"></span><span id="index-5"></span><h2>Table Instructions<a class="headerlink" href="#table-instructions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-table"><span class="std std-ref">Table instructions</span></a> are represented by either single byte or two byte codes.</p>
+<p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-table"><span class="std std-ref">Table instructions</span></a> are represented either by a single byte or a one byte prefix followed by a variable-length <a class="reference internal" href="values.html#binary-uint"><span class="std std-ref">unsigned integer</span></a>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef760#1{{}}\mathdef760{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
