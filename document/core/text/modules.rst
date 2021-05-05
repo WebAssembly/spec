@@ -16,6 +16,8 @@ Modules
 .. _text-funcidx:
 .. _text-tableidx:
 .. _text-memidx:
+.. _text-elemidx:
+.. _text-dataidx:
 .. _text-globalidx:
 .. _text-localidx:
 .. _text-labelidx:
@@ -521,10 +523,10 @@ As an abbreviation, a single instruction may occur in place of the offset of an 
 .. math::
    \begin{array}{llcll}
    \production{element offset} &
-     \Tinstr &\equiv&
+     \text{(}~\Tinstr~\text{)} &\equiv&
      \text{(}~\text{offset}~~\Tinstr~\text{)} \\
    \production{element item} &
-     \Tinstr &\equiv&
+     \text{(}~\Tinstr~\text{)} &\equiv&
      \text{(}~\text{item}~~\Tinstr~\text{)} \\
    \end{array}
 
@@ -594,7 +596,7 @@ As an abbreviation, a single instruction may occur in place of the offset of an 
 .. math::
    \begin{array}{llcll}
    \production{data offset} &
-     \Tinstr &\equiv&
+     \text{(}~\Tinstr~\text{)} &\equiv&
      \text{(}~\text{offset}~~\Tinstr~\text{)}
    \end{array}
 
