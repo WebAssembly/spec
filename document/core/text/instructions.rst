@@ -592,6 +592,6 @@ No explicit :math:`\text{end}` keyword is included, since they only occur in bra
 
 .. math::
    \begin{array}{llclll}
-   \production{expression} & \Texpr &::=&
-     (\X{in}{:}\Tinstr)^\ast &\Rightarrow& \X{in}^\ast~\END \\
+   \production{expression} & \Texpr_I &::=&
+     (\X{in}{:}\Tinstr_I)^\ast &\Rightarrow& \X{in}^\ast~\END \\
    \end{array}
