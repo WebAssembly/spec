@@ -144,6 +144,9 @@ let mutability s =
   | 1 -> Mutable
   | _ -> error s (pos s - 1) "malformed mutability"
 
+let var_type s =
+  SynVar (vu32 s)
+
 let num_type s =
   match vs7 s with
   | -0x01 -> I32Type
@@ -160,8 +163,8 @@ let heap_type s =
   | -0x12l -> AnyHeapType
   | -0x13l -> EqHeapType
   | -0x16l -> I31HeapType
-  | -0x17l -> let n = vu32 s in RttHeapType (SynVar (vs33 s), Some n)
-  | -0x18l -> RttHeapType (SynVar (vs33 s), None)
+  | -0x17l -> let n = vu32 s in RttHeapType (var_type s, Some n)
+  | -0x18l -> RttHeapType (var_type s, None)
   | -0x19l -> DataHeapType
   | i when i >= 0l -> DefHeapType (SynVar i)
   | _ -> error s pos "malformed heap type"
@@ -176,8 +179,8 @@ let ref_type s =
   | -0x14l -> (Nullable, heap_type s)
   | -0x15l -> (NonNullable, heap_type s)
   | -0x16l -> (Nullable, I31HeapType)
-  | -0x17l -> let n = vu32 s in (Nullable, RttHeapType (SynVar (vs33 s), Some n))
-  | -0x18l -> (Nullable, RttHeapType (SynVar (vs33 s), None))
+  | -0x17l -> let n = vu32 s in (Nullable, RttHeapType (var_type s, Some n))
+  | -0x18l -> (Nullable, RttHeapType (var_type s, None))
   | -0x19l -> (Nullable, DataHeapType)
   | _ -> error s pos "malformed reference type"
 
