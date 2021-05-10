@@ -907,7 +907,7 @@ Table Instructions
        (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\TABLEINIT~x~y) \\
        \end{array}
      \\ \qquad
-     (\otherwise, \iff \val = S.\SELEMS[F.\AMODULE.\MIELEMS[x]].\EIELEM[s]) \\
+     (\otherwise, \iff \val = S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM[s]) \\
    \end{array}
 
 
