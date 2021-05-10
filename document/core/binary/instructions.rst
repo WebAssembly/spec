@@ -155,7 +155,7 @@ Variable Instructions
 Table Instructions
 ~~~~~~~~~~~~~~~~~~
 
-:ref:`Table instructions <syntax-instr-table>` are represented by either single byte or two byte codes.
+:ref:`Table instructions <syntax-instr-table>` are represented either by a single byte or a one byte prefix followed by a variable-length :ref:`unsigned integer <binary-uint>`.
 
 .. math::
    \begin{array}{llclll}
