@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Modules &#8212; WebAssembly 1.1 (Draft 2021-05-06)</title>
+    <title>Modules &#8212; WebAssembly 1.1 (Draft 2021-05-10)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -249,7 +249,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \def\mathdef2364#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2364{(}~\def\mathdef2365#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2365{export}~~\href{../text/values.html#text-name}{\mathtt{name}}~~\def\mathdef2366#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2366{(}~\def\mathdef2367#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2367{func}~~\href{../text/values.html#text-id}{\mathtt{id}}'~\def\mathdef2368#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2368{)}~\def\mathdef2369#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2369{)}~~
     \def\mathdef2370#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2370{(}~\def\mathdef2371#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2371{func}~~\href{../text/values.html#text-id}{\mathtt{id}}'~~\dots~\def\mathdef2372#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2372{)}
     \\ &amp; \qquad\qquad
-    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
+    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
 <p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate nohighlight">\(\dots\)</span>” containing another import or export.</p>
 </section>
@@ -273,7 +273,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \def\mathdef2381#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2381{(}~\def\mathdef2382#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2382{table}~~\href{../text/values.html#text-id}{\mathtt{id}}'~~n~~n~~\href{../text/types.html#text-reftype}{\mathtt{reftype}}~\def\mathdef2383#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2383{)}~~
     \def\mathdef2384#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2384{(}~\def\mathdef2385#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2385{elem}~~\def\mathdef2386#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2386{(}~\def\mathdef2387#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2387{table}~~\href{../text/values.html#text-id}{\mathtt{id}}'~\def\mathdef2388#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2388{)}~~\def\mathdef2389#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2389{(}~\def\mathdef2390#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2390{i32.const}~~\def\mathdef2391#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2391{0}~\def\mathdef2392#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2392{)}~~\href{../text/modules.html#text-elemlist}{\mathtt{elemlist}}~\def\mathdef2393#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2393{)}
     \\ &amp; \qquad\qquad
-    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
+    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
@@ -282,7 +282,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \def\mathdef2400#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2400{(}~\def\mathdef2401#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2401{table}~~\href{../text/values.html#text-id}{\mathtt{id}}'~~n~~n~~\href{../text/types.html#text-reftype}{\mathtt{reftype}}~\def\mathdef2402#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2402{)}~~
     \def\mathdef2403#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2403{(}~\def\mathdef2404#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2404{elem}~~\href{../text/values.html#text-id}{\mathtt{id}}'~~\def\mathdef2405#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2405{(}~\def\mathdef2406#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2406{i32.const}~~\def\mathdef2407#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2407{0}~\def\mathdef2408#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2408{)}~~\href{../text/conventions.html#text-vec}{\mathtt{vec}}(\href{../text/instructions.html#text-expr}{\mathtt{expr}})~\def\mathdef2409#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2409{)}
     \\ &amp; \qquad\qquad
-    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
+    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
 <p>Tables can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
 <div class="math notranslate nohighlight">
@@ -294,7 +294,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \def\mathdef2428#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2428{(}~\def\mathdef2429#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2429{export}~~\href{../text/values.html#text-name}{\mathtt{name}}~~\def\mathdef2430#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2430{(}~\def\mathdef2431#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2431{table}~~\href{../text/values.html#text-id}{\mathtt{id}}'~\def\mathdef2432#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2432{)}~\def\mathdef2433#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2433{)}~~
     \def\mathdef2434#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2434{(}~\def\mathdef2435#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2435{table}~~\href{../text/values.html#text-id}{\mathtt{id}}'~~\dots~\def\mathdef2436#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2436{)}
     \\ &amp; \qquad\qquad
-    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
+    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
 <p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate nohighlight">\(\dots\)</span>” containing another import or export or an inline elements segment.</p>
 </section>
@@ -318,7 +318,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \def\mathdef2446#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2446{(}~\def\mathdef2447#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2447{memory}~~\href{../text/values.html#text-id}{\mathtt{id}}'~~m~~m~\def\mathdef2448#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2448{)}~~
     \def\mathdef2449#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2449{(}~\def\mathdef2450#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2450{data}~~\def\mathdef2451#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2451{(}~\def\mathdef2452#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2452{memory}~~\href{../text/values.html#text-id}{\mathtt{id}}'~\def\mathdef2453#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2453{)}~~\def\mathdef2454#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2454{(}~\def\mathdef2455#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2455{i32.const}~~\def\mathdef2456#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2456{0}~\def\mathdef2457#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2457{)}~~\href{../text/modules.html#text-datastring}{\mathtt{datastring}}~\def\mathdef2458#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2458{)}
     \\ &amp; \qquad\qquad
-    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}, m = \mathrm{ceil}(n / 64\mathrm{Ki})) \\
+    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}, m = \mathrm{ceil}(n / 64\mathrm{Ki})) \\
 \end{array}\end{split}\]</div>
 <p>Memories can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
 <div class="math notranslate nohighlight">
@@ -331,7 +331,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \def\mathdef2477#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2477{(}~\def\mathdef2478#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2478{export}~~\href{../text/values.html#text-name}{\mathtt{name}}~~\def\mathdef2479#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2479{(}~\def\mathdef2480#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2480{memory}~~\href{../text/values.html#text-id}{\mathtt{id}}'~\def\mathdef2481#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2481{)}~\def\mathdef2482#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2482{)}~~
     \def\mathdef2483#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2483{(}~\def\mathdef2484#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2484{memory}~~\href{../text/values.html#text-id}{\mathtt{id}}'~~\dots~\def\mathdef2485#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2485{)}
     \\ &amp; \qquad\qquad
-    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
+    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
 <p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate nohighlight">\(\dots\)</span>” containing another import or export or an inline data segment.</p>
 </section>
@@ -358,7 +358,7 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \def\mathdef2507#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2507{(}~\def\mathdef2508#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2508{export}~~\href{../text/values.html#text-name}{\mathtt{name}}~~\def\mathdef2509#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2509{(}~\def\mathdef2510#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2510{global}~~\href{../text/values.html#text-id}{\mathtt{id}}'~\def\mathdef2511#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2511{)}~\def\mathdef2512#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2512{)}~~
     \def\mathdef2513#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2513{(}~\def\mathdef2514#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2514{global}~~\href{../text/values.html#text-id}{\mathtt{id}}'~~\dots~\def\mathdef2515#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2515{)}
     \\ &amp; \qquad\qquad
-    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
+    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
 <p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate nohighlight">\(\dots\)</span>” containing another import or export.</p>
 </section>
