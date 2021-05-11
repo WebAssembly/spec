@@ -322,12 +322,25 @@ Tentatively, support a type of guaranteed unboxed scalars.
 * `ref.is_i31` checks whether a reference is an i31
   - `ref.is_i31 : [anyref] -> [i32]`
 
+* `br_on_non_null <labelidx>` branches if a reference is not null
+  - `br_on_non_null $l : [t0* (ref null ht)] -> [t0*]`
+    - iff `$l : [t0* (ref ht')]`
+    - and `ht <: ht'`
+  - passes operand along with branch, plus possible extra args
+
 * `br_on_func <labelidx>` branches if a reference is a function
   - `br_on_func $l : [t0* t] -> [t0* t]`
     - iff `$l : [t0* t']`
     - and `t <: anyref`
     - and `(ref func) <: t'`
   - passes operand along with branch as a function, plus possible extra args
+
+* `br_on_non_func <labelidx>` branches if a reference is not a function
+  - `br_on_non_func $l : [t0* t] -> [t0* (ref func)]`
+    - iff `$l : [t0* t']`
+    - and `t <: anyref`
+    - and `t <: t'`
+  - passes operand along with branch, plus possible extra args
 
 * `br_on_data <labelidx>` branches if a reference is compound data
   - `br_on_data $l : [t0* t] -> [t0* t]`
@@ -336,12 +349,26 @@ Tentatively, support a type of guaranteed unboxed scalars.
     - and `(ref data) <: t'`
   - passes operand along with branch as data, plus possible extra args
 
+* `br_on_non_data <labelidx>` branches if a reference is not compound data
+  - `br_on_non_data $l : [t0* t] -> [t0* (ref data)]`
+    - iff `$l : [t0* t']`
+    - and `t <: anyref`
+    - and `t <: t'`
+  - passes operand along with branch, plus possible extra args
+
 * `br_on_i31 <labelidx>` branches if a reference is an integer
   - `br_on_i31 $l : [t0* t] -> [t0* t]`
     - iff `$l : [t0* t']`
     - and `t <: anyref`
     - and `(ref i31) <: t'`
   - passes operand along with branch as a scalar, plus possible extra args
+
+* `br_on_non_i31 <labelidx>` branches if a reference is not an integer
+  - `br_on_non_i31 $l : [t0* t] -> [t0* (ref i31)]`
+    - iff `$l : [t0* t']`
+    - and `t <: anyref`
+    - and `t <: t'`
+  - passes operand along with branch, plus possible extra args
 
 * `ref.as_func` converts to a function reference
   - `ref.as_func : [anyref] -> [(ref func)]`
@@ -404,6 +431,14 @@ RTT-based casts can only be performed with respect to concrete types, and requir
     - and `(ref $t') <: t'`
   - branches iff the first operand is not null and its runtime type is a sub-RTT of the RTT operand
   - passes cast operand along with branch, plus possible extra args
+
+* `br_on_cast_fail <labelidx>` branches if a value can not be cast down to a given reference type
+  - `br_on_cast_fail $l : [t0* t (rtt n? $t')] -> [t0* (ref $t')]`
+    - iff `$l : [t0* t]`
+    - and `t <: (ref null data)` or `t <: (ref null func)`
+    - and `(ref $t') <: t'`
+  - branches iff the first operand is null or its runtime type is not a sub-RTT of the RTT operand
+  - passes operand along with branch, plus possible extra args
 
 Note: These instructions allow an operand of unrelated reference type, even though this cannot possibly succeed. The reasoning is the same as for classification instructions.
 
@@ -480,6 +515,7 @@ The opcode for heap types is encoded as an `s33`.
 | Opcode | Type            | Parameters |
 | ------ | --------------- | ---------- |
 | 0xd5   | `ref.eq`        |            |
+| 0xd6   | `br_on_non_null` | |
 | 0xfb01 | `struct.new_with_rtt $t` | `$t : typeidx` |
 | 0xfb02 | `struct.new_default_with_rtt $t` | `$t : typeidx` |
 | 0xfb03 | `struct.get $t i` | `$t : typeidx`, `i : fieldidx` |
@@ -501,6 +537,7 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb40 | `ref.test $t` | `$t : typeidx` |
 | 0xfb41 | `ref.cast $t` | `$t : typeidx` |
 | 0xfb42 | `br_on_cast $l` | `$l : labelidx` |
+| 0xfb43 | `br_on_cast_fail $l` | `$l : labelidx` |
 | 0xfb50 | `ref.is_func` | |
 | 0xfb51 | `ref.is_data` | |
 | 0xfb52 | `ref.is_i31` | |
@@ -510,6 +547,9 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb60 | `br_on_func` | |
 | 0xfb61 | `br_on_data` | |
 | 0xfb62 | `br_on_i31` | |
+| 0xfb63 | `br_on_non_func` | |
+| 0xfb64 | `br_on_non_data` | |
+| 0xfb65 | `br_on_non_i31` | |
 
 
 
