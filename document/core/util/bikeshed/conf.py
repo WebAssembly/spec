@@ -67,7 +67,7 @@ logo = 'static/webassembly.png'
 # built documents.
 #
 # The short X.Y version.
-version = u'1.0'
+version = u'1.1'
 # The full version, including alpha/beta/rc tags.
 release = version + ''
 
@@ -130,7 +130,7 @@ todo_include_todos = True
 # a list of builtin themes.
 #
 html_theme = 'classic'
-html_add_permalinks = ''
+html_permalinks = False
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
