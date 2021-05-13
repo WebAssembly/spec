@@ -69,12 +69,12 @@ main.native:	_tags
 
 # Building library
 
-FILES =		$(shell ls $(DIRS:%=%/*.ml*))
+FILES =		$(shell ls $(DIRS:%=%/*) | grep '[.]ml[^.]*$$')
 PACK =		$(shell echo `echo $(LIB) | sed 's/^\(.\).*$$/\\1/g' | tr [:lower:] [:upper:]``echo $(LIB) | sed 's/^.\(.*\)$$/\\1/g'`)
 
 .INTERMEDIATE:	$(LIB).mlpack
 $(LIB).mlpack:	$(DIRS)
-		ls $(DIRS:%=%/*.ml*) \
+		ls $(FILES) \
 		| sed 's:\(.*/\)\{0,1\}\(.*\)\.[^\.]*:\2:' \
 		| grep -v main \
 		| sort | uniq \

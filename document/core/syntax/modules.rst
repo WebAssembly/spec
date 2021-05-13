@@ -182,12 +182,6 @@ Tables are referenced through :ref:`table indices <syntax-tableidx>`,
 starting with the smallest index not referencing a table :ref:`import <syntax-import>`.
 Most constructs implicitly reference table index :math:`0`.
 
-.. note::
-   In the current version of WebAssembly, at most one table may be defined or imported in a single module,
-   and *all* constructs implicitly reference this table :math:`0`.
-   This restriction may be lifted in future versions.
-
-
 .. index:: ! memory, memory index, memory type, limits, page size, data, import
    pair: abstract syntax; memory
 .. _syntax-mem:
