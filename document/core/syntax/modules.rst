@@ -256,7 +256,7 @@ Each element segment defines an :ref:`reference type <syntax-reftype>` and a cor
 Element segments have a mode that identifies them as either *passive*, *active*, or *declarative*.
 A passive element segment's elements can be copied to a table using the |TABLEINIT| instruction.
 An active element segment copies its elements into a table during :ref:`instantiation <exec-instantiation>`, as specified by a :ref:`table index <syntax-tableidx>` and a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>` defining an offset into that table.
-A declarative element segment is not available at runtime but merely serves to forward-declare references that are formed in code with instructions like :math:`REFFUNC`.
+A declarative element segment is not available at runtime but merely serves to forward-declare references that are formed in code with instructions like :math:`\REFFUNC`.
 
 .. math::
    \begin{array}{llll}
