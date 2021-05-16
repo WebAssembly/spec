@@ -251,7 +251,7 @@ Element Segments
 The initial contents of a table is uninitialized. *Element segments* can be used to initialize a subrange of a table from a static :ref:`vector <syntax-vec>` of elements.
 
 The |MELEMS| component of a module defines a vector of element segments.
-Each element segment defines an :ref:`reference type <syntax-reftype>` and a corresponding list of :ref:`constant <valid-constant>` element :ref:`expressions <syntax-expr>`.
+Each element segment defines a :ref:`reference type <syntax-reftype>` and a corresponding list of :ref:`constant <valid-constant>` element :ref:`expressions <syntax-expr>`.
 
 Element segments have a mode that identifies them as either *passive*, *active*, or *declarative*.
 A passive element segment's elements can be copied to a table using the |TABLEINIT| instruction.
