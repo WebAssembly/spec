@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Modules &#8212; WebAssembly 1.1 (Draft 2021-05-13)</title>
+    <title>Modules &#8212; WebAssembly 1.1 (Draft 2021-05-17)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -221,7 +221,7 @@ starting with the smallest index not referencing a global <a class="reference in
 <span id="syntax-elemmode"></span><span id="syntax-elem"></span><span id="index-7"></span><h2>Element Segments<a class="headerlink" href="#element-segments" title="Permalink to this headline">¶</a></h2>
 <p>The initial contents of a table is uninitialized. <em>Element segments</em> can be used to initialize a subrange of a table from a static <a class="reference internal" href="conventions.html#syntax-vec"><span class="std std-ref">vector</span></a> of elements.</p>
 <p>The <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathsf{elems}}\)</span> component of a module defines a vector of element segments.
-Each element segment defines an <a class="reference internal" href="types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> and a corresponding list of <a class="reference internal" href="../valid/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> element <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expressions</span></a>.</p>
+Each element segment defines a <a class="reference internal" href="types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> and a corresponding list of <a class="reference internal" href="../valid/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> element <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expressions</span></a>.</p>
 <p>Element segments have a mode that identifies them as either <em>passive</em>, <em>active</em>, or <em>declarative</em>.
 A passive element segment’s elements can be copied to a table using the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.init}}\)</span> instruction.
 An active element segment copies its elements into a table during <a class="reference internal" href="../exec/modules.html#exec-instantiation"><span class="std std-ref">instantiation</span></a>, as specified by a <a class="reference internal" href="#syntax-tableidx"><span class="std std-ref">table index</span></a> and a <a class="reference internal" href="../valid/instructions.html#valid-constant"><span class="std std-ref">constant</span></a> <a class="reference internal" href="instructions.html#syntax-expr"><span class="std std-ref">expression</span></a> defining an offset into that table.
