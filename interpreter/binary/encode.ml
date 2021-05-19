@@ -185,6 +185,7 @@ struct
     | BrIf x -> op 0x0d; var x
     | BrTable (xs, x) -> op 0x0e; vec var xs; var x
     | BrOnNull x -> op 0xd4; var x
+    | BrOnNonNull x -> op 0xd6; var x
     | Return -> op 0x0f
     | Call x -> op 0x10; var x
     | CallRef -> op 0x14

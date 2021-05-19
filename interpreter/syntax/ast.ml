@@ -88,6 +88,7 @@ and instr' =
   | BrIf of idx                       (* conditional break *)
   | BrTable of idx list * idx         (* indexed break *)
   | BrOnNull of idx                   (* break on null *)
+  | BrOnNonNull of idx                (* break on non-null *)
   | Return                            (* break from function body *)
   | Call of idx                       (* call function *)
   | CallRef                           (* call function through reference *)

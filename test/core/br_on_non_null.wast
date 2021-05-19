@@ -2,16 +2,20 @@
   (type $t (func (result i32)))
 
   (func $nn (param $r (ref $t)) (result i32)
-    (block $l
-      (return (call_ref (br_on_null $l (local.get $r))))
+    (call_ref
+      (block $l (result (ref $t))
+        (br_on_non_null $l (local.get $r))
+        (return (i32.const -1))
+      )
     )
-    (i32.const -1)
   )
   (func $n (param $r (ref null $t)) (result i32)
-    (block $l
-      (return (call_ref (br_on_null $l (local.get $r))))
+    (call_ref
+      (block $l (result (ref $t))
+        (br_on_non_null $l (local.get $r))
+        (return (i32.const -1))
+      )
     )
-    (i32.const -1)
   )
 
   (elem func $f)
@@ -37,9 +41,9 @@
 
 (module
   (type $t (func))
-  (func (param $r (ref null $t)) (drop (br_on_null 0 (local.get $r))))
-  (func (param $r (ref null func)) (drop (br_on_null 0 (local.get $r))))
-  (func (param $r (ref null extern)) (drop (br_on_null 0 (local.get $r))))
+  (func (param $r (ref null $t)) (drop (block (result (ref $t)) (br_on_non_null 0 (local.get $r)) (unreachable))))
+  (func (param $r (ref null func)) (drop (block (result (ref func)) (br_on_non_null 0 (local.get $r)) (unreachable))))
+  (func (param $r (ref null extern)) (drop (block (result (ref extern)) (br_on_non_null 0 (local.get $r)) (unreachable))))
 )
 
 
@@ -49,8 +53,10 @@
   (func $f (param i32) (result i32) (i32.mul (local.get 0) (local.get 0)))
 
   (func $a (param $n i32) (param $r (ref null $t)) (result i32)
-    (block $l (result i32)
-      (return (call_ref (br_on_null $l (local.get $n) (local.get $r))))
+    (call_ref
+      (block $l (result i32 (ref $t))
+        (return (br_on_non_null $l (local.get $n) (local.get $r)))
+      )
     )
   )
 

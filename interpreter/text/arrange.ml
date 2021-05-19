@@ -250,6 +250,7 @@ let rec instr e =
     | BrTable (xs, x) ->
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
     | BrOnNull x -> "br_on_null " ^ var x, []
+    | BrOnNonNull x -> "br_on_non_null " ^ var x, []
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallRef -> "call_ref", []

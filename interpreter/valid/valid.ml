@@ -353,6 +353,18 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     (label c x @ [RefType (Nullable, t)]) -->
       (label c x @ [RefType (NonNullable, t)])
 
+  | BrOnNonNull x ->
+    let (_, ht) as rt = peek_ref 0 s e.at in
+    let t' = RefType (NonNullable, ht) in
+    require (label c x <> []) e.at
+      ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
+       " but label has " ^ string_of_result_type (label c x));
+    let ts0, t = Lib.List.split_last (label c x) in
+    require (match_value_type c.types [] t' t) e.at
+      ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
+       " but label has " ^ string_of_result_type (label c x));
+    (ts0 @ [RefType rt]) --> ts0
+
   | Return ->
     c.results -->... []
 

@@ -210,7 +210,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token NUM_TYPE FUNCREF EXTERNREF REF EXTERN NULL MUT
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP LET
-%token BR BR_IF BR_TABLE BR_ON_NULL
+%token BR BR_IF BR_TABLE BR_ON_NULL BR_ON_NON_NULL
 %token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF FUNC_BIND
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
@@ -398,6 +398,7 @@ plain_instr :
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
   | BR_ON_NULL var { fun c -> br_on_null ($2 c label) }
+  | BR_ON_NON_NULL var { fun c -> br_on_non_null ($2 c label) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF { fun c -> call_ref }

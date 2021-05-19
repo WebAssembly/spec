@@ -500,6 +500,8 @@ let rec instr s =
   | 0xd2 -> ref_func (at var s)
   | 0xd3 -> ref_as_non_null
   | 0xd4 -> br_on_null (at var s)
+  | 0xd5 as b -> illegal s pos b
+  | 0xd6 -> br_on_non_null (at var s)
 
   | 0xfc as b ->
     (match vu32 s with
