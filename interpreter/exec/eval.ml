@@ -260,6 +260,14 @@ let rec step (c : config) : config =
           Crash.error e.at "wrong reference type"
         )
 
+      | BrCastFail (x, NullOp), Ref r :: vs' ->
+        (match r with
+        | NullRef _ ->
+          vs', []
+        | _ ->
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        )
+
       | Return, vs ->
         [], [Returning vs @@ e.at]
 

@@ -539,6 +539,7 @@ let rec instr s =
   | 0xd3 -> ref_as_non_null
   | 0xd4 -> br_on_null (at var s)
   | 0xd5 -> ref_eq
+  | 0xd6 -> br_on_non_null (at var s)
 
   | 0xfb as b ->
     (match vu32 s with

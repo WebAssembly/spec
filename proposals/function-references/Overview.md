@@ -36,7 +36,7 @@ Note: In a Wasm engine, function references (whether first-class or as table ent
 
 * Add an instruction `ref.as_non_null` that converts a nullable reference to a non-nullable one or traps if null
 
-* Add an instruction `br_on_null` that converts a nullable reference to a non-nullable one or branches if null
+* Add an instruction `br_on_null` that converts a nullable reference to a non-nullable one or branches if null, as well as the inverted `br_on_non_null`
 
 * Add an instruction `call_ref` for calling a function through a `ref $t`
 
@@ -228,11 +228,17 @@ The following rules, now defined in terms of heap types, replace and extend the 
     - iff `ht ok`
   - traps on `null`
 
-* `br_on_null $l` checks for null and branches
+* `br_on_null $l` checks for null and branches if present
   - `br_on_null $l : [t* (ref null ht)] -> [t* (ref ht)]`
     - iff `$l : [t*]`
     - and `ht ok`
   - branches to `$l` on `null`, otherwise returns operand as non-null
+
+* `br_on_non_null $l` checks for null and branches if not present
+  - `br_on_non_null $l : [t* (ref null ht)] -> [t*]`
+    - iff `$l : [t* (ref ht)]`
+    - and `ht ok`
+  - branches to `$l` if operand is not `null`, passing the operand itself under non-null type (along with potential additional operands)
 
 * Note: `ref.is_null` already exists via the [reference types proposal](https://github.com/WebAssembly/reference-types)
 
@@ -299,6 +305,7 @@ The opcode for heap types is encoded as an `s33`.
 | 0x17   | `let <bt> <locals>`      | `bt : blocktype, locals : (as in functions)` |
 | 0xd3   | `ref.as_non_null`        |            |
 | 0xd4   | `br_on_null $l`          | `$l : u32` |
+| 0xd6   | `br_on_non_null $l`      | `$l : u32` |
 
 ### Tables
 

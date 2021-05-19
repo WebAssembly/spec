@@ -251,6 +251,7 @@ rule token = parse
   | "br_on_data" { BR_CAST br_on_data }
   | "br_on_func" { BR_CAST br_on_func }
   | "br_on_cast" { BR_CAST br_on_cast }
+  | "br_on_non_null" { BR_CAST_FAIL br_on_non_null }
   | "return" { RETURN }
   | "if" { IF }
   | "then" { THEN }

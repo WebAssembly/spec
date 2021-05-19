@@ -290,10 +290,9 @@ Other instructions are checked in a similar manner.
          let rt = pop_ref()
          if (rt.heap =/= Bot)
            error_if(not is_def(rt.heap))
-           let t1*->t2* = lookup_def(rt.heap.def)  // TODO
-           pop_vals(t1*)
-           push_vals(t2*)
-
+           let ft = lookup_func_type(rt.heap.idx)  // TODO
+           pop_vals(ft.params)
+           push_vals(ft.results)
 
 .. note::
    It is an invariant under the current WebAssembly instruction set that an operand of :code:`Unknown` type is never duplicated on the stack.

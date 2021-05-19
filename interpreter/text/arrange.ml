@@ -275,6 +275,8 @@ let rec instr e =
     | BrCast (x, DataOp) -> "br_on_data " ^ var x, []
     | BrCast (x, FuncOp) -> "br_on_func " ^ var x, []
     | BrCast (x, RttOp) -> "br_on_cast " ^ var x, []
+    | BrCastFail (x, NullOp) -> "br_on_non_null " ^ var x, []
+    | BrCastFail (x, _) -> assert false
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallRef -> "call_ref", []

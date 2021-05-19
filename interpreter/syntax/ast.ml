@@ -91,6 +91,7 @@ and instr' =
   | BrIf of idx                       (* conditional break *)
   | BrTable of idx list * idx         (* indexed break *)
   | BrCast of idx * reftypeop         (* break on type *)
+  | BrCastFail of idx * reftypeop     (* break on type inverted *)
   | Return                            (* break from function body *)
   | Call of idx                       (* call function *)
   | CallRef                           (* call function through reference *)

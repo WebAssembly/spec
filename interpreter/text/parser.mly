@@ -220,7 +220,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token MUT FIELD STRUCT ARRAY
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP LET
-%token BR BR_IF BR_TABLE BR_CAST
+%token BR BR_IF BR_TABLE BR_CAST BR_CAST_FAIL
 %token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF FUNC_BIND
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
@@ -250,7 +250,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<Types.num_type> NUM_TYPE
 %token<Types.pack_size> PACKED_TYPE
 %token<Ast.instr'> REF_TEST REF_CAST
-%token<Ast.idx -> Ast.instr'> BR_CAST
+%token<Ast.idx -> Ast.instr'> BR_CAST BR_CAST_FAIL
 %token<Ast.instr'> I31_GET
 %token<Ast.idx -> Ast.idx -> Ast.instr'> STRUCT_GET
 %token<Ast.idx -> Ast.instr'> ARRAY_GET
@@ -465,6 +465,7 @@ plain_instr :
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
   | BR_CAST var { fun c -> $1 ($2 c label) }
+  | BR_CAST_FAIL var { fun c -> $1 ($2 c label) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF { fun c -> call_ref }

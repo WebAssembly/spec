@@ -124,7 +124,7 @@ let rec instr (e : instr) =
   | Let (bt, ts, es) ->
     let free = block_type bt ++ block es in
     {free with locals = Lib.Fun.repeat (List.length ts) shift free.locals}
-  | Br x | BrIf x | BrCast (x, _) -> labels (idx x)
+  | Br x | BrIf x | BrCast (x, _) | BrCastFail (x, _) -> labels (idx x)
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
   | Return | CallRef | ReturnCallRef -> empty
   | Call x -> funcs (idx x)

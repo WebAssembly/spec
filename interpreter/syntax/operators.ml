@@ -29,6 +29,7 @@ let br_on_i31 x = BrCast (x, I31Op)
 let br_on_data x = BrCast (x, DataOp)
 let br_on_func x = BrCast (x, FuncOp)
 let br_on_cast x = BrCast (x, RttOp)
+let br_on_non_null x = BrCastFail (x, NullOp)
 
 let return = Return
 let call x = Call x
