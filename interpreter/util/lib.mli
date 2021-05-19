@@ -20,6 +20,7 @@ sig
   val drop : int -> 'a list -> 'a list (* raises Failure *)
   val split : int -> 'a list -> 'a list * 'a list (* raises Failure *)
 
+  val lead : 'a list -> 'a list (* raises Failure *)
   val last : 'a list -> 'a (* raises Failure *)
   val split_last : 'a list -> 'a list * 'a (* raises Failure *)
 

@@ -402,6 +402,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
   | BrCast (x, RttOp) ->
     let rtt, ht = peek_rtt 0 s e.at in
     let t = peek 1 s in
+    let t' = RefType (NonNullable, ht) in
     require
       ( match_value_type c.types [] t (RefType (Nullable, DataHeapType)) ||
         match_value_type c.types [] t (RefType (Nullable, FuncHeapType)) ) e.at
@@ -409,11 +410,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
        " but stack has " ^ string_of_result_type [t; RefType rtt]);
     require
       ( label c x <> [] &&
-        match_value_type c.types []
-          (RefType (NonNullable, ht)) (List.hd (label c x)) ) e.at
-      ("type mismatch: instruction requires type " ^ string_of_value_type t ^
+        match_value_type c.types [] t' (Lib.List.last (label c x)) ) e.at
+      ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
        " but label has " ^ string_of_result_type (label c x));
-    let ts0 = List.tl (label c x) in
+    let ts0 = Lib.List.lead (label c x) in
     (ts0 @ [t; RefType rtt]) --> (ts0 @ [t])
 
   | BrCast (x, NullOp) ->
@@ -431,26 +431,56 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
        " but stack has " ^ string_of_value_type (peek 0 s));
     require
       ( label c x <> [] &&
-        match_value_type c.types [] t' (List.hd (label c x)) ) e.at
+        match_value_type c.types [] t' (Lib.List.last (label c x)) ) e.at
       ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
        " but label has " ^ string_of_result_type (label c x));
-    let ts0 = List.tl (label c x) in
+    let ts0 = Lib.List.lead (label c x) in
     (ts0 @ [RefType rt]) --> (ts0 @ [RefType rt])
+
+  | BrCastFail (x, RttOp) ->
+    let rtt, ht = peek_rtt 0 s e.at in
+    let t = peek 1 s in
+    let t' = RefType (NonNullable, ht) in
+    require
+      ( match_value_type c.types [] t (RefType (Nullable, DataHeapType)) ||
+        match_value_type c.types [] t (RefType (Nullable, FuncHeapType)) ) e.at
+      ("type mismatch: instruction requires data or function reference type" ^
+       " but stack has " ^ string_of_result_type [t; RefType rtt]);
+    require
+      ( label c x <> [] &&
+        match_value_type c.types [] t (Lib.List.last (label c x)) ) e.at
+      ("type mismatch: instruction requires type " ^ string_of_value_type t ^
+       " but label has " ^ string_of_result_type (label c x));
+    let ts0 = Lib.List.lead (label c x) in
+    (ts0 @ [t; RefType rtt]) --> (ts0 @ [t'])
 
   | BrCastFail (x, NullOp) ->
     let (_, ht) as rt = peek_ref 0 s e.at in
     let t' = RefType (NonNullable, ht) in
-    require (label c x <> []) e.at
+    require
+      ( label c x <> [] &&
+        match_value_type c.types [] t' (Lib.List.last (label c x)) ) e.at
       ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
        " but label has " ^ string_of_result_type (label c x));
-    let ts0, t = Lib.List.split_last (label c x) in
-    require (match_value_type c.types [] t' t) e.at
-      ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
-       " but label has " ^ string_of_result_type (label c x));
+    let ts0 = Lib.List.lead (label c x) in
     (ts0 @ [RefType rt]) --> ts0
 
   | BrCastFail (x, reftypeop) ->
-    assert false
+    let (_, ht) as rt = peek_ref 0 s e.at in
+    let t = RefType rt in
+    let t' = RefType (NonNullable, type_reftypeop reftypeop ht) in
+    require
+      (match_value_type c.types [] (peek 0 s) (RefType (Nullable, AnyHeapType))) e.at
+      ("type mismatch: instruction requires type " ^
+        string_of_value_type (RefType (Nullable, AnyHeapType)) ^
+       " but stack has " ^ string_of_value_type (peek 0 s));
+    require
+      ( label c x <> [] &&
+        match_value_type c.types [] t (Lib.List.last (label c x)) ) e.at
+      ("type mismatch: instruction requires type " ^ string_of_value_type t ^
+       " but label has " ^ string_of_result_type (label c x));
+    let ts0 = Lib.List.lead (label c x) in
+    (ts0 @ [RefType rt]) --> (ts0 @ [t'])
 
   | Return ->
     c.results -->... []

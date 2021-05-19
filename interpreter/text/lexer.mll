@@ -252,6 +252,10 @@ rule token = parse
   | "br_on_func" { BR_CAST br_on_func }
   | "br_on_cast" { BR_CAST br_on_cast }
   | "br_on_non_null" { BR_CAST_FAIL br_on_non_null }
+  | "br_on_non_i31" { BR_CAST_FAIL br_on_non_i31 }
+  | "br_on_non_data" { BR_CAST_FAIL br_on_non_data }
+  | "br_on_non_func" { BR_CAST_FAIL br_on_non_func }
+  | "br_on_cast_fail" { BR_CAST_FAIL br_on_cast_fail }
   | "return" { RETURN }
   | "if" { IF }
   | "then" { THEN }

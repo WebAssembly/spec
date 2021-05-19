@@ -568,6 +568,7 @@ let rec instr s =
     | 0x40l -> ref_test
     | 0x41l -> ref_cast
     | 0x42l -> br_on_cast (at var s)
+    | 0x43l -> br_on_cast_fail (at var s)
 
     | 0x50l -> ref_is_func
     | 0x51l -> ref_is_data
@@ -579,6 +580,9 @@ let rec instr s =
     | 0x60l -> br_on_func (at var s)
     | 0x61l -> br_on_data (at var s)
     | 0x62l -> br_on_i31 (at var s)
+    | 0x63l -> br_on_non_func (at var s)
+    | 0x64l -> br_on_non_data (at var s)
+    | 0x65l -> br_on_non_i31 (at var s)
 
     | n -> illegal2 s pos b n
     )

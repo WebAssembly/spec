@@ -87,6 +87,11 @@ struct
     | n, y::ys' when n > 0 -> split' (n - 1) (y::xs) ys'
     | _ -> failwith "split"
 
+  let rec lead = function
+    | x::[] -> []
+    | x::xs -> x :: lead xs
+    | [] -> failwith "last"
+
   let rec last = function
     | x::[] -> x
     | _::xs -> last xs

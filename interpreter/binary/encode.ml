@@ -216,7 +216,10 @@ struct
     | BrCast (x, FuncOp) -> op 0xfb; op 0x60; var x
     | BrCast (x, RttOp) -> op 0xfb; op 0x42; var x
     | BrCastFail (x, NullOp) -> op 0xd6; var x
-    | BrCastFail (x, _) -> assert false
+    | BrCastFail (x, I31Op) -> op 0xfb; op 0x65; var x
+    | BrCastFail (x, DataOp) -> op 0xfb; op 0x64; var x
+    | BrCastFail (x, FuncOp) -> op 0xfb; op 0x63; var x
+    | BrCastFail (x, RttOp) -> op 0xfb; op 0x43; var x
     | Return -> op 0x0f
     | Call x -> op 0x10; var x
     | CallRef -> op 0x14

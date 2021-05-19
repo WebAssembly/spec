@@ -322,12 +322,6 @@ Tentatively, support a type of guaranteed unboxed scalars.
 * `ref.is_i31` checks whether a reference is an i31
   - `ref.is_i31 : [anyref] -> [i32]`
 
-* `br_on_non_null <labelidx>` branches if a reference is not null
-  - `br_on_non_null $l : [t0* (ref null ht)] -> [t0*]`
-    - iff `$l : [t0* (ref ht')]`
-    - and `ht <: ht'`
-  - passes operand along with branch, plus possible extra args
-
 * `br_on_func <labelidx>` branches if a reference is a function
   - `br_on_func $l : [t0* t] -> [t0* t]`
     - iff `$l : [t0* t']`
@@ -385,7 +379,7 @@ Tentatively, support a type of guaranteed unboxed scalars.
   - traps if reference is not an integer
   - equivalent to `(block $l (param anyref) (result i31ref) (br_on_i31 $l) (unreachable))`
 
-Note: The [reference types](https://github.com/WebAssembly/reference-types) and [typed function references](https://github.com/WebAssembly/function-references)already introduce similar `ref.is_null` and `br_on_null` instructions.
+Note: The [reference types](https://github.com/WebAssembly/reference-types) and [typed function references](https://github.com/WebAssembly/function-references)already introduce similar `ref.is_null`, `br_on_null`, and `br_on_non_null` instructions.
 
 Note: There are no instructions to check for `externref`, since that can consist of a diverse set of different object representations that would be costly to check for exhaustively.
 
@@ -434,9 +428,9 @@ RTT-based casts can only be performed with respect to concrete types, and requir
 
 * `br_on_cast_fail <labelidx>` branches if a value can not be cast down to a given reference type
   - `br_on_cast_fail $l : [t0* t (rtt n? $t')] -> [t0* (ref $t')]`
-    - iff `$l : [t0* t]`
+    - iff `$l : [t0* t']`
     - and `t <: (ref null data)` or `t <: (ref null func)`
-    - and `(ref $t') <: t'`
+    - and `t <: t'`
   - branches iff the first operand is null or its runtime type is not a sub-RTT of the RTT operand
   - passes operand along with branch, plus possible extra args
 

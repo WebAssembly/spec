@@ -268,6 +268,47 @@ let rec step (c : config) : config =
           Ref r :: vs', [Plain (Br x) @@ e.at]
         )
 
+      | BrCastFail (x, I31Op), Ref r :: vs' ->
+        (match r with
+        | I31.I31Ref _ ->
+          Ref r :: vs', []
+        | _ ->
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        )
+
+      | BrCastFail (x, DataOp), Ref r :: vs' ->
+        (match r with
+        | Data.DataRef _ ->
+          Ref r :: vs', []
+        | _ ->
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        )
+
+      | BrCastFail (x, FuncOp), Ref r :: vs' ->
+        (match r with
+        | FuncRef _ ->
+          Ref r :: vs', []
+        | _ ->
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        )
+
+      | BrCastFail (x, RttOp), Ref (NullRef _) :: vs' ->
+        vs', [Trapping "null RTT reference" @@ e.at]
+
+      | BrCastFail (x, RttOp), Ref (Rtt.RttRef rtt) :: Ref r :: vs' ->
+        (match r with
+        | NullRef _ ->
+          Ref r :: vs', []
+        | Data.DataRef d when Rtt.match_rtt (Data.read_rtt d) rtt ->
+          Ref r :: vs', []
+        | FuncRef f when Rtt.match_rtt (Func.read_rtt f) rtt ->
+          Ref r :: vs', []
+        | Data.DataRef _ | FuncRef _ ->
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        | _ ->
+          Crash.error e.at "wrong reference type"
+        )
+
       | Return, vs ->
         [], [Returning vs @@ e.at]
 
