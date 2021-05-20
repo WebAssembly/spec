@@ -135,6 +135,9 @@ let sized f s =
 
 open Types
 
+let zero s = expect 0x00 s "zero byte expected"
+let var s = vu32 s
+
 let num_type s =
   match vs7 s with
   | -0x01 -> I32Type
@@ -189,17 +192,17 @@ let global_type s =
   let mut = mutability s in
   GlobalType (t, mut)
 
+let event_type s =
+  zero s; at var s
+
 
 (* Decode instructions *)
 
 open Ast
 open Operators
 
-let var s = vu32 s
-
 let op s = u8 s
 let end_ s = expect 0x0b s "END opcode expected"
-let zero s = expect 0x00 s "zero byte expected"
 
 let memop s =
   let align = vu32 s in
@@ -527,6 +530,7 @@ let id s =
     | 10 -> `CodeSection
     | 11 -> `DataSection
     | 12 -> `DataCountSection
+    | 13 -> `EventSection
     | _ -> error s (pos s) "malformed section id"
     ) bo
 
@@ -555,6 +559,7 @@ let import_desc s =
   | 0x01 -> TableImport (table_type s)
   | 0x02 -> MemoryImport (memory_type s)
   | 0x03 -> GlobalImport (global_type s)
+  | 0x04 -> EventImport (event_type s)
   | _ -> error s (pos s - 1) "malformed import kind"
 
 let import s =
@@ -592,6 +597,14 @@ let memory s =
 let memory_section s =
   section `MemorySection (vec (at memory)) [] s
 
+(* Event section *)
+
+let event s =
+  let etype = event_type s in
+  {etype}
+
+let event_section s =
+  section `EventSection (vec (at event)) [] s
 
 (* Global section *)
 
@@ -612,6 +625,7 @@ let export_desc s =
   | 0x01 -> TableExport (at var s)
   | 0x02 -> MemoryExport (at var s)
   | 0x03 -> GlobalExport (at var s)
+  | 0x04 -> EventExport (at var s)
   | _ -> error s (pos s - 1) "malformed export kind"
 
 let export s =
@@ -787,6 +801,8 @@ let module_ s =
   iterate custom_section s;
   let memories = memory_section s in
   iterate custom_section s;
+  let events = event_section s in
+  iterate custom_section s;
   let globals = global_section s in
   iterate custom_section s;
   let exports = export_section s in
@@ -812,7 +828,8 @@ let module_ s =
   let funcs =
     List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
       func_types func_bodies
-  in {types; tables; memories; globals; funcs; imports; exports; elems; datas; start}
+  in {types; tables; memories; events; globals; funcs; imports; exports; elems;
+      datas; start}
 
 
 let decode name bs = at module_ (stream name bs)

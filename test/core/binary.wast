@@ -45,7 +45,7 @@
 (assert_malformed (module binary "\00asm\00\00\00\01") "unknown binary version")
 
 ;; Invalid section id.
-(assert_malformed (module binary "\00asm" "\01\00\00\00" "\0d\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\0e\00") "malformed section id")
 (assert_malformed (module binary "\00asm" "\01\00\00\00" "\7f\00") "malformed section id")
 (assert_malformed (module binary "\00asm" "\01\00\00\00" "\80\00\01\00") "malformed section id")
 (assert_malformed (module binary "\00asm" "\01\00\00\00" "\81\00\01\00") "malformed section id")
@@ -1284,7 +1284,7 @@
       "\02\04\01"                           ;; import section with single entry
       "\00"                                 ;; string length 0
       "\00"                                 ;; string length 0
-      "\04"                                 ;; malformed import kind
+      "\05"                                 ;; malformed import kind
   )
   "malformed import kind"
 )
@@ -1294,7 +1294,7 @@
       "\02\05\01"                           ;; import section with single entry
       "\00"                                 ;; string length 0
       "\00"                                 ;; string length 0
-      "\04"                                 ;; malformed import kind
+      "\05"                                 ;; malformed import kind
       "\00"                                 ;; dummy byte
   )
   "malformed import kind"

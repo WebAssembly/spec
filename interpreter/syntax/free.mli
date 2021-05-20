@@ -6,6 +6,7 @@ type t =
   globals : Set.t;
   tables : Set.t;
   memories : Set.t;
+  events : Set.t;
   funcs : Set.t;
   elems : Set.t;
   datas : Set.t;
@@ -25,6 +26,7 @@ val global : Ast.global -> t
 val func : Ast.func -> t
 val table : Ast.table -> t
 val memory : Ast.memory -> t
+val event : Ast.event -> t
 val elem : Ast.elem_segment -> t
 val data : Ast.data_segment -> t
 val export : Ast.export -> t

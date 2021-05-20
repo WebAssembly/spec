@@ -357,6 +357,7 @@ rule token = parse
   | "global" { GLOBAL }
   | "table" { TABLE }
   | "memory" { MEMORY }
+  | "event" { EVENT }
   | "elem" { ELEM }
   | "data" { DATA }
   | "declare" { DECLARE }

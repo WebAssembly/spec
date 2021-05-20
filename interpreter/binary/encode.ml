@@ -90,6 +90,9 @@ let encode m =
     (* Types *)
 
     open Types
+    open Source
+
+    let var x = vu32 x.it
 
     let num_type = function
       | I32Type -> vs7 (-0x01)
@@ -118,6 +121,8 @@ let encode m =
     let memory_type = function
       | MemoryType lim -> limits vu32 lim
 
+    let event_type x = vu32 0x00l; var x
+
     let mutability = function
       | Immutable -> u8 0
       | Mutable -> u8 1
@@ -127,7 +132,6 @@ let encode m =
 
     (* Expressions *)
 
-    open Source
     open Ast
     open Values
 
@@ -135,8 +139,6 @@ let encode m =
     let end_ () = op 0x0b
 
     let memop {align; offset; _} = vu32 (Int32.of_int align); vu32 offset
-
-    let var x = vu32 x.it
 
     let block_type = function
       | VarBlockType x -> vs33 x.it
@@ -426,6 +428,7 @@ let encode m =
       | TableImport t -> u8 0x01; table_type t
       | MemoryImport t -> u8 0x02; memory_type t
       | GlobalImport t -> u8 0x03; global_type t
+      | EventImport t -> u8 0x04; event_type t
 
     let import im =
       let {module_name; item_name; idesc} = im.it in
@@ -456,6 +459,12 @@ let encode m =
     let memory_section mems =
       section 5 (vec memory) mems (mems <> [])
 
+    (* Event section *)
+    let event (e : event) = u8 0x00; var e.it.etype
+
+    let event_section es =
+      section 13 (vec event) es (es <> [])
+
     (* Global section *)
     let global g =
       let {gtype; ginit} = g.it in
@@ -471,6 +480,7 @@ let encode m =
       | TableExport x -> u8 1; var x
       | MemoryExport x -> u8 2; var x
       | GlobalExport x -> u8 3; var x
+      | EventExport x -> u8 4; var x
 
     let export ex =
       let {name = n; edesc} = ex.it in
@@ -579,6 +589,7 @@ let encode m =
       func_section m.it.funcs;
       table_section m.it.tables;
       memory_section m.it.memories;
+      event_section m.it.events;
       global_section m.it.globals;
       export_section m.it.exports;
       start_section m.it.start;

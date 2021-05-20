@@ -16,6 +16,10 @@
   (memory (export "memory-2-inf") 2)
   ;; Multiple memories are not yet supported
   ;; (memory (export "memory-2-4") 2 4)
+  (event (export "event"))
+  (event $event-i32 (param i32))
+  (export "event-i32" (event $event-i32))
+  (event (export "event-f32") (param f32))
 )
 
 (register "test")
@@ -42,6 +46,9 @@
   (func $print_i32-2 (import "spectest" "print_i32") (param i32))
   (func $print_f64-2 (import "spectest" "print_f64") (param f64))
   (import "test" "func-i64->i64" (func $i64->i64 (param i64) (result i64)))
+
+  (event (import "test" "event-i32") (param i32))
+  (import "test" "event-f32" (event (param f32)))
 
   (func (export "p1") (import "spectest" "print_i32") (param i32))
   (func $p (export "p2") (import "spectest" "print_i32") (param i32))
@@ -192,6 +199,10 @@
   "incompatible import type"
 )
 (assert_unlinkable
+  (module (import "test" "event" (func)))
+  "incompatible import type"
+)
+(assert_unlinkable
   (module (import "spectest" "global_i32" (func)))
   "incompatible import type"
 )
@@ -201,6 +212,27 @@
 )
 (assert_unlinkable
   (module (import "spectest" "memory" (func)))
+  "incompatible import type"
+)
+
+(assert_unlinkable
+  (module (event (import "test" "unknown")))
+  "unknown import"
+)
+(assert_unlinkable
+  (module (event (import "test" "event") (param f32)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (event (import "test" "event-i32")))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (event (import "test" "event-i32") (param f32)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (event (import "test" "func-i32") (param f32)))
   "incompatible import type"
 )
 

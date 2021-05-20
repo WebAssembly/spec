@@ -6,6 +6,7 @@ type module_inst =
   funcs : func_inst list;
   tables : table_inst list;
   memories : memory_inst list;
+  events : event_inst list;
   globals : global_inst list;
   exports : export_inst list;
   elems : elem_inst list;
@@ -15,6 +16,7 @@ type module_inst =
 and func_inst = module_inst ref Func.t
 and table_inst = Table.t
 and memory_inst = Memory.t
+and event_inst = Event.t
 and global_inst = Global.t
 and export_inst = Ast.name * extern
 and elem_inst = Values.ref_ list ref
@@ -24,6 +26,7 @@ and extern =
   | ExternFunc of func_inst
   | ExternTable of table_inst
   | ExternMemory of memory_inst
+  | ExternEvent of event_inst
   | ExternGlobal of global_inst
 
 
@@ -47,14 +50,15 @@ let () =
 (* Auxiliary functions *)
 
 let empty_module_inst =
-  { types = []; funcs = []; tables = []; memories = []; globals = [];
-    exports = []; elems = []; datas = [] }
+  { types = []; funcs = []; tables = []; memories = []; events = [];
+    globals = []; exports = []; elems = []; datas = [] }
 
 let extern_type_of = function
   | ExternFunc func -> ExternFuncType (Func.type_of func)
   | ExternTable tab -> ExternTableType (Table.type_of tab)
   | ExternMemory mem -> ExternMemoryType (Memory.type_of mem)
   | ExternGlobal glob -> ExternGlobalType (Global.type_of glob)
+  | ExternEvent event -> ExternEventType (Event.type_of event)
 
 let export inst name =
   try Some (List.assoc name inst.exports) with Not_found -> None

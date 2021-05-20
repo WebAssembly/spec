@@ -359,12 +359,23 @@ let data i seg =
   Node ("data $" ^ nat i, segment_mode "memory" dmode @ break_bytes dinit)
 
 
+(* Events *)
+
+let event_with_name name (e : event) =
+  Node ("event" ^ name,
+    [Node ("type " ^ var (e.it.etype), [])]
+  )
+
+let event_with_index off i e =
+  event_with_name (" $" ^ nat (off + i)) e
+
+
 (* Modules *)
 
 let typedef i ty =
   Node ("type $" ^ nat i, [struct_type ty.it])
 
-let import_desc fx tx mx gx d =
+let import_desc fx tx mx ex gx d =
   match d.it with
   | FuncImport x ->
     incr fx; Node ("func $" ^ nat (!fx - 1), [Node ("type", [atom var x])])
@@ -374,11 +385,13 @@ let import_desc fx tx mx gx d =
     incr mx; memory 0 (!mx - 1) ({mtype = t} @@ d.at)
   | GlobalImport t ->
     incr gx; Node ("global $" ^ nat (!gx - 1), [global_type t])
+  | EventImport x ->
+    incr ex; Node ("event $" ^ nat (!ex - 1), [Node ("type", [atom var x])])
 
-let import fx tx mx gx im =
+let import fx tx mx ex gx im =
   let {module_name; item_name; idesc} = im.it in
   Node ("import",
-    [atom name module_name; atom name item_name; import_desc fx tx mx gx idesc]
+    [atom name module_name; atom name item_name; import_desc fx tx mx ex gx idesc]
   )
 
 let export_desc d =
@@ -386,6 +399,7 @@ let export_desc d =
   | FuncExport x -> Node ("func", [atom var x])
   | TableExport x -> Node ("table", [atom var x])
   | MemoryExport x -> Node ("memory", [atom var x])
+  | EventExport x -> Node ("event", [atom var x])
   | GlobalExport x -> Node ("global", [atom var x])
 
 let export ex =
@@ -407,13 +421,15 @@ let module_with_var_opt x_opt m =
   let fx = ref 0 in
   let tx = ref 0 in
   let mx = ref 0 in
+  let ex = ref 0 in
   let gx = ref 0 in
-  let imports = list (import fx tx mx gx) m.it.imports in
+  let imports = list (import fx tx mx ex gx) m.it.imports in
   Node ("module" ^ var_opt x_opt,
     listi typedef m.it.types @
     imports @
     listi (table !tx) m.it.tables @
     listi (memory !mx) m.it.memories @
+    listi (event_with_index !ex) m.it.events @
     listi (global !gx) m.it.globals @
     listi (func_with_index !fx) m.it.funcs @
     list export m.it.exports @
