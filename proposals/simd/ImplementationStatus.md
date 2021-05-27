@@ -245,4 +245,4 @@
 
 [4] Only in 1.12.* (development branch). Requires (case-insensitive) flag `-wasmsimd`
 
-[5] Firefox x64/x86 SSE4.1+ only, enabled in Nightly, disabled in other channels, control in about:config under `javascript.options.wasm_simd`
+[5] Firefox x64/x86 (SSE4.1+ only) from FF89, ARM64 from FF90. Earlier versions control in about:config under `javascript.options.wasm_simd`
