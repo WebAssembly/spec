@@ -329,7 +329,7 @@ INSTRUCTIONS = [
     Instruction(r'\ELEMDROP~x', r'\hex{FC}~\hex{0D}', r'[] \to []', r'valid-elem.drop', r'exec-elem.drop'),
     Instruction(r'\TABLECOPY~x~y', r'\hex{FC}~\hex{0E}', r'[\I32~\I32~\I32] \to []', r'valid-table.copy', r'exec-table.copy'),
     Instruction(r'\TABLEGROW~x', r'\hex{FC}~\hex{0F}', r'[t~\I32] \to []', r'valid-table.grow', r'exec-table.grow'),
-    Instruction(r'\TABLESIZE~x', r'\hex{FC}~\hex{10}', r'[] \to []', r'valid-table.size', r'exec-table.size'),
+    Instruction(r'\TABLESIZE~x', r'\hex{FC}~\hex{10}', r'[] \to [\I32]', r'valid-table.size', r'exec-table.size'),
     Instruction(r'\TABLEFILL~x', r'\hex{FC}~\hex{11}', r'[\I32~t~\I32] \to []', r'valid-table.fill', r'exec-table.fill'),
 ]
 
