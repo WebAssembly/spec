@@ -110,7 +110,22 @@ same results when given the same inputs.
 
 ## Instructions
 
-> This is a placeholder for instructions that this proposal adds.
+### Relaxed swizzle
+
+- `relaxed i8x16.swizzle(a : v128, s : v128) -> v128`
+
+`relaxed i8x16.swizzle(a, s)` selects lanes from `a` using indices in `s`, indices in the range `[0,15]` will select the `i`-th element of `a`, the result for any out of range indices is implementation-defined (i.e. if the index is `[16-255]`.
+
+```python
+def relaxed_i8x16_swizzle(a, s):
+    result = []
+    for i in range(16):
+        if s[i] < 16:
+            result[i] = a[s[i]]
+        else:
+            result[i] = UNDEFINED
+    return result
+```
 
 ## Binary format
 
