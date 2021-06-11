@@ -121,8 +121,9 @@ end
 A try-catch block contains zero or more `catch` blocks and zero or one
 `catch_all` block. All `catch` blocks must precede the `catch_all` block, if
 any. The `catch`/`catch_all` instructions (within the try construct) are called
-the _catching_ instructions. There should be at least one `catch` or `catch_all`
-block within a try-catch block.
+the _catching_ instructions. There may not be any `catch` or `catch_all` blocks
+after a `try`, in which case the whole `try` block is effectively a regular
+block.
 
 The _body_ of the try block is the list of instructions before the first
 catching instruction. The _body_ of each catch block is the sequence of
@@ -411,7 +412,6 @@ The following rules are added to *instructions*:
   throw (exception except_index) |
   rethrow label |
 ```
-(In the first rule, there should be at least one `catch` or `catch_all` block.)
 
 Like the `block`, `loop`, and `if` instructions, the `try` instruction is
 *structured* control flow instruction, and can be labeled. This allows branch
