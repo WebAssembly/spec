@@ -36,8 +36,8 @@ succeeding instructions to process the data.
 A WebAssembly exception is created when you throw it with the `throw`
 instruction. Thrown exceptions are handled as follows:
 
-1. They can be caught by one of `catch`/`catch_all`/`unwind` blocks in an
-   enclosing try block of a function body.
+1. They can be caught by one of `catch`/`catch_all` blocks in an enclosing try
+   block of a function body.
 
 1. Throws not caught within a function body continue up the call stack, popping
    call frames, until an enclosing try block is found.
@@ -59,8 +59,8 @@ may send values back to the suspended instruction, allowing the originating code
 to resume.
 
 Exceptions are a special case of an event in that they never resume. Similarly,
-a `throw` instruction is the suspending event of an exception. The catch or
-unwind block associated with a try block defines how to handle the throw.
+a `throw` instruction is the suspending event of an exception. The catch block
+associated with a try block defines how to handle the throw.
 
 WebAssembly events (i.e. exceptions) are defined by a new `event` section of a
 WebAssembly module. The event section is a list of declared events associated
@@ -152,32 +152,6 @@ exception is thrown, or the exception is successfully caught by the catch block.
 Because `try` and `end` instructions define a control-flow block, they can be
 targets for branches (`br` and `br_if`) as well.
 
-### Try-unwind blocks
-
-Try blocks can also be used with the `unwind` instruction. A try-unwind block
-contains an `unwind` block with the following form:
-
-```
-try blocktype
-  instruction*
-unwind
-  instruction*
-end
-```
-
-The `unwind` block is meant to contain cleanup instructions, such as
-destructors, in case any instruction in the corresponding try block throws. In
-case an exception is caught by the `unwind` block, it becomes the catching
-block.
-
-The `end` instruction at the end of `unwind` block is special that it
-automatically rethrows the current exception.
-
-When the program runs `br` within `unwind` block, the rest of the `unwind` block
-will not run and the program control will branch to the destination, as in
-normal blocks. Because we don't reach `end` of `unwind` block, rethrowing does
-not happen.
-
 ### Throwing an exception
 
 The `throw` instruction takes an exception index as an immediate argument. That
@@ -203,8 +177,8 @@ flushed, the embedder defines how to handle uncaught exceptions. Otherwise, the
 found enclosing try block is the catching try block.
 
 A throw inside the body of a catch block is never caught by the corresponding
-try block of the catch/unwind block, since instructions in the body of the
-catch/unwind block are not in the body of the try block.
+try block of the catch block, since instructions in the body of the catch block
+are not in the body of the try block.
 
 Once a catching try block is found for the thrown exception, the operand stack
 is popped back to the size the operand stack had when the try block was entered
@@ -225,23 +199,16 @@ a `catch_all` block, the exception is rethrown.
 If control is transferred to the body of a catch block, and the last instruction
 in the body is executed, control then exits the try block.
 
-In case of a try-unwind block, if an exception is thrown within the try block,
-the program control is transfered to the body of `unwind` block. After executing
-instructions within the `unwind` block, the exception is automatically rethrown
-when the control reaches the `end` instruction. As in the case of the
-`catch_all` block, the exception arguments are not copied onto the operand
-stack.
-
-If the selected catch/unwind block does not throw an exception, it must yield
-the value(s) expected by the corresponding catching try block.
+If the selected catch block does not throw an exception, it must yield the
+value(s) specified by the type annotation on the corresponding catching try
+block.
 
 Note that a caught exception can be rethrown using the `rethrow` instruction.
 
 ### Rethrowing an exception
 
-The `rethrow` instruction can only appear in the body of a
-catch/catch_all/unwind block. It always re-throws the exception caught by an
-enclosing catch block.
+The `rethrow` instruction can only appear in the body of a catch/catch_all
+block. It always re-throws the exception caught by an enclosing catch block.
 
 Associated with the `rethrow` instruction is a _label_. The label is used to
 disambiguate which exception is to be rethrown, when inside nested catch blocks.
@@ -298,21 +265,6 @@ end
 The `rethrow` here references `try $l2`, but the `rethrow` is not within its
 `catch` block.
 
-Also, the `rethrow` instruction cannot rethrow an exception caught
-by an unwind block. For example:
-```
-try $l1
-unwind
-  try $l2
-  catch
-    try $l3
-    unwind
-      rethrow label ;; only $l2 is valid
-    end
-  end
-end
-```
-
 ### Try-delegate blocks
 
 Try blocks can also be used with the `delegate` instruction. A try-delegate
@@ -327,8 +279,8 @@ delegate label
 The `delegate` clause does not have an associated body, so try-delegate blocks
 don't have an `end` instruction at the end. The `delegate` instruction takes a
 label defined by a construct in which they are enclosed, and delegates exception
-handling to a catch/unwind block specified by the label. For example, consider
-this code:
+handling to a catch block specified by the label. For example, consider this
+code:
 
 ```
 try $l1
@@ -374,10 +326,10 @@ uncaught exceptions. However, the details of this are left to the embedder.
 
 #### Traps
 
-The `catch`/`catch_all`/`unwind` instruction catches exceptions generated by the
-`throw` instruction, but does not catch traps. The rationale for this is that in
-general traps are not locally recoverable and are not needed to be handled in
-local scopes like try-catch.
+The `catch`/`catch_all` instruction catches exceptions generated by the `throw`
+instruction, but does not catch traps. The rationale for this is that in general
+traps are not locally recoverable and are not needed to be handled in local
+scopes like try-catch.
 
 The `catch` instruction catches foreign exceptions generated from calls to
 function imports as well, including JavaScript exceptions, with a few
@@ -407,7 +359,6 @@ The following rules are added to *instructions*:
 
 ```
   try blocktype instruction* (catch instruction*)* (catch_all instruction*)? end |
-  try blocktype instruction* unwind instruction* end |
   try blocktype instruction* delegate label |
   throw (exception except_index) |
   rethrow label |
@@ -564,7 +515,6 @@ throws, and rethrows as follows:
 | `try` | `0x06` | sig : `blocktype` | begins a block which can handle thrown exceptions |
 | `catch` | `0x07` | index : `varint32` | begins the catch block of the try block |
 | `catch_all` | `0x19` | | begins the catch_all block of the try block |
-| `unwind` | `0x0a` | | begins the unwind block of the try block |
 | `delegate` | `0x18` | relative_depth : `varuint32` | begins the delegate block of the try block |
 | `throw` | `0x08` | index : `varint32` | Creates an exception defined by the exception `index`and then throws it |
 | `rethrow` | `0x09` | relative_depth : `varuint32` | Pops the `exnref` on top of the stack and throws it |
