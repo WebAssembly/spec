@@ -401,7 +401,7 @@ Each tag type has the fields:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `attribute` | `varuint32` | The attribute of a tag. |
+| `attribute` | `uint8` | The attribute of a tag. |
 | `type` | `varuint32` | The type index for its corresponding type signature |
 
 ##### external_kind
