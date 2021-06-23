@@ -57,6 +57,10 @@
   (module (func) (memory 0) (export "a" (func 0)) (export "a" (memory 0)))
   "duplicate export name"
 )
+(assert_invalid
+  (module (event $e0 (export "e0")) (event $e1 (export "e0")))
+  "duplicate export name"
+)
 
 
 ;; Globals

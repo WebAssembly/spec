@@ -279,6 +279,18 @@ let rec instr e =
     | Unary op -> unop op, []
     | Binary op -> binop op, []
     | Convert op -> cvtop op, []
+    | TryCatch (bt, es, ct, ca) ->
+      let catch (tag, es) = Node ("catch " ^ var tag, list instr es) in
+      let catch_all = match ca with
+        | Some es -> [Node ("catch_all", list instr es)]
+        | None -> [] in
+      let handler = list catch ct @ catch_all in
+      "try", block_type bt @ [Node ("do", list instr es)] @ handler
+    | TryDelegate (bt, es, x) ->
+      let delegate = [Node ("delegate " ^ var x, [])] in
+      "try", block_type bt @ [Node ("do", list instr es)] @ delegate
+    | Throw x -> "throw " ^ var x, []
+    | Rethrow x -> "rethrow " ^ var x, []
   in Node (head, inner)
 
 let const head c =
@@ -538,6 +550,8 @@ let assertion mode ass =
     [Node ("assert_return", action mode act :: List.map (result mode) results)]
   | AssertTrap (act, re) ->
     [Node ("assert_trap", [action mode act; Atom (string re)])]
+  | AssertUncaughtException act ->
+    [Node ("assert_exception", [action mode act])]
   | AssertExhaustion (act, re) ->
     [Node ("assert_exhaustion", [action mode act; Atom (string re)])]
 

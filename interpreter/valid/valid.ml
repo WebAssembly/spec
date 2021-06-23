@@ -402,6 +402,11 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
     let t1, t2 = type_cvtop e.at cvtop in
     [NumType t1] --> [NumType t2]
 
+  | TryCatch _ -> [] --> [] (* TODO *)
+  | TryDelegate _ -> [] --> [] (* TODO *)
+  | Throw _ -> [] --> [] (* TODO *)
+  | Rethrow _ -> [] --> [] (* TODO *)
+
 and check_seq (c : context) (s : infer_stack_type) (es : instr list)
   : infer_stack_type =
   match es with

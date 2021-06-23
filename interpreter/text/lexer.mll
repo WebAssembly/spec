@@ -348,6 +348,14 @@ rule token = parse
   | "i32.reinterpret_f32" { CONVERT i32_reinterpret_f32 }
   | "i64.reinterpret_f64" { CONVERT i64_reinterpret_f64 }
 
+  | "try" { TRY }
+  | "do" { DO }
+  | "catch" { CATCH }
+  | "catch_all" { CATCH_ALL }
+  | "delegate" { DELEGATE }
+  | "throw" { THROW }
+  | "rethrow" { RETHROW }
+
   | "type" { TYPE }
   | "func" { FUNC }
   | "start" { START }
@@ -379,6 +387,7 @@ rule token = parse
   | "assert_unlinkable" { ASSERT_UNLINKABLE }
   | "assert_return" { ASSERT_RETURN }
   | "assert_trap" { ASSERT_TRAP }
+  | "assert_exception" { ASSERT_EXCEPTION }
   | "assert_exhaustion" { ASSERT_EXHAUSTION }
   | "nan:canonical" { NAN Script.CanonicalNan }
   | "nan:arithmetic" { NAN Script.ArithmeticNan }

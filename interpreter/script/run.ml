@@ -458,6 +458,8 @@ let run_assertion ass =
     | _ -> Assert.error ass.at "expected runtime error"
     )
 
+  | AssertUncaughtException act -> () (* TODO *)
+
   | AssertExhaustion (act, re) ->
     trace ("Asserting exhaustion...");
     (match run_action act with

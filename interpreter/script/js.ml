@@ -135,6 +135,11 @@ function assert_trap(action) {
   throw new Error("Wasm trap expected");
 }
 
+function assert_exception(action) {
+  try { action() } catch (e) { return; }
+  throw new Error("exception expected");
+}
+
 let StackOverflow;
 try { (function f() { 1 + f() })() } catch (e) { StackOverflow = e.constructor }
 
@@ -508,6 +513,8 @@ let of_assertion mods ass =
     of_assertion' mods act "assert_trap" [] None
   | AssertExhaustion (act, _) ->
     of_assertion' mods act "assert_exhaustion" [] None
+  | AssertUncaughtException act ->
+    of_assertion' mods act "assert_exception" [] None
 
 let of_command mods cmd =
   "\n// " ^ Filename.basename cmd.at.left.file ^

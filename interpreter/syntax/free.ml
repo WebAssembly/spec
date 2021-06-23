@@ -87,6 +87,15 @@ let rec instr (e : instr) =
     memories zero
   | MemoryInit x -> memories zero ++ datas (var x)
   | DataDrop x -> datas (var x)
+  | TryCatch (bt, es, ct, ca) ->
+    let catch (tag, es) = events (var tag) ++ block es in
+    let catch_all = function
+      | None -> empty
+      | Some es -> block es in
+    block es ++ (list catch ct) ++ catch_all ca
+  | TryDelegate (bt, es, x) -> block es ++ events (var x)
+  | Throw x ->  events (var x)
+  | Rethrow x ->  labels (var x)
 
 and block (es : instr list) =
   let free = list instr es in {free with labels = shift free.labels}

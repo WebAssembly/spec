@@ -112,6 +112,8 @@ let func_type (c : context) x =
   try (Lib.List32.nth c.types.list x.it).it
   with Failure _ -> error x.at ("unknown type " ^ Int32.to_string x.it)
 
+let handlers (c : context) h =
+  List.map (fun (l, i) -> (l c event, i c)) h
 
 let anon category space n =
   let i = space.count in
@@ -179,7 +181,8 @@ let inline_type_explicit (c : context) x ft at =
 %token NAT INT FLOAT STRING VAR
 %token NUM_TYPE FUNCREF EXTERNREF EXTERN MUT
 %token UNREACHABLE NOP DROP SELECT
-%token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE
+%token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE TRY DO CATCH CATCH_ALL
+%token DELEGATE
 %token CALL CALL_INDIRECT RETURN
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
@@ -188,12 +191,13 @@ let inline_type_explicit (c : context) x ft at =
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token REF_NULL REF_FUNC REF_EXTERN REF_IS_NULL
+%token THROW RETHROW
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY EVENT DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
-%token ASSERT_RETURN ASSERT_TRAP ASSERT_EXHAUSTION
+%token ASSERT_RETURN ASSERT_TRAP ASSERT_EXCEPTION ASSERT_EXHAUSTION
 %token NAN
 %token INPUT OUTPUT
 %token EOF
@@ -358,6 +362,8 @@ plain_instr :
       br_table xs x }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
+  | THROW var { fun c -> throw ($2 c event) }
+  | RETHROW var { fun c -> rethrow ($2 c label)  }
   | LOCAL_GET var { fun c -> local_get ($2 c local) }
   | LOCAL_SET var { fun c -> local_set ($2 c local) }
   | LOCAL_TEE var { fun c -> local_tee ($2 c local) }
@@ -397,7 +403,6 @@ plain_instr :
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
-
 
 select_instr :
   | SELECT select_instr_results
@@ -495,6 +500,12 @@ block_instr :
   | IF labeling_opt block ELSE labeling_end_opt instr_list END labeling_end_opt
     { fun c -> let c' = $2 c ($5 @ $8) in
       let ts, es1 = $3 c' in if_ ts es1 ($6 c') }
+  | TRY labeling_opt block handler_instr
+    { fun c -> let c' = $2 c [] in
+      let ts, es = $3 c' in  $4 ts es c' }
+  | TRY labeling_opt block DELEGATE var
+    { fun c -> let c' = $2 c [] in
+      let ts, es = $3 c' in try_delegate ts es ($5 c label) }
 
 block :
   | type_use block_param_body
@@ -524,6 +535,44 @@ block_result_body :
     { let FuncType (ins, out) = fst $5 in
       FuncType (ins, $3 @ out), snd $5 }
 
+handler_instr :
+  | catch_list_instr END
+    { fun bt es c -> try_catch bt es (handlers c $1) None }
+  | catch_list_instr catch_all END
+    { fun bt es c -> try_catch bt es (handlers c $1) (Some ($2 c)) }
+  | catch_all END
+    { fun bt es c -> try_catch bt es [] (Some ($1 c)) }
+  | END { fun bt es c -> try_catch bt es [] None }
+
+catch_list_instr :
+  | catch catch_list_instr { $1 :: $2 }
+  | catch { [$1] }
+
+handler :
+  | catch_list
+      { fun bt es _ c' ->
+        let cs = (List.map (fun (l, i) -> (l c' event, i c')) $1) in
+        try_catch bt es cs None }
+  | catch_list LPAR catch_all RPAR
+    { fun bt es _ c' ->
+      let cs = (List.map (fun (l, i) -> (l c' event, i c')) $1) in
+      try_catch bt es cs (Some ($3 c')) }
+  | LPAR catch_all RPAR
+    { fun bt es _ c' -> try_catch bt es [] (Some ($2 c')) }
+  | LPAR DELEGATE var RPAR
+    { fun bt es c _ -> try_delegate bt es ($3 c label) }
+  | /* empty */ { fun bt es c _ -> try_catch bt es [] None }
+
+catch_list :
+  | catch_list LPAR catch RPAR { $1 @ [$3] }
+  | LPAR catch RPAR { [$2] }
+
+catch :
+  | CATCH var instr_list { ($2, $3) }
+
+catch_all :
+  | CATCH_ALL instr_list { $2 }
+
 
 expr :  /* Sugar */
   | LPAR expr1 RPAR
@@ -545,6 +594,8 @@ expr1 :  /* Sugar */
   | IF labeling_opt if_block
     { fun c -> let c' = $2 c [] in
       let bt, (es, es1, es2) = $3 c c' in es, if_ bt es1 es2 }
+  | TRY labeling_opt try_block
+    { fun c -> let c' = $2 c [] in [], $3 c c' }
 
 select_expr_results :
   | LPAR RESULT value_type_list RPAR select_expr_results
@@ -613,6 +664,38 @@ if_ :
     { fun c c' -> [], $3 c', $7 c' }
   | LPAR THEN instr_list RPAR  /* Sugar */
     { fun c c' -> [], $3 c', [] }
+
+try_block :
+  | type_use try_block_param_body
+    { let at = at () in
+      fun c c' ->
+      let bt = VarBlockType (inline_type_explicit c' ($1 c' type_) (fst $2) at) in
+      snd $2 bt c c' }
+  | try_block_param_body  /* Sugar */
+    { let at = at () in
+      fun c c' ->
+      let bt =
+        match fst $1 with
+        | FuncType ([], []) -> ValBlockType None
+        | FuncType ([], [t]) -> ValBlockType (Some t)
+        | ft ->  VarBlockType (inline_type c' ft at)
+      in snd $1 bt c c' }
+
+try_block_param_body :
+  | try_block_result_body { $1 }
+  | LPAR PARAM value_type_list RPAR try_block_param_body
+    { let FuncType (ins, out) = fst $5 in
+      FuncType ($3 @ ins, out), snd $5 }
+
+try_block_result_body :
+  | try_ { FuncType ([], []), $1 }
+  | LPAR RESULT value_type_list RPAR try_block_result_body
+    { let FuncType (ins, out) = fst $5 in
+      FuncType (ins, $3 @ out), snd $5 }
+
+try_ :
+  | LPAR DO instr_list RPAR handler
+    { fun bt c c' -> $5 bt ($3 c') c c' }
 
 instr_list :
   | /* empty */ { fun c -> [] }
@@ -1085,6 +1168,8 @@ assertion :
     { AssertUninstantiable (snd $3, $4) @@ at () }
   | LPAR ASSERT_RETURN action result_list RPAR { AssertReturn ($3, $4) @@ at () }
   | LPAR ASSERT_TRAP action STRING RPAR { AssertTrap ($3, $4) @@ at () }
+  | LPAR ASSERT_EXCEPTION action RPAR
+    { AssertUncaughtException $3 @@ at () }
   | LPAR ASSERT_EXHAUSTION action STRING RPAR { AssertExhaustion ($3, $4) @@ at () }
 
 cmd :
