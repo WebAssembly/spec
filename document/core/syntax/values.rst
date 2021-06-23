@@ -133,7 +133,7 @@ where :math:`M = \significand(N)` and :math:`E = \exponent(N)` with
 A *canonical NaN* is a floating-point value :math:`\pm\NAN(\canon_N)` where :math:`\canon_N` is a payload whose most significant bit is :math:`1` while all others are :math:`0`:
 
 .. math::
-   \canon_N = 2^{\significand(N)-1}
+   \canon_N = 2^{\significand(N)}-1
 
 An *arithmetic NaN*  is a floating-point value :math:`\pm\NAN(n)` with :math:`n \geq \canon_N`, such that the most significant bit is :math:`1` while all others are arbitrary.
 
