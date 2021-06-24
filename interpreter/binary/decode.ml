@@ -148,15 +148,19 @@ let num_type s =
 
 let heap_type s =
   let pos = pos s in
-  match vs33 s with
-  | -0x10l -> FuncHeapType
-  | -0x11l -> ExternHeapType
-  | i when i >= 0l -> DefHeapType (SynVar i)
-  | _ -> error s pos "malformed heap type"
+  if peek s land 0xc0 = 0x40 then
+    match vs7 s with
+    | -0x10l -> FuncHeapType
+    | -0x11l -> ExternHeapType
+    | _ -> error s pos "malformed heap type"
+  else
+    match vs33 s with
+    | i when i >= 0l -> DefHeapType (SynVar i)
+    | _ -> error s pos "malformed heap type"
 
 let ref_type s =
   let pos = pos s in
-  match vs33 s with
+  match vs7 s with
   | -0x10l -> (Nullable, FuncHeapType)
   | -0x11l -> (Nullable, ExternHeapType)
   | -0x14l -> (Nullable, heap_type s)

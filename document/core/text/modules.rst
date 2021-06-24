@@ -72,8 +72,8 @@ Type definitions can bind a symbolic :ref:`type identifier <text-id>`.
 
 .. math::
    \begin{array}{llclll}
-   \production{type definition} & \Ttype &::=&
-     \text{(}~\text{type}~~\Tid^?~~\X{ft}{:}\Tfunctype~\text{)}
+   \production{type definition} & \Ttype_I &::=&
+     \text{(}~\text{type}~~\Tid^?~~\X{ft}{:}\Tfunctype_I~\text{)}
        &\Rightarrow& \X{ft} \\
    \end{array}
 
@@ -167,11 +167,11 @@ The descriptors in imports can bind a symbolic function, table, memory, or globa
    \production{import description} & \Timportdesc_I &::=&
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~\text{)}
        &\Rightarrow& \IDFUNC~x \\ &&|&
-     \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype~\text{)}
+     \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype_I~\text{)}
        &\Rightarrow& \IDTABLE~\X{tt} \\ &&|&
-     \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype~\text{)}
+     \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype_I~\text{)}
        &\Rightarrow& \IDMEM~~\X{mt} \\ &&|&
-     \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype~\text{)}
+     \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype_I~\text{)}
        &\Rightarrow& \IDGLOBAL~\X{gt} \\
    \end{array}
 
@@ -198,11 +198,11 @@ Function definitions can bind a symbolic :ref:`function identifier <text-id>`, a
    \begin{array}{llclll}
    \production{function} & \Tfunc_I &::=&
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~~
-     (t{:}\Tlocal)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)} \\ &&& \qquad
+     (t{:}\Tlocal_I)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)} \\ &&& \qquad
        \Rightarrow\quad \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\X{in}^\ast~\END \} \\ &&& \qquad\qquad\qquad
        (\iff I'' = I' \compose \{\ILOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\[1ex]
-   \production{local} & \Tlocal &::=&
-     \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype~\text{)}
+   \production{local} & \Tlocal_I &::=&
+     \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype_I~\text{)}
        \quad\Rightarrow\quad t \\
    \end{array}
 
@@ -265,7 +265,7 @@ Table definitions can bind a symbolic :ref:`table identifier <text-id>`.
 .. math::
    \begin{array}{llclll}
    \production{table} & \Ttable_I &::=&
-     \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype~\text{)}
+     \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype_I~\text{)}
        &\Rightarrow& \{ \TTYPE~\X{tt} \} \\
    \end{array}
 
@@ -334,7 +334,7 @@ Memory definitions can bind a symbolic :ref:`memory identifier <text-id>`.
 .. math::
    \begin{array}{llclll}
    \production{memory} & \Tmem_I &::=&
-     \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype~\text{)}
+     \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype_I~\text{)}
        &\Rightarrow& \{ \MTYPE~\X{mt} \} \\
    \end{array}
 
@@ -394,7 +394,7 @@ Global definitions can bind a symbolic :ref:`global identifier <text-id>`.
 .. math::
    \begin{array}{llclll}
    \production{global} & \Tglobal_I &::=&
-     \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype~~e{:}\Texpr_I~\text{)}
+     \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype_I~~e{:}\Texpr_I~\text{)}
        &\Rightarrow& \{ \GTYPE~\X{gt}, \GINIT~e \} \\
    \end{array}
 
@@ -505,7 +505,7 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
      \text{(}~\text{elem}~~\Tid^?~~\text{declare}~~(et, y^\ast){:}\Telemlist_I~\text{)} \\ &&& \qquad
        \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EDECLARATIVE \} \\
    \production{element list} & \Telemlist_I &::=&
-     t{:}\Treftype~~y^\ast{:}\Tvec(\Telemexpr_I) \qquad\Rightarrow\quad ( \ETYPE~t, \EINIT~y^\ast ) \\
+     t{:}\Treftype_I~~y^\ast{:}\Tvec(\Telemexpr_I) \qquad\Rightarrow\quad ( \ETYPE~t, \EINIT~y^\ast ) \\
    \production{element expression} & \Telemexpr_I &::=&
      \text{(}~\text{item}~~e{:}\Texpr_I~\text{)}
        \quad\Rightarrow\quad e \\
@@ -641,7 +641,7 @@ The name serves a documentary role only.
    \production{module field} & \Tmodulefield_I &
    \begin{array}[t]{@{}clll}
    ::=&
-     \X{ty}{:}\Ttype &\Rightarrow& \{\MTYPES~\X{ty}\} \\ |&
+     \X{ty}{:}\Ttype_I &\Rightarrow& \{\MTYPES~\X{ty}\} \\ |&
      \X{im}{:}\Timport_I &\Rightarrow& \{\MIMPORTS~\X{im}\} \\ |&
      \X{fn}{:}\Tfunc_I &\Rightarrow& \{\MFUNCS~\X{fn}\} \\ |&
      \X{ta}{:}\Ttable_I &\Rightarrow& \{\MTABLES~\X{ta}\} \\ |&

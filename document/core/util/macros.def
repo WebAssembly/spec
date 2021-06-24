@@ -179,8 +179,12 @@
 .. |F32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32}}
 .. |F64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64}}
 
-.. |FUNCREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{funcref}}
-.. |EXTERNREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{externref}}
+.. |REF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{ref}}
+.. |NULL| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{null}}
+.. |FUNC| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{func}}
+.. |EXTERN| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{extern}}
+.. |FUNCREF| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{funcref}}
+.. |EXTERNREF| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{externref}}
 
 .. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
 .. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{const}}
@@ -197,6 +201,7 @@
 .. Types, non-terminals
 
 .. |numtype| mathdef:: \xref{syntax/types}{syntax-numtype}{\X{numtype}}
+.. |heaptype| mathdef:: \xref{syntax/types}{syntax-heaptype}{\X{heaptype}}
 .. |reftype| mathdef:: \xref{syntax/types}{syntax-reftype}{\X{reftype}}
 .. |valtype| mathdef:: \xref{syntax/types}{syntax-valtype}{\X{valtype}}
 .. |resulttype| mathdef:: \xref{syntax/types}{syntax-resulttype}{\X{resulttype}}
@@ -307,7 +312,7 @@
 .. Modules, non-terminals
 
 .. |module| mathdef:: \xref{syntax/modules}{syntax-module}{\X{module}}
-.. |type| mathdef:: \xref{syntax/modules}{syntax-typedef}{\X{type}}
+.. |type| mathdef:: \xref{syntax/types}{syntax-functype}{\X{type}}
 .. |func| mathdef:: \xref{syntax/modules}{syntax-func}{\X{func}}
 .. |table| mathdef:: \xref{syntax/modules}{syntax-table}{\X{table}}
 .. |mem| mathdef:: \xref{syntax/modules}{syntax-mem}{\X{mem}}
@@ -500,6 +505,7 @@
 .. Types, non-terminals
 
 .. |Bnumtype| mathdef:: \xref{binary/types}{binary-numtype}{\B{numtype}}
+.. |Bheaptype| mathdef:: \xref{binary/types}{binary-heaptype}{\B{heaptype}}
 .. |Breftype| mathdef:: \xref{binary/types}{binary-reftype}{\B{reftype}}
 .. |Bvaltype| mathdef:: \xref{binary/types}{binary-valtype}{\B{valtype}}
 .. |Bresulttype| mathdef:: \xref{binary/types}{binary-resulttype}{\B{resulttype}}
@@ -661,8 +667,8 @@
 .. Types, non-terminals
 
 .. |Tnumtype| mathdef:: \xref{text/types}{text-numtype}{\T{numtype}}
-.. |Treftype| mathdef:: \xref{text/types}{text-reftype}{\T{reftype}}
 .. |Theaptype| mathdef:: \xref{text/types}{text-heaptype}{\T{heaptype}}
+.. |Treftype| mathdef:: \xref{text/types}{text-reftype}{\T{reftype}}
 .. |Tvaltype| mathdef:: \xref{text/types}{text-valtype}{\T{valtype}}
 .. |Tfunctype| mathdef:: \xref{text/types}{text-functype}{\T{functype}}
 
@@ -774,8 +780,11 @@
 .. |ok| mathdef:: \mathrel{\mbox{ok}}
 .. |const| mathdef:: \xref{valid/instructions}{valid-constant}{\mathrel{\mbox{const}}}
 
+.. |matchesheaptype| mathdef:: \xref{valid/types}{match-heaptype}{\leq}
+.. |matchesreftype| mathdef:: \xref{valid/types}{match-reftype}{\leq}
 .. |matchesvaltype| mathdef:: \xref{valid/types}{match-valtype}{\leq}
 .. |matchesresulttype| mathdef:: \xref{valid/types}{match-resulttype}{\leq}
+.. |matchesfunctype| mathdef:: \xref{valid/types}{match-functype}{\leq}
 
 
 .. Contexts
@@ -795,6 +804,11 @@
 
 .. Judgments
 
+.. |vdashnumtype| mathdef:: \xref{valid/types}{valid-numtype}{\vdash}
+.. |vdashheaptype| mathdef:: \xref{valid/types}{valid-heaptype}{\vdash}
+.. |vdashreftype| mathdef:: \xref{valid/types}{valid-reftype}{\vdash}
+.. |vdashvaltype| mathdef:: \xref{valid/types}{valid-valtype}{\vdash}
+.. |vdashresulttype| mathdef:: \xref{valid/types}{valid-resulttype}{\vdash}
 .. |vdashlimits| mathdef:: \xref{valid/types}{valid-limits}{\vdash}
 .. |vdashblocktype| mathdef:: \xref{valid/types}{valid-blocktype}{\vdash}
 .. |vdashfunctype| mathdef:: \xref{valid/types}{valid-functype}{\vdash}
@@ -804,9 +818,11 @@
 .. |vdashexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\vdash}
 
 .. |vdashnumtypematch| mathdef:: \xref{valid/types}{match-numtype}{\vdash}
+.. |vdashheaptypematch| mathdef:: \xref{valid/types}{match-heaptype}{\vdash}
 .. |vdashreftypematch| mathdef:: \xref{valid/types}{match-reftype}{\vdash}
 .. |vdashvaltypematch| mathdef:: \xref{valid/types}{match-valtype}{\vdash}
 .. |vdashresulttypematch| mathdef:: \xref{valid/types}{match-resulttype}{\vdash}
+.. |vdashfunctypematch| mathdef:: \xref{valid/types}{match-functype}{\vdash}
 
 .. |vdashinstr| mathdef:: \xref{valid/instructions}{valid-instr}{\vdash}
 .. |vdashinstrseq| mathdef:: \xref{valid/instructions}{valid-instr-seq}{\vdash}
@@ -814,6 +830,7 @@
 .. |vdashexprconst| mathdef:: \xref{valid/instructions}{valid-constant}{\vdash}
 .. |vdashinstrconst| mathdef:: \xref{valid/instructions}{valid-constant}{\vdash}
 
+.. |vdashtypes| mathdef:: \xref{valid/modules}{valid-types}{\vdash}
 .. |vdashfunc| mathdef:: \xref{valid/modules}{valid-func}{\vdash}
 .. |vdashtable| mathdef:: \xref{valid/modules}{valid-table}{\vdash}
 .. |vdashmem| mathdef:: \xref{valid/modules}{valid-mem}{\vdash}

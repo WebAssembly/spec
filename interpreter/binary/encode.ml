@@ -108,10 +108,10 @@ struct
     | BotHeapType -> assert false
 
   let ref_type = function
-    | (Nullable, FuncHeapType) -> vs32 (-0x10l)
-    | (Nullable, ExternHeapType) -> vs32 (-0x11l)
-    | (Nullable, t) -> vs33 (-0x14l); heap_type t
-    | (NonNullable, t) -> vs33 (-0x15l); heap_type t
+    | (Nullable, FuncHeapType) -> vs7 (-0x10l)
+    | (Nullable, ExternHeapType) -> vs7 (-0x11l)
+    | (Nullable, t) -> vs7 (-0x14l); heap_type t
+    | (NonNullable, t) -> vs7 (-0x15l); heap_type t
 
   let value_type = function
     | NumType t -> num_type t

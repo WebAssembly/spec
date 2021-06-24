@@ -13,6 +13,7 @@ Runtime Structure
 .. _syntax-ref:
 .. _syntax-ref.extern:
 .. _syntax-val:
+.. _syntax-null:
 
 Values
 ~~~~~~

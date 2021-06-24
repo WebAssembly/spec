@@ -4,6 +4,8 @@
 Soundness
 ---------
 
+.. todo:: need to ensure wf of nondet types and operate wrt semantic types
+
 The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *type safety* and *memory safety* with respect to the WebAssembly semantics. For example:
 
 * All types declared and derived during validation are respected at run time;
@@ -50,7 +52,7 @@ Results
 :ref:`Results <syntax-result>` :math:`\TRAP`
 ............................................
 
-* The result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any sequence :math:`t^\ast` of :ref:`value types <syntax-valtype>`.
+* The result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any sequence :math:`t^\ast` of :ref:`valid <valid-valtype>` :ref:`value types <syntax-valtype>`.
 
 .. math::
    \frac{
