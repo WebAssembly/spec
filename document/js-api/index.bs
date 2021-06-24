@@ -1166,6 +1166,8 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 
 <h3 id="tags">Tags</h3>
 
+The <dfn>tag_alloc</dfn>(|store|, |parameters|) algorithm creates a new [=tag address=] for |parameters| in |store| and returns the updated store and the [=tag address=].
+
 The <dfn>tag_parameters</dfn>(|store|, |tagAddress|) algorithm returns the [=list=] of types for |tagAddress| in |store|.
 
 <h4 id="exceptions-types">Exception types</h4>
@@ -1205,6 +1207,21 @@ To <dfn>create a Tag object</dfn> from a [=tag address=] |tagAddress|, perform t
 1. Let |tag| be a [=new=] {{Tag}}.
 1. [=initialize a Tag object|Initialize=] |tag| from |tagAddress|.
 1. Return |tag|.
+
+</div>
+
+<div algorithm>
+
+The <dfn constructor for="Tag" lt="Tag(type)">new Tag(|type|)</dfn> constructor steps are:
+
+1. Let |parameters| be |type|["parameters"].
+1. Let |wasmParameters| be «».
+1. [=list/iterate|For each=] |type| of |parameters|,
+    1. [=list/Append=] [=ToValueType=](|type|) to |wasmParameters|.
+1. Let |store| be the current agent's [=associated store=].
+1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, |wasmParameters|).
+1. Set the current agent's [=associated store=] to |store|.
+1. [=initialize a Tag object|Initialize=] **this** from |tagAddress|.
 
 </div>
 
