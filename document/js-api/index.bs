@@ -277,6 +277,7 @@ Each [=agent=] is associated with the following [=ordered map=]s:
     * The <dfn>Exported Function cache</dfn>, mapping [=function address=]es to [=Exported Function=] objects.
     * The <dfn>Global object cache</dfn>, mapping [=global address=]es to {{Global}} objects.
     * The <dfn>Extern value cache</dfn>, mapping [=extern address=]es to values.
+    * The <dfn>Tag object cache</dfn>, mapping [=tag addresses=] to {{Tag}} objects.
 
 <h2 id="webassembly-namespace">The WebAssembly Namespace</h2>
 
@@ -1186,12 +1187,24 @@ An {{Tag}} value represents a type of exception.
 
 <div algorithm>
 
+To <dfn>initialize a Tag object</dfn> |tag| from a [=tag address=] |tagAddress|, perform the following steps:
+
+1. Let |map| be the [=surrounding agent=]'s associated [=Tag object cache=].
+1. Assert: |map|[|tagAddress|] doesn't [=map/exist=].
+1. Set |tag|.\[[Address]] to |tagAddress|.
+1. [=map/Set=] |map|[|tagAddress|] to |tag|.
+
+</div>
+
+<div algorithm>
+
 To <dfn>create a Tag object</dfn> from a [=tag address=] |tagAddress|, perform the following steps:
 
-TODO: define cache.
-
+1. Let |map| be the [=surrounding agent=]'s associated [=Tag object cache=].
+1. If |map|[|tagAddress|] [=map/exists=],
+    1. Return |map|[|tagAddress|].
 1. Let |tag| be a [=new=] {{Tag}}.
-1. Set |tag|.\[[Address]] to |tagAddress|.
+1. [=initialize a Tag object|Initialize=] |tag| from |tagAddress|.
 1. Return |tag|.
 
 </div>
