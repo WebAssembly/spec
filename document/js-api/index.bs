@@ -6,7 +6,7 @@ Status: ED
 Level: 1
 TR: https://www.w3.org/TR/wasm-js-api-1/
 ED: https://webassembly.github.io/spec/js-api/
-Editor: Ms2ger (Igalia)
+Editor: Ms2ger, Igalia
 Repository: WebAssembly/spec
 Markup Shorthands: css no, markdown yes
 Abstract: This document provides an explicit JavaScript API for interacting with WebAssembly.
@@ -93,7 +93,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: BigInt; url: #sec-ecmascript-language-types-bigint-type
     type: abstract-op
         text: CreateMethodProperty; url: sec-createmethodproperty
-urlPrefix: https://webassembly.github.io/reference-types/core/; spec: WebAssembly; type: dfn
+urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
     url: valid/modules.html#valid-module
         text: valid
         text: WebAssembly module validation
@@ -1047,7 +1047,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
   To <dfn>create a host function</dfn> from the JavaScript object |func| and type |functype|, perform the following steps:
 
     1. Assert: [=IsCallable=](|func|).
-    1. Let |stored settings| be the [=incumbent settings object=].
+    1. Let |stored settings| be the <a spec=HTML>incumbent settings object</a>.
     1. Let |hostfunc| be a [=host function=] which performs the following steps when called with arguments |arguments|:
         1. Let |realm| be |func|'s [=associated Realm=].
         1. Let |relevant settings| be |realm|'s [=Realm/settings object=].
