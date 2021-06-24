@@ -1035,7 +1035,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. If |exntag| is the [=JavaScript exception tag=], then
             1. Let « [=ref.extern=] |externaddr| » be |payload|.
             1. Throw the result of [=retrieving an extern value=] from |externaddr|.
-        1. Let |exception| be [=create a RuntimeException object|a new RuntimeException=] for |exntag| and |payload|.
+        1. Let |exception| be [=create an Exception object|a new Exception=] for |exntag| and |payload|.
         1. Throw |exception|.
     1. Let |outArity| be the [=list/size=] of |ret|.
     1. If |outArity| is 0, return undefined.
@@ -1088,7 +1088,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
         1. [=Clean up after running script=] with |relevant settings|.
         1. Assert: |result|.\[[Type]] is <emu-const>throw</emu-const> or <emu-const>normal</emu-const>.
         1. If |result|.\[[Type]] is <emu-const>throw</emu-const>, then:
-            1. If |v| [=implements=] {{RuntimeException}},
+            1. If |v| [=implements=] {{Exception}},
                 1. Let |type| be |v|.\[[Type]].
                 1. Let |payload| be |v|.\[[Payload]].
             1. Otherwise,
@@ -1213,18 +1213,18 @@ The <dfn method for="Tag">type()</dfn> method steps are:
 
 <pre class="idl">
 [LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
-interface RuntimeException {
+interface Exception {
   constructor(Tag exceptionTag, sequence&lt;any> payload);
   any getArg(Tag exceptionTag, unsigned long index);
   boolean is(Tag exceptionTag);
 };
 </pre>
 
-A {{RuntimeException}} value represents an exception.
+An {{Exception}} value represents an exception.
 
 <div algorithm>
 
-To <dfn>create a RuntimeException object</dfn> from a [=tag address=] |tagAddress| and [=list=]
+To <dfn>create an Exception object</dfn> from a [=tag address=] |tagAddress| and [=list=]
 of WebAssembly values |payload|, perform the following steps:
 
 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
@@ -1232,7 +1232,7 @@ of WebAssembly values |payload|, perform the following steps:
 1. Assert: |types|'s [=list/size=] is |payload|'s [=list/size=].
 1. [=list/iterate|For each=] |value| and |resultType| of |payload| and |types|, paired linearly,
     1. Assert: |value|'s type matches |resultType|.
-1. Let |exception| be a [=new=] {{RuntimeException}}.
+1. Let |exception| be a [=new=] {{Exception}}.
 1. Set |exception|.\[[Type]] to |tagAddress|.
 1. Set |exception|.\[[Payload]] to |payload|.
 1. Return |exception|.
@@ -1241,8 +1241,8 @@ of WebAssembly values |payload|, perform the following steps:
 
 <div algorithm>
 
-The <dfn constructor for=RuntimeException
-lt="RuntimeException(exceptionTag, payload)">new RuntimeException(|exceptionTag|, |payload|)</dfn>
+The <dfn constructor for=Exception
+lt="Exception(exceptionTag, payload)">new Exception(|exceptionTag|, |payload|)</dfn>
 constructor steps are:
 
 1. Let |types| be [=tag_parameters=](|exceptionTag|.\[[Address]]).
@@ -1258,7 +1258,7 @@ constructor steps are:
 
 <div algorithm>
 
-The <dfn method for="RuntimeException">getArg(|exceptionTag|, |index|)</dfn> method steps are:
+The <dfn method for="Exception">getArg(|exceptionTag|, |index|)</dfn> method steps are:
 
 1. If **this**.\[[Type]] is not equal to |exceptionTag|.\[[Address]],
     1. Throw a {{TypeError}}.
@@ -1271,7 +1271,7 @@ The <dfn method for="RuntimeException">getArg(|exceptionTag|, |index|)</dfn> met
 
 <div algorithm>
 
-The <dfn method for="RuntimeException">is(|exceptionTag|)</dfn> method steps are:
+The <dfn method for="Exception">is(|exceptionTag|)</dfn> method steps are:
 
 1. If **this**.\[[Type]] is not equal to |exceptionTag|.\[[Address]],
     1. Return false.
