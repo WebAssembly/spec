@@ -1166,8 +1166,7 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 
 <h3 id="tags">Tags</h3>
 
-The <dfn>tag_parameters</dfn> algorithm returns the [=list=] of types for a given
-[=tag address=] in the given [=associated store=].
+The <dfn>tag_parameters</dfn>(|store|, |tagAddress|) algorithm returns the [=list=] of types for |tagAddress| in |store|.
 
 <h4 id="exceptions-types">Exception types</h4>
 
@@ -1258,7 +1257,8 @@ The <dfn constructor for=Exception
 lt="Exception(exceptionTag, payload)">new Exception(|exceptionTag|, |payload|)</dfn>
 constructor steps are:
 
-1. Let |types| be [=tag_parameters=](|exceptionTag|.\[[Address]]).
+1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+1. Let |types| be [=tag_parameters=](|store|, |exceptionTag|.\[[Address]]).
 1. If |types|'s [=list/size=] is not |payload|'s [=list/size=],
     1. Throw a {{TypeError}}.
 1. Let |wasmPayload| be « ».
