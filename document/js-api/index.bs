@@ -978,15 +978,13 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. Return |map|[|funcaddr|].
     1. Let |steps| be "[=call an Exported Function|call the Exported Function=] |funcaddr| with arguments."
     1. Let |realm| be the [=current Realm=].
-    1. Let |function| be [=CreateBuiltinFunction=](|realm|, |steps|, [=%FunctionPrototype%=], &laquo; \[[FunctionAddress]] &raquo;).
-    1. Set |function|.\[[FunctionAddress]] to |funcaddr|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=func_type=](|store|, |funcaddr|).
     1. Let [|paramTypes|] → [<var ignore>resultTypes</var>] be |functype|.
     1. Let |arity| be |paramTypes|'s [=list/size=].
-    1. Perform ! [=SetFunctionLength=](|function|, |arity|).
     1. Let |name| be the [=name of the WebAssembly function=] |funcaddr|.
-    1. Perform ! [=SetFunctionName=](|function|, |name|).
+    1. Let |function| be [=!=] [=CreateBuiltinFunction=](|steps|, |arity|, |name|, « \[[FunctionAddress]] », |realm|, [=%FunctionPrototype%=]).
+    1. Set |function|.\[[FunctionAddress]] to |funcaddr|.
     1. [=map/Set=] |map|[|funcaddr|] to |function|.
     1. Return |function|.
 </div>
