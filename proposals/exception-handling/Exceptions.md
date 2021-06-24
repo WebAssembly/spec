@@ -341,6 +341,38 @@ specially mark non-catchable exceptions.
 be intercepted in JS, and types of exceptions generated from stack overflow and
 out of memory are implementation-defined.)
 
+#### API additions
+
+The following additional classes are added to the JS API in order to allow JavaScript to interact with WebAssembly exceptions:
+
+  * `WebAssembly.Tag`
+  * `WebAssembly.Exception`.
+
+The `WebAssembly.Tag` class represents a typed tag defined in the tag section and exported from a WebAssembly module. It allows querying the type of a tag following the [JS type reflection proposal](https://github.com/WebAssembly/js-types/blob/master/proposals/js-types/Overview.md). Constructing an instance of `Tag` creates a fresh tag, and the new tag can be passed to a WebAssembly module as a tag import.
+
+In the future, `WebAssembly.Tag` may be used for other proposals that require a typed tag and its constructor may be extended to accept other types and/or a tag attribute to differentiate them from tags used for exceptions.
+
+The `WebAssembly.Exception` class represents an exception thrown from WebAssembly, or an exception that is constructed in JavaScript and is to be thrown to a WebAssembly exception handler. The `Exception` constructor accepts a `Tag` argument and a sequence of arguments for the exception's data fields. The `Tag` argument determines the exception tag to use. The data field arguments must match the types specified by the `Tag`'s type. The `is` method can be used to query if the `Exception` matches a given tag. The `getArg` method allows access to the data fields of a `Exception` if a matching tag is given. This last check ensures that without access to a WebAssembly module's exported exception tag, the associated data fields cannot be read.
+
+More formally, the added interfaces look like the following:
+
+```WebIDL
+[LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
+interface Tag {
+  constructor(TagType type);
+  TagType type();
+};
+
+[LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
+interface Exception {
+  constructor(Tag tag, sequence<any> payload);
+  any getArg(Tag tag, unsigned long index);
+  boolean is(Tag tag);
+};
+```
+
+Where `type TagType = {parameters: ValueType[]}`, following the format of the type reflection proposal (`TagType` corresponds to a `FunctionType` without a `results` property). `TagType` could be extended in the future for other proposals that require a richer type specification.
+
 ## Changes to the text format
 
 This section describes change in the [instruction syntax
