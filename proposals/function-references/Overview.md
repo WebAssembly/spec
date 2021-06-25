@@ -168,7 +168,7 @@ The following rules, now defined in terms of heap types, replace and extend the 
   - `(ref <heaptype1>) <: (ref null <heaptype2>)`
     - iff `<heaptype1> <: <heaptype2>`
 
-##### Constructed Types
+##### Heap Types
 
 * Any function type is a subtype of `func`
   - `$t <: func`

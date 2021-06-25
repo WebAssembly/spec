@@ -351,8 +351,11 @@
 .. |BR| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br}}
 .. |BRIF| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_if}}
 .. |BRTABLE| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_table}}
+.. |BRONNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_on\_null}}
+.. |BRONNONNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_on\_non\_null}}
 .. |RETURN| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{return}}
 .. |CALL| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call}}
+.. |CALLREF| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call\_ref}}
 .. |CALLINDIRECT| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call\_indirect}}
 
 .. |DROP| mathdef:: \xref{syntax/instructions}{syntax-instr-parametric}{\K{drop}}
@@ -383,8 +386,9 @@
 .. |DATADROP| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{data.drop}}
 
 .. |REFNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}null}}
-.. |REFISNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}is\_null}}
 .. |REFFUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}func}}
+.. |REFISNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}is\_null}}
+.. |REFASNONNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}as\_non\_null}}
 
 .. |CONST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{const}}
 .. |EQZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{eqz}}
