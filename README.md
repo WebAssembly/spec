@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 [![Build Status](https://travis-ci.org/WebAssembly/multi-memory.svg?branch=master)](https://travis-ci.org/WebAssembly/multi-memory)
 
 # Multi Memory Proposal for WebAssembly
@@ -11,22 +10,6 @@ It is meant for discussion, prototype specification and implementation of a prop
 * See the [modified spec](https://webassembly.github.io/multi-memory/) for details.
 
 Original `README` from upstream repository follows…
-=======
-[![Build Status](https://travis-ci.org/WebAssembly/reference-types.svg?branch=master)](https://travis-ci.org/WebAssembly/reference-types)
-
-# Reference Types Proposal for WebAssembly
-
-This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
-It is meant for discussion, prototype specification and implementation of a proposal to add support for basic reference types to WebAssembly.
-
-* See the [overview](proposals/reference-types/Overview.md) for a summary of the proposal.
-
-* See the [modified spec](https://webassembly.github.io/reference-types/core/) for details.
-
-The repository is now based on the [bulk operations proposal](proposals/bulk-memory-operations/Overview.md) and includes all respective changes.
-
-Original README from upstream repository follows...
->>>>>>> reftype/master
 
 # spec
 
