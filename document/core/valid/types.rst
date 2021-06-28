@@ -9,24 +9,36 @@ Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`fun
 On most types, a simple notion of subtyping is defined that is applicable in validation rules or during :ref:`module instantiation <exec-instantiation>`.
 
 
-.. index:: number type
-   pair: validation; number type
-   single: abstract syntax; number type
-.. _valid-numtype:
+.. index:: type identifier, type index
+   pair: validation; type identifier
+   single: abstract syntax; type identifier
+.. _valid-typeid:
 
-Number Types
-~~~~~~~~~~~~
+Type Identifiers
+~~~~~~~~~~~~~~~~
 
-:ref:`Number types <syntax-numtype>` are always valid.
+During validation, :ref:`type identifiers <syntax-typeid>` are represented as :ref:`type indices <syntax-typeidx>`, which are converted to plain :ref:`function types <syntax-functype>` by the following rule.
+
+:math:`\typeid`
+...............
+
+* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
+
+* Then the type identifier is valid as :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
 
 .. math::
    \frac{
+     C.\CTYPES[\typeidx] = \functype
    }{
-     C \vdashnumtype \numtype \ok
+     C \vdashtypeid \typeidx : \functype
    }
 
+.. note::
+   Validity of :ref:`semantic types <syntax-typeid>` never needs to be checked during validation.
+   It only needs to be :ref:`defined <valid-typeinst>` as part of :ref:`store validity <valid-store>`, an auxiliary notion for proving :ref:`soundness <soundness>` of the type system.
 
-.. index:: heap type
+
+.. index:: heap type, type identifier
    pair: validation; heap type
    single: abstract syntax; heap type
 .. _valid-heaptype:
@@ -34,7 +46,7 @@ Number Types
 Heap Types
 ~~~~~~~~~~
 
-Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is.
+Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type identifier <syntax-typeid>` is.
 
 :math:`\FUNC`
 .............
@@ -58,18 +70,18 @@ Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type 
      C \vdashheaptype \EXTERN \ok
    }
 
-:math:`\typeidx`
-................
+:math:`\typeid`
+...............
 
-* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
+* The type identifier :math:`\typeid` must be valid.
 
 * Then the heap type is valid.
 
 .. math::
    \frac{
-     C.\CTYPES[\typeidx] = \functype
+     C \vdashtypeid \typeid : \functype
    }{
-     C \vdashheaptype \typeidx \ok
+     C \vdashheaptype \typeid \ok
    }
 
 
@@ -95,6 +107,23 @@ Reference Types
      C \vdashreftype \heaptype \ok
    }{
      C \vdashreftype \REF~\NULL^?~\heaptype \ok
+   }
+
+
+.. index:: number type
+   pair: validation; number type
+   single: abstract syntax; number type
+.. _valid-numtype:
+
+Number Types
+~~~~~~~~~~~~
+
+:ref:`Number types <syntax-numtype>` are always valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashnumtype \numtype \ok
    }
 
 
@@ -389,25 +418,6 @@ External Types
 Value Subtyping
 ~~~~~~~~~~~~~~~
 
-.. index:: number type
-
-.. _match-numtype:
-
-Number Types
-............
-
-A :ref:`number type <syntax-numtype>` :math:`\numtype_1` matches a :ref:`number type <syntax-numtype>` :math:`\numtype_2` if and only if:
-
-* Both :math:`\numtype_1` and :math:`\numtype_2` are the same.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-   }{
-     \vdashnumtypematch \numtype \matchesvaltype \numtype
-   }
-
-
 .. index:: heap type
 
 .. _match-heaptype:
@@ -419,9 +429,9 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 
 * Either both :math:`\heaptype_1` and :math:`\heaptype_2` are the same.
 
-* Or :math:`\heaptype_1` is a :ref:`type index <syntax-typeidx>` that defines a function type and :math:`\heaptype_2` is :math:`FUNC`.
+* Or :math:`\heaptype_1` is a :ref:`type identifier <syntax-typeid>` that defines a function type and :math:`\heaptype_2` is :math:`FUNC`.
 
-* Or :math:`\heaptype_1` is a :ref:`type index <syntax-typeidx>` that defines a function type :math:`\functype_1`, and :math:`\heaptype_2` is a :ref:`type index <syntax-typeidx>` that defines a function type :math:`\functype_2`, and :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
+* Or :math:`\heaptype_1` is a :ref:`type identifier <syntax-typeid>` that defines a function type :math:`\functype_1`, and :math:`\heaptype_2` is a :ref:`type identifier <syntax-typeid>` that defines a function type :math:`\functype_2`, and :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
 
 .. math::
    ~\\[-1ex]
@@ -431,19 +441,19 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
    }
    ~\\
    \frac{
-     C.\CTYPES[\typeidx] = \functype
+     C \vdashtypeid \typeid : \functype
    }{
-     C \vdashheaptypematch \typeidx \matchesheaptype \FUNC
+     C \vdashheaptypematch \typeid \matchesheaptype \FUNC
    }
    ~\\
    \frac{
-     C.\CTYPES[\typeidx_1] = \functype_1
+     C \vdashtypeid \typeid : \functype_1
      \qquad
-     C.\CTYPES[\typeidx_2] = \functype_2
+     C \vdashtypeid \typeid : \functype_2
      \qquad
      C \vdashfunctypematch \functype_1 \matchesfunctype \functype_2
    }{
-     C \vdashheaptypematch \typeidx_1 \matchesheaptype \typeidx_2
+     C \vdashheaptypematch \typeid_1 \matchesheaptype \typeid_2
    }
 
 
@@ -472,6 +482,25 @@ A :ref:`reference type <syntax-reftype>` :math:`\REF~\NULL_1^?~heaptype_1` match
      C \vdashheaptypematch \heaptype_1 \matchesheaptype \heaptype_2
    }{
      C \vdashreftypematch \REF~\NULL~\heaptype_1 \matchesreftype \REF~\NULL^?~\heaptype_2
+   }
+
+
+.. index:: number type
+
+.. _match-numtype:
+
+Number Types
+............
+
+A :ref:`number type <syntax-numtype>` :math:`\numtype_1` matches a :ref:`number type <syntax-numtype>` :math:`\numtype_2` if and only if:
+
+* Both :math:`\numtype_1` and :math:`\numtype_2` are the same.
+
+.. math::
+   ~\\[-1ex]
+   \frac{
+   }{
+     \vdashnumtypematch \numtype \matchesvaltype \numtype
    }
 
 
@@ -561,7 +590,28 @@ When :ref:`instantiating <exec-module>` a module,
 :ref:`external values <syntax-externval>` must be provided whose :ref:`types <valid-externval>` are *matched* against the respective :ref:`external types <syntax-externtype>` classifying each import.
 In some cases, this allows for a simple form of subtyping, as defined here.
 
-.. todo:: this requires semantics types
+Unlike subtyping invoked during :ref:`validation <valid>`,
+import matching operates on :ref:`semantic types <syntax-typeid>` during :ref:`instantiation <exec-instantiation>`,
+and hence operates relative to a :ref:`store <store>` :math:`S` instead of a :ref:`context <context>` :math:`C`.
+
+To this end, all subtyping rules defined above on *syntactic* types are extended to semantic types by replacing :math:`S` with :ref:`context <context>` :math:`C`, and defining validity of semantic :ref:`type identifiers <syntax-typeid>` as follows.
+
+.. index:: type, type instance, type address
+.. _valid-typeinst:
+
+Type Addresses
+..............
+
+* The type :math:`S.\STYPES[\typeaddr]` must be defined in the store.
+
+* Then the type address is valid as :ref:`function type <syntax-functype>` :math:`S.\STYPES[\typeaddr]`.
+
+.. math::
+   \frac{
+     S.\STYPES[\typeaddr] = \functype
+   }{
+     S \vdashtypeid \typeaddr : \functype
+   }
 
 
 .. index:: limits
@@ -611,13 +661,14 @@ Functions
 
 An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_1` matches :math:`\ETFUNC~\functype_2` if and only if:
 
-* Both :math:`\functype_1` and :math:`\functype_2` are the same.
+* The :ref:`function type <syntax-functype>` :math:`\functype_1` :ref:matches <match-functype>` :math:`\functype_2`.
 
 .. math::
    ~\\[-1ex]
    \frac{
+     S \vdashfunctypematch \functype_1 \matchesfunctype \functype_2
    }{
-     \vdashexterntypematch \ETFUNC~\functype \matchesexterntype \ETFUNC~\functype
+     S \vdashexterntypematch \ETFUNC~\functype_1 \matchesexterntype \ETFUNC~\functype_2
    }
 
 
@@ -631,13 +682,17 @@ An :ref:`external type <syntax-externtype>` :math:`\ETTABLE~(\limits_1~\reftype_
 
 * Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
 
-* Both :math:`\reftype_1` and :math:`\reftype_2` are the same.
+* The :ref:`reference type <syntax-reftype>` :math:`\reftype_1` matches :math:`\reftype_2`, and vice versa.
 
 .. math::
    \frac{
      \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
+     \qquad
+     S \vdashreftypematch \reftype_1 \matchesreftype \reftype_2
+     \qquad
+     S \vdashreftypematch \reftype_2 \matchesreftype \reftype_1
    }{
-     \vdashexterntypematch \ETTABLE~(\limits_1~\reftype) \matchesexterntype \ETTABLE~(\limits_2~\reftype)
+     S \vdashexterntypematch \ETTABLE~(\limits_1~\reftype_1) \matchesexterntype \ETTABLE~(\limits_2~\reftype_2)
    }
 
 
@@ -655,7 +710,7 @@ An :ref:`external type <syntax-externtype>` :math:`\ETMEM~\limits_1` matches :ma
    \frac{
      \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
    }{
-     \vdashexterntypematch \ETMEM~\limits_1 \matchesexterntype \ETMEM~\limits_2
+     S \vdashexterntypematch \ETMEM~\limits_1 \matchesexterntype \ETMEM~\limits_2
    }
 
 
@@ -667,19 +722,22 @@ Globals
 
 An :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~(\mut_1~t_1)` matches :math:`\ETGLOBAL~(\mut_2~t_2)` if and only if:
 
-* Either both :math:`\mut_1` and :math:`\mut_2` are |MVAR| and :math:`t_1` and :math:`t_2` are the same.
+* Either both :math:`\mut_1` and :math:`\mut_2` are |MVAR| and :math:`t_1` :ref:`matches <match-valtype>` :math:`t_2` and vice versa.
  
 * Or both :math:`\mut_1` and :math:`\mut_2` are |MCONST| and :math:`t_1` :ref:`matches <match-valtype>` :math:`t_2`.
 
 .. math::
    ~\\[-1ex]
    \frac{
+     S \vdashvaltypematch t_1 \matchesvaltype t_2
+     \qquad
+     S \vdashvaltypematch t_2 \matchesvaltype t_1
    }{
-     \vdashexterntypematch \ETGLOBAL~(\MVAR~t) \matchesexterntype \ETGLOBAL~(\MVAR~t)
+     S \vdashexterntypematch \ETGLOBAL~(\MVAR~t_1) \matchesexterntype \ETGLOBAL~(\MVAR~t_2)
    }
    \qquad
    \frac{
-     \vdashvaltypematch t_1 \matchesvaltype t_2
+     S \vdashvaltypematch t_1 \matchesvaltype t_2
    }{
-     \vdashexterntypematch \ETGLOBAL~(\MCONST~t_1) \matchesexterntype \ETGLOBAL~(\MCONST~t_2)
+     S \vdashexterntypematch \ETGLOBAL~(\MCONST~t_1) \matchesexterntype \ETGLOBAL~(\MCONST~t_2)
    }

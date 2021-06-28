@@ -9,6 +9,91 @@ Various entities in WebAssembly are classified by types.
 Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-instantiation>`, and possibly :ref:`execution <syntax-call_indirect>`.
 
 
+
+.. index:: ! type identifier, type index, type address
+   pair: abstract syntax; type identifier
+.. _syntax-typeid:
+
+Type Identifiers
+~~~~~~~~~~~~~~~~
+
+Types such as :ref:`function types <syntax-functypes>` are not embedded directly into other types, such as :ref:`reference types <syntax-reftype>`.
+Instead, they are referred to indirectly.
+
+In a :ref:`module <syntax-module>` and during validation, this indirection is expressed through a :ref:`type index <syntax-typeidx>`, whose meaning is confined to one module.
+During instantiation and execution, where types from multiple modules may interact, it is expressed through :ref:`type addresses <syntax-typeaddr>` that refer to the global :ref:`store <store>`.
+
+The type grammar hence is conceptually parameterized by its interpretation of :ref:`type identifiers <syntax-typeid>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{type identifier} & \typeid &::=&
+     \typeidx ~|~ \typeaddr
+   \end{array}
+
+Types represented with type indices are referred to as *syntactic types*,
+whereas types represented with type addresses are referred to as *semantic types*.
+It is an invariant of the semantics that no syntactic type refers to a semantic type and vice versa, i.e., both universes are disjoint.
+Syntactic types are transformed into semantic types during module :ref:`instantiation <exec-instantiation>`.
+
+
+.. _notation-subst:
+
+Convention
+..........
+
+If :math:`t` is some syntactic type, then :math:`t[x^\ast \subst a^\ast]` denotes the semantic type obtained by parallel substitution of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`type addresses <typeaddr>` :math:`a^\ast`, provided :math:`|x^\ast| = |a^\ast|`.
+
+Furthermore, :math:`t[\subst a^\ast]` is shorthand for the substitution :math:`t[x^\ast \subst a^\ast]` where :math:`x^\ast = 0 \cdots (|a^\ast| - 1)`.
+
+
+.. index:: ! heap type, store, type identifier
+   pair: abstract syntax; heap type
+.. _syntax-heaptype:
+
+Heap Types
+~~~~~~~~~~
+
+*Heap types* classify objects in the runtime :ref:`store <store>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{heap type} & \heaptype &::=&
+     \FUNC ~|~ \EXTERN ~|~ \typeid \\
+   \end{array}
+
+The type |FUNC| denotes the infinite union of all types of :ref:`functions <syntax-func>`, regardless of their concrete :ref:`function types <syntax-functype>`.
+
+The type |EXTERN| denotes the infinite union of all objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
+
+A *concrete* heap type consists of a :ref:`type identifier <syntax-typeid>` and classifies an object of the respective :ref:`type <syntax-type>` defined in some module.
+
+
+.. index:: ! reference type, heap type, reference, table, function, function type, null
+   pair: abstract syntax; reference type
+   pair: reference; type
+.. _syntax-reftype:
+
+Reference Types
+~~~~~~~~~~~~~~~
+
+*Reference types* classify :ref:`values <syntax-value>` that are first-class references to objects in the runtime :ref:`store <store>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{reference type} & \reftype &::=&
+     \REF~\NULL^?~\heaptype \\
+   \end{array}
+
+A reference type is characterised by the :ref:`heap type <syntax-heaptype>` it points to.
+
+In addition, a reference type of the form :math:`\REF \NULL \X{ht}` is *nullable*, meaning that it can either be a proper reference to :math:`\X{ht}` or :ref:`null <syntax-null>`.
+Other references are *non-null*.
+
+Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
+Values of reference type can be stored in :ref:`tables <syntax-table>`.
+
+
 .. index:: ! number type, integer, floating-point, IEEE 754, bit width, memory
    pair: abstract syntax; number type
    pair: number; type
@@ -39,53 +124,6 @@ Conventions
 
 * The notation :math:`|t|` denotes the *bit width* of a number type :math:`t`.
   That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.
-
-
-.. index:: ! heap type, store, type index
-   pair: abstract syntax; heap type
-.. _syntax-heaptype:
-
-Heap Types
-~~~~~~~~~~
-
-*Heap types* classify objects in the runtime :ref:`store <store>`.
-
-.. math::
-   \begin{array}{llll}
-   \production{heap type} & \heaptype &::=&
-     \FUNC ~|~ \EXTERN ~|~ \typeidx \\
-   \end{array}
-
-The type |FUNC| denotes the infinite union of all types of :ref:`functions <syntax-func>`, regardless of their concrete :ref:`function types <syntax-functype>`.
-
-The type |EXTERN| denotes the infinite union of all objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
-
-A *concrete* heap type consists of a :ref:`type index <syntax-typeidx>` and classifies an object of the respective :ref:`type <syntax-type>` defined in the module.
-
-
-.. index:: ! reference type, heap type, reference, table, function, function type, null
-   pair: abstract syntax; reference type
-   pair: reference; type
-.. _syntax-reftype:
-
-Reference Types
-~~~~~~~~~~~~~~~
-
-*Reference types* classify :ref:`values <syntax-value>` that are first-class references to objects in the runtime :ref:`store <store>`.
-
-.. math::
-   \begin{array}{llll}
-   \production{reference type} & \reftype &::=&
-     \REF~\NULL^?~\heaptype \\
-   \end{array}
-
-A reference type is characterised by the :ref:`heap type <syntax-heaptype>` it points to.
-
-In addition, a reference type of the form :math:`\REF \NULL \X{ht}` is *nullable*, meaning that it can either be a proper reference to :math:`\X{ht}` or :ref:`null <syntax-null>`.
-Other references are *non-null*.
-
-Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
-Values of reference type can be stored in :ref:`tables <syntax-table>`.
 
 
 .. index:: ! value type, number type, reference type, ! bottom type
