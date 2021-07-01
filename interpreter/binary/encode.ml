@@ -121,7 +121,7 @@ let encode m =
     let memory_type = function
       | MemoryType lim -> limits vu32 lim
 
-    let event_type x = vu32 0x00l; var x
+    let tag_type x = vu32 0x00l; var x
 
     let mutability = function
       | Immutable -> u8 0
@@ -443,7 +443,7 @@ let encode m =
       | TableImport t -> u8 0x01; table_type t
       | MemoryImport t -> u8 0x02; memory_type t
       | GlobalImport t -> u8 0x03; global_type t
-      | EventImport t -> u8 0x04; event_type t
+      | TagImport t -> u8 0x04; tag_type t
 
     let import im =
       let {module_name; item_name; idesc} = im.it in
@@ -474,11 +474,11 @@ let encode m =
     let memory_section mems =
       section 5 (vec memory) mems (mems <> [])
 
-    (* Event section *)
-    let event (e : event) = u8 0x00; var e.it.etype
+    (* Tag section *)
+    let tag (t : tag) = u8 0x00; var t.it.tgtype
 
-    let event_section es =
-      section 13 (vec event) es (es <> [])
+    let tag_section ts =
+      section 13 (vec tag) ts (ts <> [])
 
     (* Global section *)
     let global g =
@@ -495,7 +495,7 @@ let encode m =
       | TableExport x -> u8 1; var x
       | MemoryExport x -> u8 2; var x
       | GlobalExport x -> u8 3; var x
-      | EventExport x -> u8 4; var x
+      | TagExport x -> u8 4; var x
 
     let export ex =
       let {name = n; edesc} = ex.it in
@@ -604,7 +604,7 @@ let encode m =
       func_section m.it.funcs;
       table_section m.it.tables;
       memory_section m.it.memories;
-      event_section m.it.events;
+      tag_section m.it.tags;
       global_section m.it.globals;
       export_section m.it.exports;
       start_section m.it.start;

@@ -371,15 +371,15 @@ let data i seg =
   Node ("data $" ^ nat i, segment_mode "memory" dmode @ break_bytes dinit)
 
 
-(* Events *)
+(* Tags *)
 
-let event_with_name name (e : event) =
-  Node ("event" ^ name,
-    [Node ("type " ^ var (e.it.etype), [])]
+let tag_with_name name (t : tag) =
+  Node ("tag" ^ name,
+    [Node ("type " ^ var (t.it.tgtype), [])]
   )
 
-let event_with_index off i e =
-  event_with_name (" $" ^ nat (off + i)) e
+let tag_with_index off i t =
+  tag_with_name (" $" ^ nat (off + i)) t
 
 
 (* Modules *)
@@ -387,7 +387,7 @@ let event_with_index off i e =
 let typedef i ty =
   Node ("type $" ^ nat i, [struct_type ty.it])
 
-let import_desc fx tx mx ex gx d =
+let import_desc fx tx mx tgx gx d =
   match d.it with
   | FuncImport x ->
     incr fx; Node ("func $" ^ nat (!fx - 1), [Node ("type", [atom var x])])
@@ -397,8 +397,8 @@ let import_desc fx tx mx ex gx d =
     incr mx; memory 0 (!mx - 1) ({mtype = t} @@ d.at)
   | GlobalImport t ->
     incr gx; Node ("global $" ^ nat (!gx - 1), [global_type t])
-  | EventImport x ->
-    incr ex; Node ("event $" ^ nat (!ex - 1), [Node ("type", [atom var x])])
+  | TagImport x ->
+    incr tgx; Node ("tag $" ^ nat (!tgx - 1), [Node ("type", [atom var x])])
 
 let import fx tx mx ex gx im =
   let {module_name; item_name; idesc} = im.it in
@@ -411,7 +411,7 @@ let export_desc d =
   | FuncExport x -> Node ("func", [atom var x])
   | TableExport x -> Node ("table", [atom var x])
   | MemoryExport x -> Node ("memory", [atom var x])
-  | EventExport x -> Node ("event", [atom var x])
+  | TagExport x -> Node ("tag", [atom var x])
   | GlobalExport x -> Node ("global", [atom var x])
 
 let export ex =
@@ -433,15 +433,15 @@ let module_with_var_opt x_opt m =
   let fx = ref 0 in
   let tx = ref 0 in
   let mx = ref 0 in
-  let ex = ref 0 in
+  let tgx = ref 0 in
   let gx = ref 0 in
-  let imports = list (import fx tx mx ex gx) m.it.imports in
+  let imports = list (import fx tx mx tgx gx) m.it.imports in
   Node ("module" ^ var_opt x_opt,
     listi typedef m.it.types @
     imports @
     listi (table !tx) m.it.tables @
     listi (memory !mx) m.it.memories @
-    listi (event_with_index !ex) m.it.events @
+    listi (tag_with_index !tgx) m.it.tags @
     listi (global !gx) m.it.globals @
     listi (func_with_index !fx) m.it.funcs @
     list export m.it.exports @

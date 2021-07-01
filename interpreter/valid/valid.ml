@@ -20,7 +20,7 @@ type context =
   funcs : func_type list;
   tables : table_type list;
   memories : memory_type list;
-  events : event_type list;
+  tags : tag_type list;
   globals : global_type list;
   elems : ref_type list;
   datas : unit list;
@@ -32,7 +32,7 @@ type context =
 
 let empty_context =
   { types = []; funcs = []; tables = []; memories = [];
-    events = []; globals = []; elems = []; datas = [];
+    tags = []; globals = []; elems = []; datas = [];
     locals = []; results = []; labels = [];
     refs = Free.empty
   }
@@ -45,7 +45,7 @@ let type_ (c : context) x = lookup "type" c.types x
 let func (c : context) x = lookup "function" c.funcs x
 let table (c : context) x = lookup "table" c.tables x
 let memory (c : context) x = lookup "memory" c.memories x
-let event (c : context) x = lookup "event" c.events x
+let tag (c : context) x = lookup "tag" c.tags x
 let global (c : context) x = lookup "global" c.globals x
 let elem (c : context) x = lookup "elem segment" c.elems x
 let data (c : context) x = lookup "data segment" c.datas x
@@ -494,10 +494,10 @@ let check_func (c : context) (f : func) =
   let c' = {c with locals = ts1 @ locals; results = ts2; labels = [ts2]} in
   check_block c' body (FuncType ([], ts2)) f.at
 
-let check_event (c : context) (e : event) =
-  match type_ c (e.it.etype) with
+let check_tag (c : context) (t : tag) =
+  match type_ c (t.it.tgtype) with
   | FuncType (_, []) -> ()
-  | FuncType _ -> error e.at "non-empty event result type"
+  | FuncType _ -> error t.at "non-empty tag result type"
 
 let is_const (c : context) (e : instr) =
   match e.it with
@@ -579,8 +579,8 @@ let check_import (im : import) (c : context) : context =
   | GlobalImport gt ->
     check_global_type gt idesc.at;
     {c with globals = gt :: c.globals}
-  | EventImport x ->
-    {c with events = EventType x.it :: c.events}
+  | TagImport x ->
+    {c with tags = TagType x.it :: c.tags}
 
 module NameSet = Set.Make(struct type t = Ast.name let compare = compare end)
 
@@ -590,7 +590,7 @@ let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
   | FuncExport x -> ignore (func c x)
   | TableExport x -> ignore (table c x)
   | MemoryExport x -> ignore (memory c x)
-  | EventExport x -> ignore (event c x)
+  | TagExport x -> ignore (tag c x)
   | GlobalExport x -> ignore (global c x)
   );
   require (not (NameSet.mem name set)) ex.at "duplicate export name";
@@ -598,7 +598,7 @@ let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
 
 let check_module (m : module_) =
   let
-    { types; imports; tables; memories; events; globals; funcs; start; elems;
+    { types; imports; tables; memories; tags; globals; funcs; start; elems;
       datas; exports } = m.it
   in
   let c0 =
@@ -613,7 +613,7 @@ let check_module (m : module_) =
       funcs = c0.funcs @ List.map (fun f -> type_ c0 f.it.ftype) funcs;
       tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
       memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
-      events = c0.events @ List.map (fun (ev : event) -> EventType ev.it.etype.it) events;
+      tags = c0.tags @ List.map (fun (tg : tag) -> TagType tg.it.tgtype.it) tags;
       elems = List.map (fun (elem : elem_segment) -> elem.it.etype) elems;
       datas = List.map (fun _data -> ()) datas;
     }
@@ -625,7 +625,7 @@ let check_module (m : module_) =
   List.iter (check_global c1) globals;
   List.iter (check_table c1) tables;
   List.iter (check_memory c1) memories;
-  List.iter (check_event c1) events;
+  List.iter (check_tag c1) tags;
   List.iter (check_elem c1) elems;
   List.iter (check_data c1) datas;
   List.iter (check_func c) funcs;
