@@ -163,6 +163,25 @@ def relaxed_i32x4_trunc_f64x2_zero(a : f64x2, signed : bool) -> i32x4:
         result[i] = UNDEFINED
 ```
 
+### Relaxed fused multiply-add and fused multiply-subtract
+
+- `relaxed f32x4.fma`
+- `relaxed f32x4.fms`
+- `relaxed f64x2.fma`
+- `relaxed f64x2.fms`
+
+All the instructions take 3 operands, `a`, `b`, `c`, perform `a + (b * c)` or `a - (b * c)`:
+
+- `relaxed f32x4.fma(a, b, c) = a + (b * c)`
+- `relaxed f32x4.fms(a, b, c) = a - (b * c)`
+- `relaxed f64x2.fma(a, b, c) = a + (b * c)`
+- `relaxed f64x2.fms(a, b, c) = a - (b * c)`
+
+where:
+
+- the intermediate `b * c` is be rounded first, and the final result rounded again (for a total of 2 roundings), or
+- the the entire expression evaluated with higher precision and then only rounded once (if supported by hardware).
+
 ## Binary format
 
 > This is a placeholder for binary format of instructions and new constructs.
