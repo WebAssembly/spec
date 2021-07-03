@@ -138,4 +138,4 @@ let string_of_extern_type = function
   | ExternTableType tt -> "table " ^ string_of_table_type tt
   | ExternMemoryType mt -> "memory " ^ string_of_memory_type mt
   | ExternGlobalType gt -> "global " ^ string_of_global_type gt
-  | ExternTagType ft -> "tag " ^ string_of_func_type ft
+  | ExternTagType tt -> "tag " ^ string_of_func_type tt
