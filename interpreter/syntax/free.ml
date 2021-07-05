@@ -9,7 +9,7 @@ type t =
   globals : Set.t;
   tables : Set.t;
   memories : Set.t;
-  events : Set.t;
+  tags : Set.t;
   funcs : Set.t;
   elems : Set.t;
   datas : Set.t;
@@ -23,7 +23,7 @@ let empty : t =
   globals = Set.empty;
   tables = Set.empty;
   memories = Set.empty;
-  events = Set.empty;
+  tags = Set.empty;
   funcs = Set.empty;
   elems = Set.empty;
   datas = Set.empty;
@@ -37,7 +37,7 @@ let union (s1 : t) (s2 : t) : t =
   globals = Set.union s1.globals s2.globals;
   tables = Set.union s1.tables s2.tables;
   memories = Set.union s1.memories s2.memories;
-  events = Set.union s1.events s2.events;
+  tags = Set.union s1.tags s2.tags;
   funcs = Set.union s1.funcs s2.funcs;
   elems = Set.union s1.elems s2.elems;
   datas = Set.union s1.datas s2.datas;
@@ -49,7 +49,7 @@ let types s = {empty with types = s}
 let globals s = {empty with globals = s}
 let tables s = {empty with tables = s}
 let memories s = {empty with memories = s}
-let events s = {empty with events = s}
+let tags s = {empty with tags = s}
 let funcs s = {empty with funcs = s}
 let elems s = {empty with elems = s}
 let datas s = {empty with datas = s}
@@ -88,13 +88,13 @@ let rec instr (e : instr) =
   | MemoryInit x -> memories zero ++ datas (var x)
   | DataDrop x -> datas (var x)
   | TryCatch (bt, es, ct, ca) ->
-    let catch (tag, es) = events (var tag) ++ block es in
+    let catch (tag, es) = tags (var tag) ++ block es in
     let catch_all = function
       | None -> empty
       | Some es -> block es in
     block es ++ (list catch ct) ++ catch_all ca
-  | TryDelegate (bt, es, x) -> block es ++ events (var x)
-  | Throw x ->  events (var x)
+  | TryDelegate (bt, es, x) -> block es ++ tags (var x)
+  | Throw x ->  tags (var x)
   | Rethrow x ->  labels (var x)
 
 and block (es : instr list) =
@@ -106,7 +106,7 @@ let global (g : global) = const g.it.ginit
 let func (f : func) = {(block f.it.body) with locals = Set.empty}
 let table (t : table) = empty
 let memory (m : memory) = empty
-let event (e : event) = empty
+let tag (t : tag) = empty
 
 let segment_mode f (m : segment_mode) =
   match m.it with
@@ -126,7 +126,7 @@ let export_desc (d : export_desc) =
   | FuncExport x -> funcs (var x)
   | TableExport x -> tables (var x)
   | MemoryExport x -> memories (var x)
-  | EventExport x -> events (var x)
+  | TagExport x -> tags (var x)
   | GlobalExport x -> globals (var x)
 
 let import_desc (d : import_desc) =
@@ -134,7 +134,7 @@ let import_desc (d : import_desc) =
   | FuncImport x -> types (var x)
   | TableImport tt -> empty
   | MemoryImport mt -> empty
-  | EventImport x -> types (var x)
+  | TagImport x -> types (var x)
   | GlobalImport gt -> empty
 
 let export (e : export) = export_desc e.it.edesc

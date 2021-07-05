@@ -1,12 +1,12 @@
 ;; Test throw instruction.
 
 (module
-  (event $e0)
-  (event $e-i32 (param i32))
-  (event $e-f32 (param f32))
-  (event $e-i64 (param i64))
-  (event $e-f64 (param f64))
-  (event $e-i32-i32 (param i32 i32))
+  (tag $e0)
+  (tag $e-i32 (param i32))
+  (tag $e-f32 (param f32))
+  (tag $e-i64 (param i64))
+  (tag $e-f64 (param f64))
+  (tag $e-i32-i32 (param i32 i32))
 
   (func $throw-if (export "throw-if") (param i32) (result i32)
     (local.get 0)

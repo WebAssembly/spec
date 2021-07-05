@@ -157,10 +157,10 @@ and memory' =
   mtype : memory_type;
 }
 
-type event = event' Source.phrase
-and event' =
+type tag = tag' Source.phrase
+and tag' =
 {
-  etype : var;
+  tgtype : var;
 }
 
 
@@ -196,7 +196,7 @@ and export_desc' =
   | TableExport of var
   | MemoryExport of var
   | GlobalExport of var
-  | EventExport of var
+  | TagExport of var
 
 type export = export' Source.phrase
 and export' =
@@ -211,7 +211,7 @@ and import_desc' =
   | TableImport of table_type
   | MemoryImport of memory_type
   | GlobalImport of global_type
-  | EventImport of var
+  | TagImport of var
 
 type import = import' Source.phrase
 and import' =
@@ -228,7 +228,7 @@ and module_' =
   globals : global list;
   tables : table list;
   memories : memory list;
-  events : event list;
+  tags : tag list;
   funcs : func list;
   start : var option;
   elems : elem_segment list;
@@ -246,7 +246,7 @@ let empty_module =
   globals = [];
   tables = [];
   memories = [];
-  events = [];
+  tags = [];
   funcs = [];
   start = None;
   elems = [];
@@ -266,7 +266,7 @@ let import_type (m : module_) (im : import) : extern_type =
   | FuncImport x -> ExternFuncType (func_type_for m x)
   | TableImport t -> ExternTableType t
   | MemoryImport t -> ExternMemoryType t
-  | EventImport x -> ExternEventType (func_type_for m x)
+  | TagImport x -> ExternTagType (func_type_for m x)
   | GlobalImport t -> ExternGlobalType t
 
 let export_type (m : module_) (ex : export) : extern_type =
@@ -287,10 +287,10 @@ let export_type (m : module_) (ex : export) : extern_type =
   | GlobalExport x ->
     let gts = globals its @ List.map (fun g -> g.it.gtype) m.it.globals in
     ExternGlobalType (nth gts x.it)
-  | EventExport x ->
-    let ets =
-      events its @ List.map (fun (e : event) -> func_type_for m e.it.etype) m.it.events
-    in ExternEventType (nth ets x.it)
+  | TagExport x ->
+    let tts =
+      tags its @ List.map (fun t -> func_type_for m t.it.tgtype) m.it.tags
+    in ExternTagType (nth tts x.it)
 
 let string_of_name n =
   let b = Buffer.create 16 in

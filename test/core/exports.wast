@@ -58,7 +58,7 @@
   "duplicate export name"
 )
 (assert_invalid
-  (module (event $e0 (export "e0")) (event $e1 (export "e0")))
+  (module (tag $t0 (export "t0")) (tag $t1 (export "t0")))
   "duplicate export name"
 )
 

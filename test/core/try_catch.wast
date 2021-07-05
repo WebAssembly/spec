@@ -1,22 +1,22 @@
 ;; Test try-catch blocks.
 
 (module
-  (event $e0 (export "e0"))
+  (tag $e0 (export "e0"))
   (func (export "throw") (throw $e0))
 )
 
 (register "test")
 
 (module
-  (event $imported-e0 (import "test" "e0"))
+  (tag $imported-e0 (import "test" "e0"))
   (func $imported-throw (import "test" "throw"))
-  (event $e0)
-  (event $e1)
-  (event $e2)
-  (event $e-i32 (param i32))
-  (event $e-f32 (param f32))
-  (event $e-i64 (param i64))
-  (event $e-f64 (param f64))
+  (tag $e0)
+  (tag $e1)
+  (tag $e2)
+  (tag $e-i32 (param i32))
+  (tag $e-f32 (param f32))
+  (tag $e-i64 (param i64))
+  (tag $e-f64 (param f64))
 
   (func $throw-if (param i32) (result i32)
     (local.get 0)
@@ -194,7 +194,7 @@
 )
 
 (assert_malformed
-  (module quote "(module (event $e) (func (catch $e)))")
+  (module quote "(module (tag $e) (func (catch $e)))")
   "unexpected token"
 )
 

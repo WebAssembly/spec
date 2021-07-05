@@ -85,7 +85,7 @@ let type_ (inst : module_inst) x = lookup "type" inst.types x
 let func (inst : module_inst) x = lookup "function" inst.funcs x
 let table (inst : module_inst) x = lookup "table" inst.tables x
 let memory (inst : module_inst) x = lookup "memory" inst.memories x
-let event (inst : module_inst) x = lookup "event" inst.events x
+let tag (inst : module_inst) x = lookup "tag" inst.tags x
 let global (inst : module_inst) x = lookup "global" inst.globals x
 let elem (inst : module_inst) x = lookup "element segment" inst.elems x
 let data (inst : module_inst) x = lookup "data segment" inst.datas x
@@ -581,8 +581,8 @@ let create_memory (inst : module_inst) (mem : memory) : memory_inst =
   let {mtype} = mem.it in
   Memory.alloc mtype
 
-let create_event (inst : module_inst) (e : event) : event_inst =
-  Event.alloc (type_ inst e.it.etype)
+let create_tag (inst : module_inst) (t : tag) : tag_inst =
+  Tag.alloc (type_ inst t.it.tgtype)
 
 let create_global (inst : module_inst) (glob : global) : global_inst =
   let {gtype; ginit} = glob.it in
@@ -597,7 +597,7 @@ let create_export (inst : module_inst) (ex : export) : export_inst =
     | TableExport x -> ExternTable (table inst x)
     | MemoryExport x -> ExternMemory (memory inst x)
     | GlobalExport x -> ExternGlobal (global inst x)
-    | EventExport x -> ExternEvent (event inst x)
+    | TagExport x -> ExternTag (tag inst x)
   in (name, ext)
 
 let create_elem (inst : module_inst) (seg : elem_segment) : elem_inst =
@@ -617,7 +617,7 @@ let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   | ExternFunc func -> {inst with funcs = func :: inst.funcs}
   | ExternTable tab -> {inst with tables = tab :: inst.tables}
   | ExternMemory mem -> {inst with memories = mem :: inst.memories}
-  | ExternEvent event -> {inst with events = event :: inst.events}
+  | ExternTag tag -> {inst with tags = tag :: inst.tags}
   | ExternGlobal glob -> {inst with globals = glob :: inst.globals}
 
 let init_func (inst : module_inst) (func : func_inst) =
@@ -660,7 +660,7 @@ let run_start start =
 
 let init (m : module_) (exts : extern list) : module_inst =
   let
-    { imports; tables; memories; events; globals; funcs; types;
+    { imports; tables; memories; tags; globals; funcs; types;
       exports; elems; datas; start
     } = m.it
   in
@@ -676,7 +676,7 @@ let init (m : module_) (exts : extern list) : module_inst =
     { inst1 with
       tables = inst1.tables @ List.map (create_table inst1) tables;
       memories = inst1.memories @ List.map (create_memory inst1) memories;
-      events = inst1.events @ List.map (create_event inst1) events;
+      tags = inst1.tags @ List.map (create_tag inst1) tags;
       globals = inst1.globals @ List.map (create_global inst1) globals;
     }
   in

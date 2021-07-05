@@ -1,8 +1,8 @@
 ;; Test rethrow instruction.
 
 (module
-  (event $e0)
-  (event $e1)
+  (tag $e0)
+  (tag $e1)
 
   (func (export "catch-rethrow-0")
     (try

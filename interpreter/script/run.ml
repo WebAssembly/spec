@@ -215,7 +215,7 @@ let print_import m im =
     | ExternFuncType t -> "func", string_of_func_type t
     | ExternTableType t -> "table", string_of_table_type t
     | ExternMemoryType t -> "memory", string_of_memory_type t
-    | ExternEventType t -> "event", string_of_func_type t
+    | ExternTagType t -> "tag", string_of_func_type t
     | ExternGlobalType t -> "global", string_of_global_type t
   in
   Printf.printf "  import %s \"%s\" \"%s\" : %s\n"
@@ -229,7 +229,7 @@ let print_export m ex =
     | ExternFuncType t -> "func", string_of_func_type t
     | ExternTableType t -> "table", string_of_table_type t
     | ExternMemoryType t -> "memory", string_of_memory_type t
-    | ExternEventType t -> "event", string_of_func_type t
+    | ExternTagType t -> "tag", string_of_func_type t
     | ExternGlobalType t -> "global", string_of_global_type t
   in
   Printf.printf "  export %s \"%s\" : %s\n"
