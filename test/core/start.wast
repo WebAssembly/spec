@@ -103,3 +103,11 @@
   (module quote "(module (func $a (unreachable)) (func $b (unreachable)) (start $a) (start $b))")
   "multiple start sections"
 )
+
+(assert_invalid
+  (module
+    (import "foo" "bar" (func (type 20)))
+    (start 0)
+  )
+  "unknown type"
+)
