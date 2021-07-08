@@ -384,6 +384,13 @@
   (table 10 funcref)
   (table 10 funcref)
 )
+;; Can't test values above 2^32 because wast parsing will reject them
+(assert_invalid
+  (module
+    (import "" "" (table 1 0 funcref))
+  )
+  "size minimum must not be greater than maximum"
+)
 
 (module (import "test" "table-10-inf" (table 10 funcref)))
 (module (import "test" "table-10-inf" (table 5 funcref)))
@@ -495,6 +502,30 @@
 (assert_invalid
   (module (memory 0) (memory 0))
   "multiple memories"
+)
+(assert_invalid
+  (module
+    (import "" "" (memory 65537 65538))
+  )
+  "memory size must be at most 65536 pages"
+)
+(assert_invalid
+  (module
+    (import "" "" (memory 0 65537))
+  )
+  "memory size must be at most 65536 pages"
+)
+(assert_invalid
+  (module
+    (import "" "" (memory 1 0))
+  )
+  "size minimum must not be greater than maximum"
+)
+(assert_invalid
+  (module
+    (import "" "" (memory 65537))
+  )
+  "memory size must be at most 65536 pages"
 )
 
 (module (import "test" "memory-2-inf" (memory 2)))
