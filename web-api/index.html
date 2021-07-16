@@ -5,13 +5,13 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
-  <meta content="Bikeshed version 63b04da49, updated Tue May 25 17:20:48 2021 -0700" name="generator">
+  <meta content="Bikeshed version 5f7b0e20, updated Tue Aug 18 15:46:28 2020 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
-  <meta content="484bb2b5b8a9cf5f774310bcd28e11186aa1705e" name="document-revision">
+  <meta content="2e629bc63aad31982d8941a4263e4ecacae00c94" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
-    color: var(--a-normal-text);
+    color: #005a9c;
     font-size: inherit;
     font-family: inherit;
 }
@@ -101,10 +101,6 @@ figcaption:not(.no-marker)::before {
 }</style>
 <style>/* style-dfn-panel */
 
-:root {
-    --dfnpanel-bg: #ddd;
-    --dfnpanel-text: var(--text);
-}
 .dfn-panel {
     position: absolute;
     z-index: 35;
@@ -116,14 +112,14 @@ figcaption:not(.no-marker)::before {
     overflow: auto;
     padding: 0.5em 0.75em;
     font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
-    background: var(--dfnpanel-bg);
-    color: var(--dfnpanel-text);
+    background: #DDDDDD;
+    color: black;
     border: outset 0.2em;
 }
 .dfn-panel:not(.on) { display: none; }
 .dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
 .dfn-panel > b { display: block; }
-.dfn-panel a { color: var(--dfnpanel-text); }
+.dfn-panel a { color: black; }
 .dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
 .dfn-panel > b + b { margin-top: 0.25em; }
 .dfn-panel ul { padding: 0; }
@@ -152,11 +148,6 @@ figcaption:not(.no-marker)::before {
 }</style>
 <style>/* style-selflinks */
 
-:root {
-    --selflink-text: white;
-    --selflink-bg: gray;
-    --selflink-hover-text: black;
-}
 .heading, .issue, .note, .example, li, dt {
     position: relative;
 }
@@ -186,8 +177,8 @@ dfn > a.self-link {
     opacity: 0;
     width: 1.5em;
     height: 1.5em;
-    background: var(--selflink-bg);
-    color: var(--selflink-text);
+    background: gray;
+    color: white;
     font-style: normal;
     transition: opacity .2s, background-color .2s, color .2s;
 }
@@ -195,23 +186,17 @@ dfn:hover > a.self-link {
     opacity: 1;
 }
 dfn > a.self-link:hover {
-    color: var(--selflink-hover-text);
+    color: black;
 }
 
 a.self-link::before            { content: "¶"; }
 .heading > a.self-link::before { content: "§"; }
-dfn > a.self-link::before      { content: "#"; }
-</style>
+dfn > a.self-link::before      { content: "#"; }</style>
 <style>/* style-syntax-highlighting */
-
-            pre.idl.highlight {
-                background: var(--borderedblock-bg, var(--def-bg));
-            }
-            
+pre.idl.highlight { color: #708090; }
+.highlight:not(.idl) { background: hsl(24, 20%, 95%); }
 code.highlight { padding: .1em; border-radius: .3em; }
 pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
-
-.highlight:not(.idl) { background: rgba(0, 0, 0, .03); }
 c-[a] { color: #990055 } /* Keyword.Declaration */
 c-[b] { color: #990055 } /* Keyword.Type */
 c-[c] { color: #708090 } /* Comment */
@@ -281,7 +266,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2021-06-01">1 June 2021</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2021-07-16">16 July 2021</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -316,11 +301,11 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
   All issues and comments are <a href="https://github.com/WebAssembly/spec/issues?utf8=%E2%9C%93&amp;q=is%3Aissue++">archived</a>. </p>
    <p> This document was produced by the <a href="https://www.w3.org/wasm/">WebAssembly Working Group</a>. </p>
    <p> This document was produced by a group operating under
-	the <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/">W3C Patent Policy</a>.
+	the <a href="https://www.w3.org/Consortium/Patent-Policy/">W3C Patent Policy</a>.
 	W3C maintains a <a href="https://www.w3.org/2004/01/pp-impl/101196/status" rel="disclosure">public list of any patent disclosures</a> made in connection with the deliverables of the group;
 	that page also includes instructions for disclosing a patent.
-	An individual who has actual knowledge of a patent which the individual believes contains <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/#def-essential">Essential Claim(s)</a> must disclose the information in accordance with <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/#sec-Disclosure">section 6 of the W3C Patent Policy</a>. </p>
-   <p> This document is governed by the <a href="https://www.w3.org/2020/Process-20200915/" id="w3c_process_revision">15 September 2020 W3C Process Document</a>. </p>
+	An individual who has actual knowledge of a patent which the individual believes contains <a href="https://www.w3.org/Consortium/Patent-Policy/#def-essential">Essential Claim(s)</a> must disclose the information in accordance with <a href="https://www.w3.org/Consortium/Patent-Policy/#sec-Disclosure">section 6 of the W3C Patent Policy</a>. </p>
+   <p> This document is governed by the <a href="https://www.w3.org/2019/Process-20190301/" id="w3c_process_revision">1 March 2019 W3C Process Document</a>. </p>
    <p></p>
   </div>
   <div data-fill-with="at-risk"></div>
@@ -355,9 +340,9 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
    <h2 class="heading settled" data-level="1" id="streaming-modules"><span class="secno">1. </span><span class="content">Streaming Module Compilation and Instantiation</span><a class="self-link" href="#streaming-modules"></a></h2>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>partial</c-> <c- b>namespace</c-> <a class="idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly" id="ref-for-namespacedef-webassembly"><c- g>WebAssembly</c-></a> {
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#module" id="ref-for-module"><c- n>Module</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming"><c- g>compileStreaming</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-promise" id="ref-for-idl-promise①"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response"><c- n>Response</c-></a>> <dfn class="idl-code" data-dfn-for="WebAssembly/compileStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-compilestreaming-source-source"><code><c- g>source</c-></code><a class="self-link" href="#dom-webassembly-compilestreaming-source-source"></a></dfn>);
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-promise" id="ref-for-idl-promise②"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource"><c- n>WebAssemblyInstantiatedSource</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming"><c- g>instantiateStreaming</c-></a>(
-      <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-promise" id="ref-for-idl-promise③"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①"><c- n>Response</c-></a>> <dfn class="idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-source"><code><c- g>source</c-></code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-source"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-object" id="ref-for-idl-object"><c- b>object</c-></a> <dfn class="idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-importobject"><code><c- g>importObject</c-></code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-importobject"></a></dfn>);
+  <c- b>Promise</c->&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#module" id="ref-for-module"><c- n>Module</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming"><c- g>compileStreaming</c-></a>(<c- b>Promise</c->&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response"><c- n>Response</c-></a>> <dfn class="idl-code" data-dfn-for="WebAssembly/compileStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-compilestreaming-source-source"><code><c- g>source</c-></code><a class="self-link" href="#dom-webassembly-compilestreaming-source-source"></a></dfn>);
+  <c- b>Promise</c->&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource"><c- n>WebAssemblyInstantiatedSource</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming"><c- g>instantiateStreaming</c-></a>(
+      <c- b>Promise</c->&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①"><c- n>Response</c-></a>> <dfn class="idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-source"><code><c- g>source</c-></code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-source"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-object" id="ref-for-idl-object"><c- b>object</c-></a> <dfn class="idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-importobject"><code><c- g>importObject</c-></code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-importobject"></a></dfn>);
 };
 </pre>
    <div class="algorithm" data-algorithm="compileStreaming(source)" data-algorithm-for="WebAssembly"> The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export id="dom-webassembly-compilestreaming"><code>compileStreaming(<var>source</var>)</code></dfn> method, when invoked, returns the result of <a data-link-type="dfn" href="#compile-a-potential-webassembly-response" id="ref-for-compile-a-potential-webassembly-response">compiling a potential WebAssembly response</a> with <var>source</var>. </div>
@@ -813,12 +798,6 @@ review, approval, and registration with IANA.</p>
     <li><a href="#ref-for-Exposed">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-promise">
-   <a href="https://heycam.github.io/webidl/#idl-promise">https://heycam.github.io/webidl/#idl-promise</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idl-promise">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-idl-promise①">(2)</a> <a href="#ref-for-idl-promise②">(3)</a> <a href="#ref-for-idl-promise③">(4)</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-a-new-promise">
    <a href="https://heycam.github.io/webidl/#a-new-promise">https://heycam.github.io/webidl/#a-new-promise</a><b>Referenced in:</b>
    <ul>
@@ -866,66 +845,65 @@ review, approval, and registration with IANA.</p>
    <li>
     <a data-link-type="biblio">[ECMA-262]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-sec-arraybuffer-objects">ArrayBuffer</span>
-     <li><span class="dfn-paneled" id="term-for-sec-native-error-types-used-in-this-standard-typeerror">TypeError</span>
-     <li><span class="dfn-paneled" id="term-for-sec-agent-clusters">agent cluster</span>
-     <li><span class="dfn-paneled" id="term-for-current-realm">current realm</span>
+     <li><span class="dfn-paneled" id="term-for-sec-arraybuffer-objects" style="color:initial">ArrayBuffer</span>
+     <li><span class="dfn-paneled" id="term-for-sec-native-error-types-used-in-this-standard-typeerror" style="color:initial">TypeError</span>
+     <li><span class="dfn-paneled" id="term-for-sec-agent-clusters" style="color:initial">agent cluster</span>
+     <li><span class="dfn-paneled" id="term-for-current-realm" style="color:initial">current realm</span>
     </ul>
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-response">Response</span>
-     <li><span class="dfn-paneled" id="term-for-concept-body-consume-body">consume body</span>
-     <li><span class="dfn-paneled" id="term-for-concept-header-extract-mime-type">extracting a mime type</span>
-     <li><span class="dfn-paneled" id="term-for-concept-response-header-list">header list</span>
-     <li><span class="dfn-paneled" id="term-for-ok-status">ok status</span>
-     <li><span class="dfn-paneled" id="term-for-concept-response-response">response</span>
-     <li><span class="dfn-paneled" id="term-for-concept-response-status">status</span>
+     <li><span class="dfn-paneled" id="term-for-response" style="color:initial">Response</span>
+     <li><span class="dfn-paneled" id="term-for-concept-body-consume-body" style="color:initial">consume body</span>
+     <li><span class="dfn-paneled" id="term-for-concept-header-extract-mime-type" style="color:initial">extracting a mime type</span>
+     <li><span class="dfn-paneled" id="term-for-concept-response-header-list" style="color:initial">header list</span>
+     <li><span class="dfn-paneled" id="term-for-ok-status" style="color:initial">ok status</span>
+     <li><span class="dfn-paneled" id="term-for-concept-response-response" style="color:initial">response</span>
+     <li><span class="dfn-paneled" id="term-for-concept-response-status" style="color:initial">status</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-serializable">Serializable</span>
-     <li><span class="dfn-paneled" id="term-for-cors-same-origin">cors-same-origin</span>
-     <li><span class="dfn-paneled" id="term-for-deserialization-steps">deserialization steps</span>
-     <li><span class="dfn-paneled" id="term-for-networking-task-source">networking task source</span>
-     <li><span class="dfn-paneled" id="term-for-serialization-steps">serialization steps</span>
-     <li><span class="dfn-paneled" id="term-for-sub-deserialization">sub-deserialization</span>
-     <li><span class="dfn-paneled" id="term-for-sub-serialization">sub-serialization</span>
+     <li><span class="dfn-paneled" id="term-for-serializable" style="color:initial">Serializable</span>
+     <li><span class="dfn-paneled" id="term-for-cors-same-origin" style="color:initial">cors-same-origin</span>
+     <li><span class="dfn-paneled" id="term-for-deserialization-steps" style="color:initial">deserialization steps</span>
+     <li><span class="dfn-paneled" id="term-for-networking-task-source" style="color:initial">networking task source</span>
+     <li><span class="dfn-paneled" id="term-for-serialization-steps" style="color:initial">serialization steps</span>
+     <li><span class="dfn-paneled" id="term-for-sub-deserialization" style="color:initial">sub-deserialization</span>
+     <li><span class="dfn-paneled" id="term-for-sub-serialization" style="color:initial">sub-serialization</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WASMJS]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-exceptiondef-compileerror">CompileError</span>
-     <li><span class="dfn-paneled" id="term-for-module">Module</span>
-     <li><span class="dfn-paneled" id="term-for-namespacedef-webassembly">WebAssembly</span>
-     <li><span class="dfn-paneled" id="term-for-dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</span>
-     <li><span class="dfn-paneled" id="term-for-asynchronously-compile-a-webassembly-module">asynchronously compile a webassembly module</span>
-     <li><span class="dfn-paneled" id="term-for-compile-a-webassembly-module">compile a webassembly module</span>
-     <li><span class="dfn-paneled" id="term-for-exported-function">exported function</span>
-     <li><span class="dfn-paneled" id="term-for-dom-webassembly-instantiate">instantiate</span>
-     <li><span class="dfn-paneled" id="term-for-instantiate-a-promise-of-a-module">instantiate a promise of a module</span>
+     <li><span class="dfn-paneled" id="term-for-exceptiondef-compileerror" style="color:initial">CompileError</span>
+     <li><span class="dfn-paneled" id="term-for-module" style="color:initial">Module</span>
+     <li><span class="dfn-paneled" id="term-for-namespacedef-webassembly" style="color:initial">WebAssembly</span>
+     <li><span class="dfn-paneled" id="term-for-dictdef-webassemblyinstantiatedsource" style="color:initial">WebAssemblyInstantiatedSource</span>
+     <li><span class="dfn-paneled" id="term-for-asynchronously-compile-a-webassembly-module" style="color:initial">asynchronously compile a webassembly module</span>
+     <li><span class="dfn-paneled" id="term-for-compile-a-webassembly-module" style="color:initial">compile a webassembly module</span>
+     <li><span class="dfn-paneled" id="term-for-exported-function" style="color:initial">exported function</span>
+     <li><span class="dfn-paneled" id="term-for-dom-webassembly-instantiate" style="color:initial">instantiate</span>
+     <li><span class="dfn-paneled" id="term-for-instantiate-a-promise-of-a-module" style="color:initial">instantiate a promise of a module</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBASSEMBLY]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-syntax-funcidx">function index</span>
-     <li><span class="dfn-paneled" id="term-for-binary-namesec">name section</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-funcidx" style="color:initial">function index</span>
+     <li><span class="dfn-paneled" id="term-for-binary-namesec" style="color:initial">name section</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-idl-DOMException">DOMException</span>
-     <li><span class="dfn-paneled" id="term-for-datacloneerror">DataCloneError</span>
-     <li><span class="dfn-paneled" id="term-for-Exposed">Exposed</span>
-     <li><span class="dfn-paneled" id="term-for-idl-promise">Promise</span>
-     <li><span class="dfn-paneled" id="term-for-a-new-promise">a new promise</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-get-buffer-source-copy">get a copy of the buffer source</span>
-     <li><span class="dfn-paneled" id="term-for-idl-object">object</span>
-     <li><span class="dfn-paneled" id="term-for-reject">reject</span>
-     <li><span class="dfn-paneled" id="term-for-resolve">resolve</span>
-     <li><span class="dfn-paneled" id="term-for-upon-fulfillment">upon fulfillment</span>
-     <li><span class="dfn-paneled" id="term-for-upon-rejection">upon rejection</span>
+     <li><span class="dfn-paneled" id="term-for-idl-DOMException" style="color:initial">DOMException</span>
+     <li><span class="dfn-paneled" id="term-for-datacloneerror" style="color:initial">DataCloneError</span>
+     <li><span class="dfn-paneled" id="term-for-Exposed" style="color:initial">Exposed</span>
+     <li><span class="dfn-paneled" id="term-for-a-new-promise" style="color:initial">a new promise</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-get-buffer-source-copy" style="color:initial">get a copy of the buffer source</span>
+     <li><span class="dfn-paneled" id="term-for-idl-object" style="color:initial">object</span>
+     <li><span class="dfn-paneled" id="term-for-reject" style="color:initial">reject</span>
+     <li><span class="dfn-paneled" id="term-for-resolve" style="color:initial">resolve</span>
+     <li><span class="dfn-paneled" id="term-for-upon-fulfillment" style="color:initial">upon fulfillment</span>
+     <li><span class="dfn-paneled" id="term-for-upon-rejection" style="color:initial">upon rejection</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -949,9 +927,9 @@ review, approval, and registration with IANA.</p>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>partial</c-> <c- b>namespace</c-> <a class="idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly"><c- g>WebAssembly</c-></a> {
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#module"><c- n>Module</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming"><c- g>compileStreaming</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response"><c- n>Response</c-></a>> <a href="#dom-webassembly-compilestreaming-source-source"><code><c- g>source</c-></code></a>);
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource"><c- n>WebAssemblyInstantiatedSource</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming"><c- g>instantiateStreaming</c-></a>(
-      <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response"><c- n>Response</c-></a>> <a href="#dom-webassembly-instantiatestreaming-source-importobject-source"><code><c- g>source</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-object"><c- b>object</c-></a> <a href="#dom-webassembly-instantiatestreaming-source-importobject-importobject"><code><c- g>importObject</c-></code></a>);
+  <c- b>Promise</c->&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#module"><c- n>Module</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming"><c- g>compileStreaming</c-></a>(<c- b>Promise</c->&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response"><c- n>Response</c-></a>> <a href="#dom-webassembly-compilestreaming-source-source"><code><c- g>source</c-></code></a>);
+  <c- b>Promise</c->&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource"><c- n>WebAssemblyInstantiatedSource</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming"><c- g>instantiateStreaming</c-></a>(
+      <c- b>Promise</c->&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response"><c- n>Response</c-></a>> <a href="#dom-webassembly-instantiatestreaming-source-importobject-source"><code><c- g>source</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-object"><c- b>object</c-></a> <a href="#dom-webassembly-instantiatestreaming-source-importobject-importobject"><code><c- g>importObject</c-></code></a>);
 };
 
 </pre>
@@ -1078,7 +1056,7 @@ document.body.addEventListener("click", function(e) {
             }
         }
         function getVarName(el) {
-            return el.textContent.replace(/(\s|\xa0)+/, " ").trim();
+            return el.textContent.replace(/(\s| )+/, " ").trim();
         }
         function chooseHighlightIndex(algoName, varName) {
             let indexes = null;

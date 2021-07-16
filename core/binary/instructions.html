@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-06-01)</title>
+    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-07-16)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -133,8 +133,8 @@ To avoid any loss in the range of allowed indices, it is treated as a 33 bit sig
 <section id="reference-instructions">
 <span id="binary-instr-ref"></span><span id="index-2"></span><h2>Reference Instructions<a class="headerlink" href="#reference-instructions" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-ref"><span class="std std-ref">Reference instructions</span></a> are represented by single byte codes.</p>
-<div class="math notranslate nohighlight" id="binary-ref-isnull">
-<span id="binary-ref-null"></span>\[\begin{split}\begin{array}{llclll}
+<div class="math notranslate nohighlight" id="binary-ref-is-null">
+<span id="binary-ref-func"></span><span id="binary-ref-null"></span>\[\begin{split}\begin{array}{llclll}
 \def\mathdef760#1{{}}\mathdef760{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
   \def\mathdef818#1{\mathtt{0x#1}}\mathdef818{D0}~~t{:}\href{../binary/types.html#binary-reftype}{\mathtt{reftype}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}null}}~t \\ &amp;&amp;|&amp;
   \def\mathdef819#1{\mathtt{0x#1}}\mathdef819{D1} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}is\_null}} \\ &amp;&amp;|&amp;

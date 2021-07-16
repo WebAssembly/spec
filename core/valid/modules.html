@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Modules &#8212; WebAssembly 1.1 (Draft 2021-06-01)</title>
+    <title>Modules &#8212; WebAssembly 1.1 (Draft 2021-07-16)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -526,7 +526,7 @@ the segment <span class="math notranslate nohighlight">\(\href{../syntax/modules
 <div class="math notranslate nohighlight">
 \[\begin{split}\frac{
   \begin{array}{&#64;{}c&#64;{}}
-  (\href{../valid/types.html#valid-functype}{\vdash} \href{../syntax/modules.html#syntax-typedef}{\mathit{type}} \mathrel{\mbox{ok}})^\ast
+  (\href{../valid/types.html#valid-functype}{\vdash} \href{../syntax/types.html#syntax-functype}{\mathit{type}} \mathrel{\mbox{ok}})^\ast
   \quad
   (C \href{../valid/modules.html#valid-func}{\vdash} \href{../syntax/modules.html#syntax-func}{\mathit{func}} : \mathit{ft})^\ast
   \quad
@@ -556,7 +556,7 @@ the segment <span class="math notranslate nohighlight">\(\href{../syntax/modules
   \\
   x^\ast = \href{../syntax/modules.html#syntax-funcidx}{\mathrm{funcidx}}(\href{../syntax/modules.html#syntax-module}{\mathit{module}} \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../syntax/modules.html#syntax-module}{\mathsf{funcs}} = \epsilon \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../syntax/modules.html#syntax-module}{\mathsf{start}} = \epsilon)
   \\
-  C = \{ \href{../valid/conventions.html#context}{\mathsf{types}}~\href{../syntax/modules.html#syntax-typedef}{\mathit{type}}^\ast, \href{../valid/conventions.html#context}{\mathsf{funcs}}~\mathit{ift}^\ast\,\mathit{ft}^\ast, \href{../valid/conventions.html#context}{\mathsf{tables}}~\mathit{itt}^\ast\,\mathit{tt}^\ast, \href{../valid/conventions.html#context}{\mathsf{mems}}~\mathit{imt}^\ast\,\mathit{mt}^\ast, \href{../valid/conventions.html#context}{\mathsf{globals}}~\mathit{igt}^\ast\,\mathit{gt}^\ast, \href{../valid/conventions.html#context}{\mathsf{elems}}~\mathit{rt}^\ast, \href{../valid/conventions.html#context}{\mathsf{datas}}~{\mathrel{\mbox{ok}}}^n, \href{../valid/conventions.html#context}{\mathsf{refs}}~x^\ast \}
+  C = \{ \href{../valid/conventions.html#context}{\mathsf{types}}~\href{../syntax/types.html#syntax-functype}{\mathit{type}}^\ast, \href{../valid/conventions.html#context}{\mathsf{funcs}}~\mathit{ift}^\ast\,\mathit{ft}^\ast, \href{../valid/conventions.html#context}{\mathsf{tables}}~\mathit{itt}^\ast\,\mathit{tt}^\ast, \href{../valid/conventions.html#context}{\mathsf{mems}}~\mathit{imt}^\ast\,\mathit{mt}^\ast, \href{../valid/conventions.html#context}{\mathsf{globals}}~\mathit{igt}^\ast\,\mathit{gt}^\ast, \href{../valid/conventions.html#context}{\mathsf{elems}}~\mathit{rt}^\ast, \href{../valid/conventions.html#context}{\mathsf{datas}}~{\mathrel{\mbox{ok}}}^n, \href{../valid/conventions.html#context}{\mathsf{refs}}~x^\ast \}
   \\
   C' = \{ \href{../valid/conventions.html#context}{\mathsf{globals}}~\mathit{igt}^\ast, \href{../valid/conventions.html#context}{\mathsf{funcs}}~(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}), \href{../valid/conventions.html#context}{\mathsf{refs}}~(C.\href{../valid/conventions.html#context}{\mathsf{refs}}) \}
   \qquad
@@ -566,7 +566,7 @@ the segment <span class="math notranslate nohighlight">\(\href{../syntax/modules
   \\
   \href{../syntax/modules.html#syntax-module}{\mathit{module}} = \{
     \begin{array}[t]{&#64;{}l&#64;{}}
-      \href{../syntax/modules.html#syntax-module}{\mathsf{types}}~\href{../syntax/modules.html#syntax-typedef}{\mathit{type}}^\ast,
+      \href{../syntax/modules.html#syntax-module}{\mathsf{types}}~\href{../syntax/types.html#syntax-functype}{\mathit{type}}^\ast,
       \href{../syntax/modules.html#syntax-module}{\mathsf{funcs}}~\href{../syntax/modules.html#syntax-func}{\mathit{func}}^\ast,
       \href{../syntax/modules.html#syntax-module}{\mathsf{tables}}~\href{../syntax/modules.html#syntax-table}{\mathit{table}}^\ast,
       \href{../syntax/modules.html#syntax-module}{\mathsf{mems}}~\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}^\ast,

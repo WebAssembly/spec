@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-06-01)</title>
+    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-07-16)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -95,7 +95,7 @@ which are part of the instruction itself.</p>
 <p>The following sections group instructions into a number of different categories.</p>
 <section id="numeric-instructions">
 <span id="syntax-instr-numeric"></span><span id="syntax-frelop"></span><span id="syntax-ftestop"></span><span id="syntax-fbinop"></span><span id="syntax-funop"></span><span id="syntax-irelop"></span><span id="syntax-itestop"></span><span id="syntax-ibinop"></span><span id="syntax-iunop"></span><span id="syntax-const"></span><span id="syntax-sx"></span><span id="index-1"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
-<p>Numeric instructions provide basic operations over numeric <a class="reference internal" href="values.html#syntax-value"><span class="std std-ref">values</span></a> of specific <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">type</span></a>.
+<p>Numeric instructions provide basic operations over numeric <a class="reference internal" href="values.html#syntax-value"><span class="std std-ref">values</span></a> of specific <a class="reference internal" href="types.html#syntax-numtype"><span class="std std-ref">type</span></a>.
 These operations closely match respective operations available in hardware.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl}
@@ -176,7 +176,7 @@ These operations closely match respective operations available in hardware.</p>
   \mathsf{le} ~|~
   \mathsf{ge} \\
 \end{array}\end{split}\]</div>
-<p>Numeric instructions are divided by <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">value type</span></a>.
+<p>Numeric instructions are divided by <a class="reference internal" href="types.html#syntax-numtype"><span class="std std-ref">number type</span></a>.
 For each type, several subcategories can be distinguished:</p>
 <ul class="simple">
 <li><p><em>Constants</em>: return a static constant.</p></li>
@@ -313,9 +313,9 @@ The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.ht
   \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.init}}~\href{../syntax/modules.html#syntax-dataidx}{\mathit{dataidx}} \\&amp;&amp;|&amp;
   \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{data.drop}}~\href{../syntax/modules.html#syntax-dataidx}{\mathit{dataidx}} \\
 \end{array}\end{split}\]</div>
-<p>Memory is accessed with <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\)</span> and <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\)</span> instructions for the different <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">value types</span></a>.
+<p>Memory is accessed with <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\)</span> and <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\)</span> instructions for the different <a class="reference internal" href="types.html#syntax-numtype"><span class="std std-ref">number types</span></a>.
 They all take a <em>memory immediate</em> <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span> that contains an address <em>offset</em> and the expected <em>alignment</em> (expressed as the exponent of a power of 2).
-Integer loads and stores can optionally specify a <em>storage size</em> that is smaller than the <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">bit width</span></a> of the respective value type.
+Integer loads and stores can optionally specify a <em>storage size</em> that is smaller than the <a class="reference internal" href="types.html#syntax-numtype"><span class="std std-ref">bit width</span></a> of the respective value type.
 In the case of loads, a sign extension mode <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> is then required to select appropriate behavior.</p>
 <p>The static address offset is added to the dynamic address operand, yielding a 33 bit <em>effective address</em> that is the zero-based index at which the memory is accessed.
 All values are read and written in <a class="reference external" href="https://en.wikipedia.org/wiki/Endianness#Little-endian">little endian</a> byte order.

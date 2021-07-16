@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Types &#8212; WebAssembly 1.1 (Draft 2021-06-01)</title>
+    <title>Types &#8212; WebAssembly 1.1 (Draft 2021-07-16)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -87,8 +87,8 @@
 <span id="binary-type"></span><span id="index-0"></span><h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>In future versions of WebAssembly, value types may include types denoted by <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type indices</span></a>.
-Thus, the binary format for types corresponds to the encodings of small negative <span class="math notranslate nohighlight">\(\href{../binary/values.html#binary-sint}{\href{../syntax/values.html#syntax-int}{\mathit{s}N}}\)</span> values, so that they can coexist with (positive) type indices in the future.</p>
+<p>In some places, possible types include both type constructors or types denoted by <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type indices</span></a>.
+Thus, the binary format for type constructors corresponds to the encodings of small negative <span class="math notranslate nohighlight">\(\href{../binary/values.html#binary-sint}{\href{../syntax/values.html#syntax-int}{\mathit{s}N}}\)</span> values, such that they can unambiguously occur in the same place as (positive) type indices.</p>
 </div>
 <section id="number-types">
 <span id="binary-numtype"></span><span id="index-1"></span><h2>Number Types<a class="headerlink" href="#number-types" title="Permalink to this headline">¶</a></h2>

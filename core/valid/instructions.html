@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-06-01)</title>
+    <title>Instructions &#8212; WebAssembly 1.1 (Draft 2021-07-16)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -521,7 +521,7 @@ In contrast,</p>
 <span id="valid-load"></span><h3><span class="math notranslate nohighlight">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#t-mathsf-xref-syntax-instructions-syntax-instr-memory-mathsf-load-xref-syntax-instructions-syntax-memarg-mathit-memarg" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The memory <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0]\)</span> must be defined in the context.</p></li>
-<li><p>The alignment <span class="math notranslate nohighlight">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">bit width</span></a> of <span class="math notranslate nohighlight">\(t\)</span> divided by <span class="math notranslate nohighlight">\(8\)</span>.</p></li>
+<li><p>The alignment <span class="math notranslate nohighlight">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-numtype"><span class="std std-ref">bit width</span></a> of <span class="math notranslate nohighlight">\(t\)</span> divided by <span class="math notranslate nohighlight">\(8\)</span>.</p></li>
 <li><p>Then the instruction is valid with type <span class="math notranslate nohighlight">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]\)</span>.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
@@ -553,7 +553,7 @@ In contrast,</p>
 <h3><span class="math notranslate nohighlight">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#t-mathsf-xref-syntax-instructions-syntax-instr-memory-mathsf-store-xref-syntax-instructions-syntax-memarg-mathit-memarg" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The memory <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}[0]\)</span> must be defined in the context.</p></li>
-<li><p>The alignment <span class="math notranslate nohighlight">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">bit width</span></a> of <span class="math notranslate nohighlight">\(t\)</span> divided by <span class="math notranslate nohighlight">\(8\)</span>.</p></li>
+<li><p>The alignment <span class="math notranslate nohighlight">\(2^{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}.\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}\)</span> must not be larger than the <a class="reference internal" href="../syntax/types.html#syntax-numtype"><span class="std std-ref">bit width</span></a> of <span class="math notranslate nohighlight">\(t\)</span> divided by <span class="math notranslate nohighlight">\(8\)</span>.</p></li>
 <li><p>Then the instruction is valid with type <span class="math notranslate nohighlight">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~t] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
@@ -927,7 +927,7 @@ such that <span class="math notranslate nohighlight">\(t_2^\ast = t_0^\ast~{t'}^
 <section id="xref-syntax-instructions-syntax-instr-mathit-instr-ast-xref-syntax-instructions-syntax-instr-control-mathsf-end">
 <h3><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span><a class="headerlink" href="#xref-syntax-instructions-syntax-instr-mathit-instr-ast-xref-syntax-instructions-syntax-instr-control-mathsf-end" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>The instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">valid</span></a> with some <a class="reference internal" href="#syntax-stacktype"><span class="std std-ref">stack type</span></a> <span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t'^\ast]\)</span>.</p></li>
+<li><p>The instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be <a class="reference internal" href="#valid-instr-seq"><span class="std std-ref">valid</span></a> with some <a class="reference internal" href="#syntax-stacktype"><span class="std std-ref">stack type</span></a> <span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} [{t'}^\ast]\)</span>.</p></li>
 <li><p>For each <a class="reference internal" href="#syntax-opdtype"><span class="std std-ref">operand type</span></a> <span class="math notranslate nohighlight">\(t'_i\)</span> in <span class="math notranslate nohighlight">\({t'}^\ast\)</span> and corresponding <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> type <span class="math notranslate nohighlight">\(t_i\)</span> in <span class="math notranslate nohighlight">\(t^\ast\)</span>, <span class="math notranslate nohighlight">\(t'_i\)</span> <a class="reference internal" href="#match-opdtype"><span class="std std-ref">matches</span></a> <span class="math notranslate nohighlight">\(t_i\)</span>.</p></li>
 <li><p>Then the expression is valid with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t^\ast]\)</span>.</p></li>
 </ul>
