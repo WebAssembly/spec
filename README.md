@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/WebAssembly/spec.svg?branch=master)](https://travis-ci.org/WebAssembly/spec)
+![Build Status](https://github.com/WebAssembly/spec/actions/workflows/main.yml/badge.svg)
 
 # spec
 
