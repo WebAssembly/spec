@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/WebAssembly/exception-handling.svg?branch=master)](https://travis-ci.org/WebAssembly/exception-handling)
+![Build Status](https://github.com/WebAssembly/spec/actions/workflows/main.yml/badge.svg)
 
 # Exception Handling Proposal for WebAssembly
 
@@ -9,6 +9,7 @@ for adding exception handling to WebAssembly.
 summary of the proposal.
 
 Original README from upstream repository follows...
+=======
 
 # spec
 
