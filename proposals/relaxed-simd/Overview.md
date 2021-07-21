@@ -182,6 +182,29 @@ where:
 - the intermediate `b * c` is be rounded first, and the final result rounded again (for a total of 2 roundings), or
 - the the entire expression evaluated with higher precision and then only rounded once (if supported by hardware).
 
+### Relaxed bitselect (blend/laneselect)
+
+- `i8x16.blend(a: v128, b: v128, m: v128) -> v128`
+- `i16x8.blend(a: v128, b: v128, m: v128) -> v128`
+- `i32x4.blend(a: v128, b: v128, m: v128) -> v128`
+- `i64x2.blend(a: v128, b: v128, m: v128) -> v128`
+
+Select lanes from `a` or `b` based on masks in `m`. If each lane-sized mask in `m` has all bits set or all bits unset, these instructions behave the same as `v128.bitselect`. Otherwise, the result is implementation defined.
+
+```python
+def blend(a : v128, b : v128, m: v128, lanes : int):
+  result = []
+  for i in range(lanes):
+    mask = m[i]
+    if mask == ~0:
+      result[i] = a[i]
+    elif mask == 0:
+      result[i] = b[i]
+    else:
+      result[i] = UNDEFINED
+  return result
+```
+
 ## Binary format
 
 > This is a placeholder for binary format of instructions and new constructs.
