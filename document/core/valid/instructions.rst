@@ -569,7 +569,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32] \to [t]`.
 
@@ -609,7 +609,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32~t] \to []`.
 
@@ -1100,7 +1100,7 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
 :math:`\instr^\ast~\END`
 ........................
 
-* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some :ref:`type <syntax-functype>` :math:`[] \to [t^\ast]`.
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some :ref:`type <syntax-functype>` :math:`[] \to [{t'}^\ast]`.
 
 * For each :ref:`value type <syntax-valtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding :ref:`value type <syntax-valtype>` type :math:`t_i` in :math:`t^\ast`, :math:`t'_i` :ref:`matches <match-valtype>` :math:`t_i`.
 

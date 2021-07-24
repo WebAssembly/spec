@@ -307,7 +307,7 @@
 .. Modules, non-terminals
 
 .. |module| mathdef:: \xref{syntax/modules}{syntax-module}{\X{module}}
-.. |type| mathdef:: \xref{syntax/modules}{syntax-typedef}{\X{type}}
+.. |type| mathdef:: \xref{syntax/types}{syntax-functype}{\X{type}}
 .. |func| mathdef:: \xref{syntax/modules}{syntax-func}{\X{func}}
 .. |table| mathdef:: \xref{syntax/modules}{syntax-table}{\X{table}}
 .. |mem| mathdef:: \xref{syntax/modules}{syntax-mem}{\X{mem}}
