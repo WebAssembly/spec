@@ -50,6 +50,9 @@ let num_type = function
   | "i64" -> Types.I64Type
   | "f32" -> Types.F32Type
   | "f64" -> Types.F64Type
+  | _ -> assert false
+
+let simd_type = function
   | "v128" -> Types.V128Type
   | _ -> assert false
 
@@ -65,16 +68,13 @@ let floatop t f32 f64 =
   | "f64" -> f64
   | _ -> assert false
 
-let numop t i32 i64 f32 f64 v128 =
+let numop t i32 i64 f32 f64 =
   match t with
   | "i32" -> i32
   | "i64" -> i64
   | "f32" -> f32
   | "f64" -> f64
-  | "v128" -> v128
   | _ -> assert false
-
-let unimplemented_simd = fun _ -> failwith "unimplemented simd"
 
 let simdop s i8x16 i16x8 i32x4 i64x2 f32x4 f64x2 =
   match s with
@@ -184,8 +184,8 @@ let name = '$' reserved
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
+let nxx = ixx | fxx
 let vxxx = "v128"
-let nxx = ixx | fxx | vxxx
 let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
@@ -212,8 +212,8 @@ rule token = parse
   | "extern" { EXTERN }
   | "externref" { EXTERNREF }
   | "funcref" { FUNCREF }
-  | (nxx as t) { NUM_TYPE (num_type t) }
-  | (vxxx)".const" { V128_CONST }
+  | nxx as t { NUM_TYPE (num_type t) }
+  | vxxx as t { SIMD_TYPE (simd_type t) }
   | "mut" { MUT }
 
   | (nxx as t)".const"
@@ -226,8 +226,14 @@ rule token = parse
         (fun s -> let n = F32.of_string s.it in
           f32_const (n @@ s.at), Values.F32 n)
         (fun s -> let n = F64.of_string s.it in
-          f64_const (n @@ s.at), Values.F64 n)
-        unimplemented_simd)
+          f64_const (n @@ s.at), Values.F64 n))
+    }
+  | vxxx".const"
+    { let open Source in
+      SIMD_CONST
+        (fun shape ss at ->
+          let v = V128.of_strings shape (List.map (fun s -> s.it) ss) in
+          (v128_const (v @@ at), Values.V128 v))
     }
   | "ref.null" { REF_NULL }
   | "ref.func" { REF_FUNC }
@@ -276,13 +282,11 @@ rule token = parse
   | (nxx as t)".load"
     { LOAD (fun a o ->
         numop t (i32_load (opt a 2)) (i64_load (opt a 3))
-                (f32_load (opt a 2)) (f64_load (opt a 3))
-                (v128_load (opt a 4)) o) }
+                (f32_load (opt a 2)) (f64_load (opt a 3)) o) }
   | (nxx as t)".store"
     { STORE (fun a o ->
         numop t (i32_store (opt a 2)) (i64_store (opt a 3))
-                (f32_store (opt a 2)) (f64_store (opt a 3))
-                (v128_store (opt a 4)) o) }
+                (f32_store (opt a 2)) (f64_store (opt a 3)) o) }
   | (ixx as t)".load"(mem_size as sz)"_"(sign as s)
     { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
       LOAD (fun a o ->
@@ -295,6 +299,10 @@ rule token = parse
             (ext s i64_load8_s i64_load8_u (opt a 0))
             (ext s i64_load16_s i64_load16_u (opt a 1))
             (ext s i64_load32_s i64_load32_u (opt a 2)) o)) }
+  | "v128.load"
+    { LOAD (fun a o -> (v128_load (opt a 4)) o) }
+  | "v128.store"
+    { STORE (fun a o -> (v128_store (opt a 4)) o) }
   | "v128.load8x8_"(sign as s)
     { LOAD (fun a o -> (ext s v128_load8x8_s v128_load8x8_u (opt a 3)) o) }
   | "v128.load16x4_"(sign as s)
@@ -476,14 +484,16 @@ rule token = parse
                       i64x2_splat f32x4_splat f64x2_splat) }
   | (simd_shape as s)".extract_lane"
     { except ["i8x16"; "i16x8"] s lexbuf;
-      EXTRACT_LANE (fun imm ->
-        simdop s unimplemented_simd unimplemented_simd i32x4_extract_lane
-                 i64x2_extract_lane f32x4_extract_lane f64x2_extract_lane imm) }
+      EXTRACT_LANE (fun i ->
+        simdop s
+          (fun _ -> unreachable) (fun _ -> unreachable)
+          i32x4_extract_lane i64x2_extract_lane
+          f32x4_extract_lane f64x2_extract_lane i) }
   | (("i8x16"|"i16x8") as t)".extract_lane_"(sign as s)
-    { EXTRACT_LANE (fun imm ->
+    { EXTRACT_LANE (fun i ->
         if t = "i8x16"
-        then ext s i8x16_extract_lane_s i8x16_extract_lane_u imm
-        else ext s i16x8_extract_lane_s i16x8_extract_lane_u imm )}
+        then ext s i8x16_extract_lane_s i8x16_extract_lane_u i
+        else ext s i16x8_extract_lane_s i16x8_extract_lane_u i )}
   | (simd_shape as s)".replace_lane"
     { REPLACE_LANE (simdop s i8x16_replace_lane i16x8_replace_lane i32x4_replace_lane
                              i64x2_replace_lane f32x4_replace_lane f64x2_replace_lane) }

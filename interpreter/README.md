@@ -247,12 +247,19 @@ op:
   ref.null <ref_kind>
   ref.is_null <ref_kind>
   ref.func <var>
-  <num_type>.const <value>
+  <num_type>.const <num>
   <num_type>.<unop>
   <num_type>.<binop>
   <num_type>.<testop>
   <num_type>.<relop>
   <num_type>.<cvtop>_<num_type>(_<sign>)?
+  <simd_type>.const <simd_shape> <num>+
+  <simd_type>.<simdunop>
+  <simd_type>.<simdbinop>
+  <simd_type>.<simdternop>
+  <simd_type>.<simdtestop>
+  <simd_type>.<simdcvtop>_<num_type>(_<sign>)?
+TODO
 
 func:    ( func <name>? <func_type> <local>* <instr>* )
          ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)

@@ -1,8 +1,9 @@
 (* Types *)
 
-type num_type = I32Type | I64Type | F32Type | F64Type | V128Type
+type num_type = I32Type | I64Type | F32Type | F64Type
+type simd_type = V128Type
 type ref_type = FuncRefType | ExternRefType
-type value_type = NumType of num_type | RefType of ref_type
+type value_type = NumType of num_type | SimdType of simd_type | RefType of ref_type
 type result_type = value_type list
 type func_type = FuncType of result_type * result_type
 
@@ -26,11 +27,14 @@ type pack_simd =
   | Pack32x2 of extension
   | PackZero
 
+
 (* Attributes *)
 
-let size = function
+let num_size = function
   | I32Type | F32Type -> 4
   | I64Type | F64Type -> 8
+
+let simd_size = function
   | V128Type -> 16
 
 let packed_size = function
@@ -41,11 +45,15 @@ let packed_size = function
 
 let is_num_type = function
   | NumType _ -> true
-  | RefType _ -> false
+  | _ -> false
+
+let is_simd_type = function
+  | SimdType _ -> true
+  | _ -> false
 
 let is_ref_type = function
-  | NumType _ -> false
   | RefType _ -> true
+  | _ -> false
 
 
 (* Filters *)
@@ -97,6 +105,8 @@ let string_of_num_type = function
   | I64Type -> "i64"
   | F32Type -> "f32"
   | F64Type -> "f64"
+
+let string_of_simd_type = function
   | V128Type -> "v128"
 
 let string_of_ref_type = function
@@ -109,6 +119,7 @@ let string_of_refed_type = function
 
 let string_of_value_type = function
   | NumType t -> string_of_num_type t
+  | SimdType t -> string_of_simd_type t
   | RefType t -> string_of_ref_type t
 
 let string_of_value_types = function

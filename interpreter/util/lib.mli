@@ -1,6 +1,6 @@
 (* Things that should be in the OCaml library... *)
 
-type void
+type void = |
 
 module Fun :
 sig

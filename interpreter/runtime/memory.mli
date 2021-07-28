@@ -33,12 +33,18 @@ val load_num :
   memory -> address -> offset -> num_type -> num (* raises Bounds *)
 val store_num :
   memory -> address -> offset -> num -> unit (* raises Bounds *)
-val load_packed :
+val load_num_packed :
   pack_size -> extension -> memory -> address -> offset -> num_type -> num
     (* raises Type, Bounds *)
-val load_simd_packed :
-  pack_size -> pack_simd -> memory -> address -> offset -> num_type -> num
-    (* raises Type, Bounds *)
-val store_packed :
+val store_num_packed :
   pack_size -> memory -> address -> offset -> num -> unit
+    (* raises Type, Bounds *)
+
+val load_simd :
+  memory -> address -> offset -> simd_type -> simd (* raises Bounds *)
+val store_simd :
+  memory -> address -> offset -> simd -> unit
+    (* raises Type, Bounds *)
+val load_simd_packed :
+  pack_size -> pack_simd -> memory -> address -> offset -> simd_type -> simd
     (* raises Type, Bounds *)

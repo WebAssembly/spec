@@ -252,25 +252,34 @@ let string_of_nan = function
 
 let type_of_result r =
   match r with
-  | NumResult (LitPat v) -> Values.type_of_value v.it
-  | NumResult (NanPat v) -> Types.NumType (Values.type_of_num v.it)
-  | SimdResult (_, _) -> Types.NumType Types.V128Type
-  | RefResult t -> Types.RefType t
+  | NumResult (NumPat n) -> Types.NumType (Values.type_of_num n.it)
+  | NumResult (NanPat n) -> Types.NumType (Values.type_of_num n.it)
+  | SimdResult (SimdPat _) -> Types.SimdType Types.V128Type
+  | RefResult (RefPat r) -> Types.RefType (Values.type_of_ref r.it)
+  | RefResult (RefTypePat t) -> Types.RefType t
 
 let string_of_num_pat (p : num_pat) =
   match p with
-  | LitPat v -> Values.string_of_value v.it
+  | NumPat n -> Values.string_of_num n.it
   | NanPat nanop ->
     match nanop.it with
-    | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
+    | Values.I32 _ | Values.I64 _ -> assert false
     | Values.F32 n | Values.F64 n -> string_of_nan n
+
+let string_of_simd_pat (p : simd_pat) =
+  match p with
+  | SimdPat (shape, ns) -> String.concat " " (List.map string_of_num_pat ns)
+
+let string_of_ref_pat (p : ref_pat) =
+  match p with
+  | RefPat r -> Values.string_of_ref r.it
+  | RefTypePat t -> Types.string_of_refed_type t
 
 let string_of_result r =
   match r with
-  | NumResult v -> string_of_num_pat v
-  | SimdResult (shape, vs) ->
-    String.concat " " (List.map string_of_num_pat vs)
-  | RefResult t -> Types.string_of_refed_type t
+  | NumResult np -> string_of_num_pat np
+  | SimdResult vp -> string_of_simd_pat vp
+  | RefResult rp -> string_of_ref_pat rp
 
 let string_of_results = function
   | [r] -> string_of_result r
@@ -359,58 +368,55 @@ let run_action act : Values.value list =
     )
 
 
-let assert_num_pat at v p =
+let assert_num_pat at n np =
   let open Values in
-  match p with
-    | (LitPat v') -> v <> v'.it
-    | (NanPat nanop) ->
-      match nanop.it, v with
-      | F32 CanonicalNan, Num (F32 z) -> z <> F32.pos_nan && z <> F32.neg_nan
-      | F64 CanonicalNan, Num (F64 z) -> z <> F64.pos_nan && z <> F64.neg_nan
-      | F32 ArithmeticNan, Num (F32 z) ->
+  match np with
+    | NumPat n' -> n = n'.it
+    | NanPat nanop ->
+      match n, nanop.it with
+      | F32 z, F32 CanonicalNan -> z = F32.pos_nan || z = F32.neg_nan
+      | F64 z, F64 CanonicalNan -> z = F64.pos_nan || z = F64.neg_nan
+      | F32 z, F32 ArithmeticNan ->
         let pos_nan = F32.to_bits F32.pos_nan in
-        Int32.logand (F32.to_bits z) pos_nan <> pos_nan
-      | F64 ArithmeticNan, Num (F64 z) ->
+        Int32.logand (F32.to_bits z) pos_nan = pos_nan
+      | F64 z, F64 ArithmeticNan ->
         let pos_nan = F64.to_bits F64.pos_nan in
-        Int64.logand (F64.to_bits z) pos_nan <> pos_nan
+        Int64.logand (F64.to_bits z) pos_nan = pos_nan
       | _, _ -> false
 
-let assert_result at got expect =
+let assert_simd_pat at v p =
   let open Values in
+  match v, p with
+  | V128 v, SimdPat (shape, ps) ->
+    let extract = match shape with
+      | Simd.I8x16 -> fun v i -> I32 (V128.I8x16.extract_lane_s i v)
+      | Simd.I16x8 -> fun v i -> I32 (V128.I16x8.extract_lane_s i v)
+      | Simd.I32x4 -> fun v i -> I32 (V128.I32x4.extract_lane_s i v)
+      | Simd.I64x2 -> fun v i -> I64 (V128.I64x2.extract_lane_s i v)
+      | Simd.F32x4 -> fun v i -> F32 (V128.F32x4.extract_lane i v)
+      | Simd.F64x2 -> fun v i -> F64 (V128.F64x2.extract_lane i v)
+    in
+    List.for_all2 (assert_num_pat at) (List.init (Simd.lanes shape) (extract v)) ps
+
+let assert_ref_pat at r p =
+  match r, p with
+  | r, RefPat r' -> r = r'.it
+  | Instance.FuncRef _, RefTypePat Types.FuncRefType
+  | ExternRef _, RefTypePat Types.ExternRefType -> true
+  | _ -> false
+
+let assert_pat at v r =
+  let open Values in
+  match v, r with
+  | Num n, NumResult np -> assert_num_pat at n np
+  | Simd v, SimdResult vp -> assert_simd_pat at v vp
+  | Ref r, RefResult rp -> assert_ref_pat at r rp
+  | _, _ -> false
+
+let assert_result at got expect =
   if
     List.length got <> List.length expect ||
-    List.exists2 (fun v r ->
-      match r with
-      | NumResult v' -> assert_num_pat at v v'
-      | SimdResult (shape, vs) ->
-        begin
-          let open Simd in
-          let assert_simd_result to_num extract v =
-            List.exists2
-              (assert_num_pat at)
-              (List.init (lanes shape) (fun i -> Num (to_num (extract i v)))) vs in
-          match shape, v with
-          | I8x16, Num (V128 v) ->
-            assert_simd_result I32Num.to_num V128.I8x16.extract_lane_s v
-          | I16x8, Num (V128 v) ->
-            assert_simd_result I32Num.to_num V128.I16x8.extract_lane_s v
-          | I32x4, Num (V128 v) ->
-            assert_simd_result I32Num.to_num V128.I32x4.extract_lane_s v
-          | I64x2, Num (V128 v) ->
-            assert_simd_result I64Num.to_num V128.I64x2.extract_lane_s v
-          | F32x4, Num (V128 v) ->
-            assert_simd_result F32Num.to_num V128.F32x4.extract_lane v
-          | F64x2, Num (V128 v) ->
-            assert_simd_result F64Num.to_num V128.F64x2.extract_lane v
-          | _ -> failwith "impossible"
-        end
-      | RefResult t ->
-        (match t, v with
-        | Types.FuncRefType, Ref (Instance.FuncRef _)
-        | Types.ExternRefType, Ref (ExternRef _) -> false
-        | _ -> true
-        )
-    ) got expect
+    List.exists2 (fun v r -> not (assert_pat at v r)) got expect
   then begin
     print_string "Result: "; print_values got;
     print_string "Expect: "; print_results expect;

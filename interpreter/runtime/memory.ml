@@ -103,33 +103,27 @@ let storen mem a o n x =
   in loop (effective_address a o) n x
 
 let load_num mem a o t =
+  let n = loadn mem a o (Types.num_size t) in
   match t with
-  | V128Type ->
-      V128 (V128.of_bits (load_bytes mem (effective_address a o) (Types.size t)))
-  | _ ->
-    let n = loadn mem a o (Types.size t) in
-    match t with
-    | I32Type -> I32 (Int64.to_int32 n)
-    | I64Type -> I64 n
-    | F32Type -> F32 (F32.of_bits (Int64.to_int32 n))
-    | F64Type -> F64 (F64.of_bits n)
-    | _ -> assert false
+  | I32Type -> I32 (Int64.to_int32 n)
+  | I64Type -> I64 n
+  | F32Type -> F32 (F32.of_bits (Int64.to_int32 n))
+  | F64Type -> F64 (F64.of_bits n)
 
 let store_num mem a o n =
-  let store = storen mem a o (Types.size (Values.type_of_num n)) in
+  let store = storen mem a o (Types.num_size (Values.type_of_num n)) in
   match n with
   | I32 x -> store (Int64.of_int32 x)
   | I64 x -> store x
   | F32 x -> store (Int64.of_int32 (F32.to_bits x))
   | F64 x -> store (F64.to_bits x)
-  | V128 x -> store_bytes mem (effective_address a o) (V128.to_bits x)
 
 let extend x n = function
   | ZX -> x
   | SX -> let sh = 64 - 8 * n in Int64.(shift_right (shift_left x sh) sh)
 
-let load_packed sz ext mem a o t =
-  assert (packed_size sz <= Types.size t);
+let load_num_packed sz ext mem a o t =
+  assert (packed_size sz <= Types.num_size t);
   let w = packed_size sz in
   let x = extend (loadn mem a o w) w ext in
   match t with
@@ -137,15 +131,34 @@ let load_packed sz ext mem a o t =
   | I64Type -> I64 x
   | _ -> raise Type
 
-let load_simd_packed pack_size simd_load mem a o t =
-  let n = packed_size pack_size in
-  assert (n < Types.size t);
+let store_num_packed sz mem a o n =
+  assert (packed_size sz <= Types.num_size (Values.type_of_num n));
+  let w = packed_size sz in
+  let x =
+    match n with
+    | I32 x -> Int64.of_int32 x
+    | I64 x -> x
+    | _ -> raise Type
+  in storen mem a o w x
+
+let load_simd mem a o t =
+  match t with
+  | V128Type ->
+    V128 (V128.of_bits (load_bytes mem (effective_address a o) (Types.simd_size t)))
+
+let store_simd mem a o n =
+  match n with
+  | V128 x -> store_bytes mem (effective_address a o) (V128.to_bits x)
+
+let load_simd_packed sz simd_load mem a o t =
+  let n = packed_size sz in
+  assert (n < Types.simd_size t);
   let x = loadn mem a o n in
   let b = Bytes.make 16 '\x00' in
   Bytes.set_int64_le b 0 x;
   let v = V128.of_bits (Bytes.to_string b) in
   let r =
-    match pack_size, simd_load with
+    match sz, simd_load with
     | Pack64, Pack8x8 SX -> V128.I16x8_convert.extend_low_s v
     | Pack64, Pack8x8 ZX -> V128.I16x8_convert.extend_low_u v
     | Pack64, Pack16x4 SX -> V128.I32x4_convert.extend_low_s v
@@ -160,13 +173,3 @@ let load_simd_packed pack_size simd_load mem a o t =
     | Pack64, PackZero -> v
     | _ -> assert false
   in V128 r
-
-let store_packed sz mem a o n =
-  assert (packed_size sz <= Types.size (Values.type_of_num n));
-  let w = packed_size sz in
-  let x =
-    match n with
-    | I32 x -> Int64.of_int32 x
-    | I64 x -> x
-    | _ -> raise Type
-  in storen mem a o w x

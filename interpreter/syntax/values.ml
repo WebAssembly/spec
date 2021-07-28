@@ -3,18 +3,40 @@ open Types
 
 (* Values and operators *)
 
-type ('i32, 'i64, 'f32, 'f64, 'v128) op =
-  I32 of 'i32 | I64 of 'i64 | F32 of 'f32 | F64 of 'f64 | V128 of 'v128
+type ('i32, 'i64, 'f32, 'f64) op =
+  I32 of 'i32 | I64 of 'i64 | F32 of 'f32 | F64 of 'f64
 
-type num = (I32.t, I64.t, F32.t, F64.t, V128.t) op
+type ('v128) simdop =
+  V128 of 'v128
+
+type ('i8x16, 'i16x8, 'i32x4, 'i64x2, 'f32x4, 'f64x2, 'v128) laneop =
+  | I8x16 of 'i8x16 | I16x8 of 'i16x8 | I32x4 of 'i32x4 | I64x2 of 'i64x2
+  | F32x4 of 'f32x4 | F64x2 of 'f64x2
+  | V128x1 of 'v128
+
+type num = (I32.t, I64.t, F32.t, F64.t) op
+type simd = (V128.t) simdop
 
 type ref_ = ..
 type ref_ += NullRef of ref_type
 
-type value = Num of num | Ref of ref_
+type value = Num of num | Simd of simd | Ref of ref_
 
 
 (* Injection & projection *)
+
+let as_num = function
+  | Num n -> n
+  | _ -> failwith "as_num"
+
+let as_simd = function
+  | Simd i -> i
+  | _ -> failwith "as_simd"
+
+let as_ref = function
+  | Ref r -> r
+  | _ -> failwith "as_ref"
+
 
 exception TypeError of int * num * num_type
 
@@ -53,11 +75,18 @@ struct
   let of_num n = function F64 z -> z | v -> raise (TypeError (n, v, F64Type))
 end
 
-module V128Num =
+module type SimdType =
+sig
+  type t
+  val to_simd : t -> simd
+  val of_simd : int -> simd -> t
+end
+
+module V128Simd =
 struct
   type t = V128.t
-  let to_num i = V128 i
-  let of_num n = function V128 z -> z | v -> raise (TypeError (n, v, V128Type))
+  let to_simd i = V128 i
+  let of_simd n = function V128 z -> z
 end
 
 
@@ -68,6 +97,8 @@ let type_of_num = function
   | I64 _ -> I64Type
   | F32 _ -> F32Type
   | F64 _ -> F64Type
+
+let type_of_simd = function
   | V128 _ -> V128Type
 
 let type_of_ref' = ref (function NullRef t -> t | _ -> assert false)
@@ -75,18 +106,30 @@ let type_of_ref r = !type_of_ref' r
 
 let type_of_value = function
   | Num n -> NumType (type_of_num n)
+  | Simd i -> SimdType (type_of_simd i)
   | Ref r -> RefType (type_of_ref r)
 
 
-(* Projections *)
+(* Comparison *)
 
-let as_num = function
-  | Num n -> n
-  | Ref _ -> failwith "as_num"
+let eq_num n1 n2 = n1 = n2
 
-let as_ref = function
-  | Num _ -> failwith "as_ref"
-  | Ref r -> r
+let eq_simd v1 v2 = v1 = v2
+
+let eq_ref' = ref (fun r1 r2 ->
+  match r1, r2 with
+  | NullRef _, NullRef _ -> true
+  | _, _ -> false
+)
+
+let eq_ref r1 r2 = !eq_ref' r1 r2
+
+let eq v1 v2 =
+  match v1, v2 with
+  | Num n1, Num n2 -> eq_num n1 n2
+  | Simd v1, Simd v2 -> eq_simd v1 v2
+  | Ref r1, Ref r2 -> eq_ref r1 r2
+  | _, _ -> false
 
 
 (* Defaults *)
@@ -96,13 +139,16 @@ let default_num = function
   | I64Type -> I64 I64.zero
   | F32Type -> F32 F32.zero
   | F64Type -> F64 F64.zero
-  | V128Type -> V128 V128.default
+
+let default_simd = function
+  | V128Type -> V128 V128.zero
 
 let default_ref = function
   | t -> NullRef t
 
 let default_value = function
   | NumType t' -> Num (default_num t')
+  | SimdType t' -> Simd (default_simd t')
   | RefType t' -> Ref (default_ref t')
 
 
@@ -115,13 +161,25 @@ let string_of_num = function
   | I64 i -> I64.to_string_s i
   | F32 z -> F32.to_string z
   | F64 z -> F64.to_string z
+
+let hex_string_of_num = function
+  | I32 i -> I32.to_hex_string i
+  | I64 i -> I64.to_hex_string i
+  | F32 z -> F32.to_hex_string z
+  | F64 z -> F64.to_hex_string z
+
+let string_of_simd = function
   | V128 v -> V128.to_string v
+
+let hex_string_of_simd = function
+  | V128 v -> V128.to_hex_string v
 
 let string_of_ref' = ref (function NullRef t -> "null" | _ -> "ref")
 let string_of_ref r = !string_of_ref' r
 
 let string_of_value = function
   | Num n -> string_of_num n
+  | Simd i -> string_of_simd i
   | Ref r -> string_of_ref r
 
 let string_of_values = function

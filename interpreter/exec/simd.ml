@@ -141,7 +141,7 @@ module type S =
 sig
   type t
   type bits
-  val default : t (* FIXME good name for default value? *)
+  val zero : t
   val to_string : t -> string
   val to_hex_string : t -> string
   val of_bits : bits -> t
@@ -163,7 +163,7 @@ sig
   module I64x2 : Int with type t = t and type lane = I64.t
   module F32x4 : Float with type t = t and type lane = F32.t
   module F64x2 : Float with type t = t and type lane = F64.t
-  module V128 : Vec with type t = t
+  module V128x1 : Vec with type t = t
   module V8x16 : sig
     val swizzle : t -> t -> t
     val shuffle : t -> t -> int list -> t
@@ -218,7 +218,6 @@ sig
     val convert_i32x4_u : t -> t
     val demote_f64x2_zero : t -> t
   end
-
   module F64x2_convert : sig
     val promote_low_f32x4 : t -> t
     val convert_i32x4_s : t -> t
@@ -231,7 +230,7 @@ struct
   type t = Rep.t
   type bits = Rep.t
 
-  let default = Rep.make Rep.bytewidth (chr 0)
+  let zero = Rep.make Rep.bytewidth (chr 0)
   let to_string = Rep.to_string (* FIXME very very wrong *)
   let to_hex_string = Rep.to_hex_string
   let of_bits x = x
@@ -245,7 +244,7 @@ struct
   let of_i32x4 = Rep.of_i32x4
   let of_i64x2 = Rep.of_i64x2
 
-  module V128 : Vec with type t = Rep.t = struct
+  module V128x1 : Vec with type t = Rep.t = struct
     type t = Rep.t
     let to_shape = Rep.to_i64x2
     let of_shape = Rep.of_i64x2
@@ -261,7 +260,6 @@ struct
       let v1_and_c = binop I64.and_ v1 c in
       binop I64.or_ v1_and_c v2_andnot_c
   end
-
 
   module MakeFloat (Float : Float.S) (Convert : sig
       val to_shape : Rep.t -> Float.t list

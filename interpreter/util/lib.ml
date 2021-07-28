@@ -1,4 +1,4 @@
-type void
+type void = |
 
 module Fun =
 struct

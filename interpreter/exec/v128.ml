@@ -1,3 +1,8 @@
+(* TODO
+- inline Simd functor
+- unify shape and packed num types for simd & memory
+*)
+
 include Simd.Make
   (struct
     include String

@@ -325,42 +325,8 @@ let rec step (c : config) : config =
           let n =
             match sz with
             | None -> Memory.load_num mem a offset ty
-            | Some (sz, ext) -> Memory.load_packed sz ext mem a offset ty
+            | Some (sz, ext) -> Memory.load_num_packed sz ext mem a offset ty
           in Num n :: vs', []
-        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
-
-      | SimdLoad {offset; ty; sz; _}, Num (I32 i) :: vs' ->
-        let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_i32_u i in
-        (try
-          let v =
-            match sz with
-            | None -> Memory.load_num mem addr offset ty
-            | Some (pack_size, simd_load) ->
-              Memory.load_simd_packed pack_size simd_load mem addr offset ty
-          in Num v :: vs', []
-        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
-
-      | SimdLoadLane ({offset; ty; sz; _}, j), Num (V128 v) :: Num (I32 i) :: vs' ->
-        let mem = memory frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_i32_u i in
-        (try
-          let v =
-            match sz with
-            | None -> assert false
-            | Some Pack8 ->
-              V128.I8x16.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_packed Pack8 SX mem addr offset I32Type))
-            | Some Pack16 ->
-              V128.I16x8.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_packed Pack16 SX mem addr offset I32Type))
-            | Some Pack32 ->
-              V128.I32x4.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num mem addr offset I32Type))
-            | Some Pack64 ->
-              V128.I64x2.replace_lane j v
-                (I64Num.of_num 0 (Memory.load_num mem addr offset I64Type))
-          in Num (V128 v) :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
       | Store {offset; sz; _}, Num n :: Num (I32 i) :: vs' ->
@@ -369,29 +335,65 @@ let rec step (c : config) : config =
         (try
           (match sz with
           | None -> Memory.store_num mem a offset n
-          | Some sz -> Memory.store_packed sz mem a offset n
+          | Some sz -> Memory.store_num_packed sz mem a offset n
           );
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | SimdStore {offset; sz; _}, Num v :: Num (I32 i) :: vs' ->
+      | SimdLoad {offset; ty; sz; _}, Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
         (try
-          Memory.store_num mem addr offset v;
+          let v =
+            match sz with
+            | None -> Memory.load_simd mem addr offset ty
+            | Some (pack_size, simd_load) ->
+              Memory.load_simd_packed pack_size simd_load mem addr offset ty
+          in Simd v :: vs', []
+        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
+
+      | SimdStore {offset; sz; _}, Simd v :: Num (I32 i) :: vs' ->
+        let mem = memory frame.inst (0l @@ e.at) in
+        let addr = I64_convert.extend_i32_u i in
+        (try
+          Memory.store_simd mem addr offset v;
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | SimdStoreLane ({offset; ty; sz; _}, j), Num (V128 v) :: Num (I32 i) :: vs' ->
+      | SimdLoadLane ({offset; ty; sz; _}, j), Simd (V128 v) :: Num (I32 i) :: vs' ->
+        let mem = memory frame.inst (0l @@ e.at) in
+        let addr = I64_convert.extend_i32_u i in
+        (try
+          let v =
+            match sz with
+            | Pack8 ->
+              V128.I8x16.replace_lane j v
+                (I32Num.of_num 0 (Memory.load_num_packed Pack8 SX mem addr offset I32Type))
+            | Pack16 ->
+              V128.I16x8.replace_lane j v
+                (I32Num.of_num 0 (Memory.load_num_packed Pack16 SX mem addr offset I32Type))
+            | Pack32 ->
+              V128.I32x4.replace_lane j v
+                (I32Num.of_num 0 (Memory.load_num mem addr offset I32Type))
+            | Pack64 ->
+              V128.I64x2.replace_lane j v
+                (I64Num.of_num 0 (Memory.load_num mem addr offset I64Type))
+          in Simd (V128 v) :: vs', []
+        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
+
+      | SimdStoreLane ({offset; ty; sz; _}, j), Simd (V128 v) :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
         (try
           (match sz with
-          | None -> assert false
-          | Some Pack8 -> Memory.store_packed Pack8 mem addr offset (I32 (V128.I8x16.extract_lane_s j v))
-          | Some Pack16 -> Memory.store_packed Pack16 mem addr offset (I32 (V128.I16x8.extract_lane_s j v))
-          | Some Pack32 -> Memory.store_num mem addr offset (I32 (V128.I32x4.extract_lane_s j v))
-          | Some Pack64 -> Memory.store_num mem addr offset (I64 (V128.I64x2.extract_lane_s j v))
+          | Pack8 ->
+            Memory.store_num_packed Pack8 mem addr offset (I32 (V128.I8x16.extract_lane_s j v))
+          | Pack16 ->
+            Memory.store_num_packed Pack16 mem addr offset (I32 (V128.I16x8.extract_lane_s j v))
+          | Pack32 ->
+            Memory.store_num mem addr offset (I32 (V128.I32x4.extract_lane_s j v))
+          | Pack64 ->
+            Memory.store_num mem addr offset (I64 (V128.I64x2.extract_lane_s j v))
           );
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
@@ -519,24 +521,43 @@ let rec step (c : config) : config =
         (try Num (Eval_numeric.eval_cvtop cvtop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdTernary ternop, Num v3 :: Num v2 :: Num v1 :: vs' ->
-        (try Num (Eval_simd.eval_ternop ternop v1 v2 v3) :: vs', []
+      | SimdConst v, vs ->
+        Simd v.it :: vs, []
+
+      | SimdUnary unop, Simd n :: vs' ->
+        (try Simd (Eval_simd.eval_unop unop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdExtract extractop, Num v :: vs' ->
+      | SimdBinary binop, Simd n2 :: Simd n1 :: vs' ->
+        (try Simd (Eval_simd.eval_binop binop n1 n2) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | SimdTernary ternop, Simd v3 :: Simd v2 :: Simd v1 :: vs' ->
+        (try Simd (Eval_simd.eval_ternop ternop v1 v2 v3) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | SimdTest testop, Simd n :: vs' ->
+        (try value_of_bool (Eval_simd.eval_testop testop n) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | SimdShift shiftop, Num s :: Simd v :: vs' ->
+        (try Simd (Eval_simd.eval_shiftop shiftop v s) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | SimdBitmask bitmaskop, Simd v :: vs' ->
+        (try Num (Eval_simd.eval_bitmaskop bitmaskop v) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | SimdConvert cvtop, Num n :: vs' ->
+        (try Simd (Eval_simd.eval_cvtop cvtop n) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | SimdExtract extractop, Simd v :: vs' ->
         (try Num (Eval_simd.eval_extractop extractop v) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdReplace replaceop, Num r :: Num v :: vs' ->
-        (try Num (Eval_simd.eval_replaceop replaceop v r) :: vs', []
-        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
-
-      | SimdShift shiftop, Num s :: Num v :: vs' ->
-        (try Num (Eval_simd.eval_shiftop shiftop v s) :: vs', []
-        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
-
-      | SimdBitmask bitmaskop, Num v :: vs' ->
-        (try Num (Eval_simd.eval_bitmaskop bitmaskop v) :: vs', []
+      | SimdReplace replaceop, Num r :: Simd v :: vs' ->
+        (try Simd (Eval_simd.eval_replaceop replaceop v r) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | _ ->
