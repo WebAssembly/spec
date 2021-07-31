@@ -193,7 +193,7 @@ let check_simd_binop binop at =
 let check_memop (c : context) (memop : ('t, 's) memop) ty_size get_sz at =
   let _mt = memory c (0l @@ at) in
   let size =
-    match get_sz memop.sz with
+    match get_sz memop.pack with
     | None -> ty_size memop.ty
     | Some sz ->
       check_pack sz (ty_size memop.ty) at;
@@ -387,13 +387,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
 
   | SimdLoadLane (memop, i) ->
     check_memop c memop simd_size (fun sz -> Some sz) e.at;
-    require (i < simd_size memop.ty / packed_size memop.sz) e.at
+    require (i < simd_size memop.ty / packed_size memop.pack) e.at
       "invalid lane index";
     [NumType I32Type; SimdType memop.ty] -->  [SimdType memop.ty]
 
   | SimdStoreLane (memop, i) ->
     check_memop c memop simd_size (fun sz -> Some sz) e.at;
-    require (i < simd_size memop.ty / packed_size memop.sz) e.at
+    require (i < simd_size memop.ty / packed_size memop.pack) e.at
       "invalid lane index";
     [NumType I32Type; SimdType memop.ty] -->  []
 

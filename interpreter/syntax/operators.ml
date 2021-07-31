@@ -42,45 +42,45 @@ let table_copy x y = TableCopy (x, y)
 let table_init x y = TableInit (x, y)
 let elem_drop x = ElemDrop x
 
-let i32_load align offset = Load {ty = I32Type; align; offset; sz = None}
-let i64_load align offset = Load {ty = I64Type; align; offset; sz = None}
-let f32_load align offset = Load {ty = F32Type; align; offset; sz = None}
-let f64_load align offset = Load {ty = F64Type; align; offset; sz = None}
+let i32_load align offset = Load {ty = I32Type; align; offset; pack = None}
+let i64_load align offset = Load {ty = I64Type; align; offset; pack = None}
+let f32_load align offset = Load {ty = F32Type; align; offset; pack = None}
+let f64_load align offset = Load {ty = F64Type; align; offset; pack = None}
 let i32_load8_s align offset =
-  Load {ty = I32Type; align; offset; sz = Some (Pack8, SX)}
+  Load {ty = I32Type; align; offset; pack = Some (Pack8, SX)}
 let i32_load8_u align offset =
-  Load {ty = I32Type; align; offset; sz = Some (Pack8, ZX)}
+  Load {ty = I32Type; align; offset; pack = Some (Pack8, ZX)}
 let i32_load16_s align offset =
-  Load {ty = I32Type; align; offset; sz = Some (Pack16, SX)}
+  Load {ty = I32Type; align; offset; pack = Some (Pack16, SX)}
 let i32_load16_u align offset =
-  Load {ty = I32Type; align; offset; sz = Some (Pack16, ZX)}
+  Load {ty = I32Type; align; offset; pack = Some (Pack16, ZX)}
 let i64_load8_s align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Pack8, SX)}
+  Load {ty = I64Type; align; offset; pack = Some (Pack8, SX)}
 let i64_load8_u align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Pack8, ZX)}
+  Load {ty = I64Type; align; offset; pack = Some (Pack8, ZX)}
 let i64_load16_s align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Pack16, SX)}
+  Load {ty = I64Type; align; offset; pack = Some (Pack16, SX)}
 let i64_load16_u align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Pack16, ZX)}
+  Load {ty = I64Type; align; offset; pack = Some (Pack16, ZX)}
 let i64_load32_s align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Pack32, SX)}
+  Load {ty = I64Type; align; offset; pack = Some (Pack32, SX)}
 let i64_load32_u align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Pack32, ZX)}
+  Load {ty = I64Type; align; offset; pack = Some (Pack32, ZX)}
 
-let i32_store align offset = Store {ty = I32Type; align; offset; sz = None}
-let i64_store align offset = Store {ty = I64Type; align; offset; sz = None}
-let f32_store align offset = Store {ty = F32Type; align; offset; sz = None}
-let f64_store align offset = Store {ty = F64Type; align; offset; sz = None}
+let i32_store align offset = Store {ty = I32Type; align; offset; pack = None}
+let i64_store align offset = Store {ty = I64Type; align; offset; pack = None}
+let f32_store align offset = Store {ty = F32Type; align; offset; pack = None}
+let f64_store align offset = Store {ty = F64Type; align; offset; pack = None}
 let i32_store8 align offset =
-  Store {ty = I32Type; align; offset; sz = Some Pack8}
+  Store {ty = I32Type; align; offset; pack = Some Pack8}
 let i32_store16 align offset =
-  Store {ty = I32Type; align; offset; sz = Some Pack16}
+  Store {ty = I32Type; align; offset; pack = Some Pack16}
 let i64_store8 align offset =
-  Store {ty = I64Type; align; offset; sz = Some Pack8}
+  Store {ty = I64Type; align; offset; pack = Some Pack8}
 let i64_store16 align offset =
-  Store {ty = I64Type; align; offset; sz = Some Pack16}
+  Store {ty = I64Type; align; offset; pack = Some Pack16}
 let i64_store32 align offset =
-  Store {ty = I64Type; align; offset; sz = Some Pack32}
+  Store {ty = I64Type; align; offset; pack = Some Pack32}
 
 let memory_size = MemorySize
 let memory_grow = MemoryGrow
@@ -233,51 +233,51 @@ let i64_reinterpret_f64 = Convert (I64 I64Op.ReinterpretFloat)
 let f32_reinterpret_i32 = Convert (F32 F32Op.ReinterpretInt)
 let f64_reinterpret_i64 = Convert (F64 F64Op.ReinterpretInt)
 
-let v128_load align offset = SimdLoad {ty = V128Type; align; offset; sz = None}
+let v128_load align offset = SimdLoad {ty = V128Type; align; offset; pack = None}
 let v128_load8x8_s align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack8x8 SX)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtShape (Pack8x8, SX))}
 let v128_load8x8_u align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack8x8 ZX)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtShape (Pack8x8, ZX))}
 let v128_load16x4_s align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack16x4 SX)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtShape (Pack16x4, SX))}
 let v128_load16x4_u align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack16x4 ZX)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtShape (Pack16x4, ZX))}
 let v128_load32x2_s align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack32x2 SX)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtShape (Pack32x2, SX))}
 let v128_load32x2_u align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack32x2 ZX)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtShape (Pack32x2, ZX))}
 let v128_load8_splat align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack8, PackSplat)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack8, ExtSplat)}
 let v128_load16_splat align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack16, PackSplat)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack16, ExtSplat)}
 let v128_load32_splat align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack32, PackSplat)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack32, ExtSplat)}
 let v128_load64_splat align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, PackSplat)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtSplat)}
 let v128_load32_zero align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack32, PackZero)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack32, ExtZero)}
 let v128_load64_zero align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, PackZero)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtZero)}
 
-let v128_store align offset = SimdStore {ty = V128Type; align; offset; sz = ()}
+let v128_store align offset = SimdStore {ty = V128Type; align; offset; pack = ()}
 
 let v128_load8_lane align offset i =
-  SimdLoadLane ({ty = V128Type; align; offset; sz = Pack8}, i)
+  SimdLoadLane ({ty = V128Type; align; offset; pack = Pack8}, i)
 let v128_load16_lane align offset i =
-  SimdLoadLane ({ty = V128Type; align; offset; sz = Pack16}, i)
+  SimdLoadLane ({ty = V128Type; align; offset; pack = Pack16}, i)
 let v128_load32_lane align offset i =
-  SimdLoadLane ({ty = V128Type; align; offset; sz = Pack32}, i)
+  SimdLoadLane ({ty = V128Type; align; offset; pack = Pack32}, i)
 let v128_load64_lane align offset i =
-  SimdLoadLane ({ty = V128Type; align; offset; sz = Pack64}, i)
+  SimdLoadLane ({ty = V128Type; align; offset; pack = Pack64}, i)
 
 let v128_store8_lane align offset i =
-  SimdStoreLane ({ty = V128Type; align; offset; sz = Pack8}, i)
+  SimdStoreLane ({ty = V128Type; align; offset; pack = Pack8}, i)
 let v128_store16_lane align offset i =
-  SimdStoreLane ({ty = V128Type; align; offset; sz = Pack16}, i)
+  SimdStoreLane ({ty = V128Type; align; offset; pack = Pack16}, i)
 let v128_store32_lane align offset i =
-  SimdStoreLane ({ty = V128Type; align; offset; sz = Pack32}, i)
+  SimdStoreLane ({ty = V128Type; align; offset; pack = Pack32}, i)
 let v128_store64_lane align offset i =
-  SimdStoreLane ({ty = V128Type; align; offset; sz = Pack64}, i)
+  SimdStoreLane ({ty = V128Type; align; offset; pack = Pack64}, i)
 
 let v128_not = SimdUnary (V128 V128Op.(V128x1 Not))
 let v128_and = SimdBinary (V128 V128Op.(V128x1 And))

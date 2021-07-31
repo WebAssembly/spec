@@ -123,7 +123,7 @@ let extend x n = function
   | SX -> let sh = 64 - 8 * n in Int64.(shift_right (shift_left x sh) sh)
 
 let load_num_packed sz ext mem a o t =
-  assert (packed_size sz <= Types.num_size t);
+  assert (packed_size sz <= num_size t);
   let w = packed_size sz in
   let x = extend (loadn mem a o w) w ext in
   match t with
@@ -132,7 +132,7 @@ let load_num_packed sz ext mem a o t =
   | _ -> raise Type
 
 let store_num_packed sz mem a o n =
-  assert (packed_size sz <= Types.num_size (Values.type_of_num n));
+  assert (packed_size sz <= num_size (Values.type_of_num n));
   let w = packed_size sz in
   let x =
     match n with
@@ -150,26 +150,26 @@ let store_simd mem a o n =
   match n with
   | V128 x -> store_bytes mem (effective_address a o) (V128.to_bits x)
 
-let load_simd_packed sz simd_load mem a o t =
-  let n = packed_size sz in
-  assert (n < Types.simd_size t);
-  let x = loadn mem a o n in
+let load_simd_packed sz ext mem a o t =
+  assert (packed_size sz < simd_size t);
+  let x = loadn mem a o (packed_size sz) in
   let b = Bytes.make 16 '\x00' in
   Bytes.set_int64_le b 0 x;
   let v = V128.of_bits (Bytes.to_string b) in
   let r =
-    match sz, simd_load with
-    | Pack64, Pack8x8 SX -> V128.I16x8_convert.extend_low_s v
-    | Pack64, Pack8x8 ZX -> V128.I16x8_convert.extend_low_u v
-    | Pack64, Pack16x4 SX -> V128.I32x4_convert.extend_low_s v
-    | Pack64, Pack16x4 ZX -> V128.I32x4_convert.extend_low_u v
-    | Pack64, Pack32x2 SX -> V128.I64x2_convert.extend_low_s v
-    | Pack64, Pack32x2 ZX -> V128.I64x2_convert.extend_low_u v
-    | Pack8, PackSplat -> V128.I8x16.splat (I8.of_int_s (Int64.to_int x))
-    | Pack16, PackSplat -> V128.I16x8.splat (I16.of_int_s (Int64.to_int x))
-    | Pack32, PackSplat -> V128.I32x4.splat (I32.of_int_s (Int64.to_int x))
-    | Pack64, PackSplat -> V128.I64x2.splat x
-    | Pack32, PackZero -> v
-    | Pack64, PackZero -> v
-    | _ -> assert false
+    match sz, ext with
+    | Pack64, ExtShape (Pack8x8, SX) -> V128.I16x8_convert.extend_low_s v
+    | Pack64, ExtShape (Pack8x8, ZX) -> V128.I16x8_convert.extend_low_u v
+    | Pack64, ExtShape (Pack16x4, SX) -> V128.I32x4_convert.extend_low_s v
+    | Pack64, ExtShape (Pack16x4, ZX) -> V128.I32x4_convert.extend_low_u v
+    | Pack64, ExtShape (Pack32x2, SX) -> V128.I64x2_convert.extend_low_s v
+    | Pack64, ExtShape (Pack32x2, ZX) -> V128.I64x2_convert.extend_low_u v
+    | _, ExtShape _ -> assert false
+    | Pack8, ExtSplat -> V128.I8x16.splat (I8.of_int_s (Int64.to_int x))
+    | Pack16, ExtSplat -> V128.I16x8.splat (I16.of_int_s (Int64.to_int x))
+    | Pack32, ExtSplat -> V128.I32x4.splat (I32.of_int_s (Int64.to_int x))
+    | Pack64, ExtSplat -> V128.I64x2.splat x
+    | Pack32, ExtZero -> v
+    | Pack64, ExtZero -> v
+    | _, ExtZero -> assert false
   in V128 r

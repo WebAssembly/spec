@@ -46,5 +46,5 @@ val store_simd :
   memory -> address -> offset -> simd -> unit
     (* raises Type, Bounds *)
 val load_simd_packed :
-  pack_size -> pack_simd -> memory -> address -> offset -> simd_type -> simd
+  pack_size -> simd_extension -> memory -> address -> offset -> simd_type -> simd
     (* raises Type, Bounds *)

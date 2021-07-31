@@ -187,96 +187,96 @@ struct
     | TableInit (x, y) -> op 0xfc; vu32 0x0cl; var y; var x
     | ElemDrop x -> op 0xfc; vu32 0x0dl; var x
 
-    | Load ({ty = I32Type; sz = None; _} as mo) -> op 0x28; memop mo
-    | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x29; memop mo
-    | Load ({ty = F32Type; sz = None; _} as mo) -> op 0x2a; memop mo
-    | Load ({ty = F64Type; sz = None; _} as mo) -> op 0x2b; memop mo
-    | Load ({ty = I32Type; sz = Some (Pack8, SX); _} as mo) ->
+    | Load ({ty = I32Type; pack = None; _} as mo) -> op 0x28; memop mo
+    | Load ({ty = I64Type; pack = None; _} as mo) -> op 0x29; memop mo
+    | Load ({ty = F32Type; pack = None; _} as mo) -> op 0x2a; memop mo
+    | Load ({ty = F64Type; pack = None; _} as mo) -> op 0x2b; memop mo
+    | Load ({ty = I32Type; pack = Some (Pack8, SX); _} as mo) ->
       op 0x2c; memop mo
-    | Load ({ty = I32Type; sz = Some (Pack8, ZX); _} as mo) ->
+    | Load ({ty = I32Type; pack = Some (Pack8, ZX); _} as mo) ->
       op 0x2d; memop mo
-    | Load ({ty = I32Type; sz = Some (Pack16, SX); _} as mo) ->
+    | Load ({ty = I32Type; pack = Some (Pack16, SX); _} as mo) ->
       op 0x2e; memop mo
-    | Load ({ty = I32Type; sz = Some (Pack16, ZX); _} as mo) ->
+    | Load ({ty = I32Type; pack = Some (Pack16, ZX); _} as mo) ->
       op 0x2f; memop mo
-    | Load {ty = I32Type; sz = Some (Pack32, _); _} ->
+    | Load {ty = I32Type; pack = Some (Pack32, _); _} ->
       assert false
-    | Load ({ty = I64Type; sz = Some (Pack8, SX); _} as mo) ->
+    | Load ({ty = I64Type; pack = Some (Pack8, SX); _} as mo) ->
       op 0x30; memop mo
-    | Load ({ty = I64Type; sz = Some (Pack8, ZX); _} as mo) ->
+    | Load ({ty = I64Type; pack = Some (Pack8, ZX); _} as mo) ->
       op 0x31; memop mo
-    | Load ({ty = I64Type; sz = Some (Pack16, SX); _} as mo) ->
+    | Load ({ty = I64Type; pack = Some (Pack16, SX); _} as mo) ->
       op 0x32; memop mo
-    | Load ({ty = I64Type; sz = Some (Pack16, ZX); _} as mo) ->
+    | Load ({ty = I64Type; pack = Some (Pack16, ZX); _} as mo) ->
       op 0x33; memop mo
-    | Load ({ty = I64Type; sz = Some (Pack32, SX); _} as mo) ->
+    | Load ({ty = I64Type; pack = Some (Pack32, SX); _} as mo) ->
       op 0x34; memop mo
-    | Load ({ty = I64Type; sz = Some (Pack32, ZX); _} as mo) ->
+    | Load ({ty = I64Type; pack = Some (Pack32, ZX); _} as mo) ->
       op 0x35; memop mo
-    | Load {ty = F32Type | F64Type; sz = Some _; _} ->
+    | Load {ty = F32Type | F64Type; pack = Some _; _} ->
       assert false
-    | Load {ty = I32Type | I64Type; sz = Some (Pack64, _); _} ->
+    | Load {ty = I32Type | I64Type; pack = Some (Pack64, _); _} ->
       assert false
 
-    | Store ({ty = I32Type; sz = None; _} as mo) -> op 0x36; memop mo
-    | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x37; memop mo
-    | Store ({ty = F32Type; sz = None; _} as mo) -> op 0x38; memop mo
-    | Store ({ty = F64Type; sz = None; _} as mo) -> op 0x39; memop mo
-    | Store ({ty = I32Type; sz = Some Pack8; _} as mo) -> op 0x3a; memop mo
-    | Store ({ty = I32Type; sz = Some Pack16; _} as mo) -> op 0x3b; memop mo
-    | Store {ty = I32Type; sz = Some Pack32; _} -> assert false
-    | Store ({ty = I64Type; sz = Some Pack8; _} as mo) -> op 0x3c; memop mo
-    | Store ({ty = I64Type; sz = Some Pack16; _} as mo) -> op 0x3d; memop mo
-    | Store ({ty = I64Type; sz = Some Pack32; _} as mo) -> op 0x3e; memop mo
-    | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
-    | Store {ty = (I32Type | I64Type); sz = Some Pack64; _} -> assert false
+    | Store ({ty = I32Type; pack = None; _} as mo) -> op 0x36; memop mo
+    | Store ({ty = I64Type; pack = None; _} as mo) -> op 0x37; memop mo
+    | Store ({ty = F32Type; pack = None; _} as mo) -> op 0x38; memop mo
+    | Store ({ty = F64Type; pack = None; _} as mo) -> op 0x39; memop mo
+    | Store ({ty = I32Type; pack = Some Pack8; _} as mo) -> op 0x3a; memop mo
+    | Store ({ty = I32Type; pack = Some Pack16; _} as mo) -> op 0x3b; memop mo
+    | Store {ty = I32Type; pack = Some Pack32; _} -> assert false
+    | Store ({ty = I64Type; pack = Some Pack8; _} as mo) -> op 0x3c; memop mo
+    | Store ({ty = I64Type; pack = Some Pack16; _} as mo) -> op 0x3d; memop mo
+    | Store ({ty = I64Type; pack = Some Pack32; _} as mo) -> op 0x3e; memop mo
+    | Store {ty = F32Type | F64Type; pack = Some _; _} -> assert false
+    | Store {ty = (I32Type | I64Type); pack = Some Pack64; _} -> assert false
 
-    | SimdLoad ({ty = V128Type; sz = None; _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = None; _} as mo) ->
       simd_op 0x00l; memop mo
-    | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack8x8 SX); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtShape (Pack8x8, SX)); _} as mo) ->
       simd_op 0x01l; memop mo
-    | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack8x8 ZX); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtShape (Pack8x8, ZX)); _} as mo) ->
       simd_op 0x02l; memop mo
-    | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack16x4 SX); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtShape (Pack16x4, SX)); _} as mo) ->
       simd_op 0x03l; memop mo
-    | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack16x4 ZX); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtShape (Pack16x4, ZX)); _} as mo) ->
       simd_op 0x04l; memop mo
-    | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack32x2 SX); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtShape (Pack32x2, SX)); _} as mo) ->
       simd_op 0x05l; memop mo
-    | SimdLoad ({ty = V128Type; sz = Some (Pack64, Pack32x2 ZX); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtShape (Pack32x2, ZX)); _} as mo) ->
       simd_op 0x06l; memop mo
-    | SimdLoad ({ty = V128Type; sz = Some (Pack8, PackSplat); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack8, ExtSplat); _} as mo) ->
       simd_op 0x07l; memop mo
-    | SimdLoad ({ty = V128Type; sz = Some (Pack16, PackSplat); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack16, ExtSplat); _} as mo) ->
       simd_op 0x08l; memop mo
-    | SimdLoad ({ty = V128Type; sz = Some (Pack32, PackSplat); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack32, ExtSplat); _} as mo) ->
       simd_op 0x09l; memop mo
-    | SimdLoad ({ty = V128Type; sz = Some (Pack64, PackSplat); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtSplat); _} as mo) ->
       simd_op 0x0al; memop mo
-    | SimdLoad ({ty = V128Type; sz = Some (Pack32, PackZero); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack32, ExtZero); _} as mo) ->
       simd_op 0x5cl; memop mo
-    | SimdLoad ({ty = V128Type; sz = Some (Pack64, PackZero); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtZero); _} as mo) ->
       simd_op 0x5dl; memop mo
     | SimdLoad _ -> assert false
 
-    | SimdLoadLane ({ty = V128Type; sz = Pack8; _} as mo, i) ->
+    | SimdLoadLane ({ty = V128Type; pack = Pack8; _} as mo, i) ->
       simd_op 0x54l; memop mo; u8 i;
-    | SimdLoadLane ({ty = V128Type; sz = Pack16; _} as mo, i) ->
+    | SimdLoadLane ({ty = V128Type; pack = Pack16; _} as mo, i) ->
       simd_op 0x55l; memop mo; u8 i;
-    | SimdLoadLane ({ty = V128Type; sz = Pack32; _} as mo, i) ->
+    | SimdLoadLane ({ty = V128Type; pack = Pack32; _} as mo, i) ->
       simd_op 0x56l; memop mo; u8 i;
-    | SimdLoadLane ({ty = V128Type; sz = Pack64; _} as mo, i) ->
+    | SimdLoadLane ({ty = V128Type; pack = Pack64; _} as mo, i) ->
       simd_op 0x57l; memop mo; u8 i;
 
     | SimdStore ({ty = V128Type; _} as mo) -> simd_op 0x0bl; memop mo
 
-    | SimdStoreLane ({ty = V128Type; sz = Pack8; _} as mo, i) ->
+    | SimdStoreLane ({ty = V128Type; pack = Pack8; _} as mo, i) ->
       simd_op 0x58l; memop mo; u8 i;
-    | SimdStoreLane ({ty = V128Type; sz = Pack16; _} as mo, i) ->
+    | SimdStoreLane ({ty = V128Type; pack = Pack16; _} as mo, i) ->
       simd_op 0x59l; memop mo; u8 i;
-    | SimdStoreLane ({ty = V128Type; sz = Pack32; _} as mo, i) ->
+    | SimdStoreLane ({ty = V128Type; pack = Pack32; _} as mo, i) ->
       simd_op 0x5al; memop mo; u8 i;
-    | SimdStoreLane ({ty = V128Type; sz = Pack64; _} as mo, i) ->
+    | SimdStoreLane ({ty = V128Type; pack = Pack64; _} as mo, i) ->
       simd_op 0x5bl; memop mo; u8 i;
 
     | MemorySize -> op 0x3f; u8 0x00

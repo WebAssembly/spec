@@ -318,41 +318,41 @@ let rec step (c : config) : config =
         seg := [];
         vs, []
 
-      | Load {offset; ty; sz; _}, Num (I32 i) :: vs' ->
+      | Load {offset; ty; pack; _}, Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let a = I64_convert.extend_i32_u i in
         (try
           let n =
-            match sz with
+            match pack with
             | None -> Memory.load_num mem a offset ty
             | Some (sz, ext) -> Memory.load_num_packed sz ext mem a offset ty
           in Num n :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | Store {offset; sz; _}, Num n :: Num (I32 i) :: vs' ->
+      | Store {offset; pack; _}, Num n :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let a = I64_convert.extend_i32_u i in
         (try
-          (match sz with
+          (match pack with
           | None -> Memory.store_num mem a offset n
           | Some sz -> Memory.store_num_packed sz mem a offset n
           );
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | SimdLoad {offset; ty; sz; _}, Num (I32 i) :: vs' ->
+      | SimdLoad {offset; ty; pack; _}, Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
         (try
           let v =
-            match sz with
+            match pack with
             | None -> Memory.load_simd mem addr offset ty
-            | Some (pack_size, simd_load) ->
-              Memory.load_simd_packed pack_size simd_load mem addr offset ty
+            | Some (sz, ext) ->
+              Memory.load_simd_packed sz ext mem addr offset ty
           in Simd v :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | SimdStore {offset; sz; _}, Simd v :: Num (I32 i) :: vs' ->
+      | SimdStore {offset; _}, Simd v :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
         (try
@@ -360,12 +360,12 @@ let rec step (c : config) : config =
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | SimdLoadLane ({offset; ty; sz; _}, j), Simd (V128 v) :: Num (I32 i) :: vs' ->
+      | SimdLoadLane ({offset; ty; pack; _}, j), Simd (V128 v) :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
         (try
           let v =
-            match sz with
+            match pack with
             | Pack8 ->
               V128.I8x16.replace_lane j v
                 (I32Num.of_num 0 (Memory.load_num_packed Pack8 SX mem addr offset I32Type))
@@ -381,11 +381,11 @@ let rec step (c : config) : config =
           in Simd (V128 v) :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | SimdStoreLane ({offset; ty; sz; _}, j), Simd (V128 v) :: Num (I32 i) :: vs' ->
+      | SimdStoreLane ({offset; ty; pack; _}, j), Simd (V128 v) :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
         (try
-          (match sz with
+          (match pack with
           | Pack8 ->
             Memory.store_num_packed Pack8 mem addr offset (I32 (V128.I8x16.extract_lane_s j v))
           | Pack16 ->
@@ -420,7 +420,7 @@ let rec step (c : config) : config =
             Plain (Const (I32 i @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; sz = Some Pack8});
+              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add i 1l) @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -437,9 +437,9 @@ let rec step (c : config) : config =
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
             Plain (Load
-              {ty = I32Type; align = 0; offset = 0l; sz = Some (Pack8, ZX)});
+              {ty = I32Type; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; sz = Some Pack8});
+              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -454,9 +454,9 @@ let rec step (c : config) : config =
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
             Plain (Load
-              {ty = I32Type; align = 0; offset = 0l; sz = Some (Pack8, ZX)});
+              {ty = I32Type; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; sz = Some Pack8});
+              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
           ]
 
       | MemoryInit x, Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
@@ -471,7 +471,7 @@ let rec step (c : config) : config =
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 b @@ e.at));
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; sz = Some Pack8});
+              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));

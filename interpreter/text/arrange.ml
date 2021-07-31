@@ -85,6 +85,16 @@ let extension = function
   | SX -> "_s"
   | ZX -> "_u"
 
+let pack_shape = function
+  | Pack8x8 -> "8x8"
+  | Pack16x4 -> "16x4"
+  | Pack32x2 -> "32x2"
+
+let simd_extension sz = function
+  | ExtShape (sh, ext) -> pack_shape sh ^ extension ext
+  | ExtSplat -> pack_size sz ^ "_splat"
+  | ExtZero -> pack_size sz ^ "_zero"
+
 
 (* Operators *)
 
@@ -453,46 +463,28 @@ let memop name typ {ty; align; offset; _} sz =
   (if 1 lsl align = sz then "" else " align=" ^ nat (1 lsl align))
 
 let loadop op =
-  match op.sz with
+  match op.pack with
   | None -> memop "load" num_type op (num_size op.ty)
   | Some (sz, ext) ->
     memop ("load" ^ pack_size sz ^ extension ext) num_type op (packed_size sz)
 
 let storeop op =
-  match op.sz with
+  match op.pack with
   | None -> memop "store" num_type op (num_size op.ty)
   | Some sz -> memop ("store" ^ pack_size sz) num_type op (packed_size sz)
 
 let simd_loadop (op : simd_loadop) =
-  match op.sz with
+  match op.pack with
   | None -> memop "load" simd_type op (simd_size op.ty)
-  | Some (sz, pack_simd) ->
-    let suffix =
-      (match sz, pack_simd with
-      | Pack64, Pack8x8 ext -> "8x8" ^ extension ext
-      | Pack64, Pack16x4 ext -> "16x4" ^ extension ext
-      | Pack64, Pack32x2 ext -> "32x2" ^ extension ext
-      | Pack8, PackSplat -> "8_splat"
-      | Pack16, PackSplat -> "16_splat"
-      | Pack32, PackSplat -> "32_splat"
-      | Pack64, PackSplat -> "64_splat"
-      | Pack32, PackZero -> "32_zero"
-      | Pack64, PackZero -> "64_zero"
-      | _ -> assert false
-      ) in
-    memop ("load" ^ suffix) simd_type op (packed_size sz)
+  | Some (sz, ext) ->
+    memop ("load" ^ simd_extension sz ext) simd_type op (packed_size sz)
 
 let simd_storeop op =
   memop "store" simd_type op (simd_size op.ty)
 
 let simd_laneop instr (op, i) =
-  let suffix =
-    match op.sz with
-    | Pack8 -> "8_lane"
-    | Pack16 -> "16_lane"
-    | Pack32 -> "32_lane"
-    | Pack64 -> "64_lane"
-  in memop (instr ^ suffix) simd_type op (packed_size op.sz) ^ " " ^ nat i
+  memop (instr ^ pack_size op.pack ^ "_lane") simd_type op
+    (packed_size op.pack) ^ " " ^ nat i
 
 
 (* Expressions *)

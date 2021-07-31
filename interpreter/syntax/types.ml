@@ -20,12 +20,11 @@ type extern_type =
 
 type pack_size = Pack8 | Pack16 | Pack32 | Pack64
 type extension = SX | ZX
-type pack_simd =
-  | PackSplat
-  | Pack8x8 of extension
-  | Pack16x4 of extension
-  | Pack32x2 of extension
-  | PackZero
+type pack_shape = Pack8x8 | Pack16x4 | Pack32x2
+type simd_extension =
+  | ExtShape of pack_shape * extension
+  | ExtSplat
+  | ExtZero
 
 
 (* Attributes *)
@@ -42,6 +41,9 @@ let packed_size = function
   | Pack16 -> 2
   | Pack32 -> 4
   | Pack64 -> 8
+
+let packed_shape_size = function
+  | Pack8x8 | Pack16x4 | Pack32x2 -> 8
 
 let is_num_type = function
   | NumType _ -> true

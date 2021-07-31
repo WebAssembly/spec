@@ -110,11 +110,11 @@ type simd_cvtop = (V128Op.cvtop) Values.simdop
 type simd_extractop = (V128Op.extractop) Values.simdop
 type simd_replaceop = (V128Op.replaceop) Values.simdop
 
-type ('t, 's) memop = {ty : 't; align : int; offset : int32; sz : 's}
+type ('t, 'p) memop = {ty : 't; align : int; offset : int32; pack : 'p}
 type loadop = (num_type, (pack_size * extension) option) memop
 type storeop = (num_type, pack_size option) memop
 
-type simd_loadop = (simd_type, (pack_size * pack_simd) option) memop
+type simd_loadop = (simd_type, (pack_size * simd_extension) option) memop
 type simd_storeop = (simd_type, unit) memop
 type simd_laneop = (simd_type, pack_size) memop * int
 
