@@ -524,6 +524,10 @@ let rec step (c : config) : config =
       | SimdConst v, vs ->
         Simd v.it :: vs, []
 
+      | SimdTest testop, Simd n :: vs' ->
+        (try value_of_bool (Eval_simd.eval_testop testop n) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
       | SimdUnary unop, Simd n :: vs' ->
         (try Simd (Eval_simd.eval_unop unop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
@@ -532,12 +536,20 @@ let rec step (c : config) : config =
         (try Simd (Eval_simd.eval_binop binop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdTernary ternop, Simd v3 :: Simd v2 :: Simd v1 :: vs' ->
-        (try Simd (Eval_simd.eval_ternop ternop v1 v2 v3) :: vs', []
+      | SimdTestVec vtestop, Simd n :: vs' ->
+        (try value_of_bool (Eval_simd.eval_vtestop vtestop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdTest testop, Simd n :: vs' ->
-        (try value_of_bool (Eval_simd.eval_testop testop n) :: vs', []
+      | SimdUnaryVec vunop, Simd n :: vs' ->
+        (try Simd (Eval_simd.eval_vunop vunop n) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | SimdBinaryVec vbinop, Simd n2 :: Simd n1 :: vs' ->
+        (try Simd (Eval_simd.eval_vbinop vbinop n1 n2) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | SimdTernaryVec vternop, Simd v3 :: Simd v2 :: Simd v1 :: vs' ->
+        (try Simd (Eval_simd.eval_vternop vternop v1 v2 v3) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | SimdShift shiftop, Num s :: Simd v :: vs' ->

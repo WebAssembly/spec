@@ -460,14 +460,12 @@ struct
 
     | SimdConst {it = V128 c; _} -> simd_op 0x0cl; v128 c
 
-    | SimdTest (V128 V128Op.(V1x128 AnyTrue)) -> simd_op 0x53l
     | SimdTest (V128 V128Op.(I8x16 AllTrue)) -> simd_op 0x63l
     | SimdTest (V128 V128Op.(I16x8 AllTrue)) -> simd_op 0x83l
     | SimdTest (V128 V128Op.(I32x4 AllTrue)) -> simd_op 0xa3l
     | SimdTest (V128 V128Op.(I64x2 AllTrue)) -> simd_op 0xc3l
     | SimdTest (V128 _) -> .
 
-    | SimdUnary (V128 V128Op.(V1x128 Not)) -> simd_op 0x4dl
     | SimdUnary (V128 V128Op.(I8x16 Abs)) -> simd_op 0x60l
     | SimdUnary (V128 V128Op.(I8x16 Neg)) -> simd_op 0x61l
     | SimdUnary (V128 V128Op.(I8x16 Popcnt)) -> simd_op 0x62l
@@ -636,14 +634,15 @@ struct
     | SimdBinary (V128 V128Op.(F64x2 Max)) -> simd_op 0xf5l
     | SimdBinary (V128 V128Op.(F64x2 Pmin)) -> simd_op 0xf6l
     | SimdBinary (V128 V128Op.(F64x2 Pmax)) -> simd_op 0xf7l
-    | SimdBinary (V128 V128Op.(V1x128 And)) -> simd_op 0x4el
-    | SimdBinary (V128 V128Op.(V1x128 AndNot)) -> simd_op 0x4fl
-    | SimdBinary (V128 V128Op.(V1x128 Or)) -> simd_op 0x50l
-    | SimdBinary (V128 V128Op.(V1x128 Xor)) -> simd_op 0x51l
     | SimdBinary (V128 _) -> assert false
 
-    | SimdTernary (V128 V128Op.(V1x128 Bitselect)) -> simd_op 0x52l
-    | SimdTernary (V128 _) -> .
+    | SimdTestVec (V128 V128Op.AnyTrue) -> simd_op 0x53l
+    | SimdUnaryVec (V128 V128Op.Not) -> simd_op 0x4dl
+    | SimdBinaryVec (V128 V128Op.And) -> simd_op 0x4el
+    | SimdBinaryVec (V128 V128Op.AndNot) -> simd_op 0x4fl
+    | SimdBinaryVec (V128 V128Op.Or) -> simd_op 0x50l
+    | SimdBinaryVec (V128 V128Op.Xor) -> simd_op 0x51l
+    | SimdTernaryVec (V128 V128Op.Bitselect) -> simd_op 0x52l
 
     | SimdShift (V128 V128Op.(I8x16 Shl)) -> simd_op 0x6bl
     | SimdShift (V128 V128Op.(I8x16 ShrS)) -> simd_op 0x6cl

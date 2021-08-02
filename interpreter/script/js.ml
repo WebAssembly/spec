@@ -338,7 +338,7 @@ let assert_return ress ts at =
           V128.of_i64x2 (List.map (I64Num.of_num 0) canons)
       in
       [ SimdConst (V128 mask @@ at) @@ at;
-        SimdBinary (V128 V128Op.(V1x128 And)) @@ at;
+        SimdBinaryVec (V128 V128Op.And) @@ at;
         SimdConst (V128 expected @@ at) @@ at;
         SimdBinary (V128 V128Op.(I8x16 Eq)) @@ at;
         (* If all lanes are non-zero, then they are equal *)

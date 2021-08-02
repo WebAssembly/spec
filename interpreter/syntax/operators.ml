@@ -279,13 +279,13 @@ let v128_store32_lane align offset i =
 let v128_store64_lane align offset i =
   SimdStoreLane ({ty = V128Type; align; offset; pack = Pack64}, i)
 
-let v128_not = SimdUnary (V128 V128Op.(V1x128 Not))
-let v128_and = SimdBinary (V128 V128Op.(V1x128 And))
-let v128_andnot = SimdBinary (V128 V128Op.(V1x128 AndNot))
-let v128_or = SimdBinary (V128 V128Op.(V1x128 Or))
-let v128_xor = SimdBinary (V128 V128Op.(V1x128 Xor))
-let v128_bitselect = SimdTernary (V128 V128Op.(V1x128 Bitselect))
-let v128_any_true = SimdTest (V128 V128Op.(V1x128 AnyTrue))
+let v128_not = SimdUnaryVec (V128 V128Op.Not)
+let v128_and = SimdBinaryVec (V128 V128Op.And)
+let v128_andnot = SimdBinaryVec (V128 V128Op.AndNot)
+let v128_or = SimdBinaryVec (V128 V128Op.Or)
+let v128_xor = SimdBinaryVec (V128 V128Op.Xor)
+let v128_bitselect = SimdTernaryVec (V128 V128Op.Bitselect)
+let v128_any_true = SimdTestVec (V128 V128Op.AnyTrue)
 
 let i8x16_swizzle = SimdBinary (V128 V128Op.(I8x16 Swizzle))
 let i8x16_shuffle is = SimdBinary (V128 V128Op.(I8x16 (Shuffle is)))

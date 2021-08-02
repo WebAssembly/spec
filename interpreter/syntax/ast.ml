@@ -54,6 +54,7 @@ module F64Op = FloatOp
 
 module V128Op =
 struct
+  type itestop = AllTrue
   type iunop = Abs | Neg | TruncSatF32x4S | TruncSatF32x4U
              | ExtendLowS | ExtendLowU | ExtendHighS | ExtendHighU
              | Popcnt | TruncSatF64x2SZero | TruncSatF64x2UZero
@@ -70,40 +71,42 @@ struct
               | ExtMulLowS | ExtMulHighS | ExtMulLowU | ExtMulHighU
   type fbinop = Add | Sub | Mul | Div | Min | Max | Pmin | Pmax
               | Eq | Ne | Lt | Le | Gt | Ge
+  type ishiftop = Shl | ShrS | ShrU
+  type ibitmaskop = Bitmask
+
+  type vtestop = AnyTrue
   type vunop = Not
   type vbinop = And | Or | Xor | AndNot
   type vternop = Bitselect
-  type itestop = AllTrue
-  type vtestop = AnyTrue
-  type ishiftop = Shl | ShrS | ShrU
-  type ibitmaskop = Bitmask
 
   type ncvtop = Splat
   type nextractop = Extract of int * extension option
   type nreplaceop = Replace of int
 
-  type unop = (iunop, iunop, iunop, iunop, funop, funop, vunop) Values.laneop
-  type binop = (ibinop, ibinop, ibinop, ibinop, fbinop, fbinop, vbinop) Values.laneop
-  type ternop = (void, void, void, void, void, void, vternop) Values.laneop
-  type testop = (itestop, itestop, itestop, itestop, void, void, vtestop) Values.laneop
-  type shiftop = (ishiftop, ishiftop, ishiftop, ishiftop, void, void, void) Values.laneop
-  type bitmaskop = (ibitmaskop, ibitmaskop, ibitmaskop, ibitmaskop, void, void, void) Values.laneop
+  type testop = (itestop, itestop, itestop, itestop, void, void) Values.laneop
+  type unop = (iunop, iunop, iunop, iunop, funop, funop) Values.laneop
+  type binop = (ibinop, ibinop, ibinop, ibinop, fbinop, fbinop) Values.laneop
+  type shiftop = (ishiftop, ishiftop, ishiftop, ishiftop, void, void) Values.laneop
+  type bitmaskop = (ibitmaskop, ibitmaskop, ibitmaskop, ibitmaskop, void, void) Values.laneop
 
-  type cvtop = (ncvtop, ncvtop, ncvtop, ncvtop, ncvtop, ncvtop, void) Values.laneop
-  type extractop = (nextractop, nextractop, nextractop, nextractop, nextractop, nextractop, void) Values.laneop
-  type replaceop = (nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop, void) Values.laneop
+  type cvtop = (ncvtop, ncvtop, ncvtop, ncvtop, ncvtop, ncvtop) Values.laneop
+  type extractop = (nextractop, nextractop, nextractop, nextractop, nextractop, nextractop) Values.laneop
+  type replaceop = (nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop) Values.laneop
 end
 
+type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) Values.op
 type unop = (I32Op.unop, I64Op.unop, F32Op.unop, F64Op.unop) Values.op
 type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop) Values.op
-type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) Values.op
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Values.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
 
+type simd_testop = (V128Op.testop) Values.simdop
 type simd_unop = (V128Op.unop) Values.simdop
 type simd_binop = (V128Op.binop) Values.simdop
-type simd_ternop = (V128Op.ternop) Values.simdop
-type simd_testop = (V128Op.testop) Values.simdop
+type simd_vtestop = (V128Op.vtestop) Values.simdop
+type simd_vunop = (V128Op.vunop) Values.simdop
+type simd_vbinop = (V128Op.vbinop) Values.simdop
+type simd_vternop = (V128Op.vternop) Values.simdop
 type simd_shiftop = (V128Op.shiftop) Values.simdop
 type simd_bitmaskop = (V128Op.bitmaskop) Values.simdop
 type simd_cvtop = (V128Op.cvtop) Values.simdop
@@ -181,7 +184,10 @@ and instr' =
   | SimdTest of simd_testop           (* simd test *)
   | SimdUnary of simd_unop            (* unary simd operator *)
   | SimdBinary of simd_binop          (* binary simd operator *)
-  | SimdTernary of simd_ternop        (* ternary simd operator *)
+  | SimdTestVec of simd_vtestop       (* simd test vector *)
+  | SimdUnaryVec of simd_vunop        (* unary simd vector operator *)
+  | SimdBinaryVec of simd_vbinop      (* binary simd vector operator *)
+  | SimdTernaryVec of simd_vternop    (* ternary simd vector operator *)
   | SimdShift of simd_shiftop         (* shifts for simd value *)
   | SimdBitmask of simd_bitmaskop     (* bitmask for simd value *)
   | SimdConvert of simd_cvtop         (* simd conversion *)

@@ -87,8 +87,9 @@ let rec instr (e : instr) =
   | SimdLoad _ | SimdStore _ | SimdLoadLane _ | SimdStoreLane _
   | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
     memories zero
-  | SimdConst _ | SimdTest _
-  | SimdUnary _ | SimdBinary _ | SimdTernary _ | SimdShift _ | SimdBitmask _
+  | SimdConst _
+  | SimdTest _ | SimdUnary _ | SimdBinary _ | SimdShift _ | SimdBitmask _
+  | SimdTestVec _ | SimdUnaryVec _ | SimdBinaryVec _ | SimdTernaryVec _
   | SimdConvert _ | SimdExtract _ | SimdReplace _ ->
     memories zero
   | MemoryInit x -> memories zero ++ datas (var x)

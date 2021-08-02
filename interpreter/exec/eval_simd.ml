@@ -5,6 +5,15 @@ module V128Op = struct
   open Ast.V128Op
   open V128Simd
 
+  let testop (op : testop) =
+    let f = match op with
+      | I8x16 AllTrue -> V128.I8x16.all_true
+      | I16x8 AllTrue -> V128.I16x8.all_true
+      | I32x4 AllTrue -> V128.I32x4.all_true
+      | I64x2 AllTrue -> V128.I64x2.all_true
+      | _ -> .
+    in fun v -> f (of_simd 1 v)
+
   let unop (op : unop) =
     let f = match op with
       | I8x16 Neg -> V128.I8x16.neg
@@ -56,7 +65,6 @@ module V128Op = struct
       | F64x2 PromoteLowF32x4 -> V128.F64x2_convert.promote_low_f32x4
       | F64x2 ConvertI32x4S -> V128.F64x2_convert.convert_i32x4_s
       | F64x2 ConvertI32x4U -> V128.F64x2_convert.convert_i32x4_u
-      | V1x128 Not -> V128.V1x128.lognot
       | _ -> assert false
     in fun v -> to_simd (f (of_simd 1 v))
 
@@ -179,53 +187,56 @@ module V128Op = struct
       | F64x2 Max -> V128.F64x2.max
       | F64x2 Pmin -> V128.F64x2.pmin
       | F64x2 Pmax -> V128.F64x2.pmax
-      | V1x128 And -> V128.V1x128.and_
-      | V1x128 Or -> V128.V1x128.or_
-      | V1x128 Xor -> V128.V1x128.xor
-      | V1x128 AndNot -> V128.V1x128.andnot
       | _ -> assert false
     in fun v1 v2 -> to_simd (f (of_simd 1 v1) (of_simd 2 v2))
 
-  let ternop op =
+  let vtestop (op : vtestop) =
     let f = match op with
-    | V1x128 Bitselect -> V128.V1x128.bitselect
-    | _ -> assert false
+      | AnyTrue -> V128.I8x16.any_true
+    in fun v -> f (of_simd 1 v)
+
+  let vunop (op : vunop) =
+    let f = match op with
+      | Not -> V128.V1x128.lognot
+    in fun v -> to_simd (f (of_simd 1 v))
+
+  let vbinop (op : vbinop) =
+    let f = match op with
+      | And -> V128.V1x128.and_
+      | Or -> V128.V1x128.or_
+      | Xor -> V128.V1x128.xor
+      | AndNot -> V128.V1x128.andnot
+    in fun v1 v2 -> to_simd (f (of_simd 1 v1) (of_simd 2 v2))
+
+  let vternop (op : vternop) =
+    let f = match op with
+      | Bitselect -> V128.V1x128.bitselect
     in fun v1 v2 v3 -> to_simd (f (of_simd 1 v1) (of_simd 2 v2) (of_simd 3 v3))
 
   let shiftop (op : shiftop) =
     let f = match op with
-    | I8x16 Shl -> V128.I8x16.shl
-    | I8x16 ShrS -> V128.I8x16.shr_s
-    | I8x16 ShrU -> V128.I8x16.shr_u
-    | I16x8 Shl -> V128.I16x8.shl
-    | I16x8 ShrS -> V128.I16x8.shr_s
-    | I16x8 ShrU -> V128.I16x8.shr_u
-    | I32x4 Shl -> V128.I32x4.shl
-    | I32x4 ShrS -> V128.I32x4.shr_s
-    | I32x4 ShrU -> V128.I32x4.shr_u
-    | I64x2 Shl -> V128.I64x2.shl
-    | I64x2 ShrS -> V128.I64x2.shr_s
-    | I64x2 ShrU -> V128.I64x2.shr_u
-    | _ -> .
+      | I8x16 Shl -> V128.I8x16.shl
+      | I8x16 ShrS -> V128.I8x16.shr_s
+      | I8x16 ShrU -> V128.I8x16.shr_u
+      | I16x8 Shl -> V128.I16x8.shl
+      | I16x8 ShrS -> V128.I16x8.shr_s
+      | I16x8 ShrU -> V128.I16x8.shr_u
+      | I32x4 Shl -> V128.I32x4.shl
+      | I32x4 ShrS -> V128.I32x4.shr_s
+      | I32x4 ShrU -> V128.I32x4.shr_u
+      | I64x2 Shl -> V128.I64x2.shl
+      | I64x2 ShrS -> V128.I64x2.shr_s
+      | I64x2 ShrU -> V128.I64x2.shr_u
+      | _ -> .
     in fun v n -> to_simd (f (of_simd 1 v) (I32Num.of_num 2 n))
-
-  let testop (op : testop) =
-    let f = match op with
-    | I8x16 AllTrue -> V128.I8x16.all_true
-    | I16x8 AllTrue -> V128.I16x8.all_true
-    | I32x4 AllTrue -> V128.I32x4.all_true
-    | I64x2 AllTrue -> V128.I64x2.all_true
-    | V1x128 AnyTrue -> V128.I8x16.any_true
-    | _ -> .
-    in fun v -> f (of_simd 1 v)
 
   let bitmaskop (op : bitmaskop) v =
     let f = match op with
-    | I8x16 Bitmask -> V128.I8x16.bitmask
-    | I16x8 Bitmask -> V128.I16x8.bitmask
-    | I32x4 Bitmask -> V128.I32x4.bitmask
-    | I64x2 Bitmask -> V128.I64x2.bitmask
-    | _ -> .
+      | I8x16 Bitmask -> V128.I8x16.bitmask
+      | I16x8 Bitmask -> V128.I16x8.bitmask
+      | I32x4 Bitmask -> V128.I32x4.bitmask
+      | I64x2 Bitmask -> V128.I64x2.bitmask
+      | _ -> .
     in I32 (f (of_simd 1 v))
 end
 
@@ -276,10 +287,13 @@ end
 let op v128 = function
   | V128 x -> v128 x
 
+let eval_testop = op V128Op.testop
 let eval_unop = op V128Op.unop
 let eval_binop = op V128Op.binop
-let eval_ternop = op V128Op.ternop
-let eval_testop = op V128Op.testop
+let eval_vtestop = op V128Op.vtestop
+let eval_vunop = op V128Op.vunop
+let eval_vbinop = op V128Op.vbinop
+let eval_vternop = op V128Op.vternop
 let eval_shiftop = op V128Op.shiftop
 let eval_bitmaskop = op V128Op.bitmaskop
 let eval_cvtop = op V128CvtOp.cvtop

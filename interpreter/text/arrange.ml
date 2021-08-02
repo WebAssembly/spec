@@ -206,7 +206,6 @@ struct
     | I16x8 AllTrue -> "i16x8.all_true"
     | I32x4 AllTrue -> "i32x4.all_true"
     | I64x2 AllTrue -> "i64x2.all_true"
-    | V1x128 AnyTrue -> "v128.any_true"
     | _ -> .
 
   let unop (op : unop) = match op with
@@ -259,8 +258,7 @@ struct
     | F64x2 PromoteLowF32x4  -> "f64x2.promote_low_f32x4"
     | F64x2 ConvertI32x4S -> "f64x2.convert_low_i32x4_s"
     | F64x2 ConvertI32x4U -> "f64x2.convert_low_i32x4_u"
-    | V1x128 Not -> "v128.not"
-    | _ -> failwith "Unimplemented v128 unop"
+    | _ -> assert false
 
   let binop (op : binop) = match op with
     | I8x16 (Shuffle is) -> "i8x16.shuffle " ^ (String.concat " " (List.map nat is))
@@ -380,15 +378,7 @@ struct
     | F64x2 Max -> "f64x2.max"
     | F64x2 Pmin -> "f64x2.pmin"
     | F64x2 Pmax -> "f64x2.pmax"
-    | V1x128 And -> "v128.and"
-    | V1x128 AndNot -> "v128.andnot"
-    | V1x128 Or -> "v128.or"
-    | V1x128 Xor -> "v128.xor"
-    | _ -> failwith "Unimplemented v128 binop"
-
-  let ternop (op : ternop) = match op with
-    | V1x128 Bitselect -> "v128.bitselect"
-    | _ -> .
+    | _ -> assert false
 
   let shiftop (op : shiftop) = match op with
     | I8x16 Shl -> "i8x16.shl"
@@ -411,6 +401,21 @@ struct
     | I32x4 Bitmask -> "i32x4.bitmask"
     | I64x2 Bitmask -> "i64x2.bitmask"
     | _ -> .
+
+  let vtestop (op : vtestop) = match op with
+    | AnyTrue -> "v128.any_true"
+
+  let vunop (op : vunop) = match op with
+    | Not -> "v128.not"
+
+  let vbinop (op : vbinop) = match op with
+    | And -> "v128.and"
+    | AndNot -> "v128.andnot"
+    | Or -> "v128.or"
+    | Xor -> "v128.xor"
+
+  let vternop (op : vternop) = match op with
+    | Bitselect -> "v128.bitselect"
 
   let cvtop (op : cvtop) = match op with
     | I8x16 Splat -> "i8x16.splat"
@@ -558,7 +563,10 @@ let rec instr e =
     | SimdTest (V128 op) -> V128Op.testop op, []
     | SimdUnary (V128 op) -> V128Op.unop op, []
     | SimdBinary (V128 op) -> V128Op.binop op, []
-    | SimdTernary (V128 op) -> V128Op.ternop op, []
+    | SimdTestVec (V128 op) -> V128Op.vtestop op, []
+    | SimdUnaryVec (V128 op) -> V128Op.vunop op, []
+    | SimdBinaryVec (V128 op) -> V128Op.vbinop op, []
+    | SimdTernaryVec (V128 op) -> V128Op.vternop op, []
     | SimdShift (V128 op) -> V128Op.shiftop op, []
     | SimdBitmask (V128 op) -> V128Op.bitmaskop op, []
     | SimdConvert (V128 op) -> V128Op.cvtop op, []
