@@ -216,6 +216,8 @@ rule token = parse
   | vxxx as t { SIMD_TYPE (simd_type t) }
   | "mut" { MUT }
 
+  | simd_shape as s { SIMD_SHAPE (simd_shape s) }
+
   | (nxx as t)".const"
     { let open Source in
       CONST (numop t
@@ -299,28 +301,40 @@ rule token = parse
             (ext s i64_load8_s i64_load8_u (opt a 0))
             (ext s i64_load16_s i64_load16_u (opt a 1))
             (ext s i64_load32_s i64_load32_u (opt a 2)) o)) }
+  | (ixx as t)".store"(mem_size as sz)
+    { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
+      STORE (fun a o ->
+        intop t
+          (memsz sz
+            (i32_store8 (opt a 0))
+            (i32_store16 (opt a 1))
+            (fun _ -> unreachable) o)
+          (memsz sz
+            (i64_store8 (opt a 0))
+            (i64_store16 (opt a 1))
+            (i64_store32 (opt a 2)) o)) }
   | "v128.load"
-    { LOAD (fun a o -> (v128_load (opt a 4)) o) }
+    { SIMD_LOAD (fun a o -> (v128_load (opt a 4)) o) }
   | "v128.store"
-    { STORE (fun a o -> (v128_store (opt a 4)) o) }
+    { SIMD_STORE (fun a o -> (v128_store (opt a 4)) o) }
   | "v128.load8x8_"(sign as s)
-    { LOAD (fun a o -> (ext s v128_load8x8_s v128_load8x8_u (opt a 3)) o) }
+    { SIMD_LOAD (fun a o -> (ext s v128_load8x8_s v128_load8x8_u (opt a 3)) o) }
   | "v128.load16x4_"(sign as s)
-    { LOAD (fun a o -> (ext s v128_load16x4_s v128_load16x4_u (opt a 3)) o) }
+    { SIMD_LOAD (fun a o -> (ext s v128_load16x4_s v128_load16x4_u (opt a 3)) o) }
   | "v128.load32x2_"(sign as s)
-    { LOAD (fun a o -> (ext s v128_load32x2_s v128_load32x2_u (opt a 3)) o) }
+    { SIMD_LOAD (fun a o -> (ext s v128_load32x2_s v128_load32x2_u (opt a 3)) o) }
   | "v128.load8_splat"
-    { LOAD (fun a o -> (v128_load8_splat (opt a 0)) o) }
+    { SIMD_LOAD (fun a o -> (v128_load8_splat (opt a 0)) o) }
   | "v128.load16_splat"
-    { LOAD (fun a o -> (v128_load16_splat (opt a 1)) o) }
+    { SIMD_LOAD (fun a o -> (v128_load16_splat (opt a 1)) o) }
   | "v128.load32_splat"
-    { LOAD (fun a o -> (v128_load32_splat (opt a 2)) o) }
+    { SIMD_LOAD (fun a o -> (v128_load32_splat (opt a 2)) o) }
   | "v128.load64_splat"
-    { LOAD (fun a o -> (v128_load64_splat (opt a 3)) o) }
+    { SIMD_LOAD (fun a o -> (v128_load64_splat (opt a 3)) o) }
   | "v128.load32_zero"
-    { LOAD (fun a o -> (v128_load32_zero (opt a 2)) o) }
+    { SIMD_LOAD (fun a o -> (v128_load32_zero (opt a 2)) o) }
   | "v128.load64_zero"
-    { LOAD (fun a o -> (v128_load64_zero (opt a 3)) o) }
+    { SIMD_LOAD (fun a o -> (v128_load64_zero (opt a 3)) o) }
   | "v128.load8_lane"
     { SIMD_LOAD_LANE (fun a o i -> (v128_load8_lane (opt a 0)) o i) }
   | "v128.load16_lane"
@@ -337,18 +351,6 @@ rule token = parse
     { SIMD_STORE_LANE (fun a o i -> (v128_store32_lane (opt a 2)) o i) }
   | "v128.store64_lane"
     { SIMD_STORE_LANE (fun a o i -> (v128_store64_lane (opt a 3)) o i) }
-  | (ixx as t)".store"(mem_size as sz)
-    { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
-      STORE (fun a o ->
-        intop t
-          (memsz sz
-            (i32_store8 (opt a 0))
-            (i32_store16 (opt a 1))
-            (fun _ -> unreachable) o)
-          (memsz sz
-            (i64_store8 (opt a 0))
-            (i64_store16 (opt a 1))
-            (i64_store32 (opt a 2)) o)) }
 
   | "offset="(nat as s) { OFFSET_EQ_NAT s }
   | "align="(nat as s) { ALIGN_EQ_NAT s }
@@ -479,171 +481,195 @@ rule token = parse
   | "input" { INPUT }
   | "output" { OUTPUT }
 
+  | vxxx".not" { SIMD_UNARY v128_not }
+  | vxxx".and" { SIMD_UNARY v128_and }
+  | vxxx".andnot" { SIMD_UNARY v128_andnot }
+  | vxxx".or" { SIMD_UNARY v128_or }
+  | vxxx".xor" { SIMD_UNARY v128_xor }
+  | vxxx".bitselect" { SIMD_TERNARY v128_bitselect }
+  | vxxx".any_true" { SIMD_TEST (v128_any_true) }
+
+  | (simd_shape as s)".neg"
+    { SIMD_UNARY
+        (simdop s i8x16_neg i16x8_neg i32x4_neg i64x2_neg f32x4_neg f64x2_neg) }
+  | (simd_float_shape as s)".sqrt"
+    { SIMD_UNARY (simd_float_op s f32x4_sqrt f64x2_sqrt) }
+  | (simd_float_shape as s)".ceil"
+    { SIMD_UNARY (simd_float_op s f32x4_ceil f64x2_ceil) }
+  | (simd_float_shape as s)".floor"
+    { SIMD_UNARY (simd_float_op s f32x4_floor f64x2_floor) }
+  | (simd_float_shape as s)".trunc"
+    { SIMD_UNARY (simd_float_op s f32x4_trunc f64x2_trunc) }
+  | (simd_float_shape as s)".nearest"
+    { SIMD_UNARY (simd_float_op s f32x4_nearest f64x2_nearest) }
+  | (simd_shape as s)".abs"
+    { SIMD_UNARY
+        (simdop s i8x16_abs i16x8_abs i32x4_abs i64x2_abs f32x4_abs f64x2_abs) }
+  | "i8x16.popcnt" { SIMD_UNARY i8x16_popcnt }
+  | (simd_int_shape as s)".avgr_u"
+    { only ["i8x16"; "i16x8"] s lexbuf;
+      SIMD_UNARY (simd_int_op s i8x16_avgr_u i16x8_avgr_u unreachable unreachable) }
+  | "i32x4.trunc_sat_f32x4_"(sign as s)
+    { SIMD_UNARY (ext s i32x4_trunc_sat_f32x4_s i32x4_trunc_sat_f32x4_u) }
+  | "i32x4.trunc_sat_f64x2_"(sign as s)"_zero"
+    { SIMD_UNARY (ext s i32x4_trunc_sat_f64x2_s_zero i32x4_trunc_sat_f64x2_u_zero) }
+  | "f64x2.promote_low_f32x4"
+    { SIMD_UNARY f64x2_promote_low_f32x4 }
+  | "f32x4.demote_f64x2_zero"
+    { SIMD_UNARY f32x4_demote_f64x2_zero }
+  | "f32x4.convert_i32x4_"(sign as s)
+    { SIMD_UNARY (ext s f32x4_convert_i32x4_s f32x4_convert_i32x4_u) }
+  | "f64x2.convert_low_i32x4_"(sign as s)
+    { SIMD_UNARY (ext s f64x2_convert_low_i32x4_s f64x2_convert_low_i32x4_u) }
+  | "i16x8.extadd_pairwise_i8x16_"(sign as s)
+    { SIMD_UNARY (ext s i16x8_extadd_pairwise_i8x16_s i16x8_extadd_pairwise_i8x16_u) }
+  | "i32x4.extadd_pairwise_i16x8_"(sign as s)
+    { SIMD_UNARY (ext s i32x4_extadd_pairwise_i16x8_s i32x4_extadd_pairwise_i16x8_u) }
+
+  | (simd_shape as s)".eq"
+    { SIMD_BINARY (simdop s i8x16_eq i16x8_eq i32x4_eq i64x2_eq f32x4_eq f64x2_eq) }
+  | (simd_shape as s)".ne"
+    { SIMD_BINARY (simdop s i8x16_ne i16x8_ne i32x4_ne i64x2_ne f32x4_ne f64x2_ne) }
+  | (simd_int_shape as s)".lt_s"
+    { SIMD_BINARY (simd_int_op s i8x16_lt_s i16x8_lt_s i32x4_lt_s i64x2_lt_s) }
+  | (simd_int_shape as s)".lt_u"
+    { except ["i64x2"] s lexbuf;
+      SIMD_BINARY (simd_int_op s i8x16_lt_u i16x8_lt_u i32x4_lt_u unreachable) }
+  | (simd_int_shape as s)".le_s"
+    { SIMD_BINARY (simd_int_op s i8x16_le_s i16x8_le_s i32x4_le_s i64x2_le_s) }
+  | (simd_int_shape as s)".le_u"
+    { except ["i64x2"] s lexbuf;
+      SIMD_BINARY (simd_int_op s i8x16_le_u i16x8_le_u i32x4_le_u unreachable) }
+  | (simd_int_shape as s)".gt_s"
+    { SIMD_BINARY (simd_int_op s i8x16_gt_s i16x8_gt_s i32x4_gt_s i64x2_gt_s) }
+  | (simd_int_shape as s)".gt_u"
+    { except ["i64x2"] s lexbuf;
+      SIMD_BINARY (simd_int_op s i8x16_gt_u i16x8_gt_u i32x4_gt_u unreachable) }
+  | (simd_int_shape as s)".ge_s"
+    { SIMD_BINARY (simd_int_op s i8x16_ge_s i16x8_ge_s i32x4_ge_s i64x2_ge_s) }
+  | (simd_int_shape as s)".ge_u"
+    { except ["i64x2"] s lexbuf;
+      SIMD_BINARY (simd_int_op s i8x16_ge_u i16x8_ge_u i32x4_ge_u unreachable) }
+  | (simd_float_shape as s)".lt" { SIMD_BINARY (simd_float_op s f32x4_lt f64x2_lt) }
+  | (simd_float_shape as s)".le" { SIMD_BINARY (simd_float_op s f32x4_le f64x2_le) }
+  | (simd_float_shape as s)".gt" { SIMD_BINARY (simd_float_op s f32x4_gt f64x2_gt) }
+  | (simd_float_shape as s)".ge" { SIMD_BINARY (simd_float_op s f32x4_ge f64x2_ge) }
+  | "i8x16.swizzle" { SIMD_BINARY i8x16_swizzle }
+
+  | (simd_shape as s)".add"
+    { SIMD_BINARY
+        (simdop s i8x16_add i16x8_add i32x4_add i64x2_add f32x4_add f64x2_add) }
+  | (simd_shape as s)".sub"
+    { SIMD_BINARY
+        (simdop s i8x16_sub i16x8_sub i32x4_sub i64x2_sub f32x4_sub f64x2_sub) }
+  | (simd_shape as s)".min_s"
+    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
+      SIMD_BINARY
+        (simdop s i8x16_min_s i16x8_min_s i32x4_min_s unreachable
+                  unreachable unreachable) }
+  | (simd_shape as s)".min_u"
+    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
+      SIMD_BINARY
+        (simdop s i8x16_min_u i16x8_min_u i32x4_min_u unreachable
+                  unreachable unreachable) }
+  | (simd_shape as s)".max_s"
+    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
+      SIMD_BINARY
+        (simdop s i8x16_max_s i16x8_max_s i32x4_max_s unreachable
+                  unreachable unreachable) }
+  | (simd_shape as s)".max_u"
+    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
+      SIMD_BINARY
+        (simdop s i8x16_max_u i16x8_max_u i32x4_max_u unreachable
+                  unreachable unreachable) }
+  | (simd_shape as s)".mul"
+    { only ["i16x8"; "i32x4"; "i64x2"; "f32x4"; "f64x2"] s lexbuf;
+      SIMD_BINARY
+        (simdop s unreachable i16x8_mul i32x4_mul i64x2_mul f32x4_mul f64x2_mul) }
+  | (simd_float_shape as s)".div"
+    { SIMD_BINARY (simd_float_op s f32x4_div f64x2_div) }
+  | (simd_float_shape as s)".min"
+    { SIMD_BINARY (simd_float_op s f32x4_min f64x2_min) }
+  | (simd_float_shape as s)".max"
+    { SIMD_BINARY (simd_float_op s f32x4_max f64x2_max) }
+  | (simd_float_shape as s)".pmin"
+    { SIMD_BINARY (simd_float_op s f32x4_pmin f64x2_pmin) }
+  | (simd_float_shape as s)".pmax"
+    { SIMD_BINARY (simd_float_op s f32x4_pmax f64x2_pmax) }
+  | "i8x16.add_sat_"(sign as s)
+    { SIMD_BINARY (ext s i8x16_add_sat_s i8x16_add_sat_u) }
+  | "i8x16.sub_sat_"(sign as s)
+    { SIMD_BINARY (ext s i8x16_sub_sat_s i8x16_sub_sat_u) }
+  | "i16x8.add_sat_"(sign as s)
+    { SIMD_BINARY (ext s i16x8_add_sat_s i16x8_add_sat_u) }
+  | "i16x8.sub_sat_"(sign as s)
+    { SIMD_BINARY (ext s i16x8_sub_sat_s i16x8_sub_sat_u) }
+  | "i32x4.dot_i16x8_s"
+    { SIMD_BINARY i32x4_dot_i16x8_s }
+  | "i8x16.narrow_i16x8_"(sign as s)
+    { SIMD_BINARY (ext s i8x16_narrow_i16x8_s i8x16_narrow_i16x8_u) }
+  | "i16x8.narrow_i32x4_"(sign as s)
+    { SIMD_BINARY (ext s i16x8_narrow_i32x4_s i16x8_narrow_i32x4_u) }
+  | "i16x8.extend_low_i8x16_"(sign as s)
+    { SIMD_UNARY (ext s i16x8_extend_low_i8x16_s i16x8_extend_low_i8x16_u) }
+  | "i16x8.extend_high_i8x16_"(sign as s)
+    { SIMD_UNARY (ext s i16x8_extend_high_i8x16_s i16x8_extend_high_i8x16_u) }
+  | "i32x4.extend_low_i16x8_"(sign as s)
+    { SIMD_UNARY (ext s i32x4_extend_low_i16x8_s i32x4_extend_low_i16x8_u) }
+  | "i32x4.extend_high_i16x8_"(sign as s)
+    { SIMD_UNARY (ext s i32x4_extend_high_i16x8_s i32x4_extend_high_i16x8_u) }
+  | "i64x2.extend_low_i32x4_"(sign as s)
+    { SIMD_UNARY (ext s i64x2_extend_low_i32x4_s i64x2_extend_low_i32x4_u) }
+  | "i64x2.extend_high_i32x4_"(sign as s)
+    { SIMD_UNARY (ext s i64x2_extend_high_i32x4_s i64x2_extend_high_i32x4_u) }
+  | "i16x8.extmul_low_i8x16_"(sign as s)
+    { SIMD_BINARY (ext s i16x8_extmul_low_i8x16_s i16x8_extmul_low_i8x16_u) }
+  | "i16x8.extmul_high_i8x16_"(sign as s)
+    { SIMD_BINARY (ext s i16x8_extmul_high_i8x16_s i16x8_extmul_high_i8x16_u) }
+  | "i32x4.extmul_low_i16x8_"(sign as s)
+    { SIMD_BINARY (ext s i32x4_extmul_low_i16x8_s i32x4_extmul_low_i16x8_u) }
+  | "i32x4.extmul_high_i16x8_"(sign as s)
+    { SIMD_BINARY (ext s i32x4_extmul_high_i16x8_s i32x4_extmul_high_i16x8_u) }
+  | "i64x2.extmul_low_i32x4_"(sign as s)
+    { SIMD_BINARY (ext s i64x2_extmul_low_i32x4_s i64x2_extmul_low_i32x4_u) }
+  | "i64x2.extmul_high_i32x4_"(sign as s)
+    { SIMD_BINARY (ext s i64x2_extmul_high_i32x4_s i64x2_extmul_high_i32x4_u) }
+  | "i16x8.q15mulr_sat_s"
+    { SIMD_BINARY i16x8_q15mulr_sat_s }
+
+  | (simd_int_shape as s)".all_true"
+    { SIMD_TEST
+        (simd_int_op s i8x16_all_true i16x8_all_true i32x4_all_true i64x2_all_true) }
+  | (simd_int_shape as s)".bitmask"
+    { SIMD_BITMASK
+        (simd_int_op s i8x16_bitmask i16x8_bitmask i32x4_bitmask i64x2_bitmask) }
+  | (simd_int_shape as s)".shl"
+    { SIMD_SHIFT (simd_int_op s i8x16_shl i16x8_shl i32x4_shl i64x2_shl) }
+  | (simd_int_shape as s)".shr_s"
+    { SIMD_SHIFT (simd_int_op s i8x16_shr_s i16x8_shr_s i32x4_shr_s i64x2_shr_s) }
+  | (simd_int_shape as s)".shr_u"
+    { SIMD_SHIFT (simd_int_op s i8x16_shr_u i16x8_shr_u i32x4_shr_u i64x2_shr_u) }
+  | "i8x16.shuffle" { SIMD_SHUFFLE }
+
   | (simd_shape as s)".splat"
-    { SPLAT (simdop s i8x16_splat i16x8_splat i32x4_splat
-                      i64x2_splat f32x4_splat f64x2_splat) }
+    { SIMD_SPLAT (simdop s i8x16_splat i16x8_splat i32x4_splat
+                           i64x2_splat f32x4_splat f64x2_splat) }
   | (simd_shape as s)".extract_lane"
     { except ["i8x16"; "i16x8"] s lexbuf;
-      EXTRACT_LANE (fun i ->
+      SIMD_EXTRACT (fun i ->
         simdop s
           (fun _ -> unreachable) (fun _ -> unreachable)
           i32x4_extract_lane i64x2_extract_lane
           f32x4_extract_lane f64x2_extract_lane i) }
   | (("i8x16"|"i16x8") as t)".extract_lane_"(sign as s)
-    { EXTRACT_LANE (fun i ->
+    { SIMD_EXTRACT (fun i ->
         if t = "i8x16"
         then ext s i8x16_extract_lane_s i8x16_extract_lane_u i
         else ext s i16x8_extract_lane_s i16x8_extract_lane_u i )}
   | (simd_shape as s)".replace_lane"
-    { REPLACE_LANE (simdop s i8x16_replace_lane i16x8_replace_lane i32x4_replace_lane
-                             i64x2_replace_lane f32x4_replace_lane f64x2_replace_lane) }
-  | (simd_shape as s)".eq"
-    { BINARY (simdop s i8x16_eq i16x8_eq i32x4_eq i64x2_eq f32x4_eq f64x2_eq) }
-  | (simd_shape as s)".ne"
-    { BINARY (simdop s i8x16_ne i16x8_ne i32x4_ne i64x2_ne f32x4_ne f64x2_ne) }
-  | (simd_int_shape as s)".lt_s"
-    { BINARY (simd_int_op s i8x16_lt_s i16x8_lt_s i32x4_lt_s i64x2_lt_s) }
-  | (simd_int_shape as s)".lt_u"
-    { except ["i64x2"] s lexbuf;
-      BINARY (simd_int_op s i8x16_lt_u i16x8_lt_u i32x4_lt_u unreachable) }
-  | (simd_int_shape as s)".le_s"
-    { BINARY (simd_int_op s i8x16_le_s i16x8_le_s i32x4_le_s i64x2_le_s) }
-  | (simd_int_shape as s)".le_u"
-    { except ["i64x2"] s lexbuf;
-      BINARY (simd_int_op s i8x16_le_u i16x8_le_u i32x4_le_u unreachable) }
-  | (simd_int_shape as s)".gt_s"
-    { BINARY (simd_int_op s i8x16_gt_s i16x8_gt_s i32x4_gt_s i64x2_gt_s) }
-  | (simd_int_shape as s)".gt_u"
-    { except ["i64x2"] s lexbuf;
-      BINARY (simd_int_op s i8x16_gt_u i16x8_gt_u i32x4_gt_u unreachable) }
-  | (simd_int_shape as s)".ge_s"
-    { BINARY (simd_int_op s i8x16_ge_s i16x8_ge_s i32x4_ge_s i64x2_ge_s) }
-  | (simd_int_shape as s)".ge_u"
-    { except ["i64x2"] s lexbuf;
-      BINARY (simd_int_op s i8x16_ge_u i16x8_ge_u i32x4_ge_u unreachable) }
-  | (simd_float_shape as s)".lt" { BINARY (simd_float_op s f32x4_lt f64x2_lt) }
-  | (simd_float_shape as s)".le" { BINARY (simd_float_op s f32x4_le f64x2_le) }
-  | (simd_float_shape as s)".gt" { BINARY (simd_float_op s f32x4_gt f64x2_gt) }
-  | (simd_float_shape as s)".ge" { BINARY (simd_float_op s f32x4_ge f64x2_ge) }
-  | "i8x16.swizzle" { BINARY i8x16_swizzle }
-  | "i8x16.shuffle" { SHUFFLE }
-  | vxxx".not" { UNARY v128_not }
-  | vxxx".and" { UNARY v128_and }
-  | vxxx".andnot" { UNARY v128_andnot }
-  | vxxx".or" { UNARY v128_or }
-  | vxxx".xor" { UNARY v128_xor }
-  | vxxx".bitselect" { TERNARY v128_bitselect }
-  | vxxx".any_true" { UNARY (v128_any_true) }
-  | (simd_shape as s)".neg"
-    { UNARY (simdop s i8x16_neg i16x8_neg i32x4_neg i64x2_neg f32x4_neg f64x2_neg) }
-  | (simd_float_shape as s)".sqrt" { UNARY (simd_float_op s f32x4_sqrt f64x2_sqrt) }
-  | (simd_float_shape as s)".ceil" { UNARY (simd_float_op s f32x4_ceil f64x2_ceil) }
-  | (simd_float_shape as s)".floor" { UNARY (simd_float_op s f32x4_floor f64x2_floor) }
-  | (simd_float_shape as s)".trunc" { UNARY (simd_float_op s f32x4_trunc f64x2_trunc) }
-  | (simd_float_shape as s)".nearest" { UNARY (simd_float_op s f32x4_nearest f64x2_nearest) }
-  | (simd_float_shape as s)".pmin" { BINARY (simd_float_op s f32x4_pmin f64x2_pmin) }
-  | (simd_float_shape as s)".pmax" { BINARY (simd_float_op s f32x4_pmax f64x2_pmax) }
-  | (simd_shape as s)".add"
-    { BINARY (simdop s i8x16_add i16x8_add i32x4_add i64x2_add f32x4_add f64x2_add) }
-  | (simd_shape as s)".sub"
-    { BINARY (simdop s i8x16_sub i16x8_sub i32x4_sub i64x2_sub f32x4_sub f64x2_sub) }
-  | (simd_shape as s)".min_s"
-    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
-      BINARY (simdop s i8x16_min_s i16x8_min_s i32x4_min_s unreachable unreachable unreachable) }
-  | (simd_shape as s)".min_u"
-    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
-      BINARY (simdop s i8x16_min_u i16x8_min_u i32x4_min_u unreachable unreachable unreachable) }
-  | (simd_shape as s)".max_s"
-    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
-      BINARY (simdop s i8x16_max_s i16x8_max_s i32x4_max_s unreachable unreachable unreachable) }
-  | (simd_shape as s)".max_u"
-    { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
-      BINARY (simdop s i8x16_max_u i16x8_max_u i32x4_max_u unreachable unreachable unreachable) }
-  | (simd_shape as s)".mul"
-    { only ["i16x8"; "i32x4"; "i64x2"; "f32x4"; "f64x2"] s lexbuf;
-      BINARY (simdop s unreachable i16x8_mul i32x4_mul i64x2_mul f32x4_mul f64x2_mul) }
-  | (simd_float_shape as s)".div" { BINARY (simd_float_op s f32x4_div f64x2_div) }
-  | (simd_float_shape as s)".min" { BINARY (simd_float_op s f32x4_min f64x2_min) }
-  | (simd_float_shape as s)".max" { BINARY (simd_float_op s f32x4_max f64x2_max) }
-  | (simd_shape as s)".abs"
-    { UNARY (simdop s i8x16_abs i16x8_abs i32x4_abs i64x2_abs f32x4_abs f64x2_abs) }
-  | "i8x16.popcnt"
-    { UNARY i8x16_popcnt }
-  | (simd_int_shape as s)".all_true"
-    { UNARY (simd_int_op s i8x16_all_true i16x8_all_true i32x4_all_true i64x2_all_true) }
-  | (simd_int_shape as s)".bitmask"
-    { UNARY (simd_int_op s i8x16_bitmask i16x8_bitmask i32x4_bitmask i64x2_bitmask) }
-  | (simd_int_shape as s)".shl"
-    { SHIFT (simd_int_op s i8x16_shl i16x8_shl i32x4_shl i64x2_shl) }
-  | (simd_int_shape as s)".shr_s"
-    { SHIFT (simd_int_op s i8x16_shr_s i16x8_shr_s i32x4_shr_s i64x2_shr_s) }
-  | (simd_int_shape as s)".shr_u"
-    { SHIFT (simd_int_op s i8x16_shr_u i16x8_shr_u i32x4_shr_u i64x2_shr_u) }
-  | (simd_int_shape as s)".avgr_u"
-    { only ["i8x16"; "i16x8"] s lexbuf;
-      UNARY (simd_int_op s i8x16_avgr_u i16x8_avgr_u unreachable unreachable) }
-  | "i32x4.trunc_sat_f32x4_"(sign as s)
-  { UNARY (ext s i32x4_trunc_sat_f32x4_s i32x4_trunc_sat_f32x4_u) }
-  | "i32x4.trunc_sat_f64x2_"(sign as s)"_zero"
-  { UNARY (ext s i32x4_trunc_sat_f64x2_s_zero i32x4_trunc_sat_f64x2_u_zero) }
-  | "f64x2.promote_low_f32x4"
-    { UNARY f64x2_promote_low_f32x4 }
-  | "f32x4.demote_f64x2_zero"
-    { UNARY f32x4_demote_f64x2_zero }
-  | "f32x4.convert_i32x4_"(sign as s)
-  { UNARY (ext s f32x4_convert_i32x4_s f32x4_convert_i32x4_u) }
-  | "f64x2.convert_low_i32x4_"(sign as s)
-  { UNARY (ext s f64x2_convert_low_i32x4_s f64x2_convert_low_i32x4_u) }
-  | "i8x16.narrow_i16x8_"(sign as s)
-  { BINARY (ext s i8x16_narrow_i16x8_s i8x16_narrow_i16x8_u) }
-  | "i16x8.narrow_i32x4_"(sign as s)
-  { BINARY (ext s i16x8_narrow_i32x4_s i16x8_narrow_i32x4_u) }
-  | "i16x8.extend_low_i8x16_"(sign as s)
-    { UNARY (ext s i16x8_extend_low_i8x16_s i16x8_extend_low_i8x16_u) }
-  | "i16x8.extend_high_i8x16_"(sign as s)
-    { UNARY (ext s i16x8_extend_high_i8x16_s i16x8_extend_high_i8x16_u) }
-  | "i32x4.extend_low_i16x8_"(sign as s)
-    { UNARY (ext s i32x4_extend_low_i16x8_s i32x4_extend_low_i16x8_u) }
-  | "i32x4.extend_high_i16x8_"(sign as s)
-    { UNARY (ext s i32x4_extend_high_i16x8_s i32x4_extend_high_i16x8_u) }
-  | "i64x2.extend_low_i32x4_"(sign as s)
-    { UNARY (ext s i64x2_extend_low_i32x4_s i64x2_extend_low_i32x4_u) }
-  | "i64x2.extend_high_i32x4_"(sign as s)
-    { UNARY (ext s i64x2_extend_high_i32x4_s i64x2_extend_high_i32x4_u) }
-
-  | "i8x16.add_sat_"(sign as s)
-  { BINARY (ext s i8x16_add_sat_s i8x16_add_sat_u) }
-  | "i8x16.sub_sat_"(sign as s)
-  { BINARY (ext s i8x16_sub_sat_s i8x16_sub_sat_u) }
-  | "i16x8.add_sat_"(sign as s)
-  { BINARY (ext s i16x8_add_sat_s i16x8_add_sat_u) }
-  | "i16x8.sub_sat_"(sign as s)
-  { BINARY (ext s i16x8_sub_sat_s i16x8_sub_sat_u) }
-
-  | "i32x4.dot_i16x8_s"
-  { BINARY i32x4_dot_i16x8_s }
-
-  | "i16x8.extmul_low_i8x16_"(sign as s)
-    { BINARY (ext s i16x8_extmul_low_i8x16_s i16x8_extmul_low_i8x16_u) }
-  | "i16x8.extmul_high_i8x16_"(sign as s)
-    { BINARY (ext s i16x8_extmul_high_i8x16_s i16x8_extmul_high_i8x16_u) }
-  | "i32x4.extmul_low_i16x8_"(sign as s)
-    { BINARY (ext s i32x4_extmul_low_i16x8_s i32x4_extmul_low_i16x8_u) }
-  | "i32x4.extmul_high_i16x8_"(sign as s)
-    { BINARY (ext s i32x4_extmul_high_i16x8_s i32x4_extmul_high_i16x8_u) }
-  | "i64x2.extmul_low_i32x4_"(sign as s)
-    { BINARY (ext s i64x2_extmul_low_i32x4_s i64x2_extmul_low_i32x4_u) }
-  | "i64x2.extmul_high_i32x4_"(sign as s)
-    { BINARY (ext s i64x2_extmul_high_i32x4_s i64x2_extmul_high_i32x4_u) }
-  | "i16x8.q15mulr_sat_s"
-    { BINARY i16x8_q15mulr_sat_s }
-
-  | "i16x8.extadd_pairwise_i8x16_"(sign as s)
-    { UNARY (ext s i16x8_extadd_pairwise_i8x16_s i16x8_extadd_pairwise_i8x16_u) }
-  | "i32x4.extadd_pairwise_i16x8_"(sign as s)
-    { UNARY (ext s i32x4_extadd_pairwise_i16x8_s i32x4_extadd_pairwise_i16x8_u) }
-
-  | (simd_shape as s) { SIMD_SHAPE (simd_shape s) }
+    { SIMD_REPLACE
+        (simdop s i8x16_replace_lane i16x8_replace_lane i32x4_replace_lane
+                  i64x2_replace_lane f32x4_replace_lane f64x2_replace_lane) }
 
   | name as s { VAR s }
 

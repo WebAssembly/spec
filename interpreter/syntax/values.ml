@@ -12,7 +12,7 @@ type ('v128) simdop =
 type ('i8x16, 'i16x8, 'i32x4, 'i64x2, 'f32x4, 'f64x2, 'v128) laneop =
   | I8x16 of 'i8x16 | I16x8 of 'i16x8 | I32x4 of 'i32x4 | I64x2 of 'i64x2
   | F32x4 of 'f32x4 | F64x2 of 'f64x2
-  | V128x1 of 'v128
+  | V1x128 of 'v128
 
 type num = (I32.t, I64.t, F32.t, F64.t) op
 type simd = (V128.t) simdop

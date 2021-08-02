@@ -91,7 +91,7 @@ let pack_shape = function
   | Pack32x2 -> "32x2"
 
 let simd_extension sz = function
-  | ExtShape (sh, ext) -> pack_shape sh ^ extension ext
+  | ExtLane (sh, ext) -> pack_shape sh ^ extension ext
   | ExtSplat -> pack_size sz ^ "_splat"
   | ExtZero -> pack_size sz ^ "_zero"
 
@@ -206,7 +206,7 @@ struct
     | I16x8 AllTrue -> "i16x8.all_true"
     | I32x4 AllTrue -> "i32x4.all_true"
     | I64x2 AllTrue -> "i64x2.all_true"
-    | V128x1 AnyTrue -> "v128.any_true"
+    | V1x128 AnyTrue -> "v128.any_true"
     | _ -> .
 
   let unop (op : unop) = match op with
@@ -259,7 +259,7 @@ struct
     | F64x2 PromoteLowF32x4  -> "f64x2.promote_low_f32x4"
     | F64x2 ConvertI32x4S -> "f64x2.convert_low_i32x4_s"
     | F64x2 ConvertI32x4U -> "f64x2.convert_low_i32x4_u"
-    | V128x1 Not -> "v128.not"
+    | V1x128 Not -> "v128.not"
     | _ -> failwith "Unimplemented v128 unop"
 
   let binop (op : binop) = match op with
@@ -380,14 +380,14 @@ struct
     | F64x2 Max -> "f64x2.max"
     | F64x2 Pmin -> "f64x2.pmin"
     | F64x2 Pmax -> "f64x2.pmax"
-    | V128x1 And -> "v128.and"
-    | V128x1 AndNot -> "v128.andnot"
-    | V128x1 Or -> "v128.or"
-    | V128x1 Xor -> "v128.xor"
+    | V1x128 And -> "v128.and"
+    | V1x128 AndNot -> "v128.andnot"
+    | V1x128 Or -> "v128.or"
+    | V1x128 Xor -> "v128.xor"
     | _ -> failwith "Unimplemented v128 binop"
 
   let ternop (op : ternop) = match op with
-    | V128x1 Bitselect -> "v128.bitselect"
+    | V1x128 Bitselect -> "v128.bitselect"
     | _ -> .
 
   let shiftop (op : shiftop) = match op with

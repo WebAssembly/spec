@@ -163,7 +163,7 @@ sig
   module I64x2 : Int with type t = t and type lane = I64.t
   module F32x4 : Float with type t = t and type lane = F32.t
   module F64x2 : Float with type t = t and type lane = F64.t
-  module V128x1 : Vec with type t = t
+  module V1x128 : Vec with type t = t
   module V8x16 : sig
     val swizzle : t -> t -> t
     val shuffle : t -> t -> int list -> t
@@ -244,7 +244,7 @@ struct
   let of_i32x4 = Rep.of_i32x4
   let of_i64x2 = Rep.of_i64x2
 
-  module V128x1 : Vec with type t = Rep.t = struct
+  module V1x128 : Vec with type t = Rep.t = struct
     type t = Rep.t
     let to_shape = Rep.to_i64x2
     let of_shape = Rep.of_i64x2

@@ -233,17 +233,17 @@ struct
 
     | SimdLoad ({ty = V128Type; pack = None; _} as mo) ->
       simd_op 0x00l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtShape (Pack8x8, SX)); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack8x8, SX)); _} as mo) ->
       simd_op 0x01l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtShape (Pack8x8, ZX)); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack8x8, ZX)); _} as mo) ->
       simd_op 0x02l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtShape (Pack16x4, SX)); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack16x4, SX)); _} as mo) ->
       simd_op 0x03l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtShape (Pack16x4, ZX)); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack16x4, ZX)); _} as mo) ->
       simd_op 0x04l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtShape (Pack32x2, SX)); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack32x2, SX)); _} as mo) ->
       simd_op 0x05l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtShape (Pack32x2, ZX)); _} as mo) ->
+    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack32x2, ZX)); _} as mo) ->
       simd_op 0x06l; memop mo
     | SimdLoad ({ty = V128Type; pack = Some (Pack8, ExtSplat); _} as mo) ->
       simd_op 0x07l; memop mo
@@ -460,14 +460,14 @@ struct
 
     | SimdConst {it = V128 c; _} -> simd_op 0x0cl; v128 c
 
-    | SimdTest (V128 V128Op.(V128x1 AnyTrue)) -> simd_op 0x53l
+    | SimdTest (V128 V128Op.(V1x128 AnyTrue)) -> simd_op 0x53l
     | SimdTest (V128 V128Op.(I8x16 AllTrue)) -> simd_op 0x63l
     | SimdTest (V128 V128Op.(I16x8 AllTrue)) -> simd_op 0x83l
     | SimdTest (V128 V128Op.(I32x4 AllTrue)) -> simd_op 0xa3l
     | SimdTest (V128 V128Op.(I64x2 AllTrue)) -> simd_op 0xc3l
     | SimdTest (V128 _) -> .
 
-    | SimdUnary (V128 V128Op.(V128x1 Not)) -> simd_op 0x4dl
+    | SimdUnary (V128 V128Op.(V1x128 Not)) -> simd_op 0x4dl
     | SimdUnary (V128 V128Op.(I8x16 Abs)) -> simd_op 0x60l
     | SimdUnary (V128 V128Op.(I8x16 Neg)) -> simd_op 0x61l
     | SimdUnary (V128 V128Op.(I8x16 Popcnt)) -> simd_op 0x62l
@@ -636,13 +636,13 @@ struct
     | SimdBinary (V128 V128Op.(F64x2 Max)) -> simd_op 0xf5l
     | SimdBinary (V128 V128Op.(F64x2 Pmin)) -> simd_op 0xf6l
     | SimdBinary (V128 V128Op.(F64x2 Pmax)) -> simd_op 0xf7l
-    | SimdBinary (V128 V128Op.(V128x1 And)) -> simd_op 0x4el
-    | SimdBinary (V128 V128Op.(V128x1 AndNot)) -> simd_op 0x4fl
-    | SimdBinary (V128 V128Op.(V128x1 Or)) -> simd_op 0x50l
-    | SimdBinary (V128 V128Op.(V128x1 Xor)) -> simd_op 0x51l
+    | SimdBinary (V128 V128Op.(V1x128 And)) -> simd_op 0x4el
+    | SimdBinary (V128 V128Op.(V1x128 AndNot)) -> simd_op 0x4fl
+    | SimdBinary (V128 V128Op.(V1x128 Or)) -> simd_op 0x50l
+    | SimdBinary (V128 V128Op.(V1x128 Xor)) -> simd_op 0x51l
     | SimdBinary (V128 _) -> assert false
 
-    | SimdTernary (V128 V128Op.(V128x1 Bitselect)) -> simd_op 0x52l
+    | SimdTernary (V128 V128Op.(V1x128 Bitselect)) -> simd_op 0x52l
     | SimdTernary (V128 _) -> .
 
     | SimdShift (V128 V128Op.(I8x16 Shl)) -> simd_op 0x6bl

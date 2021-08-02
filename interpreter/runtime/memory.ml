@@ -158,13 +158,13 @@ let load_simd_packed sz ext mem a o t =
   let v = V128.of_bits (Bytes.to_string b) in
   let r =
     match sz, ext with
-    | Pack64, ExtShape (Pack8x8, SX) -> V128.I16x8_convert.extend_low_s v
-    | Pack64, ExtShape (Pack8x8, ZX) -> V128.I16x8_convert.extend_low_u v
-    | Pack64, ExtShape (Pack16x4, SX) -> V128.I32x4_convert.extend_low_s v
-    | Pack64, ExtShape (Pack16x4, ZX) -> V128.I32x4_convert.extend_low_u v
-    | Pack64, ExtShape (Pack32x2, SX) -> V128.I64x2_convert.extend_low_s v
-    | Pack64, ExtShape (Pack32x2, ZX) -> V128.I64x2_convert.extend_low_u v
-    | _, ExtShape _ -> assert false
+    | Pack64, ExtLane (Pack8x8, SX) -> V128.I16x8_convert.extend_low_s v
+    | Pack64, ExtLane (Pack8x8, ZX) -> V128.I16x8_convert.extend_low_u v
+    | Pack64, ExtLane (Pack16x4, SX) -> V128.I32x4_convert.extend_low_s v
+    | Pack64, ExtLane (Pack16x4, ZX) -> V128.I32x4_convert.extend_low_u v
+    | Pack64, ExtLane (Pack32x2, SX) -> V128.I64x2_convert.extend_low_s v
+    | Pack64, ExtLane (Pack32x2, ZX) -> V128.I64x2_convert.extend_low_u v
+    | _, ExtLane _ -> assert false
     | Pack8, ExtSplat -> V128.I8x16.splat (I8.of_int_s (Int64.to_int x))
     | Pack16, ExtSplat -> V128.I16x8.splat (I16.of_int_s (Int64.to_int x))
     | Pack32, ExtSplat -> V128.I32x4.splat (I32.of_int_s (Int64.to_int x))

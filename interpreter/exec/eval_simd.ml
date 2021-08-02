@@ -56,7 +56,7 @@ module V128Op = struct
       | F64x2 PromoteLowF32x4 -> V128.F64x2_convert.promote_low_f32x4
       | F64x2 ConvertI32x4S -> V128.F64x2_convert.convert_i32x4_s
       | F64x2 ConvertI32x4U -> V128.F64x2_convert.convert_i32x4_u
-      | V128x1 Not -> V128.V128x1.lognot
+      | V1x128 Not -> V128.V1x128.lognot
       | _ -> assert false
     in fun v -> to_simd (f (of_simd 1 v))
 
@@ -179,16 +179,16 @@ module V128Op = struct
       | F64x2 Max -> V128.F64x2.max
       | F64x2 Pmin -> V128.F64x2.pmin
       | F64x2 Pmax -> V128.F64x2.pmax
-      | V128x1 And -> V128.V128x1.and_
-      | V128x1 Or -> V128.V128x1.or_
-      | V128x1 Xor -> V128.V128x1.xor
-      | V128x1 AndNot -> V128.V128x1.andnot
+      | V1x128 And -> V128.V1x128.and_
+      | V1x128 Or -> V128.V1x128.or_
+      | V1x128 Xor -> V128.V1x128.xor
+      | V1x128 AndNot -> V128.V1x128.andnot
       | _ -> assert false
     in fun v1 v2 -> to_simd (f (of_simd 1 v1) (of_simd 2 v2))
 
   let ternop op =
     let f = match op with
-    | V128x1 Bitselect -> V128.V128x1.bitselect
+    | V1x128 Bitselect -> V128.V1x128.bitselect
     | _ -> assert false
     in fun v1 v2 v3 -> to_simd (f (of_simd 1 v1) (of_simd 2 v2) (of_simd 3 v3))
 
@@ -215,10 +215,10 @@ module V128Op = struct
     | I16x8 AllTrue -> V128.I16x8.all_true
     | I32x4 AllTrue -> V128.I32x4.all_true
     | I64x2 AllTrue -> V128.I64x2.all_true
-    | V128x1 AnyTrue -> V128.I8x16.any_true
+    | V1x128 AnyTrue -> V128.I8x16.any_true
     | _ -> .
     in fun v -> f (of_simd 1 v)
-  
+
   let bitmaskop (op : bitmaskop) v =
     let f = match op with
     | I8x16 Bitmask -> V128.I8x16.bitmask

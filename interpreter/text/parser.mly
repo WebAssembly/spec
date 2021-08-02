@@ -206,7 +206,7 @@ let inline_type_explicit (c : context) x ft at =
 
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
-%token NUM_TYPE SIMD_TYPE FUNCREF EXTERNREF EXTERN MUT
+%token NUM_TYPE SIMD_TYPE SIMD_SHAPE FUNCREF EXTERNREF EXTERN MUT
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
@@ -217,7 +217,10 @@ let inline_type_explicit (c : context) x ft at =
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token REF_NULL REF_FUNC REF_EXTERN REF_IS_NULL
-%token SIMD_CONST SIMD_SHAPE SIMD_LOAD_LANE SIMD_STORE_LANE SHUFFLE
+%token SIMD_LOAD SIMD_STORE SIMD_LOAD_LANE SIMD_STORE_LANE
+%token SIMD_CONST SIMD_UNARY SIMD_BINARY SIMD_TERNARY SIMD_TEST
+%token SIMD_SHIFT SIMD_BITMASK SIMD_SHUFFLE
+%token SIMD_EXTRACT SIMD_REPLACE
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
@@ -239,21 +242,27 @@ let inline_type_explicit (c : context) x ft at =
 %token<Simd.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Values.simd> SIMD_CONST
 %token<Ast.instr'> UNARY
 %token<Ast.instr'> BINARY
-%token<Ast.instr'> TERNARY
 %token<Ast.instr'> TEST
 %token<Ast.instr'> COMPARE
 %token<Ast.instr'> CONVERT
 %token<int option -> Memory.offset -> Ast.instr'> LOAD
 %token<int option -> Memory.offset -> Ast.instr'> STORE
+%token<int option -> Memory.offset -> Ast.instr'> SIMD_LOAD
+%token<int option -> Memory.offset -> Ast.instr'> SIMD_STORE
 %token<int option -> Memory.offset -> int -> Ast.instr'> SIMD_LOAD_LANE
 %token<int option -> Memory.offset -> int -> Ast.instr'> SIMD_STORE_LANE
-%token<Ast.instr'> SPLAT
-%token<int -> Ast.instr'> EXTRACT_LANE
-%token<int -> Ast.instr'> REPLACE_LANE
+%token<Ast.instr'> SIMD_UNARY
+%token<Ast.instr'> SIMD_BINARY
+%token<Ast.instr'> SIMD_TERNARY
+%token<Ast.instr'> SIMD_TEST
+%token<Ast.instr'> SIMD_SHIFT
+%token<Ast.instr'> SIMD_BITMASK
+%token<Ast.instr'> SIMD_SPLAT
+%token<int -> Ast.instr'> SIMD_EXTRACT
+%token<int -> Ast.instr'> SIMD_REPLACE
 %token<string> OFFSET_EQ_NAT
 %token<string> ALIGN_EQ_NAT
 %token<Simd.shape> SIMD_SHAPE
-%token<Ast.instr'> SHIFT
 
 %token<Script.nan> NAN
 
@@ -426,9 +435,13 @@ plain_instr :
     { let at = at () in fun c -> table_init (0l @@ at) ($2 c elem) }
   | ELEM_DROP var { fun c -> elem_drop ($2 c elem) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
-  | SIMD_LOAD_LANE offset_opt align_opt NAT { let at = at () in fun c -> $1 $3 $2 (simd_lane_index $4 at) }
-  | SIMD_STORE_LANE offset_opt align_opt NAT { let at = at () in fun c -> $1 $3 $2 (simd_lane_index $4 at) }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
+  | SIMD_LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
+  | SIMD_STORE offset_opt align_opt { fun c -> $1 $3 $2 }
+  | SIMD_LOAD_LANE offset_opt align_opt NAT
+    { let at = at () in fun c -> $1 $3 $2 (simd_lane_index $4 at) }
+  | SIMD_STORE_LANE offset_opt align_opt NAT
+    { let at = at () in fun c -> $1 $3 $2 (simd_lane_index $4 at) }
   | MEMORY_SIZE { fun c -> memory_size }
   | MEMORY_GROW { fun c -> memory_grow }
   | MEMORY_FILL { fun c -> memory_fill }
@@ -439,18 +452,22 @@ plain_instr :
   | REF_IS_NULL { fun c -> ref_is_null }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
   | CONST num { fun c -> fst (num $1 $2) }
-  | SIMD_CONST SIMD_SHAPE num_list { let at = at () in fun c -> fst (simd $1 $2 $3 at) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
-  | TERNARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
-  | SPLAT { fun c -> $1 }
-  | EXTRACT_LANE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
-  | REPLACE_LANE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
-  | SHIFT { fun c -> $1 }
-  | SHUFFLE num_list { let at = at () in fun c -> i8x16_shuffle (shuffle_lit $2 at) }
+  | SIMD_CONST SIMD_SHAPE num_list { let at = at () in fun c -> fst (simd $1 $2 $3 at) }
+  | SIMD_UNARY { fun c -> $1 }
+  | SIMD_BINARY { fun c -> $1 }
+  | SIMD_TERNARY { fun c -> $1 }
+  | SIMD_TEST { fun c -> $1 }
+  | SIMD_SHIFT { fun c -> $1 }
+  | SIMD_BITMASK { fun c -> $1 }
+  | SIMD_SHUFFLE num_list { let at = at () in fun c -> i8x16_shuffle (shuffle_lit $2 at) }
+  | SIMD_SPLAT { fun c -> $1 }
+  | SIMD_EXTRACT NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
+  | SIMD_REPLACE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
 
 
 select_instr :

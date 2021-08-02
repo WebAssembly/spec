@@ -368,23 +368,25 @@ let run_action act : Values.value list =
     )
 
 
-let assert_num_pat at n np =
+let assert_nan_pat n nan =
   let open Values in
+  match n, nan.it with
+  | F32 z, F32 CanonicalNan -> z = F32.pos_nan || z = F32.neg_nan
+  | F64 z, F64 CanonicalNan -> z = F64.pos_nan || z = F64.neg_nan
+  | F32 z, F32 ArithmeticNan ->
+    let pos_nan = F32.to_bits F32.pos_nan in
+    Int32.logand (F32.to_bits z) pos_nan = pos_nan
+  | F64 z, F64 ArithmeticNan ->
+    let pos_nan = F64.to_bits F64.pos_nan in
+    Int64.logand (F64.to_bits z) pos_nan = pos_nan
+  | _, _ -> false
+
+let assert_num_pat n np =
   match np with
     | NumPat n' -> n = n'.it
-    | NanPat nanop ->
-      match n, nanop.it with
-      | F32 z, F32 CanonicalNan -> z = F32.pos_nan || z = F32.neg_nan
-      | F64 z, F64 CanonicalNan -> z = F64.pos_nan || z = F64.neg_nan
-      | F32 z, F32 ArithmeticNan ->
-        let pos_nan = F32.to_bits F32.pos_nan in
-        Int32.logand (F32.to_bits z) pos_nan = pos_nan
-      | F64 z, F64 ArithmeticNan ->
-        let pos_nan = F64.to_bits F64.pos_nan in
-        Int64.logand (F64.to_bits z) pos_nan = pos_nan
-      | _, _ -> false
+    | NanPat nanop -> assert_nan_pat n nanop
 
-let assert_simd_pat at v p =
+let assert_simd_pat v p =
   let open Values in
   match v, p with
   | V128 v, SimdPat (shape, ps) ->
@@ -396,27 +398,27 @@ let assert_simd_pat at v p =
       | Simd.F32x4 -> fun v i -> F32 (V128.F32x4.extract_lane i v)
       | Simd.F64x2 -> fun v i -> F64 (V128.F64x2.extract_lane i v)
     in
-    List.for_all2 (assert_num_pat at) (List.init (Simd.lanes shape) (extract v)) ps
+    List.for_all2 assert_num_pat (List.init (Simd.lanes shape) (extract v)) ps
 
-let assert_ref_pat at r p =
+let assert_ref_pat r p =
   match r, p with
   | r, RefPat r' -> r = r'.it
   | Instance.FuncRef _, RefTypePat Types.FuncRefType
   | ExternRef _, RefTypePat Types.ExternRefType -> true
   | _ -> false
 
-let assert_pat at v r =
+let assert_pat v r =
   let open Values in
   match v, r with
-  | Num n, NumResult np -> assert_num_pat at n np
-  | Simd v, SimdResult vp -> assert_simd_pat at v vp
-  | Ref r, RefResult rp -> assert_ref_pat at r rp
+  | Num n, NumResult np -> assert_num_pat n np
+  | Simd v, SimdResult vp -> assert_simd_pat v vp
+  | Ref r, RefResult rp -> assert_ref_pat r rp
   | _, _ -> false
 
 let assert_result at got expect =
   if
     List.length got <> List.length expect ||
-    List.exists2 (fun v r -> not (assert_pat at v r)) got expect
+    List.exists2 (fun v r -> not (assert_pat v r)) got expect
   then begin
     print_string "Result: "; print_values got;
     print_string "Expect: "; print_results expect;

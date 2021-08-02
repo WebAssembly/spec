@@ -153,23 +153,23 @@ let type_simd_cvtop at = function
   | Values.V128 (cvtop : V128Op.cvtop) ->
     let open V128Op in
     (match cvtop with
-    | Values.I8x16 Splat | Values.I16x8 Splat | Values.I32x4 Splat -> I32Type
+    | Values.(I8x16 Splat | I16x8 Splat | I32x4 Splat) -> I32Type
     | Values.I64x2 Splat -> I64Type
     | Values.F32x4 Splat -> F32Type
     | Values.F64x2 Splat -> F64Type
-    | Values.V128x1 _ -> .
+    | Values.V1x128 _ -> .
     ), V128Type
 
 let type_simd_lane at = function
-  | Values.V128 op ->
-    match op with
+  | Values.V128 (laneop : (_, _, _, _, _, _, void) Values.laneop) ->
+    match laneop with
     | Values.I8x16 _ -> I32Type
     | Values.I16x8 _ -> I32Type
     | Values.I32x4 _ -> I32Type
     | Values.I64x2 _ -> I64Type
     | Values.F32x4 _ -> F32Type
     | Values.F64x2 _ -> F64Type
-    | Values.V128x1 _ -> assert false
+    | Values.V1x128 _ -> .
 
 
 (* Expressions *)
@@ -202,7 +202,7 @@ let check_memop (c : context) (memop : ('t, 's) memop) ty_size get_sz at =
   require (1 lsl memop.align <= size) at
     "alignment must not be larger than natural"
 
-let check_simd_lane_index get_lane op at =
+let check_simd_lane_index get_lane (op : (_, _, _, _, _, _, void) Values.laneop Values.simdop) at =
   let max, op' = match op with
     | Values.(V128 (I8x16 op')) -> 16, op'
     | Values.(V128 (I16x8 op')) -> 8, op'
@@ -210,14 +210,8 @@ let check_simd_lane_index get_lane op at =
     | Values.(V128 (I64x2 op')) -> 2, op'
     | Values.(V128 (F32x4 op')) -> 4, op'
     | Values.(V128 (F64x2 op')) -> 2, op'
-    | Values.(V128 (V128x1 op')) -> assert false
+    | Values.(V128 (V1x128 _)) -> .
   in require (get_lane op' < max) at "invalid lane index"
-
-let check_simd_extract_lane_index op at =
-  check_simd_lane_index (fun (V128Op.Extract (i, _)) -> i) op at
-
-let check_simd_replace_lane_index op at =
-  check_simd_lane_index (fun (V128Op.Replace i) -> i) op at
 
 (*
  * Conventions:
@@ -496,13 +490,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     [NumType t1] --> [SimdType t2]
 
   | SimdExtract extractop ->
-    check_simd_extract_lane_index extractop e.at;
+    check_simd_lane_index (fun (V128Op.Extract (i, _)) -> i) extractop e.at;
     let t = SimdType (type_simd extractop) in
     let t2 = type_simd_lane e.at extractop in
     [t] --> [NumType t2]
 
   | SimdReplace replaceop ->
-    check_simd_replace_lane_index replaceop e.at;
+    check_simd_lane_index (fun (V128Op.Replace i) -> i) replaceop e.at;
     let t = SimdType (type_simd replaceop) in
     let t2 = type_simd_lane e.at replaceop in
     [t; NumType t2] --> [t]

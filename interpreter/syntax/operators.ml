@@ -235,17 +235,17 @@ let f64_reinterpret_i64 = Convert (F64 F64Op.ReinterpretInt)
 
 let v128_load align offset = SimdLoad {ty = V128Type; align; offset; pack = None}
 let v128_load8x8_s align offset =
-  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtShape (Pack8x8, SX))}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack8x8, SX))}
 let v128_load8x8_u align offset =
-  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtShape (Pack8x8, ZX))}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack8x8, ZX))}
 let v128_load16x4_s align offset =
-  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtShape (Pack16x4, SX))}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack16x4, SX))}
 let v128_load16x4_u align offset =
-  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtShape (Pack16x4, ZX))}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack16x4, ZX))}
 let v128_load32x2_s align offset =
-  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtShape (Pack32x2, SX))}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack32x2, SX))}
 let v128_load32x2_u align offset =
-  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtShape (Pack32x2, ZX))}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack32x2, ZX))}
 let v128_load8_splat align offset =
   SimdLoad {ty = V128Type; align; offset; pack = Some (Pack8, ExtSplat)}
 let v128_load16_splat align offset =
@@ -279,13 +279,13 @@ let v128_store32_lane align offset i =
 let v128_store64_lane align offset i =
   SimdStoreLane ({ty = V128Type; align; offset; pack = Pack64}, i)
 
-let v128_not = SimdUnary (V128 V128Op.(V128x1 Not))
-let v128_and = SimdBinary (V128 V128Op.(V128x1 And))
-let v128_andnot = SimdBinary (V128 V128Op.(V128x1 AndNot))
-let v128_or = SimdBinary (V128 V128Op.(V128x1 Or))
-let v128_xor = SimdBinary (V128 V128Op.(V128x1 Xor))
-let v128_bitselect = SimdTernary (V128 V128Op.(V128x1 Bitselect))
-let v128_any_true = SimdTest (V128 V128Op.(V128x1 AnyTrue))
+let v128_not = SimdUnary (V128 V128Op.(V1x128 Not))
+let v128_and = SimdBinary (V128 V128Op.(V1x128 And))
+let v128_andnot = SimdBinary (V128 V128Op.(V1x128 AndNot))
+let v128_or = SimdBinary (V128 V128Op.(V1x128 Or))
+let v128_xor = SimdBinary (V128 V128Op.(V1x128 Xor))
+let v128_bitselect = SimdTernary (V128 V128Op.(V1x128 Bitselect))
+let v128_any_true = SimdTest (V128 V128Op.(V1x128 AnyTrue))
 
 let i8x16_swizzle = SimdBinary (V128 V128Op.(I8x16 Swizzle))
 let i8x16_shuffle is = SimdBinary (V128 V128Op.(I8x16 (Shuffle is)))
