@@ -1,3 +1,4 @@
+(* TODO: inline this functor, since it won't really work for other types *)
 include Simd.Make
   (struct
     include String
