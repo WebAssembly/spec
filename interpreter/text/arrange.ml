@@ -2,6 +2,7 @@ open Source
 open Ast
 open Script
 open Values
+open Simd
 open Types
 open Sexpr
 
@@ -56,6 +57,7 @@ let break_string s =
 (* Types *)
 
 let num_type t = string_of_num_type t
+let simd_type t = string_of_simd_type t
 let ref_type t = string_of_ref_type t
 let refed_type t = string_of_refed_type t
 let value_type t = string_of_value_type t
@@ -83,6 +85,16 @@ let pack_size = function
 let extension = function
   | SX -> "_s"
   | ZX -> "_u"
+
+let pack_shape = function
+  | Pack8x8 -> "8x8"
+  | Pack16x4 -> "16x4"
+  | Pack32x2 -> "32x2"
+
+let simd_extension sz = function
+  | ExtLane (sh, ext) -> pack_shape sh ^ extension ext
+  | ExtSplat -> pack_size sz ^ "_splat"
+  | ExtZero -> pack_size sz ^ "_zero"
 
 
 (* Operators *)
@@ -148,7 +160,7 @@ module FloatOp =
 struct
   open Ast.FloatOp
 
-  let testop xx = fun _ -> assert false
+  let testop xx = function (_ : testop) -> .
 
   let relop xx = function
     | Eq -> "eq"
@@ -186,339 +198,226 @@ struct
     | ReinterpretInt -> "reinterpret_i" ^ xx
 end
 
-module SimdOp =
+module V128Op =
 struct
-  open Ast.SimdOp
+  open Ast.V128Op
 
-  let testop xx = function
-    | I8x16 AllTrue -> "i8x16.all_true"
-    | I16x8 AllTrue -> "i16x8.all_true"
-    | I32x4 AllTrue -> "i32x4.all_true"
-    | I64x2 AllTrue -> "i64x2.all_true"
-    | V128 AnyTrue -> "v128.any_true"
+  let half = function
+    | "16x8" -> "8x16"
+    | "32x4" -> "16x8"
+    | "64x2" -> "32x4"
     | _ -> assert false
 
-  let relop xx = assert false
-
-  let unop xx (op : unop) = match op with
-    | I8x16 Neg -> "i8x16.neg"
-    | I8x16 Abs -> "i8x16.abs"
-    | I8x16 Popcnt -> "i8x16.popcnt"
-    | I16x8 Abs -> "i16x8.abs"
-    | I16x8 Neg -> "i16x8.neg"
-    | I16x8 ExtendLowS -> "i16x8.extend_low_i8x16_s"
-    | I16x8 ExtendHighS -> "i16x8.extend_high_i8x16_s"
-    | I16x8 ExtendLowU -> "i16x8.extend_low_i8x16_u"
-    | I16x8 ExtendHighU -> "i16x8.extend_high_i8x16_u"
-    | I16x8 ExtAddPairwiseS -> "i16x8.extadd_pairwise_i8x16_s"
-    | I16x8 ExtAddPairwiseU -> "i16x8.extadd_pairwise_i8x16_u"
-    | I32x4 Abs -> "i32x4.abs"
-    | I32x4 Neg -> "i32x4.neg"
-    | I32x4 ExtendLowS -> "i32x4.extend_low_i16x8_s"
-    | I32x4 ExtendHighS -> "i32x4.extend_high_i16x8_s"
-    | I32x4 ExtendLowU -> "i32x4.extend_low_i16x8_u"
-    | I32x4 ExtendHighU -> "i32x4.extend_high_i16x8_u"
-    | I32x4 TruncSatF32x4S -> "i32x4.trunc_sat_f32x4_s"
-    | I32x4 TruncSatF32x4U -> "i32x4.trunc_sat_f32x4_u"
-    | I32x4 TruncSatF64x2SZero -> "i32x4.trunc_sat_f64x2_s_zero"
-    | I32x4 TruncSatF64x2UZero -> "i32x4.trunc_sat_f64x2_u_zero"
-    | I32x4 ExtAddPairwiseS -> "i32x4.extadd_pairwise_i16x8_s"
-    | I32x4 ExtAddPairwiseU -> "i32x4.extadd_pairwise_i16x8_u"
-    | I64x2 Abs -> "i64x2.abs"
-    | I64x2 Neg -> "i64x2.neg"
-    | I64x2 ExtendLowS -> "i64x2.extend_low_i32x4_s"
-    | I64x2 ExtendHighS -> "i64x2.extend_high_i32x4_s"
-    | I64x2 ExtendLowU -> "i64x2.extend_low_i32x4_u"
-    | I64x2 ExtendHighU -> "i64x2.extend_high_i32x4_u"
-    | F32x4 Ceil -> "f32x4.ceil"
-    | F32x4 Floor -> "f32x4.floor"
-    | F32x4 Trunc -> "f32x4.trunc"
-    | F32x4 Nearest -> "f32x4.nearest"
-    | F32x4 DemoteF64x2Zero  -> "f32x4.demote_f64x2_zero"
-    | F64x2 Ceil -> "f64x2.ceil"
-    | F64x2 Floor -> "f64x2.floor"
-    | F64x2 Trunc -> "f64x2.trunc"
-    | F64x2 Nearest -> "f64x2.nearest"
-    | F32x4 Abs -> "f32x4.abs"
-    | F32x4 Neg -> "f32x4.neg"
-    | F32x4 Sqrt -> "f32x4.sqrt"
-    | F32x4 ConvertI32x4S -> "f32x4.convert_i32x4_s"
-    | F32x4 ConvertI32x4U -> "f32x4.convert_i32x4_u"
-    | F64x2 Abs -> "f64x2.abs"
-    | F64x2 Neg -> "f64x2.neg"
-    | F64x2 Sqrt -> "f64x2.sqrt"
-    | F64x2 PromoteLowF32x4  -> "f64x2.promote_low_f32x4"
-    | F64x2 ConvertI32x4S -> "f64x2.convert_low_i32x4_s"
-    | F64x2 ConvertI32x4U -> "f64x2.convert_low_i32x4_u"
-    | V128 Not -> "v128.not"
-    | _ -> failwith "Unimplemented v128 unop"
-
-  let binop xx (op : binop) = match op with
-    | I8x16 (Shuffle imms) -> "i8x16.shuffle " ^ (String.concat " " (List.map nat imms))
-    | I8x16 Swizzle -> "i8x16.swizzle"
-    | I8x16 Eq -> "i8x16.eq"
-    | I8x16 Ne -> "i8x16.ne"
-    | I8x16 LtS -> "i8x16.lt_s"
-    | I8x16 LtU -> "i8x16.lt_u"
-    | I8x16 GtS -> "i8x16.gt_s"
-    | I8x16 GtU -> "i8x16.gt_u"
-    | I8x16 LeS -> "i8x16.le_s"
-    | I8x16 LeU -> "i8x16.le_u"
-    | I8x16 GeS -> "i8x16.ge_s"
-    | I8x16 GeU -> "i8x16.ge_u"
-    | I16x8 Eq -> "i16x8.eq"
-    | I16x8 Ne -> "i16x8.ne"
-    | I16x8 LtS -> "i16x8.lt_s"
-    | I16x8 LtU -> "i16x8.lt_u"
-    | I16x8 GtS -> "i16x8.gt_s"
-    | I16x8 GtU -> "i16x8.gt_u"
-    | I16x8 LeS -> "i16x8.le_s"
-    | I16x8 LeU -> "i16x8.le_u"
-    | I16x8 GeS -> "i16x8.ge_s"
-    | I16x8 GeU -> "i16x8.ge_u"
-    | I32x4 Eq -> "i32x4.eq"
-    | I32x4 Ne -> "i32x4.ne"
-    | I32x4 LtS -> "i32x4.lt_s"
-    | I32x4 LtU -> "i32x4.lt_u"
-    | I32x4 GtS -> "i32x4.gt_s"
-    | I32x4 GtU -> "i32x4.gt_u"
-    | I32x4 LeS -> "i32x4.le_s"
-    | I32x4 LeU -> "i32x4.le_u"
-    | I32x4 GeS -> "i32x4.ge_s"
-    | I32x4 GeU -> "i32x4.ge_u"
-    | I64x2 Eq -> "i64x2.eq"
-    | I64x2 Ne -> "i64x2.ne"
-    | I64x2 LtS -> "i64x2.lt_s"
-    | I64x2 GtS -> "i64x2.gt_s"
-    | I64x2 LeS -> "i64x2.le_s"
-    | I64x2 GeS -> "i64x2.ge_s"
-    | I8x16 NarrowS -> "i8x16.narrow_i16x8_s"
-    | I8x16 NarrowU -> "i8x16.narrow_i16x8_u"
-    | I8x16 Add -> "i8x16.add"
-    | I8x16 AddSatS -> "i8x16.add_sat_s"
-    | I8x16 AddSatU -> "i8x16.add_sat_u"
-    | I8x16 Sub -> "i8x16.sub"
-    | I8x16 SubSatS -> "i8x16.sub_sat_s"
-    | I8x16 SubSatU -> "i8x16.sub_sat_u"
-    | I8x16 MinS -> "i8x16.min_s"
-    | I8x16 MinU -> "i8x16.min_u"
-    | I8x16 MaxS -> "i8x16.max_s"
-    | I8x16 MaxU -> "i8x16.max_u"
-    | I8x16 AvgrU -> "i8x16.avgr_u"
-    | I16x8 NarrowS -> "i16x8.narrow_i32x4_s"
-    | I16x8 NarrowU -> "i16x8.narrow_i32x4_u"
-    | I16x8 Add -> "i16x8.add"
-    | I16x8 AddSatS -> "i16x8.add_sat_s"
-    | I16x8 AddSatU -> "i16x8.add_sat_u"
-    | I16x8 Sub -> "i16x8.sub"
-    | I16x8 SubSatS -> "i16x8.sub_sat_s"
-    | I16x8 SubSatU -> "i16x8.sub_sat_u"
-    | I16x8 Mul -> "i16x8.mul"
-    | I16x8 MinS -> "i16x8.min_s"
-    | I16x8 MinU -> "i16x8.min_u"
-    | I16x8 MaxS -> "i16x8.max_s"
-    | I16x8 MaxU -> "i16x8.max_u"
-    | I16x8 AvgrU -> "i16x8.avgr_u"
-    | I16x8 ExtMulLowS -> "i16x8.extmul_low_i8x16_s"
-    | I16x8 ExtMulHighS -> "i16x8.extmul_high_i8x16_s"
-    | I16x8 ExtMulLowU -> "i16x8.extmul_low_i8x16_u"
-    | I16x8 ExtMulHighU -> "i16x8.extmul_high_i8x16_u"
-    | I16x8 Q15MulRSatS -> "i16x8.q15mulr_sat_s"
-    | I32x4 Add -> "i32x4.add"
-    | I32x4 Sub -> "i32x4.sub"
-    | I32x4 Mul -> "i32x4.mul"
-    | I32x4 MinS -> "i32x4.min_s"
-    | I32x4 MinU -> "i32x4.min_u"
-    | I32x4 MaxS -> "i32x4.max_s"
-    | I32x4 MaxU -> "i32x4.max_u"
-    | I32x4 DotI16x8S -> "i32x4.dot_i16x8_s"
-    | I32x4 ExtMulLowS -> "i32x4.extmul_low_i16x8_s"
-    | I32x4 ExtMulHighS -> "i32x4.extmul_high_i16x8_s"
-    | I32x4 ExtMulLowU -> "i32x4.extmul_low_i16x8_u"
-    | I32x4 ExtMulHighU -> "i32x4.extmul_high_i16x8_u"
-    | I64x2 Add -> "i64x2.add"
-    | I64x2 Sub -> "i64x2.sub"
-    | I64x2 Mul -> "i64x2.mul"
-    | I64x2 ExtMulLowS -> "i64x2.extmul_low_i32x4_s"
-    | I64x2 ExtMulHighS -> "i64x2.extmul_high_i32x4_s"
-    | I64x2 ExtMulLowU -> "i64x2.extmul_low_i32x4_u"
-    | I64x2 ExtMulHighU -> "i64x2.extmul_high_i32x4_u"
-    | F32x4 Eq -> "f32x4.eq"
-    | F32x4 Ne -> "f32x4.ne"
-    | F32x4 Lt -> "f32x4.lt"
-    | F32x4 Le -> "f32x4.le"
-    | F32x4 Gt -> "f32x4.gt"
-    | F32x4 Ge -> "f32x4.ge"
-    | F32x4 Add -> "f32x4.add"
-    | F32x4 Sub -> "f32x4.sub"
-    | F32x4 Mul -> "f32x4.mul"
-    | F32x4 Div -> "f32x4.div"
-    | F32x4 Min -> "f32x4.min"
-    | F32x4 Max -> "f32x4.max"
-    | F32x4 Pmin -> "f32x4.pmin"
-    | F32x4 Pmax -> "f32x4.pmax"
-    | F64x2 Eq -> "f64x2.eq"
-    | F64x2 Ne -> "f64x2.ne"
-    | F64x2 Lt -> "f64x2.lt"
-    | F64x2 Gt -> "f64x2.gt"
-    | F64x2 Le -> "f64x2.le"
-    | F64x2 Ge -> "f64x2.ge"
-    | F64x2 Add -> "f64x2.add"
-    | F64x2 Sub -> "f64x2.sub"
-    | F64x2 Mul -> "f64x2.mul"
-    | F64x2 Div -> "f64x2.div"
-    | F64x2 Min -> "f64x2.min"
-    | F64x2 Max -> "f64x2.max"
-    | F64x2 Pmin -> "f64x2.pmin"
-    | F64x2 Pmax -> "f64x2.pmax"
-    | V128 And -> "v128.and"
-    | V128 AndNot -> "v128.andnot"
-    | V128 Or -> "v128.or"
-    | V128 Xor -> "v128.xor"
-    | _ -> failwith "Unimplemented v128 binop"
-
-  let ternop (op : ternop) = match op with
-    | Bitselect -> "v128.bitselect"
-
-  let cvtop xx = function
-    | I8x16 Splat -> "i8x16.splat"
-    | I16x8 Splat -> "i16x8.splat"
-    | I32x4 Splat -> "i32x4.splat"
-    | I64x2 Splat -> "i64x2.splat"
-    | F32x4 Splat -> "f32x4.splat"
-    | F64x2 Splat -> "f64x2.splat"
+  let double = function
+    | "8x16" -> "16x8"
+    | "16x8" -> "32x4"
+    | "32x4" -> "64x2"
     | _ -> assert false
 
-  let extractop = function
-    | I8x16 (SX, imm) -> "i8x16.extract_lane_s " ^ (nat imm)
-    | I8x16 (ZX, imm) -> "i8x16.extract_lane_u " ^ (nat imm)
-    | I16x8 (SX, imm) -> "i16x8.extract_lane_s " ^ (nat imm)
-    | I16x8 (ZX, imm) -> "i16x8.extract_lane_u " ^ (nat imm)
-    | I32x4 (ZX, imm) -> "i32x4.extract_lane " ^ (nat imm)
-    | I64x2 (ZX, imm) -> "i64x2.extract_lane " ^ (nat imm)
-    | F32x4 (ZX, imm) -> "f32x4.extract_lane " ^ (nat imm)
-    | F64x2 (ZX, imm) -> "f64x2.extract_lane " ^ (nat imm)
-    | _ -> assert false
+  let voidop xxxx = function (_ : void) -> .
 
-  let replaceop = function
-    | I8x16 imm -> "i8x16.replace_lane " ^ (nat imm)
-    | I16x8 imm -> "i16x8.replace_lane " ^ (nat imm)
-    | I32x4 imm -> "i32x4.replace_lane " ^ (nat imm)
-    | I64x2 imm -> "i64x2.replace_lane " ^ (nat imm)
-    | F32x4 imm -> "f32x4.replace_lane " ^ (nat imm)
-    | F64x2 imm -> "f64x2.replace_lane " ^ (nat imm)
-    | _ -> assert false
+  let itestop xxxx (op : itestop) = match op with
+    | AllTrue -> "all_true"
 
-  let shiftop = function
-    | I8x16 Shl -> "i8x16.shl"
-    | I8x16 ShrS -> "i8x16.shr_s"
-    | I8x16 ShrU -> "i8x16.shr_u"
-    | I16x8 Shl -> "i16x8.shl"
-    | I16x8 ShrS -> "i16x8.shr_s"
-    | I16x8 ShrU -> "i16x8.shr_u"
-    | I32x4 Shl -> "i32x4.shl"
-    | I32x4 ShrS -> "i32x4.shr_s"
-    | I32x4 ShrU -> "i32x4.shr_u"
-    | I64x2 Shl -> "i64x2.shl"
-    | I64x2 ShrS -> "i64x2.shr_s"
-    | I64x2 ShrU -> "i64x2.shr_u"
-    | _ -> assert false
+  let iunop xxxx (op : iunop) = match op with
+    | Neg -> "neg"
+    | Abs -> "abs"
+    | Popcnt -> "popcnt"
+    | ExtendLowS -> "extend_low_i" ^ half xxxx ^ "_s"
+    | ExtendLowU -> "extend_low_i" ^ half xxxx ^ "_u"
+    | ExtendHighS -> "extend_high_i" ^ half xxxx ^ "_s"
+    | ExtendHighU -> "extend_high_i" ^ half xxxx ^ "_u"
+    | ExtAddPairwiseS -> "extadd_pairwise_i" ^ half xxxx ^ "_s"
+    | ExtAddPairwiseU -> "extadd_pairwise_i" ^ half xxxx ^ "_u"
+    | TruncSatSF32x4 -> "trunc_sat_f32x4_s"
+    | TruncSatUF32x4 -> "trunc_sat_f32x4_u"
+    | TruncSatSZeroF64x2 -> "trunc_sat_f64x2_s_zero"
+    | TruncSatUZeroF64x2 -> "trunc_sat_f64x2_u_zero"
 
-  let bitmaskop = function
-    | Simd.I8x16 -> "i8x16.bitmask"
-    | Simd.I16x8 -> "i16x8.bitmask"
-    | Simd.I32x4 -> "i32x4.bitmask"
-    | Simd.I64x2 -> "i64x2.bitmask"
-    | _ -> assert false
+  let funop xxxx (op : funop) = match op with
+    | Neg -> "neg"
+    | Abs -> "abs"
+    | Sqrt -> "sqrt"
+    | Ceil -> "ceil"
+    | Floor -> "floor"
+    | Trunc -> "trunc"
+    | Nearest -> "nearest"
+    | DemoteZeroF64x2  -> "demote_f64x2_zero"
+    | PromoteLowF32x4  -> "promote_low_f32x4"
+    | ConvertSI32x4 ->
+      "convert_" ^ (if xxxx = "32x4" then "" else "low_") ^ "i32x4_s"
+    | ConvertUI32x4 ->
+      "convert_" ^ (if xxxx = "32x4" then "" else "low_") ^ "i32x4_u"
 
+  let ibinop xxxx (op : ibinop) = match op with
+    | Eq -> "eq"
+    | Ne -> "ne"
+    | LtS -> "lt_s"
+    | LtU -> "lt_u"
+    | GtS -> "gt_s"
+    | GtU -> "gt_u"
+    | LeS -> "le_s"
+    | LeU -> "le_u"
+    | GeS -> "ge_s"
+    | GeU -> "ge_u"
+    | Add -> "add"
+    | AddSatS -> "add_sat_s"
+    | AddSatU -> "add_sat_u"
+    | Sub -> "sub"
+    | SubSatS -> "sub_sat_s"
+    | SubSatU -> "sub_sat_u"
+    | Mul -> "mul"
+    | DotS -> "dot_i" ^ half xxxx ^ "_s"
+    | ExtMulLowS -> "extmul_low_i" ^ half xxxx ^ "_s"
+    | ExtMulHighS -> "extmul_high_i" ^ half xxxx ^ "_s"
+    | ExtMulLowU -> "extmul_low_i" ^ half xxxx ^ "_u"
+    | ExtMulHighU -> "extmul_high_i" ^ half xxxx ^ "_u"
+    | Q15MulRSatS -> "q15mulr_sat_s"
+    | MinS -> "min_s"
+    | MinU -> "min_u"
+    | MaxS -> "max_s"
+    | MaxU -> "max_u"
+    | AvgrU -> "avgr_u"
+    | NarrowS -> "narrow_i" ^ double xxxx ^ "_s"
+    | NarrowU -> "narrow_i" ^ double xxxx ^ "_u"
+    | Shuffle is -> "shuffle " ^ String.concat " " (List.map nat is)
+    | Swizzle -> "swizzle"
+
+  let fbinop xxxx (op : fbinop) = match op with
+    | Eq -> "eq"
+    | Ne -> "ne"
+    | Lt -> "lt"
+    | Le -> "le"
+    | Gt -> "gt"
+    | Ge -> "ge"
+    | Add -> "add"
+    | Sub -> "sub"
+    | Mul -> "mul"
+    | Div -> "div"
+    | Min -> "min"
+    | Max -> "max"
+    | Pmin -> "pmin"
+    | Pmax -> "pmax"
+
+  let ishiftop xxxx (op : ishiftop) = match op with
+    | Shl -> "shl"
+    | ShrS -> "shr_s"
+    | ShrU -> "shr_u"
+
+  let ibitmaskop xxxx (op : ibitmaskop) = match op with
+    | Bitmask -> "bitmask"
+
+  let vtestop (op : vtestop) = match op with
+    | AnyTrue -> "any_true"
+
+  let vunop (op : vunop) = match op with
+    | Not -> "not"
+
+  let vbinop (op : vbinop) = match op with
+    | And -> "and"
+    | AndNot -> "andnot"
+    | Or -> "or"
+    | Xor -> "xor"
+
+  let vternop (op : vternop) = match op with
+    | Bitselect -> "bitselect"
+
+  let splatop xxxx (op : nsplatop) = match op with
+    | Splat -> "splat"
+
+  let pextractop xxxx (op : extension nextractop) = match op with
+    | Extract (i, ext) -> "extract_lane" ^ extension ext ^ " " ^ nat i
+
+  let extractop xxxx (op : unit nextractop) = match op with
+    | Extract (i, ()) -> "extract_lane " ^ nat i
+
+  let replaceop xxxx (op : nreplaceop) = match op with
+    | Replace i -> "replace_lane " ^ nat i
+
+  let lane_oper (pop, iop, fop) op =
+    match op with
+    | I8x16 o -> pop "8x16" o
+    | I16x8 o -> pop "16x8" o
+    | I32x4 o -> iop "32x4" o
+    | I64x2 o -> iop "64x2" o
+    | F32x4 o -> fop "32x4" o
+    | F64x2 o -> fop "64x2" o
 end
 
-let oper (intop, floatop, simdop) op =
-  (* v128 operations don't need to be prefixed by the type,
-   * each instruction will specify their prefix (shape).
-   *)
-  let prefix = match op with
-    | V128 o -> ""
-    | _ -> num_type (type_of_num op) ^ "."
-  in
-  let ops = match op with
-    | I32 o -> intop "32" o
-    | I64 o -> intop "64" o
-    | F32 o -> floatop "32" o
-    | F64 o -> floatop "64" o
-    | V128 o -> simdop "128" o
-  in prefix ^ ops
+let oper (iop, fop) op =
+  num_type (type_of_num op) ^ "." ^
+  (match op with
+  | I32 o -> iop "32" o
+  | I64 o -> iop "64" o
+  | F32 o -> fop "32" o
+  | F64 o -> fop "64" o
+  )
 
-let unop = oper (IntOp.unop, FloatOp.unop, SimdOp.unop)
-let binop = oper (IntOp.binop, FloatOp.binop, SimdOp.binop)
-let testop = oper (IntOp.testop, FloatOp.testop, SimdOp.testop)
-let relop = oper (IntOp.relop, FloatOp.relop, SimdOp.relop)
-let cvtop = oper (IntOp.cvtop, FloatOp.cvtop, SimdOp.cvtop)
-let ternop = SimdOp.ternop
+let simd_oper (vop) op =
+  match op with
+  | V128 o -> "v128." ^ vop o
 
-(* Temporary wart here while we finalize the names of SIMD loads and extends. *)
-let memop name {ty; align; offset; _} sz =
-  num_type ty ^ "." ^ name ^
+let simd_shape_oper (pop, iop, fop) op =
+  match op with
+  | V128 o -> Simd.string_of_shape o ^ "." ^ V128Op.lane_oper (pop, iop, fop) o
+
+let unop = oper (IntOp.unop, FloatOp.unop)
+let binop = oper (IntOp.binop, FloatOp.binop)
+let testop = oper (IntOp.testop, FloatOp.testop)
+let relop = oper (IntOp.relop, FloatOp.relop)
+let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
+
+let simd_unop = simd_shape_oper (V128Op.iunop, V128Op.iunop, V128Op.funop)
+let simd_binop = simd_shape_oper (V128Op.ibinop, V128Op.ibinop, V128Op.fbinop)
+let simd_testop = simd_shape_oper (V128Op.itestop, V128Op.itestop, V128Op.voidop)
+let simd_vunop = simd_oper (V128Op.vunop)
+let simd_vbinop = simd_oper (V128Op.vbinop)
+let simd_vternop = simd_oper (V128Op.vternop)
+let simd_vtestop = simd_oper (V128Op.vtestop)
+let simd_shiftop = simd_shape_oper (V128Op.ishiftop, V128Op.ishiftop, V128Op.voidop)
+let simd_bitmaskop = simd_shape_oper (V128Op.ibitmaskop, V128Op.ibitmaskop, V128Op.voidop)
+
+let simd_splatop = simd_shape_oper (V128Op.splatop, V128Op.splatop, V128Op.splatop)
+let simd_extractop = simd_shape_oper (V128Op.pextractop, V128Op.extractop, V128Op.extractop)
+let simd_replaceop = simd_shape_oper (V128Op.replaceop, V128Op.replaceop, V128Op.replaceop)
+
+let memop name typ {ty; align; offset; _} sz =
+  typ ty ^ "." ^ name ^
   (if offset = 0l then "" else " offset=" ^ nat32 offset) ^
   (if 1 lsl align = sz then "" else " align=" ^ nat (1 lsl align))
 
 let loadop op =
-  match op.sz with
-  | None -> memop "load" op (size op.ty)
+  match op.pack with
+  | None -> memop "load" num_type op (num_size op.ty)
   | Some (sz, ext) ->
-    memop ("load" ^ pack_size sz ^ extension ext) op (packed_size sz)
-
-let simd_loadop (op : simd_loadop) =
-  match op.sz with
-  | None -> memop "load" op (size op.ty)
-  | Some (sz, pack_simd) ->
-    let suffix =
-      (match sz, pack_simd with
-      | Pack64, Pack8x8 ext -> "8x8" ^ extension ext
-      | Pack64, Pack16x4 ext -> "16x4" ^ extension ext
-      | Pack64, Pack32x2 ext -> "32x2" ^ extension ext
-      | Pack8, PackSplat -> "8_splat"
-      | Pack16, PackSplat -> "16_splat"
-      | Pack32, PackSplat -> "32_splat"
-      | Pack64, PackSplat -> "64_splat"
-      | Pack32, PackZero -> "32_zero"
-      | Pack64, PackZero -> "64_zero"
-      | _ -> assert false
-      ) in
-    memop ("load" ^ suffix) op (packed_size sz)
-
-let simd_laneop instr (op, i) =
-  match op.sz with
-  | None -> assert false
-  | Some sz ->
-    let suffix =
-      match sz with
-      | Pack8 -> "8_lane"
-      | Pack16 -> "16_lane"
-      | Pack32 -> "32_lane"
-      | Pack64 -> "64_lane"
-    in memop (instr ^ suffix) op (packed_size sz) ^ " " ^ (nat i)
+    memop ("load" ^ pack_size sz ^ extension ext) num_type op (packed_size sz)
 
 let storeop op =
-  match op.sz with
-  | None -> memop "store" op (size op.ty)
-  | Some sz -> memop ("store" ^ pack_size sz) op (packed_size sz)
+  match op.pack with
+  | None -> memop "store" num_type op (num_size op.ty)
+  | Some sz -> memop ("store" ^ pack_size sz) num_type op (packed_size sz)
+
+let simd_loadop (op : simd_loadop) =
+  match op.pack with
+  | None -> memop "load" simd_type op (simd_size op.ty)
+  | Some (sz, ext) ->
+    memop ("load" ^ simd_extension sz ext) simd_type op (packed_size sz)
 
 let simd_storeop op =
-  match op.sz with
-  | None -> memop "store" op (size op.ty)
-  | Some _ -> assert false
+  memop "store" simd_type op (simd_size op.ty)
+
+let simd_laneop instr (op, i) =
+  memop (instr ^ pack_size op.pack ^ "_lane") simd_type op
+    (packed_size op.pack) ^ " " ^ nat i
 
 
 (* Expressions *)
 
 let var x = nat32 x.it
 let num v = string_of_num v.it
-let constop v =
-  let shape = match v.it with
-    | V128 _ -> "i32x4 "
-    | _ -> ""
-  in num_type (type_of_num v.it) ^ ".const " ^ shape
+let simd v = string_of_simd v.it
+let constop v = num_type (type_of_num v) ^ ".const"
+let simd_constop v = simd_type (type_of_simd v) ^ ".const i32x4"
 
 let block_type = function
   | VarBlockType x -> [Node ("type " ^ var x, [])]
@@ -560,11 +459,11 @@ let rec instr e =
     | TableInit (x, y) -> "table.init " ^ var x ^ " " ^ var y, []
     | ElemDrop x -> "elem.drop " ^ var x, []
     | Load op -> loadop op, []
+    | Store op -> storeop op, []
     | SimdLoad op -> simd_loadop op, []
+    | SimdStore op -> simd_storeop op, []
     | SimdLoadLane op -> simd_laneop "load" op, []
     | SimdStoreLane op -> simd_laneop "store" op, []
-    | SimdStore op -> simd_storeop op, []
-    | Store op -> storeop op, []
     | MemorySize -> "memory.size", []
     | MemoryGrow -> "memory.grow", []
     | MemoryFill -> "memory.fill", []
@@ -574,17 +473,25 @@ let rec instr e =
     | RefNull t -> "ref.null", [Atom (refed_type t)]
     | RefIsNull -> "ref.is_null", []
     | RefFunc x -> "ref.func " ^ var x, []
-    | Const n -> constop n ^ " " ^ num n, []
+    | Const n -> constop n.it ^ " " ^ num n, []
     | Test op -> testop op, []
     | Compare op -> relop op, []
     | Unary op -> unop op, []
     | Binary op -> binop op, []
     | Convert op -> cvtop op, []
-    | SimdTernary op -> ternop op, []
-    | SimdExtract op -> SimdOp.extractop op, []
-    | SimdReplace op -> SimdOp.replaceop op, []
-    | SimdShift op -> SimdOp.shiftop op, []
-    | SimdBitmask op -> SimdOp.bitmaskop op, []
+    | SimdConst v -> simd_constop v.it ^ " " ^ simd v, []
+    | SimdTest op -> simd_testop op, []
+    | SimdUnary op -> simd_unop op, []
+    | SimdBinary op -> simd_binop op, []
+    | SimdTestVec op -> simd_vtestop op, []
+    | SimdUnaryVec op -> simd_vunop op, []
+    | SimdBinaryVec op -> simd_vbinop op, []
+    | SimdTernaryVec op -> simd_vternop op, []
+    | SimdShift op -> simd_shiftop op, []
+    | SimdBitmask op -> simd_bitmaskop op, []
+    | SimdSplat op -> simd_splatop op, []
+    | SimdExtract op -> simd_extractop op, []
+    | SimdReplace op -> simd_replaceop op, []
   in Node (head, inner)
 
 let const head c =
@@ -739,27 +646,19 @@ let module_ = module_with_var_opt None
 
 (* Scripts *)
 
-(* Converts a value to string depending on mode. *)
-let literal mode lit shape =
-  let choose_mode bin not_bin = if mode = `Binary then bin else not_bin in
-  match lit.it, shape with
-  | Num (Values.I32 i), Some Simd.I8x16 -> choose_mode I8.to_hex_string I8.to_string_s i
-  | Num (Values.I32 i), Some Simd.I16x8 -> choose_mode I16.to_hex_string I16.to_string_s i
-  | Num (Values.I32 i), _ -> choose_mode I32.to_hex_string I32.to_string_s i
-  | Num (Values.I64 i), _ -> choose_mode I64.to_hex_string I64.to_string_s i
-  | Num (Values.F32 z), _ -> choose_mode F32.to_hex_string F32.to_string z
-  | Num (Values.F64 z), _ -> choose_mode F64.to_hex_string F64.to_string z
-  | Num (Values.V128 v), _ -> choose_mode V128.to_hex_string V128.to_string v
-  | Ref (NullRef t), _ -> ("ref.null " ^ refed_type t)
-  | Ref (ExternRef n), _ -> ("ref.extern " ^ nat32 n)
-  | Ref _, _ -> assert false
+let num mode = if mode = `Binary then hex_string_of_num else string_of_num
+let simd mode = if mode = `Binary then hex_string_of_simd else string_of_simd
 
-(* Converts a literal into a constant instruction. *)
-let constant mode lit =
-  let lit_string = literal mode lit None in
+let ref_ = function
+  | NullRef t -> Node ("ref.null " ^ refed_type t, [])
+  | ExternRef n -> Node ("ref.extern " ^ nat32 n, [])
+  | _ -> assert false
+
+let literal mode lit =
   match lit.it with
-  | Num n -> Node (constop (n @@ lit.at) ^ lit_string, [])
-  | Ref _ -> Node (lit_string, [])
+  | Num n -> Node (constop n ^ " " ^ num mode n, [])
+  | Simd v -> Node (simd_constop v ^ " " ^ simd mode v, [])
+  | Ref r -> ref_ r
 
 let definition mode x_opt def =
   try
@@ -792,7 +691,7 @@ let access x_opt n =
 let action mode act =
   match act.it with
   | Invoke (x_opt, name, lits) ->
-    Node ("invoke" ^ access x_opt name, List.map (constant mode) lits)
+    Node ("invoke" ^ access x_opt name, List.map (literal mode) lits)
   | Get (x_opt, name) ->
     Node ("get" ^ access x_opt name, [])
 
@@ -800,34 +699,39 @@ let nan = function
   | CanonicalNan -> "nan:canonical"
   | ArithmeticNan -> "nan:arithmetic"
 
-let result_numpat mode res =
-    match res with
-    | LitPat lit -> constant mode lit
-    | NanPat nanop ->
-      match nanop.it with
-      | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
-      | Values.F32 n -> Node ("f32.const " ^ nan n, [])
-      | Values.F64 n -> Node ("f64.const " ^ nan n, [])
+let nanop (n : nanop) =
+  match n.it with
+  | F32 n' | F64 n' -> nan n'
+  | _ -> .
 
-let result_simd mode res shape pats =
-  (* A different text generation for SIMD, since the literals within
-   * a SimdResult do not need the i32.const instruction *)
-  let num_pat mode res =
-    match res with
-    | LitPat lit -> literal mode lit (Some shape)
-    | NanPat {it = Values.F32 n; _}
-    | NanPat {it = Values.F64 n; _} -> nan n
-    | _ -> assert false
-  in
-  let lits = (List.map (num_pat mode) pats) in
-  let tokens = ["v128.const"; Simd.string_of_shape shape;] @ lits in
-  Node (String.concat " " tokens, [])
+let num_pat mode = function
+  | NumPat n -> literal mode (Values.Num n.it @@ n.at)
+  | NanPat nan -> Node (constop nan.it ^ " " ^ nanop nan, [])
+
+let lane_pat mode pat shape =
+  let choose fb ft = if mode = `Binary then fb else ft in
+  match pat, shape with
+  | NumPat {it = Values.I32 i; _}, Simd.I8x16 () ->
+    choose I8.to_hex_string I8.to_string_s i
+  | NumPat {it = Values.I32 i; _}, Simd.I16x8 () ->
+    choose I16.to_hex_string I16.to_string_s i
+  | NumPat n, _ -> num mode n.it
+  | NanPat nan, _ -> nanop nan
+
+let simd_pat mode = function
+  | SimdPat (V128 (shape, pats)) ->
+    let lanes = List.map (fun p -> Atom (lane_pat mode p shape)) pats in
+    Node ("v128.const " ^ Simd.string_of_shape shape, lanes)
+
+let ref_pat = function
+  | RefPat r -> ref_ r.it
+  | RefTypePat t -> Node ("ref." ^ refed_type t, [])
 
 let result mode res =
   match res.it with
-  | SimdResult (shape, pats) -> result_simd mode res shape pats
-  | NumResult n -> result_numpat mode n
-  | RefResult t -> Node ("ref." ^ refed_type t, [])
+  | NumResult np -> num_pat mode np
+  | SimdResult vp -> simd_pat mode vp
+  | RefResult rp -> ref_pat rp
 
 let assertion mode ass =
   match ass.it with

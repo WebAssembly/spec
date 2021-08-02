@@ -239,33 +239,29 @@ let eq_of = function
   | I64Type -> Values.I64 I64Op.Eq
   | F32Type -> Values.F32 F32Op.Eq
   | F64Type -> Values.F64 F64Op.Eq
-  | V128Type -> assert false
 
 let and_of = function
   | I32Type | F32Type -> Values.I32 I32Op.And
   | I64Type | F64Type -> Values.I64 I64Op.And
-  | V128Type -> Values.V128 V128Op.(V128 And)
 
 let reinterpret_of = function
   | I32Type -> I32Type, Nop
   | I64Type -> I64Type, Nop
   | F32Type -> I32Type, Convert (Values.I32 I32Op.ReinterpretFloat)
   | F64Type -> I64Type, Convert (Values.I64 I64Op.ReinterpretFloat)
-  | V128Type -> assert false
 
 let canonical_nan_of = function
   | I32Type | F32Type -> Values.I32 (F32.to_bits F32.pos_nan)
   | I64Type | F64Type -> Values.I64 (F64.to_bits F64.pos_nan)
-  | V128Type -> assert false
 
 let abs_mask_of = function
   | I32Type | F32Type -> Values.I32 Int32.max_int
   | I64Type | F64Type -> Values.I64 Int64.max_int
-  | V128Type -> assert false
 
 let value v =
   match v.it with
-  | Values.Num num -> [Const (num @@ v.at) @@ v.at]
+  | Values.Num n -> [Const (n @@ v.at) @@ v.at]
+  | Values.Simd s -> [SimdConst (s @@ v.at) @@ v.at]
   | Values.Ref (Values.NullRef t) -> [RefNull t @@ v.at]
   | Values.Ref (ExternRef n) ->
     [Const (Values.I32 n @@ v.at) @@ v.at; Call (externref_idx @@ v.at) @@ v.at]
@@ -288,7 +284,7 @@ let assert_return ress ts at =
       | ArithmeticNan -> canonical_nan_of (* can be any NaN that's one everywhere the canonical NaN is one *)
     in
     match res.it with
-    | NumResult (LitPat {it = Values.Num num; at = at'}) ->
+    | NumResult (NumPat {it = num; at = at'}) ->
       let t', reinterpret = reinterpret_of (Values.type_of_num num) in
       [ reinterpret @@ at;
         Const (num @@ at')  @@ at;
@@ -296,22 +292,10 @@ let assert_return ress ts at =
         Compare (eq_of t') @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | NumResult (LitPat {it = Values.Ref (Values.NullRef t); _}) ->
-      [ RefIsNull @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
-        BrIf (0l @@ at) @@ at ]
-    | NumResult (LitPat {it = Values.Ref (ExternRef n); _}) ->
-      [ Const (Values.I32 n @@ at) @@ at;
-        Call (externref_idx @@ at) @@ at;
-        Call (eq_externref_idx @@ at)  @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
-        BrIf (0l @@ at) @@ at ]
-    | NumResult (LitPat {it = Values.Ref _; _}) ->
-      assert false
     | NumResult (NanPat nanop) ->
       let nan =
         match nanop.it with
-        | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
+        | Values.I32 _ | Values.I64 _ -> .
         | Values.F32 n | Values.F64 n -> n
       in
       let t = Values.type_of_num nanop.it in
@@ -323,7 +307,7 @@ let assert_return ress ts at =
         Compare (eq_of t') @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | SimdResult (shape, pats) ->
+    | SimdResult (SimdPat (Values.V128 (shape, pats))) ->
       let open Values in
       (* SimdResult is a list of NumPat or LitPat. For float shapes, we can have a mix of literals
        * and NaNs. For NaNs, we need to mask it and compare with a canonical NaN. To simplify
@@ -331,38 +315,49 @@ let assert_return ress ts at =
        * a v128, then compare the entire 128 bits.
        *)
       let mask_and_canonical = function
-        | LitPat {it = Num (I32 _ as i); _} -> I32 (Int32.minus_one), i
-        | LitPat {it = Num (I64 _ as i); _} -> I64 (Int64.minus_one), i
-        | LitPat {it = Num (F32 f); _} -> I32 (Int32.minus_one), I32 (I32_convert.reinterpret_f32 f)
-        | LitPat {it = Num (F64 f); _} -> I64 (Int64.minus_one), I64 (I64_convert.reinterpret_f64 f)
+        | NumPat {it = I32 _ as i; _} -> I32 (Int32.minus_one), i
+        | NumPat {it = I64 _ as i; _} -> I64 (Int64.minus_one), i
+        | NumPat {it = F32 f; _} -> I32 (Int32.minus_one), I32 (I32_convert.reinterpret_f32 f)
+        | NumPat {it = F64 f; _} -> I64 (Int64.minus_one), I64 (I64_convert.reinterpret_f64 f)
         | NanPat {it = F32 nan; _} -> nan_bitmask_of nan I32Type, canonical_nan_of I32Type
         | NanPat {it = F64 nan; _} -> nan_bitmask_of nan I64Type, canonical_nan_of I64Type
-        | _ -> assert false
+        | _ -> .
       in
       let masks, canons = List.split (List.map (fun p -> mask_and_canonical p) pats) in
       let all_ones = V128.of_i32x4 (List.init 4 (fun _ -> Int32.minus_one)) in
       let mask, expected = match shape with
-        | Simd.I8x16 -> all_ones, V128.of_i8x16 (List.map (I32Num.of_num 0) canons)
-        | Simd.I16x8 -> all_ones, V128.of_i16x8 (List.map (I32Num.of_num 0) canons)
-        | Simd.I32x4 -> all_ones, V128.of_i32x4 (List.map (I32Num.of_num 0) canons)
-        | Simd.I64x2 -> all_ones, V128.of_i64x2 (List.map (I64Num.of_num 0) canons)
-        | Simd.F32x4 ->
+        | Simd.I8x16 () -> all_ones, V128.of_i8x16 (List.map (I32Num.of_num 0) canons)
+        | Simd.I16x8 () -> all_ones, V128.of_i16x8 (List.map (I32Num.of_num 0) canons)
+        | Simd.I32x4 () -> all_ones, V128.of_i32x4 (List.map (I32Num.of_num 0) canons)
+        | Simd.I64x2 () -> all_ones, V128.of_i64x2 (List.map (I64Num.of_num 0) canons)
+        | Simd.F32x4 () ->
           V128.of_i32x4 (List.map (I32Num.of_num 0) masks),
           V128.of_i32x4 (List.map (I32Num.of_num 0) canons)
-        | Simd.F64x2 ->
+        | Simd.F64x2 () ->
           V128.of_i64x2 (List.map (I64Num.of_num 0) masks),
           V128.of_i64x2 (List.map (I64Num.of_num 0) canons)
       in
-      [
-        Const (V128 mask @@ at) @@ at;
-        Binary (and_of V128Type) @@ at;
-        Const (V128 expected @@ at) @@ at;
-        Binary (V128 V128Op.(I8x16 Eq)) @@ at;
+      [ SimdConst (V128 mask @@ at) @@ at;
+        SimdBinaryVec (V128 V128Op.And) @@ at;
+        SimdConst (V128 expected @@ at) @@ at;
+        SimdBinary (V128 V128Op.(Simd.I8x16 Eq)) @@ at;
         (* If all lanes are non-zero, then they are equal *)
-        Test (V128 V128Op.(I8x16 AllTrue)) @@ at;
+        SimdTest (V128 V128Op.(Simd.I8x16 AllTrue)) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | RefResult t ->
+    | RefResult (RefPat {it = Values.NullRef t; _}) ->
+      [ RefIsNull @@ at;
+        Test (Values.I32 I32Op.Eqz) @@ at;
+        BrIf (0l @@ at) @@ at ]
+    | RefResult (RefPat {it = ExternRef n; _}) ->
+      [ Const (Values.I32 n @@ at) @@ at;
+        Call (externref_idx @@ at) @@ at;
+        Call (eq_externref_idx @@ at)  @@ at;
+        Test (Values.I32 I32Op.Eqz) @@ at;
+        BrIf (0l @@ at) @@ at ]
+    | RefResult (RefPat _) ->
+      assert false
+    | RefResult (RefTypePat t) ->
       let is_ref_idx =
         match t with
         | FuncRefType -> is_funcref_idx
@@ -417,10 +412,11 @@ let wrap item_name wrap_action wrap_assertion at =
 
 let is_js_num_type = function
   | I32Type -> true
-  | I64Type | F32Type | F64Type | V128Type -> false
+  | I64Type | F32Type | F64Type -> false
 
 let is_js_value_type = function
   | NumType t -> is_js_num_type t
+  | SimdType t -> false
   | RefType t -> true
 
 let is_js_global_type = function
@@ -464,35 +460,57 @@ let of_float z =
   | "-inf" -> "-Infinity"
   | s -> s
 
+let of_num n =
+  let open Values in
+  match n with
+  | I32 i -> I32.to_string_s i
+  | I64 i -> "int64(\"" ^ I64.to_string_s i ^ "\")"
+  | F32 z -> of_float (F32.to_float z)
+  | F64 z -> of_float (F64.to_float z)
+
+let of_simd v =
+  let open Values in
+  match v with
+  | V128 v -> "v128(\"" ^ V128.to_string v ^ "\")"
+
+let of_ref r =
+  let open Values in
+  match r with
+  | NullRef _ -> "null"
+  | ExternRef n -> "externref(" ^ Int32.to_string n ^ ")"
+  | _ -> assert false
+
 let of_value v =
   let open Values in
   match v.it with
-  | Num (I32 i) -> I32.to_string_s i
-  | Num (I64 i) -> "int64(\"" ^ I64.to_string_s i ^ "\")"
-  | Num (F32 z) -> of_float (F32.to_float z)
-  | Num (F64 z) -> of_float (F64.to_float z)
-  | Num (V128 v) -> "v128(\"" ^ V128.to_string v ^ "\")"
-  | Ref (NullRef _) -> "null"
-  | Ref (ExternRef n) -> "externref(" ^ Int32.to_string n ^ ")"
-  | _ -> assert false
+  | Num n -> of_num n
+  | Simd v -> of_simd v
+  | Ref r -> of_ref r
 
 let of_nan = function
   | CanonicalNan -> "\"nan:canonical\""
   | ArithmeticNan -> "\"nan:arithmetic\""
 
-let of_numpat = function
-  | LitPat lit -> of_value lit
+let of_num_pat = function
+  | NumPat num -> of_num num.it
   | NanPat nanop ->
     match nanop.it with
-    | Values.I32 _ | Values.I64 _ | Values.V128 _ -> assert false
+    | Values.I32 _ | Values.I64 _ -> .
     | Values.F32 n | Values.F64 n -> of_nan n
+
+let of_simd_pat = function
+  | SimdPat (Values.V128 (shape, pats)) ->
+    Printf.sprintf "v128(\"%s\")" (String.concat " " (List.map of_num_pat pats))
+
+let of_ref_pat = function
+  | RefPat r -> of_ref r.it
+  | RefTypePat t -> "\"ref." ^ string_of_refed_type t ^ "\""
 
 let of_result res =
   match res.it with
-  | NumResult n -> of_numpat n
-  | SimdResult (shape, pats) ->
-    Printf.sprintf "v128(\"%s\")" (String.concat " " (List.map (fun x -> of_numpat x) pats))
-  | RefResult t -> "\"ref." ^ string_of_refed_type t ^ "\""
+  | NumResult np -> of_num_pat np
+  | SimdResult vp -> of_simd_pat vp
+  | RefResult rp -> of_ref_pat rp
 
 let rec of_definition def =
   match def.it with

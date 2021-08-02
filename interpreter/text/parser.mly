@@ -39,39 +39,34 @@ let ati i =
 let num f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
-let simd_literal shape ss at =
-  try
-    let v = V128.of_strings shape (List.map (fun s -> s.it) ss) in
-    (v128_const (v @@ at), Values.Num (Values.V128 v))
-  with
-    (* TODO better location for error messages. *)
-    | Failure _ -> error at "constant out of range"
-    | Invalid_argument _ -> error at "wrong number of lane literals"
+let simd f shape ss at =
+  try f shape ss at with
+  | Failure _ -> error at "constant out of range"
+  | Invalid_argument _ -> error at "wrong number of lane literals"
 
 let simd_lane_nan shape l at =
-  let open Simd in
+  let open Values in
   match shape with
-  | F32x4 -> NanPat (Values.F32 l @@ at)
-  | F64x2 -> NanPat (Values.F64 l @@ at)
+  | Simd.F32x4 () -> NanPat (F32 l @@ at)
+  | Simd.F64x2 () -> NanPat (F64 l @@ at)
   | _ -> error at "invalid simd constant"
 
 let simd_lane_lit shape l at =
-  let open Simd in
   let open Values in
   match shape with
-  | I8x16 -> LitPat (Num (I32 (I8.of_string l)) @@ at)
-  | I16x8 -> LitPat (Num (I32 (I16.of_string l)) @@ at)
-  | I32x4 -> LitPat (Num (I32 (I32.of_string l)) @@ at)
-  | I64x2 -> LitPat (Num (I64 (I64.of_string l)) @@ at)
-  | F32x4 -> LitPat (Num (F32 (F32.of_string l)) @@ at)
-  | F64x2 -> LitPat (Num (F64 (F64.of_string l)) @@ at)
+  | Simd.I8x16 () -> NumPat (I32 (I8.of_string l) @@ at)
+  | Simd.I16x8 () -> NumPat (I32 (I16.of_string l) @@ at)
+  | Simd.I32x4 () -> NumPat (I32 (I32.of_string l) @@ at)
+  | Simd.I64x2 () -> NumPat (I64 (I64.of_string l) @@ at)
+  | Simd.F32x4 () -> NumPat (F32 (F32.of_string l) @@ at)
+  | Simd.F64x2 () -> NumPat (F64 (F64.of_string l) @@ at)
 
 let simd_lane_index s at =
   match int_of_string s with
   | n when 0 <= n && n < 256 -> n
   | _ | exception Failure _ -> error at "malformed lane index"
 
-let shuffle_literal ss at =
+let shuffle_lit ss at =
   if not (List.length ss = 16) then
     error at "invalid lane length";
   List.map (fun s -> simd_lane_index s.it s.at) ss
@@ -82,7 +77,7 @@ let nanop f nan =
   match snd (f ("0" @@ no_region)) with
   | F32 _ -> F32 nan.it @@ nan.at
   | F64 _ -> F64 nan.it @@ nan.at
-  | I32 _ | I64 _ | V128 _ -> error nan.at "NaN pattern with non-float type"
+  | I32 _ | I64 _ -> error nan.at "NaN pattern with non-float type"
 
 let nat s at =
   try
@@ -211,7 +206,7 @@ let inline_type_explicit (c : context) x ft at =
 
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
-%token NUM_TYPE FUNCREF EXTERNREF EXTERN MUT
+%token NUM_TYPE SIMD_TYPE SIMD_SHAPE FUNCREF EXTERNREF EXTERN MUT
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
@@ -222,7 +217,10 @@ let inline_type_explicit (c : context) x ft at =
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token REF_NULL REF_FUNC REF_EXTERN REF_IS_NULL
-%token V128_CONST SIMD_SHAPE SIMD_LOAD_LANE SIMD_STORE_LANE SHUFFLE
+%token SIMD_LOAD SIMD_STORE SIMD_LOAD_LANE SIMD_STORE_LANE
+%token SIMD_CONST SIMD_UNARY SIMD_BINARY SIMD_TERNARY SIMD_TEST
+%token SIMD_SHIFT SIMD_BITMASK SIMD_SHUFFLE
+%token SIMD_EXTRACT SIMD_REPLACE
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
@@ -239,24 +237,32 @@ let inline_type_explicit (c : context) x ft at =
 %token<string> STRING
 %token<string> VAR
 %token<Types.num_type> NUM_TYPE
+%token<Types.simd_type> SIMD_TYPE
 %token<string Source.phrase -> Ast.instr' * Values.num> CONST
+%token<Simd.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Values.simd> SIMD_CONST
 %token<Ast.instr'> UNARY
 %token<Ast.instr'> BINARY
-%token<Ast.instr'> TERNARY
 %token<Ast.instr'> TEST
 %token<Ast.instr'> COMPARE
 %token<Ast.instr'> CONVERT
 %token<int option -> Memory.offset -> Ast.instr'> LOAD
+%token<int option -> Memory.offset -> Ast.instr'> STORE
+%token<int option -> Memory.offset -> Ast.instr'> SIMD_LOAD
+%token<int option -> Memory.offset -> Ast.instr'> SIMD_STORE
 %token<int option -> Memory.offset -> int -> Ast.instr'> SIMD_LOAD_LANE
 %token<int option -> Memory.offset -> int -> Ast.instr'> SIMD_STORE_LANE
-%token<Ast.instr'> SPLAT
-%token<int -> Ast.instr'> EXTRACT_LANE
-%token<int -> Ast.instr'> REPLACE_LANE
-%token<int option -> Memory.offset -> Ast.instr'> STORE
+%token<Ast.instr'> SIMD_UNARY
+%token<Ast.instr'> SIMD_BINARY
+%token<Ast.instr'> SIMD_TERNARY
+%token<Ast.instr'> SIMD_TEST
+%token<Ast.instr'> SIMD_SHIFT
+%token<Ast.instr'> SIMD_BITMASK
+%token<Ast.instr'> SIMD_SPLAT
+%token<int -> Ast.instr'> SIMD_EXTRACT
+%token<int -> Ast.instr'> SIMD_REPLACE
 %token<string> OFFSET_EQ_NAT
 %token<string> ALIGN_EQ_NAT
 %token<Simd.shape> SIMD_SHAPE
-%token<Ast.instr'> SHIFT
 
 %token<Script.nan> NAN
 
@@ -292,6 +298,7 @@ ref_type :
 
 value_type :
   | NUM_TYPE { NumType $1 }
+  | SIMD_TYPE { SimdType $1 }
   | ref_type { RefType $1 }
 
 value_type_list :
@@ -428,9 +435,13 @@ plain_instr :
     { let at = at () in fun c -> table_init (0l @@ at) ($2 c elem) }
   | ELEM_DROP var { fun c -> elem_drop ($2 c elem) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
-  | SIMD_LOAD_LANE offset_opt align_opt NAT { let at = at () in fun c -> $1 $3 $2 (simd_lane_index $4 at) }
-  | SIMD_STORE_LANE offset_opt align_opt NAT { let at = at () in fun c -> $1 $3 $2 (simd_lane_index $4 at) }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
+  | SIMD_LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
+  | SIMD_STORE offset_opt align_opt { fun c -> $1 $3 $2 }
+  | SIMD_LOAD_LANE offset_opt align_opt NAT
+    { let at = at () in fun c -> $1 $3 $2 (simd_lane_index $4 at) }
+  | SIMD_STORE_LANE offset_opt align_opt NAT
+    { let at = at () in fun c -> $1 $3 $2 (simd_lane_index $4 at) }
   | MEMORY_SIZE { fun c -> memory_size }
   | MEMORY_GROW { fun c -> memory_grow }
   | MEMORY_FILL { fun c -> memory_fill }
@@ -441,18 +452,22 @@ plain_instr :
   | REF_IS_NULL { fun c -> ref_is_null }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
   | CONST num { fun c -> fst (num $1 $2) }
-  | V128_CONST SIMD_SHAPE num_list { let at = at () in fun c -> fst (simd_literal $2 $3 at) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
-  | TERNARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
-  | SPLAT { fun c -> $1 }
-  | EXTRACT_LANE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
-  | REPLACE_LANE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
-  | SHIFT { fun c -> $1 }
-  | SHUFFLE num_list { let at = at () in fun c -> i8x16_shuffle (shuffle_literal $2 at) }
+  | SIMD_CONST SIMD_SHAPE num_list { let at = at () in fun c -> fst (simd $1 $2 $3 at) }
+  | SIMD_UNARY { fun c -> $1 }
+  | SIMD_BINARY { fun c -> $1 }
+  | SIMD_TERNARY { fun c -> $1 }
+  | SIMD_TEST { fun c -> $1 }
+  | SIMD_SHIFT { fun c -> $1 }
+  | SIMD_BITMASK { fun c -> $1 }
+  | SIMD_SHUFFLE num_list { let at = at () in fun c -> i8x16_shuffle (shuffle_lit $2 at) }
+  | SIMD_SPLAT { fun c -> $1 }
+  | SIMD_EXTRACT NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
+  | SIMD_REPLACE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
 
 
 select_instr :
@@ -1068,7 +1083,7 @@ script_module :
     { $3, Quoted ("quote:" ^ string_of_pos (at()).left, $5) @@ at() }
 
 action :
-  | LPAR INVOKE module_var_opt name const_list RPAR
+  | LPAR INVOKE module_var_opt name literal_list RPAR
     { Invoke ($3, $4, $5) @@ at () }
   | LPAR GET module_var_opt name RPAR
     { Get ($3, $4) @@ at() }
@@ -1103,37 +1118,43 @@ meta :
   | LPAR OUTPUT script_var_opt STRING RPAR { Output ($3, Some $4) @@ at () }
   | LPAR OUTPUT script_var_opt RPAR { Output ($3, None) @@ at () }
 
-const :
-  | LPAR CONST num RPAR { Values.Num (snd (num $2 $3)) @@ at () }
-  | LPAR REF_NULL ref_kind RPAR { Values.Ref (Values.NullRef $3) @@ at () }
-  | LPAR REF_EXTERN NAT RPAR { Values.Ref (ExternRef (nat32 $3 (ati 3))) @@ at () }
+literal_num :
+  | LPAR CONST num RPAR { snd (num $2 $3) }
 
-v128const:
-  | LPAR V128_CONST SIMD_SHAPE num_list RPAR {
-      snd (simd_literal $3 $4 (at ())) @@ ati 4
-  }
+literal_simd :
+  | LPAR SIMD_CONST SIMD_SHAPE num_list RPAR { snd (simd $2 $3 $4 (at ())) }
 
-const_list :
+literal_ref :
+  | LPAR REF_NULL ref_kind RPAR { Values.NullRef $3 }
+  | LPAR REF_EXTERN NAT RPAR { ExternRef (nat32 $3 (ati 3)) }
+
+literal :
+  | literal_num { Values.Num $1 @@ at () }
+  | literal_simd { Values.Simd $1 @@ at () }
+  | literal_ref { Values.Ref $1 @@ at () }
+
+literal_list :
   | /* empty */ { [] }
-  | const const_list { $1 :: $2 }
-  | v128const const_list { $1 :: $2 }
+  | literal literal_list { $1 :: $2 }
 
 numpat :
-  | num { fun s -> simd_lane_lit s $1.it $1.at }
-  | NAN { fun s -> simd_lane_nan s $1 (ati 3) }
+  | num { fun sh -> simd_lane_lit sh $1.it $1.at }
+  | NAN { fun sh -> simd_lane_nan sh $1 (ati 3) }
 
 numpat_list:
   | /* empty */ { [] }
   | numpat numpat_list { $1 :: $2 }
 
 result :
-  | const { NumResult (LitPat $1) @@ at () }
+  | literal_num { NumResult (NumPat ($1 @@ at())) @@ at () }
   | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ ati 3))) @@ at () }
-  | LPAR REF_FUNC RPAR { RefResult FuncRefType @@ at () }
-  | LPAR REF_EXTERN RPAR { RefResult ExternRefType @@ at () }
-  | LPAR V128_CONST SIMD_SHAPE numpat_list RPAR {
-    if Simd.lanes $3 <> List.length $4 then error (at ()) "wrong number of lane literals";
-    SimdResult ($3, List.map (fun lit -> lit $3) ($4)) @@ at ()
+  | literal_ref { RefResult (RefPat ($1 @@ at ())) @@ at () }
+  | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncRefType) @@ at () }
+  | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternRefType) @@ at () }
+  | LPAR SIMD_CONST SIMD_SHAPE numpat_list RPAR {
+    if Simd.lanes $3 <> List.length $4 then
+      error (at ()) "wrong number of lane literals";
+    SimdResult (SimdPat (Values.V128 ($3, List.map (fun lit -> lit $3) $4))) @@ at ()
   }
 
 result_list :

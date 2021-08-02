@@ -14,7 +14,7 @@ let global (GlobalType (t, _) as gt) =
     | NumType I64Type -> Num (I64 666L)
     | NumType F32Type -> Num (F32 (F32.of_float 666.6))
     | NumType F64Type -> Num (F64 (F64.of_float 666.6))
-    | NumType V128Type -> failwith "TODO v128"
+    | SimdType V128Type -> Simd (V128 (V128.of_i32x4 [666l; 666l; 666l; 666l]))
     | RefType t -> Ref (NullRef t)
   in Global.alloc gt v
 

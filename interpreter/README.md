@@ -175,26 +175,35 @@ float:  <num>.<num>?(e|E <num>)? | 0x<hexnum>.<hexnum>?(p|P <num>)?
 name:   $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
 string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex> | \u{<hex>+})*"
 
+num_type: i32 | i64 | f32 | f64
+simd_type: v128
+simd_shape: i8x16 | i16x8 | i32x4 | i64x2 | f32x4 | f64x2 | v128
+ref_kind: func | extern
+ref_type: funcref | externref
+val_type: <num_type> | <simd_type> | <ref_type>
+block_type : ( result <val_type>* )*
+func_type:   ( type <var> )? <param>* <result>*
+global_type: <val_type> | ( mut <val_type> )
+table_type:  <nat> <nat>? <ref_type>
+memory_type: <nat> <nat>?
+
 num: <int> | <float>
 var: <nat> | <name>
 
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
+testop: eqz
 relop: eq | ne | lt | ...
 sign:  s | u
 offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc | extend | wrap | ...
 
-num_type: i32 | i64 | f32 | f64
-ref_kind: func | extern
-ref_type: funcref | externref
-val_type: num_type | ref_type
-block_type : ( result <val_type>* )*
-func_type:   ( type <var> )? <param>* <result>*
-global_type: <val_type> | ( mut <val_type> )
-table_type:  <nat> <nat>? <ref_type>
-memory_type: <nat> <nat>?
+simdunop: abs | neg | ...
+simdbinop: add | sub | min_<sign> | ...
+simdternop: bitselect
+simdtestop: all_true | any_true
+simdshiftop: shl | shr_<sign>
 
 expr:
   ( <op> )
@@ -238,6 +247,10 @@ op:
   elem.drop <var>
   <num_type>.load((8|16|32)_<sign>)? <offset>? <align>?
   <num_type>.store(8|16|32)? <offset>? <align>?
+  <simd_type>.load((8x8|16x4|32x2)_<sign>)? <offset>? <align>?
+  <simd_type>.store <offset>? <align>?
+  <simd_type>.load(8|16|32|64)_(lane|splat|zero) <offset>? <align>?
+  <simd_type>.store(8|16|32|64)_lane <offset>? <align>?
   memory.size
   memory.grow
   memory.fill
@@ -247,12 +260,22 @@ op:
   ref.null <ref_kind>
   ref.is_null <ref_kind>
   ref.func <var>
-  <num_type>.const <value>
+  <num_type>.const <num>
   <num_type>.<unop>
   <num_type>.<binop>
   <num_type>.<testop>
   <num_type>.<relop>
   <num_type>.<cvtop>_<num_type>(_<sign>)?
+  <simd_type>.const <simd_shape> <num>+
+  <simd_shape>.<simdunop>
+  <simd_shape>.<simdbinop>
+  <simd_shape>.<simdternop>
+  <simd_shape>.<simdtestop>
+  <simd_shape>.<simdshiftop>
+  <simd_shape>.bitmask
+  <simd_shape>.splat
+  <simd_shape>.extract_lane(_<sign>)? <nat>
+  <simd_shape>.replace_lane <nat>
 
 func:    ( func <name>? <func_type> <local>* <instr>* )
          ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)
@@ -352,8 +375,9 @@ action:
 
 const:
   ( <num_type>.const <num> )                 ;; number value
+  ( <simd_type> <simd_shape> <num>+ )        ;; simd value
   ( ref.null <ref_kind> )                    ;; null reference
-  ( ref.host <nat> )                         ;; host reference
+  ( ref.extern <nat> )                       ;; host reference
 
 assertion:
   ( assert_return <action> <result>* )       ;; assert action has expected results
@@ -365,12 +389,14 @@ assertion:
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
 result:
+  <const>
   ( <num_type>.const <num_pat> )
+  ( <simd_type>.const <simd_shape> <num_pat>+ )
   ( ref.extern )
   ( ref.func )
 
 num_pat:
-  <value>                                    ;; literal result
+  <num>                                      ;; literal result
   nan:canonical                              ;; NaN in canonical form
   nan:arithmetic                             ;; NaN with 1 in MSB of payload
 

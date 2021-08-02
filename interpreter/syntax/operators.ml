@@ -1,6 +1,7 @@
 open Source
 open Types
 open Values
+open Simd
 open Ast
 
 
@@ -8,7 +9,7 @@ let i32_const n = Const (I32 n.it @@ n.at)
 let i64_const n = Const (I64 n.it @@ n.at)
 let f32_const n = Const (F32 n.it @@ n.at)
 let f64_const n = Const (F64 n.it @@ n.at)
-let v128_const n = Const (V128 n.it @@ n.at)
+let v128_const n = SimdConst (V128 n.it @@ n.at)
 let ref_null t = RefNull t
 let ref_func x = RefFunc x
 
@@ -42,45 +43,45 @@ let table_copy x y = TableCopy (x, y)
 let table_init x y = TableInit (x, y)
 let elem_drop x = ElemDrop x
 
-let i32_load align offset = Load {ty = I32Type; align; offset; sz = None}
-let i64_load align offset = Load {ty = I64Type; align; offset; sz = None}
-let f32_load align offset = Load {ty = F32Type; align; offset; sz = None}
-let f64_load align offset = Load {ty = F64Type; align; offset; sz = None}
+let i32_load align offset = Load {ty = I32Type; align; offset; pack = None}
+let i64_load align offset = Load {ty = I64Type; align; offset; pack = None}
+let f32_load align offset = Load {ty = F32Type; align; offset; pack = None}
+let f64_load align offset = Load {ty = F64Type; align; offset; pack = None}
 let i32_load8_s align offset =
-  Load {ty = I32Type; align; offset; sz = Some (Pack8, SX)}
+  Load {ty = I32Type; align; offset; pack = Some (Pack8, SX)}
 let i32_load8_u align offset =
-  Load {ty = I32Type; align; offset; sz = Some (Pack8, ZX)}
+  Load {ty = I32Type; align; offset; pack = Some (Pack8, ZX)}
 let i32_load16_s align offset =
-  Load {ty = I32Type; align; offset; sz = Some (Pack16, SX)}
+  Load {ty = I32Type; align; offset; pack = Some (Pack16, SX)}
 let i32_load16_u align offset =
-  Load {ty = I32Type; align; offset; sz = Some (Pack16, ZX)}
+  Load {ty = I32Type; align; offset; pack = Some (Pack16, ZX)}
 let i64_load8_s align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Pack8, SX)}
+  Load {ty = I64Type; align; offset; pack = Some (Pack8, SX)}
 let i64_load8_u align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Pack8, ZX)}
+  Load {ty = I64Type; align; offset; pack = Some (Pack8, ZX)}
 let i64_load16_s align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Pack16, SX)}
+  Load {ty = I64Type; align; offset; pack = Some (Pack16, SX)}
 let i64_load16_u align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Pack16, ZX)}
+  Load {ty = I64Type; align; offset; pack = Some (Pack16, ZX)}
 let i64_load32_s align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Pack32, SX)}
+  Load {ty = I64Type; align; offset; pack = Some (Pack32, SX)}
 let i64_load32_u align offset =
-  Load {ty = I64Type; align; offset; sz = Some (Pack32, ZX)}
+  Load {ty = I64Type; align; offset; pack = Some (Pack32, ZX)}
 
-let i32_store align offset = Store {ty = I32Type; align; offset; sz = None}
-let i64_store align offset = Store {ty = I64Type; align; offset; sz = None}
-let f32_store align offset = Store {ty = F32Type; align; offset; sz = None}
-let f64_store align offset = Store {ty = F64Type; align; offset; sz = None}
+let i32_store align offset = Store {ty = I32Type; align; offset; pack = None}
+let i64_store align offset = Store {ty = I64Type; align; offset; pack = None}
+let f32_store align offset = Store {ty = F32Type; align; offset; pack = None}
+let f64_store align offset = Store {ty = F64Type; align; offset; pack = None}
 let i32_store8 align offset =
-  Store {ty = I32Type; align; offset; sz = Some Pack8}
+  Store {ty = I32Type; align; offset; pack = Some Pack8}
 let i32_store16 align offset =
-  Store {ty = I32Type; align; offset; sz = Some Pack16}
+  Store {ty = I32Type; align; offset; pack = Some Pack16}
 let i64_store8 align offset =
-  Store {ty = I64Type; align; offset; sz = Some Pack8}
+  Store {ty = I64Type; align; offset; pack = Some Pack8}
 let i64_store16 align offset =
-  Store {ty = I64Type; align; offset; sz = Some Pack16}
+  Store {ty = I64Type; align; offset; pack = Some Pack16}
 let i64_store32 align offset =
-  Store {ty = I64Type; align; offset; sz = Some Pack32}
+  Store {ty = I64Type; align; offset; pack = Some Pack32}
 
 let memory_size = MemorySize
 let memory_grow = MemoryGrow
@@ -233,271 +234,269 @@ let i64_reinterpret_f64 = Convert (I64 I64Op.ReinterpretFloat)
 let f32_reinterpret_i32 = Convert (F32 F32Op.ReinterpretInt)
 let f64_reinterpret_i64 = Convert (F64 F64Op.ReinterpretInt)
 
-(* SIMD *)
-let v128_load align offset = SimdLoad {ty = V128Type; align; offset; sz = None}
+let v128_load align offset = SimdLoad {ty = V128Type; align; offset; pack = None}
 let v128_load8x8_s align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack8x8 SX)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack8x8, SX))}
 let v128_load8x8_u align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack8x8 ZX)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack8x8, ZX))}
 let v128_load16x4_s align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack16x4 SX)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack16x4, SX))}
 let v128_load16x4_u align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack16x4 ZX)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack16x4, ZX))}
 let v128_load32x2_s align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack32x2 SX)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack32x2, SX))}
 let v128_load32x2_u align offset =
-  SimdLoad {ty = V128Type; align; offset; sz = Some (Pack64, Pack32x2 ZX)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack32x2, ZX))}
 let v128_load8_splat align offset =
-  SimdLoad {ty= V128Type; align; offset; sz = Some (Pack8, PackSplat)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack8, ExtSplat)}
 let v128_load16_splat align offset =
-  SimdLoad {ty= V128Type; align; offset; sz = Some (Pack16, PackSplat)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack16, ExtSplat)}
 let v128_load32_splat align offset =
-  SimdLoad {ty= V128Type; align; offset; sz = Some (Pack32, PackSplat)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack32, ExtSplat)}
 let v128_load64_splat align offset =
-  SimdLoad {ty= V128Type; align; offset; sz = Some (Pack64, PackSplat)}
-
-let v128_load8_lane align offset imm =
-  SimdLoadLane ({ty = V128Type; align; offset; sz = Some Pack8}, imm)
-let v128_load16_lane align offset imm =
-  SimdLoadLane ({ty = V128Type; align; offset; sz = Some Pack16}, imm)
-let v128_load32_lane align offset imm =
-  SimdLoadLane ({ty = V128Type; align; offset; sz = Some Pack32}, imm)
-let v128_load64_lane align offset imm =
-  SimdLoadLane ({ty = V128Type; align; offset; sz = Some Pack64}, imm)
-
-let v128_store8_lane align offset imm =
-  SimdStoreLane ({ty = V128Type; align; offset; sz = Some Pack8}, imm)
-let v128_store16_lane align offset imm =
-  SimdStoreLane ({ty = V128Type; align; offset; sz = Some Pack16}, imm)
-let v128_store32_lane align offset imm =
-  SimdStoreLane ({ty = V128Type; align; offset; sz = Some Pack32}, imm)
-let v128_store64_lane align offset imm =
-  SimdStoreLane ({ty = V128Type; align; offset; sz = Some Pack64}, imm)
-
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtSplat)}
 let v128_load32_zero align offset =
-  SimdLoad {ty= V128Type; align; offset; sz = Some (Pack32, PackZero)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack32, ExtZero)}
 let v128_load64_zero align offset =
-  SimdLoad {ty= V128Type; align; offset; sz = Some (Pack64, PackZero)}
+  SimdLoad {ty = V128Type; align; offset; pack = Some (Pack64, ExtZero)}
 
-let v128_store align offset = SimdStore {ty = V128Type; align; offset; sz = None}
+let v128_store align offset = SimdStore {ty = V128Type; align; offset; pack = ()}
 
-let v128_not = Unary (V128 V128Op.(V128 Not))
-let v128_and = Binary (V128 V128Op.(V128 And))
-let v128_andnot = Binary (V128 V128Op.(V128 AndNot))
-let v128_or = Binary (V128 V128Op.(V128 Or))
-let v128_xor = Binary (V128 V128Op.(V128 Xor))
-let v128_bitselect = SimdTernary (V128Op.Bitselect)
-let v128_any_true = Test (V128 V128Op.(V128 AnyTrue))
+let v128_load8_lane align offset i =
+  SimdLoadLane ({ty = V128Type; align; offset; pack = Pack8}, i)
+let v128_load16_lane align offset i =
+  SimdLoadLane ({ty = V128Type; align; offset; pack = Pack16}, i)
+let v128_load32_lane align offset i =
+  SimdLoadLane ({ty = V128Type; align; offset; pack = Pack32}, i)
+let v128_load64_lane align offset i =
+  SimdLoadLane ({ty = V128Type; align; offset; pack = Pack64}, i)
 
-let i8x16_swizzle = Binary (V128 V128Op.(I8x16 Swizzle))
-let i8x16_shuffle imms = Binary (V128 V128Op.(I8x16 (Shuffle imms)))
+let v128_store8_lane align offset i =
+  SimdStoreLane ({ty = V128Type; align; offset; pack = Pack8}, i)
+let v128_store16_lane align offset i =
+  SimdStoreLane ({ty = V128Type; align; offset; pack = Pack16}, i)
+let v128_store32_lane align offset i =
+  SimdStoreLane ({ty = V128Type; align; offset; pack = Pack32}, i)
+let v128_store64_lane align offset i =
+  SimdStoreLane ({ty = V128Type; align; offset; pack = Pack64}, i)
 
-let i8x16_splat = Convert (V128 V128Op.(I8x16 Splat))
-let i8x16_extract_lane_s imm = SimdExtract (V128Op.I8x16 (SX, imm))
-let i8x16_extract_lane_u imm = SimdExtract (V128Op.I8x16 (ZX, imm))
-let i8x16_replace_lane imm = SimdReplace (V128Op.I8x16 imm)
-let i8x16_eq = Binary (V128 V128Op.(I8x16 Eq))
-let i8x16_ne = Binary (V128 V128Op.(I8x16 Ne))
-let i8x16_lt_s = Binary (V128 V128Op.(I8x16 LtS))
-let i8x16_lt_u = Binary (V128 V128Op.(I8x16 LtU))
-let i8x16_le_s = Binary (V128 V128Op.(I8x16 LeS))
-let i8x16_le_u = Binary (V128 V128Op.(I8x16 LeU))
-let i8x16_gt_s = Binary (V128 V128Op.(I8x16 GtS))
-let i8x16_gt_u = Binary (V128 V128Op.(I8x16 GtU))
-let i8x16_ge_s = Binary (V128 V128Op.(I8x16 GeS))
-let i8x16_ge_u = Binary (V128 V128Op.(I8x16 GeU))
-let i8x16_neg = Unary (V128 V128Op.(I8x16 Neg))
-let i8x16_bitmask = SimdBitmask Simd.I8x16
-let i8x16_all_true = Test (V128 V128Op.(I8x16 AllTrue))
-let i8x16_narrow_i16x8_s = Binary (V128 V128Op.(I8x16 NarrowS))
-let i8x16_narrow_i16x8_u = Binary (V128 V128Op.(I8x16 NarrowU))
-let i16x8_extend_low_i8x16_s = Unary (V128 V128Op.(I16x8 ExtendLowS))
-let i16x8_extend_high_i8x16_s = Unary (V128 V128Op.(I16x8 ExtendHighS))
-let i16x8_extend_low_i8x16_u = Unary (V128 V128Op.(I16x8 ExtendLowU))
-let i16x8_extend_high_i8x16_u = Unary (V128 V128Op.(I16x8 ExtendHighU))
-let i8x16_shl = SimdShift V128Op.(I8x16 Shl)
-let i8x16_shr_s = SimdShift V128Op.(I8x16 ShrS)
-let i8x16_shr_u = SimdShift V128Op.(I8x16 ShrU)
-let i8x16_add = Binary (V128 V128Op.(I8x16 Add))
-let i8x16_add_sat_s = Binary (V128 V128Op.(I8x16 AddSatS))
-let i8x16_add_sat_u = Binary (V128 V128Op.(I8x16 AddSatU))
-let i8x16_sub = Binary (V128 V128Op.(I8x16 Sub))
-let i8x16_sub_sat_s = Binary (V128 V128Op.(I8x16 SubSatS))
-let i8x16_sub_sat_u = Binary (V128 V128Op.(I8x16 SubSatU))
-let i8x16_abs = Unary (V128 V128Op.(I8x16 Abs))
-let i8x16_popcnt = Unary (V128 V128Op.(I8x16 Popcnt))
-let i8x16_min_s = Binary (V128 V128Op.(I8x16 MinS))
-let i8x16_min_u = Binary (V128 V128Op.(I8x16 MinU))
-let i8x16_max_s = Binary (V128 V128Op.(I8x16 MaxS))
-let i8x16_max_u = Binary (V128 V128Op.(I8x16 MaxU))
-let i8x16_avgr_u = Binary (V128 V128Op.(I8x16 AvgrU))
+let v128_not = SimdUnaryVec (V128 V128Op.Not)
+let v128_and = SimdBinaryVec (V128 V128Op.And)
+let v128_andnot = SimdBinaryVec (V128 V128Op.AndNot)
+let v128_or = SimdBinaryVec (V128 V128Op.Or)
+let v128_xor = SimdBinaryVec (V128 V128Op.Xor)
+let v128_bitselect = SimdTernaryVec (V128 V128Op.Bitselect)
+let v128_any_true = SimdTestVec (V128 V128Op.AnyTrue)
 
-let i16x8_splat = Convert (V128 V128Op.(I16x8 Splat))
-let i16x8_extract_lane_s imm = SimdExtract (V128Op.I16x8 (SX, imm))
-let i16x8_extract_lane_u imm = SimdExtract (V128Op.I16x8 (ZX, imm))
-let i16x8_replace_lane imm = SimdReplace (V128Op.I16x8 imm)
-let i16x8_eq = Binary (V128 V128Op.(I16x8 Eq))
-let i16x8_ne = Binary (V128 V128Op.(I16x8 Ne))
-let i16x8_lt_s = Binary (V128 V128Op.(I16x8 LtS))
-let i16x8_lt_u = Binary (V128 V128Op.(I16x8 LtU))
-let i16x8_le_s = Binary (V128 V128Op.(I16x8 LeS))
-let i16x8_le_u = Binary (V128 V128Op.(I16x8 LeU))
-let i16x8_gt_s = Binary (V128 V128Op.(I16x8 GtS))
-let i16x8_gt_u = Binary (V128 V128Op.(I16x8 GtU))
-let i16x8_ge_s = Binary (V128 V128Op.(I16x8 GeS))
-let i16x8_ge_u = Binary (V128 V128Op.(I16x8 GeU))
-let i16x8_neg = Unary (V128 V128Op.(I16x8 Neg))
-let i16x8_bitmask = SimdBitmask Simd.I16x8
-let i16x8_all_true = Test (V128 V128Op.(I16x8 AllTrue))
-let i16x8_narrow_i32x4_s = Binary (V128 V128Op.(I16x8 NarrowS))
-let i16x8_narrow_i32x4_u = Binary (V128 V128Op.(I16x8 NarrowU))
-let i16x8_shl = SimdShift V128Op.(I16x8 Shl)
-let i16x8_shr_s = SimdShift V128Op.(I16x8 ShrS)
-let i16x8_shr_u = SimdShift V128Op.(I16x8 ShrU)
-let i16x8_add = Binary (V128 V128Op.(I16x8 Add))
-let i16x8_add_sat_s = Binary (V128 V128Op.(I16x8 AddSatS))
-let i16x8_add_sat_u = Binary (V128 V128Op.(I16x8 AddSatU))
-let i16x8_sub = Binary (V128 V128Op.(I16x8 Sub))
-let i16x8_sub_sat_s = Binary (V128 V128Op.(I16x8 SubSatS))
-let i16x8_sub_sat_u = Binary (V128 V128Op.(I16x8 SubSatU))
-let i16x8_mul = Binary (V128 V128Op.(I16x8 Mul))
-let i16x8_abs = Unary (V128 V128Op.(I16x8 Abs))
-let i16x8_min_s = Binary (V128 V128Op.(I16x8 MinS))
-let i16x8_min_u = Binary (V128 V128Op.(I16x8 MinU))
-let i16x8_max_s = Binary (V128 V128Op.(I16x8 MaxS))
-let i16x8_max_u = Binary (V128 V128Op.(I16x8 MaxU))
-let i16x8_avgr_u = Binary (V128 V128Op.(I16x8 AvgrU))
-let i16x8_extmul_low_i8x16_s = Binary (V128 V128Op.(I16x8 ExtMulLowS))
-let i16x8_extmul_high_i8x16_s = Binary (V128 V128Op.(I16x8 ExtMulHighS))
-let i16x8_extmul_low_i8x16_u = Binary (V128 V128Op.(I16x8 ExtMulLowU))
-let i16x8_extmul_high_i8x16_u = Binary (V128 V128Op.(I16x8 ExtMulHighU))
-let i16x8_q15mulr_sat_s = Binary (V128 V128Op.(I16x8 Q15MulRSatS))
-let i16x8_extadd_pairwise_i8x16_s = Unary (V128 V128Op.(I16x8 ExtAddPairwiseS))
-let i16x8_extadd_pairwise_i8x16_u = Unary (V128 V128Op.(I16x8 ExtAddPairwiseU))
+let i8x16_swizzle = SimdBinary (V128 V128Op.(I8x16 Swizzle))
+let i8x16_shuffle is = SimdBinary (V128 V128Op.(I8x16 (Shuffle is)))
 
-let i32x4_splat = Convert (V128 V128Op.(I32x4 Splat))
-let i32x4_extract_lane imm = SimdExtract (V128Op.I32x4 (ZX, imm))
-let i32x4_replace_lane imm = SimdReplace (V128Op.I32x4 imm)
-let i32x4_eq = Binary (V128 V128Op.(I32x4 Eq))
-let i32x4_ne = Binary (V128 V128Op.(I32x4 Ne))
-let i32x4_lt_s = Binary (V128 V128Op.(I32x4 LtS))
-let i32x4_lt_u = Binary (V128 V128Op.(I32x4 LtU))
-let i32x4_le_s = Binary (V128 V128Op.(I32x4 LeS))
-let i32x4_le_u = Binary (V128 V128Op.(I32x4 LeU))
-let i32x4_gt_s = Binary (V128 V128Op.(I32x4 GtS))
-let i32x4_gt_u = Binary (V128 V128Op.(I32x4 GtU))
-let i32x4_ge_s = Binary (V128 V128Op.(I32x4 GeS))
-let i32x4_ge_u = Binary (V128 V128Op.(I32x4 GeU))
-let i32x4_abs = Unary (V128 V128Op.(I32x4 Abs))
-let i32x4_neg = Unary (V128 V128Op.(I32x4 Neg))
-let i32x4_bitmask = SimdBitmask Simd.I32x4
-let i32x4_all_true = Test (V128 V128Op.(I32x4 AllTrue))
-let i32x4_extend_low_i16x8_s = Unary (V128 V128Op.(I32x4 ExtendLowS))
-let i32x4_extend_high_i16x8_s = Unary (V128 V128Op.(I32x4 ExtendHighS))
-let i32x4_extend_low_i16x8_u = Unary (V128 V128Op.(I32x4 ExtendLowU))
-let i32x4_extend_high_i16x8_u = Unary (V128 V128Op.(I32x4 ExtendHighU))
-let i32x4_shl = SimdShift V128Op.(I32x4 Shl)
-let i32x4_shr_s = SimdShift V128Op.(I32x4 ShrS)
-let i32x4_shr_u = SimdShift V128Op.(I32x4 ShrU)
-let i32x4_add = Binary (V128 V128Op.(I32x4 Add))
-let i32x4_sub = Binary (V128 V128Op.(I32x4 Sub))
-let i32x4_min_s = Binary (V128 V128Op.(I32x4 MinS))
-let i32x4_min_u = Binary (V128 V128Op.(I32x4 MinU))
-let i32x4_max_s = Binary (V128 V128Op.(I32x4 MaxS))
-let i32x4_max_u = Binary (V128 V128Op.(I32x4 MaxU))
-let i32x4_mul = Binary (V128 V128Op.(I32x4 Mul))
-let i32x4_trunc_sat_f32x4_s = Unary (V128 V128Op.(I32x4 TruncSatF32x4S))
-let i32x4_trunc_sat_f32x4_u = Unary (V128 V128Op.(I32x4 TruncSatF32x4U))
-let i32x4_trunc_sat_f64x2_s_zero = Unary (V128 V128Op.(I32x4 TruncSatF64x2SZero))
-let i32x4_trunc_sat_f64x2_u_zero = Unary (V128 V128Op.(I32x4 TruncSatF64x2UZero))
-let i32x4_dot_i16x8_s = Binary (V128 V128Op.(I32x4 DotI16x8S))
-let i32x4_extmul_low_i16x8_s = Binary (V128 V128Op.(I32x4 ExtMulLowS))
-let i32x4_extmul_high_i16x8_s = Binary (V128 V128Op.(I32x4 ExtMulHighS))
-let i32x4_extmul_low_i16x8_u = Binary (V128 V128Op.(I32x4 ExtMulLowU))
-let i32x4_extmul_high_i16x8_u = Binary (V128 V128Op.(I32x4 ExtMulHighU))
-let i32x4_extadd_pairwise_i16x8_s = Unary (V128 V128Op.(I32x4 ExtAddPairwiseS))
-let i32x4_extadd_pairwise_i16x8_u = Unary (V128 V128Op.(I32x4 ExtAddPairwiseU))
+let i8x16_splat = SimdSplat (V128 V128Op.(I8x16 Splat))
+let i8x16_extract_lane_s i = SimdExtract (V128 V128Op.(I8x16 (Extract (i, SX))))
+let i8x16_extract_lane_u i = SimdExtract (V128 V128Op.(I8x16 (Extract (i, ZX))))
+let i8x16_replace_lane i = SimdReplace (V128 V128Op.(I8x16 (Replace i)))
+let i8x16_eq = SimdBinary (V128 V128Op.(I8x16 Eq))
+let i8x16_ne = SimdBinary (V128 V128Op.(I8x16 Ne))
+let i8x16_lt_s = SimdBinary (V128 V128Op.(I8x16 LtS))
+let i8x16_lt_u = SimdBinary (V128 V128Op.(I8x16 LtU))
+let i8x16_le_s = SimdBinary (V128 V128Op.(I8x16 LeS))
+let i8x16_le_u = SimdBinary (V128 V128Op.(I8x16 LeU))
+let i8x16_gt_s = SimdBinary (V128 V128Op.(I8x16 GtS))
+let i8x16_gt_u = SimdBinary (V128 V128Op.(I8x16 GtU))
+let i8x16_ge_s = SimdBinary (V128 V128Op.(I8x16 GeS))
+let i8x16_ge_u = SimdBinary (V128 V128Op.(I8x16 GeU))
+let i8x16_neg = SimdUnary (V128 V128Op.(I8x16 Neg))
+let i8x16_bitmask = SimdBitmask (V128 V128Op.(I8x16 Bitmask))
+let i8x16_all_true = SimdTest (V128 V128Op.(I8x16 AllTrue))
+let i8x16_narrow_i16x8_s = SimdBinary (V128 V128Op.(I8x16 NarrowS))
+let i8x16_narrow_i16x8_u = SimdBinary (V128 V128Op.(I8x16 NarrowU))
+let i16x8_extend_low_i8x16_s = SimdUnary (V128 V128Op.(I16x8 ExtendLowS))
+let i16x8_extend_high_i8x16_s = SimdUnary (V128 V128Op.(I16x8 ExtendHighS))
+let i16x8_extend_low_i8x16_u = SimdUnary (V128 V128Op.(I16x8 ExtendLowU))
+let i16x8_extend_high_i8x16_u = SimdUnary (V128 V128Op.(I16x8 ExtendHighU))
+let i8x16_shl = SimdShift (V128 V128Op.(I8x16 Shl))
+let i8x16_shr_s = SimdShift (V128 V128Op.(I8x16 ShrS))
+let i8x16_shr_u = SimdShift (V128 V128Op.(I8x16 ShrU))
+let i8x16_add = SimdBinary (V128 V128Op.(I8x16 Add))
+let i8x16_add_sat_s = SimdBinary (V128 V128Op.(I8x16 AddSatS))
+let i8x16_add_sat_u = SimdBinary (V128 V128Op.(I8x16 AddSatU))
+let i8x16_sub = SimdBinary (V128 V128Op.(I8x16 Sub))
+let i8x16_sub_sat_s = SimdBinary (V128 V128Op.(I8x16 SubSatS))
+let i8x16_sub_sat_u = SimdBinary (V128 V128Op.(I8x16 SubSatU))
+let i8x16_abs = SimdUnary (V128 V128Op.(I8x16 Abs))
+let i8x16_popcnt = SimdUnary (V128 V128Op.(I8x16 Popcnt))
+let i8x16_min_s = SimdBinary (V128 V128Op.(I8x16 MinS))
+let i8x16_min_u = SimdBinary (V128 V128Op.(I8x16 MinU))
+let i8x16_max_s = SimdBinary (V128 V128Op.(I8x16 MaxS))
+let i8x16_max_u = SimdBinary (V128 V128Op.(I8x16 MaxU))
+let i8x16_avgr_u = SimdBinary (V128 V128Op.(I8x16 AvgrU))
 
-let i64x2_splat = Convert (V128 V128Op.(I64x2 Splat))
-let i64x2_extract_lane imm = SimdExtract (V128Op.I64x2 (ZX, imm))
-let i64x2_replace_lane imm = SimdReplace (V128Op.I64x2 imm)
-let i64x2_extend_low_i32x4_s = Unary (V128 V128Op.(I64x2 ExtendLowS))
-let i64x2_extend_high_i32x4_s = Unary (V128 V128Op.(I64x2 ExtendHighS))
-let i64x2_extend_low_i32x4_u = Unary (V128 V128Op.(I64x2 ExtendLowU))
-let i64x2_extend_high_i32x4_u = Unary (V128 V128Op.(I64x2 ExtendHighU))
-let i64x2_eq = Binary (V128 V128Op.(I64x2 Eq))
-let i64x2_ne = Binary (V128 V128Op.(I64x2 Ne))
-let i64x2_lt_s = Binary (V128 V128Op.(I64x2 LtS))
-let i64x2_le_s = Binary (V128 V128Op.(I64x2 LeS))
-let i64x2_gt_s = Binary (V128 V128Op.(I64x2 GtS))
-let i64x2_ge_s = Binary (V128 V128Op.(I64x2 GeS))
-let i64x2_abs = Unary (V128 V128Op.(I64x2 Abs))
-let i64x2_neg = Unary (V128 V128Op.(I64x2 Neg))
-let i64x2_bitmask = SimdBitmask Simd.I64x2
-let i64x2_all_true = Test (V128 V128Op.(I64x2 AllTrue))
-let i64x2_add = Binary (V128 V128Op.(I64x2 Add))
-let i64x2_sub = Binary (V128 V128Op.(I64x2 Sub))
-let i64x2_mul = Binary (V128 V128Op.(I64x2 Mul))
-let i64x2_shl = SimdShift V128Op.(I64x2 Shl)
-let i64x2_shr_s = SimdShift V128Op.(I64x2 ShrS)
-let i64x2_shr_u = SimdShift V128Op.(I64x2 ShrU)
-let i64x2_extmul_low_i32x4_s = Binary (V128 V128Op.(I64x2 ExtMulLowS))
-let i64x2_extmul_high_i32x4_s = Binary (V128 V128Op.(I64x2 ExtMulHighS))
-let i64x2_extmul_low_i32x4_u = Binary (V128 V128Op.(I64x2 ExtMulLowU))
-let i64x2_extmul_high_i32x4_u = Binary (V128 V128Op.(I64x2 ExtMulHighU))
+let i16x8_splat = SimdSplat (V128 V128Op.(I16x8 Splat))
+let i16x8_extract_lane_s i = SimdExtract (V128 V128Op.(I16x8 (Extract (i, SX))))
+let i16x8_extract_lane_u i = SimdExtract (V128 V128Op.(I16x8 (Extract (i, ZX))))
+let i16x8_replace_lane i = SimdReplace (V128 V128Op.(I16x8 (Replace i)))
+let i16x8_eq = SimdBinary (V128 V128Op.(I16x8 Eq))
+let i16x8_ne = SimdBinary (V128 V128Op.(I16x8 Ne))
+let i16x8_lt_s = SimdBinary (V128 V128Op.(I16x8 LtS))
+let i16x8_lt_u = SimdBinary (V128 V128Op.(I16x8 LtU))
+let i16x8_le_s = SimdBinary (V128 V128Op.(I16x8 LeS))
+let i16x8_le_u = SimdBinary (V128 V128Op.(I16x8 LeU))
+let i16x8_gt_s = SimdBinary (V128 V128Op.(I16x8 GtS))
+let i16x8_gt_u = SimdBinary (V128 V128Op.(I16x8 GtU))
+let i16x8_ge_s = SimdBinary (V128 V128Op.(I16x8 GeS))
+let i16x8_ge_u = SimdBinary (V128 V128Op.(I16x8 GeU))
+let i16x8_neg = SimdUnary (V128 V128Op.(I16x8 Neg))
+let i16x8_bitmask = SimdBitmask (V128 V128Op.(I16x8 Bitmask))
+let i16x8_all_true = SimdTest (V128 V128Op.(I16x8 AllTrue))
+let i16x8_narrow_i32x4_s = SimdBinary (V128 V128Op.(I16x8 NarrowS))
+let i16x8_narrow_i32x4_u = SimdBinary (V128 V128Op.(I16x8 NarrowU))
+let i16x8_shl = SimdShift (V128 V128Op.(I16x8 Shl))
+let i16x8_shr_s = SimdShift (V128 V128Op.(I16x8 ShrS))
+let i16x8_shr_u = SimdShift (V128 V128Op.(I16x8 ShrU))
+let i16x8_add = SimdBinary (V128 V128Op.(I16x8 Add))
+let i16x8_add_sat_s = SimdBinary (V128 V128Op.(I16x8 AddSatS))
+let i16x8_add_sat_u = SimdBinary (V128 V128Op.(I16x8 AddSatU))
+let i16x8_sub = SimdBinary (V128 V128Op.(I16x8 Sub))
+let i16x8_sub_sat_s = SimdBinary (V128 V128Op.(I16x8 SubSatS))
+let i16x8_sub_sat_u = SimdBinary (V128 V128Op.(I16x8 SubSatU))
+let i16x8_mul = SimdBinary (V128 V128Op.(I16x8 Mul))
+let i16x8_abs = SimdUnary (V128 V128Op.(I16x8 Abs))
+let i16x8_min_s = SimdBinary (V128 V128Op.(I16x8 MinS))
+let i16x8_min_u = SimdBinary (V128 V128Op.(I16x8 MinU))
+let i16x8_max_s = SimdBinary (V128 V128Op.(I16x8 MaxS))
+let i16x8_max_u = SimdBinary (V128 V128Op.(I16x8 MaxU))
+let i16x8_avgr_u = SimdBinary (V128 V128Op.(I16x8 AvgrU))
+let i16x8_extmul_low_i8x16_s = SimdBinary (V128 V128Op.(I16x8 ExtMulLowS))
+let i16x8_extmul_high_i8x16_s = SimdBinary (V128 V128Op.(I16x8 ExtMulHighS))
+let i16x8_extmul_low_i8x16_u = SimdBinary (V128 V128Op.(I16x8 ExtMulLowU))
+let i16x8_extmul_high_i8x16_u = SimdBinary (V128 V128Op.(I16x8 ExtMulHighU))
+let i16x8_q15mulr_sat_s = SimdBinary (V128 V128Op.(I16x8 Q15MulRSatS))
+let i16x8_extadd_pairwise_i8x16_s = SimdUnary (V128 V128Op.(I16x8 ExtAddPairwiseS))
+let i16x8_extadd_pairwise_i8x16_u = SimdUnary (V128 V128Op.(I16x8 ExtAddPairwiseU))
 
-let f32x4_splat = Convert (V128 V128Op.(F32x4 Splat))
-let f32x4_extract_lane imm = SimdExtract (V128Op.F32x4 (ZX, imm))
-let f32x4_replace_lane imm = SimdReplace (V128Op.F32x4 imm)
-let f32x4_eq = Binary (V128 V128Op.(F32x4 Eq))
-let f32x4_ne = Binary (V128 V128Op.(F32x4 Ne))
-let f32x4_lt = Binary (V128 V128Op.(F32x4 Lt))
-let f32x4_le = Binary (V128 V128Op.(F32x4 Le))
-let f32x4_gt = Binary (V128 V128Op.(F32x4 Gt))
-let f32x4_ge = Binary (V128 V128Op.(F32x4 Ge))
-let f32x4_abs = Unary (V128 V128Op.(F32x4 Abs))
-let f32x4_neg = Unary (V128 V128Op.(F32x4 Neg))
-let f32x4_sqrt = Unary (V128 V128Op.(F32x4 Sqrt))
-let f32x4_ceil = Unary (V128 V128Op.(F32x4 Ceil))
-let f32x4_floor = Unary (V128 V128Op.(F32x4 Floor))
-let f32x4_trunc = Unary (V128 V128Op.(F32x4 Trunc))
-let f32x4_nearest = Unary (V128 V128Op.(F32x4 Nearest))
-let f32x4_add = Binary (V128 V128Op.(F32x4 Add))
-let f32x4_sub = Binary (V128 V128Op.(F32x4 Sub))
-let f32x4_mul = Binary (V128 V128Op.(F32x4 Mul))
-let f32x4_div = Binary (V128 V128Op.(F32x4 Div))
-let f32x4_min = Binary (V128 V128Op.(F32x4 Min))
-let f32x4_max = Binary (V128 V128Op.(F32x4 Max))
-let f32x4_convert_i32x4_s = Unary (V128 V128Op.(F32x4 ConvertI32x4S))
-let f32x4_convert_i32x4_u = Unary (V128 V128Op.(F32x4 ConvertI32x4U))
-let f32x4_pmin = Binary (V128 V128Op.(F32x4 Pmin))
-let f32x4_pmax = Binary (V128 V128Op.(F32x4 Pmax))
-let f32x4_demote_f64x2_zero = Unary (V128 V128Op.(F32x4 DemoteF64x2Zero))
+let i32x4_splat = SimdSplat (V128 V128Op.(I32x4 Splat))
+let i32x4_extract_lane i = SimdExtract (V128 V128Op.(I32x4 (Extract (i, ()))))
+let i32x4_replace_lane i = SimdReplace (V128 V128Op.(I32x4 (Replace i)))
+let i32x4_eq = SimdBinary (V128 V128Op.(I32x4 Eq))
+let i32x4_ne = SimdBinary (V128 V128Op.(I32x4 Ne))
+let i32x4_lt_s = SimdBinary (V128 V128Op.(I32x4 LtS))
+let i32x4_lt_u = SimdBinary (V128 V128Op.(I32x4 LtU))
+let i32x4_le_s = SimdBinary (V128 V128Op.(I32x4 LeS))
+let i32x4_le_u = SimdBinary (V128 V128Op.(I32x4 LeU))
+let i32x4_gt_s = SimdBinary (V128 V128Op.(I32x4 GtS))
+let i32x4_gt_u = SimdBinary (V128 V128Op.(I32x4 GtU))
+let i32x4_ge_s = SimdBinary (V128 V128Op.(I32x4 GeS))
+let i32x4_ge_u = SimdBinary (V128 V128Op.(I32x4 GeU))
+let i32x4_abs = SimdUnary (V128 V128Op.(I32x4 Abs))
+let i32x4_neg = SimdUnary (V128 V128Op.(I32x4 Neg))
+let i32x4_bitmask = SimdBitmask (V128 V128Op.(I32x4 Bitmask))
+let i32x4_all_true = SimdTest (V128 V128Op.(I32x4 AllTrue))
+let i32x4_extend_low_i16x8_s = SimdUnary (V128 V128Op.(I32x4 ExtendLowS))
+let i32x4_extend_high_i16x8_s = SimdUnary (V128 V128Op.(I32x4 ExtendHighS))
+let i32x4_extend_low_i16x8_u = SimdUnary (V128 V128Op.(I32x4 ExtendLowU))
+let i32x4_extend_high_i16x8_u = SimdUnary (V128 V128Op.(I32x4 ExtendHighU))
+let i32x4_shl = SimdShift (V128 V128Op.(I32x4 Shl))
+let i32x4_shr_s = SimdShift (V128 V128Op.(I32x4 ShrS))
+let i32x4_shr_u = SimdShift (V128 V128Op.(I32x4 ShrU))
+let i32x4_add = SimdBinary (V128 V128Op.(I32x4 Add))
+let i32x4_sub = SimdBinary (V128 V128Op.(I32x4 Sub))
+let i32x4_min_s = SimdBinary (V128 V128Op.(I32x4 MinS))
+let i32x4_min_u = SimdBinary (V128 V128Op.(I32x4 MinU))
+let i32x4_max_s = SimdBinary (V128 V128Op.(I32x4 MaxS))
+let i32x4_max_u = SimdBinary (V128 V128Op.(I32x4 MaxU))
+let i32x4_mul = SimdBinary (V128 V128Op.(I32x4 Mul))
+let i32x4_dot_i16x8_s = SimdBinary (V128 V128Op.(I32x4 DotS))
+let i32x4_trunc_sat_f32x4_s = SimdUnary (V128 V128Op.(I32x4 TruncSatSF32x4))
+let i32x4_trunc_sat_f32x4_u = SimdUnary (V128 V128Op.(I32x4 TruncSatUF32x4))
+let i32x4_trunc_sat_f64x2_s_zero = SimdUnary (V128 V128Op.(I32x4 TruncSatSZeroF64x2))
+let i32x4_trunc_sat_f64x2_u_zero = SimdUnary (V128 V128Op.(I32x4 TruncSatUZeroF64x2))
+let i32x4_extmul_low_i16x8_s = SimdBinary (V128 V128Op.(I32x4 ExtMulLowS))
+let i32x4_extmul_high_i16x8_s = SimdBinary (V128 V128Op.(I32x4 ExtMulHighS))
+let i32x4_extmul_low_i16x8_u = SimdBinary (V128 V128Op.(I32x4 ExtMulLowU))
+let i32x4_extmul_high_i16x8_u = SimdBinary (V128 V128Op.(I32x4 ExtMulHighU))
+let i32x4_extadd_pairwise_i16x8_s = SimdUnary (V128 V128Op.(I32x4 ExtAddPairwiseS))
+let i32x4_extadd_pairwise_i16x8_u = SimdUnary (V128 V128Op.(I32x4 ExtAddPairwiseU))
 
-let f64x2_splat = Convert (V128 V128Op.(F64x2 Splat))
-let f64x2_extract_lane imm = SimdExtract (V128Op.F64x2 (ZX, imm))
-let f64x2_replace_lane imm = SimdReplace (V128Op.F64x2 imm)
-let f64x2_eq = Binary (V128 V128Op.(F64x2 Eq))
-let f64x2_ne = Binary (V128 V128Op.(F64x2 Ne))
-let f64x2_lt = Binary (V128 V128Op.(F64x2 Lt))
-let f64x2_le = Binary (V128 V128Op.(F64x2 Le))
-let f64x2_gt = Binary (V128 V128Op.(F64x2 Gt))
-let f64x2_ge = Binary (V128 V128Op.(F64x2 Ge))
-let f64x2_neg = Unary (V128 V128Op.(F64x2 Neg))
-let f64x2_sqrt = Unary (V128 V128Op.(F64x2 Sqrt))
-let f64x2_ceil = Unary (V128 V128Op.(F64x2 Ceil))
-let f64x2_floor = Unary (V128 V128Op.(F64x2 Floor))
-let f64x2_trunc = Unary (V128 V128Op.(F64x2 Trunc))
-let f64x2_nearest = Unary (V128 V128Op.(F64x2 Nearest))
-let f64x2_add = Binary (V128 V128Op.(F64x2 Add))
-let f64x2_sub = Binary (V128 V128Op.(F64x2 Sub))
-let f64x2_mul = Binary (V128 V128Op.(F64x2 Mul))
-let f64x2_div = Binary (V128 V128Op.(F64x2 Div))
-let f64x2_min = Binary (V128 V128Op.(F64x2 Min))
-let f64x2_max = Binary (V128 V128Op.(F64x2 Max))
-let f64x2_abs = Unary (V128 V128Op.(F64x2 Abs))
-let f64x2_pmin = Binary (V128 V128Op.(F64x2 Pmin))
-let f64x2_pmax = Binary (V128 V128Op.(F64x2 Pmax))
-let f64x2_promote_low_f32x4 = Unary (V128 V128Op.(F64x2 PromoteLowF32x4))
-let f64x2_convert_low_i32x4_s = Unary (V128 V128Op.(F64x2 ConvertI32x4S))
-let f64x2_convert_low_i32x4_u = Unary (V128 V128Op.(F64x2 ConvertI32x4U))
+let i64x2_splat = SimdSplat (V128 V128Op.(I64x2 Splat))
+let i64x2_extract_lane i = SimdExtract (V128 V128Op.(I64x2 (Extract (i, ()))))
+let i64x2_replace_lane i = SimdReplace (V128 V128Op.(I64x2 (Replace i)))
+let i64x2_extend_low_i32x4_s = SimdUnary (V128 V128Op.(I64x2 ExtendLowS))
+let i64x2_extend_high_i32x4_s = SimdUnary (V128 V128Op.(I64x2 ExtendHighS))
+let i64x2_extend_low_i32x4_u = SimdUnary (V128 V128Op.(I64x2 ExtendLowU))
+let i64x2_extend_high_i32x4_u = SimdUnary (V128 V128Op.(I64x2 ExtendHighU))
+let i64x2_eq = SimdBinary (V128 V128Op.(I64x2 Eq))
+let i64x2_ne = SimdBinary (V128 V128Op.(I64x2 Ne))
+let i64x2_lt_s = SimdBinary (V128 V128Op.(I64x2 LtS))
+let i64x2_le_s = SimdBinary (V128 V128Op.(I64x2 LeS))
+let i64x2_gt_s = SimdBinary (V128 V128Op.(I64x2 GtS))
+let i64x2_ge_s = SimdBinary (V128 V128Op.(I64x2 GeS))
+let i64x2_abs = SimdUnary (V128 V128Op.(I64x2 Abs))
+let i64x2_neg = SimdUnary (V128 V128Op.(I64x2 Neg))
+let i64x2_bitmask = SimdBitmask (V128 V128Op.(I64x2 Bitmask))
+let i64x2_all_true = SimdTest (V128 V128Op.(I64x2 AllTrue))
+let i64x2_add = SimdBinary (V128 V128Op.(I64x2 Add))
+let i64x2_sub = SimdBinary (V128 V128Op.(I64x2 Sub))
+let i64x2_mul = SimdBinary (V128 V128Op.(I64x2 Mul))
+let i64x2_shl = SimdShift (V128 V128Op.(I64x2 Shl))
+let i64x2_shr_s = SimdShift (V128 V128Op.(I64x2 ShrS))
+let i64x2_shr_u = SimdShift (V128 V128Op.(I64x2 ShrU))
+let i64x2_extmul_low_i32x4_s = SimdBinary (V128 V128Op.(I64x2 ExtMulLowS))
+let i64x2_extmul_high_i32x4_s = SimdBinary (V128 V128Op.(I64x2 ExtMulHighS))
+let i64x2_extmul_low_i32x4_u = SimdBinary (V128 V128Op.(I64x2 ExtMulLowU))
+let i64x2_extmul_high_i32x4_u = SimdBinary (V128 V128Op.(I64x2 ExtMulHighU))
+
+let f32x4_splat = SimdSplat (V128 V128Op.(F32x4 Splat))
+let f32x4_extract_lane i = SimdExtract (V128 V128Op.(F32x4 (Extract (i, ()))))
+let f32x4_replace_lane i = SimdReplace (V128 V128Op.(F32x4 (Replace i)))
+let f32x4_eq = SimdBinary (V128 V128Op.(F32x4 Eq))
+let f32x4_ne = SimdBinary (V128 V128Op.(F32x4 Ne))
+let f32x4_lt = SimdBinary (V128 V128Op.(F32x4 Lt))
+let f32x4_le = SimdBinary (V128 V128Op.(F32x4 Le))
+let f32x4_gt = SimdBinary (V128 V128Op.(F32x4 Gt))
+let f32x4_ge = SimdBinary (V128 V128Op.(F32x4 Ge))
+let f32x4_abs = SimdUnary (V128 V128Op.(F32x4 Abs))
+let f32x4_neg = SimdUnary (V128 V128Op.(F32x4 Neg))
+let f32x4_sqrt = SimdUnary (V128 V128Op.(F32x4 Sqrt))
+let f32x4_ceil = SimdUnary (V128 V128Op.(F32x4 Ceil))
+let f32x4_floor = SimdUnary (V128 V128Op.(F32x4 Floor))
+let f32x4_trunc = SimdUnary (V128 V128Op.(F32x4 Trunc))
+let f32x4_nearest = SimdUnary (V128 V128Op.(F32x4 Nearest))
+let f32x4_add = SimdBinary (V128 V128Op.(F32x4 Add))
+let f32x4_sub = SimdBinary (V128 V128Op.(F32x4 Sub))
+let f32x4_mul = SimdBinary (V128 V128Op.(F32x4 Mul))
+let f32x4_div = SimdBinary (V128 V128Op.(F32x4 Div))
+let f32x4_min = SimdBinary (V128 V128Op.(F32x4 Min))
+let f32x4_max = SimdBinary (V128 V128Op.(F32x4 Max))
+let f32x4_pmin = SimdBinary (V128 V128Op.(F32x4 Pmin))
+let f32x4_pmax = SimdBinary (V128 V128Op.(F32x4 Pmax))
+let f32x4_demote_f64x2_zero = SimdUnary (V128 V128Op.(F32x4 DemoteZeroF64x2))
+let f32x4_convert_i32x4_s = SimdUnary (V128 V128Op.(F32x4 ConvertSI32x4))
+let f32x4_convert_i32x4_u = SimdUnary (V128 V128Op.(F32x4 ConvertUI32x4))
+
+let f64x2_splat = SimdSplat (V128 V128Op.(F64x2 Splat))
+let f64x2_extract_lane i = SimdExtract (V128 V128Op.(F64x2 (Extract (i, ()))))
+let f64x2_replace_lane i = SimdReplace (V128 V128Op.(F64x2 (Replace i)))
+let f64x2_eq = SimdBinary (V128 V128Op.(F64x2 Eq))
+let f64x2_ne = SimdBinary (V128 V128Op.(F64x2 Ne))
+let f64x2_lt = SimdBinary (V128 V128Op.(F64x2 Lt))
+let f64x2_le = SimdBinary (V128 V128Op.(F64x2 Le))
+let f64x2_gt = SimdBinary (V128 V128Op.(F64x2 Gt))
+let f64x2_ge = SimdBinary (V128 V128Op.(F64x2 Ge))
+let f64x2_neg = SimdUnary (V128 V128Op.(F64x2 Neg))
+let f64x2_sqrt = SimdUnary (V128 V128Op.(F64x2 Sqrt))
+let f64x2_ceil = SimdUnary (V128 V128Op.(F64x2 Ceil))
+let f64x2_floor = SimdUnary (V128 V128Op.(F64x2 Floor))
+let f64x2_trunc = SimdUnary (V128 V128Op.(F64x2 Trunc))
+let f64x2_nearest = SimdUnary (V128 V128Op.(F64x2 Nearest))
+let f64x2_add = SimdBinary (V128 V128Op.(F64x2 Add))
+let f64x2_sub = SimdBinary (V128 V128Op.(F64x2 Sub))
+let f64x2_mul = SimdBinary (V128 V128Op.(F64x2 Mul))
+let f64x2_div = SimdBinary (V128 V128Op.(F64x2 Div))
+let f64x2_min = SimdBinary (V128 V128Op.(F64x2 Min))
+let f64x2_max = SimdBinary (V128 V128Op.(F64x2 Max))
+let f64x2_abs = SimdUnary (V128 V128Op.(F64x2 Abs))
+let f64x2_pmin = SimdBinary (V128 V128Op.(F64x2 Pmin))
+let f64x2_pmax = SimdBinary (V128 V128Op.(F64x2 Pmax))
+let f64x2_promote_low_f32x4 = SimdUnary (V128 V128Op.(F64x2 PromoteLowF32x4))
+let f64x2_convert_low_i32x4_s = SimdUnary (V128 V128Op.(F64x2 ConvertSI32x4))
+let f64x2_convert_low_i32x4_u = SimdUnary (V128 V128Op.(F64x2 ConvertUI32x4))

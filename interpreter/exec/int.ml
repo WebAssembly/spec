@@ -271,6 +271,7 @@ struct
    * away the top 32-bitwidth bits.
    *)
   let as_unsigned x = 
+    if Rep.bitwidth >= 32 then x else
     (* Mask with bottom #bitwidth bits set *)
     let mask = Rep.(shift_right_logical minus_one (32 - Rep.bitwidth)) in
     Rep.logand x mask

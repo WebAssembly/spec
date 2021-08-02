@@ -1,3 +1,4 @@
+(* TODO: inline this functor, since it won't really work for other types *)
 include Simd.Make
   (struct
     include String
@@ -62,17 +63,17 @@ include Simd.Make
       let open Bytes in
       let b = create bytewidth in
       (match shape with
-      | Simd.I8x16 ->
+      | Simd.I8x16 () ->
         List.iteri (fun i s -> set_uint8 b i (i8_of_string s)) ss
-      | Simd.I16x8 ->
+      | Simd.I16x8 () ->
         List.iteri (fun i s -> set_int16_le b (i * 2) (i16_of_string s)) ss
-      | Simd.I32x4 ->
+      | Simd.I32x4 () ->
         List.iteri (fun i s -> set_int32_le b (i * 4) (I32.of_string s)) ss
-      | Simd.I64x2 ->
+      | Simd.I64x2 () ->
         List.iteri (fun i s -> set_int64_le b (i * 8) (I64.of_string s)) ss
-      | Simd.F32x4 ->
+      | Simd.F32x4 () ->
         List.iteri (fun i s -> set_int32_le b (i * 4) (F32.to_bits (F32.of_string s))) ss
-      | Simd.F64x2 ->
+      | Simd.F64x2 () ->
         List.iteri (fun i s -> set_int64_le b (i * 8) (F64.to_bits (F64.of_string s))) ss);
       Bytes.to_string b
 

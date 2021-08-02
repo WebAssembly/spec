@@ -137,21 +137,21 @@ debugtest:	$(UNOPT)
 		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',)
 
 test/%:		$(OPT)
-		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$(@F).wast
+		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast
 debugtest/%:	$(UNOPT)
-		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$(@F).wast
+		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast
 
 run/%:		$(OPT)
-		./$(OPT) $(TESTDIR)/$(@F).wast
+		./$(OPT) $(TESTDIR)/$*.wast
 debug/%:	$(UNOPT)
-		./$(UNOPT) $(TESTDIR)/$(@F).wast
+		./$(UNOPT) $(TESTDIR)/$*.wast
 
 partest: 	$(TESTS:%=quiettest/%)
 		@echo All tests passed.
 
 quiettest/%:	$(OPT)
 		@ ( \
-		  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@:quiettest/%=$(TESTDIR)/%.wast) && \
+		  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast && \
 		  rm $(@F).out \
 		) || \
 		cat $(@F).out || rm $(@F).out || exit 1

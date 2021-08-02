@@ -1,6 +1,8 @@
 type var = string Source.phrase
 
 type Values.ref_ += ExternRef of int32
+type num = Values.num Source.phrase
+type ref_ = Values.ref_ Source.phrase
 type literal = Values.value Source.phrase
 
 type definition = definition' Source.phrase
@@ -15,18 +17,25 @@ and action' =
   | Get of var option * Ast.name
 
 type nanop = nanop' Source.phrase
-and nanop' = (Lib.void, Lib.void, nan, nan, Lib.void) Values.op
+and nanop' = (Lib.void, Lib.void, nan, nan) Values.op
 and nan = CanonicalNan | ArithmeticNan
 
 type num_pat =
-  | LitPat of literal
+  | NumPat of num
   | NanPat of nanop
+
+type simd_pat =
+  | SimdPat of (Simd.shape * num_pat list) Values.simdop
+
+type ref_pat =
+  | RefPat of ref_
+  | RefTypePat of Types.ref_type
 
 type result = result' Source.phrase
 and result' =
   | NumResult of num_pat
-  | SimdResult of Simd.shape * num_pat list
-  | RefResult of Types.ref_type
+  | SimdResult of simd_pat
+  | RefResult of ref_pat
 
 type assertion = assertion' Source.phrase
 and assertion' =
@@ -68,3 +77,10 @@ let () =
   Values.string_of_ref' := function
     | ExternRef n -> "ref " ^ Int32.to_string n
     | r -> string_of_ref' r
+
+let () =
+  let eq_ref' = !Values.eq_ref' in
+  Values.eq_ref' := fun r1 r2 ->
+    match r1, r2 with
+    | ExternRef n1, ExternRef n2 -> n1 = n2
+    | _, _ -> eq_ref' r1 r2
