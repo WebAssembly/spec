@@ -560,8 +560,8 @@ let rec step (c : config) : config =
         (try Num (Eval_simd.eval_bitmaskop bitmaskop v) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdConvert cvtop, Num n :: vs' ->
-        (try Simd (Eval_simd.eval_cvtop cvtop n) :: vs', []
+      | SimdSplat splatop, Num n :: vs' ->
+        (try Simd (Eval_simd.eval_splatop splatop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | SimdExtract extractop, Simd v :: vs' ->

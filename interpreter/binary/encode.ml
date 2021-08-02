@@ -135,6 +135,7 @@ struct
   open Source
   open Ast
   open Values
+  open Simd
 
   let op n = u8 n
   let simd_op n = op 0xfd; vu32 n
@@ -297,8 +298,7 @@ struct
 
     | Test (I32 I32Op.Eqz) -> op 0x45
     | Test (I64 I64Op.Eqz) -> op 0x50
-    | Test (F32 _) -> assert false
-    | Test (F64 _) -> assert false
+    | Test (F32 _ | F64 _) -> .
 
     | Compare (I32 I32Op.Eq) -> op 0x46
     | Compare (I32 I32Op.Ne) -> op 0x47
@@ -341,8 +341,7 @@ struct
     | Unary (I32 I32Op.Popcnt) -> op 0x69
     | Unary (I32 (I32Op.ExtendS Pack8)) -> op 0xc0
     | Unary (I32 (I32Op.ExtendS Pack16)) -> op 0xc1
-    | Unary (I32 (I32Op.ExtendS Pack32)) -> assert false
-    | Unary (I32 (I32Op.ExtendS Pack64)) -> assert false
+    | Unary (I32 (I32Op.ExtendS (Pack32 | Pack64))) -> assert false
 
     | Unary (I64 I64Op.Clz) -> op 0x79
     | Unary (I64 I64Op.Ctz) -> op 0x7a
@@ -505,16 +504,16 @@ struct
     | SimdUnary (V128 V128Op.(F64x2 Abs)) -> simd_op 0xecl
     | SimdUnary (V128 V128Op.(F64x2 Neg)) -> simd_op 0xedl
     | SimdUnary (V128 V128Op.(F64x2 Sqrt)) -> simd_op 0xefl
-    | SimdUnary (V128 V128Op.(I32x4 TruncSatF32x4S)) -> simd_op 0xf8l
-    | SimdUnary (V128 V128Op.(I32x4 TruncSatF32x4U)) -> simd_op 0xf9l
-    | SimdUnary (V128 V128Op.(I32x4 TruncSatF64x2SZero)) -> simd_op 0xfcl
-    | SimdUnary (V128 V128Op.(I32x4 TruncSatF64x2UZero)) -> simd_op 0xfdl
-    | SimdUnary (V128 V128Op.(F32x4 ConvertI32x4S)) -> simd_op 0xfal
-    | SimdUnary (V128 V128Op.(F32x4 ConvertI32x4U)) -> simd_op 0xfbl
-    | SimdUnary (V128 V128Op.(F32x4 DemoteF64x2Zero)) -> simd_op 0x5el
+    | SimdUnary (V128 V128Op.(I32x4 TruncSatSF32x4)) -> simd_op 0xf8l
+    | SimdUnary (V128 V128Op.(I32x4 TruncSatUF32x4)) -> simd_op 0xf9l
+    | SimdUnary (V128 V128Op.(I32x4 TruncSatSZeroF64x2)) -> simd_op 0xfcl
+    | SimdUnary (V128 V128Op.(I32x4 TruncSatUZeroF64x2)) -> simd_op 0xfdl
+    | SimdUnary (V128 V128Op.(F32x4 ConvertSI32x4)) -> simd_op 0xfal
+    | SimdUnary (V128 V128Op.(F32x4 ConvertUI32x4)) -> simd_op 0xfbl
+    | SimdUnary (V128 V128Op.(F32x4 DemoteZeroF64x2)) -> simd_op 0x5el
     | SimdUnary (V128 V128Op.(F64x2 PromoteLowF32x4)) -> simd_op 0x5fl
-    | SimdUnary (V128 V128Op.(F64x2 ConvertI32x4S)) -> simd_op 0xfel
-    | SimdUnary (V128 V128Op.(F64x2 ConvertI32x4U)) -> simd_op 0xffl
+    | SimdUnary (V128 V128Op.(F64x2 ConvertSI32x4)) -> simd_op 0xfel
+    | SimdUnary (V128 V128Op.(F64x2 ConvertUI32x4)) -> simd_op 0xffl
     | SimdUnary (V128 _) -> assert false
 
     | SimdBinary (V128 V128Op.(I8x16 (Shuffle is))) -> simd_op 0x0dl; List.iter u8 is
@@ -577,7 +576,7 @@ struct
     | SimdBinary (V128 V128Op.(I32x4 MinU)) -> simd_op 0xb7l
     | SimdBinary (V128 V128Op.(I32x4 MaxS)) -> simd_op 0xb8l
     | SimdBinary (V128 V128Op.(I32x4 MaxU)) -> simd_op 0xb9l
-    | SimdBinary (V128 V128Op.(I32x4 DotI16x8S)) -> simd_op 0xbal
+    | SimdBinary (V128 V128Op.(I32x4 DotS)) -> simd_op 0xbal
     | SimdBinary (V128 V128Op.(I32x4 Mul)) -> simd_op 0xb5l
     | SimdBinary (V128 V128Op.(I32x4 Eq)) -> simd_op 0x37l
     | SimdBinary (V128 V128Op.(I32x4 Ne)) -> simd_op 0x38l
@@ -664,23 +663,21 @@ struct
     | SimdBitmask (V128 V128Op.(I64x2 Bitmask)) -> simd_op 0xc4l
     | SimdBitmask (V128 _) -> .
 
-    | SimdConvert (V128 (V128Op.(I8x16 Splat))) -> simd_op 0x0fl
-    | SimdConvert (V128 (V128Op.(I16x8 Splat))) -> simd_op 0x10l
-    | SimdConvert (V128 (V128Op.(I32x4 Splat))) -> simd_op 0x11l
-    | SimdConvert (V128 (V128Op.(I64x2 Splat))) -> simd_op 0x12l
-    | SimdConvert (V128 (V128Op.(F32x4 Splat))) -> simd_op 0x13l
-    | SimdConvert (V128 (V128Op.(F64x2 Splat))) -> simd_op 0x14l
-    | SimdConvert (V128 _) -> .
+    | SimdSplat (V128 (V128Op.(I8x16 Splat))) -> simd_op 0x0fl
+    | SimdSplat (V128 (V128Op.(I16x8 Splat))) -> simd_op 0x10l
+    | SimdSplat (V128 (V128Op.(I32x4 Splat))) -> simd_op 0x11l
+    | SimdSplat (V128 (V128Op.(I64x2 Splat))) -> simd_op 0x12l
+    | SimdSplat (V128 (V128Op.(F32x4 Splat))) -> simd_op 0x13l
+    | SimdSplat (V128 (V128Op.(F64x2 Splat))) -> simd_op 0x14l
 
-    | SimdExtract (V128 V128Op.(I8x16 (Extract (i, Some SX)))) -> simd_op 0x15l; u8 i
-    | SimdExtract (V128 V128Op.(I8x16 (Extract (i, Some ZX)))) -> simd_op 0x16l; u8 i
-    | SimdExtract (V128 V128Op.(I16x8 (Extract (i, Some SX)))) -> simd_op 0x18l; u8 i
-    | SimdExtract (V128 V128Op.(I16x8 (Extract (i, Some ZX)))) -> simd_op 0x19l; u8 i
-    | SimdExtract (V128 V128Op.(I32x4 (Extract (i, None)))) -> simd_op 0x1bl; u8 i
-    | SimdExtract (V128 V128Op.(I64x2 (Extract (i, None)))) -> simd_op 0x1dl; u8 i
-    | SimdExtract (V128 V128Op.(F32x4 (Extract (i, None)))) -> simd_op 0x1fl; u8 i
-    | SimdExtract (V128 V128Op.(F64x2 (Extract (i, None)))) -> simd_op 0x21l; u8 i
-    | SimdExtract (V128 _) -> assert false
+    | SimdExtract (V128 V128Op.(I8x16 (Extract (i, SX)))) -> simd_op 0x15l; u8 i
+    | SimdExtract (V128 V128Op.(I8x16 (Extract (i, ZX)))) -> simd_op 0x16l; u8 i
+    | SimdExtract (V128 V128Op.(I16x8 (Extract (i, SX)))) -> simd_op 0x18l; u8 i
+    | SimdExtract (V128 V128Op.(I16x8 (Extract (i, ZX)))) -> simd_op 0x19l; u8 i
+    | SimdExtract (V128 V128Op.(I32x4 (Extract (i, ())))) -> simd_op 0x1bl; u8 i
+    | SimdExtract (V128 V128Op.(I64x2 (Extract (i, ())))) -> simd_op 0x1dl; u8 i
+    | SimdExtract (V128 V128Op.(F32x4 (Extract (i, ())))) -> simd_op 0x1fl; u8 i
+    | SimdExtract (V128 V128Op.(F64x2 (Extract (i, ())))) -> simd_op 0x21l; u8 i
 
     | SimdReplace (V128 V128Op.(I8x16 (Replace i))) -> simd_op 0x17l; u8 i
     | SimdReplace (V128 V128Op.(I16x8 (Replace i))) -> simd_op 0x1al; u8 i
@@ -688,7 +685,6 @@ struct
     | SimdReplace (V128 V128Op.(I64x2 (Replace i))) -> simd_op 0x1el; u8 i
     | SimdReplace (V128 V128Op.(F32x4 (Replace i))) -> simd_op 0x20l; u8 i
     | SimdReplace (V128 V128Op.(F64x2 (Replace i))) -> simd_op 0x22l; u8 i
-    | SimdReplace (V128 _) -> .
 
   let const c =
     list instr c.it; end_ ()

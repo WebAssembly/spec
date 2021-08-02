@@ -18,6 +18,8 @@ let error_nest start lexbuf msg =
   lexbuf.Lexing.lex_start_p <- start;
   error lexbuf msg
 
+let unknown lexbuf = error lexbuf ("unknown operator " ^ Lexing.lexeme lexbuf)
+
 let string s =
   let b = Buffer.create (String.length s) in
   let i = ref 1 in
@@ -116,21 +118,21 @@ let ext e s u =
 let opt = Lib.Option.get
 
 let simd_shape = function
-  | "i8x16" -> Simd.I8x16
-  | "i16x8" -> Simd.I16x8
-  | "i32x4" -> Simd.I32x4
-  | "i64x2" -> Simd.I64x2
-  | "f32x4" -> Simd.F32x4
-  | "f64x2" -> Simd.F64x2
+  | "i8x16" -> Simd.I8x16 ()
+  | "i16x8" -> Simd.I16x8 ()
+  | "i32x4" -> Simd.I32x4 ()
+  | "i64x2" -> Simd.I64x2 ()
+  | "f32x4" -> Simd.F32x4 ()
+  | "f64x2" -> Simd.F64x2 ()
   | _ -> assert false
 
 let only shapes s lexbuf =
   if not (List.mem s shapes) then
-    error lexbuf "unknown operator"
+    unknown lexbuf
 
 let except shapes s lexbuf =
   if (List.mem s shapes) then
-    error lexbuf "unknown operator"
+    unknown lexbuf
 }
 
 let sign = '+' | '-'
@@ -290,7 +292,7 @@ rule token = parse
         numop t (i32_store (opt a 2)) (i64_store (opt a 3))
                 (f32_store (opt a 2)) (f64_store (opt a 3)) o) }
   | (ixx as t)".load"(mem_size as sz)"_"(sign as s)
-    { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
+    { if t = "i32" && sz = "32" then unknown lexbuf;
       LOAD (fun a o ->
         intop t
           (memsz sz
@@ -302,7 +304,7 @@ rule token = parse
             (ext s i64_load16_s i64_load16_u (opt a 1))
             (ext s i64_load32_s i64_load32_u (opt a 2)) o)) }
   | (ixx as t)".store"(mem_size as sz)
-    { if t = "i32" && sz = "32" then error lexbuf "unknown operator";
+    { if t = "i32" && sz = "32" then unknown lexbuf;
       STORE (fun a o ->
         intop t
           (memsz sz
@@ -681,7 +683,7 @@ rule token = parse
   | '\n' { Lexing.new_line lexbuf; token lexbuf }
   | eof { EOF }
 
-  | reserved { error lexbuf "unknown operator" }
+  | reserved { unknown lexbuf }
   | utf8 { error lexbuf "malformed operator" }
   | _ { error lexbuf "malformed UTF-8 encoding" }
 

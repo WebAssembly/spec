@@ -90,7 +90,7 @@ let rec instr (e : instr) =
   | SimdConst _
   | SimdTest _ | SimdUnary _ | SimdBinary _ | SimdShift _ | SimdBitmask _
   | SimdTestVec _ | SimdUnaryVec _ | SimdBinaryVec _ | SimdTernaryVec _
-  | SimdConvert _ | SimdExtract _ | SimdReplace _ ->
+  | SimdSplat _ | SimdExtract _ | SimdReplace _ ->
     memories zero
   | MemoryInit x -> memories zero ++ datas (var x)
   | DataDrop x -> datas (var x)

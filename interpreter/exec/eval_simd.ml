@@ -4,6 +4,7 @@ open Values
 module V128Op = struct
   open Ast.V128Op
   open V128Simd
+  open Simd
 
   let testop (op : testop) =
     let f = match op with
@@ -33,10 +34,10 @@ module V128Op = struct
       | I32x4 ExtendHighS -> V128.I32x4_convert.extend_high_s
       | I32x4 ExtendLowU -> V128.I32x4_convert.extend_low_u
       | I32x4 ExtendHighU -> V128.I32x4_convert.extend_high_u
-      | I32x4 TruncSatF32x4S -> V128.I32x4_convert.trunc_sat_f32x4_s
-      | I32x4 TruncSatF32x4U -> V128.I32x4_convert.trunc_sat_f32x4_u
-      | I32x4 TruncSatF64x2SZero -> V128.I32x4_convert.trunc_sat_f64x2_s_zero
-      | I32x4 TruncSatF64x2UZero -> V128.I32x4_convert.trunc_sat_f64x2_u_zero
+      | I32x4 TruncSatSF32x4 -> V128.I32x4_convert.trunc_sat_f32x4_s
+      | I32x4 TruncSatUF32x4 -> V128.I32x4_convert.trunc_sat_f32x4_u
+      | I32x4 TruncSatSZeroF64x2 -> V128.I32x4_convert.trunc_sat_f64x2_s_zero
+      | I32x4 TruncSatUZeroF64x2 -> V128.I32x4_convert.trunc_sat_f64x2_u_zero
       | I32x4 ExtAddPairwiseS -> V128.I32x4_convert.extadd_pairwise_s
       | I32x4 ExtAddPairwiseU -> V128.I32x4_convert.extadd_pairwise_u
       | I64x2 Abs -> V128.I64x2.abs
@@ -52,9 +53,9 @@ module V128Op = struct
       | F32x4 Floor -> V128.F32x4.floor
       | F32x4 Trunc -> V128.F32x4.trunc
       | F32x4 Nearest -> V128.F32x4.nearest
-      | F32x4 ConvertI32x4S -> V128.F32x4_convert.convert_i32x4_s
-      | F32x4 ConvertI32x4U -> V128.F32x4_convert.convert_i32x4_u
-      | F32x4 DemoteF64x2Zero -> V128.F32x4_convert.demote_f64x2_zero
+      | F32x4 ConvertSI32x4 -> V128.F32x4_convert.convert_i32x4_s
+      | F32x4 ConvertUI32x4 -> V128.F32x4_convert.convert_i32x4_u
+      | F32x4 DemoteZeroF64x2 -> V128.F32x4_convert.demote_f64x2_zero
       | F64x2 Abs -> V128.F64x2.abs
       | F64x2 Neg -> V128.F64x2.neg
       | F64x2 Sqrt -> V128.F64x2.sqrt
@@ -63,8 +64,8 @@ module V128Op = struct
       | F64x2 Trunc -> V128.F64x2.trunc
       | F64x2 Nearest -> V128.F64x2.nearest
       | F64x2 PromoteLowF32x4 -> V128.F64x2_convert.promote_low_f32x4
-      | F64x2 ConvertI32x4S -> V128.F64x2_convert.convert_i32x4_s
-      | F64x2 ConvertI32x4U -> V128.F64x2_convert.convert_i32x4_u
+      | F64x2 ConvertSI32x4 -> V128.F64x2_convert.convert_i32x4_s
+      | F64x2 ConvertUI32x4 -> V128.F64x2_convert.convert_i32x4_u
       | _ -> assert false
     in fun v -> to_simd (f (of_simd 1 v))
 
@@ -141,7 +142,6 @@ module V128Op = struct
       | I32x4 GtU -> V128.I32x4.gt_u
       | I32x4 GeS -> V128.I32x4.ge_s
       | I32x4 GeU -> V128.I32x4.ge_u
-      | I32x4 DotI16x8S -> V128.I32x4_convert.dot_i16x8_s
       | I64x2 Eq -> V128.I64x2.eq
       | I64x2 Ne -> V128.I64x2.ne
       | I64x2 LtS -> V128.I64x2.lt_s
@@ -155,6 +155,7 @@ module V128Op = struct
       | I64x2 Add -> V128.I64x2.add
       | I64x2 Sub -> V128.I64x2.sub
       | I64x2 Mul -> V128.I64x2.mul
+      | I32x4 DotS -> V128.I32x4_convert.dot_s
       | I64x2 ExtMulLowS -> V128.I64x2_convert.extmul_low_s
       | I64x2 ExtMulHighS -> V128.I64x2_convert.extmul_high_s
       | I64x2 ExtMulLowU -> V128.I64x2_convert.extmul_low_u
@@ -243,8 +244,9 @@ end
 module V128CvtOp =
 struct
   open Ast.V128Op
+  open Simd
 
-  let cvtop (op : cvtop) v =
+  let splatop (op : splatop) v =
     let i =
       match op with
       | I8x16 Splat -> V128.I8x16.splat (I32Num.of_num 1 v)
@@ -253,32 +255,29 @@ struct
       | I64x2 Splat -> V128.I64x2.splat (I64Num.of_num 1 v)
       | F32x4 Splat -> V128.F32x4.splat (F32Num.of_num 1 v)
       | F64x2 Splat -> V128.F64x2.splat (F64Num.of_num 1 v)
-      | _ -> .
     in V128Simd.to_simd i
 
   let extractop (op : extractop) v =
     let v128 = V128Simd.of_simd 1 v in
     match op with
-    | I8x16 (Extract (i, Some SX)) -> I32 (V128.I8x16.extract_lane_s i v128)
-    | I8x16 (Extract (i, Some ZX)) -> I32 (V128.I8x16.extract_lane_u i v128)
-    | I16x8 (Extract (i, Some SX)) -> I32 (V128.I16x8.extract_lane_s i v128)
-    | I16x8 (Extract (i, Some ZX)) -> I32 (V128.I16x8.extract_lane_u i v128)
-    | I32x4 (Extract (i, None)) -> I32 (V128.I32x4.extract_lane_u i v128)
-    | I64x2 (Extract (i, None)) -> I64 (V128.I64x2.extract_lane_u i v128)
-    | F32x4 (Extract (i, None)) -> F32 (V128.F32x4.extract_lane i v128)
-    | F64x2 (Extract (i, None)) -> F64 (V128.F64x2.extract_lane i v128)
-    | _ -> assert false
+    | I8x16 (Extract (i, SX)) -> I32 (V128.I8x16.extract_lane_s i v128)
+    | I8x16 (Extract (i, ZX)) -> I32 (V128.I8x16.extract_lane_u i v128)
+    | I16x8 (Extract (i, SX)) -> I32 (V128.I16x8.extract_lane_s i v128)
+    | I16x8 (Extract (i, ZX)) -> I32 (V128.I16x8.extract_lane_u i v128)
+    | I32x4 (Extract (i, ())) -> I32 (V128.I32x4.extract_lane_u i v128)
+    | I64x2 (Extract (i, ())) -> I64 (V128.I64x2.extract_lane_u i v128)
+    | F32x4 (Extract (i, ())) -> F32 (V128.F32x4.extract_lane i v128)
+    | F64x2 (Extract (i, ())) -> F64 (V128.F64x2.extract_lane i v128)
 
-  let replaceop (op : replaceop) v (r : Values.num) =
+  let replaceop (op : replaceop) v (n : Values.num) =
     let v128 = V128Simd.of_simd 1 v in
-    let v128' = match op, r with
-      | I8x16 (Replace i), I32 r -> V128.I8x16.replace_lane i v128 r
-      | I16x8 (Replace i), I32 r -> V128.I16x8.replace_lane i v128 r
-      | I32x4 (Replace i), I32 r -> V128.I32x4.replace_lane i v128 r
-      | I64x2 (Replace i), I64 r -> V128.I64x2.replace_lane i v128 r
-      | F32x4 (Replace i), F32 r -> V128.F32x4.replace_lane i v128 r
-      | F64x2 (Replace i), F64 r -> V128.F64x2.replace_lane i v128 r
-      | _ -> assert false
+    let v128' = match op with
+      | I8x16 (Replace i) -> V128.I8x16.replace_lane i v128 (I32Num.of_num 1 n)
+      | I16x8 (Replace i) -> V128.I16x8.replace_lane i v128 (I32Num.of_num 1 n)
+      | I32x4 (Replace i) -> V128.I32x4.replace_lane i v128 (I32Num.of_num 1 n)
+      | I64x2 (Replace i) -> V128.I64x2.replace_lane i v128 (I64Num.of_num 1 n)
+      | F32x4 (Replace i) -> V128.F32x4.replace_lane i v128 (F32Num.of_num 1 n)
+      | F64x2 (Replace i) -> V128.F64x2.replace_lane i v128 (F64Num.of_num 1 n)
     in V128Simd.to_simd v128'
 end
 
@@ -296,6 +295,6 @@ let eval_vbinop = op V128Op.vbinop
 let eval_vternop = op V128Op.vternop
 let eval_shiftop = op V128Op.shiftop
 let eval_bitmaskop = op V128Op.bitmaskop
-let eval_cvtop = op V128CvtOp.cvtop
+let eval_splatop = op V128CvtOp.splatop
 let eval_extractop = op V128CvtOp.extractop
 let eval_replaceop = op V128CvtOp.replaceop

@@ -112,6 +112,8 @@ let peek i (ell, ts) =
 
 let type_num = Values.type_of_num
 let type_simd = Values.type_of_simd
+let type_simd_lane = function
+  | Values.V128 laneop -> Simd.type_of_lane laneop
 
 let type_cvtop at = function
   | Values.I32 cvtop ->
@@ -149,25 +151,24 @@ let type_cvtop at = function
     | DemoteF64 -> error at "invalid conversion"
     ), F64Type
 
-let type_simd_cvtop at = function
-  | Values.V128 cvtop ->
-    let open V128Op in
-    (match cvtop with
-    | Values.(I8x16 Splat | I16x8 Splat | I32x4 Splat) -> I32Type
-    | Values.I64x2 Splat -> I64Type
-    | Values.F32x4 Splat -> F32Type
-    | Values.F64x2 Splat -> F64Type
-    ), V128Type
+let lanes = function
+  | Values.V128 laneop -> Simd.lanes laneop
 
-let type_simd_lane at = function
-  | Values.V128 laneop ->
-    match laneop with
-    | Values.I8x16 _ -> I32Type
-    | Values.I16x8 _ -> I32Type
-    | Values.I32x4 _ -> I32Type
-    | Values.I64x2 _ -> I64Type
-    | Values.F32x4 _ -> F32Type
-    | Values.F64x2 _ -> F64Type
+let lane_extractop = function
+  | Values.V128 extractop ->
+    let open Simd in let open V128Op in
+    match extractop with
+    | I8x16 (Extract (i, _)) | I16x8 (Extract (i, _))
+    | I32x4 (Extract (i, _)) | I64x2 (Extract (i, _))
+    | F32x4 (Extract (i, _)) | F64x2 (Extract (i, _)) -> i
+
+let lane_replaceop = function
+  | Values.V128 replaceop ->
+    let open Simd in let open V128Op in
+    match replaceop with
+    | I8x16 (Replace i) | I16x8 (Replace i)
+    | I32x4 (Replace i) | I64x2 (Replace i)
+    | F32x4 (Replace i) | F64x2 (Replace i) -> i
 
 
 (* Expressions *)
@@ -183,7 +184,7 @@ let check_unop unop at =
 
 let check_simd_binop binop at =
   match binop with
-  | Values.(V128 (I8x16 (V128Op.Shuffle is))) ->
+  | Values.(V128 (Simd.I8x16 (V128Op.Shuffle is))) ->
     if List.exists ((<=) 32) is then
       error at "invalid lane index"
   | _ -> ()
@@ -200,15 +201,6 @@ let check_memop (c : context) (memop : ('t, 's) memop) ty_size get_sz at =
   require (1 lsl memop.align <= size) at
     "alignment must not be larger than natural"
 
-let check_simd_lane_index get_lane op at =
-  let max, op' = match op with
-    | Values.(V128 (I8x16 op')) -> 16, op'
-    | Values.(V128 (I16x8 op')) -> 8, op'
-    | Values.(V128 (I32x4 op')) -> 4, op'
-    | Values.(V128 (I64x2 op')) -> 2, op'
-    | Values.(V128 (F32x4 op')) -> 4, op'
-    | Values.(V128 (F64x2 op')) -> 2, op'
-  in require (get_lane op' < max) at "invalid lane index"
 
 (*
  * Conventions:
@@ -494,20 +486,23 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let t = SimdType (type_simd bitmaskop) in
     [t] --> [NumType I32Type]
 
-  | SimdConvert cvtop ->
-    let t1, t2 = type_simd_cvtop e.at cvtop in
-    [NumType t1] --> [SimdType t2]
+  | SimdSplat splatop ->
+    let t1 = type_simd_lane splatop in
+    let t2 = SimdType (type_simd splatop) in
+    [NumType t1] --> [t2]
 
   | SimdExtract extractop ->
-    check_simd_lane_index (fun (V128Op.Extract (i, _)) -> i) extractop e.at;
     let t = SimdType (type_simd extractop) in
-    let t2 = type_simd_lane e.at extractop in
+    let t2 = type_simd_lane extractop in
+    require (lane_extractop extractop < lanes extractop) e.at
+      "invalid lane index";
     [t] --> [NumType t2]
 
   | SimdReplace replaceop ->
-    check_simd_lane_index (fun (V128Op.Replace i) -> i) replaceop e.at;
     let t = SimdType (type_simd replaceop) in
-    let t2 = type_simd_lane e.at replaceop in
+    let t2 = type_simd_lane replaceop in
+    require (lane_replaceop replaceop < lanes replaceop) e.at
+      "invalid lane index";
     [t; NumType t2] --> [t]
 
 and check_seq (c : context) (s : infer_result_type) (es : instr list)

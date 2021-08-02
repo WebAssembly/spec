@@ -47,19 +47,19 @@ let simd f shape ss at =
 let simd_lane_nan shape l at =
   let open Values in
   match shape with
-  | Simd.F32x4 -> NanPat (F32 l @@ at)
-  | Simd.F64x2 -> NanPat (F64 l @@ at)
+  | Simd.F32x4 () -> NanPat (F32 l @@ at)
+  | Simd.F64x2 () -> NanPat (F64 l @@ at)
   | _ -> error at "invalid simd constant"
 
 let simd_lane_lit shape l at =
   let open Values in
   match shape with
-  | Simd.I8x16 -> NumPat (I32 (I8.of_string l) @@ at)
-  | Simd.I16x8 -> NumPat (I32 (I16.of_string l) @@ at)
-  | Simd.I32x4 -> NumPat (I32 (I32.of_string l) @@ at)
-  | Simd.I64x2 -> NumPat (I64 (I64.of_string l) @@ at)
-  | Simd.F32x4 -> NumPat (F32 (F32.of_string l) @@ at)
-  | Simd.F64x2 -> NumPat (F64 (F64.of_string l) @@ at)
+  | Simd.I8x16 () -> NumPat (I32 (I8.of_string l) @@ at)
+  | Simd.I16x8 () -> NumPat (I32 (I16.of_string l) @@ at)
+  | Simd.I32x4 () -> NumPat (I32 (I32.of_string l) @@ at)
+  | Simd.I64x2 () -> NumPat (I64 (I64.of_string l) @@ at)
+  | Simd.F32x4 () -> NumPat (F32 (F32.of_string l) @@ at)
+  | Simd.F64x2 () -> NumPat (F64 (F64.of_string l) @@ at)
 
 let simd_lane_index s at =
   match int_of_string s with
@@ -1154,7 +1154,7 @@ result :
   | LPAR SIMD_CONST SIMD_SHAPE numpat_list RPAR {
     if Simd.lanes $3 <> List.length $4 then
       error (at ()) "wrong number of lane literals";
-    SimdResult (SimdPat ($3, List.map (fun lit -> lit $3) $4)) @@ at ()
+    SimdResult (SimdPat (Values.V128 ($3, List.map (fun lit -> lit $3) $4))) @@ at ()
   }
 
 result_list :

@@ -1,23 +1,32 @@
-open Char
+type ('i8x16, 'i16x8, 'i32x4, 'i64x2, 'f32x4, 'f64x2) laneop =
+  | I8x16 of 'i8x16 | I16x8 of 'i16x8 | I32x4 of 'i32x4 | I64x2 of 'i64x2
+  | F32x4 of 'f32x4 | F64x2 of 'f64x2
 
-type shape = I8x16 | I16x8 | I32x4 | I64x2 | F32x4 | F64x2
+type shape = (unit, unit, unit, unit, unit, unit) laneop
 
 let lanes shape =
   match shape with
-  | I8x16 -> 16
-  | I16x8 -> 8
-  | I32x4 -> 4
-  | I64x2 -> 2
-  | F32x4 -> 4
-  | F64x2 -> 2
+  | I8x16 _ -> 16
+  | I16x8 _ -> 8
+  | I32x4 _ -> 4
+  | I64x2 _ -> 2
+  | F32x4 _ -> 4
+  | F64x2 _ -> 2
+
+let type_of_lane = function
+  | I8x16 _ | I16x8 _ | I32x4 _ -> Types.I32Type
+  | I64x2 _ -> Types.I64Type
+  | F32x4 _ -> Types.F32Type
+  | F64x2 _ -> Types.F64Type
 
 let string_of_shape = function
-  | I8x16 -> "i8x16"
-  | I16x8 -> "i16x8"
-  | I32x4 -> "i32x4"
-  | I64x2 -> "i64x2"
-  | F32x4 -> "f32x4"
-  | F64x2 -> "f64x2"
+  | I8x16 _ -> "i8x16"
+  | I16x8 _ -> "i16x8"
+  | I32x4 _ -> "i32x4"
+  | I64x2 _ -> "i64x2"
+  | F32x4 _ -> "f32x4"
+  | F64x2 _ -> "f64x2"
+
 
 module type RepType =
 sig
@@ -195,7 +204,7 @@ sig
     val extend_high_s : t -> t
     val extend_low_u : t -> t
     val extend_high_u : t -> t
-    val dot_i16x8_s : t -> t -> t
+    val dot_s : t -> t -> t
     val extmul_low_s : t -> t -> t
     val extmul_high_s : t -> t -> t
     val extmul_low_u : t -> t -> t
@@ -230,7 +239,7 @@ struct
   type t = Rep.t
   type bits = Rep.t
 
-  let zero = Rep.make Rep.bytewidth (chr 0)
+  let zero = Rep.make Rep.bytewidth (Char.chr 0)
   let to_string = Rep.to_string (* FIXME very very wrong *)
   let to_hex_string = Rep.to_hex_string
   let of_bits x = x
@@ -391,37 +400,37 @@ struct
   module I8x16 = MakeInt (I8) (struct
       let to_shape = Rep.to_i8x16
       let of_shape = Rep.of_i8x16
-      let num_lanes = lanes I8x16
+      let num_lanes = lanes (I8x16 ())
     end)
 
   module I16x8 = MakeInt (I16) (struct
       let to_shape = Rep.to_i16x8
       let of_shape = Rep.of_i16x8
-      let num_lanes = lanes I16x8
+      let num_lanes = lanes (I16x8 ())
     end)
 
   module I32x4 = MakeInt (I32) (struct
       let to_shape = Rep.to_i32x4
       let of_shape = Rep.of_i32x4
-      let num_lanes = lanes I32x4
+      let num_lanes = lanes (I32x4 ())
     end)
 
   module I64x2 = MakeInt (I64) (struct
       let to_shape = Rep.to_i64x2
       let of_shape = Rep.of_i64x2
-      let num_lanes = lanes I64x2
+      let num_lanes = lanes (I64x2 ())
     end)
 
   module F32x4 = MakeFloat (F32) (struct
       let to_shape = Rep.to_f32x4
       let of_shape = Rep.of_f32x4
-      let num_lanes = lanes F32x4
+      let num_lanes = lanes (F32x4 ())
     end)
 
   module F64x2 = MakeFloat (F64) (struct
       let to_shape = Rep.to_f64x2
       let of_shape = Rep.of_f64x2
-      let num_lanes = lanes F64x2
+      let num_lanes = lanes (F64x2 ())
     end)
 
   (* Narrow two v128 into one v128 by using to_shape on both operands,
@@ -479,7 +488,7 @@ struct
     let extend_low_u = extend Lib.List.take ext_u
     let extend_high_u = extend Lib.List.drop ext_u
 
-    let dot_i16x8_s x y =
+    let dot_s x y =
       let xs = Rep.to_i16x8 x in
       let ys = Rep.to_i16x8 y in
       let rec dot xs ys =

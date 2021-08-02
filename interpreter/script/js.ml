@@ -307,7 +307,7 @@ let assert_return ress ts at =
         Compare (eq_of t') @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | SimdResult (SimdPat (shape, pats)) ->
+    | SimdResult (SimdPat (Values.V128 (shape, pats))) ->
       let open Values in
       (* SimdResult is a list of NumPat or LitPat. For float shapes, we can have a mix of literals
        * and NaNs. For NaNs, we need to mask it and compare with a canonical NaN. To simplify
@@ -326,23 +326,23 @@ let assert_return ress ts at =
       let masks, canons = List.split (List.map (fun p -> mask_and_canonical p) pats) in
       let all_ones = V128.of_i32x4 (List.init 4 (fun _ -> Int32.minus_one)) in
       let mask, expected = match shape with
-        | Simd.I8x16 -> all_ones, V128.of_i8x16 (List.map (I32Num.of_num 0) canons)
-        | Simd.I16x8 -> all_ones, V128.of_i16x8 (List.map (I32Num.of_num 0) canons)
-        | Simd.I32x4 -> all_ones, V128.of_i32x4 (List.map (I32Num.of_num 0) canons)
-        | Simd.I64x2 -> all_ones, V128.of_i64x2 (List.map (I64Num.of_num 0) canons)
-        | Simd.F32x4 ->
+        | Simd.I8x16 () -> all_ones, V128.of_i8x16 (List.map (I32Num.of_num 0) canons)
+        | Simd.I16x8 () -> all_ones, V128.of_i16x8 (List.map (I32Num.of_num 0) canons)
+        | Simd.I32x4 () -> all_ones, V128.of_i32x4 (List.map (I32Num.of_num 0) canons)
+        | Simd.I64x2 () -> all_ones, V128.of_i64x2 (List.map (I64Num.of_num 0) canons)
+        | Simd.F32x4 () ->
           V128.of_i32x4 (List.map (I32Num.of_num 0) masks),
           V128.of_i32x4 (List.map (I32Num.of_num 0) canons)
-        | Simd.F64x2 ->
+        | Simd.F64x2 () ->
           V128.of_i64x2 (List.map (I64Num.of_num 0) masks),
           V128.of_i64x2 (List.map (I64Num.of_num 0) canons)
       in
       [ SimdConst (V128 mask @@ at) @@ at;
         SimdBinaryVec (V128 V128Op.And) @@ at;
         SimdConst (V128 expected @@ at) @@ at;
-        SimdBinary (V128 V128Op.(I8x16 Eq)) @@ at;
+        SimdBinary (V128 V128Op.(Simd.I8x16 Eq)) @@ at;
         (* If all lanes are non-zero, then they are equal *)
-        SimdTest (V128 V128Op.(I8x16 AllTrue)) @@ at;
+        SimdTest (V128 V128Op.(Simd.I8x16 AllTrue)) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult (RefPat {it = Values.NullRef t; _}) ->
@@ -499,7 +499,7 @@ let of_num_pat = function
     | Values.F32 n | Values.F64 n -> of_nan n
 
 let of_simd_pat = function
-  | SimdPat (shape, pats) ->
+  | SimdPat (Values.V128 (shape, pats)) ->
     Printf.sprintf "v128(\"%s\")" (String.concat " " (List.map of_num_pat pats))
 
 let of_ref_pat = function

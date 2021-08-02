@@ -25,7 +25,7 @@ type num_pat =
   | NanPat of nanop
 
 type simd_pat =
-  | SimdPat of Simd.shape * num_pat list
+  | SimdPat of (Simd.shape * num_pat list) Values.simdop
 
 type ref_pat =
   | RefPat of ref_

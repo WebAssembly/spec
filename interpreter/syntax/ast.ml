@@ -40,7 +40,7 @@ module FloatOp =
 struct
   type unop = Neg | Abs | Ceil | Floor | Trunc | Nearest | Sqrt
   type binop = Add | Sub | Mul | Div | Min | Max | CopySign
-  type testop
+  type testop = |
   type relop = Eq | Ne | Lt | Gt | Le | Ge
   type cvtop = ConvertSI32 | ConvertUI32 | ConvertSI64 | ConvertUI64
              | PromoteF32 | DemoteF64
@@ -55,20 +55,21 @@ module F64Op = FloatOp
 module V128Op =
 struct
   type itestop = AllTrue
-  type iunop = Abs | Neg | TruncSatF32x4S | TruncSatF32x4U
+  type iunop = Abs | Neg | Popcnt
              | ExtendLowS | ExtendLowU | ExtendHighS | ExtendHighU
-             | Popcnt | TruncSatF64x2SZero | TruncSatF64x2UZero
              | ExtAddPairwiseS | ExtAddPairwiseU
+             | TruncSatSF32x4 | TruncSatUF32x4
+             | TruncSatSZeroF64x2 | TruncSatUZeroF64x2
   type funop = Abs | Neg | Sqrt
              | Ceil | Floor | Trunc | Nearest
-             | ConvertI32x4S | ConvertI32x4U
-             | DemoteF64x2Zero | PromoteLowF32x4
-  type ibinop = Add | Sub | MinS | MinU | MaxS | MaxU | Mul | AvgrU
+             | ConvertSI32x4 | ConvertUI32x4
+             | DemoteZeroF64x2 | PromoteLowF32x4
+  type ibinop = Add | Sub | Mul | MinS | MinU | MaxS | MaxU | AvgrU
               | Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
-              | Swizzle | Shuffle of int list | NarrowS | NarrowU
               | AddSatS | AddSatU | SubSatS | SubSatU
-              | DotI16x8S | Q15MulRSatS
+              | DotS | Q15MulRSatS
               | ExtMulLowS | ExtMulHighS | ExtMulLowU | ExtMulHighU
+              | Swizzle | Shuffle of int list | NarrowS | NarrowU
   type fbinop = Add | Sub | Mul | Div | Min | Max | Pmin | Pmax
               | Eq | Ne | Lt | Le | Gt | Ge
   type ishiftop = Shl | ShrS | ShrU
@@ -79,19 +80,19 @@ struct
   type vbinop = And | Or | Xor | AndNot
   type vternop = Bitselect
 
-  type ncvtop = Splat
-  type nextractop = Extract of int * extension option
+  type testop = (itestop, itestop, itestop, itestop, void, void) Simd.laneop
+  type unop = (iunop, iunop, iunop, iunop, funop, funop) Simd.laneop
+  type binop = (ibinop, ibinop, ibinop, ibinop, fbinop, fbinop) Simd.laneop
+  type shiftop = (ishiftop, ishiftop, ishiftop, ishiftop, void, void) Simd.laneop
+  type bitmaskop = (ibitmaskop, ibitmaskop, ibitmaskop, ibitmaskop, void, void) Simd.laneop
+
+  type nsplatop = Splat
+  type 'a nextractop = Extract of int * 'a
   type nreplaceop = Replace of int
 
-  type testop = (itestop, itestop, itestop, itestop, void, void) Values.laneop
-  type unop = (iunop, iunop, iunop, iunop, funop, funop) Values.laneop
-  type binop = (ibinop, ibinop, ibinop, ibinop, fbinop, fbinop) Values.laneop
-  type shiftop = (ishiftop, ishiftop, ishiftop, ishiftop, void, void) Values.laneop
-  type bitmaskop = (ibitmaskop, ibitmaskop, ibitmaskop, ibitmaskop, void, void) Values.laneop
-
-  type cvtop = (ncvtop, ncvtop, ncvtop, ncvtop, ncvtop, ncvtop) Values.laneop
-  type extractop = (nextractop, nextractop, nextractop, nextractop, nextractop, nextractop) Values.laneop
-  type replaceop = (nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop) Values.laneop
+  type splatop = (nsplatop, nsplatop, nsplatop, nsplatop, nsplatop, nsplatop) Simd.laneop
+  type extractop = (extension nextractop, extension nextractop, unit nextractop, unit nextractop, unit nextractop, unit nextractop) Simd.laneop
+  type replaceop = (nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop) Simd.laneop
 end
 
 type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) Values.op
@@ -109,7 +110,8 @@ type simd_vbinop = (V128Op.vbinop) Values.simdop
 type simd_vternop = (V128Op.vternop) Values.simdop
 type simd_shiftop = (V128Op.shiftop) Values.simdop
 type simd_bitmaskop = (V128Op.bitmaskop) Values.simdop
-type simd_cvtop = (V128Op.cvtop) Values.simdop
+
+type simd_splatop = (V128Op.splatop) Values.simdop
 type simd_extractop = (V128Op.extractop) Values.simdop
 type simd_replaceop = (V128Op.replaceop) Values.simdop
 
@@ -190,9 +192,9 @@ and instr' =
   | SimdTernaryVec of simd_vternop    (* ternary simd vector operator *)
   | SimdShift of simd_shiftop         (* shifts for simd value *)
   | SimdBitmask of simd_bitmaskop     (* bitmask for simd value *)
-  | SimdConvert of simd_cvtop         (* simd conversion *)
-  | SimdExtract of simd_extractop     (* extract lane from simd value *)
-  | SimdReplace of simd_replaceop     (* replace lane of simd value *)
+  | SimdSplat of simd_splatop         (* number to simd conversion *)
+  | SimdExtract of simd_extractop     (* extract lane from simd value*)
+  | SimdReplace of simd_replaceop     (* replace lane in simd value *)
 
 
 (* Globals & Functions *)

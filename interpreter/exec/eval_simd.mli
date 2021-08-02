@@ -9,6 +9,6 @@ val eval_vbinop : Ast.simd_vbinop -> simd -> simd -> simd
 val eval_vternop : Ast.simd_vternop -> simd -> simd -> simd -> simd
 val eval_shiftop : Ast.simd_shiftop -> simd -> num -> simd
 val eval_bitmaskop : Ast.simd_bitmaskop -> simd -> num
-val eval_cvtop : Ast.simd_cvtop -> num -> simd
+val eval_splatop : Ast.simd_splatop -> num -> simd
 val eval_extractop : Ast.simd_extractop -> simd -> num
 val eval_replaceop : Ast.simd_replaceop -> simd -> num -> simd
