@@ -65,7 +65,7 @@ INSTRUCTIONS = [
     Instruction(r'\NOP', r'\hex{01}', r'[] \to []', r'valid-nop', r'exec-nop'),
     Instruction(r'\BLOCK~\X{bt}', r'\hex{02}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-block', r'exec-block'),
     Instruction(r'\LOOP~\X{bt}', r'\hex{03}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-loop', r'exec-loop'),
-    Instruction(r'\IF~\X{bt}', r'\hex{04}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-if', r'exec-if'),
+    Instruction(r'\IF~\X{bt}', r'\hex{04}', r'[t_1^\ast~\I32] \to [t_2^\ast]', r'valid-if', r'exec-if'),
     Instruction(r'\ELSE', r'\hex{05}'),
     Instruction(None, r'\hex{06}'),
     Instruction(None, r'\hex{07}'),
