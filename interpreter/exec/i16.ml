@@ -1,7 +1,7 @@
 (* I16 for SIMD. Uses Int32 as the underlying storage. All int16 values will be
  * stored signed-extended. E.g. -1 will be stored with all high bits set.
  *)
-include Int.Make (struct
+include Ixx.Make (struct
   include Int32
 
   let bitwidth = 16
