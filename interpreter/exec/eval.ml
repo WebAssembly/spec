@@ -32,9 +32,9 @@ let memory_error at = function
   | exn -> raise exn
 
 let numeric_error at = function
-  | Int.Overflow -> "integer overflow"
-  | Int.DivideByZero -> "integer divide by zero"
-  | Int.InvalidConversion -> "invalid conversion to integer"
+  | Ixx.Overflow -> "integer overflow"
+  | Ixx.DivideByZero -> "integer divide by zero"
+  | Ixx.InvalidConversion -> "invalid conversion to integer"
   | Values.TypeError (i, v, t) ->
     Crash.error at
       ("type error, expected " ^ Types.string_of_num_type t ^ " as operand " ^

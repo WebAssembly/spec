@@ -94,10 +94,10 @@ sig
   val q15mulr_sat_s : t -> t -> t
 end
 
-module MakeIntShape (Int : Int.S) (Cvt : Convert(Int).S) :
-  IntShape with type lane = Int.t =
+module MakeIntShape (IXX : Ixx.S) (Cvt : Convert(IXX).S) :
+  IntShape with type lane = IXX.t =
 struct
-  type lane = Int.t
+  type lane = IXX.t
 
   let num_lanes = num_lanes Cvt.shape
   let of_lanes = Cvt.of_lanes
@@ -106,60 +106,60 @@ struct
   let unop f x = of_lanes (List.map f (to_lanes x))
   let unopi f x = of_lanes (List.mapi f (to_lanes x))
   let binop f x y = of_lanes (List.map2 f (to_lanes x) (to_lanes y))
+  let reduceop f a s = List.fold_left (fun a b -> f a (b <> IXX.zero)) a (to_lanes s)
+  let cmp f x y = if f x y then IXX.of_int_s (-1) else IXX.zero
 
   let splat x = of_lanes (List.init num_lanes (fun i -> x))
   let extract_lane_s i s = List.nth (to_lanes s) i
-  let extract_lane_u i s = Int.as_unsigned (extract_lane_s i s)
+  let extract_lane_u i s = IXX.as_unsigned (extract_lane_s i s)
   let replace_lane i v x = unopi (fun j y -> if j = i then x else y) v
 
-  let cmp f x y = if f x y then (Int.of_int_s (-1)) else Int.zero
-  let eq = binop (cmp Int.eq)
-  let ne = binop (cmp Int.ne)
-  let lt_s = binop (cmp Int.lt_s)
-  let lt_u = binop (cmp Int.lt_u)
-  let le_s = binop (cmp Int.le_s)
-  let le_u = binop (cmp Int.le_u)
-  let gt_s = binop (cmp Int.gt_s)
-  let gt_u = binop (cmp Int.gt_u)
-  let ge_s = binop (cmp Int.ge_s)
-  let ge_u = binop (cmp Int.ge_u)
-  let abs = unop Int.abs
-  let neg = unop Int.neg
-  let popcnt = unop Int.popcnt
-  let add = binop Int.add
-  let sub = binop Int.sub
-  let mul = binop Int.mul
+  let eq = binop (cmp IXX.eq)
+  let ne = binop (cmp IXX.ne)
+  let lt_s = binop (cmp IXX.lt_s)
+  let lt_u = binop (cmp IXX.lt_u)
+  let le_s = binop (cmp IXX.le_s)
+  let le_u = binop (cmp IXX.le_u)
+  let gt_s = binop (cmp IXX.gt_s)
+  let gt_u = binop (cmp IXX.gt_u)
+  let ge_s = binop (cmp IXX.ge_s)
+  let ge_u = binop (cmp IXX.ge_u)
+  let abs = unop IXX.abs
+  let neg = unop IXX.neg
+  let popcnt = unop IXX.popcnt
+  let add = binop IXX.add
+  let sub = binop IXX.sub
+  let mul = binop IXX.mul
   let choose f x y = if f x y then x else y
-  let min_s = binop (choose Int.le_s)
-  let min_u = binop (choose Int.le_u)
-  let max_s = binop (choose Int.ge_s)
-  let max_u = binop (choose Int.ge_u)
+  let min_s = binop (choose IXX.le_s)
+  let min_u = binop (choose IXX.le_u)
+  let max_s = binop (choose IXX.ge_s)
+  let max_u = binop (choose IXX.ge_u)
   (* The result of avgr_u will not overflow this type, but the intermediate might,
    * so have the Int type implement it so they can extend it accordingly *)
-  let avgr_u = binop Int.avgr_u
-  let reduceop f a s = List.fold_left (fun a b -> f a (b <> Int.zero)) a (to_lanes s)
+  let avgr_u = binop IXX.avgr_u
   let any_true = reduceop (||) false
   let all_true = reduceop (&&) true
   (* Extract top bits using signed-comparision with zero *)
   let bitmask x =
     let xs = to_lanes x in
-    let negs = List.map (fun x -> if Int.(lt_s x zero) then Int32.one else Int32.zero) xs in
+    let negs = List.map (fun x -> if IXX.(lt_s x zero) then Int32.one else Int32.zero) xs in
     List.fold_right (fun a b -> Int32.(logor a (shift_left b 1))) negs Int32.zero
   let shl v s =
-    let shift = Int.of_int_u (Int32.to_int s) in
-    unop (fun a -> Int.shl a shift) v
+    let shift = IXX.of_int_u (Int32.to_int s) in
+    unop (fun a -> IXX.shl a shift) v
   let shr_s v s =
-    let shift = Int.of_int_u (Int32.to_int s) in
-    unop (fun a -> Int.shr_s a shift) v
+    let shift = IXX.of_int_u (Int32.to_int s) in
+    unop (fun a -> IXX.shr_s a shift) v
   let shr_u v s =
-    let shift = Int.of_int_u (Int32.to_int s) in
-    unop (fun a -> Int.shr_u a shift) v
-  let add_sat_s = binop Int.add_sat_s
-  let add_sat_u = binop Int.add_sat_u
-  let sub_sat_s = binop Int.sub_sat_s
-  let sub_sat_u = binop Int.sub_sat_u
+    let shift = IXX.of_int_u (Int32.to_int s) in
+    unop (fun a -> IXX.shr_u a shift) v
+  let add_sat_s = binop IXX.add_sat_s
+  let add_sat_u = binop IXX.add_sat_u
+  let sub_sat_s = binop IXX.sub_sat_s
+  let sub_sat_u = binop IXX.sub_sat_u
   (* The intermediate will overflow lane.t, so have Int implement this. *)
-  let q15mulr_sat_s = binop Int.q15mulr_sat_s
+  let q15mulr_sat_s = binop IXX.q15mulr_sat_s
 end
 
 module type FloatShape =
@@ -197,10 +197,10 @@ sig
   val pmax : t -> t -> t
 end
 
-module MakeFloatShape (Float : Float.S) (Cvt : Convert(Float).S) :
-  FloatShape with type lane = Float.t =
+module MakeFloatShape (FXX : Fxx.S) (Cvt : Convert(FXX).S) :
+  FloatShape with type lane = FXX.t =
 struct
-  type lane = Float.t
+  type lane = FXX.t
 
   let num_lanes = num_lanes Cvt.shape
   let of_lanes = Cvt.of_lanes
@@ -209,34 +209,34 @@ struct
   let unop f x = of_lanes (List.map f (to_lanes x))
   let unopi f x = of_lanes (List.mapi f (to_lanes x))
   let binop f x y = of_lanes (List.map2 f (to_lanes x) (to_lanes y))
+  let all_ones = FXX.of_float (Int64.float_of_bits (Int64.minus_one))
+  let cmp f x y = if f x y then all_ones else FXX.zero
 
   let splat x = of_lanes (List.init num_lanes (fun i -> x))
   let extract_lane i s = List.nth (to_lanes s) i
   let replace_lane i v x = unopi (fun j y -> if j = i then x else y) v
 
-  let all_ones = Float.of_float (Int64.float_of_bits (Int64.minus_one))
-  let cmp f x y = if f x y then all_ones else Float.zero
-  let eq = binop (cmp Float.eq)
-  let ne = binop (cmp Float.ne)
-  let lt = binop (cmp Float.lt)
-  let le = binop (cmp Float.le)
-  let gt = binop (cmp Float.gt)
-  let ge = binop (cmp Float.ge)
-  let abs = unop Float.abs
-  let neg = unop Float.neg
-  let sqrt = unop Float.sqrt
-  let ceil = unop Float.ceil
-  let floor = unop Float.floor
-  let trunc = unop Float.trunc
-  let nearest = unop Float.nearest
-  let add = binop Float.add
-  let sub = binop Float.sub
-  let mul = binop Float.mul
-  let div = binop Float.div
-  let min = binop Float.min
-  let max = binop Float.max
-  let pmin = binop (fun x y -> if Float.lt y x then y else x)
-  let pmax = binop (fun x y -> if Float.lt x y then y else x)
+  let eq = binop (cmp FXX.eq)
+  let ne = binop (cmp FXX.ne)
+  let lt = binop (cmp FXX.lt)
+  let le = binop (cmp FXX.le)
+  let gt = binop (cmp FXX.gt)
+  let ge = binop (cmp FXX.ge)
+  let abs = unop FXX.abs
+  let neg = unop FXX.neg
+  let sqrt = unop FXX.sqrt
+  let ceil = unop FXX.ceil
+  let floor = unop FXX.floor
+  let trunc = unop FXX.trunc
+  let nearest = unop FXX.nearest
+  let add = binop FXX.add
+  let sub = binop FXX.sub
+  let mul = binop FXX.mul
+  let div = binop FXX.div
+  let min = binop FXX.min
+  let max = binop FXX.max
+  let pmin = binop (fun x y -> if FXX.lt y x then y else x)
+  let pmax = binop (fun x y -> if FXX.lt x y then y else x)
 end
 
 module I8x16 = MakeIntShape (I8)

@@ -1,6 +1,6 @@
 (* WebAssembly-compatible i64 implementation *)
 
-include Int.Make
+include Ixx.Make
   (struct
     include Int64
     let bitwidth = 64
