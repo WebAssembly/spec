@@ -2,7 +2,6 @@ open Source
 open Ast
 open Script
 open Values
-open Simd
 open Types
 open Sexpr
 
@@ -336,12 +335,12 @@ struct
 
   let lane_oper (pop, iop, fop) op =
     match op with
-    | I8x16 o -> pop "8x16" o
-    | I16x8 o -> pop "16x8" o
-    | I32x4 o -> iop "32x4" o
-    | I64x2 o -> iop "64x2" o
-    | F32x4 o -> fop "32x4" o
-    | F64x2 o -> fop "64x2" o
+    | V128.I8x16 o -> pop "8x16" o
+    | V128.I16x8 o -> pop "16x8" o
+    | V128.I32x4 o -> iop "32x4" o
+    | V128.I64x2 o -> iop "64x2" o
+    | V128.F32x4 o -> fop "32x4" o
+    | V128.F64x2 o -> fop "64x2" o
 end
 
 let oper (iop, fop) op =
@@ -359,7 +358,7 @@ let simd_oper (vop) op =
 
 let simd_shape_oper (pop, iop, fop) op =
   match op with
-  | V128 o -> Simd.string_of_shape o ^ "." ^ V128Op.lane_oper (pop, iop, fop) o
+  | V128 o -> V128.string_of_shape o ^ "." ^ V128Op.lane_oper (pop, iop, fop) o
 
 let unop = oper (IntOp.unop, FloatOp.unop)
 let binop = oper (IntOp.binop, FloatOp.binop)
@@ -711,9 +710,9 @@ let num_pat mode = function
 let lane_pat mode pat shape =
   let choose fb ft = if mode = `Binary then fb else ft in
   match pat, shape with
-  | NumPat {it = Values.I32 i; _}, Simd.I8x16 () ->
+  | NumPat {it = Values.I32 i; _}, V128.I8x16 () ->
     choose I8.to_hex_string I8.to_string_s i
-  | NumPat {it = Values.I32 i; _}, Simd.I16x8 () ->
+  | NumPat {it = Values.I32 i; _}, V128.I16x8 () ->
     choose I16.to_hex_string I16.to_string_s i
   | NumPat n, _ -> num mode n.it
   | NanPat nan, _ -> nanop nan
@@ -721,7 +720,7 @@ let lane_pat mode pat shape =
 let simd_pat mode = function
   | SimdPat (V128 (shape, pats)) ->
     let lanes = List.map (fun p -> Atom (lane_pat mode p shape)) pats in
-    Node ("v128.const " ^ Simd.string_of_shape shape, lanes)
+    Node ("v128.const " ^ V128.string_of_shape shape, lanes)
 
 let ref_pat = function
   | RefPat r -> ref_ r.it

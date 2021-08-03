@@ -304,7 +304,7 @@ struct
     saturate_s (Rep.of_int64 Int64.((shift_right (add (mul x64 y64) 0x4000L) 15)))
 
   let to_int_s = Rep.to_int
-  let to_int_u i = Rep.to_int i land (Rep.to_int Rep.max_int lsl 1) lor 1
+  let to_int_u i = Rep.to_int i land ((Rep.to_int Rep.max_int lsl 1) lor 1)
 
   let of_int_s = Rep.of_int
   let of_int_u i = and_ (Rep.of_int i) (or_ (shl (Rep.of_int max_int) one) one)
@@ -375,7 +375,9 @@ struct
         Rep.neg n
       | _ -> parse_int 0
     in
-    sign_extend parsed
+    let n = sign_extend parsed in
+    require (low_int <= n && n <= high_int);
+    n
 
   let of_string_s s =
     let n = of_string s in

@@ -317,32 +317,40 @@ let assert_return ress ts at =
       let mask_and_canonical = function
         | NumPat {it = I32 _ as i; _} -> I32 (Int32.minus_one), i
         | NumPat {it = I64 _ as i; _} -> I64 (Int64.minus_one), i
-        | NumPat {it = F32 f; _} -> I32 (Int32.minus_one), I32 (I32_convert.reinterpret_f32 f)
-        | NumPat {it = F64 f; _} -> I64 (Int64.minus_one), I64 (I64_convert.reinterpret_f64 f)
-        | NanPat {it = F32 nan; _} -> nan_bitmask_of nan I32Type, canonical_nan_of I32Type
-        | NanPat {it = F64 nan; _} -> nan_bitmask_of nan I64Type, canonical_nan_of I64Type
+        | NumPat {it = F32 f; _} ->
+          I32 (Int32.minus_one), I32 (I32_convert.reinterpret_f32 f)
+        | NumPat {it = F64 f; _} ->
+          I64 (Int64.minus_one), I64 (I64_convert.reinterpret_f64 f)
+        | NanPat {it = F32 nan; _} ->
+          nan_bitmask_of nan I32Type, canonical_nan_of I32Type
+        | NanPat {it = F64 nan; _} ->
+          nan_bitmask_of nan I64Type, canonical_nan_of I64Type
         | _ -> .
       in
       let masks, canons = List.split (List.map (fun p -> mask_and_canonical p) pats) in
-      let all_ones = V128.of_i32x4 (List.init 4 (fun _ -> Int32.minus_one)) in
+      let all_ones = V128.I32x4.of_lanes (List.init 4 (fun _ -> Int32.minus_one)) in
       let mask, expected = match shape with
-        | Simd.I8x16 () -> all_ones, V128.of_i8x16 (List.map (I32Num.of_num 0) canons)
-        | Simd.I16x8 () -> all_ones, V128.of_i16x8 (List.map (I32Num.of_num 0) canons)
-        | Simd.I32x4 () -> all_ones, V128.of_i32x4 (List.map (I32Num.of_num 0) canons)
-        | Simd.I64x2 () -> all_ones, V128.of_i64x2 (List.map (I64Num.of_num 0) canons)
-        | Simd.F32x4 () ->
-          V128.of_i32x4 (List.map (I32Num.of_num 0) masks),
-          V128.of_i32x4 (List.map (I32Num.of_num 0) canons)
-        | Simd.F64x2 () ->
-          V128.of_i64x2 (List.map (I64Num.of_num 0) masks),
-          V128.of_i64x2 (List.map (I64Num.of_num 0) canons)
+        | V128.I8x16 () ->
+          all_ones, V128.I8x16.of_lanes (List.map (I32Num.of_num 0) canons)
+        | V128.I16x8 () ->
+          all_ones, V128.I16x8.of_lanes (List.map (I32Num.of_num 0) canons)
+        | V128.I32x4 () ->
+          all_ones, V128.I32x4.of_lanes (List.map (I32Num.of_num 0) canons)
+        | V128.I64x2 () ->
+          all_ones, V128.I64x2.of_lanes (List.map (I64Num.of_num 0) canons)
+        | V128.F32x4 () ->
+          V128.I32x4.of_lanes (List.map (I32Num.of_num 0) masks),
+          V128.I32x4.of_lanes (List.map (I32Num.of_num 0) canons)
+        | V128.F64x2 () ->
+          V128.I64x2.of_lanes (List.map (I64Num.of_num 0) masks),
+          V128.I64x2.of_lanes (List.map (I64Num.of_num 0) canons)
       in
       [ SimdConst (V128 mask @@ at) @@ at;
         SimdBinaryVec (V128 V128Op.And) @@ at;
         SimdConst (V128 expected @@ at) @@ at;
-        SimdBinary (V128 V128Op.(Simd.I8x16 Eq)) @@ at;
+        SimdBinary (V128 (V128.I8x16 V128Op.Eq)) @@ at;
         (* If all lanes are non-zero, then they are equal *)
-        SimdTest (V128 V128Op.(Simd.I8x16 AllTrue)) @@ at;
+        SimdTest (V128 (V128.I8x16 V128Op.AllTrue)) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult (RefPat {it = Values.NullRef t; _}) ->

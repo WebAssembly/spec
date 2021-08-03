@@ -392,14 +392,15 @@ let assert_simd_pat v p =
   match v, p with
   | V128 v, SimdPat (V128 (shape, ps)) ->
     let extract = match shape with
-      | Simd.I8x16 () -> fun v i -> I32 (V128.I8x16.extract_lane_s i v)
-      | Simd.I16x8 () -> fun v i -> I32 (V128.I16x8.extract_lane_s i v)
-      | Simd.I32x4 () -> fun v i -> I32 (V128.I32x4.extract_lane_s i v)
-      | Simd.I64x2 () -> fun v i -> I64 (V128.I64x2.extract_lane_s i v)
-      | Simd.F32x4 () -> fun v i -> F32 (V128.F32x4.extract_lane i v)
-      | Simd.F64x2 () -> fun v i -> F64 (V128.F64x2.extract_lane i v)
+      | V128.I8x16 () -> fun v i -> I32 (V128.I8x16.extract_lane_s i v)
+      | V128.I16x8 () -> fun v i -> I32 (V128.I16x8.extract_lane_s i v)
+      | V128.I32x4 () -> fun v i -> I32 (V128.I32x4.extract_lane_s i v)
+      | V128.I64x2 () -> fun v i -> I64 (V128.I64x2.extract_lane_s i v)
+      | V128.F32x4 () -> fun v i -> F32 (V128.F32x4.extract_lane i v)
+      | V128.F64x2 () -> fun v i -> F64 (V128.F64x2.extract_lane i v)
     in
-    List.for_all2 assert_num_pat (List.init (Simd.lanes shape) (extract v)) ps
+    List.for_all2 assert_num_pat
+      (List.init (V128.num_lanes shape) (extract v)) ps
 
 let assert_ref_pat r p =
   match r, p with

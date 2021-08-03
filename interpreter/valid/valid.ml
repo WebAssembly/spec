@@ -113,7 +113,7 @@ let peek i (ell, ts) =
 let type_num = Values.type_of_num
 let type_simd = Values.type_of_simd
 let type_simd_lane = function
-  | Values.V128 laneop -> Simd.type_of_lane laneop
+  | Values.V128 laneop -> V128.type_of_lane laneop
 
 let type_cvtop at = function
   | Values.I32 cvtop ->
@@ -151,12 +151,12 @@ let type_cvtop at = function
     | DemoteF64 -> error at "invalid conversion"
     ), F64Type
 
-let lanes = function
-  | Values.V128 laneop -> Simd.lanes laneop
+let num_lanes = function
+  | Values.V128 laneop -> V128.num_lanes laneop
 
 let lane_extractop = function
   | Values.V128 extractop ->
-    let open Simd in let open V128Op in
+    let open V128 in let open V128Op in
     match extractop with
     | I8x16 (Extract (i, _)) | I16x8 (Extract (i, _))
     | I32x4 (Extract (i, _)) | I64x2 (Extract (i, _))
@@ -164,7 +164,7 @@ let lane_extractop = function
 
 let lane_replaceop = function
   | Values.V128 replaceop ->
-    let open Simd in let open V128Op in
+    let open V128 in let open V128Op in
     match replaceop with
     | I8x16 (Replace i) | I16x8 (Replace i)
     | I32x4 (Replace i) | I64x2 (Replace i)
@@ -184,7 +184,7 @@ let check_unop unop at =
 
 let check_simd_binop binop at =
   match binop with
-  | Values.(V128 (Simd.I8x16 (V128Op.Shuffle is))) ->
+  | Values.(V128 (V128.I8x16 (V128Op.Shuffle is))) ->
     if List.exists ((<=) 32) is then
       error at "invalid lane index"
   | _ -> ()
@@ -495,14 +495,14 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
   | SimdExtract extractop ->
     let t = SimdType (type_simd extractop) in
     let t2 = type_simd_lane extractop in
-    require (lane_extractop extractop < lanes extractop) e.at
+    require (lane_extractop extractop < num_lanes extractop) e.at
       "invalid lane index";
     [t] --> [NumType t2]
 
   | SimdReplace replaceop ->
     let t = SimdType (type_simd replaceop) in
     let t2 = type_simd_lane replaceop in
-    require (lane_replaceop replaceop < lanes replaceop) e.at
+    require (lane_replaceop replaceop < num_lanes replaceop) e.at
       "invalid lane index";
     [t; NumType t2] --> [t]
 

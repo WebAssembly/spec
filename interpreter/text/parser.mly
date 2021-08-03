@@ -47,19 +47,19 @@ let simd f shape ss at =
 let simd_lane_nan shape l at =
   let open Values in
   match shape with
-  | Simd.F32x4 () -> NanPat (F32 l @@ at)
-  | Simd.F64x2 () -> NanPat (F64 l @@ at)
+  | V128.F32x4 () -> NanPat (F32 l @@ at)
+  | V128.F64x2 () -> NanPat (F64 l @@ at)
   | _ -> error at "invalid simd constant"
 
 let simd_lane_lit shape l at =
   let open Values in
   match shape with
-  | Simd.I8x16 () -> NumPat (I32 (I8.of_string l) @@ at)
-  | Simd.I16x8 () -> NumPat (I32 (I16.of_string l) @@ at)
-  | Simd.I32x4 () -> NumPat (I32 (I32.of_string l) @@ at)
-  | Simd.I64x2 () -> NumPat (I64 (I64.of_string l) @@ at)
-  | Simd.F32x4 () -> NumPat (F32 (F32.of_string l) @@ at)
-  | Simd.F64x2 () -> NumPat (F64 (F64.of_string l) @@ at)
+  | V128.I8x16 () -> NumPat (I32 (I8.of_string l) @@ at)
+  | V128.I16x8 () -> NumPat (I32 (I16.of_string l) @@ at)
+  | V128.I32x4 () -> NumPat (I32 (I32.of_string l) @@ at)
+  | V128.I64x2 () -> NumPat (I64 (I64.of_string l) @@ at)
+  | V128.F32x4 () -> NumPat (F32 (F32.of_string l) @@ at)
+  | V128.F64x2 () -> NumPat (F64 (F64.of_string l) @@ at)
 
 let simd_lane_index s at =
   match int_of_string s with
@@ -239,7 +239,7 @@ let inline_type_explicit (c : context) x ft at =
 %token<Types.num_type> NUM_TYPE
 %token<Types.simd_type> SIMD_TYPE
 %token<string Source.phrase -> Ast.instr' * Values.num> CONST
-%token<Simd.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Values.simd> SIMD_CONST
+%token<V128.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Values.simd> SIMD_CONST
 %token<Ast.instr'> UNARY
 %token<Ast.instr'> BINARY
 %token<Ast.instr'> TEST
@@ -262,7 +262,7 @@ let inline_type_explicit (c : context) x ft at =
 %token<int -> Ast.instr'> SIMD_REPLACE
 %token<string> OFFSET_EQ_NAT
 %token<string> ALIGN_EQ_NAT
-%token<Simd.shape> SIMD_SHAPE
+%token<V128.shape> SIMD_SHAPE
 
 %token<Script.nan> NAN
 
@@ -1152,7 +1152,7 @@ result :
   | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncRefType) @@ at () }
   | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternRefType) @@ at () }
   | LPAR SIMD_CONST SIMD_SHAPE numpat_list RPAR {
-    if Simd.lanes $3 <> List.length $4 then
+    if V128.num_lanes $3 <> List.length $4 then
       error (at ()) "wrong number of lane literals";
     SimdResult (SimdPat (Values.V128 ($3, List.map (fun lit -> lit $3) $4))) @@ at ()
   }

@@ -1,10 +1,11 @@
 open Types
 open Values
 
-module V128Op = struct
+module V128Op =
+struct
   open Ast.V128Op
   open V128Simd
-  open Simd
+  open V128
 
   let testop (op : testop) =
     let f = match op with
@@ -244,7 +245,8 @@ end
 module V128CvtOp =
 struct
   open Ast.V128Op
-  open Simd
+  open V128Simd
+  open V128
 
   let splatop (op : splatop) v =
     let i =
@@ -255,10 +257,10 @@ struct
       | I64x2 Splat -> V128.I64x2.splat (I64Num.of_num 1 v)
       | F32x4 Splat -> V128.F32x4.splat (F32Num.of_num 1 v)
       | F64x2 Splat -> V128.F64x2.splat (F64Num.of_num 1 v)
-    in V128Simd.to_simd i
+    in to_simd i
 
   let extractop (op : extractop) v =
-    let v128 = V128Simd.of_simd 1 v in
+    let v128 = of_simd 1 v in
     match op with
     | I8x16 (Extract (i, SX)) -> I32 (V128.I8x16.extract_lane_s i v128)
     | I8x16 (Extract (i, ZX)) -> I32 (V128.I8x16.extract_lane_u i v128)
@@ -270,7 +272,7 @@ struct
     | F64x2 (Extract (i, ())) -> F64 (V128.F64x2.extract_lane i v128)
 
   let replaceop (op : replaceop) v (n : Values.num) =
-    let v128 = V128Simd.of_simd 1 v in
+    let v128 = of_simd 1 v in
     let v128' = match op with
       | I8x16 (Replace i) -> V128.I8x16.replace_lane i v128 (I32Num.of_num 1 n)
       | I16x8 (Replace i) -> V128.I16x8.replace_lane i v128 (I32Num.of_num 1 n)
@@ -278,7 +280,7 @@ struct
       | I64x2 (Replace i) -> V128.I64x2.replace_lane i v128 (I64Num.of_num 1 n)
       | F32x4 (Replace i) -> V128.F32x4.replace_lane i v128 (F32Num.of_num 1 n)
       | F64x2 (Replace i) -> V128.F64x2.replace_lane i v128 (F64Num.of_num 1 n)
-    in V128Simd.to_simd v128'
+    in to_simd v128'
 end
 
 (* Dispatch *)

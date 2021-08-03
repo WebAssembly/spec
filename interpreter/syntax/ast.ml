@@ -80,19 +80,19 @@ struct
   type vbinop = And | Or | Xor | AndNot
   type vternop = Bitselect
 
-  type testop = (itestop, itestop, itestop, itestop, void, void) Simd.laneop
-  type unop = (iunop, iunop, iunop, iunop, funop, funop) Simd.laneop
-  type binop = (ibinop, ibinop, ibinop, ibinop, fbinop, fbinop) Simd.laneop
-  type shiftop = (ishiftop, ishiftop, ishiftop, ishiftop, void, void) Simd.laneop
-  type bitmaskop = (ibitmaskop, ibitmaskop, ibitmaskop, ibitmaskop, void, void) Simd.laneop
+  type testop = (itestop, itestop, itestop, itestop, void, void) V128.laneop
+  type unop = (iunop, iunop, iunop, iunop, funop, funop) V128.laneop
+  type binop = (ibinop, ibinop, ibinop, ibinop, fbinop, fbinop) V128.laneop
+  type shiftop = (ishiftop, ishiftop, ishiftop, ishiftop, void, void) V128.laneop
+  type bitmaskop = (ibitmaskop, ibitmaskop, ibitmaskop, ibitmaskop, void, void) V128.laneop
 
   type nsplatop = Splat
   type 'a nextractop = Extract of int * 'a
   type nreplaceop = Replace of int
 
-  type splatop = (nsplatop, nsplatop, nsplatop, nsplatop, nsplatop, nsplatop) Simd.laneop
-  type extractop = (extension nextractop, extension nextractop, unit nextractop, unit nextractop, unit nextractop, unit nextractop) Simd.laneop
-  type replaceop = (nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop) Simd.laneop
+  type splatop = (nsplatop, nsplatop, nsplatop, nsplatop, nsplatop, nsplatop) V128.laneop
+  type extractop = (extension nextractop, extension nextractop, unit nextractop, unit nextractop, unit nextractop, unit nextractop) V128.laneop
+  type replaceop = (nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop) V128.laneop
 end
 
 type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) Values.op
