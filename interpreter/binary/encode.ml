@@ -135,7 +135,7 @@ struct
   open Source
   open Ast
   open Values
-  open Simd
+  open V128
 
   let op n = u8 n
   let simd_op n = op 0xfd; vu32 n
@@ -459,180 +459,180 @@ struct
 
     | SimdConst {it = V128 c; _} -> simd_op 0x0cl; v128 c
 
-    | SimdTest (V128 V128Op.(I8x16 AllTrue)) -> simd_op 0x63l
-    | SimdTest (V128 V128Op.(I16x8 AllTrue)) -> simd_op 0x83l
-    | SimdTest (V128 V128Op.(I32x4 AllTrue)) -> simd_op 0xa3l
-    | SimdTest (V128 V128Op.(I64x2 AllTrue)) -> simd_op 0xc3l
+    | SimdTest (V128 (I8x16 V128Op.AllTrue)) -> simd_op 0x63l
+    | SimdTest (V128 (I16x8 V128Op.AllTrue)) -> simd_op 0x83l
+    | SimdTest (V128 (I32x4 V128Op.AllTrue)) -> simd_op 0xa3l
+    | SimdTest (V128 (I64x2 V128Op.AllTrue)) -> simd_op 0xc3l
     | SimdTest (V128 _) -> .
 
-    | SimdUnary (V128 V128Op.(I8x16 Abs)) -> simd_op 0x60l
-    | SimdUnary (V128 V128Op.(I8x16 Neg)) -> simd_op 0x61l
-    | SimdUnary (V128 V128Op.(I8x16 Popcnt)) -> simd_op 0x62l
-    | SimdUnary (V128 V128Op.(I16x8 Abs)) -> simd_op 0x80l
-    | SimdUnary (V128 V128Op.(I16x8 Neg)) -> simd_op 0x81l
-    | SimdUnary (V128 V128Op.(I16x8 ExtendLowS)) -> simd_op 0x87l
-    | SimdUnary (V128 V128Op.(I16x8 ExtendHighS)) -> simd_op 0x88l
-    | SimdUnary (V128 V128Op.(I16x8 ExtendLowU)) -> simd_op 0x89l
-    | SimdUnary (V128 V128Op.(I16x8 ExtendHighU)) -> simd_op 0x8al
-    | SimdUnary (V128 V128Op.(I16x8 ExtAddPairwiseS)) -> simd_op 0x7cl
-    | SimdUnary (V128 V128Op.(I16x8 ExtAddPairwiseU)) -> simd_op 0x7dl
-    | SimdUnary (V128 V128Op.(I32x4 Abs)) -> simd_op 0xa0l
-    | SimdUnary (V128 V128Op.(I32x4 Neg)) -> simd_op 0xa1l
-    | SimdUnary (V128 V128Op.(I32x4 ExtendLowS)) -> simd_op 0xa7l
-    | SimdUnary (V128 V128Op.(I32x4 ExtendHighS)) -> simd_op 0xa8l
-    | SimdUnary (V128 V128Op.(I32x4 ExtendLowU)) -> simd_op 0xa9l
-    | SimdUnary (V128 V128Op.(I32x4 ExtendHighU)) -> simd_op 0xaal
-    | SimdUnary (V128 V128Op.(I32x4 ExtAddPairwiseS)) -> simd_op 0x7el
-    | SimdUnary (V128 V128Op.(I32x4 ExtAddPairwiseU)) -> simd_op 0x7fl
-    | SimdUnary (V128 V128Op.(I64x2 Abs)) -> simd_op 0xc0l
-    | SimdUnary (V128 V128Op.(I64x2 Neg)) -> simd_op 0xc1l
-    | SimdUnary (V128 V128Op.(I64x2 ExtendLowS)) -> simd_op 0xc7l
-    | SimdUnary (V128 V128Op.(I64x2 ExtendHighS)) -> simd_op 0xc8l
-    | SimdUnary (V128 V128Op.(I64x2 ExtendLowU)) -> simd_op 0xc9l
-    | SimdUnary (V128 V128Op.(I64x2 ExtendHighU)) -> simd_op 0xcal
-    | SimdUnary (V128 V128Op.(F32x4 Ceil)) -> simd_op 0x67l
-    | SimdUnary (V128 V128Op.(F32x4 Floor)) -> simd_op 0x68l
-    | SimdUnary (V128 V128Op.(F32x4 Trunc)) -> simd_op 0x69l
-    | SimdUnary (V128 V128Op.(F32x4 Nearest)) -> simd_op 0x6al
-    | SimdUnary (V128 V128Op.(F64x2 Ceil)) -> simd_op 0x74l
-    | SimdUnary (V128 V128Op.(F64x2 Floor)) -> simd_op 0x75l
-    | SimdUnary (V128 V128Op.(F64x2 Trunc)) -> simd_op 0x7al
-    | SimdUnary (V128 V128Op.(F64x2 Nearest)) -> simd_op 0x94l
-    | SimdUnary (V128 V128Op.(F32x4 Abs)) -> simd_op 0xe0l
-    | SimdUnary (V128 V128Op.(F32x4 Neg)) -> simd_op 0xe1l
-    | SimdUnary (V128 V128Op.(F32x4 Sqrt)) -> simd_op 0xe3l
-    | SimdUnary (V128 V128Op.(F64x2 Abs)) -> simd_op 0xecl
-    | SimdUnary (V128 V128Op.(F64x2 Neg)) -> simd_op 0xedl
-    | SimdUnary (V128 V128Op.(F64x2 Sqrt)) -> simd_op 0xefl
-    | SimdUnary (V128 V128Op.(I32x4 TruncSatSF32x4)) -> simd_op 0xf8l
-    | SimdUnary (V128 V128Op.(I32x4 TruncSatUF32x4)) -> simd_op 0xf9l
-    | SimdUnary (V128 V128Op.(I32x4 TruncSatSZeroF64x2)) -> simd_op 0xfcl
-    | SimdUnary (V128 V128Op.(I32x4 TruncSatUZeroF64x2)) -> simd_op 0xfdl
-    | SimdUnary (V128 V128Op.(F32x4 ConvertSI32x4)) -> simd_op 0xfal
-    | SimdUnary (V128 V128Op.(F32x4 ConvertUI32x4)) -> simd_op 0xfbl
-    | SimdUnary (V128 V128Op.(F32x4 DemoteZeroF64x2)) -> simd_op 0x5el
-    | SimdUnary (V128 V128Op.(F64x2 PromoteLowF32x4)) -> simd_op 0x5fl
-    | SimdUnary (V128 V128Op.(F64x2 ConvertSI32x4)) -> simd_op 0xfel
-    | SimdUnary (V128 V128Op.(F64x2 ConvertUI32x4)) -> simd_op 0xffl
+    | SimdUnary (V128 (I8x16 V128Op.Abs)) -> simd_op 0x60l
+    | SimdUnary (V128 (I8x16 V128Op.Neg)) -> simd_op 0x61l
+    | SimdUnary (V128 (I8x16 V128Op.Popcnt)) -> simd_op 0x62l
+    | SimdUnary (V128 (I16x8 V128Op.Abs)) -> simd_op 0x80l
+    | SimdUnary (V128 (I16x8 V128Op.Neg)) -> simd_op 0x81l
+    | SimdUnary (V128 (I16x8 V128Op.ExtendLowS)) -> simd_op 0x87l
+    | SimdUnary (V128 (I16x8 V128Op.ExtendHighS)) -> simd_op 0x88l
+    | SimdUnary (V128 (I16x8 V128Op.ExtendLowU)) -> simd_op 0x89l
+    | SimdUnary (V128 (I16x8 V128Op.ExtendHighU)) -> simd_op 0x8al
+    | SimdUnary (V128 (I16x8 V128Op.ExtAddPairwiseS)) -> simd_op 0x7cl
+    | SimdUnary (V128 (I16x8 V128Op.ExtAddPairwiseU)) -> simd_op 0x7dl
+    | SimdUnary (V128 (I32x4 V128Op.Abs)) -> simd_op 0xa0l
+    | SimdUnary (V128 (I32x4 V128Op.Neg)) -> simd_op 0xa1l
+    | SimdUnary (V128 (I32x4 V128Op.ExtendLowS)) -> simd_op 0xa7l
+    | SimdUnary (V128 (I32x4 V128Op.ExtendHighS)) -> simd_op 0xa8l
+    | SimdUnary (V128 (I32x4 V128Op.ExtendLowU)) -> simd_op 0xa9l
+    | SimdUnary (V128 (I32x4 V128Op.ExtendHighU)) -> simd_op 0xaal
+    | SimdUnary (V128 (I32x4 V128Op.ExtAddPairwiseS)) -> simd_op 0x7el
+    | SimdUnary (V128 (I32x4 V128Op.ExtAddPairwiseU)) -> simd_op 0x7fl
+    | SimdUnary (V128 (I64x2 V128Op.Abs)) -> simd_op 0xc0l
+    | SimdUnary (V128 (I64x2 V128Op.Neg)) -> simd_op 0xc1l
+    | SimdUnary (V128 (I64x2 V128Op.ExtendLowS)) -> simd_op 0xc7l
+    | SimdUnary (V128 (I64x2 V128Op.ExtendHighS)) -> simd_op 0xc8l
+    | SimdUnary (V128 (I64x2 V128Op.ExtendLowU)) -> simd_op 0xc9l
+    | SimdUnary (V128 (I64x2 V128Op.ExtendHighU)) -> simd_op 0xcal
+    | SimdUnary (V128 (F32x4 V128Op.Ceil)) -> simd_op 0x67l
+    | SimdUnary (V128 (F32x4 V128Op.Floor)) -> simd_op 0x68l
+    | SimdUnary (V128 (F32x4 V128Op.Trunc)) -> simd_op 0x69l
+    | SimdUnary (V128 (F32x4 V128Op.Nearest)) -> simd_op 0x6al
+    | SimdUnary (V128 (F64x2 V128Op.Ceil)) -> simd_op 0x74l
+    | SimdUnary (V128 (F64x2 V128Op.Floor)) -> simd_op 0x75l
+    | SimdUnary (V128 (F64x2 V128Op.Trunc)) -> simd_op 0x7al
+    | SimdUnary (V128 (F64x2 V128Op.Nearest)) -> simd_op 0x94l
+    | SimdUnary (V128 (F32x4 V128Op.Abs)) -> simd_op 0xe0l
+    | SimdUnary (V128 (F32x4 V128Op.Neg)) -> simd_op 0xe1l
+    | SimdUnary (V128 (F32x4 V128Op.Sqrt)) -> simd_op 0xe3l
+    | SimdUnary (V128 (F64x2 V128Op.Abs)) -> simd_op 0xecl
+    | SimdUnary (V128 (F64x2 V128Op.Neg)) -> simd_op 0xedl
+    | SimdUnary (V128 (F64x2 V128Op.Sqrt)) -> simd_op 0xefl
+    | SimdUnary (V128 (I32x4 V128Op.TruncSatSF32x4)) -> simd_op 0xf8l
+    | SimdUnary (V128 (I32x4 V128Op.TruncSatUF32x4)) -> simd_op 0xf9l
+    | SimdUnary (V128 (I32x4 V128Op.TruncSatSZeroF64x2)) -> simd_op 0xfcl
+    | SimdUnary (V128 (I32x4 V128Op.TruncSatUZeroF64x2)) -> simd_op 0xfdl
+    | SimdUnary (V128 (F32x4 V128Op.ConvertSI32x4)) -> simd_op 0xfal
+    | SimdUnary (V128 (F32x4 V128Op.ConvertUI32x4)) -> simd_op 0xfbl
+    | SimdUnary (V128 (F32x4 V128Op.DemoteZeroF64x2)) -> simd_op 0x5el
+    | SimdUnary (V128 (F64x2 V128Op.PromoteLowF32x4)) -> simd_op 0x5fl
+    | SimdUnary (V128 (F64x2 V128Op.ConvertSI32x4)) -> simd_op 0xfel
+    | SimdUnary (V128 (F64x2 V128Op.ConvertUI32x4)) -> simd_op 0xffl
     | SimdUnary (V128 _) -> assert false
 
-    | SimdBinary (V128 V128Op.(I8x16 (Shuffle is))) -> simd_op 0x0dl; List.iter u8 is
-    | SimdBinary (V128 V128Op.(I8x16 Swizzle)) -> simd_op 0x0el
-    | SimdBinary (V128 V128Op.(I8x16 Eq)) -> simd_op 0x23l
-    | SimdBinary (V128 V128Op.(I8x16 Ne)) -> simd_op 0x24l
-    | SimdBinary (V128 V128Op.(I8x16 LtS)) -> simd_op 0x25l
-    | SimdBinary (V128 V128Op.(I8x16 LtU)) -> simd_op 0x26l
-    | SimdBinary (V128 V128Op.(I8x16 GtS)) -> simd_op 0x27l
-    | SimdBinary (V128 V128Op.(I8x16 GtU)) -> simd_op 0x28l
-    | SimdBinary (V128 V128Op.(I8x16 LeS)) -> simd_op 0x29l
-    | SimdBinary (V128 V128Op.(I8x16 LeU)) -> simd_op 0x2al
-    | SimdBinary (V128 V128Op.(I8x16 GeS)) -> simd_op 0x2bl
-    | SimdBinary (V128 V128Op.(I8x16 GeU)) -> simd_op 0x2cl
-    | SimdBinary (V128 V128Op.(I8x16 NarrowS)) -> simd_op 0x65l
-    | SimdBinary (V128 V128Op.(I8x16 NarrowU)) -> simd_op 0x66l
-    | SimdBinary (V128 V128Op.(I8x16 Add)) -> simd_op 0x6el
-    | SimdBinary (V128 V128Op.(I8x16 AddSatS)) -> simd_op 0x6fl
-    | SimdBinary (V128 V128Op.(I8x16 AddSatU)) -> simd_op 0x70l
-    | SimdBinary (V128 V128Op.(I8x16 Sub)) -> simd_op 0x71l
-    | SimdBinary (V128 V128Op.(I8x16 SubSatS)) -> simd_op 0x72l
-    | SimdBinary (V128 V128Op.(I8x16 SubSatU)) -> simd_op 0x73l
-    | SimdBinary (V128 V128Op.(I8x16 MinS)) -> simd_op 0x76l
-    | SimdBinary (V128 V128Op.(I8x16 MinU)) -> simd_op 0x77l
-    | SimdBinary (V128 V128Op.(I8x16 MaxS)) -> simd_op 0x78l
-    | SimdBinary (V128 V128Op.(I8x16 MaxU)) -> simd_op 0x79l
-    | SimdBinary (V128 V128Op.(I8x16 AvgrU)) -> simd_op 0x7bl
-    | SimdBinary (V128 V128Op.(I16x8 Eq)) -> simd_op 0x2dl
-    | SimdBinary (V128 V128Op.(I16x8 Ne)) -> simd_op 0x2el
-    | SimdBinary (V128 V128Op.(I16x8 LtS)) -> simd_op 0x2fl
-    | SimdBinary (V128 V128Op.(I16x8 LtU)) -> simd_op 0x30l
-    | SimdBinary (V128 V128Op.(I16x8 GtS)) -> simd_op 0x31l
-    | SimdBinary (V128 V128Op.(I16x8 GtU)) -> simd_op 0x32l
-    | SimdBinary (V128 V128Op.(I16x8 LeS)) -> simd_op 0x33l
-    | SimdBinary (V128 V128Op.(I16x8 LeU)) -> simd_op 0x34l
-    | SimdBinary (V128 V128Op.(I16x8 GeS)) -> simd_op 0x35l
-    | SimdBinary (V128 V128Op.(I16x8 GeU)) -> simd_op 0x36l
-    | SimdBinary (V128 V128Op.(I16x8 NarrowS)) -> simd_op 0x85l
-    | SimdBinary (V128 V128Op.(I16x8 NarrowU)) -> simd_op 0x86l
-    | SimdBinary (V128 V128Op.(I16x8 Add)) -> simd_op 0x8el
-    | SimdBinary (V128 V128Op.(I16x8 AddSatS)) -> simd_op 0x8fl
-    | SimdBinary (V128 V128Op.(I16x8 AddSatU)) -> simd_op 0x90l
-    | SimdBinary (V128 V128Op.(I16x8 Sub)) -> simd_op 0x91l
-    | SimdBinary (V128 V128Op.(I16x8 SubSatS)) -> simd_op 0x92l
-    | SimdBinary (V128 V128Op.(I16x8 SubSatU)) -> simd_op 0x93l
-    | SimdBinary (V128 V128Op.(I16x8 Mul)) -> simd_op 0x95l
-    | SimdBinary (V128 V128Op.(I16x8 MinS)) -> simd_op 0x96l
-    | SimdBinary (V128 V128Op.(I16x8 MinU)) -> simd_op 0x97l
-    | SimdBinary (V128 V128Op.(I16x8 MaxS)) -> simd_op 0x98l
-    | SimdBinary (V128 V128Op.(I16x8 MaxU)) -> simd_op 0x99l
-    | SimdBinary (V128 V128Op.(I16x8 AvgrU)) -> simd_op 0x9bl
-    | SimdBinary (V128 V128Op.(I16x8 ExtMulLowS)) -> simd_op 0x9cl
-    | SimdBinary (V128 V128Op.(I16x8 ExtMulHighS)) -> simd_op 0x9dl
-    | SimdBinary (V128 V128Op.(I16x8 ExtMulLowU)) -> simd_op 0x9el
-    | SimdBinary (V128 V128Op.(I16x8 ExtMulHighU)) -> simd_op 0x9fl
-    | SimdBinary (V128 V128Op.(I16x8 Q15MulRSatS)) -> simd_op 0x82l
-    | SimdBinary (V128 V128Op.(I32x4 Add)) -> simd_op 0xael
-    | SimdBinary (V128 V128Op.(I32x4 Sub)) -> simd_op 0xb1l
-    | SimdBinary (V128 V128Op.(I32x4 MinS)) -> simd_op 0xb6l
-    | SimdBinary (V128 V128Op.(I32x4 MinU)) -> simd_op 0xb7l
-    | SimdBinary (V128 V128Op.(I32x4 MaxS)) -> simd_op 0xb8l
-    | SimdBinary (V128 V128Op.(I32x4 MaxU)) -> simd_op 0xb9l
-    | SimdBinary (V128 V128Op.(I32x4 DotS)) -> simd_op 0xbal
-    | SimdBinary (V128 V128Op.(I32x4 Mul)) -> simd_op 0xb5l
-    | SimdBinary (V128 V128Op.(I32x4 Eq)) -> simd_op 0x37l
-    | SimdBinary (V128 V128Op.(I32x4 Ne)) -> simd_op 0x38l
-    | SimdBinary (V128 V128Op.(I32x4 LtS)) -> simd_op 0x39l
-    | SimdBinary (V128 V128Op.(I32x4 LtU)) -> simd_op 0x3al
-    | SimdBinary (V128 V128Op.(I32x4 GtS)) -> simd_op 0x3bl
-    | SimdBinary (V128 V128Op.(I32x4 GtU)) -> simd_op 0x3cl
-    | SimdBinary (V128 V128Op.(I32x4 LeS)) -> simd_op 0x3dl
-    | SimdBinary (V128 V128Op.(I32x4 LeU)) -> simd_op 0x3el
-    | SimdBinary (V128 V128Op.(I32x4 GeS)) -> simd_op 0x3fl
-    | SimdBinary (V128 V128Op.(I32x4 GeU)) -> simd_op 0x40l
-    | SimdBinary (V128 V128Op.(I32x4 ExtMulLowS)) -> simd_op 0xbcl
-    | SimdBinary (V128 V128Op.(I32x4 ExtMulHighS)) -> simd_op 0xbdl
-    | SimdBinary (V128 V128Op.(I32x4 ExtMulLowU)) -> simd_op 0xbel
-    | SimdBinary (V128 V128Op.(I32x4 ExtMulHighU)) -> simd_op 0xbfl
-    | SimdBinary (V128 V128Op.(I64x2 Add)) -> simd_op 0xcel
-    | SimdBinary (V128 V128Op.(I64x2 Sub)) -> simd_op 0xd1l
-    | SimdBinary (V128 V128Op.(I64x2 Mul)) -> simd_op 0xd5l
-    | SimdBinary (V128 V128Op.(I64x2 Eq)) -> simd_op 0xd6l
-    | SimdBinary (V128 V128Op.(I64x2 Ne)) -> simd_op 0xd7l
-    | SimdBinary (V128 V128Op.(I64x2 LtS)) -> simd_op 0xd8l
-    | SimdBinary (V128 V128Op.(I64x2 GtS)) -> simd_op 0xd9l
-    | SimdBinary (V128 V128Op.(I64x2 LeS)) -> simd_op 0xdal
-    | SimdBinary (V128 V128Op.(I64x2 GeS)) -> simd_op 0xdbl
-    | SimdBinary (V128 V128Op.(I64x2 ExtMulLowS)) -> simd_op 0xdcl
-    | SimdBinary (V128 V128Op.(I64x2 ExtMulHighS)) -> simd_op 0xddl
-    | SimdBinary (V128 V128Op.(I64x2 ExtMulLowU)) -> simd_op 0xdel
-    | SimdBinary (V128 V128Op.(I64x2 ExtMulHighU)) -> simd_op 0xdfl
-    | SimdBinary (V128 V128Op.(F32x4 Eq)) -> simd_op 0x41l
-    | SimdBinary (V128 V128Op.(F32x4 Ne)) -> simd_op 0x42l
-    | SimdBinary (V128 V128Op.(F32x4 Lt)) -> simd_op 0x43l
-    | SimdBinary (V128 V128Op.(F32x4 Gt)) -> simd_op 0x44l
-    | SimdBinary (V128 V128Op.(F32x4 Le)) -> simd_op 0x45l
-    | SimdBinary (V128 V128Op.(F32x4 Ge)) -> simd_op 0x46l
-    | SimdBinary (V128 V128Op.(F32x4 Add)) -> simd_op 0xe4l
-    | SimdBinary (V128 V128Op.(F32x4 Sub)) -> simd_op 0xe5l
-    | SimdBinary (V128 V128Op.(F32x4 Mul)) -> simd_op 0xe6l
-    | SimdBinary (V128 V128Op.(F32x4 Div)) -> simd_op 0xe7l
-    | SimdBinary (V128 V128Op.(F32x4 Min)) -> simd_op 0xe8l
-    | SimdBinary (V128 V128Op.(F32x4 Max)) -> simd_op 0xe9l
-    | SimdBinary (V128 V128Op.(F32x4 Pmin)) -> simd_op 0xeal
-    | SimdBinary (V128 V128Op.(F32x4 Pmax)) -> simd_op 0xebl
-    | SimdBinary (V128 V128Op.(F64x2 Eq)) -> simd_op 0x47l
-    | SimdBinary (V128 V128Op.(F64x2 Ne)) -> simd_op 0x48l
-    | SimdBinary (V128 V128Op.(F64x2 Lt)) -> simd_op 0x49l
-    | SimdBinary (V128 V128Op.(F64x2 Gt)) -> simd_op 0x4al
-    | SimdBinary (V128 V128Op.(F64x2 Le)) -> simd_op 0x4bl
-    | SimdBinary (V128 V128Op.(F64x2 Ge)) -> simd_op 0x4cl
-    | SimdBinary (V128 V128Op.(F64x2 Add)) -> simd_op 0xf0l
-    | SimdBinary (V128 V128Op.(F64x2 Sub)) -> simd_op 0xf1l
-    | SimdBinary (V128 V128Op.(F64x2 Mul)) -> simd_op 0xf2l
-    | SimdBinary (V128 V128Op.(F64x2 Div)) -> simd_op 0xf3l
-    | SimdBinary (V128 V128Op.(F64x2 Min)) -> simd_op 0xf4l
-    | SimdBinary (V128 V128Op.(F64x2 Max)) -> simd_op 0xf5l
-    | SimdBinary (V128 V128Op.(F64x2 Pmin)) -> simd_op 0xf6l
-    | SimdBinary (V128 V128Op.(F64x2 Pmax)) -> simd_op 0xf7l
+    | SimdBinary (V128 (I8x16 (V128Op.Shuffle is))) -> simd_op 0x0dl; List.iter u8 is
+    | SimdBinary (V128 (I8x16 V128Op.Swizzle)) -> simd_op 0x0el
+    | SimdBinary (V128 (I8x16 V128Op.Eq)) -> simd_op 0x23l
+    | SimdBinary (V128 (I8x16 V128Op.Ne)) -> simd_op 0x24l
+    | SimdBinary (V128 (I8x16 V128Op.LtS)) -> simd_op 0x25l
+    | SimdBinary (V128 (I8x16 V128Op.LtU)) -> simd_op 0x26l
+    | SimdBinary (V128 (I8x16 V128Op.GtS)) -> simd_op 0x27l
+    | SimdBinary (V128 (I8x16 V128Op.GtU)) -> simd_op 0x28l
+    | SimdBinary (V128 (I8x16 V128Op.LeS)) -> simd_op 0x29l
+    | SimdBinary (V128 (I8x16 V128Op.LeU)) -> simd_op 0x2al
+    | SimdBinary (V128 (I8x16 V128Op.GeS)) -> simd_op 0x2bl
+    | SimdBinary (V128 (I8x16 V128Op.GeU)) -> simd_op 0x2cl
+    | SimdBinary (V128 (I8x16 V128Op.NarrowS)) -> simd_op 0x65l
+    | SimdBinary (V128 (I8x16 V128Op.NarrowU)) -> simd_op 0x66l
+    | SimdBinary (V128 (I8x16 V128Op.Add)) -> simd_op 0x6el
+    | SimdBinary (V128 (I8x16 V128Op.AddSatS)) -> simd_op 0x6fl
+    | SimdBinary (V128 (I8x16 V128Op.AddSatU)) -> simd_op 0x70l
+    | SimdBinary (V128 (I8x16 V128Op.Sub)) -> simd_op 0x71l
+    | SimdBinary (V128 (I8x16 V128Op.SubSatS)) -> simd_op 0x72l
+    | SimdBinary (V128 (I8x16 V128Op.SubSatU)) -> simd_op 0x73l
+    | SimdBinary (V128 (I8x16 V128Op.MinS)) -> simd_op 0x76l
+    | SimdBinary (V128 (I8x16 V128Op.MinU)) -> simd_op 0x77l
+    | SimdBinary (V128 (I8x16 V128Op.MaxS)) -> simd_op 0x78l
+    | SimdBinary (V128 (I8x16 V128Op.MaxU)) -> simd_op 0x79l
+    | SimdBinary (V128 (I8x16 V128Op.AvgrU)) -> simd_op 0x7bl
+    | SimdBinary (V128 (I16x8 V128Op.Eq)) -> simd_op 0x2dl
+    | SimdBinary (V128 (I16x8 V128Op.Ne)) -> simd_op 0x2el
+    | SimdBinary (V128 (I16x8 V128Op.LtS)) -> simd_op 0x2fl
+    | SimdBinary (V128 (I16x8 V128Op.LtU)) -> simd_op 0x30l
+    | SimdBinary (V128 (I16x8 V128Op.GtS)) -> simd_op 0x31l
+    | SimdBinary (V128 (I16x8 V128Op.GtU)) -> simd_op 0x32l
+    | SimdBinary (V128 (I16x8 V128Op.LeS)) -> simd_op 0x33l
+    | SimdBinary (V128 (I16x8 V128Op.LeU)) -> simd_op 0x34l
+    | SimdBinary (V128 (I16x8 V128Op.GeS)) -> simd_op 0x35l
+    | SimdBinary (V128 (I16x8 V128Op.GeU)) -> simd_op 0x36l
+    | SimdBinary (V128 (I16x8 V128Op.NarrowS)) -> simd_op 0x85l
+    | SimdBinary (V128 (I16x8 V128Op.NarrowU)) -> simd_op 0x86l
+    | SimdBinary (V128 (I16x8 V128Op.Add)) -> simd_op 0x8el
+    | SimdBinary (V128 (I16x8 V128Op.AddSatS)) -> simd_op 0x8fl
+    | SimdBinary (V128 (I16x8 V128Op.AddSatU)) -> simd_op 0x90l
+    | SimdBinary (V128 (I16x8 V128Op.Sub)) -> simd_op 0x91l
+    | SimdBinary (V128 (I16x8 V128Op.SubSatS)) -> simd_op 0x92l
+    | SimdBinary (V128 (I16x8 V128Op.SubSatU)) -> simd_op 0x93l
+    | SimdBinary (V128 (I16x8 V128Op.Mul)) -> simd_op 0x95l
+    | SimdBinary (V128 (I16x8 V128Op.MinS)) -> simd_op 0x96l
+    | SimdBinary (V128 (I16x8 V128Op.MinU)) -> simd_op 0x97l
+    | SimdBinary (V128 (I16x8 V128Op.MaxS)) -> simd_op 0x98l
+    | SimdBinary (V128 (I16x8 V128Op.MaxU)) -> simd_op 0x99l
+    | SimdBinary (V128 (I16x8 V128Op.AvgrU)) -> simd_op 0x9bl
+    | SimdBinary (V128 (I16x8 V128Op.ExtMulLowS)) -> simd_op 0x9cl
+    | SimdBinary (V128 (I16x8 V128Op.ExtMulHighS)) -> simd_op 0x9dl
+    | SimdBinary (V128 (I16x8 V128Op.ExtMulLowU)) -> simd_op 0x9el
+    | SimdBinary (V128 (I16x8 V128Op.ExtMulHighU)) -> simd_op 0x9fl
+    | SimdBinary (V128 (I16x8 V128Op.Q15MulRSatS)) -> simd_op 0x82l
+    | SimdBinary (V128 (I32x4 V128Op.Add)) -> simd_op 0xael
+    | SimdBinary (V128 (I32x4 V128Op.Sub)) -> simd_op 0xb1l
+    | SimdBinary (V128 (I32x4 V128Op.MinS)) -> simd_op 0xb6l
+    | SimdBinary (V128 (I32x4 V128Op.MinU)) -> simd_op 0xb7l
+    | SimdBinary (V128 (I32x4 V128Op.MaxS)) -> simd_op 0xb8l
+    | SimdBinary (V128 (I32x4 V128Op.MaxU)) -> simd_op 0xb9l
+    | SimdBinary (V128 (I32x4 V128Op.DotS)) -> simd_op 0xbal
+    | SimdBinary (V128 (I32x4 V128Op.Mul)) -> simd_op 0xb5l
+    | SimdBinary (V128 (I32x4 V128Op.Eq)) -> simd_op 0x37l
+    | SimdBinary (V128 (I32x4 V128Op.Ne)) -> simd_op 0x38l
+    | SimdBinary (V128 (I32x4 V128Op.LtS)) -> simd_op 0x39l
+    | SimdBinary (V128 (I32x4 V128Op.LtU)) -> simd_op 0x3al
+    | SimdBinary (V128 (I32x4 V128Op.GtS)) -> simd_op 0x3bl
+    | SimdBinary (V128 (I32x4 V128Op.GtU)) -> simd_op 0x3cl
+    | SimdBinary (V128 (I32x4 V128Op.LeS)) -> simd_op 0x3dl
+    | SimdBinary (V128 (I32x4 V128Op.LeU)) -> simd_op 0x3el
+    | SimdBinary (V128 (I32x4 V128Op.GeS)) -> simd_op 0x3fl
+    | SimdBinary (V128 (I32x4 V128Op.GeU)) -> simd_op 0x40l
+    | SimdBinary (V128 (I32x4 V128Op.ExtMulLowS)) -> simd_op 0xbcl
+    | SimdBinary (V128 (I32x4 V128Op.ExtMulHighS)) -> simd_op 0xbdl
+    | SimdBinary (V128 (I32x4 V128Op.ExtMulLowU)) -> simd_op 0xbel
+    | SimdBinary (V128 (I32x4 V128Op.ExtMulHighU)) -> simd_op 0xbfl
+    | SimdBinary (V128 (I64x2 V128Op.Add)) -> simd_op 0xcel
+    | SimdBinary (V128 (I64x2 V128Op.Sub)) -> simd_op 0xd1l
+    | SimdBinary (V128 (I64x2 V128Op.Mul)) -> simd_op 0xd5l
+    | SimdBinary (V128 (I64x2 V128Op.Eq)) -> simd_op 0xd6l
+    | SimdBinary (V128 (I64x2 V128Op.Ne)) -> simd_op 0xd7l
+    | SimdBinary (V128 (I64x2 V128Op.LtS)) -> simd_op 0xd8l
+    | SimdBinary (V128 (I64x2 V128Op.GtS)) -> simd_op 0xd9l
+    | SimdBinary (V128 (I64x2 V128Op.LeS)) -> simd_op 0xdal
+    | SimdBinary (V128 (I64x2 V128Op.GeS)) -> simd_op 0xdbl
+    | SimdBinary (V128 (I64x2 V128Op.ExtMulLowS)) -> simd_op 0xdcl
+    | SimdBinary (V128 (I64x2 V128Op.ExtMulHighS)) -> simd_op 0xddl
+    | SimdBinary (V128 (I64x2 V128Op.ExtMulLowU)) -> simd_op 0xdel
+    | SimdBinary (V128 (I64x2 V128Op.ExtMulHighU)) -> simd_op 0xdfl
+    | SimdBinary (V128 (F32x4 V128Op.Eq)) -> simd_op 0x41l
+    | SimdBinary (V128 (F32x4 V128Op.Ne)) -> simd_op 0x42l
+    | SimdBinary (V128 (F32x4 V128Op.Lt)) -> simd_op 0x43l
+    | SimdBinary (V128 (F32x4 V128Op.Gt)) -> simd_op 0x44l
+    | SimdBinary (V128 (F32x4 V128Op.Le)) -> simd_op 0x45l
+    | SimdBinary (V128 (F32x4 V128Op.Ge)) -> simd_op 0x46l
+    | SimdBinary (V128 (F32x4 V128Op.Add)) -> simd_op 0xe4l
+    | SimdBinary (V128 (F32x4 V128Op.Sub)) -> simd_op 0xe5l
+    | SimdBinary (V128 (F32x4 V128Op.Mul)) -> simd_op 0xe6l
+    | SimdBinary (V128 (F32x4 V128Op.Div)) -> simd_op 0xe7l
+    | SimdBinary (V128 (F32x4 V128Op.Min)) -> simd_op 0xe8l
+    | SimdBinary (V128 (F32x4 V128Op.Max)) -> simd_op 0xe9l
+    | SimdBinary (V128 (F32x4 V128Op.Pmin)) -> simd_op 0xeal
+    | SimdBinary (V128 (F32x4 V128Op.Pmax)) -> simd_op 0xebl
+    | SimdBinary (V128 (F64x2 V128Op.Eq)) -> simd_op 0x47l
+    | SimdBinary (V128 (F64x2 V128Op.Ne)) -> simd_op 0x48l
+    | SimdBinary (V128 (F64x2 V128Op.Lt)) -> simd_op 0x49l
+    | SimdBinary (V128 (F64x2 V128Op.Gt)) -> simd_op 0x4al
+    | SimdBinary (V128 (F64x2 V128Op.Le)) -> simd_op 0x4bl
+    | SimdBinary (V128 (F64x2 V128Op.Ge)) -> simd_op 0x4cl
+    | SimdBinary (V128 (F64x2 V128Op.Add)) -> simd_op 0xf0l
+    | SimdBinary (V128 (F64x2 V128Op.Sub)) -> simd_op 0xf1l
+    | SimdBinary (V128 (F64x2 V128Op.Mul)) -> simd_op 0xf2l
+    | SimdBinary (V128 (F64x2 V128Op.Div)) -> simd_op 0xf3l
+    | SimdBinary (V128 (F64x2 V128Op.Min)) -> simd_op 0xf4l
+    | SimdBinary (V128 (F64x2 V128Op.Max)) -> simd_op 0xf5l
+    | SimdBinary (V128 (F64x2 V128Op.Pmin)) -> simd_op 0xf6l
+    | SimdBinary (V128 (F64x2 V128Op.Pmax)) -> simd_op 0xf7l
     | SimdBinary (V128 _) -> assert false
 
     | SimdTestVec (V128 V128Op.AnyTrue) -> simd_op 0x53l
@@ -643,48 +643,48 @@ struct
     | SimdBinaryVec (V128 V128Op.Xor) -> simd_op 0x51l
     | SimdTernaryVec (V128 V128Op.Bitselect) -> simd_op 0x52l
 
-    | SimdShift (V128 V128Op.(I8x16 Shl)) -> simd_op 0x6bl
-    | SimdShift (V128 V128Op.(I8x16 ShrS)) -> simd_op 0x6cl
-    | SimdShift (V128 V128Op.(I8x16 ShrU)) -> simd_op 0x6dl
-    | SimdShift (V128 V128Op.(I16x8 Shl)) -> simd_op 0x8bl
-    | SimdShift (V128 V128Op.(I16x8 ShrS)) -> simd_op 0x8cl
-    | SimdShift (V128 V128Op.(I16x8 ShrU)) -> simd_op 0x8dl
-    | SimdShift (V128 V128Op.(I32x4 Shl)) -> simd_op 0xabl
-    | SimdShift (V128 V128Op.(I32x4 ShrS)) -> simd_op 0xacl
-    | SimdShift (V128 V128Op.(I32x4 ShrU)) -> simd_op 0xadl
-    | SimdShift (V128 V128Op.(I64x2 Shl)) -> simd_op 0xcbl
-    | SimdShift (V128 V128Op.(I64x2 ShrS)) -> simd_op 0xccl
-    | SimdShift (V128 V128Op.(I64x2 ShrU)) -> simd_op 0xcdl
+    | SimdShift (V128 (I8x16 V128Op.Shl)) -> simd_op 0x6bl
+    | SimdShift (V128 (I8x16 V128Op.ShrS)) -> simd_op 0x6cl
+    | SimdShift (V128 (I8x16 V128Op.ShrU)) -> simd_op 0x6dl
+    | SimdShift (V128 (I16x8 V128Op.Shl)) -> simd_op 0x8bl
+    | SimdShift (V128 (I16x8 V128Op.ShrS)) -> simd_op 0x8cl
+    | SimdShift (V128 (I16x8 V128Op.ShrU)) -> simd_op 0x8dl
+    | SimdShift (V128 (I32x4 V128Op.Shl)) -> simd_op 0xabl
+    | SimdShift (V128 (I32x4 V128Op.ShrS)) -> simd_op 0xacl
+    | SimdShift (V128 (I32x4 V128Op.ShrU)) -> simd_op 0xadl
+    | SimdShift (V128 (I64x2 V128Op.Shl)) -> simd_op 0xcbl
+    | SimdShift (V128 (I64x2 V128Op.ShrS)) -> simd_op 0xccl
+    | SimdShift (V128 (I64x2 V128Op.ShrU)) -> simd_op 0xcdl
     | SimdShift (V128 _) -> .
 
-    | SimdBitmask (V128 V128Op.(I8x16 Bitmask)) -> simd_op 0x64l
-    | SimdBitmask (V128 V128Op.(I16x8 Bitmask)) -> simd_op 0x84l
-    | SimdBitmask (V128 V128Op.(I32x4 Bitmask)) -> simd_op 0xa4l
-    | SimdBitmask (V128 V128Op.(I64x2 Bitmask)) -> simd_op 0xc4l
+    | SimdBitmask (V128 (I8x16 V128Op.Bitmask)) -> simd_op 0x64l
+    | SimdBitmask (V128 (I16x8 V128Op.Bitmask)) -> simd_op 0x84l
+    | SimdBitmask (V128 (I32x4 V128Op.Bitmask)) -> simd_op 0xa4l
+    | SimdBitmask (V128 (I64x2 V128Op.Bitmask)) -> simd_op 0xc4l
     | SimdBitmask (V128 _) -> .
 
-    | SimdSplat (V128 (V128Op.(I8x16 Splat))) -> simd_op 0x0fl
-    | SimdSplat (V128 (V128Op.(I16x8 Splat))) -> simd_op 0x10l
-    | SimdSplat (V128 (V128Op.(I32x4 Splat))) -> simd_op 0x11l
-    | SimdSplat (V128 (V128Op.(I64x2 Splat))) -> simd_op 0x12l
-    | SimdSplat (V128 (V128Op.(F32x4 Splat))) -> simd_op 0x13l
-    | SimdSplat (V128 (V128Op.(F64x2 Splat))) -> simd_op 0x14l
+    | SimdSplat (V128 ((I8x16 V128Op.Splat))) -> simd_op 0x0fl
+    | SimdSplat (V128 ((I16x8 V128Op.Splat))) -> simd_op 0x10l
+    | SimdSplat (V128 ((I32x4 V128Op.Splat))) -> simd_op 0x11l
+    | SimdSplat (V128 ((I64x2 V128Op.Splat))) -> simd_op 0x12l
+    | SimdSplat (V128 ((F32x4 V128Op.Splat))) -> simd_op 0x13l
+    | SimdSplat (V128 ((F64x2 V128Op.Splat))) -> simd_op 0x14l
 
-    | SimdExtract (V128 V128Op.(I8x16 (Extract (i, SX)))) -> simd_op 0x15l; u8 i
-    | SimdExtract (V128 V128Op.(I8x16 (Extract (i, ZX)))) -> simd_op 0x16l; u8 i
-    | SimdExtract (V128 V128Op.(I16x8 (Extract (i, SX)))) -> simd_op 0x18l; u8 i
-    | SimdExtract (V128 V128Op.(I16x8 (Extract (i, ZX)))) -> simd_op 0x19l; u8 i
-    | SimdExtract (V128 V128Op.(I32x4 (Extract (i, ())))) -> simd_op 0x1bl; u8 i
-    | SimdExtract (V128 V128Op.(I64x2 (Extract (i, ())))) -> simd_op 0x1dl; u8 i
-    | SimdExtract (V128 V128Op.(F32x4 (Extract (i, ())))) -> simd_op 0x1fl; u8 i
-    | SimdExtract (V128 V128Op.(F64x2 (Extract (i, ())))) -> simd_op 0x21l; u8 i
+    | SimdExtract (V128 (I8x16 (V128Op.Extract (i, SX)))) -> simd_op 0x15l; u8 i
+    | SimdExtract (V128 (I8x16 (V128Op.Extract (i, ZX)))) -> simd_op 0x16l; u8 i
+    | SimdExtract (V128 (I16x8 (V128Op.Extract (i, SX)))) -> simd_op 0x18l; u8 i
+    | SimdExtract (V128 (I16x8 (V128Op.Extract (i, ZX)))) -> simd_op 0x19l; u8 i
+    | SimdExtract (V128 (I32x4 (V128Op.Extract (i, ())))) -> simd_op 0x1bl; u8 i
+    | SimdExtract (V128 (I64x2 (V128Op.Extract (i, ())))) -> simd_op 0x1dl; u8 i
+    | SimdExtract (V128 (F32x4 (V128Op.Extract (i, ())))) -> simd_op 0x1fl; u8 i
+    | SimdExtract (V128 (F64x2 (V128Op.Extract (i, ())))) -> simd_op 0x21l; u8 i
 
-    | SimdReplace (V128 V128Op.(I8x16 (Replace i))) -> simd_op 0x17l; u8 i
-    | SimdReplace (V128 V128Op.(I16x8 (Replace i))) -> simd_op 0x1al; u8 i
-    | SimdReplace (V128 V128Op.(I32x4 (Replace i))) -> simd_op 0x1cl; u8 i
-    | SimdReplace (V128 V128Op.(I64x2 (Replace i))) -> simd_op 0x1el; u8 i
-    | SimdReplace (V128 V128Op.(F32x4 (Replace i))) -> simd_op 0x20l; u8 i
-    | SimdReplace (V128 V128Op.(F64x2 (Replace i))) -> simd_op 0x22l; u8 i
+    | SimdReplace (V128 (I8x16 (V128Op.Replace i))) -> simd_op 0x17l; u8 i
+    | SimdReplace (V128 (I16x8 (V128Op.Replace i))) -> simd_op 0x1al; u8 i
+    | SimdReplace (V128 (I32x4 (V128Op.Replace i))) -> simd_op 0x1cl; u8 i
+    | SimdReplace (V128 (I64x2 (V128Op.Replace i))) -> simd_op 0x1el; u8 i
+    | SimdReplace (V128 (F32x4 (V128Op.Replace i))) -> simd_op 0x20l; u8 i
+    | SimdReplace (V128 (F64x2 (V128Op.Replace i))) -> simd_op 0x22l; u8 i
 
   let const c =
     list instr c.it; end_ ()

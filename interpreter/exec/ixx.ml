@@ -1,3 +1,7 @@
+exception Overflow
+exception DivideByZero
+exception InvalidConversion
+
 module type RepType =
 sig
   type t
@@ -13,8 +17,8 @@ sig
   val add : t -> t -> t
   val sub : t -> t -> t
   val mul : t -> t -> t
-  val div : t -> t -> t (* raises Division_by_zero *)
-  val rem : t -> t -> t (* raises Division_by_zero *)
+  val div : t -> t -> t (* raises DivideByZero *)
+  val rem : t -> t -> t (* raises DivideByZero *)
 
   val logand : t -> t -> t
   val lognot : t -> t
@@ -121,7 +125,7 @@ struct
    * "Unsigned Short Division from Signed Division".
    *)
   let divrem_u n d =
-    if d = Rep.zero then raise Numeric_error.IntegerDivideByZero else
+    if d = Rep.zero then raise DivideByZero else
     let t = Rep.shift_right d (Rep.bitwidth - 1) in
     let n' = Rep.logand n (Rep.lognot t) in
     let q = Rep.shift_left (Rep.div (Rep.shift_right_logical n' 1) d) 1 in
@@ -153,9 +157,9 @@ struct
   (* result is truncated toward zero *)
   let div_s x y =
     if y = Rep.zero then
-      raise Numeric_error.IntegerDivideByZero
+      raise DivideByZero
     else if x = Rep.min_int && y = Rep.minus_one then
-      raise Numeric_error.IntegerOverflow
+      raise Overflow
     else
       Rep.div x y
 
@@ -166,7 +170,7 @@ struct
   (* result has the sign of the dividend *)
   let rem_s x y =
     if y = Rep.zero then
-      raise Numeric_error.IntegerDivideByZero
+      raise DivideByZero
     else
       Rep.rem x y
 
@@ -300,7 +304,7 @@ struct
     saturate_s (Rep.of_int64 Int64.((shift_right (add (mul x64 y64) 0x4000L) 15)))
 
   let to_int_s = Rep.to_int
-  let to_int_u i = Rep.to_int i land (Rep.to_int Rep.max_int lsl 1) lor 1
+  let to_int_u i = Rep.to_int i land ((Rep.to_int Rep.max_int lsl 1) lor 1)
 
   let of_int_s = Rep.of_int
   let of_int_u i = and_ (Rep.of_int i) (or_ (shl (Rep.of_int max_int) one) one)
@@ -371,7 +375,9 @@ struct
         Rep.neg n
       | _ -> parse_int 0
     in
-    sign_extend parsed
+    let n = sign_extend parsed in
+    require (low_int <= n && n <= high_int);
+    n
 
   let of_string_s s =
     let n = of_string s in

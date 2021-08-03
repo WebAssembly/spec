@@ -3,7 +3,7 @@
  * using 64-bit floats, as described in the paper
  * "When is double rounding innocuous?" by Samuel A. Figueroa.
  *)
-include Float.Make
+include Fxx.Make
   (struct
     include Int32
     let mantissa = 23

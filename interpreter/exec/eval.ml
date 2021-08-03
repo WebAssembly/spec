@@ -32,9 +32,9 @@ let memory_error at = function
   | exn -> raise exn
 
 let numeric_error at = function
-  | Numeric_error.IntegerOverflow -> "integer overflow"
-  | Numeric_error.IntegerDivideByZero -> "integer divide by zero"
-  | Numeric_error.InvalidConversionToInteger -> "invalid conversion to integer"
+  | Ixx.Overflow -> "integer overflow"
+  | Ixx.DivideByZero -> "integer divide by zero"
+  | Ixx.InvalidConversion -> "invalid conversion to integer"
   | Values.TypeError (i, v, t) ->
     Crash.error at
       ("type error, expected " ^ Types.string_of_num_type t ^ " as operand " ^
@@ -502,23 +502,23 @@ let rec step (c : config) : config =
         Num n.it :: vs, []
 
       | Test testop, Num n :: vs' ->
-        (try value_of_bool (Eval_numeric.eval_testop testop n) :: vs', []
+        (try value_of_bool (Eval_num.eval_testop testop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | Compare relop, Num n2 :: Num n1 :: vs' ->
-        (try value_of_bool (Eval_numeric.eval_relop relop n1 n2) :: vs', []
+        (try value_of_bool (Eval_num.eval_relop relop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | Unary unop, Num n :: vs' ->
-        (try Num (Eval_numeric.eval_unop unop n) :: vs', []
+        (try Num (Eval_num.eval_unop unop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | Binary binop, Num n2 :: Num n1 :: vs' ->
-        (try Num (Eval_numeric.eval_binop binop n1 n2) :: vs', []
+        (try Num (Eval_num.eval_binop binop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | Convert cvtop, Num n :: vs' ->
-        (try Num (Eval_numeric.eval_cvtop cvtop n) :: vs', []
+        (try Num (Eval_num.eval_cvtop cvtop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | SimdConst v, vs ->

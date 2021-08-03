@@ -78,7 +78,7 @@ let numop t i32 i64 f32 f64 =
   | "f64" -> f64
   | _ -> assert false
 
-let simdop s i8x16 i16x8 i32x4 i64x2 f32x4 f64x2 =
+let v128op s i8x16 i16x8 i32x4 i64x2 f32x4 f64x2 =
   match s with
   | "i8x16" -> i8x16
   | "i16x8" -> i16x8
@@ -88,7 +88,7 @@ let simdop s i8x16 i16x8 i32x4 i64x2 f32x4 f64x2 =
   | "f64x2" -> f64x2
   | _ -> assert false
 
-let simd_int_op s i8x16 i16x8 i32x4 i64x2 =
+let v128intop s i8x16 i16x8 i32x4 i64x2 =
   match s with
   | "i8x16" -> i8x16
   | "i16x8" -> i16x8
@@ -96,7 +96,7 @@ let simd_int_op s i8x16 i16x8 i32x4 i64x2 =
   | "i64x2" -> i64x2
   | _ -> assert false
 
-let simd_float_op s f32x4 f64x2 =
+let v128floatop s f32x4 f64x2 =
   match s with
   | "f32x4" -> f32x4
   | "f64x2" -> f64x2
@@ -117,13 +117,13 @@ let ext e s u =
 
 let opt = Lib.Option.get
 
-let simd_shape = function
-  | "i8x16" -> Simd.I8x16 ()
-  | "i16x8" -> Simd.I16x8 ()
-  | "i32x4" -> Simd.I32x4 ()
-  | "i64x2" -> Simd.I64x2 ()
-  | "f32x4" -> Simd.F32x4 ()
-  | "f64x2" -> Simd.F64x2 ()
+let v128_shape = function
+  | "i8x16" -> V128.I8x16 ()
+  | "i16x8" -> V128.I16x8 ()
+  | "i32x4" -> V128.I32x4 ()
+  | "i64x2" -> V128.I64x2 ()
+  | "f32x4" -> V128.F32x4 ()
+  | "f64x2" -> V128.F64x2 ()
   | _ -> assert false
 
 let only shapes s lexbuf =
@@ -192,9 +192,9 @@ let mixx = "i" ("8" | "16" | "32" | "64")
 let mfxx = "f" ("32" | "64")
 let sign = "s" | "u"
 let mem_size = "8" | "16" | "32"
-let simd_int_shape = "i8x16" | "i16x8" | "i32x4" | "i64x2"
-let simd_float_shape = "f32x4" | "f64x2"
-let simd_shape = simd_int_shape | simd_float_shape
+let v128_int_shape = "i8x16" | "i16x8" | "i32x4" | "i64x2"
+let v128_float_shape = "f32x4" | "f64x2"
+let v128_shape = v128_int_shape | v128_float_shape
 
 rule token = parse
   | "(" { LPAR }
@@ -218,7 +218,7 @@ rule token = parse
   | vxxx as t { SIMD_TYPE (simd_type t) }
   | "mut" { MUT }
 
-  | simd_shape as s { SIMD_SHAPE (simd_shape s) }
+  | v128_shape as s { SIMD_SHAPE (v128_shape s) }
 
   | (nxx as t)".const"
     { let open Source in
@@ -491,26 +491,26 @@ rule token = parse
   | vxxx".bitselect" { SIMD_TERNARY v128_bitselect }
   | vxxx".any_true" { SIMD_TEST (v128_any_true) }
 
-  | (simd_shape as s)".neg"
+  | (v128_shape as s)".neg"
     { SIMD_UNARY
-        (simdop s i8x16_neg i16x8_neg i32x4_neg i64x2_neg f32x4_neg f64x2_neg) }
-  | (simd_float_shape as s)".sqrt"
-    { SIMD_UNARY (simd_float_op s f32x4_sqrt f64x2_sqrt) }
-  | (simd_float_shape as s)".ceil"
-    { SIMD_UNARY (simd_float_op s f32x4_ceil f64x2_ceil) }
-  | (simd_float_shape as s)".floor"
-    { SIMD_UNARY (simd_float_op s f32x4_floor f64x2_floor) }
-  | (simd_float_shape as s)".trunc"
-    { SIMD_UNARY (simd_float_op s f32x4_trunc f64x2_trunc) }
-  | (simd_float_shape as s)".nearest"
-    { SIMD_UNARY (simd_float_op s f32x4_nearest f64x2_nearest) }
-  | (simd_shape as s)".abs"
+        (v128op s i8x16_neg i16x8_neg i32x4_neg i64x2_neg f32x4_neg f64x2_neg) }
+  | (v128_float_shape as s)".sqrt"
+    { SIMD_UNARY (v128floatop s f32x4_sqrt f64x2_sqrt) }
+  | (v128_float_shape as s)".ceil"
+    { SIMD_UNARY (v128floatop s f32x4_ceil f64x2_ceil) }
+  | (v128_float_shape as s)".floor"
+    { SIMD_UNARY (v128floatop s f32x4_floor f64x2_floor) }
+  | (v128_float_shape as s)".trunc"
+    { SIMD_UNARY (v128floatop s f32x4_trunc f64x2_trunc) }
+  | (v128_float_shape as s)".nearest"
+    { SIMD_UNARY (v128floatop s f32x4_nearest f64x2_nearest) }
+  | (v128_shape as s)".abs"
     { SIMD_UNARY
-        (simdop s i8x16_abs i16x8_abs i32x4_abs i64x2_abs f32x4_abs f64x2_abs) }
+        (v128op s i8x16_abs i16x8_abs i32x4_abs i64x2_abs f32x4_abs f64x2_abs) }
   | "i8x16.popcnt" { SIMD_UNARY i8x16_popcnt }
-  | (simd_int_shape as s)".avgr_u"
+  | (v128_int_shape as s)".avgr_u"
     { only ["i8x16"; "i16x8"] s lexbuf;
-      SIMD_UNARY (simd_int_op s i8x16_avgr_u i16x8_avgr_u unreachable unreachable) }
+      SIMD_UNARY (v128intop s i8x16_avgr_u i16x8_avgr_u unreachable unreachable) }
   | "i32x4.trunc_sat_f32x4_"(sign as s)
     { SIMD_UNARY (ext s i32x4_trunc_sat_f32x4_s i32x4_trunc_sat_f32x4_u) }
   | "i32x4.trunc_sat_f64x2_"(sign as s)"_zero"
@@ -528,76 +528,76 @@ rule token = parse
   | "i32x4.extadd_pairwise_i16x8_"(sign as s)
     { SIMD_UNARY (ext s i32x4_extadd_pairwise_i16x8_s i32x4_extadd_pairwise_i16x8_u) }
 
-  | (simd_shape as s)".eq"
-    { SIMD_BINARY (simdop s i8x16_eq i16x8_eq i32x4_eq i64x2_eq f32x4_eq f64x2_eq) }
-  | (simd_shape as s)".ne"
-    { SIMD_BINARY (simdop s i8x16_ne i16x8_ne i32x4_ne i64x2_ne f32x4_ne f64x2_ne) }
-  | (simd_int_shape as s)".lt_s"
-    { SIMD_BINARY (simd_int_op s i8x16_lt_s i16x8_lt_s i32x4_lt_s i64x2_lt_s) }
-  | (simd_int_shape as s)".lt_u"
+  | (v128_shape as s)".eq"
+    { SIMD_BINARY (v128op s i8x16_eq i16x8_eq i32x4_eq i64x2_eq f32x4_eq f64x2_eq) }
+  | (v128_shape as s)".ne"
+    { SIMD_BINARY (v128op s i8x16_ne i16x8_ne i32x4_ne i64x2_ne f32x4_ne f64x2_ne) }
+  | (v128_int_shape as s)".lt_s"
+    { SIMD_BINARY (v128intop s i8x16_lt_s i16x8_lt_s i32x4_lt_s i64x2_lt_s) }
+  | (v128_int_shape as s)".lt_u"
     { except ["i64x2"] s lexbuf;
-      SIMD_BINARY (simd_int_op s i8x16_lt_u i16x8_lt_u i32x4_lt_u unreachable) }
-  | (simd_int_shape as s)".le_s"
-    { SIMD_BINARY (simd_int_op s i8x16_le_s i16x8_le_s i32x4_le_s i64x2_le_s) }
-  | (simd_int_shape as s)".le_u"
+      SIMD_BINARY (v128intop s i8x16_lt_u i16x8_lt_u i32x4_lt_u unreachable) }
+  | (v128_int_shape as s)".le_s"
+    { SIMD_BINARY (v128intop s i8x16_le_s i16x8_le_s i32x4_le_s i64x2_le_s) }
+  | (v128_int_shape as s)".le_u"
     { except ["i64x2"] s lexbuf;
-      SIMD_BINARY (simd_int_op s i8x16_le_u i16x8_le_u i32x4_le_u unreachable) }
-  | (simd_int_shape as s)".gt_s"
-    { SIMD_BINARY (simd_int_op s i8x16_gt_s i16x8_gt_s i32x4_gt_s i64x2_gt_s) }
-  | (simd_int_shape as s)".gt_u"
+      SIMD_BINARY (v128intop s i8x16_le_u i16x8_le_u i32x4_le_u unreachable) }
+  | (v128_int_shape as s)".gt_s"
+    { SIMD_BINARY (v128intop s i8x16_gt_s i16x8_gt_s i32x4_gt_s i64x2_gt_s) }
+  | (v128_int_shape as s)".gt_u"
     { except ["i64x2"] s lexbuf;
-      SIMD_BINARY (simd_int_op s i8x16_gt_u i16x8_gt_u i32x4_gt_u unreachable) }
-  | (simd_int_shape as s)".ge_s"
-    { SIMD_BINARY (simd_int_op s i8x16_ge_s i16x8_ge_s i32x4_ge_s i64x2_ge_s) }
-  | (simd_int_shape as s)".ge_u"
+      SIMD_BINARY (v128intop s i8x16_gt_u i16x8_gt_u i32x4_gt_u unreachable) }
+  | (v128_int_shape as s)".ge_s"
+    { SIMD_BINARY (v128intop s i8x16_ge_s i16x8_ge_s i32x4_ge_s i64x2_ge_s) }
+  | (v128_int_shape as s)".ge_u"
     { except ["i64x2"] s lexbuf;
-      SIMD_BINARY (simd_int_op s i8x16_ge_u i16x8_ge_u i32x4_ge_u unreachable) }
-  | (simd_float_shape as s)".lt" { SIMD_BINARY (simd_float_op s f32x4_lt f64x2_lt) }
-  | (simd_float_shape as s)".le" { SIMD_BINARY (simd_float_op s f32x4_le f64x2_le) }
-  | (simd_float_shape as s)".gt" { SIMD_BINARY (simd_float_op s f32x4_gt f64x2_gt) }
-  | (simd_float_shape as s)".ge" { SIMD_BINARY (simd_float_op s f32x4_ge f64x2_ge) }
+      SIMD_BINARY (v128intop s i8x16_ge_u i16x8_ge_u i32x4_ge_u unreachable) }
+  | (v128_float_shape as s)".lt" { SIMD_BINARY (v128floatop s f32x4_lt f64x2_lt) }
+  | (v128_float_shape as s)".le" { SIMD_BINARY (v128floatop s f32x4_le f64x2_le) }
+  | (v128_float_shape as s)".gt" { SIMD_BINARY (v128floatop s f32x4_gt f64x2_gt) }
+  | (v128_float_shape as s)".ge" { SIMD_BINARY (v128floatop s f32x4_ge f64x2_ge) }
   | "i8x16.swizzle" { SIMD_BINARY i8x16_swizzle }
 
-  | (simd_shape as s)".add"
+  | (v128_shape as s)".add"
     { SIMD_BINARY
-        (simdop s i8x16_add i16x8_add i32x4_add i64x2_add f32x4_add f64x2_add) }
-  | (simd_shape as s)".sub"
+        (v128op s i8x16_add i16x8_add i32x4_add i64x2_add f32x4_add f64x2_add) }
+  | (v128_shape as s)".sub"
     { SIMD_BINARY
-        (simdop s i8x16_sub i16x8_sub i32x4_sub i64x2_sub f32x4_sub f64x2_sub) }
-  | (simd_shape as s)".min_s"
+        (v128op s i8x16_sub i16x8_sub i32x4_sub i64x2_sub f32x4_sub f64x2_sub) }
+  | (v128_shape as s)".min_s"
     { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
       SIMD_BINARY
-        (simdop s i8x16_min_s i16x8_min_s i32x4_min_s unreachable
+        (v128op s i8x16_min_s i16x8_min_s i32x4_min_s unreachable
                   unreachable unreachable) }
-  | (simd_shape as s)".min_u"
+  | (v128_shape as s)".min_u"
     { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
       SIMD_BINARY
-        (simdop s i8x16_min_u i16x8_min_u i32x4_min_u unreachable
+        (v128op s i8x16_min_u i16x8_min_u i32x4_min_u unreachable
                   unreachable unreachable) }
-  | (simd_shape as s)".max_s"
+  | (v128_shape as s)".max_s"
     { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
       SIMD_BINARY
-        (simdop s i8x16_max_s i16x8_max_s i32x4_max_s unreachable
+        (v128op s i8x16_max_s i16x8_max_s i32x4_max_s unreachable
                   unreachable unreachable) }
-  | (simd_shape as s)".max_u"
+  | (v128_shape as s)".max_u"
     { only ["i8x16"; "i16x8"; "i32x4"] s lexbuf;
       SIMD_BINARY
-        (simdop s i8x16_max_u i16x8_max_u i32x4_max_u unreachable
+        (v128op s i8x16_max_u i16x8_max_u i32x4_max_u unreachable
                   unreachable unreachable) }
-  | (simd_shape as s)".mul"
+  | (v128_shape as s)".mul"
     { only ["i16x8"; "i32x4"; "i64x2"; "f32x4"; "f64x2"] s lexbuf;
       SIMD_BINARY
-        (simdop s unreachable i16x8_mul i32x4_mul i64x2_mul f32x4_mul f64x2_mul) }
-  | (simd_float_shape as s)".div"
-    { SIMD_BINARY (simd_float_op s f32x4_div f64x2_div) }
-  | (simd_float_shape as s)".min"
-    { SIMD_BINARY (simd_float_op s f32x4_min f64x2_min) }
-  | (simd_float_shape as s)".max"
-    { SIMD_BINARY (simd_float_op s f32x4_max f64x2_max) }
-  | (simd_float_shape as s)".pmin"
-    { SIMD_BINARY (simd_float_op s f32x4_pmin f64x2_pmin) }
-  | (simd_float_shape as s)".pmax"
-    { SIMD_BINARY (simd_float_op s f32x4_pmax f64x2_pmax) }
+        (v128op s unreachable i16x8_mul i32x4_mul i64x2_mul f32x4_mul f64x2_mul) }
+  | (v128_float_shape as s)".div"
+    { SIMD_BINARY (v128floatop s f32x4_div f64x2_div) }
+  | (v128_float_shape as s)".min"
+    { SIMD_BINARY (v128floatop s f32x4_min f64x2_min) }
+  | (v128_float_shape as s)".max"
+    { SIMD_BINARY (v128floatop s f32x4_max f64x2_max) }
+  | (v128_float_shape as s)".pmin"
+    { SIMD_BINARY (v128floatop s f32x4_pmin f64x2_pmin) }
+  | (v128_float_shape as s)".pmax"
+    { SIMD_BINARY (v128floatop s f32x4_pmax f64x2_pmax) }
   | "i8x16.add_sat_"(sign as s)
     { SIMD_BINARY (ext s i8x16_add_sat_s i8x16_add_sat_u) }
   | "i8x16.sub_sat_"(sign as s)
@@ -639,27 +639,27 @@ rule token = parse
   | "i16x8.q15mulr_sat_s"
     { SIMD_BINARY i16x8_q15mulr_sat_s }
 
-  | (simd_int_shape as s)".all_true"
+  | (v128_int_shape as s)".all_true"
     { SIMD_TEST
-        (simd_int_op s i8x16_all_true i16x8_all_true i32x4_all_true i64x2_all_true) }
-  | (simd_int_shape as s)".bitmask"
+        (v128intop s i8x16_all_true i16x8_all_true i32x4_all_true i64x2_all_true) }
+  | (v128_int_shape as s)".bitmask"
     { SIMD_BITMASK
-        (simd_int_op s i8x16_bitmask i16x8_bitmask i32x4_bitmask i64x2_bitmask) }
-  | (simd_int_shape as s)".shl"
-    { SIMD_SHIFT (simd_int_op s i8x16_shl i16x8_shl i32x4_shl i64x2_shl) }
-  | (simd_int_shape as s)".shr_s"
-    { SIMD_SHIFT (simd_int_op s i8x16_shr_s i16x8_shr_s i32x4_shr_s i64x2_shr_s) }
-  | (simd_int_shape as s)".shr_u"
-    { SIMD_SHIFT (simd_int_op s i8x16_shr_u i16x8_shr_u i32x4_shr_u i64x2_shr_u) }
+        (v128intop s i8x16_bitmask i16x8_bitmask i32x4_bitmask i64x2_bitmask) }
+  | (v128_int_shape as s)".shl"
+    { SIMD_SHIFT (v128intop s i8x16_shl i16x8_shl i32x4_shl i64x2_shl) }
+  | (v128_int_shape as s)".shr_s"
+    { SIMD_SHIFT (v128intop s i8x16_shr_s i16x8_shr_s i32x4_shr_s i64x2_shr_s) }
+  | (v128_int_shape as s)".shr_u"
+    { SIMD_SHIFT (v128intop s i8x16_shr_u i16x8_shr_u i32x4_shr_u i64x2_shr_u) }
   | "i8x16.shuffle" { SIMD_SHUFFLE }
 
-  | (simd_shape as s)".splat"
-    { SIMD_SPLAT (simdop s i8x16_splat i16x8_splat i32x4_splat
+  | (v128_shape as s)".splat"
+    { SIMD_SPLAT (v128op s i8x16_splat i16x8_splat i32x4_splat
                            i64x2_splat f32x4_splat f64x2_splat) }
-  | (simd_shape as s)".extract_lane"
+  | (v128_shape as s)".extract_lane"
     { except ["i8x16"; "i16x8"] s lexbuf;
       SIMD_EXTRACT (fun i ->
-        simdop s
+        v128op s
           (fun _ -> unreachable) (fun _ -> unreachable)
           i32x4_extract_lane i64x2_extract_lane
           f32x4_extract_lane f64x2_extract_lane i) }
@@ -668,9 +668,9 @@ rule token = parse
         if t = "i8x16"
         then ext s i8x16_extract_lane_s i8x16_extract_lane_u i
         else ext s i16x8_extract_lane_s i16x8_extract_lane_u i )}
-  | (simd_shape as s)".replace_lane"
+  | (v128_shape as s)".replace_lane"
     { SIMD_REPLACE
-        (simdop s i8x16_replace_lane i16x8_replace_lane i32x4_replace_lane
+        (v128op s i8x16_replace_lane i16x8_replace_lane i32x4_replace_lane
                   i64x2_replace_lane f32x4_replace_lane f64x2_replace_lane) }
 
   | name as s { VAR s }
