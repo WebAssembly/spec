@@ -1,3 +1,7 @@
+exception Overflow
+exception DivideByZero
+exception InvalidConversion
+
 module type RepType =
 sig
   type t
@@ -13,8 +17,8 @@ sig
   val add : t -> t -> t
   val sub : t -> t -> t
   val mul : t -> t -> t
-  val div : t -> t -> t (* raises Division_by_zero *)
-  val rem : t -> t -> t (* raises Division_by_zero *)
+  val div : t -> t -> t (* raises DivideByZero *)
+  val rem : t -> t -> t (* raises DivideByZero *)
 
   val logand : t -> t -> t
   val lognot : t -> t
@@ -121,7 +125,7 @@ struct
    * "Unsigned Short Division from Signed Division".
    *)
   let divrem_u n d =
-    if d = Rep.zero then raise Numeric_error.IntegerDivideByZero else
+    if d = Rep.zero then raise DivideByZero else
     let t = Rep.shift_right d (Rep.bitwidth - 1) in
     let n' = Rep.logand n (Rep.lognot t) in
     let q = Rep.shift_left (Rep.div (Rep.shift_right_logical n' 1) d) 1 in
@@ -153,9 +157,9 @@ struct
   (* result is truncated toward zero *)
   let div_s x y =
     if y = Rep.zero then
-      raise Numeric_error.IntegerDivideByZero
+      raise DivideByZero
     else if x = Rep.min_int && y = Rep.minus_one then
-      raise Numeric_error.IntegerOverflow
+      raise Overflow
     else
       Rep.div x y
 
@@ -166,7 +170,7 @@ struct
   (* result has the sign of the dividend *)
   let rem_s x y =
     if y = Rep.zero then
-      raise Numeric_error.IntegerDivideByZero
+      raise DivideByZero
     else
       Rep.rem x y
 

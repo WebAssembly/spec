@@ -241,13 +241,14 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
 
   | Select None ->
     let t = peek 1 s in
-    require (match t with None -> true | Some t -> is_num_type t) e.at
-      ("type mismatch: instruction requires numeric type" ^
+    require (match t with None -> true | Some t -> is_num_type t || is_simd_type t) e.at
+      ("type mismatch: instruction requires numeric or SIMD type" ^
        " but stack has " ^ string_of_infer_type t);
     [t; t; Some (NumType I32Type)] -~> [t]
 
   | Select (Some ts) ->
-    require (List.length ts = 1) e.at "invalid result arity other than 1 is not (yet) allowed";
+    require (List.length ts = 1) e.at
+      "invalid result arity other than 1 is not (yet) allowed";
     (ts @ ts @ [NumType I32Type]) --> ts
 
   | Block (bt, es) ->
