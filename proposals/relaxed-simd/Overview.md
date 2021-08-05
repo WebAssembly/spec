@@ -207,7 +207,25 @@ def blend(a : v128, b : v128, m: v128, lanes : int):
 
 ## Binary format
 
-> This is a placeholder for binary format of instructions and new constructs.
+All opcodes have the `0xfd` prefix (same as SIMD proposal), which are omitted in the table below.
+
+| instruction                        | opcode   |
+| ---------------------------------- | -------- |
+| `relaxed i8x16.swizzle`            | 0xa2     |
+| `relaxed i32x4.trunc_f32x4_s`      | 0xa5     |
+| `relaxed i32x4.trunc_f32x4_u`      | 0xa6     |
+| `relaxed i32x4.trunc_f64x2_s_zero` | 0xc5     |
+| `relaxed i32x4.trunc_f64x2_u_zero` | 0xc6     |
+| `f32x4.fma`                        | 0xaf     |
+| `f32x4.fms`                        | 0xb0     |
+| `f64x2.fma`                        | 0xcf     |
+| `f64x2.fms`                        | 0xd0     |
+| `i8x16.blend`                      | 0xb2     |
+| `i16x8.blend`                      | 0xb3     |
+| `i32x4.blend`                      | 0xd2     |
+| `i64x2.blend`                      | 0xd3     |
+
+Note: the opcodes are chosen to fit into the existing opcode space of the SIMD proposal, see [Binary encoding of SIMD](https://github.com/WebAssembly/simd/blob/main/proposals/simd/BinarySIMD.md), or a [table view of the same opcodes](https://github.com/WebAssembly/simd/blob/main/proposals/simd/NewOpcodes.md) for a list of existing opcodes.
 
 ## References
 
