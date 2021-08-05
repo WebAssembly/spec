@@ -25,7 +25,22 @@ Number Types
      \hex{7F} &\Rightarrow& \I32 \\ &&|&
      \hex{7E} &\Rightarrow& \I64 \\ &&|&
      \hex{7D} &\Rightarrow& \F32 \\ &&|&
-     \hex{7C} &\Rightarrow& \F64 \\ &&|&
+     \hex{7C} &\Rightarrow& \F64 \\
+   \end{array}
+
+
+.. index:: SIMD type
+   pair: binary format; SIMD type
+.. _binary-simdtype:
+
+SIMD Types
+~~~~~~~~~~
+
+:ref:`SIMD types <syntax-simdtype>` are also encoded by a single byte.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{SIMD type} & \Bsimdtype &::=&
      \hex{7B} &\Rightarrow& \V128 \\
    \end{array}
 

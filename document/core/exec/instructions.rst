@@ -253,9 +253,9 @@ Reference Instructions
 .. _exec-instr-simd:
 
 SIMD Instructions
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
-SIMD instructions are defined in terms of generic numeric operators applied lane-wise based on the :ref:`shape <syntax-simd-shape>`.
+Most SIMD instructions are defined in terms of generic numeric operators applied lane-wise based on the :ref:`shape <syntax-simd-shape>`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
@@ -349,12 +349,13 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
 
 
+.. _exec-vstestop:
 .. _exec-simd-any_true:
 
 :math:`\V128\K{.}\ANYTRUE`
-...........................
+..........................
 
-1. Assert: due to :ref:`validation <valid-vitestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vstestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
@@ -647,13 +648,13 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
 
 
-.. _exec-vitestop:
+.. _exec-vtestop:
 .. _exec-simd-all_true:
 
 :math:`\shape\K{.}\ALLTRUE`
 ...........................
 
-1. Assert: due to :ref:`validation <valid-vitestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vtestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
@@ -682,7 +683,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 :math:`t\K{x}N\K{.}\BITMASK`
 ............................
 
-1. Assert: due to :ref:`validation <valid-vitestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-simd-bitmask>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
@@ -711,7 +712,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 
 1. Assert: due to :ref:`syntax <syntax-instr-simd>`, :math:`N = 2\cdot M`.
 
-2. Assert: due to :ref:`validation <valid-vitestop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+2. Assert: due to :ref:`validation <valid-simd-narrow>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 3. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
@@ -766,8 +767,8 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
 
 
-:math:`t_2\K{x}N\K{.}\vcvtop\K{\_low\_}t_1\K{x}M\K{\_}\sx^?` and :math:`t_2\K{x}N\K{.}\vcvtop\K{\_high\_}t_1\K{x}M\K{\_}\sx^?`
-..............................................................................................................................
+:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}\side\K{\_}t_1\K{x}M\K{\_}\sx^?`
+..................................................................
 
 1. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
@@ -786,23 +787,19 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 6. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
-   \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_low\_}t_1\K{x}M\K{\_}\sx^? &\stepto& (\V128\K{.}\VCONST~c) \\
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}\side\K{\_}t_1\K{x}M\K{\_}\sx^? &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[0 \slice N]))
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[\side(0, N) \slice N]))
      \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_high\_}t_1\K{x}M\K{\_}\sx^? &\stepto& (\V128\K{.}\VCONST~c) \\
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[N \slice N]))
-     \end{array}
-   \end{array}
+
+where:
+
+.. math::
+    \K{low}(x, y) = x
+    \K{high}(x, y) = y
 
 
 :math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx^?\K{\_zero}`
@@ -835,7 +832,7 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 :math:`\K{i32x4.}\DOT\K{\_i16x8\_s}`
 ....................................
 
-1. Assert: due to :ref:`validation <valid-vitestop>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-simd-dot>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
@@ -863,18 +860,18 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
    \end{array}
 
 
-.. _exec-simd-vextmul:
+.. _exec-simd-extmul:
 
-:math:`t_2\K{x}N\K{.}\EXTMUL\_\K{low}\_t_1\K{x}M\_\sx` and :math:`t_2\K{x}N\K{.}\EXTMUL\_\K{high}\_t_1\K{x}M\_\sx`
-..................................................................................................................
+:math:`t_2\K{x}N\K{.}\EXTMUL\K{\_}\side\K{\_}t_1\K{x}M\K{\_}\sx`
+................................................................
 
-1. Assert: due to :ref:`validation <valid-vitestop>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-simd-extmul>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. If :math:`\K{low}` is part of the instruction, then:
+4. If :math:`\side` is :math:`\K{low}`, then:
 
    a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[0 \slice N]`.
 
@@ -891,35 +888,29 @@ SIMD instructions are defined in terms of generic numeric operators applied lane
 8. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
-   \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\EXTMUL\_\K{low}\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\EXTMUL\K{\_}\side\K{\_}t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[0 \slice N] \\
-     \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[0 \slice N] \\
+     (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[\side(0, N) \slice N] \\
+     \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[\side(0, N) \slice N] \\
      \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))
      \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\EXTMUL\_\K{high}\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[N \slice N] \\
-     \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[N \slice N] \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))
-     \end{array}
-   \end{array}
+
+where:
+
+.. math::
+    \K{low}(x, y) = x
+    \K{high}(x, y) = y
 
 
-.. _exec-simd-extaddpairwise:
+.. _exec-simd-extadd_pairwise:
 
 :math:`t_2\K{x}N\K{.}\EXTADDPAIRWISE\_t_1\K{x}M\_\sx`
 .....................................................
 
-1. Assert: due to :ref:`validation <valid-vitestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-simd-extadd_pairwise>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 

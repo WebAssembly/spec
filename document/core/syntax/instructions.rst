@@ -171,34 +171,11 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
-.. index:: ! reference instruction, reference, null
-   pair: abstract syntax; instruction
-.. _syntax-ref.null:
-.. _syntax-ref.is_null:
-.. _syntax-ref.func:
-.. _syntax-instr-ref:
-
-Reference Instructions
-~~~~~~~~~~~~~~~~~~~~~~
-
-Instructions in this group are concerned with accessing :ref:`references <syntax-reftype>`.
-
-.. math::
-   \begin{array}{llcl}
-   \production{instruction} & \instr &::=&
-     \dots \\&&|&
-     \REFNULL~\reftype \\&&|&
-     \REFISNULL \\&&|&
-     \REFFUNC~\funcidx \\
-   \end{array}
-
-These instruction produce a null value, check for a null value, or produce a reference to a given function, respectively.
-
-
-.. index:: ! simd instruction, fixed-width simd, value, value type
+.. index:: ! SIMD instruction, fixed-width SIMD, number, value, value type
    pair: abstract syntax; instruction
 .. _syntax-laneidx:
 .. _syntax-shape:
+.. _syntax-side:
 .. _syntax-vternop:
 .. _syntax-vsunop:
 .. _syntax-vsbinop:
@@ -228,6 +205,8 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{f32x4} ~|~ \K{f64x2} \\
    \production{shape} & \shape &::=&
      \ishape ~|~ \fshape \\
+   \production{side} & \side &::=&
+     \K{low} ~|~ \K{high} \\
    \production{lane index} & \laneidx &::=& \u8 \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
@@ -235,7 +214,7 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{v128.}\vsunop \\&&|&
      \K{v128.}\vsbinop \\&&|&
      \K{v128.}\vsternop \\&&|&
-     \K{v128.}\ANYTRUE \\&&|&
+     \K{v128.}\vstestop \\&&|&
      \K{i8x16.}\SHUFFLE~\laneidx^{16} \\&&|&
      \K{i8x16.}\SWIZZLE \\&&|&
      \shape\K{.}\SPLAT \\&&|&
@@ -249,16 +228,13 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{i16x8}\K{.}\virelop ~|~
      \K{i32x4}\K{.}\virelop \\&&|&
      \K{i64x2.}\K{eq} ~|~
-     \K{i64x2.}\K{ne} \\&&|&
+     \K{i64x2.}\K{ne} ~|~
      \K{i64x2.}\K{lt\_s} ~|~
      \K{i64x2.}\K{gt\_s} ~|~
      \K{i64x2.}\K{le\_s} ~|~
      \K{i64x2.}\K{ge\_s} \\&&|&
      \fshape\K{.}\vfrelop \\&&|&
-     \K{i8x16.}\viunop ~|~
-     \K{i16x8.}\viunop ~|~
-     \K{i32x4.}\viunop ~|~
-     \K{i64x2.}\viunop \\&&|&
+     \ishape\K{.}\viunop ~|~
      \K{i8x16.}\VPOPCNT \\&&|&
      \K{i16x8.}\Q15MULRSAT\K{\_s} \\ &&|&
      \K{i32x4.}\DOT\K{\_i16x8\_s} \\ &&|&
@@ -267,12 +243,9 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \ishape\K{.}\BITMASK \\ &&|&
      \K{i8x16.}\NARROW\K{\_i16x8\_}\sx ~|~
      \K{i16x8.}\NARROW\K{\_i32x4\_}\sx \\&&|&
-     \K{i16x8.}\VEXTEND\K{\_low}\K{\_i8x16\_}\sx ~|~
-     \K{i32x4.}\VEXTEND\K{\_low}\K{\_i16x8\_}\sx \\&&|&
-     \K{i64x2.}\VEXTEND\K{\_low}\K{\_i32x4\_}\sx \\&&|&
-     \K{i16x8.}\VEXTEND\K{\_high}\K{\_i8x16\_}\sx ~|~
-     \K{i32x4.}\VEXTEND\K{\_high}\K{\_i16x8\_}\sx \\&&|&
-     \K{i64x2.}\VEXTEND\K{\_high}\K{\_i32x4\_}\sx \\&&|&
+     \K{i16x8.}\VEXTEND\K{\_}\side^?\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\VEXTEND\K{\_}\side^?\K{\_i16x8\_}\sx \\&&|&
+     \K{i64x2.}\VEXTEND\K{\_}\side^?\K{\_i32x4\_}\sx \\&&|&
      \ishape\K{.}\vshiftop \\&&|&
      \ishape\K{.}\vibinop \\&&|&
      \K{i8x16.}\viminmaxop ~|~
@@ -285,18 +258,18 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{i64x2.}\K{mul} \\&&|&
      \K{i8x16.}\AVGR\K{\_u} ~|~
      \K{i16x8.}\AVGR\K{\_u} \\&&|&
-     \K{i16x8.}\EXTMUL\K{\_low}\K{\_i8x16\_}\sx ~|~
-     \K{i16x8.}\EXTMUL\K{\_high}\K{\_i8x16\_}\sx \\&&|&
-     \K{i32x4.}\EXTMUL\K{\_low}\K{\_i16x8\_}\sx ~|~
-     \K{i32x4.}\EXTMUL\K{\_high}\K{\_i16x8\_}\sx \\&&|&
-     \K{i64x2.}\EXTMUL\K{\_low}\K{\_i32x4\_}\sx ~|~
-     \K{i64x2.}\EXTMUL\K{\_high}\K{\_i32x4\_}\sx \\&&|&
+     \K{i16x8.}\EXTMUL\K{\_}\side^?\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\EXTMUL\K{\_}\side^?\K{\_i16x8\_}\sx ~|~
+     \K{i64x2.}\EXTMUL\K{\_}\side^?\K{\_i32x4\_}\sx ~|~
      \K{i16x8.}\EXTADDPAIRWISE\K{\_i8x16\_}\sx ~|~
      \K{i32x4.}\EXTADDPAIRWISE\K{\_i16x8\_}\sx \\ &&|&
      \fshape\K{.}\vfbinop \\&&|&
-     \K{i32x4.}\VTRUNC\K{\_sat\_f32x4\_}\sx ~|~ \K{i32x4.}\VTRUNC\K{\_sat\_f64x2\_}\sx\K{\_zero} \\&&|&
-     \K{f32x4.}\VCONVERT\K{\_i32x4\_}\sx ~|~ \K{f32x4.}\VDEMOTE\K{\_f64x2\_zero} \\&&|&
-     \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}sx ~|~ \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\&&|&
+     \K{i32x4.}\VTRUNC\K{\_sat\_f32x4\_}\sx ~|~
+     \K{i32x4.}\VTRUNC\K{\_sat\_f64x2\_}\sx\K{\_zero} \\&&|&
+     \K{f32x4.}\VCONVERT\K{\_i32x4\_}\sx ~|~
+     \K{f32x4.}\VDEMOTE\K{\_f64x2\_zero} \\&&|&
+     \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}sx ~|~
+     \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\&&|&
      \dots \\
    \production{SIMD unary operator} & \vsunop &::=&
      \K{not} \\
@@ -307,6 +280,8 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{xor} \\
    \production{SIMD ternary operator} & \vsternop &::=&
      \K{bitselect} \\
+   \production{SIMD test operator} & \vstestop &::=&
+     \K{any\_true} \\
    \production{SIMD test operator} & \vitestop &::=&
      \K{all\_true} \\
    \production{SIMD integer relational operator} & \virelop &::=&
@@ -363,7 +338,7 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
 SIMD instructions have a naming convention involving a prefix that
 determines how their operands will be interpreted.
 This prefix describes the *shape* of the operand,
-written :math:`t\K{x}N`, and consisting of a packed numeric type :math:`t` and the number of *lanes* :math:`N` of that type.
+written :math:`t\K{x}N`, and consisting of a packed :ref:`numeric type <syntax-numtype>` :math:`t` and the number of *lanes* :math:`N` of that type.
 Operations are performed point-wise on the values of each lane.
 
 .. note::
@@ -400,8 +375,8 @@ For the other SIMD instructions, the use of two's complement for the signed inte
 .. _syntax-vunop:
 .. _syntax-vbinop:
 .. _syntax-vrelop:
+.. _syntax-vtestop:
 .. _syntax-vcvtop:
-.. _syntax-vextmul:
 
 Conventions
 ...........
@@ -417,22 +392,44 @@ Occasionally, it is convenient to group operators together according to the foll
    \production{binary operator} & \vbinop &::=&
      \vibinop ~|~ \vfbinop \\&&|&
      \viminmaxop ~|~ \visatbinop \\&&|&
-     \SWIZZLE ~|~
      \VMUL ~|~
      \AVGR\K{\_u} ~|~
      \Q15MULRSAT\K{\_s} \\
-   \production{simd relational operator} & \vrelop &::=&
+   \production{test operator} & \vtestop &::=&
+     \vitestop \\
+   \production{relational operator} & \vrelop &::=&
      \virelop ~|~ \vfrelop \\
    \production{conversion operator} & \vcvtop &::=&
-     \VTRUNC\K{\_sat} ~|~
      \VEXTEND ~|~
+     \VTRUNC\K{\_sat} ~|~
      \VCONVERT ~|~
      \VDEMOTE ~|~
      \VPROMOTE \\
-   \production{extmul operator} & \vextmul &::=&
-     \EXTMUL\K{\_low} ~|~
-     \EXTMUL\K{\_high} \\
    \end{array}
+
+
+.. index:: ! reference instruction, reference, null
+   pair: abstract syntax; instruction
+.. _syntax-ref.null:
+.. _syntax-ref.is_null:
+.. _syntax-ref.func:
+.. _syntax-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+Instructions in this group are concerned with accessing :ref:`references <syntax-reftype>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \REFNULL~\reftype \\&&|&
+     \REFISNULL \\&&|&
+     \REFFUNC~\funcidx \\
+   \end{array}
+
+These instruction produce a null value, check for a null value, or produce a reference to a given function, respectively.
 
 
 .. index:: ! parametric instruction, value type

@@ -203,6 +203,8 @@ vecunop: abs | neg | ...
 vecbinop: add | sub | min_<sign> | ...
 vecternop: bitselect
 vectestop: all_true | any_true
+vecrelop: eq | ne | lt | ...
+veccvtop: extend_low | extend_high | trunc_sat | ...
 vecshiftop: shl | shr_<sign>
 
 expr:
@@ -271,6 +273,8 @@ op:
   <vec_shape>.<vecbinop>
   <vec_shape>.<vecternop>
   <vec_shape>.<vectestop>
+  <vec_shape>.<vecrelop>
+  <vec_shape>.<veccvtop>_<vec_shape>(_<sign>)?(_<zero>)?
   <vec_shape>.<vecshiftop>
   <vec_shape>.bitmask
   <vec_shape>.splat

@@ -22,7 +22,7 @@ Number Types
 .. math::
    \begin{array}{llll}
    \production{number type} & \numtype &::=&
-     \I32 ~|~ \I64 ~|~ \F32 ~|~ \F64 ~|~ \V128 \\
+     \I32 ~|~ \I64 ~|~ \F32 ~|~ \F64 \\
    \end{array}
 
 The types |I32| and |I64| classify 32 and 64 bit integers, respectively.
@@ -31,18 +31,45 @@ Integers are not inherently signed or unsigned, their interpretation is determin
 The types |F32| and |F64| classify 32 and 64 bit floating-point data, respectively.
 They correspond to the respective binary floating-point representations, also known as *single* and *double* precision, as defined by the |IEEE754|_ standard (Section 3.3).
 
-The type |V128| corresponds to a 128 bit vector of packed integer or floating-point data. The packed data
-can be interpreted as signed or unsigned integers, single or double precision floating-point
-values, or a single 128 bit type. The interpretation is determined by individual operations.
-
 Number types are *transparent*, meaning that their bit patterns can be observed.
 Values of number type can be stored in :ref:`memories <syntax-mem>`.
+
+.. _bitwidth:
 
 Conventions
 ...........
 
 * The notation :math:`|t|` denotes the *bit width* of a number type :math:`t`.
-  That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`, and :math:`|\V128| = 128`.
+  That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.
+
+
+.. index:: ! SIMD type, integer, floating-point, IEEE 754, bit width, memory
+   pair: abstract syntax; number type
+   pair: number; type
+.. _syntax-simdtype:
+
+SIMD Types
+~~~~~~~~~~
+
+*SIMD types* classify vectors of :ref:`numeric <syntax-numtype>` values processed by SIMD instructions (single instruction multiple data).
+
+.. math::
+   \begin{array}{llll}
+   \production{SIMD type} & \simdtype &::=&
+     \V128 \\
+   \end{array}
+
+The type |V128| corresponds to a 128 bit vector of packed integer or floating-point data. The packed data
+can be interpreted as signed or unsigned integers, single or double precision floating-point
+values, or a single 128 bit type. The interpretation is determined by individual operations.
+
+SIMD types, like :ref:`number types <syntax-numtype>` are *transparent*, meaning that their bit patterns can be observed.
+Values of SIMD type can be stored in :ref:`memories <syntax-mem>`.
+
+Conventions
+...........
+
+* The notation :math:`|t|` for :ref:`bit width <bitwidth>` extends to SIMD types as well, that is, :math:`|\V128| = 128`.
 
 
 .. index:: ! reference type, reference, table, function, function type, null
@@ -69,7 +96,7 @@ Reference types are *opaque*, meaning that neither their size nor their bit patt
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
 
 
-.. index:: ! value type, number type, reference type
+.. index:: ! value type, number type, SIMD type, reference type
    pair: abstract syntax; value type
    pair: value; type
 .. _syntax-valtype:
@@ -78,12 +105,12 @@ Value Types
 ~~~~~~~~~~~
 
 *Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
-They are either :ref:`number types <syntax-numtype>` or :ref:`reference types <syntax-reftype>`.
+They are either :ref:`number types <syntax-numtype>`, :ref:`SIMD types <syntax-simdtype>`, or :ref:`reference types <syntax-reftype>`.
 
 .. math::
    \begin{array}{llll}
    \production{value type} & \valtype &::=&
-     \numtype ~|~ \reftype \\
+     \numtype ~|~ \simdtype ~|~ \reftype \\
    \end{array}
 
 Conventions

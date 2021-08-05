@@ -87,8 +87,8 @@ let rec instr (e : instr) =
   | VecLoad _ | VecStore _ | VecLoadLane _ | VecStoreLane _
   | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
     memories zero
-  | VecConst _
-  | VecTest _ | VecUnary _ | VecBinary _ | VecShift _ | VecBitmask _
+  | VecConst _ | VecTest _ | VecUnary _ | VecBinary _ | VecCompare _
+  | VecConvert _ | VecShift _ | VecBitmask _
   | VecTestBits _ | VecUnaryBits _ | VecBinaryBits _ | VecTernaryBits _
   | VecSplat _ | VecExtract _ | VecReplace _ ->
     memories zero

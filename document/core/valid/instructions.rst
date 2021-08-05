@@ -334,17 +334,31 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-any-true:
+.. _valid-vstestop:
 
-:math:`\V128\K{.}\ANYTRUE`
-............................
+:math:`\V128\K{.}\vstestop`
+...........................
 
 * The instruction is valid with type :math:`[\V128] \to [\I32]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \V128\K{.}\ANYTRUE : [\V128] \to [\I32]
+     C \vdashinstr \V128\K{.}\vstestop : [\V128] \to [\I32]
+   }
+
+
+.. _valid-simd-swizzle:
+
+:math:`\K{i8x16.}\SWIZZLE`
+..........................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \K{i8x16.}\SWIZZLE : [\V128~\V128] \to [\V128]
    }
 
 
@@ -459,20 +473,6 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-vternop:
-
-:math:`\shape\K{.}\vternop`
-...........................
-
-* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \shape\K{.}\vternop : [\V128~\V128~\V128] \to [\V128]
-   }
-
-
 .. _valid-vshiftop:
 
 :math:`\ishape\K{.}\vshiftop`
@@ -487,81 +487,45 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-vitestop:
+.. _valid-vtestop:
 
-:math:`\shape\K{.}\vitestop`
-............................
+:math:`\shape\K{.}\vtestop`
+...........................
 
 * The instruction is valid with type :math:`[\V128] \to [\I32]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \shape\K{.}\vitestop : [\V128] \to [\I32]
+     C \vdashinstr \shape\K{.}\vtestop : [\V128] \to [\I32]
    }
 
 
 .. _valid-vcvtop:
 
-:math:`\shape\K{.}\vcvtop\K{\_}\shape\K{\_}\sx`
-...............................................
+:math:`\shape\K{.}\vcvtop\K{\_}\side^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^?`
+..........................................................................
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \shape\K{.}\vcvtop\K{\_}\shape\K{\_}\sx : [\V128] \to [\V128]
+     C \vdashinstr \shape\K{.}\vcvtop\K{\_}\side^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^? : [\V128] \to [\V128]
    }
 
 
-:math:`\shape\K{.}\vcvtop\K{\_low\_}\shape\K{\_}\sx^?`
-......................................................
+.. _valid-simd-narrow:
 
-* The instruction is valid with type :math:`[\V128] \to [\V128]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \shape\K{.}\vcvtop\K{\_low\_}\shape\K{\_}\sx : [\V128] \to [\V128]
-   }
-
-
-:math:`\shape\K{.}\vcvtop\K{\_high\_}\shape\K{\_}\sx^?`
-.......................................................
-
-* The instruction is valid with type :math:`[\V128] \to [\V128]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \shape\K{.}\vcvtop\K{\_high\_}\shape\K{\_}\sx : [\V128] \to [\V128]
-   }
-
-
-:math:`\shape\K{.}\vcvtop\K{\_}\shape\K{\_}\sx^?\K{\_zero}`
-...............................................................
-
-* The instruction is valid with type :math:`[\V128] \to [\V128]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \shape\K{.}\vcvtop\K{\_}\shape\K{\_}\sx : [\V128] \to [\V128]
-   }
-
-
-.. _valid-narrow:
-
-:math:`\shape\K{.}\NARROW\K{\_}\shape\K{\_}\sx`
-...............................................
+:math:`\ishape_1\K{.}\NARROW\K{\_}\ishape_2\K{\_}\sx`
+.....................................................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \shape\K{.}\NARROW\K{\_}\shape\K{\_}\sx : [\V128~\V128] \to [\V128]
+     C \vdashinstr \ishape_1\K{.}\NARROW\K{\_}\ishape_2\K{\_}\sx : [\V128~\V128] \to [\V128]
    }
 
 
@@ -581,33 +545,33 @@ We also define an auxiliary function to get number of packed numeric types in a 
 
 .. _valid-simd-dot:
 
-:math:`\K{i32x4.}\DOT\K{\_i16x8\_s}`
-....................................
+:math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s}`
+................................................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \K{i32x4.}\DOT\K{\_i16x8\_s} : [\V128~\V128] \to [\V128]
+     C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s} : [\V128~\V128] \to [\V128]
    }
 
 
-.. _valid-simd-vextmul:
+.. _valid-simd-extmul:
 
-:math:`\ishape\K{.}\vextmul\K{\_}\ishape\K{\_}\sx`
-..................................................
+:math:`\ishape\K{.}\EXTMUL\K{\_}\side\K{\_}\ishape\K{\_}\sx`
+............................................................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \ishape\K{.}\EXTMUL\K{\_}\ishape\K{\_}\sx : [\V128~\V128] \to [\V128]
+     C \vdashinstr \ishape\K{.}\EXTMUL\K{\_}\side\K{\_}\ishape\K{\_}\sx : [\V128~\V128] \to [\V128]
    }
 
 
-.. _valid-simd-extaddpairwise:
+.. _valid-simd-extadd_pairwise:
 
 :math:`\ishape\K{.}\EXTADDPAIRWISE\K{\_}\ishape\K{\_}\sx`
 .........................................................
@@ -660,7 +624,7 @@ Parametric Instructions
 
 * Else:
 
-  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`operand type <syntax-opdtype>` :math:`t` that :ref:`matches <match-opdtype>` some :ref:`number type <syntax-numtype>`.
+  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`operand type <syntax-opdtype>` :math:`t` that :ref:`matches <match-opdtype>` some :ref:`number type <syntax-numtype>` or :ref:`SIMD type <syntax-simdtype>`.
 
 .. math::
    \frac{
@@ -670,6 +634,12 @@ Parametric Instructions
    \qquad
    \frac{
      \vdash t \leq \numtype
+   }{
+     C \vdashinstr \SELECT : [t~t~\I32] \to [t]
+   }
+   \qquad
+   \frac{
+     \vdash t \leq \simdtype
    }{
      C \vdashinstr \SELECT : [t~t~\I32] \to [t]
    }

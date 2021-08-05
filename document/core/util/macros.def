@@ -206,6 +206,7 @@
 .. Types, non-terminals
 
 .. |numtype| mathdef:: \xref{syntax/types}{syntax-numtype}{\X{numtype}}
+.. |simdtype| mathdef:: \xref{syntax/types}{syntax-simdtype}{\X{simdtype}}
 .. |reftype| mathdef:: \xref{syntax/types}{syntax-reftype}{\X{reftype}}
 .. |valtype| mathdef:: \xref{syntax/types}{syntax-valtype}{\X{valtype}}
 .. |resulttype| mathdef:: \xref{syntax/types}{syntax-resulttype}{\X{resulttype}}
@@ -518,7 +519,7 @@
 .. |vsunop| mathdef:: \xref{syntax/instructions}{syntax-vsunop}{\X{vsunop}}
 .. |vsbinop| mathdef:: \xref{syntax/instructions}{syntax-vsbinop}{\X{vsbinop}}
 .. |vsternop| mathdef:: \xref{syntax/instructions}{syntax-vsternop}{\X{vsternop}}
-.. |vitestop| mathdef:: \xref{syntax/instructions}{syntax-vitestop}{\X{vitestop}}
+.. |vstestop| mathdef:: \xref{syntax/instructions}{syntax-vstestop}{\X{vstestop}}
 .. |vshiftop| mathdef:: \xref{syntax/instructions}{syntax-vshiftop}{\X{vshiftop}}
 .. |viunop| mathdef:: \xref{syntax/instructions}{syntax-viunop}{\X{viunop}}
 .. |vibinop| mathdef:: \xref{syntax/instructions}{syntax-vibinop}{\X{vibinop}}
@@ -528,8 +529,11 @@
 .. |vfbinop| mathdef:: \xref{syntax/instructions}{syntax-vfbinop}{\X{vfbinop}}
 .. |virelop| mathdef:: \xref{syntax/instructions}{syntax-virelop}{\X{virelop}}
 .. |vfrelop| mathdef:: \xref{syntax/instructions}{syntax-vfrelop}{\X{vfrelop}}
+.. |vitestop| mathdef:: \xref{syntax/instructions}{syntax-vitestop}{\X{vitestop}}
+.. |vtestop| mathdef:: \xref{syntax/instructions}{syntax-vtestop}{\X{vtestop}}
 
 .. |sx| mathdef:: \xref{syntax/instructions}{syntax-sx}{\X{sx}}
+.. |side| mathdef:: \xref{syntax/instructions}{syntax-side}{\X{side}}
 .. |memarg| mathdef:: \xref{syntax/instructions}{syntax-memarg}{\X{memarg}}
 .. |lanewidth| mathdef:: \xref{syntax/instructions}{syntax-lanewidth}{\X{lanewidth}}
 
@@ -589,6 +593,7 @@
 .. Types, non-terminals
 
 .. |Bnumtype| mathdef:: \xref{binary/types}{binary-numtype}{\B{numtype}}
+.. |Bsimdtype| mathdef:: \xref{binary/types}{binary-simdtype}{\B{simdtype}}
 .. |Breftype| mathdef:: \xref{binary/types}{binary-reftype}{\B{reftype}}
 .. |Bvaltype| mathdef:: \xref{binary/types}{binary-valtype}{\B{valtype}}
 .. |Bresulttype| mathdef:: \xref{binary/types}{binary-resulttype}{\B{resulttype}}
@@ -755,6 +760,7 @@
 .. Types, non-terminals
 
 .. |Tnumtype| mathdef:: \xref{text/types}{text-numtype}{\T{numtype}}
+.. |Tsimdtype| mathdef:: \xref{text/types}{text-simdtype}{\T{simdtype}}
 .. |Treftype| mathdef:: \xref{text/types}{text-reftype}{\T{reftype}}
 .. |Theaptype| mathdef:: \xref{text/types}{text-heaptype}{\T{heaptype}}
 .. |Tvaltype| mathdef:: \xref{text/types}{text-valtype}{\T{valtype}}
@@ -1064,6 +1070,7 @@
 .. Values & Results, non-terminals
 
 .. |num| mathdef:: \xref{exec/runtime}{syntax-num}{\X{num}}
+.. |simd| mathdef:: \xref{exec/runtime}{syntax-simd}{\X{simd}}
 .. |reff| mathdef:: \xref{exec/runtime}{syntax-ref}{\X{ref}}
 .. |val| mathdef:: \xref{exec/runtime}{syntax-val}{\X{val}}
 .. |result| mathdef:: \xref{exec/runtime}{syntax-result}{\X{result}}

@@ -56,22 +56,20 @@ module V128Op =
 struct
   type itestop = AllTrue
   type iunop = Abs | Neg | Popcnt
-             | ExtendLowS | ExtendLowU | ExtendHighS | ExtendHighU
-             | ExtAddPairwiseS | ExtAddPairwiseU
-             | TruncSatSF32x4 | TruncSatUF32x4
-             | TruncSatSZeroF64x2 | TruncSatUZeroF64x2
-  type funop = Abs | Neg | Sqrt
-             | Ceil | Floor | Trunc | Nearest
-             | ConvertSI32x4 | ConvertUI32x4
-             | DemoteZeroF64x2 | PromoteLowF32x4
+  type funop = Abs | Neg | Sqrt | Ceil | Floor | Trunc | Nearest
   type ibinop = Add | Sub | Mul | MinS | MinU | MaxS | MaxU | AvgrU
-              | Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
-              | AddSatS | AddSatU | SubSatS | SubSatU
-              | DotS | Q15MulRSatS
+              | AddSatS | AddSatU | SubSatS | SubSatU | DotS | Q15MulRSatS
               | ExtMulLowS | ExtMulHighS | ExtMulLowU | ExtMulHighU
               | Swizzle | Shuffle of int list | NarrowS | NarrowU
   type fbinop = Add | Sub | Mul | Div | Min | Max | Pmin | Pmax
-              | Eq | Ne | Lt | Le | Gt | Ge
+  type irelop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
+  type frelop = Eq | Ne | Lt | Le | Gt | Ge
+  type icvtop = ExtendLowS | ExtendLowU | ExtendHighS | ExtendHighU
+              | ExtAddPairwiseS | ExtAddPairwiseU
+              | TruncSatSF32x4 | TruncSatUF32x4
+              | TruncSatSZeroF64x2 | TruncSatUZeroF64x2
+  type fcvtop = DemoteZeroF64x2 | PromoteLowF32x4
+              | ConvertSI32x4 | ConvertUI32x4
   type ishiftop = Shl | ShrS | ShrU
   type ibitmaskop = Bitmask
 
@@ -83,6 +81,8 @@ struct
   type testop = (itestop, itestop, itestop, itestop, void, void) V128.laneop
   type unop = (iunop, iunop, iunop, iunop, funop, funop) V128.laneop
   type binop = (ibinop, ibinop, ibinop, ibinop, fbinop, fbinop) V128.laneop
+  type relop = (irelop, irelop, irelop, irelop, frelop, frelop) V128.laneop
+  type cvtop = (icvtop, icvtop, icvtop, icvtop, fcvtop, fcvtop) V128.laneop
   type shiftop = (ishiftop, ishiftop, ishiftop, ishiftop, void, void) V128.laneop
   type bitmaskop = (ibitmaskop, ibitmaskop, ibitmaskop, ibitmaskop, void, void) V128.laneop
 
@@ -102,15 +102,16 @@ type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Values.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
 
 type vec_testop = (V128Op.testop) Values.vecop
+type vec_relop = (V128Op.relop) Values.vecop
 type vec_unop = (V128Op.unop) Values.vecop
 type vec_binop = (V128Op.binop) Values.vecop
+type vec_cvtop = (V128Op.cvtop) Values.vecop
+type vec_shiftop = (V128Op.shiftop) Values.vecop
+type vec_bitmaskop = (V128Op.bitmaskop) Values.vecop
 type vec_vtestop = (V128Op.vtestop) Values.vecop
 type vec_vunop = (V128Op.vunop) Values.vecop
 type vec_vbinop = (V128Op.vbinop) Values.vecop
 type vec_vternop = (V128Op.vternop) Values.vecop
-type vec_shiftop = (V128Op.shiftop) Values.vecop
-type vec_bitmaskop = (V128Op.bitmaskop) Values.vecop
-
 type vec_splatop = (V128Op.splatop) Values.vecop
 type vec_extractop = (V128Op.extractop) Values.vecop
 type vec_replaceop = (V128Op.replaceop) Values.vecop
@@ -182,19 +183,21 @@ and instr' =
   | Unary of unop                     (* unary numeric operator *)
   | Binary of binop                   (* binary numeric operator *)
   | Convert of cvtop                  (* conversion *)
-  | VecConst of vec                   (* vector constant *)
+  | VecConst of vec                   (* constant *)
   | VecTest of vec_testop             (* vector test *)
+  | VecCompare of vec_relop           (* vector comparison *)
   | VecUnary of vec_unop              (* unary vector operator *)
   | VecBinary of vec_binop            (* binary vector operator *)
+  | VecConvert of vec_cvtop           (* vector conversion *)
+  | VecShift of vec_shiftop           (* vector shifts *)
+  | VecBitmask of vec_bitmaskop       (* vector masking *)
   | VecTestBits of vec_vtestop        (* vector bit test *)
-  | VecUnaryBits of vec_vunop         (* unary vector bit operator *)
-  | VecBinaryBits of vec_vbinop       (* binary vector bit operator *)
-  | VecTernaryBits of vec_vternop     (* ternary vector bit operator *)
-  | VecShift of vec_shiftop           (* shifts for vector value *)
-  | VecBitmask of vec_bitmaskop       (* bitmask for vector value *)
+  | VecUnaryBits of vec_vunop         (* unary bit vector operator *)
+  | VecBinaryBits of vec_vbinop       (* binary bit vector operator *)
+  | VecTernaryBits of vec_vternop     (* ternary bit vector operator *)
   | VecSplat of vec_splatop           (* number to vector conversion *)
-  | VecExtract of vec_extractop       (* extract lane from vector value*)
-  | VecReplace of vec_replaceop       (* replace lane in vector value *)
+  | VecExtract of vec_extractop       (* extract lane from vector *)
+  | VecReplace of vec_replaceop       (* replace lane in vector *)
 
 
 (* Globals & Functions *)
