@@ -254,7 +254,7 @@ let type_of_result r =
   match r with
   | NumResult (NumPat n) -> Types.NumType (Values.type_of_num n.it)
   | NumResult (NanPat n) -> Types.NumType (Values.type_of_num n.it)
-  | SimdResult (SimdPat _) -> Types.SimdType Types.V128Type
+  | VecResult (VecPat _) -> Types.VecType Types.V128Type
   | RefResult (RefPat r) -> Types.RefType (Values.type_of_ref r.it)
   | RefResult (RefTypePat t) -> Types.RefType t
 
@@ -266,9 +266,9 @@ let string_of_num_pat (p : num_pat) =
     | Values.I32 _ | Values.I64 _ -> assert false
     | Values.F32 n | Values.F64 n -> string_of_nan n
 
-let string_of_simd_pat (p : simd_pat) =
+let string_of_vec_pat (p : vec_pat) =
   match p with
-  | SimdPat (Values.V128 (shape, ns)) ->
+  | VecPat (Values.V128 (shape, ns)) ->
     String.concat " " (List.map string_of_num_pat ns)
 
 let string_of_ref_pat (p : ref_pat) =
@@ -279,7 +279,7 @@ let string_of_ref_pat (p : ref_pat) =
 let string_of_result r =
   match r with
   | NumResult np -> string_of_num_pat np
-  | SimdResult vp -> string_of_simd_pat vp
+  | VecResult vp -> string_of_vec_pat vp
   | RefResult rp -> string_of_ref_pat rp
 
 let string_of_results = function
@@ -387,10 +387,10 @@ let assert_num_pat n np =
     | NumPat n' -> n = n'.it
     | NanPat nanop -> assert_nan_pat n nanop
 
-let assert_simd_pat v p =
+let assert_vec_pat v p =
   let open Values in
   match v, p with
-  | V128 v, SimdPat (V128 (shape, ps)) ->
+  | V128 v, VecPat (V128 (shape, ps)) ->
     let extract = match shape with
       | V128.I8x16 () -> fun v i -> I32 (V128.I8x16.extract_lane_s i v)
       | V128.I16x8 () -> fun v i -> I32 (V128.I16x8.extract_lane_s i v)
@@ -413,7 +413,7 @@ let assert_pat v r =
   let open Values in
   match v, r with
   | Num n, NumResult np -> assert_num_pat n np
-  | Simd v, SimdResult vp -> assert_simd_pat v vp
+  | Vec v, VecResult vp -> assert_vec_pat v vp
   | Ref r, RefResult rp -> assert_ref_pat r rp
   | _, _ -> false
 

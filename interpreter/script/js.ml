@@ -261,7 +261,7 @@ let abs_mask_of = function
 let value v =
   match v.it with
   | Values.Num n -> [Const (n @@ v.at) @@ v.at]
-  | Values.Simd s -> [SimdConst (s @@ v.at) @@ v.at]
+  | Values.Vec s -> [VecConst (s @@ v.at) @@ v.at]
   | Values.Ref (Values.NullRef t) -> [RefNull t @@ v.at]
   | Values.Ref (ExternRef n) ->
     [Const (Values.I32 n @@ v.at) @@ v.at; Call (externref_idx @@ v.at) @@ v.at]
@@ -307,9 +307,9 @@ let assert_return ress ts at =
         Compare (eq_of t') @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | SimdResult (SimdPat (Values.V128 (shape, pats))) ->
+    | VecResult (VecPat (Values.V128 (shape, pats))) ->
       let open Values in
-      (* SimdResult is a list of NumPat or LitPat. For float shapes, we can have a mix of literals
+      (* VecResult is a list of NumPat or LitPat. For float shapes, we can have a mix of literals
        * and NaNs. For NaNs, we need to mask it and compare with a canonical NaN. To simplify
        * comparison, we build masks even for literals (will just be all set), collect them into
        * a v128, then compare the entire 128 bits.
@@ -345,12 +345,12 @@ let assert_return ress ts at =
           V128.I64x2.of_lanes (List.map (I64Num.of_num 0) masks),
           V128.I64x2.of_lanes (List.map (I64Num.of_num 0) canons)
       in
-      [ SimdConst (V128 mask @@ at) @@ at;
-        SimdBinaryVec (V128 V128Op.And) @@ at;
-        SimdConst (V128 expected @@ at) @@ at;
-        SimdBinary (V128 (V128.I8x16 V128Op.Eq)) @@ at;
+      [ VecConst (V128 mask @@ at) @@ at;
+        VecBinaryBits (V128 V128Op.And) @@ at;
+        VecConst (V128 expected @@ at) @@ at;
+        VecBinary (V128 (V128.I8x16 V128Op.Eq)) @@ at;
         (* If all lanes are non-zero, then they are equal *)
-        SimdTest (V128 (V128.I8x16 V128Op.AllTrue)) @@ at;
+        VecTest (V128 (V128.I8x16 V128Op.AllTrue)) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult (RefPat {it = Values.NullRef t; _}) ->
@@ -424,7 +424,7 @@ let is_js_num_type = function
 
 let is_js_value_type = function
   | NumType t -> is_js_num_type t
-  | SimdType t -> false
+  | VecType t -> false
   | RefType t -> true
 
 let is_js_global_type = function
@@ -476,7 +476,7 @@ let of_num n =
   | F32 z -> of_float (F32.to_float z)
   | F64 z -> of_float (F64.to_float z)
 
-let of_simd v =
+let of_vec v =
   let open Values in
   match v with
   | V128 v -> "v128(\"" ^ V128.to_string v ^ "\")"
@@ -492,7 +492,7 @@ let of_value v =
   let open Values in
   match v.it with
   | Num n -> of_num n
-  | Simd v -> of_simd v
+  | Vec v -> of_vec v
   | Ref r -> of_ref r
 
 let of_nan = function
@@ -506,8 +506,8 @@ let of_num_pat = function
     | Values.I32 _ | Values.I64 _ -> .
     | Values.F32 n | Values.F64 n -> of_nan n
 
-let of_simd_pat = function
-  | SimdPat (Values.V128 (shape, pats)) ->
+let of_vec_pat = function
+  | VecPat (Values.V128 (shape, pats)) ->
     Printf.sprintf "v128(\"%s\")" (String.concat " " (List.map of_num_pat pats))
 
 let of_ref_pat = function
@@ -517,7 +517,7 @@ let of_ref_pat = function
 let of_result res =
   match res.it with
   | NumResult np -> of_num_pat np
-  | SimdResult vp -> of_simd_pat vp
+  | VecResult vp -> of_vec_pat vp
   | RefResult rp -> of_ref_pat rp
 
 let rec of_definition def =

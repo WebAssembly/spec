@@ -105,7 +105,7 @@ let vs33 s = I32_convert.wrap_i64 (vsN 33 s)
 let vs64 s = vsN 64 s
 let f32 s = F32.of_bits (u32 s)
 let f64 s = F64.of_bits (u64 s)
-let v128 s = V128.of_bits (get_string (Types.simd_size Types.V128Type) s)
+let v128 s = V128.of_bits (get_string (Types.vec_size Types.V128Type) s)
 
 let len32 s =
   let pos = pos s in
@@ -144,10 +144,10 @@ let num_type s =
   | -0x04 -> F64Type
   | _ -> error s (pos s - 1) "malformed number type"
 
-let simd_type s =
+let vec_type s =
   match vs7 s with
   | -0x05 -> V128Type
-  | _ -> error s (pos s - 1) "malformed simd type"
+  | _ -> error s (pos s - 1) "malformed vector type"
 
 let ref_type s =
   match vs7 s with
@@ -158,7 +158,7 @@ let ref_type s =
 let value_type s =
   match peek s with
   | Some n when n >= ((-0x04) land 0x7f) -> NumType (num_type s)
-  | Some n when n >= ((-0x0f) land 0x7f) -> SimdType (simd_type s)
+  | Some n when n >= ((-0x0f) land 0x7f) -> VecType (vec_type s)
   | _ -> RefType (ref_type s)
 
 let result_type s = vec value_type s

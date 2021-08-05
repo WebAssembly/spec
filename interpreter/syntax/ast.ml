@@ -101,34 +101,34 @@ type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop) Values.op
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Values.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
 
-type simd_testop = (V128Op.testop) Values.simdop
-type simd_unop = (V128Op.unop) Values.simdop
-type simd_binop = (V128Op.binop) Values.simdop
-type simd_vtestop = (V128Op.vtestop) Values.simdop
-type simd_vunop = (V128Op.vunop) Values.simdop
-type simd_vbinop = (V128Op.vbinop) Values.simdop
-type simd_vternop = (V128Op.vternop) Values.simdop
-type simd_shiftop = (V128Op.shiftop) Values.simdop
-type simd_bitmaskop = (V128Op.bitmaskop) Values.simdop
+type vec_testop = (V128Op.testop) Values.vecop
+type vec_unop = (V128Op.unop) Values.vecop
+type vec_binop = (V128Op.binop) Values.vecop
+type vec_vtestop = (V128Op.vtestop) Values.vecop
+type vec_vunop = (V128Op.vunop) Values.vecop
+type vec_vbinop = (V128Op.vbinop) Values.vecop
+type vec_vternop = (V128Op.vternop) Values.vecop
+type vec_shiftop = (V128Op.shiftop) Values.vecop
+type vec_bitmaskop = (V128Op.bitmaskop) Values.vecop
 
-type simd_splatop = (V128Op.splatop) Values.simdop
-type simd_extractop = (V128Op.extractop) Values.simdop
-type simd_replaceop = (V128Op.replaceop) Values.simdop
+type vec_splatop = (V128Op.splatop) Values.vecop
+type vec_extractop = (V128Op.extractop) Values.vecop
+type vec_replaceop = (V128Op.replaceop) Values.vecop
 
 type ('t, 'p) memop = {ty : 't; align : int; offset : int32; pack : 'p}
 type loadop = (num_type, (pack_size * extension) option) memop
 type storeop = (num_type, pack_size option) memop
 
-type simd_loadop = (simd_type, (pack_size * simd_extension) option) memop
-type simd_storeop = (simd_type, unit) memop
-type simd_laneop = (simd_type, pack_size) memop * int
+type vec_loadop = (vec_type, (pack_size * vec_extension) option) memop
+type vec_storeop = (vec_type, unit) memop
+type vec_laneop = (vec_type, pack_size) memop * int
 
 
 (* Expressions *)
 
 type var = int32 Source.phrase
 type num = Values.num Source.phrase
-type simd = Values.simd Source.phrase
+type vec = Values.vec Source.phrase
 type name = int list
 
 type block_type = VarBlockType of var | ValBlockType of value_type option
@@ -163,10 +163,10 @@ and instr' =
   | ElemDrop of var                   (* drop passive element segment *)
   | Load of loadop                    (* read memory at address *)
   | Store of storeop                  (* write memory at address *)
-  | SimdLoad of simd_loadop           (* read memory at address *)
-  | SimdStore of simd_storeop         (* write memory at address *)
-  | SimdLoadLane of simd_laneop       (* read single lane at address *)
-  | SimdStoreLane of simd_laneop      (* write single lane to address *)
+  | VecLoad of vec_loadop             (* read memory at address *)
+  | VecStore of vec_storeop           (* write memory at address *)
+  | VecLoadLane of vec_laneop         (* read single lane at address *)
+  | VecStoreLane of vec_laneop        (* write single lane to address *)
   | MemorySize                        (* size of memory *)
   | MemoryGrow                        (* grow memory *)
   | MemoryFill                        (* fill memory range with value *)
@@ -182,19 +182,19 @@ and instr' =
   | Unary of unop                     (* unary numeric operator *)
   | Binary of binop                   (* binary numeric operator *)
   | Convert of cvtop                  (* conversion *)
-  | SimdConst of simd                 (* constant *)
-  | SimdTest of simd_testop           (* simd test *)
-  | SimdUnary of simd_unop            (* unary simd operator *)
-  | SimdBinary of simd_binop          (* binary simd operator *)
-  | SimdTestVec of simd_vtestop       (* simd test vector *)
-  | SimdUnaryVec of simd_vunop        (* unary simd vector operator *)
-  | SimdBinaryVec of simd_vbinop      (* binary simd vector operator *)
-  | SimdTernaryVec of simd_vternop    (* ternary simd vector operator *)
-  | SimdShift of simd_shiftop         (* shifts for simd value *)
-  | SimdBitmask of simd_bitmaskop     (* bitmask for simd value *)
-  | SimdSplat of simd_splatop         (* number to simd conversion *)
-  | SimdExtract of simd_extractop     (* extract lane from simd value*)
-  | SimdReplace of simd_replaceop     (* replace lane in simd value *)
+  | VecConst of vec                   (* vector constant *)
+  | VecTest of vec_testop             (* vector test *)
+  | VecUnary of vec_unop              (* unary vector operator *)
+  | VecBinary of vec_binop            (* binary vector operator *)
+  | VecTestBits of vec_vtestop        (* vector bit test *)
+  | VecUnaryBits of vec_vunop         (* unary vector bit operator *)
+  | VecBinaryBits of vec_vbinop       (* binary vector bit operator *)
+  | VecTernaryBits of vec_vternop     (* ternary vector bit operator *)
+  | VecShift of vec_shiftop           (* shifts for vector value *)
+  | VecBitmask of vec_bitmaskop       (* bitmask for vector value *)
+  | VecSplat of vec_splatop           (* number to vector conversion *)
+  | VecExtract of vec_extractop       (* extract lane from vector value*)
+  | VecReplace of vec_replaceop       (* replace lane in vector value *)
 
 
 (* Globals & Functions *)

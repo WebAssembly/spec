@@ -111,8 +111,8 @@ let peek i (ell, ts) =
 (* Type Synthesis *)
 
 let type_num = Values.type_of_num
-let type_simd = Values.type_of_simd
-let type_simd_lane = function
+let type_vec = Values.type_of_vec
+let type_vec_lane = function
   | Values.V128 laneop -> V128.type_of_lane laneop
 
 let type_cvtop at = function
@@ -182,7 +182,7 @@ let check_unop unop at =
     check_pack sz (num_size (Values.type_of_num unop)) at
   | _ -> ()
 
-let check_simd_binop binop at =
+let check_vec_binop binop at =
   match binop with
   | Values.(V128 (V128.I8x16 (V128Op.Shuffle is))) ->
     if List.exists ((<=) 32) is then
@@ -241,8 +241,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
 
   | Select None ->
     let t = peek 1 s in
-    require (match t with None -> true | Some t -> is_num_type t || is_simd_type t) e.at
-      ("type mismatch: instruction requires numeric or SIMD type" ^
+    require (match t with None -> true | Some t -> is_num_type t || is_vec_type t) e.at
+      ("type mismatch: instruction requires numeric or vector type" ^
        " but stack has " ^ string_of_infer_type t);
     [t; t; Some (NumType I32Type)] -~> [t]
 
@@ -361,25 +361,25 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     check_memop c memop num_size (fun sz -> sz) e.at;
     [NumType I32Type; NumType memop.ty] --> []
 
-  | SimdLoad memop ->
-    check_memop c memop simd_size (Lib.Option.map fst) e.at;
-    [NumType I32Type] --> [SimdType memop.ty]
+  | VecLoad memop ->
+    check_memop c memop vec_size (Lib.Option.map fst) e.at;
+    [NumType I32Type] --> [VecType memop.ty]
 
-  | SimdStore memop ->
-    check_memop c memop simd_size (fun _ -> None) e.at;
-    [NumType I32Type; SimdType memop.ty] --> []
+  | VecStore memop ->
+    check_memop c memop vec_size (fun _ -> None) e.at;
+    [NumType I32Type; VecType memop.ty] --> []
 
-  | SimdLoadLane (memop, i) ->
-    check_memop c memop simd_size (fun sz -> Some sz) e.at;
-    require (i < simd_size memop.ty / packed_size memop.pack) e.at
+  | VecLoadLane (memop, i) ->
+    check_memop c memop vec_size (fun sz -> Some sz) e.at;
+    require (i < vec_size memop.ty / packed_size memop.pack) e.at
       "invalid lane index";
-    [NumType I32Type; SimdType memop.ty] -->  [SimdType memop.ty]
+    [NumType I32Type; VecType memop.ty] -->  [VecType memop.ty]
 
-  | SimdStoreLane (memop, i) ->
-    check_memop c memop simd_size (fun sz -> Some sz) e.at;
-    require (i < simd_size memop.ty / packed_size memop.pack) e.at
+  | VecStoreLane (memop, i) ->
+    check_memop c memop vec_size (fun sz -> Some sz) e.at;
+    require (i < vec_size memop.ty / packed_size memop.pack) e.at
       "invalid lane index";
-    [NumType I32Type; SimdType memop.ty] -->  []
+    [NumType I32Type; VecType memop.ty] -->  []
 
   | MemorySize ->
     let _mt = memory c (0l @@ e.at) in
@@ -446,62 +446,62 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let t1, t2 = type_cvtop e.at cvtop in
     [NumType t1] --> [NumType t2]
 
-  | SimdConst v ->
-    let t = SimdType (type_simd v.it) in
+  | VecConst v ->
+    let t = VecType (type_vec v.it) in
     [] --> [t]
 
-  | SimdTest testop ->
-    let t = SimdType (type_simd testop) in
+  | VecTest testop ->
+    let t = VecType (type_vec testop) in
     [t] --> [NumType I32Type]
 
-  | SimdUnary unop ->
-    let t = SimdType (type_simd unop) in
+  | VecUnary unop ->
+    let t = VecType (type_vec unop) in
     [t] --> [t]
 
-  | SimdBinary binop ->
-    check_simd_binop binop e.at;
-    let t = SimdType (type_simd binop) in
+  | VecBinary binop ->
+    check_vec_binop binop e.at;
+    let t = VecType (type_vec binop) in
     [t; t] --> [t]
 
-  | SimdTestVec vtestop ->
-    let t = SimdType (type_simd vtestop) in
+  | VecTestBits vtestop ->
+    let t = VecType (type_vec vtestop) in
     [t] --> [NumType I32Type]
 
-  | SimdUnaryVec vunop ->
-    let t = SimdType (type_simd vunop) in
+  | VecUnaryBits vunop ->
+    let t = VecType (type_vec vunop) in
     [t] --> [t]
 
-  | SimdBinaryVec vbinop ->
-    let t = SimdType (type_simd vbinop) in
+  | VecBinaryBits vbinop ->
+    let t = VecType (type_vec vbinop) in
     [t; t] --> [t]
 
-  | SimdTernaryVec vternop ->
-    let t = SimdType (type_simd vternop) in
+  | VecTernaryBits vternop ->
+    let t = VecType (type_vec vternop) in
     [t; t; t] --> [t]
 
-  | SimdShift shiftop ->
-    let t = SimdType (type_simd shiftop) in
-    [t; NumType I32Type] --> [SimdType V128Type]
+  | VecShift shiftop ->
+    let t = VecType (type_vec shiftop) in
+    [t; NumType I32Type] --> [VecType V128Type]
 
-  | SimdBitmask bitmaskop ->
-    let t = SimdType (type_simd bitmaskop) in
+  | VecBitmask bitmaskop ->
+    let t = VecType (type_vec bitmaskop) in
     [t] --> [NumType I32Type]
 
-  | SimdSplat splatop ->
-    let t1 = type_simd_lane splatop in
-    let t2 = SimdType (type_simd splatop) in
+  | VecSplat splatop ->
+    let t1 = type_vec_lane splatop in
+    let t2 = VecType (type_vec splatop) in
     [NumType t1] --> [t2]
 
-  | SimdExtract extractop ->
-    let t = SimdType (type_simd extractop) in
-    let t2 = type_simd_lane extractop in
+  | VecExtract extractop ->
+    let t = VecType (type_vec extractop) in
+    let t2 = type_vec_lane extractop in
     require (lane_extractop extractop < num_lanes extractop) e.at
       "invalid lane index";
     [t] --> [NumType t2]
 
-  | SimdReplace replaceop ->
-    let t = SimdType (type_simd replaceop) in
-    let t2 = type_simd_lane replaceop in
+  | VecReplace replaceop ->
+    let t = VecType (type_vec replaceop) in
+    let t2 = type_vec_lane replaceop in
     require (lane_replaceop replaceop < num_lanes replaceop) e.at
       "invalid lane index";
     [t; NumType t2] --> [t]
@@ -541,7 +541,7 @@ let check_limits {min; max} range at msg =
 let check_num_type (t : num_type) at =
   ()
 
-let check_simd_type (t : simd_type) at =
+let check_vec_type (t : vec_type) at =
   ()
 
 let check_ref_type (t : ref_type) at =
@@ -550,7 +550,7 @@ let check_ref_type (t : ref_type) at =
 let check_value_type (t : value_type) at =
   match t with
   | NumType t' -> check_num_type t' at
-  | SimdType t' -> check_simd_type t' at
+  | VecType t' -> check_vec_type t' at
   | RefType t' -> check_ref_type t' at
 
 let check_func_type (ft : func_type) at =
@@ -603,7 +603,7 @@ let is_const (c : context) (e : instr) =
   | RefNull _
   | RefFunc _
   | Const _
-  | SimdConst _ -> true
+  | VecConst _ -> true
   | GlobalGet x -> let GlobalType (_, mut) = global c x in mut = Immutable
   | _ -> false
 
