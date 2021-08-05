@@ -39,19 +39,19 @@ let ati i =
 let num f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
-let simd f shape ss at =
+let vec f shape ss at =
   try f shape ss at with
   | Failure _ -> error at "constant out of range"
   | Invalid_argument _ -> error at "wrong number of lane literals"
 
-let simd_lane_nan shape l at =
+let vec_lane_nan shape l at =
   let open Values in
   match shape with
   | V128.F32x4 () -> NanPat (F32 l @@ at)
   | V128.F64x2 () -> NanPat (F64 l @@ at)
-  | _ -> error at "invalid simd constant"
+  | _ -> error at "invalid vector constant"
 
-let simd_lane_lit shape l at =
+let vec_lane_lit shape l at =
   let open Values in
   match shape with
   | V128.I8x16 () -> NumPat (I32 (I8.of_string l) @@ at)
@@ -61,7 +61,7 @@ let simd_lane_lit shape l at =
   | V128.F32x4 () -> NumPat (F32 (F32.of_string l) @@ at)
   | V128.F64x2 () -> NumPat (F64 (F64.of_string l) @@ at)
 
-let simd_lane_index s at =
+let vec_lane_index s at =
   match int_of_string s with
   | n when 0 <= n && n < 256 -> n
   | _ | exception Failure _ -> error at "malformed lane index"
@@ -69,7 +69,7 @@ let simd_lane_index s at =
 let shuffle_lit ss at =
   if not (List.length ss = 16) then
     error at "invalid lane length";
-  List.map (fun s -> simd_lane_index s.it s.at) ss
+  List.map (fun s -> vec_lane_index s.it s.at) ss
 
 let nanop f nan =
   let open Source in
@@ -206,7 +206,7 @@ let inline_type_explicit (c : context) x ft at =
 
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
-%token NUM_TYPE SIMD_TYPE SIMD_SHAPE FUNCREF EXTERNREF EXTERN MUT
+%token NUM_TYPE VEC_TYPE VEC_SHAPE FUNCREF EXTERNREF EXTERN MUT
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
@@ -217,10 +217,10 @@ let inline_type_explicit (c : context) x ft at =
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token REF_NULL REF_FUNC REF_EXTERN REF_IS_NULL
-%token SIMD_LOAD SIMD_STORE SIMD_LOAD_LANE SIMD_STORE_LANE
-%token SIMD_CONST SIMD_UNARY SIMD_BINARY SIMD_TERNARY SIMD_TEST
-%token SIMD_SHIFT SIMD_BITMASK SIMD_SHUFFLE
-%token SIMD_EXTRACT SIMD_REPLACE
+%token VEC_LOAD VEC_STORE VEC_LOAD_LANE VEC_STORE_LANE
+%token VEC_CONST VEC_UNARY VEC_BINARY VEC_TERNARY VEC_TEST
+%token VEC_SHIFT VEC_BITMASK VEC_SHUFFLE
+%token VEC_EXTRACT VEC_REPLACE
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
@@ -237,9 +237,9 @@ let inline_type_explicit (c : context) x ft at =
 %token<string> STRING
 %token<string> VAR
 %token<Types.num_type> NUM_TYPE
-%token<Types.simd_type> SIMD_TYPE
+%token<Types.vec_type> VEC_TYPE
 %token<string Source.phrase -> Ast.instr' * Values.num> CONST
-%token<V128.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Values.simd> SIMD_CONST
+%token<V128.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Values.vec> VEC_CONST
 %token<Ast.instr'> UNARY
 %token<Ast.instr'> BINARY
 %token<Ast.instr'> TEST
@@ -247,22 +247,22 @@ let inline_type_explicit (c : context) x ft at =
 %token<Ast.instr'> CONVERT
 %token<int option -> Memory.offset -> Ast.instr'> LOAD
 %token<int option -> Memory.offset -> Ast.instr'> STORE
-%token<int option -> Memory.offset -> Ast.instr'> SIMD_LOAD
-%token<int option -> Memory.offset -> Ast.instr'> SIMD_STORE
-%token<int option -> Memory.offset -> int -> Ast.instr'> SIMD_LOAD_LANE
-%token<int option -> Memory.offset -> int -> Ast.instr'> SIMD_STORE_LANE
-%token<Ast.instr'> SIMD_UNARY
-%token<Ast.instr'> SIMD_BINARY
-%token<Ast.instr'> SIMD_TERNARY
-%token<Ast.instr'> SIMD_TEST
-%token<Ast.instr'> SIMD_SHIFT
-%token<Ast.instr'> SIMD_BITMASK
-%token<Ast.instr'> SIMD_SPLAT
-%token<int -> Ast.instr'> SIMD_EXTRACT
-%token<int -> Ast.instr'> SIMD_REPLACE
+%token<int option -> Memory.offset -> Ast.instr'> VEC_LOAD
+%token<int option -> Memory.offset -> Ast.instr'> VEC_STORE
+%token<int option -> Memory.offset -> int -> Ast.instr'> VEC_LOAD_LANE
+%token<int option -> Memory.offset -> int -> Ast.instr'> VEC_STORE_LANE
+%token<Ast.instr'> VEC_UNARY
+%token<Ast.instr'> VEC_BINARY
+%token<Ast.instr'> VEC_TERNARY
+%token<Ast.instr'> VEC_TEST
+%token<Ast.instr'> VEC_SHIFT
+%token<Ast.instr'> VEC_BITMASK
+%token<Ast.instr'> VEC_SPLAT
+%token<int -> Ast.instr'> VEC_EXTRACT
+%token<int -> Ast.instr'> VEC_REPLACE
 %token<string> OFFSET_EQ_NAT
 %token<string> ALIGN_EQ_NAT
-%token<V128.shape> SIMD_SHAPE
+%token<V128.shape> VEC_SHAPE
 
 %token<Script.nan> NAN
 
@@ -298,7 +298,7 @@ ref_type :
 
 value_type :
   | NUM_TYPE { NumType $1 }
-  | SIMD_TYPE { SimdType $1 }
+  | VEC_TYPE { VecType $1 }
   | ref_type { RefType $1 }
 
 value_type_list :
@@ -436,12 +436,12 @@ plain_instr :
   | ELEM_DROP var { fun c -> elem_drop ($2 c elem) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
-  | SIMD_LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
-  | SIMD_STORE offset_opt align_opt { fun c -> $1 $3 $2 }
-  | SIMD_LOAD_LANE offset_opt align_opt NAT
-    { let at = at () in fun c -> $1 $3 $2 (simd_lane_index $4 at) }
-  | SIMD_STORE_LANE offset_opt align_opt NAT
-    { let at = at () in fun c -> $1 $3 $2 (simd_lane_index $4 at) }
+  | VEC_LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
+  | VEC_STORE offset_opt align_opt { fun c -> $1 $3 $2 }
+  | VEC_LOAD_LANE offset_opt align_opt NAT
+    { let at = at () in fun c -> $1 $3 $2 (vec_lane_index $4 at) }
+  | VEC_STORE_LANE offset_opt align_opt NAT
+    { let at = at () in fun c -> $1 $3 $2 (vec_lane_index $4 at) }
   | MEMORY_SIZE { fun c -> memory_size }
   | MEMORY_GROW { fun c -> memory_grow }
   | MEMORY_FILL { fun c -> memory_fill }
@@ -457,17 +457,17 @@ plain_instr :
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
-  | SIMD_CONST SIMD_SHAPE num_list { let at = at () in fun c -> fst (simd $1 $2 $3 at) }
-  | SIMD_UNARY { fun c -> $1 }
-  | SIMD_BINARY { fun c -> $1 }
-  | SIMD_TERNARY { fun c -> $1 }
-  | SIMD_TEST { fun c -> $1 }
-  | SIMD_SHIFT { fun c -> $1 }
-  | SIMD_BITMASK { fun c -> $1 }
-  | SIMD_SHUFFLE num_list { let at = at () in fun c -> i8x16_shuffle (shuffle_lit $2 at) }
-  | SIMD_SPLAT { fun c -> $1 }
-  | SIMD_EXTRACT NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
-  | SIMD_REPLACE NAT { let at = at () in fun c -> $1 (simd_lane_index $2 at) }
+  | VEC_CONST VEC_SHAPE num_list { let at = at () in fun c -> fst (vec $1 $2 $3 at) }
+  | VEC_UNARY { fun c -> $1 }
+  | VEC_BINARY { fun c -> $1 }
+  | VEC_TERNARY { fun c -> $1 }
+  | VEC_TEST { fun c -> $1 }
+  | VEC_SHIFT { fun c -> $1 }
+  | VEC_BITMASK { fun c -> $1 }
+  | VEC_SHUFFLE num_list { let at = at () in fun c -> i8x16_shuffle (shuffle_lit $2 at) }
+  | VEC_SPLAT { fun c -> $1 }
+  | VEC_EXTRACT NAT { let at = at () in fun c -> $1 (vec_lane_index $2 at) }
+  | VEC_REPLACE NAT { let at = at () in fun c -> $1 (vec_lane_index $2 at) }
 
 
 select_instr :
@@ -1121,8 +1121,8 @@ meta :
 literal_num :
   | LPAR CONST num RPAR { snd (num $2 $3) }
 
-literal_simd :
-  | LPAR SIMD_CONST SIMD_SHAPE num_list RPAR { snd (simd $2 $3 $4 (at ())) }
+literal_vec :
+  | LPAR VEC_CONST VEC_SHAPE num_list RPAR { snd (vec $2 $3 $4 (at ())) }
 
 literal_ref :
   | LPAR REF_NULL ref_kind RPAR { Values.NullRef $3 }
@@ -1130,7 +1130,7 @@ literal_ref :
 
 literal :
   | literal_num { Values.Num $1 @@ at () }
-  | literal_simd { Values.Simd $1 @@ at () }
+  | literal_vec { Values.Vec $1 @@ at () }
   | literal_ref { Values.Ref $1 @@ at () }
 
 literal_list :
@@ -1138,8 +1138,8 @@ literal_list :
   | literal literal_list { $1 :: $2 }
 
 numpat :
-  | num { fun sh -> simd_lane_lit sh $1.it $1.at }
-  | NAN { fun sh -> simd_lane_nan sh $1 (ati 3) }
+  | num { fun sh -> vec_lane_lit sh $1.it $1.at }
+  | NAN { fun sh -> vec_lane_nan sh $1 (ati 3) }
 
 numpat_list:
   | /* empty */ { [] }
@@ -1151,10 +1151,10 @@ result :
   | literal_ref { RefResult (RefPat ($1 @@ at ())) @@ at () }
   | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncRefType) @@ at () }
   | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternRefType) @@ at () }
-  | LPAR SIMD_CONST SIMD_SHAPE numpat_list RPAR {
+  | LPAR VEC_CONST VEC_SHAPE numpat_list RPAR {
     if V128.num_lanes $3 <> List.length $4 then
       error (at ()) "wrong number of lane literals";
-    SimdResult (SimdPat (Values.V128 ($3, List.map (fun lit -> lit $3) $4))) @@ at ()
+    VecResult (VecPat (Values.V128 ($3, List.map (fun lit -> lit $3) $4))) @@ at ()
   }
 
 result_list :

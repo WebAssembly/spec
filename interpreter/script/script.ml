@@ -24,8 +24,8 @@ type num_pat =
   | NumPat of num
   | NanPat of nanop
 
-type simd_pat =
-  | SimdPat of (V128.shape * num_pat list) Values.simdop
+type vec_pat =
+  | VecPat of (V128.shape * num_pat list) Values.vecop
 
 type ref_pat =
   | RefPat of ref_
@@ -34,7 +34,7 @@ type ref_pat =
 type result = result' Source.phrase
 and result' =
   | NumResult of num_pat
-  | SimdResult of simd_pat
+  | VecResult of vec_pat
   | RefResult of ref_pat
 
 type assertion = assertion' Source.phrase

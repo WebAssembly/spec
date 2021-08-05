@@ -176,11 +176,11 @@ name:   $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | !
 string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex> | \u{<hex>+})*"
 
 num_type: i32 | i64 | f32 | f64
-simd_type: v128
-simd_shape: i8x16 | i16x8 | i32x4 | i64x2 | f32x4 | f64x2 | v128
+vec_type: v128
+vec_shape: i8x16 | i16x8 | i32x4 | i64x2 | f32x4 | f64x2 | v128
 ref_kind: func | extern
 ref_type: funcref | externref
-val_type: <num_type> | <simd_type> | <ref_type>
+val_type: <num_type> | <vec_type> | <ref_type>
 block_type : ( result <val_type>* )*
 func_type:   ( type <var> )? <param>* <result>*
 global_type: <val_type> | ( mut <val_type> )
@@ -199,11 +199,11 @@ offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc | extend | wrap | ...
 
-simdunop: abs | neg | ...
-simdbinop: add | sub | min_<sign> | ...
-simdternop: bitselect
-simdtestop: all_true | any_true
-simdshiftop: shl | shr_<sign>
+vecunop: abs | neg | ...
+vecbinop: add | sub | min_<sign> | ...
+vecternop: bitselect
+vectestop: all_true | any_true
+vecshiftop: shl | shr_<sign>
 
 expr:
   ( <op> )
@@ -247,10 +247,10 @@ op:
   elem.drop <var>
   <num_type>.load((8|16|32)_<sign>)? <offset>? <align>?
   <num_type>.store(8|16|32)? <offset>? <align>?
-  <simd_type>.load((8x8|16x4|32x2)_<sign>)? <offset>? <align>?
-  <simd_type>.store <offset>? <align>?
-  <simd_type>.load(8|16|32|64)_(lane|splat|zero) <offset>? <align>?
-  <simd_type>.store(8|16|32|64)_lane <offset>? <align>?
+  <vec_type>.load((8x8|16x4|32x2)_<sign>)? <offset>? <align>?
+  <vec_type>.store <offset>? <align>?
+  <vec_type>.load(8|16|32|64)_(lane|splat|zero) <offset>? <align>?
+  <vec_type>.store(8|16|32|64)_lane <offset>? <align>?
   memory.size
   memory.grow
   memory.fill
@@ -266,16 +266,16 @@ op:
   <num_type>.<testop>
   <num_type>.<relop>
   <num_type>.<cvtop>_<num_type>(_<sign>)?
-  <simd_type>.const <simd_shape> <num>+
-  <simd_shape>.<simdunop>
-  <simd_shape>.<simdbinop>
-  <simd_shape>.<simdternop>
-  <simd_shape>.<simdtestop>
-  <simd_shape>.<simdshiftop>
-  <simd_shape>.bitmask
-  <simd_shape>.splat
-  <simd_shape>.extract_lane(_<sign>)? <nat>
-  <simd_shape>.replace_lane <nat>
+  <vec_type>.const <vec_shape> <num>+
+  <vec_shape>.<vecunop>
+  <vec_shape>.<vecbinop>
+  <vec_shape>.<vecternop>
+  <vec_shape>.<vectestop>
+  <vec_shape>.<vecshiftop>
+  <vec_shape>.bitmask
+  <vec_shape>.splat
+  <vec_shape>.extract_lane(_<sign>)? <nat>
+  <vec_shape>.replace_lane <nat>
 
 func:    ( func <name>? <func_type> <local>* <instr>* )
          ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)
@@ -375,7 +375,7 @@ action:
 
 const:
   ( <num_type>.const <num> )                 ;; number value
-  ( <simd_type> <simd_shape> <num>+ )        ;; simd value
+  ( <vec_type> <vec_shape> <num>+ )          ;; vector value
   ( ref.null <ref_kind> )                    ;; null reference
   ( ref.extern <nat> )                       ;; host reference
 
@@ -391,7 +391,7 @@ assertion:
 result:
   <const>
   ( <num_type>.const <num_pat> )
-  ( <simd_type>.const <simd_shape> <num_pat>+ )
+  ( <vec_type>.const <vec_shape> <num_pat>+ )
   ( ref.extern )
   ( ref.func )
 

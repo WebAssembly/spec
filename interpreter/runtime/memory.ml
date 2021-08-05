@@ -141,17 +141,17 @@ let store_num_packed sz mem a o n =
     | _ -> raise Type
   in storen mem a o w x
 
-let load_simd mem a o t =
+let load_vec mem a o t =
   match t with
   | V128Type ->
-    V128 (V128.of_bits (load_bytes mem (effective_address a o) (Types.simd_size t)))
+    V128 (V128.of_bits (load_bytes mem (effective_address a o) (Types.vec_size t)))
 
-let store_simd mem a o n =
+let store_vec mem a o n =
   match n with
   | V128 x -> store_bytes mem (effective_address a o) (V128.to_bits x)
 
-let load_simd_packed sz ext mem a o t =
-  assert (packed_size sz < simd_size t);
+let load_vec_packed sz ext mem a o t =
+  assert (packed_size sz < vec_size t);
   let x = loadn mem a o (packed_size sz) in
   let b = Bytes.make 16 '\x00' in
   Bytes.set_int64_le b 0 x;

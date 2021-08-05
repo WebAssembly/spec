@@ -340,27 +340,27 @@ let rec step (c : config) : config =
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | SimdLoad {offset; ty; pack; _}, Num (I32 i) :: vs' ->
+      | VecLoad {offset; ty; pack; _}, Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
         (try
           let v =
             match pack with
-            | None -> Memory.load_simd mem addr offset ty
+            | None -> Memory.load_vec mem addr offset ty
             | Some (sz, ext) ->
-              Memory.load_simd_packed sz ext mem addr offset ty
-          in Simd v :: vs', []
+              Memory.load_vec_packed sz ext mem addr offset ty
+          in Vec v :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | SimdStore {offset; _}, Simd v :: Num (I32 i) :: vs' ->
+      | VecStore {offset; _}, Vec v :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
         (try
-          Memory.store_simd mem addr offset v;
+          Memory.store_vec mem addr offset v;
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | SimdLoadLane ({offset; ty; pack; _}, j), Simd (V128 v) :: Num (I32 i) :: vs' ->
+      | VecLoadLane ({offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
         (try
@@ -378,10 +378,10 @@ let rec step (c : config) : config =
             | Pack64 ->
               V128.I64x2.replace_lane j v
                 (I64Num.of_num 0 (Memory.load_num mem addr offset I64Type))
-          in Simd (V128 v) :: vs', []
+          in Vec (V128 v) :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | SimdStoreLane ({offset; ty; pack; _}, j), Simd (V128 v) :: Num (I32 i) :: vs' ->
+      | VecStoreLane ({offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
         (try
@@ -521,55 +521,55 @@ let rec step (c : config) : config =
         (try Num (Eval_num.eval_cvtop cvtop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdConst v, vs ->
-        Simd v.it :: vs, []
+      | VecConst v, vs ->
+        Vec v.it :: vs, []
 
-      | SimdTest testop, Simd n :: vs' ->
-        (try value_of_bool (Eval_simd.eval_testop testop n) :: vs', []
+      | VecTest testop, Vec n :: vs' ->
+        (try value_of_bool (Eval_vec.eval_testop testop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdUnary unop, Simd n :: vs' ->
-        (try Simd (Eval_simd.eval_unop unop n) :: vs', []
+      | VecUnary unop, Vec n :: vs' ->
+        (try Vec (Eval_vec.eval_unop unop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdBinary binop, Simd n2 :: Simd n1 :: vs' ->
-        (try Simd (Eval_simd.eval_binop binop n1 n2) :: vs', []
+      | VecBinary binop, Vec n2 :: Vec n1 :: vs' ->
+        (try Vec (Eval_vec.eval_binop binop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdTestVec vtestop, Simd n :: vs' ->
-        (try value_of_bool (Eval_simd.eval_vtestop vtestop n) :: vs', []
+      | VecTestBits vtestop, Vec n :: vs' ->
+        (try value_of_bool (Eval_vec.eval_vtestop vtestop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdUnaryVec vunop, Simd n :: vs' ->
-        (try Simd (Eval_simd.eval_vunop vunop n) :: vs', []
+      | VecUnaryBits vunop, Vec n :: vs' ->
+        (try Vec (Eval_vec.eval_vunop vunop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdBinaryVec vbinop, Simd n2 :: Simd n1 :: vs' ->
-        (try Simd (Eval_simd.eval_vbinop vbinop n1 n2) :: vs', []
+      | VecBinaryBits vbinop, Vec n2 :: Vec n1 :: vs' ->
+        (try Vec (Eval_vec.eval_vbinop vbinop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdTernaryVec vternop, Simd v3 :: Simd v2 :: Simd v1 :: vs' ->
-        (try Simd (Eval_simd.eval_vternop vternop v1 v2 v3) :: vs', []
+      | VecTernaryBits vternop, Vec v3 :: Vec v2 :: Vec v1 :: vs' ->
+        (try Vec (Eval_vec.eval_vternop vternop v1 v2 v3) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdShift shiftop, Num s :: Simd v :: vs' ->
-        (try Simd (Eval_simd.eval_shiftop shiftop v s) :: vs', []
+      | VecShift shiftop, Num s :: Vec v :: vs' ->
+        (try Vec (Eval_vec.eval_shiftop shiftop v s) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdBitmask bitmaskop, Simd v :: vs' ->
-        (try Num (Eval_simd.eval_bitmaskop bitmaskop v) :: vs', []
+      | VecBitmask bitmaskop, Vec v :: vs' ->
+        (try Num (Eval_vec.eval_bitmaskop bitmaskop v) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdSplat splatop, Num n :: vs' ->
-        (try Simd (Eval_simd.eval_splatop splatop n) :: vs', []
+      | VecSplat splatop, Num n :: vs' ->
+        (try Vec (Eval_vec.eval_splatop splatop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdExtract extractop, Simd v :: vs' ->
-        (try Num (Eval_simd.eval_extractop extractop v) :: vs', []
+      | VecExtract extractop, Vec v :: vs' ->
+        (try Num (Eval_vec.eval_extractop extractop v) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
-      | SimdReplace replaceop, Num r :: Simd v :: vs' ->
-        (try Simd (Eval_simd.eval_replaceop replaceop v r) :: vs', []
+      | VecReplace replaceop, Num r :: Vec v :: vs' ->
+        (try Vec (Eval_vec.eval_replaceop replaceop v r) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | _ ->

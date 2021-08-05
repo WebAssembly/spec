@@ -98,7 +98,7 @@ struct
     | F32Type -> vs7 (-0x03)
     | F64Type -> vs7 (-0x04)
 
-  let simd_type = function
+  let vec_type = function
     | V128Type -> vs7 (-0x05)
 
   let ref_type = function
@@ -107,7 +107,7 @@ struct
 
   let value_type = function
     | NumType t -> num_type t
-    | SimdType t -> simd_type t
+    | VecType t -> vec_type t
     | RefType t -> ref_type t
 
   let func_type = function
@@ -138,7 +138,7 @@ struct
   open V128
 
   let op n = u8 n
-  let simd_op n = op 0xfd; vu32 n
+  let vecop n = op 0xfd; vu32 n
   let end_ () = op 0x0b
 
   let memop {align; offset; _} = vu32 (Int32.of_int align); vu32 offset
@@ -232,53 +232,53 @@ struct
     | Store {ty = F32Type | F64Type; pack = Some _; _} -> assert false
     | Store {ty = (I32Type | I64Type); pack = Some Pack64; _} -> assert false
 
-    | SimdLoad ({ty = V128Type; pack = None; _} as mo) ->
-      simd_op 0x00l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack8x8, SX)); _} as mo) ->
-      simd_op 0x01l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack8x8, ZX)); _} as mo) ->
-      simd_op 0x02l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack16x4, SX)); _} as mo) ->
-      simd_op 0x03l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack16x4, ZX)); _} as mo) ->
-      simd_op 0x04l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack32x2, SX)); _} as mo) ->
-      simd_op 0x05l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack32x2, ZX)); _} as mo) ->
-      simd_op 0x06l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack8, ExtSplat); _} as mo) ->
-      simd_op 0x07l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack16, ExtSplat); _} as mo) ->
-      simd_op 0x08l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack32, ExtSplat); _} as mo) ->
-      simd_op 0x09l; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtSplat); _} as mo) ->
-      simd_op 0x0al; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack32, ExtZero); _} as mo) ->
-      simd_op 0x5cl; memop mo
-    | SimdLoad ({ty = V128Type; pack = Some (Pack64, ExtZero); _} as mo) ->
-      simd_op 0x5dl; memop mo
-    | SimdLoad _ -> assert false
+    | VecLoad ({ty = V128Type; pack = None; _} as mo) ->
+      vecop 0x00l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack8x8, SX)); _} as mo) ->
+      vecop 0x01l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack8x8, ZX)); _} as mo) ->
+      vecop 0x02l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack16x4, SX)); _} as mo) ->
+      vecop 0x03l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack16x4, ZX)); _} as mo) ->
+      vecop 0x04l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack32x2, SX)); _} as mo) ->
+      vecop 0x05l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack32x2, ZX)); _} as mo) ->
+      vecop 0x06l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack8, ExtSplat); _} as mo) ->
+      vecop 0x07l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack16, ExtSplat); _} as mo) ->
+      vecop 0x08l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack32, ExtSplat); _} as mo) ->
+      vecop 0x09l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtSplat); _} as mo) ->
+      vecop 0x0al; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack32, ExtZero); _} as mo) ->
+      vecop 0x5cl; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtZero); _} as mo) ->
+      vecop 0x5dl; memop mo
+    | VecLoad _ -> assert false
 
-    | SimdLoadLane ({ty = V128Type; pack = Pack8; _} as mo, i) ->
-      simd_op 0x54l; memop mo; u8 i;
-    | SimdLoadLane ({ty = V128Type; pack = Pack16; _} as mo, i) ->
-      simd_op 0x55l; memop mo; u8 i;
-    | SimdLoadLane ({ty = V128Type; pack = Pack32; _} as mo, i) ->
-      simd_op 0x56l; memop mo; u8 i;
-    | SimdLoadLane ({ty = V128Type; pack = Pack64; _} as mo, i) ->
-      simd_op 0x57l; memop mo; u8 i;
+    | VecLoadLane ({ty = V128Type; pack = Pack8; _} as mo, i) ->
+      vecop 0x54l; memop mo; u8 i;
+    | VecLoadLane ({ty = V128Type; pack = Pack16; _} as mo, i) ->
+      vecop 0x55l; memop mo; u8 i;
+    | VecLoadLane ({ty = V128Type; pack = Pack32; _} as mo, i) ->
+      vecop 0x56l; memop mo; u8 i;
+    | VecLoadLane ({ty = V128Type; pack = Pack64; _} as mo, i) ->
+      vecop 0x57l; memop mo; u8 i;
 
-    | SimdStore ({ty = V128Type; _} as mo) -> simd_op 0x0bl; memop mo
+    | VecStore ({ty = V128Type; _} as mo) -> vecop 0x0bl; memop mo
 
-    | SimdStoreLane ({ty = V128Type; pack = Pack8; _} as mo, i) ->
-      simd_op 0x58l; memop mo; u8 i;
-    | SimdStoreLane ({ty = V128Type; pack = Pack16; _} as mo, i) ->
-      simd_op 0x59l; memop mo; u8 i;
-    | SimdStoreLane ({ty = V128Type; pack = Pack32; _} as mo, i) ->
-      simd_op 0x5al; memop mo; u8 i;
-    | SimdStoreLane ({ty = V128Type; pack = Pack64; _} as mo, i) ->
-      simd_op 0x5bl; memop mo; u8 i;
+    | VecStoreLane ({ty = V128Type; pack = Pack8; _} as mo, i) ->
+      vecop 0x58l; memop mo; u8 i;
+    | VecStoreLane ({ty = V128Type; pack = Pack16; _} as mo, i) ->
+      vecop 0x59l; memop mo; u8 i;
+    | VecStoreLane ({ty = V128Type; pack = Pack32; _} as mo, i) ->
+      vecop 0x5al; memop mo; u8 i;
+    | VecStoreLane ({ty = V128Type; pack = Pack64; _} as mo, i) ->
+      vecop 0x5bl; memop mo; u8 i;
 
     | MemorySize -> op 0x3f; u8 0x00
     | MemoryGrow -> op 0x40; u8 0x00
@@ -457,234 +457,234 @@ struct
     | Convert (F64 F64Op.DemoteF64) -> assert false
     | Convert (F64 F64Op.ReinterpretInt) -> op 0xbf
 
-    | SimdConst {it = V128 c; _} -> simd_op 0x0cl; v128 c
+    | VecConst {it = V128 c; _} -> vecop 0x0cl; v128 c
 
-    | SimdTest (V128 (I8x16 V128Op.AllTrue)) -> simd_op 0x63l
-    | SimdTest (V128 (I16x8 V128Op.AllTrue)) -> simd_op 0x83l
-    | SimdTest (V128 (I32x4 V128Op.AllTrue)) -> simd_op 0xa3l
-    | SimdTest (V128 (I64x2 V128Op.AllTrue)) -> simd_op 0xc3l
-    | SimdTest (V128 _) -> .
+    | VecTest (V128 (I8x16 V128Op.AllTrue)) -> vecop 0x63l
+    | VecTest (V128 (I16x8 V128Op.AllTrue)) -> vecop 0x83l
+    | VecTest (V128 (I32x4 V128Op.AllTrue)) -> vecop 0xa3l
+    | VecTest (V128 (I64x2 V128Op.AllTrue)) -> vecop 0xc3l
+    | VecTest (V128 _) -> .
 
-    | SimdUnary (V128 (I8x16 V128Op.Abs)) -> simd_op 0x60l
-    | SimdUnary (V128 (I8x16 V128Op.Neg)) -> simd_op 0x61l
-    | SimdUnary (V128 (I8x16 V128Op.Popcnt)) -> simd_op 0x62l
-    | SimdUnary (V128 (I16x8 V128Op.Abs)) -> simd_op 0x80l
-    | SimdUnary (V128 (I16x8 V128Op.Neg)) -> simd_op 0x81l
-    | SimdUnary (V128 (I16x8 V128Op.ExtendLowS)) -> simd_op 0x87l
-    | SimdUnary (V128 (I16x8 V128Op.ExtendHighS)) -> simd_op 0x88l
-    | SimdUnary (V128 (I16x8 V128Op.ExtendLowU)) -> simd_op 0x89l
-    | SimdUnary (V128 (I16x8 V128Op.ExtendHighU)) -> simd_op 0x8al
-    | SimdUnary (V128 (I16x8 V128Op.ExtAddPairwiseS)) -> simd_op 0x7cl
-    | SimdUnary (V128 (I16x8 V128Op.ExtAddPairwiseU)) -> simd_op 0x7dl
-    | SimdUnary (V128 (I32x4 V128Op.Abs)) -> simd_op 0xa0l
-    | SimdUnary (V128 (I32x4 V128Op.Neg)) -> simd_op 0xa1l
-    | SimdUnary (V128 (I32x4 V128Op.ExtendLowS)) -> simd_op 0xa7l
-    | SimdUnary (V128 (I32x4 V128Op.ExtendHighS)) -> simd_op 0xa8l
-    | SimdUnary (V128 (I32x4 V128Op.ExtendLowU)) -> simd_op 0xa9l
-    | SimdUnary (V128 (I32x4 V128Op.ExtendHighU)) -> simd_op 0xaal
-    | SimdUnary (V128 (I32x4 V128Op.ExtAddPairwiseS)) -> simd_op 0x7el
-    | SimdUnary (V128 (I32x4 V128Op.ExtAddPairwiseU)) -> simd_op 0x7fl
-    | SimdUnary (V128 (I64x2 V128Op.Abs)) -> simd_op 0xc0l
-    | SimdUnary (V128 (I64x2 V128Op.Neg)) -> simd_op 0xc1l
-    | SimdUnary (V128 (I64x2 V128Op.ExtendLowS)) -> simd_op 0xc7l
-    | SimdUnary (V128 (I64x2 V128Op.ExtendHighS)) -> simd_op 0xc8l
-    | SimdUnary (V128 (I64x2 V128Op.ExtendLowU)) -> simd_op 0xc9l
-    | SimdUnary (V128 (I64x2 V128Op.ExtendHighU)) -> simd_op 0xcal
-    | SimdUnary (V128 (F32x4 V128Op.Ceil)) -> simd_op 0x67l
-    | SimdUnary (V128 (F32x4 V128Op.Floor)) -> simd_op 0x68l
-    | SimdUnary (V128 (F32x4 V128Op.Trunc)) -> simd_op 0x69l
-    | SimdUnary (V128 (F32x4 V128Op.Nearest)) -> simd_op 0x6al
-    | SimdUnary (V128 (F64x2 V128Op.Ceil)) -> simd_op 0x74l
-    | SimdUnary (V128 (F64x2 V128Op.Floor)) -> simd_op 0x75l
-    | SimdUnary (V128 (F64x2 V128Op.Trunc)) -> simd_op 0x7al
-    | SimdUnary (V128 (F64x2 V128Op.Nearest)) -> simd_op 0x94l
-    | SimdUnary (V128 (F32x4 V128Op.Abs)) -> simd_op 0xe0l
-    | SimdUnary (V128 (F32x4 V128Op.Neg)) -> simd_op 0xe1l
-    | SimdUnary (V128 (F32x4 V128Op.Sqrt)) -> simd_op 0xe3l
-    | SimdUnary (V128 (F64x2 V128Op.Abs)) -> simd_op 0xecl
-    | SimdUnary (V128 (F64x2 V128Op.Neg)) -> simd_op 0xedl
-    | SimdUnary (V128 (F64x2 V128Op.Sqrt)) -> simd_op 0xefl
-    | SimdUnary (V128 (I32x4 V128Op.TruncSatSF32x4)) -> simd_op 0xf8l
-    | SimdUnary (V128 (I32x4 V128Op.TruncSatUF32x4)) -> simd_op 0xf9l
-    | SimdUnary (V128 (I32x4 V128Op.TruncSatSZeroF64x2)) -> simd_op 0xfcl
-    | SimdUnary (V128 (I32x4 V128Op.TruncSatUZeroF64x2)) -> simd_op 0xfdl
-    | SimdUnary (V128 (F32x4 V128Op.ConvertSI32x4)) -> simd_op 0xfal
-    | SimdUnary (V128 (F32x4 V128Op.ConvertUI32x4)) -> simd_op 0xfbl
-    | SimdUnary (V128 (F32x4 V128Op.DemoteZeroF64x2)) -> simd_op 0x5el
-    | SimdUnary (V128 (F64x2 V128Op.PromoteLowF32x4)) -> simd_op 0x5fl
-    | SimdUnary (V128 (F64x2 V128Op.ConvertSI32x4)) -> simd_op 0xfel
-    | SimdUnary (V128 (F64x2 V128Op.ConvertUI32x4)) -> simd_op 0xffl
-    | SimdUnary (V128 _) -> assert false
+    | VecUnary (V128 (I8x16 V128Op.Abs)) -> vecop 0x60l
+    | VecUnary (V128 (I8x16 V128Op.Neg)) -> vecop 0x61l
+    | VecUnary (V128 (I8x16 V128Op.Popcnt)) -> vecop 0x62l
+    | VecUnary (V128 (I16x8 V128Op.Abs)) -> vecop 0x80l
+    | VecUnary (V128 (I16x8 V128Op.Neg)) -> vecop 0x81l
+    | VecUnary (V128 (I16x8 V128Op.ExtendLowS)) -> vecop 0x87l
+    | VecUnary (V128 (I16x8 V128Op.ExtendHighS)) -> vecop 0x88l
+    | VecUnary (V128 (I16x8 V128Op.ExtendLowU)) -> vecop 0x89l
+    | VecUnary (V128 (I16x8 V128Op.ExtendHighU)) -> vecop 0x8al
+    | VecUnary (V128 (I16x8 V128Op.ExtAddPairwiseS)) -> vecop 0x7cl
+    | VecUnary (V128 (I16x8 V128Op.ExtAddPairwiseU)) -> vecop 0x7dl
+    | VecUnary (V128 (I32x4 V128Op.Abs)) -> vecop 0xa0l
+    | VecUnary (V128 (I32x4 V128Op.Neg)) -> vecop 0xa1l
+    | VecUnary (V128 (I32x4 V128Op.ExtendLowS)) -> vecop 0xa7l
+    | VecUnary (V128 (I32x4 V128Op.ExtendHighS)) -> vecop 0xa8l
+    | VecUnary (V128 (I32x4 V128Op.ExtendLowU)) -> vecop 0xa9l
+    | VecUnary (V128 (I32x4 V128Op.ExtendHighU)) -> vecop 0xaal
+    | VecUnary (V128 (I32x4 V128Op.ExtAddPairwiseS)) -> vecop 0x7el
+    | VecUnary (V128 (I32x4 V128Op.ExtAddPairwiseU)) -> vecop 0x7fl
+    | VecUnary (V128 (I64x2 V128Op.Abs)) -> vecop 0xc0l
+    | VecUnary (V128 (I64x2 V128Op.Neg)) -> vecop 0xc1l
+    | VecUnary (V128 (I64x2 V128Op.ExtendLowS)) -> vecop 0xc7l
+    | VecUnary (V128 (I64x2 V128Op.ExtendHighS)) -> vecop 0xc8l
+    | VecUnary (V128 (I64x2 V128Op.ExtendLowU)) -> vecop 0xc9l
+    | VecUnary (V128 (I64x2 V128Op.ExtendHighU)) -> vecop 0xcal
+    | VecUnary (V128 (F32x4 V128Op.Ceil)) -> vecop 0x67l
+    | VecUnary (V128 (F32x4 V128Op.Floor)) -> vecop 0x68l
+    | VecUnary (V128 (F32x4 V128Op.Trunc)) -> vecop 0x69l
+    | VecUnary (V128 (F32x4 V128Op.Nearest)) -> vecop 0x6al
+    | VecUnary (V128 (F64x2 V128Op.Ceil)) -> vecop 0x74l
+    | VecUnary (V128 (F64x2 V128Op.Floor)) -> vecop 0x75l
+    | VecUnary (V128 (F64x2 V128Op.Trunc)) -> vecop 0x7al
+    | VecUnary (V128 (F64x2 V128Op.Nearest)) -> vecop 0x94l
+    | VecUnary (V128 (F32x4 V128Op.Abs)) -> vecop 0xe0l
+    | VecUnary (V128 (F32x4 V128Op.Neg)) -> vecop 0xe1l
+    | VecUnary (V128 (F32x4 V128Op.Sqrt)) -> vecop 0xe3l
+    | VecUnary (V128 (F64x2 V128Op.Abs)) -> vecop 0xecl
+    | VecUnary (V128 (F64x2 V128Op.Neg)) -> vecop 0xedl
+    | VecUnary (V128 (F64x2 V128Op.Sqrt)) -> vecop 0xefl
+    | VecUnary (V128 (I32x4 V128Op.TruncSatSF32x4)) -> vecop 0xf8l
+    | VecUnary (V128 (I32x4 V128Op.TruncSatUF32x4)) -> vecop 0xf9l
+    | VecUnary (V128 (I32x4 V128Op.TruncSatSZeroF64x2)) -> vecop 0xfcl
+    | VecUnary (V128 (I32x4 V128Op.TruncSatUZeroF64x2)) -> vecop 0xfdl
+    | VecUnary (V128 (F32x4 V128Op.ConvertSI32x4)) -> vecop 0xfal
+    | VecUnary (V128 (F32x4 V128Op.ConvertUI32x4)) -> vecop 0xfbl
+    | VecUnary (V128 (F32x4 V128Op.DemoteZeroF64x2)) -> vecop 0x5el
+    | VecUnary (V128 (F64x2 V128Op.PromoteLowF32x4)) -> vecop 0x5fl
+    | VecUnary (V128 (F64x2 V128Op.ConvertSI32x4)) -> vecop 0xfel
+    | VecUnary (V128 (F64x2 V128Op.ConvertUI32x4)) -> vecop 0xffl
+    | VecUnary (V128 _) -> assert false
 
-    | SimdBinary (V128 (I8x16 (V128Op.Shuffle is))) -> simd_op 0x0dl; List.iter u8 is
-    | SimdBinary (V128 (I8x16 V128Op.Swizzle)) -> simd_op 0x0el
-    | SimdBinary (V128 (I8x16 V128Op.Eq)) -> simd_op 0x23l
-    | SimdBinary (V128 (I8x16 V128Op.Ne)) -> simd_op 0x24l
-    | SimdBinary (V128 (I8x16 V128Op.LtS)) -> simd_op 0x25l
-    | SimdBinary (V128 (I8x16 V128Op.LtU)) -> simd_op 0x26l
-    | SimdBinary (V128 (I8x16 V128Op.GtS)) -> simd_op 0x27l
-    | SimdBinary (V128 (I8x16 V128Op.GtU)) -> simd_op 0x28l
-    | SimdBinary (V128 (I8x16 V128Op.LeS)) -> simd_op 0x29l
-    | SimdBinary (V128 (I8x16 V128Op.LeU)) -> simd_op 0x2al
-    | SimdBinary (V128 (I8x16 V128Op.GeS)) -> simd_op 0x2bl
-    | SimdBinary (V128 (I8x16 V128Op.GeU)) -> simd_op 0x2cl
-    | SimdBinary (V128 (I8x16 V128Op.NarrowS)) -> simd_op 0x65l
-    | SimdBinary (V128 (I8x16 V128Op.NarrowU)) -> simd_op 0x66l
-    | SimdBinary (V128 (I8x16 V128Op.Add)) -> simd_op 0x6el
-    | SimdBinary (V128 (I8x16 V128Op.AddSatS)) -> simd_op 0x6fl
-    | SimdBinary (V128 (I8x16 V128Op.AddSatU)) -> simd_op 0x70l
-    | SimdBinary (V128 (I8x16 V128Op.Sub)) -> simd_op 0x71l
-    | SimdBinary (V128 (I8x16 V128Op.SubSatS)) -> simd_op 0x72l
-    | SimdBinary (V128 (I8x16 V128Op.SubSatU)) -> simd_op 0x73l
-    | SimdBinary (V128 (I8x16 V128Op.MinS)) -> simd_op 0x76l
-    | SimdBinary (V128 (I8x16 V128Op.MinU)) -> simd_op 0x77l
-    | SimdBinary (V128 (I8x16 V128Op.MaxS)) -> simd_op 0x78l
-    | SimdBinary (V128 (I8x16 V128Op.MaxU)) -> simd_op 0x79l
-    | SimdBinary (V128 (I8x16 V128Op.AvgrU)) -> simd_op 0x7bl
-    | SimdBinary (V128 (I16x8 V128Op.Eq)) -> simd_op 0x2dl
-    | SimdBinary (V128 (I16x8 V128Op.Ne)) -> simd_op 0x2el
-    | SimdBinary (V128 (I16x8 V128Op.LtS)) -> simd_op 0x2fl
-    | SimdBinary (V128 (I16x8 V128Op.LtU)) -> simd_op 0x30l
-    | SimdBinary (V128 (I16x8 V128Op.GtS)) -> simd_op 0x31l
-    | SimdBinary (V128 (I16x8 V128Op.GtU)) -> simd_op 0x32l
-    | SimdBinary (V128 (I16x8 V128Op.LeS)) -> simd_op 0x33l
-    | SimdBinary (V128 (I16x8 V128Op.LeU)) -> simd_op 0x34l
-    | SimdBinary (V128 (I16x8 V128Op.GeS)) -> simd_op 0x35l
-    | SimdBinary (V128 (I16x8 V128Op.GeU)) -> simd_op 0x36l
-    | SimdBinary (V128 (I16x8 V128Op.NarrowS)) -> simd_op 0x85l
-    | SimdBinary (V128 (I16x8 V128Op.NarrowU)) -> simd_op 0x86l
-    | SimdBinary (V128 (I16x8 V128Op.Add)) -> simd_op 0x8el
-    | SimdBinary (V128 (I16x8 V128Op.AddSatS)) -> simd_op 0x8fl
-    | SimdBinary (V128 (I16x8 V128Op.AddSatU)) -> simd_op 0x90l
-    | SimdBinary (V128 (I16x8 V128Op.Sub)) -> simd_op 0x91l
-    | SimdBinary (V128 (I16x8 V128Op.SubSatS)) -> simd_op 0x92l
-    | SimdBinary (V128 (I16x8 V128Op.SubSatU)) -> simd_op 0x93l
-    | SimdBinary (V128 (I16x8 V128Op.Mul)) -> simd_op 0x95l
-    | SimdBinary (V128 (I16x8 V128Op.MinS)) -> simd_op 0x96l
-    | SimdBinary (V128 (I16x8 V128Op.MinU)) -> simd_op 0x97l
-    | SimdBinary (V128 (I16x8 V128Op.MaxS)) -> simd_op 0x98l
-    | SimdBinary (V128 (I16x8 V128Op.MaxU)) -> simd_op 0x99l
-    | SimdBinary (V128 (I16x8 V128Op.AvgrU)) -> simd_op 0x9bl
-    | SimdBinary (V128 (I16x8 V128Op.ExtMulLowS)) -> simd_op 0x9cl
-    | SimdBinary (V128 (I16x8 V128Op.ExtMulHighS)) -> simd_op 0x9dl
-    | SimdBinary (V128 (I16x8 V128Op.ExtMulLowU)) -> simd_op 0x9el
-    | SimdBinary (V128 (I16x8 V128Op.ExtMulHighU)) -> simd_op 0x9fl
-    | SimdBinary (V128 (I16x8 V128Op.Q15MulRSatS)) -> simd_op 0x82l
-    | SimdBinary (V128 (I32x4 V128Op.Add)) -> simd_op 0xael
-    | SimdBinary (V128 (I32x4 V128Op.Sub)) -> simd_op 0xb1l
-    | SimdBinary (V128 (I32x4 V128Op.MinS)) -> simd_op 0xb6l
-    | SimdBinary (V128 (I32x4 V128Op.MinU)) -> simd_op 0xb7l
-    | SimdBinary (V128 (I32x4 V128Op.MaxS)) -> simd_op 0xb8l
-    | SimdBinary (V128 (I32x4 V128Op.MaxU)) -> simd_op 0xb9l
-    | SimdBinary (V128 (I32x4 V128Op.DotS)) -> simd_op 0xbal
-    | SimdBinary (V128 (I32x4 V128Op.Mul)) -> simd_op 0xb5l
-    | SimdBinary (V128 (I32x4 V128Op.Eq)) -> simd_op 0x37l
-    | SimdBinary (V128 (I32x4 V128Op.Ne)) -> simd_op 0x38l
-    | SimdBinary (V128 (I32x4 V128Op.LtS)) -> simd_op 0x39l
-    | SimdBinary (V128 (I32x4 V128Op.LtU)) -> simd_op 0x3al
-    | SimdBinary (V128 (I32x4 V128Op.GtS)) -> simd_op 0x3bl
-    | SimdBinary (V128 (I32x4 V128Op.GtU)) -> simd_op 0x3cl
-    | SimdBinary (V128 (I32x4 V128Op.LeS)) -> simd_op 0x3dl
-    | SimdBinary (V128 (I32x4 V128Op.LeU)) -> simd_op 0x3el
-    | SimdBinary (V128 (I32x4 V128Op.GeS)) -> simd_op 0x3fl
-    | SimdBinary (V128 (I32x4 V128Op.GeU)) -> simd_op 0x40l
-    | SimdBinary (V128 (I32x4 V128Op.ExtMulLowS)) -> simd_op 0xbcl
-    | SimdBinary (V128 (I32x4 V128Op.ExtMulHighS)) -> simd_op 0xbdl
-    | SimdBinary (V128 (I32x4 V128Op.ExtMulLowU)) -> simd_op 0xbel
-    | SimdBinary (V128 (I32x4 V128Op.ExtMulHighU)) -> simd_op 0xbfl
-    | SimdBinary (V128 (I64x2 V128Op.Add)) -> simd_op 0xcel
-    | SimdBinary (V128 (I64x2 V128Op.Sub)) -> simd_op 0xd1l
-    | SimdBinary (V128 (I64x2 V128Op.Mul)) -> simd_op 0xd5l
-    | SimdBinary (V128 (I64x2 V128Op.Eq)) -> simd_op 0xd6l
-    | SimdBinary (V128 (I64x2 V128Op.Ne)) -> simd_op 0xd7l
-    | SimdBinary (V128 (I64x2 V128Op.LtS)) -> simd_op 0xd8l
-    | SimdBinary (V128 (I64x2 V128Op.GtS)) -> simd_op 0xd9l
-    | SimdBinary (V128 (I64x2 V128Op.LeS)) -> simd_op 0xdal
-    | SimdBinary (V128 (I64x2 V128Op.GeS)) -> simd_op 0xdbl
-    | SimdBinary (V128 (I64x2 V128Op.ExtMulLowS)) -> simd_op 0xdcl
-    | SimdBinary (V128 (I64x2 V128Op.ExtMulHighS)) -> simd_op 0xddl
-    | SimdBinary (V128 (I64x2 V128Op.ExtMulLowU)) -> simd_op 0xdel
-    | SimdBinary (V128 (I64x2 V128Op.ExtMulHighU)) -> simd_op 0xdfl
-    | SimdBinary (V128 (F32x4 V128Op.Eq)) -> simd_op 0x41l
-    | SimdBinary (V128 (F32x4 V128Op.Ne)) -> simd_op 0x42l
-    | SimdBinary (V128 (F32x4 V128Op.Lt)) -> simd_op 0x43l
-    | SimdBinary (V128 (F32x4 V128Op.Gt)) -> simd_op 0x44l
-    | SimdBinary (V128 (F32x4 V128Op.Le)) -> simd_op 0x45l
-    | SimdBinary (V128 (F32x4 V128Op.Ge)) -> simd_op 0x46l
-    | SimdBinary (V128 (F32x4 V128Op.Add)) -> simd_op 0xe4l
-    | SimdBinary (V128 (F32x4 V128Op.Sub)) -> simd_op 0xe5l
-    | SimdBinary (V128 (F32x4 V128Op.Mul)) -> simd_op 0xe6l
-    | SimdBinary (V128 (F32x4 V128Op.Div)) -> simd_op 0xe7l
-    | SimdBinary (V128 (F32x4 V128Op.Min)) -> simd_op 0xe8l
-    | SimdBinary (V128 (F32x4 V128Op.Max)) -> simd_op 0xe9l
-    | SimdBinary (V128 (F32x4 V128Op.Pmin)) -> simd_op 0xeal
-    | SimdBinary (V128 (F32x4 V128Op.Pmax)) -> simd_op 0xebl
-    | SimdBinary (V128 (F64x2 V128Op.Eq)) -> simd_op 0x47l
-    | SimdBinary (V128 (F64x2 V128Op.Ne)) -> simd_op 0x48l
-    | SimdBinary (V128 (F64x2 V128Op.Lt)) -> simd_op 0x49l
-    | SimdBinary (V128 (F64x2 V128Op.Gt)) -> simd_op 0x4al
-    | SimdBinary (V128 (F64x2 V128Op.Le)) -> simd_op 0x4bl
-    | SimdBinary (V128 (F64x2 V128Op.Ge)) -> simd_op 0x4cl
-    | SimdBinary (V128 (F64x2 V128Op.Add)) -> simd_op 0xf0l
-    | SimdBinary (V128 (F64x2 V128Op.Sub)) -> simd_op 0xf1l
-    | SimdBinary (V128 (F64x2 V128Op.Mul)) -> simd_op 0xf2l
-    | SimdBinary (V128 (F64x2 V128Op.Div)) -> simd_op 0xf3l
-    | SimdBinary (V128 (F64x2 V128Op.Min)) -> simd_op 0xf4l
-    | SimdBinary (V128 (F64x2 V128Op.Max)) -> simd_op 0xf5l
-    | SimdBinary (V128 (F64x2 V128Op.Pmin)) -> simd_op 0xf6l
-    | SimdBinary (V128 (F64x2 V128Op.Pmax)) -> simd_op 0xf7l
-    | SimdBinary (V128 _) -> assert false
+    | VecBinary (V128 (I8x16 (V128Op.Shuffle is))) -> vecop 0x0dl; List.iter u8 is
+    | VecBinary (V128 (I8x16 V128Op.Swizzle)) -> vecop 0x0el
+    | VecBinary (V128 (I8x16 V128Op.Eq)) -> vecop 0x23l
+    | VecBinary (V128 (I8x16 V128Op.Ne)) -> vecop 0x24l
+    | VecBinary (V128 (I8x16 V128Op.LtS)) -> vecop 0x25l
+    | VecBinary (V128 (I8x16 V128Op.LtU)) -> vecop 0x26l
+    | VecBinary (V128 (I8x16 V128Op.GtS)) -> vecop 0x27l
+    | VecBinary (V128 (I8x16 V128Op.GtU)) -> vecop 0x28l
+    | VecBinary (V128 (I8x16 V128Op.LeS)) -> vecop 0x29l
+    | VecBinary (V128 (I8x16 V128Op.LeU)) -> vecop 0x2al
+    | VecBinary (V128 (I8x16 V128Op.GeS)) -> vecop 0x2bl
+    | VecBinary (V128 (I8x16 V128Op.GeU)) -> vecop 0x2cl
+    | VecBinary (V128 (I8x16 V128Op.NarrowS)) -> vecop 0x65l
+    | VecBinary (V128 (I8x16 V128Op.NarrowU)) -> vecop 0x66l
+    | VecBinary (V128 (I8x16 V128Op.Add)) -> vecop 0x6el
+    | VecBinary (V128 (I8x16 V128Op.AddSatS)) -> vecop 0x6fl
+    | VecBinary (V128 (I8x16 V128Op.AddSatU)) -> vecop 0x70l
+    | VecBinary (V128 (I8x16 V128Op.Sub)) -> vecop 0x71l
+    | VecBinary (V128 (I8x16 V128Op.SubSatS)) -> vecop 0x72l
+    | VecBinary (V128 (I8x16 V128Op.SubSatU)) -> vecop 0x73l
+    | VecBinary (V128 (I8x16 V128Op.MinS)) -> vecop 0x76l
+    | VecBinary (V128 (I8x16 V128Op.MinU)) -> vecop 0x77l
+    | VecBinary (V128 (I8x16 V128Op.MaxS)) -> vecop 0x78l
+    | VecBinary (V128 (I8x16 V128Op.MaxU)) -> vecop 0x79l
+    | VecBinary (V128 (I8x16 V128Op.AvgrU)) -> vecop 0x7bl
+    | VecBinary (V128 (I16x8 V128Op.Eq)) -> vecop 0x2dl
+    | VecBinary (V128 (I16x8 V128Op.Ne)) -> vecop 0x2el
+    | VecBinary (V128 (I16x8 V128Op.LtS)) -> vecop 0x2fl
+    | VecBinary (V128 (I16x8 V128Op.LtU)) -> vecop 0x30l
+    | VecBinary (V128 (I16x8 V128Op.GtS)) -> vecop 0x31l
+    | VecBinary (V128 (I16x8 V128Op.GtU)) -> vecop 0x32l
+    | VecBinary (V128 (I16x8 V128Op.LeS)) -> vecop 0x33l
+    | VecBinary (V128 (I16x8 V128Op.LeU)) -> vecop 0x34l
+    | VecBinary (V128 (I16x8 V128Op.GeS)) -> vecop 0x35l
+    | VecBinary (V128 (I16x8 V128Op.GeU)) -> vecop 0x36l
+    | VecBinary (V128 (I16x8 V128Op.NarrowS)) -> vecop 0x85l
+    | VecBinary (V128 (I16x8 V128Op.NarrowU)) -> vecop 0x86l
+    | VecBinary (V128 (I16x8 V128Op.Add)) -> vecop 0x8el
+    | VecBinary (V128 (I16x8 V128Op.AddSatS)) -> vecop 0x8fl
+    | VecBinary (V128 (I16x8 V128Op.AddSatU)) -> vecop 0x90l
+    | VecBinary (V128 (I16x8 V128Op.Sub)) -> vecop 0x91l
+    | VecBinary (V128 (I16x8 V128Op.SubSatS)) -> vecop 0x92l
+    | VecBinary (V128 (I16x8 V128Op.SubSatU)) -> vecop 0x93l
+    | VecBinary (V128 (I16x8 V128Op.Mul)) -> vecop 0x95l
+    | VecBinary (V128 (I16x8 V128Op.MinS)) -> vecop 0x96l
+    | VecBinary (V128 (I16x8 V128Op.MinU)) -> vecop 0x97l
+    | VecBinary (V128 (I16x8 V128Op.MaxS)) -> vecop 0x98l
+    | VecBinary (V128 (I16x8 V128Op.MaxU)) -> vecop 0x99l
+    | VecBinary (V128 (I16x8 V128Op.AvgrU)) -> vecop 0x9bl
+    | VecBinary (V128 (I16x8 V128Op.ExtMulLowS)) -> vecop 0x9cl
+    | VecBinary (V128 (I16x8 V128Op.ExtMulHighS)) -> vecop 0x9dl
+    | VecBinary (V128 (I16x8 V128Op.ExtMulLowU)) -> vecop 0x9el
+    | VecBinary (V128 (I16x8 V128Op.ExtMulHighU)) -> vecop 0x9fl
+    | VecBinary (V128 (I16x8 V128Op.Q15MulRSatS)) -> vecop 0x82l
+    | VecBinary (V128 (I32x4 V128Op.Add)) -> vecop 0xael
+    | VecBinary (V128 (I32x4 V128Op.Sub)) -> vecop 0xb1l
+    | VecBinary (V128 (I32x4 V128Op.MinS)) -> vecop 0xb6l
+    | VecBinary (V128 (I32x4 V128Op.MinU)) -> vecop 0xb7l
+    | VecBinary (V128 (I32x4 V128Op.MaxS)) -> vecop 0xb8l
+    | VecBinary (V128 (I32x4 V128Op.MaxU)) -> vecop 0xb9l
+    | VecBinary (V128 (I32x4 V128Op.DotS)) -> vecop 0xbal
+    | VecBinary (V128 (I32x4 V128Op.Mul)) -> vecop 0xb5l
+    | VecBinary (V128 (I32x4 V128Op.Eq)) -> vecop 0x37l
+    | VecBinary (V128 (I32x4 V128Op.Ne)) -> vecop 0x38l
+    | VecBinary (V128 (I32x4 V128Op.LtS)) -> vecop 0x39l
+    | VecBinary (V128 (I32x4 V128Op.LtU)) -> vecop 0x3al
+    | VecBinary (V128 (I32x4 V128Op.GtS)) -> vecop 0x3bl
+    | VecBinary (V128 (I32x4 V128Op.GtU)) -> vecop 0x3cl
+    | VecBinary (V128 (I32x4 V128Op.LeS)) -> vecop 0x3dl
+    | VecBinary (V128 (I32x4 V128Op.LeU)) -> vecop 0x3el
+    | VecBinary (V128 (I32x4 V128Op.GeS)) -> vecop 0x3fl
+    | VecBinary (V128 (I32x4 V128Op.GeU)) -> vecop 0x40l
+    | VecBinary (V128 (I32x4 V128Op.ExtMulLowS)) -> vecop 0xbcl
+    | VecBinary (V128 (I32x4 V128Op.ExtMulHighS)) -> vecop 0xbdl
+    | VecBinary (V128 (I32x4 V128Op.ExtMulLowU)) -> vecop 0xbel
+    | VecBinary (V128 (I32x4 V128Op.ExtMulHighU)) -> vecop 0xbfl
+    | VecBinary (V128 (I64x2 V128Op.Add)) -> vecop 0xcel
+    | VecBinary (V128 (I64x2 V128Op.Sub)) -> vecop 0xd1l
+    | VecBinary (V128 (I64x2 V128Op.Mul)) -> vecop 0xd5l
+    | VecBinary (V128 (I64x2 V128Op.Eq)) -> vecop 0xd6l
+    | VecBinary (V128 (I64x2 V128Op.Ne)) -> vecop 0xd7l
+    | VecBinary (V128 (I64x2 V128Op.LtS)) -> vecop 0xd8l
+    | VecBinary (V128 (I64x2 V128Op.GtS)) -> vecop 0xd9l
+    | VecBinary (V128 (I64x2 V128Op.LeS)) -> vecop 0xdal
+    | VecBinary (V128 (I64x2 V128Op.GeS)) -> vecop 0xdbl
+    | VecBinary (V128 (I64x2 V128Op.ExtMulLowS)) -> vecop 0xdcl
+    | VecBinary (V128 (I64x2 V128Op.ExtMulHighS)) -> vecop 0xddl
+    | VecBinary (V128 (I64x2 V128Op.ExtMulLowU)) -> vecop 0xdel
+    | VecBinary (V128 (I64x2 V128Op.ExtMulHighU)) -> vecop 0xdfl
+    | VecBinary (V128 (F32x4 V128Op.Eq)) -> vecop 0x41l
+    | VecBinary (V128 (F32x4 V128Op.Ne)) -> vecop 0x42l
+    | VecBinary (V128 (F32x4 V128Op.Lt)) -> vecop 0x43l
+    | VecBinary (V128 (F32x4 V128Op.Gt)) -> vecop 0x44l
+    | VecBinary (V128 (F32x4 V128Op.Le)) -> vecop 0x45l
+    | VecBinary (V128 (F32x4 V128Op.Ge)) -> vecop 0x46l
+    | VecBinary (V128 (F32x4 V128Op.Add)) -> vecop 0xe4l
+    | VecBinary (V128 (F32x4 V128Op.Sub)) -> vecop 0xe5l
+    | VecBinary (V128 (F32x4 V128Op.Mul)) -> vecop 0xe6l
+    | VecBinary (V128 (F32x4 V128Op.Div)) -> vecop 0xe7l
+    | VecBinary (V128 (F32x4 V128Op.Min)) -> vecop 0xe8l
+    | VecBinary (V128 (F32x4 V128Op.Max)) -> vecop 0xe9l
+    | VecBinary (V128 (F32x4 V128Op.Pmin)) -> vecop 0xeal
+    | VecBinary (V128 (F32x4 V128Op.Pmax)) -> vecop 0xebl
+    | VecBinary (V128 (F64x2 V128Op.Eq)) -> vecop 0x47l
+    | VecBinary (V128 (F64x2 V128Op.Ne)) -> vecop 0x48l
+    | VecBinary (V128 (F64x2 V128Op.Lt)) -> vecop 0x49l
+    | VecBinary (V128 (F64x2 V128Op.Gt)) -> vecop 0x4al
+    | VecBinary (V128 (F64x2 V128Op.Le)) -> vecop 0x4bl
+    | VecBinary (V128 (F64x2 V128Op.Ge)) -> vecop 0x4cl
+    | VecBinary (V128 (F64x2 V128Op.Add)) -> vecop 0xf0l
+    | VecBinary (V128 (F64x2 V128Op.Sub)) -> vecop 0xf1l
+    | VecBinary (V128 (F64x2 V128Op.Mul)) -> vecop 0xf2l
+    | VecBinary (V128 (F64x2 V128Op.Div)) -> vecop 0xf3l
+    | VecBinary (V128 (F64x2 V128Op.Min)) -> vecop 0xf4l
+    | VecBinary (V128 (F64x2 V128Op.Max)) -> vecop 0xf5l
+    | VecBinary (V128 (F64x2 V128Op.Pmin)) -> vecop 0xf6l
+    | VecBinary (V128 (F64x2 V128Op.Pmax)) -> vecop 0xf7l
+    | VecBinary (V128 _) -> assert false
 
-    | SimdTestVec (V128 V128Op.AnyTrue) -> simd_op 0x53l
-    | SimdUnaryVec (V128 V128Op.Not) -> simd_op 0x4dl
-    | SimdBinaryVec (V128 V128Op.And) -> simd_op 0x4el
-    | SimdBinaryVec (V128 V128Op.AndNot) -> simd_op 0x4fl
-    | SimdBinaryVec (V128 V128Op.Or) -> simd_op 0x50l
-    | SimdBinaryVec (V128 V128Op.Xor) -> simd_op 0x51l
-    | SimdTernaryVec (V128 V128Op.Bitselect) -> simd_op 0x52l
+    | VecTestBits (V128 V128Op.AnyTrue) -> vecop 0x53l
+    | VecUnaryBits (V128 V128Op.Not) -> vecop 0x4dl
+    | VecBinaryBits (V128 V128Op.And) -> vecop 0x4el
+    | VecBinaryBits (V128 V128Op.AndNot) -> vecop 0x4fl
+    | VecBinaryBits (V128 V128Op.Or) -> vecop 0x50l
+    | VecBinaryBits (V128 V128Op.Xor) -> vecop 0x51l
+    | VecTernaryBits (V128 V128Op.Bitselect) -> vecop 0x52l
 
-    | SimdShift (V128 (I8x16 V128Op.Shl)) -> simd_op 0x6bl
-    | SimdShift (V128 (I8x16 V128Op.ShrS)) -> simd_op 0x6cl
-    | SimdShift (V128 (I8x16 V128Op.ShrU)) -> simd_op 0x6dl
-    | SimdShift (V128 (I16x8 V128Op.Shl)) -> simd_op 0x8bl
-    | SimdShift (V128 (I16x8 V128Op.ShrS)) -> simd_op 0x8cl
-    | SimdShift (V128 (I16x8 V128Op.ShrU)) -> simd_op 0x8dl
-    | SimdShift (V128 (I32x4 V128Op.Shl)) -> simd_op 0xabl
-    | SimdShift (V128 (I32x4 V128Op.ShrS)) -> simd_op 0xacl
-    | SimdShift (V128 (I32x4 V128Op.ShrU)) -> simd_op 0xadl
-    | SimdShift (V128 (I64x2 V128Op.Shl)) -> simd_op 0xcbl
-    | SimdShift (V128 (I64x2 V128Op.ShrS)) -> simd_op 0xccl
-    | SimdShift (V128 (I64x2 V128Op.ShrU)) -> simd_op 0xcdl
-    | SimdShift (V128 _) -> .
+    | VecShift (V128 (I8x16 V128Op.Shl)) -> vecop 0x6bl
+    | VecShift (V128 (I8x16 V128Op.ShrS)) -> vecop 0x6cl
+    | VecShift (V128 (I8x16 V128Op.ShrU)) -> vecop 0x6dl
+    | VecShift (V128 (I16x8 V128Op.Shl)) -> vecop 0x8bl
+    | VecShift (V128 (I16x8 V128Op.ShrS)) -> vecop 0x8cl
+    | VecShift (V128 (I16x8 V128Op.ShrU)) -> vecop 0x8dl
+    | VecShift (V128 (I32x4 V128Op.Shl)) -> vecop 0xabl
+    | VecShift (V128 (I32x4 V128Op.ShrS)) -> vecop 0xacl
+    | VecShift (V128 (I32x4 V128Op.ShrU)) -> vecop 0xadl
+    | VecShift (V128 (I64x2 V128Op.Shl)) -> vecop 0xcbl
+    | VecShift (V128 (I64x2 V128Op.ShrS)) -> vecop 0xccl
+    | VecShift (V128 (I64x2 V128Op.ShrU)) -> vecop 0xcdl
+    | VecShift (V128 _) -> .
 
-    | SimdBitmask (V128 (I8x16 V128Op.Bitmask)) -> simd_op 0x64l
-    | SimdBitmask (V128 (I16x8 V128Op.Bitmask)) -> simd_op 0x84l
-    | SimdBitmask (V128 (I32x4 V128Op.Bitmask)) -> simd_op 0xa4l
-    | SimdBitmask (V128 (I64x2 V128Op.Bitmask)) -> simd_op 0xc4l
-    | SimdBitmask (V128 _) -> .
+    | VecBitmask (V128 (I8x16 V128Op.Bitmask)) -> vecop 0x64l
+    | VecBitmask (V128 (I16x8 V128Op.Bitmask)) -> vecop 0x84l
+    | VecBitmask (V128 (I32x4 V128Op.Bitmask)) -> vecop 0xa4l
+    | VecBitmask (V128 (I64x2 V128Op.Bitmask)) -> vecop 0xc4l
+    | VecBitmask (V128 _) -> .
 
-    | SimdSplat (V128 ((I8x16 V128Op.Splat))) -> simd_op 0x0fl
-    | SimdSplat (V128 ((I16x8 V128Op.Splat))) -> simd_op 0x10l
-    | SimdSplat (V128 ((I32x4 V128Op.Splat))) -> simd_op 0x11l
-    | SimdSplat (V128 ((I64x2 V128Op.Splat))) -> simd_op 0x12l
-    | SimdSplat (V128 ((F32x4 V128Op.Splat))) -> simd_op 0x13l
-    | SimdSplat (V128 ((F64x2 V128Op.Splat))) -> simd_op 0x14l
+    | VecSplat (V128 ((I8x16 V128Op.Splat))) -> vecop 0x0fl
+    | VecSplat (V128 ((I16x8 V128Op.Splat))) -> vecop 0x10l
+    | VecSplat (V128 ((I32x4 V128Op.Splat))) -> vecop 0x11l
+    | VecSplat (V128 ((I64x2 V128Op.Splat))) -> vecop 0x12l
+    | VecSplat (V128 ((F32x4 V128Op.Splat))) -> vecop 0x13l
+    | VecSplat (V128 ((F64x2 V128Op.Splat))) -> vecop 0x14l
 
-    | SimdExtract (V128 (I8x16 (V128Op.Extract (i, SX)))) -> simd_op 0x15l; u8 i
-    | SimdExtract (V128 (I8x16 (V128Op.Extract (i, ZX)))) -> simd_op 0x16l; u8 i
-    | SimdExtract (V128 (I16x8 (V128Op.Extract (i, SX)))) -> simd_op 0x18l; u8 i
-    | SimdExtract (V128 (I16x8 (V128Op.Extract (i, ZX)))) -> simd_op 0x19l; u8 i
-    | SimdExtract (V128 (I32x4 (V128Op.Extract (i, ())))) -> simd_op 0x1bl; u8 i
-    | SimdExtract (V128 (I64x2 (V128Op.Extract (i, ())))) -> simd_op 0x1dl; u8 i
-    | SimdExtract (V128 (F32x4 (V128Op.Extract (i, ())))) -> simd_op 0x1fl; u8 i
-    | SimdExtract (V128 (F64x2 (V128Op.Extract (i, ())))) -> simd_op 0x21l; u8 i
+    | VecExtract (V128 (I8x16 (V128Op.Extract (i, SX)))) -> vecop 0x15l; u8 i
+    | VecExtract (V128 (I8x16 (V128Op.Extract (i, ZX)))) -> vecop 0x16l; u8 i
+    | VecExtract (V128 (I16x8 (V128Op.Extract (i, SX)))) -> vecop 0x18l; u8 i
+    | VecExtract (V128 (I16x8 (V128Op.Extract (i, ZX)))) -> vecop 0x19l; u8 i
+    | VecExtract (V128 (I32x4 (V128Op.Extract (i, ())))) -> vecop 0x1bl; u8 i
+    | VecExtract (V128 (I64x2 (V128Op.Extract (i, ())))) -> vecop 0x1dl; u8 i
+    | VecExtract (V128 (F32x4 (V128Op.Extract (i, ())))) -> vecop 0x1fl; u8 i
+    | VecExtract (V128 (F64x2 (V128Op.Extract (i, ())))) -> vecop 0x21l; u8 i
 
-    | SimdReplace (V128 (I8x16 (V128Op.Replace i))) -> simd_op 0x17l; u8 i
-    | SimdReplace (V128 (I16x8 (V128Op.Replace i))) -> simd_op 0x1al; u8 i
-    | SimdReplace (V128 (I32x4 (V128Op.Replace i))) -> simd_op 0x1cl; u8 i
-    | SimdReplace (V128 (I64x2 (V128Op.Replace i))) -> simd_op 0x1el; u8 i
-    | SimdReplace (V128 (F32x4 (V128Op.Replace i))) -> simd_op 0x20l; u8 i
-    | SimdReplace (V128 (F64x2 (V128Op.Replace i))) -> simd_op 0x22l; u8 i
+    | VecReplace (V128 (I8x16 (V128Op.Replace i))) -> vecop 0x17l; u8 i
+    | VecReplace (V128 (I16x8 (V128Op.Replace i))) -> vecop 0x1al; u8 i
+    | VecReplace (V128 (I32x4 (V128Op.Replace i))) -> vecop 0x1cl; u8 i
+    | VecReplace (V128 (I64x2 (V128Op.Replace i))) -> vecop 0x1el; u8 i
+    | VecReplace (V128 (F32x4 (V128Op.Replace i))) -> vecop 0x20l; u8 i
+    | VecReplace (V128 (F64x2 (V128Op.Replace i))) -> vecop 0x22l; u8 i
 
   let const c =
     list instr c.it; end_ ()

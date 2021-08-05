@@ -84,13 +84,13 @@ let rec instr (e : instr) =
   | TableInit (x, y) -> tables (var x) ++ elems (var y)
   | ElemDrop x -> elems (var x)
   | Load _ | Store _
-  | SimdLoad _ | SimdStore _ | SimdLoadLane _ | SimdStoreLane _
+  | VecLoad _ | VecStore _ | VecLoadLane _ | VecStoreLane _
   | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
     memories zero
-  | SimdConst _
-  | SimdTest _ | SimdUnary _ | SimdBinary _ | SimdShift _ | SimdBitmask _
-  | SimdTestVec _ | SimdUnaryVec _ | SimdBinaryVec _ | SimdTernaryVec _
-  | SimdSplat _ | SimdExtract _ | SimdReplace _ ->
+  | VecConst _
+  | VecTest _ | VecUnary _ | VecBinary _ | VecShift _ | VecBitmask _
+  | VecTestBits _ | VecUnaryBits _ | VecBinaryBits _ | VecTernaryBits _
+  | VecSplat _ | VecExtract _ | VecReplace _ ->
     memories zero
   | MemoryInit x -> memories zero ++ datas (var x)
   | DataDrop x -> datas (var x)

@@ -4,7 +4,7 @@ open Values
 module V128Op =
 struct
   open Ast.V128Op
-  open V128Simd
+  open V128Vec
   open V128
 
   let testop (op : testop) =
@@ -14,7 +14,7 @@ struct
       | I32x4 AllTrue -> V128.I32x4.all_true
       | I64x2 AllTrue -> V128.I64x2.all_true
       | _ -> .
-    in fun v -> f (of_simd 1 v)
+    in fun v -> f (of_vec 1 v)
 
   let unop (op : unop) =
     let f = match op with
@@ -68,7 +68,7 @@ struct
       | F64x2 ConvertSI32x4 -> V128.F64x2_convert.convert_i32x4_s
       | F64x2 ConvertUI32x4 -> V128.F64x2_convert.convert_i32x4_u
       | _ -> assert false
-    in fun v -> to_simd (f (of_simd 1 v))
+    in fun v -> to_vec (f (of_vec 1 v))
 
   let binop (op : binop) =
     let f = match op with
@@ -190,17 +190,17 @@ struct
       | F64x2 Pmin -> V128.F64x2.pmin
       | F64x2 Pmax -> V128.F64x2.pmax
       | _ -> assert false
-    in fun v1 v2 -> to_simd (f (of_simd 1 v1) (of_simd 2 v2))
+    in fun v1 v2 -> to_vec (f (of_vec 1 v1) (of_vec 2 v2))
 
   let vtestop (op : vtestop) =
     let f = match op with
       | AnyTrue -> V128.I8x16.any_true
-    in fun v -> f (of_simd 1 v)
+    in fun v -> f (of_vec 1 v)
 
   let vunop (op : vunop) =
     let f = match op with
       | Not -> V128.V1x128.lognot
-    in fun v -> to_simd (f (of_simd 1 v))
+    in fun v -> to_vec (f (of_vec 1 v))
 
   let vbinop (op : vbinop) =
     let f = match op with
@@ -208,12 +208,12 @@ struct
       | Or -> V128.V1x128.or_
       | Xor -> V128.V1x128.xor
       | AndNot -> V128.V1x128.andnot
-    in fun v1 v2 -> to_simd (f (of_simd 1 v1) (of_simd 2 v2))
+    in fun v1 v2 -> to_vec (f (of_vec 1 v1) (of_vec 2 v2))
 
   let vternop (op : vternop) =
     let f = match op with
       | Bitselect -> V128.V1x128.bitselect
-    in fun v1 v2 v3 -> to_simd (f (of_simd 1 v1) (of_simd 2 v2) (of_simd 3 v3))
+    in fun v1 v2 v3 -> to_vec (f (of_vec 1 v1) (of_vec 2 v2) (of_vec 3 v3))
 
   let shiftop (op : shiftop) =
     let f = match op with
@@ -230,7 +230,7 @@ struct
       | I64x2 ShrS -> V128.I64x2.shr_s
       | I64x2 ShrU -> V128.I64x2.shr_u
       | _ -> .
-    in fun v n -> to_simd (f (of_simd 1 v) (I32Num.of_num 2 n))
+    in fun v n -> to_vec (f (of_vec 1 v) (I32Num.of_num 2 n))
 
   let bitmaskop (op : bitmaskop) v =
     let f = match op with
@@ -239,13 +239,13 @@ struct
       | I32x4 Bitmask -> V128.I32x4.bitmask
       | I64x2 Bitmask -> V128.I64x2.bitmask
       | _ -> .
-    in I32 (f (of_simd 1 v))
+    in I32 (f (of_vec 1 v))
 end
 
 module V128CvtOp =
 struct
   open Ast.V128Op
-  open V128Simd
+  open V128Vec
   open V128
 
   let splatop (op : splatop) v =
@@ -257,10 +257,10 @@ struct
       | I64x2 Splat -> V128.I64x2.splat (I64Num.of_num 1 v)
       | F32x4 Splat -> V128.F32x4.splat (F32Num.of_num 1 v)
       | F64x2 Splat -> V128.F64x2.splat (F64Num.of_num 1 v)
-    in to_simd i
+    in to_vec i
 
   let extractop (op : extractop) v =
-    let v128 = of_simd 1 v in
+    let v128 = of_vec 1 v in
     match op with
     | I8x16 (Extract (i, SX)) -> I32 (V128.I8x16.extract_lane_s i v128)
     | I8x16 (Extract (i, ZX)) -> I32 (V128.I8x16.extract_lane_u i v128)
@@ -272,7 +272,7 @@ struct
     | F64x2 (Extract (i, ())) -> F64 (V128.F64x2.extract_lane i v128)
 
   let replaceop (op : replaceop) v (n : Values.num) =
-    let v128 = of_simd 1 v in
+    let v128 = of_vec 1 v in
     let v128' = match op with
       | I8x16 (Replace i) -> V128.I8x16.replace_lane i v128 (I32Num.of_num 1 n)
       | I16x8 (Replace i) -> V128.I16x8.replace_lane i v128 (I32Num.of_num 1 n)
@@ -280,7 +280,7 @@ struct
       | I64x2 (Replace i) -> V128.I64x2.replace_lane i v128 (I64Num.of_num 1 n)
       | F32x4 (Replace i) -> V128.F32x4.replace_lane i v128 (F32Num.of_num 1 n)
       | F64x2 (Replace i) -> V128.F64x2.replace_lane i v128 (F64Num.of_num 1 n)
-    in to_simd v128'
+    in to_vec v128'
 end
 
 (* Dispatch *)

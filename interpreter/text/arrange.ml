@@ -56,7 +56,7 @@ let break_string s =
 (* Types *)
 
 let num_type t = string_of_num_type t
-let simd_type t = string_of_simd_type t
+let vec_type t = string_of_vec_type t
 let ref_type t = string_of_ref_type t
 let refed_type t = string_of_refed_type t
 let value_type t = string_of_value_type t
@@ -90,7 +90,7 @@ let pack_shape = function
   | Pack16x4 -> "16x4"
   | Pack32x2 -> "32x2"
 
-let simd_extension sz = function
+let vec_extension sz = function
   | ExtLane (sh, ext) -> pack_shape sh ^ extension ext
   | ExtSplat -> pack_size sz ^ "_splat"
   | ExtZero -> pack_size sz ^ "_zero"
@@ -352,11 +352,11 @@ let oper (iop, fop) op =
   | F64 o -> fop "64" o
   )
 
-let simd_oper (vop) op =
+let vec_oper (vop) op =
   match op with
   | V128 o -> "v128." ^ vop o
 
-let simd_shape_oper (pop, iop, fop) op =
+let vec_shape_oper (pop, iop, fop) op =
   match op with
   | V128 o -> V128.string_of_shape o ^ "." ^ V128Op.lane_oper (pop, iop, fop) o
 
@@ -366,19 +366,19 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
-let simd_unop = simd_shape_oper (V128Op.iunop, V128Op.iunop, V128Op.funop)
-let simd_binop = simd_shape_oper (V128Op.ibinop, V128Op.ibinop, V128Op.fbinop)
-let simd_testop = simd_shape_oper (V128Op.itestop, V128Op.itestop, V128Op.voidop)
-let simd_vunop = simd_oper (V128Op.vunop)
-let simd_vbinop = simd_oper (V128Op.vbinop)
-let simd_vternop = simd_oper (V128Op.vternop)
-let simd_vtestop = simd_oper (V128Op.vtestop)
-let simd_shiftop = simd_shape_oper (V128Op.ishiftop, V128Op.ishiftop, V128Op.voidop)
-let simd_bitmaskop = simd_shape_oper (V128Op.ibitmaskop, V128Op.ibitmaskop, V128Op.voidop)
+let vec_unop = vec_shape_oper (V128Op.iunop, V128Op.iunop, V128Op.funop)
+let vec_binop = vec_shape_oper (V128Op.ibinop, V128Op.ibinop, V128Op.fbinop)
+let vec_testop = vec_shape_oper (V128Op.itestop, V128Op.itestop, V128Op.voidop)
+let vec_vunop = vec_oper (V128Op.vunop)
+let vec_vbinop = vec_oper (V128Op.vbinop)
+let vec_vternop = vec_oper (V128Op.vternop)
+let vec_vtestop = vec_oper (V128Op.vtestop)
+let vec_shiftop = vec_shape_oper (V128Op.ishiftop, V128Op.ishiftop, V128Op.voidop)
+let vec_bitmaskop = vec_shape_oper (V128Op.ibitmaskop, V128Op.ibitmaskop, V128Op.voidop)
 
-let simd_splatop = simd_shape_oper (V128Op.splatop, V128Op.splatop, V128Op.splatop)
-let simd_extractop = simd_shape_oper (V128Op.pextractop, V128Op.extractop, V128Op.extractop)
-let simd_replaceop = simd_shape_oper (V128Op.replaceop, V128Op.replaceop, V128Op.replaceop)
+let vec_splatop = vec_shape_oper (V128Op.splatop, V128Op.splatop, V128Op.splatop)
+let vec_extractop = vec_shape_oper (V128Op.pextractop, V128Op.extractop, V128Op.extractop)
+let vec_replaceop = vec_shape_oper (V128Op.replaceop, V128Op.replaceop, V128Op.replaceop)
 
 let memop name typ {ty; align; offset; _} sz =
   typ ty ^ "." ^ name ^
@@ -396,17 +396,17 @@ let storeop op =
   | None -> memop "store" num_type op (num_size op.ty)
   | Some sz -> memop ("store" ^ pack_size sz) num_type op (packed_size sz)
 
-let simd_loadop (op : simd_loadop) =
+let vec_loadop (op : vec_loadop) =
   match op.pack with
-  | None -> memop "load" simd_type op (simd_size op.ty)
+  | None -> memop "load" vec_type op (vec_size op.ty)
   | Some (sz, ext) ->
-    memop ("load" ^ simd_extension sz ext) simd_type op (packed_size sz)
+    memop ("load" ^ vec_extension sz ext) vec_type op (packed_size sz)
 
-let simd_storeop op =
-  memop "store" simd_type op (simd_size op.ty)
+let vec_storeop op =
+  memop "store" vec_type op (vec_size op.ty)
 
-let simd_laneop instr (op, i) =
-  memop (instr ^ pack_size op.pack ^ "_lane") simd_type op
+let vec_laneop instr (op, i) =
+  memop (instr ^ pack_size op.pack ^ "_lane") vec_type op
     (packed_size op.pack) ^ " " ^ nat i
 
 
@@ -414,9 +414,9 @@ let simd_laneop instr (op, i) =
 
 let var x = nat32 x.it
 let num v = string_of_num v.it
-let simd v = string_of_simd v.it
+let vec v = string_of_vec v.it
 let constop v = num_type (type_of_num v) ^ ".const"
-let simd_constop v = simd_type (type_of_simd v) ^ ".const i32x4"
+let vec_constop v = vec_type (type_of_vec v) ^ ".const i32x4"
 
 let block_type = function
   | VarBlockType x -> [Node ("type " ^ var x, [])]
@@ -459,10 +459,10 @@ let rec instr e =
     | ElemDrop x -> "elem.drop " ^ var x, []
     | Load op -> loadop op, []
     | Store op -> storeop op, []
-    | SimdLoad op -> simd_loadop op, []
-    | SimdStore op -> simd_storeop op, []
-    | SimdLoadLane op -> simd_laneop "load" op, []
-    | SimdStoreLane op -> simd_laneop "store" op, []
+    | VecLoad op -> vec_loadop op, []
+    | VecStore op -> vec_storeop op, []
+    | VecLoadLane op -> vec_laneop "load" op, []
+    | VecStoreLane op -> vec_laneop "store" op, []
     | MemorySize -> "memory.size", []
     | MemoryGrow -> "memory.grow", []
     | MemoryFill -> "memory.fill", []
@@ -478,19 +478,19 @@ let rec instr e =
     | Unary op -> unop op, []
     | Binary op -> binop op, []
     | Convert op -> cvtop op, []
-    | SimdConst v -> simd_constop v.it ^ " " ^ simd v, []
-    | SimdTest op -> simd_testop op, []
-    | SimdUnary op -> simd_unop op, []
-    | SimdBinary op -> simd_binop op, []
-    | SimdTestVec op -> simd_vtestop op, []
-    | SimdUnaryVec op -> simd_vunop op, []
-    | SimdBinaryVec op -> simd_vbinop op, []
-    | SimdTernaryVec op -> simd_vternop op, []
-    | SimdShift op -> simd_shiftop op, []
-    | SimdBitmask op -> simd_bitmaskop op, []
-    | SimdSplat op -> simd_splatop op, []
-    | SimdExtract op -> simd_extractop op, []
-    | SimdReplace op -> simd_replaceop op, []
+    | VecConst v -> vec_constop v.it ^ " " ^ vec v, []
+    | VecTest op -> vec_testop op, []
+    | VecUnary op -> vec_unop op, []
+    | VecBinary op -> vec_binop op, []
+    | VecTestBits op -> vec_vtestop op, []
+    | VecUnaryBits op -> vec_vunop op, []
+    | VecBinaryBits op -> vec_vbinop op, []
+    | VecTernaryBits op -> vec_vternop op, []
+    | VecShift op -> vec_shiftop op, []
+    | VecBitmask op -> vec_bitmaskop op, []
+    | VecSplat op -> vec_splatop op, []
+    | VecExtract op -> vec_extractop op, []
+    | VecReplace op -> vec_replaceop op, []
   in Node (head, inner)
 
 let const head c =
@@ -646,7 +646,7 @@ let module_ = module_with_var_opt None
 (* Scripts *)
 
 let num mode = if mode = `Binary then hex_string_of_num else string_of_num
-let simd mode = if mode = `Binary then hex_string_of_simd else string_of_simd
+let vec mode = if mode = `Binary then hex_string_of_vec else string_of_vec
 
 let ref_ = function
   | NullRef t -> Node ("ref.null " ^ refed_type t, [])
@@ -656,7 +656,7 @@ let ref_ = function
 let literal mode lit =
   match lit.it with
   | Num n -> Node (constop n ^ " " ^ num mode n, [])
-  | Simd v -> Node (simd_constop v ^ " " ^ simd mode v, [])
+  | Vec v -> Node (vec_constop v ^ " " ^ vec mode v, [])
   | Ref r -> ref_ r
 
 let definition mode x_opt def =
@@ -717,8 +717,8 @@ let lane_pat mode pat shape =
   | NumPat n, _ -> num mode n.it
   | NanPat nan, _ -> nanop nan
 
-let simd_pat mode = function
-  | SimdPat (V128 (shape, pats)) ->
+let vec_pat mode = function
+  | VecPat (V128 (shape, pats)) ->
     let lanes = List.map (fun p -> Atom (lane_pat mode p shape)) pats in
     Node ("v128.const " ^ V128.string_of_shape shape, lanes)
 
@@ -729,7 +729,7 @@ let ref_pat = function
 let result mode res =
   match res.it with
   | NumResult np -> num_pat mode np
-  | SimdResult vp -> simd_pat mode vp
+  | VecResult vp -> vec_pat mode vp
   | RefResult rp -> ref_pat rp
 
 let assertion mode ass =
