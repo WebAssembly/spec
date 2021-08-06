@@ -1,12 +1,145 @@
 Types
 -----
 
-Most :ref:`types <syntax-type>` are universally valid.
-However, restrictions apply to :ref:`function types <syntax-functype>` as well as the :ref:`limits <syntax-limits>` of :ref:`table types <syntax-tabletype>` and :ref:`memory types <syntax-memtype>`, which must be checked during validation.
-
-On :ref:`value types <syntax-valtype>`, a simple notion of subtyping is defined.
+Simple :ref:`types <syntax-type>`, such as :ref:`number types <syntax-numtype>` are universally valid.
+However, restrictions apply to most other types, such as :ref:`reference types <syntax-reftype>`, :ref:`function types <syntax-functype>`, as well as the :ref:`limits <syntax-limits>` of :ref:`table types <syntax-tabletype>` and :ref:`memory types <syntax-memtype>`, which must be checked during validation.
 
 Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`function types <syntax-functype>` for ease of processing.
+
+
+.. index:: number type
+   pair: validation; number type
+   single: abstract syntax; number type
+.. _valid-numtype:
+
+Number Types
+~~~~~~~~~~~~
+
+:ref:`Number types <syntax-numtype>` are always valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashnumtype \numtype \ok
+   }
+
+
+.. index:: heap type
+   pair: validation; heap type
+   single: abstract syntax; heap type
+.. _valid-heaptype:
+
+Heap Types
+~~~~~~~~~~
+
+Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is.
+
+:math:`\FUNC`
+.............
+
+* The heap type is valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashheaptype \FUNC \ok
+   }
+
+:math:`\EXTERN`
+...............
+
+* The heap type is valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashheaptype \EXTERN \ok
+   }
+
+:math:`\typeidx`
+................
+
+* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
+
+* Then the heap type is valid.
+
+.. math::
+   \frac{
+     C.\CTYPES[\typeidx] = \functype
+   }{
+     C \vdashheaptype \typeidx \ok
+   }
+
+
+.. index:: reference type, heap type
+   pair: validation; reference type
+   single: abstract syntax; reference type
+.. _valid-reftype:
+
+Reference Types
+~~~~~~~~~~~~~~~
+
+:ref:`Reference types <syntax-reftype>` are valid when the referenced :ref:`heap type <syntax-heaptype>` is.
+
+:math:`\REF~\NULL^?~\heaptype`
+..............................
+
+* The heap type :math:`\heaptype` must be :ref:`valid <valid-heaptype>`.
+
+* Then the reference type is valid.
+
+.. math::
+   \frac{
+     C \vdashreftype \heaptype \ok
+   }{
+     C \vdashreftype \REF~\NULL^?~\heaptype \ok
+   }
+
+
+.. index:: value type, reference type, heap type, bottom type
+   pair: validation; value type
+   single: abstract syntax; value type
+.. _valid-valtype:
+.. _valid-bottype:
+
+Value Types
+~~~~~~~~~~~
+
+Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number type <valid-numtype>`,  :ref:`reference type <valid-reftype>`, or the :ref:`bottom type <syntax-bottype>`.
+
+:math:`\BOT`
+............
+
+* The value type is valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashvaltype \BOT \ok
+   }
+
+
+.. index:: result type, value type
+   pair: validation; result type
+   single: abstract syntax; result type
+.. _valid-resulttype:
+
+Result Types
+~~~~~~~~~~~~
+
+:math:`[t^\ast]`
+................
+
+* Each :ref:`value type <syntax-valtype>` :math:`t_i` in the type sequence :math:`t^\ast` must be :ref:`valid <valid-valtype>`.
+
+* Then the result type is valid.
+
+.. math::
+   \frac{
+     (C \vdashvaltype t \ok)^\ast
+   }{
+     C \vdashresulttype [t^\ast] \ok
+   }
 
 
 .. index:: limits
@@ -40,7 +173,7 @@ Limits
      \qquad
      (n \leq m)^?
    }{
-     \vdashlimits \{ \LMIN~n, \LMAX~m^? \} : k
+     C \vdashlimits \{ \LMIN~n, \LMAX~m^? \} : k
    }
 
 
@@ -72,10 +205,13 @@ Block Types
 :math:`[\valtype^?]`
 ....................
 
-* The block type is valid as :ref:`function type <syntax-functype>` :math:`[] \to [\valtype^?]`.
+* The value type :math:`\valtype` must either be absent, or :ref:`valid <valid-valtype>`.
+
+* Then the block type is valid as :ref:`function type <syntax-functype>` :math:`[] \to [\valtype^?]`.
 
 .. math::
    \frac{
+     (C \vdashvaltype \valtype \ok)^?
    }{
      C \vdashblocktype [\valtype^?] : [] \to [\valtype^?]
    }
@@ -89,17 +225,22 @@ Block Types
 Function Types
 ~~~~~~~~~~~~~~
 
-:ref:`Function types <syntax-functype>` are always valid.
+:math:`[t_1^\ast] \to [t_2^\ast]`
+.................................
 
-:math:`[t_1^n] \to [t_2^m]`
-...........................
+* The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
 
-* The function type is valid.
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* Then the function type is valid.
 
 .. math::
    \frac{
+     C \vdashvaltype [t_1^\ast] \ok
+     \qquad
+     C \vdashvaltype [t_2^\ast] \ok
    }{
-     \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok
+     C \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok
    }
 
 
@@ -116,13 +257,17 @@ Table Types
 
 * The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{32}-1`.
 
+* The reference type :math:`\reftype` must be :ref:`valid <valid-reftype>`.
+
 * Then the table type is valid.
 
 .. math::
    \frac{
-     \vdashlimits \limits : 2^{32} - 1
+     C \vdashlimits \limits : 2^{32} - 1
+     \qquad
+     C \vdashreftype \reftype \ok
    }{
-     \vdashtabletype \limits~\reftype \ok
+     C \vdashtabletype \limits~\reftype \ok
    }
 
 
@@ -143,9 +288,9 @@ Memory Types
 
 .. math::
    \frac{
-     \vdashlimits \limits : 2^{16}
+     C \vdashlimits \limits : 2^{16}
    }{
-     \vdashmemtype \limits \ok
+     C \vdashmemtype \limits \ok
    }
 
 
@@ -160,12 +305,15 @@ Global Types
 :math:`\mut~\valtype`
 .....................
 
-* The global type is valid.
+* The value type :math:`\valtype` must be :ref:`valid <valid-valtype>`.
+
+* Then the global type is valid.
 
 .. math::
    \frac{
+     C \vdashreftype \valtype \ok
    }{
-     \vdashglobaltype \mut~\valtype \ok
+     C \vdashglobaltype \mut~\valtype \ok
    }
 
 
@@ -186,9 +334,9 @@ External Types
 
 .. math::
    \frac{
-     \vdashfunctype \functype \ok
+     C \vdashfunctype \functype \ok
    }{
-     \vdashexterntype \ETFUNC~\functype \ok
+     C \vdashexterntype \ETFUNC~\functype \ok
    }
 
 :math:`\ETTABLE~\tabletype`
@@ -200,9 +348,9 @@ External Types
 
 .. math::
    \frac{
-     \vdashtabletype \tabletype \ok
+     C \vdashtabletype \tabletype \ok
    }{
-     \vdashexterntype \ETTABLE~\tabletype \ok
+     C \vdashexterntype \ETTABLE~\tabletype \ok
    }
 
 :math:`\ETMEM~\memtype`
@@ -214,9 +362,9 @@ External Types
 
 .. math::
    \frac{
-     \vdashmemtype \memtype \ok
+     C \vdashmemtype \memtype \ok
    }{
-     \vdashexterntype \ETMEM~\memtype \ok
+     C \vdashexterntype \ETMEM~\memtype \ok
    }
 
 :math:`\ETGLOBAL~\globaltype`
@@ -228,226 +376,7 @@ External Types
 
 .. math::
    \frac{
-     \vdashglobaltype \globaltype \ok
+     C \vdashglobaltype \globaltype \ok
    }{
-     \vdashexterntype \ETGLOBAL~\globaltype \ok
-   }
- 
- 
-.. index:: subtyping
-
-Value Subtyping
-~~~~~~~~~~~~~~~
-
-.. index:: number type
-
-.. _match-numtype:
-
-Number Types
-............
-
-A :ref:`number type <syntax-numtype>` :math:`\numtype_1` matches a :ref:`number type <syntax-numtype>` :math:`\numtype_2` if and only if:
-
-* Both :math:`\numtype_1` and :math:`\numtype_2` are the same.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-   }{
-     \vdashnumtypematch \numtype \matchesvaltype \numtype
-   }
-
-
-
-.. index:: reference type
-
-.. _match-reftype:
-
-Reference Types
-...............
-
-A :ref:`reference type <syntax-reftype>` :math:`\reftype_1` matches a :ref:`reference type <syntax-reftype>` :math:`\reftype_2` if and only if:
-
-* Either both :math:`\reftype_1` and :math:`\reftype_2` are the same.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-   }{
-     \vdashreftypematch \reftype \matchesvaltype \reftype
-   }
-
-
-.. index:: value type, number type, reference type
-
-.. _match-valtype:
-
-Value Types
-...........
-
-A :ref:`value type <syntax-valtype>` :math:`\valtype_1` matches a :ref:`value type <syntax-valtype>` :math:`\valtype_2` if and only if:
-
-* Either both :math:`\valtype_1` and :math:`\valtype_2` are :ref:`number types <syntax-numtype>` and :math:`\valtype_1` :ref:`matches <match-numtype>` :math:`\valtype_2`.
-
-* Or both :math:`\valtype_1` and :math:`\valtype_2` are :ref:`reference types <syntax-reftype>` and :math:`\valtype_1` :ref:`matches <match-reftype>` :math:`\valtype_2`.
-
-* Or :math:`\valtype_1` is :math:`\BOT`.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-   }{
-     \vdashvaltypematch \BOT \matchesvaltype \valtype
-   }
-
-
-.. _match-resulttype:
-
-Result Types
-............
-
-Subtyping is lifted to :ref:`result types <syntax-resulttype>` in a pointwise manner.
-That is, a :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` matches a :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` if and only if:
-
-* Every :ref:`value type <syntax-valtype>` :math:`t_1` in :math:`[t_1^\ast]` :ref:`matches <match-valtype>` the corresponding :ref:`value type <syntax-valtype>` :math:`t_2` in :math:`[t_2^\ast]`.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-     (\vdashvaltypematch t_1 \matchesvaltype t_2)^\ast
-   }{
-     \vdashresulttypematch [t_1^\ast] \matchesresulttype [t_2^ast]
-   }
-
-
-.. index:: ! matching, external type
-.. _exec-import:
-.. _match:
-
-Import Subtyping
-~~~~~~~~~~~~~~~~
-
-When :ref:`instantiating <exec-module>` a module,
-:ref:`external values <syntax-externval>` must be provided whose :ref:`types <valid-externval>` are *matched* against the respective :ref:`external types <syntax-externtype>` classifying each import.
-In some cases, this allows for a simple form of subtyping, as defined here.
-
-
-.. index:: limits
-.. _match-limits:
-
-Limits
-......
-
-:ref:`Limits <syntax-limits>` :math:`\{ \LMIN~n_1, \LMAX~m_1^? \}` match limits :math:`\{ \LMIN~n_2, \LMAX~m_2^? \}` if and only if:
-
-* :math:`n_1` is larger than or equal to :math:`n_2`.
-
-* Either:
-
-  * :math:`m_2^?` is empty.
-
-* Or:
-
-  * Both :math:`m_1^?` and :math:`m_2^?` are non-empty.
-
-  * :math:`m_1` is smaller than or equal to :math:`m_2`.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-     n_1 \geq n_2
-   }{
-     \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1^? \} \matcheslimits \{ \LMIN~n_2, \LMAX~\epsilon \}
-   }
-   \quad
-   \frac{
-     n_1 \geq n_2
-     \qquad
-     m_1 \leq m_2
-   }{
-     \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1 \} \matcheslimits \{ \LMIN~n_2, \LMAX~m_2 \}
-   }
-
-
-.. _match-externtype:
-
-.. index:: function type
-.. _match-functype:
-
-Functions
-.........
-
-An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_1` matches :math:`\ETFUNC~\functype_2` if and only if:
-
-* Both :math:`\functype_1` and :math:`\functype_2` are the same.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-   }{
-     \vdashexterntypematch \ETFUNC~\functype \matchesexterntype \ETFUNC~\functype
-   }
-
-
-.. index:: table type, limits, element type
-.. _match-tabletype:
-
-Tables
-......
-
-An :ref:`external type <syntax-externtype>` :math:`\ETTABLE~(\limits_1~\reftype_1)` matches :math:`\ETTABLE~(\limits_2~\reftype_2)` if and only if:
-
-* Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
-
-* Both :math:`\reftype_1` and :math:`\reftype_2` are the same.
-
-.. math::
-   \frac{
-     \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
-   }{
-     \vdashexterntypematch \ETTABLE~(\limits_1~\reftype) \matchesexterntype \ETTABLE~(\limits_2~\reftype)
-   }
-
-
-.. index:: memory type, limits
-.. _match-memtype:
-
-Memories
-........
-
-An :ref:`external type <syntax-externtype>` :math:`\ETMEM~\limits_1` matches :math:`\ETMEM~\limits_2` if and only if:
-
-* Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
-
-.. math::
-   \frac{
-     \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
-   }{
-     \vdashexterntypematch \ETMEM~\limits_1 \matchesexterntype \ETMEM~\limits_2
-   }
-
-
-.. index:: global type, value type, mutability
-.. _match-globaltype:
-
-Globals
-.......
-
-An :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~(\mut_1~t_1)` matches :math:`\ETGLOBAL~(\mut_2~t_2)` if and only if:
-
-* Either both :math:`\mut_1` and :math:`\mut_2` are |MVAR| and :math:`t_1` and :math:`t_2` are the same.
- 
-* Or both :math:`\mut_1` and :math:`\mut_2` are |MCONST| and :math:`t_1` :ref:`matches <match-valtype>` :math:`t_2`.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-   }{
-     \vdashexterntypematch \ETGLOBAL~(\MVAR~t) \matchesexterntype \ETGLOBAL~(\MVAR~t)
-   }
-   \qquad
-   \frac{
-     \vdashvaltypematch t_1 \matchesvaltype t_2
-   }{
-     \vdashexterntypematch \ETGLOBAL~(\MCONST~t_1) \matchesexterntype \ETGLOBAL~(\MCONST~t_2)
+     C \vdashexterntype \ETGLOBAL~\globaltype \ok
    }

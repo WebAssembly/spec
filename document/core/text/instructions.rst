@@ -70,7 +70,7 @@ However, the special case of a type use that is syntactically empty or consists 
    \begin{array}[t]{@{}c@{}} ::= \\ | \\ \end{array}
    &
    \begin{array}[t]{@{}lcll@{}}
-     (t{:}\Tresult)^? &\Rightarrow& t^? \\
+     (t{:}\Tresult_I)^? &\Rightarrow& t^? \\
      x,I'{:}\Ttypeuse_I &\Rightarrow& x & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array} \\
    \production{block instruction} & \Tblockinstr_I &::=&
@@ -128,9 +128,9 @@ The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitt
 .. math::
    \begin{array}{llclll}
    \production{block instruction} &
-     \text{if}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end}
+     \text{if}~~\Tlabel~~\Tblocktype_I~~\Tinstr^\ast~~\text{end}
        &\equiv&
-     \text{if}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{else}~~\text{end}
+     \text{if}~~\Tlabel~~\Tblocktype_I~~\Tinstr^\ast~~\text{else}~~\text{end}
    \end{array}
 
 Also, for backwards compatibility, the table index to :math:`\text{call\_indirect}` can be omitted, defaulting to :math:`0`.
@@ -178,7 +178,7 @@ Parametric Instructions
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{drop} &\Rightarrow& \DROP \\ &&|&
-     \text{select}~((t{:}\Tresult)^\ast)^? &\Rightarrow& \SELECT~(t^\ast)^? \\
+     \text{select}~((t{:}\Tresult_I)^\ast)^? &\Rightarrow& \SELECT~(t^\ast)^? \\
    \end{array}
 
 

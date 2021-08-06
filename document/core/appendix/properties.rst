@@ -4,6 +4,10 @@
 Soundness
 ---------
 
+.. todo:: need to operate wrt semantic types
+.. todo:: define "S \vdash t ok"
+.. todo:: ensure wf of guessed valtypes
+
 The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *type safety* and *memory safety* with respect to the WebAssembly semantics. For example:
 
 * All types declared and derived during validation are respected at run time;
@@ -50,7 +54,7 @@ Results
 :ref:`Results <syntax-result>` :math:`\TRAP`
 ............................................
 
-* The result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any sequence :math:`t^\ast` of :ref:`value types <syntax-valtype>`.
+* The result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any sequence :math:`t^\ast` of :ref:`valid <valid-valtype>` :ref:`value types <syntax-valtype>`.
 
 .. math::
    \frac{
@@ -221,6 +225,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Then the table instance is valid with :ref:`table type <syntax-tabletype>` :math:`\limits~t`.
 
+.. todo:: reftypematch needs C
+
 .. math::
    \frac{
      \vdashtabletype \limits~t \ok
@@ -229,7 +235,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \qquad
      (S \vdash \reff : t')^n
      \qquad
-     (\vdashreftypematch t' \matchesvaltype t)^n
+     (C \vdashreftypematch t' \matchesvaltype t)^n
    }{
      S \vdashtableinst \{ \TITYPE~(\limits~t), \TIELEM~\reff^n \} : \limits~t
    }
@@ -297,11 +303,13 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Then the table instance is valid.
 
+.. todo:: reftypematch needs C
+
 .. math::
    \frac{
      (S \vdash \reff : t')^\ast
      \qquad
-     (\vdashreftypematch t' \matchesvaltype t)^\ast
+     (C \vdashreftypematch t' \matchesvaltype t)^\ast
    }{
      S \vdasheleminst \{ \EITYPE~t, \EIELEM~\reff^\ast \} \ok
    }
