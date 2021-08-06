@@ -41,10 +41,29 @@ And some more discussion and feedback on the custom section format was done in t
 
 https://github.com/WebAssembly/meetings/blob/master/main/2021/CG-01-05.md
 
-After that, a tentative spec was written and a poll for phase 2 scheduled for the CG-02-16:
+After that, a tentative spec was written and there was further discussion in CG-02-16:
 
 https://github.com/WebAssembly/meetings/blob/master/main/2021/CG-02-16.md
 
+And in CG-03-02:
+
+https://github.com/WebAssembly/meetings/blob/main/main/2021/CG-03-02.md
+
+Finally after working on the feedback received, a poll for phase 2 was made, and passed, in CG-03-16:
+
+https://github.com/WebAssembly/meetings/blob/main/main/2021/CG-03-16.md
+
+The feature landed in V8 92 under an experimental flag, and the CheerpX virtual machine started using it,
+with measurable performance improvements. The results were shown in CG-06-08, plus the start of
+a discussion about testing requirements for phase 3:
+
+https://github.com/WebAssembly/meetings/blob/main/main/2021/CG-06-08.md
+
+After the Instrument and Tracing Proposal passed to phase 2 in CG-07-20, the CG felt the need to
+have a framework for standardizing proposals that use custom section as a way to hint the code
+without altering the semantics. Ongoing discussion is in a design issue:
+
+https://github.com/WebAssembly/design/issues/1424
 
 ### Design
 
