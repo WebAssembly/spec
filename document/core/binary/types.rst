@@ -7,7 +7,7 @@ Types
 
 .. note::
    In some places, possible types include both type constructors or types denoted by :ref:`type indices <syntax-typeidx>`.
-   Thus, the binary format for most type constructors corresponds to the encodings of small negative :math:`\xref{binary/values}{binary-sint}{\sN}` values, such that they can unambiguously occur in the same place as (positive) type indices.
+   Thus, the binary format for type constructors corresponds to the encodings of small negative :math:`\xref{binary/values}{binary-sint}{\sN}` values, such that they can unambiguously occur in the same place as (positive) type indices.
 
 
 .. index:: number type
