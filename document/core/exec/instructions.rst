@@ -767,53 +767,28 @@ Most SIMD instructions are defined in terms of generic numeric operators applied
    \end{array}
 
 
-:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}\side\K{\_}t_1\K{x}M\K{\_}\sx^?`
-..................................................................
+:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}\side\K{\_}t_1\K{x}M\K{\_}\sx^?\K{\_zero}^?`
+..............................................................................
 
 1. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. If :math:`\side` is :math:`\K{low}`, then:
+3. If the :math:`\K{zero}` suffix is present, then:
+
+   a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
+
+4. Else if :math:`\side` is :math:`\K{low}`, then:
 
    a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[0 \slice N]`.
 
-4. Else:
+5. Else:
 
    a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[N \slice N]`.
 
-5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(i^\ast))`
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(i^\ast))`
 
-6. Push the value :math:`\V128.\VCONST~c` onto the stack.
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}\side\K{\_}t_1\K{x}M\K{\_}\sx^? &\stepto& (\V128\K{.}\VCONST~c) \\
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[\side(0, N) \slice N]))
-     \end{array}
-
-where:
-
-.. math::
-    \K{low}(x, y) = x
-    \K{high}(x, y) = y
-
-
-:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx^?\K{\_zero}`
-.................................................................
-
-1. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
-
-2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
-
-3. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
-
-4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(i^\ast)~0^M)`
-
-5. Push the value :math:`\V128.\VCONST~c` onto the stack.
+7. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{l}
@@ -824,7 +799,21 @@ where:
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^N)
      \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}\side\K{\_}t_1\K{x}M\K{\_}\sx^? &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[\side(0, N) \slice N]))
+     \end{array}
+   \end{array}
+
+where:
+
+.. math::
+    \K{low}(x, y) = x
+    \K{high}(x, y) = y
 
 
 .. _exec-simd-dot:
