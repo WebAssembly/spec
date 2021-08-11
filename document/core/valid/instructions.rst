@@ -248,17 +248,17 @@ Reference Instructions
      C \vdashinstr \REFFUNC~x : [] \to [\FUNCREF]
    }
 
-.. index:: simd instruction
+.. index:: vector instruction
    pair: validation; instruction
    single: abstract syntax; instruction
 
-.. _valid-instr-simd:
+.. _valid-instr-vec:
 .. _aux-unpacked:
 
-SIMD Instructions
-~~~~~~~~~~~~~~~~~
+Vector Instructions
+~~~~~~~~~~~~~~~~~~~
 
-SIMD instructions can have a prefix to describe the :ref:`shape <syntax-simd-shape>` of the operand. Packed numeric types, |I8| and |I16|, are not :ref:`value type <syntax-valtype>`, we define an auxiliary function to map such packed types into value types:
+Vector instructions can have a prefix to describe the :ref:`shape <syntax-vec-shape>` of the operand. Packed numeric types, |I8| and |I16|, are not :ref:`value type <syntax-valtype>`, we define an auxiliary function to map such packed types into value types:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
@@ -348,7 +348,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-simd-swizzle:
+.. _valid-vec-swizzle:
 
 :math:`\K{i8x16.}\SWIZZLE`
 ..........................
@@ -362,7 +362,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-simd-shuffle:
+.. _valid-vec-shuffle:
 
 :math:`\K{i8x16.}\SHUFFLE~\laneidx^{16}`
 ........................................
@@ -379,7 +379,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-simd-splat:
+.. _valid-vec-splat:
 
 :math:`\shape\K{.}\SPLAT`
 .........................
@@ -395,7 +395,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-simd-extract_lane:
+.. _valid-vec-extract_lane:
 
 :math:`\shape\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx`
 ...................................................
@@ -412,7 +412,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-simd-replace_lane:
+.. _valid-vec-replace_lane:
 
 :math:`\shape\K{.}\REPLACELANE~\laneidx`
 ........................................
@@ -515,7 +515,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-simd-narrow:
+.. _valid-vec-narrow:
 
 :math:`\ishape_1\K{.}\NARROW\K{\_}\ishape_2\K{\_}\sx`
 .....................................................
@@ -529,7 +529,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-simd-bitmask:
+.. _valid-vec-bitmask:
 
 :math:`\ishape\K{.}\BITMASK`
 ............................
@@ -543,7 +543,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-simd-dot:
+.. _valid-vec-dot:
 
 :math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s}`
 ................................................
@@ -557,7 +557,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-simd-extmul:
+.. _valid-vec-extmul:
 
 :math:`\ishape\K{.}\EXTMUL\K{\_}\side\K{\_}\ishape\K{\_}\sx`
 ............................................................
@@ -571,7 +571,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-simd-extadd_pairwise:
+.. _valid-vec-extadd_pairwise:
 
 :math:`\ishape\K{.}\EXTADDPAIRWISE\K{\_}\ishape\K{\_}\sx`
 .........................................................
@@ -624,7 +624,7 @@ Parametric Instructions
 
 * Else:
 
-  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`operand type <syntax-opdtype>` :math:`t` that :ref:`matches <match-opdtype>` some :ref:`number type <syntax-numtype>` or :ref:`SIMD type <syntax-simdtype>`.
+  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`operand type <syntax-opdtype>` :math:`t` that :ref:`matches <match-opdtype>` some :ref:`number type <syntax-numtype>` or :ref:`vector type <syntax-vectype>`.
 
 .. math::
    \frac{
@@ -639,7 +639,7 @@ Parametric Instructions
    }
    \qquad
    \frac{
-     \vdash t \leq \simdtype
+     \vdash t \leq \vectype
    }{
      C \vdashinstr \SELECT : [t~t~\I32] \to [t]
    }

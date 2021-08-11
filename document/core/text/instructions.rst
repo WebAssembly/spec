@@ -533,18 +533,18 @@ Numeric Instructions
    \end{array}
 
 
-.. index:: simd instruction
+.. index:: vector instruction
    pair: text format; instruction
-.. _text-instr-simd:
+.. _text-instr-vec:
 
-SIMD Instructions
-~~~~~~~~~~~~~~~~~~~~
+Vector Instructions
+~~~~~~~~~~~~~~~~~~~
 
-SIMD memory instructions have optional offset and alignment immediates, like the :ref:`memory instructions <text-memarg>`.
+Vector memory instructions have optional offset and alignment immediates, like the :ref:`memory instructions <text-memarg>`.
 
 .. math::
    \begin{array}{llclll}
-   \production{instruction} & \Tplaininstr_I &::=& \dots \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\ &&|&
+   \production{instruction} & \Tplaininstr_I &::=& \dots \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\ &&|&
      \text{v128.load}~~m{:}\Tmemarg_{16} &\Rightarrow& \V128.\LOAD~m \\ &&|&
      \text{v128.load8x8\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{8x8\_s}~m \\ &&|&
      \text{v128.load8x8\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{8x8\_u}~m \\ &&|&
@@ -569,11 +569,11 @@ SIMD memory instructions have optional offset and alignment immediates, like the
      \text{v128.store64\_lane}~~m{:}\Tmemarg_8~~laneidx{:}\Tu8 &\Rightarrow& \V128.\STORE\K{64\_lane}~m~laneidx \\
    \end{array}
 
-SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descriptor, which determines how the following values are parsed.
+Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` descriptor, which determines how the following values are parsed.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{v128.const}~~\text{i8x16}~~(n{:}\Ti8)^{16} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{i8}(n)^{16}) \\ &&|&
      \text{v128.const}~~\text{i16x8}~~(n{:}\Ti16)^{8} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{i16}(n)^8) \\ &&|&
      \text{v128.const}~~\text{i32x4}~~(n{:}\Ti32)^{4} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{i32}(n)^4) \\ &&|&
@@ -584,14 +584,14 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i8x16.shuffle}~~(laneidx{:}\Tu8)^{16} &\Rightarrow& \I8X16.\SHUFFLE~laneidx^{16} \\ &&|&
      \text{i8x16.swizzle} &\Rightarrow& \I8X16.\SWIZZLE
    \end{array}
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i8x16.splat} &\Rightarrow& \I8X16.\SPLAT\\ &&|&
      \text{i16x8.splat} &\Rightarrow& \I16X8.\SPLAT\\ &&|&
      \text{i32x4.splat} &\Rightarrow& \I32X4.\SPLAT\\ &&|&
@@ -602,7 +602,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i8x16.extract\_lane\_s}~~laneidx{:}\Tu8 &\Rightarrow& \I8X16.\EXTRACTLANE\K{\_s}~laneidx \\ &&|&
      \text{i8x16.extract\_lane\_u}~~laneidx{:}\Tu8 &\Rightarrow& \I8X16.\EXTRACTLANE\K{\_u}~laneidx \\ &&|&
      \text{i8x16.replace\_lane}~~laneidx{:}\Tu8 &\Rightarrow& \I8X16.\REPLACELANE~laneidx \\ &&|&
@@ -623,7 +623,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i8x16.eq} &\Rightarrow& \I8X16.\VEQ\\ &&|&
      \text{i8x16.ne} &\Rightarrow& \I8X16.\VNE\\ &&|&
      \text{i8x16.lt\_s} &\Rightarrow& \I8X16.\VLT\K{\_s}\\ &&|&
@@ -638,7 +638,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i16x8.eq} &\Rightarrow& \I16X8.\VEQ\\ &&|&
      \text{i16x8.ne} &\Rightarrow& \I16X8.\VNE\\ &&|&
      \text{i16x8.lt\_s} &\Rightarrow& \I16X8.\VLT\K{\_s}\\ &&|&
@@ -653,7 +653,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i32x4.eq} &\Rightarrow& \I32X4.\VEQ\\ &&|&
      \text{i32x4.ne} &\Rightarrow& \I32X4.\VNE\\ &&|&
      \text{i32x4.lt\_s} &\Rightarrow& \I32X4.\VLT\K{\_s}\\ &&|&
@@ -668,7 +668,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i64x2.eq} &\Rightarrow& \I64X2.\VEQ\\ &&|&
      \text{i64x2.ne} &\Rightarrow& \I64X2.\VNE\\ &&|&
      \text{i64x2.lt\_s} &\Rightarrow& \I64X2.\VLT\K{\_s}\\ &&|&
@@ -681,7 +681,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{f32x4.eq} &\Rightarrow& \F32X4.\VEQ\\ &&|&
      \text{f32x4.ne} &\Rightarrow& \F32X4.\VNE\\ &&|&
      \text{f32x4.lt} &\Rightarrow& \F32X4.\VLT\\ &&|&
@@ -692,7 +692,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{f64x2.eq} &\Rightarrow& \F64X2.\VEQ\\ &&|&
      \text{f64x2.ne} &\Rightarrow& \F64X2.\VNE\\ &&|&
      \text{f64x2.lt} &\Rightarrow& \F64X2.\VLT\\ &&|&
@@ -707,7 +707,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{v128.not} &\Rightarrow& \V128.\VNOT\\ &&|&
      \text{v128.and} &\Rightarrow& \V128.\VAND\\ &&|&
      \text{v128.andnot} &\Rightarrow& \V128.\VANDNOT\\ &&|&
@@ -726,7 +726,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i8x16.abs} &\Rightarrow& \I8X16.\VABS\\ &&|&
      \text{i8x16.neg} &\Rightarrow& \I8X16.\VNEG\\ &&|&
      \text{i8x16.all\_true} &\Rightarrow& \I8X16.\ALLTRUE\\ &&|&
@@ -752,7 +752,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i16x8.abs} &\Rightarrow& \I16X8.\VABS\\ &&|&
      \text{i16x8.neg} &\Rightarrow& \I16X8.\VNEG\\ &&|&
      \text{i16x8.all\_true} &\Rightarrow& \I16X8.\ALLTRUE\\ &&|&
@@ -789,7 +789,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i32x4.abs} &\Rightarrow& \I32X4.\VABS\\ &&|&
      \text{i32x4.neg} &\Rightarrow& \I32X4.\VNEG\\ &&|&
      \text{i32x4.all\_true} &\Rightarrow& \I32X4.\ALLTRUE\\ &&|&
@@ -818,7 +818,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i64x2.abs} &\Rightarrow& \I64X2.\VABS\\ &&|&
      \text{i64x2.neg} &\Rightarrow& \I64X2.\VNEG\\ &&|&
      \text{i64x2.all\_true} &\Rightarrow& \I64X2.\ALLTRUE\\ &&|&
@@ -844,7 +844,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{f32x4.abs} &\Rightarrow& \F32X4.\VABS\\ &&|&
      \text{f32x4.neg} &\Rightarrow& \F32X4.\VNEG\\ &&|&
      \text{f32x4.sqrt} &\Rightarrow& \F32X4.\VSQRT\\ &&|&
@@ -860,7 +860,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{f64x2.abs} &\Rightarrow& \F64X2.\VABS\\ &&|&
      \text{f64x2.neg} &\Rightarrow& \F64X2.\VNEG\\ &&|&
      \text{f64x2.sqrt} &\Rightarrow& \F64X2.\VSQRT\\ &&|&
@@ -876,7 +876,7 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforsimdtext} && \phantom{simdhasreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
      \text{i32x4.trunc\_sat\_f32x4\_s} &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f32x4\_s}\\ &&|&
      \text{i32x4.trunc\_sat\_f32x4\_u} &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f32x4\_u}\\ &&|&
      \text{i32x4.trunc\_sat\_f64x2\_s\_zero} &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f64x2\_s\_zero}\\ &&|&
