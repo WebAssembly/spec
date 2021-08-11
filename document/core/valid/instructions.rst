@@ -292,9 +292,9 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-vsunop:
+.. _valid-vvunop:
 
-:math:`\V128\K{.}\vsunop`
+:math:`\V128\K{.}\vvunop`
 .........................
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
@@ -302,13 +302,13 @@ We also define an auxiliary function to get number of packed numeric types in a 
 .. math::
    \frac{
    }{
-     C \vdashinstr \V128\K{.}\vsunop : [\V128] \to [\V128]
+     C \vdashinstr \V128\K{.}\vvunop : [\V128] \to [\V128]
    }
 
 
-.. _valid-vsbinop:
+.. _valid-vvbinop:
 
-:math:`\V128\K{.}\vsbinop`
+:math:`\V128\K{.}\vvbinop`
 ..........................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
@@ -316,13 +316,13 @@ We also define an auxiliary function to get number of packed numeric types in a 
 .. math::
    \frac{
    }{
-     C \vdashinstr \V128\K{.}\vsbinop : [\V128~\V128] \to [\V128]
+     C \vdashinstr \V128\K{.}\vvbinop : [\V128~\V128] \to [\V128]
    }
 
 
-.. _valid-vsternop:
+.. _valid-vvternop:
 
-:math:`\V128\K{.}\vsternop`
+:math:`\V128\K{.}\vvternop`
 ...........................
 
 * The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
@@ -330,13 +330,13 @@ We also define an auxiliary function to get number of packed numeric types in a 
 .. math::
    \frac{
    }{
-     C \vdashinstr \V128\K{.}\vsternop : [\V128~\V128~\V128] \to [\V128]
+     C \vdashinstr \V128\K{.}\vvternop : [\V128~\V128~\V128] \to [\V128]
    }
 
 
-.. _valid-vstestop:
+.. _valid-vvtestop:
 
-:math:`\V128\K{.}\vstestop`
+:math:`\V128\K{.}\vvtestop`
 ...........................
 
 * The instruction is valid with type :math:`[\V128] \to [\I32]`.
@@ -344,7 +344,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
 .. math::
    \frac{
    }{
-     C \vdashinstr \V128\K{.}\vstestop : [\V128] \to [\I32]
+     C \vdashinstr \V128\K{.}\vvtestop : [\V128] \to [\I32]
    }
 
 
@@ -473,17 +473,17 @@ We also define an auxiliary function to get number of packed numeric types in a 
    }
 
 
-.. _valid-vshiftop:
+.. _valid-vishiftop:
 
-:math:`\ishape\K{.}\vshiftop`
-.............................
+:math:`\ishape\K{.}\vishiftop`
+..............................
 
 * The instruction is valid with type :math:`[\V128~\I32] \to [\V128]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \ishape\K{.}\vshiftop : [\V128~\I32] \to [\V128]
+     C \vdashinstr \ishape\K{.}\vishiftop : [\V128~\I32] \to [\V128]
    }
 
 

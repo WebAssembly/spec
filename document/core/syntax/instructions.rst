@@ -176,14 +176,14 @@ Occasionally, it is convenient to group operators together according to the foll
 .. _syntax-laneidx:
 .. _syntax-shape:
 .. _syntax-side:
-.. _syntax-vternop:
-.. _syntax-vsunop:
-.. _syntax-vsbinop:
-.. _syntax-vsternop:
+.. _syntax-vvunop:
+.. _syntax-vvbinop:
+.. _syntax-vvternop:
+.. _syntax-vvtestop:
 .. _syntax-vitestop:
 .. _syntax-virelop:
 .. _syntax-vfrelop:
-.. _syntax-vshiftop:
+.. _syntax-vishiftop:
 .. _syntax-viunop:
 .. _syntax-vibinop:
 .. _syntax-viminmaxop:
@@ -211,10 +211,10 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \K{v128.}\VCONST~\i128 \\&&|&
-     \K{v128.}\vsunop \\&&|&
-     \K{v128.}\vsbinop \\&&|&
-     \K{v128.}\vsternop \\&&|&
-     \K{v128.}\vstestop \\&&|&
+     \K{v128.}\vvunop \\&&|&
+     \K{v128.}\vvbinop \\&&|&
+     \K{v128.}\vvternop \\&&|&
+     \K{v128.}\vvtestop \\&&|&
      \K{i8x16.}\SHUFFLE~\laneidx^{16} \\&&|&
      \K{i8x16.}\SWIZZLE \\&&|&
      \shape\K{.}\SPLAT \\&&|&
@@ -246,7 +246,7 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{i16x8.}\VEXTEND\K{\_}\side^?\K{\_i8x16\_}\sx ~|~
      \K{i32x4.}\VEXTEND\K{\_}\side^?\K{\_i16x8\_}\sx \\&&|&
      \K{i64x2.}\VEXTEND\K{\_}\side^?\K{\_i32x4\_}\sx \\&&|&
-     \ishape\K{.}\vshiftop \\&&|&
+     \ishape\K{.}\vishiftop \\&&|&
      \ishape\K{.}\vibinop \\&&|&
      \K{i8x16.}\viminmaxop ~|~
      \K{i16x8.}\viminmaxop ~|~
@@ -271,16 +271,16 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}sx ~|~
      \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\&&|&
      \dots \\
-   \production{SIMD unary operator} & \vsunop &::=&
+   \production{SIMD unary operator} & \vvunop &::=&
      \K{not} \\
-   \production{SIMD binary operator} & \vsbinop &::=&
+   \production{SIMD binary operator} & \vvbinop &::=&
      \K{and} ~|~
      \K{andnot} ~|~
      \K{or} ~|~
      \K{xor} \\
-   \production{SIMD ternary operator} & \vsternop &::=&
+   \production{SIMD ternary operator} & \vvternop &::=&
      \K{bitselect} \\
-   \production{SIMD test operator} & \vstestop &::=&
+   \production{SIMD test operator} & \vvtestop &::=&
      \K{any\_true} \\
    \production{SIMD test operator} & \vitestop &::=&
      \K{all\_true} \\
@@ -298,7 +298,7 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{gt} ~|~
      \K{le} ~|~
      \K{ge} \\
-   \production{SIMD integer shift operator} & \vshiftop &::=&
+   \production{SIMD integer shift operator} & \vishiftop &::=&
      \K{shl} ~|~
      \K{shr\_s} ~|~
      \K{shr\_u} \\

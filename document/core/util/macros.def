@@ -516,11 +516,11 @@
 .. |vextmul| mathdef:: \xref{syntax/instructions}{syntax-vextmul}{\X{vextmul}}
 
 .. |laneidx| mathdef:: \xref{syntax/instructions}{syntax-laneidx}{\X{laneidx}}
-.. |vsunop| mathdef:: \xref{syntax/instructions}{syntax-vsunop}{\X{vsunop}}
-.. |vsbinop| mathdef:: \xref{syntax/instructions}{syntax-vsbinop}{\X{vsbinop}}
-.. |vsternop| mathdef:: \xref{syntax/instructions}{syntax-vsternop}{\X{vsternop}}
-.. |vstestop| mathdef:: \xref{syntax/instructions}{syntax-vstestop}{\X{vstestop}}
-.. |vshiftop| mathdef:: \xref{syntax/instructions}{syntax-vshiftop}{\X{vshiftop}}
+.. |vvunop| mathdef:: \xref{syntax/instructions}{syntax-vvunop}{\X{vvunop}}
+.. |vvbinop| mathdef:: \xref{syntax/instructions}{syntax-vvbinop}{\X{vvbinop}}
+.. |vvternop| mathdef:: \xref{syntax/instructions}{syntax-vvternop}{\X{vvternop}}
+.. |vvtestop| mathdef:: \xref{syntax/instructions}{syntax-vvtestop}{\X{vvtestop}}
+.. |vishiftop| mathdef:: \xref{syntax/instructions}{syntax-vishiftop}{\X{vishiftop}}
 .. |viunop| mathdef:: \xref{syntax/instructions}{syntax-viunop}{\X{viunop}}
 .. |vibinop| mathdef:: \xref{syntax/instructions}{syntax-vibinop}{\X{vibinop}}
 .. |viminmaxop| mathdef:: \xref{syntax/instructions}{syntax-viminmaxop}{\X{viminmaxop}}

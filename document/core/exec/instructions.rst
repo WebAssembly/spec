@@ -283,54 +283,54 @@ Most SIMD instructions are defined in terms of generic numeric operators applied
    No formal reduction rule is required for this instruction, since |VCONST| instructions coincide with :ref:`values <syntax-val>`.
 
 
-.. _exec-vsunop:
+.. _exec-vvunop:
 
-:math:`\V128\K{.}\vsunop`
+:math:`\V128\K{.}\vvunop`
 .........................
 
-1. Assert: due to :ref:`validation <valid-vsunop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vvunop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. Let :math:`c` be the result of computing :math:`\vsunop_{\I128}(c_1)`.
+3. Let :math:`c` be the result of computing :math:`\vvunop_{\I128}(c_1)`.
 
 4. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~\V128\K{.}\vsunop &\stepto& (\V128\K{.}\VCONST~c)
-     & (\iff c = \vsunop_{\I128}(c_1)) \\
+   (\V128\K{.}\VCONST~c_1)~\V128\K{.}\vvunop &\stepto& (\V128\K{.}\VCONST~c)
+     & (\iff c = \vvunop_{\I128}(c_1)) \\
    \end{array}
 
 
-.. _exec-vsbinop:
+.. _exec-vvbinop:
 
-:math:`\V128\K{.}\vsbinop`
+:math:`\V128\K{.}\vvbinop`
 ..........................
 
-1. Assert: due to :ref:`validation <valid-vsbinop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vvbinop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`c` be the result of computing :math:`\vsbinop_{\I128}(c_1, c_2)`.
+4. Let :math:`c` be the result of computing :math:`\vvbinop_{\I128}(c_1, c_2)`.
 
 5. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\V128\K{.}\vsbinop &\stepto& (\V128\K{.}\VCONST~c)
-     & (\iff c = \vsbinop_{\I128}(c_1, c_2)) \\
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\V128\K{.}\vvbinop &\stepto& (\V128\K{.}\VCONST~c)
+     & (\iff c = \vvbinop_{\I128}(c_1, c_2)) \\
    \end{array}
 
 
-.. _exec-vsternop:
+.. _exec-vvternop:
 
-:math:`\V128\K{.}\vsternop`
+:math:`\V128\K{.}\vvternop`
 ...........................
 
-1. Assert: due to :ref:`validation <valid-vsternop>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vvternop>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_3` from the stack.
 
@@ -338,24 +338,24 @@ Most SIMD instructions are defined in terms of generic numeric operators applied
 
 4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-5. Let :math:`c` be the result of computing :math:`\vsternop_{\I128}(c_1, c_2, c_3)`.
+5. Let :math:`c` be the result of computing :math:`\vvternop_{\I128}(c_1, c_2, c_3)`.
 
 6. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\V128\K{.}\vsternop &\stepto& (\V128\K{.}\VCONST~c)
-     & (\iff c = \vsternop_{\I128}(c_1, c_2, c_3)) \\
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\V128\K{.}\vvternop &\stepto& (\V128\K{.}\VCONST~c)
+     & (\iff c = \vvternop_{\I128}(c_1, c_2, c_3)) \\
    \end{array}
 
 
-.. _exec-vstestop:
+.. _exec-vvtestop:
 .. _exec-simd-any_true:
 
 :math:`\V128\K{.}\ANYTRUE`
 ..........................
 
-1. Assert: due to :ref:`validation <valid-vstestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vvtestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
@@ -616,34 +616,34 @@ Most SIMD instructions are defined in terms of generic numeric operators applied
    \end{array}
 
 
-.. _exec-vshiftop:
+.. _exec-vishiftop:
 
-:math:`t\K{x}N\K{.}\vshiftop`
-.............................
+:math:`t\K{x}N\K{.}\vishiftop`
+..............................
 
-1. Assert: due to :ref:`validation <valid-vshiftop>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vishiftop>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 2. Pop the value :math:`\I32.\CONST~s` from the stack.
 
-3. Assert: due to :ref:`validation <valid-vshiftop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+3. Assert: due to :ref:`validation <valid-vishiftop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
 4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
 5. Let :math:`i^\ast` be the sequence :math:`\lanes_{t\K{x}N}(c_1)`.
 
-6. Let :math:`c` be :math:`\lanes^{-1}_{t\K{x}N}(\vshiftop_{t}(i^\ast, s^N))`.
+6. Let :math:`c` be :math:`\lanes^{-1}_{t\K{x}N}(\vishiftop_{t}(i^\ast, s^N))`.
 
 7. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\I32\K{.}\CONST~s)~t\K{x}N\K{.}\vshiftop &\stepto& (\V128\K{.}\VCONST~c)
+   (\V128\K{.}\VCONST~c_1)~(\I32\K{.}\CONST~s)~t\K{x}N\K{.}\vishiftop &\stepto& (\V128\K{.}\VCONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & i^\ast = \lanes_{t\K{x}N}(c_1) \\
-     \wedge & c = \lanes^{-1}_{t\K{x}N}(\vshiftop_{t}(i^\ast, s^N)))
+     \wedge & c = \lanes^{-1}_{t\K{x}N}(\vishiftop_{t}(i^\ast, s^N)))
      \end{array}
    \end{array}
 

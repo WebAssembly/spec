@@ -701,9 +701,9 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
      \text{f64x2.ge} &\Rightarrow& \F64X2.\VGE\\
    \end{array}
 
-.. _text-vsunop:
-.. _text-vsbinop:
-.. _text-vsternop:
+.. _text-vvunop:
+.. _text-vvbinop:
+.. _text-vvternop:
 
 .. math::
    \begin{array}{llclll}
@@ -718,11 +718,11 @@ SIMD const instructions have a mandatory :ref:`shape <syntax-simd-shape>` descri
    \end{array}
 
 .. _text-vitestop:
-.. _text-vshiftop:
+.. _text-vishiftop:
 .. _text-viunop:
 .. _text-vibinop:
 .. _text-viminmaxop:
-.. _text-vsatbinop:
+.. _text-visatbinop:
 
 .. math::
    \begin{array}{llclll}
