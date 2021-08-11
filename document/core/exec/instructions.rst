@@ -774,7 +774,7 @@ Most SIMD instructions are defined in terms of generic numeric operators applied
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. If :math:`\K{low}` is part of the instruction, then:
+3. If :math:`\side` is :math:`\K{low}`, then:
 
    a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[0 \slice N]`.
 
