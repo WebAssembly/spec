@@ -767,53 +767,72 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
 
 
-:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}\side\K{\_}t_1\K{x}M\K{\_}\sx^?\K{\_zero}^?`
-..............................................................................
+:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx^?`
+..................................................................
 
 1. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. If the :math:`\K{zero}` suffix is present, then:
-
-   a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
-
-4. Else if :math:`\side` is :math:`\K{low}`, then:
+3. If :math:`\half` is :math:`\K{low}`, then:
 
    a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[0 \slice N]`.
 
-5. Else:
+4. Else:
 
    a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[N \slice N]`.
 
-6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(i^\ast))`
+5. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx^?}_{|t_1|,|t_2|}(i^\ast)`.
+
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
 
 7. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx^?\K{\_zero} &\stepto& (\V128\K{.}\VCONST~c) \\
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx^? &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^N)
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}\side\K{\_}t_1\K{x}M\K{\_}\sx^? &\stepto& (\V128\K{.}\VCONST~c) \\
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[\side(0, N) \slice N]))
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N]))
      \end{array}
    \end{array}
 
 where:
 
 .. math::
-    \K{low}(x, y) = x
-    \K{high}(x, y) = y
+   \begin{array}{lcl}
+   \K{low}(x, y) &=& x \\
+   \K{high}(x, y) &=& y \\
+   \end{array}
+
+
+:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx\K{\_zero}`
+...............................................................
+
+1. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+3. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
+
+4. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast)` concatenated with the vector :math:`0^M`.
+
+5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+
+6. Push the value :math:`\V128.\VCONST~c` onto the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx\K{\_zero} &\stepto& (\V128\K{.}\VCONST~c) \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^M)
+     \end{array}
+   \end{array}
 
 
 .. _exec-vec-dot:
@@ -851,7 +870,7 @@ where:
 
 .. _exec-vec-extmul:
 
-:math:`t_2\K{x}N\K{.}\EXTMUL\K{\_}\side\K{\_}t_1\K{x}M\K{\_}\sx`
+:math:`t_2\K{x}N\K{.}\EXTMUL\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx`
 ................................................................
 
 1. Assert: due to :ref:`validation <valid-vec-extmul>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
@@ -860,7 +879,7 @@ where:
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. If :math:`\side` is :math:`\K{low}`, then:
+4. If :math:`\half` is :math:`\K{low}`, then:
 
    a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[0 \slice N]`.
 
@@ -878,20 +897,22 @@ where:
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\EXTMUL\K{\_}\side\K{\_}t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\EXTMUL\K{\_}\half\K{\_}t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[\side(0, N) \slice N] \\
-     \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[\side(0, N) \slice N] \\
+     (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N] \\
+     \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[\half(0, N) \slice N] \\
      \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))
      \end{array}
 
 where:
 
 .. math::
-    \K{low}(x, y) = x
-    \K{high}(x, y) = y
+   \begin{array}{lcl}
+   \K{low}(x, y) &=& x \\
+   \K{high}(x, y) &=& y \\
+   \end{array}
 
 
 .. _exec-vec-extadd_pairwise:
