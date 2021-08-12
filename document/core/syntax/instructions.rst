@@ -175,7 +175,7 @@ Occasionally, it is convenient to group operators together according to the foll
    pair: abstract syntax; instruction
 .. _syntax-laneidx:
 .. _syntax-shape:
-.. _syntax-side:
+.. _syntax-half:
 .. _syntax-vvunop:
 .. _syntax-vvbinop:
 .. _syntax-vvternop:
@@ -260,7 +260,7 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{i16x8.}\AVGR\K{\_u} \\&&|&
      \K{i16x8.}\EXTMUL\K{\_}\half\K{\_i8x16\_}\sx ~|~
      \K{i32x4.}\EXTMUL\K{\_}\half\K{\_i16x8\_}\sx ~|~
-     \K{i64x2.}\EXTMUL\K{\_}\half\K{\_i32x4\_}\sx ~|~
+     \K{i64x2.}\EXTMUL\K{\_}\half\K{\_i32x4\_}\sx \\ &&|&
      \K{i16x8.}\EXTADDPAIRWISE\K{\_i8x16\_}\sx ~|~
      \K{i32x4.}\EXTADDPAIRWISE\K{\_i16x8\_}\sx \\ &&|&
      \fshape\K{.}\vfbinop \\&&|&

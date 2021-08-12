@@ -852,7 +852,7 @@ where:
 
 6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\I32X4}(j^\ast)`.
 
-8. Push the value :math:`\V128.\VCONST~c` onto the stack.
+7. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{l}
@@ -893,7 +893,7 @@ where:
 
 6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))`
 
-8. Push the value :math:`\V128.\VCONST~c` onto the stack.
+7. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
