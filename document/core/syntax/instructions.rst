@@ -205,7 +205,7 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{f32x4} ~|~ \K{f64x2} \\
    \production{shape} & \shape &::=&
      \ishape ~|~ \fshape \\
-   \production{side} & \side &::=&
+   \production{half} & \half &::=&
      \K{low} ~|~ \K{high} \\
    \production{lane index} & \laneidx &::=& \u8 \\
    \production{instruction} & \instr &::=&
@@ -243,9 +243,9 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \ishape\K{.}\BITMASK \\ &&|&
      \K{i8x16.}\NARROW\K{\_i16x8\_}\sx ~|~
      \K{i16x8.}\NARROW\K{\_i32x4\_}\sx \\&&|&
-     \K{i16x8.}\VEXTEND\K{\_}\side^?\K{\_i8x16\_}\sx ~|~
-     \K{i32x4.}\VEXTEND\K{\_}\side^?\K{\_i16x8\_}\sx \\&&|&
-     \K{i64x2.}\VEXTEND\K{\_}\side^?\K{\_i32x4\_}\sx \\&&|&
+     \K{i16x8.}\VEXTEND\K{\_}\half\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\VEXTEND\K{\_}\half\K{\_i16x8\_}\sx \\&&|&
+     \K{i64x2.}\VEXTEND\K{\_}\half\K{\_i32x4\_}\sx \\&&|&
      \ishape\K{.}\vishiftop \\&&|&
      \ishape\K{.}\vibinop \\&&|&
      \K{i8x16.}\viminmaxop ~|~
@@ -258,9 +258,9 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{i64x2.}\K{mul} \\&&|&
      \K{i8x16.}\AVGR\K{\_u} ~|~
      \K{i16x8.}\AVGR\K{\_u} \\&&|&
-     \K{i16x8.}\EXTMUL\K{\_}\side^?\K{\_i8x16\_}\sx ~|~
-     \K{i32x4.}\EXTMUL\K{\_}\side^?\K{\_i16x8\_}\sx ~|~
-     \K{i64x2.}\EXTMUL\K{\_}\side^?\K{\_i32x4\_}\sx ~|~
+     \K{i16x8.}\EXTMUL\K{\_}\half\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\EXTMUL\K{\_}\half\K{\_i16x8\_}\sx ~|~
+     \K{i64x2.}\EXTMUL\K{\_}\half\K{\_i32x4\_}\sx ~|~
      \K{i16x8.}\EXTADDPAIRWISE\K{\_i8x16\_}\sx ~|~
      \K{i32x4.}\EXTADDPAIRWISE\K{\_i16x8\_}\sx \\ &&|&
      \fshape\K{.}\vfbinop \\&&|&

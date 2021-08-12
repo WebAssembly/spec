@@ -503,7 +503,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
 
 .. _valid-vcvtop:
 
-:math:`\shape\K{.}\vcvtop\K{\_}\side^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^?`
+:math:`\shape\K{.}\vcvtop\K{\_}\half^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^?`
 ..........................................................................
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
@@ -511,7 +511,7 @@ We also define an auxiliary function to get number of packed numeric types in a 
 .. math::
    \frac{
    }{
-     C \vdashinstr \shape\K{.}\vcvtop\K{\_}\side^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^? : [\V128] \to [\V128]
+     C \vdashinstr \shape\K{.}\vcvtop\K{\_}\half^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^? : [\V128] \to [\V128]
    }
 
 
@@ -559,29 +559,29 @@ We also define an auxiliary function to get number of packed numeric types in a 
 
 .. _valid-simd-extmul:
 
-:math:`\ishape\K{.}\EXTMUL\K{\_}\side\K{\_}\ishape\K{\_}\sx`
-............................................................
+:math:`\ishape_1\K{.}\EXTMUL\K{\_}\half\K{\_}\ishape_2\K{\_}\sx`
+................................................................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \ishape\K{.}\EXTMUL\K{\_}\side\K{\_}\ishape\K{\_}\sx : [\V128~\V128] \to [\V128]
+     C \vdashinstr \ishape_1\K{.}\EXTMUL\K{\_}\half\K{\_}\ishape_2\K{\_}\sx : [\V128~\V128] \to [\V128]
    }
 
 
 .. _valid-simd-extadd_pairwise:
 
-:math:`\ishape\K{.}\EXTADDPAIRWISE\K{\_}\ishape\K{\_}\sx`
-.........................................................
+:math:`\ishape_1\K{.}\EXTADDPAIRWISE\K{\_}\ishape_2\K{\_}\sx`
+.............................................................
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \ishape\K{.}\EXTADDPAIRWISE\K{\_}\ishape\K{\_}\sx : [\V128] \to [\V128]
+     C \vdashinstr \ishape_1\K{.}\EXTADDPAIRWISE\K{\_}\ishape_2\K{\_}\sx : [\V128] \to [\V128]
    }
 
 
