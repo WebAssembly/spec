@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Conventions &#8212; WebAssembly 1.1 (Draft 2021-08-03)</title>
+    <title>Conventions &#8212; WebAssembly 1.1 (Draft 2021-08-14)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -92,7 +92,7 @@ A text string is a well-formed description of a module if and only if it is gene
 Each production of this grammar has at most one synthesized attribute: the abstract syntax that the respective character sequence expresses.
 Thus, the attribute grammar implicitly defines a <em>parsing</em> function.
 Some productions also take a <a class="reference internal" href="#text-context"><span class="std std-ref">context</span></a> as an inherited attribute
-that records bound <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifers</span></a>.</p>
+that records bound <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a>.</p>
 <p>Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
 However, it also defines a number of <em>abbreviations</em> that are “syntactic sugar” over the core syntax.</p>
 <p>The recommended extension for files containing WebAssembly modules in text format is “<span class="math notranslate nohighlight">\(\mathtt{.wat}\)</span>”.

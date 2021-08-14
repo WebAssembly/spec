@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Values &#8212; WebAssembly 1.1 (Draft 2021-08-03)</title>
+    <title>Values &#8212; WebAssembly 1.1 (Draft 2021-08-14)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -137,7 +137,7 @@ In order to distinguish arithmetics like <span class="math notranslate nohighlig
 <span id="syntax-float"></span><span id="syntax-payload"></span><span id="syntax-nan"></span><span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h2>
 <p><em>Floating-point</em> data represents 32 or 64 bit values that correspond to the respective binary formats of the <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a> standard (Section 3.3).</p>
 <p>Every value has a <em>sign</em> and a <em>magnitude</em>.
-Magnitudes can either be expressed as <em>normal</em> numbers of the form <span class="math notranslate nohighlight">\(m_0.m_1m_2\dots m_M \cdot2^e\)</span>, where <span class="math notranslate nohighlight">\(e\)</span> is the exponent and <span class="math notranslate nohighlight">\(m\)</span> is the <em>significand</em> whose most signifcant bit <span class="math notranslate nohighlight">\(m_0\)</span> is <span class="math notranslate nohighlight">\(1\)</span>,
+Magnitudes can either be expressed as <em>normal</em> numbers of the form <span class="math notranslate nohighlight">\(m_0.m_1m_2\dots m_M \cdot2^e\)</span>, where <span class="math notranslate nohighlight">\(e\)</span> is the exponent and <span class="math notranslate nohighlight">\(m\)</span> is the <em>significand</em> whose most significant bit <span class="math notranslate nohighlight">\(m_0\)</span> is <span class="math notranslate nohighlight">\(1\)</span>,
 or as a <em>subnormal</em> number where the exponent is fixed to the smallest possible value and <span class="math notranslate nohighlight">\(m_0\)</span> is <span class="math notranslate nohighlight">\(0\)</span>; among the subnormals are positive and negative zero values.
 Since the significands are binary values, normals are represented in the form <span class="math notranslate nohighlight">\((1 + m\cdot 2^{-M}) \cdot 2^e\)</span>, where <span class="math notranslate nohighlight">\(M\)</span> is the bit width of <span class="math notranslate nohighlight">\(m\)</span>; similarly for subnormals.</p>
 <p>Possible magnitudes also include the special values <span class="math notranslate nohighlight">\(\infty\)</span> (infinity) and <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-float}{\mathsf{nan}}\)</span> (<em>NaN</em>, not a number).

@@ -5,9 +5,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <meta content="ED" name="w3c-status">
   <meta content="This document describes the integration of WebAssembly with the broader web platform." name="abstract">
-  <meta content="Bikeshed version 59d067506, updated Fri Jul 23 15:43:29 2021 -0700" name="generator">
+  <meta content="Bikeshed version 4f053d00e, updated Tue Aug 10 14:13:32 2021 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-1/" rel="canonical">
-  <meta content="ab5ad7fa54e8c83d307642d7657c8c79d61dbdf2" name="document-revision">
+  <meta content="acf5d26ca5fa218453195f49aa5181c68ade13d6" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -281,7 +281,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2021-08-03">3 August 2021</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2021-08-14">14 August 2021</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -614,10 +614,10 @@ review, approval, and registration with IANA.</p>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
-   <li><a href="#compile-a-potential-webassembly-response">compile a potential WebAssembly response</a><span>, in §1</span>
-   <li><a href="#dom-webassembly-compilestreaming">compileStreaming(source)</a><span>, in §1</span>
-   <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source)</a><span>, in §1</span>
-   <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source, importObject)</a><span>, in §1</span>
+   <li><a href="#compile-a-potential-webassembly-response">compile a potential WebAssembly response</a><span>, in § 1</span>
+   <li><a href="#dom-webassembly-compilestreaming">compileStreaming(source)</a><span>, in § 1</span>
+   <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source)</a><span>, in § 1</span>
+   <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source, importObject)</a><span>, in § 1</span>
   </ul>
   <aside class="dfn-panel" data-for="term-for-sec-arraybuffer-objects">
    <a href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects">https://tc39.github.io/ecma262/#sec-arraybuffer-objects</a><b>Referenced in:</b>
@@ -932,19 +932,19 @@ review, approval, and registration with IANA.</p>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
    <dt id="biblio-ecma-262">[ECMA-262]
-   <dd><a href="https://tc39.github.io/ecma262">ECMAScript® Language Specification</a>. Current Editor's Draft. URL: <a href="https://tc39.github.io/ecma262">https://tc39.github.io/ecma262</a>
+   <dd><a href="https://tc39.github.io/ecma262"><cite>ECMAScript® Language Specification</cite></a>. Current Editor's Draft. URL: <a href="https://tc39.github.io/ecma262">https://tc39.github.io/ecma262</a>
    <dt id="biblio-fetch">[FETCH]
-   <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-html">[HTML]
-   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
+   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-rfc2119">[RFC2119]
-   <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
+   <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
    <dt id="biblio-wasmjs">[WASMJS]
-   <dd><a href="https://webassembly.github.io/spec/js-api/">WebAssembly JS Integration Specification</a>. Draft. URL: <a href="https://webassembly.github.io/spec/js-api/">https://webassembly.github.io/spec/js-api/</a>
+   <dd><a href="https://webassembly.github.io/spec/js-api/"><cite>WebAssembly JS Integration Specification</cite></a>. Draft. URL: <a href="https://webassembly.github.io/spec/js-api/">https://webassembly.github.io/spec/js-api/</a>
    <dt id="biblio-webassembly">[WEBASSEMBLY]
-   <dd><a href="https://webassembly.github.io/spec/core/">WebAssembly Core Specification</a>. Draft. URL: <a href="https://webassembly.github.io/spec/core/">https://webassembly.github.io/spec/core/</a>
+   <dd><a href="https://webassembly.github.io/spec/core/"><cite>WebAssembly Core Specification</cite></a>. Draft. URL: <a href="https://webassembly.github.io/spec/core/">https://webassembly.github.io/spec/core/</a>
    <dt id="biblio-webidl">[WebIDL]
-   <dd>Boris Zbarsky. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
+   <dd>Boris Zbarsky. <a href="https://heycam.github.io/webidl/"><cite>Web IDL</cite></a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
