@@ -635,7 +635,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
    b. Assert: due to :ref:`validation <valid-module>`, the frame :math:`F_{\F{init}}` is now on the top of the stack.
 
-   c. Let :math:`\val^\ast` be the conatenation of :math:`\val_i` in index order.
+   c. Let :math:`\val^\ast` be the concatenation of :math:`\val_i` in index order.
 
 9. Let :math:`(\reff^\ast)^\ast` be the list of :ref:`reference <syntax-ref>` vectors determined by the :ref:`element segments <syntax-elem>` in :math:`\module`. These may be calculated as follows.
 
