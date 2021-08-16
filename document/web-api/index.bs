@@ -69,7 +69,9 @@ urlPrefix: https://webassembly.github.io/spec/js-api/; spec: WASMJS
         text: asynchronously compile a webassembly module; url: #asynchronously-compile-a-webassembly-module
         text: instantiate a promise of a module; url: #instantiate-a-promise-of-a-module
         text: Exported Function; url: #exported-function
+url:https://html.spec.whatwg.org/#ascii-serialisation-of-an-origin;text:origin-serialization;type:dfn;spec:HTML
 url:https://html.spec.whatwg.org/#cors-same-origin;text:CORS-same-origin;type:dfn;spec:HTML
+url:https://html.spec.whatwg.org/#origin;text:origin;type:dfn;spec:HTML
 url:https://fetch.spec.whatwg.org/#concept-body-consume-body;text:consume body;type:dfn;spec:FETCH
 url:https://w3c.github.io/webappsec-secure-contexts/#environment-settings-object-contextually-secure; text:contextually secure; type: dfn; spec: SECURECONTEXTS
 </pre>
@@ -150,6 +152,8 @@ The [=serialization steps=], given |value|, |serialized|, and |forStorage|, are:
     1. Set |serialized|.\[[Bytes]] to the [=sub-serialization=] of |value|.\[[Bytes]].
 
     1. Set |serialized|.\[[AgentCluster]] to the [=current Realm=]'s corresponding [=agent cluster=].
+    
+    1. Set |serialized|.\[[Origin]] to be the [=origin-serialization=] of the user agent's [=origin=].
 
 The [=deserialization steps=], given |serialized| and |value|, are:
 
@@ -158,6 +162,8 @@ The [=deserialization steps=], given |serialized| and |value|, are:
     1. Set |value|.\[[Bytes]] to |bytes|.
 
     1. If |targetRealm|'s corresponding [=agent cluster=] is not |serialized|.\[[AgentCluster]], then throw a "<a exception>DataCloneError</a>" {{DOMException}}.
+    
+    1. If the [=origin-sereialization=] of the target user agent's [=origin=] is not |serialized|.\[[Origin]], then throw a "<a exception>DataCloneError</a>" {{DOMException}}.
 
     1. [=Compile a WebAssembly module=] from |bytes| and set |value|.\[[Module]] to the result.
 
