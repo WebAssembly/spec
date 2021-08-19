@@ -7,7 +7,7 @@
   <meta content="This document provides an explicit JavaScript API for interacting with WebAssembly." name="abstract">
   <meta content="Bikeshed version 4f053d00e, updated Tue Aug 10 14:13:32 2021 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-1/" rel="canonical">
-  <meta content="acf5d26ca5fa218453195f49aa5181c68ade13d6" name="document-revision">
+  <meta content="ed0f0194b50bafd79bafa6156de7dfaa9572d3f6" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -286,7 +286,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2021-08-14">14 August 2021</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2021-08-19">19 August 2021</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1546,10 +1546,6 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let <var>realm</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm">current Realm</a>.</p>
      <li data-md>
-      <p>Let <var>function</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-createbuiltinfunction" id="ref-for-sec-createbuiltinfunction">CreateBuiltinFunction</a>(<var>realm</var>, <var>steps</var>, <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-properties-of-the-function-prototype-object" id="ref-for-sec-properties-of-the-function-prototype-object">%FunctionPrototype%</a>, « [[FunctionAddress]] »).</p>
-     <li data-md>
-      <p>Set <var>function</var>.[[FunctionAddress]] to <var>funcaddr</var>.</p>
-     <li data-md>
       <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent②⑤">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②③">associated store</a>.</p>
      <li data-md>
       <p>Let <var>functype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-func-type" id="ref-for-embed-func-type">func_type</a>(<var>store</var>, <var>funcaddr</var>).</p>
@@ -1558,11 +1554,11 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let <var>arity</var> be <var>paramTypes</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a>.</p>
      <li data-md>
-      <p>Perform ! <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-setfunctionlength" id="ref-for-sec-setfunctionlength">SetFunctionLength</a>(<var>function</var>, <var>arity</var>).</p>
-     <li data-md>
       <p>Let <var>name</var> be the <a data-link-type="dfn" href="#name-of-the-webassembly-function" id="ref-for-name-of-the-webassembly-function">name of the WebAssembly function</a> <var>funcaddr</var>.</p>
      <li data-md>
-      <p>Perform ! <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-setfunctionname" id="ref-for-sec-setfunctionname">SetFunctionName</a>(<var>function</var>, <var>name</var>).</p>
+      <p>Let <var>function</var> be <a data-link-type="dfn">!</a> <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-createbuiltinfunction" id="ref-for-sec-createbuiltinfunction">CreateBuiltinFunction</a>(<var>steps</var>, <var>arity</var>, <var>name</var>, « [[FunctionAddress]] », <var>realm</var>).</p>
+     <li data-md>
+      <p>Set <var>function</var>.[[FunctionAddress]] to <var>funcaddr</var>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-set" id="ref-for-map-set③">Set</a> <var>map</var>[<var>funcaddr</var>] to <var>function</var>.</p>
      <li data-md>
@@ -2104,12 +2100,6 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#namespacedef-webassembly">WebAssembly</a><span>, in § 4</span>
    <li><a href="#dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a><span>, in § 4</span>
   </ul>
-  <aside class="dfn-panel" data-for="term-for-sec-properties-of-the-function-prototype-object">
-   <a href="https://tc39.github.io/ecma262/#sec-properties-of-the-function-prototype-object">https://tc39.github.io/ecma262/#sec-properties-of-the-function-prototype-object</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sec-properties-of-the-function-prototype-object">4.6. Exported Functions</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-sec-well-known-symbols">
    <a href="https://tc39.github.io/ecma262/#sec-well-known-symbols">https://tc39.github.io/ecma262/#sec-well-known-symbols</a><b>Referenced in:</b>
    <ul>
@@ -2260,18 +2250,6 @@ In practice, an implementation may run out of resources for valid modules below 
    <a href="https://tc39.github.io/ecma262/#sec-objectcreate">https://tc39.github.io/ecma262/#sec-objectcreate</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-objectcreate">4. The WebAssembly Namespace</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-sec-setfunctionlength">
-   <a href="https://tc39.github.io/ecma262/#sec-setfunctionlength">https://tc39.github.io/ecma262/#sec-setfunctionlength</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sec-setfunctionlength">4.6. Exported Functions</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-sec-setfunctionname">
-   <a href="https://tc39.github.io/ecma262/#sec-setfunctionname">https://tc39.github.io/ecma262/#sec-setfunctionname</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sec-setfunctionname">4.6. Exported Functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-setintegritylevel">
@@ -3106,7 +3084,6 @@ In practice, an implementation may run out of resources for valid modules below 
    <li>
     <a data-link-type="biblio">[ECMASCRIPT]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-sec-properties-of-the-function-prototype-object">%functionprototype%</span>
      <li><span class="dfn-paneled" id="term-for-sec-well-known-symbols">@@iterator</span>
      <li><span class="dfn-paneled" id="term-for-sec-arraybuffer-objects">ArrayBuffer</span>
      <li><span class="dfn-paneled" id="term-for-sec-createmethodproperty">CreateMethodProperty</span>
@@ -3130,8 +3107,6 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-sec-nativeerror-object-structure">nativeerror object structure</span>
      <li><span class="dfn-paneled" id="term-for-sec-numbertorawbytes">numbertorawbytes</span>
      <li><span class="dfn-paneled" id="term-for-sec-objectcreate">objectcreate</span>
-     <li><span class="dfn-paneled" id="term-for-sec-setfunctionlength">setfunctionlength</span>
-     <li><span class="dfn-paneled" id="term-for-sec-setfunctionname">setfunctionname</span>
      <li><span class="dfn-paneled" id="term-for-sec-setintegritylevel">setintegritylevel</span>
      <li><span class="dfn-paneled" id="term-for-surrounding-agent">surrounding agent</span>
      <li><span class="dfn-paneled" id="term-for-sec-ecmascript-language-types-number-type">the number value</span>
