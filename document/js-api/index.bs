@@ -52,7 +52,6 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         url: sec-well-known-intrinsic-objects
             text: %ErrorPrototype%
         text: %ObjectPrototype%; url: sec-properties-of-the-object-prototype-object
-        text: %FunctionPrototype%; url: sec-properties-of-the-function-prototype-object
         text: %Promise%; url: sec-promise-constructor
         text: Property Descriptor; url: sec-property-descriptor-specification-type
         text: array index; url: sec-array-exotic-objects
@@ -983,7 +982,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. Let [|paramTypes|] → [<var ignore>resultTypes</var>] be |functype|.
     1. Let |arity| be |paramTypes|'s [=list/size=].
     1. Let |name| be the [=name of the WebAssembly function=] |funcaddr|.
-    1. Let |function| be [=!=] [=CreateBuiltinFunction=](|steps|, |arity|, |name|, « \[[FunctionAddress]] », |realm|, [=%FunctionPrototype%=]).
+    1. Let |function| be [=!=] [=CreateBuiltinFunction=](|steps|, |arity|, |name|, « \[[FunctionAddress]] », |realm|).
     1. Set |function|.\[[FunctionAddress]] to |funcaddr|.
     1. [=map/Set=] |map|[|funcaddr|] to |function|.
     1. Return |function|.
