@@ -144,7 +144,34 @@ let elem_oob frame x i n =
   I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
     (I64.of_int_u (List.length !(elem frame.inst x)))
 
-let rec step (c : config) : config =
+(* Perform multiple steps at once, possibly with `code` that is part of a
+   surrounding context (block scope or call frame), until we cannot step without
+   the surrounding context. This is used to advance execution within a nested
+   context without rebuilding the entire configuration from the root, which is
+   necessary to avoid quadratic behavior (O(n) time tp step with n-deep
+   call/label stack). *)
+let rec step_many (c : config) : config =
+  let {frame; code = vs, es; _} = c in
+  match es with
+  (* These four cases happen only within the `step_many` recursive call
+     inside a `Frame` or `Label` below, and indicate that we cannot step
+     this portion of the configuration, so we must return up the `step`
+     recursion one level to step the surrounding context. *)
+  | [] -> c
+  | {it = Trapping _; _} :: _ -> c
+  | {it = Returning _; _} :: _ -> c
+  | {it = Breaking _; _} :: _ -> c
+  (* These states can always step without interacting with their surrounding
+     context, so we do so here, continuing to call `step` until we reach some
+     other state. *)
+  | {it = Plain _; _} :: _
+  | {it = Frame _; _} :: _
+  | {it = Label _; _} :: _
+  | {it = Invoke _; _} :: _ -> step_many (step c)
+  (* As a fallback, just step once. *)
+  | _ -> step c
+
+and step (c : config) : config =
   let {frame; code = vs, es; _} = c in
   let e = List.hd es in
   let vs', es' =
@@ -497,7 +524,7 @@ let rec step (c : config) : config =
       vs, [Breaking (Int32.sub k 1l, vs0) @@ at]
 
     | Label (n, es0, code'), vs ->
-      let c' = step {c with code = code'} in
+      let c' = step_many {c with code = code'} in
       vs, [Label (n, es0, c'.code) @@ e.at]
 
     | Frame (n, frame', (vs', [])), vs ->
@@ -510,7 +537,7 @@ let rec step (c : config) : config =
       take n vs0 e.at @ vs, []
 
     | Frame (n, frame', code'), vs ->
-      let c' = step {frame = frame'; code = code'; budget = c.budget - 1} in
+      let c' = step_many {frame = frame'; code = code'; budget = c.budget - 1} in
       vs, [Frame (n, c'.frame, c'.code) @@ e.at]
 
     | Invoke func, vs when c.budget = 0 ->
@@ -543,7 +570,7 @@ let rec eval (c : config) : value stack =
     Trap.error at msg
 
   | vs, es ->
-    eval (step c)
+    eval (step_many c)
 
 
 (* Functions & Constants *)
