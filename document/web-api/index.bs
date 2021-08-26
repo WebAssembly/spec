@@ -163,7 +163,7 @@ The [=deserialization steps=], given |serialized| and |value|, are:
 
     1. If |targetRealm|'s corresponding [=agent cluster=] is not |serialized|.\[[AgentCluster]], then throw a "<a exception>DataCloneError</a>" {{DOMException}}.
     
-    1. If the [=origin-sereialization=] of the target user agent's [=origin=] is not |serialized|.\[[Origin]], then throw a "<a exception>DataCloneError</a>" {{DOMException}}.
+    1. If the [=origin-serialization=] of the target user agent's [=origin=] is not |serialized|.\[[Origin]], then throw a "<a exception>DataCloneError</a>" {{DOMException}}.
 
     1. [=Compile a WebAssembly module=] from |bytes| and set |value|.\[[Module]] to the result.
 
