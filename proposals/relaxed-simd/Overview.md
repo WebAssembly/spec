@@ -205,6 +205,29 @@ def blend(a : v128, b : v128, m: v128, lanes : int):
   return result
 ```
 
+### Relaxed min and max
+
+- `f32x4.min(a: v128, b: v128) -> v128`
+- `f32x4.max(a: v128, b: v128) -> v128`
+- `f64x2.min(a: v128, b: v128) -> v128`
+- `f64x2.max(a: v128, b: v128) -> v128`
+
+Return the lane-wise minimum or maximum of two values. If either values is NaN, or the values are -0.0 and +0.0, the return value is implementation-defined.
+
+```python
+def min_or_max(a : v128, b : v128, lanes : int, is_min : bool):
+  result = []
+  for i in range(lanes):
+    if isNaN(a[i]) or isNaN(b[i]):
+      result[i] = IMPLEMENTATION_DEFINED_ONE_OF(a[i], b[i])
+    elif (a[i] == -0.0 && b[i] == +0.0) or (a[i] == +0.0 && b[i] == -0.0):
+      result[i] = IMPLEMENTATION_DEFINED_ONE_OF(a[i], b[i])
+    else:
+      result[i] = is_min ? min(a, b) : max(a, b)
+```
+
+Where `IMPLEMENTATION_DEFINED_ONE_OF(x, y)` returns either `x` or `y`, depending on the implementation.
+
 ## Binary format
 
 All opcodes have the `0xfd` prefix (same as SIMD proposal), which are omitted in the table below.
@@ -224,6 +247,10 @@ All opcodes have the `0xfd` prefix (same as SIMD proposal), which are omitted in
 | `i16x8.blend`                      | 0xb3     |
 | `i32x4.blend`                      | 0xd2     |
 | `i64x2.blend`                      | 0xd3     |
+| `f32x4.min`                        | 0xb4     |
+| `f32x4.max`                        | 0xe2     |
+| `f64x2.min`                        | 0xd4     |
+| `f64x2.max`                        | 0xee     |
 
 Note: the opcodes are chosen to fit into the existing opcode space of the SIMD proposal, see [Binary encoding of SIMD](https://github.com/WebAssembly/simd/blob/main/proposals/simd/BinarySIMD.md), or a [table view of the same opcodes](https://github.com/WebAssembly/simd/blob/main/proposals/simd/NewOpcodes.md) for a list of existing opcodes.
 
