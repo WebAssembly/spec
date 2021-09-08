@@ -157,31 +157,37 @@ let num_type s =
 
 let heap_type s =
   let pos = pos s in
-  match vs33 s with
-  | -0x10l -> FuncHeapType
-  | -0x11l -> ExternHeapType
-  | -0x12l -> AnyHeapType
-  | -0x13l -> EqHeapType
-  | -0x16l -> I31HeapType
-  | -0x17l -> let n = vu32 s in RttHeapType (var_type s, Some n)
-  | -0x18l -> RttHeapType (var_type s, None)
-  | -0x19l -> DataHeapType
-  | i when i >= 0l -> DefHeapType (SynVar i)
-  | _ -> error s pos "malformed heap type"
+  match peek s with
+  | Some i when i land 0xc0 = 0x40 ->
+    (match vs7 s with
+    | -0x10 -> FuncHeapType
+    | -0x11 -> ExternHeapType
+    | -0x12 -> AnyHeapType
+    | -0x13 -> EqHeapType
+    | -0x16 -> I31HeapType
+    | -0x17 -> let n = vu32 s in RttHeapType (var_type s, Some n)
+    | -0x18 -> RttHeapType (var_type s, None)
+    | -0x19 -> DataHeapType
+    | _ -> error s pos "malformed heap type"
+    )
+  | _ ->
+    match vs33 s with
+    | i when i >= 0l -> DefHeapType (SynVar i)
+    | _ -> error s pos "malformed heap type"
 
 let ref_type s =
   let pos = pos s in
-  match vs33 s with
-  | -0x10l -> (Nullable, FuncHeapType)
-  | -0x11l -> (Nullable, ExternHeapType)
-  | -0x12l -> (Nullable, AnyHeapType)
-  | -0x13l -> (Nullable, EqHeapType)
-  | -0x14l -> (Nullable, heap_type s)
-  | -0x15l -> (NonNullable, heap_type s)
-  | -0x16l -> (Nullable, I31HeapType)
-  | -0x17l -> let n = vu32 s in (NonNullable, RttHeapType (var_type s, Some n))
-  | -0x18l -> (NonNullable, RttHeapType (var_type s, None))
-  | -0x19l -> (Nullable, DataHeapType)
+  match vs7 s with
+  | -0x10 -> (Nullable, FuncHeapType)
+  | -0x11 -> (Nullable, ExternHeapType)
+  | -0x12 -> (Nullable, AnyHeapType)
+  | -0x13 -> (Nullable, EqHeapType)
+  | -0x14 -> (Nullable, heap_type s)
+  | -0x15 -> (NonNullable, heap_type s)
+  | -0x16 -> (Nullable, I31HeapType)
+  | -0x17 -> let n = vu32 s in (NonNullable, RttHeapType (var_type s, Some n))
+  | -0x18 -> (NonNullable, RttHeapType (var_type s, None))
+  | -0x19 -> (Nullable, DataHeapType)
   | _ -> error s pos "malformed reference type"
 
 let value_type s =

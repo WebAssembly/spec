@@ -158,6 +158,15 @@ struct
   and mapi' f i = function
     | [] -> []
     | x::xs -> f i x :: mapi' f (Int32.add i 1l) xs
+
+  let rec index_where p xs = index_where' p xs 0l
+  and index_where' p xs i =
+    match xs with
+    | [] -> None
+    | x::xs' when p x -> Some i
+    | x::xs' -> index_where' p xs' (Int32.add i 1l)
+
+  let index_of x = index_where ((=) x)
 end
 
 module Array32 =

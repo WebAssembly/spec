@@ -38,6 +38,9 @@ sig
   val take : int32 -> 'a list -> 'a list (* raises Failure *)
   val drop : int32 -> 'a list -> 'a list (* raises Failure *)
   val mapi : (int32 -> 'a -> 'b) -> 'a list -> 'b list
+
+  val index_of : 'a -> 'a list -> int32 option
+  val index_where : ('a -> bool) -> 'a list -> int32 option
 end
 
 module Array32 :

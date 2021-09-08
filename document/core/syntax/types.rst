@@ -41,7 +41,29 @@ Conventions
   That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.
 
 
-.. index:: ! reference type, reference, table, function, function type, null
+.. index:: ! heap type, store, type index
+   pair: abstract syntax; heap type
+.. _syntax-heaptype:
+
+Heap Types
+~~~~~~~~~~
+
+*Heap types* classify objects in the runtime :ref:`store <store>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{heap type} & \heaptype &::=&
+     \FUNC ~|~ \EXTERN ~|~ \typeidx \\
+   \end{array}
+
+The type |FUNC| denotes the infinite union of all types of :ref:`functions <syntax-func>`, regardless of their concrete :ref:`function types <syntax-functype>`.
+
+The type |EXTERN| denotes the infinite union of all objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
+
+A *concrete* heap type consists of a :ref:`type index <syntax-typeidx>` and classifies an object of the respective :ref:`type <syntax-type>` defined in the module.
+
+
+.. index:: ! reference type, heap type, reference, table, function, function type, null
    pair: abstract syntax; reference type
    pair: reference; type
 .. _syntax-reftype:
@@ -49,26 +71,28 @@ Conventions
 Reference Types
 ~~~~~~~~~~~~~~~
 
-*Reference types* classify first-class references to objects in the runtime :ref:`store <store>`.
+*Reference types* classify :ref:`values <syntax-value>` that are first-class references to objects in the runtime :ref:`store <store>`.
 
 .. math::
    \begin{array}{llll}
    \production{reference type} & \reftype &::=&
-     \FUNCREF ~|~ \EXTERNREF \\
+     \REF~\NULL^?~\heaptype \\
    \end{array}
 
-The type |FUNCREF| denotes the infinite union of all references to :ref:`functions <syntax-func>`, regardless of their :ref:`function types <syntax-functype>`.
+A reference type is characterised by the :ref:`heap type <syntax-heaptype>` it points to.
 
-The type |EXTERNREF| denotes the infinite union of all references to objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
+In addition, a reference type of the form :math:`\REF \NULL \X{ht}` is *nullable*, meaning that it can either be a proper reference to :math:`\X{ht}` or :ref:`null <syntax-null>`.
+Other references are *non-null*.
 
 Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
 
 
-.. index:: ! value type, number type, reference type
+.. index:: ! value type, number type, reference type, ! bottom type
    pair: abstract syntax; value type
    pair: value; type
 .. _syntax-valtype:
+.. _syntax-bottype:
 
 Value Types
 ~~~~~~~~~~~

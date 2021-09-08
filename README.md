@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/WebAssembly/function-references.svg?branch=master)](https://travis-ci.org/WebAssembly/function-references)
+![Build Status](https://github.com/WebAssembly/function-references/actions/workflows/main.yml/badge.svg)
 
 # GC Proposal for WebAssembly
 

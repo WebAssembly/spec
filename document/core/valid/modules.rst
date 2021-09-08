@@ -67,7 +67,7 @@ Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>`.
 
 .. math::
    \frac{
-     \vdashtabletype \tabletype \ok
+     C \vdashtabletype \tabletype \ok
    }{
      C \vdashtable \{ \TTYPE~\tabletype \} : \tabletype
    }
@@ -92,7 +92,7 @@ Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>`.
 
 .. math::
    \frac{
-     \vdashmemtype \memtype \ok
+     C \vdashmemtype \memtype \ok
    }{
      C \vdashmem \{ \MTYPE~\memtype \} : \memtype
    }
@@ -122,7 +122,7 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
 
 .. math::
    \frac{
-     \vdashglobaltype \mut~t \ok
+     C \vdashglobaltype \mut~t \ok
      \qquad
      C \vdashexpr \expr : [t]
      \qquad
@@ -147,6 +147,8 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 :math:`\{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \}`
 .......................................................
 
+* The :ref:`reference type <syntax-reftype>` :math:`t` must be :ref:`valid <valid-reftype>`.
+
 * For each :math:`e_i` in :math:`e^\ast`,
 
   * The expression :math:`e_i` must be :ref:`valid <valid-expr>`.
@@ -155,20 +157,22 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 * The element mode :math:`\elemmode` must be valid with some :ref:`reference type <syntax-reftype>` :math:`t'`.
 
-* The :ref:`reference type <syntax-reftype>` :math:`t` must :ref:`match <match-reftype>` the reference type :math:`t'`.
+* The reference type :math:`t` must :ref:`match <match-reftype>` the reference type :math:`t'`.
 
 * Then the element segment is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
 
 .. math::
    \frac{
+     C \vdashreftype t \ok
+     \qquad
      (C \vdashexpr e \ok)^\ast
      \qquad
      (C \vdashexprconst e \const)^\ast
      \qquad
      C \vdashelemmode \elemmode : t'
      \qquad
-     \vdashreftypematch t \matchesvaltype t'
+     C \vdashreftypematch t \matchesreftype t'
    }{
      C \vdashelem \{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \} : t
    }
@@ -179,10 +183,11 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 :math:`\EPASSIVE`
 .................
 
-* The element mode is valid with any :ref:`reference type <syntax-reftype>`.
+* The element mode is valid with any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>`.
 
 .. math::
    \frac{
+     C \vdashreftype \reftype \ok
    }{
      C \vdashelemmode \EPASSIVE : \reftype
    }
@@ -217,10 +222,11 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 :math:`\EDECLARATIVE`
 .....................
 
-* The element mode is valid with any :ref:`reference type <syntax-reftype>`.
+* The element mode is valid with any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>`.
 
 .. math::
    \frac{
+     C \vdashreftype \reftype \ok
    }{
      C \vdashelemmode \EDECLARATIVE : \reftype
    }
@@ -436,7 +442,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 :math:`\IDFUNC~x`
 .................
 
-* The function :math:`C.\CTYPES[x]` must be defined in the context.
+* The function type :math:`C.\CTYPES[x]` must be defined in the context.
 
 * Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
 
@@ -459,7 +465,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 .. math::
    \frac{
-     \vdashtable \tabletype \ok
+     C \vdashtable \tabletype \ok
    }{
      C \vdashimportdesc \IDTABLE~\tabletype : \ETTABLE~\tabletype
    }
@@ -474,7 +480,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 .. math::
    \frac{
-     \vdashmemtype \memtype \ok
+     C \vdashmemtype \memtype \ok
    }{
      C \vdashimportdesc \IDMEM~\memtype : \ETMEM~\memtype
    }
@@ -489,7 +495,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 .. math::
    \frac{
-     \vdashglobaltype \globaltype \ok
+     C \vdashglobaltype \globaltype \ok
    }{
      C \vdashimportdesc \IDGLOBAL~\globaltype : \ETGLOBAL~\globaltype
    }
@@ -540,20 +546,25 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C.\CREFS` is the set :math:`\freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)`, i.e., the set of :ref:`function indices <syntax-funcidx>` occurring in the module, except in its :ref:`functions <syntax-func>` or :ref:`start function <syntax-start>`.
 
-* Let :math:`C'` be the :ref:`context <context>` where:
+* For each function type :math:`\functype_i` in :math:`\module.\MTYPES`:
 
-  * :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)`,
+  * Let :math:`C'_i` be the :ref:`context <context>` where :math:`C'_i.\CTYPES` is :math:`C.\CTYPES[0 \slice i]` and all other fields are empty.
 
-  * :math:`C'.\CFUNCS` is the same as :math:`C.\CFUNCS`,
+  * The function  :math:`\functype_i` must be :ref:`valid <valid-functype>` under context :math:`C'_i`.
 
-  * :math:`C'.\CREFS` is the same as :math:`C.\CREFS`,
+* Let :math:`C''` be the :ref:`context <context>` where:
+
+  * :math:`C''.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)`,
+
+  * :math:`C''.\CTYPES` is the same as :math:`C.\CTYPES`,
+
+  * :math:`C''.\CFUNCS` is the same as :math:`C.\CFUNCS`,
+
+  * :math:`C''.\CREFS` is the same as :math:`C.\CREFS`,
 
   * all other fields are empty.
 
 * Under the context :math:`C`:
-
-  * For each :math:`\functype_i` in :math:`\module.\MTYPES`,
-    the :ref:`function type <syntax-functype>` :math:`\functype_i` must be :ref:`valid <valid-functype>`.
 
   * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
     the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
@@ -566,7 +577,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * For each :math:`\global_i` in :math:`\module.\MGLOBALS`:
 
-    * Under the context :math:`C'`,
+    * Under the context :math:`C''`,
       the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
 
   * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
@@ -607,7 +618,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     (\vdashfunctype \type \ok)^\ast
+     \vdashtypes \type^\ast \ok
      \quad
      (C \vdashfunc \func : \X{ft})^\ast
      \quad
@@ -615,7 +626,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \quad
      (C \vdashmem \mem : \X{mt})^\ast
      \quad
-     (C' \vdashglobal \global : \X{gt})^\ast
+     (C'' \vdashglobal \global : \X{gt})^\ast
      \\
      (C \vdashelem \elem : \X{rt})^\ast
      \quad
@@ -639,7 +650,9 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \\
      C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
-     C' = \{ \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
+     (C' = \{ \CTYPES~\type^\ast \})^\ast
+     \\
+     C'' = \{ \CTYPES~\type^\ast, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad
      |C.\CMEMS| \leq 1
      \qquad
@@ -662,6 +675,25 @@ Instead, the context :math:`C` for validation of the module's content is constru
    }{
      \vdashmodule \module : \X{it}^\ast \to \X{et}^\ast
    }
+
+.. _valid-types:
+
+where:
+
+.. math::
+   \frac{
+     \vdashtypes \type^\ast \ok
+     \qquad
+     \{\CTYPES~\type^\ast\} \vdashtypes \type \ok
+   }{
+     \vdashtypes \type^\ast~\type \ok
+   }
+   \qquad
+   \frac{
+   }{
+     \vdashtypes \epsilon \ok
+   }
+
 
 .. note::
    Most definitions in a module -- particularly functions -- are mutually recursive.

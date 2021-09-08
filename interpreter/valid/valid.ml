@@ -18,7 +18,7 @@ let require b at s = if not b then error at s
 type context =
 {
   types : def_type list;
-  funcs : syn_var list;
+  funcs : func_type list;
   tables : table_type list;
   memories : memory_type list;
   globals : global_type list;
@@ -42,7 +42,7 @@ let lookup category list x =
     error x.at ("unknown " ^ category ^ " " ^ I32.to_string_u x.it)
 
 let type_ (c : context) x = lookup "type" c.types x
-let func_var (c : context) x = lookup "function" c.funcs x
+let func (c : context) x = lookup "function" c.funcs x
 let table (c : context) x = lookup "table" c.tables x
 let memory (c : context) x = lookup "memory" c.memories x
 let global (c : context) x = lookup "global" c.globals x
@@ -65,8 +65,6 @@ let array_type (c : context) x =
   match type_ c x with
   | ArrayDefType at -> at
   | _ -> error x.at ("non-array type " ^ I32.to_string_u x.it)
-
-let func (c : context) x = func_type c (func_var c x @@ x.at)
 
 let refer category (s : Free.Set.t) x =
   if not (Free.Set.mem x.it s) then
@@ -643,7 +641,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     [] --> [RefType (Nullable, t)]
 
   | RefFunc x ->
-    let y = func_var c x in
+    let ft = func c x in
+    let y = Lib.Option.force (Lib.List32.index_of (FuncDefType ft) c.types) in
     refer_func c x;
     [] --> [RefType (NonNullable, DefHeapType (SynVar y))]
 
@@ -909,8 +908,8 @@ let check_import (im : import) (c : context) : context =
   let {module_name = _; item_name = _; idesc} = im.it in
   match idesc.it with
   | FuncImport x ->
-    ignore (func_type c x);
-    {c with funcs = x.it :: c.funcs}
+    let ft = func_type c x in
+    {c with funcs = ft :: c.funcs}
   | TableImport tt ->
     check_table_type c tt idesc.at;
     {c with tables = tt :: c.tables}
@@ -949,7 +948,7 @@ let check_module (m : module_) =
   in
   let c1 =
     { c0 with
-      funcs = c0.funcs @ List.map (fun f -> ignore (func_type c0 f.it.ftype); f.it.ftype.it) funcs;
+      funcs = c0.funcs @ List.map (fun f -> func_type c0 f.it.ftype) funcs;
       tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
       memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
       elems = List.map (fun elem -> elem.it.etype) elems;

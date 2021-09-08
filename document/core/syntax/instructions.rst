@@ -35,7 +35,7 @@ The following sections group instructions into a number of different categories.
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-Numeric instructions provide basic operations over numeric :ref:`values <syntax-value>` of specific :ref:`type <syntax-valtype>`.
+Numeric instructions provide basic operations over numeric :ref:`values <syntax-value>` of specific :ref:`type <syntax-numtype>`.
 These operations closely match respective operations available in hardware.
 
 .. math::
@@ -118,7 +118,7 @@ These operations closely match respective operations available in hardware.
      \K{ge} \\
    \end{array}
 
-Numeric instructions are divided by :ref:`value type <syntax-valtype>`.
+Numeric instructions are divided by :ref:`number type <syntax-numtype>`.
 For each type, several subcategories can be distinguished:
 
 * *Constants*: return a static constant.
@@ -324,9 +324,9 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
      \DATADROP~\dataidx \\
    \end{array}
 
-Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
+Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`number types <syntax-numtype>`.
 They all take a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
-Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-valtype>` of the respective value type.
+Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-numtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
@@ -351,7 +351,7 @@ The |DATADROP| instruction prevents further use of a passive data segment. This 
    This restriction may be lifted in future versions.
 
 
-.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, result type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
+.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, stack type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
    pair: abstract syntax; instruction
    pair: abstract syntax; block type
    pair: block; type
@@ -434,7 +434,7 @@ Forward branches require operands according to the output of the targeted block'
 Backward branches require operands according to the input of the targeted block's type, i.e., represent the values consumed by the restarted block.
 
 The |CALL| instruction invokes another :ref:`function <syntax-func>`, consuming the necessary arguments from the stack and returning the result values of the call.
-The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>` that is denoted by a :ref:`table index <syntax-tableidx>` and must have type |FUNCREF|.
+The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>` that is denoted by a :ref:`table index <syntax-tableidx>` and must contain :ref:`function references <syntax-reftype>`.
 Since it may contain functions of heterogeneous type,
 the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's second immediate, and the call is aborted with a :ref:`trap <trap>` if it does not match.
 
