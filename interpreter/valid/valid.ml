@@ -463,6 +463,22 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let t = VecType (type_vec binop) in
     [t; t] --> [t]
 
+  | VecCompare relop ->
+    let t = VecType (type_vec relop) in
+    [t; t] --> [t]
+
+  | VecConvert cvtop ->
+    let t = VecType (type_vec cvtop) in
+    [t] --> [t]
+
+  | VecShift shiftop ->
+    let t = VecType (type_vec shiftop) in
+    [t; NumType I32Type] --> [VecType V128Type]
+
+  | VecBitmask bitmaskop ->
+    let t = VecType (type_vec bitmaskop) in
+    [t] --> [NumType I32Type]
+
   | VecTestBits vtestop ->
     let t = VecType (type_vec vtestop) in
     [t] --> [NumType I32Type]
@@ -478,14 +494,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
   | VecTernaryBits vternop ->
     let t = VecType (type_vec vternop) in
     [t; t; t] --> [t]
-
-  | VecShift shiftop ->
-    let t = VecType (type_vec shiftop) in
-    [t; NumType I32Type] --> [VecType V128Type]
-
-  | VecBitmask bitmaskop ->
-    let t = VecType (type_vec bitmaskop) in
-    [t] --> [NumType I32Type]
 
   | VecSplat splatop ->
     let t1 = type_vec_lane splatop in

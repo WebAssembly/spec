@@ -461,17 +461,17 @@ whereas the actual opcode is encoded by a variable-length :ref:`unsigned integer
    \end{array}
 
 
-.. index:: simd instruction
+.. index:: vector instruction
    pair: binary format; instruction
-.. _binary-instr-simd:
+.. _binary-instr-vec:
 
-SIMD Instructions
-~~~~~~~~~~~~~~~~~~~~
+Vector Instructions
+~~~~~~~~~~~~~~~~~~~
 
-All variants of :ref:`SIMD instructions <syntax-instr-simd>` are represented by separate byte codes.
+All variants of :ref:`vector instructions <syntax-instr-vec>` are represented by separate byte codes.
 They all have a one byte prefix, whereas the actual opcode is encoded by a variable-length :ref:`unsigned integer <binary-uint>`.
 
-SIMD loads and stores are followed by the encoding of their |memarg| immediate.
+Vector loads and stores are followed by the encoding of their |memarg| immediate.
 
 .. _binary-laneidx:
 
@@ -544,11 +544,11 @@ The |SHUFFLE| instruction is also followed by the encoding of 16 |laneidx| immed
      \hex{FD}~~34{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F64X2.\REPLACELANE~l \\
    \end{array}
 
-All other SIMD instructions are plain opcodes without any immediates.
+All other vector instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \production{instruction} & \Binstr &::=& \dots && \phantom{simdhaslongerinstructionnames} \\&&|&
+   \production{instruction} & \Binstr &::=& \dots && \phantom{vechaslongerinstructionnames} \\&&|&
      \hex{FD}~~14{:}\Bu32 &\Rightarrow& \I8X16.\SWIZZLE \\ &&|&
      \hex{FD}~~15{:}\Bu32 &\Rightarrow& \I8X16.\SPLAT \\ &&|&
      \hex{FD}~~16{:}\Bu32 &\Rightarrow& \I16X8.\SPLAT \\ &&|&
@@ -562,7 +562,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~35{:}\Bu32 &\Rightarrow& \I8X16.\VEQ \\ &&|&
      \hex{FD}~~36{:}\Bu32 &\Rightarrow& \I8X16.\VNE \\ &&|&
      \hex{FD}~~37{:}\Bu32 &\Rightarrow& \I8X16.\VLT\K{\_s} \\ &&|&
@@ -577,7 +577,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~45{:}\Bu32 &\Rightarrow& \I16X8.\VEQ \\ &&|&
      \hex{FD}~~46{:}\Bu32 &\Rightarrow& \I16X8.\VNE \\ &&|&
      \hex{FD}~~47{:}\Bu32 &\Rightarrow& \I16X8.\VLT\K{\_s} \\ &&|&
@@ -592,7 +592,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~55{:}\Bu32 &\Rightarrow& \I32X4.\VEQ \\ &&|&
      \hex{FD}~~56{:}\Bu32 &\Rightarrow& \I32X4.\VNE \\ &&|&
      \hex{FD}~~57{:}\Bu32 &\Rightarrow& \I32X4.\VLT\K{\_s} \\ &&|&
@@ -607,7 +607,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~214{:}\Bu32 &\Rightarrow& \I64X2.\VEQ \\ &&|&
      \hex{FD}~~215{:}\Bu32 &\Rightarrow& \I64X2.\VNE \\ &&|&
      \hex{FD}~~216{:}\Bu32 &\Rightarrow& \I64X2.\VLT\K{\_s} \\ &&|&
@@ -620,7 +620,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~65{:}\Bu32 &\Rightarrow& \F32X4.\VEQ \\ &&|&
      \hex{FD}~~66{:}\Bu32 &\Rightarrow& \F32X4.\VNE \\ &&|&
      \hex{FD}~~67{:}\Bu32 &\Rightarrow& \F32X4.\VLT \\ &&|&
@@ -631,7 +631,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~71{:}\Bu32 &\Rightarrow& \F64X2.\VEQ \\ &&|&
      \hex{FD}~~72{:}\Bu32 &\Rightarrow& \F64X2.\VNE \\ &&|&
      \hex{FD}~~73{:}\Bu32 &\Rightarrow& \F64X2.\VLT \\ &&|&
@@ -646,7 +646,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~77{:}\Bu32 &\Rightarrow& \V128.\VNOT \\ &&|&
      \hex{FD}~~78{:}\Bu32 &\Rightarrow& \V128.\VAND \\ &&|&
      \hex{FD}~~79{:}\Bu32 &\Rightarrow& \V128.\VANDNOT \\ &&|&
@@ -665,7 +665,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~96{:}\Bu32 &\Rightarrow& \I8X16.\VABS \\ &&|&
      \hex{FD}~~97{:}\Bu32 &\Rightarrow& \I8X16.\VNEG \\ &&|&
      \hex{FD}~~98{:}\Bu32 &\Rightarrow& \I8X16.\VPOPCNT \\ &&|&
@@ -691,7 +691,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~124{:}\Bu32 &\Rightarrow& \I16X8.\EXTADDPAIRWISE\K{\_i8x16\_s}\\ &&|&
      \hex{FD}~~125{:}\Bu32 &\Rightarrow& \I16X8.\EXTADDPAIRWISE\K{\_i8x16\_u}\\ &&|&
      \hex{FD}~~128{:}\Bu32 &\Rightarrow& \I16X8.\VABS \\ &&|&
@@ -728,7 +728,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~126{:}\Bu32 &\Rightarrow& \I32X4.\EXTADDPAIRWISE\K{\_i16x8\_s}\\ &&|&
      \hex{FD}~~127{:}\Bu32 &\Rightarrow& \I32X4.\EXTADDPAIRWISE\K{\_i16x8\_u}\\ &&|&
      \hex{FD}~~160{:}\Bu32 &\Rightarrow& \I32X4.\VABS \\ &&|&
@@ -758,7 +758,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~192{:}\Bu32 &\Rightarrow& \I64X2.\VABS \\ &&|&
      \hex{FD}~~193{:}\Bu32 &\Rightarrow& \I64X2.\VNEG \\ &&|&
      \hex{FD}~~195{:}\Bu32 &\Rightarrow& \I64X2.\ALLTRUE \\ &&|&
@@ -784,7 +784,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~103{:}\Bu32 &\Rightarrow& \F32X4.\VCEIL \\ &&|&
      \hex{FD}~~104{:}\Bu32 &\Rightarrow& \F32X4.\VFLOOR \\ &&|&
      \hex{FD}~~105{:}\Bu32 &\Rightarrow& \F32X4.\VTRUNC \\ &&|&
@@ -804,7 +804,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~116{:}\Bu32 &\Rightarrow& \F64X2.\VCEIL \\ &&|&
      \hex{FD}~~117{:}\Bu32 &\Rightarrow& \F64X2.\VFLOOR \\ &&|&
      \hex{FD}~~122{:}\Bu32 &\Rightarrow& \F64X2.\VTRUNC \\ &&|&
@@ -824,7 +824,7 @@ All other SIMD instructions are plain opcodes without any immediates.
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{simdhaslongerinstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~248{:}\Bu32 &\Rightarrow& \I32X4.\TRUNC\K{\_sat\_f32x4\_s} \\ &&|&
      \hex{FD}~~249{:}\Bu32 &\Rightarrow& \I32X4.\TRUNC\K{\_sat\_f32x4\_u} \\ &&|&
      \hex{FD}~~250{:}\Bu32 &\Rightarrow& \F32X4.\CONVERT\K{\_i32x4\_s} \\ &&|&

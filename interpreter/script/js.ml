@@ -348,7 +348,7 @@ let assert_return ress ts at =
       [ VecConst (V128 mask @@ at) @@ at;
         VecBinaryBits (V128 V128Op.And) @@ at;
         VecConst (V128 expected @@ at) @@ at;
-        VecBinary (V128 (V128.I8x16 V128Op.Eq)) @@ at;
+        VecCompare (V128 (V128.I8x16 V128Op.Eq)) @@ at;
         (* If all lanes are non-zero, then they are equal *)
         VecTest (V128 (V128.I8x16 V128Op.AllTrue)) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
