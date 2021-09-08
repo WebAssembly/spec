@@ -22,16 +22,16 @@ Number Types
    \end{array}
 
 
-.. index:: SIMD type
-   pair: text format; SIMD type
-.. _text-simdtype:
+.. index:: vector type
+   pair: text format; vector type
+.. _text-vectype:
 
-SIMD Types
-~~~~~~~~~~
+Vector Types
+~~~~~~~~~~~~
 
 .. math::
    \begin{array}{llcll@{\qquad\qquad}l}
-   \production{SIMD type} & \Tsimdtype &::=&
+   \production{vector type} & \Tvectype &::=&
      \text{v128} &\Rightarrow& \V128 \\
    \end{array}
 
@@ -55,7 +55,7 @@ Reference Types
    \end{array}
 
 
-.. index:: value type, number type, SIMD type, reference type
+.. index:: value type, number type, vector type, reference type
    pair: text format; value type
 .. _text-valtype:
 
@@ -66,7 +66,7 @@ Value Types
    \begin{array}{llcll@{\qquad\qquad}l}
    \production{value type} & \Tvaltype &::=&
      t{:}\Tnumtype &\Rightarrow& t \\ &&|&
-     t{:}\Tsimdtype &\Rightarrow& t \\ &&|&
+     t{:}\Tvectype &\Rightarrow& t \\ &&|&
      t{:}\Treftype &\Rightarrow& t \\
    \end{array}
 

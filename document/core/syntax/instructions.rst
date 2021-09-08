@@ -171,7 +171,7 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
-.. index:: ! SIMD instruction, fixed-width SIMD, number, value, value type
+.. index:: ! vector instruction, numeric vectors, number, value, value type, SIMD
    pair: abstract syntax; instruction
 .. _syntax-laneidx:
 .. _syntax-shape:
@@ -190,12 +190,12 @@ Occasionally, it is convenient to group operators together according to the foll
 .. _syntax-visatbinop:
 .. _syntax-vfunop:
 .. _syntax-vfbinop:
-.. _syntax-instr-simd:
+.. _syntax-instr-vec:
 
-SIMD Instructions
-~~~~~~~~~~~~~~~~~
+Vector Instructions
+~~~~~~~~~~~~~~~~~~~
 
-SIMD instructions provide basic operations over :ref:`values <syntax-value>` of type |V128|.
+Vector instructions (also known as *SIMD* instructions, single data multiple value) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
 
 .. math::
    \begin{array}{llcl}
@@ -271,50 +271,50 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}sx ~|~
      \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\&&|&
      \dots \\
-   \production{SIMD unary operator} & \vvunop &::=&
+   \production{vector bitwise unary operator} & \vvunop &::=&
      \K{not} \\
-   \production{SIMD binary operator} & \vvbinop &::=&
+   \production{vector bitwise binary operator} & \vvbinop &::=&
      \K{and} ~|~
      \K{andnot} ~|~
      \K{or} ~|~
      \K{xor} \\
-   \production{SIMD ternary operator} & \vvternop &::=&
+   \production{vector bitwise ternary operator} & \vvternop &::=&
      \K{bitselect} \\
-   \production{SIMD test operator} & \vvtestop &::=&
+   \production{vector bitwise test operator} & \vvtestop &::=&
      \K{any\_true} \\
-   \production{SIMD test operator} & \vitestop &::=&
+   \production{vector integer test operator} & \vitestop &::=&
      \K{all\_true} \\
-   \production{SIMD integer relational operator} & \virelop &::=&
+   \production{vector integer relational operator} & \virelop &::=&
      \K{eq} ~|~
      \K{ne} ~|~
      \K{lt\_}\sx ~|~
      \K{gt\_}\sx ~|~
      \K{le\_}\sx ~|~
      \K{ge\_}\sx \\
-   \production{SIMD floating-point relational operator} & \vfrelop &::=&
+   \production{vector floating-point relational operator} & \vfrelop &::=&
      \K{eq} ~|~
      \K{ne} ~|~
      \K{lt} ~|~
      \K{gt} ~|~
      \K{le} ~|~
      \K{ge} \\
-   \production{SIMD integer shift operator} & \vishiftop &::=&
+   \production{vector integer unary operator} & \viunop &::=&
+     \K{abs} ~|~
+     \K{neg} \\
+   \production{vector integer binary operator} & \vibinop &::=&
+     \K{add} ~|~
+     \K{sub} \\
+   \production{vector integer binary min/max operator} & \viminmaxop &::=&
+     \K{min\_}\sx ~|~
+     \K{max\_}\sx \\
+   \production{vector integer saturating binary operator} & \visatbinop &::=&
+     \K{add\_sat\_}\sx ~|~
+     \K{sub\_sat\_}\sx \\
+   \production{vector integer shift operator} & \vishiftop &::=&
      \K{shl} ~|~
      \K{shr\_s} ~|~
      \K{shr\_u} \\
-   \production{SIMD integer unary operator} & \viunop &::=&
-     \K{abs} ~|~
-     \K{neg} \\
-   \production{SIMD integer binary operator} & \vibinop &::=&
-     \K{add} ~|~
-     \K{sub} \\
-   \production{SIMD integer binary min/max operator} & \viminmaxop &::=&
-     \K{min\_}\sx ~|~
-     \K{max\_}\sx \\
-   \production{SIMD integer saturating binary operator} & \visatbinop &::=&
-     \K{add\_sat\_}\sx ~|~
-     \K{sub\_sat\_}\sx \\
-   \production{SIMD floating-point unary operator} & \vfunop &::=&
+   \production{vector floating-point unary operator} & \vfunop &::=&
      \K{abs} ~|~
      \K{neg} ~|~
      \K{sqrt} ~|~
@@ -322,7 +322,7 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{floor} ~|~
      \K{trunc} ~|~
      \K{nearest} \\
-   \production{SIMD floating-point binary operator} & \vfbinop &::=&
+   \production{vector floating-point binary operator} & \vfbinop &::=&
      \K{add} ~|~
      \K{sub} ~|~
      \K{mul} ~|~
@@ -333,9 +333,9 @@ SIMD instructions provide basic operations over :ref:`values <syntax-value>` of 
      \K{pmax} \\
    \end{array}
 
-.. _syntax-simd-shape:
+.. _syntax-vec-shape:
 
-SIMD instructions have a naming convention involving a prefix that
+Vector instructions have a naming convention involving a prefix that
 determines how their operands will be interpreted.
 This prefix describes the *shape* of the operand,
 written :math:`t\K{x}N`, and consisting of a packed :ref:`numeric type <syntax-numtype>` :math:`t` and the number of *lanes* :math:`N` of that type.
@@ -348,7 +348,7 @@ Operations are performed point-wise on the values of each lane.
 
 Instructions prefixed with :math:`\K{v128}` do not involve a specific interpretation, and treat the |V128| as an |i128| value or a vector of 128 individual bits.
 
-SIMD instructions can be grouped into several subcategories:
+Vector instructions can be grouped into several subcategories:
 
 * *Constants*: return a static constant.
 
@@ -368,8 +368,8 @@ SIMD instructions can be grouped into several subcategories:
 
 * *Replace lanes*: consume a |V128| operand and a numeric value for a given lane, and produce a |V128| result.
 
-Some SIMD instructions have a signedness annotation |sx| which distinguishes whether the elements in the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
-For the other SIMD instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
+Some vector instructions have a signedness annotation |sx| which distinguishes whether the elements in the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
+For the other vector instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
 
 
 .. _syntax-vunop:
@@ -579,7 +579,8 @@ They all take a *memory immediate* |memarg| that contains an address *offset* an
 Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-valtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
-SIMD loads can specify a shape that is half the :ref:`bit width <syntax-valtype>` of |V128|. Each lane is half its usual size, and the sign extension mode |sx| then specifies how the smaller lane is extended to the larger lane. Alternatively, SIMD loads can perform a *splat*, such that only a single lane of the specified storage size is loaded, and the result is duplicated to all lanes.
+Vector loads can specify a shape that is half the :ref:`bit width <syntax-valtype>` of |V128|. Each lane is half its usual size, and the sign extension mode |sx| then specifies how the smaller lane is extended to the larger lane.
+Alternatively, vector loads can perform a *splat*, such that only a single lane of the specified storage size is loaded, and the result is duplicated to all lanes.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
 All values are read and written in |LittleEndian|_ byte order.

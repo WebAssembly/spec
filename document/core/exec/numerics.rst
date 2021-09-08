@@ -180,13 +180,13 @@ When a number is stored into :ref:`memory <syntax-mem>`, it is converted into a 
 Again these functions are invertable bijections.
 
 
-.. index:: SIMD, shape
+.. index:: numeric vectors, shape
 .. _aux-lanes:
 
-SIMD
-....
+Vectors
+.......
 
-SIMD values have the same underlying representation as an |i128|. They can also be interpreted as a sequence numeric values packed into a |V128| with a particular |shape|.
+Numeric vectors have the same underlying representation as an |i128|. They can also be interpreted as a sequence of numeric values packed into a |V128| with a particular |shape|.
 
 .. math::
    \begin{array}{l}

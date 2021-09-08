@@ -29,18 +29,18 @@ Number Types
    \end{array}
 
 
-.. index:: SIMD type
-   pair: binary format; SIMD type
-.. _binary-simdtype:
+.. index:: vector type
+   pair: binary format; vector type
+.. _binary-vectype:
 
-SIMD Types
-~~~~~~~~~~
+Vector Types
+~~~~~~~~~~~~
 
-:ref:`SIMD types <syntax-simdtype>` are also encoded by a single byte.
+:ref:`Vector types <syntax-vectype>` are also encoded by a single byte.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{SIMD type} & \Bsimdtype &::=&
+   \production{vector type} & \Bvectype &::=&
      \hex{7B} &\Rightarrow& \V128 \\
    \end{array}
 
