@@ -1,4 +1,4 @@
-![Build Status](https://github.com/WebAssembly/spec/actions/workflows/main.yml/badge.svg)
+![Build Status](https://github.com/WebAssembly/exception-handling/actions/workflows/main.yml/badge.svg)
 
 # Exception Handling Proposal for WebAssembly
 
@@ -7,6 +7,8 @@ for adding exception handling to WebAssembly.
 
 * See the [proposal overview](proposals/exception-handling/Exceptions.md) for a
 summary of the proposal.
+* A formatted version of the spec with proposed changes is available here:
+[webassembly.github.io/exception-handling](https://webassembly.github.io/exception-handling/).
 
 Original README from upstream repository follows...
 =======
