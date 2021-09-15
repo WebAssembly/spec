@@ -56,7 +56,6 @@ test(() => {
   const argument = { "element": "anyfunc", "initial": 5 };
   const table = new WebAssembly.Table(argument);
   assert_throws_js(TypeError, () => table.set());
-  assert_throws_js(TypeError, () => table.set(0));
 }, "Missing arguments: set");
 
 test(t => {
