@@ -45,6 +45,23 @@
     )
   )
 
+  (func (export "delegate-to-block") (result i32)
+    (try (result i32)
+      (do (block (try (do (throw $e0)) (delegate 0)))
+          (i32.const 0))
+      (catch_all (i32.const 1)))
+  )
+
+  (func (export "delegate-to-catch") (result i32)
+    (try (result i32)
+      (do (try
+            (do (throw $e0))
+            (catch $e0
+              (try (do (rethrow 1)) (delegate 0))))
+          (i32.const 0))
+      (catch_all (i32.const 1)))
+  )
+
   (func (export "delegate-to-caller")
     (try (do (try (do (throw $e0)) (delegate 1))) (catch_all))
   )
@@ -92,6 +109,9 @@
 
 (assert_return (invoke "delegate-skip") (i32.const 3))
 
+(assert_return (invoke "delegate-to-block") (i32.const 1))
+(assert_return (invoke "delegate-to-catch") (i32.const 1))
+
 (assert_exception (invoke "delegate-to-caller"))
 
 (assert_malformed
@@ -112,4 +132,9 @@
 (assert_malformed
   (module quote "(module (func (try (do) (delegate) (delegate 0))))")
   "unexpected token"
+)
+
+(assert_invalid
+  (module (func (try (do) (delegate 1))))
+  "unknown label"
 )

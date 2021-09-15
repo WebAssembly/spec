@@ -154,10 +154,10 @@
 (assert_return (invoke "simple-throw-catch" (i32.const 0)) (i32.const 23))
 (assert_return (invoke "simple-throw-catch" (i32.const 1)) (i32.const 42))
 
-(assert_exception (invoke "unreachable-not-caught"))
+(assert_trap (invoke "unreachable-not-caught") "unreachable")
 
 (assert_return (invoke "trap-in-callee" (i32.const 7) (i32.const 2)) (i32.const 3))
-(assert_exception (invoke "trap-in-callee" (i32.const 1) (i32.const 0)))
+(assert_trap (invoke "trap-in-callee" (i32.const 1) (i32.const 0)) "integer divide by zero")
 
 (assert_return (invoke "catch-complex-1" (i32.const 0)) (i32.const 3))
 (assert_return (invoke "catch-complex-1" (i32.const 1)) (i32.const 4))
@@ -188,6 +188,28 @@
 (assert_return (invoke "catchless-try" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "catchless-try" (i32.const 1)) (i32.const 1))
 
+(module
+  (func $imported-throw (import "test" "throw"))
+  (tag $e0)
+
+  (func (export "imported-mismatch") (result i32)
+    (try (result i32)
+      (do
+        (try (result i32)
+          (do
+            (i32.const 1)
+            (call $imported-throw)
+          )
+          (catch $e0 (i32.const 2))
+        )
+      )
+      (catch_all (i32.const 3))
+    )
+  )
+)
+
+(assert_return (invoke "imported-mismatch") (i32.const 3))
+
 (assert_malformed
   (module quote "(module (func (catch_all)))")
   "unexpected token"
@@ -204,3 +226,17 @@
   )
   "unexpected token"
 )
+
+(assert_invalid (module (func (result i32) (try (result i32) (do))))
+                "type mismatch: instruction requires [i32] but stack has []")
+(assert_invalid (module (func (result i32) (try (result i32) (do (i64.const 42)))))
+                "type mismatch: instruction requires [i32] but stack has [i64]")
+(assert_invalid (module (tag) (func (try (do) (catch 0 (i32.const 42)))))
+                "type mismatch: block requires [] but stack has [i32]")
+(assert_invalid (module
+                  (tag (param i64))
+                  (func (result i32)
+                    (try (result i32) (do (i32.const 42)) (catch 0))))
+                "type mismatch: instruction requires [i32] but stack has [i64]")
+(assert_invalid (module (func (try (do) (catch_all (i32.const 42)))))
+                "type mismatch: block requires [] but stack has [i32]")

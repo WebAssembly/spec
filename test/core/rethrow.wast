@@ -63,6 +63,13 @@
       )
     )
   )
+
+  (func (export "rethrow-stack-polymorphism")
+    (try
+      (do (throw $e0))
+      (catch $e0 (i32.const 1) (rethrow 0))
+    )
+  )
 )
 
 (assert_exception (invoke "catch-rethrow-0"))
@@ -81,3 +88,9 @@
 (assert_return (invoke "rethrow-recatch" (i32.const 0)) (i32.const 23))
 (assert_return (invoke "rethrow-recatch" (i32.const 1)) (i32.const 42))
 
+(assert_exception (invoke "rethrow-stack-polymorphism"))
+
+(assert_invalid (module (func (rethrow 0))) "invalid rethrow label")
+(assert_invalid (module (func (block (rethrow 0)))) "invalid rethrow label")
+(assert_invalid (module (func (try (do (rethrow 0)) (delegate 0))))
+                "invalid rethrow label")

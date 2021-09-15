@@ -43,3 +43,9 @@
 (assert_exception (invoke "throw-param-f64" (f64.const 5.0)))
 
 (assert_return (invoke "test-throw-1-2"))
+
+(assert_invalid (module (func (throw 0))) "unknown tag 0")
+(assert_invalid (module (tag (param i32)) (func (throw 0)))
+                "type mismatch: instruction requires [i32] but stack has []")
+(assert_invalid (module (tag (param i32)) (func (i64.const 5) (throw 0)))
+                "type mismatch: instruction requires [i32] but stack has [i64]")
