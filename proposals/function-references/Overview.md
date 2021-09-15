@@ -166,13 +166,18 @@ The following rules, now defined in terms of heap types, replace and extend the 
   - `(ref <heaptype1>) <: (ref null <heaptype2>)`
     - iff `<heaptype1> <: <heaptype2>`
 
-##### Constructed Types
+##### Heap Types
 
 * Any function type is a subtype of `func`
   - `$t <: func`
      - iff `$t = <functype>`
 
-* Note: Function types themselves are invariant for now. This may be relaxed in future extensions.
+##### Type Indices
+
+* Type indices are subtypes only if they define equivalent types
+  - `$t <: $t'`
+    - iff `$t = <functype>` and `$t' = <functype'>` and `<functype> == <functype'>`
+  - Note: Function types are invariant for now. This may be relaxed in future extensions.
 
 
 #### Defaultability
