@@ -74,13 +74,13 @@ However, the special case of a type use that is syntactically empty or consists 
      x,I'{:}\Ttypeuse_I &\Rightarrow& x & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array} \\
    \production{block instruction} & \Tblockinstr_I &::=&
-     \text{block}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+     \text{block}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
        \\ &&&\qquad \Rightarrow\quad \BLOCK~\X{bt}~\X{in}^\ast~\END
        \qquad\quad~~ (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
-     \text{loop}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+     \text{loop}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
        \\ &&&\qquad \Rightarrow\quad \LOOP~\X{bt}~\X{in}^\ast~\END
        \qquad\qquad (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
-     \text{if}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
+     \text{if}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
        \text{else}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
        \\ &&&\qquad \Rightarrow\quad \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
        \qquad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\

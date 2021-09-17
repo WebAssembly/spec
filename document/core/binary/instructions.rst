@@ -82,7 +82,8 @@ Reference Instructions
 :ref:`Reference instructions <syntax-instr-ref>` are represented by single byte codes.
 
 .. _binary-ref.null:
-.. _binary-ref.isnull:
+.. _binary-ref.func:
+.. _binary-ref.is_null:
 
 .. math::
    \begin{array}{llclll}

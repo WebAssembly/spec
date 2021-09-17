@@ -1677,7 +1677,7 @@ Memory Instructions
 
 9. If :math:`N` is not part of the instruction, then:
 
-   a. Let :math:`N` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
+   a. Let :math:`N` be the :ref:`bit width <syntax-numtype>` :math:`|t|` of :ref:`number type <syntax-numtype>` :math:`t`.
 
 10. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
 
@@ -1992,7 +1992,7 @@ Memory Instructions
 
 11. If :math:`N` is not part of the instruction, then:
 
-    a. Let :math:`N` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
+    a. Let :math:`N` be the :ref:`bit width <syntax-numtype>` :math:`|t|` of :ref:`number type <syntax-numtype>` :math:`t`.
 
 12. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
 
@@ -2403,15 +2403,15 @@ Memory Instructions
 
 10. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-11. Pop the value :math:`\I32.\CONST~cnt` from the stack.
+11. Pop the value :math:`\I32.\CONST~n` from the stack.
 
 12. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-13. Pop the value :math:`\I32.\CONST~src` from the stack.
+13. Pop the value :math:`\I32.\CONST~s` from the stack.
 
 14. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-15. Pop the value :math:`\I32.\CONST~dst` from the stack.
+15. Pop the value :math:`\I32.\CONST~d` from the stack.
 
 16. If :math:`s + n` is larger than the length of :math:`\X{data}.\DIDATA` or :math:`d + n` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
 

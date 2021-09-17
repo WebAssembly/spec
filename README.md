@@ -1,3 +1,5 @@
+![Build Status](https://github.com/WebAssembly/simd/actions/workflows/main.yml/badge.svg)
+
 # SIMD proposal for WebAssembly
 
 This repository holds a proposal for adding 128-bit SIMD support to
