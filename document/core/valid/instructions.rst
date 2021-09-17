@@ -166,32 +166,18 @@ Reference Instructions
 
 .. _valid-ref.null:
 
-:math:`\REFNULL~t`
-..................
+:math:`\REFNULL~\X{ht}`
+.......................
 
-* The instruction is valid with type :math:`[] \to [t]`.
+* The :ref:`heap type <syntax-heaptype>` :math:`\X{ht}` must be :ref:`valid <valid-heaptype>`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \REFNULL~t : [] \to [t]
-   }
-
-.. note::
-   In future versions of WebAssembly, there may be reference types for which no null reference is allowed.
-
-.. _valid-ref.is_null:
-
-:math:`\REFISNULL`
-..................
-
-* The instruction is valid with type :math:`[t] \to [\I32]`, for any :ref:`reference type <syntax-reftype>` :math:`t`.
+* Then the instruction is valid with type :math:`[] \to [(\REF~\NULL~\X{ht})]`.
 
 .. math::
    \frac{
-     t = \reftype
+     C \vdashheaptype \X{ht} \ok
    }{
-     C \vdashinstr \REFISNULL : [t] \to [\I32]
+     C \vdashinstr \REFNULL~\X{ht} : [] \to [(\REF~\NULL~\X{ht})]
    }
 
 .. _valid-ref.func:
@@ -216,6 +202,34 @@ Reference Instructions
      C \vdashinstr \REFFUNC~x : [] \to [(\REF~y)]
    }
 
+.. _valid-ref.is_null:
+
+:math:`\REFISNULL`
+..................
+
+* The instruction is valid with type :math:`[(\REF~\NULL~\X{ht})] \to [\I32]`, for any :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\X{ht}`.
+
+.. math::
+   \frac{
+     C \vdashheaptype \X{ht} \ok
+   }{
+     C \vdashinstr \REFISNULL : [(\REF~\NULL~\X{ht})] \to [\I32]
+   }
+
+.. _valid-ref.as_non_null:
+
+:math:`\REFASNONNULL`
+.....................
+
+* The instruction is valid with type :math:`[(\REF~\NULL~\X{ht})] \to [(\REF~\X{ht})]`, for any :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\X{ht}`.
+
+.. math::
+   \frac{
+     C \vdashheaptype \X{ht} \ok
+   }{
+     C \vdashinstr \REFASNONNULL : [(\REF~\NULL~\X{ht})] \to [(\REF~\X{ht})]
+   }
+
 
 .. index:: parametric instructions, value type, polymorphism
    pair: validation; instruction
@@ -230,10 +244,11 @@ Parametric Instructions
 :math:`\DROP`
 .............
 
-* The instruction is valid with type :math:`[t] \to []`, for any :ref:`value type <syntax-valtype>` :math:`t`.
+* The instruction is valid with type :math:`[t] \to []`, for any :ref:`valid <valid-valtype>` :ref:`value type <syntax-valtype>` :math:`t`.
 
 .. math::
    \frac{
+     C \vdashvaltype t \ok
    }{
      C \vdashinstr \DROP : [t] \to []
    }
@@ -975,6 +990,52 @@ Control Instructions
    a simple :ref:`linear algorithm <algo-valid>` does not require this.
 
 
+.. _valid-br_on_null:
+
+:math:`\BRONNULL~l`
+...................
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
+
+* Then the instruction is valid with type :math:`[t^\ast~(\REF~\NULL~\X{ht})] \to [t^\ast~(\REF~\X{ht})]` for any :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\X{ht}`.
+
+.. math::
+   \frac{
+     C.\CLABELS[l] = [t^\ast]
+     \qquad
+     C \vdashheaptype \X{ht} \ok
+   }{
+     C \vdashinstr \BRONNULL~l : [t^\ast~(\REF~\NULL~\X{ht})] \to [t^\ast~(\REF~\X{ht})]
+   }
+
+
+.. _valid-br_on_non_null:
+
+:math:`\BRONNONNULL~l`
+......................
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* Let :math:`[{t'}^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
+
+* The result type :math:`[{t'}^\ast]` must contain at least one type.
+
+* Let the :ref:`value type <syntax-valtype>` :math:`t_l` be the last element in the sequence :math:`{t'}^\ast`, and :math:`[t^\ast]` the remainder of the sequence preceding it.
+
+* The value type :math:`t_l` must be a reference type of the form :math:`\REF~\NULL^?~\X{ht}`.
+
+* Then the instruction is valid with type :math:`[t^\ast~(\REF~\NULL~\X{ht})] \to [t^\ast]`.
+
+.. math::
+   \frac{
+     C.\CLABELS[l] = [t^\ast~(\REF~\X{ht})]
+   }{
+     C \vdashinstr \BRONNONNULL~l : [t^\ast~(\REF~\NULL~\X{ht})] \to [t^\ast]
+   }
+
+
 .. _valid-return:
 
 :math:`\RETURN`
@@ -1017,6 +1078,23 @@ Control Instructions
      C.\CFUNCS[x] = [t_1^\ast] \to [t_2^\ast]
    }{
      C \vdashinstr \CALL~x : [t_1^\ast] \to [t_2^\ast]
+   }
+
+
+.. _valid-call_ref:
+
+:math:`\CALLREF`
+................
+
+* Let :math:`x` be some :ref:`type index <syntax-typeidx>` for which :math:`C.\CTYPES[x]` is a :ref:`function type <syntax-functype>` of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Then the instruction is valid with type :math:`[t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]`.
+
+.. math::
+   \frac{
+     C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
+   }{
+     C \vdashinstr \CALLREF : [t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]
    }
 
 

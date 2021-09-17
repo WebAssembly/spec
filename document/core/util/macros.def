@@ -351,8 +351,11 @@
 .. |BR| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br}}
 .. |BRIF| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_if}}
 .. |BRTABLE| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_table}}
+.. |BRONNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_on\_null}}
+.. |BRONNONNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_on\_non\_null}}
 .. |RETURN| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{return}}
 .. |CALL| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call}}
+.. |CALLREF| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call\_ref}}
 .. |CALLINDIRECT| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call\_indirect}}
 
 .. |DROP| mathdef:: \xref{syntax/instructions}{syntax-instr-parametric}{\K{drop}}
@@ -383,8 +386,9 @@
 .. |DATADROP| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{data.drop}}
 
 .. |REFNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}null}}
-.. |REFISNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}is\_null}}
 .. |REFFUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}func}}
+.. |REFISNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}is\_null}}
+.. |REFASNONNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}as\_non\_null}}
 
 .. |CONST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{const}}
 .. |EQZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{eqz}}
@@ -789,8 +793,8 @@
 .. |matchestabletype| mathdef:: \xref{valid/matching}{match-tabletype}{\leq}
 .. |matchesmemtype| mathdef:: \xref{valid/matching}{match-memtype}{\leq}
 .. |matchesglobaltype| mathdef:: \xref{valid/matching}{match-globaltype}{\leq}
-.. |matchesexterntype| mathdef:: \xref{exec/matching}{match-externtype}{\leq}
-.. |matcheslimits| mathdef:: \xref{exec/matching}{match-limits}{\leq}
+.. |matchesexterntype| mathdef:: \xref{valid/matching}{match-externtype}{\leq}
+.. |matcheslimits| mathdef:: \xref{valid/matching}{match-limits}{\leq}
 
 
 .. Contexts
@@ -832,8 +836,8 @@
 .. |vdashtabletypematch| mathdef:: \xref{valid/matching}{match-tabletype}{\vdash}
 .. |vdashmemtypematch| mathdef:: \xref{valid/matching}{match-memtype}{\vdash}
 .. |vdashglobaltypematch| mathdef:: \xref{valid/matching}{match-globaltype}{\vdash}
-.. |vdashexterntypematch| mathdef:: \xref{exec/matching}{match-externtype}{\vdash}
-.. |vdashlimitsmatch| mathdef:: \xref{exec/matching}{match-limits}{\vdash}
+.. |vdashexterntypematch| mathdef:: \xref{valid/matching}{match-externtype}{\vdash}
+.. |vdashlimitsmatch| mathdef:: \xref{valid/matching}{match-limits}{\vdash}
 
 .. |vdashinstr| mathdef:: \xref{valid/instructions}{valid-instr}{\vdash}
 .. |vdashinstrseq| mathdef:: \xref{valid/instructions}{valid-instr-seq}{\vdash}

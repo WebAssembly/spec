@@ -95,8 +95,11 @@ However, the special case of a type use that is syntactically empty or consists 
 .. _text-br:
 .. _text-br_if:
 .. _text-br_table:
+.. _text-br_on_null:
+.. _text-br_on_non_null:
 .. _text-return:
 .. _text-call:
+.. _text-call_ref:
 .. _text-call_indirect:
 
 All other control instruction are represented verbatim.
@@ -110,8 +113,11 @@ All other control instruction are represented verbatim.
      \text{br\_if}~~l{:}\Tlabelidx_I &\Rightarrow& \BRIF~l \\ &&|&
      \text{br\_table}~~l^\ast{:}\Tvec(\Tlabelidx_I)~~l_N{:}\Tlabelidx_I
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
+     \text{br\_on\_null}~~l{:}\Tlabelidx_I &\Rightarrow& \BRONNULL~l \\ &&|&
+     \text{br\_on\_non\_null}~~l{:}\Tlabelidx_I &\Rightarrow& \BRONNONNULL~l \\ &&|&
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
+     \text{call\_ref} &\Rightarrow& \CALLREF \\ &&|&
      \text{call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x~y
        & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array}
@@ -152,15 +158,17 @@ Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. _text-ref.null:
-.. _text-ref.is_null:
 .. _text-ref.func:
+.. _text-ref.is_null:
+.. _text-ref.as_non_null:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{ref.null}~~t{:}\Theaptype &\Rightarrow& \REFNULL~t \\ &&|&
-     \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
      \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
+     \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
+     \text{ref.as\_non\_null} &\Rightarrow& \REFASNONNULL \\
    \end{array}
 
 

@@ -192,39 +192,13 @@ Reference Instructions
 
 .. _exec-ref.null:
 
-:math:`\REFNULL~t`
-..................
+:math:`\REFNULL~\X{ht}`
+.......................
 
-1. Push the value :math:`\REFNULL~t` to the stack.
+1. Push the value :math:`\REFNULL~\X{ht}` to the stack.
 
 .. note::
    No formal reduction rule is required for this instruction, since the |REFNULL| instruction is already a :ref:`value <syntax-val>`.
-
-
-.. _exec-ref.is_null:
-
-:math:`\REFISNULL`
-..................
-
-1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
-
-2. Pop the value :math:`\val` from the stack.
-
-3. If :math:`\val` is :math:`\REFNULL~t`, then:
-
-   a. Push the value :math:`\I32.\CONST~1` to the stack.
-
-4. Else:
-
-   a. Push the value :math:`\I32.\CONST~0` to the stack.
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \val~\REFISNULL &\stepto& \I32.\CONST~1
-     & (\iff \val = \REFNULL~t) \\
-   \val~\REFISNULL &\stepto& \I32.\CONST~0
-     & (\otherwise) \\
-   \end{array}
 
 
 .. _exec-ref.func:
@@ -244,6 +218,56 @@ Reference Instructions
    \begin{array}{lcl@{\qquad}l}
    F; \REFFUNC~x &\stepto& F; \REFFUNCADDR~a
      & (\iff a = F.\AMODULE.\MIFUNCS[x]) \\
+   \end{array}
+
+
+.. _exec-ref.is_null:
+
+:math:`\REFISNULL`
+..................
+
+1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\val` from the stack.
+
+3. If :math:`\val` is :math:`\REFNULL~\X{ht}`, then:
+
+   a. Push the value :math:`\I32.\CONST~1` to the stack.
+
+4. Else:
+
+   a. Push the value :math:`\I32.\CONST~0` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~\REFISNULL &\stepto& \I32.\CONST~1
+     & (\iff \val = \REFNULL~\X{ht}) \\
+   \val~\REFISNULL &\stepto& \I32.\CONST~0
+     & (\otherwise) \\
+   \end{array}
+
+
+.. _exec-ref.as_non_null:
+
+:math:`\REFASNONNULL`
+.....................
+
+1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\val` from the stack.
+
+3. If :math:`\val` is :math:`\REFNULL~\X{ht}`, then:
+
+   a. Trap.
+
+4. Push the value :math:`\val` back to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~\REFASNONNULL &\stepto& \TRAP
+     & (\iff \val = \REFNULL~\X{ht}) \\
+   \val~\REFASNONNULL &\stepto& \val
+     & (\otherwise) \\
    \end{array}
 
 
@@ -1722,6 +1746,60 @@ Control Instructions
    \end{array}
 
 
+.. _exec-br_on_null:
+
+:math:`\BRONNULL~l`
+...................
+
+1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\val` from the stack.
+
+3. If :math:`\val` is :math:`\REFNULL~\X{ht}`, then:
+
+   a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
+
+4. Else:
+
+   a. Push the value :math:`\val` back to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~(\BRONNULL~l) &\stepto& (\BR~l)
+     & (\iff \val = \REFNULL~\X{ht}) \\
+   \val~(\BRONNULL~l) &\stepto& \val
+     & (\otherwise) \\
+   \end{array}
+
+
+.. _exec-br_on_non_null:
+
+:math:`\BRONNONNULL~l`
+......................
+
+1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\val` from the stack.
+
+3. If :math:`\val` is :math:`\REFNULL~\X{ht}`, then:
+
+   a. Do nothing.
+
+4. Else:
+
+   a. Push the value :math:`\val` back to the stack.
+
+   b. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~(\BRONNONNULL~l) &\stepto& \epsilon
+     & (\iff \val = \REFNULL~\X{ht}) \\
+   \val~(\BRONNONNULL~l) &\stepto& \val~(\BR~l)
+     & (\otherwise) \\
+   \end{array}
+
+
 .. _exec-return:
 
 :math:`\RETURN`
@@ -1776,6 +1854,23 @@ Control Instructions
    \end{array}
 
 
+.. _exec-call_ref:
+
+:math:`\CALLREF`
+................
+
+1. Assert: due to :ref:`validation <valid-call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\REFFUNCADDR~a` from the stack.
+
+3. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   F; (\REFFUNCADDR~a)~\CALLREF &\stepto& F; (\INVOKE~a)
+   \end{array}
+
+
 .. _exec-call_indirect:
 
 :math:`\CALLINDIRECT~x~y`
@@ -1805,7 +1900,7 @@ Control Instructions
 
 11. Let :math:`r` be the :ref:`reference <syntax-ref>` :math:`\X{tab}.\TIELEM[i]`.
 
-12. If :math:`r` is :math:`\REFNULL~t`, then:
+12. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
 
     a. Trap.
 

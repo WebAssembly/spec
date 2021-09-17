@@ -34,8 +34,11 @@ Control Instructions
 .. _binary-br:
 .. _binary-br_if:
 .. _binary-br_table:
+.. _binary-br_on_null:
+.. _binary-br_on_non_null:
 .. _binary-return:
 .. _binary-call:
+.. _binary-call_ref:
 .. _binary-call_indirect:
 
 .. math::
@@ -62,7 +65,10 @@ Control Instructions
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \hex{0F} &\Rightarrow& \RETURN \\ &&|&
      \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
-     \hex{11}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \CALLINDIRECT~x~y \\
+     \hex{11}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \CALLINDIRECT~x~y \\ &&|&
+     \hex{14}~~x{:}\Bfuncidx &\Rightarrow& \CALLREF \\ &&|&
+     \hex{D4}~~x{:}\Bfuncidx &\Rightarrow& \BRONNULL \\ &&|&
+     \hex{D6}~~x{:}\Bfuncidx &\Rightarrow& \BRONNONNULL \\
    \end{array}
 
 .. note::
@@ -84,13 +90,15 @@ Reference Instructions
 .. _binary-ref.null:
 .. _binary-ref.func:
 .. _binary-ref.is_null:
+.. _binary-ref.as_non_null:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{D0}~~t{:}\Bheaptype &\Rightarrow& \REFNULL~t \\ &&|&
      \hex{D1} &\Rightarrow& \REFISNULL \\ &&|&
-     \hex{D2}~~x{:}\Bfuncidx &\Rightarrow& \REFFUNC~x \\
+     \hex{D2}~~x{:}\Bfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
+     \hex{D3} &\Rightarrow& \REFASNONNULL \\
    \end{array}
 
 
