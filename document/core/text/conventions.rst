@@ -10,7 +10,7 @@ A text string is a well-formed description of a module if and only if it is gene
 Each production of this grammar has at most one synthesized attribute: the abstract syntax that the respective character sequence expresses.
 Thus, the attribute grammar implicitly defines a *parsing* function.
 Some productions also take a :ref:`context <text-context>` as an inherited attribute
-that records bound :ref:`identifers <text-id>`.
+that records bound :ref:`identifiers <text-id>`.
 
 Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
 However, it also defines a number of *abbreviations* that are "syntactic sugar" over the core syntax.
