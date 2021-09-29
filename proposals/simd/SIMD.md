@@ -836,45 +836,45 @@ natural alignment.
 
 ### Load
 
-* `v128.load(memarg) -> v128`
+* `v128.load(m: memarg) -> v128`
 
 Load a `v128` vector from the given heap address.
 
 ```python
-def S.load(memarg):
+def S.load(m: memarg):
     return S.from_bytes(memory[memarg.offset:memarg.offset + 16])
 ```
 
 ### Load and Zero-Pad
 
-* `v128.load32_zero(memarg) -> v128`
-* `v128.load64_zero(memarg) -> v128`
+* `v128.load32_zero(m: memarg) -> v128`
+* `v128.load64_zero(m: memarg) -> v128`
 
 Load a single 32-bit or 64-bit element into the lowest bits of a `v128` vector,
 and initialize all other bits of the `v128` vector to zero.
 
 ```python
-def S.load32_zero(memarg):
+def S.load32_zero(m: memarg):
     return S.from_bytes(memory[memarg.offset:memarg.offset + 4])
 ```
 
 ```python
-def S.load64_zero(memarg):
+def S.load64_zero(m: memarg):
     return S.from_bytes(memory[memarg.offset:memarg.offset + 8])
 ```
 
 ### Load and Splat
 
-* `v128.load8_splat(memarg) -> v128`
-* `v128.load16_splat(memarg) -> v128`
-* `v128.load32_splat(memarg) -> v128`
-* `v128.load64_splat(memarg) -> v128`
+* `v128.load8_splat(m: memarg) -> v128`
+* `v128.load16_splat(m: memarg) -> v128`
+* `v128.load32_splat(m: memarg) -> v128`
+* `v128.load64_splat(m: memarg) -> v128`
 
 Load a single element and splat to all lanes of a `v128` vector. The natural
 alignment is the size of the element loaded.
 
 ```python
-def S.load_splat(memarg):
+def S.load_splat(m: memarg):
     val_bytes = memory[memarg.offset:memarg.offset + S.LaneBytes])
     return S.splat(S.LaneType.from_bytes(val_bytes))
 ```
@@ -891,39 +891,39 @@ mode operand `imm`. The values of all other lanes of `x` are bypassed as is.
 
 ### Load and Extend
 
-* `v128.load8x8_s(memarg) -> v128`: load eight 8-bit integers and sign extend each one to a 16-bit lane
-* `v128.load8x8_u(memarg) -> v128`: load eight 8-bit integers and zero extend each one to a 16-bit lane
-* `v128.load16x4_s(memarg) -> v128`: load four 16-bit integers and sign extend each one to a 32-bit lane
-* `v128.load16x4_u(memarg) -> v128`: load four 16-bit integers and zero extend each one to a 32-bit lane
-* `v128.load32x2_s(memarg) -> v128`: load two 32-bit integers and sign extend each one to a 64-bit lane
-* `v128.load32x2_u(memarg) -> v128`: load two 32-bit integers and zero extend each one to a 64-bit lane
+* `v128.load8x8_s(m: memarg) -> v128`: load eight 8-bit integers and sign extend each one to a 16-bit lane
+* `v128.load8x8_u(m: memarg) -> v128`: load eight 8-bit integers and zero extend each one to a 16-bit lane
+* `v128.load16x4_s(m: memarg) -> v128`: load four 16-bit integers and sign extend each one to a 32-bit lane
+* `v128.load16x4_u(m: memarg) -> v128`: load four 16-bit integers and zero extend each one to a 32-bit lane
+* `v128.load32x2_s(m: memarg) -> v128`: load two 32-bit integers and sign extend each one to a 64-bit lane
+* `v128.load32x2_u(m: memarg) -> v128`: load two 32-bit integers and zero extend each one to a 64-bit lane
 
 Fetch consecutive integers up to 32-bit wide and produce a vector with lanes up
 to 64 bits. The natural alignment is 8 bytes.
 
 ```python
-def S.load_extend(ext, memarg):
+def S.load_extend(ext, m: memarg):
     result = S.New()
     bytes = memory[memarg.offset:memarg.offset + 8])
     for i in range(S.Lanes):
         result[i] = ext(S.LaneType.from_bytes(bytes[(i * S.LaneBytes/2):((i+1) * S.LaneBytes/2)]))
     return result
 
-def S.load_extend_s(memarg):
+def S.load_extend_s(m: memarg):
     return S.load_extend(Sext, memarg)
 
-def S.load_extend_u(memarg):
+def S.load_extend_u(m: memarg):
     return S.load_extend(Zext, memarg)
 ```
 
 ### Store
 
-* `v128.store(memarg, data: v128)`
+* `v128.store(m: memarg, data: v128)`
 
 Store a `v128` vector to the given heap address.
 
 ```python
-def S.store(memarg, a):
+def S.store(m: memarg, a):
     memory[memarg.offset:memarg.offset + 16] = bytes(a)
 ```
 
