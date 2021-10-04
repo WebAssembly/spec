@@ -268,7 +268,7 @@ Vector instructions (also known as *SIMD* instructions, single data multiple val
      \K{i32x4.}\VTRUNC\K{\_sat\_f64x2\_}\sx\K{\_zero} \\&&|&
      \K{f32x4.}\VCONVERT\K{\_i32x4\_}\sx ~|~
      \K{f32x4.}\VDEMOTE\K{\_f64x2\_zero} \\&&|&
-     \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}sx ~|~
+     \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}\sx ~|~
      \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\&&|&
      \dots \\
    \production{vector bitwise unary operator} & \vvunop &::=&
@@ -312,8 +312,7 @@ Vector instructions (also known as *SIMD* instructions, single data multiple val
      \K{sub\_sat\_}\sx \\
    \production{vector integer shift operator} & \vishiftop &::=&
      \K{shl} ~|~
-     \K{shr\_s} ~|~
-     \K{shr\_u} \\
+     \K{shr\_}\sx \\
    \production{vector floating-point unary operator} & \vfunop &::=&
      \K{abs} ~|~
      \K{neg} ~|~
@@ -542,7 +541,7 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
    \begin{array}{llcl}
    \production{memory immediate} & \memarg &::=&
      \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
-   \production{lane width} & \lanewidth &::=&
+   \production{lane width} & \X{ww} &::=&
      8 ~|~ 16 ~|~ 32 ~|~ 64 \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
@@ -558,14 +557,14 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
      \K{i}\X{nn}\K{.}\STORE\K{8}~\memarg ~|~
      \K{i}\X{nn}\K{.}\STORE\K{16}~\memarg ~|~
      \K{i64.}\STORE\K{32}~\memarg \\&&|&
-     \K{v128.}\LOAD\K{8x8}\_\sx~\memarg ~|~
-     \K{v128.}\LOAD\K{16x4}\_\sx~\memarg ~|~
-     \K{v128.}\LOAD\K{32x2}\_\sx~\memarg \\&&|&
-     \K{v128.}\LOAD\lanewidth\K{\_splat}~\memarg \\&&|&
+     \K{v128.}\LOAD\K{8x8\_}\sx~\memarg ~|~
+     \K{v128.}\LOAD\K{16x4\_}\sx~\memarg ~|~
+     \K{v128.}\LOAD\K{32x2\_}\sx~\memarg \\&&|&
      \K{v128.}\LOAD\K{32\_zero}~\memarg ~|~
      \K{v128.}\LOAD\K{64\_zero}~\memarg \\&&|&
-     \K{v128.}\LOAD\lanewidth\K{\_lane}~\memarg~\laneidx ~|~
-     \K{v128.}\STORE\lanewidth\K{\_lane}~\memarg~\laneidx \\&&|&
+     \K{v128.}\LOAD\X{ww}\K{\_splat}~\memarg \\&&|&
+     \K{v128.}\LOAD\X{ww}\K{\_lane}~\memarg~\laneidx ~|~
+     \K{v128.}\STORE\X{ww}\K{\_lane}~\memarg~\laneidx \\&&|&
      \MEMORYSIZE \\&&|&
      \MEMORYGROW \\&&|&
      \MEMORYFILL \\&&|&

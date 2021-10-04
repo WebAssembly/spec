@@ -535,7 +535,6 @@
 .. |sx| mathdef:: \xref{syntax/instructions}{syntax-sx}{\X{sx}}
 .. |half| mathdef:: \xref{syntax/instructions}{syntax-half}{\X{half}}
 .. |memarg| mathdef:: \xref{syntax/instructions}{syntax-memarg}{\X{memarg}}
-.. |lanewidth| mathdef:: \xref{syntax/instructions}{syntax-lanewidth}{\X{lanewidth}}
 
 .. |blocktype| mathdef:: \xref{syntax/instructions}{syntax-blocktype}{\X{blocktype}}
 
