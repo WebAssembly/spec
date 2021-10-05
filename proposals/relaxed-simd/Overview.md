@@ -182,17 +182,17 @@ where:
 - the intermediate `b * c` is be rounded first, and the final result rounded again (for a total of 2 roundings), or
 - the the entire expression evaluated with higher precision and then only rounded once (if supported by hardware).
 
-### Relaxed bitselect (blend/laneselect)
+### Relaxed laneselect
 
-- `i8x16.blend(a: v128, b: v128, m: v128) -> v128`
-- `i16x8.blend(a: v128, b: v128, m: v128) -> v128`
-- `i32x4.blend(a: v128, b: v128, m: v128) -> v128`
-- `i64x2.blend(a: v128, b: v128, m: v128) -> v128`
+- `i8x16.laneselect(a: v128, b: v128, m: v128) -> v128`
+- `i16x8.laneselect(a: v128, b: v128, m: v128) -> v128`
+- `i32x4.laneselect(a: v128, b: v128, m: v128) -> v128`
+- `i64x2.laneselect(a: v128, b: v128, m: v128) -> v128`
 
 Select lanes from `a` or `b` based on masks in `m`. If each lane-sized mask in `m` has all bits set or all bits unset, these instructions behave the same as `v128.bitselect`. Otherwise, the result is implementation defined.
 
 ```python
-def blend(a : v128, b : v128, m: v128, lanes : int):
+def laneselect(a : v128, b : v128, m: v128, lanes : int):
   result = []
   for i in range(lanes):
     mask = m[i]
@@ -243,10 +243,10 @@ All opcodes have the `0xfd` prefix (same as SIMD proposal), which are omitted in
 | `f32x4.fms`                        | 0xb0     |
 | `f64x2.fma`                        | 0xcf     |
 | `f64x2.fms`                        | 0xd0     |
-| `i8x16.blend`                      | 0xb2     |
-| `i16x8.blend`                      | 0xb3     |
-| `i32x4.blend`                      | 0xd2     |
-| `i64x2.blend`                      | 0xd3     |
+| `i8x16.laneselect`                 | 0xb2     |
+| `i16x8.laneselect`                 | 0xb3     |
+| `i32x4.laneselect`                 | 0xd2     |
+| `i64x2.laneselect`                 | 0xd3     |
 | `f32x4.min`                        | 0xb4     |
 | `f32x4.max`                        | 0xe2     |
 | `f64x2.min`                        | 0xd4     |
