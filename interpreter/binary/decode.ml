@@ -808,7 +808,7 @@ let module_ s =
   iterate custom_section s;
   let datas = data_section s in
   iterate custom_section s;
-  require (pos s = len s) s (len s) "junk after last section";
+  require (pos s = len s) s (len s) "duplicate section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";
   require (data_count = None || data_count = Some (Lib.List32.length datas))
