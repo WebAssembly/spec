@@ -1760,5 +1760,5 @@
     "\02\00"
     "\0b"                      ;; end
   )
-  "duplicate section"
+  "unexpected content after last section"
 )
