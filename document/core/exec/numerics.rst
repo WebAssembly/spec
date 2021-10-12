@@ -1970,3 +1970,104 @@ Conversions
    \begin{array}{lll@{\qquad}l}
    \narrowu_{M,N}(i) &=& \satu_N(\signed_M(i))
    \end{array}
+
+.. _relaxed-ops:
+
+Relaxed operators
+~~~~~~~~~~~~~~~~~
+
+.. todo::
+   This paragraph should go to the top of this document, but for ease of
+   reading, put it together with the description of all the relaxed operations
+   here.
+
+The result of *relaxed* operators are *host-dependent*, because the set of
+possible results may depend on properties of the host environment (such as
+hardware). Technically, each such operator produces a fixed-size *list of sets*
+of allowed values.  For each execution of the operator in the same environment,
+only values from the set at the same position in the list are returned, i.e.,
+each environment globally chooses a fixed projection for each operator.
+
+.. note::
+   Each operator can be thought of as a family of operations that is fixed to
+   one particular choice by the execution environment. The fixed operation
+   itself can still be non-deterministic or partial.
+
+.. todo::
+   Below is a draft of concrete definitions for relaxed-simd operations. The
+   text description is an informal description of the instructions and are not
+   the final text.
+
+Relaxed Multiply Add (madd) and Relaxed Negative Multiply Add (nmadd)
+allows for fused or unfused results. :math:`fma` is defined by |IEEE754|_
+(Section 5.4.1) as *fusedMultiplyAdd*.
+
+.. math::
+   \begin{array}{@{}lcll}
+   relaxed\_madd_N(z_1, z_2, z_3) &=& [ \fadd_N(\fmul_N(z_1, z_2), z_3), fma_N(z_1, z_2, z_3) ] \\
+   \\
+   relaxed\_fnma_N(z_1, z_2, z_3) &=& relaxed\_madd_N(-z_1, z_2, z_3) \\
+   \end{array}
+
+Relaxed swizzle lane is a helper for relaxed swizzle. Result is deterministic
+if the signed interpretation of the index is less than 16 (including negative).
+:math:`j` is a 8-bit int.
+
+.. math::
+   \begin{array}{@{}lcll}
+   relaxed\_swizzle\_lane(i^n, j) &=& [ i[j], i[j] ] & (\iff j < 16) \\
+   relaxed\_swizzle\_lane(i^n, j) &=& [ 0, 0 ] & (\iff \signed_8(j) < 0) \\
+   relaxed\_swizzle\_lane(i^n, j) &=& [ 0, i[j \mod n] ] & (\otherwise) \\
+   \\
+   relaxed\_swizzle(a^n, s^n) &=& rsl_0 \dots rsl_{n-1} \\
+   \qquad \where rsl_i &=& relaxed\_swizzle\_lane(a^n, s^n[i])
+   \end{array}
+
+Relaxed truncate converts float to int, NaN and out of range values are
+hardware dependent.
+
+.. math::
+   \begin{array}{@{}lcll}
+   relaxed\_trunc^s_{M,N}(\pm \NAN(n)) &=& [ 0, -2^{N-1} ] \\
+   relaxed\_trunc^s_{M,N}(\pm q) &=& \truncs_{M,N}(\pm q) & (\iff -2^{N-1} - 1 < \trunc(\pm q) < 2^{N-1}) \\
+   relaxed\_trunc^s_{M,N}(\pm p) &=& [ \truncsats_{M,N}(\pm p), -2^{N-1} ] & (\otherwise) \\
+   \\
+   relaxed\_trunc^u_{M,N}(\pm \NAN(n)) &=& [ 0, 2^{N}-1 ] \\
+   relaxed\_trunc^u_{M,N}(\pm q) &=& \truncu_{M,N}(\pm q) & (\iff -1 < \trunc(\pm q) < 2^N) \\
+   relaxed\_trunc^u_{M,N}(\pm p) &=& [ \truncsatu_{M,N}(\pm p), 2^{N}-1 ] & (\otherwise) \\
+   \end{array}
+
+Relaxed lane select is deterministic where all bits are set or unset in the
+mask. Otherwise depending on hardware, either only the top bit is examined, or
+all bits are examined (becomes a bitselect).
+
+.. math::
+   \begin{array}{@{}lcll}
+   relaxed\_laneselect\_lane_N(i_1, i_2, 2^N-1) &=& [ i_1, i_1 ] \\
+   relaxed\_laneselect\_lane_N(i_1, i_2, 0) &=& [ i_2, i_2 ] \\
+   relaxed\_laneselect\_lane_N(i_1, i_2, i_3) &=& [ \ibitselect_N(i_1, i_2, i_3), i_1 ] & (\iff \signed_N(i_3) < 0) \\
+   relaxed\_laneselect\_lane_N(i_1, i_2, i_3) &=& [ \ibitselect_N(i_1, i_2, i_3), i_2 ] & (\otherwise) \\
+   \\
+   relaxed\_laneselect_W(a^n, b^n, c^n) &=& rll_0 \dots rll_{n-1} \\
+   \qquad \where rll_i &=& relaxed\_laneselect\_lane_W(a^n, b^n, c^n[i])
+   \end{array}
+
+Relaxed min and max differs from min and max when inputs are NaNs or different
+signs of 0. It allows for implementation to return the first or second input
+when either input is a NaN.
+
+.. math::
+   \begin{array}{@{}lcll}
+   relaxed\_min_N(\pm \NAN(n), z_2) &=& [ \nans_N\{\pm \NAN(n), z_2\}, \NAN(n), z_2, z_2 ] \\
+   relaxed\_min_N(z_1, \pm \NAN(n)) &=& [ \nans_N\{\pm \NAN(n), z_1\}, z_1, \NAN(n), z_1 ] \\
+   relaxed\_min_N(\pm 0, \mp 0) &=& [ -0, \pm 0, \mp 0, -0 ] \\
+   relaxed\_min_N(z_1, z_2) &=& \fmin_N(z_1, z_2) & (\otherwise) \\
+   \end{array}
+
+.. math::
+   \begin{array}{@{}lcll}
+   relaxed\_max_N(\pm \NAN(n), z_2) &=& [ \nans_N\{\pm \NAN(n), z_2\}, \NAN(n), z_2, z_2 ] \\
+   relaxed\_max_N(z_1, \pm \NAN(n)) &=& [ \nans_N\{\pm \NAN(n), z_1\}, z_1, \NAN(n), z_1 ] \\
+   relaxed\_max_N(\pm 0, \mp 0) &=& [ +0, \pm 0, \mp 0, +0 ] \\
+   relaxed\_max_N(z_1, z_2) &=& \fmax_N(z_1, z_2) & (\otherwise) \\
+   \end{array}
