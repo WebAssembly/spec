@@ -75,15 +75,13 @@ However, these variables are not manipulated directly by the main checking funct
 
    func pop_val(expect : val_type | Unknown) : val_type | Unknown =
      let actual = pop_val()
-     if (actual = Unknown) return expect
-     if (expect = Unknown) return actual
-     error_if(actual =/= expect)
+     error_if(actual =/= expect && actual =/= Unknown && expect =/= Unknown)
      return actual
 
    func push_vals(types : list(val_type)) = foreach (t in types) push_val(t)
    func pop_vals(types : list(val_type)) : list(val_type) =
      var popped := []
-     foreach (t in reverse(types)) popped.append(pop_val(t))
+     foreach (t in reverse(types)) popped.prepend(pop_val(t))
      return popped
 
 Pushing an operand value simply pushes the respective type to the value stack.
