@@ -11,14 +11,15 @@ Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`fun
    pair: validation; type identifier
    single: abstract syntax; type identifier
 .. _valid-typeid:
+.. _valid-typeidx:
 
 Type Identifiers
 ~~~~~~~~~~~~~~~~
 
-During validation, :ref:`type identifiers <syntax-typeid>` are represented as :ref:`type indices <syntax-typeidx>`, which are converted to plain :ref:`function types <syntax-functype>` by the following rule.
+During validation, :ref:`type identifiers <syntax-typeid>` are represented as :ref:`type indices <syntax-typeidx>`, which are lookued up as :ref:`function types <syntax-functype>` by the following rule.
 
-:math:`\typeid`
-...............
+:math:`\typeidx`
+................
 
 * The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
 
@@ -32,8 +33,8 @@ During validation, :ref:`type identifiers <syntax-typeid>` are represented as :r
    }
 
 .. note::
-   Validity of :ref:`semantic types <syntax-typeid>` never needs to be checked during validation.
-   It only needs to be :ref:`defined <valid-typeinst>` as part of :ref:`store validity <valid-store>`, an auxiliary notion for proving :ref:`soundness <soundness>` of the type system.
+   :ref:`Semantic types <syntax-typeid>` do not arise during validation.
+   They only need to be :ref:`looked up <valid-typeaddr>` during :ref:`execution <exec-type>`.
 
 
 .. index:: heap type, type identifier
