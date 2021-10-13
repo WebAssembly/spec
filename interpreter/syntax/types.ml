@@ -250,17 +250,20 @@ let string_of_name n =
   Buffer.contents b
 
 let rec string_of_var =
-  let inner = ref 0 in
+  let inner = ref [] in
   function
   | SynVar x -> I32.to_string_u x
   | SemVar x ->
-    if !inner > 3 then "..." else
-    ( incr inner;
+    let h = Hashtbl.hash x in
+    string_of_int h ^
+    if List.mem h !inner then "" else
+    ( inner := h :: !inner;
       try
         let s = string_of_def_type (def_of x) in
-        decr inner; "(" ^ s ^ ")"
-      with exn -> inner := 0; raise exn
+        inner := List.tl !inner; "=(" ^ s ^ ")"
+      with exn -> inner := []; raise exn
     )
+
 
 and string_of_nullability = function
   | NonNullable -> ""

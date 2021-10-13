@@ -653,10 +653,14 @@ let rec step (c : config) : config =
           Ref r :: vs', []
         | FuncRef f when Rtt.match_rtt (Func.read_rtt f) rtt ->
           Ref r :: vs', []
-        | Data.DataRef _ | FuncRef _ ->
+        | Data.DataRef d ->
           vs', [Trapping ("cast failure, expected " ^
-            string_of_def_type (Rtt.def_type_of rtt) ^ " but got " ^
-            string_of_value (Ref r)) @@ e.at]
+            Rtt.string_of_rtt rtt ^ " but got " ^
+            Rtt.string_of_rtt (Data.read_rtt d)) @@ e.at]
+        | FuncRef f ->
+          vs', [Trapping ("cast failure, expected " ^
+            Rtt.string_of_rtt rtt ^ " but got " ^
+            Rtt.string_of_rtt (Func.read_rtt f)) @@ e.at]
         | _ ->
           Crash.error e.at "wrong reference type"
         )

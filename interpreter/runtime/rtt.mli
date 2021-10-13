@@ -13,3 +13,5 @@ val def_type_of : rtt -> def_type
 val depth : rtt -> int32
 
 val match_rtt : rtt -> rtt -> bool
+
+val string_of_rtt : rtt -> string
