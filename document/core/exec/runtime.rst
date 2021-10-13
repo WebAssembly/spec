@@ -725,12 +725,26 @@ on syntactic types :math:`T_1` and :math:`T_2`, the *dynamic* judgement
 
 .. math:: S \vdash T'_1 \matches T'_2
 
-on corresponding semantic types :math:`T'_1` and :math:`T'_2` is defined by constructing a :ref:`context <syntax-context>`
+on corresponding semantic types :math:`T'_1` and :math:`T'_2` is defined analogously, by replacing all occurrences of a :ref:`context <syntax-context>` :math:`C` in the rules with a :ref:`store <syntax-store>` :math:`S`.
 
-.. math:: C = \{\CTYPES~S.\STYPES\}
+Furthermore, the following base rule looking up :ref:`type addresses <syntax-typeaddr>` in the store is added.
 
-and reinterpreting all :ref:`type addresses <syntax-typeaddr>` (in :math:`T'_1`, :math:`T'_2`, and :math:`S.\STYPES`) that are relative to the :ref:`store <syntax-store>` :math:`S` as :ref:`type indices <syntax-typeidx>` relative to the :ref:`context <syntax-context>` :math:`C`.
+.. index:: type, type instance, type address
+. _valid-typeinst:
+
+Type Addresses
+..............
+
+* The type :math:`S.\STYPES[\typeaddr]` must be defined in the store.
+
+* Then the type address is valid as :ref:`function type <syntax-functype>` :math:`S.\STYPES[\typeaddr]`.
+
+.. math::
+   \frac{
+     S.\STYPES[\typeaddr] = \functype
+   }{
+     S \vdashtypeid \typeaddr : \functype
+   }
 
 .. note::
-   This works because both type indices and type addresses are ultimately zero-based indices into a sequence of types.
-   The reinterpretation could also be viewed as a reverse :ref:`substitution <notation-subst>` from addresses back to indices relative to a virtual module accumulating all types that have been allocated so far.
+   Unlike :ref:`type indices <syntax-typeidx>` recorded in a context, the number of type addresses in a store is not bounded by :math:`2^{32}`.
