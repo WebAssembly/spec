@@ -1,7 +1,30 @@
 ;; Multiple memories
 
 (module
+  (memory $mem1 1)
+  (memory $mem2 1)
+
+  (func (export "load1") (param i32) (result i64)
+    (i64.load $mem1 (local.get 0))
+  )
+  (func (export "load2") (param i32) (result i64)
+    (i64.load $mem2 (local.get 0))
+  )
+
+  (data (memory $mem1) (i32.const 0) "\01")
+  (data (memory $mem2) (i32.const 0) "\02")
+)
+
+(assert_return (invoke "load1" (i32.const 0)) (i64.const 1))
+(assert_return (invoke "load2" (i32.const 0)) (i64.const 2))
+
+
+(module $M
   (memory (export "mem") 2)
+
+  (func (export "read") (param i32) (result i32)
+    (i32.load8_u (local.get 0))
+  )
 )
 (register "M")
 
@@ -19,6 +42,12 @@
     (i32.load8_u $mem2 (local.get 0))
   )
 )
+
+(assert_return (invoke $M "read" (i32.const 20)) (i32.const 1))
+(assert_return (invoke $M "read" (i32.const 21)) (i32.const 2))
+(assert_return (invoke $M "read" (i32.const 22)) (i32.const 3))
+(assert_return (invoke $M "read" (i32.const 23)) (i32.const 4))
+(assert_return (invoke $M "read" (i32.const 24)) (i32.const 5))
 
 (assert_return (invoke "read1" (i32.const 20)) (i32.const 1))
 (assert_return (invoke "read1" (i32.const 21)) (i32.const 2))

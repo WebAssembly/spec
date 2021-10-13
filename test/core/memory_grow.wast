@@ -399,6 +399,32 @@
 (assert_return (invoke "as-memory.grow-size") (i32.const 1))
 
 
+;; Multiple memories
+
+(module
+  (memory $mem1 1)
+  (memory $mem2 2)
+
+  (func (export "grow1") (param i32) (result i32)
+    (memory.grow $mem1 (local.get 0))
+  )
+  (func (export "grow2") (param i32) (result i32)
+    (memory.grow $mem2 (local.get 0))
+  )
+
+  (func (export "size1") (result i32) (memory.size $mem1))
+  (func (export "size2") (result i32) (memory.size $mem2))
+)
+
+(assert_return (invoke "size1") (i32.const 1))
+(assert_return (invoke "size2") (i32.const 2))
+(assert_return (invoke "grow1" (i32.const 3)) (i32.const 1))
+(assert_return (invoke "grow1" (i32.const 4)) (i32.const 4))
+(assert_return (invoke "grow1" (i32.const 1)) (i32.const 8))
+(assert_return (invoke "grow2" (i32.const 1)) (i32.const 2))
+(assert_return (invoke "grow2" (i32.const 1)) (i32.const 3))
+
+
 ;; Type mismatches
 
 (assert_invalid
