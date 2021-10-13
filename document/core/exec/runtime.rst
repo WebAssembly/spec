@@ -730,7 +730,8 @@ on corresponding semantic types :math:`T'_1` and :math:`T'_2` is defined analogo
 Furthermore, the base rule looking up :ref:`type indices <syntax-typeidx>` in the context is replaced by a corresponding rule for looking up :ref:`type addresses <syntax-typeaddr>` in the store.
 
 .. index:: type, type instance, type address
-. _valid-typeinst:
+.. _valid-typeaddr:
+.. _valid-typeinst:
 
 Type Addresses
 ..............
