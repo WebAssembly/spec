@@ -727,7 +727,7 @@ on syntactic types :math:`T_1` and :math:`T_2`, the *dynamic* judgement
 
 on corresponding semantic types :math:`T'_1` and :math:`T'_2` is defined analogously, by replacing all occurrences of a :ref:`context <syntax-context>` :math:`C` in the rules with a :ref:`store <syntax-store>` :math:`S`.
 
-Furthermore, the following base rule looking up :ref:`type addresses <syntax-typeaddr>` in the store is added.
+Furthermore, the base rule looking up :ref:`type indices <syntax-typeidx>` in the context is replaced by a corresponding rule for looking up :ref:`type addresses <syntax-typeaddr>` in the store.
 
 .. index:: type, type instance, type address
 . _valid-typeinst:
