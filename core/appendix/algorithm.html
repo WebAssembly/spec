@@ -138,15 +138,13 @@ the latter surrounding <a class="reference internal" href="../syntax/instruction
 
 <span class="k">func</span> <span class="nf">pop_val</span>(<span class="nf">expect</span> : val_type | Unknown) : val_type | Unknown =
   <span class="k">let</span> <span class="nf">actual</span> = pop_val()
-  <span class="k">if</span> (actual = Unknown) <span class="k">return</span> expect
-  <span class="k">if</span> (expect = Unknown) <span class="k">return</span> actual
-  error_if(actual =/= expect)
+  error_if(actual =/= expect &amp;&amp; actual =/= Unknown &amp;&amp; expect =/= Unknown)
   <span class="k">return</span> actual
 
 <span class="k">func</span> <span class="nf">push_vals</span>(<span class="nf">types</span> : list(val_type)) = <span class="k">foreach</span> (t <span class="k">in</span> types) push_val(t)
 <span class="k">func</span> <span class="nf">pop_vals</span>(<span class="nf">types</span> : list(val_type)) : list(val_type) =
   <span class="k">var</span> <span class="nf">popped</span> := []
-  <span class="k">foreach</span> (t <span class="k">in</span> reverse(types)) popped.append(pop_val(t))
+  <span class="k">foreach</span> (t <span class="k">in</span> reverse(types)) popped.prepend(pop_val(t))
   <span class="k">return</span> popped
 </pre></div>
 </div>
