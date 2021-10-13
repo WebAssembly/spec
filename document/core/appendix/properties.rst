@@ -6,9 +6,9 @@ Soundness
 
 .. todo:: need to operate wrt semantic types
 .. todo:: define "S \vdash t ok"
-.. todo:: ensure wf of guessed valtypes
 .. _valid-typeinst:
 .. todo:: define valid-typeinst as well
+.. todo:: ensure wf of guessed valtypes
 
 The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *type safety* and *memory safety* with respect to the WebAssembly semantics. For example:
 

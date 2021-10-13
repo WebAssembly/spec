@@ -786,6 +786,7 @@
 .. |ok| mathdef:: \mathrel{\mbox{ok}}
 .. |const| mathdef:: \xref{valid/instructions}{valid-constant}{\mathrel{\mbox{const}}}
 
+.. |matches| mathdef:: \leq
 .. |matchesnumtype| mathdef:: \xref{valid/matching}{match-numtype}{\leq}
 .. |matchesheaptype| mathdef:: \xref{valid/matching}{match-heaptype}{\leq}
 .. |matchesreftype| mathdef:: \xref{valid/matching}{match-reftype}{\leq}

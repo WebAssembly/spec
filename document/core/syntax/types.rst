@@ -13,6 +13,7 @@ Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-in
 .. index:: ! type identifier, type index, type address
    pair: abstract syntax; type identifier
 .. _syntax-typeid:
+.. _syntax-semantic:
 
 Type Identifiers
 ~~~~~~~~~~~~~~~~
@@ -42,9 +43,11 @@ Syntactic types are transformed into semantic types during module :ref:`instanti
 Convention
 ..........
 
-If :math:`t` is some syntactic type, then :math:`t[x^\ast \subst a^\ast]` denotes the semantic type obtained by parallel substitution of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`type addresses <syntax-typeaddr>` :math:`a^\ast`, provided :math:`|x^\ast| = |a^\ast|`.
+The following notation expresses conversion between syntactic and semantic types:
 
-Furthermore, :math:`t[\subst a^\ast]` is shorthand for the substitution :math:`t[x^\ast \subst a^\ast]` where :math:`x^\ast = 0 \cdots (|a^\ast| - 1)`.
+* :math:`t[x^\ast \subst a^\ast]` denotes the parallel substitution of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`type addresses <syntax-typeaddr>` :math:`a^\ast`, provided :math:`|x^\ast| = |a^\ast|`.
+
+* :math:`t[\subst a^\ast]` is shorthand for the substitution :math:`t[x^\ast \subst a^\ast]` where :math:`x^\ast = 0 \cdots (|a^\ast| - 1)`.
 
 
 .. index:: ! heap type, store, type identifier
