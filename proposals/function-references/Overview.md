@@ -152,8 +152,6 @@ A *reference type* denotes the type of a reference to some data. It may either i
 
 #### Subtyping
 
-Greatest fixpoint (co-inductive interpretation) of the given rules (implying reflexivity and transitivity).
-
 The following rules, now defined in terms of heap types, replace and extend the rules for [basic reference types](https://github.com/WebAssembly/reference-types/proposals/reference-types/Overview.md#subtyping).
 
 ##### Reference Types
@@ -174,7 +172,12 @@ The following rules, now defined in terms of heap types, replace and extend the 
   - `$t <: func`
      - iff `$t = <functype>`
 
-* Note: Function types themselves are invariant for now. This may be relaxed in future extensions.
+##### Type Indices
+
+* Type indices are subtypes only if they define equivalent types
+  - `$t <: $t'`
+    - iff `$t = <functype>` and `$t' = <functype'>` and `<functype> == <functype'>`
+  - Note: Function types are invariant for now. This may be relaxed in future extensions.
 
 
 #### Defaultability

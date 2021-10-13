@@ -3,7 +3,7 @@ Modules
 
 For modules, the execution semantics primarily defines :ref:`instantiation <exec-instantiation>`, which :ref:`allocates <alloc>` instances for a module and its contained definitions, initializes :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` from contained :ref:`element <syntax-elem>` and :ref:`data <syntax-data>` segments, and invokes the :ref:`start function <syntax-start>` if present. It also includes :ref:`invocation <exec-invocation>` of exported functions.
 
-Instantiation depends on a number of auxiliary notions for :ref:`type-checking imports <exec-import>` and :ref:`allocating <alloc>` instances.
+Instantiation depends on a number of auxiliary notions for :ref:`type-checking imports <match-externtype>` and :ref:`allocating <alloc>` instances.
 
 
 .. index:: external value, external type, validation, import, store

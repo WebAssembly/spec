@@ -187,17 +187,19 @@ Reference Instructions
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
+* There must exist a :ref:`type index <syntax-typeidx>` :math:`y` such that :math:`C.\CTYPES[y]` is the same :ref:`function type <syntax-functype>` as :math:`C.\CFUNCS[x]`.
+
 * The :ref:`function index <syntax-funcidx>` :math:`x` must be contained in :math:`C.\CREFS`.
 
-* The instruction is valid with type :math:`[] \to [\FUNCREF]`.
+* The instruction is valid with type :math:`[] \to [(\REF~y)]`.
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = \functype
+     C.\CFUNCS[x] = C.\CTYPES[y]
      \qquad
      x \in C.\CREFS
    }{
-     C \vdashinstr \REFFUNC~x : [] \to [\FUNCREF]
+     C \vdashinstr \REFFUNC~x : [] \to [(\REF~y)]
    }
 
 .. _valid-ref.is_null:
@@ -521,7 +523,7 @@ Table Instructions
      \qquad
      C.\CTABLES[x] = \limits_2~t_2
      \qquad
-     \vdashreftypematch t_2 \matchesvaltype t_1
+     C \vdashreftypematch t_2 \matchesvaltype t_1
    }{
      C \vdashinstr \TABLECOPY~x~y : [\I32~\I32~\I32] \to []
    }
@@ -550,7 +552,7 @@ Table Instructions
      \qquad
      C.\CELEMS[y] = t_2
      \qquad
-     \vdashreftypematch t_2 \matchesvaltype t_1
+     C \vdashreftypematch t_2 \matchesvaltype t_1
    }{
      C \vdashinstr \TABLEINIT~x~y : [\I32~\I32~\I32] \to []
    }
@@ -969,9 +971,9 @@ Control Instructions
 
 .. math::
    \frac{
-     (\vdashresulttypematch [t^\ast] \matchesresulttype C.\CLABELS[l])^\ast
+     (C \vdashresulttypematch [t^\ast] \matchesresulttype C.\CLABELS[l])^\ast
      \qquad
-     \vdashresulttypematch [t^\ast] \matchesresulttype C.\CLABELS[l_N]
+     C \vdashresulttypematch [t^\ast] \matchesresulttype C.\CLABELS[l_N]
      \qquad
      C \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok
    }{
@@ -1167,7 +1169,7 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
    \frac{
      C \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_0^\ast~{t'}^\ast]
      \qquad
-     (\vdashvaltypematch t' \matchesvaltype t)^\ast
+     (C \vdashvaltypematch t' \matchesvaltype t)^\ast
      \qquad
      C \vdashinstr \instr_N : [t^\ast] \to [t_3^\ast]
    }{
@@ -1202,7 +1204,7 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
      \qquad
      C \vdashresulttype [t^\ast] \ok
      \qquad
-     (\vdashvaltypematch t' \matchesvaltype t)^\ast
+     (C \vdashvaltypematch t' \matchesvaltype t)^\ast
    }{
      C \vdashexpr \instr^\ast~\END : [t^\ast]
    }
