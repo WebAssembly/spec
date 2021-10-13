@@ -164,13 +164,13 @@ so that, e.g., <code class="code docutils literal notranslate"><span class="pre"
 </div>
 <p>The control stack is likewise manipulated through auxiliary functions:</p>
 <div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">func</span> <span class="nf">push_ctrl</span>(<span class="nf">opcode</span> : opcode, <span class="k">in</span> : list(val_type), <span class="nf">out</span> : list(val_type)) =
-  <span class="k">let</span> <span class="nf">frame</span> = ctrl_frame(opcode, <span class="k">in</span>, out, vals.size(), false)
+  <span class="k">let</span> <span class="nf">frame</span> = ctrl_frame(opcode, <span class="k">in</span>, out, vals.size(), false)
   ctrls.push(frame)
   push_vals(<span class="k">in</span>)
 
 <span class="k">func</span> <span class="nf">pop_ctrl</span>() : ctrl_frame =
-  error_if(ctrls.is_empty())
-  <span class="k">let</span> <span class="nf">frame</span> = ctrls[0]
+  error_if(ctrls.is_empty())
+  <span class="k">let</span> <span class="nf">frame</span> = ctrls[0]
   pop_vals(frame.end_types)
   error_if(vals.size() =/= frame.height)
   ctrls.pop()
@@ -232,8 +232,8 @@ That is an easy addition and therefore omitted from this presentation.</p>
       pop_val(t)
       push_val(t)
 
-    <span class="k">case</span> (unreachable)
-      unreachable()
+    <span class="k">case</span> (unreachable)
+      unreachable()
 
     <span class="k">case</span> (block t1*-&gt;t2*)
       pop_vals([t1*])
@@ -258,26 +258,26 @@ That is an easy addition and therefore omitted from this presentation.</p>
       push_ctrl(else, frame.start_types, frame.end_types)
 
     <span class="k">case</span> (br n)
-      error_if(ctrls.size() &lt; n)
-      pop_vals(label_types(ctrls[n]))
-      unreachable()
+      error_if(ctrls.size() &lt; n)
+      pop_vals(label_types(ctrls[n]))
+      unreachable()
 
     <span class="k">case</span> (br_if n)
-      error_if(ctrls.size() &lt; n)
+      error_if(ctrls.size() &lt; n)
       pop_val(I32)
-      pop_vals(label_types(ctrls[n]))
-      push_vals(label_types(ctrls[n]))
+      pop_vals(label_types(ctrls[n]))
+      push_vals(label_types(ctrls[n]))
 
-    <span class="k">case</span> (br_table n* m)
+    <span class="k">case</span> (br_table n* m)
       pop_val(I32)
-      error_if(ctrls.size() &lt; m)
+      error_if(ctrls.size() &lt; m)
       <span class="k">let</span> <span class="nf">arity</span> = label_types(ctrls[m]).size()
-      <span class="k">foreach</span> (n <span class="k">in</span> n*)
-        error_if(ctrls.size() &lt; n)
-        error_if(label_types(ctrls[n]).size() =/= arity)
+      <span class="k">foreach</span> (n <span class="k">in</span> n*)
+        error_if(ctrls.size() &lt; n)
+        error_if(label_types(ctrls[n]).size() =/= arity)
         push_vals(pop_vals(label_types(ctrls[n])))
       pop_vals(label_types(ctrls[m]))
-      unreachable()
+      unreachable()
 </pre></div>
 </div>
 <div class="admonition note">
