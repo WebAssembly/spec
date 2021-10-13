@@ -105,16 +105,16 @@ Added instructions that modify ranges of memory or table entries [#proposal-reft
 
 
 .. [#proposal-signext]
-   https://github.com/WebAssembly/spec/tree/master/proposals/sign-extension-ops/
+   https://github.com/WebAssembly/spec/tree/main/proposals/sign-extension-ops/
 
 .. [#proposal-cvtsat]
-   https://github.com/WebAssembly/spec/tree/master/proposals/nontrapping-float-to-int-conversion/
+   https://github.com/WebAssembly/spec/tree/main/proposals/nontrapping-float-to-int-conversion/
 
 .. [#proposal-multivalue]
-   https://github.com/WebAssembly/spec/tree/master/proposals/multi-value/
+   https://github.com/WebAssembly/spec/tree/main/proposals/multi-value/
 
 .. [#proposal-reftype]
-   https://github.com/WebAssembly/spec/tree/master/proposals/reference-types/
+   https://github.com/WebAssembly/spec/tree/main/proposals/reference-types/
 
 .. [#proposal-bulk]
-   https://github.com/WebAssembly/spec/tree/master/proposals/bulk-memory-operations/
+   https://github.com/WebAssembly/spec/tree/main/proposals/bulk-memory-operations/

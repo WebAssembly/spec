@@ -163,7 +163,7 @@ WebAssemblyText.decode(binary)
 
 ## S-Expression Syntax
 
-The implementation consumes a WebAssembly AST given in S-expression syntax. Here is an overview of the grammar of types, expressions, functions, and modules, mirroring what's described in the [design doc](https://github.com/WebAssembly/design/blob/master/Semantics.md).
+The implementation consumes a WebAssembly AST given in S-expression syntax. Here is an overview of the grammar of types, expressions, functions, and modules, mirroring what's described in the [design doc](https://github.com/WebAssembly/design/blob/main/Semantics.md).
 
 Note: The grammar is shown here for convenience, the definite source is the [specification of the text format](https://webassembly.github.io/spec/core/text/).
 ```
@@ -479,7 +479,7 @@ Moreover, float values are required to be precise, that is, they may not contain
 
 ## Abstract Syntax
 
-The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/master/Semantics.md), is defined in [ast.ml](syntax/ast.ml).
+The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/main/Semantics.md), is defined in [ast.ml](syntax/ast.ml).
 
 However, to simplify the implementation, this AST representation represents some of the inner structure of the operators more explicitly. The mapping from the operators as given in the design doc to their structured form is defined in [operators.ml](syntax/operators.ml).
 
