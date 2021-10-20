@@ -59,6 +59,7 @@ let zero = Set.singleton 0l
 let shift s = Set.map (Int32.add (-1l)) (Set.remove 0l s)
 
 let (++) = union
+let opt free xo = Lib.Option.get (Option.map free xo) empty
 let list free xs = List.fold_left union empty (List.map free xs)
 
 let var_type = function
@@ -91,7 +92,7 @@ let def_type = function
 
 let block_type = function
   | VarBlockType x -> var_type x
-  | ValBlockType _ -> empty
+  | ValBlockType t -> opt value_type t
 
 let rec instr (e : instr) =
   match e.it with
