@@ -166,8 +166,7 @@ let import_desc (d : import_desc) =
 let export (e : export) = export_desc e.it.edesc
 let import (i : import) = import_desc i.it.idesc
 
-let start (s : idx option) =
-  funcs (Lib.Option.get (Lib.Option.map idx s) Set.empty)
+let start (s : idx) = funcs (idx s)
 
 let module_ (m : module_) =
   list type_ m.it.types ++
@@ -175,7 +174,7 @@ let module_ (m : module_) =
   list table m.it.tables ++
   list memory m.it.memories ++
   list func m.it.funcs ++
-  start m.it.start ++
+  opt start m.it.start ++
   list elem m.it.elems ++
   list data m.it.datas ++
   list import m.it.imports ++

@@ -29,8 +29,9 @@ val elem : Ast.elem_segment -> t
 val data : Ast.data_segment -> t
 val export : Ast.export -> t
 val import : Ast.import -> t
-val start : Ast.idx option -> t
+val start : Ast.idx -> t
 
 val module_ : Ast.module_ -> t
 
+val opt : ('a -> t) -> 'a option -> t
 val list : ('a -> t) -> 'a list -> t
