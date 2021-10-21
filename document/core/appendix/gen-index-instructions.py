@@ -65,7 +65,7 @@ INSTRUCTIONS = [
     Instruction(r'\NOP', r'\hex{01}', r'[] \to []', r'valid-nop', r'exec-nop'),
     Instruction(r'\BLOCK~\X{bt}', r'\hex{02}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-block', r'exec-block'),
     Instruction(r'\LOOP~\X{bt}', r'\hex{03}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-loop', r'exec-loop'),
-    Instruction(r'\IF~\X{bt}', r'\hex{04}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-if', r'exec-if'),
+    Instruction(r'\IF~\X{bt}', r'\hex{04}', r'[t_1^\ast~\I32] \to [t_2^\ast]', r'valid-if', r'exec-if'),
     Instruction(r'\ELSE', r'\hex{05}'),
     Instruction(None, r'\hex{06}'),
     Instruction(None, r'\hex{07}'),
@@ -328,8 +328,8 @@ INSTRUCTIONS = [
     Instruction(r'\TABLEINIT~x~y', r'\hex{FC}~\hex{0C}', r'[\I32~\I32~\I32] \to []', r'valid-table.init', r'exec-table.init'),
     Instruction(r'\ELEMDROP~x', r'\hex{FC}~\hex{0D}', r'[] \to []', r'valid-elem.drop', r'exec-elem.drop'),
     Instruction(r'\TABLECOPY~x~y', r'\hex{FC}~\hex{0E}', r'[\I32~\I32~\I32] \to []', r'valid-table.copy', r'exec-table.copy'),
-    Instruction(r'\TABLEGROW~x', r'\hex{FC}~\hex{0F}', r'[t~\I32] \to []', r'valid-table.grow', r'exec-table.grow'),
-    Instruction(r'\TABLESIZE~x', r'\hex{FC}~\hex{10}', r'[] \to []', r'valid-table.size', r'exec-table.size'),
+    Instruction(r'\TABLEGROW~x', r'\hex{FC}~\hex{0F}', r'[t~\I32] \to [\I32]', r'valid-table.grow', r'exec-table.grow'),
+    Instruction(r'\TABLESIZE~x', r'\hex{FC}~\hex{10}', r'[] \to [\I32]', r'valid-table.size', r'exec-table.size'),
     Instruction(r'\TABLEFILL~x', r'\hex{FC}~\hex{11}', r'[\I32~t~\I32] \to []', r'valid-table.fill', r'exec-table.fill'),
 ]
 

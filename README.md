@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/WebAssembly/relaxed-simd.svg?branch=master)](https://travis-ci.org/WebAssembly/relaxed-simd)
+![Build Status](https://github.com/WebAssembly/relaxed-simd/actions/workflows/main.yml/badge.svg)
 
 # Relaxed SIMD proposal for WebAssembly
 

@@ -6,7 +6,7 @@ TODO: more text, motivation, explanation
 
 Motivation:
 
-* Easier and more efficient interop with host environment (see e.g. the [Interface Types proposal](https://github.com/WebAssembly/interface-types/blob/master/proposals/interface-types/Explainer.md))
+* Easier and more efficient interop with host environment (see e.g. the [Interface Types proposal](https://github.com/WebAssembly/interface-types/blob/main/proposals/interface-types/Explainer.md))
   - allow host references to be represented directly by type `externref` (see [here](https://github.com/WebAssembly/interface-types/issues/9))
   - without having to go through tables, allocating slots, and maintaining index bijections at the boundaries
 
@@ -19,7 +19,7 @@ by repurposing tables as a general memory for opaque data types
 * Set the stage for later additions:
 
   - Typed function references (see [below](#typed-function-references))
-  - Exception references (see the [exception handling proposal](https://github.com/WebAssembly/exception-handling/blob/master/proposals/Exceptions.md) and [here](https://github.com/WebAssembly/interface-types/issues/10))
+  - Exception references (see the [exception handling proposal](https://github.com/WebAssembly/exception-handling/blob/main/proposals/Exceptions.md) and [here](https://github.com/WebAssembly/interface-types/issues/10))
   - A smoother transition path to GC (see the [GC proposal](https://github.com/WebAssembly/gc/blob/master/proposals/gc/Overview.md))
 
 Get the most important parts soon!

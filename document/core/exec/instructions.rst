@@ -607,7 +607,7 @@ Table Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & F.\AMODULE.\MITABLES[x] = a \\
      \wedge & \X{sz} = |S.\STABLES[a].\TIELEM| \\
-     \wedge & S' = S \with \STABLES[a] = \growtable(S.\STABLES[a], n, \val)) \\
+     \wedge & S' = S \with \STABLES[a] = \growtable(S.\STABLES[a], n, \val)) \\[1ex]
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -659,17 +659,17 @@ Table Instructions
 
     a. Return.
 
-13. Push the value :math:`\I32.CONST~i` to the stack.
+13. Push the value :math:`\I32.\CONST~i` to the stack.
 
 14. Push the value :math:`\val` to the stack.
 
 15. Execute the instruction :math:`\TABLESET~x`.
 
-16. Push the value :math:`\I32.CONST~(i+1)` to the stack.
+16. Push the value :math:`\I32.\CONST~(i+1)` to the stack.
 
 17. Push the value :math:`\val` to the stack.
 
-18. Push the value :math:`\I32.CONST~(n-1)` to the stack.
+18. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
 
 19. Execute the instruction :math:`\TABLEFILL~x`.
 
@@ -679,7 +679,7 @@ Table Instructions
      \quad\stepto\quad S; F; \TRAP
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & i + n > |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM|) \\
+     (\iff & i + n > |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM|) \\[1ex]
      \end{array}
    \\[1ex]
    S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~0)~(\TABLEFILL~x)
@@ -688,7 +688,8 @@ Table Instructions
      (\otherwise)
    \\[1ex]
    S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~n+1)~(\TABLEFILL~x)
-     \quad\stepto\quad S; F;
+     \quad\stepto
+     \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
        (\I32.\CONST~i)~\val~(\TABLESET~x) \\
        (\I32.\CONST~i+1)~\val~(\I32.\CONST~n)~(\TABLEFILL~x) \\
@@ -789,7 +790,7 @@ Table Instructions
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & s + n > |S.\STABLES[F.\AMODULE.\MITABLES[y]].\TIELEM| \\
-      \vee & d + n > |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM|) \\
+      \vee & d + n > |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM|) \\[1ex]
      \end{array}
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\TABLECOPY~x~y)
@@ -798,7 +799,8 @@ Table Instructions
      (\otherwise)
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\TABLECOPY~x~y)
-     \quad\stepto\quad S; F;
+     \quad\stepto
+     \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
        (\I32.\CONST~d)~(\I32.\CONST~s)~(\TABLEGET~y)~(\TABLESET~x) \\
        (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\TABLECOPY~x~y) \\
@@ -807,7 +809,8 @@ Table Instructions
      (\otherwise, \iff d \leq s)
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\TABLECOPY~x~y)
-     \quad\stepto\quad S; F;
+     \quad\stepto
+     \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
        (\I32.\CONST~d+n-1)~(\I32.\CONST~s+n-1)~(\TABLEGET~y)~(\TABLESET~x) \\
        (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\TABLECOPY~x~y) \\
@@ -888,7 +891,7 @@ Table Instructions
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & s + n > |S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM| \\
-      \vee & d + n > |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM|) \\
+      \vee & d + n > |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM|) \\[1ex]
      \end{array}
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\TABLEINIT~x~y)
@@ -897,13 +900,14 @@ Table Instructions
      (\otherwise)
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\TABLEINIT~x~y)
-     \quad\stepto\quad S; F;
+     \quad\stepto
+     \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
        (\I32.\CONST~d)~\val~(\TABLESET~x) \\
        (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\TABLEINIT~x~y) \\
        \end{array}
      \\ \qquad
-     (\otherwise, \iff \val = S.\SELEMS[F.\AMODULE.\MIELEMS[x]].\EIELEM[s]) \\
+     (\otherwise, \iff \val = S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM[s]) \\
    \end{array}
 
 
@@ -974,7 +978,7 @@ Memory Instructions
 
 9. If :math:`N` is not part of the instruction, then:
 
-   a. Let :math:`N` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
+   a. Let :math:`N` be the :ref:`bit width <syntax-numtype>` :math:`|t|` of :ref:`number type <syntax-numtype>` :math:`t`.
 
 10. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
 
@@ -1004,7 +1008,7 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_t(c) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8])
+     \wedge & \bytes_t(c) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8]) \\[1ex]
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -1015,7 +1019,7 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8])
+     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8]) \\[1ex]
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -1054,7 +1058,7 @@ Memory Instructions
 
 11. If :math:`N` is not part of the instruction, then:
 
-    a. Let :math:`N` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
+    a. Let :math:`N` be the :ref:`bit width <syntax-numtype>` :math:`|t|` of :ref:`number type <syntax-numtype>` :math:`t`.
 
 12. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
 
@@ -1082,7 +1086,7 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8] = \bytes_t(c))
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8] = \bytes_t(c)) \\[1ex]
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -1092,7 +1096,7 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c))
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c)) \\[1ex]
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -1173,7 +1177,7 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & F.\AMODULE.\MIMEMS[0] = a \\
      \wedge & \X{sz} = |S.\SMEMS[a].\MIDATA|/64\,\F{Ki} \\
-     \wedge & S' = S \with \SMEMS[a] = \growmem(S.\SMEMS[a], n)) \\
+     \wedge & S' = S \with \SMEMS[a] = \growmem(S.\SMEMS[a], n)) \\[1ex]
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -1247,7 +1251,7 @@ Memory Instructions
    S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~n)~\MEMORYFILL
      \quad\stepto\quad S; F; \TRAP
      \\ \qquad
-     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|) \\
+     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|)
    \\[1ex]
    S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~0)~\MEMORYFILL
      \quad\stepto\quad S; F; \epsilon
@@ -1255,7 +1259,8 @@ Memory Instructions
      (\otherwise)
    \\[1ex]
    S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~n+1)~\MEMORYFILL
-     \quad\stepto\quad S; F;
+     \quad\stepto
+     \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
        (\I32.\CONST~d)~\val~(\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
        (\I32.\CONST~d+1)~\val~(\I32.\CONST~n)~\MEMORYFILL \\
@@ -1348,7 +1353,7 @@ Memory Instructions
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & s + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|) \\
+      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|) \\[1ex]
      \end{array}
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~\MEMORYCOPY
@@ -1357,7 +1362,8 @@ Memory Instructions
      (\otherwise)
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~\MEMORYCOPY
-     \quad\stepto\quad S; F;
+     \quad\stepto
+     \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
        (\I32.\CONST~d) \\
        (\I32.\CONST~s)~(\I32\K{.}\LOAD\K{8\_u}~\{ \OFFSET~0, \ALIGN~0 \}) \\
@@ -1368,7 +1374,8 @@ Memory Instructions
      (\otherwise, \iff d \leq s)
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~\MEMORYCOPY
-     \quad\stepto\quad S; F;
+     \quad\stepto
+     \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
        (\I32.\CONST~d+n-1) \\
        (\I32.\CONST~s+n-1)~(\I32\K{.}\LOAD\K{8\_u}~\{ \OFFSET~0, \ALIGN~0 \}) \\
@@ -1405,15 +1412,15 @@ Memory Instructions
 
 10. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-11. Pop the value :math:`\I32.\CONST~cnt` from the stack.
+11. Pop the value :math:`\I32.\CONST~n` from the stack.
 
 12. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-13. Pop the value :math:`\I32.\CONST~src` from the stack.
+13. Pop the value :math:`\I32.\CONST~s` from the stack.
 
 14. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-15. Pop the value :math:`\I32.\CONST~dst` from the stack.
+15. Pop the value :math:`\I32.\CONST~d` from the stack.
 
 16. If :math:`s + n` is larger than the length of :math:`\X{data}.\DIDATA` or :math:`d + n` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
 
@@ -1451,7 +1458,7 @@ Memory Instructions
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & s + n > |S.\SDATAS[F.\AMODULE.\MIDATAS[x]].\DIDATA| \\
-      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|) \\
+      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|) \\[1ex]
      \end{array}
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\MEMORYINIT~x)
@@ -1460,7 +1467,8 @@ Memory Instructions
      (\otherwise)
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\MEMORYINIT~x)
-     \quad\stepto\quad S; F;
+     \quad\stepto
+       \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
        (\I32.\CONST~d)~(\I32.\CONST~b)~(\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
        (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\MEMORYINIT~x) \\
@@ -1550,10 +1558,10 @@ Control Instructions
 
 .. math::
    ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
+   \begin{array}{lcl}
    F; \val^m~\BLOCK~\X{bt}~\instr^\ast~\END &\stepto&
      F; \LABEL_n\{\epsilon\}~\val^m~\instr^\ast~\END
-     & (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
+     \\&&\quad (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 
 
@@ -1576,10 +1584,10 @@ Control Instructions
 
 .. math::
    ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
+   \begin{array}{lcl}
    F; \val^m~\LOOP~\X{bt}~\instr^\ast~\END &\stepto&
      F; \LABEL_m\{\LOOP~\X{bt}~\instr^\ast~\END\}~\val^m~\instr^\ast~\END
-     & (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
+     \\&&\quad (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 
 
@@ -1612,13 +1620,13 @@ Control Instructions
 
 .. math::
    ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
+   \begin{array}{lcl}
    F; \val^m~(\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
      F; \LABEL_n\{\epsilon\}~\val^m~\instr_1^\ast~\END
-     & (\iff c \neq 0 \wedge \expand_F(\X{bt}) = [t_1^m] \to [t_2^n]) \\
+     \\&&\quad (\iff c \neq 0 \wedge \expand_F(\X{bt}) = [t_1^m] \to [t_2^n]) \\
    F; \val^m~(\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
      F; \LABEL_n\{\epsilon\}~\val^m~\instr_2^\ast~\END
-     & (\iff c = 0 \wedge \expand_F(\X{bt}) = [t_1^m] \to [t_2^n]) \\
+     \\&&\quad (\iff c = 0 \wedge \expand_F(\X{bt}) = [t_1^m] \to [t_2^n]) \\
    \end{array}
 
 
