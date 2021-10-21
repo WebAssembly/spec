@@ -1,5 +1,5 @@
 This is a rough list of "tests to write". Everything here should either be
-specified in [Semantics.md](https://github.com/WebAssembly/design/blob/master/Semantics.md),
+specified in [Semantics.md](https://github.com/WebAssembly/design/blob/main/Semantics.md),
 have a link to an open issue/PR, or be obvious. Comments/corrections/additions
 welcome.
 

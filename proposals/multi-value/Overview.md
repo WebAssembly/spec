@@ -14,7 +14,7 @@
   - can easily be lifted by generalising to value* -> value*
 
 * Generalised semantics is well-understood
-  - https://github.com/WebAssembly/spec/tree/master/papers/pldi2017.pdf
+  - https://github.com/WebAssembly/spec/tree/main/papers/pldi2017.pdf
 
 * Semi-complete implementation of multiple results in V8
 
