@@ -20,7 +20,9 @@
 
 (assert_return (invoke "store" (i32.const -4) (i32.const 42)))
 (assert_return (invoke "load" (i32.const -4)) (i32.const 42))
-(assert_trap (invoke "store" (i32.const -3) (i32.const 13)) "out of bounds memory access")
+(assert_trap (invoke "store" (i32.const -3) (i32.const 0x12345678)) "out of bounds memory access")
+;; check that the oob store above does not store partial data.
+(assert_return (invoke "load" (i32.const -4)) (i32.const 42))
 (assert_trap (invoke "load" (i32.const -3)) "out of bounds memory access")
 (assert_trap (invoke "store" (i32.const -2) (i32.const 13)) "out of bounds memory access")
 (assert_trap (invoke "load" (i32.const -2)) "out of bounds memory access")
