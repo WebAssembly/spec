@@ -18,9 +18,8 @@
 import os
 import sys
 from datetime import date
-
 pwd = os.path.abspath('.')
-sys.path.insert(0, pwd)
+sys.path.insert(0, pwd + '/util')
 
 # -- General configuration ------------------------------------------------
 
@@ -37,8 +36,8 @@ extensions = [
   'sphinx.ext.mathjax',
   'sphinx.ext.ifconfig',
   'sphinx.ext.githubpages',
-  'util.mathdef',
-  'util.pseudo-lexer'
+  'mathdef',
+  'pseudo-lexer'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
