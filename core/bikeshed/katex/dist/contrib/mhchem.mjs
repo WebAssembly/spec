@@ -2631,9 +2631,9 @@ mhchemParser.stateMachines = {
 
         return ret;
       }
-    } //#endregion
+    }
+  } //#endregion
 
-  }
 }; //
 // texify: Take MhchemParser output and convert it to TeX
 //
