@@ -106,7 +106,7 @@ def ReplaceMath(cache, data):
         break
       data = data[:start] + v.replace('#1', data[start+len(k):end]) + data[end:]
   p = subprocess.Popen(
-      ['node', os.path.join(SCRIPT_DIR, 'katex/cli.js'), '--display-mode'],
+      ['node', os.path.join(SCRIPT_DIR, 'katex/cli.js'), '--display-mode', '--trust'],
       stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
   ret = p.communicate(input=data)[0]
   if p.returncode != 0:
