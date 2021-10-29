@@ -38,4 +38,4 @@ main_macros_def = "/" + main_conf_pwd + "/util/macros.def"
 assert(main_macros_def in rst_prolog)
 rst_prolog  = rst_prolog.replace(main_macros_def, "/" + pwd + "/util/macros.def")
 
-del mathjax_config
+del mathjax3_config
