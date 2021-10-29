@@ -92,4 +92,4 @@ Hence, in current engines, reserving one register for the base address is a comm
 Multiple memories will typically require an extra indirection (which some engines already have).
 
 Engines could conservatively continue to optimise access to memory index 0 via a dedicated register.
-PResumably, we could also eventually add a future custom section with optimisation hints, which could e.g. mark the index of the "main" memory.
+Presumably, we could also eventually add a future custom section with optimisation hints, which could e.g. mark the index of the "main" memory.
