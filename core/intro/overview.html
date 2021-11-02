@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Overview &#8212; WebAssembly 1.1 (Draft 2021-10-29)</title>
+    <title>Overview &#8212; WebAssembly 1.1 (Draft 2021-11-02)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -121,7 +121,7 @@ where they typically can be caught.</p>
 <dl class="simple" id="function">
 <dt><strong>Functions</strong></dt><dd><p>Code is organized into separate <em>functions</em>.
 Each function takes a sequence of values as parameters
-and returns a sequence of values as results. <a class="footnote-reference brackets" href="#arity" id="id3">2</a>
+and returns a sequence of values as results.
 Functions can call each other, including recursively,
 resulting in an implicit call stack that cannot be accessed directly.
 Functions may also declare mutable <em>local variables</em> that are usable as virtual registers.</p>
@@ -164,9 +164,6 @@ However, the details of any particular embedding are beyond the scope of this sp
 <dl class="footnote brackets">
 <dt class="label" id="stackmachine"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>
 <dd><p>In practice, implementations need not maintain an actual operand stack. Instead, the stack can be viewed as a set of anonymous registers that are implicitly referenced by instructions. The <a class="reference internal" href="#validation"><span class="std std-ref">type system</span></a> ensures that the stack height, and thus any referenced register, is always known statically.</p>
-</dd>
-<dt class="label" id="arity"><span class="brackets"><a class="fn-backref" href="#id3">2</a></span></dt>
-<dd><p>In the current version of WebAssembly, there may be at most one result value.</p>
 </dd>
 </dl>
 </section>
