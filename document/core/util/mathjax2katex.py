@@ -160,19 +160,6 @@ def Main():
   data = data.replace(
       '<li class="nav-item nav-item-0"><a href="index.html#document-index">'
       'WebAssembly 1.0</a> »', '')
-  # Drop Index links.
-  data = data.replace(
-      '<li><a class="reference internal" href="index.html#index-type">'
-      '<span class="std std-ref">Index of Types</span></a>', '')
-  data = data.replace(
-      '<li><a class="reference internal" href="index.html#index-instr">'
-      '<span class="std std-ref">Index of Instructions</span></a>', '')
-  data = data.replace(
-      '<li><a class="reference internal" href="index.html#index-rules">'
-      '<span class="std std-ref">Index of Semantic Rules</span></a>', '')
-  data = data.replace(
-      '<li><a class="reference internal" href="genindex.html">'
-      '<span class="std std-ref">Index</span></a>', '')
   # Drop sphinx css.
   data = data.replace(
       '<link href="_static/classic.css" rel="stylesheet" type="text/css">', '')
