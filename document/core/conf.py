@@ -492,8 +492,9 @@ rst_prolog = """
 .. include:: /""" + pwd + """/util/macros.def
 """
 
-# https://www.sphinx-doc.org/en/master/usage/extensions/math.html#confval-mathjax_config
-# http://docs.mathjax.org/en/v2.7-latest/options/input-processors/TeX.html
-mathjax_config = {
-    'TeX': { 'MAXBUFFER': 30*1024 },
+# https://www.sphinx-doc.org/en/master/usage/extensions/math.html#confval-mathjax3_config
+# https://docs.mathjax.org/en/latest/web/configuration.html#configuration
+# https://docs.mathjax.org/en/latest/options/input/tex.html#tex-maxbuffer
+mathjax3_config = {
+    'tex': { 'maxBuffer': 30*1024 },
 }
