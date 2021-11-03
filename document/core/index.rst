@@ -3,7 +3,7 @@ WebAssembly Specification
 
 .. only:: html
 
-   | Release |release| (Draft, |today|)
+   | Release |release|
 
    | Editor: Andreas Rossberg
 
@@ -29,7 +29,11 @@ WebAssembly Specification
       appendix/index-instructions
       appendix/index-rules
 
-.. only:: html
+..
+   Only include these links when using (multi-page) html builder.
+   (The singlepage html builder is called builder_singlehtml.)
+
+.. only:: builder_html
 
    * :ref:`index-type`
    * :ref:`index-instr`

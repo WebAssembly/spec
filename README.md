@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/WebAssembly/extended-const.svg?branch=master)](https://travis-ci.org/WebAssembly/extended-const)
+![Build Status](https://github.com/WebAssembly/extended-const/actions/workflows/main.yml/badge.svg)
 
 # Extented Const Expressesions Proposal for WebAssembly
 

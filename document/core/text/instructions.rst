@@ -71,23 +71,23 @@ However, the special case of a type use that is syntactically empty or consists 
    &
    \begin{array}[t]{@{}lcll@{}}
      (t{:}\Tresult)^? &\Rightarrow& t^? \\
-     x,I'{:}\Ttypeuse_I &\Rightarrow& x & (\iff I' = \{\}) \\
+     x,I'{:}\Ttypeuse_I &\Rightarrow& x & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array} \\
    \production{block instruction} & \Tblockinstr_I &::=&
-     \text{block}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+     \text{block}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
        \\ &&&\qquad \Rightarrow\quad \BLOCK~\X{bt}~\X{in}^\ast~\END
        \qquad\quad~~ (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
-     \text{loop}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+     \text{loop}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
        \\ &&&\qquad \Rightarrow\quad \LOOP~\X{bt}~\X{in}^\ast~\END
        \qquad\qquad (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
-     \text{if}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
+     \text{if}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
        \text{else}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
        \\ &&&\qquad \Rightarrow\quad \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
        \qquad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\
    \end{array}
 
 .. note::
-   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must be empty in the rule for |Ttypeuse| block types enforces that no identifier can be bound in any |Tparam| declaration for a block type.
+   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must only contain unnamed entries in the rule for |Ttypeuse| block types enforces that no identifier can be bound in any |Tparam| declaration for a block type.
 
 
 .. _text-nop:
@@ -112,12 +112,12 @@ All other control instruction are represented verbatim.
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
-     \text{call\_indirect}~~x,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x
-       & (\iff I' = \{\}) \\
+     \text{call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x~y
+       & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array}
 
 .. note::
-   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must be empty in the rule for |CALLINDIRECT| enforces that no identifier can be bound in any |Tparam| declaration appearing in the type annotation.
+   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must only contain unnamed entries in the rule for |CALLINDIRECT| enforces that no identifier can be bound in any |Tparam| declaration appearing in the type annotation.
 
 
 Abbreviations
@@ -133,8 +133,38 @@ The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitt
      \text{if}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{else}~~\text{end}
    \end{array}
 
+Also, for backwards compatibility, the table index to :math:`\text{call\_indirect}` can be omitted, defaulting to :math:`0`.
 
-.. index:: value type, polymorphism
+.. math::
+   \begin{array}{llclll}
+   \production{plain instruction} &
+     \text{call\_indirect}~~\Ttypeuse
+       &\equiv&
+     \text{call\_indirect}~~0~~\Ttypeuse
+   \end{array}
+
+
+.. index:: reference instruction
+   pair: text format; instruction
+.. _text-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. _text-ref.null:
+.. _text-ref.is_null:
+.. _text-ref.func:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
+     \text{ref.null}~~t{:}\Theaptype &\Rightarrow& \REFNULL~t \\ &&|&
+     \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
+     \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
+   \end{array}
+
+
+.. index:: parametric instruction, value type, polymorphism
    pair: text format; instruction
 .. _text-instr-parametric:
 
@@ -148,7 +178,7 @@ Parametric Instructions
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{drop} &\Rightarrow& \DROP \\ &&|&
-     \text{select} &\Rightarrow& \SELECT \\
+     \text{select}~((t{:}\Tresult)^\ast)^? &\Rightarrow& \SELECT~(t^\ast)^? \\
    \end{array}
 
 
@@ -176,6 +206,54 @@ Variable Instructions
    \end{array}
 
 
+.. index:: table instruction, table index
+   pair: text format; instruction
+.. _text-instr-table:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+.. _text-table.get:
+.. _text-table.set:
+.. _text-table.size:
+.. _text-table.grow:
+.. _text-table.fill:
+.. _text-table.copy:
+.. _text-table.init:
+.. _text-elem.drop:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
+     \text{table.get}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEGET~x \\ &&|&
+     \text{table.set}~~x{:}\Ttableidx_I &\Rightarrow& \TABLESET~x \\ &&|&
+     \text{table.size}~~x{:}\Ttableidx_I &\Rightarrow& \TABLESIZE~x \\ &&|&
+     \text{table.grow}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEGROW~x \\ &&|&
+     \text{table.fill}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEFILL~x \\ &&|&
+     \text{table.copy}~~x{:}\Ttableidx_I~~y{:}\Ttableidx_I &\Rightarrow& \TABLECOPY~x~y \\ &&|&
+     \text{table.init}~~x{:}\Ttableidx_I~~y{:}\Telemidx_I &\Rightarrow& \TABLEINIT~x~y \\ &&|&
+     \text{elem.drop}~~x{:}\Telemidx_I &\Rightarrow& \ELEMDROP~x \\
+   \end{array}
+
+
+Abbreviations
+.............
+
+For backwards compatibility, all :math:`table indices <syntax-tableidx>` may be omitted from table instructions, defaulting to :math:`0`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} &
+     \text{table.get} &\equiv& \text{table.get}~~\text{0} \\ &&|&
+     \text{table.set} &\equiv& \text{table.set}~~\text{0} \\ &&|&
+     \text{table.size} &\equiv& \text{table.size}~~\text{0} \\ &&|&
+     \text{table.grow} &\equiv& \text{table.grow}~~\text{0} \\ &&|&
+     \text{table.fill} &\equiv& \text{table.fill}~~\text{0} \\ &&|&
+     \text{table.copy} &\equiv& \text{table.copy}~~\text{0}~~\text{0} \\ &&|&
+     \text{table.init}~~x{:}\Telemidx_I &\equiv& \text{table.init}~~\text{0}~~x{:}\Telemidx_I \\ &&|&
+   \end{array}
+
+
 .. index:: memory instruction, memory index
    pair: text format; instruction
 .. _text-instr-memory:
@@ -190,6 +268,10 @@ Memory Instructions
 .. _text-storen:
 .. _text-memory.size:
 .. _text-memory.grow:
+.. _text-memory.fill:
+.. _text-memory.copy:
+.. _text-memory.init:
+.. _text-data.drop:
 
 The offset and alignment immediates to memory instructions are optional.
 The offset defaults to :math:`\T{0}`, the alignment to the storage size of the respective memory access, which is its *natural alignment*.
@@ -230,7 +312,11 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
      \text{i64.store16}~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
      \text{i64.store32}~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
      \text{memory.size} &\Rightarrow& \MEMORYSIZE \\ &&|&
-     \text{memory.grow} &\Rightarrow& \MEMORYGROW \\
+     \text{memory.grow} &\Rightarrow& \MEMORYGROW \\ &&|&
+     \text{memory.fill} &\Rightarrow& \MEMORYFILL \\ &&|&
+     \text{memory.copy} &\Rightarrow& \MEMORYCOPY \\ &&|&
+     \text{memory.init}~~x{:}\Tdataidx_I &\Rightarrow& \MEMORYINIT~x \\ &&|&
+     \text{data.drop}~~x{:}\Tdataidx_I &\Rightarrow& \DATADROP~x \\
    \end{array}
 
 
@@ -506,6 +592,6 @@ No explicit :math:`\text{end}` keyword is included, since they only occur in bra
 
 .. math::
    \begin{array}{llclll}
-   \production{expression} & \Texpr &::=&
-     (\X{in}{:}\Tinstr)^\ast &\Rightarrow& \X{in}^\ast~\END \\
+   \production{expression} & \Texpr_I &::=&
+     (\X{in}{:}\Tinstr_I)^\ast &\Rightarrow& \X{in}^\ast~\END \\
    \end{array}

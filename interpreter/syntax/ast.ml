@@ -56,8 +56,7 @@ type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) Values.op
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Values.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
 
-type 'a memop =
-  {ty : value_type; align : int; offset : Memory.offset; sz : 'a option}
+type 'a memop = {ty : num_type; align : int; offset : int32; sz : 'a option}
 type loadop = (pack_size * extension) memop
 type storeop = pack_size memop
 
@@ -65,7 +64,7 @@ type storeop = pack_size memop
 (* Expressions *)
 
 type var = int32 Source.phrase
-type literal = Values.value Source.phrase
+type num = Values.num Source.phrase
 type name = int list
 
 type block_type = VarBlockType of var | ValBlockType of value_type option
@@ -75,7 +74,7 @@ and instr' =
   | Unreachable                       (* trap unconditionally *)
   | Nop                               (* do nothing *)
   | Drop                              (* forget a value *)
-  | Select                            (* branchless conditional *)
+  | Select of value_type list option  (* branchless conditional *)
   | Block of block_type * instr list  (* execute in sequence *)
   | Loop of block_type * instr list   (* loop header *)
   | If of block_type * instr list * instr list  (* conditional *)
@@ -84,17 +83,32 @@ and instr' =
   | BrTable of var list * var         (* indexed break *)
   | Return                            (* break from function body *)
   | Call of var                       (* call function *)
-  | CallIndirect of var               (* call function through table *)
+  | CallIndirect of var * var         (* call function through table *)
   | LocalGet of var                   (* read local variable *)
   | LocalSet of var                   (* write local variable *)
   | LocalTee of var                   (* write local variable and keep value *)
   | GlobalGet of var                  (* read global variable *)
   | GlobalSet of var                  (* write global variable *)
+  | TableGet of var                   (* read table element *)
+  | TableSet of var                   (* write table element *)
+  | TableSize of var                  (* size of table *)
+  | TableGrow of var                  (* grow table *)
+  | TableFill of var                  (* fill table range with value *)
+  | TableCopy of var * var            (* copy table range *)
+  | TableInit of var * var            (* initialize table range from segment *)
+  | ElemDrop of var                   (* drop passive element segment *)
   | Load of loadop                    (* read memory at address *)
   | Store of storeop                  (* write memory at address *)
-  | MemorySize                        (* size of linear memory *)
-  | MemoryGrow                        (* grow linear memory *)
-  | Const of literal                  (* constant *)
+  | MemorySize                        (* size of memory *)
+  | MemoryGrow                        (* grow memory *)
+  | MemoryFill                        (* fill memory range with value *)
+  | MemoryCopy                        (* copy memory ranges *)
+  | MemoryInit of var                 (* initialize memory range from segment *)
+  | DataDrop of var                   (* drop passive data segment *)
+  | RefNull of ref_type               (* null reference *)
+  | RefFunc of var                    (* function reference *)
+  | RefIsNull                         (* null test *)
+  | Const of num                      (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)
   | Unary of unop                     (* unary numeric operator *)
@@ -110,7 +124,7 @@ type global = global' Source.phrase
 and global' =
 {
   gtype : global_type;
-  value : const;
+  ginit : const;
 }
 
 type func = func' Source.phrase
@@ -136,16 +150,26 @@ and memory' =
   mtype : memory_type;
 }
 
-type 'data segment = 'data segment' Source.phrase
-and 'data segment' =
+type segment_mode = segment_mode' Source.phrase
+and segment_mode' =
+  | Passive
+  | Active of {index : var; offset : const}
+  | Declarative
+
+type elem_segment = elem_segment' Source.phrase
+and elem_segment' =
 {
-  index : var;
-  offset : const;
-  init : 'data;
+  etype : ref_type;
+  einit : const list;
+  emode : segment_mode;
 }
 
-type table_segment = var list segment
-type memory_segment = string segment
+type data_segment = data_segment' Source.phrase
+and data_segment' =
+{
+  dinit : string;
+  dmode : segment_mode;
+}
 
 
 (* Modules *)
@@ -190,8 +214,8 @@ and module_' =
   memories : memory list;
   funcs : func list;
   start : var option;
-  elems : var list segment list;
-  data : string segment list;
+  elems : elem_segment list;
+  datas : data_segment list;
   imports : import list;
   exports : export list;
 }
@@ -207,8 +231,8 @@ let empty_module =
   memories = [];
   funcs = [];
   start = None;
-  elems  = [];
-  data = [];
+  elems = [];
+  datas = [];
   imports = [];
   exports = [];
 }
@@ -258,3 +282,4 @@ let string_of_name n =
   in
   List.iter escape n;
   Buffer.contents b
+

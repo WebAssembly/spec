@@ -16,7 +16,7 @@ const kJSEmbeddingMaxFunctionLocals = 50000;
 const kJSEmbeddingMaxFunctionParams = 1000;
 const kJSEmbeddingMaxFunctionReturns = 1000;
 const kJSEmbeddingMaxElementSegments = 10000000;
-const kJSEmbeddingMaxTables = 1;
+const kJSEmbeddingMaxTables = 100000;
 const kJSEmbeddingMaxMemories = 1;
 
 // Dynamic limits

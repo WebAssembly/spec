@@ -42,7 +42,7 @@ pipenv shell
 Install Python dependencies:
 
 ```
-pip install Sphinx==2.4.4
+pipenv install Sphinx==4.0.0
 ```
 
 ### Checking out the repository
@@ -80,7 +80,7 @@ To build the [single-page W3C version](https://webassembly.github.io/spec/core/b
 ```
 # cd back to root of git directory
 git clone https://github.com/tabatkins/bikeshed.git
-pip install --editable bikeshed
+pipenv install -e bikeshed
 bikeshed update
 ```
 
@@ -88,7 +88,7 @@ You will also need `npm` and `yarn` for all the LaTeX goodness. `npm` might alre
 
 ```
 npm install -g yarn
-cd document/core
+cd document
 make -C core bikeshed
 ```
 

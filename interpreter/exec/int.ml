@@ -199,7 +199,7 @@ struct
 
   let popcnt x =
     let rec loop acc i n =
-      if n = Rep.zero then
+      if i = 0 then
         acc
       else
         let acc' = if and_ n Rep.one = Rep.one then acc + 1 else acc in

@@ -163,7 +163,7 @@ WebAssemblyText.decode(binary)
 
 ## S-Expression Syntax
 
-The implementation consumes a WebAssembly AST given in S-expression syntax. Here is an overview of the grammar of types, expressions, functions, and modules, mirroring what's described in the [design doc](https://github.com/WebAssembly/design/blob/master/Semantics.md).
+The implementation consumes a WebAssembly AST given in S-expression syntax. Here is an overview of the grammar of types, expressions, functions, and modules, mirroring what's described in the [design doc](https://github.com/WebAssembly/design/blob/main/Semantics.md).
 
 Note: The grammar is shown here for convenience, the definite source is the [specification of the text format](https://webassembly.github.io/spec/core/text/).
 ```
@@ -175,23 +175,25 @@ float:  <num>.<num>?(e|E <num>)? | 0x<hexnum>.<hexnum>?(p|P <num>)?
 name:   $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
 string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex> | \u{<hex>+})*"
 
-value:  <int> | <float>
-var:    <nat> | <name>
+num: <int> | <float>
+var: <nat> | <name>
 
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
 relop: eq | ne | lt | ...
-sign:  s|u
+sign:  s | u
 offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc | extend | wrap | ...
 
-val_type: i32 | i64 | f32 | f64
-elem_type: funcref
+num_type: i32 | i64 | f32 | f64
+ref_kind: func | extern
+ref_type: funcref | externref
+val_type: num_type | ref_type
 block_type : ( result <val_type>* )*
 func_type:   ( type <var> )? <param>* <result>*
 global_type: <val_type> | ( mut <val_type> )
-table_type:  <nat> <nat>? <elem_type>
+table_type:  <nat> <nat>? <ref_type>
 memory_type: <nat> <nat>?
 
 expr:
@@ -218,7 +220,7 @@ op:
   br_table <var>+
   return
   call <var>
-  call_indirect <func_type>
+  call_indirect <var>? <func_type>
   drop
   select
   local.get <var>
@@ -226,16 +228,31 @@ op:
   local.tee <var>
   global.get <var>
   global.set <var>
-  <val_type>.load((8|16|32)_<sign>)? <offset>? <align>?
-  <val_type>.store(8|16|32)? <offset>? <align>?
+  table.get <var>?
+  table.set <var>?
+  table.size <var>?
+  table.grow <var>?
+  table.fill <var>?
+  table.copy <var>? <var>?
+  table.init <var>? <var>
+  elem.drop <var>
+  <num_type>.load((8|16|32)_<sign>)? <offset>? <align>?
+  <num_type>.store(8|16|32)? <offset>? <align>?
   memory.size
   memory.grow
-  <val_type>.const <value>
-  <val_type>.<unop>
-  <val_type>.<binop>
-  <val_type>.<testop>
-  <val_type>.<relop>
-  <val_type>.<cvtop>_<val_type>(_<sign>)?
+  memory.fill
+  memory.copy
+  memory.init <var>
+  data.drop <var>
+  ref.null <ref_kind>
+  ref.is_null <ref_kind>
+  ref.func <var>
+  <num_type>.const <value>
+  <num_type>.<unop>
+  <num_type>.<binop>
+  <num_type>.<testop>
+  <num_type>.<relop>
+  <num_type>.<cvtop>_<num_type>(_<sign>)?
 
 func:    ( func <name>? <func_type> <local>* <instr>* )
          ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)
@@ -250,15 +267,23 @@ global:  ( global <name>? <global_type> <instr>* )
 table:   ( table <name>? <table_type> )
          ( table <name>? ( export <string> ) <...> )                        ;; = (export <string> (table <N>)) (table <name>? <...>)
          ( table <name>? ( import <string> <string> ) <table_type> )        ;; = (import <string> <string> (table <name>? <table_type>))
-         ( table <name>? ( export <string> )* <elem_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )* <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
+         ( table <name>? ( export <string> )* <ref_type> ( elem <var>* ) )  ;; = (table <name>? ( export <string> )* <size> <size> <ref_type>) (elem (i32.const 0) <var>*)
 elem:    ( elem <var>? (offset <instr>* ) <var>* )
          ( elem <var>? <expr> <var>* )                                      ;; = (elem <var>? (offset <expr>) <var>*)
+         ( elem <var>? declare <ref_type> <var>* )
+elem:    ( elem <name>? ( table <var> )? <offset> <ref_type> <item>* )
+         ( elem <name>? ( table <var> )? <offset> func <var>* )             ;; = (elem <name>? ( table <var> )? <offset> funcref (ref.func <var>)*)
+         ( elem <var>? declare? <ref_type> <var>* )
+         ( elem <name>? declare? func <var>* )                               ;; = (elem <name>? declare? funcref (ref.func <var>)*)
+offset:  ( offset <instr>* )
+         <expr>                                                             ;; = ( offset <expr> )
+item:    ( item <instr>* )
+         <expr>                                                             ;; = ( item <expr> )
 memory:  ( memory <name>? <memory_type> )
          ( memory <name>? ( export <string> ) <...> )                       ;; = (export <string> (memory <N>))+ (memory <name>? <...>)
          ( memory <name>? ( import <string> <string> ) <memory_type> )      ;; = (import <string> <string> (memory <name>? <memory_type>))
          ( memory <name>? ( export <string> )* ( data <string>* ) )         ;; = (memory <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
-data:    ( data <var>? ( offset <instr>* ) <string>* )
-         ( data <var>? <expr> <string>* )                                   ;; = (data <var>? (offset <expr>) <string>*)
+data:    ( data <name>? ( memory <var> )? <offset> <string>* )
 
 start:   ( start <var> )
 
@@ -275,9 +300,9 @@ exkind:  ( func <var> )
          ( table <var> )
          ( memory <var> )
 
-module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
-         <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>?  ;; =
-         ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
+module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>* <memory>? <global>* <elem>* <data>* <start>? )
+         <typedef>* <func>* <import>* <export>* <table>* <memory>? <global>* <elem>* <data>* <start>?  ;; =
+         ( module <typedef>* <func>* <import>* <export>* <table>* <memory>? <global>* <elem>* <data>* <start>? )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the AST below).
@@ -322,8 +347,13 @@ module:
   ( module <name>? quote <string>* )         ;; module quoted in text (may be malformed)
 
 action:
-  ( invoke <name>? <string> <expr>* )        ;; invoke function export
+  ( invoke <name>? <string> <const>* )       ;; invoke function export
   ( get <name>? <string> )                   ;; get global export
+
+const:
+  ( <num_type>.const <num> )                 ;; number value
+  ( ref.null <ref_kind> )                    ;; null reference
+  ( ref.host <nat> )                         ;; host reference
 
 assertion:
   ( assert_return <action> <result>* )       ;; assert action has expected results
@@ -335,9 +365,11 @@ assertion:
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
 result:
-  ( <val_type>.const <numpat> )
+  ( <num_type>.const <num_pat> )
+  ( ref.extern )
+  ( ref.func )
 
-numpat:
+num_pat:
   <value>                                    ;; literal result
   nan:canonical                              ;; NaN in canonical form
   nan:arithmetic                             ;; NaN with 1 in MSB of payload
@@ -422,9 +454,11 @@ assertion:
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
 result:
-  ( <val_type>.const <numpat> )
+  ( <num_type>.const <num_pat> )
+  ( ref.extern )
+  ( ref.func )
 
-numpat:
+num_pat:
   <value>                                    ;; literal result
   nan:canonical                              ;; NaN in canonical form
   nan:arithmetic                             ;; NaN with 1 in MSB of payload
@@ -445,7 +479,7 @@ Moreover, float values are required to be precise, that is, they may not contain
 
 ## Abstract Syntax
 
-The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/master/Semantics.md), is defined in [ast.ml](syntax/ast.ml).
+The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/main/Semantics.md), is defined in [ast.ml](syntax/ast.ml).
 
 However, to simplify the implementation, this AST representation represents some of the inner structure of the operators more explicitly. The mapping from the operators as given in the design doc to their structured form is defined in [operators.ml](syntax/operators.ml).
 
