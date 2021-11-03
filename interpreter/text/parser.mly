@@ -267,16 +267,18 @@ def_type :
   | LPAR FUNC func_type RPAR { $3 }
 
 func_type :
-  | /* empty */
-    { FuncType ([], []) }
-  | LPAR RESULT value_type_list RPAR func_type
-    { let FuncType (ins, out) = $5 in
-      if ins <> [] then error (at ()) "result before parameter";
-      FuncType (ins, $3 @ out) }
+  | func_type_result
+    { FuncType ([], $1) }
   | LPAR PARAM value_type_list RPAR func_type
     { let FuncType (ins, out) = $5 in FuncType ($3 @ ins, out) }
   | LPAR PARAM bind_var value_type RPAR func_type  /* Sugar */
     { let FuncType (ins, out) = $6 in FuncType ($4 :: ins, out) }
+
+func_type_result :
+  | /* empty */
+    { [] }
+  | LPAR RESULT value_type_list RPAR func_type_result
+    { $3 @ $5 }
 
 table_type :
   | limits ref_type { TableType ($1, $2) }

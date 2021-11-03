@@ -20,7 +20,8 @@ WINMAKE =	winmake.bat
 DIRS =		util syntax binary text valid runtime exec script host main
 LIBS =		bigarray
 FLAGS = 	-lexflags -ml -cflags '-w +a-4-27-42-44-45 -warn-error +a-3'
-OCB =		ocamlbuild $(FLAGS) $(DIRS:%=-I %) $(LIBS:%=-libs %)
+OCBA =		ocamlbuild $(FLAGS) $(DIRS:%=-I %)
+OCB =		$(OCBA) $(LIBS:%=-libs %)
 JS =		# set to JS shell command to run JS tests
 
 
@@ -32,8 +33,8 @@ default:	opt
 debug:		unopt
 opt:		$(OPT)
 unopt:		$(UNOPT)
-libopt:		_build/$(LIB).cmx
-libunopt:	_build/$(LIB).cmo
+libopt:		_build/$(LIB).cmx _build/$(LIB).cmxa
+libunopt:	_build/$(LIB).cmo _build/$(LIB).cma
 jslib:		$(JSLIB)
 all:		unopt opt libunopt libopt test
 land:		$(WINMAKE) all
@@ -68,21 +69,32 @@ main.native:	_tags
 
 # Building library
 
+FILES =		$(shell ls $(DIRS:%=%/*) | grep '[.]ml[^.]*$$')
 PACK =		$(shell echo `echo $(LIB) | sed 's/^\(.\).*$$/\\1/g' | tr [:lower:] [:upper:]``echo $(LIB) | sed 's/^.\(.*\)$$/\\1/g'`)
 
 .INTERMEDIATE:	$(LIB).mlpack
 $(LIB).mlpack:	$(DIRS)
-		ls $(DIRS:%=%/*.ml*) \
+		ls $(FILES) \
 		| sed 's:\(.*/\)\{0,1\}\(.*\)\.[^\.]*:\2:' \
 		| grep -v main \
 		| sort | uniq \
 		>$@
 
-_build/$(LIB).cmo: $(LIB).mlpack _tags
+.INTERMEDIATE:	$(LIB).mllib
+$(LIB).mllib:
+		echo Wasm >$@
+
+_build/$(LIB).cmo: $(FILES) $(LIB).mlpack _tags Makefile
 		$(OCB) -quiet $(LIB).cmo
 
-_build/$(LIB).cmx: $(LIB).mlpack _tags
+_build/$(LIB).cmx: $(FILES) $(LIB).mlpack _tags Makefile
 		$(OCB) -quiet $(LIB).cmx
+
+_build/$(LIB).cma: $(FILES) $(LIB).mllib _tags Makefile
+		$(OCBA) -quiet $(LIB).cma
+
+_build/$(LIB).cmxa: $(FILES) $(LIB).mllib _tags Makefile
+		$(OCBA) -quiet $(LIB).cmxa
 
 
 # Building JavaScript library

@@ -21,6 +21,7 @@ and the provided output stack with result values of types :math:`t_2^\ast` that 
 Stack types are akin to :ref:`function types <syntax-functype>`,
 except that they allow individual operands to be classified as :math:`\bot` (*bottom*), indicating that the type is unconstrained.
 As an auxiliary notion, an operand type :math:`t_1` *matches* another operand type :math:`t_2`, if :math:`t_1` is either :math:`\bot` or equal to :math:`t_2`.
+This is extended to stack types in a point-wise manner.
 
 .. _match-opdtype:
 
@@ -33,6 +34,13 @@ As an auxiliary notion, an operand type :math:`t_1` *matches* another operand ty
    \frac{
    }{
      \vdash \bot \leq t
+   }
+
+.. math::
+   \frac{
+     (\vdash t \leq t')^\ast
+   }{
+     \vdash [t^\ast] \leq [{t'}^\ast]
    }
 
 .. note::
@@ -591,7 +599,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32] \to [t]`.
 
@@ -631,7 +639,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32~t] \to []`.
 
@@ -1056,23 +1064,26 @@ Control Instructions
 :math:`\BRTABLE~l^\ast~l_N`
 ...........................
 
-* The label :math:`C.\CLABELS[l_N]` must be defined in the context.
 
-* Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l_N]`.
+* The label :math:`C.\CLABELS[l_N]` must be defined in the context.
 
 * For all :math:`l_i` in :math:`l^\ast`,
   the label :math:`C.\CLABELS[l_i]` must be defined in the context.
 
-* For all :math:`l_i` in :math:`l^\ast`,
-  :math:`C.\CLABELS[l_i]` must be :math:`[t^\ast]`.
+* There must be a :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, such that:
+
+  * For each :ref:`operand type <syntax-opdtype>` :math:`t_j` in :math:`t^\ast` and corresponding type :math:`t'_{Nj}` in :math:`C.\CLABELS[l_N]`, :math:`t_j` :ref:`matches <match-opdtype>` :math:`t'_{Nj}`.
+
+  * For all :math:`l_i` in :math:`l^\ast`,
+    and for each :ref:`operand type <syntax-opdtype>` :math:`t_j` in :math:`t^\ast` and corresponding type :math:`t'_{ij}` in :math:`C.\CLABELS[l_i]`, :math:`t_j` :ref:`matches <match-opdtype>` :math:`t'_{ij}`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^\ast~\I32] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     (C.\CLABELS[l] = [t^\ast])^\ast
+     (\vdash [t^\ast] \leq C.\CLABELS[l])^\ast
      \qquad
-     C.\CLABELS[l_N] = [t^\ast]
+     \vdash [t^\ast] \leq C.\CLABELS[l_N]
    }{
      C \vdashinstr \BRTABLE~l^\ast~l_N : [t_1^\ast~t^\ast~\I32] \to [t_2^\ast]
    }
@@ -1195,7 +1206,7 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
    \frac{
      C \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_0^\ast~{t'}^\ast]
      \qquad
-     (\vdash t' \leq t)^\ast
+     \vdash [{t'}^\ast] \leq [t^\ast]
      \qquad
      C \vdashinstr \instr_N : [t^\ast] \to [t_3^\ast]
    }{
@@ -1203,7 +1214,7 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
    }
 
 
-.. index:: expression,result type
+.. index:: expression, result type
    pair: validation; expression
    single: abstract syntax; expression
    single: expression; constant
@@ -1218,7 +1229,7 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
 :math:`\instr^\ast~\END`
 ........................
 
-* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some :ref:`stack type <syntax-stacktype>` :math:`[] \to [t'^\ast]`.
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some :ref:`stack type <syntax-stacktype>` :math:`[] \to [{t'}^\ast]`.
 
 * For each :ref:`operand type <syntax-opdtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding :ref:`value type <syntax-valtype>` type :math:`t_i` in :math:`t^\ast`, :math:`t'_i` :ref:`matches <match-opdtype>` :math:`t_i`.
 
@@ -1228,7 +1239,7 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
    \frac{
      C \vdashinstrseq \instr^\ast : [] \to [{t'}^\ast]
      \qquad
-     (\vdash t' \leq t)^\ast
+     \vdash [{t'}^\ast] \leq [t^\ast]
    }{
      C \vdashexpr \instr^\ast~\END : [t^\ast]
    }

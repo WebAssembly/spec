@@ -8,9 +8,8 @@ let i32_const n = Const (I32 n.it @@ n.at)
 let i64_const n = Const (I64 n.it @@ n.at)
 let f32_const n = Const (F32 n.it @@ n.at)
 let f64_const n = Const (F64 n.it @@ n.at)
-let ref_func x = RefFunc x
 let ref_null t = RefNull t
-let ref_is_null = RefIsNull
+let ref_func x = RefFunc x
 
 let unreachable = Unreachable
 let nop = Nop
@@ -92,6 +91,8 @@ let memory_fill = MemoryFill
 let memory_copy = MemoryCopy
 let memory_init x = MemoryInit x
 let data_drop x = DataDrop x
+
+let ref_is_null = RefIsNull
 
 let i32_clz = Unary (I32 I32Op.Clz)
 let i32_ctz = Unary (I32 I32Op.Ctz)

@@ -29,9 +29,9 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 
   * |CLOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
 
-  * |CLABELS| set to the singular sequence containing only :ref:`result type <syntax-valtype>` :math:`[t_2^\ast]`.
+  * |CLABELS| set to the singular sequence containing only :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]`.
 
-  * |CRETURN| set to the :ref:`result type <syntax-valtype>` :math:`[t_2^\ast]`.
+  * |CRETURN| set to the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]`.
 
 * Under the context :math:`C'`,
   the expression :math:`\expr` must be valid with type :math:`[t_2^\ast]`.
@@ -689,7 +689,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      (C \vdashexn \exn : \X{exnt})^\ast
      \\
      (C' \vdashglobal \global : \X{gt})^\ast
-     \quad
+     \\
      (C \vdashelem \elem : \X{rt})^\ast
      \quad
      (C \vdashdata \data \ok)^n
@@ -715,7 +715,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CEXNS~\X{iet}^\ast\,\X{exnt}^\ast,\\
         \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
-     C' = \{ \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS), \CEXNS~(C.\CEXNS) \} \qquad
+     C' = \{ \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS), \CEXNS~(C.\CEXNS) \}
      \\
      |C.\CMEMS| \leq 1
      \qquad

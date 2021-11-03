@@ -35,7 +35,7 @@ The following sections group instructions into a number of different categories.
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-Numeric instructions provide basic operations over numeric :ref:`values <syntax-value>` of specific :ref:`type <syntax-valtype>`.
+Numeric instructions provide basic operations over numeric :ref:`values <syntax-value>` of specific :ref:`type <syntax-numtype>`.
 These operations closely match respective operations available in hardware.
 
 .. math::
@@ -118,7 +118,7 @@ These operations closely match respective operations available in hardware.
      \K{ge} \\
    \end{array}
 
-Numeric instructions are divided by :ref:`value type <syntax-valtype>`.
+Numeric instructions are divided by :ref:`number type <syntax-numtype>`.
 For each type, several subcategories can be distinguished:
 
 * *Constants*: return a static constant.
@@ -324,9 +324,9 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
      \DATADROP~\dataidx \\
    \end{array}
 
-Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
+Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`number types <syntax-numtype>`.
 They all take a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
-Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-valtype>` of the respective value type.
+Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-numtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.

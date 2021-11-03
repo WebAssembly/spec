@@ -6,8 +6,8 @@ Types
 -----
 
 .. note::
-   In future versions of WebAssembly, value types may include types denoted by :ref:`type indices <syntax-typeidx>`.
-   Thus, the binary format for types corresponds to the encodings of small negative :math:`\xref{binary/values}{binary-sint}{\sN}` values, so that they can coexist with (positive) type indices in the future.
+   In some places, possible types include both type constructors or types denoted by :ref:`type indices <syntax-typeidx>`.
+   Thus, the binary format for type constructors corresponds to the encodings of small negative :math:`\xref{binary/values}{binary-sint}{\sN}` values, such that they can unambiguously occur in the same place as (positive) type indices.
 
 
 .. index:: number type
@@ -42,8 +42,8 @@ Reference Types
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{reference type} & \Breftype &::=&
      \hex{70} &\Rightarrow& \FUNCREF \\ &&|&
-     \hex{68} &\Rightarrow& \EXNREF \\ &&|&
-     \hex{6F} &\Rightarrow& \EXTERNREF \\
+     \hex{6F} &\Rightarrow& \EXTERNREF \\ &&|&
+     \hex{6E} &\Rightarrow& \EXNREF \\
    \end{array}
 
 

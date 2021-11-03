@@ -1,9 +1,9 @@
-from sphinx.ext.mathbase import math
-from sphinx.ext.mathbase import MathDirective
+from sphinx.directives.patches import MathDirective
 from sphinx.util.texescape import tex_replace_map
 from sphinx.writers.html5 import HTML5Translator
 from sphinx.writers.latex import LaTeXTranslator
 from docutils import nodes
+from docutils.nodes import math
 from docutils.parsers.rst.directives.misc import Replace
 from six import text_type
 import re

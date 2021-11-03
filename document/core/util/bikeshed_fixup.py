@@ -41,13 +41,14 @@ def Main():
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
-        <li class="nav-item nav-item-0"><a href="index.html#document-index">WebAssembly 1.0</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">WebAssembly 1.1</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">WebAssembly 1.1</a></li> 
       </ul>
-    </div>""", '')
+    </div>  """, '')
 
   # Use bikeshed biblio references for unicode and IEEE754
   data = data.replace(
-      """<a class="reference external" href="http://www.unicode.org/versions/latest/">Unicode</a>""",
+      """<a class="reference external" href="https://www.unicode.org/versions/latest/">Unicode</a>""",
       "[[!UNICODE]]"
   )
 

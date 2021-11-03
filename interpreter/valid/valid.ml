@@ -26,7 +26,7 @@ type context =
   datas : unit list;
   locals : value_type list;
   results : value_type list;
-  labels : stack_type list;
+  labels : result_type list;
   refs : Free.t;
 }
 
@@ -39,7 +39,7 @@ let empty_context =
 
 let lookup category list x =
   try Lib.List32.nth list x.it with Failure _ ->
-    error x.at ("unknown " ^ category ^ " " ^ Int32.to_string x.it)
+    error x.at ("unknown " ^ category ^ " " ^ I32.to_string_u x.it)
 
 let type_ (c : context) x = lookup "type" c.types x
 let func (c : context) x = lookup "function" c.funcs x
@@ -72,8 +72,8 @@ let refer_func (c : context) x = refer "function" c.refs.Free.funcs x
  *)
 
 type ellipses = NoEllipses | Ellipses
-type infer_stack_type = ellipses * value_type option list
-type op_type = {ins : infer_stack_type; outs : infer_stack_type}
+type infer_result_type = ellipses * value_type option list
+type op_type = {ins : infer_result_type; outs : infer_result_type}
 
 let known = List.map (fun t -> Some t)
 let stack ts = (NoEllipses, known ts)
@@ -186,7 +186,7 @@ let check_memop (c : context) (memop : 'a memop) get_sz at =
  *   es : instr list
  *   v  : value
  *   t  : value_type var
- *   ts : stack_type
+ *   ts : result_type
  *   x  : variable
  *
  * Note: To deal with the non-determinism in some of the declarative rules,
@@ -205,7 +205,7 @@ let check_block_type (c : context) (bt : block_type) : func_type =
   | ValBlockType None -> FuncType ([], [])
   | ValBlockType (Some t) -> FuncType ([], [t])
 
-let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
+let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type =
   match e.it with
   | Unreachable ->
     [] -->... []
@@ -407,8 +407,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_stack_type) : op_type =
   | Throw _ -> [] --> [] (* TODO *)
   | Rethrow _ -> [] --> [] (* TODO *)
 
-and check_seq (c : context) (s : infer_stack_type) (es : instr list)
-  : infer_stack_type =
+and check_seq (c : context) (s : infer_result_type) (es : instr list)
+  : infer_result_type =
   match es with
   | [] ->
     s
@@ -424,7 +424,7 @@ and check_block (c : context) (es : instr list) (ft : func_type) at =
   let s = check_seq c (stack ts1) es in
   let s' = pop (stack ts2) s at in
   require (snd s' = []) at
-    ("type mismatch: block requires " ^ string_of_stack_type ts2 ^
+    ("type mismatch: block requires " ^ string_of_result_type ts2 ^
      " but stack has " ^ string_of_infer_types (snd s))
 
 

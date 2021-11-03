@@ -334,21 +334,29 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
      \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg} \\
    \production{element segment} & \Belem &::=&
      \hex{00}~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \EELEMTYPE~\FUNCREF, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
+       &\Rightarrow& \\&&&\quad
+       \{ \EELEMTYPE~\FUNCREF, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
      \hex{01}~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \EELEMTYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EPASSIVE \} \\ &&|&
+       &\Rightarrow& \\&&&\quad
+       \{ \EELEMTYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EPASSIVE \} \\ &&|&
      \hex{02}~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \EELEMTYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
+       &\Rightarrow& \\&&&\quad
+       \{ \EELEMTYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
      \hex{03}~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \{ \EELEMTYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARATIVE \} \\ &&|&
+       &\Rightarrow& \\&&&\quad
+       \{ \EELEMTYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARATIVE \} \\ &&|&
      \hex{04}~~e{:}\Bexpr~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \{ \EELEMTYPE~\FUNCREF, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
+       &\Rightarrow& \\&&&\quad
+       \{ \EELEMTYPE~\FUNCREF, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
      \hex{05}~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \{ \EELEMTYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EPASSIVE \} \\ &&|&
+       &\Rightarrow& \\&&&\quad
+       \{ \EELEMTYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EPASSIVE \} \\ &&|&
      \hex{06}~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \{ \EELEMTYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
+       &\Rightarrow& \\&&&\quad
+       \{ \EELEMTYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
      \hex{07}~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \{ \EELEMTYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARATIVE \} \\
+       &\Rightarrow& \\&&&\quad
+       \{ \EELEMTYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARATIVE \} \\
    \production{element kind} & \Belemkind &::=&
      \hex{00} &\Rightarrow& \FUNCREF \\
    \end{array}

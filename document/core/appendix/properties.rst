@@ -318,7 +318,6 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      S \vdasheleminst \{ \EIELEMTYPE~t, \EIELEM~\reff^\ast \} \ok
    }
 
-
 .. index:: data instance, byte
 .. _valid-datainst:
 
@@ -388,22 +387,32 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Let :math:`\globaltype^\ast` be the concatenation of all :math:`\globaltype_i` in order.
 
-* Then the module instance is valid with :ref:`context <context>` :math:`\{\CTYPES~\functype^\ast, \CFUNCS~{\functype'}^\ast, \CTABLES~\tabletype^\ast, \CMEMS~\memtype^\ast, \CEXNS~\exntype^\ast, \CGLOBALS~\globaltype^\ast\}`.
+* | Then the module instance is valid with :ref:`context <context>`
+  | :math:`\{\CTYPES~\functype^\ast, \CFUNCS~{\functype'}^\ast, \CTABLES~\tabletype^\ast, \CMEMS~\memtype^\ast, \CEXNS~\exntype^\ast, \CGLOBALS~\globaltype^\ast\}`.
 
 .. math::
    ~\\[-1ex]
    \frac{
-     \begin{array}{@{}rcl@{}}
-     (\vdashfunctype \functype \ok)^\ast & \quad &
-     (S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype')^\ast \\
-     (S \vdashexternval \EVTABLE~\tableaddr : \ETTABLE~\tabletype)^\ast   & \quad &
-     (S \vdashexternval \EVMEM~\memaddr : \ETMEM~\memtype)^\ast  \\
-     (S \vdashexternval \EVEXN~\exnaddr : \ETEXN~\exntype)^\ast   & \quad &
-     (S \vdashexternval \EVGLOBAL~\globaladdr : \ETGLOBAL~\globaltype)^\ast \\
-     (S \vdasheleminst S.\SELEMS[\elemaddr] \ok)^\ast  & \quad &
-     (S \vdashdatainst S.\SDATAS[\dataaddr] \ok)^\ast \\
-     (S \vdashexportinst \exportinst \ok)^\ast  & \quad &
-     (\exportinst.\EINAME)^\ast ~\mbox{disjoint} \\
+     \begin{array}{@{}c@{}}
+     (\vdashfunctype \functype \ok)^\ast
+     \\
+     (S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype')^\ast
+     \qquad
+     (S \vdashexternval \EVTABLE~\tableaddr : \ETTABLE~\tabletype)^\ast
+     \\
+     (S \vdashexternval \EVMEM~\memaddr : \ETMEM~\memtype)^\ast
+     \qquad
+     (S \vdashexternval \EVEXN~\exnaddr : \ETEXN~\exntype)^\ast
+     \\
+     (S \vdashexternval \EVGLOBAL~\globaladdr : \ETGLOBAL~\globaltype)^\ast
+     \\
+     (S \vdasheleminst S.\SELEMS[\elemaddr] \ok)^\ast
+     \qquad
+     (S \vdashdatainst S.\SDATAS[\dataaddr] \ok)^\ast
+     \\
+     (S \vdashexportinst \exportinst \ok)^\ast
+     \qquad
+     (\exportinst.\EINAME)^\ast ~\mbox{disjoint}
      \end{array}
    }{
      S \vdashmoduleinst \{
@@ -606,6 +615,8 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 * The :ref:`external exception value <syntax-externval>` :math:`\EVEXN~\exnaddr` must be :ref:`valid <valid-externval-exn>` with :ref:`external exception type <syntax-externtype>` :math:`\ETEXN~[t^\ast]\to[]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast t^\ast] -> [t_2^\ast]` for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+||||||| merged common ancestors
+* Then the instruction is valid.
 
 .. math::
    \frac{
@@ -613,6 +624,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }{
      S; C \vdashadmininstr \THROWADDR~\exnaddr : [t_1^\ast t^\ast] \to [t_2^\ast]
    }
+
 
 .. index:: catch, throw context
 
@@ -864,7 +876,6 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
    }{
      \vdashglobalinstextends \{\GITYPE~(\mut~t), \GIVALUE~\val_1\} \extendsto \{\GITYPE~(\mut~t), \GIVALUE~\val_2\}
    }
-
 
 .. index:: element instance
 .. _extend-eleminst:

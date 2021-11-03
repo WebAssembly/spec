@@ -65,7 +65,7 @@ INSTRUCTIONS = [
     Instruction(r'\NOP', r'\hex{01}', r'[] \to []', r'valid-nop', r'exec-nop'),
     Instruction(r'\BLOCK~\X{bt}', r'\hex{02}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-block', r'exec-block'),
     Instruction(r'\LOOP~\X{bt}', r'\hex{03}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-loop', r'exec-loop'),
-    Instruction(r'\IF~\X{bt}', r'\hex{04}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-if', r'exec-if'),
+    Instruction(r'\IF~\X{bt}', r'\hex{04}', r'[t_1^\ast~\I32] \to [t_2^\ast]', r'valid-if', r'exec-if'),
     Instruction(r'\ELSE', r'\hex{05}'),
     Instruction(None, r'\hex{06}'),
     Instruction(None, r'\hex{07}'),
@@ -321,17 +321,18 @@ INSTRUCTIONS = [
     Instruction(r'\I64.\TRUNC\K{\_sat\_}\F32\K{\_u}', r'\hex{FC}~\hex{05}', r'[\F32] \to [\I64]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat_u'),
     Instruction(r'\I64.\TRUNC\K{\_sat\_}\F64\K{\_s}', r'\hex{FC}~\hex{06}', r'[\F64] \to [\I64]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat_s'),
     Instruction(r'\I64.\TRUNC\K{\_sat\_}\F64\K{\_u}', r'\hex{FC}~\hex{07}', r'[\F64] \to [\I64]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat_u'),
-    Instruction(r'\MEMORYINIT', r'\hex{FC}~\hex{08}', r'[\I32~\I32~\I32] \to []', r'valid-memory.init', r'exec-memory.init'),
-    Instruction(r'\DATADROP', r'\hex{FC}~\hex{09}', r'[] \to []', r'valid-data.drop', r'exec-data.drop'),
+    Instruction(r'\MEMORYINIT~x', r'\hex{FC}~\hex{08}', r'[\I32~\I32~\I32] \to []', r'valid-memory.init', r'exec-memory.init'),
+    Instruction(r'\DATADROP~x', r'\hex{FC}~\hex{09}', r'[] \to []', r'valid-data.drop', r'exec-data.drop'),
     Instruction(r'\MEMORYCOPY', r'\hex{FC}~\hex{0A}', r'[\I32~\I32~\I32] \to []', r'valid-memory.copy', r'exec-memory.copy'),
     Instruction(r'\MEMORYFILL', r'\hex{FC}~\hex{0B}', r'[\I32~\I32~\I32] \to []', r'valid-memory.fill', r'exec-memory.fill'),
-    Instruction(r'\TABLEINIT', r'\hex{FC}~\hex{0C}', r'[\I32~\I32~\I32] \to []', r'valid-table.init', r'exec-table.init'),
-    Instruction(r'\ELEMDROP', r'\hex{FC}~\hex{0D}', r'[] \to []', r'valid-elem.drop', r'exec-elem.drop'),
-    Instruction(r'\TABLECOPY', r'\hex{FC}~\hex{0E}', r'[\I32~\I32~\I32] \to []', r'valid-table.copy', r'exec-table.copy'),
-    Instruction(r'\TABLEGROW', r'\hex{FC}~\hex{0F}', r'[t~\I32] \to []', r'valid-table.grow', r'exec-table.grow'),
-    Instruction(r'\TABLESIZE', r'\hex{FC}~\hex{10}', r'[] \to []', r'valid-table.size', r'exec-table.size'),
-    Instruction(r'\TABLEFILL', r'\hex{FC}~\hex{11}', r'[\I32~t~\I32] \to []', r'valid-table.fill', r'exec-table.fill'),
+    Instruction(r'\TABLEINIT~x~y', r'\hex{FC}~\hex{0C}', r'[\I32~\I32~\I32] \to []', r'valid-table.init', r'exec-table.init'),
+    Instruction(r'\ELEMDROP~x', r'\hex{FC}~\hex{0D}', r'[] \to []', r'valid-elem.drop', r'exec-elem.drop'),
+    Instruction(r'\TABLECOPY~x~y', r'\hex{FC}~\hex{0E}', r'[\I32~\I32~\I32] \to []', r'valid-table.copy', r'exec-table.copy'),
+    Instruction(r'\TABLEGROW~x', r'\hex{FC}~\hex{0F}', r'[t~\I32] \to [\I32]', r'valid-table.grow', r'exec-table.grow'),
+    Instruction(r'\TABLESIZE~x', r'\hex{FC}~\hex{10}', r'[] \to [\I32]', r'valid-table.size', r'exec-table.size'),
+    Instruction(r'\TABLEFILL~x', r'\hex{FC}~\hex{11}', r'[\I32~t~\I32] \to []', r'valid-table.fill', r'exec-table.fill'),
 ]
+
 
 def ColumnWidth(n):
     return max([len(instr[n]) for instr in INSTRUCTIONS])

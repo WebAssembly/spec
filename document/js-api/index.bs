@@ -6,7 +6,7 @@ Status: ED
 Level: 1
 TR: https://www.w3.org/TR/wasm-js-api-1/
 ED: https://webassembly.github.io/spec/js-api/
-Editor: Ms2ger (Igalia)
+Editor: Ms2ger, Igalia
 Repository: WebAssembly/spec
 Markup Shorthands: css no, markdown yes
 Abstract: This document provides an explicit JavaScript API for interacting with WebAssembly.
@@ -52,7 +52,6 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         url: sec-well-known-intrinsic-objects
             text: %ErrorPrototype%
         text: %ObjectPrototype%; url: sec-properties-of-the-object-prototype-object
-        text: %FunctionPrototype%; url: sec-properties-of-the-function-prototype-object
         text: %Promise%; url: sec-promise-constructor
         text: Property Descriptor; url: sec-property-descriptor-specification-type
         text: array index; url: sec-array-exotic-objects
@@ -1002,15 +1001,13 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. Return |map|[|funcaddr|].
     1. Let |steps| be "[=call an Exported Function|call the Exported Function=] |funcaddr| with arguments."
     1. Let |realm| be the [=current Realm=].
-    1. Let |function| be [=CreateBuiltinFunction=](|realm|, |steps|, [=%FunctionPrototype%=], &laquo; \[[FunctionAddress]] &raquo;).
-    1. Set |function|.\[[FunctionAddress]] to |funcaddr|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=func_type=](|store|, |funcaddr|).
     1. Let [|paramTypes|] → [<var ignore>resultTypes</var>] be |functype|.
     1. Let |arity| be |paramTypes|'s [=list/size=].
-    1. Perform ! [=SetFunctionLength=](|function|, |arity|).
     1. Let |name| be the [=name of the WebAssembly function=] |funcaddr|.
-    1. Perform ! [=SetFunctionName=](|function|, |name|).
+    1. Let |function| be [=!=] [=CreateBuiltinFunction=](|steps|, |arity|, |name|, « \[[FunctionAddress]] », |realm|).
+    1. Set |function|.\[[FunctionAddress]] to |funcaddr|.
     1. [=map/Set=] |map|[|funcaddr|] to |function|.
     1. Return |function|.
 </div>
@@ -1078,7 +1075,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
   To <dfn>create a host function</dfn> from the JavaScript object |func| and type |functype|, perform the following steps:
 
     1. Assert: [=IsCallable=](|func|).
-    1. Let |stored settings| be the [=incumbent settings object=].
+    1. Let |stored settings| be the <a spec=HTML>incumbent settings object</a>.
     1. Let |hostfunc| be a [=host function=] which performs the following steps when called with arguments |arguments|:
         1. Let |realm| be |func|'s [=associated Realm=].
         1. Let |relevant settings| be |realm|'s [=Realm/settings object=].

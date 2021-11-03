@@ -73,16 +73,16 @@ However, the special case of a type use that is syntactically empty or consists 
    &
    \begin{array}[t]{@{}lcll@{}}
      (t{:}\Tresult)^? &\Rightarrow& t^? \\
-     x,I'{:}\Ttypeuse_I &\Rightarrow& x & (\iff I' = \{\}) \\
+     x,I'{:}\Ttypeuse_I &\Rightarrow& x & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array} \\
    \production{block instruction} & \Tblockinstr_I &::=&
-     \text{block}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+     \text{block}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
        \\ &&&\qquad \Rightarrow\quad \BLOCK~\X{bt}~\X{in}^\ast~\END
        \qquad\quad~~ (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
-     \text{loop}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+     \text{loop}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
        \\ &&&\qquad \Rightarrow\quad \LOOP~\X{bt}~\X{in}^\ast~\END
        \qquad\qquad (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
-     \text{if}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
+     \text{if}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
        \text{else}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
        \\ &&&\qquad \Rightarrow\quad \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
        \qquad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\ &&|&
@@ -93,7 +93,7 @@ However, the special case of a type use that is syntactically empty or consists 
    \end{array}
 
 .. note::
-   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must be empty in the rule for |Ttypeuse| block types enforces that no identifier can be bound in any |Tparam| declaration for a block type.
+   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must only contain unnamed entries in the rule for |Ttypeuse| block types enforces that no identifier can be bound in any |Tparam| declaration for a block type.
 
 
 .. _text-nop:
@@ -125,11 +125,11 @@ All other control instruction are represented verbatim.
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
      \text{call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x~y
-       & (\iff I' = \{\}) \\
+       & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array}
 
 .. note::
-   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must be empty in the rule for |CALLINDIRECT| enforces that no identifier can be bound in any |Tparam| declaration appearing in the type annotation.
+   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must only contain unnamed entries in the rule for |CALLINDIRECT| enforces that no identifier can be bound in any |Tparam| declaration appearing in the type annotation.
 
 
 Abbreviations
@@ -607,6 +607,6 @@ No explicit :math:`\text{end}` keyword is included, since they only occur in bra
 
 .. math::
    \begin{array}{llclll}
-   \production{expression} & \Texpr &::=&
-     (\X{in}{:}\Tinstr)^\ast &\Rightarrow& \X{in}^\ast~\END \\
+   \production{expression} & \Texpr_I &::=&
+     (\X{in}{:}\Tinstr_I)^\ast &\Rightarrow& \X{in}^\ast~\END \\
    \end{array}

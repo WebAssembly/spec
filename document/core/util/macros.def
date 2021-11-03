@@ -3,11 +3,11 @@
 .. External Standards
 .. ------------------
 
-.. |WasmDraft| replace:: http://webassembly.github.io/exception-handling/core/
-.. _WasmDraft: http://webassembly.github.io/exception-handling/core/
+.. |WasmDraft| replace:: |pagelink|
+.. _WasmDraft: |pagelink|
 
-.. |WasmIssues| replace:: http://github.com/webassembly/exception-handling/issues/
-.. _WasmIssues: http://github.com/webassembly/exception-handling/issues/
+.. |WasmIssues| replace:: |issuelink|
+.. _WasmIssues: |issuelink|
 
 .. |IEEE754| replace:: IEEE 754-2019
 .. _IEEE754: https://ieeexplore.ieee.org/document/8766229
@@ -290,8 +290,8 @@
 
 .. |DINIT| mathdef:: \xref{syntax/modules}{syntax-data}{\K{init}}
 .. |DMODE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{mode}}
-.. |DPASSIVE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{passive}}
-.. |DACTIVE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{active}}
+.. |DPASSIVE| mathdef:: \xref{syntax/modules}{syntax-datamode}{\K{passive}}
+.. |DACTIVE| mathdef:: \xref{syntax/modules}{syntax-datamode}{\K{active}}
 .. |DMEM| mathdef:: \xref{syntax/modules}{syntax-data}{\K{memory}}
 .. |DOFFSET| mathdef:: \xref{syntax/modules}{syntax-data}{\K{offset}}
 
@@ -318,7 +318,7 @@
 .. Modules, non-terminals
 
 .. |module| mathdef:: \xref{syntax/modules}{syntax-module}{\X{module}}
-.. |type| mathdef:: \xref{syntax/modules}{syntax-typedef}{\X{type}}
+.. |type| mathdef:: \xref{syntax/types}{syntax-functype}{\X{type}}
 .. |func| mathdef:: \xref{syntax/modules}{syntax-func}{\X{func}}
 .. |table| mathdef:: \xref{syntax/modules}{syntax-table}{\X{table}}
 .. |mem| mathdef:: \xref{syntax/modules}{syntax-mem}{\X{mem}}
@@ -737,7 +737,7 @@
 .. |Texportdesc| mathdef:: \xref{text/modules}{text-exportdesc}{\T{exportdesc}}
 .. |Telem| mathdef:: \xref{text/modules}{text-elem}{\T{elem}}
 .. |Telemlist| mathdef:: \xref{text/modules}{text-elemlist}{\T{elemlist}}
-.. |Telemexpr| mathdef:: \xref{text/modules}{text-elemexpr}{\X{elemexpr}}
+.. |Telemexpr| mathdef:: \xref{text/modules}{text-elemexpr}{\T{elemexpr}}
 .. |Ttableuse| mathdef:: \xref{text/modules}{text-tableuse}{\T{tableuse}}
 .. |Tcode| mathdef:: \xref{text/modules}{text-code}{\T{code}}
 .. |Tlocal| mathdef:: \xref{text/modules}{text-local}{\T{local}}
