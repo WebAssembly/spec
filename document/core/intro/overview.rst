@@ -57,7 +57,7 @@ This language is structured around the following concepts.
 **Functions**
   Code is organized into separate *functions*.
   Each function takes a sequence of values as parameters
-  and returns a sequence of values as results. [#arity]_
+  and returns a sequence of values as results.
   Functions can call each other, including recursively,
   resulting in an implicit call stack that cannot be accessed directly.
   Functions may also declare mutable *local variables* that are usable as virtual registers.
@@ -102,8 +102,6 @@ This language is structured around the following concepts.
 
 
 .. [#stackmachine] In practice, implementations need not maintain an actual operand stack. Instead, the stack can be viewed as a set of anonymous registers that are implicitly referenced by instructions. The :ref:`type system <validation>` ensures that the stack height, and thus any referenced register, is always known statically.
-
-.. [#arity] In the current version of WebAssembly, there may be at most one result value.
 
 
 .. index:: phases, decoding, validation, execution, instantiation, invocation
