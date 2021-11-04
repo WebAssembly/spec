@@ -514,7 +514,7 @@ let of_assertion mods ass =
     of_assertion' mods act "assert_trap" [] None
   | AssertExhaustion (act, _) ->
     of_assertion' mods act "assert_exhaustion" [] None
-  | AssertUncaughtException act ->
+  | AssertException act ->
     of_assertion' mods act "assert_exception" [] None
 
 let of_command mods cmd =

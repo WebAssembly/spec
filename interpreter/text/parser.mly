@@ -1171,7 +1171,7 @@ assertion :
   | LPAR ASSERT_RETURN action result_list RPAR { AssertReturn ($3, $4) @@ at () }
   | LPAR ASSERT_TRAP action STRING RPAR { AssertTrap ($3, $4) @@ at () }
   | LPAR ASSERT_EXCEPTION action RPAR
-    { AssertUncaughtException $3 @@ at () }
+    { AssertException $3 @@ at () }
   | LPAR ASSERT_EXHAUSTION action STRING RPAR { AssertExhaustion ($3, $4) @@ at () }
 
 cmd :

@@ -550,7 +550,7 @@ let assertion mode ass =
     [Node ("assert_return", action mode act :: List.map (result mode) results)]
   | AssertTrap (act, re) ->
     [Node ("assert_trap", [action mode act; Atom (string re)])]
-  | AssertUncaughtException act ->
+  | AssertException act ->
     [Node ("assert_exception", [action mode act])]
   | AssertExhaustion (act, re) ->
     [Node ("assert_exhaustion", [action mode act; Atom (string re)])]

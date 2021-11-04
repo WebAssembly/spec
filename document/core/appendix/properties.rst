@@ -615,8 +615,6 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 * The :ref:`external exception value <syntax-externval>` :math:`\EVEXN~\exnaddr` must be :ref:`valid <valid-externval-exn>` with :ref:`external exception type <syntax-externtype>` :math:`\ETEXN~[t^\ast]\to[]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast t^\ast] -> [t_2^\ast]` for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
-||||||| merged common ancestors
-* Then the instruction is valid.
 
 .. math::
    \frac{

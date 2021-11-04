@@ -1233,6 +1233,8 @@ The <dfn method for="Tag">type()</dfn> method steps are:
     1. [=list/Append=] [$FromValueType$](|type|) to |idlParameters|.
 1. Return «[ "{{TagType/parameters}}" → |idlParameters| ]».
 
+Advisement: This method is only expected to be implemented or shipped when both this proposal and the Type Reflection proposal are implemented or shipped (respectively).
+
 </div>
 
 <h4 id="runtime-exceptions">Runtime exceptions</h4>

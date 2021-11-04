@@ -112,6 +112,7 @@ let input_from get_script run =
   | Eval.Trap (at, msg) -> error at "runtime trap" msg
   | Eval.Exhaustion (at, msg) -> error at "resource exhaustion" msg
   | Eval.Crash (at, msg) -> error at "runtime crash" msg
+  | Eval.Exception (at, msg) -> error at "uncaught exception" msg
   | Encode.Code (at, msg) -> error at "encoding error" msg
   | Script.Error (at, msg) -> error at "script error" msg
   | IO (at, msg) -> error at "i/o error" msg
@@ -458,7 +459,12 @@ let run_assertion ass =
     | _ -> Assert.error ass.at "expected runtime error"
     )
 
-  | AssertUncaughtException act -> () (* TODO *)
+  | AssertException act ->
+    trace ("Asserting exception...");
+    (match run_action act with
+    | exception Eval.Exception (_, msg) -> ()
+    | _ -> Assert.error ass.at "expected exception"
+    )
 
   | AssertExhaustion (act, re) ->
     trace ("Asserting exhaustion...");
