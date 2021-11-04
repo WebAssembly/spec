@@ -120,6 +120,22 @@ html: index
 	@echo
 	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html/."
 
+.PHONY: newhtml
+newhtml: index
+	$(SPHINXBUILD) -b html -c newhtml $(ALLSPHINXOPTS) $(BUILDDIR)/newhtml
+	for file in `ls $(BUILDDIR)/newhtml/*.html`; \
+	do \
+	  sed s:BASEDIR:.:g <$$file >$$file.out; \
+	  mv -f $$file.out $$file; \
+	done
+	for file in `ls $(BUILDDIR)/newhtml/*/*.html`; \
+	do \
+	  sed s:BASEDIR:..:g <$$file >$$file.out; \
+	  mv -f $$file.out $$file; \
+	done
+	@echo
+	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/newhtml/."
+
 .PHONY: dirhtml
 dirhtml:
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml

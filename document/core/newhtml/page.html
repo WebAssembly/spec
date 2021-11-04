@@ -1,0 +1,20 @@
+{% extends "!page.html" %}
+{% block body %}
+<section>
+<a class="logo" href="https://www.w3.org/">
+  <img alt="W3C" width="72" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C">
+</a>
+<!--  can do logo-y things here like WA@W3C: -->
+<span style="float:right;font-size: 34px;position: relative;/* bottom: 0px; */top: 30px;margin-right: -7px;">@</span>
+<!-- WA logo -->
+<a href="https://webassembly.github.io/spec/core/">
+  <img class="logo" style="float:right; padding-top: 6px" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt="Logo" height="68">
+</a>
+<h1 id="title" class="title">WebAssembly Core Specification</h1>
+<h2>
+  W3C Working Draft
+  <time class="dt-published" datetime="{{ date_iso }}">{{ date_human }}</time>
+</h2>
+</section>
+{{ super() }}
+{% endblock %}
