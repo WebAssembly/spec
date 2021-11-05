@@ -1,28 +1,30 @@
 ## Implementation in LLVM and various engines
 
-| Instruction                        | LLVM [1]       | V8 [2]             | SpiderMonkey |
-|------------------------------------|----------------|--------------------|--------------|
-| `relaxed i8x16.swizzle`            | -mrelaxed-simd | :heavy_check_mark: |              |
-| `relaxed i32x4.trunc_f32x4_s`      | -mrelaxed-simd | :heavy_check_mark: |              |
-| `relaxed i32x4.trunc_f32x4_u`      | -mrelaxed-simd | :heavy_check_mark: |              |
-| `relaxed i32x4.trunc_f64x2_s_zero` | -mrelaxed-simd | :heavy_check_mark: |              |
-| `relaxed i32x4.trunc_f64x2_u_zero` | -mrelaxed-simd | :heavy_check_mark: |              |
-| `f32x4.fma`                        | -mrelaxed-simd | :heavy_check_mark: |              |
-| `f32x4.fms`                        | -mrelaxed-simd | :heavy_check_mark: |              |
-| `f64x2.fma`                        | -mrelaxed-simd | :heavy_check_mark: |              |
-| `f64x2.fms`                        | -mrelaxed-simd | :heavy_check_mark: |              |
-| `i8x16.laneselect`                 | -mrelaxed-simd | :heavy_check_mark: |              |
-| `i16x8.laneselect`                 | -mrelaxed-simd | :heavy_check_mark: |              |
-| `i32x4.laneselect`                 | -mrelaxed-simd | :heavy_check_mark: |              |
-| `i64x2.laneselect`                 | -mrelaxed-simd | :heavy_check_mark: |              |
-| `f32x4.min`                        | -mrelaxed-simd | :heavy_check_mark: |              |
-| `f32x4.max`                        | -mrelaxed-simd | :heavy_check_mark: |              |
-| `f64x2.min`                        | -mrelaxed-simd | :heavy_check_mark: |              |
-| `f64x2.max`                        | -mrelaxed-simd | :heavy_check_mark: |              |
+| Instruction                        | LLVM [1]       | V8 [2]             | SpiderMonkey [3]   |
+|------------------------------------|----------------|--------------------|--------------------|
+| `relaxed i8x16.swizzle`            | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `relaxed i32x4.trunc_f32x4_s`      | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `relaxed i32x4.trunc_f32x4_u`      | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `relaxed i32x4.trunc_f64x2_s_zero` | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `relaxed i32x4.trunc_f64x2_u_zero` | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `f32x4.fma`                        | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `f32x4.fms`                        | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `f64x2.fma`                        | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `f64x2.fms`                        | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `i8x16.laneselect`                 | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `i16x8.laneselect`                 | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `i32x4.laneselect`                 | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `i64x2.laneselect`                 | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `f32x4.min`                        | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `f32x4.max`                        | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `f64x2.min`                        | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `f64x2.max`                        | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 
 [1] Tip of tree LLVM as of 2021-10-28
 
 [2] V8 9.7.75 (only implemented on x64)
+
+[3] SpiderMonkey as of 2021-10-18 implemented on x86, x64 and Aarch64
 
 ## Name of builtins in LLVM
 
