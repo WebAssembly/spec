@@ -342,32 +342,30 @@ Their relative placement will depend on the placement directive given for the :m
 
 
 .. index:: ! branch hints section, hint
-.. _binary-branchHintsSec:
-.. _binary-funchints:
+.. _binary-branchhintsec:
 
-Branch Hints Section
+Branch Hint Section
 ~~~~~~~~~~~~~~~~~~~~
 
-The *branch hints section* is a :ref:`custom section <binary-customsec>` whose name string is :math:`\text{branchHints}`.
+The *branch hint section* is a :ref:`custom section <binary-customsec>` whose name string is :math:`\text{code\_annotation.branch\_hint}`.
 The branch hints section should appear only once in a module, and only before the :ref:`code section <binary-codesec>`.
 
 The purpose of this section is to aid the compilation of conditional branch instructions, by providing a hint that a branch is very likely (or unlikely) to be taken.
-
-An implementation is not required to follow the hints, and this section can be entirely ignored.
 
 The section contains a vector of *function branch hints* each representing the branch hints for a single function.
 
 Each *function branch hints* structure consists of
 
 * the :ref:`function index <binary-funcidx>` of the function the hints are referring to,
-* a single 0 byte,
-* a vector of *branch hints* for the function.
+* a vector of *branch hint* for the function.
 
-Elements of the *function branch hints* vector must appear in increasing function index order,
+Elements of the vector of *function branch hints* must appear in increasing function index order,
 and a function index can appear at most once.
 
 Each *branch hint* structure consists of
 
+* the |U32| byte offset of the hinted instruction from the beginning of the function body,
+* A byte with value 0x01,
 * a |U32| indicating the meaning of the hint:
 
 =====  ===========================================
@@ -377,21 +375,21 @@ Value  Meaning
  0x01  branch likely taken
 =====  ===========================================
 
-* the |U32| byte offset of the hinted instruction from the first instruction of the function.
-
-Elements of the *branch hints* vector must appear in increasing byte offset order,
+Elements of the vector of *branch hint* must appear in increasing byte offset order,
 and a byte offset can appear at most once. A |BRIF| or |IF| instruction must be present
 in the code section at the specified offset.
 
-
 .. math::
-   \begin{array}{llclll}
-   \production{branch hints section} & \Bbranchhintssec &::=&
-     \Bsection_0(\Bvec(\Bfuncbranchhints)) \\
+   \begin{array}{llcll}
+   \production{branch hint section} & \Bbranchhintsec &::=&
+     \Bsection_0(\Bbranchhintdata) \\
+   \production{branch hint data} & \Bbranchhintdata &::=&
+     n{:}\Bname & (\iff n = \text{code\_annotation.branch\_hint}) \\ &&&
+     \Bvec(\Bfuncbranchhints) \\
    \production{function branch hints} & \Bfuncbranchhints &::=&
-     \Bfuncidx~\hex{00}~\Bvec(\Bbranchhint) \\
+     fidx{:}\Bfuncidx~\Bvec(\Bbranchhint) \\
    \production{branch hint} & \Bbranchhint &::=&
-     \Bbranchhintkind~~\X{instoff}{:}\Bu32 \\
+     \X{instoff}{:}\Bu32 ~~ \hex{01} ~~ \Bbranchhintkind \\
    \production{branch hint kind} & \Bbranchhintkind &::=&
      \hex{00} \\ &&&
      \hex{01} \\
