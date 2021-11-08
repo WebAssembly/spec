@@ -10,7 +10,16 @@
       i32.const 1
       i32.sub
       i32.eq
-      if
+      (@code_annotation.branch_hint "\00") if
+        local.get 1
+        call 0
+      end
+      local.get 1
+      local.get 0
+      i32.const 2
+      i32.sub
+      i32.eq
+      (@code_annotation.branch_hint "\00") if
         local.get 1
         call 0
       end

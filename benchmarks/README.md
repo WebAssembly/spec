@@ -11,14 +11,13 @@ We are benchmarking 2 similar wasm modules, all exporting a 'test' function:
 
 - `test.js`: Load the wasm modules and run benchmarks
 - `test.wat`: Text representation for the vanilla version
-- `test.wasm`: wat2wasm of test.wat
-- `test_hint.wasm`: Manually modified test.wasm to use branch hinting
+- `test.wasm`: `wat2wasm test.wat -o test.wasm`
+- `test_hint.wasm`: `wat2wasm --enable-code-annotations --enable-annotations test_hint.wat -o test_hint.wasm`
 
 run the benchmark:
 
-`$D8_PATH/d8 test.js`
+`$D8_PATH/d8 --experimental-wasm-branch-hinting test.js`
 
 Useful d8 options:
 - `--print-wasm-code` to see the generated assembly code
 
-NOTE: In order to run the branch hinting version, you need a modified v8 (see [this repo](https://github.com/yuri91/v8)).
