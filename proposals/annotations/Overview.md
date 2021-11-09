@@ -41,6 +41,31 @@ Extend the Appendix on the Custom Sections:
   They may be placed after the binder for any construct that can be named by the name section.
 
 * Define annotation syntax expressing arbitrary custom sections; cf. https://gist.github.com/binji/d1cfff7faaebb2aa4f8b1c995234e5a0
+
+  With that, a custom section annotation is specified as follows:
+  ```
+  custom ::= '(' '@custom' string place? datastring ')'
+  place ::=
+    | '(' 'before' section ')'
+    | '(' 'after' section ')'
+    | '(' 'before' 'first' ')'
+    | '(' 'after' 'last' ')'
+  section ::=
+    | 'type'
+    | 'import'
+    | 'func'
+    | 'table'
+    | 'memory'
+    | 'global'
+    | 'export'
+    | 'start'
+    | 'elem'
+    | 'code'
+    | 'data'
+    | 'datacount'
+  ```
+  If placement relative to an explicit section is used, then that section must exist in the encoding of the annotated module.
+
   As with any matter concerning annotations, it is up to implementations how they handle the case where an explicit custom section overlaps with individual annotations that are associated with the same custom section.
 
 

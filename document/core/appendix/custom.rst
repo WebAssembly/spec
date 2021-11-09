@@ -273,7 +273,8 @@ They must not be nested into other constructs.
      \text{start} \\ &&|&
      \text{elem} \\ &&|&
      \text{code} \\ &&|&
-     \text{data} \\
+     \text{data} \\ &&|&
+     \text{datacount} \\
    \end{array}
 
 The first :ref:`string <text-string>` in a custom annotation denotes the name of the custom section it represents.
@@ -282,6 +283,7 @@ The remaining strings collectively represent the section's payload data, written
 An arbitrary number of custom annotations (even of the same name) may occur in a module,
 each defining a separate custom section when converting to :ref:`binary format <binary>`.
 Placement of the sections in the binary can be customized via explicit *placement* directives, that position them either directly before or directly after a known section.
+That section must exist and be non-empty in the binary encoding of the annotated module.
 The placements :math:`\T{(before~first)}` and :math:`\T{(after~last)}` denote virtual sections before the first and after the last known section, respectively.
 When the placement directive is omitted, it defaults to :math:`\T{(after~last)}`.
 
