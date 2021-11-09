@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import print_function
 import argparse
@@ -68,26 +68,29 @@ class RunTests(unittest.TestCase):
     if expectedExitCode != 0:
       return
 
-    # Convert to binary and validate again
+    # Convert to binary and run again
     wasmPath = self._auxFile(outputPath + ".bin.wast")
     logPath = self._auxFile(wasmPath + ".log")
     self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, inputPath, wasmPath), logPath)
-    self._runCommand(('%s -d "%s"') % (wasmCommand, wasmPath), logPath)
+    self._runCommand(('%s "%s"') % (wasmCommand, wasmPath), logPath)
 
-    # Convert back to text and validate again
+    # Convert back to text and run again
     wastPath = self._auxFile(wasmPath + ".wast")
     logPath = self._auxFile(wastPath + ".log")
     self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, wasmPath, wastPath), logPath)
-    self._runCommand(('%s -d "%s" ') % (wasmCommand, wastPath), logPath)
+    self._runCommand(('%s "%s"') % (wasmCommand, wastPath), logPath)
 
     # Convert back to binary once more and compare
     wasm2Path = self._auxFile(wastPath + ".bin.wast")
     logPath = self._auxFile(wasm2Path + ".log")
     self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, wastPath, wasm2Path), logPath)
-    self._runCommand(('%s -d "%s"') % (wasmCommand, wasm2Path), logPath)
-    # TODO: The binary should stay the same, but OCaml's float-string conversions are inaccurate.
-    # Once we upgrade to OCaml 4.03, use sprintf "%s" for printing floats.
-    # self._compareFile(wasmPath, wasm2Path)
+    self._compareFile(wasmPath, wasm2Path)
+
+    # Convert back to text once more and compare
+    wast2Path = self._auxFile(wasm2Path + ".wast")
+    logPath = self._auxFile(wast2Path + ".log")
+    self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, wasm2Path, wast2Path), logPath)
+    self._compareFile(wastPath, wast2Path)
 
     # Convert to JavaScript
     jsPath = self._auxFile(outputPath.replace(".wast", ".js"))

@@ -603,6 +603,13 @@
 
   ;; Test an unusual character.
   (func (export "ꙮ") (result i32) (i32.const 475))
+
+  ;; Test the three characters whose normalization forms under NFC, NFD, NFKC,
+  ;; and NFKD are all different.
+  ;; http://unicode.org/faq/normalization.html#6
+  (func (export "ϓ") (result i32) (i32.const 476))
+  (func (export "ϔ") (result i32) (i32.const 477))
+  (func (export "ẛ") (result i32) (i32.const 478))
 )
 
 (assert_return (invoke "") (i32.const 0))
@@ -1081,6 +1088,9 @@
 (assert_return (invoke "〇") (i32.const 473))
 (assert_return (invoke "๛") (i32.const 474))
 (assert_return (invoke "ꙮ") (i32.const 475))
+(assert_return (invoke "ϓ") (i32.const 476))
+(assert_return (invoke "ϔ") (i32.const 477))
+(assert_return (invoke "ẛ") (i32.const 478))
 
 (module
   ;; Test that we can use indices instead of names to reference imports,

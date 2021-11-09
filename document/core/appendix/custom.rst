@@ -42,7 +42,10 @@ Each subsection consists of a
    \production{name section} & \Bnamesec &::=&
      \Bsection_0(\Bnamedata) \\
    \production{name data} & \Bnamedata &::=&
-     n{:}\Bname~~\Bnamesubsection^\ast & (\iff n = \text{name}) \\
+     n{:}\Bname & (\iff n = \text{name}) \\ &&&
+     \Bmodulenamesubsec^? \\ &&&
+     \Bfuncnamesubsec^? \\ &&&
+     \Blocalnamesubsec^? \\
    \production{name subsection} & \Bnamesubsection_N(\B{B}) &::=&
      N{:}\Bbyte~~\X{size}{:}\Bu32~~\B{B}
        & (\iff \X{size} = ||\B{B}||) \\
@@ -57,6 +60,8 @@ Id  Subsection
  1  :ref:`function names <binary-funcnamesec>`    
  2  :ref:`local names <binary-localnamesec>`
 ==  ===========================================
+
+Each subsection may occur at most once, and in order of increasing id.
 
 
 .. index:: ! name map, index, index space

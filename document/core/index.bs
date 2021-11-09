@@ -8,8 +8,8 @@ TR: https://www.w3.org/TR/wasm-core-1/
 ED: https://webassembly.github.io/spec/core/bikeshed/
 Editor: Andreas Rossberg (Dfinity Stiftung)
 Repository: WebAssembly/spec
-Markup Shorthands: css no, markdown yes, algorithm no
-Abstract: This document describes version 1.0 of the core WebAssembly standard, a safe, portable, low-level code format designed for efficient execution and compact representation.
+Markup Shorthands: css no, markdown no, algorithm no, idl no
+Abstract: This document describes version 1.1 of the core WebAssembly standard, a safe, portable, low-level code format designed for efficient execution and compact representation.
 Prepare For TR: true
 </pre>
 

@@ -30,6 +30,7 @@ module Code = Error.Make ()
 exception Code = Code.Error
 
 let string_of_byte b = Printf.sprintf "%02x" b
+let string_of_multi n = Printf.sprintf "%02lx" n
 
 let position s pos = Source.({file = s.name; line = -1; column = pos})
 let region s left right =
@@ -47,6 +48,8 @@ let skip n = guard (skip n)
 
 let expect b s msg = require (guard get s = b) s (pos s - 1) msg
 let illegal s pos b = error s pos ("illegal opcode " ^ string_of_byte b)
+let illegal2 s pos b n =
+  error s pos ("illegal opcode " ^ string_of_byte b ^ " " ^ string_of_multi n)
 
 let at f s =
   let left = pos s in
@@ -98,6 +101,7 @@ let vu1 s = Int64.to_int (vuN 1 s)
 let vu32 s = Int64.to_int32 (vuN 32 s)
 let vs7 s = Int64.to_int (vsN 7 s)
 let vs32 s = Int64.to_int32 (vsN 32 s)
+let vs33 s = I32_convert.wrap_i64 (vsN 33 s)
 let vs64 s = vsN 64 s
 let f32 s = F32.of_bits (u32 s)
 let f64 s = F64.of_bits (u64 s)
@@ -117,7 +121,7 @@ let vec f s = let n = len32 s in list f n s
 let name s =
   let pos = pos s in
   try Utf8.decode (string s) with Utf8.Utf8 ->
-    error s pos "invalid UTF-8 encoding"
+    error s pos "malformed UTF-8 encoding"
 
 let sized f s =
   let size = len32 s in
@@ -131,31 +135,33 @@ let sized f s =
 
 open Types
 
-let value_type s =
+let num_type s =
   match vs7 s with
   | -0x01 -> I32Type
   | -0x02 -> I64Type
   | -0x03 -> F32Type
   | -0x04 -> F64Type
-  | _ -> error s (pos s - 1) "invalid value type"
+  | _ -> error s (pos s - 1) "malformed number type"
 
-let elem_type s =
+let ref_type s =
   match vs7 s with
   | -0x10 -> FuncRefType
-  | _ -> error s (pos s - 1) "invalid element type"
+  | -0x11 -> ExternRefType
+  | _ -> error s (pos s - 1) "malformed reference type"
 
-let stack_type s =
+let value_type s =
   match peek s with
-  | Some 0x40 -> skip 1 s; []
-  | _ -> [value_type s]
+  | Some n when n > 0x70 -> NumType (num_type s)
+  | _ -> RefType (ref_type s)
 
+let result_type s = vec value_type s
 let func_type s =
   match vs7 s with
   | -0x20 ->
-    let ins = vec value_type s in
-    let out = vec value_type s in
+    let ins = result_type s in
+    let out = result_type s in
     FuncType (ins, out)
-  | _ -> error s (pos s - 1) "invalid function type"
+  | _ -> error s (pos s - 1) "malformed function type"
 
 let limits vu s =
   let has_max = bool s in
@@ -164,7 +170,7 @@ let limits vu s =
   {min; max}
 
 let table_type s =
-  let t = elem_type s in
+  let t = ref_type s in
   let lim = limits vu32 s in
   TableType (lim, t)
 
@@ -176,7 +182,7 @@ let mutability s =
   match u8 s with
   | 0 -> Immutable
   | 1 -> Mutable
-  | _ -> error s (pos s - 1) "invalid mutability"
+  | _ -> error s (pos s - 1) "malformed mutability"
 
 let global_type s =
   let t = value_type s in
@@ -193,12 +199,19 @@ let var s = vu32 s
 
 let op s = u8 s
 let end_ s = expect 0x0b s "END opcode expected"
+let zero s = expect 0x00 s "zero byte expected"
 
 let memop s =
   let align = vu32 s in
-  require (I32.le_u align 32l) s (pos s - 1) "invalid memop flags";
+  require (I32.le_u align 32l) s (pos s - 1) "malformed memop flags";
   let offset = vu32 s in
   Int32.to_int align, offset
+
+let block_type s =
+  match peek s with
+  | Some 0x40 -> skip 1 s; ValBlockType None
+  | Some b when b land 0xc0 = 0x40 -> ValBlockType (Some (value_type s))
+  | _ -> VarBlockType (at vs33 s)
 
 let rec instr s =
   let pos = pos s in
@@ -207,26 +220,26 @@ let rec instr s =
   | 0x01 -> nop
 
   | 0x02 ->
-    let ts = stack_type s in
+    let bt = block_type s in
     let es' = instr_block s in
     end_ s;
-    block ts es'
+    block bt es'
   | 0x03 ->
-    let ts = stack_type s in
+    let bt = block_type s in
     let es' = instr_block s in
     end_ s;
-    loop ts es'
+    loop bt es'
   | 0x04 ->
-    let ts = stack_type s in
+    let bt = block_type s in
     let es1 = instr_block s in
     if peek s = Some 0x05 then begin
       expect 0x05 s "ELSE or END opcode expected";
       let es2 = instr_block s in
       end_ s;
-      if_ ts es1 es2
+      if_ bt es1 es2
     end else begin
       end_ s;
-      if_ ts es1 []
+      if_ bt es1 []
     end
 
   | 0x05 -> error s pos "misplaced ELSE opcode"
@@ -243,24 +256,27 @@ let rec instr s =
 
   | 0x10 -> call (at var s)
   | 0x11 ->
+    let y = at var s in
     let x = at var s in
-    expect 0x00 s "zero flag expected";
-    call_indirect x
+    call_indirect x y
 
   | 0x12 | 0x13 | 0x14 | 0x15 | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
   | 0x1a -> drop
-  | 0x1b -> select
+  | 0x1b -> select None
+  | 0x1c -> select (Some (vec value_type s))
 
-  | 0x1c | 0x1d | 0x1e | 0x1f as b -> illegal s pos b
+  | 0x1d | 0x1e | 0x1f as b -> illegal s pos b
 
   | 0x20 -> local_get (at var s)
   | 0x21 -> local_set (at var s)
   | 0x22 -> local_tee (at var s)
   | 0x23 -> global_get (at var s)
   | 0x24 -> global_set (at var s)
+  | 0x25 -> table_get (at var s)
+  | 0x26 -> table_set (at var s)
 
-  | 0x25 | 0x26 | 0x27 as b -> illegal s pos b
+  | 0x27 as b -> illegal s pos b
 
   | 0x28 -> let a, o = memop s in i32_load a o
   | 0x29 -> let a, o = memop s in i64_load a o
@@ -287,12 +303,8 @@ let rec instr s =
   | 0x3d -> let a, o = memop s in i64_store16 a o
   | 0x3e -> let a, o = memop s in i64_store32 a o
 
-  | 0x3f ->
-    expect 0x00 s "zero flag expected";
-    memory_size
-  | 0x40 ->
-    expect 0x00 s "zero flag expected";
-    memory_grow
+  | 0x3f -> zero s; memory_size
+  | 0x40 -> zero s; memory_grow
 
   | 0x41 -> i32_const (at vs32 s)
   | 0x42 -> i64_const (at vs64 s)
@@ -432,6 +444,53 @@ let rec instr s =
   | 0xbe -> f32_reinterpret_i32
   | 0xbf -> f64_reinterpret_i64
 
+  | 0xc0 -> i32_extend8_s
+  | 0xc1 -> i32_extend16_s
+  | 0xc2 -> i64_extend8_s
+  | 0xc3 -> i64_extend16_s
+  | 0xc4 -> i64_extend32_s
+
+  | 0xc5 | 0xc6 | 0xc7 | 0xc8 | 0xc9 | 0xca | 0xcb
+  | 0xcc | 0xcd | 0xce | 0xcf as b -> illegal s pos b
+
+  | 0xd0 -> ref_null (ref_type s)
+  | 0xd1 -> ref_is_null
+  | 0xd2 -> ref_func (at var s)
+
+  | 0xfc as b ->
+    (match vu32 s with
+    | 0x00l -> i32_trunc_sat_f32_s
+    | 0x01l -> i32_trunc_sat_f32_u
+    | 0x02l -> i32_trunc_sat_f64_s
+    | 0x03l -> i32_trunc_sat_f64_u
+    | 0x04l -> i64_trunc_sat_f32_s
+    | 0x05l -> i64_trunc_sat_f32_u
+    | 0x06l -> i64_trunc_sat_f64_s
+    | 0x07l -> i64_trunc_sat_f64_u
+
+    | 0x08l ->
+      let x = at var s in
+      zero s; memory_init x
+    | 0x09l -> data_drop (at var s)
+    | 0x0al -> zero s; zero s; memory_copy
+    | 0x0bl -> zero s; memory_fill
+
+    | 0x0cl ->
+      let y = at var s in
+      let x = at var s in
+      table_init x y
+    | 0x0dl -> elem_drop (at var s)
+    | 0x0el ->
+      let x = at var s in
+      let y = at var s in
+      table_copy x y
+    | 0x0fl -> table_grow (at var s)
+    | 0x10l -> table_size (at var s)
+    | 0x11l -> table_fill (at var s)
+
+    | n -> illegal2 s pos b n
+    )
+
   | b -> illegal s pos b
 
 and instr_block s = List.rev (instr_block' s [])
@@ -467,7 +526,8 @@ let id s =
     | 9 -> `ElemSection
     | 10 -> `CodeSection
     | 11 -> `DataSection
-    | _ -> error s (pos s) "invalid section id"
+    | 12 -> `DataCountSection
+    | _ -> error s (pos s) "malformed section id"
     ) bo
 
 let section_with_size tag f default s =
@@ -495,7 +555,7 @@ let import_desc s =
   | 0x01 -> TableImport (table_type s)
   | 0x02 -> MemoryImport (memory_type s)
   | 0x03 -> GlobalImport (global_type s)
-  | _ -> error s (pos s - 1) "invalid import kind"
+  | _ -> error s (pos s - 1) "malformed import kind"
 
 let import s =
   let module_name = name s in
@@ -537,8 +597,8 @@ let memory_section s =
 
 let global s =
   let gtype = global_type s in
-  let value = const s in
-  {gtype; value}
+  let ginit = const s in
+  {gtype; ginit}
 
 let global_section s =
   section `GlobalSection (vec (at global)) [] s
@@ -552,7 +612,7 @@ let export_desc s =
   | 0x01 -> TableExport (at var s)
   | 0x02 -> MemoryExport (at var s)
   | 0x03 -> GlobalExport (at var s)
-  | _ -> error s (pos s - 1) "invalid export kind"
+  | _ -> error s (pos s - 1) "malformed export kind"
 
 let export s =
   let name = name s in
@@ -593,47 +653,134 @@ let code_section s =
 
 (* Element section *)
 
-let segment dat s =
+let passive s =
+  Passive
+
+let active s =
   let index = at var s in
   let offset = const s in
-  let init = dat s in
-  {index; offset; init}
+  Active {index; offset}
 
-let table_segment s =
-  segment (vec (at var)) s
+let active_zero s =
+  let index = Source.(0l @@ Source.no_region) in
+  let offset = const s in
+  Active {index; offset}
+
+let declarative s =
+  Declarative
+
+let elem_index s =
+  let x = at var s in
+  [Source.(ref_func x @@ x.at)]
+
+let elem_kind s =
+  match u8 s with
+  | 0x00 -> FuncRefType
+  | _ -> error s (pos s - 1) "malformed element kind"
+
+let elem s =
+  match vu32 s with
+  | 0x00l ->
+    let emode = at active_zero s in
+    let einit = vec (at elem_index) s in
+    {etype = FuncRefType; einit; emode}
+  | 0x01l ->
+    let emode = at passive s in
+    let etype = elem_kind s in
+    let einit = vec (at elem_index) s in
+    {etype; einit; emode}
+  | 0x02l ->
+    let emode = at active s in
+    let etype = elem_kind s in
+    let einit = vec (at elem_index) s in
+    {etype; einit; emode}
+  | 0x03l ->
+    let emode = at declarative s in
+    let etype = elem_kind s in
+    let einit = vec (at elem_index) s in
+    {etype; einit; emode}
+  | 0x04l ->
+    let emode = at active_zero s in
+    let einit = vec const s in
+    {etype = FuncRefType; einit; emode}
+  | 0x05l ->
+    let emode = at passive s in
+    let etype = ref_type s in
+    let einit = vec const s in
+    {etype; einit; emode}
+  | 0x06l ->
+    let emode = at active s in
+    let etype = ref_type s in
+    let einit = vec const s in
+    {etype; einit; emode}
+  | 0x07l ->
+    let emode = at declarative s in
+    let etype = ref_type s in
+    let einit = vec const s in
+    {etype; einit; emode}
+  | _ -> error s (pos s - 1) "malformed elements segment kind"
 
 let elem_section s =
-  section `ElemSection (vec (at table_segment)) [] s
+  section `ElemSection (vec (at elem)) [] s
 
 
 (* Data section *)
 
-let memory_segment s =
-  segment string s
+let data s =
+  match vu32 s with
+  | 0x00l ->
+    let dmode = at active_zero s in
+    let dinit = string s in
+    {dinit; dmode}
+  | 0x01l ->
+    let dmode = at passive s in
+    let dinit = string s in
+    {dinit; dmode}
+  | 0x02l ->
+    let dmode = at active s in
+    let dinit = string s in
+    {dinit; dmode}
+  | _ -> error s (pos s - 1) "malformed data segment kind"
 
 let data_section s =
-  section `DataSection (vec (at memory_segment)) [] s
+  section `DataSection (vec (at data)) [] s
+
+
+(* DataCount section *)
+
+let data_count s =
+  Some (vu32 s)
+
+let data_count_section s =
+  section `DataCountSection data_count None s
 
 
 (* Custom section *)
 
 let custom size s =
   let start = pos s in
-  let _id = name s in
-  skip (size - (pos s - start)) s;
-  true
+  let id = name s in
+  let bs = get_string (size - (pos s - start)) s in
+  Some (id, bs)
 
 let custom_section s =
-  section_with_size `CustomSection custom false s
+  section_with_size `CustomSection custom None s
+
+let non_custom_section s =
+  match id s with
+  | None | Some `CustomSection -> None
+  | _ -> skip 1 s; sized skip s; Some ()
 
 
 (* Modules *)
 
-let rec iterate f s = if f s then iterate f s
+let rec iterate f s = if f s <> None then iterate f s
+
+let magic = 0x6d736100l
 
 let module_ s =
-  let magic = u32 s in
-  require (magic = 0x6d736100l) s 0 "magic header not detected";
+  let header = u32 s in
+  require (header = magic) s 0 "magic header not detected";
   let version = u32 s in
   require (version = Encode.version) s 4 "unknown binary version";
   iterate custom_section s;
@@ -655,17 +802,39 @@ let module_ s =
   iterate custom_section s;
   let elems = elem_section s in
   iterate custom_section s;
+  let data_count = data_count_section s in
+  iterate custom_section s;
   let func_bodies = code_section s in
   iterate custom_section s;
-  let data = data_section s in
+  let datas = data_section s in
   iterate custom_section s;
-  require (pos s = len s) s (len s) "junk after last section";
+  require (pos s = len s) s (len s) "unexpected content after last section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";
+  require (data_count = None || data_count = Some (Lib.List32.length datas))
+    s (len s) "data count and data section have inconsistent lengths";
+  require (data_count <> None ||
+    List.for_all Free.(fun f -> (func f).datas = Set.empty) func_bodies)
+    s (len s) "data count section required";
   let funcs =
     List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
       func_types func_bodies
-  in {types; tables; memories; globals; funcs; imports; exports; elems; data; start}
+  in {types; tables; memories; globals; funcs; imports; exports; elems; datas; start}
 
 
 let decode name bs = at module_ (stream name bs)
+
+let all_custom tag s =
+  let header = u32 s in
+  require (header = magic) s 0 "magic header not detected";
+  let version = u32 s in
+  require (version = Encode.version) s 4 "unknown binary version";
+  let rec collect () =
+    iterate non_custom_section s;
+    match custom_section s with
+    | None -> []
+    | Some (n, s) when n = tag -> s :: collect ()
+    | Some _ -> collect ()
+  in collect ()
+
+let decode_custom tag name bs = all_custom tag (stream name bs)

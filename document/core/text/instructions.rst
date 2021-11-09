@@ -52,6 +52,7 @@ The following grammar handles the corresponding update to the :ref:`identifier c
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
+.. _text-blocktype:
 .. _text-block:
 .. _text-loop:
 .. _text-if:
@@ -60,20 +61,34 @@ Control Instructions
 :ref:`Structured control instructions <syntax-instr-control>` can bind an optional symbolic :ref:`label identifier <text-label>`.
 The same label identifier may optionally be repeated after the corresponding :math:`\T{end}` and :math:`\T{else}` pseudo instructions, to indicate the matching delimiters.
 
+Their :ref:`block type <syntax-blocktype>` is given as a :ref:`type use <text-typeuse>`, analogous to the type of :ref:`functions <text-func>`.
+However, the special case of a type use that is syntactically empty or consists of only a single :ref:`result <text-result>` is not regarded as an :ref:`abbreviation <text-typeuse-abbrev>` for an inline :ref:`function type <syntax-functype>`, but is parsed directly into an optional :ref:`value type <syntax-valtype>`.
+
 .. math::
    \begin{array}{llclll}
+   \production{block type} & \Tblocktype_I &
+   \begin{array}[t]{@{}c@{}} ::= \\ | \\ \end{array}
+   &
+   \begin{array}[t]{@{}lcll@{}}
+     (t{:}\Tresult)^? &\Rightarrow& t^? \\
+     x,I'{:}\Ttypeuse_I &\Rightarrow& x & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
+   \end{array} \\
    \production{block instruction} & \Tblockinstr_I &::=&
-     \text{block}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
-       \\ &&&\qquad \Rightarrow\quad \BLOCK~\X{rt}~\X{in}^\ast~\END
+     \text{block}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+       \\ &&&\qquad \Rightarrow\quad \BLOCK~\X{bt}~\X{in}^\ast~\END
        \qquad\quad~~ (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
-     \text{loop}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
-       \\ &&&\qquad \Rightarrow\quad \LOOP~\X{rt}~\X{in}^\ast~\END
+     \text{loop}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+       \\ &&&\qquad \Rightarrow\quad \LOOP~\X{bt}~\X{in}^\ast~\END
        \qquad\qquad (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
-     \text{if}~~I'{:}\Tlabel_I~~\X{rt}{:}\Tresulttype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
+     \text{if}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
        \text{else}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
-       \\ &&&\qquad \Rightarrow\quad \IF~\X{rt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
+       \\ &&&\qquad \Rightarrow\quad \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
        \qquad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\
    \end{array}
+
+.. note::
+   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must only contain unnamed entries in the rule for |Ttypeuse| block types enforces that no identifier can be bound in any |Tparam| declaration for a block type.
+
 
 .. _text-nop:
 .. _text-unreachable:
@@ -97,12 +112,12 @@ All other control instruction are represented verbatim.
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
-     \text{call\_indirect}~~x,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x
-       & (\iff I' = \{\}) \\
+     \text{call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x~y
+       & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array}
 
 .. note::
-   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must be empty in the rule for |CALLINDIRECT| enforces that no identifier can be bound in any |Tparam| declaration appearing in the type annotation.
+   The side condition stating that the :ref:`identifier context <text-context>` :math:`I'` must only contain unnamed entries in the rule for |CALLINDIRECT| enforces that no identifier can be bound in any |Tparam| declaration appearing in the type annotation.
 
 
 Abbreviations
@@ -113,13 +128,43 @@ The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitt
 .. math::
    \begin{array}{llclll}
    \production{block instruction} &
-     \text{if}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~~\text{end}
+     \text{if}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end}
        &\equiv&
-     \text{if}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~~\text{else}~~\text{end}
+     \text{if}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{else}~~\text{end}
+   \end{array}
+
+Also, for backwards compatibility, the table index to :math:`\text{call\_indirect}` can be omitted, defaulting to :math:`0`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{plain instruction} &
+     \text{call\_indirect}~~\Ttypeuse
+       &\equiv&
+     \text{call\_indirect}~~0~~\Ttypeuse
    \end{array}
 
 
-.. index:: value type, polymorphism
+.. index:: reference instruction
+   pair: text format; instruction
+.. _text-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. _text-ref.null:
+.. _text-ref.is_null:
+.. _text-ref.func:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
+     \text{ref.null}~~t{:}\Theaptype &\Rightarrow& \REFNULL~t \\ &&|&
+     \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
+     \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
+   \end{array}
+
+
+.. index:: parametric instruction, value type, polymorphism
    pair: text format; instruction
 .. _text-instr-parametric:
 
@@ -133,7 +178,7 @@ Parametric Instructions
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{drop} &\Rightarrow& \DROP \\ &&|&
-     \text{select} &\Rightarrow& \SELECT \\
+     \text{select}~((t{:}\Tresult)^\ast)^? &\Rightarrow& \SELECT~(t^\ast)^? \\
    \end{array}
 
 
@@ -161,6 +206,54 @@ Variable Instructions
    \end{array}
 
 
+.. index:: table instruction, table index
+   pair: text format; instruction
+.. _text-instr-table:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+.. _text-table.get:
+.. _text-table.set:
+.. _text-table.size:
+.. _text-table.grow:
+.. _text-table.fill:
+.. _text-table.copy:
+.. _text-table.init:
+.. _text-elem.drop:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
+     \text{table.get}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEGET~x \\ &&|&
+     \text{table.set}~~x{:}\Ttableidx_I &\Rightarrow& \TABLESET~x \\ &&|&
+     \text{table.size}~~x{:}\Ttableidx_I &\Rightarrow& \TABLESIZE~x \\ &&|&
+     \text{table.grow}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEGROW~x \\ &&|&
+     \text{table.fill}~~x{:}\Ttableidx_I &\Rightarrow& \TABLEFILL~x \\ &&|&
+     \text{table.copy}~~x{:}\Ttableidx_I~~y{:}\Ttableidx_I &\Rightarrow& \TABLECOPY~x~y \\ &&|&
+     \text{table.init}~~x{:}\Ttableidx_I~~y{:}\Telemidx_I &\Rightarrow& \TABLEINIT~x~y \\ &&|&
+     \text{elem.drop}~~x{:}\Telemidx_I &\Rightarrow& \ELEMDROP~x \\
+   \end{array}
+
+
+Abbreviations
+.............
+
+For backwards compatibility, all :math:`table indices <syntax-tableidx>` may be omitted from table instructions, defaulting to :math:`0`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} &
+     \text{table.get} &\equiv& \text{table.get}~~\text{0} \\ &&|&
+     \text{table.set} &\equiv& \text{table.set}~~\text{0} \\ &&|&
+     \text{table.size} &\equiv& \text{table.size}~~\text{0} \\ &&|&
+     \text{table.grow} &\equiv& \text{table.grow}~~\text{0} \\ &&|&
+     \text{table.fill} &\equiv& \text{table.fill}~~\text{0} \\ &&|&
+     \text{table.copy} &\equiv& \text{table.copy}~~\text{0}~~\text{0} \\ &&|&
+     \text{table.init}~~x{:}\Telemidx_I &\equiv& \text{table.init}~~\text{0}~~x{:}\Telemidx_I \\ &&|&
+   \end{array}
+
+
 .. index:: memory instruction, memory index
    pair: text format; instruction
 .. _text-instr-memory:
@@ -175,6 +268,10 @@ Memory Instructions
 .. _text-storen:
 .. _text-memory.size:
 .. _text-memory.grow:
+.. _text-memory.fill:
+.. _text-memory.copy:
+.. _text-memory.init:
+.. _text-data.drop:
 
 The offset and alignment immediates to memory instructions are optional.
 The offset defaults to :math:`\T{0}`, the alignment to the storage size of the respective memory access, which is its *natural alignment*.
@@ -215,7 +312,11 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
      \text{i64.store16}~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
      \text{i64.store32}~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
      \text{memory.size} &\Rightarrow& \MEMORYSIZE \\ &&|&
-     \text{memory.grow} &\Rightarrow& \MEMORYGROW \\
+     \text{memory.grow} &\Rightarrow& \MEMORYGROW \\ &&|&
+     \text{memory.fill} &\Rightarrow& \MEMORYFILL \\ &&|&
+     \text{memory.copy} &\Rightarrow& \MEMORYCOPY \\ &&|&
+     \text{memory.init}~~x{:}\Tdataidx_I &\Rightarrow& \MEMORYINIT~x \\ &&|&
+     \text{data.drop}~~x{:}\Tdataidx_I &\Rightarrow& \DATADROP~x \\
    \end{array}
 
 
@@ -391,12 +492,20 @@ Numeric Instructions
      \text{i32.trunc\_f32\_u} &\Rightarrow& \I32.\TRUNC\K{\_}\F32\K{\_u} \\ &&|&
      \text{i32.trunc\_f64\_s} &\Rightarrow& \I32.\TRUNC\K{\_}\F64\K{\_s} \\ &&|&
      \text{i32.trunc\_f64\_u} &\Rightarrow& \I32.\TRUNC\K{\_}\F64\K{\_u} \\ &&|&
+     \text{i32.trunc\_sat\_f32\_s} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
+     \text{i32.trunc\_sat\_f32\_u} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
+     \text{i32.trunc\_sat\_f64\_s} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
+     \text{i32.trunc\_sat\_f64\_u} &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_u} \\ &&|&
      \text{i64.extend\_i32\_s} &\Rightarrow& \I64.\EXTEND\K{\_}\I32\K{\_s} \\ &&|&
      \text{i64.extend\_i32\_u} &\Rightarrow& \I64.\EXTEND\K{\_}\I32\K{\_u} \\ &&|&
      \text{i64.trunc\_f32\_s} &\Rightarrow& \I64.\TRUNC\K{\_}\F32\K{\_s} \\ &&|&
      \text{i64.trunc\_f32\_u} &\Rightarrow& \I64.\TRUNC\K{\_}\F32\K{\_u} \\ &&|&
      \text{i64.trunc\_f64\_s} &\Rightarrow& \I64.\TRUNC\K{\_}\F64\K{\_s} \\ &&|&
      \text{i64.trunc\_f64\_u} &\Rightarrow& \I64.\TRUNC\K{\_}\F64\K{\_u} \\ &&|&
+     \text{i64.trunc\_sat\_f32\_s} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
+     \text{i64.trunc\_sat\_f32\_u} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
+     \text{i64.trunc\_sat\_f64\_s} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
+     \text{i64.trunc\_sat\_f64\_u} &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_u} \\ &&|&
      \text{f32.convert\_i32\_s} &\Rightarrow& \F32.\CONVERT\K{\_}\I32\K{\_s} \\ &&|&
      \text{f32.convert\_i32\_u} &\Rightarrow& \F32.\CONVERT\K{\_}\I32\K{\_u} \\ &&|&
      \text{f32.convert\_i64\_s} &\Rightarrow& \F32.\CONVERT\K{\_}\I64\K{\_s} \\ &&|&
@@ -411,6 +520,16 @@ Numeric Instructions
      \text{i64.reinterpret\_f64} &\Rightarrow& \I64.\REINTERPRET\K{\_}\F64 \\ &&|&
      \text{f32.reinterpret\_i32} &\Rightarrow& \F32.\REINTERPRET\K{\_}\I32 \\ &&|&
      \text{f64.reinterpret\_i64} &\Rightarrow& \F64.\REINTERPRET\K{\_}\I64 \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{thisisenough} && \phantom{thisshouldbeenough} \\[-2ex] &&|&
+     \text{i32.extend8\_s} &\Rightarrow& \I32.\EXTEND\K{8\_s} \\ &&|&
+     \text{i32.extend16\_s} &\Rightarrow& \I32.\EXTEND\K{16\_s} \\ &&|&
+     \text{i64.extend8\_s} &\Rightarrow& \I64.\EXTEND\K{8\_s} \\ &&|&
+     \text{i64.extend16\_s} &\Rightarrow& \I64.\EXTEND\K{16\_s} \\ &&|&
+     \text{i64.extend32\_s} &\Rightarrow& \I64.\EXTEND\K{32\_s} \\
    \end{array}
 
 
@@ -435,14 +554,14 @@ Such a folded instruction can appear anywhere a regular instruction can.
    \production{instruction} & 
      \text{(}~\Tplaininstr~~\Tfoldedinstr^\ast~\text{)}
        &\equiv\quad \Tfoldedinstr^\ast~~\Tplaininstr \\ &
-     \text{(}~\text{block}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~\text{)}
-       &\equiv\quad \text{block}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~~\text{end} \\ &
-     \text{(}~\text{loop}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~\text{)}
-       &\equiv\quad \text{loop}~~\Tlabel~~\Tresulttype~~\Tinstr^\ast~~\text{end} \\ &
-     \text{(}~\text{if}~~\Tlabel~~\Tresulttype~~\Tfoldedinstr^\ast
+     \text{(}~\text{block}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~\text{)}
+       &\equiv\quad \text{block}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end} \\ &
+     \text{(}~\text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~\text{)}
+       &\equiv\quad \text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end} \\ &
+     \text{(}~\text{if}~~\Tlabel~~\Tblocktype~~\Tfoldedinstr^\ast
        &\hspace{-3ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)}^?~~\text{)}
        \quad\equiv \\ &\qquad
-         \Tfoldedinstr^\ast~~\text{if}~~\Tlabel~~\Tresulttype &\hspace{-1ex} \Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\
+         \Tfoldedinstr^\ast~~\text{if}~~\Tlabel~~\Tblocktype &\hspace{-1ex} \Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\
    \end{array}
 
 .. note::
@@ -473,6 +592,6 @@ No explicit :math:`\text{end}` keyword is included, since they only occur in bra
 
 .. math::
    \begin{array}{llclll}
-   \production{expression} & \Texpr &::=&
-     (\X{in}{:}\Tinstr)^\ast &\Rightarrow& \X{in}^\ast~\END \\
+   \production{expression} & \Texpr_I &::=&
+     (\X{in}{:}\Tinstr_I)^\ast &\Rightarrow& \X{in}^\ast~\END \\
    \end{array}

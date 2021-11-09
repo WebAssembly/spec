@@ -16,7 +16,7 @@ The interface is intended to be complete, in the sense that an embedder does not
    For example, an implementation may not support :ref:`parsing <embed-module-parse>` of the :ref:`text format <text>`.
 
 Types
-.....
+~~~~~
 
 In the description of the embedder interface, syntactic classes from the :ref:`abstract syntax <syntax>` and the :ref:`runtime's abstract machine <syntax-runtime>` are used as names for variables that range over the possible objects from that class.
 Hence, these syntactic classes can also be interpreted as types.
@@ -27,7 +27,7 @@ For numeric parameters, notation like :math:`n:\u32` is used to specify a symbol
 .. _embed-error:
 
 Errors
-......
+~~~~~~
 
 Failure of an interface operation is indicated by an auxiliary syntactic class:
 
@@ -44,7 +44,7 @@ In addition to the error conditions specified explicitly in this section, implem
 
 
 Pre- and Post-Conditions
-........................
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Some operations state *pre-conditions* about their arguments or *post-conditions* about their results.
 It is the embedder's responsibility to meet the pre-conditions.
@@ -280,15 +280,13 @@ Functions
 :math:`\F{func\_type}(\store, \funcaddr) : \functype`
 .....................................................
 
-1. Assert: the :ref:`external value <syntax-externval>` :math:`\EVFUNC~\funcaddr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype`.
+1. Return :math:`S.\SFUNCS[a].\FITYPE`.
 
-2. Return :math:`\functype`.
-
-3. Post-condition: :math:`\functype` is :ref:`valid <valid-functype>`.
+2. Post-condition: the returned :ref:`function type <syntax-functype>` is :ref:`valid <valid-functype>`.
 
 .. math::
    \begin{array}{lclll}
-   \F{func\_type}(S, a) &=& \X{ft} && (\iff S \vdashexternval \EVFUNC~a : \ETFUNC~\X{ft}) \\
+   \F{func\_type}(S, a) &=& S.\SFUNCS[a].\FITYPE \\
    \end{array}
 
 
@@ -325,18 +323,18 @@ Tables
 
 .. _embed-table-alloc:
 
-:math:`\F{table\_alloc}(\store, \tabletype) : (\store, \tableaddr)`
-...................................................................
+:math:`\F{table\_alloc}(\store, \tabletype) : (\store, \tableaddr, \reff)`
+..........................................................................
 
 1. Pre-condition: :math:`\tabletype` is :math:`valid <valid-tabletype>`.
 
-2. Let :math:`\tableaddr` be the result of :ref:`allocating a table <alloc-table>` in :math:`\store` with :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
+2. Let :math:`\tableaddr` be the result of :ref:`allocating a table <alloc-table>` in :math:`\store` with :ref:`table type <syntax-tabletype>` :math:`\tabletype` and initialization value :math:`\reff`.
 
 3. Return the new store paired with :math:`\tableaddr`.
 
 .. math::
    \begin{array}{lclll}
-   \F{table\_alloc}(S, \X{tt}) &=& (S', \X{a}) && (\iff \alloctable(S, \X{tt}) = S', \X{a}) \\
+   \F{table\_alloc}(S, \X{tt}, r) &=& (S', \X{a}) && (\iff \alloctable(S, \X{tt}, r) = S', \X{a}) \\
    \end{array}
 
 
@@ -345,53 +343,51 @@ Tables
 :math:`\F{table\_type}(\store, \tableaddr) : \tabletype`
 ........................................................
 
-1. Assert: the :ref:`external value <syntax-externval>` :math:`\EVTABLE~\tableaddr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETTABLE~\tabletype`.
+1. Return :math:`S.\STABLES[a].\TITYPE`.
 
-2. Return :math:`\tabletype`.
-
-3. Post-condition: :math:`\tabletype` is :math:`valid <valid-tabletype>`.
+2. Post-condition: the returned :ref:`table type <syntax-tabletype>` is :math:`valid <valid-tabletype>`.
 
 .. math::
    \begin{array}{lclll}
-   \F{table\_type}(S, a) &=& \X{tt} && (\iff S \vdashexternval \EVTABLE~a : \ETTABLE~\X{tt}) \\
+   \F{table\_type}(S, a) &=& S.\STABLES[a].\TITYPE \\
    \end{array}
 
 
 .. _embed-table-read:
 
-:math:`\F{table\_read}(\store, \tableaddr, i:\u32) : \funcaddr^? ~|~ \error`
-............................................................................
+:math:`\F{table\_read}(\store, \tableaddr, i:\u32) : \reff ~|~ \error`
+......................................................................
 
 1. Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
 
 2. If :math:`i` is larger than or equal to the length of :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
 
-3. Else, return :math:`\X{ti}.\TIELEM[i]`.
+3. Else, return the :ref:`reference value <syntax-ref>` :math:`\X{ti}.\TIELEM[i]`.
 
 .. math::
    \begin{array}{lclll}
-   \F{table\_read}(S, a, i) &=& \X{fa}^? && (\iff S.\STABLES[a].\TIELEM[i] = \X{fa}^?) \\
+   \F{table\_read}(S, a, i) &=& r && (\iff S.\STABLES[a].\TIELEM[i] = r) \\
    \F{table\_read}(S, a, i) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
 .. _embed-table-write:
 
-:math:`\F{table\_write}(\store, \tableaddr, i:\u32, \funcaddr^?) : \store ~|~ \error`
-.......................................................................................
+:math:`\F{table\_write}(\store, \tableaddr, i:\u32, \reff) : \store ~|~ \error`
+...............................................................................
 
 1. Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
 
 2. If :math:`i` is larger than or equal to the length of :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
 
-3. Replace :math:`\X{ti}.\TIELEM[i]` with the optional :ref:`function address <syntax-funcaddr>` :math:`\X{fa}^?`.
+3. Replace :math:`\X{ti}.\TIELEM[i]` with the :ref:`reference value <syntax-ref>` :math:`\reff`.
 
 4. Return the updated store.
 
 .. math::
    \begin{array}{lclll}
-   \F{table\_write}(S, a, i, \X{fa}^?) &=& S' && (\iff S' = S \with \STABLES[a].\TIELEM[i] = \X{fa}^?) \\
-   \F{table\_write}(S, a, i, \X{fa}^?) &=& \ERROR && (\otherwise) \\
+   \F{table\_write}(S, a, i, r) &=& S' && (\iff S' = S \with \STABLES[a].\TIELEM[i] = r) \\
+   \F{table\_write}(S, a, i, r) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
@@ -413,10 +409,10 @@ Tables
 
 .. _embed-table-grow:
 
-:math:`\F{table\_grow}(\store, \tableaddr, n:\u32) : \store ~|~ \error`
-.......................................................................
+:math:`\F{table\_grow}(\store, \tableaddr, n:\u32, \reff) : \store ~|~ \error`
+..............................................................................
 
-1. Try :ref:`growing <grow-table>` the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]` by :math:`n` elements:
+1. Try :ref:`growing <grow-table>` the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]` by :math:`n` elements with initialization value :math:`\reff`:
 
    a. If it succeeds, return the updated store.
 
@@ -425,9 +421,9 @@ Tables
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{table\_grow}(S, a, n) &=& S' &&
-     (\iff S' = S \with \STABLES[a] = \growtable(S.\STABLES[a], n)) \\
-   \F{table\_grow}(S, a, n) &=& \ERROR && (\otherwise) \\
+   \F{table\_grow}(S, a, n, r) &=& S' &&
+     (\iff S' = S \with \STABLES[a] = \growtable(S.\STABLES[a], n, r)) \\
+   \F{table\_grow}(S, a, n, r) &=& \ERROR && (\otherwise) \\
    \end{array}
 
 
@@ -459,15 +455,13 @@ Memories
 :math:`\F{mem\_type}(\store, \memaddr) : \memtype`
 ..................................................
 
-1. Assert: the :ref:`external value <syntax-externval>` :math:`\EVMEM~\memaddr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETMEM~\memtype`.
+1. Return :math:`S.\SMEMS[a].\MITYPE`.
 
-2. Return :math:`\memtype`.
-
-3. Post-condition: :math:`\memtype` is :math:`valid <valid-memtype>`.
+2. Post-condition: the returned :ref:`memory type <syntax-memtype>` is :math:`valid <valid-memtype>`.
 
 .. math::
    \begin{array}{lclll}
-   \F{mem\_type}(S, a) &=& \X{mt} && (\iff S \vdashexternval \EVMEM~a : \ETMEM~\X{mt}) \\
+   \F{mem\_type}(S, a) &=& S.\SMEMS[a].\MITYPE \\
    \end{array}
 
 
@@ -574,15 +568,13 @@ Globals
 :math:`\F{global\_type}(\store, \globaladdr) : \globaltype`
 ...........................................................
 
-1. Assert: the :ref:`external value <syntax-externval>` :math:`\EVGLOBAL~\globaladdr` is :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype`.
+1. Return :math:`S.\SGLOBALS[a].\GITYPE`.
 
-2. Return :math:`\globaltype`.
-
-3. Post-condition: :math:`\globaltype` is :math:`valid <valid-globaltype>`.
+2. Post-condition: the returned :ref:`global type <syntax-globaltype>` is :math:`valid <valid-globaltype>`.
 
 .. math::
    \begin{array}{lclll}
-   \F{global\_type}(S, a) &=& \X{gt} && (\iff S \vdashexternval \EVGLOBAL~a : \ETGLOBAL~\X{gt}) \\
+   \F{global\_type}(S, a) &=& S.\SGLOBALS[a].\GITYPE \\
    \end{array}
 
 
@@ -608,15 +600,17 @@ Globals
 
 1. Let :math:`\X{gi}` be the :ref:`global instance <syntax-globalinst>` :math:`\store.\SGLOBALS[\globaladdr]`.
 
-2. If :math:`\X{gi}.\GIMUT` is not :math:`\MVAR`, then return :math:`\ERROR`.
+2. Let :math:`\mut~t` be the structure of the :ref:`global type <syntax-globaltype>` :math:`\X{gi}.\GITYPE`.
 
-3. Replace :math:`\X{gi}.\GIVALUE` with the :ref:`value <syntax-val>` :math:`\val`.
+3. If :math:`\mut` is not :math:`\MVAR`, then return :math:`\ERROR`.
 
-4. Return the updated store.
+4. Replace :math:`\X{gi}.\GIVALUE` with the :ref:`value <syntax-val>` :math:`\val`.
+
+5. Return the updated store.
 
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{global\_write}(S, a, v) &=& S' && (\iff S.\SGLOBALS[a].\GIMUT = \MVAR \wedge S' = S \with \SGLOBALS[a].\GIVALUE = v) \\
+   \F{global\_write}(S, a, v) &=& S' && (\iff S.\SGLOBALS[a].\GITYPE = \MVAR~t \wedge S' = S \with \SGLOBALS[a].\GIVALUE = v) \\
    \F{global\_write}(S, a, v) &=& \ERROR && (\otherwise) \\
    \end{array}

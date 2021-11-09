@@ -10,7 +10,7 @@ A text string is a well-formed description of a module if and only if it is gene
 Each production of this grammar has at most one synthesized attribute: the abstract syntax that the respective character sequence expresses.
 Thus, the attribute grammar implicitly defines a *parsing* function.
 Some productions also take a :ref:`context <text-context>` as an inherited attribute
-that records bound :ref:`identifers <text-id>`.
+that records bound :ref:`identifiers <text-id>`.
 
 Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
 However, it also defines a number of *abbreviations* that are "syntactic sugar" over the core syntax.
@@ -53,6 +53,8 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 * Productions are written :math:`\T{sym} ::= T_1 \Rightarrow A_1 ~|~ \dots ~|~ T_n \Rightarrow A_n`, where each :math:`A_i` is the attribute that is synthesized for :math:`\T{sym}` in the given case, usually from attribute variables bound in :math:`T_i`.
 
 * Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.
+
+* If the same meta variable or non-terminal symbol appears multiple times in a production (in the syntax or in an attribute), then all those occurrences must have the same instantiation.
 
 .. _text-syntactic:
 
@@ -122,6 +124,8 @@ It is convenient to define identifier contexts as :ref:`records <notation-record
         & \ITABLES & (\Tid^?)^\ast, \\
         & \IMEMS & (\Tid^?)^\ast, \\
         & \IGLOBALS & (\Tid^?)^\ast, \\
+        & \IELEM & (\Tid^?)^\ast, \\
+        & \IDATA & (\Tid^?)^\ast, \\
         & \ILOCALS & (\Tid^?)^\ast, \\
         & \ILABELS & (\Tid^?)^\ast, \\
         & \ITYPEDEFS & \functype^\ast ~\} \\

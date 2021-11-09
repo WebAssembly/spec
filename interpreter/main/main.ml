@@ -1,5 +1,5 @@
 let name = "wasm"
-let version = "1.0"
+let version = "1.1"
 
 let configure () =
   Import.register (Utf8.decode "spectest") Spectest.lookup;
@@ -28,7 +28,7 @@ let argspec = Arg.align
     " configure output width (default is 80)";
   "-s", Arg.Set Flags.print_sig, " show module signatures";
   "-u", Arg.Set Flags.unchecked, " unchecked, do not perform validation";
-  "-h", Arg.Clear Flags.harness, " exclude harness for JS convesion";
+  "-h", Arg.Clear Flags.harness, " exclude harness for JS conversion";
   "-d", Arg.Set Flags.dry, " dry, do not run program";
   "-t", Arg.Set Flags.trace, " trace execution";
   "-v", Arg.Unit banner, " show version"

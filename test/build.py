@@ -20,6 +20,11 @@ WPT_URL_PREFIX = '/resources'
 
 # Helpers.
 def run(*cmd):
+    return subprocess.run(cmd,
+                          stdout=subprocess.PIPE,
+                          stderr=subprocess.STDOUT,
+                          universal_newlines=True)
+def call(*cmd):
     return subprocess.call(cmd,
                            stdout=subprocess.PIPE,
                            stderr=subprocess.STDOUT,
@@ -36,7 +41,7 @@ def ensure_empty_dir(path):
 
 def compile_wasm_interpreter():
     print("Recompiling the wasm interpreter...")
-    result = run('make', '-C', INTERPRETER_DIR, 'clean', 'default')
+    result = call('make', '-C', INTERPRETER_DIR, 'clean', 'default')
     if result != 0:
         print("Couldn't recompile wasm spec interpreter")
         sys.exit(1)
@@ -46,7 +51,7 @@ def ensure_wasm_executable(path_to_wasm):
     """
     Ensure we have built the wasm spec interpreter.
     """
-    result = run(path_to_wasm, '-v', '-e', '')
+    result = call(path_to_wasm, '-v', '-e', '')
     if result != 0:
         print('Unable to run the wasm executable')
         sys.exit(1)
@@ -73,8 +78,13 @@ def convert_wast_to_js(out_js_dir):
 
     pool = mp.Pool(processes=8)
     for result in pool.imap_unordered(convert_one_wast_file, inputs):
-        if result != 0:
-            print('Error when compiling {} to JS: {}', wast_file, result.stdout)
+        if result.returncode != 0:
+            print('Error when compiling to JS:')
+            print(result.args)
+            if result.stdout:
+                # stderr is piped to stdout via `run`, so we only need to
+                # worry about stdout
+                print(result.stdout)
     return [js_file for (wast_file, js_file) in inputs]
 
 def copy_harness_files(out_js_dir, include_harness):

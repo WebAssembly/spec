@@ -1,5 +1,8 @@
+type void
+
 module Fun =
 struct
+  let id x = x
   let curry f x y = f (x, y)
   let uncurry f (x, y) = f x y
 
@@ -44,6 +47,14 @@ struct
       let len = min n (String.length s - i) in
       if len = 0 then [] else String.sub s i len :: loop (i + len)
     in loop 0
+
+  let rec find_from_opt f s i =
+    if i = String.length s then
+      None
+    else if f s.[i] then
+      Some i
+    else
+      find_from_opt f s (i + 1)
 end
 
 module List =
@@ -93,6 +104,10 @@ struct
       match f x with
       | None -> map_filter f xs
       | Some y -> y :: map_filter f xs
+
+  let rec concat_map f = function
+    | [] -> []
+    | x::xs -> f x @ concat_map f xs
 end
 
 module List32 =
@@ -125,6 +140,11 @@ struct
     | 0l, _ -> xs
     | n, _::xs' when n > 0l -> drop (Int32.sub n 1l) xs'
     | _ -> failwith "drop"
+
+  let rec mapi f xs = mapi' f 0l xs
+  and mapi' f i = function
+    | [] -> []
+    | x::xs -> f i x :: mapi' f (Int32.add i 1l) xs
 end
 
 module Array32 =
@@ -175,6 +195,11 @@ struct
     match o with
     | Some y -> y
     | None -> x
+
+  let force o =
+    match o with
+    | Some y -> y
+    | None -> raise (Invalid_argument "Option.force")
 
   let map f = function
     | Some x -> Some (f x)

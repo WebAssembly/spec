@@ -6,7 +6,7 @@ Status: ED
 Level: 1
 TR: https://www.w3.org/TR/wasm-web-api-1/
 ED: https://webassembly.github.io/spec/web-api/
-Editor: Daniel Ehrenberg (Igalia)
+Editor: Ms2ger, Igalia
 Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader web platform.
 Markup Shorthands: css no, markdown yes
@@ -17,7 +17,7 @@ Prepare For TR: true
 {
   "ECMA-262": {
     "href": "https://tc39.github.io/ecma262",
-    "title": "ECMAScript® 2018 Language Specification",
+    "title": "ECMAScript® Language Specification",
     "publisher": "ECMA TC39",
     "status": "Current Editor's Draft"
   },
@@ -57,8 +57,9 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
 urlPrefix: https://webassembly.github.io/spec/js-api/; spec: WASMJS
     type: namespace
         text: WebAssembly; url: #namespacedef-webassembly
+    type: exception
+        text: CompileError; url: #exceptiondef-compileerror
     type: interface
-        text: CompileError; url: #compileerror
         text: Module; url: #module
         text: WebAssemblyInstantiatedSource; url: #dictdef-webassemblyinstantiatedsource
     type: dfn
@@ -75,7 +76,7 @@ url:https://w3c.github.io/webappsec-secure-contexts/#environment-settings-object
 
 <pre class='link-defaults'>
 spec:ecma-262; type:exception; for:ECMAScript; text:TypeError
-spec:promises-guide-1; type:dfn; text:resolve
+spec:webidl; type:dfn; text:resolve
 </pre>
 
 This document builds off of the WebAssembly specification [[WEBASSEMBLY]] and the WebAssembly JavaScript embedding [[WASMJS]].
@@ -83,6 +84,7 @@ This document builds off of the WebAssembly specification [[WEBASSEMBLY]] and th
 <h2 id="streaming-modules">Streaming Module Compilation and Instantiation</h2>
 
 <pre class="idl">
+[Exposed=(Window,Worker)]
 partial namespace WebAssembly {
   Promise&lt;Module> compileStreaming(Promise&lt;Response> source);
   Promise&lt;WebAssemblyInstantiatedSource> instantiateStreaming(
@@ -231,3 +233,76 @@ stack frame representations; this allows engines to continue using their
 existing formats for JavaScript (which existing code may already be depending
 on) while still printing WebAssembly frames in a format consistent with
 JavaScript.
+
+<h2 id="mediaType">Media-type Registration</h2>
+
+This section will be submitted to the Internet Engineering Steering Group (IESG) for
+review, approval, and registration with IANA.
+
+application/wasm
+
+<dl>
+<dt>Type Name:</dt>
+ <dd>application</dd>
+<dt>Subtype Name:</dt>
+ <dd>wasm</dd>
+<dt>Required Parameters:</dt>
+ <dd>None</dd>
+<dt>Optional Parameters:</dt>
+ <dd>None</dd>
+<dt>Encoding Considerations:</dt>
+ <dd>binary</dd>
+<dt>Security Considerations:</dt>
+ <dd>
+  <p>WebAssembly is a standard, a safe, portable, low-level code format. The
+  security considerations associated with executing WebAssembly code are
+  described in https://www.w3.org/TR/wasm-core/#security-considerations.</p>
+  <p>The WebAssembly format includes no integrity or privacy protection. If
+  such protection is needed it must be provided externally, e.g., through
+  the use of HTTPS.</p>
+ </dd>
+<dt>Interoperability Considerations:</dt>
+ <dd>See WebAssembly Core Conformance<br/>
+ https://www.w3.org/TR/wasm-core/#conformance</dd>
+<dt>Published specification:</dt>
+ <dd>https://www.w3.org/TR/wasm-core-1/
+ https://www.w3.org/TR/wasm-js-api-1/
+ https://www.w3.org/TR/wasm-web-api-1/</dd>
+<dt>Application Usage:</dt>
+ <dd>The application/wasm media type is intended for use as the type used to
+ describe WebAssembly files when sent over HTTP to be executed by browsers,
+ which is a common scenario. Additionally, the type is used by several
+ WebAssembly runtimes that take advantage of the safety and portability
+ while targeting efficient execution and compact representation.</dd>
+<dt>Fragment Identifier Considerations:</dt>
+ <dd>None</dd>
+<dt>Restrictions on usage:</dt>
+ <dd>None</dd>
+<dt>Provisional Registrations:</dt>
+ <dd>N/A</dd>
+<dt>Additional information:</dt>
+<dd><dl>
+ <dt>Deprecated alias names for this type:</dt>
+ <dd>None</dd>
+ <dt>Magic number(s):</dt>
+ <dd>0x00 0x61 0x73 0x6D</dd>
+ <dt>File extension(s):</dt>
+ <dd>.wasm</dd>
+ <dt>Macintosh file type code(s):</dt>
+ <dd>None</dd>
+ <dt>Object Identifier(s) or OID(s):</dt>
+ <dd>None</dd>
+</dl></dd>
+<dt>Intended usage:</dt>
+ <dd>Common</dd>
+<dt>Other Information &amp; Comments:</dt>
+ <dd>Common</dd>
+<dt>Contact Person:</dt>
+<dd><dl>
+ <dt>Contact Name:</dt>
+ <dd>Eric Prud'hommeaux</dd>
+ <dt>Contact Email Address:</dt>
+ <dd>eric@w3.org</dd>
+ <dt>Author/Change Controller:</dt>
+ <dd>W3C</dd>
+</dl></dd>

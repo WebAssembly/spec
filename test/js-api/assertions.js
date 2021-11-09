@@ -17,8 +17,13 @@ function assert_function_length(fn, length, description) {
 }
 
 function assert_exported_function(fn, { name, length }, description) {
-  assert_equals(Object.getPrototypeOf(fn), Function.prototype,
-                `${description}: prototype`);
+  if (WebAssembly.Function === undefined) {
+    assert_equals(Object.getPrototypeOf(fn), Function.prototype,
+                  `${description}: prototype`);
+  } else {
+    assert_equals(Object.getPrototypeOf(fn), WebAssembly.Function.prototype,
+                  `${description}: prototype`);
+  }
 
   assert_function_name(fn, name, description);
   assert_function_length(fn, length, description);
@@ -34,6 +39,7 @@ function assert_Instance(instance, expected_exports) {
 
   assert_equals(Object.getPrototypeOf(exports), null, "exports prototype");
   assert_false(Object.isExtensible(exports), "extensible exports");
+  assert_array_equals(Object.keys(exports), Object.keys(expected_exports), "matching export keys");
   for (const [key, expected] of Object.entries(expected_exports)) {
     const property = Object.getOwnPropertyDescriptor(exports, key);
     assert_equals(typeof property, "object", `${key} should be present`);
@@ -70,4 +76,25 @@ function assert_Instance(instance, expected_exports) {
       break;
     }
   }
+}
+
+function assert_WebAssemblyInstantiatedSource(actual, expected_exports={}) {
+  assert_equals(Object.getPrototypeOf(actual), Object.prototype,
+                "Prototype");
+  assert_true(Object.isExtensible(actual), "Extensibility");
+
+  const module = Object.getOwnPropertyDescriptor(actual, "module");
+  assert_equals(typeof module, "object", "module: type of descriptor");
+  assert_true(module.writable, "module: writable");
+  assert_true(module.enumerable, "module: enumerable");
+  assert_true(module.configurable, "module: configurable");
+  assert_equals(Object.getPrototypeOf(module.value), WebAssembly.Module.prototype,
+                "module: prototype");
+
+  const instance = Object.getOwnPropertyDescriptor(actual, "instance");
+  assert_equals(typeof instance, "object", "instance: type of descriptor");
+  assert_true(instance.writable, "instance: writable");
+  assert_true(instance.enumerable, "instance: enumerable");
+  assert_true(instance.configurable, "instance: configurable");
+  assert_Instance(instance.value, expected_exports);
 }

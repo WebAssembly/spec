@@ -100,7 +100,7 @@ let idchar = letter | digit | '_' | symbol
 let name = idchar+
 let id = '$' name
 
-let keyword = ['a'-'z'] (letter | digit | '_' | '.')+
+let keyword = ['a'-'z'] (letter | digit | '_' | '.' | ':')+
 let reserved = name | ',' | ';' | '[' | ']' | '{' | '}'
 
 let ixx = "i" ("32" | "64")
@@ -128,10 +128,12 @@ rule token = parse
 
   | keyword as s
     { match s with
-      | "i32" -> VALUE_TYPE Types.I32Type
-      | "i64" -> VALUE_TYPE Types.I64Type
-      | "f32" -> VALUE_TYPE Types.F32Type
-      | "f64" -> VALUE_TYPE Types.F64Type
+      | "i32" -> NUM_TYPE Types.I32Type
+      | "i64" -> NUM_TYPE Types.I64Type
+      | "f32" -> NUM_TYPE Types.F32Type
+      | "f64" -> NUM_TYPE Types.F64Type
+      | "extern" -> EXTERN
+      | "externref" -> EXTERNREF
       | "funcref" -> FUNCREF
       | "mut" -> MUT
 
@@ -157,6 +159,22 @@ rule token = parse
       | "local.tee" -> LOCAL_TEE
       | "global.get" -> GLOBAL_GET
       | "global.set" -> GLOBAL_SET
+
+      | "table.get" -> TABLE_GET
+      | "table.set" -> TABLE_SET
+      | "table.size" -> TABLE_SIZE
+      | "table.grow" -> TABLE_GROW
+      | "table.fill" -> TABLE_FILL
+      | "table.copy" -> TABLE_COPY
+      | "table.init" -> TABLE_INIT
+      | "elem.drop" -> ELEM_DROP
+
+      | "memory.size" -> MEMORY_SIZE
+      | "memory.grow" -> MEMORY_GROW
+      | "memory.fill" -> MEMORY_FILL
+      | "memory.copy" -> MEMORY_COPY
+      | "memory.init" -> MEMORY_INIT
+      | "data.drop" -> DATA_DROP
 
       | "i32.load" -> LOAD (fun a o -> i32_load (opt a 2) o)
       | "i64.load" -> LOAD (fun a o -> i64_load (opt a 3) o)
@@ -197,12 +215,22 @@ rule token = parse
         CONST (fun s ->
           let n = F64.of_string s.it in f64_const (n @@ s.at), Values.F64 n)
 
+      | "ref.null" -> REF_NULL
+      | "ref.func" -> REF_FUNC
+      | "ref.extern" -> REF_EXTERN
+      | "ref.is_null" -> REF_IS_NULL
+
       | "i32.clz" -> UNARY i32_clz
       | "i32.ctz" -> UNARY i32_ctz
       | "i32.popcnt" -> UNARY i32_popcnt
+      | "i32.extend8_s" -> UNARY i32_extend8_s
+      | "i32.extend16_s" -> UNARY i32_extend16_s
       | "i64.clz" -> UNARY i64_clz
       | "i64.ctz" -> UNARY i64_ctz
       | "i64.popcnt" -> UNARY i64_popcnt
+      | "i64.extend8_s" -> UNARY i64_extend8_s
+      | "i64.extend16_s" -> UNARY i64_extend16_s
+      | "i64.extend32_s" -> UNARY i64_extend32_s
 
       | "f32.neg" -> UNARY f32_neg
       | "f32.abs" -> UNARY f32_abs
@@ -315,6 +343,14 @@ rule token = parse
       | "i32.trunc_f64_s" -> CONVERT i32_trunc_f64_s
       | "i64.trunc_f64_u" -> CONVERT i64_trunc_f64_u
       | "i64.trunc_f64_s" -> CONVERT i64_trunc_f64_s
+      | "i32.trunc_sat_f32_u" -> CONVERT i32_trunc_sat_f32_u
+      | "i32.trunc_sat_f32_s" -> CONVERT i32_trunc_sat_f32_s
+      | "i64.trunc_sat_f32_u" -> CONVERT i64_trunc_sat_f32_u
+      | "i64.trunc_sat_f32_s" -> CONVERT i64_trunc_sat_f32_s
+      | "i32.trunc_sat_f64_u" -> CONVERT i32_trunc_sat_f64_u
+      | "i32.trunc_sat_f64_s" -> CONVERT i32_trunc_sat_f64_s
+      | "i64.trunc_sat_f64_u" -> CONVERT i64_trunc_sat_f64_u
+      | "i64.trunc_sat_f64_s" -> CONVERT i64_trunc_sat_f64_s
       | "f32.convert_i32_u" -> CONVERT f32_convert_i32_u
       | "f32.convert_i32_s" -> CONVERT f32_convert_i32_s
       | "f64.convert_i32_u" -> CONVERT f64_convert_i32_u
@@ -328,9 +364,6 @@ rule token = parse
       | "i32.reinterpret_f32" -> CONVERT i32_reinterpret_f32
       | "i64.reinterpret_f64" -> CONVERT i64_reinterpret_f64
 
-      | "memory.size" -> MEMORY_SIZE
-      | "memory.grow" -> MEMORY_GROW
-
       | "type" -> TYPE
       | "func" -> FUNC
       | "param" -> PARAM
@@ -342,7 +375,9 @@ rule token = parse
       | "memory" -> MEMORY
       | "elem" -> ELEM
       | "data" -> DATA
+      | "declare" -> DECLARE
       | "offset" -> OFFSET
+      | "item" -> ITEM
       | "import" -> IMPORT
       | "export" -> EXPORT
 
@@ -358,10 +393,10 @@ rule token = parse
       | "assert_invalid" -> ASSERT_INVALID
       | "assert_unlinkable" -> ASSERT_UNLINKABLE
       | "assert_return" -> ASSERT_RETURN
-      | "assert_return_canonical_nan" -> ASSERT_RETURN_CANONICAL_NAN
-      | "assert_return_arithmetic_nan" -> ASSERT_RETURN_ARITHMETIC_NAN
       | "assert_trap" -> ASSERT_TRAP
       | "assert_exhaustion" -> ASSERT_EXHAUSTION
+      | "nan:canonical" -> NAN Script.CanonicalNan
+      | "nan:arithmetic" -> NAN Script.ArithmeticNan
       | "input" -> INPUT
       | "output" -> OUTPUT
 

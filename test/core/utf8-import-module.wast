@@ -14,7 +14,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; encoding starts with (0x8f) continuation byte
@@ -29,7 +29,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; encoding starts with (0x90) continuation byte
@@ -44,7 +44,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; encoding starts with (0x9f) continuation byte
@@ -59,7 +59,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; encoding starts with (0xa0) continuation byte
@@ -74,7 +74,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; encoding starts with (last) continuation byte
@@ -89,7 +89,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 2-byte sequences
@@ -106,7 +106,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 2-byte sequence contains 1 byte at end of string
@@ -121,7 +121,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 2-byte sequence contains 1 byte
@@ -136,7 +136,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 2-byte sequence contents
@@ -153,7 +153,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; overlong encoding after 0xc0 prefix
@@ -168,7 +168,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; overlong encoding after 0xc1 prefix
@@ -183,7 +183,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; overlong encoding after 0xc1 prefix
@@ -198,7 +198,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; byte after (first) 2-byte prefix not a contination byte
@@ -213,7 +213,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; byte after (first) 2-byte prefix not a continuation byte
@@ -228,7 +228,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; byte after (first) 2-byte prefix not a continuation byte
@@ -243,7 +243,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; byte after (first) 2-byte prefix not a continuation byte
@@ -258,7 +258,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; byte after (last) 2-byte prefix not a continuation byte
@@ -273,7 +273,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; byte after (last) 2-byte prefix not a continuation byte
@@ -288,7 +288,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; byte after (last) 2-byte prefix not a continuation byte
@@ -303,7 +303,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; byte after (last) 2-byte prefix not a continuation byte
@@ -318,7 +318,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 3-byte sequences
@@ -335,7 +335,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 3-byte sequence contains 2 bytes at end of string
@@ -350,7 +350,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 3-byte sequence contains 2 bytes
@@ -365,7 +365,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 3-byte sequence contains 1 byte at end of string
@@ -380,7 +380,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 3-byte sequence contains 1 byte
@@ -395,7 +395,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 3-byte sequence contents
@@ -412,7 +412,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xe0) 3-byte prefix not a continuation byte
@@ -427,7 +427,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; overlong encoding after 0xe0 prefix
@@ -442,7 +442,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; overlong encoding after 0xe0 prefix
@@ -457,7 +457,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; overlong encoding after 0xe0 prefix
@@ -472,7 +472,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; overlong encoding after 0xe0 prefix
@@ -487,7 +487,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xe0) 3-byte prefix not a continuation byte
@@ -502,7 +502,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xe0) 3-byte prefix not a continuation byte
@@ -517,7 +517,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (first normal) 3-byte prefix not a continuation byte
@@ -532,7 +532,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (first normal) 3-byte prefix not a continuation byte
@@ -547,7 +547,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (first normal) 3-byte prefix not a continuation byte
@@ -562,7 +562,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (first normal) 3-byte prefix not a continuation byte
@@ -577,7 +577,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
@@ -592,7 +592,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
@@ -607,7 +607,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
@@ -622,7 +622,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
@@ -637,7 +637,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xed) 3-byte prefix not a continuation byte
@@ -652,7 +652,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xed) 3-byte prefix not a continuation byte
@@ -667,7 +667,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; byte sequence reserved for UTF-16 surrogate half
@@ -682,7 +682,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; byte sequence reserved for UTF-16 surrogate half
@@ -697,7 +697,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; byte sequence reserved for UTF-16 surrogate half
@@ -712,7 +712,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; byte sequence reserved for UTF-16 surrogate half
@@ -727,7 +727,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xed) 3-byte prefix not a continuation byte
@@ -742,7 +742,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xed) 3-byte prefix not a continuation byte
@@ -757,7 +757,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
@@ -772,7 +772,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
@@ -787,7 +787,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
@@ -802,7 +802,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (normal) 3-byte prefix not a continuation byte
@@ -817,7 +817,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (last normal) 3-byte prefix not a continuation byte
@@ -832,7 +832,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (last normal) 3-byte prefix not a continuation byte
@@ -847,7 +847,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (last normal) 3-byte prefix not a continuation byte
@@ -862,7 +862,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (last normal) 3-byte prefix not a continuation byte
@@ -877,7 +877,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 3-byte sequence contents (third byte)
@@ -894,7 +894,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xe0) 3-byte prefix not a continuation byte
@@ -909,7 +909,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xe0) 3-byte prefix not a continuation byte
@@ -924,7 +924,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xe0) 3-byte prefix not a continuation byte
@@ -939,7 +939,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (first normal) 3-byte prefix not a continuation byte
@@ -954,7 +954,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (first normal) 3-byte prefix not a continuation byte
@@ -969,7 +969,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (first normal) 3-byte prefix not a continuation byte
@@ -984,7 +984,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (first normal) 3-byte prefix not a continuation byte
@@ -999,7 +999,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
@@ -1014,7 +1014,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
@@ -1029,7 +1029,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
@@ -1044,7 +1044,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
@@ -1059,7 +1059,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xed) 3-byte prefix not a continuation byte
@@ -1074,7 +1074,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xed) 3-byte prefix not a continuation byte
@@ -1089,7 +1089,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xed) 3-byte prefix not a continuation byte
@@ -1104,7 +1104,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xed) 3-byte prefix not a continuation byte
@@ -1119,7 +1119,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
@@ -1134,7 +1134,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
@@ -1149,7 +1149,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
@@ -1164,7 +1164,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (normal) 3-byte prefix not a continuation byte
@@ -1179,7 +1179,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (last normal) 3-byte prefix not a continuation byte
@@ -1194,7 +1194,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (last normal) 3-byte prefix not a continuation byte
@@ -1209,7 +1209,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (last normal) 3-byte prefix not a continuation byte
@@ -1224,7 +1224,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (last normal) 3-byte prefix not a continuation byte
@@ -1239,7 +1239,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 4-byte sequences
@@ -1256,7 +1256,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 4-byte sequence contains 3 bytes at end of string
@@ -1271,7 +1271,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 4-byte sequence contains 3 bytes
@@ -1286,7 +1286,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 4-byte sequence contains 2 bytes at end of string
@@ -1301,7 +1301,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 4-byte sequence contains 2 bytes
@@ -1316,7 +1316,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 4-byte sequence contains 1 byte at end of string
@@ -1331,7 +1331,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 4-byte sequence contains 1 byte
@@ -1346,7 +1346,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 4-byte sequence contents
@@ -1363,7 +1363,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xf0) 4-byte prefix not a continuation byte
@@ -1378,7 +1378,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; overlong encoding after 0xf0 prefix
@@ -1393,7 +1393,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; overlong encoding after 0xf0 prefix
@@ -1408,7 +1408,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; overlong encoding after 0xf0 prefix
@@ -1423,7 +1423,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; overlong encoding after 0xf0 prefix
@@ -1438,7 +1438,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xf0) 4-byte prefix not a continuation byte
@@ -1453,7 +1453,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xf0) 4-byte prefix not a continuation byte
@@ -1468,7 +1468,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (first normal) 4-byte prefix not a continuation byte
@@ -1483,7 +1483,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (first normal) 4-byte prefix not a continuation byte
@@ -1498,7 +1498,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (first normal) 4-byte prefix not a continuation byte
@@ -1513,7 +1513,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (first normal) 4-byte prefix not a continuation byte
@@ -1528,7 +1528,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (last normal) 4-byte prefix not a continuation byte
@@ -1543,7 +1543,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (last normal) 4-byte prefix not a continuation byte
@@ -1558,7 +1558,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (last normal) 4-byte prefix not a continuation byte
@@ -1573,7 +1573,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (last normal) 4-byte prefix not a continuation byte
@@ -1588,7 +1588,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xf4) 4-byte prefix not a continuation byte
@@ -1603,7 +1603,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xf4) 4-byte prefix not a continuation byte
@@ -1618,10 +1618,10 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
-;; (first) invalid code point
+;; (first) malformed code point
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -1633,10 +1633,10 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
-;; invalid code point
+;; malformed code point
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -1648,7 +1648,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xf4) 4-byte prefix not a continuation byte
@@ -1663,7 +1663,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; first byte after (0xf4) 4-byte prefix not a continuation byte
@@ -1678,10 +1678,10 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
-;; (first) invalid 4-byte prefix
+;; (first) malformed 4-byte prefix
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -1693,10 +1693,10 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
-;; (last) invalid 4-byte prefix
+;; (last) malformed 4-byte prefix
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -1708,10 +1708,10 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
-;; (last) invalid 4-byte prefix
+;; (last) malformed 4-byte prefix
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -1723,7 +1723,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 4-byte sequence contents (third byte)
@@ -1740,7 +1740,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xf0) 4-byte prefix not a continuation byte
@@ -1755,7 +1755,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xf0) 4-byte prefix not a continuation byte
@@ -1770,7 +1770,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xf0) 4-byte prefix not a continuation byte
@@ -1785,7 +1785,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (first normal) 4-byte prefix not a continuation byte
@@ -1800,7 +1800,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (first normal) 4-byte prefix not a continuation byte
@@ -1815,7 +1815,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (first normal) 4-byte prefix not a continuation byte
@@ -1830,7 +1830,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (first normal) 4-byte prefix not a continuation byte
@@ -1845,7 +1845,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (last normal) 4-byte prefix not a continuation byte
@@ -1860,7 +1860,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (last normal) 4-byte prefix not a continuation byte
@@ -1875,7 +1875,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (last normal) 4-byte prefix not a continuation byte
@@ -1890,7 +1890,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (last normal) 4-byte prefix not a continuation byte
@@ -1905,7 +1905,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xf4) 4-byte prefix not a continuation byte
@@ -1920,7 +1920,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xf4) 4-byte prefix not a continuation byte
@@ -1935,7 +1935,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xf4) 4-byte prefix not a continuation byte
@@ -1950,7 +1950,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; second byte after (0xf4) 4-byte prefix not a continuation byte
@@ -1965,7 +1965,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 4-byte sequence contents (fourth byte)
@@ -1982,7 +1982,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (0xf0) 4-byte prefix not a continuation byte
@@ -1997,7 +1997,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (0xf0) 4-byte prefix not a continuation byte
@@ -2012,7 +2012,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (0xf0) 4-byte prefix not a continuation byte
@@ -2027,7 +2027,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (first normal) 4-byte prefix not a continuation byte
@@ -2042,7 +2042,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (first normal) 4-byte prefix not a continuation byte
@@ -2057,7 +2057,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (first normal) 4-byte prefix not a continuation byte
@@ -2072,7 +2072,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (first normal) 4-byte prefix not a continuation byte
@@ -2087,7 +2087,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (last normal) 4-byte prefix not a continuation byte
@@ -2102,7 +2102,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (last normal) 4-byte prefix not a continuation byte
@@ -2117,7 +2117,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (last normal) 4-byte prefix not a continuation byte
@@ -2132,7 +2132,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (last normal) 4-byte prefix not a continuation byte
@@ -2147,7 +2147,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (0xf4) 4-byte prefix not a continuation byte
@@ -2162,7 +2162,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (0xf4) 4-byte prefix not a continuation byte
@@ -2177,7 +2177,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (0xf4) 4-byte prefix not a continuation byte
@@ -2192,7 +2192,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; third byte after (0xf4) 4-byte prefix not a continuation byte
@@ -2207,7 +2207,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 5-byte sequences
@@ -2224,7 +2224,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 5-byte sequence contains 4 bytes at end of string
@@ -2239,7 +2239,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 5-byte sequence contains 4 bytes
@@ -2254,7 +2254,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 5-byte sequence contains 3 bytes at end of string
@@ -2269,7 +2269,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 5-byte sequence contains 3 bytes
@@ -2284,7 +2284,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 5-byte sequence contains 2 bytes at end of string
@@ -2299,7 +2299,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 5-byte sequence contains 2 bytes
@@ -2314,7 +2314,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 5-byte sequence contains 1 byte at end of string
@@ -2329,7 +2329,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 5-byte sequence contains 1 byte
@@ -2344,12 +2344,12 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 5-byte sequence contents
 
-;; (first) invalid 5-byte prefix
+;; (first) malformed 5-byte prefix
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -2361,10 +2361,10 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
-;; (last) invalid 5-byte prefix
+;; (last) malformed 5-byte prefix
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -2376,7 +2376,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 6-byte sequences
@@ -2393,7 +2393,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 6-byte sequence contains 5 bytes at end of string
@@ -2408,7 +2408,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 6-byte sequence contains 5 bytes
@@ -2423,7 +2423,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 6-byte sequence contains 4 bytes at end of string
@@ -2438,7 +2438,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 6-byte sequence contains 4 bytes
@@ -2453,7 +2453,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 6-byte sequence contains 3 bytes at end of string
@@ -2468,7 +2468,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 6-byte sequence contains 3 bytes
@@ -2483,7 +2483,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 6-byte sequence contains 2 bytes at end of string
@@ -2498,7 +2498,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 6-byte sequence contains 2 bytes
@@ -2513,7 +2513,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 6-byte sequence contains 1 byte at end of string
@@ -2528,7 +2528,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; 6-byte sequence contains 1 byte
@@ -2543,12 +2543,12 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;;;; 6-byte sequence contents
 
-;; (first) invalid 6-byte prefix
+;; (first) malformed 6-byte prefix
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -2560,10 +2560,10 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
-;; (last) invalid 6-byte prefix
+;; (last) malformed 6-byte prefix
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -2575,12 +2575,12 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
-;;;; Miscellaneous invalid bytes
+;;;; Miscellaneous malformed bytes
 
-;; invalid byte
+;; malformed byte
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -2592,10 +2592,10 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
-;; invalid byte
+;; malformed byte
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -2607,7 +2607,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; UTF-16BE BOM
@@ -2622,7 +2622,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; UTF-32BE BOM
@@ -2637,7 +2637,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; UTF-16LE BOM
@@ -2652,7 +2652,7 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 
 ;; UTF-32LE BOM
@@ -2667,6 +2667,6 @@
     "\7f"                          ;; i32
     "\00"                          ;; immutable
   )
-  "invalid UTF-8 encoding"
+  "malformed UTF-8 encoding"
 )
 

@@ -3,6 +3,7 @@ type region = {left : pos; right : pos}
 type 'a phrase = {at : region; it : 'a}
 
 let (@@) x region = {it = x; at = region}
+let at region x = x @@ region
 
 
 (* Positions and regions *)

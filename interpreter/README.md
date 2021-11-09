@@ -15,7 +15,7 @@ The text format defines modules in S-expression syntax. Moreover, it is generali
 
 ## Building
 
-You'll need OCaml 4.02 or higher. An easy way to get this on Linux is to download the [source tarball from our mirror of the ocaml website](https://wasm.storage.googleapis.com/ocaml-4.02.2.tar.gz) and do the configure / make dance.  On macOS, with [Homebrew](http://brew.sh/) installed, simply `brew install ocaml ocamlbuild`.
+You'll need OCaml 4.07 or higher. Instructions for installing a recent version of OCaml on multiple platforms are available [here](https://ocaml.org/docs/install.html). On most platforms, the recommended way is through [OPAM](https://ocaml.org/docs/install.html#OPAM).
 
 Once you have OCaml, simply do
 
@@ -43,17 +43,20 @@ That builds `all`, plus updates `winmake.bat`.
 
 #### Building on Windows
 
-We recommend a pre-built installer. With [this one](https://protz.github.io/ocaml-installer/) you have two options:
+The instructions depend on how you [installed OCaml on Windows](https://ocaml.org/docs/install.html#Windows).
 
-1. Bare OCaml. If you just want to build the interpreter and don't care about modifying it, you don't need to install the Cygwin core that comes with the installer. Just install OCaml itself and run
+1. *Cygwin*: If you want to build a native code executable, or want to hack on the interpreter (i.e., use incremental compilation), then you need to install the Cygwin core that is included with the OCaml installer. Then you can build the interpreter using `make` in the Cygwin terminal, as described above.
+
+2. *Windows Subsystem for Linux* (WSL): You can build the interpreter using `make`, as described above.
+
+3. *From source*: If you just want to build the interpreter and don't care about modifying it, you don't need to install the Cygwin core that comes with the installer. Just install OCaml itself and run
 ```
 winmake.bat
 ```
 in a Windows shell, which creates a program named `wasm`. Note that this will be a byte code executable only, i.e., somewhat slower.
 
-2. OCaml + Cygwin. If you want to build a native code executable, or want to hack on the interpreter (i.e., use incremental compilation), then you need to install the Cygwin core that is included with the OCaml installer. Then you can build the interpreter using `make` in the Cygwin terminal, as described above.
+In any way, in order to run the test suite you'll need to have Python installed. If you used Option 3, you can invoke the test runner `runtests.py` directly instead of doing it through `make`.
 
-Either way, in order to run the test suite you'll need to have Python installed. If you used Option 1, you can invoke the test runner `runtests.py` directly instead of doing it through `make`.
 
 
 #### Cross-compiling the Interpreter to JavaScript ####
@@ -160,35 +163,37 @@ WebAssemblyText.decode(binary)
 
 ## S-Expression Syntax
 
-The implementation consumes a WebAssembly AST given in S-expression syntax. Here is an overview of the grammar of types, expressions, functions, and modules, mirroring what's described in the [design doc](https://github.com/WebAssembly/design/blob/master/Semantics.md).
+The implementation consumes a WebAssembly AST given in S-expression syntax. Here is an overview of the grammar of types, expressions, functions, and modules, mirroring what's described in the [design doc](https://github.com/WebAssembly/design/blob/main/Semantics.md).
 
 Note: The grammar is shown here for convenience, the definite source is the [specification of the text format](https://webassembly.github.io/spec/core/text/).
 ```
-num:    <digit> (_? <digit>)*
-hexnum: <hexdigit> (_? <hexdigit>)*
+num:    <digit>(_? <digit>)*
+hexnum: <hexdigit>(_? <hexdigit>)*
 nat:    <num> | 0x<hexnum>
 int:    <nat> | +<nat> | -<nat>
 float:  <num>.<num>?(e|E <num>)? | 0x<hexnum>.<hexnum>?(p|P <num>)?
 name:   $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
 string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex> | \u{<hex>+})*"
 
-value:  <int> | <float>
-var:    <nat> | <name>
+num: <int> | <float>
+var: <nat> | <name>
 
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
 relop: eq | ne | lt | ...
-sign:  s|u
+sign:  s | u
 offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc | extend | wrap | ...
 
-val_type: i32 | i64 | f32 | f64
-elem_type: funcref
+num_type: i32 | i64 | f32 | f64
+ref_kind: func | extern
+ref_type: funcref | externref
+val_type: num_type | ref_type
 block_type : ( result <val_type>* )*
 func_type:   ( type <var> )? <param>* <result>*
 global_type: <val_type> | ( mut <val_type> )
-table_type:  <nat> <nat>? <elem_type>
+table_type:  <nat> <nat>? <ref_type>
 memory_type: <nat> <nat>?
 
 expr:
@@ -215,7 +220,7 @@ op:
   br_table <var>+
   return
   call <var>
-  call_indirect <func_type>
+  call_indirect <var>? <func_type>
   drop
   select
   local.get <var>
@@ -223,39 +228,62 @@ op:
   local.tee <var>
   global.get <var>
   global.set <var>
-  <val_type>.load((8|16|32)_<sign>)? <offset>? <align>?
-  <val_type>.store(8|16|32)? <offset>? <align>?
+  table.get <var>?
+  table.set <var>?
+  table.size <var>?
+  table.grow <var>?
+  table.fill <var>?
+  table.copy <var>? <var>?
+  table.init <var>? <var>
+  elem.drop <var>
+  <num_type>.load((8|16|32)_<sign>)? <offset>? <align>?
+  <num_type>.store(8|16|32)? <offset>? <align>?
   memory.size
   memory.grow
-  <val_type>.const <value>
-  <val_type>.<unop>
-  <val_type>.<binop>
-  <val_type>.<testop>
-  <val_type>.<relop>
-  <val_type>.<cvtop>_<val_type>(_<sign>)?
+  memory.fill
+  memory.copy
+  memory.init <var>
+  data.drop <var>
+  ref.null <ref_kind>
+  ref.is_null <ref_kind>
+  ref.func <var>
+  <num_type>.const <value>
+  <num_type>.<unop>
+  <num_type>.<binop>
+  <num_type>.<testop>
+  <num_type>.<relop>
+  <num_type>.<cvtop>_<num_type>(_<sign>)?
 
 func:    ( func <name>? <func_type> <local>* <instr>* )
          ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)
-         ( func <name>? ( import <string> <string> ) <func_type>)           ;; = (import <name>? <string> <string> (func <func_type>))
+         ( func <name>? ( import <string> <string> ) <func_type>)           ;; = (import <string> <string> (func <name>? <func_type>))
 param:   ( param <val_type>* ) | ( param <name> <val_type> )
 result:  ( result <val_type>* )
 local:   ( local <val_type>* ) | ( local <name> <val_type> )
 
 global:  ( global <name>? <global_type> <instr>* )
          ( global <name>? ( export <string> ) <...> )                       ;; = (export <string> (global <N>)) (global <name>? <...>)
-         ( global <name>? ( import <string> <string> ) <global_type> )      ;; = (import <name>? <string> <string> (global <global_type>))
+         ( global <name>? ( import <string> <string> ) <global_type> )      ;; = (import <string> <string> (global <name>? <global_type>))
 table:   ( table <name>? <table_type> )
          ( table <name>? ( export <string> ) <...> )                        ;; = (export <string> (table <N>)) (table <name>? <...>)
-         ( table <name>? ( import <string> <string> ) <table_type> )        ;; = (import <name>? <string> <string> (table <table_type>))
-         ( table <name>? ( export <string> )* <elem_type> ( elem <var>* ) ) ;; = (table <name>? ( export <string> )* <size> <size> <elem_type>) (elem (i32.const 0) <var>*)
+         ( table <name>? ( import <string> <string> ) <table_type> )        ;; = (import <string> <string> (table <name>? <table_type>))
+         ( table <name>? ( export <string> )* <ref_type> ( elem <var>* ) )  ;; = (table <name>? ( export <string> )* <size> <size> <ref_type>) (elem (i32.const 0) <var>*)
 elem:    ( elem <var>? (offset <instr>* ) <var>* )
          ( elem <var>? <expr> <var>* )                                      ;; = (elem <var>? (offset <expr>) <var>*)
+         ( elem <var>? declare <ref_type> <var>* )
+elem:    ( elem <name>? ( table <var> )? <offset> <ref_type> <item>* )
+         ( elem <name>? ( table <var> )? <offset> func <var>* )             ;; = (elem <name>? ( table <var> )? <offset> funcref (ref.func <var>)*)
+         ( elem <var>? declare? <ref_type> <var>* )
+         ( elem <name>? declare? func <var>* )                               ;; = (elem <name>? declare? funcref (ref.func <var>)*)
+offset:  ( offset <instr>* )
+         <expr>                                                             ;; = ( offset <expr> )
+item:    ( item <instr>* )
+         <expr>                                                             ;; = ( item <expr> )
 memory:  ( memory <name>? <memory_type> )
          ( memory <name>? ( export <string> ) <...> )                       ;; = (export <string> (memory <N>))+ (memory <name>? <...>)
-         ( memory <name>? ( import <string> <string> ) <memory_type> )      ;; = (import <name>? <string> <string> (memory <memory_type>))
+         ( memory <name>? ( import <string> <string> ) <memory_type> )      ;; = (import <string> <string> (memory <name>? <memory_type>))
          ( memory <name>? ( export <string> )* ( data <string>* ) )         ;; = (memory <name>? ( export <string> )* <size> <size>) (data (i32.const 0) <string>*)
-data:    ( data <var>? ( offset <instr>* ) <string>* )
-         ( data <var>? <expr> <string>* )                                   ;; = (data <var>? (offset <expr>) <string>*)
+data:    ( data <name>? ( memory <var> )? <offset> <string>* )
 
 start:   ( start <var> )
 
@@ -272,9 +300,9 @@ exkind:  ( func <var> )
          ( table <var> )
          ( memory <var> )
 
-module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
-         <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>?  ;; =
-         ( module <typedef>* <func>* <import>* <export>* <table>? <memory>? <global>* <elem>* <data>* <start>? )
+module:  ( module <name>? <typedef>* <func>* <import>* <export>* <table>* <memory>? <global>* <elem>* <data>* <start>? )
+         <typedef>* <func>* <import>* <export>* <table>* <memory>? <global>* <elem>* <data>* <start>?  ;; =
+         ( module <typedef>* <func>* <import>* <export>* <table>* <memory>? <global>* <elem>* <data>* <start>? )
 ```
 
 Here, productions marked with respective comments are abbreviation forms for equivalent expansions (see the explanation of the AST below).
@@ -309,7 +337,6 @@ script: <cmd>*
 cmd:
   <module>                                   ;; define, validate, and initialize module
   ( register <string> <name>? )              ;; register module for imports
-module with given failure string
   <action>                                   ;; perform action and print results
   <assertion>                                ;; assert result of an action
   <meta>                                     ;; meta command
@@ -320,18 +347,32 @@ module:
   ( module <name>? quote <string>* )         ;; module quoted in text (may be malformed)
 
 action:
-  ( invoke <name>? <string> <expr>* )        ;; invoke function export
+  ( invoke <name>? <string> <const>* )       ;; invoke function export
   ( get <name>? <string> )                   ;; get global export
 
+const:
+  ( <num_type>.const <num> )                 ;; number value
+  ( ref.null <ref_kind> )                    ;; null reference
+  ( ref.host <nat> )                         ;; host reference
+
 assertion:
-  ( assert_return <action> <expr>* )         ;; assert action has expected results
-  ( assert_return_canonical_nan <action> )   ;; assert action results in NaN in a canonical form
-  ( assert_return_arithmetic_nan <action> )  ;; assert action results in NaN with 1 in MSB of fraction field
+  ( assert_return <action> <result>* )       ;; assert action has expected results
   ( assert_trap <action> <failure> )         ;; assert action traps with given failure string
+  ( assert_exhaustion <action> <failure> )   ;; assert action exhausts system resources
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
   ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
+
+result:
+  ( <num_type>.const <num_pat> )
+  ( ref.extern )
+  ( ref.func )
+
+num_pat:
+  <value>                                    ;; literal result
+  nan:canonical                              ;; NaN in canonical form
+  nan:arithmetic                             ;; NaN with 1 in MSB of payload
 
 meta:
   ( script <name>? <script> )                ;; name a subscript
@@ -349,14 +390,96 @@ A module of the form `(module quote <string>*)` is given in textual form and wil
 There are also a number of meta commands.
 The `script` command is a simple mechanism to name sub-scripts themselves. This is mainly useful for converting scripts with the `output` command. Commands inside a `script` will be executed normally, but nested meta are expanded in place (`input`, recursively) or elided (`output`) in the named script.
 
-The `input` and `output` meta commands determine the requested file format from the file name extension. They can handle both `.wasm`, `.wat`, and `.wast` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner. It also recognises `.bin.wast` specially, which creates a script where module definitions are in binary.
+The `input` and `output` meta commands determine the requested file format from the file name extension. They can handle both `.wasm`, `.wat`, and `.wast` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner. It also recognises `.bin.wast` specially, which creates a _binary script_ where module definitions are in binary, as defined below.
 
 The interpreter supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, all actions and assertions are ignored.
 It also supports an "unchecked" mode (flag `-u`), in which module definitions are not validated before use.
 
+
+### Spectest host module
+
+When running scripts, the interpreter predefines a simple host module named `"spectest"` that has the following module type:
+```
+(module
+  (global (export "global_i32") i32)
+  (global (export "global_i64") i64)
+  (global (export "global_f32") f32)
+  (global (export "global_f64") f64)
+
+  (table (export "table") 10 20 funcref)
+
+  (memory (export "memory") 1 2)
+
+  (func (export "print"))
+  (func (export "print_i32") (param i32))
+  (func (export "print_i64") (param i64))
+  (func (export "print_f32") (param f32))
+  (func (export "print_f64") (param f64))
+  (func (export "print_i32_f32") (param i32 f32))
+  (func (export "print_f64_f64") (param f64 f64))
+)
+```
+The `print` functions are assumes to print their respective argument values to stdout (followed by a newline) and can be used to produce observable output.
+
+Note: This module predates the `register` command and should no longer be needed for new tests.
+We might remove it in the future, so consider it deprecated.
+
+
+### Binary Scripts
+
+The grammar of binary scripts is a subset of the grammar for general scripts:
+```
+binscript: <cmd>*
+
+cmd:
+  <module>                                   ;; define, validate, and initialize module
+  ( register <string> <name>? )              ;; register module for imports
+  <action>                                   ;; perform action and print results
+  <assertion>                                ;; assert result of an action
+
+module:
+  ( module <name>? binary <string>* )        ;; module in binary format (may be malformed)
+
+action:
+  ( invoke <name>? <string> <expr>* )        ;; invoke function export
+  ( get <name>? <string> )                   ;; get global export
+
+assertion:
+  ( assert_return <action> <result>* )       ;; assert action has expected results
+  ( assert_trap <action> <failure> )         ;; assert action traps with given failure string
+  ( assert_exhaustion <action> <failure> )   ;; assert action exhausts system resources
+  ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
+  ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
+  ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
+  ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
+
+result:
+  ( <num_type>.const <num_pat> )
+  ( ref.extern )
+  ( ref.func )
+
+num_pat:
+  <value>                                    ;; literal result
+  nan:canonical                              ;; NaN in canonical form
+  nan:arithmetic                             ;; NaN with 1 in MSB of payload
+
+value:  <int> | <float>
+int:    0x<hexnum>
+float:  0x<hexnum>.<hexnum>?(p|P <num>)?
+hexnum: <hexdigit>(_? <hexdigit>)*
+
+name:   $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
+string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex> | \u{<hex>+})*"
+```
+This grammar removes meta commands, textual and quoted modules.
+All numbers are in hex notation.
+
+Moreover, float values are required to be precise, that is, they may not contain bits that would lead to rounding.
+
+
 ## Abstract Syntax
 
-The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/master/Semantics.md), is defined in [ast.ml](syntax/ast.ml).
+The abstract WebAssembly syntax, as described above and in the [design doc](https://github.com/WebAssembly/design/blob/main/Semantics.md), is defined in [ast.ml](syntax/ast.ml).
 
 However, to simplify the implementation, this AST representation represents some of the inner structure of the operators more explicitly. The mapping from the operators as given in the design doc to their structured form is defined in [operators.ml](syntax/operators.ml).
 
