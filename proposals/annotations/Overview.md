@@ -49,7 +49,7 @@ Extend the Appendix on the Custom Sections:
 Expressing generic custom sections (cf. https://gist.github.com/binji/d1cfff7faaebb2aa4f8b1c995234e5a0)
 ```wasm
 (module
-  (@custom "my-fancy-section" (after function) "contents-bytes")
+  (@custom "my-fancy-section" (after func) "contents-bytes")
 )
 ```
 
