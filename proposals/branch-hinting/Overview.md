@@ -65,39 +65,52 @@ without altering the semantics. Ongoing discussion is in a design issue:
 
 https://github.com/WebAssembly/design/issues/1424
 
+The result of that discussion prompted the design of Code Annotations, presented in CG-08-17:
+
+https://github.com/WebAssembly/meetings/blob/main/main/2021/CG-08-17.md
+
+and in CG-09-28:
+
+https://github.com/WebAssembly/meetings/blob/main/main/2021/CG-09-28.md
+
+Branch hinting adpoted the Code Annotation format and an update about the new format
+and the current status of the proposal, as well as a poll for phase 3 (which passed)
+ was held on CG-11-09:
+
+https://github.com/WebAssembly/meetings/blob/main/main/2021/CG-11-09.md
+
+
+
 ### Design
 
-The *branch hints section* is a custom section whose name string is "branchHints".
+The *branch hint section* is a :ref:`custom section <binary-customsec>` whose name string is `code_annotation.branch_hint`.
 The branch hints section should appear only once in a module, and only before the code section.
 
-The purpose of this section is to aid the compilation of conditional branch instructions,
-by providing a hint that a branch is very likely (or unlikely) to be taken.
+The purpose of this section is to aid the compilation of conditional branch instructions, by providing a hint that a branch is very likely (or unlikely) to be taken.
 
-An implementation is not required to follow the hints, and this section can be entirely ignored.
+The section contains a vector of *function branch hints* each representing the branch hints for a single function.
 
-The section contains a vector of *function hints* each representing the branch hints for a single function.
+Each *function branch hints* structure consists of
 
-Each *function hints* structure consists of
+* the function index of the function the hints are referring to,
+* a vector of *branch hint* for the function.
 
-* the index of the function the hints are referring to,
-* a single 0 byte
-* a vector of *branch hints* for the function.
-
-Elements of the *function hints* vector must appear in increasing function index order,
+Elements of the vector of *function branch hints* must appear in increasing function index order,
 and a function index can appear at most once.
 
 Each *branch hint* structure consists of
 
-* a u32 indicating the meaning of the hint:
+* the |U32| byte offset of the hinted instruction from the beginning of the function body,
+* A byte with value 0x01,
+* a |U32| indicating the meaning of the hint:
 
 | value | meaning           |
 |-------|-------------------|
 | 0     | likely not taken  |
 | 1     | likely  taken     |
 
-* the u32 byte offset of the hinted instruction from the first instruction of the function.
-
-Elements of the *branch hints* vector must appear in increasing byte offset order,
-and a byte offset can appear at most once. A `br_if` or `if` instruction must be present
+Elements of the vector of *branch hint* must appear in increasing byte offset order,
+and a byte offset can appear at most once. A |BRIF| or |IF| instruction must be present
 in the code section at the specified offset.
 
+See the [the spec](/document/core/appendix/custom.rst) for the formal notation.
