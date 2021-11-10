@@ -391,7 +391,7 @@ in the code section at the specified offset.
    \production{branch hint} & \Bbranchhint &::=&
      \X{instoff}{:}\Bu32 ~~ \hex{01} ~~ \Bbranchhintkind \\
    \production{branch hint kind} & \Bbranchhintkind &::=&
-     \hex{00} \\ &&&
+     \hex{00} \\ &&|&
      \hex{01} \\
    \end{array}
 
