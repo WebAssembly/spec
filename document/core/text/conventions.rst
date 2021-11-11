@@ -61,16 +61,15 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 * A distinction is made between *lexical* and *syntactic* productions. For the latter, arbitrary :ref:`white space <text-space>` is allowed in any place where the grammar contains spaces. The productions defining :ref:`lexical syntax <text-lexical>` and the syntax of :Ref:`values <text-value>` are considered lexical, all others are syntactic.
 
 .. note::
-   For example, the :ref:`textual grammar <text-valtype>` for :ref:`value types <syntax-valtype>` is given as follows:
+   For example, the :ref:`textual grammar <text-numtype>` for :ref:`number types <syntax-numtype>` is given as follows:
 
    .. math::
      \begin{array}{llcll@{\qquad\qquad}l}
-     \production{value types} & \Tvaltype &::=&
+     \production{number types} & \Tnumtype &::=&
        \text{i32} &\Rightarrow& \I32 \\ &&|&
        \text{i64} &\Rightarrow& \I64 \\ &&|&
        \text{f32} &\Rightarrow& \F32 \\ &&|&
-       \text{f64} &\Rightarrow& \F64 \\ &&|&
-       \text{v128} &\Rightarrow& \V128 \\
+       \text{f64} &\Rightarrow& \F64 \\
      \end{array}
 
    The :ref:`textual grammar <text-limits>` for :ref:`limits <syntax-limits>` is defined as follows:   

@@ -1067,7 +1067,7 @@
 .. Values & Results, non-terminals
 
 .. |num| mathdef:: \xref{exec/runtime}{syntax-num}{\X{num}}
-.. |vecc| mathdef:: \xref{exec/runtime}{syntax-vecnum}{\X{vec}}
+.. |vecc| mathdef:: \xref{exec/runtime}{syntax-vec}{\X{vec}}
 .. |reff| mathdef:: \xref{exec/runtime}{syntax-ref}{\X{ref}}
 .. |val| mathdef:: \xref{exec/runtime}{syntax-val}{\X{val}}
 .. |result| mathdef:: \xref{exec/runtime}{syntax-result}{\X{result}}
@@ -1186,7 +1186,7 @@
 .. |fsign| mathdef:: \xref{exec/numerics}{aux-fsign}{\F{fsign}}
 .. |fbias| mathdef:: \xref{exec/numerics}{aux-fbias}{\F{fbias}}
 .. |bytes| mathdef:: \xref{exec/numerics}{aux-bytes}{\F{bytes}}
-.. |littleendian| mathdef:: \xref{exec/numerics}{aux-littleendian}{\F{little~endian}}
+.. |littleendian| mathdef:: \xref{exec/numerics}{aux-littleendian}{\F{littleendian}}
 .. |signed| mathdef:: \xref{exec/numerics}{aux-signed}{\F{signed}}
 .. |bool| mathdef:: \xref{exec/numerics}{aux-bool}{\F{bool}}
 

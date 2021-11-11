@@ -63,21 +63,20 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
   (This is a shorthand for a side condition requiring multiple different variables to be equal.)
 
 .. note::
-   For example, the :ref:`binary grammar <binary-valtype>` for :ref:`value types <syntax-valtype>` is given as follows:
+   For example, the :ref:`binary grammar <binary-numtype>` for :ref:`number types <syntax-numtype>` is given as follows:
 
    .. math::
      \begin{array}{llcll@{\qquad\qquad}l}
-     \production{value types} & \Bvaltype &::=&
+     \production{number types} & \Bnumtype &::=&
        \hex{7F} &\Rightarrow& \I32 \\ &&|&
        \hex{7E} &\Rightarrow& \I64 \\ &&|&
        \hex{7D} &\Rightarrow& \F32 \\ &&|&
-       \hex{7C} &\Rightarrow& \F64 \\ &&|&
-       \hex{7B} &\Rightarrow& \V128 \\
+       \hex{7C} &\Rightarrow& \F64 \\
      \end{array}
 
    Consequently, the byte :math:`\hex{7F}` encodes the type |I32|,
    :math:`\hex{7E}` encodes the type |I64|, and so forth.
-   No other byte value is allowed as the encoding of a value type.
+   No other byte value is allowed as the encoding of a number type.
 
    The :ref:`binary grammar <binary-limits>` for :ref:`limits <syntax-limits>` is defined as follows:   
 
