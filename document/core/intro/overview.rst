@@ -23,6 +23,9 @@ This language is structured around the following concepts.
   Instead, integers are interpreted by respective operations
   as either unsigned or signed in two’s complement representation.
 
+  Finally, values can consist of opaque *references* that represent pointers towards different sorts of entities.
+  Unlike with other types, their size or representation is not observable.
+
 .. _instruction:
 
 **Instructions**
