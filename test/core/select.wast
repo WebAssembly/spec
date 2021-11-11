@@ -272,7 +272,7 @@
 (assert_return (invoke "as-br_table-last" (i32.const 1)) (i32.const 2))
 
 (assert_return (invoke "as-call_indirect-first" (i32.const 0)) (i32.const 3))
-;;(assert_return (invoke "as-call_indirect-first" (i32.const 1)) (i32.const 2))
+(assert_return (invoke "as-call_indirect-first" (i32.const 1)) (i32.const 2))
 (assert_return (invoke "as-call_indirect-mid" (i32.const 0)) (i32.const 1))
 (assert_return (invoke "as-call_indirect-mid" (i32.const 1)) (i32.const 1))
 (assert_trap (invoke "as-call_indirect-last" (i32.const 0)) "undefined element")
