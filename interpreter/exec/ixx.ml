@@ -149,16 +149,31 @@ struct
   let abs = Rep.abs
   let neg = Rep.neg
 
+  (* If bit (bitwidth - 1) is set, sx will sign-extend t to maintain the
+   * invariant that small ints are stored sign-extended inside a wider int. *)
+  let sx x =
+    let i = 64 - Rep.bitwidth in
+    Rep.of_int64 Int64.(shift_right (shift_left (Rep.to_int64 x) i) i)
+
   (* add, sub, and mul are sign-agnostic and do not trap on overflow. *)
-  let add = Rep.add
-  let sub = Rep.sub
-  let mul = Rep.mul
+  let add x y = sx (Rep.add x y)
+  let sub x y = sx (Rep.sub x y)
+
+  let mul x y = sx (Rep.mul x y)
+
+  (* We don't override min_int and max_int since those are used
+   * by other functions (like parsing), and rely on it being
+   * min/max for int32 *)
+  (* The smallest signed |bitwidth|-bits int. *)
+  let low_int = Rep.shift_left Rep.minus_one (Rep.bitwidth - 1)
+  (* The largest signed |bitwidth|-bits int. *)
+  let high_int = Rep.logxor low_int Rep.minus_one
 
   (* result is truncated toward zero *)
   let div_s x y =
     if y = Rep.zero then
       raise DivideByZero
-    else if x = Rep.min_int && y = Rep.minus_one then
+    else if x = low_int && y = Rep.minus_one then
       raise Overflow
     else
       Rep.div x y
@@ -191,10 +206,10 @@ struct
 
   (* WebAssembly's shifts mask the shift count according to the bitwidth. *)
   let shift f x y =
-    f x (Rep.to_int (Rep.logand y (Rep.of_int (Rep.bitwidth - 1))))
+    f x Rep.(to_int (logand y (of_int (bitwidth - 1))))
 
   let shl x y =
-    shift Rep.shift_left x y
+    sx (shift Rep.shift_left x y)
 
   let shr_s x y =
     shift Rep.shift_right x y
@@ -202,12 +217,19 @@ struct
   (* Check if we are storing smaller ints. *)
   let needs_extend = shl one (Rep.of_int (Rep.bitwidth - 1)) <> Rep.min_int
 
+  (*
+   * When Int is used to store a smaller int, it is stored in signed extended
+   * form. Some instructions require the unsigned form, which requires masking
+   * away the top 32-bitwidth bits.
+   *)
+  let as_unsigned x =
+    if not needs_extend then x else
+    (* Mask with bottom #bitwidth bits set *)
+    let mask = Rep.(shift_right_logical minus_one (32 - bitwidth)) in
+    Rep.logand x mask
+
   let shr_u x y =
-    (* If we are storing smaller ints, we need to mask out the high bits. *)
-    let mask =
-      if not needs_extend then Rep.minus_one else
-      Rep.lognot (Rep.shift_left Rep.minus_one (Rep.bitwidth))
-    in shift Rep.shift_right_logical (Rep.logand x mask) y
+    sx (shift Rep.shift_right_logical (as_unsigned x) y)
 
   (* We must mask the count to implement rotates via shifts. *)
   let clamp_rotate_count n =
@@ -215,11 +237,11 @@ struct
 
   let rotl x y =
     let n = clamp_rotate_count y in
-    or_ (Rep.shift_left x n) (Rep.shift_right_logical x (Rep.bitwidth - n))
+    or_ (shl x (Rep.of_int n)) (shr_u x (Rep.of_int (Rep.bitwidth - n)))
 
   let rotr x y =
     let n = clamp_rotate_count y in
-    or_ (Rep.shift_right_logical x n) (Rep.shift_left x (Rep.bitwidth - n))
+    or_ (shr_u x (Rep.of_int n)) (shl x (Rep.of_int (Rep.bitwidth - n)))
 
   (* clz is defined for all values, including all-zeros. *)
   let clz x =
@@ -269,31 +291,22 @@ struct
   let ge_s x y = x >= y
   let ge_u x y = cmp_u x (>=) y
 
-  (*
-   * When Int is used to store a smaller int, it is stored in signed extended
-   * form. Some instructions require the unsigned form, which requires masking
-   * away the top 32-bitwidth bits.
-   *)
-  let as_unsigned x = 
-    if Rep.bitwidth >= 32 then x else
-    (* Mask with bottom #bitwidth bits set *)
-    let mask = Rep.(shift_right_logical minus_one (32 - Rep.bitwidth)) in
-    Rep.logand x mask
+  let saturate_s x = sx (min (max x low_int) high_int)
+  let saturate_u x = sx (min (max x Rep.zero) (as_unsigned Rep.minus_one))
 
-  (* We don't override min_int and max_int since those are used
-   * by other functions (like parsing), and rely on it being
-   * min/max for int32 *)
-  (* The smallest signed |bitwidth|-bits int. *)
-  let low_int = Rep.shift_left Rep.minus_one (Rep.bitwidth - 1)
-  (* The largest signed |bitwidth|-bits int. *)
-  let high_int = Rep.logxor low_int Rep.minus_one
-  let saturate_s x = min (max x low_int) high_int
-  let saturate_u x = min (max x Rep.zero) (as_unsigned Rep.minus_one)
+  (* add/sub for int, used for higher-precision arithmetic for I8 and I16 *)
+  let add_int x y =
+    assert (Rep.bitwidth < 32);
+    Rep.(of_int ((to_int x) + (to_int y)))
 
-  let add_sat_s x y = saturate_s (add x y)
-  let add_sat_u x y = saturate_u (add (as_unsigned x) (as_unsigned y))
-  let sub_sat_s x y = saturate_s (sub x y)
-  let sub_sat_u x y = saturate_u (sub (as_unsigned x) (as_unsigned y))
+  let sub_int x y =
+    assert (Rep.bitwidth < 32);
+    Rep.(of_int ((to_int x) - (to_int y)))
+
+  let add_sat_s x y = saturate_s (add_int x y)
+  let add_sat_u x y = saturate_u (add_int (as_unsigned x) (as_unsigned y))
+  let sub_sat_s x y = saturate_s (sub_int x y)
+  let sub_sat_u x y = saturate_u (sub_int (as_unsigned x) (as_unsigned y))
 
   let q15mulr_sat_s x y =
     (* mul x64 y64 can overflow int64 when both are int32 min, but this is only
