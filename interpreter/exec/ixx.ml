@@ -30,11 +30,6 @@ sig
 
   val of_int : int -> t
   val to_int : t -> int
-  (* Required for operations that need to extend to a larger type, such as
-   * avgr_u. Cast to int64, perform the operations, then convert back to t.
-   * We don't have such operations on I64, so using int64 is safe. We
-   * cannot use int, because on 32-bit platforms int cannot represent
-   * all values of int32. *)
   val of_int64: int64 -> t
   val to_int64: t -> int64
   val to_string : t -> string
