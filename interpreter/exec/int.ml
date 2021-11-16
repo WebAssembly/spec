@@ -284,7 +284,7 @@ struct
 
   let of_string_u s =
     let n = of_string s in
-    require (s.[0] != '+' && s.[0] != '-');
+    require (s.[0] <> '+' && s.[0] <> '-');
     n
 
   (* String conversion that groups digits for readability *)
