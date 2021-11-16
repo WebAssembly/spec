@@ -30,6 +30,9 @@ This language is structured around the following concepts.
   specifically 2 64-bit integers, 4 32-bit integers, 8
   16-bit integers, or 16 8-bit integers.
 
+  Finally, values can consist of opaque *references* that represent pointers towards different sorts of entities.
+  Unlike with other types, their size or representation is not observable.
+
 .. _instruction:
 
 **Instructions**
