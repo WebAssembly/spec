@@ -25,10 +25,10 @@ Types are representable as an enumeration.
 
 .. code-block:: pseudo
 
-   type val_type = I32 | I64 | F32 | F64 | Funcref | Externref
+   type val_type = I32 | I64 | F32 | F64 | V128 | Funcref | Externref
 
    func is_num(t : val_type | Unknown) : bool =
-     return t = I32 || t = I64 || t = F32 || t = F64 || t = Unknown
+     return t = I32 || t = I64 || t = F32 || t = F64 || t = V128 || t = Unknown
 
    func is_ref(t : val_type | Unknown) : bool =
      return t = Funcref || t = Externref || t = Unknown

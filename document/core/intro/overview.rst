@@ -13,7 +13,7 @@ This language is structured around the following concepts.
 .. _value:
 
 **Values**
-  WebAssembly provides only four basic *value types*.
+  WebAssembly provides only four basic *number types*.
   These are integers and |IEEE754|_ numbers,
   each in 32 and 64 bit width.
   32 bit integers also serve as Booleans and as memory addresses.
@@ -22,6 +22,13 @@ This language is structured around the following concepts.
   There is no distinction between signed and unsigned integer types.
   Instead, integers are interpreted by respective operations
   as either unsigned or signed in two’s complement representation.
+
+  In addition to these basic number types, there is a single 128 bit wide
+  vector type representing different types of packed data.
+  The supported representations are 4 32-bit, or 2 64-bit
+  |IEEE754|_ numbers, or different widths of packed integer values
+  specifically 2 64-bit integers, 4 32-bit integers, 8
+  16-bit integers, or 16 8-bit integers.
 
   Finally, values can consist of opaque *references* that represent pointers towards different sorts of entities.
   Unlike with other types, their size or representation is not observable.
