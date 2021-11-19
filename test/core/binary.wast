@@ -641,7 +641,7 @@
     "\41\00"                   ;; i32.const 0
     "\41\03"                   ;; i32.const 3
     "\36"                      ;; i32.store
-    "\03"                      ;; alignment 2
+    "\02"                      ;; alignment 2
     "\82\80\80\80\10"          ;; offset 2 with unused bits set
     "\0b"                      ;; end
   )
@@ -1215,7 +1215,7 @@
 (assert_malformed
   (module binary
       "\00asm" "\01\00\00\00"
-      "\05\03\01"                           ;; table section with one entry
+      "\04\03\01"                           ;; table section with one entry
       "\70"                                 ;; anyfunc
       "\02"                                 ;; malformed table limits flag
   )
@@ -1224,7 +1224,7 @@
 (assert_malformed
   (module binary
       "\00asm" "\01\00\00\00"
-      "\05\04\01"                           ;; table section with one entry
+      "\04\04\01"                           ;; table section with one entry
       "\70"                                 ;; anyfunc
       "\02"                                 ;; malformed table limits flag
       "\00"                                 ;; dummy byte
@@ -1234,12 +1234,12 @@
 (assert_malformed
   (module binary
       "\00asm" "\01\00\00\00"
-      "\05\06\01"                           ;; table section with one entry
+      "\04\06\01"                           ;; table section with one entry
       "\70"                                 ;; anyfunc
       "\81\00"                              ;; malformed table limits flag as LEB128
       "\00\00"                              ;; dummy bytes
   )
-  "integer too large"
+  "integer representation too long"
 )
 
 ;; Memory count can be zero
@@ -1569,5 +1569,5 @@
     "\02\00"
     "\0b"                      ;; end
   )
-  "junk after last section"
+  "unexpected content after last section"
 )

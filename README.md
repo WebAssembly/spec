@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/WebAssembly/multi-memory.svg?branch=master)](https://travis-ci.org/WebAssembly/multi-memory)
+![Build Status](https://github.com/WebAssembly/multi-memory/actions/workflows/main.yml/badge.svg)
 
 # Multi Memory Proposal for WebAssembly
 

@@ -384,6 +384,14 @@
 )
 
 (assert_invalid
+  (module
+    (memory 1)
+    (data (ref.null func))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
   (module 
     (memory 1)
     (data (offset (;empty instruction sequence;)))
