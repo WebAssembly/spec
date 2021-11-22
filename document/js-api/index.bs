@@ -898,7 +898,6 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |s| equals "anyfunc", return [=funcref=].
     1. If |s| equals "externref", return [=externref=].
     1. Assert: This step is not reached.
->>>>>>> upstream/master
 </div>
 
 <div algorithm>
