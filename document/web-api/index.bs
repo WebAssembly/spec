@@ -6,7 +6,7 @@ Status: ED
 Level: 1
 TR: https://www.w3.org/TR/wasm-web-api-1/
 ED: https://webassembly.github.io/spec/web-api/
-Editor: Ms2ger (Igalia)
+Editor: Ms2ger, Igalia
 Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader web platform.
 Markup Shorthands: css no, markdown yes

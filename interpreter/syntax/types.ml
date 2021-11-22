@@ -1,8 +1,9 @@
 (* Types *)
 
 type num_type = I32Type | I64Type | F32Type | F64Type
+type vec_type = V128Type
 type ref_type = FuncRefType | ExternRefType
-type value_type = NumType of num_type | RefType of ref_type
+type value_type = NumType of num_type | VecType of vec_type | RefType of ref_type
 type result_type = value_type list
 type func_type = FuncType of result_type * result_type
 
@@ -17,28 +18,45 @@ type extern_type =
   | ExternMemoryType of memory_type
   | ExternGlobalType of global_type
 
-type pack_size = Pack8 | Pack16 | Pack32
+(* TODO: these types should move somewhere else *)
+type pack_size = Pack8 | Pack16 | Pack32 | Pack64
 type extension = SX | ZX
+type pack_shape = Pack8x8 | Pack16x4 | Pack32x2
+type vec_extension =
+  | ExtLane of pack_shape * extension
+  | ExtSplat
+  | ExtZero
 
 
 (* Attributes *)
 
-let size = function
+let num_size = function
   | I32Type | F32Type -> 4
   | I64Type | F64Type -> 8
+
+let vec_size = function
+  | V128Type -> 16
 
 let packed_size = function
   | Pack8 -> 1
   | Pack16 -> 2
   | Pack32 -> 4
+  | Pack64 -> 8
+
+let packed_shape_size = function
+  | Pack8x8 | Pack16x4 | Pack32x2 -> 8
 
 let is_num_type = function
   | NumType _ -> true
-  | RefType _ -> false
+  | _ -> false
+
+let is_vec_type = function
+  | VecType _ -> true
+  | _ -> false
 
 let is_ref_type = function
-  | NumType _ -> false
   | RefType _ -> true
+  | _ -> false
 
 
 (* Filters *)
@@ -91,6 +109,9 @@ let string_of_num_type = function
   | F32Type -> "f32"
   | F64Type -> "f64"
 
+let string_of_vec_type = function
+  | V128Type -> "v128"
+
 let string_of_ref_type = function
   | FuncRefType -> "funcref"
   | ExternRefType -> "externref"
@@ -101,6 +122,7 @@ let string_of_refed_type = function
 
 let string_of_value_type = function
   | NumType t -> string_of_num_type t
+  | VecType t -> string_of_vec_type t
   | RefType t -> string_of_ref_type t
 
 let string_of_value_types = function
