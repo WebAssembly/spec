@@ -1,16 +1,36 @@
 {# This extends the underlying HTML theme's layout.html. #}
 {% extends "!layout.html" %}
 
-{# Don't output title, bikeshed will add it in #}
-{#{% block htmltitle %}{% endblock %}#}
-
-{# Drop all scripts, we don't use any JS, since there is no search, or MathJaX #}
 {% block scripts %}
 {{ super() }}
-{% endblock %}
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+  const toc = document.querySelector('#toc');
+  toc.setAttribute('role', 'navigation');
 
-{# Remove all link tags in head #}
-{#{% block linktags %}{% endblock %}#}
+  const toc_uls = document.querySelectorAll('#toc > ul');
+  const toc_ul = toc_uls[0];
+
+  toc_uls[0].classList.add('toc');
+  const n = toc_uls.length;
+
+  // Remove all extra toctree. TODO add bug to sphinx
+  if (n > 1) {
+    for (let i = 1; i < n; i++) {
+      toc_uls[i].remove();
+    }
+  }
+
+  // Fix classes for TOC to match W3C styles.
+  toc_ul_lis = toc_ul.querySelectorAll('li');
+  toc_ul_lis.forEach(li => {
+    // Remove all Sphinx-added classes, replace with W3C class.
+    li.classList = ['tocline'];
+  });
+
+});
+</script>
+{% endblock %}
 
 {# Remove related links bar #}
 {% block relbar1 %}{% endblock %}
@@ -19,16 +39,23 @@
 {% block css %}
 {{ super() }}
 <style>
-#toc li {
-  list-style: none;
-}
 #toc ul, #toc ol {
-  padding-left: 0;
+  margin-left: 0;
+}
+div.document, div.footer {
+  width: 100%; /* Overwrite width from custom.css */
+}
+/* Modified from alabaster theme */
+div.footer {
+  margin: 20px auto 30px auto;
+  font-size: 0.8em;
+  color: #888;
+  text-align: right;
 }
 </style>
 {% endblock %}
 
-{# completely overwrite sidebar with custom html to work with W3C CSS #}
+{# Completely overwrite sidebar with custom html to work with W3C CSS. #}
 {% block sidebar1 %}
 <nav id="toc">
 {{ toctree(maxdepth=3, collapse=False) }}
@@ -117,70 +144,49 @@
 <section id="sotd" class="introductory">
   <h2>Status of This Document</h2>
   <p>This is a quick snapshot used for planning. This is not the spec.</p>
-  <p><em>
-    This section describes the status of this
-    document at the time of its publication. Other documents may supersede
-    this document. A list of current <abbr title="World Wide Web Consortium">W3C</abbr> publications and the latest revision
-    of this technical report can be found in the
-    <a href="https://www.w3.org/TR/"><abbr title="World Wide Web Consortium">W3C</abbr> technical reports index</a> at
-    https://www.w3.org/TR/.</em></p>
-  <p>Technical comments are welcomed by the Working Group to improve future versions of WebAssembly.
-  <a href="{{ issues_url }}">GitHub Issues</a> are preferred for discussion of this specification.
-  When filing an issue, please put the text "{{shortname}}" in the title,
-  preferably like this:
-  "[{{ shortname }}] <i>…summary of comment…</i>".
-  All issues and comments are <a href="{{ issues_url }}?utf8=%E2%9C%93&amp;q=is%3Aissue++">archived</a>.
+  <p>
+    <em>
+      This section describes the status of this document at the time of its publication. Other documents may supersede this document. A list of current <abbr title="World Wide Web Consortium">W3C</abbr> publications and the latest revision
+      of this technical report can be found in the <a href="https://www.w3.org/TR/"><abbr title="World Wide Web Consortium">W3C</abbr> technical reports index</a> at https://www.w3.org/TR/.
+    </em>
   </p>
   <p>
-  This document was published by the <a href="https://www.w3.org/wasm/">WebAssembly Working Group</a> as a
-  Working Draft.
-  This document is intended to become a <abbr title="World Wide Web Consortium">W3C</abbr> Recommendation.
-  </p><p>
-  <a href="{{ issues_url }}">GitHub Issues</a> are preferred for
-  discussion of this specification.
+    Technical comments are welcomed by the Working Group to improve future versions of WebAssembly. <a href="{{ issues_url }}">GitHub Issues</a> are preferred for discussion of this specification. When filing an issue, please put the text
+    "{{shortname}}" in the title, preferably like this: "[{{ shortname }}] <i>…summary of comment…</i>". All issues and comments are <a href="{{ issues_url }}?utf8=%E2%9C%93&amp;q=is%3Aissue++">archived</a>.
+  </p>
+  <p>This document was published by the <a href="https://www.w3.org/wasm/">WebAssembly Working Group</a> as a Working Draft. This document is intended to become a <abbr title="World Wide Web Consortium">W3C</abbr> Recommendation.</p>
+  <p>
+    <a href="{{ issues_url }}">GitHub Issues</a> are preferred for discussion of this specification. Alternatively, you can send comments to our mailing list. Please send them to
+    <a href="mailto:public-webassembly@w3.org?subject=%5Bwasm-core-1%5D">public-webassembly@w3.org</a>
+    (<a href="mailto:public-webassembly-request@w3.org?subject=subscribe">subscribe</a>, <a href="https://lists.w3.org/Archives/Public/public-webassembly/">archives</a>) with <code>[wasm-core-1]</code> at the start of your email's subject.
+  </p>
+  <p>Publication as a Working Draft does not imply endorsement by the <abbr title="World Wide Web Consortium">W3C</abbr> Membership.</p>
+  <p>This is a draft document and may be updated, replaced or obsoleted by other documents at any time. It is inappropriate to cite this document as other than work in progress.</p>
+  <p></p>
+  <p>
+    This document was produced by a group operating under the
+    <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/">1 August 2017 <abbr title="World Wide Web Consortium">W3C</abbr> Patent Policy</a>.
 
-  Alternatively, you can send comments to our mailing list.
-  Please send them to
-  <a href="mailto:public-webassembly@w3.org?subject=%5Bwasm-core-1%5D">public-webassembly@w3.org</a>
-  (<a href="mailto:public-webassembly-request@w3.org?subject=subscribe">subscribe</a>,
-  <a href="https://lists.w3.org/Archives/Public/public-webassembly/">archives</a>) with <code>[wasm-core-1]</code> at the start of your
-  email's subject.
+    <abbr title="World Wide Web Consortium">W3C</abbr> maintains a
+    <a rel="disclosure" href="https://www.w3.org/groups/wg/wasm/ipr">public list of any patent disclosures</a>
+    made in connection with the deliverables of the group; that page also includes instructions for disclosing a patent. An individual who has actual knowledge of a patent which the individual believes contains
+    <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/#def-essential">Essential Claim(s)</a>
+    must disclose the information in accordance with
+    <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/#sec-Disclosure">section 6 of the <abbr title="World Wide Web Consortium">W3C</abbr> Patent Policy</a>.
+  </p>
+  <p>
+    This document is governed by the
+    <a id="w3c_process_revision" href="https://www.w3.org/2020/Process-20200915/">15 September 2020 <abbr title="World Wide Web Consortium">W3C</abbr> Process Document</a>.
+  </p>
+</section>
 
-  </p><p>
-  Publication as a Working Draft does not imply endorsement
-  by the <abbr title="World Wide Web Consortium">W3C</abbr> Membership.
-  </p><p>This is a draft document and may be updated, replaced
-  or obsoleted by other documents at any time. It is inappropriate to cite this
-  document as other than work in progress.
-  </p><p></p><p>
-
-  This document was produced by a group
-  operating under the
-  <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/">1 August 2017 <abbr title="World Wide Web Consortium">W3C</abbr> Patent
-    Policy</a>.
-
-
-  <abbr title="World Wide Web Consortium">W3C</abbr> maintains a
-  <a rel="disclosure" href="https://www.w3.org/groups/wg/wasm/ipr">public list of any patent disclosures</a>
-  made in connection with the deliverables of
-  the group; that page also includes
-  instructions for disclosing a patent. An individual who has actual
-  knowledge of a patent which the individual believes contains
-  <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/#def-essential">Essential Claim(s)</a>
-  must disclose the information in accordance with
-  <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/#sec-Disclosure">section 6 of the <abbr title="World Wide Web Consortium">W3C</abbr> Patent Policy</a>.
-
-
-  </p><p>
-  This document is governed by the
-  <a id="w3c_process_revision" href="https://www.w3.org/2020/Process-20200915/">15 September 2020 <abbr title="World Wide Web Consortium">W3C</abbr> Process Document</a>.
-  </p></section>
-
-<section id="conformance"><h2 id="x1-conformance"><bdi class="secno">1. </bdi>Conformance<a class="self-link" aria-label="§" href="#conformance"></a></h2><p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this specification are non-normative. Everything else in this specification is normative.</p>
-      <p>
-        This is required for specifications that contain normative material.
-      </p>
-    </section>
+<section id="conformance">
+  <h2 id="x1-conformance">Conformance<a class="self-link" aria-label="§" href="#conformance"></a></h2>
+  <p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this specification are non-normative. Everything else in this specification is normative.</p>
+  <p>
+    This is required for specifications that contain normative material.
+  </p>
+</section>
 
 {% else %}
 {% endif %}

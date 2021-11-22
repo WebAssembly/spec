@@ -1,14 +1,15 @@
 {% extends "!page.html" %}
 {% block body %}
+{% if pagename == "index"  %}
+{# Empty, otherwise we have duplicated headers and TOC. #}
+{% else %}
 <section>
 <a class="logo" href="https://www.w3.org/">
-  <img alt="W3C" width="72" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C">
+  <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C">
 </a>
-<!--  can do logo-y things here like WA@W3C: -->
-<span style="float:right;font-size: 34px;position: relative;/* bottom: 0px; */top: 30px;margin-right: -7px;">@</span>
 <!-- WA logo -->
-<a href="https://webassembly.github.io/spec/core/">
-  <img class="logo" style="float:right; padding-top: 6px" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt="Logo" height="68">
+<a href="{{ pathto(root_doc) }}">
+  <img alt="WebAssembly logo" class="logo" src="{{ pathto('_static/webassembly.png', 1) }}" alt="Logo" height="48">
 </a>
 <h1 id="title" class="title">WebAssembly Core Specification</h1>
 <h2>
@@ -17,4 +18,5 @@
 </h2>
 </section>
 {{ super() }}
+{% endif %}
 {% endblock %}

@@ -22,11 +22,12 @@ pwd = original_pwd
 # Overwrite html themes and configurations.
 html_theme = 'basic'
 html_theme_options = {
-  # 'nosidebar': True, # use respec
   'nosidebar': True,
-  'sidebarwidth': '260px',
 }
-html_css_files = ['https://www.w3.org/StyleSheets/TR/2016/W3C-ED']
+html_css_files = ['https://www.w3.org/StyleSheets/TR/2016/W3C-ED', 'custom.css']
+
+html_static_path = ['../static']
+html_logo =  '../static/webassembly.png'
 
 # Look for layout.html in this directory, it overwrites the underlying theme's
 # layout to remove some bits we don't need.
