@@ -1219,14 +1219,10 @@ In practice, an implementation may run out of resources for valid modules below 
 <li>The maximum number of globals defined in a module is 1000000.</li>
 <li>The maximum number of data segments defined in a module is 100000.</li>
 
-<<<<<<< HEAD
-<li>The maximum number of tables, including defined and imported tables, is 1.</li>
-=======
 <li>The maximum number of tables, including declared or imported tables, is 100000.</li>
 <li>The maximum size of a table is 10000000.</li>
->>>>>>> reftype/master
 <li>The maximum number of table entries in any table initialization is 10000000.</li>
-<li>The maximum number of memories, including defined and imported memories, is 10000000.</li>
+<li>The maximum number of memories, including defined and imported memories, is 1.</li>
 
 <li>The maximum number of parameters to any function or block is 1000.</li>
 <li>The maximum number of return values for any function or block is 1000.</li>
