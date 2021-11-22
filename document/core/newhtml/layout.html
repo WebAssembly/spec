@@ -9,25 +9,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
   toc.setAttribute('role', 'navigation');
 
   const toc_uls = document.querySelectorAll('#toc > ul');
-  const toc_ul = toc_uls[0];
-
-  toc_uls[0].classList.add('toc');
-  const n = toc_uls.length;
-
-  // Remove all extra toctree. TODO add bug to sphinx
-  if (n > 1) {
-    for (let i = 1; i < n; i++) {
-      toc_uls[i].remove();
-    }
-  }
-
-  // Fix classes for TOC to match W3C styles.
-  toc_ul_lis = toc_ul.querySelectorAll('li');
-  toc_ul_lis.forEach(li => {
-    // Remove all Sphinx-added classes, replace with W3C class.
-    li.classList = ['tocline'];
+  toc_uls.forEach(ul => {
+    // Fix classes for TOC to match W3C styles.
+    ul.classList.add('toc');
+    const toc_ul_lis = ul.querySelectorAll('li');
+    toc_ul_lis.forEach(li => {
+      // Remove all Sphinx-added classes, replace with W3C class.
+      li.classList = ['tocline'];
+    });
   });
-
 });
 </script>
 {% endblock %}
