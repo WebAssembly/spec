@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Validation Algorithm &#8212; WebAssembly 1.1 (Draft 2021-11-22)</title>
+    <title>Validation Algorithm &#8212; WebAssembly 1.1 (Draft 2021-11-23)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -99,7 +99,10 @@ Consequently, it can be integrated directly into a decoder.</p>
 <div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> <span class="nf">val_type</span> = I32 | I64 | F32 | F64 | V128 | Funcref | Externref
 
 <span class="k">func</span> <span class="nf">is_num</span>(<span class="nf">t</span> : val_type | Unknown) : bool =
-  <span class="k">return</span> t = I32 || t = I64 || t = F32 || t = F64 || t = V128 || t = Unknown
+  <span class="k">return</span> t = I32 || t = I64 || t = F32 || t = F64 || t = Unknown
+
+<span class="k">func</span> <span class="nf">is_vec</span>(<span class="nf">t</span> : val_type | Unknown) : bool =
+  <span class="k">return</span> t = V128 || t = Unknown
 
 <span class="k">func</span> <span class="nf">is_ref</span>(<span class="nf">t</span> : val_type | Unknown) : bool =
   <span class="k">return</span> t = Funcref || t = Externref || t = Unknown
@@ -222,7 +225,7 @@ That is an easy addition and therefore omitted from this presentation.</p>
       pop_val(I32)
       <span class="k">let</span> <span class="nf">t1</span> = pop_val()
       <span class="k">let</span> <span class="nf">t2</span> = pop_val()
-      error_if(not (is_num(t1) &amp;&amp; is_num(t2)))
+      error_if(not ((is_num(t1) &amp;&amp; is_num(t2)) || (is_vec(t1) &amp;&amp; is_vec(t2))))
       error_if(t1 =/= t2 &amp;&amp; t1 =/= Unknown &amp;&amp; t2 =/= Unknown)
       push_val(if (t1 = Unknown) t2 else t1)
 
