@@ -28,7 +28,10 @@ Types are representable as an enumeration.
    type val_type = I32 | I64 | F32 | F64 | V128 | Funcref | Externref
 
    func is_num(t : val_type | Unknown) : bool =
-     return t = I32 || t = I64 || t = F32 || t = F64 || t = V128 || t = Unknown
+     return t = I32 || t = I64 || t = F32 || t = F64 || t = Unknown
+
+   func is_vec(t : val_type | Unknown) : bool =
+     return t = V128 || t = Unknown
 
    func is_ref(t : val_type | Unknown) : bool =
      return t = Funcref || t = Externref || t = Unknown
@@ -172,7 +175,7 @@ Other instructions are checked in a similar manner.
          pop_val(I32)
          let t1 = pop_val()
          let t2 = pop_val()
-         error_if(not (is_num(t1) && is_num(t2)))
+         error_if(not ((is_num(t1) && is_num(t2)) || (is_vec(t1) && is_vec(t2))))
          error_if(t1 =/= t2 && t1 =/= Unknown && t2 =/= Unknown)
          push_val(if (t1 = Unknown) t2 else t1)
 
