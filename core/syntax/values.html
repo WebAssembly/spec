@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Values &#8212; WebAssembly 1.1 (Draft 2021-11-23)</title>
+    <title>Values &#8212; WebAssembly 1.1 (Draft 2021-12-02)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -93,8 +93,8 @@ Moreover, in the definition of programs, immutable sequences of values occur to 
 In the abstract syntax they are represented as hexadecimal literals.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef2549#1{{}}\mathdef2549{byte} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
-  \def\mathdef2588#1{\mathtt{0x#1}}\mathdef2588{00} ~|~ \dots ~|~ \def\mathdef2589#1{\mathtt{0x#1}}\mathdef2589{FF} \\
+\def\mathdef2541#1{{}}\mathdef2541{byte} &amp; \href{../syntax/values.html#syntax-byte}{\mathit{byte}} &amp;::=&amp;
+  \def\mathdef2580#1{\mathtt{0x#1}}\mathdef2580{00} ~|~ \dots ~|~ \def\mathdef2581#1{\mathtt{0x#1}}\mathdef2581{FF} \\
 \end{array}\end{split}\]</div>
 <section id="conventions">
 <h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
@@ -109,11 +109,11 @@ In the abstract syntax they are represented as hexadecimal literals.</p>
 <p>Different classes of <em>integers</em> with different value ranges are distinguished by their <em>bit width</em> <span class="math notranslate nohighlight">\(N\)</span> and by whether they are <em>unsigned</em> or <em>signed</em>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef2549#1{{}}\mathdef2549{unsigned integer} &amp; \href{../syntax/values.html#syntax-int}{\mathit{u}N} &amp;::=&amp;
+\def\mathdef2541#1{{}}\mathdef2541{unsigned integer} &amp; \href{../syntax/values.html#syntax-int}{\mathit{u}N} &amp;::=&amp;
   0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
-\def\mathdef2549#1{{}}\mathdef2549{signed integer} &amp; \href{../syntax/values.html#syntax-int}{\mathit{s}N} &amp;::=&amp;
+\def\mathdef2541#1{{}}\mathdef2541{signed integer} &amp; \href{../syntax/values.html#syntax-int}{\mathit{s}N} &amp;::=&amp;
   -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
-\def\mathdef2549#1{{}}\mathdef2549{uninterpreted integer} &amp; \href{../syntax/values.html#syntax-int}{\mathit{i}N} &amp;::=&amp;
+\def\mathdef2541#1{{}}\mathdef2541{uninterpreted integer} &amp; \href{../syntax/values.html#syntax-int}{\mathit{i}N} &amp;::=&amp;
   \href{../syntax/values.html#syntax-int}{\mathit{u}N} \\
 \end{array}\end{split}\]</div>
 <p>The latter class defines <em>uninterpreted</em> integers, whose signedness interpretation can vary depending on context.
@@ -145,9 +145,9 @@ NaN values have a <em>payload</em> that describes the mantissa bits in the under
 No distinction is made between signalling and quiet NaNs.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcll}
-\def\mathdef2549#1{{}}\mathdef2549{floating-point value} &amp; \href{../syntax/values.html#syntax-float}{\mathit{f}N} &amp;::=&amp;
+\def\mathdef2541#1{{}}\mathdef2541{floating-point value} &amp; \href{../syntax/values.html#syntax-float}{\mathit{f}N} &amp;::=&amp;
   {+} \href{../syntax/values.html#syntax-float}{\mathit{f}\mathit{Nmag}} ~|~ {-} \href{../syntax/values.html#syntax-float}{\mathit{f}\mathit{Nmag}} \\
-\def\mathdef2549#1{{}}\mathdef2549{floating-point magnitude} &amp; \href{../syntax/values.html#syntax-float}{\mathit{f}\mathit{Nmag}} &amp;::=&amp;
+\def\mathdef2541#1{{}}\mathdef2541{floating-point magnitude} &amp; \href{../syntax/values.html#syntax-float}{\mathit{f}\mathit{Nmag}} &amp;::=&amp;
   (1 + \href{../syntax/values.html#syntax-int}{\mathit{u}M}\cdot 2^{-M}) \cdot 2^e &amp; (\mathrel{\mbox{if}} -2^{E-1}+2 \leq e \leq 2^{E-1}-1) \\ &amp;&amp;|&amp;
   (0 + \href{../syntax/values.html#syntax-int}{\mathit{u}M}\cdot 2^{-M}) \cdot 2^e &amp; (\mathrel{\mbox{if}} e = -2^{E-1}+2) \\ &amp;&amp;|&amp;
   \infty \\ &amp;&amp;|&amp;
@@ -186,11 +186,11 @@ They are represented in the abstract syntax using <span class="math notranslate 
 <p><em>Names</em> are sequences of <em>characters</em>, which are <em>scalar values</em> as defined by <a class="reference external" href="https://www.unicode.org/versions/latest/">Unicode</a> (Section 2.4).</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
-\def\mathdef2549#1{{}}\mathdef2549{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
+\def\mathdef2541#1{{}}\mathdef2541{name} &amp; \href{../syntax/values.html#syntax-name}{\mathit{name}} &amp;::=&amp;
   \href{../syntax/values.html#syntax-name}{\mathit{char}}^\ast \qquad\qquad (\mathrel{\mbox{if}} |\href{../binary/values.html#binary-utf8}{\mathrm{utf8}}(\href{../syntax/values.html#syntax-name}{\mathit{char}}^\ast)| &lt; 2^{32}) \\
-\def\mathdef2549#1{{}}\mathdef2549{character} &amp; \href{../syntax/values.html#syntax-name}{\mathit{char}} &amp;::=&amp;
-  \def\mathdef2590#1{\mathrm{U{+}#1}}\mathdef2590{00} ~|~ \dots ~|~ \def\mathdef2591#1{\mathrm{U{+}#1}}\mathdef2591{D7FF} ~|~
-  \def\mathdef2592#1{\mathrm{U{+}#1}}\mathdef2592{E000} ~|~ \dots ~|~ \def\mathdef2593#1{\mathrm{U{+}#1}}\mathdef2593{10FFFF} \\
+\def\mathdef2541#1{{}}\mathdef2541{character} &amp; \href{../syntax/values.html#syntax-name}{\mathit{char}} &amp;::=&amp;
+  \def\mathdef2582#1{\mathrm{U{+}#1}}\mathdef2582{00} ~|~ \dots ~|~ \def\mathdef2583#1{\mathrm{U{+}#1}}\mathdef2583{D7FF} ~|~
+  \def\mathdef2584#1{\mathrm{U{+}#1}}\mathdef2584{E000} ~|~ \dots ~|~ \def\mathdef2585#1{\mathrm{U{+}#1}}\mathdef2585{10FFFF} \\
 \end{array}\end{split}\]</div>
 <p>Due to the limitations of the <a class="reference internal" href="../binary/values.html#binary-name"><span class="std std-ref">binary format</span></a>,
 the length of a name is bounded by the length of its <a class="reference internal" href="../binary/values.html#binary-utf8"><span class="std std-ref">UTF-8</span></a> encoding.</p>
