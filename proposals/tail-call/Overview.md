@@ -46,6 +46,8 @@ This can be applied to any form of call, that is:
 
 * Tail calls to host functions cannot guarantee tail behaviour (outside the scope of the spec)
 
+* Tail calls across WebAssembly module boundaries *do* guarantee tail behavior
+
 
 ### Typing
 
@@ -141,8 +143,3 @@ Use the reserved opcodes after existing call instructions, i.e.:
 ### Text Format
 
 The text format is extended with two new instructions in the obvious manner.
-
-
-## Open Questions
-
-* Can tail calls across module boundaries guarantee tail behaviour?
