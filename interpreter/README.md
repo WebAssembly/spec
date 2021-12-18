@@ -449,7 +449,7 @@ When running scripts, the interpreter predefines a simple host module named `"sp
   (func (export "print_f64_f64") (param f64 f64))
 )
 ```
-The `print` functions are assumes to print their respective argument values to stdout (followed by a newline) and can be used to produce observable output.
+The `print` functions are assumed to print their respective argument values to stdout (followed by a newline) and can be used to produce observable output.
 
 Note: This module predates the `register` command and should no longer be needed for new tests.
 We might remove it in the future, so consider it deprecated.
