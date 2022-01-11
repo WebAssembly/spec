@@ -155,7 +155,7 @@ let input_binary_file file run =
     success
   with exn -> close_in ic; raise exn
 
-let input_js_file file run =
+let input_js_file file _run =
   raise (Sys_error (file ^ ": unrecognized input file type"))
 
 let input_file file run =
@@ -268,7 +268,7 @@ let string_of_num_pat (p : num_pat) =
 
 let string_of_vec_pat (p : vec_pat) =
   match p with
-  | VecPat (Values.V128 (shape, ns)) ->
+  | VecPat (Values.V128 (_shape, ns)) ->
     String.concat " " (List.map string_of_num_pat ns)
 
 let string_of_ref_pat (p : ref_pat) =
@@ -347,7 +347,7 @@ let run_action act : Values.value list =
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternFunc f) ->
-      let Types.FuncType (ins, out) = Func.type_of f in
+      let Types.FuncType (ins, _out) = Func.type_of f in
       if List.length vs <> List.length ins then
         Script.error act.at "wrong number of arguments";
       List.iter2 (fun v t ->

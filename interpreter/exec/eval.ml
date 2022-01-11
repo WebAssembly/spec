@@ -101,7 +101,7 @@ let func_ref inst x i at =
   | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
 
 let func_type_of = function
-  | Func.AstFunc (t, inst, f) -> t
+  | Func.AstFunc (t, _inst, _f) -> t
   | Func.HostFunc (t, _) -> t
 
 let block_type inst bt =
@@ -165,7 +165,7 @@ let rec step (c : config) : config =
         vs', [Label (n2, [], (args, List.map plain es')) @@ e.at]
 
       | Loop (bt, es'), vs ->
-        let FuncType (ts1, ts2) = block_type frame.inst bt in
+        let FuncType (ts1, _ts2) = block_type frame.inst bt in
         let n1 = Lib.List32.length ts1 in
         let args, vs' = take n1 vs e.at, drop n1 vs e.at in
         vs', [Label (n1, [e' @@ e.at], (args, List.map plain es')) @@ e.at]
@@ -204,7 +204,7 @@ let rec step (c : config) : config =
         else
           vs, [Invoke func @@ e.at]
 
-      | Drop, v :: vs' ->
+      | Drop, _v :: vs' ->
         vs', []
 
       | Select _, Num (I32 i) :: v2 :: v1 :: vs' ->
@@ -360,7 +360,7 @@ let rec step (c : config) : config =
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | VecLoadLane ({offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
+      | VecLoadLane ({offset; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
         (try
@@ -381,7 +381,7 @@ let rec step (c : config) : config =
           in Vec (V128 v) :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | VecStoreLane ({offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
+      | VecStoreLane ({offset; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let addr = I64_convert.extend_i32_u i in
         (try
@@ -590,48 +590,48 @@ let rec step (c : config) : config =
     | Refer r, vs ->
       Ref r :: vs, []
 
-    | Trapping msg, vs ->
+    | Trapping _msg, _vs ->
       assert false
 
-    | Returning vs', vs ->
+    | Returning _vs', _vs ->
       Crash.error e.at "undefined frame"
 
-    | Breaking (k, vs'), vs ->
+    | Breaking (_k, _vs'), _vs ->
       Crash.error e.at "undefined label"
 
-    | Label (n, es0, (vs', [])), vs ->
+    | Label (_n, _es0, (vs', [])), vs ->
       vs' @ vs, []
 
-    | Label (n, es0, (vs', {it = Trapping msg; at} :: es')), vs ->
+    | Label (_n, _es0, (_vs', {it = Trapping msg; at} :: _es')), vs ->
       vs, [Trapping msg @@ at]
 
-    | Label (n, es0, (vs', {it = Returning vs0; at} :: es')), vs ->
+    | Label (_n, _es0, (_vs', {it = Returning vs0; at} :: _es')), vs ->
       vs, [Returning vs0 @@ at]
 
-    | Label (n, es0, (vs', {it = Breaking (0l, vs0); at} :: es')), vs ->
+    | Label (n, es0, (_vs', {it = Breaking (0l, vs0); _} :: _es')), vs ->
       take n vs0 e.at @ vs, List.map plain es0
 
-    | Label (n, es0, (vs', {it = Breaking (k, vs0); at} :: es')), vs ->
+    | Label (_n, _es0, (_vs', {it = Breaking (k, vs0); at} :: _es')), vs ->
       vs, [Breaking (Int32.sub k 1l, vs0) @@ at]
 
     | Label (n, es0, code'), vs ->
       let c' = step {c with code = code'} in
       vs, [Label (n, es0, c'.code) @@ e.at]
 
-    | Frame (n, frame', (vs', [])), vs ->
+    | Frame (_n, _frame', (vs', [])), vs ->
       vs' @ vs, []
 
-    | Frame (n, frame', (vs', {it = Trapping msg; at} :: es')), vs ->
+    | Frame (_n, _frame', (_vs', {it = Trapping msg; at} :: _es')), vs ->
       vs, [Trapping msg @@ at]
 
-    | Frame (n, frame', (vs', {it = Returning vs0; at} :: es')), vs ->
+    | Frame (n, _frame', (_vs', {it = Returning vs0; _} :: _es')), vs ->
       take n vs0 e.at @ vs, []
 
     | Frame (n, frame', code'), vs ->
       let c' = step {frame = frame'; code = code'; budget = c.budget - 1} in
       vs, [Frame (n, c'.frame, c'.code) @@ e.at]
 
-    | Invoke func, vs when c.budget = 0 ->
+    | Invoke _func, _vs when c.budget = 0 ->
       Exhaustion.error e.at "call stack exhausted"
 
     | Invoke func, vs ->
@@ -639,13 +639,13 @@ let rec step (c : config) : config =
       let n1, n2 = Lib.List32.length ins, Lib.List32.length out in
       let args, vs' = take n1 vs e.at, drop n1 vs e.at in
       (match func with
-      | Func.AstFunc (t, inst', f) ->
+      | Func.AstFunc (_t, inst', f) ->
         let locals' = List.rev args @ List.map default_value f.it.locals in
         let frame' = {inst = !inst'; locals = List.map ref locals'} in
         let instr' = [Label (n2, [], ([], List.map plain f.it.body)) @@ f.at] in
         vs', [Frame (n2, frame', ([], instr')) @@ e.at]
 
-      | Func.HostFunc (t, f) ->
+      | Func.HostFunc (_t, f) ->
         try List.rev (f (List.rev args)) @ vs', []
         with Crash (_, msg) -> Crash.error e.at msg
       )
@@ -657,10 +657,10 @@ let rec eval (c : config) : value stack =
   | vs, [] ->
     vs
 
-  | vs, {it = Trapping msg; at} :: _ ->
+  | _vs, {it = Trapping msg; at} :: _ ->
     Trap.error at msg
 
-  | vs, es ->
+  | _vs, _es ->
     eval (step c)
 
 
@@ -668,7 +668,7 @@ let rec eval (c : config) : value stack =
 
 let invoke (func : func_inst) (vs : value list) : value list =
   let at = match func with Func.AstFunc (_, _, f) -> f.at | _ -> no_region in
-  let FuncType (ins, out) = Func.type_of func in
+  let FuncType (ins, _out) = Func.type_of func in
   if List.length vs <> List.length ins then
     Crash.error at "wrong number of arguments";
   if not (List.for_all2 (fun v -> (=) (type_of_value v)) vs ins) then
@@ -681,7 +681,7 @@ let eval_const (inst : module_inst) (const : const) : value =
   let c = config inst [] (List.map plain const.it) in
   match eval c with
   | [v] -> v
-  | vs -> Crash.error const.at "wrong number of results on stack"
+  | _vs -> Crash.error const.at "wrong number of results on stack"
 
 
 (* Modules *)
@@ -689,12 +689,12 @@ let eval_const (inst : module_inst) (const : const) : value =
 let create_func (inst : module_inst) (f : func) : func_inst =
   Func.alloc (type_ inst f.it.ftype) (ref inst) f
 
-let create_table (inst : module_inst) (tab : table) : table_inst =
+let create_table (_inst : module_inst) (tab : table) : table_inst =
   let {ttype} = tab.it in
   let TableType (_lim, t) = ttype in
   Table.alloc ttype (NullRef t)
 
-let create_memory (inst : module_inst) (mem : memory) : memory_inst =
+let create_memory (_inst : module_inst) (mem : memory) : memory_inst =
   let {mtype} = mem.it in
   Memory.alloc mtype
 
@@ -714,10 +714,10 @@ let create_export (inst : module_inst) (ex : export) : export_inst =
   in (name, ext)
 
 let create_elem (inst : module_inst) (seg : elem_segment) : elem_inst =
-  let {etype; einit; _} = seg.it in
+  let einit = seg.it.einit in
   ref (List.map (fun c -> as_ref (eval_const inst c)) einit)
 
-let create_data (inst : module_inst) (seg : data_segment) : data_inst =
+let create_data (_inst : module_inst) (seg : data_segment) : data_inst =
   let {dinit; _} = seg.it in
   ref dinit
 

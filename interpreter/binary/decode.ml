@@ -513,7 +513,7 @@ let rec instr s =
     | 0x0al -> let a, o = memop s in v128_load64_splat a o
     | 0x0bl -> let a, o = memop s in v128_store a o
     | 0x0cl -> v128_const (at v128 s)
-    | 0x0dl -> i8x16_shuffle (List.init 16 (fun x -> u8 s))
+    | 0x0dl -> i8x16_shuffle (List.init 16 (fun _x -> u8 s))
     | 0x0el -> i8x16_swizzle
     | 0x0fl -> i8x16_splat
     | 0x10l -> i16x8_splat
@@ -925,7 +925,7 @@ let code_section s =
 
 (* Element section *)
 
-let passive s =
+let passive _s =
   Passive
 
 let active s =
@@ -938,7 +938,7 @@ let active_zero s =
   let offset = const s in
   Active {index; offset}
 
-let declarative s =
+let declarative _s =
   Declarative
 
 let elem_index s =

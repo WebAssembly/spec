@@ -81,7 +81,7 @@ module V128Vec =
 struct
   type t = V128.t
   let to_vec i = V128 i
-  let of_vec n = function V128 z -> z
+  let of_vec _n = function V128 z -> z
 end
 
 
@@ -169,7 +169,7 @@ let string_of_vec = function
 let hex_string_of_vec = function
   | V128 v -> V128.to_hex_string v
 
-let string_of_ref' = ref (function NullRef t -> "null" | _ -> "ref")
+let string_of_ref' = ref (function NullRef _t -> "null" | _ -> "ref")
 let string_of_ref r = !string_of_ref' r
 
 let string_of_value = function

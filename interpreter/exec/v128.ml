@@ -109,7 +109,7 @@ struct
   let reduceop f a s = List.fold_left (fun a b -> f a (b <> IXX.zero)) a (to_lanes s)
   let cmp f x y = if f x y then IXX.of_int_s (-1) else IXX.zero
 
-  let splat x = of_lanes (List.init num_lanes (fun i -> x))
+  let splat x = of_lanes (List.init num_lanes (fun _i -> x))
   let extract_lane_s i s = List.nth (to_lanes s) i
   let extract_lane_u i s = IXX.as_unsigned (extract_lane_s i s)
   let replace_lane i v x = unopi (fun j y -> if j = i then x else y) v
@@ -212,7 +212,7 @@ struct
   let all_ones = FXX.of_float (Int64.float_of_bits (Int64.minus_one))
   let cmp f x y = if f x y then all_ones else FXX.zero
 
-  let splat x = of_lanes (List.init num_lanes (fun i -> x))
+  let splat x = of_lanes (List.init num_lanes (fun _i -> x))
   let extract_lane i s = List.nth (to_lanes s) i
   let replace_lane i v x = unopi (fun j y -> if j = i then x else y) v
 

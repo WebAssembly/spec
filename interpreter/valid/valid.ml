@@ -104,7 +104,7 @@ let push (ell1, ts1) (ell2, ts2) =
   (if ell1 = Ellipses || ell2 = Ellipses then Ellipses else NoEllipses),
   ts2 @ ts1
 
-let peek i (ell, ts) =
+let peek i (_ell, ts) =
   try List.nth (List.rev ts) i with Failure _ -> None
 
 
@@ -288,7 +288,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     ts1 --> ts2
 
   | CallIndirect (x, y) ->
-    let TableType (lim, t) = table c x in
+    let TableType (_lim, t) = table c x in
     let FuncType (ts1, ts2) = type_ c y in
     require (t = FuncRefType) x.at
       ("type mismatch: instruction requires table of functions" ^
@@ -546,13 +546,13 @@ let check_limits {min; max} range at msg =
     require (I32.le_u min max) at
       "size minimum must not be greater than maximum"
 
-let check_num_type (t : num_type) at =
+let check_num_type (_t : num_type) _at =
   ()
 
-let check_vec_type (t : vec_type) at =
+let check_vec_type (_t : vec_type) _at =
   ()
 
-let check_ref_type (t : ref_type) at =
+let check_ref_type (_t : ref_type) _at =
   ()
 
 let check_value_type (t : value_type) at =
@@ -577,7 +577,7 @@ let check_memory_type (mt : memory_type) at =
     "memory size must be at most 65536 pages (4GiB)"
 
 let check_global_type (gt : global_type) at =
-  let GlobalType (t, mut) = gt in
+  let GlobalType (t, _mut) = gt in
   check_value_type t at
 
 
@@ -623,11 +623,11 @@ let check_const (c : context) (const : const) (t : value_type) =
 
 (* Tables, Memories, & Globals *)
 
-let check_table (c : context) (tab : table) =
+let check_table (_c : context) (tab : table) =
   let {ttype} = tab.it in
   check_table_type ttype tab.at
 
-let check_memory (c : context) (mem : memory) =
+let check_memory (_c : context) (mem : memory) =
   let {mtype} = mem.it in
   check_memory_type mtype mem.at
 
@@ -656,12 +656,12 @@ let check_data_mode (c : context) (mode : segment_mode) =
   | Declarative -> assert false
 
 let check_data (c : context) (seg : data_segment) =
-  let {dinit; dmode} = seg.it in
+  let dmode = seg.it.dmode in
   check_data_mode c dmode
 
 let check_global (c : context) (glob : global) =
   let {gtype; ginit} = glob.it in
-  let GlobalType (t, mut) = gtype in
+  let GlobalType (t, _mut) = gtype in
   check_const c ginit t
 
 
