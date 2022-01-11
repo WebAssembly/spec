@@ -1,0 +1,9 @@
+(library
+ (name flags)
+ (wrapped false)
+ (modules flags))
+
+(executable
+ (name main)
+ (modules main)
+ (libraries binary flags host script_run script syntax))

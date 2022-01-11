@@ -1,0 +1,33 @@
+(library
+ (name script_run)
+ (wrapped false)
+ (modules js run)
+ (libraries
+  binary
+  exec_basic
+  exec_convert
+  exec
+  flags
+  runtime
+  script
+  syntax
+  syntax_types
+  syntax_values
+  text
+  valid
+  util))
+
+(library
+ (name script)
+ (wrapped false)
+ (modules import script)
+ (libraries
+  binary
+  exec
+  exec_convert
+  flags
+  runtime
+  syntax_types
+  syntax_values
+  syntax
+  util))
