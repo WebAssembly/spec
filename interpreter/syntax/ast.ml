@@ -63,7 +63,7 @@ type loadop = (pack_size * extension) memop
 type storeop = pack_size memop
 
 type initop = Explicit | Implicit
-type reftypeop = NullOp | I31Op | DataOp | FuncOp | RttOp
+type reftypeop = NullOp | I31Op | DataOp | ArrayOp | FuncOp | RttOp
 
 
 (* Expressions *)
@@ -138,7 +138,7 @@ and instr' =
   | ArrayNew of idx * initop          (* allocate array *)
   | ArrayGet of idx * extension option  (* read array slot *)
   | ArraySet of idx                   (* write array slot *)
-  | ArrayLen of idx                   (* read array length *)
+  | ArrayLen                          (* read array length *)
   | RttCanon of idx                   (* allocate RTT *)
   | RttSub of idx                     (* alllocate sub-RTT *)
 

@@ -15,7 +15,7 @@
   (global $t3 (rtt $t3) (rtt.sub $t3 (global.get $t0)))
   (global $t4 (rtt $t3) (rtt.sub $t3 (rtt.sub $t0 (global.get $t0))))
 
-  (table 20 dataref)
+  (table 20 (ref null data))
 
   (func $init
     (table.set (i32.const 0) (struct.new_default $t0 (global.get $t0)))
@@ -30,7 +30,7 @@
 
   (func (export "test-sub")
     (call $init)
-    (block $l (result dataref)
+    (block $l (result (ref null data))
       ;; must not succeed
       (br_on_cast_fail $l (ref.null data) (global.get $t0))
       (br_on_cast_fail $l (table.get (i32.const 0)) (global.get $t0))
@@ -53,24 +53,24 @@
       (br_on_cast_fail $l (table.get (i32.const 4)) (global.get $t4))
 
       ;; must succeed
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 0)) (global.get $t1))))
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 3)) (global.get $t1))))
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 4)) (global.get $t1))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 0)) (global.get $t1))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 3)) (global.get $t1))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 4)) (global.get $t1))))
 
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 0)) (global.get $t2))))
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 1)) (global.get $t2))))
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 3)) (global.get $t2))))
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 4)) (global.get $t2))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 0)) (global.get $t2))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 1)) (global.get $t2))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 3)) (global.get $t2))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 4)) (global.get $t2))))
 
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 0)) (global.get $t3))))
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 1)) (global.get $t3))))
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 2)) (global.get $t3))))
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 4)) (global.get $t3))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 0)) (global.get $t3))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 1)) (global.get $t3))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 2)) (global.get $t3))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 4)) (global.get $t3))))
 
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 0)) (global.get $t4))))
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 1)) (global.get $t4))))
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 2)) (global.get $t4))))
-      (drop (block (result dataref) (br_on_cast_fail 0 (table.get (i32.const 3)) (global.get $t4))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 0)) (global.get $t4))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 1)) (global.get $t4))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 2)) (global.get $t4))))
+      (drop (block (result (ref null data)) (br_on_cast_fail 0 (table.get (i32.const 3)) (global.get $t4))))
 
       (return)
     )
@@ -79,7 +79,7 @@
 
   (func (export "test-canon")
     (call $init)
-    (block $l (result dataref)
+    (block $l (result (ref null data))
       (br_on_cast_fail $l (table.get (i32.const 0)) (global.get $t0'))
       (br_on_cast_fail $l (table.get (i32.const 1)) (global.get $t0'))
       (br_on_cast_fail $l (table.get (i32.const 2)) (global.get $t0'))

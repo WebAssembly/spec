@@ -215,7 +215,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
 %token NUM_TYPE PACKED_TYPE
-%token ANYREF EQREF I31REF DATAREF FUNCREF EXTERNREF
+%token ANYREF EQREF I31REF DATAREF ARRAYREF FUNCREF EXTERNREF
 %token ANY EQ I31 DATA REF RTT EXTERN NULL
 %token MUT FIELD STRUCT ARRAY
 %token UNREACHABLE NOP DROP SELECT
@@ -228,7 +228,8 @@ let inline_func_type_explicit (c : context) x ft at =
 %token MEMORY_SIZE MEMORY_GROW MEMORY_FILL MEMORY_COPY MEMORY_INIT DATA_DROP
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
-%token REF_NULL REF_FUNC REF_I31 REF_DATA REF_EXTERN REF_TEST REF_CAST REF_EQ
+%token REF_NULL REF_FUNC REF_I31 REF_DATA REF_ARRAY REF_EXTERN
+%token REF_TEST REF_CAST REF_EQ
 %token I31_NEW I32_GET
 %token STRUCT_NEW STRUCT_GET STRUCT_SET ARRAY_NEW ARRAY_GET ARRAY_SET ARRAY_LEN
 %token RTT_CANON RTT_SUB
@@ -299,6 +300,7 @@ heap_type :
   | EQ { fun c -> EqHeapType }
   | I31 { fun c -> I31HeapType }
   | DATA { fun c -> DataHeapType }
+  | ARRAY { fun c -> ArrayHeapType }
   | FUNC { fun c -> FuncHeapType }
   | EXTERN { fun c -> ExternHeapType }
   | var { fun c -> DefHeapType (SynVar ($1 c type_).it) }
@@ -312,8 +314,9 @@ ref_type :
   | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
   | ANYREF { fun c -> (Nullable, AnyHeapType) }  /* Sugar */
   | EQREF { fun c -> (Nullable, EqHeapType) }  /* Sugar */
-  | I31REF { fun c -> (Nullable, I31HeapType) }  /* Sugar */
-  | DATAREF { fun c -> (Nullable, DataHeapType) }  /* Sugar */
+  | I31REF { fun c -> (NonNullable, I31HeapType) }  /* Sugar */
+  | DATAREF { fun c -> (NonNullable, DataHeapType) }  /* Sugar */
+  | ARRAYREF { fun c -> (NonNullable, ArrayHeapType) }  /* Sugar */
   | FUNCREF { fun c -> (Nullable, FuncHeapType) }  /* Sugar */
   | EXTERNREF { fun c -> (Nullable, ExternHeapType) }  /* Sugar */
   | LPAR RTT var RPAR  /* Sugar */
@@ -513,7 +516,7 @@ plain_instr :
   | ARRAY_NEW var { fun c -> $1 ($2 c type_) }
   | ARRAY_GET var { fun c -> $1 ($2 c type_) }
   | ARRAY_SET var { fun c -> array_set ($2 c type_) }
-  | ARRAY_LEN var { fun c -> array_len ($2 c type_) }
+  | ARRAY_LEN { fun c -> array_len }
   | RTT_CANON var { fun c -> rtt_canon ($2 c type_) }
   | RTT_SUB var { fun c -> rtt_sub ($2 c type_) }
   | CONST num { fun c -> fst (num $1 $2) }
@@ -1279,6 +1282,7 @@ result :
   | LPAR REF_EQ RPAR { RefResult EqHeapType @@ at () }
   | LPAR REF_I31 RPAR { RefResult I31HeapType @@ at () }
   | LPAR REF_DATA RPAR { RefResult DataHeapType @@ at () }
+  | LPAR REF_ARRAY RPAR { RefResult ArrayHeapType @@ at () }
   | LPAR REF_FUNC RPAR { RefResult FuncHeapType @@ at () }
   | LPAR REF_EXTERN RPAR { RefResult ExternHeapType @@ at () }
   | LPAR REF_NULL RPAR { NullResult @@ at () }

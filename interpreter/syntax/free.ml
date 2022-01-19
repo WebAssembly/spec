@@ -69,7 +69,7 @@ let num_type = function
   | I32Type | I64Type | F32Type | F64Type -> empty
 
 let heap_type = function
-  | AnyHeapType | EqHeapType | I31HeapType | DataHeapType
+  | AnyHeapType | EqHeapType | I31HeapType | DataHeapType | ArrayHeapType
   | FuncHeapType | ExternHeapType | BotHeapType -> empty
   | DefHeapType x | RttHeapType (x, _) -> var_type x
 
@@ -116,7 +116,8 @@ let rec instr (e : instr) =
   | I31New | I31Get _ -> empty
   | StructNew (x, _) | ArrayNew (x, _) -> types (idx x)
   | StructGet (x, _, _) | StructSet (x, _) -> types (idx x)
-  | ArrayGet (x, _) | ArraySet x | ArrayLen x -> types (idx x)
+  | ArrayGet (x, _) | ArraySet x -> types (idx x)
+  | ArrayLen -> empty
   | RttCanon x | RttSub x -> types (idx x)
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es

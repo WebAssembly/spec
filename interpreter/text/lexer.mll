@@ -177,6 +177,9 @@ rule token = parse
   | "i31ref" { I31REF }
   | "data" { DATA }
   | "dataref" { DATAREF }
+  | "array" { ARRAY }
+  | "arrayref" { ARRAYREF }
+  | "struct" { STRUCT }
   | "extern" { EXTERN }
   | "externref" { EXTERNREF }
   | "funcref" { FUNCREF }
@@ -184,8 +187,6 @@ rule token = parse
   | (pixx as t) { PACKED_TYPE (packed_type t) }
   | "mut" { MUT }
   | "field" { FIELD }
-  | "struct" { STRUCT }
-  | "array" { ARRAY }
 
   | (nxx as t)".const"
     { let open Source in
@@ -203,15 +204,18 @@ rule token = parse
   | "ref.func" { REF_FUNC }
   | "ref.i31" { REF_I31 }
   | "ref.data" { REF_DATA }
+  | "ref.array" { REF_ARRAY }
   | "ref.extern" { REF_EXTERN }
 
   | "ref.is_null" { REF_TEST ref_is_null }
   | "ref.is_i31" { REF_TEST ref_is_i31 }
   | "ref.is_data" { REF_TEST ref_is_data }
+  | "ref.is_array" { REF_TEST ref_is_array }
   | "ref.is_func" { REF_TEST ref_is_func }
   | "ref.as_non_null" { REF_CAST ref_as_non_null }
   | "ref.as_i31" { REF_CAST ref_as_i31 }
   | "ref.as_data" { REF_CAST ref_as_data }
+  | "ref.as_array" { REF_CAST ref_as_array }
   | "ref.as_func" { REF_CAST ref_as_func }
   | "ref.test" { REF_TEST ref_test }
   | "ref.cast" { REF_CAST ref_cast }
@@ -249,11 +253,13 @@ rule token = parse
   | "br_on_null" { BR_CAST br_on_null }
   | "br_on_i31" { BR_CAST br_on_i31 }
   | "br_on_data" { BR_CAST br_on_data }
+  | "br_on_array" { BR_CAST br_on_array }
   | "br_on_func" { BR_CAST br_on_func }
   | "br_on_cast" { BR_CAST br_on_cast }
   | "br_on_non_null" { BR_CAST_FAIL br_on_non_null }
   | "br_on_non_i31" { BR_CAST_FAIL br_on_non_i31 }
   | "br_on_non_data" { BR_CAST_FAIL br_on_non_data }
+  | "br_on_non_array" { BR_CAST br_on_non_array }
   | "br_on_non_func" { BR_CAST_FAIL br_on_non_func }
   | "br_on_cast_fail" { BR_CAST_FAIL br_on_cast_fail }
   | "return" { RETURN }

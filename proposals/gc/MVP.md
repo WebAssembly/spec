@@ -43,6 +43,10 @@ All three proposals are prerequisites.
   - `heaptype ::= ... | data`
   - the common supertype of all compound data types, like struct and array types and possibly host-defined types, for which casts are allowed
 
+* `array` is a new heap type
+  - `heaptype ::= ... | array`
+  - the common supertype of all array types
+
 * `i31` is a new heap type
   - `heaptype ::= ... | i31`
   - the type of unboxed scalars
@@ -71,6 +75,9 @@ New abbreviations are introduced for reference types in binary and text format, 
 
 * `dataref` is a new reference type
   - `dataref == (ref data)`
+
+* `arrayref` is a new reference type
+  - `arrayref == (ref array)`
 
 * `i31ref` is a new reference type
   - `i31ref == (ref i31)`
@@ -119,6 +126,9 @@ In addition to the [existing rules](https://github.com/WebAssembly/function-refe
   - `data <: eq`
   - TODO: provide a way to make data types non-eq, especially immutable ones?
 
+* `arrayref` is a subtype of `dataref`
+  - `array <: data`
+
 * `i31ref` is a subtype of `eqref`
   - `i31 <: eq`
 
@@ -129,6 +139,11 @@ In addition to the [existing rules](https://github.com/WebAssembly/function-refe
   - `(type $t) <: func`
      - if `$t = <functype>`
      - or `$t = type ht` and `rt <: func` (imports)
+
+* Any concrete array type is a subtype of `array`
+  - `(type $t) <: array`
+     - if `$t = <arraytype>`
+     - or `$t = type ht` and `rt <: array` (imports)
 
 * `rtt n? $t` is a subtype of `eq`
   - `rtt n? $t <: eq`
@@ -145,6 +160,8 @@ Note: This creates a hierarchy of *abstract* Wasm heap types that looks as follo
    eq    func
   /  \
 i31  data
+       \
+       array
 ```
 All *concrete* heap types (of the form `(type $t)`) are situated below either `data` or `func`.
 RTTs are below `eq`.
@@ -293,9 +310,8 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
     - and `t = unpacked(t')`
   - traps on `null` or if the dynamic index is out of bounds
 
-* `array.len <typeidx>` inquires the length of an array
-  - `array.len $t : [(ref null $t)] -> [i32]`
-    - iff `$t = array (mut t)`
+* `array.len` inquires the length of an array
+  - `array.len : [(ref null array)] -> [i32]`
   - traps on `null`
 
 
@@ -522,7 +538,7 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb14 | `array.get_s $t` | `$t : typeidx` |
 | 0xfb15 | `array.get_u $t` | `$t : typeidx` |
 | 0xfb16 | `array.set $t` | `$t : typeidx` |
-| 0xfb17 | `array.len $t` | `$t : typeidx` |
+| 0xfb17 | `array.len` | `_ : u32` (TODO: remove, was typeidx) |
 | 0xfb20 | `i31.new` |  |
 | 0xfb21 | `i31.get_s` |  |
 | 0xfb22 | `i31.get_u` |  |

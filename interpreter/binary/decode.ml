@@ -168,6 +168,7 @@ let heap_type s =
     | -0x17 -> let n = vu32 s in RttHeapType (var_type s, Some n)
     | -0x18 -> RttHeapType (var_type s, None)
     | -0x19 -> DataHeapType
+    | -0x20 -> ArrayHeapType
     | _ -> error s pos "malformed heap type"
     )
   | _ ->
@@ -184,10 +185,11 @@ let ref_type s =
   | -0x13 -> (Nullable, EqHeapType)
   | -0x14 -> (Nullable, heap_type s)
   | -0x15 -> (NonNullable, heap_type s)
-  | -0x16 -> (Nullable, I31HeapType)
+  | -0x16 -> (NonNullable, I31HeapType)
   | -0x17 -> let n = vu32 s in (NonNullable, RttHeapType (var_type s, Some n))
   | -0x18 -> (NonNullable, RttHeapType (var_type s, None))
-  | -0x19 -> (Nullable, DataHeapType)
+  | -0x19 -> (NonNullable, DataHeapType)
+  | -0x20 -> (NonNullable, ArrayHeapType)
   | _ -> error s pos "malformed reference type"
 
 let value_type s =
@@ -562,7 +564,7 @@ let rec instr s =
     | 0x14l -> array_get_s (at var s)
     | 0x15l -> array_get_u (at var s)
     | 0x16l -> array_set (at var s)
-    | 0x17l -> array_len (at var s)
+    | 0x17l -> let _ = var s in array_len  (* TODO: remove var *)
 
     | 0x20l -> i31_new
     | 0x21l -> i31_get_s
@@ -579,9 +581,11 @@ let rec instr s =
     | 0x50l -> ref_is_func
     | 0x51l -> ref_is_data
     | 0x52l -> ref_is_i31
+    | 0x53l -> ref_is_array
     | 0x58l -> ref_as_func
     | 0x59l -> ref_as_data
     | 0x5al -> ref_as_i31
+    | 0x5bl -> ref_as_array
 
     | 0x60l -> br_on_func (at var s)
     | 0x61l -> br_on_data (at var s)
@@ -589,6 +593,8 @@ let rec instr s =
     | 0x63l -> br_on_non_func (at var s)
     | 0x64l -> br_on_non_data (at var s)
     | 0x65l -> br_on_non_i31 (at var s)
+    | 0x66l -> br_on_array (at var s)
+    | 0x67l -> br_on_non_array (at var s)
 
     | n -> illegal2 s pos b n
     )

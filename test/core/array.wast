@@ -63,6 +63,10 @@
   (type $vec (array f32))
   (type $mvec (array (mut f32)))
 
+  (func (export "new") (param $i i32) (result arrayref)
+    (array.new_default $vec (i32.const 3) (rtt.canon $vec))
+  )
+
   (func $get (param $i i32) (param $v (ref $vec)) (result f32)
     (array.get $vec (local.get $v) (local.get $i))
   )
@@ -83,14 +87,16 @@
     )
   )
 
-  (func $len (param $v (ref $vec)) (result i32)
-    (array.len $vec (local.get $v))
+  (func $len (param $v (ref array)) (result i32)
+    (array.len (local.get $v))
   )
   (func (export "len") (result i32)
     (call $len (array.new_default $vec (i32.const 3) (rtt.canon $vec)))
   )
 )
 
+(assert_return (invoke "new" (i32.const 0)) (ref.array))
+(assert_return (invoke "new" (i32.const 0)) (ref.data))
 (assert_return (invoke "get" (i32.const 0)) (f32.const 0))
 (assert_return (invoke "set_get" (i32.const 1) (f32.const 7)) (f32.const 7))
 (assert_return (invoke "len") (i32.const 3))

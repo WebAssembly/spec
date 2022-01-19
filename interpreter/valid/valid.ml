@@ -90,7 +90,7 @@ let check_num_type (c : context) (t : num_type) at =
 
 let check_heap_type (c : context) (t : heap_type) at =
   match t with
-  | AnyHeapType | EqHeapType | I31HeapType | DataHeapType
+  | AnyHeapType | EqHeapType | I31HeapType | DataHeapType | ArrayHeapType
   | FuncHeapType | ExternHeapType -> ()
   | DefHeapType (SynVar x) -> ignore (type_ c (x @@ at))
   | RttHeapType (SynVar x, _) -> ignore (type_ c (x @@ at))
@@ -277,6 +277,7 @@ let type_reftypeop op ht =
   | NullOp -> ht
   | I31Op -> I31HeapType
   | DataOp -> DataHeapType
+  | ArrayOp -> ArrayHeapType
   | FuncOp -> FuncHeapType
   | RttOp -> assert false
 
@@ -737,9 +738,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let t = unpacked_storage_type st in
     [RefType (Nullable, DefHeapType (SynVar x.it)); NumType I32Type; t] --> []
 
-  | ArrayLen x ->
-    let ArrayType _ = array_type c x in
-    [RefType (Nullable, DefHeapType (SynVar x.it))] --> [NumType I32Type]
+  | ArrayLen ->
+    [RefType (Nullable, ArrayHeapType)] --> [NumType I32Type]
 
   | RttCanon x ->
     ignore (type_ c x);
