@@ -1,0 +1,47 @@
+(copy_files#
+ (files binary/*.ml*))
+
+(copy_files#
+ (files exec/*.ml*))
+
+(copy_files#
+ (files host/*.ml*))
+
+(copy_files#
+ (files main/flags.ml))
+
+(copy_files#
+ (files runtime/*.ml*))
+
+(copy_files#
+ (files script/*.ml*))
+
+(copy_files#
+ (files syntax/*.ml*))
+
+(copy_files#
+ (files text/*.ml*))
+
+(copy_files#
+ (files util/*.ml*))
+
+(copy_files#
+ (files valid/*.ml*))
+
+(library
+ (public_name wasm)
+ (wrapped false))
+
+; we don't use the `ocamllex` stanza directly as there's no way to pass the `-ml`
+; if we don't pass `-ml` we have a transition table overflow...
+
+(rule
+ (target lexer.ml)
+ (deps lexer.mll)
+ (action
+  (chdir
+   %{workspace_root}
+   (run %{bin:ocamllex} -q -ml -o %{target} %{deps}))))
+
+(ocamlyacc
+ (modules parser))

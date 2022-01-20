@@ -3,6 +3,7 @@ let encode s =
   match def.Source.it with
   | Script.Textual m -> Encode.encode m
   | Script.Encoded (_, bs) -> bs
+  | _ -> failwith "unimplemented"
 
 let decode s width =
   let m = Decode.decode "(decode)" s in

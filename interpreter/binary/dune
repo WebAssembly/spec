@@ -1,4 +1,0 @@
-(library
- (name binary)
- (wrapped false)
- (libraries exec_basic exec_convert syntax syntax_types syntax_values util))

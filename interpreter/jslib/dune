@@ -1,0 +1,4 @@
+(executable
+ (name wasm)
+ (modes js)
+ (libraries wasm))

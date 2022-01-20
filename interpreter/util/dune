@@ -1,3 +1,0 @@
-(library
- (name util)
- (wrapped false))

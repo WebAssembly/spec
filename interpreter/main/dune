@@ -1,9 +1,6 @@
-(library
- (name flags)
- (wrapped false)
- (modules flags))
-
 (executable
+ (public_name wasm)
  (name main)
  (modules main)
- (libraries binary flags host script_run script syntax))
+ (modes byte exe)
+ (libraries wasm))

@@ -1,0 +1,3 @@
+(test
+ (name smallint)
+ (libraries wasm))
