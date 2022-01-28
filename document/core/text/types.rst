@@ -93,6 +93,10 @@ Function Types
        &\Rightarrow& t \\
    \end{array}
 
+.. note::
+   The optional identifier names for parameters in a function type only have documentation purpose.
+   They cannot be referenced from anywhere.
+
 
 Abbreviations
 .............
