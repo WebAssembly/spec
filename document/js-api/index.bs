@@ -92,7 +92,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: BigInt; url: #sec-ecmascript-language-types-bigint-type
     type: abstract-op
         text: CreateMethodProperty; url: sec-createmethodproperty
-urlPrefix: https://webassembly.github.io/reference-types/core/; spec: WebAssembly; type: dfn
+urlPrefix: https://webassembly.github.io/exception-handling/core/; spec: WebAssembly; type: dfn
     url: valid/modules.html#valid-module
         text: valid
         text: WebAssembly module validation
