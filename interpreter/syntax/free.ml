@@ -70,7 +70,7 @@ let num_type = function
 
 let heap_type = function
   | AnyHeapType | EqHeapType | I31HeapType | DataHeapType | ArrayHeapType
-  | FuncHeapType | ExternHeapType | BotHeapType -> empty
+  | FuncHeapType | BotHeapType -> empty
   | DefHeapType x | RttHeapType (x, _) -> var_type x
 
 let ref_type = function

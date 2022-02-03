@@ -21,7 +21,6 @@ and heap_type =
   | DataHeapType
   | ArrayHeapType
   | FuncHeapType
-  | ExternHeapType
   | DefHeapType of var
   | RttHeapType of var * int32 option
   | BotHeapType
@@ -167,7 +166,6 @@ let sem_heap_type c = function
   | DataHeapType -> DataHeapType
   | ArrayHeapType -> ArrayHeapType
   | FuncHeapType -> FuncHeapType
-  | ExternHeapType -> ExternHeapType
   | DefHeapType x -> DefHeapType (sem_var_type c x)
   | RttHeapType (x, no) -> RttHeapType (sem_var_type c x, no)
   | BotHeapType -> BotHeapType
@@ -288,7 +286,6 @@ and string_of_heap_type = function
   | DataHeapType -> "data"
   | ArrayHeapType -> "array"
   | FuncHeapType -> "func"
-  | ExternHeapType -> "extern"
   | DefHeapType x -> string_of_var x
   | RttHeapType (x, None) -> "(rtt " ^ string_of_var x ^ ")"
   | RttHeapType (x, Some n) ->

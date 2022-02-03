@@ -31,10 +31,6 @@ All three proposals are prerequisites.
 
 [Heap types](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md#types) classify reference types and are extended:
 
-* `any` is a new heap type
-  - `heaptype ::= ... | any`
-  - the common supertype of all referenceable types
-
 * `eq` is a new heap type
   - `heaptype ::= ... | eq`
   - the common supertype of all referenceable types on which comparison (`ref.eq`) is allowed
@@ -56,6 +52,10 @@ All three proposals are prerequisites.
   - `rtt n? t ok` iff `t ok`
   - the constant `n`, if present, encodes the static knowledge that this type has `n` dynamic supertypes (see [Runtime types](#runtime-types))
 
+* `extern` is renamed back to `any`
+  - the common supertype of all referenceable types
+  - the name `extern` is kept as an alias in the text format for backwards compatibility
+
 * Note: heap types `func` and `extern` already exist via [reference types proposal](https://github.com/WebAssembly/reference-types), and `(ref null? $t)` via [typed references](https://github.com/WebAssembly/function-references)
 
 We distinguish these *abstract* heap types from *concrete* heap types `(type $t)`.
@@ -66,9 +66,6 @@ Moreover, they form a small [subtype hierarchy](#subtyping).
 #### Reference Types
 
 New abbreviations are introduced for reference types in binary and text format, corresponding to `funcref` and `externref`:
-
-* `anyref` is a new reference type
-  - `anyref == (ref null any)`
 
 * `eqref` is a new reference type
   - `eqref == (ref null eq)`
@@ -84,6 +81,10 @@ New abbreviations are introduced for reference types in binary and text format, 
 
 * `rtt <n>? <typeidx>` is a new reference type
   - `(rtt <n>? $t) == (ref (rtt <n>? $t))`
+
+* `externref` is renamed to `anyref`
+  - `anyref == (ref null any)`
+  - the name `externref` is kept as an alias in the text format for backwards compatibility
 
 
 #### Type Definitions
@@ -166,14 +167,10 @@ i31  data
 All *concrete* heap types (of the form `(type $t)`) are situated below either `data` or `func`.
 RTTs are below `eq`.
 
-In addition, the abstract heap type `extern` is also a subtype of `any`.
-Its interpretation is defined by the host environment.
-It may contain additional host-defined types that are neither of the above three leaf type categories.
-It may also overlap with some or all of these categories, as would be observable by applying a classification instruction like `ref.is_func` to a value of type `externref`.
-The possible outcomes of such an operation hence depend on the host environment.
-(For example, in a JavaScript embedding, `externref` could be inhabited by all JS values -- which is a natural choice, because JavaScript is untyped; but some of its values are JS-side representations of Wasm values per the JS API, and those can also be observed as `data` or `func` references. Another possible interpretation could be that `data` is disjoint from `extern`, which would be determined by the coercions allowed by the JS API at the JS/Wasm boundary. While such an interpretation is probably not attractive for JavaScript, it would be natural in other embeddings such as the C/C++ API, where different references are represented with different host types.)
+In addition, a host environment may introduce additional inhabitants of type `any` that are are in neither of the above three leaf type categories.
+The interpretation of such values is defined by the host environment.
 
-Note: In the future, this hierarchy could be refined to distinguish compound data types that are not subtypes of `eq`.
+Note: In the future, this hierarchy could be refined, e.g., to distinguish compound data types that are not subtypes of `eq`.
 
 
 ##### Defined Types
@@ -397,8 +394,6 @@ Tentatively, support a type of guaranteed unboxed scalars.
 
 Note: The [reference types](https://github.com/WebAssembly/reference-types) and [typed function references](https://github.com/WebAssembly/function-references)already introduce similar `ref.is_null`, `br_on_null`, and `br_on_non_null` instructions.
 
-Note: There are no instructions to check for `externref`, since that can consist of a diverse set of different object representations that would be costly to check for exhaustively.
-
 Note: The `br_on_*` instructions allow an operand of unrelated reference type, even though this cannot possibly succeed. That's because subtyping allows to forget that information, so by the subtype substitutibility property, it would be accepted in any case. The given typing rules merely allow this type to also propagate to the result, which avoids the need to compute a least upper bound between the operand type and the target type in the typing algorithm.
 
 
@@ -480,8 +475,7 @@ This extends the [encodings](https://github.com/WebAssembly/function-references/
 | Opcode | Type            | Parameters | Note |
 | ------ | --------------- | ---------- | ---- |
 | -0x10  | `funcref`       |            | shorthand, from reftype proposal |
-| -0x11  | `externref`     |            | shorthand, from reftype proposal |
-| -0x12  | `anyref`        |            | shorthand |
+| -0x11  | `anyref`        |            | shorthand, from reftype proposal |
 | -0x13  | `eqref`         |            | shorthand |
 | -0x14  | `(ref null ht)` | `ht : heaptype (s33)` | from funcref proposal |
 | -0x15  | `(ref ht)`      | `ht : heaptype (s33)` | from funcref proposal |
@@ -499,8 +493,7 @@ The opcode for heap types is encoded as an `s33`.
 | ------ | --------------- | ---------- | ---- |
 | i >= 0 | `(type i)`      |            | from funcref proposal |
 | -0x10  | `func`          |            | from funcref proposal |
-| -0x11  | `extern`        |            | from funcref proposal |
-| -0x12  | `any`           |            | |
+| -0x11  | `any`           |            | from funcref proposal |
 | -0x13  | `eq`            |            | |
 | -0x16  | `i31`           |            | |
 | -0x17  | `(rtt n i)`     | `n : u32`, `i : typeidx` | |

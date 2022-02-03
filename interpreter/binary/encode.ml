@@ -106,21 +106,24 @@ struct
     | F64Type -> vs7 (-0x04)
 
   let heap_type = function
-    | AnyHeapType -> vs7 (-0x12)
+    | AnyHeapType -> vs7 (-0x11)
     | EqHeapType -> vs7 (-0x13)
     | I31HeapType -> vs7 (-0x16)
     | DataHeapType -> vs7 (-0x19)
     | ArrayHeapType -> vs7 (-0x1a)
     | FuncHeapType -> vs7 (-0x10)
-    | ExternHeapType -> vs7 (-0x11)
     | DefHeapType x -> var_type vs33 x
     | RttHeapType (x, None) -> vs7 (-0x18); var_type vu32 x
     | RttHeapType (x, Some n) -> vs7 (-0x17); vs32 n; var_type vu32 x
     | BotHeapType -> assert false
 
   let ref_type = function
+    | (Nullable, AnyHeapType) -> vs7 (-0x11)
+    | (Nullable, EqHeapType) -> vs7 (-0x13)
+    | (NonNullable, I31HeapType) -> vs7 (-0x16)
+    | (NonNullable, DataHeapType) -> vs7 (-0x19)
+    | (NonNullable, ArrayHeapType) -> vs7 (-0x1a)
     | (Nullable, FuncHeapType) -> vs7 (-0x10)
-    | (Nullable, ExternHeapType) -> vs7 (-0x11)
     | (Nullable, t) -> vs7 (-0x14); heap_type t
     | (NonNullable, t) -> vs7 (-0x15); heap_type t
 

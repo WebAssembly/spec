@@ -302,7 +302,7 @@ heap_type :
   | DATA { fun c -> DataHeapType }
   | ARRAY { fun c -> ArrayHeapType }
   | FUNC { fun c -> FuncHeapType }
-  | EXTERN { fun c -> ExternHeapType }
+  | EXTERN { fun c -> AnyHeapType }
   | var { fun c -> DefHeapType (SynVar ($1 c type_).it) }
   | LPAR RTT var RPAR  /* Sugar */
     { fun c -> RttHeapType (SynVar ($3 c type_).it, None) }
@@ -318,7 +318,7 @@ ref_type :
   | DATAREF { fun c -> (NonNullable, DataHeapType) }  /* Sugar */
   | ARRAYREF { fun c -> (NonNullable, ArrayHeapType) }  /* Sugar */
   | FUNCREF { fun c -> (Nullable, FuncHeapType) }  /* Sugar */
-  | EXTERNREF { fun c -> (Nullable, ExternHeapType) }  /* Sugar */
+  | EXTERNREF { fun c -> (Nullable, AnyHeapType) }  /* Sugar */
   | LPAR RTT var RPAR  /* Sugar */
     { fun c -> (NonNullable, RttHeapType (SynVar ($3 c type_).it, None)) }
   | LPAR RTT NAT var RPAR  /* Sugar */
@@ -1284,7 +1284,6 @@ result :
   | LPAR REF_DATA RPAR { RefResult DataHeapType @@ at () }
   | LPAR REF_ARRAY RPAR { RefResult ArrayHeapType @@ at () }
   | LPAR REF_FUNC RPAR { RefResult FuncHeapType @@ at () }
-  | LPAR REF_EXTERN RPAR { RefResult ExternHeapType @@ at () }
   | LPAR REF_NULL RPAR { NullResult @@ at () }
 
 result_list :
