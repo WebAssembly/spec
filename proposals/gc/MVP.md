@@ -489,6 +489,7 @@ This extends the [encodings](https://github.com/WebAssembly/function-references/
 | -0x17  | `(rtt n $t)`    | `n : u32`, `i : typeidx` | shorthand |
 | -0x18  | `(rtt $t)`      | `i : typeidx` | shorthand |
 | -0x19  | `dataref`       |            | shorthand |
+| -0x1a  | `arrayref`      |            | shorthand |
 
 #### Heap Types
 
@@ -505,6 +506,7 @@ The opcode for heap types is encoded as an `s33`.
 | -0x17  | `(rtt n i)`     | `n : u32`, `i : typeidx` | |
 | -0x18  | `(rtt i)`       | `i : typeidx` | |
 | -0x19  | `data`          |            | |
+| -0x1a  | `array`         |            | |
 
 #### Defined Types
 

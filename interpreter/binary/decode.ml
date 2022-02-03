@@ -168,7 +168,7 @@ let heap_type s =
     | -0x17 -> let n = vu32 s in RttHeapType (var_type s, Some n)
     | -0x18 -> RttHeapType (var_type s, None)
     | -0x19 -> DataHeapType
-    | -0x20 -> ArrayHeapType
+    | -0x1a -> ArrayHeapType
     | _ -> error s pos "malformed heap type"
     )
   | _ ->
@@ -189,7 +189,7 @@ let ref_type s =
   | -0x17 -> let n = vu32 s in (NonNullable, RttHeapType (var_type s, Some n))
   | -0x18 -> (NonNullable, RttHeapType (var_type s, None))
   | -0x19 -> (NonNullable, DataHeapType)
-  | -0x20 -> (NonNullable, ArrayHeapType)
+  | -0x1a -> (NonNullable, ArrayHeapType)
   | _ -> error s pos "malformed reference type"
 
 let value_type s =

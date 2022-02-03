@@ -110,7 +110,7 @@ struct
     | EqHeapType -> vs7 (-0x13)
     | I31HeapType -> vs7 (-0x16)
     | DataHeapType -> vs7 (-0x19)
-    | ArrayHeapType -> vs7 (-0x20)
+    | ArrayHeapType -> vs7 (-0x1a)
     | FuncHeapType -> vs7 (-0x10)
     | ExternHeapType -> vs7 (-0x11)
     | DefHeapType x -> var_type vs33 x
