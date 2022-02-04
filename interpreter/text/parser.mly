@@ -39,6 +39,38 @@ let ati i =
 let num f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
+let vec f shape ss at =
+  try f shape ss at with
+  | Failure _ -> error at "constant out of range"
+  | Invalid_argument _ -> error at "wrong number of lane literals"
+
+let vec_lane_nan shape l at =
+  let open Value in
+  match shape with
+  | V128.F32x4 () -> NanPat (F32 l @@ at)
+  | V128.F64x2 () -> NanPat (F64 l @@ at)
+  | _ -> error at "invalid vector constant"
+
+let vec_lane_lit shape l at =
+  let open Value in
+  match shape with
+  | V128.I8x16 () -> NumPat (I32 (I8.of_string l) @@ at)
+  | V128.I16x8 () -> NumPat (I32 (I16.of_string l) @@ at)
+  | V128.I32x4 () -> NumPat (I32 (I32.of_string l) @@ at)
+  | V128.I64x2 () -> NumPat (I64 (I64.of_string l) @@ at)
+  | V128.F32x4 () -> NumPat (F32 (F32.of_string l) @@ at)
+  | V128.F64x2 () -> NumPat (F64 (F64.of_string l) @@ at)
+
+let vec_lane_index s at =
+  match int_of_string s with
+  | n when 0 <= n && n < 256 -> n
+  | _ | exception Failure _ -> error at "malformed lane index"
+
+let shuffle_lit ss at =
+  if not (List.length ss = 16) then
+    error at "invalid lane length";
+  List.map (fun s -> vec_lane_index s.it s.at) ss
+
 let nanop f nan =
   let open Source in
   let open Value in
@@ -207,7 +239,7 @@ let inline_func_type_explicit (c : context) x ft at =
 
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
-%token NUM_TYPE FUNCREF EXTERNREF REF EXTERN NULL MUT
+%token NUM_TYPE VEC_TYPE VEC_SHAPE FUNCREF EXTERNREF REF EXTERN NULL MUT
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP LET
 %token BR BR_IF BR_TABLE BR_ON_NULL BR_ON_NON_NULL
@@ -219,6 +251,10 @@ let inline_func_type_explicit (c : context) x ft at =
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token REF_NULL REF_FUNC REF_EXTERN REF_IS_NULL REF_AS_NON_NULL
+%token VEC_LOAD VEC_STORE VEC_LOAD_LANE VEC_STORE_LANE
+%token VEC_CONST VEC_UNARY VEC_BINARY VEC_TERNARY VEC_TEST
+%token VEC_SHIFT VEC_BITMASK VEC_SHUFFLE
+%token VEC_EXTRACT VEC_REPLACE
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
@@ -235,7 +271,9 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<string> STRING
 %token<string> VAR
 %token<Types.num_type> NUM_TYPE
+%token<Types.vec_type> VEC_TYPE
 %token<string Source.phrase -> Ast.instr' * Value.num> CONST
+%token<V128.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Value.vec> VEC_CONST
 %token<Ast.instr'> UNARY
 %token<Ast.instr'> BINARY
 %token<Ast.instr'> TEST
@@ -243,8 +281,22 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<Ast.instr'> CONVERT
 %token<int option -> Memory.offset -> Ast.instr'> LOAD
 %token<int option -> Memory.offset -> Ast.instr'> STORE
+%token<int option -> Memory.offset -> Ast.instr'> VEC_LOAD
+%token<int option -> Memory.offset -> Ast.instr'> VEC_STORE
+%token<int option -> Memory.offset -> int -> Ast.instr'> VEC_LOAD_LANE
+%token<int option -> Memory.offset -> int -> Ast.instr'> VEC_STORE_LANE
+%token<Ast.instr'> VEC_UNARY
+%token<Ast.instr'> VEC_BINARY
+%token<Ast.instr'> VEC_TERNARY
+%token<Ast.instr'> VEC_TEST
+%token<Ast.instr'> VEC_SHIFT
+%token<Ast.instr'> VEC_BITMASK
+%token<Ast.instr'> VEC_SPLAT
+%token<int -> Ast.instr'> VEC_EXTRACT
+%token<int -> Ast.instr'> VEC_REPLACE
 %token<string> OFFSET_EQ_NAT
 %token<string> ALIGN_EQ_NAT
+%token<V128.shape> VEC_SHAPE
 
 %token<Script.nan> NAN
 
@@ -286,6 +338,7 @@ ref_type :
 
 value_type :
   | NUM_TYPE { fun c -> NumType $1 }
+  | VEC_TYPE { fun c -> VecType $1 }
   | ref_type { fun c -> RefType ($1 c) }
 
 value_type_list :
@@ -300,18 +353,20 @@ def_type :
   | LPAR FUNC func_type RPAR { fun c -> FuncDefType ($3 c) }
 
 func_type :
-  | /* empty */
-    { fun c -> FuncType ([], []) }
-  | LPAR RESULT value_type_list RPAR func_type
-    { fun c -> let FuncType (ins, out) = $5 c in
-      if ins <> [] then error (at ()) "result before parameter";
-      FuncType (ins, snd $3 c @ out) }
+  | func_type_result
+    { fun c -> FuncType ([], $1 c) }
   | LPAR PARAM value_type_list RPAR func_type
     { fun c -> let FuncType (ins, out) = $5 c in
       FuncType (snd $3 c @ ins, out) }
   | LPAR PARAM bind_var value_type RPAR func_type  /* Sugar */
     { fun c -> let FuncType (ins, out) = $6 c in
       FuncType ($4 c :: ins, out) }
+
+func_type_result :
+  | /* empty */
+    { fun c -> [] }
+  | LPAR RESULT value_type_list RPAR func_type_result
+    { fun c -> snd $3 c @ $5 c }
 
 table_type :
   | limits ref_type { fun c -> TableType ($1, $2 c) }
@@ -333,6 +388,10 @@ num :
   | NAT { $1 @@ at () }
   | INT { $1 @@ at () }
   | FLOAT { $1 @@ at () }
+
+num_list:
+  | /* empty */ { [] }
+  | num num_list { $1 :: $2 }
 
 var :
   | NAT { let at = at () in fun c lookup -> nat32 $1 at @@ at }
@@ -427,6 +486,12 @@ plain_instr :
   | ELEM_DROP var { fun c -> elem_drop ($2 c elem) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
+  | VEC_LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
+  | VEC_STORE offset_opt align_opt { fun c -> $1 $3 $2 }
+  | VEC_LOAD_LANE offset_opt align_opt NAT
+    { let at = at () in fun c -> $1 $3 $2 (vec_lane_index $4 at) }
+  | VEC_STORE_LANE offset_opt align_opt NAT
+    { let at = at () in fun c -> $1 $3 $2 (vec_lane_index $4 at) }
   | MEMORY_SIZE { fun c -> memory_size }
   | MEMORY_GROW { fun c -> memory_grow }
   | MEMORY_FILL { fun c -> memory_fill }
@@ -443,6 +508,17 @@ plain_instr :
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
+  | VEC_CONST VEC_SHAPE num_list { let at = at () in fun c -> fst (vec $1 $2 $3 at) }
+  | VEC_UNARY { fun c -> $1 }
+  | VEC_BINARY { fun c -> $1 }
+  | VEC_TERNARY { fun c -> $1 }
+  | VEC_TEST { fun c -> $1 }
+  | VEC_SHIFT { fun c -> $1 }
+  | VEC_BITMASK { fun c -> $1 }
+  | VEC_SHUFFLE num_list { let at = at () in fun c -> i8x16_shuffle (shuffle_lit $2 at) }
+  | VEC_SPLAT { fun c -> $1 }
+  | VEC_EXTRACT NAT { let at = at () in fun c -> $1 (vec_lane_index $2 at) }
+  | VEC_REPLACE NAT { let at = at () in fun c -> $1 (vec_lane_index $2 at) }
 
 
 select_instr :
@@ -1148,7 +1224,7 @@ script_module :
     { $3, Quoted ("quote:" ^ string_of_pos (at()).left, $5) @@ at() }
 
 action :
-  | LPAR INVOKE module_var_opt name const_list RPAR
+  | LPAR INVOKE module_var_opt name literal_list RPAR
     { Invoke ($3, $4, $5) @@ at () }
   | LPAR GET module_var_opt name RPAR
     { Get ($3, $4) @@ at() }
@@ -1183,22 +1259,45 @@ meta :
   | LPAR OUTPUT script_var_opt STRING RPAR { Output ($3, Some $4) @@ at () }
   | LPAR OUTPUT script_var_opt RPAR { Output ($3, None) @@ at () }
 
-const :
-  | LPAR CONST num RPAR { Value.Num (snd (num $2 $3)) @@ at () }
-  | LPAR REF_NULL heap_type RPAR
-    { Value.Ref (Value.NullRef ($3 (empty_context ()))) @@ at () }
-  | LPAR REF_EXTERN NAT RPAR { Value.Ref (ExternRef (nat32 $3 (ati 3))) @@ at () }
+literal_num :
+  | LPAR CONST num RPAR { snd (num $2 $3) }
 
-const_list :
+literal_vec :
+  | LPAR VEC_CONST VEC_SHAPE num_list RPAR { snd (vec $2 $3 $4 (at ())) }
+
+literal_ref :
+  | LPAR REF_NULL heap_type RPAR { Value.NullRef ($3 (empty_context ())) }
+  | LPAR REF_EXTERN NAT RPAR { Script.ExternRef (nat32 $3 (ati 3)) }
+
+literal :
+  | literal_num { Value.Num $1 @@ at () }
+  | literal_vec { Value.Vec $1 @@ at () }
+  | literal_ref { Value.Ref $1 @@ at () }
+
+literal_list :
   | /* empty */ { [] }
-  | const const_list { $1 :: $2 }
+  | literal literal_list { $1 :: $2 }
+
+numpat :
+  | num { fun sh -> vec_lane_lit sh $1.it $1.at }
+  | NAN { fun sh -> vec_lane_nan sh $1 (ati 3) }
+
+numpat_list:
+  | /* empty */ { [] }
+  | numpat numpat_list { $1 :: $2 }
 
 result :
-  | const { LitResult $1 @@ at () }
-  | LPAR CONST NAN RPAR { NanResult (nanop $2 ($3 @@ ati 3)) @@ at () }
-  | LPAR REF_FUNC RPAR { RefResult FuncHeapType @@ at () }
-  | LPAR REF_EXTERN RPAR { RefResult ExternHeapType @@ at () }
-  | LPAR REF_NULL RPAR { NullResult @@ at () }
+  | literal_num { NumResult (NumPat ($1 @@ at())) @@ at () }
+  | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ ati 3))) @@ at () }
+  | literal_ref { RefResult (RefPat ($1 @@ at ())) @@ at () }
+  | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncHeapType) @@ at () }
+  | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternHeapType) @@ at () }
+  | LPAR REF_NULL RPAR { RefResult NullPat @@ at () }
+  | LPAR VEC_CONST VEC_SHAPE numpat_list RPAR {
+    if V128.num_lanes $3 <> List.length $4 then
+      error (at ()) "wrong number of lane literals";
+    VecResult (VecPat (Value.V128 ($3, List.map (fun lit -> lit $3) $4))) @@ at ()
+  }
 
 result_list :
   | /* empty */ { [] }

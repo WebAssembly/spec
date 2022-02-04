@@ -1,3 +1,4 @@
 # Proposals
 
-This directory contains overviews for post-MVP proposals that are included in this repository.
+This directory contains overviews for post-MVP proposals that have been finished and merged into the spec.
+Proposals that are not yet finished can be found at https://github.com/WebAssembly/proposals.

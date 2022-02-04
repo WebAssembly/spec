@@ -69,6 +69,9 @@ let var_type = function
 let num_type = function
   | I32Type | I64Type | F32Type | F64Type -> empty
 
+let vec_type = function
+  | V128Type -> empty
+
 let heap_type = function
   | FuncHeapType | ExternHeapType | BotHeapType -> empty
   | DefHeapType x -> var_type x
@@ -78,6 +81,7 @@ let ref_type = function
 
 let value_type = function
   | NumType t -> num_type t
+  | VecType t -> vec_type t
   | RefType t -> ref_type t
   | BotType -> empty
 
@@ -120,7 +124,14 @@ let rec instr (e : instr) =
   | TableCopy (x, y) -> tables (idx x) ++ tables (idx y)
   | TableInit (x, y) -> tables (idx x) ++ elems (idx y)
   | ElemDrop x -> elems (idx x)
-  | Load _ | Store _ | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
+  | Load _ | Store _
+  | VecLoad _ | VecStore _ | VecLoadLane _ | VecStoreLane _
+  | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
+    memories zero
+  | VecConst _ | VecTest _ | VecUnary _ | VecBinary _ | VecCompare _
+  | VecConvert _ | VecShift _ | VecBitmask _
+  | VecTestBits _ | VecUnaryBits _ | VecBinaryBits _ | VecTernaryBits _
+  | VecSplat _ | VecExtract _ | VecReplace _ ->
     memories zero
   | MemoryInit x -> memories zero ++ datas (idx x)
   | DataDrop x -> datas (idx x)

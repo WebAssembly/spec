@@ -171,6 +171,242 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
+.. index:: ! vector instruction, numeric vectors, number, value, value type, SIMD
+   pair: abstract syntax; instruction
+.. _syntax-laneidx:
+.. _syntax-shape:
+.. _syntax-half:
+.. _syntax-vvunop:
+.. _syntax-vvbinop:
+.. _syntax-vvternop:
+.. _syntax-vvtestop:
+.. _syntax-vitestop:
+.. _syntax-virelop:
+.. _syntax-vfrelop:
+.. _syntax-vishiftop:
+.. _syntax-viunop:
+.. _syntax-vibinop:
+.. _syntax-viminmaxop:
+.. _syntax-visatbinop:
+.. _syntax-vfunop:
+.. _syntax-vfbinop:
+.. _syntax-instr-vec:
+
+Vector Instructions
+~~~~~~~~~~~~~~~~~~~
+
+Vector instructions (also known as *SIMD* instructions, single data multiple value) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{ishape} & \ishape &::=&
+     \K{i8x16} ~|~ \K{i16x8} ~|~ \K{i32x4} ~|~ \K{i64x2} \\
+   \production{fshape} & \fshape &::=&
+     \K{f32x4} ~|~ \K{f64x2} \\
+   \production{shape} & \shape &::=&
+     \ishape ~|~ \fshape \\
+   \production{half} & \half &::=&
+     \K{low} ~|~ \K{high} \\
+   \production{lane index} & \laneidx &::=& \u8 \\
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \K{v128.}\VCONST~\i128 \\&&|&
+     \K{v128.}\vvunop \\&&|&
+     \K{v128.}\vvbinop \\&&|&
+     \K{v128.}\vvternop \\&&|&
+     \K{v128.}\vvtestop \\&&|&
+     \K{i8x16.}\SHUFFLE~\laneidx^{16} \\&&|&
+     \K{i8x16.}\SWIZZLE \\&&|&
+     \shape\K{.}\SPLAT \\&&|&
+     \K{i8x16.}\EXTRACTLANE\K{\_}\sx~\laneidx ~|~
+     \K{i16x8.}\EXTRACTLANE\K{\_}\sx~\laneidx \\&&|&
+     \K{i32x4.}\EXTRACTLANE~\laneidx ~|~
+     \K{i64x2.}\EXTRACTLANE~\laneidx \\&&|&
+     \fshape\K{.}\EXTRACTLANE~\laneidx \\&&|&
+     \shape\K{.}\REPLACELANE~\laneidx \\&&|&
+     \K{i8x16}\K{.}\virelop ~|~
+     \K{i16x8}\K{.}\virelop ~|~
+     \K{i32x4}\K{.}\virelop \\&&|&
+     \K{i64x2.}\K{eq} ~|~
+     \K{i64x2.}\K{ne} ~|~
+     \K{i64x2.}\K{lt\_s} ~|~
+     \K{i64x2.}\K{gt\_s} ~|~
+     \K{i64x2.}\K{le\_s} ~|~
+     \K{i64x2.}\K{ge\_s} \\&&|&
+     \fshape\K{.}\vfrelop \\&&|&
+     \ishape\K{.}\viunop ~|~
+     \K{i8x16.}\VPOPCNT \\&&|&
+     \K{i16x8.}\Q15MULRSAT\K{\_s} \\ &&|&
+     \K{i32x4.}\DOT\K{\_i16x8\_s} \\ &&|&
+     \fshape\K{.}\vfunop \\&&|&
+     \ishape\K{.}\vitestop \\ &&|&
+     \ishape\K{.}\BITMASK \\ &&|&
+     \K{i8x16.}\NARROW\K{\_i16x8\_}\sx ~|~
+     \K{i16x8.}\NARROW\K{\_i32x4\_}\sx \\&&|&
+     \K{i16x8.}\VEXTEND\K{\_}\half\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\VEXTEND\K{\_}\half\K{\_i16x8\_}\sx \\&&|&
+     \K{i64x2.}\VEXTEND\K{\_}\half\K{\_i32x4\_}\sx \\&&|&
+     \ishape\K{.}\vishiftop \\&&|&
+     \ishape\K{.}\vibinop \\&&|&
+     \K{i8x16.}\viminmaxop ~|~
+     \K{i16x8.}\viminmaxop ~|~
+     \K{i32x4.}\viminmaxop \\&&|&
+     \K{i8x16.}\visatbinop ~|~
+     \K{i16x8.}\visatbinop \\&&|&
+     \K{i16x8.}\K{mul} ~|~
+     \K{i32x4.}\K{mul} ~|~
+     \K{i64x2.}\K{mul} \\&&|&
+     \K{i8x16.}\AVGR\K{\_u} ~|~
+     \K{i16x8.}\AVGR\K{\_u} \\&&|&
+     \K{i16x8.}\EXTMUL\K{\_}\half\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\EXTMUL\K{\_}\half\K{\_i16x8\_}\sx ~|~
+     \K{i64x2.}\EXTMUL\K{\_}\half\K{\_i32x4\_}\sx \\ &&|&
+     \K{i16x8.}\EXTADDPAIRWISE\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\EXTADDPAIRWISE\K{\_i16x8\_}\sx \\ &&|&
+     \fshape\K{.}\vfbinop \\&&|&
+     \K{i32x4.}\VTRUNC\K{\_sat\_f32x4\_}\sx ~|~
+     \K{i32x4.}\VTRUNC\K{\_sat\_f64x2\_}\sx\K{\_zero} \\&&|&
+     \K{f32x4.}\VCONVERT\K{\_i32x4\_}\sx ~|~
+     \K{f32x4.}\VDEMOTE\K{\_f64x2\_zero} \\&&|&
+     \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}\sx ~|~
+     \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\&&|&
+     \dots \\
+   \production{vector bitwise unary operator} & \vvunop &::=&
+     \K{not} \\
+   \production{vector bitwise binary operator} & \vvbinop &::=&
+     \K{and} ~|~
+     \K{andnot} ~|~
+     \K{or} ~|~
+     \K{xor} \\
+   \production{vector bitwise ternary operator} & \vvternop &::=&
+     \K{bitselect} \\
+   \production{vector bitwise test operator} & \vvtestop &::=&
+     \K{any\_true} \\
+   \production{vector integer test operator} & \vitestop &::=&
+     \K{all\_true} \\
+   \production{vector integer relational operator} & \virelop &::=&
+     \K{eq} ~|~
+     \K{ne} ~|~
+     \K{lt\_}\sx ~|~
+     \K{gt\_}\sx ~|~
+     \K{le\_}\sx ~|~
+     \K{ge\_}\sx \\
+   \production{vector floating-point relational operator} & \vfrelop &::=&
+     \K{eq} ~|~
+     \K{ne} ~|~
+     \K{lt} ~|~
+     \K{gt} ~|~
+     \K{le} ~|~
+     \K{ge} \\
+   \production{vector integer unary operator} & \viunop &::=&
+     \K{abs} ~|~
+     \K{neg} \\
+   \production{vector integer binary operator} & \vibinop &::=&
+     \K{add} ~|~
+     \K{sub} \\
+   \production{vector integer binary min/max operator} & \viminmaxop &::=&
+     \K{min\_}\sx ~|~
+     \K{max\_}\sx \\
+   \production{vector integer saturating binary operator} & \visatbinop &::=&
+     \K{add\_sat\_}\sx ~|~
+     \K{sub\_sat\_}\sx \\
+   \production{vector integer shift operator} & \vishiftop &::=&
+     \K{shl} ~|~
+     \K{shr\_}\sx \\
+   \production{vector floating-point unary operator} & \vfunop &::=&
+     \K{abs} ~|~
+     \K{neg} ~|~
+     \K{sqrt} ~|~
+     \K{ceil} ~|~
+     \K{floor} ~|~
+     \K{trunc} ~|~
+     \K{nearest} \\
+   \production{vector floating-point binary operator} & \vfbinop &::=&
+     \K{add} ~|~
+     \K{sub} ~|~
+     \K{mul} ~|~
+     \K{div} ~|~
+     \K{min} ~|~
+     \K{max} ~|~
+     \K{pmin} ~|~
+     \K{pmax} \\
+   \end{array}
+
+.. _syntax-vec-shape:
+
+Vector instructions have a naming convention involving a prefix that
+determines how their operands will be interpreted.
+This prefix describes the *shape* of the operand,
+written :math:`t\K{x}N`, and consisting of a packed :ref:`numeric type <syntax-numtype>` :math:`t` and the number of *lanes* :math:`N` of that type.
+Operations are performed point-wise on the values of each lane.
+
+.. note::
+   For example, the shape :math:`\K{i32x4}` interprets the operand
+   as four |i32| values, packed into an |i128|.
+   The bitwidth of the numeric type :math:`t` times :math:`N` always is 128.
+
+Instructions prefixed with :math:`\K{v128}` do not involve a specific interpretation, and treat the |V128| as an |i128| value or a vector of 128 individual bits.
+
+Vector instructions can be grouped into several subcategories:
+
+* *Constants*: return a static constant.
+
+* *Unary Operations*: consume one |V128| operand and produce one |V128| result.
+
+* *Binary Operations*: consume two |V128| operands and produce one |V128| result.
+
+* *Ternary Operations*: consume three |V128| operands and produce one |V128| result.
+
+* *Tests*: consume one |V128| operand and produce a Boolean integer result.
+
+* *Shifts*: consume a |v128| operand and a |i32| operand, producing one |V128| result.
+
+* *Splats*: consume a value of numeric type and produce a |V128| result of a specified shape.
+
+* *Extract lanes*: consume a |V128| operand and return the numeric value in a given lane.
+
+* *Replace lanes*: consume a |V128| operand and a numeric value for a given lane, and produce a |V128| result.
+
+Some vector instructions have a signedness annotation |sx| which distinguishes whether the elements in the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
+For the other vector instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
+
+
+.. _syntax-vunop:
+.. _syntax-vbinop:
+.. _syntax-vrelop:
+.. _syntax-vtestop:
+.. _syntax-vcvtop:
+
+Conventions
+...........
+
+Occasionally, it is convenient to group operators together according to the following grammar shorthands:
+
+.. math::
+   \begin{array}{llll}
+   \production{unary operator} & \vunop &::=&
+     \viunop ~|~
+     \vfunop ~|~
+     \VPOPCNT \\
+   \production{binary operator} & \vbinop &::=&
+     \vibinop ~|~ \vfbinop \\&&|&
+     \viminmaxop ~|~ \visatbinop \\&&|&
+     \VMUL ~|~
+     \AVGR\K{\_u} ~|~
+     \Q15MULRSAT\K{\_s} \\
+   \production{test operator} & \vtestop &::=&
+     \vitestop \\
+   \production{relational operator} & \vrelop &::=&
+     \virelop ~|~ \vfrelop \\
+   \production{conversion operator} & \vcvtop &::=&
+     \VEXTEND ~|~
+     \VTRUNC\K{\_sat} ~|~
+     \VCONVERT ~|~
+     \VDEMOTE ~|~
+     \VPROMOTE \\
+   \end{array}
+
+
 .. index:: ! reference instruction, reference, null
    pair: abstract syntax; instruction
 .. _syntax-ref.null:
@@ -296,6 +532,7 @@ An additional instruction that accesses a table is the :ref:`control instruction
 .. _syntax-loadn:
 .. _syntax-storen:
 .. _syntax-memarg:
+.. _syntax-lanewidth:
 .. _syntax-instr-memory:
 
 Memory Instructions
@@ -307,18 +544,30 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
    \begin{array}{llcl}
    \production{memory immediate} & \memarg &::=&
      \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
+   \production{lane width} & \X{ww} &::=&
+     8 ~|~ 16 ~|~ 32 ~|~ 64 \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \K{i}\X{nn}\K{.}\LOAD~\memarg ~|~
-     \K{f}\X{nn}\K{.}\LOAD~\memarg \\&&|&
+     \K{f}\X{nn}\K{.}\LOAD~\memarg ~|~
+     \K{v128.}\LOAD~\memarg \\&&|&
      \K{i}\X{nn}\K{.}\STORE~\memarg ~|~
-     \K{f}\X{nn}\K{.}\STORE~\memarg \\&&|&
+     \K{f}\X{nn}\K{.}\STORE~\memarg ~|~
+     \K{v128.}\STORE~\memarg \\&&|&
      \K{i}\X{nn}\K{.}\LOAD\K{8\_}\sx~\memarg ~|~
      \K{i}\X{nn}\K{.}\LOAD\K{16\_}\sx~\memarg ~|~
      \K{i64.}\LOAD\K{32\_}\sx~\memarg \\&&|&
      \K{i}\X{nn}\K{.}\STORE\K{8}~\memarg ~|~
      \K{i}\X{nn}\K{.}\STORE\K{16}~\memarg ~|~
      \K{i64.}\STORE\K{32}~\memarg \\&&|&
+     \K{v128.}\LOAD\K{8x8\_}\sx~\memarg ~|~
+     \K{v128.}\LOAD\K{16x4\_}\sx~\memarg ~|~
+     \K{v128.}\LOAD\K{32x2\_}\sx~\memarg \\&&|&
+     \K{v128.}\LOAD\K{32\_zero}~\memarg ~|~
+     \K{v128.}\LOAD\K{64\_zero}~\memarg \\&&|&
+     \K{v128.}\LOAD\X{ww}\K{\_splat}~\memarg \\&&|&
+     \K{v128.}\LOAD\X{ww}\K{\_lane}~\memarg~\laneidx ~|~
+     \K{v128.}\STORE\X{ww}\K{\_lane}~\memarg~\laneidx \\&&|&
      \MEMORYSIZE \\&&|&
      \MEMORYGROW \\&&|&
      \MEMORYFILL \\&&|&
@@ -331,6 +580,9 @@ Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`
 They all take a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
 Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-numtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
+
+Vector loads can specify a shape that is half the :ref:`bit width <syntax-valtype>` of |V128|. Each lane is half its usual size, and the sign extension mode |sx| then specifies how the smaller lane is extended to the larger lane.
+Alternatively, vector loads can perform a *splat*, such that only a single lane of the specified storage size is loaded, and the result is duplicated to all lanes.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
 All values are read and written in |LittleEndian|_ byte order.

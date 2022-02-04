@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -25,29 +25,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build JS API bikeshed
-        uses: netwerk-digitaal-erfgoed/bikeshed-action@v1
-        with:
-          source: "document/js-api/index.bs"
-          destination: "document/js-api/index.html"
+      - run: pip install bikeshed && bikeshed update
+      - run: bikeshed spec "document/js-api/index.bs" "document/js-api/index.html"
       - uses: actions/upload-artifact@v2
         with:
           name: js-api-rendered
-          path: document/js-api
+          path: document/js-api/index.html
 
   build-web-api-spec:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build JS API bikeshed
-        uses: netwerk-digitaal-erfgoed/bikeshed-action@v1
-        with:
-          source: "document/web-api/index.bs"
-          destination: "document/web-api/index.html"
+      - run: pip install bikeshed && bikeshed update
+      - run: bikeshed spec "document/web-api/index.bs" "document/web-api/index.html"
       - uses: actions/upload-artifact@v2
         with:
           name: web-api-rendered
-          path: document/web-api
+          path: document/web-api/index.html
 
   build-core-spec:
     runs-on: ubuntu-latest
@@ -58,7 +52,7 @@ jobs:
       - run: pip install bikeshed && bikeshed update
       - run: pip install six
       - run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
-      - run: pip install sphinx==3.5.2
+      - run: pip install sphinx==4.0.0
       - run: cd document/core && make all
       - uses: actions/upload-artifact@v2
         with:
@@ -84,7 +78,7 @@ jobs:
           name: core-api-rendered
           path: _output/core
       - name: Publish HTML to GitHub Pages
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           publish_dir: ./_output

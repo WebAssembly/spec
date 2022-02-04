@@ -12,7 +12,8 @@ Category                                  Constructor                           
 :ref:`Number type <syntax-numtype>`       |I64|                                        :math:`\hex{7E}` (-2 as |Bs7|)
 :ref:`Number type <syntax-numtype>`       |F32|                                        :math:`\hex{7D}` (-3 as |Bs7|)
 :ref:`Number type <syntax-numtype>`       |F64|                                        :math:`\hex{7C}` (-4 as |Bs7|)
-(reserved)                                                                             :math:`\hex{7B}` .. :math:`\hex{71}`
+:ref:`Vector type <syntax-vectype>`       |V128|                                       :math:`\hex{7B}` (-5 as |Bs7|)
+(reserved)                                                                             :math:`\hex{7A}` .. :math:`\hex{71}`
 :ref:`Heap type <syntax-heaptype>`        |FUNC|                                       :math:`\hex{70}` (-16 as |Bs7|)
 :ref:`Heap type <syntax-heaptype>`        |EXTERN|                                     :math:`\hex{6F}` (-17 as |Bs7|)
 (reserved)                                                                             :math:`\hex{6E}` .. :math:`\hex{6D}`
