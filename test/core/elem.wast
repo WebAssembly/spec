@@ -40,6 +40,7 @@
   (elem (i32.const 0) funcref (ref.func $f) (ref.null func))
   (elem (i32.const 0) func $f $f)
   (elem (i32.const 0) $f $f)
+  (elem (i32.const 0) funcref (item (ref.func $f)) (item (ref.null func)))
 
   (elem $a1 (table $t) (i32.const 0) funcref)
   (elem $a2 (table $t) (i32.const 0) funcref (ref.func $f) (ref.null func))
@@ -350,6 +351,14 @@
 )
 
 (assert_invalid
+  (module
+    (table 1 funcref)
+    (elem (ref.null func))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
   (module 
     (table 1 funcref)
     (elem (offset (;empty instruction sequence;)))
@@ -418,7 +427,7 @@
 
 ;; Use of internal globals in constant expressions is not allowed in MVP.
 ;; (assert_invalid
-;;   (module (memory 1) (data (global.get $g)) (global $g (mut i32) (i32.const 0)))
+;;   (module (table 1 funcref) (elem (global.get $g)) (global $g i32 (i32.const 0)))
 ;;   "constant expression required"
 ;; )
 
@@ -446,6 +455,57 @@
      (elem (global.get 0))
    )
    "constant expression required"
+)
+
+;; Invalid elements
+
+(assert_invalid
+  (module
+    (table 1 funcref)
+    (elem (i32.const 0) funcref (ref.null extern))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (table 1 funcref)
+    (elem (i32.const 0) funcref (item (ref.null func) (ref.null func)))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (table 1 funcref)
+    (elem (i32.const 0) funcref (i32.const 0))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (table 1 funcref)
+    (elem (i32.const 0) funcref (item (i32.const 0)))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (table 1 funcref)
+    (elem (i32.const 0) funcref (item (call $f)))
+    (func $f (result funcref) (ref.null func))
+  )
+  "constant expression required"
+)
+
+(assert_invalid
+  (module
+    (table 1 funcref)
+    (elem (i32.const 0) funcref (item (i32.add (i32.const 0) (i32.const 1))))
+  )
+  "constant expression required"
 )
 
 ;; Two elements target the same slot

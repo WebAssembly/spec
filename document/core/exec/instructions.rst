@@ -247,6 +247,705 @@ Reference Instructions
    \end{array}
 
 
+.. index:: vector instruction
+   pair: execution; instruction
+   single: abstract syntax; instruction
+.. _exec-instr-vec:
+
+Vector Instructions
+~~~~~~~~~~~~~~~~~~~
+
+Most vector instructions are defined in terms of generic numeric operators applied lane-wise based on the :ref:`shape <syntax-vec-shape>`.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \X{op}_{t\K{x}N}(n_1,\dots,n_k) &=&
+     \lanes^{-1}_{t\K{x}N}(op_t(\lanes_{t\K{x}N}(n_1) ~\dots~ \lanes_{t\K{x}N}(n_k))
+   \end{array}
+
+.. note::
+   For example, the result of instruction :math:`\K{i32x4}.\ADD` applied to operands :math:`i_1, i_2`
+   invokes :math:`\ADD_{\K{i32x4}}(i_1, i_2)`, which maps to
+   :math:`\lanes^{-1}_{\K{i32x4}}(\ADD_{\I32}(i_1^+, i_2^+))`,
+   where :math:`i_1^+` and :math:`i_2^+` are sequences resulting from invoking
+   :math:`\lanes_{\K{i32x4}}(i_1)` and :math:`\lanes_{\K{i32x4}}(i_2)`
+   respectively.
+
+
+.. _exec-vconst:
+
+:math:`\V128\K{.}\VCONST~c`
+...........................
+
+1. Push the value :math:`\V128.\VCONST~c` to the stack.
+
+.. note::
+   No formal reduction rule is required for this instruction, since |VCONST| instructions coincide with :ref:`values <syntax-val>`.
+
+
+.. _exec-vvunop:
+
+:math:`\V128\K{.}\vvunop`
+.........................
+
+1. Assert: due to :ref:`validation <valid-vvunop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+3. Let :math:`c` be the result of computing :math:`\vvunop_{\I128}(c_1)`.
+
+4. Push the value :math:`\V128.\VCONST~c` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~\V128\K{.}\vvunop &\stepto& (\V128\K{.}\VCONST~c)
+     & (\iff c = \vvunop_{\I128}(c_1)) \\
+   \end{array}
+
+
+.. _exec-vvbinop:
+
+:math:`\V128\K{.}\vvbinop`
+..........................
+
+1. Assert: due to :ref:`validation <valid-vvbinop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+4. Let :math:`c` be the result of computing :math:`\vvbinop_{\I128}(c_1, c_2)`.
+
+5. Push the value :math:`\V128.\VCONST~c` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\V128\K{.}\vvbinop &\stepto& (\V128\K{.}\VCONST~c)
+     & (\iff c = \vvbinop_{\I128}(c_1, c_2)) \\
+   \end{array}
+
+
+.. _exec-vvternop:
+
+:math:`\V128\K{.}\vvternop`
+...........................
+
+1. Assert: due to :ref:`validation <valid-vvternop>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_3` from the stack.
+
+3. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+5. Let :math:`c` be the result of computing :math:`\vvternop_{\I128}(c_1, c_2, c_3)`.
+
+6. Push the value :math:`\V128.\VCONST~c` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\V128\K{.}\vvternop &\stepto& (\V128\K{.}\VCONST~c)
+     & (\iff c = \vvternop_{\I128}(c_1, c_2, c_3)) \\
+   \end{array}
+
+
+.. _exec-vvtestop:
+.. _exec-vec-any_true:
+
+:math:`\V128\K{.}\ANYTRUE`
+..........................
+
+1. Assert: due to :ref:`validation <valid-vvtestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+3. Let :math:`i` be the result of computing :math:`\ine_{128}(c_1, 0)`.
+
+4. Push the value :math:`\I32.\CONST~i` onto the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~\V128\K{.}\ANYTRUE &\stepto& (\I32\K{.}\CONST~i)
+     & (\iff i = \ine_{128}(c_1, 0)) \\
+   \end{array}
+
+
+.. _exec-vec-swizzle:
+
+:math:`\K{i8x16.}\SWIZZLE`
+..........................
+
+1. Assert: due to :ref:`validation <valid-vbinop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+3. Let :math:`i^\ast` be the sequence :math:`\lanes_{i8x16}(c_2)`.
+
+4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+5. Let :math:`j^\ast` be the sequence :math:`\lanes_{i8x16}(c_1)`.
+
+6. Let :math:`c^\ast` be the concatenation of the two sequences :math:`j^\ast~0^{240}`
+
+7. Let :math:`c'` be the result of :math:`\lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ])`.
+
+8. Push the value :math:`\V128.\VCONST~c'` onto the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\V128\K{.}\SWIZZLE &\stepto& (\V128\K{.}\VCONST~c')
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & i^\ast = \lanes_{i8x16}(c_2) \\
+      \wedge & c^\ast = \lanes_{i8x16}(c_1)~0^{240} \\
+      \wedge & c' = \lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ])
+     \end{array}
+   \end{array}
+
+
+.. _exec-vec-shuffle:
+
+:math:`\K{i8x16.}\SHUFFLE~x^\ast`
+.................................
+
+1. Assert: due to :ref:`validation <valid-vec-shuffle>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+
+2. Assert: due to :ref:`validation <valid-vec-shuffle>`, for all :math:`x_i` in :math:`x^\ast` it holds that :math:`x_i < 32`.
+
+3. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+4. Let :math:`i_2^\ast` be the sequence :math:`\lanes_{i8x16}(c_2)`.
+
+5. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+6. Let :math:`i_1^\ast` be the sequence :math:`\lanes_{i8x16}(c_1)`.
+
+7. Let :math:`i^\ast` be the concatenation of the two sequences :math:`i_1^\ast~i_2^\ast`.
+
+8. Let :math:`c` be the result of :math:`\lanes^{-1}_{i8x16}(i^\ast[x^\ast[0]] \dots i^\ast[x^\ast[15]])`.
+
+9. Push the value :math:`\V128.\VCONST~c` onto the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\V128\K{.}\SHUFFLE~x^\ast &\stepto& (\V128\K{.}\VCONST~c)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & i^\ast = \lanes_{i8x16}(c_1)~\lanes_{i8x16}(c_2) \\
+      \wedge & c = \lanes^{-1}_{i8x16}(i^\ast[x^\ast[0]] \dots i^\ast[x^\ast[15]])
+     \end{array}
+   \end{array}
+
+
+.. _exec-vec-splat:
+
+:math:`\shape\K{.}\SPLAT`
+.........................
+
+1. Let :math:`t` be the type :math:`\unpacked(\shape)`.
+
+2. Assert: due to :ref:`validation <valid-vec-splat>`, a value of :ref:`value type <syntax-valtype>` :math:`t` is on the top of the stack.
+
+3. Pop the value :math:`t.\CONST~c_1` from the stack.
+
+4. Let :math:`N` be the integer :math:`\dim(\shape)`.
+
+5. Let :math:`c` be the result of :math:`\lanes^{-1}_{\shape}(c_1^N)`.
+
+6. Push the value :math:`\V128.\VCONST~c` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (t\K{.}\CONST~c_1)~\shape\K{.}\SPLAT &\stepto& (\V128\K{.}\VCONST~c)
+     & (\iff t = \unpacked(\shape)
+       \wedge c = \lanes^{-1}_{\shape}(c_1^{\dim(\shape)}))
+     \\
+   \end{array}
+
+
+.. _exec-vec-extract_lane:
+
+:math:`t_1\K{x}N\K{.}\EXTRACTLANE\K{\_}\sx^?~x`
+...............................................
+
+1. Assert: due to :ref:`validation <valid-vec-extract_lane>`, :math:`x < N`.
+
+2. Assert: due to :ref:`validation <valid-vec-extract_lane>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+4. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}N}(c_1)`.
+
+5. Let :math:`t_2` be the type :math:`\unpacked(t_1\K{x}N)`.
+
+6. Let :math:`c_2` be the result of computing :math:`\extend^{sx^?}_{t_1,t_2}(i^\ast[x])`.
+
+7. Push the value :math:`t_2.\CONST~c_2` to the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~t_1\K{x}N\K{.}\EXTRACTLANE~x &\stepto& (t_2\K{.}\CONST~c_2)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & t_2 = \unpacked(t_1\K{x}N) \\
+       \wedge & c_2 = \extend^{sx^?}_{t_1,t_2}(\lanes_{t_1\K{x}N}(c_1)[x])
+     \end{array}
+   \end{array}
+
+
+.. _exec-vec-replace_lane:
+
+:math:`\shape\K{.}\REPLACELANE~x`
+.................................
+
+1. Assert: due to :ref:`validation <valid-vec-replace_lane>`, :math:`x < \dim(\shape)`.
+
+2. Let :math:`t_1` be the type :math:`\unpacked(\shape)`.
+
+3. Assert: due to :ref:`validation <valid-vec-replace_lane>`, a value of :ref:`value type <syntax-valtype>` :math:`t_1` is on the top of the stack.
+
+4. Pop the value :math:`t_1.\CONST~c_1` from the stack.
+
+5. Assert: due to :ref:`validation <valid-vec-replace_lane>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+6. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+7. Let :math:`i^\ast` be the sequence :math:`\lanes_{\shape}(c_2)`.
+
+8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)`
+
+9. Push :math:`\V128.\VCONST~c` on the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (t_1\K{.}\CONST~c_1)~(\V128\K{.}\VCONST~c_2)~\shape\K{.}\REPLACELANE~x &\stepto& (\V128\K{.}\VCONST~c)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & i^\ast = \lanes_{\shape}(c_2)) \\
+       \wedge & c = \lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)
+     \end{array}
+   \end{array}
+
+
+.. _exec-vunop:
+
+:math:`\shape\K{.}\vunop`
+.........................
+
+1. Assert: due to :ref:`validation <valid-vunop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+3. Let :math:`c` be the result of computing :math:`\vunop_{\shape}(c_1)`.
+
+4. Push the value :math:`\V128.\VCONST~c` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~\V128\K{.}\vunop &\stepto& (\V128\K{.}\VCONST~c)
+     & (\iff c = \vunop_{\shape}(c_1))
+   \end{array}
+
+
+.. _exec-vbinop:
+
+:math:`\shape\K{.}\vbinop`
+..........................
+
+1. Assert: due to :ref:`validation <valid-vbinop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+4. If :math:`\vbinop_{\shape}(c_1, c_2)` is defined:
+
+   a. Let :math:`c` be a possible result of computing :math:`\vbinop_{\shape}(c_1, c_2)`.
+
+   b. Push the value :math:`\V128.\VCONST~c` to the stack.
+
+5. Else:
+
+   a. Trap.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\shape\K{.}\vbinop &\stepto& (\V128\K{.}\VCONST~c)
+     & (\iff c \in \vbinop_{\shape}(c_1, c_2)) \\
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\shape\K{.}\vbinop &\stepto& \TRAP
+     & (\iff \vbinop_{\shape}(c_1, c_2) = \{\})
+   \end{array}
+
+
+.. _exec-vrelop:
+
+:math:`t\K{x}N\K{.}\vrelop`
+...........................
+
+1. Assert: due to :ref:`validation <valid-vrelop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+4. Let :math:`i^\ast` be the sequence :math:`\lanes_{t\K{x}N}(c_1)`.
+
+5. Let :math:`j^\ast` be the sequence :math:`\lanes_{t\K{x}N}(c_2)`.
+
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t\K{x}N}(\extends_{1,|t|}(\vrelop_t(i^\ast, j^\ast)))`.
+
+7. Push the value :math:`\V128.\VCONST~c` to the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t\K{x}N\K{.}\vrelop &\stepto& (\V128\K{.}\VCONST~c)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff c = \lanes^{-1}_{t\K{x}N}(\extends_{1,|t|}(\vrelop_t(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2)))))
+     \end{array}
+   \end{array}
+
+
+.. _exec-vishiftop:
+
+:math:`t\K{x}N\K{.}\vishiftop`
+..............................
+
+1. Assert: due to :ref:`validation <valid-vishiftop>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+2. Pop the value :math:`\I32.\CONST~s` from the stack.
+
+3. Assert: due to :ref:`validation <valid-vishiftop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+5. Let :math:`i^\ast` be the sequence :math:`\lanes_{t\K{x}N}(c_1)`.
+
+6. Let :math:`c` be :math:`\lanes^{-1}_{t\K{x}N}(\vishiftop_{t}(i^\ast, s^N))`.
+
+7. Push the value :math:`\V128.\VCONST~c` to the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\I32\K{.}\CONST~s)~t\K{x}N\K{.}\vishiftop &\stepto& (\V128\K{.}\VCONST~c)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & i^\ast = \lanes_{t\K{x}N}(c_1) \\
+     \wedge & c = \lanes^{-1}_{t\K{x}N}(\vishiftop_{t}(i^\ast, s^N)))
+     \end{array}
+   \end{array}
+
+
+.. _exec-vtestop:
+.. _exec-vec-all_true:
+
+:math:`\shape\K{.}\ALLTRUE`
+...........................
+
+1. Assert: due to :ref:`validation <valid-vtestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+3. Let :math:`i_1^\ast` be the sequence :math:`\lanes_{\shape}(c_1)`
+
+4. Let :math:`i` be the result of computing :math:`\bool(\bigwedge(i_1 \neq 0)^\ast)`.
+
+5. Push the value :math:`\I32.\CONST~i` onto the stack.
+
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~\shape\K{.}\ALLTRUE &\stepto& (\I32\K{.}\CONST~i)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & i_1^\ast = \lanes_{\shape}(c) \\
+     \wedge & i = \bool(\bigwedge(i_1 \neq 0)^\ast)
+     \end{array}
+   \end{array}
+
+
+.. _exec-vec-bitmask:
+
+:math:`t\K{x}N\K{.}\BITMASK`
+............................
+
+1. Assert: due to :ref:`validation <valid-vec-bitmask>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+3. Let :math:`i_1^N` be the sequence :math:`\lanes_{t\K{x}N}(c)`.
+
+4. Let :math:`B` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
+
+5. Let :math:`i_2^N` be the sequence as a result of computing :math:`\ilts_{B}(i_1^N, 0^N)`.
+
+6. Let :math:`c` be the integer :math:`\ibits_{32}^{-1}(i_2^N~0^{32-N})`.
+
+7. Push the value :math:`\I32.\CONST~c` onto the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~t\K{x}N\K{.}\BITMASK &\stepto& (\I32\K{.}\CONST~c)
+     & (\iff c = \ibits_{32}^{-1}(\ilts_{|t|}(\lanes_{t\K{x}N}(c), 0^N)))
+     \\
+   \end{array}
+
+
+.. _exec-vec-narrow:
+
+:math:`t_2\K{x}N\K{.}\NARROW\K{\_}t_1\K{x}M\K{\_}\sx`
+.....................................................
+
+1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = 2\cdot M`.
+
+2. Assert: due to :ref:`validation <valid-vec-narrow>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+
+3. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+4. Let :math:`d_2^M` be the result of computing :math:`\narrow^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_2))`.
+
+5. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+6. Let :math:`d_1^M` be the result of computing :math:`\narrow^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))`.
+
+7. Let :math:`c` be the result of :math:`\lanes^{-1}_{t_2\K{x}N}(d_1^M~d_2^M)`.
+
+8. Push the value :math:`\V128.\VCONST~c` onto the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\NARROW\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & d_1^M = \narrow^{\sx}_{|t_1|,|t_2|}( \lanes_{t_1\K{x}M}(c_1)) \\
+     \wedge & d_2^M = \narrow^{\sx}_{|t_1|,|t_2|}( \lanes_{t_1\K{x}M}(c_2)) \\
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(d_1^M~d_2^M)
+     \end{array}
+   \end{array}
+
+
+.. _exec-vcvtop:
+
+:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx`
+.....................................................
+
+1. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+3. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
+
+4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast))`
+
+5. Push the value :math:`\V128.\VCONST~c` onto the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx &\stepto& (\V128\K{.}\VCONST~c) \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)))
+     \end{array}
+   \end{array}
+
+
+:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx^?`
+..................................................................
+
+1. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+3. If :math:`\half` is :math:`\K{low}`, then:
+
+   a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[0 \slice N]`.
+
+4. Else:
+
+   a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[N \slice N]`.
+
+5. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx^?}_{|t_1|,|t_2|}(i^\ast)`.
+
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+
+7. Push the value :math:`\V128.\VCONST~c` onto the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx^? &\stepto& (\V128\K{.}\VCONST~c) \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N]))
+     \end{array}
+   \end{array}
+
+where:
+
+.. math::
+   \begin{array}{lcl}
+   \K{low}(x, y) &=& x \\
+   \K{high}(x, y) &=& y \\
+   \end{array}
+
+
+:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx\K{\_zero}`
+...............................................................
+
+1. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+3. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
+
+4. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast)` concatenated with the vector :math:`0^M`.
+
+5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+
+6. Push the value :math:`\V128.\VCONST~c` onto the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx\K{\_zero} &\stepto& (\V128\K{.}\VCONST~c) \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^M)
+     \end{array}
+   \end{array}
+
+
+.. _exec-vec-dot:
+
+:math:`\K{i32x4.}\DOT\K{\_i16x8\_s}`
+....................................
+
+1. Assert: due to :ref:`validation <valid-vec-dot>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+4. Let :math:`(i_1~i_2)^\ast` be the result of computing :math:`\imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2)))`
+
+5. Let :math:`j^\ast` be the result of computing :math:`\iadd_{32}(i_1, i_2)^\ast`.
+
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\I32X4}(j^\ast)`.
+
+7. Push the value :math:`\V128.\VCONST~c` onto the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i32x4.}\DOT\K{\_i16x8\_s} &\stepto& (\V128\K{.}\VCONST~c) \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & (i_1~i_2)^\ast = \imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2))) \\
+     \wedge & j^\ast = \iadd_{32}(i_1, i_2)^\ast \\
+     \wedge & c = \lanes^{-1}_{\I32X4}(j^\ast)
+     \end{array}
+   \end{array}
+
+
+.. _exec-vec-extmul:
+
+:math:`t_2\K{x}N\K{.}\EXTMUL\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx`
+................................................................
+
+1. Assert: due to :ref:`validation <valid-vec-extmul>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+4. If :math:`\half` is :math:`\K{low}`, then:
+
+   a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[0 \slice N]`.
+
+   b. Let :math:`j^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_2)[0 \slice N]`.
+
+5. Else:
+
+   a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[N \slice N]`.
+
+   b. Let :math:`j^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_2)[N \slice N]`.
+
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))`
+
+7. Push the value :math:`\V128.\VCONST~c` onto the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\EXTMUL\K{\_}\half\K{\_}t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N] \\
+     \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[\half(0, N) \slice N] \\
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))
+     \end{array}
+
+where:
+
+.. math::
+   \begin{array}{lcl}
+   \K{low}(x, y) &=& x \\
+   \K{high}(x, y) &=& y \\
+   \end{array}
+
+
+.. _exec-vec-extadd_pairwise:
+
+:math:`t_2\K{x}N\K{.}\EXTADDPAIRWISE\_t_1\K{x}M\_\sx`
+.....................................................
+
+1. Assert: due to :ref:`validation <valid-vec-extadd_pairwise>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+3. Let :math:`(i_1~i_2)^\ast` be the sequence :math:`\extend^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))`.
+
+4. Let :math:`j^\ast` be the result of computing :math:`\iadd_{N}(i_1, i_2)^\ast`.
+
+5. Let `c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+
+6. Push the value :math:`\V128.\VCONST~c` to the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\EXTADDPAIRWISE\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & (i_1~i_2)^\ast = \extend^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)) \\
+     \wedge & j^\ast = \iadd_{N}(i_1, i_2)^\ast \\
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(j^\ast)
+     \end{array}
+   \end{array}
+
+
 .. index:: parametric instructions, value
    pair: execution; instruction
    single: abstract syntax; instruction
@@ -907,7 +1606,7 @@ Table Instructions
        (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\TABLEINIT~x~y) \\
        \end{array}
      \\ \qquad
-     (\otherwise, \iff \val = S.\SELEMS[F.\AMODULE.\MIELEMS[x]].\EIELEM[s]) \\
+     (\otherwise, \iff \val = S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM[s]) \\
    \end{array}
 
 
@@ -978,7 +1677,7 @@ Memory Instructions
 
 9. If :math:`N` is not part of the instruction, then:
 
-   a. Let :math:`N` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
+   a. Let :math:`N` be the :ref:`bit width <syntax-numtype>` :math:`|t|` of :ref:`number type <syntax-numtype>` :math:`t`.
 
 10. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
 
@@ -1030,6 +1729,241 @@ Memory Instructions
    \end{array}
 
 
+.. _exec-load-extend:
+
+:math:`\V128\K{.}\LOAD{M}\K{x}N\_\sx~\memarg`
+.............................................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+
+4. Assert: due to :ref:`validation <valid-load-extend>`, :math:`S.\SMEMS[a]` exists.
+
+5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
+
+6. Assert: due to :ref:`validation <valid-load-extend>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+7. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
+
+9. If :math:`\X{ea} + M \cdot N /8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+
+    a. Trap.
+
+10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIDATA[\X{ea} \slice M \cdot N /8]`.
+
+11. Let :math:`m_k` be the integer for which :math:`\bytes_{\iM}(m_k) = b^\ast[k \cdot M/8 \slice M/8]`.
+
+12. Let :math:`W` be the integer :math:`M \cdot 2`.
+
+13. Let :math:`n_k` be the result of :math:`\extend^{\sx}_{M,W}(m_k)`.
+
+14. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\X{i}W\K{x}N}(n_0 \dots n_{N-1})`.
+
+15. Push the value :math:`\V128.\CONST~c` to the stack.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~(\V128.\LOAD{M}\K{x}N\_\sx~\memarg) &\stepto&
+     S; F; (\V128.\CONST~c)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
+     \wedge & \X{ea} + M \cdot N / 8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
+     \wedge & \bytes_{\iM}(m_k) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} + k \cdot M/8 \slice M/8]) \\
+     \wedge & W = M \cdot 2 \\
+     \wedge & c = \lanes^{-1}_{\X{i}W\K{x}N}(\extend^{\sx}_{M,W}(m_0) \dots \extend^{\sx}_{M,W}(m_{N-1}))
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~k)~(\V128.\LOAD{M}\K{x}N\K{\_}\sx~\memarg) &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise) \\
+   \end{array}
+
+
+.. _exec-load-splat:
+
+:math:`\V128\K{.}\LOAD{N}\K{\_splat}~\memarg`
+.............................................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+
+4. Assert: due to :ref:`validation <valid-load-extend>`, :math:`S.\SMEMS[a]` exists.
+
+5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
+
+6. Assert: due to :ref:`validation <valid-load-extend>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+7. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
+
+9. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+
+    a. Trap.
+
+10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]`.
+
+11. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
+
+12. Let :math:`L` be the integer :math:`128 / N`.
+
+13. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\iN\K{x}L}(n^L)`.
+
+14. Push the value :math:`\V128.\CONST~c` to the stack.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~(\V128\K{.}\LOAD{N}\K{\_splat}~\memarg) &\stepto& S; F; (\V128.\CONST~c)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
+     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
+     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8]) \\
+     \wedge & c = \lanes^{-1}_{\iN\K{x}L}(n^L)
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~k)~(\V128.\LOAD{N}\K{\_splat}~\memarg) &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise) \\
+   \end{array}
+
+
+.. _exec-load-zero:
+
+:math:`\V128\K{.}\LOAD{N}\K{\_zero}~\memarg`
+.............................................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+
+4. Assert: due to :ref:`validation <valid-load-extend>`, :math:`S.\SMEMS[a]` exists.
+
+5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
+
+6. Assert: due to :ref:`validation <valid-load-extend>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+7. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
+
+9. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+
+    a. Trap.
+
+10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]`.
+
+11. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
+
+12. Let :math:`c` be the result of :math:`\extendu_{N,128}(n)`.
+
+13. Push the value :math:`\V128.\CONST~c` to the stack.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~(\V128\K{.}\LOAD{N}\K{\_zero}~\memarg) &\stepto& S; F; (\V128.\CONST~c)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
+     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
+     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8]) \\
+     \wedge & c = \extendu_{N,128}(n)
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~k)~(\V128.\LOAD{N}\K{\_zero}~\memarg) &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise) \\
+   \end{array}
+
+
+.. _exec-load-lane:
+
+:math:`\V128\K{.}\LOAD{N}\K{\_lane}~\memarg~x`
+.....................................................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+
+4. Assert: due to :ref:`validation <valid-load-extend>`, :math:`S.\SMEMS[a]` exists.
+
+5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
+
+6. Assert: due to :ref:`validation <valid-load-extend>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+
+7. Pop the value :math:`\V128.\CONST~v` from the stack.
+
+8. Assert: due to :ref:`validation <valid-load-extend>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+9. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+10. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
+
+11. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+
+    a. Trap.
+
+12. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]`.
+
+13. Let :math:`r` be the constant for which :math:`\bytes_{\iN}(r) = b^\ast`.
+
+14. Let :math:`L` be :math:`128 / N`.
+
+15. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\K{i}N\K{x}L}(\lanes_{\K{i}N\K{x}L}(v) \with [x] = r)`.
+
+16. Push the value :math:`\V128.\CONST~c` to the stack.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~v)~(\V128\K{.}\LOAD{N}\K{\_lane}~\memarg~x) &\stepto& S; F; (\V128.\CONST~c)
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
+     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
+     \wedge & \bytes_{\iN}(r) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8]) \\
+     \wedge & L = 128/N \\
+     \wedge & c = \lanes^{-1}_{\K{i}N\K{x}L}(\lanes_{\K{i}N\K{x}L}(v) \with [x] = r)
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~k)~(\V128.\CONST~v)~(\V128.\LOAD{N}\K{\_lane}~\memarg~x) &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise) \\
+   \end{array}
+
+
 .. _exec-store:
 .. _exec-storen:
 
@@ -1058,7 +1992,7 @@ Memory Instructions
 
 11. If :math:`N` is not part of the instruction, then:
 
-    a. Let :math:`N` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
+    a. Let :math:`N` be the :ref:`bit width <syntax-numtype>` :math:`|t|` of :ref:`number type <syntax-numtype>` :math:`t`.
 
 12. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
 
@@ -1101,6 +2035,63 @@ Memory Instructions
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~k)~(t.\CONST~c)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP
+   \end{array}
+   \\ \qquad
+     (\otherwise) \\
+   \end{array}
+
+
+.. _exec-store-lane:
+
+:math:`\V128\K{.}\STORE{N}\K{\_lane}~\memarg~x`
+......................................................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-storen>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+
+4. Assert: due to :ref:`validation <valid-storen>`, :math:`S.\SMEMS[a]` exists.
+
+5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
+
+6. Assert: due to :ref:`validation <valid-storen>`, a value of :ref:`value type <syntax-valtype>` :math:`\V128` is on the top of the stack.
+
+7. Pop the value :math:`\V128.\CONST~c` from the stack.
+
+8. Assert: due to :ref:`validation <valid-storen>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+9. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+10. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
+
+11. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+
+    a. Trap.
+
+12. Let :math:`L` be :math:`128/N`.
+
+13. Let :math:`b^\ast` be the byte sequence :math:`\bytes_{\iN}(\lanes_{\K{i}N\K{x}L}(c)[x])`.
+
+14. Replace the bytes :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]` with :math:`b^\ast`.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~\memarg~x) &\stepto& S'; F; \epsilon
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & \X{ea} = i + \memarg.\OFFSET \\
+     \wedge & \X{ea} + N \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
+     \wedge & L = 128/N \\
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\lanes_{\K{i}N\K{x}L}(c)[x])
+     \end{array}
+   \\[1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~k)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~\memarg~x) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -1412,15 +2403,15 @@ Memory Instructions
 
 10. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-11. Pop the value :math:`\I32.\CONST~cnt` from the stack.
+11. Pop the value :math:`\I32.\CONST~n` from the stack.
 
 12. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-13. Pop the value :math:`\I32.\CONST~src` from the stack.
+13. Pop the value :math:`\I32.\CONST~s` from the stack.
 
 14. Assert: due to :ref:`validation <valid-memory.init>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-15. Pop the value :math:`\I32.\CONST~dst` from the stack.
+15. Pop the value :math:`\I32.\CONST~d` from the stack.
 
 16. If :math:`s + n` is larger than the length of :math:`\X{data}.\DIDATA` or :math:`d + n` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
 

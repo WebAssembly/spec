@@ -16,6 +16,8 @@ Modules
 .. _text-funcidx:
 .. _text-tableidx:
 .. _text-memidx:
+.. _text-elemidx:
+.. _text-dataidx:
 .. _text-globalidx:
 .. _text-localidx:
 .. _text-labelidx:
@@ -245,7 +247,7 @@ Functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{func}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{func}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
@@ -286,21 +288,21 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~\Telemlist~\text{)} \quad\equiv \\ & \qquad
-       \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)}~~
-       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Telemlist~\text{)}
+     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~\expr^n{:}\Tvec(\Telemexpr)~\text{)}~~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)} \\ & \qquad
+       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Telemexpr)~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Texpr)~\text{)}~~\text{)} \quad\equiv \\ & \qquad
-       \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)}~~
-       \text{(}~\text{elem}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Texpr)~\text{)}
+     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)} \\ & \qquad
+       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
@@ -314,7 +316,7 @@ Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-exp
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{table}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{table}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline elements segment.
@@ -356,10 +358,10 @@ A :ref:`data segment <text-data>` can be given inline with a memory definition, 
    \begin{array}{llclll}
    \production{module field} &
      \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{data}~~b^n{:}\Tdatastring~\text{)}~~\text{)} \quad\equiv \\ & \qquad
-       \text{(}~\text{memory}~~\Tid'~~m~~m~\text{)}~~
+       \text{(}~\text{memory}~~\Tid'~~m~~m~\text{)} \\ & \qquad
        \text{(}~\text{data}~~\text{(}~\text{memory}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
    \end{array}
 
 Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
@@ -374,7 +376,7 @@ Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-e
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{memory}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{memory}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline data segment.
@@ -418,7 +420,7 @@ Globals can be defined as :ref:`imports <text-import>` or :ref:`exports <text-ex
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{global}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{global}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
@@ -496,16 +498,16 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
 .. math::
    \begin{array}{llclll}
    \production{element segment} & \Telem_I &::=&
-     \text{(}~\text{elem}~~\Tid^?~~(et, y^\ast){:}\Telemlist~\text{)} \\ &&& \qquad
+     \text{(}~\text{elem}~~\Tid^?~~(et, y^\ast){:}\Telemlist_I~\text{)} \\ &&& \qquad
        \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EPASSIVE \} \\ &&|&
-     \text{(}~\text{elem}~~\Tid^?~~x{:}\Ttableuse_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~(et, y^\ast){:}\Telemlist~\text{)} \\ &&& \qquad
+     \text{(}~\text{elem}~~\Tid^?~~x{:}\Ttableuse_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~(et, y^\ast){:}\Telemlist_I~\text{)} \\ &&& \qquad
        \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&&
-     \text{(}~\text{elem}~~\Tid^?~~\text{declare}~~(et, y^\ast){:}\Telemlist~\text{)} \\ &&& \qquad
+     \text{(}~\text{elem}~~\Tid^?~~\text{declare}~~(et, y^\ast){:}\Telemlist_I~\text{)} \\ &&& \qquad
        \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EDECLARATIVE \} \\
-   \production{element list} & \Telemlist &::=&
+   \production{element list} & \Telemlist_I &::=&
      t{:}\Treftype~~y^\ast{:}\Tvec(\Telemexpr_I) \qquad\Rightarrow\quad ( \ETYPE~t, \EINIT~y^\ast ) \\
-   \production{element expression} & \Telemexpr &::=&
-     \text{(}~\text{item}~~e{:}\Texpr~\text{)}
+   \production{element expression} & \Telemexpr_I &::=&
+     \text{(}~\text{item}~~e{:}\Texpr_I~\text{)}
        \quad\Rightarrow\quad e \\
    \production{table use} & \Ttableuse_I &::=&
      \text{(}~\text{table}~~x{:}\Ttableidx_I ~\text{)}
@@ -521,10 +523,10 @@ As an abbreviation, a single instruction may occur in place of the offset of an 
 .. math::
    \begin{array}{llcll}
    \production{element offset} &
-     \Tinstr &\equiv&
+     \text{(}~\Tinstr~\text{)} &\equiv&
      \text{(}~\text{offset}~~\Tinstr~\text{)} \\
    \production{element item} &
-     \Tinstr &\equiv&
+     \text{(}~\Tinstr~\text{)} &\equiv&
      \text{(}~\text{item}~~\Tinstr~\text{)} \\
    \end{array}
 
@@ -594,7 +596,7 @@ As an abbreviation, a single instruction may occur in place of the offset of an 
 .. math::
    \begin{array}{llcll}
    \production{data offset} &
-     \Tinstr &\equiv&
+     \text{(}~\Tinstr~\text{)} &\equiv&
      \text{(}~\text{offset}~~\Tinstr~\text{)}
    \end{array}
 
