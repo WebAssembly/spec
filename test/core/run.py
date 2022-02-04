@@ -22,10 +22,14 @@ parser.add_argument("file", nargs='*')
 arguments = parser.parse_args()
 sys.argv = sys.argv[:1]
 
+main_test_files = glob.glob(os.path.join(inputDir, "*.wast"))
+# SIMD test files are in a subdirectory.
+simd_test_files = glob.glob(os.path.join(inputDir, "simd", "*.wast"))
+
 wasmCommand = arguments.wasm
 jsCommand = arguments.js
 outputDir = arguments.out
-inputFiles = arguments.file if arguments.file else glob.glob(os.path.join(inputDir, "*.wast"))
+inputFiles = arguments.file if arguments.file else main_test_files + simd_test_files
 
 if not os.path.exists(wasmCommand):
   sys.stderr.write("""\
@@ -92,7 +96,6 @@ class RunTests(unittest.TestCase):
     self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, wasm2Path, wast2Path), logPath)
     self._compareFile(wastPath, wast2Path)
 
-    # Convert to JavaScript
     jsPath = self._auxFile(outputPath.replace(".wast", ".js"))
     logPath = self._auxFile(jsPath + ".log")
     self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, inputPath, jsPath), logPath)

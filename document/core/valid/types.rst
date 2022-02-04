@@ -24,6 +24,23 @@ Number Types
    }
 
 
+.. index:: vector type
+   pair: validation; vector type
+   single: abstract syntax; vector type
+.. _valid-vectype:
+
+Vector Types
+~~~~~~~~~~~~
+
+:ref:`Vector types <syntax-vectype>` are always valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashvectype \vectype \ok
+   }
+
+
 .. index:: heap type
    pair: validation; heap type
    single: abstract syntax; heap type

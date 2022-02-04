@@ -22,6 +22,20 @@ Number Types
    \end{array}
 
 
+.. index:: vector type
+   pair: text format; vector type
+.. _text-vectype:
+
+Vector Types
+~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llcll@{\qquad\qquad}l}
+   \production{vector type} & \Tvectype_I &::=&
+     \text{v128} &\Rightarrow& \V128 \\
+   \end{array}
+
+
 .. index:: heap type
    pair: text format; heap type
 .. _text-heaptype:
@@ -67,7 +81,7 @@ There are shorthands for references to abstract heap types.
    \end{array}
 
 
-.. index:: value type, number type, reference type
+.. index:: value type, number type, vector type, reference type
    pair: text format; value type
 .. _text-valtype:
 
@@ -78,6 +92,7 @@ Value Types
    \begin{array}{llcll@{\qquad\qquad}l}
    \production{value type} & \Tvaltype_I &::=&
      t{:}\Tnumtype_I &\Rightarrow& t \\ &&|&
+     t{:}\Tvectype_I &\Rightarrow& t \\ &&|&
      t{:}\Treftype_I &\Rightarrow& t \\
    \end{array}
 
@@ -103,6 +118,10 @@ Function Types
      \text{(}~\text{result}~~t{:}\Tvaltype_I~\text{)}
        &\Rightarrow& t \\
    \end{array}
+
+.. note::
+   The optional identifier names for parameters in a function type only have documentation purpose.
+   They cannot be referenced from anywhere.
 
 
 Abbreviations

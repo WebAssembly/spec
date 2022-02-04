@@ -8,11 +8,13 @@ and var = SynVar of syn_var | SemVar of sem_var
 
 and nullability = NonNullable | Nullable
 and num_type = I32Type | I64Type | F32Type | F64Type
+and vec_type = V128Type
 and ref_type = nullability * heap_type
 and heap_type =
   FuncHeapType | ExternHeapType | DefHeapType of var | BotHeapType
+and value_type =
+  NumType of num_type | VecType of vec_type | RefType of ref_type | BotType
 
-and value_type = NumType of num_type | RefType of ref_type | BotType
 and result_type = value_type list
 and func_type = FuncType of result_type * result_type
 and def_type = FuncDefType of func_type
@@ -33,33 +35,53 @@ type import_type = ImportType of extern_type * name * name
 type module_type =
   ModuleType of def_type list * import_type list * export_type list
 
-type pack_size = Pack8 | Pack16 | Pack32
+(* TODO: these types should move somewhere else *)
+type pack_size = Pack8 | Pack16 | Pack32 | Pack64
 type extension = SX | ZX
+type pack_shape = Pack8x8 | Pack16x4 | Pack32x2
+type vec_extension =
+  | ExtLane of pack_shape * extension
+  | ExtSplat
+  | ExtZero
 
 
 (* Attributes *)
 
-let size = function
+let num_size = function
   | I32Type | F32Type -> 4
   | I64Type | F64Type -> 8
+
+let vec_size = function
+  | V128Type -> 16
 
 let packed_size = function
   | Pack8 -> 1
   | Pack16 -> 2
   | Pack32 -> 4
+  | Pack64 -> 8
+
+let packed_shape_size = function
+  | Pack8x8 | Pack16x4 | Pack32x2 -> 8
 
 let is_syn_var = function SynVar _ -> true | SemVar _ -> false
 let is_sem_var = function SemVar _ -> true | SynVar _ -> false
 
 let is_num_type = function
   | NumType _ | BotType -> true
-  | RefType _ -> false
+  | _ -> false
+
+let is_vec_type = function
+  | VecType _ | BotType -> true
+  | _ -> false
 
 let is_ref_type = function
-  | NumType _ -> false
   | RefType _ | BotType -> true
+  | _ -> false
 
 let defaultable_num_type = function
+  | _ -> true
+
+let defaultable_vec_type = function
   | _ -> true
 
 let defaultable_ref_type = function
@@ -67,6 +89,7 @@ let defaultable_ref_type = function
 
 let defaultable_value_type = function
   | NumType t -> defaultable_num_type t
+  | VecType t -> defaultable_vec_type t
   | RefType t -> defaultable_ref_type t
   | BotType -> assert false
 
@@ -110,6 +133,8 @@ let sem_var_type c = function
 
 let sem_num_type c t = t
 
+let sem_vec_type c t = t
+
 let sem_heap_type c = function
   | FuncHeapType -> FuncHeapType
   | ExternHeapType -> ExternHeapType
@@ -121,6 +146,7 @@ let sem_ref_type c = function
 
 let sem_value_type c = function
   | NumType t -> NumType (sem_num_type c t)
+  | VecType t -> VecType (sem_vec_type c t)
   | RefType t -> RefType (sem_ref_type c t)
   | BotType -> BotType
 
@@ -204,6 +230,9 @@ and string_of_num_type = function
   | F32Type -> "f32"
   | F64Type -> "f64"
 
+and string_of_vec_type = function
+  | V128Type -> "v128"
+
 and string_of_heap_type = function
   | FuncHeapType -> "func"
   | ExternHeapType -> "extern"
@@ -216,6 +245,7 @@ and string_of_ref_type = function
 
 and string_of_value_type = function
   | NumType t -> string_of_num_type t
+  | VecType t -> string_of_vec_type t
   | RefType t -> string_of_ref_type t
   | BotType -> "(something)"
 

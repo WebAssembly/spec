@@ -29,6 +29,22 @@ Number Types
    \end{array}
 
 
+.. index:: vector type
+   pair: binary format; vector type
+.. _binary-vectype:
+
+Vector Types
+~~~~~~~~~~~~
+
+:ref:`Vector types <syntax-vectype>` are also encoded by a single byte.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{vector type} & \Bvectype &::=&
+     \hex{7B} &\Rightarrow& \V128 \\
+   \end{array}
+
+
 .. index:: heap type
    pair: binary format; heap type
 .. _binary-heaptype:

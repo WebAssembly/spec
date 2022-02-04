@@ -1,4 +1,4 @@
-type void
+type void = |
 
 module Fun =
 struct
@@ -116,6 +116,11 @@ struct
   let rec concat_map f = function
     | [] -> []
     | x::xs -> f x @ concat_map f xs
+
+  let rec pairwise f = function
+    | [] -> []
+    | x1::x2::xs -> f x1 x2 :: pairwise f xs
+    | _ -> failwith "pairwise"
 end
 
 module List32 =

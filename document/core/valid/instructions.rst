@@ -230,6 +230,342 @@ Reference Instructions
      C \vdashinstr \REFASNONNULL : [(\REF~\NULL~\X{ht})] \to [(\REF~\X{ht})]
    }
 
+.. index:: vector instruction
+   pair: validation; instruction
+   single: abstract syntax; instruction
+
+.. _valid-instr-vec:
+.. _aux-unpacked:
+
+Vector Instructions
+~~~~~~~~~~~~~~~~~~~
+
+Vector instructions can have a prefix to describe the :ref:`shape <syntax-vec-shape>` of the operand. Packed numeric types, |I8| and |I16|, are not :ref:`value type <syntax-valtype>`, we define an auxiliary function to map such packed types into value types:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \unpacked(\K{i8x16}) &=& \I32 \\
+   \unpacked(\K{i16x8}) &=& \I32 \\
+   \unpacked(t\K{x}N) &=& t
+   \end{array}
+
+
+We also define an auxiliary function to get number of packed numeric types in a |V128|, *dimension*:
+
+.. _aux-dim:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \dim(t\K{x}N) &=& N
+   \end{array}
+
+
+.. _valid-vconst:
+
+:math:`\V128\K{.}\VCONST~c`
+...........................
+
+* The instruction is valid with type :math:`[] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \V128\K{.}\VCONST~c : [] \to [\V128]
+   }
+
+
+.. _valid-vvunop:
+
+:math:`\V128\K{.}\vvunop`
+.........................
+
+* The instruction is valid with type :math:`[\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \V128\K{.}\vvunop : [\V128] \to [\V128]
+   }
+
+
+.. _valid-vvbinop:
+
+:math:`\V128\K{.}\vvbinop`
+..........................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \V128\K{.}\vvbinop : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vvternop:
+
+:math:`\V128\K{.}\vvternop`
+...........................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \V128\K{.}\vvternop : [\V128~\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vvtestop:
+
+:math:`\V128\K{.}\vvtestop`
+...........................
+
+* The instruction is valid with type :math:`[\V128] \to [\I32]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \V128\K{.}\vvtestop : [\V128] \to [\I32]
+   }
+
+
+.. _valid-vec-swizzle:
+
+:math:`\K{i8x16.}\SWIZZLE`
+..........................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \K{i8x16.}\SWIZZLE : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-shuffle:
+
+:math:`\K{i8x16.}\SHUFFLE~\laneidx^{16}`
+........................................
+
+* For all :math:`\laneidx_i`, in :math:`\laneidx^{16}`, :math:`\laneidx_i` must be smaller than :math:`32`.
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+     (\laneidx < 32)^{16}
+   }{
+     C \vdashinstr \K{i8x16.}\SHUFFLE~\laneidx^{16} : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-splat:
+
+:math:`\shape\K{.}\SPLAT`
+.........................
+
+* Let :math:`t` be :math:`\unpacked(\shape)`.
+
+* The instruction is valid with type :math:`[t] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\SPLAT : [\unpacked(\shape)] \to [\V128]
+   }
+
+
+.. _valid-vec-extract_lane:
+
+:math:`\shape\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx`
+...................................................
+
+* The lane index :math:`\laneidx` must be smaller than :math:`\dim(\shape)`.
+
+* The instruction is valid with type :math:`[\V128] \to [\unpacked(\shape)]`.
+
+.. math::
+   \frac{
+     \laneidx < \dim(\shape)
+   }{
+     C \vdashinstr t\K{x}N\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx : [\V128] \to [\unpacked(\shape)]
+   }
+
+
+.. _valid-vec-replace_lane:
+
+:math:`\shape\K{.}\REPLACELANE~\laneidx`
+........................................
+
+* The lane index :math:`\laneidx` must be smaller than :math:`\dim(\shape)`.
+
+* Let :math:`t` be :math:`\unpacked(\shape)`.
+
+* The instruction is valid with type :math:`[\V128~t] \to [\V128]`.
+
+.. math::
+   \frac{
+     \laneidx < \dim(\shape)
+   }{
+     C \vdashinstr \shape\K{.}\REPLACELANE~\laneidx : [\V128~\unpacked(\shape)] \to [\V128]
+   }
+
+
+.. _valid-vunop:
+
+:math:`\shape\K{.}\vunop`
+.........................
+
+* The instruction is valid with type :math:`[\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vunop : [\V128] \to [\V128]
+   }
+
+
+.. _valid-vbinop:
+
+:math:`\shape\K{.}\vbinop`
+..........................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vbinop : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vrelop:
+
+:math:`\shape\K{.}\vrelop`
+..........................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vrelop : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vishiftop:
+
+:math:`\ishape\K{.}\vishiftop`
+..............................
+
+* The instruction is valid with type :math:`[\V128~\I32] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape\K{.}\vishiftop : [\V128~\I32] \to [\V128]
+   }
+
+
+.. _valid-vtestop:
+
+:math:`\shape\K{.}\vtestop`
+...........................
+
+* The instruction is valid with type :math:`[\V128] \to [\I32]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vtestop : [\V128] \to [\I32]
+   }
+
+
+.. _valid-vcvtop:
+
+:math:`\shape\K{.}\vcvtop\K{\_}\half^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^?`
+..........................................................................
+
+* The instruction is valid with type :math:`[\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vcvtop\K{\_}\half^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^? : [\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-narrow:
+
+:math:`\ishape_1\K{.}\NARROW\K{\_}\ishape_2\K{\_}\sx`
+.....................................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\NARROW\K{\_}\ishape_2\K{\_}\sx : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-bitmask:
+
+:math:`\ishape\K{.}\BITMASK`
+............................
+
+* The instruction is valid with type :math:`[\V128] \to [\I32]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape\K{.}\BITMASK : [\V128] \to [\I32]
+   }
+
+
+.. _valid-vec-dot:
+
+:math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s}`
+................................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s} : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-extmul:
+
+:math:`\ishape_1\K{.}\EXTMUL\K{\_}\half\K{\_}\ishape_2\K{\_}\sx`
+................................................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\EXTMUL\K{\_}\half\K{\_}\ishape_2\K{\_}\sx : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-extadd_pairwise:
+
+:math:`\ishape_1\K{.}\EXTADDPAIRWISE\K{\_}\ishape_2\K{\_}\sx`
+.............................................................
+
+* The instruction is valid with type :math:`[\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\EXTADDPAIRWISE\K{\_}\ishape_2\K{\_}\sx : [\V128] \to [\V128]
+   }
+
 
 .. index:: parametric instructions, value type, polymorphism
    pair: validation; instruction
@@ -257,7 +593,6 @@ Parametric Instructions
    Both |DROP| and |SELECT| without annotation are :ref:`value-polymorphic <polymorphism>` instructions.
 
 
-
 .. _valid-select:
 
 :math:`\SELECT~(t^\ast)^?`
@@ -273,7 +608,7 @@ Parametric Instructions
 
 * Else:
 
-  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`valid <valid-valtype>` :ref:`value type <syntax-valtype>` :math:`t` that :ref:`matches <match-valtype>` some :ref:`number type <syntax-numtype>`.
+  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`valid <valid-valtype>` :ref:`value type <syntax-valtype>` :math:`t` that :ref:`matches <match-valtype>` some :ref:`number type <syntax-numtype>` or :ref:`vector type <syntax-vectype>`.
 
 .. math::
    \frac{
@@ -286,6 +621,12 @@ Parametric Instructions
      C \vdashresulttype [t] \ok
      \qquad
      C \vdashresulttypematch [t] \matchesresulttype [\numtype]
+   }{
+     C \vdashinstr \SELECT : [t~t~\I32] \to [t]
+   }
+   \qquad
+   \frac{
+     \vdash t \leq \vectype
    }{
      C \vdashinstr \SELECT : [t~t~\I32] \to [t]
    }
@@ -666,6 +1007,118 @@ Memory Instructions
    }
 
 
+.. _valid-load-extend:
+
+:math:`\K{v128.}\LOAD{N}\K{x}M\_\sx~\memarg`
+...............................................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8 \cdot M`.
+
+* Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} \leq N/8 \cdot M
+   }{
+     C \vdashinstr \K{v128.}\K{.}\LOAD{N}\K{x}M\_\sx~\memarg : [\I32] \to [\V128]
+   }
+
+
+.. _valid-load-splat:
+
+:math:`\K{v128.}\LOAD{N}\K{\_splat}~\memarg`
+...............................................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} \leq N/8
+   }{
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_splat}~\memarg : [\I32] \to [\V128]
+   }
+
+
+.. _valid-load-zero:
+
+:math:`\K{v128.}\LOAD{N}\K{\_zero}~\memarg`
+...........................................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} \leq N/8
+   }{
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_zero}~\memarg : [\I32] \to [\V128]
+   }
+
+
+.. _valid-load-lane:
+
+:math:`\K{v128.}\LOAD{N}\K{\_lane}~\memarg~\laneidx`
+....................................................
+
+* The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+     \laneidx < 128/N
+     \qquad
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} < N/8
+   }{
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_lane}~\memarg~\laneidx : [\I32~\V128] \to [\V128]
+   }
+
+.. _valid-store-lane:
+
+:math:`\K{v128.}\STORE{N}\K{\_lane}~\memarg~\laneidx`
+.....................................................
+
+* The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+     \laneidx < 128/N
+     \qquad
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} < N/8
+   }{
+     C \vdashinstr \K{v128.}\STORE{N}\K{\_lane}~\memarg~\laneidx : [\I32~\V128] \to []
+   }
+
+
 .. _valid-memory.size:
 
 :math:`\MEMORYSIZE`
@@ -954,8 +1407,6 @@ Control Instructions
 
 
 * The label :math:`C.\CLABELS[l_N]` must be defined in the context.
-
-* Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l_N]`.
 
 * For all :math:`l_i` in :math:`l^\ast`,
   the label :math:`C.\CLABELS[l_i]` must be defined in the context.
