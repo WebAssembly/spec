@@ -56,11 +56,11 @@ Results
 :ref:`Results <syntax-result>` :math:`\TRAP`
 ............................................
 
-* The result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any sequence :math:`t^\ast` of :ref:`valid <valid-valtype>` :ref:`semantic <syntax-typeid>` :ref:`value types <syntax-valtype>`.
+* The result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any :ref:`valid <valid-resulttype>` :ref:`semantic <syntax-typeid>` :ref:`result types <syntax-resulttype>`.
 
 .. math::
    \frac{
-     (S \vdashvaltype t \ok)^\ast
+     S \vdashresulttype [t^\ast] \ok
    }{
      S \vdashresult \TRAP : [t^\ast]
    }
@@ -538,10 +538,13 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\TRAP`
 .............
 
-* The instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* The instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`, for any sequences of :ref:`valid <valid-valtype>` :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
+     (S \vdashvaltype t_1 \ok)^\ast
+     \qquad
+     (S \vdashvaltype t_2 \ok)^\ast
    }{
      S; C \vdashadmininstr \TRAP : [t_1^\ast] \to [t_2^\ast]
    }
@@ -624,13 +627,15 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\FRAME_n\{F\}~\instr^\ast~\END`
 ...........................................
 
-* Under the return type :math:`[t^n]`,
+* Under the :ref:`valid <valid-resulttype>` return type :math:`[t^n]`,
   the :ref:`thread <syntax-frame>` :math:`F; \instr^\ast` must be :ref:`valid <valid-frame>` with :ref:`result type <syntax-resulttype>` :math:`[t^n]`.
 
 * Then the compound instruction is valid with type :math:`[] \to [t^n]`.
 
 .. math::
    \frac{
+     S \vdashresulttype [t^n] \ok
+     \qquad
      S; [t^n] \vdashinstrseq F; \instr^\ast : [t^n]
    }{
      S; C \vdashadmininstr \FRAME_n\{F\}~\instr^\ast~\END : [] \to [t^n]

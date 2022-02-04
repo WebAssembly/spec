@@ -168,9 +168,9 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
 
 2. Let :math:`a` be the first free :ref:`type address <syntax-typeaddr>` in :math:`S`.
 
-3. Assert: due to :ref:`validation <valid-module>`, any :ref:`type index <syntax-typeidx>` occurring in :math:`\functype` is smaller than the length of :math:`\moduleinst.MITYPES`.
+3. Assert: due to :ref:`validation <valid-module>`, any :ref:`type index <syntax-typeidx>` occurring in :math:`\functype` is smaller than the length of :math:`\moduleinst.\MITYPES`.
 
-4. Let :math:`\typeinst` be the :ref:`type instance <syntax-typeinst>` obtained from :math:`\functype` by substituting each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.MITYPES[x]`.
+4. Let :math:`\typeinst` be the :ref:`type instance <syntax-typeinst>` obtained from :math:`\functype` by substituting each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.\MITYPES[x]`.
 
 5. Append :math:`\typeinst` to the |STYPES| of :math:`S`.
 
@@ -201,7 +201,7 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
 
 4. Let :math:`\functype` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\typeaddr]`.
 
-5. Let :math:`\functype'` be the :ref:`function type <syntax-functype>` obtained from :math:`\functype` by substituting each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.MITYPES[x]`.
+5. Let :math:`\functype'` be the :ref:`function type <syntax-functype>` obtained from :math:`\functype` by substituting each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.\MITYPES[x]`.
 
 6. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \FITYPE~\functype', \FIMODULE~\moduleinst, \FICODE~\func \}`.
 
@@ -262,7 +262,7 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
 
 2. Let :math:`(\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
 
-3. Let :math:`\tabletype'` be the :ref:`table type <syntax-tabletype>` obtained from :math:`\tabletype` by substituting each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.MITYPES[x]`.
+3. Let :math:`\tabletype'` be the :ref:`table type <syntax-tabletype>` obtained from :math:`\tabletype` by substituting each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.\MITYPES[x]`.
 
 4. Let :math:`a` be the first free :ref:`table address <syntax-tableaddr>` in :math:`S`.
 
