@@ -66,7 +66,7 @@ Control Instructions
      \hex{0F} &\Rightarrow& \RETURN \\ &&|&
      \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
      \hex{11}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \CALLINDIRECT~x~y \\ &&|&
-     \hex{14}~~x{:}\Bfuncidx &\Rightarrow& \CALLREF \\ &&|&
+     \hex{14} &\Rightarrow& \CALLREF \\ &&|&
      \hex{D4}~~x{:}\Bfuncidx &\Rightarrow& \BRONNULL \\ &&|&
      \hex{D6}~~x{:}\Bfuncidx &\Rightarrow& \BRONNONNULL \\
    \end{array}
