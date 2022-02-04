@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/WebAssembly/tail-call.svg?branch=master)](https://travis-ci.org/WebAssembly/tail-call)
+![Build Status](https://github.com/WebAssembly/tail-call/actions/workflows/main.yml/badge.svg)
 
 # Tail Call Proposal for WebAssembly
 

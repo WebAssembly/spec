@@ -17,7 +17,7 @@ ZIP =		$(NAME).zip
 JSLIB =		wast.js
 WINMAKE =	winmake.bat
 
-DIRS =		util syntax binary text valid runtime exec script host main
+DIRS =		util syntax binary text valid runtime exec script host main tests
 LIBS =		bigarray
 FLAGS = 	-lexflags -ml -cflags '-w +a-4-27-42-44-45 -warn-error +a-3'
 OCBA =		ocamlbuild $(FLAGS) $(DIRS:%=-I %)
@@ -27,7 +27,7 @@ JS =		# set to JS shell command to run JS tests
 
 # Main targets
 
-.PHONY:		default opt unopt libopt libunopt jslib all land zip
+.PHONY:		default opt unopt libopt libunopt jslib all land zip smallint
 
 default:	opt
 debug:		unopt
@@ -39,6 +39,7 @@ jslib:		$(JSLIB)
 all:		unopt opt libunopt libopt test
 land:		$(WINMAKE) all
 zip: 		$(ZIP)
+smallint:	smallint.native
 
 
 # Building executable
@@ -66,15 +67,21 @@ main.byte:	_tags
 main.native:	_tags
 		$(OCB) -quiet $@
 
+.PHONY:		smallint.byte smallint.native
+smallint.byte: _tags
+		$(OCB) -quiet $@
+smallint.native: _tags
+		$(OCB) -quiet $@
+
 
 # Building library
 
-FILES =		$(shell ls $(DIRS:%=%/*.ml*))
+FILES =		$(shell ls $(DIRS:%=%/*) | grep '[.]ml[^.]*$$')
 PACK =		$(shell echo `echo $(LIB) | sed 's/^\(.\).*$$/\\1/g' | tr [:lower:] [:upper:]``echo $(LIB) | sed 's/^.\(.*\)$$/\\1/g'`)
 
 .INTERMEDIATE:	$(LIB).mlpack
 $(LIB).mlpack:	$(DIRS)
-		ls $(DIRS:%=%/*.ml*) \
+		ls $(FILES) \
 		| sed 's:\(.*/\)\{0,1\}\(.*\)\.[^\.]*:\2:' \
 		| grep -v main \
 		| sort | uniq \
@@ -125,36 +132,41 @@ $(WINMAKE):	clean
 # Executing test suite
 
 TESTDIR =	../test/core
-TESTFILES =	$(shell cd $(TESTDIR); ls *.wast)
+# Skip _output directory, since that's a tmp directory, and list all other wast files.
+TESTFILES =	$(shell cd $(TESTDIR); ls *.wast; ls [a-z]*/*.wast)
 TESTS =		$(TESTFILES:%.wast=%)
 
 .PHONY:		test debugtest partest
 
-test:		$(OPT)
+test:		$(OPT) smallint
 		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',)
-debugtest:	$(UNOPT)
+		./smallint.native
+debugtest:	$(UNOPT) smallint
 		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',)
+		./smallint.native
 
 test/%:		$(OPT)
-		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$(@F).wast
+		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast
 debugtest/%:	$(UNOPT)
-		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$(@F).wast
+		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast
 
 run/%:		$(OPT)
-		./$(OPT) $(TESTDIR)/$(@F).wast
+		./$(OPT) $(TESTDIR)/$*.wast
 debug/%:	$(UNOPT)
-		./$(UNOPT) $(TESTDIR)/$(@F).wast
+		./$(UNOPT) $(TESTDIR)/$*.wast
 
 partest: 	$(TESTS:%=quiettest/%)
 		@echo All tests passed.
 
 quiettest/%:	$(OPT)
 		@ ( \
-		  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(@F:%=$(TESTDIR)/%.wast) && \
+		  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast && \
 		  rm $(@F).out \
 		) || \
 		cat $(@F).out || rm $(@F).out || exit 1
 
+smallinttest:	smallint
+		@./smallint.native
 
 # Miscellaneous targets
 
