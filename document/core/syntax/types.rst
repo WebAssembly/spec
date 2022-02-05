@@ -34,11 +34,42 @@ They correspond to the respective binary floating-point representations, also kn
 Number types are *transparent*, meaning that their bit patterns can be observed.
 Values of number type can be stored in :ref:`memories <syntax-mem>`.
 
+.. _bitwidth:
+
 Conventions
 ...........
 
 * The notation :math:`|t|` denotes the *bit width* of a number type :math:`t`.
   That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.
+
+
+.. index:: ! vector type, integer, floating-point, IEEE 754, bit width, memory, SIMD
+   pair: abstract syntax; number type
+   pair: number; type
+.. _syntax-vectype:
+
+Vector Types
+~~~~~~~~~~~~
+
+*Vector types* classify vectors of :ref:`numeric <syntax-numtype>` values processed by vector instructions (also known as *SIMD* instructions, single instruction multiple data).
+
+.. math::
+   \begin{array}{llll}
+   \production{vector type} & \vectype &::=&
+     \V128 \\
+   \end{array}
+
+The type |V128| corresponds to a 128 bit vector of packed integer or floating-point data. The packed data
+can be interpreted as signed or unsigned integers, single or double precision floating-point
+values, or a single 128 bit type. The interpretation is determined by individual operations.
+
+Vector types, like :ref:`number types <syntax-numtype>` are *transparent*, meaning that their bit patterns can be observed.
+Values of vector type can be stored in :ref:`memories <syntax-mem>`.
+
+Conventions
+...........
+
+* The notation :math:`|t|` for :ref:`bit width <bitwidth>` extends to vector types as well, that is, :math:`|\V128| = 128`.
 
 
 .. index:: ! reference type, reference, table, function, function type, exception, exception type, null
@@ -67,7 +98,7 @@ Reference types are *opaque*, meaning that neither their size nor their bit patt
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
 
 
-.. index:: ! value type, number type, reference type
+.. index:: ! value type, number type, vector type, reference type
    pair: abstract syntax; value type
    pair: value; type
 .. _syntax-valtype:
@@ -76,12 +107,12 @@ Value Types
 ~~~~~~~~~~~
 
 *Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
-They are either :ref:`number types <syntax-numtype>` or :ref:`reference types <syntax-reftype>`.
+They are either :ref:`number types <syntax-numtype>`, :ref:`vector types <syntax-vectype>`, or :ref:`reference types <syntax-reftype>`.
 
 .. math::
    \begin{array}{llll}
    \production{value type} & \valtype &::=&
-     \numtype ~|~ \reftype \\
+     \numtype ~|~ \vectype ~|~ \reftype \\
    \end{array}
 
 Conventions

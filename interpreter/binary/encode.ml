@@ -63,6 +63,7 @@ struct
   let vs33 i = vs64 (I64_convert.extend_i32_s i)
   let f32 x = u32 (F32.to_bits x)
   let f64 x = u64 (F64.to_bits x)
+  let v128 v = String.iter (put s) (V128.to_bits v)
 
   let len i =
     if Int32.to_int (Int32.of_int i) <> i then
@@ -100,12 +101,16 @@ struct
     | F32Type -> vs7 (-0x03)
     | F64Type -> vs7 (-0x04)
 
+  let vec_type = function
+    | V128Type -> vs7 (-0x05)
+
   let ref_type = function
     | FuncRefType -> vs7 (-0x10)
     | ExternRefType -> vs7 (-0x11)
 
   let value_type = function
     | NumType t -> num_type t
+    | VecType t -> vec_type t
     | RefType t -> ref_type t
 
   let func_type = function
@@ -134,8 +139,10 @@ struct
 
   open Ast
   open Values
+  open V128
 
   let op n = u8 n
+  let vecop n = op 0xfd; vu32 n
   let end_ () = op 0x0b
 
   let memop {align; offset; _} = vu32 (Int32.of_int align); vu32 offset
@@ -198,46 +205,97 @@ struct
     | TableInit (x, y) -> op 0xfc; vu32 0x0cl; var y; var x
     | ElemDrop x -> op 0xfc; vu32 0x0dl; var x
 
-    | Load ({ty = I32Type; sz = None; _} as mo) -> op 0x28; memop mo
-    | Load ({ty = I64Type; sz = None; _} as mo) -> op 0x29; memop mo
-    | Load ({ty = F32Type; sz = None; _} as mo) -> op 0x2a; memop mo
-    | Load ({ty = F64Type; sz = None; _} as mo) -> op 0x2b; memop mo
-    | Load ({ty = I32Type; sz = Some (Pack8, SX); _} as mo) ->
+    | Load ({ty = I32Type; pack = None; _} as mo) -> op 0x28; memop mo
+    | Load ({ty = I64Type; pack = None; _} as mo) -> op 0x29; memop mo
+    | Load ({ty = F32Type; pack = None; _} as mo) -> op 0x2a; memop mo
+    | Load ({ty = F64Type; pack = None; _} as mo) -> op 0x2b; memop mo
+    | Load ({ty = I32Type; pack = Some (Pack8, SX); _} as mo) ->
       op 0x2c; memop mo
-    | Load ({ty = I32Type; sz = Some (Pack8, ZX); _} as mo) ->
+    | Load ({ty = I32Type; pack = Some (Pack8, ZX); _} as mo) ->
       op 0x2d; memop mo
-    | Load ({ty = I32Type; sz = Some (Pack16, SX); _} as mo) ->
+    | Load ({ty = I32Type; pack = Some (Pack16, SX); _} as mo) ->
       op 0x2e; memop mo
-    | Load ({ty = I32Type; sz = Some (Pack16, ZX); _} as mo) ->
+    | Load ({ty = I32Type; pack = Some (Pack16, ZX); _} as mo) ->
       op 0x2f; memop mo
-    | Load {ty = I32Type; sz = Some (Pack32, _); _} ->
+    | Load {ty = I32Type; pack = Some (Pack32, _); _} ->
       assert false
-    | Load ({ty = I64Type; sz = Some (Pack8, SX); _} as mo) ->
+    | Load ({ty = I64Type; pack = Some (Pack8, SX); _} as mo) ->
       op 0x30; memop mo
-    | Load ({ty = I64Type; sz = Some (Pack8, ZX); _} as mo) ->
+    | Load ({ty = I64Type; pack = Some (Pack8, ZX); _} as mo) ->
       op 0x31; memop mo
-    | Load ({ty = I64Type; sz = Some (Pack16, SX); _} as mo) ->
+    | Load ({ty = I64Type; pack = Some (Pack16, SX); _} as mo) ->
       op 0x32; memop mo
-    | Load ({ty = I64Type; sz = Some (Pack16, ZX); _} as mo) ->
+    | Load ({ty = I64Type; pack = Some (Pack16, ZX); _} as mo) ->
       op 0x33; memop mo
-    | Load ({ty = I64Type; sz = Some (Pack32, SX); _} as mo) ->
+    | Load ({ty = I64Type; pack = Some (Pack32, SX); _} as mo) ->
       op 0x34; memop mo
-    | Load ({ty = I64Type; sz = Some (Pack32, ZX); _} as mo) ->
+    | Load ({ty = I64Type; pack = Some (Pack32, ZX); _} as mo) ->
       op 0x35; memop mo
-    | Load {ty = F32Type | F64Type; sz = Some _; _} ->
+    | Load {ty = F32Type | F64Type; pack = Some _; _} ->
+      assert false
+    | Load {ty = I32Type | I64Type; pack = Some (Pack64, _); _} ->
       assert false
 
-    | Store ({ty = I32Type; sz = None; _} as mo) -> op 0x36; memop mo
-    | Store ({ty = I64Type; sz = None; _} as mo) -> op 0x37; memop mo
-    | Store ({ty = F32Type; sz = None; _} as mo) -> op 0x38; memop mo
-    | Store ({ty = F64Type; sz = None; _} as mo) -> op 0x39; memop mo
-    | Store ({ty = I32Type; sz = Some Pack8; _} as mo) -> op 0x3a; memop mo
-    | Store ({ty = I32Type; sz = Some Pack16; _} as mo) -> op 0x3b; memop mo
-    | Store {ty = I32Type; sz = Some Pack32; _} -> assert false
-    | Store ({ty = I64Type; sz = Some Pack8; _} as mo) -> op 0x3c; memop mo
-    | Store ({ty = I64Type; sz = Some Pack16; _} as mo) -> op 0x3d; memop mo
-    | Store ({ty = I64Type; sz = Some Pack32; _} as mo) -> op 0x3e; memop mo
-    | Store {ty = F32Type | F64Type; sz = Some _; _} -> assert false
+    | Store ({ty = I32Type; pack = None; _} as mo) -> op 0x36; memop mo
+    | Store ({ty = I64Type; pack = None; _} as mo) -> op 0x37; memop mo
+    | Store ({ty = F32Type; pack = None; _} as mo) -> op 0x38; memop mo
+    | Store ({ty = F64Type; pack = None; _} as mo) -> op 0x39; memop mo
+    | Store ({ty = I32Type; pack = Some Pack8; _} as mo) -> op 0x3a; memop mo
+    | Store ({ty = I32Type; pack = Some Pack16; _} as mo) -> op 0x3b; memop mo
+    | Store {ty = I32Type; pack = Some Pack32; _} -> assert false
+    | Store ({ty = I64Type; pack = Some Pack8; _} as mo) -> op 0x3c; memop mo
+    | Store ({ty = I64Type; pack = Some Pack16; _} as mo) -> op 0x3d; memop mo
+    | Store ({ty = I64Type; pack = Some Pack32; _} as mo) -> op 0x3e; memop mo
+    | Store {ty = F32Type | F64Type; pack = Some _; _} -> assert false
+    | Store {ty = (I32Type | I64Type); pack = Some Pack64; _} -> assert false
+
+    | VecLoad ({ty = V128Type; pack = None; _} as mo) ->
+      vecop 0x00l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack8x8, SX)); _} as mo) ->
+      vecop 0x01l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack8x8, ZX)); _} as mo) ->
+      vecop 0x02l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack16x4, SX)); _} as mo) ->
+      vecop 0x03l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack16x4, ZX)); _} as mo) ->
+      vecop 0x04l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack32x2, SX)); _} as mo) ->
+      vecop 0x05l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack32x2, ZX)); _} as mo) ->
+      vecop 0x06l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack8, ExtSplat); _} as mo) ->
+      vecop 0x07l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack16, ExtSplat); _} as mo) ->
+      vecop 0x08l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack32, ExtSplat); _} as mo) ->
+      vecop 0x09l; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtSplat); _} as mo) ->
+      vecop 0x0al; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack32, ExtZero); _} as mo) ->
+      vecop 0x5cl; memop mo
+    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtZero); _} as mo) ->
+      vecop 0x5dl; memop mo
+    | VecLoad _ -> assert false
+
+    | VecLoadLane ({ty = V128Type; pack = Pack8; _} as mo, i) ->
+      vecop 0x54l; memop mo; u8 i;
+    | VecLoadLane ({ty = V128Type; pack = Pack16; _} as mo, i) ->
+      vecop 0x55l; memop mo; u8 i;
+    | VecLoadLane ({ty = V128Type; pack = Pack32; _} as mo, i) ->
+      vecop 0x56l; memop mo; u8 i;
+    | VecLoadLane ({ty = V128Type; pack = Pack64; _} as mo, i) ->
+      vecop 0x57l; memop mo; u8 i;
+
+    | VecStore ({ty = V128Type; _} as mo) -> vecop 0x0bl; memop mo
+
+    | VecStoreLane ({ty = V128Type; pack = Pack8; _} as mo, i) ->
+      vecop 0x58l; memop mo; u8 i;
+    | VecStoreLane ({ty = V128Type; pack = Pack16; _} as mo, i) ->
+      vecop 0x59l; memop mo; u8 i;
+    | VecStoreLane ({ty = V128Type; pack = Pack32; _} as mo, i) ->
+      vecop 0x5al; memop mo; u8 i;
+    | VecStoreLane ({ty = V128Type; pack = Pack64; _} as mo, i) ->
+      vecop 0x5bl; memop mo; u8 i;
 
     | MemorySize -> op 0x3f; u8 0x00
     | MemoryGrow -> op 0x40; u8 0x00
@@ -257,8 +315,7 @@ struct
 
     | Test (I32 I32Op.Eqz) -> op 0x45
     | Test (I64 I64Op.Eqz) -> op 0x50
-    | Test (F32 _) -> assert false
-    | Test (F64 _) -> assert false
+    | Test (F32 _ | F64 _) -> .
 
     | Compare (I32 I32Op.Eq) -> op 0x46
     | Compare (I32 I32Op.Ne) -> op 0x47
@@ -301,7 +358,7 @@ struct
     | Unary (I32 I32Op.Popcnt) -> op 0x69
     | Unary (I32 (I32Op.ExtendS Pack8)) -> op 0xc0
     | Unary (I32 (I32Op.ExtendS Pack16)) -> op 0xc1
-    | Unary (I32 (I32Op.ExtendS Pack32)) -> assert false
+    | Unary (I32 (I32Op.ExtendS (Pack32 | Pack64))) -> assert false
 
     | Unary (I64 I64Op.Clz) -> op 0x79
     | Unary (I64 I64Op.Ctz) -> op 0x7a
@@ -309,6 +366,7 @@ struct
     | Unary (I64 (I64Op.ExtendS Pack8)) -> op 0xc2
     | Unary (I64 (I64Op.ExtendS Pack16)) -> op 0xc3
     | Unary (I64 (I64Op.ExtendS Pack32)) -> op 0xc4
+    | Unary (I64 (I64Op.ExtendS Pack64)) -> assert false
 
     | Unary (F32 F32Op.Abs) -> op 0x8b
     | Unary (F32 F32Op.Neg) -> op 0x8c
@@ -415,6 +473,248 @@ struct
     | Convert (F64 F64Op.PromoteF32) -> op 0xbb
     | Convert (F64 F64Op.DemoteF64) -> assert false
     | Convert (F64 F64Op.ReinterpretInt) -> op 0xbf
+
+    | VecConst {it = V128 c; _} -> vecop 0x0cl; v128 c
+
+    | VecTest (V128 (I8x16 V128Op.AllTrue)) -> vecop 0x63l
+    | VecTest (V128 (I16x8 V128Op.AllTrue)) -> vecop 0x83l
+    | VecTest (V128 (I32x4 V128Op.AllTrue)) -> vecop 0xa3l
+    | VecTest (V128 (I64x2 V128Op.AllTrue)) -> vecop 0xc3l
+    | VecTest (V128 _) -> .
+
+    | VecUnary (V128 (I8x16 V128Op.Abs)) -> vecop 0x60l
+    | VecUnary (V128 (I8x16 V128Op.Neg)) -> vecop 0x61l
+    | VecUnary (V128 (I8x16 V128Op.Popcnt)) -> vecop 0x62l
+    | VecUnary (V128 (I16x8 V128Op.Abs)) -> vecop 0x80l
+    | VecUnary (V128 (I16x8 V128Op.Neg)) -> vecop 0x81l
+    | VecUnary (V128 (I16x8 V128Op.Popcnt)) -> assert false
+    | VecUnary (V128 (I32x4 V128Op.Abs)) -> vecop 0xa0l
+    | VecUnary (V128 (I32x4 V128Op.Neg)) -> vecop 0xa1l
+    | VecUnary (V128 (I32x4 V128Op.Popcnt)) -> assert false
+    | VecUnary (V128 (I64x2 V128Op.Abs)) -> vecop 0xc0l
+    | VecUnary (V128 (I64x2 V128Op.Neg)) -> vecop 0xc1l
+    | VecUnary (V128 (I64x2 V128Op.Popcnt)) -> assert false
+    | VecUnary (V128 (F32x4 V128Op.Ceil)) -> vecop 0x67l
+    | VecUnary (V128 (F32x4 V128Op.Floor)) -> vecop 0x68l
+    | VecUnary (V128 (F32x4 V128Op.Trunc)) -> vecop 0x69l
+    | VecUnary (V128 (F32x4 V128Op.Nearest)) -> vecop 0x6al
+    | VecUnary (V128 (F64x2 V128Op.Ceil)) -> vecop 0x74l
+    | VecUnary (V128 (F64x2 V128Op.Floor)) -> vecop 0x75l
+    | VecUnary (V128 (F64x2 V128Op.Trunc)) -> vecop 0x7al
+    | VecUnary (V128 (F64x2 V128Op.Nearest)) -> vecop 0x94l
+    | VecUnary (V128 (F32x4 V128Op.Abs)) -> vecop 0xe0l
+    | VecUnary (V128 (F32x4 V128Op.Neg)) -> vecop 0xe1l
+    | VecUnary (V128 (F32x4 V128Op.Sqrt)) -> vecop 0xe3l
+    | VecUnary (V128 (F64x2 V128Op.Abs)) -> vecop 0xecl
+    | VecUnary (V128 (F64x2 V128Op.Neg)) -> vecop 0xedl
+    | VecUnary (V128 (F64x2 V128Op.Sqrt)) -> vecop 0xefl
+
+    | VecCompare (V128 (I8x16 V128Op.Eq)) -> vecop 0x23l
+    | VecCompare (V128 (I8x16 V128Op.Ne)) -> vecop 0x24l
+    | VecCompare (V128 (I8x16 V128Op.LtS)) -> vecop 0x25l
+    | VecCompare (V128 (I8x16 V128Op.LtU)) -> vecop 0x26l
+    | VecCompare (V128 (I8x16 V128Op.GtS)) -> vecop 0x27l
+    | VecCompare (V128 (I8x16 V128Op.GtU)) -> vecop 0x28l
+    | VecCompare (V128 (I8x16 V128Op.LeS)) -> vecop 0x29l
+    | VecCompare (V128 (I8x16 V128Op.LeU)) -> vecop 0x2al
+    | VecCompare (V128 (I8x16 V128Op.GeS)) -> vecop 0x2bl
+    | VecCompare (V128 (I8x16 V128Op.GeU)) -> vecop 0x2cl
+    | VecCompare (V128 (I16x8 V128Op.Eq)) -> vecop 0x2dl
+    | VecCompare (V128 (I16x8 V128Op.Ne)) -> vecop 0x2el
+    | VecCompare (V128 (I16x8 V128Op.LtS)) -> vecop 0x2fl
+    | VecCompare (V128 (I16x8 V128Op.LtU)) -> vecop 0x30l
+    | VecCompare (V128 (I16x8 V128Op.GtS)) -> vecop 0x31l
+    | VecCompare (V128 (I16x8 V128Op.GtU)) -> vecop 0x32l
+    | VecCompare (V128 (I16x8 V128Op.LeS)) -> vecop 0x33l
+    | VecCompare (V128 (I16x8 V128Op.LeU)) -> vecop 0x34l
+    | VecCompare (V128 (I16x8 V128Op.GeS)) -> vecop 0x35l
+    | VecCompare (V128 (I16x8 V128Op.GeU)) -> vecop 0x36l
+    | VecCompare (V128 (I32x4 V128Op.Eq)) -> vecop 0x37l
+    | VecCompare (V128 (I32x4 V128Op.Ne)) -> vecop 0x38l
+    | VecCompare (V128 (I32x4 V128Op.LtS)) -> vecop 0x39l
+    | VecCompare (V128 (I32x4 V128Op.LtU)) -> vecop 0x3al
+    | VecCompare (V128 (I32x4 V128Op.GtS)) -> vecop 0x3bl
+    | VecCompare (V128 (I32x4 V128Op.GtU)) -> vecop 0x3cl
+    | VecCompare (V128 (I32x4 V128Op.LeS)) -> vecop 0x3dl
+    | VecCompare (V128 (I32x4 V128Op.LeU)) -> vecop 0x3el
+    | VecCompare (V128 (I32x4 V128Op.GeS)) -> vecop 0x3fl
+    | VecCompare (V128 (I32x4 V128Op.GeU)) -> vecop 0x40l
+    | VecCompare (V128 (I64x2 V128Op.Eq)) -> vecop 0xd6l
+    | VecCompare (V128 (I64x2 V128Op.Ne)) -> vecop 0xd7l
+    | VecCompare (V128 (I64x2 V128Op.LtS)) -> vecop 0xd8l
+    | VecCompare (V128 (I64x2 V128Op.LtU)) -> assert false
+    | VecCompare (V128 (I64x2 V128Op.GtS)) -> vecop 0xd9l
+    | VecCompare (V128 (I64x2 V128Op.GtU)) -> assert false
+    | VecCompare (V128 (I64x2 V128Op.LeS)) -> vecop 0xdal
+    | VecCompare (V128 (I64x2 V128Op.LeU)) -> assert false
+    | VecCompare (V128 (I64x2 V128Op.GeS)) -> vecop 0xdbl
+    | VecCompare (V128 (I64x2 V128Op.GeU)) -> assert false
+    | VecCompare (V128 (F32x4 V128Op.Eq)) -> vecop 0x41l
+    | VecCompare (V128 (F32x4 V128Op.Ne)) -> vecop 0x42l
+    | VecCompare (V128 (F32x4 V128Op.Lt)) -> vecop 0x43l
+    | VecCompare (V128 (F32x4 V128Op.Gt)) -> vecop 0x44l
+    | VecCompare (V128 (F32x4 V128Op.Le)) -> vecop 0x45l
+    | VecCompare (V128 (F32x4 V128Op.Ge)) -> vecop 0x46l
+    | VecCompare (V128 (F64x2 V128Op.Eq)) -> vecop 0x47l
+    | VecCompare (V128 (F64x2 V128Op.Ne)) -> vecop 0x48l
+    | VecCompare (V128 (F64x2 V128Op.Lt)) -> vecop 0x49l
+    | VecCompare (V128 (F64x2 V128Op.Gt)) -> vecop 0x4al
+    | VecCompare (V128 (F64x2 V128Op.Le)) -> vecop 0x4bl
+    | VecCompare (V128 (F64x2 V128Op.Ge)) -> vecop 0x4cl
+
+    | VecBinary (V128 (I8x16 (V128Op.Shuffle is))) -> vecop 0x0dl; List.iter u8 is
+    | VecBinary (V128 (I8x16 V128Op.Swizzle)) -> vecop 0x0el
+    | VecBinary (V128 (I8x16 V128Op.NarrowS)) -> vecop 0x65l
+    | VecBinary (V128 (I8x16 V128Op.NarrowU)) -> vecop 0x66l
+    | VecBinary (V128 (I8x16 V128Op.Add)) -> vecop 0x6el
+    | VecBinary (V128 (I8x16 V128Op.AddSatS)) -> vecop 0x6fl
+    | VecBinary (V128 (I8x16 V128Op.AddSatU)) -> vecop 0x70l
+    | VecBinary (V128 (I8x16 V128Op.Sub)) -> vecop 0x71l
+    | VecBinary (V128 (I8x16 V128Op.SubSatS)) -> vecop 0x72l
+    | VecBinary (V128 (I8x16 V128Op.SubSatU)) -> vecop 0x73l
+    | VecBinary (V128 (I8x16 V128Op.MinS)) -> vecop 0x76l
+    | VecBinary (V128 (I8x16 V128Op.MinU)) -> vecop 0x77l
+    | VecBinary (V128 (I8x16 V128Op.MaxS)) -> vecop 0x78l
+    | VecBinary (V128 (I8x16 V128Op.MaxU)) -> vecop 0x79l
+    | VecBinary (V128 (I8x16 V128Op.AvgrU)) -> vecop 0x7bl
+    | VecBinary (V128 (I16x8 V128Op.NarrowS)) -> vecop 0x85l
+    | VecBinary (V128 (I16x8 V128Op.NarrowU)) -> vecop 0x86l
+    | VecBinary (V128 (I16x8 V128Op.Add)) -> vecop 0x8el
+    | VecBinary (V128 (I16x8 V128Op.AddSatS)) -> vecop 0x8fl
+    | VecBinary (V128 (I16x8 V128Op.AddSatU)) -> vecop 0x90l
+    | VecBinary (V128 (I16x8 V128Op.Sub)) -> vecop 0x91l
+    | VecBinary (V128 (I16x8 V128Op.SubSatS)) -> vecop 0x92l
+    | VecBinary (V128 (I16x8 V128Op.SubSatU)) -> vecop 0x93l
+    | VecBinary (V128 (I16x8 V128Op.Mul)) -> vecop 0x95l
+    | VecBinary (V128 (I16x8 V128Op.MinS)) -> vecop 0x96l
+    | VecBinary (V128 (I16x8 V128Op.MinU)) -> vecop 0x97l
+    | VecBinary (V128 (I16x8 V128Op.MaxS)) -> vecop 0x98l
+    | VecBinary (V128 (I16x8 V128Op.MaxU)) -> vecop 0x99l
+    | VecBinary (V128 (I16x8 V128Op.AvgrU)) -> vecop 0x9bl
+    | VecBinary (V128 (I16x8 V128Op.ExtMulLowS)) -> vecop 0x9cl
+    | VecBinary (V128 (I16x8 V128Op.ExtMulHighS)) -> vecop 0x9dl
+    | VecBinary (V128 (I16x8 V128Op.ExtMulLowU)) -> vecop 0x9el
+    | VecBinary (V128 (I16x8 V128Op.ExtMulHighU)) -> vecop 0x9fl
+    | VecBinary (V128 (I16x8 V128Op.Q15MulRSatS)) -> vecop 0x82l
+    | VecBinary (V128 (I32x4 V128Op.Add)) -> vecop 0xael
+    | VecBinary (V128 (I32x4 V128Op.Sub)) -> vecop 0xb1l
+    | VecBinary (V128 (I32x4 V128Op.MinS)) -> vecop 0xb6l
+    | VecBinary (V128 (I32x4 V128Op.MinU)) -> vecop 0xb7l
+    | VecBinary (V128 (I32x4 V128Op.MaxS)) -> vecop 0xb8l
+    | VecBinary (V128 (I32x4 V128Op.MaxU)) -> vecop 0xb9l
+    | VecBinary (V128 (I32x4 V128Op.DotS)) -> vecop 0xbal
+    | VecBinary (V128 (I32x4 V128Op.Mul)) -> vecop 0xb5l
+    | VecBinary (V128 (I32x4 V128Op.ExtMulLowS)) -> vecop 0xbcl
+    | VecBinary (V128 (I32x4 V128Op.ExtMulHighS)) -> vecop 0xbdl
+    | VecBinary (V128 (I32x4 V128Op.ExtMulLowU)) -> vecop 0xbel
+    | VecBinary (V128 (I32x4 V128Op.ExtMulHighU)) -> vecop 0xbfl
+    | VecBinary (V128 (I64x2 V128Op.Add)) -> vecop 0xcel
+    | VecBinary (V128 (I64x2 V128Op.Sub)) -> vecop 0xd1l
+    | VecBinary (V128 (I64x2 V128Op.Mul)) -> vecop 0xd5l
+    | VecBinary (V128 (I64x2 V128Op.ExtMulLowS)) -> vecop 0xdcl
+    | VecBinary (V128 (I64x2 V128Op.ExtMulHighS)) -> vecop 0xddl
+    | VecBinary (V128 (I64x2 V128Op.ExtMulLowU)) -> vecop 0xdel
+    | VecBinary (V128 (I64x2 V128Op.ExtMulHighU)) -> vecop 0xdfl
+    | VecBinary (V128 (F32x4 V128Op.Add)) -> vecop 0xe4l
+    | VecBinary (V128 (F32x4 V128Op.Sub)) -> vecop 0xe5l
+    | VecBinary (V128 (F32x4 V128Op.Mul)) -> vecop 0xe6l
+    | VecBinary (V128 (F32x4 V128Op.Div)) -> vecop 0xe7l
+    | VecBinary (V128 (F32x4 V128Op.Min)) -> vecop 0xe8l
+    | VecBinary (V128 (F32x4 V128Op.Max)) -> vecop 0xe9l
+    | VecBinary (V128 (F32x4 V128Op.Pmin)) -> vecop 0xeal
+    | VecBinary (V128 (F32x4 V128Op.Pmax)) -> vecop 0xebl
+    | VecBinary (V128 (F64x2 V128Op.Add)) -> vecop 0xf0l
+    | VecBinary (V128 (F64x2 V128Op.Sub)) -> vecop 0xf1l
+    | VecBinary (V128 (F64x2 V128Op.Mul)) -> vecop 0xf2l
+    | VecBinary (V128 (F64x2 V128Op.Div)) -> vecop 0xf3l
+    | VecBinary (V128 (F64x2 V128Op.Min)) -> vecop 0xf4l
+    | VecBinary (V128 (F64x2 V128Op.Max)) -> vecop 0xf5l
+    | VecBinary (V128 (F64x2 V128Op.Pmin)) -> vecop 0xf6l
+    | VecBinary (V128 (F64x2 V128Op.Pmax)) -> vecop 0xf7l
+    | VecBinary (V128 _) -> assert false
+
+    | VecConvert (V128 (I8x16 _)) -> assert false
+    | VecConvert (V128 (I16x8 V128Op.ExtendLowS)) -> vecop 0x87l
+    | VecConvert (V128 (I16x8 V128Op.ExtendHighS)) -> vecop 0x88l
+    | VecConvert (V128 (I16x8 V128Op.ExtendLowU)) -> vecop 0x89l
+    | VecConvert (V128 (I16x8 V128Op.ExtendHighU)) -> vecop 0x8al
+    | VecConvert (V128 (I16x8 V128Op.ExtAddPairwiseS)) -> vecop 0x7cl
+    | VecConvert (V128 (I16x8 V128Op.ExtAddPairwiseU)) -> vecop 0x7dl
+    | VecConvert (V128 (I16x8 _)) -> assert false
+    | VecConvert (V128 (I32x4 V128Op.ExtendLowS)) -> vecop 0xa7l
+    | VecConvert (V128 (I32x4 V128Op.ExtendHighS)) -> vecop 0xa8l
+    | VecConvert (V128 (I32x4 V128Op.ExtendLowU)) -> vecop 0xa9l
+    | VecConvert (V128 (I32x4 V128Op.ExtendHighU)) -> vecop 0xaal
+    | VecConvert (V128 (I32x4 V128Op.ExtAddPairwiseS)) -> vecop 0x7el
+    | VecConvert (V128 (I32x4 V128Op.ExtAddPairwiseU)) -> vecop 0x7fl
+    | VecConvert (V128 (I32x4 V128Op.TruncSatSF32x4)) -> vecop 0xf8l
+    | VecConvert (V128 (I32x4 V128Op.TruncSatUF32x4)) -> vecop 0xf9l
+    | VecConvert (V128 (I32x4 V128Op.TruncSatSZeroF64x2)) -> vecop 0xfcl
+    | VecConvert (V128 (I32x4 V128Op.TruncSatUZeroF64x2)) -> vecop 0xfdl
+    | VecConvert (V128 (I64x2 V128Op.ExtendLowS)) -> vecop 0xc7l
+    | VecConvert (V128 (I64x2 V128Op.ExtendHighS)) -> vecop 0xc8l
+    | VecConvert (V128 (I64x2 V128Op.ExtendLowU)) -> vecop 0xc9l
+    | VecConvert (V128 (I64x2 V128Op.ExtendHighU)) -> vecop 0xcal
+    | VecConvert (V128 (I64x2 _)) -> assert false
+    | VecConvert (V128 (F32x4 V128Op.DemoteZeroF64x2)) -> vecop 0x5el
+    | VecConvert (V128 (F32x4 V128Op.PromoteLowF32x4)) -> assert false
+    | VecConvert (V128 (F32x4 V128Op.ConvertSI32x4)) -> vecop 0xfal
+    | VecConvert (V128 (F32x4 V128Op.ConvertUI32x4)) -> vecop 0xfbl
+    | VecConvert (V128 (F64x2 V128Op.DemoteZeroF64x2)) -> assert false
+    | VecConvert (V128 (F64x2 V128Op.PromoteLowF32x4)) -> vecop 0x5fl
+    | VecConvert (V128 (F64x2 V128Op.ConvertSI32x4)) -> vecop 0xfel
+    | VecConvert (V128 (F64x2 V128Op.ConvertUI32x4)) -> vecop 0xffl
+
+    | VecShift (V128 (I8x16 V128Op.Shl)) -> vecop 0x6bl
+    | VecShift (V128 (I8x16 V128Op.ShrS)) -> vecop 0x6cl
+    | VecShift (V128 (I8x16 V128Op.ShrU)) -> vecop 0x6dl
+    | VecShift (V128 (I16x8 V128Op.Shl)) -> vecop 0x8bl
+    | VecShift (V128 (I16x8 V128Op.ShrS)) -> vecop 0x8cl
+    | VecShift (V128 (I16x8 V128Op.ShrU)) -> vecop 0x8dl
+    | VecShift (V128 (I32x4 V128Op.Shl)) -> vecop 0xabl
+    | VecShift (V128 (I32x4 V128Op.ShrS)) -> vecop 0xacl
+    | VecShift (V128 (I32x4 V128Op.ShrU)) -> vecop 0xadl
+    | VecShift (V128 (I64x2 V128Op.Shl)) -> vecop 0xcbl
+    | VecShift (V128 (I64x2 V128Op.ShrS)) -> vecop 0xccl
+    | VecShift (V128 (I64x2 V128Op.ShrU)) -> vecop 0xcdl
+    | VecShift (V128 _) -> .
+
+    | VecBitmask (V128 (I8x16 V128Op.Bitmask)) -> vecop 0x64l
+    | VecBitmask (V128 (I16x8 V128Op.Bitmask)) -> vecop 0x84l
+    | VecBitmask (V128 (I32x4 V128Op.Bitmask)) -> vecop 0xa4l
+    | VecBitmask (V128 (I64x2 V128Op.Bitmask)) -> vecop 0xc4l
+    | VecBitmask (V128 _) -> .
+
+    | VecTestBits (V128 V128Op.AnyTrue) -> vecop 0x53l
+    | VecUnaryBits (V128 V128Op.Not) -> vecop 0x4dl
+    | VecBinaryBits (V128 V128Op.And) -> vecop 0x4el
+    | VecBinaryBits (V128 V128Op.AndNot) -> vecop 0x4fl
+    | VecBinaryBits (V128 V128Op.Or) -> vecop 0x50l
+    | VecBinaryBits (V128 V128Op.Xor) -> vecop 0x51l
+    | VecTernaryBits (V128 V128Op.Bitselect) -> vecop 0x52l
+
+    | VecSplat (V128 ((I8x16 V128Op.Splat))) -> vecop 0x0fl
+    | VecSplat (V128 ((I16x8 V128Op.Splat))) -> vecop 0x10l
+    | VecSplat (V128 ((I32x4 V128Op.Splat))) -> vecop 0x11l
+    | VecSplat (V128 ((I64x2 V128Op.Splat))) -> vecop 0x12l
+    | VecSplat (V128 ((F32x4 V128Op.Splat))) -> vecop 0x13l
+    | VecSplat (V128 ((F64x2 V128Op.Splat))) -> vecop 0x14l
+
+    | VecExtract (V128 (I8x16 (V128Op.Extract (i, SX)))) -> vecop 0x15l; u8 i
+    | VecExtract (V128 (I8x16 (V128Op.Extract (i, ZX)))) -> vecop 0x16l; u8 i
+    | VecExtract (V128 (I16x8 (V128Op.Extract (i, SX)))) -> vecop 0x18l; u8 i
+    | VecExtract (V128 (I16x8 (V128Op.Extract (i, ZX)))) -> vecop 0x19l; u8 i
+    | VecExtract (V128 (I32x4 (V128Op.Extract (i, ())))) -> vecop 0x1bl; u8 i
+    | VecExtract (V128 (I64x2 (V128Op.Extract (i, ())))) -> vecop 0x1dl; u8 i
+    | VecExtract (V128 (F32x4 (V128Op.Extract (i, ())))) -> vecop 0x1fl; u8 i
+    | VecExtract (V128 (F64x2 (V128Op.Extract (i, ())))) -> vecop 0x21l; u8 i
+
+    | VecReplace (V128 (I8x16 (V128Op.Replace i))) -> vecop 0x17l; u8 i
+    | VecReplace (V128 (I16x8 (V128Op.Replace i))) -> vecop 0x1al; u8 i
+    | VecReplace (V128 (I32x4 (V128Op.Replace i))) -> vecop 0x1cl; u8 i
+    | VecReplace (V128 (I64x2 (V128Op.Replace i))) -> vecop 0x1el; u8 i
+    | VecReplace (V128 (F32x4 (V128Op.Replace i))) -> vecop 0x20l; u8 i
+    | VecReplace (V128 (F64x2 (V128Op.Replace i))) -> vecop 0x22l; u8 i
 
   let const c =
     list instr c.it; end_ ()

@@ -46,6 +46,13 @@ let () =
     | FuncRef _ -> "func"
     | r -> string_of_ref' r
 
+let () =
+  let eq_ref' = !Values.eq_ref' in
+  Values.eq_ref' := fun r1 r2 ->
+    match r1, r2 with
+    | FuncRef f1, FuncRef f2 -> f1 == f2
+    | _, _ -> eq_ref' r1 r2
+
 
 (* Auxiliary functions *)
 

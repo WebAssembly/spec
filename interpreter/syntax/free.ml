@@ -87,7 +87,14 @@ let rec instr (e : instr) =
   | TableCopy (x, y) -> tables (var x) ++ tables (var y)
   | TableInit (x, y) -> tables (var x) ++ elems (var y)
   | ElemDrop x -> elems (var x)
-  | Load _ | Store _ | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
+  | Load _ | Store _
+  | VecLoad _ | VecStore _ | VecLoadLane _ | VecStoreLane _
+  | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
+    memories zero
+  | VecConst _ | VecTest _ | VecUnary _ | VecBinary _ | VecCompare _
+  | VecConvert _ | VecShift _ | VecBitmask _
+  | VecTestBits _ | VecUnaryBits _ | VecBinaryBits _ | VecTernaryBits _
+  | VecSplat _ | VecExtract _ | VecReplace _ ->
     memories zero
   | MemoryInit x -> memories zero ++ datas (var x)
   | DataDrop x -> datas (var x)
