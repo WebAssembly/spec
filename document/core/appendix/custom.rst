@@ -347,7 +347,7 @@ Their relative placement will depend on the placement directive given for the :m
 Branch Hint Section
 ~~~~~~~~~~~~~~~~~~~~
 
-The *branch hint section* is a :ref:`custom section <binary-customsec>` whose name string is :math:`\text{code\_annotation.branch\_hint}`.
+The *branch hint section* is a :ref:`custom section <binary-customsec>` whose name string is :math:`\text{metadata.code.branch\_hint}`.
 The branch hints section should appear only once in a module, and only before the :ref:`code section <binary-codesec>`.
 
 The purpose of this section is to aid the compilation of conditional branch instructions, by providing a hint that a branch is very likely (or unlikely) to be taken.
@@ -384,7 +384,7 @@ in the code section at the specified offset.
    \production{branch hint section} & \Bbranchhintsec &::=&
      \Bsection_0(\Bbranchhintdata) \\
    \production{branch hint data} & \Bbranchhintdata &::=&
-     n{:}\Bname & (\iff n = \text{code\_annotation.branch\_hint}) \\ &&&
+     n{:}\Bname & (\iff n = \text{metadata.code.branch\_hint}) \\ &&&
      \Bvec(\Bfuncbranchhints) \\
    \production{function branch hints} & \Bfuncbranchhints &::=&
      fidx{:}\Bfuncidx~\Bvec(\Bbranchhint) \\
