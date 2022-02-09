@@ -63,7 +63,7 @@ type loadop = (pack_size * extension) memop
 type storeop = pack_size memop
 
 type initop = Explicit | Implicit
-type reftypeop = NullOp | I31Op | DataOp | ArrayOp | FuncOp | RttOp
+type castop = NullOp | I31Op | DataOp | ArrayOp | FuncOp | RttOp
 
 
 (* Expressions *)
@@ -90,8 +90,8 @@ and instr' =
   | Br of idx                         (* break to n-th surrounding label *)
   | BrIf of idx                       (* conditional break *)
   | BrTable of idx list * idx         (* indexed break *)
-  | BrCast of idx * reftypeop         (* break on type *)
-  | BrCastFail of idx * reftypeop     (* break on type inverted *)
+  | BrCast of idx * castop            (* break on type *)
+  | BrCastFail of idx * castop        (* break on type inverted *)
   | Return                            (* break from function body *)
   | Call of idx                       (* call function *)
   | CallRef                           (* call function through reference *)
@@ -127,8 +127,8 @@ and instr' =
   | Convert of cvtop                  (* conversion *)
   | RefNull of heap_type              (* null reference *)
   | RefFunc of idx                    (* function reference *)
-  | RefTest of reftypeop              (* type test *)
-  | RefCast of reftypeop              (* type cast *)
+  | RefTest of castop                 (* type test *)
+  | RefCast of castop                 (* type cast *)
   | RefEq                             (* reference equality *)
   | I31New                            (* allocate scalar *)
   | I31Get of extension               (* read scalar *)
