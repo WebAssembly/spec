@@ -332,6 +332,9 @@ Tentatively, support a type of guaranteed unboxed scalars.
 * `ref.is_data` checks whether a reference is compound data
   - `ref.is_data : [anyref] -> [i32]`
 
+* `ref.is_array` checks whether a reference is an array
+  - `ref.is_array : [anyref] -> [i32]`
+
 * `ref.is_i31` checks whether a reference is an i31
   - `ref.is_i31 : [anyref] -> [i32]`
 
@@ -363,6 +366,20 @@ Tentatively, support a type of guaranteed unboxed scalars.
     - and `t <: t'`
   - passes operand along with branch, plus possible extra args
 
+* `br_on_array <labelidx>` branches if a reference is an array
+  - `br_on_array $l : [t0* t] -> [t0* t]`
+    - iff `$l : [t0* t']`
+    - and `t <: anyref`
+    - and `(ref array) <: t'`
+  - passes operand along with branch as data, plus possible extra args
+
+* `br_on_non_array <labelidx>` branches if a reference is not an array
+  - `br_on_non_array $l : [t0* t] -> [t0* (ref array)]`
+    - iff `$l : [t0* t']`
+    - and `t <: anyref`
+    - and `t <: t'`
+  - passes operand along with branch, plus possible extra args
+
 * `br_on_i31 <labelidx>` branches if a reference is an integer
   - `br_on_i31 $l : [t0* t] -> [t0* t]`
     - iff `$l : [t0* t']`
@@ -380,17 +397,22 @@ Tentatively, support a type of guaranteed unboxed scalars.
 * `ref.as_func` converts to a function reference
   - `ref.as_func : [anyref] -> [(ref func)]`
   - traps if reference is not a function
-  - equivalent to `(block $l (param anyref) (result funcref) (br_on_func $l) (unreachable))`
+  - equivalent to `(block $l (param anyref) (result (ref func)) (br_on_func $l) (unreachable))`
 
 * `ref.as_data` converts to a data reference
   - `ref.as_data : [anyref] -> [(ref data)]`
   - traps if reference is not compound data
-  - equivalent to `(block $l (param anyref) (result dataref) (br_on_data $l) (unreachable))`
+  - equivalent to `(block $l (param anyref) (result (ref data)) (br_on_data $l) (unreachable))`
+
+* `ref.as_array` converts to an array reference
+  - `ref.as_array : [anyref] -> [(ref array)]`
+  - traps if reference is not an array
+  - equivalent to `(block $l (param anyref) (result (ref array)) (br_on_array $l) (unreachable))`
 
 * `ref.as_i31` converts to an integer reference
   - `ref.as_i31 : [anyref] -> [(ref i31)]`
   - traps if reference is not an integer
-  - equivalent to `(block $l (param anyref) (result i31ref) (br_on_i31 $l) (unreachable))`
+  - equivalent to `(block $l (param anyref) (result (ref i31)) (br_on_i31 $l) (unreachable))`
 
 Note: The [reference types](https://github.com/WebAssembly/reference-types) and [typed function references](https://github.com/WebAssembly/function-references)already introduce similar `ref.is_null`, `br_on_null`, and `br_on_non_null` instructions.
 
@@ -546,16 +568,19 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb50 | `ref.is_func` | |
 | 0xfb51 | `ref.is_data` | |
 | 0xfb52 | `ref.is_i31` | |
+| 0xfb53 | `ref.is_array` | |
 | 0xfb58 | `ref.as_func` | |
 | 0xfb59 | `ref.as_data` | |
 | 0xfb5a | `ref.as_i31` | |
+| 0xfb5b | `ref.as_array` | |
 | 0xfb60 | `br_on_func` | |
 | 0xfb61 | `br_on_data` | |
 | 0xfb62 | `br_on_i31` | |
 | 0xfb63 | `br_on_non_func` | |
 | 0xfb64 | `br_on_non_data` | |
 | 0xfb65 | `br_on_non_i31` | |
-
+| 0xfb66 | `br_on_array` | |
+| 0xfb67 | `br_on_non_array` | |
 
 
 ## JS API
