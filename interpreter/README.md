@@ -185,6 +185,7 @@ sign:  s | u
 offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc | extend | wrap | ...
+castop: data | array | func | i31
 
 num_type: i32 | i64 | f32 | f64
 heap_type: any | eq | i31 | data | func | extern | <var> | (rtt <nat>? <var>)
@@ -232,10 +233,11 @@ op:
   br_if <var>
   br_table <var>+
   br_on_null <var>
-  br_on_i31 <var>
-  br_on_data <var>
-  br_on_func <var>
-  br_cast <var>
+  br_on_<castop> <var>
+  br_on_cast <var>
+  br_on_non_null <var>
+  br_on_non_<castop> <var>
+  br_on_cast_fail <var>
   return
   call <var>
   call_indirect <var>? <func_type>
@@ -266,14 +268,10 @@ op:
   ref.null <heap_type>
   ref.func <var>
   ref.is_null
-  ref.is_i31
-  ref.is_data
-  ref.is_func
+  ref.is_<castop>
   ref.test
   ref_as_non_null
-  ref_as_i31
-  ref_as_data
-  ref_as_func
+  ref_as_<castop>
   ref.cast
   ref.eq
   i31.new
@@ -407,10 +405,8 @@ assertion:
 result_pat:
   ( <num_type>.const <num_pat> )
   ( ref )
-  ( ref.i31 )
-  ( ref.data )
   ( ref.null )
-  ( ref.func )
+  ( ref.<castop> )
   ( ref.extern )
 
 num_pat:
