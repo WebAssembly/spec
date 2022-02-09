@@ -232,10 +232,17 @@ let storeop op =
   | None -> memop "store" op (size op.ty)
   | Some sz -> memop ("store" ^ pack_size sz) op (packed_size sz)
 
-let initop op =
-  match op with
+let initop = function
   | Explicit -> ""
   | Implicit -> "_default"
+
+let castop = function
+  | NullOp -> "null"
+  | I31Op -> "i31"
+  | DataOp -> "data"
+  | ArrayOp -> "array"
+  | FuncOp -> "func"
+  | RttOp -> assert false
 
 
 (* Expressions *)
@@ -270,18 +277,10 @@ let rec instr e =
     | BrIf x -> "br_if " ^ var x, []
     | BrTable (xs, x) ->
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
-    | BrCast (x, NullOp) -> "br_on_null " ^ var x, []
-    | BrCast (x, I31Op) -> "br_on_i31 " ^ var x, []
-    | BrCast (x, DataOp) -> "br_on_data " ^ var x, []
-    | BrCast (x, ArrayOp) -> "br_on_array " ^ var x, []
-    | BrCast (x, FuncOp) -> "br_on_func " ^ var x, []
     | BrCast (x, RttOp) -> "br_on_cast " ^ var x, []
-    | BrCastFail (x, NullOp) -> "br_on_non_null " ^ var x, []
-    | BrCastFail (x, I31Op) -> "br_on_non_i31 " ^ var x, []
-    | BrCastFail (x, DataOp) -> "br_on_non_data " ^ var x, []
-    | BrCastFail (x, ArrayOp) -> "br_on_non_array " ^ var x, []
-    | BrCastFail (x, FuncOp) -> "br_on_non_func " ^ var x, []
+    | BrCast (x, op) -> "br_on_" ^ castop op ^ " " ^ var x, []
     | BrCastFail (x, RttOp) -> "br_on_cast_fail " ^ var x, []
+    | BrCastFail (x, op) -> "br_on_non_" ^ castop op ^ " " ^ var x, []
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallRef -> "call_ref", []
@@ -312,18 +311,11 @@ let rec instr e =
     | DataDrop x -> "data.drop " ^ var x, []
     | RefNull t -> "ref.null", [Atom (heap_type t)]
     | RefFunc x -> "ref.func " ^ var x, []
-    | RefTest NullOp -> "ref.is_null", []
-    | RefTest I31Op -> "ref.is_i31", []
-    | RefTest DataOp -> "ref.is_data", []
-    | RefTest ArrayOp -> "ref.is_array", []
-    | RefTest FuncOp -> "ref.is_func", []
     | RefTest RttOp -> "ref.test", []
-    | RefCast NullOp -> "ref.as_non_null", []
-    | RefCast I31Op -> "ref.as_i31", []
-    | RefCast DataOp -> "ref.as_data", []
-    | RefCast ArrayOp -> "ref.as_array", []
-    | RefCast FuncOp -> "ref.as_func", []
+    | RefTest op -> "ref.is_" ^ castop op, []
     | RefCast RttOp -> "ref.cast", []
+    | RefCast NullOp -> "ref.as_non_null", []
+    | RefCast op -> "ref.as_" ^ castop op, []
     | RefEq -> "ref.eq", []
     | I31New -> "i31.new", []
     | I31Get ext -> "i31.get" ^ extension ext, []

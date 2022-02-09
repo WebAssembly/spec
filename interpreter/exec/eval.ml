@@ -657,7 +657,7 @@ let rec step (c : config) : config =
         | Data.DataRef (Data.Array _) ->
           Ref r :: vs', []
         | _ ->
-          vs', [Trapping ("cast failure, expected data but got " ^
+          vs', [Trapping ("cast failure, expected array but got " ^
             string_of_value (Ref r)) @@ e.at]
         )
 
