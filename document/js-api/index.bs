@@ -1310,7 +1310,7 @@ The <dfn method for="Exception">getArg(|exceptionTag|, |index|)</dfn> method ste
     1. Throw a {{TypeError}}.
 1. Let |payload| be **this**.\[[Payload]].
 1. If |index| ≥ |payload|'s [=list/size=],
-    1. Throw a {{TypeError}}.
+    1. Throw a {{RangeError}}.
 1. Return [=ToJSValue=](|payload|[|index|]).
 
 </div>
