@@ -250,7 +250,9 @@ Functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-
        (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
-The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a function declaration can contain any number of exports, possibly followed by an import.
 
 
 .. index:: table, table type, identifier
@@ -319,7 +321,9 @@ Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-exp
        (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
-The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline elements segment.
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a table declaration can contain any number of exports, possibly followed by an import.
 
 
 .. index:: memory, memory type, identifier
@@ -379,7 +383,9 @@ Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-e
        (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
-The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline data segment.
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a memory declaration can contain any number of exports, possibly followed by an import.
 
 
 .. index:: global, global type, identifier, expression
@@ -423,7 +429,9 @@ Globals can be defined as :ref:`imports <text-import>` or :ref:`exports <text-ex
        (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
-The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a global declaration can contain any number of exports, possibly followed by an import.
 
 
 .. index:: export, name, index, function index, table index, memory index, global index
