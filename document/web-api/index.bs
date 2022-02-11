@@ -1,11 +1,11 @@
 <pre class='metadata'>
-Title: WebAssembly Web API
+Title: WebAssembly Web API: Exception Handling
 Shortname: wasm-web-api
 Group: wasm
 Status: ED
 Level: 1
 TR: https://www.w3.org/TR/wasm-web-api-1/
-ED: https://webassembly.github.io/spec/web-api/
+ED: https://webassembly.github.io/exception-handling/web-api/
 Editor: Ms2ger, Igalia
 Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader web platform.
