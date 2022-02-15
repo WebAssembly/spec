@@ -447,8 +447,8 @@ The verification of WebAssembly type requirements is deferred to the
             1. Assert: |attribute| is [=tagtype/attribute/exception=].
             1. Assert: |externval| is of the form [=external value/tag=] |tagaddr|.
             1. Let [=external value/tag=] |tagaddr| be |externval|.
-            1. Let |exception| be [=create a Tag object|a new Tag object=] created from |tagaddr|.
-            1. Let |value| be |exception|.
+            1. Let |tag| be [=create a Tag object|a new Tag object=] created from |tagaddr|.
+            1. Let |value| be |tag|.
         1. Let |status| be ! [=CreateDataProperty=](|exportsObject|, |name|, |value|).
         1. Assert: |status| is true.
 
@@ -1101,6 +1101,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
         1. [=Clean up after running script=] with |relevant settings|.
         1. Assert: |result|.\[[Type]] is <emu-const>throw</emu-const> or <emu-const>normal</emu-const>.
         1. If |result|.\[[Type]] is <emu-const>throw</emu-const>, then:
+            1. Let |v| be |result|.\[[Value]].
             1. If |v| [=implements=] {{Exception}},
                 1. Let |type| be |v|.\[[Type]].
                 1. Let |payload| be |v|.\[[Payload]].
@@ -1198,7 +1199,7 @@ interface Tag {
 };
 </pre>
 
-An {{Tag}} value represents a type of exception.
+A {{Tag}} value represents a type of exception.
 
 <div algorithm>
 
