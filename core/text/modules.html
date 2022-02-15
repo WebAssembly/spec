@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Modules &#8212; WebAssembly 1.1 (Draft 2022-01-28)</title>
+    <title>Modules &#8212; WebAssembly 1.1 (Draft 2022-02-15)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -251,7 +251,11 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \\ &amp; \qquad\qquad
     (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
-<p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate nohighlight">\(\dots\)</span>” containing another import or export.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The latter abbreviation can be applied repeatedly, if “<span class="math notranslate nohighlight">\(\dots\)</span>” contains additional export clauses.
+Consequently, a function declaration can contain any number of exports, possibly followed by an import.</p>
+</div>
 </section>
 </section>
 <section id="tables">
@@ -296,7 +300,11 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \\ &amp; \qquad\qquad
     (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
-<p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate nohighlight">\(\dots\)</span>” containing another import or export or an inline elements segment.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The latter abbreviation can be applied repeatedly, if “<span class="math notranslate nohighlight">\(\dots\)</span>” contains additional export clauses.
+Consequently, a table declaration can contain any number of exports, possibly followed by an import.</p>
+</div>
 </section>
 </section>
 <section id="memories">
@@ -333,7 +341,11 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \\ &amp; \qquad\qquad
     (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
-<p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate nohighlight">\(\dots\)</span>” containing another import or export or an inline data segment.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The latter abbreviation can be applied repeatedly, if “<span class="math notranslate nohighlight">\(\dots\)</span>” contains additional export clauses.
+Consequently, a memory declaration can contain any number of exports, possibly followed by an import.</p>
+</div>
 </section>
 </section>
 <section id="globals">
@@ -360,7 +372,11 @@ If no such index exists, then a new <a class="reference internal" href="types.ht
     \\ &amp; \qquad\qquad
     (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}) \\
 \end{array}\end{split}\]</div>
-<p>The latter abbreviation can be applied repeatedly, with “<span class="math notranslate nohighlight">\(\dots\)</span>” containing another import or export.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The latter abbreviation can be applied repeatedly, if “<span class="math notranslate nohighlight">\(\dots\)</span>” contains additional export clauses.
+Consequently, a global declaration can contain any number of exports, possibly followed by an import.</p>
+</div>
 </section>
 </section>
 <section id="exports">
