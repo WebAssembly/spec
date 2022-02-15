@@ -62,7 +62,12 @@
       (catch_all (i32.const 1)))
   )
 
-  (func (export "delegate-to-caller")
+  (func (export "delegate-to-caller-trivial")
+    (try
+      (do (throw $e0))
+      (delegate 0)))
+
+  (func (export "delegate-to-caller-skipping")
     (try (do (try (do (throw $e0)) (delegate 1))) (catch_all))
   )
 
@@ -92,6 +97,24 @@
       (catch $e1 (i32.const 2))
     )
   )
+
+  (func (export "delegate-correct-targets") (result i32)
+    (try (result i32)
+      (do (try $l3
+            (do (try $l2
+                  (do (try $l1
+                        (do (try $l0
+                              (do (try
+                                    (do (throw $e0))
+                                    (delegate $l1)))
+                              (catch_all unreachable)))
+                        (delegate $l3)))
+                  (catch_all unreachable)))
+            (catch_all (try
+                         (do (throw $e0))
+                         (delegate $l3))))
+          unreachable)
+      (catch_all (i32.const 1))))
 )
 
 (assert_return (invoke "delegate-no-throw") (i32.const 1))
@@ -112,7 +135,10 @@
 (assert_return (invoke "delegate-to-block") (i32.const 1))
 (assert_return (invoke "delegate-to-catch") (i32.const 1))
 
-(assert_exception (invoke "delegate-to-caller"))
+(assert_exception (invoke "delegate-to-caller-trivial"))
+(assert_exception (invoke "delegate-to-caller-skipping"))
+
+(assert_return (invoke "delegate-correct-targets") (i32.const 1))
 
 (assert_malformed
   (module quote "(module (func (delegate 0)))")

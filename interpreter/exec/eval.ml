@@ -236,8 +236,7 @@ let rec step (c : config) : config =
         let n1 = Lib.List32.length ts1 in
         let n2 = Lib.List32.length ts2 in
         let args, vs' = take n1 vs e.at, drop n1 vs e.at in
-        let k = Int32.succ x.it in
-        vs', [Label (n2, [], ([], [Delegate (k, (args, List.map plain es')) @@ e.at])) @@ e.at]
+        vs', [Label (n2, [], ([], [Delegate (x.it, (args, List.map plain es')) @@ e.at])) @@ e.at]
 
       | Drop, v :: vs' ->
         vs', []
@@ -692,9 +691,6 @@ let rec step (c : config) : config =
 
     | Catch (n, cts, ca, (vs', [])), vs ->
       vs' @ vs, []
-
-    | Catch (n, cts, ca, (vs', {it = Delegating (0l, a, vs0); at} :: es')), vs ->
-      vs, [Catch (n, cts, ca, (vs', (Throwing (a, vs0) @@ at) :: es')) @@ e.at]
 
     | Catch (n, cts, ca, (vs', ({it = Trapping _ | Breaking _ | Returning _ | Delegating _; at} as e) :: es')), vs ->
       vs, [e]
