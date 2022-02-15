@@ -1,4 +1,4 @@
-![Build Status](https://github.com/WebAssembly/function-references/actions/workflows/main.yml/badge.svg)
+![Build Status](https://github.com/WebAssembly/gc/actions/workflows/main.yml/badge.svg)
 
 # GC Proposal for WebAssembly
 
@@ -12,7 +12,7 @@ It is meant for discussion, prototype specification and implementation of a prop
 * See the [Post-MVP](proposals/gc/Post-MVP.md) for possible future extensions in later stages.
 
 <!--
-* See the [modified spec](https://webassembly.github.io/function-references/core) for details.  (Note, link is 404.)
+* See the [modified spec](https://webassembly.github.io/gc/core) for details.
 -->
 
 This repository is based on the [function references proposal](proposals/function-references/Overview.md) as a baseline and includes all respective changes.
