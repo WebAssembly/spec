@@ -400,6 +400,9 @@
   ))
   "type mismatch"
 )
+(module (func $type-unreachable-ref-implicit
+  (drop (ref.is_null (select (unreachable) (i32.const 1))))
+))
 
 (assert_invalid
   (module (func $type-num-vs-num

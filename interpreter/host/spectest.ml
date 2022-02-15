@@ -14,6 +14,7 @@ let global (GlobalType (t, _) as gt) =
     | NumType I64Type -> Num (I64 666L)
     | NumType F32Type -> Num (F32 (F32.of_float 666.6))
     | NumType F64Type -> Num (F64 (F64.of_float 666.6))
+    | VecType V128Type -> Vec (V128 (V128.I32x4.of_lanes [666l; 666l; 666l; 666l]))
     | RefType (_, t) -> Ref (NullRef t)
     | BotType -> assert false
   in ExternGlobal (Global.alloc gt v)

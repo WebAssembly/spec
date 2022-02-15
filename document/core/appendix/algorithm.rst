@@ -26,15 +26,19 @@ Types are representable as a set of enumerations.
 .. code-block:: pseudo
 
    type num_type = I32 | I64 | F32 | F64
+   type vec_type = V128
    type heap_type = Def(idx : nat) | Func | Extern | Bot
    type ref_type = Ref(heap : heap_type, null : bool)
-   type val_type = num_type | ref_type | Bot
+   type val_type = num_type | vec_type | ref_type | Bot
 
    func is_num(t : val_type) : bool =
      return t = I32 || t = I64 || t = F32 || t = F64 || t = Bot
 
-   func is_ref(t : val_type) : bool =
-     return t = not (is_num t) || t = Bot
+   func is_vec(t : val_type | Unknown) : bool =
+     return t = V128 || t = Unknown
+
+   func is_ref(t : val_type | Unknown) : bool =
+     return t = not (is_num t || is_vec t) || t = Bot
 
 Equivalence and subtyping checks can be defined on these types.
 
@@ -105,6 +109,11 @@ However, these variables are not manipulated directly by the main checking funct
      error_if(vals.size() = ctrls[0].height)
      return vals.pop()
 
+   func pop_val(expect : val_type) : val_type =
+     let actual = pop_val()
+     error_if(not matches(actual, expect))
+     return actual
+
    func pop_num() : num_type | Bot =
      let actual = pop_val()
      error_if(not is_num(actual))
@@ -116,15 +125,10 @@ However, these variables are not manipulated directly by the main checking funct
      if actual = Bot then return Ref(Bot, false)
      return actual
 
-   func pop_val(expect : val_type) : val_type =
-     let actual = pop_val()
-     error_if(not matches(actual, expect))
-     return actual
-
    func push_vals(types : list(val_type)) = foreach (t in types) push_val(t)
    func pop_vals(types : list(val_type)) : list(val_type) =
      var popped := []
-     foreach (t in reverse(types)) popped.append(pop_val(t))
+     foreach (t in reverse(types)) popped.prepend(pop_val(t))
      return popped
 
 Pushing an operand value simply pushes the respective type to the value stack.
@@ -150,24 +154,24 @@ The control stack is likewise manipulated through auxiliary functions:
 .. code-block:: pseudo
 
    func push_ctrl(opcode : opcode, in : list(val_type), out : list(val_type)) =
-     let frame = ctrl_frame(opcode, in, out, vals.size(), false)
-     ctrls.push(frame)
+     let frame = ctrl_frame(opcode, in, out, vals.size(), false)
+     ctrls.push(frame)
      push_vals(in)
 
    func pop_ctrl() : ctrl_frame =
-     error_if(ctrls.is_empty())
-     let frame = ctrls[0]
-     pop_vals(frame.end_types)
-     error_if(vals.size() =/= frame.height)
+     error_if(ctrls.is_empty())
+     let frame = ctrls[0]
+     pop_vals(frame.end_types)
+     error_if(vals.size() =/= frame.height)
      ctrls.pop()
-     return frame
+     return frame
 
    func label_types(frame : ctrl_frame) : list(val_types) =
      return (if frame.opcode == loop then frame.start_types else frame.end_types)
 
    func unreachable() =
-     vals.resize(ctrls[0].height)
-     ctrls[0].unreachable := true
+     vals.resize(ctrls[0].height)
+     ctrls[0].unreachable := true
 
 Pushing a control frame takes the types of the label and result values.
 It allocates a new frame record recording them along with the current height of the operand stack and marks the block as reachable.
@@ -213,10 +217,11 @@ Other instructions are checked in a similar manner.
 
        case (select)
          pop_val(I32)
-         let t1 = pop_num()
-         let t2 = pop_num()
+         let t1 = pop_val()
+         let t2 = pop_val()
+         error_if(not (is_num(t1) && is_num(t2) || is_vec(t1) && is_vec(t2)))
          error_if(t1 =/= t2 && t1 =/= Bot && t2 =/= Bot)
-         push_val(if (t1 = Bot) t2 else t1)
+         push_val(if (t1 == Bot) t2 else t1)
 
        case (select t)
          pop_val(I32)
@@ -232,8 +237,8 @@ Other instructions are checked in a similar manner.
          let rt = pop_ref()
          push_val(Ref(rt.heap, false))
 
-       case (unreachable)
-         unreachable()
+       case (unreachable)
+         unreachable()
 
        case (block t1*->t2*)
          pop_vals([t1*])
@@ -258,32 +263,32 @@ Other instructions are checked in a similar manner.
          push_ctrl(else, frame.start_types, frame.end_types)
 
        case (br n)
-         error_if(ctrls.size() < n)
-         pop_vals(label_types(ctrls[n]))
-         unreachable()
+         error_if(ctrls.size() < n)
+         pop_vals(label_types(ctrls[n]))
+         unreachable()
 
        case (br_if n)
-         error_if(ctrls.size() < n)
+         error_if(ctrls.size() < n)
          pop_val(I32)
-         pop_vals(label_types(ctrls[n]))
-         push_vals(label_types(ctrls[n]))
+         pop_vals(label_types(ctrls[n]))
+         push_vals(label_types(ctrls[n]))
 
-       case (br_table n* m)
+       case (br_table n* m)
          pop_val(I32)
-         error_if(ctrls.size() < m)
+         error_if(ctrls.size() < m)
          let arity = label_types(ctrls[m]).size()
-         foreach (n in n*)
-           error_if(ctrls.size() < n)
-           error_if(label_types(ctrls[n]).size() =/= arity)
+         foreach (n in n*)
+           error_if(ctrls.size() < n)
+           error_if(label_types(ctrls[n]).size() =/= arity)
            push_vals(pop_vals(label_types(ctrls[n])))
-         pop_vals(label_types(ctrls[m]))
-         unreachable()
+         pop_vals(label_types(ctrls[m]))
+         unreachable()
 
        case (br_on_null n)
-         error_if(ctrls.size() < n)
+         error_if(ctrls.size() < n)
          let rt = pop_ref()
-         pop_vals(label_types(ctrls[n]))
-         push_vals(label_types(ctrls[n]))
+         pop_vals(label_types(ctrls[n]))
+         push_vals(label_types(ctrls[n]))
          push_val(Ref(rt.heap, false))
 
        case (call_ref)

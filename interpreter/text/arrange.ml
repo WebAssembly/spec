@@ -61,6 +61,7 @@ let mutability node = function
   | Mutable -> Node ("mut", [node])
 
 let num_type t = string_of_num_type t
+let vec_type t = string_of_vec_type t
 let ref_type t = string_of_ref_type t
 let heap_type t = string_of_heap_type t
 let value_type t = string_of_value_type t
@@ -109,10 +110,21 @@ let pack_size = function
   | Pack8 -> "8"
   | Pack16 -> "16"
   | Pack32 -> "32"
+  | Pack64 -> "64"
 
 let extension = function
   | SX -> "_s"
   | ZX -> "_u"
+
+let pack_shape = function
+  | Pack8x8 -> "8x8"
+  | Pack16x4 -> "16x4"
+  | Pack32x2 -> "32x2"
+
+let vec_extension sz = function
+  | ExtLane (sh, ext) -> pack_shape sh ^ extension ext
+  | ExtSplat -> pack_size sz ^ "_splat"
+  | ExtZero -> pack_size sz ^ "_zero"
 
 
 (* Operators *)
@@ -178,7 +190,7 @@ module FloatOp =
 struct
   open Ast.FloatOp
 
-  let testop xx = fun _ -> assert false
+  let testop xx = function (_ : testop) -> .
 
   let relop xx = function
     | Eq -> "eq"
@@ -216,12 +228,176 @@ struct
     | ReinterpretInt -> "reinterpret_i" ^ xx
 end
 
-let oper (intop, floatop) op =
+module V128Op =
+struct
+  open Ast.V128Op
+
+  let half = function
+    | "16x8" -> "8x16"
+    | "32x4" -> "16x8"
+    | "64x2" -> "32x4"
+    | _ -> assert false
+
+  let double = function
+    | "8x16" -> "16x8"
+    | "16x8" -> "32x4"
+    | "32x4" -> "64x2"
+    | _ -> assert false
+
+  let voidop xxxx = function (_ : void) -> .
+
+  let itestop xxxx (op : itestop) = match op with
+    | AllTrue -> "all_true"
+
+  let iunop xxxx (op : iunop) = match op with
+    | Neg -> "neg"
+    | Abs -> "abs"
+    | Popcnt -> "popcnt"
+
+  let funop xxxx (op : funop) = match op with
+    | Neg -> "neg"
+    | Abs -> "abs"
+    | Sqrt -> "sqrt"
+    | Ceil -> "ceil"
+    | Floor -> "floor"
+    | Trunc -> "trunc"
+    | Nearest -> "nearest"
+
+  let ibinop xxxx (op : ibinop) = match op with
+    | Add -> "add"
+    | AddSatS -> "add_sat_s"
+    | AddSatU -> "add_sat_u"
+    | Sub -> "sub"
+    | SubSatS -> "sub_sat_s"
+    | SubSatU -> "sub_sat_u"
+    | Mul -> "mul"
+    | DotS -> "dot_i" ^ half xxxx ^ "_s"
+    | ExtMulLowS -> "extmul_low_i" ^ half xxxx ^ "_s"
+    | ExtMulHighS -> "extmul_high_i" ^ half xxxx ^ "_s"
+    | ExtMulLowU -> "extmul_low_i" ^ half xxxx ^ "_u"
+    | ExtMulHighU -> "extmul_high_i" ^ half xxxx ^ "_u"
+    | Q15MulRSatS -> "q15mulr_sat_s"
+    | MinS -> "min_s"
+    | MinU -> "min_u"
+    | MaxS -> "max_s"
+    | MaxU -> "max_u"
+    | AvgrU -> "avgr_u"
+    | NarrowS -> "narrow_i" ^ double xxxx ^ "_s"
+    | NarrowU -> "narrow_i" ^ double xxxx ^ "_u"
+    | Shuffle is -> "shuffle " ^ String.concat " " (List.map nat is)
+    | Swizzle -> "swizzle"
+
+  let fbinop xxxx (op : fbinop) = match op with
+    | Add -> "add"
+    | Sub -> "sub"
+    | Mul -> "mul"
+    | Div -> "div"
+    | Min -> "min"
+    | Max -> "max"
+    | Pmin -> "pmin"
+    | Pmax -> "pmax"
+
+  let irelop xxxx (op : irelop) = match op with
+    | Eq -> "eq"
+    | Ne -> "ne"
+    | LtS -> "lt_s"
+    | LtU -> "lt_u"
+    | GtS -> "gt_s"
+    | GtU -> "gt_u"
+    | LeS -> "le_s"
+    | LeU -> "le_u"
+    | GeS -> "ge_s"
+    | GeU -> "ge_u"
+
+  let frelop xxxx (op : frelop) = match op with
+    | Eq -> "eq"
+    | Ne -> "ne"
+    | Lt -> "lt"
+    | Le -> "le"
+    | Gt -> "gt"
+    | Ge -> "ge"
+
+  let icvtop xxxx (op : icvtop) = match op with
+    | ExtendLowS -> "extend_low_i" ^ half xxxx ^ "_s"
+    | ExtendLowU -> "extend_low_i" ^ half xxxx ^ "_u"
+    | ExtendHighS -> "extend_high_i" ^ half xxxx ^ "_s"
+    | ExtendHighU -> "extend_high_i" ^ half xxxx ^ "_u"
+    | ExtAddPairwiseS -> "extadd_pairwise_i" ^ half xxxx ^ "_s"
+    | ExtAddPairwiseU -> "extadd_pairwise_i" ^ half xxxx ^ "_u"
+    | TruncSatSF32x4 -> "trunc_sat_f32x4_s"
+    | TruncSatUF32x4 -> "trunc_sat_f32x4_u"
+    | TruncSatSZeroF64x2 -> "trunc_sat_f64x2_s_zero"
+    | TruncSatUZeroF64x2 -> "trunc_sat_f64x2_u_zero"
+
+  let fcvtop xxxx (op : fcvtop) = match op with
+    | DemoteZeroF64x2  -> "demote_f64x2_zero"
+    | PromoteLowF32x4  -> "promote_low_f32x4"
+    | ConvertSI32x4 ->
+      "convert_" ^ (if xxxx = "32x4" then "" else "low_") ^ "i32x4_s"
+    | ConvertUI32x4 ->
+      "convert_" ^ (if xxxx = "32x4" then "" else "low_") ^ "i32x4_u"
+
+  let ishiftop xxxx (op : ishiftop) = match op with
+    | Shl -> "shl"
+    | ShrS -> "shr_s"
+    | ShrU -> "shr_u"
+
+  let ibitmaskop xxxx (op : ibitmaskop) = match op with
+    | Bitmask -> "bitmask"
+
+  let vtestop (op : vtestop) = match op with
+    | AnyTrue -> "any_true"
+
+  let vunop (op : vunop) = match op with
+    | Not -> "not"
+
+  let vbinop (op : vbinop) = match op with
+    | And -> "and"
+    | AndNot -> "andnot"
+    | Or -> "or"
+    | Xor -> "xor"
+
+  let vternop (op : vternop) = match op with
+    | Bitselect -> "bitselect"
+
+  let splatop xxxx (op : nsplatop) = match op with
+    | Splat -> "splat"
+
+  let pextractop xxxx (op : extension nextractop) = match op with
+    | Extract (i, ext) -> "extract_lane" ^ extension ext ^ " " ^ nat i
+
+  let extractop xxxx (op : unit nextractop) = match op with
+    | Extract (i, ()) -> "extract_lane " ^ nat i
+
+  let replaceop xxxx (op : nreplaceop) = match op with
+    | Replace i -> "replace_lane " ^ nat i
+
+  let lane_oper (pop, iop, fop) op =
+    match op with
+    | V128.I8x16 o -> pop "8x16" o
+    | V128.I16x8 o -> pop "16x8" o
+    | V128.I32x4 o -> iop "32x4" o
+    | V128.I64x2 o -> iop "64x2" o
+    | V128.F32x4 o -> fop "32x4" o
+    | V128.F64x2 o -> fop "64x2" o
+end
+
+let oper (iop, fop) op =
+  num_type (type_of_num op) ^ "." ^
+  (match op with
+  | I32 o -> iop "32" o
+  | I64 o -> iop "64" o
+  | F32 o -> fop "32" o
+  | F64 o -> fop "64" o
+  )
+
+let vec_oper (vop) op =
   match op with
-  | I32 o -> "i32." ^ intop "32" o
-  | I64 o -> "i64." ^ intop "64" o
-  | F32 o -> "f32." ^ floatop "32" o
-  | F64 o -> "f64." ^ floatop "64" o
+  | V128 o -> "v128." ^ vop o
+
+let vec_shape_oper (pop, iop, fop) op =
+  match op with
+  | V128 o -> V128.string_of_shape o ^ "." ^ V128Op.lane_oper (pop, iop, fop) o
 
 let unop = oper (IntOp.unop, FloatOp.unop)
 let binop = oper (IntOp.binop, FloatOp.binop)
@@ -229,21 +405,49 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
-let memop name {ty; align; offset; _} sz =
-  num_type ty ^ "." ^ name ^
+let vec_unop = vec_shape_oper (V128Op.iunop, V128Op.iunop, V128Op.funop)
+let vec_binop = vec_shape_oper (V128Op.ibinop, V128Op.ibinop, V128Op.fbinop)
+let vec_testop = vec_shape_oper (V128Op.itestop, V128Op.itestop, V128Op.voidop)
+let vec_relop = vec_shape_oper (V128Op.irelop, V128Op.irelop, V128Op.frelop)
+let vec_cvtop = vec_shape_oper (V128Op.icvtop, V128Op.icvtop, V128Op.fcvtop)
+let vec_shiftop = vec_shape_oper (V128Op.ishiftop, V128Op.ishiftop, V128Op.voidop)
+let vec_bitmaskop = vec_shape_oper (V128Op.ibitmaskop, V128Op.ibitmaskop, V128Op.voidop)
+let vec_vunop = vec_oper (V128Op.vunop)
+let vec_vbinop = vec_oper (V128Op.vbinop)
+let vec_vternop = vec_oper (V128Op.vternop)
+let vec_vtestop = vec_oper (V128Op.vtestop)
+let vec_splatop = vec_shape_oper (V128Op.splatop, V128Op.splatop, V128Op.splatop)
+let vec_extractop = vec_shape_oper (V128Op.pextractop, V128Op.extractop, V128Op.extractop)
+let vec_replaceop = vec_shape_oper (V128Op.replaceop, V128Op.replaceop, V128Op.replaceop)
+
+let memop name typ {ty; align; offset; _} sz =
+  typ ty ^ "." ^ name ^
   (if offset = 0l then "" else " offset=" ^ nat32 offset) ^
   (if 1 lsl align = sz then "" else " align=" ^ nat (1 lsl align))
 
 let loadop op =
-  match op.sz with
-  | None -> memop "load" op (size op.ty)
+  match op.pack with
+  | None -> memop "load" num_type op (num_size op.ty)
   | Some (sz, ext) ->
-    memop ("load" ^ pack_size sz ^ extension ext) op (packed_size sz)
+    memop ("load" ^ pack_size sz ^ extension ext) num_type op (packed_size sz)
 
 let storeop op =
-  match op.sz with
-  | None -> memop "store" op (size op.ty)
-  | Some sz -> memop ("store" ^ pack_size sz) op (packed_size sz)
+  match op.pack with
+  | None -> memop "store" num_type op (num_size op.ty)
+  | Some sz -> memop ("store" ^ pack_size sz) num_type op (packed_size sz)
+
+let vec_loadop (op : vec_loadop) =
+  match op.pack with
+  | None -> memop "load" vec_type op (vec_size op.ty)
+  | Some (sz, ext) ->
+    memop ("load" ^ vec_extension sz ext) vec_type op (packed_size sz)
+
+let vec_storeop op =
+  memop "store" vec_type op (vec_size op.ty)
+
+let vec_laneop instr (op, i) =
+  memop (instr ^ pack_size op.pack ^ "_lane") vec_type op
+    (packed_size op.pack) ^ " " ^ nat i
 
 let initop = function
   | Explicit -> ""
@@ -262,7 +466,9 @@ let castop = function
 
 let var x = nat32 x.it
 let num v = string_of_num v.it
-let constop v = num_type (type_of_num v.it) ^ ".const"
+let vec v = string_of_vec v.it
+let constop v = num_type (type_of_num v) ^ ".const"
+let vec_constop v = vec_type (type_of_vec v) ^ ".const i32x4"
 
 let block_type = function
   | ValBlockType ts -> decls "result" (list_of_opt ts)
@@ -316,6 +522,10 @@ let rec instr e =
     | ElemDrop x -> "elem.drop " ^ var x, []
     | Load op -> loadop op, []
     | Store op -> storeop op, []
+    | VecLoad op -> vec_loadop op, []
+    | VecStore op -> vec_storeop op, []
+    | VecLoadLane op -> vec_laneop "load" op, []
+    | VecStoreLane op -> vec_laneop "store" op, []
     | MemorySize -> "memory.size", []
     | MemoryGrow -> "memory.grow", []
     | MemoryFill -> "memory.fill", []
@@ -341,12 +551,27 @@ let rec instr e =
     | ArraySet x -> "array.set " ^ var x, []
     | ArrayLen -> "array.len", []
     | RttCanon x -> "rtt.canon " ^ var x, []
-    | Const n -> constop n ^ " " ^ num n, []
+    | Const n -> constop n.it ^ " " ^ num n, []
     | Test op -> testop op, []
     | Compare op -> relop op, []
     | Unary op -> unop op, []
     | Binary op -> binop op, []
     | Convert op -> cvtop op, []
+    | VecConst v -> vec_constop v.it ^ " " ^ vec v, []
+    | VecTest op -> vec_testop op, []
+    | VecUnary op -> vec_unop op, []
+    | VecBinary op -> vec_binop op, []
+    | VecCompare op -> vec_relop op, []
+    | VecConvert op -> vec_cvtop op, []
+    | VecShift op -> vec_shiftop op, []
+    | VecBitmask op -> vec_bitmaskop op, []
+    | VecTestBits op -> vec_vtestop op, []
+    | VecUnaryBits op -> vec_vunop op, []
+    | VecBinaryBits op -> vec_vbinop op, []
+    | VecTernaryBits op -> vec_vternop op, []
+    | VecSplat op -> vec_splatop op, []
+    | VecExtract op -> vec_extractop op, []
+    | VecReplace op -> vec_replaceop op, []
   in Node (head, inner)
 
 let const head c =
@@ -505,26 +730,19 @@ let module_ = module_with_var_opt None
 
 (* Scripts *)
 
+let num mode = if mode = `Binary then hex_string_of_num else string_of_num
+let vec mode = if mode = `Binary then hex_string_of_vec else string_of_vec
+
+let ref_ = function
+  | NullRef t -> Node ("ref.null " ^ heap_type t, [])
+  | Script.ExternRef n -> Node ("ref.extern " ^ nat32 n, [])
+  | _ -> assert false
+
 let literal mode lit =
   match lit.it with
-  | Num (Value.I32 i) ->
-    let f = if mode = `Binary then I32.to_hex_string else I32.to_string_s in
-    Node ("i32.const " ^ f i, [])
-  | Num (Value.I64 i) ->
-    let f = if mode = `Binary then I64.to_hex_string else I64.to_string_s in
-    Node ("i64.const " ^ f i, [])
-  | Num (Value.F32 z) ->
-    let f = if mode = `Binary then F32.to_hex_string else F32.to_string in
-    Node ("f32.const " ^ f z, [])
-  | Num (Value.F64 z) ->
-    let f = if mode = `Binary then F64.to_hex_string else F64.to_string in
-    Node ("f64.const " ^ f z, [])
-  | Ref (Value.NullRef t) ->
-    Node ("ref.null " ^ heap_type t, [])
-  | Ref (Script.ExternRef n) ->
-    Node ("ref.extern " ^ nat32 n, [])
-  | Ref _ ->
-    assert false
+  | Num n -> Node (constop n ^ " " ^ num mode n, [])
+  | Vec v -> Node (vec_constop v ^ " " ^ vec mode v, [])
+  | Ref r -> ref_ r
 
 let definition mode x_opt def =
   try
@@ -565,17 +783,40 @@ let nan = function
   | CanonicalNan -> "nan:canonical"
   | ArithmeticNan -> "nan:arithmetic"
 
+let nanop (n : nanop) =
+  match n.it with
+  | F32 n' | F64 n' -> nan n'
+  | _ -> .
+
+let num_pat mode = function
+  | NumPat n -> literal mode (Value.Num n.it @@ n.at)
+  | NanPat nan -> Node (constop nan.it ^ " " ^ nanop nan, [])
+
+let lane_pat mode pat shape =
+  let choose fb ft = if mode = `Binary then fb else ft in
+  match pat, shape with
+  | NumPat {it = Value.I32 i; _}, V128.I8x16 () ->
+    choose I8.to_hex_string I8.to_string_s i
+  | NumPat {it = Value.I32 i; _}, V128.I16x8 () ->
+    choose I16.to_hex_string I16.to_string_s i
+  | NumPat n, _ -> num mode n.it
+  | NanPat nan, _ -> nanop nan
+
+let vec_pat mode = function
+  | VecPat (V128 (shape, pats)) ->
+    let lanes = List.map (fun p -> Atom (lane_pat mode p shape)) pats in
+    Node ("v128.const " ^ V128.string_of_shape shape, lanes)
+
+let ref_pat = function
+  | RefPat r -> ref_ r.it
+  | RefTypePat t -> Node ("ref." ^ heap_type t, [])
+  | NullPat -> Node ("ref.null", [])
+
 let result mode res =
   match res.it with
-  | LitResult lit -> literal mode lit
-  | NanResult nanop ->
-    (match nanop.it with
-    | I32 _ | I64 _ -> assert false
-    | F32 n -> Node ("f32.const " ^ nan n, [])
-    | F64 n -> Node ("f64.const " ^ nan n, [])
-    )
-  | RefResult t -> Node ("ref." ^ heap_type t, [])
-  | NullResult -> Node ("ref.null", [])
+  | NumResult np -> num_pat mode np
+  | VecResult vp -> vec_pat mode vp
+  | RefResult rp -> ref_pat rp
 
 let assertion mode ass =
   match ass.it with

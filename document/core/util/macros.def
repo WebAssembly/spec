@@ -129,6 +129,7 @@
 .. |sX#1| mathdef:: {\X{s#1}}
 .. |iX#1| mathdef:: {\X{i#1}}
 .. |fX#1| mathdef:: {\X{f#1}}
+.. |vX#1| mathdef:: {\X{v#1}}
 
 .. |uN| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}N}
 .. |uM| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}M}
@@ -144,11 +145,13 @@
 .. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\X{s32}}
 .. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\X{s64}}
 
+.. |iM| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}M}
 .. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}N}
 .. |i8| mathdef:: \xref{syntax/values}{syntax-int}{\X{i8}}
 .. |i16| mathdef:: \xref{syntax/values}{syntax-int}{\X{i16}}
 .. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\X{i32}}
 .. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\X{i64}}
+.. |i128| mathdef:: \xref{syntax/values}{syntax-int}{\X{i128}}
 
 .. |fN| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}N}
 .. |fNmag| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\X{Nmag}}
@@ -178,6 +181,14 @@
 .. |I64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i64}}
 .. |F32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32}}
 .. |F64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64}}
+.. |V128| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{v128}}
+.. |I8X16| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i8x16}}
+.. |I16X8| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i16x8}}
+.. |I32X4| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i32x4}}
+.. |I64X2| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i64x2}}
+.. |F32X4| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32x4}}
+.. |F64X2| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64x2}}
+.. |I128| mathdef:: \K{i128}
 
 .. |REF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{ref}}
 .. |NULL| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{null}}
@@ -201,6 +212,7 @@
 .. Types, non-terminals
 
 .. |numtype| mathdef:: \xref{syntax/types}{syntax-numtype}{\X{numtype}}
+.. |vectype| mathdef:: \xref{syntax/types}{syntax-vectype}{\X{vectype}}
 .. |heaptype| mathdef:: \xref{syntax/types}{syntax-heaptype}{\X{heaptype}}
 .. |reftype| mathdef:: \xref{syntax/types}{syntax-reftype}{\X{reftype}}
 .. |valtype| mathdef:: \xref{syntax/types}{syntax-valtype}{\X{valtype}}
@@ -351,8 +363,11 @@
 .. |BR| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br}}
 .. |BRIF| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_if}}
 .. |BRTABLE| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_table}}
+.. |BRONNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_on\_null}}
+.. |BRONNONNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{br\_on\_non\_null}}
 .. |RETURN| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{return}}
 .. |CALL| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call}}
+.. |CALLREF| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call\_ref}}
 .. |CALLINDIRECT| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call\_indirect}}
 
 .. |DROP| mathdef:: \xref{syntax/instructions}{syntax-instr-parametric}{\K{drop}}
@@ -383,8 +398,9 @@
 .. |DATADROP| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{data.drop}}
 
 .. |REFNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}null}}
-.. |REFISNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}is\_null}}
 .. |REFFUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}func}}
+.. |REFISNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}is\_null}}
+.. |REFASNONNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}as\_non\_null}}
 
 .. |CONST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{const}}
 .. |EQZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{eqz}}
@@ -427,6 +443,56 @@
 .. |DEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{demote}}
 .. |REINTERPRET| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{reinterpret}}
 
+.. |VCONST| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{const}}
+.. |SHUFFLE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{shuffle}}
+.. |SWIZZLE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{swizzle}}
+.. |SPLAT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{splat}}
+.. |EXTRACTLANE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extract\_lane}}
+.. |REPLACELANE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{replace\_lane}}
+.. |VNOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{not}}
+.. |VAND| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{and}}
+.. |VANDNOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{andnot}}
+.. |VOR| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{or}}
+.. |VXOR| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{xor}}
+.. |BITSELECT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{bitselect}}
+.. |VEQ| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{eq}}
+.. |VNE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{ne}}
+.. |VLT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{lt}}
+.. |VGT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{gt}}
+.. |VLE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{le}}
+.. |VGE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{ge}}
+.. |VABS| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{abs}}
+.. |VNEG| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{neg}}
+.. |VCEIL| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{ceil}}
+.. |VFLOOR| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{floor}}
+.. |VTRUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{trunc}}
+.. |VNEAREST| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{nearest}}
+.. |VPOPCNT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{popcnt}}
+.. |ANYTRUE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{any\_true}}
+.. |ALLTRUE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{all\_true}}
+.. |BITMASK| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{bitmask}}
+.. |VSHL| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{shl}}
+.. |VSHR| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{shr}}
+.. |VSQRT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{sqrt}}
+.. |VADD| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{add}}
+.. |VSUB| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{sub}}
+.. |VMUL| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{mul}}
+.. |VDIV| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{div}}
+.. |VMIN| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{min}}
+.. |VMAX| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{max}}
+.. |VPMIN| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{pmin}}
+.. |VPMAX| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{pmax}}
+.. |NARROW| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{narrow}}
+.. |VEXTEND| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extend}}
+.. |AVGR| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{avgr}}
+.. |DOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{dot}}
+.. |EXTMUL| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extmul}}
+.. |VCONVERT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{convert}}
+.. |Q15MULRSAT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{q15mulr\_sat}}
+.. |EXTADDPAIRWISE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extadd\_pairwise}}
+.. |VDEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{demote}}
+.. |VPROMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{promote}}
+
 
 .. Instructions, non-terminals
 
@@ -446,7 +512,36 @@
 .. |ftestop| mathdef:: \xref{syntax/instructions}{syntax-ftestop}{\X{ftestop}}
 .. |frelop| mathdef:: \xref{syntax/instructions}{syntax-frelop}{\X{frelop}}
 
+.. |ishape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\X{ishape}}
+.. |fshape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\X{fshape}}
+.. |shape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\X{shape}}
+
+.. |vunop| mathdef:: \xref{syntax/instructions}{syntax-vunop}{\X{vunop}}
+.. |vbinop| mathdef:: \xref{syntax/instructions}{syntax-vbinop}{\X{vbinop}}
+.. |vrelop| mathdef:: \xref{syntax/instructions}{syntax-vrelop}{\X{vrelop}}
+.. |vternop| mathdef:: \xref{syntax/instructions}{syntax-vternop}{\X{vternop}}
+.. |vcvtop| mathdef:: \xref{syntax/instructions}{syntax-vcvtop}{\X{vcvtop}}
+.. |vextmul| mathdef:: \xref{syntax/instructions}{syntax-vextmul}{\X{vextmul}}
+
+.. |laneidx| mathdef:: \xref{syntax/instructions}{syntax-laneidx}{\X{laneidx}}
+.. |vvunop| mathdef:: \xref{syntax/instructions}{syntax-vvunop}{\X{vvunop}}
+.. |vvbinop| mathdef:: \xref{syntax/instructions}{syntax-vvbinop}{\X{vvbinop}}
+.. |vvternop| mathdef:: \xref{syntax/instructions}{syntax-vvternop}{\X{vvternop}}
+.. |vvtestop| mathdef:: \xref{syntax/instructions}{syntax-vvtestop}{\X{vvtestop}}
+.. |vishiftop| mathdef:: \xref{syntax/instructions}{syntax-vishiftop}{\X{vishiftop}}
+.. |viunop| mathdef:: \xref{syntax/instructions}{syntax-viunop}{\X{viunop}}
+.. |vibinop| mathdef:: \xref{syntax/instructions}{syntax-vibinop}{\X{vibinop}}
+.. |viminmaxop| mathdef:: \xref{syntax/instructions}{syntax-viminmaxop}{\X{viminmaxop}}
+.. |visatbinop| mathdef:: \xref{syntax/instructions}{syntax-visatbinop}{\X{visatbinop}}
+.. |vfunop| mathdef:: \xref{syntax/instructions}{syntax-vfunop}{\X{vfunop}}
+.. |vfbinop| mathdef:: \xref{syntax/instructions}{syntax-vfbinop}{\X{vfbinop}}
+.. |virelop| mathdef:: \xref{syntax/instructions}{syntax-virelop}{\X{virelop}}
+.. |vfrelop| mathdef:: \xref{syntax/instructions}{syntax-vfrelop}{\X{vfrelop}}
+.. |vitestop| mathdef:: \xref{syntax/instructions}{syntax-vitestop}{\X{vitestop}}
+.. |vtestop| mathdef:: \xref{syntax/instructions}{syntax-vtestop}{\X{vtestop}}
+
 .. |sx| mathdef:: \xref{syntax/instructions}{syntax-sx}{\X{sx}}
+.. |half| mathdef:: \xref{syntax/instructions}{syntax-half}{\X{half}}
 .. |memarg| mathdef:: \xref{syntax/instructions}{syntax-memarg}{\X{memarg}}
 
 .. |blocktype| mathdef:: \xref{syntax/instructions}{syntax-blocktype}{\X{blocktype}}
@@ -505,6 +600,7 @@
 .. Types, non-terminals
 
 .. |Bnumtype| mathdef:: \xref{binary/types}{binary-numtype}{\B{numtype}}
+.. |Bvectype| mathdef:: \xref{binary/types}{binary-vectype}{\B{vectype}}
 .. |Bheaptype| mathdef:: \xref{binary/types}{binary-heaptype}{\B{heaptype}}
 .. |Breftype| mathdef:: \xref{binary/types}{binary-reftype}{\B{reftype}}
 .. |Bvaltype| mathdef:: \xref{binary/types}{binary-valtype}{\B{valtype}}
@@ -579,6 +675,7 @@
 .. |Binstr| mathdef:: \xref{binary/instructions}{binary-instr}{\B{instr}}
 .. |Bexpr| mathdef:: \xref{binary/instructions}{binary-expr}{\B{expr}}
 
+.. |Blaneidx| mathdef:: \xref{binary/instructions}{binary-laneidx}{\B{laneidx}}
 
 
 .. Text Format
@@ -647,6 +744,8 @@
 .. |Ts64| mathdef:: \xref{text/values}{text-int}{\TsX{\T{64}}}
 
 .. |TiN| mathdef:: \xref{text/values}{text-int}{\TiX{N}}
+.. |Ti8| mathdef:: \xref{text/values}{text-int}{\TiX{\T{8}}}
+.. |Ti16| mathdef:: \xref{text/values}{text-int}{\TiX{\T{16}}}
 .. |Ti32| mathdef:: \xref{text/values}{text-int}{\TiX{\T{32}}}
 .. |Ti64| mathdef:: \xref{text/values}{text-int}{\TiX{\T{64}}}
 
@@ -667,6 +766,7 @@
 .. Types, non-terminals
 
 .. |Tnumtype| mathdef:: \xref{text/types}{text-numtype}{\T{numtype}}
+.. |Tvectype| mathdef:: \xref{text/types}{text-vectype}{\T{vectype}}
 .. |Theaptype| mathdef:: \xref{text/types}{text-heaptype}{\T{heaptype}}
 .. |Treftype| mathdef:: \xref{text/types}{text-reftype}{\T{reftype}}
 .. |Tvaltype| mathdef:: \xref{text/types}{text-valtype}{\T{valtype}}
@@ -789,8 +889,8 @@
 .. |matchestabletype| mathdef:: \xref{valid/matching}{match-tabletype}{\leq}
 .. |matchesmemtype| mathdef:: \xref{valid/matching}{match-memtype}{\leq}
 .. |matchesglobaltype| mathdef:: \xref{valid/matching}{match-globaltype}{\leq}
-.. |matchesexterntype| mathdef:: \xref{exec/matching}{match-externtype}{\leq}
-.. |matcheslimits| mathdef:: \xref{exec/matching}{match-limits}{\leq}
+.. |matchesexterntype| mathdef:: \xref{valid/matching}{match-externtype}{\leq}
+.. |matcheslimits| mathdef:: \xref{valid/matching}{match-limits}{\leq}
 
 
 .. Contexts
@@ -811,6 +911,7 @@
 .. Judgments
 
 .. |vdashnumtype| mathdef:: \xref{valid/types}{valid-numtype}{\vdash}
+.. |vdashvectype| mathdef:: \xref{valid/types}{valid-vectype}{\vdash}
 .. |vdashheaptype| mathdef:: \xref{valid/types}{valid-heaptype}{\vdash}
 .. |vdashreftype| mathdef:: \xref{valid/types}{valid-reftype}{\vdash}
 .. |vdashvaltype| mathdef:: \xref{valid/types}{valid-valtype}{\vdash}
@@ -832,8 +933,8 @@
 .. |vdashtabletypematch| mathdef:: \xref{valid/matching}{match-tabletype}{\vdash}
 .. |vdashmemtypematch| mathdef:: \xref{valid/matching}{match-memtype}{\vdash}
 .. |vdashglobaltypematch| mathdef:: \xref{valid/matching}{match-globaltype}{\vdash}
-.. |vdashexterntypematch| mathdef:: \xref{exec/matching}{match-externtype}{\vdash}
-.. |vdashlimitsmatch| mathdef:: \xref{exec/matching}{match-limits}{\vdash}
+.. |vdashexterntypematch| mathdef:: \xref{valid/matching}{match-externtype}{\vdash}
+.. |vdashlimitsmatch| mathdef:: \xref{valid/matching}{match-limits}{\vdash}
 
 .. |vdashinstr| mathdef:: \xref{valid/instructions}{valid-instr}{\vdash}
 .. |vdashinstrseq| mathdef:: \xref{valid/instructions}{valid-instr-seq}{\vdash}
@@ -856,6 +957,9 @@
 .. |vdashimport| mathdef:: \xref{valid/modules}{valid-import}{\vdash}
 .. |vdashimportdesc| mathdef:: \xref{valid/modules}{valid-importdesc}{\vdash}
 .. |vdashmodule| mathdef:: \xref{valid/modules}{valid-module}{\vdash}
+
+.. |unpacked| mathdef:: \xref{valid/instructions}{aux-unpacked}{\F{unpacked}}
+.. |dim| mathdef:: \xref{valid/instructions}{aux-dim}{\F{dim}}
 
 
 .. Execution
@@ -1001,6 +1105,7 @@
 .. Values & Results, non-terminals
 
 .. |num| mathdef:: \xref{exec/runtime}{syntax-num}{\X{num}}
+.. |vecc| mathdef:: \xref{exec/runtime}{syntax-vec}{\X{vec}}
 .. |reff| mathdef:: \xref{exec/runtime}{syntax-ref}{\X{ref}}
 .. |val| mathdef:: \xref{exec/runtime}{syntax-val}{\X{val}}
 .. |result| mathdef:: \xref{exec/runtime}{syntax-result}{\X{result}}
@@ -1031,7 +1136,9 @@
 .. |idivs| mathdef:: \xref{exec/numerics}{op-idiv_s}{\F{idiv\_s}}
 .. |iremu| mathdef:: \xref{exec/numerics}{op-irem_u}{\F{irem\_u}}
 .. |irems| mathdef:: \xref{exec/numerics}{op-irem_s}{\F{irem\_s}}
+.. |inot| mathdef:: \xref{exec/numerics}{op-inot}{\F{inot}}
 .. |iand| mathdef:: \xref{exec/numerics}{op-iand}{\F{iand}}
+.. |iandnot| mathdef:: \xref{exec/numerics}{op-iandnot}{\F{iandnot}}
 .. |ior| mathdef:: \xref{exec/numerics}{op-ior}{\F{ior}}
 .. |ixor| mathdef:: \xref{exec/numerics}{op-ixor}{\F{ixor}}
 .. |ishl| mathdef:: \xref{exec/numerics}{op-ishl}{\F{ishl}}
@@ -1054,6 +1161,19 @@
 .. |igeu| mathdef:: \xref{exec/numerics}{op-ige_u}{\F{ige\_u}}
 .. |iges| mathdef:: \xref{exec/numerics}{op-ige_s}{\F{ige\_s}}
 .. |iextendMs| mathdef:: \xref{exec/numerics}{op-iextendn_s}{\F{iextend}M\F{\_s}}
+.. |ibitselect| mathdef:: \xref{exec/numerics}{op-ibitselect}{\F{ibitselect}}
+.. |iabs| mathdef:: \xref{exec/numerics}{op-iabs}{\F{iabs}}
+.. |ineg| mathdef:: \xref{exec/numerics}{op-ineg}{\F{ineg}}
+.. |iminu| mathdef:: \xref{exec/numerics}{op-imin_u}{\F{imin\_u}}
+.. |imins| mathdef:: \xref{exec/numerics}{op-imin_s}{\F{imin\_s}}
+.. |imaxu| mathdef:: \xref{exec/numerics}{op-imax_u}{\F{imax\_u}}
+.. |imaxs| mathdef:: \xref{exec/numerics}{op-imax_s}{\F{imax\_s}}
+.. |iaddsatu| mathdef:: \xref{exec/numerics}{op-iaddsat_u}{\F{iaddsat\_u}}
+.. |iaddsats| mathdef:: \xref{exec/numerics}{op-iaddsat_s}{\F{iaddsat\_s}}
+.. |isubsatu| mathdef:: \xref{exec/numerics}{op-isubsat_u}{\F{isubsat\_u}}
+.. |isubsats| mathdef:: \xref{exec/numerics}{op-isubsat_s}{\F{isubsat\_s}}
+.. |iavgru| mathdef:: \xref{exec/numerics}{op-iavgr_u}{\F{iavgr\_u}}
+.. |iq15mulrsats| mathdef:: \xref{exec/numerics}{op-iq15mulrsat_s}{\F{iq15mulrsat\_s}}
 
 .. |fadd| mathdef:: \xref{exec/numerics}{op-fadd}{\F{fadd}}
 .. |fsub| mathdef:: \xref{exec/numerics}{op-fsub}{\F{fsub}}
@@ -1075,6 +1195,8 @@
 .. |fgt| mathdef:: \xref{exec/numerics}{op-fgt}{\F{fgt}}
 .. |fle| mathdef:: \xref{exec/numerics}{op-fle}{\F{fle}}
 .. |fge| mathdef:: \xref{exec/numerics}{op-fge}{\F{fge}}
+.. |fpmin| mathdef:: \xref{exec/numerics}{op-fpmin}{\F{fpmin}}
+.. |fpmax| mathdef:: \xref{exec/numerics}{op-fpmax}{\F{fpmax}}
 
 .. |extend| mathdef:: \xref{exec/numerics}{op-extend_u}{\F{extend}}
 .. |extendu| mathdef:: \xref{exec/numerics}{op-extend_u}{\F{extend}^{\K{u}}}
@@ -1089,6 +1211,9 @@
 .. |convertu| mathdef:: \xref{exec/numerics}{op-convert_u}{\F{convert}^{\K{u}}}
 .. |converts| mathdef:: \xref{exec/numerics}{op-convert_s}{\F{convert}^{\K{s}}}
 .. |reinterpret| mathdef:: \xref{exec/numerics}{op-reinterpret}{\F{reinterpret}}
+.. |narrow| mathdef:: \xref{exec/numerics}{op-narrow_u}{\F{narrow}}
+.. |narrowu| mathdef:: \xref{exec/numerics}{op-narrow_u}{\F{narrow}^{\K{u}}}
+.. |narrows| mathdef:: \xref{exec/numerics}{op-narrow_s}{\F{narrow}^{\K{s}}}
 
 
 .. Numerics, meta functions
@@ -1106,6 +1231,10 @@
 .. |ieee| mathdef:: \xref{exec/numerics}{aux-ieee}{\F{float}}
 .. |nans| mathdef:: \xref{exec/numerics}{aux-nans}{\F{nans}}
 .. |trunc| mathdef:: \xref{exec/numerics}{aux-trunc}{\F{trunc}}
+.. |satu| mathdef:: \xref{exec/numerics}{aux-sat_u}{\F{sat}^{\K{u}}}
+.. |sats| mathdef:: \xref{exec/numerics}{aux-sat_s}{\F{sat}^{\K{s}}}
+
+.. |lanes| mathdef:: \xref{exec/numerics}{aux-lanes}{\F{lanes}}
 
 
 .. Other meta functions

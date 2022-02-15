@@ -45,6 +45,9 @@ let eq_limits c lim1 lim2 =
 let rec eq_num_type c t1 t2 =
   t1 = t2
 
+and eq_vec_type c t1 t2 =
+  t1 = t2
+
 and eq_heap_type c t1 t2 =
   match t1, t2 with
   | DefHeapType x1, DefHeapType x2 -> eq_var_type c x1 x2
@@ -59,6 +62,7 @@ and eq_ref_type c t1 t2 =
 and eq_value_type c t1 t2 =
   match t1, t2 with
   | NumType t1', NumType t2' -> eq_num_type c t1' t2'
+  | VecType t1', VecType t2' -> eq_vec_type c t1' t2'
   | RefType t1', RefType t2' -> eq_ref_type c t1' t2'
   | _, _ -> false
 
@@ -145,6 +149,9 @@ let match_limits c lim1 lim2 =
 let rec match_num_type c t1 t2 =
   t1 = t2
 
+and match_vec_type c t1 t2 =
+  t1 = t2
+
 and match_heap_type c t1 t2 =
   match t1, t2 with
   | _, AnyHeapType -> true
@@ -185,6 +192,7 @@ and match_ref_type c t1 t2 =
 and match_value_type c t1 t2 =
   match t1, t2 with
   | NumType t1', NumType t2' -> match_num_type c t1' t2'
+  | VecType t1', VecType t2' -> match_vec_type c t1' t2'
   | RefType t1', RefType t2' -> match_ref_type c t1' t2'
   | BotType, _ -> true
   | _, _ -> false

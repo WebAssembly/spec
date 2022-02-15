@@ -18,8 +18,9 @@
 import os
 import sys
 from datetime import date
+
 pwd = os.path.abspath('.')
-sys.path.insert(0, pwd + '/util')
+sys.path.insert(0, pwd)
 
 # -- General configuration ------------------------------------------------
 
@@ -36,8 +37,8 @@ extensions = [
   'sphinx.ext.mathjax',
   'sphinx.ext.ifconfig',
   'sphinx.ext.githubpages',
-  'mathdef',
-  'pseudo-lexer'
+  'util.mathdef',
+  'util.pseudo-lexer'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -251,7 +252,7 @@ html_show_copyright = True
 # If this is not None, a ‘Last updated on:’ timestamp is inserted at every
 # page bottom, using the given strftime() format.
 #
-html_last_updated_fmt = '%F'
+html_last_updated_fmt = '%Y-%m-%d'
 
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
@@ -491,8 +492,9 @@ rst_prolog = """
 .. include:: /""" + pwd + """/util/macros.def
 """
 
-# https://www.sphinx-doc.org/en/master/usage/extensions/math.html#confval-mathjax_config
-# http://docs.mathjax.org/en/v2.7-latest/options/input-processors/TeX.html
-mathjax_config = {
-    'TeX': { 'MAXBUFFER': 30*1024 },
+# https://www.sphinx-doc.org/en/master/usage/extensions/math.html#confval-mathjax3_config
+# https://docs.mathjax.org/en/latest/web/configuration.html#configuration
+# https://docs.mathjax.org/en/latest/options/input/tex.html#tex-maxbuffer
+mathjax3_config = {
+    'tex': { 'maxBuffer': 30*1024 },
 }

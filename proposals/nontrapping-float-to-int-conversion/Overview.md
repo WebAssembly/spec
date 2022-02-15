@@ -32,7 +32,7 @@ https://github.com/WebAssembly/meetings/pull/3
 
 and
 
-https://github.com/WebAssembly/meetings/blob/master/2017/CG-05.md#non-trapping-float-to-int
+https://github.com/WebAssembly/meetings/blob/main/2017/CG-05.md#non-trapping-float-to-int
 
 which made decisions about which semantics to choose, and which encoding strategy.
 
@@ -43,7 +43,7 @@ https://github.com/WebAssembly/design/pull/1089
 At the CG-07-06 meeting it was decided that a full spec repo fork should be
 created to follow the new process for new features:
 
-https://github.com/WebAssembly/meetings/blob/master/2017/CG-07-06.md#float-to-int-conversion
+https://github.com/WebAssembly/meetings/blob/main/2017/CG-07-06.md#float-to-int-conversion
 
 This led to the creation of the present repo:
 

@@ -9,10 +9,10 @@ and var = SynVar of syn_var | SemVar of sem_var | RecVar of int32
 and mutability = Immutable | Mutable
 and nullability = NonNullable | Nullable
 
-and pack_size = Pack8 | Pack16 | Pack32
-and extension = SX | ZX
+and pack_size = Pack8 | Pack16 | Pack32 | Pack64
 
 and num_type = I32Type | I64Type | F32Type | F64Type
+and vec_type = V128Type
 and ref_type = nullability * heap_type
 and heap_type =
   | AnyHeapType
@@ -24,8 +24,9 @@ and heap_type =
   | DefHeapType of var
   | RttHeapType of var
   | BotHeapType
+and value_type =
+  NumType of num_type | VecType of vec_type | RefType of ref_type | BotType
 
-and value_type = NumType of num_type | RefType of ref_type | BotType
 and result_type = value_type list
 
 and storage_type =
@@ -60,17 +61,32 @@ type import_type = ImportType of extern_type * name * name
 type module_type =
   ModuleType of def_type list * import_type list * export_type list
 
+(* TODO: these types should move somewhere else *)
+type extension = SX | ZX
+type pack_shape = Pack8x8 | Pack16x4 | Pack32x2
+type vec_extension =
+  | ExtLane of pack_shape * extension
+  | ExtSplat
+  | ExtZero
+
 
 (* Attributes *)
 
-let size = function
+let num_size = function
   | I32Type | F32Type -> 4
   | I64Type | F64Type -> 8
+
+let vec_size = function
+  | V128Type -> 16
 
 let packed_size = function
   | Pack8 -> 1
   | Pack16 -> 2
   | Pack32 -> 4
+  | Pack64 -> 8
+
+let packed_shape_size = function
+  | Pack8x8 | Pack16x4 | Pack32x2 -> 8
 
 
 let is_packed_storage_type = function
@@ -89,14 +105,21 @@ let as_rec_var = function RecVar x -> x | _ -> assert false
 
 let is_num_type = function
   | NumType _ | BotType -> true
-  | RefType _ -> false
+  | _ -> false
+
+let is_vec_type = function
+  | VecType _ | BotType -> true
+  | _ -> false
 
 let is_ref_type = function
-  | NumType _ -> false
   | RefType _ | BotType -> true
+  | _ -> false
 
 
 let defaultable_num_type = function
+  | _ -> true
+
+let defaultable_vec_type = function
   | _ -> true
 
 let defaultable_ref_type = function
@@ -104,6 +127,7 @@ let defaultable_ref_type = function
 
 let defaultable_value_type = function
   | NumType t -> defaultable_num_type t
+  | VecType t -> defaultable_vec_type t
   | RefType t -> defaultable_ref_type t
   | BotType -> assert false
 
@@ -161,6 +185,8 @@ let def_of x = Lib.Promise.value x
 
 let subst_num_type s t = t
 
+let subst_vec_type s t = t
+
 let subst_heap_type s = function
   | AnyHeapType -> AnyHeapType
   | EqHeapType -> EqHeapType
@@ -177,6 +203,7 @@ let subst_ref_type s = function
 
 let subst_value_type s = function
   | NumType t -> NumType (subst_num_type s t)
+  | VecType t -> VecType (subst_vec_type s t)
   | RefType t -> RefType (subst_ref_type s t)
   | BotType -> BotType
 
@@ -342,6 +369,9 @@ and string_of_num_type = function
   | F32Type -> "f32"
   | F64Type -> "f64"
 
+and string_of_vec_type = function
+  | V128Type -> "v128"
+
 and string_of_heap_type = function
   | AnyHeapType -> "any"
   | EqHeapType -> "eq"
@@ -359,6 +389,7 @@ and string_of_ref_type = function
 
 and string_of_value_type = function
   | NumType t -> string_of_num_type t
+  | VecType t -> string_of_vec_type t
   | RefType t -> string_of_ref_type t
   | BotType -> "(something)"
 

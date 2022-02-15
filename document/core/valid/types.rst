@@ -24,6 +24,23 @@ Number Types
    }
 
 
+.. index:: vector type
+   pair: validation; vector type
+   single: abstract syntax; vector type
+.. _valid-vectype:
+
+Vector Types
+~~~~~~~~~~~~
+
+:ref:`Vector types <syntax-vectype>` are always valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashvectype \vectype \ok
+   }
+
+
 .. index:: heap type
    pair: validation; heap type
    single: abstract syntax; heap type
@@ -119,6 +136,46 @@ Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number type <va
    }
 
 
+.. index:: block type
+   pair: validation; block type
+   single: abstract syntax; block type
+.. _valid-blocktype:
+
+Block Types
+~~~~~~~~~~~
+
+:ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to plain :ref:`function types <syntax-functype>` by the following rules.
+
+:math:`\typeidx`
+................
+
+* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
+
+* Then the block type is valid as :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
+
+.. math::
+   \frac{
+     C.\CTYPES[\typeidx] = \functype
+   }{
+     C \vdashblocktype \typeidx : \functype
+   }
+
+
+:math:`[\valtype^?]`
+....................
+
+* The value type :math:`\valtype` must either be absent, or :ref:`valid <valid-valtype>`.
+
+* Then the block type is valid as :ref:`function type <syntax-functype>` :math:`[] \to [\valtype^?]`.
+
+.. math::
+   \frac{
+     (C \vdashvaltype \valtype \ok)^?
+   }{
+     C \vdashblocktype [\valtype^?] : [] \to [\valtype^?]
+   }
+
+
 .. index:: result type, value type
    pair: validation; result type
    single: abstract syntax; result type
@@ -174,46 +231,6 @@ Limits
      (n \leq m)^?
    }{
      C \vdashlimits \{ \LMIN~n, \LMAX~m^? \} : k
-   }
-
-
-.. index:: block type
-   pair: validation; block type
-   single: abstract syntax; block type
-.. _valid-blocktype:
-
-Block Types
-~~~~~~~~~~~
-
-:ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to plain :ref:`function types <syntax-functype>` by the following rules.
-
-:math:`\typeidx`
-................
-
-* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
-
-* Then the block type is valid as :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
-
-.. math::
-   \frac{
-     C.\CTYPES[\typeidx] = \functype
-   }{
-     C \vdashblocktype \typeidx : \functype
-   }
-
-
-:math:`[\valtype^?]`
-....................
-
-* The value type :math:`\valtype` must either be absent, or :ref:`valid <valid-valtype>`.
-
-* Then the block type is valid as :ref:`function type <syntax-functype>` :math:`[] \to [\valtype^?]`.
-
-.. math::
-   \frac{
-     (C \vdashvaltype \valtype \ok)^?
-   }{
-     C \vdashblocktype [\valtype^?] : [] \to [\valtype^?]
    }
 
 

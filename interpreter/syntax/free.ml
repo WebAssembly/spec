@@ -59,6 +59,7 @@ let zero = Set.singleton 0l
 let shift s = Set.map (Int32.add (-1l)) (Set.remove 0l s)
 
 let (++) = union
+let opt free xo = Lib.Option.get (Option.map free xo) empty
 let list free xs = List.fold_left union empty (List.map free xs)
 
 let var_type = function
@@ -67,6 +68,9 @@ let var_type = function
 
 let num_type = function
   | I32Type | I64Type | F32Type | F64Type -> empty
+
+let vec_type = function
+  | V128Type -> empty
 
 let heap_type = function
   | AnyHeapType | EqHeapType | I31HeapType | DataHeapType | ArrayHeapType
@@ -78,6 +82,7 @@ let ref_type = function
 
 let value_type = function
   | NumType t -> num_type t
+  | VecType t -> vec_type t
   | RefType t -> ref_type t
   | BotType -> empty
 
@@ -108,7 +113,7 @@ let memory_type (MemoryType (_lim)) = empty
 
 let block_type = function
   | VarBlockType x -> var_type x
-  | ValBlockType _ -> empty
+  | ValBlockType t -> opt value_type t
 
 let rec instr (e : instr) =
   match e.it with
@@ -142,7 +147,14 @@ let rec instr (e : instr) =
   | TableCopy (x, y) -> tables (idx x) ++ tables (idx y)
   | TableInit (x, y) -> tables (idx x) ++ elems (idx y)
   | ElemDrop x -> elems (idx x)
-  | Load _ | Store _ | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
+  | Load _ | Store _
+  | VecLoad _ | VecStore _ | VecLoadLane _ | VecStoreLane _
+  | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
+    memories zero
+  | VecConst _ | VecTest _ | VecUnary _ | VecBinary _ | VecCompare _
+  | VecConvert _ | VecShift _ | VecBitmask _
+  | VecTestBits _ | VecUnaryBits _ | VecBinaryBits _ | VecTernaryBits _
+  | VecSplat _ | VecExtract _ | VecReplace _ ->
     memories zero
   | MemoryInit x -> memories zero ++ datas (idx x)
   | DataDrop x -> datas (idx x)
@@ -188,8 +200,7 @@ let import_desc (d : import_desc) =
 let export (e : export) = export_desc e.it.edesc
 let import (i : import) = import_desc i.it.idesc
 
-let start (s : idx option) =
-  funcs (Lib.Option.get (Lib.Option.map idx s) Set.empty)
+let start (s : idx) = funcs (idx s)
 
 let module_ (m : module_) =
   list type_ m.it.types ++
@@ -197,7 +208,7 @@ let module_ (m : module_) =
   list table m.it.tables ++
   list memory m.it.memories ++
   list func m.it.funcs ++
-  start m.it.start ++
+  opt start m.it.start ++
   list elem m.it.elems ++
   list data m.it.datas ++
   list import m.it.imports ++
