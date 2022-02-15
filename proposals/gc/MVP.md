@@ -20,9 +20,7 @@ Based on the following proposals:
 
 * [typed function references](https://github.com/WebAssembly/function-references), which introduces typed references `(ref null? $t)` etc.
 
-* [type imports](https://github.com/WebAssembly/proposal-type-imports), which allows type definitions to be imported and exported
-
-All three proposals are prerequisites.
+Both proposals are prerequisites.
 
 
 ### Types
@@ -47,10 +45,9 @@ All three proposals are prerequisites.
   - `heaptype ::= ... | i31`
   - the type of unboxed scalars
 
-* `rtt <n>? <typeidx>` is a new heap type that is a runtime representation of the static type `<typeidx>`
-  - `heaptype ::= ... | rtt <n>? <typeidx>`
-  - `rtt n? t ok` iff `t ok`
-  - the constant `n`, if present, encodes the static knowledge that this type has `n` dynamic supertypes (see [Runtime types](#runtime-types))
+* `rtt <typeidx>` is a new heap type that is a runtime representation of the static type `<typeidx>`
+  - `heaptype ::= ... | rtt <typeidx>`
+  - `rtt t ok` iff `t ok`
 
 * `extern` is renamed back to `any`
   - the common supertype of all referenceable types
@@ -79,8 +76,8 @@ New abbreviations are introduced for reference types in binary and text format, 
 * `i31ref` is a new reference type
   - `i31ref == (ref i31)`
 
-* `rtt <n>? <typeidx>` is a new reference type
-  - `(rtt <n>? $t) == (ref (rtt <n>? $t))`
+* `rtt <typeidx>` is a new reference type
+  - `(rtt $t) == (ref (rtt $t))`
 
 * `externref` is renamed to `anyref`
   - `anyref == (ref null any)`
@@ -89,9 +86,19 @@ New abbreviations are introduced for reference types in binary and text format, 
 
 #### Type Definitions
 
-* `deftype` is a new category of types that generalises the existing type definitions in the type section
-  - `deftype ::= <functype> | <structtype> | <arraytype>`
+* `deftype` is the syntax for an entry in the type section, generalising the existing syntax
+  - `deftype ::= rec <subtype>*`
   - `module ::= {..., types vec(<deftype>)}`
+  - a `rec` definition defines a group of mutually recursive types that can refer to each other; it thereby defines several type indices at a time
+  - a single type definition, as in Wasm before this proposal, is reinterpreted as a short-hand for a recursive group containing just one type
+
+* `subtype` is a new category of type defining a single type, as a subtype of possible other types
+  - `subtype ::= sub <typeidx>* <strtype>`
+  - the preexisting syntax with no `sub` clause is redefined to be a shorthand for a `sub` clause with empty `typeidx` list: `<strtype> == sub () <strtype>`
+  - Note: This allows multiple supertypes. For the MVP, it is restricted to at most one supertype.
+
+* `strtype` is a new category of types covering the different forms of concrete structural reference types
+  - `strtype ::= <functype> | <structtype> | <arraytype>`
 
 * `structtype` describes a structure with statically indexed fields
   - `structtype ::= struct <fieldtype>*`
@@ -105,20 +112,182 @@ New abbreviations are introduced for reference types in binary and text format, 
   - `storagetype ::= <valtype> | <packedtype>`
   - `packedtype ::= i8 | i16`
 
+TODO: Need to be able to use `i31` as a type definition.
+
+
+#### Type Contexts
+
+Validity of a module is checked under a context storing the definitions for each type. In the case of recursive types, this definition is given by a respective projection from the full type:
+```
+ctxtype ::= <deftype>.<i>
+```
+
+#### Auxiliary Definitions
+
 * Unpacking a storage type yields `i32` for packed types, otherwise the type itself
   - `unpacked(t) = t`
   - `unpacked(pt) = i32`
 
-TODO: Need to be able to use `i31` as a type definition.
+* Unrolling a possibly recursive context type projects the respective item
+  - `unroll($t)                 = unroll(<ctxtype>)`  iff `$t = <ctxtype>`
+  - `unroll((rec <subtype>*).i) = (<subtype>*)[i]`
+
+* Expanding a type definition unrolls it and returns its plain definition
+  - `expand($t)                 = expand(<ctxtype>)`  iff `$t = <ctxtype>`
+  - `expand(<ctxtype>) = <strtype>`
+    - where `unroll(<ctxttype>) = sub x* <strtype>`
+
+
+#### Type Validity
+
+Some of the rules define a type as `ok` for a certain index, written `ok(x)`. This controls uses of type indices as supertypes inside a recursive group: the subtype hierarchy must not be cyclic, and hence any type index used for a supertype is required to be smaller than the index `x` of the current type.
+
+* a sequence of type definitions is valid if each item is valid within the context containing the prior items
+  - `<deftype0> <deftype>* ok`
+    - iff `<deftype0> ok` and extends the context accordingly
+    - and `<deftype>* ok` under the extended context
+
+* a group of recursive type definitions is valid if its types are valid under the context containing all of them
+  - `rec <subtype>* ok` and extends the context with `<ctxtype>*`
+    - iff `<subtype>* ok($t)` under the extended context(!)
+    - where `$t` is the next unused (i.e., current) type index
+    - and `N = |<subtype>*|-1`
+    - and `<ctxtype>*  = (rec <subtype>*).0, ..., (rec <subtype>*).N`
+
+* a sequence of subtype's is valid of each of them is valid for their respective index
+  - `<subtype0> <subtype>* ok($t)`
+    - iff `<subtype0> ok($t)`
+    - and `<subtype>* ok($t+1)`
+
+* an individual subtype is valid if its definition is valid, matches every supertype, and no supertype has an index higher than its own
+  - `sub $t* <strtype> ok($t')`
+    - iff `<strtype> ok`
+    - and `(<strtype> <: expand($t))*`
+    - and `($t < $t')*`
+  - Note: the upper bound on the supertype indices ensures that subtyping hierarchies are never circular, because definitions need to be ordered.
+
+* as [before](https://github.com/WebAssembly/function-references/proposals/function-references/Overview.md#types), a strtype is valid if all the occurring value types are valid
+  - specifically, a concrete reference type `(ref $t)` is valid when `$t` is defined in the context
+
+Example: Consider two mutually recursive types:
+```
+(rec
+  (type $t1 (struct (field i32 (ref $t2))))
+  (type $t2 (struct (field i64 (ref $t1))))
+)
+```
+In the context, these will be recorded as:
+```
+$t1 = rect1t2.0
+$t2 = rect1t2.1
+
+where
+
+rect1t2 = (rec
+  (struct (field i32 (ref $t2)))
+  (struct (field i64 (ref $t1)))
+)
+```
+That is, the types are defined as projections from their respective recursion group, using their relative inner indices `0` and `1`.
+
+
+#### Equivalence
+
+Type equivalence, written `t == t'` here, is essentially defined inductively. All rules are simply the canonical congruences, with the exception of the rule for recursive types.
+
+For the purpose of defining recursive type equivalence, type indices are extended with a special form that distinguishes regular from recursive type uses.
+
+* `rec.<i>` is a new form of type index
+  - `typeidx ::= ... | rec.<i>`
+
+This form is only used during equivalence checking, to identify and represent "back edges" inside a recursive type. It is merely a technical device for formulating the rules and cannot appear in source code. It is introduced by the following auxiliary meta-function:
+
+* Rolling a context type produces an _iso-recursive_ representation of its underlying recursion group
+  - `tie($t)                    = tie_$t(<ctxtype>)`  iff `$t = <ctxtype>`
+  - `tie_$t((rec <subtype>*).i) = (rec <subtype>*).i[$t':=rec.0, ..., $t'+N:=rec.N]` iff `$t' = $t-i` and `N = |<subtype>*|-1`
+  - Note: This definition assumes that all projections of the recursive type are bound to consecutive type indices, so that `$t-i` is the first of them.
+  - Note: If a type is not recursive, `tie` is just the identity.
+
+With that:
+
+* two regular type indices are equivalent if they define equivalent tied context types:
+  - `$t == $t'`
+    - iff `tie($t) == tie($t')`
+
+* two recursive type indices are equivalent if they project the same index
+  - `rec.i == rec.i'`
+    - iff `i = i'`
+
+* two recursive types are equivalent if they are equivalent pointwise
+  - `(rec <subtype>*) == (rec <subtype'>*)`
+    - iff `(<subtype> == <subtype'>)*`
+  - Note: This rule is only used on types that have been tied, which prevents looping.
+
+* notably, two subtypes are equivalent if their structure is equivalent and they have equivalent supertypes
+  - `(sub $t* <strtype>) == (sub $t'* <strtype'>)`
+    - iff `<strtype> == <strtype'>`
+    - and `($t == $t')*`
+
+Example: As explained above, the mutually recursive types
+```
+(rec
+  (type $t1 (struct (field i32 (ref $t2))))
+  (type $t2 (struct (field i64 (ref $t1))))
+)
+```
+would be recorded in the context as
+```
+$t1 = (rec (struct (field i32 (ref $t2))) (struct (field i64 (ref $t1)))).0
+$t2 = (rec (struct (field i32 (ref $t2))) (struct (field i64 (ref $t1)))).1
+```
+Consequently, if there was an equivalent pair of types,
+```
+(rec
+  (type $u1 (struct (field i32 (ref $u2))))
+  (type $u2 (struct (field i64 (ref $u1))))
+)
+```
+recorded in the context as
+```
+$u1 = (rec (struct (field i32 (ref $u2))) (struct (field i64 (ref $u1)))).0
+$u2 = (rec (struct (field i32 (ref $u2))) (struct (field i64 (ref $u1)))).1
+```
+then to check the equivalence `$t1 == $u1`, both types are tied into iso-recursive types first:
+```
+tie($t1) = (rec (struct (field i32 (ref rec.1))) (struct (field i64 (ref rec.0)))).0
+tie($u1) = (rec (struct (field i32 (ref rec.1))) (struct (field i64 (ref rec.0)))).0
+```
+In this case, it is immediately apparent that these are equivalent types.
+
+Note: In type-theoretic terms, these are higher-kinded iso-recursive types:
+```
+tie($t1) ~ (mu a. <(struct (field i32 (ref a.1))), (struct i64 (field (ref a.0)))>).0
+tie($t2) ~ (mu a. <(struct (field i32 (ref a.1))), (struct i64 (field (ref a.0)))>).1
+```
+where `<...>` denotes a type tuple. However, in our case, a single syntactic type variable `rec` is enough for all types, because recursive types cannot nest by construction.
+
+Note 2: This semantics implies that type equivalence checks can be implemented in constant-time by representing all types as trees in tied form and canonicalising them bottom-up in linear time upfront.
+
+Note 3: It's worth noting that the only observable difference to the rules for a nominal type system is the equivalence rule on (non-recursive) type indices: instead of comparing the definitions of their recursive groups, a nominal system would require `$t = $t'` syntactically (at least as long as we ignore things like checking imports, where type indices become meaningless).
+Consequently, using a single big recursion group in this system makes it behave like a nominal system.
 
 
 #### Subtyping
 
-Greatest fixpoint (co-inductive interpretation) of the given rules (implying reflexivity and transitivity).
+##### Type Indices
+
+In the [existing rules](https://github.com/WebAssembly/function-references/proposals/function-references/Overview.md#subtyping), subtyping on type indices required equivalence. Now it can take declared supertypes into account.
+
+* Type indices are subtypes if they either define [equivalent](#type-equivalence) types or a suitable (direct or indirect) subtype relation has been declared
+  - `$t <: $t'`
+    - if `$t = <ctxtype>` and `$t' = <ctxtype'>` and `<ctxtype> == <ctxtype'>`
+    - or `unroll($t) = sub $1* $t'' $t2* strtype` and `$t'' <: $t`
+  - Note: This rule climbs the supertype hierarchy until an equivalent type has been found. Effectively, this means that subtyping is "nominal" modulo type canonicalisation.
+
 
 ##### Heap Types
 
-In addition to the [existing rules](https://github.com/WebAssembly/function-references/proposals/function-references/Overview.md#subtyping) for heap types:
+In addition to the [existing rules](https://github.com/WebAssembly/function-references/proposals/function-references/Overview.md#subtyping) for heap types, the following are added:
 
 * every type is a subtype of `any`
   - `t <: any`
@@ -134,25 +303,19 @@ In addition to the [existing rules](https://github.com/WebAssembly/function-refe
   - `i31 <: eq`
 
 * Any concrete type is a subtype of either `data` or `func`
-  - `(type $t) <: data`
+  - `$t <: data`
      - if `$t = <structtype>` or `$t = <arraytype>`
-     - or `$t = type ht` and `rt <: data` (imports)
-  - `(type $t) <: func`
+  - `$t <: func`
      - if `$t = <functype>`
-     - or `$t = type ht` and `rt <: func` (imports)
 
 * Any concrete array type is a subtype of `array`
   - `(type $t) <: array`
      - if `$t = <arraytype>`
      - or `$t = type ht` and `rt <: array` (imports)
 
-* `rtt n? $t` is a subtype of `eq`
-  - `rtt n? $t <: eq`
-
-* `rtt n $t` is a subtype of `rtt $t`
-  - `rtt n $t1 <: rtt $t2`
-    - if `$t1 == $t2`
-  - Note: `rtt n? $t1` is *not* a subtype of `rtt n? $t2`, if `$t1` is merely a subtype of `$t2`; such covariant subtyping would be unsound, since RTTs are used in both co- and contravariant roles (e.g., both when constructing and consuming a reference)
+* `rtt $t` is a subtype of `eq`
+  - `rtt $t <: eq`
+  - Note: `rtt $t1` is *not* a subtype of `rtt $t2`, unless `$t1` and `$t2` are equivalent; covariant subtyping would be unsound, since RTTs are used in both co- and contravariant roles (e.g., both when constructing and consuming a reference)
 
 Note: This creates a hierarchy of *abstract* Wasm heap types that looks as follows.
 ```
@@ -167,13 +330,16 @@ i31  data
 All *concrete* heap types (of the form `(type $t)`) are situated below either `data` or `func`.
 RTTs are below `eq`.
 
-In addition, a host environment may introduce additional inhabitants of type `any` that are are in neither of the above three leaf type categories.
+In addition, a host environment may introduce additional inhabitants of type `any`
+that are are in neither of the above three leaf type categories.
 The interpretation of such values is defined by the host environment.
 
 Note: In the future, this hierarchy could be refined, e.g., to distinguish compound data types that are not subtypes of `eq`.
 
 
-##### Defined Types
+##### Structural Types
+
+The subtyping rules for structural types are only invoked during validation of a `sub` [type definition](#type-definitions).
 
 * Structure types support width and depth subtyping
   - `struct <fieldtype1>* <fieldtype1'>* <: struct <fieldtype2>*`
@@ -190,43 +356,51 @@ Note: In the future, this hierarchy could be refined, e.g., to distinguish compo
   - Note: mutable fields are *not* subtypes of immutable ones, so `const` really means constant, not read-only
 
 
+##### Type Definitions
+
+Subtyping is not defined on type definitions.
+
+
 ### Runtime
 
 #### Runtime Types
 
-* Runtime types (RTTs) are explicit values representing concrete types at runtime; a value of type `rtt <n>? <typeidx>` is a dynamic representative of the static type `<typeidx>`.
+* Runtime types (RTTs) are explicit values representing concrete types at runtime; a value of type `rtt <typeidx>` is a dynamic representative of the static type `<typeidx>`.
 
 * All RTTs are explicitly created and all operations involving dynamic type information (like casts) operate on explicit RTT operands. This allows maximum flexibility and custom choices wrt which RTTs to represent a source type.
 
-* There is a runtime subtyping hierarchy on RTTs; creating an RTT allows providing a *parent type* in the form of an existing RTT.
+* An RTT value r1 is *equal* to another RTT value r2 iff they both represent the same static type.
 
-* An RTT value r1 is *equal* to another RTT value r2 iff they both represent the same static type and either of the following holds:
-  - r1 and r2 both have no parents, or
-  - r1 and r2 both have equal RTT values as parents.
+* An RTT value r1 is a *subtype* of another RTT value r2 iff they represent static types that are in a respective subtype relation.
 
-* An RTT value r1 is a *sub-RTT* of another RTT value r2 iff either of the following holds:
-  - r1 and r2 are equal RTT values, or
-  - r1 has a parent that is a sub-RTT of r2.
-
-* The count `<n>` in the static type of an RTT value, if present, denotes the length of the supertype chain, i.e., its "inheritance depth" of _concrete types_ (not counting abstract supertypes like `dataref` or `anyref`, which are always at the top of the hierarchy). If this information is present, it enables more efficient implementation of runtime casts in an engine; if it is absent (e.g., to abstract the depth of a subtype graph), then the engine has to read it from the dynamic RTT value.
-
-* Validation requires that each RTT's parent type is a representative of a static supertype; runtime subtyping hence is a sub-relation of static subtyping (a graph with fewer nodes and edges).
-
-* At the same time, runtime subtyping forms a linear hierarchy such that the relation can be checked efficiently using standard implementation techniques (the runtime subtype hierarchy is a tree-shaped graph).
-
-Note: RTT values correspond to type descriptors or "shape" objects as they exist in various engines. RTT equality can be implemented as a single pointer test by memoising RTT values. More interestingly, runtime casts along the hierachy encoded in these values can be implemented in an engine efficiently by using well-known techniques such as including a vector of its (direct and indirect) super-RTTs in each RTT value (with itself as the last entry). The value `<n>` then denotes the length of this vector. A subtype check between two RTT values can be implemented as follows using such a representation. Assume RTT value v1 has static type `(rtt n1? $t1)` and v2 has type `(rtt n2? $t2)`. To check whether v1 denotes a sub-RTT of v2, first verify that `n1 >= n2` -- if both `n1` and `n2` are known statically, this can be performed at compile time; if either is not statically known, it has to be read from the respective RTT value dynamically, and `n1 >= n2` becomes a dynamic check. Then compare v2 to the n2-th entry in v1's supertype vector. If they are equal, v1 is a sub-RTT.
+Note: RTT values correspond to type descriptors or "shape" objects as they exist in various engines.
+RTT equality can be implemented as a single pointer test by memoising RTT values.
+More interestingly, runtime casts along the hierarchy encoded in these values can be implemented in an engine efficiently
+by using well-known techniques such as including a vector of its (direct and indirect) super-RTTs in each RTT value (with itself as the last entry).
+A subtype check between two RTT values can be implemented as follows using such a representation.
+Assume RTT value v1 has static type `(rtt $t1)` and v2 has type `(rtt $t2)`.
+Let `n1` and `n2` be the lengths of the respective supertype vectors.
+To check whether v1 denotes a subtype RTT of v2, first verify that `n1 >= n2` --
+if both `n1` and `n2` are known statically, this can be performed at compile time;
+if either is not statically known (`$t1` and `n1` are typically unknown during a cast),
+it has to be read from the respective RTT value dynamically, and `n1 >= n2` becomes a dynamic check.
+Then compare v2 to the n2-th entry in v1's supertype vector.
+If they are equal, v1 is a subtype RTT.
 In the case of actual casts, the static type of RTT v1 (obtained from the value to cast) is not known at compile time, so `n1` is dynamic as well.
-(Note that `$t1` and `$t2` are not relevant for the dynamic semantics, but merely for validation.)
+(Note that `$t1` and `$t2` are not relevant for the dynamic semantics,
+but merely for validation.)
+
+Note: This assumes that there is at most one supertype. For hierarchies with multiple supertypes, more complex tests would be necessary.
 
 Example: Consider three types and corresponding RTTs:
 ```
 (type $A (struct))
-(type $B (struct (field i32)))
-(type $C (struct (field i32 i64)))
+(type $B (sub $A (struct (field i32))))
+(type $C (sub $B (struct (field i32 i64))))
 
 (global $rttA (rtt 0 $A) (rtt.canon $A))
-(global $rttB (rtt 1 $B) (rtt.sub $B (global.get $rttA)))
-(global $rttC (rtt 2 $C) (rtt.sub $C (global.get $rttB)))
+(global $rttB (rtt 1 $B) (rtt.canon $B))
+(global $rttC (rtt 2 $C) (rtt.canon $C))
 ```
 Here, `$rttA` would carry supertype vector `[$rttA]`, `$rttB` has `[$rttA, $rttB]`, and `$rttC` has `[$rttA, $rttB, $rttC]`.
 
@@ -245,7 +419,7 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 
 * Reference values of data or function type have an associated runtime type:
   - for structures or arrays, it is the RTT value provided upon creation,
-  - for functions, it is the RTT value for the function's type.
+  - for functions, it is the RTT value for the function's type (which may be recursive).
 
 * Note: as a future extension, we could allow a value's RTT to be a supertype of the value's actual type. For example, a structure or array with RTT `any` would become fully opaque to runtime type checks, and an implementation may choose to optimize away its RTT.
 
@@ -261,24 +435,24 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 #### Structures
 
 * `struct.new_with_rtt <typeidx>` allocates a structure with RTT information determining its [runtime type](#values) and initialises its fields with given values
-  - `struct.new_with_rtt $t : [t'* (rtt n $t)] -> [(ref $t)]`
-    - iff `$t = struct (mut t')*`
+  - `struct.new_with_rtt $t : [t'* (rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = struct (mut t')*`
 
 * `struct.new_default_with_rtt <typeidx>` allocates a structure of type `$t` and initialises its fields with default values
-  - `struct.new_default_with_rtt $t : [(rtt n $t)] -> [(ref $t)]`
-    - iff `$t = struct (mut t')*`
+  - `struct.new_default_with_rtt $t : [(rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = struct (mut t')*`
     - and all `t'*` are defaultable
 
 * `struct.get_<sx>? <typeidx> <fieldidx>` reads field `i` from a structure
   - `struct.get_<sx>? $t i : [(ref null $t)] -> [t]`
-    - iff `$t = struct (mut1 t1)^i (mut ti) (mut2 t2)*`
+    - iff `expand($t) = struct (mut1 t1)^i (mut ti) (mut2 t2)*`
     - and `t = unpacked(ti)`
     - and `_<sx>` present iff `t =/= ti`
   - traps on `null`
 
 * `struct.set <typeidx> <fieldidx>` writes field `i` of a structure
   - `struct.set $t i : [(ref null $t) ti] -> []`
-    - iff `$t = struct (mut1 t1)^i (var ti) (mut2 t2)*`
+    - iff `expand($t) = struct (mut1 t1)^i (var ti) (mut2 t2)*`
     - and `t = unpacked(ti)`
   - traps on `null`
 
@@ -286,24 +460,24 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 #### Arrays
 
 * `array.new_with_rtt <typeidx>` allocates an array with RTT information determining its [runtime type](#values)
-  - `array.new_with_rtt $t : [t' i32 (rtt n $t)] -> [(ref $t)]`
-    - iff `$t = array (var t')`
+  - `array.new_with_rtt $t : [t' i32 (rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = array (var t')`
 
 * `array.new_default_with_rtt <typeidx>` allocates an array and initialises its fields with the default value
-  - `array.new_default_with_rtt $t : [i32 (rtt n $t)] -> [(ref $t)]`
-    - iff `$t = array (var t')`
+  - `array.new_default_with_rtt $t : [i32 (rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = array (var t')`
     - and `t'` is defaultable
 
 * `array.get_<sx>? <typeidx>` reads an element from an array
   - `array.get_<sx>? $t : [(ref null $t) i32] -> [t]`
-    - iff `$t = array (mut t')`
+    - iff `expand($t) = array (mut t')`
     - and `t = unpacked(t')`
     - and `_<sx>` present iff `t =/= t'`
   - traps on `null` or if the dynamic index is out of bounds
 
 * `array.set <typeidx>` writes an element to an array
   - `array.set $t : [(ref null $t) i32 t] -> []`
-    - iff `$t = array (var t')`
+    - iff `expand($t) = array (var t')`
     - and `t = unpacked(t')`
   - traps on `null` or if the dynamic index is out of bounds
 
@@ -422,14 +596,8 @@ Note: The `br_on_*` instructions allow an operand of unrelated reference type, e
 #### Runtime Types
 
 * `rtt.canon <typeidx>` returns the RTT of the specified type
-  - `rtt.canon $t : [] -> [(rtt 0 $t)]`
+  - `rtt.canon $t : [] -> [(rtt $t)]`
   - multiple invocations of this instruction yield the same observable RTTs
-  - this is a *constant instruction*
-
-* `rtt.sub <typeidx>` returns an RTT for `typeidx` as a sub-RTT of a the parent RTT operand
-  - `rtt.sub $t : [(rtt n? $t')] -> [(rtt (n+1)? $t)]`
-    - iff `(type $t) <: (type $t')`
-  - multiple invocations of this instruction with the same operand yield the same observable RTTs
   - this is a *constant instruction*
 
 TODO: Add the ability to generate new (non-canonical) RTT values to implement casting in nominal type hierarchies?
@@ -440,19 +608,19 @@ TODO: Add the ability to generate new (non-canonical) RTT values to implement ca
 RTT-based casts can only be performed with respect to concrete types, and require a data or function reference as input, which are known to carry an RTT.
 
 * `ref.test` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given RTT
-  - `ref.test : [t' (rtt n? $t)] -> [i32]`
+  - `ref.test : [t' (rtt $t)] -> [i32]`
     - iff `t' <: (ref null data)` or `t' <: (ref null func)`
   - returns 1 if the first operand is not null and its runtime type is a sub-RTT of the RTT operand, 0 otherwise
 
 * `ref.cast` casts a reference value down to a type given by a RTT representation
-  - `ref.cast : [(ref null1? ht) (rtt n? $t)] -> [(ref null2? $t)]`
+  - `ref.cast : [(ref null1? ht) (rtt $t)] -> [(ref null2? $t)]`
     - iff `ht <: data` or `ht <: func`
     - and `null1? = null2?`
   - returns null if the first operand is null
   - traps if the first operand is not null and its runtime type is not a sub-RTT of the RTT operand
 
 * `br_on_cast <labelidx>` branches if a value can be cast down to a given reference type
-  - `br_on_cast $l : [t0* t (rtt n? $t')] -> [t0* t]`
+  - `br_on_cast $l : [t0* t (rtt $t')] -> [t0* t]`
     - iff `$l : [t0* t']`
     - and `t <: (ref null data)` or `t <: (ref null func)`
     - and `(ref $t') <: t'`
@@ -460,7 +628,7 @@ RTT-based casts can only be performed with respect to concrete types, and requir
   - passes cast operand along with branch, plus possible extra args
 
 * `br_on_cast_fail <labelidx>` branches if a value can not be cast down to a given reference type
-  - `br_on_cast_fail $l : [t0* t (rtt n? $t')] -> [t0* (ref $t')]`
+  - `br_on_cast_fail $l : [t0* t (rtt $t')] -> [t0* (ref $t')]`
     - iff `$l : [t0* t']`
     - and `t <: (ref null data)` or `t <: (ref null func)`
     - and `t <: t'`
@@ -475,7 +643,6 @@ Note: These instructions allow an operand of unrelated reference type, even thou
 In order to allow RTTs to be initialised as globals, the following extensions are made to the definition of *constant expressions*:
 
 * `rtt.canon` is a constant instruction
-* `rtt.sub` is a constant instruction
 * `global.get` is a constant instruction and can access preceding (immutable) global definitions, not just imports as in the MVP
 
 
@@ -502,7 +669,6 @@ This extends the [encodings](https://github.com/WebAssembly/function-references/
 | -0x14  | `(ref null ht)` | `ht : heaptype (s33)` | from funcref proposal |
 | -0x15  | `(ref ht)`      | `ht : heaptype (s33)` | from funcref proposal |
 | -0x16  | `i31ref`        |            | shorthand |
-| -0x17  | `(rtt n $t)`    | `n : u32`, `i : typeidx` | shorthand |
 | -0x18  | `(rtt $t)`      | `i : typeidx` | shorthand |
 | -0x19  | `dataref`       |            | shorthand |
 | -0x1a  | `arrayref`      |            | shorthand |
@@ -518,17 +684,33 @@ The opcode for heap types is encoded as an `s33`.
 | -0x11  | `any`           |            | from funcref proposal |
 | -0x13  | `eq`            |            | |
 | -0x16  | `i31`           |            | |
-| -0x17  | `(rtt n i)`     | `n : u32`, `i : typeidx` | |
 | -0x18  | `(rtt i)`       | `i : typeidx` | |
 | -0x19  | `data`          |            | |
 | -0x1a  | `array`         |            | |
 
-#### Defined Types
+#### Structured Types
 
 | Opcode | Type            | Parameters |
 | ------ | --------------- | ---------- |
 | -0x21  | `struct ft*`    | `ft* : vec(fieldtype)` |
 | -0x22  | `array ft`      | `ft : fieldtype`       |
+
+#### Subtypes
+
+| Opcode | Type            | Parameters | Note |
+| ------ | --------------- | ---------- | ---- |
+| -0x21  | `struct ft*`    | `ft* : vec(fieldtype)` | shorthand |
+| -0x22  | `array ft`      | `ft : fieldtype`       | shorthand |
+| -0x30  | `sub $t* st`    | `$t* : vec(typeidx)`, `st : strtype` | |
+
+#### Defined Types
+
+| Opcode | Type            | Parameters | Note |
+| ------ | --------------- | ---------- | ---- |
+| -0x21  | `struct ft*`    | `ft* : vec(fieldtype)` | shorthand |
+| -0x22  | `array ft`      | `ft : fieldtype`       | shorthand |
+| -0x30  | `sub $t* st`    | `$t* : vec(typeidx)`, `st : strtype` | shorthand |
+| -0x31  | `rec dt*`       | `dt* : vec(subtype)` | |
 
 #### Field Types
 
@@ -560,7 +742,6 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb21 | `i31.get_s` |  |
 | 0xfb22 | `i31.get_u` |  |
 | 0xfb30 | `rtt.canon $t` | `$t : typeidx` |
-| 0xfb31 | `rtt.sub $t` | `$t : typeidx` |
 | 0xfb40 | `ref.test $t` | `$t : typeidx` |
 | 0xfb41 | `ref.cast $t` | `$t : typeidx` |
 | 0xfb42 | `br_on_cast $l` | `$l : labelidx` |
@@ -601,3 +782,211 @@ See [GC JS API document](MVP-JS.md) .
 * Provide functionality to generate fresh, non-canonical RTTs?
 
 * Provide a way to make data types non-eq, especially immutable ones?
+
+
+
+## Appendix: Formal Rules
+
+### Validity
+
+#### Type Indices (`C |- <typeidx> ok`)
+
+```
+C(x) = ct
+---------
+C |- x ok
+```
+
+#### Value Types (`C |- <valtype> ok`)
+
+```
+
+-----------
+C |- i32 ok
+
+C |- x ok
+-------------
+C |- ref x ok
+```
+
+...and so on.
+
+
+#### Structural Types (`C |- <strtype> ok`)
+```
+(C |- t1 ok)*
+(C |- t2 ok)*
+--------------------
+C |- func t1* t2* ok
+
+(C |- ft ok)*
+------------------
+C |- struct ft* ok
+
+C |- ft ok
+----------------
+C |- array ft ok
+```
+
+#### Sub Types (`C |- <subtype>* ok(x)`)
+
+```
+C |- st ok
+(C |- st <: expand(C(x)))*
+(x < x')*
+--------------------------
+C |- sub x* st ok(x')
+
+C |- st ok(x)
+C |- st'* ok(x+1)
+-------------------
+C |- st st'* ok(x)
+```
+
+#### Defined Types (`C |- <deftype>* -| C'`)
+
+```
+x = |C|    N = |st*|-1
+C' = C,(rec st*).0,...,(rec st*).N
+C' |- st* ok(x)
+-------------------------------------
+C |- rec st* -| C'
+
+C |- dt -| C'
+C' |- dt'* ok
+---------------
+C |- dt dt'* ok
+```
+
+#### Instructions (`C |- <instr> : [t1*] -> [t2*]`)
+
+```
+expand(C(x)) = func t1* t2*
+---------------------------------------
+C |- func.call : [t1* (ref x)] -> [t2*]
+
+expand(C(x)) = struct t1^i t t2*
+------------------------------------
+C |- struct.get i : [(ref x)] -> [t]
+```
+
+...and so on
+
+
+### Type Equivalence
+
+#### Type Indices (`C |- <typeidx> == <typeidx'>`)
+
+```
+C |- tie(x) == tie(x')
+----------------------
+C |- x == x'
+
+
+--------------------
+C |- rec.i == rec.i
+```
+
+#### Value Types (`C |- <valtype> == <valtype'>`)
+
+```
+
+---------------
+C |- i32 == i32
+
+C |- x == x'
+null? = null'?
+---------------------------------
+C |- ref null? x == ref null'? x'
+```
+
+...and so on.
+
+#### Field Types (`C |- <fldtype> == <fldtype'>`)
+
+```
+C |- t == t'
+--------------------
+C |- mut t == mut t'
+```
+
+#### Structural Types (`C |- <strtype> == <strtype'>`)
+
+```
+(C |- t1 == t1')*
+(C |- t2 == t2')*
+------------------------------------
+C |- func t1* t2* == func t1'* t2'*
+
+(C |- ft == ft')*
+----------------------------
+C |- struct ft* == struct ft'*
+
+C |- ft == ft'
+--------------------------
+C |- array ft == array ft'
+```
+
+#### Defined Types (`C |- <subtype> == <subtype'>`)
+
+```
+(C |- x == x')*
+C |- st == st'
+-----------------------------
+C |- sub x* st == sub x'* st'
+```
+
+### Subtyping
+
+#### Type Indices (`C |- <typeidx> <: <typeidx'>`)
+
+```
+C |- x == x'
+------------
+C |- x <: x'
+
+unroll(C(x)) = sub (x1* x'' x2*) st
+C |- x'' <: x'
+-----------------------------------
+C |- x <: x'
+```
+
+#### Value Types (`C |- <valtype> <: <valtype'>`)
+
+```
+
+---------------
+C |- i32 <: i32
+
+C |- x <: x'
+null? = epsilon \/ null'? = null
+---------------------------------
+C |- ref null? x <: ref null'? x'
+```
+
+...and so on.
+
+#### Field Types (`C |- <fldtype> <: <fldtype'>`)
+
+```
+C |- t == t'
+--------------------
+C |- mut t <: mut t'
+```
+
+#### Structural Types (`C |- <strtype> <: <strtype'>`)
+
+```
+(C |- t1' <: t1)*
+(C |- t2 <: t2')*
+-----------------------------------
+C |- func t1* t2* <: func t1'* t2'*
+
+(C |- ft1 <: ft1')*
+-------------------------------------
+C |- struct ft1* ft2* <: struct ft1'*
+
+C |- ft <: ft'
+--------------------------
+C |- array ft <: array ft'
+```
