@@ -62,7 +62,8 @@ and eq_value_type c t1 t2 =
   | RefType t1', RefType t2' -> eq_ref_type c t1' t2'
   | _, _ -> false
 
-and eq_result_type c ts1 ts2 = eq_list eq_value_type c ts1 ts2
+and eq_result_type c ts1 ts2 =
+  eq_list eq_value_type c ts1 ts2
 
 and eq_packed_type c t1 t2 =
   t1 = t2

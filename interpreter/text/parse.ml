@@ -25,4 +25,8 @@ let string_to start s =
   parse "string" lexbuf start
 
 let string_to_script s = string_to Script s
-let string_to_module s = snd (string_to Module s)
+let string_to_definition s = snd (string_to Module s)
+let string_to_module s =
+  match (string_to_definition s).Source.it with
+  | Script.Textual m -> m
+  | _ -> assert false

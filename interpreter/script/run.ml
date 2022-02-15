@@ -298,7 +298,7 @@ let rec run_definition def : Ast.module_ =
     Decode.decode name bs
   | Quoted (_, s) ->
     trace "Parsing quote...";
-    let def' = Parse.string_to_module s in
+    let def' = Parse.string_to_definition s in
     run_definition def'
 
 let run_action act : Value.t list =

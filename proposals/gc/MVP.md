@@ -311,7 +311,6 @@ In addition to the [existing rules](https://github.com/WebAssembly/function-refe
 * Any concrete array type is a subtype of `array`
   - `(type $t) <: array`
      - if `$t = <arraytype>`
-     - or `$t = type ht` and `rt <: array` (imports)
 
 * `rtt $t` is a subtype of `eq`
   - `rtt $t <: eq`
