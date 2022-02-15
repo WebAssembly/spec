@@ -328,15 +328,11 @@
 (assert_return (invoke "call-f4" (i32.const 41) (f64.const 1) (f64.const 2) (f64.const 3) (f64.const 4)) (f64.const 1234))
 
 
-(; Once we allow subtyping on function types:
-;; The runtime type of a closure is its internal one,
-;; not the static bind annotation.
+;; A bound's function type is its refined (possibly super) type
 (module
   (type $ii (func (param i32) (result i32)))
-  (type $fl (func (param i32 anyref) (result (ref null $ii))))
-  (type $fu (func (param i32 (ref $ii)) (result anyref)))
-  (type $fl' (func (param anyref) (result (ref null $ii))))
-  (type $fu' (func (param (ref $ii)) (result anyref)))
+  (type $fu (func (param i32 (ref $ii)) (result funcref)))
+  (type $fl (sub $fu (func (param i32 funcref) (result (ref null $ii)))))
 
   (elem declare func $sqr $f)
   (func $sqr (param i32) (result i32) (i32.mul (local.get 0) (local.get 0)))
@@ -346,52 +342,38 @@
 
   (func (export "run") (result i32)
     (table.set $t (i32.const 0) (func.bind (type $fu) (ref.func $f)))
-    (table.set $t (i32.const 1) (func.bind (type $fu') (i32.const 0) (ref.func $f)))
-
-    (i32.add
-      (call_ref (i32.const 2)
-        (call_indirect $t (type $fl) (i32.const 0) (ref.null $fl) (i32.const 0))
-      )
-      (call_ref (i32.const 3)
-        (call_indirect $t (type $fl') (ref.null $fl') (i32.const 1))
-      )
+    (call_ref (i32.const 2)
+      (call_indirect $t (type $fl) (i32.const 0) (ref.null $fl) (i32.const 0))
     )
   )
 )
 
-(assert_return (invoke "run") (i32.const 13))
-;)
+(assert_trap (invoke "run") "indirect call type mismatch")
 
-(; Instead, for now: ;)
-(assert_invalid
-  (module
-    (type $ii (func (param i32) (result i32)))
-    (type $fl (func (param i32 funcref) (result (ref null $ii))))
-    (type $fu (func (param i32 (ref $ii)) (result funcref)))
+(module
+  (type $ii (func (param i32) (result i32)))
+  (type $fu' (func (param (ref $ii)) (result funcref)))
+  (type $fl' (sub $fu' (func (param funcref) (result (ref null $ii)))))
+  (type $fl (func (param i32 funcref) (result (ref null $ii))))
 
-    (elem declare func $sqr $f)
-    (func $sqr (param i32) (result i32) (i32.mul (local.get 0) (local.get 0)))
-    (func $f (type $fl) (ref.func $sqr))
+  (elem declare func $sqr $f)
+  (func $sqr (param i32) (result i32) (i32.mul (local.get 0) (local.get 0)))
+  (func $f (type $fl) (ref.func $sqr))
 
-    (func (drop (func.bind (type $fu) (ref.func $f))))
+  (table $t 10 funcref)
+
+  (func (export "run") (result i32)
+    (table.set $t (i32.const 0) (func.bind (type $fu') (i32.const 0) (ref.func $f)))
+    (call_ref (i32.const 3)
+      (call_indirect $t (type $fl') (ref.null $fl') (i32.const 0))
+    )
   )
-  "type mismatch"
 )
 
-(assert_invalid
-  (module
-    (type $ii (func (param i32) (result i32)))
-    (type $fl (func (param i32 funcref) (result (ref null $ii))))
-    (type $fu' (func (param (ref $ii)) (result funcref)))
 
-    (elem declare func $sqr $f)
-    (func $sqr (param i32) (result i32) (i32.mul (local.get 0) (local.get 0)))
-    (func $f (type $fl) (ref.func $sqr))
 
-    (func (drop (func.bind (type $fu') (i32.const 0) (ref.func $f))))
-  )
-  "type mismatch"
-)
+
+(assert_trap (invoke "run") "indirect call type mismatch")
 
 
 ;; Null and unreachable typing.

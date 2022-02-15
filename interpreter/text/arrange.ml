@@ -66,6 +66,11 @@ let heap_type t = string_of_heap_type t
 let value_type t = string_of_value_type t
 let storage_type t = string_of_storage_type t
 
+let var_type = function
+  | SynVar x -> nat32 x
+  | SemVar _ -> assert false
+  | RecVar x -> "rec." ^ nat32 x
+
 let decls kind ts = tab kind (atom value_type) ts
 
 let field_type (FieldType (t, mut)) =
@@ -80,11 +85,19 @@ let array_type (ArrayType ft) =
 let func_type (FuncType (ins, out)) =
   Node ("func", decls "param" ins @ decls "result" out)
 
-let def_type dt =
-  match dt with
+let str_type st =
+  match st with
   | StructDefType st -> struct_type st
   | ArrayDefType at -> array_type at
   | FuncDefType ft -> func_type ft
+
+let sub_type = function
+  | SubType ([], st) -> str_type st
+  | SubType (xs, st) ->
+    Node (String.concat " " ("sub" :: List.map var_type xs), [str_type st])
+
+let def_type i j st =
+  Node ("type $" ^ nat (i + j), [sub_type st])
 
 let limits nat {min; max} =
   String.concat " " (nat min :: opt nat max)
@@ -252,9 +265,9 @@ let num v = string_of_num v.it
 let constop v = num_type (type_of_num v.it) ^ ".const"
 
 let block_type = function
-  | VarBlockType (SynVar x) -> [Node ("type " ^ nat32 x, [])]
-  | VarBlockType (SemVar _) -> assert false
   | ValBlockType ts -> decls "result" (list_of_opt ts)
+  | VarBlockType (SynVar x) -> [Node ("type " ^ nat32 x, [])]
+  | VarBlockType _ -> assert false
 
 let rec instr e =
   let head, inner =
@@ -328,7 +341,6 @@ let rec instr e =
     | ArraySet x -> "array.set " ^ var x, []
     | ArrayLen -> "array.len", []
     | RttCanon x -> "rtt.canon " ^ var x, []
-    | RttSub x -> "rtt.sub " ^ var x, []
     | Const n -> constop n ^ " " ^ num n, []
     | Test op -> testop op, []
     | Compare op -> relop op, []
@@ -417,8 +429,12 @@ let data i seg =
 
 (* Modules *)
 
-let type_ i ty =
-  Node ("type $" ^ nat i, [def_type ty.it])
+let type_ (ns, i) ty =
+  match ty.it with
+  | RecDefType [st] when not Free.(Set.mem (Int32.of_int i) (type_ ty).types) ->
+    def_type i 0 st :: ns, i + 1
+  | RecDefType sts ->
+    Node ("rec", List.mapi (def_type i) sts) :: ns, i + List.length sts
 
 let import_desc fx tx mx gx d =
   match d.it with
@@ -466,7 +482,7 @@ let module_with_var_opt x_opt m =
   let gx = ref 0 in
   let imports = list (import fx tx mx gx) m.it.imports in
   Node ("module" ^ var_opt x_opt,
-    listi type_ m.it.types @
+    List.rev (fst (List.fold_left type_ ([], 0) m.it.types)) @
     imports @
     listi (table !tx) m.it.tables @
     listi (memory !mx) m.it.memories @

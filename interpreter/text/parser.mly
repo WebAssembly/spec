@@ -84,8 +84,8 @@ let scoped category n space at =
   {map = VarMap.map (shift category at n) space.map; count = space.count}
 
 
-type types = {space : space; mutable list : type_ list}
-let empty_types () = {space = empty (); list = []}
+type types = {space : space; mutable list : type_ list; mutable ctx : ctx_type list}
+let empty_types () = {space = empty (); list = []; ctx = []}
 
 type context =
   { types : types; tables : space; memories : space;
@@ -143,7 +143,7 @@ let label (c : context) x = lookup "label " c.labels x
 let field (c : context) x = lookup "field " c.fields x
 
 let func_type (c : context) x =
-  match (Lib.List32.nth c.types.list x.it).it with
+  match expand_ctx_type (Lib.List32.nth c.types.ctx x.it) with
   | FuncDefType ft -> ft
   | _ -> error x.at ("non-function type " ^ Int32.to_string x.it)
   | exception Failure _ -> error x.at ("unknown type " ^ Int32.to_string x.it)
@@ -173,9 +173,11 @@ let bind_label (c : context) x = bind_rel "label" c.labels x
 let bind_field (c : context) x = bind_abs "field" c.fields x
 
 let define_type (c : context) (ty : type_) =
-  assert (c.types.space.count > Lib.List32.length c.types.list);
   c.types.list <- c.types.list @ [ty]
 
+let define_ctx_type (c : context) (ct : ctx_type) =
+  assert (c.types.space.count > Lib.List32.length c.types.ctx);
+  c.types.ctx <- c.types.ctx @ [ct]
 
 let anon_type (c : context) at = bind "type" c.types.space 1l at
 let anon_func (c : context) at = bind "function" c.funcs 1l at
@@ -191,11 +193,18 @@ let anon_fields (c : context) n at = bind "field" c.fields n at
 
 
 let inline_func_type (c : context) ft at =
-  let dt = FuncDefType ft in
-  match Lib.List.index_where (fun ty -> ty.it = dt) c.types.list with
+  let st = SubType ([], FuncDefType ft) in
+  match Lib.List.index_where (function
+    | RecCtxType ([(_, st')], 0l) -> st = st'
+    | _ -> false
+    ) c.types.ctx with
   | Some i -> Int32.of_int i @@ at
   | None ->
-    let i = anon_type c at in define_type c (dt @@ at);
+    let i = anon_type c at in
+    let x = Lib.Promise.make () in
+    Lib.Promise.fulfill x (RecCtxType ([(SemVar x, st)], 0l));
+    define_type c (RecDefType [st] @@ at);
+    define_ctx_type c (Lib.Promise.value x);
     i @@ at
 
 let inline_func_type_explicit (c : context) x ft at =
@@ -217,7 +226,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token NUM_TYPE PACKED_TYPE
 %token ANYREF EQREF I31REF DATAREF ARRAYREF FUNCREF EXTERNREF
 %token ANY EQ I31 DATA REF RTT EXTERN NULL
-%token MUT FIELD STRUCT ARRAY
+%token MUT FIELD STRUCT ARRAY SUB REC
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP LET
 %token BR BR_IF BR_TABLE BR_CAST BR_CAST_FAIL
@@ -232,7 +241,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token REF_TEST REF_CAST REF_EQ
 %token I31_NEW I32_GET
 %token STRUCT_NEW STRUCT_GET STRUCT_SET ARRAY_NEW ARRAY_GET ARRAY_SET ARRAY_LEN
-%token RTT_CANON RTT_SUB
+%token RTT_CANON
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
@@ -304,11 +313,7 @@ heap_type :
   | FUNC { fun c -> FuncHeapType }
   | EXTERN { fun c -> AnyHeapType }
   | var { fun c -> DefHeapType (SynVar ($1 c type_).it) }
-  | LPAR RTT var RPAR  /* Sugar */
-    { fun c -> RttHeapType (SynVar ($3 c type_).it, None) }
-  | LPAR RTT NAT var RPAR  /* Sugar */
-    { let n = nat32 $3 (ati 3) in
-      fun c -> RttHeapType (SynVar ($4 c type_).it, Some n) }
+  | LPAR RTT var RPAR { fun c -> RttHeapType (SynVar ($3 c type_).it) }
 
 ref_type :
   | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
@@ -320,10 +325,7 @@ ref_type :
   | FUNCREF { fun c -> (Nullable, FuncHeapType) }  /* Sugar */
   | EXTERNREF { fun c -> (Nullable, AnyHeapType) }  /* Sugar */
   | LPAR RTT var RPAR  /* Sugar */
-    { fun c -> (NonNullable, RttHeapType (SynVar ($3 c type_).it, None)) }
-  | LPAR RTT NAT var RPAR  /* Sugar */
-    { let n = nat32 $3 (ati 3) in
-      fun c -> (NonNullable, RttHeapType (SynVar ($4 c type_).it, Some n)) }
+    { fun c -> (NonNullable, RttHeapType (SynVar ($3 c type_).it)) }
 
 value_type :
   | NUM_TYPE { fun c -> NumType $1 }
@@ -378,10 +380,15 @@ func_type :
     { fun c -> let FuncType (ins, out) = $6 c in
       FuncType ($4 c :: ins, out) }
 
-def_type :
+str_type :
   | LPAR STRUCT struct_type RPAR { fun c -> StructDefType ($3 c) }
   | LPAR ARRAY array_type RPAR { fun c -> ArrayDefType ($3 c) }
   | LPAR FUNC func_type RPAR { fun c -> FuncDefType ($3 c) }
+
+sub_type :
+  | str_type { fun c -> SubType ([], $1 c) }
+  | LPAR SUB var_list str_type RPAR
+    { fun c -> SubType (List.map (fun x -> SynVar x.it) ($3 c type_), $4 c) }
 
 table_type :
   | limits ref_type { fun c -> TableType ($1, $2 c) }
@@ -518,7 +525,6 @@ plain_instr :
   | ARRAY_SET var { fun c -> array_set ($2 c type_) }
   | ARRAY_LEN { fun c -> array_len }
   | RTT_CANON var { fun c -> rtt_canon ($2 c type_) }
-  | RTT_SUB var { fun c -> rtt_sub ($2 c type_) }
   | CONST num { fun c -> fst (num $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
@@ -1117,15 +1123,36 @@ inline_export :
 
 /* Modules */
 
-type_ :
-  | def_type { let at = at () in fun c -> define_type c ($1 c @@ at) }
+type_def_rhs :
+  | sub_type
+    { fun c i -> let st = $1 c in
+      let x = Lib.Promise.make () in
+      Lib.Promise.fulfill x (RecCtxType ([(SemVar x, st)], 0l));
+      define_ctx_type c (Lib.Promise.value x); st }
 
 type_def :
-  | LPAR TYPE type_ RPAR
+  | LPAR TYPE type_def_rhs RPAR
     { let at = at () in
-      fun c -> ignore (anon_type c at); fun () -> $3 c }
-  | LPAR TYPE bind_var type_ RPAR  /* Sugar */
-    { fun c -> ignore (bind_type c $3); fun () -> $4 c }
+      fun c -> let i = anon_type c at in fun () -> $3 c i }
+  | LPAR TYPE bind_var type_def_rhs RPAR  /* Sugar */
+    { fun c -> let i = bind_type c $3 in fun () -> $4 c i }
+
+type_def_list :
+  | /* empty */ { fun c () -> [] }
+  | type_def type_def_list
+    { fun c -> let tf = $1 c in let tsf = $2 c in fun () ->
+      let st = tf () and sts = tsf () in st::sts }
+
+def_type :
+  | type_def
+    { fun c -> let tf = $1 c in fun () -> RecDefType [tf ()] }
+  | LPAR REC type_def_list RPAR
+    { fun c -> let tf = $3 c in fun () -> RecDefType (tf ()) }
+
+type_ :
+  | def_type
+    { let at = at () in
+      fun c -> let tf = $1 c in fun () -> define_type c (tf () @@ at) }
 
 start :
   | LPAR START var RPAR
@@ -1137,7 +1164,7 @@ module_fields :
   | module_fields1 { $1 }
 
 module_fields1 :
-  | type_def module_fields
+  | type_ module_fields
     { fun c -> let tf = $1 c in let mff = $2 c in
       fun () -> tf (); mff () }
   | global module_fields

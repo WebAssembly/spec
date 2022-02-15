@@ -2,6 +2,10 @@
   (type $st (struct))
   (type $st' (struct (field i32)))
   (type $at (array i8))
+  (type $st-sub1 (sub $st (struct)))
+  (type $st-sub2 (sub $st (struct)))
+  (type $st'-sub1 (sub $st' (struct (field i32))))
+  (type $st'-sub2 (sub $st' (struct (field i32))))
 
   (table 20 (ref null eq))
 
@@ -18,10 +22,10 @@
     (table.set (i32.const 9) (rtt.canon $st))
     (table.set (i32.const 10) (rtt.canon $st))
     (table.set (i32.const 11) (rtt.canon $at))
-    (table.set (i32.const 12) (rtt.sub $st (rtt.canon $st)))
-    (table.set (i32.const 13) (rtt.sub $st (rtt.canon $st)))
-    (table.set (i32.const 14) (rtt.sub $st' (rtt.canon $st)))
-    (table.set (i32.const 15) (rtt.sub $st' (rtt.canon $st)))
+    (table.set (i32.const 12) (rtt.canon $st-sub1))
+    (table.set (i32.const 13) (rtt.canon $st-sub2))
+    (table.set (i32.const 14) (rtt.canon $st'-sub1))
+    (table.set (i32.const 15) (rtt.canon $st'-sub2))
   )
 
   (func (export "eq") (param $i i32) (param $j i32) (result i32)

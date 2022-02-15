@@ -138,7 +138,6 @@ let array_set x = ArraySet x
 let array_len = ArrayLen
 
 let rtt_canon x = RttCanon x
-let rtt_sub x = RttSub x
 
 let i32_clz = Unary (I32 I32Op.Clz)
 let i32_ctz = Unary (I32 I32Op.Ctz)

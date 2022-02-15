@@ -17,7 +17,7 @@ let require b at s = if not b then error at s
 
 type context =
 {
-  types : def_type list;
+  types : ctx_type list;
   funcs : func_type list;
   tables : table_type list;
   memories : memory_type list;
@@ -52,17 +52,17 @@ let local (c : context) x = lookup "local" c.locals x
 let label (c : context) x = lookup "label" c.labels x
 
 let func_type (c : context) x =
-  match type_ c x with
+  match expand_ctx_type (type_ c x) with
   | FuncDefType ft -> ft
   | _ -> error x.at ("non-function type " ^ I32.to_string_u x.it)
 
 let struct_type (c : context) x =
-  match type_ c x with
+  match expand_ctx_type (type_ c x) with
   | StructDefType st -> st
   | _ -> error x.at ("non-structure type " ^ I32.to_string_u x.it)
 
 let array_type (c : context) x =
-  match type_ c x with
+  match expand_ctx_type (type_ c x) with
   | ArrayDefType at -> at
   | _ -> error x.at ("non-array type " ^ I32.to_string_u x.it)
 
@@ -93,9 +93,8 @@ let check_heap_type (c : context) (t : heap_type) at =
   | AnyHeapType | EqHeapType | I31HeapType | DataHeapType | ArrayHeapType
   | FuncHeapType -> ()
   | DefHeapType (SynVar x) -> ignore (type_ c (x @@ at))
-  | RttHeapType (SynVar x, _) -> ignore (type_ c (x @@ at))
-  | DefHeapType (SemVar _) | RttHeapType (SemVar _, _) | BotHeapType ->
-    assert false
+  | RttHeapType (SynVar x) -> ignore (type_ c (x @@ at))
+  | DefHeapType _ | RttHeapType _ | BotHeapType -> assert false
 
 let check_ref_type (c : context) (t : ref_type) at =
   match t with
@@ -148,13 +147,32 @@ let check_global_type (c : context) (gt : global_type) at =
   check_value_type c t at
 
 
-let check_def_type (c : context) (dt : def_type) at =
-  match dt with
+let check_str_type (c : context) (st : str_type) at =
+  match st with
   | StructDefType st -> check_struct_type c st at
   | ArrayDefType rt -> check_array_type c rt at
   | FuncDefType ft -> check_func_type c ft at
 
-let check_type (c : context) (t : type_) =
+let check_sub_type (c : context) (st : sub_type) x at =
+  let SubType (xs, st) = st in
+  check_str_type c st at;
+  List.iter (fun xi ->
+    let xi = as_syn_var xi in
+    require (xi < x) at
+      ("forward use of type " ^ I32.to_string_u xi ^  " in sub type definition");
+    require (match_str_type c.types st (expand_ctx_type (type_ c (xi @@ at)))) at
+      ("sub type " ^ I32.to_string_u x ^ " does not match super type " ^ I32.to_string_u xi)
+  ) xs
+
+let check_def_type (c : context) (dt : def_type) at : context =
+  let x = Lib.List32.length c.types in
+  match dt with
+  | RecDefType sts ->
+    let c' = {c with types = c.types @ ctx_types_of_def_type x dt} in
+    ignore (List.fold_left (fun x st -> check_sub_type c' st x at; I32.add x 1l) x sts);
+    c'
+
+let check_type (c : context) (t : type_) : context =
   check_def_type c t.it t.at
 
 
@@ -181,7 +199,7 @@ let (-->...) ts1 ts2 = {ins = Ellipses, ts1; outs = Ellipses, ts2}
 let check_stack (c : context) ts1 ts2 at =
   require
     (List.length ts1 = List.length ts2 &&
-      List.for_all2 (match_value_type c.types []) ts1 ts2) at
+      List.for_all2 (match_value_type c.types) ts1 ts2) at
     ("type mismatch: instruction requires " ^ string_of_result_type ts2 ^
      " but stack has " ^ string_of_result_type ts1)
 
@@ -220,7 +238,7 @@ let peek_ref i (ell, ts) at =
 let peek_rtt i s at =
   let rt = peek_ref i s at in
   match rt with
-  | _, RttHeapType (x, _) -> rt, DefHeapType x
+  | _, RttHeapType x -> rt, DefHeapType x
   | _, BotHeapType -> rt, BotHeapType
   | _ ->
     error at
@@ -331,7 +349,7 @@ let check_block_type (c : context) (bt : block_type) at : func_type =
   | ValBlockType None -> FuncType ([], [])
   | ValBlockType (Some t) -> check_value_type c t at; FuncType ([], [t])
   | VarBlockType (SynVar x) -> func_type c (x @@ at)
-  | VarBlockType (SemVar _) -> assert false
+  | VarBlockType _ -> assert false
 
 let check_local (c : context) (defaults : bool) (t : local) =
   check_value_type c t.it t.at;
@@ -403,13 +421,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let t = peek 1 s in
     let t' = RefType (NonNullable, ht) in
     require
-      ( match_value_type c.types [] t (RefType (Nullable, DataHeapType)) ||
-        match_value_type c.types [] t (RefType (Nullable, FuncHeapType)) ) e.at
+      ( match_value_type c.types t (RefType (Nullable, DataHeapType)) ||
+        match_value_type c.types t (RefType (Nullable, FuncHeapType)) ) e.at
       ("type mismatch: instruction requires data or function reference type" ^
        " but stack has " ^ string_of_result_type [t; RefType rtt]);
     require
       ( label c x <> [] &&
-        match_value_type c.types [] t' (Lib.List.last (label c x)) ) e.at
+        match_value_type c.types t' (Lib.List.last (label c x)) ) e.at
       ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0 = Lib.List.lead (label c x) in
@@ -424,13 +442,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let (_, ht) as rt = peek_ref 0 s e.at in
     let t' = RefType (NonNullable, type_castop castop ht) in
     require
-      (match_value_type c.types [] (peek 0 s) (RefType (Nullable, AnyHeapType))) e.at
+      (match_value_type c.types (peek 0 s) (RefType (Nullable, AnyHeapType))) e.at
       ("type mismatch: instruction requires type " ^
         string_of_value_type (RefType (Nullable, AnyHeapType)) ^
        " but stack has " ^ string_of_value_type (peek 0 s));
     require
       ( label c x <> [] &&
-        match_value_type c.types [] t' (Lib.List.last (label c x)) ) e.at
+        match_value_type c.types t' (Lib.List.last (label c x)) ) e.at
       ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0 = Lib.List.lead (label c x) in
@@ -441,13 +459,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let t = peek 1 s in
     let t' = RefType (NonNullable, ht) in
     require
-      ( match_value_type c.types [] t (RefType (Nullable, DataHeapType)) ||
-        match_value_type c.types [] t (RefType (Nullable, FuncHeapType)) ) e.at
+      ( match_value_type c.types t (RefType (Nullable, DataHeapType)) ||
+        match_value_type c.types t (RefType (Nullable, FuncHeapType)) ) e.at
       ("type mismatch: instruction requires data or function reference type" ^
        " but stack has " ^ string_of_result_type [t; RefType rtt]);
     require
       ( label c x <> [] &&
-        match_value_type c.types [] t (Lib.List.last (label c x)) ) e.at
+        match_value_type c.types t (Lib.List.last (label c x)) ) e.at
       ("type mismatch: instruction requires type " ^ string_of_value_type t ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0 = Lib.List.lead (label c x) in
@@ -458,7 +476,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let t' = RefType (NonNullable, ht) in
     require
       ( label c x <> [] &&
-        match_value_type c.types [] t' (Lib.List.last (label c x)) ) e.at
+        match_value_type c.types t' (Lib.List.last (label c x)) ) e.at
       ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0 = Lib.List.lead (label c x) in
@@ -469,13 +487,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let t = RefType rt in
     let t' = RefType (NonNullable, type_castop castop ht) in
     require
-      (match_value_type c.types [] (peek 0 s) (RefType (Nullable, AnyHeapType))) e.at
+      (match_value_type c.types (peek 0 s) (RefType (Nullable, AnyHeapType))) e.at
       ("type mismatch: instruction requires type " ^
         string_of_value_type (RefType (Nullable, AnyHeapType)) ^
        " but stack has " ^ string_of_value_type (peek 0 s));
     require
       ( label c x <> [] &&
-        match_value_type c.types [] t (Lib.List.last (label c x)) ) e.at
+        match_value_type c.types t (Lib.List.last (label c x)) ) e.at
       ("type mismatch: instruction requires type " ^ string_of_value_type t ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0 = Lib.List.lead (label c x) in
@@ -504,7 +522,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
   | CallIndirect (x, y) ->
     let TableType (lim, t) = table c x in
     let FuncType (ts1, ts2) = func_type c y in
-    require (match_ref_type c.types [] t (Nullable, FuncHeapType)) x.at
+    require (match_ref_type c.types t (Nullable, FuncHeapType)) x.at
       ("type mismatch: instruction requires table of function type" ^
        " but table has element type " ^ string_of_ref_type t);
     (ts1 @ [NumType I32Type]) --> ts2
@@ -513,7 +531,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     (match peek_ref 0 s e.at with
     | (nul, DefHeapType (SynVar x)) ->
       let FuncType (ts1, ts2) = func_type c (x @@ e.at) in
-      require (match_result_type c.types [] ts2 c.results) e.at
+      require (match_result_type c.types ts2 c.results) e.at
         ("type mismatch: current function requires result type " ^
          string_of_result_type c.results ^
          " but callee returns " ^ string_of_result_type ts2);
@@ -534,7 +552,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
       require (List.length ts1 >= List.length ts1') x.at
         "type mismatch in function arguments";
       let ts11, ts12 = Lib.List.split (List.length ts1 - List.length ts1') ts1 in
-      require (match_func_type c.types [] (FuncType (ts12, ts2)) ft') e.at
+      require (match_func_type c.types (FuncType (ts12, ts2)) ft') e.at
         "type mismatch in function type";
       (ts11 @ [RefType (nul, DefHeapType (SynVar y))]) -->
         [RefType (NonNullable, DefHeapType (SynVar x.it))]
@@ -587,7 +605,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
   | TableCopy (x, y) ->
     let TableType (_lim1, t1) = table c x in
     let TableType (_lim2, t2) = table c y in
-    require (match_ref_type c.types [] t2 t1) x.at
+    require (match_ref_type c.types t2 t1) x.at
       ("type mismatch: source element type " ^ string_of_ref_type t1 ^
        " does not match destination element type " ^ string_of_ref_type t2);
     [NumType I32Type; NumType I32Type; NumType I32Type] --> []
@@ -595,7 +613,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
   | TableInit (x, y) ->
     let TableType (_lim1, t1) = table c x in
     let t2 = elem c y in
-    require (match_ref_type c.types [] t2 t1) x.at
+    require (match_ref_type c.types t2 t1) x.at
       ("type mismatch: element segment's type " ^ string_of_ref_type t1 ^
        " does not match table's element type " ^ string_of_ref_type t2);
     [NumType I32Type; NumType I32Type; NumType I32Type] --> []
@@ -643,7 +661,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
 
   | RefFunc x ->
     let ft = func c x in
-    let y = Lib.Option.force (Lib.List32.index_of (FuncDefType ft) c.types) in
+    let y = Lib.Option.force (Lib.List32.index_where (fun ct -> expand_ctx_type ct = FuncDefType ft) c.types) in
     refer_func c x;
     [] --> [RefType (NonNullable, DefHeapType (SynVar y))]
 
@@ -651,8 +669,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let rtt, _ht = peek_rtt 0 s e.at in
     let t = peek 1 s in
     require
-      ( match_value_type c.types [] t (RefType (Nullable, DataHeapType)) ||
-        match_value_type c.types [] t (RefType (Nullable, FuncHeapType)) ) e.at
+      ( match_value_type c.types t (RefType (Nullable, DataHeapType)) ||
+        match_value_type c.types t (RefType (Nullable, FuncHeapType)) ) e.at
       ("type mismatch: instruction requires data or function reference type" ^
        " but stack has " ^ string_of_result_type [t; RefType rtt]);
     [t; RefType rtt] --> [NumType I32Type]
@@ -665,8 +683,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let (nul, _) as rt = peek_ref 1 s e.at in
     let t = RefType rt in
     require
-      ( match_value_type c.types [] t (RefType (Nullable, DataHeapType)) ||
-        match_value_type c.types [] t (RefType (Nullable, FuncHeapType)) ) e.at
+      ( match_value_type c.types t (RefType (Nullable, DataHeapType)) ||
+        match_value_type c.types t (RefType (Nullable, FuncHeapType)) ) e.at
       ("type mismatch: instruction requires data or function reference type" ^
        " but stack has " ^ string_of_result_type [t; RefType rtt]);
     [t; RefType rtt] --> [RefType (nul, ht)]
@@ -693,7 +711,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
           defaultable_value_type (unpacked_field_type ft)) fts ) e.at
       ("field type is not defaultable");
     let ts = if initop = Implicit then [] else List.map unpacked_field_type fts in
-    (ts @ [RefType (NonNullable, RttHeapType (SynVar x.it, None))]) -->
+    (ts @ [RefType (NonNullable, RttHeapType (SynVar x.it))]) -->
       [RefType (NonNullable, DefHeapType (SynVar x.it))]
 
   | StructGet (x, y, exto) ->
@@ -722,7 +740,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
         defaultable_value_type (unpacked_field_type ft) ) e.at
       ("array type is not defaultable");
     let ts = if initop = Implicit then [] else [unpacked_field_type ft] in
-    (ts @ [NumType I32Type; RefType (NonNullable, RttHeapType (SynVar x.it, None))]) -->
+    (ts @ [NumType I32Type; RefType (NonNullable, RttHeapType (SynVar x.it))]) -->
       [RefType (NonNullable, DefHeapType (SynVar x.it))]
 
   | ArrayGet (x, exto) ->
@@ -743,22 +761,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
 
   | RttCanon x ->
     ignore (type_ c x);
-    [] --> [RefType (NonNullable, RttHeapType (SynVar x.it, Some 0l))]
-
-  | RttSub x ->
-    let dt = type_ c x in
-    let rtt, _ht = peek_rtt 0 s e.at in
-    let n'_opt =
-      match rtt with
-      | _, RttHeapType (x', n_opt) ->
-        let dt' = type_ c (as_syn_var x' @@ e.at) in
-        require (match_def_type c.types [] dt dt') e.at
-          ("type mismatch: instruction requires RTT supertype" ^
-           " but stack has " ^ string_of_value_type (RefType rtt));
-        Lib.Option.map (Int32.add 1l) n_opt
-      | _ -> None (* TODO: not principal, would have to be any depth *)
-    in
-    [RefType rtt] --> [RefType (NonNullable, RttHeapType (SynVar x.it, n'_opt))]
+    [] --> [RefType (NonNullable, RttHeapType (SynVar x.it))]
 
   | Const v ->
     let t = NumType (type_num v.it) in
@@ -838,8 +841,7 @@ let is_const (c : context) (e : instr) =
   | Const _
   | RefNull _
   | RefFunc _
-  | RttCanon _
-  | RttSub _ -> true
+  | RttCanon _ -> true
   | GlobalGet x -> let GlobalType (_, mut) = global c x in mut = Immutable
   | _ -> false
 
@@ -864,7 +866,7 @@ let check_elem_mode (c : context) (t : ref_type) (mode : segment_mode) =
   | Passive -> ()
   | Active {index; offset} ->
     let TableType (_, et) = table c index in
-    require (match_ref_type c.types [] t et) mode.at
+    require (match_ref_type c.types t et) mode.at
       ("type mismatch: element segment's type " ^ string_of_ref_type t ^
        " does not match table's element type " ^ string_of_ref_type et);
     check_const c offset (NumType I32Type)
@@ -941,9 +943,8 @@ let check_module (m : module_) =
   in
   let c0 =
     List.fold_right check_import imports
-      { empty_context with
-        refs = Free.module_ ({m.it with funcs = []; start = None} @@ m.at);
-        types = List.map (fun ty -> ty.it) types;
+      { (List.fold_left check_type empty_context types) with
+        refs = Free.module_ ({m.it with funcs = []; start = None} @@ m.at)
       }
   in
   let c1 =
@@ -955,7 +956,6 @@ let check_module (m : module_) =
       datas = List.map (fun _data -> ()) datas;
     }
   in
-  List.iter (check_type c1) types;
   let c = List.fold_left check_global c1 globals in
   List.iter (check_table c) tables;
   List.iter (check_memory c) memories;

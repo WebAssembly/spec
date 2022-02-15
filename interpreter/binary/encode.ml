@@ -97,7 +97,7 @@ struct
 
   let var_type var = function
     | SynVar x -> var x
-    | SemVar _ -> assert false
+    | _ -> assert false
 
   let num_type = function
     | I32Type -> vs7 (-0x01)
@@ -113,8 +113,7 @@ struct
     | ArrayHeapType -> vs7 (-0x1a)
     | FuncHeapType -> vs7 (-0x10)
     | DefHeapType x -> var_type vs33 x
-    | RttHeapType (x, None) -> vs7 (-0x18); var_type vu32 x
-    | RttHeapType (x, Some n) -> vs7 (-0x17); vs32 n; var_type vu32 x
+    | RttHeapType x -> vs7 (-0x18); var_type vu32 x
     | BotHeapType -> assert false
 
   let ref_type = function
@@ -153,10 +152,18 @@ struct
   let func_type = function
     | FuncType (ts1, ts2) -> vec value_type ts1; vec value_type ts2
 
-  let def_type = function
+  let str_type = function
     | StructDefType st -> vs7 (-0x21); struct_type st
     | ArrayDefType at -> vs7 (-0x22); array_type at
     | FuncDefType ft -> vs7 (-0x20); func_type ft
+
+  let sub_type = function
+    | SubType ([], st) -> str_type st
+    | SubType (xs, st) -> vs7 (-0x30); vec (var_type vu32) xs; str_type st
+
+  let def_type = function
+    | RecDefType [st] -> sub_type st
+    | RecDefType sts -> vs7 (-0x31); vec sub_type sts
 
   let limits vu {min; max} =
     bool (max <> None); vu min; opt vu max
@@ -188,7 +195,7 @@ struct
     | ValBlockType None -> vs33 (-0x40l)
     | ValBlockType (Some t) -> value_type t
     | VarBlockType (SynVar x) -> vs33 x
-    | VarBlockType (SemVar _) -> assert false
+    | VarBlockType _ -> assert false
 
   let local (t, n) = len n; value_type t.it
   let locals locs =
@@ -339,7 +346,6 @@ struct
     | ArrayLen -> op 0xfb; op 0x17; op 0  (* TODO: remove 0 *)
 
     | RttCanon x -> op 0xfb; op 0x30; var x
-    | RttSub x -> op 0xfb; op 0x31; var x
 
     | Const {it = I32 c; _} -> op 0x41; vs32 c
     | Const {it = I64 c; _} -> op 0x42; vs64 c

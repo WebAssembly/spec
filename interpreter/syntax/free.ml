@@ -63,7 +63,7 @@ let list free xs = List.fold_left union empty (List.map free xs)
 
 let var_type = function
   | SynVar x -> types (idx' x)
-  | SemVar _ -> assert false
+  | _ -> assert false
 
 let num_type = function
   | I32Type | I64Type | F32Type | F64Type -> empty
@@ -71,7 +71,7 @@ let num_type = function
 let heap_type = function
   | AnyHeapType | EqHeapType | I31HeapType | DataHeapType | ArrayHeapType
   | FuncHeapType | BotHeapType -> empty
-  | DefHeapType x | RttHeapType (x, _) -> var_type x
+  | DefHeapType x | RttHeapType x -> var_type x
 
 let ref_type = function
   | (_, t) -> heap_type t
@@ -93,10 +93,14 @@ let struct_type (StructType fts) = list field_type fts
 let array_type (ArrayType ft) = field_type ft
 let func_type (FuncType (ins, out)) = list value_type ins ++ list value_type out
 
-let def_type = function
+let str_type = function
   | StructDefType st -> struct_type st
   | ArrayDefType at -> array_type at
   | FuncDefType ft -> func_type ft
+
+let sub_type (SubType (xs, st)) = list var_type xs ++ str_type st
+let def_type = function
+  | RecDefType sts -> list sub_type sts
 
 let global_type (GlobalType (t, _mut)) = value_type t
 let table_type (TableType (_lim, t)) = ref_type t
@@ -118,7 +122,7 @@ let rec instr (e : instr) =
   | StructGet (x, _, _) | StructSet (x, _) -> types (idx x)
   | ArrayGet (x, _) | ArraySet x -> types (idx x)
   | ArrayLen -> empty
-  | RttCanon x | RttSub x -> types (idx x)
+  | RttCanon x -> types (idx x)
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
   | If (bt, es1, es2) -> block_type bt ++ block es1 ++ block es2

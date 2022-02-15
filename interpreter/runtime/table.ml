@@ -51,7 +51,7 @@ let load tab i =
 
 let store tab i r =
   let TableType (lim, t) = tab.ty in
-  if not (Match.match_ref_type [] [] (type_of_ref r) t) then raise Type;
+  if not (Match.match_ref_type [] (type_of_ref r) t) then raise Type;
   try Lib.Array32.set tab.content i r with Invalid_argument _ -> raise Bounds
 
 let blit tab offset rs =

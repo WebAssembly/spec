@@ -283,7 +283,8 @@ let value v =
   | Ref _ -> assert false
 
 let invoke ft vs at =
-  [FuncDefType ft @@ at], FuncImport (subject_type_idx @@ at) @@ at,
+  let dt = RecDefType [SubType ([], FuncDefType ft)] in
+  [dt @@ at], FuncImport (subject_type_idx @@ at) @@ at,
   List.concat (List.map value vs) @ [Call (subject_idx @@ at) @@ at]
 
 let get t at =
@@ -363,7 +364,8 @@ let assert_return ress ts at =
 let i32_type = NumType I32Type
 let anyref_type = RefType (Nullable, AnyHeapType)
 let eqref_type = RefType (Nullable, EqHeapType)
-let func_def_type ins out at = FuncDefType (FuncType (ins, out)) @@ at
+let func_def_type ins out at =
+  RecDefType [SubType ([], FuncDefType (FuncType (ins, out)))] @@ at
 
 let wrap item_name wrap_action wrap_assertion at =
   let itypes, idesc, action = wrap_action at in

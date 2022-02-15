@@ -3,8 +3,8 @@
 type name = int list
 
 and syn_var = int32
-and sem_var = def_type Lib.Promise.t
-and var = SynVar of syn_var | SemVar of sem_var
+and sem_var = ctx_type Lib.Promise.t
+and var = SynVar of syn_var | SemVar of sem_var | RecVar of int32
 
 and mutability = Immutable | Mutable
 and nullability = NonNullable | Nullable
@@ -22,7 +22,7 @@ and heap_type =
   | ArrayHeapType
   | FuncHeapType
   | DefHeapType of var
-  | RttHeapType of var * int32 option
+  | RttHeapType of var
   | BotHeapType
 
 and value_type = NumType of num_type | RefType of ref_type | BotType
@@ -36,10 +36,14 @@ and struct_type = StructType of field_type list
 and array_type = ArrayType of field_type
 and func_type = FuncType of result_type * result_type
 
-and def_type =
+and str_type =
   | StructDefType of struct_type
   | ArrayDefType of array_type
   | FuncDefType of func_type
+
+and sub_type = SubType of var list * str_type
+and def_type = RecDefType of sub_type list
+and ctx_type = RecCtxType of (var * sub_type) list * int32
 
 type 'a limits = {min : 'a; max : 'a option}
 type table_type = TableType of Int32.t limits * ref_type
@@ -74,11 +78,13 @@ let is_packed_storage_type = function
   | PackedStorageType _ -> true
 
 
-let is_syn_var = function SynVar _ -> true | SemVar _ -> false
-let is_sem_var = function SemVar _ -> true | SynVar _ -> false
+let is_syn_var = function SynVar _ -> true | _ -> false
+let is_sem_var = function SemVar _ -> true | _ -> false
+let is_rec_var = function RecVar _ -> true | _ -> false
 
-let as_syn_var = function SynVar x -> x | SemVar _ -> assert false
-let as_sem_var = function SemVar x -> x | SynVar _ -> assert false
+let as_syn_var = function SynVar x -> x | _ -> assert false
+let as_sem_var = function SemVar x -> x | _ -> assert false
+let as_rec_var = function RecVar x -> x | _ -> assert false
 
 
 let is_num_type = function
@@ -111,18 +117,18 @@ let unpacked_storage_type = function
 let unpacked_field_type (FieldType (t, _)) = unpacked_storage_type t
 
 
-let as_func_def_type (dt : def_type) : func_type =
-  match dt with
+let as_func_str_type (st : str_type) : func_type =
+  match st with
   | FuncDefType ft -> ft
   | _ -> assert false
 
-let as_struct_def_type (dt : def_type) : struct_type =
-  match dt with
+let as_struct_str_type (st : str_type) : struct_type =
+  match st with
   | StructDefType st -> st
   | _ -> assert false
 
-let as_array_def_type (dt : def_type) : array_type =
-  match dt with
+let as_array_str_type (st : str_type) : array_type =
+  match st with
   | ArrayDefType at -> at
   | _ -> assert false
 
@@ -145,10 +151,120 @@ let globals =
 (* Allocation *)
 
 let alloc_uninit () = Lib.Promise.make ()
-let init p dt = Lib.Promise.fulfill p dt
-let alloc dt = let p = alloc_uninit () in init p dt; p
+let init p ct = Lib.Promise.fulfill p ct
+let alloc ct = let p = alloc_uninit () in init p ct; p
 
 let def_of x = Lib.Promise.value x
+
+
+(* Substitution *)
+
+let subst_num_type s t = t
+
+let subst_heap_type s = function
+  | AnyHeapType -> AnyHeapType
+  | EqHeapType -> EqHeapType
+  | I31HeapType -> I31HeapType
+  | DataHeapType -> DataHeapType
+  | ArrayHeapType -> ArrayHeapType
+  | FuncHeapType -> FuncHeapType
+  | DefHeapType x -> DefHeapType (s x)
+  | RttHeapType x -> RttHeapType (s x)
+  | BotHeapType -> BotHeapType
+
+let subst_ref_type s = function
+  | (nul, t) -> (nul, subst_heap_type s t)
+
+let subst_value_type s = function
+  | NumType t -> NumType (subst_num_type s t)
+  | RefType t -> RefType (subst_ref_type s t)
+  | BotType -> BotType
+
+let subst_stack_type s ts =
+ List.map (subst_value_type s) ts
+
+let subst_storage_type s = function
+  | ValueStorageType t -> ValueStorageType (subst_value_type s t)
+  | PackedStorageType sz -> PackedStorageType sz
+
+let subst_field_type s = function
+  | FieldType (t, mut) -> FieldType (subst_storage_type s t, mut)
+
+let subst_struct_type s = function
+  | StructType ts -> StructType (List.map (subst_field_type s) ts)
+
+let subst_array_type s = function
+  | ArrayType t -> ArrayType (subst_field_type s t)
+
+let subst_func_type s (FuncType (ts1, ts2)) =
+  FuncType (subst_stack_type s ts1, subst_stack_type s ts2)
+
+let subst_str_type s = function
+  | StructDefType st -> StructDefType (subst_struct_type s st)
+  | ArrayDefType at -> ArrayDefType (subst_array_type s at)
+  | FuncDefType ft -> FuncDefType (subst_func_type s ft)
+
+let subst_sub_type s = function
+  | SubType (xs, st) ->
+    SubType (List.map s xs, subst_str_type s st)
+
+let subst_def_type s = function
+  | RecDefType sts -> RecDefType (List.map (subst_sub_type s) sts)
+
+let subst_rec_type s (x, st) = (s x, subst_sub_type s st)
+
+let subst_ctx_type s = function
+  | RecCtxType (rts, i) -> RecCtxType (List.map (subst_rec_type s) rts, i)
+
+
+let subst_memory_type s (MemoryType lim) =
+  MemoryType lim
+
+let subst_table_type s (TableType (lim, t)) =
+  TableType (lim, subst_ref_type s t)
+
+let subst_global_type s (GlobalType (t, mut)) =
+  GlobalType (subst_value_type s t, mut)
+
+let subst_extern_type s = function
+  | ExternFuncType ft -> ExternFuncType (subst_func_type s ft)
+  | ExternTableType tt -> ExternTableType (subst_table_type s tt)
+  | ExternMemoryType mt -> ExternMemoryType (subst_memory_type s mt)
+  | ExternGlobalType gt -> ExternGlobalType (subst_global_type s gt)
+
+
+let subst_export_type s (ExportType (et, name)) =
+  ExportType (subst_extern_type s et, name)
+
+let subst_import_type s (ImportType (et, module_name, name)) =
+  ImportType (subst_extern_type s et, module_name, name)
+
+
+(* Recursive types *)
+
+let ctx_types_of_def_type x (dt : def_type) : ctx_type list =
+  match dt with
+  | RecDefType sts ->
+    let rts = Lib.List32.mapi (fun i st -> (SynVar (Int32.add x i), st)) sts in
+    Lib.List32.mapi (fun i _ -> RecCtxType (rts, i)) sts
+
+let ctx_types_of_def_types (dts : def_type list) : ctx_type list =
+  let rec iter x dts =
+    match dts with
+    | [] -> []
+    | dt::dts' ->
+      let cts = ctx_types_of_def_type x dt in
+      cts @ iter (Int32.add x (Lib.List32.length cts)) dts'
+  in iter 0l dts
+
+
+let unroll_ctx_type (ct : ctx_type) : sub_type =
+  match ct with
+  | RecCtxType (rts, i) -> snd (Lib.List32.nth rts i)
+
+let expand_ctx_type (ct : ctx_type) : str_type =
+  match unroll_ctx_type ct with
+  | SubType (_, st) -> st
 
 
 (* Conversion *)
@@ -156,80 +272,26 @@ let def_of x = Lib.Promise.value x
 let sem_var_type c = function
   | SynVar x -> SemVar (Lib.List32.nth c x)
   | SemVar _ -> assert false
+  | RecVar x -> RecVar x
 
-let sem_num_type c t = t
+let sem_heap_type c = subst_heap_type (sem_var_type c)
+let sem_value_type c = subst_value_type (sem_var_type c)
+let sem_func_type c = subst_func_type (sem_var_type c)
+let sem_memory_type c = subst_memory_type (sem_var_type c)
+let sem_table_type c = subst_table_type (sem_var_type c)
+let sem_global_type c = subst_global_type (sem_var_type c)
+let sem_extern_type c = subst_extern_type (sem_var_type c)
 
-let sem_heap_type c = function
-  | AnyHeapType -> AnyHeapType
-  | EqHeapType -> EqHeapType
-  | I31HeapType -> I31HeapType
-  | DataHeapType -> DataHeapType
-  | ArrayHeapType -> ArrayHeapType
-  | FuncHeapType -> FuncHeapType
-  | DefHeapType x -> DefHeapType (sem_var_type c x)
-  | RttHeapType (x, no) -> RttHeapType (sem_var_type c x, no)
-  | BotHeapType -> BotHeapType
-
-let sem_ref_type c = function
-  | (nul, t) -> (nul, sem_heap_type c t)
-
-let sem_value_type c = function
-  | NumType t -> NumType (sem_num_type c t)
-  | RefType t -> RefType (sem_ref_type c t)
-  | BotType -> BotType
-
-let sem_stack_type c ts =
- List.map (sem_value_type c) ts
-
-let sem_storage_type c = function
-  | ValueStorageType t -> ValueStorageType (sem_value_type c t)
-  | PackedStorageType sz -> PackedStorageType sz
-
-let sem_field_type c = function
-  | FieldType (t, mut) -> FieldType (sem_storage_type c t, mut)
-
-let sem_struct_type c = function
-  | StructType ts -> StructType (List.map (sem_field_type c) ts)
-
-let sem_array_type c = function
-  | ArrayType t -> ArrayType (sem_field_type c t)
-
-let sem_func_type c (FuncType (ins, out)) =
-  FuncType (sem_stack_type c ins, sem_stack_type c out)
-
-let sem_def_type c = function
-  | StructDefType st -> StructDefType (sem_struct_type c st)
-  | ArrayDefType at -> ArrayDefType (sem_array_type c at)
-  | FuncDefType ft -> FuncDefType (sem_func_type c ft)
-
-
-let sem_memory_type c (MemoryType lim) =
-  MemoryType lim
-
-let sem_table_type c (TableType (lim, t)) =
-  TableType (lim, sem_ref_type c t)
-
-let sem_global_type c (GlobalType (t, mut)) =
-  GlobalType (sem_value_type c t, mut)
-
-let sem_extern_type c = function
-  | ExternFuncType ft -> ExternFuncType (sem_func_type c ft)
-  | ExternTableType tt -> ExternTableType (sem_table_type c tt)
-  | ExternMemoryType mt -> ExternMemoryType (sem_memory_type c mt)
-  | ExternGlobalType gt -> ExternGlobalType (sem_global_type c gt)
-
-
-let sem_export_type c (ExportType (et, name)) =
-  ExportType (sem_extern_type c et, name)
-
-let sem_import_type c (ImportType (et, module_name, name)) =
-  ImportType (sem_extern_type c et, module_name, name)
+let sem_sub_type c = subst_sub_type (sem_var_type c)
+let sem_ctx_type c = subst_ctx_type (sem_var_type c)
 
 let sem_module_type (ModuleType (dts, its, ets)) =
-  let c = List.map (fun _ -> alloc_uninit ()) dts in
-  List.iter2 (fun x dt -> init x (sem_def_type c dt)) c dts;
-  let its = List.map (sem_import_type c) its in
-  let ets = List.map (sem_export_type c) ets in
+  let cts = ctx_types_of_def_types dts in
+  let c = List.map (fun _ -> alloc_uninit ()) cts in
+  let s = sem_var_type c in
+  List.iter2 (fun x ct -> init x (subst_ctx_type s ct)) c cts;
+  let its = List.map (subst_import_type s) its in
+  let ets = List.map (subst_export_type s) ets in
   ModuleType ([], its, ets)
 
 
@@ -259,10 +321,11 @@ let rec string_of_var =
     if List.mem h !inner then "" else
     ( inner := h :: !inner;
       try
-        let s = string_of_def_type (def_of x) in
+        let s = string_of_ctx_type (def_of x) in
         inner := List.tl !inner; "=(" ^ s ^ ")"
       with exn -> inner := []; raise exn
     )
+  | RecVar x -> "rec." ^ I32.to_string_u x
 
 
 and string_of_nullability = function
@@ -287,9 +350,7 @@ and string_of_heap_type = function
   | ArrayHeapType -> "array"
   | FuncHeapType -> "func"
   | DefHeapType x -> string_of_var x
-  | RttHeapType (x, None) -> "(rtt " ^ string_of_var x ^ ")"
-  | RttHeapType (x, Some n) ->
-    "(rtt " ^ Int32.to_string n ^ " " ^ string_of_var x ^ ")"
+  | RttHeapType x -> "(rtt " ^ string_of_var x ^ ")"
   | BotHeapType -> "something"
 
 and string_of_ref_type = function
@@ -322,10 +383,28 @@ and string_of_func_type = function
   | FuncType (ins, out) ->
     string_of_result_type ins ^ " -> " ^ string_of_result_type out
 
-and string_of_def_type = function
+and string_of_str_type = function
   | StructDefType st -> "struct " ^ string_of_struct_type st
   | ArrayDefType at -> "array " ^ string_of_array_type at
   | FuncDefType ft -> "func " ^ string_of_func_type ft
+
+and string_of_sub_type = function
+  | SubType ([], st) -> string_of_str_type st
+  | SubType (xs, st) ->
+    String.concat " " ("sub" :: List.map string_of_var xs) ^
+    " (" ^ string_of_str_type st ^ ")"
+
+and string_of_def_type = function
+  | RecDefType [st] -> string_of_sub_type st
+  | RecDefType sts ->
+    "rec " ^
+    String.concat " " (List.map (fun st -> "(" ^ string_of_sub_type st ^ ")") sts)
+
+and string_of_ctx_type = function
+  | RecCtxType ([(_, st)], 0l) -> string_of_sub_type st
+  | RecCtxType (rts, i) ->
+    "(" ^ string_of_def_type (RecDefType (List.map snd rts)) ^ ")." ^
+      I32.to_string_u i
 
 
 let string_of_limits {min; max} =

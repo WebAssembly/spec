@@ -187,6 +187,8 @@ rule token = parse
   | (pixx as t) { PACKED_TYPE (packed_type t) }
   | "mut" { MUT }
   | "field" { FIELD }
+  | "sub" { SUB }
+  | "rec" { REC }
 
   | (nxx as t)".const"
     { let open Source in
@@ -238,7 +240,6 @@ rule token = parse
   | "array.len" { ARRAY_LEN }
 
   | "rtt.canon" { RTT_CANON }
-  | "rtt.sub" { RTT_SUB }
 
   | "nop" { NOP }
   | "unreachable" { UNREACHABLE }

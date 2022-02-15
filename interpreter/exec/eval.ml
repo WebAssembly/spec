@@ -97,9 +97,10 @@ let elem (inst : module_inst) x = lookup "element segment" inst.elems x
 let data (inst : module_inst) x = lookup "data segment" inst.datas x
 let local (frame : frame) x = lookup "local" frame.locals x
 
-let func_type (inst : module_inst) x = as_func_def_type (def_of (type_ inst x))
-let struct_type (inst : module_inst) x = as_struct_def_type (def_of (type_ inst x))
-let array_type (inst : module_inst) x = as_array_def_type (def_of (type_ inst x))
+let str_type (inst : module_inst) x = expand_ctx_type (def_of (type_ inst x))
+let func_type (inst : module_inst) x = as_func_str_type (str_type inst x)
+let struct_type (inst : module_inst) x = as_struct_str_type  (str_type inst x)
+let array_type (inst : module_inst) x = as_array_str_type (str_type inst x)
 
 let any_ref inst x i at =
   try Table.load (table inst x) i with Table.Bounds ->
@@ -116,7 +117,8 @@ let block_type inst bt at =
   | ValBlockType None -> FuncType ([], [])
   | ValBlockType (Some t) -> FuncType ([], [t])
   | VarBlockType (SynVar x) -> func_type inst (x @@ at)
-  | VarBlockType (SemVar x) -> as_func_def_type (def_of x)
+  | VarBlockType (SemVar x) -> as_func_str_type (expand_ctx_type (def_of x))
+  | VarBlockType (RecVar _) -> assert false
 
 let take n (vs : 'a stack) at =
   try Lib.List.take n vs with Failure _ -> Crash.error at "stack underflow"
@@ -340,7 +342,9 @@ let rec step (c : config) : config =
       | CallIndirect (x, y), Num (I32 i) :: vs ->
         let f = func_ref c.frame.inst x i e.at in
         if
-          Match.eq_func_type [] [] (func_type c.frame.inst y) (Func.type_of f)
+          Match.match_var_type []
+            (SemVar (Func.type_inst_of f))
+            (sem_var_type c.frame.inst.types (SynVar y.it))
         then
           vs, [Invoke f @@ e.at]
         else
@@ -784,12 +788,8 @@ let rec step (c : config) : config =
         Num (I32 (Lib.List32.length svs)) :: vs', []
 
       | RttCanon x, vs ->
-        let rtt = Rtt.alloc (type_ c.frame.inst x) None in
+        let rtt = Rtt.alloc (type_ c.frame.inst x) in
         Ref (Rtt.RttRef rtt) :: vs, []
-
-      | RttSub x, Ref (Rtt.RttRef rtt') :: vs' ->
-        let rtt = Rtt.alloc (type_ c.frame.inst x) (Some rtt') in
-        Ref (Rtt.RttRef rtt) :: vs', []
 
       | Const n, vs ->
         Num n.it :: vs, []
@@ -892,7 +892,10 @@ let rec step (c : config) : config =
         let ts = List.map (fun t -> Types.sem_value_type m.types t.it) locals in
         let vs0 = List.rev args @ List.map default_value ts in
         let locals' = List.map (fun t -> t @@ func.at) ts1 @ locals in
-        let bt = VarBlockType (SemVar (alloc (FuncDefType (FuncType ([], ts2))))) in
+        let st = SubType ([], FuncDefType (FuncType ([], ts2))) in
+        let x = Types.alloc_uninit () in
+        Types.init x (RecCtxType ([(SemVar x, st)], 0l));
+        let bt = VarBlockType (SemVar x) in
         let es0 = [Plain (Let (bt, locals', body)) @@ func.at] in
         vs', [Frame (List.length ts2, frame m, (List.rev vs0, es0)) @@ e.at]
 
@@ -930,7 +933,7 @@ let invoke (func : func_inst) (vs : value list) : value list =
   let FuncType (ts, _) = Func.type_of func in
   if List.length vs <> List.length ts then
     Crash.error at "wrong number of arguments";
-  if not (List.for_all2 (fun v -> Match.match_value_type [] [] (type_of_value v)) vs ts) then
+  if not (List.for_all2 (fun v -> Match.match_value_type [] (type_of_value v)) vs ts) then
     Crash.error at "wrong types of arguments";
   let c = config empty_module_inst (List.rev vs) [Invoke func @@ at] in
   try List.rev (eval c) with Stack_overflow ->
@@ -945,8 +948,9 @@ let eval_const (inst : module_inst) (const : const) : value =
 
 (* Modules *)
 
-let create_type (_ : type_) : type_inst =
-  Types.alloc_uninit ()
+let create_type (type_ : type_) : type_inst list =
+  match type_.it with
+  | RecDefType sts -> List.map (fun _ -> Types.alloc_uninit ()) sts
 
 let create_func (inst : module_inst) (f : func) : func_inst =
   Func.alloc (type_ inst f.it.ftype) (Lib.Promise.make ()) f
@@ -990,7 +994,7 @@ let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   let it = extern_type_of_import_type (import_type_of m im) in
   let et = Types.sem_extern_type inst.types it in
   let et' = extern_type_of inst.types ext in
-  if not (Match.match_extern_type [] [] et' et) then
+  if not (Match.match_extern_type [] et' et) then
     Link.error im.at ("incompatible import type for " ^
       "\"" ^ Utf8.encode im.it.module_name ^ "\" " ^
       "\"" ^ Utf8.encode im.it.item_name ^ "\": " ^
@@ -1003,8 +1007,11 @@ let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   | ExternGlobal glob -> {inst with globals = glob :: inst.globals}
 
 
-let init_type (inst : module_inst) (type_ : type_) (x : type_inst) =
-  Types.init x (Types.sem_def_type inst.types type_.it)
+let init_type (inst : module_inst) (x, ts : int32 * type_inst list) (type_ : type_) =
+  let cts = ctx_types_of_def_type x type_.it in
+  let ts1 = Lib.List.take (List.length cts) ts in
+  List.iter2 Types.init ts1 (List.map (Types.sem_ctx_type inst.types) cts);
+  Int32.add x (Lib.List32.length cts), Lib.List.drop (List.length cts) ts
 
 let init_func (inst : module_inst) (func : func_inst) =
   match func with
@@ -1052,8 +1059,8 @@ let init (m : module_) (exts : extern list) : module_inst =
   in
   if List.length exts <> List.length imports then
     Link.error m.at "wrong number of imports provided for initialisation";
-  let inst0 = {empty_module_inst with types = List.map create_type types} in
-  List.iter2 (init_type inst0) types inst0.types;
+  let inst0 = {empty_module_inst with types = List.concat_map create_type types} in
+  ignore (List.fold_left (init_type inst0) (0l, inst0.types) types);
   let inst1 = List.fold_right2 (add_import m) exts imports inst0 in
   let fs = List.map (create_func inst1) funcs in
   let inst2 = {inst1 with funcs = inst1.funcs @ fs} in

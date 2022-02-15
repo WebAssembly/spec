@@ -40,11 +40,11 @@ let read_field fld exto =
 
 
 let alloc_struct x rtt vs =
-  let StructType fts = as_struct_def_type (def_of x) in
+  let StructType fts = as_struct_str_type (expand_ctx_type (def_of x)) in
   Struct (x, rtt, List.map2 alloc_field fts vs)
 
 let alloc_array x rtt n v =
-  let ArrayType ft = as_array_def_type (def_of x) in
+  let ArrayType ft = as_array_str_type (expand_ctx_type (def_of x)) in
   Array (x, rtt, List.init (Int32.to_int n) (fun _ -> alloc_field ft v))
 
 
@@ -52,8 +52,8 @@ let type_inst_of = function
   | Struct (x, _, _) -> x
   | Array (x, _, _) -> x
 
-let struct_type_of d = as_struct_def_type (def_of (type_inst_of d))
-let array_type_of d = as_array_def_type (def_of (type_inst_of d))
+let struct_type_of d = as_struct_str_type (expand_ctx_type (def_of (type_inst_of d)))
+let array_type_of d = as_array_str_type (expand_ctx_type (def_of (type_inst_of d)))
 
 let read_rtt = function
   | Struct (_, rtt, _) -> rtt

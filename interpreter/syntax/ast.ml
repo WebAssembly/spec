@@ -140,7 +140,6 @@ and instr' =
   | ArraySet of idx                   (* write array slot *)
   | ArrayLen                          (* read array length *)
   | RttCanon of idx                   (* allocate RTT *)
-  | RttSub of idx                     (* alllocate sub-RTT *)
 
 
 (* Globals & Functions *)
@@ -267,7 +266,20 @@ let empty_module =
 open Source
 
 let func_type_of (m : module_) (x : idx) : func_type =
-  as_func_def_type (Lib.List32.nth m.it.types x.it).it
+  let rec find_in_def_types dts i =
+    match dts with
+    | dt::dts' ->
+      (match dt.it with
+      | RecDefType sts -> find_in_sub_types sts i dts'
+      )
+    | [] -> failwith "func_type_of"
+  and find_in_sub_types sts i dts =
+    let n = Lib.List32.length sts in
+    if i < n then
+      let SubType (_, st) = Lib.List32.nth sts i in st
+    else
+      find_in_def_types dts (Int32.sub i n)
+  in as_func_str_type (find_in_def_types m.it.types x.it)
 
 let import_type_of (m : module_) (im : import) : import_type =
   let {idesc; module_name; item_name} = im.it in
