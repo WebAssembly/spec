@@ -83,7 +83,7 @@ https://github.com/WebAssembly/meetings/blob/main/main/2021/CG-11-09.md
 
 ### Design
 
-The *branch hint section* is a :ref:`custom section <binary-customsec>` whose name string is `code_annotation.branch_hint`.
+The *branch hint section* is a **custom section** whose name string is `metadata.code.branch_hint`.
 The branch hints section should appear only once in a module, and only before the code section.
 
 The purpose of this section is to aid the compilation of conditional branch instructions, by providing a hint that a branch is very likely (or unlikely) to be taken.
@@ -112,5 +112,19 @@ Each *branch hint* structure consists of
 Elements of the vector of *branch hint* must appear in increasing byte offset order,
 and a byte offset can appear at most once. A |BRIF| or |IF| instruction must be present
 in the code section at the specified offset.
+
+#### Annotations
+
+*Branch Hint annotations* are the textual analogue to the branch hint section and provide a textual representation for it.
+Consequently, their id is :math:`@metadata.code.branch_hint`.
+
+Branch hint annotations are allowed only on |BRIF| and |IF| instructions,
+and at most one branch hint annotation may be given per instruction.
+
+Branch hint annotations have the following format:
+
+```
+(@metadata.code.branch_hint "\00" | "\01")
+```
 
 See the [the spec](/document/core/appendix/custom.rst) for the formal notation.
