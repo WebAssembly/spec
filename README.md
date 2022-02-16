@@ -1,16 +1,5 @@
 ![Build Status](https://github.com/WebAssembly/annotations/actions/workflows/main.yml/badge.svg)
 
-# Custom Annotations Proposal for WebAssembly
-
-This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
-It is meant for discussion, prototype specification and implementation of a proposal to add support for custom annotations to the WebAssembly text format.
-
-See the [overview](proposals/annotations/Overview.md) for a summary of the proposal.
-
-See draft spec at [webassembly.github.io/annotations](https://webassembly.github.io/annotations/).
-
-Original `README` from upstream repository follows...
-
 # Branch hinting Proposal for WebAssembly
 
 This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
