@@ -956,6 +956,7 @@ let is_const (c : context) (e : instr) =
   match e.it with
   | Const _
   | VecConst _
+  | I31New
   | RefNull _
   | RefFunc _
   | RttCanon _ -> true

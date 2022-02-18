@@ -9,6 +9,13 @@
   (func (export "get_s") (param $i i32) (result i32)
     (i31.get_s (i31.new (local.get $i)))
   )
+
+  (global $i (ref i31) (i31.new (i32.const 2)))
+  (global $m (mut (ref i31)) (i31.new (i32.const 3)))
+  (func (export "get_globals") (result i32 i32)
+    (i31.get_u (global.get $i))
+    (i31.get_u (global.get $m))
+  )
 )
 
 (assert_return (invoke "new" (i32.const 1)) (ref.i31))
@@ -30,3 +37,5 @@
 (assert_return (invoke "get_s" (i32.const 0x7fff_ffff)) (i32.const -1))
 (assert_return (invoke "get_s" (i32.const 0xaaaa_aaaa)) (i32.const 0x2aaa_aaaa))
 (assert_return (invoke "get_s" (i32.const 0xcaaa_aaaa)) (i32.const 0xcaaa_aaaa))
+
+(assert_return (invoke "get_globals") (i32.const 2) (i32.const 3))
