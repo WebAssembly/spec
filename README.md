@@ -7,6 +7,8 @@ It is meant for discussion, prototype specification and implementation of a prop
 
 See the [overview](proposals/annotations/Overview.md) for a summary of the proposal.
 
+See draft spec at [webassembly.github.io/annotations](https://webassembly.github.io/annotations/).
+
 Original `README` from upstream repository follows...
 
 # spec
