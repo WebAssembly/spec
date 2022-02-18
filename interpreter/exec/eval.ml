@@ -32,10 +32,10 @@ let memory_error at = function
   | exn -> raise exn
 
 let numeric_error at = function
-  | Numeric_error.IntegerOverflow -> "integer overflow"
-  | Numeric_error.IntegerDivideByZero -> "integer divide by zero"
-  | Numeric_error.InvalidConversionToInteger -> "invalid conversion to integer"
-  | Eval_numeric.TypeError (i, v, t) ->
+  | Ixx.Overflow -> "integer overflow"
+  | Ixx.DivideByZero -> "integer divide by zero"
+  | Ixx.InvalidConversion -> "invalid conversion to integer"
+  | Values.TypeError (i, v, t) ->
     Crash.error at
       ("type error, expected " ^ Types.string_of_num_type t ^ " as operand " ^
        string_of_int i ^ ", got " ^ Types.string_of_num_type (type_of_num v))
@@ -318,27 +318,86 @@ let rec step (c : config) : config =
         seg := [];
         vs, []
 
-      | Load {offset; ty; sz; _}, Num (I32 i) :: vs' ->
+      | Load {offset; ty; pack; _}, Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let a = I64_convert.extend_i32_u i in
         (try
           let n =
-            match sz with
+            match pack with
             | None -> Memory.load_num mem a offset ty
-            | Some (sz, ext) -> Memory.load_packed sz ext mem a offset ty
+            | Some (sz, ext) -> Memory.load_num_packed sz ext mem a offset ty
           in Num n :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | Store {offset; sz; _}, Num n :: Num (I32 i) :: vs' ->
+      | Store {offset; pack; _}, Num n :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
         let a = I64_convert.extend_i32_u i in
         (try
-          (match sz with
+          (match pack with
           | None -> Memory.store_num mem a offset n
-          | Some sz -> Memory.store_packed sz mem a offset n
+          | Some sz -> Memory.store_num_packed sz mem a offset n
           );
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
+
+      | VecLoad {offset; ty; pack; _}, Num (I32 i) :: vs' ->
+        let mem = memory frame.inst (0l @@ e.at) in
+        let addr = I64_convert.extend_i32_u i in
+        (try
+          let v =
+            match pack with
+            | None -> Memory.load_vec mem addr offset ty
+            | Some (sz, ext) ->
+              Memory.load_vec_packed sz ext mem addr offset ty
+          in Vec v :: vs', []
+        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
+
+      | VecStore {offset; _}, Vec v :: Num (I32 i) :: vs' ->
+        let mem = memory frame.inst (0l @@ e.at) in
+        let addr = I64_convert.extend_i32_u i in
+        (try
+          Memory.store_vec mem addr offset v;
+          vs', []
+        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
+
+      | VecLoadLane ({offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
+        let mem = memory frame.inst (0l @@ e.at) in
+        let addr = I64_convert.extend_i32_u i in
+        (try
+          let v =
+            match pack with
+            | Pack8 ->
+              V128.I8x16.replace_lane j v
+                (I32Num.of_num 0 (Memory.load_num_packed Pack8 SX mem addr offset I32Type))
+            | Pack16 ->
+              V128.I16x8.replace_lane j v
+                (I32Num.of_num 0 (Memory.load_num_packed Pack16 SX mem addr offset I32Type))
+            | Pack32 ->
+              V128.I32x4.replace_lane j v
+                (I32Num.of_num 0 (Memory.load_num mem addr offset I32Type))
+            | Pack64 ->
+              V128.I64x2.replace_lane j v
+                (I64Num.of_num 0 (Memory.load_num mem addr offset I64Type))
+          in Vec (V128 v) :: vs', []
+        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
+
+      | VecStoreLane ({offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
+        let mem = memory frame.inst (0l @@ e.at) in
+        let addr = I64_convert.extend_i32_u i in
+        (try
+          (match pack with
+          | Pack8 ->
+            Memory.store_num_packed Pack8 mem addr offset (I32 (V128.I8x16.extract_lane_s j v))
+          | Pack16 ->
+            Memory.store_num_packed Pack16 mem addr offset (I32 (V128.I16x8.extract_lane_s j v))
+          | Pack32 ->
+            Memory.store_num mem addr offset (I32 (V128.I32x4.extract_lane_s j v))
+          | Pack64 ->
+            Memory.store_num mem addr offset (I64 (V128.I64x2.extract_lane_s j v))
+          );
+          vs', []
+        with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
+
       | MemorySize, vs ->
         let mem = memory frame.inst (0l @@ e.at) in
         Num (I32 (Memory.size mem)) :: vs, []
@@ -361,7 +420,7 @@ let rec step (c : config) : config =
             Plain (Const (I32 i @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; sz = Some Pack8});
+              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add i 1l) @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -378,9 +437,9 @@ let rec step (c : config) : config =
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
             Plain (Load
-              {ty = I32Type; align = 0; offset = 0l; sz = Some (Pack8, ZX)});
+              {ty = I32Type; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; sz = Some Pack8});
+              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -395,9 +454,9 @@ let rec step (c : config) : config =
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
             Plain (Load
-              {ty = I32Type; align = 0; offset = 0l; sz = Some (Pack8, ZX)});
+              {ty = I32Type; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; sz = Some Pack8});
+              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
           ]
 
       | MemoryInit x, Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
@@ -412,7 +471,7 @@ let rec step (c : config) : config =
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 b @@ e.at));
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; sz = Some Pack8});
+              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -443,23 +502,82 @@ let rec step (c : config) : config =
         Num n.it :: vs, []
 
       | Test testop, Num n :: vs' ->
-        (try value_of_bool (Eval_numeric.eval_testop testop n) :: vs', []
+        (try value_of_bool (Eval_num.eval_testop testop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | Compare relop, Num n2 :: Num n1 :: vs' ->
-        (try value_of_bool (Eval_numeric.eval_relop relop n1 n2) :: vs', []
+        (try value_of_bool (Eval_num.eval_relop relop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | Unary unop, Num n :: vs' ->
-        (try Num (Eval_numeric.eval_unop unop n) :: vs', []
+        (try Num (Eval_num.eval_unop unop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | Binary binop, Num n2 :: Num n1 :: vs' ->
-        (try Num (Eval_numeric.eval_binop binop n1 n2) :: vs', []
+        (try Num (Eval_num.eval_binop binop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | Convert cvtop, Num n :: vs' ->
-        (try Num (Eval_numeric.eval_cvtop cvtop n) :: vs', []
+        (try Num (Eval_num.eval_cvtop cvtop n) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecConst v, vs ->
+        Vec v.it :: vs, []
+
+      | VecTest testop, Vec n :: vs' ->
+        (try value_of_bool (Eval_vec.eval_testop testop n) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecUnary unop, Vec n :: vs' ->
+        (try Vec (Eval_vec.eval_unop unop n) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecBinary binop, Vec n2 :: Vec n1 :: vs' ->
+        (try Vec (Eval_vec.eval_binop binop n1 n2) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecCompare relop, Vec n2 :: Vec n1 :: vs' ->
+        (try Vec (Eval_vec.eval_relop relop n1 n2) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecConvert cvtop, Vec n :: vs' ->
+        (try Vec (Eval_vec.eval_cvtop cvtop n) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecShift shiftop, Num s :: Vec v :: vs' ->
+        (try Vec (Eval_vec.eval_shiftop shiftop v s) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecBitmask bitmaskop, Vec v :: vs' ->
+        (try Num (Eval_vec.eval_bitmaskop bitmaskop v) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecTestBits vtestop, Vec n :: vs' ->
+        (try value_of_bool (Eval_vec.eval_vtestop vtestop n) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecUnaryBits vunop, Vec n :: vs' ->
+        (try Vec (Eval_vec.eval_vunop vunop n) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecBinaryBits vbinop, Vec n2 :: Vec n1 :: vs' ->
+        (try Vec (Eval_vec.eval_vbinop vbinop n1 n2) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecTernaryBits vternop, Vec v3 :: Vec v2 :: Vec v1 :: vs' ->
+        (try Vec (Eval_vec.eval_vternop vternop v1 v2 v3) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecSplat splatop, Num n :: vs' ->
+        (try Vec (Eval_vec.eval_splatop splatop n) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecExtract extractop, Vec v :: vs' ->
+        (try Num (Eval_vec.eval_extractop extractop v) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecReplace replaceop, Num r :: Vec v :: vs' ->
+        (try Vec (Eval_vec.eval_replaceop replaceop v r) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | _ ->
