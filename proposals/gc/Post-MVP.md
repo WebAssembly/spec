@@ -14,6 +14,7 @@ See [overview](Overview.md) for addition background.
 * [Type parameters](#type-parameters) (polymorphism, generics)
 * [Variants](#variants) (a.k.a. disjoint unions or tagging)
 * [Static fields](#static-fields) (meta structures)
+* [Closures](#closures)
 * [Custom function RTTs](#custom-function-RTTs)
 * [Threads and shared references](#threads-and-shared-references)
 * [Weak references](#weak-references)
@@ -518,6 +519,48 @@ The basic idea would be introducing a notion of _static fields_ in a form of imm
 There are various ways in which this could be modelled, details are TBD.
 
 **Why Post-MVP:** Such a feature only saves space, so isn't critical for the MVP. Furthermore, there isn't much precedent for exposing such a mechanism to user code in low-level form, so no obvious design philosophy to follow.
+
+
+## Closures
+
+Function references could be generalised to represent closures by means of an instruction that takes a prefix of the function's arguments and returns a new function reference with those parameters bound.
+
+* `func.bind` creates or extends a closure by binding several parameters
+  - `func.bind $t' : [t0* (ref null $t)] -> [(ref $t')]`
+    - iff `$t = [t0* t1*] -> [t2*]`
+    - and `$t' = [t1'*] -> [t2'*]`
+    - and `t1'* <: t1*`
+    - and `t2* <: t2'*`
+  - traps on `null`
+
+With this extension, closures are interchangeable with regular function references. That is, conceptually, all function references would be closures of 0 or more parameters.
+
+An alternative design would be to distinguish closures from raw functions. In such a design, we would introduce:
+
+* `closure $t` is a new heap type
+  - `heaptype ::= ... | closure $t`
+  - `(closure $t) ok` iff `$t = [t1*] -> [t2*]`
+
+* `closure $t` also is a new reference type shorthand
+  - `reftype ::= ... | closure $t`
+   - shorthand for `(ref (closure $t))`
+
+There would be two bind instructions, both returning a closure:
+
+* `closure.new` creates a closure from a function
+  - `closure.new : [(ref null $t)] -> [(ref (closure $t))]`
+    - iff `$t = [t1*] -> [t2*]`
+  - traps on `null`
+
+* `closure.bind` creates a new closure by binding (additional) parameters of an existing closure
+  - `closure.bind $t' : [t0* (ref null (closure $t))] -> [(ref (closure $t'))]`
+    - iff `$t = [t0* t1*] -> [t2*]`
+    - and `$t' = [t1'*] -> [t2'*]`
+    - and `t1'* <: t1*`
+    - and `t2* <: t2'*`
+  - traps on `null`
+
+As a variant, `closure.new` could be generalised to `func.bind` like above, but returning a closure.
 
 
 ## Custom Function RTTs
