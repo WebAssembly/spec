@@ -7,6 +7,8 @@ It is meant for discussion, prototype specification and implementation of a prop
 
 See the [overview](proposals/branch-hinting/Overview.md) for a summary of the proposal.
 
+See draft spec at [webassembly.github.io/branch-hinting](https://webassembly.github.io/branch-hinting).
+
 Original `README` from upstream repository follows...
 
 # spec
