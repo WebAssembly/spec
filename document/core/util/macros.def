@@ -1293,6 +1293,11 @@
 .. |Tparamnameannot| mathdef:: \xref{appendix/custom}{text-paramnameannot}{\T{paramnameannot}}
 .. |Tlocalnameannot| mathdef:: \xref{appendix/custom}{text-localnameannot}{\T{localnameannot}}
 
+.. Branch Hint annotations, non-terminals
+
+.. |Tbranchhintannot| mathdef:: \xref{appendix/custom}{text-branchhintannot}{\T{branchhintannot}}
+.. |Tbranchhintstr| mathdef:: \xref{appendix/custom}{text-branchhintannot}{\T{branchhintstr}}
+
 
 .. Embedding
 .. ---------
