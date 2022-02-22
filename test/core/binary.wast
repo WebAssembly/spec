@@ -1774,7 +1774,7 @@
     "\01\04\01"                             ;; type section
     "\60\00\00"                             ;; type 0
     "\03\02\01\00"                          ;; func section
-    "\0a\12\01"                             ;; code section
+    "\0a\13\01"                             ;; code section
     "\11\00"                                ;; func 0
     "\02\40"                                ;; block 0
     "\41\01"                                ;; condition of if 0
