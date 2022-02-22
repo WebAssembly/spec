@@ -1311,7 +1311,7 @@
     "\60\00\00"                             ;; 1st type
     ;; "\60\00\00"                          ;; 2nd type (missed)
   )
-  "unexpected end of section or function"
+  "length out of bounds"
 )
 
 ;; 1 type declared, 2 given
@@ -1600,7 +1600,7 @@
     "\02\00\0b"                             ;; function body 0
     "\02\00\0b"                             ;; function body 1
   )
-  "unexpected end of section or function"
+  "length out of bounds"
 )
 
 ;; 1 export declared, 2 given
@@ -1662,7 +1662,7 @@
     "\03\02\01\00"                          ;; func section
     "\04\04\01"                             ;; table section
     "\70\00\01"                             ;; table 0
-    "\09\07\02"                             ;; elem with inconsistent segment count (2 declared, 1 given)
+    "\09\0a\02"                             ;; elem with inconsistent segment count (2 declared, 1 given)
     "\00\41\00\0b\01\00"                    ;; elem 0
     "\00\41\00"                             ;; elem 1 (partial)
     ;; "\0b\01\00"                          ;; elem 1 (missing part)
