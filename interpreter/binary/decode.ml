@@ -110,7 +110,7 @@ let v128 s = V128.of_bits (get_string (Types.vec_size Types.V128Type) s)
 let len32 s =
   let pos = pos s in
   let n = vu32 s in
-  if I32.le_u n (Int32.of_int (len s)) then Int32.to_int n else
+  if I32.le_u n (Int32.of_int (len s - pos)) then Int32.to_int n else
     error s pos "length out of bounds"
 
 let bool s = (vu1 s = 1)
