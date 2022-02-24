@@ -263,7 +263,7 @@ and a function index can appear at most once.
 Each *branch hint* structure consists of
 
 * the |U32| byte offset of the hinted instruction from the beginning of the function body,
-* A byte with value 0x01,
+* A |U32| with value '1',
 * a |U32| indicating the meaning of the hint:
 
 =====  ===========================================
@@ -287,7 +287,7 @@ in the code section at the specified offset.
    \production{function branch hints} & \Bfuncbranchhints &::=&
      fidx{:}\Bfuncidx~\Bvec(\Bbranchhint) \\
    \production{branch hint} & \Bbranchhint &::=&
-     \X{instoff}{:}\Bu32 ~~ \hex{01} ~~ \Bbranchhintkind \\
+     \X{instoff}{:}\Bu32 ~~ 1{:}\Bu32 ~~ \Bbranchhintkind \\
    \production{branch hint kind} & \Bbranchhintkind &::=&
      \hex{00} \\ &&|&
      \hex{01} \\
