@@ -45,6 +45,13 @@ instruction:
  - `i64.sub`
  - `i64.mul`
 
+## Implementation Status
+
+- spec interpreter: Done
+- wabt: [Done](https://github.com/WebAssembly/debugging/issues/17#issuecomment-1041130743)
+- Firefox: [Done](https://github.com/WebAssembly/debugging/issues/17#issuecomment-1041130743)
+- v8: [WIP](https://bugs.chromium.org/p/v8/issues/detail?id=12089)
+
 [spec]: https://webassembly.github.io/spec/core/valid/instructions.html#constant-expressions
 [presentation]: https://docs.google.com/presentation/d/1sM9mJJ6iM7D8324ipYxot91hSKnWCtB8jX4Kh3bde5E
 [abi]: https://github.com/WebAssembly/tool-conventions/blob/master/DynamicLinking.md
