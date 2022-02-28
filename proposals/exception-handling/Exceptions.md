@@ -459,9 +459,9 @@ conventions](https://webassembly.github.io/spec/web-api/index.html#conventions).
 When `ExceptionOption` is not provided or it does not contain `traceStack`
 entry, `traceStack` is considered `false` by default.
 
-To preserve stack trace info when crossing the JS to Wasm boundary, `Exception`
-can internally contain an optional `externref` value containing a stack trace
-string, which is propagated when caught by `catch` and rethrown by `rethrow`.
+To preserve stack trace info when crossing the JS to Wasm boundary, exceptions
+can internally contain a stack trace, which is propagated when caught by `catch`
+and rethrown by `rethrow`.
 
 More formally, the added interfaces look like the following:
 
