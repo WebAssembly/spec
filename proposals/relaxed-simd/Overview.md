@@ -211,29 +211,36 @@ def q15mulr(a, b):
 ## Binary format
 
 All opcodes have the `0xfd` prefix (same as SIMD proposal), which are omitted in the table below.
+Opcodes `0x100` to `0x12F` (32 opcodes) are reserved for this proposal.
 
-| instruction                        | opcode   |
-| ---------------------------------- | -------- |
-| `relaxed i8x16.swizzle`            | 0xa2     |
-| `relaxed i32x4.trunc_f32x4_s`      | 0xa5     |
-| `relaxed i32x4.trunc_f32x4_u`      | 0xa6     |
-| `relaxed i32x4.trunc_f64x2_s_zero` | 0xc5     |
-| `relaxed i32x4.trunc_f64x2_u_zero` | 0xc6     |
-| `f32x4.fma`                        | 0xaf     |
-| `f32x4.fms`                        | 0xb0     |
-| `f64x2.fma`                        | 0xcf     |
-| `f64x2.fms`                        | 0xd0     |
-| `i8x16.laneselect`                 | 0xb2     |
-| `i16x8.laneselect`                 | 0xb3     |
-| `i32x4.laneselect`                 | 0xd2     |
-| `i64x2.laneselect`                 | 0xd3     |
-| `f32x4.min`                        | 0xb4     |
-| `f32x4.max`                        | 0xe2     |
-| `f64x2.min`                        | 0xd4     |
-| `f64x2.max`                        | 0xee     |
-| `i16x8.q15mulr_s`                  | ????     |
+Note: "prototype opcode" refers to the opcodes that were used in prototyping, which
+where chosen to fit into the holes in the opcode space of SIMD proposal. Going
+forward, the opcodes for relaxed-simd specification will be the ones in the
+"opcode" column, and it will take some time for tools and engines to update.
 
-Note: the opcodes are chosen to fit into the existing opcode space of the SIMD proposal, see [Binary encoding of SIMD](https://github.com/WebAssembly/simd/blob/main/proposals/simd/BinarySIMD.md), or a [table view of the same opcodes](https://github.com/WebAssembly/simd/blob/main/proposals/simd/NewOpcodes.md) for a list of existing opcodes.
+| instruction                       | opcode         | prototype opcode |
+| ----------------------------------| -------------- | ---------------- |
+| `relaxed i8x16.swizzle`           | 0x100          | 0xa2             |
+| `relaxed i32x4.trunc_f32x4_s`     | 0x101          | 0xa5             |
+| `relaxed i32x4.trunc_f32x4_u`     | 0x102          | 0xa6             |
+| `relaxed i32x4.trunc_f64x2_s_zero`| 0x103          | 0xc5             |
+| `relaxed i32x4.trunc_f64x2_u_zero`| 0x104          | 0xc6             |
+| `f32x4.fma`                       | 0x105          | 0xaf             |
+| `f32x4.fms`                       | 0x106          | 0xb0             |
+| `f64x2.fma`                       | 0x107          | 0xcf             |
+| `f64x2.fms`                       | 0x108          | 0xd0             |
+| `i8x16.laneselect`                | 0x109          | 0xb2             |
+| `i16x8.laneselect`                | 0x10a          | 0xb3             |
+| `i32x4.laneselect`                | 0x10b          | 0xd2             |
+| `i64x2.laneselect`                | 0x10c          | 0xd3             |
+| `f32x4.min`                       | 0x10d          | 0xb4             |
+| `f32x4.max`                       | 0x10e          | 0xe2             |
+| `f64x2.min`                       | 0x10f          | 0xd4             |
+| `f64x2.max`                       | 0x110          | 0xee             |
+| `i16x8.q15mulr_s`                 | 0x111          | unimplemented    |
+| Reserved for dot product          | 0x112          | unimplemented    |
+| Reserved for dot product          | 0x113          | unimplemented    |
+| Reserved                          | 0x114 - 0x12F  |                  |
 
 ## References
 
@@ -241,4 +248,8 @@ Note: the opcodes are chosen to fit into the existing opcode space of the SIMD p
   [presentation](https://docs.google.com/presentation/d/1Qnx0nbNTRYhMONLuKyygEduCXNOv3xtWODfXfYokx1Y/edit?usp=sharing)
   and [meeting
   notes](https://github.com/WebAssembly/meetings/blob/master/main/2021/CG-03-16.md)
+- Poll for phase 2
+  [slides](https://docs.google.com/presentation/d/1zyRqfgGU7HdoVw9QiKaVYifozbytPhNLHUW9jQjPzLk/edit?usp=sharing)
+  and [meeting
+  notes](https://github.com/WebAssembly/meetings/blob/main/main/2021/CG-11-09.md#update-on-relaxed-simd-fpenv-discussions-and-poll-for-phase-2-zhi-an-ng-15-min)
 - [SIMD proposal](https://github.com/WebAssembly/simd)
