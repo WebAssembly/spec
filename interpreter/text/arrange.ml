@@ -737,11 +737,12 @@ let ref_pat = function
   | RefPat r -> ref_ r.it
   | RefTypePat t -> Node ("ref." ^ refed_type t, [])
 
-let result mode res =
+let rec result mode res =
   match res.it with
   | NumResult np -> num_pat mode np
   | VecResult vp -> vec_pat mode vp
   | RefResult rp -> ref_pat rp
+  | EitherResult ress -> Node ("either", List.map (result mode) ress)
 
 let assertion mode ass =
   match ass.it with

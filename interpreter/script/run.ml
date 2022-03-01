@@ -250,13 +250,16 @@ let string_of_nan = function
   | CanonicalNan -> "nan:canonical"
   | ArithmeticNan -> "nan:arithmetic"
 
-let type_of_result r =
-  match r with
-  | NumResult (NumPat n) -> Types.NumType (Values.type_of_num n.it)
-  | NumResult (NanPat n) -> Types.NumType (Values.type_of_num n.it)
-  | VecResult (VecPat _) -> Types.VecType Types.V128Type
-  | RefResult (RefPat r) -> Types.RefType (Values.type_of_ref r.it)
-  | RefResult (RefTypePat t) -> Types.RefType t
+let rec type_of_result r =
+  match r.it with
+  | NumResult (NumPat n) -> Some (Types.NumType (Values.type_of_num n.it))
+  | NumResult (NanPat n) -> Some (Types.NumType (Values.type_of_num n.it))
+  | VecResult (VecPat _) -> Some (Types.VecType Types.V128Type)
+  | RefResult (RefPat r) -> Some (Types.RefType (Values.type_of_ref r.it))
+  | RefResult (RefTypePat t) -> Some (Types.RefType t)
+  | EitherResult rs ->
+    let ts = List.map type_of_result rs in
+    List.fold_left (fun t1 t2 -> if t1 = t2 then t1 else None) (List.hd ts) ts
 
 let string_of_num_pat (p : num_pat) =
   match p with
@@ -276,20 +279,30 @@ let string_of_ref_pat (p : ref_pat) =
   | RefPat r -> Values.string_of_ref r.it
   | RefTypePat t -> Types.string_of_refed_type t
 
-let string_of_result r =
-  match r with
+let rec string_of_result r =
+  match r.it with
   | NumResult np -> string_of_num_pat np
   | VecResult vp -> string_of_vec_pat vp
   | RefResult rp -> string_of_ref_pat rp
+  | EitherResult rs ->
+    "(" ^ String.concat " | " (List.map string_of_result rs) ^ ")"
 
 let string_of_results = function
   | [r] -> string_of_result r
   | rs -> "[" ^ String.concat " " (List.map string_of_result rs) ^ "]"
 
+let string_of_value_type_opt = function
+  | Some t -> Types.string_of_value_type t
+  | None -> "?"
+
+let string_of_value_type_opts = function
+  | [t] -> string_of_value_type_opt t
+  | ts -> "[" ^ String.concat " " (List.map string_of_value_type_opt ts) ^ "]"
+
 let print_results rs =
   let ts = List.map type_of_result rs in
   Printf.printf "%s : %s\n"
-    (string_of_results rs) (Types.string_of_value_types ts);
+    (string_of_results rs) (string_of_value_type_opts ts);
   flush_all ()
 
 
@@ -368,7 +381,6 @@ let run_action act : Values.value list =
     | None -> Assert.error act.at "undefined export"
     )
 
-
 let assert_nan_pat n nan =
   let open Values in
   match n, nan.it with
@@ -409,18 +421,19 @@ let assert_ref_pat r p =
   | ExternRef _, RefTypePat Types.ExternRefType -> true
   | _ -> false
 
-let assert_pat v r =
+let rec match_result at v r =
   let open Values in
-  match v, r with
-  | Num n, NumResult np -> assert_num_pat n np
+  match v, r.it with
+  | Num n, NumResult n' -> assert_num_pat n n'
   | Vec v, VecResult vp -> assert_vec_pat v vp
-  | Ref r, RefResult rp -> assert_ref_pat r rp
+  | Ref r, RefResult r' -> assert_ref_pat r r'
+  | _, EitherResult rs -> List.exists (match_result at v) rs
   | _, _ -> false
 
 let assert_result at got expect =
   if
     List.length got <> List.length expect ||
-    List.exists2 (fun v r -> not (assert_pat v r)) got expect
+    not (List.for_all2 (match_result at) got expect)
   then begin
     print_string "Result: "; print_values got;
     print_string "Expect: "; print_results expect;
@@ -487,8 +500,7 @@ let run_assertion ass =
   | AssertReturn (act, rs) ->
     trace ("Asserting return...");
     let got_vs = run_action act in
-    let expect_rs = List.map (fun r -> r.it) rs in
-    assert_result ass.at got_vs expect_rs
+    assert_result ass.at got_vs rs
 
   | AssertTrap (act, re) ->
     trace ("Asserting trap...");

@@ -480,6 +480,7 @@ rule token = parse
   | "assert_exhaustion" { ASSERT_EXHAUSTION }
   | "nan:canonical" { NAN Script.CanonicalNan }
   | "nan:arithmetic" { NAN Script.ArithmeticNan }
+  | "either" { EITHER }
   | "input" { INPUT }
   | "output" { OUTPUT }
 

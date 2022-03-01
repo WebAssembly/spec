@@ -278,7 +278,7 @@ let run ts at =
   [], []
 
 let assert_return ress ts at =
-  let test res =
+  let rec test res =
     let nan_bitmask_of = function
       | CanonicalNan -> abs_mask_of (* must only differ from the canonical NaN in its sign bit *)
       | ArithmeticNan -> canonical_nan_of (* can be any NaN that's one everywhere the canonical NaN is one *)
@@ -374,6 +374,17 @@ let assert_return ress ts at =
       [ Call (is_ref_idx @@ at) @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
+    | EitherResult ress ->
+      [ Block (ValBlockType None,
+          List.map (fun res ->
+            Block (ValBlockType None,
+              test res @
+              [Br (1l @@ res.at) @@ res.at]
+            ) @@ res.at
+          ) ress @
+          [Br (1l @@ at) @@ at]
+        ) @@ at
+      ]
   in [], List.flatten (List.rev_map test ress)
 
 let wrap item_name wrap_action wrap_assertion at =
@@ -514,11 +525,13 @@ let of_ref_pat = function
   | RefPat r -> of_ref r.it
   | RefTypePat t -> "\"ref." ^ string_of_refed_type t ^ "\""
 
-let of_result res =
+let rec of_result res =
   match res.it with
   | NumResult np -> of_num_pat np
   | VecResult vp -> of_vec_pat vp
   | RefResult rp -> of_ref_pat rp
+  | EitherResult ress ->
+    "[" ^ String.concat ", " (List.map of_result ress) ^ "]"
 
 let rec of_definition def =
   match def.it with
