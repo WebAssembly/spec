@@ -146,6 +146,17 @@ Conventions
 * The meta variable :math:`z` ranges over floating-point values where clear from context.
 
 
+.. index:: ! numeric vectors, integer, floating-point, lane, SIMD
+   pair: abstract syntax; vector
+.. _syntax-vecnum:
+
+Vectors
+~~~~~~~
+
+*Numeric vectors* are 128-bit values that are processed by vector instructions (also known as *SIMD* instructions, single instruction multiple data).
+They are represented in the abstract syntax using |i128|. The interpretation of lane types (:ref:`integer <syntax-int>` or :ref:`floating-point <syntax-float>` numbers) and lane sizes are determined by the specific instruction operating on them.
+
+
 .. index:: ! name, byte, Unicode, UTF-8, character, binary format
    pair: abstract syntax; name
 .. _syntax-char:
