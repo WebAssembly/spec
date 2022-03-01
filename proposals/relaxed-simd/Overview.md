@@ -184,9 +184,29 @@ def min_or_max(a : v128, b : v128, lanes : int, is_min : bool):
       result[i] = IMPLEMENTATION_DEFINED_ONE_OF(a[i], b[i])
     else:
       result[i] = is_min ? min(a, b) : max(a, b)
+  return result
 ```
 
 Where `IMPLEMENTATION_DEFINED_ONE_OF(x, y)` returns either `x` or `y`, depending on the implementation.
+
+### Relaxed Rounding Q-format Multiplication
+
+- `i16x8.q15mulr_s(a: v128, b: v128) -> v128`
+
+Returns the multiplication of 2 fixed-point numbers in Q15 format. If both
+inputs are `INT16_MIN`, the result overflows, and the return value is
+implementation defined (either wrap around, or saturate).
+
+```python
+def q15mulr(a, b):
+  result = []
+  for i in range(lanes):
+    result[i] = sat_or_wrap((a[i] * b[i] + 0x4000) >> 15)
+  return result
+```
+
+Where `sat_or_wrap` either saturates or wraps around the input, depending on the
+implementation.
 
 ## Binary format
 
@@ -211,6 +231,7 @@ All opcodes have the `0xfd` prefix (same as SIMD proposal), which are omitted in
 | `f32x4.max`                        | 0xe2     |
 | `f64x2.min`                        | 0xd4     |
 | `f64x2.max`                        | 0xee     |
+| `i16x8.q15mulr_s`                  | ????     |
 
 Note: the opcodes are chosen to fit into the existing opcode space of the SIMD proposal, see [Binary encoding of SIMD](https://github.com/WebAssembly/simd/blob/main/proposals/simd/BinarySIMD.md), or a [table view of the same opcodes](https://github.com/WebAssembly/simd/blob/main/proposals/simd/NewOpcodes.md) for a list of existing opcodes.
 
