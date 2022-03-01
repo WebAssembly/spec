@@ -368,6 +368,62 @@
   "integer too large"
 )
 
+;; Function with missing end marker (between two functions)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section: 1 type
+    "\03\03\02\00\00"          ;; Function section: 2 functions
+    "\0a\0c\02"                ;; Code section: 2 functions
+    ;; function 0
+    "\04\00"                   ;; Function size and local type count
+    "\41\01"                   ;; i32.const 1
+    "\1a"                      ;; drop
+    ;; Missing end marker here
+    ;; function 1
+    "\05\00"                   ;; Function size and local type count
+    "\41\01"                   ;; i32.const 1
+    "\1a"                      ;; drop
+    "\0b"                      ;; end
+  )
+  "END opcode expected"
+)
+
+;; Function with missing end marker (at EOF)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section: 1 type
+    "\03\02\01\00"             ;; Function section: 1 function
+    "\0a\06\01"                ;; Code section: 1 function
+    ;; function 0
+    "\04\00"                   ;; Function size and local type count
+    "\41\01"                   ;; i32.const 1
+    "\1a"                      ;; drop
+    ;; Missing end marker here
+  )
+  "unexpected end of section or function"
+)
+
+;; Function with missing end marker (at end of code sections)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section: 1 type
+    "\03\02\01\00"             ;; Function section: 1 function
+    "\0a\06\01"                ;; Code section: 1 function
+    ;; function 0
+    "\04\00"                   ;; Function size and local type count
+    "\41\01"                   ;; i32.const 1
+    "\1a"                      ;; drop
+    ;; Missing end marker here
+    "\0b\03\01\01\00"          ;; Data section
+  )
+  ;; The spec interpreter consumes the `\0b` (data section start) as an
+  ;; END instruction (also happens to be `\0b`) and reports the code section as
+  ;; being larger than declared.
+  "section size mismatch"
+)
 
 ;; Unsigned LEB128 must not be overlong
 (assert_malformed
@@ -1255,7 +1311,7 @@
     "\60\00\00"                             ;; 1st type
     ;; "\60\00\00"                          ;; 2nd type (missed)
   )
-  "unexpected end of section or function"
+  "length out of bounds"
 )
 
 ;; 1 type declared, 2 given
@@ -1544,7 +1600,7 @@
     "\02\00\0b"                             ;; function body 0
     "\02\00\0b"                             ;; function body 1
   )
-  "unexpected end of section or function"
+  "length out of bounds"
 )
 
 ;; 1 export declared, 2 given
@@ -1606,7 +1662,7 @@
     "\03\02\01\00"                          ;; func section
     "\04\04\01"                             ;; table section
     "\70\00\01"                             ;; table 0
-    "\09\07\02"                             ;; elem with inconsistent segment count (2 declared, 1 given)
+    "\09\0a\02"                             ;; elem with inconsistent segment count (2 declared, 1 given)
     "\00\41\00\0b\01\00"                    ;; elem 0
     "\00\41\00"                             ;; elem 1 (partial)
     ;; "\0b\01\00"                          ;; elem 1 (missing part)
@@ -1718,7 +1774,7 @@
     "\01\04\01"                             ;; type section
     "\60\00\00"                             ;; type 0
     "\03\02\01\00"                          ;; func section
-    "\0a\12\01"                             ;; code section
+    "\0a\13\01"                             ;; code section
     "\11\00"                                ;; func 0
     "\02\40"                                ;; block 0
     "\41\01"                                ;; condition of if 0

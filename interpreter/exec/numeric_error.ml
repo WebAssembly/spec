@@ -1,3 +1,0 @@
-exception IntegerOverflow
-exception IntegerDivideByZero
-exception InvalidConversionToInteger
