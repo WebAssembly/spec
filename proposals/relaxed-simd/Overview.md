@@ -238,9 +238,9 @@ forward, the opcodes for relaxed-simd specification will be the ones in the
 | `f64x2.min`                       | 0x10f          | 0xd4             |
 | `f64x2.max`                       | 0x110          | 0xee             |
 | `i16x8.q15mulr_s`                 | 0x111          | unimplemented    |
-| Reserved for dot product          | 0x112          | unimplemented    |
-| Reserved for dot product          | 0x113          | unimplemented    |
-| Reserved                          | 0x114 - 0x12F  |                  |
+| Reserved for dot product          | 0x112 - 0x115  | unimplemented    |
+| Reserved for bfloat16 dot product | 0x116          | unimplemented    |
+| Reserved                          | 0x117 - 0x12F  |                  |
 
 ## References
 
