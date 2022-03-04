@@ -15,7 +15,7 @@ The text format defines modules in S-expression syntax. Moreover, it is generali
 
 ## Building
 
-You'll need OCaml 4.07 or higher. Instructions for installing a recent version of OCaml on multiple platforms are available [here](https://ocaml.org/docs/install.html). On most platforms, the recommended way is through [OPAM](https://ocaml.org/docs/install.html#OPAM).
+You'll need OCaml 4.08 or higher. Instructions for installing a recent version of OCaml on multiple platforms are available [here](https://ocaml.org/docs/install.html). On most platforms, the recommended way is through [OPAM](https://ocaml.org/docs/install.html#OPAM).
 
 Once you have OCaml, simply do
 
@@ -175,26 +175,37 @@ float:  <num>.<num>?(e|E <num>)? | 0x<hexnum>.<hexnum>?(p|P <num>)?
 name:   $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
 string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex> | \u{<hex>+})*"
 
+num_type: i32 | i64 | f32 | f64
+vec_type: v128
+vec_shape: i8x16 | i16x8 | i32x4 | i64x2 | f32x4 | f64x2 | v128
+ref_kind: func | extern
+ref_type: funcref | externref
+val_type: <num_type> | <vec_type> | <ref_type>
+block_type : ( result <val_type>* )*
+func_type:   ( type <var> )? <param>* <result>*
+global_type: <val_type> | ( mut <val_type> )
+table_type:  <nat> <nat>? <ref_type>
+memory_type: <nat> <nat>?
+
 num: <int> | <float>
 var: <nat> | <name>
 
 unop:  ctz | clz | popcnt | ...
 binop: add | sub | mul | ...
+testop: eqz
 relop: eq | ne | lt | ...
 sign:  s | u
 offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc | extend | wrap | ...
 
-num_type: i32 | i64 | f32 | f64
-ref_kind: func | extern
-ref_type: funcref | externref
-val_type: num_type | ref_type
-block_type : ( result <val_type>* )*
-func_type:   ( type <var> )? <param>* <result>*
-global_type: <val_type> | ( mut <val_type> )
-table_type:  <nat> <nat>? <ref_type>
-memory_type: <nat> <nat>?
+vecunop: abs | neg | ...
+vecbinop: add | sub | min_<sign> | ...
+vecternop: bitselect
+vectestop: all_true | any_true
+vecrelop: eq | ne | lt | ...
+veccvtop: extend_low | extend_high | trunc_sat | ...
+vecshiftop: shl | shr_<sign>
 
 expr:
   ( <op> )
@@ -238,6 +249,10 @@ op:
   elem.drop <var>
   <num_type>.load((8|16|32)_<sign>)? <offset>? <align>?
   <num_type>.store(8|16|32)? <offset>? <align>?
+  <vec_type>.load((8x8|16x4|32x2)_<sign>)? <offset>? <align>?
+  <vec_type>.store <offset>? <align>?
+  <vec_type>.load(8|16|32|64)_(lane|splat|zero) <offset>? <align>?
+  <vec_type>.store(8|16|32|64)_lane <offset>? <align>?
   memory.size
   memory.grow
   memory.fill
@@ -247,12 +262,24 @@ op:
   ref.null <ref_kind>
   ref.is_null <ref_kind>
   ref.func <var>
-  <num_type>.const <value>
+  <num_type>.const <num>
   <num_type>.<unop>
   <num_type>.<binop>
   <num_type>.<testop>
   <num_type>.<relop>
   <num_type>.<cvtop>_<num_type>(_<sign>)?
+  <vec_type>.const <vec_shape> <num>+
+  <vec_shape>.<vecunop>
+  <vec_shape>.<vecbinop>
+  <vec_shape>.<vecternop>
+  <vec_shape>.<vectestop>
+  <vec_shape>.<vecrelop>
+  <vec_shape>.<veccvtop>_<vec_shape>(_<sign>)?(_<zero>)?
+  <vec_shape>.<vecshiftop>
+  <vec_shape>.bitmask
+  <vec_shape>.splat
+  <vec_shape>.extract_lane(_<sign>)? <nat>
+  <vec_shape>.replace_lane <nat>
 
 func:    ( func <name>? <func_type> <local>* <instr>* )
          ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)
@@ -352,8 +379,9 @@ action:
 
 const:
   ( <num_type>.const <num> )                 ;; number value
+  ( <vec_type> <vec_shape> <num>+ )          ;; vector value
   ( ref.null <ref_kind> )                    ;; null reference
-  ( ref.host <nat> )                         ;; host reference
+  ( ref.extern <nat> )                       ;; host reference
 
 assertion:
   ( assert_return <action> <result>* )       ;; assert action has expected results
@@ -365,12 +393,14 @@ assertion:
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
 result:
+  <const>
   ( <num_type>.const <num_pat> )
+  ( <vec_type>.const <vec_shape> <num_pat>+ )
   ( ref.extern )
   ( ref.func )
 
 num_pat:
-  <value>                                    ;; literal result
+  <num>                                      ;; literal result
   nan:canonical                              ;; NaN in canonical form
   nan:arithmetic                             ;; NaN with 1 in MSB of payload
 
@@ -419,7 +449,7 @@ When running scripts, the interpreter predefines a simple host module named `"sp
   (func (export "print_f64_f64") (param f64 f64))
 )
 ```
-The `print` functions are assumes to print their respective argument values to stdout (followed by a newline) and can be used to produce observable output.
+The `print` functions are assumed to print their respective argument values to stdout (followed by a newline) and can be used to produce observable output.
 
 Note: This module predates the `register` command and should no longer be needed for new tests.
 We might remove it in the future, so consider it deprecated.
