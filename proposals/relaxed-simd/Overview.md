@@ -195,18 +195,18 @@ Where `IMPLEMENTATION_DEFINED_ONE_OF(x, y)` returns either `x` or `y`, depending
 
 Returns the multiplication of 2 fixed-point numbers in Q15 format. If both
 inputs are `INT16_MIN`, the result overflows, and the return value is
-implementation defined (either wrap around, or saturate).
+implementation defined (either `INT16_MIN` or `INT16_MAX`).
 
 ```python
 def q15mulr(a, b):
   result = []
   for i in range(lanes):
-    result[i] = sat_or_wrap((a[i] * b[i] + 0x4000) >> 15)
+    if (a[i] == INT16_MIN && b[i] == INT16_MIN):
+      result[i] = IMPLEMENTATION_DEFINED_ONE_OF(INT16_MIN, INT16_MAX)
+    else:
+      result[i] = (a[i] * b[i] + 0x4000) >> 15
   return result
 ```
-
-Where `sat_or_wrap` either saturates or wraps around the input, depending on the
-implementation.
 
 ## Binary format
 
