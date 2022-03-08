@@ -125,11 +125,6 @@ let check_def_type (c : context) (dt : def_type) at =
   | FuncDefType ft -> check_func_type c ft at
 
 
-let check_type (c : context) (t : type_) =
-  check_def_type c t.it t.at
-
-
-
 
 (* Stack typing *)
 
@@ -795,7 +790,11 @@ let check_start (c : context) (start : idx option) =
       "start function must not have parameters or results"
   ) start
 
-let check_import (im : import) (c : context) : context =
+let check_type (c : context) (ty : type_) : context =
+  check_def_type c ty.it ty.at;
+  {c with types = c.types @ [ty.it]}
+
+let check_import (c : context) (im : import) : context =
   let {module_name = _; item_name = _; idesc} = im.it in
   match idesc.it with
   | FuncImport x ->
@@ -830,31 +829,26 @@ let check_module (m : module_) =
     { types; imports; tables; memories; globals; funcs; start; elems; datas;
       exports } = m.it
   in
-  let c0 =
-    List.fold_right check_import imports
-      { empty_context with
-        refs = Free.module_ ({m.it with funcs = []; start = None} @@ m.at);
-        types = List.map (fun ty -> ty.it) types;
-      }
-  in
-  let c1 =
-    { c0 with
-      funcs = c0.funcs @ List.map (fun f -> func_type c0 f.it.ftype) funcs;
-      tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
-      memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
+  let c0 = List.fold_left check_type empty_context types in
+  let c1 = List.fold_left check_import c0 imports in
+  let c2 =
+    { c1 with
+      funcs = c1.funcs @ List.map (fun f -> func_type c1 f.it.ftype) funcs;
+      tables = c1.tables @ List.map (fun tab -> tab.it.ttype) tables;
+      memories = c1.memories @ List.map (fun mem -> mem.it.mtype) memories;
       elems = List.map (fun elem -> elem.it.etype) elems;
       datas = List.map (fun _data -> ()) datas;
+      refs = Free.module_ ({m.it with funcs = []; start = None} @@ m.at);
     }
   in
   let c =
-    { c1 with globals = c1.globals @ List.map (fun g -> g.it.gtype) globals }
+    { c2 with globals = c1.globals @ List.map (fun g -> g.it.gtype) globals }
   in
-  List.iter (check_type c1) types;
-  List.iter (check_global c1) globals;
-  List.iter (check_table c1) tables;
-  List.iter (check_memory c1) memories;
-  List.iter (check_elem c1) elems;
-  List.iter (check_data c1) datas;
+  List.iter (check_global c2) globals;
+  List.iter (check_table c2) tables;
+  List.iter (check_memory c2) memories;
+  List.iter (check_elem c2) elems;
+  List.iter (check_data c2) datas;
   List.iter (check_func c) funcs;
   check_start c start;
   ignore (List.fold_left (check_export c) NameSet.empty exports);
