@@ -799,16 +799,16 @@ let check_import (c : context) (im : import) : context =
   match idesc.it with
   | FuncImport x ->
     let ft = func_type c x in
-    {c with funcs = ft :: c.funcs}
+    {c with funcs = c.funcs @ [ft]}
   | TableImport tt ->
     check_table_type c tt idesc.at;
-    {c with tables = tt :: c.tables}
+    {c with tables = c.tables @ [tt]}
   | MemoryImport mt ->
     check_memory_type c mt idesc.at;
-    {c with memories = mt :: c.memories}
+    {c with memories = c.memories @ [mt]}
   | GlobalImport gt ->
     check_global_type c gt idesc.at;
-    {c with globals = gt :: c.globals}
+    {c with globals = c.globals @ [gt]}
 
 module NameSet = Set.Make(struct type t = Ast.name let compare = compare end)
 
