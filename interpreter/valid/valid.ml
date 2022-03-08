@@ -181,7 +181,6 @@ let check_type (c : context) (t : type_) : context =
 
 
 
-
 (* Stack typing *)
 
 (*
@@ -1024,21 +1023,21 @@ let check_start (c : context) (start : idx option) =
       "start function must not have parameters or results"
   ) start
 
-let check_import (im : import) (c : context) : context =
+let check_import (c : context) (im : import) : context =
   let {module_name = _; item_name = _; idesc} = im.it in
   match idesc.it with
   | FuncImport x ->
     let ft = func_type c x in
-    {c with funcs = ft :: c.funcs}
+    {c with funcs = c.funcs @ [ft]}
   | TableImport tt ->
     check_table_type c tt idesc.at;
-    {c with tables = tt :: c.tables}
+    {c with tables = c.tables @ [tt]}
   | MemoryImport mt ->
     check_memory_type c mt idesc.at;
-    {c with memories = mt :: c.memories}
+    {c with memories = c.memories @ [mt]}
   | GlobalImport gt ->
     check_global_type c gt idesc.at;
-    {c with globals = gt :: c.globals}
+    {c with globals = c.globals @ [gt]}
 
 module NameSet = Set.Make(struct type t = Ast.name let compare = compare end)
 
@@ -1059,22 +1058,19 @@ let check_module (m : module_) =
     { types; imports; tables; memories; globals; funcs; start; elems; datas;
       exports } = m.it
   in
-  let c0 =
-    List.fold_right check_import imports
-      { (List.fold_left check_type empty_context types) with
-        refs = Free.module_ ({m.it with funcs = []; start = None} @@ m.at)
-      }
-  in
-  let c1 =
-    { c0 with
-      funcs = c0.funcs @ List.map (fun f -> func_type c0 f.it.ftype) funcs;
-      tables = c0.tables @ List.map (fun tab -> tab.it.ttype) tables;
-      memories = c0.memories @ List.map (fun mem -> mem.it.mtype) memories;
+  let c0 = List.fold_left check_type empty_context types in
+  let c1 = List.fold_left check_import c0 imports in
+  let c2 =
+    { c1 with
+      funcs = c1.funcs @ List.map (fun f -> func_type c1 f.it.ftype) funcs;
+      tables = c1.tables @ List.map (fun tab -> tab.it.ttype) tables;
+      memories = c1.memories @ List.map (fun mem -> mem.it.mtype) memories;
       elems = List.map (fun elem -> elem.it.etype) elems;
       datas = List.map (fun _data -> ()) datas;
+      refs = Free.module_ ({m.it with funcs = []; start = None} @@ m.at);
     }
   in
-  let c = List.fold_left check_global c1 globals in
+  let c = List.fold_left check_global c2 globals in
   List.iter (check_table c) tables;
   List.iter (check_memory c) memories;
   List.iter (check_elem c) elems;
