@@ -436,11 +436,13 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 * `struct.new_with_rtt <typeidx>` allocates a structure with RTT information determining its [runtime type](#values) and initialises its fields with given values
   - `struct.new_with_rtt $t : [t'* (rtt $t)] -> [(ref $t)]`
     - iff `expand($t) = struct (mut t')*`
+  - this is a *constant instruction*
 
 * `struct.new_default_with_rtt <typeidx>` allocates a structure of type `$t` and initialises its fields with default values
   - `struct.new_default_with_rtt $t : [(rtt $t)] -> [(ref $t)]`
     - iff `expand($t) = struct (mut t')*`
     - and all `t'*` are defaultable
+  - this is a *constant instruction*
 
 * `struct.get_<sx>? <typeidx> <fieldidx>` reads field `i` from a structure
   - `struct.get_<sx>? $t i : [(ref null $t)] -> [t]`
@@ -460,12 +462,39 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 
 * `array.new_with_rtt <typeidx>` allocates an array with RTT information determining its [runtime type](#values)
   - `array.new_with_rtt $t : [t' i32 (rtt $t)] -> [(ref $t)]`
-    - iff `expand($t) = array (var t')`
+    - iff `expand($t) = array (mut t')`
+  - this is a *constant instruction*
 
 * `array.new_default_with_rtt <typeidx>` allocates an array and initialises its fields with the default value
   - `array.new_default_with_rtt $t : [i32 (rtt $t)] -> [(ref $t)]`
-    - iff `expand($t) = array (var t')`
+    - iff `expand($t) = array (mut t')`
     - and `t'` is defaultable
+  - this is a *constant instruction*
+
+* `array.new_fixed <typeidx> <N>` allocates an array of fixed size and initialises it from operands
+  - `array.new_fixed $t N : [t^N (rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = array (mut t')`
+  - this is a *constant instruction*
+
+* `array.new_data <typeidx> <dataidx>` allocates an array and initialises it from a data segment
+  - `array.new_data $t $d : [i32 i32 (rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = array (mut t')`
+    - and `t'` is numeric or packed numeric
+    - and `$d` is a defined data segment
+  - the 1st operand is the `offset` into the segment
+  - the 2nd operand is the `size` of the array
+  - traps if `offset + |t'|*size > len($d)`
+  - this is a *constant instruction*
+
+* `array.new_elem <typeidx> <elemidx>` allocates an array and initialises it from an element segment
+  - `array.new_elem $t $e : [i32 i32 (rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = array (mut t')`
+    - and `t'` is a reference type
+    - and `$e` is a defined element segment
+  - the 1st operand is the `offset` into the segment
+  - the 2nd operand is the `size` of the array
+  - traps if `offset + size > len($e)`
+  - note: for now, this is _not_ a constant instruction, in order to side-step issues of recursion between binary sections; this restriction will be lifted later
 
 * `array.get_<sx>? <typeidx>` reads an element from an array
   - `array.get_<sx>? $t : [(ref null $t) i32] -> [t]`
@@ -642,6 +671,10 @@ Note: These instructions allow an operand of unrelated reference type, even thou
 In order to allow RTTs to be initialised as globals, the following extensions are made to the definition of *constant expressions*:
 
 * `rtt.canon` is a constant instruction
+* `i31.new` is a constant instruction
+* `struct.new` and `struct.new_default` are constant instructions
+* `array.new`, `array.new_default`, `array.new_fixed`, and `array.new_data` are constant instructions
+  - Note: `array.new_elem` is not for the time being, see above
 * `global.get` is a constant instruction and can access preceding (immutable) global definitions, not just imports as in the MVP
 
 
@@ -737,6 +770,9 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb15 | `array.get_u $t` | `$t : typeidx` |
 | 0xfb16 | `array.set $t` | `$t : typeidx` |
 | 0xfb17 | `array.len` | `_ : u32` (TODO: remove, was typeidx) |
+| 0xfb19 | `array.new_fixed $t N` | `$t : typeidx`, `N : u32` |
+| 0xfb1b | `array.new_data $t $d` | `$t : typeidx`, `$d : dataidx` |
+| 0xfb1c | `array.new_elem $t $e` | `$t : typeidx`, `$e : elemidx` |
 | 0xfb20 | `i31.new` |  |
 | 0xfb21 | `i31.get_s` |  |
 | 0xfb22 | `i31.get_u` |  |
@@ -771,8 +807,6 @@ See [GC JS API document](MVP-JS.md) .
 ## Questions
 
 * Make rtt operands nullable?
-
-* Make `i31.new` a constant instruction. Others too?
 
 * Enable `i31` as a type definition.
 
