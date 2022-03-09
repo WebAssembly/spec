@@ -674,6 +674,26 @@ rule token = parse
         (v128op s i8x16_replace_lane i16x8_replace_lane i32x4_replace_lane
                   i64x2_replace_lane f32x4_replace_lane f64x2_replace_lane) }
 
+  | "i8x16.relaxed_swizzle" { VEC_BINARY i8x16_relaxed_swizzle }
+  | "i8x16.relaxed_swizzle" { VEC_BINARY i8x16_relaxed_swizzle }
+  | "i32x4.relaxed_trunc_f32x4_"(sign as s)
+    { VEC_UNARY (ext s i32x4_relaxed_trunc_f32x4_s i32x4_relaxed_trunc_f32x4_u) }
+  | "i32x4.relaxed_trunc_f64x2_"(sign as s)"_zero"
+    { VEC_UNARY (ext s i32x4_relaxed_trunc_f64x2_s_zero i32x4_relaxed_trunc_f64x2_u_zero) }
+  | (v128_float_shape as s)".relaxed_fma"
+    { VEC_UNARY (v128floatop s f32x4_relaxed_fma f64x2_relaxed_fma) }
+  | (v128_float_shape as s)".relaxed_fms"
+    { VEC_UNARY (v128floatop s f32x4_relaxed_fms f64x2_relaxed_fms) }
+  | (v128_int_shape as s)".relaxed_laneselect"
+    { VEC_TERNARY
+        (v128intop s i8x16_relaxed_laneselect i16x8_relaxed_laneselect
+                     i32x4_relaxed_laneselect i64x2_relaxed_laneselect)}
+  | (v128_float_shape as s)".relaxed_min"
+    { VEC_UNARY (v128floatop s f32x4_relaxed_min f64x2_relaxed_min) }
+  | (v128_float_shape as s)".relaxed_max"
+    { VEC_UNARY (v128floatop s f32x4_relaxed_max f64x2_relaxed_max) }
+  | "i16x8.relaxed_q15mulr_s" { VEC_BINARY i16x8_relaxed_q15mulr_s }
+
   | name as s { VAR s }
 
   | ";;"utf8_no_nl*eof { EOF }
