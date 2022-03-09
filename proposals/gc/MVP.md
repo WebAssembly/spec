@@ -489,8 +489,8 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 * `array.new_elem <typeidx> <elemidx>` allocates an array and initialises it from an element segment
   - `array.new_elem $t $e : [i32 i32 (rtt $t)] -> [(ref $t)]`
     - iff `expand($t) = array (mut t')`
-    - and `t'` is a reference type
-    - and `$e` is a defined element segment
+    - and `$e : rt`
+    - and `rt <: t'`
   - the 1st operand is the `offset` into the segment
   - the 2nd operand is the `size` of the array
   - traps if `offset + size > len($e)`
