@@ -70,11 +70,16 @@ The specification is updated with the idea of "Relaxed operations":
 
 ## Instructions
 
+`IMPLEMENTATION_DEFINED_ONE_OF(...)` returns any one of the results in the argument list, depending on the implementation.
+
 ### Relaxed swizzle
 
 - `relaxed i8x16.swizzle(a : v128, s : v128) -> v128`
 
-`relaxed i8x16.swizzle(a, s)` selects lanes from `a` using indices in `s`, indices in the range `[0,15]` will select the `i`-th element of `a`, the result for any out of range indices is implementation-defined (i.e. if the index is `[16-255]`.
+`relaxed i8x16.swizzle(a, s)` selects lanes from `a` using indices in `s`,
+indices in the range `[0,15]` will select the `i`-th element of `a`, the result
+for any out of range indices is implementation-defined (i.e. if the index is
+`[16-255]`.
 
 ```python
 def relaxed_i8x16_swizzle(a, s):
@@ -82,8 +87,10 @@ def relaxed_i8x16_swizzle(a, s):
     for i in range(16):
         if s[i] < 16:
             result[i] = a[s[i]]
+        else if s[i] < 128:
+            result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, a[s[i]%16])
         else:
-            result[i] = UNDEFINED
+            result[i] = 0
     return result
 ```
 
@@ -97,30 +104,45 @@ def relaxed_i8x16_swizzle(a, s):
 These instructions have the same behavior as the non-relaxed instructions for
 lanes that are in the range of an `i32` (signed or unsigned depending on the
 instruction). For lanes that contain values which are out of bounds or NaN, the
-result is implementation-defined.
+result is implementation-defined, either 0, or `INT32_MAX` for signed, and
+`UINT32_MAX` for unsigned.
 
 ```python
-def relaxed_i32x4_trunc_f32x4(a : f32x4, signed : bool) -> i32x4:
-    result = []
-    min = signed ? INT32_MIN : UINT32_MIN
-    max = signed ? INT32_MAX : UINT32_MAX
+def relaxed_i32x4_trunc_f32x4_s(a : f32x4) -> i32x4:
+    result = [0, 0, 0, 0]
     for i in range(4):
       r = truncate(a[i])
-      if min <= r <= max:
+      if isnan(a[i]) or INT32_MIN <= r <= INT32_MAX:
         result[i] = r
       else:
-        result[i] = UNDEFINED
+        result[i] = signed IMPLEMENTATION_DEFINED_ONE_OF(0, INT32_MAX)
 
-def relaxed_i32x4_trunc_f64x2_zero(a : f64x2, signed : bool) -> i32x4:
+def relaxed_i32x4_trunc_f32x4_u(a : f32x4) -> i32x4:
     result = [0, 0, 0, 0]
-    min = signed ? INT32_MIN : UINT32_MIN
-    max = signed ? INT32_MAX : UINT32_MAX
-    for i in range(2):
+    for i in range(4):
       r = truncate(a[i])
-      if min <= r <= max:
+      if isnan(a[i]) or UINT32_MIN <= r <= UINT32_MAX:
         result[i] = r
       else:
-        result[i] = UNDEFINED
+        result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, UINT32_MAX)
+
+def relaxed_i32x4_trunc_f64x2_zero_s(a : f64x2) -> i32x4:
+    result = [0, 0, 0, 0]
+    for i in range(2):
+      r = isnan(a[i]) or truncate(a[i])
+      if INT32_MIN <= r <= INT32_MAX:
+        result[i] = r
+      else:
+        result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, INT32_MAX)
+
+def relaxed_i32x4_trunc_f64x2_zero_u(a : f64x2) -> i32x4:
+    result = [0, 0, 0, 0]
+    for i in range(2):
+      r = isnan(a[i]) or truncate(a[i])
+      if UINT32_MIN <= r <= UINT32_MAX:
+        result[i] = r
+      else:
+        result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, UINT32_MAX)
 ```
 
 ### Relaxed fused multiply-add and fused multiply-subtract
@@ -153,15 +175,17 @@ Select lanes from `a` or `b` based on masks in `m`. If each lane-sized mask in `
 
 ```python
 def laneselect(a : v128, b : v128, m: v128, lanes : int):
-  result = []
+  result = [0] * lanes
   for i in range(lanes):
     mask = m[i]
     if mask == ~0:
       result[i] = a[i]
     elif mask == 0:
       result[i] = b[i]
+    else topbit(mask) == 1:
+      result[i] = IMPLEMENTATION_DEFINED_ONE_OF(bitselect(a[i], b[i], mask), a[i])
     else:
-      result[i] = UNDEFINED
+      result[i] = b[i]
   return result
 ```
 
@@ -186,8 +210,6 @@ def min_or_max(a : v128, b : v128, lanes : int, is_min : bool):
       result[i] = is_min ? min(a, b) : max(a, b)
   return result
 ```
-
-Where `IMPLEMENTATION_DEFINED_ONE_OF(x, y)` returns either `x` or `y`, depending on the implementation.
 
 ### Relaxed Rounding Q-format Multiplication
 
