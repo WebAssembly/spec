@@ -304,6 +304,9 @@ op:
   struct.get(_<sign>)? <var> <var>
   struct.set <var> <var>
   array.new(_<default>)? <var>
+  array.new_fixed <var> <nat>
+  array.new_elem <var> <var>
+  array.new_data <var> <var>
   array.get(_<sign>)? <var>
   array.set <var>
   array.len <var>

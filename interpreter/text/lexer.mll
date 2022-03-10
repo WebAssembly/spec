@@ -296,6 +296,9 @@ rule token = parse
 
   | "array.new" { ARRAY_NEW array_new }
   | "array.new_default" { ARRAY_NEW array_new_default }
+  | "array.new_fixed" { ARRAY_NEW_FIXED }
+  | "array.new_elem" { ARRAY_NEW_ELEM }
+  | "array.new_data" { ARRAY_NEW_DATA }
   | "array.get" { ARRAY_GET array_get }
   | "array.get_"(sign as s) { ARRAY_GET (ext s array_get_s array_get_u) }
   | "array.set" { ARRAY_SET }

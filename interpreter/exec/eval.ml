@@ -173,13 +173,13 @@ let rec step (c : config) : config =
         let FuncType (ts1, ts2) = block_type c.frame.inst bt e.at in
         let n1 = List.length ts1 in
         let n2 = List.length ts2 in
-        let args, vs' = take n1 vs e.at, drop n1 vs e.at in
+        let args, vs' = split n1 vs e.at in
         vs', [Label (n2, [], (args, List.map plain es')) @@ e.at]
 
       | Loop (bt, es'), vs ->
         let FuncType (ts1, ts2) = block_type c.frame.inst bt e.at in
         let n1 = List.length ts1 in
-        let args, vs' = take n1 vs e.at, drop n1 vs e.at in
+        let args, vs' = split n1 vs e.at in
         vs', [Label (n1, [e' @@ e.at], (args, List.map plain es')) @@ e.at]
 
       | If (bt, es1, es2), Num (I32 i) :: vs' ->
@@ -813,10 +813,65 @@ let rec step (c : config) : config =
             try default_value (unpacked_storage_type st), vs'
             with Failure _ -> Crash.error e.at "non-defaultable type"
         in
-        let data = 
-          try Data.alloc_array (type_ c.frame.inst x) rtt n arg
+        let data =
+          try Data.alloc_array (type_ c.frame.inst x) rtt (Lib.List32.make n arg)
           with Failure _ -> Crash.error e.at "type mismatch packing value"
         in Ref (Data.DataRef data) :: vs'', []
+
+      | ArrayNewFixed (x, n), Ref (Rtt.RttRef rtt) :: vs' ->
+        let args, vs'' = split (I32.to_int_u n) vs' e.at in
+        let data =
+          try Data.alloc_array (type_ c.frame.inst x) rtt (List.rev args)
+          with Failure _ -> Crash.error e.at "type mismatch packing value"
+        in Ref (Data.DataRef data) :: vs'', []
+
+      | ArrayNewElem (x, y),
+        Ref (Rtt.RttRef rtt) :: Num (I32 n) :: Num (I32 s) :: vs' ->
+        if elem_oob c.frame y s n then
+          vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
+        else
+          let seg = elem c.frame.inst y in
+          let args =
+            List.map (fun r -> Ref r) (Lib.List32.take n (Lib.List32.drop s !seg)) in
+          let data =
+            try Data.alloc_array (type_ c.frame.inst x) rtt args
+            with Failure _ -> Crash.error e.at "type mismatch packing value"
+          in Ref (Data.DataRef data) :: vs', []
+
+      | ArrayNewData (x, y),
+        Ref (Rtt.RttRef rtt) :: Num (I32 n) :: Num (I32 s) :: vs' ->
+        if data_oob c.frame y s n then
+          vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
+        else
+          let ArrayType (FieldType (st, _)) = array_type c.frame.inst x in
+          let seg = data c.frame.inst y in
+          let bs = Bytes.of_string !seg in
+          let args = Lib.List32.init n
+            (fun i ->
+              let j = I32.to_int_u s + I32.to_int_u i * storage_size st in
+              match st with
+              | PackedStorageType Pack8 ->
+                Num (I32 (I32.of_int_u (Bytes.get_uint8 bs j)))
+              | PackedStorageType Pack16 ->
+                Num (I32 (I32.of_int_u (Bytes.get_uint16_le bs j)))
+              | ValueStorageType (NumType I32Type) ->
+                Num (I32 (Bytes.get_int32_le bs j))
+              | ValueStorageType (NumType I64Type) ->
+                Num (I64 (Bytes.get_int64_le bs j))
+              | ValueStorageType (NumType F32Type) ->
+                Num (F32 (F32.of_bits (Bytes.get_int32_le bs j)))
+              | ValueStorageType (NumType F64Type) ->
+                Num (F64 (F64.of_bits (Bytes.get_int64_le bs j)))
+              | ValueStorageType (VecType V128Type) ->
+                Vec (V128 (V128.of_bits (String.sub !seg j 16)))
+              | _ ->
+                Crash.error e.at "type mismatch packing value"
+            )
+          in
+          let data =
+            try Data.alloc_array (type_ c.frame.inst x) rtt args
+            with Failure _ -> Crash.error e.at "type mismatch packing value"
+          in Ref (Data.DataRef data) :: vs', []
 
       | ArrayGet (x, exto), Num (I32 i) :: Ref (NullRef _) :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]

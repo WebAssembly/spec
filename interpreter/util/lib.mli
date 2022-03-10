@@ -33,6 +33,7 @@ end
 
 module List32 :
 sig
+  val init : int32 -> (int32 -> 'a) -> 'a list
   val make : int32 -> 'a -> 'a list
   val length : 'a list -> int32
   val nth : 'a list -> int32 -> 'a (* raises Failure *)

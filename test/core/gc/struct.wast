@@ -55,6 +55,9 @@
 (module
   (type $vec (struct (field f32) (field $y (mut f32)) (field $z f32)))
 
+  (global (ref $vec) (struct.new $vec (f32.const 1) (f32.const 2) (f32.const 3) (rtt.canon $vec)))
+  (global (ref $vec) (struct.new_default $vec (rtt.canon $vec)))
+
   (func (export "new") (result anyref)
     (struct.new_default $vec (rtt.canon $vec))
   )

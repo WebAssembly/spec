@@ -130,6 +130,10 @@ end
 
 module List32 =
 struct
+  let rec init n f = init' n f []
+  and init' n f xs =
+    if n = 0l then xs else init' (Int32.sub n 1l) f (f (Int32.sub n 1l) :: xs)
+
   let rec make n x = make' n x []
   and make' n x xs =
     if n = 0l then xs else make' (Int32.sub n 1l) x (x::xs)

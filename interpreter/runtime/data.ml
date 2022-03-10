@@ -43,9 +43,9 @@ let alloc_struct x rtt vs =
   let StructType fts = as_struct_str_type (expand_ctx_type (def_of x)) in
   Struct (x, rtt, List.map2 alloc_field fts vs)
 
-let alloc_array x rtt n v =
+let alloc_array x rtt vs =
   let ArrayType ft = as_array_str_type (expand_ctx_type (def_of x)) in
-  Array (x, rtt, List.init (Int32.to_int n) (fun _ -> alloc_field ft v))
+  Array (x, rtt, List.map (alloc_field ft) vs)
 
 
 let type_inst_of = function

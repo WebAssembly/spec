@@ -272,7 +272,9 @@ let inline_func_type_explicit (c : context) x ft at =
 %token REF_NULL REF_FUNC REF_I31 REF_DATA REF_ARRAY REF_EXTERN
 %token REF_TEST REF_CAST REF_EQ
 %token I31_NEW I32_GET
-%token STRUCT_NEW STRUCT_GET STRUCT_SET ARRAY_NEW ARRAY_GET ARRAY_SET ARRAY_LEN
+%token STRUCT_NEW STRUCT_GET STRUCT_SET
+%token ARRAY_NEW ARRAY_NEW_FIXED ARRAY_NEW_ELEM ARRAY_NEW_DATA
+%token ARRAY_GET ARRAY_SET ARRAY_LEN
 %token RTT_CANON
 %token VEC_LOAD VEC_STORE VEC_LOAD_LANE VEC_STORE_LANE
 %token VEC_CONST VEC_UNARY VEC_BINARY VEC_TERNARY VEC_TEST
@@ -461,6 +463,9 @@ type_use :
 
 /* Immediates */
 
+nat32 :
+  | NAT { nat32 $1 (at ()) }
+
 num :
   | NAT { $1 @@ at () }
   | INT { $1 @@ at () }
@@ -586,6 +591,9 @@ plain_instr :
   | STRUCT_GET var var { fun c -> $1 ($2 c type_) ($3 c field) }
   | STRUCT_SET var var { fun c -> struct_set ($2 c type_) ($3 c field) }
   | ARRAY_NEW var { fun c -> $1 ($2 c type_) }
+  | ARRAY_NEW_FIXED var nat32 { fun c -> array_new_fixed ($2 c type_) $3 }
+  | ARRAY_NEW_ELEM var var { fun c -> array_new_elem ($2 c type_) ($3 c elem) }
+  | ARRAY_NEW_DATA var var { fun c -> array_new_data ($2 c type_) ($3 c data) }
   | ARRAY_GET var { fun c -> $1 ($2 c type_) }
   | ARRAY_SET var { fun c -> array_set ($2 c type_) }
   | ARRAY_LEN { fun c -> array_len }

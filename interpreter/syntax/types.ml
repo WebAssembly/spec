@@ -79,6 +79,11 @@ let num_size = function
 let vec_size = function
   | V128Type -> 16
 
+let value_size = function
+  | NumType t -> num_size t
+  | VecType t -> vec_size t
+  | RefType _ | BotType -> failwith "value_size"
+
 let packed_size = function
   | Pack8 -> 1
   | Pack16 -> 2
@@ -88,11 +93,9 @@ let packed_size = function
 let packed_shape_size = function
   | Pack8x8 | Pack16x4 | Pack32x2 -> 8
 
-
-let is_packed_storage_type = function
-  | ValueStorageType _ -> false
-  | PackedStorageType _ -> true
-
+let storage_size = function
+  | PackedStorageType pt -> packed_size pt
+  | ValueStorageType t -> value_size t
 
 let is_syn_var = function SynVar _ -> true | _ -> false
 let is_sem_var = function SemVar _ -> true | _ -> false
@@ -130,6 +133,11 @@ let defaultable_value_type = function
   | VecType t -> defaultable_vec_type t
   | RefType t -> defaultable_ref_type t
   | BotType -> assert false
+
+
+let is_packed_storage_type = function
+  | ValueStorageType _ -> false
+  | PackedStorageType _ -> true
 
 
 (* Projections *)

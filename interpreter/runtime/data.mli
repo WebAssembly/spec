@@ -14,7 +14,7 @@ type t = data
 type ref_ += DataRef of data
 
 val alloc_struct : sem_var -> Rtt.t -> value list -> data
-val alloc_array : sem_var -> Rtt.t -> int32 -> value -> data
+val alloc_array : sem_var -> Rtt.t -> value list -> data
 
 val struct_type_of : data -> struct_type
 val array_type_of : data -> array_type
