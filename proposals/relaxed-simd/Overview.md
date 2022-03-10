@@ -82,7 +82,7 @@ for any out of range indices is implementation-defined (i.e. if the index is
 `[16-255]`.
 
 ```python
-def relaxed_i8x16_swizzle(a, s):
+def relaxed_i8x16_swizzle(a : i8x16, s : i8x16):
     result = []
     for i in range(16):
         if s[i] < 16:
@@ -115,7 +115,7 @@ def relaxed_i32x4_trunc_f32x4_s(a : f32x4) -> i32x4:
       if isnan(a[i]) or INT32_MIN <= r <= INT32_MAX:
         result[i] = r
       else:
-        result[i] = signed IMPLEMENTATION_DEFINED_ONE_OF(0, INT32_MAX)
+        result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, INT32_MAX)
 
 def relaxed_i32x4_trunc_f32x4_u(a : f32x4) -> i32x4:
     result = [0, 0, 0, 0]
@@ -129,8 +129,8 @@ def relaxed_i32x4_trunc_f32x4_u(a : f32x4) -> i32x4:
 def relaxed_i32x4_trunc_f64x2_zero_s(a : f64x2) -> i32x4:
     result = [0, 0, 0, 0]
     for i in range(2):
-      r = isnan(a[i]) or truncate(a[i])
-      if INT32_MIN <= r <= INT32_MAX:
+      r = truncate(a[i])
+      if isnan(a[i]) or INT32_MIN <= r <= INT32_MAX:
         result[i] = r
       else:
         result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, INT32_MAX)
@@ -138,8 +138,8 @@ def relaxed_i32x4_trunc_f64x2_zero_s(a : f64x2) -> i32x4:
 def relaxed_i32x4_trunc_f64x2_zero_u(a : f64x2) -> i32x4:
     result = [0, 0, 0, 0]
     for i in range(2):
-      r = isnan(a[i]) or truncate(a[i])
-      if UINT32_MIN <= r <= UINT32_MAX:
+      r = truncate(a[i])
+      if isnan(a[i]) or UINT32_MIN <= r <= UINT32_MAX:
         result[i] = r
       else:
         result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, UINT32_MAX)
