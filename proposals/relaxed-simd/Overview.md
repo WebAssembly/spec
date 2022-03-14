@@ -103,9 +103,11 @@ def relaxed_i8x16_swizzle(a : i8x16, s : i8x16):
 
 These instructions have the same behavior as the non-relaxed instructions for
 lanes that are in the range of an `i32` (signed or unsigned depending on the
-instruction). For lanes that contain values which are out of bounds or NaN, the
-result is implementation-defined, either 0, or `INT32_MAX` for signed, and
-`UINT32_MAX` for unsigned.
+instruction). The result of lanes which contain NaN is implementation defined,
+either 0 or `INT32_MAX` for signed and `UINT32_MAX` for unsigned. The result of
+lanes which are out of bounds of `INT32` or `UINT32` is implementation defined,
+it can be either the saturated result or `INT32_MAX` for signed and `UINT32_MAX`
+for unsigned.
 
 ```python
 def relaxed_i32x4_trunc_f32x4_s(a : f32x4) -> i32x4:
