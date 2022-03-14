@@ -220,24 +220,24 @@ forward, the opcodes for relaxed-simd specification will be the ones in the
 
 | instruction                       | opcode         | prototype opcode |
 | ----------------------------------| -------------- | ---------------- |
-| `relaxed i8x16.swizzle`           | 0x100          | 0xa2             |
-| `relaxed i32x4.trunc_f32x4_s`     | 0x101          | 0xa5             |
-| `relaxed i32x4.trunc_f32x4_u`     | 0x102          | 0xa6             |
-| `relaxed i32x4.trunc_f64x2_s_zero`| 0x103          | 0xc5             |
-| `relaxed i32x4.trunc_f64x2_u_zero`| 0x104          | 0xc6             |
-| `f32x4.fma`                       | 0x105          | 0xaf             |
-| `f32x4.fms`                       | 0x106          | 0xb0             |
-| `f64x2.fma`                       | 0x107          | 0xcf             |
-| `f64x2.fms`                       | 0x108          | 0xd0             |
-| `i8x16.laneselect`                | 0x109          | 0xb2             |
-| `i16x8.laneselect`                | 0x10a          | 0xb3             |
-| `i32x4.laneselect`                | 0x10b          | 0xd2             |
-| `i64x2.laneselect`                | 0x10c          | 0xd3             |
-| `f32x4.min`                       | 0x10d          | 0xb4             |
-| `f32x4.max`                       | 0x10e          | 0xe2             |
-| `f64x2.min`                       | 0x10f          | 0xd4             |
-| `f64x2.max`                       | 0x110          | 0xee             |
-| `i16x8.q15mulr_s`                 | 0x111          | unimplemented    |
+| `i8x16.relaxed_swizzle`           | 0x100          | 0xa2             |
+| `i32x4.relaxed_trunc_f32x4_s`     | 0x101          | 0xa5             |
+| `i32x4.relaxed_trunc_f32x4_u`     | 0x102          | 0xa6             |
+| `i32x4.relaxed_trunc_f64x2_s_zero`| 0x103          | 0xc5             |
+| `i32x4.relaxed_trunc_f64x2_u_zero`| 0x104          | 0xc6             |
+| `f32x4.relaxed_fma`               | 0x105          | 0xaf             |
+| `f32x4.relaxed_fms`               | 0x106          | 0xb0             |
+| `f64x2.relaxed_fma`               | 0x107          | 0xcf             |
+| `f64x2.relaxed_fms`               | 0x108          | 0xd0             |
+| `i8x16.relaxed_laneselect`        | 0x109          | 0xb2             |
+| `i16x8.relaxed_laneselect`        | 0x10a          | 0xb3             |
+| `i32x4.relaxed_laneselect`        | 0x10b          | 0xd2             |
+| `i64x2.relaxed_laneselect`        | 0x10c          | 0xd3             |
+| `f32x4.relaxed_min`               | 0x10d          | 0xb4             |
+| `f32x4.relaxed_max`               | 0x10e          | 0xe2             |
+| `f64x2.relaxed_min`               | 0x10f          | 0xd4             |
+| `f64x2.relaxed_max`               | 0x110          | 0xee             |
+| `i16x8.relaxed_q15mulr_s`         | 0x111          | unimplemented    |
 | Reserved for dot product          | 0x112 - 0x115  | unimplemented    |
 | Reserved for bfloat16 dot product | 0x116          | unimplemented    |
 | Reserved                          | 0x117 - 0x12F  |                  |
