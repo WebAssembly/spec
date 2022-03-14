@@ -29,10 +29,16 @@
 ;; x.y+z        = 0 (2 roundings)
 ;; fma(x, y, z) = (0x1p-37) 2^-37
 ;; from https://accurate-algorithms.readthedocs.io/en/latest/ch09appendix.html#test-system-information
-(assert_return (invoke "f32x4.relaxed_fms"
+(assert_return (invoke "f32x4.relaxed_fma"
                        (v128.const f32x4 0x1.000004p+0 0x1.000004p+0 0x1.000004p+0 0x1.000004p+0)
                        (v128.const f32x4 0x1.0002p+0 0x1.0002p+0 0x1.0002p+0 0x1.0002p+0)
                        (v128.const f32x4 -0x1.000204p+0 -0x1.000204p+0 -0x1.000204p+0 -0x1.000204p+0))
+               (either (v128.const f32x4 0x1p-37 0x1p-37 0x1p-37 0x1p-37)
+                       (v128.const f32x4 0 0 0 0)))
+(assert_return (invoke "f32x4.relaxed_fms"
+                       (v128.const f32x4 0x1.000004p+0 0x1.000004p+0 0x1.000004p+0 0x1.000004p+0)
+                       (v128.const f32x4 0x1.0002p+0 0x1.0002p+0 0x1.0002p+0 0x1.0002p+0)
+                       (v128.const f32x4 0x1.000204p+0 0x1.000204p+0 0x1.000204p+0 0x1.000204p+0))
                (either (v128.const f32x4 0x1p-37 0x1p-37 0x1p-37 0x1p-37)
                        (v128.const f32x4 0 0 0 0)))
 
@@ -58,9 +64,15 @@
 ;; x.y+z        = 0 (2 roundings)
 ;; fma(x, y, z) = 0x1p-53
 ;; from https://accurate-algorithms.readthedocs.io/en/latest/ch09appendix.html#test-system-information
+(assert_return (invoke "f64x2.relaxed_fma"
+                       (v128.const f64x2 0x1.00000004p+0 0x1.00000004p+0)
+                       (v128.const f64x2 0x1.000002p+0 0x1.000002p+0)
+                       (v128.const f64x2 -0x1.00000204p+0 -0x1.00000204p+0))
+               (either (v128.const f64x2 0x1p-53 0x1p-53)
+                       (v128.const f64x2 0 0)))
 (assert_return (invoke "f64x2.relaxed_fms"
                        (v128.const f64x2 0x1.00000004p+0 0x1.00000004p+0)
-                       (v128.const f64x2 0x1.00000004p+0 0x1.00000004p+0)
-                       (v128.const f64x2 -0x1.00000204p+0 -0x1.00000204p+0))
+                       (v128.const f64x2 0x1.000002p+0 0x1.000002p+0)
+                       (v128.const f64x2 0x1.00000204p+0 0x1.00000204p+0))
                (either (v128.const f64x2 0x1p-53 0x1p-53)
                        (v128.const f64x2 0 0)))
