@@ -111,38 +111,54 @@ result is implementation-defined, either 0, or `INT32_MAX` for signed, and
 def relaxed_i32x4_trunc_f32x4_s(a : f32x4) -> i32x4:
     result = [0, 0, 0, 0]
     for i in range(4):
-      r = truncate(a[i])
-      if isnan(a[i]) or INT32_MIN <= r <= INT32_MAX:
-        result[i] = r
-      else:
+      if isnan(a[i]):
         result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, INT32_MAX)
+      r = truncate(a[i])
+      if r < INT32_MIN:
+        result[i] = IMPLEMENTATION_DEFINED_ONE_OF(INT32_MIN, INT32_MAX)
+      elif r > INT32_MAX
+        result[i] = INT32_MAX
+      else:
+        result[i] = r
 
 def relaxed_i32x4_trunc_f32x4_u(a : f32x4) -> i32x4:
     result = [0, 0, 0, 0]
     for i in range(4):
-      r = truncate(a[i])
-      if isnan(a[i]) or UINT32_MIN <= r <= UINT32_MAX:
-        result[i] = r
-      else:
+      if isnan(a[i]):
         result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, UINT32_MAX)
+      r = truncate(a[i])
+      if r < UINT32_MIN:
+        result[i] = IMPLEMENTATION_DEFINED_ONE_OF(UINT32_MIN, UINT32_MAX)
+      elif r > UINT32_MAX:
+        result[i] = UINT32_MAX
+      else:
+        result[i] = r
 
 def relaxed_i32x4_trunc_f64x2_zero_s(a : f64x2) -> i32x4:
     result = [0, 0, 0, 0]
     for i in range(2):
-      r = truncate(a[i])
-      if isnan(a[i]) or INT32_MIN <= r <= INT32_MAX:
-        result[i] = r
-      else:
+      if isnan(a[i]):
         result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, INT32_MAX)
+      r = truncate(a[i])
+      if r < INT32_MIN:
+        result[i] = IMPLEMENTATION_DEFINED_ONE_OF(INT32_MIN, INT32_MAX)
+      elif r > INT32_MAX
+        result[i] = INT32_MAX
+      else:
+        result[i] = r
 
 def relaxed_i32x4_trunc_f64x2_zero_u(a : f64x2) -> i32x4:
     result = [0, 0, 0, 0]
     for i in range(2):
-      r = truncate(a[i])
-      if isnan(a[i]) or UINT32_MIN <= r <= UINT32_MAX:
-        result[i] = r
-      else:
+      if isnan(a[i]):
         result[i] = IMPLEMENTATION_DEFINED_ONE_OF(0, UINT32_MAX)
+      r = truncate(a[i])
+      if r < UINT32_MIN:
+        result[i] = IMPLEMENTATION_DEFINED_ONE_OF(UINT32_MIN, UINT32_MAX)
+      elif r > UINT32_MAX:
+        result[i] = UINT32_MAX
+      else:
+        result[i] = r
 ```
 
 ### Relaxed fused multiply-add and fused multiply-subtract
