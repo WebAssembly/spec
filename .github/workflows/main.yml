@@ -58,6 +58,10 @@ jobs:
         with:
           name: core-api-rendered
           path: document/core/_build/html
+      - uses: actions/upload-artifact@v2
+        with:
+          name: new-html-rendered
+          path: document/core/_build/newhtml
 
   publish-spec:
     runs-on: ubuntu-latest
@@ -77,6 +81,10 @@ jobs:
         with:
           name: core-api-rendered
           path: _output/core
+      - uses: actions/download-artifact@v2
+        with:
+          name: new-html-rendered
+          path: _output/newhtml
       - name: Publish HTML to GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
