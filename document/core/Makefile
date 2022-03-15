@@ -75,7 +75,7 @@ publish: clean all deploy
 publish-main: clean main bikeshed-keep deploy
 
 .PHONY: all
-all:	pdf html bikeshed
+all:	pdf html bikeshed newhtml
 
 .PHONY: main
 main:	pdf html
