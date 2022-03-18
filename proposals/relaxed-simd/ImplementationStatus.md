@@ -19,6 +19,12 @@
 | `f32x4.max`                        | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 | `f64x2.min`                        | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 | `f64x2.max`                        | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `i16x8.relaxed_q15mulr_s`          |                |                    |                    |
+| `i16x8.dot_i8x16_i7x16_s`          |                |                    |                    |
+| `i16x8.dot_i8x16_i7x16_u`          |                |                    |                    |
+| `i32x4.dot_i8x16_i7x16_add_s`      |                |                    |                    |
+| `i32x4.dot_i8x16_i7x16_add_u`      |                |                    |                    |
+
 
 [1] Tip of tree LLVM as of 2021-10-28
 
@@ -47,3 +53,8 @@
 | `f32x4.max`                        | `__builtin_wasm_relaxed_max_f32x4`                |
 | `f64x2.min`                        | `__builtin_wasm_relaxed_min_f64x2`                |
 | `f64x2.max`                        | `__builtin_wasm_relaxed_max_f64x2`                |
+| `i16x8.relaxed_q15mulr_s`          |                                                   |
+| `i16x8.dot_i8x16_i7x16_s`          |                                                   |
+| `i16x8.dot_i8x16_i7x16_u`          |                                                   |
+| `i32x4.dot_i8x16_i7x16_add_s`      |                                                   |
+| `i32x4.dot_i8x16_i7x16_add_u`      |                                                   |
