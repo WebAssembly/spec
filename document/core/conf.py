@@ -62,8 +62,7 @@ project = u'WebAssembly'
 title = u'WebAssembly Specification'
 copyright = u'2017, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
-editor_name = u'Andreas Rossberg'
-editor = editor_name + u' (editor)'
+editor = u'Andreas Rossberg'
 editor_org = 'Dfinity Stiftung'
 editor_org_url = 'https://dfinity.org/'
 logo = 'static/webassembly.png'
@@ -167,7 +166,7 @@ html_context = {
   'date_url': date_today.strftime("%Y%m%d"),
   'year': date_today.strftime("%Y"),
   'editor': {
-    'name': editor_name,
+    'name': editor,
     'org': {
       'name': editor_org,
       'url': editor_org_url,
@@ -349,7 +348,7 @@ latex_documents = [
   ( master_doc,
     name + '.tex',
     title,
-    author + '\\\\ \\hfill\\large ' + editor,
+    author + '\\\\ \\hfill\\large ' + editor + ' (editor)',
     'manual'
   ),
 ]
