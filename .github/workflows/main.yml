@@ -61,7 +61,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: new-html-rendered
-          path: document/core/_build/newhtml
+          path: document/core/_build/w3chtml
 
   publish-spec:
     runs-on: ubuntu-latest
@@ -84,7 +84,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: new-html-rendered
-          path: _output/newhtml
+          path: _output/w3chtml
       - name: Publish HTML to GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
