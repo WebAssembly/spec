@@ -10,19 +10,16 @@ WebAssembly Specification
    | Latest Draft: |WasmDraft|
    | Issue Tracker: |WasmIssues|
 
-.. only:: builder_html
+.. toctree::
+   :maxdepth: 2
 
-  .. toctree::
-     :numbered:
-     :maxdepth: 2
-
-     intro/index
-     syntax/index
-     valid/index
-     exec/index
-     binary/index
-     text/index
-     appendix/index
+   intro/index
+   syntax/index
+   valid/index
+   exec/index
+   binary/index
+   text/index
+   appendix/index
 
 .. only:: latex
 
