@@ -75,7 +75,7 @@ publish: clean all deploy
 publish-main: clean main bikeshed-keep deploy
 
 .PHONY: all
-all:	pdf html bikeshed newhtml
+all:	pdf html bikeshed w3chtml
 
 .PHONY: main
 main:	pdf html
@@ -120,21 +120,21 @@ html: index
 	@echo
 	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html/."
 
-.PHONY: newhtml
-newhtml: index
-	$(SPHINXBUILD) -b html -c newhtml $(ALLSPHINXOPTS) $(BUILDDIR)/newhtml
-	for file in `ls $(BUILDDIR)/newhtml/*.html`; \
+.PHONY: w3chtml
+w3chtml: index
+	$(SPHINXBUILD) -b html -c w3chtml $(ALLSPHINXOPTS) $(BUILDDIR)/w3chtml
+	for file in `ls $(BUILDDIR)/w3chtml/*.html`; \
 	do \
 	  sed s:BASEDIR:.:g <$$file >$$file.out; \
 	  mv -f $$file.out $$file; \
 	done
-	for file in `ls $(BUILDDIR)/newhtml/*/*.html`; \
+	for file in `ls $(BUILDDIR)/w3chtml/*/*.html`; \
 	do \
 	  sed s:BASEDIR:..:g <$$file >$$file.out; \
 	  mv -f $$file.out $$file; \
 	done
 	@echo
-	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/newhtml/."
+	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/w3chtml/."
 
 .PHONY: dirhtml
 dirhtml:
