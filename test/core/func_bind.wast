@@ -19,12 +19,10 @@
   )
 
   (func (export "call2") (param $i i32) (param $j i32) (param $k i32) (result i32)
-    (call $mk-adder (local.get $k))
-    (let (result i32) (local $f (ref $unop))  ;; binds $f to top of stack
-      (i32.mul
-        (call_ref (local.get $i) (local.get $f))
-        (call_ref (local.get $j) (local.get $f))
-      )
+    
+    (i32.mul
+      (call_ref (local.get $i) (call $mk-adder (local.get $k)))
+      (call_ref (local.get $j) (call $mk-adder (local.get $k)))
     )
   )
 
