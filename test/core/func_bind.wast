@@ -19,7 +19,17 @@
   )
 
   (func (export "call2") (param $i i32) (param $j i32) (param $k i32) (result i32)
-    
+    (local $f (ref null $unop))
+    (local.set $f (call $mk-adder (local.get $k)))
+
+    (i32.mul
+      (call_ref (local.get $i) (local.get $f))
+      (call_ref (local.get $j) (local.get $f))
+    )
+  )
+
+  (func (export "call3") (param $i i32) (param $j i32) (param $k i32) (result i32)
+
     (i32.mul
       (call_ref (local.get $i) (call $mk-adder (local.get $k)))
       (call_ref (local.get $j) (call $mk-adder (local.get $k)))
@@ -47,6 +57,10 @@
 (assert_return (invoke "call2" (i32.const 2) (i32.const 3) (i32.const 0)) (i32.const 6))
 (assert_return (invoke "call2" (i32.const 2) (i32.const 5) (i32.const 1)) (i32.const 18))
 (assert_return (invoke "call2" (i32.const 2) (i32.const 5) (i32.const 7)) (i32.const 108))
+
+(assert_return (invoke "call3" (i32.const 4) (i32.const 9) (i32.const 1)) (i32.const 50))
+(assert_return (invoke "call3" (i32.const 4) (i32.const 7) (i32.const 2)) (i32.const 54))
+(assert_return (invoke "call3" (i32.const 4) (i32.const 5) (i32.const 3)) (i32.const 56))
 
 (assert_trap (invoke "null") "null function")
 
