@@ -68,13 +68,13 @@ New abbreviations are introduced for reference types in binary and text format, 
   - `eqref == (ref null eq)`
 
 * `dataref` is a new reference type
-  - `dataref == (ref data)`
+  - `dataref == (ref null data)`
 
 * `arrayref` is a new reference type
-  - `arrayref == (ref array)`
+  - `arrayref == (ref null array)`
 
 * `i31ref` is a new reference type
-  - `i31ref == (ref i31)`
+  - `i31ref == (ref null i31)`
 
 * `rtt <typeidx>` is a new reference type
   - `(rtt $t) == (ref (rtt $t))`

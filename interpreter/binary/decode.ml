@@ -193,10 +193,10 @@ let ref_type s =
   | -0x13 -> (Nullable, EqHeapType)
   | -0x14 -> (Nullable, heap_type s)
   | -0x15 -> (NonNullable, heap_type s)
-  | -0x16 -> (NonNullable, I31HeapType)
+  | -0x16 -> (Nullable, I31HeapType)
   | -0x18 -> (NonNullable, RttHeapType (var_type s))
-  | -0x19 -> (NonNullable, DataHeapType)
-  | -0x1a -> (NonNullable, ArrayHeapType)
+  | -0x19 -> (Nullable, DataHeapType)
+  | -0x1a -> (Nullable, ArrayHeapType)
   | _ -> error s pos "malformed reference type"
 
 let value_type s =

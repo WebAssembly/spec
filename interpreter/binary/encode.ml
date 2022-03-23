@@ -123,9 +123,9 @@ struct
   let ref_type = function
     | (Nullable, AnyHeapType) -> vs7 (-0x11)
     | (Nullable, EqHeapType) -> vs7 (-0x13)
-    | (NonNullable, I31HeapType) -> vs7 (-0x16)
-    | (NonNullable, DataHeapType) -> vs7 (-0x19)
-    | (NonNullable, ArrayHeapType) -> vs7 (-0x1a)
+    | (Nullable, I31HeapType) -> vs7 (-0x16)
+    | (Nullable, DataHeapType) -> vs7 (-0x19)
+    | (Nullable, ArrayHeapType) -> vs7 (-0x1a)
     | (Nullable, FuncHeapType) -> vs7 (-0x10)
     | (Nullable, t) -> vs7 (-0x14); heap_type t
     | (NonNullable, t) -> vs7 (-0x15); heap_type t

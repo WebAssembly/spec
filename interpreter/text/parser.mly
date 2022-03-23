@@ -373,9 +373,9 @@ ref_type :
   | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
   | ANYREF { fun c -> (Nullable, AnyHeapType) }  /* Sugar */
   | EQREF { fun c -> (Nullable, EqHeapType) }  /* Sugar */
-  | I31REF { fun c -> (NonNullable, I31HeapType) }  /* Sugar */
-  | DATAREF { fun c -> (NonNullable, DataHeapType) }  /* Sugar */
-  | ARRAYREF { fun c -> (NonNullable, ArrayHeapType) }  /* Sugar */
+  | I31REF { fun c -> (Nullable, I31HeapType) }  /* Sugar */
+  | DATAREF { fun c -> (Nullable, DataHeapType) }  /* Sugar */
+  | ARRAYREF { fun c -> (Nullable, ArrayHeapType) }  /* Sugar */
   | FUNCREF { fun c -> (Nullable, FuncHeapType) }  /* Sugar */
   | EXTERNREF { fun c -> (Nullable, AnyHeapType) }  /* Sugar */
   | LPAR RTT var RPAR  /* Sugar */

@@ -62,7 +62,16 @@ let mutability node = function
 
 let num_type t = string_of_num_type t
 let vec_type t = string_of_vec_type t
-let ref_type t = string_of_ref_type t
+let ref_type t =
+  match t with
+  | (Nullable, AnyHeapType) -> "anyref"
+  | (Nullable, EqHeapType) -> "eqref"
+  | (Nullable, I31HeapType) -> "i31ref"
+  | (Nullable, DataHeapType) -> "dataref"
+  | (Nullable, ArrayHeapType) -> "arrayref"
+  | (Nullable, FuncHeapType) -> "funcref"
+  | t -> string_of_ref_type t
+
 let heap_type t = string_of_heap_type t
 let value_type t = string_of_value_type t
 let storage_type t = string_of_storage_type t
