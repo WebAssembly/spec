@@ -154,7 +154,7 @@ Some of the rules define a type as `ok` for a certain index, written `ok(x)`. Th
     - and `N = |<subtype>*|-1`
     - and `<ctxtype>*  = (rec <subtype>*).0, ..., (rec <subtype>*).N`
 
-* a sequence of subtype's is valid of each of them is valid for their respective index
+* a sequence of subtype's is valid if each of them is valid for their respective index
   - `<subtype0> <subtype>* ok($t)`
     - iff `<subtype0> ok($t)`
     - and `<subtype>* ok($t+1)`
@@ -281,7 +281,7 @@ In the [existing rules](https://github.com/WebAssembly/function-references/propo
 * Type indices are subtypes if they either define [equivalent](#type-equivalence) types or a suitable (direct or indirect) subtype relation has been declared
   - `$t <: $t'`
     - if `$t = <ctxtype>` and `$t' = <ctxtype'>` and `<ctxtype> == <ctxtype'>`
-    - or `unroll($t) = sub $1* $t'' $t2* strtype` and `$t'' <: $t`
+    - or `unroll($t) = sub $t1* $t'' $t2* strtype` and `$t'' <: $t'`
   - Note: This rule climbs the supertype hierarchy until an equivalent type has been found. Effectively, this means that subtyping is "nominal" modulo type canonicalisation.
 
 
@@ -701,7 +701,7 @@ This extends the [encodings](https://github.com/WebAssembly/function-references/
 | -0x14  | `(ref null ht)` | `ht : heaptype (s33)` | from funcref proposal |
 | -0x15  | `(ref ht)`      | `ht : heaptype (s33)` | from funcref proposal |
 | -0x16  | `i31ref`        |            | shorthand |
-| -0x18  | `(rtt $t)`      | `i : typeidx` | shorthand |
+| -0x18  | `(rtt $t)`      | `$t : typeidx` | shorthand |
 | -0x19  | `dataref`       |            | shorthand |
 | -0x1a  | `arrayref`      |            | shorthand |
 
@@ -716,7 +716,7 @@ The opcode for heap types is encoded as an `s33`.
 | -0x11  | `any`           |            | from funcref proposal |
 | -0x13  | `eq`            |            | |
 | -0x16  | `i31`           |            | |
-| -0x18  | `(rtt i)`       | `i : typeidx` | |
+| -0x18  | `(rtt $t)`      | `$t : typeidx` | |
 | -0x19  | `data`          |            | |
 | -0x1a  | `array`         |            | |
 
