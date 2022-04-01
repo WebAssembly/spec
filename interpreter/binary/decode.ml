@@ -951,41 +951,41 @@ let elem_kind s =
   | _ -> error s (pos s - 1) "malformed element kind"
 
 let elem s =
-  match vu32 s with
-  | 0x00l ->
+  match u8 s with
+  | 0x00 ->
     let emode = at active_zero s in
     let einit = vec (at elem_index) s in
     {etype = FuncRefType; einit; emode}
-  | 0x01l ->
+  | 0x01 ->
     let emode = at passive s in
     let etype = elem_kind s in
     let einit = vec (at elem_index) s in
     {etype; einit; emode}
-  | 0x02l ->
+  | 0x02 ->
     let emode = at active s in
     let etype = elem_kind s in
     let einit = vec (at elem_index) s in
     {etype; einit; emode}
-  | 0x03l ->
+  | 0x03 ->
     let emode = at declarative s in
     let etype = elem_kind s in
     let einit = vec (at elem_index) s in
     {etype; einit; emode}
-  | 0x04l ->
+  | 0x04 ->
     let emode = at active_zero s in
     let einit = vec const s in
     {etype = FuncRefType; einit; emode}
-  | 0x05l ->
+  | 0x05 ->
     let emode = at passive s in
     let etype = ref_type s in
     let einit = vec const s in
     {etype; einit; emode}
-  | 0x06l ->
+  | 0x06 ->
     let emode = at active s in
     let etype = ref_type s in
     let einit = vec const s in
     {etype; einit; emode}
-  | 0x07l ->
+  | 0x07 ->
     let emode = at declarative s in
     let etype = ref_type s in
     let einit = vec const s in
@@ -999,16 +999,16 @@ let elem_section s =
 (* Data section *)
 
 let data s =
-  match vu32 s with
-  | 0x00l ->
+  match u8 s with
+  | 0x00 ->
     let dmode = at active_zero s in
     let dinit = string s in
     {dinit; dmode}
-  | 0x01l ->
+  | 0x01 ->
     let dmode = at passive s in
     let dinit = string s in
     {dinit; dmode}
-  | 0x02l ->
+  | 0x02 ->
     let dmode = at active s in
     let dinit = string s in
     {dinit; dmode}

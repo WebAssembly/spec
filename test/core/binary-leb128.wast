@@ -25,7 +25,8 @@
   "\00asm" "\01\00\00\00"
   "\05\03\01"                          ;; Memory section with 1 entry
   "\00\00"                             ;; no max, minimum 0
-  "\0b\07\01"                          ;; Data section with 1 entry
+  "\0b\08\01"                          ;; Data section with 1 entry
+  "\02"                                ;; Data with explicit memory index
   "\80\00"                             ;; Memory index 0, encoded with 2 bytes
   "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
 )
@@ -236,7 +237,8 @@
     "\00asm" "\01\00\00\00"
     "\05\03\01"                          ;; Memory section with 1 entry
     "\00\00"                             ;; no max, minimum 0
-    "\0b\0b\01"                          ;; Data section with 1 entry
+    "\0b\0c\01"                          ;; Data section with 1 entry
+    "\02"                                ;; Dat with explicit memory index
     "\80\80\80\80\80\00"                 ;; Memory index 0 with one byte too many
     "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
   )
@@ -247,9 +249,10 @@
     "\00asm" "\01\00\00\00"
     "\04\04\01"                          ;; Table section with 1 entry
     "\70\00\00"                          ;; no max, minimum 0, funcref
-    "\09\0b\01"                          ;; Element section with 1 entry
+    "\09\0d\01"                          ;; Element section with 1 entry
+    "\02"                                ;; Element with explicit memory index
     "\80\80\80\80\80\00"                 ;; Table index 0 with one byte too many
-    "\41\00\0b\00"                       ;; (i32.const 0) with no elements
+    "\41\00\0b\00\00"                    ;; (i32.const 0) with no func elements
   )
   "integer representation too long"
 )
@@ -561,7 +564,8 @@
     "\00asm" "\01\00\00\00"
     "\05\03\01"                          ;; Memory section with 1 entry
     "\00\00"                             ;; no max, minimum 0
-    "\0b\0a\01"                          ;; Data section with 1 entry
+    "\0b\0b\01"                          ;; Data section with 1 entry
+    "\02"                                ;; Data with explicit memory index
     "\80\80\80\80\10"                    ;; Memory index 0 with unused bits set
     "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
   )
@@ -572,9 +576,10 @@
     "\00asm" "\01\00\00\00"
     "\04\04\01"                          ;; Table section with 1 entry
     "\70\00\00"                          ;; no max, minimum 0, funcref
-    "\09\0a\01"                          ;; Element section with 1 entry
+    "\09\0c\01"                          ;; Element section with 1 entry
+    "\02"                                ;; Element with explicit table index
     "\80\80\80\80\10"                    ;; Table index 0 with unused bits set
-    "\41\00\0b\00"                       ;; (i32.const 0) with no elements
+    "\41\00\0b\00\00"                    ;; (i32.const 0) with no elements
   )
   "integer too large"
 )
