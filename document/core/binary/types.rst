@@ -69,12 +69,13 @@ Reference Types
 Value Types
 ~~~~~~~~~~~
 
-:ref:`Value types <syntax-valtype>` are encoded with their respective encoding as a :ref:`number type <binary-numtype>` or :ref:`reference type <binary-reftype>`.
+:ref:`Value types <syntax-valtype>` are encoded with their respective encoding as a :ref:`number type <binary-numtype>`, :ref:`vector type <binary-vectype>`, or :ref:`reference type <binary-reftype>`.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{value type} & \Bvaltype &::=&
      t{:}\Bnumtype &\Rightarrow& t \\ &&|&
+     t{:}\Bvectype &\Rightarrow& t \\ &&|&
      t{:}\Breftype &\Rightarrow& t \\
    \end{array}
 
