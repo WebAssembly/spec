@@ -134,3 +134,79 @@
   )
 )
 (assert_return (invoke "run"))
+
+
+;; Invalid subtyping definitions
+
+(assert_invalid
+  (module
+    (type $a0 (array i32))
+    (type $s0 (sub $a0 (struct)))
+  )
+  "sub type"
+)
+
+(assert_invalid 
+  (module
+    (type $f0 (func (param i32) (result i32)))
+    (type $s0 (sub $f0 (struct)))
+  )
+  "sub type"
+)
+
+(assert_invalid
+  (module
+    (type $s0 (struct))
+    (type $a0 (sub $s0 (array i32)))
+  )
+  "sub type"
+)
+
+(assert_invalid
+  (module
+    (type $f0 (func (param i32) (result i32)))
+    (type $a0 (sub $f0 (array i32)))
+  )
+  "sub type"
+)
+
+(assert_invalid 
+  (module
+    (type $s0 (struct))
+    (type $f0 (sub $s0 (func (param i32) (result i32))))
+  )
+  "sub type"
+)
+
+(assert_invalid 
+  (module
+    (type $a0 (array i32))
+    (type $f0 (sub $a0 (func (param i32) (result i32))))
+  )
+  "sub type"
+)
+
+(assert_invalid
+  (module
+    (type $a0 (array i32))
+    (type $a1 (sub $a0 (array i64)))
+  )
+  "sub type"
+)
+
+(assert_invalid
+  (module
+    (type $s0 (struct (field i32)))
+    (type $s1 (sub $s0 (struct (field i64))))
+  )
+  "sub type"
+)
+
+(assert_invalid
+  (module
+    (type $f0 (func))
+    (type $f1 (sub $f0 (func (param i32))))
+  )
+  "sub type"
+)
+
