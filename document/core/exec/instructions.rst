@@ -1191,8 +1191,8 @@ Table Instructions
 
 .. _exec-table.set:
 
-:math:`\TABLESET`
-.................
+:math:`\TABLESET~x`
+...................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
