@@ -105,7 +105,6 @@ New abbreviations are introduced for reference types in binary and text format, 
 
 * `arraytype` describes an array with dynamically indexed fields
   - `arraytype ::= array <fieldtype>`
-  - Note: in the MVP, all arrays must be defined as mutable
 
 * `fieldtype` describes a struct or array field and whether it is mutable
   - `fieldtype ::= <mutability> <storagetype>`
