@@ -526,8 +526,6 @@ let func_with_index off i f =
 let func f =
   func_with_name "" f
 
-let start x = Node ("start " ^ var x, [])
-
 
 (* Tables & memories *)
 
@@ -618,6 +616,9 @@ let export ex =
 let global off i g =
   let {gtype; ginit} = g.it in
   Node ("global $" ^ nat (off + i), global_type gtype :: list instr ginit.it)
+
+let start s =
+  Node ("start " ^ var s.it.sfunc, [])
 
 
 (* Modules *)

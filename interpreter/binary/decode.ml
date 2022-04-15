@@ -904,8 +904,12 @@ let export_section s =
 
 (* Start section *)
 
+let start s =
+  let sfunc = at var s in
+  {sfunc}
+
 let start_section s =
-  section `StartSection (opt (at var) true) None s
+  section `StartSection (opt (at start) true) None s
 
 
 (* Code section *)
