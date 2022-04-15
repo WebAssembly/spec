@@ -289,6 +289,12 @@ and import' =
   idesc : import_desc;
 }
 
+type start = start' Source.phrase
+and start' =
+{
+  sfunc : var;
+}
+
 type module_ = module_' Source.phrase
 and module_' =
 {
@@ -297,7 +303,7 @@ and module_' =
   tables : table list;
   memories : memory list;
   funcs : func list;
-  start : var option;
+  start : start option;
   elems : elem_segment list;
   datas : data_segment list;
   imports : import list;
