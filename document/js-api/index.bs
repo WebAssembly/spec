@@ -3,8 +3,8 @@ Title: WebAssembly JavaScript Interface
 Shortname: wasm-js-api
 Group: wasm
 Status: ED
-Level: 1
-TR: https://www.w3.org/TR/wasm-js-api-1/
+Level: 2
+TR: https://www.w3.org/TR/wasm-js-api-2/
 ED: https://webassembly.github.io/spec/js-api/
 Editor: Ms2ger, Igalia
 Repository: WebAssembly/spec
