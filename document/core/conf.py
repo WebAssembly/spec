@@ -26,7 +26,7 @@ sys.path.insert(0, pwd)
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-needs_sphinx = '1.4'
+needs_sphinx = '2.3'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -60,7 +60,7 @@ master_doc = 'index'
 name = 'WebAssembly'
 project = u'WebAssembly'
 title = u'WebAssembly Specification'
-copyright = u'2017, WebAssembly Community Group'
+copyright = u'2022, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
 editor = u'Andreas Rossberg (editor)'
 logo = 'static/webassembly.png'
@@ -79,7 +79,7 @@ draft = ' (Draft ' + date.today().strftime("%Y-%m-%d") + ')'
 # built documents.
 #
 # The short X.Y version.
-version = u'1.1'
+version = u'2.0'
 # The full version, including alpha/beta/rc tags.
 release = version + ('' if proposal == '' else ' + ') + proposal + draft
 
