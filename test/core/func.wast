@@ -639,15 +639,6 @@
   )
   "unknown type"
 )
-(assert_invalid
-  (module
-    (type $t (func))
-    (func $f (drop (let (result (ref $t)) (ref.func $g))))
-    (func $g (type 4))
-    (elem declare func $g)
-  )
-  "unknown type"
-)
 
 
 ;; Invalid typing of locals
