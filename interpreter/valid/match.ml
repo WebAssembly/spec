@@ -125,7 +125,7 @@ and eq_global_type c (GlobalType (t1, mut1)) (GlobalType (t2, mut2)) =
 
 and eq_extern_type c et1 et2 =
   match et1, et2 with
-  | ExternFuncType ft1, ExternFuncType ft2 -> eq_func_type c ft1 ft2
+  | ExternFuncType x1, ExternFuncType x2 -> eq_var_type c x1 x2
   | ExternTableType tt1, ExternTableType tt2 -> eq_table_type c tt1 tt2
   | ExternMemoryType mt1, ExternMemoryType mt2 -> eq_memory_type c mt1 mt2
   | ExternGlobalType gt1, ExternGlobalType gt2 -> eq_global_type c gt1 gt2
@@ -241,7 +241,7 @@ and match_global_type c (GlobalType (t1, mut1)) (GlobalType (t2, mut2)) =
 
 and match_extern_type c et1 et2 =
   match et1, et2 with
-  | ExternFuncType ft1, ExternFuncType ft2 -> match_func_type c ft1 ft2
+  | ExternFuncType x1, ExternFuncType x2 -> match_var_type c x1 x2
   | ExternTableType tt1, ExternTableType tt2 -> match_table_type c tt1 tt2
   | ExternMemoryType mt1, ExternMemoryType mt2 -> match_memory_type c mt1 mt2
   | ExternGlobalType gt1, ExternGlobalType gt2 -> match_global_type c gt1 gt2

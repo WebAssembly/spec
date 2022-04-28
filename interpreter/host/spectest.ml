@@ -60,5 +60,6 @@ let lookup name t =
   | "global_f64", _ -> global (GlobalType (NumType F64Type, Immutable))
   | "table", _ -> table
   | "memory", _ -> memory
-  | "debug_print", ExternFuncType ft -> func print ft
+  | "debug_print", ExternFuncType x ->
+    func print (as_func_str_type (expand_ctx_type (def_of (as_sem_var x))))
   | _ -> raise Not_found

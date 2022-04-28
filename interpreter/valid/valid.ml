@@ -18,7 +18,7 @@ let require b at s = if not b then error at s
 type context =
 {
   types : ctx_type list;
-  funcs : func_type list;
+  funcs : ctx_type list;
   tables : table_type list;
   memories : memory_type list;
   globals : global_type list;
@@ -530,7 +530,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     c.results -->... []
 
   | Call x ->
-    let FuncType (ts1, ts2) = func c x in
+    let FuncType (ts1, ts2) = as_func_str_type (expand_ctx_type (func c x)) in
     ts1 --> ts2
 
   | CallRef ->
@@ -707,8 +707,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     [] --> [RefType (Nullable, t)]
 
   | RefFunc x ->
-    let ft = func c x in
-    let y = Lib.Option.force (Lib.List32.index_where (fun ct -> expand_ctx_type ct = FuncDefType ft) c.types) in
+    let y = Lib.Option.force (Lib.List32.index_of (func c x) c.types) in
     refer_func c x;
     [] --> [RefType (NonNullable, DefHeapType (SynVar y))]
 
@@ -1040,7 +1039,8 @@ let check_global (c : context) (glob : global) : context =
 
 let check_start (c : context) (start : idx option) =
   Lib.Option.app (fun x ->
-    require (func c x = FuncType ([], [])) x.at
+    let ft = as_func_str_type (expand_ctx_type (func c x)) in
+    require (ft = FuncType ([], [])) x.at
       "start function must not have parameters or results"
   ) start
 
@@ -1048,8 +1048,8 @@ let check_import (c : context) (im : import) : context =
   let {module_name = _; item_name = _; idesc} = im.it in
   match idesc.it with
   | FuncImport x ->
-    let ft = func_type c x in
-    {c with funcs = c.funcs @ [ft]}
+    let _ = func_type c x in
+    {c with funcs = c.funcs @ [type_ c x]}
   | TableImport tt ->
     check_table_type c tt idesc.at;
     {c with tables = c.tables @ [tt]}
@@ -1083,7 +1083,7 @@ let check_module (m : module_) =
   let c1 = List.fold_left check_import c0 imports in
   let c2 =
     { c1 with
-      funcs = c1.funcs @ List.map (fun f -> func_type c1 f.it.ftype) funcs;
+      funcs = c1.funcs @ List.map (fun f -> type_ c1 f.it.ftype) funcs;
       tables = c1.tables @ List.map (fun tab -> tab.it.ttype) tables;
       memories = c1.memories @ List.map (fun mem -> mem.it.mtype) memories;
       refs = Free.module_ ({m.it with funcs = []; start = None} @@ m.at);

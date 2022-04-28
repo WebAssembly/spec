@@ -352,27 +352,11 @@ let empty_module =
 
 open Source
 
-let func_type_of (m : module_) (x : idx) : func_type =
-  let rec find_in_def_types dts i =
-    match dts with
-    | dt::dts' ->
-      (match dt.it with
-      | RecDefType sts -> find_in_sub_types sts i dts'
-      )
-    | [] -> failwith "func_type_of"
-  and find_in_sub_types sts i dts =
-    let n = Lib.List32.length sts in
-    if i < n then
-      let SubType (_, st) = Lib.List32.nth sts i in st
-    else
-      find_in_def_types dts (Int32.sub i n)
-  in as_func_str_type (find_in_def_types m.it.types x.it)
-
 let import_type_of (m : module_) (im : import) : import_type =
   let {idesc; module_name; item_name} = im.it in
   let et =
     match idesc.it with
-    | FuncImport x -> ExternFuncType (func_type_of m x)
+    | FuncImport x -> ExternFuncType (SynVar x.it)
     | TableImport t -> ExternTableType t
     | MemoryImport t -> ExternMemoryType t
     | GlobalImport t -> ExternGlobalType t
@@ -386,9 +370,8 @@ let export_type_of (m : module_) (ex : export) : export_type =
   let et =
     match edesc.it with
     | FuncExport x ->
-      let fts =
-        funcs ets @ List.map (fun f -> func_type_of m f.it.ftype) m.it.funcs
-      in ExternFuncType (nth fts x.it)
+      let fts = funcs ets @ List.map (fun f -> SynVar f.it.ftype.it) m.it.funcs in
+      ExternFuncType (nth fts x.it)
     | TableExport x ->
       let tts = tables ets @ List.map (fun t -> t.it.ttype) m.it.tables in
       ExternTableType (nth tts x.it)

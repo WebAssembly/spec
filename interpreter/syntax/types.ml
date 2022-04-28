@@ -51,7 +51,7 @@ type table_type = TableType of Int32.t limits * ref_type
 type memory_type = MemoryType of Int32.t limits
 type global_type = GlobalType of value_type * mutability
 type extern_type =
-  | ExternFuncType of func_type
+  | ExternFuncType of var
   | ExternTableType of table_type
   | ExternMemoryType of memory_type
   | ExternGlobalType of global_type
@@ -262,7 +262,7 @@ let subst_global_type s (GlobalType (t, mut)) =
   GlobalType (subst_value_type s t, mut)
 
 let subst_extern_type s = function
-  | ExternFuncType ft -> ExternFuncType (subst_func_type s ft)
+  | ExternFuncType x -> ExternFuncType (s x)
   | ExternTableType tt -> ExternTableType (subst_table_type s tt)
   | ExternMemoryType mt -> ExternMemoryType (subst_memory_type s mt)
   | ExternGlobalType gt -> ExternGlobalType (subst_global_type s gt)
@@ -460,7 +460,7 @@ let string_of_global_type = function
   | GlobalType (t, mut) -> string_of_mutability (string_of_value_type t) mut
 
 let string_of_extern_type = function
-  | ExternFuncType ft -> "func " ^ string_of_func_type ft
+  | ExternFuncType x -> "func " ^ string_of_var x
   | ExternTableType tt -> "table " ^ string_of_table_type tt
   | ExternMemoryType mt -> "memory " ^ string_of_memory_type mt
   | ExternGlobalType gt -> "global " ^ string_of_global_type gt

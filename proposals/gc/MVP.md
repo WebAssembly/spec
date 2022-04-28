@@ -121,6 +121,10 @@ Validity of a module is checked under a context storing the definitions for each
 ctxtype ::= <deftype>.<i>
 ```
 
+Both `C.types` and `C.funcs` in typing contexts `C` as defined by the spec now carry `ctxtype`s as opposed to `functype`s like before.
+In the case of `C.funcs`, it is an invariant that all types [expand](#auxiliary-definitions) to a function type.
+
+
 #### Auxiliary Definitions
 
 * Unpacking a storage type yields `i32` for packed types, otherwise the type itself
@@ -135,6 +139,15 @@ ctxtype ::= <deftype>.<i>
   - `expand($t)                 = expand(<ctxtype>)`  iff `$t = <ctxtype>`
   - `expand(<ctxtype>) = <strtype>`
     - where `unroll(<ctxttype>) = sub x* <strtype>`
+
+
+#### External Types
+
+Unlike in the current spec, external function types need to be represented by a type index/address, in order to preserve the structure and equivalence of iso-recursive types:
+```
+externtype ::= func <typeidx> | ...
+```
+The type is then looked up and expanded as needed. (This was `func <functype>` before.)
 
 
 #### Type Validity

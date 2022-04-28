@@ -66,7 +66,7 @@ let empty_module_inst =
     exports = []; elems = []; datas = [] }
 
 let extern_type_of c = function
-  | ExternFunc func -> ExternFuncType (Func.type_of func)
+  | ExternFunc func -> ExternFuncType (SemVar (Func.type_inst_of func))
   | ExternTable tab -> ExternTableType (Table.type_of tab)
   | ExternMemory mem -> ExternMemoryType (Memory.type_of mem)
   | ExternGlobal glob -> ExternGlobalType (Global.type_of glob)
