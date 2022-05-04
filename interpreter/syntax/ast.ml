@@ -130,7 +130,7 @@ type vec_laneop = (vec_type, pack_size) memop
 type var = int32 Source.phrase
 type num = Values.num Source.phrase
 type vec = Values.vec Source.phrase
-type name = int list
+type name = Utf8.unicode
 
 type block_type = VarBlockType of var | ValBlockType of value_type option
 
