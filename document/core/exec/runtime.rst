@@ -320,7 +320,7 @@ It records its :ref:`type <syntax-globaltype>` and holds an individual :ref:`val
 .. math::
    \begin{array}{llll}
    \production{(global instance)} & \globalinst &::=&
-     \{ \GITYPE~\valtype, \GIVALUE~\val \} \\
+     \{ \GITYPE~\globaltype, \GIVALUE~\val \} \\
    \end{array}
 
 The value of mutable globals can be mutated through :ref:`variable instructions <syntax-instr-variable>` or by external means provided by the :ref:`embedder <embedder>`.
