@@ -51,11 +51,12 @@ or *external references* pointing to an uninterpreted form of :ref:`extern addre
 .. _default-val:
 
 Each :ref:`value type <syntax-valtype>` has an associated *default value*;
-it is the respective value :math:`0` for :ref:`number types <syntax-numtype>` and null for :ref:`reference types <syntax-reftype>`.
+it is the respective value :math:`0` for :ref:`number types <syntax-numtype>`, :math:`0` for :ref:`vector types <syntax-vectype>`, and null for :ref:`reference types <syntax-reftype>`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    \default_t &=& t{.}\CONST~0 & (\iff t = \numtype) \\
+   \default_t &=& t{.}\CONST~0 & (\iff t = \vectype) \\
    \default_t &=& \REFNULL~t & (\iff t = \reftype) \\
    \end{array}
 
