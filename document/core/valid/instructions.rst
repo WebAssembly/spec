@@ -793,7 +793,7 @@ Table Instructions
 
 .. math::
    \frac{
-     C.\CTABLES[x] = t
+     C.\CTABLES[x] = \limits~t
    }{
      C \vdashinstr \TABLESET~x : [\I32~t] \to []
    }
@@ -900,7 +900,7 @@ Table Instructions
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits_1~t
+     C.\CTABLES[x] = \limits~t
      \qquad
      C.\CELEMS[y] = t
    }{
