@@ -181,7 +181,7 @@ the expression <span class="math notranslate nohighlight">\(\href{../syntax/inst
 <ul class="simple">
 <li><p>For each <span class="math notranslate nohighlight">\(e_i\)</span> in <span class="math notranslate nohighlight">\(e^\ast\)</span>,</p>
 <ul>
-<li><p>The expression <span class="math notranslate nohighlight">\(e_i\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a>.</p></li>
+<li><p>The expression <span class="math notranslate nohighlight">\(e_i\)</span> must be <a class="reference internal" href="instructions.html#valid-expr"><span class="std std-ref">valid</span></a> with some <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t]\)</span>.</p></li>
 <li><p>The expression <span class="math notranslate nohighlight">\(e_i\)</span> must be <a class="reference internal" href="instructions.html#valid-const"><span class="std std-ref">constant</span></a>.</p></li>
 </ul>
 </li>
@@ -190,7 +190,7 @@ the expression <span class="math notranslate nohighlight">\(\href{../syntax/inst
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
-  (C \href{../valid/instructions.html#valid-expr}{\vdash} e \mathrel{\mbox{ok}})^\ast
+  (C \href{../valid/instructions.html#valid-expr}{\vdash} e : [t])^\ast
   \qquad
   (C \href{../valid/instructions.html#valid-constant}{\vdash} e \href{../valid/instructions.html#valid-constant}{\mathrel{\mbox{const}}})^\ast
   \qquad
