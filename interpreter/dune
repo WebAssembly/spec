@@ -1,0 +1,33 @@
+(include_subdirs unqualified)
+
+(library
+ (name wasm)
+ ; The 'main' module shall not be part of the library, as it would start the
+ ; WASM REPL every time in all the dependencies.
+ ; We also need to exclude the 'wasm' module as it overlaps with the library
+ ; name.
+ (modules :standard \ main wasm))
+
+(executable
+ (name main)
+ (modules main)
+ (libraries wasm)
+ (flags
+  (-open Wasm)))
+
+(subdir
+ text
+ (rule
+  (target lexer.ml)
+  (deps lexer.mll)
+  (action
+   (chdir
+    %{workspace_root}
+    (run %{bin:ocamllex} -ml -q -o %{target} %{deps}))))
+ (ocamlyacc
+  (modules parser)))
+
+(env
+ (dev
+  (flags
+   (-w +a-4-27-42-44-45 -warn-error +a-3))))
