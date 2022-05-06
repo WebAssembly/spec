@@ -149,7 +149,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 * For each :math:`e_i` in :math:`e^\ast`,
 
-  * The expression :math:`e_i` must be valid with :ref:`result type <syntax-resulttype>` :math:`[t]`.
+  * The expression :math:`e_i` must be :ref:`valid <valid-expr>` with some :ref:`result type <syntax-resulttype>` :math:`[t]`.
 
   * The expression :math:`e_i` must be :ref:`constant <valid-const>`.
 
