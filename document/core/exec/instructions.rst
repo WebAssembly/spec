@@ -108,7 +108,7 @@ Where the underlying operators are non-deterministic, because they may return on
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& (t\K{.}\CONST~c)
      & (\iff c \in \binop_t(c_1,c_2)) \\
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& \TRAP
-     & (\iff \binop_{t}(c_1,c2) = \{\})
+     & (\iff \binop_{t}(c_1,c_2) = \{\})
    \end{array}
 
 
