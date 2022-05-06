@@ -293,7 +293,7 @@ It records its <a class="reference internal" href="../syntax/types.html#syntax-g
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef2138#1{{}}\mathdef2138{(global instance)} &amp; \href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}} &amp;::=&amp;
-  \{ \href{../exec/runtime.html#syntax-globalinst}{\mathsf{type}}~\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}, \href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}}~\href{../exec/runtime.html#syntax-val}{\mathit{val}} \} \\
+  \{ \href{../exec/runtime.html#syntax-globalinst}{\mathsf{type}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}, \href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}}~\href{../exec/runtime.html#syntax-val}{\mathit{val}} \} \\
 \end{array}\end{split}\]</div>
 <p>The value of mutable globals can be mutated through <a class="reference internal" href="../syntax/instructions.html#syntax-instr-variable"><span class="std std-ref">variable instructions</span></a> or by external means provided by the <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedder</span></a>.</p>
 <p>It is an invariant of the semantics that the value has a type equal to the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> of <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}\)</span>.</p>
