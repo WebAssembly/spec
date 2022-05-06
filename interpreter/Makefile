@@ -38,7 +38,7 @@ $(BUILDDIR)/%:
 winmake.bat:
 	dune clean
 	dune build main/main.bc
-	cat _build/log | grep -v "^#" | sed s:`which ocaml`:ocaml:g | sed s:_build/default:_build/:g
+	cat _build/log | grep -v "^#" | grep -v "ocamldep\.opt" | sed s:`which ocaml`:ocaml:g | sed s:_build/default:_build/:g | sed s:"cd _build/ &&"::g | sed s:".wasm.objs/"::g | sed s:"byte/"::g | sed s:"-I byte"::g | sed s:"^...."::g | sed s:")"::g | sed s:"  ":" ":g
 
 test/%: $(OPT)
 		$(TESTDIR)/run.py --wasm `pwd`/$< $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast
