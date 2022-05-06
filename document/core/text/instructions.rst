@@ -239,17 +239,17 @@ Table Instructions
 Abbreviations
 .............
 
-For backwards compatibility, all :math:`table indices <syntax-tableidx>` may be omitted from table instructions, defaulting to :math:`0`.
+For backwards compatibility, all :ref:`table indices <syntax-tableidx>` may be omitted from table instructions, defaulting to :math:`0`.
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llcl}
    \production{instruction} &
-     \text{table.get} &\equiv& \text{table.get}~~\text{0} \\ &&|&
-     \text{table.set} &\equiv& \text{table.set}~~\text{0} \\ &&|&
-     \text{table.size} &\equiv& \text{table.size}~~\text{0} \\ &&|&
-     \text{table.grow} &\equiv& \text{table.grow}~~\text{0} \\ &&|&
-     \text{table.fill} &\equiv& \text{table.fill}~~\text{0} \\ &&|&
-     \text{table.copy} &\equiv& \text{table.copy}~~\text{0}~~\text{0} \\ &&|&
+     \text{table.get} &\equiv& \text{table.get}~~\text{0} \\ &
+     \text{table.set} &\equiv& \text{table.set}~~\text{0} \\ &
+     \text{table.size} &\equiv& \text{table.size}~~\text{0} \\ &
+     \text{table.grow} &\equiv& \text{table.grow}~~\text{0} \\ &
+     \text{table.fill} &\equiv& \text{table.fill}~~\text{0} \\ &
+     \text{table.copy} &\equiv& \text{table.copy}~~\text{0}~~\text{0} \\ &
      \text{table.init}~~x{:}\Telemidx_I &\equiv& \text{table.init}~~\text{0}~~x{:}\Telemidx_I \\
    \end{array}
 
@@ -968,7 +968,7 @@ Such a folded instruction can appear anywhere a regular instruction can.
      \text{(}~\text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~\text{)}
        &\equiv\quad \text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end} \\ &
      \text{(}~\text{if}~~\Tlabel~~\Tblocktype~~\Tfoldedinstr^\ast
-       &\hspace{-3ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)}^?~~\text{)}
+       &\hspace{-3ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~(\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)})^?~~\text{)}
        \quad\equiv \\ &\qquad
          \Tfoldedinstr^\ast~~\text{if}~~\Tlabel~~\Tblocktype &\hspace{-1ex} \Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\
    \end{array}

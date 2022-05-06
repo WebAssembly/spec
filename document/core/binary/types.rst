@@ -91,7 +91,7 @@ Value Types
 Result Types
 ~~~~~~~~~~~~
 
-:ref:`Result types <syntax-resulttype>` are encoded by the respective :ref:`vectors <binary-vec>` of :ref:`value types `<binary-valtype>`.
+:ref:`Result types <syntax-resulttype>` are encoded by the respective :ref:`vectors <binary-vec>` of :ref:`value types <binary-valtype>`.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}

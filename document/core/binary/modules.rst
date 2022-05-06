@@ -325,7 +325,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
 .. math::
    \begin{array}{llclll}
    \production{element section} & \Belemsec &::=&
-     \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg} \\
+     \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg}^\ast \\
    \production{element segment} & \Belem &::=&
      0{:}\Bu32~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
@@ -406,7 +406,7 @@ denoting *count* locals of the same value type.
        &\Rightarrow& \X{code} & (\iff \X{size} = ||\Bfunc||) \\
    \production{function} & \Bfunc &::=&
      (t^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
-       &\Rightarrow& \concat((t^\ast)^\ast), e^\ast
+       &\Rightarrow& \concat((t^\ast)^\ast), e
          & (\iff |\concat((t^\ast)^\ast)| < 2^{32}) \\
    \production{locals} & \Blocals &::=&
      n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& t^n \\
@@ -438,7 +438,7 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
 .. math::
    \begin{array}{llclll}
    \production{data section} & \Bdatasec &::=&
-     \X{seg}^\ast{:}\Bsection_{11}(\Bvec(\Bdata)) &\Rightarrow& \X{seg} \\
+     \X{seg}^\ast{:}\Bsection_{11}(\Bvec(\Bdata)) &\Rightarrow& \X{seg}^\ast \\
    \production{data segment} & \Bdata &::=&
      0{:}\Bu32~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
        &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~0, \DOFFSET~e \} \} \\ &&|&
@@ -504,7 +504,7 @@ All sections can be empty.
 The lengths of vectors produced by the (possibly empty) :ref:`function <binary-funcsec>` and :ref:`code <binary-codesec>` section must match up.
 
 Similarly, the optional data count must match the length of the :ref:`data segment <binary-datasec>` vector.
-Furthermore, it must be present if any :math:`data index <syntax-dataidx>` occurs in the code section.
+Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs in the code section.
 
 .. math::
    \begin{array}{llcllll}
