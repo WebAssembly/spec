@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Numerics &#8212; WebAssembly 2.0 (Draft 2022-05-05)</title>
+    <title>Numerics &#8212; WebAssembly 2.0 (Draft 2022-05-06)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -382,7 +382,7 @@ it holds that <span class="math notranslate nohighlight">\(i_1 = i_2\cdot\href{.
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}lcll}
-\href{../exec/numerics.html#op-iandnot}{\mathrm{iandnot}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#op-iand}{\mathrm{iand}}_N(i_1, \href{../exec/numerics.html#op-inot}{\mathrm{inot}}_N(i2))
+\href{../exec/numerics.html#op-iandnot}{\mathrm{iandnot}}_N(i_1, i_2) &amp;=&amp; \href{../exec/numerics.html#op-iand}{\mathrm{iand}}_N(i_1, \href{../exec/numerics.html#op-inot}{\mathrm{inot}}_N(i_2))
 \end{array}\]</div>
 </section>
 <section id="xref-exec-numerics-op-ior-mathrm-ior-n-i-1-i-2">
@@ -677,8 +677,8 @@ it holds that <span class="math notranslate nohighlight">\(i_1 = i_2\cdot\href{.
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../exec/numerics.html#op-imin-u}{\mathrm{imin\_u}}_N(i_1, i_2) &amp;=&amp; i_1 &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#op-ilt-s}{\mathrm{ilt\_s}}_N(i_1, i_2) = 1)\\
-\href{../exec/numerics.html#op-imin-u}{\mathrm{imin\_u}}_N(i_1, i_2) &amp;=&amp; i_2 &amp; (\mathrel{\mbox{otherwise}})
+\href{../exec/numerics.html#op-imin-s}{\mathrm{imin\_s}}_N(i_1, i_2) &amp;=&amp; i_1 &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#op-ilt-s}{\mathrm{ilt\_s}}_N(i_1, i_2) = 1)\\
+\href{../exec/numerics.html#op-imin-s}{\mathrm{imin\_s}}_N(i_1, i_2) &amp;=&amp; i_2 &amp; (\mathrel{\mbox{otherwise}})
 \end{array}\end{split}\]</div>
 </section>
 <section id="xref-exec-numerics-op-imax-u-mathrm-imax-u-n-i-1-i-2">
@@ -688,8 +688,8 @@ it holds that <span class="math notranslate nohighlight">\(i_1 = i_2\cdot\href{.
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../exec/numerics.html#op-imin-u}{\mathrm{imin\_u}}_N(i_1, i_2) &amp;=&amp; i_1 &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#op-igt-u}{\mathrm{igt\_u}}_N(i_1, i_2) = 1)\\
-\href{../exec/numerics.html#op-imin-u}{\mathrm{imin\_u}}_N(i_1, i_2) &amp;=&amp; i_2 &amp; (\mathrel{\mbox{otherwise}})
+\href{../exec/numerics.html#op-imax-u}{\mathrm{imax\_u}}_N(i_1, i_2) &amp;=&amp; i_1 &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#op-igt-u}{\mathrm{igt\_u}}_N(i_1, i_2) = 1)\\
+\href{../exec/numerics.html#op-imax-u}{\mathrm{imax\_u}}_N(i_1, i_2) &amp;=&amp; i_2 &amp; (\mathrel{\mbox{otherwise}})
 \end{array}\end{split}\]</div>
 </section>
 <section id="xref-exec-numerics-op-imax-s-mathrm-imax-s-n-i-1-i-2">
@@ -699,8 +699,8 @@ it holds that <span class="math notranslate nohighlight">\(i_1 = i_2\cdot\href{.
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\href{../exec/numerics.html#op-imin-u}{\mathrm{imin\_u}}_N(i_1, i_2) &amp;=&amp; i_1 &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#op-igt-s}{\mathrm{igt\_s}}_N(i_1, i_2) = 1)\\
-\href{../exec/numerics.html#op-imin-u}{\mathrm{imin\_u}}_N(i_1, i_2) &amp;=&amp; i_2 &amp; (\mathrel{\mbox{otherwise}})
+\href{../exec/numerics.html#op-imax-s}{\mathrm{imax\_s}}_N(i_1, i_2) &amp;=&amp; i_1 &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#op-igt-s}{\mathrm{igt\_s}}_N(i_1, i_2) = 1)\\
+\href{../exec/numerics.html#op-imax-s}{\mathrm{imax\_s}}_N(i_1, i_2) &amp;=&amp; i_2 &amp; (\mathrel{\mbox{otherwise}})
 \end{array}\end{split}\]</div>
 </section>
 <section id="xref-exec-numerics-op-iaddsat-u-mathrm-iaddsat-u-n-i-1-i-2">
