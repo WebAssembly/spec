@@ -458,7 +458,7 @@ They all have a one byte prefix, whereas the actual opcode is encoded by a varia
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef1257#1{{}}\mathdef1257{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\&amp;&amp;|&amp;
   \def\mathdef1533#1{\mathtt{0x#1}}\mathdef1533{FD}~~12{:}\href{../binary/values.html#binary-int}{\def\mathdef1262#1{{\mathtt{u}#1}}\mathdef1262{\mathtt{32}}}~~(b{:}\href{../binary/values.html#binary-byte}{\mathtt{byte}})^{16} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{v128}}.\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{const}}~
-  bytes_{\mathsf{i128}}^{-1}(b_{0}~\dots~b_{15}) \\
+  \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\mathsf{i128}}^{-1}(b_{0}~\dots~b_{15}) \\
 \end{array}\end{split}\]</div>
 <p id="binary-vternop">The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{shuffle}}\)</span> instruction is also followed by the encoding of 16 <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-laneidx}{\mathit{laneidx}}\)</span> immediates.</p>
 <div class="math notranslate nohighlight">

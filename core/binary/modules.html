@@ -317,7 +317,7 @@ It decodes into a vector of <a class="reference internal" href="../syntax/module
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef1749#1{{}}\mathdef1749{element section} &amp; \href{../binary/modules.html#binary-elemsec}{\mathtt{elemsec}} &amp;::=&amp;
-  \mathit{seg}^\ast{:}\href{../binary/modules.html#binary-section}{\mathtt{section}}_9(\href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\href{../binary/modules.html#binary-elem}{\mathtt{elem}})) &amp;\Rightarrow&amp; \mathit{seg} \\
+  \mathit{seg}^\ast{:}\href{../binary/modules.html#binary-section}{\mathtt{section}}_9(\href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\href{../binary/modules.html#binary-elem}{\mathtt{elem}})) &amp;\Rightarrow&amp; \mathit{seg}^\ast \\
 \def\mathdef1749#1{{}}\mathdef1749{element segment} &amp; \href{../binary/modules.html#binary-elem}{\mathtt{elem}} &amp;::=&amp;
   0{:}\href{../binary/values.html#binary-int}{\def\mathdef1754#1{{\mathtt{u}#1}}\mathdef1754{\mathtt{32}}}~~e{:}\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}~~y^\ast{:}\href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\href{../binary/modules.html#binary-funcidx}{\mathtt{funcidx}})
     &amp;\Rightarrow&amp; \\&amp;&amp;&amp;\quad
@@ -387,7 +387,7 @@ The <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#sy
     &amp;\Rightarrow&amp; \mathit{code} &amp; (\mathrel{\mbox{if}} \mathit{size} = ||\href{../binary/modules.html#binary-func}{\mathtt{func}}||) \\
 \def\mathdef1749#1{{}}\mathdef1749{function} &amp; \href{../binary/modules.html#binary-func}{\mathtt{func}} &amp;::=&amp;
   (t^\ast)^\ast{:}\href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\href{../binary/modules.html#binary-local}{\mathtt{locals}})~~e{:}\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}
-    &amp;\Rightarrow&amp; \href{../syntax/conventions.html#notation-concat}{\mathrm{concat}}((t^\ast)^\ast), e^\ast
+    &amp;\Rightarrow&amp; \href{../syntax/conventions.html#notation-concat}{\mathrm{concat}}((t^\ast)^\ast), e
       &amp; (\mathrel{\mbox{if}} |\href{../syntax/conventions.html#notation-concat}{\mathrm{concat}}((t^\ast)^\ast)| &lt; 2^{32}) \\
 \def\mathdef1749#1{{}}\mathdef1749{locals} &amp; \href{../binary/modules.html#binary-local}{\mathtt{locals}} &amp;::=&amp;
   n{:}\href{../binary/values.html#binary-int}{\def\mathdef1754#1{{\mathtt{u}#1}}\mathdef1754{\mathtt{32}}}~~t{:}\href{../binary/types.html#binary-valtype}{\mathtt{valtype}} &amp;\Rightarrow&amp; t^n \\
@@ -408,7 +408,7 @@ It decodes into a vector of <a class="reference internal" href="../syntax/module
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef1749#1{{}}\mathdef1749{data section} &amp; \href{../binary/modules.html#binary-datasec}{\mathtt{datasec}} &amp;::=&amp;
-  \mathit{seg}^\ast{:}\href{../binary/modules.html#binary-section}{\mathtt{section}}_{11}(\href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\href{../binary/modules.html#binary-data}{\mathtt{data}})) &amp;\Rightarrow&amp; \mathit{seg} \\
+  \mathit{seg}^\ast{:}\href{../binary/modules.html#binary-section}{\mathtt{section}}_{11}(\href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\href{../binary/modules.html#binary-data}{\mathtt{data}})) &amp;\Rightarrow&amp; \mathit{seg}^\ast \\
 \def\mathdef1749#1{{}}\mathdef1749{data segment} &amp; \href{../binary/modules.html#binary-data}{\mathtt{data}} &amp;::=&amp;
   0{:}\href{../binary/values.html#binary-int}{\def\mathdef1754#1{{\mathtt{u}#1}}\mathdef1754{\mathtt{32}}}~~e{:}\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}~~b^\ast{:}\href{../binary/conventions.html#binary-vec}{\mathtt{vec}}(\href{../binary/values.html#binary-byte}{\mathtt{byte}})
     &amp;\Rightarrow&amp; \{ \href{../syntax/modules.html#syntax-data}{\mathsf{init}}~b^\ast, \href{../syntax/modules.html#syntax-data}{\mathsf{mode}}~\href{../syntax/modules.html#syntax-datamode}{\mathsf{active}}~\{ \href{../syntax/modules.html#syntax-data}{\mathsf{memory}}~0, \href{../syntax/modules.html#syntax-data}{\mathsf{offset}}~e \} \} \\ &amp;&amp;|&amp;
@@ -456,7 +456,7 @@ while other sections must occur at most once and in the prescribed order.
 All sections can be empty.</p>
 <p>The lengths of vectors produced by the (possibly empty) <a class="reference internal" href="#binary-funcsec"><span class="std std-ref">function</span></a> and <a class="reference internal" href="#binary-codesec"><span class="std std-ref">code</span></a> section must match up.</p>
 <p>Similarly, the optional data count must match the length of the <a class="reference internal" href="#binary-datasec"><span class="std std-ref">data segment</span></a> vector.
-Furthermore, it must be present if any <span class="math notranslate nohighlight">\(data index &lt;syntax-dataidx&gt;\)</span> occurs in the code section.</p>
+Furthermore, it must be present if any <a class="reference internal" href="../syntax/modules.html#syntax-dataidx"><span class="std std-ref">data index</span></a> occurs in the code section.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcllll}
 \def\mathdef1749#1{{}}\mathdef1749{magic} &amp; \href{../binary/modules.html#binary-magic}{\mathtt{magic}} &amp;::=&amp;
