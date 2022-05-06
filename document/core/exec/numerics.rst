@@ -406,7 +406,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \iandnot_N(i_1, i_2) &=& \iand_N(i_1, \inot_N(i2))
+   \iandnot_N(i_1, i_2) &=& \iand_N(i_1, \inot_N(i_2))
    \end{array}
 
 .. _op-ior:
@@ -793,8 +793,8 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \iminu_N(i_1, i_2) &=& i_1 & (\iff \ilts_N(i_1, i_2) = 1)\\
-   \iminu_N(i_1, i_2) &=& i_2 & (\otherwise)
+   \imins_N(i_1, i_2) &=& i_1 & (\iff \ilts_N(i_1, i_2) = 1)\\
+   \imins_N(i_1, i_2) &=& i_2 & (\otherwise)
    \end{array}
 
 
@@ -807,8 +807,8 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \iminu_N(i_1, i_2) &=& i_1 & (\iff \igtu_N(i_1, i_2) = 1)\\
-   \iminu_N(i_1, i_2) &=& i_2 & (\otherwise)
+   \imaxu_N(i_1, i_2) &=& i_1 & (\iff \igtu_N(i_1, i_2) = 1)\\
+   \imaxu_N(i_1, i_2) &=& i_2 & (\otherwise)
    \end{array}
 
 
@@ -821,8 +821,8 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \iminu_N(i_1, i_2) &=& i_1 & (\iff \igts_N(i_1, i_2) = 1)\\
-   \iminu_N(i_1, i_2) &=& i_2 & (\otherwise)
+   \imaxs_N(i_1, i_2) &=& i_1 & (\iff \igts_N(i_1, i_2) = 1)\\
+   \imaxs_N(i_1, i_2) &=& i_2 & (\otherwise)
    \end{array}
 
 
