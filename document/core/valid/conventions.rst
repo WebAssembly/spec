@@ -150,7 +150,7 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
         C \vdash \I32.\ADD : [\I32~\I32] \to [\I32]
       }
 
-   The instruction is always valid with type :math:`[\I32~\I32] \to [\I32`]
+   The instruction is always valid with type :math:`[\I32~\I32] \to [\I32]`
    (saying that it consumes two |I32| values and produces one),
    independent of any side conditions.
 
