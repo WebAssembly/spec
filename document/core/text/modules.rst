@@ -120,7 +120,7 @@ The following auxiliary function extracts optional identifiers from parameters:
    Both productions overlap for the case that the function type is :math:`[] \to []`.
    However, in that case, they also produce the same results, so that the choice is immaterial.
 
-   The :ref:`well-formedness <text-context-wf>` condition on :math:`I'` ensures that the parameters do not contain duplicate identifier.
+   The :ref:`well-formedness <text-context-wf>` condition on :math:`I'` ensures that the parameters do not contain duplicate identifiers.
 
 
 .. _text-typeuse-abbrev:
@@ -356,7 +356,7 @@ Memory definitions can bind a symbolic :ref:`memory identifier <text-id>`.
 Abbreviations
 .............
 
-A :ref:`data segment <text-data>` can be given inline with a memory definition, in which case its offset is :math:`0` the :ref:`limits <text-limits>` of the :ref:`memory type <text-memtype>` are inferred from the length of the data, rounded up to :ref:`page size <page-size>`:
+A :ref:`data segment <text-data>` can be given inline with a memory definition, in which case its offset is :math:`0` and the :ref:`limits <text-limits>` of the :ref:`memory type <text-memtype>` are inferred from the length of the data, rounded up to :ref:`page size <page-size>`:
 
 .. math::
    \begin{array}{llclll}
@@ -365,7 +365,7 @@ A :ref:`data segment <text-data>` can be given inline with a memory definition, 
        \text{(}~\text{memory}~~\Tid'~~m~~m~\text{)} \\ & \qquad
        \text{(}~\text{data}~~\text{(}~\text{memory}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh, m = \F{ceil}(n / 64\,\F{Ki})) \\
    \end{array}
 
 Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
