@@ -559,7 +559,7 @@ Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs
 where for each :math:`t_i^\ast, e_i` in :math:`\X{code}^n`,
 
 .. math::
-   \func^n[i] = \{ \FTYPE~\typeidx^n[i], \FLOCALS~t_i^\ast, \FBODY~e_i \} ) \\
+   \func^n[i] = \{ \FTYPE~\typeidx^n[i], \FLOCALS~t_i^\ast, \FBODY~e_i \} \\
 
 .. note::
    The version of the WebAssembly binary format may increase in the future

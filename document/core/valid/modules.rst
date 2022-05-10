@@ -147,7 +147,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 :math:`\{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \}`
 .......................................................
 
-* For each :math:`e_i` in :math:`e^\ast`,
+* For each :math:`e_i` in :math:`e^\ast`:
 
   * The expression :math:`e_i` must be :ref:`valid <valid-expr>` with some :ref:`result type <syntax-resulttype>` :math:`[t]`.
 
