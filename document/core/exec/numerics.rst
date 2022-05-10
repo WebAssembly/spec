@@ -197,7 +197,7 @@ Numeric vectors have the same underlying representation as an |i128|. They can a
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\where & B = |t| / 8 \\
-     \wedge & b^{16} = bytes_{\i128}(c) \\
+     \wedge & b^{16} = \bytes_{\i128}(c) \\
      \wedge & c_i = \bytes_{t}^{-1}(b^{16}[i \cdot B \slice B]))
      \end{array}
    \end{array}
@@ -746,7 +746,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 * Let :math:`j` be the :ref:`signed interpretation <aux-signed>` of :math:`i`.
 
-* If :math:`j` greater than or equal to :math:`0`, then return :math:`i`.
+* If :math:`j` is greater than or equal to :math:`0`, then return :math:`i`.
 
 * Else return the negation of `j`, modulo :math:`2^N`.
 
@@ -1060,13 +1060,13 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if both :math:`z_1` and :math:`z_2` are infinities of equal sign, then return that infinity.
 
-* Else if one of :math:`z_1` or :math:`z_2` is an infinity, then return that infinity.
+* Else if either :math:`z_1` or :math:`z_2` is an infinity, then return that infinity.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of opposite sign, then return positive zero.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of equal sign, then return that zero.
 
-* Else if one of :math:`z_1` or :math:`z_2` is a zero, then return the other operand.
+* Else if either :math:`z_1` or :math:`z_2` is a zero, then return the other operand.
 
 * Else if both :math:`z_1` and :math:`z_2` are values with the same magnitude but opposite signs, then return positive zero.
 
@@ -1149,9 +1149,9 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if both :math:`z_1` and :math:`z_2` are infinities of opposite sign, then return negative infinity.
 
-* Else if one of :math:`z_1` or :math:`z_2` is an infinity and the other a value with equal sign, then return positive infinity.
+* Else if either :math:`z_1` or :math:`z_2` is an infinity and the other a value with equal sign, then return positive infinity.
 
-* Else if one of :math:`z_1` or :math:`z_2` is an infinity and the other a value with opposite sign, then return negative infinity.
+* Else if either :math:`z_1` or :math:`z_2` is an infinity and the other a value with opposite sign, then return negative infinity.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of equal sign, then return positive zero.
 
@@ -1235,9 +1235,9 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if one of :math:`z_1` or :math:`z_2` is a negative infinity, then return negative infinity.
+* Else if either :math:`z_1` or :math:`z_2` is a negative infinity, then return negative infinity.
 
-* Else if one of :math:`z_1` or :math:`z_2` is a positive infinity, then return the other value.
+* Else if either :math:`z_1` or :math:`z_2` is a positive infinity, then return the other value.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of opposite signs, then return negative zero.
 
@@ -1264,9 +1264,9 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if one of :math:`z_1` or :math:`z_2` is a positive infinity, then return positive infinity.
+* Else if either :math:`z_1` or :math:`z_2` is a positive infinity, then return positive infinity.
 
-* Else if one of :math:`z_1` or :math:`z_2` is a negative infinity, then return the other value.
+* Else if either :math:`z_1` or :math:`z_2` is a negative infinity, then return the other value.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of opposite signs, then return positive zero.
 

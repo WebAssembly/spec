@@ -585,7 +585,7 @@ interface Module {
 </div>
 
 <div algorithm>
-    The <dfn constructor for="Module">Module(|bytes|)</dfn> constructor, when invoked, performs the follwing steps:
+    The <dfn constructor for="Module">Module(|bytes|)</dfn> constructor, when invoked, performs the following steps:
 
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Compile a WebAssembly module|Compile the WebAssembly module=] |stableBytes| and store the result as |module|.
@@ -778,7 +778,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
         1. Let |ref| be [=DefaultValue=](|elementType|).
     1. Otherwise,
         1. Let |ref| be ? [=ToWebAssemblyValue=](|value|, |elementType|).
-    1. Let |type| be the [=table type=] {[=table type|min=] |initial|, [=table type|ma𝗑=] |maximum|} |elementType|.
+    1. Let |type| be the [=table type=] {[=table type|min=] |initial|, [=table type|max=] |maximum|} |elementType|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |tableaddr|) be [=table_alloc=](|store|, |type|, |ref|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
@@ -1147,7 +1147,7 @@ WebAssembly defines the following Error classes: <dfn exception>CompileError</df
 <div algorithm="create the WebAssembly namespace object">
 When the [=namespace object=] for the {{WebAssembly}} namespace is [=create a namespace object|created=], the following steps must be run:
 
-1.  Let |namespaceObject| the [=namespace object=].
+1.  Let |namespaceObject| be the [=namespace object=].
 1.  [=list/iterate|For each=] |error| of « "CompileError", "LinkError", "RuntimeError" »,
     1.  Let |constructor| be a new object, implementing the [=NativeError Object Structure=], with <var ignore>NativeError</var> set to |error|.
     1.  ! [$CreateMethodProperty$](|namespaceObject|, |error|,  |constructor|).
@@ -1241,4 +1241,4 @@ In practice, an implementation may run out of resources for valid modules below 
 
 <p><em>This section is non-normative.</em></p>
 
-This document defines a host environment for WebAssembly. It enables a WebAssembly instance to [=import=] JavaScript objects and functions from an [=read the imports|import object=], but otherwise provides no access to the embedding environment. Thus a WebAssembly instance is bounds to the same constraints as JavaScript.
+This document defines a host environment for WebAssembly. It enables a WebAssembly instance to [=import=] JavaScript objects and functions from an [=read the imports|import object=], but otherwise provides no access to the embedding environment. Thus a WebAssembly instance is bound to the same constraints as JavaScript.

@@ -400,7 +400,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & i^\ast = \lanes_{i8x16}(c_2) \\
       \wedge & c^\ast = \lanes_{i8x16}(c_1)~0^{240} \\
-      \wedge & c' = \lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ])
+      \wedge & c' = \lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ]))
      \end{array}
    \end{array}
 
@@ -436,7 +436,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & i^\ast = \lanes_{i8x16}(c_1)~\lanes_{i8x16}(c_2) \\
-      \wedge & c = \lanes^{-1}_{i8x16}(i^\ast[x^\ast[0]] \dots i^\ast[x^\ast[15]])
+      \wedge & c = \lanes^{-1}_{i8x16}(i^\ast[x^\ast[0]] \dots i^\ast[x^\ast[15]]))
      \end{array}
    \end{array}
 
@@ -494,7 +494,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & t_2 = \unpacked(t_1\K{x}N) \\
-       \wedge & c_2 = \extend^{sx^?}_{t_1,t_2}(\lanes_{t_1\K{x}N}(c_1)[x])
+       \wedge & c_2 = \extend^{sx^?}_{t_1,t_2}(\lanes_{t_1\K{x}N}(c_1)[x]))
      \end{array}
    \end{array}
 
@@ -529,8 +529,8 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & i^\ast = \lanes_{\shape}(c_2)) \\
-       \wedge & c = \lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)
+      (\iff & i^\ast = \lanes_{\shape}(c_2) \\
+       \wedge & c = \lanes^{-1}_{\shape}(i^\ast \with [x] = c_1))
      \end{array}
    \end{array}
 
@@ -673,7 +673,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & i_1^\ast = \lanes_{\shape}(c) \\
-     \wedge & i = \bool(\bigwedge(i_1 \neq 0)^\ast)
+     \wedge & i = \bool(\bigwedge(i_1 \neq 0)^\ast))
      \end{array}
    \end{array}
 
@@ -735,7 +735,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & d_1^M = \narrow^{\sx}_{|t_1|,|t_2|}( \lanes_{t_1\K{x}M}(c_1)) \\
      \wedge & d_2^M = \narrow^{\sx}_{|t_1|,|t_2|}( \lanes_{t_1\K{x}M}(c_2)) \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(d_1^M~d_2^M)
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(d_1^M~d_2^M))
      \end{array}
    \end{array}
 
@@ -762,7 +762,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)))
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))))
      \end{array}
    \end{array}
 
@@ -795,7 +795,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N]))
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N])))
      \end{array}
    \end{array}
 
@@ -830,7 +830,7 @@ where:
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^M)
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^M))
      \end{array}
    \end{array}
 
@@ -840,7 +840,7 @@ where:
 :math:`\K{i32x4.}\DOT\K{\_i16x8\_s}`
 ....................................
 
-1. Assert: due to :ref:`validation <valid-vec-dot>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vec-dot>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
@@ -863,7 +863,7 @@ where:
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & (i_1~i_2)^\ast = \imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2))) \\
      \wedge & j^\ast = \iadd_{32}(i_1, i_2)^\ast \\
-     \wedge & c = \lanes^{-1}_{\I32X4}(j^\ast)
+     \wedge & c = \lanes^{-1}_{\I32X4}(j^\ast))
      \end{array}
    \end{array}
 
@@ -873,7 +873,7 @@ where:
 :math:`t_2\K{x}N\K{.}\EXTMUL\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx`
 ................................................................
 
-1. Assert: due to :ref:`validation <valid-vec-extmul>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vec-extmul>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
@@ -903,7 +903,7 @@ where:
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N] \\
      \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[\half(0, N) \slice N] \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast))))
      \end{array}
 
 where:
@@ -941,7 +941,7 @@ where:
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & (i_1~i_2)^\ast = \extend^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)) \\
      \wedge & j^\ast = \iadd_{N}(i_1, i_2)^\ast \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(j^\ast)
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(j^\ast))
      \end{array}
    \end{array}
 
@@ -1779,7 +1779,7 @@ Memory Instructions
      \wedge & \X{ea} + M \cdot N / 8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
      \wedge & \bytes_{\iM}(m_k) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} + k \cdot M/8 \slice M/8]) \\
      \wedge & W = M \cdot 2 \\
-     \wedge & c = \lanes^{-1}_{\X{i}W\K{x}N}(\extend^{\sx}_{M,W}(m_0) \dots \extend^{\sx}_{M,W}(m_{N-1}))
+     \wedge & c = \lanes^{-1}_{\X{i}W\K{x}N}(\extend^{\sx}_{M,W}(m_0) \dots \extend^{\sx}_{M,W}(m_{N-1})))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -2087,7 +2087,7 @@ Memory Instructions
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
      \wedge & L = 128/N \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\lanes_{\K{i}N\K{x}L}(c)[x])
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\lanes_{\K{i}N\K{x}L}(c)[y])
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
