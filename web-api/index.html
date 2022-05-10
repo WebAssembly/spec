@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version fb1e763a4, updated Tue Mar 1 13:13:50 2022 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-2/" rel="canonical">
-  <meta content="75059dcb8f3d3e5e8d40f4abd1999f73dfb14b70" name="document-revision">
+  <meta content="d39195773112a22b245ffbe864bab6d1182ccb06" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -290,7 +290,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2022-05-06">6 May 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2022-05-10">10 May 2022</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -407,7 +407,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
        <li data-md>
         <p>If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status①">ok status</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">reject</a> <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a></code> and abort these substeps.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-body-consume-body" id="ref-for-concept-body-consume-body">consume</a> <var>response</var>’s body as an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects">ArrayBuffer</a></code>, and let <var>bodyPromise</var> be the result.</p>
+        <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-body-consume-body" id="ref-for-concept-body-consume-body">Consume</a> <var>response</var>’s body as an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects">ArrayBuffer</a></code>, and let <var>bodyPromise</var> be the result.</p>
         <p class="note" role="note"><span>Note:</span> Although it is specified here that the response is consumed entirely before compilation proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The difference is unobservable, and thus the simpler model is specified.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>bodyPromise</var> with value <var>bodyArrayBuffer</var>:</p>
@@ -439,7 +439,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
    <p>The <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps" id="ref-for-serialization-steps">serialization steps</a>, given <var>value</var>, <var>serialized</var>, and <var>forStorage</var>, are:</p>
    <ol>
     <li data-md>
-     <p>If <var>forStorage</var> is true, throw a "<a class="idl-code" data-link-type="exception" href="https://webidl.spec.whatwg.org/#datacloneerror" id="ref-for-datacloneerror">DataCloneError</a>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code></p>
+     <p>If <var>forStorage</var> is true, throw a "<a class="idl-code" data-link-type="exception" href="https://webidl.spec.whatwg.org/#datacloneerror" id="ref-for-datacloneerror">DataCloneError</a>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>.</p>
     <li data-md>
      <p>Set <var>serialized</var>.[[Bytes]] to the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization" id="ref-for-sub-serialization">sub-serialization</a> of <var>value</var>.[[Bytes]].</p>
     <li data-md>
@@ -473,7 +473,7 @@ of functions and variables are taken directly from the sources. Therefore (for
 example) even though the exact format of implementation-dependent stack trace
 strings does not always match, the locations are easily understandable and the
 same across browsers.</p>
-   <p>To achieve the same goal of a common representations for WebAssembly constructs, the
+   <p>To achieve the same goal of a common representation for WebAssembly constructs, the
 following conventions are adopted.</p>
    <p>A WebAssembly location is a reference to a particular instruction in the binary, and may be
 displayed by a browser or engine in similar contexts as JavaScript source locations.

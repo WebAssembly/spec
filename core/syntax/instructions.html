@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Instructions &#8212; WebAssembly 2.0 (Draft 2022-05-06)</title>
+    <title>Instructions &#8212; WebAssembly 2.0 (Draft 2022-05-10)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -416,7 +416,7 @@ For the other vector instructions, the use of two’s complement for the signed 
   \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}is\_null}} \\&amp;&amp;|&amp;
   \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}func}}~\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}} \\
 \end{array}\end{split}\]</div>
-<p>These instruction produce a null value, check for a null value, or produce a reference to a given function, respectively.</p>
+<p>These instructions produce a null value, check for a null value, or produce a reference to a given function, respectively.</p>
 </section>
 <section id="parametric-instructions">
 <span id="syntax-instr-parametric"></span><span id="index-4"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
@@ -527,7 +527,7 @@ All values are read and written in <a class="reference external" href="https://e
 A <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> results if any of the accessed memory bytes lies outside the address range implied by the memory’s current size.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Future version of WebAssembly might provide memory instructions with 64 bit address ranges.</p>
+<p>Future versions of WebAssembly might provide memory instructions with 64 bit address ranges.</p>
 </div>
 <p>The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.size}}\)</span> instruction returns the current size of a memory.
 The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.grow}}\)</span> instruction grows memory by a given delta and returns the previous size, or <span class="math notranslate nohighlight">\(-1\)</span> if enough memory cannot be allocated.

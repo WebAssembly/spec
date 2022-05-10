@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Modules &#8212; WebAssembly 2.0 (Draft 2022-05-06)</title>
+    <title>Modules &#8212; WebAssembly 2.0 (Draft 2022-05-10)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -164,7 +164,7 @@ The following auxiliary function extracts optional identifiers from parameters:<
 <p class="admonition-title">Note</p>
 <p>Both productions overlap for the case that the function type is <span class="math notranslate nohighlight">\([] \href{../syntax/types.html#syntax-functype}{\rightarrow} []\)</span>.
 However, in that case, they also produce the same results, so that the choice is immaterial.</p>
-<p>The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate nohighlight">\(I'\)</span> ensures that the parameters do not contain duplicate identifier.</p>
+<p>The <a class="reference internal" href="conventions.html#text-context-wf"><span class="std std-ref">well-formedness</span></a> condition on <span class="math notranslate nohighlight">\(I'\)</span> ensures that the parameters do not contain duplicate identifiers.</p>
 </div>
 <section id="abbreviations">
 <span id="text-typeuse-abbrev"></span><h3>Abbreviations<a class="headerlink" href="#abbreviations" title="Permalink to this headline">¶</a></h3>
@@ -318,7 +318,7 @@ Consequently, a table declaration can contain any number of exports, possibly fo
 \end{array}\end{split}\]</div>
 <span class="target" id="index-12"></span><span class="target" id="index-13"></span><section id="text-mem-abbrev">
 <span id="index-14"></span><span id="id4"></span><h3>Abbreviations<a class="headerlink" href="#text-mem-abbrev" title="Permalink to this headline">¶</a></h3>
-<p>A <a class="reference internal" href="#text-data"><span class="std std-ref">data segment</span></a> can be given inline with a memory definition, in which case its offset is <span class="math notranslate nohighlight">\(0\)</span> the <a class="reference internal" href="types.html#text-limits"><span class="std std-ref">limits</span></a> of the <a class="reference internal" href="types.html#text-memtype"><span class="std std-ref">memory type</span></a> are inferred from the length of the data, rounded up to <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>:</p>
+<p>A <a class="reference internal" href="#text-data"><span class="std std-ref">data segment</span></a> can be given inline with a memory definition, in which case its offset is <span class="math notranslate nohighlight">\(0\)</span> and the <a class="reference internal" href="types.html#text-limits"><span class="std std-ref">limits</span></a> of the <a class="reference internal" href="types.html#text-memtype"><span class="std std-ref">memory type</span></a> are inferred from the length of the data, rounded up to <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llclll}
 \def\mathdef3267#1{{}}\mathdef3267{module field} &amp;
@@ -326,7 +326,7 @@ Consequently, a table declaration can contain any number of exports, possibly fo
     \def\mathdef3460#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3460{(}~\def\mathdef3461#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3461{memory}~~\href{../text/values.html#text-id}{\mathtt{id}}'~~m~~m~\def\mathdef3462#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3462{)} \\ &amp; \qquad
     \def\mathdef3463#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3463{(}~\def\mathdef3464#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3464{data}~~\def\mathdef3465#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3465{(}~\def\mathdef3466#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3466{memory}~~\href{../text/values.html#text-id}{\mathtt{id}}'~\def\mathdef3467#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3467{)}~~\def\mathdef3468#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3468{(}~\def\mathdef3469#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3469{i32.const}~~\def\mathdef3470#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3470{0}~\def\mathdef3471#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3471{)}~~\href{../text/modules.html#text-datastring}{\mathtt{datastring}}~\def\mathdef3472#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3472{)}
     \\ &amp; \qquad\qquad
-    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}, m = \mathrm{ceil}(n / 64\mathrm{Ki})) \\
+    (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? \neq \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' = \href{../text/values.html#text-id}{\mathtt{id}}^? \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \wedge \href{../text/values.html#text-id}{\mathtt{id}}' ~\href{../text/values.html#text-id-fresh}{\mbox{fresh}}, m = \mathrm{ceil}(n / 64\,\mathrm{Ki})) \\
 \end{array}\end{split}\]</div>
 <p>Memories can be defined as <a class="reference internal" href="#text-import"><span class="std std-ref">imports</span></a> or <a class="reference internal" href="#text-export"><span class="std std-ref">exports</span></a> inline:</p>
 <div class="math notranslate nohighlight">

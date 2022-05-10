@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version fb1e763a4, updated Tue Mar 1 13:13:50 2022 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="75059dcb8f3d3e5e8d40f4abd1999f73dfb14b70" name="document-revision">
+  <meta content="d39195773112a22b245ffbe864bab6d1182ccb06" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -295,7 +295,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2022-05-06">6 May 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2022-05-10">10 May 2022</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -973,7 +973,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Module(bytes)" data-algorithm-for="Module">
-     The <dfn class="dfn-paneled idl-code" data-dfn-for="Module" data-dfn-type="constructor" data-export data-lt="Module(bytes)|constructor(bytes)" id="dom-module-module"><code>Module(<var>bytes</var>)</code></dfn> constructor, when invoked, performs the follwing steps: 
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="Module" data-dfn-type="constructor" data-export data-lt="Module(bytes)|constructor(bytes)" id="dom-module-module"><code>Module(<var>bytes</var>)</code></dfn> constructor, when invoked, performs the following steps: 
     <ol>
      <li data-md>
       <p>Let <var>stableBytes</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy" id="ref-for-dfn-get-buffer-source-copy③">copy of the bytes held by the buffer</a> <var>bytes</var>.</p>
@@ -1242,7 +1242,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
         <p>Let <var>ref</var> be ? <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①">ToWebAssemblyValue</a>(<var>value</var>, <var>elementType</var>).</p>
       </ol>
      <li data-md>
-      <p>Let <var>type</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype">table type</a> {<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype①">min</a> <var>initial</var>, <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype②">ma𝗑</a> <var>maximum</var>} <var>elementType</var>.</p>
+      <p>Let <var>type</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype">table type</a> {<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype①">min</a> <var>initial</var>, <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype②">max</a> <var>maximum</var>} <var>elementType</var>.</p>
      <li data-md>
       <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#surrounding-agent" id="ref-for-surrounding-agent①③">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑧">associated store</a>.</p>
      <li data-md>
@@ -1876,7 +1876,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      When the <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-namespace-object" id="ref-for-dfn-namespace-object">namespace object</a> for the <code class="idl"><a data-link-type="idl" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑤">WebAssembly</a></code> namespace is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#create-a-namespace-object" id="ref-for-create-a-namespace-object">created</a>, the following steps must be run: 
     <ol>
      <li data-md>
-      <p>Let <var>namespaceObject</var> the <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-namespace-object" id="ref-for-dfn-namespace-object①">namespace object</a>.</p>
+      <p>Let <var>namespaceObject</var> be the <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-namespace-object" id="ref-for-dfn-namespace-object①">namespace object</a>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑧">For each</a> <var>error</var> of « "CompileError", "LinkError", "RuntimeError" »,</p>
       <ol>
@@ -1955,7 +1955,7 @@ In practice, an implementation may run out of resources for valid modules below 
    </ul>
    <h2 class="heading settled" data-level="7" id="security-considerations"><span class="secno">7. </span><span class="content">Security and Privacy Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
    <p><em>This section is non-normative.</em></p>
-   <p>This document defines a host environment for WebAssembly. It enables a WebAssembly instance to <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-import" id="ref-for-syntax-import">import</a> JavaScript objects and functions from an <a data-link-type="dfn" href="#read-the-imports" id="ref-for-read-the-imports③">import object</a>, but otherwise provides no access to the embedding environment. Thus a WebAssembly instance is bounds to the same constraints as JavaScript.</p>
+   <p>This document defines a host environment for WebAssembly. It enables a WebAssembly instance to <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-import" id="ref-for-syntax-import">import</a> JavaScript objects and functions from an <a data-link-type="dfn" href="#read-the-imports" id="ref-for-read-the-imports③">import object</a>, but otherwise provides no access to the embedding environment. Thus a WebAssembly instance is bound to the same constraints as JavaScript.</p>
   </main>
   <div data-fill-with="conformance">
    <h2 class="no-ref no-num heading settled" id="w3c-conformance"><span class="content">Conformance</span><a class="self-link" href="#w3c-conformance"></a></h2>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Numerics &#8212; WebAssembly 2.0 (Draft 2022-05-06)</title>
+    <title>Numerics &#8212; WebAssembly 2.0 (Draft 2022-05-10)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -220,7 +220,7 @@ op(c_1^n, \dots, c_k^n) &amp;=&amp; op(c_1^n[0], \dots, c_k^n[0])~\dots~op(c_1^n
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mathrel{\mbox{where}} &amp; B = |t| / 8 \\
-  \wedge &amp; b^{16} = bytes_{\href{../syntax/values.html#syntax-int}{\mathit{i128}}}(c) \\
+  \wedge &amp; b^{16} = \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{\href{../syntax/values.html#syntax-int}{\mathit{i128}}}(c) \\
   \wedge &amp; c_i = \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}_{t}^{-1}(b^{16}[i \cdot B \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} B]))
   \end{array}
 \end{array}\end{split}\]</div>
@@ -640,7 +640,7 @@ it holds that <span class="math notranslate nohighlight">\(i_1 = i_2\cdot\href{.
 <span id="op-iabs"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-iabs}{\mathrm{iabs}}_N(i)\)</span><a class="headerlink" href="#xref-exec-numerics-op-iabs-mathrm-iabs-n-i" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Let <span class="math notranslate nohighlight">\(j\)</span> be the <a class="reference internal" href="#aux-signed"><span class="std std-ref">signed interpretation</span></a> of <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
-<li><p>If <span class="math notranslate nohighlight">\(j\)</span> greater than or equal to <span class="math notranslate nohighlight">\(0\)</span>, then return <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(j\)</span> is greater than or equal to <span class="math notranslate nohighlight">\(0\)</span>, then return <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
 <li><p>Else return the negation of <cite>j</cite>, modulo <span class="math notranslate nohighlight">\(2^N\)</span>.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
@@ -874,10 +874,10 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <li><p>If either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a NaN, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of opposite signs, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of equal sign, then return that infinity.</p></li>
-<li><p>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity, then return that infinity.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity, then return that infinity.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of opposite sign, then return positive zero.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of equal sign, then return that zero.</p></li>
-<li><p>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a zero, then return the other operand.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a zero, then return the other operand.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are values with the same magnitude but opposite signs, then return positive zero.</p></li>
 <li><p>Else return the result of adding <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span>, <a class="reference internal" href="#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</p></li>
 </ul>
@@ -939,8 +939,8 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <li><p>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> is a zero and the other an infinity, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{\}\)</span>.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of equal sign, then return positive infinity.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of opposite sign, then return negative infinity.</p></li>
-<li><p>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity and the other a value with equal sign, then return positive infinity.</p></li>
-<li><p>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity and the other a value with opposite sign, then return negative infinity.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity and the other a value with equal sign, then return positive infinity.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity and the other a value with opposite sign, then return negative infinity.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of equal sign, then return positive zero.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of opposite sign, then return negative zero.</p></li>
 <li><p>Else return the result of multiplying <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span>, <a class="reference internal" href="#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</p></li>
@@ -1003,8 +1003,8 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <span id="op-fmin"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fmin}{\mathrm{fmin}}_N(z_1, z_2)\)</span><a class="headerlink" href="#xref-exec-numerics-op-fmin-mathrm-fmin-n-z-1-z-2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>If either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a NaN, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</p></li>
-<li><p>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a negative infinity, then return negative infinity.</p></li>
-<li><p>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a positive infinity, then return the other value.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a negative infinity, then return negative infinity.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a positive infinity, then return the other value.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of opposite signs, then return negative zero.</p></li>
 <li><p>Else return the smaller value of <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span>.</p></li>
 </ul>
@@ -1025,8 +1025,8 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <span id="op-fmax"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fmax}{\mathrm{fmax}}_N(z_1, z_2)\)</span><a class="headerlink" href="#xref-exec-numerics-op-fmax-mathrm-fmax-n-z-1-z-2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>If either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a NaN, then return an element of <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z_1, z_2\}\)</span>.</p></li>
-<li><p>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a positive infinity, then return positive infinity.</p></li>
-<li><p>Else if one of <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a negative infinity, then return the other value.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a positive infinity, then return positive infinity.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a negative infinity, then return the other value.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of opposite signs, then return positive zero.</p></li>
 <li><p>Else return the larger value of <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span>.</p></li>
 </ul>
