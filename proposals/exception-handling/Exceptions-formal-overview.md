@@ -36,14 +36,13 @@ mod ::= 'module' ... tag*
 
 ## Validation (Typing)
 
-#### Modification to Labels
+### Validation Contexts: Tagtypes and modified Labels
 
 To verify that the `rethrow l` instruction refers to a label surrounding the instructions of a catch block (call this a catch-label), we introduce a `kind` attribute to labels in the validation context, which is set to `catch` when the label is a catch-label and empty otherwise.
 
 ```
 labelkind ::= 'catch'
 labeltype ::= 'catch'? resulttype
-C ::= {..., 'labels' labeltype}
 ```
 
 The original notation `labels [t*]` is now an abbreviation for:
@@ -52,11 +51,11 @@ The original notation `labels [t*]` is now an abbreviation for:
 'labels' [t*] ::= 'labels' ε [t*]
 ```
 
-### Validation Contexts
+The `labels` entry of validation contexts is modified to use the above definition of labels.
+Moreover, validation contexts now hold a list of tag types, one for each tag known to them.
 
-Validation contexts now hold a list of tag types, one for each tag known to them.
 ```
-C ::= { ..., 'tags' tagtype*}
+C ::= { ..., 'labels' labeltype, 'tags' tagtype*}
 ```
 
 ### Validation Rules for Instructions
@@ -74,12 +73,12 @@ C ⊢ rethrow l : [t1*]→[t2*]
 
 
 C ⊢ bt : [t1*]→[t2*]
-C, labels [t2*] ⊢ instr* : [t1*]→[t2*]
+C, labels [t2*] ⊢ instr1* : [t1*]→[t2*]
 (C.tags[x] = [t*]→[] ∧
- C, labels catch [t2*] ⊢ instr'* : [t*]→[t2*])*
-(C, labels catch [t2*] ⊢ instr''* : []→[t2*])?
+ C, labels (catch [t2*]) ⊢ instr2* : [t*]→[t2*])*
+(C, labels (catch [t2*]) ⊢ instr3* : []→[t2*])?
 -----------------------------------------------------------------------------
-C ⊢ try bt instr* (catch x instr'*)* (catch_all instr''*)? end : [t1*]→[t2*]
+C ⊢ try bt instr1* (catch x instr2*)* (catch_all instr3*)? end : [t1*]→[t2*]
 
 
 C ⊢ bt : [t1*]→[t2*]
@@ -130,6 +129,8 @@ C^k ::= 'catch'{ tagaddr? instr* }* B^k 'end'
       | 'delegate'{ labelidx } B^k 'end'
 ```
 
+Note the `C` in `C^k` above stands for `control`, because the related administrative instructions are in some ways modeling [control frame opcodes](https://webassembly.github.io/spec/core/appendix/algorithm.html?highlight=control#data-structures) "on the stack".
+
 #### Throw Contexts
 
 Throw contexts don't skip over handlers (administrative `catch` or `delegate` instructions).
@@ -152,34 +153,35 @@ An absent tag address in a `catch` administrative instruction (i.e., `a? = ε`) 
 ```
 F; throw x  ↪  F; throw a  (if F.module.tagaddrs[x]=a)
 
-caught{a val^n} B^l[rethrow l] end
-  ↪ caught{a val^n} B^l[val^n (throw a)] end
+caught{a val*} B^l[rethrow l] end
+  ↪ caught{a val*} B^l[val* (throw a)] end
 
-caught{a val^n} val^m end  ↪  val^m
+caught{a val0*} val* end  ↪  val*
 
 
-F; val^n (try bt instr* (catch x instr'*)* (catch_all instr''*)? end)
-  ↪  F; label_m{} (catch{a instr'*}*{ε instr''*}? val^n instr* end) end
+F; val^n (try bt instr1* (catch x instr2*)* (catch_all instr3*)? end)
+  ↪  F; label_m{} (catch{a instr2*}*{ε instr3*}? val^n instr1* end) end
   (if expand_F(bt) = [t1^n]→[t2^m] ∧ (F.module.tagaddrs[x]=a)*)
 
-catch{a? instr*}* val^m end ↪ val^m
+catch{a? instr*}* val* end ↪ val*
 
-S; F; catch{a1? instr*}{a'? instr'*}* T[val^n (throw a)] end
-  ↪  S; F; caught{a val^n} (val^n)? instr* end
+S; F; catch{a1? instr1*}{a0? instr0*}* T[val^n (throw a)] end
+  ↪  S; F; caught{a val^n} (val^n)? instr1* end
   (if (a1? = ε ∨ a1? = a) ∧ S.tags(a).type = [t^n]→[])
 
-catch{a1? instr*}{a'? instr'*}* T[val^n (throw a)] end
-  ↪ catch{a'? instr'*}* T[val^n (throw a)] end
+catch{a1? instr*}{a0? instr0*}* T[val^n (throw a)] end
+  ↪ catch{a0? instr0*}* T[val^n (throw a)] end
   (if a1? ≠ ε ∧ a1? ≠ a)
 
 catch T[val^n (throw a)] end ↪  val^n (throw a)
+  (if S.tags(a).type = [t^n]→[])
 
 
 F; val^n (try bt instr* delegate l)
   ↪ F; label_m{} (delegate{l} val^n instr* end) end
-  (if expand_F(bt) = [t^n]→[t^m])
+  (if expand_F(bt) = [t1^n]→[t2^m])
 
-delegate{l} val^n end ↪ val^n
+delegate{l} val* end ↪ val*
 
 label_m{} B^l[ delegate{l} T[val^n (throw a)] end ] end
   ↪ val^n (throw a)
@@ -194,25 +196,26 @@ There is a subtle difference though. The instruction `br l` searches for the `l+
 
 ### Typing Rules for Administrative Instructions
 
+
 ```
-S.tags[a].type = [t*]→[]
---------------------------------
+S ⊢ tag a : tag [t*]→[]
+-------------------------------
 S;C ⊢ throw a : [t1* t*]→[t2*]
 
-((S.tags[a].type = [t'*]→[])?
- S;C, labels catch [t*] ⊢ instr'* : [t'*?]→[t*])*
-S;C, labels [t*] ⊢ instr* : []→[t*]
+((S ⊢ tag a : tag [t1*]→[])?
+ S;C, labels (catch [t2*]) ⊢ instr2* : [t1*?]→[t2*])*
+S;C, labels [t2*] ⊢ instr1* : []→[t2*]
 -----------------------------------------------------------
-S;C, labels [t*] ⊢ catch{a? instr'*}* instr* end : []→[t*]
+S;C, labels [t2*] ⊢ catch{a? instr2*}* instr1* end : []→[t2*]
 
 S;C, labels [t*] ⊢ instr* : []→[t*]
-C.labels[l] = [t'*]
+C.labels[l] = [t0*]
 ------------------------------------------------------
 S;C, labels [t*] ⊢ delegate{l} instr* end : []→[t*]
 
-S.tags[a].type = [t'*]→[]
-(val:t')*
-S;C, labels catch [t*] ⊢ instr* : []→[t*]
+S ⊢ tag a : tag [t0*]→[]
+(val:t0)*
+S;C, labels (catch [t*]) ⊢ instr* : []→[t*]
 ----------------------------------------------------------
 S;C, labels [t*] ⊢ caught{a val^n} instr* end : []→[t*]
 ```
