@@ -916,7 +916,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |mutable| be |descriptor|["mutable"].
     1. Let |valuetype| be [=ToValueType=](|descriptor|["value"]).
     1. If |valuetype| is [=v128=],
-        1. Throw a {{LinkError}} exception.
+        1. Throw a {{TypeError}} exception.
     1. If |v| is missing,
         1. Let |value| be [=DefaultValue=](|valuetype|).
     1. Otherwise,
