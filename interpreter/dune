@@ -16,6 +16,13 @@
  (flags
   (-open Wasm)))
 
+(executable
+ (name smallint)
+ (modules smallint)
+ (libraries wasm)
+ (flags
+  (-open Wasm)))
+
 (subdir
  text
  (rule
@@ -37,6 +44,9 @@
  (alias runtest)
  (deps
   ./main.exe
+  ./smallint.exe
   (source_tree ../test))
  (action
-  (run ../test/core/run.py --wasm ./main.exe)))
+  (progn
+   (run ../test/core/run.py --wasm ./main.exe)
+   (run ./smallint.exe))))
