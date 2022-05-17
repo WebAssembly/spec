@@ -28,6 +28,6 @@
   (modules parser)))
 
 (env
- (dev
+ (_
   (flags
-   (-w +a-4-27-42-44-45 -warn-error +a-3))))
+   (-w +a-4-27-42-44-45-70 -warn-error +a-3))))
