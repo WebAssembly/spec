@@ -3,7 +3,7 @@
 (library
  (name wasm)
  ; The 'main' module shall not be part of the library, as it would start the
- ; WASM REPL every time in all the dependencies.
+ ; Wasm REPL every time in all the dependencies.
  ; We also need to exclude the 'wasm' module as it overlaps with the library
  ; name.
  ; 'smallint' is a separate test module.
