@@ -32,3 +32,11 @@
  (_
   (flags
    (-w +a-4-27-42-44-45-70 -warn-error +a-3))))
+
+(rule
+ (alias runtest)
+ (deps
+  ./main.exe
+  (source_tree ../test))
+ (action
+  (run ../test/core/run.py --wasm ./main.exe)))
