@@ -6,7 +6,8 @@
  ; WASM REPL every time in all the dependencies.
  ; We also need to exclude the 'wasm' module as it overlaps with the library
  ; name.
- (modules :standard \ main wasm))
+ ; 'smallint' is a separate test module.
+ (modules :standard \ main wasm smallint))
 
 (executable
  (name main)
