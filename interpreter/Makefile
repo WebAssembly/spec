@@ -27,7 +27,7 @@ JS =		# set to JS shell command to run JS tests
 
 # Main targets
 
-.PHONY:		default opt unopt libopt libunopt jslib all land zip smallint
+.PHONY:		default opt unopt libopt libunopt jslib all land zip smallint dunebuild
 
 default:	opt
 debug:		unopt
@@ -41,6 +41,8 @@ land:		$(WINMAKE) all
 zip: 		$(ZIP)
 smallint:	smallint.native
 
+dunebuild:
+	dune build
 
 # Building executable
 
@@ -136,7 +138,7 @@ TESTDIR =	../test/core
 TESTFILES =	$(shell cd $(TESTDIR); ls *.wast; ls [a-z]*/*.wast)
 TESTS =		$(TESTFILES:%.wast=%)
 
-.PHONY:		test debugtest partest
+.PHONY:		test debugtest partest dune-test
 
 test:		$(OPT) smallint
 		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',)
@@ -167,6 +169,9 @@ quiettest/%:	$(OPT)
 
 smallinttest:	smallint
 		@./smallint.native
+
+dunetest:
+	dune test
 
 # Miscellaneous targets
 
