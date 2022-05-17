@@ -27,7 +27,7 @@ JS =		# set to JS shell command to run JS tests
 
 # Main targets
 
-.PHONY:		default opt unopt libopt libunopt jslib all land zip smallint
+.PHONY:		default opt unopt libopt libunopt jslib all land zip smallint dunebuild
 
 default:	opt
 debug:		unopt
@@ -41,6 +41,8 @@ land:		$(WINMAKE) all
 zip: 		$(ZIP)
 smallint:	smallint.native
 
+dunebuild:
+	dune build
 
 # Building executable
 
@@ -168,7 +170,7 @@ quiettest/%:	$(OPT)
 smallinttest:	smallint
 		@./smallint.native
 
-dune-test:
+dunetest:
 	dune test
 
 # Miscellaneous targets
