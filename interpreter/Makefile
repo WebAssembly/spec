@@ -136,7 +136,7 @@ TESTDIR =	../test/core
 TESTFILES =	$(shell cd $(TESTDIR); ls *.wast; ls [a-z]*/*.wast)
 TESTS =		$(TESTFILES:%.wast=%)
 
-.PHONY:		test debugtest partest
+.PHONY:		test debugtest partest dune-test
 
 test:		$(OPT) smallint
 		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',)
@@ -167,6 +167,9 @@ quiettest/%:	$(OPT)
 
 smallinttest:	smallint
 		@./smallint.native
+
+dune-test:
+	dune test
 
 # Miscellaneous targets
 
