@@ -154,6 +154,7 @@ and match_vec_type c t1 t2 =
 
 and match_heap_type c t1 t2 =
   match t1, t2 with
+  | NoneHeapType, _ -> true
   | _, AnyHeapType -> true
   | I31HeapType, EqHeapType -> true
   | DataHeapType, EqHeapType -> true
@@ -181,7 +182,6 @@ and match_heap_type c t1 t2 =
     | _ -> false
     )
   | DefHeapType x1, DefHeapType x2 -> match_var_type c x1 x2
-  | BotHeapType, _ -> true
   | _, _ -> eq_heap_type c t1 t2
 
 and match_ref_type c t1 t2 =

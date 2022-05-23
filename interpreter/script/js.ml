@@ -382,6 +382,7 @@ let assert_return ress ts at =
     | RefResult (RefTypePat t) ->
       let is_ref =
         match t with
+        | NoneHeapType -> Const (I32 0l @@ at)
         | AnyHeapType -> Const (I32 1l @@ at)
         | EqHeapType -> Call (is_eqref_idx @@ at)
         | I31HeapType -> RefTest I31Op
@@ -390,7 +391,6 @@ let assert_return ress ts at =
         | FuncHeapType -> RefTest FuncOp
         | DefHeapType _ -> Const (I32 1l @@ at) (* TODO *)
         | RttHeapType _ -> Const (I32 1l @@ at) (* TODO *)
-        | BotHeapType -> assert false
       in
       [ is_ref @@ at;
         Test (I32 I32Op.Eqz) @@ at;

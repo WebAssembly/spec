@@ -73,8 +73,8 @@ let vec_type = function
   | V128Type -> empty
 
 let heap_type = function
-  | AnyHeapType | EqHeapType | I31HeapType | DataHeapType | ArrayHeapType
-  | FuncHeapType | BotHeapType -> empty
+  | NoneHeapType | AnyHeapType | EqHeapType
+  | I31HeapType | DataHeapType | ArrayHeapType | FuncHeapType -> empty
   | DefHeapType x | RttHeapType x -> var_type x
 
 let ref_type = function

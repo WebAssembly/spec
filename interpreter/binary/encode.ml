@@ -110,6 +110,7 @@ struct
     | V128Type -> vs7 (-0x05)
 
   let heap_type = function
+    | NoneHeapType -> vs7 (-0x1b)
     | AnyHeapType -> vs7 (-0x11)
     | EqHeapType -> vs7 (-0x13)
     | I31HeapType -> vs7 (-0x16)
@@ -118,9 +119,9 @@ struct
     | FuncHeapType -> vs7 (-0x10)
     | DefHeapType x -> var_type vs33 x
     | RttHeapType x -> vs7 (-0x18); var_type vu32 x
-    | BotHeapType -> assert false
 
   let ref_type = function
+    | (Nullable, NoneHeapType) -> vs7 (-0x1b)
     | (Nullable, AnyHeapType) -> vs7 (-0x11)
     | (Nullable, EqHeapType) -> vs7 (-0x13)
     | (Nullable, I31HeapType) -> vs7 (-0x16)

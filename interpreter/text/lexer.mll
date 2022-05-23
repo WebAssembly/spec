@@ -220,6 +220,8 @@ rule token = parse
   | "ref" { REF }
   | "rtt" { RTT }
   | "null" { NULL }
+  | "none" { NONE }
+  | "nullref" { NULLREF }
   | "any" { ANY }
   | "anyref" { ANYREF }
   | "eq" { EQ }

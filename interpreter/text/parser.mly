@@ -256,8 +256,8 @@ let inline_func_type_explicit (c : context) x ft at =
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
 %token NUM_TYPE PACKED_TYPE VEC_TYPE VEC_SHAPE
-%token ANYREF EQREF I31REF DATAREF ARRAYREF FUNCREF EXTERNREF
-%token ANY EQ I31 DATA REF RTT EXTERN NULL
+%token NULLREF ANYREF EQREF I31REF DATAREF ARRAYREF FUNCREF EXTERNREF
+%token NONE ANY EQ I31 DATA REF RTT EXTERN NULL
 %token MUT FIELD STRUCT ARRAY SUB REC
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP LET
@@ -359,6 +359,7 @@ null_opt :
   | NULL { Nullable }
 
 heap_type :
+  | NONE { fun c -> NoneHeapType }
   | ANY { fun c -> AnyHeapType }
   | EQ { fun c -> EqHeapType }
   | I31 { fun c -> I31HeapType }
@@ -371,6 +372,7 @@ heap_type :
 
 ref_type :
   | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
+  | NULLREF { fun c -> (Nullable, NoneHeapType) }  /* Sugar */
   | ANYREF { fun c -> (Nullable, AnyHeapType) }  /* Sugar */
   | EQREF { fun c -> (Nullable, EqHeapType) }  /* Sugar */
   | I31REF { fun c -> (Nullable, I31HeapType) }  /* Sugar */

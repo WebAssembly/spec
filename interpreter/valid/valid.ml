@@ -93,11 +93,11 @@ let check_vec_type (c : context) (t : vec_type) at =
 
 let check_heap_type (c : context) (t : heap_type) at =
   match t with
-  | AnyHeapType | EqHeapType | I31HeapType | DataHeapType | ArrayHeapType
-  | FuncHeapType -> ()
+  | NoneHeapType | AnyHeapType | EqHeapType
+  | I31HeapType | DataHeapType | ArrayHeapType | FuncHeapType -> ()
   | DefHeapType (SynVar x) -> ignore (type_ c (x @@ at))
   | RttHeapType (SynVar x) -> ignore (type_ c (x @@ at))
-  | DefHeapType _ | RttHeapType _ | BotHeapType -> assert false
+  | DefHeapType _ | RttHeapType _ -> assert false
 
 let check_ref_type (c : context) (t : ref_type) at =
   match t with
@@ -227,7 +227,7 @@ let peek i (ell, ts) =
 let peek_ref i (ell, ts) at =
   match peek i (ell, ts) with
   | RefType rt -> rt
-  | BotType -> (NonNullable, BotHeapType)
+  | BotType -> (NonNullable, NoneHeapType)
   | t ->
     error at
       ("type mismatch: instruction requires reference type" ^
@@ -237,7 +237,7 @@ let peek_rtt i s at =
   let rt = peek_ref i s at in
   match rt with
   | _, RttHeapType x -> rt, DefHeapType x
-  | _, BotHeapType -> rt, BotHeapType
+  | _, NoneHeapType -> rt, NoneHeapType
   | _ ->
     error at
       ("type mismatch: instruction requires RTT reference type" ^
@@ -538,7 +538,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     | (nul, DefHeapType (SynVar x)) ->
       let FuncType (ts1, ts2) = func_type c (x @@ e.at) in
       (ts1 @ [RefType (nul, DefHeapType (SynVar x))]) --> ts2
-    | (_, BotHeapType) as rt ->
+    | (_, NoneHeapType) as rt ->
       [RefType rt] -->... []
     | rt ->
       error e.at
@@ -563,7 +563,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
          string_of_result_type c.results ^
          " but callee returns " ^ string_of_result_type ts2);
       (ts1 @ [RefType (nul, DefHeapType (SynVar x))]) -->... []
-    | (_, BotHeapType) as rt ->
+    | (_, NoneHeapType) as rt ->
       [RefType rt] -->... []
     | rt ->
       error e.at
@@ -583,7 +583,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
         "type mismatch in function type";
       (ts11 @ [RefType (nul, DefHeapType (SynVar y))]) -->
         [RefType (NonNullable, DefHeapType (SynVar x.it))]
-    | (_, BotHeapType) as rt ->
+    | (_, NoneHeapType) as rt ->
       [RefType rt] -->.. [RefType (NonNullable, DefHeapType (SynVar x.it))]
     | rt ->
       error e.at
