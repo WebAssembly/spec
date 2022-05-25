@@ -423,7 +423,7 @@ Both methods have severe limitations:
 To address this shortcoming, it seems necessary to enrich the Wasm type system with a form of type parameters, which allows more accurate tracking of type information for such definitions, avoiding the need to fallback to a universal type.
 However, there are a number of challenges:
 
-1. It is _highly_ desirable to avoid the rabbit hole of _reified generics_, where every type parameter has to be backed by runtime type information. That approach is both highly complex and has a substantial overhead, even where that information isn't needed.
+1. It is _highly_ desirable to avoid the rabbit hole of _reified generics_, where every type parameter has to be backed by runtime type information. That approach is both highly complex and has a substantial overhead, even where that information isn't needed because the parameterized function does not allocate or cast to the parameter type. Generic containers, for example, would only receive and return references to values of their parameter types and would never have to use those types in casts or allocations. 
 
   Instead, type parameters should adhere to the don't-pay-what-you-don't-use principle, which would be violated if _every_ parameter had to be backed by runtime types.
 
