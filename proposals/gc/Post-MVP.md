@@ -18,6 +18,7 @@ See [overview](Overview.md) for addition background.
 * [Custom function RTTs](#custom-function-RTTs)
 * [Threads and shared references](#threads-and-shared-references)
 * [Weak references](#weak-references)
+* [Method dispatch](#method-dispatch)
 
 
 ## Bulk Operations
@@ -650,3 +651,9 @@ The main challenge is the large variety of different semantics that existing lan
 Clearly, Wasm cannot build in all of them, so we need to be looking for a mechanism that can emulate most of them with acceptable performance loss.
 
 **Why Post-MVP:** Unfortunately, it is not clear at this point what a sufficiently simple and efficient set of primitives for weak references and finalisation could be. This requires more investigation, and should not block basic GC functionality.
+
+## Method Dispatch
+
+Right now OO-style method dispatch requires downcasting the receiver parameter from the top receiver type in the method's override group. As of May 2022, unsafely removing this receiver downcast improved performance by 3-4% across a suite of real-world j2wasm workloads. Introducing a method dispatch mechanism into WebAssembly and its type system would allow these receiver casts to be removed and may enable additional engine optimizations for dispatch as well, making 3-4% a lower bound on the potential improvements.
+
+**Why Post-MVP:** Method dispatch can also be easily expressed without being built into WebAssembly, so this would be a fair amount of extra complexity for a modest performance improvement and no additional benefits. Considering this as an optimimzation after shipping the MVP makes the most sense.
