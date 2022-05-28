@@ -552,6 +552,8 @@ Since a Wasm engine already has to store its own meta information in heap values
 The basic idea would be introducing a notion of _static fields_ in a form of immutable meta object that is shared between multiple instances of the same type.
 There are various ways in which this could be modelled, details are TBD.
 
+If we allow allocating separate instances of the static data for a type, for example by allocating separate RTTs corresponding to the same type with different static data attached to them, then those different RTT values should not be distinguishable via existing cast instructions. In other words, RTTs should continue to precisely represent static types with respect to casting. This will avoid invalidating existing cast optimizations in optimizers and engines. New instructions can be introduced to perform metaobject identity checks with type refinement if necessary. 
+
 **Why Post-MVP:** Such a feature only saves space, so isn't critical for the MVP. Furthermore, there isn't much precedent for exposing such a mechanism to user code in low-level form, so no obvious design philosophy to follow.
 
 
@@ -655,5 +657,7 @@ Clearly, Wasm cannot build in all of them, so we need to be looking for a mechan
 ## Method Dispatch
 
 Right now OO-style method dispatch requires downcasting the receiver parameter from the top receiver type in the method's override group. As of May 2022, unsafely removing this receiver downcast improved performance by 3-4% across a suite of real-world j2wasm workloads. Introducing a method dispatch mechanism into WebAssembly and its type system would allow these receiver casts to be removed and may enable additional engine optimizations for dispatch as well, making 3-4% a lower bound on the potential improvements.
+
+It is possible that method dispatch can be designed to work well with the more general [static fields](#static-fields) idea above.
 
 **Why Post-MVP:** Method dispatch can also be easily expressed without being built into WebAssembly, so this would be a fair amount of extra complexity for a modest performance improvement and no additional benefits. Considering this as an optimimzation after shipping the MVP makes the most sense.
