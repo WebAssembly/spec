@@ -511,7 +511,7 @@ The |VCONST| instruction is followed by 16 immediate bytes, which are converted 
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\&&|&
      \hex{FD}~~12{:}\Bu32~~(b{:}\Bbyte)^{16} &\Rightarrow& \V128.\VCONST~
-     bytes_{\K{i128}}^{-1}(b_{0}~\dots~b_{15}) \\
+     \bytes_{\K{i128}}^{-1}(b_{0}~\dots~b_{15}) \\
    \end{array}
 
 .. _binary-vternop:

@@ -1,0 +1,52 @@
+(include_subdirs unqualified)
+
+(library
+ (name wasm)
+ ; The 'main' module shall not be part of the library, as it would start the
+ ; Wasm REPL every time in all the dependencies.
+ ; We also need to exclude the 'wasm' module as it overlaps with the library
+ ; name.
+ ; 'smallint' is a separate test module.
+ (modules :standard \ main wasm smallint))
+
+(executable
+ (name main)
+ (modules main)
+ (libraries wasm)
+ (flags
+  (-open Wasm)))
+
+(executable
+ (name smallint)
+ (modules smallint)
+ (libraries wasm)
+ (flags
+  (-open Wasm)))
+
+(subdir
+ text
+ (rule
+  (target lexer.ml)
+  (deps lexer.mll)
+  (action
+   (chdir
+    %{workspace_root}
+    (run %{bin:ocamllex} -ml -q -o %{target} %{deps}))))
+ (ocamlyacc
+  (modules parser)))
+
+(env
+ (_
+  (flags
+   (-w +a-4-27-42-44-45-70 -warn-error +a-3))))
+
+(rule
+ (alias runtest)
+ (deps
+  ./main.exe
+  ./smallint.exe
+  (source_tree ../test))
+ (action
+  (progn
+   (run ../test/core/run.py --wasm ./main.exe)
+   (run ./smallint.exe))))
