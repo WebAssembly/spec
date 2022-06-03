@@ -300,7 +300,7 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)} \quad\equiv \\ & \qquad
+     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)} \\ & \qquad
        \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
        \\ & \qquad\qquad
