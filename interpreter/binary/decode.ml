@@ -27,15 +27,16 @@ let get_string n s = let i = pos s in skip n s; String.sub s.bytes i n
 
 (* Errors *)
 
+open Source
+
 module Code = Error.Make ()
 exception Code = Code.Error
 
 let string_of_byte b = Printf.sprintf "%02x" b
 let string_of_multi n = Printf.sprintf "%02lx" n
 
-let position s pos = Source.({file = s.name; line = -1; column = pos})
-let region s left right =
-  Source.({left = position s left; right = position s right})
+let position s pos = {file = s.name; line = -1; column = pos}
+let region s left right = {left = position s left; right = position s right}
 
 let error s pos msg = raise (Code (region s pos pos, msg))
 let require b s pos msg = if not b then error s pos msg
@@ -56,8 +57,7 @@ let at f s =
   let left = pos s in
   let x = f s in
   let right = pos s in
-  Source.(x @@ region s left right)
-
+  x @@ region s left right
 
 
 (* Generic values *)
@@ -225,10 +225,12 @@ let memop s =
   Int32.to_int align, offset
 
 let block_type s =
-  match peek s with
-  | Some 0x40 -> skip 1 s; ValBlockType None
-  | Some b when b land 0xc0 = 0x40 -> ValBlockType (Some (value_type s))
-  | _ -> VarBlockType (at s33 s)
+  let p = pos s in
+  either [
+    (fun s -> let x = at s33 s in require (x.it >= 0l) s p ""; VarBlockType x);
+    (fun s -> expect 0x40 s ""; ValBlockType None);
+    (fun s -> ValBlockType (Some (value_type s)));
+  ] s
 
 let rec instr s =
   let pos = pos s in
@@ -782,7 +784,7 @@ and instr_block' s es =
   | _ ->
     let pos = pos s in
     let e' = instr s in
-    instr_block' s (Source.(e' @@ region s pos pos) :: es)
+    instr_block' s ((e' @@ region s pos pos) :: es)
 
 let const s =
   let c = at instr_block s in
@@ -934,7 +936,7 @@ let code _ s =
   let locals = locals s in
   let body = instr_block s in
   end_ s;
-  {locals; body; ftype = Source.((-1l) @@ Source.no_region)}
+  {locals; body; ftype = -1l @@ no_region}
 
 let code_section s =
   section `CodeSection (vec (at (sized code))) [] s
@@ -951,7 +953,7 @@ let active s =
   Active {index; offset}
 
 let active_zero s =
-  let index = Source.(0l @@ Source.no_region) in
+  let index = 0l @@ no_region in
   let offset = const s in
   Active {index; offset}
 
@@ -960,7 +962,7 @@ let declarative s =
 
 let elem_index s =
   let x = at var s in
-  [Source.(ref_func x @@ x.at)]
+  [ref_func x @@ x.at]
 
 let elem_kind s =
   match byte s with
@@ -1106,8 +1108,7 @@ let module_ s =
     List.for_all Free.(fun f -> (func f).datas = Set.empty) func_bodies)
     s (len s) "data count section required";
   let funcs =
-    List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
-      func_types func_bodies
+    List.map2 (fun t f -> {f.it with ftype = t} @@ f.at) func_types func_bodies
   in {types; tables; memories; globals; funcs; imports; exports; elems; datas; start}
 
 
