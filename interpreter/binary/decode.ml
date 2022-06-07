@@ -178,7 +178,7 @@ let func_type s =
     let ts1 = result_type s in
     let ts2 = result_type s in
     FuncType (ts1, ts2)
-  | _ -> error s (pos s - 1) "malformed definition type"
+  | _ -> error s (pos s - 1) "malformed function type"
 
 let limits uN s =
   let has_max = bool s in
