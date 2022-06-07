@@ -359,7 +359,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
    The initial integer can be interpreted as a bitfield.
    Bit 0 indicates a passive or declarative segment,
    bit 1 indicates the presence of an explicit table index for an active segment and otherwise distinguishes passive from declarative segments,
-   bit 2 indicates the use of element type and element :ref:`expressions <binary-expr>` instead of element kind and element indices.
+   bit 2 indicates the use of element types and element :ref:`expressions <binary-expr>` instead of element kinds and element indices.
 
    Additional element kinds may be added in future versions of WebAssembly.
 
