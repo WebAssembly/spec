@@ -1,4 +1,4 @@
-(* Version *)
+(* Binary format version *)
 
 let version = 1l
 
@@ -95,10 +95,6 @@ struct
 
   open Types
 
-  let mutability = function
-    | Immutable -> byte 0
-    | Mutable -> byte 1
-
   let num_type = function
     | I32Type -> s7 (-0x01)
     | I64Type -> s7 (-0x02)
@@ -130,6 +126,10 @@ struct
 
   let memory_type = function
     | MemoryType lim -> limits u32 lim
+
+  let mutability = function
+    | Immutable -> byte 0
+    | Mutable -> byte 1
 
   let global_type = function
     | GlobalType (t, mut) -> value_type t; mutability mut

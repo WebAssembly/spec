@@ -1,18 +1,15 @@
-open Ast
-open Operators
-
 (* Decoding stream *)
 
 type stream =
 {
-  sname : string;
+  name : string;
   bytes : string;
   pos : int ref;
 }
 
 exception EOS
 
-let stream sname bs = {sname; bytes = bs; pos = ref 0}
+let stream name bs = {name; bytes = bs; pos = ref 0}
 
 let len s = String.length s.bytes
 let pos s = !(s.pos)
@@ -36,7 +33,7 @@ exception Code = Code.Error
 let string_of_byte b = Printf.sprintf "%02x" b
 let string_of_multi n = Printf.sprintf "%02lx" n
 
-let position s pos = Source.({file = s.sname; line = -1; column = pos})
+let position s pos = Source.({file = s.name; line = -1; column = pos})
 let region s left right =
   Source.({left = position s left; right = position s right})
 
@@ -147,12 +144,6 @@ let sized f s =
 
 open Types
 
-let mutability s =
-  match byte s with
-  | 0 -> Immutable
-  | 1 -> Mutable
-  | _ -> error s (pos s - 1) "malformed mutability"
-
 let num_type s =
   match s7 s with
   | -0x01 -> I32Type
@@ -204,6 +195,12 @@ let memory_type s =
   let lim = limits u32 s in
   MemoryType lim
 
+let mutability s =
+  match byte s with
+  | 0 -> Immutable
+  | 1 -> Mutable
+  | _ -> error s (pos s - 1) "malformed mutability"
+
 let global_type s =
   let t = value_type s in
   let mut = mutability s in
@@ -211,6 +208,9 @@ let global_type s =
 
 
 (* Instructions *)
+
+open Ast
+open Operators
 
 let var s = u32 s
 
