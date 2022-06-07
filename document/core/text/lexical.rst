@@ -63,7 +63,8 @@ The set of *keyword* tokens is defined implicitly, by all occurrences of a :ref:
 Any token that does not fall into any of the other categories is considered *reserved*, and cannot occur in source text.
 
 .. note::
-   The effect of defining the set of reserved tokens is that all tokens must be separated by either parentheses or :ref:`white space <text-space>`.
+   The effect of defining the set of reserved tokens is that all tokens must be separated by either parentheses,
+   :ref:`white space <text-space>`, or :ref:`string <text-string>` literals.
    For example, :math:`\text{0\$x}` is a single reserved token.
    Consequently, it is not recognized as two separate tokens :math:`\text{0}` and :math:`\text{\$x}`, but instead disallowed.
    This property of tokenization is not affected by the fact that the definition of reserved tokens overlaps with other token classes.
