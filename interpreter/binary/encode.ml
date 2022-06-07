@@ -398,7 +398,7 @@ struct
 
     | ArrayNew (x, Explicit) -> op 0xfb; op 0x11; var x
     | ArrayNew (x, Implicit) -> op 0xfb; op 0x12; var x
-    | ArrayNewFixed (x, n) -> op 0xfb; op 0x19; var x; u32 n
+    | ArrayNewFixed (x, n) -> op 0xfb; op 0x19; var x; vu32 n
     | ArrayNewElem (x, y) -> op 0xfb; op 0x1c; var x; var y
     | ArrayNewData (x, y) -> op 0xfb; op 0x1b; var x; var y
     | ArrayGet (x, None) -> op 0xfb; op 0x13; var x
