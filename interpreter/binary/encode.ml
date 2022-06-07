@@ -8,6 +8,8 @@ let version = 1l
 module Code = Error.Make ()
 exception Code = Code.Error
 
+let error = Code.error
+
 
 (* Encoding stream *)
 
@@ -68,8 +70,7 @@ struct
 
   let len i =
     if Int32.to_int (Int32.of_int i) <> i then
-      Code.error Source.no_region
-        "cannot encode length with more than 32 bit";
+      Code.error Source.no_region "length out of bounds";
     u32 (Int32.of_int i)
 
   let bool b = u1 (if b then 1 else 0)
@@ -205,7 +206,7 @@ struct
     | Load ({ty = I32Type; pack = Some (Pack16, ZX); _} as mo) ->
       op 0x2f; memop mo
     | Load {ty = I32Type; pack = Some (Pack32, _); _} ->
-      assert false
+      error e.at "illegal instruction i32.load32"
     | Load ({ty = I64Type; pack = Some (Pack8, SX); _} as mo) ->
       op 0x30; memop mo
     | Load ({ty = I64Type; pack = Some (Pack8, ZX); _} as mo) ->
@@ -219,9 +220,9 @@ struct
     | Load ({ty = I64Type; pack = Some (Pack32, ZX); _} as mo) ->
       op 0x35; memop mo
     | Load {ty = F32Type | F64Type; pack = Some _; _} ->
-      assert false
+      error e.at "illegal instruction fxx.loadN"
     | Load {ty = I32Type | I64Type; pack = Some (Pack64, _); _} ->
-      assert false
+      error e.at "illegal instruction ixx.load64"
 
     | Store ({ty = I32Type; pack = None; _} as mo) -> op 0x36; memop mo
     | Store ({ty = I64Type; pack = None; _} as mo) -> op 0x37; memop mo
@@ -229,12 +230,15 @@ struct
     | Store ({ty = F64Type; pack = None; _} as mo) -> op 0x39; memop mo
     | Store ({ty = I32Type; pack = Some Pack8; _} as mo) -> op 0x3a; memop mo
     | Store ({ty = I32Type; pack = Some Pack16; _} as mo) -> op 0x3b; memop mo
-    | Store {ty = I32Type; pack = Some Pack32; _} -> assert false
+    | Store {ty = I32Type; pack = Some Pack32; _} ->
+      error e.at "illegal instruction i32.store32"
     | Store ({ty = I64Type; pack = Some Pack8; _} as mo) -> op 0x3c; memop mo
     | Store ({ty = I64Type; pack = Some Pack16; _} as mo) -> op 0x3d; memop mo
     | Store ({ty = I64Type; pack = Some Pack32; _} as mo) -> op 0x3e; memop mo
-    | Store {ty = F32Type | F64Type; pack = Some _; _} -> assert false
-    | Store {ty = (I32Type | I64Type); pack = Some Pack64; _} -> assert false
+    | Store {ty = F32Type | F64Type; pack = Some _; _} ->
+      error e.at "illegal instruction fxx.storeN"
+    | Store {ty = (I32Type | I64Type); pack = Some Pack64; _} ->
+      error e.at "illegal instruction ixx.store64"
 
     | VecLoad ({ty = V128Type; pack = None; _} as mo) ->
       vecop 0x00l; memop mo
@@ -262,7 +266,8 @@ struct
       vecop 0x5cl; memop mo
     | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtZero); _} as mo) ->
       vecop 0x5dl; memop mo
-    | VecLoad _ -> assert false
+    | VecLoad _ ->
+      error e.at "illegal instruction v128.loadNxM_<ext>"
 
     | VecLoadLane ({ty = V128Type; pack = Pack8; _} as mo, i) ->
       vecop 0x54l; memop mo; byte i;
@@ -345,7 +350,8 @@ struct
     | Unary (I32 I32Op.Popcnt) -> op 0x69
     | Unary (I32 (I32Op.ExtendS Pack8)) -> op 0xc0
     | Unary (I32 (I32Op.ExtendS Pack16)) -> op 0xc1
-    | Unary (I32 (I32Op.ExtendS (Pack32 | Pack64))) -> assert false
+    | Unary (I32 (I32Op.ExtendS (Pack32 | Pack64))) ->
+      error e.at "illegal instruction i32.extendN_s"
 
     | Unary (I64 I64Op.Clz) -> op 0x79
     | Unary (I64 I64Op.Ctz) -> op 0x7a
@@ -353,7 +359,8 @@ struct
     | Unary (I64 (I64Op.ExtendS Pack8)) -> op 0xc2
     | Unary (I64 (I64Op.ExtendS Pack16)) -> op 0xc3
     | Unary (I64 (I64Op.ExtendS Pack32)) -> op 0xc4
-    | Unary (I64 (I64Op.ExtendS Pack64)) -> assert false
+    | Unary (I64 (I64Op.ExtendS Pack64)) ->
+      error e.at "illegal instruction i64.extend64_s"
 
     | Unary (F32 F32Op.Abs) -> op 0x8b
     | Unary (F32 F32Op.Neg) -> op 0x8c
@@ -419,8 +426,10 @@ struct
     | Binary (F64 F64Op.Max) -> op 0xa5
     | Binary (F64 F64Op.CopySign) -> op 0xa6
 
-    | Convert (I32 I32Op.ExtendSI32) -> assert false
-    | Convert (I32 I32Op.ExtendUI32) -> assert false
+    | Convert (I32 I32Op.ExtendSI32) ->
+      error e.at "illegal instruction i32.extend_i32_s"
+    | Convert (I32 I32Op.ExtendUI32) ->
+      error e.at "illegal instruction i32.extend_i32_u"
     | Convert (I32 I32Op.WrapI64) -> op 0xa7
     | Convert (I32 I32Op.TruncSF32) -> op 0xa8
     | Convert (I32 I32Op.TruncUF32) -> op 0xa9
@@ -434,7 +443,8 @@ struct
 
     | Convert (I64 I64Op.ExtendSI32) -> op 0xac
     | Convert (I64 I64Op.ExtendUI32) -> op 0xad
-    | Convert (I64 I64Op.WrapI64) -> assert false
+    | Convert (I64 I64Op.WrapI64) ->
+      error e.at "illegal instruction i64.wrap_i64"
     | Convert (I64 I64Op.TruncSF32) -> op 0xae
     | Convert (I64 I64Op.TruncUF32) -> op 0xaf
     | Convert (I64 I64Op.TruncSF64) -> op 0xb0
@@ -449,7 +459,8 @@ struct
     | Convert (F32 F32Op.ConvertUI32) -> op 0xb3
     | Convert (F32 F32Op.ConvertSI64) -> op 0xb4
     | Convert (F32 F32Op.ConvertUI64) -> op 0xb5
-    | Convert (F32 F32Op.PromoteF32) -> assert false
+    | Convert (F32 F32Op.PromoteF32) ->
+      error e.at "illegal instruction f32.promote_f32"
     | Convert (F32 F32Op.DemoteF64) -> op 0xb6
     | Convert (F32 F32Op.ReinterpretInt) -> op 0xbe
 
@@ -458,7 +469,8 @@ struct
     | Convert (F64 F64Op.ConvertSI64) -> op 0xb9
     | Convert (F64 F64Op.ConvertUI64) -> op 0xba
     | Convert (F64 F64Op.PromoteF32) -> op 0xbb
-    | Convert (F64 F64Op.DemoteF64) -> assert false
+    | Convert (F64 F64Op.DemoteF64) ->
+      error e.at "illegal instruction f64.demote_f64"
     | Convert (F64 F64Op.ReinterpretInt) -> op 0xbf
 
     | VecConst {it = V128 c; _} -> vecop 0x0cl; v128 c
@@ -474,13 +486,16 @@ struct
     | VecUnary (V128 (I8x16 V128Op.Popcnt)) -> vecop 0x62l
     | VecUnary (V128 (I16x8 V128Op.Abs)) -> vecop 0x80l
     | VecUnary (V128 (I16x8 V128Op.Neg)) -> vecop 0x81l
-    | VecUnary (V128 (I16x8 V128Op.Popcnt)) -> assert false
+    | VecUnary (V128 (I16x8 V128Op.Popcnt)) ->
+      error e.at "illegal instruction i16x8.popcnt"
     | VecUnary (V128 (I32x4 V128Op.Abs)) -> vecop 0xa0l
     | VecUnary (V128 (I32x4 V128Op.Neg)) -> vecop 0xa1l
-    | VecUnary (V128 (I32x4 V128Op.Popcnt)) -> assert false
+    | VecUnary (V128 (I32x4 V128Op.Popcnt)) ->
+      error e.at "illegal instruction i32x4.popcnt"
     | VecUnary (V128 (I64x2 V128Op.Abs)) -> vecop 0xc0l
     | VecUnary (V128 (I64x2 V128Op.Neg)) -> vecop 0xc1l
-    | VecUnary (V128 (I64x2 V128Op.Popcnt)) -> assert false
+    | VecUnary (V128 (I64x2 V128Op.Popcnt)) ->
+      error e.at "illegal instruction i64x2.popcnt"
     | VecUnary (V128 (F32x4 V128Op.Ceil)) -> vecop 0x67l
     | VecUnary (V128 (F32x4 V128Op.Floor)) -> vecop 0x68l
     | VecUnary (V128 (F32x4 V128Op.Trunc)) -> vecop 0x69l
@@ -529,13 +544,17 @@ struct
     | VecCompare (V128 (I64x2 V128Op.Eq)) -> vecop 0xd6l
     | VecCompare (V128 (I64x2 V128Op.Ne)) -> vecop 0xd7l
     | VecCompare (V128 (I64x2 V128Op.LtS)) -> vecop 0xd8l
-    | VecCompare (V128 (I64x2 V128Op.LtU)) -> assert false
+    | VecCompare (V128 (I64x2 V128Op.LtU)) ->
+      error e.at "illegal instruction i64x2.lt_u"
     | VecCompare (V128 (I64x2 V128Op.GtS)) -> vecop 0xd9l
-    | VecCompare (V128 (I64x2 V128Op.GtU)) -> assert false
+    | VecCompare (V128 (I64x2 V128Op.GtU)) ->
+      error e.at "illegal instruction i64x2.gt_u"
     | VecCompare (V128 (I64x2 V128Op.LeS)) -> vecop 0xdal
-    | VecCompare (V128 (I64x2 V128Op.LeU)) -> assert false
+    | VecCompare (V128 (I64x2 V128Op.LeU)) ->
+      error e.at "illegal instruction i64x2.le_u"
     | VecCompare (V128 (I64x2 V128Op.GeS)) -> vecop 0xdbl
-    | VecCompare (V128 (I64x2 V128Op.GeU)) -> assert false
+    | VecCompare (V128 (I64x2 V128Op.GeU)) ->
+      error e.at "illegal instruction i64x2.ge_u"
     | VecCompare (V128 (F32x4 V128Op.Eq)) -> vecop 0x41l
     | VecCompare (V128 (F32x4 V128Op.Ne)) -> vecop 0x42l
     | VecCompare (V128 (F32x4 V128Op.Lt)) -> vecop 0x43l
@@ -618,16 +637,19 @@ struct
     | VecBinary (V128 (F64x2 V128Op.Max)) -> vecop 0xf5l
     | VecBinary (V128 (F64x2 V128Op.Pmin)) -> vecop 0xf6l
     | VecBinary (V128 (F64x2 V128Op.Pmax)) -> vecop 0xf7l
-    | VecBinary (V128 _) -> assert false
+    | VecBinary (V128 _) ->
+      error e.at "illegal binary vector instruction"
 
-    | VecConvert (V128 (I8x16 _)) -> assert false
+    | VecConvert (V128 (I8x16 _)) ->
+      error e.at "illegal i8x16 conversion instruction"
     | VecConvert (V128 (I16x8 V128Op.ExtendLowS)) -> vecop 0x87l
     | VecConvert (V128 (I16x8 V128Op.ExtendHighS)) -> vecop 0x88l
     | VecConvert (V128 (I16x8 V128Op.ExtendLowU)) -> vecop 0x89l
     | VecConvert (V128 (I16x8 V128Op.ExtendHighU)) -> vecop 0x8al
     | VecConvert (V128 (I16x8 V128Op.ExtAddPairwiseS)) -> vecop 0x7cl
     | VecConvert (V128 (I16x8 V128Op.ExtAddPairwiseU)) -> vecop 0x7dl
-    | VecConvert (V128 (I16x8 _)) -> assert false
+    | VecConvert (V128 (I16x8 _)) ->
+      error e.at "illegal i16x8 conversion instruction"
     | VecConvert (V128 (I32x4 V128Op.ExtendLowS)) -> vecop 0xa7l
     | VecConvert (V128 (I32x4 V128Op.ExtendHighS)) -> vecop 0xa8l
     | VecConvert (V128 (I32x4 V128Op.ExtendLowU)) -> vecop 0xa9l
@@ -642,12 +664,15 @@ struct
     | VecConvert (V128 (I64x2 V128Op.ExtendHighS)) -> vecop 0xc8l
     | VecConvert (V128 (I64x2 V128Op.ExtendLowU)) -> vecop 0xc9l
     | VecConvert (V128 (I64x2 V128Op.ExtendHighU)) -> vecop 0xcal
-    | VecConvert (V128 (I64x2 _)) -> assert false
+    | VecConvert (V128 (I64x2 _)) ->
+      error e.at "illegal i64x2 conversion instruction"
     | VecConvert (V128 (F32x4 V128Op.DemoteZeroF64x2)) -> vecop 0x5el
-    | VecConvert (V128 (F32x4 V128Op.PromoteLowF32x4)) -> assert false
+    | VecConvert (V128 (F32x4 V128Op.PromoteLowF32x4)) ->
+      error e.at "illegal instruction f32x4.promote_low_f32x4"
     | VecConvert (V128 (F32x4 V128Op.ConvertSI32x4)) -> vecop 0xfal
     | VecConvert (V128 (F32x4 V128Op.ConvertUI32x4)) -> vecop 0xfbl
-    | VecConvert (V128 (F64x2 V128Op.DemoteZeroF64x2)) -> assert false
+    | VecConvert (V128 (F64x2 V128Op.DemoteZeroF64x2)) ->
+      error e.at "illegal instruction f64x2.demote_zero_f64x2"
     | VecConvert (V128 (F64x2 V128Op.PromoteLowF32x4)) -> vecop 0x5fl
     | VecConvert (V128 (F64x2 V128Op.ConvertSI32x4)) -> vecop 0xfel
     | VecConvert (V128 (F64x2 V128Op.ConvertUI32x4)) -> vecop 0xffl
@@ -892,10 +917,11 @@ struct
     | Active {index; offset} ->
       u32 0x02l; var index; const offset; string dinit
     | Declarative ->
-      assert false
+      error dmode.at "illegal declarative data segment"
 
   let data_section datas =
     section 11 (vec data) datas (datas <> [])
+
 
   (* Data count section *)
 
