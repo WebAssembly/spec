@@ -1123,7 +1123,7 @@ type_def :
 
 start :
   | LPAR START var RPAR
-    { fun c -> $3 c func }
+    { let at = at () in fun c -> {sfunc = $3 c func} @@ at }
 
 module_fields :
   | /* empty */

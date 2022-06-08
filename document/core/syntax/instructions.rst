@@ -589,7 +589,7 @@ All values are read and written in |LittleEndian|_ byte order.
 A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside the address range implied by the memory's current size.
 
 .. note::
-   Future version of WebAssembly might provide memory instructions with 64 bit address ranges.
+   Future versions of WebAssembly might provide memory instructions with 64 bit address ranges.
 
 The |MEMORYSIZE| instruction returns the current size of a memory.
 The |MEMORYGROW| instruction grows memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.

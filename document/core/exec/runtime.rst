@@ -19,7 +19,7 @@ Runtime Structure
 Values
 ~~~~~~
 
-WebAssembly computations manipulate *values* of either the four basic :ref:`number types <syntax-numtype>`, i.e., :ref:`integers <syntax-int>` and :ref:`floating-point data <syntax-float>` of 32 or 64 bit width each, of :ref:`vectors <syntax-vecnum>` of 128 bit width, or of :ref:`reference type <syntax-reftype>`.
+WebAssembly computations manipulate *values* of either the four basic :ref:`number types <syntax-numtype>`, i.e., :ref:`integers <syntax-int>` and :ref:`floating-point data <syntax-float>` of 32 or 64 bit width each, or :ref:`vectors <syntax-vecnum>` of 128 bit width, or of :ref:`reference type <syntax-reftype>`.
 
 In most places of the semantics, values of different types can occur.
 In order to avoid ambiguities, values are therefore represented with an abstract syntax that makes their type explicit.
@@ -52,11 +52,12 @@ or *external references* pointing to an uninterpreted form of :ref:`extern addre
 .. _default-val:
 
 Each :ref:`value type <syntax-valtype>` has an associated *default value*;
-it is the respective value :math:`0` for :ref:`number types <syntax-numtype>` and null for :ref:`reference types <syntax-reftype>`.
+it is the respective value :math:`0` for :ref:`number types <syntax-numtype>`, :math:`0` for :ref:`vector types <syntax-vectype>`, and null for :ref:`reference types <syntax-reftype>`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    \default_t &=& t{.}\CONST~0 & (\iff t = \numtype) \\
+   \default_t &=& t{.}\CONST~0 & (\iff t = \vectype) \\
    \default_t &=& \REFNULL~t & (\iff t = \reftype) \\
    \end{array}
 
@@ -321,7 +322,7 @@ It records its :ref:`type <syntax-globaltype>` and holds an individual :ref:`val
 .. math::
    \begin{array}{llll}
    \production{(global instance)} & \globalinst &::=&
-     \{ \GITYPE~\valtype, \GIVALUE~\val \} \\
+     \{ \GITYPE~\globaltype, \GIVALUE~\val \} \\
    \end{array}
 
 The value of mutable globals can be mutated through :ref:`variable instructions <syntax-instr-variable>` or by external means provided by the :ref:`embedder <embedder>`.

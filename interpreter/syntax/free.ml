@@ -177,7 +177,7 @@ let import_desc (d : import_desc) =
 let export (e : export) = export_desc e.it.edesc
 let import (i : import) = import_desc i.it.idesc
 
-let start (s : idx) = funcs (idx s)
+let start (s : start) = funcs (idx s.it.sfunc)
 
 let module_ (m : module_) =
   list type_ m.it.types ++
