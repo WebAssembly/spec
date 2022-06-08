@@ -135,7 +135,7 @@ type castop = NullOp | I31Op | DataOp | ArrayOp | FuncOp | RttOp
 type idx = int32 Source.phrase
 type num = Value.num Source.phrase
 type vec = Value.vec Source.phrase
-type name = int list
+type name = Utf8.unicode
 
 type local = local' Source.phrase
 and local' = value_type
@@ -318,6 +318,12 @@ and import' =
   idesc : import_desc;
 }
 
+type start = start' Source.phrase
+and start' =
+{
+  sfunc : idx;
+}
+
 type module_ = module_' Source.phrase
 and module_' =
 {
@@ -326,7 +332,7 @@ and module_' =
   tables : table list;
   memories : memory list;
   funcs : func list;
-  start : idx option;
+  start : start option;
   elems : elem_segment list;
   datas : data_segment list;
   imports : import list;

@@ -1222,7 +1222,7 @@ let run_data i data =
   | Declarative -> assert false
 
 let run_start start =
-  [Call start @@ start.at]
+  [Call start.it.sfunc @@ start.at]
 
 let init (m : module_) (exts : extern list) : module_inst =
   let

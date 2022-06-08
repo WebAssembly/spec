@@ -29,7 +29,7 @@ val elem : Ast.elem_segment -> t
 val data : Ast.data_segment -> t
 val export : Ast.export -> t
 val import : Ast.import -> t
-val start : Ast.idx -> t
+val start : Ast.start -> t
 
 val module_ : Ast.module_ -> t
 

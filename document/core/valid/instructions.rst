@@ -780,7 +780,7 @@ Table Instructions
 
 .. math::
    \frac{
-     C.\CTABLES[x] = t
+     C.\CTABLES[x] = \limits~t
    }{
      C \vdashinstr \TABLESET~x : [\I32~t] \to []
    }
@@ -889,7 +889,7 @@ Table Instructions
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits_1~t_1
+     C.\CTABLES[x] = \limits~t_1
      \qquad
      C.\CELEMS[y] = t_2
      \qquad
@@ -1024,7 +1024,7 @@ Memory Instructions
      \qquad
      2^{\memarg.\ALIGN} \leq N/8 \cdot M
    }{
-     C \vdashinstr \K{v128.}\K{.}\LOAD{N}\K{x}M\_\sx~\memarg : [\I32] \to [\V128]
+     C \vdashinstr \K{v128.}\LOAD{N}\K{x}M\_\sx~\memarg : [\I32] \to [\V128]
    }
 
 

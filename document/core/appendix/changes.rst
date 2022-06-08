@@ -7,7 +7,7 @@ Change History
 Since the original release 1.0 of the WebAssembly specification, a number of proposals for extensions have been integrated.
 The following sections provide an overview of what has changed.
 
-Release 1.1
+Release 2.0
 ~~~~~~~~~~~
 
 .. index:: instruction, integer

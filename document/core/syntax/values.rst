@@ -61,7 +61,7 @@ Different classes of *integers* with different value ranges are distinguished by
      \uN \\
    \end{array}
 
-The latter class defines *uninterpreted* integers, whose signedness interpretation can vary depending on context.
+The class |iN| defines *uninterpreted* integers, whose signedness interpretation can vary depending on context.
 In the abstract syntax, they are represented as unsigned values.
 However, some operations :ref:`convert <aux-signed>` them to signed based on a two's complement interpretation.
 
