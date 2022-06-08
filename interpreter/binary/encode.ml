@@ -203,10 +203,9 @@ struct
   let var x = u32 x.it
 
   let block_type = function
+    | VarBlockType x -> var_type s33 x
     | ValBlockType None -> s33 (-0x40l)
     | ValBlockType (Some t) -> value_type t
-    | VarBlockType (SynVar x) -> s33 x
-    | VarBlockType _ -> assert false
 
   let local (t, n) = len n; value_type t.it
 

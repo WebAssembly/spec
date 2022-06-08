@@ -213,9 +213,9 @@ let result_type s = vec value_type s
 
 let packed_type s =
   let pos = pos s in
-  match s33 s with
-  | -0x06l -> Pack8
-  | -0x07l -> Pack16
+  match s7 s with
+  | -0x06 -> Pack8
+  | -0x07 -> Pack16
   | _ -> error s pos "malformed storage type"
 
 let storage_type s =
@@ -301,7 +301,7 @@ let memop s =
 
 let block_type s =
   either [
-    (fun s -> let x = s33 s in VarBlockType (SynVar x));
+    (fun s -> let x = var_type s33 s in VarBlockType x);
     (fun s -> expect 0x40 s ""; ValBlockType None);
     (fun s -> ValBlockType (Some (value_type s)));
   ] s

@@ -135,6 +135,8 @@ rule token = parse
 
   | keyword as s
     { match s with
+      | "i8" -> PACKED_TYPE Types.Pack8
+      | "i16" -> PACKED_TYPE Types.Pack16
       | "i32" -> NUM_TYPE Types.I32Type
       | "i64" -> NUM_TYPE Types.I64Type
       | "f32" -> NUM_TYPE Types.F32Type
