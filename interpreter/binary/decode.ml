@@ -160,13 +160,13 @@ let vec_type s =
 let var_type s =
   let pos = pos s in
   match s33 s with
-  | i when i >= 0l -> i
+  | i when i >= 0l -> SynVar i
   | _ -> error s pos "malformed type index"
 
 let heap_type s =
   let pos = pos s in
   either [
-    (fun s -> let x = var_type s in DefHeapType (SynVar x));
+    (fun s -> DefHeapType (var_type s));
     (fun s ->
       match s7 s with
       | -0x10 -> FuncHeapType
@@ -250,7 +250,7 @@ let memop s =
 
 let block_type s =
   either [
-    (fun s -> let x = var_type s in VarBlockType (SynVar x));
+    (fun s -> VarBlockType (var_type s));
     (fun s -> expect 0x40 s ""; ValBlockType None);
     (fun s -> ValBlockType (Some (value_type s)));
   ] s
