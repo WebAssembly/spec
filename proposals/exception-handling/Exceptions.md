@@ -633,7 +633,7 @@ follows:
 | --------- | ---- | ----------- |
 | [Function](#function-names) | `1` | Assigns names to functions |
 | [Local](#local-names) | `2` | Assigns names to locals in functions |
-| [Tag](#tag-names) | `3` | Assigns names to tag types |
+| [Tag](#tag-names) | `11` | Assigns names to tags |
 
 ###### Tag names
 

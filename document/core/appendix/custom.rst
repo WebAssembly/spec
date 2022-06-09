@@ -60,6 +60,7 @@ Id  Subsection
  0  :ref:`module name <binary-modulenamesec>`
  1  :ref:`function names <binary-funcnamesec>`    
  2  :ref:`local names <binary-localnamesec>`
+11  :ref:`tag names <binary-tagnamesec>`
 ==  ===========================================
 
 Each subsection may occur at most once, and in order of increasing id.
