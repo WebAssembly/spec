@@ -142,7 +142,7 @@ let mem_oob frame x i n =
 
 let data_oob frame x i n =
   I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (I64.of_int_u (String.length !(data frame.inst x)))
+    (Data.size (data frame.inst x))
 
 let table_oob frame x i n =
   I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
@@ -150,7 +150,7 @@ let table_oob frame x i n =
 
 let elem_oob frame x i n =
   I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (I64.of_int_u (List.length !(elem frame.inst x)))
+    (I64_convert.extend_i32_u (Elem.size (elem frame.inst x)))
 
 let rec step (c : config) : config =
   let vs, es = c.code in
@@ -349,10 +349,10 @@ let rec step (c : config) : config =
         else if n = 0l then
           vs', []
         else
-          let seg = !(elem c.frame.inst y) in
+          let seg = elem c.frame.inst y in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 d @@ e.at));
-            Refer (List.nth seg (Int32.to_int s));
+            Refer (Elem.load seg s);
             Plain (TableSet x);
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
@@ -362,7 +362,7 @@ let rec step (c : config) : config =
 
       | ElemDrop x, vs ->
         let seg = elem c.frame.inst x in
-        seg := [];
+        Elem.drop seg;
         vs, []
 
       | Load {offset; ty; pack; _}, Num (I32 i) :: vs' ->
@@ -513,11 +513,12 @@ let rec step (c : config) : config =
         else if n = 0l then
           vs', []
         else
-          let seg = !(data c.frame.inst x) in
-          let b = Int32.of_int (Char.code seg.[Int32.to_int s]) in
+          let seg = data c.frame.inst x in
+          let a = I64_convert.extend_i32_u s in
+          let b = Data.load seg a in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 b @@ e.at));
+            Plain (Const (I32 (I32.of_int_u (Char.code b)) @@ e.at));
             Plain (Store
               {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
@@ -528,7 +529,7 @@ let rec step (c : config) : config =
 
       | DataDrop x, vs ->
         let seg = data c.frame.inst x in
-        seg := "";
+        Data.drop seg;
         vs, []
 
       | RefNull t, vs' ->
@@ -788,11 +789,11 @@ let create_export (inst : module_inst) (ex : export) : export_inst =
 
 let create_elem (inst : module_inst) (seg : elem_segment) : elem_inst =
   let {etype; einit; _} = seg.it in
-  ref (List.map (fun c -> as_ref (eval_const inst c)) einit)
+  Elem.alloc (List.map (fun c -> as_ref (eval_const inst c)) einit)
 
 let create_data (inst : module_inst) (seg : data_segment) : data_inst =
   let {dinit; _} = seg.it in
-  ref dinit
+  Data.alloc dinit
 
 
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
