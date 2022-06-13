@@ -594,7 +594,7 @@ Given a :ref:`store <syntax-store>` :math:`S`, a :ref:`module <syntax-module>` :
 
 Instantiation checks that the module is :ref:`valid <valid>` and the provided imports :ref:`match <match-externtype>` the declared types,
 and may *fail* with an error otherwise.
-Instantiation can also result in a :ref:`trap <trap>` from executing the start function.
+Instantiation can also result in a :ref:`trap <trap>` from initializing a table or memory from an active segment or from executing the start function.
 It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
 
 1. If :math:`\module` is not :ref:`valid <valid-module>`, then:
