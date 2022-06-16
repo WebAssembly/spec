@@ -50,6 +50,7 @@ and eq_value_type c a t1 t2 =
   | NumType t1', NumType t2' -> eq_num_type c a t1' t2'
   | VecType t1', VecType t2' -> eq_vec_type c a t1' t2'
   | RefType t1', RefType t2' -> eq_ref_type c a t1' t2'
+  | BotType, BotType -> true
   | _, _ -> false
 
 and eq_result_type c a ts1 ts2 =
