@@ -102,7 +102,7 @@ Add two instructions:
 * `return_call <funcidx>`, the tail-call version of `call`
 * `return_call_indirect <tableidx> <typeidx>`, the tail-call version of `call_indirect`
 
-Other language extensions like [typed function refereces](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md) that introduce new call instructions will also introduce tail versions of these new instructions.
+Other language extensions like [typed function references](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md) that introduce new call instructions will also introduce tail versions of these new instructions.
 
 
 ### Validation
