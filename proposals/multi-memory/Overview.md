@@ -62,7 +62,7 @@ Execution:
 
 Binary format:
 
-* For loads and stores: Reinterpret the alignment value in the `memarg` as a bitfield; if bit 6 (the MSB of the first LEB byte) is set, then an `i32` memory index follows after the offset immediate (even with SIMD, alignment must not currently be larger than 4 in the logarithmic encoding, i.e., taking up the lower 3 bits, so this is more than safe).
+* For loads and stores: Reinterpret the alignment value in the `memarg` as a bitfield; if bit 6 (the MSB of the first LEB byte) is set, then an `i32` memory index follows after the alignment bitfield (even with SIMD, alignment must not currently be larger than 4 in the logarithmic encoding, i.e., taking up the lower 3 bits, so this is more than safe).
 
 * For other memory instructions: Replace the hard-coded `0x00` bytes with an `i32` memory index.
 
