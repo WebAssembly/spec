@@ -148,8 +148,8 @@ struct
     let flags =
       Int32.(logor (of_int align) (if has_var then 0x40l else 0x00l)) in
     vu32 flags;
-    vu32 offset;
-    if has_var then var x
+    if has_var then var x;
+    vu32 offset
 
   let block_type = function
     | VarBlockType x -> vs33 x.it
