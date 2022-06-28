@@ -50,7 +50,7 @@ The character stream in the source text is divided, from left to right, into a s
      (\text{a} ~|~ \dots ~|~ \text{z})~\Tidchar^\ast
      \qquad (\mbox{if occurring as a literal terminal in the grammar}) \\
    \production{reserved} & \Treserved &::=&
-     \Tidchar^+ \\
+     (\Tidchar ~|~ \Tstring)^+ \\
    \end{array}
 
 Tokens are formed from the input character stream according to the *longest match* rule.
@@ -63,9 +63,9 @@ The set of *keyword* tokens is defined implicitly, by all occurrences of a :ref:
 Any token that does not fall into any of the other categories is considered *reserved*, and cannot occur in source text.
 
 .. note::
-   The effect of defining the set of reserved tokens is that all tokens must be separated by either parentheses or :ref:`white space <text-space>`.
-   For example, :math:`\text{0\$x}` is a single reserved token.
-   Consequently, it is not recognized as two separate tokens :math:`\text{0}` and :math:`\text{\$x}`, but instead disallowed.
+   The effect of defining the set of reserved tokens is that all tokens must be separated by either parentheses, :ref:`white space <text-space>`, or :ref:`comments <text-comment>`.
+   For example, :math:`\text{0\$x}` is a single reserved token, as is :math:`\text{"a""b"}`.
+   Consequently, they are not recognized as two separate tokens :math:`\text{0}` and :math:`\text{\$x}`, or :math:`"a"` and :math:`"b"`, respectively, but instead disallowed.
    This property of tokenization is not affected by the fact that the definition of reserved tokens overlaps with other token classes.
 
 

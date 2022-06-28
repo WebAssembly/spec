@@ -63,8 +63,9 @@ let symbol =
   ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
 
 let space = [' ''\t''\n''\r']
+let control = ['\x00'-'\x1f'] # space
 let ascii = ['\x00'-'\x7f']
-let ascii_no_nl = ['\x00'-'\x09''\x0b'-'\x7f']
+let ascii_no_nl = ascii # '\x0a'
 let utf8cont = ['\x80'-'\xbf']
 let utf8enc =
     ['\xc2'-'\xdf'] utf8cont
@@ -104,7 +105,7 @@ let name = idchar+
 let id = '$' name
 
 let keyword = ['a'-'z'] (letter | digit | '_' | '.' | ':')+
-let reserved = name | ',' | ';' | '[' | ']' | '{' | '}'
+let reserved = (idchar | string)+ | ',' | ';' | '[' | ']' | '{' | '}'
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
@@ -713,13 +714,14 @@ rule token = parse
   | eof { EOF }
 
   | reserved { unknown lexbuf }
-  | utf8 { error lexbuf "malformed operator" }
+  | control { error lexbuf "misplaced control character" }
+  | utf8enc { error lexbuf "misplaced unicode character" }
   | _ { error lexbuf "malformed UTF-8 encoding" }
 
 and comment start = parse
   | ";)" { () }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; comment start lexbuf }
   | '\n' { Lexing.new_line lexbuf; comment start lexbuf }
+  | utf8_no_nl { comment start lexbuf }
   | eof { error_nest start lexbuf "unclosed comment" }
-  | utf8 { comment start lexbuf }
   | _ { error lexbuf "malformed UTF-8 encoding" }
