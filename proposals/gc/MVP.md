@@ -547,6 +547,7 @@ Tentatively, support a type of guaranteed unboxed scalars.
 
 * `i31.get_<sx>` extracts the value, zero- or sign-extending
   - `i31.get_<sx> : [i31ref] -> [i32]`
+  - traps if the operand is null
 
 
 #### Classification

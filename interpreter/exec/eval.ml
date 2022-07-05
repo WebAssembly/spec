@@ -762,6 +762,9 @@ let rec step (c : config) : config =
       | I31New, Num (I32 i) :: vs' ->
         Ref (I31.I31Ref (I31.of_i32 i)) :: vs', []
 
+      | I31Get ext, Ref (NullRef _) :: vs' ->
+        vs', [Trapping "null i31 reference" @@ e.at]
+
       | I31Get ext, Ref (I31.I31Ref i) :: vs' ->
         Num (I32 (I31.to_i32 ext i)) :: vs', []
 
