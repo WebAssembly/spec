@@ -654,8 +654,6 @@ struct
     | VecTernary (V128 (I16x8 V128Op.RelaxedLaneselect)) -> vecop 0x10al
     | VecTernary (V128 (I32x4 V128Op.RelaxedLaneselect)) -> vecop 0x10bl
     | VecTernary (V128 (I64x2 V128Op.RelaxedLaneselect)) -> vecop 0x10cl
-    | VecTernary (V128 _) ->
-      error e.at "illegal ternary vector instruction"
 
     | VecConvert (V128 (I8x16 _)) ->
       error e.at "illegal i8x16 conversion instruction"
