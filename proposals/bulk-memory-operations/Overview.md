@@ -386,6 +386,7 @@ implemented as follows:
     ;; be dropped.
     (data.drop 1))
 )
+(start $start)
 ```
 
 ### Instruction encoding

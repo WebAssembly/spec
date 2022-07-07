@@ -325,30 +325,30 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
 .. math::
    \begin{array}{llclll}
    \production{element section} & \Belemsec &::=&
-     \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg} \\
+     \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg}^\ast \\
    \production{element segment} & \Belem &::=&
-     \hex{00}~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
+     0{:}\Bu32~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~\FUNCREF, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
-     \hex{01}~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
+     1{:}\Bu32~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EPASSIVE \} \\ &&|&
-     \hex{02}~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
+     2{:}\Bu32~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
-     \hex{03}~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
+     3{:}\Bu32~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARATIVE \} \\ &&|&
-     \hex{04}~~e{:}\Bexpr~~\X{el}^\ast{:}\Bvec(\Bexpr)
+     4{:}\Bu32~~e{:}\Bexpr~~\X{el}^\ast{:}\Bvec(\Bexpr)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~\FUNCREF, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
-     \hex{05}~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
+     5{:}\Bu32~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EPASSIVE \} \\ &&|&
-     \hex{06}~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
+     6{:}\Bu32~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
-     \hex{07}~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
+     7{:}\Bu32~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARATIVE \} \\
    \production{element kind} & \Belemkind &::=&
@@ -356,7 +356,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
    \end{array}
 
 .. note::
-   The initial byte can be interpreted as a bitfield.
+   The initial integer can be interpreted as a bitfield.
    Bit 0 indicates a passive or declarative segment,
    bit 1 indicates the presence of an explicit table index for an active segment and otherwise distinguishes passive from declarative segments,
    bit 2 indicates the use of element type and element :ref:`expressions <binary-expr>` instead of element kind and element indices.
@@ -406,7 +406,7 @@ denoting *count* locals of the same value type.
        &\Rightarrow& \X{code} & (\iff \X{size} = ||\Bfunc||) \\
    \production{function} & \Bfunc &::=&
      (t^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
-       &\Rightarrow& \concat((t^\ast)^\ast), e^\ast
+       &\Rightarrow& \concat((t^\ast)^\ast), e
          & (\iff |\concat((t^\ast)^\ast)| < 2^{32}) \\
    \production{locals} & \Blocals &::=&
      n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& t^n \\
@@ -438,18 +438,18 @@ It decodes into a vector of :ref:`data segments <syntax-data>` that represent th
 .. math::
    \begin{array}{llclll}
    \production{data section} & \Bdatasec &::=&
-     \X{seg}^\ast{:}\Bsection_{11}(\Bvec(\Bdata)) &\Rightarrow& \X{seg} \\
+     \X{seg}^\ast{:}\Bsection_{11}(\Bvec(\Bdata)) &\Rightarrow& \X{seg}^\ast \\
    \production{data segment} & \Bdata &::=&
-     \hex{00}~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
+     0{:}\Bu32~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
        &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~0, \DOFFSET~e \} \} \\ &&|&
-     \hex{01}~~b^\ast{:}\Bvec(\Bbyte)
+     1{:}\Bu32~~b^\ast{:}\Bvec(\Bbyte)
        &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DPASSIVE \} \\ &&|&
-     \hex{02}~~x{:}\Bmemidx~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
+     2{:}\Bu32~~x{:}\Bmemidx~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
        &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~x, \DOFFSET~e \} \} \\
    \end{array}
 
 .. note::
-   The initial byte can be interpreted as a bitfield.
+   The initial integer can be interpreted as a bitfield.
    Bit 0 indicates a passive segment,
    bit 1 indicates the presence of an explicit memory index for an active segment.
 
@@ -504,7 +504,7 @@ All sections can be empty.
 The lengths of vectors produced by the (possibly empty) :ref:`function <binary-funcsec>` and :ref:`code <binary-codesec>` section must match up.
 
 Similarly, the optional data count must match the length of the :ref:`data segment <binary-datasec>` vector.
-Furthermore, it must be present if any :math:`data index <syntax-dataidx>` occurs in the code section.
+Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs in the code section.
 
 .. math::
    \begin{array}{llcllll}
@@ -559,7 +559,7 @@ Furthermore, it must be present if any :math:`data index <syntax-dataidx>` occur
 where for each :math:`t_i^\ast, e_i` in :math:`\X{code}^n`,
 
 .. math::
-   \func^n[i] = \{ \FTYPE~\typeidx^n[i], \FLOCALS~t_i^\ast, \FBODY~e_i \} ) \\
+   \func^n[i] = \{ \FTYPE~\typeidx^n[i], \FLOCALS~t_i^\ast, \FBODY~e_i \} \\
 
 .. note::
    The version of the WebAssembly binary format may increase in the future
