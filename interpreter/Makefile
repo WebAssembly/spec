@@ -19,7 +19,7 @@ WINMAKE =	winmake.bat
 
 DIRS =		util syntax binary text valid runtime exec script host main tests
 LIBS =		bigarray
-FLAGS = 	-lexflags -ml -cflags '-w +a-4-27-42-44-45 -warn-error +a-3'
+FLAGS = 	-lexflags -ml -cflags '-w +a-4-27-42-44-45-70 -warn-error +a-3'
 OCBA =		ocamlbuild $(FLAGS) $(DIRS:%=-I %)
 OCB =		$(OCBA) $(LIBS:%=-libs %)
 JS =		# set to JS shell command to run JS tests
@@ -27,7 +27,7 @@ JS =		# set to JS shell command to run JS tests
 
 # Main targets
 
-.PHONY:		default opt unopt libopt libunopt jslib all land zip smallint
+.PHONY:		default opt unopt libopt libunopt jslib all land zip smallint dunebuild
 
 default:	opt
 debug:		unopt
@@ -41,6 +41,8 @@ land:		$(WINMAKE) all
 zip: 		$(ZIP)
 smallint:	smallint.native
 
+dunebuild:
+	dune build
 
 # Building executable
 
@@ -136,7 +138,7 @@ TESTDIR =	../test/core
 TESTFILES =	$(shell cd $(TESTDIR); ls *.wast; ls [a-z]*/*.wast)
 TESTS =		$(TESTFILES:%.wast=%)
 
-.PHONY:		test debugtest partest
+.PHONY:		test debugtest partest dune-test
 
 test:		$(OPT) smallint
 		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',)
@@ -167,6 +169,9 @@ quiettest/%:	$(OPT)
 
 smallinttest:	smallint
 		@./smallint.native
+
+dunetest:
+	dune test
 
 # Miscellaneous targets
 
