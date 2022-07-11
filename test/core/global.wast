@@ -334,12 +334,12 @@
 )
 
 (assert_invalid
-  (module (global (import "test" "global-i32") i32) (global i32 (global.get 0) (global.get 0)))
+  (module (global (import "spectest" "global_i32") i32) (global i32 (global.get 0) (global.get 0)))
   "type mismatch"
 )
 
 (assert_invalid
-  (module (global (import "test" "global-i32") i32) (global i32 (i32.const 0) (global.get 0)))
+  (module (global (import "spectest" "global_i32") i32) (global i32 (i32.const 0) (global.get 0)))
   "type mismatch"
 )
 
@@ -354,9 +354,16 @@
 )
 
 (assert_invalid
-  (module (global (import "test" "global-i32") i32) (global i32 (global.get 2)))
+  (module (global (import "spectest" "global_i32") i32) (global i32 (global.get 2)))
   "unknown global"
 )
+
+(module
+  (global $g (mut i32) (i32.const 56))
+  (export "global-mut-i32" (global $g))
+)
+
+(register "test")
 
 (assert_invalid
   (module (global (import "test" "global-mut-i32") (mut i32)) (global i32 (global.get 0)))
