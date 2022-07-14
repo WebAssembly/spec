@@ -34,11 +34,11 @@ Types are representable as a set of enumerations.
    func is_num(t : val_type) : bool =
      return t = I32 || t = I64 || t = F32 || t = F64 || t = Bot
 
-   func is_vec(t : val_type | Unknown) : bool =
-     return t = V128 || t = Unknown
+   func is_vec(t : val_type) : bool =
+     return t = V128 || t = Bot
 
-   func is_ref(t : val_type | Unknown) : bool =
-     return t = not (is_num t || is_vec t) || t = Bot
+   func is_ref(t : val_type) : bool =
+     return not (is_num t || is_vec t) || t = Bot
 
 Equivalence and subtyping checks can be defined on these types.
 
@@ -66,8 +66,8 @@ Equivalence and subtyping checks can be defined on these types.
 
    func matches(t1 : val_type, t2 : val_type) : bool =
      return
-       (is_num t1 && is_num t2 & t1 = t2) ||
-       (is_ref t1 && is_ref t2 & matches_ref(t1, t2)) ||
+       (is_num t1 && is_num t2 && t1 = t2) ||
+       (is_ref t1 && is_ref t2 && matches_ref(t1, t2)) ||
        t1 = Bot
 
 The algorithm uses two separate stacks: the *value stack* and the *control stack*.
