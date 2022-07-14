@@ -761,7 +761,7 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb14 | `array.get_s $t` | `$t : typeidx` |
 | 0xfb15 | `array.get_u $t` | `$t : typeidx` |
 | 0xfb16 | `array.set $t` | `$t : typeidx` |
-| 0xfb17 | `array.len` | `_ : u32` (TODO: remove, was typeidx) |
+| 0xfb17 | `array.len` | |
 | 0xfb19 | `array.new_canon_fixed $t N` | `$t : typeidx`, `N : u32` |
 | 0xfb1b | `array.new_canon_data $t $d` | `$t : typeidx`, `$d : dataidx` |
 | 0xfb1c | `array.new_canon_elem $t $e` | `$t : typeidx`, `$e : elemidx` |
