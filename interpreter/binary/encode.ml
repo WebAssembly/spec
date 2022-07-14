@@ -121,7 +121,6 @@ struct
     | ArrayHeapType -> s7 (-0x1a)
     | FuncHeapType -> s7 (-0x10)
     | DefHeapType x -> var_type s33 x
-    | RttHeapType x -> s7 (-0x18); var_type u32 x
 
   let ref_type = function
     | (Nullable, NoneHeapType) -> s7 (-0x1b)
@@ -237,13 +236,13 @@ struct
     | BrCast (x, DataOp) -> op 0xfb; op 0x61; var x
     | BrCast (x, ArrayOp) -> op 0xfb; op 0x66; var x
     | BrCast (x, FuncOp) -> op 0xfb; op 0x60; var x
-    | BrCast (x, RttOp) -> op 0xfb; op 0x42; var x
+    | BrCast (x, RttOp y) -> op 0xfb; op 0x42; var x; var y
     | BrCastFail (x, NullOp) -> op 0xd6; var x
     | BrCastFail (x, I31Op) -> op 0xfb; op 0x65; var x
     | BrCastFail (x, DataOp) -> op 0xfb; op 0x64; var x
     | BrCastFail (x, ArrayOp) -> op 0xfb; op 0x67; var x
     | BrCastFail (x, FuncOp) -> op 0xfb; op 0x63; var x
-    | BrCastFail (x, RttOp) -> op 0xfb; op 0x43; var x
+    | BrCastFail (x, RttOp y) -> op 0xfb; op 0x43; var x; var y
     | Return -> op 0x0f
     | Call x -> op 0x10; var x
     | CallRef -> op 0x14
@@ -381,14 +380,14 @@ struct
     | RefTest DataOp -> op 0xfb; op 0x51
     | RefTest ArrayOp -> op 0xfb; op 0x53
     | RefTest FuncOp -> op 0xfb; op 0x50
-    | RefTest RttOp -> op 0xfb; op 0x40
+    | RefTest (RttOp x) -> op 0xfb; op 0x40; var x
 
     | RefCast NullOp -> op 0xd3
     | RefCast I31Op -> op 0xfb; op 0x5a
     | RefCast DataOp -> op 0xfb; op 0x59
     | RefCast ArrayOp -> op 0xfb; op 0x5b
     | RefCast FuncOp -> op 0xfb; op 0x58
-    | RefCast RttOp -> op 0xfb; op 0x41
+    | RefCast (RttOp x) -> op 0xfb; op 0x41; var x
 
     | RefEq -> op 0xd5
 
@@ -412,9 +411,7 @@ struct
     | ArrayGet (x, Some SX) -> op 0xfb; op 0x14; var x
     | ArrayGet (x, Some ZX) -> op 0xfb; op 0x15; var x
     | ArraySet x -> op 0xfb; op 0x16; var x
-    | ArrayLen -> op 0xfb; op 0x17; op 0  (* TODO: remove 0 *)
-
-    | RttCanon x -> op 0xfb; op 0x30; var x
+    | ArrayLen -> op 0xfb; op 0x17
 
     | Const {it = I32 c; _} -> op 0x41; s32 c
     | Const {it = I64 c; _} -> op 0x42; s64 c

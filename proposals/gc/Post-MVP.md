@@ -11,6 +11,7 @@ See [overview](Overview.md) for addition background.
 * [Field references](#field-references) (a.k.a. member pointers)
 * [Fixed-size arrays](#fixed-sized-arrays)
 * [Nested data structures](#nested-data-structures) (flattening)
+* [Explicit RTTs](#explicit-rtts)
 * [Type parameters](#type-parameters) (polymorphism, generics)
 * [Variants](#variants) (a.k.a. disjoint unions or tagging)
 * [Static fields](#static-fields) (meta structures)
@@ -364,6 +365,110 @@ Interior references:
   An engine should be able to optimise away intermediate interior pointers very easily.
 
 * TBD: As sketched here, interior references can only point to nested aggregates. Should there also be interior references to plain fields?
+
+
+## Explicit RTTs
+
+In the MVP, canonical RTTs can be statically created, and they are hence implicit. With extensions like [type parameters](#type-parameters) or type imports, that is no longer the case, and RTTs need to be handled explicitly in order to control when, where, and how they are created and passed.
+
+* Runtime types are explicit values representing concrete types at runtime; a value of type `rtt <typeidx>` is a dynamic representative of the static type `<typeidx>`.
+
+* All RTTs are explicitly created and all operations involving dynamic type information (like casts) operate on explicit RTT operands.
+
+This will require adding a new form of heap type:
+
+* `rtt <typeidx>` is a new heap type that is a runtime representation of the static type `<typeidx>`
+  - `heaptype ::= ... | rtt <typeidx>`
+  - `rtt t ok` iff `t ok`
+  - the reference type `(rtt $t)` is a shorthand for `(ref (rtt $t))`
+
+* `rtt $t` is a subtype of `eq`
+  - `rtt $t <: eq`
+  - Note: `rtt $t1` is *not* a subtype of `rtt $t2`, unless `$t1` and `$t2` are equivalent; covariant subtyping would be unsound, since RTTs are used in both co- and contravariant roles (e.g., both when constructing and consuming a reference)
+
+At a baseline, RTT values can be created with a new instruction:
+```
+* `rtt.canon <typeidx>` returns the RTT of the specified type
+  - `rtt.canon $t : [] -> [(rtt $t)]`
+  - multiple invocations of this instruction yield the same observable RTTs
+  - this is a *constant instruction*
+```
+With extensions like [type parameters](#type-parameters), this instruction will become more nuanced and will involve additional RTT operands if `$t` has type paramters.
+
+Correspondingly, all allocation and cast instructions will get counter parts taking an explicit RTT operand. The MVP's canonical versions can be reinterpreted as the combination of the explicit ones whose RTT operand is created with `rtt.canon`:
+
+* `struct.new <typeidx>` allocates a structure with RTT information determining its [runtime type](#values) and initialises its fields with given values
+  - `struct.new $t : [t'* (rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = struct (mut t')*`
+  - this is a *constant instruction*
+
+* `struct.new_default <typeidx>` allocates a structure of type `$t` and initialises its fields with default values
+  - `struct.new_default $t : [(rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = struct (mut t')*`
+    - and all `t'*` are defaultable
+  - this is a *constant instruction*
+
+* `array.new <typeidx>` allocates an array with RTT information determining its [runtime type](#values)
+  - `array.new $t : [t' i32 (rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = array (mut t')`
+  - this is a *constant instruction*
+ 
+* `array.new_default <typeidx>` allocates an array and initialises its fields with the default value
+  - `array.new_default $t : [i32 (rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = array (mut t')`
+    - and `t'` is defaultable
+  - this is a *constant instruction*
+ 
+* `array.new_fixed <typeidx> <N>` allocates an array of fixed size and initialises it from operands
+  - `array.new_fixed $t N : [t^N (rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = array (mut t')`
+  - this is a *constant instruction*
+ 
+* `array.new_data <typeidx> <dataidx>` allocates an array and initialises it from a data segment
+  - `array.new_data $t $d : [i32 i32 (rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = array (mut t')`
+    - and `t'` is numeric or packed numeric
+    - and `$d` is a defined data segment
+  - the 1st operand is the `offset` into the segment
+  - the 2nd operand is the `size` of the array
+  - traps if `offset + |t'|*size > len($d)`
+
+* `array.new_elem <typeidx> <elemidx>` allocates an array and initialises it from an element segment
+  - `array.new_elem $t $e : [i32 i32 (rtt $t)] -> [(ref $t)]`
+    - iff `expand($t) = array (mut t')`
+    - and `$e : rt`
+    - and `rt <: t'`
+  - the 1st operand is the `offset` into the segment
+  - the 2nd operand is the `size` of the array
+  - traps if `offset + size > len($e)`
+
+* `ref.test` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given RTT
+  - `ref.test : [t' (rtt $t)] -> [i32]`
+    - iff `t' <: (ref null data)` or `t' <: (ref null func)`
+  - returns 1 if the first operand is not null and its runtime type is a sub-RTT of the RTT operand, 0 otherwise
+ 
+* `ref.cast` casts a reference value down to a type given by a RTT representation
+  - `ref.cast : [(ref null1? ht) (rtt $t)] -> [(ref null2? $t)]`
+    - iff `ht <: data` or `ht <: func`
+    - and `null1? = null2?`
+  - returns null if the first operand is null
+  - traps if the first operand is not null and its runtime type is not a sub-RTT of the RTT operand
+ 
+* `br_on_cast <labelidx>` branches if a value can be cast down to a given reference type
+  - `br_on_cast $l : [t0* t (rtt $t')] -> [t0* t]`
+    - iff `$l : [t0* t']`
+    - and `t <: (ref null data)` or `t <: (ref null func)`
+    - and `(ref $t') <: t'`
+  - branches iff the first operand is not null and its runtime type is a sub-RTT of the RTT operand
+  - passes cast operand along with branch, plus possible extra args
+ 
+* `br_on_cast_fail <labelidx>` branches if a value can not be cast down to a given reference type
+  - `br_on_cast_fail $l : [t0* t (rtt $t')] -> [t0* (ref $t')]`
+    - iff `$l : [t0* t']`
+    - and `t <: (ref null data)` or `t <: (ref null func)`
+    - and `t <: t'`
+  - branches iff the first operand is null or its runtime type is not a sub-RTT of the RTT operand
+  - passes operand along with branch, plus possible extra args
 
 
 ## Type Parameters

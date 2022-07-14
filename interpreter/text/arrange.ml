@@ -468,7 +468,7 @@ let castop = function
   | DataOp -> "data"
   | ArrayOp -> "array"
   | FuncOp -> "func"
-  | RttOp -> assert false
+  | RttOp _ -> assert false
 
 
 (* Expressions *)
@@ -505,9 +505,11 @@ let rec instr e =
     | BrIf x -> "br_if " ^ var x, []
     | BrTable (xs, x) ->
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
-    | BrCast (x, RttOp) -> "br_on_cast " ^ var x, []
+    | BrCast (x, RttOp y) ->
+      "br_on_cast_canon " ^ var x, [Node ("type " ^ var y, [])]
     | BrCast (x, op) -> "br_on_" ^ castop op ^ " " ^ var x, []
-    | BrCastFail (x, RttOp) -> "br_on_cast_fail " ^ var x, []
+    | BrCastFail (x, RttOp y) ->
+      "br_on_cast_canon_fail " ^ var x, [Node ("type " ^ var y, [])]
     | BrCastFail (x, op) -> "br_on_non_" ^ castop op ^ " " ^ var x, []
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
@@ -543,26 +545,25 @@ let rec instr e =
     | DataDrop x -> "data.drop " ^ var x, []
     | RefNull t -> "ref.null", [Atom (heap_type t)]
     | RefFunc x -> "ref.func " ^ var x, []
-    | RefTest RttOp -> "ref.test", []
+    | RefTest (RttOp x) -> "ref.test_canon " ^ var x, []
     | RefTest op -> "ref.is_" ^ castop op, []
-    | RefCast RttOp -> "ref.cast", []
+    | RefCast (RttOp x) -> "ref.cast_canon " ^ var x, []
     | RefCast NullOp -> "ref.as_non_null", []
     | RefCast op -> "ref.as_" ^ castop op, []
     | RefEq -> "ref.eq", []
     | I31New -> "i31.new", []
     | I31Get ext -> "i31.get" ^ extension ext, []
-    | StructNew (x, op) -> "struct.new" ^ initop op ^ " " ^ var x, []
+    | StructNew (x, op) -> "struct.new_canon" ^ initop op ^ " " ^ var x, []
     | StructGet (x, y, exto) ->
       "struct.get" ^ opt_s extension exto ^ " " ^ var x ^ " " ^ var y, []
     | StructSet (x, y) -> "struct.set " ^ var x ^ " " ^ var y, []
-    | ArrayNew (x, op) -> "array.new" ^ initop op ^ " " ^ var x, []
-    | ArrayNewFixed (x, n) -> "array.new_fixed " ^ var x ^ " " ^ nat32 n, []
-    | ArrayNewElem (x, y) -> "array.new_elem " ^ var x ^ " " ^ var y, []
-    | ArrayNewData (x, y) -> "array.new_data " ^ var x ^ " " ^ var y, []
+    | ArrayNew (x, op) -> "array.new_canon" ^ initop op ^ " " ^ var x, []
+    | ArrayNewFixed (x, n) -> "array.new_canon_fixed " ^ var x ^ " " ^ nat32 n, []
+    | ArrayNewElem (x, y) -> "array.new_canon_elem " ^ var x ^ " " ^ var y, []
+    | ArrayNewData (x, y) -> "array.new_canon_data " ^ var x ^ " " ^ var y, []
     | ArrayGet (x, exto) -> "array.get" ^ opt_s extension exto ^ " " ^ var x, []
     | ArraySet x -> "array.set " ^ var x, []
     | ArrayLen -> "array.len", []
-    | RttCanon x -> "rtt.canon " ^ var x, []
     | Const n -> constop n.it ^ " " ^ num n, []
     | Test op -> testop op, []
     | Compare op -> relop op, []

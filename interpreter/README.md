@@ -254,13 +254,13 @@ op:
   br_table <var>+
   br_on_null <var>
   br_on_<castop> <var>
-  br_on_cast <var>
+  br_on_cast_canon <var> (type <var>)
   br_on_non_null <var>
   br_on_non_<castop> <var>
-  br_on_cast_fail <var>
+  br_on_cast_canon_fail <var> (type <var>)
   return
   call <var>
-  call_indirect <var>? <func_type>
+  call_indirect <var>? (type <var> | <func_type>)
   call_ref
   return_call_ref
   func.bind <func_type>
@@ -293,25 +293,23 @@ op:
   ref.func <var>
   ref.is_null
   ref.is_<castop>
-  ref.test
+  ref.test_canon <var>
   ref_as_non_null
   ref_as_<castop>
-  ref.cast
+  ref.cast_canon <var>
   ref.eq
   i31.new
   i31.get_<sign>
-  struct.new(_<default>)? <var>
+  struct.new_canon(_<default>)? <var>
   struct.get(_<sign>)? <var> <var>
   struct.set <var> <var>
-  array.new(_<default>)? <var>
-  array.new_fixed <var> <nat>
-  array.new_elem <var> <var>
-  array.new_data <var> <var>
+  array.new_canon_(_<default>)? <var>
+  array.new_canon_fixed <var> <nat>
+  array.new_canon_elem <var> <var>
+  array.new_canon_data <var> <var>
   array.get(_<sign>)? <var>
   array.set <var>
   array.len <var>
-  rtt.canon <var>
-  rtt.sub <var>
   <num_type>.const <num>
   <num_type>.<unop>
   <num_type>.<binop>

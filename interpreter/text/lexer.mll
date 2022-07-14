@@ -149,7 +149,6 @@ rule token = parse
       | "f32x4" -> VEC_SHAPE (V128.F32x4 ())
       | "f64x2" -> VEC_SHAPE (V128.F64x2 ())
 
-      | "rtt" -> RTT
       | "none" -> NONE
       | "nullref" -> NULLREF
       | "any" -> ANY
@@ -188,13 +187,13 @@ rule token = parse
       | "br_on_data" -> BR_CAST br_on_data
       | "br_on_array" -> BR_CAST br_on_array
       | "br_on_func" -> BR_CAST br_on_func
-      | "br_on_cast" -> BR_CAST br_on_cast
+      | "br_on_cast_canon" -> BR_CAST_CANON
       | "br_on_non_null" -> BR_CAST_FAIL br_on_non_null
       | "br_on_non_i31" -> BR_CAST_FAIL br_on_non_i31
       | "br_on_non_data" -> BR_CAST_FAIL br_on_non_data
       | "br_on_non_array" -> BR_CAST br_on_non_array
       | "br_on_non_func" -> BR_CAST_FAIL br_on_non_func
-      | "br_on_cast_fail" -> BR_CAST_FAIL br_on_cast_fail
+      | "br_on_cast_canon_fail" -> BR_CAST_CANON_FAIL
       | "return" -> RETURN
       | "if" -> IF
       | "then" -> THEN
@@ -326,33 +325,31 @@ rule token = parse
       | "ref.as_data" -> REF_CAST ref_as_data
       | "ref.as_array" -> REF_CAST ref_as_array
       | "ref.as_func" -> REF_CAST ref_as_func
-      | "ref.test" -> REF_TEST ref_test
-      | "ref.cast" -> REF_CAST ref_cast
+      | "ref.test_canon" -> REF_TEST_CANON
+      | "ref.cast_canon" -> REF_CAST_CANON
       | "ref.eq" -> REF_EQ
 
       | "i31.new" -> I31_NEW
       | "i31.get_u" -> I31_GET i31_get_u
       | "i31.get_s" -> I31_GET i31_get_s
 
-      | "struct.new" -> STRUCT_NEW struct_new
-      | "struct.new_default" -> STRUCT_NEW struct_new_default
+      | "struct.new_canon" -> STRUCT_NEW struct_new_canon
+      | "struct.new_canon_default" -> STRUCT_NEW struct_new_canon_default
       | "struct.get" -> STRUCT_GET struct_get
       | "struct.get_u" -> STRUCT_GET struct_get_u
       | "struct.get_s" -> STRUCT_GET struct_get_s
       | "struct.set" -> STRUCT_SET
 
-      | "array.new" -> ARRAY_NEW array_new
-      | "array.new_default" -> ARRAY_NEW array_new_default
-      | "array.new_fixed" -> ARRAY_NEW_FIXED
-      | "array.new_elem" -> ARRAY_NEW_ELEM
-      | "array.new_data" -> ARRAY_NEW_DATA
+      | "array.new_canon" -> ARRAY_NEW array_new_canon
+      | "array.new_canon_default" -> ARRAY_NEW array_new_canon_default
+      | "array.new_canon_fixed" -> ARRAY_NEW_FIXED
+      | "array.new_canon_elem" -> ARRAY_NEW_ELEM
+      | "array.new_canon_data" -> ARRAY_NEW_DATA
       | "array.get" -> ARRAY_GET array_get
       | "array.get_u" -> ARRAY_GET array_get_u
       | "array.get_s" -> ARRAY_GET array_get_s
       | "array.set" -> ARRAY_SET
       | "array.len" -> ARRAY_LEN
-
-      | "rtt.canon" -> RTT_CANON
 
       | "i32.clz" -> UNARY i32_clz
       | "i32.ctz" -> UNARY i32_ctz

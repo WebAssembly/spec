@@ -51,7 +51,6 @@ and eq_vec_type c t1 t2 =
 and eq_heap_type c t1 t2 =
   match t1, t2 with
   | DefHeapType x1, DefHeapType x2 -> eq_var_type c x1 x2
-  | RttHeapType x1, RttHeapType x2 -> eq_var_type c x1 x2
   | _, _ -> t1 = t2
 
 and eq_ref_type c t1 t2 =
@@ -160,7 +159,6 @@ and match_heap_type c t1 t2 =
   | DataHeapType, EqHeapType -> true
   | ArrayHeapType, EqHeapType -> true
   | ArrayHeapType, DataHeapType -> true
-  | RttHeapType _, EqHeapType -> true
   | DefHeapType x1, EqHeapType ->
     (match expand_ctx_type (lookup c x1) with
     | StructDefType _ | ArrayDefType _ -> true

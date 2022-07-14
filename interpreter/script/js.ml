@@ -390,7 +390,6 @@ let assert_return ress ts at =
         | ArrayHeapType -> RefTest ArrayOp
         | FuncHeapType -> RefTest FuncOp
         | DefHeapType _ -> Const (I32 1l @@ at) (* TODO *)
-        | RttHeapType _ -> Const (I32 1l @@ at) (* TODO *)
       in
       [ is_ref @@ at;
         Test (I32 I32Op.Eqz) @@ at;

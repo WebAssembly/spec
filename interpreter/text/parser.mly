@@ -257,11 +257,11 @@ let inline_func_type_explicit (c : context) x ft at =
 %token NAT INT FLOAT STRING VAR
 %token NUM_TYPE PACKED_TYPE VEC_TYPE VEC_SHAPE
 %token NULLREF ANYREF EQREF I31REF DATAREF ARRAYREF FUNCREF EXTERNREF
-%token NONE ANY EQ I31 DATA REF RTT EXTERN NULL
+%token NONE ANY EQ I31 DATA REF EXTERN NULL
 %token MUT FIELD STRUCT ARRAY SUB REC
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP LET
-%token BR BR_IF BR_TABLE BR_CAST BR_CAST_FAIL
+%token BR BR_IF BR_TABLE BR_CAST BR_CAST_FAIL BR_CAST_CANON BR_CAST_CANON_FAIL
 %token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF FUNC_BIND
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
@@ -270,12 +270,11 @@ let inline_func_type_explicit (c : context) x ft at =
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token REF_NULL REF_FUNC REF_I31 REF_DATA REF_ARRAY REF_EXTERN
-%token REF_TEST REF_CAST REF_EQ
+%token REF_EQ REF_TEST REF_CAST REF_TEST_CANON REF_CAST_CANON
 %token I31_NEW I32_GET
 %token STRUCT_NEW STRUCT_GET STRUCT_SET
 %token ARRAY_NEW ARRAY_NEW_FIXED ARRAY_NEW_ELEM ARRAY_NEW_DATA
 %token ARRAY_GET ARRAY_SET ARRAY_LEN
-%token RTT_CANON
 %token VEC_LOAD VEC_STORE VEC_LOAD_LANE VEC_STORE_LANE
 %token VEC_CONST VEC_UNARY VEC_BINARY VEC_TERNARY VEC_TEST
 %token VEC_SHIFT VEC_BITMASK VEC_SHUFFLE
@@ -368,7 +367,6 @@ heap_type :
   | FUNC { fun c -> FuncHeapType }
   | EXTERN { fun c -> AnyHeapType }
   | var { fun c -> DefHeapType (SynVar ($1 c type_).it) }
-  | LPAR RTT var RPAR { fun c -> RttHeapType (SynVar ($3 c type_).it) }
 
 ref_type :
   | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
@@ -380,8 +378,6 @@ ref_type :
   | ARRAYREF { fun c -> (Nullable, ArrayHeapType) }  /* Sugar */
   | FUNCREF { fun c -> (Nullable, FuncHeapType) }  /* Sugar */
   | EXTERNREF { fun c -> (Nullable, AnyHeapType) }  /* Sugar */
-  | LPAR RTT var RPAR  /* Sugar */
-    { fun c -> (NonNullable, RttHeapType (SynVar ($3 c type_).it)) }
 
 value_type :
   | NUM_TYPE { fun c -> NumType $1 }
@@ -542,6 +538,10 @@ plain_instr :
       br_table xs x }
   | BR_CAST var { fun c -> $1 ($2 c label) }
   | BR_CAST_FAIL var { fun c -> $1 ($2 c label) }
+  | BR_CAST_CANON var type_use
+    { fun c -> br_on_cast_canon ($2 c label) ($3 c type_) }
+  | BR_CAST_CANON_FAIL var type_use
+    { fun c -> br_on_cast_canon_fail ($2 c label) ($3 c type_) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF { fun c -> call_ref }
@@ -586,6 +586,8 @@ plain_instr :
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
   | REF_TEST { fun c -> $1 }
   | REF_CAST { fun c -> $1 }
+  | REF_TEST_CANON var { fun c -> ref_test_canon ($2 c type_) }
+  | REF_CAST_CANON var { fun c -> ref_cast_canon ($2 c type_) }
   | REF_EQ { fun c -> ref_eq }
   | I31_NEW { fun c -> i31_new }
   | I31_GET { fun c -> $1 }
@@ -593,13 +595,12 @@ plain_instr :
   | STRUCT_GET var var { fun c -> $1 ($2 c type_) ($3 c field) }
   | STRUCT_SET var var { fun c -> struct_set ($2 c type_) ($3 c field) }
   | ARRAY_NEW var { fun c -> $1 ($2 c type_) }
-  | ARRAY_NEW_FIXED var nat32 { fun c -> array_new_fixed ($2 c type_) $3 }
-  | ARRAY_NEW_ELEM var var { fun c -> array_new_elem ($2 c type_) ($3 c elem) }
-  | ARRAY_NEW_DATA var var { fun c -> array_new_data ($2 c type_) ($3 c data) }
+  | ARRAY_NEW_FIXED var nat32 { fun c -> array_new_canon_fixed ($2 c type_) $3 }
+  | ARRAY_NEW_ELEM var var { fun c -> array_new_canon_elem ($2 c type_) ($3 c elem) }
+  | ARRAY_NEW_DATA var var { fun c -> array_new_canon_data ($2 c type_) ($3 c data) }
   | ARRAY_GET var { fun c -> $1 ($2 c type_) }
   | ARRAY_SET var { fun c -> array_set ($2 c type_) }
   | ARRAY_LEN { fun c -> array_len }
-  | RTT_CANON var { fun c -> rtt_canon ($2 c type_) }
   | CONST num { fun c -> fst (num $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }

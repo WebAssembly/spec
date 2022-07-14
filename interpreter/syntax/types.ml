@@ -23,7 +23,6 @@ and heap_type =
   | ArrayHeapType
   | FuncHeapType
   | DefHeapType of var
-  | RttHeapType of var
 and value_type =
   NumType of num_type | VecType of vec_type | RefType of ref_type | BotType
 
@@ -204,7 +203,6 @@ let subst_heap_type s = function
   | ArrayHeapType -> ArrayHeapType
   | FuncHeapType -> FuncHeapType
   | DefHeapType x -> DefHeapType (s x)
-  | RttHeapType x -> RttHeapType (s x)
 
 let subst_ref_type s = function
   | (nul, t) -> (nul, subst_heap_type s t)
@@ -389,7 +387,6 @@ and string_of_heap_type = function
   | ArrayHeapType -> "array"
   | FuncHeapType -> "func"
   | DefHeapType x -> string_of_var x
-  | RttHeapType x -> "(rtt " ^ string_of_var x ^ ")"
 
 and string_of_ref_type = function
   | (nul, t) ->

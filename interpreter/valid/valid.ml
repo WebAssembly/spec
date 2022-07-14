@@ -96,8 +96,7 @@ let check_heap_type (c : context) (t : heap_type) at =
   | NoneHeapType | AnyHeapType | EqHeapType
   | I31HeapType | DataHeapType | ArrayHeapType | FuncHeapType -> ()
   | DefHeapType (SynVar x) -> ignore (type_ c (x @@ at))
-  | RttHeapType (SynVar x) -> ignore (type_ c (x @@ at))
-  | DefHeapType _ | RttHeapType _ -> assert false
+  | DefHeapType _ -> assert false
 
 let check_ref_type (c : context) (t : ref_type) at =
   match t with
@@ -233,16 +232,6 @@ let peek_ref i (ell, ts) at =
       ("type mismatch: instruction requires reference type" ^
        " but stack has " ^ string_of_value_type t)
 
-let peek_rtt i s at =
-  let rt = peek_ref i s at in
-  match rt with
-  | _, RttHeapType x -> rt, DefHeapType x
-  | _, NoneHeapType -> rt, NoneHeapType
-  | _ ->
-    error at
-      ("type mismatch: instruction requires RTT reference type" ^
-       " but stack has " ^ string_of_value_type (RefType rt))
-
 
 (* Type Synthesis *)
 
@@ -313,7 +302,7 @@ let type_castop op ht =
   | DataOp -> DataHeapType
   | ArrayOp -> ArrayHeapType
   | FuncOp -> FuncHeapType
-  | RttOp -> assert false
+  | RttOp _ -> assert false
 
 
 (* Expressions *)
@@ -443,22 +432,22 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     List.iter (fun x' -> check_stack c ts (label c x') x'.at) xs;
     (ts @ [NumType I32Type]) -->... []
 
-  | BrCast (x, RttOp) ->
-    let rtt, ht = peek_rtt 0 s e.at in
-    let t = peek 1 s in
-    let t' = RefType (NonNullable, ht) in
+  | BrCast (x, RttOp y) ->
+    let _ = type_ c y in
+    let t = peek 0 s in
+    let t' = RefType (NonNullable, DefHeapType (SynVar y.it)) in
     require
       ( match_value_type c.types t (RefType (Nullable, DataHeapType)) ||
         match_value_type c.types t (RefType (Nullable, FuncHeapType)) ) e.at
       ("type mismatch: instruction requires data or function reference type" ^
-       " but stack has " ^ string_of_result_type [t; RefType rtt]);
+       " but stack has " ^ string_of_result_type [t]);
     require
       ( label c x <> [] &&
         match_value_type c.types t' (Lib.List.last (label c x)) ) e.at
       ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0 = Lib.List.lead (label c x) in
-    (ts0 @ [t; RefType rtt]) --> (ts0 @ [t])
+    (ts0 @ [t]) --> (ts0 @ [t])
 
   | BrCast (x, NullOp) ->
     let (_, ht) = peek_ref 0 s e.at in
@@ -481,22 +470,22 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let ts0 = Lib.List.lead (label c x) in
     (ts0 @ [RefType rt]) --> (ts0 @ [RefType rt])
 
-  | BrCastFail (x, RttOp) ->
-    let rtt, ht = peek_rtt 0 s e.at in
-    let t = peek 1 s in
-    let t' = RefType (NonNullable, ht) in
+  | BrCastFail (x, RttOp y) ->
+    let _ = type_ c y in
+    let t = peek 0 s in
+    let t' = RefType (NonNullable, DefHeapType (SynVar y.it)) in
     require
       ( match_value_type c.types t (RefType (Nullable, DataHeapType)) ||
         match_value_type c.types t (RefType (Nullable, FuncHeapType)) ) e.at
       ("type mismatch: instruction requires data or function reference type" ^
-       " but stack has " ^ string_of_result_type [t; RefType rtt]);
+       " but stack has " ^ string_of_result_type [t]);
     require
       ( label c x <> [] &&
         match_value_type c.types t (Lib.List.last (label c x)) ) e.at
       ("type mismatch: instruction requires type " ^ string_of_value_type t ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0 = Lib.List.lead (label c x) in
-    (ts0 @ [t; RefType rtt]) --> (ts0 @ [t'])
+    (ts0 @ [t]) --> (ts0 @ [t'])
 
   | BrCastFail (x, NullOp) ->
     let (_, ht) as rt = peek_ref 0 s e.at in
@@ -711,29 +700,29 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     refer_func c x;
     [] --> [RefType (NonNullable, DefHeapType (SynVar y))]
 
-  | RefTest RttOp ->
-    let rtt, _ht = peek_rtt 0 s e.at in
-    let t = peek 1 s in
+  | RefTest (RttOp y) ->
+    let _ = type_ c y in
+    let t = peek 0 s in
     require
       ( match_value_type c.types t (RefType (Nullable, DataHeapType)) ||
         match_value_type c.types t (RefType (Nullable, FuncHeapType)) ) e.at
       ("type mismatch: instruction requires data or function reference type" ^
-       " but stack has " ^ string_of_result_type [t; RefType rtt]);
-    [t; RefType rtt] --> [NumType I32Type]
+       " but stack has " ^ string_of_result_type [t]);
+    [t] --> [NumType I32Type]
 
   | RefTest castop ->
     [RefType (Nullable, AnyHeapType)] --> [NumType I32Type]
 
-  | RefCast RttOp ->
-    let rtt, ht = peek_rtt 0 s e.at in
-    let (nul, _) as rt = peek_ref 1 s e.at in
+  | RefCast (RttOp y) ->
+    let _ = type_ c y in
+    let (nul, _) as rt = peek_ref 0 s e.at in
     let t = RefType rt in
     require
       ( match_value_type c.types t (RefType (Nullable, DataHeapType)) ||
         match_value_type c.types t (RefType (Nullable, FuncHeapType)) ) e.at
       ("type mismatch: instruction requires data or function reference type" ^
-       " but stack has " ^ string_of_result_type [t; RefType rtt]);
-    [t; RefType rtt] --> [RefType (nul, ht)]
+       " but stack has " ^ string_of_result_type [t]);
+    [t] --> [RefType (nul, DefHeapType (SynVar y.it))]
 
   | RefCast castop ->
     let (_, ht) = peek_ref 0 s e.at in
@@ -757,8 +746,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
           defaultable_value_type (unpacked_field_type ft)) fts ) x.at
       "field type is not defaultable";
     let ts = if initop = Implicit then [] else List.map unpacked_field_type fts in
-    (ts @ [RefType (NonNullable, RttHeapType (SynVar x.it))]) -->
-      [RefType (NonNullable, DefHeapType (SynVar x.it))]
+    ts --> [RefType (NonNullable, DefHeapType (SynVar x.it))]
 
   | StructGet (x, y, exto) ->
     let StructType fts = struct_type c x in
@@ -786,14 +774,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
         defaultable_value_type (unpacked_field_type ft) ) x.at
       "array type is not defaultable";
     let ts = if initop = Implicit then [] else [unpacked_field_type ft] in
-    (ts @ [NumType I32Type; RefType (NonNullable, RttHeapType (SynVar x.it))]) -->
+    (ts @ [NumType I32Type]) -->
       [RefType (NonNullable, DefHeapType (SynVar x.it))]
 
   | ArrayNewFixed (x, n) ->
     let ArrayType ft = array_type c x in
     let ts = Lib.List32.make n (unpacked_field_type ft) in
-    (ts @ [RefType (NonNullable, RttHeapType (SynVar x.it))]) -->
-      [RefType (NonNullable, DefHeapType (SynVar x.it))]
+    ts --> [RefType (NonNullable, DefHeapType (SynVar x.it))]
 
   | ArrayNewElem (x, y) ->
     let ArrayType ft = array_type c x in
@@ -801,7 +788,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     require (match_value_type c.types (RefType rt) (unpacked_field_type ft)) x.at
       ("type mismatch: element segment's type " ^ string_of_ref_type rt ^
        " does not match array's field type " ^ string_of_field_type ft);
-    [NumType I32Type; NumType I32Type; RefType (NonNullable, RttHeapType (SynVar x.it))] -->
+    [NumType I32Type; NumType I32Type] -->
       [RefType (NonNullable, DefHeapType (SynVar x.it))]
 
   | ArrayNewData (x, y) ->
@@ -809,7 +796,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     let () = data c y in
     require (is_num_type (unpacked_field_type ft)) x.at
       "array type is not numeric";
-    [NumType I32Type; NumType I32Type; RefType (NonNullable, RttHeapType (SynVar x.it))] -->
+    [NumType I32Type; NumType I32Type] -->
       [RefType (NonNullable, DefHeapType (SynVar x.it))]
 
   | ArrayGet (x, exto) ->
@@ -827,10 +814,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
 
   | ArrayLen ->
     [RefType (Nullable, ArrayHeapType)] --> [NumType I32Type]
-
-  | RttCanon x ->
-    ignore (type_ c x);
-    [] --> [RefType (NonNullable, RttHeapType (SynVar x.it))]
 
   | Const v ->
     let t = NumType (type_num v.it) in
@@ -977,8 +960,7 @@ let is_const (c : context) (e : instr) =
   match e.it with
   | Const _ | VecConst _
   | RefNull _ | RefFunc _
-  | I31New | StructNew _ | ArrayNew _ | ArrayNewFixed _
-  | RttCanon _ -> true
+  | I31New | StructNew _ | ArrayNew _ | ArrayNewFixed _ -> true
   | GlobalGet x -> let GlobalType (_, mut) = global c x in mut = Immutable
   | _ -> false
 

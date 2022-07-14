@@ -11,11 +11,10 @@
   (func (export "init") (param $x externref)
     (table.set (i32.const 0) (ref.null any))
     (table.set (i32.const 1) (i31.new (i32.const 7)))
-    (table.set (i32.const 2) (struct.new_default $st (rtt.canon $st)))
-    (table.set (i32.const 3) (array.new_default $at (i32.const 0) (rtt.canon $at)))
+    (table.set (i32.const 2) (struct.new_canon_default $st))
+    (table.set (i32.const 3) (array.new_canon_default $at (i32.const 0)))
     (table.set (i32.const 4) (ref.func $f))
-    (table.set (i32.const 5) (rtt.canon $ft))
-    (table.set (i32.const 6) (local.get $x))
+    (table.set (i32.const 5) (local.get $x))
   )
 
   (func (export "ref_is_null") (param $i i32) (result i32)
@@ -43,7 +42,6 @@
 (assert_return (invoke "ref_is_null" (i32.const 3)) (i32.const 0))
 (assert_return (invoke "ref_is_null" (i32.const 4)) (i32.const 0))
 (assert_return (invoke "ref_is_null" (i32.const 5)) (i32.const 0))
-(assert_return (invoke "ref_is_null" (i32.const 6)) (i32.const 0))
 
 (assert_return (invoke "ref_is_i31" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "ref_is_i31" (i32.const 1)) (i32.const 1))
@@ -51,7 +49,6 @@
 (assert_return (invoke "ref_is_i31" (i32.const 3)) (i32.const 0))
 (assert_return (invoke "ref_is_i31" (i32.const 4)) (i32.const 0))
 (assert_return (invoke "ref_is_i31" (i32.const 5)) (i32.const 0))
-(assert_return (invoke "ref_is_i31" (i32.const 6)) (i32.const 0))
 
 (assert_return (invoke "ref_is_data" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "ref_is_data" (i32.const 1)) (i32.const 0))
@@ -59,7 +56,6 @@
 (assert_return (invoke "ref_is_data" (i32.const 3)) (i32.const 1))
 (assert_return (invoke "ref_is_data" (i32.const 4)) (i32.const 0))
 (assert_return (invoke "ref_is_data" (i32.const 5)) (i32.const 0))
-(assert_return (invoke "ref_is_data" (i32.const 6)) (i32.const 0))
 
 (assert_return (invoke "ref_is_array" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "ref_is_array" (i32.const 1)) (i32.const 0))
@@ -67,7 +63,6 @@
 (assert_return (invoke "ref_is_array" (i32.const 3)) (i32.const 1))
 (assert_return (invoke "ref_is_array" (i32.const 4)) (i32.const 0))
 (assert_return (invoke "ref_is_array" (i32.const 5)) (i32.const 0))
-(assert_return (invoke "ref_is_array" (i32.const 6)) (i32.const 0))
 
 (assert_return (invoke "ref_is_func" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "ref_is_func" (i32.const 1)) (i32.const 0))
@@ -75,4 +70,3 @@
 (assert_return (invoke "ref_is_func" (i32.const 3)) (i32.const 0))
 (assert_return (invoke "ref_is_func" (i32.const 4)) (i32.const 1))
 (assert_return (invoke "ref_is_func" (i32.const 5)) (i32.const 0))
-(assert_return (invoke "ref_is_func" (i32.const 6)) (i32.const 0))

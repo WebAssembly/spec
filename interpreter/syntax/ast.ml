@@ -127,7 +127,7 @@ type vec_storeop = (vec_type, unit) memop
 type vec_laneop = (vec_type, pack_size) memop * int
 
 type initop = Explicit | Implicit
-type castop = NullOp | I31Op | DataOp | ArrayOp | FuncOp | RttOp
+type castop = NullOp | I31Op | DataOp | ArrayOp | FuncOp | RttOp of int32 Source.phrase
 
 
 (* Expressions *)
@@ -211,7 +211,6 @@ and instr' =
   | ArrayGet of idx * extension option  (* read array slot *)
   | ArraySet of idx                   (* write array slot *)
   | ArrayLen                          (* read array length *)
-  | RttCanon of idx                   (* allocate RTT *)
   | VecConst of vec                   (* constant *)
   | VecTest of vec_testop             (* vector test *)
   | VecCompare of vec_relop           (* vector comparison *)

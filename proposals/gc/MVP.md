@@ -45,10 +45,6 @@ Both proposals are prerequisites.
   - `heaptype ::= ... | i31`
   - the type of unboxed scalars
 
-* `rtt <typeidx>` is a new heap type that is a runtime representation of the static type `<typeidx>`
-  - `heaptype ::= ... | rtt <typeidx>`
-  - `rtt t ok` iff `t ok`
-
 * `none` is a new heap type
   - `heaptype ::= ... | none`
   - the common subtype of all referenceable types (a.k.a. the bottom heap type)
@@ -79,9 +75,6 @@ New abbreviations are introduced for reference types in binary and text format, 
 
 * `i31ref` is a new reference type
   - `i31ref == (ref null i31)`
-
-* `rtt <typeidx>` is a new reference type
-  - `(rtt $t) == (ref (rtt $t))`
 
 * `nullref` is a new reference type
   - `nullref == (ref null none)`
@@ -334,10 +327,6 @@ In addition to the [existing rules](https://github.com/WebAssembly/function-refe
   - `(type $t) <: array`
      - if `$t = <arraytype>`
 
-* `rtt $t` is a subtype of `eq`
-  - `rtt $t <: eq`
-  - Note: `rtt $t1` is *not* a subtype of `rtt $t2`, unless `$t1` and `$t2` are equivalent; covariant subtyping would be unsound, since RTTs are used in both co- and contravariant roles (e.g., both when constructing and consuming a reference)
-
 Note: This creates a hierarchy of *abstract* Wasm heap types that looks as follows.
 ```
       any
@@ -349,8 +338,7 @@ i31  data
        array
 ```
 All *concrete* heap types (of the form `(type $t)`) are situated below either `data` or `func`.
-Not shown in the graph are RTTs, which are below `eq`,
-and `none` which is below every other "leaf" type.
+Not shown in the graph is `none`, which is below every other "leaf" type.
 
 In addition, a host environment may introduce additional inhabitants of type `any`
 that are are in neither of the above three leaf type categories.
@@ -387,9 +375,7 @@ Subtyping is not defined on type definitions.
 
 #### Runtime Types
 
-* Runtime types (RTTs) are explicit values representing concrete types at runtime; a value of type `rtt <typeidx>` is a dynamic representative of the static type `<typeidx>`.
-
-* All RTTs are explicitly created and all operations involving dynamic type information (like casts) operate on explicit RTT operands. This allows maximum flexibility and custom choices wrt which RTTs to represent a source type.
+* Runtime types (RTTs) are values representing concrete types at runtime. In the MVP, *canonical* RTTs are implicitly created by all instructions depending on runtime type information (recognisable by the suffix `_canon` in their mnemonics). In future versions, RTTs may become explicit values, and non-canonical versions of these instructions will be introduced.
 
 * An RTT value r1 is *equal* to another RTT value r2 iff they both represent the same static type.
 
@@ -400,7 +386,7 @@ RTT equality can be implemented as a single pointer test by memoising RTT values
 More interestingly, runtime casts along the hierarchy encoded in these values can be implemented in an engine efficiently
 by using well-known techniques such as including a vector of its (direct and indirect) super-RTTs in each RTT value (with itself as the last entry).
 A subtype check between two RTT values can be implemented as follows using such a representation.
-Assume RTT value v1 has static type `(rtt $t1)` and v2 has type `(rtt $t2)`.
+Assume RTT value v1 represents static type `$t1` and v2 type `$t2`.
 Let `n1` and `n2` be the lengths of the respective supertype vectors.
 To check whether v1 denotes a subtype RTT of v2, first verify that `n1 >= n2` --
 if both `n1` and `n2` are known statically, this can be performed at compile time;
@@ -419,17 +405,14 @@ Example: Consider three types and corresponding RTTs:
 (type $A (struct))
 (type $B (sub $A (struct (field i32))))
 (type $C (sub $B (struct (field i32 i64))))
-
-(global $rttA (rtt 0 $A) (rtt.canon $A))
-(global $rttB (rtt 1 $B) (rtt.canon $B))
-(global $rttC (rtt 2 $C) (rtt.canon $C))
 ```
-Here, `$rttA` would carry supertype vector `[$rttA]`, `$rttB` has `[$rttA, $rttB]`, and `$rttC` has `[$rttA, $rttB, $rttC]`.
+Assume the respective RTTs for types `$A`, `$B`, and `$C` are called `$rttA`, `$rttB`, and `$rttC`.
+Then, `$rttA` would carry supertype vector `[$rttA]`, `$rttB` has `[$rttA, $rttB]`, and `$rttC` has `[$rttA, $rttB, $rttC]`.
 
 Now consider a function that casts a `$B` to a `$C`:
 ```
 (func $castBtoC (param $x (ref $B)) (result (ref $C))
-  (ref.cast (local.get $x) (global.get $rttC))
+  (ref.cast_canon $C (local.get $x))
 )
 ```
 This can compile to machine code that (1) reads the RTT from `$x`, (2) checks that the length of its supertype table is >= 3, and (3) pointer-compares table[2] against `$rttC`.
@@ -437,13 +420,9 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 
 #### Values
 
-* Creating a structure or array requires supplying a suitable RTT value to represent its runtime type.
-
 * Reference values of data or function type have an associated runtime type:
-  - for structures or arrays, it is the RTT value provided upon creation,
+  - for structures or arrays, it is the RTT value implictly produced upon creation,
   - for functions, it is the RTT value for the function's type (which may be recursive).
-
-* Note: as a future extension, we could allow a value's RTT to be a supertype of the value's actual type. For example, a structure or array with RTT `any` would become fully opaque to runtime type checks, and an implementation may choose to optimize away its RTT.
 
 
 ### Instructions
@@ -456,13 +435,13 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 
 #### Structures
 
-* `struct.new <typeidx>` allocates a structure with RTT information determining its [runtime type](#values) and initialises its fields with given values
-  - `struct.new $t : [t'* (rtt $t)] -> [(ref $t)]`
+* `struct.new_canon <typeidx>` allocates a structure with canonical [RTT](#values) and initialises its fields with given values
+  - `struct.new_canon $t : [t'*] -> [(ref $t)]`
     - iff `expand($t) = struct (mut t')*`
   - this is a *constant instruction*
 
-* `struct.new_default <typeidx>` allocates a structure of type `$t` and initialises its fields with default values
-  - `struct.new_default $t : [(rtt $t)] -> [(ref $t)]`
+* `struct.new_canon_default <typeidx>` allocates a structure of type `$t` with canonical [RTT](#values) and initialises its fields with default values
+  - `struct.new_canon_default $t : [] -> [(ref $t)]`
     - iff `expand($t) = struct (mut t')*`
     - and all `t'*` are defaultable
   - this is a *constant instruction*
@@ -483,24 +462,24 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 
 #### Arrays
 
-* `array.new <typeidx>` allocates an array with RTT information determining its [runtime type](#values)
-  - `array.new $t : [t' i32 (rtt $t)] -> [(ref $t)]`
+* `array.new_canon <typeidx>` allocates an array with canonical [RTT](#values)
+  - `array.new_canon $t : [t' i32] -> [(ref $t)]`
     - iff `expand($t) = array (mut t')`
   - this is a *constant instruction*
 
-* `array.new_default <typeidx>` allocates an array and initialises its fields with the default value
-  - `array.new_default $t : [i32 (rtt $t)] -> [(ref $t)]`
+* `array.new_canon_default <typeidx>` allocates an array with canonical [RTT](#values) and initialises its fields with the default value
+  - `array.new_canon_default $t : [i32] -> [(ref $t)]`
     - iff `expand($t) = array (mut t')`
     - and `t'` is defaultable
   - this is a *constant instruction*
 
-* `array.new_fixed <typeidx> <N>` allocates an array of fixed size and initialises it from operands
-  - `array.new_fixed $t N : [t^N (rtt $t)] -> [(ref $t)]`
+* `array.new_canon_fixed <typeidx> <N>` allocates an array with canonical [RTT](#values) of fixed size and initialises it from operands
+  - `array.new_canon_fixed $t N : [t^N] -> [(ref $t)]`
     - iff `expand($t) = array (mut t')`
   - this is a *constant instruction*
 
-* `array.new_data <typeidx> <dataidx>` allocates an array and initialises it from a data segment
-  - `array.new_data $t $d : [i32 i32 (rtt $t)] -> [(ref $t)]`
+* `array.new_canon_data <typeidx> <dataidx>` allocates an array with canonical [RTT](#values) and initialises it from a data segment
+  - `array.new_canon_data $t $d : [i32 i32] -> [(ref $t)]`
     - iff `expand($t) = array (mut t')`
     - and `t'` is numeric or packed numeric
     - and `$d` is a defined data segment
@@ -509,8 +488,8 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
   - traps if `offset + |t'|*size > len($d)`
   - note: for now, this is _not_ a constant instruction, in order to side-step issues of recursion between binary sections; this restriction will be lifted later
 
-* `array.new_elem <typeidx> <elemidx>` allocates an array and initialises it from an element segment
-  - `array.new_elem $t $e : [i32 i32 (rtt $t)] -> [(ref $t)]`
+* `array.new_canon_elem <typeidx> <elemidx>` allocates an array with canonical [RTT](#values) and initialises it from an element segment
+  - `array.new_canon_elem $t $e : [i32 i32] -> [(ref $t)]`
     - iff `expand($t) = array (mut t')`
     - and `$e : rt`
     - and `rt <: t'`
@@ -645,46 +624,36 @@ Note: The [reference types](https://github.com/WebAssembly/reference-types) and 
 Note: The `br_on_*` instructions allow an operand of unrelated reference type, even though this cannot possibly succeed. That's because subtyping allows to forget that information, so by the subtype substitutibility property, it would be accepted in any case. The given typing rules merely allow this type to also propagate to the result, which avoids the need to compute a least upper bound between the operand type and the target type in the typing algorithm.
 
 
-#### Runtime Types
-
-* `rtt.canon <typeidx>` returns the RTT of the specified type
-  - `rtt.canon $t : [] -> [(rtt $t)]`
-  - multiple invocations of this instruction yield the same observable RTTs
-  - this is a *constant instruction*
-
-TODO: Add the ability to generate new (non-canonical) RTT values to implement casting in nominal type hierarchies?
-
-
 #### Casts
 
 RTT-based casts can only be performed with respect to concrete types, and require a data or function reference as input, which are known to carry an RTT.
 
-* `ref.test` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given RTT
-  - `ref.test : [t' (rtt $t)] -> [i32]`
+* `ref.test_canon $t` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given type
+  - `ref.test_canon $t : [t'] -> [i32]`
     - iff `t' <: (ref null data)` or `t' <: (ref null func)`
   - returns 1 if the first operand is not null and its runtime type is a sub-RTT of the RTT operand, 0 otherwise
 
-* `ref.cast` casts a reference value down to a type given by a RTT representation
-  - `ref.cast : [(ref null1? ht) (rtt $t)] -> [(ref null2? $t)]`
+* `ref.cast_canon $t` casts a reference value down to a type
+  - `ref.cast_canon $t : [(ref null1? ht)] -> [(ref null2? $t)]`
     - iff `ht <: data` or `ht <: func`
     - and `null1? = null2?`
   - returns null if the first operand is null
-  - traps if the first operand is not null and its runtime type is not a sub-RTT of the RTT operand
+  - traps if the first operand is not null and its runtime type is not a sub-RTT of `$t`
 
-* `br_on_cast <labelidx>` branches if a value can be cast down to a given reference type
-  - `br_on_cast $l : [t0* t (rtt $t')] -> [t0* t]`
+* `br_on_cast_canon <labelidx>` branches if a value can be cast down to a given reference type
+  - `br_on_cast_canon $l : [t0* t] -> [t0* t]`
     - iff `$l : [t0* t']`
     - and `t <: (ref null data)` or `t <: (ref null func)`
     - and `(ref $t') <: t'`
-  - branches iff the first operand is not null and its runtime type is a sub-RTT of the RTT operand
+  - branches iff the first operand is not null and its runtime type is a sub-RTT of `$t`
   - passes cast operand along with branch, plus possible extra args
 
-* `br_on_cast_fail <labelidx>` branches if a value can not be cast down to a given reference type
-  - `br_on_cast_fail $l : [t0* t (rtt $t')] -> [t0* (ref $t')]`
+* `br_on_cast_canon_fail <labelidx>` branches if a value can not be cast down to a given reference type
+  - `br_on_cast_canon_fail $l $t' : [t0* t] -> [t0* (ref $t')]`
     - iff `$l : [t0* t']`
     - and `t <: (ref null data)` or `t <: (ref null func)`
     - and `t <: t'`
-  - branches iff the first operand is null or its runtime type is not a sub-RTT of the RTT operand
+  - branches iff the first operand is null or its runtime type is not a sub-RTT of `$t'`
   - passes operand along with branch, plus possible extra args
 
 Note: These instructions allow an operand of unrelated reference type, even though this cannot possibly succeed. The reasoning is the same as for classification instructions.
@@ -694,11 +663,10 @@ Note: These instructions allow an operand of unrelated reference type, even thou
 
 In order to allow RTTs to be initialised as globals, the following extensions are made to the definition of *constant expressions*:
 
-* `rtt.canon` is a constant instruction
 * `i31.new` is a constant instruction
-* `struct.new` and `struct.new_default` are constant instructions
-* `array.new`, `array.new_default`, and `array.new_fixed` are constant instructions
-  - Note: `array.new_data` and `array.new_elem` are not for the time being, see above
+* `struct.new_canon` and `struct.new_canon_default` are constant instructions
+* `array.new_canon`, `array.new_canon_default`, and `array.new_canon_fixed` are constant instructions
+  - Note: `array.new_canon_data` and `array.new_canon_elem` are not for the time being, see above
 * `global.get` is a constant instruction and can access preceding (immutable) global definitions, not just imports as in the MVP
 
 
@@ -725,7 +693,6 @@ This extends the [encodings](https://github.com/WebAssembly/function-references/
 | -0x14  | `(ref null ht)` | `ht : heaptype (s33)` | from funcref proposal |
 | -0x15  | `(ref ht)`      | `ht : heaptype (s33)` | from funcref proposal |
 | -0x16  | `i31ref`        |            | shorthand |
-| -0x18  | `(rtt $t)`      | `$t : typeidx` | shorthand |
 | -0x19  | `dataref`       |            | shorthand |
 | -0x1a  | `arrayref`      |            | shorthand |
 | -0x1b  | `nullref`       |            | shorthand |
@@ -741,7 +708,6 @@ The opcode for heap types is encoded as an `s33`.
 | -0x11  | `any`           |            | from funcref proposal |
 | -0x13  | `eq`            |            | |
 | -0x16  | `i31`           |            | |
-| -0x18  | `(rtt $t)`      | `$t : typeidx` | |
 | -0x19  | `data`          |            | |
 | -0x1a  | `array`         |            | |
 | -0x1b  | `none`          |            | |
@@ -783,30 +749,29 @@ The opcode for heap types is encoded as an `s33`.
 | ------ | --------------- | ---------- |
 | 0xd5   | `ref.eq`        |            |
 | 0xd6   | `br_on_non_null` | |
-| 0xfb01 | `struct.new_with_rtt $t` | `$t : typeidx` |
-| 0xfb02 | `struct.new_default_with_rtt $t` | `$t : typeidx` |
+| 0xfb01 | `struct.new_canon $t` | `$t : typeidx` |
+| 0xfb02 | `struct.new_canon_default $t` | `$t : typeidx` |
 | 0xfb03 | `struct.get $t i` | `$t : typeidx`, `i : fieldidx` |
 | 0xfb04 | `struct.get_s $t i` | `$t : typeidx`, `i : fieldidx` |
 | 0xfb05 | `struct.get_u $t i` | `$t : typeidx`, `i : fieldidx` |
 | 0xfb06 | `struct.set $t i` | `$t : typeidx`, `i : fieldidx` |
-| 0xfb11 | `array.new_with_rtt $t` | `$t : typeidx` |
-| 0xfb12 | `array.new_default_with_rtt $t` | `$t : typeidx` |
+| 0xfb11 | `array.new_canon $t` | `$t : typeidx` |
+| 0xfb12 | `array.new_canon_default $t` | `$t : typeidx` |
 | 0xfb13 | `array.get $t` | `$t : typeidx` |
 | 0xfb14 | `array.get_s $t` | `$t : typeidx` |
 | 0xfb15 | `array.get_u $t` | `$t : typeidx` |
 | 0xfb16 | `array.set $t` | `$t : typeidx` |
 | 0xfb17 | `array.len` | `_ : u32` (TODO: remove, was typeidx) |
-| 0xfb19 | `array.new_fixed $t N` | `$t : typeidx`, `N : u32` |
-| 0xfb1b | `array.new_data $t $d` | `$t : typeidx`, `$d : dataidx` |
-| 0xfb1c | `array.new_elem $t $e` | `$t : typeidx`, `$e : elemidx` |
+| 0xfb19 | `array.new_canon_fixed $t N` | `$t : typeidx`, `N : u32` |
+| 0xfb1b | `array.new_canon_data $t $d` | `$t : typeidx`, `$d : dataidx` |
+| 0xfb1c | `array.new_canon_elem $t $e` | `$t : typeidx`, `$e : elemidx` |
 | 0xfb20 | `i31.new` |  |
 | 0xfb21 | `i31.get_s` |  |
 | 0xfb22 | `i31.get_u` |  |
-| 0xfb30 | `rtt.canon $t` | `$t : typeidx` |
-| 0xfb40 | `ref.test $t` | `$t : typeidx` |
-| 0xfb41 | `ref.cast $t` | `$t : typeidx` |
-| 0xfb42 | `br_on_cast $l` | `$l : labelidx` |
-| 0xfb43 | `br_on_cast_fail $l` | `$l : labelidx` |
+| 0xfb40 | `ref.test_canon $t` | `$t : typeidx` |
+| 0xfb41 | `ref.cast_canon $t` | `$t : typeidx` |
+| 0xfb42 | `br_on_cast_canon $l $t` | `$l : labelidx`, `$t : typeidx` |
+| 0xfb43 | `br_on_cast_canon_fail $l $t` | `$l : labelidx`, `$t : typeidx` |
 | 0xfb50 | `ref.is_func` | |
 | 0xfb51 | `ref.is_data` | |
 | 0xfb52 | `ref.is_i31` | |
@@ -832,13 +797,9 @@ See [GC JS API document](MVP-JS.md) .
 
 ## Questions
 
-* Make rtt operands nullable?
-
 * Enable `i31` as a type definition.
 
 * Should reference types be generalised to *unions*, e.g., of the form `(ref null? i31? data? func? extern? $t?)`? Perhaps even allowing multiple concrete types?
-
-* Provide functionality to generate fresh, non-canonical RTTs?
 
 * Provide a way to make data types non-eq, especially immutable ones?
 

@@ -172,14 +172,13 @@ let vec_type s =
 let heap_type s =
   let pos = pos s in
   either [
-    (fun s -> let x = var_type s33 s in DefHeapType x);
+    (fun s -> DefHeapType (var_type s33 s));
     (fun s ->
       match s7 s with
       | -0x10 -> FuncHeapType
       | -0x11 -> AnyHeapType
       | -0x13 -> EqHeapType
       | -0x16 -> I31HeapType
-      | -0x18 -> RttHeapType (var_type s33 s)
       | -0x19 -> DataHeapType
       | -0x1a -> ArrayHeapType
       | -0x1b -> NoneHeapType
@@ -196,7 +195,6 @@ let ref_type s =
   | -0x14 -> (Nullable, heap_type s)
   | -0x15 -> (NonNullable, heap_type s)
   | -0x16 -> (Nullable, I31HeapType)
-  | -0x18 -> (NonNullable, RttHeapType (var_type s33 s))
   | -0x19 -> (Nullable, DataHeapType)
   | -0x1a -> (Nullable, ArrayHeapType)
   | -0x1b -> (Nullable, NoneHeapType)
@@ -301,7 +299,7 @@ let memop s =
 
 let block_type s =
   either [
-    (fun s -> let x = var_type s33 s in VarBlockType x);
+    (fun s -> VarBlockType (var_type s33 s));
     (fun s -> expect 0x40 s ""; ValBlockType None);
     (fun s -> ValBlockType (Some (value_type s)));
   ] s
@@ -583,35 +581,33 @@ let rec instr s =
 
   | 0xfb as b ->
     (match u32 s with
-    | 0x01l -> struct_new (at var s)
-    | 0x02l -> struct_new_default (at var s)
+    | 0x01l -> struct_new_canon (at var s)
+    | 0x02l -> struct_new_canon_default (at var s)
     | 0x03l -> let x = at var s in let y = at var s in struct_get x y
     | 0x04l -> let x = at var s in let y = at var s in struct_get_s x y
     | 0x05l -> let x = at var s in let y = at var s in struct_get_u x y
     | 0x06l -> let x = at var s in let y = at var s in struct_set x y
 
-    | 0x11l -> array_new (at var s)
-    | 0x12l -> array_new_default (at var s)
+    | 0x11l -> array_new_canon (at var s)
+    | 0x12l -> array_new_canon_default (at var s)
     | 0x13l -> array_get (at var s)
     | 0x14l -> array_get_s (at var s)
     | 0x15l -> array_get_u (at var s)
     | 0x16l -> array_set (at var s)
-    | 0x17l -> let _ = var s in array_len  (* TODO: remove var *)
+    | 0x17l -> array_len
 
-    | 0x19l -> let x = at var s in let n = u32 s in array_new_fixed x n
-    | 0x1bl -> let x = at var s in let y = at var s in array_new_data x y
-    | 0x1cl -> let x = at var s in let y = at var s in array_new_elem x y
+    | 0x19l -> let x = at var s in let n = u32 s in array_new_canon_fixed x n
+    | 0x1bl -> let x = at var s in let y = at var s in array_new_canon_data x y
+    | 0x1cl -> let x = at var s in let y = at var s in array_new_canon_elem x y
 
     | 0x20l -> i31_new
     | 0x21l -> i31_get_s
     | 0x22l -> i31_get_u
 
-    | 0x30l -> rtt_canon (at var s)
-
-    | 0x40l -> ref_test
-    | 0x41l -> ref_cast
-    | 0x42l -> br_on_cast (at var s)
-    | 0x43l -> br_on_cast_fail (at var s)
+    | 0x40l -> ref_test_canon (at var s)
+    | 0x41l -> ref_cast_canon (at var s)
+    | 0x42l -> let x = at var s in let y = at var s in br_on_cast_canon x y
+    | 0x43l -> let x = at var s in let y = at var s in br_on_cast_canon_fail x y
 
     | 0x50l -> ref_is_func
     | 0x51l -> ref_is_data
