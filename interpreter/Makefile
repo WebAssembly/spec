@@ -109,12 +109,9 @@ _build/$(LIB).cmxa: $(FILES) $(LIB).mllib _tags Makefile
 # Building JavaScript library
 
 .PHONY:		$(JSLIB)
-$(JSLIB):	$(UNOPT)
-		mkdir -p _build/jslib/src
-		cp meta/jslib/* _build/jslib
-		cp $(wildcard $(DIRS:%=_build/%/*.ml*)) meta/jslib/*.ml _build/jslib/src
-		rm _build/jslib/src/*.ml[^i]
-		(cd _build/jslib; ./build.sh ../../$@)
+$(JSLIB):
+		dune build wast.bc.js
+		cp ../_build/default/interpreter/wast.bc.js ./wast.js
 
 
 # Building Windows build file
