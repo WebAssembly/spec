@@ -112,7 +112,7 @@ _build/$(LIB).cmxa: $(FILES) $(LIB).mllib _tags Makefile
 $(JSLIB):	$(UNOPT)
 		mkdir -p _build/jslib/src
 		cp meta/jslib/* _build/jslib
-		cp $(DIRS:%=_build/%/*.ml*) meta/jslib/*.ml _build/jslib/src
+		cp $(wildcard $(DIRS:%=_build/%/*.ml*)) meta/jslib/*.ml _build/jslib/src
 		rm _build/jslib/src/*.ml[^i]
 		(cd _build/jslib; ./build.sh ../../$@)
 
