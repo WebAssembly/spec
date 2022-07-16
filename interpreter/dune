@@ -7,7 +7,7 @@
  ; We also need to exclude the 'wasm' module as it overlaps with the library
  ; name.
  ; 'smallint' is a separate test module.
- (modules :standard \ main wasm smallint))
+ (modules :standard \ main wasm smallint wast))
 
 (executable
  (name main)
@@ -22,6 +22,16 @@
  (libraries wasm)
  (flags
   (-open Wasm)))
+
+(executable
+ (name wast)
+ (modules wast)
+ (libraries wasm js_of_ocaml)
+ (flags
+  (-open Wasm))
+ (optional)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx)))
 
 (subdir
  text
