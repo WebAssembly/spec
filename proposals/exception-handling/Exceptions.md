@@ -424,7 +424,7 @@ The following additional classes are added to the JS API in order to allow
 JavaScript to interact with WebAssembly exceptions:
 
   * `WebAssembly.Tag`
-  * `WebAssembly.Exception`.
+  * `WebAssembly.Exception`
 
 The `WebAssembly.Tag` class represents a typed tag defined in the tag section
 and exported from a WebAssembly module. It allows querying the type of a tag
@@ -449,12 +449,15 @@ check ensures that without access to a WebAssembly module's exported exception
 tag, the associated data fields cannot be read.
 
 The `Exception` constructor can take an optional `ExceptionOptions` argument,
-which can optionally contain `traceStack` entry. When `traceStack` is `true`,
-web VMs can attach a stack trace string to `Exception.stack` field, as in
-JavaScript's `Error` class. While `Exception` is not a subclass of JavaScript's
+which can optionally contain `traceStack` entry. When `traceStack` is
+`true`, JavaScript VMs are permitted to attach a stack trace string to
+`Exception.stack` field, as in JavaScript's `Error` class. `traceStack`
+serves as a request to the WebAssembly engine to attach a stack trace; it
+is not necessary to honour if `true`, but `trace` may not be populated if
+`traceStack` is `false`. While `Exception` is not a subclass of JavaScript's
 `Error` and it can be used to represent normal control flow constructs,
-`traceStack` field can be set when we use it to represent errors. The format of
-stack trace strings conform to the [WebAssembly stack trace
+`traceStack` field can be set when we use it to represent errors. The
+format of stack trace strings conform to the [WebAssembly stack trace
 conventions](https://webassembly.github.io/spec/web-api/index.html#conventions).
 When `ExceptionOption` is not provided or it does not contain `traceStack`
 entry, `traceStack` is considered `false` by default.
