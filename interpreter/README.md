@@ -154,7 +154,7 @@ let binary = WebAssemblyText.encode(source)
 (new WebAssembly.Instance(new WebAssembly.Module(binary))).exports.f(3, 4)
 // => 7
 
-WebAssemblyText.decode(binary)
+WebAssemblyText.decode(binary, 80)
 // =>
 // (module
 //   (type $0 (func (param i32 i32) (result i32)))
