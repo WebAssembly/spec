@@ -65,7 +65,10 @@ The Makefile also provides a target to compile (parts of) the interpreter into a
 ```
 make wast.js
 ```
-Building this target requires node.js and BuckleScript.
+Building this target requires `js_of_ocaml`, which can be installed with OPAM:
+```
+opam install js_of_ocaml js_of_ocaml-ppx
+```
 
 
 ## Synopsis
@@ -139,7 +142,7 @@ WebAssemblyText.encode(source)
 ```
 which turns a module in S-expression syntax into a WebAssembly binary, and
 ```
-WebAssemblyText.decode(binary, width = 80)
+WebAssemblyText.decode(binary, width)
 ```
 which pretty-prints a binary back into a canonicalised S-expression string.
 
@@ -158,6 +161,20 @@ WebAssemblyText.decode(binary)
 //   (func $0 (type 0) (local.get 0) (local.get 1) (i32.add))
 //   (export "f" (func 0))
 // )
+```
+
+Depending on how you load the library, the object may be accessed in different ways. For example, using `require` in node.js:
+
+```
+let wast = require("./wast.js");
+let binary = wast.WebAssemblyText.encode("(module"));
+```
+
+Or using `load` from a JavaScript shell:
+
+```
+load("./wast.js");
+let binary = WebAssemblyText.encode("(module"));
 ```
 
 

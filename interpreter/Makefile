@@ -2,7 +2,7 @@
 # package manager to build. However, Opam package management is available
 # optionally through the check/install/uninstall targets.
 #
-# The $(JSLIB) target requires node.js and BuckleScript.
+# The $(JSLIB).js target requires Js_of_ocaml (using ocamlfind).
 #
 # See README.me for instructions.
 
