@@ -14,7 +14,7 @@ UNOPT = 	$(NAME).debug
 OPT =   	$(NAME)
 LIB =		$(NAME)
 ZIP =		$(NAME).zip
-JSLIB =		wast.js
+JSLIB =		wast
 WINMAKE =	winmake.bat
 
 DIRS =		util syntax binary text valid runtime exec script host main tests
@@ -22,6 +22,7 @@ LIBS =		bigarray
 FLAGS = 	-lexflags -ml -cflags '-w +a-4-27-42-44-45-70 -warn-error +a-3'
 OCBA =		ocamlbuild $(FLAGS) $(DIRS:%=-I %)
 OCB =		$(OCBA) $(LIBS:%=-libs %)
+JSO =		js_of_ocaml -q --opt 3
 JS =		# set to JS shell command to run JS tests
 
 
@@ -35,7 +36,7 @@ opt:		$(OPT)
 unopt:		$(UNOPT)
 libopt:		_build/$(LIB).cmx _build/$(LIB).cmxa
 libunopt:	_build/$(LIB).cmo _build/$(LIB).cma
-jslib:		$(JSLIB)
+jslib:		$(JSLIB).js
 all:		unopt opt libunopt libopt test
 land:		$(WINMAKE) all
 zip: 		$(ZIP)
@@ -108,11 +109,12 @@ _build/$(LIB).cmxa: $(FILES) $(LIB).mllib _tags Makefile
 
 # Building JavaScript library
 
-.PHONY:		$(JSLIB)
-$(JSLIB):
-		dune build wast.bc.js
-		cp ../_build/default/interpreter/wast.bc.js ./wast.js
+.INTERMEDIATE:	$(JSLIB).byte
+$(JSLIB).byte:	meta/jslib/$(JSLIB).ml
+		$(OCBA) -use-ocamlfind -pkg js_of_ocaml -pkg js_of_ocaml-ppx meta/jslib/$(JSLIB).byte
 
+$(JSLIB).js: $(JSLIB).byte
+		$(JSO) $(JSLIB).byte
 
 # Building Windows build file
 
@@ -178,7 +180,7 @@ $(ZIP):		$(WINMAKE)
 		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
 clean:
-		rm -rf _build/jslib $(LIB).mlpack _tags
+		rm -rf _build/jslib $(LIB).mlpack _tags $(JSLIB).js
 		$(OCB) -clean
 
 
