@@ -109,12 +109,15 @@ _build/$(LIB).cmxa: $(FILES) $(LIB).mllib _tags Makefile
 
 # Building JavaScript library
 
+JSLIB_DIR =		meta/jslib
+JSLIB_FLAGS =	-use-ocamlfind -pkg js_of_ocaml -pkg js_of_ocaml-ppx
+
 .INTERMEDIATE:	$(JSLIB).byte
-$(JSLIB).byte:	meta/jslib/$(JSLIB).ml
-		$(OCBA) -use-ocamlfind -pkg js_of_ocaml -pkg js_of_ocaml-ppx meta/jslib/$(JSLIB).byte
+$(JSLIB).byte:	$(JSLIB_DIR)/$(JSLIB).ml
+		$(OCBA) -I $(JSLIB_DIR) $(JSLIB_FLAGS) $@
 
 $(JSLIB).js: $(JSLIB).byte
-		$(JSO) $(JSLIB).byte
+		$(JSO) $<
 
 # Building Windows build file
 

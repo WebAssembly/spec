@@ -167,14 +167,14 @@ Depending on how you load the library, the object may be accessed in different w
 
 ```
 let wast = require("./wast.js");
-let binary = wast.WebAssemblyText.encode("(module"));
+let binary = wast.WebAssemblyText.encode("(module)");
 ```
 
 Or using `load` from a JavaScript shell:
 
 ```
 load("./wast.js");
-let binary = WebAssemblyText.encode("(module"));
+let binary = WebAssemblyText.encode("(module)");
 ```
 
 
