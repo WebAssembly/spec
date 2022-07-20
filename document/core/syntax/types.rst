@@ -99,6 +99,7 @@ A *concrete* heap type consists of a :ref:`type index <syntax-typeidx>` and clas
    pair: abstract syntax; reference type
    pair: reference; type
 .. _syntax-reftype:
+.. _syntax-nullable:
 
 Reference Types
 ~~~~~~~~~~~~~~~

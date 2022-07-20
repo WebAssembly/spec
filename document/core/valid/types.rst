@@ -397,3 +397,58 @@ External Types
    }{
      C \vdashexterntype \ETGLOBAL~\globaltype \ok
    }
+
+
+.. index:: value type, ! defaultable, number type, vector type, reference type, table type
+.. _valid-defaultable:
+
+Defaultable Types
+~~~~~~~~~~~~~~~~~
+
+A type is *defaultable* if it has a :ref:`default value <default-val>` for initialization.
+
+Value Types
+...........
+
+* A defaultable :ref:`value type <syntax-valtype>` :math:`t` must be:
+
+  - either a :ref:`number type <syntax-numtype>`,
+
+  - or a :ref:`vector type <syntax-vectype>`,
+
+  - or a :ref:`nullable reference type <syntax-numtype>`.
+
+
+.. math::
+   \frac{
+   }{
+     C \vdashvaltypedefaultable \numtype \defaultable
+   }
+
+.. math::
+   \frac{
+   }{
+     C \vdashvaltypedefaultable \vectype \defaultable
+   }
+
+.. math::
+   \frac{
+   }{
+     C \vdashvaltypedefaultable (\REF~\NULL~\heaptype) \defaultable
+   }
+
+
+Table Types
+...........
+
+* A defaultable :ref:`table type <syntax-tabletype>` must be:
+
+  - of the form :math:`\limits~t`, where `t` is a :ref:`defaultable <valid-defaultable>` :ref:`reference type <syntax-numtype>`.
+
+
+.. math::
+   \frac{
+     C \vdashvaltypedefaultable \reftype \defaultable
+   }{
+     C \vdashtabletypedefaultable \limits~\reftype \defaultable
+   }

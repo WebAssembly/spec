@@ -58,7 +58,7 @@ it is the respective value :math:`0` for :ref:`number types <syntax-numtype>`, :
    \begin{array}{lcl@{\qquad}l}
    \default_t &=& t{.}\CONST~0 & (\iff t = \numtype) \\
    \default_t &=& t{.}\CONST~0 & (\iff t = \vectype) \\
-   \default_t &=& \REFNULL~t & (\iff t = \reftype) \\
+   \default_t &=& \REFNULL~t & (\iff t = (\REF~\NULL~\heaptype)) \\
    \end{array}
 
 

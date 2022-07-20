@@ -48,7 +48,7 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
    }
 
 
-.. index:: table, table type
+.. index:: table, table type, defaultable
    pair: validation; table
    single: abstract syntax; table
 .. _valid-table:
@@ -68,6 +68,8 @@ Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>`.
 .. math::
    \frac{
      C \vdashtabletype \tabletype \ok
+     \qquad
+     C \vdashtabletypedefaultable \tabletype \defaultable
    }{
      C \vdashtable \{ \TTYPE~\tabletype \} : \tabletype
    }

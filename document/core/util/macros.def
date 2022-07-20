@@ -878,6 +878,7 @@
 .. Notation
 
 .. |ok| mathdef:: \mathrel{\mbox{ok}}
+.. |defaultable| mathdef:: \xref{valid/types}{valid-defaultable}{\mathrel{\mbox{defaultable}}}
 .. |const| mathdef:: \xref{valid/instructions}{valid-constant}{\mathrel{\mbox{const}}}
 
 .. |matchesnumtype| mathdef:: \xref{valid/matching}{match-numtype}{\leq}
@@ -923,6 +924,9 @@
 .. |vdashmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\vdash}
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
 .. |vdashexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\vdash}
+
+.. |vdashvaltypedefaultable| mathdef:: \xref{valid/types}{valid-defaultable}{\vdash}
+.. |vdashtabletypedefaultable| mathdef:: \xref{valid/types}{valid-defaultable}{\vdash}
 
 .. |vdashnumtypematch| mathdef:: \xref{valid/matching}{match-numtype}{\vdash}
 .. |vdashheaptypematch| mathdef:: \xref{valid/matching}{match-heaptype}{\vdash}
