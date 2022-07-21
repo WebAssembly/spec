@@ -521,11 +521,11 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 Tentatively, support a type of guaranteed unboxed scalars.
 
 * `i31.new` creates an `i31ref` from a 32 bit value, truncating high bit
-  - `i31.new : [i32] -> [i31ref]`
+  - `i31.new : [i32] -> [(ref i31)]`
   - this is a *constant instruction*
 
 * `i31.get_<sx>` extracts the value, zero- or sign-extending
-  - `i31.get_<sx> : [i31ref] -> [i32]`
+  - `i31.get_<sx> : [(ref null i31)] -> [i32]`
   - traps if the operand is null
 
 
