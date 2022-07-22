@@ -189,8 +189,6 @@ struct
       op 0x04; block_type bt; list instr es1;
       if es2 <> [] then op 0x05;
       list instr es2; end_ ()
-    | Let (bt, locs, es) ->
-      op 0x17; block_type bt; locals locs; list instr es; end_ ()
 
     | Br x -> op 0x0c; var x
     | BrIf x -> op 0x0d; var x

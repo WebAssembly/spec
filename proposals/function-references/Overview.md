@@ -8,7 +8,7 @@ The proposal distinguished regular and nullable function reference. The former c
 
 The proposal has instructions for producing and consuming (calling) function references. It also includes instruction for testing and converting between regular and nullable references.
 
-Typed references have no canonical default value, because they cannot be null. To enable storing them in locals, which so far depend on default values for initialisation, the proposal also introduces a new instruction `let` for block-scoped locals whose initialisation values are taken from the operand stack.
+Typed references have no canonical default value, because they cannot be null. To enable storing them in locals, which so far depend on default values for initialisation, the proposal also tracks the initialisation status of locals during validation.
 
 
 ### Motivation
@@ -36,7 +36,7 @@ Typed references have no canonical default value, because they cannot be null. T
 
 * Refine the instruction `ref.func $f` to return a typed function reference
 
-* Add a block instruction `let (local t*) ... end` for introducing locals with block scope, in order to handle reference types without default initialisation values
+* Track initialisation status of locals during validation and only allow `local.get` after a `local.set/tee` in the same or a surrounding block.
 
 * Add an optional initialiser expression to table definitions, for element types that do not have an implicit default value.
 
@@ -168,6 +168,33 @@ The following rules, now defined in terms of heap types, replace and extend the 
 * TODO: Table definitions with a type that is not defaultable must have an initialiser value. (Imports are not affected.)
 
 
+#### Local Types
+
+* Locals are now recorded in the context with types of the following form:
+  - `localtype ::= set? <valtype>`
+  - the flag `set` records that the local has been initialized
+  - all locals with non-defaultable type start out unset
+
+
+#### Instruction Types
+
+* Instructions and instruction sequences are now typed with types of the following form:
+  - `instrtype ::= <functype> <localidx>*`
+  - the local indices record which locals have been set by the instructions
+  - most typing rules except those for locals and for instruction sequences remain unchanged, since the index list is empty
+
+* There is a natural notion of subtyping on instruction types:
+  - `[t1*] -> [t2*] x1*  <:  [t3*] -> [t4*] x2*`
+    - iff `t1* = t0* t1'*`
+    - and `t2* = t0* t2'*`
+    - and `[t1'*] -> [t2'*] <: [t3*] -> [t4*]*`
+    - and `{x2*} subset {x1*}`
+
+* Block types are instruction types with empty index set.
+
+Note: Extending block types with index sets to allow initialization status to last beyond a block's end is a possible extension.
+
+
 ### Instructions
 
 #### Functions
@@ -215,26 +242,43 @@ The following rules, now defined in terms of heap types, replace and extend the 
 * Note: `ref.is_null` already exists via the [reference types proposal](https://github.com/WebAssembly/reference-types)
 
 
-#### Local Bindings
+#### Locals
 
-* `let <blocktype> (local <valtype>)* <instr>* end` locally binds operands to variables
-  - `let bt (local t)* instr* end : [t1* t*] -> [t2*]`
-    - iff `bt = [t1*] -> [t2*]`
-    - and `instr* : bt` under a context with `locals` extended with `t*` and `labels` extended with `[t2*]`
+Typing of local instructions is updated to account for the initialization status of locals.
 
-Note: The latter condition implies that inside the body of the `let`, its locals are prepended to the list of locals. Nesting multiple `let` blocks hence addresses them relatively, similar to labels. Function-level local declarations can be viewed as syntactic sugar for a bunch of zero constant instructions and a `let` wrapping the function body. That is,
-```
-(func ... (local t)* ...)
-```
-is equivalent to
-```
-(func ... (t.default)* (let (local t)* ...))
-```
-where `(t.default)` is `(t.const 0)` for numeric types `t`, and `(ref.null)` for reference types.
+* `local.get $x`
+  - `local.get $x : [] -> [t]`
+    - iff `$x : set t`
 
-The rule also implies that let-bound locals are mutable.
+* `local.set $x`
+  - `local.set $x : [t] -> [] $x`
+    - iff `$x : set? t`
 
-Like all other block instructions, `let` binds a label
+* `local.tee $x`
+  - `local.tee $x : [t] -> [t] $x`
+    - iff `$x : set? t`
+
+Note: These typing rules do not try to exclude indices for locals that have already been set, but an implementation could.
+
+
+#### Instruction Sequences
+
+Typing of instruction sequences is updated to account for initialization of locals.
+
+* `instr*`
+  - `instr1 instr* : [t1*] -> [t3*] x1* x2*`
+    - iff `instr1 : [t1*] -> [t2*] x1*`
+    - and `instr* : [t2*] -> [t3*] x2*` under a context where `x1*` are changed to `set`
+  - `epsilon : [] -> [] epsilon`
+
+Note: These typing rules do not try to eliminate duplicate indices, but an implementation could.
+ 
+A subsumption rule allows to go to a supertype for any instruction:
+
+* `instr`
+  - `instr : [t1*] -> [t2*] x*`
+    - iff `instr : [t1'*] -> [t2'*] x'*`
+    - and `[t1'*] -> [t2'*] x'*  <:  [t1*] -> [t2*] x*`
 
 
 ### Tables
@@ -273,7 +317,6 @@ The opcode for heap types is encoded as an `s33`.
 | ------ | ------------------------ | ---------- |
 | 0x14   | `call_ref`               |            |
 | 0x15   | `return_call_ref`        |            |
-| 0x17   | `let <bt> <locals>`      | `bt : blocktype, locals : (as in functions)` |
 | 0xd3   | `ref.as_non_null`        |            |
 | 0xd4   | `br_on_null $l`          | `$l : u32` |
 | 0xd6   | `br_on_non_null $l`      | `$l : u32` |

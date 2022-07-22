@@ -148,7 +148,6 @@ and instr' =
   | Block of block_type * instr list  (* execute in sequence *)
   | Loop of block_type * instr list   (* loop header *)
   | If of block_type * instr list * instr list   (* conditional *)
-  | Let of block_type * local list * instr list  (* local bindings *)
   | Br of idx                         (* break to n-th surrounding label *)
   | BrIf of idx                       (* conditional break *)
   | BrTable of idx list * idx         (* indexed break *)

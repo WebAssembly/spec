@@ -21,7 +21,6 @@ let select t = Select t
 let block bt es = Block (bt, es)
 let loop bt es = Loop (bt, es)
 let if_ bt es1 es2 = If (bt, es1, es2)
-let let_ bt ts es = Let (bt, ts, es)
 
 let br x = Br x
 let br_if x = BrIf x

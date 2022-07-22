@@ -323,14 +323,7 @@ let rec instr s =
 
   | 0x16 as b -> illegal s pos b
 
-  | 0x17 ->
-    let bt = block_type s in
-    let locs = locals s in
-    let es = instr_block s in
-    end_ s;
-    let_ bt locs es
-
-  | 0x18 | 0x19 as b -> illegal s pos b
+  | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
   | 0x1a -> drop
   | 0x1b -> select None

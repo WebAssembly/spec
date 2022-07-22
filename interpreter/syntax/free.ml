@@ -108,9 +108,6 @@ let rec instr (e : instr) =
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
   | If (bt, es1, es2) -> block_type bt ++ block es1 ++ block es2
-  | Let (bt, ts, es) ->
-    let free = block_type bt ++ block es in
-    {free with locals = Lib.Fun.repeat (List.length ts) shift free.locals}
   | Br x | BrIf x | BrOnNull x | BrOnNonNull x -> labels (idx x)
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
   | Return | CallRef | ReturnCallRef -> empty

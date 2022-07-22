@@ -142,19 +142,6 @@ let force_locals (c : context) =
   List.fold_right Stdlib.(@@) !(c.deferred_locals) ();
   c.deferred_locals := []
 
-let merge_locals (c : context) (c' : context) at =
-  force_locals c';  (* check that there aren't too many locals locally *)
-  if VarMap.is_empty c'.locals.map then
-    defer_locals c (fun () -> bind "local" c.locals c'.locals.count at)
-  else
-  (
-    force_locals c;
-    let n = c.locals.count in
-    ignore (bind "local" c.locals c'.locals.count at);
-    c.locals.map <- VarMap.union (fun x i1 i2 -> Some i1)
-      c.locals.map (scoped "local" n c'.locals at).map
-  )
-
 
 let lookup category space x =
   try VarMap.find x.it space.map
@@ -241,7 +228,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token NAT INT FLOAT STRING VAR
 %token NUM_TYPE VEC_TYPE VEC_SHAPE FUNCREF EXTERNREF REF EXTERN NULL MUT
 %token UNREACHABLE NOP DROP SELECT
-%token BLOCK END IF THEN ELSE LOOP LET
+%token BLOCK END IF THEN ELSE LOOP
 %token BR BR_IF BR_TABLE BR_ON_NULL BR_ON_NON_NULL
 %token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
@@ -618,10 +605,6 @@ block_instr :
   | IF labeling_opt block ELSE labeling_end_opt instr_list END labeling_end_opt
     { fun c -> let c' = $2 c ($5 @ $8) in
       let ts, es1 = $3 c' in if_ ts es1 ($6 c') }
-  | LET labeling_opt let_block END labeling_end_opt
-    { let at = at () in
-      fun c -> let c' = enter_let ($2 c $5) at in
-      let ts, ls, es = $3 c c' in let_ ts ls es }
 
 block :
   | type_use block_param_body
@@ -653,59 +636,6 @@ block_result_body :
       FuncType (ins, snd $3 c @ out), es }
 
 
-let_block :
-  | type_use let_block_param_body
-    { let at = at () in
-      fun c c' -> let ft, ls, es = $2 c c' in
-      let x = inline_func_type_explicit c ($1 c type_) ft at in
-      VarBlockType (SynVar x.it), ls, es }
-  | let_block_param_body  /* Sugar */
-    { let at = at () in
-      fun c c' -> let ft, ls, es = $1 c c' in
-      let bt =
-        match ft with
-        | FuncType ([], []) -> ValBlockType None
-        | FuncType ([], [t]) -> ValBlockType (Some t)
-        | ft ->  VarBlockType (SynVar (inline_func_type c ft at).it)
-      in bt, ls, es }
-
-let_block_param_body :
-  | let_block_result_body { $1 }
-  | LPAR PARAM value_type_list RPAR let_block_param_body
-    { fun c c' ->
-      let FuncType (ins, out), ls, es = $5 c c' in
-      FuncType (snd $3 c @ ins, out), ls, es }
-
-let_block_result_body :
-  | let_block_local_body
-    { let at = at () in
-      fun c c' -> let ls, es = $1 c c' at in FuncType ([], []), ls, es }
-  | LPAR RESULT value_type_list RPAR let_block_result_body
-    { fun c c' ->
-      let FuncType (ins, out), ls, es = $5 c c' in
-      FuncType (ins, snd $3 c @ out), ls, es }
-
-let_block_local_body :
-  | instr_list
-    { fun c c' at -> merge_locals c' c at; [], $1 c' }
-  | LPAR LOCAL local_type_list RPAR let_block_local_body
-    { let at3 = ati 3 in let at4 = ati 4 in
-      fun c c' at -> ignore (anon_locals c' (fst $3) at3);
-      let at' = {left = at.left; right = at4.right} in
-      let ls, es = $5 c c' at' in snd $3 c @ ls, es }
-  | LPAR LOCAL bind_var local_type RPAR let_block_local_body  /* Sugar */
-    { let at5 = ati 5 in
-      fun c c' at -> ignore (bind_local c' $3);
-      let at' = {left = at.left; right = at5.right} in
-      let ls, es = $6 c c' at' in $4 c :: ls, es }
-
-local_type :
-  | value_type { let at = at () in fun c -> $1 c @@ at }
-
-local_type_list :
-  | /* empty */ { 0l, fun c -> [] }
-  | local_type local_type_list { I32.add (fst $2) 1l, fun c -> $1 c :: snd $2 c }
-
 expr :  /* Sugar */
   | LPAR expr1 RPAR
     { let at = at () in fun c -> let es, e' = $2 c in es @ [e' @@ at] }
@@ -726,10 +656,6 @@ expr1 :  /* Sugar */
   | IF labeling_opt if_block
     { fun c -> let c' = $2 c [] in
       let bt, (es, es1, es2) = $3 c c' in es, if_ bt es1 es2 }
-  | LET labeling_opt let_block
-    { let at = at () in
-      fun c -> let c' = enter_let ($2 c []) at in
-      let bt, ls, es = $3 c c' in [], let_ bt ls es }
 
 select_expr_results :
   | LPAR RESULT value_type_list RPAR select_expr_results
@@ -892,6 +818,13 @@ func_body :
   | LPAR LOCAL bind_var local_type RPAR func_body  /* Sugar */
     { fun c -> ignore (bind_local c $3); let f = $6 c in
       {f with locals = $4 c :: f.locals} }
+
+local_type :
+  | value_type { let at = at () in fun c -> $1 c @@ at }
+
+local_type_list :
+  | /* empty */ { 0l, fun c -> [] }
+  | local_type local_type_list { I32.add (fst $2) 1l, fun c -> $1 c :: snd $2 c }
 
 
 /* Tables, Memories & Globals */

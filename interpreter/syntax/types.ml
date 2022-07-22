@@ -1,11 +1,14 @@
 (* Types *)
 
-type name = int list
+type type_idx = int32
+type local_idx = int32
+type name = Utf8.unicode
 
-and syn_var = int32
+and syn_var = type_idx
 and sem_var = def_type Lib.Promise.t
 and var = SynVar of syn_var | SemVar of sem_var
 
+and init = Initialized | Uninitialized
 and nullability = NonNullable | Nullable
 and num_type = I32Type | I64Type | F32Type | F64Type
 and vec_type = V128Type
@@ -16,6 +19,7 @@ and value_type =
   NumType of num_type | VecType of vec_type | RefType of ref_type | BotType
 
 and result_type = value_type list
+and instr_type = result_type * result_type * local_idx list
 and func_type = FuncType of result_type * result_type
 and def_type = FuncDefType of func_type
 
@@ -24,6 +28,7 @@ type mutability = Immutable | Mutable
 type table_type = TableType of Int32.t limits * ref_type
 type memory_type = MemoryType of Int32.t limits
 type global_type = GlobalType of value_type * mutability
+type local_type = LocalType of value_type * init
 type extern_type =
   | ExternFuncType of func_type
   | ExternTableType of table_type
@@ -207,10 +212,12 @@ let string_of_name n =
   List.iter escape n;
   Buffer.contents b
 
+let string_of_idx x = I32.to_string_u x
+
 let rec string_of_var =
   let inner = ref false in
   function
-  | SynVar x -> I32.to_string_u x
+  | SynVar x -> string_of_idx x
   | SemVar x ->
     if !inner then "..." else
     ( inner := true;

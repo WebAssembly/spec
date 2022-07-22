@@ -142,6 +142,12 @@ struct
     | n, _::xs' when n > 0l -> nth xs' (Int32.sub n 1l)
     | _ -> failwith "nth"
 
+  let rec replace xs n y =
+    match n, xs with
+    | 0l, _::xs' -> y::xs'
+    | n, x::xs' when n > 0l -> x :: replace xs' (Int32.sub n 1l) y
+    | _ -> failwith "replace"
+
   let rec take n xs =
     match n, xs with
     | 0l, _ -> []

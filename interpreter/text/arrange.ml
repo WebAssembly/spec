@@ -448,9 +448,6 @@ let rec instr e =
     | If (bt, es1, es2) ->
       "if", block_type bt @
         [Node ("then", list instr es1); Node ("else", list instr es2)]
-    | Let (bt, locals, es) ->
-      "let", block_type bt @ decls "local" (List.map Source.it locals) @
-        list instr es
     | Br x -> "br " ^ var x, []
     | BrIf x -> "br_if " ^ var x, []
     | BrTable (xs, x) ->

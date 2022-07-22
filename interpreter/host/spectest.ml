@@ -29,10 +29,10 @@ let print_value v =
   Printf.printf "%s : %s\n"
     (string_of_value v) (string_of_value_type (type_of_value v))
 
-let print (FuncType (_, out)) vs =
+let print _ vs =
   List.iter print_value vs;
   flush_all ();
-  List.map default_value out
+  []
 
 
 let lookup name t =
