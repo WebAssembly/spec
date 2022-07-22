@@ -143,7 +143,6 @@ type op_type = {ins : infer_result_type; outs : infer_result_type}
 
 let stack ts = (NoEllipses, ts)
 let (-->) ts1 ts2 = {ins = NoEllipses, ts1; outs = NoEllipses, ts2}
-let (-->..) ts1 ts2 = {ins = Ellipses, ts1; outs = NoEllipses, ts2}
 let (-->...) ts1 ts2 = {ins = Ellipses, ts1; outs = Ellipses, ts2}
 
 let check_stack (c : context) ts1 ts2 at =
@@ -425,26 +424,6 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
       (ts1 @ [RefType (nul, DefHeapType (SynVar x))]) -->... []
     | (_, BotHeapType) as rt ->
       [RefType rt] -->... []
-    | rt ->
-      error e.at
-        ("type mismatch: instruction requires function reference type" ^
-         " but stack has " ^ string_of_value_type (RefType rt))
-    )
-
-  | FuncBind x ->
-    (match peek_ref 0 s e.at with
-    | (nul, DefHeapType (SynVar y)) ->
-      let FuncType (ts1, ts2) = func_type c (y @@ e.at) in
-      let FuncType (ts1', _) as ft' = func_type c x in
-      require (List.length ts1 >= List.length ts1') x.at
-        "type mismatch in function arguments";
-      let ts11, ts12 = Lib.List.split (List.length ts1 - List.length ts1') ts1 in
-      require (match_func_type c.types [] (FuncType (ts12, ts2)) ft') e.at
-        "type mismatch in function type";
-      (ts11 @ [RefType (nul, DefHeapType (SynVar y))]) -->
-        [RefType (NonNullable, DefHeapType (SynVar x.it))]
-    | (_, BotHeapType) as rt ->
-      [RefType rt] -->.. [RefType (NonNullable, DefHeapType (SynVar x.it))]
     | rt ->
       error e.at
         ("type mismatch: instruction requires function reference type" ^

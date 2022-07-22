@@ -202,7 +202,6 @@ struct
     | CallRef -> op 0x14
     | CallIndirect (x, y) -> op 0x11; var y; var x
     | ReturnCallRef -> op 0x15
-    | FuncBind x -> op 0x16; var x
 
     | Drop -> op 0x1a
     | Select None -> op 0x1b

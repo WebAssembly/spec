@@ -116,7 +116,6 @@ let rec instr (e : instr) =
   | Return | CallRef | ReturnCallRef -> empty
   | Call x -> funcs (idx x)
   | CallIndirect (x, y) -> tables (idx x) ++ types (idx y)
-  | FuncBind x -> types (idx x)
   | LocalGet x | LocalSet x | LocalTee x -> locals (idx x)
   | GlobalGet x | GlobalSet x -> globals (idx x)
   | TableGet x | TableSet x | TableSize x | TableGrow x | TableFill x ->

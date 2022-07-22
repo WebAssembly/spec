@@ -159,7 +159,6 @@ and instr' =
   | CallRef                           (* call function through reference *)
   | CallIndirect of idx * idx         (* call function through table *)
   | ReturnCallRef                     (* tail call through reference *)
-  | FuncBind of idx                   (* closure creation *)
   | LocalGet of idx                   (* read local idxiable *)
   | LocalSet of idx                   (* write local idxiable *)
   | LocalTee of idx                   (* write local idxiable and keep value *)

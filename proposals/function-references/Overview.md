@@ -10,10 +10,6 @@ The proposal has instructions for producing and consuming (calling) function ref
 
 Typed references have no canonical default value, because they cannot be null. To enable storing them in locals, which so far depend on default values for initialisation, the proposal also introduces a new instruction `let` for block-scoped locals whose initialisation values are taken from the operand stack.
 
-In addition to the above, we could also decide to include an instruction for forming a *closure* from a function reference, which takes a prefix of the function's arguments and returns a new function reference with those parameters bound. (Hence, conceptually, all function references would be closures of 0 or more parameters.)
-
-Note: In a Wasm engine, function references (whether first-class or as table entries) are already a form of closure since they must close over a specific module instance (its globals, tables, memory, etc) while their code is shared across multiple instances of the same module. It is hence expected that the ability to form language-level closures is not an observable extra cost.
-
 
 ### Motivation
 
@@ -22,8 +18,6 @@ Note: In a Wasm engine, function references (whether first-class or as table ent
 * Represent first-class function pointers without the need for tables
 
 * Easier and more efficient exchange of function references between modules and with host environment
-
-* Optionally, support for safe closures
 
 * Separate independently useful features from [GC proposal](https://github.com/WebAssembly/gc/blob/master/proposals/gc/Overview.md)
 
@@ -41,8 +35,6 @@ Note: In a Wasm engine, function references (whether first-class or as table ent
 * Add an instruction `call_ref` for calling a function through a `ref $t`
 
 * Refine the instruction `ref.func $f` to return a typed function reference
-
-* Optionally add an instruction `func.bind` to create a closure
 
 * Add a block instruction `let (local t*) ... end` for introducing locals with block scope, in order to handle reference types without default initialisation values
 
@@ -68,36 +60,13 @@ The function `$hof` takes a function pointer as parameter, and is invoked by `$c
 )
 ```
 
-The function `$mk-adder` returns a closure of another function:
-```wasm
-(func $add (param i32 i32) (result i32) (i32.add (local.get 0) (local.get 1)))
-
-(func $mk-adder (param $i i32) (result (ref $i32-i32))
-  (func.bind $i32-i32 (local.get $i) (ref.func $add))
-)
-```
-
-The following function calls it and then applies the result twice:
-```wasm
-(func $main (result i32)
-  (call $mk-adder (i32.const 7))
-  (let (result i32) (local $f (ref $i32-i32))  ;; binds $f to top of stack
-    (i32.mul
-      (call_ref (i32.const 10) (local.get $f))
-      (call_ref (i32.const 12) (local.get $f))
-    )
-  )
-)
-```
-Note that we could not have used a function-level local for `$f` in this example, since the type `(ref $i32-i32)` is non-nullable and thus does not contain any default value to initialise the local with at the beginning of the function. By using `let` we can define a local that is initialised with values from the operand stack.
-
 It is also possible to create a typed function table:
 ```wasm
 (table 0 (ref $i32-i32))
 ```
 Such a table can neither contain `null` entries nor functions of another type. Any use of `call_indirect` on this table does hence avoid all runtime checks beyond the basic bounds check. By using multiple tables, each one can be given a homogeneous type. The table can be initialised by growing it (provding an explicit initialiser value. (Open Question: we could also extend table definitions to provide an explicit initialiser.)
 
-Typed references are a subtype of `funcref`, so they can also be used as untyped references. All previous uses of `ref.func` remain valid:
+Typed function references are a subtype of `funcref`, so they can also be used as untyped references. All previous uses of `ref.func` remain valid:
 ```wasm
 (func $f (param i32))
 (func $g)
@@ -219,14 +188,6 @@ The following rules, now defined in terms of heap types, replace and extend the 
      - and `t2* <: C.result`
   - traps on `null`
 
-* Optional extension: `func.bind` creates or extends a closure by binding one or several parameters
-  - `func.bind $t' : [t0* (ref null $t)] -> [(ref $t')]`
-    - iff `$t = [t0* t1*] -> [t2*]`
-    - and `$t' = [t1'*] -> [t2'*]`
-    - and `t1'* <: t1*`
-    - and `t2* <: t2'*`
-  - traps on `null`
-
 
 #### Optional References
 
@@ -312,7 +273,6 @@ The opcode for heap types is encoded as an `s33`.
 | ------ | ------------------------ | ---------- |
 | 0x14   | `call_ref`               |            |
 | 0x15   | `return_call_ref`        |            |
-| 0x16   | `func.bind (type $t)`    | `$t : u32` |
 | 0x17   | `let <bt> <locals>`      | `bt : blocktype, locals : (as in functions)` |
 | 0xd3   | `ref.as_non_null`        |            |
 | 0xd4   | `br_on_null $l`          | `$l : u32` |

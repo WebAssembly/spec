@@ -463,7 +463,6 @@ let rec instr e =
     | CallIndirect (x, y) ->
       "call_indirect " ^ var x, [Node ("type " ^ var y, [])]
     | ReturnCallRef -> "return_call_ref", []
-    | FuncBind x -> "func.bind", [Node ("type " ^ var x, [])]
     | LocalGet x -> "local.get " ^ var x, []
     | LocalSet x -> "local.set " ^ var x, []
     | LocalTee x -> "local.tee " ^ var x, []

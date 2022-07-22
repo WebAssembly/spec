@@ -243,7 +243,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP LET
 %token BR BR_IF BR_TABLE BR_ON_NULL BR_ON_NON_NULL
-%token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF FUNC_BIND
+%token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
 %token TABLE_SIZE TABLE_GROW TABLE_FILL TABLE_COPY TABLE_INIT ELEM_DROP
@@ -550,8 +550,6 @@ call_instr :
     { let at = at () in fun c -> call_indirect ($2 c table) ($3 c) @@ at }
   | CALL_INDIRECT call_instr_type  /* Sugar */
     { let at = at () in fun c -> call_indirect (0l @@ at) ($2 c) @@ at }
-  | FUNC_BIND call_instr_type
-    { let at = at () in fun c -> func_bind ($2 c) @@ at }
 
 call_instr_type :
   | type_use call_instr_params
@@ -584,9 +582,6 @@ call_instr_instr :
   | CALL_INDIRECT call_instr_type_instr  /* Sugar */
     { let at1 = ati 1 in
       fun c -> let x, es = $2 c in call_indirect (0l @@ at1) x @@ at1, es }
-  | FUNC_BIND call_instr_type_instr
-    { let at1 = ati 1 in
-      fun c -> let x, es = $2 c in func_bind x @@ at1, es }
 
 call_instr_type_instr :
   | type_use call_instr_params_instr
@@ -724,8 +719,6 @@ expr1 :  /* Sugar */
   | CALL_INDIRECT call_expr_type  /* Sugar */
     { let at1 = ati 1 in
       fun c -> let x, es = $2 c in es, call_indirect (0l @@ at1) x }
-  | FUNC_BIND call_expr_type
-    { fun c -> let x, es = $2 c in es, func_bind x }
   | BLOCK labeling_opt block
     { fun c -> let c' = $2 c [] in let bt, es = $3 c' in [], block bt es }
   | LOOP labeling_opt block

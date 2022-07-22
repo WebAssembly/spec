@@ -320,7 +320,8 @@ let rec instr s =
 
   | 0x14 -> call_ref
   | 0x15 -> return_call_ref
-  | 0x16 -> func_bind (at var s)
+
+  | 0x16 as b -> illegal s pos b
 
   | 0x17 ->
     let bt = block_type s in

@@ -173,7 +173,6 @@ rule token = parse
       | "call_ref" -> CALL_REF
       | "call_indirect" -> CALL_INDIRECT
       | "return_call_ref" -> RETURN_CALL_REF
-      | "func.bind" -> FUNC_BIND
 
       | "local.get" -> LOCAL_GET
       | "local.set" -> LOCAL_SET
