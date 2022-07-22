@@ -26,6 +26,24 @@ A :ref:`number type <syntax-numtype>` :math:`\numtype_1` matches a :ref:`number 
    }
 
 
+.. index:: vector type
+.. _match-vectortype:
+
+Vector Types
+~~~~~~~~~~~~
+
+A :ref:`vector type <syntax-vectype>` :math:`\vectype_1` matches a :ref:`vector type <syntax-vectype>` :math:`\vectype_2` if and only if:
+
+* Both :math:`\vectype_1` and :math:`\vectype_2` are the same.
+
+.. math::
+   ~\\[-1ex]
+   \frac{
+   }{
+     C \vdashvectypematch \vectype \matchesvaltype \vectype
+   }
+
+
 .. index:: heap type
 .. _match-heaptype:
 

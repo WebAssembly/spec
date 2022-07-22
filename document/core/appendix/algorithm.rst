@@ -67,6 +67,7 @@ Equivalence and subtyping checks can be defined on these types.
    func matches(t1 : val_type, t2 : val_type) : bool =
      return
        (is_num t1 && is_num t2 && t1 = t2) ||
+       (is_vec t1 && is_vec t2 && t1 == t2) ||
        (is_ref t1 && is_ref t2 && matches_ref(t1, t2)) ||
        t1 = Bot
 

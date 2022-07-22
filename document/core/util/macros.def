@@ -929,6 +929,7 @@
 .. |vdashtabletypedefaultable| mathdef:: \xref{valid/types}{valid-defaultable}{\vdash}
 
 .. |vdashnumtypematch| mathdef:: \xref{valid/matching}{match-numtype}{\vdash}
+.. |vdashvectypematch| mathdef:: \xref{valid/matching}{match-vectype}{\vdash}
 .. |vdashheaptypematch| mathdef:: \xref{valid/matching}{match-heaptype}{\vdash}
 .. |vdashreftypematch| mathdef:: \xref{valid/matching}{match-reftype}{\vdash}
 .. |vdashvaltypematch| mathdef:: \xref{valid/matching}{match-valtype}{\vdash}

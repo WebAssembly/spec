@@ -87,6 +87,16 @@ Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type 
      C \vdashheaptype \typeidx \ok
    }
 
+:math:`\BOT`
+............
+
+* The heap type is valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashheaptype \BOT \ok
+   }
 
 .. index:: reference type, heap type
    pair: validation; reference type
