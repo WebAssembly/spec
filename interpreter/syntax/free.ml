@@ -87,7 +87,7 @@ let value_type = function
 
 let func_type (FuncType (ins, out)) =
   list value_type ins ++ list value_type out
-let global_type (GlobalType (t, _mut)) = value_type t
+let global_type (GlobalType (_mut, t)) = value_type t
 let table_type (TableType (_lim, t)) = ref_type t
 let memory_type (MemoryType (_lim)) = empty
 

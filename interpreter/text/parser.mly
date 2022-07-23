@@ -310,8 +310,8 @@ string_list :
 /* Types */
 
 null_opt :
-  | /* empty */ { NonNullable }
-  | NULL { Nullable }
+  | /* empty */ { NoNull }
+  | NULL { Null }
 
 heap_type :
   | FUNC { fun c -> FuncHeapType }
@@ -320,8 +320,8 @@ heap_type :
 
 ref_type :
   | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
-  | FUNCREF { fun c -> (Nullable, FuncHeapType) }  /* Sugar */
-  | EXTERNREF { fun c -> (Nullable, ExternHeapType) }  /* Sugar */
+  | FUNCREF { fun c -> (Null, FuncHeapType) }  /* Sugar */
+  | EXTERNREF { fun c -> (Null, ExternHeapType) }  /* Sugar */
 
 value_type :
   | NUM_TYPE { fun c -> NumType $1 }
@@ -333,8 +333,8 @@ value_type_list :
   | value_type value_type_list { I32.add (fst $2) 1l, fun c -> $1 c :: snd $2 c }
 
 global_type :
-  | value_type { fun c -> GlobalType ($1 c, Immutable) }
-  | LPAR MUT value_type RPAR { fun c -> GlobalType ($3 c, Mutable) }
+  | value_type { fun c -> GlobalType (Cons, $1 c) }
+  | LPAR MUT value_type RPAR { fun c -> GlobalType (Var, $3 c) }
 
 def_type :
   | LPAR FUNC func_type RPAR { fun c -> FuncDefType ($3 c) }
@@ -820,7 +820,7 @@ func_body :
       {f with locals = $4 c :: f.locals} }
 
 local_type :
-  | value_type { let at = at () in fun c -> $1 c @@ at }
+  | value_type { let at = at () in fun c -> {ltype = $1 c} @@ at }
 
 local_type_list :
   | /* empty */ { 0l, fun c -> [] }
@@ -840,7 +840,7 @@ offset :
   | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
 
 elem_kind :
-  | FUNC { (NonNullable, FuncHeapType) }
+  | FUNC { (NoNull, FuncHeapType) }
 
 elem_expr :
   | LPAR ITEM const_expr RPAR { $3 }
@@ -889,7 +889,7 @@ elem :
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () ->
-      { etype = (NonNullable, FuncHeapType); einit = $5 c func;
+      { etype = (NoNull, FuncHeapType); einit = $5 c func;
         emode = Active {index = 0l @@ at; offset = $4 c} @@ at } @@ at }
 
 table :

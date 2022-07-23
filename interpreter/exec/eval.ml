@@ -698,9 +698,9 @@ let rec step (c : config) : config =
       | Func.AstFunc (_, inst', func) ->
         let {locals; body; _} = func.it in
         let m = Lib.Promise.value inst' in
-        let ts = List.map (fun t -> Types.sem_value_type m.types t.it) locals in
-        let locals' = List.(rev (map Option.some args) @ map default_value ts) in
-        let frame' = {inst = m; locals = List.map ref locals'} in
+        let ts = List.map (fun loc -> Types.sem_value_type m.types loc.it.ltype) locals in
+        let locs' = List.(rev (map Option.some args) @ map default_value ts) in
+        let frame' = {inst = m; locals = List.map ref locs'} in
         let instr' = [Label (n2, [], ([], List.map plain body)) @@ func.at] in
         vs', [Frame (n2, frame', ([], instr')) @@ e.at]
 

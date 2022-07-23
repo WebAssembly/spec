@@ -99,8 +99,8 @@ let type_of_vec = function
 
 let type_of_ref' = ref (function _ -> assert false)
 let type_of_ref = function
-  | NullRef t -> (Nullable, t)
-  | r -> (NonNullable, !type_of_ref' r)
+  | NullRef t -> (Null, t)
+  | r -> (NoNull, !type_of_ref' r)
 
 let type_of_value = function
   | Num n -> NumType (type_of_num n)
@@ -142,8 +142,8 @@ let default_vec = function
   | V128Type -> Some (Vec (V128 V128.zero))
 
 let default_ref = function
-  | (Nullable, t) -> Some (Ref (NullRef t))
-  | (NonNullable, _) -> None
+  | (Null, t) -> Some (Ref (NullRef t))
+  | (NoNull, _) -> None
 
 let default_value = function
   | NumType t' -> default_num t'

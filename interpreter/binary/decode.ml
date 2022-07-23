@@ -178,10 +178,10 @@ let heap_type s =
 let ref_type s =
   let pos = pos s in
   match s7 s with
-  | -0x10 -> (Nullable, FuncHeapType)
-  | -0x11 -> (Nullable, ExternHeapType)
-  | -0x14 -> (Nullable, heap_type s)
-  | -0x15 -> (NonNullable, heap_type s)
+  | -0x10 -> (Null, FuncHeapType)
+  | -0x11 -> (Null, ExternHeapType)
+  | -0x14 -> (Null, heap_type s)
+  | -0x15 -> (NoNull, heap_type s)
   | _ -> error s pos "malformed reference type"
 
 let value_type s =
@@ -221,14 +221,14 @@ let memory_type s =
 
 let mutability s =
   match byte s with
-  | 0 -> Immutable
-  | 1 -> Mutable
+  | 0 -> Cons
+  | 1 -> Var
   | _ -> error s (pos s - 1) "malformed mutability"
 
 let global_type s =
   let t = value_type s in
   let mut = mutability s in
-  GlobalType (t, mut)
+  GlobalType (mut, t)
 
 
 (* Instructions *)
@@ -258,7 +258,7 @@ let block_type s =
 let local s =
   let n = u32 s in
   let t = at value_type s in
-  n, t
+  n, {ltype = t.it} @@ t.at
 
 let locals s =
   let pos = pos s in
@@ -1001,7 +1001,7 @@ let elem_index s =
 
 let elem_kind s =
   match byte s with
-  | 0x00 -> (NonNullable, FuncHeapType)
+  | 0x00 -> (NoNull, FuncHeapType)
   | _ -> error s (pos s - 1) "malformed element kind"
 
 let elem s =
@@ -1009,7 +1009,7 @@ let elem s =
   | 0x00l ->
     let emode = at active_zero s in
     let einit = vec (at elem_index) s in
-    {etype = (NonNullable, FuncHeapType); einit; emode}
+    {etype = (NoNull, FuncHeapType); einit; emode}
   | 0x01l ->
     let emode = at passive s in
     let etype = elem_kind s in
@@ -1028,7 +1028,7 @@ let elem s =
   | 0x04l ->
     let emode = at active_zero s in
     let einit = vec const s in
-    {etype = (NonNullable, FuncHeapType); einit; emode}
+    {etype = (NoNull, FuncHeapType); einit; emode}
   | 0x05l ->
     let emode = at passive s in
     let etype = ref_type s in

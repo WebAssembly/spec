@@ -389,8 +389,8 @@ let assert_return ress ts at =
   in [], List.flatten (List.rev_map test (List.combine ress ts))
 
 let i32_type = NumType I32Type
-let funcref_type = RefType (Nullable, FuncHeapType)
-let externref_type = RefType (Nullable, ExternHeapType)
+let funcref_type = RefType (Null, FuncHeapType)
+let externref_type = RefType (Null, ExternHeapType)
 let func_def_type ins out at = FuncDefType (FuncType (ins, out)) @@ at
 
 let wrap item_name wrap_action wrap_assertion at =
@@ -446,10 +446,10 @@ let is_js_value_type = function
   | BotType -> assert false
 
 let is_js_global_type = function
-  | GlobalType (t, mut) -> is_js_value_type t && mut = Immutable
+  | GlobalType (mut, t) -> is_js_value_type t && mut = Cons
 
 let is_js_func_type = function
-  | FuncType (ins, out) -> List.for_all is_js_value_type (ins @ out)
+  | FuncType (ts1, ts2) -> List.for_all is_js_value_type (ts1 @ ts2)
 
 
 (* Script conversion *)
@@ -567,7 +567,7 @@ let of_action mods act =
     "get(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ")",
     (match lookup mods x_opt name act.at with
     | ExternGlobalType gt when not (is_js_global_type gt) ->
-      let GlobalType (t, _) = gt in
+      let GlobalType (_, t) = gt in
       Some (of_wrapper mods x_opt name (get gt), [t])
     | _ -> None
     )

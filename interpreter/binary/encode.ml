@@ -115,10 +115,10 @@ struct
     | BotHeapType -> assert false
 
   let ref_type = function
-    | (Nullable, FuncHeapType) -> s7 (-0x10)
-    | (Nullable, ExternHeapType) -> s7 (-0x11)
-    | (Nullable, t) -> s7 (-0x14); heap_type t
-    | (NonNullable, t) -> s7 (-0x15); heap_type t
+    | (Null, FuncHeapType) -> s7 (-0x10)
+    | (Null, ExternHeapType) -> s7 (-0x11)
+    | (Null, t) -> s7 (-0x14); heap_type t
+    | (NoNull, t) -> s7 (-0x15); heap_type t
 
   let value_type = function
     | NumType t -> num_type t
@@ -142,11 +142,11 @@ struct
     | MemoryType lim -> limits u32 lim
 
   let mutability = function
-    | Immutable -> byte 0
-    | Mutable -> byte 1
+    | Cons -> byte 0
+    | Var -> byte 1
 
   let global_type = function
-    | GlobalType (t, mut) -> value_type t; mutability mut
+    | GlobalType (mut, t) -> value_type t; mutability mut
 
 
   (* Instructions *)
@@ -170,12 +170,13 @@ struct
     | VarBlockType (SynVar x) -> s33 x
     | VarBlockType (SemVar _) -> assert false
 
-  let local (t, n) = len n; value_type t.it
+  let local (n, loc) = len n; value_type loc.it.ltype
 
   let locals locs =
-    let combine t = function
-      | (t', n) :: ts when t.it = t'.it -> (t, n + 1) :: ts
-      | ts -> (t, 1) :: ts
+    let combine loc = function
+      | (n, loc') :: nlocs' when loc.it.ltype = loc'.it.ltype ->
+        (n + 1, loc') :: nlocs'
+      | nlocs -> (1, loc) :: nlocs
     in vec local (List.fold_right combine locs [])
 
   let rec instr e =
@@ -880,11 +881,11 @@ struct
   (* Element section *)
 
   let is_elem_kind = function
-    | (NonNullable, FuncHeapType) -> true
+    | (NoNull, FuncHeapType) -> true
     | _ -> false
 
   let elem_kind = function
-    | (NonNullable, FuncHeapType) -> byte 0x00
+    | (NoNull, FuncHeapType) -> byte 0x00
     | _ -> assert false
 
   let is_elem_index e =

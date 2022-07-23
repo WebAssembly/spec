@@ -74,8 +74,8 @@ let limits nat {min; max} =
   String.concat " " (nat min :: opt nat max)
 
 let global_type = function
-  | GlobalType (t, Immutable) -> atom string_of_value_type t
-  | GlobalType (t, Mutable) -> Node ("mut", [atom string_of_value_type t])
+  | GlobalType (Cons, t) -> atom string_of_value_type t
+  | GlobalType (Var, t) -> Node ("mut", [atom string_of_value_type t])
 
 let pack_size = function
   | Pack8 -> "8"
@@ -524,7 +524,7 @@ let func_with_name name f =
   let {ftype; locals; body} = f.it in
   Node ("func" ^ name,
     [Node ("type " ^ var ftype, [])] @
-    decls "local" (List.map Source.it locals) @
+    decls "local" (List.map (fun loc -> loc.it.ltype) locals) @
     list instr body
   )
 
@@ -548,11 +548,11 @@ let memory off i mem =
   Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
 
 let is_elem_kind = function
-  | (NonNullable, FuncHeapType) -> true
+  | (NoNull, FuncHeapType) -> true
   | _ -> false
 
 let elem_kind = function
-  | (NonNullable, FuncHeapType) -> "func"
+  | (NoNull, FuncHeapType) -> "func"
   | _ -> assert false
 
 let is_elem_index e =

@@ -134,9 +134,6 @@ type num = Value.num Source.phrase
 type vec = Value.vec Source.phrase
 type name = Utf8.unicode
 
-type local = local' Source.phrase
-and local' = value_type
-
 type block_type = VarBlockType of var | ValBlockType of value_type option
 
 type instr = instr' Source.phrase
@@ -210,9 +207,15 @@ and instr' =
   | VecReplace of vec_replaceop       (* replace lane in vector *)
 
 
-(* Globals & Functions *)
+(* Locals, globals & Functions *)
 
 type const = instr list Source.phrase
+
+type local = local' Source.phrase
+and local' =
+{
+  ltype : value_type;
+}
 
 type global = global' Source.phrase
 and global' =

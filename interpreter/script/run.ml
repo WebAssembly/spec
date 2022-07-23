@@ -232,8 +232,8 @@ let type_of_result r =
   | NumResult (NanPat n) -> Types.NumType (Value.type_of_num n.it)
   | VecResult (VecPat _) -> Types.VecType Types.V128Type
   | RefResult (RefPat r) -> Types.RefType (Value.type_of_ref r.it)
-  | RefResult (RefTypePat t) -> Types.(RefType (NonNullable, t))
-  | RefResult (NullPat) -> Types.(RefType (Nullable, ExternHeapType))
+  | RefResult (RefTypePat t) -> Types.(RefType (NoNull, t))
+  | RefResult (NullPat) -> Types.(RefType (Null, ExternHeapType))
 
 let string_of_num_pat (p : num_pat) =
   match p with

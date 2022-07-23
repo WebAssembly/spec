@@ -7,7 +7,7 @@ open Value
 open Instance
 
 
-let global (GlobalType (t, _) as gt) =
+let global (GlobalType (_, t) as gt) =
   let v =
     match t with
     | NumType I32Type -> Num (I32 666l)
@@ -20,7 +20,7 @@ let global (GlobalType (t, _) as gt) =
   in Global.alloc gt v
 
 let table =
-  Table.alloc (TableType ({min = 10l; max = Some 20l}, (Nullable, FuncHeapType)))
+  Table.alloc (TableType ({min = 10l; max = Some 20l}, (Null, FuncHeapType)))
     (NullRef FuncHeapType)
 let memory = Memory.alloc (MemoryType {min = 1l; max = Some 2l})
 let func f ft = Func.alloc_host (Types.alloc (FuncDefType ft)) (f ft)
@@ -46,10 +46,10 @@ let lookup name t =
     ExternFunc (func print (FuncType ([NumType I32Type; NumType F32Type], [])))
   | "print_f64_f64", _ ->
     ExternFunc (func print (FuncType ([NumType F64Type; NumType F64Type], [])))
-  | "global_i32", _ -> ExternGlobal (global (GlobalType (NumType I32Type, Immutable)))
-  | "global_i64", _ -> ExternGlobal (global (GlobalType (NumType I64Type, Immutable)))
-  | "global_f32", _ -> ExternGlobal (global (GlobalType (NumType F32Type, Immutable)))
-  | "global_f64", _ -> ExternGlobal (global (GlobalType (NumType F64Type, Immutable)))
+  | "global_i32", _ -> ExternGlobal (global (GlobalType (Cons, NumType I32Type)))
+  | "global_i64", _ -> ExternGlobal (global (GlobalType (Cons, NumType I64Type)))
+  | "global_f32", _ -> ExternGlobal (global (GlobalType (Cons, NumType F32Type)))
+  | "global_f64", _ -> ExternGlobal (global (GlobalType (Cons, NumType F64Type)))
   | "table", _ -> ExternTable table
   | "memory", _ -> ExternMemory memory
   | _ -> raise Not_found

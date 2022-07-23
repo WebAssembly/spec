@@ -8,8 +8,8 @@ and syn_var = type_idx
 and sem_var = def_type Lib.Promise.t
 and var = SynVar of syn_var | SemVar of sem_var
 
-and init = Initialized | Uninitialized
-and nullability = NonNullable | Nullable
+and init = Set | Unset
+and nullability = NoNull | Null
 and num_type = I32Type | I64Type | F32Type | F64Type
 and vec_type = V128Type
 and ref_type = nullability * heap_type
@@ -24,11 +24,11 @@ and func_type = FuncType of result_type * result_type
 and def_type = FuncDefType of func_type
 
 type 'a limits = {min : 'a; max : 'a option}
-type mutability = Immutable | Mutable
+type mutability = Cons | Var
 type table_type = TableType of Int32.t limits * ref_type
 type memory_type = MemoryType of Int32.t limits
-type global_type = GlobalType of value_type * mutability
-type local_type = LocalType of value_type * init
+type global_type = GlobalType of mutability * value_type
+type local_type = LocalType of init * value_type
 type extern_type =
   | ExternFuncType of func_type
   | ExternTableType of table_type
@@ -90,7 +90,7 @@ let defaultable_vec_type = function
   | _ -> true
 
 let defaultable_ref_type = function
-  | (nul, _) -> nul = Nullable
+  | (nul, _) -> nul = Null
 
 let defaultable_value_type = function
   | NumType t -> defaultable_num_type t
@@ -165,8 +165,8 @@ let sem_memory_type c (MemoryType lim) =
 let sem_table_type c (TableType (lim, t)) =
   TableType (lim, sem_ref_type c t)
 
-let sem_global_type c (GlobalType (t, mut)) =
-  GlobalType (sem_value_type c t, mut)
+let sem_global_type c (GlobalType (mut, t)) =
+  GlobalType (mut, sem_value_type c t)
 
 let sem_func_type c (FuncType (ins, out)) =
   FuncType (sem_stack_type c ins, sem_stack_type c out)
@@ -228,8 +228,8 @@ let rec string_of_var =
     )
 
 and string_of_nullability = function
-  | NonNullable -> ""
-  | Nullable -> "null "
+  | NoNull -> ""
+  | Null -> "null "
 
 and string_of_num_type = function
   | I32Type -> "i32"
@@ -278,8 +278,12 @@ let string_of_table_type = function
   | TableType (lim, t) -> string_of_limits lim ^ " " ^ string_of_ref_type t
 
 let string_of_global_type = function
-  | GlobalType (t, Immutable) -> string_of_value_type t
-  | GlobalType (t, Mutable) -> "(mut " ^ string_of_value_type t ^ ")"
+  | GlobalType (Cons, t) -> string_of_value_type t
+  | GlobalType (Var, t) -> "(mut " ^ string_of_value_type t ^ ")"
+
+let string_of_local_type = function
+  | LocalType (Set, t) -> string_of_value_type t
+  | LocalType (Unset, t) -> "(unset " ^ string_of_value_type t ^ ")"
 
 let string_of_extern_type = function
   | ExternFuncType ft -> "func " ^ string_of_func_type ft

@@ -75,7 +75,7 @@ and eq_table_type c a (TableType (lim1, t1)) (TableType (lim2, t2)) =
 and eq_memory_type c a (MemoryType lim1) (MemoryType lim2) =
   eq_limits c a lim1 lim2
 
-and eq_global_type c a (GlobalType (t1, mut1)) (GlobalType (t2, mut2)) =
+and eq_global_type c a (GlobalType (mut1, t1)) (GlobalType (mut2, t2)) =
   eq_mutability c a mut1 mut2 && eq_value_type c a t1 t2
 
 and eq_extern_type c a et1 et2 =
@@ -91,7 +91,7 @@ and eq_extern_type c a et1 et2 =
 
 let match_nullability c a nul1 nul2 =
   match nul1, nul2 with
-  | NonNullable, Nullable -> true
+  | NoNull, Null -> true
   | _, _ -> nul1 = nul2
 
 let match_limits c a lim1 lim2 =
@@ -143,11 +143,11 @@ and match_table_type c a (TableType (lim1, t1)) (TableType (lim2, t2)) =
 and match_memory_type c a (MemoryType lim1) (MemoryType lim2) =
   match_limits c a lim1 lim2
 
-and match_global_type c a (GlobalType (t1, mut1)) (GlobalType (t2, mut2)) =
+and match_global_type c a (GlobalType (mut1, t1)) (GlobalType (mut2, t2)) =
   eq_mutability c [] mut1 mut2 &&
   match mut1 with
-  | Immutable -> match_value_type c a t1 t2
-  | Mutable -> eq_value_type c [] t1 t2
+  | Cons -> match_value_type c a t1 t2
+  | Var -> eq_value_type c [] t1 t2
 
 and match_extern_type c a et1 et2 =
   match et1, et2 with

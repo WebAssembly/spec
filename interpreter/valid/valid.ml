@@ -56,8 +56,8 @@ let replace category list x y =
     error x.at ("unknown " ^ category ^ " " ^ I32.to_string_u x.it)
 
 let init_local (c : context) x =
-  let LocalType (t, _) = local c x in
-  {c with locals = replace "local" c.locals x (LocalType (t, Initialized))}
+  let LocalType (_, t) = local c x in
+  {c with locals = replace "local" c.locals x (LocalType (Set, t))}
 
 let init_locals (c : context) xs =
   List.fold_left init_local c xs
@@ -128,7 +128,7 @@ let check_memory_type (c : context) (mt : memory_type) at =
     "memory size must be at most 65536 pages (4GiB)"
 
 let check_global_type (c : context) (gt : global_type) at =
-  let GlobalType (t, mut) = gt in
+  let GlobalType (_mut, t) = gt in
   check_value_type c t at
 
 let check_def_type (c : context) (dt : def_type) at =
@@ -183,7 +183,7 @@ let peek i (ell, ts) =
 let peek_ref i (ell, ts) at =
   match peek i (ell, ts) with
   | RefType rt -> rt
-  | BotType -> (NonNullable, BotHeapType)
+  | BotType -> (NoNull, BotHeapType)
   | t ->
     error at
       ("type mismatch: instruction requires reference type" ^
@@ -311,12 +311,10 @@ let check_block_type (c : context) (bt : block_type) at : func_type =
   | VarBlockType (SynVar x) -> func_type c (x @@ at)
   | VarBlockType (SemVar _) -> assert false
 
-let check_local (c : context) (defaulted : bool) (t : local) : local_type =
-  check_value_type c t.it t.at;
-  let init =
-    if not defaulted || defaultable_value_type t.it
-    then Initialized else Uninitialized
-  in LocalType (t.it, init)
+let check_local (c : context) (loc : local) : local_type =
+  check_value_type c loc.it.ltype loc.at;
+  let init = if defaultable_value_type loc.it.ltype then Set else Unset in
+  LocalType (init, loc.it.ltype)
 
 let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_instr_type =
   match e.it with
@@ -373,12 +371,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
 
   | BrOnNull x ->
     let (_, t) = peek_ref 0 s e.at in
-    (label c x @ [RefType (Nullable, t)]) -->
-      (label c x @ [RefType (NonNullable, t)]), []
+    (label c x @ [RefType (Null, t)]) -->
+      (label c x @ [RefType (NoNull, t)]), []
 
   | BrOnNonNull x ->
     let (_, ht) as rt = peek_ref 0 s e.at in
-    let t' = RefType (NonNullable, ht) in
+    let t' = RefType (NoNull, ht) in
     require (label c x <> []) e.at
       ("type mismatch: instruction requires type " ^ string_of_value_type t' ^
        " but label has " ^ string_of_result_type (label c x));
@@ -411,7 +409,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
   | CallIndirect (x, y) ->
     let TableType (lim, t) = table c x in
     let FuncType (ts1, ts2) = func_type c y in
-    require (match_ref_type c.types [] t (Nullable, FuncHeapType)) x.at
+    require (match_ref_type c.types [] t (Null, FuncHeapType)) x.at
       ("type mismatch: instruction requires table of function type" ^
        " but table has element type " ^ string_of_ref_type t);
     (ts1 @ [NumType I32Type]) --> ts2, []
@@ -434,25 +432,25 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     )
 
   | LocalGet x ->
-    let LocalType (t, init) = local c x in
-    require (init = Initialized) x.at "uninitialized local";
+    let LocalType (init, t) = local c x in
+    require (init = Set) x.at "uninitialized local";
     [] --> [t], []
 
   | LocalSet x ->
-    let LocalType (t, _) = local c x in
+    let LocalType (_, t) = local c x in
     [t] --> [], [x]
 
   | LocalTee x ->
-    let LocalType (t, _) = local c x in
+    let LocalType (_, t) = local c x in
     [t] --> [t], [x]
 
   | GlobalGet x ->
-    let GlobalType (t, _mut) = global c x in
+    let GlobalType (_mut, t) = global c x in
     [] --> [t], []
 
   | GlobalSet x ->
-    let GlobalType (t, mut) = global c x in
-    require (mut = Mutable) x.at "global is immutable";
+    let GlobalType (mut, t) = global c x in
+    require (mut = Var) x.at "immutable global";
     [t] --> [], []
 
   | TableGet x ->
@@ -550,21 +548,21 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
 
   | RefNull t ->
     check_heap_type c t e.at;
-    [] --> [RefType (Nullable, t)], []
+    [] --> [RefType (Null, t)], []
 
   | RefIsNull ->
     let (_, t) = peek_ref 0 s e.at in
-    [RefType (Nullable, t)] --> [NumType I32Type], []
+    [RefType (Null, t)] --> [NumType I32Type], []
 
   | RefAsNonNull ->
     let (_, t) = peek_ref 0 s e.at in
-    [RefType (Nullable, t)] --> [RefType (NonNullable, t)], []
+    [RefType (Null, t)] --> [RefType (NoNull, t)], []
 
   | RefFunc x ->
     let ft = func c x in
     let y = Lib.Option.force (Lib.List32.index_of (FuncDefType ft) c.types) in
     refer_func c x;
-    [] --> [RefType (NonNullable, DefHeapType (SynVar y))], []
+    [] --> [RefType (NoNull, DefHeapType (SynVar y))], []
 
   | Const v ->
     let t = NumType (type_num v.it) in
@@ -697,10 +695,10 @@ and check_block (c : context) (es : instr list) (ft : func_type) at =
 let check_func (c : context) (f : func) =
   let {ftype; locals; body} = f.it in
   let FuncType (ts1, ts2) = func_type c ftype in
-  let ts = List.map (check_local c true) locals in
+  let lts = List.map (check_local c) locals in
   let c' =
     { c with
-      locals = List.map (fun t -> LocalType (t, Initialized)) ts1 @ ts;
+      locals = List.map (fun t -> LocalType (Set, t)) ts1 @ lts;
       results = ts2;
       labels = [ts2]
     }
@@ -713,7 +711,7 @@ let is_const (c : context) (e : instr) =
   | RefFunc _
   | Const _
   | VecConst _ -> true
-  | GlobalGet x -> let GlobalType (_, mut) = global c x in mut = Immutable
+  | GlobalGet x -> let GlobalType (mut, _t) = global c x in mut = Cons
   | _ -> false
 
 let check_const (c : context) (const : const) (t : value_type) =
@@ -764,7 +762,7 @@ let check_data (c : context) (seg : data_segment) =
 let check_global (c : context) (glob : global) =
   let {gtype; ginit} = glob.it in
   check_global_type c gtype glob.at;
-  let GlobalType (t, mut) = gtype in
+  let GlobalType (_mut, t) = gtype in
   check_const c ginit t
 
 
