@@ -195,7 +195,7 @@ Occasionally, it is convenient to group operators together according to the foll
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Vector instructions (also known as *SIMD* instructions, single data multiple value) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
+Vector instructions (also known as *SIMD* instructions, single instruction multiple data) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
 
 .. math::
    \begin{array}{llcl}
