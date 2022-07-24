@@ -29,10 +29,10 @@ let num_lanes shape =
   | F64x2 _ -> 2
 
 let type_of_lane = function
-  | I8x16 _ | I16x8 _ | I32x4 _ -> Types.I32Type
-  | I64x2 _ -> Types.I64Type
-  | F32x4 _ -> Types.F32Type
-  | F64x2 _ -> Types.F64Type
+  | I8x16 _ | I16x8 _ | I32x4 _ -> `I32
+  | I64x2 _ -> `I64
+  | F32x4 _ -> `F32
+  | F64x2 _ -> `F64
 
 
 (* Shape-based operations *)

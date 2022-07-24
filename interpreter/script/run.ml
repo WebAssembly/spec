@@ -220,7 +220,7 @@ let print_module x_opt m =
 let print_values vs =
   let ts = List.map Value.type_of_value vs in
   Printf.printf "%s : %s\n%!"
-    (Value.string_of_values vs) (Types.string_of_result_type ts)
+    (Value.string_of_values vs) (Types.Sem.string_of_result_type ts)
 
 let string_of_nan = function
   | CanonicalNan -> "nan:canonical"
@@ -228,12 +228,12 @@ let string_of_nan = function
 
 let type_of_result r =
   match r with
-  | NumResult (NumPat n) -> Types.NumType (Value.type_of_num n.it)
-  | NumResult (NanPat n) -> Types.NumType (Value.type_of_num n.it)
-  | VecResult (VecPat _) -> Types.VecType Types.V128Type
-  | RefResult (RefPat r) -> Types.RefType (Value.type_of_ref r.it)
-  | RefResult (RefTypePat t) -> Types.(RefType (NoNull, t))
-  | RefResult (NullPat) -> Types.(RefType (Null, ExternHeapType))
+  | NumResult (NumPat n) -> Value.type_of_num n.it
+  | NumResult (NanPat n) -> Value.type_of_num n.it
+  | VecResult (VecPat v) -> Value.type_of_vec v
+  | RefResult (RefPat r) -> Value.type_of_ref r.it
+  | RefResult (RefTypePat t) -> `Ref (`NoNull, Types.Sem.sem_heap_type [] t)
+  | RefResult (NullPat) -> `Ref (`Null, `Extern)
 
 let string_of_num_pat (p : num_pat) =
   match p with
@@ -267,7 +267,7 @@ let string_of_results = function
 let print_results rs =
   let ts = List.map type_of_result rs in
   Printf.printf "%s : %s\n%!"
-    (string_of_results rs) (Types.string_of_result_type ts)
+    (string_of_results rs) (Types.Sem.string_of_result_type ts)
 
 
 (* Configuration *)
@@ -324,13 +324,13 @@ let run_action act : Value.t list =
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternFunc f) ->
-      let Types.FuncType (ins, out) = Func.type_of f in
-      if List.length vs <> List.length ins then
+      let `Func (ts1, _ts2) = Func.type_of f in
+      if List.length vs <> List.length ts1 then
         Script.error act.at "wrong number of arguments";
       List.iter2 (fun v t ->
-        if not (Match.match_value_type [] [] (Value.type_of_value v.it) t) then
+        if not (Match.Sem.match_val_type () [] (Value.type_of_value v.it) t) then
           Script.error v.at "wrong type of argument"
-      ) vs ins;
+      ) vs ts1;
       Eval.invoke f (List.map (fun v -> v.it) vs)
     | Some _ -> Assert.error act.at "export is not a function"
     | None -> Assert.error act.at "undefined export"
@@ -381,8 +381,8 @@ let assert_vec_pat v p =
 let assert_ref_pat r p =
   match r, p with
   | r, RefPat r' -> Value.eq_ref r r'.it
-  | Instance.FuncRef _, RefTypePat Types.FuncHeapType
-  | ExternRef _, RefTypePat Types.ExternHeapType -> true
+  | Instance.FuncRef _, RefTypePat `Func
+  | ExternRef _, RefTypePat `Extern -> true
   | Value.NullRef _, NullPat -> true
   | _ -> false
 

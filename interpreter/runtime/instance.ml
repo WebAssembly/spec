@@ -1,4 +1,4 @@
-open Types
+open Types.Sem
 
 type module_inst =
 {
@@ -12,7 +12,7 @@ type module_inst =
   datas : data_inst list;
 }
 
-and type_inst = Types.sem_var
+and type_inst = var
 and func_inst = module_inst Lib.Promise.t Func.t
 and table_inst = Table.t
 and memory_inst = Memory.t
@@ -35,7 +35,7 @@ type Value.ref_ += FuncRef of func_inst
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | FuncRef f -> DefHeapType (SemVar (Func.type_inst_of f))
+    | FuncRef f -> `Def (Func.type_inst_of f)
     | r -> type_of_ref' r
 
 let () =
@@ -59,10 +59,10 @@ let empty_module_inst =
     exports = []; elems = []; datas = [] }
 
 let extern_type_of c = function
-  | ExternFunc func -> ExternFuncType (Func.type_of func)
-  | ExternTable tab -> ExternTableType (Table.type_of tab)
-  | ExternMemory mem -> ExternMemoryType (Memory.type_of mem)
-  | ExternGlobal glob -> ExternGlobalType (Global.type_of glob)
+  | ExternFunc func -> (Func.type_of func :> extern_type)
+  | ExternTable tab -> (Table.type_of tab :> extern_type)
+  | ExternMemory mem -> (Memory.type_of mem :> extern_type)
+  | ExternGlobal glob -> (Global.type_of glob :> extern_type)
 
 let export inst name =
   try Some (List.assoc name inst.exports) with Not_found -> None

@@ -1,5 +1,6 @@
 open Source
 open Ast
+open Pack
 open Script
 open Value
 open Types
@@ -59,23 +60,23 @@ let num_type t = string_of_num_type t
 let vec_type t = string_of_vec_type t
 let ref_type t = string_of_ref_type t
 let heap_type t = string_of_heap_type t
-let value_type t = string_of_value_type t
+let val_type t = string_of_val_type t
 
-let decls kind ts = tab kind (atom value_type) ts
+let decls kind ts = tab kind (atom val_type) ts
 
-let func_type (FuncType (ins, out)) =
-  Node ("func", decls "param" ins @ decls "result" out)
+let func_type (`Func (ts1, ts2)) =
+  Node ("func", decls "param" ts1 @ decls "result" ts2)
 
 let def_type dt =
   match dt with
-  | FuncDefType ft -> func_type ft
+  | #func_type as ft -> func_type ft
 
 let limits nat {min; max} =
   String.concat " " (nat min :: opt nat max)
 
 let global_type = function
-  | GlobalType (Cons, t) -> atom string_of_value_type t
-  | GlobalType (Var, t) -> Node ("mut", [atom string_of_value_type t])
+  | `Global (`Const, t) -> atom string_of_val_type t
+  | `Global (`Var, t) -> Node ("mut", [atom string_of_val_type t])
 
 let pack_size = function
   | Pack8 -> "8"
@@ -430,8 +431,7 @@ let constop v = num_type (type_of_num v) ^ ".const"
 let vec_constop v = vec_type (type_of_vec v) ^ ".const i32x4"
 
 let block_type = function
-  | VarBlockType (SynVar x) -> [Node ("type " ^ nat32 x, [])]
-  | VarBlockType (SemVar _) -> assert false
+  | VarBlockType x -> [Node ("type " ^ nat32 x, [])]
   | ValBlockType ts -> decls "result" (list_of_opt ts)
 
 let rec instr e =
@@ -538,21 +538,21 @@ let func f =
 (* Tables & memories *)
 
 let table off i tab =
-  let {ttype = TableType (lim, t)} = tab.it in
+  let {ttype = `Table (lim, t)} = tab.it in
   Node ("table $" ^ nat (off + i) ^ " " ^ limits nat32 lim,
     [atom ref_type t]
   )
 
 let memory off i mem =
-  let {mtype = MemoryType lim} = mem.it in
+  let {mtype = `Memory lim} = mem.it in
   Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
 
 let is_elem_kind = function
-  | (NoNull, FuncHeapType) -> true
+  | `Ref (`NoNull, `Func) -> true
   | _ -> false
 
 let elem_kind = function
-  | (NoNull, FuncHeapType) -> "func"
+  | `Ref (`NoNull, `Func) -> "func"
   | _ -> assert false
 
 let is_elem_index e =
@@ -669,7 +669,7 @@ let num mode = if mode = `Binary then hex_string_of_num else string_of_num
 let vec mode = if mode = `Binary then hex_string_of_vec else string_of_vec
 
 let ref_ = function
-  | NullRef t -> Node ("ref.null " ^ heap_type t, [])
+  | NullRef t -> Node ("ref.null " ^ Types.Sem.string_of_heap_type t, [])
   | Script.ExternRef n -> Node ("ref.extern " ^ nat32 n, [])
   | _ -> assert false
 

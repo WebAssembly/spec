@@ -9,7 +9,7 @@
  *   f : func
  *   m : module_
  *
- *   t : value_type
+ *   t : val_type
  *   s : func_type
  *   c : context / config
  *
@@ -19,6 +19,7 @@
 (* Types *)
 
 open Types
+open Pack
 
 type void = Lib.void
 
@@ -134,14 +135,14 @@ type num = Value.num Source.phrase
 type vec = Value.vec Source.phrase
 type name = Utf8.unicode
 
-type block_type = VarBlockType of var | ValBlockType of value_type option
+type block_type = VarBlockType of var | ValBlockType of val_type option
 
 type instr = instr' Source.phrase
 and instr' =
   | Unreachable                       (* trap unconditionally *)
   | Nop                               (* do nothing *)
   | Drop                              (* forget a value *)
-  | Select of value_type list option  (* branchless conditional *)
+  | Select of val_type list option    (* branchless conditional *)
   | Block of block_type * instr list  (* execute in sequence *)
   | Loop of block_type * instr list   (* loop header *)
   | If of block_type * instr list * instr list   (* conditional *)
@@ -214,7 +215,7 @@ type const = instr list Source.phrase
 type local = local' Source.phrase
 and local' =
 {
-  ltype : value_type;
+  ltype : val_type;
 }
 
 type global = global' Source.phrase
@@ -349,11 +350,11 @@ let import_type_of (m : module_) (im : import) : import_type =
   let {idesc; module_name; item_name} = im.it in
   let et =
     match idesc.it with
-    | FuncImport x -> ExternFuncType (func_type_of m x)
-    | TableImport t -> ExternTableType t
-    | MemoryImport t -> ExternMemoryType t
-    | GlobalImport t -> ExternGlobalType t
-  in ImportType (et, module_name, item_name)
+    | FuncImport x -> (func_type_of m x :> extern_type)
+    | TableImport t -> (t :> extern_type)
+    | MemoryImport t -> (t :> extern_type)
+    | GlobalImport t -> (t :> extern_type)
+  in `Import (et, module_name, item_name)
 
 let export_type_of (m : module_) (ex : export) : export_type =
   let {edesc; name} = ex.it in
@@ -365,20 +366,20 @@ let export_type_of (m : module_) (ex : export) : export_type =
     | FuncExport x ->
       let fts =
         funcs ets @ List.map (fun f -> func_type_of m f.it.ftype) m.it.funcs
-      in ExternFuncType (nth fts x.it)
+      in (nth fts x.it :> extern_type)
     | TableExport x ->
       let tts = tables ets @ List.map (fun t -> t.it.ttype) m.it.tables in
-      ExternTableType (nth tts x.it)
+      (nth tts x.it :> extern_type)
     | MemoryExport x ->
       let mts = memories ets @ List.map (fun m -> m.it.mtype) m.it.memories in
-      ExternMemoryType (nth mts x.it)
+      (nth mts x.it :> extern_type)
     | GlobalExport x ->
       let gts = globals ets @ List.map (fun g -> g.it.gtype) m.it.globals in
-      ExternGlobalType (nth gts x.it)
-  in ExportType (et, name)
+      (nth gts x.it :> extern_type)
+  in `Export (et, name)
 
 let module_type_of (m : module_) : module_type =
   let dts = List.map Source.it m.it.types in
   let its = List.map (import_type_of m) m.it.imports in
   let ets = List.map (export_type_of m) m.it.exports in
-  ModuleType (dts, its, ets)
+  `Module (dts, its, ets)
