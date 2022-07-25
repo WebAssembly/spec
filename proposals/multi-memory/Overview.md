@@ -64,7 +64,7 @@ Binary format:
 
 * For loads and stores: Reinterpret the alignment value in the `memarg` as a bitfield; if bit 6 (the MSB of the first LEB byte) is set, then an `i32` memory index follows after the alignment bitfield (even with SIMD, alignment must not currently be larger than 4 in the logarithmic encoding, i.e., taking up the lower 3 bits, so this is more than safe).
 
-* For copy, replace the two hard-coded `0x00` bytes with two `i32` memory indexes, representing the source memory index and destination memory index respectively.
+* For copy, replace the two hard-coded `0x00` bytes with two `i32` memory indexes, denoting the destination and source memory, respectively.
 
 * For other memory instructions: Replace the hard-coded `0x00` bytes with an `i32` memory index.
 
