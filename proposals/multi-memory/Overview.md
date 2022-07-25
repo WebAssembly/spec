@@ -72,7 +72,7 @@ Text format:
 
 * Add an optional `memidx` immediate that defaults to 0 if absent (for backwards compatibility). In the case of loads and stores, this index must occur before the optional alignment and offset immediates.
 
-* In the case of copy, two optional `memidx` immediates are added, representing the source memory index and destination memory index respectively. These optional indexes must both be present to specify a source and destintaion memory, or both be absent to default to 0.
+* In the case of copy, two optional `memidx` immediates are added, denoting the destination and source memory, respectively. These optional indexes must both be present to specify a source and destintaion memory, or both be absent to default to 0.
 
 
 ### Modules
