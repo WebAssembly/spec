@@ -1423,6 +1423,7 @@ In practice, an implementation may run out of resources for valid modules below 
 <li>The maximum number of imports declared in a module is 100000.</li>
 <li>The maximum number of exports declared in a module is 100000.</li>
 <li>The maximum number of globals defined in a module is 1000000.</li>
+<li>The maximum number of tags defined in a module is 1000000.</li>
 <li>The maximum number of data segments defined in a module is 100000.</li>
 
 <li>The maximum number of tables, including declared or imported tables, is 100000.</li>
