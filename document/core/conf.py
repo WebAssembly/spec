@@ -79,7 +79,7 @@ draft = ' (Draft ' + date.today().strftime("%Y-%m-%d") + ')'
 # built documents.
 #
 # The short X.Y version.
-version = u'2.0'
+version = u'2.1'
 # The full version, including alpha/beta/rc tags.
 release = version + ('' if proposal == '' else ' + ') + proposal + draft
 
