@@ -1,6 +1,7 @@
 {
 open Parser
 open Operators
+open Types
 open Source
 
 let convert_pos pos =
@@ -134,11 +135,11 @@ rule token = parse
 
   | keyword as s
     { match s with
-      | "i32" -> NUM_TYPE `I32
-      | "i64" -> NUM_TYPE `I64
-      | "f32" -> NUM_TYPE `F32
-      | "f64" -> NUM_TYPE `F64
-      | "v128" -> VEC_TYPE `V128
+      | "i32" -> NUM_TYPE I32T
+      | "i64" -> NUM_TYPE I64T
+      | "f32" -> NUM_TYPE F32T
+      | "f64" -> NUM_TYPE F64T
+      | "v128" -> VEC_TYPE V128T
       | "i8x16" -> VEC_SHAPE (V128.I8x16 ())
       | "i16x8" -> VEC_SHAPE (V128.I16x8 ())
       | "i32x4" -> VEC_SHAPE (V128.I32x4 ())

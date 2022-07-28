@@ -27,7 +27,7 @@ let single = function
 
 let int = function
   | Num (I32 i) -> Int32.to_int i
-  | v -> type_error v `I32
+  | v -> type_error v (NumT I32T)
 
 
 let abort vs =
@@ -41,8 +41,8 @@ let exit vs =
 
 let lookup name et =
   match Utf8.encode name, et with
-  | "abort", (#func_type as ft) ->
-    ExternFunc (Func.alloc_host (Types.Sem.alloc (ft :> def_type)) abort)
-  | "exit", (#func_type as ft) ->
-    ExternFunc (Func.alloc_host (Types.Sem.alloc (ft :> def_type)) exit)
+  | "abort", ExternFuncT ft ->
+    ExternFunc (Func.alloc_host (Types.Sem.alloc (DefFuncT ft)) abort)
+  | "exit", ExternFuncT ft ->
+    ExternFunc (Func.alloc_host (Types.Sem.alloc (DefFuncT ft)) exit)
   | _ -> raise Not_found

@@ -35,7 +35,7 @@ type Value.ref_ += FuncRef of func_inst
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | FuncRef f -> `Def (Func.type_inst_of f)
+    | FuncRef f -> DefHT (Func.type_inst_of f)
     | r -> type_of_ref' r
 
 let () =
@@ -59,10 +59,10 @@ let empty_module_inst =
     exports = []; elems = []; datas = [] }
 
 let extern_type_of c = function
-  | ExternFunc func -> (Func.type_of func :> extern_type)
-  | ExternTable tab -> (Table.type_of tab :> extern_type)
-  | ExternMemory mem -> (Memory.type_of mem :> extern_type)
-  | ExternGlobal glob -> (Global.type_of glob :> extern_type)
+  | ExternFunc func -> ExternFuncT (Func.type_of func)
+  | ExternTable tab -> ExternTableT (Table.type_of tab)
+  | ExternMemory mem -> ExternMemoryT (Memory.type_of mem)
+  | ExternGlobal glob -> ExternGlobalT (Global.type_of glob)
 
 let export inst name =
   try Some (List.assoc name inst.exports) with Not_found -> None

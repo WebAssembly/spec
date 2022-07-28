@@ -56,15 +56,15 @@ let replace category list x y =
     error x.at ("unknown " ^ category ^ " " ^ I32.to_string_u x.it)
 
 let init_local (c : context) x =
-  let `Local (_init, t) = local c x in
-  {c with locals = replace "local" c.locals x (`Local (`Set, t))}
+  let LocalT (_init, t) = local c x in
+  {c with locals = replace "local" c.locals x (LocalT (Set, t))}
 
 let init_locals (c : context) xs =
   List.fold_left init_local c xs
 
 let func_type (c : context) x =
   match type_ c x with
-  | #func_type as ft -> ft
+  | DefFuncT ft -> ft
 
 let refer category (s : Free.Set.t) x =
   if not (Free.Set.mem x.it s) then
@@ -93,48 +93,48 @@ let check_vec_type (c : context) (t : vec_type) at =
 
 let check_heap_type (c : context) (t : heap_type) at =
   match t with
-  | `Func -> ()
-  | `Extern -> ()
-  | `Def x -> ignore (type_ c (x @@ at))
-  | `Bot -> assert false
+  | FuncHT -> ()
+  | ExternHT -> ()
+  | DefHT x -> ignore (type_ c (x @@ at))
+  | BotHT -> assert false
 
 let check_ref_type (c : context) (t : ref_type) at =
   match t with
-  | `Ref (_nul, t') -> check_heap_type c t' at
+  | (_nul, ht) -> check_heap_type c ht at
 
 let check_val_type (c : context) (t : val_type) at =
   match t with
-  | #num_type as t' -> check_num_type c t' at
-  | #vec_type as t' -> check_vec_type c t' at
-  | #ref_type as t' -> check_ref_type c t' at
-  | `Bot -> assert false
+  | NumT t' -> check_num_type c t' at
+  | VecT t' -> check_vec_type c t' at
+  | RefT t' -> check_ref_type c t' at
+  | BotT -> assert false
 
 let check_result_type (c : context) (ts : result_type) at =
   List.iter (fun t -> check_val_type c t at) ts
 
 let check_func_type (c : context) (ft : func_type) at =
-  let `Func (ts1, ts2) = ft in
+  let FuncT (ts1, ts2) = ft in
   check_result_type c ts1 at;
   check_result_type c ts2 at
 
 let check_table_type (c : context) (tt : table_type) at =
-  let `Table (lim, t) = tt in
+  let TableT (lim, t) = tt in
   check_limits lim 0xffff_ffffl at "table size must be at most 2^32-1";
   check_ref_type c t at;
-  require (defaultable t) at "non-defaultable element type"
+  require (defaultable (RefT t)) at "non-defaultable element type"
 
 let check_memory_type (c : context) (mt : memory_type) at =
-  let `Memory lim = mt in
+  let MemoryT lim = mt in
   check_limits lim 0x1_0000l at
     "memory size must be at most 65536 pages (4GiB)"
 
 let check_global_type (c : context) (gt : global_type) at =
-  let `Global (_mut, t) = gt in
+  let GlobalT (_mut, t) = gt in
   check_val_type c t at
 
 let check_def_type (c : context) (dt : def_type) at =
   match dt with
-  | #func_type as ft -> check_func_type c ft at
+  | DefFuncT ft -> check_func_type c ft at
 
 
 
@@ -144,7 +144,7 @@ let check_def_type (c : context) (dt : def_type) at =
  * Note: The declarative typing rules are non-deterministic, that is, they
  * have the liberty to locally "guess" the right types implied by the context.
  * In the algorithmic formulation required here, stack types may hence pick
- * `BotType` as the principal choice for a locally unknown type.
+ * `BotT` as the principal choice for a locally unknown type.
  * Furthermore, an ellipses flag represents arbitrary sequences
  * of unknown types, in order to handle stack polymorphism algorithmically.
  *)
@@ -170,7 +170,7 @@ let pop c (ell1, ts1) (ell2, ts2) at =
   let n2 = List.length ts2 in
   let n = min n1 n2 in
   let n3 = if ell2 = Ellipses then (n1 - n) else 0 in
-  check_stack c (Lib.List.make n3 `Bot @ Lib.List.drop (n2 - n) ts2) ts1 at;
+  check_stack c (Lib.List.make n3 (BotT : val_type) @ Lib.List.drop (n2 - n) ts2) ts1 at;
   (ell2, if ell1 = Ellipses then [] else Lib.List.take (n2 - n) ts2)
 
 let push c (ell1, ts1) (ell2, ts2) =
@@ -178,13 +178,13 @@ let push c (ell1, ts1) (ell2, ts2) =
   (if ell1 = Ellipses || ell2 = Ellipses then Ellipses else NoEllipses),
   ts2 @ ts1
 
-let peek i (ell, ts) =
-  try List.nth (List.rev ts) i with Failure _ -> `Bot
+let peek i (ell, ts) : val_type =
+  try List.nth (List.rev ts) i with Failure _ -> BotT
 
-let peek_ref i (ell, ts) at =
+let peek_ref i (ell, ts) at : ref_type =
   match peek i (ell, ts) with
-  | #ref_type as rt -> rt
-  | `Bot -> `Ref (`NoNull, `Bot)
+  | RefT rt -> rt
+  | BotT -> (NoNull, BotHT)
   | t ->
     error at
       ("type mismatch: instruction requires reference type" ^
@@ -193,46 +193,46 @@ let peek_ref i (ell, ts) at =
 
 (* Type Synthesis *)
 
-let type_num = Value.type_of_num
-let type_vec = Value.type_of_vec
+let type_num = Value.type_of_op
+let type_vec = Value.type_of_vecop
 let type_vec_lane = function
-  | Value.V128 laneop -> (V128.type_of_lane laneop :> val_type)
+  | Value.V128 laneop -> V128.type_of_lane laneop
 
 let type_cvtop at = function
   | Value.I32 cvtop ->
     let open I32Op in
     (match cvtop with
     | ExtendSI32 | ExtendUI32 -> error at "invalid conversion"
-    | WrapI64 -> `I64
+    | WrapI64 -> I64T
     | TruncSF32 | TruncUF32 | TruncSatSF32 | TruncSatUF32
-    | ReinterpretFloat -> `F32
-    | TruncSF64 | TruncUF64 | TruncSatSF64 | TruncSatUF64 -> `F64
-    ), `I32
+    | ReinterpretFloat -> F32T
+    | TruncSF64 | TruncUF64 | TruncSatSF64 | TruncSatUF64 -> F64T
+    ), I32T
   | Value.I64 cvtop ->
     let open I64Op in
     (match cvtop with
-    | ExtendSI32 | ExtendUI32 -> `I32
+    | ExtendSI32 | ExtendUI32 -> I32T
     | WrapI64 -> error at "invalid conversion"
-    | TruncSF32 | TruncUF32 | TruncSatSF32 | TruncSatUF32 -> `F32
+    | TruncSF32 | TruncUF32 | TruncSatSF32 | TruncSatUF32 -> F32T
     | TruncSF64 | TruncUF64 | TruncSatSF64 | TruncSatUF64
-    | ReinterpretFloat -> `F64
-    ), `I64
+    | ReinterpretFloat -> F64T
+    ), I64T
   | Value.F32 cvtop ->
     let open F32Op in
     (match cvtop with
-    | ConvertSI32 | ConvertUI32 | ReinterpretInt -> `I32
-    | ConvertSI64 | ConvertUI64 -> `I64
+    | ConvertSI32 | ConvertUI32 | ReinterpretInt -> I32T
+    | ConvertSI64 | ConvertUI64 -> I64T
     | PromoteF32 -> error at "invalid conversion"
-    | DemoteF64 -> `F64
-    ), `F32
+    | DemoteF64 -> F64T
+    ), F32T
   | Value.F64 cvtop ->
     let open F64Op in
     (match cvtop with
-    | ConvertSI32 | ConvertUI32 -> `I32
-    | ConvertSI64 | ConvertUI64 | ReinterpretInt -> `I64
-    | PromoteF32 -> `F32
+    | ConvertSI32 | ConvertUI32 -> I32T
+    | ConvertSI64 | ConvertUI64 | ReinterpretInt -> I64T
+    | PromoteF32 -> F32T
     | DemoteF64 -> error at "invalid conversion"
-    ), `F64
+    ), F64T
 
 let num_lanes = function
   | Value.V128 laneop -> V128.num_lanes laneop
@@ -262,7 +262,7 @@ let check_pack sz t_sz at =
 let check_unop unop at =
   match unop with
   | Value.I32 (IntOp.ExtendS sz) | Value.I64 (IntOp.ExtendS sz) ->
-    check_pack sz (num_size (Value.type_of_num unop)) at
+    check_pack sz (num_size (Value.type_of_op unop)) at
   | _ -> ()
 
 let check_vec_binop binop at =
@@ -307,15 +307,15 @@ let check_memop (c : context) (memop : ('t, 's) memop) ty_size get_sz at =
 
 let check_block_type (c : context) (bt : block_type) at : instr_type =
   match bt with
-  | ValBlockType None -> `Instr ([], [], [])
-  | ValBlockType (Some t) -> check_val_type c t at; `Instr ([], [t], [])
+  | ValBlockType None -> InstrT ([], [], [])
+  | ValBlockType (Some t) -> check_val_type c t at; InstrT ([], [t], [])
   | VarBlockType x ->
-    let `Func (ts1, ts2) = func_type c (x @@ at) in `Instr (ts1, ts2, [])
+    let FuncT (ts1, ts2) = func_type c (x @@ at) in InstrT (ts1, ts2, [])
 
 let check_local (c : context) (loc : local) : local_type =
   check_val_type c loc.it.ltype loc.at;
-  let init = if defaultable loc.it.ltype then `Set else `Unset in
-  `Local (init, loc.it.ltype)
+  let init = if defaultable loc.it.ltype then Set else Unset in
+  LocalT (init, loc.it.ltype)
 
 let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_instr_type =
   match e.it with
@@ -333,50 +333,50 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     require (is_num_type t || is_vec_type t) e.at
       ("type mismatch: instruction requires numeric or vector type" ^
        " but stack has " ^ string_of_val_type t);
-    [t; t; `I32] --> [t], []
+    [t; t; NumT I32T] --> [t], []
 
   | Select (Some ts) ->
     require (List.length ts = 1) e.at
       "invalid result arity other than 1 is not (yet) allowed";
     check_result_type c ts e.at;
-    (ts @ ts @ [`I32]) --> ts, []
+    (ts @ ts @ [NumT I32T]) --> ts, []
 
   | Block (bt, es) ->
-    let `Instr (ts1, ts2, xs) as it = check_block_type c bt e.at in
+    let InstrT (ts1, ts2, xs) as it = check_block_type c bt e.at in
     check_block {c with labels = ts2 :: c.labels} es it e.at;
     ts1 --> ts2, List.map (fun x -> x @@ e.at) xs
 
   | Loop (bt, es) ->
-    let `Instr (ts1, ts2, xs) as it = check_block_type c bt e.at in
+    let InstrT (ts1, ts2, xs) as it = check_block_type c bt e.at in
     check_block {c with labels = ts1 :: c.labels} es it e.at;
     ts1 --> ts2, List.map (fun x -> x @@ e.at) xs
 
   | If (bt, es1, es2) ->
-    let `Instr (ts1, ts2, xs) as it = check_block_type c bt e.at in
+    let InstrT (ts1, ts2, xs) as it = check_block_type c bt e.at in
     check_block {c with labels = ts2 :: c.labels} es1 it e.at;
     check_block {c with labels = ts2 :: c.labels} es2 it e.at;
-    (ts1 @ [`I32]) --> ts2, List.map (fun x -> x @@ e.at) xs
+    (ts1 @ [NumT I32T]) --> ts2, List.map (fun x -> x @@ e.at) xs
 
   | Br x ->
     label c x -->... [], []
 
   | BrIf x ->
-    (label c x @ [`I32]) --> label c x, []
+    (label c x @ [NumT I32T]) --> label c x, []
 
   | BrTable (xs, x) ->
     let n = List.length (label c x) in
     let ts = Lib.List.table n (fun i -> peek (n - i) s) in
     check_stack c ts (label c x) x.at;
     List.iter (fun x' -> check_stack c ts (label c x') x'.at) xs;
-    (ts @ [`I32]) -->... [], []
+    (ts @ [NumT I32T]) -->... [], []
 
   | BrOnNull x ->
-    let `Ref (_, ht) = peek_ref 0 s e.at in
-    (label c x @ [`Ref (`Null, ht)]) --> (label c x @ [`Ref (`NoNull, ht)]), []
+    let (_nul, ht) = peek_ref 0 s e.at in
+    (label c x @ [RefT (Null, ht)]) --> (label c x @ [RefT (NoNull, ht)]), []
 
   | BrOnNonNull x ->
-    let `Ref (_, ht) as t = peek_ref 0 s e.at in
-    let t' = `Ref (`NoNull, ht) in
+    let (_nul, ht) = peek_ref 0 s e.at in
+    let t' = RefT (NoNull, ht) in
     require (label c x <> []) e.at
       ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
        " but label has " ^ string_of_result_type (label c x));
@@ -384,110 +384,110 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     require (match_val_type c.types [] t' t1) e.at
       ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
        " but label has " ^ string_of_result_type (label c x));
-    (ts0 @ [t]) --> ts0, []
+    (ts0 @ [RefT (_nul, ht)]) --> ts0, []
 
   | Return ->
     c.results -->... [], []
 
   | Call x ->
-    let `Func (ts1, ts2) = func c x in
+    let FuncT (ts1, ts2) = func c x in
     ts1 --> ts2, []
 
   | CallRef ->
     (match peek_ref 0 s e.at with
-    | `Ref (nul, `Def x) ->
-      let `Func (ts1, ts2) = func_type c (x @@ e.at) in
-      (ts1 @ [`Ref (nul, `Def x)]) --> ts2, []
-    | `Ref (_, `Bot) as t ->
-      [t] -->... [], []
-    | t ->
+    | (_, DefHT x) ->
+      let FuncT (ts1, ts2) = func_type c (x @@ e.at) in
+      (ts1 @ [RefT (Null, DefHT x)]) --> ts2, []
+    | (_, BotHT) ->
+      [RefT (Null, BotHT)] -->... [], []
+    | rt ->
       error e.at
         ("type mismatch: instruction requires function reference type" ^
-         " but stack has " ^ string_of_val_type t)
+         " but stack has " ^ string_of_val_type (RefT rt))
     )
 
   | CallIndirect (x, y) ->
-    let `Table (_lim, t) = table c x in
-    let `Func (ts1, ts2) = func_type c y in
-    require (match_ref_type c.types [] t (`Ref (`Null, `Func))) x.at
+    let TableT (_lim, t) = table c x in
+    let FuncT (ts1, ts2) = func_type c y in
+    require (match_ref_type c.types [] t (Null, FuncHT)) x.at
       ("type mismatch: instruction requires table of function type" ^
        " but table has element type " ^ string_of_ref_type t);
-    (ts1 @ [`I32]) --> ts2, []
+    (ts1 @ [NumT I32T]) --> ts2, []
 
   | ReturnCallRef ->
     (match peek_ref 0 s e.at with
-    | `Ref (nul, `Def x) ->
-      let `Func (ts1, ts2) = func_type c (x @@ e.at) in
+    | (_, DefHT x) ->
+      let FuncT (ts1, ts2) = func_type c (x @@ e.at) in
       require (match_result_type c.types [] ts2 c.results) e.at
         ("type mismatch: current function requires result type " ^
          string_of_result_type c.results ^
          " but callee returns " ^ string_of_result_type ts2);
-      (ts1 @ [`Ref (nul, `Def x)]) -->... [], []
-    | `Ref (_, `Bot) as t ->
-      [t] -->... [], []
-    | t ->
+      (ts1 @ [RefT (Null, DefHT x)]) -->... [], []
+    | (_, BotHT) ->
+      [RefT (Null, BotHT)] -->... [], []
+    | rt ->
       error e.at
         ("type mismatch: instruction requires function reference type" ^
-         " but stack has " ^ string_of_val_type t)
+         " but stack has " ^ string_of_ref_type rt)
     )
 
   | LocalGet x ->
-    let `Local (init, t) = local c x in
-    require (init = `Set) x.at "uninitialized local";
+    let LocalT (init, t) = local c x in
+    require (init = Set) x.at "uninitialized local";
     [] --> [t], []
 
   | LocalSet x ->
-    let `Local (_init, t) = local c x in
+    let LocalT (_init, t) = local c x in
     [t] --> [], [x]
 
   | LocalTee x ->
-    let `Local (_init, t) = local c x in
+    let LocalT (_init, t) = local c x in
     [t] --> [t], [x]
 
   | GlobalGet x ->
-    let `Global (_mut, t) = global c x in
+    let GlobalT (_mut, t) = global c x in
     [] --> [t], []
 
   | GlobalSet x ->
-    let `Global (mut, t) = global c x in
-    require (mut = `Var) x.at "immutable global";
+    let GlobalT (mut, t) = global c x in
+    require (mut = Var) x.at "immutable global";
     [t] --> [], []
 
   | TableGet x ->
-    let `Table (_lim, t) = table c x in
-    [`I32] --> [(t :> val_type)], []
+    let TableT (_lim, rt) = table c x in
+    [NumT I32T] --> [RefT rt], []
 
   | TableSet x ->
-    let `Table (_lim, t) = table c x in
-    [`I32; (t :> val_type)] --> [], []
+    let TableT (_lim, rt) = table c x in
+    [NumT I32T; RefT rt] --> [], []
 
   | TableSize x ->
     let _tt = table c x in
-    [] --> [`I32], []
+    [] --> [NumT I32T], []
 
   | TableGrow x ->
-    let `Table (_lim, t) = table c x in
-    [(t :> val_type); `I32] --> [`I32], []
+    let TableT (_lim, rt) = table c x in
+    [RefT rt; NumT I32T] --> [NumT I32T], []
 
   | TableFill x ->
-    let `Table (_lim, t) = table c x in
-    [`I32; (t :> val_type); `I32] --> [], []
+    let TableT (_lim, rt) = table c x in
+    [NumT I32T; RefT rt; NumT I32T] --> [], []
 
   | TableCopy (x, y) ->
-    let `Table (_lim1, t1) = table c x in
-    let `Table (_lim2, t2) = table c y in
+    let TableT (_lim1, t1) = table c x in
+    let TableT (_lim2, t2) = table c y in
     require (match_ref_type c.types [] t2 t1) x.at
       ("type mismatch: source element type " ^ string_of_ref_type t1 ^
        " does not match destination element type " ^ string_of_ref_type t2);
-    [`I32; `I32; `I32] --> [], []
+    [NumT I32T; NumT I32T; NumT I32T] --> [], []
 
   | TableInit (x, y) ->
-    let `Table (_lim1, t1) = table c x in
+    let TableT (_lim1, t1) = table c x in
     let t2 = elem c y in
     require (match_ref_type c.types [] t2 t1) x.at
       ("type mismatch: element segment's type " ^ string_of_ref_type t1 ^
        " does not match table's element type " ^ string_of_ref_type t2);
-    [`I32; `I32; `I32] --> [], []
+    [NumT I32T; NumT I32T; NumT I32T] --> [], []
 
   | ElemDrop x ->
     ignore (elem c x);
@@ -495,164 +495,164 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
 
   | Load memop ->
     check_memop c memop num_size (Lib.Option.map fst) e.at;
-    [`I32] --> [(memop.ty :> val_type)], []
+    [NumT I32T] --> [NumT memop.ty], []
 
   | Store memop ->
     check_memop c memop num_size (fun sz -> sz) e.at;
-    [`I32; (memop.ty :> val_type)] --> [], []
+    [NumT I32T; NumT memop.ty] --> [], []
 
   | VecLoad memop ->
     check_memop c memop vec_size (Lib.Option.map fst) e.at;
-    [`I32] --> [(memop.ty :> val_type)], []
+    [NumT I32T] --> [VecT memop.ty], []
 
   | VecStore memop ->
     check_memop c memop vec_size (fun _ -> None) e.at;
-    [`I32; (memop.ty :> val_type)] --> [], []
+    [NumT I32T; VecT memop.ty] --> [], []
 
   | VecLoadLane (memop, i) ->
     check_memop c memop vec_size (fun sz -> Some sz) e.at;
     require (i < vec_size memop.ty / Pack.packed_size memop.pack) e.at
       "invalid lane index";
-    [`I32; (memop.ty :> val_type)] -->  [(memop.ty :> val_type)], []
+    [NumT I32T; VecT memop.ty] -->  [VecT memop.ty], []
 
   | VecStoreLane (memop, i) ->
     check_memop c memop vec_size (fun sz -> Some sz) e.at;
     require (i < vec_size memop.ty / Pack.packed_size memop.pack) e.at
       "invalid lane index";
-    [`I32; (memop.ty :> val_type)] -->  [], []
+    [NumT I32T; VecT memop.ty] -->  [], []
 
   | MemorySize ->
     let _mt = memory c (0l @@ e.at) in
-    [] --> [`I32], []
+    [] --> [NumT I32T], []
 
   | MemoryGrow ->
     let _mt = memory c (0l @@ e.at) in
-    [`I32] --> [`I32], []
+    [NumT I32T] --> [NumT I32T], []
 
   | MemoryFill ->
     let _mt = memory c (0l @@ e.at) in
-    [`I32; `I32; `I32] --> [], []
+    [NumT I32T; NumT I32T; NumT I32T] --> [], []
 
   | MemoryCopy ->
     let _mt = memory c (0l @@ e.at) in
-    [`I32; `I32; `I32] --> [], []
+    [NumT I32T; NumT I32T; NumT I32T] --> [], []
 
   | MemoryInit x ->
     let _mt = memory c (0l @@ e.at) in
     let () = data c x in
-    [`I32; `I32; `I32] --> [], []
+    [NumT I32T; NumT I32T; NumT I32T] --> [], []
 
   | DataDrop x ->
     let () = data c x in
     [] --> [], []
 
-  | RefNull t ->
-    check_heap_type c t e.at;
-    [] --> [`Ref (`Null, t)], []
+  | RefNull ht ->
+    check_heap_type c ht e.at;
+    [] --> [RefT (Null, ht)], []
 
   | RefIsNull ->
-    let `Ref (_, t) = peek_ref 0 s e.at in
-    [`Ref (`Null, t)] --> [`I32], []
+    let (_, ht) = peek_ref 0 s e.at in
+    [RefT (Null, ht)] --> [NumT I32T], []
 
   | RefAsNonNull ->
-    let `Ref (_, t) = peek_ref 0 s e.at in
-    [`Ref (`Null, t)] --> [`Ref (`NoNull, t)], []
+    let (_, ht) = peek_ref 0 s e.at in
+    [RefT (Null, ht)] --> [RefT (NoNull, ht)], []
 
   | RefFunc x ->
     let ft = func c x in
-    let y = Lib.Option.force (Lib.List32.index_of (ft :> def_type) c.types) in
+    let y = Lib.Option.force (Lib.List32.index_of (DefFuncT ft) c.types) in
     refer_func c x;
-    [] --> [`Ref (`NoNull, `Def y)], []
+    [] --> [RefT (NoNull, DefHT y)], []
 
   | Const v ->
-    let t = type_num v.it in
+    let t = NumT (type_num v.it) in
     [] --> [t], []
 
   | Test testop ->
-    let t = type_num testop in
-    [t] --> [`I32], []
+    let t = NumT (type_num testop) in
+    [t] --> [NumT I32T], []
 
   | Compare relop ->
-    let t = type_num relop in
-    [t; t] --> [`I32], []
+    let t = NumT (type_num relop) in
+    [t; t] --> [NumT I32T], []
 
   | Unary unop ->
     check_unop unop e.at;
-    let t = type_num unop in
+    let t = NumT (type_num unop) in
     [t] --> [t], []
 
   | Binary binop ->
-    let t = type_num binop in
+    let t = NumT (type_num binop) in
     [t; t] --> [t], []
 
   | Convert cvtop ->
     let t1, t2 = type_cvtop e.at cvtop in
-    [t1] --> [t2], []
+    [NumT t1] --> [NumT t2], []
 
   | VecConst v ->
-    let t = type_vec v.it in
+    let t = VecT (type_vec v.it) in
     [] --> [t], []
 
   | VecTest testop ->
-    let t = type_vec testop in
-    [t] --> [`I32], []
+    let t = VecT (type_vec testop) in
+    [t] --> [NumT I32T], []
 
   | VecUnary unop ->
-    let t = type_vec unop in
+    let t = VecT (type_vec unop) in
     [t] --> [t], []
 
   | VecBinary binop ->
     check_vec_binop binop e.at;
-    let t = type_vec binop in
+    let t = VecT (type_vec binop) in
     [t; t] --> [t], []
 
   | VecCompare relop ->
-    let t = type_vec relop in
+    let t = VecT (type_vec relop) in
     [t; t] --> [t], []
 
   | VecConvert cvtop ->
-    let t = type_vec cvtop in
+    let t = VecT (type_vec cvtop) in
     [t] --> [t], []
 
   | VecShift shiftop ->
-    let t = type_vec shiftop in
-    [t; `I32] --> [t], []
+    let t = VecT (type_vec shiftop) in
+    [t; NumT I32T] --> [t], []
 
   | VecBitmask bitmaskop ->
-    let t = type_vec bitmaskop in
-    [t] --> [`I32], []
+    let t = VecT (type_vec bitmaskop) in
+    [t] --> [NumT I32T], []
 
   | VecTestBits vtestop ->
-    let t = type_vec vtestop in
-    [t] --> [`I32], []
+    let t = VecT (type_vec vtestop) in
+    [t] --> [NumT I32T], []
 
   | VecUnaryBits vunop ->
-    let t = type_vec vunop in
+    let t = VecT (type_vec vunop) in
     [t] --> [t], []
 
   | VecBinaryBits vbinop ->
-    let t = type_vec vbinop in
+    let t = VecT (type_vec vbinop) in
     [t; t] --> [t], []
 
   | VecTernaryBits vternop ->
-    let t = type_vec vternop in
+    let t = VecT (type_vec vternop) in
     [t; t; t] --> [t], []
 
   | VecSplat splatop ->
-    let t1 = type_vec_lane splatop in
-    let t2 = type_vec splatop in
+    let t1 = NumT (type_vec_lane splatop) in
+    let t2 = VecT (type_vec splatop) in
     [t1] --> [t2], []
 
   | VecExtract extractop ->
-    let t1 = type_vec extractop in
-    let t2 = type_vec_lane extractop in
+    let t1 = VecT (type_vec extractop) in
+    let t2 = NumT (type_vec_lane extractop) in
     require (lane_extractop extractop < num_lanes extractop) e.at
       "invalid lane index";
     [t1] --> [t2], []
 
   | VecReplace replaceop ->
-    let t1 = type_vec replaceop in
-    let t2 = type_vec_lane replaceop in
+    let t1 = VecT (type_vec replaceop) in
+    let t2 = NumT (type_vec_lane replaceop) in
     require (lane_replaceop replaceop < num_lanes replaceop) e.at
       "invalid lane index";
     [t1; t2] --> [t1], []
@@ -670,7 +670,7 @@ and check_seq (c : context) (s : infer_result_type) (es : instr list)
     push c outs (pop c ins s' e.at), xs @ xs'
 
 and check_block (c : context) (es : instr list) (it : instr_type) at =
-  let `Instr (ts1, ts2, _xs) = it in
+  let InstrT (ts1, ts2, _xs) = it in
   let s, xs' = check_seq c (stack ts1) es in
   let s' = pop c (stack ts2) s at in
   require (snd s' = []) at
@@ -694,15 +694,15 @@ and check_block (c : context) (es : instr list) (it : instr_type) at =
 
 let check_func (c : context) (f : func) =
   let {ftype; locals; body} = f.it in
-  let `Func (ts1, ts2) = func_type c ftype in
+  let FuncT (ts1, ts2) = func_type c ftype in
   let lts = List.map (check_local c) locals in
   let c' =
     { c with
-      locals = List.map (fun t -> `Local (`Set, t)) ts1 @ lts;
+      locals = List.map (fun t -> LocalT (Set, t)) ts1 @ lts;
       results = ts2;
       labels = [ts2]
     }
-  in check_block c' body (`Instr ([], ts2, [])) f.at
+  in check_block c' body (InstrT ([], ts2, [])) f.at
 
 
 let is_const (c : context) (e : instr) =
@@ -711,13 +711,13 @@ let is_const (c : context) (e : instr) =
   | RefFunc _
   | Const _
   | VecConst _ -> true
-  | GlobalGet x -> let `Global (mut, _t) = global c x in mut = `Const
+  | GlobalGet x -> let GlobalT (mut, _t) = global c x in mut = Cons
   | _ -> false
 
 let check_const (c : context) (const : const) (t : val_type) =
   require (List.for_all (is_const c) const.it) const.at
     "constant expression required";
-  check_block c const.it (`Instr ([], [t], [])) const.at
+  check_block c const.it (InstrT ([], [t], [])) const.at
 
 
 (* Tables, Memories, & Globals *)
@@ -734,17 +734,17 @@ let check_elem_mode (c : context) (t : ref_type) (mode : segment_mode) =
   match mode.it with
   | Passive -> ()
   | Active {index; offset} ->
-    let `Table (_lim, et) = table c index in
+    let TableT (_lim, et) = table c index in
     require (match_ref_type c.types [] t et) mode.at
       ("type mismatch: element segment's type " ^ string_of_ref_type t ^
        " does not match table's element type " ^ string_of_ref_type et);
-    check_const c offset `I32
+    check_const c offset (NumT I32T)
   | Declarative -> ()
 
 let check_elem (c : context) (seg : elem_segment) =
   let {etype; einit; emode} = seg.it in
   check_ref_type c etype seg.at;
-  List.iter (fun const -> check_const c const (etype :> val_type)) einit;
+  List.iter (fun const -> check_const c const (RefT etype)) einit;
   check_elem_mode c etype emode
 
 let check_data_mode (c : context) (mode : segment_mode) =
@@ -752,7 +752,7 @@ let check_data_mode (c : context) (mode : segment_mode) =
   | Passive -> ()
   | Active {index; offset} ->
     ignore (memory c index);
-    check_const c offset `I32
+    check_const c offset (NumT I32T)
   | Declarative -> assert false
 
 let check_data (c : context) (seg : data_segment) =
@@ -762,7 +762,7 @@ let check_data (c : context) (seg : data_segment) =
 let check_global (c : context) (glob : global) =
   let {gtype; ginit} = glob.it in
   check_global_type c gtype glob.at;
-  let `Global (_mut, t) = gtype in
+  let GlobalT (_mut, t) = gtype in
   check_const c ginit t
 
 
@@ -770,7 +770,7 @@ let check_global (c : context) (glob : global) =
 
 let check_start (c : context) (start : start) =
   let {sfunc} = start.it in
-  require (func c sfunc = `Func ([], [])) start.at
+  require (func c sfunc = FuncT ([], [])) start.at
     "start function must not have parameters or results"
 
 let check_type (c : context) (ty : type_) : context =

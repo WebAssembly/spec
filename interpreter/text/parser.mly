@@ -159,7 +159,7 @@ let label (c : context) x = lookup "label " c.labels x
 
 let func_type (c : context) x =
   match (Lib.List32.nth c.types.list x.it).it with
-  | #func_type as ft -> ft
+  | DefFuncT ft -> ft
   | exception Failure _ -> error x.at ("unknown type " ^ Int32.to_string x.it)
 
 
@@ -203,7 +203,7 @@ let anon_label (c : context) at = bind "label" c.labels 1l at
 
 
 let inline_func_type (c : context) ft at =
-  let dt = (ft :> def_type) in
+  let dt = DefFuncT ft in
   match Lib.List.index_where (fun ty -> ty.it = dt) c.types.list with
   | Some i -> Int32.of_int i @@ at
   | None ->
@@ -211,11 +211,11 @@ let inline_func_type (c : context) ft at =
     i @@ at
 
 let inline_func_type_explicit (c : context) x ft at =
-  if ft = `Func ([], []) then
+  if ft = FuncT ([], []) then
     (* Deferring ensures that type lookup is only triggered when
        symbolic identifiers are used, and not for desugared functions *)
     defer_locals c (fun () ->
-      let `Func (ts1, _ts2) = func_type c x in
+      let FuncT (ts1, _ts2) = func_type c x in
       bind "local" c.locals (Lib.List32.length ts1) at
     )
   else if ft <> func_type c x then
@@ -310,44 +310,44 @@ string_list :
 /* Types */
 
 null_opt :
-  | /* empty */ { `NoNull }
-  | NULL { `Null }
+  | /* empty */ { NoNull }
+  | NULL { Null }
 
 heap_type :
-  | FUNC { fun c -> `Func }
-  | EXTERN { fun c -> `Extern }
-  | var { fun c -> `Def ($1 c type_).it }
+  | FUNC { fun c -> FuncHT }
+  | EXTERN { fun c -> ExternHT }
+  | var { fun c -> DefHT ($1 c type_).it }
 
 ref_type :
-  | LPAR REF null_opt heap_type RPAR { fun c -> `Ref ($3, $4 c) }
-  | FUNCREF { fun c -> `Ref (`Null, `Func) }  /* Sugar */
-  | EXTERNREF { fun c -> `Ref (`Null, `Extern) }  /* Sugar */
+  | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
+  | FUNCREF { fun c -> (Null, FuncHT) }  /* Sugar */
+  | EXTERNREF { fun c -> (Null, ExternHT) }  /* Sugar */
 
 val_type :
-  | NUM_TYPE { fun c -> ($1 :> val_type) }
-  | VEC_TYPE { fun c -> ($1 :> val_type) }
-  | ref_type { fun c -> ($1 c :> val_type) }
+  | NUM_TYPE { fun c -> NumT $1 }
+  | VEC_TYPE { fun c -> VecT $1 }
+  | ref_type { fun c -> RefT ($1 c) }
 
 val_type_list :
   | /* empty */ { 0l, fun c -> [] }
   | val_type val_type_list { I32.add (fst $2) 1l, fun c -> $1 c :: snd $2 c }
 
 global_type :
-  | val_type { fun c -> `Global (`Const, $1 c) }
-  | LPAR MUT val_type RPAR { fun c -> `Global (`Var, $3 c) }
+  | val_type { fun c -> GlobalT (Cons, $1 c) }
+  | LPAR MUT val_type RPAR { fun c -> GlobalT (Var, $3 c) }
 
 def_type :
-  | LPAR FUNC func_type RPAR { fun c -> ($3 c :> def_type) }
+  | LPAR FUNC func_type RPAR { fun c -> DefFuncT ($3 c) }
 
 func_type :
   | func_type_result
-    { fun c -> `Func ([], $1 c) }
+    { fun c -> FuncT ([], $1 c) }
   | LPAR PARAM val_type_list RPAR func_type
-    { fun c -> let `Func (ts1, ts2) = $5 c in
-      `Func (snd $3 c @ ts1, ts2) }
+    { fun c -> let FuncT (ts1, ts2) = $5 c in
+      FuncT (snd $3 c @ ts1, ts2) }
   | LPAR PARAM bind_var val_type RPAR func_type  /* Sugar */
-    { fun c -> let `Func (ts1, ts2) = $6 c in
-      `Func ($4 c :: ts1, ts2) }
+    { fun c -> let FuncT (ts1, ts2) = $6 c in
+      FuncT ($4 c :: ts1, ts2) }
 
 func_type_result :
   | /* empty */
@@ -356,10 +356,10 @@ func_type_result :
     { fun c -> snd $3 c @ $5 c }
 
 table_type :
-  | limits ref_type { fun c -> `Table ($1, $2 c) }
+  | limits ref_type { fun c -> TableT ($1, $2 c) }
 
 memory_type :
-  | limits { fun c -> `Memory $1 }
+  | limits { fun c -> MemoryT $1 }
 
 limits :
   | NAT { {min = nat32 $1 (ati 1); max = None} }
@@ -543,16 +543,16 @@ call_instr_type :
     { let at1 = ati 1 in
       fun c ->
       match $2 c with
-      | `Func ([], []) -> $1 c type_
+      | FuncT ([], []) -> $1 c type_
       | ft -> inline_func_type_explicit c ($1 c type_) ft at1 }
   | call_instr_params
     { let at = at () in fun c -> inline_func_type c ($1 c) at }
 
 call_instr_params :
   | LPAR PARAM val_type_list RPAR call_instr_params
-    { fun c -> let `Func (ts1, ts2) = $5 c in `Func (snd $3 c @ ts1, ts2) }
+    { fun c -> let FuncT (ts1, ts2) = $5 c in FuncT (snd $3 c @ ts1, ts2) }
   | call_instr_results
-    { fun c -> `Func ([], $1 c) }
+    { fun c -> FuncT ([], $1 c) }
 
 call_instr_results :
   | LPAR RESULT val_type_list RPAR call_instr_results
@@ -574,7 +574,7 @@ call_instr_type_instr :
     { let at1 = ati 1 in
       fun c ->
       match $2 c with
-      | `Func ([], []), es -> $1 c type_, es
+      | FuncT ([], []), es -> $1 c type_, es
       | ft, es -> inline_func_type_explicit c ($1 c type_) ft at1, es }
   | call_instr_params_instr
     { let at = at () in
@@ -582,10 +582,10 @@ call_instr_type_instr :
 
 call_instr_params_instr :
   | LPAR PARAM val_type_list RPAR call_instr_params_instr
-    { fun c -> let `Func (ts1, ts2), es = $5 c in
-      `Func (snd $3 c @ ts1, ts2), es }
+    { fun c -> let FuncT (ts1, ts2), es = $5 c in
+      FuncT (snd $3 c @ ts1, ts2), es }
   | call_instr_results_instr
-    { fun c -> let ts, es = $1 c in `Func ([], ts), es }
+    { fun c -> let ts, es = $1 c in FuncT ([], ts), es }
 
 call_instr_results_instr :
   | LPAR RESULT val_type_list RPAR call_instr_results_instr
@@ -616,22 +616,22 @@ block :
       fun c -> let ft, es = $1 c in
       let bt =
         match ft with
-        | `Func ([], []) -> ValBlockType None
-        | `Func ([], [t]) -> ValBlockType (Some t)
+        | FuncT ([], []) -> ValBlockType None
+        | FuncT ([], [t]) -> ValBlockType (Some t)
         | ft ->  VarBlockType (inline_func_type c ft at).it
       in bt, es }
 
 block_param_body :
   | block_result_body { $1 }
   | LPAR PARAM val_type_list RPAR block_param_body
-    { fun c -> let `Func (ts1, ts2), es = $5 c in
-      `Func (snd $3 c @ ts1, ts2), es }
+    { fun c -> let FuncT (ts1, ts2), es = $5 c in
+      FuncT (snd $3 c @ ts1, ts2), es }
 
 block_result_body :
-  | instr_list { fun c -> `Func ([], []), $1 c }
+  | instr_list { fun c -> FuncT ([], []), $1 c }
   | LPAR RESULT val_type_list RPAR block_result_body
-    { fun c -> let `Func (ts1, ts2), es = $5 c in
-      `Func (ts1, snd $3 c @ ts2), es }
+    { fun c -> let FuncT (ts1, ts2), es = $5 c in
+      FuncT (ts1, snd $3 c @ ts2), es }
 
 
 expr :  /* Sugar */
@@ -666,7 +666,7 @@ call_expr_type :
     { let at1 = ati 1 in
       fun c ->
       match $2 c with
-      | `Func ([], []), es -> $1 c type_, es
+      | FuncT ([], []), es -> $1 c type_, es
       | ft, es -> inline_func_type_explicit c ($1 c type_) ft at1, es }
   | call_expr_params
     { let at1 = ati 1 in
@@ -674,10 +674,10 @@ call_expr_type :
 
 call_expr_params :
   | LPAR PARAM val_type_list RPAR call_expr_params
-    { fun c -> let `Func (ts1, ts2), es = $5 c in
-      `Func (snd $3 c @ ts1, ts2), es }
+    { fun c -> let FuncT (ts1, ts2), es = $5 c in
+      FuncT (snd $3 c @ ts1, ts2), es }
   | call_expr_results
-    { fun c -> let ts, es = $1 c in `Func ([], ts), es }
+    { fun c -> let ts, es = $1 c in FuncT ([], ts), es }
 
 call_expr_results :
   | LPAR RESULT val_type_list RPAR call_expr_results
@@ -697,22 +697,22 @@ if_block :
       fun c c' -> let ft, es = $1 c c' in
       let bt =
         match ft with
-        | `Func ([], []) -> ValBlockType None
-        | `Func ([], [t]) -> ValBlockType (Some t)
+        | FuncT ([], []) -> ValBlockType None
+        | FuncT ([], [t]) -> ValBlockType (Some t)
         | ft ->  VarBlockType (inline_func_type c ft at).it
       in bt, es }
 
 if_block_param_body :
   | if_block_result_body { $1 }
   | LPAR PARAM val_type_list RPAR if_block_param_body
-    { fun c c' -> let `Func (ts1, ts2), es = $5 c c' in
-      `Func (snd $3 c @ ts1, ts2), es }
+    { fun c c' -> let FuncT (ts1, ts2), es = $5 c c' in
+      FuncT (snd $3 c @ ts1, ts2), es }
 
 if_block_result_body :
-  | if_ { fun c c' -> `Func ([], []), $1 c c' }
+  | if_ { fun c c' -> FuncT ([], []), $1 c c' }
   | LPAR RESULT val_type_list RPAR if_block_result_body
-    { fun c c' -> let `Func (ts1, ts2), es = $5 c c' in
-      `Func (ts1, snd $3 c @ ts2), es }
+    { fun c c' -> let FuncT (ts1, ts2), es = $5 c c' in
+      FuncT (ts1, snd $3 c @ ts2), es }
 
 if_ :
   | expr if_
@@ -774,32 +774,32 @@ func_fields :
 func_fields_import :  /* Sugar */
   | func_fields_import_result { $1 }
   | LPAR PARAM val_type_list RPAR func_fields_import
-    { fun c -> let `Func (ts1, ts2) = $5 c in `Func (snd $3 c @ ts1, ts2) }
+    { fun c -> let FuncT (ts1, ts2) = $5 c in FuncT (snd $3 c @ ts1, ts2) }
   | LPAR PARAM bind_var val_type RPAR func_fields_import  /* Sugar */
-    { fun c -> let `Func (ts1, ts2) = $6 c in `Func ($4 c :: ts1, ts2) }
+    { fun c -> let FuncT (ts1, ts2) = $6 c in FuncT ($4 c :: ts1, ts2) }
 
 func_fields_import_result :  /* Sugar */
-  | /* empty */ { fun c -> `Func ([], []) }
+  | /* empty */ { fun c -> FuncT ([], []) }
   | LPAR RESULT val_type_list RPAR func_fields_import_result
-    { fun c -> let `Func (ts1, ts2) = $5 c in `Func (ts1, snd $3 c @ ts2) }
+    { fun c -> let FuncT (ts1, ts2) = $5 c in FuncT (ts1, snd $3 c @ ts2) }
 
 func_fields_body :
   | func_result_body { $1 }
   | LPAR PARAM val_type_list RPAR func_fields_body
     { let at3 = ati 3 in
-      (fun c -> let `Func (ts1, ts2) = fst $5 c in
-        `Func (snd $3 c @ ts1, ts2)),
+      (fun c -> let FuncT (ts1, ts2) = fst $5 c in
+        FuncT (snd $3 c @ ts1, ts2)),
       (fun c -> anon_locals c (fst $3) at3; snd $5 c) }
   | LPAR PARAM bind_var val_type RPAR func_fields_body  /* Sugar */
-    { (fun c -> let `Func (ts1, ts2) = fst $6 c in
-        `Func ($4 c :: ts1, ts2)),
+    { (fun c -> let FuncT (ts1, ts2) = fst $6 c in
+        FuncT ($4 c :: ts1, ts2)),
       (fun c -> ignore (bind_local c $3); snd $6 c) }
 
 func_result_body :
-  | func_body { (fun c -> `Func ([], [])), $1 }
+  | func_body { (fun c -> FuncT ([], [])), $1 }
   | LPAR RESULT val_type_list RPAR func_result_body
-    { (fun c -> let `Func (ts1, ts2) = fst $5 c in
-        `Func (ts1, snd $3 c @ ts2)),
+    { (fun c -> let FuncT (ts1, ts2) = fst $5 c in
+        FuncT (ts1, snd $3 c @ ts2)),
       snd $5 }
 
 func_body :
@@ -836,7 +836,7 @@ offset :
   | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
 
 elem_kind :
-  | FUNC { `Ref (`NoNull, `Func) }
+  | FUNC { (NoNull, FuncHT) }
 
 elem_expr :
   | LPAR ITEM const_expr RPAR { $3 }
@@ -885,7 +885,7 @@ elem :
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () ->
-      { etype = `Ref (`NoNull, `Func); einit = $5 c func;
+      { etype = (NoNull, FuncHT); einit = $5 c func;
         emode = Active {index = 0l @@ at; offset = $4 c} @@ at } @@ at }
 
 table :
@@ -912,7 +912,7 @@ table_fields :
       let size = Lib.List32.length einit in
       let emode = Active {index = x; offset} @@ at in
       let etype = $1 c in
-      [{ttype = `Table ({min = size; max = Some size}, etype)} @@ at],
+      [{ttype = TableT ({min = size; max = Some size}, etype)} @@ at],
       [{etype; einit; emode} @@ at],
       [], [] }
   | ref_type LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
@@ -922,7 +922,7 @@ table_fields :
       let size = Lib.List32.length einit in
       let emode = Active {index = x; offset} @@ at in
       let etype = $1 c in
-      [{ttype = `Table ({min = size; max = Some size}, etype)} @@ at],
+      [{ttype = TableT ({min = size; max = Some size}, etype)} @@ at],
       [{etype; einit; emode} @@ at],
       [], [] }
 
@@ -963,7 +963,7 @@ memory_fields :
     { fun c x at ->
       let offset = [i32_const (0l @@ at) @@ at] @@ at in
       let size = Int32.(div (add (of_int (String.length $3)) 65535l) 65536l) in
-      [{mtype = `Memory {min = size; max = Some size}} @@ at],
+      [{mtype = MemoryT {min = size; max = Some size}} @@ at],
       [{dinit = $3; dmode = Active {index = x; offset} @@ at} @@ at],
       [], [] }
 
@@ -1213,8 +1213,8 @@ result :
   | literal_num { NumResult (NumPat ($1 @@ at())) @@ at () }
   | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ ati 3))) @@ at () }
   | literal_ref { RefResult (RefPat ($1 @@ at ())) @@ at () }
-  | LPAR REF_FUNC RPAR { RefResult (RefTypePat `Func) @@ at () }
-  | LPAR REF_EXTERN RPAR { RefResult (RefTypePat `Extern) @@ at () }
+  | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncHT) @@ at () }
+  | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternHT) @@ at () }
   | LPAR REF_NULL RPAR { RefResult NullPat @@ at () }
   | LPAR VEC_CONST VEC_SHAPE numpat_list RPAR {
     if V128.num_lanes $3 <> List.length $4 then

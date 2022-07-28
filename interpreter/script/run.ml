@@ -227,13 +227,14 @@ let string_of_nan = function
   | ArithmeticNan -> "nan:arithmetic"
 
 let type_of_result r =
+  let open Types.Sem in
   match r with
-  | NumResult (NumPat n) -> Value.type_of_num n.it
-  | NumResult (NanPat n) -> Value.type_of_num n.it
-  | VecResult (VecPat v) -> Value.type_of_vec v
-  | RefResult (RefPat r) -> Value.type_of_ref r.it
-  | RefResult (RefTypePat t) -> `Ref (`NoNull, Types.Sem.sem_heap_type [] t)
-  | RefResult (NullPat) -> `Ref (`Null, `Extern)
+  | NumResult (NumPat n) -> NumT (Value.type_of_num n.it)
+  | NumResult (NanPat n) -> NumT (Value.type_of_num n.it)
+  | VecResult (VecPat v) -> VecT (Value.type_of_vec v)
+  | RefResult (RefPat r) -> RefT (Value.type_of_ref r.it)
+  | RefResult (RefTypePat t) -> RefT (NoNull, sem_heap_type [] t)
+  | RefResult (NullPat) -> RefT (Null, ExternHT)
 
 let string_of_num_pat (p : num_pat) =
   match p with
@@ -324,7 +325,7 @@ let run_action act : Value.t list =
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternFunc f) ->
-      let `Func (ts1, _ts2) = Func.type_of f in
+      let Types.Sem.FuncT (ts1, _ts2) = Func.type_of f in
       if List.length vs <> List.length ts1 then
         Script.error act.at "wrong number of arguments";
       List.iter2 (fun v t ->
@@ -381,8 +382,8 @@ let assert_vec_pat v p =
 let assert_ref_pat r p =
   match r, p with
   | r, RefPat r' -> Value.eq_ref r r'.it
-  | Instance.FuncRef _, RefTypePat `Func
-  | ExternRef _, RefTypePat `Extern -> true
+  | Instance.FuncRef _, RefTypePat Types.FuncHT
+  | ExternRef _, RefTypePat Types.ExternHT -> true
   | Value.NullRef _, NullPat -> true
   | _ -> false
 

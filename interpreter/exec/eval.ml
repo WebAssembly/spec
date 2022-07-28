@@ -75,7 +75,7 @@ type config =
 }
 
 let frame inst locals = {inst; locals}
-let config inst vs es = {frame = frame inst []; code = vs, es; budget = 300}
+let config inst vs es = {frame = frame inst []; code = vs, es; budget = 250}
 
 let plain e = Plain e.it @@ e.at
 
@@ -111,10 +111,10 @@ let func_ref (inst : module_inst) x i at =
 
 let block_type (inst : module_inst) bt at =
   match bt with
-  | ValBlockType None -> `Instr ([], [], [])
-  | ValBlockType (Some t) -> `Instr ([], [sem_val_type inst.types t], [])
+  | ValBlockType None -> InstrT ([], [], [])
+  | ValBlockType (Some t) -> InstrT ([], [sem_val_type inst.types t], [])
   | VarBlockType x ->
-    let `Func (ts1, ts2) = func_type inst (x @@ at) in `Instr (ts1, ts2, [])
+    let FuncT (ts1, ts2) = func_type inst (x @@ at) in InstrT (ts1, ts2, [])
 
 let take n (vs : 'a stack) at =
   try Lib.List.take n vs with Failure _ -> Crash.error at "stack underflow"
@@ -166,14 +166,14 @@ let rec step (c : config) : config =
         vs, []
 
       | Block (bt, es'), vs ->
-        let `Instr (ts1, ts2, _xs) = block_type c.frame.inst bt e.at in
+        let InstrT (ts1, ts2, _xs) = block_type c.frame.inst bt e.at in
         let n1 = List.length ts1 in
         let n2 = List.length ts2 in
         let args, vs' = take n1 vs e.at, drop n1 vs e.at in
         vs', [Label (n2, [], (args, List.map plain es')) @@ e.at]
 
       | Loop (bt, es'), vs ->
-        let `Instr (ts1, ts2, _xs) = block_type c.frame.inst bt e.at in
+        let InstrT (ts1, ts2, _xs) = block_type c.frame.inst bt e.at in
         let n1 = List.length ts1 in
         let args, vs' = take n1 vs e.at, drop n1 vs e.at in
         vs', [Label (n1, [e' @@ e.at], (args, List.map plain es')) @@ e.at]
@@ -368,11 +368,12 @@ let rec step (c : config) : config =
       | Load {offset; ty; pack; _}, Num (I32 i) :: vs' ->
         let mem = memory c.frame.inst (0l @@ e.at) in
         let a = I64_convert.extend_i32_u i in
+        let t = sem_num_type [] ty in
         (try
           let n =
             match pack with
-            | None -> Memory.load_num mem a offset ty
-            | Some (sz, ext) -> Memory.load_num_packed sz ext mem a offset ty
+            | None -> Memory.load_num mem a offset t
+            | Some (sz, ext) -> Memory.load_num_packed sz ext mem a offset t
           in Num n :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
@@ -389,13 +390,13 @@ let rec step (c : config) : config =
 
       | VecLoad {offset; ty; pack; _}, Num (I32 i) :: vs' ->
         let mem = memory c.frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_i32_u i in
+        let a = I64_convert.extend_i32_u i in
+        let t = sem_vec_type [] ty in
         (try
           let v =
             match pack with
-            | None -> Memory.load_vec mem addr offset ty
-            | Some (sz, ext) ->
-              Memory.load_vec_packed sz ext mem addr offset ty
+            | None -> Memory.load_vec mem a offset t
+            | Some (sz, ext) -> Memory.load_vec_packed sz ext mem a offset t
           in Vec v :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
@@ -415,16 +416,16 @@ let rec step (c : config) : config =
             match pack with
             | Pack8 ->
               V128.I8x16.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num_packed Pack8 SX mem addr offset `I32))
+                (I32Num.of_num 0 (Memory.load_num_packed Pack8 SX mem addr offset I32T))
             | Pack16 ->
               V128.I16x8.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num_packed Pack16 SX mem addr offset `I32))
+                (I32Num.of_num 0 (Memory.load_num_packed Pack16 SX mem addr offset I32T))
             | Pack32 ->
               V128.I32x4.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num mem addr offset `I32))
+                (I32Num.of_num 0 (Memory.load_num mem addr offset I32T))
             | Pack64 ->
               V128.I64x2.replace_lane j v
-                (I64Num.of_num 0 (Memory.load_num mem addr offset `I64))
+                (I64Num.of_num 0 (Memory.load_num mem addr offset I64T))
           in Vec (V128 v) :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
@@ -467,7 +468,7 @@ let rec step (c : config) : config =
             Plain (Const (I32 i @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Store
-              {ty = `I32; align = 0; offset = 0l; pack = Some Pack8});
+              {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add i 1l) @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -484,9 +485,9 @@ let rec step (c : config) : config =
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
             Plain (Load
-              {ty = `I32; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
+              {ty = Types.I32T; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
             Plain (Store
-              {ty = `I32; align = 0; offset = 0l; pack = Some Pack8});
+              {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -501,9 +502,9 @@ let rec step (c : config) : config =
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
             Plain (Load
-              {ty = `I32; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
+              {ty = Types.I32T; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
             Plain (Store
-              {ty = `I32; align = 0; offset = 0l; pack = Some Pack8});
+              {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
           ]
 
       | MemoryInit x, Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
@@ -518,7 +519,7 @@ let rec step (c : config) : config =
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 b @@ e.at));
             Plain (Store
-              {ty = `I32; align = 0; offset = 0l; pack = Some Pack8});
+              {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -681,7 +682,7 @@ let rec step (c : config) : config =
       take n vs0 e.at @ vs, []
 
     | Frame (n, frame', (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
-      let `Func (ts1, _ts2) = Func.type_of f in
+      let FuncT (ts1, _ts2) = Func.type_of f in
       take (List.length ts1) vs0 e.at @ vs, [Invoke f @@ at]
 
     | Frame (n, frame', code'), vs ->
@@ -692,7 +693,7 @@ let rec step (c : config) : config =
       Exhaustion.error e.at "call stack exhausted"
 
     | Invoke f, vs ->
-      let `Func (ts1, ts2) = Func.type_of f in
+      let FuncT (ts1, ts2) = Func.type_of f in
       let n1, n2 = List.length ts1, List.length ts2 in
       let args, vs' = split n1 vs e.at in
       (match f with
@@ -732,7 +733,7 @@ let at_func = function
 
 let invoke (func : func_inst) (vs : value list) : value list =
   let at = at_func func in
-  let `Func (ts1, _ts2) = Func.type_of func in
+  let FuncT (ts1, _ts2) = Func.type_of func in
   if List.length vs <> List.length ts1 then
     Crash.error at "wrong number of arguments";
   if not (List.for_all2 (fun v -> Match.Sem.match_val_type () [] (type_of_value v)) vs ts1) then
@@ -758,7 +759,7 @@ let create_func (inst : module_inst) (f : func) : func_inst =
 
 let create_table (inst : module_inst) (tab : table) : table_inst =
   let {ttype} = tab.it in
-  let `Table (_lim, `Ref (_nul, t)) as tt = Types.Sem.sem_table_type inst.types ttype in
+  let TableT (_lim, (_nul, t)) as tt = Types.Sem.sem_table_type inst.types ttype in
   Table.alloc tt (NullRef t)
 
 let create_memory (inst : module_inst) (mem : memory) : memory_inst =
@@ -791,7 +792,7 @@ let create_data (inst : module_inst) (seg : data_segment) : data_inst =
 
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   : module_inst =
-  let it = extern_type_of_import_type (import_type_of m im) in
+  let it = Types.extern_type_of_import_type (import_type_of m im) in
   let et = Types.Sem.sem_extern_type inst.types it in
   let et' = extern_type_of inst.types ext in
   if not (Match.Sem.match_extern_type () [] et' et) then

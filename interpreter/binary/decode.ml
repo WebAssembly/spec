@@ -106,7 +106,7 @@ let s33 s = I32_convert.wrap_i64 (sN 33 s)
 let s64 s = sN 64 s
 let f32 s = F32.of_bits (word32 s)
 let f64 s = F64.of_bits (word64 s)
-let v128 s = V128.of_bits (get_string (Types.vec_size `V128) s)
+let v128 s = V128.of_bits (get_string 16 s)
 
 let len32 s =
   let pos = pos s in
@@ -146,15 +146,15 @@ open Types
 
 let num_type s =
   match s7 s with
-  | -0x01 -> `I32
-  | -0x02 -> `I64
-  | -0x03 -> `F32
-  | -0x04 -> `F64
+  | -0x01 -> I32T
+  | -0x02 -> I64T
+  | -0x03 -> F32T
+  | -0x04 -> F64T
   | _ -> error s (pos s - 1) "malformed number type"
 
 let vec_type s =
   match s7 s with
-  | -0x05 -> `V128
+  | -0x05 -> V128T
   | _ -> error s (pos s - 1) "malformed vector type"
 
 let var_type s =
@@ -166,11 +166,11 @@ let var_type s =
 let heap_type s =
   let pos = pos s in
   either [
-    (fun s -> `Def (var_type s));
+    (fun s -> DefHT (var_type s));
     (fun s ->
       match s7 s with
-      | -0x10 -> `Func
-      | -0x11 -> `Extern
+      | -0x10 -> FuncHT
+      | -0x11 -> ExternHT
       | _ -> error s pos "malformed heap type"
     )
   ] s
@@ -178,17 +178,17 @@ let heap_type s =
 let ref_type s =
   let pos = pos s in
   match s7 s with
-  | -0x10 -> `Ref (`Null, `Func)
-  | -0x11 -> `Ref (`Null, `Extern)
-  | -0x14 -> `Ref (`Null, heap_type s)
-  | -0x15 -> `Ref (`NoNull, heap_type s)
+  | -0x10 -> (Null, FuncHT)
+  | -0x11 -> (Null, ExternHT)
+  | -0x14 -> (Null, heap_type s)
+  | -0x15 -> (NoNull, heap_type s)
   | _ -> error s pos "malformed reference type"
 
 let val_type s =
   either [
-    (fun s -> num_type s);
-    (fun s -> vec_type s);
-    (fun s -> ref_type s);
+    (fun s -> NumT (num_type s));
+    (fun s -> VecT (vec_type s));
+    (fun s -> RefT (ref_type s));
   ] s
 
 let result_type s = vec val_type s
@@ -196,11 +196,11 @@ let result_type s = vec val_type s
 let func_type s =
   let ts1 = result_type s in
   let ts2 = result_type s in
-  `Func (ts1, ts2)
+  FuncT (ts1, ts2)
 
 let def_type s =
   match s7 s with
-  | -0x20 -> func_type s
+  | -0x20 -> DefFuncT (func_type s)
   | _ -> error s (pos s - 1) "malformed definition type"
 
 
@@ -213,22 +213,22 @@ let limits uN s =
 let table_type s =
   let t = ref_type s in
   let lim = limits u32 s in
-  `Table (lim, t)
+  TableT (lim, t)
 
 let memory_type s =
   let lim = limits u32 s in
-  `Memory lim
+  MemoryT lim
 
 let mutability s =
   match byte s with
-  | 0 -> `Const
-  | 1 -> `Var
+  | 0 -> Cons
+  | 1 -> Var
   | _ -> error s (pos s - 1) "malformed mutability"
 
 let global_type s =
   let t = val_type s in
   let mut = mutability s in
-  `Global (mut, t)
+  GlobalT (mut, t)
 
 
 (* Instructions *)
@@ -1001,7 +1001,7 @@ let elem_index s =
 
 let elem_kind s =
   match byte s with
-  | 0x00 -> `Ref (`NoNull, `Func)
+  | 0x00 -> (NoNull, FuncHT)
   | _ -> error s (pos s - 1) "malformed element kind"
 
 let elem s =
@@ -1009,7 +1009,7 @@ let elem s =
   | 0x00l ->
     let emode = at active_zero s in
     let einit = vec (at elem_index) s in
-    {etype = `Ref (`NoNull, `Func); einit; emode}
+    {etype = (NoNull, FuncHT); einit; emode}
   | 0x01l ->
     let emode = at passive s in
     let etype = elem_kind s in
@@ -1028,7 +1028,7 @@ let elem s =
   | 0x04l ->
     let emode = at active_zero s in
     let einit = vec const s in
-    {etype = `Ref (`NoNull, `Func); einit; emode}
+    {etype = (NoNull, FuncHT); einit; emode}
   | 0x05l ->
     let emode = at passive s in
     let etype = ref_type s in

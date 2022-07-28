@@ -350,11 +350,11 @@ let import_type_of (m : module_) (im : import) : import_type =
   let {idesc; module_name; item_name} = im.it in
   let et =
     match idesc.it with
-    | FuncImport x -> (func_type_of m x :> extern_type)
-    | TableImport t -> (t :> extern_type)
-    | MemoryImport t -> (t :> extern_type)
-    | GlobalImport t -> (t :> extern_type)
-  in `Import (et, module_name, item_name)
+    | FuncImport x -> ExternFuncT (func_type_of m x)
+    | TableImport t -> ExternTableT t
+    | MemoryImport t -> ExternMemoryT t
+    | GlobalImport t -> ExternGlobalT t
+  in ImportT (et, module_name, item_name)
 
 let export_type_of (m : module_) (ex : export) : export_type =
   let {edesc; name} = ex.it in
@@ -366,20 +366,20 @@ let export_type_of (m : module_) (ex : export) : export_type =
     | FuncExport x ->
       let fts =
         funcs ets @ List.map (fun f -> func_type_of m f.it.ftype) m.it.funcs
-      in (nth fts x.it :> extern_type)
+      in ExternFuncT (nth fts x.it)
     | TableExport x ->
       let tts = tables ets @ List.map (fun t -> t.it.ttype) m.it.tables in
-      (nth tts x.it :> extern_type)
+      ExternTableT (nth tts x.it)
     | MemoryExport x ->
       let mts = memories ets @ List.map (fun m -> m.it.mtype) m.it.memories in
-      (nth mts x.it :> extern_type)
+      ExternMemoryT (nth mts x.it)
     | GlobalExport x ->
       let gts = globals ets @ List.map (fun g -> g.it.gtype) m.it.globals in
-      (nth gts x.it :> extern_type)
-  in `Export (et, name)
+      ExternGlobalT (nth gts x.it)
+  in ExportT (et, name)
 
 let module_type_of (m : module_) : module_type =
   let dts = List.map Source.it m.it.types in
   let its = List.map (import_type_of m) m.it.imports in
   let ets = List.map (export_type_of m) m.it.exports in
-  `Module (dts, its, ets)
+  ModuleT (dts, its, ets)

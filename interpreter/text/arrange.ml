@@ -64,19 +64,19 @@ let val_type t = string_of_val_type t
 
 let decls kind ts = tab kind (atom val_type) ts
 
-let func_type (`Func (ts1, ts2)) =
+let func_type (FuncT (ts1, ts2)) =
   Node ("func", decls "param" ts1 @ decls "result" ts2)
 
 let def_type dt =
   match dt with
-  | #func_type as ft -> func_type ft
+  | DefFuncT ft -> func_type ft
 
 let limits nat {min; max} =
   String.concat " " (nat min :: opt nat max)
 
 let global_type = function
-  | `Global (`Const, t) -> atom string_of_val_type t
-  | `Global (`Var, t) -> Node ("mut", [atom string_of_val_type t])
+  | GlobalT (Cons, t) -> atom string_of_val_type t
+  | GlobalT (Var, t) -> Node ("mut", [atom string_of_val_type t])
 
 let pack_size = function
   | Pack8 -> "8"
@@ -355,7 +355,7 @@ struct
 end
 
 let oper (iop, fop) op =
-  num_type (type_of_num op) ^ "." ^
+  Sem.string_of_num_type (type_of_num op) ^ "." ^
   (match op with
   | I32 o -> iop "32" o
   | I64 o -> iop "64" o
@@ -427,8 +427,8 @@ let vec_laneop instr (op, i) =
 let var x = nat32 x.it
 let num v = string_of_num v.it
 let vec v = string_of_vec v.it
-let constop v = num_type (type_of_num v) ^ ".const"
-let vec_constop v = vec_type (type_of_vec v) ^ ".const i32x4"
+let constop v = Sem.string_of_num_type (type_of_num v) ^ ".const"
+let vec_constop v = Sem.string_of_vec_type (type_of_vec v) ^ ".const i32x4"
 
 let block_type = function
   | VarBlockType x -> [Node ("type " ^ nat32 x, [])]
@@ -538,21 +538,21 @@ let func f =
 (* Tables & memories *)
 
 let table off i tab =
-  let {ttype = `Table (lim, t)} = tab.it in
+  let {ttype = TableT (lim, t)} = tab.it in
   Node ("table $" ^ nat (off + i) ^ " " ^ limits nat32 lim,
     [atom ref_type t]
   )
 
 let memory off i mem =
-  let {mtype = `Memory lim} = mem.it in
+  let {mtype = MemoryT lim} = mem.it in
   Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
 
 let is_elem_kind = function
-  | `Ref (`NoNull, `Func) -> true
+  | (NoNull, FuncHT) -> true
   | _ -> false
 
 let elem_kind = function
-  | `Ref (`NoNull, `Func) -> "func"
+  | (NoNull, FuncHT) -> "func"
   | _ -> assert false
 
 let is_elem_index e =

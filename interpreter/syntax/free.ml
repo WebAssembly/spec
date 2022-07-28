@@ -66,31 +66,31 @@ let var_type = function
   | x -> types (idx' x)
 
 let num_type = function
-  | `I32 | `I64 | `F32 | `F64 -> empty
+  | I32T | I64T | F32T | F64T -> empty
 
 let vec_type = function
-  | `V128 -> empty
+  | V128T -> empty
 
 let heap_type = function
-  | `Func | `Extern | `Bot -> empty
-  | `Def x -> var_type x
+  | FuncHT | ExternHT | BotHT -> empty
+  | DefHT x -> var_type x
 
 let ref_type = function
-  | `Ref (_, t) -> heap_type t
+  | (_, t) -> heap_type t
 
 let val_type = function
-  | #num_type as t -> num_type t
-  | #vec_type as t -> vec_type t
-  | #ref_type as t -> ref_type t
-  | `Bot -> empty
+  | NumT t -> num_type t
+  | VecT t -> vec_type t
+  | RefT t -> ref_type t
+  | BotT -> empty
 
-let func_type (`Func (ins, out)) = list val_type ins ++ list val_type out
-let global_type (`Global (_mut, t)) = val_type t
-let table_type (`Table (_lim, t)) = ref_type t
-let memory_type (`Memory (_lim)) = empty
+let func_type (FuncT (ins, out)) = list val_type ins ++ list val_type out
+let global_type (GlobalT (_mut, t)) = val_type t
+let table_type (TableT (_lim, t)) = ref_type t
+let memory_type (MemoryT (_lim)) = empty
 
 let def_type = function
-  | #func_type as ft -> func_type ft
+  | DefFuncT ft -> func_type ft
 
 let block_type = function
   | VarBlockType x -> var_type x

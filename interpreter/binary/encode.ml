@@ -99,53 +99,53 @@ struct
     | x -> s33 x
 
   let num_type = function
-    | `I32 -> s7 (-0x01)
-    | `I64 -> s7 (-0x02)
-    | `F32 -> s7 (-0x03)
-    | `F64 -> s7 (-0x04)
+    | I32T -> s7 (-0x01)
+    | I64T -> s7 (-0x02)
+    | F32T -> s7 (-0x03)
+    | F64T -> s7 (-0x04)
 
   let vec_type = function
-    | `V128 -> s7 (-0x05)
+    | V128T -> s7 (-0x05)
 
   let heap_type = function
-    | `Func -> s7 (-0x10)
-    | `Extern -> s7 (-0x11)
-    | `Def x -> var_type x
-    | `Bot -> assert false
+    | FuncHT -> s7 (-0x10)
+    | ExternHT -> s7 (-0x11)
+    | DefHT x -> var_type x
+    | BotHT -> assert false
 
   let ref_type = function
-    | `Ref (`Null, `Func) -> s7 (-0x10)
-    | `Ref (`Null, `Extern) -> s7 (-0x11)
-    | `Ref (`Null, t) -> s7 (-0x14); heap_type t
-    | `Ref (`NoNull, t) -> s7 (-0x15); heap_type t
+    | (Null, FuncHT) -> s7 (-0x10)
+    | (Null, ExternHT) -> s7 (-0x11)
+    | (Null, t) -> s7 (-0x14); heap_type t
+    | (NoNull, t) -> s7 (-0x15); heap_type t
 
   let val_type = function
-    | #num_type as t -> num_type t
-    | #vec_type as t -> vec_type t
-    | #ref_type as t -> ref_type t
-    | `Bot -> assert false
+    | NumT t -> num_type t
+    | VecT t -> vec_type t
+    | RefT t -> ref_type t
+    | BotT -> assert false
 
   let func_type = function
-    | `Func (ts1, ts2) -> vec val_type ts1; vec val_type ts2
+    | FuncT (ts1, ts2) -> vec val_type ts1; vec val_type ts2
 
   let def_type = function
-    | #func_type as ft -> s7 (-0x20); func_type ft
+    | DefFuncT ft -> s7 (-0x20); func_type ft
 
   let limits vu {min; max} =
     bool (max <> None); vu min; opt vu max
 
   let table_type = function
-    | `Table (lim, t) -> ref_type t; limits u32 lim
+    | TableT (lim, t) -> ref_type t; limits u32 lim
 
   let memory_type = function
-    | `Memory lim -> limits u32 lim
+    | MemoryT lim -> limits u32 lim
 
   let mutability = function
-    | `Const -> byte 0
-    | `Var -> byte 1
+    | Cons -> byte 0
+    | Var -> byte 1
 
   let global_type = function
-    | `Global (mut, t) -> val_type t; mutability mut
+    | GlobalT (mut, t) -> val_type t; mutability mut
 
 
   (* Instructions *)
@@ -220,90 +220,90 @@ struct
     | TableInit (x, y) -> op 0xfc; u32 0x0cl; var y; var x
     | ElemDrop x -> op 0xfc; u32 0x0dl; var x
 
-    | Load ({ty = `I32; pack = None; _} as mo) -> op 0x28; memop mo
-    | Load ({ty = `I64; pack = None; _} as mo) -> op 0x29; memop mo
-    | Load ({ty = `F32; pack = None; _} as mo) -> op 0x2a; memop mo
-    | Load ({ty = `F64; pack = None; _} as mo) -> op 0x2b; memop mo
-    | Load ({ty = `I32; pack = Some (Pack8, SX); _} as mo) -> op 0x2c; memop mo
-    | Load ({ty = `I32; pack = Some (Pack8, ZX); _} as mo) -> op 0x2d; memop mo
-    | Load ({ty = `I32; pack = Some (Pack16, SX); _} as mo) -> op 0x2e; memop mo
-    | Load ({ty = `I32; pack = Some (Pack16, ZX); _} as mo) -> op 0x2f; memop mo
-    | Load {ty = `I32; pack = Some (Pack32, _); _} ->
+    | Load ({ty = I32T; pack = None; _} as mo) -> op 0x28; memop mo
+    | Load ({ty = I64T; pack = None; _} as mo) -> op 0x29; memop mo
+    | Load ({ty = F32T; pack = None; _} as mo) -> op 0x2a; memop mo
+    | Load ({ty = F64T; pack = None; _} as mo) -> op 0x2b; memop mo
+    | Load ({ty = I32T; pack = Some (Pack8, SX); _} as mo) -> op 0x2c; memop mo
+    | Load ({ty = I32T; pack = Some (Pack8, ZX); _} as mo) -> op 0x2d; memop mo
+    | Load ({ty = I32T; pack = Some (Pack16, SX); _} as mo) -> op 0x2e; memop mo
+    | Load ({ty = I32T; pack = Some (Pack16, ZX); _} as mo) -> op 0x2f; memop mo
+    | Load {ty = I32T; pack = Some (Pack32, _); _} ->
       error e.at "illegal instruction i32.load32"
-    | Load ({ty = `I64; pack = Some (Pack8, SX); _} as mo) -> op 0x30; memop mo
-    | Load ({ty = `I64; pack = Some (Pack8, ZX); _} as mo) -> op 0x31; memop mo
-    | Load ({ty = `I64; pack = Some (Pack16, SX); _} as mo) -> op 0x32; memop mo
-    | Load ({ty = `I64; pack = Some (Pack16, ZX); _} as mo) -> op 0x33; memop mo
-    | Load ({ty = `I64; pack = Some (Pack32, SX); _} as mo) -> op 0x34; memop mo
-    | Load ({ty = `I64; pack = Some (Pack32, ZX); _} as mo) -> op 0x35; memop mo
-    | Load {ty = `F32 | `F64; pack = Some _; _} ->
+    | Load ({ty = I64T; pack = Some (Pack8, SX); _} as mo) -> op 0x30; memop mo
+    | Load ({ty = I64T; pack = Some (Pack8, ZX); _} as mo) -> op 0x31; memop mo
+    | Load ({ty = I64T; pack = Some (Pack16, SX); _} as mo) -> op 0x32; memop mo
+    | Load ({ty = I64T; pack = Some (Pack16, ZX); _} as mo) -> op 0x33; memop mo
+    | Load ({ty = I64T; pack = Some (Pack32, SX); _} as mo) -> op 0x34; memop mo
+    | Load ({ty = I64T; pack = Some (Pack32, ZX); _} as mo) -> op 0x35; memop mo
+    | Load {ty = F32T | F64T; pack = Some _; _} ->
       error e.at "illegal instruction fxx.loadN"
-    | Load {ty = `I32 | `I64; pack = Some (Pack64, _); _} ->
+    | Load {ty = I32T | I64T; pack = Some (Pack64, _); _} ->
       error e.at "illegal instruction ixx.load64"
 
-    | Store ({ty = `I32; pack = None; _} as mo) -> op 0x36; memop mo
-    | Store ({ty = `I64; pack = None; _} as mo) -> op 0x37; memop mo
-    | Store ({ty = `F32; pack = None; _} as mo) -> op 0x38; memop mo
-    | Store ({ty = `F64; pack = None; _} as mo) -> op 0x39; memop mo
-    | Store ({ty = `I32; pack = Some Pack8; _} as mo) -> op 0x3a; memop mo
-    | Store ({ty = `I32; pack = Some Pack16; _} as mo) -> op 0x3b; memop mo
-    | Store {ty = `I32; pack = Some Pack32; _} ->
+    | Store ({ty = I32T; pack = None; _} as mo) -> op 0x36; memop mo
+    | Store ({ty = I64T; pack = None; _} as mo) -> op 0x37; memop mo
+    | Store ({ty = F32T; pack = None; _} as mo) -> op 0x38; memop mo
+    | Store ({ty = F64T; pack = None; _} as mo) -> op 0x39; memop mo
+    | Store ({ty = I32T; pack = Some Pack8; _} as mo) -> op 0x3a; memop mo
+    | Store ({ty = I32T; pack = Some Pack16; _} as mo) -> op 0x3b; memop mo
+    | Store {ty = I32T; pack = Some Pack32; _} ->
       error e.at "illegal instruction i32.store32"
-    | Store ({ty = `I64; pack = Some Pack8; _} as mo) -> op 0x3c; memop mo
-    | Store ({ty = `I64; pack = Some Pack16; _} as mo) -> op 0x3d; memop mo
-    | Store ({ty = `I64; pack = Some Pack32; _} as mo) -> op 0x3e; memop mo
-    | Store {ty = `F32 | `F64; pack = Some _; _} ->
+    | Store ({ty = I64T; pack = Some Pack8; _} as mo) -> op 0x3c; memop mo
+    | Store ({ty = I64T; pack = Some Pack16; _} as mo) -> op 0x3d; memop mo
+    | Store ({ty = I64T; pack = Some Pack32; _} as mo) -> op 0x3e; memop mo
+    | Store {ty = F32T | F64T; pack = Some _; _} ->
       error e.at "illegal instruction fxx.storeN"
-    | Store {ty = (`I32 | `I64); pack = Some Pack64; _} ->
+    | Store {ty = I32T | I64T; pack = Some Pack64; _} ->
       error e.at "illegal instruction ixx.store64"
 
-    | VecLoad ({ty = `V128; pack = None; _} as mo) ->
+    | VecLoad ({ty = V128T; pack = None; _} as mo) ->
       vecop 0x00l; memop mo
-    | VecLoad ({ty = `V128; pack = Some (Pack64, ExtLane (Pack8x8, SX)); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtLane (Pack8x8, SX)); _} as mo) ->
       vecop 0x01l; memop mo
-    | VecLoad ({ty = `V128; pack = Some (Pack64, ExtLane (Pack8x8, ZX)); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtLane (Pack8x8, ZX)); _} as mo) ->
       vecop 0x02l; memop mo
-    | VecLoad ({ty = `V128; pack = Some (Pack64, ExtLane (Pack16x4, SX)); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtLane (Pack16x4, SX)); _} as mo) ->
       vecop 0x03l; memop mo
-    | VecLoad ({ty = `V128; pack = Some (Pack64, ExtLane (Pack16x4, ZX)); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtLane (Pack16x4, ZX)); _} as mo) ->
       vecop 0x04l; memop mo
-    | VecLoad ({ty = `V128; pack = Some (Pack64, ExtLane (Pack32x2, SX)); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtLane (Pack32x2, SX)); _} as mo) ->
       vecop 0x05l; memop mo
-    | VecLoad ({ty = `V128; pack = Some (Pack64, ExtLane (Pack32x2, ZX)); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtLane (Pack32x2, ZX)); _} as mo) ->
       vecop 0x06l; memop mo
-    | VecLoad ({ty = `V128; pack = Some (Pack8, ExtSplat); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack8, ExtSplat); _} as mo) ->
       vecop 0x07l; memop mo
-    | VecLoad ({ty = `V128; pack = Some (Pack16, ExtSplat); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack16, ExtSplat); _} as mo) ->
       vecop 0x08l; memop mo
-    | VecLoad ({ty = `V128; pack = Some (Pack32, ExtSplat); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack32, ExtSplat); _} as mo) ->
       vecop 0x09l; memop mo
-    | VecLoad ({ty = `V128; pack = Some (Pack64, ExtSplat); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtSplat); _} as mo) ->
       vecop 0x0al; memop mo
-    | VecLoad ({ty = `V128; pack = Some (Pack32, ExtZero); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack32, ExtZero); _} as mo) ->
       vecop 0x5cl; memop mo
-    | VecLoad ({ty = `V128; pack = Some (Pack64, ExtZero); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtZero); _} as mo) ->
       vecop 0x5dl; memop mo
     | VecLoad _ ->
       error e.at "illegal instruction v128.loadNxM_<ext>"
 
-    | VecLoadLane ({ty = `V128; pack = Pack8; _} as mo, i) ->
+    | VecLoadLane ({ty = V128T; pack = Pack8; _} as mo, i) ->
       vecop 0x54l; memop mo; byte i
-    | VecLoadLane ({ty = `V128; pack = Pack16; _} as mo, i) ->
+    | VecLoadLane ({ty = V128T; pack = Pack16; _} as mo, i) ->
       vecop 0x55l; memop mo; byte i
-    | VecLoadLane ({ty = `V128; pack = Pack32; _} as mo, i) ->
+    | VecLoadLane ({ty = V128T; pack = Pack32; _} as mo, i) ->
       vecop 0x56l; memop mo; byte i
-    | VecLoadLane ({ty = `V128; pack = Pack64; _} as mo, i) ->
+    | VecLoadLane ({ty = V128T; pack = Pack64; _} as mo, i) ->
       vecop 0x57l; memop mo; byte i
 
-    | VecStore ({ty = `V128; _} as mo) -> vecop 0x0bl; memop mo
+    | VecStore ({ty = V128T; _} as mo) -> vecop 0x0bl; memop mo
 
-    | VecStoreLane ({ty = `V128; pack = Pack8; _} as mo, i) ->
+    | VecStoreLane ({ty = V128T; pack = Pack8; _} as mo, i) ->
       vecop 0x58l; memop mo; byte i
-    | VecStoreLane ({ty = `V128; pack = Pack16; _} as mo, i) ->
+    | VecStoreLane ({ty = V128T; pack = Pack16; _} as mo, i) ->
       vecop 0x59l; memop mo; byte i
-    | VecStoreLane ({ty = `V128; pack = Pack32; _} as mo, i) ->
+    | VecStoreLane ({ty = V128T; pack = Pack32; _} as mo, i) ->
       vecop 0x5al; memop mo; byte i
-    | VecStoreLane ({ty = `V128; pack = Pack64; _} as mo, i) ->
+    | VecStoreLane ({ty = V128T; pack = Pack64; _} as mo, i) ->
       vecop 0x5bl; memop mo; byte i
 
     | MemorySize -> op 0x3f; byte 0x00
@@ -870,11 +870,11 @@ struct
   (* Element section *)
 
   let is_elem_kind = function
-    | `Ref (`NoNull, `Func) -> true
+    | (NoNull, FuncHT) -> true
     | _ -> false
 
   let elem_kind = function
-    | `Ref (`NoNull, `Func) -> byte 0x00
+    | (NoNull, FuncHT) -> byte 0x00
     | _ -> assert false
 
   let is_elem_index e =

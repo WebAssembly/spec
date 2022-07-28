@@ -70,7 +70,7 @@ exception Syntax of Source.region * string
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | ExternRef _ -> `Extern
+    | ExternRef _ -> Types.Sem.ExternHT
     | r -> type_of_ref' r
 
 let () =

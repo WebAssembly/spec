@@ -1,4 +1,5 @@
 open Value
+open Types.Sem
 
 
 (* Int operators *)
@@ -123,8 +124,8 @@ struct
       | TruncSatUF64 -> I32_convert.trunc_sat_f64_u (F64Num.of_num 1 v)
       | TruncSatSF64 -> I32_convert.trunc_sat_f64_s (F64Num.of_num 1 v)
       | ReinterpretFloat -> I32_convert.reinterpret_f32 (F32Num.of_num 1 v)
-      | ExtendUI32 -> raise (TypeError (1, v, `I32))
-      | ExtendSI32 -> raise (TypeError (1, v, `I32))
+      | ExtendUI32 -> raise (TypeError (1, v, I32T))
+      | ExtendSI32 -> raise (TypeError (1, v, I32T))
     in I32Num.to_num i
 end
 
@@ -145,7 +146,7 @@ struct
       | TruncSatUF64 -> I64_convert.trunc_sat_f64_u (F64Num.of_num 1 v)
       | TruncSatSF64 -> I64_convert.trunc_sat_f64_s (F64Num.of_num 1 v)
       | ReinterpretFloat -> I64_convert.reinterpret_f64 (F64Num.of_num 1 v)
-      | WrapI64 -> raise (TypeError (1, v, `I64))
+      | WrapI64 -> raise (TypeError (1, v, I64T))
     in I64Num.to_num i
 end
 
@@ -161,7 +162,7 @@ struct
       | ConvertSI64 -> F32_convert.convert_i64_s (I64Num.of_num 1 v)
       | ConvertUI64 -> F32_convert.convert_i64_u (I64Num.of_num 1 v)
       | ReinterpretInt -> F32_convert.reinterpret_i32 (I32Num.of_num 1 v)
-      | PromoteF32 -> raise (TypeError (1, v, `F32))
+      | PromoteF32 -> raise (TypeError (1, v, F32T))
     in F32Num.to_num z
 end
 
@@ -177,7 +178,7 @@ struct
       | ConvertSI64 -> F64_convert.convert_i64_s (I64Num.of_num 1 v)
       | ConvertUI64 -> F64_convert.convert_i64_u (I64Num.of_num 1 v)
       | ReinterpretInt -> F64_convert.reinterpret_i64 (I64Num.of_num 1 v)
-      | DemoteF64 -> raise (TypeError (1, v, `F64))
+      | DemoteF64 -> raise (TypeError (1, v, F64T))
     in F64Num.to_num z
 end
 

@@ -47,28 +47,28 @@ module I32Num =
 struct
   type t = I32.t
   let to_num i = I32 i
-  let of_num n = function I32 i -> i | v -> raise (TypeError (n, v, `I32))
+  let of_num n = function I32 i -> i | v -> raise (TypeError (n, v, I32T))
 end
 
 module I64Num =
 struct
   type t = I64.t
   let to_num i = I64 i
-  let of_num n = function I64 i -> i | v -> raise (TypeError (n, v, `I64))
+  let of_num n = function I64 i -> i | v -> raise (TypeError (n, v, I64T))
 end
 
 module F32Num =
 struct
   type t = F32.t
   let to_num i = F32 i
-  let of_num n = function F32 z -> z | v -> raise (TypeError (n, v, `F32))
+  let of_num n = function F32 z -> z | v -> raise (TypeError (n, v, F32T))
 end
 
 module F64Num =
 struct
   type t = F64.t
   let to_num i = F64 i
-  let of_num n = function F64 z -> z | v -> raise (TypeError (n, v, `F64))
+  let of_num n = function F64 z -> z | v -> raise (TypeError (n, v, F64T))
 end
 
 module type VecType =
@@ -88,24 +88,33 @@ end
 
 (* Typing *)
 
+let type_of_op = function
+  | I32 _ -> Types.I32T
+  | I64 _ -> Types.I64T
+  | F32 _ -> Types.F32T
+  | F64 _ -> Types.F64T
+
+let type_of_vecop = function
+  | V128 _ -> Types.V128T
+
 let type_of_num = function
-  | I32 _ -> `I32
-  | I64 _ -> `I64
-  | F32 _ -> `F32
-  | F64 _ -> `F64
+  | I32 _ -> I32T
+  | I64 _ -> I64T
+  | F32 _ -> F32T
+  | F64 _ -> F64T
 
 let type_of_vec = function
-  | V128 _ -> `V128
+  | V128 _ -> V128T
 
 let type_of_ref' = ref (function _ -> assert false)
 let type_of_ref = function
-  | NullRef t -> `Ref (`Null, t)
-  | r -> `Ref (`NoNull, !type_of_ref' r)
+  | NullRef t -> (Null, t)
+  | r -> (NoNull, !type_of_ref' r)
 
 let type_of_value = function
-  | Num n -> type_of_num n
-  | Vec i -> type_of_vec i
-  | Ref r -> type_of_ref r
+  | Num n -> NumT (type_of_num n)
+  | Vec i -> VecT (type_of_vec i)
+  | Ref r -> RefT (type_of_ref r)
 
 
 (* Comparison *)
@@ -133,23 +142,23 @@ let eq v1 v2 =
 (* Defaults *)
 
 let default_num = function
-  | `I32 -> Some (Num (I32 I32.zero))
-  | `I64 -> Some (Num (I64 I64.zero))
-  | `F32 -> Some (Num (F32 F32.zero))
-  | `F64 -> Some (Num (F64 F64.zero))
+  | I32T -> Some (Num (I32 I32.zero))
+  | I64T -> Some (Num (I64 I64.zero))
+  | F32T -> Some (Num (F32 F32.zero))
+  | F64T -> Some (Num (F64 F64.zero))
 
 let default_vec = function
-  | `V128 -> Some (Vec (V128 V128.zero))
+  | V128T -> Some (Vec (V128 V128.zero))
 
 let default_ref = function
-  | `Ref (`Null, t) -> Some (Ref (NullRef t))
-  | `Ref (`NoNull, _) -> None
+  | (Null, t) -> Some (Ref (NullRef t))
+  | (NoNull, _) -> None
 
 let default_value = function
-  | #num_type as t -> default_num t
-  | #vec_type as t -> default_vec t
-  | #ref_type as t -> default_ref t
-  | `Bot -> assert false
+  | NumT t -> default_num t
+  | VecT t -> default_vec t
+  | RefT t -> default_ref t
+  | BotT -> assert false
 
 
 (* Conversion *)
