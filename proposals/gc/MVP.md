@@ -351,6 +351,11 @@ Note: In the future, this hierarchy could be refined, e.g., to distinguish compo
 
 The subtyping rules for structural types are only invoked during validation of a `sub` [type definition](#type-definitions).
 
+* Function types are covariant on their results and contravariant on their parameters
+  - `func <valtype11>* -> <valtype12>* <: func <valtype21>* -> <valtype22>*`
+    - iff `(<valtype21> <: <valtype11>)*`
+    - and `(<valtype12> <: <valtype22>)*`
+
 * Structure types support width and depth subtyping
   - `struct <fieldtype1>* <fieldtype1'>* <: struct <fieldtype2>*`
     - iff `(<fieldtype1> <: <fieldtype2>)*`
