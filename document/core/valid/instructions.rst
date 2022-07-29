@@ -866,7 +866,7 @@ Table Instructions
    \frac{
      C.\CTABLES[x] = \limits_1~t_1
      \qquad
-     C.\CTABLES[x] = \limits_2~t_2
+     C.\CTABLES[y] = \limits_2~t_2
      \qquad
      C \vdashreftypematch t_2 \matchesvaltype t_1
    }{
