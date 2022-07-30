@@ -542,9 +542,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. math::
    \frac{
-     (S \vdashvaltype t_1 \ok)^\ast
-     \qquad
-     (S \vdashvaltype t_2 \ok)^\ast
+     S \vdashinstrtype [t_1^\ast] \to [t_2^\ast] \ok
    }{
      S; C \vdashadmininstr \TRAP : [t_1^\ast] \to [t_2^\ast]
    }
@@ -555,12 +553,12 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\REFEXTERNADDR~\externaddr`
 ..................................
 
-* The instruction is valid with type :math:`[] \to [\EXTERNREF]`.
+* The instruction is valid with type :math:`[] \to [(\REF~\NULL~\EXTERN)]`.
 
 .. math::
    \frac{
    }{
-     S; C \vdashadmininstr \REFEXTERNADDR~\externaddr : [] \to [\EXTERNREF]
+     S; C \vdashadmininstr \REFEXTERNADDR~\externaddr : [] \to [(\REF~\NULL~\EXTERN)]
    }
 
 
@@ -571,13 +569,13 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 * The :ref:`external function value <syntax-externval>` :math:`\EVFUNC~\funcaddr` must be :ref:`valid <valid-externval-func>` with :ref:`external function type <syntax-externtype>` :math:`\ETFUNC \functype`.
 
-* Then the instruction is valid with type :math:`[] \to [\FUNCREF]`.
+* Then the instruction is valid with type :math:`[] \to [(\REF~\NULL~\FUNC)]`.
 
 .. math::
    \frac{
      S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype
    }{
-     S; C \vdashadmininstr \REFFUNCADDR~\funcaddr : [] \to [\FUNCREF]
+     S; C \vdashadmininstr \REFFUNCADDR~\funcaddr : [] \to [(\REF~\NULL~\FUNC)]
    }
 
 
@@ -603,20 +601,20 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END`
 ..................................................
 
-* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \to [t_2^*]`.
+* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \to_{x^\ast} [t_2^*]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^n]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^*]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to_{{x'}^\ast} [t_2^*]`.
 
 * Then the compound instruction is valid with type :math:`[] \to [t_2^*]`.
 
 .. math::
    \frac{
-     S; C \vdashinstrseq \instr_0^\ast : [t_1^n] \to [t_2^*]
+     S; C \vdashinstrseq \instr_0^\ast : [t_1^n] \to_{x^\ast} [t_2^*]
      \qquad
-     S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \to [t_2^*]
+     S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \to_{{x'}^\ast} [t_2^*]
    }{
      S; C \vdashadmininstr \LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END : [] \to [t_2^*]
    }

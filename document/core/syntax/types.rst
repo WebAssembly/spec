@@ -18,7 +18,7 @@ Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-in
 Type Identifiers
 ~~~~~~~~~~~~~~~~
 
-Types such as :ref:`function types <syntax-functype>` are not embedded directly into other types, such as :ref:`reference types <syntax-reftype>`.
+Defined types like :ref:`function types <syntax-functype>` are not embedded directly into other types, such as :ref:`reference types <syntax-reftype>`.
 Instead, they are referred to indirectly.
 
 In a :ref:`module <syntax-module>` and during validation, this indirection is expressed through a :ref:`type index <syntax-typeidx>`, whose meaning is confined to one module.
@@ -34,6 +34,7 @@ The type grammar hence is conceptually parameterized by its interpretation of :r
 
 Types represented with type indices are referred to as *syntactic types*,
 whereas types represented with type addresses are referred to as *semantic types*.
+
 It is an invariant of the semantics that no syntactic type refers to a semantic type and vice versa, i.e., both universes are disjoint.
 Syntactic types are transformed into semantic types during module :ref:`instantiation <exec-instantiation>`.
 

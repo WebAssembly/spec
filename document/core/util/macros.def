@@ -877,6 +877,8 @@
 
 .. Allocation
 
+.. |sem| mathdef:: \xref{exec/types}{sem}{\F{sem}}
+
 .. |alloctype| mathdef:: \xref{exec/modules}{alloc-type}{\F{alloctype}}
 .. |allocfunc| mathdef:: \xref{exec/modules}{alloc-func}{\F{allocfunc}}
 .. |allochostfunc| mathdef:: \xref{exec/modules}{alloc-hostfunc}{\F{allochostfunc}}

@@ -64,6 +64,9 @@ In addition to pre- and post-conditions explicitly stated with each operation, t
 .. index:: allocation, store
 .. _embed-store:
 
+.. todo:: Update alloc functions to semantic types.
+
+
 Store
 ~~~~~
 

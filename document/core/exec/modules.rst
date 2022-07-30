@@ -170,7 +170,7 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
 
 3. Assert: due to :ref:`validation <valid-module>`, any :ref:`type index <syntax-typeidx>` occurring in :math:`\functype` is smaller than the length of :math:`\moduleinst.\MITYPES`.
 
-4. Let :math:`\typeinst` be the :ref:`type instance <syntax-typeinst>` obtained from :math:`\functype` by substituting each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.\MITYPES[x]`.
+4. Let :math:`\typeinst` be the :ref:`type instance <syntax-typeinst>` obtained by :ref:`instantiating <sem>` :math:`\functype` inside :math:`\moduleinst`.
 
 5. Append :math:`\typeinst` to the |STYPES| of :math:`S`.
 
@@ -179,15 +179,15 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
 .. math::
    ~\\[-1ex]
    \begin{array}{rlll}
-   \alloctype(S, \moduleinst, \functype) &=& S', \typeaddr \\[1ex]
+   \alloctype(S, \functype, \moduleinst) &=& S', \typeaddr \\[1ex]
    \mbox{where:} \hfill \\
    \typeaddr &=& |S.\STYPES| \\
-   \typeinst &=& \functype[\subst \moduleinst.\MITYPES] \\
+   \typeinst &=& \sem_\moduleinst(\functype) \\
    S' &=& S \compose \{\STYPES~\typeinst\} \\
    \end{array}
 
 
-.. index:: function, function instance, function address, module instance, function type
+.. index:: function, function instance, function address, module instance, function type, type instance
 .. _alloc-func:
 
 :ref:`Functions <syntax-funcinst>`
@@ -199,15 +199,13 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
 
 3. Let :math:`\typeaddr` be the :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.\MITYPES[\func.\FTYPE]`.
 
-4. Let :math:`\functype` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\typeaddr]`.
+4. Let :math:`\functype` be the :ref:`semantic <syntax-typeid>` :ref:`function type <syntax-functype>` :math:`S.\STYPES[\typeaddr]`.
 
-5. Let :math:`\functype'` be the :ref:`function type <syntax-functype>` obtained from :math:`\functype` by substituting each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.\MITYPES[x]`.
+5. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \FITYPE~\functype', \FIMODULE~\moduleinst, \FICODE~\func \}`.
 
-6. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \FITYPE~\functype', \FIMODULE~\moduleinst, \FICODE~\func \}`.
+6. Append :math:`\funcinst` to the |SFUNCS| of :math:`S`.
 
-7. Append :math:`\funcinst` to the |SFUNCS| of :math:`S`.
-
-8. Return :math:`a`.
+7. Return :math:`a`.
 
 .. math::
    ~\\[-1ex]
@@ -216,7 +214,7 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
    \mbox{where:} \hfill \\
    \funcaddr &=& |S.\SFUNCS| \\
    \functype &=& S.\STYPES[\moduleinst.\MITYPES[\func.\FTYPE]] \\
-   \funcinst &=& \{ \FITYPE~\functype[\subst \moduleinst.\MITYPES], \FIMODULE~\moduleinst, \FICODE~\func \} \\
+   \funcinst &=& \{ \FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func \} \\
    S' &=& S \compose \{\SFUNCS~\funcinst\} \\
    \end{array}
 
@@ -258,7 +256,7 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
 :ref:`Tables <syntax-tableinst>`
 ................................
 
-1. Let :math:`\tabletype` be the :ref:`semantic <syntax-typeid>` :ref:`table type <syntax-tabletype>` to allocate and :math:`\reff` the initialization value.
+1. Let :math:`\tabletype` be the :ref:`semantic <syntax-typeid>` :ref:`table type <syntax-tabletype>` of the table to allocate and :math:`\reff` the initialization value.
 
 2. Let :math:`(\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
 
@@ -289,7 +287,7 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
 :ref:`Memories <syntax-meminst>`
 ................................
 
-1. Let :math:`\memtype` be the :ref:`semantic <syntax-typeid>` :ref:`memory type <syntax-memtype>` to allocate.
+1. Let :math:`\memtype` be the :ref:`semantic <syntax-typeid>` :ref:`memory type <syntax-memtype>` of the memory to allocate.
 
 2. Let :math:`\{\LMIN~n, \LMAX~m^?\}` be the structure of :ref:`memory type <syntax-memtype>` :math:`\memtype`.
 
@@ -303,7 +301,7 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
 
 .. math::
    \begin{array}{rlll}
-   \allocmem(S, \memtype, \moduleinst) &=& S', \memaddr \\[1ex]
+   \allocmem(S, \memtype) &=& S', \memaddr \\[1ex]
    \mbox{where:} \hfill \\
    \memtype &=& \{\LMIN~n, \LMAX~m^?\} \\
    \memaddr &=& |S.\SMEMS| \\
@@ -318,7 +316,7 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
 :ref:`Globals <syntax-globalinst>`
 ..................................
 
-1. Let :math:`\globaltype` be the :ref:`semantic <syntax-typeid>` :ref:`global type <syntax-globaltype>` to allocate and :math:`\val` the :ref:`value <syntax-val>` to initialize the global with.
+1. Let :math:`\globaltype` be the :ref:`semantic <syntax-typeid>` :ref:`global type <syntax-globaltype>` of the global to allocate and :math:`\val` its initialization :ref:`value <syntax-val>`.
 
 2. Let :math:`a` be the first free :ref:`global address <syntax-globaladdr>` in :math:`S`.
 
@@ -344,7 +342,7 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
 :ref:`Element segments <syntax-eleminst>`
 .........................................
 
-1. Let :math:`\reftype` be the elements':ref:`semantic <syntax-typeid>` type and :math:`\reff^\ast` the vector of :ref:`references <syntax-ref>` to allocate.
+1. Let :math:`\reftype` be the elements' :ref:`semantic <syntax-typeid>` type and :math:`\reff^\ast` the vector of :ref:`references <syntax-ref>` to allocate.
 
 2. Let :math:`a` be the first free :ref:`element address <syntax-elemaddr>` in :math:`S`.
 
@@ -486,22 +484,28 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 
 4. For each :ref:`table <syntax-table>` :math:`\table_i` in :math:`\module.\MTABLES`, do:
 
-   a. Let :math:`\limits_i~t_i` be the :ref:`table type <syntax-tabletype>` :math:`\table_i.\TTYPE`.
+   a. Let :math:`\limits_i~t_i` be the :ref:`semantic <syntax-typeid>` :ref:`table type <syntax-tabletype>` obtained from :math:`\table_i.\TTYPE` in :math:`\moduleinst` defined below.
 
    b. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` resulting from :ref:`allocating <alloc-table>` :math:`\table_i.\TTYPE`
    with initialization value :math:`\REFNULL~t_i`.
 
 5. For each :ref:`memory <syntax-mem>` :math:`\mem_i` in :math:`\module.\MMEMS`, do:
 
-   a. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` resulting from :ref:`allocating <alloc-mem>` :math:`\mem_i.\MTYPE`.
+   a. Let :math:`\memtype_i` be the :ref:`semantic <syntax-typeid>` :ref:`memory type <syntax-memtype>` obtained from :math:`\mem_i.\MTYPE` in :math:`\moduleinst` defined below.
+
+   b. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` resulting from :ref:`allocating <alloc-mem>` :math:`\memtype_i`.
 
 6. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\MGLOBALS`, do:
 
-   a. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` resulting from :ref:`allocating <alloc-global>` :math:`\global_i.\GTYPE` with initializer value :math:`\val^\ast[i]`.
+   a. Let :math:`\globaltype_i` be the :ref:`semantic <syntax-typeid>` :ref:`global type <syntax-globaltype>` obtained from :math:`\global_i.\GTYPE` in :math:`\moduleinst` defined below.
+
+   b. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` resulting from :ref:`allocating <alloc-global>` :math:`\globaltype_i` with initializer value :math:`\val^\ast[i]`.
 
 7. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS`, do:
 
-   a. Let :math:`\elemaddr_i` be the :ref:`element address <syntax-elemaddr>` resulting from :ref:`allocating <alloc-elem>` a :ref:`element instance <syntax-eleminst>` of :ref:`reference type <syntax-reftype>` :math:`\elem_i.\ETYPE` with contents :math:`(\reff^\ast)^\ast[i]`.
+   a. Let :math:`\reftype_i` be the :ref:`semantic <syntax-typeid>` element :ref:`reference type <syntax-reftype>` obtained from :math:`\elem_i.\ETYPE` in :math:`\moduleinst` defined below.
+
+   b. Let :math:`\elemaddr_i` be the :ref:`element address <syntax-elemaddr>` resulting from :ref:`allocating <alloc-elem>` a :ref:`element instance <syntax-eleminst>` of :ref:`reference type <syntax-reftype>` :math:`\reftype_i` with contents :math:`(\reff^\ast)^\ast[i]`.
 
 8. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATAS`, do:
 
@@ -580,16 +584,16 @@ where:
    S_2, \funcaddr^\ast &=&
      \allocfunc^\ast(S_1, \module.\MFUNCS, \moduleinst) \\
    S_3, \tableaddr^\ast &=&
-     \alloctable^\ast(S_2, (\table.\TTYPE)^\ast, (\REFNULL~t)^\ast)
+     \alloctable^\ast(S_2, \sem_\moduleinst(\table.\TTYPE)^\ast, (\REFNULL~t)^\ast)
      \quad (\where (\table.\TTYPE)^\ast = (\limits~t)^\ast) \\
    S_4, \memaddr^\ast &=&
-     \allocmem^\ast(S_3, (\mem.\MTYPE)^\ast) \\
+     \allocmem^\ast(S_3, \sem_\moduleinst(\mem.\MTYPE)^\ast) \\
    S_5, \globaladdr^\ast &=&
-     \allocglobal^\ast(S_3, (\global.\GTYPE)^\ast, \val^\ast) \\
+     \allocglobal^\ast(S_3, \sem_\moduleinst(\global.\GTYPE)^\ast, \val^\ast) \\
    S_6, \elemaddr^\ast &=&
-     \allocelem^\ast(S_5, (\elem.\ETYPE)^\ast, (\reff^\ast)^\ast) \\
+     \allocelem^\ast(S_5, \sem_\moduleinst(\elem.\ETYPE)^\ast, (\reff^\ast)^\ast) \\
    S', \dataaddr^\ast &=&
-     \allocdata^\ast(S_6, (\data.\DINIT)^\ast) \\
+     \allocdata^\ast(S_6, \sem_\moduleinst(\data.\DINIT)^\ast) \\
    \exportinst^\ast &=&
      \{ \EINAME~(\export.\ENAME), \EIVALUE~\externval_{\F{ex}} \}^\ast \\[1ex]
    \evfuncs(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIFUNCS[x])^\ast
@@ -658,7 +662,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
       i. Fail.
 
-   b. Let :math:`\externtype''_i` be the :ref:`semantic <syntax-typeid>` :ref:`external type <syntax-externtype>` obtained from :math:`\externtype'_i` by :ref:`substituting <notation-subst>` the :ref:`type indices <syntax-typeidx>` defined in :math:`\module` with the :ref:`type addresses <syntax-typeaddr>` they map to in :math:`\moduleinst.\MITYPES` defined below.
+   b. Let :math:`\externtype''_i` be the :ref:`semantic <syntax-typeid>` :ref:`external type <syntax-externtype>` obtained by :ref:`instantiating <sem>` :math:`\externtype'_i` in :math:`\moduleinst` defined below.
 
    c. If :math:`\externtype_i` does not :ref:`match <match-externtype>` :math:`\externtype''_i`, then:
 
@@ -755,7 +759,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
    &(\iff
      & \vdashmodule \module : \externtype_{\F{im}}^k \to \externtype_{\F{ex}}^\ast \\
      &\wedge& (S' \vdashexternval \externval : \externtype)^k \\
-     &\wedge& (S' \vdashexterntypematch \externtype \matchesexterntype \externtype_{\F{im}}[\subst \moduleinst.\MITABLES])^k \\[1ex]
+     &\wedge& (S' \vdashexterntypematch \externtype \matchesexterntype \sem_\moduleinst(\externtype_{\F{im}}))^k \\[1ex]
      &\wedge& \module.\MGLOBALS = \global^\ast \\
      &\wedge& \module.\MELEMS = \elem^n \\
      &\wedge& \module.\MDATAS = \data^m \\
@@ -786,9 +790,9 @@ where:
    \end{array}
 
 .. note::
-   Checking import types assumes that the :ref:`module instance <syntax-moduleinst>` has already been :ref:`allocated <alloc-module>` and the resulting :ref:`type addresses <syntax-typeaddr>` are available, in order to be substituted for the local :ref:`type indices <syntax-typeidx>` and both types are consistently :ref:`semantic <syntax-typeid>`.
+   Checking import types assumes that the :ref:`module instance <syntax-moduleinst>` has already been :ref:`allocated <alloc-module>` and the resulting :ref:`type addresses <syntax-typeaddr>` are available, in order to :ref:`instantiate <sem>` all relevant types.
    However, this forward reference merely is a way to simplify the specification.
-   In practice, it can be implemented by staging module allocation such that the module's own :math:`type instances <syntax-typeinst>` are pre-allocated in the store before checking imports, and discarded in case the imports fail to type-check.
+   In practice, implementations will likely allocate or canonicalize types beforehand, when *compiling* a module, in a stage before instantiation and before imports are checked.
 
    Similarly, module :ref:`allocation <alloc-module>` and the :ref:`evaluation <exec-expr>` of :ref:`global <syntax-global>` initializers and :ref:`element segments <syntax-elem>` are mutually recursive because the global initialization :ref:`values <syntax-val>` :math:`\val^\ast` and element segment contents :math:`(\reff^\ast)^\ast` are passed to the module allocator while depending on the module instance :math:`\moduleinst` and store :math:`S'` returned by allocation.
    Again, this recursion is just a specification device.

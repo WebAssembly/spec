@@ -4,9 +4,13 @@
 Types
 -----
 
-Execution has to check and compare types and :ref:`type instances <syntax-typeinst>` in a few places, such as :ref:`executing <exec-call_indirect>` |CALLINDIRECT| or :ref:`instantiating <exec-instantiation>` :ref:`modules <syntax-module>`.
-However, types are represented as :ref:`semantic <syntax-semantic>` types during execution.
-Therefore, relevant type relations on syntactic types need to be redefined for execution.
+Execution has to check and compare :ref:`types <syntax-type>` and :ref:`type instances <syntax-typeinst>` in a few places, such as :ref:`executing <exec-call_indirect>` |CALLINDIRECT| or :ref:`instantiating <exec-instantiation>` :ref:`modules <syntax-module>`.
+During execution, types of all forms are represented as :ref:`semantic <syntax-typeid>` types, where all occurring :ref:`type identifiers <syntax-typeid>` are interpreted as :ref:`type addresses <syntax-typeaddr>`.
+Relevant type relations need to be redefined accordingly.
+
+.. note::
+   Runtime type checks generally involve types from multiple modules or types not defined by a module at all, such that module-local :ref:`type indices <syntax-typeidx>` are not meaningful.
+   Type addresses are global to a :ref:`store <syntax-store>` and can hence be interpreted independent of module boundaries.
 
 
 .. index:: type identifier, type address, store
@@ -36,6 +40,19 @@ During execution, :ref:`type identifiers <syntax-typeid>` are represented as :re
 
 .. note::
    Unlike :ref:`type indices <syntax-typeidx>` recorded in a context, the number of type addresses in a store is not bounded by :math:`2^{32}`.
+
+
+.. index:: type identifier, type index, type address, type instantiation, module instance
+
+.. _sem:
+
+Instantiation
+~~~~~~~~~~~~~
+
+Any form of :ref:`syntactic <syntax-typeid>` :ref:`type <syntax-type>` can be *instantiated* into a semantic type inside a :ref:`module instance <syntax-moduleinst>` by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the corresponding :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.\MITYPES[x]`.
+
+.. math::
+   \sem_\moduleinst(t) = t[\subst \moduleinst.\MITYPES]
 
 
 .. index:: type, matching, store, semantic types
