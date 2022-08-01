@@ -279,6 +279,8 @@ Limits
      \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1 \} \matcheslimits \{ \LMIN~n_2, \LMAX~m_2 \}
    }
 
+.. note::
+  In this context, read :math:`\matcheslimits` as “is the same type as or a subtype of”.
 
 .. _match-externtype:
 
