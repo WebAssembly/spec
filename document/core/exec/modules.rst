@@ -182,7 +182,7 @@ New instances of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcins
    \alloctype(S, \functype, \moduleinst) &=& S', \typeaddr \\[1ex]
    \mbox{where:} \hfill \\
    \typeaddr &=& |S.\STYPES| \\
-   \typeinst &=& \sem_\moduleinst(\functype) \\
+   \typeinst &=& \sem_{\moduleinst}(\functype) \\
    S' &=& S \compose \{\STYPES~\typeinst\} \\
    \end{array}
 
@@ -584,16 +584,16 @@ where:
    S_2, \funcaddr^\ast &=&
      \allocfunc^\ast(S_1, \module.\MFUNCS, \moduleinst) \\
    S_3, \tableaddr^\ast &=&
-     \alloctable^\ast(S_2, \sem_\moduleinst(\table.\TTYPE)^\ast, (\REFNULL~t)^\ast)
+     \alloctable^\ast(S_2, \sem_{\moduleinst}(\table.\TTYPE)^\ast, (\REFNULL~t)^\ast)
      \quad (\where (\table.\TTYPE)^\ast = (\limits~t)^\ast) \\
    S_4, \memaddr^\ast &=&
-     \allocmem^\ast(S_3, \sem_\moduleinst(\mem.\MTYPE)^\ast) \\
+     \allocmem^\ast(S_3, \sem_{\moduleinst}(\mem.\MTYPE)^\ast) \\
    S_5, \globaladdr^\ast &=&
-     \allocglobal^\ast(S_3, \sem_\moduleinst(\global.\GTYPE)^\ast, \val^\ast) \\
+     \allocglobal^\ast(S_3, \sem_{\moduleinst}(\global.\GTYPE)^\ast, \val^\ast) \\
    S_6, \elemaddr^\ast &=&
-     \allocelem^\ast(S_5, \sem_\moduleinst(\elem.\ETYPE)^\ast, (\reff^\ast)^\ast) \\
+     \allocelem^\ast(S_5, \sem_{\moduleinst}(\elem.\ETYPE)^\ast, (\reff^\ast)^\ast) \\
    S', \dataaddr^\ast &=&
-     \allocdata^\ast(S_6, \sem_\moduleinst(\data.\DINIT)^\ast) \\
+     \allocdata^\ast(S_6, \sem_{\moduleinst}(\data.\DINIT)^\ast) \\
    \exportinst^\ast &=&
      \{ \EINAME~(\export.\ENAME), \EIVALUE~\externval_{\F{ex}} \}^\ast \\[1ex]
    \evfuncs(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIFUNCS[x])^\ast
@@ -759,7 +759,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
    &(\iff
      & \vdashmodule \module : \externtype_{\F{im}}^k \to \externtype_{\F{ex}}^\ast \\
      &\wedge& (S' \vdashexternval \externval : \externtype)^k \\
-     &\wedge& (S' \vdashexterntypematch \externtype \matchesexterntype \sem_\moduleinst(\externtype_{\F{im}}))^k \\[1ex]
+     &\wedge& (S' \vdashexterntypematch \externtype \matchesexterntype \sem_{\moduleinst}(\externtype_{\F{im}}))^k \\[1ex]
      &\wedge& \module.\MGLOBALS = \global^\ast \\
      &\wedge& \module.\MELEMS = \elem^n \\
      &\wedge& \module.\MDATAS = \data^m \\

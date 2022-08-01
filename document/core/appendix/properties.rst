@@ -542,7 +542,9 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. math::
    \frac{
-     S \vdashinstrtype [t_1^\ast] \to [t_2^\ast] \ok
+     S \vdashresulttype [t_1^\ast] \ok
+     \qquad
+     S \vdashresulttype [t_2^\ast] \ok
    }{
      S; C \vdashadmininstr \TRAP : [t_1^\ast] \to [t_2^\ast]
    }

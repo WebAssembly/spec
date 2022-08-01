@@ -17,7 +17,6 @@ Relevant type relations need to be redefined accordingly.
    pair: validation; type identifier
    single: abstract syntax; type identifier
 .. _valid-typeaddr:
-.. _valid-typeinst:
 
 Type Identifiers
 ~~~~~~~~~~~~~~~~
@@ -52,7 +51,7 @@ Instantiation
 Any form of :ref:`syntactic <syntax-typeid>` :ref:`type <syntax-type>` can be *instantiated* into a semantic type inside a :ref:`module instance <syntax-moduleinst>` by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the corresponding :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.\MITYPES[x]`.
 
 .. math::
-   \sem_\moduleinst(t) = t[\subst \moduleinst.\MITYPES]
+   \sem_{\moduleinst}(t) = t[\subst \moduleinst.\MITYPES]
 
 
 .. index:: type, matching, store, semantic types
