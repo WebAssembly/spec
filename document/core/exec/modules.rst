@@ -448,7 +448,7 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 3. For each :ref:`table <syntax-table>` :math:`\table_i` in :math:`\module.\MTABLES`, do:
 
    a. Let :math:`\tableaddr_i` be the :ref:`table address <syntax-tableaddr>` resulting from :ref:`allocating <alloc-table>` :math:`\table_i.\TTYPE`
-   with initialization value :math:`\ref_{\F{t}}^\ast[i]`.
+   with initialization value :math:`\reff_{\F{t}}^\ast[i]`.
 
 4. For each :ref:`memory <syntax-mem>` :math:`\mem_i` in :math:`\module.\MMEMS`, do:
 
@@ -535,7 +535,7 @@ where:
    S_1, \funcaddr^\ast &=&
      \allocfunc^\ast(S, \module.\MFUNCS, \moduleinst) \\
    S_2, \tableaddr^\ast &=&
-     \alloctable^\ast(S_1, (\table.\TTYPE)^\ast, \ref_{\F{t}}^\ast)
+     \alloctable^\ast(S_1, (\table.\TTYPE)^\ast, \reff_{\F{t}}^\ast)
      \quad (\where (\table.\TTYPE)^\ast = (\limits~t)^\ast) \\
    S_3, \memaddr^\ast &=&
      \allocmem^\ast(S_2, (\mem.\MTYPE)^\ast) \\
