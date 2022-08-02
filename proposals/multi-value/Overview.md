@@ -14,7 +14,7 @@
   - can easily be lifted by generalising to value* -> value*
 
 * Generalised semantics is well-understood
-  - https://github.com/WebAssembly/spec/tree/master/papers/pldi2017.pdf
+  - https://github.com/WebAssembly/spec/tree/main/papers/pldi2017.pdf
 
 * Semi-complete implementation of multiple results in V8
 
@@ -43,7 +43,7 @@
 A simple swap function.
 ```wasm
 (func $swap (param i32 i32) (result i32 i32)
-	(get_local 1) (get_local 0)
+	(local.get 1) (local.get 0)
 )
 ```
 
@@ -51,10 +51,10 @@ An addition function returning an additional carry bit.
 ```wasm
 (func $add64_u_with_carry (param $i i64) (param $j i64) (param $c i32) (result i64 i32)
 	(local $k i64)
-	(set_local $k
-		(i64.add (i64.add (get_local $i) (get_local $j)) (i64.extend_u/i32 (get_local $c)))
+	(local.set $k
+		(i64.add (i64.add (local.get $i) (local.get $j)) (i64.extend_i32_u (local.get $c)))
 	)
-	(return (get_local $k) (i64.lt_u (get_local $k) (get_local $i)))
+	(return (local.get $k) (i64.lt_u (local.get $k) (local.get $i)))
 )
 ```
 
@@ -71,7 +71,7 @@ An addition function returning an additional carry bit.
 Conditionally manipulating a stack operand without using a local.
 ```wasm
 (func $add64_u_saturated (param i64 i64) (result i64)
-	($i64.add_u_carry (get_local 0) (get_local 1) (i32.const 0))
+	(call $add64_u_with_carry (local.get 0) (local.get 1) (i32.const 0))
 	(if (param i64) (result i64)
 		(then (drop) (i64.const 0xffff_ffff_ffff_ffff))
 	)
@@ -80,14 +80,22 @@ Conditionally manipulating a stack operand without using a local.
 
 An iterative factorial function whose loop doesn't use locals, but uses arguments like phis.
 ```wasm
+(func $pick0 (param i64) (result i64 i64)
+	(local.get 0) (local.get 0)
+)
+
+(func $pick1 (param i64 i64) (result i64 i64 i64)
+	(local.get 0) (local.get 1) (local.get 0)
+)
+
 (func $fac (param i64) (result i64)
-	(i64.const 1) (get_local 0)
+	(i64.const 1) (local.get 0)
 	(loop $l (param i64 i64) (result i64)
-		(pick 1) (pick 1) (i64.mul)
-		(pick 1) (i64.const 1) (i64.sub)
-		(pick 0) (i64.const 0) (i64.gt_u)
+		(call $pick1) (call $pick1) (i64.mul)
+		(call $pick1) (i64.const 1) (i64.sub)
+		(call $pick0) (i64.const 0) (i64.gt_u)
 		(br_if $l)
-		(pick 1) (return)
+		(call $pick1) (return)
 	)
 )
 ```

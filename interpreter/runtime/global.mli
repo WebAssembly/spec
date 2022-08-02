@@ -1,4 +1,4 @@
-open Types
+open Types.Sem
 open Value
 
 type global

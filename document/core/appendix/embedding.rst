@@ -50,7 +50,7 @@ Some operations state *pre-conditions* about their arguments or *post-conditions
 It is the embedder's responsibility to meet the pre-conditions.
 If it does, the post conditions are guaranteed by the semantics.
 
-In addition to pre- and post-conditions explicitly stated with each operation, the specification adopts the following conventions for :ref:`runtime objects <syntax-runtime>` (:math:`store`, :math:`\moduleinst`, :math:`\externval`, :ref:`addresses <syntax-addr>`):
+In addition to pre- and post-conditions explicitly stated with each operation, the specification adopts the following conventions for :ref:`runtime objects <syntax-runtime>` (:math:`\store`, :math:`\moduleinst`, :math:`\externval`, :ref:`addresses <syntax-addr>`):
 
 * Every runtime object passed as a parameter must be :ref:`valid <valid-store>` per an implicit pre-condition.
 
@@ -261,7 +261,7 @@ Functions
 :math:`\F{func\_alloc}(\store, \functype, \hostfunc) : (\store, \funcaddr)`
 ...........................................................................
 
-1. Pre-condition: :math:`\functype` is :math:`valid <valid-functype>`.
+1. Pre-condition: :math:`\functype` is :ref:`valid <valid-functype>`.
 
 2. Let :math:`\funcaddr` be the result of :ref:`allocating a host function <alloc-func>` in :math:`\store` with :ref:`function type <syntax-functype>` :math:`\functype` and host function code :math:`\hostfunc`.
 
@@ -329,7 +329,7 @@ Tables
 :math:`\F{table\_alloc}(\store, \tabletype) : (\store, \tableaddr, \reff)`
 ..........................................................................
 
-1. Pre-condition: :math:`\tabletype` is :math:`valid <valid-tabletype>`.
+1. Pre-condition: :math:`\tabletype` is :ref:`valid <valid-tabletype>`.
 
 2. Let :math:`\tableaddr` be the result of :ref:`allocating a table <alloc-table>` in :math:`\store` with :ref:`table type <syntax-tabletype>` :math:`\tabletype` and initialization value :math:`\reff`.
 
@@ -348,7 +348,7 @@ Tables
 
 1. Return :math:`S.\STABLES[a].\TITYPE`.
 
-2. Post-condition: the returned :ref:`table type <syntax-tabletype>` is :math:`valid <valid-tabletype>`.
+2. Post-condition: the returned :ref:`table type <syntax-tabletype>` is :ref:`valid <valid-tabletype>`.
 
 .. math::
    \begin{array}{lclll}
@@ -441,7 +441,7 @@ Memories
 :math:`\F{mem\_alloc}(\store, \memtype) : (\store, \memaddr)`
 ................................................................
 
-1. Pre-condition: :math:`\memtype` is :math:`valid <valid-memtype>`.
+1. Pre-condition: :math:`\memtype` is :ref:`valid <valid-memtype>`.
 
 2. Let :math:`\memaddr` be the result of :ref:`allocating a memory <alloc-mem>` in :math:`\store` with :ref:`memory type <syntax-memtype>` :math:`\memtype`.
 
@@ -460,7 +460,7 @@ Memories
 
 1. Return :math:`S.\SMEMS[a].\MITYPE`.
 
-2. Post-condition: the returned :ref:`memory type <syntax-memtype>` is :math:`valid <valid-memtype>`.
+2. Post-condition: the returned :ref:`memory type <syntax-memtype>` is :ref:`valid <valid-memtype>`.
 
 .. math::
    \begin{array}{lclll}
@@ -554,7 +554,7 @@ Globals
 :math:`\F{global\_alloc}(\store, \globaltype, \val) : (\store, \globaladdr)`
 ............................................................................
 
-1. Pre-condition: :math:`\globaltype` is :math:`valid <valid-globaltype>`.
+1. Pre-condition: :math:`\globaltype` is :ref:`valid <valid-globaltype>`.
 
 2. Let :math:`\globaladdr` be the result of :ref:`allocating a global <alloc-global>` in :math:`\store` with :ref:`global type <syntax-globaltype>` :math:`\globaltype` and initialization value :math:`\val`.
 
@@ -573,7 +573,7 @@ Globals
 
 1. Return :math:`S.\SGLOBALS[a].\GITYPE`.
 
-2. Post-condition: the returned :ref:`global type <syntax-globaltype>` is :math:`valid <valid-globaltype>`.
+2. Post-condition: the returned :ref:`global type <syntax-globaltype>` is :ref:`valid <valid-globaltype>`.
 
 .. math::
    \begin{array}{lclll}

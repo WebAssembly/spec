@@ -5,7 +5,7 @@ Modules
 Furthermore, most definitions are themselves classified with a suitable type.
 
 
-.. index:: function, local, function index, local index, type index, function type, value type, expression, import
+.. index:: function, local, function index, local index, type index, function type, value type, local type, expression, import
    pair: abstract syntax; function
    single: abstract syntax; function
 .. _valid-local:
@@ -24,10 +24,16 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 
 * Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
 
+* For each local declared by a :ref:`value type <syntax-valtype>` :math:`t` in :math:`t^\ast`:
+
+  * The local for type :math:`t` must be :ref:`valid <valid-localtype>` with :ref:`local type <syntax-localtype>` :math:`\localtype_i`.
+
+* Let :math:`\localtype^\ast` be the concatenation of all :math:`\localtype_i`.
+
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`,
   but with:
 
-  * |CLOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
+  * |CLOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`(\SET~t_1)^\ast~\localtype^\ast`, concatenating parameters and locals,
 
   * |CLABELS| set to the singular sequence containing only :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]`.
 
@@ -42,13 +48,58 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
    \frac{
      C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
      \qquad
-     C,\CLOCALS\,t_1^\ast~t^\ast,\CLABELS~[t_2^\ast],\CRETURN~[t_2^\ast] \vdashexpr \expr : [t_2^\ast]
+     (C \vdashlocal t : \init~t)^\ast
+     \qquad
+     C,\CLOCALS\,(\SET~t_1)^\ast~(\init~t)^\ast,\CLABELS~[t_2^\ast],\CRETURN~[t_2^\ast] \vdashexpr \expr : [t_2^\ast]
    }{
      C \vdashfunc \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : [t_1^\ast] \to [t_2^\ast]
    }
 
 
-.. index:: table, table type
+.. index:: local, local type, value type
+   pair: validation; local
+   single: abstract syntax; local
+.. _valid-localtype:
+
+Locals
+~~~~~~
+
+:ref:`Locals <syntax-local>` are classified with :ref:`local types <syntax-localtype>`.
+
+:math:`\{ \LTYPE~\valtype \}`
+.............................
+
+* The :ref:`value type <syntax-valtype>` :math:`\valtype` must be :ref:`valid <valid-valtype>`.
+
+* If :math:`\valtype` is :ref:`defaultable <valid-defaultable>`, then:
+
+  * The local is valid with :ref:`local type <syntax-localtype>` :math:`\SET~\valtype`.
+
+* Else:
+
+  * The local is valid with :ref:`local type <syntax-localtype>` :math:`\UNSET~\valtype`.
+
+.. math::
+   \frac{
+     C \vdashvaltype t \ok
+     \qquad
+     C \vdashvaltypedefaultable t \defaultable
+   }{
+     C \vdashlocal \{ \LTYPE~t \} : \SET~t \ok
+   }
+
+.. math::
+   \frac{
+     C \vdashvaltype t \ok
+   }{
+     C \vdashlocal \{ LTYPE~t \} : \UNSET~t \ok
+   }
+
+.. note::
+   For cases where both rules are applicable, the former yields the more permissable type.
+
+
+.. index:: table, table type, reference type, expression, constant, defaultable
    pair: validation; table
    single: abstract syntax; table
 .. _valid-table:
@@ -58,18 +109,30 @@ Tables
 
 Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>`.
 
-:math:`\{ \TTYPE~\tabletype \}`
-...............................
+:math:`\{ \TTYPE~\tabletype, \TINIT~\expr \}`
+.............................................
 
 * The :ref:`table type <syntax-tabletype>` :math:`\tabletype` must be :ref:`valid <valid-tabletype>`.
+
+* Let :math:`t` be the element :ref:`reference type <syntax-reftype>` of :math:`\tabletype`.
+
+* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[t]`.
+
+* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
 * Then the table definition is valid with type :math:`\tabletype`.
 
 .. math::
    \frac{
      C \vdashtabletype \tabletype \ok
+     \qquad
+     \tabletype = \limits~t
+     \qquad
+     C \vdashexpr \expr : [t]
+     \qquad
+     C \vdashexprconst \expr \const
    }{
-     C \vdashtable \{ \TTYPE~\tabletype \} : \tabletype
+     C \vdashtable \{ \TTYPE~\tabletype, \TINIT~\expr \} : \tabletype
    }
 
 
@@ -98,7 +161,7 @@ Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>`.
    }
 
 
-.. index:: global, global type, expression
+.. index:: global, global type, expression, constant
    pair: validation; global
    single: abstract syntax; global
 .. _valid-global:
@@ -132,7 +195,7 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
    }
 
 
-.. index:: element, table, table index, expression, function index
+.. index:: element, table, table index, expression, constant, function index
    pair: validation; element
    single: abstract syntax; element
    single: table; element
@@ -151,7 +214,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 * For each :math:`e_i` in :math:`e^\ast`,
 
-  * The expression :math:`e_i` must be :ref:`valid <valid-expr>`.
+  * The expression :math:`e_i` must be :ref:`valid <valid-expr>` with some :ref:`result type <syntax-resulttype>` :math:`[t]`.
 
   * The expression :math:`e_i` must be :ref:`constant <valid-const>`.
 
@@ -166,7 +229,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
    \frac{
      C \vdashreftype t \ok
      \qquad
-     (C \vdashexpr e \ok)^\ast
+     (C \vdashexpr e : [t])^\ast
      \qquad
      (C \vdashexprconst e \const)^\ast
      \qquad
@@ -233,7 +296,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 
 
-.. index:: data, memory, memory index, expression, byte
+.. index:: data, memory, memory index, expression, constant, byte
    pair: validation; data
    single: abstract syntax; data
    single: memory; data

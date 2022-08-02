@@ -1,45 +1,5 @@
-open Types
 open Value
-
-
-(* Injection & projection *)
-
-exception TypeError of int * num * num_type
-
-module type NumType =
-sig
-  type t
-  val to_num : t -> num
-  val of_num : int -> num -> t
-end
-
-module I32Num =
-struct
-  type t = I32.t
-  let to_num i = I32 i
-  let of_num n = function I32 i -> i | v -> raise (TypeError (n, v, I32Type))
-end
-
-module I64Num =
-struct
-  type t = I64.t
-  let to_num i = I64 i
-  let of_num n = function I64 i -> i | v -> raise (TypeError (n, v, I64Type))
-end
-
-module F32Num =
-struct
-  type t = F32.t
-  let to_num i = F32 i
-  let of_num n = function F32 z -> z | v -> raise (TypeError (n, v, F32Type))
-end
-
-module F64Num =
-struct
-  type t = F64.t
-  let to_num i = F64 i
-  let of_num n = function F64 z -> z | v -> raise (TypeError (n, v, F64Type))
-end
+open Types.Sem
 
 
 (* Int operators *)
@@ -54,7 +14,7 @@ struct
       | Clz -> IXX.clz
       | Ctz -> IXX.ctz
       | Popcnt -> IXX.popcnt
-      | ExtendS sz -> IXX.extend_s (8 * packed_size sz)
+      | ExtendS sz -> IXX.extend_s (8 * Pack.packed_size sz)
     in fun v -> to_num (f (of_num 1 v))
 
   let binop op =
@@ -164,8 +124,8 @@ struct
       | TruncSatUF64 -> I32_convert.trunc_sat_f64_u (F64Num.of_num 1 v)
       | TruncSatSF64 -> I32_convert.trunc_sat_f64_s (F64Num.of_num 1 v)
       | ReinterpretFloat -> I32_convert.reinterpret_f32 (F32Num.of_num 1 v)
-      | ExtendUI32 -> raise (TypeError (1, v, I32Type))
-      | ExtendSI32 -> raise (TypeError (1, v, I32Type))
+      | ExtendUI32 -> raise (TypeError (1, v, I32T))
+      | ExtendSI32 -> raise (TypeError (1, v, I32T))
     in I32Num.to_num i
 end
 
@@ -186,7 +146,7 @@ struct
       | TruncSatUF64 -> I64_convert.trunc_sat_f64_u (F64Num.of_num 1 v)
       | TruncSatSF64 -> I64_convert.trunc_sat_f64_s (F64Num.of_num 1 v)
       | ReinterpretFloat -> I64_convert.reinterpret_f64 (F64Num.of_num 1 v)
-      | WrapI64 -> raise (TypeError (1, v, I64Type))
+      | WrapI64 -> raise (TypeError (1, v, I64T))
     in I64Num.to_num i
 end
 
@@ -202,7 +162,7 @@ struct
       | ConvertSI64 -> F32_convert.convert_i64_s (I64Num.of_num 1 v)
       | ConvertUI64 -> F32_convert.convert_i64_u (I64Num.of_num 1 v)
       | ReinterpretInt -> F32_convert.reinterpret_i32 (I32Num.of_num 1 v)
-      | PromoteF32 -> raise (TypeError (1, v, F32Type))
+      | PromoteF32 -> raise (TypeError (1, v, F32T))
     in F32Num.to_num z
 end
 
@@ -218,10 +178,9 @@ struct
       | ConvertSI64 -> F64_convert.convert_i64_s (I64Num.of_num 1 v)
       | ConvertUI64 -> F64_convert.convert_i64_u (I64Num.of_num 1 v)
       | ReinterpretInt -> F64_convert.reinterpret_i64 (I64Num.of_num 1 v)
-      | DemoteF64 -> raise (TypeError (1, v, F64Type))
+      | DemoteF64 -> raise (TypeError (1, v, F64T))
     in F64Num.to_num z
 end
-
 
 (* Dispatch *)
 
@@ -236,3 +195,4 @@ let eval_binop = op I32Op.binop I64Op.binop F32Op.binop F64Op.binop
 let eval_testop = op I32Op.testop I64Op.testop F32Op.testop F64Op.testop
 let eval_relop = op I32Op.relop I64Op.relop F32Op.relop F64Op.relop
 let eval_cvtop = op I32CvtOp.cvtop I64CvtOp.cvtop F32CvtOp.cvtop F64CvtOp.cvtop
+

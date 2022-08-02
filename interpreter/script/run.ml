@@ -220,29 +220,46 @@ let print_module x_opt m =
 let print_values vs =
   let ts = List.map Value.type_of_value vs in
   Printf.printf "%s : %s\n%!"
-    (Value.string_of_values vs) (Types.string_of_result_type ts)
+    (Value.string_of_values vs) (Types.Sem.string_of_result_type ts)
 
 let string_of_nan = function
   | CanonicalNan -> "nan:canonical"
   | ArithmeticNan -> "nan:arithmetic"
 
 let type_of_result r =
+  let open Types.Sem in
   match r with
-  | LitResult v -> Value.type_of_value v.it
-  | NanResult n -> Types.NumType (Value.type_of_num n.it)
-  | RefResult t -> Types.(RefType (NonNullable, t))
-  | NullResult -> Types.(RefType (Nullable, ExternHeapType))
+  | NumResult (NumPat n) -> NumT (Value.type_of_num n.it)
+  | NumResult (NanPat n) -> NumT (Value.type_of_num n.it)
+  | VecResult (VecPat v) -> VecT (Value.type_of_vec v)
+  | RefResult (RefPat r) -> RefT (Value.type_of_ref r.it)
+  | RefResult (RefTypePat t) -> RefT (NoNull, sem_heap_type [] t)
+  | RefResult (NullPat) -> RefT (Null, ExternHT)
+
+let string_of_num_pat (p : num_pat) =
+  match p with
+  | NumPat n -> Value.string_of_num n.it
+  | NanPat nanop ->
+    match nanop.it with
+    | Value.I32 _ | Value.I64 _ -> assert false
+    | Value.F32 n | Value.F64 n -> string_of_nan n
+
+let string_of_vec_pat (p : vec_pat) =
+  match p with
+  | VecPat (Value.V128 (shape, ns)) ->
+    String.concat " " (List.map string_of_num_pat ns)
+
+let string_of_ref_pat (p : ref_pat) =
+  match p with
+  | RefPat r -> Value.string_of_ref r.it
+  | RefTypePat t -> Types.string_of_heap_type t
+  | NullPat -> "null"
 
 let string_of_result r =
   match r with
-  | LitResult v -> Value.string_of_value v.it
-  | NanResult nanop ->
-    (match nanop.it with
-    | Value.I32 _ | Value.I64 _ -> assert false
-    | Value.F32 n | Value.F64 n -> string_of_nan n
-    )
-  | RefResult t -> Types.string_of_heap_type t
-  | NullResult -> "null"
+  | NumResult np -> string_of_num_pat np
+  | VecResult vp -> string_of_vec_pat vp
+  | RefResult rp -> string_of_ref_pat rp
 
 let string_of_results = function
   | [r] -> string_of_result r
@@ -251,7 +268,7 @@ let string_of_results = function
 let print_results rs =
   let ts = List.map type_of_result rs in
   Printf.printf "%s : %s\n%!"
-    (string_of_results rs) (Types.string_of_result_type ts)
+    (string_of_results rs) (Types.Sem.string_of_result_type ts)
 
 
 (* Configuration *)
@@ -308,13 +325,13 @@ let run_action act : Value.t list =
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternFunc f) ->
-      let Types.FuncType (ins, out) = Func.type_of f in
-      if List.length vs <> List.length ins then
+      let Types.Sem.FuncT (ts1, _ts2) = Func.type_of f in
+      if List.length vs <> List.length ts1 then
         Script.error act.at "wrong number of arguments";
       List.iter2 (fun v t ->
-        if not (Match.match_value_type [] [] (Value.type_of_value v.it) t) then
+        if not (Match.Sem.match_val_type () [] (Value.type_of_value v.it) t) then
           Script.error v.at "wrong type of argument"
-      ) vs ins;
+      ) vs ts1;
       Eval.invoke f (List.map (fun v -> v.it) vs)
     | Some _ -> Assert.error act.at "export is not a function"
     | None -> Assert.error act.at "undefined export"
@@ -329,39 +346,59 @@ let run_action act : Value.t list =
     | None -> Assert.error act.at "undefined export"
     )
 
-let assert_result at got expect =
+let assert_nan_pat n nan =
   let open Value in
+  match n, nan.it with
+  | F32 z, F32 CanonicalNan -> z = F32.pos_nan || z = F32.neg_nan
+  | F64 z, F64 CanonicalNan -> z = F64.pos_nan || z = F64.neg_nan
+  | F32 z, F32 ArithmeticNan ->
+    let pos_nan = F32.to_bits F32.pos_nan in
+    Int32.logand (F32.to_bits z) pos_nan = pos_nan
+  | F64 z, F64 ArithmeticNan ->
+    let pos_nan = F64.to_bits F64.pos_nan in
+    Int64.logand (F64.to_bits z) pos_nan = pos_nan
+  | _, _ -> false
+
+let assert_num_pat n np =
+  match np with
+    | NumPat n' -> n = n'.it
+    | NanPat nanop -> assert_nan_pat n nanop
+
+let assert_vec_pat v p =
+  let open Value in
+  match v, p with
+  | V128 v, VecPat (V128 (shape, ps)) ->
+    let extract = match shape with
+      | V128.I8x16 () -> fun v i -> I32 (V128.I8x16.extract_lane_s i v)
+      | V128.I16x8 () -> fun v i -> I32 (V128.I16x8.extract_lane_s i v)
+      | V128.I32x4 () -> fun v i -> I32 (V128.I32x4.extract_lane_s i v)
+      | V128.I64x2 () -> fun v i -> I64 (V128.I64x2.extract_lane_s i v)
+      | V128.F32x4 () -> fun v i -> F32 (V128.F32x4.extract_lane i v)
+      | V128.F64x2 () -> fun v i -> F64 (V128.F64x2.extract_lane i v)
+    in
+    List.for_all2 assert_num_pat
+      (List.init (V128.num_lanes shape) (extract v)) ps
+
+let assert_ref_pat r p =
+  match r, p with
+  | r, RefPat r' -> Value.eq_ref r r'.it
+  | Instance.FuncRef _, RefTypePat Types.FuncHT
+  | ExternRef _, RefTypePat Types.ExternHT -> true
+  | Value.NullRef _, NullPat -> true
+  | _ -> false
+
+let assert_pat v r =
+  let open Value in
+  match v, r with
+  | Num n, NumResult np -> assert_num_pat n np
+  | Vec v, VecResult vp -> assert_vec_pat v vp
+  | Ref r, RefResult rp -> assert_ref_pat r rp
+  | _, _ -> false
+
+let assert_result at got expect =
   if
     List.length got <> List.length expect ||
-    List.exists2 (fun v r ->
-      match r with
-      | LitResult v' -> v <> v'.it
-      | NanResult nanop ->
-        (match nanop.it, v with
-        | F32 CanonicalNan, Num (F32 z) ->
-          z <> F32.pos_nan && z <> F32.neg_nan
-        | F64 CanonicalNan, Num (F64 z) ->
-          z <> F64.pos_nan && z <> F64.neg_nan
-        | F32 ArithmeticNan, Num (F32 z) ->
-          let pos_nan = F32.to_bits F32.pos_nan in
-          Int32.logand (F32.to_bits z) pos_nan <> pos_nan
-        | F64 ArithmeticNan, Num (F64 z) ->
-          let pos_nan = F64.to_bits F64.pos_nan in
-          Int64.logand (F64.to_bits z) pos_nan <> pos_nan
-        | _, _ -> false
-        )
-      | RefResult t ->
-        (match t, v with
-        | Types.FuncHeapType, Ref (Instance.FuncRef _)
-        | Types.ExternHeapType, Ref (ExternRef _) -> false
-        | _ -> true
-        )
-      | NullResult ->
-        (match v with
-        | Ref (NullRef _) -> false
-        | _ -> true
-        )
-    ) got expect
+    List.exists2 (fun v r -> not (assert_pat v r)) got expect
   then begin
     print_string "Result: "; print_values got;
     print_string "Expect: "; print_results expect;

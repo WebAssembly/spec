@@ -271,12 +271,12 @@
 
 (assert_invalid
   (module (global f32 (f32.const 0)) (func (global.set 0 (f32.const 1))))
-  "global is immutable"
+  "immutable global"
 )
 
 (assert_invalid
   (module (import "spectest" "global_i32" (global i32)) (func (global.set 0 (i32.const 1))))
-  "global is immutable"
+  "immutable global"
 )
 
 ;; mutable globals can be exported

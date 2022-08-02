@@ -18,14 +18,15 @@
 import os
 import sys
 from datetime import date
+
 pwd = os.path.abspath('.')
-sys.path.insert(0, pwd + '/util')
+sys.path.insert(0, pwd)
 
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-needs_sphinx = '1.4'
+needs_sphinx = '2.3'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -36,8 +37,8 @@ extensions = [
   'sphinx.ext.mathjax',
   'sphinx.ext.ifconfig',
   'sphinx.ext.githubpages',
-  'mathdef',
-  'pseudo-lexer'
+  'util.mathdef',
+  'util.pseudo-lexer'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -59,7 +60,7 @@ master_doc = 'index'
 name = 'WebAssembly'
 project = u'WebAssembly'
 title = u'WebAssembly Specification'
-copyright = u'2017-2021, WebAssembly Community Group'
+copyright = u'2017-2022, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
 editor = u'Andreas Rossberg (editor)'
 logo = 'static/webassembly.png'
@@ -68,7 +69,7 @@ logo = 'static/webassembly.png'
 repo = 'function-references'
 
 # The name of the proposal it represents, if any
-proposal = 'function-references'
+proposal = 'function references'
 
 # The draft version string (clear out for release cuts)
 draft = ' (Draft ' + date.today().strftime("%Y-%m-%d") + ')'
@@ -78,7 +79,7 @@ draft = ' (Draft ' + date.today().strftime("%Y-%m-%d") + ')'
 # built documents.
 #
 # The short X.Y version.
-version = u'1.1'
+version = u'2.0'
 # The full version, including alpha/beta/rc tags.
 release = version + ('' if proposal == '' else ' + ') + proposal + draft
 
@@ -251,7 +252,7 @@ html_show_copyright = True
 # If this is not None, a ‘Last updated on:’ timestamp is inserted at every
 # page bottom, using the given strftime() format.
 #
-html_last_updated_fmt = '%F'
+html_last_updated_fmt = '%Y-%m-%d'
 
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
@@ -491,8 +492,9 @@ rst_prolog = """
 .. include:: /""" + pwd + """/util/macros.def
 """
 
-# https://www.sphinx-doc.org/en/master/usage/extensions/math.html#confval-mathjax_config
-# http://docs.mathjax.org/en/v2.7-latest/options/input-processors/TeX.html
-mathjax_config = {
-    'TeX': { 'MAXBUFFER': 30*1024 },
+# https://www.sphinx-doc.org/en/master/usage/extensions/math.html#confval-mathjax3_config
+# https://docs.mathjax.org/en/latest/web/configuration.html#configuration
+# https://docs.mathjax.org/en/latest/options/input/tex.html#tex-maxbuffer
+mathjax3_config = {
+    'tex': { 'maxBuffer': 30*1024 },
 }

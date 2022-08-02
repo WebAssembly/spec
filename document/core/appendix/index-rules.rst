@@ -14,8 +14,14 @@ Typing of Static Constructs
 Construct                                        Judgement
 ===============================================  ===============================================================================
 :ref:`Limits <valid-limits>`                     :math:`C \vdashlimits \limits : k`
+:ref:`Numeric type <valid-numtype>`              :math:`C \vdashnumtype \numtype \ok`
+:ref:`Vector type <valid-vectype>`               :math:`C \vdashvectype \vectype \ok`
+:ref:`Heap type <valid-heaptype>`                :math:`C \vdashheaptype \heaptype \ok`
+:ref:`Reference type <valid-reftype>`            :math:`C \vdashreftype \reftype \ok`
+:ref:`Value type <valid-valtype>`                :math:`C \vdashvaltype \valtype \ok`
 :ref:`Function type <valid-functype>`            :math:`C \vdashfunctype \functype \ok`
-:ref:`Block type <valid-blocktype>`              :math:`C \vdashblocktype \blocktype \ok`
+:ref:`Block type <valid-blocktype>`              :math:`C \vdashblocktype \blocktype : \instrtype`
+:ref:`Instruction type <valid-instrtype>`        :math:`C \vdashinstrtype \instrtype \ok`
 :ref:`Table type <valid-tabletype>`              :math:`C \vdashtabletype \tabletype \ok`
 :ref:`Memory type <valid-memtype>`               :math:`C \vdashmemtype \memtype \ok`
 :ref:`Global type <valid-globaltype>`            :math:`C \vdashglobaltype \globaltype \ok`
@@ -24,6 +30,7 @@ Construct                                        Judgement
 :ref:`Instruction sequence <valid-instr-seq>`    :math:`S;C \vdashinstrseq \instr^\ast : \functype`
 :ref:`Expression <valid-expr>`                   :math:`C \vdashexpr \expr : \resulttype`
 :ref:`Function <valid-func>`                     :math:`C \vdashfunc \func : \functype`
+:ref:`Local <valid-local>`                       :math:`C \vdashlocal \local : \localtype`
 :ref:`Table <valid-table>`                       :math:`C \vdashtable \table : \tabletype`
 :ref:`Memory <valid-mem>`                        :math:`C \vdashmem \mem : \memtype`
 :ref:`Global <valid-global>`                     :math:`C \vdashglobal \global : \globaltype`
@@ -64,6 +71,16 @@ Construct                                        Judgement
 :ref:`Thread <valid-thread>`                     :math:`S;\resulttype^? \vdashthread \thread : \resulttype`
 :ref:`Frame <valid-frame>`                       :math:`S \vdashframe \frame : C`
 ===============================================  ===============================================================================
+
+
+Defaultability
+~~~~~~~~~~~~~~
+
+=================================================  ===============================================================================
+Construct                                          Judgement
+=================================================  ===============================================================================
+:ref:`Defaultable value type <valid-defaultable>`  :math:`C \vdashvaltypedefaultable \valtype \defaultable`
+=================================================  ===============================================================================
 
 
 Constantness

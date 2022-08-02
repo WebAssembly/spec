@@ -59,59 +59,58 @@ let zero = Set.singleton 0l
 let shift s = Set.map (Int32.add (-1l)) (Set.remove 0l s)
 
 let (++) = union
+let opt free xo = Lib.Option.get (Option.map free xo) empty
 let list free xs = List.fold_left union empty (List.map free xs)
 
 let var_type = function
-  | SynVar x -> types (idx' x)
-  | SemVar _ -> assert false
+  | x -> types (idx' x)
 
 let num_type = function
-  | I32Type | I64Type | F32Type | F64Type -> empty
+  | I32T | I64T | F32T | F64T -> empty
+
+let vec_type = function
+  | V128T -> empty
 
 let heap_type = function
-  | FuncHeapType | ExternHeapType | BotHeapType -> empty
-  | DefHeapType x -> var_type x
+  | FuncHT | ExternHT | BotHT -> empty
+  | DefHT x -> var_type x
 
 let ref_type = function
   | (_, t) -> heap_type t
 
-let value_type = function
-  | NumType t -> num_type t
-  | RefType t -> ref_type t
-  | BotType -> empty
+let val_type = function
+  | NumT t -> num_type t
+  | VecT t -> vec_type t
+  | RefT t -> ref_type t
+  | BotT -> empty
 
-let func_type (FuncType (ins, out)) =
-  list value_type ins ++ list value_type out
-let global_type (GlobalType (t, _mut)) = value_type t
-let table_type (TableType (_lim, t)) = ref_type t
-let memory_type (MemoryType (_lim)) = empty
+let func_type (FuncT (ins, out)) = list val_type ins ++ list val_type out
+let global_type (GlobalT (_mut, t)) = val_type t
+let table_type (TableT (_lim, t)) = ref_type t
+let memory_type (MemoryT (_lim)) = empty
 
 let def_type = function
-  | FuncDefType ft -> func_type ft
+  | DefFuncT ft -> func_type ft
 
 let block_type = function
   | VarBlockType x -> var_type x
-  | ValBlockType _ -> empty
+  | ValBlockType t -> opt val_type t
 
 let rec instr (e : instr) =
   match e.it with
   | Unreachable | Nop | Drop -> empty
-  | Select tso -> list value_type (Lib.Option.get tso [])
+  | Select tso -> list val_type (Lib.Option.get tso [])
   | RefIsNull | RefAsNonNull -> empty
   | RefNull t -> heap_type t
   | RefFunc x -> funcs (idx x)
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
   | If (bt, es1, es2) -> block_type bt ++ block es1 ++ block es2
-  | Let (bt, ts, es) ->
-    let free = block_type bt ++ block es in
-    {free with locals = Lib.Fun.repeat (List.length ts) shift free.locals}
   | Br x | BrIf x | BrOnNull x | BrOnNonNull x -> labels (idx x)
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
   | Return | CallRef | ReturnCallRef -> empty
   | Call x -> funcs (idx x)
   | CallIndirect (x, y) -> tables (idx x) ++ types (idx y)
-  | FuncBind x -> types (idx x)
   | LocalGet x | LocalSet x | LocalTee x -> locals (idx x)
   | GlobalGet x | GlobalSet x -> globals (idx x)
   | TableGet x | TableSet x | TableSize x | TableGrow x | TableFill x ->
@@ -119,7 +118,14 @@ let rec instr (e : instr) =
   | TableCopy (x, y) -> tables (idx x) ++ tables (idx y)
   | TableInit (x, y) -> tables (idx x) ++ elems (idx y)
   | ElemDrop x -> elems (idx x)
-  | Load _ | Store _ | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
+  | Load _ | Store _
+  | VecLoad _ | VecStore _ | VecLoadLane _ | VecStoreLane _
+  | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
+    memories zero
+  | VecConst _ | VecTest _ | VecUnary _ | VecBinary _ | VecCompare _
+  | VecConvert _ | VecShift _ | VecBitmask _
+  | VecTestBits _ | VecUnaryBits _ | VecBinaryBits _ | VecTernaryBits _
+  | VecSplat _ | VecExtract _ | VecReplace _ ->
     memories zero
   | MemoryInit x -> memories zero ++ datas (idx x)
   | DataDrop x -> datas (idx x)
@@ -132,7 +138,7 @@ let const (c : const) = block c.it
 let global (g : global) = global_type g.it.gtype ++ const g.it.ginit
 let func (f : func) =
   {(types (idx f.it.ftype) ++ block f.it.body) with locals = Set.empty}
-let table (t : table) = table_type t.it.ttype
+let table (t : table) = table_type t.it.ttype ++ const t.it.tinit
 let memory (m : memory) = memory_type m.it.mtype
 
 let segment_mode f (m : segment_mode) =
@@ -165,8 +171,7 @@ let import_desc (d : import_desc) =
 let export (e : export) = export_desc e.it.edesc
 let import (i : import) = import_desc i.it.idesc
 
-let start (s : idx option) =
-  funcs (Lib.Option.get (Lib.Option.map idx s) Set.empty)
+let start (s : start) = funcs (idx s.it.sfunc)
 
 let module_ (m : module_) =
   list type_ m.it.types ++
@@ -174,7 +179,7 @@ let module_ (m : module_) =
   list table m.it.tables ++
   list memory m.it.memories ++
   list func m.it.funcs ++
-  start m.it.start ++
+  opt start m.it.start ++
   list elem m.it.elems ++
   list data m.it.datas ++
   list import m.it.imports ++

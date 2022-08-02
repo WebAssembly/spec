@@ -7,9 +7,10 @@ Runtime Structure
 :ref:`Store <store>`, :ref:`stack <stack>`, and other *runtime structure* forming the WebAssembly abstract machine, such as :ref:`values <syntax-val>` or :ref:`module instances <syntax-moduleinst>`, are made precise in terms of additional auxiliary syntax.
 
 
-.. index:: ! value, number, reference, constant, number type, reference type, ! host address, value type, integer, floating-point, ! default value
+.. index:: ! value, number, reference, constant, number type, vector type, reference type, ! host address, value type, integer, floating-point, vector number, ! default value
    pair: abstract syntax; value
 .. _syntax-num:
+.. _syntax-vecc:
 .. _syntax-ref:
 .. _syntax-ref.extern:
 .. _syntax-val:
@@ -18,7 +19,7 @@ Runtime Structure
 Values
 ~~~~~~
 
-WebAssembly computations manipulate *values* of either the four basic :ref:`number types <syntax-numtype>`, i.e., :ref:`integers <syntax-int>` and :ref:`floating-point data <syntax-float>` of 32 or 64 bit width each, or of :ref:`reference type <syntax-reftype>`.
+WebAssembly computations manipulate *values* of either the four basic :ref:`number types <syntax-numtype>`, i.e., :ref:`integers <syntax-int>` and :ref:`floating-point data <syntax-float>` of 32 or 64 bit width each, or :ref:`vectors <syntax-vecnum>` of 128 bit width, or of :ref:`reference type <syntax-reftype>`.
 
 In most places of the semantics, values of different types can occur.
 In order to avoid ambiguities, values are therefore represented with an abstract syntax that makes their type explicit.
@@ -35,12 +36,14 @@ or *external references* pointing to an uninterpreted form of :ref:`extern addre
      \I64.\CONST~\i64 \\&&|&
      \F32.\CONST~\f32 \\&&|&
      \F64.\CONST~\f64 \\
+   \production{(vector)} & \vecc &::=&
+     \V128.\CONST~\i128 \\
    \production{(reference)} & \reff &::=&
      \REFNULL~t \\&&|&
      \REFFUNCADDR~\funcaddr \\&&|&
      \REFEXTERNADDR~\externaddr \\
    \production{(value)} & \val &::=&
-     \num ~|~ \reff \\
+     \num ~|~ \vecc ~|~ \reff \\
    \end{array}
 
 .. note::
@@ -48,13 +51,16 @@ or *external references* pointing to an uninterpreted form of :ref:`extern addre
 
 .. _default-val:
 
-Each :ref:`value type <syntax-valtype>` has an associated *default value*;
-it is the respective value :math:`0` for :ref:`number types <syntax-numtype>` and null for :ref:`reference types <syntax-reftype>`.
+:ref:`Value types <syntax-valtype>` can have an associated *default value*;
+it is the respective value :math:`0` for :ref:`number types <syntax-numtype>`, :math:`0` for :ref:`vector types <syntax-vectype>`, and null for nullable :ref:`reference types <syntax-reftype>`.
+For other references, no default value is defined, :math:`\default_t` hence is an optional value :math:`\val^?`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    \default_t &=& t{.}\CONST~0 & (\iff t = \numtype) \\
-   \default_t &=& \REFNULL~t & (\iff t = \reftype) \\
+   \default_t &=& t{.}\CONST~0 & (\iff t = \vectype) \\
+   \default_t &=& \REFNULL~t & (\iff t = (\REF~\NULL~\heaptype)) \\
+   \default_t &=& \epsilon & (\iff t = (\REF~\heaptype)) \\
    \end{array}
 
 
@@ -80,9 +86,6 @@ It is either a sequence of :ref:`values <syntax-val>` or a :ref:`trap <syntax-tr
      \val^\ast \\&&|&
      \TRAP
    \end{array}
-
-.. note::
-   In the current version of WebAssembly, a result can consist of at most one value.
 
 
 .. index:: ! store, type instance, function instance, table instance, memory instance, global instance, module, allocation
@@ -342,7 +345,7 @@ It records its :ref:`type <syntax-globaltype>` and holds an individual :ref:`val
 .. math::
    \begin{array}{llll}
    \production{(global instance)} & \globalinst &::=&
-     \{ \GITYPE~\valtype, \GIVALUE~\val \} \\
+     \{ \GITYPE~\globaltype, \GIVALUE~\val \} \\
    \end{array}
 
 The value of mutable globals can be mutated through :ref:`variable instructions <syntax-instr-variable>` or by external means provided by the :ref:`embedder <embedder>`.
@@ -513,10 +516,11 @@ and a reference to the function's own :ref:`module instance <syntax-moduleinst>`
    \production{(activation)} & \X{activation} &::=&
      \FRAME_n\{\frame\} \\
    \production{(frame)} & \frame &::=&
-     \{ \ALOCALS~\val^\ast, \AMODULE~\moduleinst \} \\
+     \{ \ALOCALS~(\val^?)^\ast, \AMODULE~\moduleinst \} \\
    \end{array}
 
-The values of the locals are mutated by respective :ref:`variable instructions <syntax-instr-variable>`.
+Locals may be uninitialized, in which case they are empty.
+Locals are mutated by respective :ref:`variable instructions <syntax-instr-variable>`.
 
 
 .. _exec-expand:

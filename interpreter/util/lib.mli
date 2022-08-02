@@ -1,6 +1,6 @@
 (* Things that should be in the OCaml library... *)
 
-type void
+type void = |
 
 module Fun :
 sig
@@ -27,6 +27,7 @@ sig
   val index_where : ('a -> bool) -> 'a list -> int option
   val map_filter : ('a -> 'b option) -> 'a list -> 'b list
   val concat_map : ('a -> 'b list) -> 'a list -> 'b list
+  val pairwise : ('a -> 'a -> 'b) -> 'a list -> 'b list
 end
 
 module List32 :
@@ -34,6 +35,7 @@ sig
   val make : int32 -> 'a -> 'a list
   val length : 'a list -> int32
   val nth : 'a list -> int32 -> 'a (* raises Failure *)
+  val replace : 'a list -> int32 -> 'a -> 'a list (* raises Failure *)
   val take : int32 -> 'a list -> 'a list (* raises Failure *)
   val drop : int32 -> 'a list -> 'a list (* raises Failure *)
   val mapi : (int32 -> 'a -> 'b) -> 'a list -> 'b list

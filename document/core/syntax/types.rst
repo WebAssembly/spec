@@ -38,7 +38,6 @@ whereas types represented with type addresses are referred to as *semantic types
 It is an invariant of the semantics that no syntactic type refers to a semantic type and vice versa, i.e., both universes are disjoint.
 Syntactic types are transformed into semantic types during module :ref:`instantiation <exec-instantiation>`.
 
-
 .. _notation-subst:
 
 Convention
@@ -49,6 +48,69 @@ The following notation expresses conversion between syntactic and semantic types
 * :math:`t[x^\ast \subst a^\ast]` denotes the parallel substitution of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`type addresses <syntax-typeaddr>` :math:`a^\ast`, provided :math:`|x^\ast| = |a^\ast|`.
 
 * :math:`t[\subst a^\ast]` is shorthand for the substitution :math:`t[x^\ast \subst a^\ast]` where :math:`x^\ast = 0 \cdots (|a^\ast| - 1)`.
+
+
+.. index:: ! number type, integer, floating-point, IEEE 754, bit width, memory
+   pair: abstract syntax; number type
+   pair: number; type
+.. _syntax-numtype:
+
+Number Types
+~~~~~~~~~~~~
+
+*Number types* classify numeric values.
+
+.. math::
+   \begin{array}{llll}
+   \production{number type} & \numtype &::=&
+     \I32 ~|~ \I64 ~|~ \F32 ~|~ \F64 \\
+   \end{array}
+
+The types |I32| and |I64| classify 32 and 64 bit integers, respectively.
+Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.
+
+The types |F32| and |F64| classify 32 and 64 bit floating-point data, respectively.
+They correspond to the respective binary floating-point representations, also known as *single* and *double* precision, as defined by the |IEEE754|_ standard (Section 3.3).
+
+Number types are *transparent*, meaning that their bit patterns can be observed.
+Values of number type can be stored in :ref:`memories <syntax-mem>`.
+
+.. _bitwidth:
+
+Conventions
+...........
+
+* The notation :math:`|t|` denotes the *bit width* of a number type :math:`t`.
+  That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.
+
+
+.. index:: ! vector type, integer, floating-point, IEEE 754, bit width, memory, SIMD
+   pair: abstract syntax; number type
+   pair: number; type
+.. _syntax-vectype:
+
+Vector Types
+~~~~~~~~~~~~
+
+*Vector types* classify vectors of :ref:`numeric <syntax-numtype>` values processed by vector instructions (also known as *SIMD* instructions, single instruction multiple data).
+
+.. math::
+   \begin{array}{llll}
+   \production{vector type} & \vectype &::=&
+     \V128 \\
+   \end{array}
+
+The type |V128| corresponds to a 128 bit vector of packed integer or floating-point data. The packed data
+can be interpreted as signed or unsigned integers, single or double precision floating-point
+values, or a single 128 bit type. The interpretation is determined by individual operations.
+
+Vector types, like :ref:`number types <syntax-numtype>` are *transparent*, meaning that their bit patterns can be observed.
+Values of vector type can be stored in :ref:`memories <syntax-mem>`.
+
+Conventions
+...........
+
+* The notation :math:`|t|` for :ref:`bit width <bitwidth>` extends to vector types as well, that is, :math:`|\V128| = 128`.
 
 
 .. index:: ! heap type, store, type identifier
@@ -77,6 +139,7 @@ A *concrete* heap type consists of a :ref:`type identifier <syntax-typeid>` and 
    pair: abstract syntax; reference type
    pair: reference; type
 .. _syntax-reftype:
+.. _syntax-nullable:
 
 Reference Types
 ~~~~~~~~~~~~~~~
@@ -98,39 +161,7 @@ Reference types are *opaque*, meaning that neither their size nor their bit patt
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
 
 
-.. index:: ! number type, integer, floating-point, IEEE 754, bit width, memory
-   pair: abstract syntax; number type
-   pair: number; type
-.. _syntax-numtype:
-
-Number Types
-~~~~~~~~~~~~
-
-*Number types* classify numeric values.
-
-.. math::
-   \begin{array}{llll}
-   \production{number type} & \numtype &::=&
-     \I32 ~|~ \I64 ~|~ \F32 ~|~ \F64 \\
-   \end{array}
-
-The types |I32| and |I64| classify 32 and 64 bit integers, respectively.
-Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.
-
-The types |F32| and |F64| classify 32 and 64 bit floating-point data, respectively.
-They correspond to the respective binary floating-point representations, also known as *single* and *double* precision, as defined by the |IEEE754|_ standard (Section 3.3).
-
-Number types are *transparent*, meaning that their bit patterns can be observed.
-Values of number type can be stored in :ref:`memories <syntax-mem>`.
-
-Conventions
-...........
-
-* The notation :math:`|t|` denotes the *bit width* of a number type :math:`t`.
-  That is, :math:`|\I32| = |\F32| = 32` and :math:`|\I64| = |\F64| = 64`.
-
-
-.. index:: ! value type, number type, reference type, ! bottom type
+.. index:: ! value type, number type, vector type, reference type, ! bottom type
    pair: abstract syntax; value type
    pair: value; type
 .. _syntax-valtype:
@@ -140,7 +171,7 @@ Value Types
 ~~~~~~~~~~~
 
 *Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
-They are either :ref:`number types <syntax-numtype>`, :ref:`reference type <syntax-reftype>`, or the unique *bottom type*, written :math:`\BOT`.
+They are either :ref:`number types <syntax-numtype>`, :ref:`vector types <syntax-vectype>`, :ref:`reference types <syntax-reftype>`, or the unique *bottom type*, written :math:`\BOT`.
 
 The type :math:`\BOT` is a :ref:`subtype <match-valtype>` of all other types.
 By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
@@ -149,7 +180,7 @@ it only occurs during :ref:`validation <valid>`, as a possible operand type for 
 .. math::
    \begin{array}{llll}
    \production{value type} & \valtype &::=&
-     \numtype ~|~ \reftype ~|~ \BOT \\
+     \numtype ~|~ \vectype ~|~ \reftype ~|~ \BOT \\
    \end{array}
 
 Conventions
@@ -174,6 +205,55 @@ which is a sequence of values, written with brackets.
    \production{result type} & \resulttype &::=&
      [\vec(\valtype)] \\
    \end{array}
+
+
+.. index:: ! instruction type, value type, result type, instruction, local, local index
+   pair: abstract syntax; instruction type
+   pair: instruction; type
+.. _syntax-instrtype:
+
+Instruction Types
+~~~~~~~~~~~~~~~~~
+
+*Instruction types* classify the behaviour of :ref:`instructions <syntax-instr>` or instruction sequences, by describing how they manipulate the :ref:`operand stack <stack>` and the initialization status of :ref:`locals <syntax-local>`:
+
+.. math::
+   \begin{array}{llll}
+   \production{instruction type} & \instrtype &::=&
+     \resulttype \to_{\localidx^\ast} \resulttype \\
+   \end{array}
+
+An instruction type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
+and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
+Moreover, it enumerates the :ref:`indices <syntax-localidx>` :math:`x^\ast` of locals that have been set by the instruction or sequence.
+
+.. note::
+   Instruction types are only used for :ref:`validation <valid>`,
+   they do not occur in programs.
+
+
+.. index:: ! local type, value type, local, local index
+   pair: abstract syntax; local type
+   pair: local; type
+.. _syntax-init:
+.. _syntax-localtype:
+
+Local Types
+~~~~~~~~~~~
+
+*Local types* classify :ref:`locals <syntax-local>`, by describing their :ref:`value type <syntax-valtype>` as well as their *initialization status*:
+
+.. math::
+   \begin{array}{llll}
+   \production{(initialization status)} & \init &::=&
+     \SET ~|~ \UNSET \\
+   \production{(local type)} & \localtype &::=&
+     \init~\valtype \\
+   \end{array}
+
+.. note::
+   Local types are only used for :ref:`validation <valid>`,
+   they do not occur in programs.
 
 
 .. index:: ! function type, value type, vector, function, parameter, result, result type

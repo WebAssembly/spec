@@ -9,6 +9,42 @@ On most types, a simple notion of subtyping is defined that is applicable in val
 .. todo:: externtype matching is used on semantic types; need to define how to reinterpret C for semantic types
 
 
+.. index:: number type
+.. _match-numtype:
+
+Number Types
+~~~~~~~~~~~~
+
+A :ref:`number type <syntax-numtype>` :math:`\numtype_1` matches a :ref:`number type <syntax-numtype>` :math:`\numtype_2` if and only if:
+
+* Both :math:`\numtype_1` and :math:`\numtype_2` are the same.
+
+.. math::
+   ~\\[-1ex]
+   \frac{
+   }{
+     C \vdashnumtypematch \numtype \matchesvaltype \numtype
+   }
+
+
+.. index:: vector type
+.. _match-vectortype:
+
+Vector Types
+~~~~~~~~~~~~
+
+A :ref:`vector type <syntax-vectype>` :math:`\vectype_1` matches a :ref:`vector type <syntax-vectype>` :math:`\vectype_2` if and only if:
+
+* Both :math:`\vectype_1` and :math:`\vectype_2` are the same.
+
+.. math::
+   ~\\[-1ex]
+   \frac{
+   }{
+     C \vdashvectypematch \vectype \matchesvaltype \vectype
+   }
+
+
 .. index:: heap type
 .. _match-heaptype:
 
@@ -73,24 +109,6 @@ A :ref:`reference type <syntax-reftype>` :math:`\REF~\NULL_1^?~heaptype_1` match
      C \vdashheaptypematch \heaptype_1 \matchesheaptype \heaptype_2
    }{
      C \vdashreftypematch \REF~\NULL~\heaptype_1 \matchesreftype \REF~\NULL^?~\heaptype_2
-   }
-
-
-.. index:: number type
-.. _match-numtype:
-
-Number Types
-~~~~~~~~~~~~
-
-A :ref:`number type <syntax-numtype>` :math:`\numtype_1` matches a :ref:`number type <syntax-numtype>` :math:`\numtype_2` if and only if:
-
-* Both :math:`\numtype_1` and :math:`\numtype_2` are the same.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-   }{
-     C \vdashnumtypematch \numtype \matchesvaltype \numtype
    }
 
 

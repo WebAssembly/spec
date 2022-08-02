@@ -3,9 +3,9 @@
 This directory contains the source code for the WebAssembly spec documents, as served from the [webassembly.github.io/spec](https://webassembly.github.io/spec) pages.
 It uses [Sphinx](http://www.sphinx-doc.org/) and [Bikeshed](https://github.com/tabatkins/bikeshed).
 
-To install Sphinx:
+To install Sphinx (and required library six):
 ```
-pip install sphinx
+pip install sphinx six
 ```
 
 To install Bikeshed, see the instructions [here](https://tabatkins.github.io/bikeshed/#installing).
@@ -42,7 +42,7 @@ pipenv shell
 Install Python dependencies:
 
 ```
-pipenv install Sphinx==3.5.2
+pipenv install Sphinx==4.0.0 six
 ```
 
 ### Checking out the repository

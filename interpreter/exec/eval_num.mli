@@ -1,7 +1,5 @@
 open Value
 
-exception TypeError of int * num * Types.num_type
-
 val eval_unop : Ast.unop -> num -> num
 val eval_binop : Ast.binop -> num -> num -> num
 val eval_testop : Ast.testop -> num -> bool

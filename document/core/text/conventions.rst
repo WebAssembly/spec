@@ -10,7 +10,7 @@ A text string is a well-formed description of a module if and only if it is gene
 Each production of this grammar has at most one synthesized attribute: the abstract syntax that the respective character sequence expresses.
 Thus, the attribute grammar implicitly defines a *parsing* function.
 Some productions also take a :ref:`context <text-context>` as an inherited attribute
-that records bound :ref:`identifers <text-id>`.
+that records bound :ref:`identifiers <text-id>`.
 
 Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
 However, it also defines a number of *abbreviations* that are "syntactic sugar" over the core syntax.
@@ -61,11 +61,11 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 * A distinction is made between *lexical* and *syntactic* productions. For the latter, arbitrary :ref:`white space <text-space>` is allowed in any place where the grammar contains spaces. The productions defining :ref:`lexical syntax <text-lexical>` and the syntax of :Ref:`values <text-value>` are considered lexical, all others are syntactic.
 
 .. note::
-   For example, the :ref:`textual grammar <text-valtype>` for :ref:`value types <syntax-valtype>` is given as follows:
+   For example, the :ref:`textual grammar <text-numtype>` for :ref:`number types <syntax-numtype>` is given as follows:
 
    .. math::
      \begin{array}{llcll@{\qquad\qquad}l}
-     \production{value types} & \Tvaltype &::=&
+     \production{number types} & \Tnumtype &::=&
        \text{i32} &\Rightarrow& \I32 \\ &&|&
        \text{i64} &\Rightarrow& \I64 \\ &&|&
        \text{f32} &\Rightarrow& \F32 \\ &&|&
@@ -110,7 +110,7 @@ Contexts
 
 The text format allows the use of symbolic :ref:`identifiers <text-id>` in place of :ref:`indices <syntax-index>`.
 To resolve these identifiers into concrete indices,
-some grammar production are indexed by an *identifier context* :math:`I` as a synthesized attribute that records the declared identifiers in each :ref:`index space <syntax-index>`.
+some grammar productions are indexed by an *identifier context* :math:`I` as a synthesized attribute that records the declared identifiers in each :ref:`index space <syntax-index>`.
 In addition, the context records the types defined in the module, so that :ref:`parameter <text-param>` indices can be computed for :ref:`functions <text-func>`.
 
 It is convenient to define identifier contexts as :ref:`records <notation-record>` :math:`I` with abstract syntax as follows:

@@ -2,53 +2,52 @@
  * Simple collection of functions useful for writing test cases.
  *)
 
-open Types
+open Types.Sem
 open Value
 open Instance
 
 
-let global (GlobalType (t, _) as gt) =
+let global (GlobalT (_, t) as gt) =
   let v =
     match t with
-    | NumType I32Type -> Num (I32 666l)
-    | NumType I64Type -> Num (I64 666L)
-    | NumType F32Type -> Num (F32 (F32.of_float 666.6))
-    | NumType F64Type -> Num (F64 (F64.of_float 666.6))
-    | RefType (_, t) -> Ref (NullRef t)
-    | BotType -> assert false
+    | NumT I32T -> Num (I32 666l)
+    | NumT I64T -> Num (I64 666L)
+    | NumT F32T -> Num (F32 (F32.of_float 666.6))
+    | NumT F64T -> Num (F64 (F64.of_float 666.6))
+    | VecT V128T -> Vec (V128 (V128.I32x4.of_lanes [666l; 666l; 666l; 666l]))
+    | RefT (_, t) -> Ref (NullRef t)
+    | BotT -> assert false
   in Global.alloc gt v
 
 let table =
-  Table.alloc (TableType ({min = 10l; max = Some 20l}, (Nullable, FuncHeapType)))
-    (NullRef FuncHeapType)
-let memory = Memory.alloc (MemoryType {min = 1l; max = Some 2l})
-let func f ft = Func.alloc_host (Types.alloc (FuncDefType ft)) (f ft)
+  Table.alloc (TableT ({min = 10l; max = Some 20l}, (Null, FuncHT)))
+    (NullRef FuncHT)
+let memory = Memory.alloc (MemoryT {min = 1l; max = Some 2l})
+let func f ft = Func.alloc_host (Types.Sem.alloc (DefFuncT ft)) (f ft)
 
 let print_value v =
   Printf.printf "%s : %s\n"
-    (string_of_value v) (string_of_value_type (type_of_value v))
+    (string_of_value v) (string_of_val_type (type_of_value v))
 
-let print (FuncType (_, out)) vs =
+let print _ vs =
   List.iter print_value vs;
   flush_all ();
-  List.map default_value out
+  []
 
 
 let lookup name t =
   match Utf8.encode name, t with
-  | "print", _ -> ExternFunc (func print (FuncType ([], [])))
-  | "print_i32", _ -> ExternFunc (func print (FuncType ([NumType I32Type], [])))
-  | "print_i64", _ -> ExternFunc (func print (FuncType ([NumType I64Type], [])))
-  | "print_f32", _ -> ExternFunc (func print (FuncType ([NumType F32Type], [])))
-  | "print_f64", _ -> ExternFunc (func print (FuncType ([NumType F64Type], [])))
-  | "print_i32_f32", _ ->
-    ExternFunc (func print (FuncType ([NumType I32Type; NumType F32Type], [])))
-  | "print_f64_f64", _ ->
-    ExternFunc (func print (FuncType ([NumType F64Type; NumType F64Type], [])))
-  | "global_i32", _ -> ExternGlobal (global (GlobalType (NumType I32Type, Immutable)))
-  | "global_i64", _ -> ExternGlobal (global (GlobalType (NumType I64Type, Immutable)))
-  | "global_f32", _ -> ExternGlobal (global (GlobalType (NumType F32Type, Immutable)))
-  | "global_f64", _ -> ExternGlobal (global (GlobalType (NumType F64Type, Immutable)))
+  | "print", _ -> ExternFunc (func print (FuncT ([], [])))
+  | "print_i32", _ -> ExternFunc (func print (FuncT ([NumT I32T], [])))
+  | "print_i64", _ -> ExternFunc (func print (FuncT ([NumT I64T], [])))
+  | "print_f32", _ -> ExternFunc (func print (FuncT ([NumT F32T], [])))
+  | "print_f64", _ -> ExternFunc (func print (FuncT ([NumT F64T], [])))
+  | "print_i32_f32", _ -> ExternFunc (func print (FuncT ([NumT I32T; NumT F32T], [])))
+  | "print_f64_f64", _ -> ExternFunc (func print (FuncT ([NumT F64T; NumT F64T], [])))
+  | "global_i32", _ -> ExternGlobal (global (GlobalT (Cons, NumT I32T)))
+  | "global_i64", _ -> ExternGlobal (global (GlobalT (Cons, NumT I64T)))
+  | "global_f32", _ -> ExternGlobal (global (GlobalT (Cons, NumT F32T)))
+  | "global_f64", _ -> ExternGlobal (global (GlobalT (Cons, NumT F64T)))
   | "table", _ -> ExternTable table
   | "memory", _ -> ExternMemory memory
   | _ -> raise Not_found
