@@ -240,7 +240,7 @@ Import Subtyping
 
 When :ref:`instantiating <exec-module>` a module,
 :ref:`external values <syntax-externval>` must be provided whose :ref:`types <valid-externval>` are *matched* against the respective :ref:`external types <syntax-externtype>` classifying each import.
-In some cases, this allows for a simple form of subtyping, as defined here.
+In some cases, this allows for a simple form of subtyping (written ":math:`\matchesexterntype`" formally), as defined here.
 
 
 .. index:: limits
@@ -278,9 +278,6 @@ Limits
    }{
      \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1 \} \matcheslimits \{ \LMIN~n_2, \LMAX~m_2 \}
    }
-
-.. note::
-  In this context, read :math:`\matcheslimits` as “is the same type as or a subtype of”.
 
 .. _match-externtype:
 
