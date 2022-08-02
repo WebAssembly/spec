@@ -328,7 +328,7 @@ The |MSTART| component of a module declares the :ref:`function index <syntax-fun
 
 .. note::
    The start function is intended for initializing the state of a module.
-   The module and its exports are not accessible to the host before this initialization has completed.
+   The module and its exports are not accessible externally before this initialization has completed.
 
 
 .. index:: ! export, name, index, function index, table index, memory index, global index, function, table, memory, global, instantiation
