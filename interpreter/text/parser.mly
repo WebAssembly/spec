@@ -736,6 +736,9 @@ expr_list :
 const_expr :
   | instr_list { let at = at () in fun c -> $1 c @@ at }
 
+const_expr1 :
+  | instr instr_list { let at = at () in fun c -> ($1 c @ $2 c) @@ at }
+
 
 /* Functions */
 
@@ -895,8 +898,11 @@ table :
       fun () -> $4 c x at }
 
 table_fields :
-  | table_type
-    { fun c x at -> [{ttype = $1 c} @@ at], [], [], [] }
+  | table_type const_expr1
+    { fun c x at -> [{ttype = $1 c; tinit = $2 c} @@ at], [], [], [] }
+  | table_type  /* Sugar */
+    { fun c x at -> let TableT (_, (_, ht)) as ttype = $1 c in
+      [{ttype; tinit = [RefNull ht @@ at] @@ at} @@ at], [], [], [] }
   | inline_import table_type  /* Sugar */
     { fun c x at ->
       [], [],
@@ -911,8 +917,9 @@ table_fields :
       let einit = $4 c func in
       let size = Lib.List32.length einit in
       let emode = Active {index = x; offset} @@ at in
-      let etype = $1 c in
-      [{ttype = TableT ({min = size; max = Some size}, etype)} @@ at],
+      let (_, ht) as etype = $1 c in
+      let tinit = [RefNull ht @@ at] @@ at in
+      [{ttype = TableT ({min = size; max = Some size}, etype); tinit} @@ at],
       [{etype; einit; emode} @@ at],
       [], [] }
   | ref_type LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
@@ -921,8 +928,9 @@ table_fields :
       let einit = (fun c -> $4 c :: $5 c) c in
       let size = Lib.List32.length einit in
       let emode = Active {index = x; offset} @@ at in
-      let etype = $1 c in
-      [{ttype = TableT ({min = size; max = Some size}, etype)} @@ at],
+      let (_, ht) as etype = $1 c in
+      let tinit = [RefNull ht @@ at] @@ at in
+      [{ttype = TableT ({min = size; max = Some size}, etype); tinit} @@ at],
       [{etype; einit; emode} @@ at],
       [], [] }
 

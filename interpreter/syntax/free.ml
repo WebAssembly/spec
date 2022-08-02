@@ -138,7 +138,7 @@ let const (c : const) = block c.it
 let global (g : global) = global_type g.it.gtype ++ const g.it.ginit
 let func (f : func) =
   {(types (idx f.it.ftype) ++ block f.it.body) with locals = Set.empty}
-let table (t : table) = table_type t.it.ttype
+let table (t : table) = table_type t.it.ttype ++ const t.it.tinit
 let memory (m : memory) = memory_type m.it.mtype
 
 let segment_mode f (m : segment_mode) =

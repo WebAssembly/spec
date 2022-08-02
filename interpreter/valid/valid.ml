@@ -120,8 +120,7 @@ let check_func_type (c : context) (ft : func_type) at =
 let check_table_type (c : context) (tt : table_type) at =
   let TableT (lim, t) = tt in
   check_limits lim 0xffff_ffffl at "table size must be at most 2^32-1";
-  check_ref_type c t at;
-  require (defaultable (RefT t)) at "non-defaultable element type"
+  check_ref_type c t at
 
 let check_memory_type (c : context) (mt : memory_type) at =
   let MemoryT lim = mt in
@@ -723,8 +722,10 @@ let check_const (c : context) (const : const) (t : val_type) =
 (* Tables, Memories, & Globals *)
 
 let check_table (c : context) (tab : table) =
-  let {ttype} = tab.it in
-  check_table_type c ttype tab.at
+  let {ttype; tinit} = tab.it in
+  check_table_type c ttype tab.at;
+  let TableT (_lim, rt) = ttype in
+  check_const c tinit (RefT rt)
 
 let check_memory (c : context) (mem : memory) =
   let {mtype} = mem.it in

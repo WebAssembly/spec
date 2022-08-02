@@ -165,7 +165,7 @@ The following rules, now defined in terms of heap types, replace and extend the 
 
 * Function-level locals must have a type that is defaultable.
 
-* TODO: Table definitions with a type that is not defaultable must have an initialiser value. (Imports are not affected.)
+* Table definitions with a type that is not defaultable must have an initialiser value. (Imports are not affected.)
 
 
 #### Local Types
@@ -283,9 +283,13 @@ A subsumption rule allows to go to a supertype for any instruction:
 
 ### Tables
 
-* TODO: Table definitions have an initialiser value: `(table <tabletype> <constexpr>)`
+Table definitions have an initialiser value:
+
+* `(table <tabletype> <constexpr>)` is an extended form of table definition
   - `(table <limits> <reftype> <constexpr>) ok` iff `<limits> <reftype> ok` and `<constexpr> : <reftype>`
-  - `(table <tabletype>)` is shorthand for `(table <tabletype> (ref.null))`
+
+* `(table <tabletype>)` is shorthand for `(table <tabletype> (ref.null <heaptype>))`, where `<heaptype>` is the element heap type contained in `<tabletype>`
+  - note: the typing rule above implies that this only validates if the table's reference type is nullable
 
 
 ## Binary Format
@@ -323,7 +327,15 @@ The opcode for heap types is encoded as an `s33`.
 
 ### Tables
 
-TODO.
+Entries to the table section are extended as follows:
+
+| Table Definition | Note |
+|------------------|------|
+| tabletype        | null-initialized table (as before) |
+| 0x40 0x00 tabletype constexpr | explicitly initialized table |
+
+The encoding of a table type starts with the encoding of a reference type, which cannot be 0x40 (since this is a pseudo type code otherwise only used in block types). Consequently, both forms can be distinguished by the first byte.
+The second byte is reserved for possible future extensions.
 
 
 ## JS API

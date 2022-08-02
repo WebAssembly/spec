@@ -798,8 +798,11 @@ struct
   (* Table section *)
 
   let table tab =
-    let {ttype} = tab.it in
-    table_type ttype
+    let {ttype; tinit} = tab.it in
+    match ttype, tinit.it with
+    | TableT (_, (_, ht1)), [{it = RefNull ht2; _}] when ht1 = ht2 ->
+      table_type ttype
+    | _ -> op 0x40; op 0x00; table_type ttype; const tinit
 
   let table_section tabs =
     section 4 (vec table) tabs (tabs <> [])

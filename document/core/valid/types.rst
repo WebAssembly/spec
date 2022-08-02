@@ -479,19 +479,3 @@ Value Types
    }{
      C \vdashvaltypedefaultable (\REF~\NULL~\heaptype) \defaultable
    }
-
-
-Table Types
-...........
-
-* A defaultable :ref:`table type <syntax-tabletype>` must be:
-
-  - of the form :math:`\limits~t`, where `t` is a :ref:`defaultable <valid-defaultable>` :ref:`reference type <syntax-numtype>`.
-
-
-.. math::
-   \frac{
-     C \vdashvaltypedefaultable \reftype \defaultable
-   }{
-     C \vdashtabletypedefaultable \limits~\reftype \defaultable
-   }

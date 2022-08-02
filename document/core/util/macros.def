@@ -289,6 +289,7 @@
 .. |LTYPE| mathdef:: \xref{syntax/modules}{syntax-local}{\K{type}}
 
 .. |TTYPE| mathdef:: \xref{syntax/modules}{syntax-table}{\K{type}}
+.. |TINIT| mathdef:: \xref{syntax/modules}{syntax-table}{\K{init}}
 
 .. |MTYPE| mathdef:: \xref{syntax/modules}{syntax-mem}{\K{type}}
 
@@ -937,7 +938,6 @@
 .. |vdashinstrtype| mathdef:: \xref{valid/instructions}{valid-instrtype}{\vdash}
 
 .. |vdashvaltypedefaultable| mathdef:: \xref{valid/types}{valid-defaultable}{\vdash}
-.. |vdashtabletypedefaultable| mathdef:: \xref{valid/types}{valid-defaultable}{\vdash}
 
 .. |vdashnumtypematch| mathdef:: \xref{valid/matching}{match-numtype}{\vdash}
 .. |vdashvectypematch| mathdef:: \xref{valid/matching}{match-vectype}{\vdash}

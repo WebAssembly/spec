@@ -758,9 +758,14 @@ let create_func (inst : module_inst) (f : func) : func_inst =
   Func.alloc (type_ inst f.it.ftype) (Lib.Promise.make ()) f
 
 let create_table (inst : module_inst) (tab : table) : table_inst =
-  let {ttype} = tab.it in
-  let TableT (_lim, (_nul, t)) as tt = Types.Sem.sem_table_type inst.types ttype in
-  Table.alloc tt (NullRef t)
+  let {ttype; tinit} = tab.it in
+  let tt = Types.Sem.sem_table_type inst.types ttype in
+  let r =
+    match eval_const inst tinit with
+    | Ref r -> r
+    | _ -> Crash.error tinit.at "non-reference table initializer"
+  in
+  Table.alloc tt r
 
 let create_memory (inst : module_inst) (mem : memory) : memory_inst =
   let {mtype} = mem.it in

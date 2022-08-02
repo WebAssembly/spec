@@ -538,9 +538,9 @@ let func f =
 (* Tables & memories *)
 
 let table off i tab =
-  let {ttype = TableT (lim, t)} = tab.it in
+  let {ttype = TableT (lim, t); tinit} = tab.it in
   Node ("table $" ^ nat (off + i) ^ " " ^ limits nat32 lim,
-    [atom ref_type t]
+    atom ref_type t :: list instr tinit.it
   )
 
 let memory off i mem =
@@ -598,7 +598,7 @@ let import_desc fx tx mx gx d =
   | FuncImport x ->
     incr fx; Node ("func $" ^ nat (!fx - 1), [Node ("type", [atom var x])])
   | TableImport t ->
-    incr tx; table 0 (!tx - 1) ({ttype = t} @@ d.at)
+    incr tx; table 0 (!tx - 1) ({ttype = t; tinit = [] @@ d.at} @@ d.at)
   | MemoryImport t ->
     incr mx; memory 0 (!mx - 1) ({mtype = t} @@ d.at)
   | GlobalImport t ->

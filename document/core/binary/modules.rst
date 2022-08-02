@@ -210,8 +210,16 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |MTA
    \production{table section} & \Btablesec &::=&
      \X{tab}^\ast{:}\Bsection_4(\Bvec(\Btable)) &\Rightarrow& \X{tab}^\ast \\
    \production{table} & \Btable &::=&
-     \X{tt}{:}\Btabletype &\Rightarrow& \{ \TTYPE~\X{tt} \} \\
+     \X{tt}{:}\Btabletype
+       &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~(\REFNULL~\X{ht}) \}
+         \qquad \iff \X{tt} = \limits~(\REF~\NULL^?~\X{ht}) \\
+     \hex{40}~~\X{tt}{:}\Btabletype~~e{:}\Bexpr
+       &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~e \} \\
    \end{array}
+
+.. note::
+   The encoding of a table type cannot start with byte :math:`\hex{40}`,
+   hence decoding is unambiguous.
 
 
 .. index:: ! memory section, memory, memory type
