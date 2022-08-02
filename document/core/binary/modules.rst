@@ -405,15 +405,15 @@ denoting *count* locals of the same value type.
      \X{size}{:}\Bu32~~\X{code}{:}\Bfunc
        &\Rightarrow& \X{code} & (\iff \X{size} = ||\Bfunc||) \\
    \production{function} & \Bfunc &::=&
-     (t^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
-       &\Rightarrow& \concat((t^\ast)^\ast), e
-         & (\iff |\concat((t^\ast)^\ast)| < 2^{32}) \\
+     (\local^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
+       &\Rightarrow& \concat((\local^\ast)^\ast), e
+         & (\iff |\concat((\local^\ast)^\ast)| < 2^{32}) \\
    \production{locals} & \Blocals &::=&
-     n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& t^n \\
+     n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& \{ \LTYPE~t \}^n \\
    \end{array}
 
 Here, :math:`\X{code}` ranges over pairs :math:`(\valtype^\ast, \expr)`.
-The meta function :math:`\concat((t^\ast)^\ast)` concatenates all sequences :math:`t_i^\ast` in :math:`(t^\ast)^\ast`.
+The meta function :math:`\concat((\local^\ast)^\ast)` concatenates all sequences :math:`\local_i^\ast` in :math:`(\local^\ast)^\ast`.
 Any code for which the length of the resulting sequence is out of bounds of the maximum size of a :ref:`vector <syntax-vec>` is malformed.
 
 .. note::

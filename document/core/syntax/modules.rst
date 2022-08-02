@@ -142,7 +142,9 @@ The |MFUNCS| component of a module defines a vector of *functions* with the foll
 .. math::
    \begin{array}{llll}
    \production{function} & \func &::=&
-     \{ \FTYPE~\typeidx, \FLOCALS~\vec(\valtype), \FBODY~\expr \} \\
+     \{ \FTYPE~\typeidx, \FLOCALS~\vec(\local), \FBODY~\expr \} \\
+   \production{local} & \local &::=&
+     \{ \LTYPE~\valtype \} \\
    \end{array}
 
 The |FTYPE| of a function declares its signature by reference to a :ref:`type <syntax-type>` defined in the module.

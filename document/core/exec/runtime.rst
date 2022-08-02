@@ -51,14 +51,16 @@ or *external references* pointing to an uninterpreted form of :ref:`extern addre
 
 .. _default-val:
 
-Each :ref:`value type <syntax-valtype>` has an associated *default value*;
-it is the respective value :math:`0` for :ref:`number types <syntax-numtype>`, :math:`0` for :ref:`vector types <syntax-vectype>`, and null for :ref:`reference types <syntax-reftype>`.
+:ref:`Value types <syntax-valtype>` can have an associated *default value*;
+it is the respective value :math:`0` for :ref:`number types <syntax-numtype>`, :math:`0` for :ref:`vector types <syntax-vectype>`, and null for nullable :ref:`reference types <syntax-reftype>`.
+For other references, no default value is defined, :math:`\default_t` hence is an optional value :math:`\val^?`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    \default_t &=& t{.}\CONST~0 & (\iff t = \numtype) \\
    \default_t &=& t{.}\CONST~0 & (\iff t = \vectype) \\
    \default_t &=& \REFNULL~t & (\iff t = (\REF~\NULL~\heaptype)) \\
+   \default_t &=& \epsilon & (\iff t = (\REF~\heaptype)) \\
    \end{array}
 
 
@@ -493,10 +495,11 @@ and a reference to the function's own :ref:`module instance <syntax-moduleinst>`
    \production{(activation)} & \X{activation} &::=&
      \FRAME_n\{\frame\} \\
    \production{(frame)} & \frame &::=&
-     \{ \ALOCALS~\val^\ast, \AMODULE~\moduleinst \} \\
+     \{ \ALOCALS~(\val^?)^\ast, \AMODULE~\moduleinst \} \\
    \end{array}
 
-The values of the locals are mutated by respective :ref:`variable instructions <syntax-instr-variable>`.
+Locals may be uninitialized, in which case they are empty.
+Locals are mutated by respective :ref:`variable instructions <syntax-instr-variable>`.
 
 
 .. _exec-expand:

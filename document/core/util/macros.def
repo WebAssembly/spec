@@ -172,7 +172,7 @@
 .. Types, terminals
 
 .. |to| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
- 
+
 .. |BOT| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{bot}}
 
 .. |I8| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\K{i8}}
@@ -200,6 +200,9 @@
 .. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
 .. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{const}}
 
+.. |SET| mathdef:: \xref{syntax/types}{syntax-init}{\mathrel{\mbox{set}}}
+.. |UNSET| mathdef:: \xref{syntax/types}{syntax-init}{\mathrel{\mbox{unset}}}
+
 .. |LMIN| mathdef:: \xref{syntax/types}{syntax-limits}{\K{min}}
 .. |LMAX| mathdef:: \xref{syntax/types}{syntax-limits}{\K{max}}
 
@@ -225,7 +228,10 @@
 
 .. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
 .. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mut}}
+.. |init| mathdef:: \xref{syntax/types}{syntax-init}{\X{init}}
 
+.. |instrtype| mathdef:: \xref{syntax/types}{syntax-instrtype}{\X{instrtype}}
+.. |localtype| mathdef:: \xref{syntax/types}{syntax-localtype}{\X{localtype}}
 .. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
 
 
@@ -280,6 +286,8 @@
 .. |FLOCALS| mathdef:: \xref{syntax/modules}{syntax-func}{\K{locals}}
 .. |FBODY| mathdef:: \xref{syntax/modules}{syntax-func}{\K{body}}
 
+.. |LTYPE| mathdef:: \xref{syntax/modules}{syntax-local}{\K{type}}
+
 .. |TTYPE| mathdef:: \xref{syntax/modules}{syntax-table}{\K{type}}
 
 .. |MTYPE| mathdef:: \xref{syntax/modules}{syntax-mem}{\K{type}}
@@ -326,6 +334,7 @@
 .. |module| mathdef:: \xref{syntax/modules}{syntax-module}{\X{module}}
 .. |type| mathdef:: \xref{syntax/types}{syntax-functype}{\X{type}}
 .. |func| mathdef:: \xref{syntax/modules}{syntax-func}{\X{func}}
+.. |local| mathdef:: \xref{syntax/modules}{syntax-local}{\X{local}}
 .. |table| mathdef:: \xref{syntax/modules}{syntax-table}{\X{table}}
 .. |mem| mathdef:: \xref{syntax/modules}{syntax-mem}{\X{mem}}
 .. |global| mathdef:: \xref{syntax/modules}{syntax-global}{\X{global}}
@@ -925,6 +934,8 @@
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
 .. |vdashexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\vdash}
 
+.. |vdashinstrtype| mathdef:: \xref{valid/instructions}{valid-instrtype}{\vdash}
+
 .. |vdashvaltypedefaultable| mathdef:: \xref{valid/types}{valid-defaultable}{\vdash}
 .. |vdashtabletypedefaultable| mathdef:: \xref{valid/types}{valid-defaultable}{\vdash}
 
@@ -949,6 +960,7 @@
 
 .. |vdashtypes| mathdef:: \xref{valid/modules}{valid-types}{\vdash}
 .. |vdashfunc| mathdef:: \xref{valid/modules}{valid-func}{\vdash}
+.. |vdashlocal| mathdef:: \xref{valid/modules}{valid-local}{\vdash}
 .. |vdashtable| mathdef:: \xref{valid/modules}{valid-table}{\vdash}
 .. |vdashmem| mathdef:: \xref{valid/modules}{valid-mem}{\vdash}
 .. |vdashglobal| mathdef:: \xref{valid/modules}{valid-global}{\vdash}

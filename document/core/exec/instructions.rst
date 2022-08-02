@@ -1043,7 +1043,7 @@ Variable Instructions
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-local.get>`, :math:`F.\ALOCALS[x]` exists.
+2. Assert: due to :ref:`validation <valid-local.get>`, :math:`F.\ALOCALS[x]` exists and is non-empty.
 
 3. Let :math:`\val` be the value :math:`F.\ALOCALS[x]`.
 
@@ -3007,7 +3007,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 3. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\FITYPE`.
 
-4. Let :math:`t^\ast` be the list of :ref:`value types <syntax-valtype>` :math:`f.\FICODE.\FLOCALS`.
+4. Let :math:`\local^\ast` be the list of :ref:`locals <syntax-local>` :math:`f.\FICODE.\FLOCALS`.
 
 5. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\FICODE.\FBODY`.
 
@@ -3015,15 +3015,13 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 7. Pop the values :math:`\val^n` from the stack.
 
-8. Let :math:`\val_0^\ast` be the list of zero values of types :math:`t^\ast`.
+8. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~f.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
 
-9. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~f.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
+9. Push the activation of :math:`F` with arity :math:`m` to the stack.
 
-10. Push the activation of :math:`F` with arity :math:`m` to the stack.
+10. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
 
-11. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
-
-12. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
+11. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
 
 .. math::
    ~\\[-1ex]
@@ -3035,10 +3033,13 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\SFUNCS[a] = f \\
      \wedge & f.\FITYPE = [t_1^n] \to [t_2^m] \\
-     \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~t^k, \FBODY~\instr^\ast~\END \} \\
+     \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(\default_t)^k \})
      \end{array} \\
    \end{array}
+
+.. note::
+   For non-defaultable types, the respective local is left uninitialized by these rules.
 
 
 .. _exec-invoke-exit:

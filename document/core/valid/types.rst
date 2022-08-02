@@ -146,7 +146,7 @@ Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number type <va
    }
 
 
-.. index:: block type
+.. index:: block type, instruction type
    pair: validation; block type
    single: abstract syntax; block type
 .. _valid-blocktype:
@@ -154,20 +154,22 @@ Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number type <va
 Block Types
 ~~~~~~~~~~~
 
-:ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to plain :ref:`function types <syntax-functype>` by the following rules.
+:ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to :ref:`instruction types <syntax-instrtype>` by the following rules.
 
 :math:`\typeidx`
 ................
 
 * The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
 
-* Then the block type is valid as :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
+
+* Then the block type is valid as :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\CTYPES[\typeidx] = \functype
+     C.\CTYPES[\typeidx] = [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdashblocktype \typeidx : \functype
+     C \vdashblocktype \typeidx : [t_1^\ast] \to [t_2^\ast]
    }
 
 
@@ -176,7 +178,7 @@ Block Types
 
 * The value type :math:`\valtype` must either be absent, or :ref:`valid <valid-valtype>`.
 
-* Then the block type is valid as :ref:`function type <syntax-functype>` :math:`[] \to [\valtype^?]`.
+* Then the block type is valid as :ref:`instruction type <syntax-instrtype>` :math:`[] \to [\valtype^?]`.
 
 .. math::
    \frac{
@@ -206,6 +208,64 @@ Result Types
      (C \vdashvaltype t \ok)^\ast
    }{
      C \vdashresulttype [t^\ast] \ok
+   }
+
+
+.. index:: instruction type
+   pair: validation; instruction type
+   single: abstract syntax; instruction type
+.. _valid-instrtype:
+
+Instruction Types
+~~~~~~~~~~~~~~~~~
+
+:math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`
+..........................................
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* Each :ref:`local index <syntax-localidx>` :math:`x_i` in :math:`x^\ast` must be defined in the context.
+
+* Then the instruction type is valid.
+
+.. math::
+   \frac{
+     C \vdashvaltype [t_1^\ast] \ok
+     \qquad
+     C \vdashvaltype [t_2^\ast] \ok
+     \qquad
+     (C.\CLOCALS[x] = \localtype)^\ast
+   }{
+     C \vdashfunctype [t_1^\ast] \to_{x^\ast} [t_2^\ast] \ok
+   }
+
+
+.. index:: function type
+   pair: validation; function type
+   single: abstract syntax; function type
+.. _valid-functype:
+
+Function Types
+~~~~~~~~~~~~~~
+
+:math:`[t_1^\ast] \to [t_2^\ast]`
+.................................
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* Then the function type is valid.
+
+.. math::
+   \frac{
+     C \vdashvaltype [t_1^\ast] \ok
+     \qquad
+     C \vdashvaltype [t_2^\ast] \ok
+   }{
+     C \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok
    }
 
 
@@ -241,33 +301,6 @@ Limits
      (n \leq m)^?
    }{
      C \vdashlimits \{ \LMIN~n, \LMAX~m^? \} : k
-   }
-
-
-.. index:: function type
-   pair: validation; function type
-   single: abstract syntax; function type
-.. _valid-functype:
-
-Function Types
-~~~~~~~~~~~~~~
-
-:math:`[t_1^\ast] \to [t_2^\ast]`
-.................................
-
-* The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
-
-* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be :ref:`valid <valid-resulttype>`.
-
-* Then the function type is valid.
-
-.. math::
-   \frac{
-     C \vdashvaltype [t_1^\ast] \ok
-     \qquad
-     C \vdashvaltype [t_2^\ast] \ok
-   }{
-     C \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok
    }
 
 

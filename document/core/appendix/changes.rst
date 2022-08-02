@@ -138,6 +138,17 @@ Added vector type and instructions that manipulate multiple numeric values in pa
 * New injection/projection :ref:`vector instructions <syntax-instr-vec>`: :math:`\K{i}\!N\!\K{x}\!M\!\K{.splat}`, :math:`\K{f}\!N\!\K{x}\!M\!\K{.splat}`, :math:`\K{i}\!N\!\K{x}\!M\!\K{.bitmask}`
 
 
+Release 2.1
+~~~~~~~~~~~
+
+.. index:: reference
+
+Typeful References
+..................
+
+.. todo:: describe
+
+
 .. [#proposal-signext]
    https://github.com/WebAssembly/spec/tree/main/proposals/sign-extension-ops/
 

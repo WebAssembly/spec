@@ -167,6 +167,55 @@ which is a sequence of values, written with brackets.
    \end{array}
 
 
+.. index:: ! instruction type, value type, result type, instruction, local, local index
+   pair: abstract syntax; instruction type
+   pair: instruction; type
+.. _syntax-instrtype:
+
+Instruction Types
+~~~~~~~~~~~~~~~~~
+
+*Instruction types* classify the behaviour of :ref:`instructions <syntax-instr>` or instruction sequences, by describing how they manipulate the :ref:`operand stack <stack>` and the initialization status of :ref:`locals <syntax-local>`:
+
+.. math::
+   \begin{array}{llll}
+   \production{instruction type} & \instrtype &::=&
+     \resulttype \to_{\localidx^\ast} \resulttype \\
+   \end{array}
+
+An instruction type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
+and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
+Moreover, it enumerates the :ref:`indices <syntax-localidx>` :math:`x^\ast` of locals that have been set by the instruction or sequence.
+
+.. note::
+   Instruction types are only used for :ref:`validation <valid>`,
+   they do not occur in programs.
+
+
+.. index:: ! local type, value type, local, local index
+   pair: abstract syntax; local type
+   pair: local; type
+.. _syntax-init:
+.. _syntax-localtype:
+
+Local Types
+~~~~~~~~~~~
+
+*Local types* classify :ref:`locals <syntax-local>`, by describing their :ref:`value type <syntax-valtype>` as well as their *initialization status*:
+
+.. math::
+   \begin{array}{llll}
+   \production{(initialization status)} & \init &::=&
+     \SET ~|~ \UNSET \\
+   \production{(local type)} & \localtype &::=&
+     \init~\valtype \\
+   \end{array}
+
+.. note::
+   Local types are only used for :ref:`validation <valid>`,
+   they do not occur in programs.
+
+
 .. index:: ! function type, value type, vector, function, parameter, result, result type
    pair: abstract syntax; function type
    pair: function; type
