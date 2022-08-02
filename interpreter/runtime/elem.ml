@@ -1,4 +1,4 @@
-type elem = Values.ref_ list ref
+type elem = Value.ref_ list ref
 type t = elem
 
 let alloc rs = ref rs
