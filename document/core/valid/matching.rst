@@ -1,5 +1,7 @@
 .. index:: ! matching, subtyping
 
+.. _match:
+
 Matching
 --------
 
