@@ -540,14 +540,14 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 * The instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`, for any sequences of :ref:`valid <valid-valtype>` :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
- .. math::
-    \frac{
+.. math::
+   \frac{
      S \vdashresulttype [t_1^\ast] \ok
      \qquad
      S \vdashresulttype [t_2^\ast] \ok
-    }{
-      S; C \vdashadmininstr \TRAP : [t_1^\ast] \to [t_2^\ast]
-    }
+   }{
+     S; C \vdashadmininstr \TRAP : [t_1^\ast] \to [t_2^\ast]
+   }
 
 
 .. index:: extern address
