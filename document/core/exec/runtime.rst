@@ -239,7 +239,7 @@ Type Instances
 ~~~~~~~~~~~~~~
 
 A *type instance* is the runtime representation of a :ref:`function type <syntax-functype>`.
-It is a :ref:`semantic type <syntax-typeid>` equivalent to the respective syntactic type that appeared in the module.
+It is a :ref:`semantic type <syntax-type-sem>` equivalent to the respective :ref:`syntactic type <syntax-type-syn>` that appeared in the module.
 
 .. math::
    \begin{array}{llll}

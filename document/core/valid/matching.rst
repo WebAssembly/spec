@@ -6,8 +6,6 @@ Matching
 
 On most types, a simple notion of subtyping is defined that is applicable in validation rules or during :ref:`module instantiation <exec-instantiation>` when checking the types of imports.
 
-.. todo:: externtype matching is used on semantic types; need to define how to reinterpret C for semantic types
-
 
 .. index:: heap type
 .. _match-heaptype:
