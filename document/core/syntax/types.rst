@@ -13,7 +13,8 @@ Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-in
 .. index:: ! type identifier, type index, type address
    pair: abstract syntax; type identifier
 .. _syntax-typeid:
-.. _syntax-semantic:
+.. _syntax-type-syn:
+.. _syntax-type-sem:
 
 Type Identifiers
 ~~~~~~~~~~~~~~~~

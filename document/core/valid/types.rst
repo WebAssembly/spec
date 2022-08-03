@@ -1,3 +1,5 @@
+.. _valid-type:
+
 Types
 -----
 
@@ -33,7 +35,7 @@ During validation, :ref:`type identifiers <syntax-typeid>` are represented as :r
    }
 
 .. note::
-   :ref:`Semantic types <syntax-typeid>` do not arise during validation.
+   :ref:`Semantic types <syntax-type-sem>` do not arise during validation.
    They only need to be :ref:`looked up <valid-typeaddr>` during :ref:`execution <exec-type>`.
 
 
