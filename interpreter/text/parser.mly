@@ -1197,7 +1197,7 @@ literal_vec :
 
 literal_ref :
   | LPAR REF_NULL heap_type RPAR
-    { Value.NullRef (Types.Sem.sem_heap_type [] ($3 (empty_context ()))) }
+    { Value.NullRef (Types.Dyn.dyn_heap_type [] ($3 (empty_context ()))) }
   | LPAR REF_EXTERN NAT RPAR { Script.ExternRef (nat32 $3 (ati 3)) }
 
 literal :

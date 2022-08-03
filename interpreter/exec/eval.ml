@@ -1,7 +1,7 @@
 open Ast
 open Pack
 open Source
-open Types.Sem
+open Types.Dyn
 open Value
 open Instance
 
@@ -112,7 +112,7 @@ let func_ref (inst : module_inst) x i at =
 let block_type (inst : module_inst) bt at =
   match bt with
   | ValBlockType None -> InstrT ([], [], [])
-  | ValBlockType (Some t) -> InstrT ([], [sem_val_type inst.types t], [])
+  | ValBlockType (Some t) -> InstrT ([], [dyn_val_type inst.types t], [])
   | VarBlockType x ->
     let FuncT (ts1, ts2) = func_type inst (x @@ at) in InstrT (ts1, ts2, [])
 
@@ -230,7 +230,7 @@ let rec step (c : config) : config =
       | CallIndirect (x, y), Num (I32 i) :: vs ->
         let f = func_ref c.frame.inst x i e.at in
         if
-          Match.Sem.eq_func_type () [] (func_type c.frame.inst y) (Func.type_of f)
+          Match.Dyn.eq_func_type () [] (func_type c.frame.inst y) (Func.type_of f)
         then
           vs, [Invoke f @@ e.at]
         else
@@ -368,7 +368,7 @@ let rec step (c : config) : config =
       | Load {offset; ty; pack; _}, Num (I32 i) :: vs' ->
         let mem = memory c.frame.inst (0l @@ e.at) in
         let a = I64_convert.extend_i32_u i in
-        let t = sem_num_type [] ty in
+        let t = dyn_num_type [] ty in
         (try
           let n =
             match pack with
@@ -391,7 +391,7 @@ let rec step (c : config) : config =
       | VecLoad {offset; ty; pack; _}, Num (I32 i) :: vs' ->
         let mem = memory c.frame.inst (0l @@ e.at) in
         let a = I64_convert.extend_i32_u i in
-        let t = sem_vec_type [] ty in
+        let t = dyn_vec_type [] ty in
         (try
           let v =
             match pack with
@@ -533,7 +533,7 @@ let rec step (c : config) : config =
         vs, []
 
       | RefNull t, vs' ->
-        Ref (NullRef (sem_heap_type c.frame.inst.types t)) :: vs', []
+        Ref (NullRef (dyn_heap_type c.frame.inst.types t)) :: vs', []
 
       | RefIsNull, Ref r :: vs' ->
         (match r with
@@ -701,7 +701,7 @@ let rec step (c : config) : config =
       | Func.AstFunc (_, inst', func) ->
         let {locals; body; _} = func.it in
         let m = Lib.Promise.value inst' in
-        let ts = List.map (fun loc -> Types.Sem.sem_val_type m.types loc.it.ltype) locals in
+        let ts = List.map (fun loc -> Types.Dyn.dyn_val_type m.types loc.it.ltype) locals in
         let locs' = List.(rev (map Option.some args) @ map default_value ts) in
         let frame' = {inst = m; locals = List.map ref locs'} in
         let instr' = [Label (n2, [], ([], List.map plain body)) @@ func.at] in
@@ -737,7 +737,7 @@ let invoke (func : func_inst) (vs : value list) : value list =
   let FuncT (ts1, _ts2) = Func.type_of func in
   if List.length vs <> List.length ts1 then
     Crash.error at "wrong number of arguments";
-  if not (List.for_all2 (fun v -> Match.Sem.match_val_type () [] (type_of_value v)) vs ts1) then
+  if not (List.for_all2 (fun v -> Match.Dyn.match_val_type () [] (type_of_value v)) vs ts1) then
     Crash.error at "wrong types of arguments";
   let c = config empty_module_inst (List.rev vs) [Invoke func @@ at] in
   try List.rev (eval c) with Stack_overflow ->
@@ -753,14 +753,14 @@ let eval_const (inst : module_inst) (const : const) : value =
 (* Modules *)
 
 let create_type (_ : type_) : type_inst =
-  Types.Sem.alloc_uninit ()
+  Types.Dyn.alloc_uninit ()
 
 let create_func (inst : module_inst) (f : func) : func_inst =
   Func.alloc (type_ inst f.it.ftype) (Lib.Promise.make ()) f
 
 let create_table (inst : module_inst) (tab : table) : table_inst =
   let {ttype; tinit} = tab.it in
-  let tt = Types.Sem.sem_table_type inst.types ttype in
+  let tt = Types.Dyn.dyn_table_type inst.types ttype in
   let r =
     match eval_const inst tinit with
     | Ref r -> r
@@ -770,12 +770,12 @@ let create_table (inst : module_inst) (tab : table) : table_inst =
 
 let create_memory (inst : module_inst) (mem : memory) : memory_inst =
   let {mtype} = mem.it in
-  Memory.alloc (Types.Sem.sem_memory_type inst.types mtype)
+  Memory.alloc (Types.Dyn.dyn_memory_type inst.types mtype)
 
 let create_global (inst : module_inst) (glob : global) : global_inst =
   let {gtype; ginit} = glob.it in
   let v = eval_const inst ginit in
-  Global.alloc (Types.Sem.sem_global_type inst.types gtype) v
+  Global.alloc (Types.Dyn.dyn_global_type inst.types gtype) v
 
 let create_export (inst : module_inst) (ex : export) : export_inst =
   let {name; edesc} = ex.it in
@@ -799,14 +799,14 @@ let create_data (inst : module_inst) (seg : data_segment) : data_inst =
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   : module_inst =
   let it = Types.extern_type_of_import_type (import_type_of m im) in
-  let et = Types.Sem.sem_extern_type inst.types it in
+  let et = Types.Dyn.dyn_extern_type inst.types it in
   let et' = extern_type_of inst.types ext in
-  if not (Match.Sem.match_extern_type () [] et' et) then
+  if not (Match.Dyn.match_extern_type () [] et' et) then
     Link.error im.at ("incompatible import type for " ^
       "\"" ^ Utf8.encode im.it.module_name ^ "\" " ^
       "\"" ^ Utf8.encode im.it.item_name ^ "\": " ^
-      "expected " ^ Types.Sem.string_of_extern_type et ^
-      ", got " ^ Types.Sem.string_of_extern_type et');
+      "expected " ^ Types.Dyn.string_of_extern_type et ^
+      ", got " ^ Types.Dyn.string_of_extern_type et');
   match ext with
   | ExternFunc func -> {inst with funcs = func :: inst.funcs}
   | ExternTable tab -> {inst with tables = tab :: inst.tables}
@@ -815,7 +815,7 @@ let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
 
 
 let init_type (inst : module_inst) (type_ : type_) (x : type_inst) =
-  Types.Sem.init x (Types.Sem.sem_def_type inst.types type_.it)
+  Types.Dyn.init x (Types.Dyn.dyn_def_type inst.types type_.it)
 
 let init_func (inst : module_inst) (func : func_inst) =
   match func with

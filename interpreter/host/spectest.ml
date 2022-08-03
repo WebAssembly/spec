@@ -2,7 +2,7 @@
  * Simple collection of functions useful for writing test cases.
  *)
 
-open Types.Sem
+open Types.Dyn
 open Value
 open Instance
 
@@ -23,7 +23,7 @@ let table =
   Table.alloc (TableT ({min = 10l; max = Some 20l}, (Null, FuncHT)))
     (NullRef FuncHT)
 let memory = Memory.alloc (MemoryT {min = 1l; max = Some 2l})
-let func f ft = Func.alloc_host (Types.Sem.alloc (DefFuncT ft)) (f ft)
+let func f ft = Func.alloc_host (Types.Dyn.alloc (DefFuncT ft)) (f ft)
 
 let print_value v =
   Printf.printf "%s : %s\n"

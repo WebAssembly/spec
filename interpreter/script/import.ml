@@ -1,6 +1,6 @@
 open Source
 open Ast
-open Types.Sem
+open Types.Dyn
 
 module Unknown = Error.Make ()
 exception Unknown = Unknown.Error  (* indicates unknown import name *)
@@ -17,5 +17,5 @@ let lookup (ImportT (et, module_name, item_name)) at : Instance.extern =
         "\".\"" ^ Types.string_of_name item_name ^ "\"")
 
 let link m =
-  let ModuleT (_, its, _) = Types.Sem.sem_module_type (module_type_of m) in
+  let ModuleT (_, its, _) = Types.Dyn.dyn_module_type (module_type_of m) in
   List.map2 lookup its (List.map Source.at m.it.imports)

@@ -4,5 +4,5 @@ val link : Ast.module_ -> Instance.extern list (* raises Unknown *)
 
 val register :
   Ast.name ->
-  (Ast.name -> Types.Sem.extern_type -> Instance.extern (* raises Not_found *)) ->
+  (Ast.name -> Types.Dyn.extern_type -> Instance.extern (* raises Not_found *)) ->
   unit

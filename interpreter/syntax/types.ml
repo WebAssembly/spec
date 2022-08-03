@@ -201,23 +201,23 @@ struct
 end
 
 
-(* Syntactic Types *)
+(* Static Types *)
 
-module SynVar =
+module StatVar =
 struct
   type var = int32
   let eq_var = (=)
   let string_of_var = I32.to_string_u
 end
 
-module Syn = Make (SynVar)
+module Stat = Make (StatVar)
 
-include Syn
+include Stat
 
 
-(* Semantic Types *)
+(* Dynamic Types *)
 
-module SemVar =
+module DynVar =
 struct
   (* Use extensible type, since recursive modules won't work *)
   type var = ..
@@ -228,11 +228,11 @@ struct
   let string_of_var x = !string_of_var' x
 end
 
-module Sem =
+module Dyn =
 struct
-  include Make (SemVar)
+  include Make (DynVar)
 
-  type SemVar.var += Addr of def_type Lib.Promise.t
+  type DynVar.var += Addr of def_type Lib.Promise.t
 
   let unwrap = function
     | Addr p -> p
@@ -243,7 +243,7 @@ struct
   let alloc dt = let x = alloc_uninit () in init x dt; x
   let def_of x = Lib.Promise.value (unwrap x)
 
-  let () = SemVar.string_of_var' :=
+  let () = DynVar.string_of_var' :=
     let inner = ref false in
     fun x ->
       if !inner then "..." else
@@ -256,86 +256,86 @@ struct
 
   (* Conversion *)
 
-  let sem_null c : Syn.null -> null = function
-    | Syn.Null -> Null
-    | Syn.NoNull -> NoNull
+  let dyn_null c : Stat.null -> null = function
+    | Stat.Null -> Null
+    | Stat.NoNull -> NoNull
 
-  let sem_mut c : Syn.mut -> mut = function
-    | Syn.Cons -> Cons
-    | Syn.Var -> Var
+  let dyn_mut c : Stat.mut -> mut = function
+    | Stat.Cons -> Cons
+    | Stat.Var -> Var
 
-  let sem_init c : Syn.init -> init = function
-    | Syn.Set -> Set
-    | Syn.Unset -> Unset
+  let dyn_init c : Stat.init -> init = function
+    | Stat.Set -> Set
+    | Stat.Unset -> Unset
 
-  let sem_limits c : 'a Syn.limits -> 'a limits = function
-    | Syn.{min; max} -> {min; max}
+  let dyn_limits c : 'a Stat.limits -> 'a limits = function
+    | Stat.{min; max} -> {min; max}
 
-  let sem_var_type c (x : Syn.var) : var = Lib.List32.nth c x
+  let dyn_var_type c (x : Stat.var) : var = Lib.List32.nth c x
 
-  let sem_num_type c : Syn.num_type -> num_type = function
-    | Syn.I32T -> I32T
-    | Syn.I64T -> I64T
-    | Syn.F32T -> F32T
-    | Syn.F64T -> F64T
+  let dyn_num_type c : Stat.num_type -> num_type = function
+    | Stat.I32T -> I32T
+    | Stat.I64T -> I64T
+    | Stat.F32T -> F32T
+    | Stat.F64T -> F64T
 
-  let sem_vec_type c : Syn.vec_type -> vec_type = function
-    | Syn.V128T -> V128T
+  let dyn_vec_type c : Stat.vec_type -> vec_type = function
+    | Stat.V128T -> V128T
 
-  let sem_heap_type c : Syn.heap_type -> heap_type = function
-    | Syn.FuncHT -> FuncHT
-    | Syn.ExternHT -> ExternHT
-    | Syn.DefHT x -> DefHT (sem_var_type c x)
-    | Syn.BotHT -> BotHT
+  let dyn_heap_type c : Stat.heap_type -> heap_type = function
+    | Stat.FuncHT -> FuncHT
+    | Stat.ExternHT -> ExternHT
+    | Stat.DefHT x -> DefHT (dyn_var_type c x)
+    | Stat.BotHT -> BotHT
 
-  let sem_ref_type c : Syn.ref_type -> ref_type = function
-    | (nul, t) -> (sem_null c nul, sem_heap_type c t)
+  let dyn_ref_type c : Stat.ref_type -> ref_type = function
+    | (nul, t) -> (dyn_null c nul, dyn_heap_type c t)
 
-  let sem_val_type c : Syn.val_type -> val_type = function
-    | Syn.NumT t -> NumT (sem_num_type c t)
-    | Syn.VecT t -> VecT (sem_vec_type c t)
-    | Syn.RefT t -> RefT (sem_ref_type c t)
-    | Syn.BotT -> BotT
+  let dyn_val_type c : Stat.val_type -> val_type = function
+    | Stat.NumT t -> NumT (dyn_num_type c t)
+    | Stat.VecT t -> VecT (dyn_vec_type c t)
+    | Stat.RefT t -> RefT (dyn_ref_type c t)
+    | Stat.BotT -> BotT
 
-  let sem_result_type c : Syn.result_type -> result_type = function
-    | ts -> List.map (sem_val_type c) ts
+  let dyn_result_type c : Stat.result_type -> result_type = function
+    | ts -> List.map (dyn_val_type c) ts
 
-  let sem_func_type c : Syn.func_type -> func_type = function
-    | Syn.FuncT (ts1, ts2) -> FuncT (sem_result_type c ts1, sem_result_type c ts2)
+  let dyn_func_type c : Stat.func_type -> func_type = function
+    | Stat.FuncT (ts1, ts2) -> FuncT (dyn_result_type c ts1, dyn_result_type c ts2)
 
-  let sem_def_type c : Syn.def_type -> def_type = function
-    | Syn.DefFuncT ft -> DefFuncT (sem_func_type c ft)
+  let dyn_def_type c : Stat.def_type -> def_type = function
+    | Stat.DefFuncT ft -> DefFuncT (dyn_func_type c ft)
 
-  let sem_local_type c : Syn.local_type -> local_type = function
-    | Syn.LocalT (init, t) -> LocalT (sem_init c init, sem_val_type c t)
+  let dyn_local_type c : Stat.local_type -> local_type = function
+    | Stat.LocalT (init, t) -> LocalT (dyn_init c init, dyn_val_type c t)
 
-  let sem_memory_type c : Syn.memory_type -> memory_type = function
-    | Syn.MemoryT lim -> MemoryT (sem_limits c lim)
+  let dyn_memory_type c : Stat.memory_type -> memory_type = function
+    | Stat.MemoryT lim -> MemoryT (dyn_limits c lim)
 
-  let sem_table_type c : Syn.table_type -> table_type = function
-    | Syn.TableT (lim, t) -> TableT (sem_limits c lim, sem_ref_type c t)
+  let dyn_table_type c : Stat.table_type -> table_type = function
+    | Stat.TableT (lim, t) -> TableT (dyn_limits c lim, dyn_ref_type c t)
 
-  let sem_global_type c : Syn.global_type -> global_type = function
-    | Syn.GlobalT (mut, t) -> GlobalT (sem_mut c mut, sem_val_type c t)
+  let dyn_global_type c : Stat.global_type -> global_type = function
+    | Stat.GlobalT (mut, t) -> GlobalT (dyn_mut c mut, dyn_val_type c t)
 
-  let sem_extern_type c : Syn.extern_type -> extern_type = function
-    | Syn.ExternFuncT ft -> ExternFuncT (sem_func_type c ft)
-    | Syn.ExternTableT tt -> ExternTableT (sem_table_type c tt)
-    | Syn.ExternMemoryT mt -> ExternMemoryT (sem_memory_type c mt)
-    | Syn.ExternGlobalT gt -> ExternGlobalT (sem_global_type c gt)
+  let dyn_extern_type c : Stat.extern_type -> extern_type = function
+    | Stat.ExternFuncT ft -> ExternFuncT (dyn_func_type c ft)
+    | Stat.ExternTableT tt -> ExternTableT (dyn_table_type c tt)
+    | Stat.ExternMemoryT mt -> ExternMemoryT (dyn_memory_type c mt)
+    | Stat.ExternGlobalT gt -> ExternGlobalT (dyn_global_type c gt)
 
-  let sem_export_type c : Syn.export_type -> export_type = function
-    | Syn.ExportT (et, name) -> ExportT (sem_extern_type c et, name)
+  let dyn_export_type c : Stat.export_type -> export_type = function
+    | Stat.ExportT (et, name) -> ExportT (dyn_extern_type c et, name)
 
-  let sem_import_type c : Syn.import_type -> import_type = function
-    | Syn.ImportT (et, module_name, name) ->
-      ImportT (sem_extern_type c et, module_name, name)
+  let dyn_import_type c : Stat.import_type -> import_type = function
+    | Stat.ImportT (et, module_name, name) ->
+      ImportT (dyn_extern_type c et, module_name, name)
 
-  let sem_module_type : Syn.module_type -> module_type = function
-    | Syn.ModuleT (dts, its, ets) ->
+  let dyn_module_type : Stat.module_type -> module_type = function
+    | Stat.ModuleT (dts, its, ets) ->
       let c = List.map (fun _ -> alloc_uninit ()) dts in
-      List.iter2 (fun x dt -> init x (sem_def_type c dt)) c dts;
-      let its = List.map (sem_import_type c) its in
-      let ets = List.map (sem_export_type c) ets in
+      List.iter2 (fun x dt -> init x (dyn_def_type c dt)) c dts;
+      let its = List.map (dyn_import_type c) its in
+      let ets = List.map (dyn_export_type c) ets in
       ModuleT ([], its, ets)
 end

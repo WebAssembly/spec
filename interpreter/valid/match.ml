@@ -16,7 +16,7 @@ module Make
   ) =
 struct
 
-  open Types.Make(Var)
+  open Types.Make (Var)
   open Context
 
 
@@ -177,29 +177,29 @@ struct
 end
 
 
-(* Syntactic Matching *)
+(* Static Matching *)
 
-module SynContext =
+module StatContext =
 struct
-  type var = Types.Syn.var
-  type def_type = Types.Syn.def_type
+  type var = Types.Stat.var
+  type def_type = Types.Stat.def_type
   type context = def_type list
   let lookup c x = Lib.List32.nth c x
 end
 
-module Syn = Make (Types.SynVar) (SynContext)
+module Stat = Make (Types.StatVar) (StatContext)
 
-include Syn
+include Stat
 
 
-(* Semantic Matching *)
+(* Dynamic Matching *)
 
-module SemContext =
+module DynContext =
 struct
-  type var = Types.Sem.var
-  type def_type = Types.Sem.def_type
+  type var = Types.Dyn.var
+  type def_type = Types.Dyn.def_type
   type context = unit
-  let lookup _c x = Types.Sem.def_of x
+  let lookup _c x = Types.Dyn.def_of x
 end
 
-module Sem = Make (Types.SemVar) (SemContext)
+module Dyn = Make (Types.DynVar) (DynContext)
