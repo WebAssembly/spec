@@ -620,7 +620,7 @@ Parametric Instructions
 
   * The length of :math:`t^\ast` must be :math:`1`.
 
-  * The instruction is valid with type :math:`[t^\ast~t^\ast~\I32] \to [t^\ast]`.
+  * Then the instruction is valid with type :math:`[t^\ast~t^\ast~\I32] \to [t^\ast]`.
 
 * Else:
 
