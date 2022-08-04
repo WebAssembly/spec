@@ -163,19 +163,19 @@ def relaxed_i32x4_trunc_f64x2_zero_u(a : f64x2) -> i32x4:
         result[i] = r
 ```
 
-### Relaxed fused multiply-add and fused multiply-subtract
+### Relaxed fused multiply-add and fused negative multiply-add
 
 - `relaxed f32x4.fma`
-- `relaxed f32x4.fms`
+- `relaxed f32x4.fnma`
 - `relaxed f64x2.fma`
-- `relaxed f64x2.fms`
+- `relaxed f64x2.fnma`
 
-All the instructions take 3 operands, `a`, `b`, `c`, perform `a + (b * c)` or `a - (b * c)`:
+All the instructions take 3 operands, `a`, `b`, `c`, perform `a * b + c` or `-(a * b) + c`:
 
-- `relaxed f32x4.fma(a, b, c) = a + (b * c)`
-- `relaxed f32x4.fms(a, b, c) = a - (b * c)`
-- `relaxed f64x2.fma(a, b, c) = a + (b * c)`
-- `relaxed f64x2.fms(a, b, c) = a - (b * c)`
+- `relaxed f32x4.fma(a, b, c) = a * b + c`
+- `relaxed f32x4.fnma(a, b, c) = -(a * b) + c`
+- `relaxed f64x2.fma(a, b, c) = a * b + c`
+- `relaxed f64x2.fnma(a, b, c) = -(a * b) + c`
 
 where:
 
