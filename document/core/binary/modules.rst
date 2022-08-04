@@ -213,13 +213,14 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |MTA
      \X{tt}{:}\Btabletype
        &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~(\REFNULL~\X{ht}) \}
          \qquad \iff \X{tt} = \limits~(\REF~\NULL^?~\X{ht}) \\
-     \hex{40}~~\X{tt}{:}\Btabletype~~e{:}\Bexpr
+     \hex{40}~~\hex{00}~~\X{tt}{:}\Btabletype~~e{:}\Bexpr
        &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~e \} \\
    \end{array}
 
 .. note::
    The encoding of a table type cannot start with byte :math:`\hex{40}`,
    hence decoding is unambiguous.
+   The zero byte following it is reserved for futre extensions.
 
 
 .. index:: ! memory section, memory, memory type
