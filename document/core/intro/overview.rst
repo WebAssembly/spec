@@ -70,7 +70,7 @@ This language is structured around the following concepts.
 **Tables**
   A *table* is an array of opaque values of a particular *element type*.
   It allows programs to select such values indirectly through a dynamic index operand.
-  Currently, the only available element type is an untyped function reference.
+  Currently, the only available element type is an untyped function reference or a reference to an external host value.
   Thereby, a program can call functions indirectly through a dynamic index into a table.
   For example, this allows emulating function pointers by way of table indices.
 
