@@ -73,7 +73,8 @@ type config =
 }
 
 let frame inst locals = {inst; locals}
-let config inst vs es = {frame = frame inst []; code = vs, es; budget = 300}
+let config inst vs es =
+  {frame = frame inst []; code = vs, es; budget = !Flags.budget}
 
 let plain e = Plain e.it @@ e.at
 
