@@ -875,7 +875,7 @@ Table Instructions
    \frac{
      C.\CTABLES[x] = \limits_1~t
      \qquad
-     C.\CTABLES[x] = \limits_2~t
+     C.\CTABLES[y] = \limits_2~t
    }{
      C \vdashinstr \TABLECOPY~x~y : [\I32~\I32~\I32] \to []
    }
