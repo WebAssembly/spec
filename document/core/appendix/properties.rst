@@ -285,13 +285,13 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
   * The :ref:`reference <syntax-ref>` :math:`\reff_i` must be :ref:`valid <valid-ref>` with :ref:`reference type <syntax-reftype>` :math:`t`.
 
-* Then the table instance is valid.
+* Then the table instance is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
 .. math::
    \frac{
      (S \vdash \reff : t)^\ast
    }{
-     S \vdasheleminst \{ \EITYPE~t, \EIELEM~\reff^\ast \} \ok
+     S \vdasheleminst \{ \EITYPE~t, \EIELEM~\reff^\ast \} : t
    }
 
 
@@ -346,7 +346,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * For each :ref:`element address <syntax-elemaddr>` :math:`\elemaddr_i` in :math:`\moduleinst.\MIELEMS`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\elemaddr_i]` must be :ref:`valid <valid-eleminst>`.
 
-* For each :ref:`data address <syntax-dataaddr>` :math:`\dataaddr_i` in :math:`\moduleinst.\MIDATAS`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\dataaddr_i]` must be :ref:`valid <valid-datainst>`.
+* For each :ref:`data address <syntax-dataaddr>` :math:`\dataaddr_i` in :math:`\moduleinst.\MIDATAS`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\dataaddr_i]` must be :ref:`valid <valid-datainst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
 
 * Each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS` must be :ref:`valid <valid-exportinst>`.
 
@@ -360,8 +360,12 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Let :math:`\globaltype^\ast` be the concatenation of all :math:`\globaltype_i` in order.
 
-* | Then the module instance is valid with :ref:`context <context>`
-  | :math:`\{\CTYPES~\functype^\ast, \CFUNCS~{\functype'}^\ast, \CTABLES~\tabletype^\ast, \CMEMS~\memtype^\ast, \CGLOBALS~\globaltype^\ast\}`.
+* Let :math:`\reftype^\ast` be the concatenation of all :math:`\reftype_i` in order.
+
+* Let :math:`n` be the length of :math:`\moduleinst.\MIDATAS`.
+
+* Then the module instance is valid with :ref:`context <context>`
+  :math:`\{\CTYPES~\functype^\ast,` :math:`\CFUNCS~{\functype'}^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~{\ok}^n\}`.
 
 .. math::
    ~\\[-1ex]
@@ -377,7 +381,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \qquad
      (S \vdashexternval \EVGLOBAL~\globaladdr : \ETGLOBAL~\globaltype)^\ast
      \\
-     (S \vdasheleminst S.\SELEMS[\elemaddr] \ok)^\ast
+     (S \vdasheleminst S.\SELEMS[\elemaddr] : \reftype)^\ast
      \qquad
      (S \vdashdatainst S.\SDATAS[\dataaddr] \ok)^\ast
      \\
@@ -394,14 +398,16 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
        \MIMEMS & \memaddr^\ast, \\
        \MIGLOBALS & \globaladdr^\ast, \\
        \MIELEMS & \elemaddr^\ast, \\
-       \MIDATAS & \dataaddr^\ast, \\
+       \MIDATAS & \dataaddr^n, \\
        \MIEXPORTS & \exportinst^\ast ~\} : \{
          \begin{array}[t]{@{}l@{~}l@{}}
          \CTYPES & \functype^\ast, \\
          \CFUNCS & {\functype'}^\ast, \\
          \CTABLES & \tabletype^\ast, \\
          \CMEMS & \memtype^\ast, \\
-         \CGLOBALS & \globaltype^\ast ~\}
+         \CGLOBALS & \globaltype^\ast, \\
+         \CELEMS & \reftype^\ast, \\
+         \CDATAS & {\ok}^n ~\}
          \end{array}
        \end{array}
    }
