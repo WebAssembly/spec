@@ -285,7 +285,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
   * The :ref:`reference <syntax-ref>` :math:`\reff_i` must be :ref:`valid <valid-ref>` with :ref:`reference type <syntax-reftype>` :math:`t`.
 
-* Then the table instance is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
+* Then the element instance is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
 .. math::
    \frac{
