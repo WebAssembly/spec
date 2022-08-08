@@ -2559,9 +2559,9 @@ Control Instructions
 :math:`\BLOCK~\blocktype~\instr^\ast~\END`
 ..........................................
 
-1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
+1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_{S;F}(\blocktype)`.
 
 3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
 
@@ -2574,9 +2574,9 @@ Control Instructions
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl}
-   F; \val^m~\BLOCK~\X{bt}~\instr^\ast~\END &\stepto&
-     F; \LABEL_n\{\epsilon\}~\val^m~\instr^\ast~\END
-     \\&&\quad (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
+   S; F; \val^m~\BLOCK~\X{bt}~\instr^\ast~\END &\stepto&
+     S; F; \LABEL_n\{\epsilon\}~\val^m~\instr^\ast~\END
+     \\&&\quad (\iff \expand_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 
 
@@ -2585,9 +2585,9 @@ Control Instructions
 :math:`\LOOP~\blocktype~\instr^\ast~\END`
 .........................................
 
-1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
+1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_{S;F}(\blocktype)`.
 
 3. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is the start of the loop.
 
@@ -2600,9 +2600,9 @@ Control Instructions
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl}
-   F; \val^m~\LOOP~\X{bt}~\instr^\ast~\END &\stepto&
-     F; \LABEL_m\{\LOOP~\X{bt}~\instr^\ast~\END\}~\val^m~\instr^\ast~\END
-     \\&&\quad (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
+   S; F; \val^m~\LOOP~\X{bt}~\instr^\ast~\END &\stepto&
+     S; F; \LABEL_m\{\LOOP~\X{bt}~\instr^\ast~\END\}~\val^m~\instr^\ast~\END
+     \\&&\quad (\iff \expand_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 
 
@@ -2611,9 +2611,9 @@ Control Instructions
 :math:`\IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
 .............................................................
 
-1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
+1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_{S;F}(\blocktype)`.
 
 3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the |IF| instruction.
 
@@ -2636,12 +2636,12 @@ Control Instructions
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl}
-   F; \val^m~(\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     F; \LABEL_n\{\epsilon\}~\val^m~\instr_1^\ast~\END
-     \\&&\quad (\iff c \neq 0 \wedge \expand_F(\X{bt}) = [t_1^m] \to [t_2^n]) \\
-   F; \val^m~(\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     F; \LABEL_n\{\epsilon\}~\val^m~\instr_2^\ast~\END
-     \\&&\quad (\iff c = 0 \wedge \expand_F(\X{bt}) = [t_1^m] \to [t_2^n]) \\
+   S; F; \val^m~(\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
+     S; F; \LABEL_n\{\epsilon\}~\val^m~\instr_1^\ast~\END
+     \\&&\quad (\iff c \neq 0 \wedge \expand_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n]) \\
+   S; F; \val^m~(\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
+     S; F; \LABEL_n\{\epsilon\}~\val^m~\instr_2^\ast~\END
+     \\&&\quad (\iff c = 0 \wedge \expand_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n]) \\
    \end{array}
 
 
@@ -2879,37 +2879,39 @@ Control Instructions
 
 6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITYPES[y]` exists.
 
-7. Let :math:`\X{ft}_{\F{expect}}` be the :ref:`function type <syntax-functype>` :math:`F.\AMODULE.\MITYPES[y]`.
+7. Let :math:`\X{ta}` be the :ref:`type address <syntax-typeaddr>` :math:`F.\AMODULE.\MITYPES[y]`.
 
-8. Assert: due to :ref:`validation <valid-call_indirect>`, a value with :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+8. Let :math:`\X{ft}_{\F{expect}}` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\X{ta}]`.
 
-9. Pop the value :math:`\I32.\CONST~i` from the stack.
+9. Assert: due to :ref:`validation <valid-call_indirect>`, a value with :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-10. If :math:`i` is not smaller than the length of :math:`\X{tab}.\TIELEM`, then:
+10. Pop the value :math:`\I32.\CONST~i` from the stack.
 
-    a. Trap.
-
-11. Let :math:`r` be the :ref:`reference <syntax-ref>` :math:`\X{tab}.\TIELEM[i]`.
-
-12. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
+11. If :math:`i` is not smaller than the length of :math:`\X{tab}.\TIELEM`, then:
 
     a. Trap.
 
-13. Assert: due to :ref:`validation of table mutation <valid-table.set>`, :math:`r` is a :ref:`function reference <syntax-ref.func>`.
+12. Let :math:`r` be the :ref:`reference <syntax-ref>` :math:`\X{tab}.\TIELEM[i]`.
 
-14. Let :math:`\REFFUNCADDR~a` be the :ref:`function reference <syntax-ref.func>` :math:`r`.
-
-15. Assert: due to :ref:`validation of table mutation <valid-table.set>`, :math:`S.\SFUNCS[a]` exists.
-
-16. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[a]`.
-
-17. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
-
-18. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
+13. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
 
     a. Trap.
 
-19. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
+14. Assert: due to :ref:`validation of table mutation <valid-table.set>`, :math:`r` is a :ref:`function reference <syntax-ref.func>`.
+
+15. Let :math:`\REFFUNCADDR~a` be the :ref:`function reference <syntax-ref.func>` :math:`r`.
+
+16. Assert: due to :ref:`validation of table mutation <valid-table.set>`, :math:`S.\SFUNCS[a]` exists.
+
+17. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[a]`.
+
+18. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
+
+19. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
+
+    a. Trap.
+
+20. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
 .. math::
    ~\\[-1ex]
@@ -2921,7 +2923,7 @@ Control Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM[i] = \REFFUNCADDR~a \\
      \wedge & S.\SFUNCS[a] = f \\
-     \wedge & F.\AMODULE.\MITYPES[y] = f.\FITYPE)
+     \wedge & S \vdashfunctypematch S.\STYPES[F.\AMODULE.\MITYPES[y]] \matchesfunctype f.\FITYPE)
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}

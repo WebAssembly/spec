@@ -579,6 +579,9 @@ that is, its components can only refer to definitions that appear in the module 
 Consequently, no initial :ref:`context <context>` is required.
 Instead, the context :math:`C` for validation of the module's content is constructed from the definitions in the module.
 
+The :ref:`external types <syntax-externtype>` classifying a module may contain free :ref:`type indices <syntax-typeidx>` that refer to types defined within the module.
+
+
 * Let :math:`\module` be the module to validate.
 
 * Let :math:`C` be a :ref:`context <context>` where:

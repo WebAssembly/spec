@@ -1,4 +1,5 @@
 .. index:: ! matching, subtyping
+.. _match:
 
 .. _match:
 
@@ -6,8 +7,6 @@ Matching
 --------
 
 On most types, a simple notion of subtyping is defined that is applicable in validation rules or during :ref:`module instantiation <exec-instantiation>` when checking the types of imports.
-
-.. todo:: externtype matching is used on semantic types; need to define how to reinterpret C for semantic types
 
 
 .. index:: number type
@@ -56,9 +55,9 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 
 * Either both :math:`\heaptype_1` and :math:`\heaptype_2` are the same.
 
-* Or :math:`\heaptype_1` is a :ref:`type index <syntax-typeidx>` that defines a function type and :math:`\heaptype_2` is :math:`FUNC`.
+* Or :math:`\heaptype_1` is a :ref:`type identifier <syntax-typeid>` that defines a function type and :math:`\heaptype_2` is :math:`FUNC`.
 
-* Or :math:`\heaptype_1` is a :ref:`type index <syntax-typeidx>` that defines a function type :math:`\functype_1`, and :math:`\heaptype_2` is a :ref:`type index <syntax-typeidx>` that defines a function type :math:`\functype_2`, and :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
+* Or :math:`\heaptype_1` is a :ref:`type identifier <syntax-typeid>` that defines a function type :math:`\functype_1`, and :math:`\heaptype_2` is a :ref:`type identifier <syntax-typeid>` that defines a function type :math:`\functype_2`, and :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
 
 .. math::
    ~\\[-1ex]
@@ -68,21 +67,21 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
    }
    \qquad
    \frac{
-     C.\CTYPES[\typeidx] = \functype
+     C \vdashtypeid \typeid : \functype
    }{
-     C \vdashheaptypematch \typeidx \matchesheaptype \FUNC
+     C \vdashheaptypematch \typeid \matchesheaptype \FUNC
    }
 
 .. math::
    ~\\[-1ex]
    \frac{
-     C.\CTYPES[\typeidx_1] = \functype_1
+     C \vdashtypeid \typeid_1 : \functype_1
      \qquad
-     C.\CTYPES[\typeidx_2] = \functype_2
+     C \vdashtypeid \typeid_2 : \functype_2
      \qquad
      C \vdashfunctypematch \functype_1 \matchesfunctype \functype_2
    }{
-     C \vdashheaptypematch \typeidx_1 \matchesheaptype \typeidx_2
+     C \vdashheaptypematch \typeid_1 \matchesheaptype \typeid_2
    }
 
 
@@ -279,15 +278,18 @@ Global Types
 
 A :ref:`global type <syntax-globaltype>` :math:`(\mut_1~t_1)` matches :math:`(\mut_2~t_2)` if and only if:
 
-* Either both :math:`\mut_1` and :math:`\mut_2` are |MVAR| and :math:`t_1` and :math:`t_2` are the same.
- 
+* Either both :math:`\mut_1` and :math:`\mut_2` are |MVAR| and :math:`t_1` :ref:`matches <match-valtype>` :math:`t_2` and vice versa.
+
 * Or both :math:`\mut_1` and :math:`\mut_2` are |MCONST| and :math:`t_1` :ref:`matches <match-valtype>` :math:`t_2`.
 
 .. math::
    ~\\[-1ex]
    \frac{
+     C \vdashvaltypematch t_1 \matchesvaltype t_2
+     \qquad
+     C \vdashvaltypematch t_2 \matchesvaltype t_1
    }{
-     C \vdashglobaltypematch \MVAR~t \matchesglobaltype \MVAR~t
+     C \vdashglobaltypematch \MVAR~t_1 \matchesglobaltype \MVAR~t_2
    }
    \qquad
    \frac{

@@ -1,3 +1,5 @@
+.. _valid-type:
+
 Types
 -----
 
@@ -5,6 +7,36 @@ Simple :ref:`types <syntax-type>`, such as :ref:`number types <syntax-numtype>` 
 However, restrictions apply to most other types, such as :ref:`reference types <syntax-reftype>`, :ref:`function types <syntax-functype>`, as well as the :ref:`limits <syntax-limits>` of :ref:`table types <syntax-tabletype>` and :ref:`memory types <syntax-memtype>`, which must be checked during validation.
 
 Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`function types <syntax-functype>` for ease of processing.
+
+
+.. index:: type identifier, type index
+   pair: validation; type identifier
+   single: abstract syntax; type identifier
+.. _valid-typeid:
+.. _valid-typeidx:
+
+Type Identifiers
+~~~~~~~~~~~~~~~~
+
+During validation, :ref:`type identifiers <syntax-typeid>` are represented as :ref:`type indices <syntax-typeidx>`, which are lookued up as :ref:`function types <syntax-functype>` by the following rule.
+
+:math:`\typeidx`
+................
+
+* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
+
+* Then the type identifier is valid as :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
+
+.. math::
+   \frac{
+     C.\CTYPES[\typeidx] = \functype
+   }{
+     C \vdashtypeid \typeidx : \functype
+   }
+
+.. note::
+   :ref:`Semantic types <syntax-type-sem>` do not arise during validation.
+   They only need to be :ref:`looked up <valid-typeaddr>` during :ref:`execution <exec-type>`.
 
 
 .. index:: number type
@@ -41,7 +73,7 @@ Vector Types
    }
 
 
-.. index:: heap type
+.. index:: heap type, type identifier
    pair: validation; heap type
    single: abstract syntax; heap type
 .. _valid-heaptype:
@@ -49,7 +81,7 @@ Vector Types
 Heap Types
 ~~~~~~~~~~
 
-Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is.
+Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type identifier <syntax-typeid>` is.
 
 :math:`\FUNC`
 .............
@@ -73,18 +105,18 @@ Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type 
      C \vdashheaptype \EXTERN \ok
    }
 
-:math:`\typeidx`
-................
+:math:`\typeid`
+...............
 
-* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
+* The type identifier :math:`\typeid` must be valid.
 
 * Then the heap type is valid.
 
 .. math::
    \frac{
-     C.\CTYPES[\typeidx] = \functype
+     C \vdashtypeid \typeid : \functype
    }{
-     C \vdashheaptype \typeidx \ok
+     C \vdashheaptype \typeid \ok
    }
 
 :math:`\BOT`
