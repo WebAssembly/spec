@@ -785,14 +785,14 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb59 | `ref.as_data` | |
 | 0xfb5a | `ref.as_i31` | |
 | 0xfb5b | `ref.as_array` | |
-| 0xfb60 | `br_on_func` | |
-| 0xfb61 | `br_on_data` | |
-| 0xfb62 | `br_on_i31` | |
-| 0xfb63 | `br_on_non_func` | |
-| 0xfb64 | `br_on_non_data` | |
-| 0xfb65 | `br_on_non_i31` | |
-| 0xfb66 | `br_on_array` | |
-| 0xfb67 | `br_on_non_array` | |
+| 0xfb60 | `br_on_func` | `$l : labelidx` |
+| 0xfb61 | `br_on_data` | `$l : labelidx` |
+| 0xfb62 | `br_on_i31` | `$l : labelidx` |
+| 0xfb63 | `br_on_non_func` | `$l : labelidx` |
+| 0xfb64 | `br_on_non_data` | `$l : labelidx` |
+| 0xfb65 | `br_on_non_i31` | `$l : labelidx` |
+| 0xfb66 | `br_on_array` | `$l : labelidx` |
+| 0xfb67 | `br_on_non_array` | `$l : labelidx` |
 
 
 ## JS API
