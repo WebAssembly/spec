@@ -383,7 +383,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \\
      (S \vdasheleminst S.\SELEMS[\elemaddr] : \reftype)^\ast
      \qquad
-     (S \vdashdatainst S.\SDATAS[\dataaddr] \ok)^\ast
+     (S \vdashdatainst S.\SDATAS[\dataaddr] \ok)^n
      \\
      (S \vdashexportinst \exportinst \ok)^\ast
      \qquad
