@@ -185,7 +185,7 @@ The initialization stack and the initialization status of locals is manipulated 
 .. code-block:: pseudo
 
    func get_local(idx : u32) =
-     error_if(not (locals_init[idx] || ctrls[0].unreachable))
+     error_if(not locals_init[idx])
 
    func set_local(idx : u32) =
      if (not locals_init[idx])
@@ -196,7 +196,7 @@ The initialization stack and the initialization status of locals is manipulated 
      while (inits.size() > height)
        locals_init[inits.pop()] := false
 
-Getting a local verifies that it is either known to be initialized, or that that the operation is unreachable in the current stack frame.
+Getting a local verifies that it is known to be initialized.
 When a local is set that was not set already,
 then its initialization status is updated and the change is recorded in the initialization stack.
 Thus, the initialization status of all locals can be reset to a previous state by denoting a specific height in the initialization stack.

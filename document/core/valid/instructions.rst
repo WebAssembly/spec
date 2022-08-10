@@ -30,7 +30,7 @@ Two degrees of polymorphism can be distinguished:
   That is the case for all :ref:`parametric instructions <valid-instr-parametric>` like |DROP| and |SELECT|.
 
 * *stack-polymorphic*:
-  the entire (or most of the) :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` of the instruction is unconstrained.
+  the entire (or most of the) :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]` of the instruction is unconstrained.
   That is the case for all :ref:`control instructions <valid-instr-control>` that perform an *unconditional control transfer*, such as |UNREACHABLE|, |BR|, |BRTABLE|, and |RETURN|.
 
 In both cases, the unconstrained types or type sequences can be chosen arbitrarily, as long as they meet the constraints imposed for the surrounding parts of the program.
@@ -49,7 +49,7 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
    are valid, with :math:`t` in the typing of |SELECT| being instantiated to |I32| or |F64|, respectively.
 
    The |UNREACHABLE| instruction is stack-polymorphic,
-   and hence valid with type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` for any possible sequences of value types :math:`t_1^\ast` and :math:`t_2^\ast` and sequence of locals :math:`x^\ast`.
+   and hence valid with type :math:`[t_1^\ast] \to [t_2^\ast]` for any possible sequences of value types :math:`t_1^\ast` and :math:`t_2^\ast`.
    Consequently,
 
    .. math::
@@ -1257,13 +1257,13 @@ Control Instructions
 :math:`\UNREACHABLE`
 ....................
 
-* The instruction is valid with any :ref:`valid <valid-instrtype>` type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`.
+* The instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C \vdashinstrtype [t_1^\ast] \to_{x^\ast} [t_2^\ast] \ok
+     C \vdashinstrtype [t_1^\ast] \to [t_2^\ast] \ok
    }{
-     C \vdashinstr \UNREACHABLE : [t_1^\ast] \to_{x^\ast} [t_2^\ast]
+     C \vdashinstr \UNREACHABLE : [t_1^\ast] \to [t_2^\ast]
    }
 
 .. note::
@@ -1365,15 +1365,15 @@ Control Instructions
 
 * Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
 
-* Then the instruction is valid with type :math:`[t_1^\ast~t^\ast] \to_{x^\ast} [t_2^\ast]`, for any :ref:`valid <valid-instrtype>` type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`.
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast~t^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
      C.\CLABELS[l] = [t^\ast]
      \qquad
-     C \vdashinstrtype [t_1^\ast] \to_{x^\ast} [t_2^\ast] \ok
+     C \vdashinstrtype [t_1^\ast~t^\ast] \to [t_2^\ast] \ok
    }{
-     C \vdashinstr \BR~l : [t_1^\ast~t^\ast] \to_{x^\ast} [t_2^\ast]
+     C \vdashinstr \BR~l : [t_1^\ast~t^\ast] \to [t_2^\ast]
    }
 
 .. note::
@@ -1422,7 +1422,7 @@ Control Instructions
   * For all :math:`l_i` in :math:`l^\ast`,
     the result type :math:`[t^\ast]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_i]`.
 
-* Then the instruction is valid with type :math:`[t_1^\ast~t^\ast~\I32] \to_{x^\ast} [t_2^\ast]`, for any :ref:`valid <valid-instrtype>` type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`.
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast~t^\ast~\I32] \to [t_2^\ast]`.
 
 .. math::
    \frac{
@@ -1430,9 +1430,9 @@ Control Instructions
      \qquad
      C \vdashresulttypematch [t^\ast] \matchesresulttype C.\CLABELS[l_N]
      \qquad
-     C \vdashinstrtype [t_1^\ast] \to_{x^\ast} [t_2^\ast] \ok
+     C \vdashinstrtype [t_1^\ast~t^\ast~\I32] \to [t_2^\ast] \ok
    }{
-     C \vdashinstr \BRTABLE~l^\ast~l_N : [t_1^\ast~t^\ast~\I32] \to_{x^\ast} [t_2^\ast]
+     C \vdashinstr \BRTABLE~l^\ast~l_N : [t_1^\ast~t^\ast~\I32] \to [t_2^\ast]
    }
 
 .. note::
@@ -1500,15 +1500,15 @@ Control Instructions
 
 * Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\CRETURN`.
 
-* Then the instruction is valid with type :math:`[t_1^\ast~t^\ast] \to_{x^\ast} [t_2^\ast]`, for any :ref:`valid <valid-instrtype>` type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`.
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
      C.\CRETURN = [t^\ast]
      \qquad
-     C \vdashinstrtype [t_1^\ast] \to_{x^\ast} [t_2^\ast] \ok
+     C \vdashinstrtype [t_1^\ast~t^\ast] \to [t_2^\ast] \ok
    }{
-     C \vdashinstr \RETURN : [t_1^\ast~t^\ast] \to_{x^\ast} [t_2^\ast]
+     C \vdashinstr \RETURN : [t_1^\ast~t^\ast] \to [t_2^\ast]
    }
 
 .. note::
