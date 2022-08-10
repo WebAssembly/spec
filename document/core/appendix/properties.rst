@@ -344,9 +344,9 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * For each :ref:`global address <syntax-globaladdr>` :math:`\globaladdr_i` in :math:`\moduleinst.\MIGLOBALS`, the :ref:`external value <syntax-externval>` :math:`\EVGLOBAL~\globaladdr_i` must be :ref:`valid <valid-externval-global>` with some :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_i`.
 
-* For each :ref:`element address <syntax-elemaddr>` :math:`\elemaddr_i` in :math:`\moduleinst.\MIELEMS`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\elemaddr_i]` must be :ref:`valid <valid-eleminst>`.
+* For each :ref:`element address <syntax-elemaddr>` :math:`\elemaddr_i` in :math:`\moduleinst.\MIELEMS`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\elemaddr_i]` must be :ref:`valid <valid-eleminst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
 
-* For each :ref:`data address <syntax-dataaddr>` :math:`\dataaddr_i` in :math:`\moduleinst.\MIDATAS`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\dataaddr_i]` must be :ref:`valid <valid-datainst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
+* For each :ref:`data address <syntax-dataaddr>` :math:`\dataaddr_i` in :math:`\moduleinst.\MIDATAS`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\dataaddr_i]` must be :ref:`valid <valid-datainst>`.
 
 * Each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS` must be :ref:`valid <valid-exportinst>`.
 
