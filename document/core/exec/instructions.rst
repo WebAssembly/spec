@@ -2595,37 +2595,27 @@ Control Instructions
 :math:`\IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
 .............................................................
 
-1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
+1. Assert: due to :ref:`validation <valid-if>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
+2. Pop the value :math:`\I32.\CONST~c` from the stack.
 
-3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the |IF| instruction.
+3. If :math:`c` is non-zero, then:
 
-4. Assert: due to :ref:`validation <valid-if>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+   a. Execute the block instruction :math:`\BLOCK~\X{bt}~\instr_1^\ast~\END`.
 
-5. Pop the value :math:`\I32.\CONST~c` from the stack.
+4. Else:
 
-6. Assert: due to :ref:`validation <valid-if>`, there are at least :math:`m` values on the top of the stack.
-
-7. Pop the values :math:`\val^m` from the stack.
-
-8. If :math:`c` is non-zero, then:
-
-   a. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr_1^\ast` with label :math:`L`.
-
-9. Else:
-
-   a. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr_2^\ast` with label :math:`L`.
+   a. Execute the block instruction :math:`\BLOCK~\X{bt}~\instr_2^\ast~\END`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl}
-   F; \val^m~(\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     F; \LABEL_n\{\epsilon\}~\val^m~\instr_1^\ast~\END
-     \\&&\quad (\iff c \neq 0 \wedge \expand_F(\X{bt}) = [t_1^m] \to [t_2^n]) \\
-   F; \val^m~(\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     F; \LABEL_n\{\epsilon\}~\val^m~\instr_2^\ast~\END
-     \\&&\quad (\iff c = 0 \wedge \expand_F(\X{bt}) = [t_1^m] \to [t_2^n]) \\
+   F; (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
+     F; \BLOCK~\X{bt}~\instr_1^\ast~\END
+     \\&&\quad (\iff c \neq 0) \\
+   F; (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
+     F; \BLOCK~\X{bt}~\instr_2^\ast~\END
+     \\&&\quad (\iff c = 0) \\
    \end{array}
 
 
