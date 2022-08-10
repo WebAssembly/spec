@@ -667,9 +667,9 @@ If we allow allocating separate instances of the static data for a type, for exa
 Function references could be generalised to represent closures by means of an instruction that takes a prefix of the function's arguments and returns a new function reference with those parameters bound.
 
 * `func.bind` creates or extends a closure by binding several parameters
-  - `func.bind $t' : [t0* (ref null $t)] -> [(ref $t')]`
-    - iff `$t = [t0* t1*] -> [t2*]`
-    - and `$t' = [t1'*] -> [t2'*]`
+  - `func.bind $t $t' : [t0* (ref null $t)] -> [(ref $t')]`
+    - iff `unroll($t) = [t0* t1*] -> [t2*]`
+    - and `unroll($t') = [t1'*] -> [t2'*]`
     - and `t1'* <: t1*`
     - and `t2* <: t2'*`
   - traps on `null`
@@ -690,13 +690,13 @@ There would be two bind instructions, both returning a closure:
 
 * `closure.new` creates a closure from a function
   - `closure.new : [(ref null $t)] -> [(ref (closure $t))]`
-    - iff `$t = [t1*] -> [t2*]`
+    - iff `unroll($t) = [t1*] -> [t2*]`
   - traps on `null`
 
 * `closure.bind` creates a new closure by binding (additional) parameters of an existing closure
-  - `closure.bind $t' : [t0* (ref null (closure $t))] -> [(ref (closure $t'))]`
-    - iff `$t = [t0* t1*] -> [t2*]`
-    - and `$t' = [t1'*] -> [t2'*]`
+  - `closure.bind $t $t' : [t0* (ref null (closure $t))] -> [(ref (closure $t'))]`
+    - iff `unroll($t) = [t0* t1*] -> [t2*]`
+    - and `unroll($t') = [t1'*] -> [t2'*]`
     - and `t1'* <: t1*`
     - and `t2* <: t2'*`
   - traps on `null`
