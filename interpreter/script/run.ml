@@ -354,7 +354,7 @@ let run_action act : Values.value list =
         if Values.type_of_value v.it <> t then
           Script.error v.at "wrong type of argument"
       ) vs ins;
-      Eval.invoke f (List.map (fun v -> v.it) vs)
+      Eval.invoke inst f (List.map (fun v -> v.it) vs)
     | Some _ -> Assert.error act.at "export is not a function"
     | None -> Assert.error act.at "undefined export"
     )

@@ -668,14 +668,14 @@ let rec eval (c : config) : value stack =
 
 (* Functions & Constants *)
 
-let invoke (func : func_inst) (vs : value list) : value list =
+let invoke (mod_inst : module_inst) (func : func_inst) (vs : value list) : value list =
   let at = match func with Func.AstFunc (_, _, f) -> f.at | _ -> no_region in
   let FuncType (ins, out) = Func.type_of func in
   if List.length vs <> List.length ins then
     Crash.error at "wrong number of arguments";
   if not (List.for_all2 (fun v -> (=) (type_of_value v)) vs ins) then
     Crash.error at "wrong types of arguments";
-  let c = config empty_module_inst (List.rev vs) [Invoke func @@ at] in
+  let c = config mod_inst (List.rev vs) [Invoke func @@ at] in
   try List.rev (eval c) with Stack_overflow ->
     Exhaustion.error at "call stack exhausted"
 
