@@ -442,7 +442,8 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 
 * `struct.new_canon <typeidx>` allocates a structure with canonical [RTT](#values) and initialises its fields with given values
   - `struct.new_canon $t : [t'*] -> [(ref $t)]`
-    - iff `expand($t) = struct (mut t')*`
+    - iff `expand($t) = struct (mut t'')*`
+    - and `(t' = unpacked(t''))*`
   - this is a *constant instruction*
 
 * `struct.new_canon_default <typeidx>` allocates a structure of type `$t` with canonical [RTT](#values) and initialises its fields with default values
@@ -469,7 +470,8 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 
 * `array.new_canon <typeidx>` allocates an array with canonical [RTT](#values)
   - `array.new_canon $t : [t' i32] -> [(ref $t)]`
-    - iff `expand($t) = array (mut t')`
+    - iff `expand($t) = array (mut t'')`
+    - and `t' = unpacked(t'')`
   - this is a *constant instruction*
 
 * `array.new_canon_default <typeidx>` allocates an array with canonical [RTT](#values) and initialises its fields with the default value
@@ -480,7 +482,8 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 
 * `array.new_canon_fixed <typeidx> <N>` allocates an array with canonical [RTT](#values) of fixed size and initialises it from operands
   - `array.new_canon_fixed $t N : [t^N] -> [(ref $t)]`
-    - iff `expand($t) = array (mut t')`
+    - iff `expand($t) = array (mut t'')`
+    - and `t' = unpacked(t'')`
   - this is a *constant instruction*
 
 * `array.new_canon_data <typeidx> <dataidx>` allocates an array with canonical [RTT](#values) and initialises it from a data segment
