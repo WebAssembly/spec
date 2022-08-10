@@ -87,7 +87,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in :math:`S.\SGLOBALS` must be :ref:`valid <valid-globalinst>` with some  :ref:`global type <syntax-globaltype>` :math:`\globaltype_i`.
 
-* Each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in :math:`S.\SELEMS` must be :ref:`valid <valid-eleminst>`.
+* Each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in :math:`S.\SELEMS` must be :ref:`valid <valid-eleminst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
 
 * Each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in :math:`S.\SDATAS` must be :ref:`valid <valid-datainst>`.
 
@@ -105,7 +105,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \qquad
      (S \vdashglobalinst \globalinst : \globaltype)^\ast
      \\
-     (S \vdasheleminst \eleminst \ok)^\ast
+     (S \vdasheleminst \eleminst : \reftype)^\ast
      \qquad
      (S \vdashdatainst \datainst \ok)^\ast
      \\
