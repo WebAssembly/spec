@@ -614,7 +614,7 @@ All other vector instructions are plain opcodes without any immediates.
      \hex{FD}~~216{:}\Bu32 &\Rightarrow& \I64X2.\VLT\K{\_s} \\ &&|&
      \hex{FD}~~217{:}\Bu32 &\Rightarrow& \I64X2.\VGT\K{\_s} \\ &&|&
      \hex{FD}~~218{:}\Bu32 &\Rightarrow& \I64X2.\VLE\K{\_s} \\ &&|&
-     \hex{FD}~~219{:}\Bu32 &\Rightarrow& \I64X2.\VGE\K{\_s} \\ &&|&
+     \hex{FD}~~219{:}\Bu32 &\Rightarrow& \I64X2.\VGE\K{\_s} \\
    \end{array}
 
 .. _binary-vfrelop:
