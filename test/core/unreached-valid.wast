@@ -33,7 +33,6 @@
   )
   (func (export "unreachable-ref")
     (unreachable)
-    (select)
     (ref.is_null)
     (drop)
   )
