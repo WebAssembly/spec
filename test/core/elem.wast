@@ -148,8 +148,14 @@
 (assert_return (invoke "call-7") (i32.const 65))
 (assert_return (invoke "call-9") (i32.const 66))
 
-(module (table 1 funcref) (elem (global.get 0) $f) (global i32 (i32.const 0)) (func $f))
-(module (table 1 funcref) (elem (global.get $g) $f) (global $g i32 (i32.const 0)) (func $f))
+(assert_invalid
+  (module (table 1 funcref) (global i32 (i32.const 0)) (elem (global.get 0) $f) (func $f))
+  "unknown global"
+)
+(assert_invalid
+  (module (table 1 funcref) (global $g i32 (i32.const 0)) (elem (global.get $g) $f) (func $f))
+  "unknown global"
+)
 
 
 ;; Corner cases
@@ -430,7 +436,11 @@
 )
 
 (assert_invalid
-  (module (table 1 funcref) (elem (global.get $g)) (global $g (mut i32) (i32.const 0)))
+  (module
+    (global $g (import "test" "g") (mut i32))
+    (table 1 funcref)
+    (elem (global.get $g))
+  )
   "constant expression required"
 )
 

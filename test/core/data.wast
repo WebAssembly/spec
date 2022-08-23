@@ -81,8 +81,14 @@
   (data (global.get $g) "a")
 )
 
-(module (memory 1) (data (global.get 0) "a") (global i32 (i32.const 0)))
-(module (memory 1) (data (global.get $g) "a") (global $g i32 (i32.const 0)))
+(assert_invalid
+  (module (memory 1) (global i32 (i32.const 0)) (data (global.get 0) "a"))
+  "unknown global"
+)
+(assert_invalid
+  (module (memory 1) (global $g i32 (i32.const 0)) (data (global.get $g) "a"))
+  "unknown global"
+)
 
 
 ;; Corner cases
@@ -457,7 +463,11 @@
 )
 
 (assert_invalid
-  (module (memory 1) (data (global.get $g)) (global $g (mut i32) (i32.const 0)))
+  (module
+    (global $g (import "test" "g") (mut i32))
+    (memory 1)
+    (data (global.get $g))
+  )
   "constant expression required"
 )
 
