@@ -489,7 +489,7 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 * `array.new_canon_data <typeidx> <dataidx>` allocates an array with canonical [RTT](#values) and initialises it from a data segment
   - `array.new_canon_data $t $d : [i32 i32] -> [(ref $t)]`
     - iff `expand($t) = array (mut t')`
-    - and `t'` is numeric or packed numeric
+    - and `t'` is numeric, vector, or packed
     - and `$d` is a defined data segment
   - the 1st operand is the `offset` into the segment
   - the 2nd operand is the `size` of the array
