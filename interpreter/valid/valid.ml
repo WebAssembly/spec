@@ -794,8 +794,9 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
   | ArrayNewData (x, y) ->
     let ArrayType ft = array_type c x in
     let () = data c y in
-    require (is_num_type (unpacked_field_type ft)) x.at
-      "array type is not numeric";
+    let t = unpacked_field_type ft in
+    require (is_num_type t || is_vec_type t) x.at
+      "array type is not numeric or vector";
     [NumType I32Type; NumType I32Type] -->
       [RefType (NonNullable, DefHeapType (SynVar x.it))]
 
