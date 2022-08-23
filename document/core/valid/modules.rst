@@ -667,8 +667,8 @@ Instead, the context :math:`C` for validation of the module's content is constru
    However, this recursion is just a specification device.
    All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
-   Globals, however, are not recursive and not accessible within :ref:`constant expressions <valid-const>`.
-   The effect of defining the limited context :math:`C'` for validating certain definitions is that these can only access functions and imported globals and nothing else.
+   Globals, however, are not recursive and not accessible within :ref:`constant expressions <valid-const>` when they are defined locally.
+   The effect of defining the limited context :math:`C'` for validating certain definitions is that they can only access functions and imported globals and nothing else.
 
 .. note::
    The restriction on the number of memories may be lifted in future versions of WebAssembly.
