@@ -726,10 +726,10 @@ let check_module (m : module_) =
   in
   List.iter check_type types;
   List.iter (check_global c1) globals;
-  List.iter (check_table c1) tables;
-  List.iter (check_memory c1) memories;
-  List.iter (check_elem c1) elems;
-  List.iter (check_data c1) datas;
+  List.iter (check_table c) tables;
+  List.iter (check_memory c) memories;
+  List.iter (check_elem c) elems;
+  List.iter (check_data c) datas;
   List.iter (check_func c) funcs;
   Lib.Option.app (check_start c) start;
   ignore (List.fold_left (check_export c) NameSet.empty exports);

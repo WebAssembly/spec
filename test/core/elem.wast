@@ -148,6 +148,10 @@
 (assert_return (invoke "call-7") (i32.const 65))
 (assert_return (invoke "call-9") (i32.const 66))
 
+(module (table 1 funcref) (elem (global.get 0) $f) (global i32 (i32.const 0)) (func $f))
+(module (table 1 funcref) (elem (global.get $g) $f) (global $g i32 (i32.const 0)) (func $f))
+
+
 ;; Corner cases
 
 (module
@@ -425,11 +429,10 @@
   "constant expression required"
 )
 
-;; Use of internal globals in constant expressions is not allowed in MVP.
-;; (assert_invalid
-;;   (module (table 1 funcref) (elem (global.get $g)) (global $g i32 (i32.const 0)))
-;;   "constant expression required"
-;; )
+(assert_invalid
+  (module (table 1 funcref) (elem (global.get $g)) (global $g (mut i32) (i32.const 0)))
+  "constant expression required"
+)
 
 (assert_invalid
    (module 
