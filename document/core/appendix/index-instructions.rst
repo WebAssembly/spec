@@ -516,3 +516,8 @@ Instruction                                        Binary Opcode                
 :math:`\F64X2.\VCONVERT\K{\_low\_i32x4\_s}`        :math:`\hex{FD}~~\hex{FE}~~\hex{01}`  :math:`[\V128] \to [\V128]`                    :ref:`validation <valid-vcvtop>`               :ref:`execution <exec-vcvtop>`, :ref:`operator <op-convert_s>`    
 :math:`\F64X2.\VCONVERT\K{\_low\_i32x4\_u}`        :math:`\hex{FD}~~\hex{FF}~~\hex{01}`  :math:`[\V128] \to [\V128]`                    :ref:`validation <valid-vcvtop>`               :ref:`execution <exec-vcvtop>`, :ref:`operator <op-convert_u>`    
 =================================================  ====================================  =============================================  =============================================  ==================================================================
+
+.. note::
+   Multi-byte opcodes are given with the shortest possible encoding in the table.
+   However, what is following the first byte is actually a :ref:`u32 <binary-uint>` with variable-length encoding,
+   and consequently, has multiple possible representations.
