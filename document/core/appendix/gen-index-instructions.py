@@ -81,7 +81,7 @@ INSTRUCTIONS = [
     Instruction(r'\CALLINDIRECT~x~y', r'\hex{11}', r'[t_1^\ast~\I32] \to [t_2^\ast]', r'valid-call_indirect', r'exec-call_indirect'),
     Instruction(None, r'\hex{12}'),
     Instruction(None, r'\hex{13}'),
-    Instruction(r'\CALLREF', r'\hex{14}', r'[t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]', r'valid-call_ref', r'exec-call_ref'),
+    Instruction(r'\CALLREF~x', r'\hex{14}', r'[t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]', r'valid-call_ref', r'exec-call_ref'),
     Instruction(None, r'\hex{15}'),
     Instruction(None, r'\hex{16}'),
     Instruction(None, r'\hex{17}'),

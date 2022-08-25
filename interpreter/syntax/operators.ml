@@ -32,9 +32,9 @@ let br_on_non_null x = BrOnNonNull x
 
 let return = Return
 let call x = Call x
-let call_ref = CallRef
+let call_ref x = CallRef x
 let call_indirect x y = CallIndirect (x, y)
-let return_call_ref = ReturnCallRef
+let return_call_ref x = ReturnCallRef x
 
 let local_get x = LocalGet x
 let local_set x = LocalSet x

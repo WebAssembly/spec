@@ -1538,10 +1538,12 @@ Control Instructions
 
 .. _valid-call_ref:
 
-:math:`\CALLREF`
-................
+:math:`\CALLREF~x`
+..................
 
-* Let :math:`x` be some :ref:`type index <syntax-typeidx>` for which :math:`C.\CTYPES[x]` is a :ref:`function type <syntax-functype>` of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
+* The type :math:`C.\CTYPES[x]` must be defined in the context.
+
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]`.
 
@@ -1549,7 +1551,7 @@ Control Instructions
    \frac{
      C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdashinstr \CALLREF : [t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]
+     C \vdashinstr \CALLREF~x : [t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]
    }
 
 

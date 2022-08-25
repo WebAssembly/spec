@@ -648,7 +648,7 @@ Instructions in this group affect the flow of control.
      \BRONNONNULL~\labelidx \\&&|&
      \RETURN \\&&|&
      \CALL~\funcidx \\&&|&
-     \CALLREF \\&&|&
+     \CALLREF~\typeidx \\&&|&
      \CALLINDIRECT~\tableidx~\typeidx \\
    \end{array}
 

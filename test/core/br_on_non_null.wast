@@ -2,7 +2,7 @@
   (type $t (func (result i32)))
 
   (func $nn (param $r (ref $t)) (result i32)
-    (call_ref
+    (call_ref $t
       (block $l (result (ref $t))
         (br_on_non_null $l (local.get $r))
         (return (i32.const -1))
@@ -10,7 +10,7 @@
     )
   )
   (func $n (param $r (ref null $t)) (result i32)
-    (call_ref
+    (call_ref $t
       (block $l (result (ref $t))
         (br_on_non_null $l (local.get $r))
         (return (i32.const -1))
@@ -27,7 +27,7 @@
 
   (func (export "unreachable") (result i32)
     (block $l
-      (return (call_ref (br_on_null $l (unreachable))))
+      (return (call_ref $t (br_on_null $l (unreachable))))
     )
     (i32.const -1)
   )
@@ -53,7 +53,7 @@
   (func $f (param i32) (result i32) (i32.mul (local.get 0) (local.get 0)))
 
   (func $a (param $n i32) (param $r (ref null $t)) (result i32)
-    (call_ref
+    (call_ref $t
       (block $l (result i32 (ref $t))
         (return (br_on_non_null $l (local.get $n) (local.get $r)))
       )

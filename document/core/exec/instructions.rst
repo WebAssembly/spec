@@ -2837,8 +2837,8 @@ Control Instructions
 
 .. _exec-call_ref:
 
-:math:`\CALLREF`
-................
+:math:`\CALLREF~x`
+..................
 
 1. Assert: due to :ref:`validation <valid-call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
 
@@ -2848,7 +2848,7 @@ Control Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; (\REFFUNCADDR~a)~\CALLREF &\stepto& F; (\INVOKE~a)
+   F; (\REFFUNCADDR~a)~\CALLREF~x &\stepto& F; (\INVOKE~a)
    \end{array}
 
 

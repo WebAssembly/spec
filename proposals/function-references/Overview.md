@@ -48,7 +48,7 @@ The function `$hof` takes a function pointer as parameter, and is invoked by `$c
 (type $i32-i32 (func (param i32) (result i32)))
 
 (func $hof (param $f (ref $i32-i32)) (result i32)
-  (i32.add (i32.const 10) (call_ref (i32.const 42) (local.get $f)))
+  (i32.add (i32.const 10) (call_ref $i32-i32 (i32.const 42) (local.get $f)))
 )
 
 (func $inc (param $i i32) (result i32)
@@ -204,13 +204,13 @@ Note: Extending block types with index sets to allow initialization status to la
      - iff `$f : $t`
   - this is a *constant instruction*
 
-* `call_ref` calls a function through a reference
-  - `call_ref : [t1* (ref null $t)] -> [t2*]`
+* `call_ref <typeidx>` calls a function through a reference
+  - `call_ref $t : [t1* (ref null $t)] -> [t2*]`
      - iff `$t = [t1*] -> [t2*]`
   - traps on `null`
 
 * With the [tail call proposal](https://github.com/WebAssembly/tail-call/blob/master/proposals/tail-call/Overview.md), there will also be `return_call_ref`:
-  - `return_call_ref : [t1* (ref null $t)] -> [t2*]`
+  - `return_call_ref $t : [t1* (ref null $t)] -> [t2*]`
      - iff `$t = [t1*] -> [t2*]`
      - and `t2* <: C.result`
   - traps on `null`
@@ -218,7 +218,7 @@ Note: Extending block types with index sets to allow initialization status to la
 
 #### Optional References
 
-* `ref.null` is generalised to take a `<heaptype>` immediate
+* `ref.null <heaptype>` is generalised to take a `<heaptype>` immediate
   - `ref.null ht: [] -> [(ref null ht)]`
     - iff `ht ok`
 
@@ -227,13 +227,13 @@ Note: Extending block types with index sets to allow initialization status to la
     - iff `ht ok`
   - traps on `null`
 
-* `br_on_null $l` checks for null and branches if present
+* `br_on_null <labelidx>` checks for null and branches if present
   - `br_on_null $l : [t* (ref null ht)] -> [t* (ref ht)]`
     - iff `$l : [t*]`
     - and `ht ok`
   - branches to `$l` on `null`, otherwise returns operand as non-null
 
-* `br_on_non_null $l` checks for null and branches if not present
+* `br_on_non_null <labelidx>` checks for null and branches if not present
   - `br_on_non_null $l : [t* (ref null ht)] -> [t*]`
     - iff `$l : [t* (ref ht)]`
     - and `ht ok`
@@ -246,15 +246,15 @@ Note: Extending block types with index sets to allow initialization status to la
 
 Typing of local instructions is updated to account for the initialization status of locals.
 
-* `local.get $x`
+* `local.get <localidx>`
   - `local.get $x : [] -> [t]`
     - iff `$x : set t`
 
-* `local.set $x`
+* `local.set <localidx>`
   - `local.set $x : [t] -> [] $x`
     - iff `$x : set? t`
 
-* `local.tee $x`
+* `local.tee <localidx>`
   - `local.tee $x : [t] -> [t] $x`
     - iff `$x : set? t`
 
@@ -319,8 +319,8 @@ The opcode for heap types is encoded as an `s33`.
 
 | Opcode | Instruction              | Immediates |
 | ------ | ------------------------ | ---------- |
-| 0x14   | `call_ref`               |            |
-| 0x15   | `return_call_ref`        |            |
+| 0x14   | `call_ref $t`            | `$t : u32` |
+| 0x15   | `return_call_ref $t`     | `$t : u32` |
 | 0xd3   | `ref.as_non_null`        |            |
 | 0xd4   | `br_on_null $l`          | `$l : u32` |
 | 0xd6   | `br_on_non_null $l`      | `$l : u32` |

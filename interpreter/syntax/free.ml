@@ -108,8 +108,9 @@ let rec instr (e : instr) =
   | If (bt, es1, es2) -> block_type bt ++ block es1 ++ block es2
   | Br x | BrIf x | BrOnNull x | BrOnNonNull x -> labels (idx x)
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
-  | Return | CallRef | ReturnCallRef -> empty
+  | Return -> empty
   | Call x -> funcs (idx x)
+  | CallRef x | ReturnCallRef x -> types (idx x)
   | CallIndirect (x, y) -> tables (idx x) ++ types (idx y)
   | LocalGet x | LocalSet x | LocalTee x -> locals (idx x)
   | GlobalGet x | GlobalSet x -> globals (idx x)

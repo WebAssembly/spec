@@ -318,8 +318,8 @@ let rec instr s =
 
   | 0x12 | 0x13 as b -> illegal s pos b  (* return_call, return_call_indirect *)
 
-  | 0x14 -> call_ref
-  | 0x15 -> return_call_ref
+  | 0x14 -> call_ref (at var s)
+  | 0x15 -> return_call_ref (at var s)
 
   | 0x16 as b -> illegal s pos b
 

@@ -66,9 +66,9 @@ Control Instructions
      \hex{0F} &\Rightarrow& \RETURN \\ &&|&
      \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
      \hex{11}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \CALLINDIRECT~x~y \\ &&|&
-     \hex{14} &\Rightarrow& \CALLREF \\ &&|&
-     \hex{D4}~~x{:}\Bfuncidx &\Rightarrow& \BRONNULL \\ &&|&
-     \hex{D6}~~x{:}\Bfuncidx &\Rightarrow& \BRONNONNULL \\
+     \hex{14}~~x{:}\Btypeidx &\Rightarrow& \CALLREF~x \\ &&|&
+     \hex{D4}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
+     \hex{D6}~~l{:}\Blabelidx &\Rightarrow& \BRONNONNULL~l \\
    \end{array}
 
 .. note::

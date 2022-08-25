@@ -447,8 +447,8 @@ plain_instr :
   | BR_ON_NON_NULL var { fun c -> br_on_non_null ($2 c label) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
-  | CALL_REF { fun c -> call_ref }
-  | RETURN_CALL_REF { fun c -> return_call_ref }
+  | CALL_REF var { fun c -> call_ref ($2 c type_) }
+  | RETURN_CALL_REF var { fun c -> return_call_ref ($2 c type_) }
   | LOCAL_GET var { fun c -> local_get ($2 c local) }
   | LOCAL_SET var { fun c -> local_set ($2 c local) }
   | LOCAL_TEE var { fun c -> local_tee ($2 c local) }

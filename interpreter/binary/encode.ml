@@ -197,9 +197,9 @@ struct
     | BrOnNonNull x -> op 0xd6; var x
     | Return -> op 0x0f
     | Call x -> op 0x10; var x
-    | CallRef -> op 0x14
+    | CallRef x -> op 0x14; var x
     | CallIndirect (x, y) -> op 0x11; var y; var x
-    | ReturnCallRef -> op 0x15
+    | ReturnCallRef x -> op 0x15; var x
 
     | Drop -> op 0x1a
     | Select None -> op 0x1b

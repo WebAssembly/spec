@@ -456,10 +456,10 @@ let rec instr e =
     | BrOnNonNull x -> "br_on_non_null " ^ var x, []
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
-    | CallRef -> "call_ref", []
+    | CallRef x -> "call_ref " ^ var x, []
     | CallIndirect (x, y) ->
       "call_indirect " ^ var x, [Node ("type " ^ var y, [])]
-    | ReturnCallRef -> "return_call_ref", []
+    | ReturnCallRef x -> "return_call_ref " ^ var x, []
     | LocalGet x -> "local.get " ^ var x, []
     | LocalSet x -> "local.set " ^ var x, []
     | LocalTee x -> "local.tee " ^ var x, []

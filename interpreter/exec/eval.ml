@@ -222,10 +222,10 @@ let rec step (c : config) : config =
       | Call x, vs ->
         vs, [Invoke (func c.frame.inst x) @@ e.at]
 
-      | CallRef, Ref (NullRef _) :: vs ->
+      | CallRef _x, Ref (NullRef _) :: vs ->
         vs, [Trapping "null function reference" @@ e.at]
 
-      | CallRef, Ref (FuncRef f) :: vs ->
+      | CallRef _x, Ref (FuncRef f) :: vs ->
         vs, [Invoke f @@ e.at]
 
       | CallIndirect (x, y), Num (I32 i) :: vs ->
@@ -237,11 +237,11 @@ let rec step (c : config) : config =
         else
           vs, [Trapping "indirect call type mismatch" @@ e.at]
 
-      | ReturnCallRef, Ref (NullRef _) :: vs ->
+      | ReturnCallRef _x, Ref (NullRef _) :: vs ->
         vs, [Trapping "null function reference" @@ e.at]
 
-      | ReturnCallRef, vs ->
-        (match (step {c with code = (vs, [Plain CallRef @@ e.at])}).code with
+      | ReturnCallRef x, vs ->
+        (match (step {c with code = (vs, [Plain (CallRef x) @@ e.at])}).code with
         | vs', [{it = Invoke a; at}] -> vs', [ReturningInvoke (vs', a) @@ at]
         | vs', [{it = Trapping s; at}] -> vs', [Trapping s @@ at]
         | _ -> assert false
