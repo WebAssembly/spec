@@ -4,10 +4,9 @@
  (name wasm)
  ; The 'main' module shall not be part of the library, as it would start the
  ; Wasm REPL every time in all the dependencies.
- ; We also need to exclude the 'wasm' module as it overlaps with the library
- ; name.
+ ; We exclude the 'wast' module as it is only used for the JS build.
  ; 'smallint' is a separate test module.
- (modules :standard \ main wasm smallint))
+ (modules :standard \ main smallint wast))
 
 (executable
  (name main)

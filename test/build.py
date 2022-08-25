@@ -60,7 +60,7 @@ def ensure_wasm_executable(path_to_wasm):
 def convert_one_wast_file(inputs):
     wast_file, js_file = inputs
     print('Compiling {} to JS...'.format(wast_file))
-    return run(WASM_EXEC, wast_file, '-h', '-o', js_file)
+    return run(WASM_EXEC, wast_file, '-j', '-o', js_file)
 
 def convert_wast_to_js(out_js_dir):
     """Compile all the wast files to JS and store the results in the JS dir."""

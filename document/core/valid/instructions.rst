@@ -242,7 +242,7 @@ Reference Instructions
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Vector instructions can have a prefix to describe the :ref:`shape <syntax-vec-shape>` of the operand. Packed numeric types, |I8| and |I16|, are not :ref:`value type <syntax-valtype>`, we define an auxiliary function to map such packed types into value types:
+Vector instructions can have a prefix to describe the :ref:`shape <syntax-vec-shape>` of the operand. Packed numeric types, |I8| and |I16|, are not :ref:`value types <syntax-valtype>`. An auxiliary function maps such packed types to value types:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
@@ -606,7 +606,7 @@ Parametric Instructions
 
   * The length of :math:`t^\ast` must be :math:`1`.
 
-  * The instruction is valid with type :math:`[t^\ast~t^\ast~\I32] \to [t^\ast]`.
+  * Then the instruction is valid with type :math:`[t^\ast~t^\ast~\I32] \to [t^\ast]`.
 
 * Else:
 
@@ -1415,7 +1415,7 @@ Control Instructions
 * For all :math:`l_i` in :math:`l^\ast`,
   the label :math:`C.\CLABELS[l_i]` must be defined in the context.
 
-* There must be a :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, such that:
+* There must be a sequence :math:`t^\ast` of :ref:`value types <syntax-valtype>`, such that:
 
   * The result type :math:`[t^\ast]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_N]`.
 
