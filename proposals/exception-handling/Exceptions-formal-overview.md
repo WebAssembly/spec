@@ -83,10 +83,12 @@ C ⊢ try bt instr1* (catch x instr2*)* (catch_all instr3*)? end : [t1*]→[t2*]
 
 C ⊢ bt : [t1*]→[t2*]
 C, labels [t2*] ⊢ instr* : [t1*]→[t2*]
-C.labels[l] = [t*]
+C.labels[l] = [t0*]
 -------------------------------------------
 C ⊢ try bt instr* delegate l : [t1*]→[t2*]
 ```
+
+Note that `try ... delegate 0` may appear without any explicitly surrounding block, in which case the label 0 refers to the label of the frame. Currently it is not allowed to refer to a label higher than the one of the frame.
 
 ## Execution (Reduction)
 
@@ -208,10 +210,10 @@ S;C, labels [t2*] ⊢ instr1* : []→[t2*]
 -----------------------------------------------------------
 S;C, labels [t2*] ⊢ catch{a? instr2*}* instr1* end : []→[t2*]
 
-S;C, labels [t*] ⊢ instr* : []→[t*]
-C.labels[l] = [t0*]
+S;C ⊢ instr* : []→[t*]
+C.labels[l+1] = [t0*]
 ------------------------------------------------------
-S;C, labels [t*] ⊢ delegate{l} instr* end : []→[t*]
+S;C ⊢ delegate{l} instr* end : []→[t*]
 
 S ⊢ tag a : tag [t0*]→[]
 (val:t0)*
