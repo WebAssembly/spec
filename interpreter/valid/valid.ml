@@ -160,7 +160,7 @@ let (-->...) ts1 ts2 = {ins = Ellipses, ts1; outs = Ellipses, ts2}
 let check_stack (c : context) ts1 ts2 at =
   require
     (List.length ts1 = List.length ts2 &&
-      List.for_all2 (match_val_type c.types []) ts1 ts2) at
+      List.for_all2 (match_val_type c.types) ts1 ts2) at
     ("type mismatch: instruction requires " ^ string_of_result_type ts2 ^
      " but stack has " ^ string_of_result_type ts1)
 
@@ -380,7 +380,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
       ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0, t1 = Lib.List.split_last (label c x) in
-    require (match_val_type c.types [] t' t1) e.at
+    require (match_val_type c.types t' t1) e.at
       ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
        " but label has " ^ string_of_result_type (label c x));
     (ts0 @ [RefT (_nul, ht)]) --> ts0, []
@@ -399,14 +399,14 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
   | CallIndirect (x, y) ->
     let TableT (_lim, t) = table c x in
     let FuncT (ts1, ts2) = func_type c y in
-    require (match_ref_type c.types [] t (Null, FuncHT)) x.at
+    require (match_ref_type c.types t (Null, FuncHT)) x.at
       ("type mismatch: instruction requires table of function type" ^
        " but table has element type " ^ string_of_ref_type t);
     (ts1 @ [NumT I32T]) --> ts2, []
 
   | ReturnCallRef x ->
     let FuncT (ts1, ts2) = func_type c x in
-    require (match_result_type c.types [] ts2 c.results) e.at
+    require (match_result_type c.types ts2 c.results) e.at
       ("type mismatch: current function requires result type " ^
        string_of_result_type c.results ^
        " but callee returns " ^ string_of_result_type ts2);
@@ -457,7 +457,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
   | TableCopy (x, y) ->
     let TableT (_lim1, t1) = table c x in
     let TableT (_lim2, t2) = table c y in
-    require (match_ref_type c.types [] t2 t1) x.at
+    require (match_ref_type c.types t2 t1) x.at
       ("type mismatch: source element type " ^ string_of_ref_type t1 ^
        " does not match destination element type " ^ string_of_ref_type t2);
     [NumT I32T; NumT I32T; NumT I32T] --> [], []
@@ -465,7 +465,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
   | TableInit (x, y) ->
     let TableT (_lim1, t1) = table c x in
     let t2 = elem c y in
-    require (match_ref_type c.types [] t2 t1) x.at
+    require (match_ref_type c.types t2 t1) x.at
       ("type mismatch: element segment's type " ^ string_of_ref_type t1 ^
        " does not match table's element type " ^ string_of_ref_type t2);
     [NumT I32T; NumT I32T; NumT I32T] --> [], []
@@ -718,7 +718,7 @@ let check_elem_mode (c : context) (t : ref_type) (mode : segment_mode) =
   | Passive -> ()
   | Active {index; offset} ->
     let TableT (_lim, et) = table c index in
-    require (match_ref_type c.types [] t et) mode.at
+    require (match_ref_type c.types t et) mode.at
       ("type mismatch: element segment's type " ^ string_of_ref_type t ^
        " does not match table's element type " ^ string_of_ref_type et);
     check_const c offset (NumT I32T)

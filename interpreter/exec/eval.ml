@@ -231,7 +231,7 @@ let rec step (c : config) : config =
       | CallIndirect (x, y), Num (I32 i) :: vs ->
         let f = func_ref c.frame.inst x i e.at in
         if
-          Match.Dyn.eq_func_type () [] (func_type c.frame.inst y) (Func.type_of f)
+          Match.Dyn.eq_func_type () (func_type c.frame.inst y) (Func.type_of f)
         then
           vs, [Invoke f @@ e.at]
         else
@@ -738,7 +738,7 @@ let invoke (func : func_inst) (vs : value list) : value list =
   let FuncT (ts1, _ts2) = Func.type_of func in
   if List.length vs <> List.length ts1 then
     Crash.error at "wrong number of arguments";
-  if not (List.for_all2 (fun v -> Match.Dyn.match_val_type () [] (type_of_value v)) vs ts1) then
+  if not (List.for_all2 (fun v -> Match.Dyn.match_val_type () (type_of_value v)) vs ts1) then
     Crash.error at "wrong types of arguments";
   let c = config empty_module_inst (List.rev vs) [Invoke func @@ at] in
   try List.rev (eval c) with Stack_overflow ->
@@ -802,7 +802,7 @@ let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   let it = Types.extern_type_of_import_type (import_type_of m im) in
   let et = Types.Dyn.dyn_extern_type inst.types it in
   let et' = extern_type_of inst.types ext in
-  if not (Match.Dyn.match_extern_type () [] et' et) then
+  if not (Match.Dyn.match_extern_type () et' et) then
     Link.error im.at ("incompatible import type for " ^
       "\"" ^ Utf8.encode im.it.module_name ^ "\" " ^
       "\"" ^ Utf8.encode im.it.item_name ^ "\": " ^
