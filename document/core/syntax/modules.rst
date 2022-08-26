@@ -106,7 +106,7 @@ Conventions
 
 * The meta variables :math:`x, y` range over indices in any of the other index spaces.
 
-* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`. We sometimes reinterpret this set as the :ref:`vector <syntax-vec>` of its elements.
+* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`. Sometimes this set is reinterpreted as the :ref:`vector <syntax-vec>` of its elements.
 
 .. note::
    For example, if :math:`\instr^\ast` is :math:`(\DATADROP~x) (\MEMORYINIT~y)`, then :math:`\freedataidx(\instr^\ast) = \{x, y\}`, or equivalently, the vector :math:`x~y`.
