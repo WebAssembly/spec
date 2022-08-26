@@ -3,6 +3,13 @@ open Types
 type context = ctx_type list
 
 
+(* Extremas *)
+
+val top_of_heap_type : context -> heap_type -> heap_type
+val top_of_str_type : context -> str_type -> heap_type
+val abs_of_str_type : context -> str_type -> heap_type
+
+
 (* Equivalence *)
 
 val eq_num_type : context -> num_type -> num_type -> bool

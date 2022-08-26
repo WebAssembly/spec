@@ -185,12 +185,13 @@ sign:  s | u
 offset: offset=<nat>
 align: align=(1|2|4|8|...)
 cvtop: trunc | extend | wrap | ...
-castop: data | array | func | i31
+castop: data | array | i31
+externop: internalize | externalize
 
 num_type: i32 | i64 | f32 | f64
 vec_type: v128
 vec_shape: i8x16 | i16x8 | i32x4 | i64x2 | f32x4 | f64x2 | v128
-heap_type: any | eq | i31 | data | array | func | <var> | (rtt <var>)
+heap_type: any | eq | i31 | data | array | func | extern | none | nofunc | noextern | <var> | (rtt <var>)
 ref_type:
   ( ref null? <heap_type> )
   ( rtt <var> )               ;; = (ref (rtt <var>))
@@ -200,6 +201,10 @@ ref_type:
   dataref                     ;; = (ref null data)
   arrayref                    ;; = (ref null array)
   funcref                     ;; = (ref null func)
+  externref                   ;; = (ref null extern)
+  nullref                     ;; = (ref null none)
+  nullfuncref                 ;; = (ref null nofunc)
+  nullexternref               ;; = (ref null noextern)
 val_type: <num_type> | <vec_type> | <ref_type>
 block_type : ( result <val_type>* )*
 func_type:   ( type <var> )? <param>* <result>*
@@ -310,6 +315,7 @@ op:
   array.get(_<sign>)? <var>
   array.set <var>
   array.len <var>
+  extern.<externop>
   <num_type>.const <num>
   <num_type>.<unop>
   <num_type>.<binop>
@@ -429,7 +435,8 @@ const:
   ( <num_type>.const <num> )                 ;; number value
   ( <vec_type> <vec_shape> <num>+ )          ;; vector value
   ( ref.null <ref_kind> )                    ;; null reference
-  ( ref.extern <nat> )                       ;; host reference
+  ( ref.host <nat> )                         ;; host reference
+  ( ref.extern <nat> )                       ;; external host reference
 
 assertion:
   ( assert_return <action> <result_pat>* )   ;; assert action has expected results
@@ -445,6 +452,8 @@ result_pat:
   ( <vec_type>.const <vec_shape> <num_pat>+ )
   ( ref )
   ( ref.null )
+  ( ref.func )
+  ( ref.extern )
   ( ref.<castop> )
 
 num_pat:
@@ -519,7 +528,7 @@ module:
   ( module <name>? binary <string>* )        ;; module in binary format (may be malformed)
 
 action:
-  ( invoke <name>? <string> <expr>* )        ;; invoke function export
+  ( invoke <name>? <string> <const>* )       ;; invoke function export
   ( get <name>? <string> )                   ;; get global export
 
 assertion:
@@ -534,11 +543,10 @@ assertion:
 result_pat:
   ( <num_type>.const <num_pat> )
   ( ref )
-  ( ref.i31 )
-  ( ref.data )
   ( ref.null )
   ( ref.func )
   ( ref.extern )
+  ( ref.<castop> )
 
 num_pat:
   <value>                                    ;; literal result

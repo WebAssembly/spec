@@ -30,13 +30,11 @@ let br_on_null x = BrCast (x, NullOp)
 let br_on_i31 x = BrCast (x, I31Op)
 let br_on_data x = BrCast (x, DataOp)
 let br_on_array x = BrCast (x, ArrayOp)
-let br_on_func x = BrCast (x, FuncOp)
 let br_on_cast_canon x y = BrCast (x, RttOp y)
 let br_on_non_null x = BrCastFail (x, NullOp)
 let br_on_non_i31 x = BrCastFail (x, I31Op)
 let br_on_non_data x = BrCastFail (x, DataOp)
 let br_on_non_array x = BrCastFail (x, ArrayOp)
-let br_on_non_func x = BrCastFail (x, FuncOp)
 let br_on_cast_canon_fail x y = BrCastFail (x, RttOp y)
 
 let return = Return
@@ -112,13 +110,11 @@ let ref_is_null = RefTest NullOp
 let ref_is_i31 = RefTest I31Op
 let ref_is_data = RefTest DataOp
 let ref_is_array = RefTest ArrayOp
-let ref_is_func = RefTest FuncOp
 let ref_test_canon x = RefTest (RttOp x)
 let ref_as_non_null = RefCast NullOp
 let ref_as_i31 = RefCast I31Op
 let ref_as_data = RefCast DataOp
 let ref_as_array = RefCast ArrayOp
-let ref_as_func = RefCast FuncOp
 let ref_cast_canon x = RefCast (RttOp x)
 let ref_eq = RefEq
 
@@ -141,6 +137,9 @@ let array_get_u x = ArrayGet (x, Some ZX)
 let array_get_s x = ArrayGet (x, Some SX)
 let array_set x = ArraySet x
 let array_len = ArrayLen
+
+let extern_internalize = ExternConvert Internalize
+let extern_externalize = ExternConvert Externalize
 
 let i32_clz = Unary (I32 I32Op.Clz)
 let i32_ctz = Unary (I32 I32Op.Ctz)

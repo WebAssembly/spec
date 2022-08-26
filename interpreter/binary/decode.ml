@@ -176,9 +176,12 @@ let heap_type s =
     (fun s ->
       match s7 s with
       | -0x10 -> FuncHeapType
-      | -0x11 -> AnyHeapType
+      | -0x11 -> ExternHeapType
+      | -0x12 -> AnyHeapType
       | -0x13 -> EqHeapType
       | -0x16 -> I31HeapType
+      | -0x17 -> NoFuncHeapType
+      | -0x18 -> NoExternHeapType
       | -0x19 -> DataHeapType
       | -0x1a -> ArrayHeapType
       | -0x1b -> NoneHeapType
@@ -190,11 +193,14 @@ let ref_type s =
   let pos = pos s in
   match s7 s with
   | -0x10 -> (Nullable, FuncHeapType)
-  | -0x11 -> (Nullable, AnyHeapType)
+  | -0x11 -> (Nullable, ExternHeapType)
+  | -0x12 -> (Nullable, AnyHeapType)
   | -0x13 -> (Nullable, EqHeapType)
   | -0x14 -> (Nullable, heap_type s)
   | -0x15 -> (NonNullable, heap_type s)
   | -0x16 -> (Nullable, I31HeapType)
+  | -0x17 -> (Nullable, NoFuncHeapType)
+  | -0x18 -> (Nullable, NoExternHeapType)
   | -0x19 -> (Nullable, DataHeapType)
   | -0x1a -> (Nullable, ArrayHeapType)
   | -0x1b -> (Nullable, NoneHeapType)
@@ -609,23 +615,22 @@ let rec instr s =
     | 0x42l -> let x = at var s in let y = at var s in br_on_cast_canon x y
     | 0x43l -> let x = at var s in let y = at var s in br_on_cast_canon_fail x y
 
-    | 0x50l -> ref_is_func
     | 0x51l -> ref_is_data
     | 0x52l -> ref_is_i31
     | 0x53l -> ref_is_array
-    | 0x58l -> ref_as_func
     | 0x59l -> ref_as_data
     | 0x5al -> ref_as_i31
     | 0x5bl -> ref_as_array
 
-    | 0x60l -> br_on_func (at var s)
     | 0x61l -> br_on_data (at var s)
     | 0x62l -> br_on_i31 (at var s)
-    | 0x63l -> br_on_non_func (at var s)
     | 0x64l -> br_on_non_data (at var s)
     | 0x65l -> br_on_non_i31 (at var s)
     | 0x66l -> br_on_array (at var s)
     | 0x67l -> br_on_non_array (at var s)
+
+    | 0x70l -> extern_internalize
+    | 0x71l -> extern_externalize
 
     | n -> illegal2 s pos b n
     )

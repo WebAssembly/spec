@@ -28,6 +28,24 @@ let tie_rec_types rts =
   List.map (subst_sub_type (tie_var_type xs)) sts
 
 
+(* Extremas *)
+
+let abs_of_str_type _c = function
+  | StructDefType _ | ArrayDefType _ -> DataHeapType
+  | FuncDefType _ -> FuncHeapType
+
+let rec top_of_str_type c st =
+  top_of_heap_type c (abs_of_str_type c st)
+
+and top_of_heap_type c = function
+  | AnyHeapType | NoneHeapType | EqHeapType
+  | DataHeapType | ArrayHeapType | I31HeapType -> AnyHeapType
+  | FuncHeapType | NoFuncHeapType -> FuncHeapType
+  | ExternHeapType | NoExternHeapType -> ExternHeapType
+  | DefHeapType x -> top_of_str_type c (expand_ctx_type (lookup c x))
+  | BotHeapType -> assert false
+
+
 (* Equivalence *)
 
 let eq_list eq c as1 as2 =
@@ -153,17 +171,21 @@ and match_vec_type c t1 t2 =
 
 and match_heap_type c t1 t2 =
   match t1, t2 with
-  | NoneHeapType, _ -> true
-  | _, AnyHeapType -> true
+  | AnyHeapType, AnyHeapType -> true
+  | EqHeapType, AnyHeapType -> true
+  | DataHeapType, AnyHeapType -> true
+  | ArrayHeapType, AnyHeapType -> true
+  | I31HeapType, AnyHeapType -> true
   | I31HeapType, EqHeapType -> true
   | DataHeapType, EqHeapType -> true
   | ArrayHeapType, EqHeapType -> true
   | ArrayHeapType, DataHeapType -> true
-  | DefHeapType x1, EqHeapType ->
-    (match expand_ctx_type (lookup c x1) with
-    | StructDefType _ | ArrayDefType _ -> true
-    | _ -> false
-    )
+  | ExternHeapType, ExternHeapType -> true
+  | NoneHeapType, t -> match_heap_type c t AnyHeapType
+  | NoFuncHeapType, t -> match_heap_type c t FuncHeapType
+  | NoExternHeapType, t -> match_heap_type c t ExternHeapType
+  | DefHeapType x1, AnyHeapType -> match_heap_type c t1 DataHeapType
+  | DefHeapType x1, EqHeapType -> match_heap_type c t1 DataHeapType
   | DefHeapType x1, DataHeapType ->
     (match expand_ctx_type (lookup c x1) with
     | StructDefType _ | ArrayDefType _ -> true
@@ -180,6 +202,7 @@ and match_heap_type c t1 t2 =
     | _ -> false
     )
   | DefHeapType x1, DefHeapType x2 -> match_var_type c x1 x2
+  | BotHeapType, _ -> true
   | _, _ -> eq_heap_type c t1 t2
 
 and match_ref_type c t1 t2 =

@@ -256,8 +256,9 @@ let inline_func_type_explicit (c : context) x ft at =
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
 %token NUM_TYPE PACKED_TYPE VEC_TYPE VEC_SHAPE
-%token NULLREF ANYREF EQREF I31REF DATAREF ARRAYREF FUNCREF EXTERNREF
-%token NONE ANY EQ I31 DATA REF EXTERN NULL
+%token ANYREF NULLREF EQREF I31REF DATAREF ARRAYREF
+%token FUNCREF NULLFUNCREF EXTERNREF NULLEXTERNREF
+%token ANY NONE EQ I31 DATA REF NOFUNC EXTERN NOEXTERN NULL
 %token MUT FIELD STRUCT ARRAY SUB REC
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP LET
@@ -269,12 +270,13 @@ let inline_func_type_explicit (c : context) x ft at =
 %token MEMORY_SIZE MEMORY_GROW MEMORY_FILL MEMORY_COPY MEMORY_INIT DATA_DROP
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
-%token REF_NULL REF_FUNC REF_I31 REF_DATA REF_ARRAY REF_EXTERN
+%token REF_NULL REF_FUNC REF_I31 REF_DATA REF_ARRAY REF_EXTERN REF_HOST
 %token REF_EQ REF_TEST REF_CAST REF_TEST_CANON REF_CAST_CANON
 %token I31_NEW I32_GET
 %token STRUCT_NEW STRUCT_GET STRUCT_SET
 %token ARRAY_NEW ARRAY_NEW_FIXED ARRAY_NEW_ELEM ARRAY_NEW_DATA
 %token ARRAY_GET ARRAY_SET ARRAY_LEN
+%token EXTERN_CONVERT
 %token VEC_LOAD VEC_STORE VEC_LOAD_LANE VEC_STORE_LANE
 %token VEC_CONST VEC_UNARY VEC_BINARY VEC_TERNARY VEC_TEST
 %token VEC_SHIFT VEC_BITMASK VEC_SHUFFLE
@@ -310,6 +312,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<Ast.instr'> TEST
 %token<Ast.instr'> COMPARE
 %token<Ast.instr'> CONVERT
+%token<Ast.instr'> EXTERN_CONVERT
 %token<int option -> Memory.offset -> Ast.instr'> LOAD
 %token<int option -> Memory.offset -> Ast.instr'> STORE
 %token<int option -> Memory.offset -> Ast.instr'> VEC_LOAD
@@ -358,26 +361,30 @@ null_opt :
   | NULL { Nullable }
 
 heap_type :
-  | NONE { fun c -> NoneHeapType }
   | ANY { fun c -> AnyHeapType }
+  | NONE { fun c -> NoneHeapType }
   | EQ { fun c -> EqHeapType }
   | I31 { fun c -> I31HeapType }
   | DATA { fun c -> DataHeapType }
   | ARRAY { fun c -> ArrayHeapType }
   | FUNC { fun c -> FuncHeapType }
-  | EXTERN { fun c -> AnyHeapType }
+  | NOFUNC { fun c -> NoFuncHeapType }
+  | EXTERN { fun c -> ExternHeapType }
+  | NOEXTERN { fun c -> NoExternHeapType }
   | var { fun c -> DefHeapType (SynVar ($1 c type_).it) }
 
 ref_type :
   | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
-  | NULLREF { fun c -> (Nullable, NoneHeapType) }  /* Sugar */
   | ANYREF { fun c -> (Nullable, AnyHeapType) }  /* Sugar */
+  | NULLREF { fun c -> (Nullable, NoneHeapType) }  /* Sugar */
   | EQREF { fun c -> (Nullable, EqHeapType) }  /* Sugar */
   | I31REF { fun c -> (Nullable, I31HeapType) }  /* Sugar */
   | DATAREF { fun c -> (Nullable, DataHeapType) }  /* Sugar */
   | ARRAYREF { fun c -> (Nullable, ArrayHeapType) }  /* Sugar */
   | FUNCREF { fun c -> (Nullable, FuncHeapType) }  /* Sugar */
-  | EXTERNREF { fun c -> (Nullable, AnyHeapType) }  /* Sugar */
+  | NULLFUNCREF { fun c -> (Nullable, NoFuncHeapType) }  /* Sugar */
+  | EXTERNREF { fun c -> (Nullable, ExternHeapType) }  /* Sugar */
+  | NULLEXTERNREF { fun c -> (Nullable, NoExternHeapType) }  /* Sugar */
 
 value_type :
   | NUM_TYPE { fun c -> NumType $1 }
@@ -601,6 +608,7 @@ plain_instr :
   | ARRAY_GET var { fun c -> $1 ($2 c type_) }
   | ARRAY_SET var { fun c -> array_set ($2 c type_) }
   | ARRAY_LEN { fun c -> array_len }
+  | EXTERN_CONVERT { fun c -> $1 }
   | CONST num { fun c -> fst (num $1 $2) }
   | TEST { fun c -> $1 }
   | COMPARE { fun c -> $1 }
@@ -1387,7 +1395,8 @@ literal_vec :
 
 literal_ref :
   | LPAR REF_NULL heap_type RPAR { Value.NullRef ($3 (empty_context ())) }
-  | LPAR REF_EXTERN NAT RPAR { Script.ExternRef (nat32 $3 (ati 3)) }
+  | LPAR REF_HOST NAT RPAR { Script.HostRef (nat32 $3 (ati 3)) }
+  | LPAR REF_EXTERN NAT RPAR { Extern.ExternRef (Script.HostRef (nat32 $3 (ati 3))) }
 
 literal :
   | literal_num { Value.Num $1 @@ at () }
@@ -1415,8 +1424,9 @@ result :
   | LPAR REF_I31 RPAR { RefResult (RefTypePat I31HeapType) @@ at () }
   | LPAR REF_DATA RPAR { RefResult (RefTypePat DataHeapType) @@ at () }
   | LPAR REF_ARRAY RPAR { RefResult (RefTypePat ArrayHeapType) @@ at () }
-  | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncHeapType) @@ at () }
   | LPAR REF_NULL RPAR { RefResult NullPat @@ at () }
+  | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncHeapType) @@ at () }
+  | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternHeapType) @@ at () }
   | LPAR VEC_CONST VEC_SHAPE numpat_list RPAR
     { if V128.num_lanes $3 <> List.length $4 then
         error (at ()) "wrong number of lane literals";

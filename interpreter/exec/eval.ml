@@ -245,14 +245,6 @@ let rec step (c : config) : config =
           Ref r :: vs', []
         )
 
-      | BrCast (x, FuncOp), Ref r :: vs' ->
-        (match r with
-        | FuncRef _ ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        | _ ->
-          Ref r :: vs', []
-        )
-
       | BrCast (x, RttOp y), Ref r :: vs' ->
         let rtt = Rtt.alloc (type_ c.frame.inst y) in
         (match r with
@@ -295,14 +287,6 @@ let rec step (c : config) : config =
       | BrCastFail (x, ArrayOp), Ref r :: vs' ->
         (match r with
         | Data.DataRef (Data.Array _) ->
-          Ref r :: vs', []
-        | _ ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        )
-
-      | BrCastFail (x, FuncOp), Ref r :: vs' ->
-        (match r with
-        | FuncRef _ ->
           Ref r :: vs', []
         | _ ->
           Ref r :: vs', [Plain (Br x) @@ e.at]
@@ -667,9 +651,6 @@ let rec step (c : config) : config =
       | RefTest ArrayOp, Ref r :: vs' ->
         value_of_bool (match r with Data.DataRef (Data.Array _) -> true | _ -> false) :: vs', []
 
-      | RefTest FuncOp, Ref r :: vs' ->
-        value_of_bool (match r with FuncRef _ -> true | _ -> false) :: vs', []
-
       | RefTest (RttOp x), Ref r :: vs' ->
         let rtt = Rtt.alloc (type_ c.frame.inst x) in
         (match r with
@@ -715,15 +696,6 @@ let rec step (c : config) : config =
           Ref r :: vs', []
         | _ ->
           vs', [Trapping ("cast failure, expected array but got " ^
-            string_of_value (Ref r)) @@ e.at]
-        )
-
-      | RefCast FuncOp, Ref r :: vs' ->
-        (match r with
-        | FuncRef _ ->
-          Ref r :: vs', []
-        | _ ->
-          vs', [Trapping ("cast failure, expected func but got " ^
             string_of_value (Ref r)) @@ e.at]
         )
 
@@ -898,6 +870,18 @@ let rec step (c : config) : config =
 
       | ArrayLen, Ref (Data.DataRef (Data.Array (_, _, svs))) :: vs' ->
         Num (I32 (Lib.List32.length svs)) :: vs', []
+
+      | ExternConvert Internalize, Ref (NullRef _) :: vs' ->
+        Ref (NullRef NoExternHeapType) :: vs', []
+
+      | ExternConvert Internalize, Ref (Extern.ExternRef r) :: vs' ->
+        Ref r :: vs', []
+
+      | ExternConvert Externalize, Ref (NullRef _) :: vs' ->
+        Ref (NullRef NoneHeapType) :: vs', []
+
+      | ExternConvert Externalize, Ref r :: vs' ->
+        Ref (Extern.ExternRef r) :: vs', []
 
       | Const n, vs ->
         Num n.it :: vs, []

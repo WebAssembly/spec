@@ -73,9 +73,12 @@ let vec_type = function
   | V128Type -> empty
 
 let heap_type = function
-  | NoneHeapType | AnyHeapType | EqHeapType
-  | I31HeapType | DataHeapType | ArrayHeapType | FuncHeapType -> empty
+  | AnyHeapType | NoneHeapType | EqHeapType
+  | I31HeapType | DataHeapType | ArrayHeapType -> empty
+  | FuncHeapType | NoFuncHeapType -> empty
+  | ExternHeapType | NoExternHeapType -> empty
   | DefHeapType x -> var_type x
+  | BotHeapType -> empty
 
 let ref_type = function
   | (_, t) -> heap_type t
@@ -134,6 +137,7 @@ let rec instr (e : instr) =
   | StructGet (x, _, _) | StructSet (x, _) -> types (idx x)
   | ArrayGet (x, _) | ArraySet x -> types (idx x)
   | ArrayLen -> empty
+  | ExternConvert _ -> empty
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
   | If (bt, es1, es2) -> block_type bt ++ block es1 ++ block es2

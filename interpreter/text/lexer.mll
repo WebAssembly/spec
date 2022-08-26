@@ -149,19 +149,23 @@ rule token = parse
       | "f32x4" -> VEC_SHAPE (V128.F32x4 ())
       | "f64x2" -> VEC_SHAPE (V128.F64x2 ())
 
-      | "none" -> NONE
-      | "nullref" -> NULLREF
       | "any" -> ANY
       | "anyref" -> ANYREF
+      | "none" -> NONE
+      | "nullref" -> NULLREF
       | "eq" -> EQ
       | "eqref" -> EQREF
       | "i31" -> I31
       | "i31ref" -> I31REF
       | "dataref" -> DATAREF
       | "arrayref" -> ARRAYREF
-      | "extern" -> EXTERN
-      | "externref" -> EXTERNREF
+      | "nofunc" -> NOFUNC
       | "funcref" -> FUNCREF
+      | "nullfuncref" -> NULLFUNCREF
+      | "extern" -> EXTERN
+      | "noextern" -> NOEXTERN
+      | "externref" -> EXTERNREF
+      | "nullexternref" -> NULLEXTERNREF
       | "ref" -> REF
       | "null" -> NULL
 
@@ -186,13 +190,11 @@ rule token = parse
       | "br_on_i31" -> BR_CAST br_on_i31
       | "br_on_data" -> BR_CAST br_on_data
       | "br_on_array" -> BR_CAST br_on_array
-      | "br_on_func" -> BR_CAST br_on_func
       | "br_on_cast_canon" -> BR_CAST_CANON
       | "br_on_non_null" -> BR_CAST_FAIL br_on_non_null
       | "br_on_non_i31" -> BR_CAST_FAIL br_on_non_i31
       | "br_on_non_data" -> BR_CAST_FAIL br_on_non_data
       | "br_on_non_array" -> BR_CAST br_on_non_array
-      | "br_on_non_func" -> BR_CAST_FAIL br_on_non_func
       | "br_on_cast_canon_fail" -> BR_CAST_CANON_FAIL
       | "return" -> RETURN
       | "if" -> IF
@@ -314,17 +316,16 @@ rule token = parse
       | "ref.data" -> REF_DATA
       | "ref.array" -> REF_ARRAY
       | "ref.extern" -> REF_EXTERN
+      | "ref.host" -> REF_HOST
 
       | "ref.is_null" -> REF_TEST ref_is_null
       | "ref.is_i31" -> REF_TEST ref_is_i31
       | "ref.is_data" -> REF_TEST ref_is_data
       | "ref.is_array" -> REF_TEST ref_is_array
-      | "ref.is_func" -> REF_TEST ref_is_func
       | "ref.as_non_null" -> REF_CAST ref_as_non_null
       | "ref.as_i31" -> REF_CAST ref_as_i31
       | "ref.as_data" -> REF_CAST ref_as_data
       | "ref.as_array" -> REF_CAST ref_as_array
-      | "ref.as_func" -> REF_CAST ref_as_func
       | "ref.test_canon" -> REF_TEST_CANON
       | "ref.cast_canon" -> REF_CAST_CANON
       | "ref.eq" -> REF_EQ
@@ -350,6 +351,9 @@ rule token = parse
       | "array.get_s" -> ARRAY_GET array_get_s
       | "array.set" -> ARRAY_SET
       | "array.len" -> ARRAY_LEN
+
+      | "extern.internalize" -> EXTERN_CONVERT extern_internalize
+      | "extern.externalize" -> EXTERN_CONVERT extern_externalize
 
       | "i32.clz" -> UNARY i32_clz
       | "i32.ctz" -> UNARY i32_ctz

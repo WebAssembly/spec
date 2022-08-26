@@ -329,7 +329,9 @@ let run_action act : Value.t list =
         Script.error act.at "wrong number of arguments";
       List.iter2 (fun v t ->
         if not (Match.match_value_type [] (Value.type_of_value v.it) t) then
+(Printf.printf "[%s : %s <: %s]\n%!" (Value.string_of_value v.it) (Types.string_of_value_type (Value.type_of_value v.it)) (Types.string_of_value_type t);
           Script.error v.at "wrong type of argument"
+)
       ) vs ins;
       Eval.invoke f (List.map (fun v -> v.it) vs)
     | Some _ -> Assert.error act.at "export is not a function"
@@ -381,12 +383,14 @@ let assert_vec_pat v p =
 let assert_ref_pat r p =
   match p, r with
   | RefPat r', r -> Value.eq_ref r r'.it
+  | RefTypePat Types.AnyHeapType, Instance.FuncRef _ -> false
   | RefTypePat Types.AnyHeapType, _
   | RefTypePat Types.EqHeapType, (I31.I31Ref _ | Data.DataRef _)
   | RefTypePat Types.I31HeapType, I31.I31Ref _
   | RefTypePat Types.DataHeapType, Data.DataRef _
   | RefTypePat Types.ArrayHeapType, Data.DataRef (Data.Array _) -> true
   | RefTypePat Types.FuncHeapType, Instance.FuncRef _
+  | RefTypePat Types.ExternHeapType, _ -> true
   | NullPat, Value.NullRef _ -> true
   | _ -> false
 

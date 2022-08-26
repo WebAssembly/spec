@@ -93,10 +93,13 @@ let check_vec_type (c : context) (t : vec_type) at =
 
 let check_heap_type (c : context) (t : heap_type) at =
   match t with
-  | NoneHeapType | AnyHeapType | EqHeapType
-  | I31HeapType | DataHeapType | ArrayHeapType | FuncHeapType -> ()
+  | AnyHeapType | NoneHeapType | EqHeapType
+  | I31HeapType | DataHeapType | ArrayHeapType -> ()
+  | FuncHeapType | NoFuncHeapType -> ()
+  | ExternHeapType | NoExternHeapType -> ()
   | DefHeapType (SynVar x) -> ignore (type_ c (x @@ at))
   | DefHeapType _ -> assert false
+  | BotHeapType -> ()
 
 let check_ref_type (c : context) (t : ref_type) at =
   match t with
@@ -226,7 +229,7 @@ let peek i (ell, ts) =
 let peek_ref i (ell, ts) at =
   match peek i (ell, ts) with
   | RefType rt -> rt
-  | BotType -> (NonNullable, NoneHeapType)
+  | BotType -> (NonNullable, BotHeapType)
   | t ->
     error at
       ("type mismatch: instruction requires reference type" ^
@@ -295,14 +298,16 @@ let lane_replaceop = function
     | I32x4 (Replace i) | I64x2 (Replace i)
     | F32x4 (Replace i) | F64x2 (Replace i) -> i
 
-let type_castop op ht =
-  match op with
-  | NullOp -> ht
+let type_castop = function
   | I31Op -> I31HeapType
   | DataOp -> DataHeapType
   | ArrayOp -> ArrayHeapType
-  | FuncOp -> FuncHeapType
-  | RttOp _ -> assert false
+  | NullOp | RttOp _ -> assert false
+
+let type_externop op =
+  match op with
+  | Internalize -> ExternHeapType, AnyHeapType
+  | Externalize -> AnyHeapType, ExternHeapType
 
 
 (* Expressions *)
@@ -455,8 +460,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
       (label c x @ [RefType (NonNullable, ht)])
 
   | BrCast (x, castop) ->
-    let (_, ht) as rt = peek_ref 0 s e.at in
-    let t' = RefType (NonNullable, type_castop castop ht) in
+    let rt = peek_ref 0 s e.at in
+    let t' = RefType (NonNullable, type_castop castop) in
     require
       (match_value_type c.types (peek 0 s) (RefType (Nullable, AnyHeapType))) e.at
       ("type mismatch: instruction requires type " ^
@@ -499,9 +504,9 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     (ts0 @ [RefType rt]) --> ts0
 
   | BrCastFail (x, castop) ->
-    let (_, ht) as rt = peek_ref 0 s e.at in
+    let rt = peek_ref 0 s e.at in
     let t = RefType rt in
-    let t' = RefType (NonNullable, type_castop castop ht) in
+    let t' = RefType (NonNullable, type_castop castop) in
     require
       (match_value_type c.types (peek 0 s) (RefType (Nullable, AnyHeapType))) e.at
       ("type mismatch: instruction requires type " ^
@@ -527,7 +532,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     | (nul, DefHeapType (SynVar x)) ->
       let FuncType (ts1, ts2) = func_type c (x @@ e.at) in
       (ts1 @ [RefType (nul, DefHeapType (SynVar x))]) --> ts2
-    | (_, NoneHeapType) as rt ->
+    | (_, (NoFuncHeapType | BotHeapType)) as rt ->
       [RefType rt] -->... []
     | rt ->
       error e.at
@@ -552,7 +557,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
          string_of_result_type c.results ^
          " but callee returns " ^ string_of_result_type ts2);
       (ts1 @ [RefType (nul, DefHeapType (SynVar x))]) -->... []
-    | (_, NoneHeapType) as rt ->
+    | (_, (NoFuncHeapType | BotHeapType)) as rt ->
       [RefType rt] -->... []
     | rt ->
       error e.at
@@ -572,7 +577,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
         "type mismatch in function type";
       (ts11 @ [RefType (nul, DefHeapType (SynVar y))]) -->
         [RefType (NonNullable, DefHeapType (SynVar x.it))]
-    | (_, NoneHeapType) as rt ->
+    | (_, (NoFuncHeapType | BotHeapType)) as rt ->
       [RefType rt] -->.. [RefType (NonNullable, DefHeapType (SynVar x.it))]
     | rt ->
       error e.at
@@ -701,33 +706,31 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     [] --> [RefType (NonNullable, DefHeapType (SynVar y))]
 
   | RefTest (RttOp y) ->
-    let _ = type_ c y in
-    let t = peek 0 s in
-    require
-      ( match_value_type c.types t (RefType (Nullable, DataHeapType)) ||
-        match_value_type c.types t (RefType (Nullable, FuncHeapType)) ) e.at
-      ("type mismatch: instruction requires data or function reference type" ^
-       " but stack has " ^ string_of_result_type [t]);
-    [t] --> [NumType I32Type]
+    let st = expand_ctx_type (type_ c y) in
+    [RefType (Nullable, abs_of_str_type c.types st)] --> [NumType I32Type]
+
+  | RefTest NullOp ->
+    let (_, ht) = peek_ref 0 s e.at in
+    [RefType (Nullable, ht)] --> [NumType I32Type]
 
   | RefTest castop ->
-    [RefType (Nullable, AnyHeapType)] --> [NumType I32Type]
+    let ht = type_castop castop in
+    [RefType (Nullable, top_of_heap_type c.types ht)] --> [NumType I32Type]
 
   | RefCast (RttOp y) ->
-    let _ = type_ c y in
-    let (nul, _) as rt = peek_ref 0 s e.at in
-    let t = RefType rt in
-    require
-      ( match_value_type c.types t (RefType (Nullable, DataHeapType)) ||
-        match_value_type c.types t (RefType (Nullable, FuncHeapType)) ) e.at
-      ("type mismatch: instruction requires data or function reference type" ^
-       " but stack has " ^ string_of_result_type [t]);
-    [t] --> [RefType (nul, DefHeapType (SynVar y.it))]
+    let st = expand_ctx_type (type_ c y) in
+    let (nul, _) = peek_ref 0 s e.at in
+    [RefType (nul, abs_of_str_type c.types st)] -->
+    [RefType (nul, DefHeapType (SynVar y.it))]
+
+  | RefCast NullOp ->
+    let (_, ht) = peek_ref 0 s e.at in
+    [RefType (Nullable, ht)] --> [RefType (NonNullable, ht)]
 
   | RefCast castop ->
-    let (_, ht) = peek_ref 0 s e.at in
-    let ht' = type_castop castop ht in
-    [RefType (Nullable, AnyHeapType)] --> [RefType (NonNullable, ht')]
+    let ht = type_castop castop in
+    [RefType (Nullable, top_of_heap_type c.types ht)] -->
+    [RefType (NonNullable, ht)]
 
   | RefEq ->
     [RefType (Nullable, EqHeapType); RefType (Nullable, EqHeapType)] -->
@@ -815,6 +818,11 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
 
   | ArrayLen ->
     [RefType (Nullable, ArrayHeapType)] --> [NumType I32Type]
+
+  | ExternConvert op ->
+    let ht1, ht2 = type_externop op in
+    let (nul, _) as rt = peek_ref 0 s e.at in
+    [RefType (nul, ht1)] --> [RefType (nul, ht2)]
 
   | Const v ->
     let t = NumType (type_num v.it) in

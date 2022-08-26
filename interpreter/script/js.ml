@@ -11,11 +11,11 @@ let harness =
 {|
 'use strict';
 
-let externrefs = {};
-let externsym = Symbol("externref");
-function externref(s) {
-  if (! (s in externrefs)) externrefs[s] = {[externsym]: s};
-  return externrefs[s];
+let hostrefs = {};
+let hostsym = Symbol("hostref");
+function hostref(s) {
+  if (! (s in hostrefs)) hostrefs[s] = {[hostsym]: s};
+  return hostrefs[s];
 }
 function is_anyref(x) {
   return x !== null ? 1 : 0;
@@ -32,15 +32,18 @@ function is_dataref(x) {
 function is_funcref(x) {
   return typeof x === "function" ? 1 : 0;
 }
+function is_hostref(x) {
+  return (x !== null && hostsym in x) ? 1 : 0;
+}
 function is_externref(x) {
-  return (x !== null && externsym in x) ? 1 : 0;
+  return (x !== null) ? 1 : 0;
 }
 function eq_ref(x, y) {
   return x === y ? 1 : 0;
 }
 
 let spectest = {
-  externref: externref,
+  hostref: hostref,
   is_anyref: is_anyref,
   is_eqref: is_eqref,
   is_i31ref: is_i31ref,
@@ -279,7 +282,7 @@ let value v =
   | Num n -> [Const (n @@ v.at) @@ v.at]
   | Vec s -> [VecConst (s @@ v.at) @@ v.at]
   | Ref (NullRef t) -> [RefNull t @@ v.at]
-  | Ref (ExternRef n) ->
+  | Ref (HostRef n) ->
     [Const (I32 n @@ v.at) @@ v.at; Call (externref_idx @@ v.at) @@ v.at]
   | Ref _ -> assert false
 
@@ -367,11 +370,11 @@ let assert_return ress ts at =
         VecTest (V128 (V128.I8x16 V128Op.AllTrue)) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | RefResult (RefPat {it = Value.NullRef t; _}) ->
+    | RefResult (RefPat {it = NullRef t; _}) ->
       [ RefTest NullOp @@ at;
         Test (Value.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | RefResult (RefPat {it = Script.ExternRef n; _}) ->
+    | RefResult (RefPat {it = HostRef n; _}) ->
       [ Const (Value.I32 n @@ at) @@ at;
         Call (externref_idx @@ at) @@ at;
         Call (eq_ref_idx @@ at)  @@ at;
@@ -382,14 +385,14 @@ let assert_return ress ts at =
     | RefResult (RefTypePat t) ->
       let is_ref =
         match t with
-        | NoneHeapType -> Const (I32 0l @@ at)
-        | AnyHeapType -> Const (I32 1l @@ at)
+        | AnyHeapType | FuncHeapType | ExternHeapType -> Const (I32 1l @@ at)
+        | NoneHeapType | NoFuncHeapType | NoExternHeapType -> Const (I32 0l @@ at)
         | EqHeapType -> Call (is_eqref_idx @@ at)
         | I31HeapType -> RefTest I31Op
         | DataHeapType -> RefTest DataOp
         | ArrayHeapType -> RefTest ArrayOp
-        | FuncHeapType -> RefTest FuncOp
         | DefHeapType _ -> Const (I32 1l @@ at) (* TODO *)
+        | BotHeapType -> assert false
       in
       [ is_ref @@ at;
         Test (I32 I32Op.Eqz) @@ at;
@@ -514,7 +517,7 @@ let of_ref r =
   let open Value in
   match r with
   | NullRef _ -> "null"
-  | ExternRef n -> "externref(" ^ Int32.to_string n ^ ")"
+  | HostRef n | Extern.ExternRef (HostRef n) -> "hostref(" ^ Int32.to_string n ^ ")"
   | _ -> assert false
 
 let of_value v =

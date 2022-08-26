@@ -15,14 +15,18 @@ and num_type = I32Type | I64Type | F32Type | F64Type
 and vec_type = V128Type
 and ref_type = nullability * heap_type
 and heap_type =
-  | NoneHeapType
   | AnyHeapType
+  | NoneHeapType
   | EqHeapType
   | I31HeapType
   | DataHeapType
   | ArrayHeapType
   | FuncHeapType
+  | NoFuncHeapType
+  | ExternHeapType
+  | NoExternHeapType
   | DefHeapType of var
+  | BotHeapType
 and value_type =
   NumType of num_type | VecType of vec_type | RefType of ref_type | BotType
 
@@ -195,14 +199,18 @@ let subst_num_type s t = t
 let subst_vec_type s t = t
 
 let subst_heap_type s = function
-  | NoneHeapType -> NoneHeapType
   | AnyHeapType -> AnyHeapType
+  | NoneHeapType -> NoneHeapType
   | EqHeapType -> EqHeapType
   | I31HeapType -> I31HeapType
   | DataHeapType -> DataHeapType
   | ArrayHeapType -> ArrayHeapType
   | FuncHeapType -> FuncHeapType
+  | NoFuncHeapType -> NoFuncHeapType
+  | ExternHeapType -> ExternHeapType
+  | NoExternHeapType -> NoExternHeapType
   | DefHeapType x -> DefHeapType (s x)
+  | BotHeapType -> BotHeapType
 
 let subst_ref_type s = function
   | (nul, t) -> (nul, subst_heap_type s t)
@@ -379,14 +387,24 @@ and string_of_vec_type = function
   | V128Type -> "v128"
 
 and string_of_heap_type = function
-  | NoneHeapType -> "none"
   | AnyHeapType -> "any"
+  | NoneHeapType -> "none"
   | EqHeapType -> "eq"
   | I31HeapType -> "i31"
   | DataHeapType -> "data"
   | ArrayHeapType -> "array"
   | FuncHeapType -> "func"
+  | NoFuncHeapType -> "nofunc"
+  | ExternHeapType -> "extern"
+  | NoExternHeapType -> "noextern"
   | DefHeapType x -> string_of_var x
+  | BotHeapType -> "something"
+
+and string_of_top_heap_type = function
+  | AnyHeapType -> "internal"
+  | FuncHeapType -> "function"
+  | ExternHeapType -> "external"
+  | _ -> assert false
 
 and string_of_ref_type = function
   | (nul, t) ->

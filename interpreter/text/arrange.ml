@@ -467,8 +467,11 @@ let castop = function
   | I31Op -> "i31"
   | DataOp -> "data"
   | ArrayOp -> "array"
-  | FuncOp -> "func"
   | RttOp _ -> assert false
+
+let externop = function
+  | Internalize -> "internalize"
+  | Externalize -> "externalize"
 
 
 (* Expressions *)
@@ -564,6 +567,7 @@ let rec instr e =
     | ArrayGet (x, exto) -> "array.get" ^ opt_s extension exto ^ " " ^ var x, []
     | ArraySet x -> "array.set " ^ var x, []
     | ArrayLen -> "array.len", []
+    | ExternConvert op -> "extern." ^ externop op, []
     | Const n -> constop n.it ^ " " ^ num n, []
     | Test op -> testop op, []
     | Compare op -> relop op, []
@@ -749,7 +753,8 @@ let vec mode = if mode = `Binary then hex_string_of_vec else string_of_vec
 
 let ref_ = function
   | NullRef t -> Node ("ref.null " ^ heap_type t, [])
-  | Script.ExternRef n -> Node ("ref.extern " ^ nat32 n, [])
+  | Script.HostRef n -> Node ("ref.host " ^ nat32 n, [])
+  | Extern.ExternRef (Script.HostRef n) -> Node ("ref.extern " ^ nat32 n, [])
   | _ -> assert false
 
 let literal mode lit =

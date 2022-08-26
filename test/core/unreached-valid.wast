@@ -61,3 +61,34 @@
 )
 
 (assert_trap (invoke "meet-bottom") "unreachable")
+
+
+;; Bottom heap type
+
+(module
+  (func (result (ref func))
+    (unreachable)
+    (ref.as_non_null)
+  )
+  (func (result (ref extern))
+    (unreachable)
+    (ref.as_non_null)
+  )
+
+  (func (result (ref func))
+    (block (result funcref)
+      (unreachable)
+      (br_on_null 0)
+      (return)
+    )
+    (unreachable)
+  )
+  (func (result (ref extern))
+    (block (result externref)
+      (unreachable)
+      (br_on_null 0)
+      (return)
+    )
+    (unreachable)
+  )
+)
