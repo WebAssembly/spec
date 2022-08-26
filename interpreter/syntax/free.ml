@@ -93,7 +93,7 @@ let def_type = function
   | DefFuncT ft -> func_type ft
 
 let block_type = function
-  | VarBlockType x -> var_type x
+  | VarBlockType x -> var_type x.it
   | ValBlockType t -> opt val_type t
 
 let rec instr (e : instr) =

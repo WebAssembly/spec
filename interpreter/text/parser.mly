@@ -610,7 +610,7 @@ block :
     { let at1 = ati 1 in
       fun c -> let ft, es = $2 c in
       let x = inline_func_type_explicit c ($1 c) ft at1 in
-      VarBlockType x.it, es }
+      VarBlockType x, es }
   | block_param_body  /* Sugar */
     { let at = at () in
       fun c -> let ft, es = $1 c in
@@ -618,7 +618,7 @@ block :
         match ft with
         | FuncT ([], []) -> ValBlockType None
         | FuncT ([], [t]) -> ValBlockType (Some t)
-        | ft ->  VarBlockType (inline_func_type c ft at).it
+        | ft ->  VarBlockType (inline_func_type c ft at)
       in bt, es }
 
 block_param_body :
@@ -691,7 +691,7 @@ if_block :
     { let at = at () in
       fun c c' -> let ft, es = $2 c c' in
       let x = inline_func_type_explicit c ($1 c) ft at in
-      VarBlockType x.it, es }
+      VarBlockType x, es }
   | if_block_param_body  /* Sugar */
     { let at = at () in
       fun c c' -> let ft, es = $1 c c' in
@@ -699,7 +699,7 @@ if_block :
         match ft with
         | FuncT ([], []) -> ValBlockType None
         | FuncT ([], [t]) -> ValBlockType (Some t)
-        | ft ->  VarBlockType (inline_func_type c ft at).it
+        | ft ->  VarBlockType (inline_func_type c ft at)
       in bt, es }
 
 if_block_param_body :

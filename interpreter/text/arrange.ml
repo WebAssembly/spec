@@ -431,7 +431,7 @@ let constop v = Dyn.string_of_num_type (type_of_num v) ^ ".const"
 let vec_constop v = Dyn.string_of_vec_type (type_of_vec v) ^ ".const i32x4"
 
 let block_type = function
-  | VarBlockType x -> [Node ("type " ^ nat32 x, [])]
+  | VarBlockType x -> [Node ("type " ^ var x, [])]
   | ValBlockType ts -> decls "result" (list_of_opt ts)
 
 let rec instr e =

@@ -167,7 +167,7 @@ struct
   let block_type = function
     | ValBlockType None -> s33 (-0x40l)
     | ValBlockType (Some t) -> val_type t
-    | VarBlockType x -> var_type x
+    | VarBlockType x -> var_type x.it
 
   let local (n, loc) = len n; val_type loc.it.ltype
 

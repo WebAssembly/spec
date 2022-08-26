@@ -115,7 +115,7 @@ let block_type (inst : module_inst) bt at =
   | ValBlockType None -> InstrT ([], [], [])
   | ValBlockType (Some t) -> InstrT ([], [dyn_val_type inst.types t], [])
   | VarBlockType x ->
-    let FuncT (ts1, ts2) = func_type inst (x @@ at) in InstrT (ts1, ts2, [])
+    let FuncT (ts1, ts2) = func_type inst x in InstrT (ts1, ts2, [])
 
 let take n (vs : 'a stack) at =
   try Lib.List.take n vs with Failure _ -> Crash.error at "stack underflow"

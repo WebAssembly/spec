@@ -135,7 +135,7 @@ type num = Value.num Source.phrase
 type vec = Value.vec Source.phrase
 type name = Utf8.unicode
 
-type block_type = VarBlockType of var | ValBlockType of val_type option
+type block_type = VarBlockType of idx | ValBlockType of val_type option
 
 type instr = instr' Source.phrase
 and instr' =

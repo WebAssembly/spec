@@ -309,7 +309,7 @@ let check_block_type (c : context) (bt : block_type) at : instr_type =
   | ValBlockType None -> InstrT ([], [], [])
   | ValBlockType (Some t) -> check_val_type c t at; InstrT ([], [t], [])
   | VarBlockType x ->
-    let FuncT (ts1, ts2) = func_type c (x @@ at) in InstrT (ts1, ts2, [])
+    let FuncT (ts1, ts2) = func_type c x in InstrT (ts1, ts2, [])
 
 let check_local (c : context) (loc : local) : local_type =
   check_val_type c loc.it.ltype loc.at;

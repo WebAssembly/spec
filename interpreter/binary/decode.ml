@@ -250,7 +250,7 @@ let memop s =
 
 let block_type s =
   either [
-    (fun s -> VarBlockType (var_type s));
+    (fun s -> VarBlockType (at var_type s));
     (fun s -> expect 0x40 s ""; ValBlockType None);
     (fun s -> ValBlockType (Some (val_type s)));
   ] s
