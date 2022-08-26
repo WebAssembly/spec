@@ -68,22 +68,22 @@ The following auxiliary typing rules specify this typing relation relative to a 
    }
 
 
-.. index:: exception type, exception address, exception tag, function type
-.. _valid-externval-exn:
+.. index:: tag type, tag address, exception tag, function type
+.. _valid-externval-tag:
 
-:math:`\EVEXN~a`
+:math:`\EVTAG~a`
 ................
 
-* The store entry :math:`S.\SEXNS[a]` must exist.
+* The store entry :math:`S.\STAGS[a]` must exist.
 
-* Let :math:`\exntype` be the function type :math:`S.\SEXNS[a].\EITYPE`.
+* Let :math:`\tagtype` be the function type :math:`S.\STAGS[a].\TAGITYPE`.
 
-* Then :math:`\EVEXN~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETEXN~\exntype`.
+* Then :math:`\EVTAG~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETTAG~\tagtype`.
 
 .. math::
    \frac{
    }{
-     S \vdashexternval \EVEXN~a : \ETEXN~(S.\SEXNS[a].\EITYPE)
+     S \vdashexternval \EVTAG~a : \ETTAG~S.\STAGS[a].\TAGITYPE
    }
 
 
@@ -169,32 +169,13 @@ The following auxiliary typing rules specify this typing relation relative to a 
    }
 
 
-:ref:`Exception References <syntax-refexnaddr>` :math:`\REFEXNADDR~a~\val^n`
-............................................................................
-
-* The external value :math:`\EVEXN~a` must be valid with :ref:`exception type <syntax-exntype>` :math:`[t^n]\to[]`.
-
-* Each value :math:`val_i` in :math:`\val^n` must have type :math:`t_i` in :math:`t^n`.
-
-* The value is valid with :ref:`reference type <syntax-reftype>` :math:`\EXNREF`.
-
-.. math::
-   \frac{
-     S \vdashexternval \EVEXN~a : [t^n]\to[]
-   \qquad
-    (S \vdashval \val : t)^n
-   }{
-     S \vdashval \REFEXNADDR~a~\val^n : \EXNREF
-   }
-
-
 .. index:: ! allocation, store, address
 .. _alloc:
 
 Allocation
 ~~~~~~~~~~
 
-New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, :ref:`exceptions <syntax-exninst>`, and :ref:`globals <syntax-globalinst>` are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the following auxiliary functions.
+New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, :ref:`tags <syntax-taginst>`, and :ref:`globals <syntax-globalinst>` are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the following auxiliary functions.
 
 
 .. index:: function, function instance, function address, module instance, function type
@@ -316,29 +297,29 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    \end{array}
 
 
-.. index:: exception, exception instance, exception address, exception type
-.. _alloc-exn:
+.. index:: tag, tag instance, tag address, tag type
+.. _alloc-tag:
 
-:ref:`Exceptions <syntax-exninst>`
-..................................
+:ref:`Tags <syntax-taginst>`
+............................
 
-1. Let :math:`\exntype` be the :ref:`exception type <syntax-exntype>` to allocate.
+1. Let :math:`\tagtype` be the :ref:`tag type <syntax-tagtype>` to allocate.
 
-2. Let :math:`a` be the first free :ref:`exception address <syntax-exnaddr>` in :math:`S`.
+2. Let :math:`a` be the first free :ref:`tag address <syntax-tagaddr>` in :math:`S`.
 
-3. Let :math:`\exninst` be the :ref:`exception instance <syntax-exninst>` :math:`\{ \EITYPE~\exntype \}`.
+3. Let :math:`\taginst` be the :ref:`tag instance <syntax-taginst>` :math:`\{ \TAGITYPE~\tagtype \}`.
 
-4. Append :math:`\exninst` to the |SEXNS| of :math:`S`.
+4. Append :math:`\taginst` to the |STAGS| of :math:`S`.
 
 5. Return :math:`a`.
 
 .. math::
    \begin{array}{rlll}
-   \allocexn(S, \exntype) &=& S', \exnaddr \\[1ex]
+   \alloctag(S, \tagtype) &=& S', \tagaddr \\[1ex]
    \mbox{where:} \hfill \\
-   \exnaddr &=& |S.\SEXNS| \\
-   \exninst &=& \{ \EITYPE~\exntype \} \\
-   S' &=& S \compose \{\SEXNS~\exninst\} \\
+   \tagaddr &=& |S.\STAGS| \\
+   \taginst &=& \{ \TAGITYPE~\tagtype \} \\
+   S' &=& S \compose \{\STAGS~\taginst\} \\
    \end{array}
 
 
@@ -494,7 +475,7 @@ Growing :ref:`memories <syntax-meminst>`
    \end{array}
 
 
-.. index:: module, module instance, function instance, table instance, memory instance, exception instance, global instance, export instance, function address, table address, memory address, exception address, global address, function index, table index, memory index, exception index, global index, type, function, table, memory, exception, global, import, export, external value, external type, matching
+.. index:: module, module instance, function instance, table instance, memory instance, tag instance, global instance, export instance, function address, table address, memory address, tag address, global address, function index, table index, memory index, tag index, global index, type, function, table, memory, tag, global, import, export, external value, external type, matching
 .. _alloc-module:
 
 :ref:`Modules <syntax-moduleinst>`
@@ -521,11 +502,11 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 
    a. Let :math:`\memaddr_i` be the :ref:`memory address <syntax-memaddr>` resulting from :ref:`allocating <alloc-mem>` :math:`\mem_i.\MTYPE`.
 
-5. For each :ref:`exception <syntax-exn>` :math:`\exn_i` in :math:`\module.\MEXNS`, do:
+5. For each :ref:`tag <syntax-tag>` :math:`\tag_i` in :math:`\module.\MTAGS`, do:
 
-   a. Let :math:`\exntype` be the :ref:`exception type <syntax-exntype>` :math:`\module.\MTYPES[\exn_i.ETYPE]`.
+   a. Let :math:`\tagtype` be the :ref:`tag type <syntax-tagtype>` :math:`\module.\MTYPES[\tag_i.\TAGTYPE]`.
 
-   b. Let :math:`\exnaddr_i` be the :ref:`exception address <syntax-exnaddr>` resulting from :ref:`allocating <alloc-exn>` :math:`\exntype`.
+   b. Let :math:`\tagaddr_i` be the :ref:`tag address <syntax-tagaddr>` resulting from :ref:`allocating <alloc-tag>` :math:`\tagtype`.
 
 6. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\MGLOBALS`, do:
 
@@ -545,7 +526,7 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 
 11. Let :math:`\memaddr^\ast` be the concatenation of the :ref:`memory addresses <syntax-memaddr>` :math:`\memaddr_i` in index order.
 
-12. Let :math:`\exnaddr^\ast` be the concatenation of the :ref:`exception addresses <syntax-exnaddr>` :math:`\exnaddr_i` in index order.
+12. Let :math:`\tagaddr^\ast` be the concatenation of the :ref:`tag addresses <syntax-tagaddr>` :math:`\tagaddr_i` in index order.
 
 13. Let :math:`\globaladdr^\ast` be the concatenation of the :ref:`global addresses <syntax-globaladdr>` :math:`\globaladdr_i` in index order.
 
@@ -559,7 +540,7 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 
 18. Let :math:`\memaddr_{\F{mod}}^\ast` be the list of :ref:`memory addresses <syntax-memaddr>` extracted from :math:`\externval_{\F{im}}^\ast`, concatenated with :math:`\memaddr^\ast`.
 
-19. Let :math:`\exnaddr_{\F{mod}}^\ast` be the list of :ref:`exception addresses <syntax-exnaddr>` extracted from :math:`\externval_{\F{im}}^\ast`, concatenated with :math:`\exnaddr^\ast`.
+19. Let :math:`\tagaddr_{\F{mod}}^\ast` be the list of :ref:`tag addresses <syntax-tagaddr>` extracted from :math:`\externval_{\F{im}}^\ast`, concatenated with :math:`\tagaddr^\ast`.
 
 20. Let :math:`\globaladdr_{\F{mod}}^\ast` be the list of :ref:`global addresses <syntax-globaladdr>` extracted from :math:`\externval_{\F{im}}^\ast`, concatenated with :math:`\globaladdr^\ast`.
 
@@ -571,7 +552,7 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 
     c. Else, if :math:`\export_i` is a memory export for :ref:`memory index <syntax-memidx>` :math:`x`, then let :math:`\externval_i` be the :ref:`external value <syntax-externval>` :math:`\EVMEM~(\memaddr_{\F{mod}}^\ast[x])`.
 
-    d. Else, if :math:`\export_i` is an exception export for :ref:`exception index <syntax-exnidx>` :math:`x`, then let :math:`\externval_i` be the :ref:`external value <syntax-externval>` :math:`\EVEXN~(\exnaddr_{\F{mod}}^\ast[x])`.
+    d. Else, if :math:`\export_i` is a tag export for :ref:`tag index <syntax-tagidx>` :math:`x`, then let :math:`\externval_i` be the :ref:`external value <syntax-externval>` :math:`\EVTAG~(\tagaddr_{\F{mod}}^\ast[x])`.
 
     e. Else, if :math:`\export_i` is a global export for :ref:`global index <syntax-globalidx>` :math:`x`, then let :math:`\externval_i` be the :ref:`external value <syntax-externval>` :math:`\EVGLOBAL~(\globaladdr_{\F{mod}}^\ast[x])`.
 
@@ -579,7 +560,7 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 
 22. Let :math:`\exportinst^\ast` be the concatenation of the :ref:`export instances <syntax-exportinst>` :math:`\exportinst_i` in index order.
 
-23. Let :math:`\moduleinst` be the :ref:`module instance <syntax-moduleinst>` :math:`\{\MITYPES~(\module.\MTYPES),` :math:`\MIFUNCS~\funcaddr_{\F{mod}}^\ast,` :math:`\MITABLES~\tableaddr_{\F{mod}}^\ast,` :math:`\MIMEMS~\memaddr_{\F{mod}}^\ast,` :math:`\MIEXNS~\exnaddr_{\F{mod}}^\ast`, :math:`\MIGLOBALS~\globaladdr_{\F{mod}}^\ast,` :math:`\MIEXPORTS~\exportinst^\ast\}`.
+23. Let :math:`\moduleinst` be the :ref:`module instance <syntax-moduleinst>` :math:`\{\MITYPES~(\module.\MTYPES),` :math:`\MIFUNCS~\funcaddr_{\F{mod}}^\ast,` :math:`\MITABLES~\tableaddr_{\F{mod}}^\ast,` :math:`\MIMEMS~\memaddr_{\F{mod}}^\ast,` :math:`\MITAGS~\tagaddr_{\F{mod}}^\ast`, :math:`\MIGLOBALS~\globaladdr_{\F{mod}}^\ast,` :math:`\MIEXPORTS~\exportinst^\ast\}`.
 
 24. Return :math:`\moduleinst`.
 
@@ -606,7 +587,7 @@ where:
      \MIFUNCS~\evfuncs(\externval_{\F{im}}^\ast)~\funcaddr^\ast, \\
      \MITABLES~\evtables(\externval_{\F{im}}^\ast)~\tableaddr^\ast, \\
      \MIMEMS~\evmems(\externval_{\F{im}}^\ast)~\memaddr^\ast, \\
-     \MIEXNS~\evexns(\externval_{\F{im}}^\ast)~\exnaddr^\ast, \\
+     \MITAGS~\evtags(\externval_{\F{im}}^\ast)~\tagaddr^\ast, \\
      \MIGLOBALS~\evglobals(\externval_{\F{im}}^\ast)~\globaladdr^\ast, \\
      \MIELEMS~\elemaddr^\ast, \\
      \MIDATAS~\dataaddr^\ast, \\
@@ -619,8 +600,8 @@ where:
      \quad (\where (\table.\TTYPE)^\ast = (\limits~t)^\ast) \\
    S_3, \memaddr^\ast &=&
      \allocmem^\ast(S_2, (\mem.\MTYPE)^\ast) \\
-   S_4, \exnaddr^\ast &=& \allocexn^\ast(S_3, \exn^\ast, \module)
-     \quad (\where \exn^\ast = \module.\MEXNS) \\
+   S_4, \tagaddr^\ast &=& \alloctag^\ast(S_3, \tag^\ast, \module)
+     \quad (\where \tag^\ast = \module.\MTAGS) \\
    S_5, \globaladdr^\ast &=&
      \allocglobal^\ast(S_4, (\global.\GTYPE)^\ast, \val^\ast) \\
    S_6, \elemaddr^\ast &=&
@@ -635,8 +616,8 @@ where:
      \qquad (\where x^\ast = \edtables(\export^\ast)) \\
    \evmems(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIMEMS[x])^\ast
      \qquad (\where x^\ast = \edmems(\export^\ast)) \\
-   \evexns(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIEXNS[x])^\ast
-     \qquad\!\!\! (\where x^\ast = \edexns(\export^\ast)) \\
+   \evtags(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MITAGS[x])^\ast
+     \qquad\!\!\! (\where x^\ast = \edtags(\export^\ast)) \\
    \evglobals(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIGLOBALS[x])^\ast
      \qquad\!\!\! (\where x^\ast = \edglobals(\export^\ast)) \\
    \end{array}

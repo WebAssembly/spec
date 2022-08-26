@@ -72,7 +72,7 @@ Conventions
 * The notation :math:`|t|` for :ref:`bit width <bitwidth>` extends to vector types as well, that is, :math:`|\V128| = 128`.
 
 
-.. index:: ! reference type, reference, table, function, function type, exception, exception type, null
+.. index:: ! reference type, reference, table, function, function type, null
    pair: abstract syntax; reference type
    pair: reference; type
 .. _syntax-reftype:
@@ -85,12 +85,10 @@ Reference Types
 .. math::
    \begin{array}{llll}
    \production{reference type} & \reftype &::=&
-     \FUNCREF ~|~ \EXNREF ~|~ \EXTERNREF \\
+     \FUNCREF ~|~ \EXTERNREF \\
    \end{array}
 
 The type |FUNCREF| denotes the infinite union of all references to :ref:`functions <syntax-func>`, regardless of their :ref:`function types <syntax-functype>`.
-
-The type |EXNREF| denotes a caught :ref:`exception <syntax-exn>`.
 
 The type |EXTERNREF| denotes the infinite union of all references to objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
 
@@ -223,26 +221,28 @@ The limits are given in numbers of entries.
    In future versions of WebAssembly, additional element types may be introduced.
 
 
-.. index:: ! exception, exception type, function type
-   pair: abstract syntax; exception
-   single: exception; type
-.. _syntax-exntype:
+.. index:: ! tag, tag type, function type, exception tag
+   pair: abstract syntax; tag
+   pair: tag; exception tag
+   single: tag; type; exception
+.. _syntax-tagtype:
 
-Exception Types
-~~~~~~~~~~~~~~~
+Tag Types
+~~~~~~~~~
 
-*Exception types* classify the signature of :ref:`exceptions <syntax-exn>` with a function type.
+*Tag types* classify the signature of :ref:`tags <syntax-tag>` with a function type.
 
 .. math::
    \begin{array}{llll}
-   \production{exception type} &\exntype &::=& \functype \\
+   \production{tag type} &\tagtype &::=& \functype \\
    \end{array}
 
-The parameters of |functype| define the list of values associated with the exception.
-Furthermore, it is an invariant of the semantics that every |functype| in a :ref:`valid <valid-exntype>` exception type has an empty result type.
+Currently tags are only used for categorizing exceptions.
+The parameters of |functype| define the list of values associated with the exception thrown with this tag.
+Furthermore, it is an invariant of the semantics that every |functype| in a :ref:`valid <valid-tagtype>` tag type for an exception has an empty result type.
 
 .. note::
-   Future versions of WebAssembly may allow non-empty result types in exceptions.
+   Future versions of WebAssembly may have additional uses for tags, and may allow non-empty result types in the function types of tags.
 
 
 .. index:: ! global type, ! mutability, value type, global, mutability
@@ -268,7 +268,7 @@ Global Types
    \end{array}
 
 
-.. index:: ! external type, function type, table type, memory type, exception type, global type, import, external value
+.. index:: ! external type, function type, table type, memory type, tag type, global type, import, external value
    pair: abstract syntax; external type
    pair: external; type
 .. _syntax-externtype:
@@ -284,7 +284,7 @@ External Types
      \ETFUNC~\functype ~|~
      \ETTABLE~\tabletype ~|~
      \ETMEM~\memtype ~|~
-     \ETEXN~\exntype ~|~
+     \ETTAG~\tagtype ~|~
      \ETGLOBAL~\globaltype \\
    \end{array}
 
@@ -301,6 +301,6 @@ It filters out entries of a specific kind in an order-preserving fashion:
 
 * :math:`\etmems(\externtype^\ast) = [\memtype ~|~ (\ETMEM~\memtype) \in \externtype^\ast]`
 
-* :math:`\etexns(\externtype^\ast) = [\exntype ~|~ (\ETEXN~\exntype) \in \externtype^\ast]`
+* :math:`\ettags(\externtype^\ast) = [\tagtype ~|~ (\ETTAG~\tagtype) \in \externtype^\ast]`
 
 * :math:`\etglobals(\externtype^\ast) = [\globaltype ~|~ (\ETGLOBAL~\globaltype) \in \externtype^\ast]`

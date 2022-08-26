@@ -9,12 +9,12 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    This separation enables *parallel* and *streaming* compilation of the functions in a module.
 
 
-.. index:: index, type index, function index, table index, memory index, exception index, global index, element index, data index, local index, label index
+.. index:: index, type index, function index, table index, memory index, tag index, global index, element index, data index, local index, label index
    pair: binary format; type index
    pair: binary format; function index
    pair: binary format; table index
    pair: binary format; memory index
-   pair: binary format; exception index
+   pair: binary format; tag index
    pair: binary format; global index
    pair: binary format; element index
    pair: binary format; data index
@@ -24,7 +24,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
 .. _binary-funcidx:
 .. _binary-tableidx:
 .. _binary-memidx:
-.. _binary-exnidx:
+.. _binary-tagidx:
 .. _binary-globalidx:
 .. _binary-elemidx:
 .. _binary-dataidx:
@@ -43,7 +43,7 @@ All :ref:`indices <syntax-index>` are encoded with their respective value.
    \production{function index} & \Bfuncidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{table index} & \Btableidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{memory index} & \Bmemidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{exception index} & \Bexnidx &::=& x{:}\Bu32 &\Rightarrow& x \\
+   \production{tag index} & \Btagidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{global index} & \Bglobalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{element index} & \Belemidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{data index} & \Bdataidx &::=& x{:}\Bu32 &\Rightarrow& x \\
@@ -103,7 +103,7 @@ Id  Section
 10  :ref:`code section <binary-codesec>`           
 11  :ref:`data section <binary-datasec>`           
 12  :ref:`data count section <binary-datacountsec>`
-13  :ref:`exception section <binary-exnsec>`
+13  :ref:`tag section <binary-tagsec>`
 ==  ===============================================
 
 
@@ -150,7 +150,7 @@ It decodes into a vector of :ref:`function types <syntax-functype>` that represe
    \end{array}
 
 
-.. index:: ! import section, import, name, function type, table type, memory type, global type, exception type
+.. index:: ! import section, import, name, function type, table type, memory type, global type, tag type
    pair: binary format; import
    pair: section; import
 .. _binary-import:
@@ -175,7 +175,7 @@ It decodes into a vector of :ref:`imports <syntax-import>` that represent the |M
      \hex{01}~~\X{tt}{:}\Btabletype &\Rightarrow& \IDTABLE~\X{tt} \\ &&|&
      \hex{02}~~\X{mt}{:}\Bmemtype &\Rightarrow& \IDMEM~\X{mt} \\ &&|&
      \hex{03}~~\X{gt}{:}\Bglobaltype &\Rightarrow& \IDGLOBAL~\X{gt} \\ &&|&
-     \hex{04}~~\X{et}{:}\Bexn &\Rightarrow& \IDEXN~\X{et} \\
+     \hex{04}~~\X{tt}{:}\Btag &\Rightarrow& \IDTAG~\X{tt} \\
    \end{array}
 
 
@@ -262,7 +262,7 @@ It decodes into a vector of :ref:`globals <syntax-global>` that represent the |M
    \end{array}
 
 
-.. index:: ! export section, export, name, index, function index, table index, memory index, exception index, global index
+.. index:: ! export section, export, name, index, function index, table index, memory index, tag index, global index
    pair: binary format; export
    pair: section; export
 .. _binary-export:
@@ -287,7 +287,7 @@ It decodes into a vector of :ref:`exports <syntax-export>` that represent the |M
      \hex{01}~~x{:}\Btableidx &\Rightarrow& \EDTABLE~x \\ &&|&
      \hex{02}~~x{:}\Bmemidx &\Rightarrow& \EDMEM~x \\ &&|&
      \hex{03}~~x{:}\Bglobalidx &\Rightarrow& \EDGLOBAL~x \\ &&|&
-     \hex{04}~~x{:}\Bexnidx &\Rightarrow& \EDEXN~x \\
+     \hex{04}~~x{:}\Btagidx &\Rightarrow& \EDTAG~x \\
    \end{array}
 
 
@@ -490,29 +490,29 @@ It decodes into an optional :ref:`u32 <syntax-uint>` that represents the number 
    instead of deferring validation.
 
 
-.. index:: ! exception section, exception, exception type, function type index
-   pair: binary format; exception
-   pair: section; exception
-.. _binary-exn:
-.. _binary-exnsec:
+.. index:: ! tag section, tag, tag type, function type index, exception tag
+   pair: binary format; tag
+   pair: section; tag
+.. _binary-tag:
+.. _binary-tagsec:
 
-Exception Section
-~~~~~~~~~~~~~~~~~
+Tag Section
+~~~~~~~~~~~
 
-The *exception section* has the id 13.
-It decodes into a vector of :ref:`exceptions <syntax-exn>` that represent the |MEXNS|
+The *tag section* has the id 13.
+It decodes into a vector of :ref:`tags <syntax-tag>` that represent the |MTAGS|
 component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
-   \production{exception section} & \Bexnsec &::=&
-     \X{exception}^\ast{:}\Bsection_{13}(\Bvec(\Bexn)) &\Rightarrow& \X{exception}^\ast \\
-   \production{exception} & \Bexn &::=&
-     \hex{00}~~\X{x}{:}\Btypeidx &\Rightarrow& \{ \ETYPE~\X{x} \} \\
+   \production{tag section} & \Btagsec &::=&
+     \X{tag}^\ast{:}\Bsection_{13}(\Bvec(\Btag)) &\Rightarrow& \X{tag}^\ast \\
+   \production{tag} & \Btag &::=&
+     \hex{00}~~\X{x}{:}\Btypeidx &\Rightarrow& \{ \TAGTYPE~\X{x} \} \\
    \end{array}
 
 
-.. index:: module, section, type definition, function type, function, table, memory, exception, global, element, data, start function, import, export, context, version
+.. index:: module, section, type definition, function type, function, table, memory, tag, global, element, data, start function, import, export, context, version
    pair: binary format; module
 .. _binary-magic:
 .. _binary-version:
@@ -554,7 +554,7 @@ Furthermore, it must be present if any :math:`data index <syntax-dataidx>` occur
      \Bcustomsec^\ast \\ &&&
      \mem^\ast{:\,}\Bmemsec \\ &&&
      \Bcustomsec^\ast \\ &&&
-     \exn^\ast{:\,}\Bexnsec \\ &&&
+     \tag^\ast{:\,}\Btagsec \\ &&&
      \Bcustomsec^\ast \\ &&&
      \global^\ast{:\,}\Bglobalsec \\ &&&
      \Bcustomsec^\ast \\ &&&
@@ -576,7 +576,7 @@ Furthermore, it must be present if any :math:`data index <syntax-dataidx>` occur
        \MFUNCS~\func^n, \\
        \MTABLES~\table^\ast, \\
        \MMEMS~\mem^\ast, \\
-       \MEXNS~\exn^\ast, \\
+       \MTAGS~\tag^\ast, \\
        \MGLOBALS~\global^\ast, \\
        \MELEMS~\elem^\ast, \\
        \MDATAS~\data^m, \\

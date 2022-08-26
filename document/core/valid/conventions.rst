@@ -24,8 +24,9 @@ That is, they only formulate the constraints, they do not define an algorithm.
 The skeleton of a sound and complete algorithm for type-checking instruction sequences according to this specification is provided in the :ref:`appendix <algo-valid>`.
 
 
-.. index:: ! context, function type, table type, memory type, exception type, global type, value type, result type, index space, module, function, exception
+.. index:: ! context, function type, table type, memory type, tag type, global type, value type, result type, index space, module, function, tag, labeltype
 .. _context:
+.. _labeltype:
 
 Contexts
 ~~~~~~~~
@@ -37,12 +38,12 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Functions*: the list of functions declared in the current module, represented by their function type.
 * *Tables*: the list of tables declared in the current module, represented by their table type.
 * *Memories*: the list of memories declared in the current module, represented by their memory type.
-* *Exceptions*: the list of exceptions declared in the current module, represented by their exception type.
+* *Tags*: the list of tags declared in the current module, represented by their tag type.
 * *Globals*: the list of globals declared in the current module, represented by their global type.
 * *Element Segments*: the list of element segments declared in the current module, represented by their element type.
 * *Data Segments*: the list of data segments declared in the current module, each represented by an |ok| entry.
 * *Locals*: the list of locals declared in the current function (including parameters), represented by their value type.
-* *Labels*: the stack of labels accessible from the current position, represented by their result type.
+* *Labels*: the stack of labels accessible from the current position, represented by their |labeltype|, which is a result type, possibly prepended by a |LCATCH| entry, if the label is surrounding the instructions inside a |CATCH| or |CATCHALL|.
 * *Return*: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.
 * *References*: the list of :ref:`function indices <syntax-funcidx>` that occur in the module outside functions and can hence be used to form references inside them.
 
@@ -55,18 +56,19 @@ More concretely, contexts are defined as :ref:`records <notation-record>` :math:
 
 .. math::
    \begin{array}{llll}
+   \production{(labeltype)} & \labeltype & ::= & \LCATCH^?~\resulttype\\
    \production{(context)} & C &::=&
      \begin{array}[t]{l@{~}ll}
      \{ & \CTYPES & \functype^\ast, \\
         & \CFUNCS & \functype^\ast, \\
         & \CTABLES & \tabletype^\ast, \\
         & \CMEMS & \memtype^\ast, \\
-	& \CEXNS & \exntype^\ast, \\
+	& \CTAGS & \tagtype^\ast, \\
         & \CGLOBALS & \globaltype^\ast, \\
         & \CELEMS & \reftype^\ast, \\
         & \CDATAS & {\ok}^\ast, \\
         & \CLOCALS & \valtype^\ast, \\
-        & \CLABELS & \resulttype^\ast, \\
+        & \CLABELS & \labeltype^\ast, \\
         & \CRETURN & \resulttype^?, \\
         & \CREFS & \funcidx^\ast ~\} \\
      \end{array}

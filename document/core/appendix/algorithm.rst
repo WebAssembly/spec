@@ -25,7 +25,7 @@ Types are representable as an enumeration.
 
 .. code-block:: pseudo
 
-   type val_type = I32 | I64 | F32 | F64 | V128 | Funcref | Exnref | Externref
+   type val_type = I32 | I64 | F32 | F64 | V128 | Funcref | Externref
 
    func is_num(t : val_type | Unknown) : bool =
      return t = I32 || t = I64 || t = F32 || t = F64 || t = Unknown
@@ -34,7 +34,7 @@ Types are representable as an enumeration.
      return t = V128 || t = Unknown
 
    func is_ref(t : val_type | Unknown) : bool =
-     return t = Funcref || t = Exnref || t = Externref || t = Unknown
+     return t = Funcref || t = Externref || t = Unknown
 
 The algorithm uses two separate stacks: the *value stack* and the *control stack*.
 The former tracks the :ref:`types <syntax-valtype>` of operand values on the :ref:`stack <stack>`,
@@ -216,8 +216,14 @@ Other instructions are checked in a similar manner.
 
        case (catch)
          let frame = pop_ctrl()
-         error_if(frame.opcode =/= try)
-         push_ctrl(catch, [exnref], frame.end_types)
+         error_if(frame.opcode =/= try || frame.opcode =/= catch)
+         let params = tags[x].type.params
+         push_ctrl(catch, params , frame.end_types)
+
+       case (catch_all)
+         let frame = pop_ctrl()
+         error_if(frame.opcode =/= try || frame.opcode =/= catch)
+         push_ctrl(catch_all, [], frame.end_types)
 
        case (br n)
          error_if(ctrls.size() < n)
@@ -241,7 +247,8 @@ Other instructions are checked in a similar manner.
          pop_vals(label_types(ctrls[m]))
          unreachable()
 
-
+.. todo::
+   Add a case for :code:`throw`.
 
 .. note::
    It is an invariant under the current WebAssembly instruction set that an operand of :code:`Unknown` type is never duplicated on the stack.

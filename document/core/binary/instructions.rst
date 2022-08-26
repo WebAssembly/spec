@@ -13,7 +13,7 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
    Gaps in the byte code ranges for encoding instructions are reserved for future extensions.
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, value type, block type, label index, function index, exception index, type index, vector, polymorphism, LEB128
+.. index:: control instructions, structured control, exception handling, label, block, branch, result type, value type, block type, label index, function index, tag index, type index, vector, polymorphism, LEB128
    pair: binary format; instruction
    pair: binary format; block type
 .. _binary-instr-control:
@@ -21,7 +21,7 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the instruction sequences forming nested blocks are terminated with explicit opcodes for |END|, |ELSE|, and |CATCH|.
+:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the instruction sequences forming nested blocks are separated or terminated with explicit opcodes for |END|, |ELSE|, |CATCH|, |CATCHALL|, and |DELEGATE|.
 
 :ref:`Block types <syntax-blocktype>` are encoded in special compressed form, by either the byte :math:`\hex{40}` indicating the empty type, as a single :ref:`value type <binary-valtype>`, or as a :ref:`type index <binary-typeidx>` encoded as a positive :ref:`signed integer <binary-sint>`.
 
@@ -34,7 +34,6 @@ Control Instructions
 .. _binary-try:
 .. _binary-throw:
 .. _binary-rethrow:
-.. _binary-br_on_exn:
 .. _binary-br:
 .. _binary-br_if:
 .. _binary-br_table:
@@ -61,11 +60,14 @@ Control Instructions
        \hex{05}~~(\X{in}_2{:}\Binstr)^\ast~~\hex{0B}
        &\Rightarrow& \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\ &&|&
      \hex{06}~~\X{bt}{:}\Bblocktype~~(\X{in}_1{:}\Binstr)^\ast~~
-       \hex{07}~~(\X{in}_2{:}\Binstr)^\ast~~\hex{0B}
-       &\Rightarrow& \TRY~\X{bt}~\X{in}_1^\ast~\CATCH~\X{in}_2^\ast~\END \\ &&|&
-     \hex{08}~~x{:}\Bexnidx &\Rightarrow& \THROW~x \\ &&|&
-     \hex{09} &\Rightarrow& \RETHROW \\ &&|&
-     \hex{0A}~~l{:}\Blabelidx~~x{:}\Bexnidx &\Rightarrow& \BRONEXN~l~x \\ &&|&
+       (\hex{07}~~x{:}\Btagidx~~(\X{in}_2{:}\Binstr)^\ast)^\ast~~
+       (\hex{19}~~(\X{in}_3{:}\Binstr)^\ast)^?~~\hex{0B}
+       &\Rightarrow& \TRY~\X{bt}~\X{in}_1^\ast~(\CATCH~x~\X{in}_2^\ast)^\ast~
+       (\CATCHALL~\X{in}_3^\ast)^?\END \\ &&|&
+     \hex{06}~~\X{bt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{18}~~l{:}\Blabelidx
+       &\Rightarrow& \TRY~\X{bt}~\X{in}^\ast~\DELEGATE~l \\ &&|&
+     \hex{08}~~x{:}\Btagidx &\Rightarrow& \THROW~x \\ &&|&
+     \hex{09}~~l{:}\Blabelidx &\Rightarrow& \RETHROW~l \\ &&|&
      \hex{0C}~~l{:}\Blabelidx &\Rightarrow& \BR~l \\ &&|&
      \hex{0D}~~l{:}\Blabelidx &\Rightarrow& \BRIF~l \\ &&|&
      \hex{0E}~~l^\ast{:}\Bvec(\Blabelidx)~~l_N{:}\Blabelidx

@@ -2,7 +2,7 @@ Types
 -----
 
 Most :ref:`types <syntax-type>` are universally valid.
-However, restrictions apply to :ref:`exception types <syntax-exntype>` and to :ref:`limits <syntax-limits>`, which must be checked during validation.
+However, restrictions apply to :ref:`exception tag types <syntax-tagtype>` and to :ref:`limits <syntax-limits>`, which must be checked during validation.
 Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`function types <syntax-functype>` for ease of processing.
 
 
@@ -146,13 +146,13 @@ Memory Types
    }
 
 
-.. index:: exception type, function type
-   pair: validation; exception type
-   single: abstract syntax; exception type
-.. _valid-exntype:
+.. index:: tag type, function type, exception tag
+   pair: validation; tag type
+   single: abstract syntax; tag type
+.. _valid-tagtype:
 
-Exception Types
-~~~~~~~~~~~~~~~
+Tag Types
+~~~~~~~~~
 
 :math:`[t_1^n] \to [t_2^m]`
 ...........................
@@ -161,13 +161,12 @@ Exception Types
 
 * The type sequence :math:`t_2^m` must be empty.
 
-* Then the exception type is valid.
+* Then the tag type is valid.
 
 .. math::
    \frac{
-     \vdashfunctype [t^n] \to [] \ok
    }{
-     \vdashexntype [t^n] \to [] \ok
+     \vdashtagtype [t^\ast] \to [] \ok
    }
 
 
@@ -241,18 +240,18 @@ External Types
      \vdashexterntype \ETMEM~\memtype \ok
    }
 
-:math:`\ETEXN~\exntype`
+:math:`\ETTAG~\tagtype`
 .......................
 
-* The :ref:`exception type <syntax-exntype>` :math:`\exntype` must be :ref:`valid <valid-exntype>`.
+* The :ref:`tag type <syntax-tagtype>` :math:`\tagtype` must be :ref:`valid <valid-tagtype>`.
 
 * Then the external type is valid.
 
 .. math::
    \frac{
-     \vdashexntype \exntype \ok
+     \vdashtagtype \tagtype \ok
    }{
-     \vdashexterntype \ETEXN~\exntype \ok
+     \vdashexterntype \ETTAG~\tagtype \ok
    }
 
 :math:`\ETGLOBAL~\globaltype`
@@ -377,20 +376,20 @@ An :ref:`external type <syntax-externtype>` :math:`\ETMEM~\limits_1` matches :ma
    }
 
 
-.. index:: exception type, value type
-.. _match-exntype:
+.. index:: tag type, value type
+.. _match-tagtype:
 
-Exceptions
-..........
+Tags
+....
 
-An :ref:`external type <syntax-externtype>` :math:`\ETEXN~\exntype_1` matches :math:`\ETEXN~\exntype_2`  if and only if:
+An :ref:`external type <syntax-externtype>` :math:`\ETTAG~\tagtype_1` matches :math:`\ETTAG~\tagtype_2`  if and only if:
 
-* Both :math:`\ETEXN~\exntype_1` and :math:`\ETEXN~\exntype_2` are the same.
+* Both :math:`\ETTAG~\tagtype_1` and :math:`\ETTAG~\tagtype_2` are the same.
 
 .. math::
    \frac{
    }{
-     \vdashexterntypematch \ETEXN~\exntype \matchesexterntype \ETEXN~\exntype
+     \vdashexterntypematch \ETTAG~\tagtype \matchesexterntype \ETTAG~\tagtype
    }
 
 

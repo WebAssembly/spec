@@ -76,7 +76,7 @@ Store
 
 .. math::
    \begin{array}{lclll}
-   \F{store\_init}() &=& \{ \SFUNCS~\epsilon,~ \SMEMS~\epsilon, ~\SEXNS~\epsilon,~ \STABLES~\epsilon,~ \SGLOBALS~\epsilon \} \\
+   \F{store\_init}() &=& \{ \SFUNCS~\epsilon,~ \SMEMS~\epsilon, ~\STAGS~\epsilon,~ \STABLES~\epsilon,~ \SGLOBALS~\epsilon \} \\
    \end{array}
 
 
@@ -539,26 +539,26 @@ Memories
    \end{array}
 
 
-.. index:: exception, exception address, store, exception instance, exception type, function type
-.. _embed-exn:
+.. index:: tag, tag address, store, tag instance, tag type, function type
+.. _embed-tag:
 
-Exceptions
-~~~~~~~~~~
+Tags
+~~~~
 
-.. _embedd-exn-alloc:
+.. _embedd-tag-alloc:
 
-:math:`\F{exn\_alloc}(\store, \exntype) : (\store, \exnaddr)`
+:math:`\F{tag\_alloc}(\store, \tagtype) : (\store, \tagaddr)`
 .............................................................
 
-1. Pre-condition: :math:`exntype` is :ref:`valid <valid-exntype>`.
+1. Pre-condition: :math:`tagtype` is :ref:`valid <valid-tagtype>`.
 
-2. Let :math:`\exnaddr` be the result of :ref:`allocating an exception <alloc-exn>` in :math:`\store` with :ref:`exception type <syntax-exntype>` :math:`\exntype`.
+2. Let :math:`\tagaddr` be the result of :ref:`allocating a tag <alloc-tag>` in :math:`\store` with :ref:`tag type <syntax-tagtype>` :math:`\tagtype`.
 
-3. Return the new store paired with :math:`\exnaddr`.
+3. Return the new store paired with :math:`\tagaddr`.
 
 .. math::
    \begin{array}{lclll}
-   \F{exn\_alloc}(S, \X{et}) &=& (S', \X{a}) && (\iff \allocexn(S, \X{et}) = S', \X{a}) \\
+   \F{tag\_alloc}(S, \X{tt}) &=& (S', \X{a}) && (\iff \alloctag(S, \X{tt}) = S', \X{a}) \\
    \end{array}
 
 

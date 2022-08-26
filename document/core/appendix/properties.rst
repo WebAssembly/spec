@@ -67,14 +67,14 @@ Store Validity
 
 The following typing rules specify when a runtime :ref:`store <syntax-store>` :math:`S` is *valid*.
 A valid store must consist of
-:ref:`function <syntax-funcinst>`, :ref:`table <syntax-tableinst>`, :ref:`memory <syntax-meminst>`, :ref:`exception <syntax-exninst>`, :ref:`global <syntax-globalinst>`, and :ref:`module <syntax-moduleinst>` instances that are themselves valid, relative to :math:`S`.
+:ref:`function <syntax-funcinst>`, :ref:`table <syntax-tableinst>`, :ref:`memory <syntax-meminst>`, :ref:`tag <syntax-taginst>`, :ref:`global <syntax-globalinst>`, and :ref:`module <syntax-moduleinst>` instances that are themselves valid, relative to :math:`S`.
 
-To that end, each kind of instance is classified by a respective :ref:`function <syntax-functype>`, :ref:`table <syntax-tabletype>`, :ref:`memory <syntax-memtype>`, :ref:`exception <syntax-exntype>`, or :ref:`global <syntax-globaltype>` type.
+To that end, each kind of instance is classified by a respective :ref:`function <syntax-functype>`, :ref:`table <syntax-tabletype>`, :ref:`memory <syntax-memtype>`, :ref:`tag <syntax-tagtype>`, or :ref:`global <syntax-globaltype>` type.
 Module instances are classified by *module contexts*, which are regular :ref:`contexts <context>` repurposed as module types describing the :ref:`index spaces <syntax-index>` defined by a module.
 
 
 
-.. index:: store, function instance, table instance, memory instance, exception instance, global instance, function type, table type, memory type, exception type, global type
+.. index:: store, function instance, table instance, memory instance, tag instance, global instance, function type, table type, memory type, tag type, global type
 
 :ref:`Store <syntax-store>` :math:`S`
 .....................................
@@ -85,7 +85,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Each :ref:`memory instance <syntax-meminst>` :math:`\meminst_i` in :math:`S.\SMEMS` must be :ref:`valid <valid-meminst>` with some :ref:`memory type <syntax-memtype>` :math:`\memtype_i`.
 
-* Each :ref:`exception instance <syntax-exninst>` :math:`\exninst_i` in :math:`S.\SEXNS` must be :ref:`valid <valid-exninst>` with some :ref:`exception type <syntax-exntype>` :math:`\exntype_i`.
+* Each :ref:`tag instance <syntax-taginst>` :math:`\taginst_i` in :math:`S.\STAGS` must be :ref:`valid <valid-taginst>` with some :ref:`tag type <syntax-tagtype>` :math:`\tagtype_i`.
 
 * Each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in :math:`S.\SGLOBALS` must be :ref:`valid <valid-globalinst>` with some  :ref:`global type <syntax-globaltype>` :math:`\globaltype_i`.
 
@@ -105,7 +105,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \\
      (S \vdashmeminst \meminst : \memtype)^\ast
      \qquad
-     (S \vdashexninst \exninst : \exntype)^\ast
+     (S \vdashtaginst \taginst : \tagtype)^\ast
      \\
      (S \vdashglobalinst \globalinst : \globaltype)^\ast
      \\
@@ -117,7 +117,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
        \SFUNCS~\funcinst^\ast,
        \STABLES~\tableinst^\ast,
        \SMEMS~\meminst^\ast,
-       \SEXNS~\exninst^\ast,
+       \STAGS~\taginst^\ast,
        \\
        \SGLOBALS~\globalinst^\ast,
        \SELEMS~\eleminst^\ast,
@@ -259,21 +259,21 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    }
 
 
-.. index:: exception type, exception instance, exception tag, function type
-.. _valid-exninst:
+.. index:: tag type, tag instance, function type
+.. _valid-taginst:
 
-:ref:`Exception Instances <syntax-exninst>` :math:`\{ \EITYPE~\exntype \}`
-...........................................................................
+:ref:`Tag Instances <syntax-taginst>` :math:`\{ \TAGITYPE~\tagtype \}`
+......................................................................
 
-* The :ref:`exception type <syntax-exntype>` :math:`\exntype` must be :ref:`valid <valid-exntype>`.
+* The :ref:`tag type <syntax-tagtype>` :math:`\tagtype` must be :ref:`valid <valid-tagtype>`.
 
-* Then the exception instance is valid with :ref:`exception type <syntax-exntype>` :math:`\exntype`.
+* Then the tag instance is valid with :ref:`tag type <syntax-tagtype>` :math:`\tagtype`.
 
 .. math::
    \frac{
-     \vdashexntype \exntype \ok
+     \vdashtagtype \tagtype \ok
    }{
-     S \vdashexninst \{ \EITYPE~\exntype \} : \exntype
+     S \vdashtaginst \{ \TAGITYPE~\tagtype \} : \tagtype
    }
 
 
@@ -365,7 +365,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * For each :ref:`memory address <syntax-memaddr>` :math:`\memaddr_i` in :math:`\moduleinst.\MIMEMS`, the :ref:`external value <syntax-externval>` :math:`\EVMEM~\memaddr_i` must be :ref:`valid <valid-externval-mem>` with some :ref:`external type <syntax-externtype>` :math:`\ETMEM~\memtype_i`.
 
-* For each :ref:`exception address <syntax-exnaddr>` :math:`\exnaddr_i` in :math:`\moduleinst.\MIEXNS`, the :ref:`external value <syntax-externval>` :math:`\EVEXN~\exnaddr_i` must be :ref:`valid <valid-externval-exn>` with some :ref:`external type <syntax-externtype>` :math:`\ETEXN~\exntype_i`.
+* For each :ref:`tag address <syntax-tagaddr>` :math:`\tagaddr_i` in :math:`\moduleinst.\MITAGS`, the :ref:`external value <syntax-externval>` :math:`\EVTAG~\tagaddr_i` must be :ref:`valid <valid-externval-tag>` with some :ref:`external type <syntax-externtype>` :math:`\ETTAG~\tagtype_i`.
 
 * For each :ref:`global address <syntax-globaladdr>` :math:`\globaladdr_i` in :math:`\moduleinst.\MIGLOBALS`, the :ref:`external value <syntax-externval>` :math:`\EVGLOBAL~\globaladdr_i` must be :ref:`valid <valid-externval-global>` with some :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_i`.
 
@@ -383,12 +383,12 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Let :math:`\memtype^\ast` be the concatenation of all :math:`\memtype_i` in order.
 
-* Let :math:`\exntype^\ast` be the concatenation of all :math:`\exntype_i` in order.
+* Let :math:`\tagtype^\ast` be the concatenation of all :math:`\tagtype_i` in order.
 
 * Let :math:`\globaltype^\ast` be the concatenation of all :math:`\globaltype_i` in order.
 
 * | Then the module instance is valid with :ref:`context <context>`
-  | :math:`\{\CTYPES~\functype^\ast, \CFUNCS~{\functype'}^\ast, \CTABLES~\tabletype^\ast, \CMEMS~\memtype^\ast, \CEXNS~\exntype^\ast, \CGLOBALS~\globaltype^\ast\}`.
+  | :math:`\{\CTYPES~\functype^\ast, \CFUNCS~{\functype'}^\ast, \CTABLES~\tabletype^\ast, \CMEMS~\memtype^\ast, \CTAGS~\tagtype^\ast, \CGLOBALS~\globaltype^\ast\}`.
 
 .. math::
    ~\\[-1ex]
@@ -402,7 +402,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \\
      (S \vdashexternval \EVMEM~\memaddr : \ETMEM~\memtype)^\ast
      \qquad
-     (S \vdashexternval \EVEXN~\exnaddr : \ETEXN~\exntype)^\ast
+     (S \vdashexternval \EVTAG~\tagaddr : \ETTAG~\tagtype)^\ast
      \\
      (S \vdashexternval \EVGLOBAL~\globaladdr : \ETGLOBAL~\globaltype)^\ast
      \\
@@ -421,7 +421,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
        \MIFUNCS & \funcaddr^\ast, \\
        \MITABLES & \tableaddr^\ast, \\
        \MIMEMS & \memaddr^\ast, \\
-       \MIEXNS & \exnaddr^\ast, \\
+       \MITAGS & \tagaddr^\ast, \\
        \MIGLOBALS & \globaladdr^\ast, \\
        \MIELEMS & \elemaddr^\ast, \\
        \MIDATAS & \dataaddr^\ast, \\
@@ -431,7 +431,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
          \CFUNCS & {\functype'}^\ast, \\
          \CTABLES & \tabletype^\ast, \\
          \CMEMS & \memtype^\ast, \\
-         \CEXNS & \exntype^\ast \\
+         \CTAGS & \tagtype^\ast \\
          \CGLOBALS & \globaltype^\ast ~\}
          \end{array}
        \end{array}
@@ -586,65 +586,78 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }
 
 
-.. index:: exception address, exception type, function type, value type, exception tag
+.. index:: throw, throw context, tag address
 
-:math:`\REFEXNADDR~\exnaddr~\val^\ast`
-......................................
+:math:`\THROWadm~\tagaddr`
+..........................
 
-* The :ref:`external exception value <syntax-externval>` :math:`\EVEXN~\exnaddr` must be :ref:`valid <valid-externval-exn>` with :ref:`external exception type <syntax-externtype>` :math:`\ETEXN~[t^\ast]\to[]`.
+* The :ref:`external tag value <syntax-externval>` :math:`\EVTAG~\tagaddr` must be :ref:`valid <valid-externval-tag>` with :ref:`external tag type <syntax-externtype>` :math:`\ETTAG~[t^\ast]\to[]`.
 
-* Each :ref:`value <syntax-val>` :math:`\val_i` in :math:`\val^\ast` must be :ref:`valid <valid-val>` with :ref:`value type <syntax-valtype>` :math:`t_i` in :math:`t^\ast`.
-
-* Then the instruction is valid with type :math:`[] \to [\EXNREF]`.
+* Then the instruction is valid with type :math:`[t_1^\ast t^\ast] \to [t_2^\ast]` for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     S \vdashexternval \EVEXN~\exnaddr : \ETEXN~[t^\ast]\to[]
-     \qquad
-     (S \vdashval \val : t)^\ast
+     S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t^\ast]\to[]
    }{
-     S; C \vdashadmininstr \REFEXNADDR~\exnaddr~\val^\ast : [] \to [\EXNREF]
-   }
-
-
-.. index:: throw, throw context, exception address, exception tag
-
-:math:`\THROWADDR~\exnaddr`
-...........................
-
-* The :ref:`external exception value <syntax-externval>` :math:`\EVEXN~\exnaddr` must be :ref:`valid <valid-externval-exn>` with :ref:`external exception type <syntax-externtype>` :math:`\ETEXN~[t^\ast]\to[]`.
-
-* Then the instruction is valid with type :math:`[t_1^\ast t^\ast] -> [t_2^\ast]` for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
-
-.. math::
-   \frac{
-     S \vdashexternval \EVEXN~\exnaddr : \ETEXN~[t^\ast]\to[]
-   }{
-     S; C \vdashadmininstr \THROWADDR~\exnaddr : [t_1^\ast t^\ast] \to [t_2^\ast]
+     S; C \vdashadmininstr \THROWadm~\tagaddr : [t_1^\ast t^\ast] \to [t_2^\ast]
    }
 
 
 .. index:: catch, throw context
 
-:math:`\CATCH_n\{ \instr_0^\ast \} \instr^\ast \END`
-....................................................
+:math:`\CATCHadm\{\tagaddr^?~\instr'^\ast\}^\ast~\instr^\ast~\END`
+..................................................................
 
-* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with a type of the form :math:`[\EXNREF] \to [t^n]`.
-
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t^n]` prepended to the |CLABELS| vector.
-
-* Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^n]`.
-
-* Then the compound instruction is valid with type :math:`[] \to [t^n]`.
+.. todo::
+   Add prose.
 
 .. math::
    \frac{
-     S; C \vdashinstrseq \instr_0^\ast : [\EXNREF] \to [t^n]
-     \qquad
-     S; C,\CLABELS\,[t^n] \vdashinstrseq \instr^\ast : [] \to [t^n]
+     \begin{array}{@{}c@{}}
+     ((S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t'^\ast]\to[])^? \\
+     ~~S; C,\CLABELS\,(\LCATCH~[t^\ast]) \vdashinstrseq \instr'^\ast : [(t'^\ast)^?] \to [t^\ast])^\ast \\
+     S; C,\CLABELS\,[t^\ast] \vdashinstrseq \instr^\ast : [] \to [t^\ast] \\
+   \end{array}
    }{
-     S; C \vdashadmininstr \CATCH_n\{\instr_0^\ast\}~\instr^\ast~\END : [] \to [t^n]
+     S; C,\CLABELS\,[t^\ast] \vdashadmininstr \CATCHadm\{\tagaddr^?~{\instr'}^\ast\}^\ast~\instr^\ast~\END : [] \to [t^\ast]
+   }
+
+
+.. index:: delegate, throw context
+
+:math:`\DELEGATEadm\{l\}~\instr^\ast~\END`
+..........................................
+
+.. todo::
+   Add prose.
+
+.. math::
+   \frac{
+     S; C,\CLABELS\,[t^\ast] \vdashinstrseq \instr^\ast : [] \to [t^\ast]
+     \qquad
+     C.\CLABELS[l] = [t_0^\ast]
+   }{
+     S; C,\CLABELS\,[t^\ast] \vdashadmininstr \DELEGATEadm\{l\}~\instr^\ast~\END : [] \to [t^\ast]
+   }
+
+
+.. index:: caught, throw context
+
+:math:`\CAUGHTadm\{\tagaddr~\val^\ast\}~\instr^\ast~\END`
+.........................................................
+
+.. todo::
+   Add prose.
+
+.. math::
+   \frac{
+     S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t'^\ast]\to[]
+     \qquad
+     (val : t')^\ast
+     \qquad
+     S; C,\CLABELS\,(\LCATCH~[t^\ast]) \vdashinstrseq \instr^\ast : [] \to [t^\ast]
+   }{
+     S; C,\CLABELS\,[t^\ast] \vdashadmininstr \CAUGHTadm\{\tagaddr~\val^\ast\}~\instr^\ast~\END : [] \to [t^\ast]
    }
 
 
@@ -738,7 +751,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * The length of :math:`S.\SMEMS` must not shrink.
 
-* The length of :math:`S.\SEXNS` must not shrink.
+* The length of :math:`S.\STAGS` must not shrink.
 
 * The length of :math:`S.\SGLOBALS` must not shrink.
 
@@ -752,7 +765,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * For each :ref:`memory instance <syntax-meminst>` :math:`\meminst_i` in the original :math:`S.\SMEMS`, the new memory instance must be an :ref:`extension <extend-meminst>` of the old.
 
-* For each :ref:`exception instance <syntax-exninst>` :math:`\exninst_i` in the original :math:`S.\SEXNS`, the new exception instance must be an :ref:`extension <extend-exninst>` of the old.
+* For each :ref:`tag instance <syntax-taginst>` :math:`\taginst_i` in the original :math:`S.\STAGS`, the new tag instance must be an :ref:`extension <extend-taginst>` of the old.
 
 * For each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in the original :math:`S.\SGLOBALS`, the new global instance must be an :ref:`extension <extend-globalinst>` of the old.
 
@@ -772,9 +785,9 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
      S_1.\SMEMS = \meminst_1^\ast &
      S_2.\SMEMS = {\meminst'_1}^\ast~\meminst_2^\ast &
      (\vdashmeminstextends \meminst_1 \extendsto \meminst'_1)^\ast \\
-     S_1.\SEXNS = \exninst_1^\ast &
-     S_2.\SEXNS = {\exninst'_1}^\ast~\exninst_2^\ast &
-     (\vdashexninstextends \exninst_1 \extendsto \exninst'_1)^\ast \\
+     S_1.\STAGS = \taginst_1^\ast &
+     S_2.\STAGS = {\taginst'_1}^\ast~\taginst_2^\ast &
+     (\vdashtaginstextends \taginst_1 \extendsto \taginst'_1)^\ast \\
      S_1.\SGLOBALS = \globalinst_1^\ast &
      S_2.\SGLOBALS = {\globalinst'_1}^\ast~\globalinst_2^\ast &
      (\vdashglobalinstextends \globalinst_1 \extendsto \globalinst'_1)^\ast \\
@@ -841,18 +854,18 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
    }
 
 
-.. index:: exception instance
-.. _extend-exninst:
+.. index:: tag instance
+.. _extend-taginst:
 
-:ref:`Exception Instance <syntax-exninst>` :math:`\exninst`
-...........................................................
+:ref:`Tag Instance <syntax-taginst>` :math:`\taginst`
+.....................................................
 
-* An exception instance must remain unchanged.
+* A tag instance must remain unchanged.
 
 .. math::
    \frac{
    }{
-     \vdashexninstextends \exninst \extendsto \exninst
+     \vdashtaginstextends \taginst \extendsto \taginst
    }
 
 

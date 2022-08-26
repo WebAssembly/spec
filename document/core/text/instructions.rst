@@ -43,7 +43,7 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    mirroring the fact that control instructions are indexed relatively not absolutely.
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism, exception index, exception instructions
+.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism, tag index, exception instructions
    pair: text format; instruction
 .. _text-blockinstr:
 .. _text-plaininstr:
@@ -60,7 +60,7 @@ Control Instructions
 .. _text-try:
 
 :ref:`Structured control instructions <syntax-instr-control>` can bind an optional symbolic :ref:`label identifier <text-label>`.
-The same label identifier may optionally be repeated after the corresponding :math:`\T{end}`, :math:`\T{else}`, and :math:`\T{catch}`
+The same label identifier may optionally be repeated after the corresponding :math:`\T{end}`, :math:`\T{else}`, :math:`\T{catch}`, :math:`\T{catch\_all}`, and :math:`\T{delegate}`
 pseudo instructions, to indicate the matching delimiters.
 
 Their :ref:`block type <syntax-blocktype>` is given as a :ref:`type use <text-typeuse>`, analogous to the type of :ref:`functions <text-func>`.
@@ -86,10 +86,15 @@ However, the special case of a type use that is syntactically empty or consists 
        \text{else}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
        \\ &&&\qquad \Rightarrow\quad \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
        \qquad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\ &&|&
-    \text{try}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
-       \text{catch}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
-       \\ &&&\qquad \Rightarrow\quad \TRY~\X{rt}~\X{in}_1^\ast~\CATCH~\X{in}_2^\ast~\END
-       \quad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\
+     \text{try}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
+       (\text{catch}~~\Tid_1^?~~x{:}\Ttagidx_I~~(\X{in}_2{:}\Tinstr_{I'})^\ast)^\ast~~
+       \\ &&&\qquad\qquad (\text{catch\_all}~~\Tid_1^?~~(\X{in}_3{:}\Tinstr_{I'})^\ast)^?~~\text{end}~~\Tid_2^?
+       \\ &&&\qquad \Rightarrow\quad \TRY~\X{bt}~\X{in}_1^\ast~(\CATCH~x~\X{in}_2^\ast)^\ast~(\CATCHALL~\X{in}_3^\ast)^?~\END
+       \\ &&&\qquad\qquad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\ &&|&
+     \text{try}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}_1{:}\Tinstr_{I'})^\ast
+       ~~\text{delegate}~~l{:}\Tlabelidx_I~~\X{l}{:}\Tlabelidx_I
+       \\ &&&\qquad \Rightarrow\quad \TRY~\X{bt}~\X{in}_1^\ast~\DELEGATE~l
+       \qquad\quad~~ (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\
    \end{array}
 
 .. note::
@@ -100,7 +105,6 @@ However, the special case of a type use that is syntactically empty or consists 
 .. _text-unreachable:
 .. _text-throw:
 .. _text-rethrow:
-.. _text-br_on_exn:
 .. _text-br:
 .. _text-br_if:
 .. _text-br_table:
@@ -115,9 +119,8 @@ All other control instruction are represented verbatim.
    \production{plain instruction} & \Tplaininstr_I &::=&
      \text{unreachable} &\Rightarrow& \UNREACHABLE \\ &&|&
      \text{nop} &\Rightarrow& \NOP \\ &&|&
-     \text{throw}~~\text{(}\text{exception}~x{:}\Texnidx_I\text{)} &\Rightarrow& \THROW~x \\ &&|&
-     \text{rethrow} &\Rightarrow& \RETHROW \\ &&|&
-     \text{br\_on\_exn}~~l{:}\Tlabelidx_I~~\text{(}\text{exception}~x{:}\Texnidx_I~\text{)} &\Rightarrow& \BRONEXN~l~x \\ &&|&
+     \text{throw}~~x{:}\Ttagidx_I &\Rightarrow& \THROW~x \\ &&|&
+     \text{rethrow}~~l{:}\Tlabelidx_I &\Rightarrow& \RETHROW~l \\ &&|&
      \text{br}~~l{:}\Tlabelidx_I &\Rightarrow& \BR~l \\ &&|&
      \text{br\_if}~~l{:}\Tlabelidx_I &\Rightarrow& \BRIF~l \\ &&|&
      \text{br\_table}~~l^\ast{:}\Tvec(\Tlabelidx_I)~~l_N{:}\Tlabelidx_I
@@ -928,13 +931,22 @@ Such a folded instruction can appear anywhere a regular instruction can.
      \text{(}~\text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~\text{)}
        &\equiv\quad \text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end} \\ &
      \text{(}~\text{if}~~\Tlabel~~\Tblocktype~~\Tfoldedinstr^\ast
-       &\hspace{-3ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)}^?~~\text{)}
+       &\hspace{-1ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~(\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)})^?~~\text{)}
        \quad\equiv \\ &\qquad
-         \Tfoldedinstr^\ast~~\text{if}~~\Tlabel~~\Tblocktype &\hspace{-1ex} \Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\ &
-     \text{(}~\text{try}~~\Tlabel~~\Tblocktype~~\text{(}~\text{do}~~\Tinstr_1^\ast~~\text{)}
-       &\hspace{-8ex} \text{(}~\text{catch}~~\Tinstr_2^\ast~\text{)}~\text{)} \quad\equiv \\ &\qquad
-       \text{try}~~\Tlabel~~\Tblocktype~~\Tinstr_1^\ast & \hspace{-6ex} \text{catch}~~\Tinstr_2^\ast~\text{end} & \\
+       \Tfoldedinstr^\ast~~\text{if}~~\Tlabel
+       &\hspace{-12ex} \Tblocktype~~\Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\ &
+     \text{(}~\text{try}~~\Tlabel~~\Tblocktype~~\text{(}~\text{do} &\hspace{-8ex} \Tinstr_1^\ast~\text{)}~~
+       (\text{(}~\text{catch}~~x{:}\Ttagidx_I~~\Tinstr_2^\ast~\text{)})^\ast \\ &\quad
+       (\text{(}~\text{catch\_all}~~\Tinstr_3^\ast~\text{)})^?~\text{)}
+       \quad\equiv \\ &\qquad
+         \text{try}~~\Tlabel~~\Tblocktype~~\Tinstr_1^\ast
+       &\hspace{-5ex} (\text{catch}~~x{:}\Ttagidx_I~~\Tinstr_2^\ast)^\ast~~(\text{catch\_all}~~\Tinstr_3^\ast)^?~~\text{end} \\ &
+     \text{(}~\text{try}~~\Tlabel~~\Tblocktype~~\text{(}~\text{do} &\hspace{-8ex} \Tinstr^\ast~\text{)}~~
+       \text{(}~\text{delegate}~~l{:}\Tlabelidx~~\text{)}~\text{)}
+       \quad\equiv \\ &\qquad
+         \text{try}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast &\hspace{-5ex} \text{delegate}~~l{:}\Tlabelidx \\
    \end{array}
+
 
 .. note::
    For example, the instruction sequence

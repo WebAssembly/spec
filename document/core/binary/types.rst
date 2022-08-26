@@ -58,8 +58,7 @@ Reference Types
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{reference type} & \Breftype &::=&
      \hex{70} &\Rightarrow& \FUNCREF \\ &&|&
-     \hex{6F} &\Rightarrow& \EXTERNREF \\ &&|&
-     \hex{6E} &\Rightarrow& \EXNREF \\
+     \hex{6F} &\Rightarrow& \EXTERNREF \\
    \end{array}
 
 
@@ -187,22 +186,23 @@ Global Types
    \end{array}
 
 
-.. index:: exception type, function type
-   pair: binary format; exception type
-.. _binary-exntype:
+.. index:: tag type, function type, exception tag
+   pair: binary format; tag type
+.. _binary-tagtype:
 
-Exception Types
-~~~~~~~~~~~~~~~
+Tag Types
+~~~~~~~~~
 
-:ref:`Exception types <syntax-exntype>` are encoded by their function type.
+:ref:`Tag types <syntax-tagtype>` are encoded by their function type.
 
 .. math::
    \begin{array}{llclll}
-   \production{exception type} & \Bexntype &::=&
+   \production{tag type} & \Btagtype &::=&
      \hex{00}~~ft{:}\Bfunctype &\Rightarrow& ft \\
    \end{array}
 
-The |Bfunctype| of an exception must have an empty result.
+The |Bfunctype| of a tag is used to characterise exceptions.
+The :math:`\hex{00}` bit signifies an exception and is currently the only allowed value.
 
 .. note::
    In future versions of WebAssembly,
