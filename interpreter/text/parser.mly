@@ -366,7 +366,7 @@ limits :
   | NAT NAT { {min = nat32 $1 (ati 1); max = Some (nat32 $2 (ati 2))} }
 
 type_use :
-  | LPAR TYPE var RPAR { $3 }
+  | LPAR TYPE var RPAR { fun c -> $3 c type_ }
 
 
 /* Immediates */
@@ -543,8 +543,8 @@ call_instr_type :
     { let at1 = ati 1 in
       fun c ->
       match $2 c with
-      | FuncT ([], []) -> $1 c type_
-      | ft -> inline_func_type_explicit c ($1 c type_) ft at1 }
+      | FuncT ([], []) -> $1 c
+      | ft -> inline_func_type_explicit c ($1 c) ft at1 }
   | call_instr_params
     { let at = at () in fun c -> inline_func_type c ($1 c) at }
 
@@ -574,8 +574,8 @@ call_instr_type_instr :
     { let at1 = ati 1 in
       fun c ->
       match $2 c with
-      | FuncT ([], []), es -> $1 c type_, es
-      | ft, es -> inline_func_type_explicit c ($1 c type_) ft at1, es }
+      | FuncT ([], []), es -> $1 c, es
+      | ft, es -> inline_func_type_explicit c ($1 c) ft at1, es }
   | call_instr_params_instr
     { let at = at () in
       fun c -> let ft, es = $1 c in inline_func_type c ft at, es }
@@ -609,7 +609,7 @@ block :
   | type_use block_param_body
     { let at1 = ati 1 in
       fun c -> let ft, es = $2 c in
-      let x = inline_func_type_explicit c ($1 c type_) ft at1 in
+      let x = inline_func_type_explicit c ($1 c) ft at1 in
       VarBlockType x.it, es }
   | block_param_body  /* Sugar */
     { let at = at () in
@@ -666,8 +666,8 @@ call_expr_type :
     { let at1 = ati 1 in
       fun c ->
       match $2 c with
-      | FuncT ([], []), es -> $1 c type_, es
-      | ft, es -> inline_func_type_explicit c ($1 c type_) ft at1, es }
+      | FuncT ([], []), es -> $1 c, es
+      | ft, es -> inline_func_type_explicit c ($1 c) ft at1, es }
   | call_expr_params
     { let at1 = ati 1 in
       fun c -> let ft, es = $1 c in inline_func_type c ft at1, es }
@@ -690,7 +690,7 @@ if_block :
   | type_use if_block_param_body
     { let at = at () in
       fun c c' -> let ft, es = $2 c c' in
-      let x = inline_func_type_explicit c ($1 c type_) ft at in
+      let x = inline_func_type_explicit c ($1 c) ft at in
       VarBlockType x.it, es }
   | if_block_param_body  /* Sugar */
     { let at = at () in
@@ -751,7 +751,7 @@ func_fields :
   | type_use func_fields_body
     { fun c x at ->
       let c' = enter_func c at in
-      let y = inline_func_type_explicit c' ($1 c' type_) (fst $2 c') at in
+      let y = inline_func_type_explicit c' ($1 c') (fst $2 c') at in
       [{(snd $2 c') with ftype = y} @@ at], [], [] }
   | func_fields_body  /* Sugar */
     { fun c x at ->
@@ -760,7 +760,7 @@ func_fields :
       [{(snd $1 c') with ftype = y} @@ at], [], [] }
   | inline_import type_use func_fields_import  /* Sugar */
     { fun c x at ->
-      let y = inline_func_type_explicit c ($2 c type_) ($3 c) at in
+      let y = inline_func_type_explicit c ($2 c) ($3 c) at in
       [],
       [{ module_name = fst $1; item_name = snd $1;
          idesc = FuncImport y @@ at } @@ at ], [] }
@@ -999,7 +999,7 @@ global_fields :
 import_desc :
   | LPAR FUNC bind_var_opt type_use RPAR
     { fun c -> ignore ($3 c anon_func bind_func);
-      fun () -> FuncImport ($4 c type_) }
+      fun () -> FuncImport ($4 c) }
   | LPAR FUNC bind_var_opt func_type RPAR  /* Sugar */
     { let at4 = ati 4 in
       fun c -> ignore ($3 c anon_func bind_func);
