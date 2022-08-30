@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Modules &#8212; WebAssembly 2.0 (Draft 2022-08-26)</title>
+    <title>Modules &#8212; WebAssembly 2.0 (Draft 2022-08-30)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -484,32 +484,32 @@ with the import’s <a class="reference internal" href="../syntax/types.html#syn
 <li><p>all other fields are empty.</p></li>
 </ul>
 </li>
-<li><p>Under the context <span class="math notranslate nohighlight">\(C\)</span>:</p>
-<ul>
 <li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{types}}\)</span>,
 the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-functype}{\mathit{functype}}_i\)</span> must be <a class="reference internal" href="types.html#valid-functype"><span class="std std-ref">valid</span></a>.</p></li>
+<li><p>Under the context <span class="math notranslate nohighlight">\(C\)</span>:</p>
+<ul>
 <li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{funcs}}\)</span>,
 the definition <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-func}{\mathit{func}}_i\)</span> must be <a class="reference internal" href="#valid-func"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\(\mathit{ft}_i\)</span>.</p></li>
-<li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-table}{\mathit{table}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{tables}}\)</span>,
-the definition <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-table}{\mathit{table}}_i\)</span> must be <a class="reference internal" href="#valid-table"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate nohighlight">\(\mathit{tt}_i\)</span>.</p></li>
-<li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{mems}}\)</span>,
-the definition <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}_i\)</span> must be <a class="reference internal" href="#valid-mem"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math notranslate nohighlight">\(\mathit{mt}_i\)</span>.</p></li>
-<li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-global}{\mathit{global}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{globals}}\)</span>:</p>
-<ul>
-<li><p>Under the context <span class="math notranslate nohighlight">\(C'\)</span>,
-the definition <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-global}{\mathit{global}}_i\)</span> must be <a class="reference internal" href="#valid-global"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math notranslate nohighlight">\(\mathit{gt}_i\)</span>.</p></li>
-</ul>
-</li>
-<li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{elems}}\)</span>,
-the segment <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i\)</span> must be <a class="reference internal" href="#valid-elem"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\(\mathit{rt}_i\)</span>.</p></li>
-<li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-data}{\mathit{data}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{datas}}\)</span>,
-the segment <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-data}{\mathit{data}}_i\)</span> must be <a class="reference internal" href="#valid-data"><span class="std std-ref">valid</span></a>.</p></li>
 <li><p>If <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{start}}\)</span> is non-empty,
 then <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{start}}\)</span> must be <a class="reference internal" href="#valid-start"><span class="std std-ref">valid</span></a>.</p></li>
 <li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{imports}}\)</span>,
 the segment <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-import}{\mathit{import}}_i\)</span> must be <a class="reference internal" href="#valid-import"><span class="std std-ref">valid</span></a> with an <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate nohighlight">\(\mathit{it}_i\)</span>.</p></li>
 <li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{exports}}\)</span>,
 the segment <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-export}{\mathit{export}}_i\)</span> must be <a class="reference internal" href="#valid-export"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external type</span></a> <span class="math notranslate nohighlight">\(\mathit{et}_i\)</span>.</p></li>
+</ul>
+</li>
+<li><p>Under the context <span class="math notranslate nohighlight">\(C'\)</span>:</p>
+<ul>
+<li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-table}{\mathit{table}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{tables}}\)</span>,
+the definition <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-table}{\mathit{table}}_i\)</span> must be <a class="reference internal" href="#valid-table"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate nohighlight">\(\mathit{tt}_i\)</span>.</p></li>
+<li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{mems}}\)</span>,
+the definition <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}_i\)</span> must be <a class="reference internal" href="#valid-mem"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math notranslate nohighlight">\(\mathit{mt}_i\)</span>.</p></li>
+<li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-global}{\mathit{global}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{globals}}\)</span>,
+the definition <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-global}{\mathit{global}}_i\)</span> must be <a class="reference internal" href="#valid-global"><span class="std std-ref">valid</span></a> with a <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math notranslate nohighlight">\(\mathit{gt}_i\)</span>.</p></li>
+<li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{elems}}\)</span>,
+the segment <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}_i\)</span> must be <a class="reference internal" href="#valid-elem"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\(\mathit{rt}_i\)</span>.</p></li>
+<li><p>For each <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-data}{\mathit{data}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-module}{\mathit{module}}.\href{../syntax/modules.html#syntax-module}{\mathsf{datas}}\)</span>,
+the segment <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-data}{\mathit{data}}_i\)</span> must be <a class="reference internal" href="#valid-data"><span class="std std-ref">valid</span></a>.</p></li>
 </ul>
 </li>
 <li><p>The length of <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}\)</span> must not be larger than <span class="math notranslate nohighlight">\(1\)</span>.</p></li>
@@ -530,15 +530,15 @@ the segment <span class="math notranslate nohighlight">\(\href{../syntax/modules
   \quad
   (C \href{../valid/modules.html#valid-func}{\vdash} \href{../syntax/modules.html#syntax-func}{\mathit{func}} : \mathit{ft})^\ast
   \quad
-  (C \href{../valid/modules.html#valid-table}{\vdash} \href{../syntax/modules.html#syntax-table}{\mathit{table}} : \mathit{tt})^\ast
+  (C' \href{../valid/modules.html#valid-table}{\vdash} \href{../syntax/modules.html#syntax-table}{\mathit{table}} : \mathit{tt})^\ast
   \quad
-  (C \href{../valid/modules.html#valid-mem}{\vdash} \href{../syntax/modules.html#syntax-mem}{\mathit{mem}} : \mathit{mt})^\ast
+  (C' \href{../valid/modules.html#valid-mem}{\vdash} \href{../syntax/modules.html#syntax-mem}{\mathit{mem}} : \mathit{mt})^\ast
   \quad
   (C' \href{../valid/modules.html#valid-global}{\vdash} \href{../syntax/modules.html#syntax-global}{\mathit{global}} : \mathit{gt})^\ast
   \\
-  (C \href{../valid/modules.html#valid-elem}{\vdash} \href{../syntax/modules.html#syntax-elem}{\mathit{elem}} : \mathit{rt})^\ast
+  (C' \href{../valid/modules.html#valid-elem}{\vdash} \href{../syntax/modules.html#syntax-elem}{\mathit{elem}} : \mathit{rt})^\ast
   \quad
-  (C \href{../valid/modules.html#valid-data}{\vdash} \href{../syntax/modules.html#syntax-data}{\mathit{data}} \mathrel{\mbox{ok}})^n
+  (C' \href{../valid/modules.html#valid-data}{\vdash} \href{../syntax/modules.html#syntax-data}{\mathit{data}} \mathrel{\mbox{ok}})^n
   \quad
   (C \href{../valid/modules.html#valid-start}{\vdash} \href{../syntax/modules.html#syntax-start}{\mathit{start}} \mathrel{\mbox{ok}})^?
   \quad
@@ -589,8 +589,8 @@ it depends on the outcome of validation of the function, table, memory, and glob
 which itself depends on <span class="math notranslate nohighlight">\(C\)</span>.
 However, this recursion is just a specification device.
 All types needed to construct <span class="math notranslate nohighlight">\(C\)</span> can easily be determined from a simple pre-pass over the module that does not perform any actual validation.</p>
-<p>Globals, however, are not recursive.
-The effect of defining the limited context <span class="math notranslate nohighlight">\(C'\)</span> for validating the module’s globals is that their initialization expressions can only access functions and imported globals and nothing else.</p>
+<p>Globals, however, are not recursive and not accessible within <a class="reference internal" href="instructions.html#valid-const"><span class="std std-ref">constant expressions</span></a> when they are defined locally.
+The effect of defining the limited context <span class="math notranslate nohighlight">\(C'\)</span> for validating certain definitions is that they can only access functions and imported globals and nothing else.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
