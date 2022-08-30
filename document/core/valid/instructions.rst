@@ -1641,7 +1641,7 @@ Constant Expressions
    }
 
 .. note::
-   Currently, constant expressions occurring as initializers of :ref:`globals <syntax-global>` are further constrained in that contained |GLOBALGET| instructions are only allowed to refer to *imported* globals.
+   Currently, constant expressions occurring in :ref:`globals <syntax-global>`, :ref:`element <syntax-elem>`, or :ref:`data <syntax-data>` segments are further constrained in that contained |GLOBALGET| instructions are only allowed to refer to *imported* globals.
    This is enforced in the :ref:`validation rule for modules <valid-module>` by constraining the context :math:`C` accordingly.
 
    The definition of constant expression may be extended in future versions of WebAssembly.
