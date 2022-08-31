@@ -1614,7 +1614,7 @@ Non-empty Instruction Sequence: :math:`\instr~{\instr'}^\ast`
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`,
   but with:
 
-  * |CLOCALS| the same as in C, except that for every :ref:`local index <syntax-localidx>` :math:`x` in :math:`x_1^\ast`, the :ref:`local type <syntax-localtype>` :math:`\CLOCALS[x]` has been updated to :ref:`initialization status <syntax-init>` `\SET`.
+  * |CLOCALS| the same as in C, except that for every :ref:`local index <syntax-localidx>` :math:`x` in :math:`x_1^\ast`, the :ref:`local type <syntax-localtype>` :math:`\CLOCALS[x]` has been updated to :ref:`initialization status <syntax-init>` :math:`\SET`.
 
 * The instruction sequence :math:`{\instr'}^\ast` must be valid with some type :math:`[{t'}^\ast] \to_{x_2^\ast} [t_3^\ast]`.
 
