@@ -472,6 +472,10 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 
 ### Instructions
 
+Note: Instructions not mentioned here remain the same.
+In particular, `ref.null` is typed as before, despite the introduction of `none`/`nofunc`/`noextern`.
+
+
 #### Equality
 
 * `ref.eq` compares two references whose types support equality
