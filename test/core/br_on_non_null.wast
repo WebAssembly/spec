@@ -26,10 +26,11 @@
   (func (export "nullable-f") (result i32) (call $n (ref.func $f)))
 
   (func (export "unreachable") (result i32)
-    (block $l
-      (return (call_ref $t (br_on_null $l (unreachable))))
+    (block $l (result (ref $t))
+      (br_on_non_null $l (unreachable))
+      (return (i32.const -1))
     )
-    (i32.const -1)
+    (call_ref $t)
   )
 )
 
