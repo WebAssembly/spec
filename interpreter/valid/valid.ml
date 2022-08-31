@@ -311,11 +311,6 @@ let check_block_type (c : context) (bt : block_type) at : instr_type =
   | VarBlockType x ->
     let FuncT (ts1, ts2) = func_type c x in InstrT (ts1, ts2, [])
 
-let check_local (c : context) (loc : local) : local_type =
-  check_val_type c loc.it.ltype loc.at;
-  let init = if defaultable loc.it.ltype then Set else Unset in
-  LocalT (init, loc.it.ltype)
-
 let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_instr_type =
   match e.it with
   | Unreachable ->
@@ -644,11 +639,9 @@ and check_seq (c : context) (s : infer_result_type) (es : instr list)
   | [] ->
     s, []
 
-  | _ ->
-    let es', e = Lib.List.split_last es in
-    let s', xs = check_seq c s es' in
-    let {ins; outs}, xs' = check_instr (init_locals c xs) e s' in
-    push c outs (pop c ins s' e.at), xs @ xs'
+  | e::es' ->
+    let {ins; outs}, xs = check_instr c e s in
+    check_seq (init_locals c xs) (push c outs (pop c ins s e.at)) es'
 
 and check_block (c : context) (es : instr list) (it : instr_type) at =
   let InstrT (ts1, ts2, _xs) = it in
@@ -672,6 +665,11 @@ and check_block (c : context) (es : instr list) (it : instr_type) at =
  *   s : func_type
  *   x : variable
  *)
+
+let check_local (c : context) (loc : local) : local_type =
+  check_val_type c loc.it.ltype loc.at;
+  let init = if defaultable loc.it.ltype then Set else Unset in
+  LocalT (init, loc.it.ltype)
 
 let check_func (c : context) (f : func) =
   let {ftype; locals; body} = f.it in

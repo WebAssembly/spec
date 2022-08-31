@@ -1606,42 +1606,40 @@ Empty Instruction Sequence: :math:`\epsilon`
    }
 
 
-Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
-............................................................
+Non-empty Instruction Sequence: :math:`\instr~{\instr'}^\ast`
+.............................................................
 
-* The instruction sequence :math:`\instr^\ast` must be valid with type :math:`[t_1^\ast] \to_{x_1^\ast} [t_2^\ast]`,
-  for some sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* The instruction :math:`\instr` must be valid with some type :math:`[t_1^\ast] \to_{x_1^\ast} [t_0^\ast]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`,
   but with:
 
   * |CLOCALS| the same as in C, except that for every :ref:`local index <syntax-localidx>` :math:`x` in :math:`x_1^\ast`, the :ref:`local type <syntax-localtype>` :math:`\CLOCALS[x]` has been updated to :ref:`initialization status <syntax-init>` `\SET`.
 
-* Under context :math:`C'`, the instruction :math:`\instr_N` must be valid with type :math:`[t^\ast] \to_{x_2^\ast} [t_3^\ast]`,
-  for some sequences of :ref:`value types <syntax-valtype>` :math:`t^\ast` and :math:`t_3^\ast`.
+* The instruction sequence :math:`{\instr'}^\ast` must be valid with some type :math:`[{t'}^\ast] \to_{x_2^\ast} [t_3^\ast]`.
 
 * There must be a sequence of :ref:`value types <syntax-valtype>` :math:`t_0^\ast`,
-  such that :math:`t_2^\ast = t_0^\ast~{t'}^\ast` where the type sequence :math:`{t'}^\ast` is as long as :math:`t^\ast`.
+  such that :math:`t_0^\ast = t_2^\ast~t^\ast` where the type sequence :math:`t^\ast` is as long as :math:`{t'}^\ast`.
 
-* For each :ref:`value type <syntax-valtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding type :math:`t_i` in :math:`t^\ast`, the type :math:`t'_i` must :ref:`match <match-valtype>` :math:`t_i`.
+* For each :ref:`value type <syntax-valtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding type :math:`t_i` in :math:`t^\ast`, the type :math:`t_i` must :ref:`match <match-valtype>` :math:`t'_i`.
 
-* Then the combined instruction sequence is valid with type :math:`[t_1^\ast] \to_{x_1^\ast x_2^\ast} [t_0^\ast~t_3^\ast]`.
+* Then the combined instruction sequence is valid with type :math:`[t_1^\ast] \to_{x_1^\ast x_2^\ast} [t_2^\ast~t_3^\ast]`.
 
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     C \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{x_1^\ast} [t_0^\ast~{t'}^\ast]
+     C \vdashinstr \instr : [t_1^\ast] \to_{x_1^\ast} [t_2^\ast~t^\ast]
      \qquad
-     (C \vdashvaltypematch t' \matchesvaltype t)^\ast
+     (C \vdashvaltypematch t \matchesvaltype t')^\ast
      \qquad
-     C' \vdashinstr \instr_N : [t^\ast] \to_{x_2^\ast} [t_3^\ast]
+     C' \vdashinstrseq {\instr'}^\ast : [{t'}^\ast] \to_{x_2^\ast} [t_3^\ast]
      \\
      (\init~t = C.\CLOCALS[x_1])^\ast
      \qquad
      C' = C~(\with C.\CLOCALS[x_1] = \SET~t)^\ast
      \end{array}
    }{
-     C \vdashinstrseq \instr^\ast~\instr_N : [t_1^\ast] \to_{x_1^\ast x_2^\ast} [t_0^\ast~t_3^\ast]
+     C \vdashinstrseq \instr~{\instr'}^\ast : [t_1^\ast] \to_{x_1^\ast x_2^\ast} [t_2^\ast~t_3^\ast]
    }
 
 
