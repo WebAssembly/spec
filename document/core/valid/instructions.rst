@@ -1366,8 +1366,30 @@ Control Instructions
 :math:`\TRY~\blocktype~\instr_1^\ast~(\CATCH~x~\instr_2^\ast)^\ast~(\CATCHALL~\instr_3^\ast)^?~\END`
 ....................................................................................................
 
-.. todo::
-   Add prose.
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
+
+* Under context :math:`C'`,
+  the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Let :math:`C''` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label <exec-label>` :math:`\LCATCH~[t_2^\ast]` prepended to the |CLABELS| vector.
+
+* For every :math:`(\CATCH~x~\instr_2^\ast)`:
+
+  * The tag :math:`C.\CTAGS[x]` must be defined in the context :math:`C`.
+
+  * Let :math:`[t^\ast] \to []` be its :ref:`tag type <syntax-tagtype>`.
+
+  * Under context :math:`C''`,
+    the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t^\ast] \to [t_2^\ast]`.
+
+* If there is a :math:`(\CATCHALL~\instr_3^\ast)`, then:
+
+  * Under context :math:`C''`,
+    the instruction sequence :math:`\instr_3^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^\ast]`.
+
+* Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
@@ -1375,17 +1397,17 @@ Control Instructions
      C \vdashblocktype \blocktype : [t_1^\ast] \to [t_2^\ast]
      \qquad
      C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr_1^\ast : [t_1^\ast] \to [t_2^\ast] \\
-     (C.\CTAGS[x] = [t^\ast]\to[] \\
-     C,\CLABELS\,(\LCATCH [t_2^\ast]) \vdashinstrseq \instr_2^\ast : [t^\ast]\to[t_2^\ast])\ast \\
-     (C,\CLABELS\,(\LCATCH~[t_2^\ast]) \vdashinstrseq \instr_3^\ast : []\to[t_2^\ast])^?
+     (C.\CTAGS[x] = [t^\ast] \to [] \\
+     C,\CLABELS\,(\LCATCH~[t_2^\ast]) \vdashinstrseq \instr_2^\ast : [t^\ast] \to [t_2^\ast])^\ast \\
+     (C,\CLABELS\,(\LCATCH~[t_2^\ast]) \vdashinstrseq \instr_3^\ast : [] \to [t_2^\ast])^?
    \end{array}
    }{
-   C \vdashinstr \TRY~\blocktype~\instr^\ast (\CATCH~x~\instr_2^\ast)^\ast (\CATCHALL~\instr_3^\ast)^? \END : [t_1^\ast]\to[t_2^\ast]
+   C \vdashinstr \TRY~\blocktype~\instr_1^\ast~(\CATCH~x~\instr_2^\ast)^\ast~(\CATCHALL~\instr_3^\ast)^?~\END : [t_1^\ast] \to [t_2^\ast]
    }
 
 
 .. note::
-   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,(\LCATCH^? [t^\ast])` inserts the new label type at index :math:`0`, shifting all others.
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,(\LCATCH^?~[t^\ast])` inserts the new label type at index :math:`0`, shifting all others.
 
 
 .. _valid-try-delegate:
