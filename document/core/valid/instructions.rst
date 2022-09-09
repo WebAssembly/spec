@@ -1436,8 +1436,14 @@ Control Instructions
 :math:`\RETHROW~l`
 ..................
 
-.. todo::
-   Add prose.
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* Let :math:`(\LCATCH^?~[t^\ast])` be the :ref:`label type <labeltype>` :math:`C.\CLABELS[l]`.
+
+* The |LCATCH| must be present in the :ref:`label type <labeltype>` :math:`C.\CLABELS[l]`.
+
+* Then the instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+
 
 .. math::
    \frac{
