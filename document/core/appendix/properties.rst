@@ -646,14 +646,25 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\CAUGHTadm\{\tagaddr~\val^\ast\}~\instr^\ast~\END`
 .........................................................
 
-.. todo::
-   Add prose.
+* The :ref:`external tag value <syntax-externval>` :math:`\EVTAG~\tagaddr` must be :ref:`valid <valid-externval-tag>` with some :ref:`external tag type <syntax-externtype>` :math:`\ETTAG~[t_0^\ast] \to []`.
+
+* The :ref:`values <syntax-val>` :math:`\val^\ast` must be of type :math:`[t_0^\ast]`.
+
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the label :math:`(\LCATCH~[t^\ast])` prepended to the |CLABELS| vector.
+
+* Under context :math:`C'`,
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^\ast]`.
+
+* Let :math:`C''` be the same :ref:`context <context>` as :math:`C`, but with the label :math:`[t^\ast]` prepended to the |CLABELS| vector.
+
+* Then the compound instruction is valid under context :math:`C''` with type :math:`[] \to [t^\ast]`.
+
 
 .. math::
    \frac{
-     S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t'^\ast]\to[]
+     S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t_0^\ast]\to[]
      \qquad
-     (val : t')^\ast
+     (val : t_0)^\ast
      \qquad
      S; C,\CLABELS\,(\LCATCH~[t^\ast]) \vdashinstrseq \instr^\ast : [] \to [t^\ast]
    }{
