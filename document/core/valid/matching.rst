@@ -106,7 +106,7 @@ A :ref:`reference type <syntax-reftype>` :math:`\REF~\NULL_1^?~heaptype_1` match
    \frac{
      C \vdashheaptypematch \heaptype_1 \matchesheaptype \heaptype_2
    }{
-     C \vdashreftypematch \REF~\NULL~\heaptype_1 \matchesreftype \REF~\NULL^?~\heaptype_2
+     C \vdashreftypematch \REF~\NULL^?~\heaptype_1 \matchesreftype \REF~\NULL~\heaptype_2
    }
 
 
