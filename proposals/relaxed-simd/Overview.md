@@ -180,7 +180,7 @@ All the instructions take 3 operands, `a`, `b`, `c`, perform `a * b + c` or `-(a
 where:
 
 - the intermediate `b * c` is be rounded first, and the final result rounded again (for a total of 2 roundings), or
-- the the entire expression evaluated with higher precision and then only rounded once (if supported by hardware).
+- the entire expression evaluated with higher precision and then only rounded once (if supported by hardware).
 
 ### Relaxed laneselect
 
@@ -279,6 +279,32 @@ i16x8_dot_i8x16_i7x16_s(a, b)        = dot_product(signed=True, elements=2, a, b
 i32x4.dot_i8x16_i7x16_add_s(a, b, c) = dot_product(signed=False, elements=2, a, b, c)
 ```
 
+### Relaxed BFloat16 dot product
+
+- `f32x4.relaxed_dot_bf16x8_add_f32x4(a: v128, b: v128, c: v128) -> v128`
+
+BFloat16 is a 16-bit floating-point format that represents the IEEE FP32 numbers
+truncated to the high 16 bits. This instruction computes a FP32 dot product of 2
+BFloat16 with accumulation into another FP32.
+
+```python
+def bfloat16_dot_product(a, b, c):
+  for i in range(8):
+    y.fp32[i] =
+      y.fp32[i] +
+      cast<fp32>(a.bf16[2*i]) * cast<fp32>(b.bf16[2*i]) +
+      cast<fp32>(a.bf16[2*i+1]) * cast<fp32>(b.bf16[2*i+1])
+```
+
+This instruction is implementation defined in the following ways:
+
+- evaluation order
+  - can compute dot product in one step, then accumulation in another, or
+  - accumulate first product in one step, then accumulate second product in
+    another step
+- fusion, the steps described above can be both fused or both unfused
+- the intermediate results can be Round-to-Nearest-Even or Round-to-Odd.
+
 
 ## Binary format
 
@@ -290,30 +316,30 @@ where chosen to fit into the holes in the opcode space of SIMD proposal. Going
 forward, the opcodes for relaxed-simd specification will be the ones in the
 "opcode" column, and it will take some time for tools and engines to update.
 
-| instruction                        | opcode         | prototype opcode |
-| ---------------------------------- | -------------- | ---------------- |
-| `i8x16.relaxed_swizzle`            | 0x100          | 0xa2             |
-| `i32x4.relaxed_trunc_f32x4_s`      | 0x101          | 0xa5             |
-| `i32x4.relaxed_trunc_f32x4_u`      | 0x102          | 0xa6             |
-| `i32x4.relaxed_trunc_f64x2_s_zero` | 0x103          | 0xc5             |
-| `i32x4.relaxed_trunc_f64x2_u_zero` | 0x104          | 0xc6             |
-| `f32x4.relaxed_fma`                | 0x105          | 0xaf             |
-| `f32x4.relaxed_fms`                | 0x106          | 0xb0             |
-| `f64x2.relaxed_fma`                | 0x107          | 0xcf             |
-| `f64x2.relaxed_fms`                | 0x108          | 0xd0             |
-| `i8x16.relaxed_laneselect`         | 0x109          | 0xb2             |
-| `i16x8.relaxed_laneselect`         | 0x10a          | 0xb3             |
-| `i32x4.relaxed_laneselect`         | 0x10b          | 0xd2             |
-| `i64x2.relaxed_laneselect`         | 0x10c          | 0xd3             |
-| `f32x4.relaxed_min`                | 0x10d          | 0xb4             |
-| `f32x4.relaxed_max`                | 0x10e          | 0xe2             |
-| `f64x2.relaxed_min`                | 0x10f          | 0xd4             |
-| `f64x2.relaxed_max`                | 0x110          | 0xee             |
-| `i16x8.relaxed_q15mulr_s`          | 0x111          | unimplemented    |
-| `i16x8.dot_i8x16_i7x16_s`          | 0x112          | unimplemented    |
-| `i32x4.dot_i8x16_i7x16_add_s`      | 0x113          | unimplemented    |
-| Reserved for bfloat16              | 0x114          | unimplemented    |
-| Reserved                           | 0x115 - 0x12F  |                  |
+| instruction                          | opcode         | prototype opcode |
+| ------------------------------------ | -------------- | ---------------- |
+| `i8x16.relaxed_swizzle`              | 0x100          | 0xa2             |
+| `i32x4.relaxed_trunc_f32x4_s`        | 0x101          | 0xa5             |
+| `i32x4.relaxed_trunc_f32x4_u`        | 0x102          | 0xa6             |
+| `i32x4.relaxed_trunc_f64x2_s_zero`   | 0x103          | 0xc5             |
+| `i32x4.relaxed_trunc_f64x2_u_zero`   | 0x104          | 0xc6             |
+| `f32x4.relaxed_fma`                  | 0x105          | 0xaf             |
+| `f32x4.relaxed_fms`                  | 0x106          | 0xb0             |
+| `f64x2.relaxed_fma`                  | 0x107          | 0xcf             |
+| `f64x2.relaxed_fms`                  | 0x108          | 0xd0             |
+| `i8x16.relaxed_laneselect`           | 0x109          | 0xb2             |
+| `i16x8.relaxed_laneselect`           | 0x10a          | 0xb3             |
+| `i32x4.relaxed_laneselect`           | 0x10b          | 0xd2             |
+| `i64x2.relaxed_laneselect`           | 0x10c          | 0xd3             |
+| `f32x4.relaxed_min`                  | 0x10d          | 0xb4             |
+| `f32x4.relaxed_max`                  | 0x10e          | 0xe2             |
+| `f64x2.relaxed_min`                  | 0x10f          | 0xd4             |
+| `f64x2.relaxed_max`                  | 0x110          | 0xee             |
+| `i16x8.relaxed_q15mulr_s`            | 0x111          | unimplemented    |
+| `i16x8.dot_i8x16_i7x16_s`            | 0x112          | unimplemented    |
+| `i32x4.dot_i8x16_i7x16_add_s`        | 0x113          | unimplemented    |
+| `f32x4.relaxed_dot_bf16x8_add_f32x4` | 0x114          | unimplemented    |
+| Reserved                             | 0x115 - 0x12F  |                  |
 
 ## References
 
