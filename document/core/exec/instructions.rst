@@ -2708,7 +2708,7 @@ Control Instructions
 
 6. Repeat :math:`l+1` times:
 
-   a. While the top of the stack is a value, do:
+   a. While the top of the stack is a value, a |handler|, or a |CAUGHTadm| instruction, do:
 
       i. Pop the value from the stack.
 
