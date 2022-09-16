@@ -262,8 +262,8 @@ Vector instructions can have a prefix to describe the :ref:`shape <syntax-vec-sh
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \unpacked(\K{i8x16}) &=& \I32 \\
-   \unpacked(\K{i16x8}) &=& \I32 \\
+   \unpacked(\K{i8x16}) &=& \I8 \\
+   \unpacked(\K{i16x8}) &=& \I16 \\
    \unpacked(t\K{x}N) &=& t
    \end{array}
 
