@@ -1,4 +1,4 @@
-.. index:: ! validation, ! type system, function type, table type, memory type, globaltype, valtype, resulttype, index space, instantiation. module
+.. index:: ! validation, ! type system, function type, table type, memory type, global type, value type, result type, index space, instantiation. module
 .. _type-system:
 
 Conventions
@@ -24,9 +24,9 @@ That is, they only formulate the constraints, they do not define an algorithm.
 The skeleton of a sound and complete algorithm for type-checking instruction sequences according to this specification is provided in the :ref:`appendix <algo-valid>`.
 
 
-.. index:: ! context, function type, table type, memory type, tag type, global type, value type, result type, index space, module, function, tag, labeltype
+.. index:: ! context, function type, table type, memory type, tag type, global type, value type, result type, index space, module, function, tag, label type
 .. _context:
-.. _labeltype:
+.. _syntax-labeltype:
 
 Contexts
 ~~~~~~~~
