@@ -38,10 +38,9 @@ mod ::= 'module' ... tag*
 
 ### Validation Contexts: Tagtypes and modified Labels
 
-To verify that the `rethrow l` instruction refers to a label surrounding the instructions of a catch block (call this a catch-label), we introduce a `kind` attribute to labels in the validation context, which is set to `catch` when the label is a catch-label and empty otherwise.
+To verify that the `rethrow l` instruction refers to a label surrounding the instructions of a catch block (call this a catch-label), an optional `catch` specifier is introduced to labels in the validation context.
 
 ```
-labelkind ::= 'catch'
 labeltype ::= 'catch'? resulttype
 ```
 
@@ -67,7 +66,7 @@ C.tags[x] = [t*]→[]
 C ⊢ throw x : [t1* t*]→[t2*]
 
 
-C.labels[l].kind = catch
+C.labels[l] = catch [t*]
 ----------------------------
 C ⊢ rethrow l : [t1*]→[t2*]
 
@@ -116,12 +115,12 @@ m ::= {..., 'tags' tagaddr*}
 
 ```
 instr ::= ... | 'throw' tagaddr | 'catch'{ tagaddr? instr* }* instr* 'end'
-        | 'delegate'{ labelidx } instr* 'end' | 'caught'{ tagaddr val^n } instr* 'end'
+        | 'delegate'{ labelidx } instr* 'end' | 'caught'{ tagaddr val* } instr* 'end'
 ```
 
 #### Block Contexts and Label Kinds
 
-So far block contexts are only used in the reduction of `br l` and `return`, and only include labels or values on the stack on the left side of the hole `[_]`. If we want to be able to break jumping over try-catch and try-delegate blocks, we must allow for the new administrative control instructions to appear after labels in block contexts.
+So far block contexts are only used in the reduction of `br l` and `return`, and only include labels or values on the stack on the left side of the hole `[_]`. To be able to break jumping over try-catch and try-delegate blocks, the new administrative control instructions must be allowed to appear after labels in block contexts.
 
 ```
 B^0 ::= val* '[_]' instr* | val* C^0 instr*
@@ -189,9 +188,9 @@ label_m{} B^l[ delegate{l} T[val^n (throw a)] end ] end
   ↪ val^n (throw a)
 ```
 
-Note that the last reduction step above is similar to the reduction of `br l` [1], if we look at the entire `delegate{l}...end` as the `br l`, but also doing a throw after it breaks.
+Note that the last reduction step above is similar to the reduction of `br l` [1], the entire `delegate{l}...end` is seen as a `br l` immediately followed by a throw.
 
-There is a subtle difference though. The instruction `br l` searches for the `l+1`th surrounding block and breaks out after that block. Because `delegate{l}` is always wrapped in its own `label_n{} ... end` [2], with the same lookup as for `br l` we end up breaking inside the `l+1`th surrounding block, and throwing there. So if that `l+1`th surrounding block is a try, we end up throwing in its "try code", and thus correctly getting delegated to that try's catches.
+There is a subtle difference though. The instruction `br l` searches for the `l+1`th surrounding block and breaks out after that block. Because `delegate{l}` is always wrapped in its own `label_n{} ... end` [2], with the same lookup as for `br l` the instruction ends up breaking inside the `l+1`th surrounding block, and throwing there. So if that `l+1`th surrounding block is a try, the exception is thrown in the "try code", and thus correctly getting delegated to that try's catches.
 
 - [1] [The execution step for `br l`](https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-br-l)
 - [2] The label that always wraps `delegate{l}...end` can be thought of as "level -1" and cannot be referred to by the delegate's label index `l`.
@@ -219,7 +218,7 @@ S ⊢ tag a : tag [t0*]→[]
 (val:t0)*
 S;C, labels (catch [t*]) ⊢ instr* : []→[t*]
 ----------------------------------------------------------
-S;C, labels [t*] ⊢ caught{a val^n} instr* end : []→[t*]
+S;C, labels [t*] ⊢ caught{a val^*} instr* end : []→[t*]
 ```
 
 ## TODO Uncaught Exceptions
