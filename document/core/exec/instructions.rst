@@ -3039,16 +3039,31 @@ Throwing an exception with :ref:`tag address <syntax-tagaddr>` :math:`a`
 
 .. _exec-caughtadm:
 
-Holding a caught exception with |CAUGHTadm|
-...........................................
+Exiting a |CAUGHTadm|
+.....................
 
-.. todo::
-   Add prose describing the administrative |CAUGHTadm| execution step.
+When the |END| of a |CAUGHTadm|, is reached without a jump, exception, or trap, then the following steps are performed.
+
+1. Let :math:`\val^\ast` be the values on the top of the stack.
+
+2. Pop the values :math:`\val^\ast` from the stack.
+
+3. Assert: due to :ref:`validation <valid-instr-seq>`, an administrative instruction :math:`\CAUGHTadm\{a~\val_0^\ast\}` is now on the top of the stack.
+
+4. Pop the |CAUGHTadm| from the stack.
+
+5. Push :math:`\val^\ast` back to the stack.
+
+6. Jump to the position after the |END| of the administrative instruction associated with the |CAUGHTadm| instruction.
+
 
 .. math::
    \begin{array}{rcl}
-   \CAUGHTadm\{a~\val^n\}~\val^m~\END  &\stepto& \val^m
+   \CAUGHTadm\{a~\val_0^\ast\}~\val^\ast~\END  &\stepto& \val^\ast
    \end{array}
+
+.. note::
+   An exception can only be rethrown from the scope of the |CAUGHTadm| administrative instruction holding it, i.e., from the scope of the |CATCH| or |CATCHALL| block of a :ref:`try-catch <syntax-try-catch>` instruction that caught it. Upon exit from a |CAUGHTadm|, the exception it holds is discarded.
 
 
 .. index:: ! call, function, function instance, label, frame
