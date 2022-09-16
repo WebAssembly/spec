@@ -138,9 +138,10 @@ Throw contexts don't skip over handlers (administrative `catch` or `delegate` in
 Throw contexts are used to match a thrown exception with the innermost handler.
 
 ```
-T ::= val* '[_]' instr* | 'label'_n{instr*} T 'end'
-   | 'caught'{ tagaddr val^n } T 'end'
-   | 'frame'_n{F} T end
+T ::= '[_]' | val* T instr*
+   | 'label'_n{instr*} T 'end'
+   | 'caught'{ tagaddr val* } T 'end'
+   | 'frame'_n{F} T 'end'
 ```
 
 Note that because `catch` and `delegate` instructions are not included above, there is always a unique maximal throw context to match the reduction rules. Note that this basically means that `caught{..} instr* end` is not a potential catching block for exceptions thrown by `instr*`. The instruction sequence `instr*` is inside a `catch` or `catch_all` block.
@@ -221,6 +222,12 @@ S;C, labels (catch [t*]) ⊢ instr* : []→[t*]
 S;C, labels [t*] ⊢ caught{a val^*} instr* end : []→[t*]
 ```
 
-## TODO Uncaught Exceptions
+## Uncaught Exceptions
 
-We haven't yet described the formalism for an uncaught exception being the result of evaluation.
+A new [result](https://webassembly.github.io/spec/core/exec/runtime.html#syntax-result) value is added to describe uncaught exceptions.
+
+```
+result ::= val* | trap
+         | T[val* (throw tagaddr)]
+```
+
