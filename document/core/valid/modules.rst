@@ -614,19 +614,19 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
 * For each function type :math:`\functype_i` in :math:`\module.\MTYPES`:
 
-  * Let :math:`C'_i` be the :ref:`context <context>` where :math:`C'_i.\CTYPES` is :math:`C.\CTYPES[0 \slice i]` and all other fields are empty.
+  * Let :math:`C_i` be the :ref:`context <context>` where :math:`C_i.\CTYPES` is :math:`C.\CTYPES[0 \slice i]` and all other fields are empty.
 
-  * The function  :math:`\functype_i` must be :ref:`valid <valid-functype>` under context :math:`C'_i`.
+  * The function  :math:`\functype_i` must be :ref:`valid <valid-functype>` under context :math:`C_i`.
 
-* Let :math:`C''` be the :ref:`context <context>` where:
+* Let :math:`C'` be the :ref:`context <context>` where:
 
-  * :math:`C''.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)`,
+  * :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)`,
 
-  * :math:`C''.\CTYPES` is the same as :math:`C.\CTYPES`,
+  * :math:`C'.\CTYPES` is the same as :math:`C.\CTYPES`,
 
-  * :math:`C''.\CFUNCS` is the same as :math:`C.\CFUNCS`,
+  * :math:`C'.\CFUNCS` is the same as :math:`C.\CFUNCS`,
 
-  * :math:`C''.\CREFS` is the same as :math:`C.\CREFS`,
+  * :math:`C'.\CREFS` is the same as :math:`C.\CREFS`,
 
   * all other fields are empty.
 
@@ -634,23 +634,6 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
     the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
-
-  * For each :math:`\table_i` in :math:`\module.\MTABLES`,
-    the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\X{tt}_i`.
-
-  * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
-    the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\X{mt}_i`.
-
-  * For each :math:`\global_i` in :math:`\module.\MGLOBALS`:
-
-    * Under the context :math:`C''`,
-      the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
-
-  * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
-    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
-
-  * For each :math:`\data_i` in :math:`\module.\MDATAS`,
-    the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
 
   * If :math:`\module.\MSTART` is non-empty,
     then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
@@ -660,6 +643,23 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
     the segment :math:`\export_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
+
+* Under the context :math:`C'`:
+
+  * For each :math:`\table_i` in :math:`\module.\MTABLES`,
+    the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\X{tt}_i`.
+
+  * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
+    the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\X{mt}_i`.
+
+  * For each :math:`\global_i` in :math:`\module.\MGLOBALS`,
+    the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
+
+  * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
+    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
+
+  * For each :math:`\data_i` in :math:`\module.\MDATAS`,
+    the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
 
 * The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
 
@@ -688,15 +688,15 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \quad
      (C \vdashfunc \func : \X{ft})^\ast
      \quad
-     (C \vdashtable \table : \X{tt})^\ast
+     (C' \vdashtable \table : \X{tt})^\ast
      \quad
-     (C \vdashmem \mem : \X{mt})^\ast
+     (C' \vdashmem \mem : \X{mt})^\ast
      \quad
-     (C'' \vdashglobal \global : \X{gt})^\ast
+     (C' \vdashglobal \global : \X{gt})^\ast
      \\
-     (C \vdashelem \elem : \X{rt})^\ast
+     (C' \vdashelem \elem : \X{rt})^\ast
      \quad
-     (C \vdashdata \data \ok)^n
+     (C' \vdashdata \data \ok)^n
      \quad
      (C \vdashstart \start \ok)^?
      \quad
@@ -716,9 +716,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \\
      C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
-     (C' = \{ \CTYPES~\type^\ast \})^\ast
-     \\
-     C'' = \{ \CTYPES~\type^\ast, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
+     C' = \{ \CTYPES~\type^\ast, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad
      |C.\CMEMS| \leq 1
      \qquad
@@ -769,8 +767,8 @@ where:
    However, this recursion is just a specification device.
    All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
-   Globals, however, are not recursive.
-   The effect of defining the limited context :math:`C'` for validating the module's globals is that their initialization expressions can only access functions and imported globals and nothing else.
+   Globals, however, are not recursive and not accessible within :ref:`constant expressions <valid-const>` when they are defined locally.
+   The effect of defining the limited context :math:`C'` for validating certain definitions is that they can only access functions and imported globals and nothing else.
 
 .. note::
    The restriction on the number of memories may be lifted in future versions of WebAssembly.
