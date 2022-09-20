@@ -267,6 +267,7 @@ function assert_return(action, ...expected) {
     .then(
       values => {
         uniqueTest(_ => {
+          let actual = values[0];
           if (actual === undefined) {
             actual = [];
           } else if (!Array.isArray(actual)) {
