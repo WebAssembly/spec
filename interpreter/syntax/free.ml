@@ -63,7 +63,8 @@ let opt free xo = Lib.Option.get (Option.map free xo) empty
 let list free xs = List.fold_left union empty (List.map free xs)
 
 let var_type = function
-  | x -> types (idx' x)
+  | Stat x -> types (idx' x)
+  | Dyn x -> empty
 
 let num_type = function
   | I32T | I64T | F32T | F64T -> empty
@@ -93,7 +94,7 @@ let def_type = function
   | DefFuncT ft -> func_type ft
 
 let block_type = function
-  | VarBlockType x -> var_type x.it
+  | VarBlockType x -> types (idx x)
   | ValBlockType t -> opt val_type t
 
 let rec instr (e : instr) =

@@ -265,12 +265,13 @@ let abs_mask_of = function
   | I64T | F64T -> I64 Int64.max_int
 
 let null_heap_type_of = function
-  | Types.Dyn.FuncHT -> FuncHT
-  | Types.Dyn.ExternHT -> ExternHT
-  | Types.Dyn.BotHT -> assert false
-  | Types.Dyn.DefHT x ->
-    match Types.Dyn.def_of x with
-    | Types.Dyn.DefFuncT _ -> FuncHT
+  | Types.FuncHT -> FuncHT
+  | Types.ExternHT -> ExternHT
+  | Types.BotHT -> assert false
+  | Types.DefHT (Stat _) -> assert false
+  | Types.DefHT (Dyn a) ->
+    match Types.def_of a with
+    | Types.DefFuncT _ -> FuncHT
 
 let value v =
   match v.it with

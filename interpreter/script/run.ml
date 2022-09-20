@@ -220,14 +220,14 @@ let print_module x_opt m =
 let print_values vs =
   let ts = List.map Value.type_of_value vs in
   Printf.printf "%s : %s\n%!"
-    (Value.string_of_values vs) (Types.Dyn.string_of_result_type ts)
+    (Value.string_of_values vs) (Types.string_of_result_type ts)
 
 let string_of_nan = function
   | CanonicalNan -> "nan:canonical"
   | ArithmeticNan -> "nan:arithmetic"
 
 let type_of_result r =
-  let open Types.Dyn in
+  let open Types in
   match r with
   | NumResult (NumPat n) -> NumT (Value.type_of_num n.it)
   | NumResult (NanPat n) -> NumT (Value.type_of_num n.it)
@@ -268,7 +268,7 @@ let string_of_results = function
 let print_results rs =
   let ts = List.map type_of_result rs in
   Printf.printf "%s : %s\n%!"
-    (string_of_results rs) (Types.Dyn.string_of_result_type ts)
+    (string_of_results rs) (Types.string_of_result_type ts)
 
 
 (* Configuration *)
@@ -325,11 +325,11 @@ let run_action act : Value.t list =
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternFunc f) ->
-      let Types.Dyn.FuncT (ts1, _ts2) = Func.type_of f in
+      let Types.FuncT (ts1, _ts2) = Func.type_of f in
       if List.length vs <> List.length ts1 then
         Script.error act.at "wrong number of arguments";
       List.iter2 (fun v t ->
-        if not (Match.Dyn.match_val_type () (Value.type_of_value v.it) t) then
+        if not (Match.match_val_type [] (Value.type_of_value v.it) t) then
           Script.error v.at "wrong type of argument"
       ) vs ts1;
       Eval.invoke f (List.map (fun v -> v.it) vs)

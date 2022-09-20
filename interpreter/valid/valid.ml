@@ -95,7 +95,8 @@ let check_heap_type (c : context) (t : heap_type) at =
   match t with
   | FuncHT -> ()
   | ExternHT -> ()
-  | DefHT x -> ignore (type_ c (x @@ at))
+  | DefHT (Stat x) -> ignore (type_ c (x @@ at))
+  | DefHT (Dyn _) -> assert false
   | BotHT -> assert false
 
 let check_ref_type (c : context) (t : ref_type) at =
@@ -389,7 +390,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
 
   | CallRef x ->
     let FuncT (ts1, ts2) = func_type c x in
-    (ts1 @ [RefT (Null, DefHT x.it)]) --> ts2, []
+    (ts1 @ [RefT (Null, DefHT (Stat x.it))]) --> ts2, []
 
   | CallIndirect (x, y) ->
     let TableT (_lim, t) = table c x in
@@ -405,7 +406,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
       ("type mismatch: current function requires result type " ^
        string_of_result_type c.results ^
        " but callee returns " ^ string_of_result_type ts2);
-    (ts1 @ [RefT (Null, DefHT x.it)]) -->... [], []
+    (ts1 @ [RefT (Null, DefHT (Stat x.it))]) -->... [], []
 
   | LocalGet x ->
     let LocalT (init, t) = local c x in
@@ -538,7 +539,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     let ft = func c x in
     let y = Lib.Option.force (Lib.List32.index_of (DefFuncT ft) c.types) in
     refer_func c x;
-    [] --> [RefT (NoNull, DefHT y)], []
+    [] --> [RefT (NoNull, DefHT (Stat y))], []
 
   | Const v ->
     let t = NumT (type_num v.it) in

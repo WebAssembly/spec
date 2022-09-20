@@ -1,4 +1,4 @@
-open Types.Dyn
+open Types
 
 type module_inst =
 {
@@ -12,7 +12,7 @@ type module_inst =
   exports : export_inst list;
 }
 
-and type_inst = var
+and type_inst = type_addr
 and func_inst = module_inst Lib.Promise.t Func.t
 and table_inst = Table.t
 and memory_inst = Memory.t
@@ -35,7 +35,7 @@ type Value.ref_ += FuncRef of func_inst
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | FuncRef f -> DefHT (Func.type_inst_of f)
+    | FuncRef f -> DefHT (Dyn (Func.type_inst_of f))
     | r -> type_of_ref' r
 
 let () =

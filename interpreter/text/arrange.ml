@@ -355,7 +355,7 @@ struct
 end
 
 let oper (iop, fop) op =
-  Dyn.string_of_num_type (type_of_num op) ^ "." ^
+  string_of_num_type (type_of_num op) ^ "." ^
   (match op with
   | I32 o -> iop "32" o
   | I64 o -> iop "64" o
@@ -427,8 +427,8 @@ let vec_laneop instr (op, i) =
 let var x = nat32 x.it
 let num v = string_of_num v.it
 let vec v = string_of_vec v.it
-let constop v = Dyn.string_of_num_type (type_of_num v) ^ ".const"
-let vec_constop v = Dyn.string_of_vec_type (type_of_vec v) ^ ".const i32x4"
+let constop v = string_of_num_type (type_of_num v) ^ ".const"
+let vec_constop v = string_of_vec_type (type_of_vec v) ^ ".const i32x4"
 
 let block_type = function
   | VarBlockType x -> [Node ("type " ^ var x, [])]
@@ -669,7 +669,7 @@ let num mode = if mode = `Binary then hex_string_of_num else string_of_num
 let vec mode = if mode = `Binary then hex_string_of_vec else string_of_vec
 
 let ref_ = function
-  | NullRef t -> Node ("ref.null " ^ Types.Dyn.string_of_heap_type t, [])
+  | NullRef t -> Node ("ref.null " ^ Types.string_of_heap_type t, [])
   | Script.ExternRef n -> Node ("ref.extern " ^ nat32 n, [])
   | _ -> assert false
 

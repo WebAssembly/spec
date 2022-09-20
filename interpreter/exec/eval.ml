@@ -1,7 +1,7 @@
 open Ast
 open Pack
 open Source
-open Types.Dyn
+open Types
 open Value
 open Instance
 
@@ -231,7 +231,7 @@ let rec step (c : config) : config =
       | CallIndirect (x, y), Num (I32 i) :: vs ->
         let f = func_ref c.frame.inst x i e.at in
         if
-          Match.Dyn.eq_func_type () (func_type c.frame.inst y) (Func.type_of f)
+          Match.eq_func_type [] (func_type c.frame.inst y) (Func.type_of f)
         then
           vs, [Invoke f @@ e.at]
         else
@@ -702,7 +702,7 @@ let rec step (c : config) : config =
       | Func.AstFunc (_, inst', func) ->
         let {locals; body; _} = func.it in
         let m = Lib.Promise.value inst' in
-        let ts = List.map (fun loc -> Types.Dyn.dyn_val_type m.types loc.it.ltype) locals in
+        let ts = List.map (fun loc -> Types.dyn_val_type m.types loc.it.ltype) locals in
         let locs' = List.(rev (map Option.some args) @ map default_value ts) in
         let frame' = {inst = m; locals = List.map ref locs'} in
         let instr' = [Label (n2, [], ([], List.map plain body)) @@ func.at] in
@@ -738,7 +738,7 @@ let invoke (func : func_inst) (vs : value list) : value list =
   let FuncT (ts1, _ts2) = Func.type_of func in
   if List.length vs <> List.length ts1 then
     Crash.error at "wrong number of arguments";
-  if not (List.for_all2 (fun v -> Match.Dyn.match_val_type () (type_of_value v)) vs ts1) then
+  if not (List.for_all2 (fun v -> Match.match_val_type [] (type_of_value v)) vs ts1) then
     Crash.error at "wrong types of arguments";
   let c = config empty_module_inst (List.rev vs) [Invoke func @@ at] in
   try List.rev (eval c) with Stack_overflow ->
@@ -754,14 +754,14 @@ let eval_const (inst : module_inst) (const : const) : value =
 (* Modules *)
 
 let create_type (_ : type_) : type_inst =
-  Types.Dyn.alloc_uninit ()
+  Types.alloc_uninit ()
 
 let create_func (inst : module_inst) (f : func) : func_inst =
   Func.alloc (type_ inst f.it.ftype) (Lib.Promise.make ()) f
 
 let create_table (inst : module_inst) (tab : table) : table_inst =
   let {ttype; tinit} = tab.it in
-  let tt = Types.Dyn.dyn_table_type inst.types ttype in
+  let tt = Types.dyn_table_type inst.types ttype in
   let r =
     match eval_const inst tinit with
     | Ref r -> r
@@ -771,12 +771,12 @@ let create_table (inst : module_inst) (tab : table) : table_inst =
 
 let create_memory (inst : module_inst) (mem : memory) : memory_inst =
   let {mtype} = mem.it in
-  Memory.alloc (Types.Dyn.dyn_memory_type inst.types mtype)
+  Memory.alloc (Types.dyn_memory_type inst.types mtype)
 
 let create_global (inst : module_inst) (glob : global) : global_inst =
   let {gtype; ginit} = glob.it in
   let v = eval_const inst ginit in
-  Global.alloc (Types.Dyn.dyn_global_type inst.types gtype) v
+  Global.alloc (Types.dyn_global_type inst.types gtype) v
 
 let create_export (inst : module_inst) (ex : export) : export_inst =
   let {name; edesc} = ex.it in
@@ -800,14 +800,14 @@ let create_data (inst : module_inst) (seg : data_segment) : data_inst =
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   : module_inst =
   let it = Types.extern_type_of_import_type (import_type_of m im) in
-  let et = Types.Dyn.dyn_extern_type inst.types it in
+  let et = Types.dyn_extern_type inst.types it in
   let et' = extern_type_of inst.types ext in
-  if not (Match.Dyn.match_extern_type () et' et) then
+  if not (Match.match_extern_type [] et' et) then
     Link.error im.at ("incompatible import type for " ^
       "\"" ^ Utf8.encode im.it.module_name ^ "\" " ^
       "\"" ^ Utf8.encode im.it.item_name ^ "\": " ^
-      "expected " ^ Types.Dyn.string_of_extern_type et ^
-      ", got " ^ Types.Dyn.string_of_extern_type et');
+      "expected " ^ Types.string_of_extern_type et ^
+      ", got " ^ Types.string_of_extern_type et');
   match ext with
   | ExternFunc func -> {inst with funcs = func :: inst.funcs}
   | ExternTable tab -> {inst with tables = tab :: inst.tables}
@@ -816,7 +816,7 @@ let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
 
 
 let init_type (inst : module_inst) (type_ : type_) (x : type_inst) =
-  Types.Dyn.init x (Types.Dyn.dyn_def_type inst.types type_.it)
+  Types.init x (Types.dyn_def_type inst.types type_.it)
 
 let init_func (inst : module_inst) (func : func_inst) =
   match func with

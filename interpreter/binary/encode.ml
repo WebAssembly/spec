@@ -96,7 +96,8 @@ struct
   open Types
 
   let var_type = function
-    | x -> s33 x
+    | Stat x -> s33 x
+    | Dyn _ -> assert false
 
   let num_type = function
     | I32T -> s7 (-0x01)
@@ -167,7 +168,7 @@ struct
   let block_type = function
     | ValBlockType None -> s33 (-0x40l)
     | ValBlockType (Some t) -> val_type t
-    | VarBlockType x -> var_type x.it
+    | VarBlockType x -> s33 x.it
 
   let local (n, loc) = len n; val_type loc.it.ltype
 
