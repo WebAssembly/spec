@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version 44af0bf3e, updated Fri Jul 29 17:05:16 2022 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-2/" rel="canonical">
-  <meta content="04beeb7d3f1b3470970eb3672edfde92413138b0" name="document-revision">
+  <meta content="5900d839f38641989a9d8df2df4aee0513365d39" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -415,7 +415,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
          <li data-md>
           <p>Let <var>stableBytes</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy" id="ref-for-dfn-get-buffer-source-copy">copy of the bytes held by the buffer</a> <var>bodyArrayBuffer</var>.</p>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>stableBytes</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a> and <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve">resolve</a> <var>returnValue</var> with the result.</p>
+          <p><a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>stableBytes</var> using the <a data-link-type="dfn">networking task source</a> and <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve">resolve</a> <var>returnValue</var> with the result.</p>
         </ol>
        <li data-md>
         <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> of <var>bodyPromise</var> with reason <var>reason</var>:</p>
@@ -435,20 +435,20 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
     </ol>
    </div>
    <h2 class="heading settled" data-level="2" id="serialization"><span class="secno">2. </span><span class="content">Serialization</span><a class="self-link" href="#serialization"></a></h2>
-   <p>Web user agents must augment the <code class="idl"><a data-link-type="idl" href="https://webassembly.github.io/spec/js-api/#module" id="ref-for-module①">Module</a></code> interface with the <code>[<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/structured-data.html#serializable" id="ref-for-serializable">Serializable</a>]</code> extended attribute.</p>
-   <p>The <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps" id="ref-for-serialization-steps">serialization steps</a>, given <var>value</var>, <var>serialized</var>, and <var>forStorage</var>, are:</p>
+   <p>Web user agents must augment the <code class="idl"><a data-link-type="idl" href="https://webassembly.github.io/spec/js-api/#module" id="ref-for-module①">Module</a></code> interface with the <code>[<a class="idl-code" data-link-type="extended-attribute">Serializable</a>]</code> extended attribute.</p>
+   <p>The <a data-link-type="dfn">serialization steps</a>, given <var>value</var>, <var>serialized</var>, and <var>forStorage</var>, are:</p>
    <ol>
     <li data-md>
      <p>If <var>forStorage</var> is true, throw a "<a class="idl-code" data-link-type="exception" href="https://webidl.spec.whatwg.org/#datacloneerror" id="ref-for-datacloneerror">DataCloneError</a>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>.</p>
     <li data-md>
-     <p>Set <var>serialized</var>.[[Bytes]] to the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization" id="ref-for-sub-serialization">sub-serialization</a> of <var>value</var>.[[Bytes]].</p>
+     <p>Set <var>serialized</var>.[[Bytes]] to the <a data-link-type="dfn">sub-serialization</a> of <var>value</var>.[[Bytes]].</p>
     <li data-md>
      <p>Set <var>serialized</var>.[[AgentCluster]] to the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm">current Realm</a>'s corresponding <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-agent-clusters" id="ref-for-sec-agent-clusters">agent cluster</a>.</p>
    </ol>
-   <p>The <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps" id="ref-for-deserialization-steps">deserialization steps</a>, given <var>serialized</var> and <var>value</var>, are:</p>
+   <p>The <a data-link-type="dfn">deserialization steps</a>, given <var>serialized</var> and <var>value</var>, are:</p>
    <ol>
     <li data-md>
-     <p>Let <var>bytes</var> be the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization" id="ref-for-sub-deserialization">sub-deserialization</a> of <var>serialized</var>.[[Bytes]].</p>
+     <p>Let <var>bytes</var> be the <a data-link-type="dfn">sub-deserialization</a> of <var>serialized</var>.[[Bytes]].</p>
     <li data-md>
      <p>Set <var>value</var>.[[Bytes]] to <var>bytes</var>.</p>
     <li data-md>
@@ -717,46 +717,10 @@ review, approval, and registration with IANA.</p>
     <li><a href="#ref-for-concept-response-status">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-serializable">
-   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#serializable">https://html.spec.whatwg.org/multipage/structured-data.html#serializable</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-serializable">2. Serialization</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-cors-same-origin">
    <a href="https://html.spec.whatwg.org/#cors-same-origin">https://html.spec.whatwg.org/#cors-same-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-cors-same-origin">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-cors-same-origin①">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-deserialization-steps">
-   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps">https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-deserialization-steps">2. Serialization</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-networking-task-source">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source">https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-networking-task-source">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-serialization-steps">
-   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps">https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-serialization-steps">2. Serialization</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-sub-deserialization">
-   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization">https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sub-deserialization">2. Serialization</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-sub-serialization">
-   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization">https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sub-serialization">2. Serialization</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-exceptiondef-compileerror">
@@ -916,13 +880,7 @@ review, approval, and registration with IANA.</p>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-serializable">Serializable</span>
      <li><span class="dfn-paneled" id="term-for-cors-same-origin">cors-same-origin</span>
-     <li><span class="dfn-paneled" id="term-for-deserialization-steps">deserialization steps</span>
-     <li><span class="dfn-paneled" id="term-for-networking-task-source">networking task source</span>
-     <li><span class="dfn-paneled" id="term-for-serialization-steps">serialization steps</span>
-     <li><span class="dfn-paneled" id="term-for-sub-deserialization">sub-deserialization</span>
-     <li><span class="dfn-paneled" id="term-for-sub-serialization">sub-serialization</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WASMJS]</a> defines the following terms:

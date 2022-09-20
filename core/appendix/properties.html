@@ -691,7 +691,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 <section id="theorems">
 <span id="soundness-statement"></span><span id="index-31"></span><h2>Theorems<a class="headerlink" href="#theorems" title="Permalink to this headline">¶</a></h2>
 <p>Given the definition of <a class="reference internal" href="#valid-config"><span class="std std-ref">valid configurations</span></a>,
-the standard soundness theorems hold. <a class="footnote-reference brackets" href="#cite-cpp2018" id="id4">2</a></p>
+the standard soundness theorems hold. <a class="footnote-reference brackets" href="#cite-cpp2018" id="id4">2</a> <a class="footnote-reference brackets" href="#cite-fm2021" id="id5">3</a></p>
 <p><strong>Theorem (Preservation).</strong>
 If a <a class="reference internal" href="../exec/runtime.html#syntax-config"><span class="std std-ref">configuration</span></a> <span class="math notranslate nohighlight">\(S;T\)</span> is <a class="reference internal" href="#valid-config"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t^\ast]\)</span> (i.e., <span class="math notranslate nohighlight">\(\href{../appendix/properties.html#valid-config}{\vdash} S;T : [t^\ast]\)</span>),
 and steps to <span class="math notranslate nohighlight">\(S';T'\)</span> (i.e., <span class="math notranslate nohighlight">\(S;T \href{../exec/conventions.html#formal-notation}{\hookrightarrow} S';T'\)</span>),
@@ -716,8 +716,12 @@ Consequently, given a <a class="reference internal" href="#valid-store"><span cl
 Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. <a class="reference external" href="https://dl.acm.org/citation.cfm?doid=3062341.3062363">Bringing the Web up to Speed with WebAssembly</a>. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.</p>
 </dd>
 <dt class="label" id="cite-cpp2018"><span class="brackets"><a class="fn-backref" href="#id4">2</a></span></dt>
-<dd><p>A machine-verified version of the formalization and soundness proof is described in the following article:
+<dd><p>A machine-verified version of the formalization and soundness proof of the PLDI 2017 paper is described in the following article:
 Conrad Watt. <a class="reference external" href="https://dl.acm.org/citation.cfm?id=3167082">Mechanising and Verifying the WebAssembly Specification</a>. Proceedings of the 7th ACM SIGPLAN Conference on Certified Programs and Proofs (CPP 2018). ACM 2018.</p>
+</dd>
+<dt class="label" id="cite-fm2021"><span class="brackets"><a class="fn-backref" href="#id5">3</a></span></dt>
+<dd><p>Machine-verified formalizations and soundness proofs of the semantics from the official specification are described in the following article:
+Conrad Watt, Xiaojia Rao, Jean Pichon-Pharabod, Martin Bodin, Philippa Gardner. <a class="reference external" href="https://link.springer.com/chapter/10.1007/978-3-030-90870-6_4">Two Mechanisations of WebAssembly 1.0</a>. Proceedings of the 24th International Symposium on Formal Methods (FM 2021). Springer 2021.</p>
 </dd>
 </dl>
 </section>
