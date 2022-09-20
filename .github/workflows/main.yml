@@ -17,7 +17,7 @@ jobs:
       - name: Setup OCaml
         uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-compiler: 4.12.x
+          ocaml-compiler: 4.13.x
       - run: opam install --yes ocamlbuild.0.14.0
       - run: cd interpreter && opam exec make all
 
