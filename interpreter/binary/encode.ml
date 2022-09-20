@@ -96,101 +96,101 @@ struct
   open Types
 
   let mutability = function
-    | Immutable -> byte 0
-    | Mutable -> byte 1
+    | Cons -> byte 0
+    | Var -> byte 1
 
   let var_type var = function
-    | SynVar x -> var x
-    | _ -> assert false
+    | StatX x -> var x
+    | DynX _ | RecX _ -> assert false
 
   let num_type = function
-    | I32Type -> s7 (-0x01)
-    | I64Type -> s7 (-0x02)
-    | F32Type -> s7 (-0x03)
-    | F64Type -> s7 (-0x04)
+    | I32T -> s7 (-0x01)
+    | I64T -> s7 (-0x02)
+    | F32T -> s7 (-0x03)
+    | F64T -> s7 (-0x04)
 
   let vec_type = function
-    | V128Type -> s7 (-0x05)
+    | V128T -> s7 (-0x05)
 
   let heap_type = function
-    | AnyHeapType -> s7 (-0x12)
-    | NoneHeapType -> s7 (-0x1b)
-    | EqHeapType -> s7 (-0x13)
-    | I31HeapType -> s7 (-0x16)
-    | DataHeapType -> s7 (-0x19)
-    | ArrayHeapType -> s7 (-0x1a)
-    | FuncHeapType -> s7 (-0x10)
-    | NoFuncHeapType -> s7 (-0x17)
-    | ExternHeapType -> s7 (-0x11)
-    | NoExternHeapType -> s7 (-0x18)
-    | DefHeapType x -> var_type s33 x
-    | BotHeapType -> assert false
+    | AnyHT -> s7 (-0x12)
+    | NoneHT -> s7 (-0x1b)
+    | EqHT -> s7 (-0x13)
+    | I31HT -> s7 (-0x16)
+    | AggrHT -> s7 (-0x19)
+    | ArrayHT -> s7 (-0x1a)
+    | FuncHT -> s7 (-0x10)
+    | NoFuncHT -> s7 (-0x17)
+    | ExternHT -> s7 (-0x11)
+    | NoExternHT -> s7 (-0x18)
+    | DefHT x -> var_type s33 x
+    | BotHT -> assert false
 
   let ref_type = function
-    | (Nullable, AnyHeapType) -> s7 (-0x12)
-    | (Nullable, NoneHeapType) -> s7 (-0x1b)
-    | (Nullable, EqHeapType) -> s7 (-0x13)
-    | (Nullable, I31HeapType) -> s7 (-0x16)
-    | (Nullable, DataHeapType) -> s7 (-0x19)
-    | (Nullable, ArrayHeapType) -> s7 (-0x1a)
-    | (Nullable, FuncHeapType) -> s7 (-0x10)
-    | (Nullable, NoFuncHeapType) -> s7 (-0x17)
-    | (Nullable, ExternHeapType) -> s7 (-0x11)
-    | (Nullable, NoExternHeapType) -> s7 (-0x18)
-    | (Nullable, t) -> s7 (-0x14); heap_type t
-    | (NonNullable, t) -> s7 (-0x15); heap_type t
+    | (Null, AnyHT) -> s7 (-0x12)
+    | (Null, NoneHT) -> s7 (-0x1b)
+    | (Null, EqHT) -> s7 (-0x13)
+    | (Null, I31HT) -> s7 (-0x16)
+    | (Null, AggrHT) -> s7 (-0x19)
+    | (Null, ArrayHT) -> s7 (-0x1a)
+    | (Null, FuncHT) -> s7 (-0x10)
+    | (Null, NoFuncHT) -> s7 (-0x17)
+    | (Null, ExternHT) -> s7 (-0x11)
+    | (Null, NoExternHT) -> s7 (-0x18)
+    | (Null, t) -> s7 (-0x14); heap_type t
+    | (NoNull, t) -> s7 (-0x15); heap_type t
 
-  let value_type = function
-    | NumType t -> num_type t
-    | VecType t -> vec_type t
-    | RefType t -> ref_type t
-    | BotType -> assert false
+  let val_type = function
+    | NumT t -> num_type t
+    | VecT t -> vec_type t
+    | RefT t -> ref_type t
+    | BotT -> assert false
 
-  let packed_type = function
-    | Pack8 -> s7 (-0x06)
-    | Pack16 -> s7 (-0x07)
-    | Pack32 | Pack64 -> assert false
+  let pack_type = function
+    | Pack.Pack8 -> s7 (-0x06)
+    | Pack.Pack16 -> s7 (-0x07)
+    | Pack.Pack32 | Pack.Pack64 -> assert false
 
   let storage_type = function
-    | ValueStorageType t -> value_type t
-    | PackedStorageType t -> packed_type t
+    | ValStorageT t -> val_type t
+    | PackStorageT t -> pack_type t
 
   let field_type = function
-    | FieldType (t, mut) -> storage_type t; mutability mut
+    | FieldT (mut, t) -> storage_type t; mutability mut
 
   let struct_type = function
-    | StructType fts -> vec field_type fts
+    | StructT fts -> vec field_type fts
 
   let array_type = function
-    | ArrayType ft -> field_type ft
+    | ArrayT ft -> field_type ft
 
   let func_type = function
-    | FuncType (ts1, ts2) -> vec value_type ts1; vec value_type ts2
+    | FuncT (ts1, ts2) -> vec val_type ts1; vec val_type ts2
 
   let str_type = function
-    | StructDefType st -> s7 (-0x21); struct_type st
-    | ArrayDefType at -> s7 (-0x22); array_type at
-    | FuncDefType ft -> s7 (-0x20); func_type ft
+    | DefStructT st -> s7 (-0x21); struct_type st
+    | DefArrayT at -> s7 (-0x22); array_type at
+    | DefFuncT ft -> s7 (-0x20); func_type ft
 
   let sub_type = function
-    | SubType ([], st) -> str_type st
-    | SubType (xs, st) -> s7 (-0x30); vec (var_type u32) xs; str_type st
+    | SubT ([], st) -> str_type st
+    | SubT (xs, st) -> s7 (-0x30); vec (var_type u32) xs; str_type st
 
   let def_type = function
-    | RecDefType [st] -> sub_type st
-    | RecDefType sts -> s7 (-0x31); vec sub_type sts
+    | RecT [st] -> sub_type st
+    | RecT sts -> s7 (-0x31); vec sub_type sts
 
   let limits uN {min; max} =
     bool (max <> None); uN min; opt uN max
 
   let table_type = function
-    | TableType (lim, t) -> ref_type t; limits u32 lim
+    | TableT (lim, t) -> ref_type t; limits u32 lim
 
   let memory_type = function
-    | MemoryType lim -> limits u32 lim
+    | MemoryT lim -> limits u32 lim
 
   let global_type = function
-    | GlobalType (t, mut) -> value_type t; mutability mut
+    | GlobalT (mut, t) -> val_type t; mutability mut
 
 
   (* Instructions *)
@@ -199,6 +199,7 @@ struct
   open Ast
   open Value
   open V128
+  open Pack
 
   let op n = byte n
   let vecop n = op 0xfd; u32 n
@@ -209,16 +210,17 @@ struct
   let var x = u32 x.it
 
   let block_type = function
-    | VarBlockType x -> var_type s33 x
+    | VarBlockType x -> var_type s33 (StatX x.it)
     | ValBlockType None -> s33 (-0x40l)
-    | ValBlockType (Some t) -> value_type t
+    | ValBlockType (Some t) -> val_type t
 
-  let local (t, n) = len n; value_type t.it
+  let local (n, loc) = len n; val_type loc.it.ltype
 
   let locals locs =
-    let combine t = function
-      | (t', n) :: ts when t.it = t'.it -> (t, n + 1) :: ts
-      | ts -> (t, 1) :: ts
+    let combine loc = function
+      | (n, loc') :: nlocs' when loc.it.ltype = loc'.it.ltype ->
+        (n + 1, loc') :: nlocs'
+      | nlocs -> (1, loc) :: nlocs
     in vec local (List.fold_right combine locs [])
 
   let rec instr e =
@@ -232,32 +234,29 @@ struct
       op 0x04; block_type bt; list instr es1;
       if es2 <> [] then op 0x05;
       list instr es2; end_ ()
-    | Let (bt, locs, es) ->
-      op 0x17; block_type bt; locals locs; list instr es; end_ ()
 
     | Br x -> op 0x0c; var x
     | BrIf x -> op 0x0d; var x
     | BrTable (xs, x) -> op 0x0e; vec var xs; var x
     | BrCast (x, NullOp) -> op 0xd4; var x
     | BrCast (x, I31Op) -> op 0xfb; op 0x62; var x
-    | BrCast (x, DataOp) -> op 0xfb; op 0x61; var x
+    | BrCast (x, AggrOp) -> op 0xfb; op 0x61; var x
     | BrCast (x, ArrayOp) -> op 0xfb; op 0x66; var x
     | BrCast (x, RttOp y) -> op 0xfb; op 0x42; var x; var y
     | BrCastFail (x, NullOp) -> op 0xd6; var x
     | BrCastFail (x, I31Op) -> op 0xfb; op 0x65; var x
-    | BrCastFail (x, DataOp) -> op 0xfb; op 0x64; var x
+    | BrCastFail (x, AggrOp) -> op 0xfb; op 0x64; var x
     | BrCastFail (x, ArrayOp) -> op 0xfb; op 0x67; var x
     | BrCastFail (x, RttOp y) -> op 0xfb; op 0x43; var x; var y
     | Return -> op 0x0f
     | Call x -> op 0x10; var x
-    | CallRef -> op 0x14
+    | CallRef x -> op 0x14; var x
     | CallIndirect (x, y) -> op 0x11; var y; var x
-    | ReturnCallRef -> op 0x15
-    | FuncBind x -> op 0x16; var x
+    | ReturnCallRef x -> op 0x15; var x
 
     | Drop -> op 0x1a
     | Select None -> op 0x1b
-    | Select (Some ts) -> op 0x1c; vec value_type ts
+    | Select (Some ts) -> op 0x1c; vec val_type ts
 
     | LocalGet x -> op 0x20; var x
     | LocalSet x -> op 0x21; var x
@@ -274,101 +273,91 @@ struct
     | TableInit (x, y) -> op 0xfc; u32 0x0cl; var y; var x
     | ElemDrop x -> op 0xfc; u32 0x0dl; var x
 
-    | Load ({ty = I32Type; pack = None; _} as mo) -> op 0x28; memop mo
-    | Load ({ty = I64Type; pack = None; _} as mo) -> op 0x29; memop mo
-    | Load ({ty = F32Type; pack = None; _} as mo) -> op 0x2a; memop mo
-    | Load ({ty = F64Type; pack = None; _} as mo) -> op 0x2b; memop mo
-    | Load ({ty = I32Type; pack = Some (Pack8, SX); _} as mo) ->
-      op 0x2c; memop mo
-    | Load ({ty = I32Type; pack = Some (Pack8, ZX); _} as mo) ->
-      op 0x2d; memop mo
-    | Load ({ty = I32Type; pack = Some (Pack16, SX); _} as mo) ->
-      op 0x2e; memop mo
-    | Load ({ty = I32Type; pack = Some (Pack16, ZX); _} as mo) ->
-      op 0x2f; memop mo
-    | Load {ty = I32Type; pack = Some (Pack32, _); _} ->
+    | Load ({ty = I32T; pack = None; _} as mo) -> op 0x28; memop mo
+    | Load ({ty = I64T; pack = None; _} as mo) -> op 0x29; memop mo
+    | Load ({ty = F32T; pack = None; _} as mo) -> op 0x2a; memop mo
+    | Load ({ty = F64T; pack = None; _} as mo) -> op 0x2b; memop mo
+    | Load ({ty = I32T; pack = Some (Pack8, SX); _} as mo) -> op 0x2c; memop mo
+    | Load ({ty = I32T; pack = Some (Pack8, ZX); _} as mo) -> op 0x2d; memop mo
+    | Load ({ty = I32T; pack = Some (Pack16, SX); _} as mo) -> op 0x2e; memop mo
+    | Load ({ty = I32T; pack = Some (Pack16, ZX); _} as mo) -> op 0x2f; memop mo
+    | Load {ty = I32T; pack = Some (Pack32, _); _} ->
       error e.at "illegal instruction i32.load32"
-    | Load ({ty = I64Type; pack = Some (Pack8, SX); _} as mo) ->
-      op 0x30; memop mo
-    | Load ({ty = I64Type; pack = Some (Pack8, ZX); _} as mo) ->
-      op 0x31; memop mo
-    | Load ({ty = I64Type; pack = Some (Pack16, SX); _} as mo) ->
-      op 0x32; memop mo
-    | Load ({ty = I64Type; pack = Some (Pack16, ZX); _} as mo) ->
-      op 0x33; memop mo
-    | Load ({ty = I64Type; pack = Some (Pack32, SX); _} as mo) ->
-      op 0x34; memop mo
-    | Load ({ty = I64Type; pack = Some (Pack32, ZX); _} as mo) ->
-      op 0x35; memop mo
-    | Load {ty = F32Type | F64Type; pack = Some _; _} ->
+    | Load ({ty = I64T; pack = Some (Pack8, SX); _} as mo) -> op 0x30; memop mo
+    | Load ({ty = I64T; pack = Some (Pack8, ZX); _} as mo) -> op 0x31; memop mo
+    | Load ({ty = I64T; pack = Some (Pack16, SX); _} as mo) -> op 0x32; memop mo
+    | Load ({ty = I64T; pack = Some (Pack16, ZX); _} as mo) -> op 0x33; memop mo
+    | Load ({ty = I64T; pack = Some (Pack32, SX); _} as mo) -> op 0x34; memop mo
+    | Load ({ty = I64T; pack = Some (Pack32, ZX); _} as mo) -> op 0x35; memop mo
+    | Load {ty = F32T | F64T; pack = Some _; _} ->
       error e.at "illegal instruction fxx.loadN"
-    | Load {ty = I32Type | I64Type; pack = Some (Pack64, _); _} ->
+    | Load {ty = I32T | I64T; pack = Some (Pack64, _); _} ->
       error e.at "illegal instruction ixx.load64"
 
-    | Store ({ty = I32Type; pack = None; _} as mo) -> op 0x36; memop mo
-    | Store ({ty = I64Type; pack = None; _} as mo) -> op 0x37; memop mo
-    | Store ({ty = F32Type; pack = None; _} as mo) -> op 0x38; memop mo
-    | Store ({ty = F64Type; pack = None; _} as mo) -> op 0x39; memop mo
-    | Store ({ty = I32Type; pack = Some Pack8; _} as mo) -> op 0x3a; memop mo
-    | Store ({ty = I32Type; pack = Some Pack16; _} as mo) -> op 0x3b; memop mo
-    | Store {ty = I32Type; pack = Some Pack32; _} ->
+    | Store ({ty = I32T; pack = None; _} as mo) -> op 0x36; memop mo
+    | Store ({ty = I64T; pack = None; _} as mo) -> op 0x37; memop mo
+    | Store ({ty = F32T; pack = None; _} as mo) -> op 0x38; memop mo
+    | Store ({ty = F64T; pack = None; _} as mo) -> op 0x39; memop mo
+    | Store ({ty = I32T; pack = Some Pack8; _} as mo) -> op 0x3a; memop mo
+    | Store ({ty = I32T; pack = Some Pack16; _} as mo) -> op 0x3b; memop mo
+    | Store {ty = I32T; pack = Some Pack32; _} ->
       error e.at "illegal instruction i32.store32"
-    | Store ({ty = I64Type; pack = Some Pack8; _} as mo) -> op 0x3c; memop mo
-    | Store ({ty = I64Type; pack = Some Pack16; _} as mo) -> op 0x3d; memop mo
-    | Store ({ty = I64Type; pack = Some Pack32; _} as mo) -> op 0x3e; memop mo
-    | Store {ty = F32Type | F64Type; pack = Some _; _} ->
+    | Store ({ty = I64T; pack = Some Pack8; _} as mo) -> op 0x3c; memop mo
+    | Store ({ty = I64T; pack = Some Pack16; _} as mo) -> op 0x3d; memop mo
+    | Store ({ty = I64T; pack = Some Pack32; _} as mo) -> op 0x3e; memop mo
+    | Store {ty = F32T | F64T; pack = Some _; _} ->
       error e.at "illegal instruction fxx.storeN"
-    | Store {ty = (I32Type | I64Type); pack = Some Pack64; _} ->
+    | Store {ty = I32T | I64T; pack = Some Pack64; _} ->
       error e.at "illegal instruction ixx.store64"
 
-    | VecLoad ({ty = V128Type; pack = None; _} as mo) ->
+    | VecLoad ({ty = V128T; pack = None; _} as mo) ->
       vecop 0x00l; memop mo
-    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack8x8, SX)); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtLane (Pack8x8, SX)); _} as mo) ->
       vecop 0x01l; memop mo
-    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack8x8, ZX)); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtLane (Pack8x8, ZX)); _} as mo) ->
       vecop 0x02l; memop mo
-    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack16x4, SX)); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtLane (Pack16x4, SX)); _} as mo) ->
       vecop 0x03l; memop mo
-    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack16x4, ZX)); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtLane (Pack16x4, ZX)); _} as mo) ->
       vecop 0x04l; memop mo
-    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack32x2, SX)); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtLane (Pack32x2, SX)); _} as mo) ->
       vecop 0x05l; memop mo
-    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtLane (Pack32x2, ZX)); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtLane (Pack32x2, ZX)); _} as mo) ->
       vecop 0x06l; memop mo
-    | VecLoad ({ty = V128Type; pack = Some (Pack8, ExtSplat); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack8, ExtSplat); _} as mo) ->
       vecop 0x07l; memop mo
-    | VecLoad ({ty = V128Type; pack = Some (Pack16, ExtSplat); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack16, ExtSplat); _} as mo) ->
       vecop 0x08l; memop mo
-    | VecLoad ({ty = V128Type; pack = Some (Pack32, ExtSplat); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack32, ExtSplat); _} as mo) ->
       vecop 0x09l; memop mo
-    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtSplat); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtSplat); _} as mo) ->
       vecop 0x0al; memop mo
-    | VecLoad ({ty = V128Type; pack = Some (Pack32, ExtZero); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack32, ExtZero); _} as mo) ->
       vecop 0x5cl; memop mo
-    | VecLoad ({ty = V128Type; pack = Some (Pack64, ExtZero); _} as mo) ->
+    | VecLoad ({ty = V128T; pack = Some (Pack64, ExtZero); _} as mo) ->
       vecop 0x5dl; memop mo
     | VecLoad _ ->
       error e.at "illegal instruction v128.loadNxM_<ext>"
 
-    | VecLoadLane ({ty = V128Type; pack = Pack8; _} as mo, i) ->
-      vecop 0x54l; memop mo; byte i;
-    | VecLoadLane ({ty = V128Type; pack = Pack16; _} as mo, i) ->
-      vecop 0x55l; memop mo; byte i;
-    | VecLoadLane ({ty = V128Type; pack = Pack32; _} as mo, i) ->
-      vecop 0x56l; memop mo; byte i;
-    | VecLoadLane ({ty = V128Type; pack = Pack64; _} as mo, i) ->
-      vecop 0x57l; memop mo; byte i;
+    | VecLoadLane ({ty = V128T; pack = Pack8; _} as mo, i) ->
+      vecop 0x54l; memop mo; byte i
+    | VecLoadLane ({ty = V128T; pack = Pack16; _} as mo, i) ->
+      vecop 0x55l; memop mo; byte i
+    | VecLoadLane ({ty = V128T; pack = Pack32; _} as mo, i) ->
+      vecop 0x56l; memop mo; byte i
+    | VecLoadLane ({ty = V128T; pack = Pack64; _} as mo, i) ->
+      vecop 0x57l; memop mo; byte i
 
-    | VecStore ({ty = V128Type; _} as mo) -> vecop 0x0bl; memop mo
+    | VecStore ({ty = V128T; _} as mo) -> vecop 0x0bl; memop mo
 
-    | VecStoreLane ({ty = V128Type; pack = Pack8; _} as mo, i) ->
-      vecop 0x58l; memop mo; byte i;
-    | VecStoreLane ({ty = V128Type; pack = Pack16; _} as mo, i) ->
-      vecop 0x59l; memop mo; byte i;
-    | VecStoreLane ({ty = V128Type; pack = Pack32; _} as mo, i) ->
-      vecop 0x5al; memop mo; byte i;
-    | VecStoreLane ({ty = V128Type; pack = Pack64; _} as mo, i) ->
-      vecop 0x5bl; memop mo; byte i;
+    | VecStoreLane ({ty = V128T; pack = Pack8; _} as mo, i) ->
+      vecop 0x58l; memop mo; byte i
+    | VecStoreLane ({ty = V128T; pack = Pack16; _} as mo, i) ->
+      vecop 0x59l; memop mo; byte i
+    | VecStoreLane ({ty = V128T; pack = Pack32; _} as mo, i) ->
+      vecop 0x5al; memop mo; byte i
+    | VecStoreLane ({ty = V128T; pack = Pack64; _} as mo, i) ->
+      vecop 0x5bl; memop mo; byte i
 
     | MemorySize -> op 0x3f; byte 0x00
     | MemoryGrow -> op 0x40; byte 0x00
@@ -382,13 +371,13 @@ struct
 
     | RefTest NullOp -> op 0xd1
     | RefTest I31Op -> op 0xfb; op 0x52
-    | RefTest DataOp -> op 0xfb; op 0x51
+    | RefTest AggrOp -> op 0xfb; op 0x51
     | RefTest ArrayOp -> op 0xfb; op 0x53
     | RefTest (RttOp x) -> op 0xfb; op 0x40; var x
 
     | RefCast NullOp -> op 0xd3
     | RefCast I31Op -> op 0xfb; op 0x5a
-    | RefCast DataOp -> op 0xfb; op 0x59
+    | RefCast AggrOp -> op 0xfb; op 0x59
     | RefCast ArrayOp -> op 0xfb; op 0x5b
     | RefCast (RttOp x) -> op 0xfb; op 0x41; var x
 
@@ -899,8 +888,11 @@ struct
   (* Table section *)
 
   let table tab =
-    let {ttype} = tab.it in
-    table_type ttype
+    let {ttype; tinit} = tab.it in
+    match ttype, tinit.it with
+    | TableT (_, (_, ht1)), [{it = RefNull ht2; _}] when ht1 = ht2 ->
+      table_type ttype
+    | _ -> op 0x40; op 0x00; table_type ttype; const tinit
 
   let table_section tabs =
     section 4 (vec table) tabs (tabs <> [])
@@ -971,11 +963,11 @@ struct
   (* Element section *)
 
   let is_elem_kind = function
-    | (NonNullable, FuncHeapType) -> true
+    | (NoNull, FuncHT) -> true
     | _ -> false
 
   let elem_kind = function
-    | (NonNullable, FuncHeapType) -> byte 0x00
+    | (NoNull, FuncHT) -> byte 0x00
     | _ -> assert false
 
   let is_elem_index e =

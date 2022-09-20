@@ -125,15 +125,20 @@
 
   (func (export "run")
     (block (result (ref null $t1)) (call_indirect (type $t1) (i32.const 0)))
-    (block (result (ref null $t1)) (call_indirect (type $t1) (i32.const 0)))
-    (block (result (ref null $t1)) (call_indirect (type $t1) (i32.const 1)))
-    (block (result (ref null $t1)) (call_indirect (type $t1) (i32.const 1)))
     (block (result (ref null $t2)) (call_indirect (type $t2) (i32.const 1)))
-    (block (result (ref null $t2)) (call_indirect (type $t2) (i32.const 1)))
+    (block (result (ref null $t1)) (ref.cast_canon $t1 (table.get (i32.const 0))))
+    (block (result (ref null $t1)) (ref.cast_canon $t1 (table.get (i32.const 1))))
+    (block (result (ref null $t2)) (ref.cast_canon $t2 (table.get (i32.const 1))))
+    (br 0)
+  )
+
+  (func (export "fail")
+    (block (result (ref null $t1)) (call_indirect (type $t1) (i32.const 1)))
     (br 0)
   )
 )
 (assert_return (invoke "run"))
+(assert_trap (invoke "fail") "indirect call")
 
 
 ;; Invalid subtyping definitions

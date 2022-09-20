@@ -2,19 +2,17 @@ open Types
 
 type context = ctx_type list
 
-
 (* Extremas *)
 
 val top_of_heap_type : context -> heap_type -> heap_type
 val top_of_str_type : context -> str_type -> heap_type
 val abs_of_str_type : context -> str_type -> heap_type
 
-
 (* Equivalence *)
 
 val eq_num_type : context -> num_type -> num_type -> bool
 val eq_ref_type : context -> ref_type -> ref_type -> bool
-val eq_value_type : context -> value_type -> value_type -> bool
+val eq_val_type : context -> val_type -> val_type -> bool
 
 val eq_result_type : context -> result_type -> result_type -> bool
 
@@ -31,12 +29,11 @@ val eq_def_type : context -> def_type -> def_type -> bool
 val eq_ctx_type : context -> ctx_type -> ctx_type -> bool
 val eq_var_type : context -> var -> var -> bool
 
-
 (* Subtyping *)
 
 val match_num_type : context -> num_type -> num_type -> bool
 val match_ref_type : context -> ref_type -> ref_type -> bool
-val match_value_type : context -> value_type -> value_type -> bool
+val match_val_type : context -> val_type -> val_type -> bool
 
 val match_result_type : context -> result_type -> result_type -> bool
 

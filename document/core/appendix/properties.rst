@@ -6,6 +6,8 @@ Soundness
 
 .. todo:: need to operate wrt semantic types
 .. todo:: define "S \vdash t ok"
+.. _valid-typeinst:
+.. todo:: define valid-typeinst as well
 .. todo:: ensure wf of guessed valtypes
 
 The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *type safety* and *memory safety* with respect to the WebAssembly semantics. For example:
@@ -54,10 +56,11 @@ Results
 :ref:`Results <syntax-result>` :math:`\TRAP`
 ............................................
 
-* The result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any sequence :math:`t^\ast` of :ref:`valid <valid-valtype>` :ref:`value types <syntax-valtype>`.
+* The result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any :ref:`valid <valid-resulttype>` :ref:`semantic <syntax-type-sem>` :ref:`result types <syntax-resulttype>`.
 
 .. math::
    \frac{
+     S \vdashresulttype [t^\ast] \ok
    }{
      S \vdashresult \TRAP : [t^\ast]
    }
@@ -91,7 +94,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in :math:`S.\SGLOBALS` must be :ref:`valid <valid-globalinst>` with some  :ref:`global type <syntax-globaltype>` :math:`\globaltype_i`.
 
-* Each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in :math:`S.\SELEMS` must be :ref:`valid <valid-eleminst>`.
+* Each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in :math:`S.\SELEMS` must be :ref:`valid <valid-eleminst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
 
 * Each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in :math:`S.\SDATAS` must be :ref:`valid <valid-datainst>`.
 
@@ -109,7 +112,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \qquad
      (S \vdashglobalinst \globalinst : \globaltype)^\ast
      \\
-     (S \vdasheleminst \eleminst \ok)^\ast
+     (S \vdasheleminst \eleminst : \reftype)^\ast
      \qquad
      (S \vdashdatainst \datainst \ok)^\ast
      \\
@@ -301,7 +304,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
   * The :ref:`reference type <syntax-reftype>` :math:`t'_i` must :ref:`match <match-reftype>` the :ref:`reference type <syntax-reftype>` :math:`t`.
 
-* Then the table instance is valid.
+* Then the element instance is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
 .. todo:: reftypematch needs C
 
@@ -311,7 +314,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \qquad
      (C \vdashreftypematch t' \matchesvaltype t)^\ast
    }{
-     S \vdasheleminst \{ \EITYPE~t, \EIELEM~\reff^\ast \} \ok
+     S \vdasheleminst \{ \EITYPE~t, \EIELEM~\reff^\ast \} : t
    }
 
 
@@ -364,7 +367,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * For each :ref:`global address <syntax-globaladdr>` :math:`\globaladdr_i` in :math:`\moduleinst.\MIGLOBALS`, the :ref:`external value <syntax-externval>` :math:`\EVGLOBAL~\globaladdr_i` must be :ref:`valid <valid-externval-global>` with some :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_i`.
 
-* For each :ref:`element address <syntax-elemaddr>` :math:`\elemaddr_i` in :math:`\moduleinst.\MIELEMS`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\elemaddr_i]` must be :ref:`valid <valid-eleminst>`.
+* For each :ref:`element address <syntax-elemaddr>` :math:`\elemaddr_i` in :math:`\moduleinst.\MIELEMS`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\elemaddr_i]` must be :ref:`valid <valid-eleminst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
 
 * For each :ref:`data address <syntax-dataaddr>` :math:`\dataaddr_i` in :math:`\moduleinst.\MIDATAS`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\dataaddr_i]` must be :ref:`valid <valid-datainst>`.
 
@@ -380,8 +383,12 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Let :math:`\globaltype^\ast` be the concatenation of all :math:`\globaltype_i` in order.
 
-* | Then the module instance is valid with :ref:`context <context>`
-  | :math:`\{\CTYPES~\functype^\ast, \CFUNCS~{\functype'}^\ast, \CTABLES~\tabletype^\ast, \CMEMS~\memtype^\ast, \CGLOBALS~\globaltype^\ast\}`.
+* Let :math:`\reftype^\ast` be the concatenation of all :math:`\reftype_i` in order.
+
+* Let :math:`n` be the length of :math:`\moduleinst.\MIDATAS`.
+
+* Then the module instance is valid with :ref:`context <context>`
+  :math:`\{\CTYPES~\functype^\ast,` :math:`\CFUNCS~{\functype'}^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~{\ok}^n\}`.
 
 .. math::
    ~\\[-1ex]
@@ -397,9 +404,9 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \qquad
      (S \vdashexternval \EVGLOBAL~\globaladdr : \ETGLOBAL~\globaltype)^\ast
      \\
-     (S \vdasheleminst S.\SELEMS[\elemaddr] \ok)^\ast
+     (S \vdasheleminst S.\SELEMS[\elemaddr] : \reftype)^\ast
      \qquad
-     (S \vdashdatainst S.\SDATAS[\dataaddr] \ok)^\ast
+     (S \vdashdatainst S.\SDATAS[\dataaddr] \ok)^n
      \\
      (S \vdashexportinst \exportinst \ok)^\ast
      \qquad
@@ -414,14 +421,16 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
        \MIMEMS & \memaddr^\ast, \\
        \MIGLOBALS & \globaladdr^\ast, \\
        \MIELEMS & \elemaddr^\ast, \\
-       \MIDATAS & \dataaddr^\ast, \\
+       \MIDATAS & \dataaddr^n, \\
        \MIEXPORTS & \exportinst^\ast ~\} : \{
          \begin{array}[t]{@{}l@{~}l@{}}
          \CTYPES & \functype^\ast, \\
          \CFUNCS & {\functype'}^\ast, \\
          \CTABLES & \tabletype^\ast, \\
          \CMEMS & \memtype^\ast, \\
-         \CGLOBALS & \globaltype^\ast ~\}
+         \CGLOBALS & \globaltype^\ast, \\
+         \CELEMS & \reftype^\ast, \\
+         \CDATAS & {\ok}^n ~\}
          \end{array}
        \end{array}
    }
@@ -535,10 +544,11 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\TRAP`
 .............
 
-* The instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* The instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`, for any sequences of :ref:`valid <valid-instrtype>` :ref:`instruction type <syntax-instrtype>` of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
+     S \vdashinstrtype [t_1^\ast] \to [t_2^\ast] \ok
    }{
      S; C \vdashadmininstr \TRAP : [t_1^\ast] \to [t_2^\ast]
    }
@@ -549,12 +559,12 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\REFEXTERNADDR~\externaddr`
 ..................................
 
-* The instruction is valid with type :math:`[] \to [\EXTERNREF]`.
+* The instruction is valid with type :math:`[] \to [(\REF~\NULL~\EXTERN)]`.
 
 .. math::
    \frac{
    }{
-     S; C \vdashadmininstr \REFEXTERNADDR~\externaddr : [] \to [\EXTERNREF]
+     S; C \vdashadmininstr \REFEXTERNADDR~\externaddr : [] \to [(\REF~\NULL~\EXTERN)]
    }
 
 
@@ -565,13 +575,13 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 * The :ref:`external function value <syntax-externval>` :math:`\EVFUNC~\funcaddr` must be :ref:`valid <valid-externval-func>` with :ref:`external function type <syntax-externtype>` :math:`\ETFUNC~\functype`.
 
-* Then the instruction is valid with type :math:`[] \to [\FUNCREF]`.
+* Then the instruction is valid with type :math:`[] \to [(\REF~\NULL~\FUNC)]`.
 
 .. math::
    \frac{
      S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype
    }{
-     S; C \vdashadmininstr \REFFUNCADDR~\funcaddr : [] \to [\FUNCREF]
+     S; C \vdashadmininstr \REFFUNCADDR~\funcaddr : [] \to [(\REF~\NULL~\FUNC)]
    }
 
 
@@ -597,20 +607,20 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END`
 ..................................................
 
-* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \to [t_2^*]`.
+* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \to_{x^\ast} [t_2^*]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^n]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^*]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to_{{x'}^\ast} [t_2^*]`.
 
 * Then the compound instruction is valid with type :math:`[] \to [t_2^*]`.
 
 .. math::
    \frac{
-     S; C \vdashinstrseq \instr_0^\ast : [t_1^n] \to [t_2^*]
+     S; C \vdashinstrseq \instr_0^\ast : [t_1^n] \to_{x^\ast} [t_2^*]
      \qquad
-     S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \to [t_2^*]
+     S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \to_{{x'}^\ast} [t_2^*]
    }{
      S; C \vdashadmininstr \LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END : [] \to [t_2^*]
    }
@@ -621,13 +631,15 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\FRAME_n\{F\}~\instr^\ast~\END`
 ...........................................
 
-* Under the return type :math:`[t^n]`,
+* Under the :ref:`valid <valid-resulttype>` return type :math:`[t^n]`,
   the :ref:`thread <syntax-frame>` :math:`F; \instr^\ast` must be :ref:`valid <valid-frame>` with :ref:`result type <syntax-resulttype>` :math:`[t^n]`.
 
 * Then the compound instruction is valid with type :math:`[] \to [t^n]`.
 
 .. math::
    \frac{
+     S \vdashresulttype [t^n] \ok
+     \qquad
      S; [t^n] \vdashinstrseq F; \instr^\ast : [t^n]
    }{
      S; C \vdashadmininstr \FRAME_n\{F\}~\instr^\ast~\END : [] \to [t^n]

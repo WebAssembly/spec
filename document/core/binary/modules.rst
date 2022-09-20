@@ -210,8 +210,17 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |MTA
    \production{table section} & \Btablesec &::=&
      \X{tab}^\ast{:}\Bsection_4(\Bvec(\Btable)) &\Rightarrow& \X{tab}^\ast \\
    \production{table} & \Btable &::=&
-     \X{tt}{:}\Btabletype &\Rightarrow& \{ \TTYPE~\X{tt} \} \\
+     \X{tt}{:}\Btabletype
+       &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~(\REFNULL~\X{ht}) \}
+         \qquad \iff \X{tt} = \limits~(\REF~\NULL^?~\X{ht}) \\
+     \hex{40}~~\hex{00}~~\X{tt}{:}\Btabletype~~e{:}\Bexpr
+       &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~e \} \\
    \end{array}
+
+.. note::
+   The encoding of a table type cannot start with byte :math:`\hex{40}`,
+   hence decoding is unambiguous.
+   The zero byte following it is reserved for futre extensions.
 
 
 .. index:: ! memory section, memory, memory type
@@ -405,15 +414,15 @@ denoting *count* locals of the same value type.
      \X{size}{:}\Bu32~~\X{code}{:}\Bfunc
        &\Rightarrow& \X{code} & (\iff \X{size} = ||\Bfunc||) \\
    \production{function} & \Bfunc &::=&
-     (t^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
-       &\Rightarrow& \concat((t^\ast)^\ast), e
-         & (\iff |\concat((t^\ast)^\ast)| < 2^{32}) \\
+     (\local^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
+       &\Rightarrow& \concat((\local^\ast)^\ast), e
+         & (\iff |\concat((\local^\ast)^\ast)| < 2^{32}) \\
    \production{locals} & \Blocals &::=&
-     n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& t^n \\
+     n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& \{ \LTYPE~t \}^n \\
    \end{array}
 
 Here, :math:`\X{code}` ranges over pairs :math:`(\valtype^\ast, \expr)`.
-The meta function :math:`\concat((t^\ast)^\ast)` concatenates all sequences :math:`t_i^\ast` in :math:`(t^\ast)^\ast`.
+The meta function :math:`\concat((\local^\ast)^\ast)` concatenates all sequences :math:`\local_i^\ast` in :math:`(\local^\ast)^\ast`.
 Any code for which the length of the resulting sequence is out of bounds of the maximum size of a :ref:`vector <syntax-vec>` is malformed.
 
 .. note::

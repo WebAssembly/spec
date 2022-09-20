@@ -15,6 +15,10 @@
 (module (table 0 funcref) (table 0 funcref))
 (module (table (import "spectest" "table") 0 funcref) (table 0 funcref))
 
+(module (table 0 funcref (ref.null func)))
+(module (table 1 funcref (ref.null func)))
+(module (table 1 (ref null func) (ref.null func)))
+
 (assert_invalid (module (elem (i32.const 0))) "unknown table")
 (assert_invalid (module (elem (i32.const 0) $f) (func $f)) "unknown table")
 
@@ -42,29 +46,75 @@
 )
 
 (assert_invalid
+  (module (table 1 (ref null func) (i32.const 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (table 1 (ref func) (ref.null extern)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (type $t (func)) (table 1 (ref $t) (ref.null func)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (table 1 (ref func) (ref.null func)))
+  "type mismatch"
+)
+(assert_invalid
   (module (table 0 (ref func)))
-  "non-defaultable element type"
+  "type mismatch"
 )
 (assert_invalid
   (module (table 0 (ref extern)))
-  "non-defaultable element type"
+  "type mismatch"
 )
 (assert_invalid
   (module (type $t (func)) (table 0 (ref $t)))
-  "non-defaultable element type"
+  "type mismatch"
 )
+
+
+;; Table initializer
+
+(module
+  (type $dummy (func))
+  (func $dummy)
+
+  (table $t1 10 funcref)
+  (table $t2 10 funcref (ref.func $dummy))
+  (table $t3 10 (ref $dummy) (ref.func $dummy))
+
+  (func (export "get1") (result funcref) (table.get $t1 (i32.const 1)))
+  (func (export "get2") (result funcref) (table.get $t2 (i32.const 4)))
+  (func (export "get3") (result funcref) (table.get $t3 (i32.const 7)))
+)
+
+(assert_return (invoke "get1") (ref.null))
+(assert_return (invoke "get2") (ref.func))
+(assert_return (invoke "get3") (ref.func))
+
 
 ;; Duplicate table identifiers
 
-(assert_malformed (module quote
-  "(table $foo 1 funcref)"
-  "(table $foo 1 funcref)")
-  "duplicate table")
-(assert_malformed (module quote
-  "(import \"\" \"\" (table $foo 1 funcref))"
-  "(table $foo 1 funcref)")
-  "duplicate table")
-(assert_malformed (module quote
-  "(import \"\" \"\" (table $foo 1 funcref))"
-  "(import \"\" \"\" (table $foo 1 funcref))")
-  "duplicate table")
+(assert_malformed
+  (module quote
+    "(table $foo 1 funcref)"
+    "(table $foo 1 funcref)"
+  )
+  "duplicate table"
+)
+(assert_malformed
+  (module quote
+    "(import \"\" \"\" (table $foo 1 funcref))"
+    "(table $foo 1 funcref)"
+  )
+  "duplicate table"
+)
+(assert_malformed
+  (module quote
+    "(import \"\" \"\" (table $foo 1 funcref))"
+    "(import \"\" \"\" (table $foo 1 funcref))"
+  )
+  "duplicate table"
+)

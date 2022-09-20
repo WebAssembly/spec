@@ -68,16 +68,16 @@ exception Syntax of Source.region * string
 
 
 let () =
+  let type_of_ref' = !Value.type_of_ref' in
+  Value.type_of_ref' := function
+    | HostRef _ -> Types.AnyHT
+    | r -> type_of_ref' r
+
+let () =
   let string_of_ref' = !Value.string_of_ref' in
   Value.string_of_ref' := function
     | HostRef n -> "(host " ^ Int32.to_string n ^ ")"
     | r -> string_of_ref' r
-
-let () =
-  let type_of_ref' = !Value.type_of_ref' in
-  Value.type_of_ref' := function
-    | HostRef _ -> Types.AnyHeapType
-    | r -> type_of_ref' r
 
 let () =
   let eq_ref' = !Value.eq_ref' in

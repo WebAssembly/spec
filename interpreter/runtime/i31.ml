@@ -10,8 +10,8 @@ let of_i32 i = Int32.to_int i land 0x7fff_ffff
 let to_i32 ext i =
   let i' = Int32.of_int i in
   match ext with
-  | ZX -> i'
-  | SX -> Int32.(shift_right (shift_left i' 1) 1)
+  | Pack.ZX -> i'
+  | Pack.SX -> Int32.(shift_right (shift_left i' 1) 1)
 
 let () =
   let eq_ref' = !Value.eq_ref' in
@@ -23,7 +23,7 @@ let () =
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | I31Ref f -> I31HeapType
+    | I31Ref f -> I31HT
     | r -> type_of_ref' r
 
 let () =

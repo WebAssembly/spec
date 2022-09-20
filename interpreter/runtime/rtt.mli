@@ -1,11 +1,11 @@
 open Types
 
-type rtt = Rtt of sem_var
+type rtt = Rtt of type_addr
 type t = rtt
 
-val alloc : sem_var -> rtt
+val alloc : type_addr -> rtt
 
-val type_inst_of : rtt -> sem_var
+val type_inst_of : rtt -> type_addr
 val ctx_type_of : rtt -> ctx_type
 
 val eq_rtt : rtt -> rtt -> bool

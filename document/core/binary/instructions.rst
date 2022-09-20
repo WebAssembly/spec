@@ -66,9 +66,9 @@ Control Instructions
      \hex{0F} &\Rightarrow& \RETURN \\ &&|&
      \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
      \hex{11}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \CALLINDIRECT~x~y \\ &&|&
-     \hex{14} &\Rightarrow& \CALLREF \\ &&|&
-     \hex{D4}~~x{:}\Bfuncidx &\Rightarrow& \BRONNULL \\ &&|&
-     \hex{D6}~~x{:}\Bfuncidx &\Rightarrow& \BRONNONNULL \\
+     \hex{14}~~x{:}\Btypeidx &\Rightarrow& \CALLREF~x \\ &&|&
+     \hex{D4}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
+     \hex{D6}~~l{:}\Blabelidx &\Rightarrow& \BRONNONNULL~l \\
    \end{array}
 
 .. note::
@@ -622,7 +622,7 @@ All other vector instructions are plain opcodes without any immediates.
      \hex{FD}~~216{:}\Bu32 &\Rightarrow& \I64X2.\VLT\K{\_s} \\ &&|&
      \hex{FD}~~217{:}\Bu32 &\Rightarrow& \I64X2.\VGT\K{\_s} \\ &&|&
      \hex{FD}~~218{:}\Bu32 &\Rightarrow& \I64X2.\VLE\K{\_s} \\ &&|&
-     \hex{FD}~~219{:}\Bu32 &\Rightarrow& \I64X2.\VGE\K{\_s} \\ &&|&
+     \hex{FD}~~219{:}\Bu32 &\Rightarrow& \I64X2.\VGE\K{\_s} \\
    \end{array}
 
 .. _binary-vfrelop:

@@ -9,6 +9,48 @@ Various entities in WebAssembly are classified by types.
 Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-instantiation>`, and possibly :ref:`execution <syntax-call_indirect>`.
 
 
+
+.. index:: ! type identifier, type index, type address
+   pair: abstract syntax; type identifier
+.. _syntax-typeid:
+.. _syntax-type-syn:
+.. _syntax-type-sem:
+
+Type Identifiers
+~~~~~~~~~~~~~~~~
+
+Defined types like :ref:`function types <syntax-functype>` are not embedded directly into other types, such as :ref:`reference types <syntax-reftype>`.
+Instead, they are referred to indirectly.
+
+In a :ref:`module <syntax-module>` and during validation, this indirection is expressed through a :ref:`type index <syntax-typeidx>`, whose meaning is confined to one module.
+During instantiation and execution, where types from multiple modules may interact, it is expressed through :ref:`type addresses <syntax-typeaddr>` that refer to the global :ref:`store <store>`.
+
+The type grammar hence is conceptually parameterized by its interpretation of :ref:`type identifiers <syntax-typeid>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{type identifier} & \typeid &::=&
+     \typeidx ~|~ \typeaddr
+   \end{array}
+
+Types represented with type indices are referred to as *syntactic types*,
+whereas types represented with type addresses are referred to as *semantic types*.
+
+It is an invariant of the semantics that no syntactic type refers to a semantic type and vice versa, i.e., both universes are disjoint.
+Syntactic types are transformed into semantic types during module :ref:`instantiation <exec-instantiation>`.
+
+.. _notation-subst:
+
+Convention
+..........
+
+The following notation expresses conversion between syntactic and semantic types:
+
+* :math:`t[x^\ast \subst a^\ast]` denotes the parallel substitution of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`type addresses <syntax-typeaddr>` :math:`a^\ast`, provided :math:`|x^\ast| = |a^\ast|`.
+
+* :math:`t[\subst a^\ast]` is shorthand for the substitution :math:`t[x^\ast \subst a^\ast]` where :math:`x^\ast = 0 \cdots (|a^\ast| - 1)`.
+
+
 .. index:: ! number type, integer, floating-point, IEEE 754, bit width, memory
    pair: abstract syntax; number type
    pair: number; type
@@ -72,10 +114,9 @@ Conventions
 * The notation :math:`|t|` for :ref:`bit width <bitwidth>` extends to vector types as well, that is, :math:`|\V128| = 128`.
 
 
-.. index:: ! heap type, store, type index
+.. index:: ! heap type, store, type identifier
    pair: abstract syntax; heap type
 .. _syntax-heaptype:
-
 
 Heap Types
 ~~~~~~~~~~
@@ -85,20 +126,21 @@ Heap Types
 .. math::
    \begin{array}{llll}
    \production{heap type} & \heaptype &::=&
-     \FUNC ~|~ \EXTERN ~|~ \typeidx \\
+     \FUNC ~|~ \EXTERN ~|~ \typeid \\
    \end{array}
 
 The type |FUNC| denotes the infinite union of all types of :ref:`functions <syntax-func>`, regardless of their concrete :ref:`function types <syntax-functype>`.
 
 The type |EXTERN| denotes the infinite union of all objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
 
-A *concrete* heap type consists of a :ref:`type index <syntax-typeidx>` and classifies an object of the respective :ref:`type <syntax-type>` defined in the module.
+A *concrete* heap type consists of a :ref:`type identifier <syntax-typeid>` and classifies an object of the respective :ref:`type <syntax-type>` defined in some module.
 
 
 .. index:: ! reference type, heap type, reference, table, function, function type, null
    pair: abstract syntax; reference type
    pair: reference; type
 .. _syntax-reftype:
+.. _syntax-nullable:
 
 Reference Types
 ~~~~~~~~~~~~~~~
@@ -164,6 +206,55 @@ which is a sequence of values, written with brackets.
    \production{result type} & \resulttype &::=&
      [\vec(\valtype)] \\
    \end{array}
+
+
+.. index:: ! instruction type, value type, result type, instruction, local, local index
+   pair: abstract syntax; instruction type
+   pair: instruction; type
+.. _syntax-instrtype:
+
+Instruction Types
+~~~~~~~~~~~~~~~~~
+
+*Instruction types* classify the behaviour of :ref:`instructions <syntax-instr>` or instruction sequences, by describing how they manipulate the :ref:`operand stack <stack>` and the initialization status of :ref:`locals <syntax-local>`:
+
+.. math::
+   \begin{array}{llll}
+   \production{instruction type} & \instrtype &::=&
+     \resulttype \to_{\localidx^\ast} \resulttype \\
+   \end{array}
+
+An instruction type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
+and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
+Moreover, it enumerates the :ref:`indices <syntax-localidx>` :math:`x^\ast` of locals that have been set by the instruction or sequence.
+
+.. note::
+   Instruction types are only used for :ref:`validation <valid>`,
+   they do not occur in programs.
+
+
+.. index:: ! local type, value type, local, local index
+   pair: abstract syntax; local type
+   pair: local; type
+.. _syntax-init:
+.. _syntax-localtype:
+
+Local Types
+~~~~~~~~~~~
+
+*Local types* classify :ref:`locals <syntax-local>`, by describing their :ref:`value type <syntax-valtype>` as well as their *initialization status*:
+
+.. math::
+   \begin{array}{llll}
+   \production{(initialization status)} & \init &::=&
+     \SET ~|~ \UNSET \\
+   \production{(local type)} & \localtype &::=&
+     \init~\valtype \\
+   \end{array}
+
+.. note::
+   Local types are only used for :ref:`validation <valid>`,
+   they do not occur in programs.
 
 
 .. index:: ! function type, value type, vector, function, parameter, result, result type

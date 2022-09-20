@@ -97,6 +97,7 @@
 
 .. Notation for Sequences & Records
 
+.. |subst| mathdef:: \xref{syntax/conventions}{notation-subst}{\mathrel{\mathbf{:=}}}
 .. |slice| mathdef:: \xref{syntax/conventions}{notation-slice}{\mathrel{\mathbf{:}}}
 .. |with| mathdef:: \xref{syntax/conventions}{notation-replace}{\mathrel{\mbox{with}}}
 .. |concat| mathdef:: \xref{syntax/conventions}{notation-concat}{\F{concat}}
@@ -172,7 +173,7 @@
 .. Types, terminals
 
 .. |to| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
- 
+
 .. |BOT| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{bot}}
 
 .. |I8| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\K{i8}}
@@ -200,6 +201,9 @@
 .. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
 .. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{const}}
 
+.. |SET| mathdef:: \xref{syntax/types}{syntax-init}{\mathrel{\mbox{set}}}
+.. |UNSET| mathdef:: \xref{syntax/types}{syntax-init}{\mathrel{\mbox{unset}}}
+
 .. |LMIN| mathdef:: \xref{syntax/types}{syntax-limits}{\K{min}}
 .. |LMAX| mathdef:: \xref{syntax/types}{syntax-limits}{\K{max}}
 
@@ -211,6 +215,7 @@
 
 .. Types, non-terminals
 
+.. |typeid| mathdef:: \xref{syntax/types}{syntax-typeid}{\X{typeid}}
 .. |numtype| mathdef:: \xref{syntax/types}{syntax-numtype}{\X{numtype}}
 .. |vectype| mathdef:: \xref{syntax/types}{syntax-vectype}{\X{vectype}}
 .. |heaptype| mathdef:: \xref{syntax/types}{syntax-heaptype}{\X{heaptype}}
@@ -225,7 +230,10 @@
 
 .. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
 .. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mut}}
+.. |init| mathdef:: \xref{syntax/types}{syntax-init}{\X{init}}
 
+.. |instrtype| mathdef:: \xref{syntax/types}{syntax-instrtype}{\X{instrtype}}
+.. |localtype| mathdef:: \xref{syntax/types}{syntax-localtype}{\X{localtype}}
 .. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
 
 
@@ -280,7 +288,10 @@
 .. |FLOCALS| mathdef:: \xref{syntax/modules}{syntax-func}{\K{locals}}
 .. |FBODY| mathdef:: \xref{syntax/modules}{syntax-func}{\K{body}}
 
+.. |LTYPE| mathdef:: \xref{syntax/modules}{syntax-local}{\K{type}}
+
 .. |TTYPE| mathdef:: \xref{syntax/modules}{syntax-table}{\K{type}}
+.. |TINIT| mathdef:: \xref{syntax/modules}{syntax-table}{\K{init}}
 
 .. |MTYPE| mathdef:: \xref{syntax/modules}{syntax-mem}{\K{type}}
 
@@ -326,6 +337,7 @@
 .. |module| mathdef:: \xref{syntax/modules}{syntax-module}{\X{module}}
 .. |type| mathdef:: \xref{syntax/types}{syntax-functype}{\X{type}}
 .. |func| mathdef:: \xref{syntax/modules}{syntax-func}{\X{func}}
+.. |local| mathdef:: \xref{syntax/modules}{syntax-local}{\X{local}}
 .. |table| mathdef:: \xref{syntax/modules}{syntax-table}{\X{table}}
 .. |mem| mathdef:: \xref{syntax/modules}{syntax-mem}{\X{mem}}
 .. |global| mathdef:: \xref{syntax/modules}{syntax-global}{\X{global}}
@@ -397,10 +409,10 @@
 .. |MEMORYINIT| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.init}}
 .. |DATADROP| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{data.drop}}
 
-.. |REFNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}null}}
-.. |REFFUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}func}}
-.. |REFISNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}is\_null}}
-.. |REFASNONNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref{.}as\_non\_null}}
+.. |REFNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref.null}}
+.. |REFFUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref.func}}
+.. |REFISNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref.is\_null}}
+.. |REFASNONNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref.as\_non\_null}}
 
 .. |CONST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{const}}
 .. |EQZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{eqz}}
@@ -878,8 +890,10 @@
 .. Notation
 
 .. |ok| mathdef:: \mathrel{\mbox{ok}}
+.. |defaultable| mathdef:: \xref{valid/types}{valid-defaultable}{\mathrel{\mbox{defaultable}}}
 .. |const| mathdef:: \xref{valid/instructions}{valid-constant}{\mathrel{\mbox{const}}}
 
+.. |matches| mathdef:: \leq
 .. |matchesnumtype| mathdef:: \xref{valid/matching}{match-numtype}{\leq}
 .. |matchesheaptype| mathdef:: \xref{valid/matching}{match-heaptype}{\leq}
 .. |matchesreftype| mathdef:: \xref{valid/matching}{match-reftype}{\leq}
@@ -910,6 +924,7 @@
 
 .. Judgments
 
+.. |vdashtypeid| mathdef:: \xref{valid/types}{valid-typeid}{\vdash}
 .. |vdashnumtype| mathdef:: \xref{valid/types}{valid-numtype}{\vdash}
 .. |vdashvectype| mathdef:: \xref{valid/types}{valid-vectype}{\vdash}
 .. |vdashheaptype| mathdef:: \xref{valid/types}{valid-heaptype}{\vdash}
@@ -924,7 +939,12 @@
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
 .. |vdashexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\vdash}
 
+.. |vdashinstrtype| mathdef:: \xref{valid/instructions}{valid-instrtype}{\vdash}
+
+.. |vdashvaltypedefaultable| mathdef:: \xref{valid/types}{valid-defaultable}{\vdash}
+
 .. |vdashnumtypematch| mathdef:: \xref{valid/matching}{match-numtype}{\vdash}
+.. |vdashvectypematch| mathdef:: \xref{valid/matching}{match-vectype}{\vdash}
 .. |vdashheaptypematch| mathdef:: \xref{valid/matching}{match-heaptype}{\vdash}
 .. |vdashreftypematch| mathdef:: \xref{valid/matching}{match-reftype}{\vdash}
 .. |vdashvaltypematch| mathdef:: \xref{valid/matching}{match-valtype}{\vdash}
@@ -944,6 +964,7 @@
 
 .. |vdashtypes| mathdef:: \xref{valid/modules}{valid-types}{\vdash}
 .. |vdashfunc| mathdef:: \xref{valid/modules}{valid-func}{\vdash}
+.. |vdashlocal| mathdef:: \xref{valid/modules}{valid-local}{\vdash}
 .. |vdashtable| mathdef:: \xref{valid/modules}{valid-table}{\vdash}
 .. |vdashmem| mathdef:: \xref{valid/modules}{valid-mem}{\vdash}
 .. |vdashglobal| mathdef:: \xref{valid/modules}{valid-global}{\vdash}
@@ -973,6 +994,9 @@
 
 .. Allocation
 
+.. |sem| mathdef:: \xref{exec/types}{sem}{\F{sem}}
+
+.. |alloctype| mathdef:: \xref{exec/modules}{alloc-type}{\F{alloctype}}
 .. |allocfunc| mathdef:: \xref{exec/modules}{alloc-func}{\F{allocfunc}}
 .. |allochostfunc| mathdef:: \xref{exec/modules}{alloc-hostfunc}{\F{allochostfunc}}
 .. |alloctable| mathdef:: \xref{exec/modules}{alloc-table}{\F{alloctable}}
@@ -989,6 +1013,7 @@
 .. Addresses, non-terminals
 
 .. |addr| mathdef:: \xref{exec/runtime}{syntax-addr}{\X{addr}}
+.. |typeaddr| mathdef:: \xref{exec/runtime}{syntax-typeaddr}{\X{typeaddr}}
 .. |funcaddr| mathdef:: \xref{exec/runtime}{syntax-funcaddr}{\X{funcaddr}}
 .. |tableaddr| mathdef:: \xref{exec/runtime}{syntax-tableaddr}{\X{tableaddr}}
 .. |memaddr| mathdef:: \xref{exec/runtime}{syntax-memaddr}{\X{memaddr}}
@@ -1041,6 +1066,7 @@
 .. |externval| mathdef:: \xref{exec/runtime}{syntax-externval}{\X{externval}}
 
 .. |moduleinst| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\X{moduleinst}}
+.. |typeinst| mathdef:: \xref{exec/runtime}{syntax-typeinst}{\X{typeinst}}
 .. |funcinst| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\X{funcinst}}
 .. |tableinst| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\X{tableinst}}
 .. |meminst| mathdef:: \xref{exec/runtime}{syntax-meminst}{\X{meminst}}
@@ -1062,6 +1088,7 @@
 
 .. Store, terminals
 
+.. |STYPES| mathdef:: \xref{exec/runtime}{syntax-store}{\K{types}}
 .. |SFUNCS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{funcs}}
 .. |STABLES| mathdef:: \xref{exec/runtime}{syntax-store}{\K{tables}}
 .. |SMEMS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{mems}}

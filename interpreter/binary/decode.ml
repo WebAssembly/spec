@@ -106,7 +106,7 @@ let s33 s = I32_convert.wrap_i64 (sN 33 s)
 let s64 s = sN 64 s
 let f32 s = F32.of_bits (word32 s)
 let f64 s = F64.of_bits (word64 s)
-let v128 s = V128.of_bits (get_string (Types.vec_size Types.V128Type) s)
+let v128 s = V128.of_bits (get_string 16 s)
 
 let len32 s =
   let pos = pos s in
@@ -146,45 +146,45 @@ open Types
 
 let mutability s =
   match byte s with
-  | 0 -> Immutable
-  | 1 -> Mutable
+  | 0 -> Cons
+  | 1 -> Var
   | _ -> error s (pos s - 1) "malformed mutability"
 
 let var_type var s =
   let pos = pos s in
   match var s with
-  | i when i >= 0l -> SynVar i
+  | i when i >= 0l -> StatX i
   | _ -> error s pos "malformed type index"
 
 let num_type s =
   match s7 s with
-  | -0x01 -> I32Type
-  | -0x02 -> I64Type
-  | -0x03 -> F32Type
-  | -0x04 -> F64Type
+  | -0x01 -> I32T
+  | -0x02 -> I64T
+  | -0x03 -> F32T
+  | -0x04 -> F64T
   | _ -> error s (pos s - 1) "malformed number type"
 
 let vec_type s =
   match s7 s with
-  | -0x05 -> V128Type
+  | -0x05 -> V128T
   | _ -> error s (pos s - 1) "malformed vector type"
 
 let heap_type s =
   let pos = pos s in
   either [
-    (fun s -> DefHeapType (var_type s33 s));
+    (fun s -> DefHT (var_type s33 s));
     (fun s ->
       match s7 s with
-      | -0x10 -> FuncHeapType
-      | -0x11 -> ExternHeapType
-      | -0x12 -> AnyHeapType
-      | -0x13 -> EqHeapType
-      | -0x16 -> I31HeapType
-      | -0x17 -> NoFuncHeapType
-      | -0x18 -> NoExternHeapType
-      | -0x19 -> DataHeapType
-      | -0x1a -> ArrayHeapType
-      | -0x1b -> NoneHeapType
+      | -0x10 -> FuncHT
+      | -0x11 -> ExternHT
+      | -0x12 -> AnyHT
+      | -0x13 -> EqHT
+      | -0x16 -> I31HT
+      | -0x17 -> NoFuncHT
+      | -0x18 -> NoExternHT
+      | -0x19 -> AggrHT
+      | -0x1a -> ArrayHT
+      | -0x1b -> NoneHT
       | _ -> error s pos "malformed heap type"
     )
   ] s
@@ -192,63 +192,63 @@ let heap_type s =
 let ref_type s =
   let pos = pos s in
   match s7 s with
-  | -0x10 -> (Nullable, FuncHeapType)
-  | -0x11 -> (Nullable, ExternHeapType)
-  | -0x12 -> (Nullable, AnyHeapType)
-  | -0x13 -> (Nullable, EqHeapType)
-  | -0x14 -> (Nullable, heap_type s)
-  | -0x15 -> (NonNullable, heap_type s)
-  | -0x16 -> (Nullable, I31HeapType)
-  | -0x17 -> (Nullable, NoFuncHeapType)
-  | -0x18 -> (Nullable, NoExternHeapType)
-  | -0x19 -> (Nullable, DataHeapType)
-  | -0x1a -> (Nullable, ArrayHeapType)
-  | -0x1b -> (Nullable, NoneHeapType)
+  | -0x10 -> (Null, FuncHT)
+  | -0x11 -> (Null, ExternHT)
+  | -0x12 -> (Null, AnyHT)
+  | -0x13 -> (Null, EqHT)
+  | -0x14 -> (Null, heap_type s)
+  | -0x15 -> (NoNull, heap_type s)
+  | -0x16 -> (Null, I31HT)
+  | -0x17 -> (Null, NoFuncHT)
+  | -0x18 -> (Null, NoExternHT)
+  | -0x19 -> (Null, AggrHT)
+  | -0x1a -> (Null, ArrayHT)
+  | -0x1b -> (Null, NoneHT)
   | _ -> error s pos "malformed reference type"
 
-let value_type s =
+let val_type s =
   either [
-    (fun s -> NumType (num_type s));
-    (fun s -> VecType (vec_type s));
-    (fun s -> RefType (ref_type s));
+    (fun s -> NumT (num_type s));
+    (fun s -> VecT (vec_type s));
+    (fun s -> RefT (ref_type s));
   ] s
 
-let result_type s = vec value_type s
+let result_type s = vec val_type s
 
-let packed_type s =
+let pack_type s =
   let pos = pos s in
   match s7 s with
-  | -0x06 -> Pack8
-  | -0x07 -> Pack16
+  | -0x06 -> Pack.Pack8
+  | -0x07 -> Pack.Pack16
   | _ -> error s pos "malformed storage type"
 
 let storage_type s =
   either [
-    (fun s -> ValueStorageType (value_type s));
-    (fun s -> PackedStorageType (packed_type s));
+    (fun s -> ValStorageT (val_type s));
+    (fun s -> PackStorageT (pack_type s));
   ] s
 
 let field_type s =
   let t = storage_type s in
   let mut = mutability s in
-  FieldType (t, mut)
+  FieldT (mut, t)
 
 let struct_type s =
-  StructType (vec field_type s)
+  StructT (vec field_type s)
 
 let array_type s =
-  ArrayType (field_type s)
+  ArrayT (field_type s)
 
 let func_type s =
   let ts1 = result_type s in
   let ts2 = result_type s in
-  FuncType (ts1, ts2)
+  FuncT (ts1, ts2)
 
 let str_type s =
   match s7 s with
-  | -0x20 -> FuncDefType (func_type s)
-  | -0x21 -> StructDefType (struct_type s)
-  | -0x22 -> ArrayDefType (array_type s)
+  | -0x20 -> DefFuncT (func_type s)
+  | -0x21 -> DefStructT (struct_type s)
+  | -0x22 -> DefArrayT (array_type s)
   | _ -> error s (pos s - 1) "malformed definition type"
 
 let sub_type s =
@@ -256,13 +256,13 @@ let sub_type s =
   | Some i when i = -0x30 land 0x7f ->
     skip 1 s;
     let xs = vec (var_type u32) s in
-    SubType (xs, str_type s)
-  | _ -> SubType ([], str_type s)
+    SubT (xs, str_type s)
+  | _ -> SubT ([], str_type s)
 
 let def_type s =
   match peek s with
-  | Some i when i = -0x31 land 0x7f -> skip 1 s; RecDefType (vec sub_type s)
-  | _ -> RecDefType [sub_type s]
+  | Some i when i = -0x31 land 0x7f -> skip 1 s; RecT (vec sub_type s)
+  | _ -> RecT [sub_type s]
 
 
 let limits uN s =
@@ -274,16 +274,16 @@ let limits uN s =
 let table_type s =
   let t = ref_type s in
   let lim = limits u32 s in
-  TableType (lim, t)
+  TableT (lim, t)
 
 let memory_type s =
   let lim = limits u32 s in
-  MemoryType lim
+  MemoryT lim
 
 let global_type s =
-  let t = value_type s in
+  let t = val_type s in
   let mut = mutability s in
-  GlobalType (t, mut)
+  GlobalT (mut, t)
 
 
 (* Instructions *)
@@ -305,15 +305,15 @@ let memop s =
 
 let block_type s =
   either [
-    (fun s -> VarBlockType (var_type s33 s));
+    (fun s -> VarBlockType (at (fun s -> as_stat_var (var_type s33 s)) s));
     (fun s -> expect 0x40 s ""; ValBlockType None);
-    (fun s -> ValBlockType (Some (value_type s)));
+    (fun s -> ValBlockType (Some (val_type s)));
   ] s
 
 let local s =
   let n = u32 s in
-  let t = at value_type s in
-  n, t
+  let t = at val_type s in
+  n, {ltype = t.it} @@ t.at
 
 let locals s =
   let pos = pos s in
@@ -373,22 +373,16 @@ let rec instr s =
 
   | 0x12 | 0x13 as b -> illegal s pos b  (* return_call, return_call_indirect *)
 
-  | 0x14 -> call_ref
-  | 0x15 -> return_call_ref
-  | 0x16 -> func_bind (at var s)
+  | 0x14 -> call_ref (at var s)
+  | 0x15 -> return_call_ref (at var s)
 
-  | 0x17 ->
-    let bt = block_type s in
-    let locs = locals s in
-    let es = instr_block s in
-    end_ s;
-    let_ bt locs es
+  | 0x16 as b -> illegal s pos b
 
-  | 0x18 | 0x19 as b -> illegal s pos b
+  | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
   | 0x1a -> drop
   | 0x1b -> select None
-  | 0x1c -> select (Some (vec value_type s))
+  | 0x1c -> select (Some (vec val_type s))
 
   | 0x1d | 0x1e | 0x1f as b -> illegal s pos b
 
@@ -1019,8 +1013,20 @@ let func_section s =
 (* Table section *)
 
 let table s =
-  let ttype = table_type s in
-  {ttype}
+  either [
+    (fun s ->
+      expect 0x40 s "";
+      zero s;
+      let ttype = table_type s in
+      let tinit = const s in
+      {ttype; tinit}
+    );
+    (fun s ->
+      let at = region s (pos s) (pos s) in
+      let TableT (_, (_, ht)) as ttype = table_type s in
+      {ttype; tinit = [RefNull ht @@ at] @@ at}
+    );
+  ] s
 
 let table_section s =
   section `TableSection (vec (at table)) [] s
@@ -1112,7 +1118,7 @@ let elem_index s =
 
 let elem_kind s =
   match byte s with
-  | 0x00 -> (NonNullable, FuncHeapType)
+  | 0x00 -> (NoNull, FuncHT)
   | _ -> error s (pos s - 1) "malformed element kind"
 
 let elem s =
@@ -1120,7 +1126,7 @@ let elem s =
   | 0x00l ->
     let emode = at active_zero s in
     let einit = vec (at elem_index) s in
-    {etype = (NonNullable, FuncHeapType); einit; emode}
+    {etype = (NoNull, FuncHT); einit; emode}
   | 0x01l ->
     let emode = at passive s in
     let etype = elem_kind s in
@@ -1139,7 +1145,7 @@ let elem s =
   | 0x04l ->
     let emode = at active_zero s in
     let einit = vec const s in
-    {etype = (NonNullable, FuncHeapType); einit; emode}
+    {etype = (NoNull, FuncHT); einit; emode}
   | 0x05l ->
     let emode = at passive s in
     let etype = ref_type s in

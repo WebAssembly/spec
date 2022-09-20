@@ -21,6 +21,14 @@ Index of Instructions
 ---------------------
 """
 
+FOOTER = """\
+
+.. note::
+   Multi-byte opcodes are given with the shortest possible encoding in the table.
+   However, what is following the first byte is actually a :ref:`u32 <binary-uint>` with variable-length encoding
+   and consequently has multiple possible representations.\
+"""
+
 COLUMNS = [
     'Instruction',
     'Binary Opcode',
@@ -81,7 +89,7 @@ INSTRUCTIONS = [
     Instruction(r'\CALLINDIRECT~x~y', r'\hex{11}', r'[t_1^\ast~\I32] \to [t_2^\ast]', r'valid-call_indirect', r'exec-call_indirect'),
     Instruction(None, r'\hex{12}'),
     Instruction(None, r'\hex{13}'),
-    Instruction(r'\CALLREF', r'\hex{14}', r'[t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]', r'valid-call_ref', r'exec-call_ref'),
+    Instruction(r'\CALLREF~x', r'\hex{14}', r'[t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]', r'valid-call_ref', r'exec-call_ref'),
     Instruction(None, r'\hex{15}'),
     Instruction(None, r'\hex{16}'),
     Instruction(None, r'\hex{17}'),
@@ -591,3 +599,4 @@ if __name__ == '__main__':
           print(Row(instr), file=f)
 
         print(DIVIDER, file=f)
+        print(FOOTER, file=f)
