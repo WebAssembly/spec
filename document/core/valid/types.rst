@@ -1,3 +1,5 @@
+.. _valid-type:
+
 Types
 -----
 
@@ -5,6 +7,36 @@ Simple :ref:`types <syntax-type>`, such as :ref:`number types <syntax-numtype>` 
 However, restrictions apply to most other types, such as :ref:`reference types <syntax-reftype>`, :ref:`function types <syntax-functype>`, as well as the :ref:`limits <syntax-limits>` of :ref:`table types <syntax-tabletype>` and :ref:`memory types <syntax-memtype>`, which must be checked during validation.
 
 Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`function types <syntax-functype>` for ease of processing.
+
+
+.. index:: type identifier, type index
+   pair: validation; type identifier
+   single: abstract syntax; type identifier
+.. _valid-typeid:
+.. _valid-typeidx:
+
+Type Identifiers
+~~~~~~~~~~~~~~~~
+
+During validation, :ref:`type identifiers <syntax-typeid>` are represented as :ref:`type indices <syntax-typeidx>`, which are lookued up as :ref:`function types <syntax-functype>` by the following rule.
+
+:math:`\typeidx`
+................
+
+* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
+
+* Then the type identifier is valid as :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
+
+.. math::
+   \frac{
+     C.\CTYPES[\typeidx] = \functype
+   }{
+     C \vdashtypeid \typeidx : \functype
+   }
+
+.. note::
+   :ref:`Semantic types <syntax-type-sem>` do not arise during validation.
+   They only need to be :ref:`looked up <valid-typeaddr>` during :ref:`execution <exec-type>`.
 
 
 .. index:: number type
@@ -41,7 +73,7 @@ Vector Types
    }
 
 
-.. index:: heap type
+.. index:: heap type, type identifier
    pair: validation; heap type
    single: abstract syntax; heap type
 .. _valid-heaptype:
@@ -49,7 +81,7 @@ Vector Types
 Heap Types
 ~~~~~~~~~~
 
-Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is.
+Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type identifier <syntax-typeid>` is.
 
 :math:`\FUNC`
 .............
@@ -73,20 +105,30 @@ Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type 
      C \vdashheaptype \EXTERN \ok
    }
 
-:math:`\typeidx`
-................
+:math:`\typeid`
+...............
 
-* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
+* The type identifier :math:`\typeid` must be valid.
 
 * Then the heap type is valid.
 
 .. math::
    \frac{
-     C.\CTYPES[\typeidx] = \functype
+     C \vdashtypeid \typeid : \functype
    }{
-     C \vdashheaptype \typeidx \ok
+     C \vdashheaptype \typeid \ok
    }
 
+:math:`\BOT`
+............
+
+* The heap type is valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashheaptype \BOT \ok
+   }
 
 .. index:: reference type, heap type
    pair: validation; reference type
@@ -136,7 +178,7 @@ Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number type <va
    }
 
 
-.. index:: block type
+.. index:: block type, instruction type
    pair: validation; block type
    single: abstract syntax; block type
 .. _valid-blocktype:
@@ -144,20 +186,22 @@ Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number type <va
 Block Types
 ~~~~~~~~~~~
 
-:ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to plain :ref:`function types <syntax-functype>` by the following rules.
+:ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to :ref:`instruction types <syntax-instrtype>` by the following rules.
 
 :math:`\typeidx`
 ................
 
 * The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
 
-* Then the block type is valid as :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
+
+* Then the block type is valid as :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\CTYPES[\typeidx] = \functype
+     C.\CTYPES[\typeidx] = [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdashblocktype \typeidx : \functype
+     C \vdashblocktype \typeidx : [t_1^\ast] \to [t_2^\ast]
    }
 
 
@@ -166,7 +210,7 @@ Block Types
 
 * The value type :math:`\valtype` must either be absent, or :ref:`valid <valid-valtype>`.
 
-* Then the block type is valid as :ref:`function type <syntax-functype>` :math:`[] \to [\valtype^?]`.
+* Then the block type is valid as :ref:`instruction type <syntax-instrtype>` :math:`[] \to [\valtype^?]`.
 
 .. math::
    \frac{
@@ -196,6 +240,64 @@ Result Types
      (C \vdashvaltype t \ok)^\ast
    }{
      C \vdashresulttype [t^\ast] \ok
+   }
+
+
+.. index:: instruction type
+   pair: validation; instruction type
+   single: abstract syntax; instruction type
+.. _valid-instrtype:
+
+Instruction Types
+~~~~~~~~~~~~~~~~~
+
+:math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`
+..........................................
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* Each :ref:`local index <syntax-localidx>` :math:`x_i` in :math:`x^\ast` must be defined in the context.
+
+* Then the instruction type is valid.
+
+.. math::
+   \frac{
+     C \vdashvaltype [t_1^\ast] \ok
+     \qquad
+     C \vdashvaltype [t_2^\ast] \ok
+     \qquad
+     (C.\CLOCALS[x] = \localtype)^\ast
+   }{
+     C \vdashfunctype [t_1^\ast] \to_{x^\ast} [t_2^\ast] \ok
+   }
+
+
+.. index:: function type
+   pair: validation; function type
+   single: abstract syntax; function type
+.. _valid-functype:
+
+Function Types
+~~~~~~~~~~~~~~
+
+:math:`[t_1^\ast] \to [t_2^\ast]`
+.................................
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* Then the function type is valid.
+
+.. math::
+   \frac{
+     C \vdashvaltype [t_1^\ast] \ok
+     \qquad
+     C \vdashvaltype [t_2^\ast] \ok
+   }{
+     C \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok
    }
 
 
@@ -231,33 +333,6 @@ Limits
      (n \leq m)^?
    }{
      C \vdashlimits \{ \LMIN~n, \LMAX~m^? \} : k
-   }
-
-
-.. index:: function type
-   pair: validation; function type
-   single: abstract syntax; function type
-.. _valid-functype:
-
-Function Types
-~~~~~~~~~~~~~~
-
-:math:`[t_1^\ast] \to [t_2^\ast]`
-.................................
-
-* The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
-
-* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be :ref:`valid <valid-resulttype>`.
-
-* Then the function type is valid.
-
-.. math::
-   \frac{
-     C \vdashvaltype [t_1^\ast] \ok
-     \qquad
-     C \vdashvaltype [t_2^\ast] \ok
-   }{
-     C \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok
    }
 
 
@@ -396,4 +471,43 @@ External Types
      C \vdashglobaltype \globaltype \ok
    }{
      C \vdashexterntype \ETGLOBAL~\globaltype \ok
+   }
+
+
+.. index:: value type, ! defaultable, number type, vector type, reference type, table type
+.. _valid-defaultable:
+
+Defaultable Types
+~~~~~~~~~~~~~~~~~
+
+A type is *defaultable* if it has a :ref:`default value <default-val>` for initialization.
+
+Value Types
+...........
+
+* A defaultable :ref:`value type <syntax-valtype>` :math:`t` must be:
+
+  - either a :ref:`number type <syntax-numtype>`,
+
+  - or a :ref:`vector type <syntax-vectype>`,
+
+  - or a :ref:`nullable reference type <syntax-numtype>`.
+
+
+.. math::
+   \frac{
+   }{
+     C \vdashvaltypedefaultable \numtype \defaultable
+   }
+
+.. math::
+   \frac{
+   }{
+     C \vdashvaltypedefaultable \vectype \defaultable
+   }
+
+.. math::
+   \frac{
+   }{
+     C \vdashvaltypedefaultable (\REF~\NULL~\heaptype) \defaultable
    }

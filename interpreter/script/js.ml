@@ -11,45 +11,22 @@ let harness =
 {|
 'use strict';
 
-let hostrefs = {};
-let hostsym = Symbol("hostref");
-function hostref(s) {
-  if (! (s in hostrefs)) hostrefs[s] = {[hostsym]: s};
-  return hostrefs[s];
-}
-function is_anyref(x) {
-  return x !== null ? 1 : 0;
+let externrefs = {};
+let externsym = Symbol("externref");
+function externref(s) {
+  if (! (s in externrefs)) externrefs[s] = {[externsym]: s};
+  return externrefs[s];
 }
 function is_eqref(x) {
   return x !== null ? 1 : 0;  // TODO
-}
-function is_i31ref(x) {
-  return typeof x === "number" && (x | 0x7fffffff) === x ? 1 : 0;
-}
-function is_dataref(x) {
-  return x !== null && typeof x !== "function" ? 1 : 0;
-}
-function is_funcref(x) {
-  return typeof x === "function" ? 1 : 0;
-}
-function is_hostref(x) {
-  return (x !== null && hostsym in x) ? 1 : 0;
-}
-function is_externref(x) {
-  return (x !== null) ? 1 : 0;
 }
 function eq_ref(x, y) {
   return x === y ? 1 : 0;
 }
 
 let spectest = {
-  hostref: hostref,
-  is_anyref: is_anyref,
+  externref: externref,
   is_eqref: is_eqref,
-  is_i31ref: is_i31ref,
-  is_dataref: is_dataref,
-  is_funcref: is_funcref,
-  is_externref: is_externref,
   eq_ref: eq_ref,
   print: console.log.bind(console),
   print_i32: console.log.bind(console),
@@ -217,8 +194,8 @@ type exports = extern_type NameMap.t
 type modules = {mutable env : exports Map.t; mutable current : int}
 
 let exports m : exports =
-  let ModuleType (_, _, ets) = sem_module_type (module_type_of m) in
-  List.fold_left (fun map (ExportType (et, name)) -> NameMap.add name et map)
+  let ModuleT (_, _, ets) = dyn_module_type (module_type_of m) in
+  List.fold_left (fun map (ExportT (et, name)) -> NameMap.add name et map)
     NameMap.empty ets
 
 let modules () : modules = {env = Map.empty; current = 0}
@@ -254,40 +231,51 @@ let eq_ref_idx = 3l
 let subject_type_idx = 4l
 
 let eq_of = function
-  | I32Type -> I32 I32Op.Eq
-  | I64Type -> I64 I64Op.Eq
-  | F32Type -> F32 F32Op.Eq
-  | F64Type -> F64 F64Op.Eq
+  | I32T -> I32 I32Op.Eq
+  | I64T -> I64 I64Op.Eq
+  | F32T -> F32 F32Op.Eq
+  | F64T -> F64 F64Op.Eq
 
 let and_of = function
-  | I32Type | F32Type -> I32 I32Op.And
-  | I64Type | F64Type -> I64 I64Op.And
+  | I32T | F32T -> I32 I32Op.And
+  | I64T | F64T -> I64 I64Op.And
 
 let reinterpret_of = function
-  | I32Type -> I32Type, Nop
-  | I64Type -> I64Type, Nop
-  | F32Type -> I32Type, Convert (I32 I32Op.ReinterpretFloat)
-  | F64Type -> I64Type, Convert (I64 I64Op.ReinterpretFloat)
+  | I32T -> I32T, Nop
+  | I64T -> I64T, Nop
+  | F32T -> I32T, Convert (I32 I32Op.ReinterpretFloat)
+  | F64T -> I64T, Convert (I64 I64Op.ReinterpretFloat)
 
 let canonical_nan_of = function
-  | I32Type | F32Type -> I32 (F32.to_bits F32.pos_nan)
-  | I64Type | F64Type -> I64 (F64.to_bits F64.pos_nan)
+  | I32T | F32T -> I32 (F32.to_bits F32.pos_nan)
+  | I64T | F64T -> I64 (F64.to_bits F64.pos_nan)
 
 let abs_mask_of = function
-  | I32Type | F32Type -> I32 Int32.max_int
-  | I64Type | F64Type -> I64 Int64.max_int
+  | I32T | F32T -> I32 Int32.max_int
+  | I64T | F64T -> I64 Int64.max_int
+
+let null_heap_type_of = function
+  | Types.(AnyHT | NoneHT | EqHT | I31HT | AggrHT | ArrayHT) -> NoneHT
+  | Types.(FuncHT | NoFuncHT) -> NoFuncHT
+  | Types.(ExternHT | NoExternHT) -> NoExternHT
+  | Types.BotHT -> assert false
+  | Types.DefHT (StatX _ | RecX _) -> assert false
+  | Types.DefHT (DynX a) ->
+    match expand_ctx_type (Types.def_of a) with
+    | Types.DefFuncT _ -> NoFuncHT
+    | Types.(DefStructT _ | DefArrayT _) -> NoneHT
 
 let value v =
   match v.it with
   | Num n -> [Const (n @@ v.at) @@ v.at]
   | Vec s -> [VecConst (s @@ v.at) @@ v.at]
-  | Ref (NullRef t) -> [RefNull t @@ v.at]
-  | Ref (HostRef n) ->
+  | Ref (NullRef t) -> [RefNull (null_heap_type_of t) @@ v.at]
+  | Ref (Extern.ExternRef (HostRef n)) ->
     [Const (I32 n @@ v.at) @@ v.at; Call (externref_idx @@ v.at) @@ v.at]
   | Ref _ -> assert false
 
 let invoke ft vs at =
-  let dt = RecDefType [SubType ([], FuncDefType ft)] in
+  let dt = RecT [SubT ([], DefFuncT ft)] in
   [dt @@ at], FuncImport (subject_type_idx @@ at) @@ at,
   List.concat (List.map value vs) @ [Call (subject_idx @@ at) @@ at]
 
@@ -305,7 +293,7 @@ let assert_return ress ts at =
   let test (res, t) =
     match res.it with
     | NumResult (NumPat {it = num; at = at'}) ->
-      let t', reinterpret = reinterpret_of (Value.type_of_num num) in
+      let t', reinterpret = reinterpret_of (Value.type_of_op num) in
       [ reinterpret @@ at;
         Const (num @@ at')  @@ at;
         reinterpret @@ at;
@@ -318,8 +306,7 @@ let assert_return ress ts at =
         | Value.I32 _ | Value.I64 _ -> .
         | Value.F32 n | Value.F64 n -> n
       in
-      let t = Value.type_of_num nanop.it in
-      let t', reinterpret = reinterpret_of t in
+      let t', reinterpret = reinterpret_of (Value.type_of_op nanop.it) in
       [ reinterpret @@ at;
         Const (nan_bitmask_of nan t' @@ at) @@ at;
         Binary (and_of t') @@ at;
@@ -337,9 +324,9 @@ let assert_return ress ts at =
         | NumPat {it = F64 f; _} ->
           I64 (Int64.minus_one), I64 (I64_convert.reinterpret_f64 f)
         | NanPat {it = F32 nan; _} ->
-          nan_bitmask_of nan I32Type, canonical_nan_of I32Type
+          nan_bitmask_of nan I32T, canonical_nan_of I32T
         | NanPat {it = F64 nan; _} ->
-          nan_bitmask_of nan I64Type, canonical_nan_of I64Type
+          nan_bitmask_of nan I64T, canonical_nan_of I64T
         | _ -> .
       in
       let masks, canons =
@@ -385,41 +372,40 @@ let assert_return ress ts at =
     | RefResult (RefTypePat t) ->
       let is_ref =
         match t with
-        | AnyHeapType | FuncHeapType | ExternHeapType -> Const (I32 1l @@ at)
-        | NoneHeapType | NoFuncHeapType | NoExternHeapType -> Const (I32 0l @@ at)
-        | EqHeapType -> Call (is_eqref_idx @@ at)
-        | I31HeapType -> RefTest I31Op
-        | DataHeapType -> RefTest DataOp
-        | ArrayHeapType -> RefTest ArrayOp
-        | DefHeapType _ -> Const (I32 1l @@ at) (* TODO *)
-        | BotHeapType -> assert false
+        | AnyHT | FuncHT | ExternHT -> Const (I32 1l @@ at)
+        | NoneHT | NoFuncHT | NoExternHT -> Const (I32 0l @@ at)
+        | EqHT -> Call (is_eqref_idx @@ at)
+        | I31HT -> RefTest I31Op
+        | AggrHT -> RefTest AggrOp
+        | ArrayHT -> RefTest ArrayOp
+        | DefHT _ -> Const (I32 1l @@ at) (* TODO *)
+        | BotHT -> assert false
       in
       [ is_ref @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult NullPat ->
       (match t with
-      | RefType _ ->
+      | RefT _ ->
         [ BrCast (0l @@ at, NullOp) @@ at ]
       | _ ->
         [ Br (0l @@ at) @@ at ]
       )
   in [], List.flatten (List.rev_map test (List.combine ress ts))
 
-let i32_type = NumType I32Type
-let anyref_type = RefType (Nullable, AnyHeapType)
-let eqref_type = RefType (Nullable, EqHeapType)
-let func_def_type ins out at =
-  RecDefType [SubType ([], FuncDefType (FuncType (ins, out)))] @@ at
+let i32 = NumT I32T
+let anyref = RefT (Null, AnyHT)
+let eqref = RefT (Null, EqHT)
+let func_def_type ts1 ts2 at = RecT [SubT ([], DefFuncT (FuncT (ts1, ts2)))] @@ at
 
 let wrap item_name wrap_action wrap_assertion at =
   let itypes, idesc, action = wrap_action at in
   let locals, assertion = wrap_assertion at in
   let types =
     func_def_type [] [] at ::
-    func_def_type [i32_type] [anyref_type] at ::
-    func_def_type [anyref_type] [i32_type] at ::
-    func_def_type [eqref_type; eqref_type] [i32_type] at ::
+    func_def_type [i32] [anyref] at ::
+    func_def_type [anyref] [i32] at ::
+    func_def_type [eqref; eqref] [i32] at ::
     itypes
   in
   let imports =
@@ -450,20 +436,20 @@ let wrap item_name wrap_action wrap_assertion at =
 
 
 let is_js_num_type = function
-  | I32Type -> true
-  | I64Type | F32Type | F64Type -> false
+  | I32T -> true
+  | I64T | F32T | F64T -> false
 
-let is_js_value_type = function
-  | NumType t -> is_js_num_type t
-  | VecType t -> false
-  | RefType t -> true
-  | BotType -> assert false
+let is_js_val_type = function
+  | NumT t -> is_js_num_type t
+  | VecT _ -> false
+  | RefT _ -> true
+  | BotT -> assert false
 
 let is_js_global_type = function
-  | GlobalType (t, mut) -> is_js_value_type t && mut = Immutable
+  | GlobalT (mut, t) -> is_js_val_type t && mut = Cons
 
 let is_js_func_type = function
-  | FuncType (ins, out) -> List.for_all is_js_value_type (ins @ out)
+  | FuncT (ts1, ts2) -> List.for_all is_js_val_type (ts1 @ ts2)
 
 
 (* Script conversion *)
@@ -572,9 +558,9 @@ let of_action mods act =
     "call(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ", " ^
       "[" ^ String.concat ", " (List.map of_value vs) ^ "])",
     (match lookup mods x_opt name act.at with
-    | ExternFuncType x ->
-      let FuncType (_, out) as ft =
-        as_func_str_type (expand_ctx_type (def_of (as_sem_var x))) in
+    | ExternFuncT x ->
+      let FuncT (_, out) as ft =
+        as_func_str_type (expand_ctx_type (def_of (as_dyn_var x))) in
       if is_js_func_type ft then
         None
       else
@@ -584,8 +570,8 @@ let of_action mods act =
   | Get (x_opt, name) ->
     "get(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ")",
     (match lookup mods x_opt name act.at with
-    | ExternGlobalType gt when not (is_js_global_type gt) ->
-      let GlobalType (t, _) = gt in
+    | ExternGlobalT gt when not (is_js_global_type gt) ->
+      let GlobalT (_, t) = gt in
       Some (of_wrapper mods x_opt name (get gt), [t])
     | _ -> None
     )

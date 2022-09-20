@@ -16,7 +16,7 @@ let () =
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | ExternRef _ -> ExternHeapType
+    | ExternRef _ -> ExternHT
     | r -> type_of_ref' r
 
 let () =

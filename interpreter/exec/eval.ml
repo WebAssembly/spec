@@ -1,8 +1,9 @@
+open Ast
+open Pack
+open Source
 open Types
 open Value
 open Instance
-open Ast
-open Source
 
 
 (* Errors *)
@@ -49,7 +50,7 @@ type 'a stack = 'a list
 type frame =
 {
   inst : module_inst;
-  locals : value ref list;
+  locals : value option ref list;
 }
 
 type code = value stack * admin_instr list
@@ -64,7 +65,6 @@ and admin_instr' =
   | ReturningInvoke of value stack * func_inst
   | Breaking of int32 * value stack
   | Label of int * instr list * code
-  | Local of int * value list * code
   | Frame of int * frame * code
 
 type config =
@@ -74,8 +74,9 @@ type config =
   budget : int;  (* to model stack overflow *)
 }
 
-let frame inst = {inst; locals = []}
-let config inst vs es = {frame = frame inst; code = vs, es; budget = 300}
+let frame inst locals = {inst; locals}
+let config inst vs es =
+  {frame = frame inst []; code = vs, es; budget = !Flags.budget}
 
 let plain e = Plain e.it @@ e.at
 
@@ -102,23 +103,22 @@ let func_type (inst : module_inst) x = as_func_str_type (str_type inst x)
 let struct_type (inst : module_inst) x = as_struct_str_type  (str_type inst x)
 let array_type (inst : module_inst) x = as_array_str_type (str_type inst x)
 
-let any_ref inst x i at =
+let any_ref (inst : module_inst) x i at =
   try Table.load (table inst x) i with Table.Bounds ->
     Trap.error at ("undefined element " ^ Int32.to_string i)
 
-let func_ref inst x i at =
+let func_ref (inst : module_inst) x i at =
   match any_ref inst x i at with
   | FuncRef f -> f
   | NullRef _ -> Trap.error at ("uninitialized element " ^ Int32.to_string i)
   | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
 
-let block_type inst bt at =
+let block_type (inst : module_inst) bt at =
   match bt with
-  | ValBlockType None -> FuncType ([], [])
-  | ValBlockType (Some t) -> FuncType ([], [t])
-  | VarBlockType (SynVar x) -> func_type inst (x @@ at)
-  | VarBlockType (SemVar x) -> as_func_str_type (expand_ctx_type (def_of x))
-  | VarBlockType (RecVar _) -> assert false
+  | ValBlockType None -> InstrT ([], [], [])
+  | ValBlockType (Some t) -> InstrT ([], [dyn_val_type inst.types t], [])
+  | VarBlockType x ->
+    let FuncT (ts1, ts2) = func_type inst x in InstrT (ts1, ts2, [])
 
 let take n (vs : 'a stack) at =
   try Lib.List.take n vs with Failure _ -> Crash.error at "stack underflow"
@@ -146,7 +146,7 @@ let mem_oob frame x i n =
 
 let data_oob frame x i n =
   I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (I64.of_int_u (String.length !(data frame.inst x)))
+    (Data.size (data frame.inst x))
 
 let table_oob frame x i n =
   I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
@@ -154,7 +154,7 @@ let table_oob frame x i n =
 
 let elem_oob frame x i n =
   I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (I64.of_int_u (List.length !(elem frame.inst x)))
+    (I64_convert.extend_i32_u (Elem.size (elem frame.inst x)))
 
 let rec step (c : config) : config =
   let vs, es = c.code in
@@ -170,14 +170,14 @@ let rec step (c : config) : config =
         vs, []
 
       | Block (bt, es'), vs ->
-        let FuncType (ts1, ts2) = block_type c.frame.inst bt e.at in
+        let InstrT (ts1, ts2, _xs) = block_type c.frame.inst bt e.at in
         let n1 = List.length ts1 in
         let n2 = List.length ts2 in
         let args, vs' = split n1 vs e.at in
         vs', [Label (n2, [], (args, List.map plain es')) @@ e.at]
 
       | Loop (bt, es'), vs ->
-        let FuncType (ts1, ts2) = block_type c.frame.inst bt e.at in
+        let InstrT (ts1, ts2, _xs) = block_type c.frame.inst bt e.at in
         let n1 = List.length ts1 in
         let args, vs' = split n1 vs e.at in
         vs', [Label (n1, [e' @@ e.at], (args, List.map plain es')) @@ e.at]
@@ -187,16 +187,6 @@ let rec step (c : config) : config =
           vs', [Plain (Block (bt, es2)) @@ e.at]
         else
           vs', [Plain (Block (bt, es1)) @@ e.at]
-
-      | Let (bt, locals, es'), vs ->
-        let vs0, vs' = split (List.length locals) vs e.at in
-        let FuncType (ts1, ts2) = block_type c.frame.inst bt e.at in
-        let vs1, vs2 = split (List.length ts1) vs' e.at in
-        vs2, [
-          Local (List.length ts2, List.rev vs0,
-            (vs1, [Plain (Block (bt, es')) @@ e.at])
-          ) @@ e.at
-        ]
 
       | Br x, vs ->
         [], [Breaking (x.it, vs) @@ e.at]
@@ -229,9 +219,9 @@ let rec step (c : config) : config =
           Ref r :: vs', []
         )
 
-      | BrCast (x, DataOp), Ref r :: vs' ->
+      | BrCast (x, AggrOp), Ref r :: vs' ->
         (match r with
-        | Data.DataRef _ ->
+        | Aggr.AggrRef _ ->
           Ref r :: vs', [Plain (Br x) @@ e.at]
         | _ ->
           Ref r :: vs', []
@@ -239,7 +229,7 @@ let rec step (c : config) : config =
 
       | BrCast (x, ArrayOp), Ref r :: vs' ->
         (match r with
-        | Data.DataRef (Data.Array _) ->
+        | Aggr.(AggrRef (Array _)) ->
           Ref r :: vs', [Plain (Br x) @@ e.at]
         | _ ->
           Ref r :: vs', []
@@ -250,11 +240,11 @@ let rec step (c : config) : config =
         (match r with
         | NullRef _ ->
           Ref r :: vs', [Plain (Br x) @@ e.at]
-        | Data.DataRef d when Rtt.match_rtt (Data.read_rtt d) rtt ->
+        | Aggr.AggrRef d when Rtt.match_rtt (Aggr.read_rtt d) rtt ->
           Ref r :: vs', [Plain (Br x) @@ e.at]
         | FuncRef f when Rtt.match_rtt (Func.read_rtt f) rtt ->
           Ref r :: vs', [Plain (Br x) @@ e.at]
-        | Data.DataRef _ | FuncRef _ ->
+        | Aggr.AggrRef _ | FuncRef _ ->
           Ref r :: vs', []
         | _ ->
           Crash.error e.at "wrong reference type"
@@ -276,9 +266,9 @@ let rec step (c : config) : config =
           Ref r :: vs', [Plain (Br x) @@ e.at]
         )
 
-      | BrCastFail (x, DataOp), Ref r :: vs' ->
+      | BrCastFail (x, AggrOp), Ref r :: vs' ->
         (match r with
-        | Data.DataRef _ ->
+        | Aggr.AggrRef _ ->
           Ref r :: vs', []
         | _ ->
           Ref r :: vs', [Plain (Br x) @@ e.at]
@@ -286,7 +276,7 @@ let rec step (c : config) : config =
 
       | BrCastFail (x, ArrayOp), Ref r :: vs' ->
         (match r with
-        | Data.DataRef (Data.Array _) ->
+        | Aggr.AggrRef (Aggr.Array _) ->
           Ref r :: vs', []
         | _ ->
           Ref r :: vs', [Plain (Br x) @@ e.at]
@@ -297,11 +287,11 @@ let rec step (c : config) : config =
         (match r with
         | NullRef _ ->
           Ref r :: vs', []
-        | Data.DataRef d when Rtt.match_rtt (Data.read_rtt d) rtt ->
+        | Aggr.AggrRef d when Rtt.match_rtt (Aggr.read_rtt d) rtt ->
           Ref r :: vs', []
         | FuncRef f when Rtt.match_rtt (Func.read_rtt f) rtt ->
           Ref r :: vs', []
-        | Data.DataRef _ | FuncRef _ ->
+        | Aggr.AggrRef _ | FuncRef _ ->
           Ref r :: vs', [Plain (Br x) @@ e.at]
         | _ ->
           Crash.error e.at "wrong reference type"
@@ -313,45 +303,30 @@ let rec step (c : config) : config =
       | Call x, vs ->
         vs, [Invoke (func c.frame.inst x) @@ e.at]
 
-      | CallRef, Ref (NullRef _) :: vs ->
+      | CallRef _x, Ref (NullRef _) :: vs ->
         vs, [Trapping "null function reference" @@ e.at]
 
-      | CallRef, Ref (FuncRef f) :: vs ->
+      | CallRef _x, Ref (FuncRef f) :: vs ->
         vs, [Invoke f @@ e.at]
 
       | CallIndirect (x, y), Num (I32 i) :: vs ->
         let f = func_ref c.frame.inst x i e.at in
         if
-          Match.match_var_type []
-            (SemVar (Func.type_inst_of f))
-            (sem_var_type c.frame.inst.types (SynVar y.it))
+          Match.eq_var_type [] (DynX (type_ c.frame.inst y)) (DynX (Func.type_inst_of f))
         then
           vs, [Invoke f @@ e.at]
         else
           vs, [Trapping "indirect call type mismatch" @@ e.at]
 
-      | ReturnCallRef, Ref (NullRef _) :: vs ->
+      | ReturnCallRef _x, Ref (NullRef _) :: vs ->
         vs, [Trapping "null function reference" @@ e.at]
 
-      | ReturnCallRef, vs ->
-        (match (step {c with code = (vs, [Plain CallRef @@ e.at])}).code with
+      | ReturnCallRef x, vs ->
+        (match (step {c with code = (vs, [Plain (CallRef x) @@ e.at])}).code with
         | vs', [{it = Invoke a; at}] -> vs', [ReturningInvoke (vs', a) @@ at]
         | vs', [{it = Trapping s; at}] -> vs', [Trapping s @@ at]
         | _ -> assert false
         )
-
-      | FuncBind x, Ref (NullRef _) :: vs ->
-        vs, [Trapping "null function reference" @@ e.at]
-
-      | FuncBind x, Ref (FuncRef f) :: vs ->
-        let FuncType (ts, _) = Func.type_of f in
-        let FuncType (ts', _) = func_type c.frame.inst x in
-        let args, vs' =
-          try split (List.length ts - List.length ts') vs e.at
-          with Failure _ -> Crash.error e.at "type mismatch at function bind"
-        in
-        let f' = Func.alloc_closure (type_ c.frame.inst x) f args in
-        Ref (FuncRef f') :: vs', []
 
       | Drop, v :: vs' ->
         vs', []
@@ -363,14 +338,19 @@ let rec step (c : config) : config =
           v1 :: vs', []
 
       | LocalGet x, vs ->
-        !(local c.frame x) :: vs, []
+        (match !(local c.frame x) with
+        | Some v ->
+          v :: vs, []
+        | None ->
+          Crash.error e.at "read of uninitialized local"
+        )
 
       | LocalSet x, v :: vs' ->
-        local c.frame x := v;
+        local c.frame x := Some v;
         vs', []
 
       | LocalTee x, v :: vs' ->
-        local c.frame x := v;
+        local c.frame x := Some v;
         v :: vs', []
 
       | GlobalGet x, vs ->
@@ -451,10 +431,10 @@ let rec step (c : config) : config =
         else if n = 0l then
           vs', []
         else
-          let seg = !(elem c.frame.inst y) in
+          let seg = elem c.frame.inst y in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 d @@ e.at));
-            Refer (List.nth seg (Int32.to_int s));
+            Refer (Elem.load seg s);
             Plain (TableSet x);
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
@@ -464,7 +444,7 @@ let rec step (c : config) : config =
 
       | ElemDrop x, vs ->
         let seg = elem c.frame.inst x in
-        seg := [];
+        Elem.drop seg;
         vs, []
 
       | Load {offset; ty; pack; _}, Num (I32 i) :: vs' ->
@@ -491,13 +471,12 @@ let rec step (c : config) : config =
 
       | VecLoad {offset; ty; pack; _}, Num (I32 i) :: vs' ->
         let mem = memory c.frame.inst (0l @@ e.at) in
-        let addr = I64_convert.extend_i32_u i in
+        let a = I64_convert.extend_i32_u i in
         (try
           let v =
             match pack with
-            | None -> Memory.load_vec mem addr offset ty
-            | Some (sz, ext) ->
-              Memory.load_vec_packed sz ext mem addr offset ty
+            | None -> Memory.load_vec mem a offset ty
+            | Some (sz, ext) -> Memory.load_vec_packed sz ext mem a offset ty
           in Vec v :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
@@ -517,16 +496,16 @@ let rec step (c : config) : config =
             match pack with
             | Pack8 ->
               V128.I8x16.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num_packed Pack8 SX mem addr offset I32Type))
+                (I32Num.of_num 0 (Memory.load_num_packed Pack8 SX mem addr offset I32T))
             | Pack16 ->
               V128.I16x8.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num_packed Pack16 SX mem addr offset I32Type))
+                (I32Num.of_num 0 (Memory.load_num_packed Pack16 SX mem addr offset I32T))
             | Pack32 ->
               V128.I32x4.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num mem addr offset I32Type))
+                (I32Num.of_num 0 (Memory.load_num mem addr offset I32T))
             | Pack64 ->
               V128.I64x2.replace_lane j v
-                (I64Num.of_num 0 (Memory.load_num mem addr offset I64Type))
+                (I64Num.of_num 0 (Memory.load_num mem addr offset I64T))
           in Vec (V128 v) :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
@@ -569,7 +548,7 @@ let rec step (c : config) : config =
             Plain (Const (I32 i @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
+              {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add i 1l) @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -586,9 +565,9 @@ let rec step (c : config) : config =
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
             Plain (Load
-              {ty = I32Type; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
+              {ty = Types.I32T; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
+              {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -603,9 +582,9 @@ let rec step (c : config) : config =
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
             Plain (Load
-              {ty = I32Type; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
+              {ty = Types.I32T; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
+              {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
           ]
 
       | MemoryInit x, Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
@@ -614,13 +593,14 @@ let rec step (c : config) : config =
         else if n = 0l then
           vs', []
         else
-          let seg = !(data c.frame.inst x) in
-          let b = Int32.of_int (Char.code seg.[Int32.to_int s]) in
+          let seg = data c.frame.inst x in
+          let a = I64_convert.extend_i32_u s in
+          let b = Data.load seg a in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 b @@ e.at));
+            Plain (Const (I32 (I32.of_int_u (Char.code b)) @@ e.at));
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
+              {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
@@ -629,11 +609,11 @@ let rec step (c : config) : config =
 
       | DataDrop x, vs ->
         let seg = data c.frame.inst x in
-        seg := "";
+        Data.drop seg;
         vs, []
 
       | RefNull t, vs' ->
-        Ref (NullRef (sem_heap_type c.frame.inst.types t)) :: vs', []
+        Ref (NullRef (dyn_heap_type c.frame.inst.types t)) :: vs', []
 
       | RefFunc x, vs' ->
         let f = func c.frame.inst x in
@@ -645,19 +625,19 @@ let rec step (c : config) : config =
       | RefTest I31Op, Ref r :: vs' ->
         value_of_bool (match r with I31.I31Ref _ -> true | _ -> false) :: vs', []
 
-      | RefTest DataOp, Ref r :: vs' ->
-        value_of_bool (match r with Data.DataRef _ -> true | _ -> false) :: vs', []
+      | RefTest AggrOp, Ref r :: vs' ->
+        value_of_bool (match r with Aggr.AggrRef _ -> true | _ -> false) :: vs', []
 
       | RefTest ArrayOp, Ref r :: vs' ->
-        value_of_bool (match r with Data.DataRef (Data.Array _) -> true | _ -> false) :: vs', []
+        value_of_bool (match r with Aggr.(AggrRef (Array _)) -> true | _ -> false) :: vs', []
 
       | RefTest (RttOp x), Ref r :: vs' ->
         let rtt = Rtt.alloc (type_ c.frame.inst x) in
         (match r with
         | NullRef _ ->
           value_of_bool false :: vs', []
-        | Data.DataRef d ->
-          value_of_bool (Rtt.match_rtt (Data.read_rtt d) rtt) :: vs', []
+        | Aggr.AggrRef d ->
+          value_of_bool (Rtt.match_rtt (Aggr.read_rtt d) rtt) :: vs', []
         | FuncRef f ->
           value_of_bool (Rtt.match_rtt (Func.read_rtt f) rtt) :: vs', []
         | _ ->
@@ -681,9 +661,9 @@ let rec step (c : config) : config =
             string_of_value (Ref r)) @@ e.at]
         )
 
-      | RefCast DataOp, Ref r :: vs' ->
+      | RefCast AggrOp, Ref r :: vs' ->
         (match r with
-        | Data.DataRef _ ->
+        | Aggr.AggrRef _ ->
           Ref r :: vs', []
         | _ ->
           vs', [Trapping ("cast failure, expected data but got " ^
@@ -692,7 +672,7 @@ let rec step (c : config) : config =
 
       | RefCast ArrayOp, Ref r :: vs' ->
         (match r with
-        | Data.DataRef (Data.Array _) ->
+        | Aggr.AggrRef (Aggr.Array _) ->
           Ref r :: vs', []
         | _ ->
           vs', [Trapping ("cast failure, expected array but got " ^
@@ -704,14 +684,14 @@ let rec step (c : config) : config =
         (match r with
         | NullRef _ ->
           Ref r :: vs', []
-        | Data.DataRef d when Rtt.match_rtt (Data.read_rtt d) rtt ->
+        | Aggr.AggrRef d when Rtt.match_rtt (Aggr.read_rtt d) rtt ->
           Ref r :: vs', []
         | FuncRef f when Rtt.match_rtt (Func.read_rtt f) rtt ->
           Ref r :: vs', []
-        | Data.DataRef d ->
+        | Aggr.AggrRef d ->
           vs', [Trapping ("cast failure, expected " ^
             Rtt.string_of_rtt rtt ^ " but got " ^
-            Rtt.string_of_rtt (Data.read_rtt d)) @@ e.at]
+            Rtt.string_of_rtt (Aggr.read_rtt d)) @@ e.at]
         | FuncRef f ->
           vs', [Trapping ("cast failure, expected " ^
             Rtt.string_of_rtt rtt ^ " but got " ^
@@ -734,7 +714,7 @@ let rec step (c : config) : config =
 
       | StructNew (x, initop), vs' ->
         let rtt = Rtt.alloc (type_ c.frame.inst x) in
-        let StructType fts = struct_type c.frame.inst x in
+        let StructT fts = struct_type c.frame.inst x in
         let args, vs'' =
           match initop with
           | Explicit ->
@@ -742,58 +722,58 @@ let rec step (c : config) : config =
             List.rev args, vs''
           | Implicit ->
             let ts = List.map unpacked_field_type fts in
-            try List.map default_value ts, vs'
-            with Failure _ -> Crash.error e.at "non-defaultable type"
+            try List.map Option.get (List.map default_value ts), vs'
+            with Invalid_argument _ -> Crash.error e.at "non-defaultable type"
         in
-        let data = 
-          try Data.alloc_struct (type_ c.frame.inst x) rtt args
+        let aggr =
+          try Aggr.alloc_struct (type_ c.frame.inst x) rtt args
           with Failure _ -> Crash.error e.at "type mismatch packing value"
-        in Ref (Data.DataRef data) :: vs'', []
+        in Ref (Aggr.AggrRef aggr) :: vs'', []
 
       | StructGet (x, y, exto), Ref (NullRef _) :: vs' ->
         vs', [Trapping "null structure reference" @@ e.at]
 
-      | StructGet (x, y, exto), Ref Data.(DataRef (Struct (_, _, fs))) :: vs' ->
+      | StructGet (x, y, exto), Ref Aggr.(AggrRef (Struct (_, _, fs))) :: vs' ->
         let f =
           try Lib.List32.nth fs y.it
           with Failure _ -> Crash.error y.at "undefined field"
         in
-        (try Data.read_field f exto :: vs', []
+        (try Aggr.read_field f exto :: vs', []
         with Failure _ -> Crash.error e.at "type mismatch reading field")
 
       | StructSet (x, y), v :: Ref (NullRef _) :: vs' ->
         vs', [Trapping "null structure reference" @@ e.at]
 
-      | StructSet (x, y), v :: Ref Data.(DataRef (Struct (_, _, fs))) :: vs' ->
+      | StructSet (x, y), v :: Ref Aggr.(AggrRef (Struct (_, _, fs))) :: vs' ->
         let f =
           try Lib.List32.nth fs y.it
           with Failure _ -> Crash.error y.at "undefined field"
         in
-        (try Data.write_field f v; vs', []
+        (try Aggr.write_field f v; vs', []
         with Failure _ -> Crash.error e.at "type mismatch writing field")
 
       | ArrayNew (x, initop), Num (I32 n) :: vs' ->
         let rtt = Rtt.alloc (type_ c.frame.inst x) in
-        let ArrayType (FieldType (st, _)) = array_type c.frame.inst x in
+        let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
         let arg, vs'' =
           match initop with
           | Explicit -> List.hd vs', List.tl vs'
           | Implicit ->
-            try default_value (unpacked_storage_type st), vs'
-            with Failure _ -> Crash.error e.at "non-defaultable type"
+            try Option.get (default_value (unpacked_storage_type st)), vs'
+            with Invalid_argument _ -> Crash.error e.at "non-defaultable type"
         in
-        let data =
-          try Data.alloc_array (type_ c.frame.inst x) rtt (Lib.List32.make n arg)
+        let aggr =
+          try Aggr.alloc_array (type_ c.frame.inst x) rtt (Lib.List32.make n arg)
           with Failure _ -> Crash.error e.at "type mismatch packing value"
-        in Ref (Data.DataRef data) :: vs'', []
+        in Ref (Aggr.AggrRef aggr) :: vs'', []
 
       | ArrayNewFixed (x, n), vs' ->
         let rtt = Rtt.alloc (type_ c.frame.inst x) in
         let args, vs'' = split (I32.to_int_u n) vs' e.at in
-        let data =
-          try Data.alloc_array (type_ c.frame.inst x) rtt (List.rev args)
+        let aggr =
+          try Aggr.alloc_array (type_ c.frame.inst x) rtt (List.rev args)
           with Failure _ -> Crash.error e.at "type mismatch packing value"
-        in Ref (Data.DataRef data) :: vs'', []
+        in Ref (Aggr.AggrRef aggr) :: vs'', []
 
       | ArrayNewElem (x, y), Num (I32 n) :: Num (I32 s) :: vs' ->
         if elem_oob c.frame y s n then
@@ -801,84 +781,84 @@ let rec step (c : config) : config =
         else
           let rtt = Rtt.alloc (type_ c.frame.inst x) in
           let seg = elem c.frame.inst y in
-          let args =
-            List.map (fun r -> Ref r) (Lib.List32.take n (Lib.List32.drop s !seg)) in
-          let data =
-            try Data.alloc_array (type_ c.frame.inst x) rtt args
+          let rs = Lib.List32.init n (fun i -> Elem.load seg (Int32.add s i)) in
+          let args = List.map (fun r -> Ref r) rs in
+          let aggr =
+            try Aggr.alloc_array (type_ c.frame.inst x) rtt args
             with Failure _ -> Crash.error e.at "type mismatch packing value"
-          in Ref (Data.DataRef data) :: vs', []
+          in Ref (Aggr.AggrRef aggr) :: vs', []
 
       | ArrayNewData (x, y), Num (I32 n) :: Num (I32 s) :: vs' ->
         if data_oob c.frame y s n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
         else
           let rtt = Rtt.alloc (type_ c.frame.inst x) in
-          let ArrayType (FieldType (st, _)) = array_type c.frame.inst x in
+          let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
           let seg = data c.frame.inst y in
-          let bs = Bytes.of_string !seg in
+          let bs = Data.bytes seg in
           let args = Lib.List32.init n
             (fun i ->
               let j = I32.to_int_u s + I32.to_int_u i * storage_size st in
               match st with
-              | PackedStorageType Pack8 ->
-                Num (I32 (I32.of_int_u (Bytes.get_uint8 bs j)))
-              | PackedStorageType Pack16 ->
-                Num (I32 (I32.of_int_u (Bytes.get_uint16_le bs j)))
-              | ValueStorageType (NumType I32Type) ->
-                Num (I32 (Bytes.get_int32_le bs j))
-              | ValueStorageType (NumType I64Type) ->
-                Num (I64 (Bytes.get_int64_le bs j))
-              | ValueStorageType (NumType F32Type) ->
-                Num (F32 (F32.of_bits (Bytes.get_int32_le bs j)))
-              | ValueStorageType (NumType F64Type) ->
-                Num (F64 (F64.of_bits (Bytes.get_int64_le bs j)))
-              | ValueStorageType (VecType V128Type) ->
-                Vec (V128 (V128.of_bits (String.sub !seg j 16)))
+              | PackStorageT Pack.Pack8 ->
+                Num (I32 (I32.of_int_u (String.get_uint8 bs j)))
+              | PackStorageT Pack.Pack16 ->
+                Num (I32 (I32.of_int_u (String.get_uint16_le bs j)))
+              | ValStorageT (NumT I32T) ->
+                Num (I32 (String.get_int32_le bs j))
+              | ValStorageT (NumT I64T) ->
+                Num (I64 (String.get_int64_le bs j))
+              | ValStorageT (NumT F32T) ->
+                Num (F32 (F32.of_bits (String.get_int32_le bs j)))
+              | ValStorageT (NumT F64T) ->
+                Num (F64 (F64.of_bits (String.get_int64_le bs j)))
+              | ValStorageT (VecT V128T) ->
+                Vec (V128 (V128.of_bits (String.sub bs j 16)))
               | _ ->
                 Crash.error e.at "type mismatch packing value"
             )
           in
-          let data =
-            try Data.alloc_array (type_ c.frame.inst x) rtt args
+          let aggr =
+            try Aggr.alloc_array (type_ c.frame.inst x) rtt args
             with Failure _ -> Crash.error e.at "type mismatch packing value"
-          in Ref (Data.DataRef data) :: vs', []
+          in Ref (Aggr.AggrRef aggr) :: vs', []
 
       | ArrayGet (x, exto), Num (I32 i) :: Ref (NullRef _) :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
-      | ArrayGet (x, exto), Num (I32 i) :: Ref Data.(DataRef (Array (_, _, fs))) :: vs'
+      | ArrayGet (x, exto), Num (I32 i) :: Ref Aggr.(AggrRef (Array (_, _, fs))) :: vs'
         when I32.ge_u i (Lib.List32.length fs) ->
         vs', [Trapping "out of bounds array access" @@ e.at]
 
-      | ArrayGet (x, exto), Num (I32 i) :: Ref Data.(DataRef (Array (_, _, fs))) :: vs' ->
-        (try Data.read_field (Lib.List32.nth fs i) exto :: vs', []
+      | ArrayGet (x, exto), Num (I32 i) :: Ref Aggr.(AggrRef (Array (_, _, fs))) :: vs' ->
+        (try Aggr.read_field (Lib.List32.nth fs i) exto :: vs', []
         with Failure _ -> Crash.error e.at "type mismatch reading array")
 
       | ArraySet x, v :: Num (I32 i) :: Ref (NullRef _) :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
-      | ArraySet x, v :: Num (I32 i) :: Ref (Data.DataRef (Data.Array (_, _, fs))) :: vs'
+      | ArraySet x, v :: Num (I32 i) :: Ref Aggr.(AggrRef (Array (_, _, fs))) :: vs'
         when I32.ge_u i (Lib.List32.length fs) ->
         vs', [Trapping "out of bounds array access" @@ e.at]
 
-      | ArraySet x, v :: Num (I32 i) :: Ref (Data.DataRef (Data.Array (_, _, fs))) :: vs' ->
-        (try Data.write_field (Lib.List32.nth fs i) v; vs', []
+      | ArraySet x, v :: Num (I32 i) :: Ref Aggr.(AggrRef (Array (_, _, fs))) :: vs' ->
+        (try Aggr.write_field (Lib.List32.nth fs i) v; vs', []
         with Failure _ -> Crash.error e.at "type mismatch writing array")
 
       | ArrayLen, Ref (NullRef _) :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
-      | ArrayLen, Ref (Data.DataRef (Data.Array (_, _, svs))) :: vs' ->
+      | ArrayLen, Ref Aggr.(AggrRef (Array (_, _, svs))) :: vs' ->
         Num (I32 (Lib.List32.length svs)) :: vs', []
 
       | ExternConvert Internalize, Ref (NullRef _) :: vs' ->
-        Ref (NullRef NoExternHeapType) :: vs', []
+        Ref (NullRef NoExternHT) :: vs', []
 
       | ExternConvert Internalize, Ref (Extern.ExternRef r) :: vs' ->
         Ref r :: vs', []
 
       | ExternConvert Externalize, Ref (NullRef _) :: vs' ->
-        Ref (NullRef NoneHeapType) :: vs', []
+        Ref (NullRef NoneHT) :: vs', []
 
       | ExternConvert Externalize, Ref r :: vs' ->
         Ref (Extern.ExternRef r) :: vs', []
@@ -1001,18 +981,6 @@ let rec step (c : config) : config =
       let c' = step {c with code = code'} in
       vs, [Label (n, es0, c'.code) @@ e.at]
 
-    | Local (n, vs0, (vs', [])), vs ->
-      vs' @ vs, []
-
-    | Local (n, vs0, (vs', e' :: es')), vs when is_jumping e' ->
-      vs' @ vs, [e']
-
-    | Local (n, vs0, code'), vs ->
-      let frame' = {c.frame with locals = List.map ref vs0 @ c.frame.locals} in
-      let c' = step {c with frame = frame'; code = code'} in
-      let vs0' = List.map (!) (take (List.length vs0) c'.frame.locals e.at) in
-      vs, [Local (n, vs0', c'.code) @@ e.at]
-
     | Frame (n, frame', (vs', [])), vs ->
       vs' @ vs, []
 
@@ -1023,7 +991,7 @@ let rec step (c : config) : config =
       take n vs0 e.at @ vs, []
 
     | Frame (n, frame', (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
-      let FuncType (ts1, _) = Func.type_of f in
+      let FuncT (ts1, _ts2) = Func.type_of f in
       take (List.length ts1) vs0 e.at @ vs, [Invoke f @@ at]
 
     | Frame (n, frame', code'), vs ->
@@ -1034,28 +1002,22 @@ let rec step (c : config) : config =
       Exhaustion.error e.at "call stack exhausted"
 
     | Invoke f, vs ->
-      let FuncType (ts1, ts2) = Func.type_of f in
-      let args, vs' = split (List.length ts1) vs e.at in
+      let FuncT (ts1, ts2) = Func.type_of f in
+      let n1, n2 = List.length ts1, List.length ts2 in
+      let args, vs' = split n1 vs e.at in
       (match f with
       | Func.AstFunc (_, inst', func) ->
         let {locals; body; _} = func.it in
         let m = Lib.Promise.value inst' in
-        let ts = List.map (fun t -> Types.sem_value_type m.types t.it) locals in
-        let vs0 = List.rev args @ List.map default_value ts in
-        let locals' = List.map (fun t -> t @@ func.at) ts1 @ locals in
-        let st = SubType ([], FuncDefType (FuncType ([], ts2))) in
-        let x = Types.alloc_uninit () in
-        Types.init x (RecCtxType ([(SemVar x, st)], 0l));
-        let bt = VarBlockType (SemVar x) in
-        let es0 = [Plain (Let (bt, locals', body)) @@ func.at] in
-        vs', [Frame (List.length ts2, frame m, (List.rev vs0, es0)) @@ e.at]
+        let ts = List.map (fun loc -> Types.dyn_val_type m.types loc.it.ltype) locals in
+        let locs' = List.(rev (map Option.some args) @ map default_value ts) in
+        let frame' = {inst = m; locals = List.map ref locs'} in
+        let instr' = [Label (n2, [], ([], List.map plain body)) @@ func.at] in
+        vs', [Frame (n2, frame', ([], instr')) @@ e.at]
 
       | Func.HostFunc (_, f) ->
         (try List.rev (f (List.rev args)) @ vs', []
         with Crash (_, msg) -> Crash.error e.at msg)
-
-      | Func.ClosureFunc (_, f', args') ->
-        args @ args' @ vs', [Invoke f' @@ e.at]
       )
   in {c with code = vs', es' @ List.tl es}
 
@@ -1074,17 +1036,16 @@ let rec eval (c : config) : value stack =
 
 (* Functions & Constants *)
 
-let rec at_func = function
+let at_func = function
  | Func.AstFunc (_, _, f) -> f.at
  | Func.HostFunc _ -> no_region
- | Func.ClosureFunc (_, func, _) -> at_func func
 
 let invoke (func : func_inst) (vs : value list) : value list =
   let at = at_func func in
-  let FuncType (ts, _) = Func.type_of func in
-  if List.length vs <> List.length ts then
+  let FuncT (ts1, _ts2) = Func.type_of func in
+  if List.length vs <> List.length ts1 then
     Crash.error at "wrong number of arguments";
-  if not (List.for_all2 (fun v -> Match.match_value_type [] (type_of_value v)) vs ts) then
+  if not (List.for_all2 (fun v -> Match.match_val_type [] (type_of_value v)) vs ts1) then
     Crash.error at "wrong types of arguments";
   let c = config empty_module_inst (List.rev vs) [Invoke func @@ at] in
   try List.rev (eval c) with Stack_overflow ->
@@ -1101,24 +1062,29 @@ let eval_const (inst : module_inst) (const : const) : value =
 
 let create_type (type_ : type_) : type_inst list =
   match type_.it with
-  | RecDefType sts -> List.map (fun _ -> Types.alloc_uninit ()) sts
+  | RecT sts -> List.map (fun _ -> Types.alloc_uninit ()) sts
 
 let create_func (inst : module_inst) (f : func) : func_inst =
   Func.alloc (type_ inst f.it.ftype) (Lib.Promise.make ()) f
 
 let create_table (inst : module_inst) (tab : table) : table_inst =
-  let {ttype} = tab.it in
-  let TableType (_lim, (_, t)) as tt = Types.sem_table_type inst.types ttype in
-  Table.alloc tt (NullRef t)
+  let {ttype; tinit} = tab.it in
+  let tt = Types.dyn_table_type inst.types ttype in
+  let r =
+    match eval_const inst tinit with
+    | Ref r -> r
+    | _ -> Crash.error tinit.at "non-reference table initializer"
+  in
+  Table.alloc tt r
 
 let create_memory (inst : module_inst) (mem : memory) : memory_inst =
   let {mtype} = mem.it in
-  Memory.alloc (Types.sem_memory_type inst.types mtype)
+  Memory.alloc (Types.dyn_memory_type inst.types mtype)
 
 let create_global (inst : module_inst) (glob : global) : module_inst =
   let {gtype; ginit} = glob.it in
   let v = eval_const inst ginit in
-  let glob = Global.alloc (Types.sem_global_type inst.types gtype) v in
+  let glob = Global.alloc (Types.dyn_global_type inst.types gtype) v in
   { inst with globals = inst.globals @ [glob] }
 
 let create_export (inst : module_inst) (ex : export) : export_inst =
@@ -1133,17 +1099,17 @@ let create_export (inst : module_inst) (ex : export) : export_inst =
 
 let create_elem (inst : module_inst) (seg : elem_segment) : elem_inst =
   let {etype; einit; _} = seg.it in
-  ref (List.map (fun c -> as_ref (eval_const inst c)) einit)
+  Elem.alloc (List.map (fun c -> as_ref (eval_const inst c)) einit)
 
 let create_data (inst : module_inst) (seg : data_segment) : data_inst =
   let {dinit; _} = seg.it in
-  ref dinit
+  Data.alloc dinit
 
 
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
   : module_inst =
-  let it = extern_type_of_import_type (import_type_of m im) in
-  let et = Types.sem_extern_type inst.types it in
+  let it = Types.extern_type_of_import_type (import_type_of m im) in
+  let et = Types.dyn_extern_type inst.types it in
   let et' = extern_type_of inst.types ext in
   if not (Match.match_extern_type [] et' et) then
     Link.error im.at ("incompatible import type for " ^
@@ -1161,7 +1127,7 @@ let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
 let init_type (inst : module_inst) (x, ts : int32 * type_inst list) (type_ : type_) =
   let cts = ctx_types_of_def_type x type_.it in
   let ts1 = Lib.List.take (List.length cts) ts in
-  List.iter2 Types.init ts1 (List.map (Types.sem_ctx_type inst.types) cts);
+  List.iter2 Types.init ts1 (List.map (Types.dyn_ctx_type inst.types) cts);
   Int32.add x (Lib.List32.length cts), Lib.List.drop (List.length cts) ts
 
 let init_func (inst : module_inst) (func : func_inst) =

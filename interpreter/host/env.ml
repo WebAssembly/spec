@@ -13,8 +13,8 @@ let error msg = raise (Eval.Crash (Source.no_region, msg))
 
 let type_error v t =
   error
-    ("type error, expected " ^ string_of_value_type t ^
-     ", got " ^ string_of_value_type (type_of_value v))
+    ("type error, expected " ^ string_of_val_type t ^
+     ", got " ^ string_of_val_type (type_of_value v))
 
 let empty = function
   | [] -> ()
@@ -27,7 +27,7 @@ let single = function
 
 let int = function
   | Num (I32 i) -> Int32.to_int i
-  | v -> type_error v (NumType I32Type)
+  | v -> type_error v (NumT I32T)
 
 
 let abort vs =
@@ -40,10 +40,10 @@ let exit vs =
 
 
 let alloc_func f x =
-  ExternFunc (Func.alloc_host (as_sem_var x) f)
+  ExternFunc (Func.alloc_host x f)
 
 let lookup name et =
   match Utf8.encode name, et with
-  | "abort", ExternFuncType x -> alloc_func abort x
-  | "exit", ExternFuncType x -> alloc_func exit x
+  | "abort", ExternFuncT (DynX x) -> alloc_func abort x
+  | "exit", ExternFuncT (DynX x) -> alloc_func exit x
   | _ -> raise Not_found

@@ -198,12 +198,12 @@ Function definitions can bind a symbolic :ref:`function identifier <text-id>`, a
    \begin{array}{llclll}
    \production{function} & \Tfunc_I &::=&
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~~
-     (t{:}\Tlocal_I)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\X{in}^\ast~\END \} \\ &&& \qquad\qquad\qquad
+     (\X{loc}{:}\Tlocal_I)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \FTYPE~x, \FLOCALS~\X{loc}^\ast, \FBODY~\X{in}^\ast~\END \} \\ &&& \qquad\qquad\qquad
        (\iff I'' = I' \compose \{\ILOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\[1ex]
    \production{local} & \Tlocal_I &::=&
      \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype_I~\text{)}
-       \quad\Rightarrow\quad t \\
+       \quad\Rightarrow\quad \{ \LTYPE~t \} \\
    \end{array}
 
 The definition of the local :ref:`identifier context <text-context>` :math:`I''` uses the following auxiliary function to extract optional identifiers from locals:
@@ -292,7 +292,7 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
    \production{module field} &
      \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~\expr^n{:}\Tvec(\Telemexpr)~\text{)}~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)} \\ & \qquad
-       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Telemexpr)~\text{)}
+       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Treftype~~\Tvec(\Telemexpr)~\text{)}
        \\ & \qquad\qquad
        (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
@@ -302,7 +302,7 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
    \production{module field} &
      \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)} \\ & \qquad
-       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
+       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\text{func}~~\Tvec(\Tfuncidx)~\text{)}
        \\ & \qquad\qquad
        (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}

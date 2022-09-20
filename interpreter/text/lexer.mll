@@ -62,8 +62,9 @@ let symbol =
   ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
 
 let space = [' ''\t''\n''\r']
+let control = ['\x00'-'\x1f'] # space
 let ascii = ['\x00'-'\x7f']
-let ascii_no_nl = ['\x00'-'\x09''\x0b'-'\x7f']
+let ascii_no_nl = ascii # '\x0a'
 let utf8cont = ['\x80'-'\xbf']
 let utf8enc =
     ['\xc2'-'\xdf'] utf8cont
@@ -103,7 +104,7 @@ let name = idchar+
 let id = '$' name
 
 let keyword = ['a'-'z'] (letter | digit | '_' | '.' | ':')+
-let reserved = name | ',' | ';' | '[' | ']' | '{' | '}'
+let reserved = (idchar | string)+ | ',' | ';' | '[' | ']' | '{' | '}'
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
@@ -135,13 +136,13 @@ rule token = parse
 
   | keyword as s
     { match s with
-      | "i8" -> PACKED_TYPE Types.Pack8
-      | "i16" -> PACKED_TYPE Types.Pack16
-      | "i32" -> NUM_TYPE Types.I32Type
-      | "i64" -> NUM_TYPE Types.I64Type
-      | "f32" -> NUM_TYPE Types.F32Type
-      | "f64" -> NUM_TYPE Types.F64Type
-      | "v128" -> VEC_TYPE Types.V128Type
+      | "i8" -> PACK_TYPE Pack.Pack8
+      | "i16" -> PACK_TYPE Pack.Pack16
+      | "i32" -> NUM_TYPE Types.I32T
+      | "i64" -> NUM_TYPE Types.I64T
+      | "f32" -> NUM_TYPE Types.F32T
+      | "f64" -> NUM_TYPE Types.F64T
+      | "v128" -> VEC_TYPE Types.V128T
       | "i8x16" -> VEC_SHAPE (V128.I8x16 ())
       | "i16x8" -> VEC_SHAPE (V128.I16x8 ())
       | "i32x4" -> VEC_SHAPE (V128.I32x4 ())
@@ -181,7 +182,6 @@ rule token = parse
       | "drop" -> DROP
       | "block" -> BLOCK
       | "loop" -> LOOP
-      | "let" -> LET
       | "end" -> END
       | "br" -> BR
       | "br_if" -> BR_IF
@@ -205,7 +205,6 @@ rule token = parse
       | "call_ref" -> CALL_REF
       | "call_indirect" -> CALL_INDIRECT
       | "return_call_ref" -> RETURN_CALL_REF
-      | "func.bind" -> FUNC_BIND
 
       | "local.get" -> LOCAL_GET
       | "local.set" -> LOCAL_SET
@@ -784,13 +783,14 @@ rule token = parse
   | eof { EOF }
 
   | reserved { unknown lexbuf }
-  | utf8 { error lexbuf "malformed operator" }
+  | control { error lexbuf "misplaced control character" }
+  | utf8enc { error lexbuf "misplaced unicode character" }
   | _ { error lexbuf "malformed UTF-8 encoding" }
 
 and comment start = parse
   | ";)" { () }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; comment start lexbuf }
   | '\n' { Lexing.new_line lexbuf; comment start lexbuf }
+  | utf8_no_nl { comment start lexbuf }
   | eof { error_nest start lexbuf "unclosed comment" }
-  | utf8 { comment start lexbuf }
   | _ { error lexbuf "malformed UTF-8 encoding" }

@@ -5,7 +5,7 @@ Modules
 Furthermore, most definitions are themselves classified with a suitable type.
 
 
-.. index:: function, local, function index, local index, type index, function type, value type, expression, import
+.. index:: function, local, function index, local index, type index, function type, value type, local type, expression, import
    pair: abstract syntax; function
    single: abstract syntax; function
 .. _valid-local:
@@ -24,10 +24,16 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 
 * Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
 
+* For each local declared by a :ref:`value type <syntax-valtype>` :math:`t` in :math:`t^\ast`:
+
+  * The local for type :math:`t` must be :ref:`valid <valid-localtype>` with :ref:`local type <syntax-localtype>` :math:`\localtype_i`.
+
+* Let :math:`\localtype^\ast` be the concatenation of all :math:`\localtype_i`.
+
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`,
   but with:
 
-  * |CLOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
+  * |CLOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`(\SET~t_1)^\ast~\localtype^\ast`, concatenating parameters and locals,
 
   * |CLABELS| set to the singular sequence containing only :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]`.
 
@@ -42,13 +48,58 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
    \frac{
      C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
      \qquad
-     C,\CLOCALS\,t_1^\ast~t^\ast,\CLABELS~[t_2^\ast],\CRETURN~[t_2^\ast] \vdashexpr \expr : [t_2^\ast]
+     (C \vdashlocal t : \init~t)^\ast
+     \qquad
+     C,\CLOCALS\,(\SET~t_1)^\ast~(\init~t)^\ast,\CLABELS~[t_2^\ast],\CRETURN~[t_2^\ast] \vdashexpr \expr : [t_2^\ast]
    }{
      C \vdashfunc \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : [t_1^\ast] \to [t_2^\ast]
    }
 
 
-.. index:: table, table type
+.. index:: local, local type, value type
+   pair: validation; local
+   single: abstract syntax; local
+.. _valid-localtype:
+
+Locals
+~~~~~~
+
+:ref:`Locals <syntax-local>` are classified with :ref:`local types <syntax-localtype>`.
+
+:math:`\{ \LTYPE~\valtype \}`
+.............................
+
+* The :ref:`value type <syntax-valtype>` :math:`\valtype` must be :ref:`valid <valid-valtype>`.
+
+* If :math:`\valtype` is :ref:`defaultable <valid-defaultable>`, then:
+
+  * The local is valid with :ref:`local type <syntax-localtype>` :math:`\SET~\valtype`.
+
+* Else:
+
+  * The local is valid with :ref:`local type <syntax-localtype>` :math:`\UNSET~\valtype`.
+
+.. math::
+   \frac{
+     C \vdashvaltype t \ok
+     \qquad
+     C \vdashvaltypedefaultable t \defaultable
+   }{
+     C \vdashlocal \{ \LTYPE~t \} : \SET~t \ok
+   }
+
+.. math::
+   \frac{
+     C \vdashvaltype t \ok
+   }{
+     C \vdashlocal \{ LTYPE~t \} : \UNSET~t \ok
+   }
+
+.. note::
+   For cases where both rules are applicable, the former yields the more permissable type.
+
+
+.. index:: table, table type, reference type, expression, constant, defaultable
    pair: validation; table
    single: abstract syntax; table
 .. _valid-table:
@@ -58,18 +109,30 @@ Tables
 
 Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>`.
 
-:math:`\{ \TTYPE~\tabletype \}`
-...............................
+:math:`\{ \TTYPE~\tabletype, \TINIT~\expr \}`
+.............................................
 
 * The :ref:`table type <syntax-tabletype>` :math:`\tabletype` must be :ref:`valid <valid-tabletype>`.
+
+* Let :math:`t` be the element :ref:`reference type <syntax-reftype>` of :math:`\tabletype`.
+
+* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[t]`.
+
+* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
 * Then the table definition is valid with type :math:`\tabletype`.
 
 .. math::
    \frac{
      C \vdashtabletype \tabletype \ok
+     \qquad
+     \tabletype = \limits~t
+     \qquad
+     C \vdashexpr \expr : [t]
+     \qquad
+     C \vdashexprconst \expr \const
    }{
-     C \vdashtable \{ \TTYPE~\tabletype \} : \tabletype
+     C \vdashtable \{ \TTYPE~\tabletype, \TINIT~\expr \} : \tabletype
    }
 
 
@@ -98,7 +161,7 @@ Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>`.
    }
 
 
-.. index:: global, global type, expression
+.. index:: global, global type, expression, constant
    pair: validation; global
    single: abstract syntax; global
 .. _valid-global:
@@ -132,7 +195,7 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
    }
 
 
-.. index:: element, table, table index, expression, function index
+.. index:: element, table, table index, expression, constant, function index
    pair: validation; element
    single: abstract syntax; element
    single: table; element
@@ -233,7 +296,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 
 
-.. index:: data, memory, memory index, expression, byte
+.. index:: data, memory, memory index, expression, constant, byte
    pair: validation; data
    single: abstract syntax; data
    single: memory; data
@@ -516,6 +579,9 @@ that is, its components can only refer to definitions that appear in the module 
 Consequently, no initial :ref:`context <context>` is required.
 Instead, the context :math:`C` for validation of the module's content is constructed from the definitions in the module.
 
+The :ref:`external types <syntax-externtype>` classifying a module may contain free :ref:`type indices <syntax-typeidx>` that refer to types defined within the module.
+
+
 * Let :math:`\module` be the module to validate.
 
 * Let :math:`C` be a :ref:`context <context>` where:
@@ -548,19 +614,19 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
 * For each function type :math:`\functype_i` in :math:`\module.\MTYPES`:
 
-  * Let :math:`C'_i` be the :ref:`context <context>` where :math:`C'_i.\CTYPES` is :math:`C.\CTYPES[0 \slice i]` and all other fields are empty.
+  * Let :math:`C_i` be the :ref:`context <context>` where :math:`C_i.\CTYPES` is :math:`C.\CTYPES[0 \slice i]` and all other fields are empty.
 
-  * The function  :math:`\functype_i` must be :ref:`valid <valid-functype>` under context :math:`C'_i`.
+  * The function  :math:`\functype_i` must be :ref:`valid <valid-functype>` under context :math:`C_i`.
 
-* Let :math:`C''` be the :ref:`context <context>` where:
+* Let :math:`C'` be the :ref:`context <context>` where:
 
-  * :math:`C''.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)`,
+  * :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)`,
 
-  * :math:`C''.\CTYPES` is the same as :math:`C.\CTYPES`,
+  * :math:`C'.\CTYPES` is the same as :math:`C.\CTYPES`,
 
-  * :math:`C''.\CFUNCS` is the same as :math:`C.\CFUNCS`,
+  * :math:`C'.\CFUNCS` is the same as :math:`C.\CFUNCS`,
 
-  * :math:`C''.\CREFS` is the same as :math:`C.\CREFS`,
+  * :math:`C'.\CREFS` is the same as :math:`C.\CREFS`,
 
   * all other fields are empty.
 
@@ -568,23 +634,6 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
     the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
-
-  * For each :math:`\table_i` in :math:`\module.\MTABLES`,
-    the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\X{tt}_i`.
-
-  * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
-    the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\X{mt}_i`.
-
-  * For each :math:`\global_i` in :math:`\module.\MGLOBALS`:
-
-    * Under the context :math:`C''`,
-      the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
-
-  * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
-    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
-
-  * For each :math:`\data_i` in :math:`\module.\MDATAS`,
-    the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
 
   * If :math:`\module.\MSTART` is non-empty,
     then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
@@ -594,6 +643,23 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
     the segment :math:`\export_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
+
+* Under the context :math:`C'`:
+
+  * For each :math:`\table_i` in :math:`\module.\MTABLES`,
+    the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\X{tt}_i`.
+
+  * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
+    the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\X{mt}_i`.
+
+  * For each :math:`\global_i` in :math:`\module.\MGLOBALS`,
+    the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
+
+  * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
+    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
+
+  * For each :math:`\data_i` in :math:`\module.\MDATAS`,
+    the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
 
 * The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
 
@@ -622,15 +688,15 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \quad
      (C \vdashfunc \func : \X{ft})^\ast
      \quad
-     (C \vdashtable \table : \X{tt})^\ast
+     (C' \vdashtable \table : \X{tt})^\ast
      \quad
-     (C \vdashmem \mem : \X{mt})^\ast
+     (C' \vdashmem \mem : \X{mt})^\ast
      \quad
-     (C'' \vdashglobal \global : \X{gt})^\ast
+     (C' \vdashglobal \global : \X{gt})^\ast
      \\
-     (C \vdashelem \elem : \X{rt})^\ast
+     (C' \vdashelem \elem : \X{rt})^\ast
      \quad
-     (C \vdashdata \data \ok)^n
+     (C' \vdashdata \data \ok)^n
      \quad
      (C \vdashstart \start \ok)^?
      \quad
@@ -650,9 +716,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \\
      C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
-     (C' = \{ \CTYPES~\type^\ast \})^\ast
-     \\
-     C'' = \{ \CTYPES~\type^\ast, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
+     C' = \{ \CTYPES~\type^\ast, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad
      |C.\CMEMS| \leq 1
      \qquad
@@ -703,8 +767,8 @@ where:
    However, this recursion is just a specification device.
    All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
-   Globals, however, are not recursive.
-   The effect of defining the limited context :math:`C'` for validating the module's globals is that their initialization expressions can only access functions and imported globals and nothing else.
+   Globals, however, are not recursive and not accessible within :ref:`constant expressions <valid-const>` when they are defined locally.
+   The effect of defining the limited context :math:`C'` for validating certain definitions is that they can only access functions and imported globals and nothing else.
 
 .. note::
    The restriction on the number of memories may be lifted in future versions of WebAssembly.

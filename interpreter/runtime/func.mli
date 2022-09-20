@@ -1,17 +1,15 @@
 open Types
 open Value
 
-type 'inst func =
-  | AstFunc of sem_var * 'inst * Ast.func
-  | HostFunc of sem_var * (value list -> value list)
-  | ClosureFunc of sem_var * 'inst func * value list
 type 'inst t = 'inst func
+and 'inst func =
+  | AstFunc of type_addr * 'inst * Ast.func
+  | HostFunc of type_addr * (value list -> value list)
 
-val alloc : sem_var -> 'inst -> Ast.func -> 'inst func
-val alloc_host : sem_var -> (value list -> value list) -> 'inst func
-val alloc_closure : sem_var -> 'inst func -> value list -> 'inst func
+val alloc : type_addr -> 'inst -> Ast.func -> 'inst func
+val alloc_host : type_addr -> (value list -> value list) -> 'inst func
 
 val type_of : 'inst func -> func_type
-val type_inst_of : 'inst func -> sem_var
+val type_inst_of : 'inst func -> type_addr
 
 val read_rtt : 'inst func -> Rtt.t

@@ -1,4 +1,5 @@
 open Types
+open Pack
 open Value
 open Bigarray
 open Lib.Bigarray
@@ -34,7 +35,7 @@ let create n =
     mem
   with Out_of_memory -> raise OutOfMemory
 
-let alloc (MemoryType lim as ty) =
+let alloc (MemoryT lim as ty) =
   if not (valid_limits lim) then raise Type;
   {ty; content = create lim.min}
 
@@ -48,7 +49,7 @@ let type_of mem =
   mem.ty
 
 let grow mem delta =
-  let MemoryType lim = mem.ty in
+  let MemoryT lim = mem.ty in
   assert (lim.min = size mem);
   let old_size = lim.min in
   let new_size = Int32.add old_size delta in
@@ -58,7 +59,7 @@ let grow mem delta =
   let after = create new_size in
   let dim = Array1_64.dim mem.content in
   Array1.blit (Array1_64.sub mem.content 0L dim) (Array1_64.sub after 0L dim);
-  mem.ty <- MemoryType lim';
+  mem.ty <- MemoryT lim';
   mem.content <- after
 
 let load_byte mem a =
@@ -103,15 +104,15 @@ let storen mem a o n x =
   in loop (effective_address a o) n x
 
 let load_num mem a o t =
-  let n = loadn mem a o (Types.num_size t) in
+  let n = loadn mem a o (num_size t) in
   match t with
-  | I32Type -> I32 (Int64.to_int32 n)
-  | I64Type -> I64 n
-  | F32Type -> F32 (F32.of_bits (Int64.to_int32 n))
-  | F64Type -> F64 (F64.of_bits n)
+  | I32T -> I32 (Int64.to_int32 n)
+  | I64T -> I64 n
+  | F32T -> F32 (F32.of_bits (Int64.to_int32 n))
+  | F64T -> F64 (F64.of_bits n)
 
 let store_num mem a o n =
-  let store = storen mem a o (Types.num_size (Value.type_of_num n)) in
+  let store = storen mem a o (num_size (Value.type_of_num n)) in
   match n with
   | I32 x -> store (Int64.of_int32 x)
   | I64 x -> store x
@@ -127,12 +128,12 @@ let load_num_packed sz ext mem a o t =
   let w = packed_size sz in
   let x = extend (loadn mem a o w) w ext in
   match t with
-  | I32Type -> I32 (Int64.to_int32 x)
-  | I64Type -> I64 x
+  | I32T -> I32 (Int64.to_int32 x)
+  | I64T -> I64 x
   | _ -> raise Type
 
 let store_num_packed sz mem a o n =
-  assert (packed_size sz <= Types.num_size (Value.type_of_num n));
+  assert (packed_size sz <= num_size (Value.type_of_num n));
   let w = packed_size sz in
   let x =
     match n with
@@ -143,8 +144,8 @@ let store_num_packed sz mem a o n =
 
 let load_vec mem a o t =
   match t with
-  | V128Type ->
-    V128 (V128.of_bits (load_bytes mem (effective_address a o) (Types.vec_size t)))
+  | V128T ->
+    V128 (V128.of_bits (load_bytes mem (effective_address a o) (vec_size t)))
 
 let store_vec mem a o n =
   match n with

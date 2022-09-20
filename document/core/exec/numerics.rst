@@ -177,7 +177,7 @@ When a number is stored into :ref:`memory <syntax-mem>`, it is converted into a 
    \littleendian(d^8~{d'}^\ast~) &=& \littleendian({d'}^\ast)~\ibits_8^{-1}(d^8) \\
    \end{array}
 
-Again these functions are invertable bijections.
+Again these functions are invertible bijections.
 
 
 .. index:: numeric vectors, shape

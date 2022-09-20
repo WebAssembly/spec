@@ -9,7 +9,7 @@
  *   f : func
  *   m : module_
  *
- *   t : value_type
+ *   t : val_type
  *   s : func_type
  *   c : context / config
  *
@@ -19,6 +19,7 @@
 (* Types *)
 
 open Types
+open Pack
 
 type void = Lib.void
 
@@ -127,7 +128,7 @@ type vec_storeop = (vec_type, unit) memop
 type vec_laneop = (vec_type, pack_size) memop * int
 
 type initop = Explicit | Implicit
-type castop = NullOp | I31Op | DataOp | ArrayOp | RttOp of int32 Source.phrase
+type castop = NullOp | I31Op | AggrOp | ArrayOp | RttOp of int32 Source.phrase
 type externop = Internalize | Externalize
 
 
@@ -138,21 +139,17 @@ type num = Value.num Source.phrase
 type vec = Value.vec Source.phrase
 type name = Utf8.unicode
 
-type local = local' Source.phrase
-and local' = value_type
-
-type block_type = VarBlockType of var | ValBlockType of value_type option
+type block_type = VarBlockType of idx | ValBlockType of val_type option
 
 type instr = instr' Source.phrase
 and instr' =
   | Unreachable                       (* trap unconditionally *)
   | Nop                               (* do nothing *)
   | Drop                              (* forget a value *)
-  | Select of value_type list option  (* branchless conditional *)
+  | Select of val_type list option    (* branchless conditional *)
   | Block of block_type * instr list  (* execute in sequence *)
   | Loop of block_type * instr list   (* loop header *)
   | If of block_type * instr list * instr list   (* conditional *)
-  | Let of block_type * local list * instr list  (* local bindings *)
   | Br of idx                         (* break to n-th surrounding label *)
   | BrIf of idx                       (* conditional break *)
   | BrTable of idx list * idx         (* indexed break *)
@@ -160,10 +157,9 @@ and instr' =
   | BrCastFail of idx * castop        (* break on type inverted *)
   | Return                            (* break from function body *)
   | Call of idx                       (* call function *)
-  | CallRef                           (* call function through reference *)
+  | CallRef of idx                    (* call function through reference *)
   | CallIndirect of idx * idx         (* call function through table *)
-  | ReturnCallRef                     (* tail call through reference *)
-  | FuncBind of idx                   (* closure creation *)
+  | ReturnCallRef of idx              (* tail call through reference *)
   | LocalGet of idx                   (* read local idxiable *)
   | LocalSet of idx                   (* write local idxiable *)
   | LocalTee of idx                   (* write local idxiable and keep value *)
@@ -230,9 +226,15 @@ and instr' =
   | VecReplace of vec_replaceop       (* replace lane in vector *)
 
 
-(* Globals & Functions *)
+(* Locals, globals & Functions *)
 
 type const = instr list Source.phrase
+
+type local = local' Source.phrase
+and local' =
+{
+  ltype : val_type;
+}
 
 type global = global' Source.phrase
 and global' =
@@ -256,6 +258,7 @@ type table = table' Source.phrase
 and table' =
 {
   ttype : table_type;
+  tinit : const;
 }
 
 type memory = memory' Source.phrase
@@ -363,11 +366,11 @@ let import_type_of (m : module_) (im : import) : import_type =
   let {idesc; module_name; item_name} = im.it in
   let et =
     match idesc.it with
-    | FuncImport x -> ExternFuncType (SynVar x.it)
-    | TableImport t -> ExternTableType t
-    | MemoryImport t -> ExternMemoryType t
-    | GlobalImport t -> ExternGlobalType t
-  in ImportType (et, module_name, item_name)
+    | FuncImport x -> ExternFuncT (StatX x.it)
+    | TableImport t -> ExternTableT t
+    | MemoryImport t -> ExternMemoryT t
+    | GlobalImport t -> ExternGlobalT t
+  in ImportT (et, module_name, item_name)
 
 let export_type_of (m : module_) (ex : export) : export_type =
   let {edesc; name} = ex.it in
@@ -377,21 +380,21 @@ let export_type_of (m : module_) (ex : export) : export_type =
   let et =
     match edesc.it with
     | FuncExport x ->
-      let fts = funcs ets @ List.map (fun f -> SynVar f.it.ftype.it) m.it.funcs in
-      ExternFuncType (nth fts x.it)
+      let fts = funcs ets @ List.map (fun f -> StatX f.it.ftype.it) m.it.funcs in
+      ExternFuncT (nth fts x.it)
     | TableExport x ->
       let tts = tables ets @ List.map (fun t -> t.it.ttype) m.it.tables in
-      ExternTableType (nth tts x.it)
+      ExternTableT (nth tts x.it)
     | MemoryExport x ->
       let mts = memories ets @ List.map (fun m -> m.it.mtype) m.it.memories in
-      ExternMemoryType (nth mts x.it)
+      ExternMemoryT (nth mts x.it)
     | GlobalExport x ->
       let gts = globals ets @ List.map (fun g -> g.it.gtype) m.it.globals in
-      ExternGlobalType (nth gts x.it)
-  in ExportType (et, name)
+      ExternGlobalT (nth gts x.it)
+  in ExportT (et, name)
 
 let module_type_of (m : module_) : module_type =
   let dts = List.map Source.it m.it.types in
   let its = List.map (import_type_of m) m.it.imports in
   let ets = List.map (export_type_of m) m.it.exports in
-  ModuleType (dts, its, ets)
+  ModuleT (dts, its, ets)

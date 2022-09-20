@@ -21,6 +21,17 @@ jobs:
       - run: opam install --yes ocamlbuild.0.14.0
       - run: cd interpreter && opam exec make all
 
+  ref-interpreter-js-library:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 4.13.x
+      - run: opam install --yes ocamlbuild.0.14.0 ocamlfind.1.9.5 js_of_ocaml.4.0.0 js_of_ocaml-ppx.4.0.0
+      - run: cd interpreter && opam exec make wast.js
+
   build-js-api-spec:
     runs-on: ubuntu-latest
     steps:

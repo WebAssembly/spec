@@ -24,7 +24,7 @@ That is, they only formulate the constraints, they do not define an algorithm.
 The skeleton of a sound and complete algorithm for type-checking instruction sequences according to this specification is provided in the :ref:`appendix <algo-valid>`.
 
 
-.. index:: ! context, function type, table type, memory type, global type, value type, result type, index space, module, function
+.. index:: ! context, local type, function type, table type, memory type, global type, value type, result type, index space, module, function, local type
 .. _context:
 
 Contexts
@@ -40,7 +40,7 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Globals*: the list of globals declared in the current module, represented by their global type.
 * *Element Segments*: the list of element segments declared in the current module, represented by their element type.
 * *Data Segments*: the list of data segments declared in the current module, each represented by an |ok| entry.
-* *Locals*: the list of locals declared in the current function (including parameters), represented by their value type.
+* *Locals*: the list of locals declared in the current function (including parameters), represented by their local type.
 * *Labels*: the stack of labels accessible from the current position, represented by their result type.
 * *Return*: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.
 * *References*: the list of :ref:`function indices <syntax-funcidx>` that occur in the module outside functions and can hence be used to form references inside them.
@@ -63,11 +63,11 @@ More concretely, contexts are defined as :ref:`records <notation-record>` :math:
         & \CGLOBALS & \globaltype^\ast, \\
         & \CELEMS & \reftype^\ast, \\
         & \CDATAS & {\ok}^\ast, \\
-        & \CLOCALS & \valtype^\ast, \\
+        & \CLOCALS & \localtype^\ast, \\
         & \CLABELS & \resulttype^\ast, \\
         & \CRETURN & \resulttype^?, \\
         & \CREFS & \funcidx^\ast ~\} \\
-     \end{array}
+     \end{array} \\
    \end{array}
 
 .. _notation-extend:
@@ -79,7 +79,7 @@ In addition to field access written :math:`C.\K{field}` the following notation i
 * :math:`C,\K{field}\,A^\ast` denotes the same context as :math:`C` but with the elements :math:`A^\ast` prepended to its :math:`\K{field}` component sequence.
 
 .. note::
-   We use :ref:`indexing notation <notation-index>` like :math:`C.\CLABELS[i]` to look up indices in their respective :ref:`index space <syntax-index>` in the context.
+   :ref:`Indexing notation <notation-index>` like :math:`C.\CLABELS[i]` is used to look up indices in their respective :ref:`index space <syntax-index>` in the context.
    Context extension notation :math:`C,\K{field}\,A` is primarily used to locally extend *relative* index spaces, such as :ref:`label indices <syntax-labelidx>`.
    Accordingly, the notation is defined to append at the *front* of the respective sequence, introducing a new relative index :math:`0` and shifting the existing ones.
 
@@ -158,15 +158,15 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
 
    .. math::
       \frac{
-        C.\CLOCALS[x] = t
+        C.\CGLOBALS[x] = \mut~t
       }{
-        C \vdash \LOCALGET~x : [] \to [t]
+        C \vdash \GLOBALGET~x : [] \to [t]
       }
 
-   Here, the premise enforces that the immediate :ref:`local index <syntax-localidx>` :math:`x` exists in the context.
+   Here, the premise enforces that the immediate :ref:`global index <syntax-globalidx>` :math:`x` exists in the context.
    The instruction produces a value of its respective type :math:`t`
    (and does not consume any values).
-   If :math:`C.\CLOCALS[x]` does not exist then the premise does not hold,
+   If :math:`C.\CGLOBALS[x]` does not exist then the premise does not hold,
    and the instruction is ill-typed.
 
    Finally, a :ref:`structured <syntax-instr-control>` instruction requires

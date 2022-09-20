@@ -9,5 +9,6 @@ Execution
    conventions
    runtime
    numerics
+   types
    instructions
    modules
