@@ -807,7 +807,7 @@ Theorems
 ~~~~~~~~
 
 Given the definition of :ref:`valid configurations <valid-config>`,
-the standard soundness theorems hold. [#cite-cpp2018]_
+the standard soundness theorems hold. [#cite-cpp2018]_ [#cite-fm2021]_
 
 **Theorem (Preservation).**
 If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-config>` with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` (i.e., :math:`\vdashconfig S;T : [t^\ast]`),
@@ -839,5 +839,9 @@ Consequently, given a :ref:`valid store <valid-store>`, no computation defined b
    Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. |PLDI2017|_. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
 
 .. [#cite-cpp2018]
-   A machine-verified version of the formalization and soundness proof is described in the following article:
+   A machine-verified version of the formalization and soundness proof of the PLDI 2017 paper is described in the following article:
    Conrad Watt. |CPP2018|_. Proceedings of the 7th ACM SIGPLAN Conference on Certified Programs and Proofs (CPP 2018). ACM 2018.
+
+.. [#cite-fm2021]
+   Machine-verified formalizations and soundness proofs of the semantics from the official specification are described in the following article:
+   Conrad Watt, Xiaojia Rao, Jean Pichon-Pharabod, Martin Bodin, Philippa Gardner. |FM2021|_. Proceedings of the 24th International Symposium on Formal Methods (FM 2021). Springer 2021.
