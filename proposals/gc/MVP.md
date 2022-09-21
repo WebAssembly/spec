@@ -596,22 +596,22 @@ In particular, `ref.null` is typed as before, despite the introduction of `none`
 
 #### Casts
 
-Casts work for both abstract and concrete types. In the latter case, they test of the operands RTT is a sub-RTT of the target type.
+Casts work for both abstract and concrete types. In the latter case, they test if the operand's RTT is a sub-RTT of the target type.
 
-* `ref.test null? <heaptype>` checks whether a reference is a given heap type
+* `ref.test null? <heaptype>` checks whether a reference has a given heap type
   - `ref.test null? ht : [(ref null ht')] -> [i32]`
-    - iff `ht <: tht` and `ht' <: tht` where `tht` is a common super type
+    - iff `ht <: ht'`
   - if `null?` is present, returns 1 for null, otherwise 0
 
 * `ref.cast null? <heaptype>` tries to convert to a given heap type
   - `ref.cast null? ht : [(ref null ht')] -> [(ref null2? ht)]`
-    - iff `ht <: tht` and `ht' <: tht` where `tht` is a common super type
+    - iff `ht <: ht'`
     - and `null? = null2?`
   - traps if reference is not of requested type
   - if `null?` is present, a null operand is passed through, otherwise traps on null
   - equivalent to `(block $l (param anyref) (result (ref null? ht)) (br_on_cast null? ht $l) (unreachable))`
 
-* `br_on_cast <labelidx> null? <heaptype>` branches if a reference is given heap type
+* `br_on_cast <labelidx> null? <heaptype>` branches if a reference has a given heap type
   - `br_on_cast $l null? ht : [t0* (ref null ht')] -> [t0* (ref null2? ht')]`
     - iff `$l : [t0* t']`
     - and `(ref null3? ht) <: t'`
@@ -620,7 +620,7 @@ Casts work for both abstract and concrete types. In the latter case, they test o
   - passes operand along with branch under target type, plus possible extra args
   - if `null?` is present, branches on null, otherwise does not
 
-* `br_on_cast_fail <labelidx> null? <heaptype>` branches if a reference is not a given heap type
+* `br_on_cast_fail <labelidx> null? <heaptype>` branches if a reference does not have a given heap type
   - `br_on_cast_fail $l null? ht : [t0* (ref null ht')] -> [t0* (ref null2? ht)]`
     - iff `$l : [t0* t']`
     - and `(ref null3? ht) <: t'`
@@ -629,15 +629,15 @@ Casts work for both abstract and concrete types. In the latter case, they test o
   - passes operand along with branch, plus possible extra args
   - if `null?` is present, does not branch on null, otherwise does
 
-Note: Cast instructions allow an operand of sibling reference type, even though this cannot possibly succeed. That's because subtyping allows to forget type information and go to a common supertype, so by the subtype substitutibility property, it would be accepted in any case. The given typing rules merely allow this type to also propagate to the result, which avoids the need to compute a least upper bound between the operand type and the target type in the typing algorithm. In practice, it is sufficient to test that both types share the same top heap type.
+Note: Via subsumption to a common supertype, `ref.test` and `ref.cast` actually allow an operand of sibling reference type, even though this cannot possibly succeed. In the case of the branch instruction, this has to be made explicit, though, since the type also occurs in result position. The given typing rules allow this type to also propagate to the result, which avoids the need to compute a least upper bound between the operand type and the target type in the typing algorithm (allowing so is required to maintain subtype substitutability). In practice, it is sufficient to test that both types share the same top heap type.
 
 Note: The [reference types](https://github.com/WebAssembly/reference-types) and [typed function references](https://github.com/WebAssembly/function-references)already introduce similar `ref.is_null`, `br_on_null`, and `br_on_non_null` instructions. These can now be interpreted as syntactic sugar:
 
-* `ref.is_null` is equivalent to `ref.test null ht`, where `tht` is the suitable bottom type (`none`, `nofunc`, or `noextern`)
+* `ref.is_null` is equivalent to `ref.test null ht`, where `ht` is the suitable bottom type (`none`, `nofunc`, or `noextern`)
 
-* `br_on_null` is equivalent to `br_on_cast null ht`, where `tht` is the suitable bottom type
+* `br_on_null` is equivalent to `br_on_cast null ht`, where `ht` is the suitable bottom type
 
-* `br_on_non_null` is equivalent to `br_on_cast_fail null ht`, where `tht` is the suitable bottom type
+* `br_on_non_null` is equivalent to `br_on_cast_fail null ht`, where `ht` is the suitable bottom type
 
 * finally, `ref.as_non_null` is equivalent to `ref.cast ht`, where `ht` is the heap type of the operand
 
@@ -761,10 +761,10 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb41 | `ref.cast ht` | `ht : heaptype` |
 | 0xfb42 | `br_on_cast $l ht` | `$l : labelidx`, `ht : heaptype` |
 | 0xfb43 | `br_on_cast_fail $l ht` | `$l : labelidx`, `ht : heaptype` |
-| 0xfb40 | `ref.test null ht` | `ht : heaptype` |
-| 0xfb41 | `ref.cast null ht` | `ht : heaptype` |
-| 0xfb42 | `br_on_cast $l null ht` | `$l : labelidx`, `ht : heaptype` |
-| 0xfb43 | `br_on_cast_fail $l null ht` | `$l : labelidx`, `ht : heaptype` |
+| 0xfb48 | `ref.test null ht` | `ht : heaptype` |
+| 0xfb49 | `ref.cast null ht` | `ht : heaptype` |
+| 0xfb4a | `br_on_cast $l null ht` | `$l : labelidx`, `ht : heaptype` |
+| 0xfb4b | `br_on_cast_fail $l null ht` | `$l : labelidx`, `ht : heaptype` |
 | 0xfb70 | `extern.internalize` | |
 | 0xfb71 | `extern.externalize` | |
 
