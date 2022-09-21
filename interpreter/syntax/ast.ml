@@ -128,7 +128,6 @@ type vec_storeop = (vec_type, unit) memop
 type vec_laneop = (vec_type, pack_size) memop * int
 
 type initop = Explicit | Implicit
-type castop = NullOp | I31Op | AggrOp | ArrayOp | RttOp of int32 Source.phrase
 type externop = Internalize | Externalize
 
 
@@ -153,8 +152,10 @@ and instr' =
   | Br of idx                         (* break to n-th surrounding label *)
   | BrIf of idx                       (* conditional break *)
   | BrTable of idx list * idx         (* indexed break *)
-  | BrCast of idx * castop            (* break on type *)
-  | BrCastFail of idx * castop        (* break on type inverted *)
+  | BrCastNull of idx                 (* break on type *)
+  | BrCastFailNull of idx             (* break on type inverted *)
+  | BrCast of idx * ref_type          (* break on type *)
+  | BrCastFail of idx * ref_type      (* break on type inverted *)
   | Return                            (* break from function body *)
   | Call of idx                       (* call function *)
   | CallRef of idx                    (* call function through reference *)
@@ -193,8 +194,10 @@ and instr' =
   | Convert of cvtop                  (* conversion *)
   | RefNull of heap_type              (* null reference *)
   | RefFunc of idx                    (* function reference *)
-  | RefTest of castop                 (* type test *)
-  | RefCast of castop                 (* type cast *)
+  | RefTestNull                       (* type test *)
+  | RefCastNull                       (* type cast *)
+  | RefTest of ref_type               (* type test *)
+  | RefCast of ref_type               (* type cast *)
   | RefEq                             (* reference equality *)
   | I31New                            (* allocate scalar *)
   | I31Get of extension               (* read scalar *)

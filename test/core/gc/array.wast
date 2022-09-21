@@ -8,7 +8,7 @@
   (type (array f32))
   (type (array f64))
   (type (array anyref))
-  (type (array (ref data)))
+  (type (array (ref struct)))
   (type (array (ref 0)))
   (type (array (ref null 1)))
   (type (array (mut i8)))
@@ -18,7 +18,7 @@
   (type (array (mut i32)))
   (type (array (mut i64)))
   (type (array (mut anyref)))
-  (type (array (mut (ref data))))
+  (type (array (mut (ref struct))))
   (type (array (mut (ref 0))))
   (type (array (mut (ref null i31))))
 )
@@ -95,7 +95,7 @@
 )
 
 (assert_return (invoke "new") (ref.array))
-(assert_return (invoke "new") (ref.data))
+(assert_return (invoke "new") (ref.eq))
 (assert_return (invoke "get" (i32.const 0)) (f32.const 0))
 (assert_return (invoke "set_get" (i32.const 1) (f32.const 7)) (f32.const 7))
 (assert_return (invoke "len") (i32.const 3))
@@ -140,7 +140,7 @@
 )
 
 (assert_return (invoke "new") (ref.array))
-(assert_return (invoke "new") (ref.data))
+(assert_return (invoke "new") (ref.eq))
 (assert_return (invoke "get" (i32.const 0)) (f32.const 1))
 (assert_return (invoke "set_get" (i32.const 1) (f32.const 7)) (f32.const 7))
 (assert_return (invoke "len") (i32.const 2))
@@ -185,7 +185,7 @@
 )
 
 (assert_return (invoke "new") (ref.array))
-(assert_return (invoke "new") (ref.data))
+(assert_return (invoke "new") (ref.eq))
 (assert_return (invoke "get" (i32.const 0)) (i32.const 1))
 (assert_return (invoke "set_get" (i32.const 1) (i32.const 7)) (i32.const 7))
 (assert_return (invoke "len") (i32.const 3))
@@ -243,7 +243,7 @@
 )
 
 (assert_return (invoke "new") (ref.array))
-(assert_return (invoke "new") (ref.data))
+(assert_return (invoke "new") (ref.eq))
 (assert_return (invoke "get" (i32.const 0) (i32.const 0)) (i32.const 7))
 (assert_return (invoke "get" (i32.const 1) (i32.const 0)) (i32.const 1))
 (assert_return (invoke "set_get" (i32.const 0) (i32.const 1) (i32.const 1)) (i32.const 2))

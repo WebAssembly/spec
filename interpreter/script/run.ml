@@ -384,10 +384,10 @@ let assert_ref_pat r p =
   | RefPat r', r -> Value.eq_ref r r'.it
   | RefTypePat Types.AnyHT, Instance.FuncRef _ -> false
   | RefTypePat Types.AnyHT, _
-  | RefTypePat Types.EqHT, (I31.I31Ref _ | Aggr.AggrRef _)
+  | RefTypePat Types.EqHT, (I31.I31Ref _ | Aggr.StructRef _ | Aggr.ArrayRef _)
   | RefTypePat Types.I31HT, I31.I31Ref _
-  | RefTypePat Types.AggrHT, Aggr.AggrRef _
-  | RefTypePat Types.ArrayHT, Aggr.(AggrRef (Array _)) -> true
+  | RefTypePat Types.StructHT, Aggr.StructRef _
+  | RefTypePat Types.ArrayHT, Aggr.ArrayRef _ -> true
   | RefTypePat Types.FuncHT, Instance.FuncRef _
   | RefTypePat Types.ExternHT, _ -> true
   | NullPat, Value.NullRef _ -> true

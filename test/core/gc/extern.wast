@@ -48,7 +48,7 @@
 
 (assert_return (invoke "externalize-ii" (i32.const 0)) (ref.null any))
 (assert_return (invoke "externalize-ii" (i32.const 1)) (ref.i31))
-(assert_return (invoke "externalize-ii" (i32.const 2)) (ref.data))
+(assert_return (invoke "externalize-ii" (i32.const 2)) (ref.struct))
 (assert_return (invoke "externalize-ii" (i32.const 3)) (ref.array))
 (assert_return (invoke "externalize-ii" (i32.const 4)) (ref.host 0))
 (assert_return (invoke "externalize-ii" (i32.const 5)) (ref.null any))

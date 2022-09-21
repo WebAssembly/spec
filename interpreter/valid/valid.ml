@@ -105,7 +105,7 @@ let check_vec_type (c : context) (t : vec_type) at =
 let check_heap_type (c : context) (t : heap_type) at =
   match t with
   | AnyHT | NoneHT | EqHT
-  | I31HT | AggrHT | ArrayHT -> ()
+  | I31HT | StructHT | ArrayHT -> ()
   | FuncHT | NoFuncHT -> ()
   | ExternHT | NoExternHT -> ()
   | DefHT (StatX x) -> ignore (type_ c (x @@ at))
@@ -308,12 +308,6 @@ let lane_replaceop = function
     | I32x4 (Replace i) | I64x2 (Replace i)
     | F32x4 (Replace i) | F64x2 (Replace i) -> i
 
-let type_castop = function
-  | I31Op -> I31HT
-  | AggrOp -> AggrHT
-  | ArrayOp -> ArrayHT
-  | NullOp | RttOp _ -> assert false
-
 let type_externop op =
   match op with
   | Internalize -> ExternHT, AnyHT
@@ -431,62 +425,29 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     List.iter (fun x' -> check_stack c ts (label c x') x'.at) xs;
     (ts @ [NumT I32T]) -->... [], []
 
-  | BrCast (x, RttOp y) ->
-    let _ = type_ c y in
-    let t = peek 0 s in
-    let t' = RefT (NoNull, DefHT (StatX y.it)) in
-    require
-      ( match_val_type c.types t (RefT (Null, AggrHT)) ||
-        match_val_type c.types t (RefT (Null, FuncHT)) ) e.at
-      ("type mismatch: instruction requires data or function reference type" ^
-       " but stack has " ^ string_of_result_type [t]);
-    require
-      ( label c x <> [] &&
-        match_val_type c.types t' (Lib.List.last (label c x)) ) e.at
-      ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
-       " but label has " ^ string_of_result_type (label c x));
-    let ts0 = Lib.List.lead (label c x) in
-    (ts0 @ [t]) --> (ts0 @ [t]), []
-
-  | BrCast (x, NullOp) ->
+  | BrCastNull x ->
     let (_nul, ht) = peek_ref 0 s e.at in
     (label c x @ [RefT (Null, ht)]) --> (label c x @ [RefT (NoNull, ht)]), []
 
-  | BrCast (x, castop) ->
-    let rt = peek_ref 0 s e.at in
-    let t' = RefT (NoNull, type_castop castop) in
+  | BrCast (x, rt) ->
+    let (nul, ht) = rt in
+    let (nul', ht') as rt' = peek_ref 0 s e.at in
+    let tht = top_of_heap_type c.types ht in
     require
-      (match_val_type c.types (peek 0 s) (RefT (Null, AnyHT))) e.at
+      (match_ref_type c.types rt' (Null, tht)) e.at
       ("type mismatch: instruction requires type " ^
-        string_of_val_type (RefT (Null, AnyHT)) ^
-       " but stack has " ^ string_of_val_type (peek 0 s));
-    require
-      ( label c x <> [] &&
-        match_val_type c.types t' (Lib.List.last (label c x)) ) e.at
-      ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
-       " but label has " ^ string_of_result_type (label c x));
-    let ts0 = Lib.List.lead (label c x) in
-    (ts0 @ [RefT rt]) --> (ts0 @ [RefT rt]), []
-
-  | BrCastFail (x, RttOp y) ->
-    let _ = type_ c y in
-    let t = peek 0 s in
-    let t' = RefT (NoNull, DefHT (StatX y.it)) in
-    require
-      ( match_val_type c.types t (RefT (Null, AggrHT)) ||
-        match_val_type c.types t (RefT (Null, FuncHT)) ) e.at
-      ("type mismatch: instruction requires data or function reference type" ^
-       " but stack has " ^ string_of_result_type [t]);
+        string_of_ref_type (Null, tht) ^
+       " but stack has " ^ string_of_ref_type rt');
     require (label c x <> []) e.at
-      ("type mismatch: instruction requires type " ^ string_of_val_type t ^
+      ("type mismatch: instruction requires type " ^ string_of_ref_type rt ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0, t1 = Lib.List.split_last (label c x) in
-    require (match_val_type c.types t t1) e.at
-      ("type mismatch: instruction requires type " ^ string_of_val_type t ^
+    require (match_val_type c.types (RefT rt) t1) e.at
+      ("type mismatch: instruction requires type " ^ string_of_ref_type rt ^
        " but label has " ^ string_of_result_type (label c x));
-    (ts0 @ [t]) --> (ts0 @ [t']), []
+    (ts0 @ [RefT rt']) --> (ts0 @ [RefT (inv_null nul, ht')]), []
 
-  | BrCastFail (x, NullOp) ->
+  | BrCastFailNull x ->
     let (nul, ht) = peek_ref 0 s e.at in
     let t' = RefT (NoNull, ht) in
     require (label c x <> []) e.at
@@ -498,23 +459,23 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
        " but label has " ^ string_of_result_type (label c x));
     (ts0 @ [RefT (nul, ht)]) --> ts0, []
 
-  | BrCastFail (x, castop) ->
-    let rt = peek_ref 0 s e.at in
-    let t = RefT rt in
-    let t' = RefT (NoNull, type_castop castop) in
+  | BrCastFail (x, rt) ->
+    let (nul, ht) = rt in
+    let (nul', ht') as rt' = peek_ref 0 s e.at in
+    let tht = top_of_heap_type c.types ht in
     require
-      (match_val_type c.types (peek 0 s) (RefT (Null, AnyHT))) e.at
+      (match_ref_type c.types rt' (Null, tht)) e.at
       ("type mismatch: instruction requires type " ^
-        string_of_val_type (RefT (Null, AnyHT)) ^
-       " but stack has " ^ string_of_val_type (peek 0 s));
+        string_of_ref_type (Null, tht) ^
+       " but stack has " ^ string_of_ref_type rt');
     require (label c x <> []) e.at
-      ("type mismatch: instruction requires type " ^ string_of_val_type t ^
+      ("type mismatch: instruction requires type " ^ string_of_ref_type rt' ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0, t1 = Lib.List.split_last (label c x) in
-    require (match_val_type c.types t t1) e.at
-      ("type mismatch: instruction requires type " ^ string_of_val_type t ^
+    require (match_val_type c.types (RefT (inv_null nul, ht')) t1) e.at
+      ("type mismatch: instruction requires type " ^ string_of_ref_type (inv_null nul, ht') ^
        " but label has " ^ string_of_result_type (label c x));
-    (ts0 @ [RefT rt]) --> (ts0 @ [t']), []
+    (ts0 @ [RefT rt']) --> (ts0 @ [RefT rt]), []
 
   | Return ->
     c.results -->... [], []
@@ -667,31 +628,23 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     refer_func c x;
     [] --> [RefT (NoNull, DefHT (StatX y))], []
 
-  | RefTest (RttOp y) ->
-    let st = expand_ctx_type (type_ c y) in
-    [RefT (Null, abs_of_str_type c.types st)] --> [NumT I32T], []
-
-  | RefTest NullOp ->
+  | RefTestNull ->
     let (_, ht) = peek_ref 0 s e.at in
     [RefT (Null, ht)] --> [NumT I32T], []
 
-  | RefTest castop ->
-    let ht = type_castop castop in
+  | RefTest rt ->
+    check_ref_type c rt e.at;
+    let (_nul, ht) = rt in
     [RefT (Null, top_of_heap_type c.types ht)] --> [NumT I32T], []
 
-  | RefCast (RttOp y) ->
-    let st = expand_ctx_type (type_ c y) in
-    let (nul, _) = peek_ref 0 s e.at in
-    [RefT (nul, abs_of_str_type c.types st)] -->
-      [RefT (nul, DefHT (StatX y.it))], []
-
-  | RefCast NullOp ->
+  | RefCastNull ->
     let (_, ht) = peek_ref 0 s e.at in
     [RefT (Null, ht)] --> [RefT (NoNull, ht)], []
 
-  | RefCast castop ->
-    let ht = type_castop castop in
-    [RefT (Null, top_of_heap_type c.types ht)] --> [RefT (NoNull, ht)], []
+  | RefCast rt ->
+    check_ref_type c rt e.at;
+    let (nul, ht) = rt in
+    [RefT (Null, top_of_heap_type c.types ht)] --> [RefT (nul, ht)], []
 
   | RefEq ->
     [RefT (Null, EqHT); RefT (Null, EqHT)] --> [NumT I32T], []

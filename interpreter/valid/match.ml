@@ -32,7 +32,7 @@ let tie_rec_types rts =
 (* Extremas *)
 
 let abs_of_str_type _c = function
-  | DefStructT _ | DefArrayT _ -> AggrHT
+  | DefStructT _ | DefArrayT _ -> StructHT
   | DefFuncT _ -> FuncHT
 
 let rec top_of_str_type c st =
@@ -40,10 +40,21 @@ let rec top_of_str_type c st =
 
 and top_of_heap_type c = function
   | AnyHT | NoneHT | EqHT
-  | AggrHT | ArrayHT | I31HT -> AnyHT
+  | StructHT | ArrayHT | I31HT -> AnyHT
   | FuncHT | NoFuncHT -> FuncHT
   | ExternHT | NoExternHT -> ExternHT
   | DefHT x -> top_of_str_type c (expand_ctx_type (lookup c x))
+  | BotHT -> assert false
+
+let rec bot_of_str_type c st =
+  bot_of_heap_type c (abs_of_str_type c st)
+
+and bot_of_heap_type c = function
+  | AnyHT | NoneHT | EqHT
+  | StructHT | ArrayHT | I31HT -> NoneHT
+  | FuncHT | NoFuncHT -> NoFuncHT
+  | ExternHT | NoExternHT -> NoExternHT
+  | DefHT x -> bot_of_str_type c (expand_ctx_type (lookup c x))
   | BotHT -> assert false
 
 
@@ -172,35 +183,28 @@ let rec match_heap_type c t1 t2 =
   match t1, t2 with
   | AnyHT, AnyHT -> true
   | EqHT, AnyHT -> true
-  | AggrHT, AnyHT -> true
+  | StructHT, AnyHT -> true
   | ArrayHT, AnyHT -> true
   | I31HT, AnyHT -> true
   | I31HT, EqHT -> true
-  | AggrHT, EqHT -> true
+  | StructHT, EqHT -> true
   | ArrayHT, EqHT -> true
-  | ArrayHT, AggrHT -> true
   | ExternHT, ExternHT -> true
   | NoneHT, t -> match_heap_type c t AnyHT
   | NoFuncHT, t -> match_heap_type c t FuncHT
   | NoExternHT, t -> match_heap_type c t ExternHT
-  | DefHT x1, AnyHT -> match_heap_type c t1 AggrHT
-  | DefHT x1, EqHT -> match_heap_type c t1 AggrHT
-  | DefHT x1, AggrHT ->
-    (match expand_ctx_type (lookup c x1) with
-    | DefStructT _ | DefArrayT _ -> true
-    | _ -> false
-    )
-  | DefHT x1, ArrayHT ->
-    (match expand_ctx_type (lookup c x1) with
-    | DefArrayT _ -> true
-    | _ -> false
-    )
-  | DefHT x1, FuncHT ->
-    (match expand_ctx_type (lookup c x1) with
-    | DefFuncT _ -> true
-    | _ -> false
-    )
   | DefHT x1, DefHT x2 -> match_var_type c x1 x2
+  | DefHT x1, t ->
+    (match expand_ctx_type (lookup c x1), t with
+    | DefStructT _, AnyHT -> true
+    | DefStructT _, EqHT -> true
+    | DefStructT _, StructHT -> true
+    | DefArrayT _, AnyHT -> true
+    | DefArrayT _, EqHT -> true
+    | DefArrayT _, ArrayHT -> true
+    | DefFuncT _, FuncHT -> true
+    | _ -> false
+    )
   | BotHT, _ -> true
   | _, _ -> eq_heap_type c t1 t2
 

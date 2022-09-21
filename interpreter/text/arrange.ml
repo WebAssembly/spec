@@ -68,7 +68,7 @@ let ref_type t =
   | (Null, AnyHT) -> "anyref"
   | (Null, EqHT) -> "eqref"
   | (Null, I31HT) -> "i31ref"
-  | (Null, AggrHT) -> "dataref"
+  | (Null, StructHT) -> "structref"
   | (Null, ArrayHT) -> "arrayref"
   | (Null, FuncHT) -> "funcref"
   | t -> string_of_ref_type t
@@ -81,6 +81,13 @@ let var_type = function
   | StatX x -> nat32 x
   | DynX _ -> assert false
   | RecX x -> "rec." ^ nat32 x
+
+let null = function
+  | NoNull -> ""
+  | Null -> "null "
+
+let ref_type_raw (nul, t) =
+  Atom (null nul ^ heap_type t)
 
 let decls kind ts = tab kind (atom val_type) ts
 
@@ -463,13 +470,6 @@ let initop = function
   | Explicit -> ""
   | Implicit -> "_default"
 
-let castop = function
-  | NullOp -> "null"
-  | I31Op -> "i31"
-  | AggrOp -> "data"
-  | ArrayOp -> "array"
-  | RttOp _ -> assert false
-
 let externop = function
   | Internalize -> "internalize"
   | Externalize -> "externalize"
@@ -505,12 +505,10 @@ let rec instr e =
     | BrIf x -> "br_if " ^ var x, []
     | BrTable (xs, x) ->
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
-    | BrCast (x, RttOp y) ->
-      "br_on_cast_canon " ^ var x, [Node ("type " ^ var y, [])]
-    | BrCast (x, op) -> "br_on_" ^ castop op ^ " " ^ var x, []
-    | BrCastFail (x, RttOp y) ->
-      "br_on_cast_canon_fail " ^ var x, [Node ("type " ^ var y, [])]
-    | BrCastFail (x, op) -> "br_on_non_" ^ castop op ^ " " ^ var x, []
+    | BrCastNull x -> "br_on_null " ^ var x, []
+    | BrCast (x, t) -> "br_on_cast " ^ var x, [ref_type_raw t]
+    | BrCastFailNull x -> "br_on_non_null " ^ var x, []
+    | BrCastFail (x, t) -> "br_on_cast_fail " ^ var x, [ref_type_raw t]
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallRef x -> "call_ref " ^ var x, []
@@ -544,11 +542,10 @@ let rec instr e =
     | DataDrop x -> "data.drop " ^ var x, []
     | RefNull t -> "ref.null", [Atom (heap_type t)]
     | RefFunc x -> "ref.func " ^ var x, []
-    | RefTest (RttOp x) -> "ref.test_canon " ^ var x, []
-    | RefTest op -> "ref.is_" ^ castop op, []
-    | RefCast (RttOp x) -> "ref.cast_canon " ^ var x, []
-    | RefCast NullOp -> "ref.as_non_null", []
-    | RefCast op -> "ref.as_" ^ castop op, []
+    | RefTestNull -> "ref.is_null", []
+    | RefTest t -> "ref.test", [ref_type_raw t]
+    | RefCastNull -> "ref.as_non_null", []
+    | RefCast t -> "ref.cast", [ref_type_raw t]
     | RefEq -> "ref.eq", []
     | I31New -> "i31.new", []
     | I31Get ext -> "i31.get" ^ extension ext, []

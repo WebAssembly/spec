@@ -11,5 +11,3 @@ val alloc_host : type_addr -> (value list -> value list) -> 'inst func
 
 val type_of : 'inst func -> func_type
 val type_inst_of : 'inst func -> type_addr
-
-val read_rtt : 'inst func -> Rtt.t

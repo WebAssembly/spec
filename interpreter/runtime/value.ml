@@ -112,7 +112,7 @@ let type_of_vec = function
 
 let type_of_ref' = ref (function _ -> assert false)
 let type_of_ref = function
-  | NullRef t -> (Null, t)
+  | NullRef t -> (Null, Match.bot_of_heap_type [] t)
   | r -> (NoNull, !type_of_ref' r)
 
 let type_of_value = function

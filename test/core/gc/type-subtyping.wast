@@ -28,7 +28,7 @@
   (type $f1 (func (param (ref $s')) (result anyref)))
   (type $f2 (sub $f1 (func (param (ref $s)) (result (ref any)))))
   (type $f3 (sub $f2 (func (param (ref null $s)) (result (ref $s)))))
-  (type $f4 (sub $f3 (func (param (ref null data)) (result (ref $s')))))
+  (type $f4 (sub $f3 (func (param (ref null struct)) (result (ref $s')))))
 )
 
 
@@ -126,9 +126,9 @@
   (func (export "run")
     (block (result (ref null $t1)) (call_indirect (type $t1) (i32.const 0)))
     (block (result (ref null $t2)) (call_indirect (type $t2) (i32.const 1)))
-    (block (result (ref null $t1)) (ref.cast_canon $t1 (table.get (i32.const 0))))
-    (block (result (ref null $t1)) (ref.cast_canon $t1 (table.get (i32.const 1))))
-    (block (result (ref null $t2)) (ref.cast_canon $t2 (table.get (i32.const 1))))
+    (block (result (ref null $t1)) (ref.cast $t1 (table.get (i32.const 0))))
+    (block (result (ref null $t1)) (ref.cast $t1 (table.get (i32.const 1))))
+    (block (result (ref null $t2)) (ref.cast $t2 (table.get (i32.const 1))))
     (br 0)
   )
 

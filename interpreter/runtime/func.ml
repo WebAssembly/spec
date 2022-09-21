@@ -14,5 +14,3 @@ let type_inst_of = function
   | HostFunc (x, _) -> x
 
 let type_of f = as_func_str_type (expand_ctx_type (def_of (type_inst_of f)))
-
-let read_rtt f = Rtt.alloc (type_inst_of f)

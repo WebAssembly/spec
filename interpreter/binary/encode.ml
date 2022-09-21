@@ -117,7 +117,7 @@ struct
     | NoneHT -> s7 (-0x1b)
     | EqHT -> s7 (-0x13)
     | I31HT -> s7 (-0x16)
-    | AggrHT -> s7 (-0x19)
+    | StructHT -> s7 (-0x19)
     | ArrayHT -> s7 (-0x1a)
     | FuncHT -> s7 (-0x10)
     | NoFuncHT -> s7 (-0x17)
@@ -131,7 +131,7 @@ struct
     | (Null, NoneHT) -> s7 (-0x1b)
     | (Null, EqHT) -> s7 (-0x13)
     | (Null, I31HT) -> s7 (-0x16)
-    | (Null, AggrHT) -> s7 (-0x19)
+    | (Null, StructHT) -> s7 (-0x19)
     | (Null, ArrayHT) -> s7 (-0x1a)
     | (Null, FuncHT) -> s7 (-0x10)
     | (Null, NoFuncHT) -> s7 (-0x17)
@@ -238,16 +238,12 @@ struct
     | Br x -> op 0x0c; var x
     | BrIf x -> op 0x0d; var x
     | BrTable (xs, x) -> op 0x0e; vec var xs; var x
-    | BrCast (x, NullOp) -> op 0xd4; var x
-    | BrCast (x, I31Op) -> op 0xfb; op 0x62; var x
-    | BrCast (x, AggrOp) -> op 0xfb; op 0x61; var x
-    | BrCast (x, ArrayOp) -> op 0xfb; op 0x66; var x
-    | BrCast (x, RttOp y) -> op 0xfb; op 0x42; var x; var y
-    | BrCastFail (x, NullOp) -> op 0xd6; var x
-    | BrCastFail (x, I31Op) -> op 0xfb; op 0x65; var x
-    | BrCastFail (x, AggrOp) -> op 0xfb; op 0x64; var x
-    | BrCastFail (x, ArrayOp) -> op 0xfb; op 0x67; var x
-    | BrCastFail (x, RttOp y) -> op 0xfb; op 0x43; var x; var y
+    | BrCastNull x -> op 0xd4; var x
+    | BrCast (x, (NoNull, t)) -> op 0xfb; op 0x42; var x; heap_type t
+    | BrCast (x, (Null, t)) -> op 0xfb; op 0x4a; var x; heap_type t
+    | BrCastFailNull x -> op 0xd6; var x
+    | BrCastFail (x, (NoNull, t)) -> op 0xfb; op 0x43; var x; heap_type t
+    | BrCastFail (x, (Null, t)) -> op 0xfb; op 0x4b; var x; heap_type t
     | Return -> op 0x0f
     | Call x -> op 0x10; var x
     | CallRef x -> op 0x14; var x
@@ -369,17 +365,12 @@ struct
     | RefNull t -> op 0xd0; heap_type t
     | RefFunc x -> op 0xd2; var x
 
-    | RefTest NullOp -> op 0xd1
-    | RefTest I31Op -> op 0xfb; op 0x52
-    | RefTest AggrOp -> op 0xfb; op 0x51
-    | RefTest ArrayOp -> op 0xfb; op 0x53
-    | RefTest (RttOp x) -> op 0xfb; op 0x40; var x
-
-    | RefCast NullOp -> op 0xd3
-    | RefCast I31Op -> op 0xfb; op 0x5a
-    | RefCast AggrOp -> op 0xfb; op 0x59
-    | RefCast ArrayOp -> op 0xfb; op 0x5b
-    | RefCast (RttOp x) -> op 0xfb; op 0x41; var x
+    | RefTestNull -> op 0xd1
+    | RefTest (NoNull, t) -> op 0xfb; op 0x40; heap_type t
+    | RefTest (Null, t) -> op 0xfb; op 0x48; heap_type t
+    | RefCastNull -> op 0xd3
+    | RefCast (NoNull, t) -> op 0xfb; op 0x41; heap_type t
+    | RefCast (Null, t) -> op 0xfb; op 0x49; heap_type t
 
     | RefEq -> op 0xd5
 

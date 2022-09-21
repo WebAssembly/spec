@@ -203,99 +203,31 @@ let rec step (c : config) : config =
         else
           vs', [Plain (Br (Lib.List32.nth xs i)) @@ e.at]
 
-      | BrCast (x, NullOp), Ref r :: vs' ->
-        (match r with
-        | NullRef _ ->
-          vs', [Plain (Br x) @@ e.at]
-        | _ ->
+      | BrCast (x, rt), Ref r :: vs' ->
+        let rt' = dyn_ref_type c.frame.inst.types rt in
+        if Match.match_ref_type [] (type_of_ref r) rt' then
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        else
           Ref r :: vs', []
-        )
 
-      | BrCast (x, I31Op), Ref r :: vs' ->
-        (match r with
-        | I31.I31Ref _ ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        | _ ->
+      | BrCastFail (x, rt), Ref r :: vs' ->
+        let rt' = dyn_ref_type c.frame.inst.types rt in
+        if Match.match_ref_type [] (type_of_ref r) rt' then
           Ref r :: vs', []
-        )
+        else
+          Ref r :: vs', [Plain (Br x) @@ e.at]
 
-      | BrCast (x, AggrOp), Ref r :: vs' ->
-        (match r with
-        | Aggr.AggrRef _ ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        | _ ->
-          Ref r :: vs', []
-        )
+      | BrCastNull x, Ref (NullRef _) :: vs' ->
+        vs', [Plain (Br x) @@ e.at]
 
-      | BrCast (x, ArrayOp), Ref r :: vs' ->
-        (match r with
-        | Aggr.(AggrRef (Array _)) ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        | _ ->
-          Ref r :: vs', []
-        )
+      | BrCastNull x, Ref r :: vs' ->
+        Ref r :: vs', []
 
-      | BrCast (x, RttOp y), Ref r :: vs' ->
-        let rtt = Rtt.alloc (type_ c.frame.inst y) in
-        (match r with
-        | NullRef _ ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        | Aggr.AggrRef d when Rtt.match_rtt (Aggr.read_rtt d) rtt ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        | FuncRef f when Rtt.match_rtt (Func.read_rtt f) rtt ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        | Aggr.AggrRef _ | FuncRef _ ->
-          Ref r :: vs', []
-        | _ ->
-          Crash.error e.at "wrong reference type"
-        )
+      | BrCastFailNull x, Ref (NullRef _) :: vs' ->
+        vs', []
 
-      | BrCastFail (x, NullOp), Ref r :: vs' ->
-        (match r with
-        | NullRef _ ->
-          vs', []
-        | _ ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        )
-
-      | BrCastFail (x, I31Op), Ref r :: vs' ->
-        (match r with
-        | I31.I31Ref _ ->
-          Ref r :: vs', []
-        | _ ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        )
-
-      | BrCastFail (x, AggrOp), Ref r :: vs' ->
-        (match r with
-        | Aggr.AggrRef _ ->
-          Ref r :: vs', []
-        | _ ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        )
-
-      | BrCastFail (x, ArrayOp), Ref r :: vs' ->
-        (match r with
-        | Aggr.AggrRef (Aggr.Array _) ->
-          Ref r :: vs', []
-        | _ ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        )
-
-      | BrCastFail (x, RttOp y), Ref r :: vs' ->
-        let rtt = Rtt.alloc (type_ c.frame.inst y) in
-        (match r with
-        | NullRef _ ->
-          Ref r :: vs', []
-        | Aggr.AggrRef d when Rtt.match_rtt (Aggr.read_rtt d) rtt ->
-          Ref r :: vs', []
-        | FuncRef f when Rtt.match_rtt (Func.read_rtt f) rtt ->
-          Ref r :: vs', []
-        | Aggr.AggrRef _ | FuncRef _ ->
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        | _ ->
-          Crash.error e.at "wrong reference type"
-        )
+      | BrCastFailNull x, Ref r :: vs' ->
+        Ref r :: vs', [Plain (Br x) @@ e.at]
 
       | Return, vs ->
         [], [Returning vs @@ e.at]
@@ -619,86 +551,30 @@ let rec step (c : config) : config =
         let f = func c.frame.inst x in
         Ref (FuncRef f) :: vs', []
 
-      | RefTest NullOp, Ref r :: vs' ->
-        value_of_bool (match r with NullRef _ -> true | _ -> false) :: vs', []
+      | RefTest rt, Ref r :: vs' ->
+        let rt' = dyn_ref_type c.frame.inst.types rt in
+        value_of_bool (Match.match_ref_type [] (type_of_ref r) rt') :: vs', []
 
-      | RefTest I31Op, Ref r :: vs' ->
-        value_of_bool (match r with I31.I31Ref _ -> true | _ -> false) :: vs', []
-
-      | RefTest AggrOp, Ref r :: vs' ->
-        value_of_bool (match r with Aggr.AggrRef _ -> true | _ -> false) :: vs', []
-
-      | RefTest ArrayOp, Ref r :: vs' ->
-        value_of_bool (match r with Aggr.(AggrRef (Array _)) -> true | _ -> false) :: vs', []
-
-      | RefTest (RttOp x), Ref r :: vs' ->
-        let rtt = Rtt.alloc (type_ c.frame.inst x) in
-        (match r with
-        | NullRef _ ->
-          value_of_bool false :: vs', []
-        | Aggr.AggrRef d ->
-          value_of_bool (Rtt.match_rtt (Aggr.read_rtt d) rtt) :: vs', []
-        | FuncRef f ->
-          value_of_bool (Rtt.match_rtt (Func.read_rtt f) rtt) :: vs', []
-        | _ ->
-          Crash.error e.at "wrong reference type"
-        )
-
-      | RefCast NullOp, Ref r :: vs' ->
-        (match r with
-        | NullRef _ ->
-          vs', [Trapping "null reference" @@ e.at]
-        | _ ->
+      | RefCast rt, Ref r :: vs' ->
+        let rt' = dyn_ref_type c.frame.inst.types rt in
+        if Match.match_ref_type [] (type_of_ref r) rt' then
           Ref r :: vs', []
-        )
-
-      | RefCast I31Op, Ref r :: vs' ->
-        (match r with
-        | I31.I31Ref _ ->
-          Ref r :: vs', []
-        | _ ->
-          vs', [Trapping ("cast failure, expected i31 but got " ^
-            string_of_value (Ref r)) @@ e.at]
-        )
-
-      | RefCast AggrOp, Ref r :: vs' ->
-        (match r with
-        | Aggr.AggrRef _ ->
-          Ref r :: vs', []
-        | _ ->
-          vs', [Trapping ("cast failure, expected data but got " ^
-            string_of_value (Ref r)) @@ e.at]
-        )
-
-      | RefCast ArrayOp, Ref r :: vs' ->
-        (match r with
-        | Aggr.AggrRef (Aggr.Array _) ->
-          Ref r :: vs', []
-        | _ ->
-          vs', [Trapping ("cast failure, expected array but got " ^
-            string_of_value (Ref r)) @@ e.at]
-        )
-
-      | RefCast (RttOp x), Ref r :: vs' ->
-        let rtt = Rtt.alloc (type_ c.frame.inst x) in
-        (match r with
-        | NullRef _ ->
-          Ref r :: vs', []
-        | Aggr.AggrRef d when Rtt.match_rtt (Aggr.read_rtt d) rtt ->
-          Ref r :: vs', []
-        | FuncRef f when Rtt.match_rtt (Func.read_rtt f) rtt ->
-          Ref r :: vs', []
-        | Aggr.AggrRef d ->
+        else
           vs', [Trapping ("cast failure, expected " ^
-            Rtt.string_of_rtt rtt ^ " but got " ^
-            Rtt.string_of_rtt (Aggr.read_rtt d)) @@ e.at]
-        | FuncRef f ->
-          vs', [Trapping ("cast failure, expected " ^
-            Rtt.string_of_rtt rtt ^ " but got " ^
-            Rtt.string_of_rtt (Func.read_rtt f)) @@ e.at]
-        | _ ->
-          Crash.error e.at "wrong reference type"
-        )
+            string_of_ref_type rt ^ " but got " ^
+            string_of_ref_type (type_of_ref r)) @@ e.at]
+
+      | RefTestNull, Ref (NullRef _) :: vs' ->
+        value_of_bool true :: vs', []
+
+      | RefTestNull, Ref _ :: vs' ->
+        value_of_bool false :: vs', []
+
+      | RefCastNull, Ref (NullRef _) :: vs' ->
+        vs', [Trapping "null reference" @@ e.at]
+
+      | RefCastNull, Ref r :: vs' ->
+        Ref r :: vs', []
 
       | RefEq, Ref r1 :: Ref r2 :: vs' ->
         value_of_bool (eq_ref r1 r2) :: vs', []
@@ -713,7 +589,6 @@ let rec step (c : config) : config =
         Num (I32 (I31.to_i32 ext i)) :: vs', []
 
       | StructNew (x, initop), vs' ->
-        let rtt = Rtt.alloc (type_ c.frame.inst x) in
         let StructT fts = struct_type c.frame.inst x in
         let args, vs'' =
           match initop with
@@ -725,15 +600,15 @@ let rec step (c : config) : config =
             try List.map Option.get (List.map default_value ts), vs'
             with Invalid_argument _ -> Crash.error e.at "non-defaultable type"
         in
-        let aggr =
-          try Aggr.alloc_struct (type_ c.frame.inst x) rtt args
+        let struct_ =
+          try Aggr.alloc_struct (type_ c.frame.inst x) args
           with Failure _ -> Crash.error e.at "type mismatch packing value"
-        in Ref (Aggr.AggrRef aggr) :: vs'', []
+        in Ref (Aggr.StructRef struct_) :: vs'', []
 
       | StructGet (x, y, exto), Ref (NullRef _) :: vs' ->
         vs', [Trapping "null structure reference" @@ e.at]
 
-      | StructGet (x, y, exto), Ref Aggr.(AggrRef (Struct (_, _, fs))) :: vs' ->
+      | StructGet (x, y, exto), Ref Aggr.(StructRef (Struct (_, fs))) :: vs' ->
         let f =
           try Lib.List32.nth fs y.it
           with Failure _ -> Crash.error y.at "undefined field"
@@ -744,7 +619,7 @@ let rec step (c : config) : config =
       | StructSet (x, y), v :: Ref (NullRef _) :: vs' ->
         vs', [Trapping "null structure reference" @@ e.at]
 
-      | StructSet (x, y), v :: Ref Aggr.(AggrRef (Struct (_, _, fs))) :: vs' ->
+      | StructSet (x, y), v :: Ref Aggr.(StructRef (Struct (_, fs))) :: vs' ->
         let f =
           try Lib.List32.nth fs y.it
           with Failure _ -> Crash.error y.at "undefined field"
@@ -753,7 +628,6 @@ let rec step (c : config) : config =
         with Failure _ -> Crash.error e.at "type mismatch writing field")
 
       | ArrayNew (x, initop), Num (I32 n) :: vs' ->
-        let rtt = Rtt.alloc (type_ c.frame.inst x) in
         let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
         let arg, vs'' =
           match initop with
@@ -762,37 +636,34 @@ let rec step (c : config) : config =
             try Option.get (default_value (unpacked_storage_type st)), vs'
             with Invalid_argument _ -> Crash.error e.at "non-defaultable type"
         in
-        let aggr =
-          try Aggr.alloc_array (type_ c.frame.inst x) rtt (Lib.List32.make n arg)
+        let array =
+          try Aggr.alloc_array (type_ c.frame.inst x) (Lib.List32.make n arg)
           with Failure _ -> Crash.error e.at "type mismatch packing value"
-        in Ref (Aggr.AggrRef aggr) :: vs'', []
+        in Ref (Aggr.ArrayRef array) :: vs'', []
 
       | ArrayNewFixed (x, n), vs' ->
-        let rtt = Rtt.alloc (type_ c.frame.inst x) in
         let args, vs'' = split (I32.to_int_u n) vs' e.at in
-        let aggr =
-          try Aggr.alloc_array (type_ c.frame.inst x) rtt (List.rev args)
+        let array =
+          try Aggr.alloc_array (type_ c.frame.inst x) (List.rev args)
           with Failure _ -> Crash.error e.at "type mismatch packing value"
-        in Ref (Aggr.AggrRef aggr) :: vs'', []
+        in Ref (Aggr.ArrayRef array) :: vs'', []
 
       | ArrayNewElem (x, y), Num (I32 n) :: Num (I32 s) :: vs' ->
         if elem_oob c.frame y s n then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
         else
-          let rtt = Rtt.alloc (type_ c.frame.inst x) in
           let seg = elem c.frame.inst y in
           let rs = Lib.List32.init n (fun i -> Elem.load seg (Int32.add s i)) in
           let args = List.map (fun r -> Ref r) rs in
-          let aggr =
-            try Aggr.alloc_array (type_ c.frame.inst x) rtt args
+          let array =
+            try Aggr.alloc_array (type_ c.frame.inst x) args
             with Failure _ -> Crash.error e.at "type mismatch packing value"
-          in Ref (Aggr.AggrRef aggr) :: vs', []
+          in Ref (Aggr.ArrayRef array) :: vs', []
 
       | ArrayNewData (x, y), Num (I32 n) :: Num (I32 s) :: vs' ->
         if data_oob c.frame y s n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
         else
-          let rtt = Rtt.alloc (type_ c.frame.inst x) in
           let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
           let seg = data c.frame.inst y in
           let bs = Data.bytes seg in
@@ -818,47 +689,47 @@ let rec step (c : config) : config =
                 Crash.error e.at "type mismatch packing value"
             )
           in
-          let aggr =
-            try Aggr.alloc_array (type_ c.frame.inst x) rtt args
+          let array =
+            try Aggr.alloc_array (type_ c.frame.inst x) args
             with Failure _ -> Crash.error e.at "type mismatch packing value"
-          in Ref (Aggr.AggrRef aggr) :: vs', []
+          in Ref (Aggr.ArrayRef array) :: vs', []
 
       | ArrayGet (x, exto), Num (I32 i) :: Ref (NullRef _) :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
-      | ArrayGet (x, exto), Num (I32 i) :: Ref Aggr.(AggrRef (Array (_, _, fs))) :: vs'
+      | ArrayGet (x, exto), Num (I32 i) :: Ref Aggr.(ArrayRef (Array (_, fs))) :: vs'
         when I32.ge_u i (Lib.List32.length fs) ->
         vs', [Trapping "out of bounds array access" @@ e.at]
 
-      | ArrayGet (x, exto), Num (I32 i) :: Ref Aggr.(AggrRef (Array (_, _, fs))) :: vs' ->
+      | ArrayGet (x, exto), Num (I32 i) :: Ref Aggr.(ArrayRef (Array (_, fs))) :: vs' ->
         (try Aggr.read_field (Lib.List32.nth fs i) exto :: vs', []
         with Failure _ -> Crash.error e.at "type mismatch reading array")
 
       | ArraySet x, v :: Num (I32 i) :: Ref (NullRef _) :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
-      | ArraySet x, v :: Num (I32 i) :: Ref Aggr.(AggrRef (Array (_, _, fs))) :: vs'
+      | ArraySet x, v :: Num (I32 i) :: Ref Aggr.(ArrayRef (Array (_, fs))) :: vs'
         when I32.ge_u i (Lib.List32.length fs) ->
         vs', [Trapping "out of bounds array access" @@ e.at]
 
-      | ArraySet x, v :: Num (I32 i) :: Ref Aggr.(AggrRef (Array (_, _, fs))) :: vs' ->
+      | ArraySet x, v :: Num (I32 i) :: Ref Aggr.(ArrayRef (Array (_, fs))) :: vs' ->
         (try Aggr.write_field (Lib.List32.nth fs i) v; vs', []
         with Failure _ -> Crash.error e.at "type mismatch writing array")
 
       | ArrayLen, Ref (NullRef _) :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
-      | ArrayLen, Ref Aggr.(AggrRef (Array (_, _, svs))) :: vs' ->
-        Num (I32 (Lib.List32.length svs)) :: vs', []
+      | ArrayLen, Ref Aggr.(ArrayRef (Array (_, fs))) :: vs' ->
+        Num (I32 (Lib.List32.length fs)) :: vs', []
 
       | ExternConvert Internalize, Ref (NullRef _) :: vs' ->
-        Ref (NullRef NoExternHT) :: vs', []
+        Ref (NullRef NoneHT) :: vs', []
 
       | ExternConvert Internalize, Ref (Extern.ExternRef r) :: vs' ->
         Ref r :: vs', []
 
       | ExternConvert Externalize, Ref (NullRef _) :: vs' ->
-        Ref (NullRef NoneHT) :: vs', []
+        Ref (NullRef NoExternHT) :: vs', []
 
       | ExternConvert Externalize, Ref r :: vs' ->
         Ref (Extern.ExternRef r) :: vs', []

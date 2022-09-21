@@ -86,7 +86,7 @@
   )
 )
 
-(assert_return (invoke "new") (ref.data))
+(assert_return (invoke "new") (ref.struct))
 (assert_return (invoke "get_0") (f32.const 0))
 (assert_return (invoke "set_get_y" (f32.const 7)) (f32.const 7))
 (assert_return (invoke "set_get_1" (f32.const 7)) (f32.const 7))
