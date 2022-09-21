@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version 44af0bf3e, updated Fri Jul 29 17:05:16 2022 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="5900d839f38641989a9d8df2df4aee0513365d39" name="document-revision">
+  <meta content="82a613da5ea18515bf6f16593b8f7b608f47380f" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -295,7 +295,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2022-09-20">20 September 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2022-09-21">21 September 2022</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -509,17 +509,17 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
     </ol>
    </div>
    <div class="algorithm" data-algorithm="asynchronously compile a WebAssembly module">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="asynchronously-compile-a-webassembly-module">asynchronously compile a WebAssembly module</dfn> from source bytes <var>bytes</var>, using optional <a data-link-type="dfn">task source</a> <var>taskSource</var>, perform the following steps: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="asynchronously-compile-a-webassembly-module">asynchronously compile a WebAssembly module</dfn> from source bytes <var>bytes</var>, using optional <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#task-source" id="ref-for-task-source">task source</a> <var>taskSource</var>, perform the following steps: 
     <ol>
      <li data-md>
       <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
      <li data-md>
-      <p>Run the following steps <a data-link-type="dfn">in parallel</a>:</p>
+      <p>Run the following steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>:</p>
       <ol>
        <li data-md>
         <p><a data-link-type="dfn" href="#compile-a-webassembly-module" id="ref-for-compile-a-webassembly-module①">Compile the WebAssembly module</a> <var>bytes</var> and store the result as <var>module</var>.</p>
        <li data-md>
-        <p><a data-link-type="dfn">Queue a task</a> to perform the following steps. If <var>taskSource</var> was provided, queue the task on that task source.</p>
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task">Queue a task</a> to perform the following steps. If <var>taskSource</var> was provided, queue the task on that task source.</p>
         <ol>
          <li data-md>
           <p>If <var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑤">error</a>, reject <var>promise</var> with a <code class="idl"><a data-link-type="idl" href="#exceptiondef-compileerror" id="ref-for-exceptiondef-compileerror">CompileError</a></code> exception.</p>
@@ -785,7 +785,7 @@ The verification of WebAssembly type requirements is deferred to the
       <p><a data-link-type="dfn" href="#read-the-imports" id="ref-for-read-the-imports">Read the imports</a> of <var>module</var> with imports <var>importObject</var>, and let <var>imports</var> be the result.
 If this operation throws an exception, catch it, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject">reject</a> <var>promise</var> with the exception, and return <var>promise</var>.</p>
      <li data-md>
-      <p><a data-link-type="dfn">Queue a task</a> to perform the following steps:</p>
+      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task①">Queue a task</a> to perform the following steps:</p>
       <ol>
        <li data-md>
         <p><a data-link-type="dfn" href="#instantiate-the-core-of-a-webassembly-module" id="ref-for-instantiate-the-core-of-a-webassembly-module①">Instantiate the core of a WebAssembly module</a> <var>module</var> with <var>imports</var>, and let <var>instance</var> be the result.
@@ -843,7 +843,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p>Return <var>promise</var>.</p>
     </ol>
-    <p class="note" role="note"><span>Note:</span> It would be valid to perform certain parts of the instantiation <a data-link-type="dfn">in parallel</a>, but several parts need to happen in the event loop, including JavaScript operations to access the <var>importObject</var> and execution of the start function.</p>
+    <p class="note" role="note"><span>Note:</span> It would be valid to perform certain parts of the instantiation <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>, but several parts need to happen in the event loop, including JavaScript operations to access the <var>importObject</var> and execution of the start function.</p>
    </div>
    <div class="algorithm" data-algorithm="instantiate(bytes, importObject)" data-algorithm-for="WebAssembly">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export data-lt="instantiate(bytes, importObject)|instantiate(bytes)" id="dom-webassembly-instantiate"><code>instantiate(<var>bytes</var>, <var>importObject</var>)</code></dfn> method, when invoked, performs the following steps: 
@@ -1711,24 +1711,24 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p class="assertion">Assert: <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-iscallable" id="ref-for-sec-iscallable②">IsCallable</a>(<var>func</var>).</p>
      <li data-md>
-      <p>Let <var>stored settings</var> be the <a data-link-type="dfn">incumbent settings object</a>.</p>
+      <p>Let <var>stored settings</var> be the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#incumbent-settings-object" id="ref-for-incumbent-settings-object">incumbent settings object</a>.</p>
      <li data-md>
       <p>Let <var>hostfunc</var> be a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-hostfunc" id="ref-for-syntax-hostfunc">host function</a> which performs the following steps when called with arguments <var>arguments</var>:</p>
       <ol>
        <li data-md>
         <p>Let <var>realm</var> be <var>func</var>’s <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-associated-realm" id="ref-for-dfn-associated-realm">associated Realm</a>.</p>
        <li data-md>
-        <p>Let <var>relevant settings</var> be <var>realm</var>’s <a data-link-type="dfn">settings object</a>.</p>
+        <p>Let <var>relevant settings</var> be <var>realm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-settings-object" id="ref-for-concept-realm-settings-object">settings object</a>.</p>
        <li data-md>
-        <p><a data-link-type="dfn">Prepare to run script</a> with <var>relevant settings</var>.</p>
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-script" id="ref-for-prepare-to-run-script">Prepare to run script</a> with <var>relevant settings</var>.</p>
        <li data-md>
-        <p><a data-link-type="dfn">Prepare to run a callback</a> with <var>stored settings</var>.</p>
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-a-callback" id="ref-for-prepare-to-run-a-callback">Prepare to run a callback</a> with <var>stored settings</var>.</p>
        <li data-md>
         <p>Let <var>result</var> be the result of <a data-link-type="dfn" href="#run-a-host-function" id="ref-for-run-a-host-function">running a host function</a> from <var>func</var>, <var>functype</var>, and <var>arguments</var>.</p>
        <li data-md>
-        <p><a data-link-type="dfn">Clean up after running a callback</a> with <var>stored settings</var>.</p>
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-a-callback" id="ref-for-clean-up-after-running-a-callback">Clean up after running a callback</a> with <var>stored settings</var>.</p>
        <li data-md>
-        <p><a data-link-type="dfn">Clean up after running script</a> with <var>relevant settings</var>.</p>
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-script" id="ref-for-clean-up-after-running-script">Clean up after running script</a> with <var>relevant settings</var>.</p>
        <li data-md>
         <p class="assertion">Assert: <var>result</var>.[[Type]] is <emu-const>throw</emu-const> or <emu-const>normal</emu-const>.</p>
        <li data-md>
@@ -2371,6 +2371,60 @@ In practice, an implementation may run out of resources for valid modules below 
    <a href="https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail">https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-utf-8-decode-without-bom-or-fail">4.1. Modules</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-clean-up-after-running-a-callback">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-a-callback">https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-a-callback</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-clean-up-after-running-a-callback">4.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-clean-up-after-running-script">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-script">https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-script</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-clean-up-after-running-script">4.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-in-parallel">
+   <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-in-parallel">4. The WebAssembly Namespace</a> <a href="#ref-for-in-parallel①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-incumbent-settings-object">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#incumbent-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#incumbent-settings-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-incumbent-settings-object">4.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-prepare-to-run-a-callback">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-a-callback">https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-a-callback</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prepare-to-run-a-callback">4.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-prepare-to-run-script">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-script">https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-script</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prepare-to-run-script">4.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-queue-a-task">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task">https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-queue-a-task">4. The WebAssembly Namespace</a> <a href="#ref-for-queue-a-task①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-realm-settings-object">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-settings-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-realm-settings-object">4.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-task-source">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#task-source">https://html.spec.whatwg.org/multipage/webappapis.html#task-source</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-task-source">4. The WebAssembly Namespace</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-append">
@@ -3147,6 +3201,19 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-utf-8-decode-without-bom-or-fail">utf-8 decode without bom or fail</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[HTML]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-clean-up-after-running-a-callback">clean up after running a callback</span>
+     <li><span class="dfn-paneled" id="term-for-clean-up-after-running-script">clean up after running script</span>
+     <li><span class="dfn-paneled" id="term-for-in-parallel">in parallel</span>
+     <li><span class="dfn-paneled" id="term-for-incumbent-settings-object">incumbent settings object</span>
+     <li><span class="dfn-paneled" id="term-for-prepare-to-run-a-callback">prepare to run a callback</span>
+     <li><span class="dfn-paneled" id="term-for-prepare-to-run-script">prepare to run script</span>
+     <li><span class="dfn-paneled" id="term-for-queue-a-task">queue a task</span>
+     <li><span class="dfn-paneled" id="term-for-concept-realm-settings-object">settings object</span>
+     <li><span class="dfn-paneled" id="term-for-task-source">task source</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-list-append">append</span>
@@ -3273,6 +3340,8 @@ In practice, an implementation may run out of resources for valid modules below 
    <dd><a href="https://tc39.es/ecma262/multipage/"><cite>ECMAScript Language Specification</cite></a>. URL: <a href="https://tc39.es/ecma262/multipage/">https://tc39.es/ecma262/multipage/</a>
    <dt id="biblio-encoding">[ENCODING]
    <dd>Anne van Kesteren. <a href="https://encoding.spec.whatwg.org/"><cite>Encoding Standard</cite></a>. Living Standard. URL: <a href="https://encoding.spec.whatwg.org/">https://encoding.spec.whatwg.org/</a>
+   <dt id="biblio-html">[HTML]
+   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-rfc2119">[RFC2119]
