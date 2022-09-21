@@ -641,6 +641,8 @@ Note: The [reference types](https://github.com/WebAssembly/reference-types) and 
 
 * finally, `ref.as_non_null` is equivalent to `ref.cast ht`, where `ht` is the heap type of the operand
 
+TODO: Should we remove the latter 3 from the typed function references proposal?
+
 
 #### Constant Expressions
 
