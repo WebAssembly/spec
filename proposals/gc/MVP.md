@@ -623,7 +623,7 @@ Casts work for both abstract and concrete types. In the latter case, they test i
 * `br_on_cast_fail <labelidx> null? <heaptype>` branches if a reference does not have a given heap type
   - `br_on_cast_fail $l null? ht : [t0* (ref null ht')] -> [t0* (ref null2? ht)]`
     - iff `$l : [t0* t']`
-    - and `(ref null3? ht) <: t'`
+    - and `(ref null3? ht') <: t'`
     - and `ht <: tht` and `ht' <: tht` where `tht` is a common super type
     - and `null? = null2? =/= null3?`
   - passes operand along with branch, plus possible extra args
