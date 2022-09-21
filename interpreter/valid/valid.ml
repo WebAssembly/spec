@@ -366,11 +366,11 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     (ts @ [NumT I32T]) -->... [], []
 
   | BrOnNull x ->
-    let (_nul, ht) = peek_ref 0 s e.at in
+    let (_, ht) = peek_ref 0 s e.at in
     (label c x @ [RefT (Null, ht)]) --> (label c x @ [RefT (NoNull, ht)]), []
 
   | BrOnNonNull x ->
-    let (_nul, ht) = peek_ref 0 s e.at in
+    let (_, ht) = peek_ref 0 s e.at in
     let t' = RefT (NoNull, ht) in
     require (label c x <> []) e.at
       ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
@@ -379,7 +379,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     require (match_val_type c.types t' t1) e.at
       ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
        " but label has " ^ string_of_result_type (label c x));
-    (ts0 @ [RefT (_nul, ht)]) --> ts0, []
+    (ts0 @ [RefT (Null, ht)]) --> ts0, []
 
   | Return ->
     c.results -->... [], []
