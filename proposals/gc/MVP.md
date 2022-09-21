@@ -635,9 +635,9 @@ Note: The [reference types](https://github.com/WebAssembly/reference-types) and 
 
 * `ref.is_null` is equivalent to `ref.test null ht`, where `ht` is the suitable bottom type (`none`, `nofunc`, or `noextern`)
 
-* `br_on_null` is equivalent to `br_on_cast null ht`, where `ht` is the suitable bottom type
+* `br_on_null` is equivalent to `br_on_cast null ht`, where `ht` is the suitable bottom type, except that it does not forward the null value
 
-* `br_on_non_null` is equivalent to `br_on_cast_fail null ht`, where `ht` is the suitable bottom type
+* `br_on_non_null` is equivalent to `(br_on_cast_fail null ht) (drop)`, where `ht` is the suitable bottom type
 
 * finally, `ref.as_non_null` is equivalent to `ref.cast ht`, where `ht` is the heap type of the operand
 
