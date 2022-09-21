@@ -353,7 +353,7 @@ let assert_return ress ts at =
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult (RefPat {it = NullRef t; _}) ->
-      [ RefTestNull @@ at;
+      [ RefIsNull @@ at;
         Test (Value.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult (RefPat {it = HostRef n; _}) ->
@@ -371,7 +371,7 @@ let assert_return ress ts at =
     | RefResult NullPat ->
       (match t with
       | RefT _ ->
-        [ BrCastNull (0l @@ at) @@ at ]
+        [ BrOnNull (0l @@ at) @@ at ]
       | _ ->
         [ Br (0l @@ at) @@ at ]
       )

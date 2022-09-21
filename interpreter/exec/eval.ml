@@ -203,31 +203,31 @@ let rec step (c : config) : config =
         else
           vs', [Plain (Br (Lib.List32.nth xs i)) @@ e.at]
 
-      | BrCast (x, rt), Ref r :: vs' ->
-        let rt' = dyn_ref_type c.frame.inst.types rt in
-        if Match.match_ref_type [] (type_of_ref r) rt' then
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-        else
-          Ref r :: vs', []
-
-      | BrCastFail (x, rt), Ref r :: vs' ->
-        let rt' = dyn_ref_type c.frame.inst.types rt in
-        if Match.match_ref_type [] (type_of_ref r) rt' then
-          Ref r :: vs', []
-        else
-          Ref r :: vs', [Plain (Br x) @@ e.at]
-
-      | BrCastNull x, Ref (NullRef _) :: vs' ->
+      | BrOnNull x, Ref (NullRef _) :: vs' ->
         vs', [Plain (Br x) @@ e.at]
 
-      | BrCastNull x, Ref r :: vs' ->
+      | BrOnNull x, Ref r :: vs' ->
         Ref r :: vs', []
 
-      | BrCastFailNull x, Ref (NullRef _) :: vs' ->
+      | BrOnNonNull x, Ref (NullRef _) :: vs' ->
         vs', []
 
-      | BrCastFailNull x, Ref r :: vs' ->
+      | BrOnNonNull x, Ref r :: vs' ->
         Ref r :: vs', [Plain (Br x) @@ e.at]
+
+      | BrOnCast (x, rt), Ref r :: vs' ->
+        let rt' = dyn_ref_type c.frame.inst.types rt in
+        if Match.match_ref_type [] (type_of_ref r) rt' then
+          Ref r :: vs', [Plain (Br x) @@ e.at]
+        else
+          Ref r :: vs', []
+
+      | BrOnCastFail (x, rt), Ref r :: vs' ->
+        let rt' = dyn_ref_type c.frame.inst.types rt in
+        if Match.match_ref_type [] (type_of_ref r) rt' then
+          Ref r :: vs', []
+        else
+          Ref r :: vs', [Plain (Br x) @@ e.at]
 
       | Return, vs ->
         [], [Returning vs @@ e.at]
@@ -551,6 +551,18 @@ let rec step (c : config) : config =
         let f = func c.frame.inst x in
         Ref (FuncRef f) :: vs', []
 
+      | RefIsNull, Ref (NullRef _) :: vs' ->
+        value_of_bool true :: vs', []
+
+      | RefIsNull, Ref _ :: vs' ->
+        value_of_bool false :: vs', []
+
+      | RefAsNonNull, Ref (NullRef _) :: vs' ->
+        vs', [Trapping "null reference" @@ e.at]
+
+      | RefAsNonNull, Ref r :: vs' ->
+        Ref r :: vs', []
+
       | RefTest rt, Ref r :: vs' ->
         let rt' = dyn_ref_type c.frame.inst.types rt in
         value_of_bool (Match.match_ref_type [] (type_of_ref r) rt') :: vs', []
@@ -563,18 +575,6 @@ let rec step (c : config) : config =
           vs', [Trapping ("cast failure, expected " ^
             string_of_ref_type rt ^ " but got " ^
             string_of_ref_type (type_of_ref r)) @@ e.at]
-
-      | RefTestNull, Ref (NullRef _) :: vs' ->
-        value_of_bool true :: vs', []
-
-      | RefTestNull, Ref _ :: vs' ->
-        value_of_bool false :: vs', []
-
-      | RefCastNull, Ref (NullRef _) :: vs' ->
-        vs', [Trapping "null reference" @@ e.at]
-
-      | RefCastNull, Ref r :: vs' ->
-        Ref r :: vs', []
 
       | RefEq, Ref r1 :: Ref r2 :: vs' ->
         value_of_bool (eq_ref r1 r2) :: vs', []

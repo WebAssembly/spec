@@ -425,11 +425,23 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     List.iter (fun x' -> check_stack c ts (label c x') x'.at) xs;
     (ts @ [NumT I32T]) -->... [], []
 
-  | BrCastNull x ->
+  | BrOnNull x ->
     let (_nul, ht) = peek_ref 0 s e.at in
     (label c x @ [RefT (Null, ht)]) --> (label c x @ [RefT (NoNull, ht)]), []
 
-  | BrCast (x, rt) ->
+  | BrOnNonNull x ->
+    let (nul, ht) = peek_ref 0 s e.at in
+    let t' = RefT (NoNull, ht) in
+    require (label c x <> []) e.at
+      ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
+       " but label has " ^ string_of_result_type (label c x));
+    let ts0, t1 = Lib.List.split_last (label c x) in
+    require (match_val_type c.types t' t1) e.at
+      ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
+       " but label has " ^ string_of_result_type (label c x));
+    (ts0 @ [RefT (nul, ht)]) --> ts0, []
+
+  | BrOnCast (x, rt) ->
     let (nul, ht) = rt in
     let (nul', ht') as rt' = peek_ref 0 s e.at in
     let tht = top_of_heap_type c.types ht in
@@ -447,19 +459,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
        " but label has " ^ string_of_result_type (label c x));
     (ts0 @ [RefT rt']) --> (ts0 @ [RefT (inv_null nul, ht')]), []
 
-  | BrCastFailNull x ->
-    let (nul, ht) = peek_ref 0 s e.at in
-    let t' = RefT (NoNull, ht) in
-    require (label c x <> []) e.at
-      ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
-       " but label has " ^ string_of_result_type (label c x));
-    let ts0, t1 = Lib.List.split_last (label c x) in
-    require (match_val_type c.types t' t1) e.at
-      ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
-       " but label has " ^ string_of_result_type (label c x));
-    (ts0 @ [RefT (nul, ht)]) --> ts0, []
-
-  | BrCastFail (x, rt) ->
+  | BrOnCastFail (x, rt) ->
     let (nul, ht) = rt in
     let (nul', ht') as rt' = peek_ref 0 s e.at in
     let tht = top_of_heap_type c.types ht in
@@ -628,18 +628,18 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     refer_func c x;
     [] --> [RefT (NoNull, DefHT (StatX y))], []
 
-  | RefTestNull ->
+  | RefIsNull ->
     let (_, ht) = peek_ref 0 s e.at in
     [RefT (Null, ht)] --> [NumT I32T], []
+
+  | RefAsNonNull ->
+    let (_, ht) = peek_ref 0 s e.at in
+    [RefT (Null, ht)] --> [RefT (NoNull, ht)], []
 
   | RefTest rt ->
     check_ref_type c rt e.at;
     let (_nul, ht) = rt in
     [RefT (Null, top_of_heap_type c.types ht)] --> [NumT I32T], []
-
-  | RefCastNull ->
-    let (_, ht) = peek_ref 0 s e.at in
-    [RefT (Null, ht)] --> [RefT (NoNull, ht)], []
 
   | RefCast rt ->
     check_ref_type c rt e.at;

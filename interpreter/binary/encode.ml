@@ -238,12 +238,12 @@ struct
     | Br x -> op 0x0c; var x
     | BrIf x -> op 0x0d; var x
     | BrTable (xs, x) -> op 0x0e; vec var xs; var x
-    | BrCastNull x -> op 0xd4; var x
-    | BrCast (x, (NoNull, t)) -> op 0xfb; op 0x42; var x; heap_type t
-    | BrCast (x, (Null, t)) -> op 0xfb; op 0x4a; var x; heap_type t
-    | BrCastFailNull x -> op 0xd6; var x
-    | BrCastFail (x, (NoNull, t)) -> op 0xfb; op 0x43; var x; heap_type t
-    | BrCastFail (x, (Null, t)) -> op 0xfb; op 0x4b; var x; heap_type t
+    | BrOnNull x -> op 0xd4; var x
+    | BrOnNonNull x -> op 0xd6; var x
+    | BrOnCast (x, (NoNull, t)) -> op 0xfb; op 0x42; var x; heap_type t
+    | BrOnCast (x, (Null, t)) -> op 0xfb; op 0x4a; var x; heap_type t
+    | BrOnCastFail (x, (NoNull, t)) -> op 0xfb; op 0x43; var x; heap_type t
+    | BrOnCastFail (x, (Null, t)) -> op 0xfb; op 0x4b; var x; heap_type t
     | Return -> op 0x0f
     | Call x -> op 0x10; var x
     | CallRef x -> op 0x14; var x
@@ -365,10 +365,10 @@ struct
     | RefNull t -> op 0xd0; heap_type t
     | RefFunc x -> op 0xd2; var x
 
-    | RefTestNull -> op 0xd1
+    | RefIsNull -> op 0xd1
+    | RefAsNonNull -> op 0xd3
     | RefTest (NoNull, t) -> op 0xfb; op 0x40; heap_type t
     | RefTest (Null, t) -> op 0xfb; op 0x48; heap_type t
-    | RefCastNull -> op 0xd3
     | RefCast (NoNull, t) -> op 0xfb; op 0x41; heap_type t
     | RefCast (Null, t) -> op 0xfb; op 0x49; heap_type t
 

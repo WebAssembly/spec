@@ -251,7 +251,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token MUT FIELD STRUCT ARRAY SUB REC
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP
-%token BR BR_IF BR_TABLE BR_CAST BR_CAST_FAIL BR_CAST_NULL BR_CAST_FAIL_NULL
+%token BR BR_IF BR_TABLE BR_ON_NULL BR_ON_NON_NULL BR_ON_CAST BR_ON_CAST_FAIL
 %token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
@@ -260,7 +260,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
 %token REF_NULL REF_FUNC REF_I31 REF_STRUCT REF_ARRAY REF_EXTERN REF_HOST
-%token REF_EQ REF_TEST REF_CAST REF_TEST_NULL REF_CAST_NULL
+%token REF_EQ REF_IS_NULL REF_AS_NON_NULL REF_TEST REF_CAST
 %token I31_NEW I32_GET
 %token STRUCT_NEW STRUCT_GET STRUCT_SET
 %token ARRAY_NEW ARRAY_NEW_FIXED ARRAY_NEW_ELEM ARRAY_NEW_DATA
@@ -288,10 +288,10 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<Types.num_type> NUM_TYPE
 %token<Types.vec_type> VEC_TYPE
 %token<Pack.pack_size> PACK_TYPE
-%token<Ast.instr'> REF_TEST_NULL REF_CAST_NULL
+%token<Ast.instr'> REF_IS_NULL REF_AS_NON_NULL
 %token<(Types.heap_type -> Ast.instr') * (Types.heap_type -> Ast.instr')> REF_TEST REF_CAST
-%token<Ast.idx -> Ast.instr'> BR_CAST_NULL BR_CAST_FAIL_NULL
-%token<(Ast.idx -> Types.heap_type -> Ast.instr') * (Ast.idx -> Types.heap_type -> Ast.instr')> BR_CAST BR_CAST_FAIL
+%token<Ast.idx -> Ast.instr'> BR_ON_NULL BR_ON_NON_NULL
+%token<(Ast.idx -> Types.heap_type -> Ast.instr') * (Ast.idx -> Types.heap_type -> Ast.instr')> BR_ON_CAST BR_ON_CAST_FAIL
 %token<Ast.instr'> I31_GET
 %token<Ast.idx -> Ast.idx -> Ast.instr'> STRUCT_GET
 %token<Ast.idx -> Ast.instr'> ARRAY_GET
@@ -534,12 +534,12 @@ plain_instr :
   | BR_TABLE var var_list
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
-  | BR_CAST_NULL var { fun c -> $1 ($2 c label) }
-  | BR_CAST_FAIL_NULL var { fun c -> $1 ($2 c label) }
-  | BR_CAST var heap_type { fun c -> fst $1 ($2 c label) ($3 c) }
-  | BR_CAST_FAIL var heap_type { fun c -> fst $1 ($2 c label) ($3 c) }
-  | BR_CAST var NULL heap_type { fun c -> snd $1 ($2 c label) ($4 c) }
-  | BR_CAST_FAIL var NULL heap_type { fun c -> snd $1 ($2 c label) ($4 c) }
+  | BR_ON_NULL var { fun c -> $1 ($2 c label) }
+  | BR_ON_NON_NULL var { fun c -> $1 ($2 c label) }
+  | BR_ON_CAST var heap_type { fun c -> fst $1 ($2 c label) ($3 c) }
+  | BR_ON_CAST var NULL heap_type { fun c -> snd $1 ($2 c label) ($4 c) }
+  | BR_ON_CAST_FAIL var heap_type { fun c -> fst $1 ($2 c label) ($3 c) }
+  | BR_ON_CAST_FAIL var NULL heap_type { fun c -> snd $1 ($2 c label) ($4 c) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF var { fun c -> call_ref ($2 c type_) }
@@ -582,8 +582,8 @@ plain_instr :
   | DATA_DROP var { fun c -> data_drop ($2 c data) }
   | REF_NULL heap_type { fun c -> ref_null ($2 c) }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
-  | REF_TEST_NULL { fun c -> $1 }
-  | REF_CAST_NULL { fun c -> $1 }
+  | REF_IS_NULL { fun c -> $1 }
+  | REF_AS_NON_NULL { fun c -> $1 }
   | REF_TEST heap_type { fun c -> fst $1 ($2 c) }
   | REF_CAST heap_type { fun c -> fst $1 ($2 c) }
   | REF_TEST NULL heap_type { fun c -> snd $1 ($3 c) }

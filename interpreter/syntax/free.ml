@@ -124,7 +124,7 @@ let rec instr (e : instr) =
   match e.it with
   | Unreachable | Nop | Drop -> empty
   | Select tso -> list val_type (Lib.Option.get tso [])
-  | RefTestNull | RefCastNull -> empty
+  | RefIsNull | RefAsNonNull -> empty
   | RefTest t | RefCast t -> ref_type t
   | RefEq -> empty
   | RefNull t -> heap_type t
@@ -140,8 +140,8 @@ let rec instr (e : instr) =
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
   | If (bt, es1, es2) -> block_type bt ++ block es1 ++ block es2
-  | Br x | BrIf x | BrCastNull x | BrCastFailNull x -> labels (idx x)
-  | BrCast (x, t) | BrCastFail (x, t) -> labels (idx x) ++ ref_type t
+  | Br x | BrIf x | BrOnNull x | BrOnNonNull x -> labels (idx x)
+  | BrOnCast (x, t) | BrOnCastFail (x, t) -> labels (idx x) ++ ref_type t
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
   | Return -> empty
   | Call x -> funcs (idx x)
