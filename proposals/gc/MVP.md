@@ -629,9 +629,17 @@ Casts work for both abstract and concrete types. In the latter case, they test o
   - passes operand along with branch, plus possible extra args
   - if `null?` is present, does not branch on null, otherwise does
 
-Note: The [reference types](https://github.com/WebAssembly/reference-types) and [typed function references](https://github.com/WebAssembly/function-references)already introduce similar `ref.is_null`, `br_on_null`, and `br_on_non_null` instructions.
-
 Note: The `br_on`/`br_on_non` instructions allow an operand of sibling reference type, even though this cannot possibly succeed. That's because subtyping allows to forget that information, so by the subtype substitutibility property, it would be accepted in any case. The given typing rules merely allow this type to also propagate to the result, which avoids the need to compute a least upper bound between the operand type and the target type in the typing algorithm.
+
+Note: The [reference types](https://github.com/WebAssembly/reference-types) and [typed function references](https://github.com/WebAssembly/function-references)already introduce similar `ref.is_null`, `br_on_null`, and `br_on_non_null` instructions. These can now be interpreted as syntactic sugar:
+
+* `ref.is_null` is equivalent to `ref.is null ht`, where `tht` is the suitable bottom type (`none`, `nofunc`, or `noextern`)
+
+* `br_on_null` is equivalent to `br_on null ht`, where `tht` is the suitable bottom type
+
+* `br_on_non_null` is equivalent to `br_on_non null ht`, where `tht` is the suitable bottom type
+
+* finally, `ref.as_non_null` is equivalent to `ref.as ht`, where `ht` is the heap type of the operand
 
 
 #### Constant Expressions
