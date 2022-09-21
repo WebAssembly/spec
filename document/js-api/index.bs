@@ -170,6 +170,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
         text: −∞
         text: nan
         text: canon
+        text: signif
     text: function element; url: exec/runtime.html#syntax-funcelem
     text: import component; url: syntax/modules.html#imports
     text: external value; url: exec/runtime.html#syntax-externval
@@ -1134,7 +1135,7 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 1. If |type| is [=f32=],
     1. Let |number| be [=?=] [=ToNumber=](|v|).
     1. If |number| is **NaN**,
-        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>32</sub> ≤ |n| < 2<sup>32</sup>.
+        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>32</sub> ≤ |n| < 2<sup>[=signif=](32)</sup>.
         1. Let |f32| be [=nan=](n).
     1. Otherwise,
         1. Let |f32| be |number| rounded to the nearest representable value using IEEE 754-2008 round to nearest, ties to even mode. [[IEEE-754]]
@@ -1142,7 +1143,7 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 1. If |type| is [=f64=],
     1. Let |number| be [=?=] [=ToNumber=](|v|).
     1. If |number| is **NaN**,
-        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>64</sub> ≤ |n| < 2<sup>64</sup>.
+        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>64</sub> ≤ |n| < 2<sup>[=signif=](64)</sup>.
         1. Let |f64| be [=nan=](n).
     1. Otherwise,
         1. Let |f64| be |number|.
