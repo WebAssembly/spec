@@ -179,7 +179,7 @@ All the instructions take 3 operands, `a`, `b`, `c`, perform `a * b + c` or `-(a
 
 where:
 
-- the intermediate `b * c` is be rounded first, and the final result rounded again (for a total of 2 roundings), or
+- the intermediate `a * b` is be rounded first, and the final result rounded again (for a total of 2 roundings), or
 - the entire expression evaluated with higher precision and then only rounded once (if supported by hardware).
 
 ### Relaxed laneselect
@@ -324,9 +324,9 @@ forward, the opcodes for relaxed-simd specification will be the ones in the
 | `i32x4.relaxed_trunc_f64x2_s_zero`   | 0x103          | 0xc5             |
 | `i32x4.relaxed_trunc_f64x2_u_zero`   | 0x104          | 0xc6             |
 | `f32x4.relaxed_fma`                  | 0x105          | 0xaf             |
-| `f32x4.relaxed_fms`                  | 0x106          | 0xb0             |
+| `f32x4.relaxed_fnma`                 | 0x106          | 0xb0             |
 | `f64x2.relaxed_fma`                  | 0x107          | 0xcf             |
-| `f64x2.relaxed_fms`                  | 0x108          | 0xd0             |
+| `f64x2.relaxed_fnma`                 | 0x108          | 0xd0             |
 | `i8x16.relaxed_laneselect`           | 0x109          | 0xb2             |
 | `i16x8.relaxed_laneselect`           | 0x10a          | 0xb3             |
 | `i32x4.relaxed_laneselect`           | 0x10b          | 0xd2             |
