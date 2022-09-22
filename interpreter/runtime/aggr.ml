@@ -67,8 +67,9 @@ let string_of_field = function
   | ValField vr -> string_of_value !vr
   | PackField (_, ir) -> string_of_int !ir
 
-let string_of_fields fs =
+let string_of_fields nest fs =
   if fs = [] then "" else
+  if !nest > 0 then " ..." else
   let fs', ell =
     if List.length fs > 5
     then Lib.List.take 5 fs, ["..."]
@@ -76,8 +77,7 @@ let string_of_fields fs =
   in " " ^ String.concat " " (List.map string_of_field fs' @ ell)
 
 let string_of_aggr name nest fs =
-  if !nest > 0 && fs <> [] then "(" ^ name ^ " ...)" else
-  Fun.protect (fun () -> incr nest; "(" ^ name ^ string_of_fields fs ^ ")")
+  Fun.protect (fun () -> incr nest; "(" ^ name ^ string_of_fields nest fs ^ ")")
     ~finally:(fun () -> decr nest)
 
 let () =
