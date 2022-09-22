@@ -68,24 +68,22 @@ let string_of_field = function
   | PackField (_, ir) -> string_of_int !ir
 
 let string_of_fields fs =
+  if fs = [] then "" else
   let fs', ell =
     if List.length fs > 5
     then Lib.List.take 5 fs, ["..."]
     else fs, []
-  in String.concat " " (List.map string_of_field fs' @ ell)
+  in " " ^ String.concat " " (List.map string_of_field fs' @ ell)
 
-let rec_for inner f x =
-  inner := true;
-  try let y = f x in inner := false; y
-  with exn -> inner := false; raise exn
+let string_of_aggr name nest fs =
+  if !nest > 0 && fs <> [] then "(" ^ name ^ " ...)" else
+  Fun.protect (fun () -> incr nest; "(" ^ name ^ string_of_fields fs ^ ")")
+    ~finally:(fun () -> decr nest)
 
 let () =
   let string_of_ref' = !Value.string_of_ref' in
-  let inner = ref false in
+  let nest = ref 0 in
   Value.string_of_ref' := function
-    | (StructRef _ | ArrayRef _) when !inner -> "..."
-    | StructRef (Struct (_, fs)) ->
-      "(struct " ^ rec_for inner string_of_fields fs ^ ")"
-    | ArrayRef (Array (_, fs)) ->
-      "(array " ^ rec_for inner string_of_fields fs ^ ")"
+    | StructRef (Struct (_, fs)) -> string_of_aggr "struct" nest fs
+    | ArrayRef (Array (_, fs)) -> string_of_aggr "array" nest fs
     | r -> string_of_ref' r
