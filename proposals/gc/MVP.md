@@ -600,12 +600,12 @@ Casts work for both abstract and concrete types. In the latter case, they test i
 
 * `ref.test null? <heaptype>` checks whether a reference has a given heap type
   - `ref.test null? ht : [(ref null ht')] -> [i32]`
-    - iff `ht <: ht'`
+    - iff `ht <: tht` and `ht' <: tht` where `tht` is a common super type
   - if `null?` is present, returns 1 for null, otherwise 0
 
 * `ref.cast null? <heaptype>` tries to convert to a given heap type
   - `ref.cast null? ht : [(ref null ht')] -> [(ref null2? ht)]`
-    - iff `ht <: ht'`
+    - iff `ht <: tht` and `ht' <: tht` where `tht` is a common super type
     - and `null? = null2?`
   - traps if reference is not of requested type
   - if `null?` is present, a null operand is passed through, otherwise traps on null
@@ -629,7 +629,7 @@ Casts work for both abstract and concrete types. In the latter case, they test i
   - passes operand along with branch, plus possible extra args
   - if `null?` is present, does not branch on null, otherwise does
 
-Note: Via subsumption to a common supertype, `ref.test` and `ref.cast` actually allow an operand of sibling reference type, even though this cannot possibly succeed. In the case of the branch instruction, this has to be made explicit, though, since the type also occurs in result position. The given typing rules allow this type to also propagate to the result, which avoids the need to compute a least upper bound between the operand type and the target type in the typing algorithm (allowing so is required to maintain subtype substitutability). In practice, it is sufficient to test that both types share the same top heap type.
+Note: Cast instructions do _not_ require the operand's source type to be a supertype of the target type. It can also be a "sibling" in the same hierarchy, i.e., they only need to have a common supertype (in practice, it is sufficient to test that both types share the same top heap type.). Allowing so is necessary to maintain subtype substitutability, i.e., the ability to maintain well-typedness when operands are replaced by subtypes.
 
 Note: The [reference types](https://github.com/WebAssembly/reference-types) and [typed function references](https://github.com/WebAssembly/function-references)already introduce similar `ref.is_null`, `br_on_null`, and `br_on_non_null` instructions. These can now be interpreted as syntactic sugar:
 
