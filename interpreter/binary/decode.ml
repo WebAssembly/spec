@@ -182,7 +182,7 @@ let heap_type s =
       | -0x16 -> I31HT
       | -0x17 -> NoFuncHT
       | -0x18 -> NoExternHT
-      | -0x19 -> AggrHT
+      | -0x19 -> StructHT
       | -0x1a -> ArrayHT
       | -0x1b -> NoneHT
       | _ -> error s pos "malformed heap type"
@@ -201,7 +201,7 @@ let ref_type s =
   | -0x16 -> (Null, I31HT)
   | -0x17 -> (Null, NoFuncHT)
   | -0x18 -> (Null, NoExternHT)
-  | -0x19 -> (Null, AggrHT)
+  | -0x19 -> (Null, StructHT)
   | -0x1a -> (Null, ArrayHT)
   | -0x1b -> (Null, NoneHT)
   | _ -> error s pos "malformed reference type"
@@ -604,24 +604,14 @@ let rec instr s =
     | 0x21l -> i31_get_s
     | 0x22l -> i31_get_u
 
-    | 0x40l -> ref_test_canon (at var s)
-    | 0x41l -> ref_cast_canon (at var s)
-    | 0x42l -> let x = at var s in let y = at var s in br_on_cast_canon x y
-    | 0x43l -> let x = at var s in let y = at var s in br_on_cast_canon_fail x y
-
-    | 0x51l -> ref_is_data
-    | 0x52l -> ref_is_i31
-    | 0x53l -> ref_is_array
-    | 0x59l -> ref_as_data
-    | 0x5al -> ref_as_i31
-    | 0x5bl -> ref_as_array
-
-    | 0x61l -> br_on_data (at var s)
-    | 0x62l -> br_on_i31 (at var s)
-    | 0x64l -> br_on_non_data (at var s)
-    | 0x65l -> br_on_non_i31 (at var s)
-    | 0x66l -> br_on_array (at var s)
-    | 0x67l -> br_on_non_array (at var s)
+    | 0x40l -> ref_test (heap_type s)
+    | 0x41l -> ref_cast (heap_type s)
+    | 0x42l -> let x = at var s in br_on_cast x (heap_type s)
+    | 0x43l -> let x = at var s in br_on_cast_fail x (heap_type s)
+    | 0x48l -> ref_test_null (heap_type s)
+    | 0x49l -> ref_cast_null (heap_type s)
+    | 0x4al -> let x = at var s in br_on_cast_null x (heap_type s)
+    | 0x4bl -> let x = at var s in br_on_cast_fail_null x (heap_type s)
 
     | 0x70l -> extern_internalize
     | 0x71l -> extern_externalize

@@ -158,7 +158,7 @@ rule token = parse
       | "eqref" -> EQREF
       | "i31" -> I31
       | "i31ref" -> I31REF
-      | "dataref" -> DATAREF
+      | "structref" -> STRUCTREF
       | "arrayref" -> ARRAYREF
       | "nofunc" -> NOFUNC
       | "funcref" -> FUNCREF
@@ -186,16 +186,10 @@ rule token = parse
       | "br" -> BR
       | "br_if" -> BR_IF
       | "br_table" -> BR_TABLE
-      | "br_on_null" -> BR_CAST br_on_null
-      | "br_on_i31" -> BR_CAST br_on_i31
-      | "br_on_data" -> BR_CAST br_on_data
-      | "br_on_array" -> BR_CAST br_on_array
-      | "br_on_cast_canon" -> BR_CAST_CANON
-      | "br_on_non_null" -> BR_CAST_FAIL br_on_non_null
-      | "br_on_non_i31" -> BR_CAST_FAIL br_on_non_i31
-      | "br_on_non_data" -> BR_CAST_FAIL br_on_non_data
-      | "br_on_non_array" -> BR_CAST br_on_non_array
-      | "br_on_cast_canon_fail" -> BR_CAST_CANON_FAIL
+      | "br_on_null" -> BR_ON_NULL br_on_null
+      | "br_on_non_null" -> BR_ON_NON_NULL br_on_non_null
+      | "br_on_cast" -> BR_ON_CAST (br_on_cast, br_on_cast_null)
+      | "br_on_cast_fail" -> BR_ON_CAST_FAIL (br_on_cast_fail, br_on_cast_fail_null)
       | "return" -> RETURN
       | "if" -> IF
       | "then" -> THEN
@@ -312,21 +306,15 @@ rule token = parse
       | "ref.null" -> REF_NULL
       | "ref.func" -> REF_FUNC
       | "ref.i31" -> REF_I31
-      | "ref.data" -> REF_DATA
+      | "ref.struct" -> REF_STRUCT
       | "ref.array" -> REF_ARRAY
       | "ref.extern" -> REF_EXTERN
       | "ref.host" -> REF_HOST
 
-      | "ref.is_null" -> REF_TEST ref_is_null
-      | "ref.is_i31" -> REF_TEST ref_is_i31
-      | "ref.is_data" -> REF_TEST ref_is_data
-      | "ref.is_array" -> REF_TEST ref_is_array
-      | "ref.as_non_null" -> REF_CAST ref_as_non_null
-      | "ref.as_i31" -> REF_CAST ref_as_i31
-      | "ref.as_data" -> REF_CAST ref_as_data
-      | "ref.as_array" -> REF_CAST ref_as_array
-      | "ref.test_canon" -> REF_TEST_CANON
-      | "ref.cast_canon" -> REF_CAST_CANON
+      | "ref.is_null" -> REF_IS_NULL ref_is_null
+      | "ref.as_non_null" -> REF_AS_NON_NULL ref_as_non_null
+      | "ref.test" -> REF_TEST (ref_test, ref_test_null)
+      | "ref.cast" -> REF_CAST (ref_cast, ref_cast_null)
       | "ref.eq" -> REF_EQ
 
       | "i31.new" -> I31_NEW

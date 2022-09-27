@@ -245,13 +245,13 @@ let inline_func_type_explicit (c : context) x ft at =
 %token LPAR RPAR
 %token NAT INT FLOAT STRING VAR
 %token NUM_TYPE PACK_TYPE VEC_TYPE VEC_SHAPE
-%token ANYREF NULLREF EQREF I31REF DATAREF ARRAYREF
+%token ANYREF NULLREF EQREF I31REF STRUCTREF ARRAYREF
 %token FUNCREF NULLFUNCREF EXTERNREF NULLEXTERNREF
-%token ANY NONE EQ I31 DATA REF NOFUNC EXTERN NOEXTERN NULL
+%token ANY NONE EQ I31 REF NOFUNC EXTERN NOEXTERN NULL
 %token MUT FIELD STRUCT ARRAY SUB REC
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP
-%token BR BR_IF BR_TABLE BR_CAST BR_CAST_FAIL BR_CAST_CANON BR_CAST_CANON_FAIL
+%token BR BR_IF BR_TABLE BR_ON_NULL BR_ON_NON_NULL BR_ON_CAST BR_ON_CAST_FAIL
 %token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
@@ -259,8 +259,8 @@ let inline_func_type_explicit (c : context) x ft at =
 %token MEMORY_SIZE MEMORY_GROW MEMORY_FILL MEMORY_COPY MEMORY_INIT DATA_DROP
 %token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token CONST UNARY BINARY TEST COMPARE CONVERT
-%token REF_NULL REF_FUNC REF_I31 REF_DATA REF_ARRAY REF_EXTERN REF_HOST
-%token REF_EQ REF_TEST REF_CAST REF_TEST_CANON REF_CAST_CANON
+%token REF_NULL REF_FUNC REF_I31 REF_STRUCT REF_ARRAY REF_EXTERN REF_HOST
+%token REF_EQ REF_IS_NULL REF_AS_NON_NULL REF_TEST REF_CAST
 %token I31_NEW I32_GET
 %token STRUCT_NEW STRUCT_GET STRUCT_SET
 %token ARRAY_NEW ARRAY_NEW_FIXED ARRAY_NEW_ELEM ARRAY_NEW_DATA
@@ -288,8 +288,10 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<Types.num_type> NUM_TYPE
 %token<Types.vec_type> VEC_TYPE
 %token<Pack.pack_size> PACK_TYPE
-%token<Ast.instr'> REF_TEST REF_CAST
-%token<Ast.idx -> Ast.instr'> BR_CAST BR_CAST_FAIL
+%token<Ast.instr'> REF_IS_NULL REF_AS_NON_NULL
+%token<(Types.heap_type -> Ast.instr') * (Types.heap_type -> Ast.instr')> REF_TEST REF_CAST
+%token<Ast.idx -> Ast.instr'> BR_ON_NULL BR_ON_NON_NULL
+%token<(Ast.idx -> Types.heap_type -> Ast.instr') * (Ast.idx -> Types.heap_type -> Ast.instr')> BR_ON_CAST BR_ON_CAST_FAIL
 %token<Ast.instr'> I31_GET
 %token<Ast.idx -> Ast.idx -> Ast.instr'> STRUCT_GET
 %token<Ast.idx -> Ast.instr'> ARRAY_GET
@@ -354,7 +356,7 @@ heap_type :
   | NONE { fun c -> NoneHT }
   | EQ { fun c -> EqHT }
   | I31 { fun c -> I31HT }
-  | DATA { fun c -> AggrHT }
+  | STRUCT { fun c -> StructHT }
   | ARRAY { fun c -> ArrayHT }
   | FUNC { fun c -> FuncHT }
   | NOFUNC { fun c -> NoFuncHT }
@@ -368,7 +370,7 @@ ref_type :
   | NULLREF { fun c -> (Null, NoneHT) }  /* Sugar */
   | EQREF { fun c -> (Null, EqHT) }  /* Sugar */
   | I31REF { fun c -> (Null, I31HT) }  /* Sugar */
-  | DATAREF { fun c -> (Null, AggrHT) }  /* Sugar */
+  | STRUCTREF { fun c -> (Null, StructHT) }  /* Sugar */
   | ARRAYREF { fun c -> (Null, ArrayHT) }  /* Sugar */
   | FUNCREF { fun c -> (Null, FuncHT) }  /* Sugar */
   | NULLFUNCREF { fun c -> (Null, NoFuncHT) }  /* Sugar */
@@ -532,12 +534,12 @@ plain_instr :
   | BR_TABLE var var_list
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
-  | BR_CAST var { fun c -> $1 ($2 c label) }
-  | BR_CAST_FAIL var { fun c -> $1 ($2 c label) }
-  | BR_CAST_CANON var type_use
-    { fun c -> br_on_cast_canon ($2 c label) ($3 c) }
-  | BR_CAST_CANON_FAIL var type_use
-    { fun c -> br_on_cast_canon_fail ($2 c label) ($3 c) }
+  | BR_ON_NULL var { fun c -> $1 ($2 c label) }
+  | BR_ON_NON_NULL var { fun c -> $1 ($2 c label) }
+  | BR_ON_CAST var heap_type { fun c -> fst $1 ($2 c label) ($3 c) }
+  | BR_ON_CAST var NULL heap_type { fun c -> snd $1 ($2 c label) ($4 c) }
+  | BR_ON_CAST_FAIL var heap_type { fun c -> fst $1 ($2 c label) ($3 c) }
+  | BR_ON_CAST_FAIL var NULL heap_type { fun c -> snd $1 ($2 c label) ($4 c) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF var { fun c -> call_ref ($2 c type_) }
@@ -580,10 +582,12 @@ plain_instr :
   | DATA_DROP var { fun c -> data_drop ($2 c data) }
   | REF_NULL heap_type { fun c -> ref_null ($2 c) }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
-  | REF_TEST { fun c -> $1 }
-  | REF_CAST { fun c -> $1 }
-  | REF_TEST_CANON var { fun c -> ref_test_canon ($2 c type_) }
-  | REF_CAST_CANON var { fun c -> ref_cast_canon ($2 c type_) }
+  | REF_IS_NULL { fun c -> $1 }
+  | REF_AS_NON_NULL { fun c -> $1 }
+  | REF_TEST heap_type { fun c -> fst $1 ($2 c) }
+  | REF_CAST heap_type { fun c -> fst $1 ($2 c) }
+  | REF_TEST NULL heap_type { fun c -> snd $1 ($3 c) }
+  | REF_CAST NULL heap_type { fun c -> snd $1 ($3 c) }
   | REF_EQ { fun c -> ref_eq }
   | I31_NEW { fun c -> i31_new }
   | I31_GET { fun c -> $1 }
@@ -1354,7 +1358,7 @@ result :
   | LPAR REF RPAR { RefResult (RefTypePat AnyHT) @@ at () }
   | LPAR REF_EQ RPAR { RefResult (RefTypePat EqHT) @@ at () }
   | LPAR REF_I31 RPAR { RefResult (RefTypePat I31HT) @@ at () }
-  | LPAR REF_DATA RPAR { RefResult (RefTypePat AggrHT) @@ at () }
+  | LPAR REF_STRUCT RPAR { RefResult (RefTypePat StructHT) @@ at () }
   | LPAR REF_ARRAY RPAR { RefResult (RefTypePat ArrayHT) @@ at () }
   | LPAR REF_NULL RPAR { RefResult NullPat @@ at () }
   | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncHT) @@ at () }

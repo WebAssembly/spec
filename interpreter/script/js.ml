@@ -17,16 +17,12 @@ function externref(s) {
   if (! (s in externrefs)) externrefs[s] = {[externsym]: s};
   return externrefs[s];
 }
-function is_eqref(x) {
-  return x !== null ? 1 : 0;  // TODO
-}
 function eq_ref(x, y) {
   return x === y ? 1 : 0;
 }
 
 let spectest = {
   externref: externref,
-  is_eqref: is_eqref,
   eq_ref: eq_ref,
   print: console.log.bind(console),
   print_i32: console.log.bind(console),
@@ -226,9 +222,8 @@ let lookup (mods : modules) x_opt name at =
 
 let subject_idx = 0l
 let externref_idx = 1l
-let is_eqref_idx = 2l
-let eq_ref_idx = 3l
-let subject_type_idx = 4l
+let eq_ref_idx = 2l
+let subject_type_idx = 3l
 
 let eq_of = function
   | I32T -> I32 I32Op.Eq
@@ -255,7 +250,7 @@ let abs_mask_of = function
   | I64T | F64T -> I64 Int64.max_int
 
 let null_heap_type_of = function
-  | Types.(AnyHT | NoneHT | EqHT | I31HT | AggrHT | ArrayHT) -> NoneHT
+  | Types.(AnyHT | NoneHT | EqHT | I31HT | StructHT | ArrayHT) -> NoneHT
   | Types.(FuncHT | NoFuncHT) -> NoFuncHT
   | Types.(ExternHT | NoExternHT) -> NoExternHT
   | Types.BotHT -> assert false
@@ -358,7 +353,7 @@ let assert_return ress ts at =
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult (RefPat {it = NullRef t; _}) ->
-      [ RefTest NullOp @@ at;
+      [ RefIsNull @@ at;
         Test (Value.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult (RefPat {it = HostRef n; _}) ->
@@ -370,24 +365,13 @@ let assert_return ress ts at =
     | RefResult (RefPat _) ->
       assert false
     | RefResult (RefTypePat t) ->
-      let is_ref =
-        match t with
-        | AnyHT | FuncHT | ExternHT -> Const (I32 1l @@ at)
-        | NoneHT | NoFuncHT | NoExternHT -> Const (I32 0l @@ at)
-        | EqHT -> Call (is_eqref_idx @@ at)
-        | I31HT -> RefTest I31Op
-        | AggrHT -> RefTest AggrOp
-        | ArrayHT -> RefTest ArrayOp
-        | DefHT _ -> Const (I32 1l @@ at) (* TODO *)
-        | BotHT -> assert false
-      in
-      [ is_ref @@ at;
+      [ RefTest (NoNull, t) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult NullPat ->
       (match t with
       | RefT _ ->
-        [ BrCast (0l @@ at, NullOp) @@ at ]
+        [ BrOnNull (0l @@ at) @@ at ]
       | _ ->
         [ Br (0l @@ at) @@ at ]
       )
@@ -404,7 +388,6 @@ let wrap item_name wrap_action wrap_assertion at =
   let types =
     func_def_type [] [] at ::
     func_def_type [i32] [anyref] at ::
-    func_def_type [anyref] [i32] at ::
     func_def_type [eqref; eqref] [i32] at ::
     itypes
   in
@@ -412,8 +395,6 @@ let wrap item_name wrap_action wrap_assertion at =
     [ {module_name = Utf8.decode "module"; item_name; idesc} @@ at;
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "externref";
        idesc = FuncImport (1l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_eqref";
-       idesc = FuncImport (2l @@ at) @@ at} @@ at;
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_ref";
        idesc = FuncImport (3l @@ at) @@ at} @@ at;
     ]

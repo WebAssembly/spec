@@ -15,7 +15,7 @@ type var = StatX of type_idx | DynX of type_addr | RecX of int32
 type num_type = I32T | I64T | F32T | F64T
 type vec_type = V128T
 type heap_type =
-  | AnyHT | NoneHT | EqHT | I31HT | AggrHT | ArrayHT
+  | AnyHT | NoneHT | EqHT | I31HT | StructHT | ArrayHT
   | FuncHT | NoFuncHT
   | ExternHT | NoExternHT
   | DefHT of var
@@ -111,6 +111,10 @@ let defaultable = function
 
 (* Projections *)
 
+let inv_null = function
+  | Null -> NoNull
+  | NoNull -> Null
+
 let unpacked_storage_type = function
   | ValStorageT t -> t
   | PackStorageT _ -> NumT I32T
@@ -195,7 +199,7 @@ let string_of_heap_type = function
   | NoneHT -> "none"
   | EqHT -> "eq"
   | I31HT -> "i31"
-  | AggrHT -> "data"
+  | StructHT -> "struct"
   | ArrayHT -> "array"
   | FuncHT -> "func"
   | NoFuncHT -> "nofunc"
@@ -311,7 +315,7 @@ let subst_heap_type s = function
   | NoneHT -> NoneHT
   | EqHT -> EqHT
   | I31HT -> I31HT
-  | AggrHT -> AggrHT
+  | StructHT -> StructHT
   | ArrayHT -> ArrayHT
   | FuncHT -> FuncHT
   | NoFuncHT -> NoFuncHT
@@ -451,6 +455,7 @@ let dyn_var_type c = function
   | RecX x -> RecX x
 
 let dyn_heap_type c = subst_heap_type (dyn_var_type c)
+let dyn_ref_type c = subst_ref_type (dyn_var_type c)
 let dyn_val_type c = subst_val_type (dyn_var_type c)
 let dyn_func_type c = subst_func_type (dyn_var_type c)
 let dyn_memory_type c = subst_memory_type (dyn_var_type c)

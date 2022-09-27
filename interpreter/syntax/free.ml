@@ -74,7 +74,7 @@ let vec_type = function
 
 let heap_type = function
   | AnyHT | NoneHT | EqHT
-  | I31HT | AggrHT | ArrayHT -> empty
+  | I31HT | StructHT | ArrayHT -> empty
   | FuncHT | NoFuncHT -> empty
   | ExternHT | NoExternHT -> empty
   | DefHT x -> var_type x
@@ -120,15 +120,12 @@ let block_type = function
   | VarBlockType x -> types (idx x)
   | ValBlockType t -> opt val_type t
 
-let castop = function
-  | RttOp x -> types (idx x)
-  | _ -> empty
-
 let rec instr (e : instr) =
   match e.it with
   | Unreachable | Nop | Drop -> empty
   | Select tso -> list val_type (Lib.Option.get tso [])
-  | RefTest op | RefCast op -> castop op
+  | RefIsNull | RefAsNonNull -> empty
+  | RefTest t | RefCast t -> ref_type t
   | RefEq -> empty
   | RefNull t -> heap_type t
   | RefFunc x -> funcs (idx x)
@@ -143,8 +140,8 @@ let rec instr (e : instr) =
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
   | If (bt, es1, es2) -> block_type bt ++ block es1 ++ block es2
-  | Br x | BrIf x -> labels (idx x)
-  | BrCast (x, op) | BrCastFail (x, op) -> labels (idx x) ++ castop op
+  | Br x | BrIf x | BrOnNull x | BrOnNonNull x -> labels (idx x)
+  | BrOnCast (x, t) | BrOnCastFail (x, t) -> labels (idx x) ++ ref_type t
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
   | Return -> empty
   | Call x -> funcs (idx x)

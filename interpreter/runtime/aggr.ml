@@ -5,12 +5,11 @@ type field =
   | ValField of value ref
   | PackField of Pack.pack_size * int ref
 
-type aggr =
-  | Struct of type_addr * Rtt.t * field list
-  | Array of type_addr * Rtt.t * field list
-type t = aggr
+type struct_ = Struct of type_addr * field list
+type array = Array of type_addr * field list
 
-type ref_ += AggrRef of aggr
+type ref_ += StructRef of struct_
+type ref_ += ArrayRef of array
 
 
 let gap sz = 32 - 8 * Pack.packed_size sz
@@ -39,56 +38,52 @@ let read_field fld exto =
   | _, _ -> failwith "read_field"
 
 
-let alloc_struct x rtt vs =
+let alloc_struct x vs =
   let StructT fts = as_struct_str_type (expand_ctx_type (def_of x)) in
-  Struct (x, rtt, List.map2 alloc_field fts vs)
+  Struct (x, List.map2 alloc_field fts vs)
 
-let alloc_array x rtt vs =
+let alloc_array x vs =
   let ArrayT ft = as_array_str_type (expand_ctx_type (def_of x)) in
-  Array (x, rtt, List.map (alloc_field ft) vs)
+  Array (x, List.map (alloc_field ft) vs)
 
 
-let type_inst_of = function
-  | Struct (x, _, _) -> x
-  | Array (x, _, _) -> x
+let type_inst_of_struct (Struct (x, _)) = x
+let type_inst_of_array (Array (x, _)) = x
 
-let struct_type_of d = as_struct_str_type (expand_ctx_type (def_of (type_inst_of d)))
-let array_type_of d = as_array_str_type (expand_ctx_type (def_of (type_inst_of d)))
-
-let read_rtt = function
-  | Struct (_, rtt, _) -> rtt
-  | Array (_, rtt, _) -> rtt
+let type_of_struct s =
+  as_struct_str_type (expand_ctx_type (def_of (type_inst_of_struct s)))
+let type_of_array a =
+  as_array_str_type (expand_ctx_type (def_of (type_inst_of_array a)))
 
 
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | AggrRef d -> DefHT (DynX (type_inst_of d))
+    | StructRef s -> DefHT (DynX (type_inst_of_struct s))
+    | ArrayRef a -> DefHT (DynX (type_inst_of_array a))
     | r -> type_of_ref' r
 
 let string_of_field = function
   | ValField vr -> string_of_value !vr
   | PackField (_, ir) -> string_of_int !ir
 
-let string_of_fields fs =
+let string_of_fields nest fs =
+  if fs = [] then "" else
+  if !nest > 0 then " ..." else
   let fs', ell =
     if List.length fs > 5
     then Lib.List.take 5 fs, ["..."]
     else fs, []
-  in String.concat " " (List.map string_of_field fs' @ ell)
+  in " " ^ String.concat " " (List.map string_of_field fs' @ ell)
 
-let rec_for inner f x =
-  inner := true;
-  try let y = f x in inner := false; y
-  with exn -> inner := false; raise exn
+let string_of_aggr name nest fs =
+  Fun.protect (fun () -> incr nest; "(" ^ name ^ string_of_fields nest fs ^ ")")
+    ~finally:(fun () -> decr nest)
 
 let () =
   let string_of_ref' = !Value.string_of_ref' in
-  let inner = ref false in
+  let nest = ref 0 in
   Value.string_of_ref' := function
-    | AggrRef _ when !inner -> "..."
-    | AggrRef (Struct (_, _, fs)) ->
-      "(struct " ^ rec_for inner string_of_fields fs ^ ")"
-    | AggrRef (Array (_, _, fs)) ->
-      "(array " ^ rec_for inner string_of_fields fs ^ ")"
+    | StructRef (Struct (_, fs)) -> string_of_aggr "struct" nest fs
+    | ArrayRef (Array (_, fs)) -> string_of_aggr "array" nest fs
     | r -> string_of_ref' r
