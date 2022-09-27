@@ -55,11 +55,11 @@ The following additions are made to the hierarchies of heap types:
 
 * `eq` is a new heap type
   - `heaptype ::= ... | eq`
-  - the common supertype of all referenceable types on which comparison (`ref.eq`) is allowed
+  - the common supertype of all referenceable types on which comparison (`ref.eq`) is allowed (this may include host-defined external types)
 
-* `data` is a new heap type
-  - `heaptype ::= ... | data`
-  - the common supertype of all compound data types, like struct and array types and possibly host-defined types, for which casts are allowed
+* `struct` is a new heap type
+  - `heaptype ::= ... | struct`
+  - the common supertype of all struct types
 
 * `array` is a new heap type
   - `heaptype ::= ... | array`
@@ -71,7 +71,7 @@ The following additions are made to the hierarchies of heap types:
 
 We distinguish these *abstract* heap types from *concrete* heap types `$t` that reference actual definitions in the type section.
 Most abstract heap types are a supertype of a class of concrete heap types.
-Moreover, they form a small [subtype hierarchy](#subtyping) among themselves.
+Moreover, they form several small [subtype hierarchies](#subtyping) among themselves.
 
 
 #### Reference Types
@@ -93,8 +93,8 @@ New abbreviations are introduced for reference types in binary and text format, 
 * `eqref` is a new reference type
   - `eqref == (ref null eq)`
 
-* `dataref` is a new reference type
-  - `dataref == (ref null data)`
+* `structref` is a new reference type
+  - `structref == (ref null struct)`
 
 * `arrayref` is a new reference type
   - `arrayref == (ref null array)`
@@ -322,7 +322,7 @@ In addition to the [existing rules](https://github.com/WebAssembly/function-refe
 
 * every internal type is a subtype of `any`
   - `t <: any`
-    - if `t = any/eq/data/array/i31` or `t = $t` and `$t = <structtype>` or `$t = <arraytype>`
+    - if `t = any/eq/struct/array/i31` or `t = $t` and `$t = <structtype>` or `$t = <arraytype>`
 
 * every internal type is a supertype of `none`
   - `none <: t`
@@ -345,46 +345,46 @@ In addition to the [existing rules](https://github.com/WebAssembly/function-refe
   - `nofunc <: t`
     - if `t <: func`
 
-* `dataref` is a subtype of `eqref`
-  - `data <: eq`
-  - TODO: provide a way to make data types non-eq, especially immutable ones?
+* `structref` is a subtype of `eqref`
+  - `struct <: eq`
+  - TODO: provide a way to make aggregate types non-eq, especially immutable ones?
 
-* `arrayref` is a subtype of `dataref`
-  - `array <: data`
+* `arrayref` is a subtype of `eqref`
+  - `array <: eq`
 
 * `i31ref` is a subtype of `eqref`
   - `i31 <: eq`
 
-* Any concrete internal type is a subtype of `data`
-  - `$t <: data`
-     - if `$t = <structtype>` or `$t = <arraytype>`
+* Any concrete struct type is a subtype of `struct`
+  - `$t <: struct`
+     - if `$t = <structtype>`
+
+* Any concrete array type is a subtype of `array`
+  - `$t <: struct`
+     - if `$t = <arraytype>`
 
 * Any concrete function type is a subtype of `func`
   - `$t <: func`
      - if `$t = <functype>`
 
-* Any concrete array type is a subtype of `array`
-  - `$t <: array`
-     - if `$t = <arraytype>`
-
 Note: This creates a hierarchy of *abstract* Wasm heap types that looks as follows.
 ```
-   any  extern  func
-    |
-   eq
-  /  \
-i31  data
-       \
-       array
+      any  extern  func
+       |
+       eq
+    /  |   \
+i31  struct  array
 ```
-All *concrete* types (of the form `$t`) are situated below either `data` or `func`.
+The hierarchy consists of several disjoint sub hierarchies, each starting from one of the *top* heap types `any`, `extern`, or `func`.
+
+All *concrete* types (of the form `$t`) are situated below either `struct`, `array`, or `func`.
 Not shown in the graph are `none`, `noextern`, and `nofunc`, which are below the other "leaf" types.
 
 A host environment may introduce additional inhabitants of type `any`
 that are are in neither of the above leaf type categories.
 The interpretation of such values is defined by the host environment, they are opaque within Wasm code.
 
-Note: In the future, this hierarchy could be refined, e.g., to distinguish compound data types that are not subtypes of `eq`.
+Note: In the future, this hierarchy could be refined, e.g., to distinguish aggregate types that are not subtypes of `eq`.
 
 
 ##### Structural Types
@@ -465,7 +465,7 @@ This can compile to machine code that (1) reads the RTT from `$x`, (2) checks th
 
 #### Values
 
-* Reference values of data or function type have an associated runtime type:
+* Reference values of aggregate or function type have an associated runtime type:
   - for structures or arrays, it is the RTT value implictly produced upon creation,
   - for functions, it is the RTT value for the function's type (which may be recursive).
 
@@ -594,112 +594,54 @@ In particular, `ref.null` is typed as before, despite the introduction of `none`
   - note: this succeeds for all values; moreover, composing this with `extern.internalize` (in either order) yields the original value
 
 
-#### Classification
-
-* `ref.is_data` checks whether a reference is compound data
-  - `ref.is_data : [anyref] -> [i32]`
-
-* `ref.is_array` checks whether a reference is an array
-  - `ref.is_array : [anyref] -> [i32]`
-
-* `ref.is_i31` checks whether a reference is an i31
-  - `ref.is_i31 : [anyref] -> [i32]`
-
-* `br_on_data <labelidx>` branches if a reference is compound data
-  - `br_on_data $l : [t0* t] -> [t0* t]`
-    - iff `$l : [t0* t']`
-    - and `t <: anyref`
-    - and `(ref data) <: t'`
-  - passes operand along with branch as data, plus possible extra args
-
-* `br_on_non_data <labelidx>` branches if a reference is not compound data
-  - `br_on_non_data $l : [t0* t] -> [t0* (ref data)]`
-    - iff `$l : [t0* t']`
-    - and `t <: anyref`
-    - and `t <: t'`
-  - passes operand along with branch, plus possible extra args
-
-* `br_on_array <labelidx>` branches if a reference is an array
-  - `br_on_array $l : [t0* t] -> [t0* t]`
-    - iff `$l : [t0* t']`
-    - and `t <: anyref`
-    - and `(ref array) <: t'`
-  - passes operand along with branch as data, plus possible extra args
-
-* `br_on_non_array <labelidx>` branches if a reference is not an array
-  - `br_on_non_array $l : [t0* t] -> [t0* (ref array)]`
-    - iff `$l : [t0* t']`
-    - and `t <: anyref`
-    - and `t <: t'`
-  - passes operand along with branch, plus possible extra args
-
-* `br_on_i31 <labelidx>` branches if a reference is an integer
-  - `br_on_i31 $l : [t0* t] -> [t0* t]`
-    - iff `$l : [t0* t']`
-    - and `t <: anyref`
-    - and `(ref i31) <: t'`
-  - passes operand along with branch as a scalar, plus possible extra args
-
-* `br_on_non_i31 <labelidx>` branches if a reference is not an integer
-  - `br_on_non_i31 $l : [t0* t] -> [t0* (ref i31)]`
-    - iff `$l : [t0* t']`
-    - and `t <: anyref`
-    - and `t <: t'`
-  - passes operand along with branch, plus possible extra args
-
-* `ref.as_data` converts to a data reference
-  - `ref.as_data : [anyref] -> [(ref data)]`
-  - traps if reference is not compound data
-  - equivalent to `(block $l (param anyref) (result (ref data)) (br_on_data $l) (unreachable))`
-
-* `ref.as_array` converts to an array reference
-  - `ref.as_array : [anyref] -> [(ref array)]`
-  - traps if reference is not an array
-  - equivalent to `(block $l (param anyref) (result (ref array)) (br_on_array $l) (unreachable))`
-
-* `ref.as_i31` converts to an integer reference
-  - `ref.as_i31 : [anyref] -> [(ref i31)]`
-  - traps if reference is not an integer
-  - equivalent to `(block $l (param anyref) (result (ref i31)) (br_on_i31 $l) (unreachable))`
-
-Note: The [reference types](https://github.com/WebAssembly/reference-types) and [typed function references](https://github.com/WebAssembly/function-references)already introduce similar `ref.is_null`, `br_on_null`, and `br_on_non_null` instructions.
-
-Note: The `br_on_*` instructions allow an operand of unrelated reference type, even though this cannot possibly succeed. That's because subtyping allows to forget that information, so by the subtype substitutibility property, it would be accepted in any case. The given typing rules merely allow this type to also propagate to the result, which avoids the need to compute a least upper bound between the operand type and the target type in the typing algorithm.
-
-
 #### Casts
 
-RTT-based casts can only be performed with respect to concrete types, and require a data or function reference as input, which are known to carry an RTT.
+Casts work for both abstract and concrete types. In the latter case, they test if the operand's RTT is a sub-RTT of the target type.
 
-* `ref.test_canon <typeidx>` tests whether a reference value's [runtime type](#values) is a [runtime subtype](#runtime) of a given type
-  - `ref.test_canon $t : [t'] -> [i32]`
-    - iff `t' <: (ref null data)` and `$t <: data` or `t' <: (ref null func)` and `$t <: func`
-  - returns 1 if the first operand is not null and its runtime type is a sub-RTT of the RTT operand, 0 otherwise
+* `ref.test null? <heaptype>` checks whether a reference has a given heap type
+  - `ref.test null? ht : [(ref null ht')] -> [i32]`
+    - iff `ht <: tht` and `ht' <: tht` where `tht` is a common super type
+  - if `null?` is present, returns 1 for null, otherwise 0
 
-* `ref.cast_canon <typeidx>` casts a reference value down to a type
-  - `ref.cast_canon $t : [(ref null1? ht)] -> [(ref null2? $t)]`
-    - iff `ht <: data` and `$t <: data` or `ht <: func` and `$t <: func`
-    - and `null1? = null2?`
-  - returns null if the first operand is null
-  - traps if the first operand is not null and its runtime type is not a sub-RTT of `$t`
+* `ref.cast null? <heaptype>` tries to convert to a given heap type
+  - `ref.cast null? ht : [(ref null ht')] -> [(ref null2? ht)]`
+    - iff `ht <: tht` and `ht' <: tht` where `tht` is a common super type
+    - and `null? = null2?`
+  - traps if reference is not of requested type
+  - if `null?` is present, a null operand is passed through, otherwise traps on null
+  - equivalent to `(block $l (param anyref) (result (ref null? ht)) (br_on_cast null? ht $l) (unreachable))`
 
-* `br_on_cast_canon <labelidx> <typeidx>` branches if a value can be cast down to a given reference type
-  - `br_on_cast_canon $l $t : [t0* t] -> [t0* t]`
+* `br_on_cast <labelidx> null? <heaptype>` branches if a reference has a given heap type
+  - `br_on_cast $l null? ht : [t0* (ref null ht')] -> [t0* (ref null2? ht')]`
     - iff `$l : [t0* t']`
-    - and `t <: (ref null data)` and `$t <: data` or `t <: (ref null func)` and `$t <: func`
-    - and `(ref $t) <: t'`
-  - branches iff the first operand is not null and its runtime type is a sub-RTT of `$t`
-  - passes cast operand along with branch, plus possible extra args
+    - and `(ref null3? ht) <: t'`
+    - and `ht <: tht` and `ht' <: tht` where `tht` is a common super type
+    - and `null? = null3? =/= null2?`
+  - passes operand along with branch under target type, plus possible extra args
+  - if `null?` is present, branches on null, otherwise does not
 
-* `br_on_cast_canon_fail <labelidx> <typeidx>` branches if a value can not be cast down to a given reference type
-  - `br_on_cast_canon_fail $l $t : [t0* t] -> [t0* (ref $t)]`
+* `br_on_cast_fail <labelidx> null? <heaptype>` branches if a reference does not have a given heap type
+  - `br_on_cast_fail $l null? ht : [t0* (ref null ht')] -> [t0* (ref null2? ht)]`
     - iff `$l : [t0* t']`
-    - and `t <: (ref null data)` and `$t <: data` or `t <: (ref null func)` and `$t <: func`
-    - and `t <: t'`
-  - branches iff the first operand is null or its runtime type is not a sub-RTT of `$t'`
+    - and `(ref null3? ht') <: t'`
+    - and `ht <: tht` and `ht' <: tht` where `tht` is a common super type
+    - and `null? = null2? =/= null3?`
   - passes operand along with branch, plus possible extra args
+  - if `null?` is present, does not branch on null, otherwise does
 
-Note: These instructions allow an operand of unrelated reference type, even though this cannot possibly succeed. The reasoning is the same as for classification instructions.
+Note: Cast instructions do _not_ require the operand's source type to be a supertype of the target type. It can also be a "sibling" in the same hierarchy, i.e., they only need to have a common supertype (in practice, it is sufficient to test that both types share the same top heap type.). Allowing so is necessary to maintain subtype substitutability, i.e., the ability to maintain well-typedness when operands are replaced by subtypes.
+
+Note: The [reference types](https://github.com/WebAssembly/reference-types) and [typed function references](https://github.com/WebAssembly/function-references)already introduce similar `ref.is_null`, `br_on_null`, and `br_on_non_null` instructions. These can now be interpreted as syntactic sugar:
+
+* `ref.is_null` is equivalent to `ref.test null ht`, where `ht` is the suitable bottom type (`none`, `nofunc`, or `noextern`)
+
+* `br_on_null` is equivalent to `br_on_cast null ht`, where `ht` is the suitable bottom type, except that it does not forward the null value
+
+* `br_on_non_null` is equivalent to `(br_on_cast_fail null ht) (drop)`, where `ht` is the suitable bottom type
+
+* finally, `ref.as_non_null` is equivalent to `ref.cast ht`, where `ht` is the heap type of the operand
+
+TODO: Should we remove the latter 3 from the typed function references proposal?
 
 
 #### Constant Expressions
@@ -739,7 +681,7 @@ This extends the [encodings](https://github.com/WebAssembly/function-references/
 | -0x16  | `i31ref`        |            | shorthand |
 | -0x17  | `nullfuncref`   |            | shorthand |
 | -0x18  | `nullexternref` |            | shorthand |
-| -0x19  | `dataref`       |            | shorthand |
+| -0x19  | `structref`     |            | shorthand |
 | -0x1a  | `arrayref`      |            | shorthand |
 | -0x1b  | `nullref`       |            | shorthand |
 
@@ -757,7 +699,7 @@ The opcode for heap types is encoded as an `s33`.
 | -0x16  | `i31`           |            | |
 | -0x17  | `nofunc`        |            | |
 | -0x18  | `noextern`      |            | |
-| -0x19  | `data`          |            | |
+| -0x19  | `struct`        |            | |
 | -0x1a  | `array`         |            | |
 | -0x1b  | `none`          |            | |
 
@@ -817,22 +759,14 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb20 | `i31.new` |  |
 | 0xfb21 | `i31.get_s` |  |
 | 0xfb22 | `i31.get_u` |  |
-| 0xfb40 | `ref.test_canon $t` | `$t : typeidx` |
-| 0xfb41 | `ref.cast_canon $t` | `$t : typeidx` |
-| 0xfb42 | `br_on_cast_canon $l $t` | `$l : labelidx`, `$t : typeidx` |
-| 0xfb43 | `br_on_cast_canon_fail $l $t` | `$l : labelidx`, `$t : typeidx` |
-| 0xfb51 | `ref.is_data` | |
-| 0xfb52 | `ref.is_i31` | |
-| 0xfb53 | `ref.is_array` | |
-| 0xfb59 | `ref.as_data` | |
-| 0xfb5a | `ref.as_i31` | |
-| 0xfb5b | `ref.as_array` | |
-| 0xfb61 | `br_on_data` | `$l : labelidx` |
-| 0xfb62 | `br_on_i31` | `$l : labelidx` |
-| 0xfb64 | `br_on_non_data` | `$l : labelidx` |
-| 0xfb65 | `br_on_non_i31` | `$l : labelidx` |
-| 0xfb66 | `br_on_array` | `$l : labelidx` |
-| 0xfb67 | `br_on_non_array` | `$l : labelidx` |
+| 0xfb40 | `ref.test ht` | `ht : heaptype` |
+| 0xfb41 | `ref.cast ht` | `ht : heaptype` |
+| 0xfb42 | `br_on_cast $l ht` | `$l : labelidx`, `ht : heaptype` |
+| 0xfb43 | `br_on_cast_fail $l ht` | `$l : labelidx`, `ht : heaptype` |
+| 0xfb48 | `ref.test null ht` | `ht : heaptype` |
+| 0xfb49 | `ref.cast null ht` | `ht : heaptype` |
+| 0xfb4a | `br_on_cast $l null ht` | `$l : labelidx`, `ht : heaptype` |
+| 0xfb4b | `br_on_cast_fail $l null ht` | `$l : labelidx`, `ht : heaptype` |
 | 0xfb70 | `extern.internalize` | |
 | 0xfb71 | `extern.externalize` | |
 
@@ -846,9 +780,9 @@ See [GC JS API document](MVP-JS.md) .
 
 * Enable `i31` as a type definition.
 
-* Should reference types be generalised to *unions*, e.g., of the form `(ref null? i31? data? func? extern? $t?)`? Perhaps even allowing multiple concrete types?
+* Should reference types be generalised to *unions*, e.g., of the form `(ref null? i31? struct? array? func? extern? $t?)`? Perhaps even allowing multiple concrete types?
 
-* Provide a way to make data types non-eq, especially immutable ones?
+* Provide a way to make aggregate types non-eq, especially immutable ones?
 
 
 
