@@ -689,7 +689,7 @@ An alternative design would be to distinguish closures from raw functions. In su
 There would be two bind instructions, both returning a closure:
 
 * `closure.new` creates a closure from a function
-  - `closure.new : [(ref null $t)] -> [(ref (closure $t))]`
+  - `closure.new $t : [(ref null $t)] -> [(ref (closure $t))]`
     - iff `unroll($t) = [t1*] -> [t2*]`
   - traps on `null`
 
