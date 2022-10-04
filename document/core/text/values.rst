@@ -131,7 +131,7 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
      z{:}\Tfloat &\Rightarrow& \ieee_N(z) & (\iff \ieee_N(z) \neq \pm \infty) \\ &&|&
      z{:}\Thexfloat &\Rightarrow& \ieee_N(z) & (\iff \ieee_N(z) \neq \pm \infty) \\ &&|&
      \text{inf} &\Rightarrow& \infty \\ &&|&
-     \text{nan} &\Rightarrow& \NAN(2^{\significand(N)-1}) \\ &&|&
+     \text{nan} &\Rightarrow& \NAN(\canon_N) \\ &&|&
      \text{nan{:}0x}~n{:}\Thexnum &\Rightarrow& \NAN(n) & (\iff 1 \leq n < 2^{\significand(N)}) \\
    \end{array}
 
