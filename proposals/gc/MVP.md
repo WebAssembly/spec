@@ -110,6 +110,7 @@ New abbreviations are introduced for reference types in binary and text format, 
   - `module ::= {..., types vec(<deftype>)}`
   - a `rec` definition defines a group of mutually recursive types that can refer to each other; it thereby defines several type indices at a time
   - a single type definition, as in Wasm before this proposal, is reinterpreted as a short-hand for a recursive group containing just one type
+  - Note that the number of type section entries is now the number of recursion groups rather than the number of individual types. 
 
 * `subtype` is a new category of type defining a single type, as a subtype of possible other types
   - `subtype ::= sub <typeidx>* <strtype>`
