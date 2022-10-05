@@ -178,7 +178,7 @@ Furthermore, arbitrary NaN values may be expressed by providing an explicit payl
   z{:}\href{../text/values.html#text-float}{\mathtt{float}} &amp;\Rightarrow&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z) &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z) \neq \pm \infty) \\ &amp;&amp;|&amp;
   z{:}\href{../text/values.html#text-hexfloat}{\mathtt{hexfloat}} &amp;\Rightarrow&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z) &amp; (\mathrel{\mbox{if}} \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z) \neq \pm \infty) \\ &amp;&amp;|&amp;
   \def\mathdef3933#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3933{inf} &amp;\Rightarrow&amp; \infty \\ &amp;&amp;|&amp;
-  \def\mathdef3934#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3934{nan} &amp;\Rightarrow&amp; \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(2^{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)-1}) \\ &amp;&amp;|&amp;
+  \def\mathdef3934#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3934{nan} &amp;\Rightarrow&amp; \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \\ &amp;&amp;|&amp;
   \def\mathdef3935#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef3935{nan{:}0x}~n{:}\href{../text/values.html#text-hexnum}{\mathtt{hexnum}} &amp;\Rightarrow&amp; \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) &amp; (\mathrel{\mbox{if}} 1 \leq n &lt; 2^{\href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)}) \\
 \end{array}\end{split}\]</div>
 </section>
