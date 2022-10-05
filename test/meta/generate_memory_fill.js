@@ -62,7 +62,7 @@ print(
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0x20000) (i32.const 0x55) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // Very large range
@@ -141,7 +141,7 @@ function mem_fill(min, max, shared, backup, write=backup*2) {
     let val = 37;
     print(
 `(assert_trap (invoke "run" (i32.const ${offs}) (i32.const ${val}) (i32.const ${write}))
-              "out of bounds")
+              "out of bounds memory access")
 `);
     checkRange(0, min, 0);
 }
