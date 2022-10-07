@@ -648,7 +648,7 @@ Moreover, if the dots :math:`\dots` are a sequence :math:`A^n` (as for globals o
    In an implementation, this recursion is easily unraveled by mutating one or the other in a secondary step.
 
 
-.. index:: ! instantiation, module, instance, store, trap
+.. index:: ! instantiation, module, instance, store, trap, exception
 .. _exec-module:
 .. _exec-instantiation:
 
@@ -659,7 +659,7 @@ Given a :ref:`store <syntax-store>` :math:`S`, a :ref:`module <syntax-module>` :
 
 Instantiation checks that the module is :ref:`valid <valid>` and the provided imports :ref:`match <match-externtype>` the declared types,
 and may *fail* with an error otherwise.
-Instantiation can also result in a :ref:`trap <trap>` from executing the start function.
+Instantiation can also result in a :ref:`trap <trap>` or an exception from executing the start function.
 It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
 
 1. If :math:`\module` is not :ref:`valid <valid-module>`, then:
@@ -816,7 +816,7 @@ where:
    :ref:`Evaluation <exec-expr>` of :ref:`constant expressions <valid-constant>` does not affect the store.
 
 
-.. index:: ! invocation, module, module instance, function, export, function address, function instance, function type, value, stack, trap, store
+.. index:: ! invocation, module, module instance, function, export, function address, function instance, function type, value, stack, trap, exception, store
 .. _exec-invocation:
 
 Invocation
@@ -825,11 +825,11 @@ Invocation
 Once a :ref:`module <syntax-module>` has been :ref:`instantiated <exec-instantiation>`, any exported function can be *invoked* externally via its :ref:`function address <syntax-funcaddr>` :math:`\funcaddr` in the :ref:`store <syntax-store>` :math:`S` and an appropriate list :math:`\val^\ast` of argument :ref:`values <syntax-val>`.
 
 Invocation may *fail* with an error if the arguments do not fit the :ref:`function type <syntax-functype>`.
-Invocation can also result in a :ref:`trap <trap>`.
+Invocation can also result in a :ref:`trap <trap>` or an exception.
 It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
 
 .. note::
-   If the :ref:`embedder <embedder>` API performs type checks itself, either statically or dynamically, before performing an invocation, then no failure other than traps can occur.
+   If the :ref:`embedder <embedder>` API performs type checks itself, either statically or dynamically, before performing an invocation, then no failure other than traps or exceptions can occur.
 
 The following steps are performed:
 

@@ -3171,7 +3171,7 @@ Host Functions
 ..............
 
 Invoking a :ref:`host function <syntax-hostfunc>` has non-deterministic behavior.
-It may either terminate with a :ref:`trap <trap>` or return regularly.
+It may either terminate with a :ref:`trap <trap>`, an exception, or return regularly.
 However, in the latter case, it must consume and produce the right number and types of WebAssembly :ref:`values <syntax-val>` on the stack,
 according to its :ref:`function type <syntax-functype>`.
 

@@ -7,7 +7,7 @@ Soundness
 The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *type safety* and *memory safety* with respect to the WebAssembly semantics. For example:
 
 * All types declared and derived during validation are respected at run time;
-  e.g., every :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variable will only contain type-correct values, every :ref:`instruction <syntax-instr>` will only be applied to operands of the expected type, and every :ref:`function <syntax-func>` :ref:`invocation <exec-invocation>` always evaluates to a result of the right type (if it does not :ref:`trap <trap>` or diverge).
+  e.g., every :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variable will only contain type-correct values, every :ref:`instruction <syntax-instr>` will only be applied to operands of the expected type, and every :ref:`function <syntax-func>` :ref:`invocation <exec-invocation>` always evaluates to a result of the right type (if it does not :ref:`trap <trap>`, throw an exception, or diverge).
 
 * No memory location will be read or written except those explicitly defined by the program, i.e., as a :ref:`local <syntax-local>`, a :ref:`global <syntax-global>`, an element in a :ref:`table <syntax-table>`, or a location within a linear :ref:`memory <syntax-mem>`.
 
@@ -20,7 +20,7 @@ The typing rules defining WebAssembly :ref:`validation <valid>` only cover the *
 In order to state and prove soundness precisely, the typing rules must be extended to the *dynamic* components of the abstract :ref:`runtime <syntax-runtime>`, that is, the :ref:`store <syntax-store>`, :ref:`configurations <syntax-config>`, and :ref:`administrative instructions <syntax-instr-admin>`. [#cite-pldi2017]_
 
 
-.. index:: value, value type, result, result type, trap
+.. index:: value, value type, result, result type, trap, exception, throw
 .. _valid-result:
 
 Results
@@ -57,6 +57,9 @@ Results
    }{
      S \vdashresult \TRAP : [t^\ast]
    }
+
+.. todo::
+   Add validation for exception results.
 
 
 .. _module-context:
@@ -979,7 +982,7 @@ If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-conf
 then it either diverges or takes a finite number of steps to reach a terminal configuration :math:`S';T'` (i.e., :math:`S;T \stepto^\ast S';T'`) that is valid with the same result type (i.e., :math:`\vdashconfig S';T' : [t^\ast]`)
 and where :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdashstoreextends S \extendsto S'`).
 
-In other words, every thread in a valid configuration either runs forever, traps, or terminates with a result that has the expected type.
+In other words, every thread in a valid configuration either runs forever, traps, throws an exception, or terminates with a result that has the expected type.
 Consequently, given a :ref:`valid store <valid-store>`, no computation defined by :ref:`instantiation <exec-instantiation>` or :ref:`invocation <exec-invocation>` of a valid module can "crash" or otherwise (mis)behave in ways not covered by the :ref:`execution <exec>` semantics given in this specification.
 
 

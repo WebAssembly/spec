@@ -66,7 +66,7 @@ Convention
 * The meta variable :math:`r` ranges over reference values where clear from context.
 
 
-.. index:: ! result, value, trap
+.. index:: ! result, value, trap, exception
    pair: abstract syntax; result
 .. _syntax-result:
 
@@ -74,17 +74,15 @@ Results
 ~~~~~~~
 
 A *result* is the outcome of a computation.
-It is either a sequence of :ref:`values <syntax-val>` or a :ref:`trap <syntax-trap>`.
+It is either a sequence of :ref:`values <syntax-val>`, a :ref:`trap <syntax-trap>`, or an uncaught exception wrapped in its throw context.
 
 .. math::
    \begin{array}{llcl}
    \production{(result)} & \result &::=&
      \val^\ast \\&&|&
-     \TRAP
+     \TRAP  \\&&|&
+     \XT[\val^\ast~(\THROWadm~\tagaddr)]
    \end{array}
-
-.. todo::
-   Add a result value for an unhandled exception.
 
 .. note::
    In the current version of WebAssembly, a result can consist of at most one value.
@@ -714,13 +712,14 @@ the following syntax of *throw contexts* is defined, as well as associated struc
 .. math::
    \begin{array}{llll}
    \production{(throw contexts)} & \XT &::=&
-     \val^\ast~[\_]~\instr^\ast \\ &&|&
+     [\_] | \val^\ast~\XT~\instr^\ast \\ &&|&
      \LABEL_n\{\instr^\ast\}~\XT~\END \\ &&|&
      \CAUGHTadm\{\tagaddr~\val^\ast\}~\XT~\END \\ &&|&
      \FRAME_n\{F\}~\XT~\END \\
    \end{array}
 
 Throw contexts allow matching the program context around a throw instruction up to the innermost enclosing |CATCHadm| or |DELEGATEadm|, thereby selecting the exception |handler| responsible for an exception, if one exists.
+If no exception :ref:`handler that catches the exception <syntax-handler>` is found, the computation :ref:`results <syntax-result>` in an uncaught exception result value, which contains the exception's entire throw context.
 
 .. note::
    Contrary to block contexts, throw contexts don't skip over handlers.
@@ -763,8 +762,6 @@ Throw contexts allow matching the program context around a throw instruction up 
 
    In this particular case, the exception is caught by the exception handler :math:`H` and its values are returned.
 
-.. todo::
-   Add administrative values to describe unresolved throws.
 
 
 .. index:: ! configuration, ! thread, store, frame, instruction, module instruction
@@ -820,10 +817,7 @@ Finally, the following definition of *evaluation context* and associated structu
    \end{array}
 
 Reduction terminates when a thread's instruction sequence has been reduced to a :ref:`result <syntax-result>`,
-that is, either a sequence of :ref:`values <syntax-val>` or to a |TRAP|.
-
-.. todo::
-   Add rules to deal with unresolved :math:`\THROWadm~\tagaddr`, and extend results to include such situations.
+that is, either a sequence of :ref:`values <syntax-val>`, to an uncaught exception, or to a |TRAP|.
 
 .. note::
    The restriction on evaluation contexts rules out contexts like :math:`[\_]` and :math:`\epsilon~[\_]~\epsilon` for which :math:`E[\TRAP] = \TRAP`.
