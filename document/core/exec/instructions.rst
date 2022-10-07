@@ -2643,15 +2643,28 @@ Control Instructions
 :math:`\TRY~\blocktype~\instr^\ast~\DELEGATE~l`
 ...............................................
 
-.. todo::
-   Add prose for the |TRY| - |DELEGATE| execution step.
+1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
+
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
+
+3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the |TRY| instruction.
+
+4. Let :math:`H` be the :ref:`delegating exception handler <syntax-handler>` :math:`\DELEGATEadm\{l\}`, targeting the :math:`l` surrounding block.
+
+5. Assert: due to :ref:`validation <valid-try-delegate>`, there are at least :math:`m` values on the top of the stack.
+
+6. Pop the values :math:`\val^m` from the stack.
+
+7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`H~(\val^n~\instr^\ast)~\END` with label :math:`L`.
+
+8. :ref:`Install <exec-handler-enter>` the exception handler `H` containing :math:`\val^m~\instr^\ast`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl}
-   F; \val^n~(\TRY~\X{bt}~\instr^\ast~\DELEGATE~l) &\stepto&
-   F; \LABEL_m\{\}~(\DELEGATEadm\{l\}~\val^n~\instr^\ast~\END)~\END \\
-   && (\iff \expand_F(\X{bt}) = [t_1^n] \to [t_2^m])
+   F; \val^m~(\TRY~\X{bt}~\instr^\ast~\DELEGATE~l) &\stepto&
+   F; \LABEL_n\{\}~(\DELEGATEadm\{l\}~\val^m~\instr^\ast~\END)~\END \\
+   && (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 
 
