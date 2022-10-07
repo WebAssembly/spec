@@ -595,6 +595,7 @@ So the list of all sections will be:
 | Export | `7` | Exports |
 | Start | `8` | Start function declaration |
 | Element | `9` | Elements section |
+| Data count | `12` | Data count section |
 | Code | `10` | Function bodies (code) |
 | Data | `11` | Data segments |
 
