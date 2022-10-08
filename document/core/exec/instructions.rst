@@ -2869,9 +2869,9 @@ Control Instructions
 
 6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITYPES[y]` exists.
 
-7. Let :math:`\X{ta}` be the :ref:`type address <syntax-typeaddr>` :math:`F.\AMODULE.\MITYPES[y]`.
+7. Let :math:`\X{ta}_{\F{expect}}` be the :ref:`type address <syntax-typeaddr>` :math:`F.\AMODULE.\MITYPES[y]`.
 
-8. Let :math:`\X{ft}_{\F{expect}}` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\X{ta}]`.
+8. Let :math:`\X{ft}_{\F{expect}}` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\X{ta}_{\F{expect}}]`.
 
 9. Assert: due to :ref:`validation <valid-call_indirect>`, a value with :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
@@ -2895,13 +2895,15 @@ Control Instructions
 
 17. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[a]`.
 
-18. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
+18. Let :math:`\X{ta}_{\F{actual}}` be the :ref:`type address <syntax-typeaddr>` :math:`\X{f}.\FITYPE`.
 
-19. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
+19. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\X{ta}_{\F{actual}}]`.
+
+20. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
 
     a. Trap.
 
-20. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
+21. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
 .. math::
    ~\\[-1ex]
@@ -2913,7 +2915,7 @@ Control Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM[i] = \REFFUNCADDR~a \\
      \wedge & S.\SFUNCS[a] = f \\
-     \wedge & S \vdashfunctypematch S.\STYPES[F.\AMODULE.\MITYPES[y]] \matchesfunctype f.\FITYPE)
+     \wedge & S \vdashfunctypematch S.\STYPES[F.\AMODULE.\MITYPES[y]] \matchesfunctype S.\STYPES[f.\FITYPE])
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -2997,23 +2999,25 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 2. Let :math:`f` be the :ref:`function instance <syntax-funcinst>`, :math:`S.\SFUNCS[a]`.
 
-3. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\FITYPE`.
+3. Let :math:`\X{ta}` be the :ref:`type address <syntax-typeaddr>` :math:`\X{f}.\FITYPE`.
 
-4. Let :math:`\local^\ast` be the list of :ref:`locals <syntax-local>` :math:`f.\FICODE.\FLOCALS`.
+4. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\X{ta}]`.
 
-5. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\FICODE.\FBODY`.
+5. Let :math:`\local^\ast` be the list of :ref:`locals <syntax-local>` :math:`f.\FICODE.\FLOCALS`.
 
-6. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
+6. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\FICODE.\FBODY`.
 
-7. Pop the values :math:`\val^n` from the stack.
+7. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
 
-8. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~f.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
+8. Pop the values :math:`\val^n` from the stack.
 
-9. Push the activation of :math:`F` with arity :math:`m` to the stack.
+9. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~f.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
 
-10. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
+10. Push the activation of :math:`F` with arity :math:`m` to the stack.
 
-11. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
+11. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
+
+12. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
 
 .. math::
    ~\\[-1ex]
@@ -3024,7 +3028,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\SFUNCS[a] = f \\
-     \wedge & f.\FITYPE = [t_1^n] \to [t_2^m] \\
+     \wedge & S.\STYPES[f.\FITYPE] = [t_1^n] \to [t_2^m] \\
      \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(\default_t)^k \})
      \end{array} \\
@@ -3087,7 +3091,8 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~\X{ta}, \FIHOSTCODE~\X{hf} \} \\
+     \wedge & S.\STYPES[\X{ta}] = [t_1^n] \to [t_2^m] \\
      \wedge & (S'; \result) \in \X{hf}(S; \val^n)) \\
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}

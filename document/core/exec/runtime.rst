@@ -200,6 +200,24 @@ even where this identity is not observable from within WebAssembly code itself
    hence logical addresses can be arbitrarily large natural numbers.
 
 
+.. _free-typeaddr:
+.. _free-funcaddr:
+.. _free-tableaddr:
+.. _free-memaddr:
+.. _free-globaladdr:
+.. _free-elemaddr:
+.. _free-dataaddr:
+.. _free-localaddr:
+.. _free-labeladdr:
+.. _free-addr:
+
+Conventions
+...........
+
+* The notation :math:`\F{addr}(A)` denotes the set of addresses from address space :math:`\X{addr}` occurring free in :math:`A`. We sometimes reinterpret this set as the :ref:`vector <syntax-vec>` of its elements.
+
+
+
 .. index:: ! instance, function type, type instance, function instance, table instance, memory instance, global instance, element instance, data instance, export instance, table address, memory address, global address, element address, data address, index, name
    pair: abstract syntax; module instance
    pair: module; instance
@@ -242,7 +260,7 @@ Type Instances
 ~~~~~~~~~~~~~~
 
 A *type instance* is the runtime representation of a :ref:`function type <syntax-functype>`.
-It is a :ref:`semantic type <syntax-type-sem>` equivalent to the respective :ref:`syntactic type <syntax-type-syn>` that appeared in the module.
+It is a :ref:`dynamic type <syntax-type-dyn>` equivalent to the respective :ref:`static type <syntax-type-stat>` that appeared in the module.
 
 .. math::
    \begin{array}{llll}
@@ -267,8 +285,8 @@ The module instance is used to resolve references to other definitions during ex
 .. math::
    \begin{array}{llll}
    \production{(function instance)} & \funcinst &::=&
-     \{ \FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func \} \\ &&|&
-     \{ \FITYPE~\functype, \FIHOSTCODE~\hostfunc \} \\
+     \{ \FITYPE~\typeaddr, \FIMODULE~\moduleinst, \FICODE~\func \} \\ &&|&
+     \{ \FITYPE~\typeaddr, \FIHOSTCODE~\hostfunc \} \\
    \production{(host function)} & \hostfunc &::=& \dots \\
    \end{array}
 

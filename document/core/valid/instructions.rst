@@ -189,7 +189,7 @@ Reference Instructions
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* There must exist a :ref:`type index <syntax-typeidx>` :math:`y` such that :math:`C.\CTYPES[y]` is the same :ref:`function type <syntax-functype>` as :math:`C.\CFUNCS[x]`.
+* Let :math:`y` be the :ref:`type index <syntax-typeidx>` :math:`C.\CFUNCS[x]`.
 
 * The :ref:`function index <syntax-funcidx>` :math:`x` must be contained in :math:`C.\CREFS`.
 
@@ -197,7 +197,7 @@ Reference Instructions
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = C.\CTYPES[y]
+     C.\CFUNCS[x] = y
      \qquad
      x \in C.\CREFS
    }{
@@ -1526,11 +1526,17 @@ Control Instructions
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* Then the instruction is valid with type :math:`C.\CFUNCS[x]`.
+* Let :math:`y` be the :ref:`type index <syntax-typeidx>` :math:`C.\CFUNCS[x]`.
+
+* Assert: The type :math:`C.\CTYPES[y]` is defined in the context.
+
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[y]`.
+
+* Then the instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = [t_1^\ast] \to [t_2^\ast]
+     C.\CTYPES[C.\CFUNCS[x]] = [t_1^\ast] \to [t_2^\ast]
    }{
      C \vdashinstr \CALL~x : [t_1^\ast] \to [t_2^\ast]
    }

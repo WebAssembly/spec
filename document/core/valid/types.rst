@@ -35,7 +35,7 @@ During validation, :ref:`type identifiers <syntax-typeid>` are represented as :r
    }
 
 .. note::
-   :ref:`Semantic types <syntax-type-sem>` do not arise during validation.
+   :ref:`Dynamic types <syntax-type-dyn>` do not arise during validation.
    They only need to be :ref:`looked up <valid-typeaddr>` during :ref:`execution <exec-type>`.
 
 
@@ -417,18 +417,18 @@ Global Types
 External Types
 ~~~~~~~~~~~~~~
 
-:math:`\ETFUNC~\functype`
-.........................
+:math:`\ETFUNC~\typeidx`
+........................
 
-* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
+* The :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]` must be defined in the context.
 
 * Then the external type is valid.
 
 .. math::
    \frac{
-     C \vdashfunctype \functype \ok
+     C.\CTYPES[x] = \functype
    }{
-     C \vdashexterntype \ETFUNC~\functype \ok
+     C \vdashexterntype \ETFUNC~x
    }
 
 :math:`\ETTABLE~\tabletype`
