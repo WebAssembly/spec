@@ -63,8 +63,7 @@ let opt free xo = Lib.Option.get (Option.map free xo) empty
 let list free xs = List.fold_left union empty (List.map free xs)
 
 let var_type = function
-  | Stat x -> types (idx' x)
-  | Dyn x -> empty
+  | StatX x -> types (idx' x)
 
 let num_type = function
   | I32T | I64T | F32T | F64T -> empty
@@ -74,7 +73,8 @@ let vec_type = function
 
 let heap_type = function
   | FuncHT | ExternHT | BotHT -> empty
-  | DefHT x -> var_type x
+  | VarHT x -> var_type x
+  | DefHT dt -> empty  (* assume closed *)
 
 let ref_type = function
   | (_, t) -> heap_type t

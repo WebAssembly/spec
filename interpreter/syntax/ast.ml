@@ -380,7 +380,15 @@ let export_type_of (m : module_) (ex : export) : export_type =
   in ExportT (et, name)
 
 let module_type_of (m : module_) : module_type =
-  let dts = List.map Source.it m.it.types in
+  let _, s =
+    List.fold_left (fun (x, s) dt ->
+      let dt' = subst_def_type s dt.it in
+      (Int32.add x 1l, fun (StatX y as x') -> if x = y then Some dt' else s x')
+    ) (0l, fun _ -> None) m.it.types
+  in
   let its = List.map (import_type_of m) m.it.imports in
   let ets = List.map (export_type_of m) m.it.exports in
-  ModuleT (dts, its, ets)
+  ModuleT (
+    List.map (subst_import_type s) its,
+    List.map (subst_export_type s) ets
+  )

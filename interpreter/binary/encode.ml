@@ -96,8 +96,7 @@ struct
   open Types
 
   let var_type = function
-    | Stat x -> s33 x
-    | Dyn _ -> assert false
+    | StatX x -> s33 x
 
   let num_type = function
     | I32T -> s7 (-0x01)
@@ -111,8 +110,8 @@ struct
   let heap_type = function
     | FuncHT -> s7 (-0x10)
     | ExternHT -> s7 (-0x11)
-    | DefHT x -> var_type x
-    | BotHT -> assert false
+    | VarHT x -> var_type x
+    | DefHT _ | BotHT -> assert false
 
   let ref_type = function
     | (Null, FuncHT) -> s7 (-0x10)
