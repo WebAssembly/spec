@@ -39,26 +39,26 @@ type module_type = ModuleT of import_type list * export_type list
 
 (* Attributes *)
 
-let num_size : num_type -> int = function
+let num_size = function
   | I32T | F32T -> 4
   | I64T | F64T -> 8
 
-let vec_size : vec_type -> int = function
+let vec_size = function
   | V128T -> 16
 
-let is_num_type : val_type -> bool = function
+let is_num_type = function
   | NumT _ | BotT -> true
   | _ -> false
 
-let is_vec_type : val_type -> bool = function
+let is_vec_type = function
   | VecT _ | BotT -> true
   | _ -> false
 
-let is_ref_type : val_type -> bool = function
+let is_ref_type = function
   | RefT _ | BotT -> true
   | _ -> false
 
-let defaultable : val_type -> bool = function
+let defaultable = function
   | NumT _ -> true
   | VecT _ -> true
   | RefT (nul, _) -> nul = Null
@@ -133,7 +133,7 @@ let rec string_of_heap_type = function
   | ExternHT -> "extern"
   | VarHT x -> string_of_var x
   | DefHT dt -> string_of_def_type dt
-  | BotHT -> "something"
+  | BotHT -> "none"
 
 and string_of_ref_type = function
   | (nul, t) ->
@@ -143,7 +143,7 @@ and string_of_val_type = function
   | NumT t -> string_of_num_type t
   | VecT t -> string_of_vec_type t
   | RefT t -> string_of_ref_type t
-  | BotT -> "(something)"
+  | BotT -> "bot"
 
 and string_of_result_type = function
   | ts -> "[" ^ String.concat " " (List.map string_of_val_type ts) ^ "]"
@@ -196,6 +196,8 @@ let string_of_module_type = function
 
 (* Substitution *)
 
+type subst = var -> heap_type
+
 let subst_num_type s t = t
 
 let subst_vec_type s t = t
@@ -203,11 +205,7 @@ let subst_vec_type s t = t
 let subst_heap_type s = function
   | FuncHT -> FuncHT
   | ExternHT -> ExternHT
-  | VarHT x ->
-    (match s x with
-    | None -> VarHT x
-    | Some dt -> DefHT dt
-    )
+  | VarHT x -> s x
   | DefHT ht -> DefHT ht  (* assume closed *)
   | BotHT -> BotHT
 
@@ -220,8 +218,8 @@ let subst_val_type s = function
   | RefT t -> RefT (subst_ref_type s t)
   | BotT -> BotT
 
-let subst_result_type s ts =
- List.map (subst_val_type s) ts
+let subst_result_type s = function
+  | ts -> List.map (subst_val_type s) ts
 
 let subst_func_type s = function
   | FuncT (ts1, ts2) -> FuncT (subst_result_type s ts1, subst_result_type s ts2)
@@ -250,3 +248,10 @@ let subst_export_type s = function
 let subst_import_type s = function
   | ImportT (et, module_name, name) ->
     ImportT (subst_extern_type s et, module_name, name)
+
+let subst_module_type s = function
+  | ModuleT (its, ets) ->
+    ModuleT (
+      List.map (subst_import_type s) its,
+      List.map (subst_export_type s) ets
+    )

@@ -99,7 +99,7 @@ let data (inst : module_inst) x = lookup "data segment" inst.datas x
 let local (frame : frame) x = lookup "local" frame.locals x
 
 let subst_of (inst : module_inst) (StatX x) =
-  Some (type_ inst (x @@ Source.no_region))
+  DefHT (type_ inst (x @@ Source.no_region))
 
 let func_type (inst : module_inst) x = as_func_def_type (type_ inst x)
 
