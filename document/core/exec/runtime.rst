@@ -552,7 +552,7 @@ If there is no :ref:`tag address <syntax-tagaddr>`, the instructions of that tar
 
 Intuitively, for each target :math:`\{\tagaddr^?~\instr^\ast\}` of a |CATCHadm|, :math:`\instr^\ast` is the *continuation* to execute
 when the handler catches a thrown exception with tag |tagaddr|, or for any exception, when a target specifies no tag address.
-In that case, we say that the exception is handled by the exception handler |CATCHadm|.
+In that case, the exception is handled by the exception handler |CATCHadm|.
 If this list of targets is empty, or if the tag address of the thrown exception is not in the handler's mapping and there is no |CATCHALL| clause, then the exception will be rethrown.
 
 .. todo::
@@ -677,7 +677,7 @@ In order to specify the reduction of :ref:`branches <syntax-instr-control>`, the
 
 This definition allows to index active labels surrounding a :ref:`branch <syntax-br>` or :ref:`return <syntax-return>` instruction.
 
-In order to be able to break jumping over exception handlers and caught exceptions, we must allow for these new structured administrative control instructions to appear after labels in block contexts, by extending block context as follows.
+In order to be able to break jumping over exception handlers and caught exceptions, these new structured administrative control instructions are allowed to appear after labels in block contexts, by extending block context as follows.
 
 .. math::
    \begin{array}{llll}
@@ -740,7 +740,7 @@ If no exception :ref:`handler that catches the exception <syntax-handler>` is fo
       \stepto & S;~F;~\LABEL_m\{\} (\CATCHadm\{a~\RETURN\}~\val^n~(\THROW~x)~\END)~\END \\
       \end{array}
 
-   We denote :math:`\val^n = \val^{n-m} \val^m`.
+   Let :math:`\val^n` be :math:`\val^{n-m} \val^m`.
    :ref:`Handling the thrown exception <exec-throwadm>` with tag address :math:`a` in the throw context
    :math:`T=[val^{n-m}\_]`, with the exception handler :math:`H=\CATCHadm\{a~\RETURN\}` gives:
 
@@ -751,11 +751,11 @@ If no exception :ref:`handler that catches the exception <syntax-handler>` is fo
       \end{array}
 
 
+   When a throw of the form :math:`val^m (\THROWadm~a)` occurs, search for the maximal surrounding throw context :math:`T` is performed,
+   which means any other values, labels, frames, and |CAUGHTadm| instructions surrounding the throw :math:`val^m (\THROWadm~a)` are popped,
+   until a :ref:`handler <syntax-handler>` for the exception is found.
+   Then a new |CAUGHTadm| instruction, containing the tag address :math:`a` and the values :math:`\val^m`, is pushed onto the stack.
 
-   When a throw of the form :math:`val^m (\THROWadm~a)` occurs, we search for the maximal surrounding throw context :math:`T`,
-   which means we pop any other values, labels, frames, and |CAUGHTadm| instructions surrounding the throw :math:`val^m (\THROWadm~a)`,
-   until we find an exception handler (corresponding to a try block) that :ref:`handles the exception <syntax-handler>`.
-   We then append the values :math:`val^m:[t^m]` to the tag address :math:`a` into a new |CAUGHTadm| instruction which we push on the stack.
 
    In other words, when a throw occurs, normal execution halts and exceptional execution begins, until the throw
    is the continuation (i.e., in the place of a :math:`\_`) of a throw context in a catching try block.
