@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly JavaScript Interface</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version 44af0bf3e, updated Fri Jul 29 17:05:16 2022 -0700" name="generator">
+  <meta content="Bikeshed version 11cdbd324, updated Fri Oct 7 18:14:16 2022 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="7f3e78eb15194fa1694f126f1eaef54d3206a37b" name="document-revision">
+  <meta content="683e40265dc1665a6967b193afe167397a1004ee" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -295,7 +295,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2022-10-05">5 October 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2022-10-11">11 October 2022</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -1718,7 +1718,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
        <li data-md>
         <p>Let <var>realm</var> be <var>func</var>’s <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-associated-realm" id="ref-for-dfn-associated-realm">associated Realm</a>.</p>
        <li data-md>
-        <p>Let <var>relevant settings</var> be <var>realm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-settings-object" id="ref-for-concept-realm-settings-object">settings object</a>.</p>
+        <p>Let <var>relevant settings</var> be <var>realm</var>’s <a data-link-type="dfn">settings object</a>.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#prepare-to-run-script" id="ref-for-prepare-to-run-script">Prepare to run script</a> with <var>relevant settings</var>.</p>
        <li data-md>
@@ -2435,12 +2435,6 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-queue-a-task">4. The WebAssembly Namespace</a> <a href="#ref-for-queue-a-task①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-realm-settings-object">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-settings-object</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-realm-settings-object">4.6. Exported Functions</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-task-source">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#task-source">https://html.spec.whatwg.org/multipage/webappapis.html#task-source</a><b>Referenced in:</b>
    <ul>
@@ -2793,6 +2787,12 @@ In practice, an implementation may run out of resources for valid modules below 
    <ul>
     <li><a href="#ref-for-exec-memory-grow">4.3. Memories</a>
     <li><a href="#ref-for-exec-memory-grow①">5.2. Out of Memory</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-syntax-module">
+   <a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module">https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-module">4. The WebAssembly Namespace</a> <a href="#ref-for-syntax-module①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-syntax-frame">
@@ -3232,7 +3232,6 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-prepare-to-run-a-callback">prepare to run a callback</span>
      <li><span class="dfn-paneled" id="term-for-prepare-to-run-script">prepare to run script</span>
      <li><span class="dfn-paneled" id="term-for-queue-a-task">queue a task</span>
-     <li><span class="dfn-paneled" id="term-for-concept-realm-settings-object">settings object</span>
      <li><span class="dfn-paneled" id="term-for-task-source">task source</span>
     </ul>
    <li>
@@ -3292,6 +3291,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-syntax-memaddr">memory address</span>
      <li><span class="dfn-paneled" id="term-for-memory-instances">memory instance</span>
      <li><span class="dfn-paneled" id="term-for-exec-memory-grow">memory.grow</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-module①">module</span>
      <li><span class="dfn-paneled" id="term-for-syntax-frame">module <small>(for frame)</small></span>
      <li><span class="dfn-paneled" id="term-for-binary-module">module grammar</span>
      <li><span class="dfn-paneled" id="term-for-embed-module-decode">module_decode</span>
