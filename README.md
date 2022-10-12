@@ -7,7 +7,7 @@ It is meant for discussion, prototype specification and implementation of a prop
 
 * See the [overview](proposals/function-references/Overview.md) for a summary of the proposal.
 
-* See the [modified spec](https://webassembly.github.io/function-references/core) for details.  (Note, link is 404.)
+* See the [modified spec](https://webassembly.github.io/function-references/core) for details.
 
 The repository is now based on the [bulk operations proposal](proposals/bulk-memory-operations/Overview.md) and includes all respective changes.
 
