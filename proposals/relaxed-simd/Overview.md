@@ -351,4 +351,8 @@ forward, the opcodes for relaxed-simd specification will be the ones in the
   [slides](https://docs.google.com/presentation/d/1zyRqfgGU7HdoVw9QiKaVYifozbytPhNLHUW9jQjPzLk/edit?usp=sharing)
   and [meeting
   notes](https://github.com/WebAssembly/meetings/blob/main/main/2021/CG-11-09.md#update-on-relaxed-simd-fpenv-discussions-and-poll-for-phase-2-zhi-an-ng-15-min)
+- Poll for phase 3
+  [slides](https://docs.google.com/presentation/d/1ofBkgbW2AjYM4oayjTPTH3PCbyEn6W-q3GN67qSEigQ/edit?usp=sharing)
+  and [meeting
+  notes](https://github.com/WebAssembly/meetings/blob/main/main/2022/CG-04-12.md)
 - [SIMD proposal](https://github.com/WebAssembly/simd)
