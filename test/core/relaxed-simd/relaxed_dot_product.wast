@@ -15,7 +15,7 @@
 ;; Test max and min i8 values;
 (assert_return (invoke "i16x8.dot_i8x16_i7x16_s"
                        (v128.const i8x16 -128 -128 127 127 0 0 0 0 0 0 0 0 0 0 0 0)
-                       (v128.const i8x16 127 127 127 127 0 0 0 0 0 0 0 0 0 0 0 0 0))
+                       (v128.const i8x16 127 127 127 127 0 0 0 0 0 0 0 0 0 0 0 0))
                (v128.const i16x8 -32512 32512 0 0 0 0 0 0))
 
 ;; Simple values to ensure things are functional.
