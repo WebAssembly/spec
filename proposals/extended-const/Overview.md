@@ -48,9 +48,13 @@ instruction:
 ## Implementation Status
 
 - spec interpreter: Done
-- wabt: [Done](https://github.com/WebAssembly/debugging/issues/17#issuecomment-1041130743)
 - Firefox: [Done](https://github.com/WebAssembly/debugging/issues/17#issuecomment-1041130743)
-- v8: [Done](https://chromium.googlesource.com/v8/v8/+/bf1565d7081cabc510e39c42eaea67ea6e79484e)
+- Chrome/v8: [Done](https://chromium.googlesource.com/v8/v8/+/bf1565d7081cabc510e39c42eaea67ea6e79484e)
+- Safari: ?
+- wabt: [Done](https://github.com/WebAssembly/debugging/issues/17#issuecomment-1041130743)
+- llvm: Done
+- binaryen: Done
+- emscripten: Done
 
 [spec]: https://webassembly.github.io/spec/core/valid/instructions.html#constant-expressions
 [presentation]: https://docs.google.com/presentation/d/1sM9mJJ6iM7D8324ipYxot91hSKnWCtB8jX4Kh3bde5E
