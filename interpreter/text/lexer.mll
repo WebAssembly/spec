@@ -660,8 +660,8 @@ rule token = parse
       | "i32x4.relaxed_trunc_f64x2_s_zero" -> VEC_UNARY i32x4_relaxed_trunc_f64x2_s_zero
       | "f32x4.relaxed_fma" -> VEC_UNARY f32x4_relaxed_fma
       | "f64x2.relaxed_fma" -> VEC_UNARY f64x2_relaxed_fma
-      | "f32x4.relaxed_fms" -> VEC_UNARY f32x4_relaxed_fms
-      | "f64x2.relaxed_fms" -> VEC_UNARY f64x2_relaxed_fms
+      | "f32x4.relaxed_fnma" -> VEC_UNARY f32x4_relaxed_fnma
+      | "f64x2.relaxed_fnma" -> VEC_UNARY f64x2_relaxed_fnma
       | "i8x16.relaxed_laneselect" -> VEC_TERNARY i8x16_relaxed_laneselect
       | "i16x8.relaxed_laneselect" -> VEC_TERNARY i16x8_relaxed_laneselect
       | "i32x4.relaxed_laneselect" -> VEC_TERNARY i32x4_relaxed_laneselect
@@ -671,6 +671,9 @@ rule token = parse
       | "f32x4.relaxed_max" -> VEC_UNARY f32x4_relaxed_max
       | "f64x2.relaxed_max" -> VEC_UNARY f64x2_relaxed_max
       | "i16x8.relaxed_q15mulr_s" -> VEC_BINARY i16x8_relaxed_q15mulr_s
+      | "i16x8.dot_i8x16_i7x16_s" -> VEC_BINARY i16x8_dot_i8x16_i7x16_s
+      | "i32x4.dot_i8x16_i7x16_add_s" -> VEC_BINARY i32x4_dot_i8x16_i7x16_add_s
+      | "f32x4.relaxed_dot_bf16x8_add_f32x4" -> VEC_BINARY f32x4_relaxed_dot_bf16x8_add_f32x4
 
       | "type" -> TYPE
       | "func" -> FUNC

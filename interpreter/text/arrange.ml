@@ -213,6 +213,10 @@ struct
     | "32x4" -> "64x2"
     | _ -> assert false
 
+  let without_high_bit = function
+    | "8x16" -> "7x16"
+    | _ -> assert false
+
   let voidop xxxx = function (_ : void) -> .
 
   let itestop xxxx (op : itestop) = match op with
@@ -257,9 +261,11 @@ struct
     | Swizzle -> "swizzle"
     | RelaxedSwizzle -> "relaxed_swizzle"
     | RelaxedQ15MulRS -> "relaxed_q15mulr_s"
+    | RelaxedDot -> "relaxed_dot_i" ^ half xxxx ^ "_i" ^ without_high_bit (half xxxx) ^ "_s"
 
   let iternop xxxx (op : iternop) = match op with
     | RelaxedLaneselect -> "relaxed_laneselect"
+    | RelaxedDotAccum -> "relaxed_dot_i" ^ half (half xxxx) ^ "_i" ^ without_high_bit (half (half xxxx)) ^ "add_s"
 
   let fbinop xxxx (op : fbinop) = match op with
     | Add -> "add"
@@ -275,7 +281,8 @@ struct
 
   let fternop xxxx (op : fternop) = match op with
     | RelaxedFma -> "relaxed_fma"
-    | RelaxedFms -> "relaxed_fms"
+    | RelaxedFnma-> "relaxed_fnma"
+    | RelaxedDotAccum -> "relaxed_dot_bf" ^ half (half xxxx) ^ "_add_" ^ xxxx
 
   let irelop xxxx (op : irelop) = match op with
     | Eq -> "eq"

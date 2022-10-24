@@ -604,6 +604,7 @@ struct
     | VecBinary (V128 (I16x8 V128Op.ExtMulHighU)) -> vecop 0x9fl
     | VecBinary (V128 (I16x8 V128Op.Q15MulRSatS)) -> vecop 0x82l
     | VecBinary (V128 (I16x8 V128Op.RelaxedQ15MulRS)) -> vecop 0x111l
+    | VecBinary (V128 (I16x8 V128Op.RelaxedDot)) -> vecop 0x112l
     | VecBinary (V128 (I32x4 V128Op.Add)) -> vecop 0xael
     | VecBinary (V128 (I32x4 V128Op.Sub)) -> vecop 0xb1l
     | VecBinary (V128 (I32x4 V128Op.MinS)) -> vecop 0xb6l
@@ -647,13 +648,17 @@ struct
       error e.at "illegal binary vector instruction"
 
     | VecTernary (V128 (F32x4 V128Op.RelaxedFma)) -> vecop 0x105l
-    | VecTernary (V128 (F32x4 V128Op.RelaxedFms)) -> vecop 0x106l
+    | VecTernary (V128 (F32x4 V128Op.RelaxedFnma)) -> vecop 0x106l
     | VecTernary (V128 (F64x2 V128Op.RelaxedFma)) -> vecop 0x107l
-    | VecTernary (V128 (F64x2 V128Op.RelaxedFms)) -> vecop 0x108l
+    | VecTernary (V128 (F64x2 V128Op.RelaxedFnma)) -> vecop 0x108l
     | VecTernary (V128 (I8x16 V128Op.RelaxedLaneselect)) -> vecop 0x109l
     | VecTernary (V128 (I16x8 V128Op.RelaxedLaneselect)) -> vecop 0x10al
     | VecTernary (V128 (I32x4 V128Op.RelaxedLaneselect)) -> vecop 0x10bl
     | VecTernary (V128 (I64x2 V128Op.RelaxedLaneselect)) -> vecop 0x10cl
+    | VecTernary (V128 (I32x4 V128Op.RelaxedDotAccum)) -> vecop 0x113l
+    | VecTernary (V128 (F32x4 V128Op.RelaxedDotAccum)) -> vecop 0x114l
+    | VecTernary (V128 _) ->
+      error e.at "illegal ternary vector instruction"
 
     | VecConvert (V128 (I8x16 _)) ->
       error e.at "illegal i8x16 conversion instruction"

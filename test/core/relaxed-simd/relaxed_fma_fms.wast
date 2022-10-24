@@ -1,9 +1,9 @@
-;; Tests for f32x4.relaxed_fma, f32x4.relaxed_fms, f64x2.relaxed_fma, and f64x2.relaxed_fms.
+;; Tests for f32x4.relaxed_fma, f32x4.relaxed_fnma, f64x2.relaxed_fma, and f64x2.relaxed_fnma.
 
 (module
     (func (export "f32x4.relaxed_fma") (param v128 v128 v128) (result v128) (f32x4.relaxed_fma (local.get 0) (local.get 1) (local.get 2)))
-    (func (export "f32x4.relaxed_fms") (param v128 v128 v128) (result v128) (f32x4.relaxed_fms (local.get 0) (local.get 1) (local.get 2)))
-    (func (export "f64x2.relaxed_fms") (param v128 v128 v128) (result v128) (f64x2.relaxed_fms (local.get 0) (local.get 1) (local.get 2)))
+    (func (export "f32x4.relaxed_fnma") (param v128 v128 v128) (result v128) (f32x4.relaxed_fnma (local.get 0) (local.get 1) (local.get 2)))
+    (func (export "f64x2.relaxed_fnma") (param v128 v128 v128) (result v128) (f64x2.relaxed_fnma (local.get 0) (local.get 1) (local.get 2)))
     (func (export "f64x2.relaxed_fma") (param v128 v128 v128) (result v128) (f64x2.relaxed_fma (local.get 0) (local.get 1) (local.get 2)))
 )
 
@@ -35,7 +35,7 @@
                        (v128.const f32x4 -0x1.000204p+0 -0x1.000204p+0 -0x1.000204p+0 -0x1.000204p+0))
                (either (v128.const f32x4 0x1p-37 0x1p-37 0x1p-37 0x1p-37)
                        (v128.const f32x4 0 0 0 0)))
-(assert_return (invoke "f32x4.relaxed_fms"
+(assert_return (invoke "f32x4.relaxed_fnma"
                        (v128.const f32x4 0x1.000004p+0 0x1.000004p+0 0x1.000004p+0 0x1.000004p+0)
                        (v128.const f32x4 0x1.0002p+0 0x1.0002p+0 0x1.0002p+0 0x1.0002p+0)
                        (v128.const f32x4 0x1.000204p+0 0x1.000204p+0 0x1.000204p+0 0x1.000204p+0))
@@ -70,7 +70,7 @@
                        (v128.const f64x2 -0x1.00000204p+0 -0x1.00000204p+0))
                (either (v128.const f64x2 0x1p-53 0x1p-53)
                        (v128.const f64x2 0 0)))
-(assert_return (invoke "f64x2.relaxed_fms"
+(assert_return (invoke "f64x2.relaxed_fnma"
                        (v128.const f64x2 0x1.00000004p+0 0x1.00000004p+0)
                        (v128.const f64x2 0x1.000002p+0 0x1.000002p+0)
                        (v128.const f64x2 0x1.00000204p+0 0x1.00000204p+0))

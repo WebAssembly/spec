@@ -61,11 +61,11 @@ struct
               | AddSatS | AddSatU | SubSatS | SubSatU | DotS | Q15MulRSatS
               | ExtMulLowS | ExtMulHighS | ExtMulLowU | ExtMulHighU
               | Swizzle | Shuffle of int list | NarrowS | NarrowU
-              | RelaxedSwizzle | RelaxedQ15MulRS
+              | RelaxedSwizzle | RelaxedQ15MulRS | RelaxedDot
   type fbinop = Add | Sub | Mul | Div | Min | Max | Pmin | Pmax
               | RelaxedMin | RelaxedMax
-  type iternop = RelaxedLaneselect
-  type fternop = RelaxedFma | RelaxedFms
+  type iternop = RelaxedLaneselect | RelaxedDotAccum
+  type fternop = RelaxedFma | RelaxedFnma | RelaxedDotAccum
   type irelop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
   type frelop = Eq | Ne | Lt | Le | Gt | Ge
   type icvtop = ExtendLowS | ExtendLowU | ExtendHighS | ExtendHighU
