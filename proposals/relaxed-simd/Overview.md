@@ -335,10 +335,10 @@ forward, the opcodes for relaxed-simd specification will be the ones in the
 | `f32x4.relaxed_max`                   | 0x10e          | 0xe2             |
 | `f64x2.relaxed_min`                   | 0x10f          | 0xd4             |
 | `f64x2.relaxed_max`                   | 0x110          | 0xee             |
-| `i16x8.relaxed_q15mulr_s`             | 0x111          | unimplemented    |
-| `i16x8.relaxed_dot_i8x16_i7x16_s`     | 0x112          | unimplemented    |
-| `i32x4.relaxed_dot_i8x16_i7x16_add_s` | 0x113          | unimplemented    |
-| `f32x4.relaxed_dot_bf16x8_add_f32x4`  | 0x114          | unimplemented    |
+| `i16x8.relaxed_q15mulr_s`             | 0x111          | 0x111            |
+| `i16x8.relaxed_dot_i8x16_i7x16_s`     | 0x112          | 0x112            |
+| `i32x4.relaxed_dot_i8x16_i7x16_add_s` | 0x113          | 0x113            |
+| `f32x4.relaxed_dot_bf16x8_add_f32x4`  | 0x114          | 0x114            |
 | Reserved                              | 0x115 - 0x12F  |                  |
 
 ## References
