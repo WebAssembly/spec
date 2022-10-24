@@ -6,6 +6,16 @@ This page describes a proposal to support linear memory of sizes larger than
 2<sup>32</sup> bits. It provides no new instructions, but instead extends the
 currently existing instructions to allow 64-bit indexes.
 
+### Implementation Status
+
+- spec interpreter: Done
+- v8/chrome: [Done](https://chromium-review.googlesource.com/c/v8/v8/+/2679683)
+- Firefox: Done
+- Safari: ?
+- wabt: [Done](https://github.com/WebAssembly/wabt/pull/1500)
+- binaryen: [Done](https://github.com/WebAssembly/binaryen/pull/3202)
+- emscripten: [Done](https://github.com/emscripten-core/emscripten/pull/17803)
+
 ## Motivation
 
 [WebAssembly linear memory objects][memory object] have sizes measured in
