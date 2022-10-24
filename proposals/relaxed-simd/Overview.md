@@ -268,15 +268,15 @@ def dot_product(signed, elements, a, b, c):
     if (b[i] & 0x80):
       lhs = as_signed(a[i]) if signed else a[i]
       rhs = IMPLEMENTATION_DEFINED_ONE_OF(as_signed(b[i]), b[i])
-      intermediate[i] = lhs + rhs
+      intermediate[i] = lhs * rhs
     else:
       intermediate[i] = (as_signed(a[i]) if signed else a[i]) * b[i]
   for i in range(0, 16, elements):
-    result[i/elements] == sum(intermediate[i:i+elements])
+    result[i/elements] = sum(intermediate[i:i+elements])
     result[i/elements] += c[i/elements] if c else 0
 
 i16x8_dot_i8x16_i7x16_s(a, b)        = dot_product(signed=True, elements=2, a, b)
-i32x4.dot_i8x16_i7x16_add_s(a, b, c) = dot_product(signed=False, elements=2, a, b, c)
+i32x4.dot_i8x16_i7x16_add_s(a, b, c) = dot_product(signed=True, elements=4, a, b, c)
 ```
 
 ### Relaxed BFloat16 dot product

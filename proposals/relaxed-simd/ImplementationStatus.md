@@ -19,10 +19,10 @@
 | `f32x4.max`                          | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 | `f64x2.min`                          | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 | `f64x2.max`                          | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
-| `i16x8.relaxed_q15mulr_s`            |                |                    |                    |
-| `i16x8.dot_i8x16_i7x16_s`            |                |                    |                    |
-| `i32x4.dot_i8x16_i7x16_add_s`        |                |                    |                    |
-| `f32x4.relaxed_dot_bf16x8_add_f32x4` |                |                    |                    |
+| `i16x8.relaxed_q15mulr_s`            | -mrelaxed-simd |                    |                    |
+| `i16x8.dot_i8x16_i7x16_s`            | -mrelaxed-simd |                    |                    |
+| `i32x4.dot_i8x16_i7x16_add_s`        | -mrelaxed-simd |                    |                    |
+| `f32x4.relaxed_dot_bf16x8_add_f32x4` | -mrelaxed-simd |                    |                    |
 
 
 [1] Tip of tree LLVM as of 2021-10-28
@@ -52,7 +52,7 @@
 | `f32x4.max`                          | `__builtin_wasm_relaxed_max_f32x4`                |
 | `f64x2.min`                          | `__builtin_wasm_relaxed_min_f64x2`                |
 | `f64x2.max`                          | `__builtin_wasm_relaxed_max_f64x2`                |
-| `i16x8.relaxed_q15mulr_s`            |                                                   |
-| `i16x8.dot_i8x16_i7x16_s`            |                                                   |
-| `i32x4.dot_i8x16_i7x16_add_s`        |                                                   |
-| `f32x4.relaxed_dot_bf16x8_add_f32x4` |                                                   |
+| `i16x8.relaxed_q15mulr_s`            | `__builtin_wasm_relaxed_q15mulr_s_i16x8`          |
+| `i16x8.dot_i8x16_i7x16_s`            | `__builtin_wasm_dot_i8x16_i7x16_s_i16x8`          |
+| `i32x4.dot_i8x16_i7x16_add_s`        | `__builtin_wasm_dot_i8x16_i7x16_add_s_i32x4`      |
+| `f32x4.relaxed_dot_bf16x8_add_f32x4` | `__builtin_wasm_relaxed_dot_bf16x8_add_f32_f32x4` |
