@@ -16,7 +16,7 @@
 (assert_return (invoke "i16x8.dot_i8x16_i7x16_s"
                        (v128.const i8x16 -128 -128 127 127 0 0 0 0 0 0 0 0 0 0 0 0)
                        (v128.const i8x16 127 127 127 127 0 0 0 0 0 0 0 0 0 0 0 0))
-               (v128.const i16x8 -32512 32512 0 0 0 0 0 0))
+               (v128.const i16x8 -32512 32258 0 0 0 0 0 0))
 
 ;; Simple values to ensure things are functional.
 (assert_return (invoke "i32x4.dot_i8x16_i7x16_add_s"
@@ -30,9 +30,9 @@
 (assert_return (invoke "i32x4.dot_i8x16_i7x16_add_s"
                        (v128.const i8x16 -128 -128 -128 -128 127 127 127 127 0 0 0 0 0 0 0 0)
                        (v128.const i8x16 127 127 127 127 127 127 127 127 0 0 0 0 0 0 0 0)
-                       (v128.const i32x4 0 1 2 3))
-               ;; intermediate result is [-65024, 65024, 0, 0]
-               (v128.const f32x4 -65024 65024 0 0))
+                       (v128.const i32x4 1 2 3 4))
+               ;; intermediate result is [-65024, 64516, 0, 0]
+               (v128.const f32x4 -65023 64518 3 4))
 
 ;; Simple values to ensure things are functional.
 (assert_return (invoke "f32x4.relaxed_dot_bf16x8_add_f32x4"
