@@ -669,11 +669,10 @@ let check_global (c : context) (glob : global) =
 
 (* Modules *)
 
-let check_start (c : context) (start : var option) =
-  Lib.Option.app (fun x ->
-    require (func c x = FuncType ([], [])) x.at
-      "start function must not have parameters or results"
-  ) start
+let check_start (c : context) (start : start) =
+  let {sfunc} = start.it in
+  require (func c sfunc = FuncType ([], [])) start.at
+    "start function must not have parameters or results"
 
 let check_import (im : import) (c : context) : context =
   let {module_name = _; item_name = _; idesc} = im.it in
@@ -734,7 +733,7 @@ let check_module (m : module_) =
   List.iter (check_elem c1) elems;
   List.iter (check_data c1) datas;
   List.iter (check_func c) funcs;
-  check_start c start;
+  Lib.Option.app (check_start c) start;
   ignore (List.fold_left (check_export c) NameSet.empty exports);
   require (List.length c.memories <= 1) m.at
     "multiple memories are not allowed (yet)"

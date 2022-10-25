@@ -79,7 +79,7 @@ In addition to field access written :math:`C.\K{field}` the following notation i
 * :math:`C,\K{field}\,A^\ast` denotes the same context as :math:`C` but with the elements :math:`A^\ast` prepended to its :math:`\K{field}` component sequence.
 
 .. note::
-   We use :ref:`indexing notation <notation-index>` like :math:`C.\CLABELS[i]` to look up indices in their respective :ref:`index space <syntax-index>` in the context.
+   :ref:`Indexing notation <notation-index>` like :math:`C.\CLABELS[i]` is used to look up indices in their respective :ref:`index space <syntax-index>` in the context.
    Context extension notation :math:`C,\K{field}\,A` is primarily used to locally extend *relative* index spaces, such as :ref:`label indices <syntax-labelidx>`.
    Accordingly, the notation is defined to append at the *front* of the respective sequence, introducing a new relative index :math:`0` and shifting the existing ones.
 
@@ -150,7 +150,7 @@ and there is one respective rule for each relevant construct :math:`A` of the ab
         C \vdash \I32.\ADD : [\I32~\I32] \to [\I32]
       }
 
-   The instruction is always valid with type :math:`[\I32~\I32] \to [\I32`]
+   The instruction is always valid with type :math:`[\I32~\I32] \to [\I32]`
    (saying that it consumes two |I32| values and produces one),
    independent of any side conditions.
 

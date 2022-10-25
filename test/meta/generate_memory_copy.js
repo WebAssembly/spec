@@ -103,7 +103,7 @@ function mem_copy(min, max, shared, srcOffs, targetOffs, len) {
     (i32.load8_u (local.get 0))))
 
 (assert_trap (invoke "run" (i32.const ${targetOffs}) (i32.const ${srcOffs}) (i32.const ${len}))
-             "out of bounds")
+             "out of bounds memory access")
 `);
 
     let immediateOOB = copyDown && (srcOffs + len > memLength || targetOffs + len > memLength);
@@ -227,7 +227,7 @@ print(
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0xFF00) (i32.const 0x8000) (i32.const 257))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // Destination wraparound the end of 32-bit offset space
@@ -236,7 +236,7 @@ print(
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0xFFFFFF00) (i32.const 0x4000) (i32.const 257))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // Source range invalid
@@ -245,7 +245,7 @@ print(
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x8000) (i32.const 0xFF00) (i32.const 257))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // Source wraparound the end of 32-bit offset space
@@ -254,7 +254,7 @@ print(
  (memory 1 1)
  (func (export "test")
    (memory.copy (i32.const 0x4000) (i32.const 0xFFFFFF00) (i32.const 257))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // Zero len with both offsets in-bounds is a no-op
@@ -286,7 +286,7 @@ print(
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x20000) (i32.const 0x7000) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // Zero len with src offset out-of-bounds at the end of memory is allowed
@@ -304,7 +304,7 @@ print(
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x9000) (i32.const 0x20000) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // Zero len with both dest and src offsets out-of-bounds at the end of memory is allowed
@@ -322,7 +322,7 @@ print(
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x20000) (i32.const 0x20000) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // 100 random fills followed by 100 random copies, in a single-page buffer,
