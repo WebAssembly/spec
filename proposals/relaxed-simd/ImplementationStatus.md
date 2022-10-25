@@ -7,10 +7,10 @@
 | `i32x4.relaxed_trunc_f32x4_u`         | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.relaxed_trunc_f64x2_s_zero`    | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.relaxed_trunc_f64x2_u_zero`    | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
-| `f32x4.relaxed_fma`                    | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
-| `f32x4.relaxed_fnma`                  | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
-| `f64x2.relaxed_fma`                   | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
-| `f64x2.relaxed_fnma`                  | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `f32x4.relaxed_madd`                  | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `f32x4.relaxed_nmadd`                 | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `f64x2.relaxed_madd`                  | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `f64x2.relaxed_nmadd`                 | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 | `i8x16.relaxed_laneselect`            | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 | `i16x8.relaxed_laneselect`            | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 | `i32x4.relaxed_laneselect`            | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
@@ -40,10 +40,10 @@
 | `i32x4.relaxed_trunc_f32x4_u`         | `__builtin_wasm_relaxed_trunc_u_i32x4_f32x4`      |
 | `i32x4.relaxed_trunc_f64x2_s_zero`    | `__builtin_wasm_relaxed_trunc_zero_s_i32x4_f64x2` |
 | `i32x4.relaxed_trunc_f64x2_u_zero`    | `__builtin_wasm_relaxed_trunc_zero_u_i32x4_f64x2` |
-| `f32x4.relaxed_fma`                   | `__builtin_wasm_fma_f32x4`                        |
-| `f32x4.relaxed_fnma`                  | `__builtin_wasm_fnma_f32x4`                       |
-| `f64x2.relaxed_fma`                   | `__builtin_wasm_fma_f64x2`                        |
-| `f64x2.relaxed_fnma`                  | `__builtin_wasm_fnma_f64x2`                       |
+| `f32x4.relaxed_madd`                  | `__builtin_wasm_fma_f32x4`                        |
+| `f32x4.relaxed_nmadd`                 | `__builtin_wasm_fnma_f32x4`                       |
+| `f64x2.relaxed_madd`                  | `__builtin_wasm_fma_f64x2`                        |
+| `f64x2.relaxed_nmadd`                 | `__builtin_wasm_fnma_f64x2`                       |
 | `i8x16.relaxed_laneselect`            | `__builtin_wasm_laneselect_i8x16`                 |
 | `i16x8.relaxed_laneselect`            | `__builtin_wasm_laneselect_i16x8`                 |
 | `i32x4.relaxed_laneselect`            | `__builtin_wasm_laneselect_i32x4`                 |

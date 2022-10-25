@@ -658,10 +658,10 @@ rule token = parse
       | "i32x4.relaxed_trunc_f32x4_s" -> VEC_UNARY i32x4_relaxed_trunc_f32x4_s
       | "i32x4.relaxed_trunc_f64x2_u_zero" -> VEC_UNARY i32x4_relaxed_trunc_f64x2_u_zero
       | "i32x4.relaxed_trunc_f64x2_s_zero" -> VEC_UNARY i32x4_relaxed_trunc_f64x2_s_zero
-      | "f32x4.relaxed_fma" -> VEC_UNARY f32x4_relaxed_fma
-      | "f64x2.relaxed_fma" -> VEC_UNARY f64x2_relaxed_fma
-      | "f32x4.relaxed_fnma" -> VEC_UNARY f32x4_relaxed_fnma
-      | "f64x2.relaxed_fnma" -> VEC_UNARY f64x2_relaxed_fnma
+      | "f32x4.relaxed_madd" -> VEC_UNARY f32x4_relaxed_madd
+      | "f64x2.relaxed_madd" -> VEC_UNARY f64x2_relaxed_madd
+      | "f32x4.relaxed_nmadd" -> VEC_UNARY f32x4_relaxed_nmadd
+      | "f64x2.relaxed_nmadd" -> VEC_UNARY f64x2_relaxed_nmadd
       | "i8x16.relaxed_laneselect" -> VEC_TERNARY i8x16_relaxed_laneselect
       | "i16x8.relaxed_laneselect" -> VEC_TERNARY i16x8_relaxed_laneselect
       | "i32x4.relaxed_laneselect" -> VEC_TERNARY i32x4_relaxed_laneselect

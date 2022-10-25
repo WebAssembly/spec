@@ -647,10 +647,10 @@ struct
     | VecBinary (V128 _) ->
       error e.at "illegal binary vector instruction"
 
-    | VecTernary (V128 (F32x4 V128Op.RelaxedFma)) -> vecop 0x105l
-    | VecTernary (V128 (F32x4 V128Op.RelaxedFnma)) -> vecop 0x106l
-    | VecTernary (V128 (F64x2 V128Op.RelaxedFma)) -> vecop 0x107l
-    | VecTernary (V128 (F64x2 V128Op.RelaxedFnma)) -> vecop 0x108l
+    | VecTernary (V128 (F32x4 V128Op.RelaxedMadd)) -> vecop 0x105l
+    | VecTernary (V128 (F32x4 V128Op.RelaxedNmadd)) -> vecop 0x106l
+    | VecTernary (V128 (F64x2 V128Op.RelaxedMadd)) -> vecop 0x107l
+    | VecTernary (V128 (F64x2 V128Op.RelaxedNmadd)) -> vecop 0x108l
     | VecTernary (V128 (I8x16 V128Op.RelaxedLaneselect)) -> vecop 0x109l
     | VecTernary (V128 (I16x8 V128Op.RelaxedLaneselect)) -> vecop 0x10al
     | VecTernary (V128 (I32x4 V128Op.RelaxedLaneselect)) -> vecop 0x10bl

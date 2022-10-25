@@ -280,8 +280,8 @@ struct
     | RelaxedMax -> "relaxed_max"
 
   let fternop xxxx (op : fternop) = match op with
-    | RelaxedFma -> "relaxed_fma"
-    | RelaxedFnma-> "relaxed_fnma"
+    | RelaxedMadd -> "relaxed_madd"
+    | RelaxedNmadd-> "relaxed_nmadd"
     | RelaxedDotAccum -> "relaxed_dot_bf" ^ half (half xxxx) ^ "_add_" ^ xxxx
 
   let irelop xxxx (op : irelop) = match op with

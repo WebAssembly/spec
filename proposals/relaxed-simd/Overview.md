@@ -165,17 +165,17 @@ def relaxed_i32x4_trunc_f64x2_zero_u(a : f64x2) -> i32x4:
 
 ### Relaxed fused multiply-add and fused negative multiply-add
 
-- `relaxed f32x4.fma`
-- `relaxed f32x4.fnma`
-- `relaxed f64x2.fma`
-- `relaxed f64x2.fnma`
+- `relaxed f32x4.madd`
+- `relaxed f32x4.nmadd`
+- `relaxed f64x2.madd`
+- `relaxed f64x2.nmadd`
 
 All the instructions take 3 operands, `a`, `b`, `c`, perform `a * b + c` or `-(a * b) + c`:
 
-- `relaxed f32x4.fma(a, b, c) = a * b + c`
-- `relaxed f32x4.fnma(a, b, c) = -(a * b) + c`
-- `relaxed f64x2.fma(a, b, c) = a * b + c`
-- `relaxed f64x2.fnma(a, b, c) = -(a * b) + c`
+- `relaxed f32x4.madd(a, b, c) = a * b + c`
+- `relaxed f32x4.nmadd(a, b, c) = -(a * b) + c`
+- `relaxed f64x2.madd(a, b, c) = a * b + c`
+- `relaxed f64x2.nmadd(a, b, c) = -(a * b) + c`
 
 where:
 
@@ -323,10 +323,10 @@ forward, the opcodes for relaxed-simd specification will be the ones in the
 | `i32x4.relaxed_trunc_f32x4_u`         | 0x102          | 0xa6             |
 | `i32x4.relaxed_trunc_f64x2_s_zero`    | 0x103          | 0xc5             |
 | `i32x4.relaxed_trunc_f64x2_u_zero`    | 0x104          | 0xc6             |
-| `f32x4.relaxed_fma`                   | 0x105          | 0xaf             |
-| `f32x4.relaxed_fnma`                  | 0x106          | 0xb0             |
-| `f64x2.relaxed_fma`                   | 0x107          | 0xcf             |
-| `f64x2.relaxed_fnma`                  | 0x108          | 0xd0             |
+| `f32x4.relaxed_madd`                  | 0x105          | 0xaf             |
+| `f32x4.relaxed_nmadd`                 | 0x106          | 0xb0             |
+| `f64x2.relaxed_madd`                  | 0x107          | 0xcf             |
+| `f64x2.relaxed_nmadd`                 | 0x108          | 0xd0             |
 | `i8x16.relaxed_laneselect`            | 0x109          | 0xb2             |
 | `i16x8.relaxed_laneselect`            | 0x10a          | 0xb3             |
 | `i32x4.relaxed_laneselect`            | 0x10b          | 0xd2             |
