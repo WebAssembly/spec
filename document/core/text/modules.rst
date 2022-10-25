@@ -2,18 +2,22 @@ Modules
 -------
 
 
-.. index:: index, type index, function index, table index, memory index, global index, local index, label index
+.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index
    pair: text format; type index
    pair: text format; function index
    pair: text format; table index
    pair: text format; memory index
    pair: text format; global index
+   pair: text format; element index
+   pair: text format; data index
    pair: text format; local index
    pair: text format; label index
 .. _text-typeidx:
 .. _text-funcidx:
 .. _text-tableidx:
 .. _text-memidx:
+.. _text-elemidx:
+.. _text-dataidx:
 .. _text-globalidx:
 .. _text-localidx:
 .. _text-labelidx:
@@ -42,6 +46,12 @@ Such identifiers are looked up in the suitable space of the :ref:`identifier con
    \production{global index} & \Tglobalidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x \\&&|&
      v{:}\Tid &\Rightarrow& x & (\iff I.\IGLOBALS[x] = v) \\
+   \production{element index} & \Telemidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x \\&&|&
+     v{:}\Tid &\Rightarrow& x & (\iff I.\IELEM[x] = v) \\
+   \production{data index} & \Tdataidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x \\&&|&
+     v{:}\Tid &\Rightarrow& x & (\iff I.\IDATA[x] = v) \\
    \production{local index} & \Tlocalidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x \\&&|&
      v{:}\Tid &\Rightarrow& x & (\iff I.\ILOCALS[x] = v) \\
@@ -237,10 +247,12 @@ Functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{func}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{func}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
-The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a function declaration can contain any number of exports, possibly followed by an import.
 
 
 .. index:: table, table type, identifier
@@ -278,11 +290,21 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{table}~~\Tid^?~~\Telemtype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~~\text{)} \quad\equiv \\ & \qquad
-       \text{(}~\text{table}~~\Tid'~~n~~n~~\Telemtype~\text{)}~~
-       \text{(}~\text{elem}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
+     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~\expr^n{:}\Tvec(\Telemexpr)~\text{)}~~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)} \\ & \qquad
+       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Telemexpr)~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)} \\ & \qquad
+       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
+       \\ & \qquad\qquad
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
 Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
@@ -296,10 +318,12 @@ Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-exp
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{table}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{table}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
-The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline elements segment.
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a table declaration can contain any number of exports, possibly followed by an import.
 
 
 .. index:: memory, memory type, identifier
@@ -338,10 +362,10 @@ A :ref:`data segment <text-data>` can be given inline with a memory definition, 
    \begin{array}{llclll}
    \production{module field} &
      \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{data}~~b^n{:}\Tdatastring~\text{)}~~\text{)} \quad\equiv \\ & \qquad
-       \text{(}~\text{memory}~~\Tid'~~m~~m~\text{)}~~
-       \text{(}~\text{data}~~\Tid'~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
+       \text{(}~\text{memory}~~\Tid'~~m~~m~\text{)} \\ & \qquad
+       \text{(}~\text{data}~~\text{(}~\text{memory}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh, m = \F{ceil}(n / 64\F{Ki})) \\
    \end{array}
 
 Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
@@ -356,10 +380,12 @@ Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-e
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{memory}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{memory}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
-The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export or an inline data segment.
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a memory declaration can contain any number of exports, possibly followed by an import.
 
 
 .. index:: global, global type, identifier, expression
@@ -400,10 +426,12 @@ Globals can be defined as :ref:`imports <text-import>` or :ref:`exports <text-ex
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{global}~~\Tid'~\text{)}~\text{)}~~
        \text{(}~\text{global}~~\Tid'~~\dots~\text{)}
        \\ & \qquad\qquad
-       (\iff \Tid' = \Tid^? \neq \epsilon \vee \Tid' \idfresh) \\
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}
 
-The latter abbreviation can be applied repeatedly, with ":math:`\dots`" containing another import or export.
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a global declaration can contain any number of exports, possibly followed by an import.
 
 
 .. index:: export, name, index, function index, table index, memory index, global index
@@ -466,6 +494,9 @@ A :ref:`start function <syntax-start>` is defined in terms of its index.
    single: table; element
    single: element; segment
 .. _text-elem:
+.. _text-elemlist:
+.. _text-elemexpr:
+.. _text-tableuse:
 
 Element Segments
 ~~~~~~~~~~~~~~~~
@@ -475,35 +506,58 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
 .. math::
    \begin{array}{llclll}
    \production{element segment} & \Telem_I &::=&
-     \text{(}~\text{elem}~~x{:}\Ttableidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~y^\ast{:}\Tvec(\Tfuncidx_I)~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \ETABLE~x, \EOFFSET~e, \EINIT~y^\ast \} \\
+     \text{(}~\text{elem}~~\Tid^?~~(et, y^\ast){:}\Telemlist_I~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EPASSIVE \} \\ &&|&
+     \text{(}~\text{elem}~~\Tid^?~~x{:}\Ttableuse_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~(et, y^\ast){:}\Telemlist_I~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&&
+     \text{(}~\text{elem}~~\Tid^?~~\text{declare}~~(et, y^\ast){:}\Telemlist_I~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EDECLARATIVE \} \\
+   \production{element list} & \Telemlist_I &::=&
+     t{:}\Treftype~~y^\ast{:}\Tvec(\Telemexpr_I) \qquad\Rightarrow\quad ( \ETYPE~t, \EINIT~y^\ast ) \\
+   \production{element expression} & \Telemexpr_I &::=&
+     \text{(}~\text{item}~~e{:}\Texpr_I~\text{)}
+       \quad\Rightarrow\quad e \\
+   \production{table use} & \Ttableuse_I &::=&
+     \text{(}~\text{table}~~x{:}\Ttableidx_I ~\text{)}
+       \quad\Rightarrow\quad x \\
    \end{array}
-
-.. note::
-   In the current version of WebAssembly, the only valid table index is 0
-   or a symbolic :ref:`table identifier <text-id>` resolving to the same value.
 
 
 Abbreviations
 .............
 
-As an abbreviation, a single instruction may occur in place of the offset:
+As an abbreviation, a single instruction may occur in place of the offset of an active element segment or as an element expression:
 
 .. math::
    \begin{array}{llcll}
    \production{element offset} &
-     \Tinstr &\equiv&
-     \text{(}~\text{offset}~~\Tinstr~\text{)}
+     \text{(}~\Tinstr~\text{)} &\equiv&
+     \text{(}~\text{offset}~~\Tinstr~\text{)} \\
+   \production{element item} &
+     \text{(}~\Tinstr~\text{)} &\equiv&
+     \text{(}~\text{item}~~\Tinstr~\text{)} \\
    \end{array}
 
-Also, the table index can be omitted, defaulting to :math:`\T{0}`.
+Also, the element list may be written as just a sequence of :ref:`function indices <text-funcidx>`:
+
+.. math::
+   \begin{array}{llcll}
+   \production{element list} &
+     \text{func}~~\Tvec(\Tfuncidx_I) &\equiv&
+     \text{funcref}~~\Tvec(\text{(}~\text{ref.func}~~\Tfuncidx_I~\text{)})
+   \end{array}
+
+A table use can be omitted, defaulting to :math:`\T{0}`.
+Furthermore, for backwards compatibility with earlier versions of WebAssembly, if the table use is omitted, the :math:`\text{func}` keyword can be omitted as well.
 
 .. math::
    \begin{array}{llclll}
+   \production{table use} &
+     \epsilon &\equiv& \text{(}~\text{table}~~\text{0}~\text{)} \\
    \production{element segment} &
-    \text{(}~\text{elem}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\Tvec(\Tfuncidx_I)~\text{)}
        &\equiv&
-     \text{(}~\text{elem}~~0~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{table}~~\text{0}~\text{)}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\text{func}~~\Tvec(\Tfuncidx_I)~\text{)}
    \end{array}
 
 As another abbreviation, element segments may also be specified inline with :ref:`table <text-table>` definitions; see the respective section.
@@ -515,6 +569,7 @@ As another abbreviation, element segments may also be specified inline with :ref
    single: data; segment
 .. _text-datastring:
 .. _text-data:
+.. _test-memuse:
 
 Data Segments
 ~~~~~~~~~~~~~
@@ -525,10 +580,15 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
 .. math::
    \begin{array}{llclll}
    \production{data segment} & \Tdata_I &::=&
-     \text{(}~\text{data}~~x{:}\Tmemidx_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \DMEM~x', \DOFFSET~e, \DINIT~b^\ast \} \\[1ex]
+     \text{(}~\text{data}~~\Tid^?~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \DINIT~b^\ast, \DMODE~\DPASSIVE \} \\ &&|&
+     \text{(}~\text{data}~~\Tid^?~~x{:}\Tmemuse_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~x', \DOFFSET~e \} \} \\
    \production{data string} & \Tdatastring &::=&
      (b^\ast{:}\Tstring)^\ast \quad\Rightarrow\quad \concat((b^\ast)^\ast) \\
+   \production{memory use} & \Tmemuse_I &::=&
+     \text{(}~\text{memory}~~x{:}\Tmemidx_I ~\text{)}
+       \quad\Rightarrow\quad x \\
    \end{array}
 
 .. note::
@@ -539,23 +599,21 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
 Abbreviations
 .............
 
-As an abbreviation, a single instruction may occur in place of the offset:
+As an abbreviation, a single instruction may occur in place of the offset of an active data segment:
 
 .. math::
    \begin{array}{llcll}
    \production{data offset} &
-     \Tinstr &\equiv&
+     \text{(}~\Tinstr~\text{)} &\equiv&
      \text{(}~\text{offset}~~\Tinstr~\text{)}
    \end{array}
 
-Also, the memory index can be omitted, defaulting to :math:`\T{0}`.
+Also, a memory use can be omitted, defaulting to :math:`\T{0}`.
 
 .. math::
    \begin{array}{llclll}
-   \production{data segment} &
-    \text{(}~\text{data}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
-       &\equiv&
-     \text{(}~\text{data}~~0~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\dots~\text{)}
+   \production{memory use} &
+     \epsilon &\equiv& \text{(}~\text{memory}~~\text{0}~\text{)} \\
    \end{array}
 
 As another abbreviation, data segments may also be specified inline with :ref:`memory <text-mem>` definitions; see the respective section.
@@ -599,8 +657,8 @@ The name serves a documentary role only.
      \X{gl}{:}\Tglobal_I &\Rightarrow& \{\MGLOBALS~\X{gl}\} \\ |&
      \X{ex}{:}\Texport_I &\Rightarrow& \{\MEXPORTS~\X{ex}\} \\ |&
      \X{st}{:}\Tstart_I &\Rightarrow& \{\MSTART~\X{st}\} \\ |&
-     \X{el}{:}\Telem_I &\Rightarrow& \{\MELEM~\X{el}\} \\ |&
-     \X{da}{:}\Tdata_I &\Rightarrow& \{\MDATA~\X{da}\} \\
+     \X{el}{:}\Telem_I &\Rightarrow& \{\MELEMS~\X{el}\} \\ |&
+     \X{da}{:}\Tdata_I &\Rightarrow& \{\MDATAS~\X{da}\} \\
    \end{array}
    \end{array}
 
@@ -631,6 +689,10 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
      \{\IMEMS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{global}~\Tid^?~\dots~\text{)}) &=&
      \{\IGLOBALS~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{elem}~\Tid^?~\dots~\text{)}) &=&
+     \{\IELEM~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{data}~\Tid^?~\dots~\text{)}) &=&
+     \{\IDATA~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{func}~\Tid^?~\dots~\text{)}~\text{)}) &=&
      \{\IFUNCS~(\Tid^?)\} \\
    \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{table}~\Tid^?~\dots~\text{)}~\text{)}) &=&

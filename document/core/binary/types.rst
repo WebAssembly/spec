@@ -5,22 +5,78 @@
 Types
 -----
 
-.. index:: value type
+.. note::
+   In some places, possible types include both type constructors or types denoted by :ref:`type indices <syntax-typeidx>`.
+   Thus, the binary format for type constructors corresponds to the encodings of small negative :math:`\xref{binary/values}{binary-sint}{\sN}` values, such that they can unambiguously occur in the same place as (positive) type indices.
+
+
+.. index:: number type
+   pair: binary format; number type
+.. _binary-numtype:
+
+Number Types
+~~~~~~~~~~~~
+
+:ref:`Number types <syntax-numtype>` are encoded by a single byte.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{number type} & \Bnumtype &::=&
+     \hex{7F} &\Rightarrow& \I32 \\ &&|&
+     \hex{7E} &\Rightarrow& \I64 \\ &&|&
+     \hex{7D} &\Rightarrow& \F32 \\ &&|&
+     \hex{7C} &\Rightarrow& \F64 \\
+   \end{array}
+
+
+.. index:: vector type
+   pair: binary format; vector type
+.. _binary-vectype:
+
+Vector Types
+~~~~~~~~~~~~
+
+:ref:`Vector types <syntax-vectype>` are also encoded by a single byte.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{vector type} & \Bvectype &::=&
+     \hex{7B} &\Rightarrow& \V128 \\
+   \end{array}
+
+
+.. index:: reference type
+   pair: binary format; reference type
+.. _binary-reftype:
+
+Reference Types
+~~~~~~~~~~~~~~~
+
+:ref:`Reference types <syntax-reftype>` are also encoded by a single byte.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{reference type} & \Breftype &::=&
+     \hex{70} &\Rightarrow& \FUNCREF \\ &&|&
+     \hex{6F} &\Rightarrow& \EXTERNREF \\
+   \end{array}
+
+
+.. index:: value type, number type, reference type
    pair: binary format; value type
 .. _binary-valtype:
 
 Value Types
 ~~~~~~~~~~~
 
-:ref:`Value types <syntax-valtype>` are encoded by a single byte.
+:ref:`Value types <syntax-valtype>` are encoded with their respective encoding as a :ref:`number type <binary-numtype>`, :ref:`vector type <binary-vectype>`, or :ref:`reference type <binary-reftype>`.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{value type} & \Bvaltype &::=&
-     \hex{7F} &\Rightarrow& \I32 \\ &&|&
-     \hex{7E} &\Rightarrow& \I64 \\ &&|&
-     \hex{7D} &\Rightarrow& \F32 \\ &&|&
-     \hex{7C} &\Rightarrow& \F64 \\
+     t{:}\Bnumtype &\Rightarrow& t \\ &&|&
+     t{:}\Bvectype &\Rightarrow& t \\ &&|&
+     t{:}\Breftype &\Rightarrow& t \\
    \end{array}
 
 .. note::
@@ -35,7 +91,7 @@ Value Types
 Result Types
 ~~~~~~~~~~~~
 
-:ref:`Result types <syntax-resulttype>` are encoded by the respective :ref:`vectors <binary-vec>` of :ref:`value types `<binary-valtype>`.
+:ref:`Result types <syntax-resulttype>` are encoded by the respective :ref:`vectors <binary-vec>` of :ref:`value types <binary-valtype>`.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
@@ -94,23 +150,19 @@ Memory Types
    \end{array}
 
 
-.. index:: table type, element type, limits
+.. index:: table type, reference type, limits
    pair: binary format; table type
-   pair: binary format; element type
-.. _binary-elemtype:
 .. _binary-tabletype:
 
 Table Types
 ~~~~~~~~~~~
 
-:ref:`Table types <syntax-tabletype>` are encoded with their :ref:`limits <binary-limits>` and a constant byte indicating their :ref:`element type <syntax-elemtype>`.
+:ref:`Table types <syntax-tabletype>` are encoded with their :ref:`limits <binary-limits>` and the encoding of their element :ref:`reference type <syntax-reftype>`.
 
 .. math::
    \begin{array}{llclll}
    \production{table type} & \Btabletype &::=&
-     \X{et}{:}\Belemtype~~\X{lim}{:}\Blimits &\Rightarrow& \X{lim}~\X{et} \\
-   \production{element type} & \Belemtype &::=&
-     \hex{70} &\Rightarrow& \FUNCREF \\
+     \X{et}{:}\Breftype~~\X{lim}{:}\Blimits &\Rightarrow& \X{lim}~\X{et} \\
    \end{array}
 
 

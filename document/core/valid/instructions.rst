@@ -1,13 +1,47 @@
-.. index:: instruction, function type, context, value, operand stack, ! polymorphism
+.. index:: instruction, function type, context, value, operand stack, ! polymorphism, ! bottom type
 .. _valid-instr:
+.. _syntax-stacktype:
+.. _syntax-opdtype:
 
 Instructions
 ------------
 
-:ref:`Instructions <syntax-instr>` are classified by :ref:`function types <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`
-that describe how they manipulate the :ref:`operand stack <stack>`.
-The types describe the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
+:ref:`Instructions <syntax-instr>` are classified by *stack types* :math:`[t_1^\ast] \to [t_2^\ast]` that describe how instructions manipulate the :ref:`operand stack <stack>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{stack type} & \stacktype &::=&
+     [\opdtype^\ast] \to [\opdtype^\ast] \\
+   \production{operand type} & \opdtype &::=&
+     \valtype ~|~ \bot \\
+   \end{array}
+
+The types describe the required input stack with *operand types* :math:`t_1^\ast` that an instruction pops off
 and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
+Stack types are akin to :ref:`function types <syntax-functype>`,
+except that they allow individual operands to be classified as :math:`\bot` (*bottom*), indicating that the type is unconstrained.
+As an auxiliary notion, an operand type :math:`t_1` *matches* another operand type :math:`t_2`, if :math:`t_1` is either :math:`\bot` or equal to :math:`t_2`.
+This is extended to stack types in a point-wise manner.
+
+.. _match-opdtype:
+
+.. math::
+   \frac{
+   }{
+     \vdash t \leq t
+   }
+   \qquad
+   \frac{
+   }{
+     \vdash \bot \leq t
+   }
+
+.. math::
+   \frac{
+     (\vdash t \leq t')^\ast
+   }{
+     \vdash [t^\ast] \leq [{t'}^\ast]
+   }
 
 .. note::
    For example, the instruction :math:`\I32.\ADD` has type :math:`[\I32~\I32] \to [\I32]`,
@@ -35,7 +69,7 @@ Two degrees of polymorphism can be distinguished:
 In both cases, the unconstrained types or type sequences can be chosen arbitrarily, as long as they meet the constraints imposed for the surrounding parts of the program.
 
 .. note::
-   For example, the |SELECT| instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any possible :ref:`value type <syntax-valtype>` :math:`t`.   Consequently, both instruction sequences
+   For example, the |SELECT| instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any possible :ref:`number type <syntax-numtype>` :math:`t`.   Consequently, both instruction sequences
 
    .. math::
       (\I32.\CONST~1)~~(\I32.\CONST~2)~~(\I32.\CONST~3)~~\SELECT{}
@@ -60,6 +94,8 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
       \UNREACHABLE~~(\I64.\CONST~0)~~\I32.\ADD
 
    is invalid, because there is no possible type to pick for the |UNREACHABLE| instruction that would make the sequence well-typed.
+
+The :ref:`Appendix <algo-valid>` describes a type checking :ref:`algorithm <algo-valid>` that efficiently implements validation of instruction sequences as prescribed by the rules given here.
 
 
 .. index:: numeric instruction
@@ -154,6 +190,401 @@ Numeric Instructions
    }
 
 
+.. index:: reference instructions, reference type
+   pair: validation; instruction
+   single: abstract syntax; instruction
+.. _valid-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. _valid-ref.null:
+
+:math:`\REFNULL~t`
+..................
+
+* The instruction is valid with type :math:`[] \to [t]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \REFNULL~t : [] \to [t]
+   }
+
+.. note::
+   In future versions of WebAssembly, there may be reference types for which no null reference is allowed.
+
+.. _valid-ref.is_null:
+
+:math:`\REFISNULL`
+..................
+
+* The instruction is valid with type :math:`[t] \to [\I32]`, for any :ref:`reference type <syntax-reftype>` :math:`t`.
+
+.. math::
+   \frac{
+     t = \reftype
+   }{
+     C \vdashinstr \REFISNULL : [t] \to [\I32]
+   }
+
+.. _valid-ref.func:
+
+:math:`\REFFUNC~x`
+..................
+
+* The function :math:`C.\CFUNCS[x]` must be defined in the context.
+
+* The :ref:`function index <syntax-funcidx>` :math:`x` must be contained in :math:`C.\CREFS`.
+
+* The instruction is valid with type :math:`[] \to [\FUNCREF]`.
+
+.. math::
+   \frac{
+     C.\CFUNCS[x] = \functype
+     \qquad
+     x \in C.\CREFS
+   }{
+     C \vdashinstr \REFFUNC~x : [] \to [\FUNCREF]
+   }
+
+.. index:: vector instruction
+   pair: validation; instruction
+   single: abstract syntax; instruction
+
+.. _valid-instr-vec:
+.. _aux-unpacked:
+
+Vector Instructions
+~~~~~~~~~~~~~~~~~~~
+
+Vector instructions can have a prefix to describe the :ref:`shape <syntax-vec-shape>` of the operand. Packed numeric types, |I8| and |I16|, are not :ref:`value type <syntax-valtype>`, we define an auxiliary function to map such packed types into value types:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \unpacked(\K{i8x16}) &=& \I32 \\
+   \unpacked(\K{i16x8}) &=& \I32 \\
+   \unpacked(t\K{x}N) &=& t
+   \end{array}
+
+
+We also define an auxiliary function to get number of packed numeric types in a |V128|, *dimension*:
+
+.. _aux-dim:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \dim(t\K{x}N) &=& N
+   \end{array}
+
+
+.. _valid-vconst:
+
+:math:`\V128\K{.}\VCONST~c`
+...........................
+
+* The instruction is valid with type :math:`[] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \V128\K{.}\VCONST~c : [] \to [\V128]
+   }
+
+
+.. _valid-vvunop:
+
+:math:`\V128\K{.}\vvunop`
+.........................
+
+* The instruction is valid with type :math:`[\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \V128\K{.}\vvunop : [\V128] \to [\V128]
+   }
+
+
+.. _valid-vvbinop:
+
+:math:`\V128\K{.}\vvbinop`
+..........................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \V128\K{.}\vvbinop : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vvternop:
+
+:math:`\V128\K{.}\vvternop`
+...........................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \V128\K{.}\vvternop : [\V128~\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vvtestop:
+
+:math:`\V128\K{.}\vvtestop`
+...........................
+
+* The instruction is valid with type :math:`[\V128] \to [\I32]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \V128\K{.}\vvtestop : [\V128] \to [\I32]
+   }
+
+
+.. _valid-vec-swizzle:
+
+:math:`\K{i8x16.}\SWIZZLE`
+..........................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \K{i8x16.}\SWIZZLE : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-shuffle:
+
+:math:`\K{i8x16.}\SHUFFLE~\laneidx^{16}`
+........................................
+
+* For all :math:`\laneidx_i`, in :math:`\laneidx^{16}`, :math:`\laneidx_i` must be smaller than :math:`32`.
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+     (\laneidx < 32)^{16}
+   }{
+     C \vdashinstr \K{i8x16.}\SHUFFLE~\laneidx^{16} : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-splat:
+
+:math:`\shape\K{.}\SPLAT`
+.........................
+
+* Let :math:`t` be :math:`\unpacked(\shape)`.
+
+* The instruction is valid with type :math:`[t] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\SPLAT : [\unpacked(\shape)] \to [\V128]
+   }
+
+
+.. _valid-vec-extract_lane:
+
+:math:`\shape\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx`
+...................................................
+
+* The lane index :math:`\laneidx` must be smaller than :math:`\dim(\shape)`.
+
+* The instruction is valid with type :math:`[\V128] \to [\unpacked(\shape)]`.
+
+.. math::
+   \frac{
+     \laneidx < \dim(\shape)
+   }{
+     C \vdashinstr t\K{x}N\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx : [\V128] \to [\unpacked(\shape)]
+   }
+
+
+.. _valid-vec-replace_lane:
+
+:math:`\shape\K{.}\REPLACELANE~\laneidx`
+........................................
+
+* The lane index :math:`\laneidx` must be smaller than :math:`\dim(\shape)`.
+
+* Let :math:`t` be :math:`\unpacked(\shape)`.
+
+* The instruction is valid with type :math:`[\V128~t] \to [\V128]`.
+
+.. math::
+   \frac{
+     \laneidx < \dim(\shape)
+   }{
+     C \vdashinstr \shape\K{.}\REPLACELANE~\laneidx : [\V128~\unpacked(\shape)] \to [\V128]
+   }
+
+
+.. _valid-vunop:
+
+:math:`\shape\K{.}\vunop`
+.........................
+
+* The instruction is valid with type :math:`[\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vunop : [\V128] \to [\V128]
+   }
+
+
+.. _valid-vbinop:
+
+:math:`\shape\K{.}\vbinop`
+..........................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vbinop : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vrelop:
+
+:math:`\shape\K{.}\vrelop`
+..........................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vrelop : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vishiftop:
+
+:math:`\ishape\K{.}\vishiftop`
+..............................
+
+* The instruction is valid with type :math:`[\V128~\I32] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape\K{.}\vishiftop : [\V128~\I32] \to [\V128]
+   }
+
+
+.. _valid-vtestop:
+
+:math:`\shape\K{.}\vtestop`
+...........................
+
+* The instruction is valid with type :math:`[\V128] \to [\I32]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vtestop : [\V128] \to [\I32]
+   }
+
+
+.. _valid-vcvtop:
+
+:math:`\shape\K{.}\vcvtop\K{\_}\half^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^?`
+..........................................................................
+
+* The instruction is valid with type :math:`[\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vcvtop\K{\_}\half^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^? : [\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-narrow:
+
+:math:`\ishape_1\K{.}\NARROW\K{\_}\ishape_2\K{\_}\sx`
+.....................................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\NARROW\K{\_}\ishape_2\K{\_}\sx : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-bitmask:
+
+:math:`\ishape\K{.}\BITMASK`
+............................
+
+* The instruction is valid with type :math:`[\V128] \to [\I32]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape\K{.}\BITMASK : [\V128] \to [\I32]
+   }
+
+
+.. _valid-vec-dot:
+
+:math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s}`
+................................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s} : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-extmul:
+
+:math:`\ishape_1\K{.}\EXTMUL\K{\_}\half\K{\_}\ishape_2\K{\_}\sx`
+................................................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\EXTMUL\K{\_}\half\K{\_}\ishape_2\K{\_}\sx : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-extadd_pairwise:
+
+:math:`\ishape_1\K{.}\EXTADDPAIRWISE\K{\_}\ishape_2\K{\_}\sx`
+.............................................................
+
+* The instruction is valid with type :math:`[\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\EXTADDPAIRWISE\K{\_}\ishape_2\K{\_}\sx : [\V128] \to [\V128]
+   }
+
+
 .. index:: parametric instructions, value type, polymorphism
    pair: validation; instruction
    single: abstract syntax; instruction
@@ -175,22 +606,46 @@ Parametric Instructions
      C \vdashinstr \DROP : [t] \to []
    }
 
+.. note::
+   Both |DROP| and |SELECT| without annotation are :ref:`value-polymorphic <polymorphism>` instructions.
+
+
 
 .. _valid-select:
 
-:math:`\SELECT`
-...............
+:math:`\SELECT~(t^\ast)^?`
+..........................
 
-* The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`value type <syntax-valtype>` :math:`t`.
+* If :math:`t^\ast` is present, then:
+
+  * The length of :math:`t^\ast` must be :math:`1`.
+
+  * Then the instruction is valid with type :math:`[t^\ast~t^\ast~\I32] \to [t^\ast]`.
+
+* Else:
+
+  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`operand type <syntax-opdtype>` :math:`t` that :ref:`matches <match-opdtype>` some :ref:`number type <syntax-numtype>` or :ref:`vector type <syntax-vectype>`.
 
 .. math::
    \frac{
+   }{
+     C \vdashinstr \SELECT~t : [t~t~\I32] \to [t]
+   }
+   \qquad
+   \frac{
+     \vdash t \leq \numtype
+   }{
+     C \vdashinstr \SELECT : [t~t~\I32] \to [t]
+   }
+   \qquad
+   \frac{
+     \vdash t \leq \vectype
    }{
      C \vdashinstr \SELECT : [t~t~\I32] \to [t]
    }
 
 .. note::
-   Both |DROP| and |SELECT| are :ref:`value-polymorphic <polymorphism>` instructions.
+   In future versions of WebAssembly, |SELECT| may allow more than one value per choice.
 
 
 .. index:: variable instructions, local index, global index, context
@@ -298,6 +753,178 @@ Variable Instructions
    }
 
 
+.. index:: table instruction, table index, context
+   pair: validation; instruction
+   single: abstract syntax; instruction
+.. _valid-instr-table:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+.. _valid-table.get:
+
+:math:`\TABLEGET~x`
+...................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* Then the instruction is valid with type :math:`[\I32] \to [t]`.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = \limits~t
+   }{
+     C \vdashinstr \TABLEGET~x : [\I32] \to [t]
+   }
+
+
+.. _valid-table.set:
+
+:math:`\TABLESET~x`
+...................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* Then the instruction is valid with type :math:`[\I32~t] \to []`.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = \limits~t
+   }{
+     C \vdashinstr \TABLESET~x : [\I32~t] \to []
+   }
+
+
+.. _valid-table.size:
+
+:math:`\TABLESIZE~x`
+....................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Then the instruction is valid with type :math:`[] \to [\I32]`.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = \tabletype
+   }{
+     C \vdashinstr \TABLESIZE~x : [] \to [\I32]
+   }
+
+
+.. _valid-table.grow:
+
+:math:`\TABLEGROW~x`
+....................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* Then the instruction is valid with type :math:`[t~\I32] \to [\I32]`.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = \limits~t
+   }{
+     C \vdashinstr \TABLEGROW~x : [t~\I32] \to [\I32]
+   }
+
+
+.. _valid-table.fill:
+
+:math:`\TABLEFILL~x`
+....................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* Then the instruction is valid with type :math:`[\I32~t~\I32] \to []`.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = \limits~t
+   }{
+     C \vdashinstr \TABLEFILL~x : [\I32~t~\I32] \to []
+   }
+
+
+.. _valid-table.copy:
+
+:math:`\TABLECOPY~x~y`
+......................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Let :math:`\limits_1~t_1` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* The table :math:`C.\CTABLES[y]` must be defined in the context.
+
+* Let :math:`\limits_2~t_2` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[y]`.
+
+* The :ref:`reference type <syntax-reftype>` :math:`t_1` must be the same as :math:`t_2`.
+
+* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = \limits_1~t
+     \qquad
+     C.\CTABLES[x] = \limits_2~t
+   }{
+     C \vdashinstr \TABLECOPY~x~y : [\I32~\I32~\I32] \to []
+   }
+
+
+.. _valid-table.init:
+
+:math:`\TABLEINIT~x~y`
+......................
+
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
+
+* Let :math:`\limits~t_1` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* The element segment :math:`C.\CELEMS[y]` must be defined in the context.
+
+* Let :math:`t_2` be the :ref:`reference type <syntax-reftype>` :math:`C.\CELEMS[y]`.
+
+* The :ref:`reference type <syntax-reftype>` :math:`t_1` must be the same as :math:`t_2`.
+
+* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     C.\CTABLES[x] = \limits~t
+     \qquad
+     C.\CELEMS[y] = t
+   }{
+     C \vdashinstr \TABLEINIT~x~y : [\I32~\I32~\I32] \to []
+   }
+
+
+.. _valid-elem.drop:
+
+:math:`\ELEMDROP~x`
+...................
+
+* The element segment :math:`C.\CELEMS[x]` must be defined in the context.
+
+* Then the instruction is valid with type :math:`[] \to []`.
+
+.. math::
+   \frac{
+     C.\CELEMS[x] = t
+   }{
+     C \vdashinstr \ELEMDROP~x : [] \to []
+   }
+
+
 .. index:: memory instruction, memory index, context
    pair: validation; instruction
    single: abstract syntax; instruction
@@ -314,7 +941,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32] \to [t]`.
 
@@ -354,7 +981,7 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[0]` must be defined in the context.
 
-* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-valtype>` of :math:`t` divided by :math:`8`.
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\I32~t] \to []`.
 
@@ -386,6 +1013,118 @@ Memory Instructions
      2^{\memarg.\ALIGN} \leq N/8
    }{
      C \vdashinstr t\K{.store}N~\memarg : [\I32~t] \to []
+   }
+
+
+.. _valid-load-extend:
+
+:math:`\K{v128.}\LOAD{N}\K{x}M\_\sx~\memarg`
+...............................................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8 \cdot M`.
+
+* Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} \leq N/8 \cdot M
+   }{
+     C \vdashinstr \K{v128.}\K{.}\LOAD{N}\K{x}M\_\sx~\memarg : [\I32] \to [\V128]
+   }
+
+
+.. _valid-load-splat:
+
+:math:`\K{v128.}\LOAD{N}\K{\_splat}~\memarg`
+...............................................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} \leq N/8
+   }{
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_splat}~\memarg : [\I32] \to [\V128]
+   }
+
+
+.. _valid-load-zero:
+
+:math:`\K{v128.}\LOAD{N}\K{\_zero}~\memarg`
+...........................................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} \leq N/8
+   }{
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_zero}~\memarg : [\I32] \to [\V128]
+   }
+
+
+.. _valid-load-lane:
+
+:math:`\K{v128.}\LOAD{N}\K{\_lane}~\memarg~\laneidx`
+....................................................
+
+* The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+     \laneidx < 128/N
+     \qquad
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} < N/8
+   }{
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_lane}~\memarg~\laneidx : [\I32~\V128] \to [\V128]
+   }
+
+.. _valid-store-lane:
+
+:math:`\K{v128.}\STORE{N}\K{\_lane}~\memarg~\laneidx`
+.....................................................
+
+* The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+     \laneidx < 128/N
+     \qquad
+     C.\CMEMS[0] = \memtype
+     \qquad
+     2^{\memarg.\ALIGN} < N/8
+   }{
+     C \vdashinstr \K{v128.}\STORE{N}\K{\_lane}~\memarg~\laneidx : [\I32~\V128] \to []
    }
 
 
@@ -423,7 +1162,79 @@ Memory Instructions
    }
 
 
-.. index:: control instructions, structured control, label, block, branch, block type, result type, label index, function index, type index, vector, polymorphism, context
+.. _valid-memory.fill:
+
+:math:`\MEMORYFILL`
+...................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+   }{
+     C \vdashinstr \MEMORYFILL : [\I32~\I32~\I32] \to []
+   }
+
+
+.. _valid-memory.copy:
+
+:math:`\MEMORYCOPY`
+...................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+   }{
+     C \vdashinstr \MEMORYCOPY : [\I32~\I32~\I32] \to []
+   }
+
+
+.. _valid-memory.init:
+
+:math:`\MEMORYINIT~x`
+.....................
+
+* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+
+* The data segment :math:`C.\CDATAS[x]` must be defined in the context.
+
+* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     C.\CMEMS[0] = \memtype
+     \qquad
+     C.\CDATAS[x] = {\ok}
+   }{
+     C \vdashinstr \MEMORYINIT~x : [\I32~\I32~\I32] \to []
+   }
+
+
+.. _valid-data.drop:
+
+:math:`\DATADROP~x`
+...................
+
+* The data segment :math:`C.\CDATAS[x]` must be defined in the context.
+
+* Then the instruction is valid with type :math:`[] \to []`.
+
+.. math::
+   \frac{
+     C.\CDATAS[x] = {\ok}
+   }{
+     C \vdashinstr \DATADROP~x : [] \to []
+   }
+
+
+.. index:: control instructions, structured control, label, block, branch, block type, label index, function index, type index, vector, polymorphism, context
    pair: validation; instruction
    single: abstract syntax; instruction
 .. _valid-label:
@@ -600,23 +1411,26 @@ Control Instructions
 :math:`\BRTABLE~l^\ast~l_N`
 ...........................
 
-* The label :math:`C.\CLABELS[l_N]` must be defined in the context.
 
-* Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l_N]`.
+* The label :math:`C.\CLABELS[l_N]` must be defined in the context.
 
 * For all :math:`l_i` in :math:`l^\ast`,
   the label :math:`C.\CLABELS[l_i]` must be defined in the context.
 
-* For all :math:`l_i` in :math:`l^\ast`,
-  :math:`C.\CLABELS[l_i]` must be :math:`[t^\ast]`.
+* There must be a :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, such that:
+
+  * For each :ref:`operand type <syntax-opdtype>` :math:`t_j` in :math:`t^\ast` and corresponding type :math:`t'_{Nj}` in :math:`C.\CLABELS[l_N]`, :math:`t_j` :ref:`matches <match-opdtype>` :math:`t'_{Nj}`.
+
+  * For all :math:`l_i` in :math:`l^\ast`,
+    and for each :ref:`operand type <syntax-opdtype>` :math:`t_j` in :math:`t^\ast` and corresponding type :math:`t'_{ij}` in :math:`C.\CLABELS[l_i]`, :math:`t_j` :ref:`matches <match-opdtype>` :math:`t'_{ij}`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^\ast~\I32] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     (C.\CLABELS[l] = [t^\ast])^\ast
+     (\vdash [t^\ast] \leq C.\CLABELS[l])^\ast
      \qquad
-     C.\CLABELS[l_N] = [t^\ast]
+     \vdash [t^\ast] \leq C.\CLABELS[l_N]
    }{
      C \vdashinstr \BRTABLE~l^\ast~l_N : [t_1^\ast~t^\ast~\I32] \to [t_2^\ast]
    }
@@ -672,28 +1486,28 @@ Control Instructions
 
 .. _valid-call_indirect:
 
-:math:`\CALLINDIRECT~x`
-.......................
+:math:`\CALLINDIRECT~x~y`
+.........................
 
-* The table :math:`C.\CTABLES[0]` must be defined in the context.
+* The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~\elemtype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[0]`.
+* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The :ref:`element type <syntax-elemtype>` :math:`\elemtype` must be |FUNCREF|.
+* The :ref:`reference type <syntax-reftype>` :math:`t` must be |FUNCREF|.
 
-* The type :math:`C.\CTYPES[x]` must be defined in the context.
+* The type :math:`C.\CTYPES[y]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[y]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~\I32] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\CTABLES[0] = \limits~\FUNCREF
+     C.\CTABLES[x] = \limits~\FUNCREF
      \qquad
-     C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
+     C.\CTYPES[y] = [t_1^\ast] \to [t_2^\ast]
    }{
-     C \vdashinstr \CALLINDIRECT~x : [t_1^\ast~\I32] \to [t_2^\ast]
+     C \vdashinstr \CALLINDIRECT~x~y : [t_1^\ast~\I32] \to [t_2^\ast]
    }
 
 
@@ -710,7 +1524,7 @@ Empty Instruction Sequence: :math:`\epsilon`
 ............................................
 
 * The empty instruction sequence is valid with type :math:`[t^\ast] \to [t^\ast]`,
-  for any sequence of :ref:`value types <syntax-valtype>` :math:`t^\ast`.
+  for any sequence of :ref:`operand types <syntax-opdtype>` :math:`t^\ast`.
 
 .. math::
    \frac{
@@ -729,13 +1543,17 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
   for some sequences of :ref:`value types <syntax-valtype>` :math:`t^\ast` and :math:`t_3^\ast`.
 
 * There must be a sequence of :ref:`value types <syntax-valtype>` :math:`t_0^\ast`,
-  such that :math:`t_2^\ast = t_0^\ast~t^\ast`.
+  such that :math:`t_2^\ast = t_0^\ast~{t'}^\ast` where the type sequence :math:`{t'}^\ast` is as long as :math:`t^\ast`.
+
+* For each :ref:`operand type <syntax-opdtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding type :math:`t_i` in :math:`t^\ast`, :math:`t'_i` :ref:`matches <match-opdtype>` :math:`t_i`.
 
 * Then the combined instruction sequence is valid with type :math:`[t_1^\ast] \to [t_0^\ast~t_3^\ast]`.
 
 .. math::
    \frac{
-     C \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_0^\ast~t^\ast]
+     C \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_0^\ast~{t'}^\ast]
+     \qquad
+     \vdash [{t'}^\ast] \leq [t^\ast]
      \qquad
      C \vdashinstr \instr_N : [t^\ast] \to [t_3^\ast]
    }{
@@ -743,7 +1561,7 @@ Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
    }
 
 
-.. index:: expression,result type
+.. index:: expression, result type
    pair: validation; expression
    single: abstract syntax; expression
    single: expression; constant
@@ -758,14 +1576,17 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
 :math:`\instr^\ast~\END`
 ........................
 
-* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^\ast]`,
-  for some :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some :ref:`stack type <syntax-stacktype>` :math:`[] \to [{t'}^\ast]`.
+
+* For each :ref:`operand type <syntax-opdtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding :ref:`value type <syntax-valtype>` type :math:`t_i` in :math:`t^\ast`, :math:`t'_i` :ref:`matches <match-opdtype>` :math:`t_i`.
 
 * Then the expression is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
 
 .. math::
    \frac{
-     C \vdashinstrseq \instr^\ast : [] \to [t^\ast]
+     C \vdashinstrseq \instr^\ast : [] \to [{t'}^\ast]
+     \qquad
+     \vdash [{t'}^\ast] \leq [t^\ast]
    }{
      C \vdashexpr \instr^\ast~\END : [t^\ast]
    }
@@ -783,6 +1604,10 @@ Constant Expressions
 
   * either of the form :math:`t.\CONST~c`,
 
+  * or of the form :math:`\REFNULL`,
+
+  * or of the form :math:`\REFFUNC~x`,
+
   * or of the form :math:`\GLOBALGET~x`, in which case :math:`C.\CGLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
 
 .. math::
@@ -798,6 +1623,17 @@ Constant Expressions
      C \vdashinstrconst t.\CONST~c \const
    }
    \qquad
+   \frac{
+   }{
+     C \vdashinstrconst \REFNULL \const
+   }
+   \qquad
+   \frac{
+   }{
+     C \vdashinstrconst \REFFUNC~x \const
+   }
+
+.. math::
    \frac{
      C.\CGLOBALS[x] = \CONST~t
    }{

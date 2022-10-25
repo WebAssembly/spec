@@ -21,7 +21,7 @@ if "%1" == "" (
 	echo.  html       to make standalone HTML files
 	echo.  pdf        to make standalone PDF file
 	echo.  all        to make both
-	echo.  publish    to make all and push to gh-pages (changes must be committed)
+	echo.  publish    to make all and push to gh-pages ^(changes must be committed^)
 	echo.  help       to see more options
 	goto end
 )

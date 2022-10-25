@@ -3,9 +3,9 @@
 This directory contains the source code for the WebAssembly spec documents, as served from the [webassembly.github.io/spec](https://webassembly.github.io/spec) pages.
 It uses [Sphinx](http://www.sphinx-doc.org/) and [Bikeshed](https://github.com/tabatkins/bikeshed).
 
-To install Sphinx:
+To install Sphinx (and required library six):
 ```
-pip install sphinx
+pip install sphinx six
 ```
 
 To install Bikeshed, see the instructions [here](https://tabatkins.github.io/bikeshed/#installing).
@@ -42,7 +42,7 @@ pipenv shell
 Install Python dependencies:
 
 ```
-pip install Sphinx==2.4.4
+pipenv install Sphinx==4.0.0 six
 ```
 
 ### Checking out the repository
@@ -80,7 +80,7 @@ To build the [single-page W3C version](https://webassembly.github.io/spec/core/b
 ```
 # cd back to root of git directory
 git clone https://github.com/tabatkins/bikeshed.git
-pip install --editable bikeshed
+pipenv install -e bikeshed
 bikeshed update
 ```
 
@@ -88,7 +88,7 @@ You will also need `npm` and `yarn` for all the LaTeX goodness. `npm` might alre
 
 ```
 npm install -g yarn
-cd document/core
+cd document
 make -C core bikeshed
 ```
 

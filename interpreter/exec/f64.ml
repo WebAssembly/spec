@@ -1,4 +1,4 @@
-include Float.Make
+include Fxx.Make
   (struct
     include Int64
     let mantissa = 52

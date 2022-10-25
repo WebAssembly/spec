@@ -1,5 +1,8 @@
+type void = |
+
 module Fun =
 struct
+  let id x = x
   let curry f x y = f (x, y)
   let uncurry f (x, y) = f x y
 
@@ -105,6 +108,11 @@ struct
   let rec concat_map f = function
     | [] -> []
     | x::xs -> f x @ concat_map f xs
+
+  let rec pairwise f = function
+    | [] -> []
+    | x1::x2::xs -> f x1 x2 :: pairwise f xs
+    | _ -> failwith "pairwise"
 end
 
 module List32 =
@@ -137,6 +145,11 @@ struct
     | 0l, _ -> xs
     | n, _::xs' when n > 0l -> drop (Int32.sub n 1l) xs'
     | _ -> failwith "drop"
+
+  let rec mapi f xs = mapi' f 0l xs
+  and mapi' f i = function
+    | [] -> []
+    | x::xs -> f i x :: mapi' f (Int32.add i 1l) xs
 end
 
 module Array32 =
@@ -187,6 +200,11 @@ struct
     match o with
     | Some y -> y
     | None -> x
+
+  let force o =
+    match o with
+    | Some y -> y
+    | None -> raise (Invalid_argument "Option.force")
 
   let map f = function
     | Some x -> Some (f x)

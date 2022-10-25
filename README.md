@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/WebAssembly/memory64.svg?branch=master)](https://travis-ci.org/WebAssembly/memory64)
+![Build Status](https://github.com/WebAssembly/memory64/actions/workflows/main.yml/badge.svg)
 
 # Memory64 Proposal for WebAssembly
 
@@ -12,7 +12,7 @@ add support for 64-bit memory indexes to WebAssembly.
 
 Original `README` from upstream repository follows...
 
-[![Build Status](https://travis-ci.org/WebAssembly/spec.svg?branch=master)](https://travis-ci.org/WebAssembly/spec)
+![Build Status](https://github.com/WebAssembly/spec/actions/workflows/main.yml/badge.svg)
 
 # spec
 

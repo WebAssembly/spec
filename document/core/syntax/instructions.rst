@@ -35,7 +35,7 @@ The following sections group instructions into a number of different categories.
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-Numeric instructions provide basic operations over numeric :ref:`values <syntax-value>` of specific :ref:`type <syntax-valtype>`.
+Numeric instructions provide basic operations over numeric :ref:`values <syntax-value>` of specific :ref:`type <syntax-numtype>`.
 These operations closely match respective operations available in hardware.
 
 .. math::
@@ -118,7 +118,7 @@ These operations closely match respective operations available in hardware.
      \K{ge} \\
    \end{array}
 
-Numeric instructions are divided by :ref:`value type <syntax-valtype>`.
+Numeric instructions are divided by :ref:`number type <syntax-numtype>`.
 For each type, several subcategories can be distinguished:
 
 * *Constants*: return a static constant.
@@ -171,6 +171,266 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
+.. index:: ! vector instruction, numeric vectors, number, value, value type, SIMD
+   pair: abstract syntax; instruction
+.. _syntax-laneidx:
+.. _syntax-shape:
+.. _syntax-half:
+.. _syntax-vvunop:
+.. _syntax-vvbinop:
+.. _syntax-vvternop:
+.. _syntax-vvtestop:
+.. _syntax-vitestop:
+.. _syntax-virelop:
+.. _syntax-vfrelop:
+.. _syntax-vishiftop:
+.. _syntax-viunop:
+.. _syntax-vibinop:
+.. _syntax-viminmaxop:
+.. _syntax-visatbinop:
+.. _syntax-vfunop:
+.. _syntax-vfbinop:
+.. _syntax-instr-vec:
+
+Vector Instructions
+~~~~~~~~~~~~~~~~~~~
+
+Vector instructions (also known as *SIMD* instructions, single data multiple value) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{ishape} & \ishape &::=&
+     \K{i8x16} ~|~ \K{i16x8} ~|~ \K{i32x4} ~|~ \K{i64x2} \\
+   \production{fshape} & \fshape &::=&
+     \K{f32x4} ~|~ \K{f64x2} \\
+   \production{shape} & \shape &::=&
+     \ishape ~|~ \fshape \\
+   \production{half} & \half &::=&
+     \K{low} ~|~ \K{high} \\
+   \production{lane index} & \laneidx &::=& \u8 \\
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \K{v128.}\VCONST~\i128 \\&&|&
+     \K{v128.}\vvunop \\&&|&
+     \K{v128.}\vvbinop \\&&|&
+     \K{v128.}\vvternop \\&&|&
+     \K{v128.}\vvtestop \\&&|&
+     \K{i8x16.}\SHUFFLE~\laneidx^{16} \\&&|&
+     \K{i8x16.}\SWIZZLE \\&&|&
+     \shape\K{.}\SPLAT \\&&|&
+     \K{i8x16.}\EXTRACTLANE\K{\_}\sx~\laneidx ~|~
+     \K{i16x8.}\EXTRACTLANE\K{\_}\sx~\laneidx \\&&|&
+     \K{i32x4.}\EXTRACTLANE~\laneidx ~|~
+     \K{i64x2.}\EXTRACTLANE~\laneidx \\&&|&
+     \fshape\K{.}\EXTRACTLANE~\laneidx \\&&|&
+     \shape\K{.}\REPLACELANE~\laneidx \\&&|&
+     \K{i8x16}\K{.}\virelop ~|~
+     \K{i16x8}\K{.}\virelop ~|~
+     \K{i32x4}\K{.}\virelop \\&&|&
+     \K{i64x2.}\K{eq} ~|~
+     \K{i64x2.}\K{ne} ~|~
+     \K{i64x2.}\K{lt\_s} ~|~
+     \K{i64x2.}\K{gt\_s} ~|~
+     \K{i64x2.}\K{le\_s} ~|~
+     \K{i64x2.}\K{ge\_s} \\&&|&
+     \fshape\K{.}\vfrelop \\&&|&
+     \ishape\K{.}\viunop ~|~
+     \K{i8x16.}\VPOPCNT \\&&|&
+     \K{i16x8.}\Q15MULRSAT\K{\_s} \\ &&|&
+     \K{i32x4.}\DOT\K{\_i16x8\_s} \\ &&|&
+     \fshape\K{.}\vfunop \\&&|&
+     \ishape\K{.}\vitestop \\ &&|&
+     \ishape\K{.}\BITMASK \\ &&|&
+     \K{i8x16.}\NARROW\K{\_i16x8\_}\sx ~|~
+     \K{i16x8.}\NARROW\K{\_i32x4\_}\sx \\&&|&
+     \K{i16x8.}\VEXTEND\K{\_}\half\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\VEXTEND\K{\_}\half\K{\_i16x8\_}\sx \\&&|&
+     \K{i64x2.}\VEXTEND\K{\_}\half\K{\_i32x4\_}\sx \\&&|&
+     \ishape\K{.}\vishiftop \\&&|&
+     \ishape\K{.}\vibinop \\&&|&
+     \K{i8x16.}\viminmaxop ~|~
+     \K{i16x8.}\viminmaxop ~|~
+     \K{i32x4.}\viminmaxop \\&&|&
+     \K{i8x16.}\visatbinop ~|~
+     \K{i16x8.}\visatbinop \\&&|&
+     \K{i16x8.}\K{mul} ~|~
+     \K{i32x4.}\K{mul} ~|~
+     \K{i64x2.}\K{mul} \\&&|&
+     \K{i8x16.}\AVGR\K{\_u} ~|~
+     \K{i16x8.}\AVGR\K{\_u} \\&&|&
+     \K{i16x8.}\EXTMUL\K{\_}\half\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\EXTMUL\K{\_}\half\K{\_i16x8\_}\sx ~|~
+     \K{i64x2.}\EXTMUL\K{\_}\half\K{\_i32x4\_}\sx \\ &&|&
+     \K{i16x8.}\EXTADDPAIRWISE\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\EXTADDPAIRWISE\K{\_i16x8\_}\sx \\ &&|&
+     \fshape\K{.}\vfbinop \\&&|&
+     \K{i32x4.}\VTRUNC\K{\_sat\_f32x4\_}\sx ~|~
+     \K{i32x4.}\VTRUNC\K{\_sat\_f64x2\_}\sx\K{\_zero} \\&&|&
+     \K{f32x4.}\VCONVERT\K{\_i32x4\_}\sx ~|~
+     \K{f32x4.}\VDEMOTE\K{\_f64x2\_zero} \\&&|&
+     \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}\sx ~|~
+     \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\&&|&
+     \dots \\
+   \production{vector bitwise unary operator} & \vvunop &::=&
+     \K{not} \\
+   \production{vector bitwise binary operator} & \vvbinop &::=&
+     \K{and} ~|~
+     \K{andnot} ~|~
+     \K{or} ~|~
+     \K{xor} \\
+   \production{vector bitwise ternary operator} & \vvternop &::=&
+     \K{bitselect} \\
+   \production{vector bitwise test operator} & \vvtestop &::=&
+     \K{any\_true} \\
+   \production{vector integer test operator} & \vitestop &::=&
+     \K{all\_true} \\
+   \production{vector integer relational operator} & \virelop &::=&
+     \K{eq} ~|~
+     \K{ne} ~|~
+     \K{lt\_}\sx ~|~
+     \K{gt\_}\sx ~|~
+     \K{le\_}\sx ~|~
+     \K{ge\_}\sx \\
+   \production{vector floating-point relational operator} & \vfrelop &::=&
+     \K{eq} ~|~
+     \K{ne} ~|~
+     \K{lt} ~|~
+     \K{gt} ~|~
+     \K{le} ~|~
+     \K{ge} \\
+   \production{vector integer unary operator} & \viunop &::=&
+     \K{abs} ~|~
+     \K{neg} \\
+   \production{vector integer binary operator} & \vibinop &::=&
+     \K{add} ~|~
+     \K{sub} \\
+   \production{vector integer binary min/max operator} & \viminmaxop &::=&
+     \K{min\_}\sx ~|~
+     \K{max\_}\sx \\
+   \production{vector integer saturating binary operator} & \visatbinop &::=&
+     \K{add\_sat\_}\sx ~|~
+     \K{sub\_sat\_}\sx \\
+   \production{vector integer shift operator} & \vishiftop &::=&
+     \K{shl} ~|~
+     \K{shr\_}\sx \\
+   \production{vector floating-point unary operator} & \vfunop &::=&
+     \K{abs} ~|~
+     \K{neg} ~|~
+     \K{sqrt} ~|~
+     \K{ceil} ~|~
+     \K{floor} ~|~
+     \K{trunc} ~|~
+     \K{nearest} \\
+   \production{vector floating-point binary operator} & \vfbinop &::=&
+     \K{add} ~|~
+     \K{sub} ~|~
+     \K{mul} ~|~
+     \K{div} ~|~
+     \K{min} ~|~
+     \K{max} ~|~
+     \K{pmin} ~|~
+     \K{pmax} \\
+   \end{array}
+
+.. _syntax-vec-shape:
+
+Vector instructions have a naming convention involving a prefix that
+determines how their operands will be interpreted.
+This prefix describes the *shape* of the operand,
+written :math:`t\K{x}N`, and consisting of a packed :ref:`numeric type <syntax-numtype>` :math:`t` and the number of *lanes* :math:`N` of that type.
+Operations are performed point-wise on the values of each lane.
+
+.. note::
+   For example, the shape :math:`\K{i32x4}` interprets the operand
+   as four |i32| values, packed into an |i128|.
+   The bitwidth of the numeric type :math:`t` times :math:`N` always is 128.
+
+Instructions prefixed with :math:`\K{v128}` do not involve a specific interpretation, and treat the |V128| as an |i128| value or a vector of 128 individual bits.
+
+Vector instructions can be grouped into several subcategories:
+
+* *Constants*: return a static constant.
+
+* *Unary Operations*: consume one |V128| operand and produce one |V128| result.
+
+* *Binary Operations*: consume two |V128| operands and produce one |V128| result.
+
+* *Ternary Operations*: consume three |V128| operands and produce one |V128| result.
+
+* *Tests*: consume one |V128| operand and produce a Boolean integer result.
+
+* *Shifts*: consume a |v128| operand and a |i32| operand, producing one |V128| result.
+
+* *Splats*: consume a value of numeric type and produce a |V128| result of a specified shape.
+
+* *Extract lanes*: consume a |V128| operand and return the numeric value in a given lane.
+
+* *Replace lanes*: consume a |V128| operand and a numeric value for a given lane, and produce a |V128| result.
+
+Some vector instructions have a signedness annotation |sx| which distinguishes whether the elements in the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
+For the other vector instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
+
+
+.. _syntax-vunop:
+.. _syntax-vbinop:
+.. _syntax-vrelop:
+.. _syntax-vtestop:
+.. _syntax-vcvtop:
+
+Conventions
+...........
+
+Occasionally, it is convenient to group operators together according to the following grammar shorthands:
+
+.. math::
+   \begin{array}{llll}
+   \production{unary operator} & \vunop &::=&
+     \viunop ~|~
+     \vfunop ~|~
+     \VPOPCNT \\
+   \production{binary operator} & \vbinop &::=&
+     \vibinop ~|~ \vfbinop \\&&|&
+     \viminmaxop ~|~ \visatbinop \\&&|&
+     \VMUL ~|~
+     \AVGR\K{\_u} ~|~
+     \Q15MULRSAT\K{\_s} \\
+   \production{test operator} & \vtestop &::=&
+     \vitestop \\
+   \production{relational operator} & \vrelop &::=&
+     \virelop ~|~ \vfrelop \\
+   \production{conversion operator} & \vcvtop &::=&
+     \VEXTEND ~|~
+     \VTRUNC\K{\_sat} ~|~
+     \VCONVERT ~|~
+     \VDEMOTE ~|~
+     \VPROMOTE \\
+   \end{array}
+
+
+.. index:: ! reference instruction, reference, null
+   pair: abstract syntax; instruction
+.. _syntax-ref.null:
+.. _syntax-ref.is_null:
+.. _syntax-ref.func:
+.. _syntax-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+Instructions in this group are concerned with accessing :ref:`references <syntax-reftype>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \REFNULL~\reftype \\&&|&
+     \REFISNULL \\&&|&
+     \REFFUNC~\funcidx \\
+   \end{array}
+
+These instruction produce a null value, check for a null value, or produce a reference to a given function, respectively.
+
+
 .. index:: ! parametric instruction, value type
    pair: abstract syntax; instruction
 .. _syntax-instr-parametric:
@@ -185,12 +445,16 @@ Instructions in this group can operate on operands of any :ref:`value type <synt
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \DROP \\&&|&
-     \SELECT
+     \SELECT~(\valtype^\ast)^? \\
    \end{array}
 
 The |DROP| instruction simply throws away a single operand.
 
 The |SELECT| instruction selects one of its first two operands based on whether its third operand is zero or not.
+It may include a :ref:`value type <syntax-valtype>` determining the type of these operands. If missing, the operands must be of :ref:`numeric type <syntax-numtype>`.
+
+.. note::
+   In future versions of WebAssembly, the type annotation on |SELECT| may allow for more than a single value being selected at the same time.
 
 
 .. index:: ! variable instruction, local, global, local index, global index
@@ -217,11 +481,55 @@ These instructions get or set the values of variables, respectively.
 The |LOCALTEE| instruction is like |LOCALSET| but also returns its argument.
 
 
+.. index:: ! table instruction, table, table index, trap
+   pair: abstract syntax; instruction
+.. _syntax-instr-table:
+.. _syntax-table.get:
+.. _syntax-table.set:
+.. _syntax-table.size:
+.. _syntax-table.grow:
+.. _syntax-table.fill:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+Instructions in this group are concerned with tables :ref:`table <syntax-table>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \TABLEGET~\tableidx \\&&|&
+     \TABLESET~\tableidx \\&&|&
+     \TABLESIZE~\tableidx \\&&|&
+     \TABLEGROW~\tableidx \\&&|&
+     \TABLEFILL~\tableidx \\&&|&
+     \TABLECOPY~\tableidx~\tableidx \\&&|&
+     \TABLEINIT~\tableidx~\elemidx \\&&|&
+     \ELEMDROP~\elemidx \\
+   \end{array}
+
+The |TABLEGET| and |TABLESET| instructions load or store an element in a table, respectively.
+
+The |TABLESIZE| instruction returns the current size of a table.
+The |TABLEGROW| instruction grows table by a given delta and returns the previous size, or :math:`-1` if enough space cannot be allocated.
+It also takes an initialization value for the newly allocated entries.
+
+The |TABLEFILL| instruction sets all entries in a range to a given value.
+
+The |TABLECOPY| instruction copies elements from a source table region to a possibly overlapping destination region; the first index denotes the destination.
+The |TABLEINIT| instruction copies elements from a :ref:`passive element segment <syntax-elem>` into a table.
+The |ELEMDROP| instruction prevents further use of a passive element segment. This instruction is intended to be used as an optimization hint. After an element segment is dropped its elements can no longer be retrieved, so the memory used by this segment may be freed.
+
+An additional instruction that accesses a table is the :ref:`control instruction <syntax-instr-control>` |CALLINDIRECT|.
+
+
 .. index:: ! memory instruction, memory, memory index, page size, little endian, trap
    pair: abstract syntax; instruction
 .. _syntax-loadn:
 .. _syntax-storen:
 .. _syntax-memarg:
+.. _syntax-lanewidth:
 .. _syntax-instr-memory:
 
 Memory Instructions
@@ -233,26 +541,45 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
    \begin{array}{llcl}
    \production{memory immediate} & \memarg &::=&
      \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
+   \production{lane width} & \X{ww} &::=&
+     8 ~|~ 16 ~|~ 32 ~|~ 64 \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \K{i}\X{nn}\K{.}\LOAD~\memarg ~|~
-     \K{f}\X{nn}\K{.}\LOAD~\memarg \\&&|&
+     \K{f}\X{nn}\K{.}\LOAD~\memarg ~|~
+     \K{v128.}\LOAD~\memarg \\&&|&
      \K{i}\X{nn}\K{.}\STORE~\memarg ~|~
-     \K{f}\X{nn}\K{.}\STORE~\memarg \\&&|&
+     \K{f}\X{nn}\K{.}\STORE~\memarg ~|~
+     \K{v128.}\STORE~\memarg \\&&|&
      \K{i}\X{nn}\K{.}\LOAD\K{8\_}\sx~\memarg ~|~
      \K{i}\X{nn}\K{.}\LOAD\K{16\_}\sx~\memarg ~|~
      \K{i64.}\LOAD\K{32\_}\sx~\memarg \\&&|&
      \K{i}\X{nn}\K{.}\STORE\K{8}~\memarg ~|~
      \K{i}\X{nn}\K{.}\STORE\K{16}~\memarg ~|~
      \K{i64.}\STORE\K{32}~\memarg \\&&|&
+     \K{v128.}\LOAD\K{8x8\_}\sx~\memarg ~|~
+     \K{v128.}\LOAD\K{16x4\_}\sx~\memarg ~|~
+     \K{v128.}\LOAD\K{32x2\_}\sx~\memarg \\&&|&
+     \K{v128.}\LOAD\K{32\_zero}~\memarg ~|~
+     \K{v128.}\LOAD\K{64\_zero}~\memarg \\&&|&
+     \K{v128.}\LOAD\X{ww}\K{\_splat}~\memarg \\&&|&
+     \K{v128.}\LOAD\X{ww}\K{\_lane}~\memarg~\laneidx ~|~
+     \K{v128.}\STORE\X{ww}\K{\_lane}~\memarg~\laneidx \\&&|&
      \MEMORYSIZE \\&&|&
-     \MEMORYGROW \\
+     \MEMORYGROW \\&&|&
+     \MEMORYFILL \\&&|&
+     \MEMORYCOPY \\&&|&
+     \MEMORYINIT~\dataidx \\&&|&
+     \DATADROP~\dataidx \\
    \end{array}
 
-Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`value types <syntax-valtype>`.
+Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`number types <syntax-numtype>`.
 They all take a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
-Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-valtype>` of the respective value type.
+Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-numtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
+
+Vector loads can specify a shape that is half the :ref:`bit width <syntax-valtype>` of |V128|. Each lane is half its usual size, and the sign extension mode |sx| then specifies how the smaller lane is extended to the larger lane.
+Alternatively, vector loads can perform a *splat*, such that only a single lane of the specified storage size is loaded, and the result is duplicated to all lanes.
 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
 All values are read and written in |LittleEndian|_ byte order.
@@ -265,13 +592,18 @@ The |MEMORYSIZE| instruction returns the current size of a memory.
 The |MEMORYGROW| instruction grows memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
 Both instructions operate in units of :ref:`page size <page-size>`.
 
+The |MEMORYFILL| instruction sets all values in a region to a given byte.
+The |MEMORYCOPY| instruction copies data from a source memory region to a possibly overlapping destination region.
+The |MEMORYINIT| instruction copies data from a :ref:`passive data segment <syntax-data>` into a memory.
+The |DATADROP| instruction prevents further use of a passive data segment. This instruction is intended to be used as an optimization hint. After a data segment is dropped its data can no longer be retrieved, so the memory used by this segment may be freed.
+
 .. note::
    In the current version of WebAssembly,
    all memory instructions implicitly operate on :ref:`memory <syntax-mem>` :ref:`index <syntax-memidx>` :math:`0`.
    This restriction may be lifted in future versions.
 
 
-.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, result type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
+.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, stack type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
    pair: abstract syntax; instruction
    pair: abstract syntax; block type
    pair: block; type
@@ -311,7 +643,7 @@ Instructions in this group affect the flow of control.
      \BRTABLE~\vec(\labelidx)~\labelidx \\&&|&
      \RETURN \\&&|&
      \CALL~\funcidx \\&&|&
-     \CALLINDIRECT~\typeidx \\
+     \CALLINDIRECT~\tableidx~\typeidx \\
    \end{array}
 
 The |NOP| instruction does nothing.
@@ -354,14 +686,9 @@ Forward branches require operands according to the output of the targeted block'
 Backward branches require operands according to the input of the targeted block's type, i.e., represent the values consumed by the restarted block.
 
 The |CALL| instruction invokes another :ref:`function <syntax-func>`, consuming the necessary arguments from the stack and returning the result values of the call.
-The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>`.
-Since tables may contain function elements of heterogeneous type |FUNCREF|,
-the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's immediate, and the call aborted with a :ref:`trap <trap>` if it does not match.
-
-.. note::
-   In the current version of WebAssembly,
-   |CALLINDIRECT| implicitly operates on :ref:`table <syntax-table>` :ref:`index <syntax-tableidx>` :math:`0`.
-   This restriction may be lifted in future versions.
+The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>` that is denoted by a :ref:`table index <syntax-tableidx>` and must have type |FUNCREF|.
+Since it may contain functions of heterogeneous type,
+the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's second immediate, and the call is aborted with a :ref:`trap <trap>` if it does not match.
 
 
 .. index:: ! expression, constant, global, offset, element, data, instruction

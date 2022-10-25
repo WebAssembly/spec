@@ -3,13 +3,13 @@ Title: WebAssembly Core Specification
 Shortname: wasm-core
 Group: wasm
 Status: ED
-Level: 1
-TR: https://www.w3.org/TR/wasm-core-1/
+Level: 2
+TR: https://www.w3.org/TR/wasm-core-2/
 ED: https://webassembly.github.io/spec/core/bikeshed/
 Editor: Andreas Rossberg (Dfinity Stiftung)
 Repository: WebAssembly/spec
 Markup Shorthands: css no, markdown no, algorithm no, idl no
-Abstract: This document describes version 1.0 of the core WebAssembly standard, a safe, portable, low-level code format designed for efficient execution and compact representation.
+Abstract: This document describes release 2.0 of the core WebAssembly standard, a safe, portable, low-level code format designed for efficient execution and compact representation.
 Prepare For TR: true
 </pre>
 

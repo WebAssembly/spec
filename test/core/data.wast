@@ -8,14 +8,26 @@
   (data (i32.const 1) "a" "" "bcd")
   (data (offset (i32.const 0)))
   (data (offset (i32.const 0)) "" "a" "bc" "")
-  (data 0 (i32.const 0))
-  (data 0x0 (i32.const 1) "a" "" "bcd")
-  (data 0x000 (offset (i32.const 0)))
-  (data 0 (offset (i32.const 0)) "" "a" "bc" "")
-  (data $m (i32.const 0))
-  (data $m (i32.const 1) "a" "" "bcd")
-  (data $m (offset (i32.const 0)))
-  (data $m (offset (i32.const 0)) "" "a" "bc" "")
+  (data (memory 0) (i32.const 0))
+  (data (memory 0x0) (i32.const 1) "a" "" "bcd")
+  (data (memory 0x000) (offset (i32.const 0)))
+  (data (memory 0) (offset (i32.const 0)) "" "a" "bc" "")
+  (data (memory $m) (i32.const 0))
+  (data (memory $m) (i32.const 1) "a" "" "bcd")
+  (data (memory $m) (offset (i32.const 0)))
+  (data (memory $m) (offset (i32.const 0)) "" "a" "bc" "")
+  (data $d1 (i32.const 0))
+  (data $d2 (i32.const 1) "a" "" "bcd")
+  (data $d3 (offset (i32.const 0)))
+  (data $d4 (offset (i32.const 0)) "" "a" "bc" "")
+  (data $d5 (memory 0) (i32.const 0))
+  (data $d6 (memory 0x0) (i32.const 1) "a" "" "bcd")
+  (data $d7 (memory 0x000) (offset (i32.const 0)))
+  (data $d8 (memory 0) (offset (i32.const 0)) "" "a" "bc" "")
+  (data $d9 (memory $m) (i32.const 0))
+  (data $d10 (memory $m) (i32.const 1) "a" "" "bcd")
+  (data $d11 (memory $m) (offset (i32.const 0)))
+  (data $d12 (memory $m) (offset (i32.const 0)) "" "a" "bc" "")
 )
 
 ;; Basic use
@@ -158,44 +170,42 @@
 
 ;; Invalid bounds for data
 
-(assert_unlinkable
+(assert_trap
   (module
     (memory 0)
     (data (i32.const 0) "a")
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (memory 0 0)
     (data (i32.const 0) "a")
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (memory 0 1)
     (data (i32.const 0) "a")
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
-
-(assert_unlinkable
+(assert_trap
   (module
     (memory 0)
     (data (i32.const 1))
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
-
-(assert_unlinkable
+(assert_trap
   (module
     (memory 0 1)
     (data (i32.const 1))
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
 
 ;; This seems to cause a time-out on Travis.
@@ -204,77 +214,77 @@
     (memory 0x10000)
     (data (i32.const 0xffffffff) "ab")
   )
-  ""  ;; either out of memory or segment does not fit
+  ""  ;; either out of memory or out of bounds
 ;)
 
-(assert_unlinkable
+(assert_trap
   (module
     (global (import "spectest" "global_i32") i32)
     (memory 0)
     (data (global.get 0) "a")
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (memory 1 2)
     (data (i32.const 0x1_0000) "a")
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
-(assert_unlinkable
+(assert_trap
   (module
     (import "spectest" "memory" (memory 1))
     (data (i32.const 0x1_0000) "a")
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (memory 2)
     (data (i32.const 0x2_0000) "a")
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (memory 2 3)
     (data (i32.const 0x2_0000) "a")
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (memory 1)
     (data (i32.const -1) "a")
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
-(assert_unlinkable
+(assert_trap
   (module
     (import "spectest" "memory" (memory 1))
     (data (i32.const -1) "a")
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
 
-(assert_unlinkable
+(assert_trap
   (module
     (memory 2)
     (data (i32.const -100) "a")
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
-(assert_unlinkable
+(assert_trap
   (module
     (import "spectest" "memory" (memory 1))
     (data (i32.const -100) "a")
   )
-  "data segment does not fit"
+  "out of bounds memory access"
 )
 
 ;; Data without memory
@@ -292,19 +302,30 @@
     "\00asm" "\01\00\00\00"
     "\05\03\01"                             ;; memory section
     "\00\00"                                ;; memory 0
-    "\0b\06\01"                             ;; data section
-    "\01\41\00\0b"                          ;; data segment 0 for memory 1
+    "\0b\07\01"                             ;; data section
+    "\02\01\41\00\0b"                       ;; active data segment 0 for memory 1
     "\00"                                   ;; empty vec(byte)
   )
   "unknown memory 1"
+)
+
+;; Data segment with memory index 0 (no memory section)
+(assert_invalid
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\0b\06\01"                             ;; data section
+    "\00\41\00\0b"                          ;; active data segment 0 for memory 0
+    "\00"                                   ;; empty vec(byte)
+  )
+  "unknown memory 0"
 )
 
 ;; Data segment with memory index 1 (no memory section)
 (assert_invalid
   (module binary
     "\00asm" "\01\00\00\00"
-    "\0b\06\01"                             ;; data section
-    "\01\41\00\0b"                          ;; data segment 0 for memory 1
+    "\0b\07\01"                             ;; data section
+    "\02\01\41\00\0b"                       ;; active data segment 0 for memory 1
     "\00"                                   ;; empty vec(byte)
   )
   "unknown memory 1"
@@ -317,7 +338,8 @@
     "\00asm" "\01\00\00\00"
     "\05\03\01"                             ;; memory section
     "\00\00"                                ;; memory 0
-    "\0b\44\01"                             ;; data section
+    "\0b\45\01"                             ;; data section
+    "\02"                                   ;; active segment
     "\01"                                   ;; memory index
     "\41\00\0b"                             ;; offset constant expression
     "\3e"                                   ;; vec(byte) length
@@ -336,7 +358,8 @@
 (assert_invalid
   (module binary
     "\00asm" "\01\00\00\00"
-    "\0b\44\01"                             ;; data section
+    "\0b\45\01"                             ;; data section
+    "\02"                                   ;; active segment
     "\01"                                   ;; memory index
     "\41\00\0b"                             ;; offset constant expression
     "\3e"                                   ;; vec(byte) length
@@ -355,6 +378,48 @@
   (module
     (memory 1)
     (data (i64.const 0))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (memory 1)
+    (data (ref.null func))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module 
+    (memory 1)
+    (data (offset (;empty instruction sequence;)))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (memory 1)
+    (data (offset (i32.const 0) (i32.const 0)))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (global (import "test" "global-i32") i32)
+    (memory 1)
+    (data (offset (global.get 0) (global.get 0)))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (global (import "test" "global-i32") i32)
+    (memory 1)
+    (data (offset (global.get 0) (i32.const 0)))
   )
   "type mismatch"
 )
@@ -396,3 +461,29 @@
 ;;   (module (memory 1) (data (global.get $g)) (global $g (mut i32) (i32.const 0)))
 ;;   "constant expression required"
 ;; )
+
+(assert_invalid
+   (module 
+     (memory 1)
+     (data (global.get 0))
+   )
+   "unknown global 0"
+)
+
+(assert_invalid
+   (module
+     (global (import "test" "global-i32") i32)
+     (memory 1)
+     (data (global.get 1))
+   )
+   "unknown global 1"
+)
+
+(assert_invalid
+   (module 
+     (global (import "test" "global-mut-i32") (mut i32))
+     (memory 1)
+     (data (global.get 0))
+   )
+   "constant expression required"
+)

@@ -1,5 +1,5 @@
 let name = "wasm"
-let version = "1.0"
+let version = "2.0"
 
 let configure () =
   Import.register (Utf8.decode "spectest") Spectest.lookup;
