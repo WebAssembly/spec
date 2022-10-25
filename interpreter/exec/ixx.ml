@@ -30,8 +30,8 @@ sig
 
   val of_int : int -> t
   val to_int : t -> int
-  val of_int64: int64 -> t
-  val to_int64: t -> int64
+  val of_int64 : int64 -> t
+  val to_int64 : t -> int64
   val to_string : t -> string
   val to_hex_string : t -> string
 

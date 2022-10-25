@@ -84,10 +84,6 @@ It is either a sequence of :ref:`values <syntax-val>` or a :ref:`trap <syntax-tr
      \TRAP
    \end{array}
 
-.. note::
-   In the current version of WebAssembly, a result can consist of at most one value.
-
-
 .. index:: ! store, function instance, table instance, memory instance, global instance, module, allocation
    pair: abstract syntax; store
 .. _syntax-store:

@@ -3,14 +3,21 @@
 (library
  (name wasm)
  ; The 'main' module shall not be part of the library, as it would start the
- ; WASM REPL every time in all the dependencies.
- ; We also need to exclude the 'wasm' module as it overlaps with the library
- ; name.
- (modules :standard \ main wasm))
+ ; Wasm REPL every time in all the dependencies.
+ ; We exclude the 'wast' module as it is only used for the JS build.
+ ; 'smallint' is a separate test module.
+ (modules :standard \ main smallint wast))
 
 (executable
  (name main)
  (modules main)
+ (libraries wasm)
+ (flags
+  (-open Wasm)))
+
+(executable
+ (name smallint)
+ (modules smallint)
  (libraries wasm)
  (flags
   (-open Wasm)))
@@ -28,6 +35,17 @@
   (modules parser)))
 
 (env
- (dev
+ (_
   (flags
-   (-w +a-4-27-42-44-45 -warn-error +a-3))))
+   (-w +a-4-27-42-44-45-70 -warn-error +a-3))))
+
+(rule
+ (alias runtest)
+ (deps
+  ./main.exe
+  ./smallint.exe
+  (source_tree ../test))
+ (action
+  (progn
+   (run ../test/core/run.py --wasm ./main.exe)
+   (run ./smallint.exe))))

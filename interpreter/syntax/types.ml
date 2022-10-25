@@ -71,10 +71,11 @@ let memories =
 let globals =
   Lib.List.map_filter (function ExternGlobalType t -> Some t | _ -> None)
 
-let value_type_of_index_type = function
+let num_type_of_index_type = function
   | I32IndexType -> I32Type
   | I64IndexType -> I64Type
 
+let value_type_of_index_type t = NumType (num_type_of_index_type t)
 
 (* Subtyping *)
 
@@ -141,7 +142,7 @@ let string_of_limits to_string {min; max} =
 
 let string_of_memory_type = function
   | MemoryType (lim, it) ->
-    string_of_value_type (value_type_of_index_type it) ^
+    string_of_num_type (num_type_of_index_type it) ^
     " " ^ string_of_limits I64.to_string_u lim
 
 

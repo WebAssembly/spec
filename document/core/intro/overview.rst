@@ -26,7 +26,7 @@ This language is structured around the following concepts.
   In addition to these basic number types, there is a single 128 bit wide
   vector type representing different types of packed data.
   The supported representations are 4 32-bit, or 2 64-bit
-  |IEEE754|_ numbers, or different widths of packed integer values
+  |IEEE754|_ numbers, or different widths of packed integer values,
   specifically 2 64-bit integers, 4 32-bit integers, 8
   16-bit integers, or 16 8-bit integers.
 
@@ -70,7 +70,7 @@ This language is structured around the following concepts.
 **Tables**
   A *table* is an array of opaque values of a particular *element type*.
   It allows programs to select such values indirectly through a dynamic index operand.
-  Currently, the only available element type is an untyped function reference.
+  Currently, the only available element type is an untyped function reference or a reference to an external host value.
   Thereby, a program can call functions indirectly through a dynamic index into a table.
   For example, this allows emulating function pointers by way of table indices.
 

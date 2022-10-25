@@ -190,7 +190,6 @@ let check_vec_binop binop at =
   | _ -> ()
 
 let check_memop (c : context) (memop : ('t, 's) memop) ty_size get_sz at =
-  let _mt (lim, it) = memory c (0l @@ at) in
   let size =
     match get_sz memop.pack with
     | None -> ty_size memop.ty
@@ -200,6 +199,7 @@ let check_memop (c : context) (memop : ('t, 's) memop) ty_size get_sz at =
   in
   require (1 lsl memop.align <= size) at
     "alignment must not be larger than natural";
+  let MemoryType (_lim, it) = memory c (0l @@ at) in
   if it = I32IndexType then
     require (I64.lt_u memop.offset 0x1_0000_0000L) at
       "offset out of range";
@@ -358,39 +358,39 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     [] --> []
 
   | Load memop ->
-    let it = check_memop c memop (Lib.Option.map fst) e.at in
-    [value_type_of_index_type it] --> [memop.ty]
+    let it = check_memop c memop num_size (Lib.Option.map fst) e.at in
+    [value_type_of_index_type it] --> [NumType memop.ty]
 
   | Store memop ->
-    let it = check_memop c memop (fun sz -> sz) e.at in
-    [value_type_of_index_type it; memop.ty] --> []
+    let it = check_memop c memop num_size (fun sz -> sz) e.at in
+    [value_type_of_index_type it; NumType memop.ty] --> []
 
   | VecLoad memop ->
-    check_memop c memop vec_size (Lib.Option.map fst) e.at;
-    [NumType I32Type] --> [VecType memop.ty]
+    let it = check_memop c memop vec_size (Lib.Option.map fst) e.at in
+    [value_type_of_index_type it]--> [VecType memop.ty]
 
   | VecStore memop ->
-    check_memop c memop vec_size (fun _ -> None) e.at;
-    [NumType I32Type; VecType memop.ty] --> []
+    let it = check_memop c memop vec_size (fun _ -> None) e.at in
+    [value_type_of_index_type it; VecType memop.ty] --> []
 
   | VecLoadLane (memop, i) ->
-    check_memop c memop vec_size (fun sz -> Some sz) e.at;
+    let it = check_memop c memop vec_size (fun sz -> Some sz) e.at in
     require (i < vec_size memop.ty / packed_size memop.pack) e.at
       "invalid lane index";
-    [NumType I32Type; VecType memop.ty] -->  [VecType memop.ty]
+    [value_type_of_index_type it; VecType memop.ty] -->  [VecType memop.ty]
 
   | VecStoreLane (memop, i) ->
-    check_memop c memop vec_size (fun sz -> Some sz) e.at;
+    let it = check_memop c memop vec_size (fun sz -> Some sz) e.at in
     require (i < vec_size memop.ty / packed_size memop.pack) e.at
       "invalid lane index";
-    [NumType I32Type; VecType memop.ty] -->  []
+    [value_type_of_index_type it; VecType memop.ty] -->  []
 
   | MemorySize ->
-    let _mt (_, it) = memory c (0l @@ e.at) in
+    let MemoryType (_, it) = memory c (0l @@ e.at) in
     [] --> [value_type_of_index_type it]
 
   | MemoryGrow ->
-    let _mt (_, it) = memory c (0l @@ e.at) in
+    let MemoryType (_, it) = memory c (0l @@ e.at) in
     [value_type_of_index_type it] --> [value_type_of_index_type it]
 
   | MemoryFill ->
@@ -576,7 +576,7 @@ let check_table_type (tt : table_type) at =
   check_ref_type t at
 
 let check_memory_type (mt : memory_type) at =
-  let _mt (lim, it) = mt in
+  let MemoryType (lim, it) = mt in
   match it with
   | I32IndexType ->
     check_limits I64.le_u lim 0x1_0000L at
@@ -660,14 +660,12 @@ let check_data_mode (c : context) (mode : segment_mode) =
   match mode.it with
   | Passive -> ()
   | Active {index; offset} ->
-    ignore (memory c index);
-    check_const c offset (NumType I32Type)
+    let MemoryType (_, it) = memory c index in
+    check_const c offset (value_type_of_index_type it)
   | Declarative -> assert false
 
 let check_data (c : context) (seg : data_segment) =
   let {dinit; dmode} = seg.it in
-  let _mt (_, it) = memory c index in
-  check_const c offset (value_type_of_index_type it)
   check_data_mode c dmode
 
 let check_global (c : context) (glob : global) =

@@ -146,6 +146,7 @@ let func_type (c : context) x =
   try (Lib.List32.nth c.types.list x.it).it
   with Failure _ -> error x.at ("unknown type " ^ Int32.to_string x.it)
 
+
 let anon category space n =
   let i = space.count in
   space.count <- Int32.add i n;
@@ -204,10 +205,15 @@ let inline_type_explicit (c : context) x ft at =
     error at "inline function type does not match explicit type";
   x
 
-let index_type t at =
+let index_type_of_num_type t at =
   match t with
   | I32Type -> I32IndexType
   | I64Type -> I64IndexType
+  | _ -> error at "illegal memory index type"
+
+let index_type_of_value_type t at =
+  match t with
+  | NumType t -> index_type_of_num_type t at
   | _ -> error at "illegal memory index type"
 
 let memory_data init it c x at =
@@ -216,15 +222,17 @@ let memory_data init it c x at =
     | I32IndexType -> i32_const (0l @@ at)
     | I64IndexType -> i64_const (0L @@ at) in
   [{mtype = MemoryType ({min = size; max = Some size}, it)} @@ at],
-  [{index = x;
-    offset = [instr @@ at] @@ at; init} @@ at],
+  [{dinit = init; dmode = Active {index = x; offset = [instr @@ at] @@ at} @@ at} @@ at],
   [], []
 
 %}
 
 %token LPAR RPAR
-%token NAT INT FLOAT STRING VAR
-%token NUM_TYPE VEC_TYPE VEC_SHAPE FUNCREF EXTERNREF EXTERN MUT
+%token<string> NAT INT FLOAT STRING VAR
+%token<Types.num_type> NUM_TYPE
+%token<Types.vec_type> VEC_TYPE
+%token<V128.shape> VEC_SHAPE
+%token FUNCREF EXTERNREF EXTERN MUT
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
@@ -232,60 +240,27 @@ let memory_data init it c x at =
 %token TABLE_GET TABLE_SET
 %token TABLE_SIZE TABLE_GROW TABLE_FILL TABLE_COPY TABLE_INIT ELEM_DROP
 %token MEMORY_SIZE MEMORY_GROW MEMORY_FILL MEMORY_COPY MEMORY_INIT DATA_DROP
-%token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
-%token CONST UNARY BINARY TEST COMPARE CONVERT
+%token<int option -> Memory.offset -> Ast.instr'> LOAD STORE
+%token<string> OFFSET_EQ_NAT ALIGN_EQ_NAT
+%token<string Source.phrase -> Ast.instr' * Values.num> CONST
+%token<Ast.instr'> UNARY BINARY TEST COMPARE CONVERT
 %token REF_NULL REF_FUNC REF_EXTERN REF_IS_NULL
-%token VEC_LOAD VEC_STORE VEC_LOAD_LANE VEC_STORE_LANE
-%token VEC_CONST VEC_UNARY VEC_BINARY VEC_TERNARY VEC_TEST
-%token VEC_SHIFT VEC_BITMASK VEC_SHUFFLE
-%token VEC_EXTRACT VEC_REPLACE
+%token<int option -> Memory.offset -> Ast.instr'> VEC_LOAD VEC_STORE
+%token<int option -> Memory.offset -> int -> Ast.instr'> VEC_LOAD_LANE VEC_STORE_LANE
+%token<V128.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Values.vec> VEC_CONST
+%token<Ast.instr'> VEC_UNARY VEC_BINARY VEC_TERNARY VEC_TEST
+%token<Ast.instr'> VEC_SHIFT VEC_BITMASK VEC_SPLAT
+%token VEC_SHUFFLE
+%token<int -> Ast.instr'> VEC_EXTRACT VEC_REPLACE
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
-%token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
+%token ASSERT_MALFORMED ASSERT_INVALID ASSERT_UNLINKABLE
 %token ASSERT_RETURN ASSERT_TRAP ASSERT_EXHAUSTION
-%token NAN
+%token<Script.nan> NAN
 %token INPUT OUTPUT
 %token EOF
-
-%token<string> NAT
-%token<string> INT
-%token<string> FLOAT
-%token<string> STRING
-%token<string> VAR
-%token<Types.num_type> NUM_TYPE
-%token<Types.vec_type> VEC_TYPE
-%token<string Source.phrase -> Ast.instr' * Values.num> CONST
-%token<V128.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Values.vec> VEC_CONST
-%token<Ast.instr'> UNARY
-%token<Ast.instr'> BINARY
-%token<Ast.instr'> TEST
-%token<Ast.instr'> COMPARE
-%token<Ast.instr'> CONVERT
-%token<int option -> Memory.offset -> Ast.instr'> LOAD
-%token<int option -> Memory.offset -> Ast.instr'> STORE
-%token<int option -> Memory.offset -> Ast.instr'> VEC_LOAD
-%token<int option -> Memory.offset -> Ast.instr'> VEC_STORE
-%token<int option -> Memory.offset -> int -> Ast.instr'> VEC_LOAD_LANE
-%token<int option -> Memory.offset -> int -> Ast.instr'> VEC_STORE_LANE
-%token<Ast.instr'> VEC_UNARY
-%token<Ast.instr'> VEC_BINARY
-%token<Ast.instr'> VEC_TERNARY
-%token<Ast.instr'> VEC_TEST
-%token<Ast.instr'> VEC_SHIFT
-%token<Ast.instr'> VEC_BITMASK
-%token<Ast.instr'> VEC_SPLAT
-%token<int -> Ast.instr'> VEC_EXTRACT
-%token<int -> Ast.instr'> VEC_REPLACE
-%token<string> OFFSET_EQ_NAT
-%token<string> ALIGN_EQ_NAT
-%token<V128.shape> VEC_SHAPE
-
-%token<Script.nan> NAN
-
-%nonassoc LOW
-%nonassoc VAR
 
 %start script script1 module1
 %type<Script.script> script
@@ -348,7 +323,7 @@ table_type :
   | limits32 ref_type { TableType ($1, $2) }
 
 memory_type :
-  | VALUE_TYPE limits64 { MemoryType ($2, index_type $1 (at ())) }
+  | value_type limits64 { MemoryType ($2, index_type_of_value_type $1 (at ())) }
   | limits64 { MemoryType ($1, I32IndexType) }
 
 limits32 :
@@ -390,7 +365,7 @@ bind_var :
   | VAR { $1 @@ at () }
 
 labeling_opt :
-  | /* empty */ %prec LOW
+  | /* empty */
     { fun c xs ->
       List.iter (fun x -> error x.at "mismatching label") xs;
       anon_label c }
@@ -401,7 +376,7 @@ labeling_opt :
       bind_label c $1 }
 
 labeling_end_opt :
-  | /* empty */ %prec LOW { [] }
+  | /* empty */ { [] }
   | bind_var { [$1] }
 
 offset_opt :
@@ -935,8 +910,8 @@ memory_fields :
       mems, data, ims, $1 (MemoryExport x) c :: exs }
   | LPAR DATA string_list RPAR  /* Sugar */
     { memory_data $3 I32IndexType }
-  | VALUE_TYPE LPAR DATA string_list RPAR  /* Sugar */
-    { memory_data $4 (index_type $1 (at ())) }
+  | value_type LPAR DATA string_list RPAR  /* Sugar */
+    { memory_data $4 (index_type_of_value_type $1 (at ())) }
 
 global :
   | LPAR GLOBAL bind_var_opt global_fields RPAR

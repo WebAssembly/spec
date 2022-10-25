@@ -34,9 +34,9 @@ let create n it =
     mem
   with Out_of_memory -> raise OutOfMemory
 
-let alloc (MemoryType lim as ty) =
+let alloc (MemoryType (lim, it) as ty) =
   if not (valid_limits lim) then raise Type;
-  {ty; content = create lim.min}
+  {ty; content = create lim.min it}
 
 let bound mem =
   Array1_64.dim mem.content
@@ -47,29 +47,37 @@ let size mem =
 let type_of mem =
   mem.ty
 
-let index_of mem = mem.ty.it
+let index_of mem =
+  let (MemoryType (_, it)) = type_of mem in it
 
 let value_of_address it x =
-  if it = I64IndexType then I64 (x) else I32 (Int64.to_int32 x)
+  match it with
+  | I64IndexType -> Num (I64 x)
+  | I32IndexType -> Num (I32 (Int64.to_int32 x))
 
-let address_of_value x =
+let address_of_num x =
   match x with
   | I64 i -> i
   | I32 i -> I64_convert.extend_i32_u i
   | _ -> raise Type
 
+let address_of_value x =
+  match x with
+  | Num n -> address_of_num n
+  | _ -> raise Type
+
 let grow mem delta =
-  let MemoryType lim = mem.ty in
+  let MemoryType (lim, it) = mem.ty in
   assert (lim.min = size mem);
   let old_size = lim.min in
   let new_size = Int64.add old_size delta in
   if I64.gt_u old_size new_size then raise SizeOverflow else
   let lim' = {lim with min = new_size} in
   if not (valid_limits lim') then raise SizeLimit else
-  let after = create new_size mem.ty.it in
+  let after = create new_size (index_of mem) in
   let dim = Array1_64.dim mem.content in
   Array1.blit (Array1_64.sub mem.content 0L dim) (Array1_64.sub after 0L dim);
-  mem.ty <- MemoryType lim';
+  mem.ty <- MemoryType (lim', it);
   mem.content <- after
 
 let load_byte mem a =

@@ -106,7 +106,7 @@ Conventions
 
 * The meta variables :math:`x, y` range over indices in any of the other index spaces.
 
-* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`. We sometimes reinterpret this set as the :ref:`vector <syntax-vec>` of its elements.
+* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`. Sometimes this set is reinterpreted as the :ref:`vector <syntax-vec>` of its elements.
 
 .. note::
    For example, if :math:`\instr^\ast` is :math:`(\DATADROP~x) (\MEMORYINIT~y)`, then :math:`\freedataidx(\instr^\ast) = \{x, y\}`, or equivalently, the vector :math:`x~y`.
@@ -272,10 +272,6 @@ The |EOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <s
 
 Element segments are referenced through :ref:`element indices <syntax-elemidx>`.
 
-.. note::
-   In the current version of WebAssembly, only tables of element type |FUNCREF| can be initialized with an element segment.
-   This limitation may be lifted in the future.
-
 
 .. index:: ! data, active, passive, data index, memory, memory index, expression, constant, byte, vector
    pair: abstract syntax; data
@@ -328,7 +324,7 @@ The |MSTART| component of a module declares the :ref:`function index <syntax-fun
 
 .. note::
    The start function is intended for initializing the state of a module.
-   The module and its exports are not accessible before this initialization has completed.
+   The module and its exports are not accessible externally before this initialization has completed.
 
 
 .. index:: ! export, name, index, function index, table index, memory index, global index, function, table, memory, global, instantiation

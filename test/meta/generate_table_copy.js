@@ -203,22 +203,22 @@ for ( let dest of ["$t0","$t1"] ) {
     // copy: dst range invalid
     tab_test2(`(table.copy ${dest} $t0 (i32.const 28) (i32.const 1) (i32.const 3))`,
               "",
-              "out of bounds");
+              "out of bounds table access");
 
     // copy: dst wraparound end of 32 bit offset space
     tab_test2(`(table.copy ${dest} $t0 (i32.const 0xFFFFFFFE) (i32.const 1) (i32.const 2))`,
               "",
-              "out of bounds");
+              "out of bounds table access");
 
     // copy: src range invalid
     tab_test2(`(table.copy ${dest} $t0 (i32.const 15) (i32.const 25) (i32.const 6))`,
               "",
-              "out of bounds");
+              "out of bounds table access");
 
     // copy: src wraparound end of 32 bit offset space
     tab_test2(`(table.copy ${dest} $t0 (i32.const 15) (i32.const 0xFFFFFFFE) (i32.const 2))`,
               "",
-              "out of bounds");
+              "out of bounds table access");
 
     // copy: zero length with both offsets in-bounds is OK
     tab_test_nofail(
@@ -233,7 +233,7 @@ for ( let dest of ["$t0","$t1"] ) {
     // copy: zero length with dst offset out of bounds past the end of the table is not allowed
     tab_test2(`(table.copy ${dest} $t0 (i32.const 31) (i32.const 15) (i32.const 0))`,
               "",
-              "out of bounds");
+              "out of bounds table access");
 
     // copy: zero length with src offset out of bounds at the end of the table is allowed
     tab_test2(`(table.copy ${dest} $t0 (i32.const 15) (i32.const 30) (i32.const 0))`,
@@ -243,7 +243,7 @@ for ( let dest of ["$t0","$t1"] ) {
     // copy: zero length with src offset out of bounds past the end of the table is not allowed
     tab_test2(`(table.copy ${dest} $t0 (i32.const 15) (i32.const 31) (i32.const 0))`,
               "",
-              "out of bounds");
+              "out of bounds table access");
 
     // copy: zero length with both dst and src offset out of bounds at the end of the table is allowed
     tab_test2(`(table.copy ${dest} $t0 (i32.const 30) (i32.const 30) (i32.const 0))`,
@@ -253,7 +253,7 @@ for ( let dest of ["$t0","$t1"] ) {
     // copy: zero length with both dst and src offset out of bounds past the end of the table is not allowed
     tab_test2(`(table.copy ${dest} $t0 (i32.const 31) (i32.const 31) (i32.const 0))`,
               "",
-              "out of bounds");
+              "out of bounds table access");
 }
 
 // table.copy: out of bounds of the table for the source or target, but should
@@ -320,7 +320,7 @@ function tbl_copy(min, max, srcOffs, targetOffs, len) {
     let immediateOOB = copyDown && (srcOffs + len > tblLength || targetOffs + len > tblLength);
 
     print(`(assert_trap (invoke "run" (i32.const ${targetOffs}) (i32.const ${srcOffs}) (i32.const ${len}))
-             "out of bounds")`);
+             "out of bounds table access")`);
 
     var s = 0;
     var i = 0;

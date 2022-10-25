@@ -73,7 +73,8 @@ type config =
 }
 
 let frame inst locals = {inst; locals}
-let config inst vs es = {frame = frame inst []; code = vs, es; budget = 300}
+let config inst vs es =
+  {frame = frame inst []; code = vs, es; budget = !Flags.budget}
 
 let plain e = Plain e.it @@ e.at
 
@@ -129,12 +130,14 @@ let drop n (vs : 'a stack) at =
  *)
 
 let mem_oob frame x i n =
-  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (Memory.bound (memory frame.inst x))
+  let mem = (memory frame.inst x) in
+  let start = Memory.address_of_num i in
+  I64.gt_u (I64.add start (Memory.address_of_num n))
+    (Memory.bound mem)
 
 let data_oob frame x i n =
-  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (I64.of_int_u (String.length !(data frame.inst x)))
+  I64.gt_u (I64.add (Memory.address_of_num i) (Memory.address_of_num n))
+    (Data.size (data frame.inst x))
 
 let table_oob frame x i n =
   I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
@@ -142,7 +145,13 @@ let table_oob frame x i n =
 
 let elem_oob frame x i n =
   I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (I64.of_int_u (List.length !(elem frame.inst x)))
+    (I64_convert.extend_i32_u (Elem.size (elem frame.inst x)))
+
+let inc_address i at =
+  match i with
+  | I32 x -> (I32 (I32.add x 1l) @@ at)
+  | I64 x -> (I64 (I64.add x 1L) @@ at)
+  | _ -> Crash.error at ("bad address type")
 
 let rec step (c : config) : config =
   let {frame; code = vs, es; _} = c in
@@ -302,10 +311,10 @@ let rec step (c : config) : config =
         else if n = 0l then
           vs', []
         else
-          let seg = !(elem frame.inst y) in
+          let seg = elem frame.inst y in
           vs', List.map (at e.at) [
             Plain (Const (I32 d @@ e.at));
-            Refer (List.nth seg (Int32.to_int s));
+            Refer (Elem.load seg s);
             Plain (TableSet x);
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
@@ -315,12 +324,12 @@ let rec step (c : config) : config =
 
       | ElemDrop x, vs ->
         let seg = elem frame.inst x in
-        seg := [];
+        Elem.drop seg;
         vs, []
 
       | Load {offset; ty; pack; _}, Num i :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
-        let a = Memory.address_of_value i in
+        let a = Memory.address_of_num i in
         (try
           let n =
             match pack with
@@ -331,7 +340,7 @@ let rec step (c : config) : config =
 
       | Store {offset; pack; _}, Num n :: Num i :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
-        let a = Memory.address_of_value i in
+        let a = Memory.address_of_num i in
         (try
           (match pack with
           | None -> Memory.store_num mem a offset n
@@ -407,81 +416,88 @@ let rec step (c : config) : config =
         let mem = memory frame.inst (0l @@ e.at) in
         let old_size = Memory.size mem in
         let result =
-          try Memory.grow mem (Memory.address_of_value delta); old_size
-          with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
+          try Memory.grow mem (Memory.address_of_num delta); old_size
+          with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1L
         in (Memory.value_of_address (Memory.index_of mem) result) :: vs', []
 
-      | MemoryFill, Num (I32 n) :: Num k :: Num (I32 i) :: vs' ->
+      | MemoryFill, Num n :: Num k :: Num i :: vs' ->
+        let n_64 = Memory.address_of_num n in
         if mem_oob frame (0l @@ e.at) i n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
-        else if n = 0l then
+        else if n_64 = 0L then
           vs', []
         else
           vs', List.map (at e.at) [
-            Plain (Const (I32 i @@ e.at));
+            Plain (Const (i @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
-            Plain (Const (I32 (I32.add i 1l) @@ e.at));
+              {ty = I32Type; align = 0; offset = 0L; pack = Some Pack8});
+            Plain (Const (inc_address i e.at));
             Plain (Const (k @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (Const (I64 (I64.sub n_64 1L) @@ e.at));
             Plain (MemoryFill);
           ]
 
-      | MemoryCopy, Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
+      | MemoryCopy, Num n :: Num s :: Num d :: vs' ->
+        let n_64 = Memory.address_of_num n in
+        let s_64 = Memory.address_of_num s in
+        let d_64 = Memory.address_of_num d in
         if mem_oob frame (0l @@ e.at) s n || mem_oob frame (0l @@ e.at) d n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
-        else if n = 0l then
+        else if n_64 = 0L then
           vs', []
-        else if I32.le_u d s then
+        else if I64.le_u d_64 s_64 then
           vs', List.map (at e.at) [
-            Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 s @@ e.at));
+            Plain (Const (I64 d_64 @@ e.at));
+            Plain (Const (I64 s_64 @@ e.at));
             Plain (Load
-              {ty = I32Type; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
+              {ty = I32Type; align = 0; offset = 0L; pack = Some (Pack8, ZX)});
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
-            Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+              {ty = I32Type; align = 0; offset = 0L; pack = Some Pack8});
+            Plain (Const (I64 (I64.add d_64 1L) @@ e.at));
+            Plain (Const (I64 (I64.add s_64 1L) @@ e.at));
+            Plain (Const (I64 (I64.sub n_64 1L) @@ e.at));
             Plain (MemoryCopy);
           ]
         else (* d > s *)
           vs', List.map (at e.at) [
-            Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (Const (I64 (I64.add d_64 1L) @@ e.at));
+            Plain (Const (I64 (I64.add s_64 1L) @@ e.at));
+            Plain (Const (I64 (I64.sub n_64 1L) @@ e.at));
             Plain (MemoryCopy);
-            Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 s @@ e.at));
+            Plain (Const (I64 d_64 @@ e.at));
+            Plain (Const (I64 s_64 @@ e.at));
             Plain (Load
-              {ty = I32Type; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
+              {ty = I32Type; align = 0; offset = 0L; pack = Some (Pack8, ZX)});
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
+              {ty = I32Type; align = 0; offset = 0L; pack = Some Pack8});
           ]
 
-      | MemoryInit x, Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
+      | MemoryInit x, Num n :: Num s :: Num d :: vs' ->
+        let n_64 = Memory.address_of_num n in
         if mem_oob frame (0l @@ e.at) d n || data_oob frame x s n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
-        else if n = 0l then
+        else if n_64 = 0L then
           vs', []
         else
-          let seg = !(data frame.inst x) in
-          let b = Int32.of_int (Char.code seg.[Int32.to_int s]) in
+          let seg = data frame.inst x in
+          let s_64 = Memory.address_of_num s in
+          let d_64 = Memory.address_of_num d in
+          let b = Data.load seg s_64 in
           vs', List.map (at e.at) [
-            Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 b @@ e.at));
+            Plain (Const (I64 d_64 @@ e.at));
+            Plain (Const (I64 (I64.of_int_u (Char.code b)) @@ e.at));
             Plain (Store
-              {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8});
-            Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+              {ty = I64Type; align = 0; offset = 0L; pack = Some Pack8});
+            Plain (Const (I64 (I64.add d_64 1L) @@ e.at));
+            Plain (Const (I64 (I64.add s_64 1L) @@ e.at));
+            Plain (Const (I64 (I64.sub n_64 1L) @@ e.at));
             Plain (MemoryInit x);
           ]
 
       | DataDrop x, vs ->
         let seg = data frame.inst x in
-        seg := "";
+        Data.drop seg;
         vs, []
 
       | RefNull t, vs' ->
@@ -684,12 +700,6 @@ let eval_const (inst : module_inst) (const : const) : value =
   | [v] -> v
   | vs -> Crash.error const.at "wrong number of results on stack"
 
-let i32_64 (v : value) at =
-  match v with
-  | I32 i -> I64_convert.extend_i32_u i
-  | I64 i -> i
-  | _ -> Crash.error at "type error: i32 or i64 value expected"
-
 (* Modules *)
 
 let create_func (inst : module_inst) (f : func) : func_inst =
@@ -721,11 +731,11 @@ let create_export (inst : module_inst) (ex : export) : export_inst =
 
 let create_elem (inst : module_inst) (seg : elem_segment) : elem_inst =
   let {etype; einit; _} = seg.it in
-  ref (List.map (fun c -> as_ref (eval_const inst c)) einit)
+  Elem.alloc (List.map (fun c -> as_ref (eval_const inst c)) einit)
 
 let create_data (inst : module_inst) (seg : data_segment) : data_inst =
   let {dinit; _} = seg.it in
-  ref dinit
+  Data.alloc dinit
 
 
 let add_import (m : module_) (ext : extern) (im : import) (inst : module_inst)
