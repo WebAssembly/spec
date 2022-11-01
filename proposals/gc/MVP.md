@@ -1,7 +1,5 @@
 # GC v1 Extensions
 
-*Note: This design is still in flux!*
-
 See [overview](Overview.md) for background.
 
 The functionality provided with this first version of GC support for Wasm is intentionally limited in the spirit of a "a minimal viable product" (MVP).
