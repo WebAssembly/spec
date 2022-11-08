@@ -97,7 +97,7 @@ Store
 ~~~~~
 
 The *store* represents all global state that can be manipulated by WebAssembly programs.
-It consists of the runtime representation of all *instances* of :ref:`types <syntax-typeinst>`, :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>`, :ref:`element segments <syntax-eleminst>`, and :ref:`data segments <syntax-datainst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
+It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>`, :ref:`element segments <syntax-eleminst>`, and :ref:`data segments <syntax-datainst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
 
 It is an invariant of the semantics that no element or data instance is :ref:`addressed <syntax-addr>` from anywhere else but the owning module instances.
 
@@ -107,7 +107,6 @@ Syntactically, the store is defined as a :ref:`record <notation-record>` listing
    \begin{array}{llll}
    \production{(store)} & \store &::=& \{~
      \begin{array}[t]{l@{~}ll}
-     \STYPES & \typeinst^\ast, \\
      \SFUNCS & \funcinst^\ast, \\
      \STABLES & \tableinst^\ast, \\
      \SMEMS & \meminst^\ast, \\
@@ -130,7 +129,6 @@ Convention
 
 
 .. index:: ! address, store, function instance, table instance, memory instance, global instance, element instance, data instance, embedder
-   pair: abstract syntax; type address
    pair: abstract syntax; function address
    pair: abstract syntax; table address
    pair: abstract syntax; memory address
@@ -138,7 +136,6 @@ Convention
    pair: abstract syntax; element address
    pair: abstract syntax; data address
    pair: abstract syntax; host address
-   pair: type; address
    pair: function; address
    pair: table; address
    pair: memory; address
@@ -146,7 +143,6 @@ Convention
    pair: element; address
    pair: data; address
    pair: host; address
-.. _syntax-typeaddr:
 .. _syntax-funcaddr:
 .. _syntax-tableaddr:
 .. _syntax-memaddr:
@@ -159,7 +155,7 @@ Convention
 Addresses
 ~~~~~~~~~
 
-:ref:`Type instances <syntax-typeinst>`, :ref:`function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>`, :ref:`element instances <syntax-eleminst>`, and :ref:`data instances <syntax-datainst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
+:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>`, :ref:`element instances <syntax-eleminst>`, and :ref:`data instances <syntax-datainst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
 These are simply indices into the respective store component.
 In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *host addresses*.
 
@@ -167,8 +163,6 @@ In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *h
    \begin{array}{llll}
    \production{(address)} & \addr &::=&
      0 ~|~ 1 ~|~ 2 ~|~ \dots \\
-   \production{(type address)} & \typeaddr &::=&
-     \addr \\
    \production{(function address)} & \funcaddr &::=&
      \addr \\
    \production{(table address)} & \tableaddr &::=&
@@ -200,7 +194,6 @@ even where this identity is not observable from within WebAssembly code itself
    hence logical addresses can be arbitrarily large natural numbers.
 
 
-.. _free-typeaddr:
 .. _free-funcaddr:
 .. _free-tableaddr:
 .. _free-memaddr:
@@ -234,7 +227,7 @@ and collects runtime representations of all entities that are imported, defined,
    \begin{array}{llll}
    \production{(module instance)} & \moduleinst &::=& \{
      \begin{array}[t]{l@{~}ll}
-     \MITYPES & \typeaddr^\ast, \\
+     \MITYPES & \deftype^\ast, \\
      \MIFUNCS & \funcaddr^\ast, \\
      \MITABLES & \tableaddr^\ast, \\
      \MIMEMS & \memaddr^\ast, \\
@@ -246,27 +239,9 @@ and collects runtime representations of all entities that are imported, defined,
    \end{array}
 
 Each component references runtime instances corresponding to respective declarations from the original module -- whether imported or defined -- in the order of their static :ref:`indices <syntax-index>`.
-:ref:`Type instances <syntax-typeinst>`, :ref:`function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` are referenced with an indirection through their respective :ref:`addresses <syntax-addr>` in the :ref:`store <syntax-store>`.
+:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` are referenced with an indirection through their respective :ref:`addresses <syntax-addr>` in the :ref:`store <syntax-store>`.
 
 It is an invariant of the semantics that all :ref:`export instances <syntax-exportinst>` in a given module instance have different :ref:`names <syntax-name>`.
-
-
-.. index:: ! type instance, function type, module
-   pair: abstract syntax; function instance
-   pair: function; instance
-.. _syntax-typeinst:
-
-Type Instances
-~~~~~~~~~~~~~~
-
-A *type instance* is the runtime representation of a :ref:`function type <syntax-functype>`.
-It is a :ref:`dynamic type <syntax-type-dyn>` equivalent to the respective :ref:`static type <syntax-type-stat>` that appeared in the module.
-
-.. math::
-   \begin{array}{llll}
-   \production{(type instance)} & \typeinst &::=&
-     \functype
-   \end{array}
 
 
 .. index:: ! function instance, module instance, function, closure, module, ! host function, invocation
@@ -285,8 +260,8 @@ The module instance is used to resolve references to other definitions during ex
 .. math::
    \begin{array}{llll}
    \production{(function instance)} & \funcinst &::=&
-     \{ \FITYPE~\typeaddr, \FIMODULE~\moduleinst, \FICODE~\func \} \\ &&|&
-     \{ \FITYPE~\typeaddr, \FIHOSTCODE~\hostfunc \} \\
+     \{ \FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func \} \\ &&|&
+     \{ \FITYPE~\functype, \FIHOSTCODE~\hostfunc \} \\
    \production{(host function)} & \hostfunc &::=& \dots \\
    \end{array}
 
@@ -554,7 +529,7 @@ Conventions
 
 .. math::
    \begin{array}{lll}
-   \expand_{S;F}(\typeidx) &=& S.\STYPES[F.\AMODULE.\MITYPES[\typeidx]] \\
+   \expand_{S;F}(\typeidx) &=& F.\AMODULE.\MITYPES[\typeidx] \\
    \expand_{S;F}([\valtype^?]) &=& [] \to [\valtype^?] \\
    \end{array}
 

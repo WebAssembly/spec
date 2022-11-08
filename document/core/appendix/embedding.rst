@@ -167,7 +167,7 @@ Modules
 :math:`\F{module\_imports}(\module) : (\name, \name, \externtype)^\ast`
 .......................................................................
 
-1. Pre-condition: :math:`\module` is :ref:`valid <valid-module>` with the :ref:`dynamic <syntax-type-dyn>` external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
+1. Pre-condition: :math:`\module` is :ref:`valid <valid-module>` with the external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
 
 2. Let :math:`\import^\ast` be the :ref:`imports <syntax-import>` :math:`\module.\MIMPORTS`.
 
@@ -179,7 +179,7 @@ Modules
 
 5. Return the concatenation of all :math:`\X{result}_i`, in index order.
 
-6. Post-condition: each :ref:`dynamic <syntax-type-dyn>` :math:`\externtype_i` is :ref:`valid <valid-externtype>`.
+6. Post-condition: each :math:`\externtype_i` is :ref:`valid <valid-externtype>` under the empty :ref:`context <context>`.
 
 .. math::
    ~ \\
@@ -195,7 +195,7 @@ Modules
 :math:`\F{module\_exports}(\module) : (\name, \externtype)^\ast`
 ................................................................
 
-1. Pre-condition: :math:`\module` is :ref:`valid <valid-module>` with the :ref:`dynamic <syntax-type-dyn>` external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
+1. Pre-condition: :math:`\module` is :ref:`valid <valid-module>` with the external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
 
 2. Let :math:`\export^\ast` be the :ref:`exports <syntax-export>` :math:`\module.\MEXPORTS`.
 
@@ -207,7 +207,7 @@ Modules
 
 5. Return the concatenation of all :math:`\X{result}_i`, in index order.
 
-6. Post-condition: each :ref:`dynamic <syntax-type-dyn>` :math:`\externtype'_i` is :ref:`valid <valid-externtype>`.
+6. Post-condition: each :math:`\externtype'_i` is :ref:`valid <valid-externtype>` under the empty :ref:`context <context>`.
 
 .. math::
    ~ \\
@@ -246,29 +246,6 @@ Module Instances
    \end{array}
 
 
-.. index:: type, type instance, function type
-.. _embed-type:
-
-Types
-~~~~~
-
-.. _embed-type-alloc:
-
-:math:`\F{type\_alloc}(\store, \functype) : (\store, \typeaddr)`
-...........................................................................
-
-1. Pre-condition: the :ref:`dynamic <syntax-type-dyn>` :math:`\functype` is :ref:`valid <valid-functype>`.
-
-2. Let :math:`\typeaddr` be the result of :ref:`allocating a type <alloc-type>` in :math:`\store` for :ref:`function type <syntax-functype>` :math:`\functype`.
-
-3. Return the new store paired with :math:`\typeaddr`.
-
-.. math::
-   \begin{array}{lclll}
-   \F{type\_alloc}(S, \X{ft}) &=& (S', \X{a}) && (\iff \alloctype(S, \X{ft}) = S', \X{a}) \\
-   \end{array}
-
-
 .. index:: function, host function, function address, function instance, function type, store
 .. _embed-func:
 
@@ -277,12 +254,12 @@ Functions
 
 .. _embed-func-alloc:
 
-:math:`\F{func\_alloc}(\store, \typeaddr, \hostfunc) : (\store, \funcaddr)`
+:math:`\F{func\_alloc}(\store, \functype, \hostfunc) : (\store, \funcaddr)`
 ...........................................................................
 
-1. Pre-condition: the :ref:`dynamic <syntax-type-dyn>` :math:`\functype` is :ref:`valid <valid-functype>`.
+1. Pre-condition: the :math:`\functype` is :ref:`valid <valid-functype>` under the empty :ref:`context <context>`.
 
-2. Let :math:`\funcaddr` be the result of :ref:`allocating a host function <alloc-func>` in :math:`\store` with :ref:`type address <syntax-typeaddr>` :math:`\typeaddr` and host function code :math:`\hostfunc`.
+2. Let :math:`\funcaddr` be the result of :ref:`allocating a host function <alloc-func>` in :math:`\store` with :ref:`function type <syntax-functype>` :math:`\functype` and host function code :math:`\hostfunc`.
 
 3. Return the new store paired with :math:`\funcaddr`.
 
@@ -302,15 +279,15 @@ Functions
 :math:`\F{func\_type}(\store, \funcaddr) : \functype`
 .....................................................
 
-1. Let :math:`\typeaddr` be the :ref:`type address <syntax-typeaddr>` :math:`S.\SFUNCS[a].\FITYPE`.
+1. Let :math:`\functype` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
 
-2. Return :math:`S.\STYPES[\typeaddr]`.
+2. Return :math:`\functype`.
 
-3. Post-condition: the returned :ref:`dynamic <syntax-type-dyn>` :ref:`function type <syntax-functype>` is :ref:`valid <valid-functype>`.
+3. Post-condition: the returned :ref:`function type <syntax-functype>` is :ref:`valid <valid-functype>`.
 
 .. math::
    \begin{array}{lclll}
-   \F{func\_type}(S, a) &=& S.\STYPES[S.\SFUNCS[a].\FITYPE] \\
+   \F{func\_type}(S, a) &=& S.\SFUNCS[a].\FITYPE \\
    \end{array}
 
 
@@ -350,7 +327,7 @@ Tables
 :math:`\F{table\_alloc}(\store, \tabletype) : (\store, \tableaddr, \reff)`
 ..........................................................................
 
-1. Pre-condition: the :ref:`dynamic <syntax-type-dyn>` :math:`\tabletype` is :ref:`valid <valid-tabletype>`.
+1. Pre-condition: the :math:`\tabletype` is :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
 
 2. Let :math:`\tableaddr` be the result of :ref:`allocating a table <alloc-table>` in :math:`\store` with :ref:`table type <syntax-tabletype>` :math:`\tabletype` and initialization value :math:`\reff`.
 
@@ -369,7 +346,7 @@ Tables
 
 1. Return :math:`S.\STABLES[a].\TITYPE`.
 
-2. Post-condition: the returned :ref:`dynamic <syntax-type-dyn>` :ref:`table type <syntax-tabletype>` is :ref:`valid <valid-tabletype>`.
+2. Post-condition: the returned :ref:`table type <syntax-tabletype>` is :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
 
 .. math::
    \begin{array}{lclll}
@@ -462,7 +439,7 @@ Memories
 :math:`\F{mem\_alloc}(\store, \memtype) : (\store, \memaddr)`
 ................................................................
 
-1. Pre-condition: the :ref:`dynamic <syntax-type-dyn>` :math:`\memtype` is :ref:`valid <valid-memtype>`.
+1. Pre-condition: the :math:`\memtype` is :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
 
 2. Let :math:`\memaddr` be the result of :ref:`allocating a memory <alloc-mem>` in :math:`\store` with :ref:`memory type <syntax-memtype>` :math:`\memtype`.
 
@@ -481,7 +458,7 @@ Memories
 
 1. Return :math:`S.\SMEMS[a].\MITYPE`.
 
-2. Post-condition: the returned :ref:`dynamic <syntax-type-dyn>` :ref:`memory type <syntax-memtype>` is :ref:`valid <valid-memtype>`.
+2. Post-condition: the returned :ref:`memory type <syntax-memtype>` is :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
 
 .. math::
    \begin{array}{lclll}
@@ -575,7 +552,7 @@ Globals
 :math:`\F{global\_alloc}(\store, \globaltype, \val) : (\store, \globaladdr)`
 ............................................................................
 
-1. Pre-condition: the :ref:`dynamic <syntax-type-dyn>` :math:`\globaltype` is :ref:`valid <valid-globaltype>`.
+1. Pre-condition: the :math:`\globaltype` is :ref:`valid <valid-globaltype>` under the empty :ref:`context <context>`.
 
 2. Let :math:`\globaladdr` be the result of :ref:`allocating a global <alloc-global>` in :math:`\store` with :ref:`global type <syntax-globaltype>` :math:`\globaltype` and initialization value :math:`\val`.
 
@@ -594,7 +571,7 @@ Globals
 
 1. Return :math:`S.\SGLOBALS[a].\GITYPE`.
 
-2. Post-condition: the returned :ref:`dynamic <syntax-type-dyn>` :ref:`global type <syntax-globaltype>` is :ref:`valid <valid-globaltype>`.
+2. Post-condition: the returned :ref:`global type <syntax-globaltype>` is :ref:`valid <valid-globaltype>` under the empty :ref:`context <context>`.
 
 .. math::
    \begin{array}{lclll}

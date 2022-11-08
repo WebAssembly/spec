@@ -34,7 +34,7 @@ Validity of an individual definition is specified relative to a *context*,
 which collects relevant information about the surrounding :ref:`module <syntax-module>` and the definitions in scope:
 
 * *Types*: the list of :ref:`types <syntax-type>` defined in the current module.
-* *Functions*: the list of :ref:`functions <syntax-func>` declared in the current module, represented by a :ref:`type identifier <syntax-typeid>` for their :ref:`function type <syntax-functype>`.
+* *Functions*: the list of :ref:`functions <syntax-func>` declared in the current module, represented by their :ref:`function type <syntax-functype>`.
 * *Tables*: the list of :ref:`tables <syntax-table>` declared in the current module, represented by their :ref:`table type <syntax-tabletype>`.
 * *Memories*: the list of :ref:`memories <syntax-mem>` declared in the current module, represented by their :ref:`memory type <syntax-memtype>`.
 * *Globals*: the list of :ref:`globals <syntax-global>` declared in the current module, represented by their :ref:`global type <syntax-globaltype>`.
@@ -56,8 +56,8 @@ More concretely, contexts are defined as :ref:`records <notation-record>` :math:
    \begin{array}{llll}
    \production{(context)} & C &::=&
      \begin{array}[t]{l@{~}ll}
-     \{ & \CTYPES & \functype^\ast, \\
-        & \CFUNCS & \typeid^\ast, \\
+     \{ & \CTYPES & \deftype^\ast, \\
+        & \CFUNCS & \functype^\ast, \\
         & \CTABLES & \tabletype^\ast, \\
         & \CMEMS & \memtype^\ast, \\
         & \CGLOBALS & \globaltype^\ast, \\
