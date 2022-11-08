@@ -157,6 +157,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
         text: i64
         text: f32
         text: f64
+    url: syntax/types.html#vector-types
         text: v128
     url: syntax/types.html#syntax-reftype
         text: reftype
