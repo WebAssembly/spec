@@ -306,16 +306,16 @@ External Types
 Functions
 .........
 
-An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_1` matches :math:`\ETFUNC~\functype_2` if and only if:
+An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\typeid_1` matches :math:`\ETFUNC~\typeid_2` if and only if:
 
-* Function type :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
+* The :ref:`heap type <syntax-heaptype>` :math:`\typeid_1` :ref:`matches <match-heaptype>` :math:`\typeid_2`.
 
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashfunctypematch \functype_1 \matchesfunctype \functype_2
+     C \vdashheaptypematch \typeid_1 \matchesheaptype \typeid_2
    }{
-     C \vdashexterntypematch \ETFUNC~\functype_1 \matchesexterntype \ETFUNC~\functype_2
+     C \vdashexterntypematch \ETFUNC~\typeid_1 \matchesexterntype \ETFUNC~\typeid_2
    }
 
 

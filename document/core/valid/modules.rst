@@ -14,7 +14,7 @@ Furthermore, most definitions are themselves classified with a suitable type.
 Functions
 ~~~~~~~~~
 
-Functions :math:`\func` are classified by :ref:`function types <syntax-functype>` of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
+Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` referring to :ref:`function types <syntax-functype>` of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 
 :math:`\{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \}`
@@ -52,7 +52,7 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
      \qquad
      C,\CLOCALS\,(\SET~t_1)^\ast~(\init~t)^\ast,\CLABELS~[t_2^\ast],\CRETURN~[t_2^\ast] \vdashexpr \expr : [t_2^\ast]
    }{
-     C \vdashfunc \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : [t_1^\ast] \to [t_2^\ast]
+     C \vdashfunc \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : x
    }
 
 
@@ -375,14 +375,18 @@ Start function declarations :math:`\start` are not classified by any type.
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* The type of :math:`C.\CFUNCS[x]` must be :math:`[] \to []`.
+* Let :math:`y` be the :ref:`type index <syntax-typeidx>` :math:`C.\CFUNCS[x]`.
+
+* Assert: The type :math:`C.\CTYPES[y]` is defined in the context.
+
+* The type :math:`C.\CTYPES[y]` must be the :ref:`function type <syntax-functype>` :math:`[] \to []`.
 
 * Then the start function is valid.
 
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = [] \to []
+     C.\CTYPES[C.\CFUNCS[x]] = [] \to []
    }{
      C \vdashstart \{ \SFUNC~x \} \ok
    }
@@ -424,9 +428,9 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = \functype
+     C.\CFUNCS[x] = \typeid
    }{
-     C \vdashexportdesc \EDFUNC~x : \ETFUNC~\functype
+     C \vdashexportdesc \EDFUNC~x : \ETFUNC~\typeid
    }
 
 
@@ -505,17 +509,15 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 :math:`\IDFUNC~x`
 .................
 
-* The function type :math:`C.\CTYPES[x]` must be defined in the context.
+* The :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
-
-* Then the import description is valid with type :math:`\ETFUNC~[t_1^\ast] \to [t_2^\ast]`.
+* Then the import description is valid with type :math:`\ETFUNC~x`.
 
 .. math::
    \frac{
-     C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
+     C.\CTYPES[x] = \functype
    }{
-     C \vdashimportdesc \IDFUNC~x : \ETFUNC~[t_1^\ast] \to [t_2^\ast]
+     C \vdashimportdesc \IDFUNC~x : \ETFUNC~x
    }
 
 

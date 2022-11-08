@@ -10,11 +10,11 @@ Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-in
 
 
 
-.. index:: ! type identifier, type index, type address
+.. index:: ! type identifier, type index, type address, ! static type, ! dynamic type
    pair: abstract syntax; type identifier
 .. _syntax-typeid:
-.. _syntax-type-syn:
-.. _syntax-type-sem:
+.. _syntax-type-stat:
+.. _syntax-type-dyn:
 
 Type Identifiers
 ~~~~~~~~~~~~~~~~
@@ -22,10 +22,11 @@ Type Identifiers
 Defined types like :ref:`function types <syntax-functype>` are not embedded directly into other types, such as :ref:`reference types <syntax-reftype>`.
 Instead, they are referred to indirectly.
 
-In a :ref:`module <syntax-module>` and during validation, this indirection is expressed through a :ref:`type index <syntax-typeidx>`, whose meaning is confined to one module.
-During instantiation and execution, where types from multiple modules may interact, it is expressed through :ref:`type addresses <syntax-typeaddr>` that refer to the global :ref:`store <store>`.
+In a :ref:`module <syntax-module>` and during :ref:`validation <valid>`, this indirection is expressed through a :ref:`type index <syntax-typeidx>`, whose meaning is confined to one module.
 
-The type grammar hence is conceptually parameterized by its interpretation of :ref:`type identifiers <syntax-typeid>`.
+During :ref:`execution <exec>`, where types from multiple modules may interact, it is expressed through :ref:`type addresses <syntax-typeaddr>` that refer to the global :ref:`store <store>`.
+
+The type grammar hence allows multiple representations of type identifiers:
 
 .. math::
    \begin{array}{llll}
@@ -33,18 +34,20 @@ The type grammar hence is conceptually parameterized by its interpretation of :r
      \typeidx ~|~ \typeaddr
    \end{array}
 
-Types represented with type indices are referred to as *syntactic types*,
-whereas types represented with type addresses are referred to as *semantic types*.
+Types represented with type indices are referred to as *static types*,
+whereas types represented with type addresses are referred to as *dynamic types*.
 
-It is an invariant of the semantics that no syntactic type refers to a semantic type and vice versa, i.e., both universes are disjoint.
-Syntactic types are transformed into semantic types during module :ref:`instantiation <exec-instantiation>`.
+Static types are transformed into dynamic types during module :ref:`instantiation <exec-instantiation>`.
+
+It is an invariant of the semantics that only static types arise during :ref:`validation <valid>`, while only dynamic types are used during :ref:`execution <exec>`.
+However, for the proof of :ref:`type soundness <soundness>`, both forms of types must be considered together, and static types may refer to dynamic types.
 
 .. _notation-subst:
 
 Convention
 ..........
 
-The following notation expresses conversion between syntactic and semantic types:
+The following notation expresses conversion between static and dynamic types:
 
 * :math:`t[x^\ast \subst a^\ast]` denotes the parallel substitution of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`type addresses <syntax-typeaddr>` :math:`a^\ast`, provided :math:`|x^\ast| = |a^\ast|`.
 
@@ -377,7 +380,7 @@ External Types
 .. math::
    \begin{array}{llll}
    \production{external types} & \externtype &::=&
-     \ETFUNC~\functype ~|~
+     \ETFUNC~\typeid ~|~
      \ETTABLE~\tabletype ~|~
      \ETMEM~\memtype ~|~
      \ETGLOBAL~\globaltype \\
@@ -390,7 +393,7 @@ Conventions
 The following auxiliary notation is defined for sequences of external types.
 It filters out entries of a specific kind in an order-preserving fashion:
 
-* :math:`\etfuncs(\externtype^\ast) = [\functype ~|~ (\ETFUNC~\functype) \in \externtype^\ast]`
+* :math:`\etfuncs(\externtype^\ast) = [\typeid ~|~ (\ETFUNC~\typeid) \in \externtype^\ast]`
 
 * :math:`\ettables(\externtype^\ast) = [\tabletype ~|~ (\ETTABLE~\tabletype) \in \externtype^\ast]`
 

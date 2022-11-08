@@ -939,7 +939,7 @@
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
 .. |vdashexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\vdash}
 
-.. |vdashinstrtype| mathdef:: \xref{valid/instructions}{valid-instrtype}{\vdash}
+.. |vdashinstrtype| mathdef:: \xref{valid/types}{valid-instrtype}{\vdash}
 
 .. |vdashvaltypedefaultable| mathdef:: \xref{valid/types}{valid-defaultable}{\vdash}
 
@@ -994,7 +994,7 @@
 
 .. Allocation
 
-.. |sem| mathdef:: \xref{exec/types}{sem}{\F{sem}}
+.. |dyn| mathdef:: \xref{exec/types}{dyn}{\F{dyn}}
 
 .. |alloctype| mathdef:: \xref{exec/modules}{alloc-type}{\F{alloctype}}
 .. |allocfunc| mathdef:: \xref{exec/modules}{alloc-func}{\F{allocfunc}}
@@ -1021,6 +1021,18 @@
 .. |elemaddr| mathdef:: \xref{exec/runtime}{syntax-elemaddr}{\X{elemaddr}}
 .. |dataaddr| mathdef:: \xref{exec/runtime}{syntax-dataaddr}{\X{dataaddr}}
 .. |externaddr| mathdef:: \xref{exec/runtime}{syntax-externaddr}{\X{externaddr}}
+
+
+.. Address, meta functions
+
+.. |freetypeaddr| mathdef:: \xref{syntax/modules}{syntax-typeaddr}{\F{typeaddr}}
+.. |freefuncaddr| mathdef:: \xref{syntax/modules}{syntax-funcaddr}{\F{funcaddr}}
+.. |freetableaddr| mathdef:: \xref{syntax/modules}{syntax-tableaddr}{\F{tableaddr}}
+.. |freememaddr| mathdef:: \xref{syntax/modules}{syntax-memaddr}{\F{memaddr}}
+.. |freeglobaladdr| mathdef:: \xref{syntax/modules}{syntax-globaladdr}{\F{globaladdr}}
+.. |freeelemaddr| mathdef:: \xref{syntax/modules}{syntax-elemaddr}{\F{elemaddr}}
+.. |freedataaddr| mathdef:: \xref{syntax/modules}{syntax-dataaddr}{\F{dataaddr}}
+
 
 .. Instances, terminals
 
@@ -1123,7 +1135,7 @@
 
 .. Administrative Instructions, terminals
 
-.. |REFFUNCADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref}}
+.. |REFFUNCADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}func}}
 .. |REFEXTERNADDR| mathdef:: \xref{exec/runtime}{syntax-ref.extern}{\K{ref{.}extern}}
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
@@ -1272,7 +1284,7 @@
 
 .. Judgements
 
-.. |vdashexternval| mathdef:: \xref{exec/modules}{valid-externval}{\vdash}
+.. |vdashexternval| mathdef:: \xref{exec/values}{valid-externval}{\vdash}
 
 
 .. Soundness
@@ -1285,6 +1297,7 @@
 .. |vdashval| mathdef:: \xref{appendix/properties}{valid-val}{\vdash}
 .. |vdashresult| mathdef:: \xref{appendix/properties}{valid-result}{\vdash}
 
+.. |vdashtypeinst| mathdef:: \xref{appendix/properties}{valid-typeinst}{\vdash}
 .. |vdashfuncinst| mathdef:: \xref{appendix/properties}{valid-funcinst}{\vdash}
 .. |vdashtableinst| mathdef:: \xref{appendix/properties}{valid-tableinst}{\vdash}
 .. |vdashmeminst| mathdef:: \xref{appendix/properties}{valid-meminst}{\vdash}
@@ -1294,11 +1307,13 @@
 .. |vdashexportinst| mathdef:: \xref{appendix/properties}{valid-exportinst}{\vdash}
 .. |vdashmoduleinst| mathdef:: \xref{appendix/properties}{valid-moduleinst}{\vdash}
 
+.. |vdashcontext| mathdef:: \xref{appendix/properties}{valid-context}{\vdash}
 .. |vdashstore| mathdef:: \xref{appendix/properties}{valid-store}{\vdash}
 .. |vdashconfig| mathdef:: \xref{appendix/properties}{valid-config}{\vdash}
 .. |vdashthread| mathdef:: \xref{appendix/properties}{valid-thread}{\vdash}
 .. |vdashframe| mathdef:: \xref{appendix/properties}{valid-frame}{\vdash}
 
+.. |vdashtypeinstextends| mathdef:: \xref{appendix/properties}{extend-typeinst}{\vdash}
 .. |vdashfuncinstextends| mathdef:: \xref{appendix/properties}{extend-funcinst}{\vdash}
 .. |vdashtableinstextends| mathdef:: \xref{appendix/properties}{extend-tableinst}{\vdash}
 .. |vdashmeminstextends| mathdef:: \xref{appendix/properties}{extend-meminst}{\vdash}
