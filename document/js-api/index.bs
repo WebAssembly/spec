@@ -1040,12 +1040,12 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. [=list/Append=] [=ToWebAssemblyValue=](|arg|, |t|) to |args|.
         1. Set |i| to |i| + 1.
     1. Let (|store|, |ret|) be the result of [=func_invoke=](|store|, |funcaddr|, |args|).
-    1. Note: The expectation is that [=func_invoke=] will be updated to return (|store|, <var ignore>val</var>* | [=error=] | (exception |exntag| |payload|)).
+    1. Note: The expectation is that [=func_invoke=] will be updated to return (|store|, <var ignore>val</var>* | [=error=] | (exception |exntag| |payload| |opaqueData|)).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
-    1. If |ret| is exception |exntag| |payload|, then
-        1. If |exntag| is the [=JavaScript exception tag=], then
-            1. Let « [=ref.extern=] |externaddr| » be |payload|.
+    1. If |ret| is exception |exntag| |payload| |opaqueData|, then
+        1. If |opaqueData| is not [=ref.null=] [=externref=],
+            1. Let « [=ref.extern=] |externaddr| » be |opaqueData|.
             1. Throw the result of [=retrieving an extern value=] from |externaddr|.
         1. Let |exception| be [=create an Exception object|a new Exception=] for |exntag| and |payload|.
         1. Throw |exception|.
@@ -1107,8 +1107,9 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
                 1. Let |payload| be |v|.\[[Payload]].
             1. Otherwise,
                 1. Let |type| be the [=JavaScript exception tag=].
-                1. Let |payload| be [=ToWebAssemblyValue=](|v|, [=externref=]).
-            1. [=WebAssembly/Throw=] with |type| and |payload|.
+                1. Let |payload| be « ».
+            1. Let |opaqueData| be [=ToWebAssemblyValue=](|v|, [=externref=])
+            1. [=WebAssembly/Throw=] with |type|, |payload| and |opaqueData|.
         1. Otherwise, return |result|.\[[Value]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
@@ -1258,11 +1259,16 @@ Advisement: This method is only expected to be implemented or shipped when both 
 <h4 id="runtime-exceptions">Runtime exceptions</h4>
 
 <pre class="idl">
+dictionary ExceptionOptions {
+  boolean traceStack = false;
+};
+
 [LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
 interface Exception {
-  constructor(Tag exceptionTag, sequence&lt;any> payload);
+  constructor(Tag exceptionTag, sequence&lt;any> payload, optional ExceptionOptions options = {});
   any getArg(Tag exceptionTag, unsigned long index);
   boolean is(Tag exceptionTag);
+  readonly attribute (DOMString or undefined) stack;
 };
 </pre>
 
@@ -1270,8 +1276,8 @@ An {{Exception}} value represents an exception.
 
 <div algorithm>
 
-To <dfn>create an Exception object</dfn> from a [=tag address=] |tagAddress| and [=list=]
-of WebAssembly values |payload|, perform the following steps:
+To <dfn>create an Exception object</dfn> from a [=tag address=] |tagAddress| and a [=list=] of
+WebAssembly values |payload|, perform the following steps:
 
 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
 1. Let |types| be [=tag_parameters=](|store|, |tagAddress|).
@@ -1281,6 +1287,7 @@ of WebAssembly values |payload|, perform the following steps:
 1. Let |exception| be a [=new=] {{Exception}}.
 1. Set |exception|.\[[Type]] to |tagAddress|.
 1. Set |exception|.\[[Payload]] to |payload|.
+1. Set |exception|.\[[Stack]] to undefined.
 1. Return |exception|.
 
 </div>
@@ -1288,7 +1295,7 @@ of WebAssembly values |payload|, perform the following steps:
 <div algorithm>
 
 The <dfn constructor for=Exception
-lt="Exception(exceptionTag, payload)">new Exception(|exceptionTag|, |payload|)</dfn>
+lt="Exception(exceptionTag, payload, options)">new Exception(|exceptionTag|, |payload|, |options|)</dfn>
 constructor steps are:
 
 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
@@ -1300,6 +1307,10 @@ constructor steps are:
     1. [=list/Append=] ? [=ToWebAssemblyValue=](|value|, |resultType|) to |wasmPayload|.
 1. Set **this**.\[[Type]] to |exceptionTag|.\[[Address]].
 1. Set **this**.\[[Payload]] to |wasmPayload|.
+1. If |options|["traceStack"] is true,
+    1. Set **this**.\[[Stack]] to either a {{DOMString}} representation of the current call stack or undefined.
+1. Otherwise,
+    1. Set **this**.\[[Stack]] to undefined.
 
 </div>
 
@@ -1326,22 +1337,28 @@ The <dfn method for="Exception">is(|exceptionTag|)</dfn> method steps are:
 
 </div>
 
+<div algorithm>
+
+The <dfn attribute for="Exception">stack</dfn> getter steps are:
+
+1. Return **this**.\[[Stack]].
+
+</div>
+
 <h4 id="js-exceptions">JavaScript exceptions</h4>
 
 The <dfn>JavaScript exception tag</dfn> is a [=tag address=] reserved by this
 specification to distinguish exceptions originating from JavaScript.
 
 For any [=associated store=] |store|, the result of
-[=tag_parameters=](|store|, [=JavaScript exception tag=]) must be « [=externref=] ».
-
- Issue: Should it be possible for `catch <JS-exception-tag>` to extract the payload from an exception with this tag?
+[=tag_parameters=](|store|, [=JavaScript exception tag=]) must be « ».
 
 <div algorithm>
 
-To <dfn for=WebAssembly>throw</dfn> with a [=tag address=] |type| and matching [=list=] of WebAssembly values |payload|, perform the following steps:
+To <dfn for=WebAssembly>throw</dfn> with a [=tag address=] |type|, a matching [=list=] of WebAssembly values |payload|, and an [=externref=] |opaqueData|, perform the following steps:
 
 1. Unwind the stack until reaching the *catching try block* given |type|.
-1. Invoke the catch block with |payload|.
+1. Invoke the catch block with |payload| and |opaqueData|.
 
 Note: This algorithm is expected to be moved into the core specification.
 
