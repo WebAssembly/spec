@@ -20,7 +20,7 @@ See [overview](Overview.md) for addition background.
 * [Threads and shared references](#threads-and-shared-references)
 * [Weak references](#weak-references)
 * [Method dispatch](#method-dispatch)
-
+* [Handle nondefaultable fields in `struct.new_default`](#handle-nondefaultable-fields-in-structnew_default)
 
 ## Bulk Operations
 
@@ -767,3 +767,9 @@ Right now OO-style method dispatch requires downcasting the receiver parameter f
 The problem could be addressed by extending the type system with features that allow typing the receiver/environment parameter more precisely, for which a number of solutions are known (e.g., [1](https://dl.acm.org/doi/pdf/10.1145/354222.353192), [2](http://lucacardelli.name/Papers/ObjectEncodings.pdf)). A fallback solution could be the introduction of a primitive method and dispatch mechanism besides functions, e.g., as an extension to the static fields mechanism.
 
 **Why Post-MVP:** Methods and closures can be easily expressed without being built into WebAssembly, so this would be a fair amount of extra complexity for a modest performance improvement and no additional benefits. Considering this as an optimimzation after shipping the MVP makes the most sense.
+
+## Handle nondefaultable fields in `struct.new_default`
+
+As proposed in #174. The idea is that `struct.new_default` would take values for nondefaultable fields in the struct from the stack. This would be a code size optimization over having to specify every single field with `struct.new` when allocating a struct containing nondefaultable fields.
+
+**Why Post-MVP:** This is a local code size optimization that does not affect expressivity, so getting it into the MVP is not urgent.
