@@ -453,7 +453,7 @@ Note: This assumes that there is at most one supertype. For hierarchies with mul
 
 Example: Consider three types and corresponding RTTs:
 ```
-(type $A (struct))
+(type $A (sub (struct)))
 (type $B (sub $A (struct (field i32))))
 (type $C (sub $B (struct (field i32 i64))))
 ```
