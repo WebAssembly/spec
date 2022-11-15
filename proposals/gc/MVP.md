@@ -111,8 +111,8 @@ New abbreviations are introduced for reference types in binary and text format, 
   - Note that the number of type section entries is now the number of recursion groups rather than the number of individual types. 
 
 * `subtype` is a new category of type defining a single type, as a subtype of possible other types
-  - `subtype ::= sub <typeidx>* <strtype>`
-  - the preexisting syntax with no `sub` clause is redefined to be a shorthand for a `sub` clause with empty `typeidx` list: `<strtype> == sub () <strtype>`
+  - `subtype ::= sub final? <typeidx>* <strtype>`
+  - the preexisting syntax with no `sub` clause is redefined to be a shorthand for a `sub` clause with empty `typeidx` list: `<strtype> == sub final () <strtype>`
   - Note: This allows multiple supertypes. For the MVP, it is restricted to at most one supertype.
 
 * `strtype` is a new category of types covering the different forms of concrete structural reference types
@@ -155,8 +155,13 @@ In the case of `C.funcs`, it is an invariant that all types [expand](#auxiliary-
 
 * Expanding a type definition unrolls it and returns its plain definition
   - `expand($t)                 = expand(<ctxtype>)`  iff `$t = <ctxtype>`
-  - `expand(<ctxtype>) = <strtype>`
-    - where `unroll(<ctxttype>) = sub x* <strtype>`
+  - `expand(<ctxtype>)          = <strtype>`
+    - where `unroll(<ctxttype>) = sub final? x* <strtype>`
+
+* Finality of a type just checks the flag
+  - `final($t)                  = final(<ctxtype>)`  iff `$t = <ctxtype>`
+  - `final(<ctxtype>)           = final? =/= empty`
+    - where `unroll(<ctxttype>) = sub final? x* <strtype>`
 
 
 #### External Types
@@ -189,10 +194,11 @@ Some of the rules define a type as `ok` for a certain index, written `ok(x)`. Th
     - iff `<subtype0> ok($t)`
     - and `<subtype>* ok($t+1)`
 
-* an individual subtype is valid if its definition is valid, matches every supertype, and no supertype has an index higher than its own
-  - `sub $t* <strtype> ok($t')`
+* an individual subtype is valid if its definition is valid, matches every supertype, and no supertype is final or has an index higher than its own
+  - `sub final? $t* <strtype> ok($t')`
     - iff `<strtype> ok`
     - and `(<strtype> <: expand($t))*`
+    - and `(not final($t))*`
     - and `($t < $t')*`
   - Note: the upper bound on the supertype indices ensures that subtyping hierarchies are never circular, because definitions need to be ordered.
 
@@ -253,10 +259,11 @@ With that:
     - iff `(<subtype> == <subtype'>)*`
   - Note: This rule is only used on types that have been tied, which prevents looping.
 
-* notably, two subtypes are equivalent if their structure is equivalent and they have equivalent supertypes
-  - `(sub $t* <strtype>) == (sub $t'* <strtype'>)`
+* notably, two subtypes are equivalent if their structure is equivalent, they have equivalent supertypes, and their finality flag matches
+  - `(sub final1? $t* <strtype>) == (sub final2? $t'* <strtype'>)`
     - iff `<strtype> == <strtype'>`
     - and `($t == $t')*`
+    - and `final1? = final2?`
 
 Example: As explained above, the mutually recursive types
 ```
@@ -311,7 +318,7 @@ In the [existing rules](https://github.com/WebAssembly/function-references/propo
 * Type indices are subtypes if they either define [equivalent](#type-equivalence) types or a suitable (direct or indirect) subtype relation has been declared
   - `$t <: $t'`
     - if `$t = <ctxtype>` and `$t' = <ctxtype'>` and `<ctxtype> == <ctxtype'>`
-    - or `unroll($t) = sub $t1* $t'' $t2* strtype` and `$t'' <: $t'`
+    - or `unroll($t) = sub final? $t1* $t'' $t2* strtype` and `$t'' <: $t'`
   - Note: This rule climbs the supertype hierarchy until an equivalent type has been found. Effectively, this means that subtyping is "nominal" modulo type canonicalisation.
 
 
@@ -716,6 +723,7 @@ The opcode for heap types is encoded as an `s33`.
 | -0x21  | `struct ft*`    | `ft* : vec(fieldtype)` | shorthand |
 | -0x22  | `array ft`      | `ft : fieldtype`       | shorthand |
 | -0x30  | `sub $t* st`    | `$t* : vec(typeidx)`, `st : strtype` | |
+| -0x32  | `sub final $t* st` | `$t* : vec(typeidx)`, `st : strtype` | |
 
 #### Defined Types
 
@@ -725,6 +733,7 @@ The opcode for heap types is encoded as an `s33`.
 | -0x22  | `array ft`      | `ft : fieldtype`       | shorthand |
 | -0x30  | `sub $t* st`    | `$t* : vec(typeidx)`, `st : strtype` | shorthand |
 | -0x31  | `rec dt*`       | `dt* : vec(subtype)` | |
+| -0x32  | `sub final $t* st` | `$t* : vec(typeidx)`, `st : strtype` | shorthand |
 
 #### Field Types
 
@@ -833,9 +842,10 @@ C |- array ft ok
 ```
 C |- st ok
 (C |- st <: expand(C(x)))*
+(not final(C(x)))*
 (x < x')*
---------------------------
-C |- sub x* st ok(x')
+----------------------------
+C |- sub final? x* st ok(x')
 
 C |- st ok(x)
 C |- st'* ok(x+1)
@@ -932,8 +942,9 @@ C |- array ft == array ft'
 ```
 (C |- x == x')*
 C |- st == st'
------------------------------
-C |- sub x* st == sub x'* st'
+final1? = final2?
+---------------------------------------------
+C |- sub final1? x* st == sub final2? x'* st'
 ```
 
 ### Subtyping
@@ -945,9 +956,9 @@ C |- x == x'
 ------------
 C |- x <: x'
 
-unroll(C(x)) = sub (x1* x'' x2*) st
+unroll(C(x)) = sub final? (x1* x'' x2*) st
 C |- x'' <: x'
------------------------------------
+------------------------------------------
 C |- x <: x'
 ```
 
