@@ -21,6 +21,7 @@ See [overview](Overview.md) for addition background.
 * [Weak references](#weak-references)
 * [Method dispatch](#method-dispatch)
 * [Handle nondefaultable fields in `struct.new_default`](#handle-nondefaultable-fields-in-structnew_default)
+* [Throwing versions of trapping instructions](#throwing-versions-of-trapping-instructions)
 
 ## Bulk Operations
 
@@ -773,3 +774,18 @@ The problem could be addressed by extending the type system with features that a
 As proposed in #174. The idea is that `struct.new_default` would take values for nondefaultable fields in the struct from the stack. This would be a code size optimization over having to specify every single field with `struct.new` when allocating a struct containing nondefaultable fields.
 
 **Why Post-MVP:** This is a local code size optimization that does not affect expressivity, so getting it into the MVP is not urgent.
+
+
+## Throwing versions of trapping instructions
+
+Some language implementers have expressed interest in having throwing versions of operations like `struct.get` to simplify the implementation of e.g. Java's `NullPointerException`. It may be worth investigating what the potential code size or performance benefits of these instructions would be. See [#208](https://github.com/WebAssembly/gc/issues/208) for details and previous discussion.
+
+**Why Post-MVP:** Null checks followed by throws are easily expressible in the MVP, so there is no pressing need to add additional instructions for this pattern. Also, throwing instructions would depend on the exception handling proposal, and we would prefer to avoid that dependency in the MVP.
+
+
+## Equality-comparable funcref
+
+Being able to compare function references for equality would enable more precise polymorphic devirtualization. On the other hand, some polymorphic devirtualization should already be possible by taking advantage of patterns in vtables and letting functions be equality comparable would inhibit function deduplication optimizations. See [#239](https://github.com/WebAssembly/gc/issues/239) for details and previous discussion.
+
+**Why Post-MVP:** The benefits of this change are unknown and would likely be small, so it's not urgent that we get this into the MVP.
+
