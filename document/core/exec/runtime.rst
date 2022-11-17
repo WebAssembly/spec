@@ -729,39 +729,35 @@ If no exception :ref:`handler that catches the exception <syntax-handler>` is fo
    |CAUGHTadm| blocks do not represent active handlers. Instead, they delimit the continuation of a handler that has already been selected. Their sole purpose is to record the exception that has been caught, such that |RETHROW| can access it inside such a block.
 
 .. note::
-   For example, catching a simple :ref:`throw <exec-throw>` in a :ref:`try block <exec-try-catch>` would be as follows.
+   For example, catching a simple :ref:`throw <syntax-throw>` in a :ref:`try block <syntax-try-catch>` would be as follows.
 
-   Assume that :math:`\expand_F(bt) = [t1^n] \to [t2^m]`, for some :math:`n > m` such that :math:`t1^n[(n-m):n] = t2^m`,
-   and that the tag address `a` of :math:`x` corresponds to the tag type :math:`[t2^m] \to []`.
+   Assume that :math:`\expand_F(bt) = [\I32~\F32~\I64] \to [\F32~\I64]`,
+   and that the tag address `a` of :math:`x` has tag type :math:`[\F32~\I64] \to []`.
+   Let :math:`\val_{i32}`, :math:`\val_{f32}`, and :math:`\val_{i64}` be values of type |I32|, |F32|, and |I64| respectively.
 
    .. math::
       \begin{array}{ll}
-      & \hspace{-5ex} S;~F;~\val^n~(\TRY~\X{bt}~(\THROW~x)~\CATCH~x~\RETURN~\END) \\
-      \stepto & S;~F;~\LABEL_m\{\} (\CATCHadm\{a~\RETURN\}~\val^n~(\THROW~x)~\END)~\END \\
+      & \hspace{-5ex} F;~\val_{i32}~\val_{f32}~\val_{i64}~(\TRY~\X{bt}~(\THROW~x)~\CATCH~x~\END) \\
+      \stepto & F;~\LABEL_2\{\} (\CATCHadm\{a~\epsilon\}~\val_{i32}~\val_{f32}~\val_{i64}~(\THROW~x)~\END)~\END \\
       \end{array}
 
-   Let :math:`\val^n` be :math:`\val^{n-m} \val^m`.
    :ref:`Handling the thrown exception <exec-throwadm>` with tag address :math:`a` in the throw context
-   :math:`T=[val^{n-m}\_]`, with the exception handler :math:`H=\CATCHadm\{a~\RETURN\}` gives:
+   :math:`T=[\val_{i32}\_]`, with the exception handler :math:`H=\CATCHadm\{a~\epsilon\}` gives:
 
    .. math::
       \begin{array}{lll}
-      \stepto & S;~F;~\LABEL_m\{\}~(\CAUGHTadm\{a~\val^m\}~\val^m~\RETURN~\END)~\END & \hspace{9ex}\ \\
-      \stepto & \val^m & \\
+      \stepto & F;~\LABEL_2\{\}~(\CAUGHTadm\{a~\val_{f32}~\val_{i64}\}~\val_{f32}~\val_{i64}~\END)~\END & \hspace{9ex}\ \\
+      \stepto & F;~\LABEL_2\{\}~\val_{f32}~\val_{i64}~\END & \hspace{9ex}\ \\
+      \stepto & \val_{f32}~\val_{i64} & \\
       \end{array}
 
 
-   When a throw of the form :math:`val^m (\THROWadm~a)` occurs, search for the maximal surrounding throw context :math:`T` is performed,
-   which means any other values, labels, frames, and |CAUGHTadm| instructions surrounding the throw :math:`val^m (\THROWadm~a)` are popped,
+   When a throw of the form :math:`\val^m (\THROWadm~a)` occurs, search for the maximal surrounding throw context :math:`T` is performed,
+   which means any other values, labels, frames, and |CAUGHTadm| instructions surrounding the throw :math:`\val^m (\THROWadm~a)` are popped,
    until a :ref:`handler <syntax-handler>` for the exception is found.
    Then a new |CAUGHTadm| instruction, containing the tag address :math:`a` and the values :math:`\val^m`, is pushed onto the stack.
 
-
-   In other words, when a throw occurs, normal execution halts and exceptional execution begins, until the throw
-   is the continuation (i.e., in the place of a :math:`\_`) of a throw context in a catching try block.
-
    In this particular case, the exception is caught by the exception handler :math:`H` and its values are returned.
-
 
 
 .. index:: ! configuration, ! thread, store, frame, instruction, module instruction
