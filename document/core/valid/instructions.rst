@@ -1415,8 +1415,14 @@ Control Instructions
 :math:`\TRY~\blocktype~\instr^\ast~\DELEGATE~l`
 ...............................................
 
-.. todo::
-   Add prose.
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
+
+* Under context :math:`C'`,
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
@@ -1424,10 +1430,13 @@ Control Instructions
      \qquad
      C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr^\ast : [t_1^\ast]\to[t_2^\ast]
      \qquad
-     C.\CLABELS[l] = [t^\ast]
+     C.\CLABELS[l] = [t_0^\ast]
    }{
    C \vdashinstrseq \TRY~\blocktype~\instr^\ast~\DELEGATE~l : [t_1^\ast]\to[t_2^\ast]
    }
+
+.. note::
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
 
 
 .. _valid-throw:
