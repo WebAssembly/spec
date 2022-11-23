@@ -2625,16 +2625,45 @@ Control Instructions
 :math:`\TRY~\blocktype~\instr_1^\ast~(\CATCH~x~\instr_2^\ast)^\ast~(\CATCHALL~\instr_3^\ast)^?~\END`
 ....................................................................................................
 
-.. todo::
-   Add prose for the |TRY| - |CATCH| - |CATCHALL| execution step.
+1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
+
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
+
+3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the |TRY| instruction.
+
+4. Assert: due to :ref:`validation <valid-try-catch>`, there are at least :math:`m` values on the top of the stack.
+
+5. Pop the values :math:`\val^m` from the stack.
+
+6. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+7. For each catch clause :math:`(\CATCH~x_i~\instr_{2i}^\ast)` do:
+
+   a. Assert: due to :ref:`validation <valid-try-catch>`, :math:`F.\AMODULE.\MITAGS[x_i]` exists.
+
+   b. Let :math:`a_i` be the tag address :math:`F.\AMODULE.\MITAGS[x_i]`.
+
+   c. Let :math:`H_i` be the handler clause :math:`\{a_i~\instr_{2i}^\ast\}`.
+
+8. If there is a catch all clause :math:`(\CATCHALL~\instr_3^\ast)`, then:
+
+    a. Let :math:`H'^?` be the handler clause :math:`\{\epsilon~\instr_3^\ast\}`.
+
+9. Else:
+
+    a. Let :math:`H'^?` be the empty handler clause :math:`\epsilon`.
+
+10. Let :math:`H^\ast` be the :ref:`catching exception handler <syntax-handler>` containing the concatenation of the handler clauses :math:`H_i` and :math:`H'^?`.
+
+11. :ref:`Enter <exec-handler-enter>` the block :math:`\val^m~\instr_1^\ast` with label :math:`L` and exception handler :math:`H`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
-   F; \val^n~(\TRY~\X{bt}~\instr_1^\ast~(\CATCH~x~\instr_2^\ast)^\ast~(\CATCHALL~\instr_3^\ast)^?~\END
+   F; \val^m~(\TRY~\X{bt}~\instr_1^\ast~(\CATCH~x~\instr_2^\ast)^\ast~(\CATCHALL~\instr_3^\ast)^?~\END
    \quad \stepto \\
-   \qquad F; \LABEL_m\{\}~(\CATCHadm\{a~\instr_2^\ast\}^\ast\{\epsilon~\instr_3\ast\}^?~\val^n~\instr_1^\ast~\END)~\END \\
-   (\iff \expand_F(\X{bt}) = [t_1^n] \to [t_2^m] \land (F.\AMODULE.\MITAGS[x]=a)^\ast)
+   \qquad F; \LABEL_n\{\epsilon\}~(\CATCHadm\{a_x~\instr_2^\ast\}^\ast\{\epsilon~\instr_3\ast\}^?~\val^m~\instr_1^\ast~\END)~\END \\
+   (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n] \land (F.\AMODULE.\MITAGS[x]=a_x)^\ast)
    \end{array}
 
 
@@ -2987,13 +3016,18 @@ The following auxiliary rules define the semantics of entering and exiting :ref:
 
 .. _exec-handler-enter:
 
-Entering an exception handler :math:`H`
-.......................................
+Entering :math:`\instr^\ast` with label :math:`L` and exception handler :math:`H`
+.................................................................................
 
-1. Push :math:`H` onto the stack.
+1. Push :math:`L` to the stack.
+
+2. Push :math:`H` onto the stack.
+
+3. Jump to the start of the instruction sequence :math:`\instr^\ast`.
+
 
 .. note::
-   No formal reduction rule is needed for installing an exception :ref:`handler <syntax-handler>`
+   No formal reduction rule is needed for entering an exception :ref:`handler <syntax-handler>`
    because it is an :ref:`administrative instruction <syntax-instr-admin>`
    that the :ref:`try <syntax-try>` instruction reduces to directly.
 
