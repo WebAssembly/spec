@@ -648,8 +648,14 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\DELEGATEadm\{l\}~\instr^\ast~\END`
 ..........................................
 
-.. todo::
-   Add prose.
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the label :math:`[t^\ast]` prepended to the |CLABELS| vector.
+
+* Under context :math:`C'`,
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[]\to[t^\ast]`.
+
+* Then the compound instruction is valid under context :math:`C'` with type :math:`[] \to [t^\ast]`.
 
 .. math::
    \frac{
