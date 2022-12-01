@@ -1424,6 +1424,8 @@ Control Instructions
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
+* Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
 .. math::
    \frac{
      C \vdashblocktype \blocktype : [t_1^\ast] \to [t_2^\ast]

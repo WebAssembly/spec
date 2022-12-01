@@ -2678,7 +2678,7 @@ Control Instructions
 
 3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the |TRY| instruction.
 
-4. Let :math:`H` be the :ref:`delegating exception handler <syntax-handler>` :math:`\DELEGATEadm\{l\}`, targeting the :math:`l` surrounding block.
+4. Let :math:`H` be the :ref:`delegating exception handler <syntax-handler>` :math:`\DELEGATEadm\{l\}`, targeting the :math:`l`-th surrounding block.
 
 5. Assert: due to :ref:`validation <valid-try-delegate>`, there are at least :math:`m` values on the top of the stack.
 
@@ -2692,7 +2692,7 @@ Control Instructions
    ~\\[-1ex]
    \begin{array}{lcl}
    F; \val^m~(\TRY~\X{bt}~\instr^\ast~\DELEGATE~l) &\stepto&
-   F; \LABEL_n\{\}~(\DELEGATEadm\{l\}~\val^m~\instr^\ast~\END)~\END \\
+   F; \LABEL_n\{\epsilon\}~(\DELEGATEadm\{l\}~\val^m~\instr^\ast~\END)~\END \\
    && (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 

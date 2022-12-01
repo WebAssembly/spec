@@ -74,7 +74,7 @@ Results
 ~~~~~~~
 
 A *result* is the outcome of a computation.
-It is either a sequence of :ref:`values <syntax-val>`, a :ref:`trap <syntax-trap>`, or an uncaught exception wrapped in its throw context.
+It is either a sequence of :ref:`values <syntax-val>`, a :ref:`trap <syntax-trap>`, or an uncaught exception wrapped in its :ref:`throw context <syntax-ctxt-throw>`.
 
 .. math::
    \begin{array}{llcl}
@@ -712,7 +712,8 @@ the following syntax of *throw contexts* is defined, as well as associated struc
 .. math::
    \begin{array}{llll}
    \production{(throw contexts)} & \XT &::=&
-     [\_] | \val^\ast~\XT~\instr^\ast \\ &&|&
+     [\_] \\ &&|&
+     \val^\ast~\XT~\instr^\ast \\ &&|&
      \LABEL_n\{\instr^\ast\}~\XT~\END \\ &&|&
      \CAUGHTadm\{\tagaddr~\val^\ast\}~\XT~\END \\ &&|&
      \FRAME_n\{F\}~\XT~\END \\
