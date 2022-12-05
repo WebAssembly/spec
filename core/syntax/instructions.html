@@ -4,17 +4,18 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Instructions &#8212; WebAssembly 2.0 (Draft 2022-11-09)</title>
+    <title>Instructions &#8212; WebAssembly 2.0 (Draft 2022-12-05)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Modules" href="modules.html" />
@@ -69,12 +70,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="documentwrapper">
@@ -84,7 +85,7 @@
           <div class="body" role="main">
             
   <section id="instructions">
-<span id="syntax-instr"></span><span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h1>
+<span id="syntax-instr"></span><span id="index-0"></span><h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this heading">¶</a></h1>
 <p>WebAssembly code consists of sequences of <em>instructions</em>.
 Its computational model is based on a <em>stack machine</em> in that instructions manipulate values on an implicit <em>operand stack</em>,
 consuming (popping) argument values and producing or returning (pushing) result values.</p>
@@ -94,7 +95,7 @@ which are part of the instruction itself.</p>
 <p>Some instructions are <a class="reference internal" href="#syntax-instr-control"><span class="std std-ref">structured</span></a> in that they bracket nested sequences of instructions.</p>
 <p>The following sections group instructions into a number of different categories.</p>
 <section id="numeric-instructions">
-<span id="syntax-instr-numeric"></span><span id="syntax-frelop"></span><span id="syntax-ftestop"></span><span id="syntax-fbinop"></span><span id="syntax-funop"></span><span id="syntax-irelop"></span><span id="syntax-itestop"></span><span id="syntax-ibinop"></span><span id="syntax-iunop"></span><span id="syntax-const"></span><span id="syntax-sx"></span><span id="index-1"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-numeric"></span><span id="syntax-frelop"></span><span id="syntax-ftestop"></span><span id="syntax-fbinop"></span><span id="syntax-funop"></span><span id="syntax-irelop"></span><span id="syntax-itestop"></span><span id="syntax-ibinop"></span><span id="syntax-iunop"></span><span id="syntax-const"></span><span id="syntax-sx"></span><span id="index-1"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Permalink to this heading">¶</a></h2>
 <p>Numeric instructions provide basic operations over numeric <a class="reference internal" href="values.html#syntax-value"><span class="std std-ref">values</span></a> of specific <a class="reference internal" href="types.html#syntax-numtype"><span class="std std-ref">type</span></a>.
 These operations closely match respective operations available in hardware.</p>
 <div class="math notranslate nohighlight">
@@ -191,7 +192,7 @@ For each type, several subcategories can be distinguished:</p>
 where a signedness annotation <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> distinguishes whether the operands are to be <a class="reference internal" href="../exec/numerics.html#aux-signed"><span class="std std-ref">interpreted</span></a> as <a class="reference internal" href="values.html#syntax-uint"><span class="std std-ref">unsigned</span></a> or <a class="reference internal" href="values.html#syntax-sint"><span class="std std-ref">signed</span></a> integers.
 For the other integer instructions, the use of two’s complement for the signed interpretation means that they behave the same regardless of signedness.</p>
 <section id="conventions">
-<span id="syntax-cvtop"></span><span id="syntax-relop"></span><span id="syntax-testop"></span><span id="syntax-binop"></span><span id="syntax-unop"></span><h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
+<span id="syntax-cvtop"></span><span id="syntax-relop"></span><span id="syntax-testop"></span><span id="syntax-binop"></span><span id="syntax-unop"></span><h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading">¶</a></h3>
 <p>Occasionally, it is convenient to group operators together according to the following grammar shorthands:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
@@ -215,7 +216,7 @@ For the other integer instructions, the use of two’s complement for the signed
 </section>
 </section>
 <section id="vector-instructions">
-<span id="syntax-instr-vec"></span><span id="syntax-vfbinop"></span><span id="syntax-vfunop"></span><span id="syntax-visatbinop"></span><span id="syntax-viminmaxop"></span><span id="syntax-vibinop"></span><span id="syntax-viunop"></span><span id="syntax-vishiftop"></span><span id="syntax-vfrelop"></span><span id="syntax-virelop"></span><span id="syntax-vitestop"></span><span id="syntax-vvtestop"></span><span id="syntax-vvternop"></span><span id="syntax-vvbinop"></span><span id="syntax-vvunop"></span><span id="syntax-half"></span><span id="syntax-shape"></span><span id="syntax-laneidx"></span><span id="index-2"></span><h2>Vector Instructions<a class="headerlink" href="#vector-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-vec"></span><span id="syntax-vfbinop"></span><span id="syntax-vfunop"></span><span id="syntax-visatbinop"></span><span id="syntax-viminmaxop"></span><span id="syntax-vibinop"></span><span id="syntax-viunop"></span><span id="syntax-vishiftop"></span><span id="syntax-vfrelop"></span><span id="syntax-virelop"></span><span id="syntax-vitestop"></span><span id="syntax-vvtestop"></span><span id="syntax-vvternop"></span><span id="syntax-vvbinop"></span><span id="syntax-vvunop"></span><span id="syntax-half"></span><span id="syntax-shape"></span><span id="syntax-laneidx"></span><span id="index-2"></span><h2>Vector Instructions<a class="headerlink" href="#vector-instructions" title="Permalink to this heading">¶</a></h2>
 <p>Vector instructions (also known as <em>SIMD</em> instructions, <em>single instruction multiple data</em>) provide basic operations over <a class="reference internal" href="values.html#syntax-value"><span class="std std-ref">values</span></a> of <a class="reference internal" href="types.html#syntax-vectype"><span class="std std-ref">vector type</span></a>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl}
@@ -384,7 +385,7 @@ The bitwidth of the numeric type <span class="math notranslate nohighlight">\(t\
 <p>Some vector instructions have a signedness annotation <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span> which distinguishes whether the elements in the operands are to be <a class="reference internal" href="../exec/numerics.html#aux-signed"><span class="std std-ref">interpreted</span></a> as <a class="reference internal" href="values.html#syntax-uint"><span class="std std-ref">unsigned</span></a> or <a class="reference internal" href="values.html#syntax-sint"><span class="std std-ref">signed</span></a> integers.
 For the other vector instructions, the use of two’s complement for the signed interpretation means that they behave the same regardless of signedness.</p>
 <section id="syntax-vcvtop">
-<span id="syntax-vtestop"></span><span id="syntax-vrelop"></span><span id="syntax-vbinop"></span><span id="syntax-vunop"></span><span id="id1"></span><h3>Conventions<a class="headerlink" href="#syntax-vcvtop" title="Permalink to this headline">¶</a></h3>
+<span id="syntax-vtestop"></span><span id="syntax-vrelop"></span><span id="syntax-vbinop"></span><span id="syntax-vunop"></span><span id="id1"></span><h3>Conventions<a class="headerlink" href="#syntax-vcvtop" title="Permalink to this heading">¶</a></h3>
 <p>Occasionally, it is convenient to group operators together according to the following grammar shorthands:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
@@ -412,7 +413,7 @@ For the other vector instructions, the use of two’s complement for the signed 
 </section>
 </section>
 <section id="reference-instructions">
-<span id="syntax-instr-ref"></span><span id="syntax-ref-func"></span><span id="syntax-ref-is-null"></span><span id="syntax-ref-null"></span><span id="index-3"></span><h2>Reference Instructions<a class="headerlink" href="#reference-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-ref"></span><span id="syntax-ref-func"></span><span id="syntax-ref-is-null"></span><span id="syntax-ref-null"></span><span id="index-3"></span><h2>Reference Instructions<a class="headerlink" href="#reference-instructions" title="Permalink to this heading">¶</a></h2>
 <p>Instructions in this group are concerned with accessing <a class="reference internal" href="types.html#syntax-reftype"><span class="std std-ref">references</span></a>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl}
@@ -425,7 +426,7 @@ For the other vector instructions, the use of two’s complement for the signed 
 <p>These instructions produce a null value, check for a null value, or produce a reference to a given function, respectively.</p>
 </section>
 <section id="parametric-instructions">
-<span id="syntax-instr-parametric"></span><span id="index-4"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-parametric"></span><span id="index-4"></span><h2>Parametric Instructions<a class="headerlink" href="#parametric-instructions" title="Permalink to this heading">¶</a></h2>
 <p>Instructions in this group can operate on operands of any <a class="reference internal" href="types.html#syntax-valtype"><span class="std std-ref">value type</span></a>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl}
@@ -443,7 +444,7 @@ It may include a <a class="reference internal" href="types.html#syntax-valtype">
 </div>
 </section>
 <section id="variable-instructions">
-<span id="syntax-instr-variable"></span><span id="index-5"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-variable"></span><span id="index-5"></span><h2>Variable Instructions<a class="headerlink" href="#variable-instructions" title="Permalink to this heading">¶</a></h2>
 <p>Variable instructions are concerned with access to <a class="reference internal" href="modules.html#syntax-local"><span class="std std-ref">local</span></a> or <a class="reference internal" href="modules.html#syntax-global"><span class="std std-ref">global</span></a> variables.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl}
@@ -459,7 +460,7 @@ It may include a <a class="reference internal" href="types.html#syntax-valtype">
 The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{local.tee}}\)</span> instruction is like <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{local.set}}\)</span> but also returns its argument.</p>
 </section>
 <section id="table-instructions">
-<span id="syntax-table-fill"></span><span id="syntax-table-grow"></span><span id="syntax-table-size"></span><span id="syntax-table-set"></span><span id="syntax-table-get"></span><span id="syntax-instr-table"></span><span id="index-6"></span><h2>Table Instructions<a class="headerlink" href="#table-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-table-fill"></span><span id="syntax-table-grow"></span><span id="syntax-table-size"></span><span id="syntax-table-set"></span><span id="syntax-table-get"></span><span id="syntax-instr-table"></span><span id="index-6"></span><h2>Table Instructions<a class="headerlink" href="#table-instructions" title="Permalink to this heading">¶</a></h2>
 <p>Instructions in this group are concerned with tables <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">table</span></a>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl}
@@ -485,7 +486,7 @@ The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.ht
 <p>An additional instruction that accesses a table is the <a class="reference internal" href="#syntax-instr-control"><span class="std std-ref">control instruction</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span>.</p>
 </section>
 <section id="memory-instructions">
-<span id="syntax-instr-memory"></span><span id="syntax-lanewidth"></span><span id="syntax-memarg"></span><span id="syntax-storen"></span><span id="syntax-loadn"></span><span id="index-7"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-memory"></span><span id="syntax-lanewidth"></span><span id="syntax-memarg"></span><span id="syntax-storen"></span><span id="syntax-loadn"></span><span id="index-7"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Permalink to this heading">¶</a></h2>
 <p>Instructions in this group are concerned with linear <a class="reference internal" href="modules.html#syntax-mem"><span class="std std-ref">memory</span></a>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl}
@@ -550,7 +551,7 @@ This restriction may be lifted in future versions.</p>
 </div>
 </section>
 <section id="control-instructions">
-<span id="syntax-instr-control"></span><span id="syntax-instr-seq"></span><span id="syntax-call-indirect"></span><span id="syntax-call"></span><span id="syntax-return"></span><span id="syntax-br-table"></span><span id="syntax-br-if"></span><span id="syntax-br"></span><span id="syntax-if"></span><span id="syntax-loop"></span><span id="syntax-block"></span><span id="syntax-unreachable"></span><span id="syntax-nop"></span><span id="syntax-blocktype"></span><span id="index-8"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-instr-control"></span><span id="syntax-instr-seq"></span><span id="syntax-call-indirect"></span><span id="syntax-call"></span><span id="syntax-return"></span><span id="syntax-br-table"></span><span id="syntax-br-if"></span><span id="syntax-br"></span><span id="syntax-if"></span><span id="syntax-loop"></span><span id="syntax-block"></span><span id="syntax-unreachable"></span><span id="syntax-nop"></span><span id="syntax-blocktype"></span><span id="index-8"></span><h2>Control Instructions<a class="headerlink" href="#control-instructions" title="Permalink to this heading">¶</a></h2>
 <p>Instructions in this group affect the flow of control.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl}
@@ -610,7 +611,7 @@ Since it may contain functions of heterogeneous type,
 the callee is dynamically checked against the <a class="reference internal" href="types.html#syntax-functype"><span class="std std-ref">function type</span></a> indexed by the instruction’s second immediate, and the call is aborted with a <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> if it does not match.</p>
 </section>
 <section id="expressions">
-<span id="syntax-expr"></span><span id="index-9"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-expr"></span><span id="index-9"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference internal" href="modules.html#syntax-func"><span class="std std-ref">Function</span></a> bodies, initialization values for <a class="reference internal" href="modules.html#syntax-global"><span class="std std-ref">globals</span></a>, and offsets of <a class="reference internal" href="modules.html#syntax-elem"><span class="std std-ref">element</span></a> or <a class="reference internal" href="modules.html#syntax-data"><span class="std std-ref">data</span></a> segments are given as expressions, which are sequences of <a class="reference internal" href="#syntax-instr"><span class="std std-ref">instructions</span></a> terminated by an <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span> marker.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}

@@ -4,17 +4,18 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Types &#8212; WebAssembly 2.0 (Draft 2022-11-09)</title>
+    <title>Types &#8212; WebAssembly 2.0 (Draft 2022-12-05)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Instructions" href="instructions.html" />
@@ -69,12 +70,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="documentwrapper">
@@ -84,11 +85,11 @@
           <div class="body" role="main">
             
   <section id="types">
-<span id="syntax-type"></span><span id="index-0"></span><h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
+<span id="syntax-type"></span><span id="index-0"></span><h1>Types<a class="headerlink" href="#types" title="Permalink to this heading">¶</a></h1>
 <p>Various entities in WebAssembly are classified by types.
 Types are checked during <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">validation</span></a>, <a class="reference internal" href="../exec/modules.html#exec-instantiation"><span class="std std-ref">instantiation</span></a>, and possibly <a class="reference internal" href="instructions.html#syntax-call-indirect"><span class="std std-ref">execution</span></a>.</p>
 <section id="number-types">
-<span id="syntax-numtype"></span><span id="index-1"></span><h2>Number Types<a class="headerlink" href="#number-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-numtype"></span><span id="index-1"></span><h2>Number Types<a class="headerlink" href="#number-types" title="Permalink to this heading">¶</a></h2>
 <p><em>Number types</em> classify numeric values.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
@@ -102,7 +103,7 @@ They correspond to the respective binary floating-point representations, also kn
 <p>Number types are <em>transparent</em>, meaning that their bit patterns can be observed.
 Values of number type can be stored in <a class="reference internal" href="modules.html#syntax-mem"><span class="std std-ref">memories</span></a>.</p>
 <section id="conventions">
-<span id="bitwidth"></span><h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h3>
+<span id="bitwidth"></span><h3>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The notation <span class="math notranslate nohighlight">\(|t|\)</span> denotes the <em>bit width</em> of a number type <span class="math notranslate nohighlight">\(t\)</span>.
 That is, <span class="math notranslate nohighlight">\(|\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}| = |\href{../syntax/types.html#syntax-valtype}{\mathsf{f32}}| = 32\)</span> and <span class="math notranslate nohighlight">\(|\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}| = |\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}| = 64\)</span>.</p></li>
@@ -110,7 +111,7 @@ That is, <span class="math notranslate nohighlight">\(|\href{../syntax/types.htm
 </section>
 </section>
 <section id="vector-types">
-<span id="syntax-vectype"></span><span id="index-2"></span><h2>Vector Types<a class="headerlink" href="#vector-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-vectype"></span><span id="index-2"></span><h2>Vector Types<a class="headerlink" href="#vector-types" title="Permalink to this heading">¶</a></h2>
 <p><em>Vector types</em> classify vectors of <a class="reference internal" href="#syntax-numtype"><span class="std std-ref">numeric</span></a> values processed by vector instructions (also known as <em>SIMD</em> instructions, single instruction multiple data).</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
@@ -123,14 +124,14 @@ values, or a single 128 bit type. The interpretation is determined by individual
 <p>Vector types, like <a class="reference internal" href="#syntax-numtype"><span class="std std-ref">number types</span></a> are <em>transparent</em>, meaning that their bit patterns can be observed.
 Values of vector type can be stored in <a class="reference internal" href="modules.html#syntax-mem"><span class="std std-ref">memories</span></a>.</p>
 <section id="id1">
-<h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The notation <span class="math notranslate nohighlight">\(|t|\)</span> for <a class="reference internal" href="#bitwidth"><span class="std std-ref">bit width</span></a> extends to vector types as well, that is, <span class="math notranslate nohighlight">\(|\href{../syntax/types.html#syntax-valtype}{\mathsf{v128}}| = 128\)</span>.</p></li>
 </ul>
 </section>
 </section>
 <section id="reference-types">
-<span id="syntax-reftype"></span><span id="index-3"></span><h2>Reference Types<a class="headerlink" href="#reference-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-reftype"></span><span id="index-3"></span><h2>Reference Types<a class="headerlink" href="#reference-types" title="Permalink to this heading">¶</a></h2>
 <p><em>Reference types</em> classify first-class references to objects in the runtime <a class="reference internal" href="../exec/runtime.html#store"><span class="std std-ref">store</span></a>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
@@ -143,7 +144,7 @@ Values of vector type can be stored in <a class="reference internal" href="modul
 Values of reference type can be stored in <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">tables</span></a>.</p>
 </section>
 <section id="value-types">
-<span id="syntax-valtype"></span><span id="index-4"></span><h2>Value Types<a class="headerlink" href="#value-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-valtype"></span><span id="index-4"></span><h2>Value Types<a class="headerlink" href="#value-types" title="Permalink to this heading">¶</a></h2>
 <p><em>Value types</em> classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
 They are either <a class="reference internal" href="#syntax-numtype"><span class="std std-ref">number types</span></a>, <a class="reference internal" href="#syntax-vectype"><span class="std std-ref">vector types</span></a>, or <a class="reference internal" href="#syntax-reftype"><span class="std std-ref">reference types</span></a>.</p>
 <div class="math notranslate nohighlight">
@@ -152,14 +153,14 @@ They are either <a class="reference internal" href="#syntax-numtype"><span class
   \href{../syntax/types.html#syntax-numtype}{\mathit{numtype}} ~|~ \href{../syntax/types.html#syntax-vectype}{\mathit{vectype}} ~|~ \href{../syntax/types.html#syntax-reftype}{\mathit{reftype}} \\
 \end{array}\end{split}\]</div>
 <section id="id2">
-<h3>Conventions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<h3>Conventions<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The meta variable <span class="math notranslate nohighlight">\(t\)</span> ranges over value types or subclasses thereof where clear from context.</p></li>
 </ul>
 </section>
 </section>
 <section id="result-types">
-<span id="syntax-resulttype"></span><span id="index-5"></span><h2>Result Types<a class="headerlink" href="#result-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-resulttype"></span><span id="index-5"></span><h2>Result Types<a class="headerlink" href="#result-types" title="Permalink to this heading">¶</a></h2>
 <p><em>Result types</em> classify the result of <a class="reference internal" href="../exec/instructions.html#exec-instr"><span class="std std-ref">executing</span></a> <a class="reference internal" href="instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> or <a class="reference internal" href="modules.html#syntax-func"><span class="std std-ref">functions</span></a>,
 which is a sequence of values, written with brackets.</p>
 <div class="math notranslate nohighlight">
@@ -169,7 +170,7 @@ which is a sequence of values, written with brackets.</p>
 \end{array}\end{split}\]</div>
 </section>
 <section id="function-types">
-<span id="syntax-functype"></span><span id="index-6"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-functype"></span><span id="index-6"></span><h2>Function Types<a class="headerlink" href="#function-types" title="Permalink to this heading">¶</a></h2>
 <p><em>Function types</em> classify the signature of <a class="reference internal" href="modules.html#syntax-func"><span class="std std-ref">functions</span></a>,
 mapping a vector of parameters to a vector of results.
 They are also used to classify the inputs and outputs of <a class="reference internal" href="instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a>.</p>
@@ -180,7 +181,7 @@ They are also used to classify the inputs and outputs of <a class="reference int
 \end{array}\end{split}\]</div>
 </section>
 <section id="limits">
-<span id="syntax-limits"></span><span id="index-7"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-limits"></span><span id="index-7"></span><h2>Limits<a class="headerlink" href="#limits" title="Permalink to this heading">¶</a></h2>
 <p><em>Limits</em> classify the size range of resizeable storage associated with <a class="reference internal" href="#syntax-memtype"><span class="std std-ref">memory types</span></a> and <a class="reference internal" href="#syntax-tabletype"><span class="std std-ref">table types</span></a>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
@@ -190,7 +191,7 @@ They are also used to classify the inputs and outputs of <a class="reference int
 <p>If no maximum is given, the respective storage can grow to any size.</p>
 </section>
 <section id="memory-types">
-<span id="syntax-memtype"></span><span id="index-8"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-memtype"></span><span id="index-8"></span><h2>Memory Types<a class="headerlink" href="#memory-types" title="Permalink to this heading">¶</a></h2>
 <p><em>Memory types</em> classify linear <a class="reference internal" href="modules.html#syntax-mem"><span class="std std-ref">memories</span></a> and their size range.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
@@ -201,7 +202,7 @@ They are also used to classify the inputs and outputs of <a class="reference int
 The limits are given in units of <a class="reference internal" href="../exec/runtime.html#page-size"><span class="std std-ref">page size</span></a>.</p>
 </section>
 <section id="table-types">
-<span id="syntax-tabletype"></span><span id="index-9"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-tabletype"></span><span id="index-9"></span><h2>Table Types<a class="headerlink" href="#table-types" title="Permalink to this heading">¶</a></h2>
 <p><em>Table types</em> classify <a class="reference internal" href="modules.html#syntax-table"><span class="std std-ref">tables</span></a> over elements of <a class="reference internal" href="#syntax-reftype"><span class="std std-ref">reference type</span></a> within a size range.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
@@ -216,7 +217,7 @@ The limits are given in numbers of entries.</p>
 </div>
 </section>
 <section id="global-types">
-<span id="syntax-globaltype"></span><span id="syntax-mut"></span><span id="index-10"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-globaltype"></span><span id="syntax-mut"></span><span id="index-10"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Permalink to this heading">¶</a></h2>
 <p><em>Global types</em> classify <a class="reference internal" href="modules.html#syntax-global"><span class="std std-ref">global</span></a> variables, which hold a value and can either be mutable or immutable.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
@@ -228,7 +229,7 @@ The limits are given in numbers of entries.</p>
 \end{array}\end{split}\]</div>
 </section>
 <section id="external-types">
-<span id="syntax-externtype"></span><span id="index-11"></span><h2>External Types<a class="headerlink" href="#external-types" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-externtype"></span><span id="index-11"></span><h2>External Types<a class="headerlink" href="#external-types" title="Permalink to this heading">¶</a></h2>
 <p><em>External types</em> classify <a class="reference internal" href="modules.html#syntax-import"><span class="std std-ref">imports</span></a> and <a class="reference internal" href="../exec/runtime.html#syntax-externval"><span class="std std-ref">external values</span></a> with their respective types.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
@@ -239,7 +240,7 @@ The limits are given in numbers of entries.</p>
   \href{../syntax/types.html#syntax-externtype}{\mathsf{global}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}} \\
 \end{array}\end{split}\]</div>
 <section id="id3">
-<h3>Conventions<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<h3>Conventions<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <p>The following auxiliary notation is defined for sequences of external types.
 It filters out entries of a specific kind in an order-preserving fashion:</p>
 <ul class="simple">

@@ -4,17 +4,18 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Conventions &#8212; WebAssembly 2.0 (Draft 2022-11-09)</title>
+    <title>Conventions &#8212; WebAssembly 2.0 (Draft 2022-12-05)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Runtime Structure" href="runtime.html" />
@@ -69,12 +70,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="documentwrapper">
@@ -84,7 +85,7 @@
           <div class="body" role="main">
             
   <section id="conventions">
-<span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
+<span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading">¶</a></h1>
 <p>WebAssembly code is <em>executed</em> when <a class="reference internal" href="modules.html#exec-instantiation"><span class="std std-ref">instantiating</span></a> a module or <a class="reference internal" href="modules.html#exec-invocation"><span class="std std-ref">invoking</span></a> an <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a> function on the resulting module <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">instance</span></a>.</p>
 <p>Execution behavior is defined in terms of an <em>abstract machine</em> that models the <em>program state</em>.
 It includes a <em>stack</em>, which records operand values and control constructs, and an abstract <em>store</em> containing global state.</p>
@@ -93,7 +94,7 @@ Furthermore, there are rules describing the instantiation of a module.
 As with <a class="reference internal" href="../intro/overview.html#validation"><span class="std std-ref">validation</span></a>, all rules are given in two <em>equivalent</em> forms:</p>
 <ol class="arabic simple">
 <li><p>In <em>prose</em>, describing the execution in intuitive form.</p></li>
-<li><p>In <em>formal notation</em>, describing the rule in mathematical form. <a class="footnote-reference brackets" href="#cite-pldi2017" id="id1">1</a></p></li>
+<li><p>In <em>formal notation</em>, describing the rule in mathematical form. <a class="footnote-reference brackets" href="#cite-pldi2017" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></li>
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -102,7 +103,7 @@ so that understanding of the formal notation is <em>not</em> required to read th
 The formalism offers a more concise description in notation that is used widely in programming languages semantics and is readily amenable to mathematical proof.</p>
 </div>
 <section id="prose-notation">
-<span id="exec-notation-textual"></span><h2>Prose Notation<a class="headerlink" href="#prose-notation" title="Permalink to this headline">¶</a></h2>
+<span id="exec-notation-textual"></span><h2>Prose Notation<a class="headerlink" href="#prose-notation" title="Permalink to this heading">¶</a></h2>
 <p>Execution is specified by stylised, step-wise rules for each <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> of the <a class="reference internal" href="../syntax/index.html#syntax"><span class="std std-ref">abstract syntax</span></a>.
 The following conventions are adopted in stating these rules.</p>
 <ul class="simple">
@@ -124,11 +125,11 @@ which defines the next instruction to execute.</p></li>
 </ul>
 </section>
 <section id="formal-notation">
-<span id="exec-notation"></span><span id="index-1"></span><h2>Formal Notation<a class="headerlink" href="#formal-notation" title="Permalink to this headline">¶</a></h2>
+<span id="exec-notation"></span><span id="index-1"></span><h2>Formal Notation<a class="headerlink" href="#formal-notation" title="Permalink to this heading">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This section gives a brief explanation of the notation for specifying execution formally.
-For the interested reader, a more thorough introduction can be found in respective text books. <a class="footnote-reference brackets" href="#cite-tapl" id="id2">2</a></p>
+For the interested reader, a more thorough introduction can be found in respective text books. <a class="footnote-reference brackets" href="#cite-tapl" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p>
 </div>
 <p>The formal execution rules use a standard approach for specifying operational semantics, rendering them into <em>reduction rules</em>.
 Every rule has the following general form:</p>
@@ -176,15 +177,17 @@ or if a <a class="reference internal" href="runtime.html#syntax-trap"><span clas
 \end{array}\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(x_4 = -x_2\)</span> and <span class="math notranslate nohighlight">\(x_5 = -x_2 + x_3\)</span> and <span class="math notranslate nohighlight">\(x_6 = x_1 \cdot (-x_2 + x_3)\)</span>.</p>
 </div>
-<dl class="footnote brackets">
-<dt class="label" id="cite-pldi2017"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>The semantics is derived from the following article:
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="cite-pldi2017" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>The semantics is derived from the following article:
 Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. <a class="reference external" href="https://dl.acm.org/citation.cfm?doid=3062341.3062363">Bringing the Web up to Speed with WebAssembly</a>. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.</p>
-</dd>
-<dt class="label" id="cite-tapl"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
-<dd><p>For example: Benjamin Pierce. <a class="reference external" href="https://www.cis.upenn.edu/~bcpierce/tapl/">Types and Programming Languages</a>. The MIT Press 2002</p>
-</dd>
-</dl>
+</aside>
+<aside class="footnote brackets" id="cite-tapl" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>For example: Benjamin Pierce. <a class="reference external" href="https://www.cis.upenn.edu/~bcpierce/tapl/">Types and Programming Languages</a>. The MIT Press 2002</p>
+</aside>
+</aside>
 </section>
 </section>
 

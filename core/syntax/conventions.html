@@ -4,17 +4,18 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Conventions &#8212; WebAssembly 2.0 (Draft 2022-11-09)</title>
+    <title>Conventions &#8212; WebAssembly 2.0 (Draft 2022-12-05)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Values" href="values.html" />
@@ -69,12 +70,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="documentwrapper">
@@ -84,14 +85,14 @@
           <div class="body" role="main">
             
   <section id="conventions">
-<span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
+<span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading">¶</a></h1>
 <p>WebAssembly is a programming language that has multiple concrete representations
 (its <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a> and the <a class="reference internal" href="../text/index.html#text"><span class="std std-ref">text format</span></a>).
 Both map to a common structure.
 For conciseness, this structure is described in the form of an <em>abstract syntax</em>.
 All parts of this specification are defined in terms of this abstract syntax.</p>
 <section id="grammar-notation">
-<span id="grammar"></span><span id="index-1"></span><h2>Grammar Notation<a class="headerlink" href="#grammar-notation" title="Permalink to this headline">¶</a></h2>
+<span id="grammar"></span><span id="index-1"></span><h2>Grammar Notation<a class="headerlink" href="#grammar-notation" title="Permalink to this heading">¶</a></h2>
 <p>The following conventions are adopted in defining grammar rules for abstract syntax.</p>
 <ul class="simple">
 <li><p>Terminal symbols (atoms) are written in sans-serif font: <span class="math notranslate nohighlight">\(\mathsf{i32}, \mathsf{end}\)</span>.</p></li>
@@ -111,7 +112,7 @@ All parts of this specification are defined in terms of this abstract syntax.</p
 </ul>
 </section>
 <section id="auxiliary-notation">
-<span id="notation-compose"></span><span id="notation-concat"></span><span id="notation-project"></span><span id="notation-record"></span><span id="notation-replace"></span><span id="notation-slice"></span><span id="notation-index"></span><span id="notation-length"></span><span id="notation-epsilon"></span><h2>Auxiliary Notation<a class="headerlink" href="#auxiliary-notation" title="Permalink to this headline">¶</a></h2>
+<span id="notation-compose"></span><span id="notation-concat"></span><span id="notation-project"></span><span id="notation-record"></span><span id="notation-replace"></span><span id="notation-slice"></span><span id="notation-index"></span><span id="notation-length"></span><span id="notation-epsilon"></span><h2>Auxiliary Notation<a class="headerlink" href="#auxiliary-notation" title="Permalink to this heading">¶</a></h2>
 <p>When dealing with syntactic constructs the following notation is also used:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\epsilon\)</span> denotes the empty sequence.</p></li>
@@ -154,7 +155,7 @@ except that the contents of the <span class="math notranslate nohighlight">\(\ma
 <p>where <span class="math notranslate nohighlight">\(r \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}}~.\mathsf{field} = A\)</span> is shortened to <span class="math notranslate nohighlight">\(r \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \mathsf{field} = A\)</span>.</p>
 </section>
 <section id="vectors">
-<span id="syntax-vec"></span><span id="index-2"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
+<span id="syntax-vec"></span><span id="index-2"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this heading">¶</a></h2>
 <p><em>Vectors</em> are bounded sequences of the form <span class="math notranslate nohighlight">\(A^n\)</span> (or <span class="math notranslate nohighlight">\(A^\ast\)</span>),
 where the <span class="math notranslate nohighlight">\(A\)</span> can either be values or complex constructions.
 A vector can have at most <span class="math notranslate nohighlight">\(2^{32}-1\)</span> elements.</p>

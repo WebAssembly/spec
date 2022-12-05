@@ -4,17 +4,18 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Introduction &#8212; WebAssembly 2.0 (Draft 2022-11-09)</title>
+    <title>Introduction &#8212; WebAssembly 2.0 (Draft 2022-12-05)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Overview" href="overview.html" />
@@ -66,12 +67,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="documentwrapper">
@@ -81,21 +82,21 @@
           <div class="body" role="main">
             
   <section id="introduction">
-<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>WebAssembly (abbreviated Wasm <a class="footnote-reference brackets" href="#wasm" id="id1">1</a>) is a <em>safe, portable, low-level code format</em>
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h1>
+<p>WebAssembly (abbreviated Wasm <a class="footnote-reference brackets" href="#wasm" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>) is a <em>safe, portable, low-level code format</em>
 designed for efficient execution and compact representation.
 Its main goal is to enable high performance applications on the Web, but it does not make any Web-specific assumptions or provide Web-specific features, so it can be employed in other environments as well.</p>
 <p>WebAssembly is an open standard developed by a <a class="reference external" href="https://www.w3.org/community/webassembly/">W3C Community Group</a>.</p>
-<p>This document describes version 2.0 (Draft 2022-11-09) of the <a class="reference internal" href="#scope"><span class="std std-ref">core</span></a> WebAssembly standard.
+<p>This document describes version 2.0 (Draft 2022-12-05) of the <a class="reference internal" href="#scope"><span class="std std-ref">core</span></a> WebAssembly standard.
 It is intended that it will be superseded by new incremental releases with additional features in the future.</p>
 <section id="design-goals">
-<span id="goals"></span><h2>Design Goals<a class="headerlink" href="#design-goals" title="Permalink to this headline">¶</a></h2>
+<span id="goals"></span><h2>Design Goals<a class="headerlink" href="#design-goals" title="Permalink to this heading">¶</a></h2>
 <p id="index-0">The design goals of WebAssembly are the following:</p>
 <ul class="simple">
 <li><p>Fast, safe, and portable <em>semantics</em>:</p>
 <ul>
 <li><p><strong>Fast</strong>: executes with near native code performance, taking advantage of capabilities common to all contemporary hardware.</p></li>
-<li><p><strong>Safe</strong>: code is validated and executes in a memory-safe <a class="footnote-reference brackets" href="#memorysafe" id="id2">2</a>, sandboxed environment preventing data corruption or security breaches.</p></li>
+<li><p><strong>Safe</strong>: code is validated and executes in a memory-safe <a class="footnote-reference brackets" href="#memorysafe" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>, sandboxed environment preventing data corruption or security breaches.</p></li>
 <li><p><strong>Well-defined</strong>: fully and precisely defines valid programs and their behavior in a way that is easy to reason about informally and formally.</p></li>
 <li><p><strong>Hardware-independent</strong>: can be compiled on all modern architectures, desktop or mobile devices and embedded systems alike.</p></li>
 <li><p><strong>Language-independent</strong>: does not privilege any particular language, programming model, or object model.</p></li>
@@ -115,17 +116,19 @@ It is intended that it will be superseded by new incremental releases with addit
 </li>
 </ul>
 <p>WebAssembly code is also intended to be easy to inspect and debug, especially in environments like web browsers, but such features are beyond the scope of this specification.</p>
-<dl class="footnote brackets">
-<dt class="label" id="wasm"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>A contraction of “WebAssembly”, not an acronym, hence not using all-caps.</p>
-</dd>
-<dt class="label" id="memorysafe"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
-<dd><p>No program can break WebAssembly’s memory model. Of course, it cannot guarantee that an unsafe language compiling to WebAssembly does not corrupt its own memory layout, e.g. inside WebAssembly’s linear memory.</p>
-</dd>
-</dl>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="wasm" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>A contraction of “WebAssembly”, not an acronym, hence not using all-caps.</p>
+</aside>
+<aside class="footnote brackets" id="memorysafe" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>No program can break WebAssembly’s memory model. Of course, it cannot guarantee that an unsafe language compiling to WebAssembly does not corrupt its own memory layout, e.g. inside WebAssembly’s linear memory.</p>
+</aside>
+</aside>
 </section>
 <section id="scope">
-<span id="id3"></span><h2>Scope<a class="headerlink" href="#scope" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>Scope<a class="headerlink" href="#scope" title="Permalink to this heading">¶</a></h2>
 <p>At its core, WebAssembly is a <em>virtual instruction set architecture (virtual ISA)</em>.
 As such, it has many use cases and can be embedded in many different environments.
 To encompass their variety and enable maximum reuse, the WebAssembly specification is split and layered into several documents.</p>
@@ -136,7 +139,7 @@ It does not, however, define how WebAssembly programs can interact with a specif
 These will each define a WebAssembly <em>application programming interface (API)</em> suitable for a given environment.</p>
 </section>
 <section id="security-considerations">
-<span id="security"></span><span id="index-1"></span><h2>Security Considerations<a class="headerlink" href="#security-considerations" title="Permalink to this headline">¶</a></h2>
+<span id="security"></span><span id="index-1"></span><h2>Security Considerations<a class="headerlink" href="#security-considerations" title="Permalink to this heading">¶</a></h2>
 <p>WebAssembly provides no ambient access to the computing environment in which code is executed.
 Any interaction with the environment, such as I/O, access to resources, or operating system calls, can only be performed by invoking <a class="reference internal" href="overview.html#function"><span class="std std-ref">functions</span></a> provided by the <a class="reference internal" href="overview.html#embedder"><span class="std std-ref">embedder</span></a> and imported into a WebAssembly <a class="reference internal" href="overview.html#module"><span class="std std-ref">module</span></a>.
 An embedder can establish security policies suitable for a respective environment by controlling or limiting which functional capabilities it makes available for import.
@@ -145,7 +148,7 @@ Such considerations are an embedder’s responsibility and the subject of <a cla
 In environments where this is a concern, an embedder may have to put suitable mitigations into place to isolate WebAssembly computations.</p>
 </section>
 <section id="dependencies">
-<span id="index-2"></span><span id="id4"></span><h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<span id="index-2"></span><span id="id4"></span><h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading">¶</a></h2>
 <p>WebAssembly depends on two existing standards:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a>, for the representation of <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">floating-point data</span></a> and the semantics of respective <a class="reference internal" href="../exec/numerics.html#float-ops"><span class="std std-ref">numeric operations</span></a>.</p></li>
