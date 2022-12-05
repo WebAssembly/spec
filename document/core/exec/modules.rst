@@ -655,7 +655,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 13. Push the frame :math:`F` to the stack.
 
-14. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS` whose :ref:`mode <syntax-elemmode>` is either of the form :math:`\EDECLARATIVE` or :math:`\EACTIVE~\{ \ETABLE~\tableidx_i, \EOFFSET~\X{einstr}^\ast_i~\END \}`, do:
+14. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS` whose :ref:`mode <syntax-elemmode>` is of the form :math:`\EACTIVE~\{ \ETABLE~\tableidx_i, \EOFFSET~\X{einstr}^\ast_i~\END \}`, do:
 
     a. Let :math:`n` be the length of the vector :math:`\elem_i.\EINIT`.
 
@@ -669,7 +669,11 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
     f. :ref:`Execute <exec-elem.drop>` the instruction :math:`\ELEMDROP~i`.
 
-15. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATAS` whose :ref:`mode <syntax-datamode>` is of the form :math:`\DACTIVE~\{ \DMEM~\memidx_i, \DOFFSET~\X{dinstr}^\ast_i~\END \}`, do:
+15. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS` whose :ref:`mode <syntax-elemmode>` is of the form :math:`\EDECLARATIVE`, do:
+
+    a. :ref:`Execute <exec-elem.drop>` the instruction :math:`\ELEMDROP~i`.
+
+16. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATAS` whose :ref:`mode <syntax-datamode>` is of the form :math:`\DACTIVE~\{ \DMEM~\memidx_i, \DOFFSET~\X{dinstr}^\ast_i~\END \}`, do:
 
     a. Assert: :math:`\memidx_i` is :math:`0`.
 
@@ -684,10 +688,6 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
     f. :ref:`Execute <exec-memory.init>` the instruction :math:`\MEMORYINIT~i`.
 
     g. :ref:`Execute <exec-data.drop>` the instruction :math:`\DATADROP~i`.
-
-16. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATAS` whose :ref:`mode <syntax-datamode>` is of the form :math:`\DDECLARATIVE`, do:
-
-    a. :ref:`Execute <exec-data.drop>` the instruction :math:`\DATADROP~i`.
 
 17. If the :ref:`start function <syntax-start>` :math:`\module.\MSTART` is not empty, then:
 
