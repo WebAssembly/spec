@@ -2687,7 +2687,7 @@ Control Instructions
 :math:`\BRTABLE~l^\ast~l_N`
 ...........................
 
-1. Assert: due to :ref:`validation <valid-if>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-br-table>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 2. Pop the value :math:`\I32.\CONST~i` from the stack.
 
