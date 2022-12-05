@@ -655,7 +655,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 13. Push the frame :math:`F` to the stack.
 
-14. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS` whose :ref:`mode <syntax-elemmode>` is of the form :math:`\EACTIVE~\{ \ETABLE~\tableidx_i, \EOFFSET~\X{einstr}^\ast_i~\END \}`, do:
+14. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS` whose :ref:`mode <syntax-elemmode>` is either of the form :math:`\EDECLARATIVE` or :math:`\EACTIVE~\{ \ETABLE~\tableidx_i, \EOFFSET~\X{einstr}^\ast_i~\END \}`, do:
 
     a. Let :math:`n` be the length of the vector :math:`\elem_i.\EINIT`.
 
@@ -685,15 +685,19 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
     g. :ref:`Execute <exec-data.drop>` the instruction :math:`\DATADROP~i`.
 
-16. If the :ref:`start function <syntax-start>` :math:`\module.\MSTART` is not empty, then:
+16. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATAS` whose :ref:`mode <syntax-datamode>` is of the form :math:`\DDECLARATIVE`, do:
+
+    a. :ref:`Execute <exec-data.drop>` the instruction :math:`\DATADROP~i`.
+
+17. If the :ref:`start function <syntax-start>` :math:`\module.\MSTART` is not empty, then:
 
     a. Let :math:`\start` be the :ref:`start function <syntax-start>` :math:`\module.\MSTART`.
 
     b. :ref:`Execute <exec-call>` the instruction :math:`\CALL~\start.\SFUNC`.
 
-17. Assert: due to :ref:`validation <valid-module>`, the frame :math:`F` is now on the top of the stack.
+18. Assert: due to :ref:`validation <valid-module>`, the frame :math:`F` is now on the top of the stack.
 
-18. Pop the frame :math:`F` from the stack.
+19. Pop the frame :math:`F` from the stack.
 
 
 .. math::
