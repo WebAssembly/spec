@@ -22,7 +22,6 @@
 | `i16x8.relaxed_q15mulr_s`             | -mrelaxed-simd |                    |                    |
 | `i16x8.relaxed_dot_i8x16_i7x16_s`     | -mrelaxed-simd |                    |                    |
 | `i32x4.relaxed_dot_i8x16_i7x16_add_s` | -mrelaxed-simd |                    |                    |
-| `f32x4.relaxed_dot_bf16x8_add_f32x4`  | -mrelaxed-simd |                    |                    |
 
 
 [1] Tip of tree LLVM as of 2021-10-28
@@ -55,4 +54,3 @@
 | `i16x8.relaxed_q15mulr_s`             | `__builtin_wasm_relaxed_q15mulr_s_i16x8`          |
 | `i16x8.relaxed_dot_i8x16_i7x16_s`     | `__builtin_wasm_dot_i8x16_i7x16_s_i16x8`          |
 | `i32x4.relaxed_dot_i8x16_i7x16_add_s` | `__builtin_wasm_dot_i8x16_i7x16_add_s_i32x4`      |
-| `f32x4.relaxed_dot_bf16x8_add_f32x4`  | `__builtin_wasm_relaxed_dot_bf16x8_add_f32_f32x4` |

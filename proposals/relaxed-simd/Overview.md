@@ -279,33 +279,6 @@ i16x8_dot_i8x16_i7x16_s(a, b)        = dot_product(signed=True, elements=2, a, b
 i32x4.dot_i8x16_i7x16_add_s(a, b, c) = dot_product(signed=True, elements=4, a, b, c)
 ```
 
-### Relaxed BFloat16 dot product
-
-- `f32x4.relaxed_dot_bf16x8_add_f32x4(a: v128, b: v128, c: v128) -> v128`
-
-BFloat16 is a 16-bit floating-point format that represents the IEEE FP32 numbers
-truncated to the high 16 bits. This instruction computes a FP32 dot product of 2
-BFloat16 with accumulation into another FP32.
-
-```python
-def bfloat16_dot_product(a, b, c):
-  for i in range(8):
-    y.fp32[i] =
-      y.fp32[i] +
-      cast<fp32>(a.bf16[2*i]) * cast<fp32>(b.bf16[2*i]) +
-      cast<fp32>(a.bf16[2*i+1]) * cast<fp32>(b.bf16[2*i+1])
-```
-
-This instruction is implementation defined in the following ways:
-
-- evaluation order
-  - can compute dot product in one step, then accumulation in another, or
-  - accumulate first product in one step, then accumulate second product in
-    another step
-- fusion, the steps described above can be both fused or both unfused
-- the intermediate results can be Round-to-Nearest-Even or Round-to-Odd.
-
-
 ## Binary format
 
 All opcodes have the `0xfd` prefix (same as SIMD proposal), which are omitted in the table below.
@@ -338,8 +311,7 @@ forward, the opcodes for relaxed-simd specification will be the ones in the
 | `i16x8.relaxed_q15mulr_s`             | 0x111          | 0x111            |
 | `i16x8.relaxed_dot_i8x16_i7x16_s`     | 0x112          | 0x112            |
 | `i32x4.relaxed_dot_i8x16_i7x16_add_s` | 0x113          | 0x113            |
-| `f32x4.relaxed_dot_bf16x8_add_f32x4`  | 0x114          | 0x114            |
-| Reserved                              | 0x115 - 0x12F  |                  |
+| Reserved                              | 0x114 - 0x12F  |                  |
 
 ## References
 
