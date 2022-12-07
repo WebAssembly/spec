@@ -1625,7 +1625,7 @@ Constant Expressions
    \qquad
    \frac{
    }{
-     C \vdashinstrconst \REFNULL \const
+     C \vdashinstrconst \REFNULL~t \const
    }
    \qquad
    \frac{
