@@ -2864,15 +2864,13 @@ When the end of a block is reached without a jump or trap aborting it, then the 
 
 2. Pop the values :math:`\val^n` from the stack.
 
-3. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack.
+3. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack and has arity :math:`n`.
 
-4. Assert: due to :ref:`validation <valid-block>`, the arity of :math:`L` is :math:`n`.
+4. Pop the label from the stack.
 
-5. Pop the label from the stack.
+5. Push :math:`\val^n` back to the stack.
 
-6. Push :math:`\val^n` back to the stack.
-
-7. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
+6. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
 
 .. math::
    ~\\[-1ex]
