@@ -65,7 +65,7 @@ print(
    (module
      (func (export "test")
        (data.drop 0)))
-   "unknown memory 0")
+   "unknown data segment")
 `);
 
 // drop with data seg ix out of range
@@ -95,7 +95,7 @@ print(
   (func (export "test")
     (data.drop 0)
     (memory.init 0 (i32.const 1234) (i32.const 1) (i32.const 1))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // init with data seg ix indicating an active segment
@@ -105,7 +105,7 @@ print(
    (data (i32.const 0) "\\37")
    (func (export "test")
      (memory.init 0 (i32.const 1234) (i32.const 1) (i32.const 1))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // init with no memory
@@ -143,7 +143,7 @@ print(
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 1234) (i32.const 0) (i32.const 5))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // init: seg ix is valid passive, but implies copying beyond end of seg
@@ -152,7 +152,7 @@ print(
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 1234) (i32.const 2) (i32.const 3))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // init: seg ix is valid passive, but implies copying beyond end of dst
@@ -161,7 +161,7 @@ print(
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 0xFFFE) (i32.const 1) (i32.const 3))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // init: seg ix is valid passive, src offset past the end, zero len is invalid
@@ -170,7 +170,7 @@ print(
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 1234) (i32.const 4) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // init: seg ix is valid passive, zero len, src offset at the end
@@ -188,7 +188,7 @@ print(
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 0x10001) (i32.const 0) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // init: seg ix is valid passive, zero len, but dst offset at the end
@@ -216,7 +216,7 @@ print(
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 0x10001) (i32.const 4) (i32.const 0))))
-(assert_trap (invoke "test") "out of bounds")
+(assert_trap (invoke "test") "out of bounds memory access")
 `);
 
 // invalid argument types.  TODO: can add anyfunc etc here.
@@ -265,7 +265,7 @@ function mem_init(min, max, shared, backup, write) {
     let offs = min*PAGESIZE - backup;
     print(
 `(assert_trap (invoke "run" (i32.const ${offs}) (i32.const ${write}))
-              "out of bounds")
+              "out of bounds memory access")
 `);
     checkRange(0, min, 0);
 }
@@ -309,5 +309,4 @@ print(
   (data "") (data "") (data "") (data "") (data "") (data "") (data "") (data "")
   (data "") (data "") (data "") (data "") (data "") (data "") (data "") (data "")
   (data "")
-  (func (memory.init 64 (i32.const 0) (i32.const 0) (i32.const 0))))
-`)
+  (func (memory.init 64 (i32.const 0) (i32.const 0) (i32.const 0))))`)
