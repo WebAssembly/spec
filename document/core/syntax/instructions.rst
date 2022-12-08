@@ -195,7 +195,7 @@ Occasionally, it is convenient to group operators together according to the foll
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Vector instructions (also known as *SIMD* instructions, single instruction multiple data) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
+Vector instructions (also known as *SIMD* instructions, *single instruction multiple data*) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
 
 .. math::
    \begin{array}{llcl}
@@ -208,6 +208,10 @@ Vector instructions (also known as *SIMD* instructions, single instruction multi
    \production{half} & \half &::=&
      \K{low} ~|~ \K{high} \\
    \production{lane index} & \laneidx &::=& \u8 \\
+   \end{array}
+
+.. math::
+   \begin{array}{llcl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \K{v128.}\VCONST~\i128 \\&&|&
@@ -271,6 +275,10 @@ Vector instructions (also known as *SIMD* instructions, single instruction multi
      \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}\sx ~|~
      \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\&&|&
      \dots \\
+   \end{array}
+
+.. math::
+   \begin{array}{llcl}
    \production{vector bitwise unary operator} & \vvunop &::=&
      \K{not} \\
    \production{vector bitwise binary operator} & \vvbinop &::=&
