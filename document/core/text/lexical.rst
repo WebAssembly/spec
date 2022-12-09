@@ -58,7 +58,7 @@ That is, the next token always consists of the longest possible sequence of char
 Tokens can be separated by :ref:`white space <text-space>`,
 but except for strings, they cannot themselves contain whitespace.
 
-The set of *keyword* tokens is defined implicitly, by all occurrences of a :ref:`terminal symbol <text-grammar>` in literal form, such as :math:`\text{keyword}`, in a :ref:`syntactic <text-syntactic>` production of this chapter.
+*Keyword* tokens are defined either implicitly by an occurrence of a :ref:`terminal symbol <text-grammar>` in literal form, such as :math:`\text{keyword}`, in a :ref:`syntactic <text-syntactic>` production of this chapter, or explicitly where they arise in this chapter.
 
 Any token that does not fall into any of the other categories is considered *reserved*, and cannot occur in source text.
 

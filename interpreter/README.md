@@ -10,7 +10,7 @@ The interpreter can
 * *export* test scripts to self-contained JavaScript test cases
 * *run* as an interactive interpreter
 
-The text format defines modules in S-expression syntax. Moreover, it is generalised to a (very dumb) form of *script* that can define multiples module and a batch of invocations, assertions, and conversions between them. As such it is richer than the binary format, with the additional functionality purely intended as testing infrastructure. (See [below](#scripts) for details.)
+The text format defines modules in S-expression syntax. Moreover, it is generalised to a form of *script* that can define multiples module and a batch of invocations, assertions, and conversions between them. As such it is richer than the binary format, with the additional functionality purely intended as testing infrastructure. (See [below](#scripts) for details.)
 
 
 ## Building
@@ -383,7 +383,7 @@ In particular, comments of the latter form nest properly.
 
 ## Scripts
 
-In order to be able to check and run modules for testing purposes, the S-expression format is interpreted as a very simple and dumb notion of "script", with commands as follows:
+In order to be able to check and run modules for testing purposes, the S-expression format is interpreted as a very simple notion of "script", with commands as follows:
 
 ```
 script: <cmd>*

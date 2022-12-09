@@ -340,15 +340,8 @@ The second byte is reserved for possible future extensions.
 
 ## JS API
 
-Based on the [JS type reflection proposal](https://github.com/WebAssembly/js-types).
-
-### Type Representation
-
-* A `ValueType` can be described by an object of the form `{ref: ConsType, ...}`
-  - `type ValueType = ... | {ref: ConsType, nullable: bool}`
-
-* A `ConsType` can be described by a suitable union type
-  - `type ConsType = "func" | "extern" | DefType`
+The group decided to go with the "no-frills" approach for the JS API for the time being.
+In the context of this proposal, that means that conversions (or type reflection) at concrete reference type throws a `TypeError` exception.
 
 
 ### Value Conversions
@@ -357,11 +350,9 @@ Based on the [JS type reflection proposal](https://github.com/WebAssembly/js-typ
 
 In addition to the rules for basic reference types:
 
-* Any function that is an instance of `WebAssembly.Function` with type `<functype>` is allowed as `ref <functype>` or `ref null <functype>`.
+* If the target type of a ToWebAssemblyValue is a concrete reference type, then throw `TypeError`.
 
-* Any non-null external reference is allowed as `ref extern`.
-
-* The `null` value is allowed as `ref null ht`.
+* If the source type of a ToJSValue is a concrete reference type, then throw `TypeError`.
 
 
 ### Constructors
@@ -376,6 +367,52 @@ In addition to the rules for basic reference types:
 
 * The `Table` method `grow` gets an additional optional argument `init` that is used to initialise the new table slots. It defaults to `null`. A `TypeError` is produced if the argument is omitted and the table's element type is not defaultable.
 
+
+### Type Reflection
+
+In the presence of the [JS type reflection proposal](https://github.com/WebAssembly/js-types):
+
+* `Global.type` throws `TypeError` when encountering a concrete reference type.
+
+* `Table.type` throws `TypeError` when encountering a concrete reference type as element type.
+
+* `Function.type` throws `TypeError` when encountering a concrete reference type as parameter or result type.
+
+* `Module.imports` throws `TypeError` when encountering a concrete reference type in any of the global, table or function types of imports.
+
+* `Module.exports` throws `TypeError` when encountering a concrete reference type in any of the global, table or function types of exports.
+
+Note: The [GC proposal](https://github.com/WebAssembly/gc) is expected to at least add `anyref` as a recognised `RefType`, but possibly throw on other abstract reference types.
+
+
+### Possible Extension: Full Type Reflection
+
+Post-MVP, the type reflection abilities of the JS API could be refined based on the [JS type reflection proposal](https://github.com/WebAssembly/js-types).
+
+### Type Representation
+
+* A `RefType` can be described by an object of the form `{ref: HeapType, ...}`
+  - `type RefType = ... | {ref: HeapType, nullable: bool}`
+
+* A `HeapType` can be described by a suitable union type
+  - `type HeapType = "func" | "extern" | DefType`
+
+Note: The [GC proposal](https://github.com/WebAssembly/gc) adds additional heap types.
+
+
+### Value Conversions
+
+#### Reference Types
+
+In addition to the rules for basic reference types:
+
+* Any function that is an instance of `WebAssembly.Function` with type `<functype>` is allowed as `ref <functype>` or `ref null <functype>`.
+
+* Any non-null external reference is allowed as `ref extern`.
+
+* The `null` value is allowed as `ref null ht`.
+
+Note: The [GC proposal](https://github.com/WebAssembly/gc) is expected to allow additional conversions for `anyref`.
 
 
 ## Possible Extension: Function Subtyping

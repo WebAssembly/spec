@@ -133,7 +133,7 @@ Reference Types
 
 A reference type is characterised by the :ref:`heap type <syntax-heaptype>` it points to.
 
-In addition, a reference type of the form :math:`\REF \NULL \X{ht}` is *nullable*, meaning that it can either be a proper reference to :math:`\X{ht}` or :ref:`null <syntax-null>`.
+In addition, a reference type of the form :math:`\REF~\NULL~\X{ht}` is *nullable*, meaning that it can either be a proper reference to :math:`\X{ht}` or :ref:`null <syntax-null>`.
 Other references are *non-null*.
 
 Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
