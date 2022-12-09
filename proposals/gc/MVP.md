@@ -604,7 +604,7 @@ Casts work for both abstract and concrete types. In the latter case, they test i
 
 * `ref.cast null? <heaptype>` tries to convert to a given heap type
   - `ref.cast rt : [(ref rt')] -> [(ref rt)]`
-    - iff `rt <: trt` and `rt' <: trt` for some `tht`
+    - iff `rt <: trt` and `rt' <: trt` for some `trt`
   - traps if reference is not of requested type
   - if `rt` contains `null`, a null operand is passed through, otherwise traps on null
   - equivalent to `(block $l (param anyref) (result (ref rt)) (br_on_cast rt $l) (unreachable))`
