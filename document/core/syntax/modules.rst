@@ -275,10 +275,6 @@ The |EOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <s
 
 Element segments are referenced through :ref:`element indices <syntax-elemidx>`.
 
-.. note::
-   In the current version of WebAssembly, only tables whose elements are :ref:`function references <syntax-reftype>` can be initialized with an element segment.
-   This limitation may be lifted in the future.
-
 
 .. index:: ! data, active, passive, data index, memory, memory index, expression, constant, byte, vector
    pair: abstract syntax; data
