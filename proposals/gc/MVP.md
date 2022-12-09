@@ -607,7 +607,7 @@ Casts work for both abstract and concrete types. In the latter case, they test i
     - iff `rt <: trt` and `rt' <: trt` for some `trt`
   - traps if reference is not of requested type
   - if `rt` contains `null`, a null operand is passed through, otherwise traps on null
-  - equivalent to `(block $l (param anyref) (result rt) (br_on_cast $l rt) (unreachable))`
+  - equivalent to `(block $l (param trt) (result rt) (br_on_cast $l rt) (unreachable))`
 
 * `br_on_cast <labelidx> <reftype>` branches if a reference has a given type
   - `br_on_cast $l rt : [t0* rt'] -> [t0* rt']`
