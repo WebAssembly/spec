@@ -224,9 +224,9 @@ Local Types
 
 .. math::
    \begin{array}{llll}
-   \production{(initialization status)} & \init &::=&
+   \production{initialization status} & \init &::=&
      \SET ~|~ \UNSET \\
-   \production{(local type)} & \localtype &::=&
+   \production{local type} & \localtype &::=&
      \init~\valtype \\
    \end{array}
 
