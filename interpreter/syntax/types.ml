@@ -111,10 +111,6 @@ let defaultable = function
 
 (* Projections *)
 
-let inv_null = function
-  | Null -> NoNull
-  | NoNull -> Null
-
 let unpacked_storage_type = function
   | ValStorageT t -> t
   | PackStorageT _ -> NumT I32T

@@ -203,3 +203,42 @@
 
 (invoke "test-sub")
 (invoke "test-canon")
+
+
+;; Cases of nullability
+
+(module
+  (type $t (struct))
+
+  (func (param (ref any)) (result (ref any))
+    (block (result (ref $t)) (br_on_cast_fail 1 $t (local.get 0)))
+  )
+  (func (param (ref null any)) (result (ref null any))
+    (block (result (ref $t)) (br_on_cast_fail 1 $t (local.get 0)))
+  )
+  (func (param (ref any)) (result (ref any))
+    (block (result (ref null $t)) (br_on_cast_fail 1 null $t (local.get 0))) (ref.as_non_null)
+  )
+  (func (param (ref null any)) (result (ref null any))
+    (block (result (ref null $t)) (br_on_cast_fail 1 null $t (local.get 0)))
+  )
+)
+
+(assert_invalid
+  (module
+    (type $t (struct))
+    (func (param (ref any)) (result (ref any))
+      (block (result (ref $t)) (br_on_cast_fail 1 null $t (local.get 0)))
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (type $t (struct))
+    (func (param (ref null any)) (result (ref any))
+      (block (result (ref $t)) (br_on_cast_fail 1 $t (local.get 0)))
+    )
+  )
+  "type mismatch"
+)
