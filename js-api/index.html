@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly JavaScript Interface</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version 63e66730b, updated Tue Oct 25 12:35:05 2022 -0700" name="generator">
+  <meta content="Bikeshed version 26e85e599, updated Thu Dec 8 15:29:31 2022 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="62aa16e9085999dfd66d32b9a12f76f26605a7b8" name="document-revision">
+  <meta content="937fc7d63efb9e18f36334a9e761a8a040ac44b7" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -303,7 +303,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2022-12-07">7 December 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2022-12-09">9 December 2022</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -403,7 +403,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
    </ol>
   </nav>
   <main>
-   <p>This API provides a way to access WebAssembly <a data-link-type="biblio" href="#biblio-webassembly">[WEBASSEMBLY]</a> through a bridge to explicitly construct modules from JavaScript <a data-link-type="biblio" href="#biblio-ecmascript">[ECMASCRIPT]</a>.</p>
+   <p>This API provides a way to access WebAssembly <a data-link-type="biblio" href="#biblio-webassembly" title="WebAssembly Core Specification">[WEBASSEMBLY]</a> through a bridge to explicitly construct modules from JavaScript <a data-link-type="biblio" href="#biblio-ecmascript" title="ECMAScript Language Specification">[ECMASCRIPT]</a>.</p>
    <h2 class="heading settled" data-level="1" id="sample"><span class="secno">1. </span><span class="content">Sample API Usage</span><a class="self-link" href="#sample"></a></h2>
    <p><em>This section is non-normative.</em></p>
    <p>Given <code>demo.wat</code> (encoded to <code>demo.wasm</code>):</p>
@@ -429,7 +429,7 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
 <c- p>);</c->
 </pre>
    <h2 class="heading settled" data-level="2" id="notation"><span class="secno">2. </span><span class="content">Notation</span><a class="self-link" href="#notation"></a></h2>
-   <p>This specification depends on the Infra Standard. <a data-link-type="biblio" href="#biblio-infra">[INFRA]</a></p>
+   <p>This specification depends on the Infra Standard. <a data-link-type="biblio" href="#biblio-infra" title="Infra Standard">[INFRA]</a></p>
    <p>The WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/conventions.html#grammar-notation" id="ref-for-grammar-notation">sequence</a> type is equivalent to the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> type defined there; values of one
 are treated as values of the other transparently.</p>
    <h2 class="heading settled" data-level="3" id="webassembly-storage"><span class="secno">3. </span><span class="content">Internal storage</span><a class="self-link" href="#webassembly-storage"></a></h2>
@@ -1977,7 +1977,7 @@ In practice, an implementation may run out of resources for valid modules below 
     However, for readability,
     these words do not appear in all uppercase letters in this specification. </p>
    <p>All of the text of this specification is normative
-    except sections explicitly marked as non-normative, examples, and notes. <a data-link-type="biblio" href="#biblio-rfc2119">[RFC2119]</a> </p>
+    except sections explicitly marked as non-normative, examples, and notes. <a data-link-type="biblio" href="#biblio-rfc2119" title="Key words for use in RFCs to Indicate Requirement Levels">[RFC2119]</a> </p>
    <p>Examples in this specification are introduced with the words “for example”
     or are set apart from the normative text
     with <code>class="example"</code>,
@@ -4122,12 +4122,13 @@ document.body.addEventListener("click", function(e) {
 </script>
 <script>/* script-var-click-highlighting */
 
-    document.addEventListener("click", e=>{
-        if(e.target.nodeName == "VAR") {
-            highlightSameAlgoVars(e.target);
-        }
-    });
+    "use strict";
     {
+        document.addEventListener("click", e=>{
+            if(e.target.nodeName == "VAR") {
+                highlightSameAlgoVars(e.target);
+            }
+        });
         const indexCounts = new Map();
         const indexNames = new Map();
         function highlightSameAlgoVars(v) {
