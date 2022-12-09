@@ -264,7 +264,7 @@ It is a :ref:`dynamic type <syntax-type-dyn>` equivalent to the respective :ref:
 
 .. math::
    \begin{array}{llll}
-   \production{(type instance)} & \typeinst &::=&
+   \production{type instance} & \typeinst &::=&
      \functype
    \end{array}
 

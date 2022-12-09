@@ -54,7 +54,7 @@ More concretely, contexts are defined as :ref:`records <notation-record>` :math:
 
 .. math::
    \begin{array}{llll}
-   \production{(context)} & C &::=&
+   \production{context} & C &::=&
      \begin{array}[t]{l@{~}ll}
      \{ & \CTYPES & \functype^\ast, \\
         & \CFUNCS & \typeid^\ast, \\
