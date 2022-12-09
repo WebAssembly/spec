@@ -597,36 +597,33 @@ In particular, `ref.null` is typed as before, despite the introduction of `none`
 
 Casts work for both abstract and concrete types. In the latter case, they test if the operand's RTT is a sub-RTT of the target type.
 
-* `ref.test null? <heaptype>` checks whether a reference has a given heap type
-  - `ref.test null? ht : [(ref null ht')] -> [i32]`
-    - iff `ht <: tht` and `ht' <: tht` where `tht` is a common super type
-  - if `null?` is present, returns 1 for null, otherwise 0
+* `ref.test <reftype>` tests whether a reference has a given type
+  - `ref.test rt : [rt'] -> [i32]`
+    - iff `rt <: trt` and `rt' <: trt` for some `trt`
+  - if `rt` contains `null`, returns 1 for null, otherwise 0
 
-* `ref.cast null? <heaptype>` tries to convert to a given heap type
-  - `ref.cast null? ht : [(ref null ht')] -> [(ref null2? ht)]`
-    - iff `ht <: tht` and `ht' <: tht` where `tht` is a common super type
-    - and `null? = null2?`
+* `ref.cast <reftype>` tries to convert a reference to a given type
+  - `ref.cast rt : [rt'] -> [rt]`
+    - iff `rt <: trt` and `rt' <: trt` for some `trt`
   - traps if reference is not of requested type
-  - if `null?` is present, a null operand is passed through, otherwise traps on null
-  - equivalent to `(block $l (param anyref) (result (ref null? ht)) (br_on_cast null? ht $l) (unreachable))`
+  - if `rt` contains `null`, a null operand is passed through, otherwise traps on null
+  - equivalent to `(block $l (param anyref) (result rt) (br_on_cast $l rt) (unreachable))`
 
-* `br_on_cast <labelidx> null? <heaptype>` branches if a reference has a given heap type
-  - `br_on_cast $l null? ht : [t0* (ref null ht')] -> [t0* (ref null2? ht')]`
+* `br_on_cast <labelidx> <reftype>` branches if a reference has a given type
+  - `br_on_cast $l rt : [t0* rt'] -> [t0* rt']`
     - iff `$l : [t0* t']`
-    - and `(ref null3? ht) <: t'`
-    - and `ht <: tht` and `ht' <: tht` where `tht` is a common super type
-    - and `null? = null3? =/= null2?`
+    - and `rt <: t'`
+    - and `rt <: trt` and `rt' <: trt` for some `trt`
   - passes operand along with branch under target type, plus possible extra args
-  - if `null?` is present, branches on null, otherwise does not
+  - if `rt` contains `null`, branches on null, otherwise does not
 
-* `br_on_cast_fail <labelidx> null? <heaptype>` branches if a reference does not have a given heap type
-  - `br_on_cast_fail $l null? ht : [t0* (ref null ht')] -> [t0* (ref null2? ht)]`
+* `br_on_cast_fail <labelidx> <reftype>` branches if a reference does not have a given type
+  - `br_on_cast_fail $l rt : [t0* rt'] -> [t0* rt]`
     - iff `$l : [t0* t']`
-    - and `(ref null3? ht') <: t'`
-    - and `ht <: tht` and `ht' <: tht` where `tht` is a common super type
-    - and `null? = null2? =/= null3?`
+    - and `rt' <: t'`
+    - and `rt <: trt` and `rt' <: trt` for some `trt`
   - passes operand along with branch, plus possible extra args
-  - if `null?` is present, does not branch on null, otherwise does
+  - if `rt` contains `null`, does not branch on null, otherwise does
 
 Note: Cast instructions do _not_ require the operand's source type to be a supertype of the target type. It can also be a "sibling" in the same hierarchy, i.e., they only need to have a common supertype (in practice, it is sufficient to test that both types share the same top heap type.). Allowing so is necessary to maintain subtype substitutability, i.e., the ability to maintain well-typedness when operands are replaced by subtypes.
 
