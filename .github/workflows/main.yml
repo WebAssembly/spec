@@ -21,6 +21,17 @@ jobs:
       - run: opam install --yes ocamlbuild.0.14.0
       - run: cd interpreter && opam exec make all
 
+  ref-interpreter-js-library:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 4.12.x
+      - run: opam install --yes ocamlbuild.0.14.0 ocamlfind.1.9.5 js_of_ocaml.4.0.0 js_of_ocaml-ppx.4.0.0
+      - run: cd interpreter && opam exec make wast.js
+
   build-js-api-spec:
     runs-on: ubuntu-latest
     steps:
@@ -52,7 +63,7 @@ jobs:
       - run: pip install bikeshed && bikeshed update
       - run: pip install six
       - run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
-      - run: pip install sphinx==4.0.0
+      - run: pip install sphinx==5.1.0
       - run: cd document/core && make all
       - uses: actions/upload-artifact@v2
         with:

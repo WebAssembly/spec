@@ -38,6 +38,7 @@
 .. |MediaType| replace:: Media Type
 .. _MediaType: https://www.iana.org/assignments/media-types/media-types.xhtml
 
+
 .. Literature
 .. ----------
 
@@ -46,6 +47,9 @@
 
 .. |CPP2018| replace:: Mechanising and Verifying the WebAssembly Specification
 .. _CPP2018: https://dl.acm.org/citation.cfm?id=3167082
+
+.. |FM2021| replace:: Two Mechanisations of WebAssembly 1.0
+.. _FM2021: https://link.springer.com/chapter/10.1007/978-3-030-90870-6_4
 
 .. |TAPL| replace:: Types and Programming Languages
 .. _TAPL: https://www.cis.upenn.edu/~bcpierce/tapl/
@@ -290,7 +294,7 @@
 .. |GTYPE| mathdef:: \xref{syntax/modules}{syntax-global}{\K{type}}
 .. |GINIT| mathdef:: \xref{syntax/modules}{syntax-global}{\K{init}}
 
-.. |EELEMTYPE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{type}}
+.. |ETYPE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{type}}
 .. |EINIT| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{init}}
 .. |EMODE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{mode}}
 .. |EPASSIVE| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\K{passive}}
@@ -1010,7 +1014,7 @@
 .. |GITYPE| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{type}}
 .. |GIVALUE| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{value}}
 
-.. |EIELEMTYPE| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{type}}
+.. |EITYPE| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{type}}
 .. |EIELEM| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{elem}}
 
 .. |DIDATA| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{data}}

@@ -30,7 +30,7 @@ and provide initialization in the form of :ref:`data <syntax-data>` and :ref:`el
 Each of the vectors -- and thus the entire module -- may be empty.
 
 
-.. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! tag index, ! global index, ! local index, ! label index, ! element index, ! data index, function, global, table, memory, tag, element, data, local, parameter, import
+.. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! local index, ! label index, ! element index, ! data index, ! tag index, ! global index, ! local index, ! label index, function, global, table, memory, element, data, tag, local, parameter, import
    pair: abstract syntax; type index
    pair: abstract syntax; function index
    pair: abstract syntax; table index
@@ -97,7 +97,6 @@ Label indices reference :ref:`structured control instructions <syntax-instr-cont
 .. _free-funcidx:
 .. _free-tableidx:
 .. _free-memidx:
-.. _free-tagidx:
 .. _free-globalidx:
 .. _free-elemidx:
 .. _free-dataidx:
@@ -112,7 +111,7 @@ Conventions
 
 * The meta variables :math:`x, y` range over indices in any of the other index spaces.
 
-* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`. We sometimes reinterpret this set as the :ref:`vector <syntax-vec>` of its elements.
+* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`. Sometimes this set is reinterpreted as the :ref:`vector <syntax-vec>` of its elements.
 
 .. note::
    For example, if :math:`\instr^\ast` is :math:`(\DATADROP~x) (\MEMORYINIT~y)`, then :math:`\freedataidx(\instr^\ast) = \{x, y\}`, or equivalently, the vector :math:`x~y`.
@@ -288,7 +287,7 @@ A declarative element segment is not available at runtime but merely serves to f
 .. math::
    \begin{array}{llll}
    \production{element segment} & \elem &::=&
-     \{ \EELEMTYPE~\reftype, \EINIT~\vec(\expr), \EMODE~\elemmode \} \\
+     \{ \ETYPE~\reftype, \EINIT~\vec(\expr), \EMODE~\elemmode \} \\
    \production{element segment mode} & \elemmode &::=&
      \EPASSIVE \\&&|&
      \EACTIVE~\{ \ETABLE~\tableidx, \EOFFSET~\expr \} \\&&|&
@@ -298,10 +297,6 @@ A declarative element segment is not available at runtime but merely serves to f
 The |EOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
 
 Element segments are referenced through :ref:`element indices <syntax-elemidx>`.
-
-.. note::
-   In the current version of WebAssembly, only tables of element type |FUNCREF| can be initialized with an element segment.
-   This limitation may be lifted in the future.
 
 
 .. index:: ! data, active, passive, data index, memory, memory index, expression, constant, byte, vector
@@ -355,7 +350,7 @@ The |MSTART| component of a module declares the :ref:`function index <syntax-fun
 
 .. note::
    The start function is intended for initializing the state of a module.
-   The module and its exports are not accessible before this initialization has completed.
+   The module and its exports are not accessible externally before this initialization has completed.
 
 
 .. index:: ! export, name, index, function index, table index, memory index, tag index, global index, function, table, memory, tag, global, instantiation
@@ -406,7 +401,7 @@ The following auxiliary notation is defined for sequences of exports, filtering 
 * :math:`\edglobals(\export^\ast) = [\globalidx ~|~ \EDGLOBAL~\globalidx \in (\export.\EDESC)^\ast]`
 
 
-.. index:: ! import, name, function type, table type, memory type, global type, tag type, index space, type index, function index, table index, memory index, global index, tag index, function, table, memory, tag, global, instantiation
+.. index:: ! import, name, function type, table type, memory type, global type, tag type, index, index space, type index, function index, table index, memory index, global index, tag index, function, table, memory, tag, global, instantiation
    pair: abstract syntax; import
    single: function; import
    single: table; import

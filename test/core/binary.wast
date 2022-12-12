@@ -140,23 +140,68 @@
   "\41\00\0b\00"                       ;; (i32.const 0) with no elements
 )
 
-;; Data segment memory index can have non-minimal length
+;; Data segment tags and memory index can have non-minimal length
 (module binary
   "\00asm" "\01\00\00\00"
   "\05\03\01"                          ;; Memory section with 1 entry
   "\00\00"                             ;; no max, minimum 0
   "\0b\07\01"                          ;; Data section with 1 entry
-  "\80\00"                             ;; Memory index 0, encoded with 2 bytes
+  "\80\00"                             ;; Active segment, encoded with 2 bytes
+  "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
+)
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\05\03\01"                          ;; Memory section with 1 entry
+  "\00\00"                             ;; no max, minimum 0
+  "\0b\08\01"                          ;; Data section with 1 entry
+  "\82\00"                             ;; Active segment, encoded with 2 bytes
+  "\00"                                ;; explicit memory index
+  "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
+)
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\05\03\01"                          ;; Memory section with 1 entry
+  "\00\00"                             ;; no max, minimum 0
+  "\0b\09\01"                          ;; Data section with 1 entry
+  "\82\00"                             ;; Active segment, encoded with 2 bytes
+  "\80\00"                             ;; explicit memory index, encoded with 2 bytes
   "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
 )
 
-;; Element segment table index can have non-minimal length
+;; Element segment tags and table index can have non-minimal length
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\04\04\01"                          ;; Table section with 1 entry
+  "\70\00\00"                          ;; no max, minimum 0, funcref
+  "\09\07\01"                          ;; Element section with 1 entry
+  "\80\00"                             ;; Active segment
+  "\41\00\0b\00"                       ;; (i32.const 0) with no elements
+)
 (module binary
   "\00asm" "\01\00\00\00"
   "\04\04\01"                          ;; Table section with 1 entry
   "\70\00\00"                          ;; no max, minimum 0, funcref
   "\09\09\01"                          ;; Element section with 1 entry
-  "\02\80\00"                          ;; Table index 0, encoded with 2 bytes
+  "\02"                                ;; Active segment
+  "\80\00"                             ;; explicit table index, encoded with 2 bytes
+  "\41\00\0b\00\00"                    ;; (i32.const 0) with no elements
+)
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\04\04\01"                          ;; Table section with 1 entry
+  "\70\00\00"                          ;; no max, minimum 0, funcref
+  "\09\09\01"                          ;; Element section with 1 entry
+  "\82\00"                             ;; Active segment, encoded with 2 bytes
+  "\00"                                ;; explicit table index
+  "\41\00\0b\00\00"                    ;; (i32.const 0) with no elements
+)
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\04\04\01"                          ;; Table section with 1 entry
+  "\70\00\00"                          ;; no max, minimum 0, funcref
+  "\09\0a\01"                          ;; Element section with 1 entry
+  "\82\00"                             ;; Active segment, encoded with 2 bytes
+  "\80\00"                             ;; explicit table index, encoded with 2 bytes
   "\41\00\0b\00\00"                    ;; (i32.const 0) with no elements
 )
 
@@ -1196,7 +1241,7 @@
   )                            ;; end
   "data count section required")
 
-;; passive element segment containing opcode other than ref.func or ref.null
+;; passive element segment containing illegal opcode
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -1213,7 +1258,7 @@
     "\09\07\01"                ;; Element section with one segment
     "\05\70"                   ;; Passive, funcref
     "\01"                      ;; 1 element
-    "\d3\00\0b"                ;; bad opcode, index 0, end
+    "\f3\00\0b"                ;; bad opcode, index 0, end
 
     "\0a\04\01"                ;; Code section
 
@@ -1311,7 +1356,7 @@
     "\60\00\00"                             ;; 1st type
     ;; "\60\00\00"                          ;; 2nd type (missed)
   )
-  "unexpected end of section or function"
+  "length out of bounds"
 )
 
 ;; 1 type declared, 2 given
@@ -1600,7 +1645,7 @@
     "\02\00\0b"                             ;; function body 0
     "\02\00\0b"                             ;; function body 1
   )
-  "unexpected end of section or function"
+  "length out of bounds"
 )
 
 ;; 1 export declared, 2 given
@@ -1662,7 +1707,7 @@
     "\03\02\01\00"                          ;; func section
     "\04\04\01"                             ;; table section
     "\70\00\01"                             ;; table 0
-    "\09\07\02"                             ;; elem with inconsistent segment count (2 declared, 1 given)
+    "\09\0a\02"                             ;; elem with inconsistent segment count (2 declared, 1 given)
     "\00\41\00\0b\01\00"                    ;; elem 0
     "\00\41\00"                             ;; elem 1 (partial)
     ;; "\0b\01\00"                          ;; elem 1 (missing part)
@@ -1774,7 +1819,7 @@
     "\01\04\01"                             ;; type section
     "\60\00\00"                             ;; type 0
     "\03\02\01\00"                          ;; func section
-    "\0a\12\01"                             ;; code section
+    "\0a\13\01"                             ;; code section
     "\11\00"                                ;; func 0
     "\02\40"                                ;; block 0
     "\41\01"                                ;; condition of if 0
