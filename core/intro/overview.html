@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Overview &#8212; WebAssembly 2.0 (Draft 2022-12-12)</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Structure" href="../syntax/index.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Introduction</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h1>
+<section id="concepts">
+<span id="index-0"></span><span id="id1"></span><h2>Concepts<a class="headerlink" href="#concepts" title="Permalink to this heading">¶</a></h2>
+<p>WebAssembly encodes a low-level, assembly-like programming language.
+This language is structured around the following concepts.</p>
+<dl id="value">
+<dt><strong>Values</strong></dt><dd><p>WebAssembly provides only four basic <em>number types</em>.
+These are integers and <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a> numbers,
+each in 32 and 64 bit width.
+32 bit integers also serve as Booleans and as memory addresses.
+The usual operations on these types are available,
+including the full matrix of conversions between them.
+There is no distinction between signed and unsigned integer types.
+Instead, integers are interpreted by respective operations
+as either unsigned or signed in two’s complement representation.</p>
+<p>In addition to these basic number types, there is a single 128 bit wide
+vector type representing different types of packed data.
+The supported representations are 4 32-bit, or 2 64-bit
+<a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a> numbers, or different widths of packed integer values,
+specifically 2 64-bit integers, 4 32-bit integers, 8
+16-bit integers, or 16 8-bit integers.</p>
+<p>Finally, values can consist of opaque <em>references</em> that represent pointers towards different sorts of entities.
+Unlike with other types, their size or representation is not observable.</p>
+</dd>
+</dl>
+<dl class="simple" id="instruction">
+<dt><strong>Instructions</strong></dt><dd><p>The computational model of WebAssembly is based on a <em>stack machine</em>.
+Code consists of sequences of <em>instructions</em> that are executed in order.
+Instructions manipulate values on an implicit <em>operand stack</em> <a class="footnote-reference brackets" href="#stackmachine" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>
+and fall into two main categories.
+<em>Simple</em> instructions perform basic operations on data.
+They pop arguments from the operand stack and push results back to it.
+<em>Control</em> instructions alter control flow.
+Control flow is <em>structured</em>, meaning it is expressed with well-nested constructs such as blocks, loops, and conditionals.
+Branches can only target such constructs.</p>
+</dd>
+</dl>
+<dl class="simple" id="trap">
+<dt><strong>Traps</strong></dt><dd><p>Under some conditions, certain instructions may produce a <em>trap</em>,
+which immediately aborts execution.
+Traps cannot be handled by WebAssembly code,
+but are reported to the outside environment,
+where they typically can be caught.</p>
+</dd>
+</dl>
+<dl class="simple" id="function">
+<dt><strong>Functions</strong></dt><dd><p>Code is organized into separate <em>functions</em>.
+Each function takes a sequence of values as parameters
+and returns a sequence of values as results.
+Functions can call each other, including recursively,
+resulting in an implicit call stack that cannot be accessed directly.
+Functions may also declare mutable <em>local variables</em> that are usable as virtual registers.</p>
+</dd>
+</dl>
+<dl class="simple" id="table">
+<dt><strong>Tables</strong></dt><dd><p>A <em>table</em> is an array of opaque values of a particular <em>element type</em>.
+It allows programs to select such values indirectly through a dynamic index operand.
+Currently, the only available element type is an untyped function reference or a reference to an external host value.
+Thereby, a program can call functions indirectly through a dynamic index into a table.
+For example, this allows emulating function pointers by way of table indices.</p>
+</dd>
+</dl>
+<dl class="simple" id="memory">
+<dt><strong>Linear Memory</strong></dt><dd><p>A <em>linear memory</em> is a contiguous, mutable array of raw bytes.
+Such a memory is created with an initial size but can be grown dynamically.
+A program can load and store values from/to a linear memory at any byte address (including unaligned).
+Integer loads and stores can specify a <em>storage size</em> which is smaller than the size of the respective value type.
+A trap occurs if an access is not within the bounds of the current memory size.</p>
+</dd>
+</dl>
+<dl class="simple" id="module">
+<dt><strong>Modules</strong></dt><dd><p>A WebAssembly binary takes the form of a <em>module</em>
+that contains definitions for functions, tables, and linear memories,
+as well as mutable or immutable <em>global variables</em>.
+Definitions can also be <em>imported</em>, specifying a module/name pair and a suitable type.
+Each definition can optionally be <em>exported</em> under one or more names.
+In addition to definitions, modules can define initialization data for their memories or tables
+that takes the form of <em>segments</em> copied to given offsets.
+They can also define a <em>start function</em> that is automatically executed.</p>
+</dd>
+</dl>
+<dl class="simple" id="embedder">
+<dt><strong>Embedder</strong></dt><dd><p>A WebAssembly implementation will typically be <em>embedded</em> into a <em>host</em> environment.
+This environment defines how loading of modules is initiated,
+how imports are provided (including host-side definitions), and how exports can be accessed.
+However, the details of any particular embedding are beyond the scope of this specification, and will instead be provided by complementary, environment-specific API definitions.</p>
+</dd>
+</dl>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="stackmachine" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<p>In practice, implementations need not maintain an actual operand stack. Instead, the stack can be viewed as a set of anonymous registers that are implicitly referenced by instructions. The <a class="reference internal" href="#validation"><span class="std std-ref">type system</span></a> ensures that the stack height, and thus any referenced register, is always known statically.</p>
+</aside>
+</aside>
+</section>
+<section id="semantic-phases">
+<span id="index-1"></span><h2>Semantic Phases<a class="headerlink" href="#semantic-phases" title="Permalink to this heading">¶</a></h2>
+<p>Conceptually, the semantics of WebAssembly is divided into three phases.
+For each part of the language, the specification specifies each of them.</p>
+<dl class="simple" id="decoding">
+<dt><strong>Decoding</strong></dt><dd><p>WebAssembly modules are distributed in a <em>binary format</em>.
+<em>Decoding</em> processes that format and converts it into an internal representation of a module.
+In this specification, this representation is modelled by <em>abstract syntax</em>, but a real implementation could compile directly to machine code instead.</p>
+</dd>
+</dl>
+<dl class="simple" id="validation">
+<dt><strong>Validation</strong></dt><dd><p>A decoded module has to be <em>valid</em>.
+Validation checks a number of well-formedness conditions to guarantee that the module is meaningful and safe.
+In particular, it performs <em>type checking</em> of functions and the instruction sequences in their bodies, ensuring for example that the operand stack is used consistently.</p>
+</dd>
+</dl>
+<span id="instantiation"></span><span id="execution"></span><dl id="invocation">
+<dt><strong>Execution</strong></dt><dd><p>Finally, a valid module can be <em>executed</em>.
+Execution can be further divided into two phases:</p>
+<p><strong>Instantiation</strong>.
+A module <em>instance</em> is the dynamic representation of a module,
+complete with its own state and execution stack.
+Instantiation executes the module body itself, given definitions for all its imports.
+It initializes globals, memories and tables and invokes the module’s start function if defined.
+It returns the instances of the module’s exports.</p>
+<p><strong>Invocation</strong>.
+Once instantiated, further WebAssembly computations can be initiated by <em>invoking</em> an exported function on a module instance.
+Given the required arguments, that executes the respective function and returns its results.</p>
+<p>Instantiation and invocation are operations within the embedding environment.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2022, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

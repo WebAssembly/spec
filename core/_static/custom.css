@@ -1,0 +1,76 @@
+a {
+  color: #004BAB;
+  text-decoration: none;
+}
+
+a.reference {
+  border-bottom: none;
+}
+
+a.reference:hover {
+  border-bottom: 1px dotted #004BAB;
+}
+
+body {
+  font-size: 15px;
+}
+
+div.document { width: 1000px; }
+div.bodywrapper { margin: 0 0 0 200px; }
+div.body { padding: 0 10px 0 10px; }
+div.footer { width: 1000px; }
+
+div.body h1 { font-size: 200%; }
+div.body h2 { font-size: 150%; }
+div.body h3 { font-size: 120%; }
+div.body h4 { font-size: 110%; }
+
+div.note {
+  border: 0px;
+  font-size: 90%;
+  background-color: #F6F8FF;
+}
+
+div.admonition {
+  padding: 10px;
+}
+
+div.admonition p.admonition-title {
+  margin: 0px 0px 0px 0px;
+  font-size: 100%;
+  font-weight: bold;
+}
+
+div.math {
+  background-color: #F0F0F0;
+  padding: 3px 0 3px 0;
+}
+
+div.relations {
+  display: block;
+}
+
+div.sphinxsidebar {
+  z-index: 1;
+  background: #FFF;
+  margin-top: -30px;
+  font-size: 13px;
+  width: 200px;
+  height: 100%;
+}
+
+div.sphinxsidebarwrapper p.logo {
+  padding: 30px 40px 10px 0px;
+}
+
+div.sphinxsidebar h3 {
+  font-size: 0px;
+}
+
+div.sphinxsidebar a {
+  border-bottom: 0px;
+}
+
+div.sphinxsidebar a:hover {
+  border-bottom: 1px dotted;
+}

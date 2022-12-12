@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Validation Algorithm &#8212; WebAssembly 2.0 (Draft 2022-12-12)</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Custom Sections" href="custom.html" />
+    <link rel="prev" title="Implementation Limitations" href="implementation.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Appendix</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="embedding.html">Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="implementation.html">Implementation Limitations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Validation Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom.html">Custom Sections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties.html">Soundness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html">Change History</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="validation-algorithm">
+<span id="algo-valid"></span><span id="index-0"></span><h1>Validation Algorithm<a class="headerlink" href="#validation-algorithm" title="Permalink to this heading">¶</a></h1>
+<p>The specification of WebAssembly <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">validation</span></a> is purely <em>declarative</em>.
+It describes the constraints that must be met by a <a class="reference internal" href="../valid/modules.html#valid-module"><span class="std std-ref">module</span></a> or <a class="reference internal" href="../valid/instructions.html#valid-instr"><span class="std std-ref">instruction</span></a> sequence to be valid.</p>
+<p>This section sketches the skeleton of a sound and complete <em>algorithm</em> for effectively validating code, i.e., sequences of <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a>.
+(Other aspects of validation are straightforward to implement.)</p>
+<p>In fact, the algorithm is expressed over the flat sequence of opcodes as occurring in the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>, and performs only a single pass over it.
+Consequently, it can be integrated directly into a decoder.</p>
+<p>The algorithm is expressed in typed pseudo code whose semantics is intended to be self-explanatory.</p>
+<section id="data-structures">
+<span id="index-1"></span><h2>Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this heading">¶</a></h2>
+<p>Types are representable as an enumeration.</p>
+<div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> <span class="nf">val_type</span> = I32 | I64 | F32 | F64 | V128 | Funcref | Externref
+
+<span class="k">func</span> <span class="nf">is_num</span>(<span class="nf">t</span> : val_type | Unknown) : bool =
+  <span class="k">return</span> t = I32 || t = I64 || t = F32 || t = F64 || t = Unknown
+
+<span class="k">func</span> <span class="nf">is_vec</span>(<span class="nf">t</span> : val_type | Unknown) : bool =
+  <span class="k">return</span> t = V128 || t = Unknown
+
+<span class="k">func</span> <span class="nf">is_ref</span>(<span class="nf">t</span> : val_type | Unknown) : bool =
+  <span class="k">return</span> t = Funcref || t = Externref || t = Unknown
+</pre></div>
+</div>
+<p>The algorithm uses two separate stacks: the <em>value stack</em> and the <em>control stack</em>.
+The former tracks the <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">types</span></a> of operand values on the <a class="reference internal" href="../exec/runtime.html#stack"><span class="std std-ref">stack</span></a>,
+the latter surrounding <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured control instructions</span></a> and their associated <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">blocks</span></a>.</p>
+<div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> <span class="nf">val_stack</span> = stack(val_type | Unknown)
+
+<span class="k">type</span> <span class="nf">ctrl_stack</span> = stack(ctrl_frame)
+<span class="k">type</span> <span class="nf">ctrl_frame</span> = {
+  <span class="nf">opcode</span> : opcode
+  <span class="nf">start_types</span> : list(val_type)
+  <span class="nf">end_types</span> : list(val_type)
+  <span class="nf">height</span> : nat
+  <span class="nf">unreachable</span> : bool
+}
+</pre></div>
+</div>
+<p>For each value, the value stack records its <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a>, or <code class="code docutils literal notranslate"><span class="pre">Unknown</span></code> when the type is not known.</p>
+<p>For each entered block, the control stack records a <em>control frame</em> with the originating opcode, the types on the top of the operand stack at the start and end of the block (used to check its result as well as branches), the height of the operand stack at the start of the block (used to check that operands do not underflow the current block), and a flag recording whether the remainder of the block is unreachable (used to handle <a class="reference internal" href="../valid/instructions.html#polymorphism"><span class="std std-ref">stack-polymorphic</span></a> typing after branches).</p>
+<p>For the purpose of presenting the algorithm, the operand and control stacks are simply maintained as global variables:</p>
+<div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nf">vals</span> : val_stack
+<span class="k">var</span> <span class="nf">ctrls</span> : ctrl_stack
+</pre></div>
+</div>
+<p>However, these variables are not manipulated directly by the main checking function, but through a set of auxiliary functions:</p>
+<div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">func</span> <span class="nf">push_val</span>(<span class="nf">type</span> : val_type | Unknown) =
+  vals.push(type)
+
+<span class="k">func</span> <span class="nf">pop_val</span>() : val_type | Unknown =
+  <span class="k">if</span> (vals.size() = ctrls[0].height &amp;&amp; ctrls[0].unreachable) <span class="k">return</span> Unknown
+  error_if(vals.size() = ctrls[0].height)
+  <span class="k">return</span> vals.pop()
+
+<span class="k">func</span> <span class="nf">pop_val</span>(<span class="nf">expect</span> : val_type | Unknown) : val_type | Unknown =
+  <span class="k">let</span> <span class="nf">actual</span> = pop_val()
+  error_if(actual =/= expect &amp;&amp; actual =/= Unknown &amp;&amp; expect =/= Unknown)
+  <span class="k">return</span> actual
+
+<span class="k">func</span> <span class="nf">push_vals</span>(<span class="nf">types</span> : list(val_type)) = <span class="k">foreach</span> (t <span class="k">in</span> types) push_val(t)
+<span class="k">func</span> <span class="nf">pop_vals</span>(<span class="nf">types</span> : list(val_type)) : list(val_type) =
+  <span class="k">var</span> <span class="nf">popped</span> := []
+  <span class="k">foreach</span> (t <span class="k">in</span> reverse(types)) popped.prepend(pop_val(t))
+  <span class="k">return</span> popped
+</pre></div>
+</div>
+<p>Pushing an operand value simply pushes the respective type to the value stack.</p>
+<p>Popping an operand value checks that the value stack does not underflow the current block and then removes one type.
+But first, a special case is handled where the block contains no known values, but has been marked as unreachable.
+That can occur after an unconditional branch, when the stack is typed <a class="reference internal" href="../valid/instructions.html#polymorphism"><span class="std std-ref">polymorphically</span></a>.
+In that case, an unknown type is returned.</p>
+<p>A second function for popping an operand value takes an expected type, which the actual operand type is checked against.
+The types may differ in case one of them is Unknown.
+The function returns the actual type popped from the stack.</p>
+<p>Finally, there are accumulative functions for pushing or popping multiple operand types.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The notation <code class="code docutils literal notranslate"><span class="pre">stack[i]</span></code> is meant to index the stack from the top,
+so that, e.g., <code class="code docutils literal notranslate"><span class="pre">ctrls[0]</span></code> accesses the element pushed last.</p>
+</div>
+<p>The control stack is likewise manipulated through auxiliary functions:</p>
+<div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">func</span> <span class="nf">push_ctrl</span>(<span class="nf">opcode</span> : opcode, <span class="k">in</span> : list(val_type), <span class="nf">out</span> : list(val_type)) =
+  <span class="k">let</span> <span class="nf">frame</span> = ctrl_frame(opcode, <span class="k">in</span>, out, vals.size(), false)
+  ctrls.push(frame)
+  push_vals(<span class="k">in</span>)
+
+<span class="k">func</span> <span class="nf">pop_ctrl</span>() : ctrl_frame =
+  error_if(ctrls.is_empty())
+  <span class="k">let</span> <span class="nf">frame</span> = ctrls[0]
+  pop_vals(frame.end_types)
+  error_if(vals.size() =/= frame.height)
+  ctrls.pop()
+  <span class="k">return</span> frame
+
+<span class="k">func</span> <span class="nf">label_types</span>(<span class="nf">frame</span> : ctrl_frame) : list(val_types) =
+  <span class="k">return</span> (if frame.opcode == loop then frame.start_types else frame.end_types)
+
+<span class="k">func</span> <span class="nf">unreachable</span>() =
+  vals.resize(ctrls[0].height)
+  ctrls[0].unreachable := true
+</pre></div>
+</div>
+<p>Pushing a control frame takes the types of the label and result values.
+It allocates a new frame record recording them along with the current height of the operand stack and marks the block as reachable.</p>
+<p>Popping a frame first checks that the control stack is not empty.
+It then verifies that the operand stack contains the right types of values expected at the end of the exited block and pops them off the operand stack.
+Afterwards, it checks that the stack has shrunk back to its initial height.</p>
+<p>The type of the <a class="reference internal" href="../exec/runtime.html#syntax-label"><span class="std std-ref">label</span></a> associated with a control frame is either that of the stack at the start or the end of the frame, determined by the opcode that it originates from.</p>
+<p>Finally, the current frame can be marked as unreachable.
+In that case, all existing operand types are purged from the value stack, in order to allow for the <a class="reference internal" href="../valid/instructions.html#polymorphism"><span class="std std-ref">stack-polymorphism</span></a> logic in <code class="code docutils literal notranslate"><span class="pre">pop_val</span></code> to take effect.
+Because every function has an implicit outermost label that corresponds to an implicit block frame,
+it is an invariant of the validation algorithm that there always is at least one frame on the control stack when validating an instruction, and hence, <cite>ctrls[0]</cite> is always defined.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Even with the unreachable flag set, consecutive operands are still pushed to and popped from the operand stack.
+That is necessary to detect invalid <a class="reference internal" href="../valid/instructions.html#polymorphism"><span class="std std-ref">examples</span></a> like <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}}~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}})~\href{../syntax/types.html#syntax-valtype}{\mathsf{i64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}})\)</span>.
+However, a polymorphic stack cannot underflow, but instead generates <code class="code docutils literal notranslate"><span class="pre">Unknown</span></code> types as needed.</p>
+</div>
+</section>
+<section id="validation-of-opcode-sequences">
+<span id="index-2"></span><h2>Validation of Opcode Sequences<a class="headerlink" href="#validation-of-opcode-sequences" title="Permalink to this heading">¶</a></h2>
+<p>The following function shows the validation of a number of representative instructions that manipulate the stack.
+Other instructions are checked in a similar manner.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Various instructions not shown here will additionally require the presence of a validation <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a> for checking uses of <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a>.
+That is an easy addition and therefore omitted from this presentation.</p>
+</div>
+<div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">func</span> <span class="nf">validate</span>(opcode) =
+  <span class="k">switch</span> (opcode)
+    <span class="k">case</span> (i32.add)
+      pop_val(I32)
+      pop_val(I32)
+      push_val(I32)
+
+    <span class="k">case</span> (drop)
+      pop_val()
+
+    <span class="k">case</span> (select)
+      pop_val(I32)
+      <span class="k">let</span> <span class="nf">t1</span> = pop_val()
+      <span class="k">let</span> <span class="nf">t2</span> = pop_val()
+      error_if(not ((is_num(t1) &amp;&amp; is_num(t2)) || (is_vec(t1) &amp;&amp; is_vec(t2))))
+      error_if(t1 =/= t2 &amp;&amp; t1 =/= Unknown &amp;&amp; t2 =/= Unknown)
+      push_val(if (t1 = Unknown) t2 else t1)
+
+    <span class="k">case</span> (select t)
+      pop_val(I32)
+      pop_val(t)
+      pop_val(t)
+      push_val(t)
+
+    <span class="k">case</span> (unreachable)
+      unreachable()
+
+    <span class="k">case</span> (block t1*-&gt;t2*)
+      pop_vals([t1*])
+      push_ctrl(block, [t1*], [t2*])
+
+    <span class="k">case</span> (loop t1*-&gt;t2*)
+      pop_vals([t1*])
+      push_ctrl(loop, [t1*], [t2*])
+
+    <span class="k">case</span> (if t1*-&gt;t2*)
+      pop_val(I32)
+      pop_vals([t1*])
+      push_ctrl(if, [t1*], [t2*])
+
+    <span class="k">case</span> (end)
+      <span class="k">let</span> <span class="nf">frame</span> = pop_ctrl()
+      push_vals(frame.end_types)
+
+    <span class="k">case</span> (else)
+      <span class="k">let</span> <span class="nf">frame</span> = pop_ctrl()
+      error_if(frame.opcode =/= <span class="k">if</span>)
+      push_ctrl(else, frame.start_types, frame.end_types)
+
+    <span class="k">case</span> (br n)
+      error_if(ctrls.size() &lt; n)
+      pop_vals(label_types(ctrls[n]))
+      unreachable()
+
+    <span class="k">case</span> (br_if n)
+      error_if(ctrls.size() &lt; n)
+      pop_val(I32)
+      pop_vals(label_types(ctrls[n]))
+      push_vals(label_types(ctrls[n]))
+
+    <span class="k">case</span> (br_table n* m)
+      pop_val(I32)
+      error_if(ctrls.size() &lt; m)
+      <span class="k">let</span> <span class="nf">arity</span> = label_types(ctrls[m]).size()
+      <span class="k">foreach</span> (n <span class="k">in</span> n*)
+        error_if(ctrls.size() &lt; n)
+        error_if(label_types(ctrls[n]).size() =/= arity)
+        push_vals(pop_vals(label_types(ctrls[n])))
+      pop_vals(label_types(ctrls[m]))
+      unreachable()
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is an invariant under the current WebAssembly instruction set that an operand of <code class="code docutils literal notranslate"><span class="pre">Unknown</span></code> type is never duplicated on the stack.
+This would change if the language were extended with stack instructions like <code class="code docutils literal notranslate"><span class="pre">dup</span></code>.
+Under such an extension, the above algorithm would need to be refined by replacing the <code class="code docutils literal notranslate"><span class="pre">Unknown</span></code> type with proper <em>type variables</em> to ensure that all uses are consistent.</p>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2022, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

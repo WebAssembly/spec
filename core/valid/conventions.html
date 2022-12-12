@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Conventions &#8212; WebAssembly 2.0 (Draft 2022-12-12)</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Types" href="types.html" />
+    <link rel="prev" title="Validation" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Validation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text/index.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="conventions">
+<span id="type-system"></span><span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading">¶</a></h1>
+<p>Validation checks that a WebAssembly module is well-formed.
+Only valid modules can be <a class="reference internal" href="../exec/modules.html#exec-instantiation"><span class="std std-ref">instantiated</span></a>.</p>
+<p>Validity is defined by a <em>type system</em> over the <a class="reference internal" href="../syntax/index.html#syntax"><span class="std std-ref">abstract syntax</span></a> of a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> and its contents.
+For each piece of abstract syntax, there is a typing rule that specifies the constraints that apply to it.
+All rules are given in two <em>equivalent</em> forms:</p>
+<ol class="arabic simple">
+<li><p>In <em>prose</em>, describing the meaning in intuitive form.</p></li>
+<li><p>In <em>formal notation</em>, describing the rule in mathematical form. <a class="footnote-reference brackets" href="#cite-pldi2017" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The prose and formal rules are equivalent,
+so that understanding of the formal notation is <em>not</em> required to read this specification.
+The formalism offers a more concise description in notation that is used widely in programming languages semantics and is readily amenable to mathematical proof.</p>
+</div>
+<p>In both cases, the rules are formulated in a <em>declarative</em> manner.
+That is, they only formulate the constraints, they do not define an algorithm.
+The skeleton of a sound and complete algorithm for type-checking instruction sequences according to this specification is provided in the <a class="reference internal" href="../appendix/algorithm.html#algo-valid"><span class="std std-ref">appendix</span></a>.</p>
+<section id="contexts">
+<span id="context"></span><span id="index-1"></span><h2>Contexts<a class="headerlink" href="#contexts" title="Permalink to this heading">¶</a></h2>
+<p>Validity of an individual definition is specified relative to a <em>context</em>,
+which collects relevant information about the surrounding <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> and the definitions in scope:</p>
+<ul class="simple">
+<li><p><em>Types</em>: the list of types defined in the current module.</p></li>
+<li><p><em>Functions</em>: the list of functions declared in the current module, represented by their function type.</p></li>
+<li><p><em>Tables</em>: the list of tables declared in the current module, represented by their table type.</p></li>
+<li><p><em>Memories</em>: the list of memories declared in the current module, represented by their memory type.</p></li>
+<li><p><em>Globals</em>: the list of globals declared in the current module, represented by their global type.</p></li>
+<li><p><em>Element Segments</em>: the list of element segments declared in the current module, represented by their element type.</p></li>
+<li><p><em>Data Segments</em>: the list of data segments declared in the current module, each represented by an <span class="math notranslate nohighlight">\(\mathrel{\mbox{ok}}\)</span> entry.</p></li>
+<li><p><em>Locals</em>: the list of locals declared in the current function (including parameters), represented by their value type.</p></li>
+<li><p><em>Labels</em>: the stack of labels accessible from the current position, represented by their result type.</p></li>
+<li><p><em>Return</em>: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.</p></li>
+<li><p><em>References</em>: the list of <a class="reference internal" href="../syntax/modules.html#syntax-funcidx"><span class="std std-ref">function indices</span></a> that occur in the module outside functions and can hence be used to form references inside them.</p></li>
+</ul>
+<p>In other words, a context contains a sequence of suitable <a class="reference internal" href="../syntax/types.html#syntax-type"><span class="std std-ref">types</span></a> for each <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>,
+describing each defined entry in that space.
+Locals, labels and return type are only used for validating <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> in <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function bodies</span></a>, and are left empty elsewhere.
+The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.</p>
+<p>More concretely, contexts are defined as <a class="reference internal" href="../syntax/conventions.html#notation-record"><span class="std std-ref">records</span></a> <span class="math notranslate nohighlight">\(C\)</span> with abstract syntax:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef3994#1{{}}\mathdef3994{context} &amp; C &amp;::=&amp;
+  \begin{array}[t]{l&#64;{~}ll}
+  \{ &amp; \href{../valid/conventions.html#context}{\mathsf{types}} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{funcs}} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{tables}} &amp; \href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}^\ast, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{mems}} &amp; \href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}^\ast, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{globals}} &amp; \href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}^\ast, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{elems}} &amp; \href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}^\ast, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{datas}} &amp; {\mathrel{\mbox{ok}}}^\ast, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{locals}} &amp; \href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^\ast, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{labels}} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^\ast, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{return}} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}^?, \\
+     &amp; \href{../valid/conventions.html#context}{\mathsf{refs}} &amp; \href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}^\ast ~\} \\
+  \end{array}
+\end{array}\end{split}\]</div>
+<p id="notation-extend">In addition to field access written <span class="math notranslate nohighlight">\(C.\mathsf{field}\)</span> the following notation is adopted for manipulating contexts:</p>
+<ul class="simple">
+<li><p>When spelling out a context, empty fields are omitted.</p></li>
+<li><p><span class="math notranslate nohighlight">\(C,\mathsf{field}\,A^\ast\)</span> denotes the same context as <span class="math notranslate nohighlight">\(C\)</span> but with the elements <span class="math notranslate nohighlight">\(A^\ast\)</span> prepended to its <span class="math notranslate nohighlight">\(\mathsf{field}\)</span> component sequence.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="../syntax/conventions.html#notation-index"><span class="std std-ref">Indexing notation</span></a> like <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{labels}}[i]\)</span> is used to look up indices in their respective <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a> in the context.
+Context extension notation <span class="math notranslate nohighlight">\(C,\mathsf{field}\,A\)</span> is primarily used to locally extend <em>relative</em> index spaces, such as <a class="reference internal" href="../syntax/modules.html#syntax-labelidx"><span class="std std-ref">label indices</span></a>.
+Accordingly, the notation is defined to append at the <em>front</em> of the respective sequence, introducing a new relative index <span class="math notranslate nohighlight">\(0\)</span> and shifting the existing ones.</p>
+</div>
+</section>
+<section id="prose-notation">
+<span id="valid-notation-textual"></span><h2>Prose Notation<a class="headerlink" href="#prose-notation" title="Permalink to this heading">¶</a></h2>
+<p>Validation is specified by stylised rules for each relevant part of the <a class="reference internal" href="../syntax/index.html#syntax"><span class="std std-ref">abstract syntax</span></a>.
+The rules not only state constraints defining when a phrase is valid,
+they also classify it with a type.
+The following conventions are adopted in stating these rules.</p>
+<ul>
+<li><p>A phrase <span class="math notranslate nohighlight">\(A\)</span> is said to be “valid with type <span class="math notranslate nohighlight">\(T\)</span>”
+if and only if all constraints expressed by the respective rules are met.
+The form of <span class="math notranslate nohighlight">\(T\)</span> depends on what <span class="math notranslate nohighlight">\(A\)</span> is.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For example, if <span class="math notranslate nohighlight">\(A\)</span> is a <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a>,
+then  <span class="math notranslate nohighlight">\(T\)</span> is a <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a>;
+for an <span class="math notranslate nohighlight">\(A\)</span> that is a <a class="reference internal" href="../syntax/modules.html#syntax-global"><span class="std std-ref">global</span></a>,
+<span class="math notranslate nohighlight">\(T\)</span> is a <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a>;
+and so on.</p>
+</div>
+</li>
+<li><p>The rules implicitly assume a given <a class="reference internal" href="#context"><span class="std std-ref">context</span></a> <span class="math notranslate nohighlight">\(C\)</span>.</p></li>
+<li><p>In some places, this context is locally extended to a context <span class="math notranslate nohighlight">\(C'\)</span> with additional entries.
+The formulation “Under context <span class="math notranslate nohighlight">\(C'\)</span>, … <em>statement</em> …” is adopted to express that the following statement must apply under the assumptions embodied in the extended context.</p></li>
+</ul>
+</section>
+<section id="formal-notation">
+<span id="valid-notation"></span><span id="index-2"></span><h2>Formal Notation<a class="headerlink" href="#formal-notation" title="Permalink to this heading">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This section gives a brief explanation of the notation for specifying typing rules formally.
+For the interested reader, a more thorough introduction can be found in respective text books. <a class="footnote-reference brackets" href="#cite-tapl" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p>
+</div>
+<p>The proposition that a phrase <span class="math notranslate nohighlight">\(A\)</span> has a respective type <span class="math notranslate nohighlight">\(T\)</span> is written <span class="math notranslate nohighlight">\(A : T\)</span>.
+In general, however, typing is dependent on a context <span class="math notranslate nohighlight">\(C\)</span>.
+To express this explicitly, the complete form is a <em>judgement</em> <span class="math notranslate nohighlight">\(C \vdash A : T\)</span>,
+which says that <span class="math notranslate nohighlight">\(A : T\)</span> holds under the assumptions encoded in <span class="math notranslate nohighlight">\(C\)</span>.</p>
+<p>The formal typing rules use a standard approach for specifying type systems, rendering them into <em>deduction rules</em>.
+Every rule has the following general form:</p>
+<div class="math notranslate nohighlight">
+\[\frac{
+  \mathit{premise}_1 \qquad \mathit{premise}_2 \qquad \dots \qquad \mathit{premise}_n
+}{
+  \mathit{conclusion}
+}\]</div>
+<p>Such a rule is read as a big implication: if all premises hold, then the conclusion holds.
+Some rules have no premises; they are <em>axioms</em> whose conclusion holds unconditionally.
+The conclusion always is a judgment <span class="math notranslate nohighlight">\(C \vdash A : T\)</span>,
+and there is one respective rule for each relevant construct <span class="math notranslate nohighlight">\(A\)</span> of the abstract syntax.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For example, the typing rule for the <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction can be given as an axiom:</p>
+<div class="math notranslate nohighlight">
+\[\frac{
+}{
+  C \vdash \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}} : [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]
+}\]</div>
+<p>The instruction is always valid with type <span class="math notranslate nohighlight">\([\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}] \href{../syntax/types.html#syntax-functype}{\rightarrow} [\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}]\)</span>
+(saying that it consumes two <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\)</span> values and produces one),
+independent of any side conditions.</p>
+<p>An instruction like <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{local.get}}\)</span> can be typed as follows:</p>
+<div class="math notranslate nohighlight">
+\[\frac{
+  C.\href{../valid/conventions.html#context}{\mathsf{locals}}[x] = t
+}{
+  C \vdash \href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{local.get}}~x : [] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t]
+}\]</div>
+<p>Here, the premise enforces that the immediate <a class="reference internal" href="../syntax/modules.html#syntax-localidx"><span class="std std-ref">local index</span></a> <span class="math notranslate nohighlight">\(x\)</span> exists in the context.
+The instruction produces a value of its respective type <span class="math notranslate nohighlight">\(t\)</span>
+(and does not consume any values).
+If <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{locals}}[x]\)</span> does not exist then the premise does not hold,
+and the instruction is ill-typed.</p>
+<p>Finally, a <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">structured</span></a> instruction requires
+a recursive rule, where the premise is itself a typing judgement:</p>
+<div class="math notranslate nohighlight">
+\[\frac{
+  C \vdash \href{../syntax/instructions.html#syntax-blocktype}{\mathit{blocktype}} : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
+  \qquad
+  C,\href{../exec/runtime.html#syntax-label}{\mathsf{label}}\,[t_2^\ast] \vdash \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
+}{
+  C \vdash \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}~\href{../syntax/instructions.html#syntax-blocktype}{\mathit{blocktype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} : [t_1^\ast] \href{../syntax/types.html#syntax-functype}{\rightarrow} [t_2^\ast]
+}\]</div>
+<p>A <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> instruction is only valid when the instruction sequence in its body is.
+Moreover, the result type must match the block’s annotation <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-blocktype}{\mathit{blocktype}}\)</span>.
+If so, then the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{block}}\)</span> instruction has the same type as the body.
+Inside the body an additional label of the corresponding result type is available,
+which is expressed by extending the context <span class="math notranslate nohighlight">\(C\)</span> with the additional label information for the premise.</p>
+</div>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="cite-pldi2017" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>The semantics is derived from the following article:
+Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. <a class="reference external" href="https://dl.acm.org/citation.cfm?doid=3062341.3062363">Bringing the Web up to Speed with WebAssembly</a>. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.</p>
+</aside>
+<aside class="footnote brackets" id="cite-tapl" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>For example: Benjamin Pierce. <a class="reference external" href="https://www.cis.upenn.edu/~bcpierce/tapl/">Types and Programming Languages</a>. The MIT Press 2002</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2022, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

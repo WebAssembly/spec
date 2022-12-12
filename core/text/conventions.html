@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Conventions &#8212; WebAssembly 2.0 (Draft 2022-12-12)</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lexical Format" href="lexical.html" />
+    <link rel="prev" title="Text Format" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../syntax/index.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../valid/index.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exec/index.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../binary/index.html">Binary Format</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Text Format</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lexical.html">Lexical Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index.html">Appendix</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/index-rules.html">Index of Semantic Rules</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="../genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="../_download/WebAssembly.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="conventions">
+<span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading">¶</a></h1>
+<p>The textual format for WebAssembly <a class="reference internal" href="../intro/overview.html#module"><span class="std std-ref">modules</span></a> is a rendering of their <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">abstract syntax</span></a> into <a class="reference external" href="https://en.wikipedia.org/wiki/S-expression">S-expressions</a>.</p>
+<p>Like the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>, the text format is defined by an <em>attribute grammar</em>.
+A text string is a well-formed description of a module if and only if it is generated by the grammar.
+Each production of this grammar has at most one synthesized attribute: the abstract syntax that the respective character sequence expresses.
+Thus, the attribute grammar implicitly defines a <em>parsing</em> function.
+Some productions also take a <a class="reference internal" href="#text-context"><span class="std std-ref">context</span></a> as an inherited attribute
+that records bound <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a>.</p>
+<p>Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
+However, it also defines a number of <em>abbreviations</em> that are “syntactic sugar” over the core syntax.</p>
+<p>The recommended extension for files containing WebAssembly modules in text format is “<span class="math notranslate nohighlight">\(\mathtt{.wat}\)</span>”.
+Files with this extension are assumed to be encoded in UTF-8, as per <a class="reference external" href="https://www.unicode.org/versions/latest/">Unicode</a> (Section 2.5).</p>
+<section id="grammar">
+<span id="text-grammar"></span><span id="index-1"></span><h2>Grammar<a class="headerlink" href="#grammar" title="Permalink to this heading">¶</a></h2>
+<p>The following conventions are adopted in defining grammar rules of the text format.
+They mirror the conventions used for <a class="reference internal" href="../syntax/conventions.html#grammar"><span class="std std-ref">abstract syntax</span></a> and for the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary format</span></a>.
+In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, <span class="math notranslate nohighlight">\(\mathtt{typewriter}\)</span> font is adopted for the former.</p>
+<ul class="simple">
+<li><p>Terminal symbols are either literal strings of characters enclosed in quotes
+or expressed as <a class="reference external" href="https://www.unicode.org/versions/latest/">Unicode</a> scalar values: <span class="math notranslate nohighlight">\(\def\mathdef2722#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2722{module}\)</span>, <span class="math notranslate nohighlight">\(\def\mathdef2723#1{\mathrm{U{+}#1}}\mathdef2723{0A}\)</span>.
+(All characters written literally are unambiguously drawn from the 7-bit <a class="reference external" href="https://webstore.ansi.org/RecordDetail.aspx?sku=INCITS+4-1986%5bR2012%5d">ASCII</a> subset of Unicode.)</p></li>
+<li><p>Nonterminal symbols are written in typewriter font: <span class="math notranslate nohighlight">\(\mathtt{valtype}, \mathtt{instr}\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(T^n\)</span> is a sequence of <span class="math notranslate nohighlight">\(n\geq 0\)</span> iterations  of <span class="math notranslate nohighlight">\(T\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(T^\ast\)</span> is a possibly empty sequence of iterations of <span class="math notranslate nohighlight">\(T\)</span>.
+(This is a shorthand for <span class="math notranslate nohighlight">\(T^n\)</span> used where <span class="math notranslate nohighlight">\(n\)</span> is not relevant.)</p></li>
+<li><p><span class="math notranslate nohighlight">\(T^+\)</span> is a sequence of one or more iterations of <span class="math notranslate nohighlight">\(T\)</span>.
+(This is a shorthand for <span class="math notranslate nohighlight">\(T^n\)</span> where <span class="math notranslate nohighlight">\(n \geq 1\)</span>.)</p></li>
+<li><p><span class="math notranslate nohighlight">\(T^?\)</span> is an optional occurrence of <span class="math notranslate nohighlight">\(T\)</span>.
+(This is a shorthand for <span class="math notranslate nohighlight">\(T^n\)</span> where <span class="math notranslate nohighlight">\(n \leq 1\)</span>.)</p></li>
+<li><p><span class="math notranslate nohighlight">\(x{:}T\)</span> denotes the same language as the nonterminal <span class="math notranslate nohighlight">\(T\)</span>, but also binds the variable <span class="math notranslate nohighlight">\(x\)</span> to the attribute synthesized for <span class="math notranslate nohighlight">\(T\)</span>.</p></li>
+<li><p>Productions are written <span class="math notranslate nohighlight">\(\mathtt{sym} ::= T_1 \Rightarrow A_1 ~|~ \dots ~|~ T_n \Rightarrow A_n\)</span>, where each <span class="math notranslate nohighlight">\(A_i\)</span> is the attribute that is synthesized for <span class="math notranslate nohighlight">\(\mathtt{sym}\)</span> in the given case, usually from attribute variables bound in <span class="math notranslate nohighlight">\(T_i\)</span>.</p></li>
+<li><p>Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.</p></li>
+<li><p>If the same meta variable or non-terminal symbol appears multiple times in a production (in the syntax or in an attribute), then all those occurrences must have the same instantiation.</p></li>
+</ul>
+<ul class="simple" id="text-syntactic">
+<li><p>A distinction is made between <em>lexical</em> and <em>syntactic</em> productions. For the latter, arbitrary <a class="reference internal" href="lexical.html#text-space"><span class="std std-ref">white space</span></a> is allowed in any place where the grammar contains spaces. The productions defining <a class="reference internal" href="lexical.html#text-lexical"><span class="std std-ref">lexical syntax</span></a> and the syntax of <a class="reference internal" href="values.html#text-value"><span class="std std-ref">values</span></a> are considered lexical, all others are syntactic.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For example, the <a class="reference internal" href="types.html#text-numtype"><span class="std std-ref">textual grammar</span></a> for <a class="reference internal" href="../syntax/types.html#syntax-numtype"><span class="std std-ref">number types</span></a> is given as follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{llcll&#64;{\qquad\qquad}l}
+\def\mathdef2683#1{{}}\mathdef2683{number types} &amp; \href{../text/types.html#text-numtype}{\mathtt{numtype}} &amp;::=&amp;
+  \def\mathdef2724#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2724{i32} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i32}} \\ &amp;&amp;|&amp;
+  \def\mathdef2725#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2725{i64} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{i64}} \\ &amp;&amp;|&amp;
+  \def\mathdef2726#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2726{f32} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f32}} \\ &amp;&amp;|&amp;
+  \def\mathdef2727#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef2727{f64} &amp;\Rightarrow&amp; \href{../syntax/types.html#syntax-valtype}{\mathsf{f64}} \\
+\end{array}\end{split}\]</div>
+<p>The <a class="reference internal" href="types.html#text-limits"><span class="std std-ref">textual grammar</span></a> for <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits</span></a> is defined as follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{llclll}
+\def\mathdef2683#1{{}}\mathdef2683{limits} &amp; \href{../text/types.html#text-limits}{\mathtt{limits}} &amp;::=&amp;
+  n{:}\href{../text/values.html#text-int}{\def\mathdef2708#1{{\mathtt{u}#1}}\mathdef2708{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~\epsilon \} \\ &amp;&amp;|&amp;
+  n{:}\href{../text/values.html#text-int}{\def\mathdef2708#1{{\mathtt{u}#1}}\mathdef2708{\mathtt{32}}}~~m{:}\href{../text/values.html#text-int}{\def\mathdef2708#1{{\mathtt{u}#1}}\mathdef2708{\mathtt{32}}} &amp;\Rightarrow&amp; \{ \href{../syntax/types.html#syntax-limits}{\mathsf{min}}~n, \href{../syntax/types.html#syntax-limits}{\mathsf{max}}~m \} \\
+\end{array}\end{split}\]</div>
+<p>The variables <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(m\)</span> name the attributes of the respective <span class="math notranslate nohighlight">\(\href{../text/values.html#text-int}{\def\mathdef2708#1{{\mathtt{u}#1}}\mathdef2708{\mathtt{32}}}\)</span> nonterminals, which in this case are the actual <a class="reference internal" href="../syntax/values.html#syntax-uint"><span class="std std-ref">unsigned integers</span></a> those parse into.
+The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.</p>
+</div>
+</section>
+<section id="abbreviations">
+<span id="text-abbreviations"></span><span id="index-2"></span><h2>Abbreviations<a class="headerlink" href="#abbreviations" title="Permalink to this heading">¶</a></h2>
+<p>In addition to the core grammar, which corresponds directly to the <a class="reference internal" href="../syntax/index.html#syntax"><span class="std std-ref">abstract syntax</span></a>, the textual syntax also defines a number of <em>abbreviations</em> that can be used for convenience and readability.</p>
+<p>Abbreviations are defined by <em>rewrite rules</em> specifying their expansion into the core syntax:</p>
+<div class="math notranslate nohighlight">
+\[\mathit{abbreviation~syntax} \quad\equiv\quad \mathit{expanded~syntax}\]</div>
+<p>These expansions are assumed to be applied, recursively and in order of appearance, before applying the core grammar rules to construct the abstract syntax.</p>
+</section>
+<section id="contexts">
+<span id="text-context"></span><span id="text-context-wf"></span><span id="index-3"></span><h2>Contexts<a class="headerlink" href="#contexts" title="Permalink to this heading">¶</a></h2>
+<p>The text format allows the use of symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> in place of <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a>.
+To resolve these identifiers into concrete indices,
+some grammar productions are indexed by an <em>identifier context</em> <span class="math notranslate nohighlight">\(I\)</span> as a synthesized attribute that records the declared identifiers in each <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">index space</span></a>.
+In addition, the context records the types defined in the module, so that <a class="reference internal" href="types.html#text-param"><span class="std std-ref">parameter</span></a> indices can be computed for <a class="reference internal" href="modules.html#text-func"><span class="std std-ref">functions</span></a>.</p>
+<p>It is convenient to define identifier contexts as <a class="reference internal" href="../syntax/conventions.html#notation-record"><span class="std std-ref">records</span></a> <span class="math notranslate nohighlight">\(I\)</span> with abstract syntax as follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{llll}
+\def\mathdef2683#1{{}}\mathdef2683{identifier context} &amp; I &amp;::=&amp;
+  \begin{array}[t]{l&#64;{~}ll}
+  \{ &amp; \href{../text/conventions.html#text-context}{\mathsf{types}} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \href{../text/conventions.html#text-context}{\mathsf{funcs}} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \href{../text/conventions.html#text-context}{\mathsf{tables}} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \href{../text/conventions.html#text-context}{\mathsf{mems}} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \href{../text/conventions.html#text-context}{\mathsf{globals}} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \href{../text/conventions.html#text-context}{\mathsf{elem}} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \href{../text/conventions.html#text-context}{\mathsf{data}} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \href{../text/conventions.html#text-context}{\mathsf{locals}} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \href{../text/conventions.html#text-context}{\mathsf{labels}} &amp; (\href{../text/values.html#text-id}{\mathtt{id}}^?)^\ast, \\
+     &amp; \href{../text/conventions.html#text-context}{\mathsf{typedefs}} &amp; \href{../syntax/types.html#syntax-functype}{\mathit{functype}}^\ast ~\} \\
+  \end{array}
+\end{array}\end{split}\]</div>
+<p>For each index space, such a context contains the list of <a class="reference internal" href="values.html#text-id"><span class="std std-ref">identifiers</span></a> assigned to the defined indices.
+Unnamed indices are associated with empty (<span class="math notranslate nohighlight">\(\epsilon\)</span>) entries in these lists.</p>
+<p>An identifier context is <em>well-formed</em> if no index space contains duplicate identifiers.</p>
+<section id="id1">
+<h3>Conventions<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<p>To avoid unnecessary clutter, empty components are omitted when writing out identifier contexts.
+For example, the record <span class="math notranslate nohighlight">\(\{\}\)</span> is shorthand for an <a class="reference internal" href="#text-context"><span class="std std-ref">identifier context</span></a> whose components are all empty.</p>
+</section>
+</section>
+<section id="vectors">
+<span id="text-vec"></span><span id="index-4"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="../syntax/conventions.html#syntax-vec"><span class="std std-ref">Vectors</span></a> are written as plain sequences, but with a restriction on the length of these sequence.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{llclll&#64;{\qquad\qquad}l}
+\def\mathdef2683#1{{}}\mathdef2683{vector} &amp; \href{../text/conventions.html#text-vec}{\mathtt{vec}}(\mathtt{A}) &amp;::=&amp;
+  (x{:}\mathtt{A})^n &amp;\Rightarrow&amp; x^n &amp; (\mathrel{\mbox{if}} n &lt; 2^{32}) \\
+\end{array}\end{split}\]</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2022, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
