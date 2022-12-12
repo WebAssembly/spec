@@ -110,11 +110,12 @@
 
 .. Notation for Profiles
 
-.. |exprofiles#1| mathdef:: {[\mbox{\bf !}#1]}
-.. |profile#1| mathdef:: {\textsc{#1}}
+.. |exprofiles#1| mathdef:: {^{\small{[!#1]}}}
+.. |profilename#1| mathdef:: {\small{\mathrm{#1}}}
+.. |profile| mathdef:: \mathrm
 
-.. |PROFFULL| mathdef:: \xref{appendix/profiles}{profile-full}{\profile{Ful}}
-.. |PROFDET| mathdef:: \xref{appendix/profiles}{profile-deterministic}{\profile{Det}}
+.. |PROFFULL| mathdef:: \xref{appendix/profiles}{profile-full}{\profile{FUL}}
+.. |PROFDET| mathdef:: \xref{appendix/profiles}{profile-deterministic}{\profile{DET}}
 
 
 

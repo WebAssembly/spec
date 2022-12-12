@@ -13,8 +13,8 @@ Conventions
 
 A profile modification is specified by decorating selected rules in the main body of this specification with a *profile annotation* that defines them as "conditional" on the choice of profile.
 
-For that purpose, every profile defines a *profile marker*, an alphanumeric short-hand like :math:`\profile{Abc}`.
-A profile annotation of the form :math:`\exprofiles{\profile{Abc},\profile{Xyz}}` on a rule indicates that this rule is *excluded* for either of the profiles whose marker is :math:`\profile{Abc}` or :math:`\profile{Xyz}`.
+For that purpose, every profile defines a *profile marker*, an alphanumeric short-hand like :math:`\profilename{ABC}`.
+A profile annotation of the form :math:`\exprofiles{\profile{ABC}~\profile{XYZ}}` on a rule indicates that this rule is *excluded* for either of the profiles whose marker is :math:`\profilename{ABC}` or :math:`\profilename{XYZ}`.
 
 There are two ways of subsetting the language in a profile:
 
@@ -36,13 +36,13 @@ This is defined to have the following implications:
 The overall effect is that the respective construct is no longer part of the language under a respective profile.
 
 .. note::
-   For example, a "busy" profile marked :math:`\profile{Busy}` could rule out the |NOP| instruction by marking the production for it in the abstract syntax as follows:
+   For example, a "busy" profile marked :math:`\profilename{BUSY}` could rule out the |NOP| instruction by marking the production for it in the abstract syntax as follows:
 
    .. math::
       \begin{array}{llcl}
       \production{instruction} & \instr &::=&
         \dots \\
-      & \exprofiles{\profile{Busy}} &|& \NOP \\
+      & \exprofiles{\profile{BUSY}} &|& \NOP \\
       &                           &|& \UNREACHABLE \\
       \end{array}
 
@@ -57,7 +57,7 @@ To restrict certain behaviours in a profile, individual :ref:`validation <valid>
 This has the simple consequence that the respective rule is no longer applicable under the given profile.
 
 .. note::
-   For example, an "infinite" profile marked :math:`\profile{Inf}` could define that growing memory never fails:
+   For example, an "infinite" profile marked :math:`\profilename{INF}` could define that growing memory never fails:
 
    .. math::
 	   \begin{array}{llcl@{\qquad}l}
@@ -69,7 +69,7 @@ This has the simple consequence that the respective rule is no longer applicable
 	     \wedge & S' = S \with \SMEMS[a] = \growmem(S.\SMEMS[a], n)) \\[1ex]
 	     \end{array}
 	   \\[1ex]
-	   \exprofiles{\profile{Inf}} & S; F; (\I32.\CONST~n)~\MEMORYGROW &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
+	   \exprofiles{\profile{INF}} & S; F; (\I32.\CONST~n)~\MEMORYGROW &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
 	   \end{array}
 
 
@@ -103,8 +103,8 @@ Defined Profiles
    single: profile; full
 .. _profile-full:
 
-Full Profile (:math:`\textsc{Ful}`)
-...................................
+Full Profile (:math:`{\small{\mathrm{FUL}}}`)
+.............................................
 
 The *full* profile contains the complete language and all possible behaviours.
 It imposes no restrictions, i.e., all rules and definitions are active.
@@ -115,8 +115,8 @@ All other profiles define sub-languages of this profile.
    single: profile; deterministic
 .. _profile-deterministic:
 
-Deterministic Profile (:math:`\textsc{Det}`)
-............................................
+Deterministic Profile (:math:`{\small{\mathrm{DET}}}`)
+......................................................
 
 The *deterministic* profile excludes all rules marked :math:`\exprofiles{\PROFDET}`.
 It defines a sub-language that does not exhibit any incidental non-deterministic behaviour:

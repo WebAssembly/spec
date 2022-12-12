@@ -22,10 +22,12 @@ def Main():
   number = 1
   for section in [
       'Embedding',
+      'Profiles',
       'Implementation Limitations',
       'Validation Algorithm',
       'Custom Sections',
       'Soundness',
+      'Changes',
       'Index of Types',
       'Index of Instructions',
       'Index of Semantic Rules']:
