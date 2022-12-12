@@ -7,7 +7,7 @@ Instructions
 WebAssembly computation is performed by executing individual :ref:`instructions <syntax-instr>`.
 
 
-.. index:: numeric instruction, determinism, trap, NaN, value, value type
+.. index:: numeric instruction, determinism, non-determinism, trap, NaN, value, value type
    pair: execution; instruction
    single: abstract syntax; instruction
 .. _exec-instr-numeric:
@@ -1263,6 +1263,7 @@ Table Instructions
    \end{array}
 
 
+.. index:: determinism, non-determinism
 .. _exec-table.grow:
 
 :math:`\TABLEGROW~x`
@@ -2129,6 +2130,7 @@ Memory Instructions
    \end{array}
 
 
+.. index:: determinism, non-determinism
 .. _exec-memory.grow:
 
 :math:`\MEMORYGROW`
