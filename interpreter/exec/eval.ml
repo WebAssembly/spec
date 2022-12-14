@@ -244,7 +244,7 @@ let rec step (c : config) : config =
       | CallIndirect (x, y), Num (I32 i) :: vs ->
         let f = func_ref c.frame.inst x i e.at in
         if
-          Match.eq_var_type [] (DynX (type_ c.frame.inst y)) (DynX (Func.type_inst_of f))
+          Match.match_var_type [] (DynX (Func.type_inst_of f)) (DynX (type_ c.frame.inst y))
         then
           vs, [Invoke f @@ e.at]
         else

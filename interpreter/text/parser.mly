@@ -212,7 +212,7 @@ let anon_fields (c : context) n at = bind "field" c.fields n at
 
 
 let inline_func_type (c : context) ft at =
-  let st = SubT ([], DefFuncT ft) in
+  let st = SubT (Final, [], DefFuncT ft) in
   match
     Lib.List.index_where (function
       | CtxT ([(_, st')], 0l) -> st = st'
@@ -248,7 +248,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token ANYREF NULLREF EQREF I31REF STRUCTREF ARRAYREF
 %token FUNCREF NULLFUNCREF EXTERNREF NULLEXTERNREF
 %token ANY NONE EQ I31 REF NOFUNC EXTERN NOEXTERN NULL
-%token MUT FIELD STRUCT ARRAY SUB REC
+%token MUT FIELD STRUCT ARRAY SUB FINAL REC
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP
 %token BR BR_IF BR_TABLE BR_ON_NULL BR_ON_NON_NULL BR_ON_CAST BR_ON_CAST_FAIL
@@ -439,9 +439,11 @@ str_type :
   | LPAR FUNC func_type RPAR { fun c -> DefFuncT ($3 c) }
 
 sub_type :
-  | str_type { fun c -> SubT ([], $1 c) }
+  | str_type { fun c -> SubT (Final, [], $1 c) }
   | LPAR SUB var_list str_type RPAR
-    { fun c -> SubT (List.map (fun x -> StatX x.it) ($3 c type_), $4 c) }
+    { fun c -> SubT (NoFinal, List.map (fun x -> StatX x.it) ($3 c type_), $4 c) }
+  | LPAR SUB FINAL var_list str_type RPAR
+    { fun c -> SubT (Final, List.map (fun x -> StatX x.it) ($4 c type_), $5 c) }
 
 table_type :
   | limits ref_type { fun c -> TableT ($1, $2 c) }

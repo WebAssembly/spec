@@ -175,6 +175,7 @@ rule token = parse
       | "field" -> FIELD
       | "mut" -> MUT
       | "sub" -> SUB
+      | "final" -> FINAL
       | "rec" -> REC
 
       | "nop" -> NOP

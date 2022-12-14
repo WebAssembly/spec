@@ -1,6 +1,6 @@
 (module
-  (type $st (struct))
-  (type $st' (struct (field i32)))
+  (type $st (sub (struct)))
+  (type $st' (sub (struct (field i32))))
   (type $at (array i8))
   (type $st-sub1 (sub $st (struct)))
   (type $st-sub2 (sub $st (struct)))

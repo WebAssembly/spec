@@ -173,8 +173,9 @@ struct
     | DefFuncT ft -> s7 (-0x20); func_type ft
 
   let sub_type = function
-    | SubT ([], st) -> str_type st
-    | SubT (xs, st) -> s7 (-0x30); vec (var_type u32) xs; str_type st
+    | SubT (Final, [], st) -> str_type st
+    | SubT (Final, xs, st) -> s7 (-0x32); vec (var_type u32) xs; str_type st
+    | SubT (NoFinal, xs, st) -> s7 (-0x30); vec (var_type u32) xs; str_type st
 
   let def_type = function
     | RecT [st] -> sub_type st

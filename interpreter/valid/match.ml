@@ -127,8 +127,8 @@ and eq_str_type c dt1 dt2 =
   | DefFuncT ft1, DefFuncT ft2 -> eq_func_type c ft1 ft2
   | _, _ -> false
 
-and eq_sub_type c (SubT (xs1, st1)) (SubT (xs2, st2)) =
-  eq_list eq_var_type c xs1 xs2 && eq_str_type c st1 st2
+and eq_sub_type c (SubT (fin1, xs1, st1)) (SubT (fin2, xs2, st2)) =
+  fin1 = fin2 && eq_list eq_var_type c xs1 xs2 && eq_str_type c st1 st2
 
 and eq_def_type c (RecT sts1) (RecT sts2) =
   eq_list eq_sub_type c sts1 sts2
@@ -261,9 +261,8 @@ and match_str_type c dt1 dt2 =
 and match_var_type c x1 x2 =
   eq_var x1 x2 ||
   not (is_rec_var x1 || is_rec_var x2) && eq_ctx_type c (lookup c x1) (lookup c x2) ||
-  let SubT (xs, _) = unroll_ctx_type (lookup c x1) in
+  let SubT (_fin, xs, _st) = unroll_ctx_type (lookup c x1) in
   List.exists (fun x -> match_var_type c x x2) xs
-
 
 let match_table_type c (TableT (lim1, t1)) (TableT (lim2, t2)) =
   match_limits c lim1 lim2 && eq_ref_type c t1 t2
