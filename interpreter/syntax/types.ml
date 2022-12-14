@@ -7,6 +7,7 @@ type name = Utf8.unicode
 type null = NoNull | Null
 type mut = Cons | Var
 type init = Set | Unset
+type final = NoFinal | Final
 type 'a limits = {min : 'a; max : 'a option}
 
 type type_addr = ..
@@ -38,7 +39,7 @@ type str_type =
   | DefArrayT of array_type
   | DefFuncT of func_type
 
-type sub_type = SubT of var list * str_type
+type sub_type = SubT of final * var list * str_type
 type def_type = RecT of sub_type list
 type ctx_type = CtxT of (var * sub_type) list * int32
 
@@ -180,7 +181,11 @@ let string_of_null = function
   | NoNull -> ""
   | Null -> "null "
 
-and string_of_mut s = function
+let string_of_final = function
+  | NoFinal -> ""
+  | Final -> " final"
+
+let string_of_mut s = function
   | Cons -> s
   | Var -> "(mut " ^ s ^ ")"
 
@@ -245,9 +250,10 @@ let string_of_str_type = function
   | DefFuncT ft -> "func " ^ string_of_func_type ft
 
 let string_of_sub_type = function
-  | SubT ([], st) -> string_of_str_type st
-  | SubT (xs, st) ->
-    String.concat " " ("sub" :: List.map string_of_var xs) ^
+  | SubT (Final, [], st) -> string_of_str_type st
+  | SubT (fin, xs, st) ->
+    String.concat " "
+      (("sub" ^ string_of_final fin) :: List.map string_of_var xs) ^
     " (" ^ string_of_str_type st ^ ")"
 
 let string_of_def_type = function
@@ -359,7 +365,7 @@ let subst_str_type s = function
   | DefFuncT ft -> DefFuncT (subst_func_type s ft)
 
 let subst_sub_type s = function
-  | SubT (xs, st) -> SubT (List.map s xs, subst_str_type s st)
+  | SubT (fin, xs, st) -> SubT (fin, List.map s xs, subst_str_type s st)
 
 let subst_def_type s = function
   | RecT sts -> RecT (List.map (subst_sub_type s) sts)
@@ -417,7 +423,7 @@ let unroll_ctx_type (ct : ctx_type) : sub_type =
 
 let expand_ctx_type (ct : ctx_type) : str_type =
   match unroll_ctx_type ct with
-  | SubT (_, st) -> st
+  | SubT (_, _, st) -> st
 
 
 (* Dynamic Types *)

@@ -107,7 +107,7 @@ let str_type = function
   | DefFuncT ft -> func_type ft
 
 let sub_type = function
-  | SubT (xs, st) -> list var_type xs ++ str_type st
+  | SubT (_fin, xs, st) -> list var_type xs ++ str_type st
 
 let def_type = function
   | RecT sts -> list sub_type sts

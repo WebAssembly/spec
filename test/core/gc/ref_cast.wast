@@ -97,7 +97,7 @@
 ;; Concrete Types
 
 (module
-  (type $t0 (struct))
+  (type $t0 (sub (struct)))
   (type $t1 (sub $t0 (struct (field i32))))
   (type $t1' (sub $t0 (struct (field i32))))
   (type $t2 (sub $t1 (struct (field i32 i32))))

@@ -170,13 +170,16 @@ let check_str_type (c : context) (st : str_type) at =
   | DefFuncT ft -> check_func_type c ft at
 
 let check_sub_type (c : context) (st : sub_type) x at =
-  let SubT (xs, st) = st in
+  let SubT (fin, xs, st) = st in
   check_str_type c st at;
   List.iter (fun xi ->
     let xi = as_stat_var xi in
     require (xi < x) at
       ("forward use of type " ^ I32.to_string_u xi ^  " in sub type definition");
-    require (match_str_type c.types st (expand_ctx_type (type_ c (xi @@ at)))) at
+    let SubT (fini, _, sti) = unroll_ctx_type (type_ c (xi @@ at)) in
+    require (fini = NoFinal) at
+      ("sub type " ^ I32.to_string_u x ^ " has final super type " ^ I32.to_string_u xi);
+    require (match_str_type c.types st sti) at
       ("sub type " ^ I32.to_string_u x ^ " does not match super type " ^ I32.to_string_u xi)
   ) xs
 

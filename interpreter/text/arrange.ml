@@ -86,6 +86,10 @@ let null = function
   | NoNull -> ""
   | Null -> "null "
 
+let final = function
+  | NoFinal -> ""
+  | Final -> " final"
+
 let ref_type_raw (nul, t) =
   Atom (null nul ^ heap_type t)
 
@@ -110,9 +114,10 @@ let str_type st =
   | DefFuncT ft -> func_type ft
 
 let sub_type = function
-  | SubT ([], st) -> str_type st
-  | SubT (xs, st) ->
-    Node (String.concat " " ("sub" :: List.map var_type xs), [str_type st])
+  | SubT (Final, [], st) -> str_type st
+  | SubT (fin, xs, st) ->
+    Node (String.concat " "
+      (("sub" ^ final fin ):: List.map var_type xs), [str_type st])
 
 let def_type i j st =
   Node ("type $" ^ nat (i + j), [sub_type st])

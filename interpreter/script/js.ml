@@ -270,7 +270,7 @@ let value v =
   | Ref _ -> assert false
 
 let invoke ft vs at =
-  let dt = RecT [SubT ([], DefFuncT ft)] in
+  let dt = RecT [SubT (Final, [], DefFuncT ft)] in
   [dt @@ at], FuncImport (subject_type_idx @@ at) @@ at,
   List.concat (List.map value vs) @ [Call (subject_idx @@ at) @@ at]
 
@@ -380,7 +380,8 @@ let assert_return ress ts at =
 let i32 = NumT I32T
 let anyref = RefT (Null, AnyHT)
 let eqref = RefT (Null, EqHT)
-let func_def_type ts1 ts2 at = RecT [SubT ([], DefFuncT (FuncT (ts1, ts2)))] @@ at
+let func_def_type ts1 ts2 at =
+  RecT [SubT (Final, [], DefFuncT (FuncT (ts1, ts2)))] @@ at
 
 let wrap item_name wrap_action wrap_assertion at =
   let itypes, idesc, action = wrap_action at in

@@ -256,8 +256,12 @@ let sub_type s =
   | Some i when i = -0x30 land 0x7f ->
     skip 1 s;
     let xs = vec (var_type u32) s in
-    SubT (xs, str_type s)
-  | _ -> SubT ([], str_type s)
+    SubT (NoFinal, xs, str_type s)
+  | Some i when i = -0x32 land 0x7f ->
+    skip 1 s;
+    let xs = vec (var_type u32) s in
+    SubT (Final, xs, str_type s)
+  | _ -> SubT (Final, [], str_type s)
 
 let def_type s =
   match peek s with
