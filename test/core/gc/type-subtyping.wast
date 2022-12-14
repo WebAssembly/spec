@@ -116,7 +116,7 @@
 ;; Runtime types
 
 (module
-  (rec (type $t0 (sub (func (result (ref null func))))))
+  (type $t0 (sub (func (result (ref null func)))))
   (rec (type $t1 (sub $t0 (func (result (ref null $t1))))))
   (rec (type $t2 (sub $t1 (func (result (ref null $t2))))))
 
@@ -176,12 +176,41 @@
 (assert_trap (invoke "fail5") "cast")
 (assert_trap (invoke "fail6") "cast")
 
+(module
+  (type $t1 (sub (func)))
+  (type $t2 (sub final (func)))
+
+  (func $f1 (type $t1))
+  (func $f2 (type $t2))
+  (table funcref (elem $f1 $f2))
+
+  (func (export "fail1")
+    (block (call_indirect (type $t1) (i32.const 1)))
+  )
+  (func (export "fail2")
+    (block (call_indirect (type $t2) (i32.const 0)))
+  )
+
+  (func (export "fail3")
+    (ref.cast $t1 (table.get (i32.const 1)))
+    (drop)
+  )
+  (func (export "fail4")
+    (ref.cast $t2 (table.get (i32.const 0)))
+    (drop)
+  )
+)
+(assert_trap (invoke "fail1") "indirect call")
+(assert_trap (invoke "fail2") "indirect call")
+(assert_trap (invoke "fail3") "cast")
+(assert_trap (invoke "fail4") "cast")
+
 
 
 ;; Linking
 
 (module
-  (rec (type $t0 (sub (func (result (ref null func))))))
+  (type $t0 (sub (func (result (ref null func)))))
   (rec (type $t1 (sub $t0 (func (result (ref null $t1))))))
   (rec (type $t2 (sub $t1 (func (result (ref null $t2))))))
 
@@ -192,7 +221,7 @@
 (register "M")
 
 (module
-  (rec (type $t0 (sub (func (result (ref null func))))))
+  (type $t0 (sub (func (result (ref null func)))))
   (rec (type $t1 (sub $t0 (func (result (ref null $t1))))))
   (rec (type $t2 (sub $t1 (func (result (ref null $t2))))))
 
@@ -206,7 +235,7 @@
 
 (assert_unlinkable
   (module
-    (rec (type $t0 (sub (func (result (ref null func))))))
+    (type $t0 (sub (func (result (ref null func)))))
     (rec (type $t1 (sub $t0 (func (result (ref null $t1))))))
     (rec (type $t2 (sub $t1 (func (result (ref null $t2))))))
     (func (import "M" "f0") (type $t1))
@@ -216,7 +245,7 @@
 
 (assert_unlinkable
   (module
-    (rec (type $t0 (sub (func (result (ref null func))))))
+    (type $t0 (sub (func (result (ref null func)))))
     (rec (type $t1 (sub $t0 (func (result (ref null $t1))))))
     (rec (type $t2 (sub $t1 (func (result (ref null $t2))))))
     (func (import "M" "f0") (type $t2))
@@ -226,10 +255,35 @@
 
 (assert_unlinkable
   (module
-    (rec (type $t0 (sub (func (result (ref null func))))))
+    (type $t0 (sub (func (result (ref null func)))))
     (rec (type $t1 (sub $t0 (func (result (ref null $t1))))))
     (rec (type $t2 (sub $t1 (func (result (ref null $t2))))))
     (func (import "M" "f1") (type $t2))
+  )
+  "incompatible import type"
+)
+
+(module
+  (type $t1 (sub (func)))
+  (type $t2 (sub final (func)))
+  (func (export "f1") (type $t1))
+  (func (export "f2") (type $t2))
+)
+(register "M2")
+
+(assert_unlinkable
+  (module
+    (type $t1 (sub (func)))
+    (type $t2 (sub final (func)))
+    (func (import "M2" "f1") (type $t2))
+  )
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module
+    (type $t1 (sub (func)))
+    (type $t2 (sub final (func)))
+    (func (import "M2" "f2") (type $t1))
   )
   "incompatible import type"
 )
@@ -270,6 +324,7 @@
   )
   "sub type"
 )
+
 
 
 ;; Invalid subtyping definitions
