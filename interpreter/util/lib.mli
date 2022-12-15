@@ -37,6 +37,7 @@ sig
   val replace : 'a list -> int32 -> 'a -> 'a list (* raises Failure *)
   val take : int32 -> 'a list -> 'a list (* raises Failure *)
   val drop : int32 -> 'a list -> 'a list (* raises Failure *)
+  val iteri : (int32 -> 'a -> unit) -> 'a list -> unit
   val mapi : (int32 -> 'a -> 'b) -> 'a list -> 'b list
 
   val index_of : 'a -> 'a list -> int32 option

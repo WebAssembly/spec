@@ -1156,19 +1156,12 @@ inline_export :
 
 /* Modules */
 
-type_def_rhs :
-  | sub_type
-    { fun c i -> let st = $1 c in
-      let x = Types.alloc_uninit () in
-      Types.init x (CtxT ([(DynX x, st)], 0l));
-      define_ctx_type c (Types.def_of x); st }
-
 type_def :
-  | LPAR TYPE type_def_rhs RPAR
+  | LPAR TYPE sub_type RPAR
     { let at = at () in
-      fun c -> let i = anon_type c at in fun () -> $3 c i }
-  | LPAR TYPE bind_var type_def_rhs RPAR  /* Sugar */
-    { fun c -> let i = bind_type c $3 in fun () -> $4 c i }
+      fun c -> let i = anon_type c at in fun () -> i, $3 c }
+  | LPAR TYPE bind_var sub_type RPAR  /* Sugar */
+    { fun c -> let i = bind_type c $3 in fun () -> i, $4 c }
 
 type_def_list :
   | /* empty */ { fun c () -> [] }
@@ -1178,9 +1171,16 @@ type_def_list :
 
 def_type :
   | type_def
-    { fun c -> let tf = $1 c in fun () -> RecT [tf ()] }
+    { fun c -> let tf = $1 c in fun () ->
+      let x, st = tf () in
+      define_ctx_type c (CtxT ([(StatX x, st)], 0l));
+      RecT [st] }
   | LPAR REC type_def_list RPAR
-    { fun c -> let tf = $3 c in fun () -> RecT (tf ()) }
+    { fun c -> let tf = $3 c in fun () ->
+      let xsts = tf () in
+      let rts = List.map (fun (x, st) -> (StatX x, st)) xsts in
+      Lib.List32.iteri (fun i (x, _) -> define_ctx_type c (CtxT (rts, i))) xsts;
+      RecT (snd (List.split xsts)) }
 
 type_ :
   | def_type
