@@ -86,3 +86,25 @@
   (func (export "run") (call_indirect (type $f2) (i32.const 0)))
 )
 (assert_trap (invoke "run") "indirect call type mismatch")
+
+
+;; Implicit function types never pick up non-singleton recursive types
+
+(module
+  (rec (type $s (struct)))
+  (rec (type $t (func (param (ref $s)))))
+  (func $f (param (ref $s)))  ;; okay, type is equivalent to $t
+  (global (ref $t) (ref.func $f))
+)
+
+(assert_invalid
+  (module
+    (rec
+      (type $s (struct))
+      (type $t (func (param (ref $s))))
+    )
+    (func $f (param (ref $s)))  ;; type is not equivalent to $t
+    (global (ref $t) (ref.func $f))
+  )
+  "type mismatch"
+)
