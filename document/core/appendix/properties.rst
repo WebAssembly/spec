@@ -661,7 +661,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    \frac{
      S; C,\CLABELS\,[t^\ast] \vdashinstrseq \instr^\ast : [] \to [t^\ast]
      \qquad
-     C.\CLABELS[l] = [t_0^\ast]
+     C.\CLABELS[l] = \LCATCH^?~[t_0^\ast]
    }{
      S; C,\CLABELS\,[t^\ast] \vdashadmininstr \DELEGATEadm\{l\}~\instr^\ast~\END : [] \to [t^\ast]
    }
@@ -684,7 +684,6 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 * Let :math:`C''` be the same :ref:`context <context>` as :math:`C`, but with the label :math:`[t^\ast]` prepended to the |CLABELS| vector.
 
 * Then the compound instruction is valid under context :math:`C''` with type :math:`[] \to [t^\ast]`.
-
 
 .. math::
    \frac{
@@ -722,7 +721,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 * The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \to [t_2^*]`.
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^n]` prepended to the |CLABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label type <syntax-labeltype>` :math:`[t_1^n]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^*]`.

@@ -29,7 +29,7 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 
   * |CLOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
 
-  * |CLABELS| set to the singular sequence containing only :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]`.
+  * |CLABELS| set to the singular sequence containing only :ref:`label type <syntax-labeltype>` :math:`[t_2^\ast]`.
 
   * |CRETURN| set to the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]`.
 

@@ -1234,7 +1234,7 @@ Memory Instructions
    }
 
 
-.. index:: control instructions, structured control, label, block, branch, block type, label index, function index, type index, tag index, vector, polymorphism, context
+.. index:: control instructions, structured control, label, block, branch, block type, label index, label type, function index, type index, tag index, vector, polymorphism, context
    pair: validation; instruction
    single: abstract syntax; instruction
 .. _valid-label:
@@ -1281,7 +1281,7 @@ Control Instructions
 
 * The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label type <syntax-labeltype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
@@ -1308,7 +1308,7 @@ Control Instructions
 
 * The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` prepended to the |CLABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label type <syntax-labeltype>` :math:`[t_1^\ast]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
@@ -1335,7 +1335,7 @@ Control Instructions
 
 * The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label type <syntax-labeltype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
@@ -1368,23 +1368,25 @@ Control Instructions
 
 * The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label type <syntax-labeltype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
-* Let :math:`C''` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label <exec-label>` :math:`\LCATCH~[t_2^\ast]` prepended to the |CLABELS| vector.
+* Let :math:`C''` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label type <syntax-labeltype>` :math:`\LCATCH~[t_2^\ast]` prepended to the |CLABELS| vector.
 
-* For every :math:`(\CATCH~x~\instr_2^\ast)`:
+* For every :math:`x_i` and :math:`\instr_{2i}^\ast` in :math:`(\CATCH~x~\instr_2^\ast)^\ast`:
 
-  * The tag :math:`C.\CTAGS[x]` must be defined in the context :math:`C`.
+  * The tag :math:`C.\CTAGS[x_i]` must be defined in the context :math:`C`.
 
-  * Let :math:`[t^\ast] \to []` be its :ref:`tag type <syntax-tagtype>`.
+  * Let :math:`[t_{3i}^\ast] \to [t_{4i}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x_i]`.
+
+  * The :ref:`result type <syntax-resulttype>` :math:`[t_{4i}^\ast]` must be empty.
 
   * Under context :math:`C''`,
-    the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t^\ast] \to [t_2^\ast]`.
+    the instruction sequence :math:`\instr_{2i}^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_{3i}^\ast] \to [t_2^\ast]`.
 
-* If there is a :math:`(\CATCHALL~\instr_3^\ast)`, then:
+* If :math:`(\CATCHALL~\instr_3^\ast)^?` is not empty, then:
 
   * Under context :math:`C''`,
     the instruction sequence :math:`\instr_3^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^\ast]`.
@@ -1471,9 +1473,9 @@ Control Instructions
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* Let :math:`(\LCATCH^?~[t^\ast])` be the :ref:`label type <labeltype>` :math:`C.\CLABELS[l]`.
+* Let :math:`(\LCATCH^?~[t^\ast])` be the :ref:`label type <syntax-labeltype>` :math:`C.\CLABELS[l]`.
 
-* The |LCATCH| must be present in the :ref:`label type <labeltype>` :math:`C.\CLABELS[l]`.
+* The |LCATCH| must be present in the :ref:`label type <syntax-labeltype>` :math:`C.\CLABELS[l]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
@@ -1498,19 +1500,19 @@ Control Instructions
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
+* Let :math:`\LCATCH^?~[t^\ast]` be the :ref:`label type <syntax-labeltype>` :math:`C.\CLABELS[l]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^\ast] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     C.\CLABELS[l] = [t^\ast]
+     C.\CLABELS[l] = \LCATCH^?~[t^\ast]
    }{
      C \vdashinstr \BR~l : [t_1^\ast~t^\ast] \to [t_2^\ast]
    }
 
 .. note::
-   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label type first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
 
    The |BR| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
@@ -1522,19 +1524,19 @@ Control Instructions
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
+* Let :math:`\LCATCH^?~[t^\ast]` be the :ref:`label type <syntax-labeltype>` :math:`C.\CLABELS[l]`.
 
 * Then the instruction is valid with type :math:`[t^\ast~\I32] \to [t^\ast]`.
 
 .. math::
    \frac{
-     C.\CLABELS[l] = [t^\ast]
+     C.\CLABELS[l] = \LCATCH^?~[t^\ast]
    }{
      C \vdashinstr \BRIF~l : [t^\ast~\I32] \to [t^\ast]
    }
 
 .. note::
-   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label type first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
 
 
 .. _valid-br_table:

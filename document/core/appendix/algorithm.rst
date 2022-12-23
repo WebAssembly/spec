@@ -122,7 +122,7 @@ The control stack is likewise manipulated through auxiliary functions:
      ctrls.pop()
      return frame
 
-   func label_types(frame : ctrl_frame) : list(val_types) =
+   func label_types(frame : ctrl_frame) : list(val_type) =
      return (if frame.opcode == loop then frame.start_types else frame.end_types)
 
    func unreachable() =
