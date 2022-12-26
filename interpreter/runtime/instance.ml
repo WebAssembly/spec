@@ -8,9 +8,9 @@ type module_inst =
   memories : memory_inst list;
   tags : tag_inst list;
   globals : global_inst list;
-  exports : export_inst list;
   elems : elem_inst list;
   datas : data_inst list;
+  exports : export_inst list;
 }
 
 and func_inst = module_inst ref Func.t
@@ -18,9 +18,9 @@ and table_inst = Table.t
 and memory_inst = Memory.t
 and tag_inst = Tag.t
 and global_inst = Global.t
+and elem_inst = Elem.t
+and data_inst = Data.t
 and export_inst = Ast.name * extern
-and elem_inst = Values.ref_ list ref
-and data_inst = string ref
 
 and extern =
   | ExternFunc of func_inst

@@ -174,12 +174,12 @@ Element Segments
 
 Element segments :math:`\elem` are classified by the :ref:`reference type <syntax-reftype>` of their elements.
 
-:math:`\{ \EELEMTYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \}`
-...........................................................
+:math:`\{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \}`
+.......................................................
 
-* For each :math:`e_i` in :math:`e^\ast`,
+* For each :math:`e_i` in :math:`e^\ast`:
 
-  * The expression :math:`e_i` must be :ref:`valid <valid-expr>`.
+  * The expression :math:`e_i` must be :ref:`valid <valid-expr>` with some :ref:`result type <syntax-resulttype>` :math:`[t]`.
 
   * The expression :math:`e_i` must be :ref:`constant <valid-const>`.
 
@@ -190,13 +190,13 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 .. math::
    \frac{
-     (C \vdashexpr e \ok)^\ast
+     (C \vdashexpr e : [t])^\ast
      \qquad
      (C \vdashexprconst e \const)^\ast
      \qquad
      C \vdashelemmode \elemmode : t
    }{
-     C \vdashelem \{ \EELEMTYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \} : t
+     C \vdashelem \{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \} : t
    }
 
 
@@ -616,13 +616,24 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * all other fields are empty.
 
-* Under the context :math:`C`:
+* For each :math:`\functype_i` in :math:`\module.\MTYPES`,
+  the :ref:`function type <syntax-functype>` :math:`\functype_i` must be :ref:`valid <valid-functype>`.
 
-  * For each :math:`\functype_i` in :math:`\module.\MTYPES`,
-    the :ref:`function type <syntax-functype>` :math:`\functype_i` must be :ref:`valid <valid-functype>`.
+* Under the context :math:`C`:
 
   * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
     the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
+
+  * If :math:`\module.\MSTART` is non-empty,
+    then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
+
+  * For each :math:`\import_i` in :math:`\module.\MIMPORTS`,
+    the segment :math:`\import_i` must be :ref:`valid <valid-import>` with an :ref:`external type <syntax-externtype>` :math:`\X{it}_i`.
+
+  * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
+    the segment :math:`\export_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
+
+* Under the context :math:`C'`:
 
   * For each :math:`\table_i` in :math:`\module.\MTABLES`,
     the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\X{tt}_i`.
@@ -633,25 +644,14 @@ Instead, the context :math:`C` for validation of the module's content is constru
   * For each :math:`\tag_i` in :math:`\module.\MTAGS`,
     the definition :math:`\tag_i` must be :ref:`valid <valid-tag>` with an :ref:`tag type <syntax-tagtype>` :math:`\X{tagt}_i`.
 
-  * For each :math:`\global_i` in :math:`\module.\MGLOBALS`:
-
-    * Under the context :math:`C'`,
-      the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
+  * For each :math:`\global_i` in :math:`\module.\MGLOBALS`,
+    the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
 
   * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
     the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
 
   * For each :math:`\data_i` in :math:`\module.\MDATAS`,
     the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
-
-  * If :math:`\module.\MSTART` is non-empty,
-    then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
-
-  * For each :math:`\import_i` in :math:`\module.\MIMPORTS`,
-    the segment :math:`\import_i` must be :ref:`valid <valid-import>` with an :ref:`external type <syntax-externtype>` :math:`\X{it}_i`.
-
-  * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
-    the segment :math:`\export_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
 
 * The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
 
@@ -682,17 +682,17 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \quad
      (C \vdashfunc \func : \X{ft})^\ast
      \quad
-     (C \vdashtable \table : \X{tt})^\ast
+     (C' \vdashtable \table : \X{tt})^\ast
      \quad
-     (C \vdashmem \mem : \X{mt})^\ast
+     (C' \vdashmem \mem : \X{mt})^\ast
      \quad
-     (C \vdashtag \tag : \X{tagt})^\ast
+     (C' \vdashtag \tag : \X{tagt})^\ast
      \\
      (C' \vdashglobal \global : \X{gt})^\ast
      \\
-     (C \vdashelem \elem : \X{rt})^\ast
+     (C' \vdashelem \elem : \X{rt})^\ast
      \quad
-     (C \vdashdata \data \ok)^n
+     (C' \vdashdata \data \ok)^n
      \quad
      (C \vdashstart \start \ok)^?
      \quad
@@ -748,8 +748,8 @@ Instead, the context :math:`C` for validation of the module's content is constru
    However, this recursion is just a specification device.
    All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
-   Globals, however, are not recursive.
-   The effect of defining the limited context :math:`C'` for validating the module's globals is that their initialization expressions can only access functions and imported globals and nothing else.
+   Globals, however, are not recursive and not accessible within :ref:`constant expressions <valid-const>` when they are defined locally.
+   The effect of defining the limited context :math:`C'` for validating certain definitions is that they can only access functions and imported globals and nothing else.
 
 .. note::
    The restriction on the number of memories may be lifted in future versions of WebAssembly.

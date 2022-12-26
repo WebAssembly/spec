@@ -58,7 +58,7 @@ Construct                                        Judgement
 :ref:`Memory instance <valid-meminst>`           :math:`S \vdashmeminst \meminst : \memtype`
 :ref:`Tag instance <valid-taginst>`              :math:`S \vdashtaginst \taginst : \tagtype`
 :ref:`Global instance <valid-globalinst>`        :math:`S \vdashglobalinst \globalinst : \globaltype`
-:ref:`Element instance <valid-eleminst>`         :math:`S \vdasheleminst \eleminst \ok`
+:ref:`Element instance <valid-eleminst>`         :math:`S \vdasheleminst \eleminst : t`
 :ref:`Data instance <valid-datainst>`            :math:`S \vdashdatainst \datainst \ok`
 :ref:`Export instance <valid-exportinst>`        :math:`S \vdashexportinst \exportinst \ok`
 :ref:`Module instance <valid-moduleinst>`        :math:`S \vdashmoduleinst \moduleinst : C`

@@ -113,7 +113,7 @@ print(
   (module
     (func (export "test")
       (elem.drop 0)))
-  "unknown table 0")
+  "unknown elem segment 0")
 `);
 
 // table.init requires a table, minimally
@@ -133,7 +133,7 @@ print(
     (func (result i32) (i32.const 0))
     (func (export "test")
       (elem.drop 4)))
-  "unknown table 0")
+  "unknown elem segment 4")
 `);
 
 // init with elem seg ix out of range
@@ -197,7 +197,7 @@ tab_test1("(elem.drop 2)", 0,
 
 // init with elem seg ix indicating an active segment
 tab_test1("(table.init 2 (i32.const 12) (i32.const 1) (i32.const 1))", 0,
-          "out of bounds");
+          "out of bounds table access");
 
 // init, using an elem seg ix more than once is OK
 tab_test2(
@@ -213,15 +213,15 @@ tab_test2("(elem.drop 1)",
 // drop, then init
 tab_test2("(elem.drop 1)",
           "(table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))",
-          "out of bounds");
+          "out of bounds table access");
 
 // init: seg ix is valid passive, but length to copy > len of seg
 tab_test1("(table.init 1 (i32.const 12) (i32.const 0) (i32.const 5))", 0,
-          "out of bounds");
+          "out of bounds table access");
 
 // init: seg ix is valid passive, but implies copying beyond end of seg
 tab_test1("(table.init 1 (i32.const 12) (i32.const 2) (i32.const 3))", 0,
-          "out of bounds");
+          "out of bounds table access");
 
 // Tables are of different length with t1 shorter than t0, to test that we're not
 // using t0's limit for t1's bound
@@ -230,7 +230,7 @@ for ( let [table, oobval] of [[0,30],[1,28]] ) {
     // init: seg ix is valid passive, but implies copying beyond end of dst
     tab_test1(`(table.init $t${table} 1 (i32.const ${oobval-2}) (i32.const 1) (i32.const 3))`,
               table,
-              "out of bounds");
+              "out of bounds table access");
 
     // init: seg ix is valid passive, zero len, and src offset out of bounds at the
     // end of the table - this is allowed
@@ -242,7 +242,7 @@ for ( let [table, oobval] of [[0,30],[1,28]] ) {
     // end of the table - this is not allowed
     tab_test1(`(table.init $t${table} 1 (i32.const 12) (i32.const 5) (i32.const 0))`,
               table,
-              "out of bounds");
+              "out of bounds table access");
 
     // init: seg ix is valid passive, zero len, and dst offset out of bounds at the
     // end of the table - this is allowed
@@ -254,7 +254,7 @@ for ( let [table, oobval] of [[0,30],[1,28]] ) {
     // end of the table - this is not allowed
     tab_test1(`(table.init $t${table} 1 (i32.const ${oobval+1}) (i32.const 2) (i32.const 0))`,
               table,
-              "out of bounds");
+              "out of bounds table access");
 
     // init: seg ix is valid passive, zero len, and dst and src offsets out of bounds
     // at the end of the table - this is allowed
@@ -266,7 +266,7 @@ for ( let [table, oobval] of [[0,30],[1,28]] ) {
     // end of the table - this is not allowed
     tab_test1(`(table.init $t${table} 1 (i32.const ${oobval+1}) (i32.const 5) (i32.const 0))`,
               table,
-              "out of bounds");
+              "out of bounds table access");
 }
 
 // invalid argument types
@@ -338,7 +338,7 @@ function tbl_init(min, max, backup, write, segoffs=0) {
     // A fill reading past the end of the segment should throw *and* have filled
     // table with as much data as was available.
     let offs = min - backup;
-    print(`(assert_trap (invoke "run" (i32.const ${offs}) (i32.const ${write})) "out of bounds")`);
+    print(`(assert_trap (invoke "run" (i32.const ${offs}) (i32.const ${write})) "out of bounds table access")`);
     for (let i=0; i < min; i++) {
         print(`(assert_trap (invoke "test" (i32.const ${i})) "uninitialized element")`);
     }
@@ -383,5 +383,4 @@ print(
   (elem funcref) (elem funcref) (elem funcref) (elem funcref)
   (elem funcref) (elem funcref) (elem funcref) (elem funcref)
   (elem funcref)
-  (func (table.init 64 (i32.const 0) (i32.const 0) (i32.const 0))))
-`)
+  (func (table.init 64 (i32.const 0) (i32.const 0) (i32.const 0))))`)

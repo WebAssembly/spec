@@ -92,7 +92,7 @@ and a sequence of |CONST| instructions can be interpreted as an operand "stack" 
       (\I32.\CONST~n_1)~(\I32.\CONST~n_2)~\I32.\ADD \quad\stepto\quad (\I32.\CONST~(n_1 + n_2) \mod 2^{32})
 
    Per this rule, two |CONST| instructions and the |ADD| instruction itself are removed from the instruction stream and replaced with one new |CONST| instruction.
-   This can be interpreted as popping two value off the stack and pushing the result.
+   This can be interpreted as popping two values off the stack and pushing the result.
 
    When no result is produced, an instruction reduces to the empty sequence:
 

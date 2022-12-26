@@ -3,8 +3,8 @@ Title: WebAssembly Web API: Exception Handling
 Shortname: wasm-web-api
 Group: wasm
 Status: ED
-Level: 1
-TR: https://www.w3.org/TR/wasm-web-api-1/
+Level: 2
+TR: https://www.w3.org/TR/wasm-web-api-2/
 ED: https://webassembly.github.io/exception-handling/web-api/
 Editor: Ms2ger, Igalia
 Repository: WebAssembly/spec
@@ -125,7 +125,7 @@ Note: This algorithm accepts a {{Response}} object, or a
 
         1. If |response| is not [=CORS-same-origin=], [=reject=] |returnValue| with a {{TypeError}} and abort these substeps.
         1. If |response|'s [=response/status=] is not an [=ok status=], [=reject=] |returnValue| with a {{TypeError}} and abort these substeps.
-        1. [=Consume body|consume=] |response|'s body as an {{ArrayBuffer}}, and let |bodyPromise| be the result.
+        1. [=Consume body|Consume=] |response|'s body as an {{ArrayBuffer}}, and let |bodyPromise| be the result.
 
             Note: Although it is specified here that the response is consumed entirely before compilation proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The difference is unobservable, and thus the simpler model is specified. <!-- Using consume is a bit silly as it creates an ArrayBuffer but then we just want the underlying bytes. This is because of how streams is specced in terms of promises and JS objects whereas we want to operate more directly on the underlying concept. We can revisit this if things change in the Streams/Fetch specs. -->
 
@@ -145,13 +145,13 @@ Web user agents must augment the {{Module}} interface with the <code>[<a extende
 
 The [=serialization steps=], given |value|, |serialized|, and |forStorage|, are:
 
-    1. If |forStorage| is true, throw a "<a exception>DataCloneError</a>" {{DOMException}}
+    1. If |forStorage| is true, throw a "<a exception>DataCloneError</a>" {{DOMException}}.
 
     1. Set |serialized|.\[[Bytes]] to the [=sub-serialization=] of |value|.\[[Bytes]].
 
     1. Set |serialized|.\[[AgentCluster]] to the [=current Realm=]'s corresponding [=agent cluster=].
 
-The [=deserialization steps=], given |serialized| and |value|, are:
+The [=deserialization steps=], given |serialized|, |value|, and |targetRealm| are:
 
     1. Let |bytes| be the [=sub-deserialization=] of |serialized|.\[[Bytes]].
 
@@ -184,7 +184,7 @@ example) even though the exact format of implementation-dependent stack trace
 strings does not always match, the locations are easily understandable and the
 same across browsers.
 
-To achieve the same goal of a common representations for WebAssembly constructs, the
+To achieve the same goal of a common representation for WebAssembly constructs, the
 following conventions are adopted.
 
 A WebAssembly location is a reference to a particular instruction in the binary, and may be

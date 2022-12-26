@@ -148,6 +148,16 @@
 (assert_return (invoke "call-7") (i32.const 65))
 (assert_return (invoke "call-9") (i32.const 66))
 
+(assert_invalid
+  (module (table 1 funcref) (global i32 (i32.const 0)) (elem (global.get 0) $f) (func $f))
+  "unknown global"
+)
+(assert_invalid
+  (module (table 1 funcref) (global $g i32 (i32.const 0)) (elem (global.get $g) $f) (func $f))
+  "unknown global"
+)
+
+
 ;; Corner cases
 
 (module
@@ -425,11 +435,14 @@
   "constant expression required"
 )
 
-;; Use of internal globals in constant expressions is not allowed in MVP.
-;; (assert_invalid
-;;   (module (table 1 funcref) (elem (global.get $g)) (global $g i32 (i32.const 0)))
-;;   "constant expression required"
-;; )
+(assert_invalid
+  (module
+    (global $g (import "test" "g") (mut i32))
+    (table 1 funcref)
+    (elem (global.get $g))
+  )
+  "constant expression required"
+)
 
 (assert_invalid
    (module 
@@ -587,3 +600,59 @@
 (assert_return (invoke $module1 "call-7") (i32.const 67))
 (assert_return (invoke $module1 "call-8") (i32.const 69))
 (assert_return (invoke $module1 "call-9") (i32.const 70))
+
+;; Element segments must match element type of table
+
+(assert_invalid
+  (module (func $f) (table 1 externref) (elem (i32.const 0) $f))
+  "type mismatch"
+)
+
+(assert_invalid
+  (module (table 1 funcref) (elem (i32.const 0) externref (ref.null extern)))
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (func $f)
+    (table $t 1 externref)
+    (elem $e funcref (ref.func $f))
+    (func (table.init $t $e (i32.const 0) (i32.const 0) (i32.const 1))))
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (table $t 1 funcref)
+    (elem $e externref (ref.null extern))
+    (func (table.init $t $e (i32.const 0) (i32.const 0) (i32.const 1))))
+  "type mismatch"
+)
+
+;; Initializing a table with an externref-type element segment
+
+(module $m
+	(table $t (export "table") 2 externref)
+	(func (export "get") (param $i i32) (result externref)
+	      (table.get $t (local.get $i)))
+	(func (export "set") (param $i i32) (param $x externref)
+	      (table.set $t (local.get $i) (local.get $x))))
+
+(register "exporter" $m)
+
+(assert_return (invoke $m "get" (i32.const 0)) (ref.null extern))
+(assert_return (invoke $m "get" (i32.const 1)) (ref.null extern))
+
+(assert_return (invoke $m "set" (i32.const 0) (ref.extern 42)))
+(assert_return (invoke $m "set" (i32.const 1) (ref.extern 137)))
+
+(assert_return (invoke $m "get" (i32.const 0)) (ref.extern 42))
+(assert_return (invoke $m "get" (i32.const 1)) (ref.extern 137))
+
+(module
+  (import "exporter" "table" (table $t 2 externref))
+  (elem (i32.const 0) externref (ref.null extern)))
+
+(assert_return (invoke $m "get" (i32.const 0)) (ref.null extern))
+(assert_return (invoke $m "get" (i32.const 1)) (ref.extern 137))
