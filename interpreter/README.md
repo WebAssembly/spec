@@ -448,10 +448,10 @@ It also supports an "unchecked" mode (flag `-u`), in which module definitions ar
 When running scripts, the interpreter predefines a simple host module named `"spectest"` that has the following module type:
 ```
 (module
-  (global (export "global_i32") i32)
-  (global (export "global_i64") i64)
-  (global (export "global_f32") f32)
-  (global (export "global_f64") f64)
+  (global (export "global_i32") i32 (i32.const 0))
+  (global (export "global_i64") i64 (i64.const 0))
+  (global (export "global_f32") f32 (f32.const 0))
+  (global (export "global_f64") f64 (f64.const 0))
 
   (table (export "table") 10 20 funcref)
 
