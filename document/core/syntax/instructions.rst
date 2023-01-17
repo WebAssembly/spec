@@ -190,6 +190,9 @@ Occasionally, it is convenient to group operators together according to the foll
 .. _syntax-visatbinop:
 .. _syntax-vfunop:
 .. _syntax-vfbinop:
+.. _syntax-rvfbinop:
+.. _syntax-rvfternop:
+.. _syntax-rvftruncop:
 .. _syntax-instr-vec:
 
 Vector Instructions
@@ -273,8 +276,16 @@ Vector instructions (also known as *SIMD* instructions, *single instruction mult
      \K{f32x4.}\VCONVERT\K{\_i32x4\_}\sx ~|~
      \K{f32x4.}\VDEMOTE\K{\_f64x2\_zero} \\&&|&
      \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}\sx ~|~
-     \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\&&|&
-     \dots \\
+     \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\
+     & \exprofiles{\PROFDET} &|& \K{i8x16.relaxed\_swizzle} \\
+     & \exprofiles{\PROFDET} &|& \K{i32x4.}\RVTRUNC\K{\_f32x4\_}\sx \\
+     & \exprofiles{\PROFDET} &|& \fshape\K{.}\rvfternop \\
+     & \exprofiles{\PROFDET} &|& \ishape\K{.relaxed\_laneselect} \\
+     & \exprofiles{\PROFDET} &|& \fshape\K{.}\rvfbinop \\
+     & \exprofiles{\PROFDET} &|& \K{i16x8.}\RQ15MULRS \\
+     & \exprofiles{\PROFDET} &|& \K{i16x8.relaxed\_dot\_i8x16\_i7x16\_s} \\
+     & \exprofiles{\PROFDET} &|& \K{i32x4.relaxed\_dot\_i8x16\_i7x16\_add\_s} \\
+     & &|& \dots \\
    \end{array}
 
 .. math::
@@ -338,6 +349,12 @@ Vector instructions (also known as *SIMD* instructions, *single instruction mult
      \K{max} ~|~
      \K{pmin} ~|~
      \K{pmax} \\
+   \production{relaxed vector floating-point binary operator} & \rvfbinop &::=&
+     \K{relaxed\_min} ~|~
+     \K{relaxed\_max} \\
+   \production{relaxed vector floating-point ternary operator} & \rvfternop &::=&
+     \K{relaxed\_madd} ~|~
+     \K{relaxed\_nmadd} \\
    \end{array}
 
 .. _syntax-vec-shape:
@@ -399,9 +416,17 @@ Occasionally, it is convenient to group operators together according to the foll
    \production{binary operator} & \vbinop &::=&
      \vibinop ~|~ \vfbinop \\&&|&
      \viminmaxop ~|~ \visatbinop \\&&|&
+     \rvfbinop \\&&|&
      \VMUL ~|~
      \AVGR\K{\_u} ~|~
-     \Q15MULRSAT\K{\_s} \\
+     \Q15MULRSAT\K{\_s} \\&&|&
+     \RQ15MULRS\K{\_s} ~|~
+     \K{relaxed\_dot\_i8x16\_i7x16\_s} \\
+   \production{ternary operator} & \vternop &::=&
+     \vvternop ~|~
+     \rvfternop \\&&|&
+     \K{relaxed\_laneselect} ~|~
+     \K{relaxed\_dot\_i8x16\_i7x16\_add\_s} \\
    \production{test operator} & \vtestop &::=&
      \vitestop \\
    \production{relational operator} & \vrelop &::=&
@@ -411,7 +436,8 @@ Occasionally, it is convenient to group operators together according to the foll
      \VTRUNC\K{\_sat} ~|~
      \VCONVERT ~|~
      \VDEMOTE ~|~
-     \VPROMOTE \\
+     \VPROMOTE ~|~
+     \RVTRUNC \\
    \end{array}
 
 

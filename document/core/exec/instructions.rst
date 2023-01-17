@@ -325,12 +325,12 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
 
 
-.. _exec-vvternop:
+.. _exec-vternop:
 
-:math:`\V128\K{.}\vvternop`
+:math:`\V128\K{.}\vternop`
 ...........................
 
-1. Assert: due to :ref:`validation <valid-vvternop>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vternop>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_3` from the stack.
 
@@ -338,14 +338,14 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-5. Let :math:`c` be the result of computing :math:`\vvternop_{\I128}(c_1, c_2, c_3)`.
+5. Let :math:`c` be the result of computing :math:`\vternop{\I128}(c_1, c_2, c_3)`.
 
 6. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\V128\K{.}\vvternop &\stepto& (\V128\K{.}\VCONST~c)
-     & (\iff c = \vvternop_{\I128}(c_1, c_2, c_3)) \\
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\V128\K{.}\vternop &\stepto& (\V128\K{.}\VCONST~c)
+     & (\iff c = \vternop{\I128}(c_1, c_2, c_3)) \\
    \end{array}
 
 
@@ -395,6 +395,39 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
    (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\I8X16\K{.}\SWIZZLE &\stepto& (\V128\K{.}\VCONST~c')
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & i^\ast = \lanes_{i8x16}(c_2) \\
+      \wedge & c^\ast = \lanes_{i8x16}(c_1)~0^{240} \\
+      \wedge & c' = \lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ]))
+     \end{array}
+   \end{array}
+
+
+.. _exec-vec-relaxed-swizzle:
+
+:math:`\K{i8x16.}\RSWIZZLE`
+...........................
+
+1. Assert: due to :ref:`validation <valid-vbinop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+3. Let :math:`i^\ast` be the sequence :math:`\lanes_{i8x16}(c_2)`.
+
+4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+5. Let :math:`j^\ast` be the sequence :math:`\lanes_{i8x16}(c_1)`.
+
+6. Let :math:`c'` be the result of computing :math:`\RSWIZZLE(j^\ast, i^\ast)`.
+
+7. Push the value :math:`\V128.\VCONST~c'` onto the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i8x16}\K{.}\RSWIZZLE &\stepto& (\V128\K{.}\VCONST~c')
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}

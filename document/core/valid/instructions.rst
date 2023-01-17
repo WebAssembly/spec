@@ -320,9 +320,9 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    }
 
 
-.. _valid-vvternop:
+.. _valid-vternop:
 
-:math:`\V128\K{.}\vvternop`
+:math:`\V128\K{.}\vternop`
 ...........................
 
 * The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
@@ -330,7 +330,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 .. math::
    \frac{
    }{
-     C \vdashinstr \V128\K{.}\vvternop : [\V128~\V128~\V128] \to [\V128]
+     C \vdashinstr \V128\K{.}\vternop : [\V128~\V128~\V128] \to [\V128]
    }
 
 
@@ -350,8 +350,8 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 .. _valid-vec-swizzle:
 
-:math:`\K{i8x16.}\SWIZZLE`
-..........................
+:math:`\K{i8x16.}\SWIZZLE` :math:`\K{i8x16.relaxed\_swizzle}`
+.............................................................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 

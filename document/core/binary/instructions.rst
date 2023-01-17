@@ -838,6 +838,31 @@ All other vector instructions are plain opcodes without any immediates.
      \hex{FD}~~95{:}\Bu32 &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\
    \end{array}
 
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
+     \hex{FD}~~256{:}\Bu32 &\Rightarrow& \I16X8.\RSWIZZLE \\ &&|&
+     \hex{FD}~~257{:}\Bu32 &\Rightarrow& \I32X4.\RVTRUNC\K{\_f32x4\_s} \\ &&|&
+     \hex{FD}~~258{:}\Bu32 &\Rightarrow& \I32X4.\RVTRUNC\K{\_f32x4\_u} \\ &&|&
+     \hex{FD}~~259{:}\Bu32 &\Rightarrow& \I32X4.\RVTRUNC\K{\_f32x4\_s\_zero} \\ &&|&
+     \hex{FD}~~260{:}\Bu32 &\Rightarrow& \I32X4.\RVTRUNC\K{\_f32x4\_u\_zero} \\ &&|&
+     \hex{FD}~~261{:}\Bu32 &\Rightarrow& \F32X4.\K{relaxed\_madd} \\ &&|&
+     \hex{FD}~~262{:}\Bu32 &\Rightarrow& \F32X4.\K{relaxed\_nmadd} \\ &&|&
+     \hex{FD}~~263{:}\Bu32 &\Rightarrow& \F64X2.\K{relaxed\_madd} \\ &&|&
+     \hex{FD}~~264{:}\Bu32 &\Rightarrow& \F64X2.\K{relaxed\_nmadd} \\ &&|&
+     \hex{FD}~~265{:}\Bu32 &\Rightarrow& \I8X16.\K{relaxed\_laneselect} \\ &&|&
+     \hex{FD}~~266{:}\Bu32 &\Rightarrow& \I16X8.\K{relaxed\_laneselect} \\ &&|&
+     \hex{FD}~~267{:}\Bu32 &\Rightarrow& \I32X4.\K{relaxed\_laneselect} \\ &&|&
+     \hex{FD}~~268{:}\Bu32 &\Rightarrow& \I64X2.\K{relaxed\_laneselect} \\ &&|&
+     \hex{FD}~~269{:}\Bu32 &\Rightarrow& \F32X4.\K{relaxed\_min} \\ &&|&
+     \hex{FD}~~270{:}\Bu32 &\Rightarrow& \F32X4.\K{relaxed\_max} \\ &&|&
+     \hex{FD}~~271{:}\Bu32 &\Rightarrow& \F64X2.\K{relaxed\_min} \\ &&|&
+     \hex{FD}~~272{:}\Bu32 &\Rightarrow& \F64X2.\K{relaxed\_max} \\ &&|&
+     \hex{FD}~~273{:}\Bu32 &\Rightarrow& \I16X8.\RQ15MULRS \\ &&|&
+     \hex{FD}~~274{:}\Bu32 &\Rightarrow& \I16X8.\K{relaxed\_dot\_i8x16\_i7x16\_s} \\ &&|&
+     \hex{FD}~~275{:}\Bu32 &\Rightarrow& \I16X8.\K{relaxed\_dot\_i8x16\_i7x16\_add\_s} \\
+   \end{array}
+
 
 .. index:: expression
    pair: binary format; expression

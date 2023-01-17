@@ -421,7 +421,7 @@ INSTRUCTIONS = [
     Instruction(r'\V128.\VANDNOT', r'\hex{FD}~~\hex{4F}', r'[\V128~\V128] \to [\V128]', r'valid-vvbinop', r'exec-vvbinop', r'op-iandnot'),
     Instruction(r'\V128.\VOR', r'\hex{FD}~~\hex{50}', r'[\V128~\V128] \to [\V128]', r'valid-vvbinop', r'exec-vvbinop', r'op-ior'),
     Instruction(r'\V128.\VXOR', r'\hex{FD}~~\hex{51}', r'[\V128~\V128] \to [\V128]', r'valid-vvbinop', r'exec-vvbinop', r'op-ixor'),
-    Instruction(r'\V128.\BITSELECT', r'\hex{FD}~~\hex{52}', r'[\V128~\V128~\V128] \to [\V128]', r'valid-vvternop', r'exec-vvternop', r'op-ibitselect'),
+    Instruction(r'\V128.\BITSELECT', r'\hex{FD}~~\hex{52}', r'[\V128~\V128~\V128] \to [\V128]', r'valid-vternop', r'exec-vternop', r'op-ibitselect'),
     Instruction(r'\V128.\ANYTRUE', r'\hex{FD}~~\hex{53}', r'[\V128] \to [\I32]', r'valid-vvtestop', r'exec-vvtestop'),
     Instruction(r'\V128.\LOAD\K{8\_lane}~\memarg~\laneidx', r'\hex{FD}~~\hex{54}', r'[\I32~\V128] \to [\V128]', r'valid-load-lane', r'exec-load-lane'),
     Instruction(r'\V128.\LOAD\K{16\_lane}~\memarg~\laneidx', r'\hex{FD}~~\hex{55}', r'[\I32~\V128] \to [\V128]', r'valid-load-lane', r'exec-load-lane'),
