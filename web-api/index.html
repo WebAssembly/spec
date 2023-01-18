@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly Web API</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version 26e85e599, updated Thu Dec 8 15:29:31 2022 -0800" name="generator">
+  <meta content="Bikeshed version d6f2d6445, updated Tue Jan 17 11:25:25 2023 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-2/" rel="canonical">
-  <meta content="1782235239ddebaf2cb079b00fdaa2d2c4dedba3" name="document-revision">
+  <meta content="ca1d792430e353a7de0f2f4948fbb02bb0b83a65" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -298,7 +298,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2022-12-15">15 December 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-01-18">18 January 2023</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -315,7 +315,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
     </div>
    </details>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2022 <a href="https://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="https://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="https://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="https://www.keio.ac.jp/">Keio</a>, <a href="https://ev.buaa.edu.cn/">Beihang</a>). W3C <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document" rel="license">permissive document license</a> rules apply. </p>
+   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2023 <a href="https://www.w3.org/">World Wide Web Consortium</a>. <abbr title="World Wide Web Consortium">W3C</abbr><sup>®</sup> <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document" rel="license">permissive document license</a> rules apply. </p>
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
@@ -393,7 +393,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
    </div>
    <div class="algorithm" data-algorithm="compile a potential WebAssembly response">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="compile-a-potential-webassembly-response">compile a potential WebAssembly response</dfn> with a promise of a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response②">Response</a></code> <var>source</var>, perform the following steps: 
-    <p class="note" role="note"><span>Note:</span> This algorithm accepts a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response③">Response</a></code> object, or a
+    <p class="note" role="note"><span class="marker">Note:</span> This algorithm accepts a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response③">Response</a></code> object, or a
     promise for one, and compiles and instantiates the resulting bytes of the response. This compilation
     can be performed in the background and in a streaming manner. If the <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response④">Response</a></code> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/#cors-same-origin" id="ref-for-cors-same-origin">CORS-same-origin</a>, does not represent an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status">ok status</a>, or does not match the <code>`application/wasm`</code> MIME type, the returned promise will be rejected with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code>; if
     compilation or instantiation fails, the returned promise will be rejected with a <code class="idl"><a data-link-type="idl" href="https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror" id="ref-for-exceptiondef-compileerror">CompileError</a></code> or other relevant error type, depending on the cause of failure.</p>
@@ -409,14 +409,14 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
         <p>Let <var>mimeType</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-extract-mime-type" id="ref-for-concept-header-extract-mime-type">extracting a MIME type</a> from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list">header list</a>.</p>
        <li data-md>
         <p>If <var>mimeType</var> is not <code>`application/wasm`</code>, reject <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①">TypeError</a></code> and abort these substeps.</p>
-        <p class="note" role="note"><span>Note:</span> extra parameters are not allowed, including the empty <code>`application/wasm;`</code>.</p>
+        <p class="note" role="note"><span class="marker">Note:</span> extra parameters are not allowed, including the empty <code>`application/wasm;`</code>.</p>
        <li data-md>
         <p>If <var>response</var> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/#cors-same-origin" id="ref-for-cors-same-origin①">CORS-same-origin</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject">reject</a> <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror②">TypeError</a></code> and abort these substeps.</p>
        <li data-md>
         <p>If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status①">ok status</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">reject</a> <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a></code> and abort these substeps.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-body-consume-body" id="ref-for-concept-body-consume-body">Consume</a> <var>response</var>’s body as an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects">ArrayBuffer</a></code>, and let <var>bodyPromise</var> be the result.</p>
-        <p class="note" role="note"><span>Note:</span> Although it is specified here that the response is consumed entirely before compilation proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The difference is unobservable, and thus the simpler model is specified.</p>
+        <p class="note" role="note"><span class="marker">Note:</span> Although it is specified here that the response is consumed entirely before compilation proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The difference is unobservable, and thus the simpler model is specified.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>bodyPromise</var> with value <var>bodyArrayBuffer</var>:</p>
         <ol>
@@ -467,7 +467,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
    <p>Engines should attempt to share/reuse internal compiled code when performing
 a structured serialization, although in corner cases like CPU upgrade or browser
 update, this might not be possible and full recompilation may be necessary.</p>
-   <p class="note" role="note"><span>Note:</span> The semantics of a structured serialization is as-if the binary source, from which the <code class="idl"><a data-link-type="idl" href="https://webassembly.github.io/spec/js-api/#module" id="ref-for-module②">Module</a></code> was compiled, is serialized, then deserialized, and recompiled into the target realm.
+   <p class="note" role="note"><span class="marker">Note:</span> The semantics of a structured serialization is as-if the binary source, from which the <code class="idl"><a data-link-type="idl" href="https://webassembly.github.io/spec/js-api/#module" id="ref-for-module②">Module</a></code> was compiled, is serialized, then deserialized, and recompiled into the target realm.
 Given the above engine optimizations, structured serialization provides developers
 explicit control over both compiled-code caching and cross-window/worker code
 sharing.</p>
