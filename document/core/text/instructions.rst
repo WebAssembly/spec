@@ -34,7 +34,7 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    \production{label} & \Tlabel_I &::=&
      v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose I
        & (\iff v \notin I.\ILABELS) \\ &&|&
-     v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose (I \WITH \ILABELS[i] = \epsilon)
+     v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose (I \with \ILABELS[i] = \epsilon)
        & (\iff I.\ILABELS[i] = v) \\ &&|&
      \epsilon &\Rightarrow& \{\ILABELS~(\epsilon)\} \compose I \\
    \end{array}
