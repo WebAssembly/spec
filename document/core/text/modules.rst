@@ -108,7 +108,7 @@ If inline declarations are given, then their types must match the referenced :re
         \end{array} \\
    \end{array}
 
-The synthesized attribute of a |Ttypeuse| is a pair consisting of both the used :ref:`type index <syntax-typeidx>` and the updated :ref:`identifier context <text-context>` including possible parameter identifiers.
+The synthesized attribute of a |Ttypeuse| is a pair consisting of both the used :ref:`type index <syntax-typeidx>` and the local :ref:`identifier context <text-context>` containing possible parameter identifiers.
 The following auxiliary function extracts optional identifiers from parameters:
 
 .. math::
