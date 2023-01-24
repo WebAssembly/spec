@@ -655,6 +655,7 @@ In order to allow RTTs to be initialised as globals, the following extensions ar
 * `struct.new_canon` and `struct.new_canon_default` are constant instructions
 * `array.new_canon`, `array.new_canon_default`, and `array.new_canon_fixed` are constant instructions
   - Note: `array.new_canon_data` and `array.new_canon_elem` are not for the time being, see above
+* `extern.internalize` and `extern.externalize` are constant instructions
 * `global.get` is a constant instruction and can access preceding (immutable) global definitions, not just imports as in the MVP
 
 
