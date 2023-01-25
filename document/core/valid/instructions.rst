@@ -320,9 +320,9 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    }
 
 
-.. _valid-vternop:
+.. _valid-vvternop:
 
-:math:`\V128\K{.}\vternop`
+:math:`\V128\K{.}\vvternop`
 ...........................
 
 * The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
@@ -330,7 +330,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 .. math::
    \frac{
    }{
-     C \vdashinstr \V128\K{.}\vternop : [\V128~\V128~\V128] \to [\V128]
+     C \vdashinstr \V128\K{.}\vvternop : [\V128~\V128~\V128] \to [\V128]
    }
 
 
@@ -350,8 +350,8 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 .. _valid-vec-swizzle:
 
-:math:`\K{i8x16.}\SWIZZLE` :math:`\K{i8x16.relaxed\_swizzle}`
-.............................................................
+:math:`\K{i8x16.}\SWIZZLE`
+.....................................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
@@ -359,6 +359,20 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    \frac{
    }{
      C \vdashinstr \K{i8x16.}\SWIZZLE : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vec-rswizzle:
+
+:math:`\K{i8x16.}relaxed\_\SWIZZLE`
+.....................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \K{i8x16.}relaxed\_\SWIZZLE : [\V128~\V128] \to [\V128]
    }
 
 
@@ -459,6 +473,20 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    }
 
 
+.. _valid-vternop:
+
+:math:`\shape\K{.}\vternop`
+...........................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vternop : [\V128~\V128~\V128] \to [\V128]
+   }
+
+
 .. _valid-vrelop:
 
 :math:`\shape\K{.}\vrelop`
@@ -554,6 +582,28 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    \frac{
    }{
      C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s} : [\V128~\V128] \to [\V128]
+   }
+
+:math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_s}`
+.......................................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_s} : [\V128~\V128] \to [\V128]
+   }
+
+:math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_add\_\_s}`
+..............................................................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_add\_\_s} : [\V128~\V128~\V128] \to [\V128]
    }
 
 

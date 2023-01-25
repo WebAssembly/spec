@@ -116,6 +116,7 @@
 
 .. |PROFFULL| mathdef:: \xref{appendix/profiles}{profile-full}{\profile{FUL}}
 .. |PROFDET| mathdef:: \xref{appendix/profiles}{profile-deterministic}{\profile{DET}}
+.. |EXPROFDET| mathdef:: \exprofiles{\PROFDET}
 
 
 
@@ -1196,6 +1197,8 @@
 .. |narrow| mathdef:: \xref{exec/numerics}{op-narrow_u}{\F{narrow}}
 .. |narrowu| mathdef:: \xref{exec/numerics}{op-narrow_u}{\F{narrow}^{\K{u}}}
 .. |narrows| mathdef:: \xref{exec/numerics}{op-narrow_s}{\F{narrow}^{\K{s}}}
+
+.. |ridotmul| mathdef:: \xref{exec/numerics}{op-ridotmul}{\F{relaxed\_dot\_mul}}
 
 
 .. Numerics, meta functions

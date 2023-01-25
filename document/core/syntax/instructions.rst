@@ -277,14 +277,14 @@ Vector instructions (also known as *SIMD* instructions, *single instruction mult
      \K{f32x4.}\VDEMOTE\K{\_f64x2\_zero} \\&&|&
      \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}\sx ~|~
      \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\
-     & \exprofiles{\PROFDET} &|& \K{i8x16.relaxed\_swizzle} \\
-     & \exprofiles{\PROFDET} &|& \K{i32x4.}\RVTRUNC\K{\_f32x4\_}\sx \\
-     & \exprofiles{\PROFDET} &|& \fshape\K{.}\rvfternop \\
-     & \exprofiles{\PROFDET} &|& \ishape\K{.relaxed\_laneselect} \\
-     & \exprofiles{\PROFDET} &|& \fshape\K{.}\rvfbinop \\
-     & \exprofiles{\PROFDET} &|& \K{i16x8.}\RQ15MULRS \\
-     & \exprofiles{\PROFDET} &|& \K{i16x8.relaxed\_dot\_i8x16\_i7x16\_s} \\
-     & \exprofiles{\PROFDET} &|& \K{i32x4.relaxed\_dot\_i8x16\_i7x16\_add\_s} \\
+     & &|& \K{i8x16.relaxed\_swizzle} \\
+     & &|& \K{i32x4.}\RVTRUNC\K{\_f32x4\_}\sx \\
+     & &|& \fshape\K{.}\rvfternop \\
+     & &|& \ishape\K{.relaxed\_laneselect} \\
+     & &|& \fshape\K{.}\rvfbinop \\
+     & &|& \K{i16x8.}\RQ15MULRS \\
+     & &|& \K{i16x8.relaxed\_dot\_i8x16\_i7x16\_s} \\
+     & &|& \K{i32x4.relaxed\_dot\_i8x16\_i7x16\_add\_s} \\
      & &|& \dots \\
    \end{array}
 
@@ -399,6 +399,7 @@ For the other vector instructions, the use of two's complement for the signed in
 .. _syntax-vunop:
 .. _syntax-vbinop:
 .. _syntax-vrelop:
+.. _syntax-vternop:
 .. _syntax-vtestop:
 .. _syntax-vcvtop:
 
@@ -420,13 +421,11 @@ Occasionally, it is convenient to group operators together according to the foll
      \VMUL ~|~
      \AVGR\K{\_u} ~|~
      \Q15MULRSAT\K{\_s} \\&&|&
-     \RQ15MULRS\K{\_s} ~|~
-     \K{relaxed\_dot\_i8x16\_i7x16\_s} \\
+     \RQ15MULRS\K{\_s} \\
    \production{ternary operator} & \vternop &::=&
      \vvternop ~|~
      \rvfternop \\&&|&
-     \K{relaxed\_laneselect} ~|~
-     \K{relaxed\_dot\_i8x16\_i7x16\_add\_s} \\
+     \K{relaxed\_laneselect} \\
    \production{test operator} & \vtestop &::=&
      \vitestop \\
    \production{relational operator} & \vrelop &::=&
