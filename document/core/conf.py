@@ -140,36 +140,42 @@ todo_include_todos = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-html_theme = 'alabaster'
+
+# ====== Old theme and config =============================
+# html_theme = 'alabaster'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-html_theme_options = {
-  'logo': logo,
-  'logo_name': 'WebAssembly',
-  'description': 'WebAssembly Specification',
-  'fixed_sidebar': True,
-  'sidebar_width': '260px',
-  'sidebar_collapse': True,
-  'show_powered_by': False,
-  'extra_nav_links': {
-    'Index': 'BASEDIR/genindex.html',
-    'Download as PDF': 'BASEDIR/_download/' + name + '.pdf'
-  },
-}
+# html_theme_options = {
+#   'logo': logo,
+#   'logo_name': 'WebAssembly',
+#   'description': 'WebAssembly Specification',
+#   'fixed_sidebar': True,
+#   'sidebar_width': '260px',
+#   'sidebar_collapse': True,
+#   'show_powered_by': False,
+#   'extra_nav_links': {
+#     'Index': 'BASEDIR/genindex.html',
+#     'Download as PDF': 'BASEDIR/_download/' + name + '.pdf'
+#   },
+# }
 
-html_sidebars = {
-  '**': [
-    # 'about.html',
-    'navigation.html',
-    # 'relations.html',
-    'searchbox.html',
-  ]
-}
+# html_sidebars = {
+#   '**': [
+#     # 'about.html',
+#     'navigation.html',
+#     # 'relations.html',
+#     'searchbox.html',
+#   ]
+# }
+# ==============================================================
 
+# New mobile friendly theme with dark mode
+html_theme = 'furo'
+
+html_logo = logo
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
