@@ -551,7 +551,6 @@
 .. |vtestop| mathdef:: \xref{syntax/instructions}{syntax-vtestop}{\X{vtestop}}
 .. |rvfbinop| mathdef:: \xref{syntax/instructions}{syntax-rvfbinop}{\X{rvfbinop}}
 .. |rvfternop| mathdef:: \xref{syntax/instructions}{syntax-rvfternop}{\X{rvfternop}}
-.. |rvftruncop| mathdef:: \xref{syntax/instructions}{syntax-rvftruncop}{\X{rvftruncop}}
 
 .. |sx| mathdef:: \xref{syntax/instructions}{syntax-sx}{\X{sx}}
 .. |half| mathdef:: \xref{syntax/instructions}{syntax-half}{\X{half}}
@@ -1198,7 +1197,14 @@
 .. |narrowu| mathdef:: \xref{exec/numerics}{op-narrow_u}{\F{narrow}^{\K{u}}}
 .. |narrows| mathdef:: \xref{exec/numerics}{op-narrow_s}{\F{narrow}^{\K{s}}}
 
-.. |ridotmul| mathdef:: \xref{exec/numerics}{op-ridotmul}{\F{relaxed\_dot\_mul}}
+.. |rmadd| mathdef:: \xref{exec/numerics}{op-relaxed_madd}{\F{relaxed\_madd}}
+.. |rnmadd| mathdef:: \xref{exec/numerics}{op-relaxed_nmadd}{\F{relaxed\_nmadd}}
+.. |rswizzle| mathdef:: \xref{exec/numerics}{op-relaxed_swizzle}{\F{relaxed\_swizzle}}
+.. |rtrunc| mathdef:: \xref{exec/numerics}{op-relaxed_trunc}{\F{relaxed\_trunc}}
+.. |rlaneselect| mathdef:: \xref{exec/numerics}{op-relaxed_laneselect}{\F{relaxed\_laneselect}}
+.. |rmin| mathdef:: \xref{exec/numerics}{op-relaxed_min}{\F{relaxed\_min}}
+.. |rmax| mathdef:: \xref{exec/numerics}{op-relaxed_max}{\F{relaxed\_max}}
+.. |ridotmul| mathdef:: \xref{exec/numerics}{op-relaxed_idotmul}{\F{relaxed\_dot\_mul}}
 
 
 .. Numerics, meta functions

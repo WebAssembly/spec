@@ -351,7 +351,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 .. _valid-vec-swizzle:
 
 :math:`\K{i8x16.}\SWIZZLE`
-.....................................
+..........................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
@@ -364,15 +364,15 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 .. _valid-vec-rswizzle:
 
-:math:`\K{i8x16.}relaxed\_\SWIZZLE`
-.....................................
+:math:`\K{i8x16.}\RSWIZZLE`
+...................................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \K{i8x16.}relaxed\_\SWIZZLE : [\V128~\V128] \to [\V128]
+     C \vdashinstr \K{i8x16.}\RSWIZZLE : [\V128~\V128] \to [\V128]
    }
 
 

@@ -926,7 +926,7 @@ where:
 .. _exec-vec-rdot:
 
 
-:math:`\K{i16x8.}\_dot\K{\_i8x16\_i7x16\_s}`
+:math:`\K{i16x8.}\DOT\K{\_i8x16\_i7x16\_s}`
 ...................................................
 
 1. Assert: due to :ref:`validation <valid-vec-dot>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
@@ -946,7 +946,7 @@ where:
 .. math::
    \begin{array}{l}
    \begin{array}{llcl@{\qquad}l}
-   & (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i16x8.}relaxed\_dot\K{\_i8x16\_i7x16\_s} &\stepto& (\V128\K{.}\VCONST~c) \\
+   & (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i16x8.}\DOT\K{\_i8x16\_i7x16\_s} &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -957,7 +957,7 @@ where:
    \end{array}
 
 
-:math:`\K{i32x4.}\_dot\K{\_i8x16\_i7x16\_add\_s}`
+:math:`\K{i32x4.}\DOT\K{\_i8x16\_i7x16\_add\_s}`
 ........................................................
 
 1. Assert: due to :ref:`validation <valid-vec-dot>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
@@ -981,7 +981,7 @@ where:
 .. math::
    \begin{array}{l}
    \begin{array}{llcl@{\qquad}l}
-   & (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\K{i32x4.}\_dot\K{\_i8x16\_i7x16\_add\_s} &\stepto& (\V128\K{.}\VCONST~c) \\
+   & (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\K{i32x4.}\DOT\K{\_i8x16\_i7x16\_add\_s} &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
