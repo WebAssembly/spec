@@ -499,9 +499,15 @@
 .. |EXTADDPAIRWISE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extadd\_pairwise}}
 .. |VDEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{demote}}
 .. |VPROMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{promote}}
+.. |RMADD| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_madd}}
+.. |RNMADD| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_nmadd}}
 .. |RSWIZZLE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_swizzle}}
+.. |RLANESELECT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_laneselect}}
+.. |RMIN| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_min}}
+.. |RMAX| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_max}}
 .. |RQ15MULRS| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_q15mulr\_s}}
-.. |RVTRUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_trunc}}
+.. |RTRUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_trunc}}
+.. |RDOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{\_dot}}
 
 
 .. Instructions, non-terminals
@@ -1197,14 +1203,15 @@
 .. |narrowu| mathdef:: \xref{exec/numerics}{op-narrow_u}{\F{narrow}^{\K{u}}}
 .. |narrows| mathdef:: \xref{exec/numerics}{op-narrow_s}{\F{narrow}^{\K{s}}}
 
-.. |rmadd| mathdef:: \xref{exec/numerics}{op-relaxed_madd}{\F{relaxed\_madd}}
-.. |rnmadd| mathdef:: \xref{exec/numerics}{op-relaxed_nmadd}{\F{relaxed\_nmadd}}
-.. |rswizzle| mathdef:: \xref{exec/numerics}{op-relaxed_swizzle}{\F{relaxed\_swizzle}}
-.. |rtrunc| mathdef:: \xref{exec/numerics}{op-relaxed_trunc}{\F{relaxed\_trunc}}
-.. |rlaneselect| mathdef:: \xref{exec/numerics}{op-relaxed_laneselect}{\F{relaxed\_laneselect}}
-.. |rmin| mathdef:: \xref{exec/numerics}{op-relaxed_min}{\F{relaxed\_min}}
-.. |rmax| mathdef:: \xref{exec/numerics}{op-relaxed_max}{\F{relaxed\_max}}
-.. |ridotmul| mathdef:: \xref{exec/numerics}{op-relaxed_idotmul}{\F{relaxed\_dot\_mul}}
+.. |frmadd| mathdef:: \xref{exec/numerics}{op-frmaddd}{\F{frelaxed\_madd}}
+.. |frnmadd| mathdef:: \xref{exec/numerics}{op-frnmadd}{\F{frelaxed\_nmadd}}
+.. |rswizzle| mathdef:: \xref{exec/numerics}{op-rswizzle}{\F{relaxed\_swizzle}}
+.. |rtrunc| mathdef:: \xref{exec/numerics}{op-rtrunc}{\F{relaxed\_trunc}}
+.. |rlaneselect| mathdef:: \xref{exec/numerics}{op-rlaneselect}{\F{relaxed\_laneselect}}
+.. |frmin| mathdef:: \xref{exec/numerics}{op-frmin}{\F{frelaxed\_min}}
+.. |frmax| mathdef:: \xref{exec/numerics}{op-frmax}{\F{frelaxed\_max}}
+.. |irq15mulrs| mathdef:: \xref{exec/numerics}{op-irq15mulr_s}{\F{irelaxed\_q15mulr\_s}}
+.. |ridotmul| mathdef:: \xref{exec/numerics}{op-ridotmul}{\F{relaxed\_dot\_mul}}
 
 
 .. Numerics, meta functions

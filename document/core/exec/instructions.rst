@@ -405,7 +405,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
 
 
-.. _exec-vec-relaxed-swizzle:
+.. _exec-vec-rswizzle:
 
 :math:`\K{i8x16.}\RSWIZZLE`
 ...........................
@@ -414,26 +414,20 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
-3. Let :math:`i^\ast` be the sequence :math:`\lanes_{i8x16}(c_2)`.
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+4. Let :math:`c'` be the result of computing :math:`\lanes^{-1}_{\I8X16}(\rswizzle(\lanes_{i8x16}(c_1), \lanes_{i8x16}(c_2)))`.
 
-5. Let :math:`j^\ast` be the sequence :math:`\lanes_{i8x16}(c_1)`.
-
-6. Let :math:`c'` be the result of computing :math:`\RSWIZZLE(j^\ast, i^\ast)`.
-
-7. Push the value :math:`\V128.\VCONST~c'` onto the stack.
+5. Push the value :math:`\V128.\VCONST~c'` onto the stack.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i8x16}\K{.}\RSWIZZLE &\stepto& (\V128\K{.}\VCONST~c')
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i8x16}\K{.}\rswizzle &\stepto& (\V128\K{.}\VCONST~c')
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & i^\ast = \lanes_{i8x16}(c_2) \\
-      \wedge & c^\ast = \lanes_{i8x16}(c_1)~0^{240} \\
-      \wedge & c' = \lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ]))
+      (\iff & c' = \lanes^{-1}_{i8x16}(\rswizzle(\lanes_{i8x16}(c_1), \lanes_{i8x16}(c_2)))
      \end{array}
    \end{array}
 
@@ -618,6 +612,8 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
 
 
+.. _exec-vternop:
+
 :math:`\shape\K{.}\vternop`
 ...........................
 
@@ -634,9 +630,45 @@ Most vector instructions are defined in terms of generic numeric operators appli
 6. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
+   \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\V128\K{.}\vternop &\stepto& (\V128\K{.}\VCONST~c)
-     & (\iff c = \vternop_{\shape}(c_1, c_2, c_3)) \\
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\V128\K{.}\vternop &\stepto& (\V128\K{.}\VCONST~c) &
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff c = \vternop_{\shape}(c_1, c_2, c_3)) \\
+     \end{array}
+   \end{array}
+
+
+.. _exec-rlaneselect:
+
+:math:`t\K{x}N\K{.}\RLANESELECT`
+................................
+
+1. Assert: due to :ref:`validation <valid-rlaneselect>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+
+2. Pop the value :math:`\V128.\VCONST~c_3` from the stack.
+
+3. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+
+4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+5. Let :math:`B` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
+
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t\K{x}N}(\rlaneselect_{B}(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2), \lanes_{t\K{x}N}(c_3)))`.
+
+7. Push the value :math:`\V128.\VCONST~c` to the stack.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lcl@{\qquad}l}
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\V128\K{.}\RLANESELECT &\stepto& (\V128\K{.}\VCONST~c) & \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff c = \lanes^{-1}_{t\K{x}N}(\rlaneselect_{|t|}(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2), \lanes_{t\K{x}N}(c_3)))) \\
+     \end{array}
    \end{array}
 
 
@@ -929,7 +961,7 @@ where:
 :math:`\K{i16x8.}\DOT\K{\_i8x16\_i7x16\_s}`
 ...................................................
 
-1. Assert: due to :ref:`validation <valid-vec-dot>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vec-rdot>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
@@ -960,7 +992,7 @@ where:
 :math:`\K{i32x4.}\DOT\K{\_i8x16\_i7x16\_add\_s}`
 ........................................................
 
-1. Assert: due to :ref:`validation <valid-vec-dot>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vec-rdot>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_3` from the stack.
 

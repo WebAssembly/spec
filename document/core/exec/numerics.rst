@@ -1976,11 +1976,6 @@ Conversions
 Relaxed operators
 ~~~~~~~~~~~~~~~~~
 
-.. todo::
-   This paragraph should go to the top of this document, but for ease of
-   reading, put it together with the description of all the relaxed operations
-   here.
-
 The result of *relaxed* operators are *host-dependent*, because the set of
 possible results may depend on properties of the host environment (such as
 hardware). Technically, each such operator produces a fixed-size *list of sets*
@@ -1993,29 +1988,39 @@ each environment globally chooses a fixed projection for each operator.
    one particular choice by the execution environment. The fixed operation
    itself can still be non-deterministic or partial.
 
-.. todo::
-   Below is a draft of concrete definitions for relaxed-simd operations. The
-   text description is an informal description of the instructions and are not
-   the final text.
 
+.. _op-frmadd:
 
-.. _op-relaxed_madd:
-.. _op-relaxed_nmadd:
+:math:`\frmadd_N(z_1, z_2, z_3)`
+................................
 
-Relaxed Multiply Add (madd) and Relaxed Negative Multiply Add (nmadd)
-allows for fused or unfused results. :math:`fma` is defined by |IEEE754|_
-(Section 5.4.1) as *fusedMultiplyAdd*.
+Relaxed Multiply Add (madd) allows for fused or unfused results. :math:`fma` is
+defined by |IEEE754|_ (Section 5.4.1) as *fusedMultiplyAdd*.
 
 .. math::
    \begin{array}{@{}llcll}
-   \EXPROFDET & \rmadd_N(z_1, z_2, z_3) &=& [ \fadd_N(\fmul_N(z_1, z_2), z_3), fma_N(z_1, z_2, z_3) ] \\
-   & \rmadd_N(z_1, z_2, z_3) &=& \fadd_N(\fmul_N(z_1, z_2), z_3) \\
-   \\
-   & \rnmadd_N(z_1, z_2, z_3) &=& \rmadd_N(-z_1, z_2, z_3) \\
+   \EXPROFDET & \frmadd_N(z_1, z_2, z_3) &=& [ \fadd_N(\fmul_N(z_1, z_2), z_3), fma_N(z_1, z_2, z_3) ] \\
+   & \frmadd_N(z_1, z_2, z_3) &=& \fadd_N(\fmul_N(z_1, z_2), z_3) \\
    \end{array}
 
 
-.. _op-relaxed_swizzle:
+.. _op-frnmadd:
+
+:math:`\frnmadd_N(z_1, z_2, z_3)`
+.................................
+
+Relaxed Negative Multiply Add (nmadd) allows for fused or unfused results.
+
+.. math::
+   \begin{array}{@{}llcll}
+   & \frnmadd_N(z_1, z_2, z_3) &=& \frmadd_N(-z_1, z_2, z_3) \\
+   \end{array}
+
+
+.. _op-rswizzle:
+
+:math:`\rswizzle(a^n, s^n)`
+...........................
 
 Relaxed swizzle lane is a helper for relaxed swizzle. Result is deterministic
 if the signed interpretation of the index is less than 16 (including negative).
@@ -2033,26 +2038,45 @@ if the signed interpretation of the index is less than 16 (including negative).
    \end{array}
 
 
-.. _op-relaxed_trunc:
+.. _op-rtrunc:
+.. _op-rtrunc_u:
+
+:math:`\rtrunc^u_{M,N}(z)`
+..........................
 
 Relaxed truncate converts float to int, NaN and out of range values are
 hardware dependent.
 
 .. math::
    \begin{array}{@{}llcll}
-   \EXPROFDET & relaxed\_trunc^s_{M,N}(\pm \NAN(n)) &=& [ 0, -2^{N-1} ] \\
-   \EXPROFDET & relaxed\_trunc^s_{M,N}(\pm q) &=& \truncs_{M,N}(\pm q) & (\iff -2^{N-1} - 1 < \trunc(\pm q) < 2^{N-1}) \\
-   \EXPROFDET & relaxed\_trunc^s_{M,N}(\pm p) &=& [ \truncsats_{M,N}(\pm p), -2^{N-1} ] & (\otherwise) \\
-   & \rtrunc^s_{M,N}(\pm p) &=& \truncsats_{M,N}(\pm p) & (\otherwise) \\
-   \\
-   \EXPROFDET & relaxed\_trunc^u_{M,N}(\pm \NAN(n)) &=& [ 0, 2^{N}-1 ] \\
-   \EXPROFDET & relaxed\_trunc^u_{M,N}(\pm q) &=& \truncu_{M,N}(\pm q) & (\iff -1 < \trunc(\pm q) < 2^N) \\
-   \EXPROFDET & relaxed\_trunc^u_{M,N}(\pm p) &=& [ \truncsatu_{M,N}(\pm p), 2^{N}-1 ] & (\otherwise) \\
+   \EXPROFDET & \rtrunc^u_{M,N}(\pm \NAN(n)) &=& [ 0, 2^{N}-1 ] \\
+   \EXPROFDET & \rtrunc^u_{M,N}(\pm q) &=& \truncu_{M,N}(\pm q) & (\iff -1 < \trunc(\pm q) < 2^N) \\
+   \EXPROFDET & \rtrunc^u_{M,N}(\pm p) &=& [ \truncsatu_{M,N}(\pm p), 2^{N}-1 ] & (\otherwise) \\
    & \rtrunc^u_{M,N}(\pm p) &=& \truncsatu_{M,N}(\pm p) & (\otherwise) \\
    \end{array}
 
 
-.. _op-relaxed_laneselect:
+.. _op-rtrunc_s:
+
+:math:`\rtrunc^s_{M,N}(z)`
+..........................
+
+Relaxed truncate converts float to int, NaN and out of range values are
+hardware dependent.
+
+.. math::
+   \begin{array}{@{}llcll}
+   \EXPROFDET & \rtrunc^s_{M,N}(\pm \NAN(n)) &=& [ 0, -2^{N-1} ] \\
+   \EXPROFDET & \rtrunc^s_{M,N}(\pm q) &=& \truncs_{M,N}(\pm q) & (\iff -2^{N-1} - 1 < \trunc(\pm q) < 2^{N-1}) \\
+   \EXPROFDET & \rtrunc^s_{M,N}(\pm p) &=& [ \truncsats_{M,N}(\pm p), -2^{N-1} ] & (\otherwise) \\
+   & \rtrunc^s_{M,N}(\pm p) &=& \truncsats_{M,N}(\pm p) & (\otherwise) \\
+   \end{array}
+
+
+.. _op-rlaneselect:
+
+:math:`\rlaneselect_B(a^n, b^n, c^n)`
+.....................................
 
 Relaxed lane select is deterministic where all bits are set or unset in the
 mask. Otherwise depending on hardware, either only the top bit is examined, or
@@ -2060,47 +2084,74 @@ all bits are examined (becomes a bitselect).
 
 .. math::
    \begin{array}{@{}llcll}
-   & relaxed\_laneselect\_lane_N(i_1, i_2, 2^N-1) &=& i_1 \\
-   & relaxed\_laneselect\_lane_N(i_1, i_2, 0) &=& i_2 \\
-   \EXPROFDET & relaxed\_laneselect\_lane_N(i_1, i_2, i_3) &=& [ \ibitselect_N(i_1, i_2, i_3), i_1 ] & (\iff \signed_N(i_3) < 0) \\
-   \EXPROFDET & relaxed\_laneselect\_lane_N(i_1, i_2, i_3) &=& [ \ibitselect_N(i_1, i_2, i_3), i_2 ] & (\otherwise) \\
-   & relaxed\_laneselect\_lane_N(i_1, i_2, i_3) &=& \ibitselect_N(i_1, i_2, i_3) & (\otherwise) \\
+   & relaxed\_lane_N(i_1, i_2, 2^N-1) &=& i_1 \\
+   & relaxed\_lane_N(i_1, i_2, 0) &=& i_2 \\
+   \EXPROFDET & relaxed\_lane_N(i_1, i_2, i_3) &=& [ \ibitselect_N(i_1, i_2, i_3), i_1 ] & (\iff \signed_N(i_3) < 0) \\
+   \EXPROFDET & relaxed\_lane_N(i_1, i_2, i_3) &=& [ \ibitselect_N(i_1, i_2, i_3), i_2 ] & (\otherwise) \\
+   & relaxed\_lane_N(i_1, i_2, i_3) &=& \ibitselect_N(i_1, i_2, i_3) & (\otherwise) \\
    \\
-   & \rlaneselect_W(a^n, b^n, c^n) &=& rll_0 \dots rll_{n-1} \\
-   & \qquad \where rll_i &=& relaxed\_laneselect\_lane_W(a^n[i], b^n[i], c^n[i]) \\
+   & \rlaneselect_B(a^n, b^n, c^n) &=& rll_0 \dots rll_{n-1} \\
+   & \qquad \where rll_i &=& relaxed\_lane_B(a^n[i], b^n[i], c^n[i]) \\
    \end{array}
 
 
-.. _op-relaxed_min:
-.. _op-relaxed_max:
+.. _op-frmin:
 
-Relaxed min and max differs from min and max when inputs are NaNs or different
+:math:`\frmin_N(z_1, z_2)`
+..........................
+
+Relaxed min differs from min when inputs are NaNs or different
 signs of 0. It allows for implementation to return the first or second input
 when either input is a NaN.
 
 .. math::
    \begin{array}{@{}llcll}
-   \EXPROFDET & relaxed\_min_N(\pm \NAN(n), z_2) &=& [ \nans_N\{\pm \NAN(n), z_2\}, \NAN(n), z_2, z_2 ] \\
-   \EXPROFDET & relaxed\_min_N(z_1, \pm \NAN(n)) &=& [ \nans_N\{\pm \NAN(n), z_1\}, z_1, \NAN(n), z_1 ] \\
-   \EXPROFDET & relaxed\_min_N(\pm 0, \mp 0) &=& [ -0, \pm 0, \mp 0, -0 ] \\
-   & \rmin(z_1, z_2) &=& \fmin_N(z_1, z_2) & (\otherwise) \\
+   \EXPROFDET & \frmin_N(\pm \NAN(n), z_2) &=& [ \nans_N\{\pm \NAN(n), z_2\}, \NAN(n), z_2, z_2 ] \\
+   \EXPROFDET & \frmin_N(z_1, \pm \NAN(n)) &=& [ \nans_N\{\pm \NAN(n), z_1\}, z_1, \NAN(n), z_1 ] \\
+   \EXPROFDET & \frmin_N(\pm 0, \mp 0) &=& [ -0, \pm 0, \mp 0, -0 ] \\
+   & \frmin_N(z_1, z_2) &=& \fmin_N(z_1, z_2) & (\otherwise) \\
    \end{array}
+
+
+.. _op-frmax:
+
+:math:`\frmax_N(z_1, z_2)`
+..........................
+
+Relaxed max differs from max when inputs are NaNs or different
+signs of 0. It allows for implementation to return the first or second input
+when either input is a NaN.
 
 .. math::
    \begin{array}{@{}llcll}
-   \EXPROFDET & relaxed\_max_N(\pm \NAN(n), z_2) &=& [ \nans_N\{\pm \NAN(n), z_2\}, \NAN(n), z_2, z_2 ] \\
-   \EXPROFDET & relaxed\_max_N(z_1, \pm \NAN(n)) &=& [ \nans_N\{\pm \NAN(n), z_1\}, z_1, \NAN(n), z_1 ] \\
-   \EXPROFDET & relaxed\_max_N(\pm 0, \mp 0) &=& [ +0, \pm 0, \mp 0, +0 ] \\
-   & \rmax(z_1, z_2) &=& \fmax_N(z_1, z_2) & (\otherwise) \\
+   \EXPROFDET & \frmax_N(\pm \NAN(n), z_2) &=& [ \nans_N\{\pm \NAN(n), z_2\}, \NAN(n), z_2, z_2 ] \\
+   \EXPROFDET & \frmax_N(z_1, \pm \NAN(n)) &=& [ \nans_N\{\pm \NAN(n), z_1\}, z_1, \NAN(n), z_1 ] \\
+   \EXPROFDET & \frmax_N(\pm 0, \mp 0) &=& [ +0, \pm 0, \mp 0, +0 ] \\
+   & \frmax_N(z_1, z_2) &=& \fmax_N(z_1, z_2) & (\otherwise) \\
    \end{array}
 
 
-.. _op-relaxed_idotmul:
+.. _op-irq15mulr_s:
+
+:math:`\irq15mulrs_N(i_1, i_2)`
+...............................
+
+.. math::
+   \begin{array}{@{}llcll}
+   \EXPROFDET & \irq15mulrs_N(i_1, i_2) &=& [ \sats_N(i), i \mod 2^N ] & (\iff i = \ishrs_N(i_1 \cdot i_2 + 2^{14}, 15)) \\
+   & \irq15mulrs_N(i_1, i_2) &=& \iq15mulrsats(i_1, i_2)
+   \end{array}
+
+
+.. _op-ridotmul:
+
+:math:`\ridotmul_{M,N}(i_1, i_2)`
+.................................
 
 Relaxed integer dot product differs from integer dot product when the elements of the input have top bit set.
 
 .. math::
    \begin{array}{@{}llcll}
-   \EXPROFDET & \ridotmul{M,N}(i_1, i_2) &=& [ \imul_N(\signed_M(i_1), i_2), \imul_N(\signed_M(i_1), \signed_M(i_2)) ] \\
-   & \ridotmul{M,N}(i_1, i_2) &=& \imul_N(\extends_{M,N}(i_1), \extends_{M,N}(i_2)) \\
+   \EXPROFDET & \ridotmul_{M,N}(i_1, i_2) &=& [ \imul_N(\signed_M(i_1), i_2), \imul_N(\signed_M(i_1), \signed_M(i_2)) ] \\
+   & \ridotmul_{M,N}(i_1, i_2) &=& \imul_N(\extends_{M,N}(i_1), \extends_{M,N}(i_2)) \\
    \end{array}

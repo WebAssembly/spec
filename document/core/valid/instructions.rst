@@ -487,6 +487,20 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    }
 
 
+.. _valid-rlaneselect:
+
+:math:`\shape\K{.}\RLANESELECT`
+...............................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vternop : [\V128~\V128~\V128] \to [\V128]
+   }
+
+
 .. _valid-vrelop:
 
 :math:`\shape\K{.}\vrelop`
@@ -583,6 +597,9 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    }{
      C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s} : [\V128~\V128] \to [\V128]
    }
+
+
+.. _valid-vec-rdot:
 
 :math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_s}`
 .......................................................

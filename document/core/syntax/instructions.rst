@@ -276,14 +276,14 @@ Vector instructions (also known as *SIMD* instructions, *single instruction mult
      \K{f32x4.}\VDEMOTE\K{\_f64x2\_zero} \\&&|&
      \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}\sx ~|~
      \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\
-     & &|& \K{i8x16.relaxed\_swizzle} \\
-     & &|& \K{i32x4.}\RVTRUNC\K{\_f32x4\_}\sx \\
-     & &|& \fshape\K{.}\rvfternop \\
-     & &|& \ishape\K{.relaxed\_laneselect} \\
-     & &|& \fshape\K{.}\rvfbinop \\
+     & &|& \K{i8x16.}\RSWIZZLE \\
      & &|& \K{i16x8.}\RQ15MULRS \\
-     & &|& \K{i16x8.relaxed\_dot\_i8x16\_i7x16\_s} \\
-     & &|& \K{i32x4.relaxed\_dot\_i8x16\_i7x16\_add\_s} \\
+     & &|& \K{i32x4.}\RTRUNC\K{\_f32x4\_}\sx \\
+     & &|& \K{i16x8.}\RDOT\K{\_i8x16\_i7x16\_s} \\
+     & &|& \K{i32x4.}\RDOT\K{\_i8x16\_i7x16\_add\_s} \\
+     & &|& \ishape\K{.}\RLANESELECT \\
+     & &|& \fshape\K{.}\rvfternop \\
+     & &|& \fshape\K{.}\rvfbinop \\
      & &|& \dots \\
    \end{array}
 
@@ -423,8 +423,7 @@ Occasionally, it is convenient to group operators together according to the foll
      \RQ15MULRS\K{\_s} \\
    \production{ternary operator} & \vternop &::=&
      \vvternop ~|~
-     \rvfternop \\&&|&
-     \K{relaxed\_laneselect} \\
+     \rvfternop \\
    \production{test operator} & \vtestop &::=&
      \vitestop \\
    \production{relational operator} & \vrelop &::=&
@@ -435,7 +434,7 @@ Occasionally, it is convenient to group operators together according to the foll
      \VCONVERT ~|~
      \VDEMOTE ~|~
      \VPROMOTE ~|~
-     \RVTRUNC \\
+     \RTRUNC \\
    \end{array}
 
 
