@@ -507,7 +507,7 @@
 .. |RMAX| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_max}}
 .. |RQ15MULRS| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_q15mulr\_s}}
 .. |RTRUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_trunc}}
-.. |RDOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{\_dot}}
+.. |RDOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_dot}}
 
 
 .. Instructions, non-terminals

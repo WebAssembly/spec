@@ -896,27 +896,27 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
 
 .. math::
    \begin{array}{llclll}
-   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averyveryverylonginstructionnameforvectext} && \phantom{vechasreallyreallyreallylonginstructionnames} \\[-2ex] &&|&
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallyreallyreallylonginstructionnames} \\[-2ex] &&|&
      \text{i16x8.relaxed\_swizzle} &\Rightarrow& \I16X8.\RSWIZZLE \\ &&|&
-     \text{i32x4.relaxed\_trunc\_f32x4\_s} &\Rightarrow& \I32X4.\RVTRUNC\K{\_f32x4\_s} \\ &&|&
-     \text{i32x4.relaxed\_trunc\_f32x4\_u} &\Rightarrow& \I32X4.\RVTRUNC\K{\_f32x4\_u} \\ &&|&
-     \text{i32x4.relaxed\_trunc\_f32x4\_s\_zero} &\Rightarrow& \I32X4.\RVTRUNC\K{\_f32x4\_s\_zero} \\ &&|&
-     \text{i32x4.relaxed\_trunc\_f32x4\_u\_zero} &\Rightarrow& \I32X4.\RVTRUNC\K{\_f32x4\_u\_zero} \\ &&|&
-     \text{f32x4.relaxed\_madd} &\Rightarrow& \F32X4.\K{relaxed\_madd} \\ &&|&
-     \text{f32x4.relaxed\_nmadd} &\Rightarrow& \F32X4.\K{relaxed\_nmadd} \\ &&|&
-     \text{f64x2.relaxed\_madd} &\Rightarrow& \F64X2.\K{relaxed\_madd} \\ &&|&
-     \text{f64x2.relaxed\_nmadd} &\Rightarrow& \F64X2.\K{relaxed\_nmadd} \\ &&|&
-     \text{i8x16.relaxed\_laneselect} &\Rightarrow& \I8X16.\K{relaxed\_laneselect} \\ &&|&
-     \text{i16x8.relaxed\_laneselect} &\Rightarrow& \I16X8.\K{relaxed\_laneselect} \\ &&|&
-     \text{i32x4.relaxed\_laneselect} &\Rightarrow& \I32X4.\K{relaxed\_laneselect} \\ &&|&
-     \text{i64x2.relaxed\_laneselect} &\Rightarrow& \I64X2.\K{relaxed\_laneselect} \\ &&|&
-     \text{f32x4.relaxed\_min} &\Rightarrow& \F32X4.\K{relaxed\_min} \\ &&|&
-     \text{f32x4.relaxed\_max} &\Rightarrow& \F32X4.\K{relaxed\_max} \\ &&|&
-     \text{f64x2.relaxed\_min} &\Rightarrow& \F64X2.\K{relaxed\_min} \\ &&|&
-     \text{f64x2.relaxed\_max} &\Rightarrow& \F64X2.\K{relaxed\_max} \\ &&|&
+     \text{i32x4.relaxed\_trunc\_f32x4\_s} &\Rightarrow& \I32X4.\RTRUNC\K{\_f32x4\_s} \\ &&|&
+     \text{i32x4.relaxed\_trunc\_f32x4\_u} &\Rightarrow& \I32X4.\RTRUNC\K{\_f32x4\_u} \\ &&|&
+     \text{i32x4.relaxed\_trunc\_f32x4\_s\_zero} &\Rightarrow& \I32X4.\RTRUNC\K{\_f32x4\_s\_zero} \\ &&|&
+     \text{i32x4.relaxed\_trunc\_f32x4\_u\_zero} &\Rightarrow& \I32X4.\RTRUNC\K{\_f32x4\_u\_zero} \\ &&|&
+     \text{f32x4.relaxed\_madd} &\Rightarrow& \F32X4.\RMADD \\ &&|&
+     \text{f32x4.relaxed\_nmadd} &\Rightarrow& \F32X4.\RNMADD \\ &&|&
+     \text{f64x2.relaxed\_madd} &\Rightarrow& \F64X2.\RMADD \\ &&|&
+     \text{f64x2.relaxed\_nmadd} &\Rightarrow& \F64X2.\RNMADD \\ &&|&
+     \text{i8x16.relaxed\_laneselect} &\Rightarrow& \I8X16.\RLANESELECT \\ &&|&
+     \text{i16x8.relaxed\_laneselect} &\Rightarrow& \I16X8.\RLANESELECT \\ &&|&
+     \text{i32x4.relaxed\_laneselect} &\Rightarrow& \I32X4.\RLANESELECT \\ &&|&
+     \text{i64x2.relaxed\_laneselect} &\Rightarrow& \I64X2.\RLANESELECT \\ &&|&
+     \text{f32x4.relaxed\_min} &\Rightarrow& \F32X4.\RMIN \\ &&|&
+     \text{f32x4.relaxed\_max} &\Rightarrow& \F32X4.\RMAX \\ &&|&
+     \text{f64x2.relaxed\_min} &\Rightarrow& \F64X2.\RMIN \\ &&|&
+     \text{f64x2.relaxed\_max} &\Rightarrow& \F64X2.\RMAX \\ &&|&
      \text{i16x8.relaxed\_q15mulr\_s} &\Rightarrow& \I16X8.\RQ15MULRS \\ &&|&
-     \text{i16x8.relaxed\_dot\_i8x16\_i7x16\_s} &\Rightarrow& \I16X8.\K{relaxed\_dot\_i8x16\_i7x16\_s} \\ &&|&
-     \text{i16x8.relaxed\_dot\_i8x16\_i7x16\_add\_s} &\Rightarrow& \I16X8.\K{relaxed\_dot\_i8x16\_i7x16\_add\_s}
+     \text{i16x8.relaxed\_dot\_i8x16\_i7x16\_s} &\Rightarrow& \I16X8.\RDOT\K{\_i8x16\_i7x16\_s} \\ &&|&
+     \text{i16x8.relaxed\_dot\_i8x16\_i7x16\_add\_s} &\Rightarrow& \I16X8.\RDOT\K{\_i8x16\_i7x16\_add\_s}
    \end{array}
 
 
