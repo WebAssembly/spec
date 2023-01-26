@@ -45,7 +45,7 @@ These operations closely match respective operations available in hardware.
    \production{signedness} & \sx &::=&
      \K{u} ~|~ \K{s} \\
    \production{instruction} & \instr &::=&
-     \K{i}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-int}{\iX{\X{nn}}} ~|~
+     \K{i}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-int}{\uX{\X{nn}}} ~|~
      \K{f}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-float}{\fX{\X{nn}}} \\&&|&
      \K{i}\X{nn}\K{.}\iunop ~|~
      \K{f}\X{nn}\K{.}\funop \\&&|&
