@@ -107,6 +107,8 @@ The following grammar handles the corresponding update to the <a class="referenc
 \def\mathdef2767#1{{}}\mathdef2767{label} &amp; \href{../text/instructions.html#text-label}{\mathtt{label}}_I &amp;::=&amp;
   v{:}\href{../text/values.html#text-id}{\mathtt{id}} &amp;\Rightarrow&amp; \{\href{../text/conventions.html#text-context}{\mathsf{labels}}~v\} \href{../syntax/conventions.html#notation-compose}{\oplus} I
     &amp; (\mathrel{\mbox{if}} v \notin I.\href{../text/conventions.html#text-context}{\mathsf{labels}}) \\ &amp;&amp;|&amp;
+  v{:}\href{../text/values.html#text-id}{\mathtt{id}} &amp;\Rightarrow&amp; \{\href{../text/conventions.html#text-context}{\mathsf{labels}}~v\} \href{../syntax/conventions.html#notation-compose}{\oplus} (I \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../text/conventions.html#text-context}{\mathsf{labels}}[i] = \epsilon)
+    &amp; (\mathrel{\mbox{if}} I.\href{../text/conventions.html#text-context}{\mathsf{labels}}[i] = v) \\ &amp;&amp;|&amp;
   \epsilon &amp;\Rightarrow&amp; \{\href{../text/conventions.html#text-context}{\mathsf{labels}}~(\epsilon)\} \href{../syntax/conventions.html#notation-compose}{\oplus} I \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
@@ -114,6 +116,8 @@ The following grammar handles the corresponding update to the <a class="referenc
 <p>The new label entry is inserted at the <em>beginning</em> of the label list in the identifier context.
 This effectively shifts all existing labels up by one,
 mirroring the fact that control instructions are indexed relatively not absolutely.</p>
+<p>If a label with the same name already exists,
+then it is shadowed and the earlier label becomes inaccessible.</p>
 </div>
 </section>
 <section id="control-instructions">
