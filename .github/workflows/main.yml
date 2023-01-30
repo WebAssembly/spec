@@ -13,7 +13,7 @@ jobs:
   ref-interpreter:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup OCaml
         uses: ocaml/setup-ocaml@v2
         with:
