@@ -34,6 +34,8 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    \production{label} & \Tlabel_I &::=&
      v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose I
        & (\iff v \notin I.\ILABELS) \\ &&|&
+     v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose (I \with \ILABELS[i] = \epsilon)
+       & (\iff I.\ILABELS[i] = v) \\ &&|&
      \epsilon &\Rightarrow& \{\ILABELS~(\epsilon)\} \compose I \\
    \end{array}
 
@@ -41,6 +43,9 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    The new label entry is inserted at the *beginning* of the label list in the identifier context.
    This effectively shifts all existing labels up by one,
    mirroring the fact that control instructions are indexed relatively not absolutely.
+
+   If a label with the same name already exists,
+   then it is shadowed and the earlier label becomes inaccessible.
 
 
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
@@ -247,18 +252,18 @@ Table Instructions
 Abbreviations
 .............
 
-For backwards compatibility, all :math:`table indices <syntax-tableidx>` may be omitted from table instructions, defaulting to :math:`0`.
+For backwards compatibility, all :ref:`table indices <syntax-tableidx>` may be omitted from table instructions, defaulting to :math:`0`.
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llcl}
    \production{instruction} &
-     \text{table.get} &\equiv& \text{table.get}~~\text{0} \\ &&|&
-     \text{table.set} &\equiv& \text{table.set}~~\text{0} \\ &&|&
-     \text{table.size} &\equiv& \text{table.size}~~\text{0} \\ &&|&
-     \text{table.grow} &\equiv& \text{table.grow}~~\text{0} \\ &&|&
-     \text{table.fill} &\equiv& \text{table.fill}~~\text{0} \\ &&|&
-     \text{table.copy} &\equiv& \text{table.copy}~~\text{0}~~\text{0} \\ &&|&
-     \text{table.init}~~x{:}\Telemidx_I &\equiv& \text{table.init}~~\text{0}~~x{:}\Telemidx_I \\ &&|&
+     \text{table.get} &\equiv& \text{table.get}~~\text{0} \\ &
+     \text{table.set} &\equiv& \text{table.set}~~\text{0} \\ &
+     \text{table.size} &\equiv& \text{table.size}~~\text{0} \\ &
+     \text{table.grow} &\equiv& \text{table.grow}~~\text{0} \\ &
+     \text{table.fill} &\equiv& \text{table.fill}~~\text{0} \\ &
+     \text{table.copy} &\equiv& \text{table.copy}~~\text{0}~~\text{0} \\ &
+     \text{table.init}~~x{:}\Telemidx_I &\equiv& \text{table.init}~~\text{0}~~x{:}\Telemidx_I \\
    \end{array}
 
 
@@ -924,7 +929,7 @@ Such a folded instruction can appear anywhere a regular instruction can.
      \text{(}~\text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~\text{)}
        &\equiv\quad \text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end} \\ &
      \text{(}~\text{if}~~\Tlabel~~\Tblocktype~~\Tfoldedinstr^\ast
-       &\hspace{-3ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)}^?~~\text{)}
+       &\hspace{-3ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~(\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)})^?~~\text{)}
        \quad\equiv \\ &\qquad
          \Tfoldedinstr^\ast~~\text{if}~~\Tlabel~~\Tblocktype &\hspace{-1ex} \Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\
    \end{array}

@@ -66,7 +66,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{uninterpreted integer} & \BiN &::=&
-     n{:}\BsN &\Rightarrow& i & (\iff n = \signed_{\iN}(i))
+     n{:}\BsN &\Rightarrow& i & (\iff n = \signed_N(i))
    \end{array}
 
 .. note::

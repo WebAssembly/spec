@@ -1,6 +1,6 @@
 # WebAssembly Reference Interpreter
 
-This repository implements a interpreter for WebAssembly. It is written for clarity and simplicity, _not_ speed. It is intended as a playground for trying out ideas and a device for nailing down the exact semantics, and as a proxy for the (yet to be produced) formal specification of WebAssembly. For that purpose, the code is written in a fairly declarative, "speccy" way.
+This repository implements an interpreter for WebAssembly. It is written for clarity and simplicity, _not_ speed. It is intended as a playground for trying out ideas and a device for nailing down their exact semantics. For that purpose, the code is written in a fairly declarative, "speccy" way.
 
 The interpreter can
 
@@ -10,7 +10,7 @@ The interpreter can
 * *export* test scripts to self-contained JavaScript test cases
 * *run* as an interactive interpreter
 
-The text format defines modules in S-expression syntax. Moreover, it is generalised to a (very dumb) form of *script* that can define multiples module and a batch of invocations, assertions, and conversions between them. As such it is richer than the binary format, with the additional functionality purely intended as testing infrastructure. (See [below](#scripts) for details.)
+The text format defines modules in S-expression syntax. Moreover, it is generalised to a form of *script* that can define multiples module and a batch of invocations, assertions, and conversions between them. As such it is richer than the binary format, with the additional functionality purely intended as testing infrastructure. (See [below](#scripts) for details.)
 
 
 ## Building
@@ -65,7 +65,10 @@ The Makefile also provides a target to compile (parts of) the interpreter into a
 ```
 make wast.js
 ```
-Building this target requires node.js and BuckleScript.
+Building this target requires `js_of_ocaml`, which can be installed with OPAM:
+```
+opam install js_of_ocaml js_of_ocaml-ppx
+```
 
 
 ## Synopsis
@@ -139,7 +142,7 @@ WebAssemblyText.encode(source)
 ```
 which turns a module in S-expression syntax into a WebAssembly binary, and
 ```
-WebAssemblyText.decode(binary, width = 80)
+WebAssemblyText.decode(binary, width)
 ```
 which pretty-prints a binary back into a canonicalised S-expression string.
 
@@ -151,13 +154,27 @@ let binary = WebAssemblyText.encode(source)
 (new WebAssembly.Instance(new WebAssembly.Module(binary))).exports.f(3, 4)
 // => 7
 
-WebAssemblyText.decode(binary)
+WebAssemblyText.decode(binary, 80)
 // =>
 // (module
 //   (type $0 (func (param i32 i32) (result i32)))
 //   (func $0 (type 0) (local.get 0) (local.get 1) (i32.add))
 //   (export "f" (func 0))
 // )
+```
+
+Depending on how you load the library, the object may be accessed in different ways. For example, using `require` in node.js:
+
+```
+let wast = require("./wast.js");
+let binary = wast.WebAssemblyText.encode("(module)");
+```
+
+Or using `load` from a JavaScript shell:
+
+```
+load("./wast.js");
+let binary = WebAssemblyText.encode("(module)");
 ```
 
 
@@ -358,7 +375,7 @@ In particular, comments of the latter form nest properly.
 
 ## Scripts
 
-In order to be able to check and run modules for testing purposes, the S-expression format is interpreted as a very simple and dumb notion of "script", with commands as follows:
+In order to be able to check and run modules for testing purposes, the S-expression format is interpreted as a very simple notion of "script", with commands as follows:
 
 ```
 script: <cmd>*

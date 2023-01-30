@@ -108,7 +108,7 @@ Where the underlying operators are non-deterministic, because they may return on
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& (t\K{.}\CONST~c)
      & (\iff c \in \binop_t(c_1,c_2)) \\
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& \TRAP
-     & (\iff \binop_{t}(c_1,c2) = \{\})
+     & (\iff \binop_{t}(c_1,c_2) = \{\})
    \end{array}
 
 
@@ -394,13 +394,13 @@ Most vector instructions are defined in terms of generic numeric operators appli
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\V128\K{.}\SWIZZLE &\stepto& (\V128\K{.}\VCONST~c')
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\I8X16\K{.}\SWIZZLE &\stepto& (\V128\K{.}\VCONST~c')
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & i^\ast = \lanes_{i8x16}(c_2) \\
       \wedge & c^\ast = \lanes_{i8x16}(c_1)~0^{240} \\
-      \wedge & c' = \lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ])
+      \wedge & c' = \lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ]))
      \end{array}
    \end{array}
 
@@ -431,12 +431,12 @@ Most vector instructions are defined in terms of generic numeric operators appli
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\V128\K{.}\SHUFFLE~x^\ast &\stepto& (\V128\K{.}\VCONST~c)
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\I8X16\K{.}\SHUFFLE~x^\ast &\stepto& (\V128\K{.}\VCONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & i^\ast = \lanes_{i8x16}(c_1)~\lanes_{i8x16}(c_2) \\
-      \wedge & c = \lanes^{-1}_{i8x16}(i^\ast[x^\ast[0]] \dots i^\ast[x^\ast[15]])
+      \wedge & c = \lanes^{-1}_{i8x16}(i^\ast[x^\ast[0]] \dots i^\ast[x^\ast[15]]))
      \end{array}
    \end{array}
 
@@ -494,7 +494,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & t_2 = \unpacked(t_1\K{x}N) \\
-       \wedge & c_2 = \extend^{sx^?}_{t_1,t_2}(\lanes_{t_1\K{x}N}(c_1)[x])
+       \wedge & c_2 = \extend^{sx^?}_{t_1,t_2}(\lanes_{t_1\K{x}N}(c_1)[x]))
      \end{array}
    \end{array}
 
@@ -529,8 +529,8 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & i^\ast = \lanes_{\shape}(c_2)) \\
-       \wedge & c = \lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)
+      (\iff & i^\ast = \lanes_{\shape}(c_2) \\
+       \wedge & c = \lanes^{-1}_{\shape}(i^\ast \with [x] = c_1))
      \end{array}
    \end{array}
 
@@ -673,7 +673,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & i_1^\ast = \lanes_{\shape}(c) \\
-     \wedge & i = \bool(\bigwedge(i_1 \neq 0)^\ast)
+     \wedge & i = \bool(\bigwedge(i_1 \neq 0)^\ast))
      \end{array}
    \end{array}
 
@@ -735,7 +735,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & d_1^M = \narrow^{\sx}_{|t_1|,|t_2|}( \lanes_{t_1\K{x}M}(c_1)) \\
      \wedge & d_2^M = \narrow^{\sx}_{|t_1|,|t_2|}( \lanes_{t_1\K{x}M}(c_2)) \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(d_1^M~d_2^M)
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(d_1^M~d_2^M))
      \end{array}
    \end{array}
 
@@ -762,7 +762,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)))
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))))
      \end{array}
    \end{array}
 
@@ -795,7 +795,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N]))
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N])))
      \end{array}
    \end{array}
 
@@ -830,7 +830,7 @@ where:
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^M)
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^M))
      \end{array}
    \end{array}
 
@@ -840,7 +840,7 @@ where:
 :math:`\K{i32x4.}\DOT\K{\_i16x8\_s}`
 ....................................
 
-1. Assert: due to :ref:`validation <valid-vec-dot>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vec-dot>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
@@ -863,7 +863,7 @@ where:
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & (i_1~i_2)^\ast = \imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2))) \\
      \wedge & j^\ast = \iadd_{32}(i_1, i_2)^\ast \\
-     \wedge & c = \lanes^{-1}_{\I32X4}(j^\ast)
+     \wedge & c = \lanes^{-1}_{\I32X4}(j^\ast))
      \end{array}
    \end{array}
 
@@ -873,7 +873,7 @@ where:
 :math:`t_2\K{x}N\K{.}\EXTMUL\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx`
 ................................................................
 
-1. Assert: due to :ref:`validation <valid-vec-extmul>`, two values of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vec-extmul>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
@@ -903,7 +903,7 @@ where:
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N] \\
      \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[\half(0, N) \slice N] \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast))))
      \end{array}
 
 where:
@@ -941,7 +941,7 @@ where:
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & (i_1~i_2)^\ast = \extend^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)) \\
      \wedge & j^\ast = \iadd_{N}(i_1, i_2)^\ast \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(j^\ast)
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(j^\ast))
      \end{array}
    \end{array}
 
@@ -1191,8 +1191,8 @@ Table Instructions
 
 .. _exec-table.set:
 
-:math:`\TABLESET`
-.................
+:math:`\TABLESET~x`
+...................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -1256,7 +1256,7 @@ Table Instructions
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; \TABLESIZE~x &\stepto& S; F; (\I32.\CONST~\X{sz})
+   S; F; (\TABLESIZE~x) &\stepto& S; F; (\I32.\CONST~\X{sz})
    \end{array}
    \\ \qquad
      (\iff |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM| = \X{sz}) \\
@@ -1288,19 +1288,21 @@ Table Instructions
 
 10. Pop the value :math:`\val` from the stack.
 
-11. Either, try :ref:`growing <grow-table>` :math:`\X{table}` by :math:`n` entries with initialization value :math:`\val`:
+11. Let :math:`\X{err}` be the |i32| value :math:`2^{32}-1`, for which :math:`\signed_{32}(\X{err})` is :math:`-1`.
+
+12. Either, try :ref:`growing <grow-table>` :math:`\X{table}` by :math:`n` entries with initialization value :math:`\val`:
 
    a. If it succeeds, push the value :math:`\I32.\CONST~\X{sz}` to the stack.
 
-   b. Else, push the value :math:`\I32.\CONST~(-1)` to the stack.
+   b. Else, push the value :math:`\I32.\CONST~\X{err}` to the stack.
 
-12. Or, push the value :math:`\I32.\CONST~(-1)` to the stack.
+13. Or, push the value :math:`\I32.\CONST~\X{err}` to the stack.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; \val~(\I32.\CONST~n)~\TABLEGROW~x &\stepto& S'; F; (\I32.\CONST~\X{sz})
+   S; F; \val~(\I32.\CONST~n)~(\TABLEGROW~x) &\stepto& S'; F; (\I32.\CONST~\X{sz})
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -1310,7 +1312,7 @@ Table Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~\TABLEGROW~x &\stepto& S; F; (\I32.\CONST~{-1})
+   S; F; (\I32.\CONST~n)~(\TABLEGROW~x) &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
    \end{array}
    \end{array}
 
@@ -1511,7 +1513,7 @@ Table Instructions
      \quad\stepto
      \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d+n-1)~(\I32.\CONST~s+n-1)~(\TABLEGET~y)~(\TABLESET~x) \\
+       (\I32.\CONST~d+n)~(\I32.\CONST~s+n)~(\TABLEGET~y)~(\TABLESET~x) \\
        (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\TABLECOPY~x~y) \\
        \end{array}
      \\ \qquad
@@ -1722,7 +1724,7 @@ Memory Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(t.\LOAD({N}\K{\_}\sx)^?~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(t.\LOAD({N}\K{\_}\sx)^?~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -1777,13 +1779,13 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + M \cdot N / 8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_{\iM}(m_k) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} + k \cdot M/8 \slice M/8]) \\
+     \wedge & \bytes_{\iM}(m_k) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} + k \cdot M/8 \slice M/8] \\
      \wedge & W = M \cdot 2 \\
-     \wedge & c = \lanes^{-1}_{\X{i}W\K{x}N}(\extend^{\sx}_{M,W}(m_0) \dots \extend^{\sx}_{M,W}(m_{N-1}))
+     \wedge & c = \lanes^{-1}_{\X{i}W\K{x}N}(\extend^{\sx}_{M,W}(m_0) \dots \extend^{\sx}_{M,W}(m_{N-1})))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(\V128.\LOAD{M}\K{x}N\K{\_}\sx~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\LOAD{M}\K{x}N\K{\_}\sx~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -1835,12 +1837,12 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8]) \\
-     \wedge & c = \lanes^{-1}_{\iN\K{x}L}(n^L)
+     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] \\
+     \wedge & c = \lanes^{-1}_{\iN\K{x}L}(n^L))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(\V128.\LOAD{N}\K{\_splat}~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\LOAD{N}\K{\_splat}~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -1890,12 +1892,12 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8]) \\
-     \wedge & c = \extendu_{N,128}(n)
+     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] \\
+     \wedge & c = \extendu_{N,128}(n))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(\V128.\LOAD{N}\K{\_zero}~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\LOAD{N}\K{\_zero}~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -1951,13 +1953,13 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(r) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8]) \\
+     \wedge & \bytes_{\iN}(r) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] \\
      \wedge & L = 128/N \\
-     \wedge & c = \lanes^{-1}_{\K{i}N\K{x}L}(\lanes_{\K{i}N\K{x}L}(v) \with [x] = r)
+     \wedge & c = \lanes^{-1}_{\K{i}N\K{x}L}(\lanes_{\K{i}N\K{x}L}(v) \with [x] = r))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(\V128.\CONST~v)~(\V128.\LOAD{N}\K{\_lane}~\memarg~x) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~v)~(\V128.\LOAD{N}\K{\_lane}~\memarg~x) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -2030,11 +2032,11 @@ Memory Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c)) \\[1ex]
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c))) \\[1ex]
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(t.\CONST~c)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -2087,11 +2089,11 @@ Memory Instructions
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
      \wedge & L = 128/N \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\lanes_{\K{i}N\K{x}L}(c)[x])
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\lanes_{\K{i}N\K{x}L}(c)[x]))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~\memarg~x) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~\memarg~x) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -2368,8 +2370,8 @@ Memory Instructions
      \quad\stepto
      \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d+n-1) \\
-       (\I32.\CONST~s+n-1)~(\I32\K{.}\LOAD\K{8\_u}~\{ \OFFSET~0, \ALIGN~0 \}) \\
+       (\I32.\CONST~d+n) \\
+       (\I32.\CONST~s+n)~(\I32\K{.}\LOAD\K{8\_u}~\{ \OFFSET~0, \ALIGN~0 \}) \\
        (\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
        (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~\MEMORYCOPY \\
        \end{array}
@@ -2587,37 +2589,27 @@ Control Instructions
 :math:`\IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
 .............................................................
 
-1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
+1. Assert: due to :ref:`validation <valid-if>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
+2. Pop the value :math:`\I32.\CONST~c` from the stack.
 
-3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the |IF| instruction.
+3. If :math:`c` is non-zero, then:
 
-4. Assert: due to :ref:`validation <valid-if>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+   a. Execute the block instruction :math:`\BLOCK~\X{bt}~\instr_1^\ast~\END`.
 
-5. Pop the value :math:`\I32.\CONST~c` from the stack.
+4. Else:
 
-6. Assert: due to :ref:`validation <valid-if>`, there are at least :math:`m` values on the top of the stack.
-
-7. Pop the values :math:`\val^m` from the stack.
-
-8. If :math:`c` is non-zero, then:
-
-   a. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr_1^\ast` with label :math:`L`.
-
-9. Else:
-
-   a. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr_2^\ast` with label :math:`L`.
+   a. Execute the block instruction :math:`\BLOCK~\X{bt}~\instr_2^\ast~\END`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl}
-   F; \val^m~(\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     F; \LABEL_n\{\epsilon\}~\val^m~\instr_1^\ast~\END
-     \\&&\quad (\iff c \neq 0 \wedge \expand_F(\X{bt}) = [t_1^m] \to [t_2^n]) \\
-   F; \val^m~(\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     F; \LABEL_n\{\epsilon\}~\val^m~\instr_2^\ast~\END
-     \\&&\quad (\iff c = 0 \wedge \expand_F(\X{bt}) = [t_1^m] \to [t_2^n]) \\
+   F; (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
+     F; \BLOCK~\X{bt}~\instr_1^\ast~\END
+     \\&&\quad (\iff c \neq 0) \\
+   F; (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
+     F; \BLOCK~\X{bt}~\instr_2^\ast~\END
+     \\&&\quad (\iff c = 0) \\
    \end{array}
 
 
@@ -2689,7 +2681,7 @@ Control Instructions
 :math:`\BRTABLE~l^\ast~l_N`
 ...........................
 
-1. Assert: due to :ref:`validation <valid-if>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-br_table>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 2. Pop the value :math:`\I32.\CONST~i` from the stack.
 
@@ -2946,22 +2938,22 @@ Exiting :math:`\instr^\ast` with label :math:`L`
 
 When the end of a block is reached without a jump or trap aborting it, then the following steps are performed.
 
-1. Let :math:`m` be the number of values on the top of the stack.
+1. Let :math:`n` be the number of values on the top of the stack.
 
-2. Pop the values :math:`\val^m` from the stack.
+2. Pop the values :math:`\val^n` from the stack.
 
-3. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack.
+3. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack and has arity :math:`n`.
 
 4. Pop the label from the stack.
 
-5. Push :math:`\val^m` back to the stack.
+5. Push :math:`\val^n` back to the stack.
 
 6. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \LABEL_n\{\instr^\ast\}~\val^m~\END &\stepto& \val^m
+   \LABEL_n\{\instr^\ast\}~\val^n~\END &\stepto& \val^n
    \end{array}
 
 .. note::
@@ -2998,15 +2990,13 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 7. Pop the values :math:`\val^n` from the stack.
 
-8. Let :math:`\val_0^\ast` be the list of zero values of types :math:`t^\ast`.
+8. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~f.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
 
-9. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~f.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
+9. Push the activation of :math:`F` with arity :math:`m` to the stack.
 
-10. Push the activation of :math:`F` with arity :math:`m` to the stack.
+10. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
 
-11. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
-
-12. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
+11. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
 
 .. math::
    ~\\[-1ex]

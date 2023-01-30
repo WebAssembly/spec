@@ -1,5 +1,5 @@
 let name = "wasm"
-let version = "1.1"
+let version = "2.0"
 
 let configure () =
   Import.register (Utf8.decode "spectest") Spectest.lookup;
@@ -24,11 +24,13 @@ let argspec = Arg.align
     " read script from file";
   "-o", Arg.String (fun file -> add_arg ("(output " ^ quote file ^ ")")),
     " write module to file";
+  "-b", Arg.Int (fun n -> Flags.budget := n),
+    " configure call depth budget (default is " ^ string_of_int !Flags.budget ^ ")";
   "-w", Arg.Int (fun n -> Flags.width := n),
-    " configure output width (default is 80)";
+    " configure output width (default is " ^ string_of_int !Flags.width ^ ")";
   "-s", Arg.Set Flags.print_sig, " show module signatures";
   "-u", Arg.Set Flags.unchecked, " unchecked, do not perform validation";
-  "-h", Arg.Clear Flags.harness, " exclude harness for JS conversion";
+  "-j", Arg.Clear Flags.harness, " exclude harness for JS conversion";
   "-d", Arg.Set Flags.dry, " dry, do not run program";
   "-t", Arg.Set Flags.trace, " trace execution";
   "-v", Arg.Unit banner, " show version"

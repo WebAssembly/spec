@@ -130,7 +130,7 @@ type vec_laneop = (vec_type, pack_size) memop * int
 type var = int32 Source.phrase
 type num = Values.num Source.phrase
 type vec = Values.vec Source.phrase
-type name = int list
+type name = Utf8.unicode
 
 type block_type = VarBlockType of var | ValBlockType of value_type option
 
@@ -291,6 +291,12 @@ and import' =
   idesc : import_desc;
 }
 
+type start = start' Source.phrase
+and start' =
+{
+  sfunc : var;
+}
+
 type module_ = module_' Source.phrase
 and module_' =
 {
@@ -299,7 +305,7 @@ and module_' =
   tables : table list;
   memories : memory list;
   funcs : func list;
-  start : var option;
+  start : start option;
   elems : elem_segment list;
   datas : data_segment list;
   imports : import list;
