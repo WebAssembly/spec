@@ -1618,7 +1618,7 @@ Control Instructions
    The |RETURNCALL| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
-.. _valid-call_ref:
+.. _valid-return_call_ref:
 
 :math:`\RETURNCALLREF~x`
 ........................

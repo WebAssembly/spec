@@ -2982,9 +2982,9 @@ Control Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    \val~(\RETURNCALLREF~x) &\stepto& (\RETURNINVOKE~a)
-     & (\iff \val~(\CALLREF~x) \stepto (\INVOKE~a))
-   \val~(\RETURNCALLINDIRECT~x) &\stepto& \TRAP
-     & (\iff \val~(\CALLINDIRECT~x) \stepto \TRAP) \\
+     & (\iff \val~(\CALLREF~x) \stepto (\INVOKE~a)) \\
+   \val~(\RETURNCALLREF~x) &\stepto& \TRAP
+     & (\iff \val~(\CALLREF~x) \stepto \TRAP) \\
    \end{array}
 
 
