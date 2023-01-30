@@ -34,6 +34,8 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    \production{label} & \Tlabel_I &::=&
      v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose I
        & (\iff v \notin I.\ILABELS) \\ &&|&
+     v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose (I \with \ILABELS[i] = \epsilon)
+       & (\iff I.\ILABELS[i] = v) \\ &&|&
      \epsilon &\Rightarrow& \{\ILABELS~(\epsilon)\} \compose I \\
    \end{array}
 
@@ -41,6 +43,9 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    The new label entry is inserted at the *beginning* of the label list in the identifier context.
    This effectively shifts all existing labels up by one,
    mirroring the fact that control instructions are indexed relatively not absolutely.
+
+   If a label with the same name already exists,
+   then it is shadowed and the earlier label becomes inaccessible.
 
 
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism

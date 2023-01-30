@@ -397,12 +397,16 @@ align_opt :
 
 /* Instructions & Expressions */
 
-instr :
+instr_list :
+  | /* empty */ { fun c -> [] }
+  | instr1 instr_list { fun c -> $1 c @ $2 c }
+  | select_instr_instr_list { $1 }
+  | call_instr_instr_list { $1 }
+
+instr1 :
   | plain_instr { let at = at () in fun c -> [$1 c @@ at] }
-  | select_instr_instr { fun c -> let e, es = $1 c in e :: es }
-  | call_instr_instr { fun c -> let e, es = $1 c in e :: es }
   | block_instr { let at = at () in fun c -> [$1 c @@ at] }
-  | expr { $1 } /* Sugar */
+  | expr { $1 }  /* Sugar */
 
 plain_instr :
   | UNREACHABLE { fun c -> unreachable }
@@ -478,89 +482,51 @@ plain_instr :
   | VEC_REPLACE NAT { let at = at () in fun c -> $1 (vec_lane_index $2 at) }
 
 
-select_instr :
-  | SELECT select_instr_results
-    { let at = at () in fun c -> let b, ts = $2 c in
-      select (if b then (Some ts) else None) @@ at }
-
-select_instr_results :
-  | LPAR RESULT val_type_list RPAR select_instr_results
-    { fun c -> let _, ts = $5 c in true, snd $3 c @ ts }
-  | /* empty */
-    { fun c -> false, [] }
-
-select_instr_instr :
-  | SELECT select_instr_results_instr
+select_instr_instr_list :
+  | SELECT select_instr_results_instr_list
     { let at1 = ati 1 in
       fun c -> let b, ts, es = $2 c in
-      select (if b then (Some ts) else None) @@ at1, es }
+      (select (if b then (Some ts) else None) @@ at1) :: es }
 
-select_instr_results_instr :
-  | LPAR RESULT val_type_list RPAR select_instr_results_instr
+select_instr_results_instr_list :
+  | LPAR RESULT val_type_list RPAR select_instr_results_instr_list
     { fun c -> let _, ts, es = $5 c in true, snd $3 c @ ts, es }
-  | instr
+  | instr_list
     { fun c -> false, [], $1 c }
 
 
-call_instr :
-  | CALL_INDIRECT var call_instr_type
-    { let at = at () in fun c -> call_indirect ($2 c table) ($3 c) @@ at }
-  | CALL_INDIRECT call_instr_type  /* Sugar */
-    { let at = at () in fun c -> call_indirect (0l @@ at) ($2 c) @@ at }
-
-call_instr_type :
-  | type_use call_instr_params
+call_instr_instr_list :
+  | CALL_INDIRECT var call_instr_type_instr_list
     { let at1 = ati 1 in
-      fun c ->
-      match $2 c with
-      | FuncT ([], []) -> $1 c
-      | ft -> inline_func_type_explicit c ($1 c) ft at1 }
-  | call_instr_params
-    { let at = at () in fun c -> inline_func_type c ($1 c) at }
-
-call_instr_params :
-  | LPAR PARAM val_type_list RPAR call_instr_params
-    { fun c -> let FuncT (ts1, ts2) = $5 c in FuncT (snd $3 c @ ts1, ts2) }
-  | call_instr_results
-    { fun c -> FuncT ([], $1 c) }
-
-call_instr_results :
-  | LPAR RESULT val_type_list RPAR call_instr_results
-    { fun c -> snd $3 c @ $5 c }
-  | /* empty */
-    { fun c -> [] }
-
-
-call_instr_instr :
-  | CALL_INDIRECT var call_instr_type_instr
+      fun c -> let x, es = $3 c in
+      (call_indirect ($2 c table) x @@ at1) :: es }
+  | CALL_INDIRECT call_instr_type_instr_list  /* Sugar */
     { let at1 = ati 1 in
-      fun c -> let x, es = $3 c in call_indirect ($2 c table) x @@ at1, es }
-  | CALL_INDIRECT call_instr_type_instr  /* Sugar */
-    { let at1 = ati 1 in
-      fun c -> let x, es = $2 c in call_indirect (0l @@ at1) x @@ at1, es }
+      fun c -> let x, es = $2 c in
+      (call_indirect (0l @@ at1) x @@ at1) :: es }
 
-call_instr_type_instr :
-  | type_use call_instr_params_instr
+call_instr_type_instr_list :
+  | type_use call_instr_params_instr_list
     { let at1 = ati 1 in
       fun c ->
       match $2 c with
       | FuncT ([], []), es -> $1 c, es
       | ft, es -> inline_func_type_explicit c ($1 c) ft at1, es }
-  | call_instr_params_instr
+  | call_instr_params_instr_list
     { let at = at () in
       fun c -> let ft, es = $1 c in inline_func_type c ft at, es }
 
-call_instr_params_instr :
-  | LPAR PARAM val_type_list RPAR call_instr_params_instr
+call_instr_params_instr_list :
+  | LPAR PARAM val_type_list RPAR call_instr_params_instr_list
     { fun c -> let FuncT (ts1, ts2), es = $5 c in
       FuncT (snd $3 c @ ts1, ts2), es }
-  | call_instr_results_instr
+  | call_instr_results_instr_list
     { fun c -> let ts, es = $1 c in FuncT ([], ts), es }
 
-call_instr_results_instr :
-  | LPAR RESULT val_type_list RPAR call_instr_results_instr
+call_instr_results_instr_list :
+  | LPAR RESULT val_type_list RPAR call_instr_results_instr_list
     { fun c -> let ts, es = $5 c in snd $3 c @ ts, es }
-  | instr
+  | instr_list
     { fun c -> [], $1 c }
 
 
@@ -693,12 +659,6 @@ if_ :
   | LPAR THEN instr_list RPAR  /* Sugar */
     { fun c c' -> [], $3 c', [] }
 
-instr_list :
-  | /* empty */ { fun c -> [] }
-  | select_instr { fun c -> [$1 c] }
-  | call_instr { fun c -> [$1 c] }
-  | instr instr_list { fun c -> $1 c @ $2 c }
-
 expr_list :
   | /* empty */ { fun c -> [] }
   | expr expr_list { fun c -> $1 c @ $2 c }
@@ -707,7 +667,7 @@ const_expr :
   | instr_list { let at = at () in fun c -> $1 c @@ at }
 
 const_expr1 :
-  | instr instr_list { let at = at () in fun c -> ($1 c @ $2 c) @@ at }
+  | instr1 instr_list { let at = at () in fun c -> ($1 c @ $2 c) @@ at }
 
 
 /* Functions */
