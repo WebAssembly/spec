@@ -2848,7 +2848,7 @@ Control Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (\RETURNCALL~x) &\stepto& (\RETURNINVOKE~a)
-     & (\iff \CALL~x \stepto \INVOKE~a)
+     & (\iff (\CALL~x) \stepto (\INVOKE~a))
    \end{array}
 
 
@@ -2900,10 +2900,10 @@ Control Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\RETURNCALLINDIRECT~x) &\stepto& (\RETURNINVOKE~a)
-     & (\iff \CALLINDIRECT~x \stepto \INVOKE~a) \\
-   (\RETURNCALLINDIRECT~x) &\stepto& \TRAP
-     & (\iff \CALLINDIRECT~x \stepto \TRAP) \\
+   \val~(\RETURNCALLINDIRECT~x) &\stepto& (\RETURNINVOKE~a)
+     & (\iff \val~(\CALLINDIRECT~x) \stepto (\INVOKE~a)) \\
+   \val~(\RETURNCALLINDIRECT~x) &\stepto& \TRAP
+     & (\iff \val~(\CALLINDIRECT~x) \stepto \TRAP) \\
    \end{array}
 
 
