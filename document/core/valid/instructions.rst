@@ -1599,17 +1599,17 @@ Control Instructions
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^?]` be the :ref:`function type <syntax-functype>` :math:`C.\CFUNCS[x]`.
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CFUNCS[x]`.
 
-* The :ref:`result type <syntax-resulttype>` :math:`[t_2^?]` must be the same as :math:`C.\CRETURN`.
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be the same as :math:`C.\CRETURN`.
 
 * Then the instruction is valid with type :math:`[t_3^\ast~t_1^\ast] \to [t_4^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_3^\ast` and :math:`t_4^\ast`.
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = [t_1^\ast] \to [t_2^?]
+     C.\CFUNCS[x] = [t_1^\ast] \to [t_2^\ast]
      \qquad
-     C.\CRETURN = [t_2^?]
+     C.\CRETURN = [t_2^\ast]
    }{
      C \vdashinstr \RETURNCALL~x : [t_3^\ast~t_1^\ast] \to [t_4^\ast]
    }
@@ -1633,9 +1633,9 @@ Control Instructions
 
 * The type :math:`C.\CTYPES[y]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^?]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[y]`.
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[y]`.
 
-* The :ref:`result type <syntax-resulttype>` :math:`[t_2^?]` must be the same as :math:`C.\CRETURN`.
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be the same as :math:`C.\CRETURN`.
 
 * Then the instruction is valid with type :math:`[t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_3^\ast` and :math:`t_4^\ast`.
 
@@ -1644,9 +1644,9 @@ Control Instructions
    \frac{
      C.\CTABLES[x] = \limits~\FUNCREF
      \qquad
-     C.\CTYPES[y] = [t_1^\ast] \to [t_2^?]
+     C.\CTYPES[y] = [t_1^\ast] \to [t_2^\ast]
      \qquad
-     C.\CRETURN = [t_2^?]
+     C.\CRETURN = [t_2^\ast]
    }{
      C \vdashinstr \RETURNCALLINDIRECT~x~y : [t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]
    }
