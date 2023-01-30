@@ -90,7 +90,7 @@ INSTRUCTIONS = [
     Instruction(r'\RETURNCALL~x', r'\hex{12}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-return_call', r'exec-return_call'),
     Instruction(r'\RETURNCALLINDIRECT~x', r'\hex{13}', r'[t_1^\ast~\I32] \to [t_2^\ast]', r'valid-return_call_indirect', r'exec-return_call_indirect'),
     Instruction(r'\CALLREF~x', r'\hex{14}', r'[t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]', r'valid-call_ref', r'exec-call_ref'),
-    Instruction(None, r'\hex{15}'),
+    Instruction(r'\RETURNCALLREF~x', r'\hex{15}', r'[t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]', r'valid-return_call_ref', r'exec-return_call_ref'),
     Instruction(None, r'\hex{16}'),
     Instruction(None, r'\hex{17}'),
     Instruction(None, r'\hex{18}'),
