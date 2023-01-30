@@ -2813,7 +2813,7 @@ Control Instructions
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \FRAME_n\{F\}~\XB^k[\val^n~\RETURN]~\END &\stepto& \val^n
+   \FRAME_n\{F\}~B^\ast[\val^n~\RETURN]~\END &\stepto& \val^n
    \end{array}
 
 
@@ -2928,6 +2928,84 @@ Control Instructions
    \end{array}
 
 
+.. _exec-return_call:
+
+:math:`\RETURNCALL~x`
+.....................
+
+.. todo: find a way to reuse call/call_indirect prose for tail call versions
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-call>`, :math:`F.\AMODULE.\MIFUNCS[x]` exists.
+
+3. Let :math:`a` be the :ref:`function address <syntax-funcaddr>` :math:`F.\AMODULE.\MIFUNCS[x]`.
+
+4. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\RETURNCALL~x) &\stepto& (\RETURNINVOKE~a)
+     & (\iff \CALL~x \stepto \INVOKE~a)
+   \end{array}
+
+
+.. _exec-return_call_indirect:
+
+:math:`\RETURNCALLINDIRECT~x`
+.............................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITABLES[0]` exists.
+
+3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[0]`.
+
+4. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`S.\STABLES[\X{ta}]` exists.
+
+5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
+
+6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITYPES[x]` exists.
+
+7. Let :math:`\X{ft}_{\F{expect}}` be the :ref:`function type <syntax-functype>` :math:`F.\AMODULE.\MITYPES[x]`.
+
+8. Assert: due to :ref:`validation <valid-call_indirect>`, a value with :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+9. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+10. If :math:`i` is not smaller than the length of :math:`\X{tab}.\TIELEM`, then:
+
+    a. Trap.
+
+11. If :math:`\X{tab}.\TIELEM[i]` is uninitialized, then:
+
+    a. Trap.
+
+12. Let :math:`a` be the :ref:`function address <syntax-funcaddr>` :math:`\X{tab}.\TIELEM[i]`.
+
+13. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`S.\SFUNCS[a]` exists.
+
+14. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[a]`.
+
+15. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
+
+16. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
+
+    a. Trap.
+
+17. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\RETURNCALLINDIRECT~x) &\stepto& (\RETURNINVOKE~a)
+     & (\iff \CALLINDIRECT~x \stepto \INVOKE~a) \\
+   (\RETURNCALLINDIRECT~x) &\stepto& \TRAP
+     & (\iff \CALLINDIRECT~x \stepto \TRAP) \\
+   \end{array}
+
+
 .. index:: instruction, instruction sequence, block
 .. _exec-instr-seq:
 
@@ -3038,6 +3116,42 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 .. note::
    For non-defaultable types, the respective local is left uninitialized by these rules.
+
+
+.. _exec-return-invoke:
+
+Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
+......................................................................
+
+1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
+
+2. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
+
+3. Assert: due to :ref:`validation <valid-return_call>`, there are at least :math:`n` values on the top of the stack.
+
+4. Pop the results :math:`\val^n` from the stack.
+
+5. Assert: due to :ref:`validation <valid-return_call>`, the stack contains at least one :ref:`frame <syntax-frame>`.
+
+6. While the top of the stack is not a frame, do:
+
+   a. Pop the top element from the stack.
+
+7. Assert: the top of the stack is a frame.
+
+8. Pop the frame from the stack.
+
+9. Push :math:`\val^n` to the stack.
+
+10. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{lcl@{\qquad}l}
+    S; \FRAME_m\{F\}~B^\ast[\val^n~(\RETURNINVOKE~a)]~\END &\stepto&
+      \val^n~(\INVOKE~a)
+      & (\iff S.\SFUNCS[a].\FITYPE = [t_1^n] \to [t_2^m])
+   \end{array}
 
 
 .. _exec-invoke-exit:

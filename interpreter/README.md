@@ -255,6 +255,8 @@ op:
   br_table <var>+
   br_on_null <var> <heap_type>
   return
+  return_call <var>
+  return_call_indirect <func_type>
   call <var>
   call_indirect <var>? <func_type>
   call_ref

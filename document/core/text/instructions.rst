@@ -106,6 +106,8 @@ However, the special case of a type use that is syntactically empty or consists 
 .. _text-call:
 .. _text-call_ref:
 .. _text-call_indirect:
+.. _text-return_call:
+.. _text-return_call_indirect:
 
 All other control instruction are represented verbatim.
 
@@ -124,6 +126,9 @@ All other control instruction are represented verbatim.
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
      \text{call\_ref}~~x{:}\Ttypeidx &\Rightarrow& \CALLREF~x \\ &&|&
      \text{call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x~y
+       & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\&&|&
+     \text{return\_call}~~x{:}\Tfuncidx_I &\Rightarrow& \RETURNCALL~x \\ &&|&
+     \text{return\_call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \RETURNCALLINDIRECT~x~y
        & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array}
 
@@ -144,14 +149,17 @@ The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitt
      \text{if}~~\Tlabel~~\Tblocktype_I~~\Tinstr^\ast~~\text{else}~~\text{end}
    \end{array}
 
-Also, for backwards compatibility, the table index to :math:`\text{call\_indirect}` can be omitted, defaulting to :math:`0`.
+Also, for backwards compatibility, the table index to :math:`\text{call\_indirect}` and :math:`\text{return\_call\_indirect}` can be omitted, defaulting to :math:`0`.
 
 .. math::
    \begin{array}{llclll}
    \production{plain instruction} &
      \text{call\_indirect}~~\Ttypeuse
        &\equiv&
-     \text{call\_indirect}~~0~~\Ttypeuse
+     \text{call\_indirect}~~0~~\Ttypeuse \\
+     \text{return\_call\_indirect}~~\Ttypeuse
+       &\equiv&
+     \text{return\_call\_indirect}~~0~~\Ttypeuse \\
    \end{array}
 
 
