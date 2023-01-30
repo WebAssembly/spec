@@ -658,6 +658,8 @@ Instructions in this group affect the flow of control.
      \CALL~\funcidx \\&&|&
      \CALLREF~\typeidx \\&&|&
      \CALLINDIRECT~\tableidx~\typeidx \\
+     \RETURNCALL~\funcidx \\&&|&
+     \RETURNCALLINDIRECT~\tableidx~\typeidx \\
    \end{array}
 
 The |NOP| instruction does nothing.
@@ -705,6 +707,10 @@ The |CALLREF| instruction invokes a function indirectly through a :ref:`function
 The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>` that is denoted by a :ref:`table index <syntax-tableidx>` and must contain :ref:`function references <syntax-reftype>`.
 Since it may contain functions of heterogeneous type,
 the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's second immediate, and the call is aborted with a :ref:`trap <trap>` if it does not match.
+
+The |RETURNCALL| and |RETURNCALLINDIRECT| instructions are *tail-call* variants of the previous ones.
+That is, they first return from the current function before actually performing the respective call.
+It is guaranteed that no sequence of nested calls using only these instructions can cause resource exhaustion due to hitting an :ref:`implementation's limit <impl-exec>` on the number of active calls.
 
 
 .. index:: ! expression, constant, global, offset, element, data, instruction

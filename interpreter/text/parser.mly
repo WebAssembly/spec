@@ -233,7 +233,8 @@ let inline_func_type_explicit (c : context) x ft at =
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP
 %token BR BR_IF BR_TABLE BR_ON_NULL BR_ON_NON_NULL
-%token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF
+%token CALL CALL_REF CALL_INDIRECT
+%token RETURN RETURN_CALL RETURN_CALL_REF RETURN_CALL_INDIRECT
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
 %token TABLE_SIZE TABLE_GROW TABLE_FILL TABLE_COPY TABLE_INIT ELEM_DROP
@@ -422,6 +423,7 @@ plain_instr :
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF var { fun c -> call_ref ($2 c type_) }
+  | RETURN_CALL var { fun c -> return_call ($2 c func) }
   | RETURN_CALL_REF var { fun c -> return_call_ref ($2 c type_) }
   | LOCAL_GET var { fun c -> local_get ($2 c local) }
   | LOCAL_SET var { fun c -> local_set ($2 c local) }
@@ -504,6 +506,14 @@ call_instr_instr_list :
     { let at1 = ati 1 in
       fun c -> let x, es = $2 c in
       (call_indirect (0l @@ at1) x @@ at1) :: es }
+  | RETURN_CALL_INDIRECT var call_instr_type_instr_list
+    { let at1 = ati 1 in
+      fun c -> let x, es = $3 c in
+      (return_call_indirect ($2 c table) x @@ at1) :: es }
+  | RETURN_CALL_INDIRECT call_instr_type_instr_list  /* Sugar */
+    { let at1 = ati 1 in
+      fun c -> let x, es = $2 c in
+      (return_call_indirect (0l @@ at1) x @@ at1) :: es }
 
 call_instr_type_instr_list :
   | type_use call_instr_params_instr_list
@@ -583,6 +593,11 @@ expr1 :  /* Sugar */
   | CALL_INDIRECT call_expr_type  /* Sugar */
     { let at1 = ati 1 in
       fun c -> let x, es = $2 c in es, call_indirect (0l @@ at1) x }
+  | RETURN_CALL_INDIRECT var call_expr_type
+    { fun c -> let x, es = $3 c in es, return_call_indirect ($2 c table) x }
+  | RETURN_CALL_INDIRECT call_expr_type  /* Sugar */
+    { let at1 = ati 1 in
+      fun c -> let x, es = $2 c in es, return_call_indirect (0l @@ at1) x }
   | BLOCK labeling_opt block
     { fun c -> let c' = $2 c [] in let bt, es = $3 c' in [], block bt es }
   | LOOP labeling_opt block
