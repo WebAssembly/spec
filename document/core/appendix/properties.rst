@@ -237,7 +237,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 :ref:`Memory Instances <syntax-meminst>` :math:`\{ \MITYPE~\limits, \MIDATA~b^\ast \}`
 ......................................................................................
 
-* The :ref:`memory type <syntax-memtype>` :math:`\{\LMIN~n, \LMAX~m^?\}` must be :ref:`valid <valid-memtype>`.
+* The :ref:`memory type <syntax-memtype>` :math:`\limits` must be :ref:`valid <valid-memtype>`.
 
 * The length of :math:`b^\ast` must equal :math:`\limits.\LMIN` multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
 
