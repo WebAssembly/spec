@@ -610,6 +610,8 @@ let is_const (c : context) (e : instr) =
   match e.it with
   | RefNull _
   | RefFunc _
+  | Binary (Values.I32 I32Op.(Add | Sub | Mul))
+  | Binary (Values.I64 I64Op.(Add | Sub | Mul))
   | Const _
   | VecConst _ -> true
   | GlobalGet x -> let GlobalType (_, mut) = global c x in mut = Immutable

@@ -534,8 +534,9 @@
 
 (assert_invalid
   (module
+    (func $f (result i32) (i32.const 9))
     (table 1 funcref)
-    (elem (i32.const 0) funcref (item (i32.add (i32.const 0) (i32.const 1))))
+    (elem (i32.const 0) funcref (item (call $f)))
   )
   "constant expression required"
 )
