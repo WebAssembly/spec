@@ -296,6 +296,9 @@ let literal lit =
 let get t at =
   [], GlobalImport t @@ at, [], [GlobalGet (subject_idx @@ at) @@ at]
 
+let set t at =
+  [], GlobalImport t @@ at, [], [GlobalSet (subject_idx @@ at) @@ at]
+
 let invoke ft at =
   let FuncType (ts, _) = ft in
   [ft @@ at], FuncImport (subject_type_idx @@ at) @@ at,
@@ -583,19 +586,25 @@ let of_wrapper mods x_opt name wrap_action opds wrap_assertion at =
 let rec of_action mods act =
   match act.it with
   | Invoke (x_opt, name, args) ->
+    let opds = List.map (of_argument mods) args in
     "call(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ", " ^
-      "[" ^ String.concat ", " (List.map (of_arg mods) args) ^ "].flat())",
+      "[" ^ String.concat ", " opds ^ "].flat())",
     let FuncType (_, ts2) as ft = lookup_func mods x_opt name act.at in
     if is_js_func_type ft then None else
-    let opds = List.map (of_arg mods) args in
     Some (of_wrapper mods x_opt name (invoke ft) opds, ts2)
   | Get (x_opt, name) ->
     "get(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ")",
     let GlobalType (t, _) as gt = lookup_global mods x_opt name act.at in
     if is_js_global_type gt then None else
     Some (of_wrapper mods x_opt name (get gt) [], [t])
+  | Set (x_opt, name, arg) ->
+    let opd = of_argument mods arg in
+    "set(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ", " ^ opd ^ ")",
+    let GlobalType (t, _) as gt = lookup_global mods x_opt name act.at in
+    if is_js_global_type gt then None else
+    Some (of_wrapper mods x_opt name (set gt) [opd], [t])
 
-and of_arg mods arg =
+and of_argument mods arg =
   match arg.it with
   | LiteralArg lit -> of_literal lit
   | ActionArg act ->

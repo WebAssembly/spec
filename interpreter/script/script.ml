@@ -15,6 +15,7 @@ type action = action' Source.phrase
 and action' =
   | Invoke of var option * Ast.name * arg list
   | Get of var option * Ast.name
+  | Set of var option * Ast.name * arg
 
 and arg = arg' Source.phrase
 and arg' =

@@ -349,7 +349,7 @@ let rec run_action act : Values.value list =
     (match Instance.export inst name with
     | Some (Instance.ExternFunc f) ->
       let Types.FuncType (ts1, _) = Func.type_of f in
-      let vs = List.concat_map run_arg args in
+      let vs = List.concat_map run_argument args in
       if List.length vs <> List.length ts1 then
         Script.error act.at "wrong number of arguments";
       List.iteri (fun i (v, t) ->
@@ -360,7 +360,6 @@ let rec run_action act : Values.value list =
     | Some _ -> Assert.error act.at "export is not a function"
     | None -> Assert.error act.at "undefined export"
     )
-
  | Get (x_opt, name) ->
     trace ("Getting global \"" ^ Ast.string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
@@ -369,8 +368,21 @@ let rec run_action act : Values.value list =
     | Some _ -> Assert.error act.at "export is not a global"
     | None -> Assert.error act.at "undefined export"
     )
+ | Set (x_opt, name, arg) ->
+    trace ("Setting global \"" ^ Ast.string_of_name name ^ "\"...");
+    let inst = lookup_instance x_opt act.at in
+    let v =
+      match run_argument arg with
+      | [v] -> v
+      | _ -> Assert.error act.at "wrong number of arguments"
+    in
+    (match Instance.export inst name with
+    | Some (Instance.ExternGlobal gl) -> Global.store gl v; []
+    | Some _ -> Assert.error act.at "export is not a global"
+    | None -> Assert.error act.at "undefined export"
+    )
 
-and run_arg arg : Values.value list =
+and run_argument arg : Values.value list =
   match arg.it with
   | LiteralArg lit -> [lit.it]
   | ActionArg act -> run_action act

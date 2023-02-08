@@ -393,6 +393,7 @@ module:
 action:
   ( invoke <name>? <string> <arg>* )         ;; invoke function export
   ( get <name>? <string> )                   ;; get global export
+  ( set <name>? <string> <arg> )             ;; set global export
 
 arg:
   <literal>                                  ;; literal argument

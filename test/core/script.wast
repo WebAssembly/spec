@@ -7,7 +7,7 @@
 )
 
 (module $m2
-  (global (export "g") i32 (i32.const 42))
+  (global (export "g") (mut i32) (i32.const 42))
   (func (export "f") (result i32) (i32.const 42))
   (func (export "add3") (param i32 i32 i32) (result i32)
     (i32.add (i32.add (local.get 0) (local.get 1)) (local.get 2))
@@ -21,17 +21,25 @@
 (assert_return (get $m1 "g") (i32.const 41))
 (assert_return (get $m2 "g") (i32.const 42))
 
+(set "g" (i32.const 43))
+(assert_return (set "g" (i32.const 43)))
+(assert_return (get "g") (i32.const 43))
+(set $m2 "g" (i32.const 44))
+(assert_return (get "g") (i32.const 44))
+(set "g" (invoke $m1 "inc" (get "g")))
+(assert_return (get "g") (i32.const 45))
+
 (assert_return (invoke "f") (i32.const 42))
 (assert_return (invoke $m1 "f") (i32.const 41))
 (assert_return (invoke $m2 "f") (i32.const 42))
 
 (assert_return (invoke $m1 "inc" (i32.const 2)) (i32.const 3))
 (assert_return (invoke $m1 "inc" (get $m1 "g")) (i32.const 42))
-(assert_return (invoke $m1 "inc" (get $m2 "g")) (i32.const 43))
-(assert_return (invoke $m1 "inc" (invoke $m1 "inc" (get "g"))) (i32.const 44))
+(assert_return (invoke $m1 "inc" (get $m2 "g")) (i32.const 46))
+(assert_return (invoke $m1 "inc" (invoke $m1 "inc" (get "g"))) (i32.const 47))
 
-(assert_return (invoke "add3" (get $m1 "g") (invoke $m1 "inc" (get "g")) (get "g")) (i32.const 126))
-(assert_return (invoke "add3" (invoke "swap" (get $m1 "g") (invoke $m1 "inc" (get "g"))) (i32.const -20)) (i32.const 64))
+(assert_return (invoke "add3" (get $m1 "g") (invoke $m1 "inc" (get "g")) (get "g")) (i32.const 132))
+(assert_return (invoke "add3" (invoke "swap" (get $m1 "g") (invoke $m1 "inc" (get "g"))) (i32.const -20)) (i32.const 67))
 
 
 (module

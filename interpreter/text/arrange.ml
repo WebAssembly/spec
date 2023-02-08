@@ -702,11 +702,13 @@ let access x_opt n =
 let rec action mode act =
   match act.it with
   | Invoke (x_opt, name, args) ->
-    Node ("invoke" ^ access x_opt name, List.map (arg mode) args)
+    Node ("invoke" ^ access x_opt name, List.map (argument mode) args)
   | Get (x_opt, name) ->
     Node ("get" ^ access x_opt name, [])
+  | Set (x_opt, name, arg) ->
+    Node ("set" ^ access x_opt name, [argument mode arg])
 
-and arg mode arg =
+and argument mode arg =
   match arg.it with
   | LiteralArg lit -> literal mode lit
   | ActionArg act -> action mode act
