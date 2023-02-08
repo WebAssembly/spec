@@ -15,6 +15,7 @@
   (func (export "swap") (param i32 i32) (result i32 i32)
     (local.get 1) (local.get 0)
   )
+  (func (export "nop"))
 )
 
 (assert_return (get "g") (i32.const 42))
@@ -39,7 +40,7 @@
 (assert_return (invoke $m1 "inc" (invoke $m1 "inc" (get "g"))) (i32.const 47))
 
 (assert_return (invoke "add3" (get $m1 "g") (invoke $m1 "inc" (get "g")) (get "g")) (i32.const 132))
-(assert_return (invoke "add3" (invoke "swap" (get $m1 "g") (invoke $m1 "inc" (get "g"))) (i32.const -20)) (i32.const 67))
+(assert_return (invoke "add3" (invoke "swap" (get $m1 "g") (invoke "nop") (invoke $m1 "inc" (get "g"))) (i32.const -20)) (i32.const 67))
 
 
 (module
@@ -67,3 +68,21 @@
 (assert_return (invoke "f-v128" (get "g-v128")) (v128.const i32x4 42 42 42 42))
 (assert_return (invoke "f-funcref" (get "g-funcref")) (ref.null func))
 (assert_return (invoke "f-externref" (get "g-externref")) (ref.null extern))
+
+
+(module
+  (global $g (export "g") (mut i32) (i32.const 1))
+  (func (export "inc") (global.set $g (i32.add (global.get $g) (i32.const 1))))
+  (func (export "get") (result i32) (global.get $g))
+)
+
+;; Left-to-right evaluation order
+(assert_return
+  (invoke "get"
+    (set "g" (i32.const 3))
+    (invoke "inc")
+    (set "g" (invoke $m1 "inc" (get "g")))
+    (invoke "inc")
+  )
+  (i32.const 6)
+)
