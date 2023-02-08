@@ -13,8 +13,13 @@ and definition' =
 
 type action = action' Source.phrase
 and action' =
-  | Invoke of var option * Ast.name * literal list
+  | Invoke of var option * Ast.name * arg list
   | Get of var option * Ast.name
+
+and arg = arg' Source.phrase
+and arg' =
+  | LiteralArg of literal
+  | ActionArg of action
 
 type nanop = nanop' Source.phrase
 and nanop' = (Lib.void, Lib.void, nan, nan) Values.op

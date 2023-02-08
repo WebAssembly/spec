@@ -188,6 +188,13 @@ function assert_return(action, ...expected) {
 |}
 
 
+(* Errors & Tracing *)
+
+module Error = Error.Make ()
+
+exception Error = Error.Error
+
+
 (* Context *)
 
 module NameMap = Map.Make(struct type t = Ast.name let compare = compare end)
@@ -217,12 +224,26 @@ let bind (mods : modules) x_opt m =
 let lookup (mods : modules) x_opt name at =
   let exports =
     try Map.find (of_var_opt mods x_opt) mods.env with Not_found ->
-      raise (Eval.Crash (at, 
-        if x_opt = None then "no module defined within script"
-        else "unknown module " ^ of_var_opt mods x_opt ^ " within script"))
+      Error.error at 
+        (if x_opt = None then "no module defined within script"
+         else "unknown module " ^ of_var_opt mods x_opt ^ " within script")
   in try NameMap.find name exports with Not_found ->
-    raise (Eval.Crash (at, "unknown export \"" ^
-      string_of_name name ^ "\" within module"))
+    Error.error at ("unknown export \"" ^
+      string_of_name name ^ "\" within module")
+
+let lookup_func (mods : modules) x_opt name at =
+  match lookup mods x_opt name at with
+  | ExternFuncType ft -> ft
+  | _ ->
+    Error.error at ("export \"" ^
+      string_of_name name ^ "\" is not a function")
+
+let lookup_global (mods : modules) x_opt name at =
+  match lookup mods x_opt name at with
+  | ExternGlobalType gt -> gt
+  | _ ->
+    Error.error at ("export \"" ^
+      string_of_name name ^ "\" is not a global")
 
 
 (* Wrappers *)
@@ -259,21 +280,34 @@ let abs_mask_of = function
   | I32Type | F32Type -> Values.I32 Int32.max_int
   | I64Type | F64Type -> Values.I64 Int64.max_int
 
-let value v =
-  match v.it with
-  | Values.Num n -> [Const (n @@ v.at) @@ v.at]
-  | Values.Vec s -> [VecConst (s @@ v.at) @@ v.at]
-  | Values.Ref (Values.NullRef t) -> [RefNull t @@ v.at]
+(*
+let literal lit =
+  match lit.it with
+  | Values.Num n -> [Const (n @@ lit.at) @@ lit.at]
+  | Values.Vec s -> [VecConst (s @@ lit.at) @@ lit.at]
+  | Values.Ref (Values.NullRef t) -> [RefNull t @@ lit.at]
   | Values.Ref (ExternRef n) ->
-    [Const (Values.I32 n @@ v.at) @@ v.at; Call (externref_idx @@ v.at) @@ v.at]
+    [ Const (Values.I32 n @@ lit.at) @@ lit.at;
+      Call (externref_idx @@ lit.at) @@ lit.at;
+    ]
   | Values.Ref _ -> assert false
-
-let invoke ft vs at =
-  [ft @@ at], FuncImport (subject_type_idx @@ at) @@ at,
-  List.concat (List.map value vs) @ [Call (subject_idx @@ at) @@ at]
+*)
 
 let get t at =
-  [], GlobalImport t @@ at, [GlobalGet (subject_idx @@ at) @@ at]
+  [], GlobalImport t @@ at, [], [GlobalGet (subject_idx @@ at) @@ at]
+
+let invoke ft at =
+  let FuncType (ts, _) = ft in
+  [ft @@ at], FuncImport (subject_type_idx @@ at) @@ at,
+  List.mapi (fun i t ->
+    { module_name = Utf8.decode "arg";
+      item_name = Utf8.decode (string_of_int i);
+      idesc = GlobalImport (GlobalType (t, Immutable)) @@ at;
+    } @@ at
+  ) ts,
+  List.concat
+    (Lib.List32.mapi (fun i _ -> [GlobalGet (i @@ at) @@ at]) ts) @
+  [Call (subject_idx @@ at) @@ at]
 
 let run ts at =
   [], []
@@ -378,7 +412,7 @@ let assert_return ress ts at =
   in [], List.flatten (List.rev_map test ress)
 
 let wrap item_name wrap_action wrap_assertion at =
-  let itypes, idesc, action = wrap_action at in
+  let itypes, idesc, iargs, action = wrap_action at in
   let locals, assertion = wrap_assertion at in
   let types =
     (FuncType ([], []) @@ at) ::
@@ -400,7 +434,8 @@ let wrap item_name wrap_action wrap_assertion at =
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_externref";
        idesc = FuncImport (4l @@ at) @@ at} @@ at;
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_funcref";
-       idesc = FuncImport (5l @@ at) @@ at} @@ at ]
+       idesc = FuncImport (5l @@ at) @@ at} @@ at;
+    ] @ iargs
   in
   let item =
     List.fold_left
@@ -429,10 +464,10 @@ let is_js_value_type = function
   | RefType t -> true
 
 let is_js_global_type = function
-  | GlobalType (t, mut) -> is_js_value_type t && mut = Immutable
+  | GlobalType (t, mut) -> is_js_value_type t
 
 let is_js_func_type = function
-  | FuncType (ins, out) -> List.for_all is_js_value_type (ins @ out)
+  | FuncType (ts1, ts2) -> List.for_all is_js_value_type (ts1 @ ts2)
 
 
 (* Script conversion *)
@@ -473,14 +508,19 @@ let of_num n =
   let open Values in
   match n with
   | I32 i -> I32.to_string_s i
-  | I64 i -> "int64(\"" ^ I64.to_string_s i ^ "\")"
+  | I64 i -> I64.to_string_s i ^ "n"
   | F32 z -> of_float (F32.to_float z)
   | F64 z -> of_float (F64.to_float z)
 
 let of_vec v =
-  let open Values in
-  match v with
-  | V128 v -> "v128(\"" ^ V128.to_string v ^ "\")"
+  let at = Source.no_region in
+  let gtype = GlobalType (VecType (Values.type_of_vec v), Immutable) in
+  let ginit = [VecConst (v @@ at) @@ at] @@ at in
+  let globals = [{gtype; ginit} @@ at] in
+  let edesc = GlobalExport (0l @@ at) @@ at in
+  let exports = [{name = Utf8.decode "v128"; edesc} @@ at] in
+  let bs = Encode.encode ({empty_module with globals; exports} @@ at) in
+  "instance(" ^ of_bytes bs ^ ").exports.v128"
 
 let of_ref r =
   let open Values in
@@ -489,9 +529,9 @@ let of_ref r =
   | ExternRef n -> "externref(" ^ Int32.to_string n ^ ")"
   | _ -> assert false
 
-let of_value v =
+let of_literal lit =
   let open Values in
-  match v.it with
+  match lit.it with
   | Num n -> of_num n
   | Vec v -> of_vec v
   | Ref r -> of_ref r
@@ -529,43 +569,52 @@ let rec of_definition def =
     try of_definition (Parse.string_to_module s) with Parse.Syntax _ ->
       of_bytes "<malformed quote>"
 
-let of_wrapper mods x_opt name wrap_action wrap_assertion at =
+let of_arg_import i opd =
+  "arg" ^ string_of_int i ^ ": " ^ opd
+
+let of_wrapper mods x_opt name wrap_action opds wrap_assertion at =
   let x = of_var_opt mods x_opt in
   let bs = wrap name wrap_action wrap_assertion at in
-  "call(instance(" ^ of_bytes bs ^ ", " ^
-    "exports(" ^ x ^ ")), " ^ " \"run\", [])"
+  let exs = if opds = [] then "exports(" ^ x ^ ")" else
+    "{...exports(" ^ x ^ "), " ^
+    "args: [" ^ String.concat ", " (List.mapi of_arg_import opds) ^ "]}"
+  in "call(instance(" ^ of_bytes bs ^ ", " ^ exs ^ "), \"run\", [])"
 
-let of_action mods act =
+let rec of_action mods act =
   match act.it with
-  | Invoke (x_opt, name, vs) ->
+  | Invoke (x_opt, name, args) ->
     "call(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ", " ^
-      "[" ^ String.concat ", " (List.map of_value vs) ^ "])",
-    (match lookup mods x_opt name act.at with
-    | ExternFuncType ft when not (is_js_func_type ft) ->
-      let FuncType (_, out) = ft in
-      Some (of_wrapper mods x_opt name (invoke ft vs), out)
-    | _ -> None
-    )
+      "[" ^ String.concat ", " (List.map (of_arg mods) args) ^ "].flat())",
+    let FuncType (_, ts2) as ft = lookup_func mods x_opt name act.at in
+    if is_js_func_type ft then None else
+    let opds = List.map (of_arg mods) args in
+    Some (of_wrapper mods x_opt name (invoke ft) opds, ts2)
   | Get (x_opt, name) ->
     "get(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ")",
-    (match lookup mods x_opt name act.at with
-    | ExternGlobalType gt when not (is_js_global_type gt) ->
-      let GlobalType (t, _) = gt in
-      Some (of_wrapper mods x_opt name (get gt), [t])
-    | _ -> None
-    )
+    let GlobalType (t, _) as gt = lookup_global mods x_opt name act.at in
+    if is_js_global_type gt then None else
+    Some (of_wrapper mods x_opt name (get gt) [], [t])
+
+and of_arg mods arg =
+  match arg.it with
+  | LiteralArg lit -> of_literal lit
+  | ActionArg act ->
+    let act_js, act_wrapper_opt = of_action mods act in
+    match act_wrapper_opt with
+    | None -> act_js
+    | Some (act_wrapper, ts) -> act_wrapper (run ts) act.at
 
 let of_assertion' mods act name args wrapper_opt =
   let act_js, act_wrapper_opt = of_action mods act in
   let js = name ^ "(() => " ^ act_js ^ String.concat ", " ("" :: args) ^ ")" in
   match act_wrapper_opt with
   | None -> js ^ ";"
-  | Some (act_wrapper, out) ->
+  | Some (act_wrapper, ts) ->
     let run_name, wrapper =
       match wrapper_opt with
       | None -> name, run
       | Some wrapper -> "run", wrapper
-    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ ");  // " ^ js
+    in run_name ^ "(() => " ^ act_wrapper (wrapper ts) act.at ^ ");  // " ^ js
 
 let of_assertion mods ass =
   match ass.it with

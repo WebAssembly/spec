@@ -1015,7 +1015,7 @@ script_module :
     { $3, Quoted ("quote:" ^ string_of_pos (at()).left, $5) @@ at() }
 
 action :
-  | LPAR INVOKE module_var_opt name literal_list RPAR
+  | LPAR INVOKE module_var_opt name arg_list RPAR
     { Invoke ($3, $4, $5) @@ at () }
   | LPAR GET module_var_opt name RPAR
     { Get ($3, $4) @@ at() }
@@ -1065,9 +1065,13 @@ literal :
   | literal_vec { Values.Vec $1 @@ at () }
   | literal_ref { Values.Ref $1 @@ at () }
 
-literal_list :
+arg :
+  | literal { LiteralArg $1 @@ at () }
+  | action { ActionArg $1 @@ at () }
+
+arg_list :
   | /* empty */ { [] }
-  | literal literal_list { $1 :: $2 }
+  | arg arg_list { $1 :: $2 }
 
 numpat :
   | num { fun sh -> vec_lane_lit sh $1.it $1.at }
