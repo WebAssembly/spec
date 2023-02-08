@@ -51,7 +51,7 @@ instruction:
 - Firefox: [Done](https://github.com/WebAssembly/debugging/issues/17#issuecomment-1041130743)
 - Chrome/v8: [Done](https://chromium.googlesource.com/v8/v8/+/bf1565d7081cabc510e39c42eaea67ea6e79484e)
 - Safari: ?
-- wabt: [Done](https://github.com/WebAssembly/debugging/issues/17#issuecomment-1041130743)
+- wabt: Done
 - llvm: Done
 - binaryen: Done
 - emscripten: Done
