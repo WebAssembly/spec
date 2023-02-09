@@ -90,6 +90,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: IterableToList; url: sec-iterabletolist
         text: ToBigInt64; url: #sec-tobigint64
         text: BigInt; url: #sec-ecmascript-language-types-bigint-type
+        text: MakeBasicObject; url: #sec-makebasicobject
     type: abstract-op
         text: CreateMethodProperty; url: sec-createmethodproperty
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
@@ -113,6 +114,10 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
         text: ref.null
         text: ref.func
         text: ref.extern
+        <!-- FIXME: correct these links once the GC proposal formal spec is complete -->
+        text: ref.i31
+        text: ref.array
+        text: ref.struct
     text: function index; url: syntax/modules.html#syntax-funcidx
     text: function instance; url: exec/runtime.html#function-instances
     text: store_init; url: appendix/embedding.html#embed-store-init
@@ -142,6 +147,12 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: global_read; url: appendix/embedding.html#embed-global-read
     text: global_write; url: appendix/embedding.html#embed-global-write
     text: error; url: appendix/embedding.html#embed-error
+    <!-- FIXME: these links should be updated with the GC proposal formal spec -->
+    text: i31_new; url: appendix/embedding.html#embed-gc
+    text: i31_get; url: appendix/embedding.html#embed-gc
+    text: ref_cast; url: appendix/embedding.html#embed-gc
+    text: extern_internalize; url: appendix/embedding.html#embed-gc
+    text: extern_externalize; url: appendix/embedding.html#embed-gc
     text: store; url: exec/runtime.html#syntax-store
     text: table type; url: syntax/types.html#syntax-tabletype
     text: table address; url: exec/runtime.html#syntax-tableaddr
@@ -149,6 +160,8 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: memory address; url: exec/runtime.html#syntax-memaddr
     text: global address; url: exec/runtime.html#syntax-globaladdr
     text: extern address; url: exec/runtime.html#syntax-externaddr
+    <!-- FIXME: Update this link with the GC proposal formal spec -->
+    text: object address; url: exec/runtime.html#syntax-objectaddr
     url: syntax/types.html#syntax-numtype
         text: i32
         text: i64
@@ -159,6 +172,12 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
         text: reftype
         text: funcref
         text: externref
+        text: ref
+    url: syntax/types.html#heap-types; for: heap-type
+        text: extern
+        text: func
+        text: i31
+        text: any
     text: function element; url: exec/runtime.html#syntax-funcelem
     text: import component; url: syntax/modules.html#imports
     text: external value; url: exec/runtime.html#syntax-externval
@@ -167,7 +186,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: module; url: syntax/modules.html#syntax-module
     text: imports; url: syntax/modules.html#syntax-module
     text: import; url: syntax/modules.html#syntax-import
-    url: syntax/types.html#external-types
+    url: syntax/types.html#external-types; for: external-type
         text: external type
         text: func
         text: table
@@ -358,7 +377,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
         1. Let |o| be ? [=Get=](|importObject|, |moduleName|).
         1. If [=Type=](|o|) is not Object, throw a {{TypeError}} exception.
         1. Let |v| be ? [=Get=](|o|, |componentName|).
-        1. If |externtype| is of the form [=func=] |functype|,
+        1. If |externtype| is of the form [=external-type/func=] |functype|,
             1. If [=IsCallable=](|v|) is false, throw a {{LinkError}} exception.
             1. If |v| has a \[[FunctionAddress]] internal slot, and therefore is an [=Exported Function=],
                 1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
@@ -407,7 +426,7 @@ The verification of WebAssembly type requirements is deferred to the
     1. [=list/iterate|For each=] (|name|, |externtype|) of [=module_exports=](|module|),
         1. Let |externval| be [=instance_export=](|instance|, |name|).
         1. Assert: |externval| is not [=error=].
-        1. If |externtype| is of the form [=func=] <var ignore>functype</var>,
+        1. If |externtype| is of the form [=external-type/func=] <var ignore>functype</var>,
             1. Assert: |externval| is of the form [=external value|func=] |funcaddr|.
             1. Let [=external value|func=] |funcaddr| be |externval|.
             1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
@@ -544,7 +563,7 @@ interface Module {
 
 <div algorithm>
   The <dfn>string value of the extern type</dfn> |type| is
-    * "function" if |type| is of the form [=func=] <var ignore>functype</var>
+    * "function" if |type| is of the form [=external-type/func=] <var ignore>functype</var>
     * "table" if |type| is of the form [=table=] <var ignore>tabletype</var>
     * "memory" if |type| is of the form [=mem=] <var ignore>memtype</var>
     * "global" if |type| is of the form [=global=] <var ignore>globaltype</var>
@@ -1090,6 +1109,11 @@ The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a Jav
 1. If |w| is of the form [=ref.null=] <var ignore>t</var>, return null.
 1. If |w| is of the form [=ref.func=] |funcaddr|, return the result of creating [=a new Exported Function=] from |funcaddr|.
 1. If |w| is of the form [=ref.extern=] |externaddr|, return the result of [=retrieving an extern value=] from |externaddr|.
+1. If |w| is of the form [=ref.array=] |arrayaddr|, return the result of creating [=a new GC Exported Object=] from |arrayaddr|.
+1. If |w| is of the form [=ref.struct=] |structaddr|, return the result of creating [=a new GC Exported Object=] from |structaddr|.
+1. If |w| is of the form [=ref.i31=] |i31addr|,
+    1. Let |i32| be [=i31_get=](|i31addr|).
+    1. Return [=the Number value=] for |i32|.
 
 Note: Number values which are equal to NaN may have various observable NaN payloads; see [=NumberToRawBytes=] for details.
 </div>
@@ -1120,24 +1144,153 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 1. If |type| is [=f64=],
     1. Let |f64| be ? [=ToNumber=](|v|).
     1. Return [=f64.const=] |f64|.
-1. If |type| is [=funcref=],
+1. If |type| is of the form [=ref=] |null| |heaptype| and is a subtype of [=ref=] |null| [=heap-type/func=],
     1. If |v| is null,
-        1. Return [=ref.null=] [=funcref=].
+        1. If |null| is present,
+            1. Return [=ref.null=] |heaptype|.
+        1. Otherwise,
+            1. Throw a {{TypeError}}.
     1. If |v| is an [=Exported Function=],
         1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
-        1. Return [=ref.func=] |funcaddr|.
+        1. Let |casted| be [=ref_cast=](|heaptype|, |funcaddr|).
+        1. Return |casted|.
     1. Throw a {{TypeError}}.
-1. If |type| is [=externref=],
+1. If |type| is of the form [=ref=] |null| [=extern=],
     1. If |v| is null,
-        1. Return [=ref.null=] [=externref=].
+        1. If |null| is present,
+            1. Return [=ref.null=] [=externref=].
+        1. Otherwise,
+            1. Throw a {{TypeError}}.
     1. Let |map| be the [=surrounding agent=]'s associated [=extern value cache=].
     1. If a [=extern address=] |externaddr| exists such that |map|[|externaddr|] is the same as |v|,
         1. Return [=ref.extern=] |externaddr|.
     1. Let [=extern address=] |externaddr| be the smallest address such that |map|[|externaddr|] [=map/exists=] is false.
     1. [=map/Set=] |map|[|externaddr|] to |v|.
     1. Return [=ref.extern=] |externaddr|.
+1. If |type| is of the form [=ref=] |null| |heaptype| and is a subtype of [=ref=] |null| [=any=],
+    1. If |v| is null,
+        1. If |null| is present,
+            1. Return [=ref.null=] |heaptype|.
+        1. Otherwise,
+            1. Throw a {{TypeError}}.
+    1. If |heaptype| is [=i31=],
+        1. Let |i32value| be [=ToWebAssemblyValue=](|v|, [=i32=]).
+        1. Let |ref| be [=i31_new=](|i32value|).
+        1. Return |ref|.
+    1. If |v| is a [=GC Exported Object=],
+        1. Let |objectaddr| be the value of |v|'s \[[ObjectAddress]] internal slot.
+        1. Let |intern| be [=extern_internalize=]([=ref.extern=] |objectaddr|).
+        1. Let |casted| be [=ref_cast=](|heaptype|, |intern|).
+        1. Return |casted|.
+    1. Throw a {{TypeError}}.
 1. Assert: This step is not reached.
 
+</div>
+
+<h3 id="gc-exotic-objects">Garbage Collected Objects</h3>
+
+A WebAssembly struct or array is made available in JavaScript as a <dfn>GC Exported Object</dfn>.
+A [=GC Exported Object=] is an exotic object that wraps a garbage collected WebAssembly reference value.
+Most JavaScript operations on a [=GC Exported Object=] will throw an exception.
+
+Note: These operations may be refined in the future to allow richer interactions in JavaScript with WebAssembly structs and arrays.
+
+A [=GC Exported Object=] contains an \[[ObjectAddress]] internal slot.
+This slot holds a [=extern address=] relative to the [=surrounding agent=]'s [=associated store=].
+
+Note: A [=GC Exported Object=] holds an extern address, rather than the internal address of the corresponding struct or array. This is because the struct or array is first converted to an external representation via [=extern_externalize=] before it is exported to JavaScript.
+
+The internal methods of a [=GC Exported Object=] use the following implementations.
+
+<div algorithm>
+  The <dfn>\[[GetPrototypeOf]] internal method of a GC Exported Object</dfn> <var ignore>O</var> takes no arguments and throws an exception. It performs the following steps when called:
+
+    1. Throw a {{TypeError}}.
+</div>
+
+<div algorithm>
+  The <dfn>\[[SetPrototypeOf]] internal method of a GC Exported Object</dfn> <var ignore>O</var> takes argument <var ignore>V</var> (an Object or null) and throws an exception. It performs the following steps when called:
+
+    1. Throw a {{TypeError}}.
+</div>
+
+<div algorithm>
+  The <dfn>\[[IsExtensible]] internal method of a GC Exported Object</dfn> <var ignore>O</var> takes no arguments and returns a boolean. It performs the following steps when called:
+
+    1. Return false.
+</div>
+
+<div algorithm>
+  The <dfn>\[[PreventExtensions]] internal method of a GC Exported Object</dfn> <var ignore>O</var> takes no arguments and throws an exception. It performs the following steps when called:
+
+    1. Throw a {{TypeError}}.
+</div>
+
+<div algorithm>
+  The <dfn>\[[GetOwnProperty]] internal method of a GC Exported Object</dfn> <var ignore>O</var> takes argument <var ignore>P</var> (a property key) and returns undefined. It performs the following steps when called:
+
+    1. Return undefined.
+</div>
+
+<div algorithm>
+  The <dfn>\[[DefineOwnProperty]] internal method of a GC Exported Object</dfn> <var ignore>O</var> takes arguments <var ignore>P</var> (a property key) and <var ignore>Desc</var> (a property descriptor) and throws an exception. It performs the following steps when called:
+
+    1. Throw a {{TypeError}}.
+</div>
+
+<div algorithm>
+  The <dfn>\[[HasProperty]] internal method of a GC Exported Object</dfn> <var ignore>O</var> takes argument <var ignore>P</var> (a property key) and returns a boolean. It performs the following steps when called:
+
+    1. Return false.
+</div>
+
+<div algorithm>
+  The <dfn>\[[Get]] internal method of a GC Exported Object</dfn> <var ignore>O</var> takes arguments <var ignore>P</var> (a property key) and <var ignore>Receiver</var> (an ECMAScript language value) and returns undefined. It performs the following steps when called:
+
+    1. Return undefined.
+</div>
+
+<div algorithm>
+  The <dfn>\[[Set]] internal method of a GC Exported Object</dfn> <var ignore>O</var> takes arguments <var ignore>P</var> (a property key), <var ignore>V</var> (an ECMAScript language value), and <var ignore>Receiver</var> (an ECMAScript language value) and throws an exception. It performs the following steps when called:
+
+    1. Throw a {{TypeError}}.
+</div>
+
+<div algorithm>
+  The <dfn>\[[Delete]] internal method of a GC Exported Object</dfn> <var ignore>O</var> takes argument <var ignore>P</var> (a property key) and throws an exception. It performs the following steps when called:
+
+    1. Throw a {{TypeError}}.
+</div>
+
+<div algorithm>
+  The <dfn>\[[OwnPropertyKeys]] internal method of a GC Exported Object</dfn> <var ignore>O</var> takes no arguments and returns a list. It performs the following steps when called:
+
+    1. Let keys be a new empty list.
+    1. Return keys.
+</div>
+
+<div algorithm>
+  To create <dfn>a new GC Exported Object</dfn> from a WebAssembly [=object address=] |objectaddr|, perform the following steps:
+
+    1. Let |externaddr| be [=extern_externalize=](|objectaddr|).
+    1. Let |map| be the [=surrounding agent=]'s associated [=extern value cache=].
+    1. If |map|[|externaddr|] [=map/exists=],
+        1. Return |map|[|externaddr|].
+    1. Let |object| be [=MakeBasicObject=](« \[[ObjectAddress]] »).
+    1. Set |object|.\[[ObjectAddress]] to |externaddr|.
+    1. Set |object|.\[[GetPrototypeOf]] as specified in [=[[GetPrototypeOf]] internal method of a GC Exported Object=].
+    1. Set |object|.\[[SetPrototypeOf]] as specified in [=[[SetPrototypeOf]] internal method of a GC Exported Object=].
+    1. Set |object|.\[[IsExtensible]] as specified in [=[[IsExtensible]] internal method of a GC Exported Object=].
+    1. Set |object|.\[[PreventExtensions]] as specified in [=[[PreventExtensions]] internal method of a GC Exported Object=].
+    1. Set |object|.\[[GetOwnProperty]] as specified in [=[[GetOwnProperty]] internal method of a GC Exported Object=].
+    1. Set |object|.\[[DefineOwnProperty]] as specified in [=[[DefineOwnProperty]] internal method of a GC Exported Object=].
+    1. Set |object|.\[[HasProperty]] as specified in [=[[HasProperty]] internal method of a GC Exported Object=].
+    1. Set |object|.\[[Get]] as specified in [=[[Get]] internal method of a GC Exported Object=].
+    1. Set |object|.\[[Set]] as specified in [=[[Set]] internal method of a GC Exported Object=].
+    1. Set |object|.\[[Delete]] as specified in [=[[Delete]] internal method of a GC Exported Object=].
+    1. Set |object|.\[[OwnPropertyKeys]] as specified in [=[[OwnPropertyKeys]] internal method of a GC Exported Object=].
+    1. [=map/Set=] |map|[|externaddr|] to |object|.
+    1. Return |object|.
 </div>
 
 <h3 id="error-objects">Error Objects</h3>
