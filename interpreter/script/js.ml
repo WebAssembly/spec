@@ -59,6 +59,7 @@ let registry = new Proxy({spectest}, handler);
 
 function register(name, instance) {
   registry[name] = instance.exports;
+  return instance;
 }
 
 function module(bytes, valid = true) {
@@ -74,7 +75,19 @@ function module(bytes, valid = true) {
     throw new Error("Wasm validate throws");
   }
   if (validated !== valid) {
-    throw new Error("Wasm validate failure" + (valid ? "" : " expected"));
+    let error;
+    skip: if (valid) {
+      try {
+        new WebAssembly.Module(buffer);
+      } catch (e) {
+        error = ": " + e;
+        break skip;
+      }
+      throw new Error("Wasm compile does not throw, although validation failed");
+    } else {
+      error = " expected";
+    }
+    throw new Error("Wasm validate failure" + error);
   }
   return new WebAssembly.Module(buffer);
 }
@@ -88,12 +101,19 @@ function call(instance, name, args) {
 }
 
 function get(instance, name) {
-  let v = instance.exports[name];
-  return (v instanceof WebAssembly.Global) ? v.value : v;
+  let global = instance.exports[name];
+  if (v instanceof WebAssembly.Global) return v.value;
+  throw new Error("Wasm global expected");
 }
 
-function exports(instance) {
-  return {module: instance.exports, spectest: spectest};
+function set(instance, name, arg) {
+  let global = instance.exports[name];
+  if (v instanceof WebAssembly.Global) {
+    try {
+      v.value = arg; return;
+    } catch (e) {}
+  }
+  throw new Error("Wasm mutable global expected");
 }
 
 function run(action) {
@@ -211,22 +231,22 @@ let exports m : exports =
 let modules () : modules = {env = Map.empty; current = 0}
 
 let current_var (mods : modules) = "$" ^ string_of_int mods.current
-let of_var_opt (mods : modules) = function
+let var_opt (mods : modules) = function
   | None -> current_var mods
   | Some x -> x.it
 
 let bind (mods : modules) x_opt m =
   let exports = exports m in
   mods.current <- mods.current + 1;
-  mods.env <- Map.add (of_var_opt mods x_opt) exports mods.env;
+  mods.env <- Map.add (var_opt mods x_opt) exports mods.env;
   if x_opt <> None then mods.env <- Map.add (current_var mods) exports mods.env
 
 let lookup (mods : modules) x_opt name at =
   let exports =
-    try Map.find (of_var_opt mods x_opt) mods.env with Not_found ->
+    try Map.find (var_opt mods x_opt) mods.env with Not_found ->
       Error.error at 
         (if x_opt = None then "no module defined within script"
-         else "unknown module " ^ of_var_opt mods x_opt ^ " within script")
+         else "unknown module " ^ var_opt mods x_opt ^ " within script")
   in try NameMap.find name exports with Not_found ->
     Error.error at ("unknown export \"" ^
       string_of_name name ^ "\" within module")
@@ -246,15 +266,70 @@ let lookup_global (mods : modules) x_opt name at =
       string_of_name name ^ "\" is not a global")
 
 
-(* Wrappers *)
+(* Dependencies for Wasm wrappers *)
 
-let subject_idx = 0l
-let externref_idx = 1l
-let is_externref_idx = 2l
-let is_funcref_idx = 3l
-let eq_externref_idx = 4l
-let _eq_funcref_idx = 5l
-let subject_type_idx = 6l
+type deps =
+  { mutable dtypes : func_type list;
+    mutable descs : (import_desc' * int32) NameMap.t Map.t;
+    func_idx : int32 ref;
+    global_idx : int32 ref;
+  }
+
+let new_deps () =
+  { dtypes = []; descs = Map.empty;
+    func_idx = ref 0l; global_idx = ref 0l }
+
+let dep deps x name idxr idesc =
+  let nmap =
+    match Map.find_opt x deps.descs with
+    | Some nmap -> nmap
+    | None -> NameMap.empty
+  in
+  match NameMap.find_opt name nmap with
+  | Some (_, idx) -> idx
+  | None ->
+    let idx = !idxr in
+    deps.descs <-
+      Map.add x (NameMap.add name (idesc, idx) nmap) deps.descs;
+    idxr := Int32.add idx 1l;
+    idx
+
+let dep_type deps ft =
+  match Lib.List.index_of ft deps.dtypes with
+  | Some i -> Int32.of_int i
+  | None ->
+    let idx = Lib.List32.length deps.dtypes in
+    deps.dtypes <- deps.dtypes @ [ft];
+    idx
+
+let dep_global deps x name gt =
+  dep deps x name deps.global_idx (GlobalImport gt)
+
+let dep_func deps x name ft =
+  dep deps x name deps.func_idx
+    (FuncImport (dep_type deps ft @@ Source.no_region))
+
+let dep_spectest deps name ft =
+  dep_func deps "spectest" (Utf8.decode name) ft
+
+let dep_spectest_externref deps =
+  dep_spectest deps "externref"
+    (FuncType ([NumType I32Type], [RefType ExternRefType]))
+let dep_spectest_is_externref deps =
+  dep_spectest deps "is_externref"
+    (FuncType ([RefType ExternRefType], [NumType I32Type]))
+let dep_spectest_is_funcref deps =
+  dep_spectest deps "is_funcref"
+    (FuncType ([RefType FuncRefType], [NumType I32Type]))
+let dep_spectest_eq_externref deps =
+  dep_spectest deps "eq_externref"
+    (FuncType ([RefType ExternRefType; RefType ExternRefType], [NumType I32Type]))
+let _dep_spectest_eq_funcref deps =
+  dep_spectest deps "eq_funcref"
+    (FuncType ([RefType FuncRefType; RefType FuncRefType], [NumType I32Type]))
+
+
+(* Script conversion to Wasm wrappers *)
 
 let eq_of = function
   | I32Type -> Values.I32 I32Op.Eq
@@ -280,200 +355,184 @@ let abs_mask_of = function
   | I32Type | F32Type -> Values.I32 Int32.max_int
   | I64Type | F64Type -> Values.I64 Int64.max_int
 
-(*
-let literal lit =
+let nan_bitmask_of = function
+  | CanonicalNan -> abs_mask_of
+  | ArithmeticNan -> canonical_nan_of
+
+
+let wasm_literal deps lit : instr list =
   match lit.it with
   | Values.Num n -> [Const (n @@ lit.at) @@ lit.at]
   | Values.Vec s -> [VecConst (s @@ lit.at) @@ lit.at]
   | Values.Ref (Values.NullRef t) -> [RefNull t @@ lit.at]
   | Values.Ref (ExternRef n) ->
+    let externref_idx = dep_spectest_externref deps in
     [ Const (Values.I32 n @@ lit.at) @@ lit.at;
       Call (externref_idx @@ lit.at) @@ lit.at;
     ]
   | Values.Ref _ -> assert false
-*)
 
-let get t at =
-  [], GlobalImport t @@ at, [], [GlobalGet (subject_idx @@ at) @@ at]
+let rec wasm_action mods deps act : instr list * value_type list =
+  match act.it with
+  | Invoke (x_opt, name, args) ->
+    let FuncType (_, ts2) as ft = lookup_func mods x_opt name act.at in
+    let idx = dep_func deps (var_opt mods x_opt) name ft in
+    List.concat_map (wasm_argument mods deps) args @
+    [Call (idx @@ act.at) @@ act.at], ts2
+  | Get (x_opt, name) ->
+    let GlobalType (t, _) as gt = lookup_global mods x_opt name act.at in
+    let idx = dep_global deps (var_opt mods x_opt) name gt in
+    [GlobalGet (idx @@ act.at) @@ act.at], [t]
+  | Set (x_opt, name, arg) ->
+    let GlobalType (t, _) as gt = lookup_global mods x_opt name act.at in
+    let idx = dep_global deps (var_opt mods x_opt) name gt in
+    wasm_argument mods deps arg @
+    [GlobalSet (idx @@ act.at) @@ act.at], []
 
-let set t at =
-  [], GlobalImport t @@ at, [], [GlobalSet (subject_idx @@ at) @@ at]
+and wasm_argument mods deps arg : instr list =
+  match arg.it with
+  | LiteralArg lit -> wasm_literal deps lit
+  | ActionArg act -> fst (wasm_action mods deps act)
 
-let invoke ft at =
-  let FuncType (ts, _) = ft in
-  [ft @@ at], FuncImport (subject_type_idx @@ at) @@ at,
-  List.mapi (fun i t ->
-    { module_name = Utf8.decode "arg";
-      item_name = Utf8.decode (string_of_int i);
-      idesc = GlobalImport (GlobalType (t, Immutable)) @@ at;
-    } @@ at
-  ) ts,
-  List.concat
-    (Lib.List32.mapi (fun i _ -> [GlobalGet (i @@ at) @@ at]) ts) @
-  [Call (subject_idx @@ at) @@ at]
-
-let run ts at =
-  [], []
-
-let assert_return ress ts at =
-  let test res =
-    let nan_bitmask_of = function
-      | CanonicalNan -> abs_mask_of (* must only differ from the canonical NaN in its sign bit *)
-      | ArithmeticNan -> canonical_nan_of (* can be any NaN that's one everywhere the canonical NaN is one *)
+let wasm_result deps res : instr list =
+  let at = res.at in
+  match res.it with
+  | NumResult (NumPat {it = num; at = at'}) ->
+    let t', reinterpret = reinterpret_of (Values.type_of_num num) in
+    [ reinterpret @@ at;
+      Const (num @@ at')  @@ at;
+      reinterpret @@ at;
+      Compare (eq_of t') @@ at;
+      Test (Values.I32 I32Op.Eqz) @@ at;
+      BrIf (0l @@ at) @@ at;
+    ]
+  | NumResult (NanPat nanop) ->
+    let open Values in
+    let nan = match nanop.it with F32 n | F64 n -> n | I32 _ | I64 _ -> . in
+    let t = Values.type_of_num nanop.it in
+    let t', reinterpret = reinterpret_of t in
+    [ reinterpret @@ at;
+      Const (nan_bitmask_of nan t' @@ at) @@ at;
+      Binary (and_of t') @@ at;
+      Const (canonical_nan_of t' @@ at) @@ at;
+      Compare (eq_of t') @@ at;
+      Test (Values.I32 I32Op.Eqz) @@ at;
+      BrIf (0l @@ at) @@ at;
+    ]
+  | VecResult (VecPat (Values.V128 (shape, pats))) ->
+    let open Values in
+    (* VecResult is a list of NumPat or LitPat. For float shapes, we can have a mix of literals
+     * and NaNs. For NaNs, we need to mask it and compare with a canonical NaN. To simplify
+     * comparison, we build masks even for literals (will just be all set), collect them into
+     * a v128, then compare the entire 128 bits.
+     *)
+    let mask_and_canonical = function
+      | NumPat {it = I32 _ as i; _} -> I32 (Int32.minus_one), i
+      | NumPat {it = I64 _ as i; _} -> I64 (Int64.minus_one), i
+      | NumPat {it = F32 f; _} ->
+        I32 (Int32.minus_one), I32 (I32_convert.reinterpret_f32 f)
+      | NumPat {it = F64 f; _} ->
+        I64 (Int64.minus_one), I64 (I64_convert.reinterpret_f64 f)
+      | NanPat {it = F32 nan; _} ->
+        nan_bitmask_of nan I32Type, canonical_nan_of I32Type
+      | NanPat {it = F64 nan; _} ->
+        nan_bitmask_of nan I64Type, canonical_nan_of I64Type
+      | _ -> .
     in
-    match res.it with
-    | NumResult (NumPat {it = num; at = at'}) ->
-      let t', reinterpret = reinterpret_of (Values.type_of_num num) in
-      [ reinterpret @@ at;
-        Const (num @@ at')  @@ at;
-        reinterpret @@ at;
-        Compare (eq_of t') @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
-        BrIf (0l @@ at) @@ at ]
-    | NumResult (NanPat nanop) ->
-      let nan =
-        match nanop.it with
-        | Values.I32 _ | Values.I64 _ -> .
-        | Values.F32 n | Values.F64 n -> n
-      in
-      let t = Values.type_of_num nanop.it in
-      let t', reinterpret = reinterpret_of t in
-      [ reinterpret @@ at;
-        Const (nan_bitmask_of nan t' @@ at) @@ at;
-        Binary (and_of t') @@ at;
-        Const (canonical_nan_of t' @@ at) @@ at;
-        Compare (eq_of t') @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
-        BrIf (0l @@ at) @@ at ]
-    | VecResult (VecPat (Values.V128 (shape, pats))) ->
-      let open Values in
-      (* VecResult is a list of NumPat or LitPat. For float shapes, we can have a mix of literals
-       * and NaNs. For NaNs, we need to mask it and compare with a canonical NaN. To simplify
-       * comparison, we build masks even for literals (will just be all set), collect them into
-       * a v128, then compare the entire 128 bits.
-       *)
-      let mask_and_canonical = function
-        | NumPat {it = I32 _ as i; _} -> I32 (Int32.minus_one), i
-        | NumPat {it = I64 _ as i; _} -> I64 (Int64.minus_one), i
-        | NumPat {it = F32 f; _} ->
-          I32 (Int32.minus_one), I32 (I32_convert.reinterpret_f32 f)
-        | NumPat {it = F64 f; _} ->
-          I64 (Int64.minus_one), I64 (I64_convert.reinterpret_f64 f)
-        | NanPat {it = F32 nan; _} ->
-          nan_bitmask_of nan I32Type, canonical_nan_of I32Type
-        | NanPat {it = F64 nan; _} ->
-          nan_bitmask_of nan I64Type, canonical_nan_of I64Type
-        | _ -> .
-      in
-      let masks, canons = List.split (List.map (fun p -> mask_and_canonical p) pats) in
-      let all_ones = V128.I32x4.of_lanes (List.init 4 (fun _ -> Int32.minus_one)) in
-      let mask, expected = match shape with
-        | V128.I8x16 () ->
-          all_ones, V128.I8x16.of_lanes (List.map (I32Num.of_num 0) canons)
-        | V128.I16x8 () ->
-          all_ones, V128.I16x8.of_lanes (List.map (I32Num.of_num 0) canons)
-        | V128.I32x4 () ->
-          all_ones, V128.I32x4.of_lanes (List.map (I32Num.of_num 0) canons)
-        | V128.I64x2 () ->
-          all_ones, V128.I64x2.of_lanes (List.map (I64Num.of_num 0) canons)
-        | V128.F32x4 () ->
-          V128.I32x4.of_lanes (List.map (I32Num.of_num 0) masks),
-          V128.I32x4.of_lanes (List.map (I32Num.of_num 0) canons)
-        | V128.F64x2 () ->
-          V128.I64x2.of_lanes (List.map (I64Num.of_num 0) masks),
-          V128.I64x2.of_lanes (List.map (I64Num.of_num 0) canons)
-      in
-      [ VecConst (V128 mask @@ at) @@ at;
-        VecBinaryBits (V128 V128Op.And) @@ at;
-        VecConst (V128 expected @@ at) @@ at;
-        VecCompare (V128 (V128.I8x16 V128Op.Eq)) @@ at;
-        (* If all lanes are non-zero, then they are equal *)
-        VecTest (V128 (V128.I8x16 V128Op.AllTrue)) @@ at;
-        Test (I32 I32Op.Eqz) @@ at;
-        BrIf (0l @@ at) @@ at ]
-    | RefResult (RefPat {it = Values.NullRef t; _}) ->
-      [ RefIsNull @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
-        BrIf (0l @@ at) @@ at ]
-    | RefResult (RefPat {it = ExternRef n; _}) ->
-      [ Const (Values.I32 n @@ at) @@ at;
-        Call (externref_idx @@ at) @@ at;
-        Call (eq_externref_idx @@ at)  @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
-        BrIf (0l @@ at) @@ at ]
-    | RefResult (RefPat _) ->
-      assert false
-    | RefResult (RefTypePat t) ->
-      let is_ref_idx =
-        match t with
-        | FuncRefType -> is_funcref_idx
-        | ExternRefType -> is_externref_idx
-      in
-      [ Call (is_ref_idx @@ at) @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
-        BrIf (0l @@ at) @@ at ]
-  in [], List.flatten (List.rev_map test ress)
+    let masks, canons = List.split (List.map (fun p -> mask_and_canonical p) pats) in
+    let all_ones = V128.I32x4.of_lanes (List.init 4 (fun _ -> Int32.minus_one)) in
+    let mask, expected =
+      match shape with
+      | V128.I8x16 () ->
+        all_ones, V128.I8x16.of_lanes (List.map (I32Num.of_num 0) canons)
+      | V128.I16x8 () ->
+        all_ones, V128.I16x8.of_lanes (List.map (I32Num.of_num 0) canons)
+      | V128.I32x4 () ->
+        all_ones, V128.I32x4.of_lanes (List.map (I32Num.of_num 0) canons)
+      | V128.I64x2 () ->
+        all_ones, V128.I64x2.of_lanes (List.map (I64Num.of_num 0) canons)
+      | V128.F32x4 () ->
+        V128.I32x4.of_lanes (List.map (I32Num.of_num 0) masks),
+        V128.I32x4.of_lanes (List.map (I32Num.of_num 0) canons)
+      | V128.F64x2 () ->
+        V128.I64x2.of_lanes (List.map (I64Num.of_num 0) masks),
+        V128.I64x2.of_lanes (List.map (I64Num.of_num 0) canons)
+    in
+    [ VecConst (V128 mask @@ at) @@ at;
+      VecBinaryBits (V128 V128Op.And) @@ at;
+      VecConst (V128 expected @@ at) @@ at;
+      VecCompare (V128 (V128.I8x16 V128Op.Eq)) @@ at;
+      (* If all lanes are non-zero, then they are equal *)
+      VecTest (V128 (V128.I8x16 V128Op.AllTrue)) @@ at;
+      Test (I32 I32Op.Eqz) @@ at;
+      BrIf (0l @@ at) @@ at;
+    ]
+  | RefResult (RefPat {it = Values.NullRef t; _}) ->
+    [ RefIsNull @@ at;
+      Test (Values.I32 I32Op.Eqz) @@ at;
+      BrIf (0l @@ at) @@ at;
+    ]
+  | RefResult (RefPat {it = ExternRef n; _}) ->
+    let externref_idx = dep_spectest_externref deps in
+    let eq_externref_idx = dep_spectest_eq_externref deps in
+    [ Const (Values.I32 n @@ at) @@ at;
+      Call (externref_idx @@ at) @@ at;
+      Call (eq_externref_idx @@ at)  @@ at;
+      Test (Values.I32 I32Op.Eqz) @@ at;
+      BrIf (0l @@ at) @@ at;
+    ]
+  | RefResult (RefPat _) ->
+    assert false
+  | RefResult (RefTypePat t) ->
+    let is_ref_idx =
+      match t with
+      | FuncRefType -> dep_spectest_is_funcref deps
+      | ExternRefType -> dep_spectest_is_externref deps
+    in
+    [ Call (is_ref_idx @@ at) @@ at;
+      Test (Values.I32 I32Op.Eqz) @@ at;
+      BrIf (0l @@ at) @@ at;
+    ]
 
-let wrap item_name wrap_action wrap_assertion at =
-  let itypes, idesc, iargs, action = wrap_action at in
-  let locals, assertion = wrap_assertion at in
-  let types =
-    (FuncType ([], []) @@ at) ::
-    (FuncType ([NumType I32Type], [RefType ExternRefType]) @@ at) ::
-    (FuncType ([RefType ExternRefType], [NumType I32Type]) @@ at) ::
-    (FuncType ([RefType FuncRefType], [NumType I32Type]) @@ at) ::
-    (FuncType ([RefType ExternRefType; RefType ExternRefType], [NumType I32Type]) @@ at) ::
-    (FuncType ([RefType FuncRefType; RefType FuncRefType], [NumType I32Type]) @@ at) ::
-    itypes
-  in
+let wasm_assertion mods deps ass : instr list * value_type list =
+  match ass.it with
+  | AssertReturn (act, ress) ->
+    [ Block (ValBlockType None,
+        fst (wasm_action mods deps act) @
+        List.concat_map (wasm_result deps) (List.rev ress) @
+        [Return @@ ass.at]
+      ) @@ ass.at;
+      Unreachable @@ ass.at;
+    ], []
+  | _ -> assert false
+
+let wasm_module mk_code mods phrase : string =
+  let at = phrase.at in
+  let deps = new_deps () in
+  let body, ts = mk_code mods deps phrase in
+  let ftype = dep_type deps (FuncType ([], ts)) @@ at in
+  let types = List.map (fun ft -> ft @@ at) deps.dtypes in
   let imports =
-    [ {module_name = Utf8.decode "module"; item_name; idesc} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "externref";
-       idesc = FuncImport (1l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_externref";
-       idesc = FuncImport (2l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_funcref";
-       idesc = FuncImport (3l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_externref";
-       idesc = FuncImport (4l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_funcref";
-       idesc = FuncImport (5l @@ at) @@ at} @@ at;
-    ] @ iargs
+    Map.bindings deps.descs |>
+    List.concat_map (fun (x, nmap) ->
+      NameMap.bindings nmap |>
+      List.map (fun (item_name, (idesc', idx)) ->
+        let idesc = idesc' @@ at in
+        idx, {module_name = Utf8.decode x; item_name; idesc} @@ at
+      )
+    ) |>
+    List.sort compare |> List.map snd |> List.sort compare
   in
-  let item =
-    List.fold_left
-      (fun i im ->
-        match im.it.idesc.it with FuncImport _ -> Int32.add i 1l | _ -> i
-      ) 0l imports @@ at
-  in
-  let edesc = FuncExport item @@ at in
+  let edesc = FuncExport (!(deps.func_idx) @@ at) @@ at in
   let exports = [{name = Utf8.decode "run"; edesc} @@ at] in
-  let body =
-    [ Block (ValBlockType None, action @ assertion @ [Return @@ at]) @@ at;
-      Unreachable @@ at ]
-  in
-  let funcs = [{ftype = 0l @@ at; locals; body} @@ at] in
+  let funcs = [{ftype; locals = []; body} @@ at] in
   let m = {empty_module with types; funcs; imports; exports} @@ at in
   Encode.encode m
 
 
-let is_js_num_type = function
-  | I32Type -> true
-  | I64Type | F32Type | F64Type -> false
+(* Script conversion to plain JS *)
 
-let is_js_value_type = function
-  | NumType t -> is_js_num_type t
-  | VecType t -> false
-  | RefType t -> true
-
-let is_js_global_type = function
-  | GlobalType (t, mut) -> is_js_value_type t
-
-let is_js_func_type = function
-  | FuncType (ts1, ts2) -> List.for_all is_js_value_type (ts1 @ ts2)
-
-
-(* Script conversion *)
+exception UnsupportedByJs
 
 let add_hex_char buf c = Printf.bprintf buf "\\x%02x" (Char.code c)
 let add_char buf c =
@@ -489,17 +548,17 @@ let add_unicode_char buf uc =
   else
     add_char buf (Char.chr uc)
 
-let of_string_with iter add_char s =
+let js_string_with iter add_char s =
   let buf = Buffer.create 256 in
   Buffer.add_char buf '\"';
   iter (add_char buf) s;
   Buffer.add_char buf '\"';
   Buffer.contents buf
 
-let of_bytes = of_string_with String.iter add_hex_char
-let of_name = of_string_with List.iter add_unicode_char
+let js_bytes = js_string_with String.iter add_hex_char
+let js_name = js_string_with List.iter add_unicode_char
 
-let of_float z =
+let js_float z =
   match string_of_float z with
   | "nan" -> "NaN"
   | "-nan" -> "-NaN"
@@ -507,143 +566,107 @@ let of_float z =
   | "-inf" -> "-Infinity"
   | s -> s
 
-let of_num n =
+let js_num n =
   let open Values in
   match n with
   | I32 i -> I32.to_string_s i
   | I64 i -> I64.to_string_s i ^ "n"
-  | F32 z -> of_float (F32.to_float z)
-  | F64 z -> of_float (F64.to_float z)
+  | F32 z -> js_float (F32.to_float z)
+  | F64 z -> js_float (F64.to_float z)
 
-let of_vec v =
-  let at = Source.no_region in
-  let gtype = GlobalType (VecType (Values.type_of_vec v), Immutable) in
-  let ginit = [VecConst (v @@ at) @@ at] @@ at in
-  let globals = [{gtype; ginit} @@ at] in
-  let edesc = GlobalExport (0l @@ at) @@ at in
-  let exports = [{name = Utf8.decode "v128"; edesc} @@ at] in
-  let bs = Encode.encode ({empty_module with globals; exports} @@ at) in
-  "instance(" ^ of_bytes bs ^ ").exports.v128"
+let js_vec v =
+  raise UnsupportedByJs
 
-let of_ref r =
+let js_ref r =
   let open Values in
   match r with
   | NullRef _ -> "null"
   | ExternRef n -> "externref(" ^ Int32.to_string n ^ ")"
-  | _ -> assert false
+  | _ -> raise UnsupportedByJs
 
-let of_literal lit =
+let js_literal lit =
   let open Values in
   match lit.it with
-  | Num n -> of_num n
-  | Vec v -> of_vec v
-  | Ref r -> of_ref r
+  | Num n -> js_num n
+  | Vec v -> js_vec v
+  | Ref r -> js_ref r
 
-let of_nan = function
-  | CanonicalNan -> "\"nan:canonical\""
-  | ArithmeticNan -> "\"nan:arithmetic\""
+let js_num_pat = function
+  | NumPat num ->
+    if num = num then js_num num.it else raise UnsupportedByJs (* NaN *)
+  | NanPat nanop -> raise UnsupportedByJs
 
-let of_num_pat = function
-  | NumPat num -> of_num num.it
-  | NanPat nanop ->
-    match nanop.it with
-    | Values.I32 _ | Values.I64 _ -> .
-    | Values.F32 n | Values.F64 n -> of_nan n
+let js_vec_pat = function
+  | VecPat _ -> raise UnsupportedByJs
 
-let of_vec_pat = function
-  | VecPat (Values.V128 (shape, pats)) ->
-    Printf.sprintf "v128(\"%s\")" (String.concat " " (List.map of_num_pat pats))
-
-let of_ref_pat = function
-  | RefPat r -> of_ref r.it
+let js_ref_pat = function
+  | RefPat r -> js_ref r.it
   | RefTypePat t -> "\"ref." ^ string_of_refed_type t ^ "\""
 
-let of_result res =
+let js_result res =
   match res.it with
-  | NumResult np -> of_num_pat np
-  | VecResult vp -> of_vec_pat vp
-  | RefResult rp -> of_ref_pat rp
+  | NumResult np -> js_num_pat np
+  | VecResult vp -> js_vec_pat vp
+  | RefResult rp -> js_ref_pat rp
 
-let rec of_definition def =
+let rec js_definition def =
   match def.it with
-  | Textual m -> of_bytes (Encode.encode m)
-  | Encoded (_, bs) -> of_bytes bs
+  | Textual m -> js_bytes (Encode.encode m)
+  | Encoded (_, bs) -> js_bytes bs
   | Quoted (_, s) ->
-    try of_definition (Parse.string_to_module s) with Parse.Syntax _ ->
-      of_bytes "<malformed quote>"
+    try js_definition (Parse.string_to_module s) with Parse.Syntax _ ->
+      js_bytes "<malformed quote>"
 
-let of_arg_import i opd =
-  "arg" ^ string_of_int i ^ ": " ^ opd
-
-let of_wrapper mods x_opt name wrap_action opds wrap_assertion at =
-  let x = of_var_opt mods x_opt in
-  let bs = wrap name wrap_action wrap_assertion at in
-  let exs = if opds = [] then "exports(" ^ x ^ ")" else
-    "{...exports(" ^ x ^ "), " ^
-    "args: [" ^ String.concat ", " (List.mapi of_arg_import opds) ^ "]}"
-  in "call(instance(" ^ of_bytes bs ^ ", " ^ exs ^ "), \"run\", [])"
-
-let rec of_action mods act =
+let rec js_action mods act =
   match act.it with
   | Invoke (x_opt, name, args) ->
-    let opds = List.map (of_argument mods) args in
-    "call(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ", " ^
-      "[" ^ String.concat ", " opds ^ "].flat())",
-    let FuncType (_, ts2) as ft = lookup_func mods x_opt name act.at in
-    if is_js_func_type ft then None else
-    Some (of_wrapper mods x_opt name (invoke ft) opds, ts2)
+    "call(" ^ var_opt mods x_opt ^ ", " ^ js_name name ^ ", " ^
+      "[" ^ String.concat ", " (List.map (js_argument mods) args) ^
+      "].flat())"
   | Get (x_opt, name) ->
-    "get(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ")",
-    let GlobalType (t, _) as gt = lookup_global mods x_opt name act.at in
-    if is_js_global_type gt then None else
-    Some (of_wrapper mods x_opt name (get gt) [], [t])
+    "get(" ^ var_opt mods x_opt ^ ", " ^ js_name name ^ ")"
   | Set (x_opt, name, arg) ->
-    let opd = of_argument mods arg in
-    "set(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ", " ^ opd ^ ")",
-    let GlobalType (t, _) as gt = lookup_global mods x_opt name act.at in
-    if is_js_global_type gt then None else
-    Some (of_wrapper mods x_opt name (set gt) [opd], [t])
+    "set(" ^ var_opt mods x_opt ^ ", " ^ js_name name ^ ", " ^
+      js_argument mods arg ^ ")"
 
-and of_argument mods arg =
+and js_argument mods arg =
   match arg.it with
-  | LiteralArg lit -> of_literal lit
-  | ActionArg act ->
-    let act_js, act_wrapper_opt = of_action mods act in
-    match act_wrapper_opt with
-    | None -> act_js
-    | Some (act_wrapper, ts) -> act_wrapper (run ts) act.at
+  | LiteralArg lit -> js_literal lit
+  | ActionArg act -> js_action mods act
 
-let of_assertion' mods act name args wrapper_opt =
-  let act_js, act_wrapper_opt = of_action mods act in
-  let js = name ^ "(() => " ^ act_js ^ String.concat ", " ("" :: args) ^ ")" in
-  match act_wrapper_opt with
-  | None -> js ^ ";"
-  | Some (act_wrapper, ts) ->
-    let run_name, wrapper =
-      match wrapper_opt with
-      | None -> name, run
-      | Some wrapper -> "run", wrapper
-    in run_name ^ "(() => " ^ act_wrapper (wrapper ts) act.at ^ ");  // " ^ js
+let js_run_wasm bs =
+  "call(instance(" ^ js_bytes bs ^ ", registry), \"run\", [])"
 
-let of_assertion mods ass =
+let js_or_wasm_action mods act =
+  try js_action mods act
+  with UnsupportedByJs -> js_run_wasm (wasm_module wasm_action mods act)
+^ "\n/*\n" ^ Sexpr.to_string 80 (Arrange.module_ (Decode.decode "wrapper" (wasm_module wasm_action mods act))) ^ "*/\n"
+
+let js_assertion mods ass =
   match ass.it with
   | AssertMalformed (def, _) ->
-    "assert_malformed(" ^ of_definition def ^ ");"
+    "assert_malformed(" ^ js_definition def ^ ")"
   | AssertInvalid (def, _) ->
-    "assert_invalid(" ^ of_definition def ^ ");"
+    "assert_invalid(" ^ js_definition def ^ ")"
   | AssertUnlinkable (def, _) ->
-    "assert_unlinkable(" ^ of_definition def ^ ");"
+    "assert_unlinkable(" ^ js_definition def ^ ")"
   | AssertUninstantiable (def, _) ->
-    "assert_uninstantiable(" ^ of_definition def ^ ");"
+    "assert_uninstantiable(" ^ js_definition def ^ ")"
   | AssertReturn (act, ress) ->
-    of_assertion' mods act "assert_return" (List.map of_result ress)
-      (Some (assert_return ress))
+    (try
+      let js_ress = List.map js_result ress in
+      "assert_return(() => " ^ js_or_wasm_action mods act ^
+        String.concat ", " ("" :: js_ress) ^ ")"
+    with UnsupportedByJs ->
+      js_run_wasm (wasm_module wasm_assertion mods ass)
+^ "\n/*\n" ^ Sexpr.to_string 80 (Arrange.module_ (Decode.decode "wrapper" (wasm_module wasm_assertion mods ass))) ^ "*/\n"
+    )
   | AssertTrap (act, _) ->
-    of_assertion' mods act "assert_trap" [] None
+    "assert_trap(() => " ^ js_or_wasm_action mods act ^ ")"
   | AssertExhaustion (act, _) ->
-    of_assertion' mods act "assert_exhaustion" [] None
+    "assert_exhaustion(() => " ^ js_or_wasm_action mods act ^ ")"
 
-let of_command mods cmd =
+let js_command mods cmd =
   "\n// " ^ Filename.basename cmd.at.left.file ^
     ":" ^ string_of_int cmd.at.left.line ^ "\n" ^
   match cmd.it with
@@ -653,18 +676,23 @@ let of_command mods cmd =
       | Textual m -> m
       | Encoded (_, bs) -> Decode.decode "binary" bs
       | Quoted (_, s) -> unquote (Parse.string_to_module s)
-    in bind mods x_opt (unquote def);
-    "let " ^ current_var mods ^ " = instance(" ^ of_definition def ^ ");\n" ^
-    (if x_opt = None then "" else
-    "let " ^ of_var_opt mods x_opt ^ " = " ^ current_var mods ^ ";\n")
+    in
+    bind mods x_opt (unquote def);
+    let xi = current_var mods in
+    "let " ^ current_var mods ^
+      " = register(\"" ^ xi ^ "\", instance(" ^ js_definition def ^ "));\n" ^
+    ( if x_opt = None then "" else
+      let x = var_opt mods x_opt in
+      "let " ^ x ^ " = register(\"" ^ x ^ "\", " ^ xi ^ ");\n"
+    )
   | Register (name, x_opt) ->
-    "register(" ^ of_name name ^ ", " ^ of_var_opt mods x_opt ^ ")\n"
+    "register(" ^ js_name name ^ ", " ^ var_opt mods x_opt ^ ");\n"
   | Action act ->
-    of_assertion' mods act "run" [] None ^ "\n"
+    js_or_wasm_action mods act ^ ";\n"
   | Assertion ass ->
-    of_assertion mods ass ^ "\n"
+    js_assertion mods ass ^ ";\n"
   | Meta _ -> assert false
 
 let of_script scr =
   (if !Flags.harness then harness else "") ^
-  String.concat "" (List.map (of_command (modules ())) scr)
+  String.concat "" (List.map (js_command (modules ())) scr)
