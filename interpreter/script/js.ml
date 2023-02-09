@@ -661,7 +661,6 @@ let js_run_wasm bs =
 let js_or_wasm_action mods act =
   try js_action mods act
   with UnsupportedByJs -> js_run_wasm (wasm_module wasm_action mods act)
-^ "\n/*\n" ^ Sexpr.to_string 80 (Arrange.module_ (Decode.decode "wrapper" (wasm_module wasm_action mods act))) ^ "*/\n"
 
 let js_assertion mods ass =
   match ass.it with
@@ -680,7 +679,6 @@ let js_assertion mods ass =
         String.concat ", " ("" :: js_ress) ^ ")"
     with UnsupportedByJs ->
       js_run_wasm (wasm_module wasm_assertion mods ass)
-^ "\n/*\n" ^ Sexpr.to_string 80 (Arrange.module_ (Decode.decode "wrapper" (wasm_module wasm_assertion mods ass))) ^ "*/\n"
     )
   | AssertTrap (act, _) ->
     "assert_trap(() => " ^ js_or_wasm_action mods act ^ ")"
