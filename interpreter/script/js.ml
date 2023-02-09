@@ -102,15 +102,15 @@ function call(instance, name, args) {
 
 function get(instance, name) {
   let global = instance.exports[name];
-  if (v instanceof WebAssembly.Global) return v.value;
+  if (global instanceof WebAssembly.Global) return global.value;
   throw new Error("Wasm global expected");
 }
 
 function set(instance, name, arg) {
   let global = instance.exports[name];
-  if (v instanceof WebAssembly.Global) {
+  if (global instanceof WebAssembly.Global) {
     try {
-      v.value = arg; return;
+      global.value = arg; return;
     } catch (e) {}
   }
   throw new Error("Wasm mutable global expected");
@@ -578,9 +578,8 @@ let js_bytes = js_string_with String.iter add_hex_char
 let js_name = js_string_with List.iter add_unicode_char
 
 let js_float z =
-  match string_of_float z with
-  | "nan" -> "NaN"
-  | "-nan" -> "-NaN"
+  match Printf.sprintf "%.17g" z with
+  | "nan" | "-nan" -> raise UnsupportedByJs
   | "inf" -> "Infinity"
   | "-inf" -> "-Infinity"
   | s -> s

@@ -15,7 +15,6 @@
   (func (export "swap") (param i32 i32) (result i32 i32)
     (local.get 1) (local.get 0)
   )
-  (func (export "nop"))
 )
 
 (assert_return (get "g") (i32.const 42))
@@ -29,6 +28,8 @@
 (assert_return (get "g") (i32.const 44))
 (set "g" (invoke $m1 "inc" (get "g")))
 (assert_return (get "g") (i32.const 45))
+(assert_return (get $m1 "g") (i32.const 41))
+(assert_return (get $m2 "g") (i32.const 45))
 
 (assert_return (invoke "f") (i32.const 42))
 (assert_return (invoke $m1 "f") (i32.const 41))
@@ -39,8 +40,17 @@
 (assert_return (invoke $m1 "inc" (get $m2 "g")) (i32.const 46))
 (assert_return (invoke $m1 "inc" (invoke $m1 "inc" (get "g"))) (i32.const 47))
 
-(assert_return (invoke "add3" (get $m1 "g") (invoke $m1 "inc" (get "g")) (get "g")) (i32.const 132))
-(assert_return (invoke "add3" (invoke "swap" (get $m1 "g") (invoke "nop") (invoke $m1 "inc" (get "g"))) (i32.const -20)) (i32.const 67))
+(assert_return
+  (invoke "add3" (get $m1 "g") (invoke $m1 "inc" (get "g")) (get "g"))
+  (i32.const 132)
+ )
+(assert_return
+  (invoke "add3"
+    (invoke "swap" (get $m1 "g") (invoke $m1 "inc" (get "g")))
+    (i32.const -20)
+  )
+  (i32.const 67)
+)
 
 
 (module
