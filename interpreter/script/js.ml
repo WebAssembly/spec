@@ -123,6 +123,7 @@ function run(action) {
 function assert_malformed(bytes) {
   try { module(bytes, false) } catch (e) {
     if (e instanceof WebAssembly.CompileError) return;
+    throw new Error("Wasm decoding failure expected, got: " + e);
   }
   throw new Error("Wasm decoding failure expected");
 }
@@ -130,6 +131,7 @@ function assert_malformed(bytes) {
 function assert_invalid(bytes) {
   try { module(bytes, false) } catch (e) {
     if (e instanceof WebAssembly.CompileError) return;
+    throw new Error("Wasm validation failure expected, got: " + e);
   }
   throw new Error("Wasm validation failure expected");
 }
@@ -138,6 +140,7 @@ function assert_unlinkable(bytes) {
   let mod = module(bytes);
   try { new WebAssembly.Instance(mod, registry) } catch (e) {
     if (e instanceof WebAssembly.LinkError) return;
+    throw new Error("Wasm linking failure expected, got: " + e);
   }
   throw new Error("Wasm linking failure expected");
 }
@@ -146,6 +149,7 @@ function assert_uninstantiable(bytes) {
   let mod = module(bytes);
   try { new WebAssembly.Instance(mod, registry) } catch (e) {
     if (e instanceof WebAssembly.RuntimeError) return;
+    throw new Error("Wasm trap failure expected, got: " + e);
   }
   throw new Error("Wasm trap expected");
 }
@@ -153,6 +157,7 @@ function assert_uninstantiable(bytes) {
 function assert_trap(action) {
   try { action() } catch (e) {
     if (e instanceof WebAssembly.RuntimeError) return;
+    throw new Error("Wasm trap expected, got: " + e);
   }
   throw new Error("Wasm trap expected");
 }
@@ -163,6 +168,7 @@ try { (function f() { 1 + f() })() } catch (e) { StackOverflow = e.constructor }
 function assert_exhaustion(action) {
   try { action() } catch (e) {
     if (e instanceof StackOverflow) return;
+    throw new Error("Wasm resource exhaustion expected, got: " + e);
   }
   throw new Error("Wasm resource exhaustion expected");
 }
@@ -213,6 +219,19 @@ function assert_return(action, ...expected) {
 module Error = Error.Make ()
 
 exception Error = Error.Error
+
+exception UnsupportedByJs
+
+let js_val_type = function
+  | NumType _ -> ()
+  | VecType _ -> raise UnsupportedByJs
+  | RefType _ -> ()
+
+let js_global_type = function
+  | GlobalType (t, _mut) -> js_val_type t
+
+let js_func_type = function
+  | FuncType (ts1, ts2) -> List.iter js_val_type (ts1 @ ts2)
 
 
 (* Context *)
@@ -509,8 +528,9 @@ let wasm_assertion mods deps ass : instr list * value_type list =
 let wasm_module mk_code mods phrase : string =
   let at = phrase.at in
   let deps = new_deps () in
-  let body, ts = mk_code mods deps phrase in
-  let ftype = dep_type deps (FuncType ([], ts)) @@ at in
+  let code, ts = mk_code mods deps phrase in
+  let ts' = try List.iter js_val_type ts; ts with UnsupportedByJs -> [] in
+  let ftype = dep_type deps (FuncType ([], ts')) @@ at in
   let types = List.map (fun ft -> ft @@ at) deps.dtypes in
   let imports =
     Map.bindings deps.descs |>
@@ -525,14 +545,13 @@ let wasm_module mk_code mods phrase : string =
   in
   let edesc = FuncExport (!(deps.func_idx) @@ at) @@ at in
   let exports = [{name = Utf8.decode "run"; edesc} @@ at] in
+  let body = code @ (if ts = ts' then [] else [Return @@ at]) in
   let funcs = [{ftype; locals = []; body} @@ at] in
   let m = {empty_module with types; funcs; imports; exports} @@ at in
   Encode.encode m
 
 
 (* Script conversion to plain JS *)
-
-exception UnsupportedByJs
 
 let add_hex_char buf c = Printf.bprintf buf "\\x%02x" (Char.code c)
 let add_char buf c =
@@ -620,12 +639,15 @@ let rec js_definition def =
 let rec js_action mods act =
   match act.it with
   | Invoke (x_opt, name, args) ->
+    js_func_type (lookup_func mods x_opt name act.at);
     "call(" ^ var_opt mods x_opt ^ ", " ^ js_name name ^ ", " ^
       "[" ^ String.concat ", " (List.map (js_argument mods) args) ^
       "].flat())"
   | Get (x_opt, name) ->
+    js_global_type (lookup_global mods x_opt name act.at);
     "get(" ^ var_opt mods x_opt ^ ", " ^ js_name name ^ ")"
   | Set (x_opt, name, arg) ->
+    js_global_type (lookup_global mods x_opt name act.at);
     "set(" ^ var_opt mods x_opt ^ ", " ^ js_name name ^ ", " ^
       js_argument mods arg ^ ")"
 
