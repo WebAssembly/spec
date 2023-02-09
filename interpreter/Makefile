@@ -18,7 +18,7 @@ JSLIB =		wast
 WINMAKE =	winmake.bat
 
 DIRS =		util syntax binary text valid runtime exec script host main tests
-LIBS =		bigarray
+LIBS =		
 FLAGS = 	-lexflags -ml -cflags '-w +a-4-27-42-44-45-70 -warn-error +a-3'
 OCBA =		ocamlbuild $(FLAGS) $(DIRS:%=-I %)
 OCB =		$(OCBA) $(LIBS:%=-libs %)
