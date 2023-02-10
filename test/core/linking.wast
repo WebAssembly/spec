@@ -129,6 +129,16 @@
 )
 
 
+(module
+  (global (export "g-v128") v128 (v128.const i64x2 0 0))
+)
+(register "Mv128")
+
+(module
+  (import "Mv128" "g-v128" (global v128))
+)
+
+
 ;; Tables
 
 (module $Mt

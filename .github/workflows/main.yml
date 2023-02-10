@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 18.x
-      - run: cd interpreter && opam exec make all
+      - run: cd interpreter && opam exec make JS=node all
 
   ref-interpreter-js-library:
     runs-on: ubuntu-latest
