@@ -1,10 +1,11 @@
-.. index:: ! matching, subtyping
+.. index:: ! matching, ! subtyping
+.. _subtyping:
 .. _match:
 
 Matching
 --------
 
-On most types, a simple notion of subtyping is defined that is applicable in validation rules or during :ref:`module instantiation <exec-instantiation>` when checking the types of imports.
+On most types, a simple notion of *subtyping* is defined that is applicable in validation rules or during :ref:`module instantiation <exec-instantiation>` when checking the types of imports.
 
 
 .. index:: number type
@@ -150,6 +151,47 @@ That is, a :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` matches a :
    }{
      C \vdashresulttypematch [t_1^\ast] \matchesresulttype [t_2^\ast]
    }
+
+
+.. index:: instruction type, result type
+.. _match-instrtype:
+
+Instruction Types
+~~~~~~~~~~~~~~~~~
+
+Subtyping is further lifted to :ref:`instruction types <syntax-instrtype>`.
+An :ref:`instruction type <syntax-instrtype>` :math:`[t_{11}^\ast] \to_{x_1^\ast} [t_{12}^\ast]` matches a type :math:`[t_{21}^ast] \to_{x_2^\ast} [t_{22}^\ast]` if and only if:
+
+* There is a common sequence of :ref:`value types <syntax-valtype>` :math:`t^\ast` such that :math:`t_{21}^\ast` equals :math:`t^\ast~{t'_{21}}^\ast` and :math:`t_{22}^\ast` equals :math:`t^\ast~{t'_{22}}^\ast`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[{t'_{21}}^\ast]` :ref:`matches <match-resulttype>` :math:`[t_{11}^\ast]`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_{12}^\ast]` :ref:`matches <match-resulttype>` :math:`[{t'_{22}}^\ast]`.
+
+* For every :ref:`local index <syntax-localidx>` :math:`x` that is in :math:`x_2^\ast` but not in :math:`x_1^\ast`, the :ref:`local type <syntax-localtype>` :math:`C.\CLOCALS[x]` is :math:`\SET~t_x` for some :ref:`value type <syntax-valtype>` :math:`t_x`.
+
+.. math::
+   ~\\[-1ex]
+   \frac{
+     \begin{array}{@{}c@{\qquad}l@{}}
+     C \vdashresulttypematch [t_{21}^\ast] \matchesresulttype [t_{11}^\ast]
+     &
+     \{ x^\ast \} = \{ x_2^\ast \} \setminus \{ x_1^\ast \}
+     \\
+     C \vdashresulttypematch [t_{12}^\ast] \matchesresulttype [t_{22}^\ast]
+     &
+     (C.\CLOCALS[x] = \SET~t_x)^\ast
+     \end{array}
+   }{
+     C \vdashinstrtypematch [t_{11}^\ast] \to_{x_1^\ast} [t_{12}^\ast] \matchesinstrtype [t^\ast~t_{21}^\ast] \to_{x_2^\ast} [t^\ast~t_{22}^\ast]
+   }
+
+.. note::
+   Instruction types are contravariant in their input and covariant in their output.
+   Subtyping also incorporates a sort of "frame" condition, which allows adding arbitrary invariant stack elements on both sides in the super type.
+
+   Finally, the supertype may ignore variables from the init set :math:`x_1^\ast`.
+   It may also *add* variables to the init set, provided these are already set in the context, i.e., are vacuously initialized.
 
 
 .. index:: function type, result type
