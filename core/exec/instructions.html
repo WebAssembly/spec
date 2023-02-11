@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Instructions &#8212; WebAssembly 2.0 (Draft 2023-02-09)</title>
+    <title>Instructions &#8212; WebAssembly 2.0 (Draft 2023-02-11)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -1797,7 +1797,7 @@ In practice, the choice depends on the <a class="reference internal" href="../ap
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~d)~\href{../exec/runtime.html#syntax-val}{\mathit{val}}~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.fill}}
   \quad\href{../exec/conventions.html#formal-notation}{\hookrightarrow}\quad S; F; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
   \\ \qquad
-  (\mathrel{\mbox{if}} d + n &gt; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[x]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}|)
+  (\mathrel{\mbox{if}} d + n &gt; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}|)
 \\[1ex]
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~d)~\href{../exec/runtime.html#syntax-val}{\mathit{val}}~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~0)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.fill}}
   \quad\href{../exec/conventions.html#formal-notation}{\hookrightarrow}\quad S; F; \epsilon
@@ -1963,7 +1963,7 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
   \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
   (\mathrel{\mbox{if}} &amp; s + n &gt; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{datas}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{dataaddrs}}[x]].\href{../exec/runtime.html#syntax-datainst}{\mathsf{data}}| \\
-   \vee &amp; d + n &gt; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[x]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}|) \\[1ex]
+   \vee &amp; d + n &gt; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[F.\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{memaddrs}}[0]].\href{../exec/runtime.html#syntax-meminst}{\mathsf{data}}|) \\[1ex]
   \end{array}
 \\[1ex]
 S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~d)~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~s)~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~0)~(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.init}}~x)
