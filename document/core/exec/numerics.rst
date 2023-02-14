@@ -2118,9 +2118,8 @@ when either input is a NaN.
 :math:`\frmax_N(z_1, z_2)`
 ..........................
 
-Relaxed max differs from max when inputs are NaNs or different
-signs of 0. It allows for implementation to return the first or second input
-when either input is a NaN.
+Relaxed maximum differs from regular maximum when inputs are NaN's or zeroes with different signs.
+It allows for implementations to return the first or second input when either input is a NaN.
 
 .. math::
    \begin{array}{@{}llcll}
