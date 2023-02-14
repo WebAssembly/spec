@@ -2061,8 +2061,8 @@ hardware dependent.
 :math:`\rtrunc^s_{M,N}(z)`
 ..........................
 
-Relaxed truncate converts float to int, NaN and out of range values are
-hardware dependent.
+Relaxed signed truncation converts floating point numbers to integers.
+The result for NaN's and out-of-range values is host-dependent.
 
 .. math::
    \begin{array}{@{}llcll}
