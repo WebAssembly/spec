@@ -193,6 +193,7 @@ Occasionally, it is convenient to group operators together according to the foll
 .. _syntax-rvfbinop:
 .. _syntax-rvfternop:
 .. _syntax-instr-vec:
+.. _syntax-instr-relaxed:
 
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
