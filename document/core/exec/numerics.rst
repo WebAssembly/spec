@@ -2000,7 +2000,7 @@ defined by |IEEE754|_ (Section 5.4.1) as *fusedMultiplyAdd*.
 .. math::
    \begin{array}{@{}llcll}
    \EXPROFDET & \frmadd_N(z_1, z_2, z_3) &=& [ \fadd_N(\fmul_N(z_1, z_2), z_3), fma_N(z_1, z_2, z_3) ] \\
-   & \frmadd_N(z_1, z_2, z_3) &=& \fadd_N(\fmul_N(z_1, z_2), z_3) \\
+   & \frmadd_N(z_1, z_2, z_3) &=& fma_N(z_1, z_2, z_3) \\
    \end{array}
 
 
