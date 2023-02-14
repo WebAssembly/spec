@@ -282,7 +282,6 @@ struct
   let fternop xxxx (op : fternop) = match op with
     | RelaxedMadd -> "relaxed_madd"
     | RelaxedNmadd-> "relaxed_nmadd"
-    | RelaxedDotAccum -> "relaxed_dot_bf" ^ half (half xxxx) ^ "_add_" ^ xxxx
 
   let irelop xxxx (op : irelop) = match op with
     | Eq -> "eq"

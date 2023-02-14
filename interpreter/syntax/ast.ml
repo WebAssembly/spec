@@ -65,7 +65,7 @@ struct
   type fbinop = Add | Sub | Mul | Div | Min | Max | Pmin | Pmax
               | RelaxedMin | RelaxedMax
   type iternop = RelaxedLaneselect | RelaxedDotAccum
-  type fternop = RelaxedMadd | RelaxedNmadd | RelaxedDotAccum
+  type fternop = RelaxedMadd | RelaxedNmadd
   type irelop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
   type frelop = Eq | Ne | Lt | Le | Gt | Ge
   type icvtop = ExtendLowS | ExtendLowU | ExtendHighS | ExtendHighU

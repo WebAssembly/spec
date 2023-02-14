@@ -673,7 +673,6 @@ rule token = parse
       | "i16x8.relaxed_q15mulr_s" -> VEC_BINARY i16x8_relaxed_q15mulr_s
       | "i16x8.dot_i8x16_i7x16_s" -> VEC_BINARY i16x8_dot_i8x16_i7x16_s
       | "i32x4.dot_i8x16_i7x16_add_s" -> VEC_BINARY i32x4_dot_i8x16_i7x16_add_s
-      | "f32x4.relaxed_dot_bf16x8_add_f32x4" -> VEC_BINARY f32x4_relaxed_dot_bf16x8_add_f32x4
 
       | "type" -> TYPE
       | "func" -> FUNC
