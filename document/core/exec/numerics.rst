@@ -2023,7 +2023,7 @@ Relaxed Negative Multiply Add (nmadd) allows for fused or unfused results.
 ...........................
 
 Relaxed swizzle lane is deterministic
-if the signed interpretation of the index is less than 16 (including negative).
+if the signed interpretation of the index is less than 16 (including negative values).
 :math:`j` is a 8-bit int.
 
 .. math::
