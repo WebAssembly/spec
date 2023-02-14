@@ -23,7 +23,7 @@
                        (v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)
                        (v128.const i32x4 0 1 2 3))
                ;; intermediate result is [14, 126, 366, 734]
-               (v128.const f32x4 14 127 368 737))
+               (v128.const i32x4 14 127 368 737))
 
 ;; Test max and min i8 values;
 (assert_return (invoke "i32x4.relaxed_dot_i8x16_i7x16_add_s"
@@ -31,4 +31,4 @@
                        (v128.const i8x16 127 127 127 127 127 127 127 127 0 0 0 0 0 0 0 0)
                        (v128.const i32x4 1 2 3 4))
                ;; intermediate result is [-65024, 64516, 0, 0]
-               (v128.const f32x4 -65023 64518 3 4))
+               (v128.const i32x4 -65023 64518 3 4))
