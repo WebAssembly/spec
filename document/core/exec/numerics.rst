@@ -2028,13 +2028,13 @@ if the signed interpretation of the index is less than 16 (including negative va
 
 .. math::
    \begin{array}{@{}llcll}
-   & relaxed\_swizzle\_lane(i^n, j) &=& i[j] & (\iff j < 16) \\
-   & relaxed\_swizzle\_lane(i^n, j) &=& 0 & (\iff \signed_8(j) < 0) \\
-   \EXPROFDET & relaxed\_swizzle\_lane(i^n, j) &=& [ 0, i[j \mod n] ] & (\otherwise) \\
-   & relaxed\_swizzle\_lane(i^n, j) &=& 0 & (\otherwise) \\
+   & \rswizzlelane(i^n, j) &=& i[j] & (\iff j < 16) \\
+   & \rswizzlelane(i^n, j) &=& 0 & (\iff \signed_8(j) < 0) \\
+   \EXPROFDET & \rswizzlelane(i^n, j) &=& [ 0, i[j \mod n] ] & (\otherwise) \\
+   & \rswizzlelane(i^n, j) &=& 0 & (\otherwise) \\
    \\
    & \rswizzle(a^n, s^n) &=& \X{rsl}_0 \dots \X{rsl}_{n-1} \\
-   & \qquad \where \X{rsl}_i &=& relaxed\_swizzle\_lane(a^n, s^n[i])
+   & \qquad \where \X{rsl}_i &=& \rswizzlelane(a^n, s^n[i])
    \end{array}
 
 

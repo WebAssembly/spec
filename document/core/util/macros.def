@@ -1205,6 +1205,7 @@
 
 .. |frmadd| mathdef:: \xref{exec/numerics}{op-frmaddd}{\F{frelaxed\_madd}}
 .. |frnmadd| mathdef:: \xref{exec/numerics}{op-frnmadd}{\F{frelaxed\_nmadd}}
+.. |rswizzlelane| mathdef:: \xref{exec/numerics}{op-rswizzle_lane}{\F{relaxed\_swizzle\_lane}}
 .. |rswizzle| mathdef:: \xref{exec/numerics}{op-rswizzle}{\F{relaxed\_swizzle}}
 .. |rtrunc| mathdef:: \xref{exec/numerics}{op-rtrunc}{\F{relaxed\_trunc}}
 .. |rlaneselect| mathdef:: \xref{exec/numerics}{op-rlaneselect}{\F{relaxed\_laneselect}}
