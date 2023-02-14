@@ -2022,7 +2022,7 @@ Relaxed Negative Multiply Add (nmadd) allows for fused or unfused results.
 :math:`\rswizzle(a^n, s^n)`
 ...........................
 
-Relaxed swizzle lane is a helper for relaxed swizzle. Result is deterministic
+Relaxed swizzle lane is deterministic
 if the signed interpretation of the index is less than 16 (including negative).
 :math:`j` is a 8-bit int.
 
