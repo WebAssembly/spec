@@ -1994,7 +1994,7 @@ each environment globally chooses a fixed projection for each operator.
 :math:`\frmadd_N(z_1, z_2, z_3)`
 ................................
 
-Relaxed Multiply Add (madd) allows for fused or unfused results. :math:`fma` is
+Relaxed multiply-add (madd) allows for fused or unfused results. The function :math:`fma` is
 defined by |IEEE754|_ (Section 5.4.1) as *fusedMultiplyAdd*.
 
 .. math::
@@ -2033,8 +2033,8 @@ if the signed interpretation of the index is less than 16 (including negative va
    \EXPROFDET & relaxed\_swizzle\_lane(i^n, j) &=& [ 0, i[j \mod n] ] & (\otherwise) \\
    & relaxed\_swizzle\_lane(i^n, j) &=& 0 & (\otherwise) \\
    \\
-   & \rswizzle(a^n, s^n) &=& rsl_0 \dots rsl_{n-1} \\
-   & \qquad \where rsl_i &=& relaxed\_swizzle\_lane(a^n, s^n[i])
+   & \rswizzle(a^n, s^n) &=& \X{rsl}_0 \dots \X{rsl}_{n-1} \\
+   & \qquad \where \X{rsl}_i &=& relaxed\_swizzle\_lane(a^n, s^n[i])
    \end{array}
 
 
@@ -2044,8 +2044,8 @@ if the signed interpretation of the index is less than 16 (including negative va
 :math:`\rtrunc^u_{M,N}(z)`
 ..........................
 
-Relaxed truncate converts float to int, NaN and out of range values are
-hardware dependent.
+Relaxed unsigned truncation converts floating point numbers to integers.
+The result for NaN's and out-of-range values is host-dependent.
 
 .. math::
    \begin{array}{@{}llcll}
@@ -2078,9 +2078,9 @@ The result for NaN's and out-of-range values is host-dependent.
 :math:`\rlaneselect_B(a^n, b^n, c^n)`
 .....................................
 
-Relaxed lane select is deterministic where all bits are set or unset in the
-mask. Otherwise depending on hardware, either only the top bit is examined, or
-all bits are examined (becomes a bitselect).
+Relaxed lane selection is deterministic when all bits are set or unset in the
+mask. Otherwise depending on the host, either only the top bit is examined, or
+all bits are examined (i.e. it becomes a bit select).
 
 .. math::
    \begin{array}{@{}llcll}
@@ -2100,9 +2100,8 @@ all bits are examined (becomes a bitselect).
 :math:`\frmin_N(z_1, z_2)`
 ..........................
 
-Relaxed min differs from min when inputs are NaNs or different
-signs of 0. It allows for implementation to return the first or second input
-when either input is a NaN.
+Relaxed minimum differs from regular minimum when inputs are NaN's or zeroes with different signs.
+It allows for implementation to return the first or second input when either input is a NaN.
 
 .. math::
    \begin{array}{@{}llcll}
