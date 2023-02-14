@@ -2148,7 +2148,7 @@ when either input is a NaN.
 :math:`\ridotmul_{M,N}(i_1, i_2)`
 .................................
 
-Relaxed integer dot product differs from integer dot product when the elements of the input have top bit set.
+Relaxed integer dot product differs from regular integer dot product when the elements of the input have their most significant bit set.
 
 .. math::
    \begin{array}{@{}llcll}
