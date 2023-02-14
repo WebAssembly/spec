@@ -671,8 +671,8 @@ rule token = parse
       | "f32x4.relaxed_max" -> VEC_UNARY f32x4_relaxed_max
       | "f64x2.relaxed_max" -> VEC_UNARY f64x2_relaxed_max
       | "i16x8.relaxed_q15mulr_s" -> VEC_BINARY i16x8_relaxed_q15mulr_s
-      | "i16x8.dot_i8x16_i7x16_s" -> VEC_BINARY i16x8_dot_i8x16_i7x16_s
-      | "i32x4.dot_i8x16_i7x16_add_s" -> VEC_BINARY i32x4_dot_i8x16_i7x16_add_s
+      | "i16x8.relaxed_dot_i8x16_i7x16_s" -> VEC_BINARY i16x8_relaxed_dot_i8x16_i7x16_s
+      | "i32x4.relaxed_dot_i8x16_i7x16_add_s" -> VEC_BINARY i32x4_relaxed_dot_i8x16_i7x16_add_s
 
       | "type" -> TYPE
       | "func" -> FUNC
