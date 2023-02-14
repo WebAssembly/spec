@@ -1203,16 +1203,17 @@
 .. |narrowu| mathdef:: \xref{exec/numerics}{op-narrow_u}{\F{narrow}^{\K{u}}}
 .. |narrows| mathdef:: \xref{exec/numerics}{op-narrow_s}{\F{narrow}^{\K{s}}}
 
-.. |frmadd| mathdef:: \xref{exec/numerics}{op-frmaddd}{\F{frelaxed\_madd}}
-.. |frnmadd| mathdef:: \xref{exec/numerics}{op-frnmadd}{\F{frelaxed\_nmadd}}
-.. |rswizzlelane| mathdef:: \xref{exec/numerics}{op-rswizzle_lane}{\F{relaxed\_swizzle\_lane}}
-.. |rswizzle| mathdef:: \xref{exec/numerics}{op-rswizzle}{\F{relaxed\_swizzle}}
-.. |rtrunc| mathdef:: \xref{exec/numerics}{op-rtrunc}{\F{relaxed\_trunc}}
-.. |rlaneselect| mathdef:: \xref{exec/numerics}{op-rlaneselect}{\F{relaxed\_laneselect}}
-.. |frmin| mathdef:: \xref{exec/numerics}{op-frmin}{\F{frelaxed\_min}}
-.. |frmax| mathdef:: \xref{exec/numerics}{op-frmax}{\F{frelaxed\_max}}
-.. |irq15mulrs| mathdef:: \xref{exec/numerics}{op-irq15mulr_s}{\F{irelaxed\_q15mulr\_s}}
-.. |ridotmul| mathdef:: \xref{exec/numerics}{op-ridotmul}{\F{relaxed\_dot\_mul}}
+.. |relaxedmadd| mathdef:: \xref{exec/numerics}{op-relaxed_madd}{\F{frelaxed\_madd}}
+.. |relaxednmadd| mathdef:: \xref{exec/numerics}{op-relaxed_nmadd}{\F{frelaxed\_nmadd}}
+.. |relaxedswizzlelane| mathdef:: \xref{exec/numerics}{op-relaxed_swizzle_lane}{\F{relaxed\_swizzle\_lane}}
+.. |relaxedswizzle| mathdef:: \xref{exec/numerics}{op-relaxed_swizzle}{\F{relaxed\_swizzle}}
+.. |relaxedtrunc| mathdef:: \xref{exec/numerics}{op-relaxed_trunc}{\F{relaxed\_trunc}}
+.. |relaxedlane| mathdef:: \xref{exec/numerics}{op-relaxed_lane}{\F{relaxed\_lane}}
+.. |relaxedlaneselect| mathdef:: \xref{exec/numerics}{op-relaxed_lane_select}{\F{relaxed\_laneselect}}
+.. |relaxedmin| mathdef:: \xref{exec/numerics}{op-relaxed_min}{\F{frelaxed\_min}}
+.. |relaxedmax| mathdef:: \xref{exec/numerics}{op-relaxed_max}{\F{frelaxed\_max}}
+.. |relaxedq15mulrs| mathdef:: \xref{exec/numerics}{op-relaxed_q15mulr_s}{\F{irelaxed\_q15mulr\_s}}
+.. |relaxeddotmul| mathdef:: \xref{exec/numerics}{op-relaxed_dot_mul}{\F{relaxed\_dot\_mul}}
 
 
 .. Numerics, meta functions

@@ -416,18 +416,18 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`c'` be the result of computing :math:`\lanes^{-1}_{\I8X16}(\rswizzle(\lanes_{i8x16}(c_1), \lanes_{i8x16}(c_2)))`.
+4. Let :math:`c'` be the result of computing :math:`\lanes^{-1}_{\I8X16}(\relaxedswizzle(\lanes_{i8x16}(c_1), \lanes_{i8x16}(c_2)))`.
 
 5. Push the value :math:`\V128.\VCONST~c'` onto the stack.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i8x16}\K{.}\rswizzle &\stepto& (\V128\K{.}\VCONST~c')
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i8x16}\K{.}\relaxedswizzle &\stepto& (\V128\K{.}\VCONST~c')
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & c' = \lanes^{-1}_{i8x16}(\rswizzle(\lanes_{i8x16}(c_1), \lanes_{i8x16}(c_2)))
+      (\iff & c' = \lanes^{-1}_{i8x16}(\relaxedswizzle(\lanes_{i8x16}(c_1), \lanes_{i8x16}(c_2)))
      \end{array}
    \end{array}
 
@@ -641,12 +641,12 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
 
 
-.. _exec-rlaneselect:
+.. _exec-relaxedlaneselect:
 
 :math:`t\K{x}N\K{.}\RELAXEDLANESELECT`
 ......................................
 
-1. Assert: due to :ref:`validation <valid-rlaneselect>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+1. Assert: due to :ref:`validation <valid-relaxedlaneselect>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_3` from the stack.
 
@@ -656,7 +656,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 5. Let :math:`B` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
 
-6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t\K{x}N}(\rlaneselect_{B}(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2), \lanes_{t\K{x}N}(c_3)))`.
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t\K{x}N}(\relaxedlaneselect_{B}(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2), \lanes_{t\K{x}N}(c_3)))`.
 
 7. Push the value :math:`\V128.\VCONST~c` to the stack.
 
@@ -667,7 +667,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff c = \lanes^{-1}_{t\K{x}N}(\rlaneselect_{|t|}(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2), \lanes_{t\K{x}N}(c_3)))) \\
+     (\iff c = \lanes^{-1}_{t\K{x}N}(\relaxedlaneselect_{|t|}(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2), \lanes_{t\K{x}N}(c_3)))) \\
      \end{array}
    \end{array}
 
@@ -967,7 +967,7 @@ where:
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\ridotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
+4. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\relaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
 
 5. Let :math:`j^8` be the result of computing :math:`\iadd_{16}(i_1, i_2)^8`.
 
@@ -982,7 +982,7 @@ where:
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & (i_1~i_2)^8 = \ridotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
+     (\iff & (i_1~i_2)^8 = \relaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
      \wedge & j^8 = \iadd_{16}(i_1, i_2)^8 \\
      \wedge & c = \lanes^{-1}_{\I16X8}(j^8))
      \end{array}
@@ -1000,7 +1000,7 @@ where:
 
 4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-5. Let :math:`(i_1~i_2~i_3~i_4)^4` be the result of computing :math:`\ridotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
+5. Let :math:`(i_1~i_2~i_3~i_4)^4` be the result of computing :math:`\relaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
 
 6. Let :math:`k^4` be the result of computing :math:`\lanes_{\I32X4}(c_3)`.
 
@@ -1017,7 +1017,7 @@ where:
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & (i_1~i_2~i_3~i_4)^4 = \ridotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
+     (\iff & (i_1~i_2~i_3~i_4)^4 = \relaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
      \wedge & k^4 = \lanes_{\I32X4}(c_3) \\
      \wedge & j^4 = \iadd_{16}(i_1, i_2, i_3, i_4, k)^4 \\
      \wedge & c = \lanes^{-1}_{\I32X4}(j^4))
