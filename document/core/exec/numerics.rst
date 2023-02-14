@@ -2009,7 +2009,7 @@ defined by |IEEE754|_ (Section 5.4.1) as *fusedMultiplyAdd*.
 :math:`\frnmadd_N(z_1, z_2, z_3)`
 .................................
 
-Relaxed Negative Multiply Add (nmadd) allows for fused or unfused results.
+Relaxed negative multiply-add allows for fused or unfused results.
 
 .. math::
    \begin{array}{@{}llcll}
