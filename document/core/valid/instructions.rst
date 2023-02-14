@@ -362,9 +362,9 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    }
 
 
-.. _valid-vec-rswizzle:
+.. _valid-relaxed_swizzle:
 
-:math:`\K{i8x16.}\RSWIZZLE`
+:math:`\K{i8x16.}\RELAXEDSWIZZLE`
 ...................................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
@@ -372,7 +372,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 .. math::
    \frac{
    }{
-     C \vdashinstr \K{i8x16.}\RSWIZZLE : [\V128~\V128] \to [\V128]
+     C \vdashinstr \K{i8x16.}\RELAXEDSWIZZLE : [\V128~\V128] \to [\V128]
    }
 
 
@@ -489,7 +489,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 .. _valid-rlaneselect:
 
-:math:`\shape\K{.}\RLANESELECT`
+:math:`\shape\K{.}\RELAXEDLANESELECT`
 ...............................
 
 * The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
@@ -599,7 +599,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    }
 
 
-.. _valid-vec-rdot:
+.. _valid-relaxed_dot:
 
 :math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_s}`
 .......................................................

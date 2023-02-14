@@ -276,12 +276,12 @@ Vector instructions (also known as *SIMD* instructions, *single instruction mult
      \K{f32x4.}\VDEMOTE\K{\_f64x2\_zero} \\&&|&
      \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}\sx ~|~
      \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\
-     & &|& \K{i8x16.}\RSWIZZLE \\
-     & &|& \K{i16x8.}\RQ15MULRS \\
-     & &|& \K{i32x4.}\RTRUNC\K{\_f32x4\_}\sx \\
-     & &|& \K{i16x8.}\RDOT\K{\_i8x16\_i7x16\_s} \\
-     & &|& \K{i32x4.}\RDOT\K{\_i8x16\_i7x16\_add\_s} \\
-     & &|& \ishape\K{.}\RLANESELECT \\
+     & &|& \K{i8x16.}\RELAXEDSWIZZLE \\
+     & &|& \K{i16x8.}\RELAXEDQ15MULRS \\
+     & &|& \K{i32x4.}\RELAXEDTRUNC\K{\_f32x4\_}\sx \\
+     & &|& \K{i16x8.}\RELAXEDDOT\K{\_i8x16\_i7x16\_s} \\
+     & &|& \K{i32x4.}\RELAXEDDOT\K{\_i8x16\_i7x16\_add\_s} \\
+     & &|& \ishape\K{.}\RELAXEDLANESELECT \\
      & &|& \fshape\K{.}\rvfternop \\
      & &|& \fshape\K{.}\rvfbinop \\
      & &|& \dots \\
@@ -420,7 +420,7 @@ Occasionally, it is convenient to group operators together according to the foll
      \VMUL ~|~
      \AVGR\K{\_u} ~|~
      \Q15MULRSAT\K{\_s} \\&&|&
-     \RQ15MULRS\K{\_s} \\
+     \RELAXEDQ15MULRS\K{\_s} \\
    \production{ternary operator} & \vternop &::=&
      \vvternop ~|~
      \rvfternop \\
@@ -434,7 +434,7 @@ Occasionally, it is convenient to group operators together according to the foll
      \VCONVERT ~|~
      \VDEMOTE ~|~
      \VPROMOTE ~|~
-     \RTRUNC \\
+     \RELAXEDTRUNC \\
    \end{array}
 
 

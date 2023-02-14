@@ -499,15 +499,15 @@
 .. |EXTADDPAIRWISE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extadd\_pairwise}}
 .. |VDEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{demote}}
 .. |VPROMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{promote}}
-.. |RMADD| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_madd}}
-.. |RNMADD| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_nmadd}}
-.. |RSWIZZLE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_swizzle}}
-.. |RLANESELECT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_laneselect}}
-.. |RMIN| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_min}}
-.. |RMAX| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_max}}
-.. |RQ15MULRS| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_q15mulr\_s}}
-.. |RTRUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_trunc}}
-.. |RDOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_dot}}
+.. |RELAXEDMADD| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_madd}}
+.. |RELAXEDNMADD| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_nmadd}}
+.. |RELAXEDSWIZZLE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_swizzle}}
+.. |RELAXEDLANESELECT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_laneselect}}
+.. |RELAXEDMIN| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_min}}
+.. |RELAXEDMAX| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_max}}
+.. |RELAXEDQ15MULRS| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_q15mulr\_s}}
+.. |RELAXEDTRUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_trunc}}
+.. |RELAXEDDOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{relaxed\_dot}}
 
 
 .. Instructions, non-terminals
