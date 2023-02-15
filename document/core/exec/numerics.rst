@@ -2135,6 +2135,9 @@ It allows for implementations to return the first or second input when either in
 :math:`\relaxedq15mulrs_N(i_1, i_2)`
 ....................................
 
+Relaxed Q15 multiply differs from regular Q15 multiply when the multiplication results overflows (i.e. when both inputs are -32768).
+It allows for implementations to either wrap around or saturate.
+
 .. math::
    \begin{array}{@{}llcll}
    \EXPROFDET & \relaxedq15mulrs_N(i_1, i_2) &=& [ \sats_N(i), i \mod 2^N ] & (\iff i = \ishrs_N(i_1 \cdot i_2 + 2^{14}, 15)) \\
