@@ -675,21 +675,25 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. index:: caught, throw context
 
-:math:`\CAUGHTadm\{\tagaddr~\val^\ast\}~\instr^\ast~\END`
-.........................................................
+:math:`\CAUGHTadm_n\{\tagaddr~\val^\ast\}~\instr^\ast~\END`
+...........................................................
 
 * The :ref:`external tag value <syntax-externval>` :math:`\EVTAG~\tagaddr` must be :ref:`valid <valid-externval-tag>` with some :ref:`external tag type <syntax-externtype>` :math:`\ETTAG~[t_0^\ast] \to []`.
 
 * The :ref:`values <syntax-val>` :math:`\val^\ast` must be of type :math:`[t_0^\ast]`.
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the label :math:`(\LCATCH~[t^\ast])` prepended to the |CLABELS| vector.
+* The label :math:`C.\CLABELS[0]` must be defined in the context.
 
-* Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^\ast]`.
+* Let :math:`(\LCATCH^?~[t^n])` be the :ref:`label type <syntax-labeltype>` :math:`C.\CLABELS[0]`.
 
-* Let :math:`C''` be the same :ref:`context <context>` as :math:`C`, but with the label :math:`[t^\ast]` prepended to the |CLABELS| vector.
+* The |LCATCH| must not be present in the label type :math:`C.\CLABELS[0]`.
 
-* Then the compound instruction is valid under context :math:`C''` with type :math:`[] \to [t^\ast]`.
+* Let :math:`C''` be the same :ref:`context <context>` as :math:`C`, but with the label type :math:`(\LCATCH~[t^n])` replacing the first element of the |CLABELS| vector.
+
+* Under context :math:`C''`,
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^n]`.
+
+* Then the compound instruction is valid with type :math:`[] \to [t^n]`.
 
 .. math::
    \frac{
@@ -697,9 +701,9 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
      \qquad
      (val : t_0)^\ast
      \qquad
-     S; C,\CLABELS\,(\LCATCH~[t^\ast]) \vdashinstrseq \instr^\ast : [] \to [t^\ast]
+     S; C',\CLABELS\,(\LCATCH~[t^n]) \vdashinstrseq \instr^\ast : [] \to [t^n]
    }{
-     S; C,\CLABELS\,[t^\ast] \vdashadmininstr \CAUGHTadm\{\tagaddr~\val^\ast\}~\instr^\ast~\END : [] \to [t^\ast]
+     S; C',\CLABELS\,[t^n] \vdashadmininstr \CAUGHTadm_n\{\tagaddr~\val^\ast\}~\instr^\ast~\END : [] \to [t^n]
    }
 
 
