@@ -5,6 +5,23 @@
     (func (export "i32x4.relaxed_trunc_f32x4_u") (param v128) (result v128) (i32x4.relaxed_trunc_f32x4_u (local.get 0)))
     (func (export "i32x4.relaxed_trunc_f64x2_s_zero") (param v128) (result v128) (i32x4.relaxed_trunc_f64x2_s_zero (local.get 0)))
     (func (export "i32x4.relaxed_trunc_f64x2_u_zero") (param v128) (result v128) (i32x4.relaxed_trunc_f64x2_u_zero (local.get 0)))
+
+    (func (export "i32x4.relaxed_trunc_f32x4_s_cmp") (param v128) (result v128)
+          (i32x4.eq
+            (i32x4.relaxed_trunc_f32x4_s (local.get 0))
+            (i32x4.relaxed_trunc_f32x4_s (local.get 0))))
+    (func (export "i32x4.relaxed_trunc_f32x4_u_cmp") (param v128) (result v128)
+          (i32x4.eq
+            (i32x4.relaxed_trunc_f32x4_u (local.get 0))
+            (i32x4.relaxed_trunc_f32x4_u (local.get 0))))
+    (func (export "i32x4.relaxed_trunc_f64x2_s_zero_cmp") (param v128) (result v128)
+          (i32x4.eq
+            (i32x4.relaxed_trunc_f64x2_s_zero (local.get 0))
+            (i32x4.relaxed_trunc_f64x2_s_zero (local.get 0))))
+    (func (export "i32x4.relaxed_trunc_f64x2_u_zero_cmp") (param v128) (result v128)
+          (i32x4.eq
+            (i32x4.relaxed_trunc_f64x2_u_zero (local.get 0))
+            (i32x4.relaxed_trunc_f64x2_u_zero (local.get 0))))
 )
 
 (assert_return (invoke "i32x4.relaxed_trunc_f32x4_s"
@@ -54,3 +71,45 @@
                        (v128.const f64x2 nan -nan))
                (either (v128.const i32x4 0 0 0 0)
                        (v128.const i32x4 0 0 0xffffffff 0xffffffff)))
+
+;; Check that multiple calls to the relaxed instruction with same inputs returns same results.
+
+(assert_return (invoke "i32x4.relaxed_trunc_f32x4_s_cmp"
+                       ;; INT32_MIN <INT32_MIN INT32_MAX >INT32_MAX
+                       (v128.const f32x4 -2147483648.0 -2147483904.0 2147483647.0 2147483904.0))
+               ;; out of range -> saturate or INT32_MIN
+               (v128.const i32x4 -1 -1 -1 -1))
+
+(assert_return (invoke "i32x4.relaxed_trunc_f32x4_s_cmp"
+                       (v128.const f32x4 nan -nan nan:0x444444 -nan:0x444444))
+               ;; nans -> 0 or INT32_MIN
+               (v128.const i32x4 -1 -1 -1 -1))
+
+(assert_return (invoke "i32x4.relaxed_trunc_f32x4_u_cmp"
+                       ;; UINT32_MIN UINT32_MIN-1 <UINT32_MAX UINT32_MAX+1
+                       (v128.const f32x4 0 -1.0 4294967040.0 4294967296.0))
+               ;; out of range -> saturate or UINT32_MAX
+               (v128.const i32x4 -1 -1 -1 -1))
+
+(assert_return (invoke "i32x4.relaxed_trunc_f32x4_u_cmp"
+                       (v128.const f32x4 nan -nan nan:0x444444 -nan:0x444444))
+               ;; nans -> 0 or UINT32_MAX
+               (v128.const i32x4 -1 -1 -1 -1))
+
+(assert_return (invoke "i32x4.relaxed_trunc_f64x2_s_zero_cmp"
+                       (v128.const f64x2 -2147483904.0 2147483904.0))
+               ;; out of range -> saturate or INT32_MIN
+               (v128.const i32x4 -1 -1 -1 -1))
+
+(assert_return (invoke "i32x4.relaxed_trunc_f64x2_s_zero_cmp"
+                       (v128.const f64x2 nan -nan))
+               (v128.const i32x4 -1 -1 -1 -1))
+
+(assert_return (invoke "i32x4.relaxed_trunc_f64x2_u_zero_cmp"
+                       (v128.const f64x2 -1.0 4294967296.0))
+               ;; out of range -> saturate or UINT32_MAX
+               (v128.const i32x4 -1 -1 -1 -1))
+
+(assert_return (invoke "i32x4.relaxed_trunc_f64x2_u_zero_cmp"
+                       (v128.const f64x2 nan -nan))
+               (v128.const i32x4 -1 -1 -1 -1))
