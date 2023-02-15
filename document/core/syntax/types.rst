@@ -129,7 +129,7 @@ Heap Types
 .. math::
    \begin{array}{llll}
    \production{heap type} & \heaptype &::=&
-     \FUNC ~|~ \EXTERN ~|~ \typeid \\
+     \FUNC ~|~ \EXTERN ~|~ \typeid ~|~ \BOT \\
    \end{array}
 
 The type |FUNC| denotes the infinite union of all types of :ref:`functions <syntax-func>`, regardless of their concrete :ref:`function types <syntax-functype>`.
@@ -137,6 +137,10 @@ The type |FUNC| denotes the infinite union of all types of :ref:`functions <synt
 The type |EXTERN| denotes the infinite union of all objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
 
 A *concrete* heap type consists of a :ref:`type identifier <syntax-typeid>` and classifies an object of the respective :ref:`type <syntax-type>` defined in some module.
+
+The type :math:`\BOT` is a :ref:`subtype <match-heaptype>` of all other heap types.
+By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
+it only occurs during :ref:`validation <valid>`, as a part of a possible operand type for instructions.
 
 
 .. index:: ! reference type, heap type, reference, table, function, function type, null
@@ -177,7 +181,7 @@ Value Types
 *Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
 They are either :ref:`number types <syntax-numtype>`, :ref:`vector types <syntax-vectype>`, :ref:`reference types <syntax-reftype>`, or the unique *bottom type*, written :math:`\BOT`.
 
-The type :math:`\BOT` is a :ref:`subtype <match-valtype>` of all other types.
+The type :math:`\BOT` is a :ref:`subtype <match-valtype>` of all other value types.
 By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
 it only occurs during :ref:`validation <valid>`, as a possible operand type for instructions.
 
