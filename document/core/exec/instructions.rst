@@ -2715,14 +2715,23 @@ Control Instructions
 :math:`\RETHROW~l`
 ..................
 
-.. todo::
-   Add prose for the |RETHROW| execution step.
+1. Assert: due to :ref:`validation <valid-rethrow>`, the stack contains at least :math:`l+1` labels.
+
+2. Let :math:`L` be the :math:`l`-th label appearing on the stack, starting from the top and counting from zero.
+
+3. Assert: due to :ref:`validation <valid-rethrow>`, :math:`L` is a catch label, i.e., a label of the form :math:`(\LCATCH~[t^\ast])`, which is a label followed by a caught exception in an active catch clause.
+
+4. Let :math:`\{a~\val^\ast\}` be the caught exception.
+
+5. Push the values :math:`\val^\ast` onto the stack.
+
+6. :ref:`Throw <exec-throwadm>` an exception with :ref:`tag address <syntax-tagaddr>` :math:`a`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lclr@{\qquad}}
-   \CAUGHTadm\{a~\val^n\}~\XB^l[\RETHROW~l]~\END &\stepto&
-   \CAUGHTadm\{a~\val^n\}~\XB^l[\val^n~(\THROWadm~a)]~\END \\
+   \CAUGHTadm\{a~\val^\ast\}~\XB^l[\RETHROW~l]~\END &\stepto&
+   \CAUGHTadm\{a~\val^\ast\}~\XB^l[\val^\ast~(\THROWadm~a)]~\END \\
    \end{array}
 
 
