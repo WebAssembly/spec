@@ -1973,8 +1973,8 @@ Conversions
 
 .. _relaxed-ops:
 
-Relaxed operators
-~~~~~~~~~~~~~~~~~
+Relaxed operations
+~~~~~~~~~~~~~~~~~~
 
 The result of *relaxed* operators are *host-dependent*, because the set of
 possible results may depend on properties of the host environment (such as
