@@ -1008,11 +1008,16 @@ Consequently, given a :ref:`valid store <valid-store>`, no computation defined b
    Conrad Watt, Xiaojia Rao, Jean Pichon-Pharabod, Martin Bodin, Philippa Gardner. |FM2021|_. Proceedings of the 24th International Symposium on Formal Methods (FM 2021). Springer 2021.
 
 
+.. index:: type system
+
+Type System Properties
+----------------------
+
 .. index:: ! principal types, type system, subtyping, polymorphism, instruction, syntax
-.. _principal:
+.. _principality:
 
 Principal Types
----------------
+~~~~~~~~~~~~~~~
 
 The :ref:`type system <type-system>` of WebAssembly features both :ref:`subtyping <match>` and simple forms of :ref:`polymorphism <polymorphism>` for :ref:`instruction types <syntax-instrtype>`.
 That has the effect that every instruction or instruction sequence can be classified with multiple different instruction types.
@@ -1043,7 +1048,7 @@ Technically, the :ref:`syntax <syntax-type>` of :ref:`heap <syntax-heaptype>`, :
    \production{value type} & \valtype &::=&
      \dots ~|~ \alpha_{\valtype} ~|~ \alpha_{\X{numvectype}} \\
    \production{result type} & \resulttype &::=&
-     [\alpha_{\valtype^\ast}~\valtype^\ast] \\
+     [\alpha_{\valtype^\ast}^?~\valtype^\ast] \\
    \end{array}
 
 where each :math:`\alpha_{\X{xyz}}` ranges over a set of type variables for syntactic class :math:`\X{xyz}`, respectively.
@@ -1069,3 +1074,56 @@ where all :math:`t^\ast` are closed,
 such that for *every* closed result type :math:`[{t'_2}^\ast]` with which :math:`\instr^\ast` is valid (i.e., for all :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{\!x^\ast} [{t'_2}^\ast]`),
 there exists a substitution :math:`\sigma`,
 such that :math:`[{t'_2}^\ast] = [\sigma(\alpha_{\valtype^\ast})~t^\ast]`.
+
+
+.. index:: ! type lattice, subtyping, least upper bound, greatest lower bound
+
+Type Lattice
+~~~~~~~~~~~~
+
+The :ref:`Principal Types <principality>` property depends on the existence of a *greatest lower bound* for any pair of types.
+
+**Theorem (Greatest Lower Bounds for Value Types).**
+For any two value types :math:`t_1` and :math:`t_2` that are :ref:`valid <valid-valtype>`
+(i.e., :math:`C \vdashvaltype t_1 \ok` and :math:`C \vdashvaltype t_2 \ok`),
+there exists a valid value type :math:`t` that is a subtype of both :math:`t_1` and :math:`t_2`
+(i.e., :math:`C \vdashvaltype t \ok` and :math:`C \vdashvaltypematch t \matchesvaltype t_1` and :math:`C \vdashvaltypematch t \matchesvaltype t_2`),
+such that *every* valid value type :math:`t'` that also is a subtype of both :math:`t_1` and :math:`t_2`
+(i.e., for all :math:`C \vdashvaltype t' \ok` and :math:`C \vdashvaltypematch t' \matchesvaltype t_1` and :math:`C \vdashvaltypematch t' \matchesvaltype t_2`),
+is a subtype of :math:`t`
+(i.e., :math:`C \vdashvaltypematch t' \matchesvaltype t`).
+
+.. note::
+   The greatest lower bound of two types may be |BOT|.
+
+**Theorem (Conditional Least Upper Bounds for Value Types).**
+Any two value types :math:`t_1` and :math:`t_2` that are :ref:`valid <valid-valtype>`
+(i.e., :math:`C \vdashvaltype t_1 \ok` and :math:`C \vdashvaltype t_2 \ok`)
+either have no common supertype,
+or there exists a valid value type :math:`t` that is a supertype of both :math:`t_1` and :math:`t_2`
+(i.e., :math:`C \vdashvaltype t \ok` and :math:`C \vdashvaltypematch t_1 \matchesvaltype t` and :math:`C \vdashvaltypematch t_2 \matchesvaltype t`),
+such that *every* valid value type :math:`t'` that also is a supertype of both :math:`t_1` and :math:`t_2`
+(i.e., for all :math:`C \vdashvaltype t' \ok` and :math:`C \vdashvaltypematch t_1 \matchesvaltype t'` and :math:`C \vdashvaltypematch t_2 \matchesvaltype t'`),
+is a supertype of :math:`t`
+(i.e., :math:`C \vdashvaltypematch t \matchesvaltype t'`).
+
+.. note::
+   If a top type was added to the type system,
+   a least upper bound would exist for any two types.
+
+**Corollary (Type Lattice).**
+Assuming the addition of a provisional top type,
+:ref:`value types <syntax-valtype>` form a lattice with respect to their :ref:`subtype <match-valtype>` relation.
+
+Finally, value types can be partitioned into multiple disjoint hierarchies that are not related by subtyping, except through |BOT|.
+
+**Theorem (Disjoint Subtype Hierarchies).**
+The greatest lower bound of two :ref:`value types <syntax-valtype>` is :math:`\BOT` or :math:`\REF~\BOT`
+if and only if they do not have a least upper bound.
+
+In other words, types that do not have common supertypes,
+do not have common subtypes either (other than :math:`\BOT` or :math:`\REF~\BOT`), and vice versa.
+
+.. note::
+   Types from disjoint hierarchies can safely be represented in mutually incompatible ways in an implementation,
+   because their values can never flow to the same place.
