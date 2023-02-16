@@ -93,6 +93,8 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: IterableToList; url: sec-iterabletolist
         text: ToBigInt64; url: #sec-tobigint64
         text: BigInt; url: #sec-ecmascript-language-types-bigint-type
+        text: 𝔽; url: #𝔽
+        text: ℤ; url: #ℤ
     type: abstract-op
         text: CreateMethodProperty; url: sec-createmethodproperty
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
@@ -163,6 +165,12 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
         text: reftype
         text: funcref
         text: externref
+    url: syntax/values.html#syntax-float
+        text: +∞
+        text: −∞
+        text: nan
+        text: canon
+        text: signif
     text: function element; url: exec/runtime.html#syntax-funcelem
     text: import component; url: syntax/modules.html#imports
     text: external value; url: exec/runtime.html#syntax-externval
@@ -1087,10 +1095,16 @@ The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a Jav
 1. Assert: |w| is not of  the form [=v128.const=] <var ignore>v128</var>.
 1. If |w| is of the form [=i64.const=] |i64|,
     1. Let |v| be [=signed_64=](|i64|).
-    1. Return a [=BigInt=] representing the mathematical value |v|.
-1. If |w| is of the form [=i32.const=] |i32|, return [=the Number value=] for [=signed_32=](|i32|).
-1. If |w| is of the form [=f32.const=] |f32|, return [=the Number value=] for |f32|.
-1. If |w| is of the form [=f64.const=] |f64|, return [=the Number value=] for |f64|.
+    1. Return [=ℤ=](|v| interpreted as a mathematical value).
+1. If |w| is of the form [=i32.const=] |i32|, return [=𝔽=]([=signed_32=](|i32| interpreted as a mathematical value)).
+1. If |w| is of the form [=f32.const=] |f32|,
+    1. If |f32| is [=+∞=] or [=−∞=], return **+∞**<sub>𝔽</sub> or **-∞**<sub>𝔽</sub>, respectively.
+    1. If |f32| is [=nan=], return **NaN**.
+    1. Return [=𝔽=](|f32| interpreted as a mathematical value).
+1. If |w| is of the form [=f64.const=] |f64|,
+    1. If |f64| is [=+∞=] or [=−∞=], return **+∞**<sub>𝔽</sub> or **-∞**<sub>𝔽</sub>, respectively.
+    1. If |f64| is [=nan=], return **NaN**.
+    1. Return [=𝔽=](|f64| interpreted as a mathematical value).
 1. If |w| is of the form [=ref.null=] <var ignore>t</var>, return null.
 1. If |w| is of the form [=ref.func=] |funcaddr|, return the result of creating [=a new Exported Function=] from |funcaddr|.
 1. If |w| is of the form [=ref.extern=] |externaddr|, return the result of [=retrieving an extern value=] from |externaddr|.
@@ -1119,10 +1133,20 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
     1. Let |i32| be [=?=] [=ToInt32=](|v|).
     1. Return [=i32.const=] |i32|.
 1. If |type| is [=f32=],
-    1. Let |f32| be [=?=] [=ToNumber=](|v|) rounded to the nearest representable value using IEEE 754-2008 round to nearest, ties to even mode.
+    1. Let |number| be [=?=] [=ToNumber=](|v|).
+    1. If |number| is **NaN**,
+        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>32</sub> ≤ |n| < 2<sup>[=signif=](32)</sup>.
+        1. Let |f32| be [=nan=](n).
+    1. Otherwise,
+        1. Let |f32| be |number| rounded to the nearest representable value using IEEE 754-2008 round to nearest, ties to even mode. [[IEEE-754]]
     1. Return [=f32.const=] |f32|.
 1. If |type| is [=f64=],
-    1. Let |f64| be [=?=] [=ToNumber=](|v|).
+    1. Let |number| be [=?=] [=ToNumber=](|v|).
+    1. If |number| is **NaN**,
+        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>64</sub> ≤ |n| < 2<sup>[=signif=](64)</sup>.
+        1. Let |f64| be [=nan=](n).
+    1. Otherwise,
+        1. Let |f64| be |number|.
     1. Return [=f64.const=] |f64|.
 1. If |type| is [=funcref=],
     1. If |v| is null,
