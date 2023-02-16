@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version 42a48c451, updated Tue Feb 14 14:52:15 2023 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="19b1243cea1d8c3898ea56e9b193fa9fba9f4583" name="document-revision">
+  <meta content="4feb91964f8e5e80d416abd6e9f62cc626c7c600" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -397,6 +397,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
      <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
      <ol class="toc">
       <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
+      <li><a href="#informative"><span class="secno"></span> <span class="content">Informative References</span></a>
      </ol>
     <li><a href="#idl-index"><span class="secno"></span> <span class="content">IDL Index</span></a>
     <li><a href="#issues-index"><span class="secno"></span> <span class="content">Issues Index</span></a>
@@ -1765,14 +1766,30 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
        <li data-md>
         <p>Let <var>v</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed">signed_64</a>(<var>i64</var>).</p>
        <li data-md>
-        <p>Return a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-bigint-type" id="ref-for-sec-ecmascript-language-types-bigint-type">BigInt</a> representing the mathematical value <var>v</var>.</p>
+        <p>Return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#ℤ" id="ref-for-ℤ">ℤ</a>(<var>v</var> interpreted as a mathematical value).</p>
       </ol>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⓪">i32.const</a> <var>i32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type">the Number value</a> for <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed①">signed_32</a>(<var>i32</var>).</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⓪">i32.const</a> <var>i32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#𝔽" id="ref-for-𝔽">𝔽</a>(<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed①">signed_32</a>(<var>i32</var> interpreted as a mathematical value)).</p>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①①">f32.const</a> <var>f32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type①">the Number value</a> for <var>f32</var>.</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①①">f32.const</a> <var>f32</var>,</p>
+      <ol>
+       <li data-md>
+        <p>If <var>f32</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float">+∞</a> or <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float①">−∞</a>, return <strong>+∞</strong><sub>𝔽</sub> or <strong>-∞</strong><sub>𝔽</sub>, respectively.</p>
+       <li data-md>
+        <p>If <var>f32</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float②">nan</a>, return <strong>NaN</strong>.</p>
+       <li data-md>
+        <p>Return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#𝔽" id="ref-for-𝔽①">𝔽</a>(<var>f32</var> interpreted as a mathematical value).</p>
+      </ol>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①②">f64.const</a> <var>f64</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type②">the Number value</a> for <var>f64</var>.</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①②">f64.const</a> <var>f64</var>,</p>
+      <ol>
+       <li data-md>
+        <p>If <var>f64</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float③">+∞</a> or <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float④">−∞</a>, return <strong>+∞</strong><sub>𝔽</sub> or <strong>-∞</strong><sub>𝔽</sub>, respectively.</p>
+       <li data-md>
+        <p>If <var>f64</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑤">nan</a>, return <strong>NaN</strong>.</p>
+       <li data-md>
+        <p>Return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#𝔽" id="ref-for-𝔽②">𝔽</a>(<var>f64</var> interpreted as a mathematical value).</p>
+      </ol>
      <li data-md>
       <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①③">ref.null</a> <var>t</var>, return null.</p>
      <li data-md>
@@ -1818,7 +1835,21 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
       <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①②">f32</a>,</p>
       <ol>
        <li data-md>
-        <p>Let <var>f32</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑧">?</a> <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-tonumber" id="ref-for-sec-tonumber">ToNumber</a>(<var>v</var>) rounded to the nearest representable value using IEEE 754-2008 round to nearest, ties to even mode.</p>
+        <p>Let <var>number</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑧">?</a> <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-tonumber" id="ref-for-sec-tonumber">ToNumber</a>(<var>v</var>).</p>
+       <li data-md>
+        <p>If <var>number</var> is <strong>NaN</strong>,</p>
+        <ol>
+         <li data-md>
+          <p>Let <var>n</var> be an implementation-defined integer such that <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑥">canon</a><sub>32</sub> ≤ <var>n</var> &lt; 2<sup><a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑦">signif</a>(32)</sup>.</p>
+         <li data-md>
+          <p>Let <var>f32</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑧">nan</a>(n).</p>
+        </ol>
+       <li data-md>
+        <p>Otherwise,</p>
+        <ol>
+         <li data-md>
+          <p>Let <var>f32</var> be <var>number</var> rounded to the nearest representable value using IEEE 754-2008 round to nearest, ties to even mode. <a data-link-type="biblio" href="#biblio-ieee-754" title="IEEE Standard for Floating-Point Arithmetic">[IEEE-754]</a></p>
+        </ol>
        <li data-md>
         <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⑨">f32.const</a> <var>f32</var>.</p>
       </ol>
@@ -1826,7 +1857,21 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
       <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①③">f64</a>,</p>
       <ol>
        <li data-md>
-        <p>Let <var>f64</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑨">?</a> <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-tonumber" id="ref-for-sec-tonumber①">ToNumber</a>(<var>v</var>).</p>
+        <p>Let <var>number</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑨">?</a> <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-tonumber" id="ref-for-sec-tonumber①">ToNumber</a>(<var>v</var>).</p>
+       <li data-md>
+        <p>If <var>number</var> is <strong>NaN</strong>,</p>
+        <ol>
+         <li data-md>
+          <p>Let <var>n</var> be an implementation-defined integer such that <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑨">canon</a><sub>64</sub> ≤ <var>n</var> &lt; 2<sup><a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float①⓪">signif</a>(64)</sup>.</p>
+         <li data-md>
+          <p>Let <var>f64</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float①①">nan</a>(n).</p>
+        </ol>
+       <li data-md>
+        <p>Otherwise,</p>
+        <ol>
+         <li data-md>
+          <p>Let <var>f64</var> be <var>number</var>.</p>
+        </ol>
        <li data-md>
         <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②⓪">f64.const</a> <var>f64</var>.</p>
       </ol>
@@ -2245,12 +2290,6 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-sec-agent-clusters">3.1. Interaction of the WebAssembly Store with JavaScript</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-term-for-sec-ecmascript-language-types-bigint-type" class="dfn-panel" data-for="term-for-sec-ecmascript-language-types-bigint-type" id="infopanel-for-term-for-sec-ecmascript-language-types-bigint-type" role="menu">
-   <span id="infopaneltitle-for-term-for-sec-ecmascript-language-types-bigint-type" style="display:none">Info about the 'bigint' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-bigint-type">https://tc39.github.io/ecma262/#sec-ecmascript-language-types-bigint-type</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sec-ecmascript-language-types-bigint-type">4.6. Exported Functions</a>
-   </ul>
-  </aside>
   <aside aria-labelledby="infopaneltitle-for-term-for-sec-built-in-function-objects" class="dfn-panel" data-for="term-for-sec-built-in-function-objects" id="infopanel-for-term-for-sec-built-in-function-objects" role="menu">
    <span id="infopaneltitle-for-term-for-sec-built-in-function-objects" style="display:none">Info about the 'built-in function objects' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-built-in-function-objects">https://tc39.github.io/ecma262/#sec-built-in-function-objects</a><b>Referenced in:</b>
    <ul>
@@ -2359,12 +2398,6 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-surrounding-agent②②">4.6. Exported Functions</a> <a href="#ref-for-surrounding-agent②③">(2)</a> <a href="#ref-for-surrounding-agent②④">(3)</a> <a href="#ref-for-surrounding-agent②⑤">(4)</a> <a href="#ref-for-surrounding-agent②⑥">(5)</a> <a href="#ref-for-surrounding-agent②⑦">(6)</a> <a href="#ref-for-surrounding-agent②⑧">(7)</a> <a href="#ref-for-surrounding-agent②⑨">(8)</a> <a href="#ref-for-surrounding-agent③⓪">(9)</a> <a href="#ref-for-surrounding-agent③①">(10)</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-term-for-sec-ecmascript-language-types-number-type" class="dfn-panel" data-for="term-for-sec-ecmascript-language-types-number-type" id="infopanel-for-term-for-sec-ecmascript-language-types-number-type" role="menu">
-   <span id="infopaneltitle-for-term-for-sec-ecmascript-language-types-number-type" style="display:none">Info about the 'the number value' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type">https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sec-ecmascript-language-types-number-type">4.6. Exported Functions</a> <a href="#ref-for-sec-ecmascript-language-types-number-type①">(2)</a> <a href="#ref-for-sec-ecmascript-language-types-number-type②">(3)</a>
-   </ul>
-  </aside>
   <aside aria-labelledby="infopaneltitle-for-term-for-sec-tobigint64" class="dfn-panel" data-for="term-for-sec-tobigint64" id="infopanel-for-term-for-sec-tobigint64" role="menu">
    <span id="infopaneltitle-for-term-for-sec-tobigint64" style="display:none">Info about the 'tobigint64' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-tobigint64">https://tc39.github.io/ecma262/#sec-tobigint64</a><b>Referenced in:</b>
    <ul>
@@ -2393,6 +2426,18 @@ In practice, an implementation may run out of resources for valid modules below 
    <span id="infopaneltitle-for-term-for-sec-ecmascript-data-types-and-values" style="display:none">Info about the 'type' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values">https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-ecmascript-data-types-and-values">4. The WebAssembly Namespace</a> <a href="#ref-for-sec-ecmascript-data-types-and-values①">(2)</a> <a href="#ref-for-sec-ecmascript-data-types-and-values②">(3)</a> <a href="#ref-for-sec-ecmascript-data-types-and-values③">(4)</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-term-for-ℤ" class="dfn-panel" data-for="term-for-ℤ" id="infopanel-for-term-for-ℤ" role="menu">
+   <span id="infopaneltitle-for-term-for-ℤ" style="display:none">Info about the 'ℤ' external reference.</span><a href="https://tc39.github.io/ecma262/#ℤ">https://tc39.github.io/ecma262/#ℤ</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-ℤ">4.6. Exported Functions</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-term-for-𝔽" class="dfn-panel" data-for="term-for-𝔽" id="infopanel-for-term-for-𝔽" role="menu">
+   <span id="infopaneltitle-for-term-for-𝔽" style="display:none">Info about the '𝔽' external reference.</span><a href="https://tc39.github.io/ecma262/#𝔽">https://tc39.github.io/ecma262/#𝔽</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-𝔽">4.6. Exported Functions</a> <a href="#ref-for-𝔽①">(2)</a> <a href="#ref-for-𝔽②">(3)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-term-for-utf-8-decode-without-bom-or-fail" class="dfn-panel" data-for="term-for-utf-8-decode-without-bom-or-fail" id="infopanel-for-term-for-utf-8-decode-without-bom-or-fail" role="menu">
@@ -2509,10 +2554,22 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-list-size">4.6. Exported Functions</a> <a href="#ref-for-list-size①">(2)</a> <a href="#ref-for-list-size②">(3)</a> <a href="#ref-for-list-size③">(4)</a> <a href="#ref-for-list-size④">(5)</a>
    </ul>
   </aside>
+  <aside aria-labelledby="infopaneltitle-for-term-for-syntax-float" class="dfn-panel" data-for="term-for-syntax-float" id="infopanel-for-term-for-syntax-float" role="menu">
+   <span id="infopaneltitle-for-term-for-syntax-float" style="display:none">Info about the '+∞' external reference.</span><a href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float">https://webassembly.github.io/spec/core/syntax/values.html#syntax-float</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-float">4.6. Exported Functions</a> <a href="#ref-for-syntax-float①">(2)</a> <a href="#ref-for-syntax-float②">(3)</a> <a href="#ref-for-syntax-float③">(4)</a> <a href="#ref-for-syntax-float④">(5)</a> <a href="#ref-for-syntax-float⑤">(6)</a> <a href="#ref-for-syntax-float⑥">(7)</a> <a href="#ref-for-syntax-float⑦">(8)</a> <a href="#ref-for-syntax-float⑧">(9)</a> <a href="#ref-for-syntax-float⑨">(10)</a> <a href="#ref-for-syntax-float①⓪">(11)</a> <a href="#ref-for-syntax-float①①">(12)</a>
+   </ul>
+  </aside>
   <aside aria-labelledby="infopaneltitle-for-term-for-addresses" class="dfn-panel" data-for="term-for-addresses" id="infopanel-for-term-for-addresses" role="menu">
    <span id="infopaneltitle-for-term-for-addresses" style="display:none">Info about the 'address' external reference.</span><a href="https://webassembly.github.io/spec/core/exec/runtime.html#addresses">https://webassembly.github.io/spec/core/exec/runtime.html#addresses</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-addresses">3.2. WebAssembly JS Object Caches</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-term-for-syntax-float" class="dfn-panel" data-for="term-for-syntax-float" id="infopanel-for-term-for-syntax-float①" role="menu">
+   <span id="infopaneltitle-for-term-for-syntax-float①" style="display:none">Info about the 'canon' external reference.</span><a href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float">https://webassembly.github.io/spec/core/syntax/values.html#syntax-float</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-float">4.6. Exported Functions</a> <a href="#ref-for-syntax-float①">(2)</a> <a href="#ref-for-syntax-float②">(3)</a> <a href="#ref-for-syntax-float③">(4)</a> <a href="#ref-for-syntax-float④">(5)</a> <a href="#ref-for-syntax-float⑤">(6)</a> <a href="#ref-for-syntax-float⑥">(7)</a> <a href="#ref-for-syntax-float⑦">(8)</a> <a href="#ref-for-syntax-float⑧">(9)</a> <a href="#ref-for-syntax-float⑨">(10)</a> <a href="#ref-for-syntax-float①⓪">(11)</a> <a href="#ref-for-syntax-float①①">(12)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-term-for-syntax-mut" class="dfn-panel" data-for="term-for-syntax-mut" id="infopanel-for-term-for-syntax-mut" role="menu">
@@ -2847,6 +2904,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-embed-module-validate">4. The WebAssembly Namespace</a>
    </ul>
   </aside>
+  <aside aria-labelledby="infopaneltitle-for-term-for-syntax-float" class="dfn-panel" data-for="term-for-syntax-float" id="infopanel-for-term-for-syntax-float②" role="menu">
+   <span id="infopaneltitle-for-term-for-syntax-float②" style="display:none">Info about the 'nan' external reference.</span><a href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float">https://webassembly.github.io/spec/core/syntax/values.html#syntax-float</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-float">4.6. Exported Functions</a> <a href="#ref-for-syntax-float①">(2)</a> <a href="#ref-for-syntax-float②">(3)</a> <a href="#ref-for-syntax-float③">(4)</a> <a href="#ref-for-syntax-float④">(5)</a> <a href="#ref-for-syntax-float⑤">(6)</a> <a href="#ref-for-syntax-float⑥">(7)</a> <a href="#ref-for-syntax-float⑦">(8)</a> <a href="#ref-for-syntax-float⑧">(9)</a> <a href="#ref-for-syntax-float⑨">(10)</a> <a href="#ref-for-syntax-float①⓪">(11)</a> <a href="#ref-for-syntax-float①①">(12)</a>
+   </ul>
+  </aside>
   <aside aria-labelledby="infopaneltitle-for-term-for-values" class="dfn-panel" data-for="term-for-values" id="infopanel-for-term-for-values④" role="menu">
    <span id="infopaneltitle-for-term-for-values④" style="display:none">Info about the 'ref.extern' external reference.</span><a href="https://webassembly.github.io/spec/core/exec/runtime.html#values">https://webassembly.github.io/spec/core/exec/runtime.html#values</a><b>Referenced in:</b>
    <ul>
@@ -2895,6 +2958,12 @@ In practice, an implementation may run out of resources for valid modules below 
    <span id="infopaneltitle-for-term-for-aux-signed①" style="display:none">Info about the 'signed_64' external reference.</span><a href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed">https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-aux-signed">4.6. Exported Functions</a> <a href="#ref-for-aux-signed①">(2)</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-term-for-syntax-float" class="dfn-panel" data-for="term-for-syntax-float" id="infopanel-for-term-for-syntax-float③" role="menu">
+   <span id="infopaneltitle-for-term-for-syntax-float③" style="display:none">Info about the 'signif' external reference.</span><a href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float">https://webassembly.github.io/spec/core/syntax/values.html#syntax-float</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-float">4.6. Exported Functions</a> <a href="#ref-for-syntax-float①">(2)</a> <a href="#ref-for-syntax-float②">(3)</a> <a href="#ref-for-syntax-float③">(4)</a> <a href="#ref-for-syntax-float④">(5)</a> <a href="#ref-for-syntax-float⑤">(6)</a> <a href="#ref-for-syntax-float⑥">(7)</a> <a href="#ref-for-syntax-float⑦">(8)</a> <a href="#ref-for-syntax-float⑧">(9)</a> <a href="#ref-for-syntax-float⑨">(10)</a> <a href="#ref-for-syntax-float①⓪">(11)</a> <a href="#ref-for-syntax-float①①">(12)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-term-for-syntax-store" class="dfn-panel" data-for="term-for-syntax-store" id="infopanel-for-term-for-syntax-store" role="menu">
@@ -3014,6 +3083,12 @@ In practice, an implementation may run out of resources for valid modules below 
     <li><a href="#ref-for-values">4.3. Memories</a>
     <li><a href="#ref-for-values①">4.5. Globals</a> <a href="#ref-for-values②">(2)</a> <a href="#ref-for-values③">(3)</a> <a href="#ref-for-values④">(4)</a> <a href="#ref-for-values⑤">(5)</a>
     <li><a href="#ref-for-values⑥">4.6. Exported Functions</a> <a href="#ref-for-values⑦">(2)</a> <a href="#ref-for-values⑧">(3)</a> <a href="#ref-for-values⑨">(4)</a> <a href="#ref-for-values①⓪">(5)</a> <a href="#ref-for-values①①">(6)</a> <a href="#ref-for-values①②">(7)</a> <a href="#ref-for-values①③">(8)</a> <a href="#ref-for-values①④">(9)</a> <a href="#ref-for-values①⑤">(10)</a> <a href="#ref-for-values①⑥">(11)</a> <a href="#ref-for-values①⑦">(12)</a> <a href="#ref-for-values①⑧">(13)</a> <a href="#ref-for-values①⑨">(14)</a> <a href="#ref-for-values②⓪">(15)</a> <a href="#ref-for-values②①">(16)</a> <a href="#ref-for-values②②">(17)</a> <a href="#ref-for-values②③">(18)</a> <a href="#ref-for-values②④">(19)</a> <a href="#ref-for-values②⑤">(20)</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-term-for-syntax-float" class="dfn-panel" data-for="term-for-syntax-float" id="infopanel-for-term-for-syntax-float④" role="menu">
+   <span id="infopaneltitle-for-term-for-syntax-float④" style="display:none">Info about the '−∞' external reference.</span><a href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float">https://webassembly.github.io/spec/core/syntax/values.html#syntax-float</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-syntax-float">4.6. Exported Functions</a> <a href="#ref-for-syntax-float①">(2)</a> <a href="#ref-for-syntax-float②">(3)</a> <a href="#ref-for-syntax-float③">(4)</a> <a href="#ref-for-syntax-float④">(5)</a> <a href="#ref-for-syntax-float⑤">(6)</a> <a href="#ref-for-syntax-float⑥">(7)</a> <a href="#ref-for-syntax-float⑦">(8)</a> <a href="#ref-for-syntax-float⑧">(9)</a> <a href="#ref-for-syntax-float⑨">(10)</a> <a href="#ref-for-syntax-float①⓪">(11)</a> <a href="#ref-for-syntax-float①①">(12)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-term-for-BufferSource" class="dfn-panel" data-for="term-for-BufferSource" id="infopanel-for-term-for-BufferSource" role="menu">
@@ -3189,7 +3264,6 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-sec-native-error-types-used-in-this-standard-typeerror">TypeError</span>
      <li><span class="dfn-paneled" id="term-for-agent">agent</span>
      <li><span class="dfn-paneled" id="term-for-sec-agent-clusters">agent cluster</span>
-     <li><span class="dfn-paneled" id="term-for-sec-ecmascript-language-types-bigint-type">bigint</span>
      <li><span class="dfn-paneled" id="term-for-sec-built-in-function-objects">built-in function objects</span>
      <li><span class="dfn-paneled" id="term-for-sec-call">call</span>
      <li><span class="dfn-paneled" id="term-for-sec-createarrayfromlist">createarrayfromlist</span>
@@ -3207,12 +3281,13 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-sec-objectcreate">objectcreate</span>
      <li><span class="dfn-paneled" id="term-for-sec-setintegritylevel">setintegritylevel</span>
      <li><span class="dfn-paneled" id="term-for-surrounding-agent">surrounding agent</span>
-     <li><span class="dfn-paneled" id="term-for-sec-ecmascript-language-types-number-type">the number value</span>
      <li><span class="dfn-paneled" id="term-for-sec-tobigint64">tobigint64</span>
      <li><span class="dfn-paneled" id="term-for-sec-toint32">toint32</span>
      <li><span class="dfn-paneled" id="term-for-sec-tonumber">tonumber</span>
      <li><span class="dfn-paneled" id="term-for-sec-tostring">tostring</span>
      <li><span class="dfn-paneled" id="term-for-sec-ecmascript-data-types-and-values">type</span>
+     <li><span class="dfn-paneled" id="term-for-ℤ">ℤ</span>
+     <li><span class="dfn-paneled" id="term-for-𝔽">𝔽</span>
     </ul>
    <li>
     <a data-link-type="biblio">[ENCODING]</a> defines the following terms:
@@ -3246,7 +3321,9 @@ In practice, an implementation may run out of resources for valid modules below 
    <li>
     <a data-link-type="biblio">[WEBASSEMBLY]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-syntax-float">+∞</span>
      <li><span class="dfn-paneled" id="term-for-addresses">address</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-float①">canon</span>
      <li><span class="dfn-paneled" id="term-for-syntax-mut">const</span>
      <li><span class="dfn-paneled" id="term-for-exec-notation-textual">current frame</span>
      <li><span class="dfn-paneled" id="term-for-custom-section">custom section</span>
@@ -3296,6 +3373,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-embed-module-imports">module_imports</span>
      <li><span class="dfn-paneled" id="term-for-embed-module-instantiate">module_instantiate</span>
      <li><span class="dfn-paneled" id="term-for-embed-module-validate">module_validate</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-float②">nan</span>
      <li><span class="dfn-paneled" id="term-for-values④">ref.extern</span>
      <li><span class="dfn-paneled" id="term-for-values⑤">ref.func</span>
      <li><span class="dfn-paneled" id="term-for-values⑥">ref.null</span>
@@ -3303,6 +3381,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-grammar-notation">sequence</span>
      <li><span class="dfn-paneled" id="term-for-aux-signed">signed_32</span>
      <li><span class="dfn-paneled" id="term-for-aux-signed①">signed_64</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-float③">signif</span>
      <li><span class="dfn-paneled" id="term-for-syntax-store">store</span>
      <li><span class="dfn-paneled" id="term-for-embed-store-init">store_init</span>
      <li><span class="dfn-paneled" id="term-for-external-types③">table</span>
@@ -3321,6 +3400,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="term-for-syntax-mut①">var</span>
      <li><span class="dfn-paneled" id="term-for-valid-module①">webassembly module validation</span>
      <li><span class="dfn-paneled" id="term-for-values⑧">webassembly value</span>
+     <li><span class="dfn-paneled" id="term-for-syntax-float④">−∞</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBIDL]</a> defines the following terms:
@@ -3368,6 +3448,11 @@ In practice, an implementation may run out of resources for valid modules below 
    <dd><a href="https://webassembly.github.io/spec/core/"><cite>WebAssembly Core Specification</cite></a>. Draft. URL: <a href="https://webassembly.github.io/spec/core/">https://webassembly.github.io/spec/core/</a>
    <dt id="biblio-webidl">[WEBIDL]
    <dd>Edgar Chen; Timothy Gu. <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
+  </dl>
+  <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
+  <dl>
+   <dt id="biblio-ieee-754">[IEEE-754]
+   <dd><a href="http://ieeexplore.ieee.org/servlet/opac?punumber=4610933"><cite>IEEE Standard for Floating-Point Arithmetic</cite></a>. 29 August 2008. URL: <a href="http://ieeexplore.ieee.org/servlet/opac?punumber=4610933">http://ieeexplore.ieee.org/servlet/opac?punumber=4610933</a>
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
 <pre class="idl highlight def"><c- b>dictionary</c-> <a href="#dictdef-webassemblyinstantiatedsource"><code><c- g>WebAssemblyInstantiatedSource</c-></code></a> {
