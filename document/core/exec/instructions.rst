@@ -2244,7 +2244,7 @@ Memory Instructions
    S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~n)~\MEMORYFILL
      \quad\stepto\quad S; F; \TRAP
      \\ \qquad
-     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|)
+     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|)
    \\[1ex]
    S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~0)~\MEMORYFILL
      \quad\stepto\quad S; F; \epsilon
@@ -2451,7 +2451,7 @@ Memory Instructions
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & s + n > |S.\SDATAS[F.\AMODULE.\MIDATAS[x]].\DIDATA| \\
-      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|) \\[1ex]
+      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|) \\[1ex]
      \end{array}
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\MEMORYINIT~x)
