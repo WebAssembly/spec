@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly Web API</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version 859efb4bd, updated Fri Jan 27 16:04:01 2023 -0800" name="generator">
+  <meta content="Bikeshed version 42a48c451, updated Tue Feb 14 14:52:15 2023 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-2/" rel="canonical">
-  <meta content="0f068801d6bcd0219e5ede2a71fcde1d130e3853" name="document-revision">
+  <meta content="328e425226dad03539ec0a3891fe0ba6426cc62c" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -298,7 +298,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-02-13">13 February 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-02-16">16 February 2023</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -658,244 +658,244 @@ review, approval, and registration with IANA.</p>
    <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source)</a><span>, in § 1</span>
    <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source, importObject)</a><span>, in § 1</span>
   </ul>
-  <aside class="dfn-panel" data-for="term-for-sec-arraybuffer-objects">
-   <a href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects">https://tc39.github.io/ecma262/#sec-arraybuffer-objects</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-sec-arraybuffer-objects" class="dfn-panel" data-for="term-for-sec-arraybuffer-objects" id="infopanel-for-term-for-sec-arraybuffer-objects" role="menu">
+   <span id="infopaneltitle-for-term-for-sec-arraybuffer-objects" style="display:none">Info about the 'ArrayBuffer' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects">https://tc39.github.io/ecma262/#sec-arraybuffer-objects</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-arraybuffer-objects">1. Streaming Module Compilation and Instantiation</a>
     <li><a href="#ref-for-sec-arraybuffer-objects①">3. Developer-Facing Display Conventions</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-sec-native-error-types-used-in-this-standard-typeerror">
-   <a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-sec-native-error-types-used-in-this-standard-typeerror" class="dfn-panel" data-for="term-for-sec-native-error-types-used-in-this-standard-typeerror" id="infopanel-for-term-for-sec-native-error-types-used-in-this-standard-typeerror" role="menu">
+   <span id="infopaneltitle-for-term-for-sec-native-error-types-used-in-this-standard-typeerror" style="display:none">Info about the 'TypeError' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror①">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror②">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror③">(4)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-sec-agent-clusters">
-   <a href="https://tc39.github.io/ecma262/#sec-agent-clusters">https://tc39.github.io/ecma262/#sec-agent-clusters</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-sec-agent-clusters" class="dfn-panel" data-for="term-for-sec-agent-clusters" id="infopanel-for-term-for-sec-agent-clusters" role="menu">
+   <span id="infopaneltitle-for-term-for-sec-agent-clusters" style="display:none">Info about the 'agent cluster' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-agent-clusters">https://tc39.github.io/ecma262/#sec-agent-clusters</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-agent-clusters">2. Serialization</a> <a href="#ref-for-sec-agent-clusters①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-current-realm">
-   <a href="https://tc39.github.io/ecma262/#current-realm">https://tc39.github.io/ecma262/#current-realm</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-current-realm" class="dfn-panel" data-for="term-for-current-realm" id="infopanel-for-term-for-current-realm" role="menu">
+   <span id="infopaneltitle-for-term-for-current-realm" style="display:none">Info about the 'current realm' external reference.</span><a href="https://tc39.github.io/ecma262/#current-realm">https://tc39.github.io/ecma262/#current-realm</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-current-realm">2. Serialization</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-response">
-   <a href="https://fetch.spec.whatwg.org/#response">https://fetch.spec.whatwg.org/#response</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-response" class="dfn-panel" data-for="term-for-response" id="infopanel-for-term-for-response" role="menu">
+   <span id="infopaneltitle-for-term-for-response" style="display:none">Info about the 'Response' external reference.</span><a href="https://fetch.spec.whatwg.org/#response">https://fetch.spec.whatwg.org/#response</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-response">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-response①">(2)</a> <a href="#ref-for-response②">(3)</a> <a href="#ref-for-response③">(4)</a> <a href="#ref-for-response④">(5)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-body-consume-body">
-   <a href="https://fetch.spec.whatwg.org/#concept-body-consume-body">https://fetch.spec.whatwg.org/#concept-body-consume-body</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-concept-body-consume-body" class="dfn-panel" data-for="term-for-concept-body-consume-body" id="infopanel-for-term-for-concept-body-consume-body" role="menu">
+   <span id="infopaneltitle-for-term-for-concept-body-consume-body" style="display:none">Info about the 'consume body' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-body-consume-body">https://fetch.spec.whatwg.org/#concept-body-consume-body</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-body-consume-body">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-header-extract-mime-type">
-   <a href="https://fetch.spec.whatwg.org/#concept-header-extract-mime-type">https://fetch.spec.whatwg.org/#concept-header-extract-mime-type</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-concept-header-extract-mime-type" class="dfn-panel" data-for="term-for-concept-header-extract-mime-type" id="infopanel-for-term-for-concept-header-extract-mime-type" role="menu">
+   <span id="infopaneltitle-for-term-for-concept-header-extract-mime-type" style="display:none">Info about the 'extracting a mime type' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-header-extract-mime-type">https://fetch.spec.whatwg.org/#concept-header-extract-mime-type</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-header-extract-mime-type">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-response-header-list">
-   <a href="https://fetch.spec.whatwg.org/#concept-response-header-list">https://fetch.spec.whatwg.org/#concept-response-header-list</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-concept-response-header-list" class="dfn-panel" data-for="term-for-concept-response-header-list" id="infopanel-for-term-for-concept-response-header-list" role="menu">
+   <span id="infopaneltitle-for-term-for-concept-response-header-list" style="display:none">Info about the 'header list' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-response-header-list">https://fetch.spec.whatwg.org/#concept-response-header-list</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-response-header-list">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-ok-status">
-   <a href="https://fetch.spec.whatwg.org/#ok-status">https://fetch.spec.whatwg.org/#ok-status</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-ok-status" class="dfn-panel" data-for="term-for-ok-status" id="infopanel-for-term-for-ok-status" role="menu">
+   <span id="infopaneltitle-for-term-for-ok-status" style="display:none">Info about the 'ok status' external reference.</span><a href="https://fetch.spec.whatwg.org/#ok-status">https://fetch.spec.whatwg.org/#ok-status</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-ok-status">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-ok-status①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-response-response">
-   <a href="https://fetch.spec.whatwg.org/#concept-response-response">https://fetch.spec.whatwg.org/#concept-response-response</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-concept-response-response" class="dfn-panel" data-for="term-for-concept-response-response" id="infopanel-for-term-for-concept-response-response" role="menu">
+   <span id="infopaneltitle-for-term-for-concept-response-response" style="display:none">Info about the 'response' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-response-response">https://fetch.spec.whatwg.org/#concept-response-response</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-response-response">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-response-status">
-   <a href="https://fetch.spec.whatwg.org/#concept-response-status">https://fetch.spec.whatwg.org/#concept-response-status</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-concept-response-status" class="dfn-panel" data-for="term-for-concept-response-status" id="infopanel-for-term-for-concept-response-status" role="menu">
+   <span id="infopaneltitle-for-term-for-concept-response-status" style="display:none">Info about the 'status' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-response-status">https://fetch.spec.whatwg.org/#concept-response-status</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-response-status">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-serializable">
-   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#serializable">https://html.spec.whatwg.org/multipage/structured-data.html#serializable</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-serializable" class="dfn-panel" data-for="term-for-serializable" id="infopanel-for-term-for-serializable" role="menu">
+   <span id="infopaneltitle-for-term-for-serializable" style="display:none">Info about the 'Serializable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#serializable">https://html.spec.whatwg.org/multipage/structured-data.html#serializable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-serializable">2. Serialization</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-cors-same-origin">
-   <a href="https://html.spec.whatwg.org/#cors-same-origin">https://html.spec.whatwg.org/#cors-same-origin</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-cors-same-origin" class="dfn-panel" data-for="term-for-cors-same-origin" id="infopanel-for-term-for-cors-same-origin" role="menu">
+   <span id="infopaneltitle-for-term-for-cors-same-origin" style="display:none">Info about the 'cors-same-origin' external reference.</span><a href="https://html.spec.whatwg.org/#cors-same-origin">https://html.spec.whatwg.org/#cors-same-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-cors-same-origin">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-cors-same-origin①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-deserialization-steps">
-   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps">https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-deserialization-steps" class="dfn-panel" data-for="term-for-deserialization-steps" id="infopanel-for-term-for-deserialization-steps" role="menu">
+   <span id="infopaneltitle-for-term-for-deserialization-steps" style="display:none">Info about the 'deserialization steps' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps">https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-deserialization-steps">2. Serialization</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-networking-task-source">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source">https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-networking-task-source" class="dfn-panel" data-for="term-for-networking-task-source" id="infopanel-for-term-for-networking-task-source" role="menu">
+   <span id="infopaneltitle-for-term-for-networking-task-source" style="display:none">Info about the 'networking task source' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source">https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-networking-task-source">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-serialization-steps">
-   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps">https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-serialization-steps" class="dfn-panel" data-for="term-for-serialization-steps" id="infopanel-for-term-for-serialization-steps" role="menu">
+   <span id="infopaneltitle-for-term-for-serialization-steps" style="display:none">Info about the 'serialization steps' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps">https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-serialization-steps">2. Serialization</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-sub-deserialization">
-   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization">https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-sub-deserialization" class="dfn-panel" data-for="term-for-sub-deserialization" id="infopanel-for-term-for-sub-deserialization" role="menu">
+   <span id="infopaneltitle-for-term-for-sub-deserialization" style="display:none">Info about the 'sub-deserialization' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization">https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sub-deserialization">2. Serialization</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-sub-serialization">
-   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization">https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-sub-serialization" class="dfn-panel" data-for="term-for-sub-serialization" id="infopanel-for-term-for-sub-serialization" role="menu">
+   <span id="infopaneltitle-for-term-for-sub-serialization" style="display:none">Info about the 'sub-serialization' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization">https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sub-serialization">2. Serialization</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-exceptiondef-compileerror">
-   <a href="https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror">https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-exceptiondef-compileerror" class="dfn-panel" data-for="term-for-exceptiondef-compileerror" id="infopanel-for-term-for-exceptiondef-compileerror" role="menu">
+   <span id="infopaneltitle-for-term-for-exceptiondef-compileerror" style="display:none">Info about the 'CompileError' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror">https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-exceptiondef-compileerror">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-module">
-   <a href="https://webassembly.github.io/spec/js-api/#module">https://webassembly.github.io/spec/js-api/#module</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-module" class="dfn-panel" data-for="term-for-module" id="infopanel-for-term-for-module" role="menu">
+   <span id="infopaneltitle-for-term-for-module" style="display:none">Info about the 'Module' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#module">https://webassembly.github.io/spec/js-api/#module</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-module">1. Streaming Module Compilation and Instantiation</a>
     <li><a href="#ref-for-module①">2. Serialization</a> <a href="#ref-for-module②">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-namespacedef-webassembly">
-   <a href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly">https://webassembly.github.io/spec/js-api/#namespacedef-webassembly</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-namespacedef-webassembly" class="dfn-panel" data-for="term-for-namespacedef-webassembly" id="infopanel-for-term-for-namespacedef-webassembly" role="menu">
+   <span id="infopaneltitle-for-term-for-namespacedef-webassembly" style="display:none">Info about the 'WebAssembly' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly">https://webassembly.github.io/spec/js-api/#namespacedef-webassembly</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-namespacedef-webassembly">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dictdef-webassemblyinstantiatedsource">
-   <a href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource">https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-dictdef-webassemblyinstantiatedsource" class="dfn-panel" data-for="term-for-dictdef-webassemblyinstantiatedsource" id="infopanel-for-term-for-dictdef-webassemblyinstantiatedsource" role="menu">
+   <span id="infopaneltitle-for-term-for-dictdef-webassemblyinstantiatedsource" style="display:none">Info about the 'WebAssemblyInstantiatedSource' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource">https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dictdef-webassemblyinstantiatedsource">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-asynchronously-compile-a-webassembly-module">
-   <a href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module">https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-asynchronously-compile-a-webassembly-module" class="dfn-panel" data-for="term-for-asynchronously-compile-a-webassembly-module" id="infopanel-for-term-for-asynchronously-compile-a-webassembly-module" role="menu">
+   <span id="infopaneltitle-for-term-for-asynchronously-compile-a-webassembly-module" style="display:none">Info about the 'asynchronously compile a webassembly module' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module">https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-asynchronously-compile-a-webassembly-module">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-compile-a-webassembly-module">
-   <a href="https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module">https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-compile-a-webassembly-module" class="dfn-panel" data-for="term-for-compile-a-webassembly-module" id="infopanel-for-term-for-compile-a-webassembly-module" role="menu">
+   <span id="infopaneltitle-for-term-for-compile-a-webassembly-module" style="display:none">Info about the 'compile a webassembly module' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module">https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-compile-a-webassembly-module">2. Serialization</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-exported-function">
-   <a href="https://webassembly.github.io/spec/js-api/#exported-function">https://webassembly.github.io/spec/js-api/#exported-function</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-exported-function" class="dfn-panel" data-for="term-for-exported-function" id="infopanel-for-term-for-exported-function" role="menu">
+   <span id="infopaneltitle-for-term-for-exported-function" style="display:none">Info about the 'exported function' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#exported-function">https://webassembly.github.io/spec/js-api/#exported-function</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-exported-function">3. Developer-Facing Display Conventions</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-webassembly-instantiate">
-   <a href="https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate">https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-dom-webassembly-instantiate" class="dfn-panel" data-for="term-for-dom-webassembly-instantiate" id="infopanel-for-term-for-dom-webassembly-instantiate" role="menu">
+   <span id="infopaneltitle-for-term-for-dom-webassembly-instantiate" style="display:none">Info about the 'instantiate' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate">https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-webassembly-instantiate">3. Developer-Facing Display Conventions</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-instantiate-a-promise-of-a-module">
-   <a href="https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module">https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-instantiate-a-promise-of-a-module" class="dfn-panel" data-for="term-for-instantiate-a-promise-of-a-module" id="infopanel-for-term-for-instantiate-a-promise-of-a-module" role="menu">
+   <span id="infopaneltitle-for-term-for-instantiate-a-promise-of-a-module" style="display:none">Info about the 'instantiate a promise of a module' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module">https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-instantiate-a-promise-of-a-module">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-syntax-funcidx">
-   <a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx">https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-syntax-funcidx" class="dfn-panel" data-for="term-for-syntax-funcidx" id="infopanel-for-term-for-syntax-funcidx" role="menu">
+   <span id="infopaneltitle-for-term-for-syntax-funcidx" style="display:none">Info about the 'function index' external reference.</span><a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx">https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-syntax-funcidx">3. Developer-Facing Display Conventions</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-binary-namesec">
-   <a href="https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec">https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-binary-namesec" class="dfn-panel" data-for="term-for-binary-namesec" id="infopanel-for-term-for-binary-namesec" role="menu">
+   <span id="infopaneltitle-for-term-for-binary-namesec" style="display:none">Info about the 'name section' external reference.</span><a href="https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec">https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-binary-namesec">3. Developer-Facing Display Conventions</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-DOMException">
-   <a href="https://webidl.spec.whatwg.org/#idl-DOMException">https://webidl.spec.whatwg.org/#idl-DOMException</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-idl-DOMException" class="dfn-panel" data-for="term-for-idl-DOMException" id="infopanel-for-term-for-idl-DOMException" role="menu">
+   <span id="infopaneltitle-for-term-for-idl-DOMException" style="display:none">Info about the 'DOMException' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-DOMException">https://webidl.spec.whatwg.org/#idl-DOMException</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-DOMException">2. Serialization</a> <a href="#ref-for-idl-DOMException①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-datacloneerror">
-   <a href="https://webidl.spec.whatwg.org/#datacloneerror">https://webidl.spec.whatwg.org/#datacloneerror</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-datacloneerror" class="dfn-panel" data-for="term-for-datacloneerror" id="infopanel-for-term-for-datacloneerror" role="menu">
+   <span id="infopaneltitle-for-term-for-datacloneerror" style="display:none">Info about the 'DataCloneError' external reference.</span><a href="https://webidl.spec.whatwg.org/#datacloneerror">https://webidl.spec.whatwg.org/#datacloneerror</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-datacloneerror">2. Serialization</a> <a href="#ref-for-datacloneerror①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-Exposed">
-   <a href="https://webidl.spec.whatwg.org/#Exposed">https://webidl.spec.whatwg.org/#Exposed</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-Exposed" class="dfn-panel" data-for="term-for-Exposed" id="infopanel-for-term-for-Exposed" role="menu">
+   <span id="infopaneltitle-for-term-for-Exposed" style="display:none">Info about the 'Exposed' external reference.</span><a href="https://webidl.spec.whatwg.org/#Exposed">https://webidl.spec.whatwg.org/#Exposed</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-Exposed">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-promise">
-   <a href="https://webidl.spec.whatwg.org/#idl-promise">https://webidl.spec.whatwg.org/#idl-promise</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-idl-promise" class="dfn-panel" data-for="term-for-idl-promise" id="infopanel-for-term-for-idl-promise" role="menu">
+   <span id="infopaneltitle-for-term-for-idl-promise" style="display:none">Info about the 'Promise' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-promise">https://webidl.spec.whatwg.org/#idl-promise</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-promise">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-idl-promise①">(2)</a> <a href="#ref-for-idl-promise②">(3)</a> <a href="#ref-for-idl-promise③">(4)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-a-new-promise">
-   <a href="https://webidl.spec.whatwg.org/#a-new-promise">https://webidl.spec.whatwg.org/#a-new-promise</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-a-new-promise" class="dfn-panel" data-for="term-for-a-new-promise" id="infopanel-for-term-for-a-new-promise" role="menu">
+   <span id="infopaneltitle-for-term-for-a-new-promise" style="display:none">Info about the 'a new promise' external reference.</span><a href="https://webidl.spec.whatwg.org/#a-new-promise">https://webidl.spec.whatwg.org/#a-new-promise</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-a-new-promise">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-get-buffer-source-copy">
-   <a href="https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy">https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-dfn-get-buffer-source-copy" class="dfn-panel" data-for="term-for-dfn-get-buffer-source-copy" id="infopanel-for-term-for-dfn-get-buffer-source-copy" role="menu">
+   <span id="infopaneltitle-for-term-for-dfn-get-buffer-source-copy" style="display:none">Info about the 'get a copy of the buffer source' external reference.</span><a href="https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy">https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-get-buffer-source-copy">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-object">
-   <a href="https://webidl.spec.whatwg.org/#idl-object">https://webidl.spec.whatwg.org/#idl-object</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-idl-object" class="dfn-panel" data-for="term-for-idl-object" id="infopanel-for-term-for-idl-object" role="menu">
+   <span id="infopaneltitle-for-term-for-idl-object" style="display:none">Info about the 'object' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-object">https://webidl.spec.whatwg.org/#idl-object</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-object">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-reject">
-   <a href="https://webidl.spec.whatwg.org/#reject">https://webidl.spec.whatwg.org/#reject</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-reject" class="dfn-panel" data-for="term-for-reject" id="infopanel-for-term-for-reject" role="menu">
+   <span id="infopaneltitle-for-term-for-reject" style="display:none">Info about the 'reject' external reference.</span><a href="https://webidl.spec.whatwg.org/#reject">https://webidl.spec.whatwg.org/#reject</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-reject">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-reject①">(2)</a> <a href="#ref-for-reject②">(3)</a> <a href="#ref-for-reject③">(4)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-resolve">
-   <a href="https://webidl.spec.whatwg.org/#resolve">https://webidl.spec.whatwg.org/#resolve</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-resolve" class="dfn-panel" data-for="term-for-resolve" id="infopanel-for-term-for-resolve" role="menu">
+   <span id="infopaneltitle-for-term-for-resolve" style="display:none">Info about the 'resolve' external reference.</span><a href="https://webidl.spec.whatwg.org/#resolve">https://webidl.spec.whatwg.org/#resolve</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-resolve">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-upon-fulfillment">
-   <a href="https://webidl.spec.whatwg.org/#upon-fulfillment">https://webidl.spec.whatwg.org/#upon-fulfillment</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-upon-fulfillment" class="dfn-panel" data-for="term-for-upon-fulfillment" id="infopanel-for-term-for-upon-fulfillment" role="menu">
+   <span id="infopaneltitle-for-term-for-upon-fulfillment" style="display:none">Info about the 'upon fulfillment' external reference.</span><a href="https://webidl.spec.whatwg.org/#upon-fulfillment">https://webidl.spec.whatwg.org/#upon-fulfillment</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-upon-fulfillment">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-upon-fulfillment①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-upon-rejection">
-   <a href="https://webidl.spec.whatwg.org/#upon-rejection">https://webidl.spec.whatwg.org/#upon-rejection</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-term-for-upon-rejection" class="dfn-panel" data-for="term-for-upon-rejection" id="infopanel-for-term-for-upon-rejection" role="menu">
+   <span id="infopaneltitle-for-term-for-upon-rejection" style="display:none">Info about the 'upon rejection' external reference.</span><a href="https://webidl.spec.whatwg.org/#upon-rejection">https://webidl.spec.whatwg.org/#upon-rejection</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-upon-rejection">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-upon-rejection①">(2)</a>
    </ul>
@@ -994,79 +994,135 @@ review, approval, and registration with IANA.</p>
 };
 
 </pre>
-  <aside class="dfn-panel" data-for="dom-webassembly-compilestreaming">
-   <b><a href="#dom-webassembly-compilestreaming">#dom-webassembly-compilestreaming</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dom-webassembly-compilestreaming" class="dfn-panel" data-for="dom-webassembly-compilestreaming" id="infopanel-for-dom-webassembly-compilestreaming" role="dialog">
+   <span id="infopaneltitle-for-dom-webassembly-compilestreaming" style="display:none">Info about the 'compileStreaming(source)' definition.</span><b><a href="#dom-webassembly-compilestreaming">#dom-webassembly-compilestreaming</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-webassembly-compilestreaming">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="dom-webassembly-instantiatestreaming">
-   <b><a href="#dom-webassembly-instantiatestreaming">#dom-webassembly-instantiatestreaming</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dom-webassembly-instantiatestreaming" class="dfn-panel" data-for="dom-webassembly-instantiatestreaming" id="infopanel-for-dom-webassembly-instantiatestreaming" role="dialog">
+   <span id="infopaneltitle-for-dom-webassembly-instantiatestreaming" style="display:none">Info about the 'instantiateStreaming(source, importObject)' definition.</span><b><a href="#dom-webassembly-instantiatestreaming">#dom-webassembly-instantiatestreaming</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-webassembly-instantiatestreaming">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="compile-a-potential-webassembly-response">
-   <b><a href="#compile-a-potential-webassembly-response">#compile-a-potential-webassembly-response</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-compile-a-potential-webassembly-response" class="dfn-panel" data-for="compile-a-potential-webassembly-response" id="infopanel-for-compile-a-potential-webassembly-response" role="dialog">
+   <span id="infopaneltitle-for-compile-a-potential-webassembly-response" style="display:none">Info about the 'compile a potential WebAssembly response' definition.</span><b><a href="#compile-a-potential-webassembly-response">#compile-a-potential-webassembly-response</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-compile-a-potential-webassembly-response">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-compile-a-potential-webassembly-response①">(2)</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
 
-document.body.addEventListener("click", function(e) {
-    var queryAll = function(sel) { return [].slice.call(document.querySelectorAll(sel)); }
-    // Find the dfn element or panel, if any, that was clicked on.
-    var el = e.target;
-    var target;
-    var hitALink = false;
-    while(el.parentElement) {
-        if(el.tagName == "A") {
-            // Clicking on a link in a <dfn> shouldn't summon the panel
-            hitALink = true;
-        }
-        if(el.classList.contains("dfn-paneled")) {
-            target = "dfn";
-            break;
-        }
-        if(el.classList.contains("dfn-panel")) {
-            target = "dfn-panel";
-            break;
-        }
-        el = el.parentElement;
-    }
-    if(target != "dfn-panel") {
-        // Turn off any currently "on" or "activated" panels.
-        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(function(el){
-            el.classList.remove("on");
-            el.classList.remove("activated");
-        });
-    }
-    if(target == "dfn" && !hitALink) {
-        // open the panel
-        var dfnPanel = document.querySelector(".dfn-panel[data-for='" + el.id + "']");
-        if(dfnPanel) {
-            dfnPanel.classList.add("on");
-            var rect = el.getBoundingClientRect();
-            dfnPanel.style.left = window.scrollX + rect.right + 5 + "px";
-            dfnPanel.style.top = window.scrollY + rect.top + "px";
-            var panelRect = dfnPanel.getBoundingClientRect();
-            var panelWidth = panelRect.right - panelRect.left;
-            if(panelRect.right > document.body.scrollWidth && (rect.left - (panelWidth + 5)) > 0) {
-                // Reposition, because the panel is overflowing
-                dfnPanel.style.left = window.scrollX + rect.left - (panelWidth + 5) + "px";
-            }
-        } else {
-            console.log("Couldn't find .dfn-panel[data-for='" + el.id + "']");
-        }
-    } else if(target == "dfn-panel") {
-        // Switch it to "activated" state, which pins it.
-        el.classList.add("activated");
-        el.style.left = null;
-        el.style.top = null;
+"use strict";
+{
+    function queryAll(sel) {
+        return [].slice.call(document.querySelectorAll(sel));
     }
 
-});
+    // Add popup behavior to all dfns to show the corresponding dfn-panel.
+    var dfns = document.querySelectorAll('.dfn-paneled');
+    for (let dfn of dfns) { insertDfnPopupAction(dfn); }
+
+    document.body.addEventListener("click", (e) => {
+        // If not handled already, just hide all dfn panels.
+        hideAllDfnPanels();
+    });
+
+    function hideAllDfnPanels() {
+        // Turn off any currently "on" or "activated" panels.
+        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
+    }
+
+    function showDfnPanel(dfnPanel, dfn) {
+        hideAllDfnPanels(); // Only display one at this time.
+        dfn.setAttribute("aria-expanded", "true");
+        dfnPanel.classList.add("on");
+        dfnPanel.style.left = "5px";
+        dfnPanel.style.top = "0px";
+        const panelRect = dfnPanel.getBoundingClientRect();
+        const panelWidth = panelRect.right - panelRect.left;
+        if (panelRect.right > document.body.scrollWidth) {
+            // Panel's overflowing the screen.
+            // Just drop it below the dfn and flip it rightward instead.
+            // This still wont' fix things if the screen is *really* wide,
+            // but fixing that's a lot harder without 'anchor()'.
+            dfnPanel.style.top = "1.5em";
+            dfnPanel.style.left = "auto";
+            dfnPanel.style.right = "0px";
+        }
+    }
+
+    function pinDfnPanel(dfnPanel) {
+        // Switch it to "activated" state, which pins it.
+        dfnPanel.classList.add("activated");
+        dfnPanel.style.left = null;
+        dfnPanel.style.top = null;
+    }
+
+    function hideDfnPanel(dfnPanel, dfn) {
+        if(!dfn) {
+            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
+        }
+        dfn.setAttribute("aria-expanded", "false")
+        dfnPanel.classList.remove("on");
+        dfnPanel.classList.remove("activated");
+    }
+
+    function toggleDfnPanel(dfnPanel, dfn) {
+        if(dfnPanel.classList.contains("on")) {
+            hideDfnPanel(dfnPanel, dfn);
+        } else {
+            showDfnPanel(dfnPanel, dfn);
+        }
+    }
+
+    function insertDfnPopupAction(dfn) {
+        // Find dfn panel
+        const dfnPanel = document.querySelector(`.dfn-panel[data-for='${dfn.id}']`);
+        if (dfnPanel) {
+            const panelWrapper = document.createElement('span');
+            panelWrapper.appendChild(dfnPanel);
+            panelWrapper.style.position = "relative";
+            panelWrapper.style.height = "0px";
+            dfn.insertAdjacentElement("afterend", panelWrapper);
+            dfn.setAttribute('role', 'button');
+            dfn.setAttribute('aria-haspopup', 'menu');
+            dfn.setAttribute('aria-expanded', 'false')
+            dfn.tabIndex = 0;
+            dfn.classList.add('has-dfn-panel');
+            dfn.addEventListener('click', (event) => {
+                showDfnPanel(dfnPanel, dfn);
+                event.stopPropagation();
+            });
+            dfn.addEventListener('keypress', (event) => {
+                const kc = event.keyCode;
+                // 32->Space, 13->Enter
+                if(kc == 32 || kc == 13) {
+                    toggleDfnPanel(dfnPanel, dfn);
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+            });
+
+            dfnPanel.addEventListener('click', (event) => {
+                pinDfnPanel(dfnPanel);
+                event.stopPropagation();
+            });
+
+            dfnPanel.addEventListener('keydown', (event) => {
+                if(event.keyCode == 27) { // Escape key
+                    hideDfnPanel(dfnPanel, dfn);
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+            })
+
+        } else {
+            console.log("Couldn't find .dfn-panel[data-for='" + dfn.id + "']");
+        }
+    }
+}
 </script>
 <script>/* script-var-click-highlighting */
 
