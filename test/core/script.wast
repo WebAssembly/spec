@@ -76,7 +76,8 @@
 (assert_return (invoke "f-f32" (get "g-f32")) (f32.const 42))
 (assert_return (invoke "f-f64" (get "g-f64")) (f64.const 42))
 (assert_return (invoke "f-v128" (v128.const i32x4 42 42 42 42)) (v128.const i32x4 42 42 42 42))
-;; Importing v128 globals crashes V8 in node.js 18.14.0, so this fails in CI!
+;; TODO: Reactivate once the fix for https://bugs.chromium.org/p/v8/issues/detail?id=13732
+;; has made it to the downstream node.js version that we use on CI.
 ;; (assert_return (invoke "f-v128" (get "g-v128")) (v128.const i32x4 42 42 42 42))
 (assert_return (invoke "f-funcref" (get "g-funcref")) (ref.null func))
 (assert_return (invoke "f-externref" (get "g-externref")) (ref.null extern))
