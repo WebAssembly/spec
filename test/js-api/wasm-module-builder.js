@@ -74,6 +74,13 @@ let kLocalNamesCode = 2;
 
 let kWasmFunctionTypeForm = 0x60;
 let kWasmAnyFunctionTypeForm = 0x70;
+let kWasmStructTypeForm = 0x5f;
+let kWasmArrayTypeForm = 0x5e;
+let kWasmSubtypeForm = 0x50;
+let kWasmSubtypeFinalForm = 0x4e;
+let kWasmRecursiveTypeGroupForm = 0x4f;
+
+let kNoSuperType = 0xFFFFFFFF;
 
 let kHasMaximumFlag = 1;
 let kSharedHasMaximumFlag = 3;
@@ -99,6 +106,15 @@ let kWasmF64 = 0x7c;
 let kWasmS128 = 0x7b;
 let kWasmAnyRef = 0x6f;
 let kWasmAnyFunc = 0x70;
+
+let kWasmRefNull = 0x6c;
+let kWasmRef = 0x6b;
+function wasmRefNullType(heap_type) {
+  return {opcode: kWasmRefNull, heap_type: heap_type};
+}
+function wasmRefType(heap_type) {
+  return {opcode: kWasmRef, heap_type: heap_type};
+}
 
 let kExternalFunction = 0;
 let kExternalTable = 1;
@@ -374,9 +390,47 @@ let kExprRefIsNull = 0xd1;
 let kExprRefFunc = 0xd2;
 
 // Prefix opcodes
+let kGCPrefix = 0xfb;
 let kNumericPrefix = 0xfc;
 let kSimdPrefix = 0xfd;
 let kAtomicPrefix = 0xfe;
+
+// Use these for multi-byte instructions (opcode > 0x7F needing two LEB bytes):
+function GCInstr(opcode) {
+  if (opcode <= 0x7F) return [kGCPrefix, opcode];
+  return [kGCPrefix, 0x80 | (opcode & 0x7F), opcode >> 7];
+}
+
+// GC opcodes
+let kExprStructNew = 0x01;
+let kExprStructNewDefault = 0x02;
+let kExprStructGet = 0x03;
+let kExprStructGetS = 0x04;
+let kExprStructGetU = 0x05;
+let kExprStructSet = 0x06;
+let kExprArrayNew = 0x11;
+let kExprArrayNewDefault = 0x12;
+let kExprArrayGet = 0x13;
+let kExprArrayGetS = 0x14;
+let kExprArrayGetU = 0x15;
+let kExprArraySet = 0x16;
+let kExprArrayLen = 0x17;
+let kExprArrayNewFixed = 0x19;
+let kExprArrayNewData = 0x1b;
+let kExprArrayNewElem = 0x1c;
+let kExprI31New = 0x20;
+let kExprI31GetS = 0x21;
+let kExprI31GetU = 0x22;
+let kExprRefTest = 0x40;
+let kExprRefTestNull = 0x48;
+let kExprRefCast = 0x41;
+let kExprRefCastNull = 0x49;
+let kExprBrOnCast = 0x42;
+let kExprBrOnCastNull = 0x4a;
+let kExprBrOnCastFail = 0x43;
+let kExprBrOnCastFailNull = 0x4b;
+let kExprExternInternalize = 0x70;
+let kExprExternExternalize = 0x71;
 
 // Numeric opcodes.
 let kExprMemoryInit = 0x08;
@@ -554,6 +608,20 @@ class Binary {
     }
   }
 
+  emit_heap_type(heap_type) {
+    this.emit_bytes(wasmSignedLeb(heap_type, kMaxVarInt32Size));
+  }
+
+  emit_type(type) {
+    if ((typeof type) == 'number') {
+      this.emit_u8(type >= 0 ? type : type & kLeb128Mask);
+    } else {
+      this.emit_u8(type.opcode);
+      if ('depth' in type) this.emit_u8(type.depth);
+      this.emit_heap_type(type.heap_type);
+    }
+  }
+
   emit_header() {
     this.emit_bytes([
       kWasmH0, kWasmH1, kWasmH2, kWasmH3, kWasmV0, kWasmV1, kWasmV2, kWasmV3
@@ -674,6 +742,35 @@ class WasmTableBuilder {
   }
 }
 
+function makeField(type, mutability) {
+  if ((typeof mutability) != 'boolean') {
+    throw new Error('field mutability must be boolean');
+  }
+  return {type: type, mutability: mutability};
+}
+
+class WasmStruct {
+  constructor(fields, is_final, supertype_idx) {
+    if (!Array.isArray(fields)) {
+      throw new Error('struct fields must be an array');
+    }
+    this.fields = fields;
+    this.type_form = kWasmStructTypeForm;
+    this.is_final = is_final;
+    this.supertype = supertype_idx;
+  }
+}
+
+class WasmArray {
+  constructor(type, mutability, is_final, supertype_idx) {
+    this.type = type;
+    this.mutability = mutability;
+    this.type_form = kWasmArrayTypeForm;
+    this.is_final = is_final;
+    this.supertype = supertype_idx;
+  }
+}
+
 class WasmModuleBuilder {
   constructor() {
     this.types = [];
@@ -686,6 +783,7 @@ class WasmModuleBuilder {
     this.element_segments = [];
     this.data_segments = [];
     this.explicit = [];
+    this.rec_groups = [];
     this.num_imported_funcs = 0;
     this.num_imported_globals = 0;
     this.num_imported_tables = 0;
@@ -728,10 +826,24 @@ class WasmModuleBuilder {
     this.explicit.push(this.createCustomSection(name, bytes));
   }
 
-  addType(type) {
-    this.types.push(type);
-    var pl = type.params.length;  // should have params
-    var rl = type.results.length; // should have results
+  // We use {is_final = true} so that the MVP syntax is generated for
+  // signatures.
+  addType(type, supertype_idx = kNoSuperType, is_final = true) {
+    var pl = type.params.length;   // should have params
+    var rl = type.results.length;  // should have results
+    var type_copy = {params: type.params, results: type.results,
+                     is_final: is_final, supertype: supertype_idx};
+    this.types.push(type_copy);
+    return this.types.length - 1;
+  }
+
+  addStruct(fields, supertype_idx = kNoSuperType, is_final = false) {
+    this.types.push(new WasmStruct(fields, is_final, supertype_idx));
+    return this.types.length - 1;
+  }
+
+  addArray(type, mutability, supertype_idx = kNoSuperType, is_final = false) {
+    this.types.push(new WasmArray(type, mutability, is_final, supertype_idx));
     return this.types.length - 1;
   }
 
@@ -877,6 +989,21 @@ class WasmModuleBuilder {
     return this;
   }
 
+  startRecGroup() {
+    this.rec_groups.push({start: this.types.length, size: 0});
+  }
+
+  endRecGroup() {
+    if (this.rec_groups.length == 0) {
+      throw new Error("Did not start a recursive group before ending one")
+    }
+    let last_element = this.rec_groups[this.rec_groups.length - 1]
+    if (last_element.size != 0) {
+      throw new Error("Did not start a recursive group before ending one")
+    }
+    last_element.size = this.types.length - last_element.start;
+  }
+
   setName(name) {
     this.name = name;
     return this;
@@ -891,18 +1018,55 @@ class WasmModuleBuilder {
 
     // Add type section
     if (wasm.types.length > 0) {
-      if (debug) print("emitting types @ " + binary.length);
+      if (debug) print('emitting types @ ' + binary.length);
       binary.emit_section(kTypeSectionCode, section => {
-        section.emit_u32v(wasm.types.length);
-        for (let type of wasm.types) {
-          section.emit_u8(kWasmFunctionTypeForm);
-          section.emit_u32v(type.params.length);
-          for (let param of type.params) {
-            section.emit_u8(param);
+        let length_with_groups = wasm.types.length;
+        for (let group of wasm.rec_groups) {
+          length_with_groups -= group.size - 1;
+        }
+        section.emit_u32v(length_with_groups);
+
+        let rec_group_index = 0;
+
+        for (let i = 0; i < wasm.types.length; i++) {
+          if (rec_group_index < wasm.rec_groups.length &&
+              wasm.rec_groups[rec_group_index].start == i) {
+            section.emit_u8(kWasmRecursiveTypeGroupForm);
+            section.emit_u32v(wasm.rec_groups[rec_group_index].size);
+            rec_group_index++;
           }
-          section.emit_u32v(type.results.length);
-          for (let result of type.results) {
-            section.emit_u8(result);
+
+          let type = wasm.types[i];
+          if (type.supertype != kNoSuperType) {
+            section.emit_u8(type.is_final ? kWasmSubtypeFinalForm
+                                          : kWasmSubtypeForm);
+            section.emit_u8(1);  // supertype count
+            section.emit_u32v(type.supertype);
+          } else if (!type.is_final) {
+            section.emit_u8(kWasmSubtypeForm);
+            section.emit_u8(0);  // no supertypes
+          }
+          if (type instanceof WasmStruct) {
+            section.emit_u8(kWasmStructTypeForm);
+            section.emit_u32v(type.fields.length);
+            for (let field of type.fields) {
+              section.emit_type(field.type);
+              section.emit_u8(field.mutability ? 1 : 0);
+            }
+          } else if (type instanceof WasmArray) {
+            section.emit_u8(kWasmArrayTypeForm);
+            section.emit_type(type.type);
+            section.emit_u8(type.mutability ? 1 : 0);
+          } else {
+            section.emit_u8(kWasmFunctionTypeForm);
+            section.emit_u32v(type.params.length);
+            for (let param of type.params) {
+              section.emit_type(param);
+            }
+            section.emit_u32v(type.results.length);
+            for (let result of type.results) {
+              section.emit_type(result);
+            }
           }
         }
       });
