@@ -1312,7 +1312,7 @@ Table Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~(\TABLEGROW~x) &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
+   S; F; \val~(\I32.\CONST~n)~(\TABLEGROW~x) &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
    \end{array}
    \end{array}
 
