@@ -72,8 +72,8 @@ test(() => {
 test(() => {
   const struct = functions.makeStruct()
   const array = functions.makeArray()
-  assert_throws_js(TypeError, () => Object.getPrototypeOf(struct));
-  assert_throws_js(TypeError, () => Object.getPrototypeOf(array));
+  assert_equals(Object.getPrototypeOf(struct), null);
+  assert_equals(Object.getPrototypeOf(array), null);
 }, "getPrototypeOf");
 
 test(() => {
