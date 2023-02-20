@@ -1192,9 +1192,9 @@ and an \[[ObjectKind]] internal slot, which holds the string value "struct" or "
 The internal methods of an [=Exported GC Object=] use the following implementations.
 
 <div algorithm>
-  The <dfn>\[[GetPrototypeOf]] internal method of an Exported GC Object</dfn> <var ignore>O</var> takes no arguments and throws an exception. It performs the following steps when called:
+  The <dfn>\[[GetPrototypeOf]] internal method of an Exported GC Object</dfn> <var ignore>O</var> takes no arguments and returns null. It performs the following steps when called:
 
-    1. Throw a {{TypeError}}.
+    1. Return null.
 </div>
 
 <div algorithm>
