@@ -1,8 +1,8 @@
 .. index:: ! soundness, type system
 .. _soundness:
 
-Soundness
----------
+Type Soundness
+--------------
 
 The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *type safety* and *memory safety* with respect to the WebAssembly semantics. For example:
 
@@ -1006,3 +1006,124 @@ Consequently, given a :ref:`valid store <valid-store>`, no computation defined b
 .. [#cite-fm2021]
    Machine-verified formalizations and soundness proofs of the semantics from the official specification are described in the following article:
    Conrad Watt, Xiaojia Rao, Jean Pichon-Pharabod, Martin Bodin, Philippa Gardner. |FM2021|_. Proceedings of the 24th International Symposium on Formal Methods (FM 2021). Springer 2021.
+
+
+.. index:: type system
+
+Type System Properties
+----------------------
+
+.. index:: ! principal types, type system, subtyping, polymorphism, instruction, syntax
+.. _principality:
+
+Principal Types
+~~~~~~~~~~~~~~~
+
+The :ref:`type system <type-system>` of WebAssembly features both :ref:`subtyping <match>` and simple forms of :ref:`polymorphism <polymorphism>` for :ref:`instruction types <syntax-instrtype>`.
+That has the effect that every instruction or instruction sequence can be classified with multiple different instruction types.
+
+However, the typing rules still allow deriving *principal types* for instruction sequences.
+That is, every valid instruction sequence has one particular type scheme, possibly containing some unconstrained place holder *type variables*, that is a subtype of all its valid instruction types, after substituting its type variables with suitable specific types.
+
+Moreover, when deriving an instruction type in a "forward" manner, i.e., the *input* of the instruction sequence is already fixed to specific types,
+then it has a principal *output* type expressible without type variables, up to a possibly :ref:`polymorphic stack <polymorphism>` bottom representable with one single variable.
+In other words, "forward" principal types are effectively *closed*.
+
+.. note::
+   For example, in isolation, the instruction :math:`\REFASNONNULL` has the type :math:`[(\REF~\NULL~\X{ht})] \to [(\REF~\X{ht})]` for any choice of valid :ref:`heap type <syntax-type>` :math:`\X{ht}`.
+   Moreover, if the input type :math:`[(\REF~\NULL~\X{ht})]` is already determined, i.e., a specific :math:`\X{ht}` is given, then the output type :math:`[(\REF~\X{ht})]` is fully determined as well.
+
+   The implication of the latter property is that a validator for *complete* instruction sequences (as they occur in valid modules) can be implemented with a simple left-to-right :ref:`algorithm <algo-valid>` that does not require the introduction of type variables.
+
+   A typing algorithm capable of handling *partial* instruction sequences (as might be considered for program analysis or program manipulation)
+   needs to introduce type variables and perform substitutions,
+   but it does not need to perform backtracking or record any non-syntactic constraints on these type variables.
+
+Technically, the :ref:`syntax <syntax-type>` of :ref:`heap <syntax-heaptype>`, :ref:`value <syntax-valtype>`, and :ref:`result <syntax-resulttype>` types can be enriched with type variables as follows:
+
+.. math::
+   \begin{array}{llll}
+   \production{heap type} & \heaptype &::=&
+     \dots ~|~ \alpha_{\heaptype} \\
+   \production{value type} & \valtype &::=&
+     \dots ~|~ \alpha_{\valtype} ~|~ \alpha_{\X{numvectype}} \\
+   \production{result type} & \resulttype &::=&
+     [\alpha_{\valtype^\ast}^?~\valtype^\ast] \\
+   \end{array}
+
+where each :math:`\alpha_{\X{xyz}}` ranges over a set of type variables for syntactic class :math:`\X{xyz}`, respectively.
+The special class :math:`\X{numvectype}` is defined as :math:`\numtype ~|~ \vectype ~|~ \BOT`,
+and is only needed to handle unannotated |SELECT| instructions.
+
+A type is *closed* when it does not contain any type variables, and *open* otherwise.
+A *type substitution* :math:`\sigma` is a finite mapping from type variables to closed types of the respective syntactic class.
+When applied to an open type, it replaces the type variables :math:`\alpha` from its domain with the respective :math:`\sigma(\alpha)`.
+
+**Theorem (Principal Types).**
+If an instruction sequence :math:`\instr^\ast` is :ref:`valid <valid-config>` with some closed :ref:`instruction type <syntax-instrtype>` :math:`\instrtype` (i.e., :math:`C \vdashinstrseq \instr^\ast : \instrtype`),
+then it is also valid with a possibly open instruction type :math:`\instrtype_{\min}` (i.e., :math:`C \vdashinstrseq \instr^\ast : \instrtype_{\min}`),
+such that for *every* closed type :math:`\instrtype'` with which :math:`\instr^\ast` is valid (i.e., for all :math:`C \vdashinstrseq \instr^\ast : \instrtype'`),
+there exists a substitution :math:`\sigma`,
+such that :math:`\sigma(\instrtype_{\min})` is a subtype of :math:`\instrtype'` (i.e., :math:`C \vdashinstrtypematch \sigma(\instrtype_{\min}) \matchesinstrtype \instrtype'`).
+Furthermore, :math:`\instrtype_{\min}` is unique up to the choice of type variables.
+
+**Theorem (Closed Principal Forward Types).**
+If closed input type :math:`[t_1^\ast]` is given and the instruction sequence :math:`\instr^\ast` is :ref:`valid <valid-config>` with :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to_{{\!x^\ast}} [t_2^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{{\!x^\ast}} [t_2^\ast]`),
+then it is also valid with instruction type :math:`[t_1^\ast] \to_{{\!x^\ast}} [\alpha_{\valtype^\ast}~t^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{\!x^\ast} [\alpha_{\valtype^\ast}~t^\ast]`),
+where all :math:`t^\ast` are closed,
+such that for *every* closed result type :math:`[{t'_2}^\ast]` with which :math:`\instr^\ast` is valid (i.e., for all :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{\!x^\ast} [{t'_2}^\ast]`),
+there exists a substitution :math:`\sigma`,
+such that :math:`[{t'_2}^\ast] = [\sigma(\alpha_{\valtype^\ast})~t^\ast]`.
+
+
+.. index:: ! type lattice, subtyping, least upper bound, greatest lower bound
+
+Type Lattice
+~~~~~~~~~~~~
+
+The :ref:`Principal Types <principality>` property depends on the existence of a *greatest lower bound* for any pair of types.
+
+**Theorem (Greatest Lower Bounds for Value Types).**
+For any two value types :math:`t_1` and :math:`t_2` that are :ref:`valid <valid-valtype>`
+(i.e., :math:`C \vdashvaltype t_1 \ok` and :math:`C \vdashvaltype t_2 \ok`),
+there exists a valid value type :math:`t` that is a subtype of both :math:`t_1` and :math:`t_2`
+(i.e., :math:`C \vdashvaltype t \ok` and :math:`C \vdashvaltypematch t \matchesvaltype t_1` and :math:`C \vdashvaltypematch t \matchesvaltype t_2`),
+such that *every* valid value type :math:`t'` that also is a subtype of both :math:`t_1` and :math:`t_2`
+(i.e., for all :math:`C \vdashvaltype t' \ok` and :math:`C \vdashvaltypematch t' \matchesvaltype t_1` and :math:`C \vdashvaltypematch t' \matchesvaltype t_2`),
+is a subtype of :math:`t`
+(i.e., :math:`C \vdashvaltypematch t' \matchesvaltype t`).
+
+.. note::
+   The greatest lower bound of two types may be |BOT|.
+
+**Theorem (Conditional Least Upper Bounds for Value Types).**
+Any two value types :math:`t_1` and :math:`t_2` that are :ref:`valid <valid-valtype>`
+(i.e., :math:`C \vdashvaltype t_1 \ok` and :math:`C \vdashvaltype t_2 \ok`)
+either have no common supertype,
+or there exists a valid value type :math:`t` that is a supertype of both :math:`t_1` and :math:`t_2`
+(i.e., :math:`C \vdashvaltype t \ok` and :math:`C \vdashvaltypematch t_1 \matchesvaltype t` and :math:`C \vdashvaltypematch t_2 \matchesvaltype t`),
+such that *every* valid value type :math:`t'` that also is a supertype of both :math:`t_1` and :math:`t_2`
+(i.e., for all :math:`C \vdashvaltype t' \ok` and :math:`C \vdashvaltypematch t_1 \matchesvaltype t'` and :math:`C \vdashvaltypematch t_2 \matchesvaltype t'`),
+is a supertype of :math:`t`
+(i.e., :math:`C \vdashvaltypematch t \matchesvaltype t'`).
+
+.. note::
+   If a top type was added to the type system,
+   a least upper bound would exist for any two types.
+
+**Corollary (Type Lattice).**
+Assuming the addition of a provisional top type,
+:ref:`value types <syntax-valtype>` form a lattice with respect to their :ref:`subtype <match-valtype>` relation.
+
+Finally, value types can be partitioned into multiple disjoint hierarchies that are not related by subtyping, except through |BOT|.
+
+**Theorem (Disjoint Subtype Hierarchies).**
+The greatest lower bound of two :ref:`value types <syntax-valtype>` is :math:`\BOT` or :math:`\REF~\BOT`
+if and only if they do not have a least upper bound.
+
+In other words, types that do not have common supertypes,
+do not have common subtypes either (other than :math:`\BOT` or :math:`\REF~\BOT`), and vice versa.
+
+.. note::
+   Types from disjoint hierarchies can safely be represented in mutually incompatible ways in an implementation,
+   because their values can never flow to the same place.
