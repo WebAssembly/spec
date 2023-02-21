@@ -209,7 +209,7 @@ Note: Extending block types with index sets to allow initialization status to la
      - iff `$t = [t1*] -> [t2*]`
   - traps on `null`
 
-* With the [tail call proposal](https://github.com/WebAssembly/tail-call/blob/master/proposals/tail-call/Overview.md), there will also be `return_call_ref`:
+* `return_call_ref` tail-calls a function through a reference
   - `return_call_ref $t : [t1* (ref null $t)] -> [t2*]`
      - iff `$t = [t1*] -> [t2*]`
      - and `t2* <: C.result`

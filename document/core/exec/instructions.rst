@@ -2842,15 +2842,24 @@ Control Instructions
 :math:`\CALLREF~x`
 ..................
 
-1. Assert: due to :ref:`validation <valid-call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-call_ref>`, a null or :ref:`function reference <syntax-ref>` is on the top of the stack.
 
-2. Pop the value :math:`\REFFUNCADDR~a` from the stack.
+2. Pop the reference value :math:`r` from the stack.
 
-3. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
+3. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
+
+    a. Trap.
+
+4. Assert: due to :ref:`validation <valid-call_ref>`, :math:`r` is a :ref:`function reference <syntax-ref>`.
+
+5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
+
+6. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; (\REFFUNCADDR~a)~\CALLREF~x &\stepto& F; (\INVOKE~a)
+   F; (\REFFUNCADDR~a)~(\CALLREF~x) &\stepto& F; (\INVOKE~a) \\
+   F; (\REFNULL~\X{ht})~(\CALLREF~x) &\stepto& F; \TRAP \\
    \end{array}
 
 
@@ -2948,6 +2957,34 @@ Control Instructions
    \begin{array}{lcl@{\qquad}l}
    (\RETURNCALL~x) &\stepto& (\RETURNINVOKE~a)
      & (\iff (\CALL~x) \stepto (\INVOKE~a))
+   \end{array}
+
+
+.. _exec-return_call_ref:
+
+:math:`\RETURNCALLREF~x`
+........................
+
+1. Assert: due to :ref:`validation <valid-return_call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
+
+2. Pop the reference value :math:`r` from the stack.
+
+3. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
+
+    a. Trap.
+
+4. Assert: due to :ref:`validation <valid-call_ref>`, :math:`r` is a :ref:`function reference <syntax-ref>`.
+
+5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
+
+6. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~(\RETURNCALLREF~x) &\stepto& (\RETURNINVOKE~a)
+     & (\iff \val~(\CALLREF~x) \stepto (\INVOKE~a)) \\
+   \val~(\RETURNCALLREF~x) &\stepto& \TRAP
+     & (\iff \val~(\CALLREF~x) \stepto \TRAP) \\
    \end{array}
 
 

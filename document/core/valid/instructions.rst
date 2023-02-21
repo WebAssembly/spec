@@ -1618,6 +1618,29 @@ Control Instructions
    The |RETURNCALL| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
+.. _valid-return_call_ref:
+
+:math:`\RETURNCALLREF~x`
+........................
+
+* The type :math:`C.\CTYPES[x]` must be defined in the context.
+
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be the same as :math:`C.\CRETURN`.
+
+* Then the instruction is valid with type :math:`[t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]`.
+
+.. math::
+   \frac{
+     C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
+     \qquad
+     C.\CRETURN = [t_2^\ast]
+   }{
+     C \vdashinstr \CALLREF~x : [t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]
+   }
+
+
 .. _valid-return_call_indirect:
 
 :math:`\RETURNCALLINDIRECT~x~y`

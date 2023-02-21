@@ -657,8 +657,9 @@ Instructions in this group affect the flow of control.
      \RETURN \\&&|&
      \CALL~\funcidx \\&&|&
      \CALLREF~\typeidx \\&&|&
-     \CALLINDIRECT~\tableidx~\typeidx \\
+     \CALLINDIRECT~\tableidx~\typeidx \\&&|&
      \RETURNCALL~\funcidx \\&&|&
+     \RETURNCALLREF~\funcidx \\&&|&
      \RETURNCALLINDIRECT~\tableidx~\typeidx \\
    \end{array}
 
@@ -708,7 +709,7 @@ The |CALLINDIRECT| instruction calls a function indirectly through an operand in
 Since it may contain functions of heterogeneous type,
 the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's second immediate, and the call is aborted with a :ref:`trap <trap>` if it does not match.
 
-The |RETURNCALL| and |RETURNCALLINDIRECT| instructions are *tail-call* variants of the previous ones.
+The |RETURNCALL|, |RETURNCALLREF|, and |RETURNCALLINDIRECT| instructions are *tail-call* variants of the previous ones.
 That is, they first return from the current function before actually performing the respective call.
 It is guaranteed that no sequence of nested calls using only these instructions can cause resource exhaustion due to hitting an :ref:`implementation's limit <impl-exec>` on the number of active calls.
 

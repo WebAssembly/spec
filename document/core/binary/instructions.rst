@@ -71,6 +71,7 @@ Control Instructions
      \hex{12}~~x{:}\Bfuncidx &\Rightarrow& \RETURNCALL~x \\ &&|&
      \hex{13}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \RETURNCALLINDIRECT~x~y \\ &&|&
      \hex{14}~~x{:}\Btypeidx &\Rightarrow& \CALLREF~x \\ &&|&
+     \hex{15}~~x{:}\Btypeidx &\Rightarrow& \RETURNCALLREF~x \\ &&|&
      \hex{D4}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
      \hex{D6}~~l{:}\Blabelidx &\Rightarrow& \BRONNONNULL~l \\
    \end{array}

@@ -254,14 +254,13 @@ op:
   br_if <var>
   br_table <var>+
   br_on_null <var> <heap_type>
+  call <var>
+  call_ref <var>
+  call_indirect <var>? <func_type>
   return
   return_call <var>
-  return_call_indirect <func_type>
-  call <var>
-  call_indirect <var>? <func_type>
-  call_ref
-  return_call_ref
-  func.bind <func_type>
+  return_call_ref <var>
+  return_call_indirect <var>? <func_type>
   local.get <var>
   local.set <var>
   local.tee <var>
