@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version f043d3484, updated Fri Feb 17 10:53:48 2023 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="585bfa7e08ca1ef2556781707f0668731a0ab63d" name="document-revision">
+  <meta content="25b3df3e21324465fefd9aed2cf3901cfd76a7c1" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -793,25 +793,30 @@ The verification of WebAssembly type requirements is deferred to the
       <p><a data-link-type="dfn" href="#read-the-imports" id="ref-for-read-the-imports">Read the imports</a> of <var>module</var> with imports <var>importObject</var>, and let <var>imports</var> be the result.
 If this operation throws an exception, catch it, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject">reject</a> <var>promise</var> with the exception, and return <var>promise</var>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task①">Queue a task</a> to perform the following steps:</p>
+      <p>Run the following steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
       <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="#instantiate-the-core-of-a-webassembly-module" id="ref-for-instantiate-the-core-of-a-webassembly-module①">Instantiate the core of a WebAssembly module</a> <var>module</var> with <var>imports</var>, and let <var>instance</var> be the result.
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task①">Queue a task</a> to perform the following steps:
+Note: Implementation-specific work may be performed here.</p>
+        <ol>
+         <li data-md>
+          <p><a data-link-type="dfn" href="#instantiate-the-core-of-a-webassembly-module" id="ref-for-instantiate-the-core-of-a-webassembly-module①">Instantiate the core of a WebAssembly module</a> <var>module</var> with <var>imports</var>, and let <var>instance</var> be the result.
 If this throws an exception, catch it, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">reject</a> <var>promise</var> with the exception, and terminate these substeps.</p>
-       <li data-md>
-        <p>Let <var>instanceObject</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new">new</a> <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance②">Instance</a></code>.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="#initialize-an-instance-object" id="ref-for-initialize-an-instance-object">Initialize</a> <var>instanceObject</var> from <var>module</var> and <var>instance</var>.
+         <li data-md>
+          <p>Let <var>instanceObject</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new">new</a> <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance②">Instance</a></code>.</p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="#initialize-an-instance-object" id="ref-for-initialize-an-instance-object">Initialize</a> <var>instanceObject</var> from <var>module</var> and <var>instance</var>.
 If this throws an exception, catch it, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject②">reject</a> <var>promise</var> with the exception, and terminate these substeps.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve①">Resolve</a> <var>promise</var> with <var>instanceObject</var>.</p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve①">Resolve</a> <var>promise</var> with <var>instanceObject</var>.</p>
+        </ol>
       </ol>
      <li data-md>
       <p>Return <var>promise</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="instantiate">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="instantiate-a-webassembly-module">instantiate a WebAssembly module</dfn> from a <code class="idl"><a data-link-type="idl" href="#module" id="ref-for-module⑦">Module</a></code> <var>moduleObject</var> and imports <var>importObject</var>, perform the following steps: 
+     To <dfn data-dfn-type="dfn" data-noexport id="synchronously-instantiate-a-webassembly-module">synchronously instantiate a WebAssembly module<a class="self-link" href="#synchronously-instantiate-a-webassembly-module"></a></dfn> from a <code class="idl"><a data-link-type="idl" href="#module" id="ref-for-module⑦">Module</a></code> <var>moduleObject</var> and imports <var>importObject</var>, perform the following steps: 
     <ol>
      <li data-md>
       <p>Let <var>module</var> be <var>moduleObject</var>.[[Module]].</p>
@@ -836,14 +841,24 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
       <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-fulfillment" id="ref-for-upon-fulfillment">Upon fulfillment</a> of <var>promiseOfModule</var> with value <var>module</var>:</p>
       <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="#instantiate-a-webassembly-module" id="ref-for-instantiate-a-webassembly-module">Instantiate the WebAssembly module</a> <var>module</var> importing <var>importObject</var>, and let <var>instance</var> be the result.  If this throws an exception, catch it, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">reject</a> <var>promise</var> with the exception, and abort these substeps.</p>
+        <p><a data-link-type="dfn" href="#asynchronously-instantiate-a-webassembly-module" id="ref-for-asynchronously-instantiate-a-webassembly-module">Instantiate the WebAssembly module</a> <var>module</var> importing <var>importObject</var>, and let <var>innerPromise</var> be the result.</p>
        <li data-md>
-        <p>Let <var>result</var> be the <code class="idl"><a data-link-type="idl" href="#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a></code> value «[ "<code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-module" id="ref-for-dom-webassemblyinstantiatedsource-module">module</a></code>" → <var>module</var>, "<code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-instance" id="ref-for-dom-webassemblyinstantiatedsource-instance">instance</a></code>" → <var>instance</var> ]».</p>
+        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>innerPromise</var> with value <var>instance</var>.</p>
+        <ol>
+         <li data-md>
+          <p>Let <var>result</var> be the <code class="idl"><a data-link-type="idl" href="#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a></code> value «[ "<code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-module" id="ref-for-dom-webassemblyinstantiatedsource-module">module</a></code>" → <var>module</var>, "<code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-instance" id="ref-for-dom-webassemblyinstantiatedsource-instance">instance</a></code>" → <var>instance</var> ]».</p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve②">Resolve</a> <var>promise</var> with <var>result</var>.</p>
+        </ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve②">Resolve</a> <var>promise</var> with <var>result</var>.</p>
+        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> of <var>innerPromise</var> with reason <var>reason</var>:</p>
+        <ol>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">Reject</a> <var>promise</var> with <var>reason</var>.</p>
+        </ol>
       </ol>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> of <var>promiseOfModule</var> with reason <var>reason</var>:</p>
+      <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-rejection" id="ref-for-upon-rejection①">Upon rejection</a> of <var>promiseOfModule</var> with reason <var>reason</var>:</p>
       <ol>
        <li data-md>
         <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject④">Reject</a> <var>promise</var> with <var>reason</var>.</p>
@@ -851,7 +866,6 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p>Return <var>promise</var>.</p>
     </ol>
-    <p class="note" role="note"><span class="marker">Note:</span> It would be valid to perform certain parts of the instantiation <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>, but several parts need to happen in the event loop, including JavaScript operations to access the <var>importObject</var> and execution of the start function.</p>
    </div>
    <div class="algorithm" data-algorithm="instantiate(bytes, importObject)" data-algorithm-for="WebAssembly">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export data-lt="instantiate(bytes, importObject)|instantiate(bytes)" id="dom-webassembly-instantiate"><code>instantiate(<var>bytes</var>, <var>importObject</var>)</code></dfn> method, when invoked, performs the following steps: 
@@ -868,7 +882,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export data-lt="instantiate(moduleObject, importObject)|instantiate(moduleObject)" id="dom-webassembly-instantiate-moduleobject-importobject"><code>instantiate(<var>moduleObject</var>, <var>importObject</var>)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>
-      <p><a data-link-type="dfn" href="#asynchronously-instantiate-a-webassembly-module" id="ref-for-asynchronously-instantiate-a-webassembly-module">Asynchronously instantiate the WebAssembly module</a> <var>moduleObject</var> importing <var>importObject</var>, and return the result.</p>
+      <p><a data-link-type="dfn" href="#asynchronously-instantiate-a-webassembly-module" id="ref-for-asynchronously-instantiate-a-webassembly-module①">Asynchronously instantiate the WebAssembly module</a> <var>moduleObject</var> importing <var>importObject</var>, and return the result.</p>
     </ol>
    </div>
    <p class="note" role="note"><span class="marker">Note:</span> A follow-on streaming API is documented in the <a href="https://webassembly.github.io/spec/web-api/index.html">WebAssembly Web API</a>.</p>
@@ -994,6 +1008,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p>Set <strong>this</strong>.[[Bytes]] to <var>stableBytes</var>.</p>
     </ol>
+    <p class="note" role="note"><span class="marker">Note:</span> Some implementations enforce a size limitation on <var>bytes</var>. Use of this API is discouraged, in favor of asynchronous APIs.</p>
    </div>
    <h3 class="heading settled" data-level="4.2" id="instances"><span class="secno">4.2. </span><span class="content">Instances</span><a class="self-link" href="#instances"></a></h3>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNamespace" id="ref-for-LegacyNamespace①"><c- g>LegacyNamespace</c-></a>=<a data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly①"><c- n>WebAssembly</c-></a>, Exposed=*]
@@ -1014,6 +1029,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p><a data-link-type="dfn" href="#initialize-an-instance-object" id="ref-for-initialize-an-instance-object②">Initialize</a> <strong>this</strong> from <var>module</var> and <var>instance</var>.</p>
     </ol>
+    <p class="note" role="note"><span class="marker">Note:</span> The use of this synchronous API is discouraged, as some implementations sometimes do long-running compilation work when instantiating.</p>
    </div>
    <div class="algorithm" data-algorithm="exports" data-algorithm-for="Instance"> The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Instance" data-dfn-type="attribute" data-export id="dom-instance-exports"><code>exports</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance④">Instance</a></code> returns <strong>this</strong>.[[Exports]]. </div>
    <h3 class="heading settled" data-level="4.3" id="memories"><span class="secno">4.3. </span><span class="content">Memories</span><a class="self-link" href="#memories"></a></h3>
@@ -2141,7 +2157,6 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#dom-instance-instance">Instance(module)</a><span>, in § 4.2</span>
    <li><a href="#dom-instance-instance">Instance(module, importObject)</a><span>, in § 4.2</span>
    <li><a href="#instantiate-a-promise-of-a-module">instantiate a promise of a module</a><span>, in § 4</span>
-   <li><a href="#instantiate-a-webassembly-module">instantiate a WebAssembly module</a><span>, in § 4</span>
    <li><a href="#dom-webassembly-instantiate">instantiate(bytes)</a><span>, in § 4</span>
    <li><a href="#dom-webassembly-instantiate">instantiate(bytes, importObject)</a><span>, in § 4</span>
    <li><a href="#dom-webassembly-instantiate-moduleobject-importobject">instantiate(moduleObject)</a><span>, in § 4</span>
@@ -2192,6 +2207,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#dom-table-set">set(index)</a><span>, in § 4.4</span>
    <li><a href="#dom-table-set">set(index, value)</a><span>, in § 4.4</span>
    <li><a href="#string-value-of-the-extern-type">string value of the extern type</a><span>, in § 4.1</span>
+   <li><a href="#synchronously-instantiate-a-webassembly-module">synchronously instantiate a WebAssembly module</a><span>, in § 4</span>
    <li><a href="#dom-importexportkind-table">"table"</a><span>, in § 4.1</span>
    <li><a href="#table">Table</a><span>, in § 4.4</span>
    <li><a href="#dom-table-table">Table(descriptor)</a><span>, in § 4.4</span>
@@ -3240,13 +3256,13 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside aria-labelledby="infopaneltitle-for-f5ca5e20b5517a5008ecab4bb1349e91" class="dfn-panel" data-for="f5ca5e20b5517a5008ecab4bb1349e91" id="infopanel-for-f5ca5e20b5517a5008ecab4bb1349e91">
    <span id="infopaneltitle-for-f5ca5e20b5517a5008ecab4bb1349e91" style="display:none">Info about the 'upon fulfillment' external reference.</span><a href="https://webidl.spec.whatwg.org/#upon-fulfillment">https://webidl.spec.whatwg.org/#upon-fulfillment</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-upon-fulfillment">4. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-upon-fulfillment">4. The WebAssembly Namespace</a> <a href="#ref-for-upon-fulfillment①">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fa4b9722c62694623b5c8d8781bef7a7" class="dfn-panel" data-for="fa4b9722c62694623b5c8d8781bef7a7" id="infopanel-for-fa4b9722c62694623b5c8d8781bef7a7">
    <span id="infopaneltitle-for-fa4b9722c62694623b5c8d8781bef7a7" style="display:none">Info about the 'upon rejection' external reference.</span><a href="https://webidl.spec.whatwg.org/#upon-rejection">https://webidl.spec.whatwg.org/#upon-rejection</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-upon-rejection">4. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-upon-rejection">4. The WebAssembly Namespace</a> <a href="#ref-for-upon-rejection①">(2)</a>
    </ul>
   </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
@@ -3721,13 +3737,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <aside aria-labelledby="infopaneltitle-for-asynchronously-instantiate-a-webassembly-module" class="dfn-panel" data-for="asynchronously-instantiate-a-webassembly-module" id="infopanel-for-asynchronously-instantiate-a-webassembly-module">
    <span id="infopaneltitle-for-asynchronously-instantiate-a-webassembly-module" style="display:none">Info about the 'asynchronously instantiate a WebAssembly module' definition.</span><b><a href="#asynchronously-instantiate-a-webassembly-module">#asynchronously-instantiate-a-webassembly-module</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-asynchronously-instantiate-a-webassembly-module">4. The WebAssembly Namespace</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-instantiate-a-webassembly-module" class="dfn-panel" data-for="instantiate-a-webassembly-module" id="infopanel-for-instantiate-a-webassembly-module">
-   <span id="infopaneltitle-for-instantiate-a-webassembly-module" style="display:none">Info about the 'instantiate a WebAssembly module' definition.</span><b><a href="#instantiate-a-webassembly-module">#instantiate-a-webassembly-module</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-instantiate-a-webassembly-module">4. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-asynchronously-instantiate-a-webassembly-module">4. The WebAssembly Namespace</a> <a href="#ref-for-asynchronously-instantiate-a-webassembly-module①">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-instantiate-a-promise-of-a-module" class="dfn-panel" data-for="instantiate-a-promise-of-a-module" id="infopanel-for-instantiate-a-promise-of-a-module">
