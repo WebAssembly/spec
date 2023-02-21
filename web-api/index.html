@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly Web API</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version 2fb26b4f8, updated Thu Feb 16 11:34:18 2023 -0800" name="generator">
+  <meta content="Bikeshed version f043d3484, updated Fri Feb 17 10:53:48 2023 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-2/" rel="canonical">
-  <meta content="51ff50a1f4f580e8d3bc185fd83479fdbb62ca7a" name="document-revision">
+  <meta content="e8a83b22635281a62731df2dcd0488445f71744f" name="document-revision">
 <style>/* style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -106,10 +106,10 @@ figcaption:not(.no-marker)::before {
 .dfn-panel {
     position: absolute;
     z-index: 35;
-    height: auto;
-    width: -webkit-fit-content;
-    width: fit-content;
+    width: 20em;
+    min-width: min-content;
     max-width: 300px;
+    height: auto;
     max-height: 500px;
     overflow: auto;
     padding: 0.5em 0.75em;
@@ -117,6 +117,7 @@ figcaption:not(.no-marker)::before {
     background: var(--dfnpanel-bg);
     color: var(--dfnpanel-text);
     border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
 }
 .dfn-panel:not(.on) { display: none; }
 .dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
@@ -296,7 +297,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-02-17">17 February 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-02-21">21 February 2023</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -660,255 +661,255 @@ review, approval, and registration with IANA.</p>
    <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source)</a><span>, in § 1</span>
    <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source, importObject)</a><span>, in § 1</span>
   </ul>
-  <aside aria-labelledby="infopaneltitle-for-c95026beaa8440767d9b07e67366e8a7" class="dfn-panel" data-for="c95026beaa8440767d9b07e67366e8a7" id="infopanel-for-c95026beaa8440767d9b07e67366e8a7" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-c95026beaa8440767d9b07e67366e8a7" class="dfn-panel" data-for="c95026beaa8440767d9b07e67366e8a7" id="infopanel-for-c95026beaa8440767d9b07e67366e8a7">
    <span id="infopaneltitle-for-c95026beaa8440767d9b07e67366e8a7" style="display:none">Info about the 'ArrayBuffer' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects">https://tc39.github.io/ecma262/#sec-arraybuffer-objects</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-arraybuffer-objects">1. Streaming Module Compilation and Instantiation</a>
     <li><a href="#ref-for-sec-arraybuffer-objects①">3. Developer-Facing Display Conventions</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-28f48920b78e327d90225af978074155" class="dfn-panel" data-for="28f48920b78e327d90225af978074155" id="infopanel-for-28f48920b78e327d90225af978074155" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-28f48920b78e327d90225af978074155" class="dfn-panel" data-for="28f48920b78e327d90225af978074155" id="infopanel-for-28f48920b78e327d90225af978074155">
    <span id="infopaneltitle-for-28f48920b78e327d90225af978074155" style="display:none">Info about the 'TypeError' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror①">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror②">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror③">(4)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror④">(5)</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-2b69410046aab674d5f0546bec85d1b3" class="dfn-panel" data-for="2b69410046aab674d5f0546bec85d1b3" id="infopanel-for-2b69410046aab674d5f0546bec85d1b3" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-2b69410046aab674d5f0546bec85d1b3" class="dfn-panel" data-for="2b69410046aab674d5f0546bec85d1b3" id="infopanel-for-2b69410046aab674d5f0546bec85d1b3">
    <span id="infopaneltitle-for-2b69410046aab674d5f0546bec85d1b3" style="display:none">Info about the 'agent cluster' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-agent-clusters">https://tc39.github.io/ecma262/#sec-agent-clusters</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-agent-clusters">2. Serialization</a> <a href="#ref-for-sec-agent-clusters①">(2)</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-6c9eecddeb7e35c49eca59bce9015c67" class="dfn-panel" data-for="6c9eecddeb7e35c49eca59bce9015c67" id="infopanel-for-6c9eecddeb7e35c49eca59bce9015c67" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-6c9eecddeb7e35c49eca59bce9015c67" class="dfn-panel" data-for="6c9eecddeb7e35c49eca59bce9015c67" id="infopanel-for-6c9eecddeb7e35c49eca59bce9015c67">
    <span id="infopaneltitle-for-6c9eecddeb7e35c49eca59bce9015c67" style="display:none">Info about the 'current realm' external reference.</span><a href="https://tc39.github.io/ecma262/#current-realm">https://tc39.github.io/ecma262/#current-realm</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-current-realm">2. Serialization</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-df56c9933bfdc177c891bb711f259407" class="dfn-panel" data-for="df56c9933bfdc177c891bb711f259407" id="infopanel-for-df56c9933bfdc177c891bb711f259407" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-df56c9933bfdc177c891bb711f259407" class="dfn-panel" data-for="df56c9933bfdc177c891bb711f259407" id="infopanel-for-df56c9933bfdc177c891bb711f259407">
    <span id="infopaneltitle-for-df56c9933bfdc177c891bb711f259407" style="display:none">Info about the 'Response' external reference.</span><a href="https://fetch.spec.whatwg.org/#response">https://fetch.spec.whatwg.org/#response</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-response">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-response①">(2)</a> <a href="#ref-for-response②">(3)</a> <a href="#ref-for-response③">(4)</a> <a href="#ref-for-response④">(5)</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-0b6fcf799cb7ea0359e0702123ab61e5" class="dfn-panel" data-for="0b6fcf799cb7ea0359e0702123ab61e5" id="infopanel-for-0b6fcf799cb7ea0359e0702123ab61e5" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-0b6fcf799cb7ea0359e0702123ab61e5" class="dfn-panel" data-for="0b6fcf799cb7ea0359e0702123ab61e5" id="infopanel-for-0b6fcf799cb7ea0359e0702123ab61e5">
    <span id="infopaneltitle-for-0b6fcf799cb7ea0359e0702123ab61e5" style="display:none">Info about the 'consume body' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-body-consume-body">https://fetch.spec.whatwg.org/#concept-body-consume-body</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-body-consume-body">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-6ef0be99a5b17cb515c6816ad5548e89" class="dfn-panel" data-for="6ef0be99a5b17cb515c6816ad5548e89" id="infopanel-for-6ef0be99a5b17cb515c6816ad5548e89" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-6ef0be99a5b17cb515c6816ad5548e89" class="dfn-panel" data-for="6ef0be99a5b17cb515c6816ad5548e89" id="infopanel-for-6ef0be99a5b17cb515c6816ad5548e89">
    <span id="infopaneltitle-for-6ef0be99a5b17cb515c6816ad5548e89" style="display:none">Info about the 'get' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-header-list-get">https://fetch.spec.whatwg.org/#concept-header-list-get</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-header-list-get">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-d94cb5e6252c9158478ebbe8a624e99c" class="dfn-panel" data-for="d94cb5e6252c9158478ebbe8a624e99c" id="infopanel-for-d94cb5e6252c9158478ebbe8a624e99c" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-d94cb5e6252c9158478ebbe8a624e99c" class="dfn-panel" data-for="d94cb5e6252c9158478ebbe8a624e99c" id="infopanel-for-d94cb5e6252c9158478ebbe8a624e99c">
    <span id="infopaneltitle-for-d94cb5e6252c9158478ebbe8a624e99c" style="display:none">Info about the 'header list' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-response-header-list">https://fetch.spec.whatwg.org/#concept-response-header-list</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-response-header-list">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-7fc2d90e004303dc3283c8fec6edc2e1" class="dfn-panel" data-for="7fc2d90e004303dc3283c8fec6edc2e1" id="infopanel-for-7fc2d90e004303dc3283c8fec6edc2e1" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-7fc2d90e004303dc3283c8fec6edc2e1" class="dfn-panel" data-for="7fc2d90e004303dc3283c8fec6edc2e1" id="infopanel-for-7fc2d90e004303dc3283c8fec6edc2e1">
    <span id="infopaneltitle-for-7fc2d90e004303dc3283c8fec6edc2e1" style="display:none">Info about the 'http tab or space byte' external reference.</span><a href="https://fetch.spec.whatwg.org/#http-tab-or-space-byte">https://fetch.spec.whatwg.org/#http-tab-or-space-byte</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-http-tab-or-space-byte">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-4c5f8fcb3d3bc6012b505bef39f38ada" class="dfn-panel" data-for="4c5f8fcb3d3bc6012b505bef39f38ada" id="infopanel-for-4c5f8fcb3d3bc6012b505bef39f38ada" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-4c5f8fcb3d3bc6012b505bef39f38ada" class="dfn-panel" data-for="4c5f8fcb3d3bc6012b505bef39f38ada" id="infopanel-for-4c5f8fcb3d3bc6012b505bef39f38ada">
    <span id="infopaneltitle-for-4c5f8fcb3d3bc6012b505bef39f38ada" style="display:none">Info about the 'ok status' external reference.</span><a href="https://fetch.spec.whatwg.org/#ok-status">https://fetch.spec.whatwg.org/#ok-status</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-ok-status">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-ok-status①">(2)</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-12a5f639c62d2f0bd5e5e8ab36848416" class="dfn-panel" data-for="12a5f639c62d2f0bd5e5e8ab36848416" id="infopanel-for-12a5f639c62d2f0bd5e5e8ab36848416" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-12a5f639c62d2f0bd5e5e8ab36848416" class="dfn-panel" data-for="12a5f639c62d2f0bd5e5e8ab36848416" id="infopanel-for-12a5f639c62d2f0bd5e5e8ab36848416">
    <span id="infopaneltitle-for-12a5f639c62d2f0bd5e5e8ab36848416" style="display:none">Info about the 'response' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-response-response">https://fetch.spec.whatwg.org/#concept-response-response</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-response-response">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-1b6fecbab51caa95d9e527debe16b0b0" class="dfn-panel" data-for="1b6fecbab51caa95d9e527debe16b0b0" id="infopanel-for-1b6fecbab51caa95d9e527debe16b0b0" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-1b6fecbab51caa95d9e527debe16b0b0" class="dfn-panel" data-for="1b6fecbab51caa95d9e527debe16b0b0" id="infopanel-for-1b6fecbab51caa95d9e527debe16b0b0">
    <span id="infopaneltitle-for-1b6fecbab51caa95d9e527debe16b0b0" style="display:none">Info about the 'status' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-response-status">https://fetch.spec.whatwg.org/#concept-response-status</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-response-status">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-d920b917b35b57f8b17f0e92fc7e202a" class="dfn-panel" data-for="d920b917b35b57f8b17f0e92fc7e202a" id="infopanel-for-d920b917b35b57f8b17f0e92fc7e202a" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-d920b917b35b57f8b17f0e92fc7e202a" class="dfn-panel" data-for="d920b917b35b57f8b17f0e92fc7e202a" id="infopanel-for-d920b917b35b57f8b17f0e92fc7e202a">
    <span id="infopaneltitle-for-d920b917b35b57f8b17f0e92fc7e202a" style="display:none">Info about the 'Serializable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#serializable">https://html.spec.whatwg.org/multipage/structured-data.html#serializable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-serializable">2. Serialization</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-b422b1bbdd20533a7dc8ad39fa0b5f84" class="dfn-panel" data-for="b422b1bbdd20533a7dc8ad39fa0b5f84" id="infopanel-for-b422b1bbdd20533a7dc8ad39fa0b5f84" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-b422b1bbdd20533a7dc8ad39fa0b5f84" class="dfn-panel" data-for="b422b1bbdd20533a7dc8ad39fa0b5f84" id="infopanel-for-b422b1bbdd20533a7dc8ad39fa0b5f84">
    <span id="infopaneltitle-for-b422b1bbdd20533a7dc8ad39fa0b5f84" style="display:none">Info about the 'cors-same-origin' external reference.</span><a href="https://html.spec.whatwg.org/#cors-same-origin">https://html.spec.whatwg.org/#cors-same-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-cors-same-origin">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-cors-same-origin①">(2)</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-3ad3a8594a35249376ff51fe520fe1ce" class="dfn-panel" data-for="3ad3a8594a35249376ff51fe520fe1ce" id="infopanel-for-3ad3a8594a35249376ff51fe520fe1ce" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-3ad3a8594a35249376ff51fe520fe1ce" class="dfn-panel" data-for="3ad3a8594a35249376ff51fe520fe1ce" id="infopanel-for-3ad3a8594a35249376ff51fe520fe1ce">
    <span id="infopaneltitle-for-3ad3a8594a35249376ff51fe520fe1ce" style="display:none">Info about the 'deserialization steps' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps">https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-deserialization-steps">2. Serialization</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-a62bba5e3257149e6f7839babb61b77a" class="dfn-panel" data-for="a62bba5e3257149e6f7839babb61b77a" id="infopanel-for-a62bba5e3257149e6f7839babb61b77a" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-a62bba5e3257149e6f7839babb61b77a" class="dfn-panel" data-for="a62bba5e3257149e6f7839babb61b77a" id="infopanel-for-a62bba5e3257149e6f7839babb61b77a">
    <span id="infopaneltitle-for-a62bba5e3257149e6f7839babb61b77a" style="display:none">Info about the 'networking task source' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source">https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-networking-task-source">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-86e3b084870f52f55c6f2f6acf81fc1c" class="dfn-panel" data-for="86e3b084870f52f55c6f2f6acf81fc1c" id="infopanel-for-86e3b084870f52f55c6f2f6acf81fc1c" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-86e3b084870f52f55c6f2f6acf81fc1c" class="dfn-panel" data-for="86e3b084870f52f55c6f2f6acf81fc1c" id="infopanel-for-86e3b084870f52f55c6f2f6acf81fc1c">
    <span id="infopaneltitle-for-86e3b084870f52f55c6f2f6acf81fc1c" style="display:none">Info about the 'serialization steps' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps">https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-serialization-steps">2. Serialization</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-f203d50266622c51007b87c613ac606a" class="dfn-panel" data-for="f203d50266622c51007b87c613ac606a" id="infopanel-for-f203d50266622c51007b87c613ac606a" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-f203d50266622c51007b87c613ac606a" class="dfn-panel" data-for="f203d50266622c51007b87c613ac606a" id="infopanel-for-f203d50266622c51007b87c613ac606a">
    <span id="infopaneltitle-for-f203d50266622c51007b87c613ac606a" style="display:none">Info about the 'sub-deserialization' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization">https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sub-deserialization">2. Serialization</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-322c2e013a81d54c9fafc08d176f786a" class="dfn-panel" data-for="322c2e013a81d54c9fafc08d176f786a" id="infopanel-for-322c2e013a81d54c9fafc08d176f786a" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-322c2e013a81d54c9fafc08d176f786a" class="dfn-panel" data-for="322c2e013a81d54c9fafc08d176f786a" id="infopanel-for-322c2e013a81d54c9fafc08d176f786a">
    <span id="infopaneltitle-for-322c2e013a81d54c9fafc08d176f786a" style="display:none">Info about the 'sub-serialization' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization">https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sub-serialization">2. Serialization</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-c79a743632b2700b6247337edd905ce4" class="dfn-panel" data-for="c79a743632b2700b6247337edd905ce4" id="infopanel-for-c79a743632b2700b6247337edd905ce4" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-c79a743632b2700b6247337edd905ce4" class="dfn-panel" data-for="c79a743632b2700b6247337edd905ce4" id="infopanel-for-c79a743632b2700b6247337edd905ce4">
    <span id="infopaneltitle-for-c79a743632b2700b6247337edd905ce4" style="display:none">Info about the 'byte-case-insensitive' external reference.</span><a href="https://infra.spec.whatwg.org/#byte-case-insensitive">https://infra.spec.whatwg.org/#byte-case-insensitive</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-byte-case-insensitive">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-472069b9d8a16861fa9664c9792a7131" class="dfn-panel" data-for="472069b9d8a16861fa9664c9792a7131" id="infopanel-for-472069b9d8a16861fa9664c9792a7131" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-472069b9d8a16861fa9664c9792a7131" class="dfn-panel" data-for="472069b9d8a16861fa9664c9792a7131" id="infopanel-for-472069b9d8a16861fa9664c9792a7131">
    <span id="infopaneltitle-for-472069b9d8a16861fa9664c9792a7131" style="display:none">Info about the 'CompileError' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror">https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-exceptiondef-compileerror">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-3140fd7e0da5c570743bffe1d66c7ce3" class="dfn-panel" data-for="3140fd7e0da5c570743bffe1d66c7ce3" id="infopanel-for-3140fd7e0da5c570743bffe1d66c7ce3" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-3140fd7e0da5c570743bffe1d66c7ce3" class="dfn-panel" data-for="3140fd7e0da5c570743bffe1d66c7ce3" id="infopanel-for-3140fd7e0da5c570743bffe1d66c7ce3">
    <span id="infopaneltitle-for-3140fd7e0da5c570743bffe1d66c7ce3" style="display:none">Info about the 'Module' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#module">https://webassembly.github.io/spec/js-api/#module</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-module">1. Streaming Module Compilation and Instantiation</a>
     <li><a href="#ref-for-module①">2. Serialization</a> <a href="#ref-for-module②">(2)</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-26e990cf3dbe445b574eee9bcf3ccd63" class="dfn-panel" data-for="26e990cf3dbe445b574eee9bcf3ccd63" id="infopanel-for-26e990cf3dbe445b574eee9bcf3ccd63" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-26e990cf3dbe445b574eee9bcf3ccd63" class="dfn-panel" data-for="26e990cf3dbe445b574eee9bcf3ccd63" id="infopanel-for-26e990cf3dbe445b574eee9bcf3ccd63">
    <span id="infopaneltitle-for-26e990cf3dbe445b574eee9bcf3ccd63" style="display:none">Info about the 'WebAssembly' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly">https://webassembly.github.io/spec/js-api/#namespacedef-webassembly</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-namespacedef-webassembly">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-1972f7e99f285e8c7a05bf5639894d0c" class="dfn-panel" data-for="1972f7e99f285e8c7a05bf5639894d0c" id="infopanel-for-1972f7e99f285e8c7a05bf5639894d0c" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-1972f7e99f285e8c7a05bf5639894d0c" class="dfn-panel" data-for="1972f7e99f285e8c7a05bf5639894d0c" id="infopanel-for-1972f7e99f285e8c7a05bf5639894d0c">
    <span id="infopaneltitle-for-1972f7e99f285e8c7a05bf5639894d0c" style="display:none">Info about the 'WebAssemblyInstantiatedSource' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource">https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dictdef-webassemblyinstantiatedsource">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-a1183097e07243fa99953ed37c09456c" class="dfn-panel" data-for="a1183097e07243fa99953ed37c09456c" id="infopanel-for-a1183097e07243fa99953ed37c09456c" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-a1183097e07243fa99953ed37c09456c" class="dfn-panel" data-for="a1183097e07243fa99953ed37c09456c" id="infopanel-for-a1183097e07243fa99953ed37c09456c">
    <span id="infopaneltitle-for-a1183097e07243fa99953ed37c09456c" style="display:none">Info about the 'asynchronously compile a webassembly module' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module">https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-asynchronously-compile-a-webassembly-module">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-ee14d9890846b52d2e6de0acc27a99d4" class="dfn-panel" data-for="ee14d9890846b52d2e6de0acc27a99d4" id="infopanel-for-ee14d9890846b52d2e6de0acc27a99d4" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-ee14d9890846b52d2e6de0acc27a99d4" class="dfn-panel" data-for="ee14d9890846b52d2e6de0acc27a99d4" id="infopanel-for-ee14d9890846b52d2e6de0acc27a99d4">
    <span id="infopaneltitle-for-ee14d9890846b52d2e6de0acc27a99d4" style="display:none">Info about the 'compile a webassembly module' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module">https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-compile-a-webassembly-module">2. Serialization</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-3ed910d68fafd94810fd8ed644f9a0aa" class="dfn-panel" data-for="3ed910d68fafd94810fd8ed644f9a0aa" id="infopanel-for-3ed910d68fafd94810fd8ed644f9a0aa" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-3ed910d68fafd94810fd8ed644f9a0aa" class="dfn-panel" data-for="3ed910d68fafd94810fd8ed644f9a0aa" id="infopanel-for-3ed910d68fafd94810fd8ed644f9a0aa">
    <span id="infopaneltitle-for-3ed910d68fafd94810fd8ed644f9a0aa" style="display:none">Info about the 'exported function' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#exported-function">https://webassembly.github.io/spec/js-api/#exported-function</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-exported-function">3. Developer-Facing Display Conventions</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-6faea3f0afd7563f930d0b2a1fed49c1" class="dfn-panel" data-for="6faea3f0afd7563f930d0b2a1fed49c1" id="infopanel-for-6faea3f0afd7563f930d0b2a1fed49c1" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-6faea3f0afd7563f930d0b2a1fed49c1" class="dfn-panel" data-for="6faea3f0afd7563f930d0b2a1fed49c1" id="infopanel-for-6faea3f0afd7563f930d0b2a1fed49c1">
    <span id="infopaneltitle-for-6faea3f0afd7563f930d0b2a1fed49c1" style="display:none">Info about the 'instantiate' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate">https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-webassembly-instantiate">3. Developer-Facing Display Conventions</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-5ac1912add7c40a9b5570acfcbed8007" class="dfn-panel" data-for="5ac1912add7c40a9b5570acfcbed8007" id="infopanel-for-5ac1912add7c40a9b5570acfcbed8007" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-5ac1912add7c40a9b5570acfcbed8007" class="dfn-panel" data-for="5ac1912add7c40a9b5570acfcbed8007" id="infopanel-for-5ac1912add7c40a9b5570acfcbed8007">
    <span id="infopaneltitle-for-5ac1912add7c40a9b5570acfcbed8007" style="display:none">Info about the 'instantiate a promise of a module' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module">https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-instantiate-a-promise-of-a-module">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-03f5a516ed2db63b6b9fe3530ba53ba5" class="dfn-panel" data-for="03f5a516ed2db63b6b9fe3530ba53ba5" id="infopanel-for-03f5a516ed2db63b6b9fe3530ba53ba5" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-03f5a516ed2db63b6b9fe3530ba53ba5" class="dfn-panel" data-for="03f5a516ed2db63b6b9fe3530ba53ba5" id="infopanel-for-03f5a516ed2db63b6b9fe3530ba53ba5">
    <span id="infopaneltitle-for-03f5a516ed2db63b6b9fe3530ba53ba5" style="display:none">Info about the 'function index' external reference.</span><a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx">https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-syntax-funcidx">3. Developer-Facing Display Conventions</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-43f4ac33ddf496432bbe4bcbb4dc3ef9" class="dfn-panel" data-for="43f4ac33ddf496432bbe4bcbb4dc3ef9" id="infopanel-for-43f4ac33ddf496432bbe4bcbb4dc3ef9" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-43f4ac33ddf496432bbe4bcbb4dc3ef9" class="dfn-panel" data-for="43f4ac33ddf496432bbe4bcbb4dc3ef9" id="infopanel-for-43f4ac33ddf496432bbe4bcbb4dc3ef9">
    <span id="infopaneltitle-for-43f4ac33ddf496432bbe4bcbb4dc3ef9" style="display:none">Info about the 'name section' external reference.</span><a href="https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec">https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-binary-namesec">3. Developer-Facing Display Conventions</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-0ab204fb9cc9a746edaff83c0db0740a" class="dfn-panel" data-for="0ab204fb9cc9a746edaff83c0db0740a" id="infopanel-for-0ab204fb9cc9a746edaff83c0db0740a" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-0ab204fb9cc9a746edaff83c0db0740a" class="dfn-panel" data-for="0ab204fb9cc9a746edaff83c0db0740a" id="infopanel-for-0ab204fb9cc9a746edaff83c0db0740a">
    <span id="infopaneltitle-for-0ab204fb9cc9a746edaff83c0db0740a" style="display:none">Info about the 'DOMException' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-DOMException">https://webidl.spec.whatwg.org/#idl-DOMException</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-DOMException">2. Serialization</a> <a href="#ref-for-idl-DOMException①">(2)</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-1af5e3e985ab9044ac30e5cd83bb4545" class="dfn-panel" data-for="1af5e3e985ab9044ac30e5cd83bb4545" id="infopanel-for-1af5e3e985ab9044ac30e5cd83bb4545" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-1af5e3e985ab9044ac30e5cd83bb4545" class="dfn-panel" data-for="1af5e3e985ab9044ac30e5cd83bb4545" id="infopanel-for-1af5e3e985ab9044ac30e5cd83bb4545">
    <span id="infopaneltitle-for-1af5e3e985ab9044ac30e5cd83bb4545" style="display:none">Info about the 'DataCloneError' external reference.</span><a href="https://webidl.spec.whatwg.org/#datacloneerror">https://webidl.spec.whatwg.org/#datacloneerror</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-datacloneerror">2. Serialization</a> <a href="#ref-for-datacloneerror①">(2)</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-dde049eb112f043fc45407ec0d4cb457" class="dfn-panel" data-for="dde049eb112f043fc45407ec0d4cb457" id="infopanel-for-dde049eb112f043fc45407ec0d4cb457" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-dde049eb112f043fc45407ec0d4cb457" class="dfn-panel" data-for="dde049eb112f043fc45407ec0d4cb457" id="infopanel-for-dde049eb112f043fc45407ec0d4cb457">
    <span id="infopaneltitle-for-dde049eb112f043fc45407ec0d4cb457" style="display:none">Info about the 'Exposed' external reference.</span><a href="https://webidl.spec.whatwg.org/#Exposed">https://webidl.spec.whatwg.org/#Exposed</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-Exposed">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-93669c631ec1ef8e696b4c083bdbe12c" class="dfn-panel" data-for="93669c631ec1ef8e696b4c083bdbe12c" id="infopanel-for-93669c631ec1ef8e696b4c083bdbe12c" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-93669c631ec1ef8e696b4c083bdbe12c" class="dfn-panel" data-for="93669c631ec1ef8e696b4c083bdbe12c" id="infopanel-for-93669c631ec1ef8e696b4c083bdbe12c">
    <span id="infopaneltitle-for-93669c631ec1ef8e696b4c083bdbe12c" style="display:none">Info about the 'Promise' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-promise">https://webidl.spec.whatwg.org/#idl-promise</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-promise">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-idl-promise①">(2)</a> <a href="#ref-for-idl-promise②">(3)</a> <a href="#ref-for-idl-promise③">(4)</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-bbe33fc7ac016834e4aaddbfd1b084a1" class="dfn-panel" data-for="bbe33fc7ac016834e4aaddbfd1b084a1" id="infopanel-for-bbe33fc7ac016834e4aaddbfd1b084a1" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-bbe33fc7ac016834e4aaddbfd1b084a1" class="dfn-panel" data-for="bbe33fc7ac016834e4aaddbfd1b084a1" id="infopanel-for-bbe33fc7ac016834e4aaddbfd1b084a1">
    <span id="infopaneltitle-for-bbe33fc7ac016834e4aaddbfd1b084a1" style="display:none">Info about the 'a new promise' external reference.</span><a href="https://webidl.spec.whatwg.org/#a-new-promise">https://webidl.spec.whatwg.org/#a-new-promise</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-a-new-promise">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-0603a0691b03d199124b442d2d3e4f87" class="dfn-panel" data-for="0603a0691b03d199124b442d2d3e4f87" id="infopanel-for-0603a0691b03d199124b442d2d3e4f87" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-0603a0691b03d199124b442d2d3e4f87" class="dfn-panel" data-for="0603a0691b03d199124b442d2d3e4f87" id="infopanel-for-0603a0691b03d199124b442d2d3e4f87">
    <span id="infopaneltitle-for-0603a0691b03d199124b442d2d3e4f87" style="display:none">Info about the 'get a copy of the buffer source' external reference.</span><a href="https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy">https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-get-buffer-source-copy">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-5039223412f0d0a24ee17570f82d3d59" class="dfn-panel" data-for="5039223412f0d0a24ee17570f82d3d59" id="infopanel-for-5039223412f0d0a24ee17570f82d3d59" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-5039223412f0d0a24ee17570f82d3d59" class="dfn-panel" data-for="5039223412f0d0a24ee17570f82d3d59" id="infopanel-for-5039223412f0d0a24ee17570f82d3d59">
    <span id="infopaneltitle-for-5039223412f0d0a24ee17570f82d3d59" style="display:none">Info about the 'object' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-object">https://webidl.spec.whatwg.org/#idl-object</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-object">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-f7204c0306e7ffcb24c31adf6e629e1d" class="dfn-panel" data-for="f7204c0306e7ffcb24c31adf6e629e1d" id="infopanel-for-f7204c0306e7ffcb24c31adf6e629e1d" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-f7204c0306e7ffcb24c31adf6e629e1d" class="dfn-panel" data-for="f7204c0306e7ffcb24c31adf6e629e1d" id="infopanel-for-f7204c0306e7ffcb24c31adf6e629e1d">
    <span id="infopaneltitle-for-f7204c0306e7ffcb24c31adf6e629e1d" style="display:none">Info about the 'reject' external reference.</span><a href="https://webidl.spec.whatwg.org/#reject">https://webidl.spec.whatwg.org/#reject</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-reject">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-reject①">(2)</a> <a href="#ref-for-reject②">(3)</a> <a href="#ref-for-reject③">(4)</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-f4f973f92274819781816b033aea1f11" class="dfn-panel" data-for="f4f973f92274819781816b033aea1f11" id="infopanel-for-f4f973f92274819781816b033aea1f11" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-f4f973f92274819781816b033aea1f11" class="dfn-panel" data-for="f4f973f92274819781816b033aea1f11" id="infopanel-for-f4f973f92274819781816b033aea1f11">
    <span id="infopaneltitle-for-f4f973f92274819781816b033aea1f11" style="display:none">Info about the 'resolve' external reference.</span><a href="https://webidl.spec.whatwg.org/#resolve">https://webidl.spec.whatwg.org/#resolve</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-resolve">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-f5ca5e20b5517a5008ecab4bb1349e91" class="dfn-panel" data-for="f5ca5e20b5517a5008ecab4bb1349e91" id="infopanel-for-f5ca5e20b5517a5008ecab4bb1349e91" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-f5ca5e20b5517a5008ecab4bb1349e91" class="dfn-panel" data-for="f5ca5e20b5517a5008ecab4bb1349e91" id="infopanel-for-f5ca5e20b5517a5008ecab4bb1349e91">
    <span id="infopaneltitle-for-f5ca5e20b5517a5008ecab4bb1349e91" style="display:none">Info about the 'upon fulfillment' external reference.</span><a href="https://webidl.spec.whatwg.org/#upon-fulfillment">https://webidl.spec.whatwg.org/#upon-fulfillment</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-upon-fulfillment">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-upon-fulfillment①">(2)</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-fa4b9722c62694623b5c8d8781bef7a7" class="dfn-panel" data-for="fa4b9722c62694623b5c8d8781bef7a7" id="infopanel-for-fa4b9722c62694623b5c8d8781bef7a7" role="menu">
+  <aside aria-labelledby="infopaneltitle-for-fa4b9722c62694623b5c8d8781bef7a7" class="dfn-panel" data-for="fa4b9722c62694623b5c8d8781bef7a7" id="infopanel-for-fa4b9722c62694623b5c8d8781bef7a7">
    <span id="infopaneltitle-for-fa4b9722c62694623b5c8d8781bef7a7" style="display:none">Info about the 'upon rejection' external reference.</span><a href="https://webidl.spec.whatwg.org/#upon-rejection">https://webidl.spec.whatwg.org/#upon-rejection</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-upon-rejection">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-upon-rejection①">(2)</a>
@@ -1016,19 +1017,19 @@ review, approval, and registration with IANA.</p>
 };
 
 </pre>
-  <aside aria-labelledby="infopaneltitle-for-dom-webassembly-compilestreaming" class="dfn-panel" data-for="dom-webassembly-compilestreaming" id="infopanel-for-dom-webassembly-compilestreaming" role="dialog">
+  <aside aria-labelledby="infopaneltitle-for-dom-webassembly-compilestreaming" class="dfn-panel" data-for="dom-webassembly-compilestreaming" id="infopanel-for-dom-webassembly-compilestreaming">
    <span id="infopaneltitle-for-dom-webassembly-compilestreaming" style="display:none">Info about the 'compileStreaming(source)' definition.</span><b><a href="#dom-webassembly-compilestreaming">#dom-webassembly-compilestreaming</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-webassembly-compilestreaming">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-webassembly-instantiatestreaming" class="dfn-panel" data-for="dom-webassembly-instantiatestreaming" id="infopanel-for-dom-webassembly-instantiatestreaming" role="dialog">
+  <aside aria-labelledby="infopaneltitle-for-dom-webassembly-instantiatestreaming" class="dfn-panel" data-for="dom-webassembly-instantiatestreaming" id="infopanel-for-dom-webassembly-instantiatestreaming">
    <span id="infopaneltitle-for-dom-webassembly-instantiatestreaming" style="display:none">Info about the 'instantiateStreaming(source, importObject)' definition.</span><b><a href="#dom-webassembly-instantiatestreaming">#dom-webassembly-instantiatestreaming</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-webassembly-instantiatestreaming">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-compile-a-potential-webassembly-response" class="dfn-panel" data-for="compile-a-potential-webassembly-response" id="infopanel-for-compile-a-potential-webassembly-response" role="dialog">
+  <aside aria-labelledby="infopaneltitle-for-compile-a-potential-webassembly-response" class="dfn-panel" data-for="compile-a-potential-webassembly-response" id="infopanel-for-compile-a-potential-webassembly-response">
    <span id="infopaneltitle-for-compile-a-potential-webassembly-response" style="display:none">Info about the 'compile a potential WebAssembly response' definition.</span><b><a href="#compile-a-potential-webassembly-response">#compile-a-potential-webassembly-response</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-compile-a-potential-webassembly-response">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-compile-a-potential-webassembly-response①">(2)</a>
@@ -1108,7 +1109,6 @@ review, approval, and registration with IANA.</p>
             panelWrapper.style.height = "0px";
             dfn.insertAdjacentElement("afterend", panelWrapper);
             dfn.setAttribute('role', 'button');
-            dfn.setAttribute('aria-haspopup', 'menu');
             dfn.setAttribute('aria-expanded', 'false')
             dfn.tabIndex = 0;
             dfn.classList.add('has-dfn-panel');
