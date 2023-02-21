@@ -297,7 +297,8 @@ latex_elements = {
   'pointsize': '10pt',
 
    # Additional stuff for the LaTeX preamble.
-   'preamble': '',
+   # Don't type-set cross references with emphasis.
+   'preamble': '\\renewcommand\\sphinxcrossref[1]{#1}\n',
 
    # Latex figure (float) alignment
   'figure_align': 'htbp',

@@ -8,9 +8,9 @@ Appendix
 
    embedding
    implementation
+   properties
    algorithm
    custom
-   properties
    changes
 
 .. only:: singlehtml

@@ -1280,7 +1280,7 @@ Control Instructions
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`, for any sequence of :ref:`local indices <syntax-localidx>` :math:`x^\ast`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
@@ -1288,7 +1288,7 @@ Control Instructions
    \frac{
      C \vdashblocktype \blocktype : [t_1^\ast] \to [t_2^\ast]
      \qquad
-     C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{x^\ast} [t_2^\ast]
+     C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_2^\ast]
    }{
      C \vdashinstr \BLOCK~\blocktype~\instr^\ast~\END : [t_1^\ast] \to [t_2^\ast]
    }
@@ -1307,7 +1307,7 @@ Control Instructions
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`, for any sequence of :ref:`local indices <syntax-localidx>` :math:`x^\ast`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
@@ -1315,7 +1315,7 @@ Control Instructions
    \frac{
      C \vdashblocktype \blocktype : [t_1^\ast] \to [t_2^\ast]
      \qquad
-     C,\CLABELS\,[t_1^\ast] \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{x^\ast} [t_2^\ast]
+     C,\CLABELS\,[t_1^\ast] \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_2^\ast]
    }{
      C \vdashinstr \LOOP~\blocktype~\instr^\ast~\END : [t_1^\ast] \to [t_2^\ast]
    }
@@ -1334,10 +1334,10 @@ Control Instructions
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to_{x_1^\ast} [t_2^\ast]`, for any sequence of :ref:`local indices <syntax-localidx>` :math:`x_1^\ast`.
+  the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to_{x_2^\ast} [t_2^\ast]`, for any sequence of :ref:`local indices <syntax-localidx>` :math:`x_2^\ast`.
+  the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * Then the compound instruction is valid with type :math:`[t_1^\ast~\I32] \to [t_2^\ast]`.
 
@@ -1345,9 +1345,9 @@ Control Instructions
    \frac{
      C \vdashblocktype \blocktype : [t_1^\ast] \to [t_2^\ast]
      \qquad
-     C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr_1^\ast : [t_1^\ast] \to_{x_1^\ast} [t_2^\ast]
+     C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr_1^\ast : [t_1^\ast] \to [t_2^\ast]
      \qquad
-     C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr_2^\ast : [t_1^\ast] \to_{x_2^\ast} [t_2^\ast]
+     C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr_2^\ast : [t_1^\ast] \to [t_2^\ast]
    }{
      C \vdashinstr \IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast~\END : [t_1^\ast~\I32] \to [t_2^\ast]
    }
@@ -1690,51 +1690,82 @@ Typing of instruction sequences is defined recursively.
 Empty Instruction Sequence: :math:`\epsilon`
 ............................................
 
-* The empty instruction sequence is valid with type :math:`[t^\ast] \to [t^\ast]`,
-  for any sequence of :ref:`value types <syntax-valtype>` :math:`t^\ast`.
+* The empty instruction sequence is valid with type :math:`[] \to []`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstrseq \epsilon : [t^\ast] \to [t^\ast]
+     C \vdashinstrseq \epsilon : [] \to []
    }
 
 
 Non-empty Instruction Sequence: :math:`\instr~{\instr'}^\ast`
 .............................................................
 
-* The instruction :math:`\instr` must be valid with some type :math:`[t_1^\ast] \to_{x_1^\ast} [t_0^\ast]`.
+* The instruction :math:`\instr` must be valid with some type :math:`[t_1^\ast] \to_{x_1^\ast} [t_2^\ast]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`,
   but with:
 
   * |CLOCALS| the same as in C, except that for every :ref:`local index <syntax-localidx>` :math:`x` in :math:`x_1^\ast`, the :ref:`local type <syntax-localtype>` :math:`\CLOCALS[x]` has been updated to :ref:`initialization status <syntax-init>` :math:`\SET`.
 
-* The instruction sequence :math:`{\instr'}^\ast` must be valid with some type :math:`[{t'}^\ast] \to_{x_2^\ast} [t_3^\ast]`.
+* Under the context :math:`C'`, the instruction sequence :math:`{\instr'}^\ast` must be valid with some type :math:`[t_2^\ast] \to_{x_2^\ast} [t_3^\ast]`.
 
-* There must be a sequence of :ref:`value types <syntax-valtype>` :math:`t_0^\ast`,
-  such that :math:`t_0^\ast = t_2^\ast~t^\ast` where the type sequence :math:`t^\ast` is as long as :math:`{t'}^\ast`.
-
-* For each :ref:`value type <syntax-valtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding type :math:`t_i` in :math:`t^\ast`, the type :math:`t_i` must :ref:`match <match-valtype>` :math:`t'_i`.
-
-* Then the combined instruction sequence is valid with type :math:`[t_1^\ast] \to_{x_1^\ast x_2^\ast} [t_2^\ast~t_3^\ast]`.
+* Then the combined instruction sequence is valid with type :math:`[t_1^\ast] \to_{x_1^\ast x_2^\ast} [t_3^\ast]`.
 
 .. math::
    \frac{
-     \begin{array}{@{}c@{}}
-     C \vdashinstr \instr : [t_1^\ast] \to_{x_1^\ast} [t_2^\ast~t^\ast]
-     \qquad
-     (C \vdashvaltypematch t \matchesvaltype t')^\ast
-     \qquad
-     C' \vdashinstrseq {\instr'}^\ast : [{t'}^\ast] \to_{x_2^\ast} [t_3^\ast]
+     \begin{array}{@{}l@{\qquad}l@{}}
+     C \vdashinstr \instr : [t_1^\ast] \to_{x_1^\ast} [t_2^\ast]
+     &
+     (C.\CLOCALS[x_1] = \init~t)^\ast
      \\
-     (\init~t = C.\CLOCALS[x_1])^\ast
-     \qquad
+     C' \vdashinstrseq {\instr'}^\ast : [t_2^\ast] \to_{x_2^\ast} [t_3^\ast]
+     &
      C' = C~(\with C.\CLOCALS[x_1] = \SET~t)^\ast
      \end{array}
    }{
      C \vdashinstrseq \instr~{\instr'}^\ast : [t_1^\ast] \to_{x_1^\ast x_2^\ast} [t_2^\ast~t_3^\ast]
    }
+
+
+Subsumption for :math:`\instr^\ast`
+...................................
+
+* The instruction sequence :math:`\instr^\ast` must be valid with some type :math:`\instrtype`.
+
+* The instruction type :math:`\instrtype'`: must be a :ref:`valid <valid-instrtype>`
+
+* The instruction type :math:`\instrtype` must :ref:`match <match-instrtype>` the type :math:`\instrtype'`.
+
+* Then the instruction sequence :math:`\instr^\ast` is also valid with type :math:`\instrtype'`.
+
+.. math::
+   \frac{
+     \begin{array}{@{}c@{}}
+     C \vdashinstr \instr : \instrtype
+     \qquad
+     C \vdashinstrtype \instrtype' \ok
+     \qquad
+     C \vdashinstrtypematch \instrtype \matchesinstrtype \instrtype'
+     \end{array}
+   }{
+     C \vdashinstrseq \instr^\ast : \instrtype'
+   }
+
+.. note::
+   In combination with the previous rule,
+   subsumption allows to compose instructions whose types would not directly fit otherwise.
+   For example, consider the instruction sequence
+
+   .. math::
+      (\I32.\CONST~1)~(\I32.\CONST~1)~\I32.\ADD
+
+   To type this sequence, its subsequence :math:`(\I32.\CONST~1)~\I32.\ADD` needs to be valid with an intermediate type.
+   But the direct type of :math:`(\I32.\CONST~1)` is :math:`[] \to [\I32]`, not matching the two inputs expected by :math:`\I32.\ADD`.
+   The subsumption rule allows to weaken the type of :math:`(\I32.\CONST~1)` to the supertype :math:`[\I32] \to [\I32~\I32]`, such that it can be composed with :math:`\I32.\ADD` and yields the intermediate type :math:`[\I32] \to [\I32]` for the subsequence. That can in turn be composed with the first constant.
+
+   Furthermore, subsumption allows to drop init variables :math:`x^\ast` from the instruction type in a context where they are not needed, for example, at the end of the body of a :ref:`block <valid-block>`.
 
 
 .. index:: expression, result type
@@ -1752,19 +1783,13 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
 :math:`\instr^\ast~\END`
 ........................
 
-* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some :ref:`type <syntax-instrtype>` :math:`[] \to_{x^\ast} [{t'}^\ast]`.
-
-* For each :ref:`value type <syntax-valtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding :ref:`valid <valid-valtype>` :ref:`value type <syntax-valtype>` type :math:`t_i` in :math:`t^\ast`, :math:`t'_i` :ref:`matches <match-valtype>` :math:`t_i`.
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with :ref:`type <syntax-instrtype>` :math:`[] \to [t^\ast]`.
 
 * Then the expression is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
 
 .. math::
    \frac{
-     C \vdashinstrseq \instr^\ast : [] \to_{x^\ast} [{t'}^\ast]
-     \qquad
-     C \vdashresulttype [t^\ast] \ok
-     \qquad
-     (C \vdashvaltypematch t' \matchesvaltype t)^\ast
+     C \vdashinstrseq \instr^\ast : [] \to [t^\ast]
    }{
      C \vdashexpr \instr^\ast~\END : [t^\ast]
    }
