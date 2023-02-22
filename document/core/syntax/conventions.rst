@@ -20,7 +20,7 @@ Grammar Notation
 
 The following conventions are adopted in defining grammar rules for abstract syntax.
 
-* Terminal symbols (atoms) are written in sans-serif font: :math:`\K{i32}, \K{end}`.
+* Terminal symbols (atoms) are written in sans-serif font or in symbolic form: :math:`\K{i32}, \K{end}, {\to}, [, ]`.
 
 * Nonterminal symbols are written in italic font: :math:`\X{valtype}, \X{instr}`.
 
