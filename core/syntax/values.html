@@ -136,7 +136,7 @@ In order to distinguish arithmetics like <span class="math notranslate nohighlig
 </section>
 <section id="floating-point">
 <span id="syntax-float"></span><span id="syntax-payload"></span><span id="syntax-nan"></span><span id="index-3"></span><h2>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this heading">¶</a></h2>
-<p><em>Floating-point</em> data represents 32 or 64 bit values that correspond to the respective binary formats of the <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a> standard (Section 3.3).</p>
+<p><em>Floating-point</em> data represents 32 or 64 bit values that correspond to the respective binary formats of the <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> standard (Section 3.3).</p>
 <p>Every value has a <em>sign</em> and a <em>magnitude</em>.
 Magnitudes can either be expressed as <em>normal</em> numbers of the form <span class="math notranslate nohighlight">\(m_0.m_1m_2\dots m_M \cdot2^e\)</span>, where <span class="math notranslate nohighlight">\(e\)</span> is the exponent and <span class="math notranslate nohighlight">\(m\)</span> is the <em>significand</em> whose most significant bit <span class="math notranslate nohighlight">\(m_0\)</span> is <span class="math notranslate nohighlight">\(1\)</span>,
 or as a <em>subnormal</em> number where the exponent is fixed to the smallest possible value and <span class="math notranslate nohighlight">\(m_0\)</span> is <span class="math notranslate nohighlight">\(0\)</span>; among the subnormals are positive and negative zero values.
@@ -169,7 +169,7 @@ No distinction is made between signalling and quiet NaNs.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In the abstract syntax, subnormals are distinguished by the leading 0 of the significand. The exponent of subnormals has the same value as the smallest possible exponent of a normal number. Only in the <a class="reference internal" href="../binary/values.html#binary-float"><span class="std std-ref">binary representation</span></a> the exponent of a subnormal is encoded differently than the exponent of any normal number.</p>
-<p>The notion of canonical NaN defined here is unrelated to the notion of canonical NaN that the <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a> standard (Section 3.5.2) defines for decimal interchange formats.</p>
+<p>The notion of canonical NaN defined here is unrelated to the notion of canonical NaN that the <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> standard (Section 3.5.2) defines for decimal interchange formats.</p>
 </div>
 <section id="id2">
 <h3>Conventions<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>

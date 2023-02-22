@@ -185,7 +185,7 @@ op(c_1^n, \dots, c_k^n) &amp;=&amp; op(c_1^n[0], \dots, c_k^n[0])~\dots~op(c_1^n
 </section>
 <section id="floating-point">
 <span id="aux-fbits"></span><span id="aux-fsign"></span><span id="aux-fbias"></span><span id="index-3"></span><h3>Floating-Point<a class="headerlink" href="#floating-point" title="Permalink to this heading">¶</a></h3>
-<p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating-point values</span></a> are represented in the respective binary format defined by <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a> (Section 3.4):</p>
+<p><a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">Floating-point values</span></a> are represented in the respective binary format defined by <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> (Section 3.4):</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
 \href{../exec/numerics.html#aux-fbits}{\mathrm{fbits}}_N(\pm (1+m\cdot 2^{-M})\cdot 2^e) &amp;=&amp; \href{../exec/numerics.html#aux-fsign}{\mathrm{fsign}}({\pm})~\href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_E(e+\href{../exec/numerics.html#aux-fbias}{\mathrm{fbias}}_N)~\href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_M(m) \\
@@ -776,7 +776,7 @@ it holds that <span class="math notranslate nohighlight">\(i_1 = i_2\cdot\href{.
 </section>
 <section id="floating-point-operations">
 <span id="float-ops"></span><span id="index-9"></span><h2>Floating-Point Operations<a class="headerlink" href="#floating-point-operations" title="Permalink to this heading">¶</a></h2>
-<p>Floating-point arithmetic follows the <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a> standard,
+<p>Floating-point arithmetic follows the <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> standard,
 with the following qualifications:</p>
 <ul class="simple">
 <li><p>All operators use round-to-nearest ties-to-even, except where otherwise specified.
@@ -792,7 +792,7 @@ There is no observable difference between quiet and signalling NaNs.</p></li>
 </div>
 <section id="rounding">
 <span id="aux-ieee"></span><span id="index-10"></span><h3>Rounding<a class="headerlink" href="#rounding" title="Permalink to this heading">¶</a></h3>
-<p>Rounding always is round-to-nearest ties-to-even, in correspondence with <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a> (Section 4.3.1).</p>
+<p>Rounding always is round-to-nearest ties-to-even, in correspondence with <a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> (Section 4.3.1).</p>
 <p>An <em>exact</em> floating-point number is a rational number that is exactly representable as a <a class="reference internal" href="../syntax/values.html#syntax-float"><span class="std std-ref">floating-point number</span></a> of given bit width <span class="math notranslate nohighlight">\(N\)</span>.</p>
 <p>A <em>limit</em> number for a given floating-point bit width <span class="math notranslate nohighlight">\(N\)</span> is a positive or negative number whose magnitude is the smallest power of <span class="math notranslate nohighlight">\(2\)</span> that is not exactly representable as a floating-point number of width <span class="math notranslate nohighlight">\(N\)</span> (that magnitude is <span class="math notranslate nohighlight">\(2^{128}\)</span> for <span class="math notranslate nohighlight">\(N = 32\)</span> and <span class="math notranslate nohighlight">\(2^{1024}\)</span> for <span class="math notranslate nohighlight">\(N = 64\)</span>).</p>
 <p>A <em>candidate</em> number is either an exact floating-point number or a positive or negative limit number for the given bit width <span class="math notranslate nohighlight">\(N\)</span>.</p>
