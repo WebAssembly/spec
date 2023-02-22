@@ -34,6 +34,8 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    \production{label} & \Tlabel_I &::=&
      v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose I
        & (\iff v \notin I.\ILABELS) \\ &&|&
+     v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose (I \with \ILABELS[i] = \epsilon)
+       & (\iff I.\ILABELS[i] = v) \\ &&|&
      \epsilon &\Rightarrow& \{\ILABELS~(\epsilon)\} \compose I \\
    \end{array}
 
@@ -41,6 +43,9 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    The new label entry is inserted at the *beginning* of the label list in the identifier context.
    This effectively shifts all existing labels up by one,
    mirroring the fact that control instructions are indexed relatively not absolutely.
+
+   If a label with the same name already exists,
+   then it is shadowed and the earlier label becomes inaccessible.
 
 
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
@@ -160,7 +165,7 @@ Reference Instructions
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{ref.null}~~t{:}\Theaptype &\Rightarrow& \REFNULL~t \\ &&|&
      \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
-     \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
+     \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\
    \end{array}
 
 
@@ -886,7 +891,7 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
      \text{f64x2.convert\_low\_i32x4\_s} &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_s}\\  &&|&
      \text{f64x2.convert\_low\_i32x4\_u} &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_u}\\ &&|&
      \text{f32x4.demote\_f64x2\_zero} &\Rightarrow& \F32X4.\VDEMOTE\K{\_f64x2\_zero}\\ &&|&
-     \text{f64x2.promote\_low\_f32x4} &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\ &&|&
+     \text{f64x2.promote\_low\_f32x4} &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\
    \end{array}
 
 
