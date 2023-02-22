@@ -2868,22 +2868,20 @@ Exiting :math:`\instr^\ast` with label :math:`L`
 
 When the end of a block is reached without a jump or trap aborting it, then the following steps are performed.
 
-1. Let :math:`n` be the number of values on the top of the stack.
+1. Pop all values :math:`\val^\ast` from the top of the stack.
 
-2. Pop the values :math:`\val^n` from the stack.
+2. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack.
 
-3. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack and has arity :math:`n`.
+3. Pop the label from the stack.
 
-4. Pop the label from the stack.
+4. Push :math:`\val^\ast` back to the stack.
 
-5. Push :math:`\val^n` back to the stack.
-
-6. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
+5. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \LABEL_n\{\instr^\ast\}~\val^n~\END &\stepto& \val^n
+   \LABEL_n\{\instr^\ast\}~\val^\ast~\END &\stepto& \val^\ast
    \end{array}
 
 .. note::
