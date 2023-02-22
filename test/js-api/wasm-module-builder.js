@@ -754,9 +754,9 @@ class WasmModuleBuilder {
 
   addTag(type) {
     let type_index = (typeof type) == "number" ? type : this.addType(type);
-    let except_index = this.tags.length + this.num_imported_tags;
+    let tag_index = this.tags.length + this.num_imported_tags;
     this.tags.push(type_index);
-    return except_index;
+    return tag_index;
   }
 
   addFunction(name, type) {

@@ -510,8 +510,8 @@ Intuitively, :math:`\instr^\ast` is the *continuation* to execute when the branc
 
    When branching, the empty continuation ends the targeted block, such that execution can proceed with consecutive instructions.
 
-Activations and Frames
-......................
+Activation Frames
+.................
 
 Activation frames carry the return arity :math:`n` of the respective function,
 hold the values of its :ref:`locals <syntax-local>` (including arguments) in the order corresponding to their static :ref:`local indices <syntax-localidx>`,
@@ -519,8 +519,6 @@ and a reference to the function's own :ref:`module instance <syntax-moduleinst>`
 
 .. math::
    \begin{array}{llll}
-   \production{activation} & \X{activation} &::=&
-     \FRAME_n\{\frame\} \\
    \production{frame} & \frame &::=&
      \{ \ALOCALS~\val^\ast, \AMODULE~\moduleinst \} \\
    \end{array}
