@@ -3,38 +3,44 @@
 // META: script=/wasm/jsapi/wasm-module-builder.js
 
 test(() => {
-  const tag = new WebAssembly.Tag({ parameters: ["i32"] });
-  const exn = new WebAssembly.Exception(tag, [42]);
-  const exn_same_payload = new WebAssembly.Exception(tag, [42]);
-  const exn_diff_payload = new WebAssembly.Exception(tag, [53]);
-
   const builder = new WasmModuleBuilder();
-  const jsfuncIndex = builder.addImport("module", "jsfunc", kSig_v_v);
-  const tagIndex = builder.addImportedTag("module", "tag", kSig_v_i);
+
+  // Tag defined in JavaScript and imported into Wasm
+  const jsTag = new WebAssembly.Tag({ parameters: ["i32"] });
+  const jsTagIndex = builder.addImportedTag("module", "jsTag", kSig_v_i)
+  const jsTagExn = new WebAssembly.Exception(jsTag, [42]);
+  const jsTagExnSamePayload = new WebAssembly.Exception(jsTag, [42]);
+  const jsTagExnDiffPayload = new WebAssembly.Exception(jsTag, [53]);
+  const throwJSTagExnIndex = builder.addImport("module", "throwJSTagExn", kSig_v_v);
+
   const imports = {
     module: {
-      jsfunc: function() { throw exn; },
-      tag: tag
+      throwJSTagExn: function() { throw jsTagExn; },
+      jsTag: jsTag
     }
   };
 
+  // Call a JS function that throws an exception using a JS-defined tag, catches
+  // it with a 'catch' instruction, and rethrows it.
   builder
-    .addFunction("catch_rethrow", kSig_v_v)
+    .addFunction("catch_js_tag_rethrow", kSig_v_v)
     .addBody([
       kExprTry, kWasmStmt,
-        kExprCallFunction, jsfuncIndex,
-      kExprCatch, tagIndex,
+        kExprCallFunction, throwJSTagExnIndex,
+      kExprCatch, jsTagIndex,
         kExprDrop,
         kExprRethrow, 0x00,
       kExprEnd
     ])
     .exportFunc();
 
+  // Call a JS function that throws an exception using a JS-defined tag, catches
+  // it with a 'catch_all' instruction, and rethrows it.
   builder
-    .addFunction("catch_all_rethrow", kSig_v_v)
+    .addFunction("catch_all_js_tag_rethrow", kSig_v_v)
     .addBody([
       kExprTry, kWasmStmt,
-        kExprCallFunction, jsfuncIndex,
+        kExprCallFunction, throwJSTagExnIndex,
       kExprCatchAll,
         kExprRethrow, 0x00,
       kExprEnd
@@ -42,20 +48,25 @@ test(() => {
     .exportFunc();
 
   const buffer = builder.toBuffer();
+
+  // The exception object's identity should be preserved across 'rethrow's in
+  // Wasm code. Do tests with a tag defined in JS.
   WebAssembly.instantiate(buffer, imports).then(result => {
     try {
-      result.instance.exports.catch_rethrow();
+      result.instance.exports.catch_js_tag_rethrow();
     } catch (e) {
-      assert_equals(e, exn);
-      assert_not_equals(e, exn_same_payload);
-      assert_not_equals(e, exn_diff_payload);
+      assert_equals(e, jsTagExn);
+      // Even if they have the same payload, they are different objects, so they
+      // shouldn't compare equal.
+      assert_not_equals(e, jsTagExnSamePayload);
+      assert_not_equals(e, jsTagExnDiffPayload);
     }
     try {
-      result.instance.exports.catch_all_rethrow();
+      result.instance.exports.catch_all_js_tag_rethrow();
     } catch (e) {
-      assert_equals(e, exn);
-      assert_not_equals(e, exn_same_payload);
-      assert_not_equals(e, exn_diff_payload);
+      assert_equals(e, jsTagExn);
+      assert_not_equals(e, jsTagExnSamePayload);
+      assert_not_equals(e, jsTagExnDiffPayload);
     }
   });
 }, "Identity check");
