@@ -257,6 +257,41 @@ end
 The `rethrow` here references `try $l2`, but the `rethrow` is not within its
 `catch` block.
 
+The example below includes all of the cases explained above. The numbers
+within `()` after `rethrow`s are the label operands in immediate values.
+```
+(func $test
+  try $lA
+    ...
+  catch ($lA)
+    ...
+    block $lB
+      ...
+      try $lC
+        ...
+      catch ($lC)
+        ...
+        try $lD
+          ...
+          rethrow $lD (0) ;; refers to 'catch ($lD)', but it is not within 'catch ($lD)', so validation failure
+          rethrow $lC (1) ;; rethrows the exception caught by catch ($lC)
+          rethrow $lB (2) ;; refers to 'block $lB', so validation failure
+          rethrow $lA (3) ;; rethrows the exception caught by catch ($lA)
+          rethrow 4       ;; validation failure
+        catch ($lD)
+          ...
+          rethrow $lD (0) ;; rethrows the exception caught by catch ($lD)
+          rethrow $lC (1) ;; rethrows the exception caught by catch ($lC)
+          rethrow $lB (2) ;; refers to 'block $lB', so validation failure
+          rethrow $lA (3) ;; rethrows the exception caught by catch ($lA)
+          rethrow 4       ;; validation failure
+        end
+      end
+    end
+    ...
+  end
+```
+
 ### Try-delegate blocks
 
 Try blocks can also be used with the `delegate` instruction. A try-delegate
