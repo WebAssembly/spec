@@ -65,7 +65,7 @@
                        (v128.const i32x4 1 2 3 4))
                (either
                  (v128.const i32x4 -66047 2 3 4)
-                 (v128.const i32x4 -65536 2 3 4)
+                 (v128.const i32x4 -65535 2 3 4)
                  (v128.const i32x4  65025 2 3 4)
                  (v128.const i32x4  66049 2 3 4)))
 
