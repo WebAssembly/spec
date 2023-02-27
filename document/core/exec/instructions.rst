@@ -969,7 +969,7 @@ where:
 
 4. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\relaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
 
-5. Let :math:`j^8` be the result of computing :math:`\iadd_{16}(i_1, i_2)^8`.
+5. Let :math:`j^8` be the result of computing :math:`\sats_{16}(i_1 + i_2)^8`.
 
 6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\I16X8}(j^8)`.
 
@@ -983,7 +983,7 @@ where:
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & (i_1~i_2)^8 = \relaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
-     \wedge & j^8 = \iadd_{16}(i_1, i_2)^8 \\
+     \wedge & j^8 = \sats_{16}(i_1, i_2)^8 \\
      \wedge & c = \lanes^{-1}_{\I16X8}(j^8))
      \end{array}
    \end{array}
@@ -1000,15 +1000,19 @@ where:
 
 4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-5. Let :math:`(i_1~i_2~i_3~i_4)^4` be the result of computing :math:`\relaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
+5. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\relaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
 
-6. Let :math:`k^4` be the result of computing :math:`\lanes_{\I32X4}(c_3)`.
+6. Let :math:`(j_1~j_2)^4` be the result of computing :math:`\sats_{16}(i_1 + i_2)^8`.
 
-7. Let :math:`j^4` be the result of computing :math:`\iadd_{32}(i_1, i_2, i_3, i_4, k)^4`.
+7. Let :math:`j^4` be the result of computing :math:`\iadd_{32}(\extend^{s}_{16, 32}(j_1), \extend^{s}_{16, 32}(j_2))^4`.
 
-8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\I32X4}(j^4)`.
+8. Let :math:`k^4` be the result of computing :math:`\lanes_{\I32X4}(c_3)`.
 
-9. Push the value :math:`\V128.\VCONST~c` onto the stack.
+9. Let :math:`l^4` be the result of computing :math:`\iadd_{32}(j, k)^4`.
+
+10. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\I32X4}(l^4)`.
+
+11. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{l}
@@ -1017,10 +1021,12 @@ where:
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & (i_1~i_2~i_3~i_4)^4 = \relaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
+     (\iff & (i_1~i_2)^8 = \relaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
+     \wedge & (j_1~j_2)^4 = \sats_{16}(i_1 + i_2)^8 \\
+     \wedge & j^4 = \iadd_{32}(\extend^{s}_{16, 32}(j_1), \extend^{s}_{16, 32}(j_2))^4 \\
      \wedge & k^4 = \lanes_{\I32X4}(c_3) \\
-     \wedge & j^4 = \iadd_{16}(i_1, i_2, i_3, i_4, k)^4 \\
-     \wedge & c = \lanes^{-1}_{\I32X4}(j^4))
+     \wedge & l^4 = \iadd_{32}(j, k)^4 \\
+     \wedge & c = \lanes^{-1}_{\I32X4}(l^4))
      \end{array}
    \end{array}
 
