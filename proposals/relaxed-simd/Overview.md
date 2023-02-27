@@ -203,7 +203,7 @@ def laneselect(a : v128, b : v128, m: v128, lanes : int):
     else topbit(mask) == 1:
       result[i] = IMPLEMENTATION_DEFINED_ONE_OF(bitselect(a[i], b[i], mask), a[i])
     else:
-      result[i] = b[i]
+      result[i] = IMPLEMENTATION_DEFINED_ONE_OF(bitselect(a[i], b[i], mask), b[i])
   return result
 ```
 
