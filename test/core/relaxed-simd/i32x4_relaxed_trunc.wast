@@ -25,17 +25,17 @@
 )
 
 (assert_return (invoke "i32x4.relaxed_trunc_f32x4_s"
-                       ;; INT32_MIN <INT32_MIN INT32_MAX >INT32_MAX
-                       (v128.const f32x4 -2147483648.0 -2147483904.0 2147483647.0 2147483904.0))
+                       ;;                INT32_MIN     <INT32_MIN        >INT32_MAX
+                       (v128.const f32x4 -2147483648.0 -2147483904.0 2.0 2147483904.0))
                ;; out of range -> saturate or INT32_MIN
-               (either (v128.const i32x4 -2147483648 -2147483648 2147483647 2147483647)
-                       (v128.const i32x4 -2147483648 -2147483648 2147483647 -2147483648)))
+               (either (v128.const i32x4 -2147483648 -2147483648 2 2147483647)
+                       (v128.const i32x4 -2147483648 -2147483648 2 -2147483648)))
 
 (assert_return (invoke "i32x4.relaxed_trunc_f32x4_s"
                        (v128.const f32x4 nan -nan nan:0x444444 -nan:0x444444))
                ;; nans -> 0 or INT32_MIN
                (either (v128.const i32x4 0 0 0 0)
-                       (v128.const i32x4 0x8000000 0x8000000 0x8000000 0x8000000)))
+                       (v128.const i32x4 0x80000000 0x80000000 0x80000000 0x80000000)))
 
 (assert_return (invoke "i32x4.relaxed_trunc_f32x4_u"
                        ;; UINT32_MIN UINT32_MIN-1 <UINT32_MAX UINT32_MAX+1
@@ -59,7 +59,7 @@
 (assert_return (invoke "i32x4.relaxed_trunc_f64x2_s_zero"
                        (v128.const f64x2 nan -nan))
                (either (v128.const i32x4 0 0 0 0)
-                       (v128.const i32x4 0x8000000 0x8000000 0 0)))
+                       (v128.const i32x4 0x80000000 0x80000000 0 0)))
 
 (assert_return (invoke "i32x4.relaxed_trunc_f64x2_u_zero"
                        (v128.const f64x2 -1.0 4294967296.0))
