@@ -24,6 +24,14 @@
             (i32x4.relaxed_trunc_f64x2_u_zero (local.get 0))))
 )
 
+;; Test some edge cases around min/max to ensure that the instruction either
+;; saturates correctly or returns INT_MIN.
+;;
+;; Note, though, that INT_MAX itself is not tested. The value for INT_MAX is
+;; 2147483647 but that is not representable in a `f32` since it requires 31 bits
+;; when a f32 has only 24 bits available. This means that the closest integers
+;; to INT_MAX which can be represented are 2147483520 and 2147483648, meaning
+;; that the INT_MAX test case cannot be tested.
 (assert_return (invoke "i32x4.relaxed_trunc_f32x4_s"
                        ;;                INT32_MIN     <INT32_MIN        >INT32_MAX
                        (v128.const f32x4 -2147483648.0 -2147483904.0 2.0 2147483904.0))
