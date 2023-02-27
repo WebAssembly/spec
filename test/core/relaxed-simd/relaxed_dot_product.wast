@@ -53,7 +53,10 @@
                ;; intermediate result is [-65024, 64516, 0, 0]
                (v128.const i32x4 -65023 64518 3 4))
 
-;; signed * unsigned   : -128 *  129 * 4 = -66,048 (+ 1)
+;; signed * unsigned   : -128 *  129 * 4 = -66,048 (+ 1) VPDPBUSD AVX2-VNNI or AVX512-VNNI
+;; signed * unsigned with intermediate saturation :
+;;   (-128 * 129) + (-128 * 129) = -33024 saturated to -32768 (PMADDUBSW)
+;;   -32768 + -32768 = -65536 (+ 1)
 ;; signed * signed     : -128 * -127 * 4 =  65,024 (+ 1)
 ;; unsigned * unsigned :  128 *  129 * 2 =  66,048 (+ 1)
 (assert_return (invoke "i32x4.relaxed_dot_i8x16_i7x16_add_s"
@@ -62,6 +65,7 @@
                        (v128.const i32x4 1 2 3 4))
                (either
                  (v128.const i32x4 -66047 2 3 4)
+                 (v128.const i32x4 -65536 2 3 4)
                  (v128.const i32x4  65025 2 3 4)
                  (v128.const i32x4  66049 2 3 4)))
 
@@ -89,7 +93,10 @@
                        (v128.const i8x16 -127 -127 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
                (v128.const i16x8 -1 -1 -1 -1 -1 -1 -1 -1))
 
-;; signed * unsigned   : -128 *  129 * 4 = -66,048 (+ 1)
+;; signed * unsigned   : -128 *  129 * 4 = -66,048 (+ 1) VPDPBUSD AVX2-VNNI or AVX512-VNNI
+;; signed * unsigned with intermediate saturation :
+;;   (-128 * 129) + (-128 * 129) = -33024 saturated to -32768 (PMADDUBSW)
+;;   -32768 + -32768 = -65536 (+ 1)
 ;; signed * signed     : -128 * -127 * 4 =  65,024 (+ 1)
 ;; unsigned * unsigned :  128 *  129 * 2 =  66,048 (+ 1)
 (assert_return (invoke "i32x4.relaxed_dot_i8x16_i7x16_add_s_cmp"
