@@ -3,6 +3,7 @@ open Values
 val eval_testop : Ast.vec_testop -> vec -> bool
 val eval_unop : Ast.vec_unop -> vec -> vec
 val eval_binop : Ast.vec_binop -> vec -> vec -> vec
+val eval_ternop : Ast.vec_ternop -> vec -> vec -> vec -> vec
 val eval_relop : Ast.vec_relop -> vec -> vec -> vec
 val eval_cvtop : Ast.vec_cvtop -> vec -> vec
 val eval_shiftop : Ast.vec_shiftop -> vec -> num -> vec

@@ -24,6 +24,7 @@ sig
   val index_of : 'a -> 'a list -> int option
   val index_where : ('a -> bool) -> 'a list -> int option
   val map_filter : ('a -> 'b option) -> 'a list -> 'b list
+  val map3 : ('a -> 'b -> 'c -> 'd) -> 'a list -> 'b list -> 'c list -> 'd list
   val concat_map : ('a -> 'b list) -> 'a list -> 'b list
   val pairwise : ('a -> 'a -> 'b) -> 'a list -> 'b list
 end

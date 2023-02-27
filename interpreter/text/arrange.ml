@@ -265,7 +265,7 @@ struct
 
   let iternop xxxx (op : iternop) = match op with
     | RelaxedLaneselect -> "relaxed_laneselect"
-    | RelaxedDotAccum -> "relaxed_dot_i" ^ half (half xxxx) ^ "_i" ^ without_high_bit (half (half xxxx)) ^ "add_s"
+    | RelaxedDotAccum -> "relaxed_dot_i" ^ half (half xxxx) ^ "_i" ^ without_high_bit (half (half xxxx)) ^ "_add_s"
 
   let fbinop xxxx (op : fbinop) = match op with
     | Add -> "add"

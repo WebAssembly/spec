@@ -26,12 +26,13 @@ sys.argv = sys.argv[:1]
 main_test_files = glob.glob(os.path.join(inputDir, "*.wast"))
 # SIMD test files are in a subdirectory.
 simd_test_files = glob.glob(os.path.join(inputDir, "simd", "*.wast"))
+relaxed_simd_test_files = glob.glob(os.path.join(inputDir, "relaxed-simd", "*.wast"))
 
 wasmCommand = arguments.wasm
 jsCommand = arguments.js
 generateJsOnly = arguments.generate_js_only
 outputDir = arguments.out
-inputFiles = arguments.file if arguments.file else main_test_files + simd_test_files
+inputFiles = arguments.file if arguments.file else main_test_files + simd_test_files + relaxed_simd_test_files
 
 if not os.path.exists(wasmCommand):
   sys.stderr.write("""\
@@ -107,6 +108,9 @@ class RunTests(unittest.TestCase):
     self._compareFile(wastPath, wast2Path)
 
     if jsCommand != None:
+      # TODO: node does not support relaxed-simd yet.
+      if 'node' in jsCommand and 'relaxed-simd' in jsPath:
+        return
       self._runCommand(('%s "%s"') % (jsCommand, jsPath), logPath)
 
 
