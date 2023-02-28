@@ -23,7 +23,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 19.x
-      - run: cd interpreter && opam exec make JS=node all
+      # TODO: disable node run until it fully implements proposal
+      # - run: cd interpreter && opam exec make JS=node all
+      - run: cd interpreter && opam exec make all
 
   ref-interpreter-js-library:
     runs-on: ubuntu-latest
