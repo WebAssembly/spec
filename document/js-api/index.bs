@@ -93,6 +93,8 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: IterableToList; url: sec-iterabletolist
         text: ToBigInt64; url: #sec-tobigint64
         text: BigInt; url: #sec-ecmascript-language-types-bigint-type
+        text: 𝔽; url: #𝔽
+        text: ℤ; url: #ℤ
     type: abstract-op
         text: CreateMethodProperty; url: sec-createmethodproperty
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
@@ -163,6 +165,12 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
         text: reftype
         text: funcref
         text: externref
+    url: syntax/values.html#syntax-float
+        text: +∞
+        text: −∞
+        text: nan
+        text: canon
+        text: signif
     text: function element; url: exec/runtime.html#syntax-funcelem
     text: import component; url: syntax/modules.html#imports
     text: external value; url: exec/runtime.html#syntax-externval
@@ -282,7 +290,7 @@ dictionary WebAssemblyInstantiatedSource {
     required Instance instance;
 };
 
-[Exposed=(Window,Worker,Worklet)]
+[Exposed=*]
 namespace WebAssembly {
     boolean validate(BufferSource bytes);
     Promise&lt;Module> compile(BufferSource bytes);
@@ -466,18 +474,20 @@ The verification of WebAssembly type requirements is deferred to the
     1. Let |module| be |moduleObject|.\[[Module]].
     1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
         If this operation throws an exception, catch it, [=reject=] |promise| with the exception, and return |promise|.
-    1. [=Queue a task=] to perform the following steps:
-        1.  [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
-            If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
-        1.  Let |instanceObject| be a [=/new=] {{Instance}}.
-        1.  [=initialize an instance object|Initialize=] |instanceObject| from |module| and |instance|.
-            If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
-        1. [=Resolve=] |promise| with |instanceObject|.
+    1. Run the following steps [=in parallel=]:
+        1. [=Queue a task=] to perform the following steps:
+            Note: Implementation-specific work may be performed here.
+            1.  [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
+                If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
+            1.  Let |instanceObject| be a [=/new=] {{Instance}}.
+            1.  [=initialize an instance object|Initialize=] |instanceObject| from |module| and |instance|.
+                If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
+            1. [=Resolve=] |promise| with |instanceObject|.
     1. Return |promise|.
 </div>
 
 <div algorithm="instantiate">
-  To <dfn>instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
+  To <dfn>synchronously instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
     1. Let |module| be |moduleObject|.\[[Module]].
     1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
     1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
@@ -491,14 +501,15 @@ The verification of WebAssembly type requirements is deferred to the
 
     1. Let |promise| be [=a new promise=].
     1. [=Upon fulfillment=] of |promiseOfModule| with value |module|:
-        1. [=instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |instance| be the result.  If this throws an exception, catch it, [=reject=] |promise| with the exception, and abort these substeps.
-        1. Let |result| be the {{WebAssemblyInstantiatedSource}} value «[ "{{WebAssemblyInstantiatedSource/module}}" → |module|, "{{WebAssemblyInstantiatedSource/instance}}" → |instance| ]».
-        1. [=Resolve=] |promise| with |result|.
+        1. [=asynchronously instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |innerPromise| be the result.
+        1. [=Upon fulfillment=] of |innerPromise| with value |instance|.
+            1. Let |result| be the {{WebAssemblyInstantiatedSource}} value «[ "{{WebAssemblyInstantiatedSource/module}}" → |module|, "{{WebAssemblyInstantiatedSource/instance}}" → |instance| ]».
+            1. [=Resolve=] |promise| with |result|.
+        1. [=Upon rejection=] of |innerPromise| with reason |reason|:
+            1. [=Reject=] |promise| with |reason|.
     1. [=Upon rejection=] of |promiseOfModule| with reason |reason|:
         1. [=Reject=] |promise| with |reason|.
     1. Return |promise|.
-
-    Note: It would be valid to perform certain parts of the instantiation [=in parallel=], but several parts need to happen in the event loop, including JavaScript operations to access the |importObject| and execution of the start function.
 </div>
 
 <div algorithm>
@@ -537,7 +548,7 @@ dictionary ModuleImportDescriptor {
   required ImportExportKind kind;
 };
 
-[LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
+[LegacyNamespace=WebAssembly, Exposed=*]
 interface Module {
   constructor(BufferSource bytes);
   static sequence&lt;ModuleExportDescriptor> exports(Module moduleObject);
@@ -596,12 +607,14 @@ interface Module {
     1. If |module| is [=error=], throw a {{CompileError}} exception.
     1. Set **this**.\[[Module]] to |module|.
     1. Set **this**.\[[Bytes]] to |stableBytes|.
+
+Note: Some implementations enforce a size limitation on |bytes|. Use of this API is discouraged, in favor of asynchronous APIs.
 </div>
 
 <h3 id="instances">Instances</h3>
 
 <pre class="idl">
-[LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
+[LegacyNamespace=WebAssembly, Exposed=*]
 interface Instance {
   constructor(Module module, optional object importObject);
   readonly attribute object exports;
@@ -614,6 +627,8 @@ interface Instance {
     1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
     1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
     1. [=initialize an instance object|Initialize=] **this** from |module| and |instance|.
+
+Note: The use of this synchronous API is discouraged, as some implementations sometimes do long-running compilation work when instantiating.
 </div>
 
 <div algorithm>
@@ -628,7 +643,7 @@ dictionary MemoryDescriptor {
   [EnforceRange] unsigned long maximum;
 };
 
-[LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
+[LegacyNamespace=WebAssembly, Exposed=*]
 interface Memory {
   constructor(MemoryDescriptor descriptor);
   unsigned long grow([EnforceRange] unsigned long delta);
@@ -738,7 +753,7 @@ dictionary TableDescriptor {
   [EnforceRange] unsigned long maximum;
 };
 
-[LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
+[LegacyNamespace=WebAssembly, Exposed=*]
 interface Table {
   constructor(TableDescriptor descriptor, optional any value);
   unsigned long grow([EnforceRange] unsigned long delta, optional any value);
@@ -860,7 +875,7 @@ dictionary GlobalDescriptor {
   boolean mutable = false;
 };
 
-[LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
+[LegacyNamespace=WebAssembly, Exposed=*]
 interface Global {
   constructor(GlobalDescriptor descriptor, optional any v);
   any valueOf();
@@ -1087,10 +1102,16 @@ The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a Jav
 1. Assert: |w| is not of  the form [=v128.const=] <var ignore>v128</var>.
 1. If |w| is of the form [=i64.const=] |i64|,
     1. Let |v| be [=signed_64=](|i64|).
-    1. Return a [=BigInt=] representing the mathematical value |v|.
-1. If |w| is of the form [=i32.const=] |i32|, return [=the Number value=] for [=signed_32=](|i32|).
-1. If |w| is of the form [=f32.const=] |f32|, return [=the Number value=] for |f32|.
-1. If |w| is of the form [=f64.const=] |f64|, return [=the Number value=] for |f64|.
+    1. Return [=ℤ=](|v| interpreted as a mathematical value).
+1. If |w| is of the form [=i32.const=] |i32|, return [=𝔽=]([=signed_32=](|i32| interpreted as a mathematical value)).
+1. If |w| is of the form [=f32.const=] |f32|,
+    1. If |f32| is [=+∞=] or [=−∞=], return **+∞**<sub>𝔽</sub> or **-∞**<sub>𝔽</sub>, respectively.
+    1. If |f32| is [=nan=], return **NaN**.
+    1. Return [=𝔽=](|f32| interpreted as a mathematical value).
+1. If |w| is of the form [=f64.const=] |f64|,
+    1. If |f64| is [=+∞=] or [=−∞=], return **+∞**<sub>𝔽</sub> or **-∞**<sub>𝔽</sub>, respectively.
+    1. If |f64| is [=nan=], return **NaN**.
+    1. Return [=𝔽=](|f64| interpreted as a mathematical value).
 1. If |w| is of the form [=ref.null=] <var ignore>t</var>, return null.
 1. If |w| is of the form [=ref.func=] |funcaddr|, return the result of creating [=a new Exported Function=] from |funcaddr|.
 1. If |w| is of the form [=ref.extern=] |externaddr|, return the result of [=retrieving an extern value=] from |externaddr|.
@@ -1119,10 +1140,20 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
     1. Let |i32| be [=?=] [=ToInt32=](|v|).
     1. Return [=i32.const=] |i32|.
 1. If |type| is [=f32=],
-    1. Let |f32| be [=?=] [=ToNumber=](|v|) rounded to the nearest representable value using IEEE 754-2008 round to nearest, ties to even mode.
+    1. Let |number| be [=?=] [=ToNumber=](|v|).
+    1. If |number| is **NaN**,
+        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>32</sub> ≤ |n| < 2<sup>[=signif=](32)</sup>.
+        1. Let |f32| be [=nan=](n).
+    1. Otherwise,
+        1. Let |f32| be |number| rounded to the nearest representable value using IEEE 754-2008 round to nearest, ties to even mode. [[IEEE-754]]
     1. Return [=f32.const=] |f32|.
 1. If |type| is [=f64=],
-    1. Let |f64| be [=?=] [=ToNumber=](|v|).
+    1. Let |number| be [=?=] [=ToNumber=](|v|).
+    1. If |number| is **NaN**,
+        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>64</sub> ≤ |n| < 2<sup>[=signif=](64)</sup>.
+        1. Let |f64| be [=nan=](n).
+    1. Otherwise,
+        1. Let |f64| be |number|.
     1. Return [=f64.const=] |f64|.
 1. If |type| is [=funcref=],
     1. If |v| is null,
