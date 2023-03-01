@@ -103,6 +103,7 @@ pdf:	index latexpdf
 clean:
 	rm -rf $(BUILDDIR)
 	rm -rf $(STATICDIR)
+	rm -f appendix/index-instructions.rst
 
 .PHONY: html
 html: index
