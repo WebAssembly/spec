@@ -246,7 +246,7 @@ struct
       op 0x3a; memop x mo
     | Store (x, ({ty = I32Type; pack = Some Pack16; _} as mo)) ->
       op 0x3b; memop x mo
-    | Store (x, {ty = I32Type; pack = Some (Pack32 | Pack64); _}) ->
+    | Store (x, {ty = I32Type; pack = Some Pack32; _}) ->
       error e.at "illegal instruction i32.store32"
     | Store (x, ({ty = I64Type; pack = Some Pack8; _} as mo)) ->
       op 0x3c; memop x mo
@@ -285,35 +285,36 @@ struct
       vecop 0x5cl; memop x mo
     | VecLoad (x, ({ty = V128Type; pack = Some (Pack64, ExtZero); _} as mo)) ->
       vecop 0x5dl; memop x mo
-      error e.at "illegal instruction v128.loadNxM_<ext>"
+    | VecLoad _ ->
+      error e.at "illegal instruction v128.loadNxM_x"
 
     | VecLoadLane (x, ({ty = V128Type; pack = Pack8; _} as mo), i) ->
-      vecop 0x54l; memop x mo; u8 i;
+      vecop 0x54l; memop x mo; byte i;
     | VecLoadLane (x, ({ty = V128Type; pack = Pack16; _} as mo), i) ->
-      vecop 0x55l; memop x mo; u8 i;
+      vecop 0x55l; memop x mo; byte i;
     | VecLoadLane (x, ({ty = V128Type; pack = Pack32; _} as mo), i) ->
-      vecop 0x56l; memop x mo; u8 i;
+      vecop 0x56l; memop x mo; byte i;
     | VecLoadLane (x, ({ty = V128Type; pack = Pack64; _} as mo), i) ->
-      vecop 0x57l; memop x mo; u8 i;
+      vecop 0x57l; memop x mo; byte i;
 
     | VecStore (x, ({ty = V128Type; _} as mo)) ->
       vecop 0x0bl; memop x mo
 
     | VecStoreLane (x, ({ty = V128Type; pack = Pack8; _} as mo), i) ->
-      vecop 0x58l; memop x mo; u8 i;
+      vecop 0x58l; memop x mo; byte i;
     | VecStoreLane (x, ({ty = V128Type; pack = Pack16; _} as mo), i) ->
-      vecop 0x59l; memop x mo; u8 i;
+      vecop 0x59l; memop x mo; byte i;
     | VecStoreLane (x, ({ty = V128Type; pack = Pack32; _} as mo), i) ->
-      vecop 0x5al; memop x mo; u8 i;
+      vecop 0x5al; memop x mo; byte i;
     | VecStoreLane (x, ({ty = V128Type; pack = Pack64; _} as mo), i) ->
-      vecop 0x5bl; memop x mo; u8 i;
+      vecop 0x5bl; memop x mo; byte i;
 
     | MemorySize x -> op 0x3f; var x
     | MemoryGrow x -> op 0x40; var x
-    | MemoryFill x -> op 0xfc; vu32 0x0bl; var x
-    | MemoryCopy (x, y) -> op 0xfc; vu32 0x0al; var x; var y
-    | MemoryInit (x, y) -> op 0xfc; vu32 0x08l; var y; var x
-    | DataDrop x -> op 0xfc; vu32 0x09l; var x
+    | MemoryFill x -> op 0xfc; u32 0x0bl; var x
+    | MemoryCopy (x, y) -> op 0xfc; u32 0x0al; var x; var y
+    | MemoryInit (x, y) -> op 0xfc; u32 0x08l; var y; var x
+    | DataDrop x -> op 0xfc; u32 0x09l; var x
 
     | RefNull t -> op 0xd0; ref_type t
     | RefIsNull -> op 0xd1

@@ -92,50 +92,50 @@ let i64_store32 x align offset =
   Store (x, {ty = I64Type; align; offset; pack = Some Pack32})
 
 let v128_load x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = None})
+  VecLoad (x, {ty = V128Type; align; offset; pack = None})
 let v128_load8x8_s x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack8x8, SX))})
+  VecLoad (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack8x8, SX))})
 let v128_load8x8_u x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack8x8, ZX))})
+  VecLoad (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack8x8, ZX))})
 let v128_load16x4_s x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack16x4, SX))})
+  VecLoad (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack16x4, SX))})
 let v128_load16x4_u x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack16x4, ZX))})
+  VecLoad (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack16x4, ZX))})
 let v128_load32x2_s x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack32x2, SX))})
+  VecLoad (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack32x2, SX))})
 let v128_load32x2_u x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack32x2, ZX))})
+  VecLoad (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtLane (Pack32x2, ZX))})
 let v128_load8_splat x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = Some (Pack8, ExtSplat)})
+  VecLoad (x, {ty = V128Type; align; offset; pack = Some (Pack8, ExtSplat)})
 let v128_load16_splat x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = Some (Pack16, ExtSplat)})
+  VecLoad (x, {ty = V128Type; align; offset; pack = Some (Pack16, ExtSplat)})
 let v128_load32_splat x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = Some (Pack32, ExtSplat)})
+  VecLoad (x, {ty = V128Type; align; offset; pack = Some (Pack32, ExtSplat)})
 let v128_load64_splat x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtSplat)})
+  VecLoad (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtSplat)})
 let v128_load32_zero x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = Some (Pack32, ExtZero)})
+  VecLoad (x, {ty = V128Type; align; offset; pack = Some (Pack32, ExtZero)})
 let v128_load64_zero x align offset =
-  LoadVec (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtZero)})
+  VecLoad (x, {ty = V128Type; align; offset; pack = Some (Pack64, ExtZero)})
 let v128_load8_lane x align offset i =
-  LoadVecLane (x, {ty = V128Type; align; offset; pack = Pack8}, i)
+  VecLoadLane (x, {ty = V128Type; align; offset; pack = Pack8}, i)
 let v128_load16_lane x align offset i =
-  LoadVecLane (x, {ty = V128Type; align; offset; pack = Pack16}, i)
+  VecLoadLane (x, {ty = V128Type; align; offset; pack = Pack16}, i)
 let v128_load32_lane x align offset i =
-  LoadVecLane (x, {ty = V128Type; align; offset; pack = Pack32}, i)
+  VecLoadLane (x, {ty = V128Type; align; offset; pack = Pack32}, i)
 let v128_load64_lane x align offset i =
-  LoadVecLane (x, {ty = V128Type; align; offset; pack = Pack64}, i)
+  VecLoadLane (x, {ty = V128Type; align; offset; pack = Pack64}, i)
 
 let v128_store x align offset =
-  StoreVec (x, {ty = V128Type; align; offset; pack = ()})
+  VecStore (x, {ty = V128Type; align; offset; pack = ()})
 let v128_store8_lane x align offset i =
-  StoreVecLane (x, {ty = V128Type; align; offset; pack = Pack8}, i)
+  VecStoreLane (x, {ty = V128Type; align; offset; pack = Pack8}, i)
 let v128_store16_lane x align offset i =
-  StoreVecLane (x, {ty = V128Type; align; offset; pack = Pack16}, i)
+  VecStoreLane (x, {ty = V128Type; align; offset; pack = Pack16}, i)
 let v128_store32_lane x align offset i =
-  StoreVecLane (x, {ty = V128Type; align; offset; pack = Pack32}, i)
+  VecStoreLane (x, {ty = V128Type; align; offset; pack = Pack32}, i)
 let v128_store64_lane x align offset i =
-  StoreVecLane (x, {ty = V128Type; align; offset; pack = Pack64}, i)
+  VecStoreLane (x, {ty = V128Type; align; offset; pack = Pack64}, i)
 
 let memory_size x = MemorySize x
 let memory_grow x = MemoryGrow x

@@ -341,7 +341,7 @@ let rec step (c : config) : config =
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | LoadVec (x, {offset; ty; pack; _}), Num (I32 i) :: vs' ->
+      | VecLoad (x, {offset; ty; pack; _}), Num (I32 i) :: vs' ->
         let mem = memory frame.inst x in
         let addr = I64_convert.extend_i32_u i in
         (try
@@ -353,7 +353,7 @@ let rec step (c : config) : config =
           in Vec v :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | StoreVec (x, {offset; _}), Vec v :: Num (I32 i) :: vs' ->
+      | VecStore (x, {offset; _}), Vec v :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst x in
         let addr = I64_convert.extend_i32_u i in
         (try
@@ -361,7 +361,7 @@ let rec step (c : config) : config =
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | LoadVecLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
+      | VecLoadLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst x in
         let addr = I64_convert.extend_i32_u i in
         (try
@@ -382,7 +382,7 @@ let rec step (c : config) : config =
           in Vec (V128 v) :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | StoreVecLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
+      | VecStoreLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
         let mem = memory frame.inst x in
         let addr = I64_convert.extend_i32_u i in
         (try

@@ -357,29 +357,29 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     check_memop c memop num_size (Lib.Option.map fst) e.at;
     [NumType I32Type] --> [NumType memop.ty]
 
-  | LoadVec (x, memop) ->
+  | Store (x, memop) ->
+    let _mt = memory c x in
+    check_memop c memop num_size (fun sz -> sz) e.at;
+    [NumType I32Type; NumType memop.ty] --> []
+
+  | VecLoad (x, memop) ->
     let _mt = memory c x in
     check_memop c memop vec_size (Lib.Option.map fst) e.at;
     [NumType I32Type] --> [VecType memop.ty]
 
-  | LoadVecLane (x, memop, i) ->
+  | VecStore (x, memop) ->
+    let _mt = memory c x in
+    check_memop c memop vec_size (fun _ -> None) e.at;
+    [NumType I32Type; VecType memop.ty] --> []
+
+  | VecLoadLane (x, memop, i) ->
     let _mt = memory c x in
     check_memop c memop vec_size (fun sz -> Some sz) e.at;
     require (i < vec_size memop.ty / packed_size memop.pack) e.at
       "invalid lane index";
     [NumType I32Type; VecType memop.ty] -->  [VecType memop.ty]
 
-  | Store (x, memop) ->
-    let _mt = memory c x in
-    check_memop c memop num_size (fun sz -> sz) e.at;
-    [NumType I32Type; NumType memop.ty] --> []
-
-  | StoreVec (x, memop) ->
-    let _mt = memory c x in
-    check_memop c memop vec_size (fun _ -> None) e.at;
-    [NumType I32Type; VecType memop.ty] --> []
-
-  | StoreVecLane (x, memop, i) ->
+  | VecStoreLane (x, memop, i) ->
     let _mt = memory c x in
     check_memop c memop vec_size (fun sz -> Some sz) e.at;
     require (i < vec_size memop.ty / packed_size memop.pack) e.at
