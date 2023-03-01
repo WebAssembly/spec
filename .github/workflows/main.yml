@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 19.x
-      # TODO: disable node run until it fully implements proposal
+      # TODO: disable node.js run until it fully implements proposal
       # - run: cd interpreter && opam exec make JS=node all
       - run: cd interpreter && opam exec make all
 
