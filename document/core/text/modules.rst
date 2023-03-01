@@ -96,14 +96,14 @@ If inline declarations are given, then their types must match the referenced :re
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
        \quad\Rightarrow\quad x, I' \\ &&& \qquad
        (\iff \begin{array}[t]{@{}l@{}}
-        I.\ITYPEDEFS[x] = [t_1^n] \to [t_2^\ast] \wedge
+        I.\ITYPEDEFS[x] = [t_1^n] \toF [t_2^\ast] \wedge
         I' = \{\ILOCALS~(\epsilon)^n\}) \\
         \end{array} \\[1ex] &&|&
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
      ~~(t_1{:}\Tparam)^\ast~~(t_2{:}\Tresult)^\ast
        \quad\Rightarrow\quad x, I' \\ &&& \qquad
        (\iff \begin{array}[t]{@{}l@{}}
-        I.\ITYPEDEFS[x] = [t_1^\ast] \to [t_2^\ast] \wedge
+        I.\ITYPEDEFS[x] = [t_1^\ast] \toF [t_2^\ast] \wedge
         I' = \{\ILOCALS~\F{id}(\Tparam)^\ast\} \idcwellformed) \\
         \end{array} \\
    \end{array}
@@ -117,7 +117,7 @@ The following auxiliary function extracts optional identifiers from parameters:
    \end{array}
 
 .. note::
-   Both productions overlap for the case that the function type is :math:`[] \to []`.
+   Both productions overlap for the case that the function type is :math:`[] \toF []`.
    However, in that case, they also produce the same results, so that the choice is immaterial.
 
    The :ref:`well-formedness <text-context-wf>` condition on :math:`I'` ensures that the parameters do not contain duplicate identifiers.
@@ -138,7 +138,7 @@ In that case, a :ref:`type index <syntax-typeidx>` is automatically inserted:
      \text{(}~\text{type}~~x~\text{)}~~\Tparam^\ast~~\Tresult^\ast \\
    \end{array}
 
-where :math:`x` is the smallest existing :ref:`type index <syntax-typeidx>` whose definition in the current module is the :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+where :math:`x` is the smallest existing :ref:`type index <syntax-typeidx>` whose definition in the current module is the :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \toF [t_2^\ast]`.
 If no such index exists, then a new :ref:`type definition <text-type>` of the form
 
 .. math::

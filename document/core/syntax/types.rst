@@ -228,10 +228,10 @@ Instruction Types
 .. math::
    \begin{array}{llll}
    \production{instruction type} & \instrtype &::=&
-     \resulttype \to_{\localidx^\ast} \resulttype \\
+     \resulttype \toX{\localidx^\ast} \resulttype \\
    \end{array}
 
-An instruction type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
+An instruction type :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
 and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
 Moreover, it enumerates the :ref:`indices <syntax-localidx>` :math:`x^\ast` of locals that have been set by the instruction or sequence.
 

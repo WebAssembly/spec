@@ -191,7 +191,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * The :ref:`type instance <syntax-typeinst>` :math:`S.\STYPES[\typeaddr]` must exist.
 
-* Let the :ref:`dynamic <syntax-type-dyn>` :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`type instance <syntax-typeinst>` :math:`S.\STYPES[\typeaddr]`.
+* Let the :ref:`dynamic <syntax-type-dyn>` :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`type instance <syntax-typeinst>` :math:`S.\STYPES[\typeaddr]`.
 
 * For every :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_1` :ref:`extending <extend-store>` :math:`S` and every sequence :math:`\val^\ast` of :ref:`values <syntax-val>` whose :ref:`types <valid-val>` coincide with :math:`t_1^\ast`:
 
@@ -208,7 +208,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 .. math::
    \frac{
      \begin{array}[b]{@{}l@{}}
-     S.\STYPES[\typeaddr] = [t_1^\ast] \to [t_2^\ast] \\
+     S.\STYPES[\typeaddr] = [t_1^\ast] \toF [t_2^\ast] \\
      \end{array}
      \quad
      \begin{array}[b]{@{}l@{}}
@@ -678,7 +678,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 * Assert: The :ref:`type address <syntax-typeaddr>` :math:`S.\STYPES[a']` is defined in the store.
 
-* Let :math:`[t_1^\ast] \to [t_2^\ast])` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[a']`.
+* Let :math:`[t_1^\ast] \toF [t_2^\ast])` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[a']`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
@@ -686,7 +686,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    \frac{
      S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~a'
      \qquad
-     S.\STYPES[a'] = [t_1^\ast] \to [t_2^\ast]
+     S.\STYPES[a'] = [t_1^\ast] \toF [t_2^\ast]
    }{
      S; C \vdashadmininstr \INVOKE~\funcaddr : [t_1^\ast] \to [t_2^\ast]
    }
@@ -697,20 +697,20 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END`
 ..................................................
 
-* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \to_{x^\ast} [t_2^*]`.
+* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \toX{x^\ast} [t_2^*]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^n]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to_{{x'}^\ast} [t_2^*]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \toX{{x'}^\ast} [t_2^*]`.
 
 * Then the compound instruction is valid with type :math:`[] \to [t_2^*]`.
 
 .. math::
    \frac{
-     S; C \vdashinstrseq \instr_0^\ast : [t_1^n] \to_{x^\ast} [t_2^*]
+     S; C \vdashinstrseq \instr_0^\ast : [t_1^n] \toX{x^\ast} [t_2^*]
      \qquad
-     S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \to_{{x'}^\ast} [t_2^*]
+     S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \toX{{x'}^\ast} [t_2^*]
    }{
      S; C \vdashadmininstr \LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END : [] \to [t_2^*]
    }
@@ -1013,7 +1013,7 @@ Consequently, given a :ref:`valid store <valid-store>`, no computation defined b
 Type System Properties
 ----------------------
 
-.. index:: ! principal types, type system, subtyping, polymorphism, instruction, syntax
+.. index:: ! principal types, type system, subtyping, polymorphism, instruction, syntax, instruction type
 .. _principality:
 
 Principal Types
@@ -1068,15 +1068,15 @@ such that :math:`\sigma(\instrtype_{\min})` is a subtype of :math:`\instrtype'` 
 Furthermore, :math:`\instrtype_{\min}` is unique up to the choice of type variables.
 
 **Theorem (Closed Principal Forward Types).**
-If closed input type :math:`[t_1^\ast]` is given and the instruction sequence :math:`\instr^\ast` is :ref:`valid <valid-config>` with :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to_{{\!x^\ast}} [t_2^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{{\!x^\ast}} [t_2^\ast]`),
-then it is also valid with instruction type :math:`[t_1^\ast] \to_{{\!x^\ast}} [\alpha_{\valtype^\ast}~t^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{\!x^\ast} [\alpha_{\valtype^\ast}~t^\ast]`),
+If closed input type :math:`[t_1^\ast]` is given and the instruction sequence :math:`\instr^\ast` is :ref:`valid <valid-config>` with :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \toX{x^\ast} [t_2^\ast]`),
+then it is also valid with instruction type :math:`[t_1^\ast] \toX{x^\ast} [\alpha_{\valtype^\ast}~t^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \toX{x^\ast} [\alpha_{\valtype^\ast}~t^\ast]`),
 where all :math:`t^\ast` are closed,
-such that for *every* closed result type :math:`[{t'_2}^\ast]` with which :math:`\instr^\ast` is valid (i.e., for all :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{\!x^\ast} [{t'_2}^\ast]`),
+such that for *every* closed result type :math:`[{t'_2}^\ast]` with which :math:`\instr^\ast` is valid (i.e., for all :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \toX{x^\ast} [{t'_2}^\ast]`),
 there exists a substitution :math:`\sigma`,
 such that :math:`[{t'_2}^\ast] = [\sigma(\alpha_{\valtype^\ast})~t^\ast]`.
 
 
-.. index:: ! type lattice, subtyping, least upper bound, greatest lower bound
+.. index:: ! type lattice, subtyping, least upper bound, greatest lower bound, instruction type
 
 Type Lattice
 ~~~~~~~~~~~~
@@ -1127,3 +1127,31 @@ do not have common subtypes either (other than :math:`\BOT` or :math:`\REF~\BOT`
 .. note::
    Types from disjoint hierarchies can safely be represented in mutually incompatible ways in an implementation,
    because their values can never flow to the same place.
+
+
+.. index:: ! compositionality, instruction type, subtyping
+
+Compositionality
+~~~~~~~~~~~~~~~~
+
+:ref:`Valid <valid-instr-seq>` :ref:`instruction sequences <syntax-instr>` can be freely *composed*, as long as their types match up.
+
+**Theorem (Composition).**
+If two instruction sequences :math:`\instr_1^\ast` and :math:`\instr_2^\ast` are valid with types :math:`[t_1^\ast] \toX{x_1^\ast} [t^\ast]` and  :math:`[t^\ast] \toX{x_2^\ast} [t_2^\ast]`, respectively (i.e., :math:`C \vdashinstrseq \instr_1^\ast : [t_1^\ast] \toX{x_1^\ast} [t^\ast]` and :math:`C \vdashinstrseq \instr_1^\ast : [t^\ast] \toX{x_2^\ast} [t_2^\ast]`),
+then the concatenated instruction sequence :math:`(\instr_1^\ast\;\instr_2^\ast)` is valid with type :math:`[t_1^\ast] \toX{x_1^\ast\,x_2^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrseq \instr_1^\ast\;\instr_2^\ast : [t_1^\ast] \toX{x_1^\ast\,x_2^\ast} [t_2^\ast]`).
+
+.. note::
+   More generally, instead of a shared type :math:`[t^\ast]`, it suffices if the output type of :math:`\instr_1^\ast` is a :ref:`subtype <match-resulttype>` of the input type of  :math:`\instr_1^\ast`,
+   since the subtype can always be weakened to its supertype by subsumption.
+
+Inversely, valid instruction sequences can also freely be *decomposed*, that is, splitting them anywhere produces two instruction sequences that are both :ref:`valid <valid-instr-seq>`.
+
+**Theorem (Decomposition).**
+If an instruction sequence :math:`\instr^\ast` that is valid with type :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \toX{x^\ast} [t_2^\ast]`)
+is split into two instruction sequences :math:`\instr_1^\ast` and :math:`\instr_2^\ast` at any point (i.e., :math:`\instr^\ast = \instr_1^\ast\;\instr_2^\ast`),
+then these are separately valid with some types :math:`[t_1^\ast] \toX{x_1^\ast} [t^\ast]` and  :math:`[t^\ast] \toX{x_2^\ast} [t_2^\ast]`, respectively (i.e., :math:`C \vdashinstrseq \instr_1^\ast : [t_1^\ast] \toX{x_1^\ast} [t^\ast]` and :math:`C \vdashinstrseq \instr_1^\ast : [t^\ast] \toX{x_2^\ast} [t_2^\ast]`),
+where :math:`x^\ast = x_1^\ast\;x_2^\ast`.
+
+.. note::
+   This property holds because validation is required even for unreachable code.
+   Without that, :math:`\instr_2^\ast` might not be valid in isolation.

@@ -425,7 +425,7 @@ It defines the export's :ref:`name <syntax-name>` and the associated :ref:`exter
    \end{array}
 
 
-.. index:: ! external value, function address, table address, memory address, global address, store, function, table, memory, global
+.. index:: ! external value, function address, table address, memory address, global address, store, function, table, memory, global, instruction type
    pair: abstract syntax; external value
    pair: external; value
 .. _syntax-externval:
@@ -548,7 +548,7 @@ Conventions
 
 * The meta variable :math:`F` ranges over frames where clear from context.
 
-* The following auxiliary definition takes a :ref:`block type <syntax-blocktype>` and looks up the :ref:`function type <syntax-functype>` that it denotes in the current frame:
+* The following auxiliary definition takes a :ref:`block type <syntax-blocktype>` and looks up the :ref:`instruction type <syntax-instrtype>` that it denotes in the current frame:
 
 .. math::
    \begin{array}{lll}

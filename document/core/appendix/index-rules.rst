@@ -43,7 +43,7 @@ Construct                                        Judgement
 :ref:`Export description <valid-exportdesc>`     :math:`C \vdashexportdesc \exportdesc : \externtype`
 :ref:`Import <valid-import>`                     :math:`C \vdashimport \import : \externtype`
 :ref:`Import description <valid-importdesc>`     :math:`C \vdashimportdesc \importdesc : \externtype`
-:ref:`Module <valid-module>`                     :math:`\vdashmodule \module : \externtype^\ast \to \externtype^\ast`
+:ref:`Module <valid-module>`                     :math:`\vdashmodule \module : \externtype^\ast \rightarrow \externtype^\ast`
 ===============================================  ===============================================================================
 
 

@@ -622,7 +622,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      (\CALL~\start.\SFUNC)^? \\
      \end{array} \\
    &(\iff
-     & \vdashmodule \module : \externtype_{\F{im}}^k \to \externtype_{\F{ex}}^\ast \\
+     & \vdashmodule \module : \externtype_{\F{im}}^k \rightarrow \externtype_{\F{ex}}^\ast \\
      &\wedge& (S' \vdashexternval \externval : \externtype)^k \\
      &\wedge& (S' \vdashexterntypematch \externtype \matchesexterntype \dyn_{\moduleinst}(\externtype_{\F{im}}))^k \\[1ex]
      &\wedge& \module.\MGLOBALS = \global^\ast \\
@@ -698,7 +698,7 @@ The following steps are performed:
 
 4. Assert: :math:`S.\STYPES[\typeaddr]` exists.
 
-5. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`dynamic <syntax-type-dyn>` :ref:`function type <syntax-functype>` :math:`S.\STYPES[\typeaddr]`.
+5. Let :math:`[t_1^n] \toF [t_2^m]` be the :ref:`dynamic <syntax-type-dyn>` :ref:`function type <syntax-functype>` :math:`S.\STYPES[\typeaddr]`.
 
 6. If the length :math:`|\val^\ast|` of the provided argument values is different from the number :math:`n` of expected arguments, then:
 
@@ -730,7 +730,7 @@ The values :math:`\val_{\F{res}}^m` are returned as the results of the invocatio
    ~\\[-1ex]
    \begin{array}{@{}lcl}
    \invoke(S, \funcaddr, \val^n) &=& S; F; \val^n~(\INVOKE~\funcaddr) \\
-     &(\iff & S.\STYPES[S.\SFUNCS[\funcaddr].\FITYPE] = [t_1^n] \to [t_2^m] \\
+     &(\iff & S.\STYPES[S.\SFUNCS[\funcaddr].\FITYPE] = [t_1^n] \toF [t_2^m] \\
      &\wedge& (S \vdashval \val : t_1)^n \\
      &\wedge& F = \{ \AMODULE~\{\}, \ALOCALS~\epsilon \}) \\
    \end{array}

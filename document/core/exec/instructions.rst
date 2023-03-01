@@ -2563,7 +2563,7 @@ Control Instructions
 
 1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_{S;F}(\blocktype)`.
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\expand_{S;F}(\blocktype)`.
 
 3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
 
@@ -2589,7 +2589,7 @@ Control Instructions
 
 1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_{S;F}(\blocktype)`.
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\expand_{S;F}(\blocktype)`.
 
 3. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is the start of the loop.
 
@@ -3116,7 +3116,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 3. Let :math:`\X{ta}` be the :ref:`type address <syntax-typeaddr>` :math:`\X{f}.\FITYPE`.
 
-4. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\X{ta}]`.
+4. Let :math:`[t_1^n] \toF [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\X{ta}]`.
 
 5. Let :math:`\local^\ast` be the list of :ref:`locals <syntax-local>` :math:`f.\FICODE.\FLOCALS`.
 
@@ -3143,7 +3143,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\SFUNCS[a] = f \\
-     \wedge & S.\STYPES[f.\FITYPE] = [t_1^n] \to [t_2^m] \\
+     \wedge & S.\STYPES[f.\FITYPE] = [t_1^n] \toF [t_2^m] \\
      \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(\default_t)^k \})
      \end{array} \\
@@ -3160,7 +3160,7 @@ Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
 
-2. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
+2. Let :math:`[t_1^n] \toF [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
 
 3. Assert: due to :ref:`validation <valid-return_call>`, there are at least :math:`n` values on the top of the stack.
 
@@ -3185,7 +3185,7 @@ Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \begin{array}{lcl@{\qquad}l}
     S; \FRAME_m\{F\}~B^\ast[\val^n~(\RETURNINVOKE~a)]~\END &\stepto&
       \val^n~(\INVOKE~a)
-      & (\iff S.\SFUNCS[a].\FITYPE = [t_1^n] \to [t_2^m])
+      & (\iff S.\SFUNCS[a].\FITYPE = [t_1^n] \toF [t_2^m])
    \end{array}
 
 
@@ -3243,7 +3243,7 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\SFUNCS[a] = \{ \FITYPE~\X{ta}, \FIHOSTCODE~\X{hf} \} \\
-     \wedge & S.\STYPES[\X{ta}] = [t_1^n] \to [t_2^m] \\
+     \wedge & S.\STYPES[\X{ta}] = [t_1^n] \toF [t_2^m] \\
      \wedge & (S'; \result) \in \X{hf}(S; \val^n)) \\
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
@@ -3251,7 +3251,7 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \toF [t_2^m], \FIHOSTCODE~\X{hf} \} \\
      \wedge & \bot \in \X{hf}(S; \val^n)) \\
      \end{array} \\
    \end{array}

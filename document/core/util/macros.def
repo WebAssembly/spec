@@ -176,7 +176,9 @@
 
 .. Types, terminals
 
-.. |to| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
+.. |toF| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
+.. |to| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow}
+.. |toX#1| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow_{#1}}
 
 .. |BOT| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{bot}}
 

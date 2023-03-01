@@ -14,7 +14,7 @@ Furthermore, most definitions are themselves classified with a suitable type.
 Functions
 ~~~~~~~~~
 
-Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` referring to :ref:`function types <syntax-functype>` of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
+Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` referring to :ref:`function types <syntax-functype>` of the form :math:`[t_1^\ast] \toF [t_2^\ast]`.
 
 
 :math:`\{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \}`
@@ -22,7 +22,7 @@ Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` r
 
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
 
 * For each local declared by a :ref:`value type <syntax-valtype>` :math:`t` in :math:`t^\ast`:
 
@@ -42,11 +42,11 @@ Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` r
 * Under the context :math:`C'`,
   the expression :math:`\expr` must be valid with type :math:`[t_2^\ast]`.
 
-* Then the function definition is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+* Then the function definition is valid with type :math:`[t_1^\ast] \toF [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\CTYPES[x] = [t_1^\ast] \to [t_2^\ast]
+     C.\CTYPES[x] = [t_1^\ast] \toF [t_2^\ast]
      \qquad
      (C \vdashlocal t : \init~t)^\ast
      \qquad
@@ -379,14 +379,14 @@ Start function declarations :math:`\start` are not classified by any type.
 
 * Assert: The type :math:`C.\CTYPES[y]` is defined in the context.
 
-* The type :math:`C.\CTYPES[y]` must be the :ref:`function type <syntax-functype>` :math:`[] \to []`.
+* The type :math:`C.\CTYPES[y]` must be the :ref:`function type <syntax-functype>` :math:`[] \toF []`.
 
 * Then the start function is valid.
 
 
 .. math::
    \frac{
-     C.\CTYPES[C.\CFUNCS[x]] = [] \to []
+     C.\CTYPES[C.\CFUNCS[x]] = [] \toF []
    }{
      C \vdashstart \{ \SFUNC~x \} \ok
    }
