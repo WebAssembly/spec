@@ -48,7 +48,7 @@ The character stream in the source text is divided, from left to right, into a s
      \text{(} ~|~ \text{)} ~|~ \Treserved \\
    \production{keyword} & \Tkeyword &::=&
      (\text{a} ~|~ \dots ~|~ \text{z})~\Tidchar^\ast
-     \qquad (\mbox{if occurring as a literal terminal in the grammar}) \\
+     \qquad (\iff~\mbox{occurring as a literal terminal in the grammar}) \\
    \production{reserved} & \Treserved &::=&
      (\Tidchar ~|~ \Tstring)^+ \\
    \end{array}

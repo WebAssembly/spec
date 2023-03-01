@@ -1312,7 +1312,7 @@ Table Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~(\TABLEGROW~x) &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
+   S; F; \val~(\I32.\CONST~n)~(\TABLEGROW~x) &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
    \end{array}
    \end{array}
 
@@ -2244,7 +2244,7 @@ Memory Instructions
    S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~n)~\MEMORYFILL
      \quad\stepto\quad S; F; \TRAP
      \\ \qquad
-     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|)
+     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|)
    \\[1ex]
    S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~0)~\MEMORYFILL
      \quad\stepto\quad S; F; \epsilon
@@ -2451,7 +2451,7 @@ Memory Instructions
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & s + n > |S.\SDATAS[F.\AMODULE.\MIDATAS[x]].\DIDATA| \\
-      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|) \\[1ex]
+      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|) \\[1ex]
      \end{array}
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\MEMORYINIT~x)
@@ -2938,22 +2938,20 @@ Exiting :math:`\instr^\ast` with label :math:`L`
 
 When the end of a block is reached without a jump or trap aborting it, then the following steps are performed.
 
-1. Let :math:`n` be the number of values on the top of the stack.
+1. Pop all values :math:`\val^\ast` from the top of the stack.
 
-2. Pop the values :math:`\val^n` from the stack.
+2. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack.
 
-3. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack and has arity :math:`n`.
+3. Pop the label from the stack.
 
-4. Pop the label from the stack.
+4. Push :math:`\val^\ast` back to the stack.
 
-5. Push :math:`\val^n` back to the stack.
-
-6. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
+5. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \LABEL_n\{\instr^\ast\}~\val^n~\END &\stepto& \val^n
+   \LABEL_n\{\instr^\ast\}~\val^\ast~\END &\stepto& \val^\ast
    \end{array}
 
 .. note::
