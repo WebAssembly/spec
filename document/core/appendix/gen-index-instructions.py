@@ -52,18 +52,28 @@ def RefWrap(s, kind):
         return f':ref:`{kind} <{s}>`'
 
 
-def Instruction(name, opcode, type=None, validation=None, execution=None, operator=None):
+def Instruction(name, opcode, type=None, validation=None, execution=None, operator=None, validation2=None, execution2=None):
     if operator:
         execution_str = ', '.join([RefWrap(execution, 'execution'),
                                    RefWrap(operator, 'operator')])
+    elif execution2:
+        execution_str = ', '.join([RefWrap(execution, 'execution'),
+                                   RefWrap(execution, 'execution')])
+
     else:
         execution_str = RefWrap(execution, 'execution')
+
+    if validation2:
+        validation_str = ', '.join([RefWrap(validation, 'validation'),
+                                    RefWrap(validation2, 'validation')])
+    else:
+        validation_str = RefWrap(validation, 'validation')
 
     return (
         MathWrap(name, '(reserved)'),
         MathWrap(opcode),
         MathWrap(type),
-        RefWrap(validation, 'validation'),
+        validation_str,
         execution_str
     )
 
@@ -75,10 +85,10 @@ INSTRUCTIONS = [
     Instruction(r'\LOOP~\X{bt}', r'\hex{03}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-loop', r'exec-loop'),
     Instruction(r'\IF~\X{bt}', r'\hex{04}', r'[t_1^\ast~\I32] \to [t_2^\ast]', r'valid-if', r'exec-if'),
     Instruction(r'\ELSE', r'\hex{05}'),
-    Instruction(None, r'\hex{06}'),
-    Instruction(None, r'\hex{07}'),
-    Instruction(None, r'\hex{08}'),
-    Instruction(None, r'\hex{09}'),
+    Instruction(r'\TRY~\X{bt}', r'\hex{06}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-try-catch', r'exec-try-catch', None, r'valid-try-delegate', r'exec-try-delegate'),
+    Instruction(r'\CATCH~x', r'\hex{07}'),
+    Instruction(r'\THROW~x', r'\hex{08}', r'[t_1^\ast~t_x^\ast] \to [t_2^\ast]', r'valid-throw', r'exec-throw'),
+    Instruction(r'\RETHROW~n', r'\hex{09}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-rethrow', r'exec-rethrow'),
     Instruction(None, r'\hex{0A}'),
     Instruction(r'\END', r'\hex{0B}'),
     Instruction(r'\BR~l', r'\hex{0C}', r'[t_1^\ast~t^\ast] \to [t_2^\ast]', r'valid-br', r'exec-br'),
@@ -93,8 +103,8 @@ INSTRUCTIONS = [
     Instruction(None, r'\hex{15}'),
     Instruction(None, r'\hex{16}'),
     Instruction(None, r'\hex{17}'),
-    Instruction(None, r'\hex{18}'),
-    Instruction(None, r'\hex{19}'),
+    Instruction(r'\DELEGATE~l', r'\hex{18}'),
+    Instruction(r'\CATCHALL', r'\hex{19}', None, r'valid-try-catch', r'exec-try-catch'),
     Instruction(r'\DROP', r'\hex{1A}', r'[t] \to []', r'valid-drop', r'exec-drop'),
     Instruction(r'\SELECT', r'\hex{1B}', r'[t~t~\I32] \to [t]', r'valid-select', r'exec-select'),
     Instruction(r'\SELECT~t', r'\hex{1C}', r'[t~t~\I32] \to [t]', r'valid-select', r'exec-select'),
