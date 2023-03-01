@@ -89,12 +89,14 @@ bikeshed-keep:
 	  echo Downloaded Bikeshed.
 
 
-.PHONY: index
-index:
-	(cd appendix; ./index-instructions.py)
+GENERATED = appendix/index-instructions.rst
+.INTERMEDIATE: $(GENERATED)
+
+%.rst: %.py
+	(cd `dirname $@`; ./`basename $^`)
 
 .PHONY: pdf
-pdf:	index latexpdf
+pdf:	$(GENERATED) latexpdf
 	mkdir -p $(BUILDDIR)/html/$(DOWNLOADDIR)
 	ln -f $(BUILDDIR)/latex/$(NAME).pdf $(BUILDDIR)/html/$(DOWNLOADDIR)/$(NAME).pdf
 
@@ -103,10 +105,9 @@ pdf:	index latexpdf
 clean:
 	rm -rf $(BUILDDIR)
 	rm -rf $(STATICDIR)
-	rm -f appendix/index-instructions.rst
 
 .PHONY: html
-html: index
+html: $(GENERATED)
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	for file in `ls $(BUILDDIR)/html/*.html`; \
 	do \
@@ -122,19 +123,19 @@ html: index
 	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html/."
 
 .PHONY: dirhtml
-dirhtml:
+dirhtml: $(GENERATED)
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/dirhtml."
 
 .PHONY: singlehtml
-singlehtml:
+singlehtml: $(GENERATED)
 	$(SPHINXBUILD) -b singlehtml $(ALLSPHINXOPTS) $(BUILDDIR)/singlehtml
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/singlehtml."
 
 .PHONY: bikeshed
-bikeshed:
+bikeshed: $(GENERATED)
 	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
 		$(ALLSPHINXOPTS) $(BUILDDIR)/bikeshed_singlehtml
 	python util/bikeshed_fixup.py $(BUILDDIR)/bikeshed_singlehtml/index.html \
