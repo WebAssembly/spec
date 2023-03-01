@@ -91,7 +91,7 @@ bikeshed-keep:
 
 .PHONY: index
 index:
-	(cd appendix; ./gen-index-instructions.py)
+	(cd appendix; ./index-instructions.py)
 
 .PHONY: pdf
 pdf:	index latexpdf
