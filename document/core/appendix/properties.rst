@@ -612,64 +612,65 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }
 
 
-.. index:: catch, throw context
+.. index:: handler, throw context
 
-:math:`\CATCHadm\{\tagaddr^?~\instr_1^\ast\}^\ast~\instr_2^\ast~\END`
-.....................................................................
+:math:`\HANDLERadm_n\{(\tagaddr^?~\instr_1^\ast)^\ast\}~\instr_2^\ast~\END`
+...........................................................................
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label type <syntax-labeltype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^\ast]`.
+  the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^n]`.
 
-* Let :math:`C''` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label type <syntax-labeltype>` :math:`(\LCATCH~[t_2^\ast])` prepended to the |CLABELS| vector.
+* Let :math:`C''` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label type <syntax-labeltype>` :math:`(\LCATCH~[t_2^n])` prepended to the |CLABELS| vector.
 
 * Under context :math:`C''`,
   for every :math:`\tagaddr^?` and associated instruction sequence :math:`\instr_1^\ast`:
 
-  * If :math:`\tagaddr^? = \epsilon`, then :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^\ast]`.
+  * If :math:`\tagaddr^? = \epsilon`, then :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^n]`.
 
   * Else:
 
     * The :ref:`external tag value <syntax-externval>` :math:`\EVTAG~\tagaddr` must be :ref:`valid <valid-externval-tag>` with some :ref:`external tag type <syntax-externtype>` :math:`\ETTAG~[t_1^\ast] \to []`.
 
-    * The instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+    * The instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^n]`.
 
-* Then the compound instruction is valid under context :math:`C'` with type :math:`[] \to [t_2^\ast]`.
+* Then the compound instruction is valid under context :math:`C'` with type :math:`[] \to [t_2^n]`.
 
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
      ((S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t_1^\ast]\to[])^? \\
-     ~~S; C,\CLABELS\,(\LCATCH~[t_2^\ast]) \vdashinstrseq \instr_1^\ast : [(t_1^\ast)^?] \to [t_2^\ast])^\ast \\
-     S; C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr_2^\ast : [] \to [t_2^\ast] \\
+     ~~S; C,\CLABELS\,(\LCATCH~[t_2^n]) \vdashinstrseq \instr_1^\ast : [(t_1^\ast)^?] \to [t_2^n])^\ast \\
+     S; C,\CLABELS\,[t_2^n] \vdashinstrseq \instr_2^\ast : [] \to [t_2^n] \\
    \end{array}
    }{
-     S; C,\CLABELS\,[t_2^\ast] \vdashadmininstr \CATCHadm\{\tagaddr^?~{\instr_1}^\ast\}^\ast~\instr_2^\ast~\END : [] \to [t_2^\ast]
+     S; C,\CLABELS\,[t_2^n] \vdashadmininstr \HANDLERadm_n\{(\tagaddr^?~{\instr_1}^\ast)^\ast\}~\instr_2^\ast~\END : [] \to [t_2^n]
    }
 
 
-.. index:: delegate, throw context
+.. index:: handler, throw context
+.. _valid-handleradm:
 
-:math:`\DELEGATEadm\{l\}~\instr^\ast~\END`
-..........................................
+:math:`\HANDLERadm_n\{l\}~\instr^\ast~\END`
+...........................................
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the label :math:`[t^\ast]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[]\to[t^\ast]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[]\to[t^n]`.
 
-* Then the compound instruction is valid under context :math:`C'` with type :math:`[] \to [t^\ast]`.
+* Then the compound instruction is valid under context :math:`C'` with type :math:`[] \to [t^n]`.
 
 .. math::
    \frac{
-     S; C,\CLABELS\,[t^\ast] \vdashinstrseq \instr^\ast : [] \to [t^\ast]
+     S; C,\CLABELS\,[t^n] \vdashinstrseq \instr^\ast : [] \to [t^n]
      \qquad
      C.\CLABELS[l] = \LCATCH^?~[t_0^\ast]
    }{
-     S; C,\CLABELS\,[t^\ast] \vdashadmininstr \DELEGATEadm\{l\}~\instr^\ast~\END : [] \to [t^\ast]
+     S; C,\CLABELS\,[t^n] \vdashadmininstr \HANDLERadm_n\{l\}~\instr^\ast~\END : [] \to [t^n]
    }
 
 

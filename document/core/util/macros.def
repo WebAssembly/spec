@@ -1094,6 +1094,7 @@
 .. |label| mathdef:: \xref{exec/runtime}{syntax-label}{\X{label}}
 .. |frame| mathdef:: \xref{exec/runtime}{syntax-frame}{\X{frame}}
 .. |handler| mathdef:: \xref{exec/runtime}{syntax-handler}{\X{handler}}
+.. |exn| mathdef:: \xref{exec/runtime}{syntax-exn}{\X{exn}}
 
 .. Stack, meta functions
 
@@ -1107,8 +1108,7 @@
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
 .. |THROWadm| mathdef:: \xref{exec/runtime}{syntax-throwadm}{\K{throw}}
-.. |CATCHadm| mathdef:: \xref{exec/runtime}{syntax-catchadm}{\K{catch}}
-.. |DELEGATEadm| mathdef:: \xref{exec/runtime}{syntax-delegateadm}{\K{delegate}}
+.. |HANDLERadm| mathdef:: \xref{exec/runtime}{syntax-handleradm}{\K{handler}}
 .. |CAUGHTadm| mathdef:: \xref{exec/runtime}{syntax-caughtadm}{\K{caught}}
 
 

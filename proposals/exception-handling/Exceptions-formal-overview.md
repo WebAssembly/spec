@@ -110,12 +110,18 @@ taginst ::= {'type' tagtype}
 ```
 m ::= {..., 'tags' tagaddr*}
 ```
+#### Stack
+
+```
+handler ::= (tagaddr? instr*)* | labelidx
+exn ::= tagaddr val*
+```
 
 #### Administrative Instructions
 
 ```
-instr ::= ... | 'throw' tagaddr | 'catch'{ tagaddr? instr* }* instr* 'end'
-        | 'delegate'{ labelidx } instr* 'end' | 'caught'{ tagaddr val* } instr* 'end'
+instr ::= ... | 'throw' tagaddr | 'handler'_n{handler} instr* 'end'
+        | 'handler'_n{ labelidx } instr* 'end' | 'caught'_n{exn} instr* 'end'
 ```
 
 #### Block Contexts and Label Kinds
@@ -125,73 +131,72 @@ So far block contexts are only used in the reduction of `br l` and `return`, and
 ```
 B^0 ::= val* '[_]' instr* | val* C^0 instr*
 B^{k+1} ::= val* ('label'_n{instr*} B^k 'end') instr* | val* C^{k+1} instr*
-C^k ::= 'catch'{ tagaddr? instr* }* B^k 'end'
-      | 'caught'{ tagaddr val* } B^k 'end'
-      | 'delegate'{ labelidx } B^k 'end'
+C^k ::= 'handler'_n{ handler } B^k 'end'
+      | 'caught'_n{ exn } B^k 'end'
 ```
 
 Note the `C` in `C^k` above stands for `control`, because the related administrative instructions are in some ways modeling [control frame opcodes](https://webassembly.github.io/spec/core/appendix/algorithm.html?highlight=control#data-structures) "on the stack".
 
 #### Throw Contexts
 
-Throw contexts don't skip over handlers (administrative `catch` or `delegate` instructions).
+Throw contexts don't skip over handlers.
 Throw contexts are used to match a thrown exception with the innermost handler.
 
 ```
 T ::= '[_]' | val* T instr*
    | 'label'_n{instr*} T 'end'
-   | 'caught'{ tagaddr val* } T 'end'
+   | 'caught'_n{exn} T 'end'
    | 'frame'_n{F} T 'end'
 ```
 
-Note that because `catch` and `delegate` instructions are not included above, there is always a unique maximal throw context to match the reduction rules. Note that this basically means that `caught{..} instr* end` is not a potential catching block for exceptions thrown by `instr*`. The instruction sequence `instr*` is inside a `catch` or `catch_all` block.
+Note that because handlers are not included above, popping the throw context stops when the innermost handler is found, if any. Note that this also means that `caught_n{exn} instr* end` is not a potential catching block for exceptions thrown by `instr*`. The instruction sequence `instr*` is inside a `catch` or `catch_all` block.
 
 ### Reduction of Instructions
 
 Reduction steps for the new instructions or administrative instructions.
 
-An absent tag address in a `catch` administrative instruction (i.e., `a? = ε`) represents a `catch_all`.
+An absent tag address in a handler (i.e., `a? = ε`) represents a `catch_all`.
 
 ```
 F; throw x  ↪  F; throw a  (if F.module.tagaddrs[x]=a)
 
-caught{a val*} B^l[rethrow l] end
-  ↪ caught{a val*} B^l[val* (throw a)] end
+caught_n{a val*} B^l[rethrow l] end
+  ↪ caught_n{a val*} B^l[val* (throw a)] end
 
-caught{a val0*} val* end  ↪  val*
+caught_n{a val0*} val^n end  ↪  val^n
 
 
 F; val^n (try bt instr1* (catch x instr2*)* (catch_all instr3*)? end)
-  ↪  F; label_m{} (catch{a instr2*}*{ε instr3*}? val^n instr1* end) end
+  ↪  F; label_m{} (handler_m{(a instr2*)*(ε instr3*)?} val^n instr1* end) end
   (if expand_F(bt) = [t1^n]→[t2^m] ∧ (F.module.tagaddrs[x]=a)*)
 
-catch{a? instr*}* val* end ↪ val*
+handler_m{(a? instr*)*} val^m end ↪ val^m
 
-S; F; catch{a1? instr1*}{a0? instr0*}* T[val^n (throw a)] end
-  ↪  S; F; caught{a val^n} (val^n)? instr1* end
+S; F; handler_m{(a1? instr1*)(a0? instr0*)*} T[val^n (throw a)] end
+  ↪  S; F; caught_m{a val^n} (val^n)? instr1* end
   (if (a1? = ε ∨ a1? = a) ∧ S.tags(a).type = [t^n]→[])
 
-catch{a1? instr*}{a0? instr0*}* T[val^n (throw a)] end
-  ↪ catch{a0? instr0*}* T[val^n (throw a)] end
+handler_m{(a1? instr*)(a0? instr0*)*} T[(throw a)] end
+  ↪ handler_m{(a0? instr0*)*} T[(throw a)] end
   (if a1? ≠ ε ∧ a1? ≠ a)
 
-catch T[val^n (throw a)] end ↪  val^n (throw a)
+handler_m{} T[(throw a)] end ↪  T[(throw a)]
   (if S.tags(a).type = [t^n]→[])
 
 
 F; val^n (try bt instr* delegate l)
-  ↪ F; label_m{} (delegate{l} val^n instr* end) end
+  ↪ F; label_m{} (handler_m{l} val^n instr* end) end
   (if expand_F(bt) = [t1^n]→[t2^m])
 
-delegate{l} val* end ↪ val*
+handler_m{l} val^m end ↪ val^m
 
-label_m{} B^l[ delegate{l} T[val^n (throw a)] end ] end
-  ↪ val^n (throw a)
+label_m{} B^l[ handler_m{l} T[(throw a)] end ] end
+  ↪ T[(throw a)]
 ```
 
-Note that the last reduction step above is similar to the reduction of `br l` [1], the entire `delegate{l}...end` is seen as a `br l` immediately followed by a throw.
+Note that the last reduction step above is similar to the reduction of `br l` [1], the entire `handler_m{l}...end` is seen as a `br l` immediately followed by a throw.
 
-There is a subtle difference though. The instruction `br l` searches for the `l+1`th surrounding block and breaks out after that block. Because `delegate{l}` is always wrapped in its own `label_n{} ... end` [2], with the same lookup as for `br l` the instruction ends up breaking inside the `l+1`th surrounding block, and throwing there. So if that `l+1`th surrounding block is a try, the exception is thrown in the "try code", and thus correctly getting delegated to that try's catches.
+There is a subtle difference though. The instruction `br l` searches for the `l+1`th surrounding block and breaks out after that block. Because `handler_m{l}` is always wrapped in its own `label_m{} ... end` [2], with the same lookup as for `br l` the instruction ends up breaking inside the `l+1`th surrounding block, and throwing there. So if that `l+1`th surrounding block is a try, the exception is thrown in the "try code", and thus correctly getting delegated to that try's catches.
 
 - [1] [The execution step for `br l`](https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-br-l)
 - [2] The label that always wraps `delegate{l}...end` can be thought of as "level -1" and cannot be referred to by the delegate's label index `l`.
@@ -205,21 +210,21 @@ S ⊢ tag a : tag [t*]→[]
 S;C ⊢ throw a : [t1* t*]→[t2*]
 
 ((S ⊢ tag a : tag [t1*]→[])?
- S;C, labels (catch [t2*]) ⊢ instr2* : [t1*?]→[t2*])*
-S;C, labels [t2*] ⊢ instr1* : []→[t2*]
+ S;C, labels (catch [t2^m]) ⊢ instr2* : [t1*?]→[t2^m])*
+S;C, labels [t2^m] ⊢ instr1* : []→[t2^m]
 -----------------------------------------------------------
-S;C, labels [t2*] ⊢ catch{a? instr2*}* instr1* end : []→[t2*]
+S;C, labels [t2^m] ⊢ handler_m{(a? instr2*)*} instr1* end : []→[t2^m]
 
-S;C ⊢ instr* : []→[t*]
+S;C ⊢ instr* : []→[t^m]
 C.labels[l+1] = [t0*]
 ------------------------------------------------------
-S;C ⊢ delegate{l} instr* end : []→[t*]
+S;C ⊢ handler_m{l} instr* end : []→[t^m]
 
 S ⊢ tag a : tag [t0*]→[]
 (val:t0)*
-S;C, labels (catch [t*]) ⊢ instr* : []→[t*]
-----------------------------------------------------------
-S;C, labels [t*] ⊢ caught{a val^*} instr* end : []→[t*]
+S;C, labels (catch [t^n]) ⊢ instr* : []→[t^n]
+------------------------------------------------------------
+S;C, labels [t^n] ⊢ caught_n{a val^*} instr* end : []→[t^n]
 ```
 
 ## Uncaught Exceptions
@@ -228,6 +233,6 @@ A new [result](https://webassembly.github.io/spec/core/exec/runtime.html#syntax-
 
 ```
 result ::= val* | trap
-         | T[val* (throw tagaddr)]
+         | val* (throw tagaddr)
 ```
 

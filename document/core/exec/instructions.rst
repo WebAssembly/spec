@@ -2636,26 +2636,26 @@ Control Instructions
 
    b. Let :math:`a_i` be the tag address :math:`F.\AMODULE.\MITAGS[x_i]`.
 
-   c. Let :math:`H_i` be the handler clause :math:`\{a_i~\instr_{2i}^\ast\}`.
+   c. Let :math:`H_i` be the handler :math:`(a_i~\instr_{2i}^\ast)`.
 
 8. If there is a catch all clause :math:`(\CATCHALL~\instr_3^\ast)`, then:
 
-    a. Let :math:`H'^?` be the handler clause :math:`\{\epsilon~\instr_3^\ast\}`.
+    a. Let :math:`H'^?` be the handler :math:`(\epsilon~\instr_3^\ast)`.
 
 9. Else:
 
-    a. Let :math:`H'^?` be the empty handler clause :math:`\epsilon`.
+    a. Let :math:`H'^?` be the empty handler :math:`\epsilon`.
 
-10. Let :math:`H^\ast` be the :ref:`catching exception handler <syntax-handler>` containing the concatenation of the handler clauses :math:`H_i` and :math:`H'^?`.
+10. Let :math:`H^\ast` be the concatenation of :math:`H_i` and :math:`H'^?`.
 
-11. :ref:`Enter <exec-handler-enter>` the block :math:`\val^m~\instr_1^\ast` with label :math:`L` and exception handler :math:`H`.
+11. :ref:`Enter <exec-handler-enter>` the block :math:`\val^m~\instr_1^\ast` with label :math:`L` and exception handler :math:`H^\ast`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
    F; \val^m~(\TRY~\X{bt}~\instr_1^\ast~(\CATCH~x~\instr_2^\ast)^\ast~(\CATCHALL~\instr_3^\ast)^?~\END
    \quad \stepto \\
-   \qquad F; \LABEL_n\{\epsilon\}~(\CATCHadm\{a_x~\instr_2^\ast\}^\ast\{\epsilon~\instr_3\ast\}^?~\val^m~\instr_1^\ast~\END)~\END \\
+   \qquad F; \LABEL_n\{\epsilon\}~(\HANDLERadm_n\{(a_x~\instr_2^\ast)^\ast~(\epsilon~\instr_3^\ast)^?\}~\val^m~\instr_1^\ast~\END)~\END \\
    (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n] \land (F.\AMODULE.\MITAGS[x]=a_x)^\ast)
    \end{array}
 
@@ -2671,21 +2671,19 @@ Control Instructions
 
 3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the |TRY| instruction.
 
-4. Let :math:`H` be the :ref:`delegating exception handler <syntax-handler>` :math:`\DELEGATEadm\{l\}`, targeting the :math:`l`-th surrounding block.
+4. Let :math:`H` be the :ref:`exception handler <syntax-handler>` :math:`l`, targeting the :math:`l`-th surrounding block.
 
 5. Assert: due to :ref:`validation <valid-try-delegate>`, there are at least :math:`m` values on the top of the stack.
 
 6. Pop the values :math:`\val^m` from the stack.
 
-7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`H~(\val^n~\instr^\ast)~\END` with label :math:`L`.
-
-8. :ref:`Install <exec-handler-enter>` the exception handler `H` containing :math:`\val^m~\instr^\ast`.
+7. :ref:`Enter <exec-handler-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L` and  exception handler `H`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl}
    F; \val^m~(\TRY~\X{bt}~\instr^\ast~\DELEGATE~l) &\stepto&
-   F; \LABEL_n\{\epsilon\}~(\DELEGATEadm\{l\}~\val^m~\instr^\ast~\END)~\END \\
+   F; \LABEL_n\{\epsilon\}~(\HANDLERadm_n\{l\}~\val^m~\instr^\ast~\END)~\END \\
    && (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 
@@ -2730,8 +2728,8 @@ Control Instructions
 .. math::
    ~\\[-1ex]
    \begin{array}{lclr@{\qquad}}
-   \CAUGHTadm\{a~\val^\ast\}~\XB^l[\RETHROW~l]~\END &\stepto&
-   \CAUGHTadm\{a~\val^\ast\}~\XB^l[\val^\ast~(\THROWadm~a)]~\END \\
+   \CAUGHTadm_n\{a~\val^n\}~\XB^l[\RETHROW~l]~\END &\stepto&
+   \CAUGHTadm_n\{a~\val^n\}~\XB^l[\val^n~(\THROWadm~a)]~\END \\
    \end{array}
 
 
@@ -3053,8 +3051,7 @@ When the end of a :ref:`try <syntax-try>` instruction is reached without a jump,
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \CATCHadm\{a^?~\instr^\ast\}^\ast~\val^m~\END &\stepto& \val^m \\
-   \DELEGATEadm\{l\}~\val^m~\END &\stepto& \val^m
+   \HANDLERadm_m\{\handler\}~\val^m~\END &\stepto& \val^m \\
    \end{array}
 
 
@@ -3063,53 +3060,128 @@ When the end of a :ref:`try <syntax-try>` instruction is reached without a jump,
 Throwing an exception with :ref:`tag address <syntax-tagaddr>` :math:`a`
 ........................................................................
 
-.. todo::
-   Add prose for the following execution steps.
+When a throw occurs, then values, labels, active catch clauses,
+and call frames are popped if necessary, until an appropriate exception handler is found
+on the top of the stack.
 
+ 1. Assert: due to :ref:`validation <valid-throw>`, :math:`S.\STAGS[a]` exists.
+
+ 2. Let :math:`[t^n] \to []` be the :ref:`tag type <syntax-tagtype>` :math:`S.\STAGS[a].\TAGITYPE`.
+
+ 3. Assert: due to :ref:`validation <valid-throw>`, there are :math:`n` values on the top of the stack.
+
+ 4. Pop the :math:`n` values :math:`\val^n` from the stack.
+
+ 5. While the stack is not empty and the top of the stack is not an :ref:`exception handler <syntax-handler>`, do:
+
+    a. Pop the top element from the stack.
+
+ 6. Assert: the stack is now either empty, or there is an exception handler on the top of the stack.
+
+ 7. If the stack is empty, then:
+
+    a. Return the uncaught exception :math:`\val^n~(\THROWadm~a)` as a :ref:`result <syntax-result>`.
+
+8. Else assert: there is an :ref:`exception handler <syntax-handler>` :math:`H` on the top of the stack.
+
+9. Pop the exception handler :math:`H` from the stack.
+
+10. If :math:`H` is list of handlers, then:
+
+    a. While :math:`H` is not empty, do:
+
+       i. Let :math:`(a_1^?~\instr^\ast)` be the first handler in :math:`H`.
+
+       ii. If :math:`a_1^? = \epsilon`, then:
+
+           * :ref:`Enter <exec-caughtadm-enter>` the block :math:`\instr^\ast` with caught exception :math:`a~\val^n`.
+
+       iii. Else if :math:`a_1^? = a`, then:
+
+            * :ref:`Enter <exec-caughtadm-enter>` the block :math:`\val^n~\instr^\ast` with caught exception :math:`a~\val^n`.
+
+       iv. Else, pop the first handler from :math:`H`.
+
+    b. Else, the exception was not caught by :math:`H`:
+
+       i. Put the values :math:`\val^n` back onto the stack.
+
+       ii. :ref:`Throw <exec-throwadm>` an exception with tag address :math:`a`.
+
+11. Else :math:`H` is a label index :math:`l`.
+
+    a. Assert: due to :ref:`validation <valid-handleradm>`, the stack contains at least :math:`l` labels.
+
+    b. Repeat :math:`l` times:
+
+       i. While the top of the stack is not a label, do:
+
+          * Pop the top element from the stack.
+
+    c. Assert: due to :ref:`validation <valid-handleradm>`, the top of the stack now is a label.
+
+    d. Pop the label from the stack.
+
+    e. Push the values :math:`\val^n` onto the stack.
+
+    f. :ref:`Throw <exec-throwadm>` an exception with tag address :math:`a`.
 
 .. math::
    \begin{array}{rcl}
-   \CATCHadm\{a_1^?~\instr^\ast\}\{a'^?~\instr'^\ast\}^\ast~\XT[(\THROWadm~a)]~\END &\stepto&
-   \CATCHadm\{a'^?~\instr'^\ast\}^\ast~\XT[(\THROWadm~a)]~\END  \\
+   \HANDLERadm_n\{\}~\XT[(\THROWadm~a)]~\END &\stepto&
+   \XT[(\THROWadm~a)] \\
+   \HANDLERadm_n\{(a_1^?~\instr^\ast)~(a'^?~\instr'^\ast)^\ast\}~\XT[(\THROWadm~a)]~\END &\stepto&
+   \HANDLERadm_n\{(a'^?~\instr'^\ast)^\ast~\XT[(\THROWadm~a)]~\END  \\
    && (\iff a_1^? \neq \epsilon \land a_1^? \neq a) \\
-   S;~\CATCHadm\{a_1^?~\instr^\ast\}\{a'^?~\instr'^\ast\}^\ast~\XT[\val^n~(\THROWadm~a)]~\END &\stepto&
-   S;~\CAUGHTadm\{a~\val^n\}~(\val^n)?~\instr^\ast~\END \\
+   S;~\HANDLERadm_n\{(a_1^?~\instr^\ast)~(a'^?~\instr'^\ast)^\ast\}~\XT[\val^n~(\THROWadm~a)]~\END &\stepto&
+   S;~\CAUGHTadm_n\{a~\val^n\}~(\val^n)^?~\instr^\ast~\END \\
    && (\iff~(a_1^? = \epsilon \lor a_1^? = a)~\land\\
    && \ S.\STAGS[a].\TAGITYPE = [t^n]\to[]) \\
-   \LABEL_n\{\}~\XB^l[\DELEGATEadm\{l\}~\XT[(\THROWadm~a)]~\END]~\END &\stepto&
+   \LABEL_n\{\}~\XB^l[\HANDLERadm_n\{l\}~\XT[(\THROWadm~a)]~\END]~\END &\stepto&
    \XT[(\THROWadm~a)]  \\
    \end{array}
 
+.. note::
+   The rules are formulated in this way to allow looking up the exception values in the throw context,
+   only when a thrown exception is caught.
 
-.. todo::
-   Add explainer note.
 
-.. _exec-caughtadm:
+.. _exec-caughtadm-enter:
 
-Exiting a catch clause
-......................
+Entering :math:`\instr^\ast` with caught exception :math:`\{\exn\}`
+...................................................................
 
-When the |END| of a catch clause is reached without a jump, exception, or trap, then the following steps are performed.
+1. Push the caught exception |exn| onto the stack.
 
-1. Let :math:`\val^\ast` be the values on the top of the stack.
+2. Jump to the start of the instruction sequence :math:`\instr^\ast`.
 
-2. Pop the values :math:`\val^\ast` from the stack.
 
-3. Assert: due to :ref:`validation <valid-instr-seq>`, a caught exception :math:`\{a~\val_0^\ast\}` is now on the top of the stack.
+.. _exec-caughtadm-exit:
+
+Exiting a block with a caught exception
+.......................................
+
+When the |END| of a block with a caught exception is reached without a jump, thrown exception, or trap, then the following steps are performed.
+
+1. Let :math:`\val^m` be the values on the top of the stack.
+
+2. Pop the values :math:`\val^m` from the stack.
+
+3. Assert: due to :ref:`validation <valid-caughtadm>`, a caught exception is now on the top of the stack.
 
 4. Pop the caught exception from the stack.
 
-5. Push :math:`\val^\ast` back to the stack.
+5. Push :math:`\val^m` back to the stack.
 
-6. Jump to the position after the |END| of the administrative instruction associated with the catch clause.
+6. Jump to the position after the |END| of the administrative instruction associated with the caught exception.
 
 .. math::
    \begin{array}{rcl}
-   \CAUGHTadm\{a~\val_0^\ast\}~\val^\ast~\END  &\stepto& \val^\ast
+   \CAUGHTadm_n\{\exn\}~\val^m~\END  &\stepto& \val^m
    \end{array}
 
 .. note::
-   An exception can only be rethrown from the scope of the |CAUGHTadm| administrative instruction holding it, i.e., from the scope of the |CATCH| or |CATCHALL| block of a :ref:`try-catch <syntax-try-catch>` instruction that caught it. Upon exit from a |CAUGHTadm|, the exception it holds is discarded.
+   A caught exception can only be rethrown from the scope of the administrative instruction associated with it, i.e., from the scope of the |CATCH| or |CATCHALL| block of a :ref:`try-catch <syntax-try-catch>` instruction that caught it. Upon exit from that block, the caught exception is discarded.
 
 
 .. index:: ! call, function, function instance, label, frame
