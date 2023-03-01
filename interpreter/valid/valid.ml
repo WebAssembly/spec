@@ -406,7 +406,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
 
   | ReturnCall x ->
     let FuncT (ts1, ts2) = func c x in
-    require (match_result_type c.types ts2 c.results) e.at
+    require (match_result_type ts2 c.results) e.at
       ("type mismatch: current function requires result type " ^
        string_of_result_type c.results ^
        " but callee returns " ^ string_of_result_type ts2);
@@ -423,7 +423,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
   | ReturnCallIndirect (x, y) ->
     let TableT (_lim, t) = table c x in
     let FuncT (ts1, ts2) = func_type c y in
-    require (match_result_type c.types ts2 c.results) e.at
+    require (match_result_type ts2 c.results) e.at
       ("type mismatch: current function requires result type " ^
        string_of_result_type c.results ^
        " but callee returns " ^ string_of_result_type ts2);
