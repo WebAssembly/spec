@@ -1,6 +1,6 @@
 # WebAssembly Reference Interpreter
 
-This repository implements a interpreter for WebAssembly. It is written for clarity and simplicity, _not_ speed. It is intended as a playground for trying out ideas and a device for nailing down the exact semantics, and as a proxy for the (yet to be produced) formal specification of WebAssembly. For that purpose, the code is written in a fairly declarative, "speccy" way.
+This repository implements an interpreter for WebAssembly. It is written for clarity and simplicity, _not_ speed. It is intended as a playground for trying out ideas and a device for nailing down their exact semantics. For that purpose, the code is written in a fairly declarative, "speccy" way.
 
 The interpreter can
 
@@ -254,12 +254,13 @@ op:
   br_if <var>
   br_table <var>+
   br_on_null <var> <heap_type>
-  return
   call <var>
+  call_ref <var>
   call_indirect <var>? <func_type>
-  call_ref
-  return_call_ref
-  func.bind <func_type>
+  return
+  return_call <var>
+  return_call_ref <var>
+  return_call_indirect <var>? <func_type>
   local.get <var>
   local.set <var>
   local.tee <var>

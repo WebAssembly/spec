@@ -400,7 +400,7 @@ It defines the export's :ref:`name <syntax-name>` and the associated :ref:`exter
    \end{array}
 
 
-.. index:: ! external value, function address, table address, memory address, global address, store, function, table, memory, global
+.. index:: ! external value, function address, table address, memory address, global address, store, function, table, memory, global, instruction type
    pair: abstract syntax; external value
    pair: external; value
 .. _syntax-externval:
@@ -497,8 +497,8 @@ Intuitively, :math:`\instr^\ast` is the *continuation* to execute when the branc
 
    When branching, the empty continuation ends the targeted block, such that execution can proceed with consecutive instructions.
 
-Activations and Frames
-......................
+Activation Frames
+.................
 
 Activation frames carry the return arity :math:`n` of the respective function,
 hold the values of its :ref:`locals <syntax-local>` (including arguments) in the order corresponding to their static :ref:`local indices <syntax-localidx>`,
@@ -506,8 +506,6 @@ and a reference to the function's own :ref:`module instance <syntax-moduleinst>`
 
 .. math::
    \begin{array}{llll}
-   \production{activation} & \X{activation} &::=&
-     \FRAME_n\{\frame\} \\
    \production{frame} & \frame &::=&
      \{ \ALOCALS~(\val^?)^\ast, \AMODULE~\moduleinst \} \\
    \end{array}
@@ -525,7 +523,7 @@ Conventions
 
 * The meta variable :math:`F` ranges over frames where clear from context.
 
-* The following auxiliary definition takes a :ref:`block type <syntax-blocktype>` and looks up the :ref:`function type <syntax-functype>` that it denotes in the current frame:
+* The following auxiliary definition takes a :ref:`block type <syntax-blocktype>` and looks up the :ref:`instruction type <syntax-instrtype>` that it denotes in the current frame:
 
 .. math::
    \begin{array}{lll}
@@ -557,6 +555,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
      \REFFUNCADDR~\funcaddr \\ &&|&
      \REFEXTERNADDR~\externaddr \\ &&|&
      \INVOKE~\funcaddr \\ &&|&
+     \RETURNINVOKE~\funcaddr \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
      \FRAME_n\{\frame\}~\instr^\ast~\END \\
    \end{array}
@@ -568,6 +567,7 @@ The |REFFUNCADDR| instruction represents :ref:`function reference values <syntax
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.
+Analogously, |RETURNINVOKE| represents the imminent tail invocation of a function instance.
 
 The |LABEL| and |FRAME| instructions model :ref:`labels <syntax-label>` and :ref:`frames <syntax-frame>` :ref:`"on the stack" <exec-notation>`.
 Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instr-seq>` with an |END| marker.

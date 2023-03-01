@@ -20,7 +20,7 @@ Category                                  Constructor                           
 :ref:`Reference type <syntax-reftype>`    |REF| |NULL|                                 :math:`\hex{6C}` (-20 as |Bs7|)
 :ref:`Reference type <syntax-reftype>`    |REF|                                        :math:`\hex{6B}` (-21 as |Bs7|)
 (reserved)                                                                             :math:`\hex{6A}` .. :math:`\hex{61}`
-:ref:`Function type <syntax-functype>`    :math:`[\valtype^\ast] \to [\valtype^\ast]`  :math:`\hex{60}` (-32 as |Bs7|)
+:ref:`Function type <syntax-functype>`    :math:`[\valtype^\ast] \toF[\valtype^\ast]`  :math:`\hex{60}` (-32 as |Bs7|)
 (reserved)                                                                             :math:`\hex{5F}` .. :math:`\hex{41}`
 :ref:`Result type <syntax-resulttype>`    :math:`[\epsilon]`                           :math:`\hex{40}` (-64 as |Bs7|)
 :ref:`Table type <syntax-tabletype>`      :math:`\limits~\reftype`                     (none)

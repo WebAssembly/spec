@@ -418,7 +418,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\V128\K{.}\SWIZZLE &\stepto& (\V128\K{.}\VCONST~c')
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\I8X16\K{.}\SWIZZLE &\stepto& (\V128\K{.}\VCONST~c')
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -455,7 +455,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\V128\K{.}\SHUFFLE~x^\ast &\stepto& (\V128\K{.}\VCONST~c)
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\I8X16\K{.}\SHUFFLE~x^\ast &\stepto& (\V128\K{.}\VCONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -1336,7 +1336,7 @@ Table Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~(\TABLEGROW~x) &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
+   S; F; \val~(\I32.\CONST~n)~(\TABLEGROW~x) &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
    \end{array}
    \end{array}
 
@@ -2268,7 +2268,7 @@ Memory Instructions
    S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~n)~\MEMORYFILL
      \quad\stepto\quad S; F; \TRAP
      \\ \qquad
-     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|)
+     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|)
    \\[1ex]
    S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~0)~\MEMORYFILL
      \quad\stepto\quad S; F; \epsilon
@@ -2475,7 +2475,7 @@ Memory Instructions
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & s + n > |S.\SDATAS[F.\AMODULE.\MIDATAS[x]].\DIDATA| \\
-      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|) \\[1ex]
+      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|) \\[1ex]
      \end{array}
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\MEMORYINIT~x)
@@ -2563,7 +2563,7 @@ Control Instructions
 
 1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_{S;F}(\blocktype)`.
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\expand_{S;F}(\blocktype)`.
 
 3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
 
@@ -2589,7 +2589,7 @@ Control Instructions
 
 1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_{S;F}(\blocktype)`.
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\expand_{S;F}(\blocktype)`.
 
 3. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is the start of the loop.
 
@@ -2813,7 +2813,7 @@ Control Instructions
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \FRAME_n\{F\}~\XB^k[\val^n~\RETURN]~\END &\stepto& \val^n
+   \FRAME_n\{F\}~B^\ast[\val^n~\RETURN]~\END &\stepto& \val^n
    \end{array}
 
 
@@ -2842,15 +2842,24 @@ Control Instructions
 :math:`\CALLREF~x`
 ..................
 
-1. Assert: due to :ref:`validation <valid-call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-call_ref>`, a null or :ref:`function reference <syntax-ref>` is on the top of the stack.
 
-2. Pop the value :math:`\REFFUNCADDR~a` from the stack.
+2. Pop the reference value :math:`r` from the stack.
 
-3. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
+3. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
+
+    a. Trap.
+
+4. Assert: due to :ref:`validation <valid-call_ref>`, :math:`r` is a :ref:`function reference <syntax-ref>`.
+
+5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
+
+6. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; (\REFFUNCADDR~a)~\CALLREF~x &\stepto& F; (\INVOKE~a)
+   F; (\REFFUNCADDR~a)~(\CALLREF~x) &\stepto& F; (\INVOKE~a) \\
+   F; (\REFNULL~\X{ht})~(\CALLREF~x) &\stepto& F; \TRAP \\
    \end{array}
 
 
@@ -2924,6 +2933,112 @@ Control Instructions
    \end{array}
 
 
+.. _exec-return_call:
+
+:math:`\RETURNCALL~x`
+.....................
+
+.. todo: find a way to reuse call/call_indirect prose for tail call versions
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-call>`, :math:`F.\AMODULE.\MIFUNCS[x]` exists.
+
+3. Let :math:`a` be the :ref:`function address <syntax-funcaddr>` :math:`F.\AMODULE.\MIFUNCS[x]`.
+
+4. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\RETURNCALL~x) &\stepto& (\RETURNINVOKE~a)
+     & (\iff (\CALL~x) \stepto (\INVOKE~a))
+   \end{array}
+
+
+.. _exec-return_call_ref:
+
+:math:`\RETURNCALLREF~x`
+........................
+
+1. Assert: due to :ref:`validation <valid-return_call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
+
+2. Pop the reference value :math:`r` from the stack.
+
+3. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
+
+    a. Trap.
+
+4. Assert: due to :ref:`validation <valid-call_ref>`, :math:`r` is a :ref:`function reference <syntax-ref>`.
+
+5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
+
+6. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~(\RETURNCALLREF~x) &\stepto& (\RETURNINVOKE~a)
+     & (\iff \val~(\CALLREF~x) \stepto (\INVOKE~a)) \\
+   \val~(\RETURNCALLREF~x) &\stepto& \TRAP
+     & (\iff \val~(\CALLREF~x) \stepto \TRAP) \\
+   \end{array}
+
+
+.. _exec-return_call_indirect:
+
+:math:`\RETURNCALLINDIRECT~x`
+.............................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITABLES[0]` exists.
+
+3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[0]`.
+
+4. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`S.\STABLES[\X{ta}]` exists.
+
+5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
+
+6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITYPES[x]` exists.
+
+7. Let :math:`\X{ft}_{\F{expect}}` be the :ref:`function type <syntax-functype>` :math:`F.\AMODULE.\MITYPES[x]`.
+
+8. Assert: due to :ref:`validation <valid-call_indirect>`, a value with :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+9. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+10. If :math:`i` is not smaller than the length of :math:`\X{tab}.\TIELEM`, then:
+
+    a. Trap.
+
+11. If :math:`\X{tab}.\TIELEM[i]` is uninitialized, then:
+
+    a. Trap.
+
+12. Let :math:`a` be the :ref:`function address <syntax-funcaddr>` :math:`\X{tab}.\TIELEM[i]`.
+
+13. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`S.\SFUNCS[a]` exists.
+
+14. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[a]`.
+
+15. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
+
+16. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
+
+    a. Trap.
+
+17. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~(\RETURNCALLINDIRECT~x) &\stepto& (\RETURNINVOKE~a)
+     & (\iff \val~(\CALLINDIRECT~x) \stepto (\INVOKE~a)) \\
+   \val~(\RETURNCALLINDIRECT~x) &\stepto& \TRAP
+     & (\iff \val~(\CALLINDIRECT~x) \stepto \TRAP) \\
+   \end{array}
+
+
 .. index:: instruction, instruction sequence, block
 .. _exec-instr-seq:
 
@@ -2955,22 +3070,20 @@ Exiting :math:`\instr^\ast` with label :math:`L`
 
 When the end of a block is reached without a jump or trap aborting it, then the following steps are performed.
 
-1. Let :math:`n` be the number of values on the top of the stack.
+1. Pop all values :math:`\val^\ast` from the top of the stack.
 
-2. Pop the values :math:`\val^n` from the stack.
+2. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack.
 
-3. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack and has arity :math:`n`.
+3. Pop the label from the stack.
 
-4. Pop the label from the stack.
+4. Push :math:`\val^\ast` back to the stack.
 
-5. Push :math:`\val^n` back to the stack.
-
-6. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
+5. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \LABEL_n\{\instr^\ast\}~\val^n~\END &\stepto& \val^n
+   \LABEL_n\{\instr^\ast\}~\val^\ast~\END &\stepto& \val^\ast
    \end{array}
 
 .. note::
@@ -2997,7 +3110,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 2. Let :math:`f` be the :ref:`function instance <syntax-funcinst>`, :math:`S.\SFUNCS[a]`.
 
-3. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
+3. Let :math:`[t_1^n] \toF [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
 
 4. Let :math:`\local^\ast` be the list of :ref:`locals <syntax-local>` :math:`f.\FICODE.\FLOCALS`.
 
@@ -3024,7 +3137,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\SFUNCS[a] = f \\
-     \wedge & S.f.\FITYPE = [t_1^n] \to [t_2^m] \\
+     \wedge & S.f.\FITYPE = [t_1^n] \toF [t_2^m] \\
      \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(\default_t)^k \})
      \end{array} \\
@@ -3032,6 +3145,42 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 .. note::
    For non-defaultable types, the respective local is left uninitialized by these rules.
+
+
+.. _exec-return-invoke:
+
+Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
+......................................................................
+
+1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
+
+2. Let :math:`[t_1^n] \toF [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
+
+3. Assert: due to :ref:`validation <valid-return_call>`, there are at least :math:`n` values on the top of the stack.
+
+4. Pop the results :math:`\val^n` from the stack.
+
+5. Assert: due to :ref:`validation <valid-return_call>`, the stack contains at least one :ref:`frame <syntax-frame>`.
+
+6. While the top of the stack is not a frame, do:
+
+   a. Pop the top element from the stack.
+
+7. Assert: the top of the stack is a frame.
+
+8. Pop the frame from the stack.
+
+9. Push :math:`\val^n` to the stack.
+
+10. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{lcl@{\qquad}l}
+    S; \FRAME_m\{F\}~B^\ast[\val^n~(\RETURNINVOKE~a)]~\END &\stepto&
+      \val^n~(\INVOKE~a)
+      & (\iff S.\SFUNCS[a].\FITYPE = [t_1^n] \toF [t_2^m])
+   \end{array}
 
 
 .. _exec-invoke-exit:
@@ -3087,7 +3236,7 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \toF [t_2^m], \FIHOSTCODE~\X{hf} \} \\
      \wedge & (S'; \result) \in \X{hf}(S; \val^n)) \\
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
@@ -3095,7 +3244,7 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \toF [t_2^m], \FIHOSTCODE~\X{hf} \} \\
      \wedge & \bot \in \X{hf}(S; \val^n)) \\
      \end{array} \\
    \end{array}

@@ -9,7 +9,7 @@
 .. |WasmIssues| replace:: |issuelink|
 .. _WasmIssues: |issuelink|
 
-.. |IEEE754| replace:: IEEE 754-2019
+.. |IEEE754| replace:: IEEE 754
 .. _IEEE754: https://ieeexplore.ieee.org/document/8766229
 
 .. |Unicode| replace:: Unicode
@@ -176,7 +176,9 @@
 
 .. Types, terminals
 
-.. |to| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
+.. |toF| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
+.. |to| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow}
+.. |toX#1| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow_{#1}}
 
 .. |BOT| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{bot}}
 
@@ -385,6 +387,9 @@
 .. |CALL| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call}}
 .. |CALLREF| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call\_ref}}
 .. |CALLINDIRECT| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{call\_indirect}}
+.. |RETURNCALL| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{return\_call}}
+.. |RETURNCALLREF| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{return\_call\_ref}}
+.. |RETURNCALLINDIRECT| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{return\_call\_indirect}}
 
 .. |DROP| mathdef:: \xref{syntax/instructions}{syntax-instr-parametric}{\K{drop}}
 .. |SELECT| mathdef:: \xref{syntax/instructions}{syntax-instr-parametric}{\K{select}}
@@ -905,6 +910,7 @@
 .. |matchesreftype| mathdef:: \xref{valid/matching}{match-reftype}{\leq}
 .. |matchesvaltype| mathdef:: \xref{valid/matching}{match-valtype}{\leq}
 .. |matchesresulttype| mathdef:: \xref{valid/matching}{match-resulttype}{\leq}
+.. |matchesinstrtype| mathdef:: \xref{valid/matching}{match-instrtype}{\leq}
 .. |matchesfunctype| mathdef:: \xref{valid/matching}{match-functype}{\leq}
 .. |matchestabletype| mathdef:: \xref{valid/matching}{match-tabletype}{\leq}
 .. |matchesmemtype| mathdef:: \xref{valid/matching}{match-memtype}{\leq}
@@ -955,6 +961,7 @@
 .. |vdashreftypematch| mathdef:: \xref{valid/matching}{match-reftype}{\vdash}
 .. |vdashvaltypematch| mathdef:: \xref{valid/matching}{match-valtype}{\vdash}
 .. |vdashresulttypematch| mathdef:: \xref{valid/matching}{match-resulttype}{\vdash}
+.. |vdashinstrtypematch| mathdef:: \xref{valid/matching}{match-instrtype}{\vdash}
 .. |vdashfunctypematch| mathdef:: \xref{valid/matching}{match-functype}{\vdash}
 .. |vdashtabletypematch| mathdef:: \xref{valid/matching}{match-tabletype}{\vdash}
 .. |vdashmemtypematch| mathdef:: \xref{valid/matching}{match-memtype}{\vdash}
@@ -1140,6 +1147,7 @@
 .. |REFEXTERNADDR| mathdef:: \xref{exec/runtime}{syntax-ref.extern}{\K{ref{.}extern}}
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
+.. |RETURNINVOKE| mathdef:: \xref{exec/runtime}{syntax-return_invoke}{\K{return\_invoke}}
 
 
 .. Values & Results, non-terminals

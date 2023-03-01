@@ -132,7 +132,7 @@ Modules
 
 .. math::
    \begin{array}{lclll}
-   \F{module\_validate}(m) &=& \epsilon && (\iff {} \vdashmodule m : \externtype^\ast \to {\externtype'}^\ast) \\
+   \F{module\_validate}(m) &=& \epsilon && (\iff {} \vdashmodule m : \externtype^\ast \rightarrow {\externtype'}^\ast) \\
    \F{module\_validate}(m) &=& \ERROR && (\otherwise) \\
    \end{array}
 
@@ -185,7 +185,7 @@ Modules
    ~ \\
    \begin{array}{lclll}
    \F{module\_imports}(m) &=& (\X{im}.\IMODULE, \X{im}.\INAME, \externtype)^\ast \\
-     && \qquad (\iff \X{im}^\ast = m.\MIMPORTS \wedge {} \vdashmodule m : \externtype^\ast \to {\externtype'}^\ast) \\
+     && \qquad (\iff \X{im}^\ast = m.\MIMPORTS \wedge {} \vdashmodule m : \externtype^\ast \rightarrow {\externtype'}^\ast) \\
    \end{array}
 
 
@@ -213,7 +213,7 @@ Modules
    ~ \\
    \begin{array}{lclll}
    \F{module\_exports}(m) &=& (\X{ex}.\ENAME, \externtype')^\ast \\
-     && \qquad (\iff \X{ex}^\ast = m.\MEXPORTS \wedge {} \vdashmodule m : \externtype^\ast \to {\externtype'}^\ast) \\
+     && \qquad (\iff \X{ex}^\ast = m.\MEXPORTS \wedge {} \vdashmodule m : \externtype^\ast \rightarrow {\externtype'}^\ast) \\
    \end{array}
 
 

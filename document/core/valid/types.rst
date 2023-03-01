@@ -163,13 +163,13 @@ Block Types
 
 * The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
+* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
 
 * Then the block type is valid as :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\CTYPES[\typeidx] = [t_1^\ast] \to [t_2^\ast]
+     C.\CTYPES[\typeidx] = [t_1^\ast] \toF [t_2^\ast]
    }{
      C \vdashblocktype \typeidx : [t_1^\ast] \to [t_2^\ast]
    }
@@ -221,8 +221,8 @@ Result Types
 Instruction Types
 ~~~~~~~~~~~~~~~~~
 
-:math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`
-..........................................
+:math:`[t_1^\ast] \rightarrow_{x^\ast} [t_2^\ast]`
+..................................................
 
 * The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
 
@@ -240,7 +240,7 @@ Instruction Types
      \qquad
      (C.\CLOCALS[x] = \localtype)^\ast
    }{
-     C \vdashfunctype [t_1^\ast] \to_{x^\ast} [t_2^\ast] \ok
+     C \vdashfunctype [t_1^\ast] \toX{x^\ast} [t_2^\ast] \ok
    }
 
 
@@ -253,8 +253,8 @@ Instruction Types
 Function Types
 ~~~~~~~~~~~~~~
 
-:math:`[t_1^\ast] \to [t_2^\ast]`
-.................................
+:math:`[t_1^\ast] \toF [t_2^\ast]`
+..................................
 
 * The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
 
@@ -268,7 +268,7 @@ Function Types
      \qquad
      C \vdashvaltype [t_2^\ast] \ok
    }{
-     C \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok
+     C \vdashfunctype [t_1^\ast] \toF [t_2^\ast] \ok
    }
 
 

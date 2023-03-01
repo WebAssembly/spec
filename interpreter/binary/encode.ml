@@ -199,7 +199,9 @@ struct
     | Call x -> op 0x10; var x
     | CallRef x -> op 0x14; var x
     | CallIndirect (x, y) -> op 0x11; var y; var x
+    | ReturnCall x -> op 0x12; var x
     | ReturnCallRef x -> op 0x15; var x
+    | ReturnCallIndirect (x, y) -> op 0x13; var y; var x
 
     | Drop -> op 0x1a
     | Select None -> op 0x1b

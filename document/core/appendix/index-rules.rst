@@ -43,7 +43,7 @@ Construct                                        Judgement
 :ref:`Export description <valid-exportdesc>`     :math:`C \vdashexportdesc \exportdesc : \externtype`
 :ref:`Import <valid-import>`                     :math:`C \vdashimport \import : \externtype`
 :ref:`Import description <valid-importdesc>`     :math:`C \vdashimportdesc \importdesc : \externtype`
-:ref:`Module <valid-module>`                     :math:`\vdashmodule \module : \externtype^\ast \to \externtype^\ast`
+:ref:`Module <valid-module>`                     :math:`\vdashmodule \module : \externtype^\ast \rightarrow \externtype^\ast`
 ===============================================  ===============================================================================
 
 
@@ -105,6 +105,7 @@ Construct                                        Judgement
 :ref:`Reference type <match-reftype>`            :math:`C \vdashreftypematch \reftype_1 \matchesreftype \reftype_2`
 :ref:`Value type <match-valtype>`                :math:`C \vdashvaltypematch \valtype_1 \matchesvaltype \valtype_2`
 :ref:`Result type <match-resulttype>`            :math:`C \vdashresulttypematch \resulttype_1 \matchesresulttype \resulttype_2`
+:ref:`Instruction type <match-instrtype>`        :math:`C \vdashinstrtypematch \instrtype_1 \matchesinstrtype \instrtype_2`
 :ref:`Function type <match-functype>`            :math:`C \vdashfunctypematch \functype_1 \matchesfunctype \functype_2`
 :ref:`Table type <match-tabletype>`              :math:`C \vdashtabletypematch \tabletype_1 \matchestabletype \tabletype_2`
 :ref:`Memory type <match-memtype>`               :math:`C \vdashmemtypematch \memtype_1 \matchesmemtype \memtype_2`

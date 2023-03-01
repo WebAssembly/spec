@@ -45,7 +45,7 @@ These operations closely match respective operations available in hardware.
    \production{signedness} & \sx &::=&
      \K{u} ~|~ \K{s} \\
    \production{instruction} & \instr &::=&
-     \K{i}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-int}{\iX{\X{nn}}} ~|~
+     \K{i}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-int}{\uX{\X{nn}}} ~|~
      \K{f}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-float}{\fX{\X{nn}}} \\&&|&
      \K{i}\X{nn}\K{.}\iunop ~|~
      \K{f}\X{nn}\K{.}\funop \\&&|&
@@ -657,7 +657,10 @@ Instructions in this group affect the flow of control.
      \RETURN \\&&|&
      \CALL~\funcidx \\&&|&
      \CALLREF~\typeidx \\&&|&
-     \CALLINDIRECT~\tableidx~\typeidx \\
+     \CALLINDIRECT~\tableidx~\typeidx \\&&|&
+     \RETURNCALL~\funcidx \\&&|&
+     \RETURNCALLREF~\funcidx \\&&|&
+     \RETURNCALLINDIRECT~\tableidx~\typeidx \\
    \end{array}
 
 The |NOP| instruction does nothing.
@@ -669,7 +672,7 @@ They bracket nested sequences of instructions, called *blocks*, terminated with,
 As the grammar prescribes, they must be well-nested.
 
 A structured instruction can consume *input* and produce *output* on the operand stack according to its annotated *block type*.
-It is given either as a :ref:`type index <syntax-funcidx>` that refers to a suitable :ref:`function type <syntax-functype>`, or as an optional :ref:`value type <syntax-valtype>` inline, which is a shorthand for the function type :math:`[] \to [\valtype^?]`.
+It is given either as a :ref:`type index <syntax-funcidx>` that refers to a suitable :ref:`function type <syntax-functype>` reinterpreted as an :ref:`instruction type <syntax-instrtype>`, or as an optional :ref:`value type <syntax-valtype>` inline, which is a shorthand for the instruction type :math:`[] \to [\valtype^?]`.
 
 Each structured control instruction introduces an implicit *label*.
 Labels are targets for branch instructions that reference them with :ref:`label indices <syntax-labelidx>`.
@@ -705,6 +708,10 @@ The |CALLREF| instruction invokes a function indirectly through a :ref:`function
 The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>` that is denoted by a :ref:`table index <syntax-tableidx>` and must contain :ref:`function references <syntax-reftype>`.
 Since it may contain functions of heterogeneous type,
 the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's second immediate, and the call is aborted with a :ref:`trap <trap>` if it does not match.
+
+The |RETURNCALL|, |RETURNCALLREF|, and |RETURNCALLINDIRECT| instructions are *tail-call* variants of the previous ones.
+That is, they first return from the current function before actually performing the respective call.
+It is guaranteed that no sequence of nested calls using only these instructions can cause resource exhaustion due to hitting an :ref:`implementation's limit <impl-exec>` on the number of active calls.
 
 
 .. index:: ! expression, constant, global, offset, element, data, instruction

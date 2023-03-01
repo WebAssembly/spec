@@ -13,12 +13,18 @@ jobs:
   ref-interpreter:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup OCaml
         uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-compiler: 4.12.x
+          ocaml-compiler: 4.13.x
       - run: opam install --yes ocamlbuild.0.14.0
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 19.x
+      # TODO: disable node.js run until it fully implements proposal
+      # - run: cd interpreter && opam exec make JS=node all
       - run: cd interpreter && opam exec make all
 
   ref-interpreter-js-library:
@@ -28,7 +34,7 @@ jobs:
       - name: Setup OCaml
         uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-compiler: 4.12.x
+          ocaml-compiler: 4.13.x
       - run: opam install --yes ocamlbuild.0.14.0 ocamlfind.1.9.5 js_of_ocaml.4.0.0 js_of_ocaml-ppx.4.0.0
       - run: cd interpreter && opam exec make wast.js
 
@@ -60,6 +66,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: "recursive"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - run: pip install bikeshed && bikeshed update
       - run: pip install six
       - run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended

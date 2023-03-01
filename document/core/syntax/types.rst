@@ -87,7 +87,7 @@ Heap Types
 .. math::
    \begin{array}{llll}
    \production{heap type} & \heaptype &::=&
-     \FUNC ~|~ \EXTERN ~|~ \typeidx ~|~ \functype \\
+     \FUNC ~|~ \EXTERN ~|~ \typeidx ~|~ \functype ~|~ \BOT \\
    \end{array}
 
 The type |FUNC| denotes the infinite union of all types of :ref:`functions <syntax-func>`, regardless of their concrete :ref:`function types <syntax-functype>`.
@@ -100,6 +100,10 @@ A concrete heap type can also consist of a :ref:`function type <syntax-functype>
 However, this form is representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, such that it cannot be used in a program;
 it only occurs during :ref:`validation <valid>` or :ref:`execution <exec>`, as the result of *substituting* a :ref:`type index <syntax-typeidx>` with its definition.
 
+The type :math:`\BOT` is a :ref:`subtype <match-heaptype>` of all other heap types.
+By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
+it only occurs during :ref:`validation <valid>`, as a part of a possible operand type for instructions.
+
 A type of any form is *closed* when it does not contain a heap type that is a :ref:`type index <syntax-typeidx>`,
 i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <notation-subst>` with their :ref:`defined type <syntax-deftype>`.
 
@@ -111,7 +115,6 @@ Convention
 * :math:`t[x^\ast \subst \X{ft}^\ast]` denotes the parallel *substitution* of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`function types <syntax-functype>` :math:`\X{ft}^\ast`, provided :math:`|x^\ast| = |\X{ft}^\ast|` in type :math:`t`.
 
 * :math:`t[\subst \X{ft}^\ast]` is shorthand for the substitution :math:`t[x^\ast \subst \X{ft}^\ast]` where :math:`x^\ast = 0 \cdots (|\X{ft}^\ast| - 1)` in type :math:`t`.
-
 
 
 .. index:: ! reference type, heap type, reference, table, function, function type, null
@@ -152,7 +155,7 @@ Value Types
 *Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
 They are either :ref:`number types <syntax-numtype>`, :ref:`vector types <syntax-vectype>`, :ref:`reference types <syntax-reftype>`, or the unique *bottom type*, written :math:`\BOT`.
 
-The type :math:`\BOT` is a :ref:`subtype <match-valtype>` of all other types.
+The type :math:`\BOT` is a :ref:`subtype <match-valtype>` of all other value types.
 By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
 it only occurs during :ref:`validation <valid>`, as a possible operand type for instructions.
 
@@ -199,10 +202,10 @@ Instruction Types
 .. math::
    \begin{array}{llll}
    \production{instruction type} & \instrtype &::=&
-     \resulttype \to_{\localidx^\ast} \resulttype \\
+     \resulttype \toX{\localidx^\ast} \resulttype \\
    \end{array}
 
-An instruction type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
+An instruction type :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
 and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
 Moreover, it enumerates the :ref:`indices <syntax-localidx>` :math:`x^\ast` of locals that have been set by the instruction or sequence.
 

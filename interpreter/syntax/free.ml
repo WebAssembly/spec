@@ -110,9 +110,10 @@ let rec instr (e : instr) =
   | Br x | BrIf x | BrOnNull x | BrOnNonNull x -> labels (idx x)
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
   | Return -> empty
-  | Call x -> funcs (idx x)
+  | Call x | ReturnCall x -> funcs (idx x)
   | CallRef x | ReturnCallRef x -> types (idx x)
-  | CallIndirect (x, y) -> tables (idx x) ++ types (idx y)
+  | CallIndirect (x, y) | ReturnCallIndirect (x, y) ->
+    tables (idx x) ++ types (idx y)
   | LocalGet x | LocalSet x | LocalTee x -> locals (idx x)
   | GlobalGet x | GlobalSet x -> globals (idx x)
   | TableGet x | TableSet x | TableSize x | TableGrow x | TableFill x ->

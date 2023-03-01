@@ -34,6 +34,8 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    \production{label} & \Tlabel_I &::=&
      v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose I
        & (\iff v \notin I.\ILABELS) \\ &&|&
+     v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose (I \with \ILABELS[i] = \epsilon)
+       & (\iff I.\ILABELS[i] = v) \\ &&|&
      \epsilon &\Rightarrow& \{\ILABELS~(\epsilon)\} \compose I \\
    \end{array}
 
@@ -41,6 +43,9 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    The new label entry is inserted at the *beginning* of the label list in the identifier context.
    This effectively shifts all existing labels up by one,
    mirroring the fact that control instructions are indexed relatively not absolutely.
+
+   If a label with the same name already exists,
+   then it is shadowed and the earlier label becomes inaccessible.
 
 
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
@@ -101,6 +106,8 @@ However, the special case of a type use that is syntactically empty or consists 
 .. _text-call:
 .. _text-call_ref:
 .. _text-call_indirect:
+.. _text-return_call:
+.. _text-return_call_indirect:
 
 All other control instruction are represented verbatim.
 
@@ -119,6 +126,10 @@ All other control instruction are represented verbatim.
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
      \text{call\_ref}~~x{:}\Ttypeidx &\Rightarrow& \CALLREF~x \\ &&|&
      \text{call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x~y
+       & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\&&|&
+     \text{return\_call}~~x{:}\Tfuncidx_I &\Rightarrow& \RETURNCALL~x \\ &&|&
+     \text{return\_call\_ref}~~x{:}\Ttypeidx &\Rightarrow& \RETURNCALLREF~x \\ &&|&
+     \text{return\_call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \RETURNCALLINDIRECT~x~y
        & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array}
 
@@ -139,14 +150,17 @@ The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitt
      \text{if}~~\Tlabel~~\Tblocktype_I~~\Tinstr^\ast~~\text{else}~~\text{end}
    \end{array}
 
-Also, for backwards compatibility, the table index to :math:`\text{call\_indirect}` can be omitted, defaulting to :math:`0`.
+Also, for backwards compatibility, the table index to :math:`\text{call\_indirect}` and :math:`\text{return\_call\_indirect}` can be omitted, defaulting to :math:`0`.
 
 .. math::
    \begin{array}{llclll}
    \production{plain instruction} &
      \text{call\_indirect}~~\Ttypeuse
        &\equiv&
-     \text{call\_indirect}~~0~~\Ttypeuse
+     \text{call\_indirect}~~0~~\Ttypeuse \\
+     \text{return\_call\_indirect}~~\Ttypeuse
+       &\equiv&
+     \text{return\_call\_indirect}~~0~~\Ttypeuse \\
    \end{array}
 
 
@@ -894,7 +908,7 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
      \text{f64x2.convert\_low\_i32x4\_s} &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_s}\\  &&|&
      \text{f64x2.convert\_low\_i32x4\_u} &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_u}\\ &&|&
      \text{f32x4.demote\_f64x2\_zero} &\Rightarrow& \F32X4.\VDEMOTE\K{\_f64x2\_zero}\\ &&|&
-     \text{f64x2.promote\_low\_f32x4} &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\ &&|&
+     \text{f64x2.promote\_low\_f32x4} &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\
    \end{array}
 
 
