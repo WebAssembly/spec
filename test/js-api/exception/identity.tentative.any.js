@@ -7,7 +7,7 @@ test(() => {
 
   // Tag defined in JavaScript and imported into Wasm
   const jsTag = new WebAssembly.Tag({ parameters: ["i32"] });
-  const jsTagIndex = builder.addImportedTag("module", "jsTag", kSig_v_i)
+  const jsTagIndex = builder.addImportedTag("module", "jsTag", kSig_v_i);
   const jsTagExn = new WebAssembly.Exception(jsTag, [42]);
   const jsTagExnSamePayload = new WebAssembly.Exception(jsTag, [42]);
   const jsTagExnDiffPayload = new WebAssembly.Exception(jsTag, [53]);
@@ -84,6 +84,33 @@ test(() => {
     ])
     .exportFunc();
 
+  // Call a JS function that throws an exception, catches it with a 'catch'
+  // instruction, and returns its i32 payload.
+  builder
+    .addFunction("catch_js_tag_return_payload", kSig_i_v)
+    .addBody([
+      kExprTry, kWasmI32,
+        kExprCallFunction, throwJSTagExnIndex,
+        kExprI32Const, 0x00,
+      kExprCatch, jsTagIndex,
+        kExprReturn,
+      kExprEnd
+    ])
+    .exportFunc();
+
+  // Call a JS function that throws an exception, catches it with a 'catch'
+  // instruction, and throws a new exception using that payload.
+  builder
+    .addFunction("catch_js_tag_throw_payload", kSig_v_v)
+    .addBody([
+      kExprTry, kWasmStmt,
+        kExprCallFunction, throwJSTagExnIndex,
+      kExprCatch, jsTagIndex,
+        kExprThrow, jsTagIndex,
+      kExprEnd
+    ])
+    .exportFunc();
+
   const buffer = builder.toBuffer();
 
   WebAssembly.instantiate(buffer, imports).then(result => {
@@ -124,6 +151,20 @@ test(() => {
       assert_equals(e, wasmTagExn);
       assert_not_equals(e, wasmTagExnSamePayload);
       assert_not_equals(e, wasmTagExnDiffPayload);
+    }
+
+    // This function catches the exception and returns its i32 payload, which
+    // should match the original payload.
+    assert_equals(result.instance.exports.catch_js_tag_return_payload(), 42);
+
+    // This function catches the exception and throws a new exception using the
+    // its payload. Even if the payload is reused, the exception objects should
+    // not compare equal.
+    try {
+      result.instance.exports.catch_js_tag_throw_payload();
+    } catch (e) {
+      assert_equals(e.getArg(jsTag, 0), 42);
+      assert_not_equals(e, jsTagExn);
     }
   });
 }, "Identity check");
