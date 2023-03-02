@@ -15,7 +15,7 @@ Release 2.1
 Relaxed vector instructions
 ...........................
 
-Added new relaxed vector instructions, which are vector instructions whose results are host-dependent.
+Added new relaxed vector instructions, which are vector instructions whose behaviour is host-dependent.
 
 * New binary :ref:`relaxed vector instruction <syntax-instr-relaxed>`: :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_min}`, :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_max}`, :math:`\K{i16x8.relaxed\_q15mulr\_s}`, :math:`\K{i16x8.relaxed\_dot\_i8x16\_i7x16\_s}`
 
