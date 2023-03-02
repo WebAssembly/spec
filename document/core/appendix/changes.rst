@@ -7,24 +7,6 @@ Change History
 Since the original release 1.0 of the WebAssembly specification, a number of proposals for extensions have been integrated.
 The following sections provide an overview of what has changed.
 
-Release 2.1
-~~~~~~~~~~~
-
-.. index:: instruction, vector instruction, SIMD
-
-Relaxed vector instructions
-...........................
-
-Added new relaxed vector instructions, which are vector instructions whose behaviour is host-dependent.
-
-* New binary :ref:`relaxed vector instruction <syntax-instr-relaxed>`: :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_min}`, :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_max}`, :math:`\K{i16x8.relaxed\_q15mulr\_s}`, :math:`\K{i16x8.relaxed\_dot\_i8x16\_i7x16\_s}`
-
-* New ternary :ref:`relaxed vector instruction <syntax-instr-relaxed>`: :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_madd}`, :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_nmadd}`, :math:`\K{i}\!N\!\K{x}\!M\!\K{.relaxed\_laneselect}`, :math:`\K{i32x4.relaxed\_dot\_i8x16\_i7x16\_add\_s}`
-
-* New conversion :ref:`relaxed vector instructions <syntax-instr-relaxed>`::math:`\K{i32x4.relaxed\_trunc\_f32x4\_}\sx`, :math:`\K{i32x4.relaxed\_trunc\_f64x2\_}\sx\K{\_zero}`
-
-* New byte reordering :ref:`relaxed vector instruction <syntax-instr-relaxed>`: :math:`\K{i8x16.relaxed\_swizzle}`
-
 Release 2.0
 ~~~~~~~~~~~
 
@@ -154,6 +136,24 @@ Added vector type and instructions that manipulate multiple numeric values in pa
 * New byte reordering :ref:`vector instructions <syntax-instr-vec>`: :math:`\K{i8x16.shuffle}`, :math:`\K{i8x16.swizzle}`
 
 * New injection/projection :ref:`vector instructions <syntax-instr-vec>`: :math:`\K{i}\!N\!\K{x}\!M\!\K{.splat}`, :math:`\K{f}\!N\!\K{x}\!M\!\K{.splat}`, :math:`\K{i}\!N\!\K{x}\!M\!\K{.bitmask}`
+
+Release 2.1
+~~~~~~~~~~~
+
+.. index:: instruction, vector instruction, SIMD
+
+Relaxed vector instructions
+...........................
+
+Added new relaxed vector instructions, which are vector instructions whose behaviour is host-dependent.
+
+* New binary :ref:`relaxed vector instruction <syntax-instr-relaxed>`: :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_min}`, :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_max}`, :math:`\K{i16x8.relaxed\_q15mulr\_s}`, :math:`\K{i16x8.relaxed\_dot\_i8x16\_i7x16\_s}`
+
+* New ternary :ref:`relaxed vector instruction <syntax-instr-relaxed>`: :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_madd}`, :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_nmadd}`, :math:`\K{i}\!N\!\K{x}\!M\!\K{.relaxed\_laneselect}`, :math:`\K{i32x4.relaxed\_dot\_i8x16\_i7x16\_add\_s}`
+
+* New conversion :ref:`relaxed vector instructions <syntax-instr-relaxed>`::math:`\K{i32x4.relaxed\_trunc\_f32x4\_}\sx`, :math:`\K{i32x4.relaxed\_trunc\_f64x2\_}\sx\K{\_zero}`
+
+* New byte reordering :ref:`relaxed vector instruction <syntax-instr-relaxed>`: :math:`\K{i8x16.relaxed\_swizzle}`
 
 
 .. [#proposal-signext]
