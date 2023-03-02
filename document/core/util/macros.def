@@ -1203,6 +1203,7 @@
 .. |narrowu| mathdef:: \xref{exec/numerics}{op-narrow_u}{\F{narrow}^{\K{u}}}
 .. |narrows| mathdef:: \xref{exec/numerics}{op-narrow_s}{\F{narrow}^{\K{s}}}
 
+.. |fma| mathdef:: \xref{exec/numerics}{op-fma}{\F{fma}}
 .. |relaxedmadd| mathdef:: \xref{exec/numerics}{op-relaxed_madd}{\F{frelaxed\_madd}}
 .. |relaxednmadd| mathdef:: \xref{exec/numerics}{op-relaxed_nmadd}{\F{frelaxed\_nmadd}}
 .. |relaxedswizzlelane| mathdef:: \xref{exec/numerics}{op-relaxed_swizzle_lane}{\F{relaxed\_swizzle\_lane}}

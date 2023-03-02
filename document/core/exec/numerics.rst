@@ -1990,17 +1990,20 @@ each environment globally chooses a fixed projection for each operator.
 
 
 .. _op-relaxed_madd:
+.. _op-fma:
 
 :math:`\relaxedmadd_N(z_1, z_2, z_3)`
 .....................................
 
-Relaxed multiply-add (madd) allows for fused or unfused results. The function :math:`fma` is
+Relaxed multiply-add (madd) allows for fused or unfused results. The function :math:`\fma` is
 defined by |IEEE754|_ (Section 5.4.1) as *fusedMultiplyAdd*.
 
 .. math::
    \begin{array}{@{}llcll}
-   \EXPROFDET & \relaxedmadd_N(z_1, z_2, z_3) &=& [ \fadd_N(\fmul_N(z_1, z_2), z_3), fma_N(z_1, z_2, z_3) ] \\
-   & \relaxedmadd_N(z_1, z_2, z_3) &=& fma_N(z_1, z_2, z_3) \\
+   \EXPROFDET & \relaxedmadd_N(z_1, z_2, z_3) &=& [ \fadd_N(\fmul_N(z_1, z_2), z_3), \fma_N(z_1, z_2, z_3) ] \\
+   & \relaxedmadd_N(z_1, z_2, z_3) &=& \fma_N(z_1, z_2, z_3) \\
+   \\
+   & \fma_N(z_1, z_2, z_3) &=& \ieee_N(z_1 \cdot z_2 + z_3) \\
    \end{array}
 
 
