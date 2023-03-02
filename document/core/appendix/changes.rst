@@ -10,7 +10,7 @@ The following sections provide an overview of what has changed.
 Release 2.1
 ~~~~~~~~~~~
 
-.. index:: instruction, SIMD
+.. index:: instruction, vector instruction, SIMD
 
 Relaxed vector instructions
 ...........................
