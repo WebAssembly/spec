@@ -1995,7 +1995,7 @@ each environment globally chooses a fixed projection for each operator.
 :math:`\relaxedmadd_N(z_1, z_2, z_3)`
 .....................................
 
-Relaxed multiply-add (madd) allows for fused or unfused results. The function :math:`\fma`
+Relaxed multiply-add allows for fused or unfused results. The function :math:`\fma`
 is the same as *fusedMultiplyAdd* defined by |IEEE754|_ (Section 5.4.1).
 
 .. math::
