@@ -1,6 +1,6 @@
 ![Build Status](https://github.com/WebAssembly/extended-const/actions/workflows/main.yml/badge.svg)
 
-# Extended Const Expressesions Proposal for WebAssembly
+# Extended Const Expressions Proposal for WebAssembly
 
 This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
 It is meant for discussion, prototype specification and implementation of a proposal to add tail call support to WebAssembly.
