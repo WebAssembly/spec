@@ -411,10 +411,13 @@ The subtyping rules for structural types are only invoked during validation of a
     - iff `<fieldtype1> <: <fieldtype2>`
 
 * Field types are covariant if they are immutable, invariant otherwise
-  - `const <valtype1> <: const <valtype2>`
-    - iff `<valtype1> <: <valtype2>`
-  - `var <valtype> <: var <valtype>`
+  - `const <storagetype1> <: const <storagetype2>`
+    - iff `<storagetype1> <: <storagetype2>`
+  - `var <storagetype> <: var <storagetype>`
   - Note: mutable fields are *not* subtypes of immutable ones, so `const` really means constant, not read-only
+
+* Storage types inherent subtyping from value types, packed types must be equivalent
+  - `<packedtype> <: <packedtype>`
 
 
 ##### Type Definitions
