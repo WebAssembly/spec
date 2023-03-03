@@ -501,7 +501,7 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 
 19. Let :math:`\exportinst^\ast` be the concatenation of the :ref:`export instances <syntax-exportinst>` :math:`\exportinst_i` in index order.
 
-20. Let :math:`\moduleinst` be the :ref:`module instance <syntax-moduleinst>` :math:`\{\MITYPES~(\module.\MTYPES),` :math:`\MIFUNCS~\funcaddr_{\F{mod}}^\ast,` :math:`\MITABLES~\tableaddr_{\F{mod}}^\ast,` :math:`\MIMEMS~\memaddr_{\F{mod}}^\ast,` :math:`\MIGLOBALS~\globaladdr_{\F{mod}}^\ast,` :math:`\MIEXPORTS~\exportinst^\ast\}`.
+20. Let :math:`\moduleinst` be the :ref:`module instance <syntax-moduleinst>` :math:`\{\MITYPES~(\module.\MTYPES), \MIFUNCS~\funcaddr_{\F{mod}}^\ast, \MITABLES~\tableaddr_{\F{mod}}^\ast, \MIMEMS~\memaddr_{\F{mod}}^\ast, \MIGLOBALS~\globaladdr_{\F{mod}}^\ast, \MIEXPORTS~\exportinst^\ast\}`.
 
 21. Return :math:`\moduleinst`.
 
