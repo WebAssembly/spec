@@ -105,6 +105,7 @@ pdf:	$(GENERATED) latexpdf
 clean:
 	rm -rf $(BUILDDIR)
 	rm -rf $(STATICDIR)
+	rm -f $(GENERATED)
 
 .PHONY: html
 html: $(GENERATED)
@@ -261,7 +262,7 @@ latex:
 	      "(use \`make latexpdf' here to do that automatically)."
 
 .PHONY: latexpdf
-latexpdf:
+latexpdf: $(GENERATED)
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo "Running LaTeX files through pdflatex..."
 	$(MAKE) -C $(BUILDDIR)/latex LATEXMKOPTS=" </dev/null" all-pdf >$(BUILDDIR)/latex/LOG 2>&1 || cat $(BUILDDIR)/latex/LOG
