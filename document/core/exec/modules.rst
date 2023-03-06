@@ -722,9 +722,6 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
      &\wedge& (S'; F; \expr_{\F{g}} \stepto^\ast S'; F; \val~\END)^\ast \\
      &\wedge& ((S'; F; \expr_{\F{e}} \stepto^\ast S'; F; \reff~\END)^\ast)^n \\
-     &\wedge& (\tableaddr = \moduleinst.\MITABLES[\elem.\ETABLE])^\ast \\
-     &\wedge& (\memaddr = \moduleinst.\MIMEMS[\data.\DMEM])^\ast \\
-     &\wedge& (\funcaddr = \moduleinst.\MIFUNCS[\start.\SFUNC])^?)
    \end{array}
 
 where:
