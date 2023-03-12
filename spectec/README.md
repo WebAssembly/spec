@@ -52,7 +52,6 @@ The language consists of few generic concepts:
   ```
   relation Instr_ok: context |- instr : functype
   relation Step: config ~> config
-
   ```
 
 * _Rule definitions_, expressing the individual rules defining relations. For example:
@@ -96,9 +95,6 @@ The language consists of few generic concepts:
 ```
 list(x, sep) ::=
   epsilon
-  list1(x, sep)
-
-list1(x, sep) ::=
   x
   x sep list(x, sep)
 ```
@@ -241,26 +237,26 @@ To use arithmetic operators in a place that is not naturally arithmetic, the sub
 
 ```
 def ::=
-  "syntax" varid hint* "=" deftyp      syntax definition
-  "relation" relid hint* ":" typ       relation declaration
-  "rule" relid (("/" | "-") ruleid)* ":" exp ("--" premise)*    rule
-  "var" varid ":" typ hint*            variable declaration
-  "def" "$" defid exp? ":" typ hint*   function delcaration
-  "def" "$" defid exp? "=" exp         function clause
+  "syntax" varid hint* "=" deftyp                             syntax definition
+  "relation" relid hint* ":" typ                              relation declaration
+  "rule" relid (("/" | "-") ruleid)* ":" exp ("--" premise)*  rule
+  "var" varid ":" typ hint*                                   variable declaration
+  "def" "$" defid exp? ":" typ hint*                          function declaration
+  "def" "$" defid exp? "=" exp                                function clause
 
 deftyp ::=
-  typ                                  typ alias
-  "{" list(atom typ hint*, ",") "}"    records
-  "|" list1(varid | atom typ hint*, "|")  variant
+  typ                                                         typ alias
+  "{" list(atom typ hint*, ",") "}"                           records
+  "|" list(varid | atom typ hint*, "|")                       variant
 
 premise ::=
-  relid exp                            relational premise
-  "(" relid exp ")" iter               iterated relational premise
-  "iff" ":" exp                        side condition
-  "otherwise"                          fallback side condition
+  relid exp                                                   relational premise
+  "(" relid exp ")" iter                                      iterated relational premise
+  "iff" ":" exp                                               side condition
+  "otherwise"                                                 fallback side condition
 
 hint ::=
-  "(" "hint" hintid exp ")"            hint
+  "(" "hint" hintid exp ")"                                   hint
 ```
 
 

@@ -167,6 +167,7 @@ fieldtyp_list :
   | atom typ hint_list COMMA fieldtyp_list { ($1, $2, $3) :: $5 }
 
 casetyp_list :
+  | /* empty */ { [], [] }
   | varid { [$1], [] }
   | varid BAR casetyp_list { $1::fst $3, snd $3 }
   | atom typs hint_list { [], ($1, $2, $3)::[] }
