@@ -170,18 +170,18 @@ let rec match_typ' env typ1 typ2 =
   | SeqT (typ11::typs12), IterT (_, (List | List1)) ->
     match_typ' env typ11 typ2 &&
     match_typ' env (SeqT typs12 @@ typ1.at) typ2
-  | IterT (typ1', iter1), IterT (typ2', iter2) ->
-    match_typ' env typ1' typ2' && match_iter env iter1 iter2 ||
-    match_typ' env typ1 typ2'
-  | typ1', IterT (typ2', (Opt | List | List1)) ->
-    match_typ' env (typ1' @@ typ1.at) typ2'
+  | IterT (typ11, iter1), IterT (typ21, iter2) ->
+    match_typ' env typ11 typ21 && match_iter env iter1 iter2 ||
+    match_typ' env typ1 typ21
+  | _, IterT (typ21, (Opt | List | List1)) ->
+    match_typ' env typ1 typ21
   | TupT typs1, TupT typs2 ->
     match_typs env typs1 typs2
   | RelT (typ11, relop1, typ12), RelT (typ21, relop2, typ22) ->
     match_typ' env typ11 typ21 && relop1 = relop2 && match_typ' env typ12 typ22
   | BrackT (brackop1, typs1), BrackT (brackop2, typs2) ->
     brackop1 = brackop2 && match_typs env typs1 typs2
-  | typ1', typ2' ->
+  | _, _ ->
     false
 
 and match_typs env typs1 typs2 =
