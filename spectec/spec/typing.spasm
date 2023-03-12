@@ -1,0 +1,238 @@
+;; Contexts
+
+syntax context hint(desc "context") =
+  { FUNC functype*,
+    GLOBAL globaltype*,
+    TABLE tabletype*,
+    MEM memtype*,
+    ELEM elemtype*,
+    DATA datatype*,
+    LOCAL valtype*,
+    LABEL resulttype*,
+    RETURN resulttype?,
+  }
+
+var `C : context
+
+
+
+;; Types
+
+relation Functype_ok: |- functype : OK
+relation Globaltype_ok: |- globaltype : OK
+relation Tabletype_ok: |- tabletype : OK
+relation Memtype_ok: |- memtype : OK
+relation Limits_ok: |- limits : nat
+
+rule Functype_ok:
+  |- ft : OK
+
+rule Globaltype_ok:
+  |- gt : OK
+
+rule Tabletype_ok:
+  |- lim rt : OK
+  -- Limits_ok: |- lim : $(2^32-1)
+
+rule Memtype_ok:
+  |- lim I8 : OK
+  -- Limits_ok: |- lim : $(2^16)
+
+rule Limits_ok:
+  |- `[n_1 .. n_2] : k
+  -- iff: n_1 <= n_2 <= k
+
+
+
+;; Subtyping
+
+relation Valtype_sub: |- valtype <: valtype
+relation Resulttype_sub: |- valtype* <: valtype*
+
+rule Valtype_sub/refl:
+  |- t <: t
+
+rule Valtype_sub/bot:
+  |- BOT <: t
+
+rule Resulttype_sub:
+  |- t_1* <: t_2*
+  -- (Valtype_sub: |- t_1 <: t_2)*
+
+
+relation Functype_sub: |- functype <: functype
+relation Globaltype_sub: |- globaltype <: globaltype
+relation Tabletype_sub: |- tabletype <: tabletype
+relation Memtype_sub: |- memtype <: memtype
+relation Limits_sub: |- limits <: limits
+relation Externtype_sub: |- externtype <: externtype
+
+rule Functype_sub:
+  |- ft <: ft
+
+rule Globaltype_sub:
+  |- gt <: gt
+
+rule Tabletype_sub:
+  |- lim_1 rt <: lim_2 rt
+  -- Limits_sub: |- lim_1 <: lim_2
+
+rule Memtype_sub:
+  |- lim_1 I8 <: lim_2 I8
+  -- Limits_sub: |- lim_1 <: lim_2
+
+rule Limits_sub:
+  |- `[n_11 .. n_12] <: `[n_21 .. n_22]
+  -- iff: n_11 >= n_21
+  -- iff: n_12 <= n_22
+
+rule Externtype_sub/func:
+  |- FUNC ft_1 <: FUNC ft_2
+  -- Functype_sub: |- ft_1 <: ft_2
+
+rule Externtype_sub/global:
+  |- GLOBAL gt_1 <: GLOBAL gt_2
+  -- Globaltype_sub: |- gt_1 <: gt_2
+
+rule Externtype_sub/table:
+  |- TABLE tt_1 <: TABLE tt_2
+  -- Tabletype_sub: |- tt_1 <: tt_2
+
+rule Externtype_sub/mem:
+  |- MEM mt_1 <: MEM mt_2
+  -- Memtype_sub: |- mt_1 <: mt_2
+
+
+
+;; Instructions
+
+relation Instr_ok: context |- instr : functype
+relation InstrSeq_ok: context |- instr* : functype
+
+rule InstrSeq_ok/empty:
+  `C |- epsilon : epsilon -> epsilon
+
+rule InstrSeq_ok/seq:
+  `C |- instr_1 instr_2* : t_1* -> t_3*
+  -- Instr_ok: `C |- instr_1 : t_1* -> t_2*
+  -- InstrSeq_ok: `C |- instr_2 : t_2* -> t_3*
+
+rule InstrSeq_ok/weak:
+  `C |- instr* : t'_1 -> t'_2*
+  -- InstrSeq_ok: `C |- instr* : t_1* -> t_2*
+  -- Resulttype_sub: |- t'_1* <: t_1*
+  -- Resulttype_sub: |- t_2* <: t'_2*
+
+rule InstrSeq_ok/frame:
+  `C |- instr* : t* t_1* -> t* t_2*
+  -- InstrSeq_ok: `C |- instr* : t_1* -> t_2*
+
+
+rule Instr_ok/unreachable:
+  `C |- UNREACHABLE : t_1* -> t_2*
+
+rule Instr_ok/nop:
+  `C |- NOP : epsilon -> epsilon
+
+rule Instr_ok/drop:
+  `C |- DROP : t -> epsilon
+
+
+rule Instr_ok/select-expl:
+  `C |- SELECT t : t t I32 -> t
+
+rule Instr_ok/select-impl:
+  `C |- SELECT : t t I32 -> t
+  -- Valtype_sub: |- t <: t'
+  -- iff: t' = numtype \/ t' = vectype
+
+
+relation Blocktype_ok: context |- blocktype : functype
+rule Blocktype_ok:
+  `C |- ft : ft
+  -- Functype_ok: |- ft : OK
+
+rule Instr_ok/block:
+  `C |- BLOCK bt instr* : t_1* -> t_2*
+  -- Blocktype_ok: `C |- bt : t_1* -> t_2*
+  -- InstrSeq_ok: `C, LABEL t_2* |- instr* : t_1* -> t_2*
+
+rule Instr_ok/loop:
+  `C |- LOOP bt instr* : t_1* -> t_2*
+  -- Blocktype_ok: `C |- bt : t_1* -> t_2*
+  -- InstrSeq_ok: `C, LABEL t_1* |- instr* : t_1* -> t_2
+
+rule Instr_ok/if:
+  `C |- IF bt instr_1* ELSE instr_2* : t_1* -> t_2
+  -- Blocktype_ok: `C |- bt : t_1* -> t_2
+  -- InstrSeq_ok: `C, LABEL t_2* |- instr_1* : t_1* -> t_2*
+  -- InstrSeq_ok: `C, LABEL t_2* |- instr_2* : t_1* -> t_2*
+
+
+rule Instr_ok/br:
+  `C |- BR l : t_1* t* -> t_2*
+  -- iff: `C.LABEL[l] = t*
+
+rule Instr_ok/br_if:
+  `C |- BR_IF l : t* I32 -> t*
+  -- iff: `C.LABEL[l] = t*
+
+rule Instr_ok/br_table:
+  `C |- BR_TABLE l* l' : t_1* t* -> t_2*
+  -- (Resulttype_sub: |- t* <: `C.LABEL[l])*
+  -- Resulttype_sub: |- t* <: `C.LABEL[l']
+
+rule Instr_ok/return:
+  `C |- RETURN : t_1* t* -> t_2*
+  -- iff: `C.RETURN = (t*)
+
+rule Instr_ok/call:
+  `C |- CALL x : t_1* -> t_2*
+  -- iff: `C.FUNC[x] = t_1* -> t_2*
+
+rule Instr_ok/call_indirect:
+  `C |- CALL_INDIRECT x ft : t_1* I32 -> t_2*
+  -- iff: `C.TABLE[x] = lim FUNCREF
+  -- iff: ft = t_1* -> t_2*
+
+
+rule Instr_ok/const:
+  `C |- CONST nt c_nt : epsilon -> nt
+
+rule Instr_ok/unop:
+  `C |- UNOP nt unop : nt -> nt
+
+rule Instr_ok/binop:
+  `C |- BINOP nt binop : nt nt -> nt
+
+rule Instr_ok/testop:
+  `C |- TESTOP nt testop : nt -> I32
+
+rule Instr_ok/relop:
+  `C |- RELOP nt relop : nt nt -> I32
+
+
+
+
+
+;; Constant Instructions
+
+relation Instr_const: context |- instr CONST
+relation InstrSeq_const: context |- instr* CONST
+
+rule Instr_const/const:
+  `C |- (CONST nt c) CONST
+
+rule Instr_const/ref.null:
+  `C |- (REF.NULL rt) CONST
+
+rule Instr_const/ref.func:
+  `C |- (REF.FUNC x) CONST
+
+rule Instr_const/global.get:
+  `C |- (GLOBAL.GET x) CONST
+  -- iff: `C.GLOBAL[x] = epsilon t
+
+
+rule InstrSeq_const: `C |- instr* CONST
+  -- (Instr_const: `C |- instr CONST)*

@@ -1,0 +1,654 @@
+open Source
+open Ast
+open Print
+
+
+(* Errors *)
+
+let error at msg = Source.error at "type" msg
+
+
+(* Environment *)
+
+module Env = Map.Make(String)
+
+type var_typ = typ
+type syn_typ = deftyp
+type rel_typ = typ
+type def_typ = typ * typ
+
+type env =
+  { mutable vars : var_typ Env.t;
+    mutable typs : syn_typ Env.t;
+    mutable rels : rel_typ Env.t;
+    mutable defs : def_typ Env.t;
+  }
+
+let new_env () =
+  { vars = Env.empty;
+    typs = Env.empty;
+    rels = Env.empty;
+    defs = Env.empty;
+  }
+
+let find space env' id =
+  match Env.find_opt id.it env' with
+  | None -> error id.at ("undeclared " ^ space ^ " `" ^ id.it ^ "`")
+  | Some t -> t
+
+let bind space env' id typ =
+  if Env.mem id.it env' then
+    error id.at ("duplicate declaration for " ^ space ^ " `" ^ id.it ^ "`")
+  else
+    Env.add id.it typ env'
+
+let rebind space env' id typ =
+  assert (Env.mem id.it env');
+  Env.add id.it typ env'
+
+let find_field fields atom at =
+  match List.find_opt (fun (atom', _, _) -> atom' = atom) fields with
+  | Some (_, x, _) -> x
+  | None -> error at ("unbound field `" ^ string_of_atom atom ^ "`")
+
+let find_case cases atom at =
+  match List.find_opt (fun (atom', _, _) -> atom' = atom) cases with
+  | Some (_, x, _) -> x
+  | None -> error at ("unknown case `" ^ string_of_atom atom ^ "`")
+
+
+(* Type Accessors *)
+
+let as_seq_exp exp =
+  match exp.it with
+  | SeqE exps -> exps
+  | _ -> assert false
+
+
+let rec expand' env = function
+  | VarT id as typ' ->
+    (match (find "syntax type" env.typs id).it with
+    | AliasT typ1 -> expand' env typ1.it
+    | _ -> typ'
+    )
+  | TupT [typ] -> expand' env typ.it
+  | typ' -> typ'
+
+let expand_singular' env typ' =
+  match expand' env typ' with
+  | IterT (typ1, (Opt | List | List1)) -> typ1.it
+  | typ' -> typ'
+
+let expand env typ = expand' env typ.it
+
+
+type direction = Infer | Check
+
+let as_error at phrase dir typ expected =
+  match dir with
+  | Infer ->
+    error at (
+      phrase ^ "'s type `" ^ string_of_typ typ ^
+      "` does not match expected type `" ^ expected ^ "`"
+    )
+  | Check ->
+    error at (
+      phrase ^ "'s type does not match expected type `" ^
+      string_of_typ typ ^ "`"
+    )
+
+let as_iter_typ phrase env dir typ at : typ * iter =
+  match expand' env typ.it with
+  | IterT (typ1, iter) -> typ1, iter
+  | _ -> as_error at phrase dir typ "(_)*"
+
+let as_list_typ phrase env dir typ at : typ =
+  match expand' env typ.it with
+  | IterT (typ1, (List | List1 | ListN _)) -> typ1
+  | _ -> as_error at phrase dir typ "(_)*"
+
+let as_seq_typ phrase env dir typ at : typ list =
+  match expand' env typ.it with
+  | SeqT typs -> typs
+  | _ -> as_error at phrase dir typ "(_ ... _)"
+
+let as_tup_typ n phrase env dir typ at : typ list =
+  match expand_singular' env typ.it with
+  | TupT typs when List.length typs = n -> typs
+  | _ ->
+    as_error at phrase dir typ
+      ("(" ^ String.concat ", " (List.init n (Fun.const "_") ) ^ ")")
+
+let as_rel_typ relop phrase env dir typ at : typ * typ =
+  match expand_singular' env typ.it with
+  | RelT (typ1, relop', typ2) when relop' = relop -> typ1, typ2
+  | _ -> as_error at phrase dir typ ("(_ " ^ string_of_relop relop ^ " _)")
+
+let as_brack_typ brackop phrase env dir typ at : typ list =
+  match expand_singular' env typ.it with
+  | BrackT (brackop', typs) when brackop' = brackop -> typs
+  | _ ->
+    let l, r = string_of_brackop brackop in
+    as_error at phrase dir typ ("`" ^ l ^ "..." ^ r)
+
+let as_struct_typ phrase env dir typ at : typfield list =
+  match expand_singular' env typ.it with
+  | VarT id ->
+    (match (find "syntax type" env.typs id).it with
+    | StructT fields -> fields
+    | _ -> as_error at phrase dir typ "{...}"
+    )
+  | _ -> as_error at phrase dir typ "{...}"
+
+let as_variant_typ phrase env dir typ at : typcase list =
+  match expand_singular' env typ.it with
+  | VarT id ->
+Printf.printf "[variant] %s = %s\n%!" id.it (string_of_deftyp (find "syntax type" env.typs id));
+    (match (find "syntax type" env.typs id).it with
+    | VariantT (ids, cases) -> assert (ids = []); cases
+    | _ -> as_error at phrase dir typ "| ..."
+    )
+  | _ -> as_error at phrase dir typ "| ..."
+
+let as_variant_deftyp phrase env id : typcase list =
+  match (find "syntax type" env.typs id).it with
+  | VariantT (ids, cases) -> assert (ids = []); cases
+  | _ -> as_error id.at phrase Check (VarT id @@ id.at) "| ..."
+
+
+let is_x_typ as_x_typ env typ =
+  try ignore (as_x_typ "" env Check typ no_region); true
+  with Source.Error _ -> false
+
+let is_iter_typ = is_x_typ as_iter_typ
+let is_variant_typ = is_x_typ as_variant_typ
+
+
+(* Type Matching *)
+
+let tail_iter typ = function
+  | Opt -> SeqT []
+  | List | List1 -> IterT (typ, List)
+  | ListN exp -> assert false
+
+
+let match_iter' env iter1 iter2 =
+  match iter1, iter2 with
+  | _, List
+  | Opt, List1 -> true
+  | _, _ -> Eq.eq_iter iter1 iter2
+
+let rec match_typ' env typ1 typ2 =
+  Printf.printf "[match] (%s) <: (%s)\n%!"
+    (string_of_typ typ1) (string_of_typ typ2);
+  match expand env typ1, expand env typ2 with
+  | SeqT [], IterT (_, (Opt | List)) ->
+    true
+  | SeqT [typ1'], IterT (typ2', (Opt | List | List1)) ->
+    match_typ' env typ1' typ2'
+  | SeqT typs1, IterT (typ2', (List | List1)) ->
+    List.for_all (fun typ1I -> match_typ' env typ1I typ2') typs1
+  | IterT (typ1', iter1), IterT (typ2', iter2) ->
+    match_typ' env typ1' typ2' && match_iter' env iter1 iter2 ||
+    match_typ' env typ1 typ2'
+  | typ1', IterT (typ2', (Opt | List | List1)) ->
+    match_typ' env (typ1' @@ typ1.at) typ2'
+  | AtomT atom, _ when is_variant_typ env typ2 ->
+    let cases = as_variant_typ "" env Check typ2 typ1.at in
+    (try
+      let typs2 = find_case cases atom typ1.at in
+      List.for_all (match_typ' env (SeqT [] @@ typ1.at)) typs2
+    with Source.Error _ -> false)
+  | SeqT ({it = AtomT atom; at} :: typs1), _ when is_variant_typ env typ2 ->
+    let cases = as_variant_typ "" env Check typ2 at in
+    (try
+      let typs2 = find_case cases atom at in
+      List.length typs1 = List.length typs2 &&
+      List.for_all2 (match_typ' env) typs1 typs2
+    with Source.Error _ -> false)
+  | _, _ when is_variant_typ env typ1 && is_variant_typ env typ2 ->
+    let cases1 = as_variant_typ "" env Check typ1 typ2.at in
+    let cases2 = as_variant_typ "" env Check typ2 typ1.at in
+    List.for_all (fun (atom, typs1, _) ->
+      try
+        let typs2 = find_case cases2 atom typ1.at in
+        match_typ' env (SeqT typs1 @@ typ1.at) (SeqT typs2 @@ typ2.at)
+      with Source.Error _ -> false
+    ) cases1
+  | typ1', typ2' ->
+    Eq.eq_typ (typ1' @@ typ1.at) (typ2' @@ typ2.at)
+
+
+let match_iter phrase env iter1 iter2 at =
+  if not (match_iter' env iter1 iter2) then
+    error at (
+      phrase ^ "'s multiplicity `_" ^ string_of_iter iter1 ^
+      "` does not match expected multiplicity `_" ^ string_of_iter iter2 ^ "`"
+    )
+
+let match_typ phrase env typ1 typ2 at =
+  if not (match_typ' env typ1 typ2) then
+    error at (
+      phrase ^ "'s type `" ^ string_of_typ typ1 ^
+    "` does not match expected type `" ^ string_of_typ typ2 ^ "`"
+    )
+
+
+
+(* Operators *)
+
+let check_unop = function
+  | NotOp -> BoolT
+  | PlusOp | MinusOp -> NatT
+
+let check_binop = function
+  | AndOp | OrOp | ImplOp -> BoolT
+  | AddOp | SubOp | MulOp | DivOp | ExpOp -> NatT
+
+let check_cmpop = function
+  | EqOp | NeOp -> VarT ("(any)" @@ no_region)
+  | LtOp | GtOp | LeOp | GeOp -> NatT
+
+
+(* Iteration *)
+
+let rec check_iter env iter : iter =
+  match iter with
+  | Opt | List | List1 ->
+    iter
+  | ListN exp ->
+    let exp' = check_exp env exp (NatT @@ exp.at) in
+    ListN exp'
+
+
+(* Types *)
+
+and check_typ env typ : typ =
+  match typ.it with
+  | VarT id ->
+    let _ = find "syntax type" env.typs id in
+    VarT id @@ typ.at
+  | AtomT _
+  | BoolT
+  | NatT
+  | TextT ->
+    typ
+  | SeqT typs ->
+    let typs' = List.map (check_typ env) typs in
+    SeqT typs' @@ typ.at
+  | TupT typs ->
+    let typs' = List.map (check_typ env) typs in
+    TupT typs' @@ typ.at
+  | RelT (typ1, relop, typ2) ->
+    let typ1' = check_typ env typ1 in
+    let typ2' = check_typ env typ2 in
+    RelT (typ1', relop, typ2') @@ typ.at
+  | BrackT (brackop, typs) ->
+    let typs' = List.map (check_typ env) typs in
+    BrackT (brackop, typs') @@ typ.at
+  | IterT (typ1, iter) ->
+    let typ1' = check_typ env typ1 in
+    let iter' = check_iter env iter in
+    (match iter with
+    | ListN exp -> error exp.at "definite iterator not allowed in type"
+    | _ -> ()
+    );
+    IterT (typ1', iter') @@ typ.at
+
+and check_deftyp env deftyp : deftyp =
+  match deftyp.it with
+  | AliasT typ ->
+    let typ' = check_typ env typ in
+    AliasT typ' @@ deftyp.at
+  | StructT fields ->
+    let fields' = List.map (check_typfield env) fields in
+    (* TODO: check for duplicates *)
+    StructT fields' @@ deftyp.at
+  | VariantT (ids, cases) ->
+    let casess = List.map (as_variant_deftyp "parent" env) ids in
+    let cases' = List.map (check_typcase env) cases in
+    (* TODO: check for duplicates *)
+    VariantT ([], List.concat (casess @ [cases'])) @@ deftyp.at
+
+and check_typfield env (atom, typ, hints) : typfield =
+  let typ' = check_typ env typ in
+  (atom, typ', hints)
+
+and check_typcase env (atom, typs, hints) : typcase =
+  let typs' = List.map (check_typ env) typs in
+  (atom, typs', hints)
+
+
+(* Expressions *)
+
+and prefix_id id =
+  match String.index_opt id.it '_', String.index_opt id.it '\'' with
+  | None, None -> id
+  | None, Some n | Some n, None -> String.sub id.it 0 n @@ id.at
+  | Some n1, Some n2 -> String.sub id.it 0 (min n1 n2) @@ id.at
+
+and infer_exp env exp : typ =
+  match exp.it with
+  | VarE id -> find "variable" env.vars (prefix_id id)
+  | AtomE atom -> AtomT atom @@ exp.at
+  | BoolE _ -> BoolT @@ exp.at
+  | NatE _ -> NatT @@ exp.at
+  | TextE _ -> TextT @@ exp.at
+  | UnE (unop, _) -> check_unop unop @@ exp.at
+  | BinE (_, binop, _) -> check_binop binop @@ exp.at
+  | CmpE _ -> BoolT @@ exp.at
+  | IdxE (exp1, _) ->
+    let typ1 = infer_exp env exp1 in
+    as_list_typ "expression" env Infer typ1 exp1.at
+  | SliceE (exp1, _, _)
+  | UpdE (exp1, _, _)
+  | ExtE (exp1, _, _)
+  | CommaE (exp1, _)
+  | CompE (exp1, _) ->
+    infer_exp env exp1
+  | StrE fields ->
+    error exp.at "cannot infer type of a record"
+  | DotE (exp1, atom) ->
+    let typ1 = infer_exp env exp1 in
+    let typfields = as_struct_typ "expression" env Infer typ1 exp1.at in
+    find_field typfields atom exp1.at
+  | LenE _ -> NatT @@ exp.at
+  | SeqE exps -> SeqT (List.map (infer_exp env) exps) @@ exp.at
+  | TupE exps -> TupT (List.map (infer_exp env) exps) @@ exp.at
+  | CallE (id, _) -> snd (find "function" env.defs id)
+  | RelE (exp1, relop, exp2) ->
+    RelT (infer_exp env exp1, relop, infer_exp env exp2) @@ exp.at
+  | BrackE (brackop, exps) ->
+    BrackT (brackop, List.map (infer_exp env) exps) @@ exp.at
+  | IterE (exp1, iter) ->
+    let typ1 = infer_exp env exp1 in
+    let iter' =
+      match check_iter env iter with
+      | ListN _ -> List
+      | iter' -> iter'
+    in
+    IterT (typ1, iter') @@ exp.at
+  | HoleE -> error exp.at "misplaced hole"
+  | CatE _ -> error exp.at "misplaced token concatenation"
+
+
+and check_exp env exp typ : exp =
+  Printf.printf "[check %s] (%s) : (%s)\n%!"
+    (string_of_region exp.at) (string_of_exp exp) (string_of_typ typ);
+  match exp.it with
+  | VarE id ->
+    let typ' = find "variable" env.vars (prefix_id id) in
+    match_typ "variable" env typ' typ exp.at;
+    VarE id @@ exp.at
+  | AtomE atom ->
+    match_typ "atom" env (AtomT atom @@ exp.at) typ exp.at;
+    AtomE atom @@ exp.at
+  | BoolE bool ->
+    match_typ "boolean" env (BoolT @@ exp.at) typ exp.at;
+    BoolE bool @@ exp.at
+  | NatE nat ->
+    match_typ "number" env (NatT @@ exp.at) typ exp.at;
+    NatE nat @@ exp.at
+  | TextE text ->
+    match_typ "text" env (TextT @@ exp.at) typ exp.at;
+    TextE text @@ exp.at
+  | UnE (unop, exp1) ->
+    let typ' = check_unop unop @@ exp.at in
+    match_typ "unary operator" env typ' typ exp.at;
+    let exp1' = check_exp env exp1 typ' in
+    UnE (unop, exp1') @@ exp.at
+  | BinE (exp1, binop, exp2) ->
+    let typ' = check_binop binop @@ exp.at in
+    match_typ "binary operator" env typ' typ exp.at;
+    let exp1' = check_exp env exp1 typ' in
+    let exp2' = check_exp env exp2 typ' in
+    BinE (exp1', binop, exp2') @@ exp.at
+  | CmpE (exp1, cmpop, exp2) ->
+    match_typ "comparison operator" env (BoolT @@ exp.at) typ exp.at;
+    let typ1 =
+      match check_cmpop cmpop with
+      | VarT {it = "(any)"; _} -> infer_exp env exp1
+      | t -> t @@ exp.at
+    in
+    let typ2 =
+      match exp2.it with
+      | CmpE (exp21, _, _) ->
+        let _ = check_exp env exp21 typ1 in
+        (BoolT @@ exp1.at)
+      | _ -> typ1
+    in
+    let exp1' = check_exp env exp1 typ1 in
+    let exp2' = check_exp env exp2 typ2 in
+    CmpE (exp1', cmpop, exp2') @@ exp.at
+  | SeqE [] ->
+    match_typ "empty expression" env (SeqT [] @@ exp.at) typ exp.at;
+    SeqE [] @@ exp.at
+  | SeqE ({it = AtomE atom; at} :: exps) when is_variant_typ env typ ->
+    let typcases = as_variant_typ "expression" env Check typ exp.at in
+    let typs = find_case typcases atom at in
+    let exps' = check_exp env (SeqE exps @@ exp.at) (SeqT typs @@ typ.at) in
+    SeqE ((AtomE atom @@ at) :: as_seq_exp exps') @@ exp.at
+  | SeqE (exp1::exps) when is_iter_typ env typ ->
+    let typ1, iter = as_iter_typ "expression" env Check typ exp.at in
+    let exp1' = check_exp env exp1 typ in
+    let typ' = tail_iter typ1 iter @@ typ.at in
+    let exp2' = check_exp env (SeqE exps @@ exp.at) typ' in
+    SeqE (exp1' :: as_seq_exp exp2') @@ exp.at
+  | SeqE exps ->
+    let typs = as_seq_typ "expression" env Check typ exp.at in
+    let exps' = check_exp_seq env exps typs exp.at in
+    SeqE exps' @@ exp.at
+  | IdxE (exp1, exp2) ->
+    let typ1 = infer_exp env exp1 in
+    let typ' = as_list_typ "expression" env Infer typ1 exp1.at in
+    let exp1' = check_exp env exp1 typ1 in
+    let exp2' = check_exp env exp2 (NatT @@ exp.at) in
+    match_typ "list element" env typ' typ exp.at;
+    IdxE (exp1', exp2') @@ exp.at
+  | SliceE (exp1, exp2, exp3) ->
+    let typ1 = infer_exp env exp1 in
+    let _ = as_list_typ "expression" env Infer typ1 exp1.at in
+    let exp1' = check_exp env exp1 typ1 in
+    let exp2' = check_exp env exp2 (NatT @@ exp.at) in
+    let exp3' = check_exp env exp3 (NatT @@ exp.at) in
+    match_typ "slice" env typ1 typ exp.at;
+    SliceE (exp1', exp2', exp3') @@ exp.at
+  | UpdE (exp1, path, exp2) ->
+    let typ1 = infer_exp env exp1 in
+    let path', typ2 = check_path env path typ1 in
+    let exp1' = check_exp env exp1 typ1 in
+    let exp2' = check_exp env exp2 typ2 in
+    match_typ "list" env typ1 typ exp.at;
+    UpdE (exp1', path', exp2') @@ exp.at
+  | ExtE (exp1, path, exp2) ->
+    let typ1 = infer_exp env exp1 in
+    let path', typ2 = check_path env path typ1 in
+    let _ = as_list_typ "path" env Check typ2 path.at in
+    let exp1' = check_exp env exp1 typ1 in
+    let exp2' = check_exp env exp2 typ2 in
+    match_typ "list" env typ1 typ exp.at;
+    ExtE (exp1', path', exp2') @@ exp.at
+  | StrE fields ->
+    let typfields = as_struct_typ "record" env Check typ exp.at in
+    let fields' = check_expfields env fields typfields exp.at in
+    StrE fields' @@ exp.at
+  | DotE (exp1, atom) ->
+    let typ1 = infer_exp env exp1 in
+    let exp1' = check_exp env exp1 typ1 in
+    let typfields = as_struct_typ "expression" env Infer typ1 exp1.at in
+    let typ' = find_field typfields atom exp1.at in
+    match_typ "field" env typ' typ exp1.at;
+    DotE (exp1', atom) @@ exp.at
+  | CommaE (exp1, exp2) ->
+    (* TODO: this is super hacky *)
+    let exp1' = check_exp env exp1 typ in
+    let typfields = as_struct_typ "expression" env Check typ exp1.at in
+    (match exp2.it with
+    | SeqE ({it = AtomE atom; at}::exps2) ->
+      let typ2 = find_field typfields atom at in
+      let exp2 = match exps2 with [exp2] -> exp2 | _ -> SeqE exps2 @@ exp2.at in
+      let exp2' = check_exp env exp2 typ2 in
+      CompE (exp1', StrE [(atom, exp2')] @@ exp2.at) @@ exp.at
+    | _ -> failwith "unimplemented check CommaE"
+    )
+  | CompE (exp1, exp2) ->
+    let exp1' = check_exp env exp1 typ in
+    let exp2' = check_exp env exp2 typ in
+    CompE (exp1', exp2') @@ exp.at
+  | LenE exp1 ->
+    let typ1 = infer_exp env exp1 in
+    let _ = as_list_typ "expression" env Infer typ1 exp1.at in
+    let exp1' = check_exp env exp1 typ1 in
+    match_typ "size expression" env (NatT @@ exp.at) typ exp.at;
+    LenE exp1' @@ exp.at
+  | TupE [exp1] when is_iter_typ env typ ->
+    let typ1, _ = as_iter_typ "parentheses expression" env Check typ exp.at in
+    let exp1' = check_exp env exp1 typ1 in
+    TupE [exp1'] @@ exp.at
+  | TupE [exp1] ->
+    let exp1' = check_exp env exp1 typ in
+    TupE [exp1'] @@ exp.at
+  | TupE exps ->
+    let typs =
+      as_tup_typ (List.length exps) "expression" env Check typ exp.at in
+    let exps' = check_exps env exps typs exp.at in
+    TupE exps' @@ exp.at
+  | CallE (id, exp2) ->
+    let typ2, typ' = find "function" env.defs id in
+    match_typ "expression" env typ' typ exp.at;
+    let exp2' = check_exp env exp2 typ2 in
+    CallE (id, exp2') @@ exp.at
+  | RelE (exp1, relop, exp2) ->
+    let typ1, typ2 =
+      as_rel_typ relop "relational expression" env Check typ exp.at in
+    let exp1' = check_exp env exp1 typ1 in
+    let exp2' = check_exp env exp2 typ2 in
+    RelE (exp1', relop, exp2') @@ exp.at
+  | BrackE (brackop, exps) ->
+    let typs =
+      as_brack_typ brackop "bracket expression" env Check typ exp.at in
+    let exps' = check_exps env exps typs exp.at in
+    BrackE (brackop, exps') @@ exp.at
+  | IterE (exp1, iter2) ->
+    let iter2' = check_iter env iter2 in
+    let typ1, iter = as_iter_typ "expression" env Check typ exp.at in
+    match_iter "iteration" env iter2' iter exp.at;
+    let exp1' = check_exp env exp1 typ1 in
+    IterE (exp1', iter2') @@ exp.at
+  | HoleE ->
+    error exp.at "misplaced hole"
+  | CatE _ ->
+    error exp.at "misplaced token concatenation"
+
+and check_exps env exps typs at : exp list =
+  if List.length exps <> List.length typs then
+    error at "arity mismatch for expression list";
+  List.map2 (check_exp env) exps typs
+
+and check_exp_seq env exps typs at : exp list =
+  match exps, typs with
+  | [], [] -> []
+  | exp1::_, [] ->
+    error exp1.at "expression sequence's type does not match `epsilon`"
+  | [], typs ->
+    List.iter (fun typI -> match_typ "empty sequence" env (SeqT [] @@ at) typI at) typs;
+    []
+  | exps, [typ1] ->
+    List.map (fun expI -> check_exp env expI typ1) exps
+  | exp1::exps2, typ1::typs2 ->
+    let exp1' = check_exp env exp1 typ1 in
+    let exps2' = check_exp_seq env exps2 typs2 at in
+    exp1'::exps2'
+
+and check_expfields env expfields typfields at : expfield list =
+  match expfields, typfields with
+  | [], [] -> []
+  | (atom1, exp)::expfields', (atom2, typ, _)::typfields' when atom1 = atom2 ->
+    let exp' = check_exp env exp typ in
+    (atom1, exp') :: check_expfields env expfields' typfields' at
+  | _, (atom, typ, _)::typfields' ->
+    let _ = as_iter_typ "omitted field" env Check typ at in
+    []
+  | (atom, exp)::_, [] ->
+    error exp.at ("unexpected record field " ^ string_of_atom atom)
+
+and check_path env path typ : path * typ =
+  match path.it with
+  | RootP ->
+    RootP @@ path.at, typ
+  | IdxP (path1, exp2) ->
+    let path1', typ1 = check_path env path1 typ in
+    let exp2' = check_exp env exp2 (NatT @@ exp2.at) in
+    let typ' = as_list_typ "path" env Check typ1 path1.at in
+    match_typ "list element" env typ' typ exp2.at;
+    IdxP (path1', exp2') @@ path1.at, typ'
+  | DotP (path1, atom) ->
+    let path1', typ1 = check_path env path1 typ in
+    let typfields = as_struct_typ "path" env Check typ1 path1.at in
+    let typ' = find_field typfields atom path1.at in
+    DotP (path1', atom) @@ path1.at, typ'
+
+
+(* Definitions *)
+
+let check_prem env prem : premise =
+  match prem.it with
+  | RulePr (id, exp, iter_opt) ->
+    let typ = find "relation" env.rels id in
+    let exp' = check_exp env exp typ in
+    let iter_opt' = Option.map (check_iter env) iter_opt in
+    RulePr (id, exp', iter_opt') @@ prem.at
+  | IffPr exp ->
+    let exp' = check_exp env exp (BoolT @@ prem.at) in
+    IffPr exp' @@ prem.at
+  | ElsePr ->
+    ElsePr @@ prem.at
+
+
+let infer_def env def =
+  match def.it with
+  | SynD (id, _, _) ->
+    let dummy = AliasT (VarT ("(pre)" @@ def.at) @@ def.at) @@ def.at in
+    env.typs <- bind "syntax" env.typs id dummy
+  | _ -> ()
+
+let check_def env def : def =
+  match def.it with
+  | SynD (id, typ, hints) ->
+    let deftyp' = check_deftyp env typ in
+    env.typs <- rebind "syntax" env.typs id deftyp';
+    env.vars <- bind "variable" env.vars id (VarT id @@ id.at);
+    SynD (id, deftyp', hints) @@ def.at
+  | RelD (id, typ, hints) ->
+    let typ' = check_typ env typ in
+    env.rels <- bind "relation" env.rels id typ';
+    RelD (id, typ', hints) @@ def.at
+  | RuleD (id, ids, exp, prems) ->
+    let typ = find "relation" env.rels id in
+    let exp' = check_exp env exp typ in
+    let prems' = List.map (check_prem env) prems in
+    RuleD (id, ids, exp', prems') @@ def.at
+  | VarD (id, typ, hints) ->
+    let typ' = check_typ env typ in
+    env.vars <- bind "variable" env.vars id typ';
+    VarD (id, typ', hints) @@ def.at
+  | DecD (id, exp1, typ2, hints) ->
+    let typ1' = infer_exp env exp1 in
+    let exp1' = check_exp env exp1 typ1' in
+    let typ2' = check_typ env typ2 in
+    env.defs <- bind "function" env.defs id (typ1', typ2');
+    DecD (id, exp1', typ2', hints) @@ def.at
+  | DefD (id, exp1, exp2) ->
+    (* TODO: check no free variables *)
+    let typ1, typ2 = find "function" env.defs id in
+    let exp1' = check_exp env exp1 typ1 in
+    let exp2' = check_exp env exp2 typ2 in
+    DefD (id, exp1', exp2') @@ def.at
+
+
+(* Scripts *)
+
+let check defs : script =
+  let env = new_env () in
+  List.iter (infer_def env) defs;
+  List.map (check_def env) defs
