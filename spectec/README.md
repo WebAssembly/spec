@@ -119,7 +119,7 @@ loletter ::= "a" | ... | "z"
 nat ::= digit+
 
 upid ::= (upletter | "_") (upletter | digit | "_" | "." | "'")*
-loid ::= (loletter | "`) (loletter | digit | "_" | "'")*
+loid ::= (loletter | "`") (loletter | digit | "_" | "'")*
 id ::= upid | loid
 
 atomid ::= upid
