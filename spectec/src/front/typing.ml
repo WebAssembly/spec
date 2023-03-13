@@ -94,24 +94,24 @@ let as_struct_typ phrase env typ at : typfield list =
   | StrT fields -> fields
   | _ -> as_error at phrase typ "{...}"
 
+let rec as_variant_typid' phrase env id at : typcase list =
+  match (find "syntax type" env.typs id).it with
+  | VariantT (ids, cases) ->
+    List.concat (cases :: List.map (as_variant_typid "" env) ids)
+  | _ -> as_error id.at phrase (VarT id @@ id.at) "| ..."
+
+and as_variant_typid phrase env id : typcase list =
+  as_variant_typid' phrase env id id.at
+
 let as_variant_typ phrase env typ at : typcase list =
   match expand_singular' env typ.it with
-  | VarT id ->
-    (match (find "syntax type" env.typs id).it with
-    | VariantT (ids, cases) -> assert (ids = []); cases
-    | _ -> as_error at phrase typ "| ..."
-    )
+  | VarT id -> as_variant_typid' phrase env id at
   | _ -> as_error at phrase typ "| ..."
-
-let as_variant_deftyp phrase env id : typcase list =
-  match (find "syntax type" env.typs id).it with
-  | VariantT (ids, cases) -> assert (ids = []); cases
-  | _ -> as_error id.at phrase (VarT id @@ id.at) "| ..."
 
 
 let is_x_typ as_x_typ env typ =
   try ignore (as_x_typ "" env typ no_region); true
-  with Source.Error _ -> false
+  with Error _ -> false
 
 let is_variant_typ = is_x_typ as_variant_typ
 
@@ -252,20 +252,17 @@ and check_typ env typ =
     | ListN exp -> error exp.at "definite iterator not allowed in type"
     | _ -> ()
 
-and check_deftyp env deftyp : deftyp =
+and check_deftyp env deftyp =
   match deftyp.it with
   | AliasT typ ->
-    check_typ env typ;
-    deftyp
+    check_typ env typ
   | StructT typfields ->
-    List.iter (check_typfield env) typfields;
+    List.iter (check_typfield env) typfields
     (* TODO: check for duplicate atoms *)
-    deftyp
   | VariantT (ids, cases) ->
-    let casess = List.map (as_variant_deftyp "parent" env) ids in
-    List.iter (check_typcase env) cases;
+    let _casess = List.map (as_variant_typid "parent" env) ids in
+    List.iter (check_typcase env) cases
     (* TODO: check for duplicate atoms *)
-    VariantT ([], List.concat (casess @ [cases])) @@ deftyp.at
 
 
 and check_typfield env (atom, typ, _hints) =
@@ -457,8 +454,8 @@ let infer_def env def =
 let check_def env def =
   match def.it with
   | SynD (id, deftyp, hints) ->
-    let deftyp' = check_deftyp env deftyp in
-    env.typs <- rebind "syntax" env.typs id deftyp';
+    check_deftyp env deftyp;
+    env.typs <- rebind "syntax" env.typs id deftyp;
     env.vars <- bind "variable" env.vars id (VarT id @@ id.at)
   | RelD (id, typ, hints) ->
     check_typ env typ;
