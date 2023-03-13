@@ -222,6 +222,20 @@ let check_cmpop = function
   | LtOp | GtOp | LeOp | GeOp -> NatT
 
 
+(* Atom Bindings *)
+
+let check_atoms phrase item get_atom list at =
+  let _, dups =
+    List.fold_right (fun item (set, dups) ->
+      let s = Print.string_of_atom (get_atom item) in
+      Free.Set.(if mem s set then (set, s::dups) else (add s set, dups))
+    ) list (Free.Set.empty, [])
+  in
+  if dups <> [] then
+    error at (phrase ^ " contains duplicate " ^ item ^ "(s) `" ^
+      String.concat "`, `" dups ^ "`")
+
+
 (* Iteration *)
 
 let rec check_iter env iter =
@@ -246,8 +260,8 @@ and check_typ env typ =
   | SeqT typs ->
     List.iter (check_typ env) typs
   | StrT typfields ->
-    List.iter (check_typfield env) typfields
-    (* TODO: check for duplicates *)
+    List.iter (check_typfield env) typfields;
+    check_atoms "record" "field" (fun (atom, _, _) -> atom) typfields typ.at
   | TupT typs ->
     List.iter (check_typ env) typs
   | RelT (typ1, relop, typ2) ->
@@ -267,14 +281,15 @@ and check_deftyp env deftyp =
   | AliasT typ ->
     check_typ env typ
     (* TODO: check this isn't recursive *)
-  | StructT typfields ->
-    List.iter (check_typfield env) typfields
+  | StructT fields ->
+    List.iter (check_typfield env) fields;
+    check_atoms "record" "field" (fun (atom, _, _) -> atom) fields deftyp.at
     (* TODO: check this isn't recursive *)
-    (* TODO: check for duplicate atoms *)
   | VariantT (ids, cases) ->
-    let _casess = List.map (as_variant_typid "parent" env) ids in
-    List.iter (check_typcase env) cases
-    (* TODO: check for duplicate atoms *)
+    let casess = List.map (as_variant_typid "parent" env) ids in
+    List.iter (check_typcase env) cases;
+    let cases' = List.flatten (cases::casess) in
+    check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' deftyp.at
 
 
 and check_typfield env (atom, typ, _hints) =
@@ -365,7 +380,7 @@ and check_exp env exp : typ =
     typ1
   | StrE expfields ->
     let typfields = List.map (check_expfield env) expfields in
-    (* TODO: check for duplicates *)
+    check_atoms "record" "field" fst expfields exp.at;
     StrT typfields @@ exp.at
   | DotE (exp1, atom) ->
     let typ1 = check_exp env exp1 in
@@ -486,12 +501,15 @@ let check_def env def =
     check_typ env typ2;
     env.defs <- bind "function" env.defs id (typ1, typ2)
   | DefD (id, exp1, exp2) ->
-    (* TODO: check no free variables *)
     let typ1 = check_exp env exp1 in
     let typ2 = check_exp env exp2 in
     let typ1', typ2' = find "function" env.defs id in
     match_typ "argument" env typ1 typ1' exp1.at;
-    match_typ "result" env typ2 typ2' exp2.at
+    match_typ "result" env typ2 typ2' exp2.at;
+    let free = Free.(Set.elements (Set.diff (free_exp exp2) (free_exp exp1))) in
+    if free <> [] then
+      error def.at ("definition contains unbound variable(s) `" ^
+        String.concat "`, `" free ^ "`")
 
 
 (* Scripts *)
