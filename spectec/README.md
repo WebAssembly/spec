@@ -87,6 +87,8 @@ The language consists of few generic concepts:
   def $size(F64) = 64
   ```
 
+Larger examples can be found in the [`spec` subdirectory](https://github.com/Wasm-DSL/spectec/tree/main/spectec/spec).
+
 
 ## Syntax
 
