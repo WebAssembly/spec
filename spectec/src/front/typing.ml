@@ -170,7 +170,9 @@ let rec match_typ' env typ1 typ2 =
     List.for_all (fun (atom, typs1, _) ->
       try
         let typs2 = find_case cases2 atom typ1.at in
-        match_typ' env (SeqT typs1 @@ typ1.at) (SeqT typs2 @@ typ2.at)
+        (* Shallow subtyping on variants *)
+        List.length typs1 = List.length typs2 &&
+        List.for_all2 Eq.eq_typ typs1 typs2
       with Source.Error _ -> false
     ) cases1
   | SeqT [], IterT (_, (Opt | List)) ->
