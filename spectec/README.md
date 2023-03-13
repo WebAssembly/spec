@@ -252,10 +252,10 @@ deftyp ::=
   "|" list(varid | atom typ hint*, "|")                       variant
 
 premise ::=
-  relid exp                                                   relational premise
+  relid ":" exp                                               relational premise
   "iff" ":" exp                                               side condition
   "otherwise"                                                 fallback side condition
-  "(" relid exp ")" iter                                      iterated relational premise
+  "(" relid ":" exp ")" iter                                  iterated relational premise
   "(" "iff" ":" exp ")" iter                                  iterated side condition
 
 hint ::=
