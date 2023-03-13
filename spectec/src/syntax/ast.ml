@@ -118,9 +118,9 @@ and expfield = atom * exp        (* atom exp *)
 
 and path = path' phrase
 and path' =
-  | RootP               (*  *)
-  | IdxP of path * exp  (* path `[` exp `]` *)
-  | DotP of path * atom (* path `.` atom *)
+  | RootP                        (*  *)
+  | IdxP of path * exp           (* path `[` exp `]` *)
+  | DotP of path * atom          (* path `.` atom *)
 
 
 (* Definitions *)
@@ -136,12 +136,12 @@ and def' =
 
 and premise = premise' phrase
 and premise' =
-  | RulePr of id * exp * iter option (* `(` metaid exp `)` iter? *)
-  | IffPr of exp                     (* `iff` exp *)
-  | ElsePr                           (* `otherwise` *)
+  | RulePr of id * exp * iter option           (* `(` metaid exp `)` iter? *)
+  | IffPr of exp * iter option                 (* `iff` exp *)
+  | ElsePr                                     (* `otherwise` *)
 
 and hint = hint' phrase
-and hint' = {hintid : id; hintexp : exp} (* `(` `hint` hintid exp `)` *)
+and hint' = {hintid : id; hintexp : exp}       (* `(` `hint` hintid exp `)` *)
 
 
 (* Scripts *)

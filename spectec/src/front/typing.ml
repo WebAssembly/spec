@@ -449,9 +449,10 @@ let check_prem env prem =
     let typ' = find "relation" env.rels id in
     match_typ "premise" env typ typ' exp.at;
     Option.iter (check_iter env) iter_opt
-  | IffPr exp ->
+  | IffPr (exp, iter_opt) ->
     let typ = check_exp env exp in
     match_typ "condition" env typ (BoolT @@ exp.at) exp.at;
+    Option.iter (check_iter env) iter_opt
   | ElsePr ->
     ()
 

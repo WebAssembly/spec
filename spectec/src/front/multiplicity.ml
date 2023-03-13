@@ -103,8 +103,11 @@ let check_prem env prem =
   | RulePr (_id, exp, Some iter) ->
     check_iter env [] iter;
     check_exp env [iter] exp
-  | IffPr exp ->
+  | IffPr (exp, None) ->
     check_exp env [] exp
+  | IffPr (exp, Some iter) ->
+    check_iter env [] iter;
+    check_exp env [iter] exp
   | ElsePr -> ()
 
 let check_def def =
