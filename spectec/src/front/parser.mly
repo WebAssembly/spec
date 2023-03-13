@@ -231,7 +231,11 @@ exp_un : exp_un_ { $1 @@ at () }
 exp_un_ :
   | exp_call_ { $1 }
   | NOT exp_un { UnE (NotOp, $2) }
-  | TURNSTILE exp_un { RelE (SeqE [] @@ ati 1, Turnstile, $2) }
+  | QDOT exp_un { RelE (SeqE [] @@ ati 1, Dot, $2) }
+  | DOT2 exp_un { RelE (SeqE [] @@ ati 1, Dot2, $2) }
+  | DOT3 exp_un { RelE (SeqE [] @@ ati 1, Dot3, $2) }
+  | SEMICOLON exp_un { RelE (SeqE [] @@ ati 1, Semicolon, $2) }
+  | ARROW exp_un { RelE (SeqE [] @@ ati 1, Arrow, $2) }
 
 exp_bin : exp_bin_ { $1 @@ at () }
 exp_bin_ :
@@ -252,17 +256,27 @@ exp_bin_ :
   | exp_bin OR exp_bin { BinE ($1, OrOp, $3) }
   | exp_bin ARROW2 exp_bin { BinE ($1, OrOp, $3) }
 
-exp_comma : exp_comma_ { $1 @@ at () }
-exp_comma_ :
+exp_unrel : exp_unrel_ { $1 @@ at () }
+exp_unrel_ :
   | exp_bin_ { $1 }
-  | exp_comma COMMA exp_comma { CommaE ($1, $3) }
-  | exp_comma COLON exp_comma { RelE ($1, Colon, $3) }
-  | exp_comma SUB exp_comma { RelE ($1, Sub, $3) }
-  | exp_comma SQARROW exp_comma { RelE ($1, SqArrow, $3) }
-  | exp_comma TILESTURN exp_comma { RelE ($1, Tilesturn, $3) }
-  | exp_comma TURNSTILE exp_comma { RelE ($1, Turnstile, $3) }
+  | COMMA exp_rel { CommaE (SeqE [] @@ ati 1, $2) }
+  | COLON exp_rel { RelE (SeqE [] @@ ati 1, Colon, $2) }
+  | SUB exp_rel { RelE (SeqE [] @@ ati 1, Sub, $2) }
+  | SQARROW exp_rel { RelE (SeqE [] @@ ati 1, SqArrow, $2) }
+  | TILESTURN exp_rel { RelE (SeqE [] @@ ati 1, Tilesturn, $2) }
+  | TURNSTILE exp_rel { RelE (SeqE [] @@ ati 1, Turnstile, $2) }
 
-exp : exp_comma { $1 }
+exp_rel : exp_rel_ { $1 @@ at () }
+exp_rel_ :
+  | exp_unrel_ { $1 }
+  | exp_rel COMMA exp_rel { CommaE ($1, $3) }
+  | exp_rel COLON exp_rel { RelE ($1, Colon, $3) }
+  | exp_rel SUB exp_rel { RelE ($1, Sub, $3) }
+  | exp_rel SQARROW exp_rel { RelE ($1, SqArrow, $3) }
+  | exp_rel TILESTURN exp_rel { RelE ($1, Tilesturn, $3) }
+  | exp_rel TURNSTILE exp_rel { RelE ($1, Turnstile, $3) }
+
+exp : exp_rel { $1 }
 
 fieldexp_list :
   | /* empty */ { [] }

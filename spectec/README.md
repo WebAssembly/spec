@@ -153,7 +153,7 @@ typ ::=
   typ typ                              sequencing
   typ iter                             iteration
   "(" list(typ, ",") ")"               tupling
-  relop typ                            custom operators
+  relop typ                            custom operator
   typ relop typ
   "`" "(" list(typ, ",") ")"           custom brackets
   "`" "[" list(typ, ",") "]"
@@ -198,7 +198,7 @@ exp ::=
   "|" exp "|"                          list length
   "(" list(exp, ",") ")"               tuple
   "$" defid exp?                       function invocation
-  relop exp                            custom operators
+  relop exp                            custom operator
   exp relop exp
   "`" "(" list(exp, ",") ")"           custom brackets
   "`" "[" list(exp, ",") "]"
