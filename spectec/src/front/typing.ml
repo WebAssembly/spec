@@ -134,6 +134,14 @@ let rec match_typ' env typ1 typ2 =
   match expand env typ1, expand env typ2 with
   | typ1', typ2' when Eq.eq_typ (typ1' @@ typ1.at) (typ2' @@ typ2.at) ->
     true
+  | StrT fields1, StrT fields2 ->
+    List.for_all (fun (atom, typ2, _) ->
+      try
+        let typ1 = find_field fields1 atom typ2.at in
+        match_typ' env typ1 typ2
+      with Source.Error _ ->
+        match_typ' env (SeqT [] @@ typ1.at) typ2
+    ) fields2
   | SeqT [typ11], _ ->
     match_typ' env typ11 typ2
   | _, SeqT [typ21] ->
