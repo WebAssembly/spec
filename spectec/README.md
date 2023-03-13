@@ -273,7 +273,12 @@ script ::=
 
 ## Status
 
-Currently, the implementation consists of merely the frontend, which performs parsing, type checking, and multiplicity checking.
+Currently, the implementation consists of merely the frontend, which performs:
+
+* parsing,
+* type checking,
+* multiplicity checking,
+* recursion analysis.
 
 
 ## Building and Running

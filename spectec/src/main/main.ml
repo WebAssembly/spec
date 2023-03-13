@@ -32,9 +32,25 @@ let () =
   Printexc.record_backtrace true;
   try
     Arg.parse argspec add_arg usage;
-    let ast = List.concat_map parse_file !args in
-    Typing.check ast;
-    Multiplicity.check ast
+    let script = List.concat_map parse_file !args in
+    Typing.check script;
+    Multiplicity.check script;
+    let sccs_syn = Recursion.sccs_of_syntaxes script in
+    List.iter (fun ids ->
+      if List.length ids > 1 then begin
+        Printf.printf "mutual syntax ";
+        List.iter (fun id -> Printf.printf "%s " id.Source.it) ids;
+        Printf.printf "\n%!"
+      end
+    ) sccs_syn;
+    let sccs_rel = Recursion.sccs_of_relations script in
+    List.iter (fun ids ->
+      if List.length ids > 1 then begin
+        Printf.printf "mutual relation ";
+        List.iter (fun id -> Printf.printf "%s " id.Source.it) ids;
+        Printf.printf "\n%!"
+      end
+    ) sccs_rel;
   with
   | Source.Error (at, msg) ->
     error at msg
