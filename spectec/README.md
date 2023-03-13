@@ -70,7 +70,7 @@ The language consists of few generic concepts:
   rule Step/if-true:
     z; (I32.CONST c) (IF instr_1* ELSE instr_2*) ~> z; (BLOCK instr_1*)
     -- iff: c =/= 0
-  rule Step/if-fals:
+  rule Step/if-false:
     z; (I32.CONST c) (IF instr_1* ELSE instr_2*) ~> z; (BLOCK instr_2*)
     -- iff: c = 0
   ```
@@ -139,16 +139,13 @@ relop ::=
   "`." | ".." | "..."
 ```
 
-Atoms are uninterpreted tokens that can be used in syntax or relations.
-Relational operators are uninterpreted operators that can be used to express the meta syntax of relations.
-
 
 ### Types
 
 ```
 typ ::=
   varid                                type name
-  atom                                 token
+  atom                                 custom token
   "bool"                               booleans
   "nat"                                natural numbers
   "text"                               text strings
@@ -169,7 +166,7 @@ iter ::=
   "^" arith                            list of specific length
 ```
 
-Custom operators and brackets are uninterpreted by the DSL semantics itself and can be used to define symbolic syntax for language or relations.
+Custom atoms, operators and brackets are uninterpreted by the DSL semantics itself and can be used to define symbolic syntax for language or relations.
 (Currently, most operators are binary, with hard-coded "natural" precedences. But these should be sufficient to emulate the kind of mixfix notation used for most relations.)
 
 
@@ -181,7 +178,7 @@ logop ::= "/\" | "\/" | "=>"
 cmpop ::= "=" | "=/=" | "<" | ">" | "<=" | ">="
 exp ::=
   varid                                meta variable
-  atom                                 token
+  atom                                 custom token
   nat                                  natural number literal
   text                                 text literal
   notop exp                            logical negation
