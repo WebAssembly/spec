@@ -266,8 +266,10 @@ and check_deftyp env deftyp =
   match deftyp.it with
   | AliasT typ ->
     check_typ env typ
+    (* TODO: check this isn't recursive *)
   | StructT typfields ->
     List.iter (check_typfield env) typfields
+    (* TODO: check this isn't recursive *)
     (* TODO: check for duplicate atoms *)
   | VariantT (ids, cases) ->
     let _casess = List.map (as_variant_typid "parent" env) ids in
