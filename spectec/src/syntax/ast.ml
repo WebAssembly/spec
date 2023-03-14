@@ -111,8 +111,13 @@ and exp' =
   | BrackE of brackop * exp list (* ``` ([{ exp }]) *)
   | CallE of id * exp            (* defid exp? *)
   | IterE of exp * iter          (* exp iter *)
+  | OptE of exp option           (* exp? : typ? *)
+  | ListE of exp list            (* exp ... exp : typ* *)
+  | CatE of exp * exp            (* exp* exp* : typ* *)
+  | CaseE of atom * exp list     (* atom exp ... exp : variant *)
+  | SubE of exp * typ * typ      (* exp : typ1 <: typ2 *)
   | HoleE                        (* `%` *)
-  | CatE of exp * exp            (* exp `#` exp *)
+  | FuseE of exp * exp           (* exp `#` exp *)
 
 and expfield = atom * exp        (* atom exp *)
 

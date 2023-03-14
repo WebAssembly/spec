@@ -74,7 +74,7 @@ and string_of_typ typ =
   | NatT -> "nat"
   | TextT -> "text"
   | SeqT [] -> "epsilon"
-  | SeqT typs -> string_of_typs " " typs
+  | SeqT typs -> "{" ^ string_of_typs " " typs ^ "}"
   | StrT typfields ->
     "{" ^ concat ", " (List.map string_of_typfield typfields) ^ "}"
   | TupT typs -> "(" ^ string_of_typs ", " typs ^ ")"
@@ -121,7 +121,7 @@ and string_of_exp exp =
   | CmpE (exp1, cmpop, exp2) ->
     string_of_exp exp1 ^ space string_of_cmpop cmpop ^ string_of_exp exp2
   | SeqE [] -> "epsilon"
-  | SeqE exps -> string_of_exps " " exps
+  | SeqE exps -> "{" ^ string_of_exps " " exps ^ "}"
   | IdxE (exp1, exp2) -> string_of_exp exp1 ^ "[" ^ string_of_exp exp2 ^ "]"
   | SliceE (exp1, exp2, exp3) ->
     string_of_exp exp1 ^
@@ -147,8 +147,17 @@ and string_of_exp exp =
   | CallE (id, {it = SeqE []; _}) -> "$" ^ id.it
   | CallE (id, exp) -> "$" ^ id.it ^ string_of_exp exp
   | IterE (exp1, iter) -> string_of_exp exp1 ^ string_of_iter iter
+  | OptE expo -> "?(" ^ string_of_exps "" (Option.to_list expo) ^ ")"
+  | ListE exps -> "[" ^ string_of_exps " " exps ^ "]"
+  | CatE (exp1, exp2) -> string_of_exp exp1 ^ " :: " ^ string_of_exp exp2
+  | CaseE (atom, []) -> "@" ^ string_of_atom atom
+  | CaseE (atom, exps) ->
+    "(@" ^ string_of_atom atom ^ " " ^ string_of_exps " " exps ^ ")"
+  | SubE (exp1, typ1, typ2) ->
+    "((" ^ string_of_exp exp1 ^
+      ") : " ^ string_of_typ typ1 ^ " <: " ^ string_of_typ typ2 ^ ")"
   | HoleE -> "%"
-  | CatE (exp1, exp2) -> string_of_exp exp1 ^ "#" ^ string_of_exp exp2
+  | FuseE (exp1, exp2) -> string_of_exp exp1 ^ "#" ^ string_of_exp exp2
 
 and string_of_exps sep exps =
   concat sep (List.map string_of_exp exps)

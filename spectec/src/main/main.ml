@@ -51,6 +51,8 @@ let () =
         Printf.printf "\n%!"
       end
     ) sccs_rel;
+    let _ = Elaboration.elab script in
+    ()
   with
   | Source.Error (at, msg) ->
     error at msg
