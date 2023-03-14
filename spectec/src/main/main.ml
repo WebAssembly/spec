@@ -22,6 +22,8 @@ let error at msg =
   prerr_endline (Source.string_of_region at ^ ": " ^ msg);
   exit 1
 
+let trace s = Printf.printf "== %s...\n%!" s
+
 let parse_file file =
   try
     Parse.parse_file file
@@ -32,9 +34,13 @@ let () =
   Printexc.record_backtrace true;
   try
     Arg.parse argspec add_arg usage;
+    trace "Parsing";
     let script = List.concat_map parse_file !args in
+    trace "Type checking";
     Typing.check script;
+    trace "Multiplicity checking";
     Multiplicity.check script;
+    trace "Recursion analysis";
     let sccs_syn = Recursion.sccs_of_syntaxes script in
     List.iter (fun ids ->
       if List.length ids > 1 then begin
@@ -51,8 +57,11 @@ let () =
         Printf.printf "\n%!"
       end
     ) sccs_rel;
-    let _ = Elaboration.elab script in
-    ()
+    trace "Elaboration";
+    let script' = Elaboration.elab script in
+    trace "Validation";
+    Validation.valid script';
+    trace "Complete."
   with
   | Source.Error (at, msg) ->
     error at msg

@@ -151,6 +151,7 @@ let is_x_typ as_x_typ env typ =
   try ignore (as_x_typ "" env Check typ no_region); true
   with Error _ -> false
 
+let _is_iter_typ = is_x_typ as_iter_typ
 let is_variant_typ = is_x_typ as_variant_typ
 
 
@@ -240,6 +241,10 @@ and elab_typ env typ : typ =
   | StrT typfields ->
     check_atoms "record" "field" (fun (atom, _, _) -> atom) typfields typ.at;
     StrT (List.map (elab_typfield env) typfields) @@ typ.at
+  | TupT [] ->
+    SeqT [] @@ typ.at
+  | TupT [typ1] ->
+    elab_typ env typ1
   | TupT typs ->
     TupT (List.map (elab_typ env) typs) @@ typ.at
   | RelT (typ1, relop, typ2) ->
@@ -247,20 +252,19 @@ and elab_typ env typ : typ =
   | BrackT (brackop, typs) ->
     BrackT (brackop, List.map (elab_typ env) typs) @@ typ.at
   | IterT (typ1, iter) ->
-    (match iter with
+    match iter with
     | ListN exp -> error exp.at "definite iterator not allowed in type"
     | _ -> IterT (elab_typ env typ1, elab_iter env iter) @@ typ.at
-    )
 
 and elab_deftyp env deftyp : deftyp =
   match deftyp.it with
   | AliasT typ ->
     AliasT (elab_typ env typ) @@ deftyp.at
-    (* TODO: elab this isn't recursive *)
+    (* TODO: check this isn't recursive *)
   | StructT fields ->
     check_atoms "record" "field" (fun (atom, _, _) -> atom) fields deftyp.at;
     StructT (List.map (elab_typfield env) fields) @@ deftyp.at
-    (* TODO: elab this isn't recursive *)
+    (* TODO: check this isn't recursive *)
   | VariantT (ids, cases) ->
     let casess = List.map (as_variant_typid "parent" env) ids in
     let cases' = List.flatten (cases::casess) in
@@ -427,6 +431,18 @@ and elab_exp env exp typ : exp =
     let exp1' = elab_exp env exp1 typ1 in
     let exp' = LenE exp1' @@ exp.at in
     cast_typ "list length" env (NatT @@ exp.at) typ exp'
+(*
+  | TupE [] when is_iter_typ env typ ->
+    (* Hack *)
+    let typ1, _ = as_iter_typ "" env Check typ exp.at in
+    let exp' = elab_exp env (SeqE [] @@ exp.at) typ1 in
+    cast_typ "empty tuple" env typ1 typ exp'
+  | TupE [exp1] when is_iter_typ env typ ->
+    (* Hack *)
+    let typ1, _ = as_iter_typ "" env Check typ exp.at in
+    let exp' = elab_exp env exp1 typ1 in
+    cast_typ "expression" env typ1 typ exp'
+*)
   | TupE [] ->
     let exp' = SeqE [] @@ exp.at in
     cast_typ "empty tuple" env (SeqT [] @@ exp.at) typ exp'
@@ -484,7 +500,8 @@ and elab_path env path typ : path * typ =
   | IdxP (path1, exp2) ->
     let path1', typ1 = elab_path env path1 typ in
     let exp2' = elab_exp env exp2 (NatT @@ exp2.at) in
-    IdxP (path1', exp2') @@ path.at, as_list_typ "path" env Check typ1 path1.at
+    let typ' = as_list_typ "path" env Check typ1 path1.at in
+    IdxP (path1', exp2') @@ path.at, typ'
   | DotP (path1, atom) ->
     let path1', typ1 = elab_path env path1 typ in
     let typfields = as_struct_typ "path" env Check typ1 path1.at in
@@ -497,19 +514,6 @@ and elab_exp_seq env exps typ at : exp =
     let typs = find_case cases atom at in
     let exp' = elab_exp_seq env exps (SeqT typs @@ typ.at) at in
     CaseE (atom, unseq_exp exp') @@ at
-
-  | [], SeqT [] -> SeqE [] @@ at
-  | [exp1], SeqT [typ1] -> SeqE [elab_exp env exp1 typ1] @@ at
-  | [exp1], _ -> SeqE [elab_exp env exp1 typ] @@ at
-  | _, SeqT [typ1] -> SeqE [elab_exp env (SeqE exps @@ at) typ1] @@ at
-  | [], SeqT (typ1::typs) ->
-    let exp1' = cast_typ "empty tail" env (SeqT [] @@ at) typ1 (SeqE [] @@ at) in
-    seq_exp exp1' (elab_exp_seq env [] (SeqT typs @@ typ.at) at) @@ at
-  | exp1::exps2, SeqT (typ1::typs2) ->
-    let exp1' = elab_exp env exp1 typ1 in
-    seq_exp exp1' (elab_exp_seq env exps2 (SeqT typs2 @@ typ.at) at) @@ at
-  | exp1::_, SeqT [] ->
-    error exp1.at "unexpected element at end of sequence"
 
   | [], IterT (_, Opt) ->
     OptE None @@ at
@@ -526,6 +530,19 @@ and elab_exp_seq env exps typ at : exp =
   | _, IterT _ ->
     error at ("sequence does not match expected iteration type `" ^
       string_of_typ typ ^ "`")
+
+  | [], SeqT [] -> SeqE [] @@ at
+  | [exp1], SeqT [typ1] -> SeqE [elab_exp env exp1 typ1] @@ at
+  | [exp1], _ -> SeqE [elab_exp env exp1 typ] @@ at
+  | _, SeqT [typ1] -> SeqE [elab_exp env (SeqE exps @@ at) typ1] @@ at
+  | [], SeqT (typ1::typs) ->
+    let exp1' = cast_typ "empty tail" env (SeqT [] @@ at) typ1 (SeqE [] @@ at) in
+    seq_exp exp1' (elab_exp_seq env [] (SeqT typs @@ typ.at) at) @@ at
+  | exp1::exps2, SeqT (typ1::typs2) ->
+    let exp1' = elab_exp env exp1 typ1 in
+    seq_exp exp1' (elab_exp_seq env exps2 (SeqT typs2 @@ typ.at) at) @@ at
+  | exp1::_, SeqT [] ->
+    error exp1.at "unexpected element at end of sequence"
 
   | _, _ ->
     error at ("sequence does not match expected type `" ^
