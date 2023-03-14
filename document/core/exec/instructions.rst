@@ -385,7 +385,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 5. Let :math:`j^\ast` be the sequence :math:`\lanes_{i8x16}(c_1)`.
 
-6. Let :math:`c^\ast` be the concatenation of the two sequences :math:`j^\ast~0^{240}`
+6. Let :math:`c^\ast` be the concatenation of the two sequences :math:`j^\ast~0^{240}`.
 
 7. Let :math:`c'` be the result of :math:`\lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ])`.
 
@@ -518,7 +518,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 7. Let :math:`i^\ast` be the sequence :math:`\lanes_{\shape}(c_2)`.
 
-8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)`
+8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)`.
 
 9. Push :math:`\V128.\VCONST~c` on the stack.
 
@@ -658,7 +658,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. Let :math:`i_1^\ast` be the sequence :math:`\lanes_{\shape}(c_1)`
+3. Let :math:`i_1^\ast` be the sequence :math:`\lanes_{\shape}(c_1)`.
 
 4. Let :math:`i` be the result of computing :math:`\bool(\bigwedge(i_1 \neq 0)^\ast)`.
 
@@ -751,7 +751,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 3. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast))`
+4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast))`.
 
 5. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
@@ -928,7 +928,7 @@ where:
 
 4. Let :math:`j^\ast` be the result of computing :math:`\iadd_{N}(i_1, i_2)^\ast`.
 
-5. Let `c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
 
 6. Push the value :math:`\V128.\VCONST~c` to the stack.
 
