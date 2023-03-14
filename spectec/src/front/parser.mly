@@ -137,7 +137,11 @@ typ_seq_ :
 typ_un : typ_un_ { $1 @@ at () }
 typ_un_ :
   | typ_seq_ { $1 }
-  | TURNSTILE typ_un { RelT (SeqT [] @@ ati 1, Turnstile, $2) }
+  | QDOT typ_un { RelT (SeqT [] @@ ati 1, Dot, $2) }
+  | DOT2 typ_un { RelT (SeqT [] @@ ati 1, Dot2, $2) }
+  | DOT3 typ_un { RelT (SeqT [] @@ ati 1, Dot3, $2) }
+  | SEMICOLON typ_un { RelT (SeqT [] @@ ati 1, Semicolon, $2) }
+  | ARROW typ_un { RelT (SeqT [] @@ ati 1, Arrow, $2) }
 
 typ_bin : typ_bin_ { $1 @@ at () }
 typ_bin_ :
@@ -147,13 +151,26 @@ typ_bin_ :
   | typ_bin DOT3 typ_bin { RelT ($1, Dot3, $3) }
   | typ_bin SEMICOLON typ_bin { RelT ($1, Semicolon, $3) }
   | typ_bin ARROW typ_bin { RelT ($1, Arrow, $3) }
-  | typ_bin COLON typ_bin { RelT ($1, Colon, $3) }
-  | typ_bin SUB typ_bin { RelT ($1, Sub, $3) }
-  | typ_bin SQARROW typ_bin { RelT ($1, SqArrow, $3) }
-  | typ_bin TILESTURN typ_bin { RelT ($1, Tilesturn, $3) }
-  | typ_bin TURNSTILE typ_bin { RelT ($1, Turnstile, $3) }
 
-typ : typ_bin { $1 }
+typ_unrel : typ_unrel_ { $1 @@ at () }
+typ_unrel_ :
+  | typ_bin_ { $1 }
+  | COLON typ_rel { RelT (SeqT [] @@ ati 1, Colon, $2) }
+  | SUB typ_rel { RelT (SeqT [] @@ ati 1, Sub, $2) }
+  | SQARROW typ_rel { RelT (SeqT [] @@ ati 1, SqArrow, $2) }
+  | TILESTURN typ_rel { RelT (SeqT [] @@ ati 1, Tilesturn, $2) }
+  | TURNSTILE typ_rel { RelT (SeqT [] @@ ati 1, Turnstile, $2) }
+
+typ_rel : typ_rel_ { $1 @@ at () }
+typ_rel_ :
+  | typ_unrel_ { $1 }
+  | typ_rel COLON typ_rel { RelT ($1, Colon, $3) }
+  | typ_rel SUB typ_rel { RelT ($1, Sub, $3) }
+  | typ_rel SQARROW typ_rel { RelT ($1, SqArrow, $3) }
+  | typ_rel TILESTURN typ_rel { RelT ($1, Tilesturn, $3) }
+  | typ_rel TURNSTILE typ_rel { RelT ($1, Turnstile, $3) }
+
+typ : typ_rel { $1 }
 
 deftyp : deftyp_ { $1 @@ at () }
 deftyp_ :
@@ -175,8 +192,8 @@ casetyp_list :
 
 typ_list :
   | /* empty */ { [] }
-  | typ { $1::[] }
-  | typ COMMA typ_list { $1::$3 }
+  | typ_bin { $1::[] }
+  | typ_bin COMMA typ_list { $1::$3 }
 
 typs :
   | /* empty */ { [] }
