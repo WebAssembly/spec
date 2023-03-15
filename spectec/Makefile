@@ -37,6 +37,7 @@ ci: all test dunetest
 
 clean:
 	dune clean
+	rm -f src/front/parser.{automaton,conflicts}
 
 distclean: clean
 	rm -f ./$(NAME)
