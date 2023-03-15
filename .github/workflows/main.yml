@@ -10,6 +10,17 @@ on:
   workflow_dispatch:
 
 jobs:
+  spec-tec:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 4.14.x
+      - run: opam install --yes ocamlbuild.0.14.0
+      - run: cd spectec/src && make all test
+
   ref-interpreter:
     runs-on: ubuntu-latest
     steps:
