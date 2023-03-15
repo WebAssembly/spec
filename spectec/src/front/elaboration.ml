@@ -248,7 +248,7 @@ and elab_typ env typ : typ =
     BrackT (brackop, List.map (elab_typ env) typs) @@ typ.at
   | IterT (typ1, iter) ->
     match iter with
-    | ListN exp -> error exp.at "definite iterator not allowed in type"
+    | List1 | ListN _ -> error typ.at "illegal iterator for types"
     | _ -> IterT (elab_typ env typ1, elab_iter env iter) @@ typ.at
 
 and elab_deftyp env deftyp : deftyp =

@@ -303,7 +303,7 @@ and check_typ env typ =
     check_typ env typ1;
     check_iter env iter;
     match iter with
-    | ListN exp -> error exp.at "definite iterator not allowed in type"
+    | List1 | ListN _ -> error typ.at "illegal iterator for types"
     | _ -> ()
 
 and check_deftyp env deftyp =

@@ -152,7 +152,7 @@ typ ::=
   "epsilon"                            the empty phrase
   typ typ                              sequencing
   typ iter                             iteration
-  "(" list(typ, ",") ")"               tupling
+  "(" list(typ, ",") ")"               parentheses or tupling
   relop typ                            custom operator
   typ relop typ
   "`" "(" list(typ, ",") ")"           custom brackets
@@ -196,7 +196,7 @@ exp ::=
   exp "," exp                          record extension
   exp "++" exp                         record composition
   "|" exp "|"                          list length
-  "(" list(exp, ",") ")"               tuple
+  "(" list(exp, ",") ")"               parentheses or tupling
   "$" defid exp?                       function invocation
   relop exp                            custom operator
   exp relop exp

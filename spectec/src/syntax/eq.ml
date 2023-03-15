@@ -1,26 +1,28 @@
 open Ast
 open Source
 
-(* TODO: implement normalisation of:
-   - arithmetics
-   - indexing & projections
-   - calls
-   - concatenation
-*)
+
+(* Helpers *)
 
 let eq_opt eq_x xo1 xo2 =
   match xo1, xo2 with
   | Some x1, Some x2 -> eq_x x1 x2
   | _, _ -> xo1 = xo2
+
 let eq_list eq_x xs1 xs2 =
   List.length xs1 = List.length xs2 && List.for_all2 eq_x xs1 xs2
 
+
+(* Iteration *)
 
 let rec eq_iter iter1 iter2 =
   iter1 = iter2 ||
   match iter1, iter2 with
   | ListN exp1, ListN exp2 -> eq_exp exp1 exp2
   | _, _ -> false
+
+
+(* Types *)
 
 and eq_typ typ1 typ2 =
   (*
@@ -48,6 +50,9 @@ and eq_typ typ1 typ2 =
 
 and eq_typfield (atom1, typ1, _) (atom2, typ2, _) =
   atom1 = atom2 && eq_typ typ1 typ2
+
+
+(* Expressions *)
 
 and eq_exp exp1 exp2 =
   exp1.it = exp2.it ||
