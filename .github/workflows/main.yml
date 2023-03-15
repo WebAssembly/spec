@@ -29,23 +29,12 @@ jobs:
         uses: ocaml/setup-ocaml@v2
         with:
           ocaml-compiler: 4.12.x
-      - run: opam install --yes ocamlbuild.0.14.0
+      - run: opam install --yes ocamlbuild.0.14.0 ocamlfind.1.9.5 js_of_ocaml.4.0.0 js_of_ocaml-ppx.4.0.0
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: 19.x
-      - run: cd interpreter && opam exec make JS=node all
-
-  ref-interpreter-js-library:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup OCaml
-        uses: ocaml/setup-ocaml@v2
-        with:
-          ocaml-compiler: 4.12.x
-      - run: opam install --yes ocamlbuild.0.14.0 ocamlfind.1.9.5 js_of_ocaml.4.0.0 js_of_ocaml-ppx.4.0.0
-      - run: cd interpreter && opam exec make wast.js
+      - run: cd interpreter && opam exec make JS=node ci
 
   build-js-api-spec:
     runs-on: ubuntu-latest
