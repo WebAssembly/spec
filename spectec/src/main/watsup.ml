@@ -1,3 +1,5 @@
+open Spectec
+
 let name = "spasm"
 let version = "0.1"
 
@@ -8,8 +10,6 @@ let usage = "Usage: " ^ name ^ " [option] [file ...]"
 
 let args = ref []
 let add_arg source = args := !args @ [source]
-
-let quote s = "\"" ^ String.escaped s ^ "\""
 
 let argspec = Arg.align
 [

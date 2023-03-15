@@ -87,7 +87,7 @@ let free_relid_premise prem =
 
 let free_relid_def def =
   match def.it with
-  | RuleD (id, _, _, prems) -> free_list free_relid_premise prems
+  | RuleD (_id, _, _, prems) -> free_list free_relid_premise prems
   | SynD _ | VarD _ | RelD _ | DecD _ | DefD _ -> Set.empty
 
 let free_synid_def def =

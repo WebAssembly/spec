@@ -42,7 +42,7 @@ let bind space env' id typ =
   else
     Env.add id.it typ env'
 
-let rebind space env' id typ =
+let rebind _space env' id typ =
   assert (Env.mem id.it env');
   Env.add id.it typ env'
 
@@ -131,7 +131,7 @@ let as_struct_typ phrase env dir typ at : typfield list =
   | StrT fields -> fields
   | _ -> as_error at phrase dir typ "{...}"
 
-let rec as_variant_typid' phrase env id at : typcase list =
+let rec as_variant_typid' phrase env id _at : typcase list =
   match (find "syntax type" env.typs id).it with
   | VariantT (ids, cases) ->
     List.concat (cases :: List.map (as_variant_typid "" env) ids)
@@ -457,7 +457,7 @@ and elab_exp' env exp typ : exp =
     let exps' = elab_exps env exps typs exp.at in
     BrackE (brackop, exps') @@ exp.at
   | IterE (exp1, iter2) ->
-    let typ1, iter = as_iter_typ "iteration" env Check typ exp.at in
+    let typ1, _iter = as_iter_typ "iteration" env Check typ exp.at in
     let exp1' = elab_exp' env exp1 typ1 in
     let iter2' = elab_iter env iter2 in
     IterE (exp1', iter2') @@ exp.at
@@ -509,7 +509,7 @@ and elab_exp_seq env exps typ at : exp =
     OptE None @@ at
   | [], IterT (_, List) ->
     ListE [] @@ at
-  | ({it = ParenE _; _} as exp1)::exps2, IterT (typ1, iter) ->
+  | ({it = ParenE _; _} as exp1)::exps2, IterT (typ1, _iter) ->
     let exp1' = elab_exp' env exp1 typ1 in
     let exp2' = elab_exp_seq env exps2 typ at in
     cons_exp exp1' exp2' @@ at
@@ -565,13 +565,13 @@ and cast_typ phrase env typ1 typ2 exp =
   *)
   if equiv_typ env typ1 typ2 then exp else
   match expand env typ1, expand env typ2 with
-  | SeqT [], IterT (typ21, Opt) ->
+  | SeqT [], IterT (_typ21, Opt) ->
     OptE None @@ exp.at
-  | SeqT [], IterT (typ21, List) ->
+  | SeqT [], IterT (_typ21, List) ->
     ListE [] @@ exp.at
-  | typ1', IterT (typ21, Opt) ->
+  | _typ1', IterT (typ21, Opt) ->
     OptE (Some (cast_variant phrase env typ1 typ21 exp)) @@ exp.at
-  | typ1', IterT (typ21, (List | List1)) ->
+  | _typ1', IterT (typ21, (List | List1)) ->
     ListE [cast_variant phrase env typ1 typ21 exp] @@ exp.at
   | _, _ ->
     cast_variant phrase env typ1 typ2 exp

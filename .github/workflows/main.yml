@@ -18,8 +18,8 @@ jobs:
         uses: ocaml/setup-ocaml@v2
         with:
           ocaml-compiler: 4.14.x
-      - run: opam install --yes ocamlbuild.0.14.0
-      - run: cd spectec/src && opam exec make all test
+      - run: opam install --yes dune mdx
+      - run: cd spectec && opam exec make all test
 
   ref-interpreter:
     runs-on: ubuntu-latest

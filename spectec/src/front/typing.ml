@@ -42,7 +42,7 @@ let bind space env' id typ =
   else
     Env.add id.it typ env'
 
-let rebind space env' id typ =
+let rebind _space env' id typ =
   assert (Env.mem id.it env');
   Env.add id.it typ env'
 
@@ -93,7 +93,7 @@ let as_struct_typ phrase env typ at : typfield list =
   | StrT fields -> fields
   | _ -> as_error at phrase typ "{...}"
 
-let rec as_variant_typid' phrase env id at : typcase list =
+let rec as_variant_typid' phrase env id _at : typcase list =
   match (find "syntax type" env.typs id).it with
   | VariantT (ids, cases) ->
     List.concat (cases :: List.map (as_variant_typid "" env) ids)
@@ -147,7 +147,7 @@ and equiv_typfield env (atom1, typ1, _) (atom2, typ2, _) =
   atom1 = atom2 && equiv_typ env typ1 typ2
 
 
-let match_iter env iter1 iter2 =
+let match_iter _env iter1 iter2 =
   match iter1, iter2 with
   | _, List -> true
   | _, _ -> Eq.eq_iter iter1 iter2
@@ -294,10 +294,10 @@ and check_typ env typ =
     check_typ env typ
   | TupT typs ->
     List.iter (check_typ env) typs
-  | RelT (typ1, relop, typ2) ->
+  | RelT (typ1, _relop, typ2) ->
     check_typ env typ1;
     check_typ env typ2
-  | BrackT (brackop, typs) ->
+  | BrackT (_brackop, typs) ->
     List.iter (check_typ env) typs
   | IterT (typ1, iter) ->
     check_typ env typ1;
@@ -322,10 +322,10 @@ and check_deftyp env deftyp =
     check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' deftyp.at
 
 
-and check_typfield env (atom, typ, _hints) =
+and check_typfield env (_atom, typ, _hints) =
   check_typ env typ
 
-and check_typcase env (atom, typs, _hints) =
+and check_typcase env (_atom, typs, _hints) =
   List.iter (check_typ env) typs
 
 
@@ -345,9 +345,9 @@ and check_exp env exp : typ =
   match exp.it with
   | VarE id -> find "variable" env.vars (prefix_id id)
   | AtomE atom -> AtomT atom @@ exp.at
-  | BoolE bool -> BoolT @@ exp.at
-  | NatE nat -> NatT @@ exp.at
-  | TextE text -> TextT @@ exp.at
+  | BoolE _bool -> BoolT @@ exp.at
+  | NatE _nat -> NatT @@ exp.at
+  | TextE _text -> TextT @@ exp.at
   | UnE (unop, exp1) ->
     let typ1 = check_exp env exp1 in
     let typ = infer_unop unop @@ exp.at in
@@ -520,7 +520,7 @@ let check_def env def =
   | RelD (id, typ, _hints) ->
     check_typ env typ;
     env.rels <- bind "relation" env.rels id typ
-  | RuleD (id, ids, exp, prems) ->
+  | RuleD (id, _ids, exp, prems) ->
     let typ = check_exp env exp in
     let typ' = find "relation" env.rels id in
     match_typ "rule" env typ typ' exp.at;

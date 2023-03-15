@@ -29,8 +29,8 @@ let string_of_region r =
 
 let (@@) x region = {it = x; at = region}
 
-let it {it; at} = it
-let at {it; at} = at
+let it {it; at = _} = it
+let at {at; it = _} = at
 
 
 (* Errors *)

@@ -24,7 +24,7 @@ let nat lexbuf s =
     if n >= 0 then n else raise (Failure "")
   with Failure _ -> error lexbuf "nat literal out of range"
 
-let text lexbuf s =
+let text _lexbuf s =
   let b = Buffer.create (String.length s) in
   let i = ref 1 in
   while !i < String.length s - 1 do
@@ -105,7 +105,7 @@ let character =
     [^'"''\\''\x00'-'\x1f''\x7f'-'\xff']
   | utf8enc
   | '\\'escape
-  | '\\'hexdigit hexdigit 
+  | '\\'hexdigit hexdigit
   | "\\u{" hexnum '}'
 let text = '"' character* '"'
 

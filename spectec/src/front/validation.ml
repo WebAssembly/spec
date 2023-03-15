@@ -42,7 +42,7 @@ let bind space env' id typ =
   else
     Env.add id.it typ env'
 
-let rebind space env' id typ =
+let rebind _space env' id typ =
   assert (Env.mem id.it env');
   Env.add id.it typ env'
 
@@ -139,7 +139,7 @@ let as_struct_typ phrase env dir typ at : typfield list =
   | StrT fields -> fields
   | _ -> as_error at phrase dir typ "{...}"
 
-let rec as_variant_typid' phrase env id at : typcase list =
+let rec as_variant_typid' phrase env id _at : typcase list =
   match (find "syntax type" env.typs id).it with
   | VariantT (ids, cases) ->
     List.concat (cases :: List.map (as_variant_typid "" env) ids)
@@ -253,9 +253,9 @@ and valid_typ env typ =
     valid_typ env typ1
   | TupT typs ->
     List.iter (valid_typ env) typs
-  | RelT (typ1, relop, typ2) ->
+  | RelT (typ1, _relop, typ2) ->
     valid_typ env typ1; valid_typ env typ2
-  | BrackT (brackop, typs) ->
+  | BrackT (_brackop, typs) ->
     List.iter (valid_typ env) typs
   | IterT (typ1, iter) ->
     match iter with
@@ -277,8 +277,8 @@ and valid_deftyp env deftyp =
     check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' deftyp.at;
     List.iter (valid_typcase env) cases
 
-and valid_typfield env (atom, typ, _hints) = valid_typ env typ
-and valid_typcase env (atom, typs, _hints) = List.iter (valid_typ env) typs
+and valid_typfield env (_atom, typ, _hints) = valid_typ env typ
+and valid_typcase env (_atom, typs, _hints) = List.iter (valid_typ env) typs
 
 
 (* Expressions *)
@@ -390,7 +390,7 @@ and valid_exp env exp typ =
     let typfields = as_struct_typ "expression" env Infer typ1 exp1.at in
     let typ' = find_field typfields atom exp1.at in
     equiv_typ env typ' typ exp.at
-  | CommaE (exp1, exp2) ->
+  | CommaE (_exp1, _exp2) ->
     error exp.at "invalid use of comma expression"
   | CompE (exp1, exp2) ->
     let _ = as_struct_typ "record" env Check typ exp.at in
@@ -483,20 +483,20 @@ let infer_def env def =
 
 let valid_def env def =
   match def.it with
-  | SynD (id, deftyp, hints) ->
+  | SynD (id, deftyp, _hints) ->
     valid_deftyp env deftyp;
     env.typs <- rebind "syntax" env.typs id deftyp;
     env.vars <- bind "variable" env.vars id (VarT id @@ id.at)
-  | RelD (id, typ, hints) ->
+  | RelD (id, typ, _hints) ->
     valid_typ env typ;
     env.rels <- bind "relation" env.rels id typ
-  | RuleD (id, ids, exp, prems) ->
+  | RuleD (id, _ids, exp, prems) ->
     valid_exp env exp (find "relation" env.rels id);
     List.iter (valid_prem env) prems
-  | VarD (id, typ, hints) ->
+  | VarD (id, typ, _hints) ->
     valid_typ env typ;
     env.vars <- bind "variable" env.vars id typ
-  | DecD (id, exp1, typ2, hints) ->
+  | DecD (id, exp1, typ2, _hints) ->
     let typ1 = infer_exp env exp1 in
     valid_exp env exp1 typ1;
     valid_typ env typ2;

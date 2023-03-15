@@ -1,0 +1,5 @@
+(ocamllex
+  (modules lexer))
+
+(ocamlyacc
+  (modules parser))
