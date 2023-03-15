@@ -151,7 +151,7 @@ let is_x_typ as_x_typ env typ =
   try ignore (as_x_typ "" env Check typ no_region); true
   with Error _ -> false
 
-let _is_iter_typ = is_x_typ as_iter_typ
+let is_iter_typ = is_x_typ as_iter_typ
 let is_variant_typ = is_x_typ as_variant_typ
 
 
@@ -223,7 +223,7 @@ let check_atoms phrase item get_atom list at =
 let rec elab_iter env iter =
   match iter with
   | Opt | List | List1 -> iter
-  | ListN exp -> ListN (elab_exp env exp (NatT @@ exp.at))
+  | ListN exp -> ListN (elab_exp' env exp (NatT @@ exp.at))
 
 
 (* Types *)
@@ -334,6 +334,15 @@ and elab_exp env exp typ : exp =
     (string_of_region exp.at) (string_of_exp exp) (string_of_typ typ);
   *)
   match exp.it with
+  | TupE [exp1] when is_iter_typ env typ ->
+    let typ1, _ = as_iter_typ "" env Check typ exp.at in
+    let exp' = elab_exp env exp1 typ1 in
+    cast_typ "expression" env typ1 typ exp'
+  | _ ->
+    elab_exp' env exp typ
+
+and elab_exp' env exp typ : exp =
+  match exp.it with
   | AtomE atom when is_variant_typ env typ ->
     let cases = as_variant_typ "" env Check typ exp.at in
     let typs = find_case cases atom exp.at in
@@ -376,23 +385,23 @@ and elab_exp env exp typ : exp =
   | IdxE (exp1, exp2) ->
     let typ1 = infer_exp env exp1 in
     let typ' = as_list_typ "expression" env Infer typ1 exp1.at in
-    let exp1' = elab_exp env exp1 typ1 in
+    let exp1' = elab_exp' env exp1 typ1 in
     let exp2' = elab_exp env exp2 (NatT @@ exp2.at) in
     let exp' = IdxE (exp1', exp2') @@ exp.at in
     cast_typ "list element" env typ' typ exp'
   | SliceE (exp1, exp2, exp3) ->
     let _typ' = as_list_typ "expression" env Check typ exp1.at in
-    let exp1' = elab_exp env exp1 typ in
+    let exp1' = elab_exp' env exp1 typ in
     let exp2' = elab_exp env exp2 (NatT @@ exp2.at) in
     let exp3' = elab_exp env exp3 (NatT @@ exp3.at) in
     SliceE (exp1', exp2', exp3') @@ exp.at
   | UpdE (exp1, path, exp2) ->
-    let exp1' = elab_exp env exp1 typ in
+    let exp1' = elab_exp' env exp1 typ in
     let path', typ2 = elab_path env path typ in
     let exp2' = elab_exp env exp2 typ2 in
     UpdE (exp1', path', exp2') @@ exp.at
   | ExtE (exp1, path, exp2) ->
-    let exp1' = elab_exp env exp1 typ in
+    let exp1' = elab_exp' env exp1 typ in
     let path', typ2 = elab_path env path typ in
     let _typ21 = as_list_typ "path" env Check typ2 path.at in
     let exp2' = elab_exp env exp2 typ2 in
@@ -403,7 +412,7 @@ and elab_exp env exp typ : exp =
     StrE fields' @@ exp.at
   | DotE (exp1, atom) ->
     let typ1 = infer_exp env exp1 in
-    let exp1' = elab_exp env exp1 typ1 in
+    let exp1' = elab_exp' env exp1 typ1 in
     let typfields = as_struct_typ "expression" env Infer typ1 exp1.at in
     let typ' = find_field typfields atom exp1.at in
     let exp' = DotE (exp1', atom) @@ exp.at in
@@ -416,7 +425,7 @@ and elab_exp env exp typ : exp =
     | SeqE ({it = AtomE atom; at} :: exps2) ->
       let _typ2 = find_field typfields atom at in
       let exp2 = match exps2 with [exp2] -> exp2 | _ -> SeqE exps2 @@ exp2.at in
-      let exp2' = elab_exp env (StrE [(atom, exp2)] @@ exp2.at) typ in
+      let exp2' = elab_exp' env (StrE [(atom, exp2)] @@ exp2.at) typ in
       CompE (exp1', exp2') @@ exp.at
     | _ -> failwith "unimplemented check CommaE"
     )
@@ -454,7 +463,7 @@ and elab_exp env exp typ : exp =
     TupE exps' @@ exp.at
   | CallE (id, exp2) ->
     let typ2, typ' = find "function" env.defs id in
-    let exp2' = elab_exp env exp2 typ2 in
+    let exp2' = elab_exp' env exp2 typ2 in
     let exp' = CallE (id, exp2') @@ exp.at in
     cast_typ "expression" env typ' typ exp'
   | RelE (exp1, relop, exp2) ->
@@ -468,7 +477,7 @@ and elab_exp env exp typ : exp =
     BrackE (brackop, exps') @@ exp.at
   | IterE (exp1, iter2) ->
     let typ1, iter = as_iter_typ "iteration" env Check typ exp.at in
-    let exp1' = elab_exp env exp1 typ1 in
+    let exp1' = elab_exp' env exp1 typ1 in
     let iter2' = elab_iter env iter2 in
     IterE (exp1', iter2') @@ exp.at
   | OptE _ | ListE _ | CatE _ | CaseE _ | SubE _ -> assert false
@@ -484,7 +493,7 @@ and elab_expfields env expfields typfields at : expfield list =
   match expfields, typfields with
   | [], [] -> []
   | (atom1, exp)::expfields', (atom2, typ, _)::typfields' when atom1 = atom2 ->
-    let exp' = elab_exp env exp typ in
+    let exp' = elab_exp' env exp typ in
     (atom1, exp') :: elab_expfields env expfields' typfields' at
   | _, (atom, typ, _)::typfields' ->
     let exp' =
@@ -520,11 +529,11 @@ and elab_exp_seq env exps typ at : exp =
   | [], IterT (_, List) ->
     ListE [] @@ at
   | ({it = TupE _; _} as exp1)::exps2, IterT (typ1, iter) ->
-    let exp1' = elab_exp env exp1 typ1 in
+    let exp1' = elab_exp' env exp1 typ1 in
     let exp2' = elab_exp_seq env exps2 typ at in
     cons_exp exp1' exp2' @@ at
   | exp1::exps2, IterT (_, (List | List1)) ->
-    let exp1' = elab_exp env exp1 typ in
+    let exp1' = elab_exp' env exp1 typ in
     let exp2' = elab_exp_seq env exps2 typ at in
     CatE (exp1', exp2') @@ at
   | _, IterT _ ->
@@ -532,14 +541,14 @@ and elab_exp_seq env exps typ at : exp =
       string_of_typ typ ^ "`")
 
   | [], SeqT [] -> SeqE [] @@ at
-  | [exp1], SeqT [typ1] -> SeqE [elab_exp env exp1 typ1] @@ at
-  | [exp1], _ -> SeqE [elab_exp env exp1 typ] @@ at
-  | _, SeqT [typ1] -> SeqE [elab_exp env (SeqE exps @@ at) typ1] @@ at
+  | [exp1], SeqT [typ1] -> SeqE [elab_exp' env exp1 typ1] @@ at
+  | [exp1], _ -> SeqE [elab_exp' env exp1 typ] @@ at
+  | _, SeqT [typ1] -> SeqE [elab_exp' env (SeqE exps @@ at) typ1] @@ at
   | [], SeqT (typ1::typs) ->
     let exp1' = cast_typ "empty tail" env (SeqT [] @@ at) typ1 (SeqE [] @@ at) in
     seq_exp exp1' (elab_exp_seq env [] (SeqT typs @@ typ.at) at) @@ at
   | exp1::exps2, SeqT (typ1::typs2) ->
-    let exp1' = elab_exp env exp1 typ1 in
+    let exp1' = elab_exp' env exp1 typ1 in
     seq_exp exp1' (elab_exp_seq env exps2 (SeqT typs2 @@ typ.at) at) @@ at
   | exp1::_, SeqT [] ->
     error exp1.at "unexpected element at end of sequence"
@@ -656,13 +665,13 @@ let elab_def env def : def =
     VarD (id, typ', hints) @@ def.at
   | DecD (id, exp1, typ2, hints) ->
     let typ1' = infer_exp env exp1 in
-    let exp1' = elab_exp env exp1 typ1' in
+    let exp1' = elab_exp' env exp1 typ1' in
     let typ2' = elab_typ env typ2 in
     env.defs <- bind "function" env.defs id (typ1', typ2');
     DecD (id, exp1', typ2', hints) @@ def.at
   | DefD (id, exp1, exp2) ->
     let typ1, typ2 = find "function" env.defs id in
-    let exp1' = elab_exp env exp1 typ1 in
+    let exp1' = elab_exp' env exp1 typ1 in
     let exp2' = elab_exp env exp2 typ2 in
     let free = Free.(Set.elements (Set.diff (free_exp exp2) (free_exp exp1))) in
     if free <> [] then
