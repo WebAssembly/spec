@@ -12,7 +12,7 @@ syntax context hint(desc "context") =
     RETURN resulttype?,
   }
 
-var `C : context
+var C : context
 
 
 
@@ -110,106 +110,106 @@ relation Instr_ok: context |- instr : functype
 relation InstrSeq_ok: context |- instr* : functype
 
 rule InstrSeq_ok/empty:
-  `C |- epsilon : epsilon -> epsilon
+  C |- epsilon : epsilon -> epsilon
 
 rule InstrSeq_ok/seq:
-  `C |- instr_1 instr_2* : t_1* -> t_3*
-  -- Instr_ok: `C |- instr_1 : t_1* -> t_2*
-  -- InstrSeq_ok: `C |- instr_2 : t_2* -> t_3*
+  C |- instr_1 instr_2* : t_1* -> t_3*
+  -- Instr_ok: C |- instr_1 : t_1* -> t_2*
+  -- InstrSeq_ok: C |- instr_2 : t_2* -> t_3*
 
 rule InstrSeq_ok/weak:
-  `C |- instr* : t'_1 -> t'_2*
-  -- InstrSeq_ok: `C |- instr* : t_1* -> t_2*
+  C |- instr* : t'_1 -> t'_2*
+  -- InstrSeq_ok: C |- instr* : t_1* -> t_2*
   -- Resulttype_sub: |- t'_1* <: t_1*
   -- Resulttype_sub: |- t_2* <: t'_2*
 
 rule InstrSeq_ok/frame:
-  `C |- instr* : t* t_1* -> t* t_2*
-  -- InstrSeq_ok: `C |- instr* : t_1* -> t_2*
+  C |- instr* : t* t_1* -> t* t_2*
+  -- InstrSeq_ok: C |- instr* : t_1* -> t_2*
 
 
 rule Instr_ok/unreachable:
-  `C |- UNREACHABLE : t_1* -> t_2*
+  C |- UNREACHABLE : t_1* -> t_2*
 
 rule Instr_ok/nop:
-  `C |- NOP : epsilon -> epsilon
+  C |- NOP : epsilon -> epsilon
 
 rule Instr_ok/drop:
-  `C |- DROP : t -> epsilon
+  C |- DROP : t -> epsilon
 
 
 rule Instr_ok/select-expl:
-  `C |- SELECT t : t t I32 -> t
+  C |- SELECT t : t t I32 -> t
 
 rule Instr_ok/select-impl:
-  `C |- SELECT : t t I32 -> t
+  C |- SELECT : t t I32 -> t
   -- Valtype_sub: |- t <: t'
   -- iff: t' = numtype \/ t' = vectype
 
 
 relation Blocktype_ok: context |- blocktype : functype
 rule Blocktype_ok:
-  `C |- ft : ft
+  C |- ft : ft
   -- Functype_ok: |- ft : OK
 
 rule Instr_ok/block:
-  `C |- BLOCK bt instr* : t_1* -> t_2*
-  -- Blocktype_ok: `C |- bt : t_1* -> t_2*
-  -- InstrSeq_ok: `C, LABEL t_2* |- instr* : t_1* -> t_2*
+  C |- BLOCK bt instr* : t_1* -> t_2*
+  -- Blocktype_ok: C |- bt : t_1* -> t_2*
+  -- InstrSeq_ok: C, LABEL t_2* |- instr* : t_1* -> t_2*
 
 rule Instr_ok/loop:
-  `C |- LOOP bt instr* : t_1* -> t_2*
-  -- Blocktype_ok: `C |- bt : t_1* -> t_2*
-  -- InstrSeq_ok: `C, LABEL t_1* |- instr* : t_1* -> t_2
+  C |- LOOP bt instr* : t_1* -> t_2*
+  -- Blocktype_ok: C |- bt : t_1* -> t_2*
+  -- InstrSeq_ok: C, LABEL t_1* |- instr* : t_1* -> t_2
 
 rule Instr_ok/if:
-  `C |- IF bt instr_1* ELSE instr_2* : t_1* -> t_2
-  -- Blocktype_ok: `C |- bt : t_1* -> t_2
-  -- InstrSeq_ok: `C, LABEL t_2* |- instr_1* : t_1* -> t_2*
-  -- InstrSeq_ok: `C, LABEL t_2* |- instr_2* : t_1* -> t_2*
+  C |- IF bt instr_1* ELSE instr_2* : t_1* -> t_2
+  -- Blocktype_ok: C |- bt : t_1* -> t_2
+  -- InstrSeq_ok: C, LABEL t_2* |- instr_1* : t_1* -> t_2*
+  -- InstrSeq_ok: C, LABEL t_2* |- instr_2* : t_1* -> t_2*
 
 
 rule Instr_ok/br:
-  `C |- BR l : t_1* t* -> t_2*
-  -- iff: `C.LABEL[l] = t*
+  C |- BR l : t_1* t* -> t_2*
+  -- iff: C.LABEL[l] = t*
 
 rule Instr_ok/br_if:
-  `C |- BR_IF l : t* I32 -> t*
-  -- iff: `C.LABEL[l] = t*
+  C |- BR_IF l : t* I32 -> t*
+  -- iff: C.LABEL[l] = t*
 
 rule Instr_ok/br_table:
-  `C |- BR_TABLE l* l' : t_1* t* -> t_2*
-  -- (Resulttype_sub: |- t* <: `C.LABEL[l])*
-  -- Resulttype_sub: |- t* <: `C.LABEL[l']
+  C |- BR_TABLE l* l' : t_1* t* -> t_2*
+  -- (Resulttype_sub: |- t* <: C.LABEL[l])*
+  -- Resulttype_sub: |- t* <: C.LABEL[l']
 
 rule Instr_ok/return:
-  `C |- RETURN : t_1* t* -> t_2*
-  -- iff: `C.RETURN = (t*)
+  C |- RETURN : t_1* t* -> t_2*
+  -- iff: C.RETURN = (t*)
 
 rule Instr_ok/call:
-  `C |- CALL x : t_1* -> t_2*
-  -- iff: `C.FUNC[x] = t_1* -> t_2*
+  C |- CALL x : t_1* -> t_2*
+  -- iff: C.FUNC[x] = t_1* -> t_2*
 
 rule Instr_ok/call_indirect:
-  `C |- CALL_INDIRECT x ft : t_1* I32 -> t_2*
-  -- iff: `C.TABLE[x] = lim FUNCREF
+  C |- CALL_INDIRECT x ft : t_1* I32 -> t_2*
+  -- iff: C.TABLE[x] = lim FUNCREF
   -- iff: ft = t_1* -> t_2*
 
 
 rule Instr_ok/const:
-  `C |- CONST nt c_nt : epsilon -> nt
+  C |- CONST nt c_nt : epsilon -> nt
 
 rule Instr_ok/unop:
-  `C |- UNOP nt unop : nt -> nt
+  C |- UNOP nt unop : nt -> nt
 
 rule Instr_ok/binop:
-  `C |- BINOP nt binop : nt nt -> nt
+  C |- BINOP nt binop : nt nt -> nt
 
 rule Instr_ok/testop:
-  `C |- TESTOP nt testop : nt -> I32
+  C |- TESTOP nt testop : nt -> I32
 
 rule Instr_ok/relop:
-  `C |- RELOP nt relop : nt nt -> I32
+  C |- RELOP nt relop : nt nt -> I32
 
 
 
@@ -221,18 +221,18 @@ relation Instr_const: context |- instr CONST
 relation InstrSeq_const: context |- instr* CONST
 
 rule Instr_const/const:
-  `C |- (CONST nt c) CONST
+  C |- (CONST nt c) CONST
 
 rule Instr_const/ref.null:
-  `C |- (REF.NULL rt) CONST
+  C |- (REF.NULL rt) CONST
 
 rule Instr_const/ref.func:
-  `C |- (REF.FUNC x) CONST
+  C |- (REF.FUNC x) CONST
 
 rule Instr_const/global.get:
-  `C |- (GLOBAL.GET x) CONST
-  -- iff: `C.GLOBAL[x] = epsilon t
+  C |- (GLOBAL.GET x) CONST
+  -- iff: C.GLOBAL[x] = epsilon t
 
 
-rule InstrSeq_const: `C |- instr* CONST
-  -- (Instr_const: `C |- instr CONST)*
+rule InstrSeq_const: C |- instr* CONST
+  -- (Instr_const: C |- instr CONST)*

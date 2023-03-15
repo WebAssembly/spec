@@ -112,13 +112,13 @@ syntax instr hint(desc "instruction") =
   | CALL funcidx
   | CALL_INDIRECT tableidx functype
   | RETURN
-  | CONST numtype c_numtype          hint(math %`.CONST %)
-  | UNOP numtype unop_numtype        hint(math %`.%)
-  | BINOP numtype binop_numtype      hint(math %`.%)
-  | TESTOP numtype testop_numtype    hint(math %`.%)
-  | RELOP numtype relop_numtype      hint(math %`.%)
-  | EXTEND numtype nat               hint(math %`.EXTEND%)
-  | CVTOP numtype cvtop numtype sx?  hint(math %`.%_%_%)
+  | CONST numtype c_numtype          hint(math %.CONST %)
+  | UNOP numtype unop_numtype        hint(math %.%)
+  | BINOP numtype binop_numtype      hint(math %.%)
+  | TESTOP numtype testop_numtype    hint(math %.%)
+  | RELOP numtype relop_numtype      hint(math %.%)
+  | EXTEND numtype nat               hint(math %.EXTEND%)
+  | CVTOP numtype cvtop numtype sx?  hint(math %.%_%_%)
   | REF.NULL reftype
   | REF.FUNC funcidx
   | REF.IS_NULL

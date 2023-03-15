@@ -50,6 +50,13 @@ let text lexbuf s =
     incr i
   done;
   Buffer.contents b
+
+let is_var s =
+  (* Glorious hack to access parser state! *)
+  let s = [|UPID s; EOF|] in
+  let i = ref (-1) in
+  Parser.check_atom (fun _ -> incr i; s.(!i)) (Lexing.from_string "")
+
 }
 
 let sign = '+' | '-'
@@ -63,9 +70,10 @@ let int = sign nat
 let upletter = ['A'-'Z']
 let loletter = ['a'-'z']
 let letter = upletter | loletter
+let idchar = letter | digit | '_' | '\''
 
-let upid = (upletter | '_') (letter | digit | '_' | '\'' | '.')*
-let loid = (loletter | '`') (letter | digit | '_' | '\'')*
+let upid = (upletter | '_') idchar*
+let loid = (loletter | '`') idchar*
 let id = upid | loid
 let atomid = upid
 let typid = loid
@@ -152,7 +160,6 @@ rule token = parse
   | "#" { CAT }
 
   | "`" { TICK }
-  | "`." { QDOT }
 
   | "bool" { BOOL }
   | "nat" { NAT }
@@ -177,8 +184,9 @@ rule token = parse
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
-  | upid as s { UPID s }
+  | upid as s { if is_var s then LOID s else UPID s }
   | loid as s { LOID s }
+  | "."(id as s) { DOTID s }
 
   | ";;"utf8_no_nl*eof { EOF }
   | ";;"utf8_no_nl*'\n' { Lexing.new_line lexbuf; token lexbuf }
