@@ -321,18 +321,18 @@ S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\h
 <section id="data-segments">
 <span id="alloc-data"></span><span id="index-13"></span><h3><a class="reference internal" href="runtime.html#syntax-datainst"><span class="std std-ref">Data segments</span></a><a class="headerlink" href="#data-segments" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
-<li><p>Let <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}\)</span> be the vector of <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a> to allocate.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(b^\ast\)</span> be the vector of <a class="reference internal" href="../syntax/values.html#syntax-byte"><span class="std std-ref">bytes</span></a> to allocate.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(a\)</span> be the first free <a class="reference internal" href="runtime.html#syntax-dataaddr"><span class="std std-ref">data address</span></a> in <span class="math notranslate nohighlight">\(S\)</span>.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-datainst}{\mathit{datainst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-datainst"><span class="std std-ref">data instance</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-datainst}{\mathsf{data}}~\href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}} \}\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-datainst}{\mathit{datainst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-datainst"><span class="std std-ref">data instance</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-datainst}{\mathsf{data}}~b^\ast \}\)</span>.</p></li>
 <li><p>Append <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-datainst}{\mathit{datainst}}\)</span> to the <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathsf{datas}}\)</span> of <span class="math notranslate nohighlight">\(S\)</span>.</p></li>
 <li><p>Return <span class="math notranslate nohighlight">\(a\)</span>.</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{rlll}
-\href{../exec/modules.html#alloc-data}{\mathrm{allocdata}}(S, \href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}}) &amp;=&amp; S', \href{../exec/runtime.html#syntax-dataaddr}{\mathit{dataaddr}} \\[1ex]
+\href{../exec/modules.html#alloc-data}{\mathrm{allocdata}}(S, b^\ast) &amp;=&amp; S', \href{../exec/runtime.html#syntax-dataaddr}{\mathit{dataaddr}} \\[1ex]
 \mbox{where:} \hfill \\
 \href{../exec/runtime.html#syntax-dataaddr}{\mathit{dataaddr}} &amp;=&amp; |S.\href{../exec/runtime.html#syntax-store}{\mathsf{datas}}| \\
-\href{../exec/runtime.html#syntax-datainst}{\mathit{datainst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-datainst}{\mathsf{data}}~\href{../exec/numerics.html#aux-bytes}{\mathrm{bytes}} \} \\
+\href{../exec/runtime.html#syntax-datainst}{\mathit{datainst}} &amp;=&amp; \{ \href{../exec/runtime.html#syntax-datainst}{\mathsf{data}}~b^\ast \} \\
 S' &amp;=&amp; S \href{../syntax/conventions.html#notation-compose}{\oplus} \{\href{../exec/runtime.html#syntax-store}{\mathsf{datas}}~\href{../exec/runtime.html#syntax-datainst}{\mathit{datainst}}\} \\
 \end{array}\end{split}\]</div>
 </section>
