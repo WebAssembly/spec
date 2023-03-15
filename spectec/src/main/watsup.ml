@@ -1,7 +1,7 @@
 open Spectec
 
-let name = "spasm"
-let version = "0.1"
+let name = "watsup"
+let version = "0.2"
 
 let banner () =
   print_endline (name ^ " " ^ version ^ " generator")

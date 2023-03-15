@@ -51,7 +51,7 @@ let atom_vars = ref VarSet.empty
 %}
 
 %token LPAR RPAR LBRACK RBRACK LBRACE RBRACE
-%token COLON SEMICOLON COMMA DOT DOT DOT2 DOT3 BAR DASH
+%token COLON SEMICOLON COMMA DOT DOT2 DOT3 BAR DASH
 %token EQ NE LT GT LE GE SUB EQDOT2
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH UP COMPOSE
@@ -224,7 +224,6 @@ typs :
 exp_prim : exp_prim_ { $1 @@ at () }
 exp_prim_ :
   | varid { VarE $1 }
-  | atom { AtomE $1 }
   | BOOLLIT { BoolE $1 }
   | NATLIT { NatE $1 }
   | TEXTLIT { TextE $1 }
@@ -243,14 +242,9 @@ exp_prim_ :
   | DOLLAR LPAR arith RPAR { $3.it }
   | DOLLAR defid exp_prim { CallE ($2, $3) }
 
-exp_cat : exp_cat_ { $1 @@ at () }
-exp_cat_ :
-  | exp_prim_ { $1 }
-  | exp_cat CAT exp_prim { CatE ($1, $3) }
-
 exp_post : exp_post_ { $1 @@ at () }
 exp_post_ :
-  | exp_cat_ { $1 }
+  | exp_prim_ { $1 }
   | exp_post LBRACK arith RBRACK { IdxE ($1, $3) }
   | exp_post LBRACK arith COLON arith RBRACK { SliceE ($1, $3, $5) }
   | exp_post LBRACK path EQ exp RBRACK { UpdE ($1, $3, $5) }
@@ -258,10 +252,16 @@ exp_post_ :
   | exp_post dotid { DotE ($1, $2) }
   | exp_post iter { IterE ($1, $2) }
 
+exp_atom : exp_atom_ { $1 @@ at () }
+exp_atom_ :
+  | exp_post_ { $1 }
+  | atom { AtomE $1 }
+  | exp_atom CAT exp_prim { CatE ($1, $3) }
+
 exp_seq : exp_seq_ { $1 @@ at () }
 exp_seq_ :
-  | exp_post_ { $1 }
-  | exp_post exp_seq { SeqE ($1 :: as_seq_exp $2) }
+  | exp_atom_ { $1 }
+  | exp_atom exp_seq { SeqE ($1 :: as_seq_exp $2) }
 
 exp_call : exp_call_ { $1 @@ at () }
 exp_call_ :
@@ -337,7 +337,6 @@ exps1 :
 arith_prim : arith_prim_ { $1 @@ at () }
 arith_prim_ :
   | varid { VarE $1 }
-  | atom { AtomE $1 }
   | NATLIT { NatE $1 }
   | LPAR arith RPAR { ParenE $2 }
 
@@ -348,9 +347,14 @@ arith_post_ :
   | arith_post LBRACK arith RBRACK { IdxE ($1, $3) }
   | arith_post dotid { DotE ($1, $2) }
 
+arith_atom : arith_atom_ { $1 @@ at () }
+arith_atom_ :
+  | arith_post_ { $1 }
+  | atom { AtomE $1 }
+
 arith_call : arith_call_ { $1 @@ at () }
 arith_call_ :
-  | arith_post_ { $1 }
+  | arith_atom_ { $1 }
   | BAR exp BAR { LenE $2 }
   | DOLLAR defid { CallE ($2, SeqE [] @@ at ()) }
   | DOLLAR defid exp_prim { CallE ($2, $3) }

@@ -277,7 +277,9 @@ Currently, the implementation consists of merely the frontend, which performs:
 * parsing,
 * type checking,
 * multiplicity checking,
-* recursion analysis.
+* recursion analysis,
+* elaboration into more rigid sublanguage,
+* validation of elaboration result.
 
 
 ## Building and Running

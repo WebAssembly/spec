@@ -19,7 +19,7 @@ jobs:
         with:
           ocaml-compiler: 4.14.x
       - run: opam install --yes dune mdx
-      - run: cd spectec && opam exec make all test
+      - run: cd spectec && opam exec make ci
 
   ref-interpreter:
     runs-on: ubuntu-latest
