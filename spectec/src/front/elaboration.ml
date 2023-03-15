@@ -66,8 +66,7 @@ let rec expand' env = function
     | StructT typfields -> StrT typfields
     | _ -> typ'
     )
-  | TupT [] -> SeqT []
-  | TupT [typ] -> expand' env typ.it
+  | ParenT typ -> expand' env typ.it
   | typ' -> typ'
 
 let expand env typ = expand' env typ.it
@@ -169,8 +168,6 @@ let rec equiv_typ env typ1 typ2 =
   typ1.it = typ2.it ||
   match expand env typ1, expand env typ2 with
   | VarT id1, VarT id2 -> id1.it = id2.it
-  | TupT [typ1'], _ -> equiv_typ env typ1' typ2
-  | _, TupT [typ2'] -> equiv_typ env typ1 typ2'
   | SeqT typs1, SeqT typs2
   | TupT typs1, TupT typs2 ->
     equiv_list (equiv_typ env) typs1 typs2
@@ -241,9 +238,7 @@ and elab_typ env typ : typ =
   | StrT typfields ->
     check_atoms "record" "field" (fun (atom, _, _) -> atom) typfields typ.at;
     StrT (List.map (elab_typfield env) typfields) @@ typ.at
-  | TupT [] ->
-    SeqT [] @@ typ.at
-  | TupT [typ1] ->
+  | ParenT typ1 ->
     elab_typ env typ1
   | TupT typs ->
     TupT (List.map (elab_typ env) typs) @@ typ.at
@@ -312,6 +307,7 @@ and infer_exp env exp : typ =
     find_field typfields atom exp1.at
   | SeqE exps -> SeqT (List.map (infer_exp env) exps) @@ exp.at
   | TupE exps -> TupT (List.map (infer_exp env) exps) @@ exp.at
+  | ParenE exp1 -> ParenT (infer_exp env exp1) @@ exp.at
   | CallE (id, _) -> snd (find "function" env.defs id)
   | RelE (exp1, relop, exp2) ->
     RelT (infer_exp env exp1, relop, infer_exp env exp2) @@ exp.at
@@ -334,7 +330,7 @@ and elab_exp env exp typ : exp =
     (string_of_region exp.at) (string_of_exp exp) (string_of_typ typ);
   *)
   match exp.it with
-  | TupE [exp1] when is_iter_typ env typ ->
+  | ParenE exp1 when is_iter_typ env typ ->
     let typ1, _ = as_iter_typ "" env Check typ exp.at in
     let exp' = elab_exp env exp1 typ1 in
     cast_typ "expression" env typ1 typ exp'
@@ -440,22 +436,7 @@ and elab_exp' env exp typ : exp =
     let exp1' = elab_exp env exp1 typ1 in
     let exp' = LenE exp1' @@ exp.at in
     cast_typ "list length" env (NatT @@ exp.at) typ exp'
-(*
-  | TupE [] when is_iter_typ env typ ->
-    (* Hack *)
-    let typ1, _ = as_iter_typ "" env Check typ exp.at in
-    let exp' = elab_exp env (SeqE [] @@ exp.at) typ1 in
-    cast_typ "empty tuple" env typ1 typ exp'
-  | TupE [exp1] when is_iter_typ env typ ->
-    (* Hack *)
-    let typ1, _ = as_iter_typ "" env Check typ exp.at in
-    let exp' = elab_exp env exp1 typ1 in
-    cast_typ "expression" env typ1 typ exp'
-*)
-  | TupE [] ->
-    let exp' = SeqE [] @@ exp.at in
-    cast_typ "empty tuple" env (SeqT [] @@ exp.at) typ exp'
-  | TupE [exp1] ->
+  | ParenE exp1 ->
     elab_exp env exp1 typ
   | TupE exps ->
     let typs = as_tup_typ "tuple" env Check typ exp.at in
@@ -528,7 +509,7 @@ and elab_exp_seq env exps typ at : exp =
     OptE None @@ at
   | [], IterT (_, List) ->
     ListE [] @@ at
-  | ({it = TupE _; _} as exp1)::exps2, IterT (typ1, iter) ->
+  | ({it = ParenE _; _} as exp1)::exps2, IterT (typ1, iter) ->
     let exp1' = elab_exp' env exp1 typ1 in
     let exp2' = elab_exp_seq env exps2 typ at in
     cons_exp exp1' exp2' @@ at

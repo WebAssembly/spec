@@ -61,6 +61,7 @@ let () =
     let script' = Elaboration.elab script in
     trace "Validation...";
     Validation.valid script';
+    Multiplicity.check script';
     trace "Complete."
   with
   | Source.Error (at, msg) ->

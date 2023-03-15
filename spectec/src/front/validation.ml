@@ -66,8 +66,7 @@ let rec expand' env = function
     | StructT typfields -> StrT typfields
     | _ -> typ'
     )
-  | TupT [] -> SeqT []
-  | TupT [typ] -> expand' env typ.it
+  | ParenT typ -> expand' env typ.it
   | typ' -> typ'
 
 let expand env typ = expand' env typ.it
@@ -169,8 +168,6 @@ let rec equiv_typ env typ1 typ2 =
   typ1.it = typ2.it ||
   match expand env typ1, expand env typ2 with
   | VarT id1, VarT id2 -> id1.it = id2.it
-  | TupT [typ1'], _ -> equiv_typ env typ1' typ2
-  | _, TupT [typ2'] -> equiv_typ env typ1 typ2'
   | SeqT typs1, SeqT typs2
   | TupT typs1, TupT typs2 ->
     equiv_list (equiv_typ env) typs1 typs2
@@ -252,6 +249,8 @@ and valid_typ env typ =
   | StrT typfields ->
     check_atoms "record" "field" (fun (atom, _, _) -> atom) typfields typ.at;
     List.iter (valid_typfield env) typfields
+  | ParenT typ1 ->
+    valid_typ env typ1
   | TupT typs ->
     List.iter (valid_typ env) typs
   | RelT (typ1, relop, typ2) ->
@@ -315,6 +314,7 @@ and infer_exp env exp : typ =
     find_field typfields atom exp1.at
   | SeqE exps -> SeqT (List.map (infer_exp env) exps) @@ exp.at
   | TupE exps -> TupT (List.map (infer_exp env) exps) @@ exp.at
+  | ParenE exp1 -> infer_exp env exp1
   | CallE (id, _) -> snd (find "function" env.defs id)
   | RelE (exp1, relop, exp2) ->
     RelT (infer_exp env exp1, relop, infer_exp env exp2) @@ exp.at
@@ -401,6 +401,8 @@ and valid_exp env exp typ =
     let _typ11 = as_list_typ "expression" env Infer typ1 exp1.at in
     valid_exp env exp1 typ1;
     equiv_typ env (NatT @@ exp.at) typ exp.at
+  | ParenE exp1 ->
+    valid_exp env exp1 typ
   | TupE exps ->
     let typs = as_tup_typ "tuple" env Check typ exp.at in
     valid_list valid_exp env exps typs exp.at

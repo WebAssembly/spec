@@ -66,8 +66,7 @@ let rec expand' env = function
     | StructT typfields -> StrT typfields
     | _ -> typ'
     )
-  | TupT [] -> SeqT []
-  | TupT [typ] -> expand' env typ.it
+  | ParenT typ -> expand' env typ.it
   | typ' -> typ'
 
 let expand_singular' env typ' =
@@ -130,8 +129,6 @@ let rec equiv_typ env typ1 typ2 =
   typ1.it = typ2.it ||
   match expand env typ1, expand env typ2 with
   | VarT id1, VarT id2 -> id1.it = id2.it
-  | TupT [typ1'], _ -> equiv_typ env typ1' typ2
-  | _, TupT [typ2'] -> equiv_typ env typ1 typ2'
   | SeqT typs1, SeqT typs2
   | TupT typs1, TupT typs2 ->
     equiv_list (equiv_typ env) typs1 typs2
@@ -293,6 +290,8 @@ and check_typ env typ =
   | StrT typfields ->
     List.iter (check_typfield env) typfields;
     check_atoms "record" "field" (fun (atom, _, _) -> atom) typfields typ.at
+  | ParenT typ ->
+    check_typ env typ
   | TupT typs ->
     List.iter (check_typ env) typs
   | RelT (typ1, relop, typ2) ->
@@ -437,6 +436,9 @@ and check_exp env exp : typ =
     let typ1 = check_exp env exp1 in
     let _ = as_list_typ "expression" env typ1 exp1.at in
     NatT @@ exp.at
+  | ParenE exp1 ->
+    let typ1 = check_exp env exp1 in
+    ParenT typ1 @@ exp.at
   | TupE exps ->
     let typs = List.map (check_exp env) exps in
     TupT typs @@ exp.at

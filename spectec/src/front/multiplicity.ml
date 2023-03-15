@@ -58,6 +58,7 @@ and check_exp env ctx exp =
   | UnE (_, exp1)
   | DotE (exp1, _)
   | LenE exp1
+  | ParenE exp1
   | CallE (_, exp1) ->
     check_exp env ctx exp1
   | BinE (exp1, _, exp2)

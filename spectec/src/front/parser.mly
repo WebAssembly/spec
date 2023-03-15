@@ -119,7 +119,12 @@ typ_prim_ :
   | BOOL { BoolT }
   | NAT { NatT }
   | TEXT { TextT }
-  | LPAR typ_list RPAR { TupT $2 }
+  | LPAR typ_list RPAR
+    { match $2 with
+      | [] -> ParenT (SeqT [] @@ ati 2)
+      | [typ] -> ParenT typ
+      | typs -> TupT typs
+    }
   | TICK LPAR typ_list RPAR { BrackT (Paren, $3) }
   | TICK LBRACK typ_list RBRACK { BrackT (Brack, $3) }
   | TICK LBRACE typ_list RBRACE { BrackT (Brace, $3) }
@@ -212,7 +217,12 @@ exp_prim_ :
   | EPSILON { SeqE [] }
   | LBRACE fieldexp_list RBRACE { StrE $2 }
   | HOLE { HoleE }
-  | LPAR exp_list RPAR { TupE $2 }
+  | LPAR exp_list RPAR
+    { match $2 with
+      | [] -> ParenE (SeqE [] @@ ati 2)
+      | [exp] -> ParenE exp
+      | exps -> TupE exps
+    }
   | TICK LPAR exp_list RPAR { BrackE (Paren, $3) }
   | TICK LBRACK exp_list RBRACK { BrackE (Brack, $3) }
   | TICK LBRACE exp_list RBRACE { BrackE (Brace, $3) }
@@ -315,7 +325,7 @@ arith_prim_ :
   | varid { VarE $1 }
   | atom { AtomE $1 }
   | NATLIT { NatE $1 }
-  | LPAR arith RPAR { TupE [$2] }
+  | LPAR arith RPAR { ParenE $2 }
 
 arith_post : arith_post_ { $1 @@ at () }
 arith_post_ :

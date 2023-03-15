@@ -77,6 +77,7 @@ and string_of_typ typ =
   | SeqT typs -> "{" ^ string_of_typs " " typs ^ "}"
   | StrT typfields ->
     "{" ^ concat ", " (List.map string_of_typfield typfields) ^ "}"
+  | ParenT typ -> "(" ^ string_of_typ typ ^ ")"
   | TupT typs -> "(" ^ string_of_typs ", " typs ^ ")"
   | RelT (typ1, relop, typ2) ->
     string_of_typ typ1 ^ space string_of_relop relop ^ string_of_typ typ2
@@ -138,6 +139,7 @@ and string_of_exp exp =
   | CommaE (exp1, exp2) -> string_of_exp exp1 ^ ", " ^ string_of_exp exp2
   | CompE (exp1, exp2) -> string_of_exp exp1 ^ " ++ " ^ string_of_exp exp2
   | LenE exp1 -> "|" ^ string_of_exp exp1 ^ "|"
+  | ParenE exp -> "(" ^ string_of_exp exp ^ ")"
   | TupE exps -> "(" ^ string_of_exps ", " exps ^ ")"
   | RelE (exp1, relop, exp2) ->
     string_of_exp exp1 ^ space string_of_relop relop ^ string_of_exp exp2
