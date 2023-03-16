@@ -241,7 +241,7 @@ def ::=
   "rule" relid (("/" | "-") ruleid)* ":" exp ("--" premise)*  rule
   "var" varid ":" typ hint*                                   variable declaration
   "def" "$" defid exp? ":" typ hint*                          function declaration
-  "def" "$" defid exp? "=" exp                                function clause
+  "def" "$" defid exp? "=" exp ("--" premise)?                function clause
 
 deftyp ::=
   typ                                                         typ alias

@@ -128,9 +128,10 @@ let check_def def =
     let env = ref Env.empty in
     check_exp env [] exp;
     List.iter (check_prem env) prems
-  | DefD (_id, exp1, exp2) ->
+  | DefD (_id, exp1, exp2, premo) ->
     let env = ref Env.empty in
     check_exp env [] exp1;
-    check_exp env [] exp2
+    check_exp env [] exp2;
+    Option.iter (check_prem env) premo
 
 let check script = List.iter check_def script

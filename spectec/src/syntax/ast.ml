@@ -139,7 +139,7 @@ and def' =
   | RuleD of id * id list * exp * premise list (* `rule` metaid (`/` metaid)* `:` exp (`--` premise)* *)
   | VarD of id * typ * hint list               (* `var` expid `:` typ *)
   | DecD of id * exp * typ * hint list         (* `def` defid exp? `:` typ hint* *)
-  | DefD of id * exp * exp                     (* `def` defid exp? `=` exp *)
+  | DefD of id * exp * exp * premise option    (* `def` defid exp? `=` exp *)
 
 and premise = premise' phrase
 and premise' =

@@ -650,15 +650,16 @@ let elab_def env def : def =
     let typ2' = elab_typ env typ2 in
     env.defs <- bind "function" env.defs id (typ1', typ2');
     DecD (id, exp1', typ2', hints) @@ def.at
-  | DefD (id, exp1, exp2) ->
+  | DefD (id, exp1, exp2, premo) ->
     let typ1, typ2 = find "function" env.defs id in
     let exp1' = elab_exp' env exp1 typ1 in
     let exp2' = elab_exp env exp2 typ2 in
+    let premo' = Option.map (elab_prem env) premo in
     let free = Free.(Set.elements (Set.diff (free_exp exp2) (free_exp exp1))) in
     if free <> [] then
       error def.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" free ^ "`");
-    DefD (id, exp1', exp2') @@ def.at
+    DefD (id, exp1', exp2', premo') @@ def.at
 
 
 (* Scripts *)

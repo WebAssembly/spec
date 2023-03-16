@@ -196,17 +196,16 @@ let string_of_def def =
   | RuleD (id, ids, exp, prems) ->
     let ids' = if ids = [] then "" else "/" ^ concat "-" (List.map it ids) in
     "rule " ^ id.it ^ ids' ^ ":\n  " ^ string_of_exp exp ^
-      concat "" (List.map (prefix "\n  --" string_of_premise) prems)
+      concat "" (List.map (prefix "\n  -- " string_of_premise) prems)
   | VarD (id, typ, _hints) ->
     "var " ^ id.it ^ " : " ^ string_of_typ typ
-  | DecD (id, {it = SeqE []; _}, typ, _hints) ->
-    "def " ^ id.it ^ " : " ^ string_of_typ typ
-  | DecD (id, exp, typ, _hints) ->
-    "def " ^ id.it ^ string_of_exp exp ^ " : " ^ string_of_typ typ
-  | DefD (id, {it = SeqE []; _}, exp2) ->
-    "def" ^ id.it ^ string_of_exp exp2 ^ " = " ^ string_of_exp exp2
-  | DefD (id, exp1, exp2) ->
-    "def" ^ id.it ^ string_of_exp exp1 ^ " = " ^ string_of_exp exp2
+  | DecD (id, exp1, typ2, _hints) ->
+    let s1 = match exp1.it with SeqE [] -> "" | _ -> " " ^ string_of_exp exp1 in
+    "def " ^ id.it ^ s1 ^ " : " ^ string_of_typ typ2
+  | DefD (id, exp1, exp2, premo) ->
+    let s1 = match exp1.it with SeqE [] -> "" | _ -> " " ^ string_of_exp exp1 in
+    "def" ^ id.it ^ s1 ^ " = " ^ string_of_exp exp2 ^
+      Option.(value (map (prefix " -- " string_of_premise) premo) ~default:"")
 
 
 (* Scripts *)

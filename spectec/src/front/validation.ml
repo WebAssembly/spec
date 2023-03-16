@@ -501,10 +501,11 @@ let valid_def env def =
     valid_exp env exp1 typ1;
     valid_typ env typ2;
     env.defs <- bind "function" env.defs id (typ1, typ2)
-  | DefD (id, exp1, exp2) ->
+  | DefD (id, exp1, exp2, premo) ->
     let typ1, typ2 = find "function" env.defs id in
     valid_exp env exp1 typ1;
     valid_exp env exp2 typ2;
+    Option.iter (valid_prem env) premo;
     let free = Free.(Set.elements (Set.diff (free_exp exp2) (free_exp exp1))) in
     if free <> [] then
       error def.at ("definition contains unbound variable(s) `" ^

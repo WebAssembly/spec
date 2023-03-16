@@ -74,20 +74,20 @@ and free_path path =
 
 (* Definitions *)
 
-let free_varid_premise prem =
+let free_varid_prem prem =
   match prem.it with
   | RulePr (_, exp, itero) | IffPr (exp, itero) ->
     Set.union (free_exp exp) (free_opt free_iter itero)
   | ElsePr -> Set.empty
 
-let free_relid_premise prem =
+let free_relid_prem prem =
   match prem.it with
   | RulePr (id, _, _) -> free_id id
   | IffPr _ | ElsePr -> Set.empty
 
 let free_relid_def def =
   match def.it with
-  | RuleD (_id, _, _, prems) -> free_list free_relid_premise prems
+  | RuleD (_id, _, _, prems) -> free_list free_relid_prem prems
   | SynD _ | VarD _ | RelD _ | DecD _ | DefD _ -> Set.empty
 
 let free_synid_def def =
@@ -100,7 +100,8 @@ let free_synid_def def =
 let free_varid_def def =
   match def.it with
   | DecD (_, exp, _, _) -> free_exp exp
-  | DefD (_, exp1, exp2) -> free_list free_exp [exp1; exp2]
+  | DefD (_, exp1, exp2, premo) ->
+    Set.union (free_list free_exp [exp1; exp2]) (free_opt free_varid_prem premo)
   | RuleD (_, _, exp, prems) ->
-    Set.union (free_exp exp) (free_list free_varid_premise prems)
+    Set.union (free_exp exp) (free_list free_varid_prem prems)
   | SynD _ | VarD _ | RelD _ -> Set.empty

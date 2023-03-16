@@ -412,15 +412,19 @@ def_ :
     { DecD ($3, SeqE [] @@ ati 4, $5, $6) }
   | DEF DOLLAR defid exp_prim COLON typ hint_list
     { DecD ($3, $4, $6, $7) }
-  | DEF DOLLAR defid EQ exp
-    { DefD ($3, SeqE [] @@ ati 4, $5) }
-  | DEF DOLLAR defid exp_prim EQ exp
-    { DefD ($3, $4, $6) }
+  | DEF DOLLAR defid EQ exp premise_opt
+    { DefD ($3, SeqE [] @@ ati 4, $5, $6) }
+  | DEF DOLLAR defid exp_prim EQ exp premise_opt
+    { DefD ($3, $4, $6, $7) }
 
 ruleid_list :
   | /* empty */ { [] }
   | SLASH ruleid ruleid_list { $2::$3 }
   | MINUS ruleid ruleid_list { $2::$3 }
+
+premise_opt :
+  | /* empty */ { None }
+  | DASH premise { Some $2 }
 
 premise_list :
   | /* empty */ { [] }
