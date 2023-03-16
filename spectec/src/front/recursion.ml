@@ -19,7 +19,7 @@ let sccs_of_syntaxes (script : script) : id list list =
   done;
   let graph =
     Array.mapi (fun i (id, deftyp) ->
-      let free = Array.of_seq (Set.to_seq (Free.free_deftyp deftyp)) in
+      let free = Array.of_seq (Set.to_seq (Free.free_synid_deftyp deftyp)) in
       Scc.{
         id = i;
         label = id.it;
@@ -70,4 +70,43 @@ let sccs_of_relations (script : script) : id list list =
   let sccs = Scc.sccs graph in
   List.map (fun set ->
     List.map (fun i -> reldefs.(i)) (Scc.IntSet.elements set)
+  ) sccs
+
+
+let sccs_of_definitions (script : script) : id list list =
+  let decdefs =
+    List.filter_map (fun def ->
+      match def.it with
+      | DecD (id, _, _, _) -> Some id
+      | _ -> None
+    ) script |> Array.of_list
+  in
+  let map = ref Map.empty in
+  for i = 0 to Array.length decdefs - 1 do
+    map := Map.add decdefs.(i).it i !map
+  done;
+  let clauses = Array.map (Fun.const []) decdefs in
+  List.iter (fun def ->
+    match def.it with
+    | DefD (id, _, _, _) ->
+      let i = Map.find id.it !map in
+      clauses.(i) <- def :: clauses.(i)
+    | _ -> ()
+  ) script;
+  let graph =
+    Array.mapi (fun i id ->
+      let frees = List.fold_left Set.union Set.empty
+        (List.map Free.free_defid_def clauses.(i)) in
+      let free = Array.of_seq (Set.to_seq frees) in
+      Scc.{
+        id = i;
+        label = id.it;
+        content = ();
+        succs = Array.map (fun id -> Map.find id !map) free;
+      }
+    ) decdefs
+  in
+  let sccs = Scc.sccs graph in
+  List.map (fun set ->
+    List.map (fun i -> decdefs.(i)) (Scc.IntSet.elements set)
   ) sccs

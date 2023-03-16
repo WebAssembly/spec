@@ -516,7 +516,8 @@ let valid_def env def =
     valid_exp env exp1 typ1;
     valid_exp env exp2 typ2;
     Option.iter (valid_prem env) premo;
-    let free = Free.(Set.elements (Set.diff (free_exp exp2) (free_exp exp1))) in
+    let free =
+      Free.(Set.elements (Set.diff (free_varid_exp exp2) (free_varid_exp exp1))) in
     if free <> [] then
       error def.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" free ^ "`")

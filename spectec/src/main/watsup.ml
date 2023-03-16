@@ -57,6 +57,14 @@ let () =
         Printf.printf "\n%!"
       end
     ) sccs_rel;
+    let sccs_def = Recursion.sccs_of_definitions script in
+    List.iter (fun ids ->
+      if List.length ids > 1 then begin
+        Printf.printf "mutual def ";
+        List.iter (fun id -> Printf.printf "$%s " id.Source.it) ids;
+        Printf.printf "\n%!"
+      end
+    ) sccs_def;
     trace "Elaboration...";
     let script' = Elaboration.elab script in
     trace "Validation...";
