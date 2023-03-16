@@ -49,29 +49,15 @@ def $default(F64) = (CONST F64 0)
 def $default(reftype) = (REF.NULL reftype)
 
 
-;; Administrative Instructions
-
-syntax admininstr hint(math instr) hint(desc "administrative instruction") =
-  | instr
-  | REF.FUNC_ADDR funcaddr        hint(math REF.FUNC %)
-  | REF.HOST_ADDR hostaddr        hint(math REF.EXTERN %)
-  | CALL_ADDR funcaddr            hint(math CALL %)
-  | LABEL nat instr* admininstr*  ;;hint(math LABEL_%{%} %)
-  | FRAME nat frame admininstr*   ;;hint(math FRAME_%{%} %)
-  | TRAP
-
-syntax `E hint(desc "evaluation context") =
-  | _HOLE `[ _ ]
-  | _SEQ val* E instr*
-  | LABEL nat instr* E
-
-
-
 ;; Configurations
 
-syntax config hint(desc "configuration") = state; admininstr*
-syntax state hint(desc "state") = store; frame
-syntax frame hint(desc "frame") = moduleinst; val*
+syntax funcinst hint(desc "function instance") = moduleinst; func
+syntax globalinst hint(desc "global instance") = val
+syntax tableinst hint(desc "table instance") = ref*
+syntax meminst hint(desc "memory instance") = byte*
+syntax eleminst hint(desc "element instance") = ref*
+syntax datainst hint(desc "data instance") = byte*
+syntax exportinst hint(desc "export instance") = EXPORT name externval
 
 syntax store hint(desc "store") =
   { FUNC funcinst*,
@@ -92,17 +78,13 @@ syntax moduleinst hint(desc "module instance") =
     EXPORT exportinst*,
   }
 
-syntax funcinst hint(desc "function instance") = moduleinst; func
-syntax globalinst hint(desc "global instance") = val
-syntax tableinst hint(desc "table instance") = ref*
-syntax meminst hint(desc "memory instance") = byte*
-syntax eleminst hint(desc "element instance") = ref*
-syntax datainst hint(desc "data instance") = byte*
-syntax exportinst hint(desc "export instance") = EXPORT name externval
+syntax frame hint(desc "frame") = moduleinst; val*
+syntax state hint(desc "state") = store; frame
+syntax config hint(desc "configuration") = state; admininstr*
 
-var z : state
-var f : frame
 var s : store
+var f : frame
+var z : state
 
 var m : moduleinst
 var fi : funcinst
@@ -124,3 +106,20 @@ def $func((s; (m; val*)), x) = s.FUNC[m.FUNC[x]]
 
 def $table(state, tableidx) : tableinst  hint(math %.TABLE)
 def $table((s; (m; val*)), x) = s.TABLE[m.TABLE[x]]
+
+
+;; Administrative Instructions
+
+syntax admininstr hint(math instr) hint(desc "administrative instruction") =
+  | instr
+  | REF.FUNC_ADDR funcaddr        hint(math REF.FUNC %)
+  | REF.HOST_ADDR hostaddr        hint(math REF.EXTERN %)
+  | CALL_ADDR funcaddr            hint(math CALL %)
+  | LABEL nat instr* admininstr*  ;;hint(math LABEL_%{%} %)
+  | FRAME nat frame admininstr*   ;;hint(math FRAME_%{%} %)
+  | TRAP
+
+syntax `E hint(desc "evaluation context") =
+  | _HOLE `[ _ ]
+  | _SEQ val* E instr*
+  | LABEL nat instr* E

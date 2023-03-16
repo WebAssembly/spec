@@ -150,8 +150,11 @@ syntax expr hint(desc "expression") =
 
 ;; Modules
 
-syntax module hint(desc "module") =
-  MODULE import* func* global* table* mem* elem* data* start* export*
+syntax elemmode =
+  | TABLE tableidx expr
+  | DECLARE
+syntax datamode =
+  | MEMORY memidx expr
 
 syntax func hint(desc "function") =
   FUNC functype valtype* expr
@@ -168,15 +171,12 @@ syntax data hint(desc "memory segment") =
 syntax start hint(desc "start function") =
   START funcidx
 
-syntax elemmode =
-  | TABLE tableidx expr
-  | DECLARE
-syntax datamode =
-  | MEMORY memidx expr
-
 syntax externuse hint(desc "external use") =
   | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEM memidx
 syntax export hint(desc "export") =
   EXPORT name externuse
 syntax import hint(desc "import") =
   IMPORT name name externtype
+
+syntax module hint(desc "module") =
+  MODULE import* func* global* table* mem* elem* data* start* export*

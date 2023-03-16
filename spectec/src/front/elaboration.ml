@@ -24,6 +24,10 @@ type env =
     mutable defs : def_typ Env.t;
   }
 
+let fwd_deftyp id = AliasT (VarT (id @@ no_region) @@ no_region) @@ no_region
+let fwd_deftyp_bad = fwd_deftyp "(undefined)"
+let fwd_deftyp_ok = fwd_deftyp "(forward)"
+
 let new_env () =
   { vars = Env.empty;
     typs = Env.empty;
@@ -227,7 +231,10 @@ let rec elab_iter env iter =
 
 and elab_typ env typ : typ =
   match typ.it with
-  | VarT id -> ignore (find "syntax type" env.typs id); typ
+  | VarT id ->
+    if find "syntax type" env.typs id = fwd_deftyp_bad then
+      error typ.at ("invalid forward reference to syntax type `" ^ id.it ^ "`");
+    typ
   | AtomT _
   | BoolT
   | NatT
@@ -255,12 +262,15 @@ and elab_deftyp env deftyp : deftyp =
   match deftyp.it with
   | AliasT typ ->
     AliasT (elab_typ env typ) @@ deftyp.at
-    (* TODO: check this isn't recursive *)
   | StructT fields ->
     check_atoms "record" "field" (fun (atom, _, _) -> atom) fields deftyp.at;
     StructT (List.map (elab_typfield env) fields) @@ deftyp.at
-    (* TODO: check this isn't recursive *)
   | VariantT (ids, cases) ->
+    List.iter (fun id ->
+      let deftypI = find "syntax type" env.typs id in
+      if deftypI = fwd_deftyp_ok || deftypI = fwd_deftyp_bad then
+        error id.at ("invalid forward reference to syntax type `" ^ id.it ^ "`");
+    ) ids;
     let casess = List.map (as_variant_typid "parent" env) ids in
     let cases' = List.flatten (cases::casess) in
     check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' deftyp.at;
@@ -619,9 +629,10 @@ let elab_prem env prem : premise =
 
 let infer_def env def =
   match def.it with
-  | SynD (id, _, _) ->
-    let dummy = AliasT (VarT ("(pre)" @@ def.at) @@ def.at) @@ def.at in
-    env.typs <- bind "syntax" env.typs id dummy
+  | SynD (id, deftyp, _) ->
+    let fwd_deftyp =
+      match deftyp.it with AliasT _ -> fwd_deftyp_bad | _ -> fwd_deftyp_ok in
+    env.typs <- bind "syntax" env.typs id fwd_deftyp
   | _ -> ()
 
 let elab_def env def : def =
