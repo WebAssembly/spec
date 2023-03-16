@@ -40,7 +40,7 @@ rule Memtype_ok:
 
 rule Limits_ok:
   |- `[n_1 .. n_2] : k
-  -- iff: n_1 <= n_2 <= k
+  -- iff n_1 <= n_2 <= k
 
 
 
@@ -83,8 +83,8 @@ rule Memtype_sub:
 
 rule Limits_sub:
   |- `[n_11 .. n_12] <: `[n_21 .. n_22]
-  -- iff: n_11 >= n_21
-  -- iff: n_12 <= n_22
+  -- iff n_11 >= n_21
+  -- iff n_12 <= n_22
 
 rule Externtype_sub/func:
   |- FUNC ft_1 <: FUNC ft_2
@@ -144,7 +144,7 @@ rule Instr_ok/select-expl:
 rule Instr_ok/select-impl:
   C |- SELECT : t t I32 -> t
   -- Valtype_sub: |- t <: t'
-  -- iff: t' = numtype \/ t' = vectype
+  -- iff t' = numtype \/ t' = vectype
 
 
 relation Blocktype_ok: context |- blocktype : functype
@@ -171,11 +171,11 @@ rule Instr_ok/if:
 
 rule Instr_ok/br:
   C |- BR l : t_1* t* -> t_2*
-  -- iff: C.LABEL[l] = t*
+  -- iff C.LABEL[l] = t*
 
 rule Instr_ok/br_if:
   C |- BR_IF l : t* I32 -> t*
-  -- iff: C.LABEL[l] = t*
+  -- iff C.LABEL[l] = t*
 
 rule Instr_ok/br_table:
   C |- BR_TABLE l* l' : t_1* t* -> t_2*
@@ -184,16 +184,16 @@ rule Instr_ok/br_table:
 
 rule Instr_ok/return:
   C |- RETURN : t_1* t* -> t_2*
-  -- iff: C.RETURN = (t*)
+  -- iff C.RETURN = (t*)
 
 rule Instr_ok/call:
   C |- CALL x : t_1* -> t_2*
-  -- iff: C.FUNC[x] = t_1* -> t_2*
+  -- iff C.FUNC[x] = t_1* -> t_2*
 
 rule Instr_ok/call_indirect:
   C |- CALL_INDIRECT x ft : t_1* I32 -> t_2*
-  -- iff: C.TABLE[x] = lim FUNCREF
-  -- iff: ft = t_1* -> t_2*
+  -- iff C.TABLE[x] = lim FUNCREF
+  -- iff ft = t_1* -> t_2*
 
 
 rule Instr_ok/const:
@@ -231,7 +231,7 @@ rule Instr_const/ref.func:
 
 rule Instr_const/global.get:
   C |- (GLOBAL.GET x) CONST
-  -- iff: C.GLOBAL[x] = epsilon t
+  -- iff C.GLOBAL[x] = epsilon t
 
 
 rule InstrSeq_const: C |- instr* CONST

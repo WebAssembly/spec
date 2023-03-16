@@ -433,10 +433,10 @@ premise_list :
 premise : premise_ { $1 @@ at () }
 premise_ :
   | relid COLON exp { RulePr ($1, $3, None) }
-  | IFF COLON exp { IffPr ($3, None) }
+  | IFF exp { IffPr ($2, None) }
   | OTHERWISE { ElsePr }
   | LPAR relid COLON exp RPAR iter { RulePr ($2, $4, Some $6) }
-  | LPAR IFF COLON exp RPAR iter { IffPr ($4, Some $6) }
+  | LPAR IFF exp RPAR iter { IffPr ($3, Some $5) }
 
 hint : hint_ { $1 @@ at () }
 hint_ :
