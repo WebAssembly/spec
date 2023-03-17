@@ -103,7 +103,7 @@ let free_defid_prem prem =
 
 let free_relid_def def =
   match def.it with
-  | RuleD (_id, _, _, prems) -> free_list free_relid_prem prems
+  | RuleD (_, _, _, prems) -> free_list free_relid_prem prems
   | DefD (_, _, _, premo) -> free_opt free_relid_prem premo
   | SynD _ | VarD _ | RelD _ | DecD _ -> Set.empty
 

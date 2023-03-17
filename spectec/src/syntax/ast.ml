@@ -101,7 +101,7 @@ and exp' =
   | IdxE of exp * exp            (* exp `[` exp `]` *)
   | SliceE of exp * exp * exp    (* exp `[` exp `:` exp `]` *)
   | UpdE of exp * path * exp     (* exp `[` path `=` exp `]` *)
-  | ExtE of exp * path * exp     (* exp `[` path `=` `..` exp `]` *)
+  | ExtE of exp * path * exp     (* exp `[` path `=..` exp `]` *)
   | StrE of expfield list        (* `{` list(expfield, `,`) `}` *)
   | DotE of exp * atom           (* exp `.` atom *)
   | CommaE of exp * exp          (* exp `,` exp *)
@@ -111,7 +111,7 @@ and exp' =
   | TupE of exp list             (* `(` list2(exp, `,`) `)` *)
   | RelE of exp * relop * exp    (* exp relop exp *)
   | BrackE of brackop * exp list (* ``` ([{ exp }]) *)
-  | CallE of id * exp            (* defid exp? *)
+  | CallE of id * exp            (* `$` defid exp? *)
   | IterE of exp * iter          (* exp iter *)
   | OptE of exp option           (* exp? : typ? *)
   | ListE of exp list            (* exp ... exp : typ* *)
@@ -134,21 +134,21 @@ and path' =
 
 and def = def' phrase
 and def' =
-  | SynD of id * deftyp * hint list            (* `syntax` metaid hint* `=` deftyp *)
-  | RelD of id * typ * hint list               (* `relation` metaid `:` typ hint* *)
-  | RuleD of id * id list * exp * premise list (* `rule` metaid (`/` metaid)* `:` exp (`--` premise)* *)
-  | VarD of id * typ * hint list               (* `var` expid `:` typ *)
-  | DecD of id * exp * typ * hint list         (* `def` defid exp? `:` typ hint* *)
-  | DefD of id * exp * exp * premise option    (* `def` defid exp? `=` exp *)
+  | SynD of id * deftyp * hint list          (* `syntax` synid hint* `=` deftyp *)
+  | RelD of id * typ * hint list             (* `relation` relid `:` typ hint* *)
+  | RuleD of id * id * exp * premise list    (* `rule` relid ruleid? `:` exp (`--` premise)* *)
+  | VarD of id * typ * hint list             (* `var` varid `:` typ *)
+  | DecD of id * exp * typ * hint list       (* `def` `$` defid exp? `:` typ hint* *)
+  | DefD of id * exp * exp * premise option  (* `def` `$` defid exp? `=` exp *)
 
 and premise = premise' phrase
 and premise' =
-  | RulePr of id * exp * iter option           (* `(` metaid exp `)` iter? *)
-  | IffPr of exp * iter option                 (* `iff` exp *)
-  | ElsePr                                     (* `otherwise` *)
+  | RulePr of id * exp * iter option         (* `(` metaid exp `)` iter? *)
+  | IffPr of exp * iter option               (* `iff` exp *)
+  | ElsePr                                   (* `otherwise` *)
 
 and hint = hint' phrase
-and hint' = {hintid : id; hintexp : exp}       (* `(` `hint` hintid exp `)` *)
+and hint' = {hintid : id; hintexp : exp}     (* `(` `hint` hintid exp `)` *)
 
 
 (* Scripts *)

@@ -193,9 +193,9 @@ let string_of_def def =
     "syntax " ^ id.it ^ " = " ^ string_of_deftyp deftyp
   | RelD (id, typ, _hints) ->
     "relation " ^ id.it ^ ": " ^ string_of_typ typ
-  | RuleD (id, ids, exp, prems) ->
-    let ids' = if ids = [] then "" else "/" ^ concat "-" (List.map it ids) in
-    "rule " ^ id.it ^ ids' ^ ":\n  " ^ string_of_exp exp ^
+  | RuleD (id1, id2, exp, prems) ->
+    let id2' = if id2.it = "" then "" else "/" ^ id2.it in
+    "rule " ^ id1.it ^ id2' ^ ":\n  " ^ string_of_exp exp ^
       concat "" (List.map (prefix "\n  -- " string_of_premise) prems)
   | VarD (id, typ, _hints) ->
     "var " ^ id.it ^ " : " ^ string_of_typ typ

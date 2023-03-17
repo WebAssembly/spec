@@ -646,11 +646,11 @@ let elab_def env def : def =
     let typ' = elab_typ env typ in
     env.rels <- bind "relation" env.rels id typ';
     RelD (id, typ', hints) @@ def.at
-  | RuleD (id, ids, exp, prems) ->
-    let typ = find "relation" env.rels id in
+  | RuleD (id1, id2, exp, prems) ->
+    let typ = find "relation" env.rels id1 in
     let exp' = elab_exp env exp typ in
     let prems' = List.map (elab_prem env) prems in
-    RuleD (id, ids, exp', prems') @@ def.at
+    RuleD (id1, id2, exp', prems') @@ def.at
   | VarD (id, typ, hints) ->
     let typ' = elab_typ env typ in
     env.vars <- bind "variable" env.vars id typ';

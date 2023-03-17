@@ -500,8 +500,8 @@ let valid_def env def =
   | RelD (id, typ, _hints) ->
     valid_typ env typ;
     env.rels <- bind "relation" env.rels id typ
-  | RuleD (id, _ids, exp, prems) ->
-    valid_exp env exp (find "relation" env.rels id);
+  | RuleD (id1, _id2, exp, prems) ->
+    valid_exp env exp (find "relation" env.rels id1);
     List.iter (valid_prem env) prems
   | VarD (id, typ, _hints) ->
     valid_typ env typ;

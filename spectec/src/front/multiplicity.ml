@@ -124,7 +124,7 @@ let check_def def =
   | RelD _
   | VarD _
   | DecD _ -> ()
-  | RuleD (_id, _ids, exp, prems) ->
+  | RuleD (_id1, _id2, exp, prems) ->
     let env = ref Env.empty in
     check_exp env [] exp;
     List.iter (check_prem env) prems

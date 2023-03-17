@@ -529,9 +529,9 @@ let check_def env def =
   | RelD (id, typ, _hints) ->
     check_typ env typ;
     env.rels <- bind "relation" env.rels id typ
-  | RuleD (id, _ids, exp, prems) ->
+  | RuleD (id1, _id2, exp, prems) ->
     let typ = check_exp env exp in
-    let typ' = find "relation" env.rels id in
+    let typ' = find "relation" env.rels id1 in
     match_typ "rule" env typ typ' exp.at;
     List.iter (check_prem env) prems
   | VarD (id, typ, _hints) ->

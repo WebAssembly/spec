@@ -103,7 +103,7 @@ hintid : id { $1 }
 fieldid : atomid_ { Atom $1 }
 dotid : DOTID { Atom $1 }
 
-ruleid : ruleid_ { $1 @@ at () }
+ruleid : ruleid_ { $1 }
 ruleid_ : id { $1 } | ruleid_ DOTID { $1 ^ "." ^ $2 }
 atomid : atomid_ { $1 } | atomid DOTID { $1 ^ "." ^ $2 }
 
@@ -402,7 +402,8 @@ def_ :
   | RELATION relid hint_list COLON typ
     { RelD ($2, $5, $3) }
   | RULE relid ruleid_list COLON exp premise_list
-    { RuleD ($2, $3, $5, $6) }
+    { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
+      RuleD ($2, id @@ ati 3, $5, $6) }
   | VAR varid COLON typ hint_list
     { VarD ($2, $4, $5) }
   | VAR atomid_ COLON typ hint_list
@@ -418,9 +419,9 @@ def_ :
     { DefD ($3, $4, $6, $7) }
 
 ruleid_list :
-  | /* empty */ { [] }
-  | SLASH ruleid ruleid_list { $2::$3 }
-  | MINUS ruleid ruleid_list { $2::$3 }
+  | /* empty */ { "" }
+  | SLASH ruleid ruleid_list { "/" ^ $2 ^ $3 }
+  | MINUS ruleid ruleid_list { "-" ^ $2 ^ $3 }
 
 premise_opt :
   | /* empty */ { None }
