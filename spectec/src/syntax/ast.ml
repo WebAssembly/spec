@@ -8,34 +8,34 @@ type text = string
 type id = string phrase
 
 type atom =
-  | Atom of string (* atomid *)
-  | Bot (* `_|_` *)
+  | Atom of string               (* atomid *)
+  | Bot                          (* `_|_` *)
 
 
 (* Types *)
 
 type brackop =
-  | Paren
-  | Brack
-  | Brace
+  | Paren                        (* ``(` ... `)` *)
+  | Brack                        (* ``[` ... `]` *)
+  | Brace                        (* ``{` ... `}` *)
 
 type relop =
-  | Dot (* `.` *)
-  | Dot2 (* `..` *)
-  | Dot3 (* `...` *)
-  | Semicolon (* `;` *)
-  | Arrow (* `->` *)
-  | Colon (* `:` *)
-  | Sub (* `<:` *)
-  | SqArrow (* `~>` *)
-  | Turnstile (* `|-` *)
-  | Tilesturn (* `-|` *)
+  | Dot                          (* `.` *)
+  | Dot2                         (* `..` *)
+  | Dot3                         (* `...` *)
+  | Semicolon                    (* `;` *)
+  | Arrow                        (* `->` *)
+  | Colon                        (* `:` *)
+  | Sub                          (* `<:` *)
+  | SqArrow                      (* `~>` *)
+  | Turnstile                    (* `|-` *)
+  | Tilesturn                    (* `-|` *)
 
 type iter =
-  | Opt          (* `?` *)
-  | List         (* `*` *)
-  | List1        (* `+` *)
-  | ListN of exp (* `^` exp *)
+  | Opt                          (* `?` *)
+  | List                         (* `*` *)
+  | List1                        (* `+` *)
+  | ListN of exp                 (* `^` exp *)
 
 and typ = typ' phrase
 and typ' =
