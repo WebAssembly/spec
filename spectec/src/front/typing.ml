@@ -549,7 +549,7 @@ let check_def env def =
     match_typ "result" env typ2 typ2' exp2.at;
     Option.iter (check_prem env) premo;
     let free =
-      Free.(Set.elements (Set.diff (free_varid_exp exp2) (free_varid_exp exp1))) in
+      Free.(Set.elements (Set.diff (free_exp exp2).varid (free_exp exp1).varid)) in
     if free <> [] then
       error def.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" free ^ "`")

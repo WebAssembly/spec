@@ -2,132 +2,115 @@ open Ast
 open Source
 
 
-(* Generic *)
+(* Data Structure *)
 
 module Set = Set.Make(String)
 
-let free_opt free_x xo =
-  Option.value (Option.map free_x xo) ~default:Set.empty
-let free_list free_x xs =
-  List.fold_left Set.union Set.empty (List.map free_x xs)
+type sets = {synid : Set.t; relid : Set.t; varid : Set.t; defid : Set.t}
 
-let free_id id = Set.singleton id.it
-let free_ignore _id = Set.empty
+let empty =
+  {synid = Set.empty; relid = Set.empty; varid = Set.empty; defid = Set.empty}
+
+let union sets1 sets2 =
+  { synid = Set.union sets1.synid sets2.synid;
+    relid = Set.union sets1.relid sets2.relid;
+    varid = Set.union sets1.varid sets2.varid;
+    defid = Set.union sets1.defid sets2.defid;
+  }
+
+let free_opt free_x xo = Option.(value (map free_x xo) ~default:empty)
+let free_list free_x xs = List.(fold_left union empty (map free_x xs))
+
+
+(* Identifiers *)
+
+let free_synid id = {empty with synid = Set.singleton id.it}
+let free_relid id = {empty with relid = Set.singleton id.it}
+let free_varid id = {empty with varid = Set.singleton id.it}
+let free_defid id = {empty with defid = Set.singleton id.it}
+
+
+(* Iterations *)
+
+let rec free_iter iter =
+  match iter with
+  | Opt | List | List1 -> empty
+  | ListN exp -> free_exp exp
 
 
 (* Types *)
 
-let rec free_synid_typ typ =
+and free_typ typ =
   match typ.it with
-  | VarT id -> free_id id
-  | AtomT _ | BoolT | NatT | TextT -> Set.empty
-  | ParenT typ -> free_synid_typ typ
-  | SeqT typs | BrackT (_, typs) -> free_list free_synid_typ typs
-  | StrT typfields -> free_list free_synid_typfield typfields
-  | TupT typs -> free_list free_synid_typ typs
-  | RelT (typ1, _, typ2) -> free_list free_synid_typ [typ1; typ2]
-  | IterT (typ1, _) -> free_synid_typ typ1
+  | VarT id -> free_synid id
+  | AtomT _ | BoolT | NatT | TextT -> empty
+  | ParenT typ -> free_typ typ
+  | SeqT typs | BrackT (_, typs) -> free_list free_typ typs
+  | StrT typfields -> free_list free_typfield typfields
+  | TupT typs -> free_list free_typ typs
+  | RelT (typ1, _, typ2) -> free_list free_typ [typ1; typ2]
+  | IterT (typ1, iter) -> union (free_typ typ1) (free_iter iter)
 
-and free_synid_typfield (_, typ, _) = free_synid_typ typ
-and free_synid_typcase (_, typs, _) = free_list free_synid_typ typs
-
-let free_synid_deftyp deftyp =
+and free_deftyp deftyp =
   match deftyp.it with
-  | AliasT typ -> free_synid_typ typ
-  | StructT typfields -> free_list free_synid_typfield typfields
+  | AliasT typ -> free_typ typ
+  | StructT typfields -> free_list free_typfield typfields
   | VariantT (ids, typcases) ->
-    Set.union (free_list free_id ids) (free_list free_synid_typcase typcases)
+    union (free_list free_synid ids) (free_list free_typcase typcases)
+
+and free_typfield (_, typ, _) = free_typ typ
+and free_typcase (_, typs, _) = free_list free_typ typs
 
 
 (* Expressions *)
 
-let rec free_iter f g iter =
-  match iter with
-  | Opt | List | List1 -> Set.empty
-  | ListN exp -> free_exp f g exp
-
-and free_exp f g exp =
+and free_exp exp =
   match exp.it with
-  | VarE id -> f id
-  | AtomE _ | BoolE _ | NatE _ | TextE _ | HoleE -> Set.empty
+  | VarE id -> free_varid id
+  | AtomE _ | BoolE _ | NatE _ | TextE _ | HoleE -> empty
   | UnE (_, exp1) | DotE (exp1, _) | LenE exp1
-  | ParenE exp1 | SubE (exp1, _, _) -> free_exp f g exp1
+  | ParenE exp1 | SubE (exp1, _, _) -> free_exp exp1
   | BinE (exp1, _, exp2) | CmpE (exp1, _, exp2)
   | IdxE (exp1, exp2) | CommaE (exp1, exp2) | CompE (exp1, exp2)
   | RelE (exp1, _, exp2) | CatE (exp1, exp2) | FuseE (exp1, exp2) ->
-    free_list (free_exp f g) [exp1; exp2]
-  | SliceE (exp1, exp2, exp3) -> free_list (free_exp f g) [exp1; exp2; exp3]
-  | OptE expo -> free_opt (free_exp f g) expo
+    free_list free_exp [exp1; exp2]
+  | SliceE (exp1, exp2, exp3) -> free_list free_exp [exp1; exp2; exp3]
+  | OptE expo -> free_opt free_exp expo
   | SeqE exps | TupE exps | BrackE (_, exps) | ListE exps | CaseE (_, exps) ->
-    free_list (free_exp f g) exps
+    free_list free_exp exps
   | UpdE (exp1, path, exp2) | ExtE (exp1, path, exp2) ->
-    Set.union (free_list (free_exp f g) [exp1; exp2]) (free_path f g path)
-  | StrE expfields -> free_list (free_expfield f g) expfields
-  | CallE (id, exp1) -> Set.union (g id) (free_exp f g exp1)
-  | IterE (exp1, iter) -> Set.union (free_exp f g exp1) (free_iter f g iter)
+    union (free_list free_exp [exp1; exp2]) (free_path path)
+  | StrE expfields -> free_list free_expfield expfields
+  | CallE (id, exp1) -> union (free_defid id) (free_exp exp1)
+  | IterE (exp1, iter) -> union (free_exp exp1) (free_iter iter)
 
-and free_expfield f g (_, exp) = free_exp f g exp
+and free_expfield (_, exp) = free_exp exp
 
-and free_path f g path =
+and free_path path =
   match path.it with
-  | RootP -> Set.empty
-  | IdxP (path1, exp) -> Set.union (free_path f g path1) (free_exp f g exp)
-  | DotP (path1, _) -> free_path f g path1
-
-
-let free_varid_iter = free_iter free_id free_ignore
-let free_defid_iter = free_iter free_ignore free_id
-
-let free_varid_exp = free_exp free_id free_ignore
-let free_defid_exp = free_exp free_ignore free_id
+  | RootP -> empty
+  | IdxP (path1, exp) -> union (free_path path1) (free_exp exp)
+  | DotP (path1, _) -> free_path path1
 
 
 (* Definitions *)
 
-let free_varid_prem prem =
+let free_prem prem =
   match prem.it with
-  | RulePr (_, exp, itero) | IffPr (exp, itero) ->
-    Set.union (free_varid_exp exp) (free_opt free_varid_iter itero)
-  | ElsePr -> Set.empty
+  | RulePr (id, exp, itero) ->
+    union (free_relid id) (union (free_exp exp) (free_opt free_iter itero))
+  | IffPr (exp, itero) -> union (free_exp exp) (free_opt free_iter itero)
+  | ElsePr -> empty
 
-let free_relid_prem prem =
-  match prem.it with
-  | RulePr (id, _, _) -> free_id id
-  | IffPr _ | ElsePr -> Set.empty
-
-let free_defid_prem prem =
-  match prem.it with
-  | RulePr (_, exp, itero) | IffPr (exp, itero) ->
-    Set.union (free_defid_exp exp) (free_opt free_defid_iter itero)
-  | ElsePr -> Set.empty
-
-let free_relid_def def =
+let free_def def =
   match def.it with
-  | RuleD (_, _, _, prems) -> free_list free_relid_prem prems
-  | DefD (_, _, _, premo) -> free_opt free_relid_prem premo
-  | SynD _ | VarD _ | RelD _ | DecD _ -> Set.empty
-
-let free_synid_def def =
-  match def.it with
-  | SynD (_, deftyp, _) -> free_synid_deftyp deftyp
-  | RelD (_, typ, _) -> free_synid_typ typ
-  | DecD (_, _, typ, _) -> free_synid_typ typ
-  | VarD _ | RuleD _ | DefD _ -> Set.empty
-
-let free_varid_def def =
-  match def.it with
-  | DecD (_, exp, _, _) -> free_varid_exp exp
-  | DefD (_, exp1, exp2, premo) ->
-    Set.union (free_list free_varid_exp [exp1; exp2]) (free_opt free_varid_prem premo)
-  | RuleD (_, _, exp, prems) ->
-    Set.union (free_varid_exp exp) (free_list free_varid_prem prems)
-  | SynD _ | VarD _ | RelD _ -> Set.empty
-
-let free_defid_def def =
-  match def.it with
-  | DecD (_, exp, _, _) -> free_defid_exp exp
-  | DefD (_, exp1, exp2, premo) ->
-    Set.union (free_list free_defid_exp [exp1; exp2]) (free_opt free_defid_prem premo)
-  | RuleD (_, _, exp, prems) ->
-    Set.union (free_defid_exp exp) (free_list free_defid_prem prems)
-  | SynD _ | VarD _ | RelD _ -> Set.empty
+  | SynD (_id, deftyp, _hints) -> free_deftyp deftyp
+  | VarD _ -> empty
+  | RelD (_id, typ, _hints) -> free_typ typ
+  | RuleD (id1, _id2, exp, prems) ->
+    union (free_relid id1) (union (free_exp exp) (free_list free_prem prems))
+  | DecD (_id, exp, typ, _hints) -> union (free_exp exp) (free_typ typ)
+  | DefD (id, exp1, exp2, premo) ->
+    union
+      (union (free_defid id) (free_exp exp1))
+      (union (free_exp exp2) (free_opt free_prem premo))

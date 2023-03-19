@@ -11,6 +11,14 @@ let no_region = {left = no_pos; right = no_pos}
 let pos_of_file file = {no_pos with file}
 let region_of_file file = {left = pos_of_file file; right = pos_of_file file}
 
+let over_region = function
+  | [] -> raise (Invalid_argument "Source.over")
+  | r::rs ->
+    List.fold_left (fun r1 r2 ->
+      {left = min r1.left r2.left; right = max r1.right r2.right}
+    ) r rs
+
+
 let string_of_pos pos =
   if pos.line = -1 then
     Printf.sprintf "0x%x" pos.column

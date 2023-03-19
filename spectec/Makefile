@@ -6,13 +6,13 @@ EXT = spasm
 
 # Main targets
 
-.PHONY: default all
+.PHONY: exe all
 
-default:
+exe:
 	dune build src/$(NAME).exe
 	ln -f _build/default/src/$(NAME).exe ./$(NAME)
 
-all: default test
+all: exe test
 
 
 # Test
@@ -22,13 +22,13 @@ SPECFILES = syntax aux typing runtime reduction
 
 .PHONY: test dunetest ci
 
-test: all
+test: exe
 	./$(NAME) $(SPECFILES:%=$(SPECDIR)/%.$(EXT))
 
 dunetest:
 	dune runtest
 
-ci: all test dunetest
+ci: all dunetest
 
 
 # Cleanup

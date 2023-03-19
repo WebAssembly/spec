@@ -221,7 +221,7 @@ let check_atoms phrase item get_atom list at =
 
 (* Iteration *)
 
-let rec elab_iter env iter =
+let rec elab_iter env iter : iter =
   match iter with
   | Opt | List | List1 -> iter
   | ListN exp -> ListN (elab_exp' env exp (NatT @@ exp.at))
@@ -343,7 +343,7 @@ and elab_exp env exp typ : exp =
   | ParenE exp1 when is_iter_typ env typ ->
     let typ1, _ = as_iter_typ "" env Check typ exp.at in
     let exp' = elab_exp env exp1 typ1 in
-    cast_typ "expression" env typ1 typ exp'
+    cast_exp "expression" env exp' typ1 typ
   | _ ->
     elab_exp' env exp typ
 
@@ -356,18 +356,18 @@ and elab_exp' env exp typ : exp =
     CaseE (atom, unseq_exp exp') @@ exp.at
   | VarE _ | AtomE _ | BoolE _ | NatE _ | TextE _ ->
     let typ' = infer_exp env exp in
-    cast_typ "variable" env typ' typ exp
+    cast_exp "expression" env exp typ' typ
   | UnE (unop, exp1) ->
     let typ' = infer_unop unop @@ exp.at in
     let exp1' = elab_exp env exp1 typ' in
     let exp' = UnE (unop, exp1') @@ exp.at in
-    cast_typ "unary operator" env typ' typ exp'
+    cast_exp "unary operator" env exp' typ' typ
   | BinE (exp1, binop, exp2) ->
     let typ' = infer_binop binop @@ exp.at in
     let exp1' = elab_exp env exp1 typ' in
     let exp2' = elab_exp env exp2 typ' in
     let exp' = BinE (exp1', binop, exp2') @@ exp.at in
-    cast_typ "binary operator" env typ' typ exp'
+    cast_exp "binary operator" env exp' typ' typ
   | CmpE (exp1, cmpop, exp2) ->
     let typ' =
       match infer_cmpop cmpop with
@@ -380,12 +380,12 @@ and elab_exp' env exp typ : exp =
       | CmpE (exp21, _, _) ->
         let exp21' = elab_exp env exp21 typ' in
         let exp2' = elab_exp env exp2 (BoolT @@ exp2.at) in
-        BinE (CmpE (exp1, cmpop, exp21') @@ exp1.at, AndOp, exp2') @@ exp.at
+        BinE (CmpE (exp1', cmpop, exp21') @@ exp1.at, AndOp, exp2') @@ exp.at
       | _ ->
         let exp2' = elab_exp env exp2 typ' in
         CmpE (exp1', cmpop, exp2') @@ exp.at
     in
-    cast_typ "comparison operator" env (BoolT @@ exp.at) typ exp'
+    cast_exp "comparison operator" env exp' (BoolT @@ exp.at) typ
   | SeqE exps ->
     elab_exp_seq env exps typ exp.at
   | IdxE (exp1, exp2) ->
@@ -394,7 +394,7 @@ and elab_exp' env exp typ : exp =
     let exp1' = elab_exp' env exp1 typ1 in
     let exp2' = elab_exp env exp2 (NatT @@ exp2.at) in
     let exp' = IdxE (exp1', exp2') @@ exp.at in
-    cast_typ "list element" env typ' typ exp'
+    cast_exp "list element" env exp' typ' typ
   | SliceE (exp1, exp2, exp3) ->
     let _typ' = as_list_typ "expression" env Check typ exp1.at in
     let exp1' = elab_exp' env exp1 typ in
@@ -422,7 +422,7 @@ and elab_exp' env exp typ : exp =
     let typfields = as_struct_typ "expression" env Infer typ1 exp1.at in
     let typ' = find_field typfields atom exp1.at in
     let exp' = DotE (exp1', atom) @@ exp.at in
-    cast_typ "field" env typ' typ exp'
+    cast_exp "field" env exp' typ' typ
   | CommaE (exp1, exp2) ->
     let exp1' = elab_exp env exp1 typ in
     let typfields = as_struct_typ "expression" env Check typ exp1.at in
@@ -445,7 +445,7 @@ and elab_exp' env exp typ : exp =
     let _typ11 = as_list_typ "expression" env Infer typ1 exp1.at in
     let exp1' = elab_exp env exp1 typ1 in
     let exp' = LenE exp1' @@ exp.at in
-    cast_typ "list length" env (NatT @@ exp.at) typ exp'
+    cast_exp "list length" env exp' (NatT @@ exp.at) typ
   | ParenE exp1 ->
     elab_exp env exp1 typ
   | TupE exps ->
@@ -456,7 +456,7 @@ and elab_exp' env exp typ : exp =
     let typ2, typ' = find "function" env.defs id in
     let exp2' = elab_exp' env exp2 typ2 in
     let exp' = CallE (id, exp2') @@ exp.at in
-    cast_typ "expression" env typ' typ exp'
+    cast_exp "expression" env exp' typ' typ
   | RelE (exp1, relop, exp2) ->
     let typ1, typ2 = as_rel_typ relop "relation" env Check typ exp.at in
     let exp1' = elab_exp env exp1 typ1 in
@@ -488,7 +488,7 @@ and elab_expfields env expfields typfields at : expfield list =
     (atom1, exp') :: elab_expfields env expfields' typfields' at
   | _, (atom, typ, _)::typfields' ->
     let exp' =
-      cast_typ "omitted record field" env (SeqT [] @@ at) typ (SeqE [] @@ at) in
+      cast_exp "omitted record field" env (SeqE [] @@ at) (SeqT [] @@ at) typ in
     (atom, exp') :: elab_expfields env expfields typfields' at
   | (atom, exp)::_, [] ->
     error exp.at ("unexpected record field " ^ string_of_atom atom)
@@ -536,7 +536,7 @@ and elab_exp_seq env exps typ at : exp =
   | [exp1], _ -> SeqE [elab_exp' env exp1 typ] @@ at
   | _, SeqT [typ1] -> SeqE [elab_exp' env (SeqE exps @@ at) typ1] @@ at
   | [], SeqT (typ1::typs) ->
-    let exp1' = cast_typ "empty tail" env (SeqT [] @@ at) typ1 (SeqE [] @@ at) in
+    let exp1' = cast_exp "empty tail" env (SeqE [] @@ at) (SeqT [] @@ at) typ1 in
     seq_exp exp1' (elab_exp_seq env [] (SeqT typs @@ typ.at) at) @@ at
   | exp1::exps2, SeqT (typ1::typs2) ->
     let exp1' = elab_exp' env exp1 typ1 in
@@ -564,7 +564,7 @@ and cons_exp exp1 exp2 =
   | _ -> CatE (ListE [exp1] @@ exp1.at, exp2)
 
 
-and cast_typ phrase env typ1 typ2 exp =
+and cast_exp phrase env exp typ1 typ2 : exp =
   (*
   Printf.printf "[cast %s] (%s) <: (%s)  >>  (%s) <: (%s)  eq=%b\n%!"
     (string_of_region exp.at)
@@ -580,13 +580,13 @@ and cast_typ phrase env typ1 typ2 exp =
   | SeqT [], IterT (_typ21, List) ->
     ListE [] @@ exp.at
   | _typ1', IterT (typ21, Opt) ->
-    OptE (Some (cast_variant phrase env typ1 typ21 exp)) @@ exp.at
+    OptE (Some (cast_exp_variant phrase env exp typ1 typ21)) @@ exp.at
   | _typ1', IterT (typ21, (List | List1)) ->
-    ListE [cast_variant phrase env typ1 typ21 exp] @@ exp.at
+    ListE [cast_exp_variant phrase env exp typ1 typ21] @@ exp.at
   | _, _ ->
-    cast_variant phrase env typ1 typ2 exp
+    cast_exp_variant phrase env exp typ1 typ2
 
-and cast_variant phrase env typ1 typ2 exp =
+and cast_exp_variant phrase env exp typ1 typ2 : exp =
   if equiv_typ env typ1 typ2 then exp else
   match expand env typ1, expand env typ2 with
   | _, _ when is_variant_typ env typ1 && is_variant_typ env typ2 ->
@@ -667,7 +667,7 @@ let elab_def env def : def =
     let exp2' = elab_exp env exp2 typ2 in
     let premo' = Option.map (elab_prem env) premo in
     let free =
-      Free.(Set.elements (Set.diff (free_varid_exp exp2) (free_varid_exp exp1))) in
+      Free.(Set.elements (Set.diff (free_exp exp2).varid (free_exp exp1).varid)) in
     if free <> [] then
       error def.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" free ^ "`");

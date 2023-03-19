@@ -32,8 +32,6 @@ and eq_typ typ1 typ2 =
   *)
   typ1.it = typ2.it ||
   match typ1.it, typ2.it with
-  | TupT [typ1'], _ -> eq_typ typ1' typ2
-  | _, TupT [typ2'] -> eq_typ typ1 typ2'
   | VarT id1, VarT id2 -> id1.it = id2.it
   | SeqT typs1, SeqT typs2
   | TupT typs1, TupT typs2 ->
@@ -57,8 +55,6 @@ and eq_typfield (atom1, typ1, _) (atom2, typ2, _) =
 and eq_exp exp1 exp2 =
   exp1.it = exp2.it ||
   match exp1.it, exp2.it with
-  | TupE [exp1'], _ -> eq_exp exp1' exp2
-  | _, TupE [exp2'] -> eq_exp exp1 exp2'
   | VarE id1, VarE id2 -> id1.it = id2.it
   | UnE (unop1, exp11), UnE (unop2, exp21) ->
     unop1 = unop2 && eq_exp exp11 exp21

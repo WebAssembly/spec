@@ -4,57 +4,12 @@
  *  SIAM Journal on Computing, 1(2), 1972
  *)
 
-
-module LabelMap = Map.Make(String)
-module IntSet = Set.Make(Int)
-
-
 (* Graph Representation *)
 
-type 'a vert =
-  { mutable id : int;
-    label : string;
-    succs : int array;  (* id of successor, or negative when within own SCC *)
-    content : 'a;
-  }
+type vert = int array
+type graph = vert array
 
-type 'a graph = 'a vert array
-
-let dummy_vert x =
-  { id = -1;
-    label = "";
-    succs = [||];
-    content = x;
-  }
-
-
-(* Debugging Aid *)
-
-let assert_valid_vert maxid maxvert vert =
-  assert (vert.id < maxid);
-  Array.iter (fun id ->
-    if id >= 0 then assert (id < maxid)
-    else assert (-id-1 < maxvert)
-  ) vert.succs;
-  true
-
-let assert_valid_graph maxid verts =
-  Array.for_all (fun vert ->
-    assert_valid_vert maxid (Array.length verts) vert
-  ) verts
-
-
-let print_graph graph =
-  Array.iteri (fun v vert ->
-    Printf.printf " %d = %s(" v vert.label;
-    Array.iteri (fun j id ->
-      if j > 0 then Printf.printf ", ";
-      if id < 0
-      then Printf.printf "%d" (-id-1)
-      else Printf.printf "#%d" id;
-    ) vert.succs;
-    Printf.printf ")\n%!"
-  ) graph
+module Set = Set.Make(Int)
 
 
 (* SCC *)
@@ -65,7 +20,7 @@ type vert_info =
     mutable onstack : bool;
   }
 
-let sccs (graph : 'a graph) : IntSet.t list =
+let sccs (graph : graph) : Set.t list =
   let len = Array.length graph in
   if len = 0 then [] else
 
@@ -84,17 +39,17 @@ let sccs (graph : 'a graph) : IntSet.t list =
     v.low <- !index;
     incr index;
     visit v graph.(x);
-    if v.low = v.index then sccs := scc x IntSet.empty :: !sccs
+    if v.low = v.index then sccs := scc x Set.empty :: !sccs
 
   and scc x ys =
     decr stack_top;
     let y = stack.(!stack_top) in
     info.(y).onstack <- false;
-    let ys' = IntSet.add y ys in
+    let ys' = Set.add y ys in
     if x = y then ys' else scc x ys'
 
   and visit v vert =
-    let succs = vert.succs in
+    let succs = vert in
     for i = 0 to Array.length succs - 1 do
       let x = succs.(i) in
       let w = info.(x) in

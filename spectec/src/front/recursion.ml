@@ -2,7 +2,7 @@ open Ast
 open Source
 
 module Set = Free.Set
-module Map = Scc.LabelMap
+module Map = Map.Make(String)
 
 let sccs_of_syntaxes (script : script) : id list list =
   let syndefs =
@@ -18,19 +18,14 @@ let sccs_of_syntaxes (script : script) : id list list =
     map := Map.add id.it i !map
   done;
   let graph =
-    Array.mapi (fun i (id, deftyp) ->
-      let free = Array.of_seq (Set.to_seq (Free.free_synid_deftyp deftyp)) in
-      Scc.{
-        id = i;
-        label = id.it;
-        content = deftyp;
-        succs = Array.map (fun id -> Map.find id !map) free;
-      }
+    Array.map (fun (_id, deftyp) ->
+      let free = Array.of_seq (Set.to_seq (Free.free_deftyp deftyp).synid) in
+      Array.map (fun id -> Map.find id !map) free
     ) syndefs
   in
   let sccs = Scc.sccs graph in
   List.map (fun set ->
-    List.map (fun i -> fst syndefs.(i)) (Scc.IntSet.elements set)
+    List.map (fun i -> fst syndefs.(i)) (Scc.Set.elements set)
   ) sccs
 
 
@@ -55,21 +50,15 @@ let sccs_of_relations (script : script) : id list list =
     | _ -> ()
   ) script;
   let graph =
-    Array.mapi (fun i id ->
-      let frees = List.fold_left Set.union Set.empty
-        (List.map Free.free_relid_def rules.(i)) in
-      let free = Array.of_seq (Set.to_seq frees) in
-      Scc.{
-        id = i;
-        label = id.it;
-        content = ();
-        succs = Array.map (fun id -> Map.find id !map) free;
-      }
+    Array.mapi (fun i _id ->
+      let frees = Free.(free_list free_def rules.(i)) in
+      let free = Array.of_seq (Set.to_seq frees.relid) in
+      Array.map (fun id -> Map.find id !map) free
     ) reldefs
   in
   let sccs = Scc.sccs graph in
   List.map (fun set ->
-    List.map (fun i -> reldefs.(i)) (Scc.IntSet.elements set)
+    List.map (fun i -> reldefs.(i)) (Scc.Set.elements set)
   ) sccs
 
 
@@ -94,19 +83,13 @@ let sccs_of_definitions (script : script) : id list list =
     | _ -> ()
   ) script;
   let graph =
-    Array.mapi (fun i id ->
-      let frees = List.fold_left Set.union Set.empty
-        (List.map Free.free_defid_def clauses.(i)) in
-      let free = Array.of_seq (Set.to_seq frees) in
-      Scc.{
-        id = i;
-        label = id.it;
-        content = ();
-        succs = Array.map (fun id -> Map.find id !map) free;
-      }
+    Array.mapi (fun i _id ->
+      let frees = Free.(free_list free_def clauses.(i)) in
+      let free = Array.of_seq (Set.to_seq frees.defid) in
+      Array.map (fun id -> Map.find id !map) free
     ) decdefs
   in
   let sccs = Scc.sccs graph in
   List.map (fun set ->
-    List.map (fun i -> decdefs.(i)) (Scc.IntSet.elements set)
+    List.map (fun i -> decdefs.(i)) (Scc.Set.elements set)
   ) sccs

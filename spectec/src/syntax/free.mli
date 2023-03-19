@@ -2,13 +2,15 @@ open Ast
 
 module Set : Set.S with type elt = string
 
-val free_varid_exp : exp -> Set.t
-val free_defid_exp : exp -> Set.t
+type sets = {synid : Set.t; relid : Set.t; varid : Set.t; defid : Set.t}
 
-val free_synid_typ : typ -> Set.t
-val free_synid_deftyp : deftyp -> Set.t
+val free_opt : ('a -> sets) -> 'a option -> sets
+val free_list : ('a -> sets) -> 'a list -> sets
 
-val free_synid_def : def -> Set.t
-val free_relid_def : def -> Set.t
-val free_varid_def : def -> Set.t
-val free_defid_def : def -> Set.t
+val free_iter : iter -> sets
+val free_typ : typ -> sets
+val free_exp : exp -> sets
+val free_path : path -> sets
+val free_prem : premise -> sets
+val free_def : def -> sets
+val free_deftyp : deftyp -> sets
