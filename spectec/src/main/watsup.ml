@@ -70,6 +70,10 @@ let () =
     trace "Validation...";
     Validation.valid script';
     Multiplicity.check script';
+    trace "Lowering...";
+    let il = Lower.lower script in
+    trace "IL Validation...";
+    Il_validation.valid il;
     trace "Complete."
   with
   | Source.Error (at, msg) ->
