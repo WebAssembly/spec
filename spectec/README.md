@@ -132,7 +132,7 @@ atom ::=
   atomid
   "_|_"
 
-relop ::=
+atomop ::=
   ":" | ";" | "<:"
   "|-" | "-|"
   "->" | "~>"| "=>"
@@ -145,19 +145,11 @@ relop ::=
 ```
 typ ::=
   varid                                type name
-  atom                                 custom token
   "bool"                               booleans
   "nat"                                natural numbers
   "text"                               text strings
-  "epsilon"                            the empty phrase
-  typ typ                              sequencing
   typ iter                             iteration
   "(" list(typ, ",") ")"               parentheses or tupling
-  relop typ                            custom operator
-  typ relop typ
-  "`" "(" list(typ, ",") ")"           custom brackets
-  "`" "[" list(typ, ",") "]"
-  "`" "{" list(typ, ",") "}"
 
 iter ::=
   "?"                                  optional
@@ -166,8 +158,29 @@ iter ::=
   "^" arith                            list of specific length
 ```
 
+In addition to type expressions, custom _notation_ types can be defined:
+
+```
+deftyp ::=
+  nottyp                                    free notation
+  "{" list(atom typ hint*, ",") "}"         records
+  "|" list(varid | atom nottyp hint*, "|")  variant
+
+nottyp ::=
+  typ                                       plain type
+  atom                                      atom
+  atomop nottyp                             infix atom
+  nottyp atomop nottyp                      infix atom
+  nottyp nottyp                             sequencing
+  "(" nottyp ")"                            parenthess
+  "`" "(" nottyp ")"                        custom brackets
+  "`" "[" nottyp "]"
+  "`" "{" nottyp "}"
+  nottyp iter                               iteration
+```
+
 Custom atoms, operators and brackets are uninterpreted by the DSL semantics itself and can be used to define symbolic syntax for language or relations.
-(Currently, most operators are binary, with hard-coded "natural" precedences. But these should be sufficient to emulate the kind of mixfix notation used for most relations.)
+(Currently, most operators have hard-coded "natural" precedences. But these should be sufficient to emulate the kind of mixfix notation used for most relations.)
 
 
 ### Expressions
@@ -178,13 +191,12 @@ logop ::= "/\" | "\/" | "=>"
 cmpop ::= "=" | "=/=" | "<" | ">" | "<=" | ">="
 exp ::=
   varid                                meta variable
-  atom                                 custom token
   nat                                  natural number literal
   text                                 text literal
   notop exp                            logical negation
   exp logop exp                        logical connective
   exp cmpop exp                        comparison
-  "epsilon"                            the empty phrase
+  "epsilon"                            empty sequence
   exp exp                              sequencing
   exp iter                             iteration
   exp "[" arith "]"                    list indexing
@@ -198,8 +210,9 @@ exp ::=
   "|" exp "|"                          list length
   "(" list(exp, ",") ")"               parentheses or tupling
   "$" defid exp?                       function invocation
-  relop exp                            custom operator
-  exp relop exp
+  atom                                 custom token
+  atomop exp                           custom operator
+  exp atomop exp
   "`" "(" list(exp, ",") ")"           custom brackets
   "`" "[" list(exp, ",") "]"
   "`" "{" list(exp, ",") "}"
@@ -243,11 +256,6 @@ def ::=
   "def" "$" defid exp? ":" typ hint*                          function declaration
   "def" "$" defid exp? "=" exp ("--" premise)?                function clause
 
-deftyp ::=
-  typ                                                         typ alias
-  "{" list(atom typ hint*, ",") "}"                           records
-  "|" list(varid | atom typ hint*, "|")                       variant
-
 premise ::=
   relid ":" exp                                               relational premise
   "iff" exp                                                   side condition
@@ -272,14 +280,19 @@ script ::=
 
 ## Status
 
+The implementation defines two AST representations:
+
+* an external language (EL), suitable for backends generating latex,
+* an internal language (IL), suitable for backends generating programs. 
+
 Currently, the implementation consists of merely the frontend, which performs:
 
 * parsing,
-* type checking,
 * multiplicity checking,
 * recursion analysis,
-* elaboration into more rigid sublanguage,
-* validation of elaboration result.
+* type checking for the EL,
+* elaboration from EL into IL,
+* type checking for the EL.
 
 
 ## Building and Running
