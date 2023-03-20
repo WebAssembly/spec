@@ -63,16 +63,10 @@ let string_of_mixop = function
   | mixop ->
     let s =
       String.concat "%" (List.map (
-        function [] -> " "
-        | atoms -> String.concat "" (List.map string_of_atom atoms)) mixop
+        fun atoms -> String.concat "" (List.map string_of_atom atoms)) mixop
       )
     in
-    let n = String.length s in
-    if n < 2 then s else
-    let s' = if s.[0] = ' ' then String.sub s 1 (n - 1) else s in
-    let n' = String.length s' in
-    let s'' = if s'.[n' - 1] = ' ' then String.sub s' 0 (n' - 1) else s' in
-    "`" ^ s'' ^ "`"
+    "`" ^ s ^ "`"
 
 
 (* Types *)
