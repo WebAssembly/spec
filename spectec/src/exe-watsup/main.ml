@@ -1,4 +1,5 @@
-open Spectec
+open Util
+open Front
 
 let name = "watsup"
 let version = "0.2"
@@ -36,10 +37,13 @@ let () =
     Arg.parse argspec add_arg usage;
     trace "Parsing...";
     let script = List.concat_map parse_file !args in
+(*
     trace "Type checking...";
     Typing.check script;
+*)
     trace "Multiplicity checking...";
     Multiplicity.check script;
+(*
     trace "Recursion analysis...";
     let sccs_syn = Recursion.sccs_of_syntaxes script in
     List.iter (fun ids ->
@@ -66,14 +70,17 @@ let () =
       end
     ) sccs_def;
     trace "Elaboration...";
-    let script' = Elaboration.elab script in
+    let el = Elaboration.elab script in
     trace "Validation...";
-    Validation.valid script';
-    Multiplicity.check script';
+    El.Validation.valid el;
+    Multiplicity.check el;
+*)
     trace "Lowering...";
     let il = Lower.lower script in
+    trace "Printing...";
+    Printf.printf "%s\n%!" (Il.Print.string_of_script il);
     trace "IL Validation...";
-    Il_validation.valid il;
+    Il.Validation.valid il;
     trace "Complete."
   with
   | Source.Error (at, msg) ->

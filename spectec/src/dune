@@ -1,10 +1,5 @@
-(include_subdirs unqualified)
-
 (library
   (name spectec)
-  (modules ast elaboration eq flags free lexer lib multiplicity parse parser print recursion scc source typing utf8 validation il lower il_eq il_free il_print il_validation))
-
-(executable
-  (name watsup)
-  (modules watsup)
-  (libraries spectec))
+  (modules )
+  (libraries (re_export util) (re_export el) (re_export il) (re_export front))
+)

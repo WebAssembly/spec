@@ -9,8 +9,8 @@ EXT = spasm
 .PHONY: exe all
 
 exe:
-	dune build src/$(NAME).exe
-	ln -f _build/default/src/$(NAME).exe ./$(NAME)
+	dune build src/exe-$(NAME)/main.exe
+	ln -f _build/default/src/exe-$(NAME)/main.exe ./$(NAME)
 
 all: exe test
 
@@ -27,6 +27,9 @@ test: exe
 
 dunetest:
 	dune runtest
+
+dunepromote:
+	dune promote
 
 ci: all dunetest
 

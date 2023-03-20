@@ -1,2 +1,2 @@
-val parse_string : string -> Ast.script (* raises Source.Error *)
-val parse_file : string -> Ast.script (* raises Source.Error *)
+val parse_string : string -> El.Ast.script (* raises Source.Error *)
+val parse_file : string -> El.Ast.script (* raises Source.Error *)

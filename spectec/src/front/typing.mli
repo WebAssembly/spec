@@ -1,1 +1,1 @@
-val check : Ast.script -> unit (* raises Source.Error *)
+val check : El.Ast.script -> unit (* raises Source.Error *)

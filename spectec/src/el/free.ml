@@ -1,5 +1,5 @@
+open Util.Source
 open Ast
-open Source
 
 
 (* Data Structure *)
@@ -43,23 +43,29 @@ let rec free_iter iter =
 and free_typ typ =
   match typ.it with
   | VarT id -> free_synid id
-  | AtomT _ | BoolT | NatT | TextT -> empty
+  | BoolT | NatT | TextT -> empty
   | ParenT typ -> free_typ typ
-  | SeqT typs | BrackT (_, typs) -> free_list free_typ typs
-  | StrT typfields -> free_list free_typfield typfields
   | TupT typs -> free_list free_typ typs
-  | RelT (typ1, _, typ2) -> free_list free_typ [typ1; typ2]
   | IterT (typ1, iter) -> union (free_typ typ1) (free_iter iter)
 
 and free_deftyp deftyp =
   match deftyp.it with
-  | AliasT typ -> free_typ typ
+  | NotationT nottyp -> free_nottyp nottyp
   | StructT typfields -> free_list free_typfield typfields
   | VariantT (ids, typcases) ->
     union (free_list free_synid ids) (free_list free_typcase typcases)
 
+and free_nottyp nottyp =
+  match nottyp.it with
+  | TypT typ -> free_typ typ
+  | AtomT _ -> empty
+  | SeqT nottyps -> free_list free_nottyp nottyps
+  | InfixT (nottyp1, _, nottyp2) -> free_list free_nottyp [nottyp1; nottyp2]
+  | BrackT (_, nottyp1) | ParenNT nottyp1 -> free_nottyp nottyp1
+  | IterNT (nottyp1, iter) -> union (free_nottyp nottyp1) (free_iter iter)
+
 and free_typfield (_, typ, _) = free_typ typ
-and free_typcase (_, typs, _) = free_list free_typ typs
+and free_typcase (_, nottyps, _) = free_list free_nottyp nottyps
 
 
 (* Expressions *)
@@ -69,14 +75,13 @@ and free_exp exp =
   | VarE id -> free_varid id
   | AtomE _ | BoolE _ | NatE _ | TextE _ | HoleE -> empty
   | UnE (_, exp1) | DotE (exp1, _) | LenE exp1
-  | ParenE exp1 | SubE (exp1, _, _) -> free_exp exp1
+  | ParenE exp1 | BrackE (_, exp1) -> free_exp exp1
   | BinE (exp1, _, exp2) | CmpE (exp1, _, exp2)
   | IdxE (exp1, exp2) | CommaE (exp1, exp2) | CompE (exp1, exp2)
-  | RelE (exp1, _, exp2) | CatE (exp1, exp2) | FuseE (exp1, exp2) ->
+  | InfixE (exp1, _, exp2) | FuseE (exp1, exp2) ->
     free_list free_exp [exp1; exp2]
   | SliceE (exp1, exp2, exp3) -> free_list free_exp [exp1; exp2; exp3]
-  | OptE expo -> free_opt free_exp expo
-  | SeqE exps | TupE exps | BrackE (_, exps) | ListE exps | CaseE (_, exps) ->
+  | SeqE exps | TupE exps ->
     free_list free_exp exps
   | UpdE (exp1, path, exp2) | ExtE (exp1, path, exp2) ->
     union (free_list free_exp [exp1; exp2]) (free_path path)
@@ -106,7 +111,7 @@ let free_def def =
   match def.it with
   | SynD (_id, deftyp, _hints) -> free_deftyp deftyp
   | VarD _ -> empty
-  | RelD (_id, typ, _hints) -> free_typ typ
+  | RelD (_id, nottyp, _hints) -> free_nottyp nottyp
   | RuleD (id1, _id2, exp, prems) ->
     union (free_relid id1) (union (free_exp exp) (free_list free_prem prems))
   | DecD (_id, exp, typ, _hints) -> union (free_exp exp) (free_typ typ)

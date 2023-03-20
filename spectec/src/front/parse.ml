@@ -1,3 +1,5 @@
+open Util
+
 let parse_lexbuf name lexbuf =
   let open Lexing in
   lexbuf.lex_curr_p <- {lexbuf.lex_curr_p with pos_fname = name};

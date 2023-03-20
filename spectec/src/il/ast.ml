@@ -1,4 +1,4 @@
-open Source
+open Util.Source
 
 
 (* Terminals *)
@@ -10,12 +10,6 @@ type id = string phrase
 type atom =
   | Atom of string               (* atomid *)
   | Bot                          (* `_|_` *)
-  | LParen                       (* `(` *)
-  | LBrack                       (* `[` *)
-  | LBrace                       (* `{` *)
-  | RParen                       (* `)` *)
-  | RBrack                       (* `]` *)
-  | RBrace                       (* `}` *)
   | Dot                          (* `.` *)
   | Dot2                         (* `..` *)
   | Dot3                         (* `...` *)
@@ -26,17 +20,28 @@ type atom =
   | SqArrow                      (* `~>` *)
   | Turnstile                    (* `|-` *)
   | Tilesturn                    (* `-|` *)
+  | LParen                       (* `(` *)
+  | LBrack                       (* `[` *)
+  | LBrace                       (* `{` *)
+  | RParen                       (* `)` *)
+  | RBrack                       (* `]` *)
+  | RBrace                       (* `}` *)
+  | Quest                        (* `?` *)
+  | Star                         (* `*` *)
 
-type relop = atom list list      (* mixfix name *)
+type mixop = atom list list      (* mixfix name *)
 
 
-(* Types *)
+(* Iteration *)
 
 type iter =
   | Opt                          (* `?` *)
   | List                         (* `*` *)
   | List1                        (* `+` *)
   | ListN of exp                 (* `^` exp *)
+
+
+(* Types *)
 
 and typ = typ' phrase
 and typ' =
@@ -45,15 +50,15 @@ and typ' =
   | NatT                         (* `nat` *)
   | TextT                        (* `text` *)
   | TupT of typ list             (* typ * ... * typ *)
-  | RelT of relop * typ list     (* typ relop typ *)
   | IterT of typ * iter          (* typ iter *)
 
 and deftyp = deftyp' phrase
 and deftyp' =
-  | AliasT of typ                       (* type alias *)
+  | NotationT of typmix                 (* type alias *)
   | StructT of typfield list            (* record type *)
   | VariantT of id list * typcase list  (* variant type *)
 
+and typmix = mixop * typ                (* mixfix type *)
 and typfield = atom * typ * hint list   (* record field *)
 and typcase = atom * typ * hint list    (* variant case *)
 
@@ -101,7 +106,7 @@ and exp' =
   | CompE of exp * exp           (* exp `@` exp *)
   | LenE of exp                  (* `|` exp `|` *)
   | TupE of exp list             (* `(` list2(exp, `,`) `)` *)
-  | RelE of relop * exp list     (* exp relop exp *)
+  | MixE of mixop * exp          (* exp atom exp *)
   | CallE of id * exp            (* defid exp? *)
   | IterE of exp * iter          (* exp iter *)
   | OptE of exp option           (* exp? : typ? *)
@@ -126,13 +131,13 @@ and binds = (id * typ) list
 and def = def' phrase
 and def' =
   | SynD of id * deftyp * hint list                   (* syntax type *)
-  | RelD of id * typ * rule list * hint list          (* relation *)
+  | RelD of id * typmix * rule list * hint list       (* relation *)
   | DecD of id * typ * typ * clause list * hint list  (* definition *)
   | RecD of def list                                  (* recursive *)
 
 and rule = rule' phrase
 and rule' =
-  | RuleD of id * binds * exp * premise list          (* relation rule *)
+  | RuleD of id * binds * mixop * exp * premise list  (* relation rule *)
 
 and clause = clause' phrase
 and clause' =
@@ -140,7 +145,7 @@ and clause' =
 
 and premise = premise' phrase
 and premise' =
-  | RulePr of id * exp * iter option                  (* premise *)
+  | RulePr of id * mixop * exp * iter option          (* premise *)
   | IffPr of exp * iter option                        (* side condition *)
   | ElsePr                                            (* otherwise *)
 

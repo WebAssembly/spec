@@ -1,9 +1,10 @@
 {
 open Parser
-open Source
+open Util
 
 let convert_pos pos =
-  { file = pos.Lexing.pos_fname;
+  Source.{
+    file = pos.Lexing.pos_fname;
     line = pos.Lexing.pos_lnum;
     column = pos.Lexing.pos_cnum - pos.Lexing.pos_bol
   }
@@ -11,7 +12,7 @@ let convert_pos pos =
 let region lexbuf =
   let left = convert_pos (Lexing.lexeme_start_p lexbuf) in
   let right = convert_pos (Lexing.lexeme_end_p lexbuf) in
-  {left = left; right = right}
+  Source.{left = left; right = right}
 
 let error lexbuf msg = raise (Source.Error (region lexbuf, msg))
 let error_nest start lexbuf msg =
@@ -157,7 +158,7 @@ rule token = parse
 
   | "_|_" { BOT }
   | "%" { HOLE }
-  | "#" { CAT }
+  | "#" { FUSE }
 
   | "`" { TICK }
 

@@ -48,10 +48,10 @@ rule Step_pure/if-false:
 
 
 rule Step_pure/br-zero:
-  (LABEL n (instr'*) (val'* val^n (BR 0) instr*))  ~>  val^n instr'*
+  (LABEL n (instr'*) val'* val^n (BR 0) instr*)  ~>  val^n instr'*
 
 rule Step_pure/br-succ:
-  (LABEL n (instr'*) (val* (BR $(l+1)) instr*))  ~>  val* (BR l)
+  (LABEL n (instr'*) val* (BR $(l+1)) instr*)  ~>  val* (BR l)
 
 
 rule Step_pure/br_if-true:

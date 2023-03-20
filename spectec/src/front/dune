@@ -1,5 +1,13 @@
+(library
+  (name front)
+  (libraries util el il)
+  (modules lexer parser parse multiplicity lower)
+)
+
 (ocamllex
-  (modules lexer))
+  (modules lexer)
+)
 
 (ocamlyacc
-  (modules parser))
+  (modules parser)
+)

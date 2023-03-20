@@ -1,5 +1,5 @@
-open Il
-open Source
+open Util.Source
+open Ast
 
 
 (* Data Structure *)
@@ -59,16 +59,16 @@ and free_typ typ =
   | VarT id -> free_synid id
   | BoolT | NatT | TextT -> empty
   | TupT typs -> free_list free_typ typs
-  | RelT (_, typs) -> free_list free_typ typs
   | IterT (typ1, iter) -> union (free_typ typ1) (free_iter iter)
 
 and free_deftyp deftyp =
   match deftyp.it with
-  | AliasT typ -> free_typ typ
+  | NotationT typmix -> free_typmix typmix
   | StructT typfields -> free_list free_typfield typfields
   | VariantT (ids, typcases) ->
     union (free_list free_synid ids) (free_list free_typcase typcases)
 
+and free_typmix (_, typ) = free_typ typ
 and free_typfield (_, typ, _) = free_typ typ
 and free_typcase (_, typ, _) = free_typ typ
 
@@ -80,14 +80,14 @@ and free_exp exp =
   | VarE id -> free_varid id
   | BoolE _ | NatE _ | TextE _ -> empty
   | UnE (_, exp1) | DotE (exp1, _) | CaseE (_, exp1)
-  | LenE exp1 | SubE (exp1, _, _) ->
+  | LenE exp1 | MixE (_, exp1) | SubE (exp1, _, _) ->
     free_exp exp1
   | BinE (_, exp1, exp2) | CmpE (_, exp1, exp2)
   | IdxE (exp1, exp2) | CompE (exp1, exp2) | CatE (exp1, exp2) ->
     free_list free_exp [exp1; exp2]
   | SliceE (exp1, exp2, exp3) -> free_list free_exp [exp1; exp2; exp3]
   | OptE expo -> free_opt free_exp expo
-  | TupE exps | RelE (_, exps) | ListE exps ->
+  | TupE exps | ListE exps ->
     free_list free_exp exps
   | UpdE (exp1, path, exp2) | ExtE (exp1, path, exp2) ->
     union (free_list free_exp [exp1; exp2]) (free_path path)
@@ -114,14 +114,14 @@ let free_binds binds = free_list free_bind binds
 
 let free_prem prem =
   match prem.it with
-  | RulePr (id, exp, itero) ->
+  | RulePr (id, _mixop, exp, itero) ->
     union (free_relid id) (union (free_exp exp) (free_opt free_iter itero))
   | IffPr (exp, itero) -> union (free_exp exp) (free_opt free_iter itero)
   | ElsePr -> empty
 
 let free_rule rule =
   match rule.it with
-  | RuleD (_id, binds, exp, prems) ->
+  | RuleD (_id, binds, _mixop, exp, prems) ->
     union (free_binds binds)
       (diff
         (union (free_exp exp) (free_list free_prem prems))
@@ -140,8 +140,8 @@ let free_clause clause =
 let rec free_def def =
   match def.it with
   | SynD (_id, deftyp, _hints) -> free_deftyp deftyp
-  | RelD (_id, typ, rules, _hints) ->
-    union (free_typ typ) (free_list free_rule rules)
+  | RelD (_id, typmix, rules, _hints) ->
+    union (free_typmix typmix) (free_list free_rule rules)
   | DecD (_id, typ1, typ2, clauses, _hints) ->
     union (union (free_typ typ1) (free_typ typ2)) (free_list free_clause clauses)
   | RecD defs -> free_list free_def defs

@@ -1,4 +1,4 @@
-open Source
+open Util.Source
 
 
 (* Terminals *)
@@ -10,16 +10,6 @@ type id = string phrase
 type atom =
   | Atom of string               (* atomid *)
   | Bot                          (* `_|_` *)
-
-
-(* Types *)
-
-type brackop =
-  | Paren                        (* ``(` ... `)` *)
-  | Brack                        (* ``[` ... `]` *)
-  | Brace                        (* ``{` ... `}` *)
-
-type relop =
   | Dot                          (* `.` *)
   | Dot2                         (* `..` *)
   | Dot3                         (* `...` *)
@@ -31,35 +21,51 @@ type relop =
   | Turnstile                    (* `|-` *)
   | Tilesturn                    (* `-|` *)
 
+type brack =
+  | Paren                        (* ``(` ... `)` *)
+  | Brack                        (* ``[` ... `]` *)
+  | Brace                        (* ``{` ... `}` *)
+
+
+(* Iteration *)
+
 type iter =
   | Opt                          (* `?` *)
   | List                         (* `*` *)
   | List1                        (* `+` *)
   | ListN of exp                 (* `^` exp *)
 
+
+(* Types *)
+
 and typ = typ' phrase
 and typ' =
   | VarT of id                   (* varid *)
-  | AtomT of atom                (* atom *)
   | BoolT                        (* `bool` *)
   | NatT                         (* `nat` *)
   | TextT                        (* `text` *)
-  | SeqT of typ list             (* `epsilon` / typ typ *)
-  | StrT of typfield list        (* `{` list(typfield,`,`') `}` *)
   | ParenT of typ                (* `(` typ `)` *)
   | TupT of typ list             (* `(` list2(typ, `,`) `)` *)
-  | RelT of typ * relop * typ    (* typ relop typ *)
-  | BrackT of brackop * typ list (* ``` ([{ typ }]) *)
   | IterT of typ * iter          (* typ iter *)
 
 and deftyp = deftyp' phrase
 and deftyp' =
-  | AliasT of typ                      (* typ *)
-  | StructT of typfield list           (* `{` list(typfield,`,`') `}` *)
-  | VariantT of id list * typcase list (* `|` list(varid|typcase, `|`) *)
+  | NotationT of nottyp                    (* nottyp *)
+  | StructT of typfield list               (* `{` list(typfield,`,`') `}` *)
+  | VariantT of id list * typcase list     (* `|` list(varid|typcase, `|`) *)
 
-and typfield = atom * typ * hint list      (* atom typ hint* *)
-and typcase = atom * typ list * hint list  (* atom typ* hint* *)
+and nottyp = nottyp' phrase
+and nottyp' =
+  | TypT of typ
+  | AtomT of atom                          (* atom *)
+  | SeqT of nottyp list                    (* `epsilon` / nottyp nottyp *)
+  | InfixT of nottyp * atom * nottyp       (* nottyp atom nottyp *)
+  | BrackT of brack * nottyp               (* ``` ([{ nottyp }]) *)
+  | ParenNT of nottyp                      (* `(` nottyp `)` *)
+  | IterNT of nottyp * iter                (* nottyp iter *)
+
+and typfield = atom * typ * hint list         (* atom typ hint* *)
+and typcase = atom * nottyp list * hint list  (* atom nottyp* hint* *)
 
 
 (* Expressions *)
@@ -109,15 +115,10 @@ and exp' =
   | LenE of exp                  (* `|` exp `|` *)
   | ParenE of exp                (* `(` exp `)` *)
   | TupE of exp list             (* `(` list2(exp, `,`) `)` *)
-  | RelE of exp * relop * exp    (* exp relop exp *)
-  | BrackE of brackop * exp list (* ``` ([{ exp }]) *)
+  | InfixE of exp * atom * exp   (* exp atom exp *)
+  | BrackE of brack * exp        (* ``` ([{ exp }]) *)
   | CallE of id * exp            (* `$` defid exp? *)
   | IterE of exp * iter          (* exp iter *)
-  | OptE of exp option           (* exp? : typ? *)
-  | ListE of exp list            (* exp ... exp : typ* *)
-  | CatE of exp * exp            (* exp* exp* : typ* *)
-  | CaseE of atom * exp list     (* atom exp ... exp : variant *)
-  | SubE of exp * typ * typ      (* exp : typ1 <: typ2 *)
   | HoleE                        (* `%` *)
   | FuseE of exp * exp           (* exp `#` exp *)
 
@@ -135,7 +136,7 @@ and path' =
 and def = def' phrase
 and def' =
   | SynD of id * deftyp * hint list          (* `syntax` synid hint* `=` deftyp *)
-  | RelD of id * typ * hint list             (* `relation` relid `:` typ hint* *)
+  | RelD of id * nottyp * hint list          (* `relation` relid `:` nottyp hint* *)
   | RuleD of id * id * exp * premise list    (* `rule` relid ruleid? `:` exp (`--` premise)* *)
   | VarD of id * typ * hint list             (* `var` varid `:` typ *)
   | DecD of id * exp * typ * hint list       (* `def` `$` defid exp? `:` typ hint* *)

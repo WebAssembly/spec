@@ -1,5 +1,7 @@
-open Ast
+open Util
 open Source
+open El
+open Ast
 
 module Set = Free.Set
 module Map = Map.Make(String)

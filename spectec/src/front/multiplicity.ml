@@ -1,4 +1,6 @@
+open Util
 open Source
+open El
 open Ast
 
 
@@ -59,6 +61,7 @@ and check_exp env ctx exp =
   | DotE (exp1, _)
   | LenE exp1
   | ParenE exp1
+  | BrackE (_, exp1)
   | CallE (_, exp1) ->
     check_exp env ctx exp1
   | BinE (exp1, _, exp2)
@@ -66,8 +69,7 @@ and check_exp env ctx exp =
   | IdxE (exp1, exp2)
   | CommaE (exp1, exp2)
   | CompE (exp1, exp2)
-  | RelE (exp1, _, exp2)
-  | CatE (exp1, exp2) ->
+  | InfixE (exp1, _, exp2) ->
     check_exp env ctx exp1;
     check_exp env ctx exp2
   | SliceE (exp1, exp2, exp3) ->
@@ -79,21 +81,14 @@ and check_exp env ctx exp =
     check_exp env ctx exp1;
     check_path env ctx path;
     check_exp env ctx exp2
-  | OptE expo ->
-    Option.iter (check_exp env ctx) expo
   | SeqE exps
-  | TupE exps
-  | BrackE (_, exps)
-  | ListE exps
-  | CaseE (_, exps) ->
+  | TupE exps ->
     List.iter (check_exp env ctx) exps
   | StrE fields ->
     List.iter (check_exp env ctx) (List.map snd fields)
   | IterE (exp1, iter) ->
     check_iter env ctx iter;
     check_exp env (iter::ctx) exp1
-  | SubE (exp1, _, _) ->
-    check_exp env ctx exp1
 
 and check_path env ctx path =
   match path.it with

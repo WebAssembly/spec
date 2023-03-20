@@ -1,6 +1,8 @@
 (mdx
   (libraries spectec)
   (deps
-    (file ../src/watsup.exe)
-    (glob_files ./*.spasm))
-  (files TEST.md))
+    (file ../src/exe-watsup/main.exe)
+    (glob_files ./*.spasm)
+  )
+  (files TEST.md)
+)
