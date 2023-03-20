@@ -73,7 +73,7 @@ syntax resulttype = valtype*
 syntax limits = `[%..%]`(u32, u32)
 
 ;; syntax.spasm:55.1-56.15
-syntax globaltype = `MUT %?%`(()?, valtype)
+syntax globaltype = `MUT%?%`(()?, valtype)
 
 ;; syntax.spasm:57.1-58.27
 syntax functype = `%->%`(resulttype, resulttype)
@@ -82,7 +82,7 @@ syntax functype = `%->%`(resulttype, resulttype)
 syntax tabletype = `% %`(limits, reftype)
 
 ;; syntax.spasm:61.1-62.12
-syntax memtype = `% I8`(limits)
+syntax memtype = `%I8`(limits)
 
 ;; syntax.spasm:63.1-64.10
 syntax elemtype = reftype
@@ -241,16 +241,16 @@ def size : numtype -> nat
 syntax context = {FUNC functype*, GLOBAL globaltype*, TABLE tabletype*, MEM memtype*, ELEM elemtype*, DATA datatype*, LOCAL valtype*, LABEL resulttype*, RETURN resulttype?}
 
 ;; typing.spasm:21.1-21.39
-relation Functype_ok: `|-%:  OK`(functype)
+relation Functype_ok: `|-%:OK`(functype)
   ;; typing.spasm:27.1-28.13
   rule _ {ft : functype}:
-    `|-%:  OK`(ft)
+    `|-%:OK`(ft)
 
 ;; typing.spasm:22.1-22.43
-relation Globaltype_ok: `|-%:  OK`(globaltype)
+relation Globaltype_ok: `|-%:OK`(globaltype)
   ;; typing.spasm:30.1-31.13
   rule _ {gt : globaltype}:
-    `|-%:  OK`(gt)
+    `|-%:OK`(gt)
 
 ;; typing.spasm:25.1-25.36
 relation Limits_ok: `|-%:%`(limits, nat)
@@ -260,17 +260,17 @@ relation Limits_ok: `|-%:%`(limits, nat)
     -- iff ((n_1 <= n_2) /\ (n_2 <= k))
 
 ;; typing.spasm:23.1-23.41
-relation Tabletype_ok: `|-%:  OK`(tabletype)
+relation Tabletype_ok: `|-%:OK`(tabletype)
   ;; typing.spasm:33.1-35.35
   rule _ {lim : limits, rt : reftype}:
-    `|-%:  OK`(`% %`(lim, rt))
+    `|-%:OK`(`% %`(lim, rt))
     -- Limits_ok: `|-%:%`(lim, ((2 ^ 32) - 1))
 
 ;; typing.spasm:24.1-24.37
-relation Memtype_ok: `|-%:  OK`(memtype)
+relation Memtype_ok: `|-%:OK`(memtype)
   ;; typing.spasm:37.1-39.33
   rule _ {lim : limits}:
-    `|-%:  OK`(`% I8`(lim))
+    `|-%:OK`(`%I8`(lim))
     -- Limits_ok: `|-%:%`(lim, (2 ^ 16))
 
 ;; typing.spasm:49.1-49.44
@@ -321,7 +321,7 @@ relation Tabletype_sub: `|-%<:%`(tabletype, tabletype)
 relation Memtype_sub: `|-%<:%`(memtype, memtype)
   ;; typing.spasm:80.1-82.35
   rule _ {lim_1 : limits, lim_2 : limits}:
-    `|-%<:%`(`% I8`(lim_1), `% I8`(lim_2))
+    `|-%<:%`(`%I8`(lim_1), `%I8`(lim_2))
     -- Limits_sub: `|-%<:%`(lim_1, lim_2)
 
 ;; typing.spasm:68.1-68.53
@@ -351,7 +351,7 @@ relation Blocktype_ok: `%|-%:%`(context, blocktype, functype)
   ;; typing.spasm:151.1-153.29
   rule _ {C : context, ft : functype}:
     `%|-%:%`(C, ft, ft)
-    -- Functype_ok: `|-%:  OK`(ft)
+    -- Functype_ok: `|-%:OK`(ft)
 
 ;; typing.spasm:109.1-110.51
 rec {
@@ -477,30 +477,30 @@ relation InstrSeq_ok: `%|-%:%`(context, instr*, functype)
 }
 
 ;; typing.spasm:220.1-220.45
-relation Instr_const: `%|-% CONST`(context, instr)
+relation Instr_const: `%|-%CONST`(context, instr)
   ;; typing.spasm:232.1-234.33
   rule global.get {C : context, t : valtype, x : idx}:
-    `%|-% CONST`(C, GLOBAL.GET(x))
-    -- iff (C.GLOBAL[x] = `MUT %?%`(?(), t))
+    `%|-%CONST`(C, GLOBAL.GET(x))
+    -- iff (C.GLOBAL[x] = `MUT%?%`(?(), t))
 
   ;; typing.spasm:229.1-230.26
   rule ref.func {C : context, x : idx}:
-    `%|-% CONST`(C, REF.FUNC(x))
+    `%|-%CONST`(C, REF.FUNC(x))
 
   ;; typing.spasm:226.1-227.27
   rule ref.null {C : context, rt : reftype}:
-    `%|-% CONST`(C, REF.NULL(rt))
+    `%|-%CONST`(C, REF.NULL(rt))
 
   ;; typing.spasm:223.1-224.26
   rule const {C : context, c : c_numtype, nt : numtype}:
-    `%|-% CONST`(C, CONST(nt, c))
+    `%|-%CONST`(C, CONST(nt, c))
 
 ;; typing.spasm:221.1-221.49
-relation InstrSeq_const: `%|-% CONST`(context, instr*)
+relation InstrSeq_const: `%|-%CONST`(context, instr*)
   ;; typing.spasm:237.1-238.38
   rule _ {C : context, instr : instr}:
-    `%|-% CONST`(C, instr*)
-    -- (Instr_const: `%|-% CONST`(C, instr))*
+    `%|-%CONST`(C, instr*)
+    -- (Instr_const: `%|-%CONST`(C, instr))*
 
 ;; runtime.spasm:3.1-3.39
 syntax addr = nat

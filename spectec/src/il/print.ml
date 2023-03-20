@@ -61,11 +61,10 @@ let string_of_cmpop = function
 let string_of_mixop = function
   | [Atom a]::tail when List.for_all ((=) []) tail -> a
   | mixop ->
-    let of_atom = function Atom s -> " " ^ s ^ " " | a -> string_of_atom a in
     let s =
       String.concat "%" (List.map (
         function [] -> " "
-        | atoms -> String.concat " " (List.map of_atom atoms)) mixop
+        | atoms -> String.concat "" (List.map string_of_atom atoms)) mixop
       )
     in
     let n = String.length s in
