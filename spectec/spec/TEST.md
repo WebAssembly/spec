@@ -79,7 +79,7 @@ syntax globaltype = `MUT%?%`(()?, valtype)
 syntax functype = `%->%`(resulttype, resulttype)
 
 ;; syntax.spasm:59.1-60.17
-syntax tabletype = `% %`(limits, reftype)
+syntax tabletype = `%%`(limits, reftype)
 
 ;; syntax.spasm:61.1-62.12
 syntax memtype = `%I8`(limits)
@@ -263,7 +263,7 @@ relation Limits_ok: `|-%:%`(limits, nat)
 relation Tabletype_ok: `|-%:OK`(tabletype)
   ;; typing.spasm:33.1-35.35
   rule _ {lim : limits, rt : reftype}:
-    `|-%:OK`(`% %`(lim, rt))
+    `|-%:OK`(`%%`(lim, rt))
     -- Limits_ok: `|-%:%`(lim, ((2 ^ 32) - 1))
 
 ;; typing.spasm:24.1-24.37
@@ -314,7 +314,7 @@ relation Limits_sub: `|-%<:%`(limits, limits)
 relation Tabletype_sub: `|-%<:%`(tabletype, tabletype)
   ;; typing.spasm:76.1-78.35
   rule _ {lim_1 : limits, lim_2 : limits, rt : reftype}:
-    `|-%<:%`(`% %`(lim_1, rt), `% %`(lim_2, rt))
+    `|-%<:%`(`%%`(lim_1, rt), `%%`(lim_2, rt))
     -- Limits_sub: `|-%<:%`(lim_1, lim_2)
 
 ;; typing.spasm:66.1-66.44
@@ -381,7 +381,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   ;; typing.spasm:193.1-196.27
   rule call_indirect {C : context, ft : functype, lim : limits, t_1 : valtype, t_2 : valtype, x : idx}:
     `%|-%:%`(C, CALL_INDIRECT(x, ft), `%->%`(t_1* :: [I32], t_2*))
-    -- iff (C.TABLE[x] = `% %`(lim, FUNCREF))
+    -- iff (C.TABLE[x] = `%%`(lim, FUNCREF))
     -- iff (ft = `%->%`(t_1*, t_2*))
 
   ;; typing.spasm:189.1-191.34
