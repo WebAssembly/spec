@@ -296,8 +296,10 @@ Currently, the implementation consists of merely the frontend, which performs:
 
 Lowering from EL into IL infers the following information and makes it explicit in the representation:
 
+* resolving notational overloading,
 * mixfix operator applications,
 * injections from variant subtypes into supertypes,
+* injections from singletons into options/lists,
 * scopes and types of local variables,
 * grouping of relations and their rules, resp functions and their clauses,
 * dependency ordering of definitions,
