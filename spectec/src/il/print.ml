@@ -109,7 +109,7 @@ and string_of_deftyp deftyp =
   | StructT typfields ->
     "{" ^ concat ", " (List.map string_of_typfield typfields) ^ "}"
   | VariantT (ids, typcases) ->
-    concat "" (List.map it ids @ List.map string_of_typcase typcases)
+    "\n  | " ^ concat "\n  | " (List.map it ids @ List.map string_of_typcase typcases)
 
 and string_of_typmix (mixop, typ) =
   if mixop = [[]; []] then string_of_typ typ else
@@ -119,7 +119,7 @@ and string_of_typfield (atom, typ, _hints) =
   string_of_atom atom ^ " " ^ string_of_typ typ
 
 and string_of_typcase (atom, typ, _hints) =
-  "\n  | " ^ string_of_atom atom ^ string_of_typ_args typ
+  string_of_atom atom ^ string_of_typ_args typ
 
 
 (* Expressions *)

@@ -60,7 +60,10 @@ syntax reftype =
   | EXTERNREF
 
 ;; syntax.spasm:42.1-43.38
-syntax valtype = numtypevectypereftype
+syntax valtype =
+  | numtype
+  | vectype
+  | reftype
   | BOT
 
 ;; syntax.spasm:50.1-51.11
@@ -537,7 +540,9 @@ syntax ref =
   | REF.HOST_ADDR(hostaddr)
 
 ;; runtime.spasm:28.1-29.14
-syntax val = numref
+syntax val =
+  | num
+  | ref
 
 ;; runtime.spasm:31.1-32.22
 syntax result =
@@ -601,7 +606,8 @@ syntax state = `%;%`(store, frame)
 rec {
 
 ;; runtime.spasm:113.1-120.9
-syntax admininstr = instr
+syntax admininstr =
+  | instr
   | REF.FUNC_ADDR(funcaddr)
   | REF.HOST_ADDR(hostaddr)
   | CALL_ADDR(funcaddr)
