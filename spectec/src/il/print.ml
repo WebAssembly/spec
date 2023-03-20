@@ -9,7 +9,6 @@ let concat = String.concat
 let prefix s f x = s ^ f x
 let suffix f s x = f x ^ s
 let space f x = " " ^ f x ^ " "
-let paren f x = "(" ^ f x ^ ")"
 
 
 (* Operators *)
@@ -59,18 +58,22 @@ let string_of_cmpop = function
   | LeOp -> "<="
   | GeOp -> ">="
 
-let string_of_mixop mixop =
-  let s =
-    String.concat "%" (List.map (
-      function [] -> " "
-      | atoms -> String.concat " " (List.map string_of_atom atoms)) mixop
-    )
-  in
-  let n = String.length s in
-  if n < 2 then s else
-  let s' = if s.[0] = ' ' then String.sub s 1 (n - 1) else s in
-  let n' = String.length s' in
-  if s'.[n' - 1] = ' ' then String.sub s' 0 (n' - 1) else s'
+let string_of_mixop = function
+  | [Atom a]::tail when List.for_all ((=) []) tail -> a
+  | mixop ->
+    let of_atom = function Atom s -> " " ^ s ^ " " | a -> string_of_atom a in
+    let s =
+      String.concat "%" (List.map (
+        function [] -> " "
+        | atoms -> String.concat " " (List.map of_atom atoms)) mixop
+      )
+    in
+    let n = String.length s in
+    if n < 2 then s else
+    let s' = if s.[0] = ' ' then String.sub s 1 (n - 1) else s in
+    let n' = String.length s' in
+    let s'' = if s'.[n' - 1] = ' ' then String.sub s' 0 (n' - 1) else s' in
+    "`" ^ s'' ^ "`"
 
 
 (* Types *)
@@ -91,6 +94,12 @@ and string_of_typ typ =
   | TupT typs -> "(" ^ string_of_typs ", " typs ^ ")"
   | IterT (typ1, iter) -> string_of_typ typ1 ^ string_of_iter iter
 
+and string_of_typ_args typ =
+  match typ.it with
+  | TupT [] -> ""
+  | TupT _ -> string_of_typ typ
+  | _ -> "(" ^ string_of_typ typ ^ ")"
+
 and string_of_typs sep typs =
   concat sep (List.map string_of_typ typs)
 
@@ -104,15 +113,13 @@ and string_of_deftyp deftyp =
 
 and string_of_typmix (mixop, typ) =
   if mixop = [[]; []] then string_of_typ typ else
-  match typ.it with
-  | TupT _ -> "`" ^ string_of_mixop mixop ^ "`" ^ string_of_typ typ
-  | _ -> "`" ^ string_of_mixop mixop ^ "`(" ^ string_of_typ typ ^ ")"
+  string_of_mixop mixop ^ string_of_typ_args typ
 
 and string_of_typfield (atom, typ, _hints) =
   string_of_atom atom ^ " " ^ string_of_typ typ
 
 and string_of_typcase (atom, typ, _hints) =
-  "\n  | " ^ string_of_atom atom ^ " " ^ string_of_typ typ
+  "\n  | " ^ string_of_atom atom ^ string_of_typ_args typ
 
 
 (* Expressions *)
@@ -144,26 +151,21 @@ and string_of_exp exp =
   | CompE (exp1, exp2) -> string_of_exp exp1 ^ " ++ " ^ string_of_exp exp2
   | LenE exp1 -> "|" ^ string_of_exp exp1 ^ "|"
   | TupE exps -> "(" ^ string_of_exps ", " exps ^ ")"
-  | MixE (mixop, ({it = TupE _; _} as exp1)) ->
-    "`" ^ string_of_mixop mixop ^ "`" ^ string_of_exp exp1
-  | MixE (mixop, exp1) ->
-    "`" ^ string_of_mixop mixop ^ "`(" ^ paren string_of_exp exp1 ^ ")"
-  | CallE (id, {it = TupE []; _}) -> "$" ^ id.it
-  | CallE (id, ({it = TupE _; _} as exp1)) -> "$" ^ id.it ^ paren string_of_exp exp1
-  | CallE (id, exp) -> "$" ^ id.it ^ "(" ^ string_of_exp exp ^ ")"
+  | MixE (mixop, exp1) -> string_of_mixop mixop ^ string_of_exp_args exp1
+  | CallE (id, exp) -> "$" ^ id.it ^ string_of_exp_args exp
   | IterE (exp1, iter) -> string_of_exp exp1 ^ string_of_iter iter
   | OptE expo -> "?(" ^ string_of_exps "" (Option.to_list expo) ^ ")"
   | ListE exps -> "[" ^ string_of_exps " " exps ^ "]"
-  | CatE (exp1, exp2) ->
-    "(" ^ string_of_exp exp1 ^ " :: " ^ string_of_exp exp2 ^ ")"
-  | CaseE (atom, {it = TupE []; _}) -> "@" ^ string_of_atom atom
-  | CaseE (atom, ({it = TupE _; _} as exp)) ->
-    "@" ^ string_of_atom atom ^ string_of_exp exp
-  | CaseE (atom, exp) -> 
-    "@" ^ string_of_atom atom ^ paren string_of_exp exp
-  | SubE (exp1, typ1, typ2) ->
-    "(" ^ string_of_exp exp1 ^
-      " : " ^ string_of_typ typ1 ^ " <: " ^ string_of_typ typ2 ^ ")"
+  | CatE (exp1, exp2) -> string_of_exp exp1 ^ " :: " ^ string_of_exp exp2
+  | CaseE (atom, exp) -> string_of_atom atom ^ string_of_exp_args exp
+  | SubE (exp1, _typ1, typ2) ->
+    "(" ^ string_of_exp exp1 ^ " <: " ^ string_of_typ typ2 ^ ")"
+
+and string_of_exp_args exp =
+  match exp.it with
+  | TupE [] -> ""
+  | TupE _ | SubE _ | BinE _ | CmpE _ -> string_of_exp exp
+  | _ -> "(" ^ string_of_exp exp ^ ")"
 
 and string_of_exps sep exps =
   concat sep (List.map string_of_exp exps)
@@ -188,12 +190,6 @@ let string_of_binds = function
   | [] -> ""
   | binds -> " {" ^ concat ", " (List.map string_of_bind binds) ^ "}"
 
-let string_of_params exp =
-  match exp.it with
-  | TupE [] -> ""
-  | TupE [exp1] -> paren string_of_exp exp1
-  | _ -> string_of_exp exp
-
 
 let string_of_premise prem =
   match prem.it with
@@ -211,7 +207,7 @@ let string_of_rule rule =
   | RuleD (id, binds, mixop, exp, prems) ->
     let id' = if id.it = "" then "_" else id.it in
     "\n  ;; " ^ string_of_region rule.at ^ "\n" ^
-    "  rule " ^ id' ^ string_of_binds binds ^ ":\n  " ^
+    "  rule " ^ id' ^ string_of_binds binds ^ ":\n    " ^
       string_of_exp (MixE (mixop, exp) @@ exp.at) ^
       concat "" (List.map (prefix "\n    -- " string_of_premise) prems)
 
@@ -219,7 +215,7 @@ let string_of_clause id clause =
   match clause.it with
   | DefD (binds, exp1, exp2, premo) ->
     "\n  ;; " ^ string_of_region clause.at ^ "\n" ^
-    "  def" ^ string_of_binds binds ^ " " ^ id.it ^ string_of_params exp1 ^ " = " ^
+    "  def" ^ string_of_binds binds ^ " " ^ id.it ^ string_of_exp_args exp1 ^ " = " ^
       string_of_exp exp2 ^
       Option.(value (map (prefix " -- " string_of_premise) premo) ~default:"")
 

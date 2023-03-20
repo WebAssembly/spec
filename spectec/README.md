@@ -294,6 +294,15 @@ Currently, the implementation consists of merely the frontend, which performs:
 * elaboration from EL into IL,
 * type checking for the EL.
 
+Lowering from EL into IL infers the following information and makes it explicit in the representation:
+
+* mixfix operator applications,
+* injections from variant subtypes into supertypes,
+* scopes and types of local variables,
+* grouping of relations and their rules, resp functions and their clauses,
+* dependency ordering of definitions,
+* recursion groups,
+
 
 ## Building and Running
 
