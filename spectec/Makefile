@@ -13,7 +13,7 @@ SPECLOG = TEST.md
 
 default: exe
 all: exe test
-ci: all rawtest
+ci: all testexe
 
 
 # Executable
