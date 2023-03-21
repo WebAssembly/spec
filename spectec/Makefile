@@ -3,8 +3,8 @@
 NAME = watsup
 EXT = $(NAME)
 
-SPECDIR = spec
-SPECLOG = TEST.md
+TESTDIR = spec
+TESTLOG = $(TESTDIR)/TEST.md
 
 
 # Main targets
@@ -40,7 +40,7 @@ testpromote:
 	dune promote
 
 testexe: exe
-	(cd $(SPECDIR); ../$(NAME) *.$(EXT))
+	(cd $(TESTDIR); ../$(NAME) *.$(EXT))
 
 
 # Cleanup
