@@ -564,14 +564,14 @@ The embedder may define its own set of types (such as DOM objects) or allow the 
 Such *host types* can be [imported](import-and-export) into a module, where they are treated as opaque data types.
 
 There are no operations to manipulate such types, but a WebAssembly program can receive references to them as parameters or results of imported/exported Wasm functions. Such "foreign" references may point to objects on the _embedder_'s heap. Yet, they can safely be stored in or round-trip through Wasm code.
-
+```
 (type $Foreign (import "env" "Foreign"))
 (type $s (struct (field $a i32) (field $x (ref $Foreign)))
 
 (func (export "f") (param $x (ref $Foreign))
   ...
 )
-
+```
 
 ### Function References
 
