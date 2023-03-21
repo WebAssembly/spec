@@ -31,9 +31,6 @@ exe:
 
 # Test
 
-CONFIGURED_INVOKE = $$ dune exec ../$(SRCDIR)/$(EXE) -- $(SPECFILES:%=%.$(EXT))
-CURRENT_INVOKE = $(shell grep "dune exec" $(SPECDIR)/$(SPECLOG))
-
 .PHONY: test testpromote testexe
 
 test:
