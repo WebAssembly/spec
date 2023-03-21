@@ -12,7 +12,7 @@ SPECLOG = TEST.md
 .PHONY: default all ci
 
 default: exe
-all: exe dunetest
+all: exe test
 ci: all rawtest
 
 
