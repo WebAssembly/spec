@@ -35,7 +35,7 @@ let string_of_region r =
 
 type 'a phrase = {at : region; it : 'a}
 
-let (@@) x region = {it = x; at = region}
+let ($) x region = {it = x; at = region}
 
 let it {it; at = _} = it
 let at {at; it = _} = at

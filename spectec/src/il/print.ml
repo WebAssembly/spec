@@ -187,9 +187,9 @@ let string_of_binds = function
 let string_of_premise prem =
   match prem.it with
   | RulePr (id, mixop, exp, None) ->
-    id.it ^ ": " ^ string_of_exp (MixE (mixop, exp) @@ exp.at)
+    id.it ^ ": " ^ string_of_exp (MixE (mixop, exp) $ exp.at)
   | RulePr (id, mixop, exp, Some iter) ->
-    "(" ^ id.it ^ ": " ^ string_of_exp (MixE (mixop, exp) @@ exp.at) ^ ")" ^ string_of_iter iter
+    "(" ^ id.it ^ ": " ^ string_of_exp (MixE (mixop, exp) $ exp.at) ^ ")" ^ string_of_iter iter
   | IffPr (exp, None) -> "iff " ^ string_of_exp exp
   | IffPr (exp, Some iter) ->
     "(" ^ "iff " ^ string_of_exp exp ^ ")" ^ string_of_iter iter
@@ -201,7 +201,7 @@ let string_of_rule rule =
     let id' = if id.it = "" then "_" else id.it in
     "\n  ;; " ^ string_of_region rule.at ^ "\n" ^
     "  rule " ^ id' ^ string_of_binds binds ^ ":\n    " ^
-      string_of_exp (MixE (mixop, exp) @@ exp.at) ^
+      string_of_exp (MixE (mixop, exp) $ exp.at) ^
       concat "" (List.map (prefix "\n    -- " string_of_premise) prems)
 
 let string_of_clause id clause =

@@ -17,7 +17,7 @@ val string_of_region : region -> string
 
 type 'a phrase = {at : region; it : 'a}
 
-val (@@) : 'a -> region -> 'a phrase
+val ($) : 'a -> region -> 'a phrase
 val it : 'a phrase -> 'a
 val at : 'a phrase -> region
 

@@ -32,9 +32,9 @@ let new_env () =
     defs = Env.empty;
   }
 
-let fwd_deftyp id = NotationT ([[]; []], VarT (id @@ no_region) @@ no_region)
-let fwd_deftyp_bad = fwd_deftyp "(undefined)" @@ no_region
-let fwd_deftyp_ok = fwd_deftyp "(forward)" @@ no_region
+let fwd_deftyp id = NotationT ([[]; []], VarT (id $ no_region) $ no_region)
+let fwd_deftyp_bad = fwd_deftyp "(undefined)" $ no_region
+let fwd_deftyp_ok = fwd_deftyp "(forward)" $ no_region
 
 let find space env' id =
   match Env.find_opt id.it env' with
@@ -117,7 +117,7 @@ let as_tup_typ phrase env dir typ at : typ list =
 let as_mix_typid phrase env id at : mixop * typ =
   match (find "syntax type" env.typs id).it with
   | NotationT (mixop, typ) -> mixop, typ
-  | _ -> as_error at phrase Infer (VarT id @@ id.at) "`mixin-op`(...)"
+  | _ -> as_error at phrase Infer (VarT id $ id.at) "`mixin-op`(...)"
 
 let as_mix_typ phrase env dir typ at : mixop * typ =
   match expand_singular' env typ.it with
@@ -127,7 +127,7 @@ let as_mix_typ phrase env dir typ at : mixop * typ =
 let as_struct_typid phrase env id at : typfield list =
   match (find "syntax type" env.typs id).it with
   | StructT fields -> fields
-  | _ -> as_error at phrase Infer (VarT id @@ id.at) "{...}"
+  | _ -> as_error at phrase Infer (VarT id $ id.at) "{...}"
 
 let as_struct_typ phrase env dir typ at : typfield list =
   match expand_singular' env typ.it with
@@ -138,7 +138,7 @@ let rec as_variant_typid phrase env id at : typcase list =
   match (find "syntax type" env.typs id).it with
   | VariantT (ids, cases) ->
     List.concat (cases :: List.map (fun id -> as_variant_typid "" env id at) ids)
-  | _ -> as_error at phrase Infer (VarT id @@ id.at) "| ..."
+  | _ -> as_error at phrase Infer (VarT id $ id.at) "| ..."
 
 let as_variant_typ phrase env dir typ at : typcase list =
   match expand_singular' env typ.it with
@@ -165,7 +165,7 @@ let rec equiv_typ' env typ1 typ2 =
   | IterT (typ11, iter1), IterT (typ21, iter2) ->
     equiv_typ' env typ11 typ21 && Eq.eq_iter iter1 iter2
   | typ1', typ2' ->
-    Eq.eq_typ (typ1' @@ typ1.at) (typ2' @@ typ2.at)
+    Eq.eq_typ (typ1' $ typ1.at) (typ2' $ typ2.at)
 
 let equiv_typ env typ1 typ2 at =
   if not (equiv_typ' env typ1 typ2) then
@@ -214,7 +214,7 @@ let valid_list valid_x_y env xs ys at =
 let rec valid_iter env iter =
   match iter with
   | Opt | List | List1 -> ()
-  | ListN exp -> valid_exp env exp (NatT @@ exp.at)
+  | ListN exp -> valid_exp env exp (NatT $ exp.at)
 
 
 (* Types *)
@@ -273,12 +273,12 @@ and valid_typcase env (_atom, typ, _hints) = valid_typ env typ
 and infer_exp env exp : typ =
   match exp.it with
   | VarE id -> find "variable" env.vars id
-  | BoolE _ -> BoolT @@ exp.at
-  | NatE _ | LenE _ -> NatT @@ exp.at
-  | TextE _ -> TextT @@ exp.at
-  | UnE (unop, _) -> infer_unop unop @@ exp.at
-  | BinE (binop, _, _) -> infer_binop binop @@ exp.at
-  | CmpE _ -> BoolT @@ exp.at
+  | BoolE _ -> BoolT $ exp.at
+  | NatE _ | LenE _ -> NatT $ exp.at
+  | TextE _ -> TextT $ exp.at
+  | UnE (unop, _) -> infer_unop unop $ exp.at
+  | BinE (binop, _, _) -> infer_binop binop $ exp.at
+  | CmpE _ -> BoolT $ exp.at
   | IdxE (exp1, _) ->
     as_list_typ "expression" env Infer (infer_exp env exp1) exp1.at
   | SliceE (exp1, _, _)
@@ -291,12 +291,12 @@ and infer_exp env exp : typ =
     let typ1 = infer_exp env exp1 in
     let typfields = as_struct_typ "expression" env Infer typ1 exp1.at in
     find_field typfields atom exp1.at
-  | TupE exps -> TupT (List.map (infer_exp env) exps) @@ exp.at
+  | TupE exps -> TupT (List.map (infer_exp env) exps) $ exp.at
   | CallE (id, _) -> snd (find "function" env.defs id)
   | MixE _ -> error exp.at "cannot infer type of mixin notation"
   | IterE (exp1, iter) ->
     let iter' = match iter with ListN _ -> List | iter' -> iter' in
-    IterT (infer_exp env exp1, iter') @@ exp.at
+    IterT (infer_exp env exp1, iter') $ exp.at
   | OptE _ -> error exp.at "cannot infer type of option"
   | ListE _ -> error exp.at "cannot infer type of list"
   | CatE _ -> error exp.at "cannot infer type of concatenation"
@@ -314,34 +314,34 @@ and valid_exp env exp typ =
     let typ' = infer_exp env exp in
     equiv_typ env typ' typ exp.at
   | UnE (unop, exp1) ->
-    let typ' = infer_unop unop @@ exp.at in
+    let typ' = infer_unop unop $ exp.at in
     valid_exp env exp1 typ';
     equiv_typ env typ' typ exp.at
   | BinE (binop, exp1, exp2) ->
-    let typ' = infer_binop binop @@ exp.at in
+    let typ' = infer_binop binop $ exp.at in
     valid_exp env exp1 typ';
     valid_exp env exp2 typ';
     equiv_typ env typ' typ exp.at
   | CmpE (cmpop, exp1, exp2) ->
     let typ' =
       match infer_cmpop cmpop with
-      | Some typ' -> typ' @@ exp.at
+      | Some typ' -> typ' $ exp.at
       | None -> infer_exp env exp1
     in
     valid_exp env exp1 typ';
     valid_exp env exp2 typ';
-    equiv_typ env (BoolT @@ exp.at) typ exp.at
+    equiv_typ env (BoolT $ exp.at) typ exp.at
   | IdxE (exp1, exp2) ->
     let typ1 = infer_exp env exp1 in
     let typ' = as_list_typ "expression" env Infer typ1 exp1.at in
     valid_exp env exp1 typ1;
-    valid_exp env exp2 (NatT @@ exp2.at);
+    valid_exp env exp2 (NatT $ exp2.at);
     equiv_typ env typ' typ exp.at
   | SliceE (exp1, exp2, exp3) ->
     let _typ' = as_list_typ "expression" env Check typ exp1.at in
     valid_exp env exp1 typ;
-    valid_exp env exp2 (NatT @@ exp2.at);
-    valid_exp env exp3 (NatT @@ exp3.at)
+    valid_exp env exp2 (NatT $ exp2.at);
+    valid_exp env exp3 (NatT $ exp3.at)
   | UpdE (exp1, path, exp2) ->
     valid_exp env exp1 typ;
     let typ2 = valid_path env path typ in
@@ -368,7 +368,7 @@ and valid_exp env exp typ =
     let typ1 = infer_exp env exp1 in
     let _typ11 = as_list_typ "expression" env Infer typ1 exp1.at in
     valid_exp env exp1 typ1;
-    equiv_typ env (NatT @@ exp.at) typ exp.at
+    equiv_typ env (NatT $ exp.at) typ exp.at
   | TupE exps ->
     let typs = as_tup_typ "tuple" env Check typ exp.at in
     valid_list valid_exp env exps typs exp.at
@@ -420,7 +420,7 @@ and valid_path env path typ : typ =
   | RootP -> typ
   | IdxP (path1, exp2) ->
     let typ1 = valid_path env path1 typ in
-    valid_exp env exp2 (NatT @@ exp2.at);
+    valid_exp env exp2 (NatT $ exp2.at);
     as_list_typ "path" env Check typ1 path1.at
   | DotP (path1, atom) ->
     let typ1 = valid_path env path1 typ in
@@ -442,7 +442,7 @@ let valid_prem env prem =
     valid_expmix env mixop exp (find "relation" env.rels id) exp.at;
     Option.iter (valid_iter env) iter_opt
   | IffPr (exp, iter_opt) ->
-    valid_exp env exp (BoolT @@ exp.at);
+    valid_exp env exp (BoolT $ exp.at);
     Option.iter (valid_iter env) iter_opt
   | ElsePr ->
     ()
