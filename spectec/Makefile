@@ -1,31 +1,47 @@
 # Configuration
 
 NAME = watsup
-EXT = spasm
+EXT = $(NAME)
+
+SPECDIR = spec
+SPECFILES = syntax aux typing runtime reduction
+SPECLOG = TEST.md
 
 
 # Main targets
 
+EXE = exe-$(NAME)/main.exe
+SRCDIR = src
+OUTDIR = _build/default/src
+
 .PHONY: exe all
 
 exe:
-	dune build src/exe-$(NAME)/main.exe
-	ln -f _build/default/src/exe-$(NAME)/main.exe ./$(NAME)
+	dune build $(SRCDIR)/$(EXE)
+	ln -f $(OUTDIR)/$(EXE) ./$(NAME)
 
 all: exe test
 
 
 # Test
 
-SPECDIR = spec
-SPECFILES = syntax aux typing runtime reduction
+CONFIGURED_INVOKE = $$ dune exec ../$(SRCDIR)/$(EXE) -- $(SPECFILES:%=%.$(EXT))
+CURRENT_INVOKE = $(shell grep "dune exec" $(SPECDIR)/$(SPECLOG))
 
-.PHONY: test dunetest ci
+.PHONY: test dunetest dunepromote fix-dunetest ci
 
 test: exe
 	./$(NAME) $(SPECFILES:%=$(SPECDIR)/%.$(EXT))
 
-dunetest:
+fix-dunetest:
+	@ \
+	if [ "$(CURRENT_INVOKE)" != "$(CONFIGURED_INVOKE)" ]; then \
+	  echo Updating dune test invocation in $(SPECDIR)/$(SPECLOG) ;\
+	  sed "s!$(CURRENT_INVOKE)!$(CONFIGURED_INVOKE)!" $(SPECDIR)/$(SPECLOG) >$(SPECDIR)/$(SPECLOG).tmp ;\
+	  mv $(SPECDIR)/$(SPECLOG).tmp $(SPECDIR)/$(SPECLOG) ;\
+	fi
+
+dunetest: fix-dunetest
 	dune runtest
 
 dunepromote:
