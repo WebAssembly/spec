@@ -11,6 +11,12 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 def Main():
   data = open(sys.argv[1]).read()
 
+  # Make bikeshed happy
+  # Apparently it can't handle empty line before DOCTYPE comment
+  data = data.replace('\n<!DOCTYPE', '<!DOCTYPE')
+  # Ensure newline before <pre>
+  data = data.replace('<pre>', '\n<pre>')
+
   # Don't add more than 3 levels to TOC.
   data = data.replace('<h5>', '<h5 class="no-toc">')
 

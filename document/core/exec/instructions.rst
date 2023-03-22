@@ -385,7 +385,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 5. Let :math:`j^\ast` be the sequence :math:`\lanes_{i8x16}(c_1)`.
 
-6. Let :math:`c^\ast` be the concatenation of the two sequences :math:`j^\ast~0^{240}`
+6. Let :math:`c^\ast` be the concatenation of the two sequences :math:`j^\ast~0^{240}`.
 
 7. Let :math:`c'` be the result of :math:`\lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ])`.
 
@@ -545,7 +545,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 7. Let :math:`i^\ast` be the sequence :math:`\lanes_{\shape}(c_2)`.
 
-8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)`
+8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)`.
 
 9. Push :math:`\V128.\VCONST~c` on the stack.
 
@@ -745,7 +745,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. Let :math:`i_1^\ast` be the sequence :math:`\lanes_{\shape}(c_1)`
+3. Let :math:`i_1^\ast` be the sequence :math:`\lanes_{\shape}(c_1)`.
 
 4. Let :math:`i` be the result of computing :math:`\bool(\bigwedge(i_1 \neq 0)^\ast)`.
 
@@ -838,7 +838,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 3. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast))`
+4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast))`.
 
 5. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
@@ -933,7 +933,7 @@ where:
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`(i_1~i_2)^\ast` be the result of computing :math:`\imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2)))`
+4. Let :math:`(i_1~i_2)^\ast` be the result of computing :math:`\imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2)))`.
 
 5. Let :math:`j^\ast` be the result of computing :math:`\iadd_{32}(i_1, i_2)^\ast`.
 
@@ -1054,7 +1054,7 @@ where:
 
    b. Let :math:`j^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_2)[N \slice N]`.
 
-6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))`
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))`.
 
 7. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
@@ -1091,7 +1091,7 @@ where:
 
 4. Let :math:`j^\ast` be the result of computing :math:`\iadd_{N}(i_1, i_2)^\ast`.
 
-5. Let `c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
 
 6. Push the value :math:`\V128.\VCONST~c` to the stack.
 
@@ -2702,17 +2702,19 @@ Control Instructions
 :math:`\BLOCK~\blocktype~\instr^\ast~\END`
 ..........................................
 
-1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
+2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
 
-3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
+3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
 
-4. Assert: due to :ref:`validation <valid-block>`, there are at least :math:`m` values on the top of the stack.
+4. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
 
-5. Pop the values :math:`\val^m` from the stack.
+5. Assert: due to :ref:`validation <valid-block>`, there are at least :math:`m` values on the top of the stack.
 
-6. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
+6. Pop the values :math:`\val^m` from the stack.
+
+7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
 
 .. math::
    ~\\[-1ex]
@@ -2728,17 +2730,19 @@ Control Instructions
 :math:`\LOOP~\blocktype~\instr^\ast~\END`
 .........................................
 
-1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
+2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
 
-3. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is the start of the loop.
+3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
 
-4. Assert: due to :ref:`validation <valid-loop>`, there are at least :math:`m` values on the top of the stack.
+4. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is the start of the loop.
 
-5. Pop the values :math:`\val^m` from the stack.
+5. Assert: due to :ref:`validation <valid-loop>`, there are at least :math:`m` values on the top of the stack.
 
-6. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
+6. Pop the values :math:`\val^m` from the stack.
+
+7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
 
 .. math::
    ~\\[-1ex]
@@ -2769,11 +2773,11 @@ Control Instructions
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl}
-   F; (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     F; \BLOCK~\X{bt}~\instr_1^\ast~\END
+   (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
+     \BLOCK~\X{bt}~\instr_1^\ast~\END
      \\&&\quad (\iff c \neq 0) \\
-   F; (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     F; \BLOCK~\X{bt}~\instr_2^\ast~\END
+   (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
+     \BLOCK~\X{bt}~\instr_2^\ast~\END
      \\&&\quad (\iff c = 0) \\
    \end{array}
 
