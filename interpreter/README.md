@@ -280,7 +280,7 @@ op:
   br_on_cast_fail <var> <ref_type> <ref_type> 
   call <var>
   call_ref <var>
-  call_indirect <var>? (type <var>)? <func_type>?
+  call_indirect <var>? (type <var>)? <func_type>
   return
   return_call <var>
   return_call_ref <var>
