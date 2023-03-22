@@ -167,10 +167,6 @@
 (assert_return (invoke "call-7") (i32.const 65))
 (assert_return (invoke "call-9") (i32.const 66))
 
-(assert_invalid
-  (module (table 1 funcref) (global i32 (i32.const 0)) (elem (global.get 0) $f) (func $f))
-  "unknown global"
-)
 (module
   (global $g i32 (i32.const 0))
   (table 1 funcref) (elem (global.get $g) $f) (func $f)
