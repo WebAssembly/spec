@@ -139,21 +139,19 @@ singlehtml: $(GENERATED)
 bikeshed: $(GENERATED)
 	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
 		$(ALLSPHINXOPTS) $(BUILDDIR)/bikeshed_singlehtml
-	@echo ==== Showing contents of _build/bikeshed_singlehtml/index.html ====
-	@head -n20 _build/bikeshed_singlehtml/index.html
-	@echo ...
-	@echo ===================================================================
-	python util/bikeshed_fixup.py $(BUILDDIR)/bikeshed_singlehtml/index.html \
+	python3 util/bikeshed_fixup.py $(BUILDDIR)/bikeshed_singlehtml/index.html \
 		>$(BUILDDIR)/bikeshed_singlehtml/index_fixed.html
 	@echo ==== Showing contents of _build/bikeshed_singlehtml/index_fixed.html ====
-	@head -n20 _build/bikeshed_singlehtml/index_fixed.html
-	@echo ...
+	@head -n10 _build/bikeshed_singlehtml/index_fixed.html
+	@echo ... skipping $$(expr `cat _build/bikeshed_singlehtml/index_fixed.html | wc -l` - 20) lines ...
+	@tail -n10 _build/bikeshed_singlehtml/index_fixed.html
+	@echo
 	@echo =========================================================================
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
 	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
-	python util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
+	python3 util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
 		>$(BUILDDIR)/html/bikeshed/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/katex/dist/
 	cp -r util/katex/dist/* $(BUILDDIR)/html/bikeshed/katex/dist/
