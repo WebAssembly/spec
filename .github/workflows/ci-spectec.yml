@@ -1,0 +1,28 @@
+name: CI for spectec
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ spectec ]
+
+  pull_request:
+    branches: [ main ]
+    paths: [ spectec ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  spec-tec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 4.14.x
+      - name: Setup Dune
+        run: opam install --yes dune mdx
+      - name: Build and test
+        run: cd spectec && opam exec make ci
