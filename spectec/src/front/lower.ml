@@ -965,16 +965,17 @@ let origins i (map : int Map.t ref) (set : Il.Free.Set.t) =
 let deps (map : int Map.t) (set : Il.Free.Set.t) : int array =
   Array.map (fun id -> Map.find id map) (Array.of_seq (Il.Free.Set.to_seq set))
 
-let check_homogeneous def' defs' =
-  List.iter (fun def2' ->
-    match def'.it, def2'.it with
+let check_recursion defs' =
+  List.iter (fun def' ->
+    match def'.it, (List.hd defs').it with
     | Il.SynD _, Il.SynD _
     | Il.RelD _, Il.RelD _
     | Il.DecD _, Il.DecD _ -> ()
     | _, _ ->
-      error def'.at (" " ^ string_of_region def2'.at ^
+      error (List.hd defs').at (" " ^ string_of_region def'.at ^
         ": invalid recurion between definitions of different sort")
   ) defs'
+  (* TODO: check that notations are non-recursive and defs are inductive? *)
 
 let recursify_defs defs' : Il.def list =
   let open Il.Free in
@@ -1001,13 +1002,11 @@ let recursify_defs defs' : Il.def list =
   let sccs = Scc.sccs graph in
   List.map (fun set ->
     let defs'' = List.map (fun i -> defa.(i)) (Scc.Set.elements set) in
-    check_homogeneous (List.hd defs'') defs'';
+    check_recursion defs'';
     let i = Scc.Set.choose set in
     match defs'' with
     | [def'] when not (Il.Free.subset bounds.(i) frees.(i)) -> def'
-    | defs'' ->
-      (* TODO: check that notation is non-recursive and defs are inductive? *)
-      Il.RecD defs'' $ Source.over_region (List.map at defs'')
+    | defs'' -> Il.RecD defs'' $ Source.over_region (List.map at defs'')
   ) sccs
 
 let lower defs : Il.script =
