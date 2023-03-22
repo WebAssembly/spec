@@ -322,18 +322,18 @@ rule token = parse
       | "i31.get_u" -> I31_GET i31_get_u
       | "i31.get_s" -> I31_GET i31_get_s
 
-      | "struct.new_canon" -> STRUCT_NEW struct_new_canon
-      | "struct.new_canon_default" -> STRUCT_NEW struct_new_canon_default
+      | "struct.new" -> STRUCT_NEW struct_new
+      | "struct.new_default" -> STRUCT_NEW struct_new_default
       | "struct.get" -> STRUCT_GET struct_get
       | "struct.get_u" -> STRUCT_GET struct_get_u
       | "struct.get_s" -> STRUCT_GET struct_get_s
       | "struct.set" -> STRUCT_SET
 
-      | "array.new_canon" -> ARRAY_NEW array_new_canon
-      | "array.new_canon_default" -> ARRAY_NEW array_new_canon_default
-      | "array.new_canon_fixed" -> ARRAY_NEW_FIXED
-      | "array.new_canon_elem" -> ARRAY_NEW_ELEM
-      | "array.new_canon_data" -> ARRAY_NEW_DATA
+      | "array.new" -> ARRAY_NEW array_new
+      | "array.new_default" -> ARRAY_NEW array_new_default
+      | "array.new_fixed" -> ARRAY_NEW_FIXED
+      | "array.new_elem" -> ARRAY_NEW_ELEM
+      | "array.new_data" -> ARRAY_NEW_DATA
       | "array.get" -> ARRAY_GET array_get
       | "array.get_u" -> ARRAY_GET array_get_u
       | "array.get_s" -> ARRAY_GET array_get_s

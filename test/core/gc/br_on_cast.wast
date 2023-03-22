@@ -13,8 +13,8 @@
   (func (export "init") (param $x externref)
     (table.set (i32.const 0) (ref.null any))
     (table.set (i32.const 1) (i31.new (i32.const 7)))
-    (table.set (i32.const 2) (struct.new_canon $st (i32.const 6)))
-    (table.set (i32.const 3) (array.new_canon $at (i32.const 5) (i32.const 3)))
+    (table.set (i32.const 2) (struct.new $st (i32.const 6)))
+    (table.set (i32.const 3) (array.new $at (i32.const 5) (i32.const 3)))
     (table.set (i32.const 4) (extern.internalize (local.get $x)))
   )
 
@@ -98,14 +98,14 @@
   (table 20 structref)
 
   (func $init
-    (table.set (i32.const 0) (struct.new_canon_default $t0))
-    (table.set (i32.const 10) (struct.new_canon_default $t0'))
-    (table.set (i32.const 1) (struct.new_canon_default $t1))
-    (table.set (i32.const 11) (struct.new_canon_default $t1'))
-    (table.set (i32.const 2) (struct.new_canon_default $t2))
-    (table.set (i32.const 12) (struct.new_canon_default $t2'))
-    (table.set (i32.const 3) (struct.new_canon_default $t3))
-    (table.set (i32.const 4) (struct.new_canon_default $t4))
+    (table.set (i32.const 0) (struct.new_default $t0))
+    (table.set (i32.const 10) (struct.new_default $t0'))
+    (table.set (i32.const 1) (struct.new_default $t1))
+    (table.set (i32.const 11) (struct.new_default $t1'))
+    (table.set (i32.const 2) (struct.new_default $t2))
+    (table.set (i32.const 12) (struct.new_default $t2'))
+    (table.set (i32.const 3) (struct.new_default $t3))
+    (table.set (i32.const 4) (struct.new_default $t4))
   )
 
   (func (export "test-sub")

@@ -17,8 +17,8 @@
     (table.set $ta (i32.const 1) (ref.null struct))
     (table.set $ta (i32.const 2) (ref.null none))
     (table.set $ta (i32.const 3) (i31.new (i32.const 7)))
-    (table.set $ta (i32.const 4) (struct.new_canon_default $st))
-    (table.set $ta (i32.const 5) (array.new_canon_default $at (i32.const 0)))
+    (table.set $ta (i32.const 4) (struct.new_default $st))
+    (table.set $ta (i32.const 5) (array.new_default $at (i32.const 0)))
     (table.set $ta (i32.const 6) (extern.internalize (local.get $x)))
     (table.set $ta (i32.const 7) (extern.internalize (ref.null extern)))
 
@@ -30,7 +30,7 @@
     (table.set $te (i32.const 1) (ref.null extern))
     (table.set $te (i32.const 2) (local.get $x))
     (table.set $te (i32.const 3) (extern.externalize (i31.new (i32.const 8))))
-    (table.set $te (i32.const 4) (extern.externalize (struct.new_canon_default $st)))
+    (table.set $te (i32.const 4) (extern.externalize (struct.new_default $st)))
     (table.set $te (i32.const 5) (extern.externalize (ref.null any)))
   )
 
@@ -192,14 +192,14 @@
   (table 20 (ref null struct))
 
   (func $init
-    (table.set (i32.const 0) (struct.new_canon_default $t0))
-    (table.set (i32.const 10) (struct.new_canon_default $t0))
-    (table.set (i32.const 1) (struct.new_canon_default $t1))
-    (table.set (i32.const 11) (struct.new_canon_default $t1'))
-    (table.set (i32.const 2) (struct.new_canon_default $t2))
-    (table.set (i32.const 12) (struct.new_canon_default $t2'))
-    (table.set (i32.const 3) (struct.new_canon_default $t3))
-    (table.set (i32.const 4) (struct.new_canon_default $t4))
+    (table.set (i32.const 0) (struct.new_default $t0))
+    (table.set (i32.const 10) (struct.new_default $t0))
+    (table.set (i32.const 1) (struct.new_default $t1))
+    (table.set (i32.const 11) (struct.new_default $t1'))
+    (table.set (i32.const 2) (struct.new_default $t2))
+    (table.set (i32.const 12) (struct.new_default $t2'))
+    (table.set (i32.const 3) (struct.new_default $t3))
+    (table.set (i32.const 4) (struct.new_default $t4))
   )
 
   (func (export "test-sub")

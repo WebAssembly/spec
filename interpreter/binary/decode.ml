@@ -587,24 +587,24 @@ let rec instr s =
 
   | 0xfb as b ->
     (match u32 s with
-    | 0x01l -> struct_new_canon (at var s)
-    | 0x02l -> struct_new_canon_default (at var s)
+    | 0x01l -> struct_new (at var s)
+    | 0x02l -> struct_new_default (at var s)
     | 0x03l -> let x = at var s in let y = at var s in struct_get x y
     | 0x04l -> let x = at var s in let y = at var s in struct_get_s x y
     | 0x05l -> let x = at var s in let y = at var s in struct_get_u x y
     | 0x06l -> let x = at var s in let y = at var s in struct_set x y
 
-    | 0x11l -> array_new_canon (at var s)
-    | 0x12l -> array_new_canon_default (at var s)
+    | 0x11l -> array_new (at var s)
+    | 0x12l -> array_new_default (at var s)
     | 0x13l -> array_get (at var s)
     | 0x14l -> array_get_s (at var s)
     | 0x15l -> array_get_u (at var s)
     | 0x16l -> array_set (at var s)
     | 0x17l -> array_len
 
-    | 0x19l -> let x = at var s in let n = u32 s in array_new_canon_fixed x n
-    | 0x1bl -> let x = at var s in let y = at var s in array_new_canon_data x y
-    | 0x1cl -> let x = at var s in let y = at var s in array_new_canon_elem x y
+    | 0x19l -> let x = at var s in let n = u32 s in array_new_fixed x n
+    | 0x1bl -> let x = at var s in let y = at var s in array_new_data x y
+    | 0x1cl -> let x = at var s in let y = at var s in array_new_elem x y
 
     | 0x20l -> i31_new
     | 0x21l -> i31_get_s

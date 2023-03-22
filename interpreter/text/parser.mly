@@ -589,9 +589,9 @@ plain_instr :
   | STRUCT_GET var var { fun c -> $1 ($2 c type_) ($3 c field) }
   | STRUCT_SET var var { fun c -> struct_set ($2 c type_) ($3 c field) }
   | ARRAY_NEW var { fun c -> $1 ($2 c type_) }
-  | ARRAY_NEW_FIXED var nat32 { fun c -> array_new_canon_fixed ($2 c type_) $3 }
-  | ARRAY_NEW_ELEM var var { fun c -> array_new_canon_elem ($2 c type_) ($3 c elem) }
-  | ARRAY_NEW_DATA var var { fun c -> array_new_canon_data ($2 c type_) ($3 c data) }
+  | ARRAY_NEW_FIXED var nat32 { fun c -> array_new_fixed ($2 c type_) $3 }
+  | ARRAY_NEW_ELEM var var { fun c -> array_new_elem ($2 c type_) ($3 c elem) }
+  | ARRAY_NEW_DATA var var { fun c -> array_new_data ($2 c type_) ($3 c data) }
   | ARRAY_GET var { fun c -> $1 ($2 c type_) }
   | ARRAY_SET var { fun c -> array_set ($2 c type_) }
   | ARRAY_LEN { fun c -> array_len }
