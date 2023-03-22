@@ -22,7 +22,7 @@ jobs:
         uses: ocaml/setup-ocaml@v2
         with:
           ocaml-compiler: 4.12.x
-      - name Setup OCaml tools
+      - name: Setup OCaml tools
         run: opam install --yes ocamlbuild.0.14.0 ocamlfind.1.9.5 js_of_ocaml.4.0.0 js_of_ocaml-ppx.4.0.0
       - name: Setup Node.js
         uses: actions/setup-node@v2
