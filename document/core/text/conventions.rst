@@ -117,7 +117,7 @@ It is convenient to define identifier contexts as :ref:`records <notation-record
 
 .. math::
    \begin{array}{llll}
-   \production{(identifier context)} & I &::=&
+   \production{identifier context} & I &::=&
      \begin{array}[t]{l@{~}ll}
      \{ & \ITYPES & (\Tid^?)^\ast, \\
         & \IFUNCS & (\Tid^?)^\ast, \\

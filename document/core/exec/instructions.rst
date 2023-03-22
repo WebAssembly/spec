@@ -409,7 +409,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 5. Let :math:`j^\ast` be the sequence :math:`\lanes_{i8x16}(c_1)`.
 
-6. Let :math:`c^\ast` be the concatenation of the two sequences :math:`j^\ast~0^{240}`
+6. Let :math:`c^\ast` be the concatenation of the two sequences :math:`j^\ast~0^{240}`.
 
 7. Let :math:`c'` be the result of :math:`\lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ])`.
 
@@ -418,7 +418,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\V128\K{.}\SWIZZLE &\stepto& (\V128\K{.}\VCONST~c')
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\I8X16\K{.}\SWIZZLE &\stepto& (\V128\K{.}\VCONST~c')
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -455,7 +455,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\V128\K{.}\SHUFFLE~x^\ast &\stepto& (\V128\K{.}\VCONST~c)
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\I8X16\K{.}\SHUFFLE~x^\ast &\stepto& (\V128\K{.}\VCONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -542,7 +542,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 7. Let :math:`i^\ast` be the sequence :math:`\lanes_{\shape}(c_2)`.
 
-8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)`
+8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)`.
 
 9. Push :math:`\V128.\VCONST~c` on the stack.
 
@@ -682,7 +682,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. Let :math:`i_1^\ast` be the sequence :math:`\lanes_{\shape}(c_1)`
+3. Let :math:`i_1^\ast` be the sequence :math:`\lanes_{\shape}(c_1)`.
 
 4. Let :math:`i` be the result of computing :math:`\bool(\bigwedge(i_1 \neq 0)^\ast)`.
 
@@ -775,7 +775,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 3. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast))`
+4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast))`.
 
 5. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
@@ -870,7 +870,7 @@ where:
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`(i_1~i_2)^\ast` be the result of computing :math:`\imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2)))`
+4. Let :math:`(i_1~i_2)^\ast` be the result of computing :math:`\imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2)))`.
 
 5. Let :math:`j^\ast` be the result of computing :math:`\iadd_{32}(i_1, i_2)^\ast`.
 
@@ -915,7 +915,7 @@ where:
 
    b. Let :math:`j^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_2)[N \slice N]`.
 
-6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))`
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))`.
 
 7. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
@@ -952,7 +952,7 @@ where:
 
 4. Let :math:`j^\ast` be the result of computing :math:`\iadd_{N}(i_1, i_2)^\ast`.
 
-5. Let `c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
 
 6. Push the value :math:`\V128.\VCONST~c` to the stack.
 
@@ -1280,7 +1280,7 @@ Table Instructions
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; \TABLESIZE~x &\stepto& S; F; (\I32.\CONST~\X{sz})
+   S; F; (\TABLESIZE~x) &\stepto& S; F; (\I32.\CONST~\X{sz})
    \end{array}
    \\ \qquad
      (\iff |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM| = \X{sz}) \\
@@ -1312,19 +1312,21 @@ Table Instructions
 
 10. Pop the value :math:`\val` from the stack.
 
-11. Either, try :ref:`growing <grow-table>` :math:`\X{table}` by :math:`n` entries with initialization value :math:`\val`:
+11. Let :math:`\X{err}` be the |i32| value :math:`2^{32}-1`, for which :math:`\signed_{32}(\X{err})` is :math:`-1`.
+
+12. Either, try :ref:`growing <grow-table>` :math:`\X{table}` by :math:`n` entries with initialization value :math:`\val`:
 
    a. If it succeeds, push the value :math:`\I32.\CONST~\X{sz}` to the stack.
 
-   b. Else, push the value :math:`\I32.\CONST~(-1)` to the stack.
+   b. Else, push the value :math:`\I32.\CONST~\X{err}` to the stack.
 
-12. Or, push the value :math:`\I32.\CONST~(-1)` to the stack.
+13. Or, push the value :math:`\I32.\CONST~\X{err}` to the stack.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; \val~(\I32.\CONST~n)~\TABLEGROW~x &\stepto& S'; F; (\I32.\CONST~\X{sz})
+   S; F; \val~(\I32.\CONST~n)~(\TABLEGROW~x) &\stepto& S'; F; (\I32.\CONST~\X{sz})
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -1334,7 +1336,7 @@ Table Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~\TABLEGROW~x &\stepto& S; F; (\I32.\CONST~{-1})
+   S; F; \val~(\I32.\CONST~n)~(\TABLEGROW~x) &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
    \end{array}
    \end{array}
 
@@ -1535,7 +1537,7 @@ Table Instructions
      \quad\stepto
      \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d+n-1)~(\I32.\CONST~s+n-1)~(\TABLEGET~y)~(\TABLESET~x) \\
+       (\I32.\CONST~d+n)~(\I32.\CONST~s+n)~(\TABLEGET~y)~(\TABLESET~x) \\
        (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\TABLECOPY~x~y) \\
        \end{array}
      \\ \qquad
@@ -1746,7 +1748,7 @@ Memory Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(t.\LOAD({N}\K{\_}\sx)^?~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(t.\LOAD({N}\K{\_}\sx)^?~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -1807,7 +1809,7 @@ Memory Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(\V128.\LOAD{M}\K{x}N\K{\_}\sx~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\LOAD{M}\K{x}N\K{\_}\sx~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -1864,7 +1866,7 @@ Memory Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(\V128.\LOAD{N}\K{\_splat}~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\LOAD{N}\K{\_splat}~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -1919,7 +1921,7 @@ Memory Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(\V128.\LOAD{N}\K{\_zero}~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\LOAD{N}\K{\_zero}~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -1981,7 +1983,7 @@ Memory Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(\V128.\CONST~v)~(\V128.\LOAD{N}\K{\_lane}~\memarg~x) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~v)~(\V128.\LOAD{N}\K{\_lane}~\memarg~x) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -2058,7 +2060,7 @@ Memory Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(t.\CONST~c)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -2115,7 +2117,7 @@ Memory Instructions
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~k)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~\memarg~x) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~\memarg~x) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -2266,7 +2268,7 @@ Memory Instructions
    S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~n)~\MEMORYFILL
      \quad\stepto\quad S; F; \TRAP
      \\ \qquad
-     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|)
+     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|)
    \\[1ex]
    S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~0)~\MEMORYFILL
      \quad\stepto\quad S; F; \epsilon
@@ -2392,8 +2394,8 @@ Memory Instructions
      \quad\stepto
      \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d+n-1) \\
-       (\I32.\CONST~s+n-1)~(\I32\K{.}\LOAD\K{8\_u}~\{ \OFFSET~0, \ALIGN~0 \}) \\
+       (\I32.\CONST~d+n) \\
+       (\I32.\CONST~s+n)~(\I32\K{.}\LOAD\K{8\_u}~\{ \OFFSET~0, \ALIGN~0 \}) \\
        (\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
        (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~\MEMORYCOPY \\
        \end{array}
@@ -2473,7 +2475,7 @@ Memory Instructions
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & s + n > |S.\SDATAS[F.\AMODULE.\MIDATAS[x]].\DIDATA| \\
-      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|) \\[1ex]
+      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|) \\[1ex]
      \end{array}
    \\[1ex]
    S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\MEMORYINIT~x)
@@ -2559,17 +2561,19 @@ Control Instructions
 :math:`\BLOCK~\blocktype~\instr^\ast~\END`
 ..........................................
 
-1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_{S;F}(\blocktype)`.
+2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
 
-3. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
+3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\expand_{S;F}(\blocktype)`.
 
-4. Assert: due to :ref:`validation <valid-block>`, there are at least :math:`m` values on the top of the stack.
+4. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
 
-5. Pop the values :math:`\val^m` from the stack.
+5. Assert: due to :ref:`validation <valid-block>`, there are at least :math:`m` values on the top of the stack.
 
-6. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
+6. Pop the values :math:`\val^m` from the stack.
+
+7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
 
 .. math::
    ~\\[-1ex]
@@ -2585,17 +2589,19 @@ Control Instructions
 :math:`\LOOP~\blocktype~\instr^\ast~\END`
 .........................................
 
-1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_{S;F}(\blocktype)`.
+2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
 
-3. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is the start of the loop.
+3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\expand_{S;F}(\blocktype)`.
 
-4. Assert: due to :ref:`validation <valid-loop>`, there are at least :math:`m` values on the top of the stack.
+4. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is the start of the loop.
 
-5. Pop the values :math:`\val^m` from the stack.
+5. Assert: due to :ref:`validation <valid-loop>`, there are at least :math:`m` values on the top of the stack.
 
-6. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
+6. Pop the values :math:`\val^m` from the stack.
+
+7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
 
 .. math::
    ~\\[-1ex]
@@ -2626,11 +2632,11 @@ Control Instructions
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl}
-   F; (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     F; \BLOCK~\X{bt}~\instr_1^\ast~\END
+   (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
+     \BLOCK~\X{bt}~\instr_1^\ast~\END
      \\&&\quad (\iff c \neq 0) \\
-   F; (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     F; \BLOCK~\X{bt}~\instr_2^\ast~\END
+   (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
+     \BLOCK~\X{bt}~\instr_2^\ast~\END
      \\&&\quad (\iff c = 0) \\
    \end{array}
 
@@ -2703,7 +2709,7 @@ Control Instructions
 :math:`\BRTABLE~l^\ast~l_N`
 ...........................
 
-1. Assert: due to :ref:`validation <valid-if>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-br_table>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 2. Pop the value :math:`\I32.\CONST~i` from the stack.
 
@@ -2811,7 +2817,7 @@ Control Instructions
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \FRAME_n\{F\}~\XB^k[\val^n~\RETURN]~\END &\stepto& \val^n
+   \FRAME_n\{F\}~B^\ast[\val^n~\RETURN]~\END &\stepto& \val^n
    \end{array}
 
 
@@ -2840,15 +2846,24 @@ Control Instructions
 :math:`\CALLREF~x`
 ..................
 
-1. Assert: due to :ref:`validation <valid-call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-call_ref>`, a null or :ref:`function reference <syntax-ref>` is on the top of the stack.
 
-2. Pop the value :math:`\REFFUNCADDR~a` from the stack.
+2. Pop the reference value :math:`r` from the stack.
 
-3. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
+3. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
+
+    a. Trap.
+
+4. Assert: due to :ref:`validation <valid-call_ref>`, :math:`r` is a :ref:`function reference <syntax-ref>`.
+
+5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
+
+6. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; (\REFFUNCADDR~a)~\CALLREF~x &\stepto& F; (\INVOKE~a)
+   F; (\REFFUNCADDR~a)~(\CALLREF~x) &\stepto& F; (\INVOKE~a) \\
+   F; (\REFNULL~\X{ht})~(\CALLREF~x) &\stepto& F; \TRAP \\
    \end{array}
 
 
@@ -2869,9 +2884,9 @@ Control Instructions
 
 6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITYPES[y]` exists.
 
-7. Let :math:`\X{ta}` be the :ref:`type address <syntax-typeaddr>` :math:`F.\AMODULE.\MITYPES[y]`.
+7. Let :math:`\X{ta}_{\F{expect}}` be the :ref:`type address <syntax-typeaddr>` :math:`F.\AMODULE.\MITYPES[y]`.
 
-8. Let :math:`\X{ft}_{\F{expect}}` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\X{ta}]`.
+8. Let :math:`\X{ft}_{\F{expect}}` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\X{ta}_{\F{expect}}]`.
 
 9. Assert: due to :ref:`validation <valid-call_indirect>`, a value with :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
@@ -2895,13 +2910,15 @@ Control Instructions
 
 17. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[a]`.
 
-18. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
+18. Let :math:`\X{ta}_{\F{actual}}` be the :ref:`type address <syntax-typeaddr>` :math:`\X{f}.\FITYPE`.
 
-19. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
+19. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\X{ta}_{\F{actual}}]`.
+
+20. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
 
     a. Trap.
 
-20. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
+21. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
 .. math::
    ~\\[-1ex]
@@ -2913,7 +2930,7 @@ Control Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM[i] = \REFFUNCADDR~a \\
      \wedge & S.\SFUNCS[a] = f \\
-     \wedge & S \vdashfunctypematch S.\STYPES[F.\AMODULE.\MITYPES[y]] \matchesfunctype f.\FITYPE)
+     \wedge & S \vdashfunctypematch S.\STYPES[F.\AMODULE.\MITYPES[y]] \matchesfunctype S.\STYPES[f.\FITYPE])
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -2921,6 +2938,112 @@ Control Instructions
    \end{array}
    \\ \qquad
      (\otherwise)
+   \end{array}
+
+
+.. _exec-return_call:
+
+:math:`\RETURNCALL~x`
+.....................
+
+.. todo: find a way to reuse call/call_indirect prose for tail call versions
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-call>`, :math:`F.\AMODULE.\MIFUNCS[x]` exists.
+
+3. Let :math:`a` be the :ref:`function address <syntax-funcaddr>` :math:`F.\AMODULE.\MIFUNCS[x]`.
+
+4. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\RETURNCALL~x) &\stepto& (\RETURNINVOKE~a)
+     & (\iff (\CALL~x) \stepto (\INVOKE~a))
+   \end{array}
+
+
+.. _exec-return_call_ref:
+
+:math:`\RETURNCALLREF~x`
+........................
+
+1. Assert: due to :ref:`validation <valid-return_call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
+
+2. Pop the reference value :math:`r` from the stack.
+
+3. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
+
+    a. Trap.
+
+4. Assert: due to :ref:`validation <valid-call_ref>`, :math:`r` is a :ref:`function reference <syntax-ref>`.
+
+5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
+
+6. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~(\RETURNCALLREF~x) &\stepto& (\RETURNINVOKE~a)
+     & (\iff \val~(\CALLREF~x) \stepto (\INVOKE~a)) \\
+   \val~(\RETURNCALLREF~x) &\stepto& \TRAP
+     & (\iff \val~(\CALLREF~x) \stepto \TRAP) \\
+   \end{array}
+
+
+.. _exec-return_call_indirect:
+
+:math:`\RETURNCALLINDIRECT~x`
+.............................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITABLES[0]` exists.
+
+3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[0]`.
+
+4. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`S.\STABLES[\X{ta}]` exists.
+
+5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
+
+6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITYPES[x]` exists.
+
+7. Let :math:`\X{ft}_{\F{expect}}` be the :ref:`function type <syntax-functype>` :math:`F.\AMODULE.\MITYPES[x]`.
+
+8. Assert: due to :ref:`validation <valid-call_indirect>`, a value with :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+9. Pop the value :math:`\I32.\CONST~i` from the stack.
+
+10. If :math:`i` is not smaller than the length of :math:`\X{tab}.\TIELEM`, then:
+
+    a. Trap.
+
+11. If :math:`\X{tab}.\TIELEM[i]` is uninitialized, then:
+
+    a. Trap.
+
+12. Let :math:`a` be the :ref:`function address <syntax-funcaddr>` :math:`\X{tab}.\TIELEM[i]`.
+
+13. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`S.\SFUNCS[a]` exists.
+
+14. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[a]`.
+
+15. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
+
+16. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
+
+    a. Trap.
+
+17. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~(\RETURNCALLINDIRECT~x) &\stepto& (\RETURNINVOKE~a)
+     & (\iff \val~(\CALLINDIRECT~x) \stepto (\INVOKE~a)) \\
+   \val~(\RETURNCALLINDIRECT~x) &\stepto& \TRAP
+     & (\iff \val~(\CALLINDIRECT~x) \stepto \TRAP) \\
    \end{array}
 
 
@@ -2955,22 +3078,20 @@ Exiting :math:`\instr^\ast` with label :math:`L`
 
 When the end of a block is reached without a jump or trap aborting it, then the following steps are performed.
 
-1. Let :math:`m` be the number of values on the top of the stack.
+1. Pop all values :math:`\val^\ast` from the top of the stack.
 
-2. Pop the values :math:`\val^m` from the stack.
+2. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack.
 
-3. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack.
+3. Pop the label from the stack.
 
-4. Pop the label from the stack.
+4. Push :math:`\val^\ast` back to the stack.
 
-5. Push :math:`\val^m` back to the stack.
-
-6. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
+5. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   \LABEL_n\{\instr^\ast\}~\val^m~\END &\stepto& \val^m
+   \LABEL_n\{\instr^\ast\}~\val^\ast~\END &\stepto& \val^\ast
    \end{array}
 
 .. note::
@@ -2997,23 +3118,25 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 2. Let :math:`f` be the :ref:`function instance <syntax-funcinst>`, :math:`S.\SFUNCS[a]`.
 
-3. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\FITYPE`.
+3. Let :math:`\X{ta}` be the :ref:`type address <syntax-typeaddr>` :math:`\X{f}.\FITYPE`.
 
-4. Let :math:`\local^\ast` be the list of :ref:`locals <syntax-local>` :math:`f.\FICODE.\FLOCALS`.
+4. Let :math:`[t_1^n] \toF [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\STYPES[\X{ta}]`.
 
-5. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\FICODE.\FBODY`.
+5. Let :math:`\local^\ast` be the list of :ref:`locals <syntax-local>` :math:`f.\FICODE.\FLOCALS`.
 
-6. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
+6. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\FICODE.\FBODY`.
 
-7. Pop the values :math:`\val^n` from the stack.
+7. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
 
-8. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~f.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
+8. Pop the values :math:`\val^n` from the stack.
 
-9. Push the activation of :math:`F` with arity :math:`m` to the stack.
+9. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~f.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
 
-10. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
+10. Push the activation of :math:`F` with arity :math:`m` to the stack.
 
-11. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
+11. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
+
+12. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
 
 .. math::
    ~\\[-1ex]
@@ -3024,7 +3147,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\SFUNCS[a] = f \\
-     \wedge & f.\FITYPE = [t_1^n] \to [t_2^m] \\
+     \wedge & S.\STYPES[f.\FITYPE] = [t_1^n] \toF [t_2^m] \\
      \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(\default_t)^k \})
      \end{array} \\
@@ -3032,6 +3155,42 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 .. note::
    For non-defaultable types, the respective local is left uninitialized by these rules.
+
+
+.. _exec-return-invoke:
+
+Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
+......................................................................
+
+1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
+
+2. Let :math:`[t_1^n] \toF [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
+
+3. Assert: due to :ref:`validation <valid-return_call>`, there are at least :math:`n` values on the top of the stack.
+
+4. Pop the results :math:`\val^n` from the stack.
+
+5. Assert: due to :ref:`validation <valid-return_call>`, the stack contains at least one :ref:`frame <syntax-frame>`.
+
+6. While the top of the stack is not a frame, do:
+
+   a. Pop the top element from the stack.
+
+7. Assert: the top of the stack is a frame.
+
+8. Pop the frame from the stack.
+
+9. Push :math:`\val^n` to the stack.
+
+10. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{lcl@{\qquad}l}
+    S; \FRAME_m\{F\}~B^\ast[\val^n~(\RETURNINVOKE~a)]~\END &\stepto&
+      \val^n~(\INVOKE~a)
+      & (\iff S.\SFUNCS[a].\FITYPE = [t_1^n] \toF [t_2^m])
+   \end{array}
 
 
 .. _exec-invoke-exit:
@@ -3087,7 +3246,8 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~\X{ta}, \FIHOSTCODE~\X{hf} \} \\
+     \wedge & S.\STYPES[\X{ta}] = [t_1^n] \toF [t_2^m] \\
      \wedge & (S'; \result) \in \X{hf}(S; \val^n)) \\
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
@@ -3095,7 +3255,7 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \toF [t_2^m], \FIHOSTCODE~\X{hf} \} \\
      \wedge & \bot \in \X{hf}(S; \val^n)) \\
      \end{array} \\
    \end{array}

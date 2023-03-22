@@ -1,11 +1,11 @@
-.. index:: type, semantic type
+.. index:: type, dynamic type
 .. _exec-type:
 
 Types
 -----
 
 Execution has to check and compare :ref:`types <syntax-type>` and :ref:`type instances <syntax-typeinst>` in a few places, such as :ref:`executing <exec-call_indirect>` |CALLINDIRECT| or :ref:`instantiating <exec-instantiation>` :ref:`modules <syntax-module>`.
-During execution, types of all forms are represented as :ref:`semantic <syntax-type-sem>` types, where all occurring :ref:`type identifiers <syntax-typeid>` are interpreted as :ref:`type addresses <syntax-typeaddr>`.
+During execution, types of all forms are represented as :ref:`dynamic <syntax-type-dyn>` types, where all occurring :ref:`type identifiers <syntax-typeid>` are interpreted as :ref:`type addresses <syntax-typeaddr>`.
 Relevant type relations need to be redefined accordingly.
 
 .. note::
@@ -34,61 +34,39 @@ During execution, :ref:`type identifiers <syntax-typeid>` are represented as :re
    \frac{
      S.\STYPES[\typeaddr] = \functype
    }{
-     S \vdashtypeid \typeaddr : \functype
+     S; C \vdashtypeid \typeaddr : \functype
    }
 
 .. note::
    Unlike :ref:`type indices <syntax-typeidx>` recorded in a context, the number of type addresses in a store is not bounded by :math:`2^{32}`.
 
 
-.. index:: type identifier, type index, type address, type instantiation, module instance, semantic type
+.. index:: type identifier, type index, type address, type instantiation, module instance, dynamic type
 
-.. _sem:
+.. _dyn:
 
 Instantiation
 ~~~~~~~~~~~~~
 
-Any form of :ref:`syntactic <syntax-type-syn>` :ref:`type <syntax-type>` can be *instantiated* into a :ref:`semantic <syntax-type-sem>` type inside a :ref:`module instance <syntax-moduleinst>` by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the corresponding :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.\MITYPES[x]`.
+Any form of :ref:`static <syntax-type-stat>` :ref:`type <syntax-type>` can be *instantiated* into a :ref:`dynamic <syntax-type-dyn>` type inside a :ref:`module instance <syntax-moduleinst>` by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the corresponding :ref:`type address <syntax-typeaddr>` :math:`\moduleinst.\MITYPES[x]`.
 
 .. math::
-   \sem_{\moduleinst}(t) = t[\subst \moduleinst.\MITYPES]
+   \dyn_{\moduleinst}(t) = t[\subst \moduleinst.\MITYPES]
 
 
-.. index:: type, matching, store, semantic types, validity
-.. _exec-match:
+.. index:: type, matching, store, dynamic types, validity
 .. _exec-valid-type:
+.. _exec-match:
 
-Matching and Validity
-~~~~~~~~~~~~~~~~~~~~~
+Dynamic Typing
+~~~~~~~~~~~~~~
 
-For each *static* :ref:`matching relation <match>` on syntactic types, operating relative to a :ref:`context <context>`, an analogous *dynamic* validity or matching relation is defined, operating relative to a :ref:`store <syntax-store>`.
+To handle :ref:`dynamic <syntax-type-dyn>` types, all static judgements :math:`C \vdash \X{prop}` on types (such as :ref:`validity <valid-type>` and :ref:`matching <match>`) are generalized to include the store, as in :math:`S; C \vdash \X{prop}`, by implicitly adding a :ref:`store <syntax-store>` :math:`S` to all rules -- :math:`S` is never modified by the pre-existing rules, but it is accessed in the extra rule for :ref:`type addresses <syntax-typeaddr>` given :ref:`above <valid-typeaddr>`.
 
-Formally, for each judgement
-
-.. math:: C \vdash T_1 \matches T_2
-
-on syntactic types :math:`T_1` and :math:`T_2`, an analogous judgement
-
-.. math:: S \vdash T'_1 \matches T'_2
-
-on corresponding semantic types :math:`T'_1` and :math:`T'_2` is introduced. It is defined analogously, by replacing all occurrences of a :ref:`context <context>` :math:`C` in the associated rules with a :ref:`store <syntax-store>` :math:`S`.
+It is an invariant of the semantics that all types inspected by execution rules are dynamic, i.e., the :ref:`context <context>` is always empty and never used.
+To avoid unnecessary clutter, empty contexts are omitted from the rules, writing just :math:`S \vdash \X{prop}`.
 
 .. note::
-   Where the static rules invoke :ref:`static lookup <valid-typeidx>` for :ref:`type indices <syntax-typeidx>` in the context, the dynamic rules thereby invoke :ref:`dynamic lookup <valid-typeaddr>` for :ref:`type addresses <syntax-typeaddr>` in the store.
-
-Likewise, for each *static* :ref:`validity rule <valid-type>` on syntactic types, operating relative to a :ref:`context <context>`, an analogous *dynamic* validity rule is defined, operating relative to a :ref:`store <syntax-store>`.
-
-Formally, for each judgement
-
-.. math:: C \vdash T \ok
-
-on syntactic type :math:`T`, an analogous judgement
-
-.. math:: S \vdash T' \ok
-
-on corresponding semantic types :math:`T'` is introduced. It is defined analogously, by replacing all occurrences of a :ref:`context <context>` :math:`C` in the associated rules with a :ref:`store <syntax-store>` :math:`S`.
-
-.. note::
-   Dynamic validity rules are not needed for the semantics,
-   but to prove :ref:`soundness <soundness-statement>`
+   Only matching rules are invoked during execution.
+   Dynamic validity is only needed to prove :ref:`type soundness <soundness>`
    and for specifying parts of the :ref:`embedder <embed>` interface.

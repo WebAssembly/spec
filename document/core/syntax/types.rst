@@ -10,11 +10,11 @@ Types are checked during :ref:`validation <valid>`, :ref:`instantiation <exec-in
 
 
 
-.. index:: ! type identifier, type index, type address
+.. index:: ! type identifier, type index, type address, ! static type, ! dynamic type
    pair: abstract syntax; type identifier
 .. _syntax-typeid:
-.. _syntax-type-syn:
-.. _syntax-type-sem:
+.. _syntax-type-stat:
+.. _syntax-type-dyn:
 
 Type Identifiers
 ~~~~~~~~~~~~~~~~
@@ -22,10 +22,11 @@ Type Identifiers
 Defined types like :ref:`function types <syntax-functype>` are not embedded directly into other types, such as :ref:`reference types <syntax-reftype>`.
 Instead, they are referred to indirectly.
 
-In a :ref:`module <syntax-module>` and during validation, this indirection is expressed through a :ref:`type index <syntax-typeidx>`, whose meaning is confined to one module.
-During instantiation and execution, where types from multiple modules may interact, it is expressed through :ref:`type addresses <syntax-typeaddr>` that refer to the global :ref:`store <store>`.
+In a :ref:`module <syntax-module>` and during :ref:`validation <valid>`, this indirection is expressed through a :ref:`type index <syntax-typeidx>`, whose meaning is confined to one module.
 
-The type grammar hence is conceptually parameterized by its interpretation of :ref:`type identifiers <syntax-typeid>`.
+During :ref:`execution <exec>`, where types from multiple modules may interact, it is expressed through :ref:`type addresses <syntax-typeaddr>` that refer to the global :ref:`store <store>`.
+
+The type grammar hence allows multiple representations of type identifiers:
 
 .. math::
    \begin{array}{llll}
@@ -33,18 +34,20 @@ The type grammar hence is conceptually parameterized by its interpretation of :r
      \typeidx ~|~ \typeaddr
    \end{array}
 
-Types represented with type indices are referred to as *syntactic types*,
-whereas types represented with type addresses are referred to as *semantic types*.
+Types represented with type indices are referred to as *static types*,
+whereas types represented with type addresses are referred to as *dynamic types*.
 
-It is an invariant of the semantics that no syntactic type refers to a semantic type and vice versa, i.e., both universes are disjoint.
-Syntactic types are transformed into semantic types during module :ref:`instantiation <exec-instantiation>`.
+Static types are transformed into dynamic types during module :ref:`instantiation <exec-instantiation>`.
+
+It is an invariant of the semantics that only static types arise during :ref:`validation <valid>`, while only dynamic types are used during :ref:`execution <exec>`.
+However, for the proof of :ref:`type soundness <soundness>`, both forms of types must be considered together, and static types may refer to dynamic types.
 
 .. _notation-subst:
 
 Convention
 ..........
 
-The following notation expresses conversion between syntactic and semantic types:
+The following notation expresses conversion between static and dynamic types:
 
 * :math:`t[x^\ast \subst a^\ast]` denotes the parallel substitution of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`type addresses <syntax-typeaddr>` :math:`a^\ast`, provided :math:`|x^\ast| = |a^\ast|`.
 
@@ -126,7 +129,7 @@ Heap Types
 .. math::
    \begin{array}{llll}
    \production{heap type} & \heaptype &::=&
-     \FUNC ~|~ \EXTERN ~|~ \typeid \\
+     \FUNC ~|~ \EXTERN ~|~ \typeid ~|~ \BOT \\
    \end{array}
 
 The type |FUNC| denotes the infinite union of all types of :ref:`functions <syntax-func>`, regardless of their concrete :ref:`function types <syntax-functype>`.
@@ -134,6 +137,10 @@ The type |FUNC| denotes the infinite union of all types of :ref:`functions <synt
 The type |EXTERN| denotes the infinite union of all objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
 
 A *concrete* heap type consists of a :ref:`type identifier <syntax-typeid>` and classifies an object of the respective :ref:`type <syntax-type>` defined in some module.
+
+The type :math:`\BOT` is a :ref:`subtype <match-heaptype>` of all other heap types.
+By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
+it only occurs during :ref:`validation <valid>`, as a part of a possible operand type for instructions.
 
 
 .. index:: ! reference type, heap type, reference, table, function, function type, null
@@ -155,7 +162,7 @@ Reference Types
 
 A reference type is characterised by the :ref:`heap type <syntax-heaptype>` it points to.
 
-In addition, a reference type of the form :math:`\REF \NULL \X{ht}` is *nullable*, meaning that it can either be a proper reference to :math:`\X{ht}` or :ref:`null <syntax-null>`.
+In addition, a reference type of the form :math:`\REF~\NULL~\X{ht}` is *nullable*, meaning that it can either be a proper reference to :math:`\X{ht}` or :ref:`null <syntax-null>`.
 Other references are *non-null*.
 
 Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
@@ -174,7 +181,7 @@ Value Types
 *Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
 They are either :ref:`number types <syntax-numtype>`, :ref:`vector types <syntax-vectype>`, :ref:`reference types <syntax-reftype>`, or the unique *bottom type*, written :math:`\BOT`.
 
-The type :math:`\BOT` is a :ref:`subtype <match-valtype>` of all other types.
+The type :math:`\BOT` is a :ref:`subtype <match-valtype>` of all other value types.
 By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
 it only occurs during :ref:`validation <valid>`, as a possible operand type for instructions.
 
@@ -221,10 +228,10 @@ Instruction Types
 .. math::
    \begin{array}{llll}
    \production{instruction type} & \instrtype &::=&
-     \resulttype \to_{\localidx^\ast} \resulttype \\
+     \resulttype \toX{\localidx^\ast} \resulttype \\
    \end{array}
 
-An instruction type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
+An instruction type :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
 and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
 Moreover, it enumerates the :ref:`indices <syntax-localidx>` :math:`x^\ast` of locals that have been set by the instruction or sequence.
 
@@ -246,9 +253,9 @@ Local Types
 
 .. math::
    \begin{array}{llll}
-   \production{(initialization status)} & \init &::=&
+   \production{initialization status} & \init &::=&
      \SET ~|~ \UNSET \\
-   \production{(local type)} & \localtype &::=&
+   \production{local type} & \localtype &::=&
      \init~\valtype \\
    \end{array}
 
@@ -377,7 +384,7 @@ External Types
 .. math::
    \begin{array}{llll}
    \production{external types} & \externtype &::=&
-     \ETFUNC~\functype ~|~
+     \ETFUNC~\typeid ~|~
      \ETTABLE~\tabletype ~|~
      \ETMEM~\memtype ~|~
      \ETGLOBAL~\globaltype \\
@@ -390,7 +397,7 @@ Conventions
 The following auxiliary notation is defined for sequences of external types.
 It filters out entries of a specific kind in an order-preserving fashion:
 
-* :math:`\etfuncs(\externtype^\ast) = [\functype ~|~ (\ETFUNC~\functype) \in \externtype^\ast]`
+* :math:`\etfuncs(\externtype^\ast) = [\typeid ~|~ (\ETFUNC~\typeid) \in \externtype^\ast]`
 
 * :math:`\ettables(\externtype^\ast) = [\tabletype ~|~ (\ETTABLE~\tabletype) \in \externtype^\ast]`
 

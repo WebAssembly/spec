@@ -33,16 +33,16 @@ Contexts
 Validity of an individual definition is specified relative to a *context*,
 which collects relevant information about the surrounding :ref:`module <syntax-module>` and the definitions in scope:
 
-* *Types*: the list of types defined in the current module.
-* *Functions*: the list of functions declared in the current module, represented by their function type.
-* *Tables*: the list of tables declared in the current module, represented by their table type.
-* *Memories*: the list of memories declared in the current module, represented by their memory type.
-* *Globals*: the list of globals declared in the current module, represented by their global type.
-* *Element Segments*: the list of element segments declared in the current module, represented by their element type.
-* *Data Segments*: the list of data segments declared in the current module, each represented by an |ok| entry.
-* *Locals*: the list of locals declared in the current function (including parameters), represented by their local type.
-* *Labels*: the stack of labels accessible from the current position, represented by their result type.
-* *Return*: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.
+* *Types*: the list of :ref:`types <syntax-type>` defined in the current module.
+* *Functions*: the list of :ref:`functions <syntax-func>` declared in the current module, represented by a :ref:`type identifier <syntax-typeid>` for their :ref:`function type <syntax-functype>`.
+* *Tables*: the list of :ref:`tables <syntax-table>` declared in the current module, represented by their :ref:`table type <syntax-tabletype>`.
+* *Memories*: the list of :ref:`memories <syntax-mem>` declared in the current module, represented by their :ref:`memory type <syntax-memtype>`.
+* *Globals*: the list of :ref:`globals <syntax-global>` declared in the current module, represented by their :ref:`global type <syntax-globaltype>`.
+* *Element Segments*: the list of :ref:`element segments <syntax-elem>` declared in the current module, represented by the elements' :ref:`reference type <syntax-reftype>`.
+* *Data Segments*: the list of :ref:`data segments <syntax-data>` declared in the current module, each represented by an |ok| entry.
+* *Locals*: the list of :ref:`locals <syntax-local>` declared in the current :ref:`function <syntax-func>` (including parameters), represented by their :ref:`local type <syntax-localtype>`.
+* *Labels*: the stack of :ref:`labels <syntax-label>` accessible from the current position, represented by their :ref:`result type <syntax-resulttype>`.
+* *Return*: the return type of the current :ref:`function <syntax-func>`, represented as an optional :ref:`result type <syntax-resulttype>` that is absent when no return is allowed, as in free-standing expressions.
 * *References*: the list of :ref:`function indices <syntax-funcidx>` that occur in the module outside functions and can hence be used to form references inside them.
 
 In other words, a context contains a sequence of suitable :ref:`types <syntax-type>` for each :ref:`index space <syntax-index>`,
@@ -54,10 +54,10 @@ More concretely, contexts are defined as :ref:`records <notation-record>` :math:
 
 .. math::
    \begin{array}{llll}
-   \production{(context)} & C &::=&
+   \production{context} & C &::=&
      \begin{array}[t]{l@{~}ll}
      \{ & \CTYPES & \functype^\ast, \\
-        & \CFUNCS & \functype^\ast, \\
+        & \CFUNCS & \typeid^\ast, \\
         & \CTABLES & \tabletype^\ast, \\
         & \CMEMS & \memtype^\ast, \\
         & \CGLOBALS & \globaltype^\ast, \\

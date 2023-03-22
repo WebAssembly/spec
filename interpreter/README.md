@@ -1,6 +1,6 @@
 # WebAssembly Reference Interpreter
 
-This repository implements a interpreter for WebAssembly. It is written for clarity and simplicity, _not_ speed. It is intended as a playground for trying out ideas and a device for nailing down the exact semantics, and as a proxy for the (yet to be produced) formal specification of WebAssembly. For that purpose, the code is written in a fairly declarative, "speccy" way.
+This repository implements an interpreter for WebAssembly. It is written for clarity and simplicity, _not_ speed. It is intended as a playground for trying out ideas and a device for nailing down their exact semantics. For that purpose, the code is written in a fairly declarative, "speccy" way.
 
 The interpreter can
 
@@ -10,12 +10,12 @@ The interpreter can
 * *export* test scripts to self-contained JavaScript test cases
 * *run* as an interactive interpreter
 
-The text format defines modules in S-expression syntax. Moreover, it is generalised to a (very dumb) form of *script* that can define multiples module and a batch of invocations, assertions, and conversions between them. As such it is richer than the binary format, with the additional functionality purely intended as testing infrastructure. (See [below](#scripts) for details.)
+The text format defines modules in S-expression syntax. Moreover, it is generalised to a form of *script* that can define multiples module and a batch of invocations, assertions, and conversions between them. As such it is richer than the binary format, with the additional functionality purely intended as testing infrastructure. (See [below](#scripts) for details.)
 
 
 ## Building
 
-You'll need OCaml 4.08 or higher. Instructions for installing a recent version of OCaml on multiple platforms are available [here](https://ocaml.org/docs/install.html). On most platforms, the recommended way is through [OPAM](https://ocaml.org/docs/install.html#OPAM).
+You'll need OCaml 4.12 or higher. Instructions for installing a recent version of OCaml on multiple platforms are available [here](https://ocaml.org/docs/install.html). On most platforms, the recommended way is through [OPAM](https://ocaml.org/docs/install.html#OPAM).
 
 Once you have OCaml, simply do
 
@@ -275,17 +275,16 @@ op:
   br_if <var>
   br_table <var>+
   br_on_null <var>
-  br_on_<castop> <var>
-  br_on_cast_canon <var> (type <var>)
   br_on_non_null <var>
-  br_on_non_<castop> <var>
-  br_on_cast_canon_fail <var> (type <var>)
-  return
+  br_on_cast <var> <ref_type> <ref_type>
+  br_on_cast_fail <var> <ref_type> <ref_type> 
   call <var>
-  call_indirect <var>? (type <var> | <func_type>)
-  call_ref
-  return_call_ref
-  func.bind <func_type>
+  call_ref <var>
+  call_indirect <var>? (type <var>)? <func_type>?
+  return
+  return_call <var>
+  return_call_ref <var>
+  return_call_indirect <var>? (type <var>)? <func_type>
   local.get <var>
   local.set <var>
   local.tee <var>
@@ -314,21 +313,19 @@ op:
   ref.null <heap_type>
   ref.func <var>
   ref.is_null
-  ref.is_<castop>
-  ref.test_canon <var>
   ref_as_non_null
-  ref_as_<castop>
-  ref.cast_canon <var>
+  ref.test <var>
+  ref.cast <var>
   ref.eq
   i31.new
   i31.get_<sign>
-  struct.new_canon(_<default>)? <var>
+  struct.new(_<default>)? <var>
   struct.get(_<sign>)? <var> <var>
   struct.set <var> <var>
-  array.new_canon_(_<default>)? <var>
-  array.new_canon_fixed <var> <nat>
-  array.new_canon_elem <var> <var>
-  array.new_canon_data <var> <var>
+  array.new(_<default>)? <var>
+  array.new_fixed <var> <nat>
+  array.new_elem <var> <var>
+  array.new_data <var> <var>
   array.get(_<sign>)? <var>
   array.set <var>
   array.len <var>
@@ -427,7 +424,7 @@ In particular, comments of the latter form nest properly.
 
 ## Scripts
 
-In order to be able to check and run modules for testing purposes, the S-expression format is interpreted as a very simple and dumb notion of "script", with commands as follows:
+In order to be able to check and run modules for testing purposes, the S-expression format is interpreted as a very simple notion of "script", with commands as follows:
 
 ```
 script: <cmd>*

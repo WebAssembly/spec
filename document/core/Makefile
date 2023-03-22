@@ -89,12 +89,14 @@ bikeshed-keep:
 	  echo Downloaded Bikeshed.
 
 
-.PHONY: index
-index:
-	(cd appendix; ./gen-index-instructions.py)
+GENERATED = appendix/index-instructions.rst
+.INTERMEDIATE: $(GENERATED)
+
+%.rst: %.py
+	(cd `dirname $@`; ./`basename $^`)
 
 .PHONY: pdf
-pdf:	index latexpdf
+pdf:	$(GENERATED) latexpdf
 	mkdir -p $(BUILDDIR)/html/$(DOWNLOADDIR)
 	ln -f $(BUILDDIR)/latex/$(NAME).pdf $(BUILDDIR)/html/$(DOWNLOADDIR)/$(NAME).pdf
 
@@ -103,9 +105,10 @@ pdf:	index latexpdf
 clean:
 	rm -rf $(BUILDDIR)
 	rm -rf $(STATICDIR)
+	rm -f $(GENERATED)
 
 .PHONY: html
-html: index
+html: $(GENERATED)
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	for file in `ls $(BUILDDIR)/html/*.html`; \
 	do \
@@ -121,28 +124,34 @@ html: index
 	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html/."
 
 .PHONY: dirhtml
-dirhtml:
+dirhtml: $(GENERATED)
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/dirhtml."
 
 .PHONY: singlehtml
-singlehtml:
+singlehtml: $(GENERATED)
 	$(SPHINXBUILD) -b singlehtml $(ALLSPHINXOPTS) $(BUILDDIR)/singlehtml
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/singlehtml."
 
 .PHONY: bikeshed
-bikeshed:
+bikeshed: $(GENERATED)
 	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
 		$(ALLSPHINXOPTS) $(BUILDDIR)/bikeshed_singlehtml
-	python util/bikeshed_fixup.py $(BUILDDIR)/bikeshed_singlehtml/index.html \
+	python3 util/bikeshed_fixup.py $(BUILDDIR)/bikeshed_singlehtml/index.html \
 		>$(BUILDDIR)/bikeshed_singlehtml/index_fixed.html
+	@echo ==== Showing contents of _build/bikeshed_singlehtml/index_fixed.html ====
+	@head -n10 _build/bikeshed_singlehtml/index_fixed.html
+	@echo ... skipping $$(expr `cat _build/bikeshed_singlehtml/index_fixed.html | wc -l` - 20) lines ...
+	@tail -n10 _build/bikeshed_singlehtml/index_fixed.html
+	@echo
+	@echo =========================================================================
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
 	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
-	python util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
+	python3 util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
 		>$(BUILDDIR)/html/bikeshed/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/katex/dist/
 	cp -r util/katex/dist/* $(BUILDDIR)/html/bikeshed/katex/dist/
@@ -259,7 +268,7 @@ latex:
 	      "(use \`make latexpdf' here to do that automatically)."
 
 .PHONY: latexpdf
-latexpdf:
+latexpdf: $(GENERATED)
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo "Running LaTeX files through pdflatex..."
 	$(MAKE) -C $(BUILDDIR)/latex LATEXMKOPTS=" </dev/null" all-pdf >$(BUILDDIR)/latex/LOG 2>&1 || cat $(BUILDDIR)/latex/LOG

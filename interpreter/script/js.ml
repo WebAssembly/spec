@@ -26,6 +26,7 @@ let spectest = {
   eq_ref: eq_ref,
   print: console.log.bind(console),
   print_i32: console.log.bind(console),
+  print_i64: console.log.bind(console),
   print_i32_f32: console.log.bind(console),
   print_f64_f64: console.log.bind(console),
   print_f32: console.log.bind(console),

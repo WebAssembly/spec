@@ -374,8 +374,11 @@ let rec instr s =
     let y = at var s in
     let x = at var s in
     call_indirect x y
-
-  | 0x12 | 0x13 as b -> illegal s pos b  (* return_call, return_call_indirect *)
+  | 0x12 -> return_call (at var s)
+  | 0x13 ->
+    let y = at var s in
+    let x = at var s in
+    return_call_indirect x y
 
   | 0x14 -> call_ref (at var s)
   | 0x15 -> return_call_ref (at var s)
