@@ -1005,7 +1005,9 @@ let recursify_defs defs' : Il.def list =
     let i = Scc.Set.choose set in
     match defs'' with
     | [def'] when not (Il.Free.subset bounds.(i) frees.(i)) -> def'
-    | defs'' -> Il.RecD defs'' $ Source.over_region (List.map at defs'')
+    | defs'' ->
+      (* TODO: check that notation is non-recursive and defs are inductive? *)
+      Il.RecD defs'' $ Source.over_region (List.map at defs'')
   ) sccs
 
 let lower defs : Il.script =
