@@ -620,7 +620,7 @@ Casts work for both abstract and concrete types. In the latter case, they test i
   - equivalent to `(block $l (param trt) (result rt) (br_on_cast $l rt) (unreachable))`
 
 * `br_on_cast <labelidx> <reftype> <reftype>` branches if a reference has a given type
-  - `br_on_cast $l rt1 rt2 : [t0* rt1] -> [t0* rt1]`
+  - `br_on_cast $l rt1 rt2 : [t0* rt1] -> [t0* rt1\rt2]`
     - iff `$l : [t0* rt2]`
     - and `rt2 <: rt1`
   - passes operand along with branch under target type, plus possible extra args
@@ -628,10 +628,14 @@ Casts work for both abstract and concrete types. In the latter case, they test i
 
 * `br_on_cast_fail <labelidx> <reftype> <reftype>` branches if a reference does not have a given type
   - `br_on_cast_fail $l rt1 rt2 : [t0* rt1] -> [t0* rt2]`
-    - iff `$l : [t0* rt1]`
+    - iff `$l : [t0* rt1\rt2]`
     - and `rt2 <: rt1`
   - passes operand along with branch, plus possible extra args
   - if `rt2` contains `null`, does not branch on null, otherwise does
+
+where:
+  - `(ref null1? ht1)\(ref null ht2) = (ref ht1)`
+  - `(ref null1? ht1)\(ref ht2)      = (ref null1? ht1)`
 
 Note: Cast instructions do _not_ require the operand's source type to be a supertype of the target type. It can also be a "sibling" in the same hierarchy, i.e., they only need to have a common supertype (in practice, it is sufficient to test that both types share the same top heap type.). Allowing so is necessary to maintain subtype substitutability, i.e., the ability to maintain well-typedness when operands are replaced by subtypes.
 

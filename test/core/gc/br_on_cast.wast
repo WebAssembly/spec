@@ -54,6 +54,16 @@
     )
     (array.len)
   )
+
+  (func (export "null-diff") (param $i i32) (result i32)
+    (block $l (result (ref null struct))
+      (block (result (ref any))
+        (br_on_cast $l (ref null any) (ref null struct) (table.get (local.get $i)))
+      )
+      (return (i32.const 0))
+    )
+    (return (i32.const 1))
+  )
 )
 
 (invoke "init" (ref.extern 0))
@@ -81,6 +91,12 @@
 (assert_return (invoke "br_on_array" (i32.const 2)) (i32.const -1))
 (assert_return (invoke "br_on_array" (i32.const 3)) (i32.const 3))
 (assert_return (invoke "br_on_array" (i32.const 4)) (i32.const -1))
+
+(assert_return (invoke "null-diff" (i32.const 0)) (i32.const 1))
+(assert_return (invoke "null-diff" (i32.const 1)) (i32.const 0))
+(assert_return (invoke "null-diff" (i32.const 2)) (i32.const 1))
+(assert_return (invoke "null-diff" (i32.const 3)) (i32.const 0))
+(assert_return (invoke "null-diff" (i32.const 4)) (i32.const 0))
 
 
 ;; Concrete Types
