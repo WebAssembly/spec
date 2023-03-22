@@ -62,6 +62,8 @@ let at f s =
 
 (* Generic values *)
 
+let bit i n = n land (1 lsl i) <> 0
+
 let byte s =
   get s
 
@@ -608,14 +610,17 @@ let rec instr s =
     | 0x21l -> i31_get_s
     | 0x22l -> i31_get_u
 
-    | 0x40l -> ref_test (heap_type s)
-    | 0x41l -> ref_cast (heap_type s)
-    | 0x42l -> let x = at var s in br_on_cast x (heap_type s)
-    | 0x43l -> let x = at var s in br_on_cast_fail x (heap_type s)
-    | 0x48l -> ref_test_null (heap_type s)
-    | 0x49l -> ref_cast_null (heap_type s)
-    | 0x4al -> let x = at var s in br_on_cast_null x (heap_type s)
-    | 0x4bl -> let x = at var s in br_on_cast_fail_null x (heap_type s)
+    | 0x40l -> ref_test (NoNull, heap_type s)
+    | 0x41l -> ref_cast (NoNull, heap_type s)
+    | 0x48l -> ref_test (Null, heap_type s)
+    | 0x49l -> ref_cast (Null, heap_type s)
+    | 0x4fl ->
+      let flags = byte s in
+      require (flags land 0xf8 = 0) s (pos + 2) "malformed br_on_cast flags";
+      let x = at var s in
+      let rt1 = ((if bit 0 flags then Null else NoNull), heap_type s) in
+      let rt2 = ((if bit 1 flags then Null else NoNull), heap_type s) in
+      (if bit 2 flags then br_on_cast_fail else br_on_cast) x rt1 rt2
 
     | 0x70l -> extern_internalize
     | 0x71l -> extern_externalize

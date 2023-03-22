@@ -251,7 +251,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token MUT FIELD STRUCT ARRAY SUB FINAL REC
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP
-%token BR BR_IF BR_TABLE BR_ON_NULL BR_ON_NON_NULL BR_ON_CAST BR_ON_CAST_FAIL
+%token BR BR_IF BR_TABLE BR_ON_NULL BR_ON_NON_NULL BR_ON_CAST
 %token CALL CALL_REF CALL_INDIRECT RETURN RETURN_CALL_REF
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
@@ -288,10 +288,8 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<Types.num_type> NUM_TYPE
 %token<Types.vec_type> VEC_TYPE
 %token<Pack.pack_size> PACK_TYPE
-%token<Ast.instr'> REF_IS_NULL REF_AS_NON_NULL
-%token<(Types.heap_type -> Ast.instr') * (Types.heap_type -> Ast.instr')> REF_TEST REF_CAST
-%token<Ast.idx -> Ast.instr'> BR_ON_NULL BR_ON_NON_NULL
-%token<(Ast.idx -> Types.heap_type -> Ast.instr') * (Ast.idx -> Types.heap_type -> Ast.instr')> BR_ON_CAST BR_ON_CAST_FAIL
+%token<Ast.idx -> Ast.instr'> BR_ON_NULL
+%token<Ast.idx -> Types.ref_type -> Types.ref_type -> Ast.instr'> BR_ON_CAST
 %token<Ast.instr'> I31_GET
 %token<Ast.idx -> Ast.idx -> Ast.instr'> STRUCT_GET
 %token<Ast.idx -> Ast.instr'> ARRAY_GET
@@ -537,11 +535,7 @@ plain_instr :
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
   | BR_ON_NULL var { fun c -> $1 ($2 c label) }
-  | BR_ON_NON_NULL var { fun c -> $1 ($2 c label) }
-  | BR_ON_CAST var heap_type { fun c -> fst $1 ($2 c label) ($3 c) }
-  | BR_ON_CAST var NULL heap_type { fun c -> snd $1 ($2 c label) ($4 c) }
-  | BR_ON_CAST_FAIL var heap_type { fun c -> fst $1 ($2 c label) ($3 c) }
-  | BR_ON_CAST_FAIL var NULL heap_type { fun c -> snd $1 ($2 c label) ($4 c) }
+  | BR_ON_CAST var ref_type ref_type { fun c -> $1 ($2 c label) ($3 c) ($4 c) }
   | RETURN { fun c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | CALL_REF var { fun c -> call_ref ($2 c type_) }
@@ -584,12 +578,10 @@ plain_instr :
   | DATA_DROP var { fun c -> data_drop ($2 c data) }
   | REF_NULL heap_type { fun c -> ref_null ($2 c) }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
-  | REF_IS_NULL { fun c -> $1 }
-  | REF_AS_NON_NULL { fun c -> $1 }
-  | REF_TEST heap_type { fun c -> fst $1 ($2 c) }
-  | REF_CAST heap_type { fun c -> fst $1 ($2 c) }
-  | REF_TEST NULL heap_type { fun c -> snd $1 ($3 c) }
-  | REF_CAST NULL heap_type { fun c -> snd $1 ($3 c) }
+  | REF_IS_NULL { fun c -> ref_is_null }
+  | REF_AS_NON_NULL { fun c -> ref_as_non_null }
+  | REF_TEST ref_type { fun c -> ref_test ($2 c) }
+  | REF_CAST ref_type { fun c -> ref_cast ($2 c) }
   | REF_EQ { fun c -> ref_eq }
   | I31_NEW { fun c -> i31_new }
   | I31_GET { fun c -> $1 }

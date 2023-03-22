@@ -29,10 +29,8 @@ let br_if x = BrIf x
 let br_table xs x = BrTable (xs, x)
 let br_on_null x = BrOnNull x
 let br_on_non_null x = BrOnNonNull x
-let br_on_cast x t = BrOnCast (x, (NoNull, t))
-let br_on_cast_null x t = BrOnCast (x, (Null, t))
-let br_on_cast_fail x t = BrOnCastFail (x, (NoNull, t))
-let br_on_cast_fail_null x t = BrOnCastFail (x, (Null, t))
+let br_on_cast x t1 t2 = BrOnCast (x, t1, t2)
+let br_on_cast_fail x t1 t2 = BrOnCastFail (x, t1, t2)
 
 let return = Return
 let call x = Call x
@@ -104,10 +102,8 @@ let data_drop x = DataDrop x
 
 let ref_is_null = RefIsNull
 let ref_as_non_null = RefAsNonNull  
-let ref_test t = RefTest (NoNull, t)
-let ref_test_null t = RefTest (Null, t)
-let ref_cast t = RefCast (NoNull, t)
-let ref_cast_null t = RefCast (Null, t)
+let ref_test t = RefTest t
+let ref_cast t = RefCast t
 let ref_eq = RefEq
 
 let i31_new = I31New

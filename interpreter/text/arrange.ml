@@ -82,16 +82,9 @@ let var_type = function
   | DynX _ -> assert false
   | RecX x -> "rec." ^ nat32 x
 
-let null = function
-  | NoNull -> ""
-  | Null -> "null "
-
 let final = function
   | NoFinal -> ""
   | Final -> " final"
-
-let ref_type_raw (nul, t) =
-  Atom (null nul ^ heap_type t)
 
 let decls kind ts = tab kind (atom val_type) ts
 
@@ -512,8 +505,10 @@ let rec instr e =
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
     | BrOnNull x -> "br_on_null " ^ var x, []
     | BrOnNonNull x -> "br_on_non_null " ^ var x, []
-    | BrOnCast (x, t) -> "br_on_cast " ^ var x, [ref_type_raw t]
-    | BrOnCastFail (x, t) -> "br_on_cast_fail " ^ var x, [ref_type_raw t]
+    | BrOnCast (x, t1, t2) ->
+      "br_on_cast " ^ var x, [Atom (ref_type t1); Atom (ref_type t2)]
+    | BrOnCastFail (x, t1, t2) ->
+      "br_on_cast_fail " ^ var x, [Atom (ref_type t1); Atom (ref_type t2)]
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallRef x -> "call_ref " ^ var x, []
@@ -549,8 +544,8 @@ let rec instr e =
     | RefFunc x -> "ref.func " ^ var x, []
     | RefIsNull -> "ref.is_null", []
     | RefAsNonNull -> "ref.as_non_null", []
-    | RefTest t -> "ref.test", [ref_type_raw t]
-    | RefCast t -> "ref.cast", [ref_type_raw t]
+    | RefTest t -> "ref.test", [Atom (ref_type t)]
+    | RefCast t -> "ref.cast", [Atom (ref_type t)]
     | RefEq -> "ref.eq", []
     | I31New -> "i31.new", []
     | I31Get ext -> "i31.get" ^ extension ext, []

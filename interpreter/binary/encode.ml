@@ -40,6 +40,8 @@ struct
 
   (* Generic values *)
 
+  let bit i b = (if b then 1 else 0) lsl i
+
   let byte i = put s (Char.chr (i land 0xff))
   let word16 i = byte (i land 0xff); byte (i lsr 8)
   let word32 i =
@@ -241,10 +243,12 @@ struct
     | BrTable (xs, x) -> op 0x0e; vec var xs; var x
     | BrOnNull x -> op 0xd4; var x
     | BrOnNonNull x -> op 0xd6; var x
-    | BrOnCast (x, (NoNull, t)) -> op 0xfb; op 0x42; var x; heap_type t
-    | BrOnCast (x, (Null, t)) -> op 0xfb; op 0x4a; var x; heap_type t
-    | BrOnCastFail (x, (NoNull, t)) -> op 0xfb; op 0x43; var x; heap_type t
-    | BrOnCastFail (x, (Null, t)) -> op 0xfb; op 0x4b; var x; heap_type t
+    | BrOnCast (x, (nul1, t1), (nul2, t2)) ->
+      let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) + bit 2 false in
+      op 0xfb; op 0x4f; byte flags; var x; heap_type t1; heap_type t2
+    | BrOnCastFail (x, (nul1, t1), (nul2, t2)) ->
+      let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) + bit 2 true in
+      op 0xfb; op 0x4f; byte flags; var x; heap_type t1; heap_type t2
     | Return -> op 0x0f
     | Call x -> op 0x10; var x
     | CallRef x -> op 0x14; var x

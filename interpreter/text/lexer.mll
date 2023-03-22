@@ -188,9 +188,9 @@ rule token = parse
       | "br_if" -> BR_IF
       | "br_table" -> BR_TABLE
       | "br_on_null" -> BR_ON_NULL br_on_null
-      | "br_on_non_null" -> BR_ON_NON_NULL br_on_non_null
-      | "br_on_cast" -> BR_ON_CAST (br_on_cast, br_on_cast_null)
-      | "br_on_cast_fail" -> BR_ON_CAST_FAIL (br_on_cast_fail, br_on_cast_fail_null)
+      | "br_on_non_null" -> BR_ON_NULL br_on_non_null
+      | "br_on_cast" -> BR_ON_CAST br_on_cast
+      | "br_on_cast_fail" -> BR_ON_CAST br_on_cast_fail
       | "return" -> RETURN
       | "if" -> IF
       | "then" -> THEN
@@ -312,10 +312,10 @@ rule token = parse
       | "ref.extern" -> REF_EXTERN
       | "ref.host" -> REF_HOST
 
-      | "ref.is_null" -> REF_IS_NULL ref_is_null
-      | "ref.as_non_null" -> REF_AS_NON_NULL ref_as_non_null
-      | "ref.test" -> REF_TEST (ref_test, ref_test_null)
-      | "ref.cast" -> REF_CAST (ref_cast, ref_cast_null)
+      | "ref.is_null" -> REF_IS_NULL
+      | "ref.as_non_null" -> REF_AS_NON_NULL
+      | "ref.test" -> REF_TEST
+      | "ref.cast" -> REF_CAST
       | "ref.eq" -> REF_EQ
 
       | "i31.new" -> I31_NEW
