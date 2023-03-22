@@ -2599,11 +2599,11 @@ Control Instructions
 
 3. If :math:`c` is non-zero, then:
 
-   a. Execute the block instruction :math:`\BLOCK~\X{bt}~\instr_1^\ast~\END`.
+   a. Execute the block instruction :math:`\BLOCK~\blocktype~\instr_1^\ast~\END`.
 
 4. Else:
 
-   a. Execute the block instruction :math:`\BLOCK~\X{bt}~\instr_2^\ast~\END`.
+   a. Execute the block instruction :math:`\BLOCK~\blocktype~\instr_2^\ast~\END`.
 
 .. math::
    ~\\[-1ex]
