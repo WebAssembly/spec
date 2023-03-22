@@ -139,8 +139,16 @@ singlehtml: $(GENERATED)
 bikeshed: $(GENERATED)
 	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
 		$(ALLSPHINXOPTS) $(BUILDDIR)/bikeshed_singlehtml
+	@echo ==== Showing contents of _build/bikeshed_singlehtml/index.html ====
+	@head -n20 _build/bikeshed_singlehtml/index.html
+	@echo ...
+	@echo ===================================================================
 	python util/bikeshed_fixup.py $(BUILDDIR)/bikeshed_singlehtml/index.html \
 		>$(BUILDDIR)/bikeshed_singlehtml/index_fixed.html
+	@echo ==== Showing contents of _build/bikeshed_singlehtml/index_fixed.html ====
+	@head -n20 _build/bikeshed_singlehtml/index_fixed.html
+	@echo ...
+	@echo =========================================================================
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
