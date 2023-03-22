@@ -253,14 +253,15 @@ op:
   br <var>
   br_if <var>
   br_table <var>+
-  br_on_null <var> <heap_type>
+  br_on_null <var>
+  br_on_non_null <var>
   call <var>
   call_ref <var>
-  call_indirect <var>? <func_type>
+  call_indirect <var>? (type <var>)? <func_type>
   return
   return_call <var>
   return_call_ref <var>
-  return_call_indirect <var>? <func_type>
+  return_call_indirect <var>? (type <var>)? <func_type>
   local.get <var>
   local.set <var>
   local.tee <var>
@@ -287,8 +288,8 @@ op:
   memory.init <var>
   data.drop <var>
   ref.null <heap_type>
-  ref.is_null <heap_type>
-  ref_as_non_null <heap_type>
+  ref.is_null
+  ref_as_non_null
   ref.func <var>
   <num_type>.const <num>
   <num_type>.<unop>
