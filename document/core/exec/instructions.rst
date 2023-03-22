@@ -220,9 +220,9 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val~\REFISNULL &\stepto& \I32.\CONST~1
+   \val~\REFISNULL &\stepto& (\I32.\CONST~1)
      & (\iff \val = \REFNULL~t) \\
-   \val~\REFISNULL &\stepto& \I32.\CONST~0
+   \val~\REFISNULL &\stepto& (\I32.\CONST~0)
      & (\otherwise) \\
    \end{array}
 
@@ -242,7 +242,7 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; \REFFUNC~x &\stepto& F; \REFFUNCADDR~a
+   F; (\REFFUNC~x) &\stepto& F; (\REFFUNCADDR~a)
      & (\iff a = F.\AMODULE.\MIFUNCS[x]) \\
    \end{array}
 
@@ -431,7 +431,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\I8X16\K{.}\SHUFFLE~x^\ast &\stepto& (\V128\K{.}\VCONST~c)
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\I8X16\K{.}\SHUFFLE~x^\ast) &\stepto& (\V128\K{.}\VCONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -489,7 +489,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t_1\K{x}N\K{.}\EXTRACTLANE~x &\stepto& (t_2\K{.}\CONST~c_2)
+   (\V128\K{.}\VCONST~c_1)~(t_1\K{x}N\K{.}\EXTRACTLANE~x) &\stepto& (t_2\K{.}\CONST~c_2)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -525,7 +525,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (t_1\K{.}\CONST~c_1)~(\V128\K{.}\VCONST~c_2)~\shape\K{.}\REPLACELANE~x &\stepto& (\V128\K{.}\VCONST~c)
+   (t_1\K{.}\CONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\shape\K{.}\REPLACELANE~x) &\stepto& (\V128\K{.}\VCONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -994,9 +994,9 @@ Parametric Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val_1~\val_2~(\I32\K{.}\CONST~c)~\SELECT~t^? &\stepto& \val_1
+   \val_1~\val_2~(\I32\K{.}\CONST~c)~(\SELECT~t^?) &\stepto& \val_1
      & (\iff c \neq 0) \\
-   \val_1~\val_2~(\I32\K{.}\CONST~c)~\SELECT~t^? &\stepto& \val_2
+   \val_1~\val_2~(\I32\K{.}\CONST~c)~(\SELECT~t^?) &\stepto& \val_2
      & (\iff c = 0) \\
    \end{array}
 
@@ -1067,7 +1067,7 @@ Variable Instructions
 
 4. Push the value :math:`\val` to the stack.
 
-5. :ref:`Execute <exec-local.set>` the instruction :math:`(\LOCALSET~x)`.
+5. :ref:`Execute <exec-local.set>` the instruction :math:`\LOCALSET~x`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -2664,7 +2664,7 @@ Control Instructions
 
 3. If :math:`c` is non-zero, then:
 
-   a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
+   a. :ref:`Execute <exec-br>` the instruction :math:`\BR~l`.
 
 4. Else:
 
@@ -2693,11 +2693,11 @@ Control Instructions
 
    a. Let :math:`l_i` be the label :math:`l^\ast[i]`.
 
-   b. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l_i)`.
+   b. :ref:`Execute <exec-br>` the instruction :math:`\BR~l_i`.
 
 4. Else:
 
-   a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l_N)`.
+   a. :ref:`Execute <exec-br>` the instruction :math:`\BR~l_N`.
 
 .. math::
    ~\\[-1ex]
