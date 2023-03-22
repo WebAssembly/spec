@@ -294,16 +294,13 @@ Currently, the implementation consists of merely the frontend, which performs:
 * elaboration from EL into IL,
 * type checking for the EL.
 
-Lowering from EL into IL infers the following information and makes it explicit in the representation:
+Lowering from EL into IL infers additional information and makes it explicit in the representation:
 
-* resolving notational overloading,
-* mixfix operator applications,
-* injections from variant subtypes into supertypes,
-* injections from singletons into options/lists,
-* scopes and types of local variables,
-* grouping of relations and their rules, resp functions and their clauses,
-* dependency ordering of definitions,
-* recursion groups,
+* resolve notational overloading and mixfix applications,
+* insert injections from variant subtypes into supertypes,
+* insert injections from singletons into options/lists,
+* insert binders and types for local variables in rules and functions,
+* mark recursion groups and group definitions with rules, ordering everything by dependency.
 
 
 ## Building and Running
