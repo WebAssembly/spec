@@ -1,4 +1,4 @@
-# Test Preview
+# Preview
 
 ```sh
 $ dune exec ../src/exe-watsup/main.exe -- *.watsup
