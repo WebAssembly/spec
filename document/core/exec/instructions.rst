@@ -1332,13 +1332,19 @@ Table Instructions
 
 11. Let :math:`\X{err}` be the |i32| value :math:`2^{32}-1`, for which :math:`\signed_{32}(\X{err})` is :math:`-1`.
 
-12. Either, try :ref:`growing <grow-table>` :math:`\X{table}` by :math:`n` entries with initialization value :math:`\val`:
+12. Either:
 
-   a. If it succeeds, push the value :math:`\I32.\CONST~\X{sz}` to the stack.
+   a. If :ref:`growing <grow-table>` :math:`\X{tab}` by :math:`n` entries with initialization value :math:`\val` succeeds, then:
 
-   b. Else, push the value :math:`\I32.\CONST~\X{err}` to the stack.
+      i. Push the value :math:`\I32.\CONST~\X{sz}` to the stack.
 
-13. Or, push the value :math:`\I32.\CONST~\X{err}` to the stack.
+   b. Else:
+
+      i. Push the value :math:`\I32.\CONST~\X{err}` to the stack.
+
+13. Or:
+
+   a. push the value :math:`\I32.\CONST~\X{err}` to the stack.
 
 .. math::
    ~\\[-1ex]
@@ -2198,13 +2204,19 @@ Memory Instructions
 
 9. Let :math:`\X{err}` be the |i32| value :math:`2^{32}-1`, for which :math:`\signed_{32}(\X{err})` is :math:`-1`.
 
-10. Either, try :ref:`growing <grow-mem>` :math:`\X{mem}` by :math:`n` :ref:`pages <page-size>`:
+10. Either:
 
-   a. If it succeeds, push the value :math:`\I32.\CONST~\X{sz}` to the stack.
+   a. If :ref:`growing <grow-mem>` :math:`\X{mem}` by :math:`n` :ref:`pages <page-size>` succeeds, then:
 
-   b. Else, push the value :math:`\I32.\CONST~\X{err}` to the stack.
+      i. Push the value :math:`\I32.\CONST~\X{sz}` to the stack.
 
-11. Or, push the value :math:`\I32.\CONST~\X{err}` to the stack.
+   b. Else:
+
+      i. Push the value :math:`\I32.\CONST~\X{err}` to the stack.
+
+11. Or:
+
+   a. Push the value :math:`\I32.\CONST~\X{err}` to the stack.
 
 .. math::
    ~\\[-1ex]
