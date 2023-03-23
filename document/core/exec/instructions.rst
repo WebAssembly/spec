@@ -759,17 +759,19 @@ Most vector instructions are defined in terms of generic numeric operators appli
 :math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx`
 .....................................................
 
-1. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = M`.
 
-2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+2. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
-3. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
+4. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+5. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
 
-6. Push the value :math:`\V128.\VCONST~c` onto the stack.
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+
+7. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{l}
@@ -786,27 +788,29 @@ Most vector instructions are defined in terms of generic numeric operators appli
 :math:`t_2\K{x}N\K{.}\vcvtop\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx^?`
 ..................................................................
 
-1. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = M / 2`.
 
-2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+2. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
-3. If :math:`\half` is :math:`\K{low}`, then:
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+4. If :math:`\half` is :math:`\K{low}`, then:
 
    a. Let :math:`n` be the integer :math:`0`.
 
-4. Else:
+5. Else:
 
    a. Let :math:`n` be the integer :math:`N`.
 
-5. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
+6. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-6. Let :math:`j^\ast` be the sequence :math:`i^\ast[n \slice N]`.
+7. Let :math:`j^\ast` be the sequence :math:`i^\ast[n \slice N]`.
 
-7. Let :math:`k^\ast` be the result of computing :math:`\vcvtop^{\sx^?}_{|t_1|,|t_2|}(j^\ast)`.
+8. Let :math:`k^\ast` be the result of computing :math:`\vcvtop^{\sx^?}_{|t_1|,|t_2|}(j^\ast)`.
 
-8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
+9. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
 
-9. Push the value :math:`\V128.\VCONST~c` onto the stack.
+10. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{l}
@@ -831,19 +835,21 @@ where:
 :math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx\K{\_zero}`
 ...............................................................
 
-1. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = 2 \cdot M`.
 
-2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+2. Assert: due to :ref:`validation <valid-vcvtop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
-3. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
+4. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-5. Let :math:`k^\ast` be the concatenation of the two sequences :math:`j^\ast~0^M`.
+5. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
 
-6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
+6. Let :math:`k^\ast` be the concatenation of the two sequences :math:`j^\ast~0^M`.
 
-7. Push the value :math:`\V128.\VCONST~c` onto the stack.
+7. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
+
+8. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{l}
@@ -903,37 +909,39 @@ where:
 :math:`t_2\K{x}N\K{.}\EXTMUL\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx`
 ................................................................
 
-1. Assert: due to :ref:`validation <valid-vec-extmul>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = M / 2`.
 
-2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+2. Assert: due to :ref:`validation <valid-vec-extmul>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
-3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+3. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
-4. If :math:`\half` is :math:`\K{low}`, then:
+4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+
+5. If :math:`\half` is :math:`\K{low}`, then:
 
    a. Let :math:`n` be the integer :math:`0`.
 
-5. Else:
+6. Else:
 
    a. Let :math:`n` be the integer :math:`N`.
 
-6. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
+7. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-7. Let :math:`i_2^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_2)`.
+8. Let :math:`i_2^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_2)`.
 
-8. Let :math:`j_1^\ast` be the sequence :math:`i_1^\ast[n \slice N]`.
+9. Let :math:`j_1^\ast` be the sequence :math:`i_1^\ast[n \slice N]`.
 
-9. Let :math:`j_2^\ast` be the sequence :math:`i_2^\ast[n \slice N]`.
+10. Let :math:`j_2^\ast` be the sequence :math:`i_2^\ast[n \slice N]`.
 
-10. Let :math:`k_1^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(j_1^\ast)`.
+11. Let :math:`k_1^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(j_1^\ast)`.
 
-11. Let :math:`k_2^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(j_2^\ast)`.
+12. Let :math:`k_2^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(j_2^\ast)`.
 
-12. Let :math:`k^\ast` be the result of computing :math:`\imul_{t_2\K{x}N}(k_1^\ast, k_2^\ast)`.
+13. Let :math:`k^\ast` be the result of computing :math:`\imul_{t_2\K{x}N}(k_1^\ast, k_2^\ast)`.
 
-13. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
+14. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
 
-14. Push the value :math:`\V128.\VCONST~c` onto the stack.
+15. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -960,19 +968,21 @@ where:
 :math:`t_2\K{x}N\K{.}\EXTADDPAIRWISE\_t_1\K{x}M\_\sx`
 .....................................................
 
-1. Assert: due to :ref:`validation <valid-vec-extadd_pairwise>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = M / 2`.
 
-2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+2. Assert: due to :ref:`validation <valid-vec-extadd_pairwise>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
-3. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
+3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`(j_1~j_2)^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
+4. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-5. Let :math:`k^\ast` be the result of computing :math:`\iadd_{N}(j_1, j_2)^\ast`.
+5. Let :math:`(j_1~j_2)^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
 
-6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
+6. Let :math:`k^\ast` be the result of computing :math:`\iadd_{N}(j_1, j_2)^\ast`.
 
-7. Push the value :math:`\V128.\VCONST~c` to the stack.
+7. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
+
+8. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
    \begin{array}{l}
