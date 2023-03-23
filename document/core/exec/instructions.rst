@@ -379,15 +379,15 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
-3. Let :math:`i^\ast` be the sequence :math:`\lanes_{i8x16}(c_2)`.
+3. Let :math:`i^\ast` be the result of computing :math:`\lanes_{i8x16}(c_2)`.
 
 4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-5. Let :math:`j^\ast` be the sequence :math:`\lanes_{i8x16}(c_1)`.
+5. Let :math:`j^\ast` be the result of computing :math:`\lanes_{i8x16}(c_1)`.
 
 6. Let :math:`c^\ast` be the concatenation of the two sequences :math:`j^\ast~0^{240}`.
 
-7. Let :math:`c'` be the result of :math:`\lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ])`.
+7. Let :math:`c'` be the result of computing :math:`\lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ])`.
 
 8. Push the value :math:`\V128.\VCONST~c'` onto the stack.
 
@@ -416,15 +416,15 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 3. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
-4. Let :math:`i_2^\ast` be the sequence :math:`\lanes_{i8x16}(c_2)`.
+4. Let :math:`i_2^\ast` be the result of computing :math:`\lanes_{i8x16}(c_2)`.
 
 5. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-6. Let :math:`i_1^\ast` be the sequence :math:`\lanes_{i8x16}(c_1)`.
+6. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{i8x16}(c_1)`.
 
 7. Let :math:`i^\ast` be the concatenation of the two sequences :math:`i_1^\ast~i_2^\ast`.
 
-8. Let :math:`c` be the result of :math:`\lanes^{-1}_{i8x16}(i^\ast[x^\ast[0]] \dots i^\ast[x^\ast[15]])`.
+8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{i8x16}(i^\ast[x^\ast[0]] \dots i^\ast[x^\ast[15]])`.
 
 9. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
@@ -446,15 +446,15 @@ Most vector instructions are defined in terms of generic numeric operators appli
 :math:`\shape\K{.}\SPLAT`
 .........................
 
-1. Let :math:`t` be the type :math:`\unpacked(\shape)`.
+1. Let :math:`t` be the result of computing :math:`\unpacked(\shape)`.
 
 2. Assert: due to :ref:`validation <valid-vec-splat>`, a value of :ref:`value type <syntax-valtype>` :math:`t` is on the top of the stack.
 
 3. Pop the value :math:`t.\CONST~c_1` from the stack.
 
-4. Let :math:`N` be the integer :math:`\dim(\shape)`.
+4. Let :math:`N` be the result of computing :math:`\dim(\shape)`.
 
-5. Let :math:`c` be the result of :math:`\lanes^{-1}_{\shape}(c_1^N)`.
+5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(c_1^N)`.
 
 6. Push the value :math:`\V128.\VCONST~c` to the stack.
 
@@ -478,9 +478,9 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}N}(c_1)`.
+4. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}N}(c_1)`.
 
-5. Let :math:`t_2` be the type :math:`\unpacked(t_1\K{x}N)`.
+5. Let :math:`t_2` be the result of computing :math:`\unpacked(t_1\K{x}N)`.
 
 6. Let :math:`c_2` be the result of computing :math:`\extend^{sx^?}_{t_1,t_2}(i^\ast[x])`.
 
@@ -506,7 +506,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 1. Assert: due to :ref:`validation <valid-vec-replace_lane>`, :math:`x < \dim(\shape)`.
 
-2. Let :math:`t_1` be the type :math:`\unpacked(\shape)`.
+2. Let :math:`t_1` be the result of computing :math:`\unpacked(\shape)`.
 
 3. Assert: due to :ref:`validation <valid-vec-replace_lane>`, a value of :ref:`value type <syntax-valtype>` :math:`t_1` is on the top of the stack.
 
@@ -516,7 +516,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 6. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
-7. Let :math:`i^\ast` be the sequence :math:`\lanes_{\shape}(c_2)`.
+7. Let :math:`i^\ast` be the result of computing :math:`\lanes_{\shape}(c_2)`.
 
 8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)`.
 
@@ -596,13 +596,17 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`i^\ast` be the sequence :math:`\lanes_{t\K{x}N}(c_1)`.
+4. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{t\K{x}N}(c_1)`.
 
-5. Let :math:`j^\ast` be the sequence :math:`\lanes_{t\K{x}N}(c_2)`.
+5. Let :math:`i_2^\ast` be the result of computing :math:`\lanes_{t\K{x}N}(c_2)`.
 
-6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t\K{x}N}(\extends_{1,|t|}(\vrelop_t(i^\ast, j^\ast)))`.
+6. Let :math:`i^\ast` be the result of computing :math:`\vrelop_t(i_1^\ast, i_2^\ast)`.
 
-7. Push the value :math:`\V128.\VCONST~c` to the stack.
+7. Let :math:`j^\ast` be the result of computing :math:`\extends_{1,|t|}(i^\ast)`.
+
+8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t\K{x}N}(j^\ast)`.
+
+9. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
    \begin{array}{l}
@@ -629,11 +633,13 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-5. Let :math:`i^\ast` be the sequence :math:`\lanes_{t\K{x}N}(c_1)`.
+5. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t\K{x}N}(c_1)`.
 
-6. Let :math:`c` be :math:`\lanes^{-1}_{t\K{x}N}(\vishiftop_{t}(i^\ast, s^N))`.
+6. Let :math:`j^\ast` be the result of computing :math:`\vishiftop_{t}(i^\ast, s^N)`.
 
-7. Push the value :math:`\V128.\VCONST~c` to the stack.
+7. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t\K{x}N}(j^\ast)`.
+
+8. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
    \begin{array}{l}
@@ -658,7 +664,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. Let :math:`i_1^\ast` be the sequence :math:`\lanes_{\shape}(c_1)`.
+3. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{\shape}(c_1)`.
 
 4. Let :math:`i` be the result of computing :math:`\bool(\bigwedge(i_1 \neq 0)^\ast)`.
 
@@ -687,15 +693,17 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. Let :math:`i_1^N` be the sequence :math:`\lanes_{t\K{x}N}(c)`.
+3. Let :math:`i_1^N` be the result of computing :math:`\lanes_{t\K{x}N}(c)`.
 
 4. Let :math:`B` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
 
-5. Let :math:`i_2^N` be the sequence as a result of computing :math:`\ilts_{B}(i_1^N, 0^N)`.
+5. Let :math:`i_2^N` be the result of computing :math:`\ilts_{B}(i_1^N, 0^N)`.
 
-6. Let :math:`c` be the integer :math:`\ibits_{32}^{-1}(i_2^N~0^{32-N})`.
+6. Let :math:`j^\ast` be the concatenation of the two sequences :math:`i_2^N~0^{32-N}`.
 
-7. Push the value :math:`\I32.\CONST~c` onto the stack.
+7. Let :math:`c` be the result of computing :math:`\ibits_{32}^{-1}(j^\ast)`.
+
+8. Push the value :math:`\I32.\CONST~c` onto the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -716,15 +724,21 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 3. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
-4. Let :math:`d_2^M` be the result of computing :math:`\narrow^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_2))`.
+4. Let :math:`i_2^M` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_2)`.
 
-5. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+5. Let :math:`d_2^M` be the result of computing :math:`\narrow^{\sx}_{|t_1|,|t_2|}(i_2^M)`.
 
-6. Let :math:`d_1^M` be the result of computing :math:`\narrow^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))`.
+6. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-7. Let :math:`c` be the result of :math:`\lanes^{-1}_{t_2\K{x}N}(d_1^M~d_2^M)`.
+7. Let :math:`i_1^M` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-8. Push the value :math:`\V128.\VCONST~c` onto the stack.
+8. Let :math:`d_1^M` be the result of computing :math:`\narrow^{\sx}_{|t_1|,|t_2|}(i_1^M)`.
+
+9. Let :math:`j^N` be the concatenation of the two sequences :math:`d_1^M~d_2^M`.
+
+10. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^N)`.
+
+11. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{l}
@@ -749,11 +763,13 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
+3. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-4. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast))`.
+4. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
 
-5. Push the value :math:`\V128.\VCONST~c` onto the stack.
+5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+
+6. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{l}
@@ -776,17 +792,21 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 3. If :math:`\half` is :math:`\K{low}`, then:
 
-   a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[0 \slice N]`.
+   a. Let :math:`n` be the integer :math:`0`.
 
 4. Else:
 
-   a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[N \slice N]`.
+   a. Let :math:`n` be the integer :math:`N`.
 
-5. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx^?}_{|t_1|,|t_2|}(i^\ast)`.
+5. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+6. Let :math:`j^\ast` be the sequence :math:`i^\ast[n \slice N]`.
 
-7. Push the value :math:`\V128.\VCONST~c` onto the stack.
+7. Let :math:`k^\ast` be the result of computing :math:`\vcvtop^{\sx^?}_{|t_1|,|t_2|}(j^\ast)`.
+
+8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
+
+9. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{l}
@@ -815,13 +835,15 @@ where:
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)`.
+3. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-4. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast)` concatenated with the vector :math:`0^M`.
+4. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
 
-5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+5. Let :math:`k^\ast` be the concatenation of the two sequences :math:`j^\ast~0^M`.
 
-6. Push the value :math:`\V128.\VCONST~c` onto the stack.
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
+
+7. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{l}
@@ -846,13 +868,21 @@ where:
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`(i_1~i_2)^\ast` be the result of computing :math:`\imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2)))`.
+4. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{\I16X8}(c_1)`.
 
-5. Let :math:`j^\ast` be the result of computing :math:`\iadd_{32}(i_1, i_2)^\ast`.
+5. Let :math:`j_1^\ast` be the result of computing :math:`\extends_{16,32}(i_1^\ast)`.
 
-6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\I32X4}(j^\ast)`.
+6. Let :math:`i_2^\ast` be the result of computing :math:`\lanes_{\I16X8}(c_2)`.
 
-7. Push the value :math:`\V128.\VCONST~c` onto the stack.
+7. Let :math:`j_2^\ast` be the result of computing :math:`\extends_{16,32}(i_2^\ast)`.
+
+8. Let :math:`(k_1~k_2)^\ast` be the result of computing :math:`\imul_{32}(j_1^\ast, j_2^\ast)`.
+
+9. Let :math:`k^\ast` be the result of computing :math:`\iadd_{32}(k_1, k_2)^\ast`.
+
+10. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\I32X4}(k^\ast)`.
+
+11. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{l}
@@ -881,19 +911,29 @@ where:
 
 4. If :math:`\half` is :math:`\K{low}`, then:
 
-   a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[0 \slice N]`.
-
-   b. Let :math:`j^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_2)[0 \slice N]`.
+   a. Let :math:`n` be the integer :math:`0`.
 
 5. Else:
 
-   a. Let :math:`i^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_1)[N \slice N]`.
+   a. Let :math:`n` be the integer :math:`N`.
 
-   b. Let :math:`j^\ast` be the sequence :math:`\lanes_{t_1\K{x}M}(c_2)[N \slice N]`.
+6. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast)))`.
+7. Let :math:`i_2^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_2)`.
 
-7. Push the value :math:`\V128.\VCONST~c` onto the stack.
+8. Let :math:`j_1^\ast` be the sequence :math:`i_1^\ast[n \slice N]`.
+
+9. Let :math:`j_2^\ast` be the sequence :math:`i_2^\ast[n \slice N]`.
+
+10. Let :math:`k_1^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(j_1^\ast)`.
+
+11. Let :math:`k_2^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(j_2^\ast)`.
+
+12. Let :math:`k^\ast` be the result of computing :math:`\imul_{t_2\K{x}N}(k_1^\ast, k_2^\ast)`.
+
+13. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
+
+14. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -924,13 +964,15 @@ where:
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. Let :math:`(i_1~i_2)^\ast` be the sequence :math:`\extend^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))`.
+3. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-4. Let :math:`j^\ast` be the result of computing :math:`\iadd_{N}(i_1, i_2)^\ast`.
+4. Let :math:`(j_1~j_2)^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
 
-5. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(j^\ast)`.
+5. Let :math:`k^\ast` be the result of computing :math:`\iadd_{N}(j_1, j_2)^\ast`.
 
-6. Push the value :math:`\V128.\VCONST~c` to the stack.
+6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
+
+7. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
    \begin{array}{l}
@@ -1762,7 +1804,7 @@ Memory Instructions
 
 12. Let :math:`W` be the integer :math:`M \cdot 2`.
 
-13. Let :math:`n_k` be the result of :math:`\extend^{\sx}_{M,W}(m_k)`.
+13. Let :math:`n_k` be the result of computing :math:`\extend^{\sx}_{M,W}(m_k)`.
 
 14. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\X{i}W\K{x}N}(n_0 \dots n_{N-1})`.
 
@@ -1878,7 +1920,7 @@ Memory Instructions
 
 11. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
 
-12. Let :math:`c` be the result of :math:`\extendu_{N,128}(n)`.
+12. Let :math:`c` be the result of computing :math:`\extendu_{N,128}(n)`.
 
 13. Push the value :math:`\V128.\CONST~c` to the stack.
 
@@ -1939,9 +1981,11 @@ Memory Instructions
 
 14. Let :math:`L` be :math:`128 / N`.
 
-15. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\K{i}N\K{x}L}(\lanes_{\K{i}N\K{x}L}(v) \with [x] = r)`.
+15. Let :math:`j^\ast` be the result of computing :math:`\lanes_{\K{i}N\K{x}L}(v)`.
 
-16. Push the value :math:`\V128.\CONST~c` to the stack.
+16. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\K{i}N\K{x}L}(j^\ast \with [x] = r)`.
+
+17. Push the value :math:`\V128.\CONST~c` to the stack.
 
 .. math::
    ~\\[-1ex]
@@ -2074,9 +2118,11 @@ Memory Instructions
 
 12. Let :math:`L` be :math:`128/N`.
 
-13. Let :math:`b^\ast` be the byte sequence :math:`\bytes_{\iN}(\lanes_{\K{i}N\K{x}L}(c)[x])`.
+13. Let :math:`j^\ast` be the result of computing :math:`\lanes_{\K{i}N\K{x}L}(c)`.
 
-14. Replace the bytes :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]` with :math:`b^\ast`.
+14. Let :math:`b^\ast` be the result of computing :math:`\bytes_{\iN}(j^\ast[x])`.
+
+15. Replace the bytes :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]` with :math:`b^\ast`.
 
 .. math::
    ~\\[-1ex]
