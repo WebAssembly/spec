@@ -13,7 +13,7 @@ TESTLOG = $(TESTDIR)/TEST.md
 
 default: exe
 all: exe test
-ci: all testexe
+ci: all test-exe test-latex
 
 
 # Executable
@@ -31,7 +31,7 @@ exe:
 
 # Test
 
-.PHONY: test testpromote testexe
+.PHONY: test testpromote test-exe test-latex
 
 test:
 	@dune runtest && echo OK || echo Failure. Run \`make testpromote\` to accept changes in test expectations.
@@ -39,8 +39,12 @@ test:
 testpromote:
 	dune promote
 
-testexe: exe
+test-exe: exe
 	(cd $(TESTDIR); ../$(NAME) *.$(EXT))
+
+test-latex: exe
+	(cd test-latex && ../$(NAME) ../$(TESTDIR)/*.$(EXT) -o spec.tex)
+	(cd test-latex && pdflatex spec-main.tex)
 
 
 # Cleanup

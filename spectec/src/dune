@@ -1,5 +1,11 @@
 (library
   (name spectec)
-  (modules )
-  (libraries (re_export util) (re_export el) (re_export il) (re_export front))
+  (modules)
+  (libraries
+    (re_export util)
+    (re_export el)
+    (re_export il)
+    (re_export frontend)
+    (re_export backend_latex)
+  )
 )

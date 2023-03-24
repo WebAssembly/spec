@@ -752,5 +752,786 @@ relation Step: `%~>%`(config, config)
     -- Step_pure: `%~>%`((instr <: admininstr)*, (instr' <: admininstr)*)
 
 == IL Validation...
+== Latex Generation...
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{name} &::=& \mathit{text}\\
+[1ex]
+& \mathit{byte} &::=& \mathit{nat}\\
+[1ex]
+& \mathit{u32} &::=& \mathit{nat}\\
+[1ex]
+& \mathit{idx} &::=& \mathit{nat}\\
+[1ex]
+& \mathit{funcidx} &::=& \mathit{idx}\\
+[1ex]
+& \mathit{globalidx} &::=& \mathit{idx}\\
+[1ex]
+& \mathit{tableidx} &::=& \mathit{idx}\\
+[1ex]
+& \mathit{memidx} &::=& \mathit{idx}\\
+[1ex]
+& \mathit{elemidx} &::=& \mathit{idx}\\
+[1ex]
+& \mathit{dataidx} &::=& \mathit{idx}\\
+[1ex]
+& \mathit{labelidx} &::=& \mathit{idx}\\
+[1ex]
+& \mathit{localidx} &::=& \mathit{idx}\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{numtype} &::=& \mathsf{i32} ~|~ \mathsf{i64} ~|~ \mathsf{f32} ~|~ \mathsf{f64}\\
+[1ex]
+& \mathit{vectype} &::=& \mathsf{v128}\\
+[1ex]
+& \mathit{reftype} &::=& \mathsf{funcref} ~|~ \mathsf{externref}\\
+[1ex]
+& \mathit{valtype} &::=& numtype ~|~ vectype ~|~ reftype ~|~ \mathsf{bot}\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{resulttype} &::=& \mathit{valtype}^\ast\\
+[1ex]
+& \mathit{limits} &::=& [\mathit{u32} .. \mathit{u32}]\\
+[1ex]
+& \mathit{globaltype} &::=& \mathsf{mut}^?~\mathit{valtype}\\
+[1ex]
+& \mathit{functype} &::=& \mathit{resulttype} \rightarrow \mathit{resulttype}\\
+[1ex]
+& \mathit{tabletype} &::=& \mathit{limits}~\mathit{reftype}\\
+[1ex]
+& \mathit{memtype} &::=& \mathit{limits}~\mathsf{i8}\\
+[1ex]
+& \mathit{elemtype} &::=& \mathit{reftype}\\
+[1ex]
+& \mathit{datatype} &::=& \mathsf{ok}\\
+[1ex]
+& \mathit{externtype} &::=& \mathsf{global}~\mathit{globaltype} \\ &&|&
+\mathsf{func}~\mathit{functype} \\ &&|&
+\mathsf{table}~\mathit{tabletype} \\ &&|&
+\mathsf{mem}~\mathit{memtype}\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{c}_{numtype} &::=& \mathit{nat}\\
+[1ex]
+& \mathit{c}_{vectype} &::=& \mathit{nat}\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{sx} &::=& \mathsf{u} ~|~ \mathsf{s}\\
+[1ex]
+& \mathit{blocktype} &::=& \mathit{functype}\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{unop}_{numtype} &::=& \mathsf{xxx}\\
+[1ex]
+& \mathit{binop}_{numtype} &::=& \mathsf{xxx}\\
+[1ex]
+& \mathit{testop}_{numtype} &::=& \mathsf{xxx}\\
+[1ex]
+& \mathit{relop}_{numtype} &::=& \mathsf{xxx}\\
+[1ex]
+& \mathit{cvtop} &::=& \mathsf{xxx}\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{instr} &::=& \mathsf{unreachable} \\ &&|&
+\mathsf{nop} \\ &&|&
+\mathsf{drop} \\ &&|&
+\mathsf{select}~\mathit{valtype}^? \\ &&|&
+\mathsf{block}~\mathit{blocktype}~\mathit{instr}^\ast \\ &&|&
+\mathsf{loop}~\mathit{blocktype}~\mathit{instr}^\ast \\ &&|&
+\mathsf{if}~\mathit{blocktype}~\mathit{instr}^\ast~\mathsf{else}~\mathit{instr}^\ast \\ &&|&
+\mathsf{br}~\mathit{labelidx} \\ &&|&
+\mathsf{br\_if}~\mathit{labelidx} \\ &&|&
+\mathsf{br\_table}~\mathit{labelidx}^\ast~\mathit{labelidx} \\ &&|&
+\mathsf{call}~\mathit{funcidx} \\ &&|&
+\mathsf{call\_indirect}~\mathit{tableidx}~\mathit{functype} \\ &&|&
+\mathsf{return} \\ &&|&
+\mathsf{const}~\mathit{numtype}~\mathit{c}_{numtype} \\ &&|&
+\mathsf{unop}~\mathit{numtype}~\mathit{unop}_{numtype} \\ &&|&
+\mathsf{binop}~\mathit{numtype}~\mathit{binop}_{numtype} \\ &&|&
+\mathsf{testop}~\mathit{numtype}~\mathit{testop}_{numtype} \\ &&|&
+\mathsf{relop}~\mathit{numtype}~\mathit{relop}_{numtype} \\ &&|&
+\mathsf{extend}~\mathit{numtype}~\mathit{nat} \\ &&|&
+\mathsf{cvtop}~\mathit{numtype}~\mathit{cvtop}~\mathit{numtype}~\mathit{sx}^? \\ &&|&
+\mathsf{ref.null}~\mathit{reftype} \\ &&|&
+\mathsf{ref.func}~\mathit{funcidx} \\ &&|&
+\mathsf{ref.is\_null} \\ &&|&
+\mathsf{local.get}~\mathit{localidx} \\ &&|&
+\mathsf{local.set}~\mathit{localidx} \\ &&|&
+\mathsf{local.tee}~\mathit{localidx} \\ &&|&
+\mathsf{global.get}~\mathit{globalidx} \\ &&|&
+\mathsf{global.set}~\mathit{globalidx} \\ &&|&
+\mathsf{table.get}~\mathit{tableidx} \\ &&|&
+\mathsf{table.set}~\mathit{tableidx} \\ &&|&
+\mathsf{table.size}~\mathit{tableidx} \\ &&|&
+\mathsf{table.grow}~\mathit{tableidx} \\ &&|&
+\mathsf{table.fill}~\mathit{tableidx} \\ &&|&
+\mathsf{table.copy}~\mathit{tableidx}~\mathit{tableidx} \\ &&|&
+\mathsf{table.init}~\mathit{tableidx}~\mathit{elemidx} \\ &&|&
+\mathsf{elem.drop}~\mathit{elemidx} \\ &&|&
+\mathsf{memory.size} \\ &&|&
+\mathsf{memory.grow} \\ &&|&
+\mathsf{memory.fill} \\ &&|&
+\mathsf{memory.copy} \\ &&|&
+\mathsf{memory.init}~\mathit{dataidx} \\ &&|&
+\mathsf{data.drop}~\mathit{dataidx} \\ &&|&
+\mathsf{load}~\mathit{numtype}~(\mathit{nat}~\mathit{sx})^?~\mathit{nat}~\mathit{nat} \\ &&|&
+\mathsf{store}~\mathit{numtype}~\mathit{nat}^?~\mathit{nat}~\mathit{nat}\\
+[1ex]
+& \mathit{expr} &::=& \mathit{instr}^\ast\\
+[1ex]
+& \mathit{elemmode} &::=& \mathsf{table}~\mathit{tableidx}~\mathit{expr} \\ &&|&
+\mathsf{declare}\\
+[1ex]
+& \mathit{datamode} &::=& \mathsf{memory}~\mathit{memidx}~\mathit{expr}\\
+[1ex]
+& \mathit{func} &::=& \mathsf{func}~\mathit{functype}~\mathit{valtype}^\ast~\mathit{expr}\\
+[1ex]
+& \mathit{global} &::=& \mathsf{global}~\mathit{globaltype}~\mathit{expr}\\
+[1ex]
+& \mathit{table} &::=& \mathsf{table}~\mathit{tabletype}\\
+[1ex]
+& \mathit{mem} &::=& \mathsf{mem}~\mathit{memtype}\\
+[1ex]
+& \mathit{elem} &::=& \mathsf{elem}~\mathit{reftype}~\mathit{expr}^\ast~\mathit{elemmode}^?\\
+[1ex]
+& \mathit{data} &::=& \mathsf{data}~(\mathit{byte}^\ast)^\ast~\mathit{datamode}^?\\
+[1ex]
+& \mathit{start} &::=& \mathsf{start}~\mathit{funcidx}\\
+[1ex]
+& \mathit{externuse} &::=& \mathsf{func}~\mathit{funcidx} \\ &&|&
+\mathsf{global}~\mathit{globalidx} \\ &&|&
+\mathsf{table}~\mathit{tableidx} \\ &&|&
+\mathsf{mem}~\mathit{memidx}\\
+[1ex]
+& \mathit{export} &::=& \mathsf{export}~\mathit{name}~\mathit{externuse}\\
+[1ex]
+& \mathit{import} &::=& \mathsf{import}~\mathit{name}~\mathit{name}~\mathit{externtype}\\
+[1ex]
+& \mathit{module} &::=& \mathsf{module}~\mathit{import}^\ast~\mathit{func}^\ast~\mathit{global}^\ast~\mathit{table}^\ast~\mathit{mem}^\ast~\mathit{elem}^\ast~\mathit{data}^\ast~\mathit{start}^\ast~\mathit{export}^\ast\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{context} &::=& \{\mathsf{func}~\mathit{functype}^\ast,\; \mathsf{global}~\mathit{globaltype}^\ast,\; \mathsf{table}~\mathit{tabletype}^\ast,\; \mathsf{mem}~\mathit{memtype}^\ast,\; \mathsf{elem}~\mathit{elemtype}^\ast,\; \mathsf{data}~\mathit{datatype}^\ast,\; \mathsf{local}~\mathit{valtype}^\ast,\; \mathsf{label}~\mathit{resulttype}^\ast,\; \mathsf{return}~\mathit{resulttype}^?\}\\
+\end{array}
+$$
+
+$
+\boxed{{ \vdash }\;\mathit{functype} : \mathsf{ok}}
+$
+
+$
+\boxed{{ \vdash }\;\mathit{globaltype} : \mathsf{ok}}
+$
+
+$
+\boxed{{ \vdash }\;\mathit{tabletype} : \mathsf{ok}}
+$
+
+$
+\boxed{{ \vdash }\;\mathit{memtype} : \mathsf{ok}}
+$
+
+$
+\boxed{{ \vdash }\;\mathit{limits} : \mathit{nat}}
+$
+
+$$
+\frac{
+}{
+{ \vdash }\;\mathit{ft} : \mathsf{ok}
+}
+$$
+
+$$
+\frac{
+}{
+{ \vdash }\;\mathit{gt} : \mathsf{ok}
+}
+$$
+
+$$
+\frac{
+{ \vdash }\;\mathit{lim} : 2^{32} - 1
+}{
+{ \vdash }\;\mathit{lim}~\mathit{rt} : \mathsf{ok}
+}
+$$
+
+$$
+\frac{
+{ \vdash }\;\mathit{lim} : 2^{16}
+}{
+{ \vdash }\;\mathit{lim}~\mathsf{i8} : \mathsf{ok}
+}
+$$
+
+$$
+\frac{
+\mathit{n}_{1} \leq \mathit{n}_{2} \leq \mathit{k}
+}{
+{ \vdash }\;[\mathit{n}_{1} .. \mathit{n}_{2}] : \mathit{k}
+}
+$$
+
+$
+\boxed{{ \vdash }\;\mathit{valtype} \leq \mathit{valtype}}
+$
+
+$
+\boxed{{ \vdash }\;\mathit{valtype}^\ast \leq \mathit{valtype}^\ast}
+$
+
+$$
+\frac{
+}{
+{ \vdash }\;\mathit{t} \leq \mathit{t}
+}
+$$
+
+$$
+\frac{
+}{
+{ \vdash }\;\mathsf{bot} \leq \mathit{t}
+}
+$$
+
+$$
+\frac{
+({ \vdash }\;\mathit{t}_{1} \leq \mathit{t}_{2})^\ast
+}{
+{ \vdash }\;\mathit{t}_{1}^\ast \leq \mathit{t}_{2}^\ast
+}
+$$
+
+$
+\boxed{{ \vdash }\;\mathit{functype} \leq \mathit{functype}}
+$
+
+$
+\boxed{{ \vdash }\;\mathit{globaltype} \leq \mathit{globaltype}}
+$
+
+$
+\boxed{{ \vdash }\;\mathit{tabletype} \leq \mathit{tabletype}}
+$
+
+$
+\boxed{{ \vdash }\;\mathit{memtype} \leq \mathit{memtype}}
+$
+
+$
+\boxed{{ \vdash }\;\mathit{limits} \leq \mathit{limits}}
+$
+
+$
+\boxed{{ \vdash }\;\mathit{externtype} \leq \mathit{externtype}}
+$
+
+$$
+\frac{
+}{
+{ \vdash }\;\mathit{ft} \leq \mathit{ft}
+}
+$$
+
+$$
+\frac{
+}{
+{ \vdash }\;\mathit{gt} \leq \mathit{gt}
+}
+$$
+
+$$
+\frac{
+{ \vdash }\;\mathit{lim}_{1} \leq \mathit{lim}_{2}
+}{
+{ \vdash }\;\mathit{lim}_{1}~\mathit{rt} \leq \mathit{lim}_{2}~\mathit{rt}
+}
+$$
+
+$$
+\frac{
+{ \vdash }\;\mathit{lim}_{1} \leq \mathit{lim}_{2}
+}{
+{ \vdash }\;\mathit{lim}_{1}~\mathsf{i8} \leq \mathit{lim}_{2}~\mathsf{i8}
+}
+$$
+
+$$
+\frac{
+\mathit{n}_{11} \geq \mathit{n}_{21}
+\qquad
+\mathit{n}_{12} \leq \mathit{n}_{22}
+}{
+{ \vdash }\;[\mathit{n}_{11} .. \mathit{n}_{12}] \leq [\mathit{n}_{21} .. \mathit{n}_{22}]
+}
+$$
+
+$$
+\frac{
+{ \vdash }\;\mathit{ft}_{1} \leq \mathit{ft}_{2}
+}{
+{ \vdash }\;\mathsf{func}~\mathit{ft}_{1} \leq \mathsf{func}~\mathit{ft}_{2}
+}
+$$
+
+$$
+\frac{
+{ \vdash }\;\mathit{gt}_{1} \leq \mathit{gt}_{2}
+}{
+{ \vdash }\;\mathsf{global}~\mathit{gt}_{1} \leq \mathsf{global}~\mathit{gt}_{2}
+}
+$$
+
+$$
+\frac{
+{ \vdash }\;\mathit{tt}_{1} \leq \mathit{tt}_{2}
+}{
+{ \vdash }\;\mathsf{table}~\mathit{tt}_{1} \leq \mathsf{table}~\mathit{tt}_{2}
+}
+$$
+
+$$
+\frac{
+{ \vdash }\;\mathit{mt}_{1} \leq \mathit{mt}_{2}
+}{
+{ \vdash }\;\mathsf{mem}~\mathit{mt}_{1} \leq \mathsf{mem}~\mathit{mt}_{2}
+}
+$$
+
+$
+\boxed{\mathit{context} \vdash \mathit{instr} : \mathit{functype}}
+$
+
+$
+\boxed{\mathit{context} \vdash \mathit{instr}^\ast : \mathit{functype}}
+$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash { : }\;{ \rightarrow }\;\epsilon
+}
+$$
+
+$$
+\frac{
+\mathit{C} \vdash \mathit{instr}_{1} : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+\qquad
+\mathit{C} \vdash \mathit{instr}_{2} : \mathit{t}_{2}^\ast \rightarrow \mathit{t}_{3}^\ast
+}{
+\mathit{C} \vdash \mathit{instr}_{1}~\mathit{instr}_{2}^\ast : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{3}^\ast
+}
+$$
+
+$$
+\frac{
+\mathit{C} \vdash \mathit{instr}^\ast : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+\qquad
+{ \vdash }\;{\mathit{t}'_{'}}^\ast \leq \mathit{t}_{1}^\ast
+\qquad
+{ \vdash }\;\mathit{t}_{2}^\ast \leq {\mathit{t}'_{'}}^\ast
+}{
+\mathit{C} \vdash \mathit{instr}^\ast : {\mathit{t}'_{'}} \rightarrow {\mathit{t}'_{'}}^\ast
+}
+$$
+
+$$
+\frac{
+\mathit{C} \vdash \mathit{instr}^\ast : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+}{
+\mathit{C} \vdash \mathit{instr}^\ast : \mathit{t}^\ast~\mathit{t}_{1}^\ast \rightarrow \mathit{t}^\ast~\mathit{t}_{2}^\ast
+}
+$$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash \mathsf{unreachable} : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+}
+$$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash \mathsf{nop} : { \rightarrow }\;\epsilon
+}
+$$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash \mathsf{drop} : \mathit{t} \rightarrow \epsilon
+}
+$$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash \mathsf{select}~\mathit{t} : \mathit{t}~\mathit{t}~\mathsf{i32} \rightarrow \mathit{t}
+}
+$$
+
+$$
+\frac{
+{ \vdash }\;\mathit{t} \leq {\mathit{t}'}
+\qquad
+{\mathit{t}'} = \mathit{numtype} \lor {\mathit{t}'} = \mathit{vectype}
+}{
+\mathit{C} \vdash \mathsf{select} : \mathit{t}~\mathit{t}~\mathsf{i32} \rightarrow \mathit{t}
+}
+$$
+
+$
+\boxed{\mathit{context} \vdash \mathit{blocktype} : \mathit{functype}}
+$
+
+$$
+\frac{
+{ \vdash }\;\mathit{ft} : \mathsf{ok}
+}{
+\mathit{C} \vdash \mathit{ft} : \mathit{ft}
+}
+$$
+
+$$
+\frac{
+\mathit{C} \vdash \mathit{bt} : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+\qquad
+\mathit{C}, \mathsf{label}~\mathit{t}_{2}^\ast \vdash \mathit{instr}^\ast : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+}{
+\mathit{C} \vdash \mathsf{block}~\mathit{bt}~\mathit{instr}^\ast : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+}
+$$
+
+$$
+\frac{
+\mathit{C} \vdash \mathit{bt} : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+\qquad
+\mathit{C}, \mathsf{label}~\mathit{t}_{1}^\ast \vdash \mathit{instr}^\ast : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}
+}{
+\mathit{C} \vdash \mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+}
+$$
+
+$$
+\frac{
+\mathit{C} \vdash \mathit{bt} : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}
+\qquad
+\mathit{C}, \mathsf{label}~\mathit{t}_{2}^\ast \vdash \mathit{instr}_{1}^\ast : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+\qquad
+\mathit{C}, \mathsf{label}~\mathit{t}_{2}^\ast \vdash \mathit{instr}_{2}^\ast : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+}{
+\mathit{C} \vdash \mathsf{if}~\mathit{bt}~\mathit{instr}_{1}^\ast~\mathsf{else}~\mathit{instr}_{2}^\ast : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}
+}
+$$
+
+$$
+\frac{
+\mathit{C}.\mathsf{label}[\mathit{l}] = \mathit{t}^\ast
+}{
+\mathit{C} \vdash \mathsf{br}~\mathit{l} : \mathit{t}_{1}^\ast~\mathit{t}^\ast \rightarrow \mathit{t}_{2}^\ast
+}
+$$
+
+$$
+\frac{
+\mathit{C}.\mathsf{label}[\mathit{l}] = \mathit{t}^\ast
+}{
+\mathit{C} \vdash \mathsf{br\_if}~\mathit{l} : \mathit{t}^\ast~\mathsf{i32} \rightarrow \mathit{t}^\ast
+}
+$$
+
+$$
+\frac{
+({ \vdash }\;\mathit{t}^\ast \leq \mathit{C}.\mathsf{label}[\mathit{l}])^\ast
+\qquad
+{ \vdash }\;\mathit{t}^\ast \leq \mathit{C}.\mathsf{label}[{\mathit{l}'}]
+}{
+\mathit{C} \vdash \mathsf{br\_table}~\mathit{l}^\ast~{\mathit{l}'} : \mathit{t}_{1}^\ast~\mathit{t}^\ast \rightarrow \mathit{t}_{2}^\ast
+}
+$$
+
+$$
+\frac{
+\mathit{C}.\mathsf{return} = (\mathit{t}^\ast)
+}{
+\mathit{C} \vdash \mathsf{return} : \mathit{t}_{1}^\ast~\mathit{t}^\ast \rightarrow \mathit{t}_{2}^\ast
+}
+$$
+
+$$
+\frac{
+\mathit{C}.\mathsf{func}[\mathit{x}] = \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+}{
+\mathit{C} \vdash \mathsf{call}~\mathit{x} : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+}
+$$
+
+$$
+\frac{
+\mathit{C}.\mathsf{table}[\mathit{x}] = \mathit{lim}~\mathsf{funcref}
+\qquad
+\mathit{ft} = \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
+}{
+\mathit{C} \vdash \mathsf{call\_indirect}~\mathit{x}~\mathit{ft} : \mathit{t}_{1}^\ast~\mathsf{i32} \rightarrow \mathit{t}_{2}^\ast
+}
+$$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash \mathsf{const}~\mathit{nt}~\mathit{c}_{nt} : { \rightarrow }\;\mathit{nt}
+}
+$$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash \mathsf{unop}~\mathit{nt}~\mathit{unop} : \mathit{nt} \rightarrow \mathit{nt}
+}
+$$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash \mathsf{binop}~\mathit{nt}~\mathit{binop} : \mathit{nt}~\mathit{nt} \rightarrow \mathit{nt}
+}
+$$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash \mathsf{testop}~\mathit{nt}~\mathit{testop} : \mathit{nt} \rightarrow \mathsf{i32}
+}
+$$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash \mathsf{relop}~\mathit{nt}~\mathit{relop} : \mathit{nt}~\mathit{nt} \rightarrow \mathsf{i32}
+}
+$$
+
+$
+\boxed{\mathit{context} \vdash \mathit{instr}~\mathsf{const}}
+$
+
+$
+\boxed{\mathit{context} \vdash \mathit{instr}^\ast~\mathsf{const}}
+$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash (\mathsf{const}~\mathit{nt}~\mathit{c})~\mathsf{const}
+}
+$$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash (\mathsf{ref.null}~\mathit{rt})~\mathsf{const}
+}
+$$
+
+$$
+\frac{
+}{
+\mathit{C} \vdash (\mathsf{ref.func}~\mathit{x})~\mathsf{const}
+}
+$$
+
+$$
+\frac{
+\mathit{C}.\mathsf{global}[\mathit{x}] = \epsilon~\mathit{t}
+}{
+\mathit{C} \vdash (\mathsf{global.get}~\mathit{x})~\mathsf{const}
+}
+$$
+
+$$
+\frac{
+(\mathit{C} \vdash \mathit{instr}~\mathsf{const})^\ast
+}{
+\mathit{C} \vdash \mathit{instr}^\ast~\mathsf{const}
+}
+$$
+
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{addr} &::=& \mathit{nat}\\
+[1ex]
+& \mathit{funcaddr} &::=& \mathit{addr}\\
+[1ex]
+& \mathit{globaladdr} &::=& \mathit{addr}\\
+[1ex]
+& \mathit{tableaddr} &::=& \mathit{addr}\\
+[1ex]
+& \mathit{memaddr} &::=& \mathit{addr}\\
+[1ex]
+& \mathit{elemaddr} &::=& \mathit{addr}\\
+[1ex]
+& \mathit{dataaddr} &::=& \mathit{addr}\\
+[1ex]
+& \mathit{labeladdr} &::=& \mathit{addr}\\
+[1ex]
+& \mathit{hostaddr} &::=& \mathit{addr}\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{num} &::=& \mathsf{const}~\mathit{numtype}~\mathit{c}_{numtype}\\
+[1ex]
+& \mathit{ref} &::=& \mathsf{ref.null}~\mathit{reftype} \\ &&|&
+\mathsf{ref.func\_addr}~\mathit{funcaddr} \\ &&|&
+\mathsf{ref.host\_addr}~\mathit{hostaddr}\\
+[1ex]
+& \mathit{val} &::=& num ~|~ ref\\
+[1ex]
+& \mathit{result} &::=& \mathit{val}^\ast \\ &&|&
+\mathsf{trap}\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{externval} &::=& \mathsf{func}~\mathit{funcaddr} \\ &&|&
+\mathsf{global}~\mathit{globaladdr} \\ &&|&
+\mathsf{table}~\mathit{tableaddr} \\ &&|&
+\mathsf{mem}~\mathit{memaddr}\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{funcinst} &::=& \mathit{moduleinst} ; \mathit{func}\\
+[1ex]
+& \mathit{globalinst} &::=& \mathit{val}\\
+[1ex]
+& \mathit{tableinst} &::=& \mathit{ref}^\ast\\
+[1ex]
+& \mathit{meminst} &::=& \mathit{byte}^\ast\\
+[1ex]
+& \mathit{eleminst} &::=& \mathit{ref}^\ast\\
+[1ex]
+& \mathit{datainst} &::=& \mathit{byte}^\ast\\
+[1ex]
+& \mathit{exportinst} &::=& \mathsf{export}~\mathit{name}~\mathit{externval}\\
+[1ex]
+& \mathit{store} &::=& \{\mathsf{func}~\mathit{funcinst}^\ast,\; \mathsf{global}~\mathit{globalinst}^\ast,\; \mathsf{table}~\mathit{tableinst}^\ast,\; \mathsf{mem}~\mathit{meminst}^\ast,\; \mathsf{elem}~\mathit{eleminst}^\ast,\; \mathsf{data}~\mathit{datainst}^\ast\}\\
+[1ex]
+& \mathit{moduleinst} &::=& \{\mathsf{func}~\mathit{funcaddr}^\ast,\; \mathsf{global}~\mathit{globaladdr}^\ast,\; \mathsf{table}~\mathit{tableaddr}^\ast,\; \mathsf{mem}~\mathit{memaddr}^\ast,\; \mathsf{elem}~\mathit{elemaddr}^\ast,\; \mathsf{data}~\mathit{dataaddr}^\ast,\; \mathsf{export}~\mathit{exportinst}^\ast\}\\
+[1ex]
+& \mathit{frame} &::=& \mathit{moduleinst} ; \mathit{val}^\ast\\
+[1ex]
+& \mathit{state} &::=& \mathit{store} ; \mathit{frame}\\
+[1ex]
+& \mathit{config} &::=& \mathit{state} ; \mathit{admininstr}^\ast\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}rcl@{}}
+& \mathit{admininstr} &::=& instr \\ &&|&
+\mathsf{ref.func\_addr}~\mathit{funcaddr} \\ &&|&
+\mathsf{ref.host\_addr}~\mathit{hostaddr} \\ &&|&
+\mathsf{call\_addr}~\mathit{funcaddr} \\ &&|&
+\mathsf{label}~\mathit{nat}~\mathit{instr}^\ast~\mathit{admininstr}^\ast \\ &&|&
+\mathsf{frame}~\mathit{nat}~\mathit{frame}~\mathit{admininstr}^\ast \\ &&|&
+\mathsf{trap}\\
+[1ex]
+& \mathit{`E} &::=& [] \\ &&|&
+\mathit{val}^\ast~\mathsf{e}~\mathit{instr}^\ast \\ &&|&
+\mathsf{label}~\mathit{nat}~\mathit{instr}^\ast~\mathsf{e}\\
+\end{array}
+$$
+
+$
+\boxed{\mathit{config} \hookrightarrow \mathit{config}}
+$
+
+$
+\boxed{\mathit{config} \hookrightarrow \mathit{admininstr}^\ast}
+$
+
+$
+\boxed{\mathit{admininstr}^\ast \hookrightarrow \mathit{admininstr}^\ast}
+$
+
+$$
+\begin{array}{@{}lcll@{}}
+\mathit{z} ; \mathit{instr}^\ast &\hookrightarrow& \mathit{z} ; {\mathit{instr}'}^\ast &
+  \mbox{if}~\mathit{instr}^\ast \hookrightarrow {\mathit{instr}'}^\ast\\
+\mathit{z} ; \mathit{instr}^\ast &\hookrightarrow& \mathit{z} ; {\mathit{instr}'}^\ast &
+  \mbox{if}~\mathit{z} ; \mathit{instr}^\ast \hookrightarrow {\mathit{instr}'}^\ast\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcll@{}}
+\mathsf{unreachable} &\hookrightarrow& \mathsf{trap}\\
+\mathsf{nop} &\hookrightarrow& \epsilon\\
+\mathit{val}~\mathsf{drop} &\hookrightarrow& \epsilon\\
+\mathit{val}_{1}~\mathit{val}_{2}~(\mathsf{const}~\mathsf{i32}~\mathit{c})~(\mathsf{select}~\mathit{t}^?) &\hookrightarrow& \mathit{val}_{1} &
+  \mbox{if}~\mathit{c} \neq 0\\
+\mathit{val}_{1}~\mathit{val}_{2}~(\mathsf{const}~\mathsf{i32}~\mathit{c})~(\mathsf{select}~\mathit{t}^?) &\hookrightarrow& \mathit{val}_{2} &
+  \mbox{if}~\mathit{c} = 0\\
+\mathit{val}^{\mathit{k}}~(\mathsf{block}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& (\mathsf{label}~\mathit{n}~\epsilon~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast) &
+  \mbox{if}~\mathit{bt} = \mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}}\\
+\mathit{val}^{\mathit{k}}~(\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& (\mathsf{label}~\mathit{n}~(\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast)~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast) &
+  \mbox{if}~\mathit{bt} = \mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}}\\
+(\mathsf{const}~\mathsf{i32}~\mathit{c})~(\mathsf{if}~\mathit{bt}~\mathit{instr}_{1}^\ast~\mathsf{else}~\mathit{instr}_{2}^\ast) &\hookrightarrow& (\mathsf{block}~\mathit{bt}~\mathit{instr}_{1}^\ast) &
+  \mbox{if}~\mathit{c} \neq 0\\
+(\mathsf{const}~\mathsf{i32}~\mathit{c})~(\mathsf{if}~\mathit{bt}~\mathit{instr}_{1}^\ast~\mathsf{else}~\mathit{instr}_{2}^\ast) &\hookrightarrow& (\mathsf{block}~\mathit{bt}~\mathit{instr}_{2}^\ast) &
+  \mbox{if}~\mathit{c} = 0\\
+(\mathsf{label}~\mathit{n}~({\mathit{instr}'}^\ast)~{\mathit{val}'}^\ast~\mathit{val}^{\mathit{n}}~(\mathsf{br}~0)~\mathit{instr}^\ast) &\hookrightarrow& \mathit{val}^{\mathit{n}}~{\mathit{instr}'}^\ast\\
+(\mathsf{label}~\mathit{n}~({\mathit{instr}'}^\ast)~\mathit{val}^\ast~(\mathsf{br}~\mathit{l} + 1)~\mathit{instr}^\ast) &\hookrightarrow& \mathit{val}^\ast~(\mathsf{br}~\mathit{l})\\
+(\mathsf{const}~\mathsf{i32}~\mathit{c})~(\mathsf{br\_if}~\mathit{l}) &\hookrightarrow& (\mathsf{br}~\mathit{l}) &
+  \mbox{if}~\mathit{c} \neq 0\\
+(\mathsf{const}~\mathsf{i32}~\mathit{c})~(\mathsf{br\_if}~\mathit{l}) &\hookrightarrow& \epsilon &
+  \mbox{if}~\mathit{c} = 0\\
+(\mathsf{const}~\mathsf{i32}~\mathit{i})~(\mathsf{br\_table}~\mathit{l}^\ast~{\mathit{l}'}) &\hookrightarrow& (\mathsf{br}~\mathit{l}^\ast[\mathit{i}]) &
+  \mbox{if}~\mathit{i} < |\mathit{l}^\ast|\\
+(\mathsf{const}~\mathsf{i32}~\mathit{i})~(\mathsf{br\_table}~\mathit{l}^\ast~{\mathit{l}'}) &\hookrightarrow& (\mathsf{br}~{\mathit{l}'}) &
+  \mbox{if}~\mathit{i} \geq |\mathit{l}^\ast|\\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcll@{}}
+\mathit{z} ; (\mathsf{call}~\mathit{x}) &\hookrightarrow& (\mathsf{call\_addr}~\mathrm{funcaddr}(\mathit{z})[\mathit{x}])\\
+\mathit{z} ; (\mathsf{const}~\mathsf{i32}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& (\mathsf{call\_addr}~\mathit{a}) &
+  \mbox{if}~\mathrm{table}(\mathit{z},\, \mathit{x})[\mathit{i}] = (\mathsf{ref.func\_addr}~\mathit{a})\\
+ &&& {\land}~\mbox{if}~\mathrm{funcinst}(\mathit{z})[\mathit{a}] = \mathit{m} ; \mathit{func}\\
+\mathit{z} ; (\mathsf{const}~\mathsf{i32}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& \mathsf{trap} &
+  \mbox{otherwise}\\
+\mathit{z} ; \mathit{val}^{\mathit{k}}~(\mathsf{call\_addr}~\mathit{a}) &\hookrightarrow& (\mathsf{frame}~\mathit{n}~(\mathit{m} ; \mathit{val}^{\mathit{k}}~(\mathrm{default}(\mathit{t}))^\ast)~(\mathsf{label}~\mathit{n}~\epsilon~\mathit{instr}^\ast)) &
+  \mbox{if}~\mathrm{funcinst}(\mathit{z})[\mathit{a}] = \mathit{m} ; \mathsf{func}~(\mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}})~\mathit{t}^\ast~\mathit{instr}^\ast\\
+\end{array}
+$$
+
+
 == Complete.
 ```
