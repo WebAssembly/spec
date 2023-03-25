@@ -41,7 +41,7 @@ latex: exe
 .PHONY: test testpromote $(TESTDIRS)
 
 test:
-	@dune runtest && echo OK || echo Failure. Run \`make testpromote\` to accept changes in test expectations.
+	@dune runtest && echo OK || (echo Failure. Run \`make testpromote\` to accept changes in test expectations. && false)
 
 testpromote:
 	dune promote
