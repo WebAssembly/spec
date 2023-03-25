@@ -29,6 +29,7 @@ let empty_env = {rels = Env.empty; current_rel = ""}
 (* Helpers *)
 
 let concat = String.concat
+let suffix s f x = f x ^ s
 let space f x = " " ^ f x ^ " "
 
 
@@ -247,44 +248,21 @@ and gen_path env path =
 
 (* Definitions *)
 
-let rec classify_rel nottyp : rel_sort option =
-  match nottyp.it with
-  | InfixT (_, Turnstile, _) -> Some TypingRel
-  | InfixT (_, SqArrow, _) -> Some ReductionRel
-  | InfixT (nottyp1, _, nottyp2) ->
-    (match classify_rel nottyp1 with None -> classify_rel nottyp2 | some -> some)
-  | _ -> None
-
-
 let word s = "\\mbox{" ^ s ^ "}"
 
-let gen_typing_premise env prem =
+let gen_premise env prem =
   match prem.it with
   | RulePr (id, exp, None) ->
-    gen_exp {env with current_rel = id.it} exp ^ "\n"
+    gen_exp {env with current_rel = id.it} exp
   | RulePr (id, exp, Some iter) ->
     let env' = {env with current_rel = id.it} in
-    "(" ^ gen_exp env' exp ^ ")" ^ gen_iter env' iter ^ "\n"
+    "(" ^ gen_exp env' exp ^ ")" ^ gen_iter env' iter
   | IffPr (exp, None) ->
-    gen_exp env exp ^ "\n"
+    gen_exp env exp
   | IffPr (exp, Some iter) ->
-    "(" ^ gen_exp env exp ^ ")" ^ gen_iter env iter ^ "\n"
+    "(" ^ gen_exp env exp ^ ")" ^ gen_iter env iter
   | ElsePr ->
-    error prem.at "cannot handle `otherwise` premise in typing rule"
-
-let gen_red_premise env prem =
-  match prem.it with
-  | RulePr (id, exp, None) ->
-    word "if" ^ "~" ^ gen_exp {env with current_rel = id.it} exp
-  | RulePr (id, exp, Some iter) ->
-    let env' = {env with current_rel = id.it} in
-    word "if" ^ "~(" ^ gen_exp env' exp ^ ")" ^ gen_iter env' iter
-  | IffPr (exp, None) ->
-    word "if" ^ "~" ^ gen_exp env exp
-  | IffPr (exp, Some iter) ->
-    word "if" ^ "~(" ^ gen_exp env exp ^ ")" ^ gen_iter env iter
-  | ElsePr ->
-    word "otherwise"
+    error prem.at "misplaced `otherwise` premise"
 
 
 let gen_syndef env def =
@@ -304,9 +282,12 @@ let gen_reddef env def =
   | RuleD (_id1, _id2, exp, prems) ->
     let exp1, exp2 = split_redexp exp in
     gen_exp env exp1 ^ " &" ^ gen_atom env SqArrow ^ "& " ^ gen_exp env exp2 ^
-    (if prems = [] then "" else
-      " &\n  " ^
-      concat "\\\\\n &&& {\\land}~" (List.map (gen_red_premise env) prems)
+    (match prems with
+    | [] -> ""
+    | [{it = ElsePr; _}] -> " &\n  " ^ word "otherwise"
+    | _ ->
+      " &\n  " ^ word "if" ^ "~" ^
+      concat "\\\\\n &&& {\\land}~" (List.map (gen_premise env) prems)
     )
   | _ -> assert false
 
@@ -324,6 +305,14 @@ let rec split_reddefs id reddefs = function
     match def.it with
     | RuleD (id1, _, _, _) when id1.it = id -> split_reddefs id (def::reddefs) defs
     | _ -> List.rev reddefs, def::defs
+
+let rec classify_rel nottyp : rel_sort option =
+  match nottyp.it with
+  | InfixT (_, Turnstile, _) -> Some TypingRel
+  | InfixT (_, SqArrow, _) -> Some ReductionRel
+  | InfixT (nottyp1, _, nottyp2) ->
+    (match classify_rel nottyp1 with None -> classify_rel nottyp2 | some -> some)
+  | _ -> None
 
 let rec gen_defs env = function
   | [] -> ""
@@ -356,7 +345,7 @@ let rec gen_defs env = function
       | TypingRel ->
         "$$\n" ^
         "\\frac{\n" ^
-          concat "\\qquad\n" (List.map (gen_typing_premise env) prems) ^
+          concat "\\qquad\n" (List.map (suffix "\n" (gen_premise env)) prems) ^
         "}{\n" ^
           gen_exp {env with current_rel = id1.it} exp ^ "\n" ^
         "}\n" ^

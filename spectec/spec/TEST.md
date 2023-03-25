@@ -1130,7 +1130,7 @@ $
 $$
 \frac{
 }{
-\mathit{C} \vdash { : }\;{ \rightarrow }\;\epsilon
+\mathit{C} \vdash \epsilon : \epsilon \rightarrow \epsilon
 }
 $$
 
@@ -1174,7 +1174,7 @@ $$
 $$
 \frac{
 }{
-\mathit{C} \vdash \mathsf{nop} : { \rightarrow }\;\epsilon
+\mathit{C} \vdash \mathsf{nop} : \epsilon \rightarrow \epsilon
 }
 $$
 
@@ -1301,7 +1301,7 @@ $$
 $$
 \frac{
 }{
-\mathit{C} \vdash \mathsf{const}~\mathit{nt}~\mathit{c}_{\mathit{nt}} : { \rightarrow }\;\mathit{nt}
+\mathit{C} \vdash \mathsf{const}~\mathit{nt}~\mathit{c}_{\mathit{nt}} : \epsilon \rightarrow \mathit{nt}
 }
 $$
 
@@ -1524,7 +1524,7 @@ $$
 \mathit{z} ; (\mathsf{call}~\mathit{x}) &\hookrightarrow& (\mathsf{call\_addr}~\mathrm{funcaddr}(\mathit{z})[\mathit{x}])\\
 \mathit{z} ; (\mathsf{const}~\mathsf{i32}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& (\mathsf{call\_addr}~\mathit{a}) &
   \mbox{if}~\mathrm{table}(\mathit{z},\, \mathit{x})[\mathit{i}] = (\mathsf{ref.func\_addr}~\mathit{a})\\
- &&& {\land}~\mbox{if}~\mathrm{funcinst}(\mathit{z})[\mathit{a}] = \mathit{m} ; \mathit{func}\\
+ &&& {\land}~\mathrm{funcinst}(\mathit{z})[\mathit{a}] = \mathit{m} ; \mathit{func}\\
 \mathit{z} ; (\mathsf{const}~\mathsf{i32}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& \mathsf{trap} &
   \mbox{otherwise}\\
 \mathit{z} ; \mathit{val}^{\mathit{k}}~(\mathsf{call\_addr}~\mathit{a}) &\hookrightarrow& (\mathsf{frame}~\mathit{n}~(\mathit{m} ; \mathit{val}^{\mathit{k}}~(\mathrm{default}(\mathit{t}))^\ast)~(\mathsf{label}~\mathit{n}~\epsilon~\mathit{instr}^\ast)) &
