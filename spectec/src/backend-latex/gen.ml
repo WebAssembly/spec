@@ -49,20 +49,21 @@ let gen_id style id =
 
 (* TODO: handle more complicated subscripts and ticks correctly *)
 
-let gen_varid id =
-  match String.index_opt id.it '_', String.index_opt id.it '\'' with
-  | None, None -> gen_id `Var id.it
-  | Some n, None ->
-    gen_id `Var (String.sub id.it 0 n) ^ "_{" ^
-      String.sub id.it (n + 1) (String.length id.it - n - 1) ^ "}"
-  | None, Some n ->
-    "{" ^ gen_id `Var (String.sub id.it 0 n) ^
-      String.sub id.it n (String.length id.it - n) ^ "}"
-  | Some n1, Some n2 ->
-    if n1 <> n2 + 1 then
-      error id.at "cannot handle variable with tick after subscript or multiple ticks and subscript";
-    "{" ^ gen_id `Var (String.sub id.it 0 n2) ^ "'_{" ^
-      String.sub id.it n2 (String.length id.it - n2 - 2) ^ "}}"
+let is_digit c = '0' <= c && c <= '9'
+
+let rec gen_varid id = gen_varid_sub (String.split_on_char '_' id.it)
+and gen_varid_sub = function
+  | [] -> ""
+  | s::ss ->
+    let rec find_primes i =
+      if i > 0 && s.[i - 1] = '\'' then find_primes (i - 1) else i
+    in
+    let n = String.length s in
+    let i = find_primes n in
+    let s' = String.sub s 0 i in
+    let s'' = if String.for_all is_digit s' then s' else gen_id `Var s' in
+    (if i = n then s'' else "{" ^ s'' ^ String.sub s i (n - i) ^ "}") ^
+    (if ss = [] then "" else "_{" ^ gen_varid_sub ss ^ "}")
 
 
 (* Operators *)

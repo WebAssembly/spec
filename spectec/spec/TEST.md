@@ -820,9 +820,9 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}}
-& \mathit{c}_{numtype} &::=& \mathit{nat}\\
+& \mathit{c}_{\mathit{numtype}} &::=& \mathit{nat}\\
 [1ex]
-& \mathit{c}_{vectype} &::=& \mathit{nat}\\
+& \mathit{c}_{\mathit{vectype}} &::=& \mathit{nat}\\
 \end{array}
 $$
 
@@ -836,13 +836,13 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}}
-& \mathit{unop}_{numtype} &::=& \mathsf{xxx}\\
+& \mathit{unop}_{\mathit{numtype}} &::=& \mathsf{xxx}\\
 [1ex]
-& \mathit{binop}_{numtype} &::=& \mathsf{xxx}\\
+& \mathit{binop}_{\mathit{numtype}} &::=& \mathsf{xxx}\\
 [1ex]
-& \mathit{testop}_{numtype} &::=& \mathsf{xxx}\\
+& \mathit{testop}_{\mathit{numtype}} &::=& \mathsf{xxx}\\
 [1ex]
-& \mathit{relop}_{numtype} &::=& \mathsf{xxx}\\
+& \mathit{relop}_{\mathit{numtype}} &::=& \mathsf{xxx}\\
 [1ex]
 & \mathit{cvtop} &::=& \mathsf{xxx}\\
 \end{array}
@@ -863,11 +863,11 @@ $$
 \mathsf{call}~\mathit{funcidx} \\ &&|&
 \mathsf{call\_indirect}~\mathit{tableidx}~\mathit{functype} \\ &&|&
 \mathsf{return} \\ &&|&
-\mathsf{const}~\mathit{numtype}~\mathit{c}_{numtype} \\ &&|&
-\mathsf{unop}~\mathit{numtype}~\mathit{unop}_{numtype} \\ &&|&
-\mathsf{binop}~\mathit{numtype}~\mathit{binop}_{numtype} \\ &&|&
-\mathsf{testop}~\mathit{numtype}~\mathit{testop}_{numtype} \\ &&|&
-\mathsf{relop}~\mathit{numtype}~\mathit{relop}_{numtype} \\ &&|&
+\mathsf{const}~\mathit{numtype}~\mathit{c}_{\mathit{numtype}} \\ &&|&
+\mathsf{unop}~\mathit{numtype}~\mathit{unop}_{\mathit{numtype}} \\ &&|&
+\mathsf{binop}~\mathit{numtype}~\mathit{binop}_{\mathit{numtype}} \\ &&|&
+\mathsf{testop}~\mathit{numtype}~\mathit{testop}_{\mathit{numtype}} \\ &&|&
+\mathsf{relop}~\mathit{numtype}~\mathit{relop}_{\mathit{numtype}} \\ &&|&
 \mathsf{extend}~\mathit{numtype}~\mathit{nat} \\ &&|&
 \mathsf{cvtop}~\mathit{numtype}~\mathit{cvtop}~\mathit{numtype}~\mathit{sx}^? \\ &&|&
 \mathsf{ref.null}~\mathit{reftype} \\ &&|&
@@ -1148,11 +1148,11 @@ $$
 \frac{
 \mathit{C} \vdash \mathit{instr}^\ast : \mathit{t}_{1}^\ast \rightarrow \mathit{t}_{2}^\ast
 \qquad
-{ \vdash }\;{\mathit{t}'_{'}}^\ast \leq \mathit{t}_{1}^\ast
+{ \vdash }\;{\mathit{t}'}_{1}^\ast \leq \mathit{t}_{1}^\ast
 \qquad
-{ \vdash }\;\mathit{t}_{2}^\ast \leq {\mathit{t}'_{'}}^\ast
+{ \vdash }\;\mathit{t}_{2}^\ast \leq {\mathit{t}'}_{2}^\ast
 }{
-\mathit{C} \vdash \mathit{instr}^\ast : {\mathit{t}'_{'}} \rightarrow {\mathit{t}'_{'}}^\ast
+\mathit{C} \vdash \mathit{instr}^\ast : {\mathit{t}'}_{1} \rightarrow {\mathit{t}'}_{2}^\ast
 }
 $$
 
@@ -1301,7 +1301,7 @@ $$
 $$
 \frac{
 }{
-\mathit{C} \vdash \mathsf{const}~\mathit{nt}~\mathit{c}_{nt} : { \rightarrow }\;\mathit{nt}
+\mathit{C} \vdash \mathsf{const}~\mathit{nt}~\mathit{c}_{\mathit{nt}} : { \rightarrow }\;\mathit{nt}
 }
 $$
 
@@ -1402,7 +1402,7 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}}
-& \mathit{num} &::=& \mathsf{const}~\mathit{numtype}~\mathit{c}_{numtype}\\
+& \mathit{num} &::=& \mathsf{const}~\mathit{numtype}~\mathit{c}_{\mathit{numtype}}\\
 [1ex]
 & \mathit{ref} &::=& \mathsf{ref.null}~\mathit{reftype} \\ &&|&
 \mathsf{ref.func\_addr}~\mathit{funcaddr} \\ &&|&
