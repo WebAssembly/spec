@@ -267,7 +267,7 @@ hint ::=
   "(" "hint" hintid exp ")"                                   hint
 ```
 
-Variable declarations can also change the status of an uppercase identifier from `atom` to `varid`.
+Syntax and variable declarations can also change the status of an uppercase identifier from `atom` to `varid` when used on the left-hand side.
 
 
 ### Scripts

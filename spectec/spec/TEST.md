@@ -640,10 +640,14 @@ def table : (state, tableidx) -> tableinst
   def {m : moduleinst, s : store, val : val, x : idx} table(`%;%`(s, `%;%`(m, val*)), x) = s.TABLE[m.TABLE[x]]
 
 ;; 4-runtime.watsup:122.1-125.23
-syntax `E =
+rec {
+
+;; 4-runtime.watsup:122.1-125.23
+syntax E =
   | _HOLE
-  | _SEQ(val*, instr*)
-  | LABEL(nat, instr*)
+  | _SEQ(val*, E, instr*)
+  | LABEL(nat, instr*, E)
+}
 
 ;; 5-reduction.watsup:5.1-5.47
 relation Step_pure: `%~>%`(admininstr*, admininstr*)
@@ -1462,9 +1466,9 @@ $$
 \mathsf{frame}~\mathit{nat}~\mathit{frame}~\mathit{admininstr}^\ast \\ &&|&
 \mathsf{trap}\\
 [1ex]
-& \mathit{`E} &::=& [\mathsf{\_}] \\ &&|&
-\mathit{val}^\ast~\mathsf{e}~\mathit{instr}^\ast \\ &&|&
-\mathsf{label}~\mathit{nat}~\mathit{instr}^\ast~\mathsf{e}\\
+& \mathit{E} &::=& [\mathsf{\_}] \\ &&|&
+\mathit{val}^\ast~\mathit{E}~\mathit{instr}^\ast \\ &&|&
+\mathsf{label}~\mathit{nat}~\mathit{instr}^\ast~\mathit{E}\\
 \end{array}
 $$
 

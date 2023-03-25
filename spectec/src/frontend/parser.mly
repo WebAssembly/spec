@@ -112,6 +112,9 @@ atom :
   | atomid { Atom $1 }
   | BOT { Bot }
 
+atom_as_varid :
+  | atomid_ { atom_vars := VarSet.add $1 !atom_vars; $1 $ at () }
+
 check_atom :
   | UPID EOF { VarSet.mem $1 !atom_vars }
 
@@ -420,6 +423,8 @@ def : def_ { $1 $ at () }
 def_ :
   | SYNTAX varid hint_list EQ deftyp
     { SynD ($2, $5, $3) }
+  | SYNTAX atom_as_varid hint_list EQ deftyp
+    { SynD ($2, $5, $3) }
   | RELATION relid hint_list COLON nottyp
     { RelD ($2, $5, $3) }
   | RULE relid ruleid_list COLON exp premise_list
@@ -427,9 +432,8 @@ def_ :
       RuleD ($2, id $ ati 3, $5, $6) }
   | VAR varid COLON typ hint_list
     { VarD ($2, $4, $5) }
-  | VAR atomid_ COLON typ hint_list
-    { atom_vars := VarSet.add $2 !atom_vars;
-      VarD ($2 $ ati 2, $4, $5) }
+  | VAR atom_as_varid COLON typ hint_list
+    { VarD ($2, $4, $5) }
   | DEF DOLLAR defid COLON typ hint_list
     { DecD ($3, SeqE [] $ ati 4, $5, $6) }
   | DEF DOLLAR defid exp_prim COLON typ hint_list

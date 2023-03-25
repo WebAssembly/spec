@@ -119,7 +119,7 @@ syntax admininstr hint(math instr) hint(desc "administrative instruction") =
   | FRAME nat frame admininstr*   ;;hint(math FRAME_%{%} %)
   | TRAP
 
-syntax `E hint(desc "evaluation context") =
+syntax E hint(desc "evaluation context") =
   | _HOLE `[ _ ]
   | _SEQ val* E instr*
   | LABEL nat instr* E
