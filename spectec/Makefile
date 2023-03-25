@@ -3,8 +3,7 @@
 NAME = watsup
 EXT = $(NAME)
 
-TESTDIR = spec
-TESTLOG = $(TESTDIR)/TEST.md
+TESTDIRS = test-frontend test-latex
 
 
 # Main targets
@@ -12,8 +11,8 @@ TESTLOG = $(TESTDIR)/TEST.md
 .PHONY: default all ci
 
 default: exe
-all: exe test
-ci: all test-exe test-latex
+all: exe latex test
+ci: all test-frontend test-latex
 
 
 # Executable
@@ -29,9 +28,17 @@ exe:
 	ln -f $(OUTDIR)/$(EXE) ./$(NAME)
 
 
+# Latex
+
+.PHONY: latex
+
+latex: exe
+	(cd test-latex && make latex)
+
+
 # Test
 
-.PHONY: test testpromote test-exe test-latex
+.PHONY: test testpromote $(TESTDIRS)
 
 test:
 	@dune runtest && echo OK || echo Failure. Run \`make testpromote\` to accept changes in test expectations.
@@ -39,12 +46,8 @@ test:
 testpromote:
 	dune promote
 
-test-exe: exe
-	(cd $(TESTDIR); ../$(NAME) *.$(EXT))
-
-test-latex: exe
-	(cd test-latex && ../$(NAME) ../$(TESTDIR)/*.$(EXT) -o spec.tex)
-	(cd test-latex && pdflatex spec-main.tex)
+$(TESTDIRS): test-%: exe
+	(cd $@ && make test)
 
 
 # Cleanup
@@ -54,6 +57,8 @@ test-latex: exe
 clean:
 	dune clean
 	rm -f src/front/parser.{automaton,conflicts}
+	for dir in $(TESTDIRS); do (cd $$dir && make clean); done
 
 distclean: clean
 	rm -f ./$(NAME)
+	for dir in $(TESTDIRS); do (cd $$dir && make distclean); done
