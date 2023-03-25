@@ -44,45 +44,9 @@ let () =
     Arg.parse argspec add_arg usage;
     trace "Parsing...";
     let el = List.concat_map parse_file !args in
-(*
-    trace "Type checking...";
-    Typing.check script;
-*)
     trace "Multiplicity checking...";
     Frontend.Multiplicity.check el;
-(*
-    trace "Recursion analysis...";
-    let sccs_syn = Recursion.sccs_of_syntaxes script in
-    List.iter (fun ids ->
-      if List.length ids > 1 then begin
-        Printf.printf "mutual syntax ";
-        List.iter (fun id -> Printf.printf "%s " id.Source.it) ids;
-        Printf.printf "\n%!"
-      end
-    ) sccs_syn;
-    let sccs_rel = Recursion.sccs_of_relations script in
-    List.iter (fun ids ->
-      if List.length ids > 1 then begin
-        Printf.printf "mutual relation ";
-        List.iter (fun id -> Printf.printf "%s " id.Source.it) ids;
-        Printf.printf "\n%!"
-      end
-    ) sccs_rel;
-    let sccs_def = Recursion.sccs_of_definitions script in
-    List.iter (fun ids ->
-      if List.length ids > 1 then begin
-        Printf.printf "mutual def ";
-        List.iter (fun id -> Printf.printf "$%s " id.Source.it) ids;
-        Printf.printf "\n%!"
-      end
-    ) sccs_def;
     trace "Elaboration...";
-    let el = Elaboration.elab script in
-    trace "Validation...";
-    El.Validation.valid el;
-    Multiplicity.check el;
-*)
-    trace "Lowering...";
     let il = Frontend.Lower.lower el in
     trace "Printing...";
     if !out_arg = "" then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
