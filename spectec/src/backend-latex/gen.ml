@@ -70,7 +70,7 @@ and gen_varid_sub = function
 (* Operators *)
 
 let gen_atom env = function
-  | Atom atomid when atomid.[0] = '_' -> ""
+  | Atom atomid when atomid.[0] = '_' && atomid <> "_" -> ""
   | Atom atomid ->
     let atomid' = Str.(global_replace (regexp "_") "\\_" atomid) in
     gen_id `Atom (String.lowercase_ascii atomid')

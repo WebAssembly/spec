@@ -1462,7 +1462,7 @@ $$
 \mathsf{frame}~\mathit{nat}~\mathit{frame}~\mathit{admininstr}^\ast \\ &&|&
 \mathsf{trap}\\
 [1ex]
-& \mathit{`E} &::=& [] \\ &&|&
+& \mathit{`E} &::=& [\mathsf{\_}] \\ &&|&
 \mathit{val}^\ast~\mathsf{e}~\mathit{instr}^\ast \\ &&|&
 \mathsf{label}~\mathit{nat}~\mathit{instr}^\ast~\mathsf{e}\\
 \end{array}
