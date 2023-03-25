@@ -93,7 +93,7 @@ let () =
     trace "IL Validation...";
     Il.Validation.valid il;
     trace "Latex Generation...";
-    let latex = Backend_latex.Gen.gen_script el in
+    let latex = Backend_latex.Render.render_script el in
     if !out_arg = "" then
       print_endline latex
     else

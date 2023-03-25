@@ -6,13 +6,13 @@ open El.Ast
 type env
 val empty_env : env
 
-val gen_atom : env -> atom -> string
-val gen_typ : env -> typ -> string
-val gen_exp : env -> exp -> string
-val gen_def : env -> def -> string
-val gen_deftyp : env -> deftyp -> string
-val gen_nottyp : env -> nottyp -> string
-val gen_script : script -> string
+val render_atom : env -> atom -> string
+val render_typ : env -> typ -> string
+val render_exp : env -> exp -> string
+val render_def : env -> def -> string
+val render_deftyp : env -> deftyp -> string
+val render_nottyp : env -> nottyp -> string
+val render_script : script -> string
 
 
 (* Flags *)

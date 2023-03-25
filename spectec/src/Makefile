@@ -1,0 +1,4 @@
+default: exe
+
+%:
+	(cd .. && make $@)
