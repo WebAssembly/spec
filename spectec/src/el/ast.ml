@@ -151,6 +151,7 @@ and def' =
   | VarD of id * typ * hint list             (* `var` varid `:` typ *)
   | DecD of id * exp * typ * hint list       (* `def` `$` defid exp? `:` typ hint* *)
   | DefD of id * exp * exp * premise option  (* `def` `$` defid exp? `=` exp *)
+  | SepD                                     (* separator *)
 
 and premise = premise' phrase
 and premise' =

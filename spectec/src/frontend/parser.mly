@@ -52,7 +52,8 @@ let atom_vars = ref VarSet.empty
 %}
 
 %token LPAR RPAR LBRACK RBRACK LBRACE RBRACE
-%token COLON SEMICOLON COMMA DOT DOT2 DOT3 BAR DASH COMMA_NL NL_BAR
+%token COLON SEMICOLON COMMA DOT DOT2 DOT3 BAR DASH
+%token COMMA_NL NL_BAR NL3
 %token EQ NE LT GT LE GE SUB EQDOT2
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH UP COMPOSE
@@ -457,6 +458,8 @@ def_ :
     { DefD ($3, SeqE [] $ ati 4, $5, $6) }
   | DEF DOLLAR defid exp_prim EQ exp premise_opt
     { DefD ($3, $4, $6, $7) }
+  | NL3
+    { SepD }
 
 ruleid_list :
   | /* empty */ { "" }

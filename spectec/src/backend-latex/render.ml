@@ -40,6 +40,8 @@ let concat = String.concat
 let suffix s f x = f x ^ s
 let space f x = " " ^ f x ^ " "
 
+let map_nl_list f xs = List.map (function Nl -> Nl | Elem x -> Elem (f x)) xs
+
 let rec concat_map_nl sep br f = function
   | [] -> ""
   | [Elem x] -> f x
@@ -169,15 +171,13 @@ and render_deftyp env deftyp =
   match deftyp.it with
   | NotationT nottyp -> render_nottyp env nottyp
   | StructT typfields ->
-    "\\{ " ^
+    "\\{\\; " ^
     "\\begin{array}[t]{@{}l@{}}\n" ^
-    concat_map_nl ",\\; " "\\\\\n  " (render_typfield env) typfields ^ " \\}" ^
+    concat_map_nl ",\\; " "\\\\\n  " (render_typfield env) typfields ^ " \\;\\}" ^
     "\\end{array}"
   | VariantT (ids, typcases) ->
-    let br = " \\\\ &&|&\n" in
-    let sep = if ids <> [] && typcases <> [] then " ~|~ " else "" in
-    altern_map_nl " ~|~ " br it ids ^ sep ^
-    altern_map_nl " ~|~ " br (render_typcase env) typcases
+    altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
+      (map_nl_list it ids @ map_nl_list (render_typcase env) typcases)
 
 and render_nottyp env nottyp =
   match nottyp.it with
@@ -351,7 +351,7 @@ let rec render_defs env = function
       let syndefs, defs' = split_syndefs [def] defs in
       "$$\n" ^
       "\\begin{array}{@{}l@{}rrl@{}}\n" ^
-      concat "\\\\\n[1ex]\n" (List.map (render_syndef env) syndefs) ^ "\\\\\n" ^
+      concat "\\\\\n[0.5ex]\n" (List.map (render_syndef env) syndefs) ^ "\\\\\n" ^
       "\\end{array}\n" ^
       "$$\n\n" ^
       render_defs env defs'
@@ -400,6 +400,10 @@ let rec render_defs env = function
 
     | DefD _ ->
       (* TODO: definitions *)
+      render_defs env defs
+
+    | SepD ->
+      "~\\\\\n\n" ^
       render_defs env defs
 
 let render_def env def = render_defs env [def]

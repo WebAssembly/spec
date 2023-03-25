@@ -954,6 +954,8 @@ let elab_def env def : Il.def list =
     let clause' = Il.DefD (binds', exp1', exp2', premo') $ def.at in
     env.defs <- rebind "definition" env.defs id (typ1, typ2, clause'::clauses');
     []
+  | SepD ->
+    []
 
 let populate_def env def' : Il.def =
   match def'.it with

@@ -1,4 +1,4 @@
 *.aux
 *.log
 *.pdf
-spec.tex
+spec-gen.tex

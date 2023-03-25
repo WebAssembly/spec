@@ -119,10 +119,7 @@ let check_prem env prem =
 
 let check_def def =
   match def.it with
-  | SynD _
-  | RelD _
-  | VarD _
-  | DecD _ -> ()
+  | SynD _ | RelD _ | VarD _ | DecD _ | SepD -> ()
   | RuleD (_id1, _id2, exp, prems) ->
     let env = ref Env.empty in
     check_exp env [] exp;

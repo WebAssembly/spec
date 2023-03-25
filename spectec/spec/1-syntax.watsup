@@ -30,7 +30,6 @@ var x : idx
 var l : labelidx
 
 
-
 ;; Types
 
 syntax numtype hint(desc "number type") =

@@ -112,7 +112,7 @@ let free_prem prem =
 let free_def def =
   match def.it with
   | SynD (_id, deftyp, _hints) -> free_deftyp deftyp
-  | VarD _ -> empty
+  | VarD _ | SepD -> empty
   | RelD (_id, nottyp, _hints) -> free_nottyp nottyp
   | RuleD (id1, _id2, exp, prems) ->
     union (free_relid id1) (union (free_exp exp) (free_list free_prem prems))

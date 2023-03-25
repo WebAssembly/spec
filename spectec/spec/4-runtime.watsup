@@ -65,8 +65,7 @@ syntax store hint(desc "store") =
     TABLE tableinst*,
     MEM meminst*,
     ELEM eleminst*,
-    DATA datainst*,
-  }
+    DATA datainst* }
 
 syntax moduleinst hint(desc "module instance") =
   { FUNC funcaddr*,
@@ -75,8 +74,7 @@ syntax moduleinst hint(desc "module instance") =
     MEM memaddr*,
     ELEM elemaddr*,
     DATA dataaddr*,
-    EXPORT exportinst*,
-  }
+    EXPORT exportinst* }
 
 syntax frame hint(desc "frame") = moduleinst; val*
 syntax state hint(desc "state") = store; frame
