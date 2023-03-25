@@ -7,129 +7,132 @@ $ (cd ../spec && dune exec ../src/exe-watsup/main.exe -- *.watsup)
 == Elaboration...
 == Printing...
 
-;; 1-syntax.watsup:8.1-8.37
+;; 1-syntax.watsup:3.1-3.15
+syntax n = nat
+
+;; 1-syntax.watsup:9.1-9.37
 syntax name = text
 
-;; 1-syntax.watsup:13.1-13.36
+;; 1-syntax.watsup:14.1-14.36
 syntax byte = nat
 
-;; 1-syntax.watsup:14.1-14.45
+;; 1-syntax.watsup:15.1-15.45
 syntax u32 = nat
 
-;; 1-syntax.watsup:19.1-19.36
+;; 1-syntax.watsup:20.1-20.36
 syntax idx = nat
 
-;; 1-syntax.watsup:20.1-20.49
+;; 1-syntax.watsup:21.1-21.49
 syntax funcidx = idx
 
-;; 1-syntax.watsup:21.1-21.49
+;; 1-syntax.watsup:22.1-22.49
 syntax globalidx = idx
 
-;; 1-syntax.watsup:22.1-22.47
+;; 1-syntax.watsup:23.1-23.47
 syntax tableidx = idx
 
-;; 1-syntax.watsup:23.1-23.46
+;; 1-syntax.watsup:24.1-24.46
 syntax memidx = idx
 
-;; 1-syntax.watsup:24.1-24.45
+;; 1-syntax.watsup:25.1-25.45
 syntax elemidx = idx
 
-;; 1-syntax.watsup:25.1-25.45
+;; 1-syntax.watsup:26.1-26.45
 syntax dataidx = idx
 
-;; 1-syntax.watsup:26.1-26.47
+;; 1-syntax.watsup:27.1-27.47
 syntax labelidx = idx
 
-;; 1-syntax.watsup:27.1-27.47
+;; 1-syntax.watsup:28.1-28.47
 syntax localidx = idx
 
-;; 1-syntax.watsup:35.1-36.22
+;; 1-syntax.watsup:36.1-37.22
 syntax numtype =
   | I32
   | I64
   | F32
   | F64
 
-;; 1-syntax.watsup:37.1-38.5
+;; 1-syntax.watsup:38.1-39.5
 syntax vectype =
   | V128
 
-;; 1-syntax.watsup:39.1-40.20
+;; 1-syntax.watsup:40.1-41.20
 syntax reftype =
   | FUNCREF
   | EXTERNREF
 
-;; 1-syntax.watsup:41.1-42.34
+;; 1-syntax.watsup:42.1-43.34
 syntax valtype =
   | numtype
   | vectype
   | reftype
   | BOT
 
-;; 1-syntax.watsup:49.1-50.11
+;; 1-syntax.watsup:50.1-51.11
 syntax resulttype = valtype*
 
-;; 1-syntax.watsup:52.1-53.16
+;; 1-syntax.watsup:53.1-54.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:54.1-55.15
+;; 1-syntax.watsup:55.1-56.15
 syntax globaltype = `MUT%?%`(()?, valtype)
 
-;; 1-syntax.watsup:56.1-57.27
+;; 1-syntax.watsup:57.1-58.27
 syntax functype = `%->%`(resulttype, resulttype)
 
-;; 1-syntax.watsup:58.1-59.17
+;; 1-syntax.watsup:59.1-60.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:60.1-61.12
+;; 1-syntax.watsup:61.1-62.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:62.1-63.10
+;; 1-syntax.watsup:63.1-64.10
 syntax elemtype = reftype
 
-;; 1-syntax.watsup:64.1-65.5
+;; 1-syntax.watsup:65.1-66.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:66.1-67.66
+;; 1-syntax.watsup:67.1-68.66
 syntax externtype =
   | GLOBAL(globaltype)
   | FUNC(functype)
   | TABLE(tabletype)
   | MEM(memtype)
 
-;; 1-syntax.watsup:80.1-80.23
+;; 1-syntax.watsup:81.1-81.23
 syntax c_numtype = nat
 
-;; 1-syntax.watsup:81.1-81.23
+;; 1-syntax.watsup:82.1-82.23
 syntax c_vectype = nat
 
-;; 1-syntax.watsup:84.1-84.44
+;; 1-syntax.watsup:85.1-85.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:86.1-86.52
+;; 1-syntax.watsup:87.1-87.52
 syntax blocktype = functype
 
-;; 1-syntax.watsup:89.1-89.26
+;; 1-syntax.watsup:90.1-90.26
 syntax unop_numtype = XXX
 
-;; 1-syntax.watsup:90.1-90.27
+;; 1-syntax.watsup:91.1-91.27
 syntax binop_numtype = XXX
 
-;; 1-syntax.watsup:91.1-91.28
+;; 1-syntax.watsup:92.1-92.28
 syntax testop_numtype = XXX
 
-;; 1-syntax.watsup:92.1-92.27
+;; 1-syntax.watsup:93.1-93.27
 syntax relop_numtype = XXX
 
-;; 1-syntax.watsup:93.1-93.19
+;; 1-syntax.watsup:94.1-94.19
 syntax cvtop = XXX
 
-;; 1-syntax.watsup:100.1-144.57
+;; 1-syntax.watsup:133.1-154.55
 rec {
 
-;; 1-syntax.watsup:100.1-144.57
+;; 1-syntax.watsup:133.1-154.55
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -149,7 +152,7 @@ syntax instr =
   | BINOP(numtype, binop_numtype)
   | TESTOP(numtype, testop_numtype)
   | RELOP(numtype, relop_numtype)
-  | EXTEND(numtype, nat)
+  | EXTEND(numtype, n)
   | CVTOP(numtype, cvtop, numtype, sx?)
   | REF.NULL(reftype)
   | REF.FUNC(funcidx)
@@ -173,57 +176,57 @@ syntax instr =
   | MEMORY.COPY
   | MEMORY.INIT(dataidx)
   | DATA.DROP(dataidx)
-  | LOAD(numtype, (nat, sx)?, nat, nat)
-  | STORE(numtype, nat?, nat, nat)
+  | LOAD(numtype, (n, sx)?, nat, nat)
+  | STORE(numtype, n?, nat, nat)
 }
 
-;; 1-syntax.watsup:146.1-147.9
+;; 1-syntax.watsup:156.1-157.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:152.1-154.8
+;; 1-syntax.watsup:162.1-164.8
 syntax elemmode =
   | TABLE(tableidx, expr)
   | DECLARE
 
-;; 1-syntax.watsup:155.1-156.19
+;; 1-syntax.watsup:165.1-166.19
 syntax datamode =
   | MEMORY(memidx, expr)
 
-;; 1-syntax.watsup:158.1-159.30
+;; 1-syntax.watsup:168.1-169.30
 syntax func = FUNC(functype, valtype*, expr)
 
-;; 1-syntax.watsup:160.1-161.25
+;; 1-syntax.watsup:170.1-171.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:162.1-163.18
+;; 1-syntax.watsup:172.1-173.18
 syntax table = TABLE(tabletype)
 
-;; 1-syntax.watsup:164.1-165.14
+;; 1-syntax.watsup:174.1-175.14
 syntax mem = MEM(memtype)
 
-;; 1-syntax.watsup:166.1-167.31
+;; 1-syntax.watsup:176.1-177.31
 syntax elem = ELEM(reftype, expr*, elemmode?)
 
-;; 1-syntax.watsup:168.1-169.26
+;; 1-syntax.watsup:178.1-179.26
 syntax data = DATA(byte**, datamode?)
 
-;; 1-syntax.watsup:170.1-171.16
+;; 1-syntax.watsup:180.1-181.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:173.1-174.62
+;; 1-syntax.watsup:183.1-184.62
 syntax externuse =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:175.1-176.24
+;; 1-syntax.watsup:185.1-186.24
 syntax export = EXPORT(name, externuse)
 
-;; 1-syntax.watsup:177.1-178.30
+;; 1-syntax.watsup:187.1-188.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:180.1-181.70
+;; 1-syntax.watsup:190.1-191.70
 syntax module = MODULE(import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-aux.watsup:5.1-5.41
@@ -255,7 +258,7 @@ relation Globaltype_ok: `|-%:OK`(globaltype)
 ;; 3-typing.watsup:18.1-18.36
 relation Limits_ok: `|-%:%`(limits, nat)
   ;; 3-typing.watsup:34.1-36.25
-  rule _ {k : nat, n_1 : nat, n_2 : nat}:
+  rule _ {k : nat, n_1 : n, n_2 : n}:
     `|-%:%`(`[%..%]`(n_1, n_2), k)
     -- iff ((n_1 <= n_2) /\ (n_2 <= k))
 
@@ -305,7 +308,7 @@ relation Globaltype_sub: `|-%<:%`(globaltype, globaltype)
 ;; 3-typing.watsup:60.1-60.41
 relation Limits_sub: `|-%<:%`(limits, limits)
   ;; 3-typing.watsup:77.1-80.22
-  rule _ {n_11 : nat, n_12 : nat, n_21 : nat, n_22 : nat}:
+  rule _ {n_11 : n, n_12 : n, n_21 : n, n_22 : n}:
     `|-%<:%`(`[%..%]`(n_11, n_12), `[%..%]`(n_21, n_22))
     -- iff (n_11 >= n_21)
     -- iff (n_12 <= n_22)
@@ -611,8 +614,8 @@ syntax admininstr =
   | REF.FUNC_ADDR(funcaddr)
   | REF.HOST_ADDR(hostaddr)
   | CALL_ADDR(funcaddr)
-  | LABEL(nat, instr*, admininstr*)
-  | FRAME(nat, frame, admininstr*)
+  | LABEL(n, instr*, admininstr*)
+  | FRAME(n, frame, admininstr*)
   | TRAP
 }
 
@@ -639,14 +642,14 @@ def table : (state, tableidx) -> tableinst
   ;; 4-runtime.watsup:106.1-106.52
   def {m : moduleinst, s : store, val : val, x : idx} table(`%;%`(s, `%;%`(m, val*)), x) = s.TABLE[m.TABLE[x]]
 
-;; 4-runtime.watsup:120.1-123.19
+;; 4-runtime.watsup:120.1-123.17
 rec {
 
-;; 4-runtime.watsup:120.1-123.19
+;; 4-runtime.watsup:120.1-123.17
 syntax E =
   | _HOLE
   | _SEQ(val*, E, instr*)
-  | LABEL(nat, instr*, E)
+  | LABEL(n, instr*, E)
 }
 
 ;; 5-reduction.watsup:5.1-5.47
@@ -671,12 +674,12 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     `%~>%`([CONST(I32, c) BR_IF(l)], [BR(l)])
     -- iff (c =/= 0)
 
-  ;; 5-reduction.watsup:53.1-54.63
-  rule br-succ {instr : instr, instr' : instr, l : labelidx, n : nat, val : val}:
+  ;; 5-reduction.watsup:53.1-54.64
+  rule br-succ {instr : instr, instr' : instr, l : labelidx, n : n, val : val}:
     `%~>%`([LABEL(n, instr'*, (val <: admininstr)* :: [BR(l + 1)] :: (instr <: admininstr)*)], (val <: admininstr)* :: [BR(l)])
 
-  ;; 5-reduction.watsup:50.1-51.67
-  rule br-zero {instr : instr, instr' : instr, n : nat, val : val, val' : val}:
+  ;; 5-reduction.watsup:50.1-51.68
+  rule br-zero {instr : instr, instr' : instr, n : n, val : val, val' : val}:
     `%~>%`([LABEL(n, instr'*, (val' <: admininstr)* :: (val <: admininstr)^n :: [BR(0)] :: (instr <: admininstr)*)], (val <: admininstr)^n :: (instr' <: admininstr)*)
 
   ;; 5-reduction.watsup:45.1-47.15
@@ -690,12 +693,12 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     -- iff (c =/= 0)
 
   ;; 5-reduction.watsup:37.1-39.29
-  rule loop {bt : blocktype, instr : instr, k : nat, n : nat, t_1 : valtype, t_2 : valtype, val : val}:
+  rule loop {bt : blocktype, instr : instr, k : nat, n : n, t_1 : valtype, t_2 : valtype, val : val}:
     `%~>%`((val <: admininstr)^k :: [LOOP(bt, instr*)], [LABEL(n, [LOOP(bt, instr*)], (val <: admininstr)^k :: (instr <: admininstr)*)])
     -- iff (bt = `%->%`(t_1^k, t_2^n))
 
   ;; 5-reduction.watsup:33.1-35.29
-  rule block {bt : blocktype, instr : instr, k : nat, n : nat, t_1 : valtype, t_2 : valtype, val : val}:
+  rule block {bt : blocktype, instr : instr, k : nat, n : n, t_1 : valtype, t_2 : valtype, val : val}:
     `%~>%`((val <: admininstr)^k :: [BLOCK(bt, instr*)], [LABEL(n, [], (val <: admininstr)^k :: (instr <: admininstr)*)])
     -- iff (bt = `%->%`(t_1^k, t_2^n))
 
@@ -724,7 +727,7 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
 ;; 5-reduction.watsup:4.1-4.42
 relation Step_read: `%~>%`(config, admininstr*)
   ;; 5-reduction.watsup:87.1-89.62
-  rule call_addr {a : addr, instr : instr, k : nat, m : moduleinst, n : nat, t : valtype, t_1 : valtype, t_2 : valtype, val : val, z : state}:
+  rule call_addr {a : addr, instr : instr, k : nat, m : moduleinst, n : n, t : valtype, t_1 : valtype, t_2 : valtype, val : val, z : state}:
     `%~>%`(`%;%`(z, (val <: admininstr)^k :: [CALL_ADDR(a)]), [FRAME(n, `%;%`(m, val^k :: $default(t)*), [LABEL(n, [], (instr <: admininstr)*)])])
     -- iff ($funcinst(z)[a] = `%;%`(m, FUNC(`%->%`(t_1^k, t_2^n), t*, instr*)))
 
@@ -757,6 +760,12 @@ relation Step: `%~>%`(config, config)
 
 == IL Validation...
 == Latex Generation...
+$$
+\begin{array}{@{}l@{}rrl@{}}
+& \mathit{n} &::=& \mathit{nat}\\
+\end{array}
+$$
+
 $$
 \begin{array}{@{}l@{}rrl@{}}
 & \mathit{name} &::=& \mathit{text}\\
@@ -879,7 +888,7 @@ $$
 \mathsf{\mathit{numtype}} . \mathsf{\mathit{binop}\_{\mathit{numtype}}} \\ &&|&
 \mathsf{\mathit{numtype}} . \mathsf{\mathit{testop}\_{\mathit{numtype}}} \\ &&|&
 \mathsf{\mathit{numtype}} . \mathsf{\mathit{relop}\_{\mathit{numtype}}} \\ &&|&
-{\mathsf{\mathit{numtype}}.\mathsf{extend}}{\mathsf{\mathit{nat}}} \\ &&|&
+{\mathsf{\mathit{numtype}}.\mathsf{extend}}{\mathsf{\mathit{n}}} \\ &&|&
 \mathsf{\mathit{numtype}} . {{{{\mathsf{\mathit{cvtop}}}{\mathsf{\_}}}{\mathsf{\mathit{numtype}}}}{\mathsf{\_}}}{\mathsf{\mathit{sx}^?}} \\ &&|&
 \mathsf{ref.null}~\mathit{reftype} \\ &&|&
 \mathsf{ref.func}~\mathit{funcidx} \\ &&|&
@@ -903,8 +912,8 @@ $$
 \mathsf{memory.copy} \\ &&|&
 \mathsf{memory.init}~\mathit{dataidx} \\ &&|&
 \mathsf{data.drop}~\mathit{dataidx} \\ &&|&
-{\mathsf{\mathit{numtype}}.\mathsf{load}}{\mathsf{(\mathit{nat}~\mathit{sx})^?}~\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}} \\ &&|&
-{\mathsf{\mathit{numtype}}.\mathsf{store}}{\mathsf{\mathit{nat}^?}~\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}}\\
+{\mathsf{\mathit{numtype}}.\mathsf{load}}{\mathsf{(\mathit{n}~\mathit{sx})^?}~\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}} \\ &&|&
+{\mathsf{\mathit{numtype}}.\mathsf{store}}{\mathsf{\mathit{n}^?}~\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}}\\
 [0.5ex]
 & \mathit{expr} &::=& \mathit{instr}^\ast\\
 \end{array}
@@ -1478,13 +1487,13 @@ $$
 \mathsf{ref.func}~\mathsf{\mathit{funcaddr}} \\ &&|&
 \mathsf{ref.extern}~\mathsf{\mathit{hostaddr}} \\ &&|&
 \mathsf{call}~\mathsf{\mathit{funcaddr}} \\ &&|&
-{{\mathsf{label\_}}{\mathsf{\mathit{nat}}}}{\{\mathsf{\mathit{instr}^\ast}\}~\mathsf{\mathit{instr}^\ast}} \\ &&|&
-{{\mathsf{frame\_}}{\mathsf{\mathit{nat}}}}{\{\mathsf{\mathit{frame}}\}~\mathsf{\mathit{instr}^\ast}} \\ &&|&
+{{\mathsf{label}}_{\mathsf{\mathit{n}}}}{\mathsf{\{\mathit{instr}^\ast\}}~\mathsf{\mathit{instr}^\ast}} \\ &&|&
+{{\mathsf{frame}}_{\mathsf{\mathit{n}}}}{\mathsf{\{\mathit{frame}\}}~\mathsf{\mathit{instr}^\ast}} \\ &&|&
 \mathsf{trap}\\
 [0.5ex]
 & \mathit{E} &::=& [\mathsf{\_}] \\ &&|&
 \mathit{val}^\ast~\mathit{E}~\mathit{instr}^\ast \\ &&|&
-{{\mathsf{label\_}}{\mathsf{\mathit{nat}}}}{\{\mathsf{\mathit{instr}^\ast}\}~\mathsf{\mathit{e}}}\\
+{{\mathsf{label}}_{\mathsf{\mathit{n}}}}{\mathsf{\mathit{instr}^\ast}~\mathsf{\mathit{e}}}\\
 \end{array}
 $$
 
@@ -1514,9 +1523,9 @@ $$
   \mbox{if}~\mathit{c} \neq 0\\
 \mathit{val}_{1}~\mathit{val}_{2}~(\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{select}~\mathit{t}^?) &\hookrightarrow& \mathit{val}_{2} &
   \mbox{if}~\mathit{c} = 0\\
-\mathit{val}^{\mathit{k}}~(\mathsf{block}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& ({{\mathsf{label\_}}{\mathit{n}}}{\{\epsilon\}~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast}) &
+\mathit{val}^{\mathit{k}}~(\mathsf{block}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& ({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast}) &
   \mbox{if}~\mathit{bt} = \mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}}\\
-\mathit{val}^{\mathit{k}}~(\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& ({{\mathsf{label\_}}{\mathit{n}}}{\{(\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast)\}~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast}) &
+\mathit{val}^{\mathit{k}}~(\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& ({{\mathsf{label}}_{\mathit{n}}}{\{\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast\}~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast}) &
   \mbox{if}~\mathit{bt} = \mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}}\\
 (\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{if}~\mathit{bt}~\mathit{instr}_{1}^\ast~\mathsf{else}~\mathit{instr}_{2}^\ast) &\hookrightarrow& (\mathsf{block}~\mathit{bt}~\mathit{instr}_{1}^\ast) &
   \mbox{if}~\mathit{c} \neq 0\\
@@ -1529,8 +1538,8 @@ $$
 
 $$
 \begin{array}{@{}lcll@{}}
-({{\mathsf{label\_}}{\mathit{n}}}{\{({\mathit{instr}'}^\ast)\}~{\mathit{val}'}^\ast~\mathit{val}^{\mathit{n}}~(\mathsf{br}~0)~\mathit{instr}^\ast}) &\hookrightarrow& \mathit{val}^{\mathit{n}}~{\mathit{instr}'}^\ast\\
-({{\mathsf{label\_}}{\mathit{n}}}{\{({\mathit{instr}'}^\ast)\}~\mathit{val}^\ast~(\mathsf{br}~\mathit{l} + 1)~\mathit{instr}^\ast}) &\hookrightarrow& \mathit{val}^\ast~(\mathsf{br}~\mathit{l})\\
+({{\mathsf{label}}_{\mathit{n}}}{\{{\mathit{instr}'}^\ast\}~{\mathit{val}'}^\ast~\mathit{val}^{\mathit{n}}~(\mathsf{br}~0)~\mathit{instr}^\ast}) &\hookrightarrow& \mathit{val}^{\mathit{n}}~{\mathit{instr}'}^\ast\\
+({{\mathsf{label}}_{\mathit{n}}}{\{{\mathit{instr}'}^\ast\}~\mathit{val}^\ast~(\mathsf{br}~\mathit{l} + 1)~\mathit{instr}^\ast}) &\hookrightarrow& \mathit{val}^\ast~(\mathsf{br}~\mathit{l})\\
 \end{array}
 $$
 
@@ -1560,14 +1569,14 @@ $$
 
 $$
 \begin{array}{@{}lcll@{}}
-\mathit{z} ; (\mathsf{call}~\mathit{x}) &\hookrightarrow& (\mathsf{call}~(\mathit{z}).\mathsf{func}[\mathit{x}])\\
+\mathit{z} ; (\mathsf{call}~\mathit{x}) &\hookrightarrow& (\mathsf{call}~\mathit{z}.\mathsf{func}[\mathit{x}])\\
 \mathit{z} ; (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& (\mathsf{call}~\mathit{a}) &
   \mbox{if}~(\mathit{z},\, \mathit{x}).\mathsf{table}[\mathit{i}] = (\mathsf{ref.func}~\mathit{a})\\
- &&& {\land}~(\mathit{z}).\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathit{func}\\
+ &&& {\land}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathit{func}\\
 \mathit{z} ; (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& \mathsf{trap} &
   \mbox{otherwise}\\
-\mathit{z} ; \mathit{val}^{\mathit{k}}~(\mathsf{call}~\mathit{a}) &\hookrightarrow& ({{\mathsf{frame\_}}{\mathit{n}}}{\{(\mathit{m} ; \mathit{val}^{\mathit{k}}~(\mathrm{default}(\mathit{t}))^\ast)\}~({{\mathsf{label\_}}{\mathit{n}}}{\{\epsilon\}~\mathit{instr}^\ast})}) &
-  \mbox{if}~(\mathit{z}).\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathsf{func}~(\mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}})~\mathit{t}^\ast~\mathit{instr}^\ast\\
+\mathit{z} ; \mathit{val}^{\mathit{k}}~(\mathsf{call}~\mathit{a}) &\hookrightarrow& ({{\mathsf{frame}}_{\mathit{n}}}{\{\mathit{m} ; \mathit{val}^{\mathit{k}}~(\mathrm{default}(\mathit{t}))^\ast\}~({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~\mathit{instr}^\ast})}) &
+  \mbox{if}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathsf{func}~(\mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}})~\mathit{t}^\ast~\mathit{instr}^\ast\\
 \end{array}
 $$
 

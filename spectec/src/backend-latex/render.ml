@@ -43,11 +43,11 @@ let env_deftyp env deftyp =
   match deftyp.it with
   | NotationT _ -> ()
   | StructT typfields -> List.iter (env_typfield env) typfields
-  | VariantT (_, typcases) -> List.iter (env_typcase env) typcases
+  | VariantT (_, _, typcases, _) -> List.iter (env_typcase env) typcases
 
 let env_def env def =
   match def.it with
-  | SynD (id, deftyp, hints) ->
+  | SynD (id, _, deftyp, hints) ->
     env_hints env.show_syn id.it hints;
     env_deftyp env deftyp
   | VarD (id, _, hints) -> env_hints env.show_var id.it hints
@@ -89,6 +89,10 @@ let rec altern_map_nl sep br f = function
   | (Elem x)::Nl::xs -> f x ^ br ^ altern_map_nl sep br f xs
   | (Elem x)::xs -> f x ^ sep ^ altern_map_nl sep br f xs
   | Nl::xs -> br ^ altern_map_nl sep br f xs
+
+let strip_nl = function
+  | Nl::xs -> xs
+  | xs -> xs
 
 
 (* Identifiers *)
@@ -179,6 +183,10 @@ let render_cmpop = function
   | GtOp -> ">"
   | LeOp -> "\\leq"
   | GeOp -> "\\geq"
+
+let render_dots = function
+  | Dots -> [Elem "..."]
+  | NoDots -> []
 
 
 (* Show expansions *)
@@ -315,9 +323,10 @@ and render_deftyp env deftyp =
     "\\begin{array}[t]{@{}l@{}}\n" ^
     concat_map_nl ",\\; " "\\\\\n  " (render_typfield env) typfields ^ " \\;\\}" ^
     "\\end{array}"
-  | VariantT (ids, typcases) ->
+  | VariantT (dots1, ids, typcases, dots2) ->
     altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
-      (map_nl_list it ids @ map_nl_list (render_typcase env deftyp.at) typcases)
+      (render_dots dots1 @ map_nl_list it ids @
+        map_nl_list (render_typcase env deftyp.at) typcases @ render_dots dots2)
 
 and render_nottyp env nottyp =
   match nottyp.it with
@@ -356,6 +365,11 @@ and render_typcase env at (atom, nottyps, _hints) =
 
 
 (* Expressions *)
+
+and unparen_exp exp =
+  match exp.it with
+  | ParenE exp1 -> exp1
+  | _ -> exp
 
 and render_exp env exp =
   match exp.it with
@@ -403,11 +417,21 @@ and render_exp env exp =
   | BrackE (brack, exp) ->
     let l, r = render_brack brack in l ^ render_exp env exp ^ r
   | CallE (id, exp) ->
-    render_expand env env.show_def id [exp]
+    render_expand env env.show_def id [unparen_exp exp]
       (fun () -> render_id env `Func id.it ^ render_exp env exp)
   | IterE (exp1, iter) -> render_exp env exp1 ^ render_iter env iter
   | FuseE (exp1, exp2) ->
-    "{" ^ render_exp env exp1 ^ "}{" ^ render_exp env exp2 ^ "}"
+    (* HACK. Is there a cleaner way? *)
+    let exp1', subscript =
+      match exp1.it with
+      | VarE {it = id; at} when id.[String.length id - 1] = '_' ->
+        VarE (String.sub id 0 (String.length id - 1) $ at) $ exp1.at, true
+      | AtomE (Atom id) when id.[String.length id - 1] = '_' ->
+        AtomE (Atom (String.sub id 0 (String.length id - 1))) $ exp1.at, true
+      | _ -> exp1, false
+    in
+    "{" ^ render_exp env exp1' ^ "}" ^ (if subscript then "_" else "") ^
+      "{" ^ render_exp env exp2 ^ "}"
   | HoleE _ -> assert false
 
 and render_exps sep env exps =
@@ -433,6 +457,7 @@ and render_expcase env atom exps at =
     (fun () ->
       let s1 = render_atom env atom in
       let s2 = render_exps "~" env exps in
+      assert (s1 <> "" || s2 <> "");
       if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
     )
 
@@ -459,13 +484,28 @@ let render_premise env prem =
     error prem.at "misplaced `otherwise` premise"
 
 
+let merge_deftyp deftyp1 deftyp2 =
+  match deftyp1.it, deftyp2.it with
+  | VariantT (dots1, ids1, cases1, _), VariantT (_, ids2, cases2, dots2) ->
+    VariantT( dots1, ids1 @ strip_nl ids2, cases1 @ strip_nl cases2, dots2) $ deftyp1.at
+  | _, _ -> assert false
+
+let rec merge_syndefs = function
+  | [] -> []
+  | {it = SynD (id1, id', deftyp1, _); at}::
+    {it = SynD (id2, _, deftyp2, _); _}::defs when id1.it = id2.it ->
+    let def' = SynD (id1, id', merge_deftyp deftyp1 deftyp2, []) $ at in
+    merge_syndefs (def'::defs)
+  | def::defs ->
+    def :: merge_syndefs defs
+
 let render_syndef env def =
   match def.it with
-  | SynD (id, deftyp, _hints) ->
+  | SynD (id1, _id2, deftyp, _hints) ->
     (* TODO: include grammar descriptions *)
-    "& " ^ render_varid env env.show_syn id ^ " &::=& " ^
+    "& " ^ render_varid env env.show_syn id1 ^ " &::=& " ^
       render_deftyp env deftyp
-  | _ -> failwith "render_syndef"
+  | _ -> assert false
 
 let split_redexp exp =
   match exp.it with
@@ -505,8 +545,10 @@ let rec render_defs env = function
   | def::defs' as defs ->
     match def.it with
     | SynD _ ->
+      let syndefs = merge_syndefs defs in
       "\\begin{array}{@{}l@{}rrl@{}}\n" ^
-        concat "\\\\\n[0.5ex]\n" (List.map (render_syndef env) defs) ^ "\\\\\n" ^
+        concat "\\\\\n[0.5ex]\n" (List.map (render_syndef env) syndefs) ^
+          "\\\\\n" ^
       "\\end{array}"
 
     | RelD (id, nottyp, _hints) ->

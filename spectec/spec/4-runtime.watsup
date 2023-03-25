@@ -99,10 +99,10 @@ def $funcaddr(s; (m; val*)) = m.FUNC
 def $funcinst(state) : funcinst*  hint(show %.FUNC)
 def $funcinst(s; f) = s.FUNC
 
-def $func(state, funcidx) : funcinst  hint(show %.FUNC)
+def $func(state, funcidx) : funcinst  hint(show %.FUNC)  ;; TODO
 def $func((s; (m; val*)), x) = s.FUNC[m.FUNC[x]]
 
-def $table(state, tableidx) : tableinst  hint(show %.TABLE)
+def $table(state, tableidx) : tableinst  hint(show %.TABLE)  ;; TODO
 def $table((s; (m; val*)), x) = s.TABLE[m.TABLE[x]]
 
 
@@ -113,11 +113,11 @@ syntax admininstr hint(show instr) hint(desc "administrative instruction") =
   | REF.FUNC_ADDR funcaddr        hint(show REF.FUNC %)
   | REF.HOST_ADDR hostaddr        hint(show REF.EXTERN %)
   | CALL_ADDR funcaddr            hint(show CALL %)
-  | LABEL nat instr* admininstr*  hint(show LABEL_#%#`{%} %%)
-  | FRAME nat frame admininstr*   hint(show FRAME_#%#`{%} %%)
+  | LABEL n `{instr*} admininstr* hint(show LABEL_#%#% %%)
+  | FRAME n `{frame} admininstr*  hint(show FRAME_#%#% %%)
   | TRAP
 
 syntax E hint(desc "evaluation context") =
   | _HOLE `[ _ ]
   | _SEQ val* E instr*
-  | LABEL nat instr* E
+  | LABEL n instr* E

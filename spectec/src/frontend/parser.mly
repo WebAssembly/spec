@@ -162,8 +162,15 @@ deftyp : deftyp_ { $1 $ at () }
 deftyp_ :
   | nottyp { NotationT $1 }
   | LBRACE fieldtyp_list RBRACE { StructT $2 }
-  | BAR casetyp_list { VariantT (fst $2, snd $2) }
-  | NL_BAR casetyp_list { VariantT (fst $2, snd $2) }
+  | BAR casetyp_list { let x, y, z = $2 in VariantT (NoDots, x, y, z) }
+  | NL_BAR casetyp_list { let x, y, z = $2 in VariantT (NoDots, x, y, z) }
+  | dots BAR casetyp_list { let x, y, z = $3 in VariantT (Dots, x, y, z) }
+  | dots NL_BAR casetyp_list { let x, y, z = $3 in VariantT (Dots, x, Nl::y, z) }
+
+dots :
+  | DOT3 {}
+  | BAR DOT3 {}
+  | NL_BAR DOT3 {}
 
 
 nottyp_prim : nottyp_prim_ { $1 $ at () }
@@ -242,13 +249,16 @@ fieldtyp_list :
   | fieldid typ hint_list COMMA_NL fieldtyp_list { (Elem ($1, $2, $3))::Nl::$5 }
 
 casetyp_list :
-  | /* empty */ { [], [] }
-  | varid { [Elem $1], [] }
-  | varid BAR casetyp_list { (Elem $1)::fst $3, snd $3 }
-  | varid NL_BAR casetyp_list { (Elem $1)::Nl::fst $3, snd $3 }
-  | atom nottyps hint_list { [], (Elem ($1, $2, $3))::[] }
-  | atom nottyps hint_list BAR casetyp_list { fst $5, (Elem ($1, $2, $3))::snd $5 }
-  | atom nottyps hint_list NL_BAR casetyp_list { fst $5, (Elem ($1, $2, $3))::Nl::snd $5 }
+  | /* empty */ { [], [], NoDots }
+  | DOT3 { [], [], Dots }
+  | varid { [Elem $1], [], NoDots }
+  | varid BAR casetyp_list { let x, y, z = $3 in (Elem $1)::x, y, z }
+  | varid NL_BAR casetyp_list { let x, y, z = $3 in (Elem $1)::Nl::x, y, z }
+  | atom nottyps hint_list { [], (Elem ($1, $2, $3))::[], NoDots }
+  | atom nottyps hint_list BAR casetyp_list
+    { let x, y, z = $5 in x, (Elem ($1, $2, $3))::y, z }
+  | atom nottyps hint_list NL_BAR casetyp_list
+    { let x, y, z = $5 in x, (Elem ($1, $2, $3))::Nl::y, z }
 
 
 /* Expressions */
@@ -440,10 +450,12 @@ path_ :
 
 def : def_ { $1 $ at () }
 def_ :
-  | SYNTAX varid hint_list EQ deftyp
-    { SynD ($2, $5, $3) }
-  | SYNTAX atom_as_varid hint_list EQ deftyp
-    { SynD ($2, $5, $3) }
+  | SYNTAX varid ruleid_list hint_list EQ deftyp
+    { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
+      SynD ($2, id $ ati 3, $6, $4) }
+  | SYNTAX atom_as_varid ruleid_list hint_list EQ deftyp
+    { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
+      SynD ($2, id $ ati 3, $6, $4) }
   | RELATION relid hint_list COLON nottyp
     { RelD ($2, $5, $3) }
   | RULE relid ruleid_list COLON exp premise_list

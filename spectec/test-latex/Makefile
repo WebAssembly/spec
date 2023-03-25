@@ -39,7 +39,7 @@ SPLICEOUTNAME = spec-splice
 
 .PHONY: latex-splice
 
-$(SPLICEOUTNAME).tex: $(SPLICEINNAME).tex $(EXE)
+$(SPLICEOUTNAME).tex: $(SPLICEINNAME).tex $(SPECFILES) $(EXE)
 	cp $< $@
 	(cd $(SPECDIR) && $(EXE) *.$(EXT) -p $(OWNDIR)/$@)
 

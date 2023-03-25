@@ -57,6 +57,10 @@ let string_of_cmpop = function
   | LeOp -> "<="
   | GeOp -> ">="
 
+let strings_of_dots = function
+  | Dots -> ["..."]
+  | NoDots -> []
+
 
 (* Iteration *)
 
@@ -89,9 +93,10 @@ and string_of_deftyp deftyp =
   | NotationT nottyp -> string_of_nottyp nottyp
   | StructT typfields ->
     "{" ^ concat ", " (map_nl_list string_of_typfield typfields) ^ "}"
-  | VariantT (ids, typcases) ->
+  | VariantT (dots1, ids, typcases, dots2) ->
     "\n  | " ^ concat "\n  | "
-      (map_nl_list it ids @ map_nl_list string_of_typcase typcases)
+      (strings_of_dots dots1 @ map_nl_list it ids @
+        map_nl_list string_of_typcase typcases @ strings_of_dots dots2)
 
 and string_of_nottyp nottyp =
   match nottyp.it with
@@ -195,8 +200,9 @@ let string_of_premise prem =
 
 let string_of_def def =
   match def.it with
-  | SynD (id, deftyp, _hints) ->
-    "syntax " ^ id.it ^ " = " ^ string_of_deftyp deftyp
+  | SynD (id1, id2, deftyp, _hints) ->
+    let id2' = if id2.it = "" then "" else "/" ^ id2.it in
+    "syntax " ^ id1.it ^ id2' ^ " = " ^ string_of_deftyp deftyp
   | RelD (id, nottyp, _hints) ->
     "relation " ^ id.it ^ ": " ^ string_of_nottyp nottyp
   | RuleD (id1, id2, exp, prems) ->

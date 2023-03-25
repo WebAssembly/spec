@@ -23,7 +23,7 @@ let error file s i msg =
 
 module Map = Map.Make(String)
 
-type syntax = {sdef : def}
+type syntax = {sdef : def; fragments : (string * def) list}
 type relation = {rdef : def; rules : def Map.t}
 type definition = {fdef : def; clauses : def list}
 
@@ -38,8 +38,12 @@ type env =
 
 let env_def env def =
   match def.it with
-  | SynD (id, _, _) ->
-    env.syn <- Map.add id.it {sdef = def} env.syn
+  | SynD (id1, id2, _, _) ->
+    if not (Map.mem id1.it env.syn) then
+      env.syn <- Map.add id1.it {sdef = def; fragments = []} env.syn;
+    let syntax = Map.find id1.it env.syn in
+    let fragments = syntax.fragments @ [(id2.it, def)] in
+    env.syn <- Map.add id1.it {syntax with fragments} env.syn
   | RelD (id, _, _) ->
     env.rel <- Map.add id.it {rdef = def; rules = Map.empty} env.rel
   | RuleD (id1, id2, _, _) ->
@@ -68,10 +72,13 @@ let env config script : env =
   env
 
 
-let find_syntax env file s (i, id1, _id2) =
+let find_syntax env file s (i, id1, id2) =
   match Map.find_opt id1 env.syn with
   | None -> error file s i ("unknown syntax identifier `" ^ id1 ^ "`")
-  | Some syntax -> syntax.sdef
+  | Some syntax ->
+    match List.assoc_opt id2 syntax.fragments with
+    | None -> error file s i ("unknown syntax fragment identifier `" ^ id2 ^ "`")
+    | Some def -> def
 
 let find_relation env file s (i, id1, _id2) =
   match Map.find_opt id1 env.rel with
@@ -84,7 +91,7 @@ let find_rule env file s (i, id1, id2) =
   | Some relation ->
     match Map.find_opt id2 relation.rules with
     | None -> error file s i ("unknown relation identifier `" ^ id2 ^ "`")
-    | Some rule -> rule
+    | Some def -> def
 
 let find_func env file s (i, id1, _id2) =
   match Map.find_opt id1 env.def with
@@ -136,9 +143,9 @@ let match_id file s i space : string =
 
 let match_id_id file s i space1 space2 : int * string * string =
   let j = !i in
-  let id1 = match_id file s i (if space2 = "" then space1 else space2) in
+  let id1 = match_id file s i space1 in
   let id2 =
-    if space2 <> "" && try_string s i "/" then match_id file s i space1 else ""
+    if space2 <> "" && try_string s i "/" then match_id file s i space2 else ""
   in
   j, id1, id2
 
@@ -149,8 +156,8 @@ let rec match_id_id_list file s i space1 space2 : (int * string * string) list =
   let idids = match_id_id_list file s i space1 space2 in
   idid::idids
 
-let try_def_anchor env file s i buf space1 space2 find : bool =
-  let b = try_string s i space1 in
+let try_def_anchor env file s i buf sort space1 space2 find : bool =
+  let b = try_string s i sort in
   if b then (
     skip_space s i;
     if not (try_string s i ":") then
@@ -187,10 +194,10 @@ let splice_anchor env file s i anchor buf =
   Buffer.add_string buf anchor.prefix;
   ignore (
     try_exp_anchor env file s i buf ||
-    try_def_anchor env file s i buf "syntax" "" find_syntax ||
-    try_def_anchor env file s i buf "relation" "" find_relation ||
-    try_def_anchor env file s i buf "rule" "relation" find_rule ||
-    try_def_anchor env file s i buf "definition" "" find_func ||
+    try_def_anchor env file s i buf "syntax" "syntax" "fragment" find_syntax ||
+    try_def_anchor env file s i buf "relation" "relation" "" find_relation ||
+    try_def_anchor env file s i buf "rule" "relation" "rule" find_rule ||
+    try_def_anchor env file s i buf "definition" "definition" "" find_func ||
     error file s !i "unknown definition sort";
   );
   Buffer.add_string buf anchor.suffix

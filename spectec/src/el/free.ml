@@ -55,7 +55,7 @@ and free_deftyp deftyp =
   match deftyp.it with
   | NotationT nottyp -> free_nottyp nottyp
   | StructT typfields -> free_nl_list free_typfield typfields
-  | VariantT (ids, typcases) ->
+  | VariantT (_, ids, typcases, _) ->
     union (free_nl_list free_synid ids) (free_nl_list free_typcase typcases)
 
 and free_nottyp nottyp =
@@ -111,7 +111,7 @@ let free_prem prem =
 
 let free_def def =
   match def.it with
-  | SynD (_id, deftyp, _hints) -> free_deftyp deftyp
+  | SynD (_id1, _id2, deftyp, _hints) -> free_deftyp deftyp
   | VarD _ | SepD -> empty
   | RelD (_id, nottyp, _hints) -> free_nottyp nottyp
   | RuleD (id1, _id2, exp, prems) ->

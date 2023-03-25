@@ -35,6 +35,8 @@ type brack =
   | Brack                        (* ``[` ... `]` *)
   | Brace                        (* ``{` ... `}` *)
 
+type dots = Dots | NoDots
+
 
 (* Iteration *)
 
@@ -61,7 +63,7 @@ and deftyp = deftyp' phrase
 and deftyp' =
   | NotationT of nottyp                      (* nottyp *)
   | StructT of typfield nl_list              (* `{` list(typfield,`,`') `}` *)
-  | VariantT of id nl_list * typcase nl_list (* `|` list(varid|typcase, `|`) *)
+  | VariantT of dots * id nl_list * typcase nl_list * dots (* `|` list(`...`|varid|typcase, `|`) *)
 
 and nottyp = nottyp' phrase
 and nottyp' =
@@ -145,7 +147,7 @@ and path' =
 
 and def = def' phrase
 and def' =
-  | SynD of id * deftyp * hint list          (* `syntax` synid hint* `=` deftyp *)
+  | SynD of id * id * deftyp * hint list     (* `syntax` synid hint* `=` deftyp *)
   | RelD of id * nottyp * hint list          (* `relation` relid `:` nottyp hint* *)
   | RuleD of id * id * exp * premise list    (* `rule` relid ruleid? `:` exp (`--` premise)* *)
   | VarD of id * typ * hint list             (* `var` varid `:` typ *)

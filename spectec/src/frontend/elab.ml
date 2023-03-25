@@ -22,7 +22,7 @@ let error at msg = Source.error at "type" msg
 
 type fwd_typ = Bad | Ok
 type var_typ = typ
-type syn_typ = (fwd_typ, deftyp) Either.t
+type syn_typ = (fwd_typ, deftyp * Il.deftyp) Either.t
 type rel_typ = nottyp * Il.rule list
 type def_typ = typ * typ * Il.clause list
 
@@ -39,6 +39,8 @@ let new_env () =
     rels = Map.empty;
     defs = Map.empty;
   }
+
+let bound env' id = Map.mem id.it env'
 
 let find space env' id =
   match Map.find_opt id.it env' with
@@ -78,7 +80,7 @@ and prefix_id' id =
 
 let as_defined_typid' env id at : deftyp' =
   match find "syntax type" env.typs id with
-  | Either.Right deftyp -> deftyp.it
+  | Either.Right (deftyp, _deftyp') -> deftyp.it
   | Either.Left _ ->
     error at ("invalid forward reference to syntax type `" ^ id.it ^ "`")
 
@@ -150,16 +152,17 @@ let as_struct_typ phrase env dir typ at : typfield list =
   | VarT id -> as_struct_typid' phrase env id at
   | _ -> as_error at phrase dir typ "{...}"
 
-let rec as_variant_typid' phrase env id at : typcase list =
+let rec as_variant_typid' phrase env id at : typcase list * dots =
   match as_defined_typid' env id at with
-  | VariantT (ids, cases) ->
-    List.concat (filter_nl cases :: map_nl_list (as_variant_typid "" env) ids)
+  | VariantT (_dots1, ids, cases, dots2) ->
+    let casess = map_nl_list (as_variant_typid "" env) ids in
+    List.concat (filter_nl cases :: List.map fst casess), dots2
   | _ -> as_error id.at phrase Infer (VarT id $ id.at) "| ..."
 
-and as_variant_typid phrase env id : typcase list =
+and as_variant_typid phrase env id : typcase list * dots =
   as_variant_typid' phrase env id id.at
 
-let as_variant_typ phrase env dir typ at : typcase list =
+let as_variant_typ phrase env dir typ at : typcase list * dots =
   match expand_singular' env typ.it with
   | VarT id -> as_variant_typid' phrase env id at
   | _ -> as_error at phrase dir typ "| ..."
@@ -181,7 +184,7 @@ let is_variant_nottyp env nottyp =
 
 let as_variant_nottyp env nottyp at : typcase list * typ =
   match nottyp.it with
-  | TypT typ -> as_variant_typ "" env Check typ at, typ
+  | TypT typ -> fst (as_variant_typ "" env Check typ at), typ
   | _ -> as_error at "expression" Check (VarT ("?" $ at) $ at) "| ..."
 
 
@@ -317,7 +320,7 @@ and elab_typ env typ : Il.typ =
     | List1 | ListN _ -> error typ.at "illegal iterator for types"
     | _ -> Il.IterT (elab_typ env typ1, elab_iter env iter) $ typ.at
 
-and elab_deftyp env deftyp : Il.deftyp =
+and elab_deftyp env id deftyp : Il.deftyp =
   match deftyp.it with
   | NotationT nottyp ->
     Il.NotationT (elab_nottyp' env nottyp) $ deftyp.at
@@ -325,12 +328,15 @@ and elab_deftyp env deftyp : Il.deftyp =
     let fields' = filter_nl fields in
     check_atoms "record" "field" (fun (atom, _, _) -> atom) fields' deftyp.at;
     Il.StructT (map_nl_list (elab_typfield env) fields) $ deftyp.at
-  | VariantT (ids, cases) ->
-    let ids' = filter_nl ids in
-    let casess = List.map (as_variant_typid "parent" env) ids' in
-    let cases' = List.flatten (filter_nl cases :: casess) in
+  | VariantT (dots1, ids, cases, _dots2) ->
+    let cases0 =
+      if dots1 = Dots then fst (as_variant_typid "own type" env id) else [] in
+    let casess = map_nl_list (as_variant_typid "parent type" env) ids in
+    let cases' =
+      List.flatten (cases0 :: filter_nl cases :: List.map fst casess) in
     check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' deftyp.at;
-    Il.VariantT (ids', map_nl_list (elab_typcase env deftyp.at) cases) $ deftyp.at
+    Il.VariantT (filter_nl ids, map_nl_list (elab_typcase env deftyp.at) cases)
+      $ deftyp.at
 
 and elab_nottyp env nottyp : Il.mixop * Il.typ list =
   match nottyp.it with
@@ -574,7 +580,7 @@ and elab_exp' env exp typ : Il.exp =
       elab_exp_notation env exp (as_notation_typ "" env Check typ exp.at)
     else if is_variant_typ env typ then
       elab_exp_variant env (unseq_exp exp)
-        (as_variant_typ "" env Check typ exp.at) typ exp.at
+        (fst (as_variant_typ "" env Check typ exp.at)) typ exp.at
     else
       error exp.at ("expression does not match expected type `" ^
         string_of_typ typ ^ "`")
@@ -731,7 +737,7 @@ and elab_exp_iter env exps (typ1, iter) typ at : Il.exp =
   *)
   match exps, iter with
   | {it = AtomE _; _}::_, _ when is_variant_typ env typ1 ->
-    let cases = as_variant_typ "" env Check typ1 at in
+    let cases, _dots = as_variant_typ "" env Check typ1 at in
     Il.ListE [elab_exp_variant env exps cases typ1 at] $ at
 
   | [], Opt ->
@@ -847,8 +853,10 @@ and cast_exp phrase env exp' typ1 typ2 : Il.exp =
 and cast_exp_variant phrase env exp' typ1 typ2 : Il.exp =
   if equiv_typ env typ1 typ2 then exp' else
   if is_variant_typ env typ1 && is_variant_typ env typ2 then
-    let cases1 = as_variant_typ "" env Check typ1 exp'.at in
-    let cases2 = as_variant_typ "" env Check typ2 exp'.at in
+    let cases1, dots1 = as_variant_typ "" env Check typ1 exp'.at in
+    let cases2, _dots2 = as_variant_typ "" env Check typ2 exp'.at in
+    if dots1 = Dots then
+      error exp'.at "used variant type is only partially defined at this point";
     (try
       List.iter (fun (atom, nottyps1, _) ->
         let nottyps2 = find_case cases2 atom typ1.at in
@@ -898,17 +906,46 @@ let infer_deftyp _env deftyp : syn_typ =
 
 let infer_def env def =
   match def.it with
-  | SynD (id, deftyp, _) ->
-    env.typs <- bind "syntax" env.typs id (infer_deftyp env deftyp)
+  | SynD (id1, _id2, deftyp, _hints) ->
+    if not (bound env.typs id1) then (
+      env.typs <- bind "syntax type" env.typs id1 (infer_deftyp env deftyp);
+      env.vars <- bind "variable" env.vars id1 (VarT id1 $ id1.at);
+    )
   | _ -> ()
+
+let merge_deftyp' deftyp1' deftyp2' =
+  match deftyp1'.it, deftyp2'.it with
+  | Il.VariantT (ids1, cases1'), Il.VariantT (ids2, cases2') ->
+    Il.VariantT (ids1 @ ids2, cases1' @ cases2')
+      $ over_region [deftyp1'.at; deftyp2'.at]
+  | _, _ -> assert false
 
 let elab_def env def : Il.def list =
   match def.it with
-  | SynD (id, deftyp, hints) ->
-    let deftyp' = elab_deftyp env deftyp in
-    env.typs <- rebind "syntax" env.typs id (Either.Right deftyp);
-    env.vars <- bind "variable" env.vars id (VarT id $ id.at);
-    [Il.SynD (id, deftyp', elab_hints hints) $ def.at]
+  | SynD (id1, _id2, deftyp, hints) ->
+    let deftyp' = elab_deftyp env id1 deftyp in
+    let deftyp1, deftyp1', closed =
+      match find "syntax type" env.typs id1, deftyp.it with
+      | Either.Left _, (NotationT _ | StructT _) ->
+        deftyp, deftyp', true
+      | Either.Left _, VariantT (NoDots, _, _, dots2) ->
+        deftyp, deftyp', dots2 = NoDots
+      | Either.Right _, (NotationT _ | StructT _ | VariantT (NoDots, _, _, _)) ->
+        error id1.at ("duplicate declaration for syntax type `" ^ id1.it ^ "`");
+      | Either.Right ({it = VariantT (dots1, ids1, cases1, Dots); at}, deftyp0'),
+          VariantT (Dots, ids2, cases2, dots2) ->
+        VariantT (dots1, ids1 @ ids2, cases1 @ cases2, dots2)
+          $ over_region [at; deftyp.at],
+        merge_deftyp' deftyp0' deftyp', dots2 = NoDots
+      | Either.Left _, VariantT (Dots, _, _, _) ->
+        error id1.at ("extension of not yet defined syntax type `" ^ id1.it ^ "`")
+      | Either.Right _, VariantT (Dots, _, _, _) ->
+        error id1.at ("extension of non-extensible syntax type `" ^ id1.it ^ "`")
+    in
+    env.typs <- rebind "syntax type" env.typs id1
+      (Either.Right (deftyp1, deftyp1'));
+    if not closed then [] else
+    [Il.SynD (id1, deftyp1', elab_hints hints) $ def.at]
   | RelD (id, nottyp, hints) ->
     let mixop', typs' = elab_nottyp env nottyp in
     let typmix = mixop', tup_typ typs' nottyp.at in

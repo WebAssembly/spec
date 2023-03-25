@@ -1,9 +1,10 @@
 ;; Meta
 
+syntax n = nat
+
 var i : nat
 var j : nat
 var k : nat
-var n : nat
 
 syntax name hint(desc "name") = text
 
@@ -97,7 +98,7 @@ var binop : binop_numtype
 var testop : testop_numtype
 var relop : relop_numtype
 
-syntax instr hint(desc "instruction") =
+syntax instr/control hint(desc "control instruction") =
   | UNREACHABLE
   | NOP
   | DROP
@@ -111,16 +112,25 @@ syntax instr hint(desc "instruction") =
   | CALL funcidx
   | CALL_INDIRECT tableidx functype
   | RETURN
+  | ...
+
+syntax instr/numeric hint(desc "numeric instruction") = ...
   | CONST numtype c_numtype          hint(show %.CONST %)
   | UNOP numtype unop_numtype        hint(show %.%)
   | BINOP numtype binop_numtype      hint(show %.%)
   | TESTOP numtype testop_numtype    hint(show %.%)
   | RELOP numtype relop_numtype      hint(show %.%)
-  | EXTEND numtype nat               hint(show %.EXTEND#%)
+  | EXTEND numtype n                 hint(show %.EXTEND#%)
   | CVTOP numtype cvtop numtype sx?  hint(show %.%#_#%#_#%)
+  | ...
+
+syntax instr/reference hint(desc "reference instruction") = ...
   | REF.NULL reftype
   | REF.FUNC funcidx
   | REF.IS_NULL
+  | ...
+
+syntax instr/state hint(desc "state instruction") = ...
   | LOCAL.GET localidx
   | LOCAL.SET localidx
   | LOCAL.TEE localidx
@@ -140,8 +150,8 @@ syntax instr hint(desc "instruction") =
   | MEMORY.COPY
   | MEMORY.INIT dataidx
   | DATA.DROP dataidx
-  | LOAD numtype (nat sx)? nat nat  hint(show %.LOAD#% % %)
-  | STORE numtype nat? nat nat      hint(show %.STORE#% % %)
+  | LOAD numtype (n sx)? nat nat  hint(show %.LOAD#% % %)  ;; TODO
+  | STORE numtype n? nat nat      hint(show %.STORE#% % %)
 
 syntax expr hint(desc "expression") =
   instr*
