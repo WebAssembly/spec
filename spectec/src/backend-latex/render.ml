@@ -3,16 +3,24 @@ open Source
 open El.Ast
 
 
-(* Flags *)
-
-let flag_macros_for_ids = ref false
-let flag_macros_for_vdash = ref false
-let flag_include_grammar_desc = ref true
-
-
 (* Errors *)
 
 let error at msg = Source.error at "latex generation" msg
+
+
+(* Configuration *)
+
+type config =
+  { macros_for_ids : bool;
+    macros_for_vdash : bool;
+    include_grammar_desc : bool;
+  }
+
+let config =
+  { macros_for_ids = false;
+    macros_for_vdash = false;
+    include_grammar_desc = false;
+  }
 
 
 (* Environment *)
@@ -21,9 +29,9 @@ module Env = Map.Make(String)
 
 type rel_sort = TypingRel | ReductionRel
 
-type env = {mutable rels : rel_sort Env.t; current_rel : string}
+type env = {config : config; mutable rels : rel_sort Env.t; current_rel : string}
 
-let empty_env = {rels = Env.empty; current_rel = ""}
+let env config = {config; rels = Env.empty; current_rel = ""}
 
 
 (* Helpers *)
@@ -41,8 +49,8 @@ let id_style = function
   | `Atom -> "\\mathsf"
   | `Token -> "\\mathtt"
 
-let render_id style id =
-  if !flag_macros_for_ids then
+let render_id env style id =
+  if env.config.macros_for_ids then
     "\\" ^ id
   else
     id_style style ^ "{" ^ id ^ "}"
@@ -52,8 +60,10 @@ let render_id style id =
 
 let is_digit c = '0' <= c && c <= '9'
 
-let rec render_varid id = render_varid_sub (String.split_on_char '_' id.it)
-and render_varid_sub = function
+let rec render_varid env id =
+  render_varid_sub env (String.split_on_char '_' id.it)
+
+and render_varid_sub env = function
   | [] -> ""
   | s::ss ->
     let rec find_primes i =
@@ -62,9 +72,9 @@ and render_varid_sub = function
     let n = String.length s in
     let i = find_primes n in
     let s' = String.sub s 0 i in
-    let s'' = if String.for_all is_digit s' then s' else render_id `Var s' in
+    let s'' = if String.for_all is_digit s' then s' else render_id env `Var s' in
     (if i = n then s'' else "{" ^ s'' ^ String.sub s i (n - i) ^ "}") ^
-    (if ss = [] then "" else "_{" ^ render_varid_sub ss ^ "}")
+    (if ss = [] then "" else "_{" ^ render_varid_sub env ss ^ "}")
 
 
 (* Operators *)
@@ -73,7 +83,7 @@ let render_atom env = function
   | Atom atomid when atomid.[0] = '_' && atomid <> "_" -> ""
   | Atom atomid ->
     let atomid' = Str.(global_replace (regexp "_") "\\_" atomid) in
-    render_id `Atom (String.lowercase_ascii atomid')
+    render_id env `Atom (String.lowercase_ascii atomid')
   | Bot -> "\\bot"
   | Dot -> "."
   | Dot2 -> ".."
@@ -85,7 +95,7 @@ let render_atom env = function
   | SqArrow -> "\\hookrightarrow"
   | Tilesturn -> "\\dashv"
   | Turnstile ->
-    if !flag_macros_for_vdash then
+    if env.config.macros_for_vdash then
       "\\vdash" ^ env.current_rel
     else
       "\\vdash"
@@ -132,10 +142,10 @@ let rec render_iter env = function
 
 and render_typ env typ =
   match typ.it with
-  | VarT id -> render_varid id
-  | BoolT -> render_id `Var "bool"
-  | NatT -> render_id `Var "nat"
-  | TextT -> render_id `Var "text"
+  | VarT id -> render_varid env id
+  | BoolT -> render_id env `Var "bool"
+  | NatT -> render_id env `Var "nat"
+  | TextT -> render_id env `Var "text"
   | ParenT typ -> "("^ render_typ env typ ^")"
   | TupT typs -> "("^ render_typs ",\\; " env typs ^")"
   | IterT (typ1, iter) -> render_typ env typ1 ^ render_iter env iter
@@ -193,9 +203,9 @@ and render_typcase env (atom, nottyps, _hints) =
 
 and render_exp env exp =
   match exp.it with
-  | VarE id -> render_varid id
+  | VarE id -> render_varid env id
   | AtomE atom -> render_atom env atom
-  | BoolE b -> render_id `Atom (string_of_bool b)
+  | BoolE b -> render_id env `Atom (string_of_bool b)
   | NatE n -> string_of_int n
   | TextE t -> "``" ^ t ^ "''"
   | UnE (unop, exp2) -> render_unop unop ^ render_exp env exp2
@@ -231,8 +241,8 @@ and render_exp env exp =
     render_exp env exp1 ^ space (render_atom env) atom ^ render_exp env exp2
   | BrackE (brack, exp) ->
     let l, r = render_brack brack in l ^ render_exp env exp ^ r
-  | CallE (id, {it = SeqE []; _}) -> render_id `Func id.it
-  | CallE (id, exp) -> render_id `Func id.it ^ render_exp env exp
+  | CallE (id, {it = SeqE []; _}) -> render_id env `Func id.it
+  | CallE (id, exp) -> render_id env `Func id.it ^ render_exp env exp
   | IterE (exp1, iter) -> render_exp env exp1 ^ render_iter env iter
   | HoleE | FuseE _ -> assert false
 
@@ -273,7 +283,7 @@ let render_syndef env def =
   match def.it with
   | SynD (id, deftyp, _hints) ->
     (* TODO: include grammar descriptions *)
-    "& " ^ render_varid id ^ " &::=& " ^ render_deftyp env deftyp
+    "& " ^ render_varid env id ^ " &::=& " ^ render_deftyp env deftyp
   | _ -> assert false
 
 let split_redexp exp =
@@ -383,5 +393,5 @@ let render_def env def = render_defs env [def]
 
 (* Scripts *)
 
-let render_script defs =
-  render_defs empty_env defs
+let render_script env defs =
+  render_defs env defs
