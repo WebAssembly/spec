@@ -1,6 +1,15 @@
 open Util.Source
 
 
+(* Lists *)
+
+type 'a nl_elem =
+  | Nl
+  | Elem of 'a
+
+type 'a nl_list = 'a nl_elem list
+
+
 (* Terminals *)
 
 type nat = int
@@ -50,19 +59,19 @@ and typ' =
 
 and deftyp = deftyp' phrase
 and deftyp' =
-  | NotationT of nottyp                    (* nottyp *)
-  | StructT of typfield list               (* `{` list(typfield,`,`') `}` *)
-  | VariantT of id list * typcase list     (* `|` list(varid|typcase, `|`) *)
+  | NotationT of nottyp                      (* nottyp *)
+  | StructT of typfield nl_list              (* `{` list(typfield,`,`') `}` *)
+  | VariantT of id nl_list * typcase nl_list (* `|` list(varid|typcase, `|`) *)
 
 and nottyp = nottyp' phrase
 and nottyp' =
   | TypT of typ
-  | AtomT of atom                          (* atom *)
-  | SeqT of nottyp list                    (* `epsilon` / nottyp nottyp *)
-  | InfixT of nottyp * atom * nottyp       (* nottyp atom nottyp *)
-  | BrackT of brack * nottyp               (* ``` ([{ nottyp }]) *)
-  | ParenNT of nottyp                      (* `(` nottyp `)` *)
-  | IterNT of nottyp * iter                (* nottyp iter *)
+  | AtomT of atom                            (* atom *)
+  | SeqT of nottyp list                      (* `epsilon` / nottyp nottyp *)
+  | InfixT of nottyp * atom * nottyp         (* nottyp atom nottyp *)
+  | BrackT of brack * nottyp                 (* ``` ([{ nottyp }]) *)
+  | ParenNT of nottyp                        (* `(` nottyp `)` *)
+  | IterNT of nottyp * iter                  (* nottyp iter *)
 
 and typfield = atom * typ * hint list         (* atom typ hint* *)
 and typcase = atom * nottyp list * hint list  (* atom nottyp* hint* *)
@@ -109,7 +118,7 @@ and exp' =
   | SliceE of exp * exp * exp    (* exp `[` exp `:` exp `]` *)
   | UpdE of exp * path * exp     (* exp `[` path `=` exp `]` *)
   | ExtE of exp * path * exp     (* exp `[` path `=..` exp `]` *)
-  | StrE of expfield list        (* `{` list(expfield, `,`) `}` *)
+  | StrE of expfield nl_list     (* `{` list(expfield, `,`) `}` *)
   | DotE of exp * atom           (* exp `.` atom *)
   | CommaE of exp * exp          (* exp `,` exp *)
   | CompE of exp * exp           (* exp `++` exp *)

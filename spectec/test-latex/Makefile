@@ -9,7 +9,7 @@ OUTNAME = spec
 
 OWNDIR = $(PWD)
 SPECDIR = ../spec
-SPECFILES = $(sh ls $(SPECDIR)/*.$(EXT))
+SPECFILES = $(shell ls $(SPECDIR)/*.$(EXT))
 
 
 # Main targets

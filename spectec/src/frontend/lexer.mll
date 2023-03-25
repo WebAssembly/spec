@@ -127,6 +127,9 @@ rule token = parse
   | "|" { BAR }
   | "--" { DASH }
 
+  | '\n'[' ''\t']*"|"[' ''\t'] { Lexing.new_line lexbuf; NL_BAR }
+  | ","[' ''\t']*(";;"utf8_no_nl*)?'\n' { Lexing.new_line lexbuf; COMMA_NL }
+
   | "=" { EQ }
   | "=/=" { NE }
   | "<" { LT }

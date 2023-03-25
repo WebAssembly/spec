@@ -9,6 +9,9 @@ let prefix s f x = s ^ f x
 let suffix f s x = f x ^ s
 let space f x = " " ^ f x ^ " "
 
+let filter_nl xs = List.filter_map (function Nl -> None | Elem x -> Some x) xs
+let map_nl_list f xs = List.map f (filter_nl xs)
+
 
 (* Operators *)
 
@@ -85,9 +88,9 @@ and string_of_deftyp deftyp =
   match deftyp.it with
   | NotationT nottyp -> string_of_nottyp nottyp
   | StructT typfields ->
-    "{" ^ concat ", " (List.map string_of_typfield typfields) ^ "}"
+    "{" ^ concat ", " (map_nl_list string_of_typfield typfields) ^ "}"
   | VariantT (ids, typcases) ->
-    concat "" (List.map it ids @ List.map string_of_typcase typcases)
+    concat "" (map_nl_list it ids @ map_nl_list string_of_typcase typcases)
 
 and string_of_nottyp nottyp =
   match nottyp.it with
@@ -144,7 +147,7 @@ and string_of_exp exp =
     string_of_exp exp1 ^
       "[" ^ string_of_path path ^ " =.. " ^ string_of_exp exp2 ^ "]"
   | StrE expfields ->
-    "{" ^ concat ", " (List.map string_of_expfield expfields) ^ "}"
+    "{" ^ concat ", " (map_nl_list string_of_expfield expfields) ^ "}"
   | DotE (exp1, atom) -> string_of_exp exp1 ^ "." ^ string_of_atom atom
   | CommaE (exp1, exp2) -> string_of_exp exp1 ^ ", " ^ string_of_exp exp2
   | CompE (exp1, exp2) -> string_of_exp exp1 ^ " ++ " ^ string_of_exp exp2

@@ -21,6 +21,9 @@ let union sets1 sets2 =
 let free_opt free_x xo = Option.(value (map free_x xo) ~default:empty)
 let free_list free_x xs = List.(fold_left union empty (map free_x xs))
 
+let free_nl_elem free_x = function Nl -> empty | Elem x -> free_x x
+let free_nl_list free_x xs = List.(fold_left union empty (map (free_nl_elem free_x) xs))
+
 
 (* Identifiers *)
 
@@ -51,9 +54,9 @@ and free_typ typ =
 and free_deftyp deftyp =
   match deftyp.it with
   | NotationT nottyp -> free_nottyp nottyp
-  | StructT typfields -> free_list free_typfield typfields
+  | StructT typfields -> free_nl_list free_typfield typfields
   | VariantT (ids, typcases) ->
-    union (free_list free_synid ids) (free_list free_typcase typcases)
+    union (free_nl_list free_synid ids) (free_nl_list free_typcase typcases)
 
 and free_nottyp nottyp =
   match nottyp.it with
@@ -81,11 +84,10 @@ and free_exp exp =
   | InfixE (exp1, _, exp2) | FuseE (exp1, exp2) ->
     free_list free_exp [exp1; exp2]
   | SliceE (exp1, exp2, exp3) -> free_list free_exp [exp1; exp2; exp3]
-  | SeqE exps | TupE exps ->
-    free_list free_exp exps
+  | SeqE exps | TupE exps -> free_list free_exp exps
   | UpdE (exp1, path, exp2) | ExtE (exp1, path, exp2) ->
     union (free_list free_exp [exp1; exp2]) (free_path path)
-  | StrE expfields -> free_list free_expfield expfields
+  | StrE expfields -> free_nl_list free_expfield expfields
   | CallE (id, exp1) -> union (free_defid id) (free_exp exp1)
   | IterE (exp1, iter) -> union (free_exp exp1) (free_iter iter)
 

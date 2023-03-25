@@ -7,6 +7,13 @@ open Ast
 let eq_list eq_x xs1 xs2 =
   List.length xs1 = List.length xs2 && List.for_all2 eq_x xs1 xs2
 
+let eq_nl_elem eq_x e1 e2 =
+  match e1, e2 with
+  | Elem x1, Elem x2 -> eq_x x1 x2
+  | _, _ -> false
+
+let eq_nl_list eq_x xs1 xs2 = eq_list (eq_nl_elem eq_x) xs1 xs2
+
 
 (* Iteration *)
 
@@ -85,7 +92,7 @@ and eq_exp exp1 exp2 =
   | TupE exps1, TupE exps2 ->
     eq_list eq_exp exps1 exps2
   | StrE fields1, StrE fields2 ->
-    eq_list eq_expfield fields1 fields2
+    eq_nl_list eq_expfield fields1 fields2
   | DotE (exp11, atom1), DotE (exp21, atom2) ->
     eq_exp exp11 exp21 && atom1 = atom2
   | InfixE (exp11, atom1, exp12), InfixE (exp21, atom2, exp22) ->

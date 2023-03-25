@@ -40,6 +40,19 @@ let concat = String.concat
 let suffix s f x = f x ^ s
 let space f x = " " ^ f x ^ " "
 
+let rec concat_map_nl sep br f = function
+  | [] -> ""
+  | [Elem x] -> f x
+  | (Elem x)::xs -> f x ^ sep ^ concat_map_nl sep br f xs
+  | Nl::xs -> br ^ concat_map_nl sep br f xs
+
+let rec altern_map_nl sep br f = function
+  | [] -> ""
+  | [Elem x] -> f x
+  | (Elem x)::Nl::xs -> f x ^ br ^ altern_map_nl sep br f xs
+  | (Elem x)::xs -> f x ^ sep ^ altern_map_nl sep br f xs
+  | Nl::xs -> br ^ altern_map_nl sep br f xs
+
 
 (* Identifiers *)
 
@@ -55,8 +68,6 @@ let render_id env style id =
   else
     id_style style ^ "{" ^ id ^ "}"
 
-
-(* TODO: handle more complicated subscripts and ticks correctly *)
 
 let is_digit c = '0' <= c && c <= '9'
 
@@ -158,15 +169,15 @@ and render_deftyp env deftyp =
   match deftyp.it with
   | NotationT nottyp -> render_nottyp env nottyp
   | StructT typfields ->
-    "\\{" ^ concat ",\\; " (List.map (render_typfield env) typfields) ^ "\\}"
+    "\\{ " ^
+    "\\begin{array}[t]{@{}l@{}}\n" ^
+    concat_map_nl ",\\; " "\\\\\n  " (render_typfield env) typfields ^ " \\}" ^
+    "\\end{array}"
   | VariantT (ids, typcases) ->
-    let ss = List.map it ids @ List.map (render_typcase env) typcases in
-    let is_short_typecase (_atom, nottyps, _hints) = nottyps = [] in
-    (* TODO: heuristic *)
-    if List.length typcases <= 6 && List.for_all is_short_typecase typcases then
-      concat " ~|~ " ss
-    else
-      concat " \\\\ &&|&\n" ss
+    let br = " \\\\ &&|&\n" in
+    let sep = if ids <> [] && typcases <> [] then " ~|~ " else "" in
+    altern_map_nl " ~|~ " br it ids ^ sep ^
+    altern_map_nl " ~|~ " br (render_typcase env) typcases
 
 and render_nottyp env nottyp =
   match nottyp.it with
@@ -228,7 +239,10 @@ and render_exp env exp =
     render_exp env exp1 ^
       "[" ^ render_path env path ^ " = .." ^ render_exp env exp2 ^ "]"
   | StrE expfields ->
-    "\\{" ^ concat ",\\; " (List.map (render_expfield env) expfields) ^ "\\}"
+    "\\{ " ^
+    "\\begin{array}[t]{@{}l@{}}\n" ^
+    concat_map_nl ",\\; " "\\\\\n  " (render_expfield env) expfields ^ " \\}" ^
+    "\\end{array}"
   | DotE (exp1, atom) -> render_exp env exp1 ^ "." ^ render_atom env atom
   | CommaE (exp1, exp2) -> render_exp env exp1 ^ ", " ^ render_exp env exp2
   | CompE (exp1, exp2) -> render_exp env exp1 ^ " \\oplus " ^ render_exp env exp2
@@ -336,7 +350,7 @@ let rec render_defs env = function
     | SynD _ ->
       let syndefs, defs' = split_syndefs [def] defs in
       "$$\n" ^
-      "\\begin{array}{@{}l@{}rcl@{}}\n" ^
+      "\\begin{array}{@{}l@{}rrl@{}}\n" ^
       concat "\\\\\n[1ex]\n" (List.map (render_syndef env) syndefs) ^ "\\\\\n" ^
       "\\end{array}\n" ^
       "$$\n\n" ^

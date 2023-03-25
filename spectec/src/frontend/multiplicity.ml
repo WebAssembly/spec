@@ -40,6 +40,9 @@ let check_id env ctx id at =
           string_of_ctx id ctx ^ " vs " ^ string_of_ctx id ctx')
   in env := Env.add id.it ctx' !env
 
+
+let iter_nl_list f xs = List.iter (function Nl -> () | Elem x -> f x) xs
+
 let rec check_iter env ctx iter =
   match iter with
   | Opt | List | List1 -> ()
@@ -86,7 +89,7 @@ and check_exp env ctx exp =
   | TupE exps ->
     List.iter (check_exp env ctx) exps
   | StrE fields ->
-    List.iter (check_exp env ctx) (List.map snd fields)
+    iter_nl_list (fun field -> check_exp env ctx (snd field)) fields
   | IterE (exp1, iter) ->
     check_iter env ctx iter;
     check_exp env (iter::ctx) exp1

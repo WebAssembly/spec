@@ -52,7 +52,7 @@ let atom_vars = ref VarSet.empty
 %}
 
 %token LPAR RPAR LBRACK RBRACK LBRACE RBRACE
-%token COLON SEMICOLON COMMA DOT DOT2 DOT3 BAR DASH
+%token COLON SEMICOLON COMMA DOT DOT2 DOT3 BAR DASH COMMA_NL NL_BAR
 %token EQ NE LT GT LE GE SUB EQDOT2
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH UP COMPOSE
@@ -77,7 +77,7 @@ let atom_vars = ref VarSet.empty
 %nonassoc TILESTURN
 %right SQARROW
 %left COLON SUB
-%left COMMA
+%left COMMA COMMA_NL
 %right EQ NE LT GT LE GE
 %right ARROW
 %left SEMICOLON
@@ -153,12 +153,14 @@ typ_list :
   | /* empty */ { [], true }
   | typ { $1::[], false }
   | typ COMMA typ_list { $1::fst $3, snd $3 }
+  | typ COMMA_NL typ_list { $1::fst $3, snd $3 }
 
 deftyp : deftyp_ { $1 $ at () }
 deftyp_ :
   | nottyp { NotationT $1 }
   | LBRACE fieldtyp_list RBRACE { StructT $2 }
   | BAR casetyp_list { VariantT (fst $2, snd $2) }
+  | NL_BAR casetyp_list { VariantT (fst $2, snd $2) }
 
 
 nottyp_prim : nottyp_prim_ { $1 $ at () }
@@ -232,15 +234,18 @@ nottyps :
 
 fieldtyp_list :
   | /* empty */ { [] }
-  | fieldid typ hint_list { ($1, $2, $3) :: [] }
-  | fieldid typ hint_list COMMA fieldtyp_list { ($1, $2, $3) :: $5 }
+  | fieldid typ hint_list { (Elem ($1, $2, $3))::[] }
+  | fieldid typ hint_list COMMA fieldtyp_list { (Elem ($1, $2, $3))::$5 }
+  | fieldid typ hint_list COMMA_NL fieldtyp_list { (Elem ($1, $2, $3))::Nl::$5 }
 
 casetyp_list :
   | /* empty */ { [], [] }
-  | varid { [$1], [] }
-  | varid BAR casetyp_list { $1::fst $3, snd $3 }
-  | atom nottyps hint_list { [], ($1, $2, $3)::[] }
-  | atom nottyps hint_list BAR casetyp_list { fst $5, ($1, $2, $3)::snd $5 }
+  | varid { [Elem $1], [] }
+  | varid BAR casetyp_list { (Elem $1)::fst $3, snd $3 }
+  | varid NL_BAR casetyp_list { (Elem $1)::Nl::fst $3, snd $3 }
+  | atom nottyps hint_list { [], (Elem ($1, $2, $3))::[] }
+  | atom nottyps hint_list BAR casetyp_list { fst $5, (Elem ($1, $2, $3))::snd $5 }
+  | atom nottyps hint_list NL_BAR casetyp_list { fst $5, (Elem ($1, $2, $3))::Nl::snd $5 }
 
 
 /* Expressions */
@@ -291,6 +296,9 @@ exp_call : exp_call_ { $1 $ at () }
 exp_call_ :
   | exp_seq_ { $1 }
   | BAR exp BAR { LenE $2 }
+  | NL_BAR exp BAR { LenE $2 }
+  | BAR exp NL_BAR { LenE $2 }
+  | NL_BAR exp NL_BAR { LenE $2 }
 
 exp_un : exp_un_ { $1 $ at () }
 exp_un_ :
@@ -325,6 +333,7 @@ exp_unrel : exp_unrel_ { $1 $ at () }
 exp_unrel_ :
   | exp_bin_ { $1 }
   | COMMA exp_rel { CommaE (SeqE [] $ ati 1, $2) }
+  | COMMA_NL exp_rel { CommaE (SeqE [] $ ati 1, $2) }
   | COLON exp_rel { InfixE (SeqE [] $ ati 1, Colon, $2) }
   | SUB exp_rel { InfixE (SeqE [] $ ati 1, Sub, $2) }
   | SQARROW exp_rel { InfixE (SeqE [] $ ati 1, SqArrow, $2) }
@@ -335,6 +344,7 @@ exp_rel : exp_rel_ { $1 $ at () }
 exp_rel_ :
   | exp_unrel_ { $1 }
   | exp_rel COMMA exp_rel { CommaE ($1, $3) }
+  | exp_rel COMMA_NL exp_rel { CommaE ($1, $3) }
   | exp_rel COLON exp_rel { InfixE ($1, Colon, $3) }
   | exp_rel SUB exp_rel { InfixE ($1, Sub, $3) }
   | exp_rel SQARROW exp_rel { InfixE ($1, SqArrow, $3) }
@@ -345,13 +355,15 @@ exp : exp_rel { $1 }
 
 fieldexp_list :
   | /* empty */ { [] }
-  | fieldid exps1 { ($1, $2) :: [] }
-  | fieldid exps1 COMMA fieldexp_list { ($1, $2) :: $4 }
+  | fieldid exps1 { (Elem ($1, $2))::[] }
+  | fieldid exps1 COMMA fieldexp_list { (Elem ($1, $2))::$4 }
+  | fieldid exps1 COMMA_NL fieldexp_list { (Elem ($1, $2))::Nl::$4 }
 
 exp_list :
   | /* empty */ { [], true }
   | exp_bin { $1::[], false }
   | exp_bin COMMA exp_list { $1::fst $3, snd $3 }
+  | exp_bin COMMA_NL exp_list { $1::fst $3, snd $3 }
 
 exps1 :
   | exp_post { $1 }
@@ -380,6 +392,9 @@ arith_call : arith_call_ { $1 $ at () }
 arith_call_ :
   | arith_atom_ { $1 }
   | BAR exp BAR { LenE $2 }
+  | NL_BAR exp BAR { LenE $2 }
+  | BAR exp NL_BAR { LenE $2 }
+  | NL_BAR exp NL_BAR { LenE $2 }
   | DOLLAR defid { CallE ($2, SeqE [] $ at ()) }
   | DOLLAR defid exp_prim { CallE ($2, $3) }
 

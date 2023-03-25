@@ -9,6 +9,10 @@ module Il = struct include Il include Ast end
 module Set = Free.Set
 module Map = Map.Make(String)
 
+let filter_nl xs = List.filter_map (function Nl -> None | Elem x -> Some x) xs
+let iter_nl_list f xs = List.iter f (filter_nl xs)
+let map_nl_list f xs = List.map f (filter_nl xs)
+
 
 (* Errors *)
 
@@ -137,7 +141,7 @@ let as_notation_typ phrase env dir typ at : nottyp =
 
 let as_struct_typid' phrase env id at : typfield list =
   match (find "syntax type" env.typs id).it with
-  | StructT fields -> fields
+  | StructT fields -> filter_nl fields
   | _ -> as_error at phrase Infer (VarT id $ id.at) "| ..."
 
 let as_struct_typ phrase env dir typ at : typfield list =
@@ -148,7 +152,7 @@ let as_struct_typ phrase env dir typ at : typfield list =
 let rec as_variant_typid' phrase env id _at : typcase list =
   match (find "syntax type" env.typs id).it with
   | VariantT (ids, cases) ->
-    List.concat (cases :: List.map (as_variant_typid "" env) ids)
+    List.concat (filter_nl cases :: map_nl_list (as_variant_typid "" env) ids)
   | _ -> as_error id.at phrase Infer (VarT id $ id.at) "| ..."
 
 and as_variant_typid phrase env id : typcase list =
@@ -316,18 +320,20 @@ and elab_deftyp env deftyp : Il.deftyp =
   | NotationT nottyp ->
     Il.NotationT (elab_nottyp' env nottyp) $ deftyp.at
   | StructT fields ->
-    check_atoms "record" "field" (fun (atom, _, _) -> atom) fields deftyp.at;
-    Il.StructT (List.map (elab_typfield env) fields) $ deftyp.at
+    let fields' = filter_nl fields in
+    check_atoms "record" "field" (fun (atom, _, _) -> atom) fields' deftyp.at;
+    Il.StructT (map_nl_list (elab_typfield env) fields) $ deftyp.at
   | VariantT (ids, cases) ->
-    List.iter (fun id ->
+    iter_nl_list (fun id ->
       let deftypI = find "syntax type" env.typs id in
       if deftypI = fwd_deftyp_ok || deftypI = fwd_deftyp_bad then
         error id.at ("invalid forward reference to syntax type `" ^ id.it ^ "`");
     ) ids;
-    let casess = List.map (as_variant_typid "parent" env) ids in
-    let cases' = List.flatten (cases::casess) in
+    let ids' = filter_nl ids in
+    let casess = List.map (as_variant_typid "parent" env) ids' in
+    let cases' = List.flatten (filter_nl cases :: casess) in
     check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' deftyp.at;
-    Il.VariantT (ids, List.map (elab_typcase env deftyp.at) cases) $ deftyp.at
+    Il.VariantT (ids', map_nl_list (elab_typcase env deftyp.at) cases) $ deftyp.at
 
 and elab_nottyp env nottyp : Il.mixop * Il.typ list =
   match nottyp.it with
@@ -519,7 +525,7 @@ and elab_exp' env exp typ : Il.exp =
     Il.ExtE (exp1', path', exp2') $ exp.at
   | StrE expfields ->
     let typfields = as_struct_typ "record" env Check typ exp.at in
-    let fields' = elab_expfields env expfields typfields exp.at in
+    let fields' = elab_expfields env (filter_nl expfields) typfields exp.at in
     Il.StrE fields' $ exp.at
   | DotE (exp1, atom) ->
     let typ1 = infer_exp env exp1 in
@@ -536,7 +542,7 @@ and elab_exp' env exp typ : Il.exp =
     | SeqE ({it = AtomE atom; at} :: exps2) ->
       let _typ2 = find_field typfields atom at in
       let exp2 = match exps2 with [exp2] -> exp2 | _ -> SeqE exps2 $ exp2.at in
-      let exp2' = elab_exp env (StrE [(atom, exp2)] $ exp2.at) typ in
+      let exp2' = elab_exp env (StrE [Elem (atom, exp2)] $ exp2.at) typ in
       Il.CompE (exp1', exp2') $ exp.at
     | _ -> failwith "unimplemented check CommaE"
     )
