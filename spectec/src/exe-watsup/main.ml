@@ -47,7 +47,7 @@ let () =
     trace "Multiplicity checking...";
     Frontend.Multiplicity.check el;
     trace "Elaboration...";
-    let il = Frontend.Lower.lower el in
+    let il = Frontend.Elab.elab el in
     trace "Printing...";
     if !out_arg = "" then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
     trace "IL Validation...";

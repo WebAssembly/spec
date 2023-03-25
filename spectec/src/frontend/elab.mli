@@ -1,1 +1,1 @@
-val lower : El.Ast.script -> Il.Ast.script (* raises Source.Error *)
+val elab : El.Ast.script -> Il.Ast.script (* raises Source.Error *)
