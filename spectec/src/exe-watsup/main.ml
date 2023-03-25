@@ -16,10 +16,6 @@ let argspec = Arg.align
 [
   "-v", Arg.Unit banner, " Show version";
   "-o", Arg.String (fun s -> out_arg := s), " Generate file";
-(*
-  "-w", Arg.Int (fun n -> Flags.width := n),
-    " Configure output width (default is " ^ string_of_int !Flags.width ^ ")";
-*)
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
 ]
