@@ -403,7 +403,7 @@ let rec render_defs env = function
       render_defs env defs
 
     | SepD ->
-      "~\\\\\n\n" ^
+      "\\vspace{1ex}\n\n" ^
       render_defs env defs
 
 let render_def env def = render_defs env [def]
