@@ -54,6 +54,7 @@ and check_exp env ctx exp =
   | BoolE _
   | NatE _
   | TextE _
+  | EpsE
   | HoleE
   | FuseE _ ->
     ()

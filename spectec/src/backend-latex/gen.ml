@@ -203,7 +203,7 @@ and gen_exp env exp =
     gen_exp env exp1 ^ space gen_binop binop ^ gen_exp env exp2
   | CmpE (exp1, cmpop, exp2) ->
     gen_exp env exp1 ^ space gen_cmpop cmpop ^ gen_exp env exp2
-  | SeqE [] -> "\\epsilon"
+  | EpsE -> "\\epsilon"
   | SeqE exps -> gen_exps "~" env exps
   | IdxE (exp1, exp2) -> gen_exp env exp1 ^ "[" ^ gen_exp env exp2 ^ "]"
   | SliceE (exp1, exp2, exp3) ->

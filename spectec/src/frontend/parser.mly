@@ -248,7 +248,7 @@ exp_prim_ :
   | BOOLLIT { BoolE $1 }
   | NATLIT { NatE $1 }
   | TEXTLIT { TextE $1 }
-  | EPSILON { SeqE [] }
+  | EPSILON { EpsE }
   | LBRACE fieldexp_list RBRACE { StrE $2 }
   | HOLE { HoleE }
   | LPAR exp_list RPAR

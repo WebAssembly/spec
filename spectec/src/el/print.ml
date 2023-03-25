@@ -131,7 +131,7 @@ and string_of_exp exp =
     string_of_exp exp1 ^ space string_of_binop binop ^ string_of_exp exp2
   | CmpE (exp1, cmpop, exp2) ->
     string_of_exp exp1 ^ space string_of_cmpop cmpop ^ string_of_exp exp2
-  | SeqE [] -> "epsilon"
+  | EpsE -> "epsilon"
   | SeqE exps -> "{" ^ string_of_exps " " exps ^ "}"
   | IdxE (exp1, exp2) -> string_of_exp exp1 ^ "[" ^ string_of_exp exp2 ^ "]"
   | SliceE (exp1, exp2, exp3) ->

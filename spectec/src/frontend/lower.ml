@@ -416,6 +416,7 @@ and infer_exp env exp : typ =
     let typ1 = infer_exp env exp1 in
     let typfields = as_struct_typ "expression" env Infer typ1 exp1.at in
     find_field typfields atom exp1.at
+  | EpsE -> error exp.at "cannot infer type of empty sequence"
   | SeqE _ -> error exp.at "cannot infer type of expression sequence"
   | TupE exps -> TupT (List.map (infer_exp env) exps) $ exp.at
   | ParenE exp1 -> ParenT (infer_exp env exp1) $ exp.at
@@ -564,6 +565,7 @@ and lower_exp' env exp typ : Il.exp =
   | AtomE _
   | InfixE _
   | BrackE _
+  | EpsE
   | SeqE _ ->
     if is_notation_typ env typ then
       lower_exp_notation env exp (as_notation_typ "" env Check typ exp.at)
@@ -653,11 +655,14 @@ and lower_exp_notation' env exp nottyp : Il.mixop * Il.exp list =
     let mixop1', typs1' = lower_exp_notation' env exp nottyp1 in
     merge_mixop (merge_mixop [[Il.LParen]] mixop1') [[Il.RParen]], typs1'
 
+  | EpsE, IterNT (nottyp1, iter) ->
+    let mixop', _ = lower_nottyp env nottyp in
+    mixop', [lower_exp_notation_iter env [] (nottyp1, iter) nottyp exp.at]
   | SeqE exps, IterNT (nottyp1, iter) ->
     let mixop', _ = lower_nottyp env nottyp in
     mixop', [lower_exp_notation_iter env exps (nottyp1, iter) nottyp exp.at]
 
-  | SeqE [], SeqT [] ->
+  | (EpsE | SeqE []), SeqT [] ->
     [], []
   | _, SeqT [{it = IterNT _ | TypT {it = IterT _; _}; _} as nottyp1] ->
     lower_exp_notation' env exp nottyp1
@@ -781,6 +786,7 @@ and unparen_exp exp =
 
 and unseq_exp exp =
   match exp.it with
+  | EpsE -> []
   | SeqE exps -> exps
   | _ -> [exp]
 
