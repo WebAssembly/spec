@@ -90,7 +90,8 @@ and string_of_deftyp deftyp =
   | StructT typfields ->
     "{" ^ concat ", " (map_nl_list string_of_typfield typfields) ^ "}"
   | VariantT (ids, typcases) ->
-    concat "" (map_nl_list it ids @ map_nl_list string_of_typcase typcases)
+    "\n  | " ^ concat "\n  | "
+      (map_nl_list it ids @ map_nl_list string_of_typcase typcases)
 
 and string_of_nottyp nottyp =
   match nottyp.it with
@@ -115,9 +116,9 @@ and string_of_typfield (atom, typ, _hints) =
 
 and string_of_typcase (atom, nottyps, _hints) =
   if nottyps = [] then
-    "\n  | " ^ string_of_atom atom
+    string_of_atom atom
   else
-    "\n  | " ^ string_of_atom atom ^ " " ^ string_of_nottyps " " nottyps
+    string_of_atom atom ^ " " ^ string_of_nottyps " " nottyps
 
 
 (* Expressions *)

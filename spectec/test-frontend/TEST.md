@@ -763,7 +763,7 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \begin{array}{@{}l@{}rrl@{}}
@@ -791,7 +791,7 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \begin{array}{@{}l@{}rrl@{}}
@@ -827,7 +827,7 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \begin{array}{@{}l@{}rrl@{}}
@@ -910,7 +910,7 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \begin{array}{@{}l@{}rrl@{}}
@@ -951,7 +951,7 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
 $
 \boxed{{ \vdash }\;\mathit{functype} : \mathsf{ok}}
@@ -1011,7 +1011,7 @@ $$
 }
 $$
 
-~\\
+\vspace{1ex}
 
 $
 \boxed{{ \vdash }\;\mathit{valtype} \leq \mathit{valtype}}
@@ -1043,7 +1043,7 @@ $$
 }
 $$
 
-~\\
+\vspace{1ex}
 
 $
 \boxed{{ \vdash }\;\mathit{functype} \leq \mathit{functype}}
@@ -1141,7 +1141,7 @@ $$
 }
 $$
 
-~\\
+\vspace{1ex}
 
 $
 \boxed{\mathit{context} \vdash \mathit{instr} : \mathit{functype}}
@@ -1188,7 +1188,7 @@ $$
 }
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \frac{
@@ -1211,7 +1211,7 @@ $$
 }
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \frac{
@@ -1230,7 +1230,7 @@ $$
 }
 $$
 
-~\\
+\vspace{1ex}
 
 $
 \boxed{\mathit{context} \vdash \mathit{blocktype} : \mathit{functype}}
@@ -1276,7 +1276,7 @@ $$
 }
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \frac{
@@ -1330,7 +1330,7 @@ $$
 }
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \frac{
@@ -1367,9 +1367,9 @@ $$
 }
 $$
 
-~\\
+\vspace{1ex}
 
-~\\
+\vspace{1ex}
 
 $
 \boxed{\mathit{context} \vdash \mathit{instr}~\mathsf{const}}
@@ -1408,7 +1408,7 @@ $$
 }
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \frac{
@@ -1440,7 +1440,7 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \begin{array}{@{}l@{}rrl@{}}
@@ -1460,9 +1460,9 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
-~\\
+\vspace{1ex}
 
 $$
 \begin{array}{@{}l@{}rrl@{}}
@@ -1505,7 +1505,7 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \begin{array}{@{}l@{}rrl@{}}
@@ -1544,7 +1544,7 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \begin{array}{@{}lcll@{}}
@@ -1566,7 +1566,7 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \begin{array}{@{}lcll@{}}
@@ -1575,7 +1575,7 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \begin{array}{@{}lcll@{}}
@@ -1586,7 +1586,7 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \begin{array}{@{}lcll@{}}
@@ -1597,7 +1597,7 @@ $$
 \end{array}
 $$
 
-~\\
+\vspace{1ex}
 
 $$
 \begin{array}{@{}lcll@{}}
