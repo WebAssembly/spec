@@ -10,7 +10,6 @@ module Set = Free.Set
 module Map = Map.Make(String)
 
 let filter_nl xs = List.filter_map (function Nl -> None | Elem x -> Some x) xs
-let iter_nl_list f xs = List.iter f (filter_nl xs)
 let map_nl_list f xs = List.map f (filter_nl xs)
 
 
@@ -21,8 +20,9 @@ let error at msg = Source.error at "type" msg
 
 (* Environment *)
 
+type fwd_typ = Bad | Ok
 type var_typ = typ
-type syn_typ = deftyp
+type syn_typ = (fwd_typ, deftyp) Either.t
 type rel_typ = nottyp * Il.rule list
 type def_typ = typ * typ * Il.clause list
 
@@ -32,11 +32,6 @@ type env =
     mutable rels : rel_typ Map.t;
     mutable defs : def_typ Map.t;
   }
-
-let fwd_deftyp id =
-  NotationT (TypT (VarT (id $ no_region) $ no_region) $ no_region) $ no_region
-let fwd_deftyp_bad = fwd_deftyp "(undefined)"
-let fwd_deftyp_ok = fwd_deftyp "(forward)"
 
 let new_env () =
   { vars = Map.empty;
@@ -81,9 +76,15 @@ and prefix_id' id =
 
 (* Type Accessors *)
 
+let as_defined_typid' env id at : deftyp' =
+  match find "syntax type" env.typs id with
+  | Either.Right deftyp -> deftyp.it
+  | Either.Left _ ->
+    error at ("invalid forward reference to syntax type `" ^ id.it ^ "`")
+
 let rec expand' env = function
   | VarT id as typ' ->
-    (match (find "syntax type" env.typs id).it with
+    (match as_defined_typid' env id id.at with
     | NotationT {it = TypT typ1; _} -> expand' env typ1.it
     | _ -> typ'
     )
@@ -130,7 +131,7 @@ let as_tup_typ phrase env dir typ at : typ list =
 
 
 let as_notation_typid' phrase env id at : nottyp =
-  match (find "syntax type" env.typs id).it with
+  match as_defined_typid' env id at with
   | NotationT nottyp -> nottyp
   | _ -> as_error at phrase Infer (VarT id $ id.at) "_ ... _"
 
@@ -140,7 +141,7 @@ let as_notation_typ phrase env dir typ at : nottyp =
   | _ -> as_error at phrase dir typ "_ ... _"
 
 let as_struct_typid' phrase env id at : typfield list =
-  match (find "syntax type" env.typs id).it with
+  match as_defined_typid' env id at with
   | StructT fields -> filter_nl fields
   | _ -> as_error at phrase Infer (VarT id $ id.at) "| ..."
 
@@ -149,8 +150,8 @@ let as_struct_typ phrase env dir typ at : typfield list =
   | VarT id -> as_struct_typid' phrase env id at
   | _ -> as_error at phrase dir typ "{...}"
 
-let rec as_variant_typid' phrase env id _at : typcase list =
-  match (find "syntax type" env.typs id).it with
+let rec as_variant_typid' phrase env id at : typcase list =
+  match as_defined_typid' env id at with
   | VariantT (ids, cases) ->
     List.concat (filter_nl cases :: map_nl_list (as_variant_typid "" env) ids)
   | _ -> as_error id.at phrase Infer (VarT id $ id.at) "| ..."
@@ -178,7 +179,7 @@ let is_variant_nottyp env nottyp =
   | TypT typ -> is_variant_typ env typ
   | _ -> false
 
-let as_variant_nottyp env nottyp at =
+let as_variant_nottyp env nottyp at : typcase list * typ =
   match nottyp.it with
   | TypT typ -> as_variant_typ "" env Check typ at, typ
   | _ -> as_error at "expression" Check (VarT ("?" $ at) $ at) "| ..."
@@ -300,9 +301,11 @@ let rec elab_iter env iter : Il.iter =
 and elab_typ env typ : Il.typ =
   match typ.it with
   | VarT id ->
-    if find "syntax type" env.typs id = fwd_deftyp_bad then
-      error typ.at ("invalid forward reference to syntax type `" ^ id.it ^ "`");
-    Il.VarT id $ typ.at
+    (match find "syntax type" env.typs id with
+    | Either.Left Bad ->
+      error typ.at ("invalid forward reference to syntax type `" ^ id.it ^ "`")
+    | _ -> Il.VarT id $ typ.at
+    )
   | BoolT -> Il.BoolT $ typ.at
   | NatT -> Il.NatT $ typ.at
   | TextT -> Il.TextT $ typ.at
@@ -324,11 +327,6 @@ and elab_deftyp env deftyp : Il.deftyp =
     check_atoms "record" "field" (fun (atom, _, _) -> atom) fields' deftyp.at;
     Il.StructT (map_nl_list (elab_typfield env) fields) $ deftyp.at
   | VariantT (ids, cases) ->
-    iter_nl_list (fun id ->
-      let deftypI = find "syntax type" env.typs id in
-      if deftypI = fwd_deftyp_ok || deftypI = fwd_deftyp_bad then
-        error id.at ("invalid forward reference to syntax type `" ^ id.it ^ "`");
-    ) ids;
     let ids' = filter_nl ids in
     let casess = List.map (as_variant_typid "parent" env) ids' in
     let cases' = List.flatten (filter_nl cases :: casess) in
@@ -894,10 +892,10 @@ let elab_prem env prem : Il.premise =
     Il.ElsePr $ prem.at
 
 
-let infer_deftyp _env deftyp =
+let infer_deftyp _env deftyp : syn_typ =
   match deftyp.it with
-  | NotationT _ -> fwd_deftyp_bad
-  | _ -> fwd_deftyp_ok
+  | NotationT _ -> Either.Left Bad
+  | _ -> Either.Left Ok
 
 let infer_def env def =
   match def.it with
@@ -909,7 +907,7 @@ let elab_def env def : Il.def list =
   match def.it with
   | SynD (id, deftyp, hints) ->
     let deftyp' = elab_deftyp env deftyp in
-    env.typs <- rebind "syntax" env.typs id deftyp;
+    env.typs <- rebind "syntax" env.typs id (Either.Right deftyp);
     env.vars <- bind "variable" env.vars id (VarT id $ id.at);
     [Il.SynD (id, deftyp', elab_hints hints) $ def.at]
   | RelD (id, nottyp, hints) ->
