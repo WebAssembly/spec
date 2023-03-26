@@ -292,7 +292,8 @@ Currently, the implementation consists of merely the frontend, which performs:
 * recursion analysis,
 * type checking for the EL,
 * elaboration from EL into IL,
-* type checking for the EL.
+* type checking for the EL,
+* splicing expressions and definitions into files.
 
 Lowering from EL into IL infers additional information and makes it explicit in the representation:
 
@@ -309,4 +310,37 @@ Lowering from EL into IL infers additional information and makes it explicit in 
 
 * Invoke `make` to build the executable.
 
-* In the same place, invoke `make test` to run it on the demo files from the `spec` directory:
+* In the same place, invoke `make test` to run it on the demo files from the `spec` directory.
+
+
+## Splicing
+
+The tool can splice Latex formulas generated from, or expressed in terms of, the DSL into files. For example invoking
+```
+watsup spec/*.watsup -p *.tex
+```
+on a list of (Latex or other) files will insert the respective inline formulas or displaystyle definitions in place. For example, consider a Latex file like the following:
+```
+[...]
+\subsection*{Syntax}
+
+@@@{syntax: numtype vectype reftype valtype resulttype}
+
+@@@{syntax: instr expr}
+
+
+\subsection*{Typing @@{relation: Instr_ok}}
+
+An instruction sequence @@{:instr*} is well-typed with an instruction type @@{:t_1* -> t_2*} according to the following rules:
+
+@@@{rule: InstrSeq_ok/empty InstrSeq_ok/seq}
+
+@@@{rule: InstrSeq_ok/weak InstrSeq_ok/frame}
+[...]
+```
+The places to splice in formulas are indicated by _anchors_. The set of anchor names like `@@` or `@@@` it freely configurable in the tool, and each can define a different prelude/epilogue for their expansion. For example, here `@@` would use `$...$` for Latex (or `:math:'...'` for Sphinx), and likewise, `@@@` maps to `$$...$$` (or `.. math: ...)`, respectively.
+
+There are two forms of splices:
+
+1. _expression splice_ (`@@{: exp }`): simply renders a DSL expression,
+2. _definition splice_ (`@@{sort: id id ...}`): inserts the named definition(s)/rule(s) etc of the indicated sort `sort`; it can list multiple definitions of the same sort, which well then be laid out together in a single line or array.
