@@ -1,6 +1,7 @@
 open Util
 open Source
 open El.Ast
+open Config
 
 
 (* Errors *)
@@ -8,30 +9,13 @@ open El.Ast
 let error at msg = Source.error at "latex generation" msg
 
 
-(* Configuration *)
-
-type config =
-  { macros_for_ids : bool;
-    macros_for_vdash : bool;
-    include_grammar_desc : bool;
-  }
-
-let config =
-  { macros_for_ids = false;
-    macros_for_vdash = false;
-    include_grammar_desc = false;
-  }
-
-
 (* Environment *)
-
-module Env = Map.Make(String)
 
 type rel_sort = TypingRel | ReductionRel
 
-type env = {config : config; mutable rels : rel_sort Env.t; current_rel : string}
+type env = {config : config; current_rel : string}
 
-let env config = {config; rels = Env.empty; current_rel = ""}
+let env config = {config; current_rel = ""}
 
 
 (* Helpers *)
@@ -298,7 +282,7 @@ let render_syndef env def =
   | SynD (id, deftyp, _hints) ->
     (* TODO: include grammar descriptions *)
     "& " ^ render_varid env id ^ " &::=& " ^ render_deftyp env deftyp
-  | _ -> assert false
+  | _ -> failwith "render_syndef"
 
 let split_redexp exp =
   match exp.it with
@@ -318,8 +302,71 @@ let render_reddef env def =
       " &\n  " ^ word "if" ^ "~" ^
       concat "\\\\\n &&& {\\land}~" (List.map (render_premise env) prems)
     )
-  | _ -> assert false
+  | _ -> failwith "render_reddef"
 
+
+let rec classify_rel exp : rel_sort option =
+  match exp.it with
+  | InfixE (_, Turnstile, _) -> Some TypingRel
+  | InfixE (_, SqArrow, _) -> Some ReductionRel
+  | InfixE (exp1, _, exp2) ->
+    (match classify_rel exp1 with
+    | None -> classify_rel exp2
+    | some -> some
+    )
+  | _ -> None
+
+
+let rec render_defs env = function
+  | [] -> ""
+  | def::defs' as defs ->
+    match def.it with
+    | SynD _ ->
+      "\\begin{array}{@{}l@{}rrl@{}}\n" ^
+        concat "\\\\\n[0.5ex]\n" (List.map (render_syndef env) defs) ^ "\\\\\n" ^
+      "\\end{array}"
+
+    | RelD (id, nottyp, _hints) ->
+      "\\boxed{" ^
+        render_nottyp {env with current_rel = id.it} nottyp ^
+      "}" ^
+      (if defs' = [] then "" else " \\; " ^ render_defs env defs')
+
+    | RuleD (id1, _id2, exp, prems) ->
+      (* TODO: include rule name *)
+      (match classify_rel exp with
+      | Some TypingRel ->
+        "\\frac{\n" ^
+          concat "\\qquad\n" (List.map (suffix "\n" (render_premise env)) prems) ^
+        "}{\n" ^
+          render_exp {env with current_rel = id1.it} exp ^ "\n" ^
+        "}" ^
+        (if defs' = [] then "" else "\n\\qquad\n" ^ render_defs env defs')
+      | Some ReductionRel ->
+        "\\begin{array}{@{}lcll@{}}\n" ^
+          concat "\\\\\n" (List.map (render_reddef env) defs) ^ "\\\\\n" ^
+        "\\end{array}"
+      | None -> error def.at "unrecognized form of relation"
+      )
+
+    | VarD _ ->
+      render_defs env defs
+
+    | DecD _ ->
+      (* TODO: definitions *)
+      render_defs env defs
+
+    | DefD _ ->
+      (* TODO: definitions *)
+      render_defs env defs
+
+    | SepD ->
+      render_defs env defs
+
+let render_def env def = render_defs env [def]
+
+
+(* Scripts *)
 
 let rec split_syndefs syndefs = function
   | [] -> List.rev syndefs, []
@@ -335,81 +382,54 @@ let rec split_reddefs id reddefs = function
     | RuleD (id1, _, _, _) when id1.it = id -> split_reddefs id (def::reddefs) defs
     | _ -> List.rev reddefs, def::defs
 
-let rec classify_rel nottyp : rel_sort option =
-  match nottyp.it with
-  | InfixT (_, Turnstile, _) -> Some TypingRel
-  | InfixT (_, SqArrow, _) -> Some ReductionRel
-  | InfixT (nottyp1, _, nottyp2) ->
-    (match classify_rel nottyp1 with None -> classify_rel nottyp2 | some -> some)
-  | _ -> None
-
-let rec render_defs env = function
+let rec render_script_defs env = function
   | [] -> ""
   | def::defs ->
     match def.it with
     | SynD _ ->
       let syndefs, defs' = split_syndefs [def] defs in
-      "$$\n" ^
-      "\\begin{array}{@{}l@{}rrl@{}}\n" ^
-      concat "\\\\\n[0.5ex]\n" (List.map (render_syndef env) syndefs) ^ "\\\\\n" ^
-      "\\end{array}\n" ^
-      "$$\n\n" ^
-      render_defs env defs'
+      "$$\n" ^ render_defs env syndefs ^ "\n$$\n\n" ^
+      render_script_defs env defs'
 
-    | RelD (id, nottyp, _hints) ->
-      let sort =
-        match classify_rel nottyp with
-        | Some sort -> sort
-        | None -> error def.at "unrecognized form of relation"
-      in
-      env.rels <- Env.add id.it sort env.rels;
-      "$\n" ^
-      "\\boxed{" ^ render_nottyp {env with current_rel = id.it} nottyp ^ "}\n" ^
-      "$\n\n" ^
-      render_defs env defs
+    | RelD _ ->
+      "$" ^ render_def env def ^ "$\n\n" ^
+      render_script_defs env defs
 
-    | RuleD (id1, _id2, exp, prems) ->
-      (* TODO: include rule name *)
-      (match Env.find id1.it env.rels with
-      | TypingRel ->
-        "$$\n" ^
-        "\\frac{\n" ^
-          concat "\\qquad\n" (List.map (suffix "\n" (render_premise env)) prems) ^
-        "}{\n" ^
-          render_exp {env with current_rel = id1.it} exp ^ "\n" ^
-        "}\n" ^
-        "$$\n\n" ^
-        render_defs env defs
-
-      | ReductionRel ->
+    | RuleD (id1, _, exp, _) ->
+      (match classify_rel exp with
+      | Some TypingRel ->
+        "$$\n" ^ render_def env def ^ "\n$$\n\n" ^
+        render_script_defs env defs
+      | Some ReductionRel ->
         let reddefs, defs' = split_reddefs id1.it [def] defs in
-        "$$\n" ^
-        "\\begin{array}{@{}lcll@{}}\n" ^
-        concat "\\\\\n" (List.map (render_reddef env) reddefs) ^ "\\\\\n" ^
-        "\\end{array}\n" ^
-        "$$\n\n" ^
-        render_defs env defs'
+        "$$\n" ^ render_defs env reddefs ^ "\n$$\n\n" ^
+        render_script_defs env defs'
+      | None -> error def.at "unrecognized form of relation"
       )
 
     | VarD _ ->
-      render_defs env defs
+      render_script_defs env defs
 
     | DecD _ ->
       (* TODO: definitions *)
-      render_defs env defs
+      render_script_defs env defs
 
     | DefD _ ->
       (* TODO: definitions *)
-      render_defs env defs
+      render_script_defs env defs
 
     | SepD ->
       "\\vspace{1ex}\n\n" ^
-      render_defs env defs
-
-let render_def env def = render_defs env [def]
+      render_script_defs env defs
 
 
-(* Scripts *)
+(* Entry points *)
 
-let render_script env defs =
-  render_defs env defs
+let render_atom config atom = render_atom (env config) atom
+let render_typ config typ = render_typ (env config) typ
+let render_exp config exp = render_exp (env config) exp
+let render_def config def = render_def (env config) def
+let render_defs config defs = render_defs (env config) defs
+let render_deftyp config deftyp = render_deftyp (env config) deftyp
+let render_nottyp config nottyp = render_nottyp (env config) nottyp
+let render_script config script = render_script_defs (env config) script

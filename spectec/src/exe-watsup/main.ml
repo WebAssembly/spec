@@ -57,7 +57,7 @@ let () =
       print_endline (Backend_latex.Gen.gen_string el);
     if !odst <> "" then
       Backend_latex.Gen.gen_file !odst el;
-    let env = Backend_latex.Splice.(env config_latex el) in
+    let env = Backend_latex.Splice.(env Backend_latex.Config.latex el) in
     List.iter (Backend_latex.Splice.splice_file env) !dsts;
     trace "Complete."
   with

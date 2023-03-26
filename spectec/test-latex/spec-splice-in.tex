@@ -1,0 +1,66 @@
+\documentclass[a4paper]{scrartcl}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xspace}
+\usepackage{enumitem}
+\usepackage{color}
+
+\hyphenation{Web-Assembly}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Wasm Formal Semantics}
+
+\begin{document}
+
+\small
+
+\maketitle
+
+
+\subsection*{Syntax}
+
+@@@{syntax: numtype vectype reftype valtype resulttype}
+
+@@@{syntax:
+  limits
+  globaltype
+  functype
+  tabletype
+  memtype
+  elemtype
+  datatype
+  externtype
+}
+
+@@@{syntax: instr expr}
+
+
+\subsection*{Typing @@{relation: Instr_ok}}
+
+An instruction sequence @@{:instr*} is well-typed with an instruction type @@{: t_1* -> t_2*}, written @@{: instr* : t_1* -> t_2*}, according to the following rules:
+
+@@@{rule: InstrSeq_ok/empty InstrSeq_ok/seq}
+
+@@@{rule: InstrSeq_ok/weak InstrSeq_ok/frame}
+
+
+@@@{rule: Instr_ok/unreachable Instr_ok/nop Instr_ok/drop}
+
+@@@{rule: Instr_ok/block}
+
+@@@{rule: Instr_ok/loop}
+
+@@@{rule: Instr_ok/if}
+
+
+\subsection*{Reduction @@{relation: Step_pure}}
+
+@@@{rule: Step/pure Step/read}
+
+@@@{rule: Step_pure/block Step_pure/loop Step_pure/if-true Step_pure/if-false}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

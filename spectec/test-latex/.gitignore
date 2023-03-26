@@ -1,4 +1,5 @@
 *.aux
 *.log
 *.pdf
-spec-gen.tex
+spec-gen-include.tex
+spec-splice.tex

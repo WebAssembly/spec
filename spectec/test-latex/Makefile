@@ -4,9 +4,6 @@ NAME = watsup
 EXE = $(PWD)/../$(NAME)
 EXT = $(NAME)
 
-GENNAME = spec-gen
-OUTNAME = spec
-
 OWNDIR = $(PWD)
 SPECDIR = ../spec
 SPECFILES = $(shell ls $(SPECDIR)/*.$(EXT))
@@ -16,19 +13,37 @@ SPECFILES = $(shell ls $(SPECDIR)/*.$(EXT))
 
 .PHONY: all
 
-all: latex
+all: latex-gen latex-splice
 
 
 # Latex generation
 
-.PHONY: latex gen
+GENNAME = spec-gen-include
+GENOUTNAME = spec-gen
+
+.PHONY: latex-gen gen
 
 $(GENNAME).tex: $(SPECFILES) $(EXE)
 	(cd $(SPECDIR) && $(EXE) *.$(EXT) -o $(OWNDIR)/$@)
 
 gen: $(GENNAME).tex
 
-latex: $(OUTNAME).tex gen
+latex-gen: $(GENOUTNAME).tex gen
+	pdflatex $<
+
+
+# Latex splicing
+
+SPLICEINNAME = spec-splice-in
+SPLICEOUTNAME = spec-splice
+
+.PHONY: latex-splice
+
+$(SPLICEOUTNAME).tex: $(SPLICEINNAME).tex $(EXE)
+	cp $< $@
+	(cd $(SPECDIR) && $(EXE) *.$(EXT) -p $(OWNDIR)/$@)
+
+latex-splice: $(SPLICEOUTNAME).tex
 	pdflatex $<
 
 
@@ -36,7 +51,7 @@ latex: $(OUTNAME).tex gen
 
 .PHONY: test
 
-test: latex
+test: latex-gen latex-splice
 
 
 # Cleanup
@@ -48,5 +63,5 @@ clean:
 	rm -f *.aux *.log
 
 distclean: clean
-	rm -f $(GENNAME).tex
-	rm -f $(OUTNAME).pdf
+	rm -f $(GENNAME).tex $(SPLICEOUTNAME).tex
+	rm -f *.pdf

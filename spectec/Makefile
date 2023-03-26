@@ -33,7 +33,7 @@ exe:
 .PHONY: latex
 
 latex: exe
-	(cd test-latex && make latex)
+	(cd test-latex && make all)
 
 
 # Test

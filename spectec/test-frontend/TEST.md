@@ -953,25 +953,15 @@ $$
 
 \vspace{1ex}
 
-$
-\boxed{{ \vdash }\;\mathit{functype} : \mathsf{ok}}
-$
+$\boxed{{ \vdash }\;\mathit{functype} : \mathsf{ok}}$
 
-$
-\boxed{{ \vdash }\;\mathit{globaltype} : \mathsf{ok}}
-$
+$\boxed{{ \vdash }\;\mathit{globaltype} : \mathsf{ok}}$
 
-$
-\boxed{{ \vdash }\;\mathit{tabletype} : \mathsf{ok}}
-$
+$\boxed{{ \vdash }\;\mathit{tabletype} : \mathsf{ok}}$
 
-$
-\boxed{{ \vdash }\;\mathit{memtype} : \mathsf{ok}}
-$
+$\boxed{{ \vdash }\;\mathit{memtype} : \mathsf{ok}}$
 
-$
-\boxed{{ \vdash }\;\mathit{limits} : \mathit{nat}}
-$
+$\boxed{{ \vdash }\;\mathit{limits} : \mathit{nat}}$
 
 $$
 \frac{
@@ -1013,13 +1003,9 @@ $$
 
 \vspace{1ex}
 
-$
-\boxed{{ \vdash }\;\mathit{valtype} \leq \mathit{valtype}}
-$
+$\boxed{{ \vdash }\;\mathit{valtype} \leq \mathit{valtype}}$
 
-$
-\boxed{{ \vdash }\;\mathit{valtype}^\ast \leq \mathit{valtype}^\ast}
-$
+$\boxed{{ \vdash }\;\mathit{valtype}^\ast \leq \mathit{valtype}^\ast}$
 
 $$
 \frac{
@@ -1045,29 +1031,17 @@ $$
 
 \vspace{1ex}
 
-$
-\boxed{{ \vdash }\;\mathit{functype} \leq \mathit{functype}}
-$
+$\boxed{{ \vdash }\;\mathit{functype} \leq \mathit{functype}}$
 
-$
-\boxed{{ \vdash }\;\mathit{globaltype} \leq \mathit{globaltype}}
-$
+$\boxed{{ \vdash }\;\mathit{globaltype} \leq \mathit{globaltype}}$
 
-$
-\boxed{{ \vdash }\;\mathit{tabletype} \leq \mathit{tabletype}}
-$
+$\boxed{{ \vdash }\;\mathit{tabletype} \leq \mathit{tabletype}}$
 
-$
-\boxed{{ \vdash }\;\mathit{memtype} \leq \mathit{memtype}}
-$
+$\boxed{{ \vdash }\;\mathit{memtype} \leq \mathit{memtype}}$
 
-$
-\boxed{{ \vdash }\;\mathit{limits} \leq \mathit{limits}}
-$
+$\boxed{{ \vdash }\;\mathit{limits} \leq \mathit{limits}}$
 
-$
-\boxed{{ \vdash }\;\mathit{externtype} \leq \mathit{externtype}}
-$
+$\boxed{{ \vdash }\;\mathit{externtype} \leq \mathit{externtype}}$
 
 $$
 \frac{
@@ -1143,13 +1117,9 @@ $$
 
 \vspace{1ex}
 
-$
-\boxed{\mathit{context} \vdash \mathit{instr} : \mathit{functype}}
-$
+$\boxed{\mathit{context} \vdash \mathit{instr} : \mathit{functype}}$
 
-$
-\boxed{\mathit{context} \vdash \mathit{instr}^\ast : \mathit{functype}}
-$
+$\boxed{\mathit{context} \vdash \mathit{instr}^\ast : \mathit{functype}}$
 
 $$
 \frac{
@@ -1232,9 +1202,7 @@ $$
 
 \vspace{1ex}
 
-$
-\boxed{\mathit{context} \vdash \mathit{blocktype} : \mathit{functype}}
-$
+$\boxed{\mathit{context} \vdash \mathit{blocktype} : \mathit{functype}}$
 
 $$
 \frac{
@@ -1371,13 +1339,9 @@ $$
 
 \vspace{1ex}
 
-$
-\boxed{\mathit{context} \vdash \mathit{instr}~\mathsf{const}}
-$
+$\boxed{\mathit{context} \vdash \mathit{instr}~\mathsf{const}}$
 
-$
-\boxed{\mathit{context} \vdash \mathit{instr}^\ast~\mathsf{const}}
-$
+$\boxed{\mathit{context} \vdash \mathit{instr}^\ast~\mathsf{const}}$
 
 $$
 \frac{
@@ -1523,17 +1487,11 @@ $$
 \end{array}
 $$
 
-$
-\boxed{\mathit{config} \hookrightarrow \mathit{config}}
-$
+$\boxed{\mathit{config} \hookrightarrow \mathit{config}}$
 
-$
-\boxed{\mathit{config} \hookrightarrow \mathit{admininstr}^\ast}
-$
+$\boxed{\mathit{config} \hookrightarrow \mathit{admininstr}^\ast}$
 
-$
-\boxed{\mathit{admininstr}^\ast \hookrightarrow \mathit{admininstr}^\ast}
-$
+$\boxed{\mathit{admininstr}^\ast \hookrightarrow \mathit{admininstr}^\ast}$
 
 $$
 \begin{array}{@{}lcll@{}}

@@ -87,8 +87,9 @@ let atom_vars = ref VarSet.empty
 %left STAR SLASH
 %left UP
 
-%start script check_atom
+%start script exp check_atom
 %type<El.Ast.script> script
+%type<El.Ast.exp> exp
 %type<bool> check_atom
 
 %%
