@@ -156,7 +156,7 @@ let rec match_id_id_list file s i space1 space2 : (int * string * string) list =
   let idids = match_id_id_list file s i space1 space2 in
   idid::idids
 
-let try_def_anchor env file s i buf sort space1 space2 find : bool =
+let try_def_anchor env file s i r sort space1 space2 find : bool =
   let b = try_string s i sort in
   if b then (
     skip_space s i;
@@ -164,11 +164,11 @@ let try_def_anchor env file s i buf sort space1 space2 find : bool =
       error file s !i "colon `:` expected";
     let idids = match_id_id_list file s i space1 space2 in
     let defs = List.map (find env file s) idids in
-    Buffer.add_string buf (Render.render_defs env.render defs);
+    r := Render.render_defs env.render defs
   );
   b
 
-let try_exp_anchor env file s i buf : bool =
+let try_exp_anchor env file s i r : bool =
   let b = try_string s i ":" in
   if b then (
   	let j = !i in
@@ -185,21 +185,27 @@ let try_exp_anchor env file s i buf : bool =
         let at' = {left = shift at.left; right = shift at.right} in
         raise (Source.Error (at', msg))
     in
-    Buffer.add_string buf (Render.render_exp env.render exp);
+    r := Render.render_exp env.render exp
   );
   b
 
 let splice_anchor env file s i anchor buf =
   skip_space s i;
   Buffer.add_string buf anchor.prefix;
+  let r = ref "" in
   ignore (
-    try_exp_anchor env file s i buf ||
-    try_def_anchor env file s i buf "syntax" "syntax" "fragment" find_syntax ||
-    try_def_anchor env file s i buf "relation" "relation" "" find_relation ||
-    try_def_anchor env file s i buf "rule" "relation" "rule" find_rule ||
-    try_def_anchor env file s i buf "definition" "definition" "" find_func ||
+    try_exp_anchor env file s i r ||
+    try_def_anchor env file s i r "syntax" "syntax" "fragment" find_syntax ||
+    try_def_anchor env file s i r "relation" "relation" "" find_relation ||
+    try_def_anchor env file s i r "rule" "relation" "rule" find_rule ||
+    try_def_anchor env file s i r "definition" "definition" "" find_func ||
     error file s !i "unknown definition sort";
   );
+  let s =
+    if anchor.indent = "" then !r else
+    Str.(global_replace (regexp "\n") ("\n" ^ anchor.indent) !r)
+  in
+  Buffer.add_string buf s;
   Buffer.add_string buf anchor.suffix
 
 let rec try_anchors env file s i buf = function

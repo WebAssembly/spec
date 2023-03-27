@@ -13,7 +13,7 @@ SPECFILES = $(shell ls $(SPECDIR)/*.$(EXT))
 
 .PHONY: all
 
-all: latex-gen latex-splice
+all: latex-gen latex-splice sphinx-splice
 
 
 # Latex generation
@@ -47,11 +47,29 @@ latex-splice: $(SPLICEOUTNAME).tex
 	pdflatex $<
 
 
+# Sphinx splicing
+
+SPHINXINNAME = spec-sphinx-in
+SPHINXOUTNAME = spec-sphinx
+SPHINXDIR = _sphinx
+
+.PHONY: sphinx-splice
+
+$(SPHINXOUTNAME).rst: $(SPHINXINNAME).rst $(SPECFILES) $(EXE)
+	cp $< $@
+	(cd $(SPECDIR) && $(EXE) *.$(EXT) --sphinx -p $(OWNDIR)/$@)
+
+sphinx-splice: $(SPHINXOUTNAME).rst conf.py
+	mkdir -p $(SPHINXDIR)/_build
+	cp $(SPHINXOUTNAME).rst conf.py $(SPHINXDIR)
+	sphinx-build -b html $(SPHINXDIR) $(SPHINXDIR)/_build
+
+
 # Test
 
 .PHONY: test
 
-test: latex-gen latex-splice
+test: latex-gen latex-splice sphinx-splice
 
 
 # Cleanup
@@ -61,7 +79,8 @@ test: latex-gen latex-splice
 clean:
 	dune clean
 	rm -f *.aux *.log
+	rm -rf $(SPHINXDIR)
 
 distclean: clean
-	rm -f $(GENNAME).tex $(SPLICEOUTNAME).tex
+	rm -f $(GENNAME).tex $(SPLICEOUTNAME).tex $(SPHINXOUTNAME).rst
 	rm -f *.pdf

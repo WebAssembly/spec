@@ -8,6 +8,7 @@ let banner () =
 
 let usage = "Usage: " ^ name ^ " [option] [file ...] [-p file ...]"
 
+let config = ref Backend_latex.Config.latex
 let dst = ref false
 let srcs = ref []
 let dsts = ref []
@@ -21,6 +22,10 @@ let argspec = Arg.align
   "-v", Arg.Unit banner, " Show version";
   "-o", Arg.String (fun s -> odst := s), " Generate file";
   "-p", Arg.Set dst, " Patch files";
+  "--latex", Arg.Unit (fun () -> config := Backend_latex.Config.latex),
+    " Use Latex settings (default)";
+  "--sphinx", Arg.Unit (fun () -> config := Backend_latex.Config.sphinx),
+    " Use Sphinx settings";
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
 ]
@@ -57,7 +62,7 @@ let () =
       print_endline (Backend_latex.Gen.gen_string el);
     if !odst <> "" then
       Backend_latex.Gen.gen_file !odst el;
-    let env = Backend_latex.Splice.(env Backend_latex.Config.latex el) in
+    let env = Backend_latex.Splice.(env !config el) in
     List.iter (Backend_latex.Splice.splice_file env) !dsts;
     trace "Complete."
   with

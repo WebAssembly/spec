@@ -547,7 +547,7 @@ let rec render_defs env = function
     | SynD _ ->
       let syndefs = merge_syndefs defs in
       "\\begin{array}{@{}l@{}rrl@{}}\n" ^
-        concat "\\\\\n[0.5ex]\n" (List.map (render_syndef env) syndefs) ^
+        concat "\\\\[0.5ex]\n" (List.map (render_syndef env) syndefs) ^
           "\\\\\n" ^
       "\\end{array}"
 

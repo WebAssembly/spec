@@ -3,6 +3,7 @@ type anchor =
     token : string;   (* anchor token *)
     prefix : string;  (* prefix generated for splice *)
     suffix : string;  (* suffix generated for splice *)
+    indent : string;  (* inserted after generated newlines *)
   }
 
 type config =
@@ -33,7 +34,15 @@ let default =
 let latex =
   { default with
     anchors = [
-      {token = "@@"; prefix = "$"; suffix ="$"};
-      {token = "@@@"; prefix = "$$\n"; suffix = "\n$$"};
+      {token = "@@"; prefix = "$"; suffix ="$"; indent = ""};
+      {token = "@@@"; prefix = "$$\n"; suffix = "\n$$"; indent = ""};
+    ]
+  }
+
+let sphinx =
+  { default with
+    anchors = [
+      {token = "@@"; prefix = ":math:`"; suffix ="`"; indent = ""};
+      {token = "@@@"; prefix = ".. math::\n   "; suffix = ""; indent = "   "};
     ]
   }
