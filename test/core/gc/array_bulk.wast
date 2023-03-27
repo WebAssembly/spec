@@ -154,10 +154,11 @@
 )
 
 (module
+  (type $t_f (func))
   (type $arr8 (array i8))
   (type $arr8_mut (array (mut i8)))
   (type $arr16_mut (array (mut i16)))
-  (type $arrref (array funcref))
+  (type $arrref (array (ref $t_f)))
   (type $arrref_mut (array (mut funcref)))
 
   (global $g_arr8 (ref $arr8) (array.new_canon $arr8 (i32.const 10) (i32.const 12)))
