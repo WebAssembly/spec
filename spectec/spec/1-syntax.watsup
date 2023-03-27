@@ -111,13 +111,13 @@ syntax instr hint(desc "instruction") =
   | CALL funcidx
   | CALL_INDIRECT tableidx functype
   | RETURN
-  | CONST numtype c_numtype          hint(math %.CONST %)
-  | UNOP numtype unop_numtype        hint(math %.%)
-  | BINOP numtype binop_numtype      hint(math %.%)
-  | TESTOP numtype testop_numtype    hint(math %.%)
-  | RELOP numtype relop_numtype      hint(math %.%)
-  | EXTEND numtype nat               hint(math %.EXTEND%)
-  | CVTOP numtype cvtop numtype sx?  hint(math %.%_%_%)
+  | CONST numtype c_numtype          hint(show %.CONST %)
+  | UNOP numtype unop_numtype        hint(show %.%)
+  | BINOP numtype binop_numtype      hint(show %.%)
+  | TESTOP numtype testop_numtype    hint(show %.%)
+  | RELOP numtype relop_numtype      hint(show %.%)
+  | EXTEND numtype nat               hint(show %.EXTEND#%)
+  | CVTOP numtype cvtop numtype sx?  hint(show %.%#_#%#_#%)
   | REF.NULL reftype
   | REF.FUNC funcidx
   | REF.IS_NULL
@@ -140,8 +140,8 @@ syntax instr hint(desc "instruction") =
   | MEMORY.COPY
   | MEMORY.INIT dataidx
   | DATA.DROP dataidx
-  | LOAD numtype (nat sx)? nat nat  hint(math %.LOAD% % %)
-  | STORE numtype nat? nat nat      hint(math %.STORE% % %)
+  | LOAD numtype (nat sx)? nat nat  hint(show %.LOAD#% % %)
+  | STORE numtype nat? nat nat      hint(show %.STORE#% % %)
 
 syntax expr hint(desc "expression") =
   instr*

@@ -2,7 +2,7 @@
 
 ;; def |I n| = |F n| = |V n| = n        ;; ????
 
-def $size(numtype) : nat  hint(math |%|)
+def $size(numtype) : nat  hint(show |%|)
 def $size(I32) = 32
 def $size(I64) = 64
 def $size(F32) = 32

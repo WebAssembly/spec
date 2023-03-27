@@ -1,5 +1,5 @@
 let gen_string el =
-  Render.render_script Config.latex el
+  Render.render_script (Render.env Config.latex el) el
 
 let gen_file file el =
   let latex = gen_string el in

@@ -76,7 +76,7 @@ and free_typcase (_, nottyps, _) = free_list free_nottyp nottyps
 and free_exp exp =
   match exp.it with
   | VarE id -> free_varid id
-  | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE | HoleE -> empty
+  | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE | HoleE _ -> empty
   | UnE (_, exp1) | DotE (exp1, _) | LenE exp1
   | ParenE exp1 | BrackE (_, exp1) -> free_exp exp1
   | BinE (exp1, _, exp2) | CmpE (exp1, _, exp2)

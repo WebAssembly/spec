@@ -163,6 +163,7 @@ rule token = parse
 
   | "_|_" { BOT }
   | "%" { HOLE }
+  | "%%" { MULTIHOLE }
   | "#" { FUSE }
 
   | "`" { TICK }

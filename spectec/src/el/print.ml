@@ -163,7 +163,8 @@ and string_of_exp exp =
   | CallE (id, {it = SeqE []; _}) -> "$" ^ id.it
   | CallE (id, exp) -> "$" ^ id.it ^ string_of_exp exp
   | IterE (exp1, iter) -> string_of_exp exp1 ^ string_of_iter iter
-  | HoleE -> "%"
+  | HoleE false -> "%"
+  | HoleE true -> "%%"
   | FuseE (exp1, exp2) -> string_of_exp exp1 ^ "#" ^ string_of_exp exp2
 
 and string_of_exps sep exps =

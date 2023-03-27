@@ -209,14 +209,13 @@ let rec equiv_typ env typ1 typ2 =
 
 (* Hints *)
 
-let elab_hint hint =
-  let {hintid; hintexp} = hint.it in
+let elab_hint {hintid; hintexp} : Il.hint =
   let ss =
     match hintexp.it with
     | SeqE exps -> List.map Print.string_of_exp exps
     | _ -> [Print.string_of_exp hintexp]
   in
-  {Il.hintid; Il.hintexp = ss} $ hint.at
+  {Il.hintid; Il.hintexp = ss}
 
 let elab_hints = List.map elab_hint
 
@@ -432,7 +431,7 @@ and infer_exp env exp : typ =
   | IterE (exp1, iter) ->
     let iter' = match iter with ListN _ -> List | iter' -> iter' in
     IterT (infer_exp env exp1, iter') $ exp.at
-  | HoleE -> error exp.at "misplaced hole"
+  | HoleE _ -> error exp.at "misplaced hole"
   | FuseE _ -> error exp.at "misplaced token concatenation"
 
 
@@ -584,7 +583,7 @@ and elab_exp' env exp typ : Il.exp =
     let exp1' = elab_exp env exp1 typ1 in
     let iter2' = elab_iter env iter2 in
     Il.IterE (exp1', iter2') $ exp.at
-  | HoleE -> error exp.at "misplaced hole"
+  | HoleE _ -> error exp.at "misplaced hole"
   | FuseE _ -> error exp.at "misplaced token fuse"
 
 and elab_exps env exps typs at : Il.exp list =

@@ -149,8 +149,7 @@ and premise' =
   | IffPr of exp * iter option                        (* side condition *)
   | ElsePr                                            (* otherwise *)
 
-and hint = hint' phrase
-and hint' = {hintid : id; hintexp : string list}    (* hint *)
+and hint = {hintid : id; hintexp : string list}       (* hint *)
 
 
 (* Scripts *)

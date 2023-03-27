@@ -29,10 +29,12 @@ type definition = {fdef : def; clauses : def list}
 
 type env =
   { config : config;
+    render : Render.env;
     mutable syn : syntax Map.t;
     mutable rel : relation Map.t;
     mutable def : definition Map.t;
   }
+
 
 let env_def env def =
   match def.it with
@@ -54,7 +56,14 @@ let env_def env def =
     ()
 
 let env config script : env =
-  let env = {config; syn = Map.empty; rel = Map.empty; def = Map.empty} in
+  let env =
+    { config;
+      render = Render.env config script;
+      syn = Map.empty;
+      rel = Map.empty;
+      def = Map.empty
+    }
+  in
   List.iter (env_def env) script;
   env
 
@@ -148,7 +157,7 @@ let try_def_anchor env file s i buf space1 space2 find : bool =
       error file s !i "colon `:` expected";
     let idids = match_id_id_list file s i space1 space2 in
     let defs = List.map (find env file s) idids in
-    Buffer.add_string buf (Render.render_defs env.config defs);
+    Buffer.add_string buf (Render.render_defs env.render defs);
   );
   b
 
@@ -169,7 +178,7 @@ let try_exp_anchor env file s i buf : bool =
         let at' = {left = shift at.left; right = shift at.right} in
         raise (Source.Error (at', msg))
     in
-    Buffer.add_string buf (Render.render_exp env.config exp);
+    Buffer.add_string buf (Render.render_exp env.render exp);
   );
   b
 

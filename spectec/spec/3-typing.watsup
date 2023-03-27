@@ -2,7 +2,8 @@
 
 syntax context hint(desc "context") =
   { FUNC functype*, GLOBAL globaltype*, TABLE tabletype*, MEM memtype*,
-    ELEM elemtype*, DATA datatype*, LOCAL valtype*, LABEL resulttype*, RETURN resulttype? }
+    ELEM elemtype*, DATA datatype*,
+    LOCAL valtype*, LABEL resulttype*, RETURN resulttype? }
 
 var C : context
 

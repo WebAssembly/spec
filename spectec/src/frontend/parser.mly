@@ -60,7 +60,7 @@ let atom_vars = ref VarSet.empty
 %token ARROW ARROW2 SQARROW TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT
-%token HOLE FUSE
+%token HOLE MULTIHOLE FUSE
 %token BOOL NAT TEXT
 %token SYNTAX RELATION RULE VAR DEF
 %token IFF OTHERWISE HINT
@@ -86,6 +86,7 @@ let atom_vars = ref VarSet.empty
 %left PLUS MINUS COMPOSE
 %left STAR SLASH
 %left UP
+%left FUSE
 
 %start script exp check_atom
 %type<El.Ast.script> script
@@ -260,7 +261,8 @@ exp_prim_ :
   | TEXTLIT { TextE $1 }
   | EPSILON { EpsE }
   | LBRACE fieldexp_list RBRACE { StrE $2 }
-  | HOLE { HoleE }
+  | HOLE { HoleE false }
+  | MULTIHOLE { HoleE true }
   | LPAR exp_list RPAR
     { match $2 with
       | [], false -> ParenE (SeqE [] $ ati 2)
@@ -287,7 +289,6 @@ exp_atom : exp_atom_ { $1 $ at () }
 exp_atom_ :
   | exp_post_ { $1 }
   | atom { AtomE $1 }
-  | exp_atom FUSE exp_prim { FuseE ($1, $3) }
 
 exp_seq : exp_seq_ { $1 $ at () }
 exp_seq_ :
@@ -330,6 +331,7 @@ exp_bin_ :
   | exp_bin AND exp_bin { BinE ($1, AndOp, $3) }
   | exp_bin OR exp_bin { BinE ($1, OrOp, $3) }
   | exp_bin ARROW2 exp_bin { BinE ($1, OrOp, $3) }
+  | exp_bin FUSE exp_bin { FuseE ($1, $3) }
 
 exp_unrel : exp_unrel_ { $1 $ at () }
 exp_unrel_ :
@@ -483,8 +485,7 @@ premise_ :
   | LPAR relid COLON exp RPAR iter { RulePr ($2, $4, Some $6) }
   | LPAR IFF exp RPAR iter { IffPr ($3, Some $5) }
 
-hint : hint_ { $1 $ at () }
-hint_ :
+hint :
   | HINT LPAR hintid exp RPAR { {hintid = $3 $ ati 3; hintexp = $4} }
 
 hint_list :

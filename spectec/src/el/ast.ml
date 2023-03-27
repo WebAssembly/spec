@@ -129,7 +129,7 @@ and exp' =
   | BrackE of brack * exp        (* ``` ([{ exp }]) *)
   | CallE of id * exp            (* `$` defid exp? *)
   | IterE of exp * iter          (* exp iter *)
-  | HoleE                        (* `%` *)
+  | HoleE of bool                (* `%` or `%%` *)
   | FuseE of exp * exp           (* exp `#` exp *)
 
 and expfield = atom * exp        (* atom exp *)
@@ -159,8 +159,7 @@ and premise' =
   | IffPr of exp * iter option               (* `iff` exp *)
   | ElsePr                                   (* `otherwise` *)
 
-and hint = hint' phrase
-and hint' = {hintid : id; hintexp : exp}     (* `(` `hint` hintid exp `)` *)
+and hint = {hintid : id; hintexp : exp}      (* `(` `hint` hintid exp `)` *)
 
 
 (* Scripts *)
