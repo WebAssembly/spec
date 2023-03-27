@@ -123,7 +123,7 @@ let check_def def =
   | RuleD (_id1, _id2, exp, prems) ->
     let env = ref Env.empty in
     check_exp env [] exp;
-    List.iter (check_prem env) prems
+    iter_nl_list (check_prem env) prems
   | DefD (_id, exp1, exp2, premo) ->
     let env = ref Env.empty in
     check_exp env [] exp1;

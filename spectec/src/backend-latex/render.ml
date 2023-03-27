@@ -75,6 +75,11 @@ let concat = String.concat
 let suffix s f x = f x ^ s
 let space f x = " " ^ f x ^ " "
 
+let rec has_nl = function
+  | [] -> false
+  | Nl::_ -> true
+  | _::xs -> has_nl xs
+
 let map_nl_list f xs = List.map (function Nl -> Nl | Elem x -> Elem (f x)) xs
 
 let rec concat_map_nl sep br f = function
@@ -520,10 +525,10 @@ let render_reddef env def =
     render_exp env exp2 ^
     (match prems with
     | [] -> ""
-    | [{it = ElsePr; _}] -> " &\n  " ^ word "otherwise"
+    | [Elem {it = ElsePr; _}] -> " &\n  " ^ word "otherwise"
     | _ ->
       " &\n  " ^ word "if" ^ "~" ^
-      concat "\\\\\n &&& {\\land}~" (List.map (render_premise env) prems)
+      concat_map_nl "\\\\\n &&& {\\land}~" "" (render_premise env) prems
     )
   | _ -> failwith "render_reddef"
 
@@ -547,8 +552,8 @@ let rec render_defs env = function
     | SynD _ ->
       let syndefs = merge_syndefs defs in
       "\\begin{array}{@{}l@{}rrl@{}}\n" ^
-        concat "\\\\[0.5ex]\n" (List.map (render_syndef env) syndefs) ^
-          "\\\\\n" ^
+        concat " \\\\[0.5ex]\n" (List.map (render_syndef env) syndefs) ^
+          " \\\\\n" ^
       "\\end{array}"
 
     | RelD (id, nottyp, _hints) ->
@@ -562,7 +567,9 @@ let rec render_defs env = function
       (match classify_rel exp with
       | Some TypingRel ->
         "\\frac{\n" ^
-          concat "\\qquad\n" (List.map (suffix "\n" (render_premise env)) prems) ^
+          (if has_nl prems then "\\begin{array}{@{}c@{}}\n" else "") ^
+          altern_map_nl " \\qquad\n" " \\\\\n" (suffix "\n" (render_premise env)) prems ^
+          (if has_nl prems then "\\end{array}\n" else "") ^
         "}{\n" ^
           render_exp {env with current_rel = id1.it} exp ^ "\n" ^
         "}" ^

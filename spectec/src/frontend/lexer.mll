@@ -110,6 +110,8 @@ let character =
   | "\\u{" hexnum '}'
 let text = '"' character* '"'
 
+let indent = [' ''\t']
+let line_comment = ";;"utf8_no_nl*
 
 rule token = parse
   | "(" { LPAR }
@@ -127,8 +129,12 @@ rule token = parse
   | "|" { BAR }
   | "--" { DASH }
 
-  | (";;"utf8_no_nl*)?'\n'[' ''\t']*"|"[' ''\t'] { Lexing.new_line lexbuf; NL_BAR }
-  | ","[' ''\t']*(";;"utf8_no_nl*)?'\n' { Lexing.new_line lexbuf; COMMA_NL }
+  | "," indent* line_comment? '\n'
+    { Lexing.new_line lexbuf; COMMA_NL }
+  | line_comment? '\n' indent* "|"[' ''\t']
+    { Lexing.new_line lexbuf; NL_BAR }
+  | line_comment? "\n\n" indent* "--"
+    { Lexing.new_line lexbuf; Lexing.new_line lexbuf; NL2_DASH }
   | "\n\n\n"
     { Lexing.new_line lexbuf; Lexing.new_line lexbuf; Lexing.new_line lexbuf; NL3 }
 

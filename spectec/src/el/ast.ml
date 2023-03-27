@@ -149,7 +149,7 @@ and def = def' phrase
 and def' =
   | SynD of id * id * deftyp * hint list     (* `syntax` synid hint* `=` deftyp *)
   | RelD of id * nottyp * hint list          (* `relation` relid `:` nottyp hint* *)
-  | RuleD of id * id * exp * premise list    (* `rule` relid ruleid? `:` exp (`--` premise)* *)
+  | RuleD of id * id * exp * premise nl_list (* `rule` relid ruleid? `:` exp (`--` premise)* *)
   | VarD of id * typ * hint list             (* `var` varid `:` typ *)
   | DecD of id * exp * typ * hint list       (* `def` `$` defid exp? `:` typ hint* *)
   | DefD of id * exp * exp * premise option  (* `def` `$` defid exp? `=` exp *)

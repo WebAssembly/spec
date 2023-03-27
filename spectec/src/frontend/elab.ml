@@ -954,9 +954,8 @@ let elab_def env def : Il.def list =
   | RuleD (id1, id2, exp, prems) ->
     let nottyp, rules' = find "relation" env.rels id1 in
     let mixop', exps' = elab_exp_notation' env exp nottyp in
-    let prems' = List.map (elab_prem env) prems in
-    let free =
-      Free.(Set.union (free_exp exp).varid (free_list free_prem prems).varid) in
+    let prems' = map_nl_list (elab_prem env) prems in
+    let free = (Free.free_def def).Free.varid in
     let binds' = make_binds env free def.at in
     let rule' = Il.RuleD (id2, binds', mixop', tup_exp exps' exp.at, prems') $ def.at in
     env.rels <- rebind "relation" env.rels id1 (nottyp, rule'::rules');

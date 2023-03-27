@@ -53,7 +53,7 @@ let atom_vars = ref VarSet.empty
 
 %token LPAR RPAR LBRACK RBRACK LBRACE RBRACE
 %token COLON SEMICOLON COMMA DOT DOT2 DOT3 BAR DASH
-%token COMMA_NL NL_BAR NL3
+%token COMMA_NL NL_BAR NL2_DASH NL3
 %token EQ NE LT GT LE GE SUB EQDOT2
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH UP COMPOSE
@@ -484,10 +484,12 @@ ruleid_list :
 premise_opt :
   | /* empty */ { None }
   | DASH premise { Some $2 }
+  | NL2_DASH premise { Some $2 }
 
 premise_list :
   | /* empty */ { [] }
-  | DASH premise premise_list { $2::$3 }
+  | DASH premise premise_list { (Elem $2)::$3 }
+  | NL2_DASH premise premise_list { Nl::(Elem $2)::$3 }
 
 premise : premise_ { $1 $ at () }
 premise_ :

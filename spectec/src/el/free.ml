@@ -115,7 +115,7 @@ let free_def def =
   | VarD _ | SepD -> empty
   | RelD (_id, nottyp, _hints) -> free_nottyp nottyp
   | RuleD (id1, _id2, exp, prems) ->
-    union (free_relid id1) (union (free_exp exp) (free_list free_prem prems))
+    union (free_relid id1) (union (free_exp exp) (free_nl_list free_prem prems))
   | DecD (_id, exp, typ, _hints) -> union (free_exp exp) (free_typ typ)
   | DefD (id, exp1, exp2, premo) ->
     union
