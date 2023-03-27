@@ -242,6 +242,11 @@
     (array.copy $arr8_mut $arr8_mut (local.get $1) (i32.const 0) (local.get $1) (i32.const 1) (i32.const 11))
     (global.set $g_arr8_mut (local.get $1))
   )
+
+  (func (export "drop_segs")
+    (data.drop $d1)
+    (elem.drop $e1)
+  )
 )
 
 ;; null array argument traps
@@ -340,3 +345,10 @@
 (assert_return (invoke "array_get_nth" (i32.const 9)) (i32.const 107))
 (assert_return (invoke "array_get_nth" (i32.const 10)) (i32.const 108))
 (assert_return (invoke "array_get_nth" (i32.const 11)) (i32.const 108))
+
+;; init_data/elem with dropped segments traps for non-zero length
+(assert_return (invoke "drop_segs"))
+(assert_return (invoke "array_init_data" (i32.const 0) (i32.const 0) (i32.const 0)))
+(assert_trap (invoke "array_init_data" (i32.const 0) (i32.const 0) (i32.const 1)) "out of bounds memory access")
+(assert_return (invoke "array_init_elem" (i32.const 0) (i32.const 0) (i32.const 0)))
+(assert_trap (invoke "array_init_elem" (i32.const 0) (i32.const 0) (i32.const 1)) "out of bounds table access")
