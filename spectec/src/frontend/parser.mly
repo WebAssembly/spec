@@ -52,8 +52,8 @@ let atom_vars = ref VarSet.empty
 %}
 
 %token LPAR RPAR LBRACK RBRACK LBRACE RBRACE
-%token COLON SEMICOLON COMMA DOT DOT2 DOT3 BAR DASH
-%token COMMA_NL NL_BAR NL2_DASH NL3
+%token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR DASH
+%token COMMA_NL NL_BAR NL_NL_DASH NL_NL_NL
 %token EQ NE LT GT LE GE SUB EQDOT2
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH UP COMPOSE
@@ -82,7 +82,7 @@ let atom_vars = ref VarSet.empty
 %right EQ NE LT GT LE GE
 %right ARROW
 %left SEMICOLON
-%left DOT DOT2 DOT3
+%left DOT DOTDOT DOTDOTDOT
 %left PLUS MINUS COMPOSE
 %left STAR SLASH
 %left UP
@@ -168,9 +168,9 @@ deftyp_ :
   | dots NL_BAR casetyp_list { let x, y, z = $3 in VariantT (Dots, x, Nl::y, z) }
 
 dots :
-  | DOT3 {}
-  | BAR DOT3 {}
-  | NL_BAR DOT3 {}
+  | DOTDOTDOT {}
+  | BAR DOTDOTDOT {}
+  | NL_BAR DOTDOTDOT {}
 
 
 nottyp_prim : nottyp_prim_ { $1 $ at () }
@@ -204,8 +204,8 @@ nottyp_un : nottyp_un_ { $1 $ at () }
 nottyp_un_ :
   | nottyp_seq_ { $1 }
   | DOT nottyp_un { InfixT (SeqT [] $ ati 1, Dot, $2) }
-  | DOT2 nottyp_un { InfixT (SeqT [] $ ati 1, Dot2, $2) }
-  | DOT3 nottyp_un { InfixT (SeqT [] $ ati 1, Dot3, $2) }
+  | DOTDOT nottyp_un { InfixT (SeqT [] $ ati 1, Dot2, $2) }
+  | DOTDOTDOT nottyp_un { InfixT (SeqT [] $ ati 1, Dot3, $2) }
   | SEMICOLON nottyp_un { InfixT (SeqT [] $ ati 1, Semicolon, $2) }
   | ARROW nottyp_un { InfixT (SeqT [] $ ati 1, Arrow, $2) }
 
@@ -213,8 +213,8 @@ nottyp_bin : nottyp_bin_ { $1 $ at () }
 nottyp_bin_ :
   | nottyp_un_ { $1 }
   | nottyp_bin DOT nottyp_bin { InfixT ($1, Dot, $3) }
-  | nottyp_bin DOT2 nottyp_bin { InfixT ($1, Dot2, $3) }
-  | nottyp_bin DOT3 nottyp_bin { InfixT ($1, Dot3, $3) }
+  | nottyp_bin DOTDOT nottyp_bin { InfixT ($1, Dot2, $3) }
+  | nottyp_bin DOTDOTDOT nottyp_bin { InfixT ($1, Dot3, $3) }
   | nottyp_bin SEMICOLON nottyp_bin { InfixT ($1, Semicolon, $3) }
   | nottyp_bin ARROW nottyp_bin { InfixT ($1, Arrow, $3) }
 
@@ -250,7 +250,7 @@ fieldtyp_list :
 
 casetyp_list :
   | /* empty */ { [], [], NoDots }
-  | DOT3 { [], [], Dots }
+  | DOTDOTDOT { [], [], Dots }
   | varid { [Elem $1], [], NoDots }
   | varid BAR casetyp_list { let x, y, z = $3 in (Elem $1)::x, y, z }
   | varid NL_BAR casetyp_list { let x, y, z = $3 in (Elem $1)::Nl::x, y, z }
@@ -318,8 +318,8 @@ exp_un_ :
   | exp_call_ { $1 }
   | NOT exp_un { UnE (NotOp, $2) }
   | DOT exp_un { InfixE (SeqE [] $ ati 1, Dot, $2) }
-  | DOT2 exp_un { InfixE (SeqE [] $ ati 1, Dot2, $2) }
-  | DOT3 exp_un { InfixE (SeqE [] $ ati 1, Dot3, $2) }
+  | DOTDOT exp_un { InfixE (SeqE [] $ ati 1, Dot2, $2) }
+  | DOTDOTDOT exp_un { InfixE (SeqE [] $ ati 1, Dot3, $2) }
   | SEMICOLON exp_un { InfixE (SeqE [] $ ati 1, Semicolon, $2) }
   | ARROW exp_un { InfixE (SeqE [] $ ati 1, Arrow, $2) }
 
@@ -328,8 +328,8 @@ exp_bin_ :
   | exp_un_ { $1 }
   | exp_bin COMPOSE exp_bin { CompE ($1, $3) }
   | exp_bin DOT exp_bin { InfixE ($1, Dot, $3) }
-  | exp_bin DOT2 exp_bin { InfixE ($1, Dot2, $3) }
-  | exp_bin DOT3 exp_bin { InfixE ($1, Dot3, $3) }
+  | exp_bin DOTDOT exp_bin { InfixE ($1, Dot2, $3) }
+  | exp_bin DOTDOTDOT exp_bin { InfixE ($1, Dot3, $3) }
   | exp_bin SEMICOLON exp_bin { InfixE ($1, Semicolon, $3) }
   | exp_bin ARROW exp_bin { InfixE ($1, Arrow, $3) }
   | exp_bin EQ exp_bin { CmpE ($1, EqOp, $3) }
@@ -473,7 +473,7 @@ def_ :
     { DefD ($3, SeqE [] $ ati 4, $5, $6) }
   | DEF DOLLAR defid exp_prim EQ exp premise_opt
     { DefD ($3, $4, $6, $7) }
-  | NL3
+  | NL_NL_NL
     { SepD }
 
 ruleid_list :
@@ -484,12 +484,12 @@ ruleid_list :
 premise_opt :
   | /* empty */ { None }
   | DASH premise { Some $2 }
-  | NL2_DASH premise { Some $2 }
+  | NL_NL_DASH premise { Some $2 }
 
 premise_list :
   | /* empty */ { [] }
   | DASH premise premise_list { (Elem $2)::$3 }
-  | NL2_DASH premise premise_list { Nl::(Elem $2)::$3 }
+  | NL_NL_DASH premise premise_list { Nl::(Elem $2)::$3 }
 
 premise : premise_ { $1 $ at () }
 premise_ :

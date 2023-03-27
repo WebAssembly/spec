@@ -124,8 +124,8 @@ rule token = parse
   | ";" { SEMICOLON }
   | "," { COMMA }
   | "." { DOT }
-  | ".." { DOT2 }
-  | "..." { DOT3 }
+  | ".." { DOTDOT }
+  | "..." { DOTDOTDOT }
   | "|" { BAR }
   | "--" { DASH }
 
@@ -134,9 +134,10 @@ rule token = parse
   | line_comment? '\n' indent* "|"[' ''\t']
     { Lexing.new_line lexbuf; NL_BAR }
   | line_comment? "\n\n" indent* "--"
-    { Lexing.new_line lexbuf; Lexing.new_line lexbuf; NL2_DASH }
+    { Lexing.new_line lexbuf; Lexing.new_line lexbuf; NL_NL_DASH }
   | "\n\n\n"
-    { Lexing.new_line lexbuf; Lexing.new_line lexbuf; Lexing.new_line lexbuf; NL3 }
+    { Lexing.new_line lexbuf; Lexing.new_line lexbuf; Lexing.new_line lexbuf;
+      NL_NL_NL }
 
   | "=" { EQ }
   | "=/=" { NE }
