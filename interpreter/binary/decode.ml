@@ -603,6 +603,12 @@ let rec instr s =
     | 0x16l -> array_set (at var s)
     | 0x17l -> array_len
 
+    (* TODO: check encodings *)
+    | 0x18l -> let x = at var s in let y = at var s in array_copy x y
+    | 0x0fl -> array_fill (at var s)
+    | 0x52l -> let x = at var s in let y = at var s in array_init_data x y
+    | 0x53l -> let x = at var s in let y = at var s in array_init_elem x y
+
     | 0x19l -> let x = at var s in let n = u32 s in array_new_canon_fixed x n
     | 0x1bl -> let x = at var s in let y = at var s in array_new_canon_data x y
     | 0x1cl -> let x = at var s in let y = at var s in array_new_canon_elem x y

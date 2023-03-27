@@ -276,6 +276,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<Ast.idx -> Ast.idx -> Ast.instr'> STRUCT_GET
 %token ARRAY_NEW ARRAY_NEW_FIXED ARRAY_NEW_ELEM ARRAY_NEW_DATA
 %token ARRAY_SET ARRAY_LEN
+%token ARRAY_COPY ARRAY_FILL ARRAY_INIT_DATA ARRAY_INIT_ELEM
 %token<Ast.instr'> EXTERN_CONVERT
 %token<int option -> Memory.offset -> Ast.instr'> VEC_LOAD VEC_STORE
 %token<int option -> Memory.offset -> int -> Ast.instr'> VEC_LOAD_LANE VEC_STORE_LANE
@@ -574,6 +575,10 @@ plain_instr :
   | ARRAY_GET var { fun c -> $1 ($2 c type_) }
   | ARRAY_SET var { fun c -> array_set ($2 c type_) }
   | ARRAY_LEN { fun c -> array_len }
+  | ARRAY_COPY var var { fun c -> array_copy ($2 c type_) ($3 c type_) }
+  | ARRAY_FILL var { fun c -> array_fill ($2 c type_) }
+  | ARRAY_INIT_DATA var var { fun c -> array_init_data ($2 c type_) ($3 c data) }
+  | ARRAY_INIT_ELEM var var { fun c -> array_init_elem ($2 c type_) ($3 c elem) }
   | EXTERN_CONVERT { fun c -> $1 }
   | CONST num { fun c -> fst (num $1 $2) }
   | TEST { fun c -> $1 }

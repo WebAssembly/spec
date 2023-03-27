@@ -341,6 +341,10 @@ rule token = parse
       | "array.get_s" -> ARRAY_GET array_get_s
       | "array.set" -> ARRAY_SET
       | "array.len" -> ARRAY_LEN
+      | "array.copy" -> ARRAY_COPY
+      | "array.fill" -> ARRAY_FILL
+      | "array.init_data" -> ARRAY_INIT_DATA
+      | "array.init_elem" -> ARRAY_INIT_ELEM
 
       | "extern.internalize" -> EXTERN_CONVERT extern_internalize
       | "extern.externalize" -> EXTERN_CONVERT extern_externalize

@@ -45,5 +45,6 @@ val match_global_type : context -> global_type -> global_type -> bool
 
 val match_extern_type : context -> extern_type -> extern_type -> bool
 
+val match_storage_type : context -> storage_type -> storage_type -> bool
 val match_str_type : context -> str_type -> str_type -> bool
 val match_var_type : context -> var -> var -> bool

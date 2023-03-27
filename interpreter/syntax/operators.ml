@@ -131,6 +131,10 @@ let array_get_u x = ArrayGet (x, Some ZX)
 let array_get_s x = ArrayGet (x, Some SX)
 let array_set x = ArraySet x
 let array_len = ArrayLen
+let array_copy x y = ArrayCopy (x, y)
+let array_fill x = ArrayFill x
+let array_init_data x y = ArrayInitData (x, y)
+let array_init_elem x y = ArrayInitElem (x, y)
 
 let extern_internalize = ExternConvert Internalize
 let extern_externalize = ExternConvert Externalize
