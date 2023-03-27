@@ -63,6 +63,8 @@ sphinx-splice: $(SPHINXOUTNAME).rst conf.py
 	mkdir -p $(SPHINXDIR)/_build
 	cp $(SPHINXOUTNAME).rst conf.py $(SPHINXDIR)
 	sphinx-build -b html $(SPHINXDIR) $(SPHINXDIR)/_build
+	sphinx-build -b latex $(SPHINXDIR) $(SPHINXDIR)/_build
+	(cd $(SPHINXDIR)/_build; pdflatex $(SPHINXOUTNAME).tex)
 
 
 # Test

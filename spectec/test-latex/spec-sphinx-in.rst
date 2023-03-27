@@ -1,12 +1,11 @@
 Wasm Formal Semantics
 =====================
 
-Syntax
-------
+**Syntax**
 
-@@@{syntax: numtype vectype reftype valtype resulttype}
+$${syntax: numtype vectype reftype valtype resulttype}
 
-@@@{syntax:
+$${syntax:
   limits
   globaltype
   functype
@@ -17,33 +16,31 @@ Syntax
   externtype
 }
 
-@@@{syntax: instr/control instr/reference}
+$${syntax: instr/control instr/reference}
 
-@@@{syntax: instr/numeric instr/state expr}
-
-
-Typing @@{relation: Instr_ok}
---------------------------------
-
-An instruction sequence @@{:instr*} is well-typed with an instruction type @@{: t_1* -> t_2*}, written @@{: instr* : t_1* -> t_2*}, according to the following rules:
-
-@@@{rule: InstrSeq_ok/empty InstrSeq_ok/seq}
-
-@@@{rule: InstrSeq_ok/weak InstrSeq_ok/frame}
+$${syntax: instr/numeric instr/state expr}
 
 
-@@@{rule: Instr_ok/unreachable Instr_ok/nop Instr_ok/drop}
+**Typing** ${relation: Instr_ok}
 
-@@@{rule: Instr_ok/block}
+An instruction sequence ${:instr*} is well-typed with an instruction type ${: t_1* -> t_2*}, written ${: instr* : t_1* -> t_2*}, according to the following rules:
 
-@@@{rule: Instr_ok/loop}
+$${rule: InstrSeq_ok/empty InstrSeq_ok/seq}
 
-@@@{rule: Instr_ok/if}
+$${rule: InstrSeq_ok/weak InstrSeq_ok/frame}
 
 
-Reduction @@{relation: Step_pure}
-----------------------------------------
+$${rule: Instr_ok/unreachable Instr_ok/nop Instr_ok/drop}
 
-@@@{rule: Step/pure Step/read}
+$${rule: Instr_ok/block}
 
-@@@{rule: Step_pure/block Step_pure/loop Step_pure/if-true Step_pure/if-false}
+$${rule: Instr_ok/loop}
+
+$${rule: Instr_ok/if}
+
+
+**Reduction** ${relation: Step_pure}
+
+$${rule: Step/pure Step/read}
+
+$${rule: Step_pure/block Step_pure/loop Step_pure/if-true Step_pure/if-false}

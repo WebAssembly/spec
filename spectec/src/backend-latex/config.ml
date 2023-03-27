@@ -42,7 +42,7 @@ let latex =
 let sphinx =
   { default with
     anchors = [
-      {token = "@@"; prefix = ":math:`"; suffix ="`"; indent = ""};
-      {token = "@@@"; prefix = ".. math::\n   "; suffix = ""; indent = "   "};
+      {token = "$"; prefix = ":math:`"; suffix ="`"; indent = ""};
+      {token = "$$"; prefix = ".. math::\n   "; suffix = ""; indent = "   "};
     ]
   }
