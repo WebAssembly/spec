@@ -26,5 +26,7 @@ jobs:
         run: opam install --yes dune mdx
       - name: Setup Latex
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+      - name: Setup Sphinx
+        run: pip install six && pip install sphinx==5.1.0
       - name: Build and test
         run: cd spectec && opam exec make ci
