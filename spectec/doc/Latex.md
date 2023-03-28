@@ -8,7 +8,7 @@ watsup <source-files ...> --<format> -p <patch-files ...>
 ```
 to pre-process the files `<patch-files ...>`, which are assumed to be in the format `<format>` -- currently either `latex` (default) or `sphinx`.
 
-The processed files are expected to contain an arbitrary number of [splice anchors](#splicing], which are then replaced by embedded Latex formulas.
+The processed files are expected to contain an arbitrary number of [splice anchors](#splicing), which are then replaced by embedded Latex formulas.
 
 The respective formular are generated from the definitions in the `<source-files ...>`, which must be a well-formed in the [language](Language.md).
 
@@ -60,7 +60,7 @@ There are two forms of splices:
 
    * `syntax`: the identifiers refer to [syntax definition](Language.md#definitions), whose grammar is rendered,
 
-   * `syntax+`: same as `syntax`, but the rendering includes any _descriptions_ provided through [description hints](#description-hints),
+   * `syntax+`: same as `syntax`, but the rendering includes any _descriptions_ provided through [description hints](#description-hints-desc),
 
    * `relation`: the identifiers refer to definitions of [relations](Language.md#definitions), whose schema is rendered,
 
