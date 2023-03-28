@@ -415,9 +415,17 @@ and render_typcase env at (atom, nottyps, _hints) =
   let exps = List.map2 (fun s t -> AtomE (Atom s) $ t.at) ss nottyps in
   render_expand env env.show_case (El.Print.string_of_atom atom $ at) exps
     (fun () ->
-      let s1 = render_atom env atom in
-      let s2 = render_nottyps "~" env nottyps in
-      if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
+      match atom, nottyps with
+      | Atom id, nottyp1::nottyps2 when ends_sub id ->
+        (* Handle subscripting *)
+        render_atomid env (chop_sub id) ^
+          "_{" ^ render_nottyp env nottyp1 ^ "}\\," ^
+          (if nottyps2 = [] then "" else "\\," ^ render_nottyps "~" env nottyps2)
+      | _ ->
+        let s1 = render_atom env atom in
+        let s2 = render_nottyps "~" env nottyps in
+        assert (s1 <> "" || s2 <> "");
+        if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
     )
 
 
@@ -474,20 +482,22 @@ and render_exp env exp =
     render_exp env exp1 ^ space (render_atom env) atom ^ render_exp env exp2
   | BrackE (brack, exp) ->
     let l, r = render_brack brack in l ^ render_exp env exp ^ r
-  | CallE (id, exp1) when ends_sub id.it ->
-    render_expand env env.show_def id (untup_exp exp1)
-      (fun () -> render_defid env (chop_sub id.it $ id.at) ^
-        let exp1', exp2' =
-          match untup_exp exp1 with
-          | [] -> SeqE [] $ exp1.at, SeqE [] $ exp1.at
-          | [exp1'] -> exp1', SeqE [] $ exp1.at
-          | exp1'::exps -> exp1', TupE exps $ exp1.at
-        in
-        "_{" ^ render_exp env exp1' ^ "}" ^ render_exp env exp2'
-      )
   | CallE (id, exp1) ->
     render_expand env env.show_def id (untup_exp exp1)
-      (fun () -> render_defid env id ^ render_exp env exp1)
+      (fun () ->
+        if not (ends_sub id.it) then
+          render_defid env id ^ render_exp env exp1
+        else
+          (* Handle subscripting *)
+          render_defid env (chop_sub id.it $ id.at) ^
+          let exp1', exp2' =
+            match untup_exp exp1 with
+            | [] -> SeqE [] $ exp1.at, SeqE [] $ exp1.at
+            | [exp1'] -> exp1', SeqE [] $ exp1.at
+            | exp1'::exps -> exp1', TupE exps $ exp1.at
+          in
+          "_{" ^ render_exp env exp1' ^ "}" ^ render_exp env exp2'
+      )
   | IterE (exp1, iter) -> render_exp env exp1 ^ render_iter env iter
   | FuseE (exp1, exp2) ->
     (* HACK. Is there a cleaner way? *)
@@ -522,10 +532,16 @@ and render_fieldname env atom at =
 and render_expcase env atom exps at =
   render_expand env env.show_case (El.Print.string_of_atom atom $ at) exps
     (fun () ->
-      let s1 = render_atom env atom in
-      let s2 = render_exps "~" env exps in
-      assert (s1 <> "" || s2 <> "");
-      if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
+      match atom, exps with
+      | Atom id, exp1::exps2 when ends_sub id ->
+        (* Handle subscripting *)
+        render_atomid env (chop_sub id) ^ "_{" ^ render_exp env exp1 ^ "}" ^
+          (if exps2 = [] then "" else "\\," ^ render_exps "~" env exps2)
+      | _ ->
+        let s1 = render_atom env atom in
+        let s2 = render_exps "~" env exps in
+        assert (s1 <> "" || s2 <> "");
+        if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
     )
 
 

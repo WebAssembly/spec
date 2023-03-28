@@ -625,8 +625,8 @@ syntax admininstr =
   | REF.FUNC_ADDR(funcaddr)
   | REF.HOST_ADDR(hostaddr)
   | CALL_ADDR(funcaddr)
-  | LABEL(n, instr*, admininstr*)
-  | FRAME(n, frame, admininstr*)
+  | LABEL_(n, instr*, admininstr*)
+  | FRAME_(n, frame, admininstr*)
   | TRAP
 }
 
@@ -653,14 +653,14 @@ def table : (state, tableidx) -> tableinst
   ;; 4-runtime.watsup:106.1-106.52
   def {m : moduleinst, s : store, val : val, x : idx} table(`%;%`(s, `%;%`(m, val*)), x) = s.TABLE[m.TABLE[x]]
 
-;; 4-runtime.watsup:120.1-123.17
+;; 4-runtime.watsup:120.1-123.18
 rec {
 
-;; 4-runtime.watsup:120.1-123.17
+;; 4-runtime.watsup:120.1-123.18
 syntax E =
   | _HOLE
   | _SEQ(val*, E, instr*)
-  | LABEL(n, instr*, E)
+  | LABEL_(n, instr*, E)
 }
 
 ;; 5-reduction.watsup:5.1-5.63
@@ -685,13 +685,13 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     `%~>%`([CONST(I32, c) BR_IF(l)], [BR(l)])
     -- iff (c =/= 0)
 
-  ;; 5-reduction.watsup:53.1-54.64
+  ;; 5-reduction.watsup:53.1-54.65
   rule br-succ {instr : instr, instr' : instr, l : labelidx, n : n, val : val}:
-    `%~>%`([LABEL(n, instr'*, (val <: admininstr)* :: [BR(l + 1)] :: (instr <: admininstr)*)], (val <: admininstr)* :: [BR(l)])
+    `%~>%`([LABEL_(n, instr'*, (val <: admininstr)* :: [BR(l + 1)] :: (instr <: admininstr)*)], (val <: admininstr)* :: [BR(l)])
 
-  ;; 5-reduction.watsup:50.1-51.68
+  ;; 5-reduction.watsup:50.1-51.69
   rule br-zero {instr : instr, instr' : instr, n : n, val : val, val' : val}:
-    `%~>%`([LABEL(n, instr'*, (val' <: admininstr)* :: (val <: admininstr)^n :: [BR(0)] :: (instr <: admininstr)*)], (val <: admininstr)^n :: (instr' <: admininstr)*)
+    `%~>%`([LABEL_(n, instr'*, (val' <: admininstr)* :: (val <: admininstr)^n :: [BR(0)] :: (instr <: admininstr)*)], (val <: admininstr)^n :: (instr' <: admininstr)*)
 
   ;; 5-reduction.watsup:45.1-47.15
   rule if-false {bt : blocktype, c : c_numtype, instr_1 : instr, instr_2 : instr}:
@@ -705,12 +705,12 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
 
   ;; 5-reduction.watsup:37.1-39.29
   rule loop {bt : blocktype, instr : instr, k : nat, n : n, t_1 : valtype, t_2 : valtype, val : val}:
-    `%~>%`((val <: admininstr)^k :: [LOOP(bt, instr*)], [LABEL(n, [LOOP(bt, instr*)], (val <: admininstr)^k :: (instr <: admininstr)*)])
+    `%~>%`((val <: admininstr)^k :: [LOOP(bt, instr*)], [LABEL_(n, [LOOP(bt, instr*)], (val <: admininstr)^k :: (instr <: admininstr)*)])
     -- iff (bt = `%->%`(t_1^k, t_2^n))
 
   ;; 5-reduction.watsup:33.1-35.29
   rule block {bt : blocktype, instr : instr, k : nat, n : n, t_1 : valtype, t_2 : valtype, val : val}:
-    `%~>%`((val <: admininstr)^k :: [BLOCK(bt, instr*)], [LABEL(n, [], (val <: admininstr)^k :: (instr <: admininstr)*)])
+    `%~>%`((val <: admininstr)^k :: [BLOCK(bt, instr*)], [LABEL_(n, [], (val <: admininstr)^k :: (instr <: admininstr)*)])
     -- iff (bt = `%->%`(t_1^k, t_2^n))
 
   ;; 5-reduction.watsup:29.1-31.15
@@ -739,7 +739,7 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
 relation Step_read: `%~>%`(config, admininstr*)
   ;; 5-reduction.watsup:87.1-89.62
   rule call_addr {a : addr, instr : instr, k : nat, m : moduleinst, n : n, t : valtype, t_1 : valtype, t_2 : valtype, val : val, z : state}:
-    `%~>%`(`%;%`(z, (val <: admininstr)^k :: [CALL_ADDR(a)]), [FRAME(n, `%;%`(m, val^k :: $default_(t)*), [LABEL(n, [], (instr <: admininstr)*)])])
+    `%~>%`(`%;%`(z, (val <: admininstr)^k :: [CALL_ADDR(a)]), [FRAME_(n, `%;%`(m, val^k :: $default_(t)*), [LABEL_(n, [], (instr <: admininstr)*)])])
     -- iff ($funcinst(z)[a] = `%;%`(m, FUNC(`%->%`(t_1^k, t_2^n), t*, instr*)))
 
   ;; 5-reduction.watsup:83.1-85.15
@@ -1633,12 +1633,12 @@ $$
 \mathsf{ref.func}~\mathsf{\mathit{funcaddr}} \\ &&|&
 \mathsf{ref.extern}~\mathsf{\mathit{hostaddr}} \\ &&|&
 \mathsf{call}~\mathsf{\mathit{funcaddr}} \\ &&|&
-{{\mathsf{label}}_{\mathsf{\mathit{n}}}}{\mathsf{\{\mathit{instr}^\ast\}}~\mathsf{\mathit{instr}^\ast}} \\ &&|&
-{{\mathsf{frame}}_{\mathsf{\mathit{n}}}}{\mathsf{\{\mathit{frame}\}}~\mathsf{\mathit{instr}^\ast}} \\ &&|&
+{\mathsf{label}_{\mathsf{\mathit{n}}}}{\mathsf{\{\mathit{instr}^\ast\}}~\mathsf{\mathit{instr}^\ast}} \\ &&|&
+{\mathsf{frame}_{\mathsf{\mathit{n}}}}{\mathsf{\{\mathit{frame}\}}~\mathsf{\mathit{instr}^\ast}} \\ &&|&
 \mathsf{trap} \\
 \mbox{(evaluation context)} & \mathit{E} &::=& [\mathsf{\_}] \\ &&|&
 \mathit{val}^\ast~\mathit{E}~\mathit{instr}^\ast \\ &&|&
-{{\mathsf{label}}_{\mathsf{\mathit{n}}}}{\mathsf{\mathit{instr}^\ast}~\mathsf{\mathit{e}}} \\
+{\mathsf{label}_{\mathsf{\mathit{n}}}}{\mathsf{\mathit{instr}^\ast}~\mathsf{\mathit{e}}} \\
 \end{array}
 $$
 
@@ -1668,9 +1668,9 @@ $$
   \mbox{if}~\mathit{c} \neq 0 \\
 {[\textsc{\scriptsize E-select-false}]} \quad & \mathit{val}_{1}~\mathit{val}_{2}~(\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{select}~\mathit{t}^?) &\hookrightarrow& \mathit{val}_{2} &\quad
   \mbox{if}~\mathit{c} = 0 \\
-{[\textsc{\scriptsize E-block}]} \quad & \mathit{val}^{\mathit{k}}~(\mathsf{block}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& ({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast}) &\quad
+{[\textsc{\scriptsize E-block}]} \quad & \mathit{val}^{\mathit{k}}~(\mathsf{block}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& ({\mathsf{label}_{\mathit{n}}}{\{\epsilon\}~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast}) &\quad
   \mbox{if}~\mathit{bt} = \mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}} \\
-{[\textsc{\scriptsize E-loop}]} \quad & \mathit{val}^{\mathit{k}}~(\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& ({{\mathsf{label}}_{\mathit{n}}}{\{\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast\}~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast}) &\quad
+{[\textsc{\scriptsize E-loop}]} \quad & \mathit{val}^{\mathit{k}}~(\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& ({\mathsf{label}_{\mathit{n}}}{\{\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast\}~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast}) &\quad
   \mbox{if}~\mathit{bt} = \mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}} \\
 {[\textsc{\scriptsize E-if-true}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{if}~\mathit{bt}~\mathit{instr}_{1}^\ast~\mathsf{else}~\mathit{instr}_{2}^\ast) &\hookrightarrow& (\mathsf{block}~\mathit{bt}~\mathit{instr}_{1}^\ast) &\quad
   \mbox{if}~\mathit{c} \neq 0 \\
@@ -1683,8 +1683,8 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E-br-zero}]} \quad & ({{\mathsf{label}}_{\mathit{n}}}{\{{\mathit{instr}'}^\ast\}~{\mathit{val}'}^\ast~\mathit{val}^{\mathit{n}}~(\mathsf{br}~0)~\mathit{instr}^\ast}) &\hookrightarrow& \mathit{val}^{\mathit{n}}~{\mathit{instr}'}^\ast &  \\
-{[\textsc{\scriptsize E-br-succ}]} \quad & ({{\mathsf{label}}_{\mathit{n}}}{\{{\mathit{instr}'}^\ast\}~\mathit{val}^\ast~(\mathsf{br}~\mathit{l} + 1)~\mathit{instr}^\ast}) &\hookrightarrow& \mathit{val}^\ast~(\mathsf{br}~\mathit{l}) &  \\
+{[\textsc{\scriptsize E-br-zero}]} \quad & ({\mathsf{label}_{\mathit{n}}}{\{{\mathit{instr}'}^\ast\}~{\mathit{val}'}^\ast~\mathit{val}^{\mathit{n}}~(\mathsf{br}~0)~\mathit{instr}^\ast}) &\hookrightarrow& \mathit{val}^{\mathit{n}}~{\mathit{instr}'}^\ast &  \\
+{[\textsc{\scriptsize E-br-succ}]} \quad & ({\mathsf{label}_{\mathit{n}}}{\{{\mathit{instr}'}^\ast\}~\mathit{val}^\ast~(\mathsf{br}~\mathit{l} + 1)~\mathit{instr}^\ast}) &\hookrightarrow& \mathit{val}^\ast~(\mathsf{br}~\mathit{l}) &  \\
 \end{array}
 $$
 
@@ -1720,7 +1720,7 @@ $$
  &&&\quad {\land}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathit{func} \\
 {[\textsc{\scriptsize E-call\_indirect-trap}]} \quad & \mathit{z} ; (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{otherwise} \\
-{[\textsc{\scriptsize E-call\_addr}]} \quad & \mathit{z} ; \mathit{val}^{\mathit{k}}~(\mathsf{call}~\mathit{a}) &\hookrightarrow& ({{\mathsf{frame}}_{\mathit{n}}}{\{\mathit{m} ; \mathit{val}^{\mathit{k}}~(\mathrm{default}_{\mathit{t}})^\ast\}~({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~\mathit{instr}^\ast})}) &\quad
+{[\textsc{\scriptsize E-call\_addr}]} \quad & \mathit{z} ; \mathit{val}^{\mathit{k}}~(\mathsf{call}~\mathit{a}) &\hookrightarrow& ({\mathsf{frame}_{\mathit{n}}}{\{\mathit{m} ; \mathit{val}^{\mathit{k}}~(\mathrm{default}_{\mathit{t}})^\ast\}~({\mathsf{label}_{\mathit{n}}}{\{\epsilon\}~\mathit{instr}^\ast})}) &\quad
   \mbox{if}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathsf{func}~(\mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}})~\mathit{t}^\ast~\mathit{instr}^\ast \\
 \end{array}
 $$

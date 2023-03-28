@@ -110,14 +110,14 @@ def $table((s; (m; val*)), x) = s.TABLE[m.TABLE[x]]
 
 syntax admininstr hint(show instr) hint(desc "administrative instruction") =
   | instr
-  | REF.FUNC_ADDR funcaddr        hint(show REF.FUNC %)
-  | REF.HOST_ADDR hostaddr        hint(show REF.EXTERN %)
-  | CALL_ADDR funcaddr            hint(show CALL %)
-  | LABEL n `{instr*} admininstr* hint(show LABEL_#%#% %%)
-  | FRAME n `{frame} admininstr*  hint(show FRAME_#%#% %%)
+  | REF.FUNC_ADDR funcaddr         hint(show REF.FUNC %)
+  | REF.HOST_ADDR hostaddr         hint(show REF.EXTERN %)
+  | CALL_ADDR funcaddr             hint(show CALL %)
+  | LABEL_ n `{instr*} admininstr* hint(show LABEL_%#% %%)
+  | FRAME_ n `{frame} admininstr*  hint(show FRAME_%#% %%)
   | TRAP
 
 syntax E hint(desc "evaluation context") =
   | _HOLE `[ _ ]
   | _SEQ val* E instr*
-  | LABEL n instr* E
+  | LABEL_ n instr* E
