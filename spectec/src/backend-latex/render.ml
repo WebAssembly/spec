@@ -23,8 +23,26 @@ type env =
     show_def : exp Map.t ref;
     show_case : exp Map.t ref;
     show_field : exp Map.t ref;
+    deco_syn : bool;
+    deco_rule : bool;
     current_rel : string;
   }
+
+let new_env config =
+  { config;
+    show_syn = ref Map.empty;
+    show_var = ref Map.empty;
+    show_rel = ref Map.empty;
+    show_def = ref Map.empty;
+    show_case = ref Map.empty;
+    show_field = ref Map.empty;
+    deco_syn = false;
+    deco_rule = false;
+    current_rel = "";
+  }
+
+let with_syntax_decoration b env = {env with deco_syn = b}
+let with_rule_decoration b env = {env with deco_rule = b}
 
 
 let env_hints map id hints =
@@ -58,17 +76,7 @@ let env_def env def =
   | RuleD _ | DefD _ | SepD -> ()
 
 let env config script : env =
-  let env =
-    { config;
-      show_syn = ref Map.empty;
-      show_var = ref Map.empty;
-      show_rel = ref Map.empty;
-      show_def = ref Map.empty;
-      show_case = ref Map.empty;
-      show_field = ref Map.empty;
-      current_rel = "";
-    }
-  in
+  let env = new_env config in
   List.iter (env_def env) script;
   env
 
@@ -140,6 +148,19 @@ and render_varid_sub env show at = function
     in
     (if i = n then s'' else "{" ^ s'' ^ String.sub s i (n - i) ^ "}") ^
     (if ss = [] then "" else "_{" ^ render_varid_sub env show at ss ^ "}")
+
+
+let render_rule_id env id1 id2 =
+  let id1' =
+    match Map.find_opt id1.it !(env.show_rel) with
+    | None -> id1.it
+    | Some {it = TextE s; _} -> s
+    | Some {at; _} ->
+      error at "malformed `show` hint for relation"
+  in
+  let id2' = if id2.it = "" then "" else "-" ^ id2.it in
+  let id' = Str.(global_replace (regexp "_") "\\_" (id1' ^ id2')) in
+  "\\textsc{\\scriptsize " ^ id' ^ "}"
 
 
 (* Operators *)
@@ -508,11 +529,20 @@ let rec merge_syndefs = function
   | def::defs ->
     def :: merge_syndefs defs
 
+let desc_of_hint = function
+  | {hintid = {it = "desc"; _}; hintexp = {it = TextE s; _}} -> Some s
+  | {hintid = {it = "desc"; _}; hintexp = {at; _}} ->
+    error at "malformed description hint"
+  | _ -> None
+
 let render_syndef env def =
   match def.it with
-  | SynD (id1, _id2, deftyp, _hints) ->
-    (* TODO: include grammar descriptions *)
-    "& " ^ render_varid env env.show_syn id1 ^ " &::=& " ^
+  | SynD (id1, _id2, deftyp, hints) ->
+    (match env.deco_syn, List.find_map desc_of_hint hints with
+    | true, Some s -> "\\mbox{(" ^ s ^ ")} & "
+    | _ -> "& "
+    ) ^
+    render_varid env env.show_syn id1 ^ " &::=& " ^
       render_deftyp env deftyp
   | _ -> assert false
 
@@ -523,12 +553,14 @@ let split_redexp exp =
 
 let render_reddef env def =
   match def.it with
-  | RuleD (_id1, _id2, exp, prems) ->
+  | RuleD (id1, id2, exp, prems) ->
     let exp1, exp2 = split_redexp exp in
-    render_exp env exp1 ^ " &" ^ render_atom env SqArrow ^ "& " ^
+    let deco = if not env.deco_rule then "& " else
+      "{[" ^ render_rule_id env id1 id2 ^ "]} \\quad & " in
+    deco ^ render_exp env exp1 ^ " &" ^ render_atom env SqArrow ^ "& " ^
     render_exp env exp2 ^
     (match prems with
-    | [] -> ""
+    | [] -> " & "
     | [Elem {it = ElsePr; _}] -> " &\n  " ^ word "otherwise"
     | _ ->
       " &\n  " ^ word "if" ^ "~" ^
@@ -566,7 +598,8 @@ let rec render_defs env = function
     match def.it with
     | SynD _ ->
       let syndefs = merge_syndefs defs in
-      "\\begin{array}{@{}l@{}rrl@{}}\n" ^
+      let deco = if env.deco_syn then "l" else "l@{}" in
+      "\\begin{array}{@{}" ^ deco ^ "rrl@{}}\n" ^
         concat " \\\\[0.5ex]\n" (List.map (render_syndef env) syndefs) ^
           " \\\\\n" ^
       "\\end{array}"
@@ -575,20 +608,21 @@ let rec render_defs env = function
         render_nottyp {env with current_rel = id.it} nottyp ^
       "}" ^
       (if defs' = [] then "" else " \\; " ^ render_defs env defs')
-    | RuleD (id1, _id2, exp, prems) ->
-      (* TODO: include rule name *)
+    | RuleD (id1, id2, exp, prems) ->
       (match classify_rel exp with
       | Some TypingRel ->
+        let deco = if not env.deco_rule then "" else
+          " \\, [" ^ render_rule_id env id1 id2 ^ "]" in
         "\\frac{\n" ^
           (if has_nl prems then "\\begin{array}{@{}c@{}}\n" else "") ^
           altern_map_nl " \\qquad\n" " \\\\\n" (suffix "\n" (render_premise env)) prems ^
           (if has_nl prems then "\\end{array}\n" else "") ^
         "}{\n" ^
           render_exp {env with current_rel = id1.it} exp ^ "\n" ^
-        "}" ^
+        "}" ^ deco ^
         (if defs' = [] then "" else "\n\\qquad\n" ^ render_defs env defs')
       | Some ReductionRel ->
-        "\\begin{array}{@{}lcll@{}}\n" ^
+        "\\begin{array}{@{}l@{}lcll@{}}\n" ^
           concat "\\\\\n" (List.map (render_reddef env) defs) ^ "\\\\\n" ^
         "\\end{array}"
       | None -> error def.at "unrecognized form of relation"

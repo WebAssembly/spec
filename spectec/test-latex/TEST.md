@@ -72,6 +72,7 @@ warning: syntax `u32` was never spliced
 warning: syntax `unop_numtype` was never spliced
 warning: syntax `val` was never spliced
 warning: rule `Blocktype_ok` was never spliced
+warning: rule `Expr_const` was never spliced
 warning: rule `Externtype_sub/func` was never spliced
 warning: rule `Externtype_sub/global` was never spliced
 warning: rule `Externtype_sub/table` was never spliced
@@ -80,7 +81,6 @@ warning: rule `Functype_ok` was never spliced
 warning: rule `Functype_sub` was never spliced
 warning: rule `Globaltype_ok` was never spliced
 warning: rule `Globaltype_sub` was never spliced
-warning: rule `InstrSeq_const` was never spliced
 warning: rule `Instr_const/const` was never spliced
 warning: rule `Instr_const/ref.null` was never spliced
 warning: rule `Instr_const/ref.func` was never spliced

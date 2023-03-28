@@ -21,11 +21,11 @@
 
 \subsection*{Syntax}
 
-@@@{syntax: numtype vectype reftype valtype resulttype}
+@@@{syntax+: numtype vectype reftype valtype resulttype}
 
 @@@{definition: size}
 
-@@@{syntax:
+@@@{syntax+:
   limits
   globaltype
   functype
@@ -52,18 +52,18 @@ An instruction sequence @@{:instr*} is well-typed with an instruction type @@{: 
 
 @@@{rule: Instr_ok/unreachable Instr_ok/nop Instr_ok/drop}
 
-@@@{rule: Instr_ok/block}
+@@@{rule+: Instr_ok/block}
 
-@@@{rule: Instr_ok/loop}
+@@@{rule+: Instr_ok/loop}
 
-@@@{rule: Instr_ok/if}
+@@@{rule+: Instr_ok/if}
 
 
 \subsection*{Reduction @@{relation: Step_pure}}
 
 @@@{rule: Step/pure Step/read}
 
-@@@{rule: Step_pure/block Step_pure/loop Step_pure/if-*}
+@@@{rule+: Step_pure/block Step_pure/loop Step_pure/if-*}
 
 \end{document}
 

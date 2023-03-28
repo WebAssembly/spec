@@ -11,11 +11,11 @@ var C : context
 
 ;; Types
 
-relation Functype_ok: |- functype : OK
-relation Globaltype_ok: |- globaltype : OK
-relation Tabletype_ok: |- tabletype : OK
-relation Memtype_ok: |- memtype : OK
-relation Limits_ok: |- limits : nat
+relation Functype_ok: |- functype : OK      hint(show "K-func")
+relation Globaltype_ok: |- globaltype : OK  hint(show "K-global")
+relation Tabletype_ok: |- tabletype : OK    hint(show "K-table")
+relation Memtype_ok: |- memtype : OK        hint(show "K-mem")
+relation Limits_ok: |- limits : nat         hint(show "K-limits")
 
 rule Functype_ok:
   |- ft : OK
@@ -39,8 +39,8 @@ rule Limits_ok:
 
 ;; Subtyping
 
-relation Valtype_sub: |- valtype <: valtype
-relation Resulttype_sub: |- valtype* <: valtype*
+relation Valtype_sub: |- valtype <: valtype       hint(show "S")
+relation Resulttype_sub: |- valtype* <: valtype*  hint(show "S-result")
 
 rule Valtype_sub/refl:
   |- t <: t
@@ -53,12 +53,12 @@ rule Resulttype_sub:
   -- (Valtype_sub: |- t_1 <: t_2)*
 
 
-relation Functype_sub: |- functype <: functype
-relation Globaltype_sub: |- globaltype <: globaltype
-relation Tabletype_sub: |- tabletype <: tabletype
-relation Memtype_sub: |- memtype <: memtype
-relation Limits_sub: |- limits <: limits
-relation Externtype_sub: |- externtype <: externtype
+relation Functype_sub: |- functype <: functype       hint(show "S-func")
+relation Globaltype_sub: |- globaltype <: globaltype hint(show "S-global")
+relation Tabletype_sub: |- tabletype <: tabletype    hint(show "S-table")
+relation Memtype_sub: |- memtype <: memtype          hint(show "S-mem")
+relation Limits_sub: |- limits <: limits             hint(show "S-limits")
+relation Externtype_sub: |- externtype <: externtype hint(show "S-extern")
 
 rule Functype_sub:
   |- ft <: ft
@@ -99,8 +99,8 @@ rule Externtype_sub/mem:
 
 ;; Instructions
 
-relation Instr_ok: context |- instr : functype
-relation InstrSeq_ok: context |- instr* : functype
+relation Instr_ok: context |- instr : functype     hint(show "T")
+relation InstrSeq_ok: context |- instr* : functype hint(show "T*")
 
 rule InstrSeq_ok/empty:
   C |- epsilon : epsilon -> epsilon
@@ -141,7 +141,7 @@ rule Instr_ok/select-impl:
   -- iff t' = numtype \/ t' = vectype
 
 
-relation Blocktype_ok: context |- blocktype : functype
+relation Blocktype_ok: context |- blocktype : functype hint(show "K-block")
 rule Blocktype_ok:
   C |- ft : ft
   -- Functype_ok: |- ft : OK
@@ -211,8 +211,8 @@ rule Instr_ok/relop:
 
 ;; Constant Instructions
 
-relation Instr_const: context |- instr CONST
-relation InstrSeq_const: context |- instr* CONST
+relation Instr_const: context |- instr CONST  hint(show "C-instr")
+relation Expr_const: context |- instr* CONST  hint(show "C-expr")
 
 rule Instr_const/const:
   C |- (CONST nt c) CONST
@@ -228,5 +228,5 @@ rule Instr_const/global.get:
   -- iff C.GLOBAL[x] = epsilon t
 
 
-rule InstrSeq_const: C |- instr* CONST
+rule Expr_const: C |- instr* CONST
   -- (Instr_const: C |- instr CONST)*

@@ -456,8 +456,8 @@ def_ :
   | SYNTAX atom_as_varid ruleid_list hint_list EQ deftyp
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
       SynD ($2, id $ ati 3, $6, $4) }
-  | RELATION relid hint_list COLON nottyp
-    { RelD ($2, $5, $3) }
+  | RELATION relid COLON nottyp hint_list
+    { RelD ($2, $4, $5) }
   | RULE relid ruleid_list COLON exp premise_list
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
       RuleD ($2, id $ ati 3, $5, $6) }

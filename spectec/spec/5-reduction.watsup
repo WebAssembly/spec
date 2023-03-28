@@ -1,8 +1,8 @@
 ;; Instructions
 
-relation Step: config ~> config
-relation Step_read: config ~> admininstr*
-relation Step_pure: admininstr* ~> admininstr*
+relation Step: config ~> config                 hint(show "E")
+relation Step_read: config ~> admininstr*       hint(show "E")
+relation Step_pure: admininstr* ~> admininstr*  hint(show "E")
 
 rule Step/pure:
   z; instr*  ~>  z; instr'*

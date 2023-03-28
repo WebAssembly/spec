@@ -182,7 +182,7 @@ let rec match_id_id_list file s i space1 space2 : (int * string * string) list =
   let idids = match_id_id_list file s i space1 space2 in
   idid::idids
 
-let try_def_anchor env file s i r sort space1 space2 find : bool =
+let try_def_anchor env file s i r sort space1 space2 find deco : bool =
   let b = try_string s i sort in
   if b then (
     skip_space s i;
@@ -190,7 +190,10 @@ let try_def_anchor env file s i r sort space1 space2 find : bool =
       error file s !i "colon `:` expected";
     let idids = match_id_id_list file s i space1 space2 in
     let defs = List.concat_map (find env file s) idids in
-    r := Render.render_defs env.render defs
+    let env' = env.render
+      |> Render.with_syntax_decoration deco
+      |> Render.with_rule_decoration deco
+    in r := Render.render_defs env' defs
   );
   b
 
@@ -221,10 +224,12 @@ let splice_anchor env file s i anchor buf =
   let r = ref "" in
   ignore (
     try_exp_anchor env file s i r ||
-    try_def_anchor env file s i r "syntax" "syntax" "fragment" find_syntax ||
-    try_def_anchor env file s i r "relation" "relation" "" find_relation ||
-    try_def_anchor env file s i r "rule" "relation" "rule" find_rule ||
-    try_def_anchor env file s i r "definition" "definition" "" find_func ||
+    try_def_anchor env file s i r "syntax+" "syntax" "fragment" find_syntax true ||
+    try_def_anchor env file s i r "syntax" "syntax" "fragment" find_syntax false ||
+    try_def_anchor env file s i r "relation" "relation" "" find_relation false ||
+    try_def_anchor env file s i r "rule+" "relation" "rule" find_rule true ||
+    try_def_anchor env file s i r "rule" "relation" "rule" find_rule false ||
+    try_def_anchor env file s i r "definition" "definition" "" find_func false ||
     error file s !i "unknown definition sort";
   );
   let s =
