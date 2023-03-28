@@ -23,9 +23,11 @@ let error file s i msg =
 
 module Map = Map.Make(String)
 
-type syntax = {sdef : def; fragments : (string * def) list}
-type relation = {rdef : def; rules : (string * def) list}
-type definition = {fdef : def; clauses : def list}
+type use = int ref
+
+type syntax = {sdef : def; fragments : (string * def * use) list}
+type relation = {rdef : def; rules : (string * def * use) list}
+type definition = {fdef : def; clauses : def list; use : use}
 
 type env =
   { config : config;
@@ -42,16 +44,16 @@ let env_def env def =
     if not (Map.mem id1.it env.syn) then
       env.syn <- Map.add id1.it {sdef = def; fragments = []} env.syn;
     let syntax = Map.find id1.it env.syn in
-    let fragments = syntax.fragments @ [(id2.it, def)] in
+    let fragments = syntax.fragments @ [(id2.it, def, ref 0)] in
     env.syn <- Map.add id1.it {syntax with fragments} env.syn
   | RelD (id, _, _) ->
     env.rel <- Map.add id.it {rdef = def; rules = []} env.rel
   | RuleD (id1, id2, _, _) ->
     let relation = Map.find id1.it env.rel in
-    let rules = relation.rules @ [(id2.it, def)] in
+    let rules = relation.rules @ [(id2.it, def, ref 0)] in
     env.rel <- Map.add id1.it {relation with rules} env.rel
   | DecD (id, _, _, _) ->
-    env.def <- Map.add id.it {fdef = def; clauses = []} env.def
+    env.def <- Map.add id.it {fdef = def; clauses = []; use = ref 0} env.def
   | DefD (id, _, _, _) ->
     let definition = Map.find id.it env.def in
     let clauses = definition.clauses @ [def] in
@@ -72,24 +74,42 @@ let env config script : env =
   env
 
 
-let to_regexp s =
-  Str.(regexp (global_replace (regexp "\\*\\|\\?") (".\\0") s))
+
+
+let warn_use use space id1 id2 =
+  if !use <> 1 then
+    let id = if id2 = "" then id1 else id1 ^ "/" ^ id2 in
+    let msg = if !use = 0 then "never spliced" else "spliced more than once" in
+    prerr_endline ("warning: " ^ space ^ " `" ^ id ^ "` was " ^ msg)
+
+let warn env =
+  Map.iter (fun id1 {fragments; _} ->
+  	List.iter (fun (id2, _, use) -> warn_use use "syntax" id1 id2) fragments
+  ) env.syn;
+  Map.iter (fun id1 {rules; _} ->
+  	List.iter (fun (id2, _, use) -> warn_use use "rule" id1 id2) rules
+  ) env.rel;
+  Map.iter (fun id1 {use; _} -> warn_use use "definition" id1 "") env.def
+
+
+let find_nosub space file s i id1 id2 =
+  if id2 <> "" then
+    error file s i ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`")
+
+let find_entries space file s i id1 id2 entries =
+  let re = Str.(regexp (global_replace (regexp "\\*\\|\\?") (".\\0") id2)) in
+  let defs = List.filter (fun (id, _, _) -> Str.string_match re id 0) entries in
+  if defs = [] then
+    error file s i ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
+  List.map (fun (_, def, use) -> incr use; def) defs
 
 let find_syntax env file s (i, id1, id2) =
   match Map.find_opt id1 env.syn with
   | None -> error file s i ("unknown syntax identifier `" ^ id1 ^ "`")
-  | Some syntax ->
-    let re = to_regexp id2 in
-    let defs =
-      List.filter (fun (id, _) -> Str.string_match re id 0) syntax.fragments in
-    if defs = [] then
-      error file s i
-        ("unknown syntax fragment identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
-    List.map snd defs
+  | Some syntax -> find_entries "syntax" file s i id1 id2 syntax.fragments
 
 let find_relation env file s (i, id1, id2) =
-  if id2 <> "" then
-    error file s i ("unknown relation identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
+  find_nosub "relation" file s i id1 id2;
   match Map.find_opt id1 env.rel with
   | None -> error file s i ("unknown relation identifier `" ^ id1 ^ "`")
   | Some relation -> [relation.rdef]
@@ -97,21 +117,13 @@ let find_relation env file s (i, id1, id2) =
 let find_rule env file s (i, id1, id2) =
   match Map.find_opt id1 env.rel with
   | None -> error file s i ("unknown relation identifier `" ^ id1 ^ "`")
-  | Some relation ->
-    let re = to_regexp id2 in
-    let defs =
-      List.filter (fun (id, _) -> Str.string_match re id 0) relation.rules in
-    if defs = [] then
-      error file s i
-        ("unknown rule identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
-    List.map snd defs
+  | Some relation -> find_entries "rule" file s i id1 id2 relation.rules
 
 let find_func env file s (i, id1, id2) =
-  if id2 <> "" then
-    error file s i ("unknown definition identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
+  find_nosub "definition" file s i id1 id2;
   match Map.find_opt id1 env.def with
   | None -> error file s i ("unknown definition identifier `" ^ id1 ^ "`")
-  | Some definition -> definition.clauses
+  | Some definition -> incr definition.use; definition.clauses
 
 
 (* Splicing *)
@@ -245,13 +257,14 @@ let splice_string env file s : string =
   splice env file s (ref 0) buf;
   Buffer.contents buf
 
-let splice_file env file =
+let splice_file ?(dry = false) env file =
   let ic = In_channel.open_text file in
   let s =
     Fun.protect (fun () -> In_channel.input_all ic)
       ~finally:(fun () -> In_channel.close ic)
   in
   let s' = splice_string env file s in
-  let oc = Out_channel.open_text file in
-  Fun.protect (fun () -> Out_channel.output_string oc s')
-    ~finally:(fun () -> Out_channel.close oc)
+  if not dry then
+    let oc = Out_channel.open_text file in
+    Fun.protect (fun () -> Out_channel.output_string oc s')
+      ~finally:(fun () -> Out_channel.close oc)
