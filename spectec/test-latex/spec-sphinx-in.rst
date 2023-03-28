@@ -3,24 +3,25 @@ Wasm Formal Semantics
 
 **Syntax**
 
-$${syntax+: numtype vectype reftype valtype resulttype}
+$${syntax+: {numtype vectype reftype valtype} resulttype}
 
 $${definition: size}
 
 $${syntax+:
   limits
-  globaltype
+  {globaltype
   functype
   tabletype
   memtype
   elemtype
-  datatype
+  datatype}
+  {}
   externtype
 }
 
-$${syntax: instr/control instr/reference}
+$${syntax: {instr/control instr/reference}}
 
-$${syntax: instr/numeric instr/state expr}
+$${syntax: {instr/numeric instr/state} expr}
 
 
 
@@ -28,12 +29,13 @@ $${syntax: instr/numeric instr/state expr}
 
 An instruction sequence ${:instr*} is well-typed with an instruction type ${: t_1* -> t_2*}, written ${: instr* : t_1* -> t_2*}, according to the following rules:
 
-$${rule: InstrSeq_ok/empty InstrSeq_ok/seq}
+$${rule:
+  {InstrSeq_ok/empty InstrSeq_ok/seq}
+  {InstrSeq_ok/weak InstrSeq_ok/frame}
+}
 
-$${rule: InstrSeq_ok/weak InstrSeq_ok/frame}
 
-
-$${rule: Instr_ok/unreachable Instr_ok/nop Instr_ok/drop}
+$${rule: {Instr_ok/unreachable Instr_ok/nop Instr_ok/drop}}
 
 $${rule+: Instr_ok/block}
 
@@ -46,4 +48,6 @@ $${rule+: Instr_ok/if}
 
 $${rule: Step/pure Step/read}
 
-$${rule+: Step_pure/block Step_pure/loop Step_pure/if-*}
+$${rule+: {Step_pure/block Step_pure/loop} {Step_pure/if-*}}
+
+$${rule+: Step_pure/if-*}

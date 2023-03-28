@@ -182,14 +182,27 @@ let rec match_id_id_list file s i space1 space2 : (int * string * string) list =
   let idids = match_id_id_list file s i space1 space2 in
   idid::idids
 
+let rec match_group_list env file s i space1 space2 find : def list list =
+  skip_space s i;
+  if try_string s i "}" then [] else
+  let groups =
+    if try_string s i "{" then
+      let idids = match_id_id_list file s i space1 space2 in
+      [List.concat_map (find env file s) idids]
+    else
+      let idid = match_id_id file s i space1 space2 in
+      List.map (fun def -> [def]) (find env file s idid)
+  in
+  groups @ match_group_list env file s i space1 space2 find
+
 let try_def_anchor env file s i r sort space1 space2 find deco : bool =
   let b = try_string s i sort in
   if b then (
     skip_space s i;
     if not (try_string s i ":") then
       error file s !i "colon `:` expected";
-    let idids = match_id_id_list file s i space1 space2 in
-    let defs = List.concat_map (find env file s) idids in
+    let groups = match_group_list env file s i space1 space2 find in
+    let defs = List.tl (List.concat_map ((@) [SepD $ no_region]) groups) in
     let env' = env.render
       |> Render.with_syntax_decoration deco
       |> Render.with_rule_decoration deco

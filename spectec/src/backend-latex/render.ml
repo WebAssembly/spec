@@ -150,7 +150,7 @@ and render_varid_sub env show at = function
     (if ss = [] then "" else "_{" ^ render_varid_sub env show at ss ^ "}")
 
 
-let render_rule_id env id1 id2 =
+let render_ruleid env id1 id2 =
   let id1' =
     match Map.find_opt id1.it !(env.show_rel) with
     | None -> id1.it
@@ -161,6 +161,10 @@ let render_rule_id env id1 id2 =
   let id2' = if id2.it = "" then "" else "-" ^ id2.it in
   let id' = Str.(global_replace (regexp "_") "\\_" (id1' ^ id2')) in
   "\\textsc{\\scriptsize " ^ id' ^ "}"
+
+let render_rule_deco env pre id1 id2 post =
+  if not env.deco_rule then "" else
+  pre ^ "{[" ^ render_ruleid env id1 id2 ^ "]}" ^ post
 
 
 (* Operators *)
@@ -546,18 +550,29 @@ let render_syndef env def =
       render_deftyp env deftyp
   | _ -> assert false
 
-let split_redexp exp =
-  match exp.it with
-  | InfixE (exp1, SqArrow, exp2) -> exp1, exp2
-  | _ -> error exp.at "unrecognized format for reduction rule"
+let render_ruledef env def =
+  match def.it with
+  | RuleD (id1, id2, exp, prems) ->
+    "\\frac{\n" ^
+      (if has_nl prems then "\\begin{array}{@{}c@{}}\n" else "") ^
+      altern_map_nl " \\qquad\n" " \\\\\n" (suffix "\n" (render_premise env)) prems ^
+      (if has_nl prems then "\\end{array}\n" else "") ^
+    "}{\n" ^
+      render_exp {env with current_rel = id1.it} exp ^ "\n" ^
+    "}" ^
+    render_rule_deco env " \\, " id1 id2 ""
+  | _ -> failwith "render_ruledef"
 
 let render_reddef env def =
   match def.it with
   | RuleD (id1, id2, exp, prems) ->
-    let exp1, exp2 = split_redexp exp in
-    let deco = if not env.deco_rule then "& " else
-      "{[" ^ render_rule_id env id1 id2 ^ "]} \\quad & " in
-    deco ^ render_exp env exp1 ^ " &" ^ render_atom env SqArrow ^ "& " ^
+    let exp1, exp2 =
+      match exp.it with
+      | InfixE (exp1, SqArrow, exp2) -> exp1, exp2
+      | _ -> error exp.at "unrecognized format for reduction rule"
+    in
+    render_rule_deco env "" id1 id2 " \\quad " ^ "& " ^
+    render_exp env exp1 ^ " &" ^ render_atom env SqArrow ^ "& " ^
     render_exp env exp2 ^
     (match prems with
     | [] -> " & "
@@ -579,6 +594,12 @@ let render_funcdef env def =
       )
   | _ -> failwith "render_funcdef"
 
+let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function
+  | [] -> ""
+  | {it = SepD; _}::defs -> "{} \\\\[-2ex]\n" ^ render_sep_defs ~sep ~br f defs
+  | def::{it = SepD; _}::defs -> f def ^ br ^ render_sep_defs ~sep ~br f defs
+  | def::defs -> f def ^ sep ^ render_sep_defs ~sep ~br f defs
+
 
 let rec classify_rel exp : rel_sort option =
   match exp.it with
@@ -597,43 +618,36 @@ let rec render_defs env = function
   | def::defs' as defs ->
     match def.it with
     | SynD _ ->
-      let syndefs = merge_syndefs defs in
+      let defs' = merge_syndefs defs in
       let deco = if env.deco_syn then "l" else "l@{}" in
       "\\begin{array}{@{}" ^ deco ^ "rrl@{}}\n" ^
-        concat " \\\\[0.5ex]\n" (List.map (render_syndef env) syndefs) ^
-          " \\\\\n" ^
+        render_sep_defs (render_syndef env) defs' ^
       "\\end{array}"
     | RelD (id, nottyp, _hints) ->
       "\\boxed{" ^
         render_nottyp {env with current_rel = id.it} nottyp ^
       "}" ^
       (if defs' = [] then "" else " \\; " ^ render_defs env defs')
-    | RuleD (id1, id2, exp, prems) ->
+    | RuleD (_, _, exp, _) ->
       (match classify_rel exp with
       | Some TypingRel ->
-        let deco = if not env.deco_rule then "" else
-          " \\, [" ^ render_rule_id env id1 id2 ^ "]" in
-        "\\frac{\n" ^
-          (if has_nl prems then "\\begin{array}{@{}c@{}}\n" else "") ^
-          altern_map_nl " \\qquad\n" " \\\\\n" (suffix "\n" (render_premise env)) prems ^
-          (if has_nl prems then "\\end{array}\n" else "") ^
-        "}{\n" ^
-          render_exp {env with current_rel = id1.it} exp ^ "\n" ^
-        "}" ^ deco ^
-        (if defs' = [] then "" else "\n\\qquad\n" ^ render_defs env defs')
+        "\\begin{array}{@{}c@{}}\\displaystyle\n" ^
+          render_sep_defs ~sep:"\n\\qquad\n" ~br:"\n\\\\[3ex]\\displaystyle\n"
+            (render_ruledef env) defs ^
+        "\\end{array}"
       | Some ReductionRel ->
         "\\begin{array}{@{}l@{}lcll@{}}\n" ^
-          concat "\\\\\n" (List.map (render_reddef env) defs) ^ "\\\\\n" ^
+          render_sep_defs (render_reddef env) defs ^
         "\\end{array}"
       | None -> error def.at "unrecognized form of relation"
       )
     | DefD _ ->
       "\\begin{array}{@{}lcll@{}}\n" ^
-        concat " \\\\\n" (List.map (render_funcdef env) defs) ^ " \\\\\n" ^
+        render_sep_defs (render_funcdef env) defs ^
       "\\end{array}"
     | SepD ->
-      "~ \\\\[-0.8\\baselineskip]\n" ^
-      render_defs env defs
+      " \\\\\n" ^
+      render_defs env defs'
     | VarD _ | DecD _ ->
       failwith "render_defs"
 

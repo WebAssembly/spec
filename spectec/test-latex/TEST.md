@@ -81,6 +81,8 @@ warning: rule `Functype_ok` was never spliced
 warning: rule `Functype_sub` was never spliced
 warning: rule `Globaltype_ok` was never spliced
 warning: rule `Globaltype_sub` was never spliced
+warning: rule `InstrSeq_ok/empty` was spliced more than once
+warning: rule `InstrSeq_ok/frame` was spliced more than once
 warning: rule `Instr_const/const` was never spliced
 warning: rule `Instr_const/ref.null` was never spliced
 warning: rule `Instr_const/ref.func` was never spliced
@@ -108,6 +110,8 @@ warning: rule `Step_pure/nop` was never spliced
 warning: rule `Step_pure/drop` was never spliced
 warning: rule `Step_pure/select-true` was never spliced
 warning: rule `Step_pure/select-false` was never spliced
+warning: rule `Step_pure/if-true` was spliced more than once
+warning: rule `Step_pure/if-false` was spliced more than once
 warning: rule `Step_pure/br-zero` was never spliced
 warning: rule `Step_pure/br-succ` was never spliced
 warning: rule `Step_pure/br_if-true` was never spliced

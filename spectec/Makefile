@@ -56,7 +56,7 @@ $(TESTDIRS): test-%: exe
 
 clean:
 	dune clean
-	rm -f src/front/parser.{automaton,conflicts}
+	rm -f src/frontend/parser.{automaton,conflicts}
 	for dir in $(TESTDIRS); do (cd $$dir && make clean); done
 
 distclean: clean
