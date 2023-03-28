@@ -9,8 +9,21 @@ def $size(F32) = 32
 def $size(F64) = 64
 
 
+;; Some notation tests
+
 def $test_sub_ATOM_22(n_3_ATOM_y) : nat
 def $test_sub_ATOM_22(n_3_ATOM_y) = 0
 
 def $curried_(n, n) : nat
 def $curried_(n_1, n_2) = $(n_1 + n_2)
+
+syntax testfuse =
+  | AB_ nat nat nat
+  | CD nat nat nat  hint(show CD_% % %)
+  | EF nat nat nat  hint(show EF_#% % %)
+  | GH nat nat nat  hint(show GH_%#% %)
+  | IJ nat nat nat  hint(show IJ_%#% %)
+  | KL nat nat nat  hint(show KL_AB#% % %)
+  | MN nat nat nat  hint(show MN_#AB % % %)
+  | OP nat nat nat  hint(show OP_#AB#% % %)
+  | QR nat nat nat  hint(show QR_%#AB % %)

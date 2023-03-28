@@ -120,4 +120,4 @@ syntax admininstr hint(show instr) hint(desc "administrative instruction") =
 syntax E hint(desc "evaluation context") =
   | _HOLE `[ _ ]
   | _SEQ val* E instr*
-  | LABEL_ n instr* E
+  | LABEL_ n `{instr*} E

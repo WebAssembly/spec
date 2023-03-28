@@ -241,15 +241,27 @@ def size : numtype -> nat
   ;; 2-aux.watsup:6.1-6.20
   def size(I32) = 32
 
-;; 2-aux.watsup:12.1-12.40
+;; 2-aux.watsup:14.1-14.40
 def test_sub_ATOM_22 : n -> nat
-  ;; 2-aux.watsup:13.1-13.38
+  ;; 2-aux.watsup:15.1-15.38
   def {n_3_ATOM_y : n} test_sub_ATOM_22(n_3_ATOM_y) = 0
 
-;; 2-aux.watsup:15.1-15.26
+;; 2-aux.watsup:17.1-17.26
 def curried_ : (n, n) -> nat
-  ;; 2-aux.watsup:16.1-16.39
+  ;; 2-aux.watsup:18.1-18.39
   def {n_1 : n, n_2 : n} curried_(n_1, n_2) = (n_1 + n_2)
+
+;; 2-aux.watsup:20.1-29.39
+syntax testfuse =
+  | AB_(nat, nat, nat)
+  | CD(nat, nat, nat)
+  | EF(nat, nat, nat)
+  | GH(nat, nat, nat)
+  | IJ(nat, nat, nat)
+  | KL(nat, nat, nat)
+  | MN(nat, nat, nat)
+  | OP(nat, nat, nat)
+  | QR(nat, nat, nat)
 
 ;; 3-typing.watsup:3.1-6.60
 syntax context = {FUNC functype*, GLOBAL globaltype*, TABLE tabletype*, MEM memtype*, ELEM elemtype*, DATA datatype*, LOCAL valtype*, LABEL resulttype*, RETURN resulttype?}
@@ -653,10 +665,10 @@ def table : (state, tableidx) -> tableinst
   ;; 4-runtime.watsup:106.1-106.52
   def {m : moduleinst, s : store, val : val, x : idx} table(`%;%`(s, `%;%`(m, val*)), x) = s.TABLE[m.TABLE[x]]
 
-;; 4-runtime.watsup:120.1-123.18
+;; 4-runtime.watsup:120.1-123.21
 rec {
 
-;; 4-runtime.watsup:120.1-123.18
+;; 4-runtime.watsup:120.1-123.21
 syntax E =
   | _HOLE
   | _SEQ(val*, E, instr*)
@@ -936,7 +948,7 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{test}_{\mathit{sub}_{\mathsf{ATOM}_{22}}}(\mathit{n}_{3_{\mathsf{ATOM}_{\mathit{y}}}}) &=& 0 &  \\
+\mathrm{test}_{\mathit{sub}_{\mathsf{atom}_{22}}}(\mathit{n}_{3_{\mathsf{atom}_{\mathit{y}}}}) &=& 0 &  \\
 \end{array}
 $$
 
@@ -948,6 +960,15 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}}
+& \mathit{testfuse} &::=& \mathsf{ab}_{\mathit{nat}}\,\,\mathit{nat}~\mathit{nat} \\ &&|&
+\mathsf{cd}_{\mathsf{\mathit{nat}}}\,\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}} \\ &&|&
+{\mathsf{ef\_}}{\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}} \\ &&|&
+{\mathsf{gh}_{\mathsf{\mathit{nat}}}}{\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}} \\ &&|&
+{\mathsf{ij}_{\mathsf{\mathit{nat}}}}{\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}} \\ &&|&
+{\mathsf{kl\_ab}}{\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}} \\ &&|&
+{\mathsf{mn\_}}{\mathsf{ab}~\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}} \\ &&|&
+{{\mathsf{op\_}}{\mathsf{ab}}}{\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}} \\ &&|&
+{\mathsf{qr}_{\mathsf{\mathit{nat}}}}{\mathsf{ab}~\mathsf{\mathit{nat}}~\mathsf{\mathit{nat}}} \\
 \mbox{(context)} & \mathit{context} &::=& \{\; \begin{array}[t]{@{}l@{}}
 \mathsf{func}~\mathit{functype}^\ast,\; \mathsf{global}~\mathit{globaltype}^\ast,\; \mathsf{table}~\mathit{tabletype}^\ast,\; \mathsf{mem}~\mathit{memtype}^\ast,\; \\
   \mathsf{elem}~\mathit{elemtype}^\ast,\; \mathsf{data}~\mathit{datatype}^\ast,\; \\
@@ -1638,7 +1659,7 @@ $$
 \mathsf{trap} \\
 \mbox{(evaluation context)} & \mathit{E} &::=& [\mathsf{\_}] \\ &&|&
 \mathit{val}^\ast~\mathit{E}~\mathit{instr}^\ast \\ &&|&
-{\mathsf{label}_{\mathsf{\mathit{n}}}}{\mathsf{\mathit{instr}^\ast}~\mathsf{\mathit{e}}} \\
+{\mathsf{label}_{\mathsf{\mathit{n}}}}{\mathsf{\{\mathit{instr}^\ast\}}~\mathsf{\mathit{e}}} \\
 \end{array}
 $$
 

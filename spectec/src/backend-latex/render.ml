@@ -126,6 +126,7 @@ let render_expand_fwd = ref (fun _ -> assert false)
 
 let is_digit c = '0' <= c && c <= '9'
 let is_upper c = 'A' <= c && c <= 'Z'
+let lower = String.lowercase_ascii
 
 let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
 let chop_sub id = String.sub id 0 (String.length id - 1)
@@ -148,10 +149,10 @@ let rec render_id_sub env style show at = function
   | [] -> ""
   | ""::ss -> render_id_sub env style show at ss
   | s::ss when style = `Var && is_upper s.[0] && not (Set.mem s !(env.vars)) ->
-    render_id_sub env `Atom show at (s::ss)  (* subscripts may be atoms *)
+    render_id_sub env `Atom show at (lower s ::ss)  (* subscripts may be atoms *)
   | s1::""::ss -> render_id_sub env style show at (s1::ss)
   | s1::s2::ss when style = `Atom && is_upper s2.[0] ->
-    render_id_sub env `Atom show at ((s1 ^ "_" ^ s2)::ss)
+    render_id_sub env `Atom show at ((s1 ^ "_" ^ lower s2)::ss)
   | s::ss ->
     let rec find_primes i =
       if i > 0 && s.[i - 1] = '\'' then find_primes (i - 1) else i
@@ -174,7 +175,7 @@ let render_varid env id = render_id env `Var env.show_var id
 let render_defid env id = render_id env `Func (ref Map.empty) id
 
 let render_atomid env id =
-  render_id' env `Atom (String.lowercase_ascii (quote_id id))
+  render_id' env `Atom (lower (quote_id id))
 
 let render_ruleid env id1 id2 =
   let id1' =
@@ -343,8 +344,13 @@ and render_expand env show id args f =
       let rargs = ref args in
       let exp = expand_exp rargs showexp in
       if !rargs <> [] then raise Arity_mismatch;
-      render_exp env exp
+      (* Avoid cyclic expansion *)
+      show := Map.remove id.it !show;
+      Fun.protect (fun () -> render_exp env exp)
+        ~finally:(fun () -> show := Map.add id.it showexp !show)
     with Arity_mismatch -> f ()
+      (* HACK: Ignore arity mismatches, such that overloading notation works,
+       * e.g., using CONST for both instruction and relation. *)
 
 
 (* Iteration *)
@@ -500,15 +506,7 @@ and render_exp env exp =
       )
   | IterE (exp1, iter) -> render_exp env exp1 ^ render_iter env iter
   | FuseE (exp1, exp2) ->
-    (* HACK. Is there a cleaner way? *)
-    let exp1', subscript =
-      match exp1.it with
-      | VarE id when ends_sub id.it -> VarE (chop_sub id.it $ id.at), true
-      | AtomE (Atom id) when ends_sub id -> AtomE (Atom (chop_sub id)), true
-      | exp1' -> exp1', false
-    in
-    "{" ^ render_exp env (exp1' $ exp1.at) ^ "}" ^
-      (if subscript then "_" else "") ^ "{" ^ render_exp env exp2 ^ "}"
+    "{" ^ render_exp env exp1 ^ "}" ^ "{" ^ render_exp env exp2 ^ "}"
   | HoleE _ -> assert false
 
 and render_exps sep env exps =
