@@ -41,7 +41,7 @@ syntax externval hint(desc "external value") =
 var xv : externval
 
 
-def $default_(valtype) : val  ;;hint(show $default_%)
+def $default_(valtype) : val
 def $default_(I32) = (CONST I32 0)
 def $default_(I64) = (CONST I64 0)
 def $default_(F32) = (CONST F32 0)

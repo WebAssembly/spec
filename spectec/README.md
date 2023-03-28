@@ -87,195 +87,22 @@ The language consists of few generic concepts:
   def $size(F64) = 64
   ```
 
-Larger examples can be found in the [`spec` subdirectory](https://github.com/Wasm-DSL/spectec/tree/main/spectec/spec).
+Larger examples can be found in the [`spec`](spec) subdirectory.
 
 
-## Syntax
+## Documentation
 
-### Lists
+Documentation can be found in the [`doc`](doc) subdirectory.
 
-```
-list(x, sep) ::=
-  epsilon
-  x
-  x sep list(x, sep)
-```
+Regarding the use of the language:
 
-### Literals
+* [Source Language](doc/Language.md)
+* [Latex Backend](doc/Latex.md)
 
-```
-nat ::= digit+
-text ::= """ utf8* """
-```
+Regarding the internal representations usable by backends:
 
-
-### Identifiers and Atoms
-
-```
-digit ::= "0" | ... | "9"
-upletter ::= "A" | ... | "Z"
-loletter ::= "a" | ... | "z"
-
-nat ::= digit+
-
-upid ::= (upletter | "_") (upletter | digit | "_" | "." | "'")*
-loid ::= (loletter | "`") (loletter | digit | "_" | "'")*
-id ::= upid | loid
-
-atomid ::= upid
-varid ::= loid
-defid ::= id
-relid ::= id
-ruleid ::= id
-
-atom ::=
-  atomid
-  "_|_"
-
-atomop ::=
-  ":" | ";" | "<:"
-  "|-" | "-|"
-  "->" | "~>"| "=>"
-  "`." | ".." | "..."
-```
-
-
-### Types
-
-```
-typ ::=
-  varid                                type name
-  "bool"                               booleans
-  "nat"                                natural numbers
-  "text"                               text strings
-  typ iter                             iteration
-  "(" list(typ, ",") ")"               parentheses or tupling
-
-iter ::=
-  "?"                                  optional
-  "*"                                  list
-  "+"                                  non-empty list
-  "^" arith                            list of specific length
-```
-
-In addition to type expressions, custom _notation_ types can be defined:
-
-```
-deftyp ::=
-  nottyp                                    free notation
-  "{" list(atom typ hint*, ",") "}"         records
-  "|" list(varid | atom nottyp hint*, "|")  variant
-
-nottyp ::=
-  typ                                       plain type
-  atom                                      atom
-  atomop nottyp                             infix atom
-  nottyp atomop nottyp                      infix atom
-  nottyp nottyp                             sequencing
-  "(" nottyp ")"                            parenthess
-  "`" "(" nottyp ")"                        custom brackets
-  "`" "[" nottyp "]"
-  "`" "{" nottyp "}"
-  nottyp iter                               iteration
-```
-
-Custom atoms, operators and brackets are uninterpreted by the DSL semantics itself and can be used to define symbolic syntax for language or relations.
-(Currently, most operators have hard-coded "natural" precedences. But these should be sufficient to emulate the kind of mixfix notation used for most relations.)
-
-
-### Expressions
-
-```
-notop ::= "~"
-logop ::= "/\" | "\/" | "=>"
-cmpop ::= "=" | "=/=" | "<" | ">" | "<=" | ">="
-exp ::=
-  varid                                meta variable
-  nat                                  natural number literal
-  text                                 text literal
-  notop exp                            logical negation
-  exp logop exp                        logical connective
-  exp cmpop exp                        comparison
-  "epsilon"                            empty sequence
-  exp exp                              sequencing
-  exp iter                             iteration
-  exp "[" arith "]"                    list indexing
-  exp "[" arith ":" arith "]"          list slicing
-  exp "[" path "=" exp "]"             list update
-  exp "[" path "=.." exp "]"           list extension
-  "{" list(atom exp, ",") "}"          record
-  exp "." atom                         record access
-  exp "," exp                          record extension
-  exp "++" exp                         record composition
-  "|" exp "|"                          list length
-  "(" list(exp, ",") ")"               parentheses or tupling
-  "$" defid exp?                       function invocation
-  atom                                 custom token
-  atomop exp                           custom operator
-  exp atomop exp
-  "`" "(" list(exp, ",") ")"           custom brackets
-  "`" "[" list(exp, ",") "]"
-  "`" "{" list(exp, ",") "}"
-  "$" "(" arith ")"                    escape to arithmetic syntax
-  "%"                                  hole (for syntax rewrites in hints)
-  exp "#" exp                          token concatenation (for syntax rewrites in hints)
-
-unop  ::= notop | "+" | "-"
-binop ::= logop | "+" | "-" | "*" | "/" | "^"
-arith ::=
-  varid                                meta variable
-  atom                                 token
-  nat                                  natural number literal
-  unop arith                           unary operator
-  arith binop arith                    binary operator
-  arith cmpop arith                    comparison
-  exp "[" arith "]"                    list indexing
-  "(" arith ")"                        parentheses
-  "|" exp "|"                          list length
-  "$" defid exp?                       function invocation
-
-path ::=
-  path? "[" arith "]"                  list element
-  path? "." atom                       record element
-```
-
-The various meta notations for lists, records, and tuples mirror the syntactic conventions defined in the Wasm spec.
-
-Arithmetic expressions are a subset of general expressions, but with different parsing and interpretation of `+`, `*`, and `^` operators.
-To use arithmetic operators in a place that is not naturally arithmetic, the subexpression must be escaped as `$( ... )`.
-
-
-### Definitions
-
-```
-def ::=
-  "syntax" varid hint* "=" deftyp                             syntax definition
-  "relation" relid hint* ":" typ                              relation declaration
-  "rule" relid (("/" | "-") ruleid)* ":" exp ("--" premise)*  rule
-  "var" varid ":" typ hint*                                   variable declaration
-  "def" "$" defid exp? ":" typ hint*                          function declaration
-  "def" "$" defid exp? "=" exp ("--" premise)*                function clause
-
-premise ::=
-  relid ":" exp                                               relational premise
-  "iff" exp                                                   side condition
-  "otherwise"                                                 fallback side condition
-  "(" relid ":" exp ")" iter                                  iterated relational premise
-  "(" "iff" exp ")" iter                                      iterated side condition
-
-hint ::=
-  "(" "hint" hintid exp ")"                                   hint
-```
-
-Syntax and variable declarations can also change the status of an uppercase identifier from `atom` to `varid` when used on the left-hand side.
-
-
-### Scripts
-
-```
-script ::=
-  def*
-```
+* [External Language](doc/EL.md)
+* [Internal Language](doc/IL.md)
 
 
 ## Status
@@ -304,22 +131,26 @@ Lowering from EL into IL infers additional information and makes it explicit in 
 * mark recursion groups and group definitions with rules, ordering everything by dependency.
 
 
-## Building and Running
+## Building
 
 * You will need `ocaml` and `dune` installed.
+
+* To run tests, you will also need `pdflatex` and `sphinx-build`.
 
 * Invoke `make` to build the executable.
 
 * In the same place, invoke `make test` to run it on the demo files from the `spec` directory.
 
 
-## Splicing
+## Running Latex Backend
 
-The tool can splice Latex formulas generated from, or expressed in terms of, the DSL into files. For example invoking
+The tool can splice Latex formulas generated from, or expressed in terms of, the DSL into files. For example, invoking
 ```
-watsup spec/*.watsup -p *.tex
+watsup <source-files ...> -p <patch-files ...>
 ```
-on a list of (Latex or other) files will insert the respective inline formulas or displaystyle definitions in place. For example, consider a Latex file like the following:
+where `source-files` are the DSL files, and `patch-files` is a set of files to process (Latex, Sphinx, or other text formats), will splice Latex formulas or displaystyle definitions into the latter files.
+
+Consider a Latex file like the following:
 ```
 [...]
 \subsection*{Syntax}
@@ -338,9 +169,11 @@ An instruction sequence @@{:instr*} is well-typed with an instruction type @@{:t
 @@@{rule: InstrSeq_ok/weak InstrSeq_ok/frame}
 [...]
 ```
-The places to splice in formulas are indicated by _anchors_. The set of anchor names like `@@` or `@@@` it freely configurable in the tool, and each can define a different prelude/epilogue for their expansion. For example, here `@@` would use `$...$` for Latex (or `:math:'...'` for Sphinx), and likewise, `@@@` maps to `$$...$$` (or `.. math: ...)`, respectively.
+The places to splice in formulas are indicated by _anchors_. For Latex, the two possible anchors are currently `@@` or `@@@`, which expand to `$...$` and `$$...$$`, respectively (for Sphinx, replace the anchor tokens with `$` and `$$`).
 
 There are two forms of splices:
 
 1. _expression splice_ (`@@{: exp }`): simply renders a DSL expression,
-2. _definition splice_ (`@@{sort: id id ...}`): inserts the named definition(s)/rule(s) etc of the indicated sort `sort`; it can list multiple definitions of the same sort, which well then be laid out together in a single line or array.
+2. _definition splice_ (`@@{sort: id id ...}`): inserts the named definitions or rules of the indicated sort `sort` as defined in the DSL sources.
+
+See the [documentation](doc/Latex.md) for more details.
