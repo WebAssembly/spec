@@ -217,4 +217,4 @@ The frontend checks that all definitions are consistent. Among other things, thi
 
 The type system uses a simple form of bidrectional typing to resolve and disambiguate uses of free-form notation.
 
-While type-checking, the frontend _elaborates_ (lowers) the _external language_ ([EL](doc/EL.md)) representing the input into a more rigidly type _internal language_ ([IL](doc/IL.md)) suitable for consumption by code-generating backends. This can be viewed as a form of desugaring. The IL is unambiguous and makes all relevant information explicit, such as recursion groups, depedency order, local variable binders and their types, uses of subtype injection, list construction, etc.
+While type-checking, the frontend _elaborates_ (lowers) the _external language_ ([EL](EL.md)) representing the input into a more rigidly type _internal language_ ([IL](IL.md)) suitable for consumption by code-generating backends. This can be viewed as a form of desugaring. The IL is unambiguous and makes all relevant information explicit, such as recursion groups, depedency order, local variable binders and their types, uses of subtype injection, list construction, etc.
