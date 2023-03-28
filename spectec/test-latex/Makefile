@@ -65,7 +65,7 @@ sphinx-html: $(SPHINXOUTNAME).rst conf.py
 	mkdir -p $(SPHINXDIR)/_build
 	cp $(SPHINXOUTNAME).rst conf.py $(SPHINXDIR)
 	sphinx-build -b html $(SPHINXDIR) $(SPHINXDIR)/_build
-	sed "s/textsc{/mathrm{/g" $(SPHINXDIR) $(SPHINXDIR)/_build/$(SPHINXOUTNAME).html >$(SPHINXOUTNAME).html.tmp
+	sed "s/textsc{/mathrm{/g" $(SPHINXDIR)/_build/$(SPHINXOUTNAME).html >$(SPHINXOUTNAME).html.tmp
 	mv -f $(SPHINXOUTNAME).html.tmp $(SPHINXDIR)/_build/$(SPHINXOUTNAME).html
 
 sphinx-pdf: $(SPHINXOUTNAME).rst conf.py
