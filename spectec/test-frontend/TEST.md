@@ -798,7 +798,7 @@ $$
 \mbox{(number type)} & \mathit{numtype} &::=& \mathsf{i32} ~|~ \mathsf{i64} ~|~ \mathsf{f32} ~|~ \mathsf{f64} \\[0.5ex]
 \mbox{(vector type)} & \mathit{vectype} &::=& \mathsf{v128} \\[0.5ex]
 \mbox{(reference type)} & \mathit{reftype} &::=& \mathsf{funcref} ~|~ \mathsf{externref} \\[0.5ex]
-\mbox{(value type)} & \mathit{valtype} &::=& numtype ~|~ vectype ~|~ reftype ~|~ \mathsf{bot} \\
+\mbox{(value type)} & \mathit{valtype} &::=& \mathit{numtype} ~|~ \mathit{vectype} ~|~ \mathit{reftype} ~|~ \mathsf{bot} \\
 \end{array}
 $$
 
@@ -915,10 +915,10 @@ $$
 
 $$
 \begin{array}{@{}lcll@{}}
-|\mathsf{i32}| &=& 32 \\
-|\mathsf{i64}| &=& 64 \\
-|\mathsf{f32}| &=& 32 \\
-|\mathsf{f64}| &=& 64 \\
+{|\mathsf{i32}|} &=& 32 \\
+{|\mathsf{i64}|} &=& 64 \\
+{|\mathsf{f32}|} &=& 32 \\
+{|\mathsf{f64}|} &=& 64 \\
 \end{array}
 $$
 
@@ -1384,7 +1384,7 @@ $$
 \begin{array}{@{}lrrl@{}}
 \mbox{(number)} & \mathit{num} &::=& \mathsf{\mathit{numtype}}.\mathsf{const}~\mathsf{\mathit{c}\_{\mathit{numtype}}} \\[0.5ex]
 \mbox{(reference)} & \mathit{ref} &::=& \mathsf{ref.null}~\mathit{reftype} ~|~ \mathsf{ref.func}~\mathsf{\mathit{funcaddr}} ~|~ \mathsf{ref.extern}~\mathsf{\mathit{hostaddr}} \\[0.5ex]
-\mbox{(value)} & \mathit{val} &::=& num ~|~ ref \\[0.5ex]
+\mbox{(value)} & \mathit{val} &::=& \mathit{num} ~|~ \mathit{ref} \\[0.5ex]
 \mbox{(result)} & \mathit{result} &::=& \mathit{val}^\ast ~|~ \mathsf{trap} \\
 \end{array}
 $$
@@ -1467,7 +1467,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}}
-\mbox{(administrative instruction)} & \mathit{instr} &::=& instr \\ &&|&
+\mbox{(administrative instruction)} & \mathit{instr} &::=& \mathit{instr} \\ &&|&
 \mathsf{ref.func}~\mathsf{\mathit{funcaddr}} \\ &&|&
 \mathsf{ref.extern}~\mathsf{\mathit{hostaddr}} \\ &&|&
 \mathsf{call}~\mathsf{\mathit{funcaddr}} \\ &&|&
@@ -1542,9 +1542,9 @@ $$
 $$
 \begin{array}{@{}l@{}lcll@{}}
 {[\textsc{\scriptsize E-br\_table-lt}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{br\_table}~\mathit{l}^\ast~{\mathit{l}'}) &\hookrightarrow& (\mathsf{br}~\mathit{l}^\ast[\mathit{i}]) &
-  \mbox{if}~\mathit{i} < |\mathit{l}^\ast|\\
+  \mbox{if}~\mathit{i} < {|\mathit{l}^\ast|}\\
 {[\textsc{\scriptsize E-br\_table-le}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{br\_table}~\mathit{l}^\ast~{\mathit{l}'}) &\hookrightarrow& (\mathsf{br}~{\mathit{l}'}) &
-  \mbox{if}~\mathit{i} \geq |\mathit{l}^\ast|\\
+  \mbox{if}~\mathit{i} \geq {|\mathit{l}^\ast|}\\
 \end{array}
 $$
 

@@ -355,7 +355,7 @@ and render_deftyp env deftyp =
     "\\end{array}"
   | VariantT (dots1, ids, typcases, dots2) ->
     altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
-      (render_dots dots1 @ map_nl_list it ids @
+      (render_dots dots1 @ map_nl_list (render_varid env env.show_syn) ids @
         map_nl_list (render_typcase env deftyp.at) typcases @ render_dots dots2)
 
 and render_nottyp env nottyp =
@@ -437,7 +437,7 @@ and render_exp env exp =
     render_exp env exp1 ^ "." ^ render_fieldname env atom exp.at
   | CommaE (exp1, exp2) -> render_exp env exp1 ^ ", " ^ render_exp env exp2
   | CompE (exp1, exp2) -> render_exp env exp1 ^ " \\oplus " ^ render_exp env exp2
-  | LenE exp1 -> "|" ^ render_exp env exp1 ^ "|"
+  | LenE exp1 -> "{|" ^ render_exp env exp1 ^ "|}"
   | ParenE exp -> "(" ^ render_exp env exp ^ ")"
   | TupE exps -> "(" ^ render_exps ",\\, " env exps ^ ")"
   | InfixE ({it = SeqE []; _}, atom, exp2) ->
