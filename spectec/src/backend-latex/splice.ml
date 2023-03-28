@@ -24,7 +24,7 @@ let error file s i msg =
 module Map = Map.Make(String)
 
 type syntax = {sdef : def; fragments : (string * def) list}
-type relation = {rdef : def; rules : def Map.t}
+type relation = {rdef : def; rules : (string * def) list}
 type definition = {fdef : def; clauses : def list}
 
 type env =
@@ -45,10 +45,10 @@ let env_def env def =
     let fragments = syntax.fragments @ [(id2.it, def)] in
     env.syn <- Map.add id1.it {syntax with fragments} env.syn
   | RelD (id, _, _) ->
-    env.rel <- Map.add id.it {rdef = def; rules = Map.empty} env.rel
+    env.rel <- Map.add id.it {rdef = def; rules = []} env.rel
   | RuleD (id1, id2, _, _) ->
     let relation = Map.find id1.it env.rel in
-    let rules = Map.add id2.it def relation.rules in
+    let rules = relation.rules @ [(id2.it, def)] in
     env.rel <- Map.add id1.it {relation with rules} env.rel
   | DecD (id, _, _, _) ->
     env.def <- Map.add id.it {fdef = def; clauses = []} env.def
@@ -72,31 +72,46 @@ let env config script : env =
   env
 
 
+let to_regexp s =
+  Str.(regexp (global_replace (regexp "\\*\\|\\?") (".\\0") s))
+
 let find_syntax env file s (i, id1, id2) =
   match Map.find_opt id1 env.syn with
   | None -> error file s i ("unknown syntax identifier `" ^ id1 ^ "`")
   | Some syntax ->
-    match List.assoc_opt id2 syntax.fragments with
-    | None -> error file s i ("unknown syntax fragment identifier `" ^ id2 ^ "`")
-    | Some def -> def
+    let re = to_regexp id2 in
+    let defs =
+      List.filter (fun (id, _) -> Str.string_match re id 0) syntax.fragments in
+    if defs = [] then
+      error file s i
+        ("unknown syntax fragment identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
+    List.map snd defs
 
-let find_relation env file s (i, id1, _id2) =
+let find_relation env file s (i, id1, id2) =
+  if id2 <> "" then
+    error file s i ("unknown relation identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
   match Map.find_opt id1 env.rel with
   | None -> error file s i ("unknown relation identifier `" ^ id1 ^ "`")
-  | Some relation -> relation.rdef
+  | Some relation -> [relation.rdef]
 
 let find_rule env file s (i, id1, id2) =
   match Map.find_opt id1 env.rel with
   | None -> error file s i ("unknown relation identifier `" ^ id1 ^ "`")
   | Some relation ->
-    match Map.find_opt id2 relation.rules with
-    | None -> error file s i ("unknown relation identifier `" ^ id2 ^ "`")
-    | Some def -> def
+    let re = to_regexp id2 in
+    let defs =
+      List.filter (fun (id, _) -> Str.string_match re id 0) relation.rules in
+    if defs = [] then
+      error file s i
+        ("unknown rule identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
+    List.map snd defs
 
-let find_func env file s (i, id1, _id2) =
+let find_func env file s (i, id1, id2) =
+  if id2 <> "" then
+    error file s i ("unknown definition identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
   match Map.find_opt id1 env.def with
   | None -> error file s i ("unknown definition identifier `" ^ id1 ^ "`")
-  | Some definition -> definition.fdef
+  | Some definition -> [definition.fdef]
     (* TODO: splice definition clauses *)
 
 
@@ -130,7 +145,7 @@ let rec match_anchor_end file s j i depth =
 let rec match_id' s i =
   if !i < len s then
   match s.[!i] with
-  | 'A'..'Z' | 'a'..'z' | '0'..'9' | '_' | '\'' | '`' | '-' ->
+  | 'A'..'Z' | 'a'..'z' | '0'..'9' | '_' | '\'' | '`' | '-' | '*' ->
     (incr i; match_id' s i)
   | _ -> ()
 
@@ -163,7 +178,7 @@ let try_def_anchor env file s i r sort space1 space2 find : bool =
     if not (try_string s i ":") then
       error file s !i "colon `:` expected";
     let idids = match_id_id_list file s i space1 space2 in
-    let defs = List.map (find env file s) idids in
+    let defs = List.concat_map (find env file s) idids in
     r := Render.render_defs env.render defs
   );
   b

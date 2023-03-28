@@ -43,4 +43,4 @@ $${rule: Instr_ok/if}
 
 $${rule: Step/pure Step/read}
 
-$${rule: Step_pure/block Step_pure/loop Step_pure/if-true Step_pure/if-false}
+$${rule: Step_pure/block Step_pure/loop Step_pure/if-*}

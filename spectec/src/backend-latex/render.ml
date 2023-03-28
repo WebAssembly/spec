@@ -19,6 +19,7 @@ type env =
   { config : config;
     show_syn : exp Map.t ref;
     show_var : exp Map.t ref;
+    show_rel : exp Map.t ref;
     show_def : exp Map.t ref;
     show_case : exp Map.t ref;
     show_field : exp Map.t ref;
@@ -49,16 +50,19 @@ let env_def env def =
   match def.it with
   | SynD (id, _, deftyp, hints) ->
     env_hints env.show_syn id.it hints;
+    env_hints env.show_var id.it hints;
     env_deftyp env deftyp
+  | RelD (id, _, hints) -> env_hints env.show_rel id.it hints
   | VarD (id, _, hints) -> env_hints env.show_var id.it hints
   | DecD (id, _, _, hints) -> env_hints env.show_def id.it hints
-  | RelD _ | RuleD _ | DefD _ | SepD -> ()
+  | RuleD _ | DefD _ | SepD -> ()
 
 let env config script : env =
   let env =
     { config;
       show_syn = ref Map.empty;
       show_var = ref Map.empty;
+      show_rel = ref Map.empty;
       show_def = ref Map.empty;
       show_case = ref Map.empty;
       show_field = ref Map.empty;
