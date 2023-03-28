@@ -22,8 +22,8 @@ let parse_script s =
 let parse_file file =
   let ic = open_in file in
   try
-    let lexbuf = Lexing.from_channel ic in
-    let ast = with_lexbuf file lexbuf Parser.script in
-    close_in ic;
-    ast
-  with exn -> close_in ic; raise exn
+    Fun.protect
+      (fun () -> with_lexbuf file (Lexing.from_channel ic) Parser.script)
+      ~finally:(fun () -> close_in ic)
+  with Sys_error msg ->
+    raise (Source.Error (Source.region_of_file file, "i/o error: " ^ msg))

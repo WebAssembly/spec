@@ -1,20 +1,32 @@
 open Util
 
+
+(* Configuration *)
+
 let name = "watsup"
-let version = "0.2"
+let version = "0.3"
+
+
+(* Flags and parameters *)
+
+let config = ref Backend_latex.Config.latex
+
+let log = ref false  (* log execution steps *)
+let dst = ref false  (* patch files *)
+let dry = ref false  (* dry run for patching *)
+let warn = ref false (* warn about unused or reused splices *)
+
+let srcs = ref []    (* src file arguments *)
+let dsts = ref []    (* destination file arguments *)
+let odst = ref ""    (* generation file argument *)
+
+
+(* Argument parsing *)
 
 let banner () =
   print_endline (name ^ " " ^ version ^ " generator")
 
 let usage = "Usage: " ^ name ^ " [option] [file ...] [-p file ...]"
-
-let config = ref Backend_latex.Config.latex
-let warn = ref false
-let dry = ref false
-let dst = ref false
-let srcs = ref []
-let dsts = ref []
-let odst = ref ""
 
 let add_arg source =
   let args = if !dst then dsts else srcs in args := !args @ [source]
@@ -25,6 +37,7 @@ let argspec = Arg.align
   "-o", Arg.String (fun s -> odst := s), " Generate file";
   "-p", Arg.Set dst, " Patch files";
   "-d", Arg.Set dry, " Dry run";
+  "-l", Arg.Set log, " Log execution steps";
   "-w", Arg.Set warn, " Warn about unsed or multiply used splices";
   "--latex", Arg.Unit (fun () -> config := Backend_latex.Config.latex),
     " Use Latex settings (default)";
@@ -34,34 +47,28 @@ let argspec = Arg.align
   "--help", Arg.Unit ignore, "";
 ]
 
-let error at msg =
-  prerr_endline (Source.string_of_region at ^ ": " ^ msg);
-  exit 1
 
-let trace s = if !odst = "" then Printf.printf "== %s\n%!" s
+(* Main *)
 
-let parse_file file =
-  try
-    Frontend.Parse.parse_file file
-  with Sys_error msg ->
-    error (Source.region_of_file file) ("i/o error: " ^ msg)
+let log s = if !log then Printf.printf "== %s\n%!" s
 
 let () =
   Printexc.record_backtrace true;
   try
     Arg.parse argspec add_arg usage;
-    trace "Parsing...";
-    let el = List.concat_map parse_file !srcs in
-    trace "Multiplicity checking...";
+    log "Parsing...";
+    let el = List.concat_map Frontend.Parse.parse_file !srcs in
+    log "Multiplicity checking...";
     Frontend.Multiplicity.check el;
-    trace "Elaboration...";
+    log "Elaboration...";
     let il = Frontend.Elab.elab el in
-    trace "Printing...";
-    if !odst = "" && !dsts = [] then
+    if !odst = "" && !dsts = [] then (
+      log "Printing...";
       Printf.printf "%s\n%!" (Il.Print.string_of_script il);
-    trace "IL Validation...";
+    );
+    log "IL Validation...";
     Il.Validation.valid il;
-    trace "Latex Generation...";
+    log "Latex Generation...";
     if !odst = "" && !dsts = [] then
       print_endline (Backend_latex.Gen.gen_string el);
     if !odst <> "" then
@@ -71,10 +78,11 @@ let () =
       List.iter (Backend_latex.Splice.splice_file ~dry:!dry env) !dsts;
       if !warn then Backend_latex.Splice.warn env;
     );
-    trace "Complete."
+    log "Complete."
   with
   | Source.Error (at, msg) ->
-    error at msg
+    prerr_endline (Source.string_of_region at ^ ": " ^ msg);
+    exit 1
   | exn ->
     flush_all ();
     prerr_endline
