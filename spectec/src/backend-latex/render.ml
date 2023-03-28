@@ -11,12 +11,14 @@ let error at msg = Source.error at "latex generation" msg
 
 (* Environment *)
 
+module Set = Set.Make(String)
 module Map = Map.Make(String)
 
 type rel_sort = TypingRel | ReductionRel
 
 type env =
   { config : config;
+    vars : Set.t ref;
     show_syn : exp Map.t ref;
     show_var : exp Map.t ref;
     show_rel : exp Map.t ref;
@@ -30,6 +32,7 @@ type env =
 
 let new_env config =
   { config;
+    vars = ref Set.empty;
     show_syn = ref Map.empty;
     show_var = ref Map.empty;
     show_rel = ref Map.empty;
@@ -67,12 +70,17 @@ let env_deftyp env deftyp =
 let env_def env def =
   match def.it with
   | SynD (id, _, deftyp, hints) ->
+    env.vars := Set.add id.it !(env.vars);
     env_hints env.show_syn id.it hints;
     env_hints env.show_var id.it hints;
     env_deftyp env deftyp
-  | RelD (id, _, hints) -> env_hints env.show_rel id.it hints
-  | VarD (id, _, hints) -> env_hints env.show_var id.it hints
-  | DecD (id, _, _, hints) -> env_hints env.show_def id.it hints
+  | RelD (id, _, hints) ->
+    env_hints env.show_rel id.it hints
+  | VarD (id, _, hints) ->
+    env.vars := Set.add id.it !(env.vars);
+    env_hints env.show_var id.it hints
+  | DecD (id, _, _, hints) ->
+    env_hints env.show_def id.it hints
   | RuleD _ | DefD _ | SepD -> ()
 
 let env config script : env =
@@ -117,6 +125,12 @@ let strip_nl = function
 let render_expand_fwd = ref (fun _ -> assert false)
 
 let is_digit c = '0' <= c && c <= '9'
+let is_upper c = 'A' <= c && c <= 'Z'
+
+let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
+let chop_sub id = String.sub id 0 (String.length id - 1)
+
+let quote_id id = Str.(global_replace (regexp "_") "\\_" id)
 
 let id_style = function
   | `Var -> "\\mathit"
@@ -124,17 +138,20 @@ let id_style = function
   | `Atom -> "\\mathsf"
   | `Token -> "\\mathtt"
 
-let render_id env style id =
+let render_id' env style id =
   if env.config.macros_for_ids then
     "\\" ^ id
   else
     id_style style ^ "{" ^ id ^ "}"
 
-let rec render_varid env show id =
-  render_varid_sub env show id.at (String.split_on_char '_' id.it)
-
-and render_varid_sub env show at = function
+let rec render_id_sub env style show at = function
   | [] -> ""
+  | ""::ss -> render_id_sub env style show at ss
+  | s::ss when style = `Var && is_upper s.[0] && not (Set.mem s !(env.vars)) ->
+    render_id_sub env `Atom show at (s::ss)  (* subscripts may be atoms *)
+  | s1::""::ss -> render_id_sub env style show at (s1::ss)
+  | s1::s2::ss when style = `Atom && is_upper s2.[0] ->
+    render_id_sub env `Atom show at ((s1 ^ "_" ^ s2)::ss)
   | s::ss ->
     let rec find_primes i =
       if i > 0 && s.[i - 1] = '\'' then find_primes (i - 1) else i
@@ -144,11 +161,20 @@ and render_varid_sub env show at = function
     let s' = String.sub s 0 i in
     let s'' =
       if String.for_all is_digit s' then s' else
-      !render_expand_fwd env show (s' $ at) [] (fun () -> render_id env `Var s')
+      !render_expand_fwd env show (s' $ at) [] (fun () -> render_id' env style s')
     in
     (if i = n then s'' else "{" ^ s'' ^ String.sub s i (n - i) ^ "}") ^
-    (if ss = [] then "" else "_{" ^ render_varid_sub env show at ss ^ "}")
+    (if ss = [] then "" else "_{" ^ render_id_sub env `Var env.show_var at ss ^ "}")
 
+let render_id env style show id =
+  render_id_sub env style show id.at (String.split_on_char '_' id.it)
+
+let render_synid env id = render_id env `Var env.show_syn id
+let render_varid env id = render_id env `Var env.show_var id
+let render_defid env id = render_id env `Func (ref Map.empty) id
+
+let render_atomid env id =
+  render_id' env `Atom (String.lowercase_ascii (quote_id id))
 
 let render_ruleid env id1 id2 =
   let id1' =
@@ -159,8 +185,7 @@ let render_ruleid env id1 id2 =
       error at "malformed `show` hint for relation"
   in
   let id2' = if id2.it = "" then "" else "-" ^ id2.it in
-  let id' = Str.(global_replace (regexp "_") "\\_" (id1' ^ id2')) in
-  "\\textsc{\\scriptsize " ^ id' ^ "}"
+  "\\textsc{\\scriptsize " ^ quote_id (id1' ^ id2') ^ "}"
 
 let render_rule_deco env pre id1 id2 post =
   if not env.deco_rule then "" else
@@ -170,10 +195,8 @@ let render_rule_deco env pre id1 id2 post =
 (* Operators *)
 
 let render_atom env = function
-  | Atom atomid when atomid.[0] = '_' && atomid <> "_" -> ""
-  | Atom atomid ->
-    let atomid' = Str.(global_replace (regexp "_") "\\_" atomid) in
-    render_id env `Atom (String.lowercase_ascii atomid')
+  | Atom id when id.[0] = '_' && id <> "_" -> ""
+  | Atom id -> render_atomid env id
   | Bot -> "\\bot"
   | Dot -> "."
   | Dot2 -> ".."
@@ -337,10 +360,10 @@ and render_iter env = function
 
 and render_typ env typ =
   match typ.it with
-  | VarT id -> render_varid env env.show_syn id
-  | BoolT -> render_id env `Var "bool"
-  | NatT -> render_id env `Var "nat"
-  | TextT -> render_id env `Var "text"
+  | VarT id -> render_synid env id
+  | BoolT -> render_synid env ("bool" $ typ.at)
+  | NatT -> render_synid env ("nat" $ typ.at)
+  | TextT -> render_synid env ("text" $ typ.at)
   | ParenT typ -> "("^ render_typ env typ ^")"
   | TupT typs -> "("^ render_typs ",\\; " env typs ^")"
   | IterT (typ1, iter) -> render_typ env typ1 ^ render_iter env iter
@@ -359,7 +382,7 @@ and render_deftyp env deftyp =
     "\\end{array}"
   | VariantT (dots1, ids, typcases, dots2) ->
     altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
-      (render_dots dots1 @ map_nl_list (render_varid env env.show_syn) ids @
+      (render_dots dots1 @ map_nl_list (render_synid env) ids @
         map_nl_list (render_typcase env deftyp.at) typcases @ render_dots dots2)
 
 and render_nottyp env nottyp =
@@ -400,16 +423,17 @@ and render_typcase env at (atom, nottyps, _hints) =
 
 (* Expressions *)
 
-and unparen_exp exp =
+and untup_exp exp =
   match exp.it with
-  | ParenE exp1 -> exp1
-  | _ -> exp
+  | TupE exps -> exps
+  | ParenE exp1 -> [exp1]
+  | _ -> [exp]
 
 and render_exp env exp =
   match exp.it with
-  | VarE id -> render_varid env env.show_var id
+  | VarE id -> render_varid env id
   | AtomE atom -> render_expcase env atom [] exp.at
-  | BoolE b -> render_id env `Atom (string_of_bool b)
+  | BoolE b -> render_atom env (Atom (string_of_bool b))
   | NatE n -> string_of_int n
   | TextE t -> "``" ^ t ^ "''"
   | UnE (unop, exp2) -> render_unop unop ^ render_exp env exp2
@@ -450,22 +474,31 @@ and render_exp env exp =
     render_exp env exp1 ^ space (render_atom env) atom ^ render_exp env exp2
   | BrackE (brack, exp) ->
     let l, r = render_brack brack in l ^ render_exp env exp ^ r
-  | CallE (id, exp) ->
-    render_expand env env.show_def id [unparen_exp exp]
-      (fun () -> render_id env `Func id.it ^ render_exp env exp)
+  | CallE (id, exp1) when ends_sub id.it ->
+    render_expand env env.show_def id (untup_exp exp1)
+      (fun () -> render_defid env (chop_sub id.it $ id.at) ^
+        let exp1', exp2' =
+          match untup_exp exp1 with
+          | [] -> SeqE [] $ exp1.at, SeqE [] $ exp1.at
+          | [exp1'] -> exp1', SeqE [] $ exp1.at
+          | exp1'::exps -> exp1', TupE exps $ exp1.at
+        in
+        "_{" ^ render_exp env exp1' ^ "}" ^ render_exp env exp2'
+      )
+  | CallE (id, exp1) ->
+    render_expand env env.show_def id (untup_exp exp1)
+      (fun () -> render_defid env id ^ render_exp env exp1)
   | IterE (exp1, iter) -> render_exp env exp1 ^ render_iter env iter
   | FuseE (exp1, exp2) ->
     (* HACK. Is there a cleaner way? *)
     let exp1', subscript =
       match exp1.it with
-      | VarE {it = id; at} when id.[String.length id - 1] = '_' ->
-        VarE (String.sub id 0 (String.length id - 1) $ at) $ exp1.at, true
-      | AtomE (Atom id) when id.[String.length id - 1] = '_' ->
-        AtomE (Atom (String.sub id 0 (String.length id - 1))) $ exp1.at, true
-      | _ -> exp1, false
+      | VarE id when ends_sub id.it -> VarE (chop_sub id.it $ id.at), true
+      | AtomE (Atom id) when ends_sub id -> AtomE (Atom (chop_sub id)), true
+      | exp1' -> exp1', false
     in
-    "{" ^ render_exp env exp1' ^ "}" ^ (if subscript then "_" else "") ^
-      "{" ^ render_exp env exp2 ^ "}"
+    "{" ^ render_exp env (exp1' $ exp1.at) ^ "}" ^
+      (if subscript then "_" else "") ^ "{" ^ render_exp env exp2 ^ "}"
   | HoleE _ -> assert false
 
 and render_exps sep env exps =
@@ -546,8 +579,7 @@ let render_syndef env def =
     | true, Some s -> "\\mbox{(" ^ s ^ ")} & "
     | _ -> "& "
     ) ^
-    render_varid env env.show_syn id1 ^ " &::=& " ^
-      render_deftyp env deftyp
+    render_synid env id1 ^ " &::=& " ^ render_deftyp env deftyp
   | _ -> assert false
 
 let render_ruledef env def =
@@ -568,7 +600,7 @@ let render_conditions env = function
   | [Elem {it = ElsePr; _}] -> " &\\quad\n  " ^ word "otherwise"
   | prems ->
     " &\\quad\n  " ^ word "if" ^ "~" ^
-    concat_map_nl "\\\\\n &&&\\quad {\\land}~" "" (render_premise env) prems
+    concat_map_nl " \\\\\n &&&\\quad {\\land}~" "" (render_premise env) prems
 
 let render_reddef env def =
   match def.it with

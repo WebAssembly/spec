@@ -44,6 +44,13 @@ $${rule+: Instr_ok/loop}
 $${rule+: Instr_ok/if}
 
 
+**Runtime**
+
+$${definition: default_}
+
+$${definition: {funcaddr funcinst} {func table}}
+
+
 **Reduction** ${relation: Step_pure}
 
 $${rule: Step/pure Step/read}

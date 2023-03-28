@@ -7,3 +7,10 @@ def $size(I32) = 32
 def $size(I64) = 64
 def $size(F32) = 32
 def $size(F64) = 64
+
+
+def $test_sub_ATOM_22(n_3_ATOM_y) : nat
+def $test_sub_ATOM_22(n_3_ATOM_y) = 0
+
+def $curried_(n, n) : nat
+def $curried_(n_1, n_2) = $(n_1 + n_2)

@@ -241,6 +241,16 @@ def size : numtype -> nat
   ;; 2-aux.watsup:6.1-6.20
   def size(I32) = 32
 
+;; 2-aux.watsup:12.1-12.40
+def test_sub_ATOM_22 : n -> nat
+  ;; 2-aux.watsup:13.1-13.38
+  def {n_3_ATOM_y : n} test_sub_ATOM_22(n_3_ATOM_y) = 0
+
+;; 2-aux.watsup:15.1-15.26
+def curried_ : (n, n) -> nat
+  ;; 2-aux.watsup:16.1-16.39
+  def {n_1 : n, n_2 : n} curried_(n_1, n_2) = (n_1 + n_2)
+
 ;; 3-typing.watsup:3.1-6.60
 syntax context = {FUNC functype*, GLOBAL globaltype*, TABLE tabletype*, MEM memtype*, ELEM elemtype*, DATA datatype*, LOCAL valtype*, LABEL resulttype*, RETURN resulttype?}
 
@@ -560,18 +570,18 @@ syntax externval =
   | TABLE(tableaddr)
   | MEM(memaddr)
 
-;; 4-runtime.watsup:44.1-44.28
-def default : valtype -> val
-  ;; 4-runtime.watsup:49.1-49.43
-  def {reftype : reftype} default(reftype <: valtype) = REF.NULL(reftype)
-  ;; 4-runtime.watsup:48.1-48.34
-  def default(F64) = CONST(F64, 0)
-  ;; 4-runtime.watsup:47.1-47.34
-  def default(F32) = CONST(F32, 0)
-  ;; 4-runtime.watsup:46.1-46.34
-  def default(I64) = CONST(I64, 0)
-  ;; 4-runtime.watsup:45.1-45.34
-  def default(I32) = CONST(I32, 0)
+;; 4-runtime.watsup:44.1-44.29
+def default_ : valtype -> val
+  ;; 4-runtime.watsup:49.1-49.34
+  def {rt : reftype} default_(rt <: valtype) = REF.NULL(rt)
+  ;; 4-runtime.watsup:48.1-48.35
+  def default_(F64) = CONST(F64, 0)
+  ;; 4-runtime.watsup:47.1-47.35
+  def default_(F32) = CONST(F32, 0)
+  ;; 4-runtime.watsup:46.1-46.35
+  def default_(I64) = CONST(I64, 0)
+  ;; 4-runtime.watsup:45.1-45.35
+  def default_(I32) = CONST(I32, 0)
 
 ;; 4-runtime.watsup:60.1-60.71
 syntax exportinst = EXPORT(name, externval)
@@ -625,20 +635,20 @@ syntax config = `%;%`(state, admininstr*)
 
 ;; 4-runtime.watsup:96.1-96.52
 def funcaddr : state -> funcaddr*
-  ;; 4-runtime.watsup:97.1-97.37
+  ;; 4-runtime.watsup:97.1-97.39
   def {m : moduleinst, s : store, val : val} funcaddr(`%;%`(s, `%;%`(m, val*))) = m.FUNC
 
 ;; 4-runtime.watsup:99.1-99.52
 def funcinst : state -> funcinst*
-  ;; 4-runtime.watsup:100.1-100.29
+  ;; 4-runtime.watsup:100.1-100.31
   def {f : frame, s : store} funcinst(`%;%`(s, f)) = s.FUNC
 
-;; 4-runtime.watsup:102.1-102.56
+;; 4-runtime.watsup:102.1-102.61
 def func : (state, funcidx) -> funcinst
   ;; 4-runtime.watsup:103.1-103.49
   def {m : moduleinst, s : store, val : val, x : idx} func(`%;%`(s, `%;%`(m, val*)), x) = s.FUNC[m.FUNC[x]]
 
-;; 4-runtime.watsup:105.1-105.60
+;; 4-runtime.watsup:105.1-105.65
 def table : (state, tableidx) -> tableinst
   ;; 4-runtime.watsup:106.1-106.52
   def {m : moduleinst, s : store, val : val, x : idx} table(`%;%`(s, `%;%`(m, val*)), x) = s.TABLE[m.TABLE[x]]
@@ -729,7 +739,7 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
 relation Step_read: `%~>%`(config, admininstr*)
   ;; 5-reduction.watsup:87.1-89.62
   rule call_addr {a : addr, instr : instr, k : nat, m : moduleinst, n : n, t : valtype, t_1 : valtype, t_2 : valtype, val : val, z : state}:
-    `%~>%`(`%;%`(z, (val <: admininstr)^k :: [CALL_ADDR(a)]), [FRAME(n, `%;%`(m, val^k :: $default(t)*), [LABEL(n, [], (instr <: admininstr)*)])])
+    `%~>%`(`%;%`(z, (val <: admininstr)^k :: [CALL_ADDR(a)]), [FRAME(n, `%;%`(m, val^k :: $default_(t)*), [LABEL(n, [], (instr <: admininstr)*)])])
     -- iff ($funcinst(z)[a] = `%;%`(m, FUNC(`%->%`(t_1^k, t_2^n), t*, instr*)))
 
   ;; 5-reduction.watsup:83.1-85.15
@@ -919,6 +929,20 @@ $$
 {|\mathsf{i64}|} &=& 64 &  \\
 {|\mathsf{f32}|} &=& 32 &  \\
 {|\mathsf{f64}|} &=& 64 &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{test}_{\mathit{sub}_{\mathsf{ATOM}_{22}}}(\mathit{n}_{3_{\mathsf{ATOM}_{\mathit{y}}}}) &=& 0 &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{curried}_{\mathit{n}_{1}}(\mathit{n}_{2}) &=& \mathit{n}_{1} + \mathit{n}_{2} &  \\
 \end{array}
 $$
 
@@ -1537,11 +1561,11 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{default}(\mathsf{i32}) &=& (\mathsf{i32}.\mathsf{const}~0) &  \\
-\mathrm{default}(\mathsf{i64}) &=& (\mathsf{i64}.\mathsf{const}~0) &  \\
-\mathrm{default}(\mathsf{f32}) &=& (\mathsf{f32}.\mathsf{const}~0) &  \\
-\mathrm{default}(\mathsf{f64}) &=& (\mathsf{f64}.\mathsf{const}~0) &  \\
-\mathrm{default}(\mathit{reftype}) &=& (\mathsf{ref.null}~\mathit{reftype}) &  \\
+\mathrm{default}_{\mathsf{i32}} &=& (\mathsf{i32}.\mathsf{const}~0) &  \\
+\mathrm{default}_{\mathsf{i64}} &=& (\mathsf{i64}.\mathsf{const}~0) &  \\
+\mathrm{default}_{\mathsf{f32}} &=& (\mathsf{f32}.\mathsf{const}~0) &  \\
+\mathrm{default}_{\mathsf{f64}} &=& (\mathsf{f64}.\mathsf{const}~0) &  \\
+\mathrm{default}_{\mathit{rt}} &=& (\mathsf{ref.null}~\mathit{rt}) &  \\
 \end{array}
 $$
 
@@ -1579,25 +1603,25 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast).\mathsf{func} &=& \mathit{m}.\mathsf{func} &  \\
+(\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast)).\mathsf{func} &=& \mathit{m}.\mathsf{func} &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathit{s} ; \mathit{f}.\mathsf{func} &=& \mathit{s}.\mathsf{func} &  \\
+(\mathit{s} ; \mathit{f}).\mathsf{func} &=& \mathit{s}.\mathsf{func} &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-((\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast)),\, \mathit{x}).\mathsf{func} &=& \mathit{s}.\mathsf{func}[\mathit{m}.\mathsf{func}[\mathit{x}]] &  \\
+{(\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast)).\mathsf{func}}{[\mathit{x}]} &=& \mathit{s}.\mathsf{func}[\mathit{m}.\mathsf{func}[\mathit{x}]] &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-((\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast)),\, \mathit{x}).\mathsf{table} &=& \mathit{s}.\mathsf{table}[\mathit{m}.\mathsf{table}[\mathit{x}]] &  \\
+{(\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast)).\mathsf{table}}{[\mathit{x}]} &=& \mathit{s}.\mathsf{table}[\mathit{m}.\mathsf{table}[\mathit{x}]] &  \\
 \end{array}
 $$
 
@@ -1692,11 +1716,11 @@ $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E-call}]} \quad & \mathit{z} ; (\mathsf{call}~\mathit{x}) &\hookrightarrow& (\mathsf{call}~\mathit{z}.\mathsf{func}[\mathit{x}]) &  \\
 {[\textsc{\scriptsize E-call\_indirect-call}]} \quad & \mathit{z} ; (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& (\mathsf{call}~\mathit{a}) &\quad
-  \mbox{if}~(\mathit{z},\, \mathit{x}).\mathsf{table}[\mathit{i}] = (\mathsf{ref.func}~\mathit{a})\\
+  \mbox{if}~{\mathit{z}.\mathsf{table}}{[\mathit{x}]}[\mathit{i}] = (\mathsf{ref.func}~\mathit{a}) \\
  &&&\quad {\land}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathit{func} \\
 {[\textsc{\scriptsize E-call\_indirect-trap}]} \quad & \mathit{z} ; (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{otherwise} \\
-{[\textsc{\scriptsize E-call\_addr}]} \quad & \mathit{z} ; \mathit{val}^{\mathit{k}}~(\mathsf{call}~\mathit{a}) &\hookrightarrow& ({{\mathsf{frame}}_{\mathit{n}}}{\{\mathit{m} ; \mathit{val}^{\mathit{k}}~(\mathrm{default}(\mathit{t}))^\ast\}~({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~\mathit{instr}^\ast})}) &\quad
+{[\textsc{\scriptsize E-call\_addr}]} \quad & \mathit{z} ; \mathit{val}^{\mathit{k}}~(\mathsf{call}~\mathit{a}) &\hookrightarrow& ({{\mathsf{frame}}_{\mathit{n}}}{\{\mathit{m} ; \mathit{val}^{\mathit{k}}~(\mathrm{default}_{\mathit{t}})^\ast\}~({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~\mathit{instr}^\ast})}) &\quad
   \mbox{if}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathsf{func}~(\mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}})~\mathit{t}^\ast~\mathit{instr}^\ast \\
 \end{array}
 $$

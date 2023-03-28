@@ -103,27 +103,30 @@ let find_entries space file s i id1 id2 entries =
     error file s i ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
   List.map (fun (_, def, use) -> incr use; def) defs
 
-let find_syntax env file s (i, id1, id2) =
+let find_syntax env file s i id1 id2 =
   match Map.find_opt id1 env.syn with
   | None -> error file s i ("unknown syntax identifier `" ^ id1 ^ "`")
   | Some syntax -> find_entries "syntax" file s i id1 id2 syntax.fragments
 
-let find_relation env file s (i, id1, id2) =
+let find_relation env file s i id1 id2 =
   find_nosub "relation" file s i id1 id2;
   match Map.find_opt id1 env.rel with
   | None -> error file s i ("unknown relation identifier `" ^ id1 ^ "`")
   | Some relation -> [relation.rdef]
 
-let find_rule env file s (i, id1, id2) =
+let find_rule env file s i id1 id2 =
   match Map.find_opt id1 env.rel with
   | None -> error file s i ("unknown relation identifier `" ^ id1 ^ "`")
   | Some relation -> find_entries "rule" file s i id1 id2 relation.rules
 
-let find_func env file s (i, id1, id2) =
+let find_func env file s i id1 id2 =
   find_nosub "definition" file s i id1 id2;
   match Map.find_opt id1 env.def with
   | None -> error file s i ("unknown definition identifier `" ^ id1 ^ "`")
-  | Some definition -> incr definition.use; definition.clauses
+  | Some definition ->
+    if definition.clauses = [] then
+      error file s i ("definition `" ^ id1 ^ "` has no clauses");
+    incr definition.use; definition.clauses
 
 
 (* Splicing *)
@@ -167,31 +170,28 @@ let match_id file s i space : string =
     error file s j ("expected " ^ space ^ " identifier or `}`");
   String.sub s j (!i - j)
 
-let match_id_id file s i space1 space2 : int * string * string =
+let match_id_id env file s i space1 space2 find : def list =
   let j = !i in
   let id1 = match_id file s i space1 in
   let id2 =
     if space2 <> "" && try_string s i "/" then match_id file s i space2 else ""
-  in
-  j, id1, id2
+  in find env file s j id1 id2
 
-let rec match_id_id_list file s i space1 space2 : (int * string * string) list =
+let rec match_id_id_list env file s i space1 space2 find : def list =
   skip_space s i;
   if try_string s i "}" then [] else
-  let idid = match_id_id file s i space1 space2 in
-  let idids = match_id_id_list file s i space1 space2 in
-  idid::idids
+  let defs1 = match_id_id env file s i space1 space2 find in
+  let defs2 = match_id_id_list env file s i space1 space2 find in
+  defs1 @ defs2
 
 let rec match_group_list env file s i space1 space2 find : def list list =
   skip_space s i;
   if try_string s i "}" then [] else
   let groups =
     if try_string s i "{" then
-      let idids = match_id_id_list file s i space1 space2 in
-      [List.concat_map (find env file s) idids]
+      [match_id_id_list env file s i space1 space2 find]
     else
-      let idid = match_id_id file s i space1 space2 in
-      List.map (fun def -> [def]) (find env file s idid)
+      List.map (fun def -> [def]) (match_id_id env file s i space1 space2 find)
   in
   groups @ match_group_list env file s i space1 space2 find
 

@@ -85,5 +85,5 @@ rule Step_read/call_indirect-trap:
   -- otherwise
 
 rule Step_read/call_addr:
-  z; val^k (CALL_ADDR a)  ~>  (FRAME n `{m; val^k ($default(t))*} (LABEL n `{epsilon} instr*))
+  z; val^k (CALL_ADDR a)  ~>  (FRAME n `{m; val^k ($default_(t))*} (LABEL n `{epsilon} instr*))
   -- iff $funcinst(z)[a] = m; FUNC (t_1^k -> t_2^n) t* instr*

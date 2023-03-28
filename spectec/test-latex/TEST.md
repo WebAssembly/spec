@@ -128,10 +128,5 @@ warning: rule `Tabletype_ok` was never spliced
 warning: rule `Tabletype_sub` was never spliced
 warning: rule `Valtype_sub/refl` was never spliced
 warning: rule `Valtype_sub/bot` was never spliced
-warning: definition `default` was never spliced
-warning: definition `func` was never spliced
-warning: definition `funcaddr` was never spliced
-warning: definition `funcinst` was never spliced
-warning: definition `table` was never spliced
 == Complete.
 ```

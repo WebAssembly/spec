@@ -41,12 +41,12 @@ syntax externval hint(desc "external value") =
 var xv : externval
 
 
-def $default(valtype) : val
-def $default(I32) = (CONST I32 0)
-def $default(I64) = (CONST I64 0)
-def $default(F32) = (CONST F32 0)
-def $default(F64) = (CONST F64 0)
-def $default(reftype) = (REF.NULL reftype)
+def $default_(valtype) : val  ;;hint(show $default_%)
+def $default_(I32) = (CONST I32 0)
+def $default_(I64) = (CONST I64 0)
+def $default_(F32) = (CONST F32 0)
+def $default_(F64) = (CONST F64 0)
+def $default_(rt) = (REF.NULL rt)
 
 
 ;; Configurations
@@ -94,15 +94,15 @@ var di : datainst
 var xi : exportinst
 
 def $funcaddr(state) : funcaddr*  hint(show %.FUNC)
-def $funcaddr(s; (m; val*)) = m.FUNC
+def $funcaddr((s; (m; val*))) = m.FUNC
 
 def $funcinst(state) : funcinst*  hint(show %.FUNC)
-def $funcinst(s; f) = s.FUNC
+def $funcinst((s; f)) = s.FUNC
 
-def $func(state, funcidx) : funcinst  hint(show %.FUNC)  ;; TODO
+def $func(state, funcidx) : funcinst  hint(show %.FUNC#`[%])
 def $func((s; (m; val*)), x) = s.FUNC[m.FUNC[x]]
 
-def $table(state, tableidx) : tableinst  hint(show %.TABLE)  ;; TODO
+def $table(state, tableidx) : tableinst  hint(show %.TABLE#`[%])
 def $table((s; (m; val*)), x) = s.TABLE[m.TABLE[x]]
 
 
