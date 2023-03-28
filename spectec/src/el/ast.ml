@@ -152,7 +152,7 @@ and def' =
   | RuleD of id * id * exp * premise nl_list (* `rule` relid ruleid? `:` exp (`--` premise)* *)
   | VarD of id * typ * hint list             (* `var` varid `:` typ *)
   | DecD of id * exp * typ * hint list       (* `def` `$` defid exp? `:` typ hint* *)
-  | DefD of id * exp * exp * premise option  (* `def` `$` defid exp? `=` exp *)
+  | DefD of id * exp * exp * premise nl_list (* `def` `$` defid exp? `=` exp (`--` premise)* *)
   | SepD                                     (* separator *)
 
 and premise = premise' phrase

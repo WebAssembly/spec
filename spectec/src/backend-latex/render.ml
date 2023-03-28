@@ -563,6 +563,13 @@ let render_ruledef env def =
     render_rule_deco env " \\, " id1 id2 ""
   | _ -> failwith "render_ruledef"
 
+let render_conditions env = function
+  | [] -> " & "
+  | [Elem {it = ElsePr; _}] -> " &\\quad\n  " ^ word "otherwise"
+  | prems ->
+    " &\\quad\n  " ^ word "if" ^ "~" ^
+    concat_map_nl "\\\\\n &&&\\quad {\\land}~" "" (render_premise env) prems
+
 let render_reddef env def =
   match def.it with
   | RuleD (id1, id2, exp, prems) ->
@@ -572,26 +579,15 @@ let render_reddef env def =
       | _ -> error exp.at "unrecognized format for reduction rule"
     in
     render_rule_deco env "" id1 id2 " \\quad " ^ "& " ^
-    render_exp env exp1 ^ " &" ^ render_atom env SqArrow ^ "& " ^
-    render_exp env exp2 ^
-    (match prems with
-    | [] -> " & "
-    | [Elem {it = ElsePr; _}] -> " &\n  " ^ word "otherwise"
-    | _ ->
-      " &\n  " ^ word "if" ^ "~" ^
-      concat_map_nl "\\\\\n &&& {\\land}~" "" (render_premise env) prems
-    )
+      render_exp env exp1 ^ " &" ^ render_atom env SqArrow ^ "& " ^
+        render_exp env exp2 ^ render_conditions env prems
   | _ -> failwith "render_reddef"
 
 let render_funcdef env def =
   match def.it with
-  | DefD (id1, exp1, exp2, premo) ->
+  | DefD (id1, exp1, exp2, prems) ->
     render_exp env (CallE (id1, exp1) $ def.at) ^ " &=& " ^
-      render_exp env exp2 ^
-      (match premo with
-      | None -> ""
-      | Some prem -> " & " ^ render_premise env prem
-      )
+      render_exp env exp2 ^ render_conditions env prems
   | _ -> failwith "render_funcdef"
 
 let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function
@@ -636,13 +632,13 @@ let rec render_defs env = function
             (render_ruledef env) defs ^
         "\\end{array}"
       | Some ReductionRel ->
-        "\\begin{array}{@{}l@{}lcll@{}}\n" ^
+        "\\begin{array}{@{}l@{}lcl@{}l@{}}\n" ^
           render_sep_defs (render_reddef env) defs ^
         "\\end{array}"
       | None -> error def.at "unrecognized form of relation"
       )
     | DefD _ ->
-      "\\begin{array}{@{}lcll@{}}\n" ^
+      "\\begin{array}{@{}lcl@{}l@{}}\n" ^
         render_sep_defs (render_funcdef env) defs ^
       "\\end{array}"
     | SepD ->

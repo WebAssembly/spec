@@ -971,11 +971,11 @@ let elab_def env def : Il.def list =
     let typ2' = elab_typ env typ2 in
     env.defs <- bind "function" env.defs id (typ1, typ2, []);
     [Il.DecD (id, typ1', typ2', [], elab_hints hints) $ def.at]
-  | DefD (id, exp1, exp2, premo) ->
+  | DefD (id, exp1, exp2, prems) ->
     let typ1, typ2, clauses' = find "function" env.defs id in
     let exp1' = elab_exp env exp1 typ1 in
     let exp2' = elab_exp env exp2 typ2 in
-    let premo' = Option.map (elab_prem env) premo in
+    let prems' = map_nl_list (elab_prem env) prems in
     let free =
       Free.(Set.elements (Set.diff (free_exp exp2).varid (free_exp exp1).varid))
     in
@@ -984,7 +984,7 @@ let elab_def env def : Il.def list =
         String.concat "`, `" free ^ "`");
     let free = Free.(Set.union (free_exp exp1).varid (free_exp exp1).varid) in
     let binds' = make_binds env free def.at in
-    let clause' = Il.DefD (binds', exp1', exp2', premo') $ def.at in
+    let clause' = Il.DefD (binds', exp1', exp2', prems') $ def.at in
     env.defs <- rebind "definition" env.defs id (typ1, typ2, clause'::clauses');
     []
   | SepD ->

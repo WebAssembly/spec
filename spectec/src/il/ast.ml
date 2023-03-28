@@ -141,7 +141,7 @@ and rule' =
 
 and clause = clause' phrase
 and clause' =
-  | DefD of binds * exp * exp * premise option        (* definition clause *)
+  | DefD of binds * exp * exp * premise list          (* definition clause *)
 
 and premise = premise' phrase
 and premise' =

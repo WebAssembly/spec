@@ -914,11 +914,11 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcll@{}}
-{|\mathsf{i32}|} &=& 32 \\
-{|\mathsf{i64}|} &=& 64 \\
-{|\mathsf{f32}|} &=& 32 \\
-{|\mathsf{f64}|} &=& 64 \\
+\begin{array}{@{}lcl@{}l@{}}
+{|\mathsf{i32}|} &=& 32 &  \\
+{|\mathsf{i64}|} &=& 64 &  \\
+{|\mathsf{f32}|} &=& 32 &  \\
+{|\mathsf{f64}|} &=& 64 &  \\
 \end{array}
 $$
 
@@ -1536,12 +1536,12 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lcll@{}}
-\mathrm{default}(\mathsf{i32}) &=& (\mathsf{i32}.\mathsf{const}~0) \\
-\mathrm{default}(\mathsf{i64}) &=& (\mathsf{i64}.\mathsf{const}~0) \\
-\mathrm{default}(\mathsf{f32}) &=& (\mathsf{f32}.\mathsf{const}~0) \\
-\mathrm{default}(\mathsf{f64}) &=& (\mathsf{f64}.\mathsf{const}~0) \\
-\mathrm{default}(\mathit{reftype}) &=& (\mathsf{ref.null}~\mathit{reftype}) \\
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{default}(\mathsf{i32}) &=& (\mathsf{i32}.\mathsf{const}~0) &  \\
+\mathrm{default}(\mathsf{i64}) &=& (\mathsf{i64}.\mathsf{const}~0) &  \\
+\mathrm{default}(\mathsf{f32}) &=& (\mathsf{f32}.\mathsf{const}~0) &  \\
+\mathrm{default}(\mathsf{f64}) &=& (\mathsf{f64}.\mathsf{const}~0) &  \\
+\mathrm{default}(\mathit{reftype}) &=& (\mathsf{ref.null}~\mathit{reftype}) &  \\
 \end{array}
 $$
 
@@ -1578,26 +1578,26 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcll@{}}
-\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast).\mathsf{func} &=& \mathit{m}.\mathsf{func} \\
+\begin{array}{@{}lcl@{}l@{}}
+\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast).\mathsf{func} &=& \mathit{m}.\mathsf{func} &  \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcll@{}}
-\mathit{s} ; \mathit{f}.\mathsf{func} &=& \mathit{s}.\mathsf{func} \\
+\begin{array}{@{}lcl@{}l@{}}
+\mathit{s} ; \mathit{f}.\mathsf{func} &=& \mathit{s}.\mathsf{func} &  \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcll@{}}
-((\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast)),\, \mathit{x}).\mathsf{func} &=& \mathit{s}.\mathsf{func}[\mathit{m}.\mathsf{func}[\mathit{x}]] \\
+\begin{array}{@{}lcl@{}l@{}}
+((\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast)),\, \mathit{x}).\mathsf{func} &=& \mathit{s}.\mathsf{func}[\mathit{m}.\mathsf{func}[\mathit{x}]] &  \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcll@{}}
-((\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast)),\, \mathit{x}).\mathsf{table} &=& \mathit{s}.\mathsf{table}[\mathit{m}.\mathsf{table}[\mathit{x}]] \\
+\begin{array}{@{}lcl@{}l@{}}
+((\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast)),\, \mathit{x}).\mathsf{table} &=& \mathit{s}.\mathsf{table}[\mathit{m}.\mathsf{table}[\mathit{x}]] &  \\
 \end{array}
 $$
 
@@ -1625,10 +1625,10 @@ $\boxed{\mathit{config} \hookrightarrow \mathit{instr}^\ast}$
 $\boxed{\mathit{instr}^\ast \hookrightarrow \mathit{instr}^\ast}$
 
 $$
-\begin{array}{@{}l@{}lcll@{}}
-{[\textsc{\scriptsize E-pure}]} \quad & \mathit{z} ; \mathit{instr}^\ast &\hookrightarrow& \mathit{z} ; {\mathit{instr}'}^\ast &
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E-pure}]} \quad & \mathit{z} ; \mathit{instr}^\ast &\hookrightarrow& \mathit{z} ; {\mathit{instr}'}^\ast &\quad
   \mbox{if}~\mathit{instr}^\ast \hookrightarrow {\mathit{instr}'}^\ast \\
-{[\textsc{\scriptsize E-read}]} \quad & \mathit{z} ; \mathit{instr}^\ast &\hookrightarrow& \mathit{z} ; {\mathit{instr}'}^\ast &
+{[\textsc{\scriptsize E-read}]} \quad & \mathit{z} ; \mathit{instr}^\ast &\hookrightarrow& \mathit{z} ; {\mathit{instr}'}^\ast &\quad
   \mbox{if}~\mathit{z} ; \mathit{instr}^\ast \hookrightarrow {\mathit{instr}'}^\ast \\
 \end{array}
 $$
@@ -1636,21 +1636,21 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}l@{}lcll@{}}
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E-unreachable}]} \quad & \mathsf{unreachable} &\hookrightarrow& \mathsf{trap} &  \\
 {[\textsc{\scriptsize E-nop}]} \quad & \mathsf{nop} &\hookrightarrow& \epsilon &  \\
 {[\textsc{\scriptsize E-drop}]} \quad & \mathit{val}~\mathsf{drop} &\hookrightarrow& \epsilon &  \\
-{[\textsc{\scriptsize E-select-true}]} \quad & \mathit{val}_{1}~\mathit{val}_{2}~(\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{select}~\mathit{t}^?) &\hookrightarrow& \mathit{val}_{1} &
+{[\textsc{\scriptsize E-select-true}]} \quad & \mathit{val}_{1}~\mathit{val}_{2}~(\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{select}~\mathit{t}^?) &\hookrightarrow& \mathit{val}_{1} &\quad
   \mbox{if}~\mathit{c} \neq 0 \\
-{[\textsc{\scriptsize E-select-false}]} \quad & \mathit{val}_{1}~\mathit{val}_{2}~(\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{select}~\mathit{t}^?) &\hookrightarrow& \mathit{val}_{2} &
+{[\textsc{\scriptsize E-select-false}]} \quad & \mathit{val}_{1}~\mathit{val}_{2}~(\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{select}~\mathit{t}^?) &\hookrightarrow& \mathit{val}_{2} &\quad
   \mbox{if}~\mathit{c} = 0 \\
-{[\textsc{\scriptsize E-block}]} \quad & \mathit{val}^{\mathit{k}}~(\mathsf{block}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& ({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast}) &
+{[\textsc{\scriptsize E-block}]} \quad & \mathit{val}^{\mathit{k}}~(\mathsf{block}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& ({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast}) &\quad
   \mbox{if}~\mathit{bt} = \mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}} \\
-{[\textsc{\scriptsize E-loop}]} \quad & \mathit{val}^{\mathit{k}}~(\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& ({{\mathsf{label}}_{\mathit{n}}}{\{\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast\}~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast}) &
+{[\textsc{\scriptsize E-loop}]} \quad & \mathit{val}^{\mathit{k}}~(\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast) &\hookrightarrow& ({{\mathsf{label}}_{\mathit{n}}}{\{\mathsf{loop}~\mathit{bt}~\mathit{instr}^\ast\}~\mathit{val}^{\mathit{k}}~\mathit{instr}^\ast}) &\quad
   \mbox{if}~\mathit{bt} = \mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}} \\
-{[\textsc{\scriptsize E-if-true}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{if}~\mathit{bt}~\mathit{instr}_{1}^\ast~\mathsf{else}~\mathit{instr}_{2}^\ast) &\hookrightarrow& (\mathsf{block}~\mathit{bt}~\mathit{instr}_{1}^\ast) &
+{[\textsc{\scriptsize E-if-true}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{if}~\mathit{bt}~\mathit{instr}_{1}^\ast~\mathsf{else}~\mathit{instr}_{2}^\ast) &\hookrightarrow& (\mathsf{block}~\mathit{bt}~\mathit{instr}_{1}^\ast) &\quad
   \mbox{if}~\mathit{c} \neq 0 \\
-{[\textsc{\scriptsize E-if-false}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{if}~\mathit{bt}~\mathit{instr}_{1}^\ast~\mathsf{else}~\mathit{instr}_{2}^\ast) &\hookrightarrow& (\mathsf{block}~\mathit{bt}~\mathit{instr}_{2}^\ast) &
+{[\textsc{\scriptsize E-if-false}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{if}~\mathit{bt}~\mathit{instr}_{1}^\ast~\mathsf{else}~\mathit{instr}_{2}^\ast) &\hookrightarrow& (\mathsf{block}~\mathit{bt}~\mathit{instr}_{2}^\ast) &\quad
   \mbox{if}~\mathit{c} = 0 \\
 \end{array}
 $$
@@ -1658,7 +1658,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}l@{}lcll@{}}
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E-br-zero}]} \quad & ({{\mathsf{label}}_{\mathit{n}}}{\{{\mathit{instr}'}^\ast\}~{\mathit{val}'}^\ast~\mathit{val}^{\mathit{n}}~(\mathsf{br}~0)~\mathit{instr}^\ast}) &\hookrightarrow& \mathit{val}^{\mathit{n}}~{\mathit{instr}'}^\ast &  \\
 {[\textsc{\scriptsize E-br-succ}]} \quad & ({{\mathsf{label}}_{\mathit{n}}}{\{{\mathit{instr}'}^\ast\}~\mathit{val}^\ast~(\mathsf{br}~\mathit{l} + 1)~\mathit{instr}^\ast}) &\hookrightarrow& \mathit{val}^\ast~(\mathsf{br}~\mathit{l}) &  \\
 \end{array}
@@ -1667,10 +1667,10 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}l@{}lcll@{}}
-{[\textsc{\scriptsize E-br\_if-true}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{br\_if}~\mathit{l}) &\hookrightarrow& (\mathsf{br}~\mathit{l}) &
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E-br\_if-true}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{br\_if}~\mathit{l}) &\hookrightarrow& (\mathsf{br}~\mathit{l}) &\quad
   \mbox{if}~\mathit{c} \neq 0 \\
-{[\textsc{\scriptsize E-br\_if-false}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{br\_if}~\mathit{l}) &\hookrightarrow& \epsilon &
+{[\textsc{\scriptsize E-br\_if-false}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{c})~(\mathsf{br\_if}~\mathit{l}) &\hookrightarrow& \epsilon &\quad
   \mbox{if}~\mathit{c} = 0 \\
 \end{array}
 $$
@@ -1678,10 +1678,10 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}l@{}lcll@{}}
-{[\textsc{\scriptsize E-br\_table-lt}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{br\_table}~\mathit{l}^\ast~{\mathit{l}'}) &\hookrightarrow& (\mathsf{br}~\mathit{l}^\ast[\mathit{i}]) &
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E-br\_table-lt}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{br\_table}~\mathit{l}^\ast~{\mathit{l}'}) &\hookrightarrow& (\mathsf{br}~\mathit{l}^\ast[\mathit{i}]) &\quad
   \mbox{if}~\mathit{i} < {|\mathit{l}^\ast|} \\
-{[\textsc{\scriptsize E-br\_table-le}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{br\_table}~\mathit{l}^\ast~{\mathit{l}'}) &\hookrightarrow& (\mathsf{br}~{\mathit{l}'}) &
+{[\textsc{\scriptsize E-br\_table-le}]} \quad & (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{br\_table}~\mathit{l}^\ast~{\mathit{l}'}) &\hookrightarrow& (\mathsf{br}~{\mathit{l}'}) &\quad
   \mbox{if}~\mathit{i} \geq {|\mathit{l}^\ast|} \\
 \end{array}
 $$
@@ -1689,14 +1689,14 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}l@{}lcll@{}}
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E-call}]} \quad & \mathit{z} ; (\mathsf{call}~\mathit{x}) &\hookrightarrow& (\mathsf{call}~\mathit{z}.\mathsf{func}[\mathit{x}]) &  \\
-{[\textsc{\scriptsize E-call\_indirect-call}]} \quad & \mathit{z} ; (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& (\mathsf{call}~\mathit{a}) &
+{[\textsc{\scriptsize E-call\_indirect-call}]} \quad & \mathit{z} ; (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& (\mathsf{call}~\mathit{a}) &\quad
   \mbox{if}~(\mathit{z},\, \mathit{x}).\mathsf{table}[\mathit{i}] = (\mathsf{ref.func}~\mathit{a})\\
- &&& {\land}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathit{func} \\
-{[\textsc{\scriptsize E-call\_indirect-trap}]} \quad & \mathit{z} ; (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& \mathsf{trap} &
+ &&&\quad {\land}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathit{func} \\
+{[\textsc{\scriptsize E-call\_indirect-trap}]} \quad & \mathit{z} ; (\mathsf{i32}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{otherwise} \\
-{[\textsc{\scriptsize E-call\_addr}]} \quad & \mathit{z} ; \mathit{val}^{\mathit{k}}~(\mathsf{call}~\mathit{a}) &\hookrightarrow& ({{\mathsf{frame}}_{\mathit{n}}}{\{\mathit{m} ; \mathit{val}^{\mathit{k}}~(\mathrm{default}(\mathit{t}))^\ast\}~({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~\mathit{instr}^\ast})}) &
+{[\textsc{\scriptsize E-call\_addr}]} \quad & \mathit{z} ; \mathit{val}^{\mathit{k}}~(\mathsf{call}~\mathit{a}) &\hookrightarrow& ({{\mathsf{frame}}_{\mathit{n}}}{\{\mathit{m} ; \mathit{val}^{\mathit{k}}~(\mathrm{default}(\mathit{t}))^\ast\}~({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~\mathit{instr}^\ast})}) &\quad
   \mbox{if}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathsf{func}~(\mathit{t}_{1}^{\mathit{k}} \rightarrow \mathit{t}_{2}^{\mathit{n}})~\mathit{t}^\ast~\mathit{instr}^\ast \\
 \end{array}
 $$

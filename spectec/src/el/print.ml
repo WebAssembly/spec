@@ -214,10 +214,10 @@ let string_of_def def =
   | DecD (id, exp1, typ2, _hints) ->
     let s1 = match exp1.it with SeqE [] -> "" | _ -> " " ^ string_of_exp exp1 in
     "def " ^ id.it ^ s1 ^ " : " ^ string_of_typ typ2
-  | DefD (id, exp1, exp2, premo) ->
+  | DefD (id, exp1, exp2, prems) ->
     let s1 = match exp1.it with SeqE [] -> "" | _ -> " " ^ string_of_exp exp1 in
     "def " ^ id.it ^ s1 ^ " = " ^ string_of_exp exp2 ^
-      Option.(value (map (prefix " -- " string_of_premise) premo) ~default:"")
+      concat "" (map_nl_list (prefix "\n  -- " string_of_premise) prems)
   | SepD ->
     "\n\n"
 

@@ -117,7 +117,7 @@ let free_def def =
   | RuleD (id1, _id2, exp, prems) ->
     union (free_relid id1) (union (free_exp exp) (free_nl_list free_prem prems))
   | DecD (_id, exp, typ, _hints) -> union (free_exp exp) (free_typ typ)
-  | DefD (id, exp1, exp2, premo) ->
+  | DefD (id, exp1, exp2, prems) ->
     union
       (union (free_defid id) (free_exp exp1))
-      (union (free_exp exp2) (free_opt free_prem premo))
+      (union (free_exp exp2) (free_nl_list free_prem prems))

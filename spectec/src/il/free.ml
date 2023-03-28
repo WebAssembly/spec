@@ -130,10 +130,10 @@ let free_rule rule =
 
 let free_clause clause =
   match clause.it with
-  | DefD (binds, exp1, exp2, premo) ->
+  | DefD (binds, exp1, exp2, prems) ->
     union (free_binds binds)
       (diff
-        (union (free_list free_exp [exp1; exp2]) (free_opt free_prem premo))
+        (union (free_list free_exp [exp1; exp2]) (free_list free_prem prems))
         (bound_binds binds)
       )
 

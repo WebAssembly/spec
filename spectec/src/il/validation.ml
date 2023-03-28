@@ -457,11 +457,11 @@ let valid_rule env typmix rule =
 
 let valid_clause env typ1 typ2 clause =
   match clause.it with
-  | DefD (binds, exp1, exp2, premo) ->
+  | DefD (binds, exp1, exp2, prems) ->
     valid_binds env binds;
     valid_exp env exp1 typ1;
     valid_exp env exp2 typ2;
-    Option.iter (valid_prem env) premo;
+    List.iter (valid_prem env) prems;
     env.vars <- Env.empty
 
 

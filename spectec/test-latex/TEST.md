@@ -23,11 +23,13 @@ warning: syntax `dataaddr` was never spliced
 warning: syntax `dataidx` was never spliced
 warning: syntax `datainst` was never spliced
 warning: syntax `datamode` was never spliced
+warning: syntax `datatype` was never spliced
 warning: syntax `elem` was never spliced
 warning: syntax `elemaddr` was never spliced
 warning: syntax `elemidx` was never spliced
 warning: syntax `eleminst` was never spliced
 warning: syntax `elemmode` was never spliced
+warning: syntax `elemtype` was never spliced
 warning: syntax `export` was never spliced
 warning: syntax `exportinst` was never spliced
 warning: syntax `externuse` was never spliced

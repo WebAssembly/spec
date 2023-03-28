@@ -207,11 +207,11 @@ let string_of_rule rule =
 
 let string_of_clause id clause =
   match clause.it with
-  | DefD (binds, exp1, exp2, premo) ->
+  | DefD (binds, exp1, exp2, prems) ->
     "\n  ;; " ^ string_of_region clause.at ^ "\n" ^
     "  def" ^ string_of_binds binds ^ " " ^ id.it ^ string_of_exp_args exp1 ^ " = " ^
       string_of_exp exp2 ^
-      Option.(value (map (prefix " -- " string_of_premise) premo) ~default:"")
+      concat "" (List.map (prefix "\n    -- " string_of_premise) prems)
 
 let rec string_of_def def =
   "\n;; " ^ string_of_region def.at ^ "\n" ^
