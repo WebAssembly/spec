@@ -111,8 +111,7 @@ let find_func env file s (i, id1, id2) =
     error file s i ("unknown definition identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
   match Map.find_opt id1 env.def with
   | None -> error file s i ("unknown definition identifier `" ^ id1 ^ "`")
-  | Some definition -> [definition.fdef]
-    (* TODO: splice definition clauses *)
+  | Some definition -> definition.clauses
 
 
 (* Splicing *)

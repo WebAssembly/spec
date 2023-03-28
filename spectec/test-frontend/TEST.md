@@ -913,6 +913,15 @@ $$
 $$
 
 $$
+\begin{array}{@{}lcll@{}}
+|\mathsf{i32}| &=& 32 \\
+|\mathsf{i64}| &=& 64 \\
+|\mathsf{f32}| &=& 32 \\
+|\mathsf{f64}| &=& 64 \\
+\end{array}
+$$
+
+$$
 \begin{array}{@{}l@{}rrl@{}}
 & \mathit{context} &::=& \{\; \begin{array}[t]{@{}l@{}}
 \mathsf{func}~\mathit{functype}^\ast,\; \mathsf{global}~\mathit{globaltype}^\ast,\; \mathsf{table}~\mathit{tabletype}^\ast,\; \mathsf{mem}~\mathit{memtype}^\ast,\; \\
@@ -1387,6 +1396,16 @@ $$
 
 \vspace{1ex}
 
+$$
+\begin{array}{@{}lcll@{}}
+\mathrm{default}(\mathsf{i32}) &=& (\mathsf{i32}.\mathsf{const}~0) \\
+\mathrm{default}(\mathsf{i64}) &=& (\mathsf{i64}.\mathsf{const}~0) \\
+\mathrm{default}(\mathsf{f32}) &=& (\mathsf{f32}.\mathsf{const}~0) \\
+\mathrm{default}(\mathsf{f64}) &=& (\mathsf{f64}.\mathsf{const}~0) \\
+\mathrm{default}(\mathit{reftype}) &=& (\mathsf{ref.null}~\mathit{reftype}) \\
+\end{array}
+$$
+
 \vspace{1ex}
 
 $$
@@ -1416,6 +1435,30 @@ $$
 & \mathit{frame} &::=& \mathit{moduleinst} ; \mathit{val}^\ast \\[0.5ex]
 & \mathit{state} &::=& \mathit{store} ; \mathit{frame} \\[0.5ex]
 & \mathit{config} &::=& \mathit{state} ; \mathit{instr}^\ast \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcll@{}}
+\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast).\mathsf{func} &=& \mathit{m}.\mathsf{func} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcll@{}}
+\mathit{s} ; \mathit{f}.\mathsf{func} &=& \mathit{s}.\mathsf{func} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcll@{}}
+((\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast)),\, \mathit{x}).\mathsf{func} &=& \mathit{s}.\mathsf{func}[\mathit{m}.\mathsf{func}[\mathit{x}]] \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcll@{}}
+((\mathit{s} ; (\mathit{m} ; \mathit{val}^\ast)),\, \mathit{x}).\mathsf{table} &=& \mathit{s}.\mathsf{table}[\mathit{m}.\mathsf{table}[\mathit{x}]] \\
 \end{array}
 $$
 

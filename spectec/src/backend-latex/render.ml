@@ -536,6 +536,17 @@ let render_reddef env def =
     )
   | _ -> failwith "render_reddef"
 
+let render_funcdef env def =
+  match def.it with
+  | DefD (id1, exp1, exp2, premo) ->
+    render_exp env (CallE (id1, exp1) $ def.at) ^ " &=& " ^
+      render_exp env exp2 ^
+      (match premo with
+      | None -> ""
+      | Some prem -> " & " ^ render_premise env prem
+      )
+  | _ -> failwith "render_funcdef"
+
 
 let rec classify_rel exp : rel_sort option =
   match exp.it with
@@ -559,13 +570,11 @@ let rec render_defs env = function
         concat " \\\\[0.5ex]\n" (List.map (render_syndef env) syndefs) ^
           " \\\\\n" ^
       "\\end{array}"
-
     | RelD (id, nottyp, _hints) ->
       "\\boxed{" ^
         render_nottyp {env with current_rel = id.it} nottyp ^
       "}" ^
       (if defs' = [] then "" else " \\; " ^ render_defs env defs')
-
     | RuleD (id1, _id2, exp, prems) ->
       (* TODO: include rule name *)
       (match classify_rel exp with
@@ -584,20 +593,15 @@ let rec render_defs env = function
         "\\end{array}"
       | None -> error def.at "unrecognized form of relation"
       )
-
-    | VarD _ ->
-      render_defs env defs
-
-    | DecD _ ->
-      (* TODO: definitions *)
-      render_defs env defs
-
     | DefD _ ->
-      (* TODO: definitions *)
-      render_defs env defs
-
+      "\\begin{array}{@{}lcll@{}}\n" ^
+        concat " \\\\\n" (List.map (render_funcdef env) defs) ^ " \\\\\n" ^
+      "\\end{array}"
     | SepD ->
+      "~ \\\\[-0.8\\baselineskip]\n" ^
       render_defs env defs
+    | VarD _ | DecD _ ->
+      failwith "render_defs"
 
 let render_def env def = render_defs env [def]
 
@@ -615,8 +619,17 @@ let rec split_reddefs id reddefs = function
   | [] -> List.rev reddefs, []
   | def::defs ->
     match def.it with
-    | RuleD (id1, _, _, _) when id1.it = id -> split_reddefs id (def::reddefs) defs
+    | RuleD (id1, _, _, _) when id1.it = id ->
+      split_reddefs id (def::reddefs) defs
     | _ -> List.rev reddefs, def::defs
+
+let rec split_funcdefs id funcdefs = function
+  | [] -> List.rev funcdefs, []
+  | def::defs ->
+    match def.it with
+    | DefD (id1, _, _, _) when id1.it = id ->
+      split_funcdefs id (def::funcdefs) defs
+    | _ -> List.rev funcdefs, def::defs
 
 let rec render_script env = function
   | [] -> ""
@@ -643,11 +656,11 @@ let rec render_script env = function
     | VarD _ ->
       render_script env defs
     | DecD _ ->
-      (* TODO: definitions *)
       render_script env defs
-    | DefD _ ->
-      (* TODO: definitions *)
-      render_script env defs
+    | DefD (id, _, _, _) ->
+      let funcdefs, defs' = split_funcdefs id.it [def] defs in
+      "$$\n" ^ render_defs env funcdefs ^ "\n$$\n\n" ^
+      render_script env defs'
     | SepD ->
       "\\vspace{1ex}\n\n" ^
       render_script env defs

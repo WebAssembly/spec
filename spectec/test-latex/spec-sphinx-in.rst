@@ -5,6 +5,8 @@ Wasm Formal Semantics
 
 $${syntax: numtype vectype reftype valtype resulttype}
 
+$${definition: size}
+
 $${syntax:
   limits
   globaltype
@@ -19,6 +21,7 @@ $${syntax:
 $${syntax: instr/control instr/reference}
 
 $${syntax: instr/numeric instr/state expr}
+
 
 
 **Typing** ${relation: Instr_ok}
