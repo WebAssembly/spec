@@ -131,7 +131,9 @@ let lower = String.lowercase_ascii
 let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
 let chop_sub id = String.sub id 0 (String.length id - 1)
 
-let quote_id id = Str.(global_replace (regexp "_") "\\_" id)
+let dash_id = Str.(global_replace (regexp "-") "{-}")
+let quote_id = Str.(global_replace (regexp "_") "\\_")
+let shrink_id = Str.(global_replace (regexp "[0-9]+") "{\\\\scriptstyle\\0}")
 
 let id_style = function
   | `Var -> "\\mathit"
@@ -143,7 +145,7 @@ let render_id' env style id =
   if env.config.macros_for_ids then
     "\\" ^ id
   else
-    id_style style ^ "{" ^ id ^ "}"
+    id_style style ^ "{" ^ shrink_id id ^ "}"
 
 let rec render_id_sub env style show at = function
   | [] -> ""
@@ -186,7 +188,7 @@ let render_ruleid env id1 id2 =
       error at "malformed `show` hint for relation"
   in
   let id2' = if id2.it = "" then "" else "-" ^ id2.it in
-  "\\textsc{\\scriptsize " ^ quote_id (id1' ^ id2') ^ "}"
+  "\\textsc{\\scriptsize " ^ dash_id (quote_id (id1' ^ id2')) ^ "}"
 
 let render_rule_deco env pre id1 id2 post =
   if not env.deco_rule then "" else

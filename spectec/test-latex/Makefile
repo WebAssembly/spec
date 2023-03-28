@@ -53,16 +53,24 @@ SPHINXINNAME = spec-sphinx-in
 SPHINXOUTNAME = spec-sphinx
 SPHINXDIR = _sphinx
 
-.PHONY: sphinx-splice
+.PHONY: sphinx-splice sphinx-html sphinx-pdf
 
 $(SPHINXOUTNAME).rst: $(SPHINXINNAME).rst $(SPECFILES) $(EXE)
 	cp $< $@
 	(cd $(SPECDIR) && $(EXE) *.$(EXT) --sphinx -p $(OWNDIR)/$@)
 
-sphinx-splice: $(SPHINXOUTNAME).rst conf.py
+sphinx-splice: sphinx-html sphinx-pdf
+
+sphinx-html: $(SPHINXOUTNAME).rst conf.py
 	mkdir -p $(SPHINXDIR)/_build
 	cp $(SPHINXOUTNAME).rst conf.py $(SPHINXDIR)
 	sphinx-build -b html $(SPHINXDIR) $(SPHINXDIR)/_build
+	sed "s/textsc{/mathrm{/g" $(SPHINXDIR) $(SPHINXDIR)/_build/$(SPHINXOUTNAME).html >$(SPHINXOUTNAME).html.tmp
+	mv -f $(SPHINXOUTNAME).html.tmp $(SPHINXDIR)/_build/$(SPHINXOUTNAME).html
+
+sphinx-pdf: $(SPHINXOUTNAME).rst conf.py
+	mkdir -p $(SPHINXDIR)/_build
+	cp $(SPHINXOUTNAME).rst conf.py $(SPHINXDIR)
 	sphinx-build -b latex $(SPHINXDIR) $(SPHINXDIR)/_build
 	(cd $(SPHINXDIR)/_build; pdflatex $(SPHINXOUTNAME).tex)
 

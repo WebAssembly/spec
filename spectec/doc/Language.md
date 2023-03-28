@@ -210,7 +210,7 @@ The frontend checks that all definitions are consistent. Among other things, thi
 
 * all identifiers are declared,
 * all expressions are well-typed,
-* all rules and premises match the notation template of their respective relation,
+* all rules and premises match the notation template of their respective relations,
 * no definiton or variant case is defined multiple times,
 * use of variables under iterators like `?` and `*` (multiplicity) is consistent,
 * there is no invalid recursion between definitions of different sort.
