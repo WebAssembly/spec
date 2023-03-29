@@ -74,11 +74,6 @@ let rec expand' env = function
 
 let expand env typ = expand' env typ.it
 
-let expand_singular' env typ' =
-  match expand' env typ' with
-  | IterT (typ1, (Opt | List | List1)) -> expand env typ1
-  | typ' -> typ'
-
 
 type direction = Infer | Check
 
@@ -109,7 +104,7 @@ let as_list_typ phrase env dir typ at : typ =
   | _ -> as_error at phrase dir typ "(_)*"
 
 let as_tup_typ phrase env dir typ at : typ list =
-  match expand_singular' env typ.it with
+  match expand' env typ.it with
   | TupT typs -> typs
   | _ -> as_error at phrase dir typ "(_,...,_)"
 
@@ -120,7 +115,7 @@ let as_mix_typid phrase env id at : mixop * typ =
   | _ -> as_error at phrase Infer (VarT id $ id.at) "`mixin-op`(...)"
 
 let as_mix_typ phrase env dir typ at : mixop * typ =
-  match expand_singular' env typ.it with
+  match expand' env typ.it with
   | VarT id -> as_mix_typid phrase env id at
   | _ -> as_error at phrase dir typ ("`mixin-op`(...)")
 
@@ -130,7 +125,7 @@ let as_struct_typid phrase env id at : typfield list =
   | _ -> as_error at phrase Infer (VarT id $ id.at) "{...}"
 
 let as_struct_typ phrase env dir typ at : typfield list =
-  match expand_singular' env typ.it with
+  match expand' env typ.it with
   | VarT id -> as_struct_typid phrase env id at
   | _ -> as_error at phrase dir typ "{...}"
 
@@ -141,7 +136,7 @@ let rec as_variant_typid phrase env id at : typcase list =
   | _ -> as_error at phrase Infer (VarT id $ id.at) "| ..."
 
 let as_variant_typ phrase env dir typ at : typcase list =
-  match expand_singular' env typ.it with
+  match expand' env typ.it with
   | VarT id -> as_variant_typid phrase env id at
   | _ -> as_error at phrase dir typ "| ..."
 
@@ -180,7 +175,7 @@ let infer_unop = function
   | PlusOp | MinusOp -> NatT
 
 let infer_binop = function
-  | AndOp | OrOp | ImplOp -> BoolT
+  | AndOp | OrOp | ImplOp | EquivOp -> BoolT
   | AddOp | SubOp | MulOp | DivOp | ExpOp -> NatT
 
 let infer_cmpop = function

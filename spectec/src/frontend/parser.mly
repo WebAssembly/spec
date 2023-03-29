@@ -4,15 +4,6 @@ open Source
 open El.Ast
 
 
-(* Error handling *)
-
-let error at msg = Source.error at "syntax" msg
-
-let parse_error msg =
-  error Source.no_region
-    (if msg = "syntax error" then "unexpected token" else msg)
-
-
 (* Position handling *)
 
 let position_to_pos position =
@@ -26,10 +17,7 @@ let positions_to_region position1 position2 =
     right = position_to_pos position2
   }
 
-let at () =
-  positions_to_region (Parsing.symbol_start_pos ()) (Parsing.symbol_end_pos ())
-let ati i =
-  positions_to_region (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos i)
+let at (l, r) = positions_to_region l r
 
 
 let as_seq_typ typ =
@@ -57,7 +45,7 @@ let atom_vars = ref VarSet.empty
 %token EQ NE LT GT LE GE SUB EQDOT2
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH UP COMPOSE
-%token ARROW ARROW2 SQARROW TURNSTILE TILESTURN
+%token ARROW ARROW2 DARROW2 SQARROW TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT
 %token HOLE MULTIHOLE FUSE
@@ -71,7 +59,7 @@ let atom_vars = ref VarSet.empty
 %token<string> UPID LOID DOTID
 %token EOF
 
-%right ARROW2
+%right ARROW2 DARROW2
 %left OR
 %left AND
 %nonassoc TURNSTILE
@@ -100,9 +88,9 @@ let atom_vars = ref VarSet.empty
 id : UPID { $1 } | LOID { $1 }
 
 atomid_ : UPID { $1 }
-varid : LOID { $1 $ at () }
-defid : id { $1 $ at () }
-relid : id { $1 $ at () }
+varid : LOID { $1 $ at $sloc }
+defid : id { $1 $ at $sloc }
+relid : id { $1 $ at $sloc }
 hintid : id { $1 }
 fieldid : atomid_ { Atom $1 }
 dotid : DOTID { Atom $1 }
@@ -116,7 +104,7 @@ atom :
   | BOT { Bot }
 
 atom_as_varid :
-  | atomid_ { atom_vars := VarSet.add $1 !atom_vars; $1 $ at () }
+  | atomid_ { atom_vars := VarSet.add $1 !atom_vars; $1 $ at $sloc }
 
 check_atom :
   | UPID EOF { VarSet.mem $1 !atom_vars }
@@ -133,14 +121,14 @@ iter :
 
 /* Types */
 
-typ_prim : typ_prim_ { $1 $ at () }
+typ_prim : typ_prim_ { $1 $ at $sloc }
 typ_prim_ :
   | varid { VarT $1 }
   | BOOL { BoolT }
   | NAT { NatT }
   | TEXT { TextT }
 
-typ_post : typ_post_ { $1 $ at () }
+typ_post : typ_post_ { $1 $ at $sloc }
 typ_post_ :
   | typ_prim_ { $1 }
   | LPAR typ_list RPAR
@@ -158,7 +146,7 @@ typ_list :
   | typ COMMA typ_list { $1::fst $3, snd $3 }
   | typ COMMA_NL typ_list { $1::fst $3, snd $3 }
 
-deftyp : deftyp_ { $1 $ at () }
+deftyp : deftyp_ { $1 $ at $sloc }
 deftyp_ :
   | nottyp { NotationT $1 }
   | LBRACE fieldtyp_list RBRACE { StructT $2 }
@@ -173,7 +161,7 @@ dots :
   | NL_BAR DOTDOTDOT {}
 
 
-nottyp_prim : nottyp_prim_ { $1 $ at () }
+nottyp_prim : nottyp_prim_ { $1 $ at $sloc }
 nottyp_prim_ :
   | typ_prim { TypT $1 }
   | atom { AtomT $1 }
@@ -182,34 +170,34 @@ nottyp_prim_ :
   | TICK LBRACE nottyp RBRACE { BrackT (Brace, $3) }
   | LPAR nottyp RPAR {
       match $2.it with
-      | TypT typ -> TypT (ParenT typ $ at ())
+      | TypT typ -> TypT (ParenT typ $ at $sloc)
       | _ -> ParenNT $2
     }
 
-nottyp_post : nottyp_post_ { $1 $ at () }
+nottyp_post : nottyp_post_ { $1 $ at $sloc }
 nottyp_post_ :
   | nottyp_prim_ { $1 }
   | nottyp_post iter {
       match $1.it with
-      | TypT typ -> TypT (IterT (typ, $2) $ at ())
+      | TypT typ -> TypT (IterT (typ, $2) $ at $sloc)
       | _ -> IterNT ($1, $2)
     }
 
-nottyp_seq : nottyp_seq_ { $1 $ at () }
+nottyp_seq : nottyp_seq_ { $1 $ at $sloc }
 nottyp_seq_ :
   | nottyp_post_ { $1 }
   | nottyp_post nottyp_seq { SeqT ($1 :: as_seq_typ $2) }
 
-nottyp_un : nottyp_un_ { $1 $ at () }
+nottyp_un : nottyp_un_ { $1 $ at $sloc }
 nottyp_un_ :
   | nottyp_seq_ { $1 }
-  | DOT nottyp_un { InfixT (SeqT [] $ ati 1, Dot, $2) }
-  | DOTDOT nottyp_un { InfixT (SeqT [] $ ati 1, Dot2, $2) }
-  | DOTDOTDOT nottyp_un { InfixT (SeqT [] $ ati 1, Dot3, $2) }
-  | SEMICOLON nottyp_un { InfixT (SeqT [] $ ati 1, Semicolon, $2) }
-  | ARROW nottyp_un { InfixT (SeqT [] $ ati 1, Arrow, $2) }
+  | DOT nottyp_un { InfixT (SeqT [] $ at $loc($1), Dot, $2) }
+  | DOTDOT nottyp_un { InfixT (SeqT [] $ at $loc($1), Dot2, $2) }
+  | DOTDOTDOT nottyp_un { InfixT (SeqT [] $ at $loc($1), Dot3, $2) }
+  | SEMICOLON nottyp_un { InfixT (SeqT [] $ at $loc($1), Semicolon, $2) }
+  | ARROW nottyp_un { InfixT (SeqT [] $ at $loc($1), Arrow, $2) }
 
-nottyp_bin : nottyp_bin_ { $1 $ at () }
+nottyp_bin : nottyp_bin_ { $1 $ at $sloc }
 nottyp_bin_ :
   | nottyp_un_ { $1 }
   | nottyp_bin DOT nottyp_bin { InfixT ($1, Dot, $3) }
@@ -218,16 +206,16 @@ nottyp_bin_ :
   | nottyp_bin SEMICOLON nottyp_bin { InfixT ($1, Semicolon, $3) }
   | nottyp_bin ARROW nottyp_bin { InfixT ($1, Arrow, $3) }
 
-nottyp_unrel : nottyp_unrel_ { $1 $ at () }
+nottyp_unrel : nottyp_unrel_ { $1 $ at $sloc }
 nottyp_unrel_ :
   | nottyp_bin_ { $1 }
-  | COLON nottyp_rel { InfixT (SeqT [] $ ati 1, Colon, $2) }
-  | SUB nottyp_rel { InfixT (SeqT [] $ ati 1, Sub, $2) }
-  | SQARROW nottyp_rel { InfixT (SeqT [] $ ati 1, SqArrow, $2) }
-  | TILESTURN nottyp_rel { InfixT (SeqT [] $ ati 1, Tilesturn, $2) }
-  | TURNSTILE nottyp_rel { InfixT (SeqT [] $ ati 1, Turnstile, $2) }
+  | COLON nottyp_rel { InfixT (SeqT [] $ at $loc($1), Colon, $2) }
+  | SUB nottyp_rel { InfixT (SeqT [] $ at $loc($1), Sub, $2) }
+  | SQARROW nottyp_rel { InfixT (SeqT [] $ at $loc($1), SqArrow, $2) }
+  | TILESTURN nottyp_rel { InfixT (SeqT [] $ at $loc($1), Tilesturn, $2) }
+  | TURNSTILE nottyp_rel { InfixT (SeqT [] $ at $loc($1), Turnstile, $2) }
 
-nottyp_rel : nottyp_rel_ { $1 $ at () }
+nottyp_rel : nottyp_rel_ { $1 $ at $sloc }
 nottyp_rel_ :
   | nottyp_unrel_ { $1 }
   | nottyp_rel COLON nottyp_rel { InfixT ($1, Colon, $3) }
@@ -263,7 +251,7 @@ casetyp_list :
 
 /* Expressions */
 
-exp_prim : exp_prim_ { $1 $ at () }
+exp_prim : exp_prim_ { $1 $ at $sloc }
 exp_prim_ :
   | varid { VarE $1 }
   | BOOLLIT { BoolE $1 }
@@ -275,7 +263,7 @@ exp_prim_ :
   | MULTIHOLE { HoleE true }
   | LPAR exp_list RPAR
     { match $2 with
-      | [], false -> ParenE (SeqE [] $ ati 2)
+      | [], false -> ParenE (SeqE [] $ at $loc($2))
       | [exp], false -> ParenE exp
       | exps, _ -> TupE exps
     }
@@ -285,27 +273,27 @@ exp_prim_ :
   | DOLLAR LPAR arith RPAR { $3.it }
   | DOLLAR defid exp_prim { CallE ($2, $3) }
 
-exp_post : exp_post_ { $1 $ at () }
+exp_post : exp_post_ { $1 $ at $sloc }
 exp_post_ :
   | exp_prim_ { $1 }
-  | exp_post LBRACK arith RBRACK { IdxE ($1, $3) }
-  | exp_post LBRACK arith COLON arith RBRACK { SliceE ($1, $3, $5) }
-  | exp_post LBRACK path EQ exp RBRACK { UpdE ($1, $3, $5) }
-  | exp_post LBRACK path EQDOT2 exp RBRACK { ExtE ($1, $3, $5) }
+  | exp_atom LBRACK arith RBRACK { IdxE ($1, $3) }
+  | exp_atom LBRACK arith COLON arith RBRACK { SliceE ($1, $3, $5) }
+  | exp_atom LBRACK path EQ exp RBRACK { UpdE ($1, $3, $5) }
+  | exp_atom LBRACK path EQDOT2 exp RBRACK { ExtE ($1, $3, $5) }
+  | exp_atom iter { IterE ($1, $2) }
   | exp_post dotid { DotE ($1, $2) }
-  | exp_post iter { IterE ($1, $2) }
 
-exp_atom : exp_atom_ { $1 $ at () }
+exp_atom : exp_atom_ { $1 $ at $sloc }
 exp_atom_ :
   | exp_post_ { $1 }
   | atom { AtomE $1 }
 
-exp_seq : exp_seq_ { $1 $ at () }
+exp_seq : exp_seq_ { $1 $ at $sloc }
 exp_seq_ :
   | exp_atom_ { $1 }
   | exp_atom exp_seq { SeqE ($1 :: as_seq_exp $2) }
 
-exp_call : exp_call_ { $1 $ at () }
+exp_call : exp_call_ { $1 $ at $sloc }
 exp_call_ :
   | exp_seq_ { $1 }
   | BAR exp BAR { LenE $2 }
@@ -313,17 +301,17 @@ exp_call_ :
   | BAR exp NL_BAR { LenE $2 }
   | NL_BAR exp NL_BAR { LenE $2 }
 
-exp_un : exp_un_ { $1 $ at () }
+exp_un : exp_un_ { $1 $ at $sloc }
 exp_un_ :
   | exp_call_ { $1 }
   | NOT exp_un { UnE (NotOp, $2) }
-  | DOT exp_un { InfixE (SeqE [] $ ati 1, Dot, $2) }
-  | DOTDOT exp_un { InfixE (SeqE [] $ ati 1, Dot2, $2) }
-  | DOTDOTDOT exp_un { InfixE (SeqE [] $ ati 1, Dot3, $2) }
-  | SEMICOLON exp_un { InfixE (SeqE [] $ ati 1, Semicolon, $2) }
-  | ARROW exp_un { InfixE (SeqE [] $ ati 1, Arrow, $2) }
+  | DOT exp_un { InfixE (SeqE [] $ at $loc($1), Dot, $2) }
+  | DOTDOT exp_un { InfixE (SeqE [] $ at $loc($1), Dot2, $2) }
+  | DOTDOTDOT exp_un { InfixE (SeqE [] $ at $loc($1), Dot3, $2) }
+  | SEMICOLON exp_un { InfixE (SeqE [] $ at $loc($1), Semicolon, $2) }
+  | ARROW exp_un { InfixE (SeqE [] $ at $loc($1), Arrow, $2) }
 
-exp_bin : exp_bin_ { $1 $ at () }
+exp_bin : exp_bin_ { $1 $ at $sloc }
 exp_bin_ :
   | exp_un_ { $1 }
   | exp_bin COMPOSE exp_bin { CompE ($1, $3) }
@@ -340,21 +328,22 @@ exp_bin_ :
   | exp_bin GE exp_bin { CmpE ($1, GeOp, $3) }
   | exp_bin AND exp_bin { BinE ($1, AndOp, $3) }
   | exp_bin OR exp_bin { BinE ($1, OrOp, $3) }
-  | exp_bin ARROW2 exp_bin { BinE ($1, OrOp, $3) }
+  | exp_bin ARROW2 exp_bin { BinE ($1, ImplOp, $3) }
+  | exp_bin DARROW2 exp_bin { BinE ($1, EquivOp, $3) }
   | exp_bin FUSE exp_bin { FuseE ($1, $3) }
 
-exp_unrel : exp_unrel_ { $1 $ at () }
+exp_unrel : exp_unrel_ { $1 $ at $sloc }
 exp_unrel_ :
   | exp_bin_ { $1 }
-  | COMMA exp_rel { CommaE (SeqE [] $ ati 1, $2) }
-  | COMMA_NL exp_rel { CommaE (SeqE [] $ ati 1, $2) }
-  | COLON exp_rel { InfixE (SeqE [] $ ati 1, Colon, $2) }
-  | SUB exp_rel { InfixE (SeqE [] $ ati 1, Sub, $2) }
-  | SQARROW exp_rel { InfixE (SeqE [] $ ati 1, SqArrow, $2) }
-  | TILESTURN exp_rel { InfixE (SeqE [] $ ati 1, Tilesturn, $2) }
-  | TURNSTILE exp_rel { InfixE (SeqE [] $ ati 1, Turnstile, $2) }
+  | COMMA exp_rel { CommaE (SeqE [] $ at $loc($1), $2) }
+  | COMMA_NL exp_rel { CommaE (SeqE [] $ at $loc($1), $2) }
+  | COLON exp_rel { InfixE (SeqE [] $ at $loc($1), Colon, $2) }
+  | SUB exp_rel { InfixE (SeqE [] $ at $loc($1), Sub, $2) }
+  | SQARROW exp_rel { InfixE (SeqE [] $ at $loc($1), SqArrow, $2) }
+  | TILESTURN exp_rel { InfixE (SeqE [] $ at $loc($1), Tilesturn, $2) }
+  | TURNSTILE exp_rel { InfixE (SeqE [] $ at $loc($1), Turnstile, $2) }
 
-exp_rel : exp_rel_ { $1 $ at () }
+exp_rel : exp_rel_ { $1 $ at $sloc }
 exp_rel_ :
   | exp_unrel_ { $1 }
   | exp_rel COMMA exp_rel { CommaE ($1, $3) }
@@ -381,45 +370,45 @@ exp_list :
 
 exps1 :
   | exp_post { $1 }
-  | exp_post exps1 { SeqE ($1 :: as_seq_exp $2) $ at () }
+  | exp_post exps1 { SeqE ($1 :: as_seq_exp $2) $ at $sloc }
 
 
-arith_prim : arith_prim_ { $1 $ at () }
+arith_prim : arith_prim_ { $1 $ at $sloc }
 arith_prim_ :
   | varid { VarE $1 }
   | NATLIT { NatE $1 }
   | LPAR arith RPAR { ParenE $2 }
 
-arith_post : arith_post_ { $1 $ at () }
+arith_post : arith_post_ { $1 $ at $sloc }
 arith_post_ :
   | arith_prim_ { $1 }
   | arith_post UP arith_prim { BinE ($1, ExpOp, $3) }
   | arith_post LBRACK arith RBRACK { IdxE ($1, $3) }
   | arith_post dotid { DotE ($1, $2) }
 
-arith_atom : arith_atom_ { $1 $ at () }
+arith_atom : arith_atom_ { $1 $ at $sloc }
 arith_atom_ :
   | arith_post_ { $1 }
   | atom { AtomE $1 }
 
-arith_call : arith_call_ { $1 $ at () }
+arith_call : arith_call_ { $1 $ at $sloc }
 arith_call_ :
   | arith_atom_ { $1 }
   | BAR exp BAR { LenE $2 }
   | NL_BAR exp BAR { LenE $2 }
   | BAR exp NL_BAR { LenE $2 }
   | NL_BAR exp NL_BAR { LenE $2 }
-  | DOLLAR defid { CallE ($2, SeqE [] $ at ()) }
+  | DOLLAR defid { CallE ($2, SeqE [] $ at $sloc) }
   | DOLLAR defid exp_prim { CallE ($2, $3) }
 
-arith_un : arith_un_ { $1 $ at () }
+arith_un : arith_un_ { $1 $ at $sloc }
 arith_un_ :
   | arith_call_ { $1 }
   | NOT arith_un { UnE (NotOp, $2) }
   | PLUS arith_un { UnE (PlusOp, $2) }
   | MINUS arith_un { UnE (MinusOp, $2) }
 
-arith_bin : arith_bin_ { $1 $ at () }
+arith_bin : arith_bin_ { $1 $ at $sloc }
 arith_bin_ :
   | arith_un_ { $1 }
   | arith_bin STAR arith_bin { BinE ($1, MulOp, $3) }
@@ -439,7 +428,7 @@ arith_bin_ :
 arith : arith_bin { $1 }
 
 
-path : path_ { $1 $ at () }
+path : path_ { $1 $ at $sloc }
 path_ :
   | /* empty */ { RootP }
   | path LBRACK arith RBRACK { IdxP ($1, $3) }
@@ -448,29 +437,29 @@ path_ :
 
 /* Definitions */
 
-def : def_ { $1 $ at () }
+def : def_ { $1 $ at $sloc }
 def_ :
   | SYNTAX varid ruleid_list hint_list EQ deftyp
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      SynD ($2, id $ ati 3, $6, $4) }
+      SynD ($2, id $ at $loc($3), $6, $4) }
   | SYNTAX atom_as_varid ruleid_list hint_list EQ deftyp
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      SynD ($2, id $ ati 3, $6, $4) }
+      SynD ($2, id $ at $loc($3), $6, $4) }
   | RELATION relid COLON nottyp hint_list
     { RelD ($2, $4, $5) }
   | RULE relid ruleid_list COLON exp premise_list
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      RuleD ($2, id $ ati 3, $5, $6) }
+      RuleD ($2, id $ at $loc($3), $5, $6) }
   | VAR varid COLON typ hint_list
     { VarD ($2, $4, $5) }
   | VAR atom_as_varid COLON typ hint_list
     { VarD ($2, $4, $5) }
   | DEF DOLLAR defid COLON typ hint_list
-    { DecD ($3, SeqE [] $ ati 4, $5, $6) }
+    { DecD ($3, SeqE [] $ at $loc($4), $5, $6) }
   | DEF DOLLAR defid exp_prim COLON typ hint_list
     { DecD ($3, $4, $6, $7) }
   | DEF DOLLAR defid EQ exp premise_list
-    { DefD ($3, SeqE [] $ ati 4, $5, $6) }
+    { DefD ($3, SeqE [] $ at $loc($4), $5, $6) }
   | DEF DOLLAR defid exp_prim EQ exp premise_list
     { DefD ($3, $4, $6, $7) }
   | NL_NL_NL
@@ -486,16 +475,19 @@ premise_list :
   | DASH premise premise_list { (Elem $2)::$3 }
   | NL_NL_DASH premise premise_list { Nl::(Elem $2)::$3 }
 
-premise : premise_ { $1 $ at () }
+premise : premise_ { $1 $ at $sloc }
 premise_ :
   | relid COLON exp { RulePr ($1, $3, None) }
-  | IFF exp { IffPr ($2, None) }
+  | IFF exp
+    { match $2.it with
+      | IterE (exp1, iter) -> IffPr (exp1, Some iter)
+      | _ -> IffPr ($2, None) }
   | OTHERWISE { ElsePr }
   | LPAR relid COLON exp RPAR iter { RulePr ($2, $4, Some $6) }
   | LPAR IFF exp RPAR iter { IffPr ($3, Some $5) }
 
 hint :
-  | HINT LPAR hintid exp RPAR { {hintid = $3 $ ati 3; hintexp = $4} }
+  | HINT LPAR hintid exp RPAR { {hintid = $3 $ at $loc($3); hintexp = $4} }
 
 hint_list :
   | /* empty */ { [] }

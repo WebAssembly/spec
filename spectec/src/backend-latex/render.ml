@@ -229,7 +229,8 @@ let render_unop = function
 let render_binop = function
   | AndOp -> "\\land"
   | OrOp -> "\\lor"
-  | ImplOp -> "Rightarrow"
+  | ImplOp -> "\\Rightarrow"
+  | EquivOp -> "\\Leftrightarrow"
   | AddOp -> "+"
   | SubOp -> "-"
   | MulOp -> "\\cdot"

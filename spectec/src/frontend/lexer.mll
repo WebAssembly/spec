@@ -162,6 +162,7 @@ rule token = parse
 
   | "->" { ARROW }
   | "=>" { ARROW2 }
+  | "<=>" { DARROW2 }
   | "~>" { SQARROW }
   | "|-" { TURNSTILE }
   | "-|" { TILESTURN }

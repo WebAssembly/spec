@@ -44,6 +44,7 @@ let string_of_binop = function
   | AndOp -> "/\\"
   | OrOp -> "\\/"
   | ImplOp -> "=>"
+  | EquivOp -> "<=>"
   | AddOp -> "+"
   | SubOp -> "-"
   | MulOp -> "*"

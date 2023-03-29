@@ -5,11 +5,8 @@ let with_lexbuf name lexbuf start =
   lexbuf.lex_curr_p <- {lexbuf.lex_curr_p with pos_fname = name};
   try
     start Lexer.token lexbuf
-  with Source.Error (region, s) ->
-    let region' = if region <> Source.no_region then region else
-      {Source.left = Lexer.convert_pos lexbuf.lex_start_p;
-       Source.right = Lexer.convert_pos lexbuf.lex_curr_p} in
-    raise (Source.Error (region', s))
+  with Parser.Error ->
+    raise (Source.Error (Lexer.region lexbuf, "unexpected token"))
 
 let parse_exp s =
   let lexbuf = Lexing.from_string s in

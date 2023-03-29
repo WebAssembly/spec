@@ -11,11 +11,17 @@ var C : context
 
 ;; Types
 
+relation Limits_ok: |- limits : nat         hint(show "K-limits")
 relation Functype_ok: |- functype : OK      hint(show "K-func")
 relation Globaltype_ok: |- globaltype : OK  hint(show "K-global")
 relation Tabletype_ok: |- tabletype : OK    hint(show "K-table")
 relation Memtype_ok: |- memtype : OK        hint(show "K-mem")
-relation Limits_ok: |- limits : nat         hint(show "K-limits")
+relation Externtype_ok: |- externtype : OK  hint(show "K-extern")
+
+
+rule Limits_ok:
+  |- `[n_1 .. n_2] : k
+  -- iff n_1 <= n_2 <= k
 
 rule Functype_ok:
   |- ft : OK
@@ -31,9 +37,22 @@ rule Memtype_ok:
   |- lim I8 : OK
   -- Limits_ok: |- lim : $(2^16)
 
-rule Limits_ok:
-  |- `[n_1 .. n_2] : k
-  -- iff n_1 <= n_2 <= k
+
+rule Externtype_ok/func:
+  |- FUNC functype : OK
+  -- Functype_ok: |- functype : OK
+
+rule Externtype_ok/global:
+  |- GLOBAL globaltype : OK
+  -- Globaltype_ok: |- globaltype : OK
+
+rule Externtype_ok/table:
+  |- TABLE tabletype : OK
+  -- Tabletype_ok: |- tabletype : OK
+
+rule Externtype_ok/mem:
+  |- MEMORY memtype : OK
+  -- Memtype_ok: |- memtype : OK
 
 
 
@@ -53,12 +72,18 @@ rule Resulttype_sub:
   -- (Valtype_sub: |- t_1 <: t_2)*
 
 
+relation Limits_sub: |- limits <: limits             hint(show "S-limits")
 relation Functype_sub: |- functype <: functype       hint(show "S-func")
 relation Globaltype_sub: |- globaltype <: globaltype hint(show "S-global")
 relation Tabletype_sub: |- tabletype <: tabletype    hint(show "S-table")
 relation Memtype_sub: |- memtype <: memtype          hint(show "S-mem")
-relation Limits_sub: |- limits <: limits             hint(show "S-limits")
 relation Externtype_sub: |- externtype <: externtype hint(show "S-extern")
+
+
+rule Limits_sub:
+  |- `[n_11 .. n_12] <: `[n_21 .. n_22]
+  -- iff n_11 >= n_21
+  -- iff n_12 <= n_22
 
 rule Functype_sub:
   |- ft <: ft
@@ -74,10 +99,6 @@ rule Memtype_sub:
   |- lim_1 I8 <: lim_2 I8
   -- Limits_sub: |- lim_1 <: lim_2
 
-rule Limits_sub:
-  |- `[n_11 .. n_12] <: `[n_21 .. n_22]
-  -- iff n_11 >= n_21
-  -- iff n_12 <= n_22
 
 rule Externtype_sub/func:
   |- FUNC ft_1 <: FUNC ft_2
@@ -92,7 +113,7 @@ rule Externtype_sub/table:
   -- Tabletype_sub: |- tt_1 <: tt_2
 
 rule Externtype_sub/mem:
-  |- MEM mt_1 <: MEM mt_2
+  |- MEMORY mt_1 <: MEMORY mt_2
   -- Memtype_sub: |- mt_1 <: mt_2
 
 
@@ -101,6 +122,7 @@ rule Externtype_sub/mem:
 
 relation Instr_ok: context |- instr : functype     hint(show "T")
 relation InstrSeq_ok: context |- instr* : functype hint(show "T*")
+
 
 rule InstrSeq_ok/empty:
   C |- epsilon : epsilon -> epsilon
@@ -142,6 +164,7 @@ rule Instr_ok/select-impl:
 
 
 relation Blocktype_ok: context |- blocktype : functype hint(show "K-block")
+
 rule Blocktype_ok:
   C |- ft : ft
   -- Functype_ok: |- ft : OK
@@ -206,7 +229,118 @@ rule Instr_ok/relop:
   C |- RELOP nt relop : nt nt -> I32
 
 
+rule Instr_ok/extend:
+  C |- EXTEND nt n : nt -> nt
+  -- iff n <= $size(nt)
 
+rule Instr_ok/reinterpret:
+  C |- CVTOP nt_1 REINTERPRET nt_2 : nt_2 -> nt_1
+  -- iff nt_1 =/= nt_2
+  -- iff $size(nt_1) = $size(nt_2)
+
+rule Instr_ok/convert-i:
+  C |- CVTOP in_1 CONVERT in_2 sx? : in_2 -> in_1
+  -- iff in_1 =/= in_2
+  -- iff sx? = epsilon <=> $size(in_1) > $size(in_2)
+
+rule Instr_ok/convert-f:
+  C |- CVTOP fn_1 CONVERT fn_2 : fn_2 -> fn_1
+  -- iff fn_1 =/= fn_2
+
+
+rule Instr_ok/ref.null:
+  C |- REF.NULL rt : epsilon -> rt
+
+rule Instr_ok/ref.func:
+  C |- REF.FUNC x : epsilon -> FUNCREF
+  -- iff C.FUNC[x] = ft
+
+rule Instr_ok/ref.is_null:
+  C |- REF.IS_NULL : rt -> I32
+
+
+rule Instr_ok/global.get:
+  C |- GLOBAL.GET x : epsilon -> t
+  -- iff C.GLOBAL[x] = MUT? t
+
+rule Instr_ok/global.set:
+  C |- GLOBAL.SET x : t -> epsilon
+  -- iff C.GLOBAL[x] = MUT t
+
+
+rule Instr_ok/table.get:
+  C |- TABLE.GET x : I32 -> rt
+  -- iff C.TABLE[x] = lim rt
+
+rule Instr_ok/table.set:
+  C |- TABLE.SET x : I32 rt -> epsilon
+  -- iff C.TABLE[x] = lim rt
+
+rule Instr_ok/table.size:
+  C |- TABLE.SIZE x : epsilon -> I32
+  -- iff C.TABLE[x] = tt
+
+rule Instr_ok/table.grow:
+  C |- TABLE.GROW x : rt I32 -> I32
+  -- iff C.TABLE[x] = lim rt
+
+rule Instr_ok/table.fill:
+  C |- TABLE.FILL x : I32 rt I32 -> epsilon
+  -- iff C.TABLE[x] = lim rt
+
+rule Instr_ok/table.copy:
+  C |- TABLE.COPY x_1 x_2 : I32 I32 I32 -> epsilon
+  -- iff C.TABLE[x_1] = lim_1 rt
+  -- iff C.TABLE[x_2] = lim_2 rt
+
+rule Instr_ok/table.init:
+  C |- TABLE.INIT x_1 x_2 : I32 I32 I32 -> epsilon
+  -- iff C.TABLE[x_1] = lim rt
+  -- iff C.ELEM[x_2] = rt
+
+rule Instr_ok/elem.drop:
+  C |- ELEM.DROP x : epsilon -> epsilon
+  -- iff C.ELEM[x] = rt
+
+
+rule Instr_ok/memory.size:
+  C |- MEMORY.SIZE : epsilon -> I32
+  -- iff C.MEM[0] = mt
+
+rule Instr_ok/memory.grow:
+  C |- MEMORY.GROW : I32 -> I32
+  -- iff C.MEM[0] = mt
+
+rule Instr_ok/memory.fill:
+  C |- MEMORY.FILL : I32 I32 I32 -> I32
+  -- iff C.MEM[0] = mt
+
+rule Instr_ok/memory.copy:
+  C |- MEMORY.COPY : I32 I32 I32 -> I32
+  -- iff C.MEM[0] = mt
+
+rule Instr_ok/memory.init:
+  C |- MEMORY.INIT x : I32 I32 I32 -> I32
+  -- iff C.MEM[0] = mt
+  -- iff C.DATA[x] = OK
+
+rule Instr_ok/data.drop:
+  C |- DATA.DROP x : epsilon -> epsilon
+  -- iff C.DATA[x] = OK
+
+rule Instr_ok/load:
+  C |- LOAD nt (n sx)? n_A n_O : I32 -> nt
+  -- iff C.MEM[0] = mt
+  -- iff $(2^(n_A) <= $size(t)/8)
+  -- iff $(2^(n_A) <= n/8 < $size(t)/8)?
+  -- iff n? = epsilon \/ nt = in
+
+rule Instr_ok/store:
+  C |- STORE nt n? n_A n_O : I32 nt -> epsilon
+  -- iff C.MEM[0] = mt
+  -- iff $(2^(n_A) <= $size(t)/8)
+  -- iff $(2^(n_A) <= n/8 < $size(t)/8)?
+  -- iff n? = epsilon \/ nt = in
 
 
 ;; Constant Instructions

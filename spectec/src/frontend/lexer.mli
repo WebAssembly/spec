@@ -1,3 +1,2 @@
-val convert_pos : Lexing.position -> Util.Source.pos
-
+val region : Lexing.lexbuf -> Util.Source.region
 val token : Lexing.lexbuf -> Parser.token  (* raises Source.Error *)

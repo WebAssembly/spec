@@ -42,6 +42,9 @@ syntax reftype hint(desc "reference type") =
 syntax valtype hint(desc "value type") =
   | numtype | vectype | reftype | BOT
 
+syntax in hint(show I#n) = | I32 | I64
+syntax fn hint(show F#n) = | F32 | F64
+
 var t : valtype
 var nt : numtype
 var vt : vectype
@@ -65,7 +68,7 @@ syntax elemtype hint(desc "element type") =
 syntax datatype hint(desc "data type") =
   OK
 syntax externtype hint(desc "external type") =
-  | GLOBAL globaltype | FUNC functype | TABLE tabletype | MEM memtype
+  | GLOBAL globaltype | FUNC functype | TABLE tabletype | MEMORY memtype
 
 var lim : limits
 var ft : functype
@@ -75,6 +78,36 @@ var mt : memtype
 var xt : externtype
 
 
+;; Operators
+
+syntax sx hint(desc "signedness") = | U | S
+
+syntax unop_IXX = | CLZ | CTZ | POPCNT
+syntax unop_FXX = | ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
+
+syntax binop_IXX =
+  | ADD | SUB | MUL | DIV sx hint(show DIV_#%) | REM sx hint(show REM_#%)
+  | AND | OR | XOR | SHL | SHR sx hint(show SHR_#%) | ROTL | ROTR
+syntax binop_FXX = | ADD | SUB | MUL | DIV | MIN | MAX | COPYSIGN
+
+syntax testop_IXX = | EQZ
+syntax testop_FXX = |      ;; uninhabited
+
+syntax relop_IXX =
+  | EQ | NE | LT sx hint(show LT_#%) | GT sx hint(show GT_#%) | LE sx hint(show LE_#%) | GE sx hint(show GE_#%)
+syntax relop_FXX = | EQ | NE | LT | GT | LE | GE
+
+syntax unop_numtype = | _I unop_IXX | _F unop_FXX
+syntax binop_numtype = | _I binop_IXX | _F binop_FXX
+syntax testop_numtype = | _I testop_IXX | _F testop_FXX
+syntax relop_numtype = | _I relop_IXX | _F relop_FXX
+syntax cvtop = | CONVERT | REINTERPRET
+
+var unop : unop_numtype
+var binop : binop_numtype
+var testop : testop_numtype
+var relop : relop_numtype
+
 
 ;; Instructions
 
@@ -82,21 +115,8 @@ syntax c_numtype = nat  ;; TODO
 syntax c_vectype = nat  ;; TODO
 var c : c_numtype
 
-syntax sx hint(desc "signedness") = | U | S
-
 syntax blocktype hint(desc "block type") = functype  ;; TODO
 var bt : blocktype
-
-syntax unop_numtype = XXX  ;; TODO
-syntax binop_numtype = XXX  ;; TODO
-syntax testop_numtype = XXX  ;; TODO
-syntax relop_numtype = XXX  ;; TODO
-syntax cvtop = XXX  ;; TODO
-
-var unop : unop_numtype
-var binop : binop_numtype
-var testop : testop_numtype
-var relop : relop_numtype
 
 syntax instr/control hint(desc "control instruction") =
   | UNREACHABLE
@@ -159,11 +179,8 @@ syntax expr hint(desc "expression") =
 
 ;; Modules
 
-syntax elemmode =
-  | TABLE tableidx expr
-  | DECLARE
-syntax datamode =
-  | MEMORY memidx expr
+syntax elemmode = | TABLE tableidx expr | DECLARE
+syntax datamode = | MEMORY memidx expr
 
 syntax func hint(desc "function") =
   FUNC functype valtype* expr
@@ -172,7 +189,7 @@ syntax global hint(desc "global") =
 syntax table hint(desc "table") =
   TABLE tabletype
 syntax mem hint(desc "memory") =
-  MEM memtype
+  MEMORY memtype
 syntax elem hint(desc "table segment") =
   ELEM reftype expr* elemmode?
 syntax data hint(desc "memory segment") =
@@ -181,7 +198,7 @@ syntax start hint(desc "start function") =
   START funcidx
 
 syntax externuse hint(desc "external use") =
-  | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEM memidx
+  | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEMORY memidx
 syntax export hint(desc "export") =
   EXPORT name externuse
 syntax import hint(desc "import") =

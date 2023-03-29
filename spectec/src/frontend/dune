@@ -8,6 +8,6 @@
   (modules lexer)
 )
 
-(ocamlyacc
+(menhir
   (modules parser)
 )

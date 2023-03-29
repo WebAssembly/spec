@@ -90,6 +90,7 @@ and binop =
   | AndOp  (* `/\` *)
   | OrOp   (* `\/` *)
   | ImplOp (* `=>` *)
+  | EquivOp (* `<=>` *)
   | AddOp  (* `+` *)
   | SubOp  (* `-` *)
   | MulOp  (* `*` *)
