@@ -9,10 +9,27 @@ let stepIdx _ =
   let i = !_stepIdx in
   _stepIdx := (i + 1);
   i
-let printf_step formatted =
-  Printf.printf ("%d. " ^^ formatted ^^ "\n") (stepIdx())
 
-(* 1. Pop the values from the stack and obtain input variables *)
+let _subIdx = ref 1
+let subIdx _ =
+  let i = !_subIdx in
+  _subIdx := (i + 1);
+  i
+
+let _indent = ref false
+let indent _ =
+  _indent := true;
+  _subIdx := 1
+let unindent _ =
+  _indent := false
+
+let printf_step formatted =
+  if !_indent then
+    Printf.printf ("  %d) " ^^ formatted ^^ "\n") (subIdx())
+  else
+    Printf.printf ("%d. " ^^ formatted ^^ "\n") (stepIdx())
+
+(* 1. Handle lhs of reduction rules *)
 
 let hds l = l |> List.rev |> List.tl
 
@@ -21,25 +38,37 @@ let assert_type e =
   (* ({CONST I32 c}) *)
   | ParenE({it = SeqE({it = (AtomE (Atom "CONST")); _} :: {it = (AtomE (Atom "I32")); _}  :: _); _}) ->
     printf_step "Assert: Due to validation, a value of value type i32 is on the top of the stack."
-  | _ -> 
+  | _ ->
     printf_step "Assert: Due to validation, a value is on the top of the stack."
 
-let pop left = match left.it with
+let pop left = match left with
   | SeqE(es) -> hds es |> List.iter (fun e ->
     assert_type e;
     let v = Print.string_of_exp e in
     printf_step "Pop the value %s from the stack." v
   )
+  | ParenE({it = SeqE({it = AtomE(Atom "LABEL"); _} :: _); at = _}) ->
+    printf_step "YET: Bubble-up semantics."
   | _ -> ()
-  
-(* 2. Calculate the output variables from the input variables from the conditions *)
 
-let calc conds =
-  conds |> List.iter (fun c ->
-    printf_step "YET: %s" (Print.string_of_premise c)
+(* 2. Handle premises *)
+
+let calc prems =
+  prems |> List.iter (fun p -> match p.it with
+    | IffPr(e, None) -> printf_step "Let %s." (Print.string_of_exp e)
+    | _ -> ()
   )
-  
-(* 3. Push the value to the stack / execute instructions, based on the output variables *)
+
+let cond prems =
+  prems
+  |> List.map (fun p -> match p.it with
+    | IffPr(e, None) -> Print.string_of_exp e
+    | _ -> Print.string_of_premise p
+  )
+  |> String.concat " and "
+  |> printf_step "If %s, then:"
+
+(* 3. Handle rhs of reductino rules *)
 
 let _freshId = ref 0
 let fresh _ =
@@ -57,26 +86,26 @@ let bind_argument args =
       { it = VarE({it = id; at = arg.at}); at = arg.at }
   )
 
-let destruct instr = match instr with
+let destruct_instr = function
   | {it = AtomE(Atom name); _} :: args -> (name, args)
   | _ -> raise(Invalid_argument "invalid instr")
 
-let push right = match right.it with
-  | AtomE(Atom "TRAP") -> printf_step("Trap.")
+let rec push right = match right with
+  | AtomE(Atom "TRAP") -> printf_step "Trap."
+  | EpsE -> printf_step "Do nothing."
   | ParenE({it = SeqE(instr); _}) -> (
-    match destruct instr with
-      | ("LABEL", n :: cont :: vals :: instrs :: []) ->
+    match destruct_instr instr with
+      | ("LABEL", n :: cont :: args) ->
         printf_step
-          "Let L be the label whose arity is %s and whose continuation is %s."
+          "Let L be the label whose arity is %s and whose continuation is the %s of this instruction."
           (Print.string_of_exp n)
-          (Print.string_of_exp cont);
+          (if cont.it = EpsE then "end" else "start");
         printf_step
-          "Enter the block %s %s with label L."
-          (Print.string_of_exp vals)
-          (Print.string_of_exp instrs)
-      | ("FRAME", _) -> 
+          "Enter the block %s with label L."
+          (Print.string_of_exps " " args)
+      | ("FRAME", _n1 :: _frame :: label :: []) ->
         printf_step "YET: Push the frame to the stack.";
-        printf_step "YET: Enter the block with label."
+        push label.it
       | ("CONST" | "REF.NULL" | "REF.FUNC" as name, args) ->
         let args = bind_argument args in
         let str = Print.string_of_exps " " args in
@@ -89,49 +118,78 @@ let push right = match right.it with
   | VarE(id) -> printf_step "Push the value %s to the stack." id.it
   | _ -> ()
 
-let reduce left right conds = 
-  (*
-  left ~> right
-  -- iff cond1
-  -- iff cond2
-  *)
+(* if r is a reduction rule, desturct it into triplet of (lhs, rhs, premises) *)
+let destruct_as_rule r = match r.it with
+  | RuleD(name, _, e, prems) -> (match e.it with
+    | InfixE(left, SqArrow, right) ->
+      if String.starts_with ~prefix:"Step_" name.it then
+        Some (left.it, right.it, prems)
+      else
+        None
+    | _ -> None)
+  | _ -> None
+let string_of_destructed (left, right, prems) =
+  Print.string_of_exp {it = left; at = no_region} ^
+  " ~> " ^
+  Print.string_of_exp {it = right; at = no_region} ^
+  String.concat "" (List.map (fun x -> "\n    -- " ^ Print.string_of_premise x) prems)
 
-  (* 1. Pop the values from the stack and obtain input variables *)
-  pop left;
-  (* 2. Calculate the output variables from the input variables from the conditions *)
-  calc conds;
-  (* 3. Push the value to the stack / execute instructions, based on the output variables *)
-  push right
-
-let handle_reduction red = 
-  print_endline (Print.string_of_def red);
-
+let handle_reduction_group red_group =
+  (* assert: every redunction rule in red_group has same lhs *)
+  red_group |> List.iter (fun red ->
+    print_endline (string_of_destructed red)
+  );
   _stepIdx := 1;
   _freshId := 0;
+
+  let (left, _, _) = List.hd red_group in
+  let left = match left with
+    | InfixE(_, Semicolon, left) -> left.it
+    | _ -> left
+  in
+  pop left;
+
   (
-    match red.it with
-    | RuleD (_, _, red, cond) -> (
-      match red.it with
-      | InfixE(left, SqArrow, right) -> (
-        match left.it with
-        | InfixE(_, Semicolon, left) -> reduce left right cond
-        | _ -> reduce left right cond)
-      | _ -> ())
-    | _ -> ()
+    match red_group with
+    (* one rule -> premises are highly likely assignment *)
+    | [(_, right, prems)] ->
+      calc prems;
+      push right;
+    (* two rules -> premises are highly likely conditions *)
+    | [(_, right1, prems1) ; (_, right2, prems2)] ->
+      cond prems1;
+        indent();
+        push right1;
+        unindent();
+      cond prems2;
+        indent();
+        push right2;
+        unindent();
+    | _ -> raise (Failure "TODO")
   );
-  if (!_stepIdx == 1) then printf_step "Do nothing.";
+
   print_newline()
+
+let rec group_by f = function
+  | [] -> []
+  | [x] -> [[x]]
+  | hd :: tl ->
+    let pred x = (f hd  = f x) in
+    let (l, r) = List.partition pred tl in
+    (hd :: l) :: (group_by f r)
 
 let translate el =
   print_endline "starting translate";
-  let reductions = el |> List.filter (fun def ->
-    match def.it with
-    | RuleD(name, _, e, _) -> (match e.it with
-      | InfixE(_, SqArrow, _) -> String.starts_with ~prefix:"Step_" name.it
-      | _ -> false)
-    | _ -> false
-  ) in
 
-  List.iter handle_reduction reductions;
+  (* Filter and destruct redctions only *)
+  let reductions = el |> List.filter_map destruct_as_rule in
+
+  (* Group reductions by lefthand side *)
+  let reduction_groups = group_by (fun (left, _, _) ->
+    Print.string_of_exp {it = left; at = no_region}
+  ) reductions in
+
+  (* Handle each redction group *)
+  List.iter handle_reduction_group reduction_groups;
 
   print_endline "finishing translate";
