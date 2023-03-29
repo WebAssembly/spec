@@ -23,7 +23,7 @@ jobs:
         with:
           ocaml-compiler: 4.14.x
       - name: Setup Dune
-        run: opam install --yes dune mdx
+        run: opam install --yes dune menhir mdx
       - name: Setup Latex
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
