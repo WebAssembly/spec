@@ -388,10 +388,12 @@ and valid_exp env exp typ =
     let _typ1 = as_iter_typ List "list" env Check typ exp.at in
     valid_exp env exp1 typ;
     valid_exp env exp2 typ
-  | CaseE (atom, exp) ->
-    let cases = as_variant_typ "" env Check typ exp.at in
-    let typ' = find_case cases atom exp.at in
-    valid_exp env exp typ'
+  | CaseE (atom, exp1, typ2) ->
+    valid_typ env typ2;
+    let cases = as_variant_typ "case" env Check typ2 exp.at in
+    let typ1 = find_case cases atom exp1.at in
+    valid_exp env exp1 typ1;
+    equiv_typ env typ2 typ exp.at
   | SubE (exp1, typ1, typ2) ->
     valid_typ env typ1;
     valid_typ env typ2;

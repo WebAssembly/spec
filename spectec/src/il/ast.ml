@@ -113,7 +113,7 @@ and exp' =
   | OptE of exp option           (* exp? : typ? *)
   | ListE of exp list            (* [exp ... exp] *)
   | CatE of exp * exp            (* exp :: exp *)
-  | CaseE of atom * exp          (* atom exp : variant *)
+  | CaseE of atom * exp * typ    (* atom exp : typ *)
   | SubE of exp * typ * typ      (* exp : typ1 <: typ2 *)
 
 and expfield = atom * exp        (* atom exp *)

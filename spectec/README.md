@@ -125,6 +125,7 @@ Currently, the implementation consists of merely the frontend, which performs:
 Lowering from EL into IL infers additional information and makes it explicit in the representation:
 
 * resolve notational overloading and mixfix applications,
+* resolve overloading of variant constructors and annotate them with their type,
 * insert injections from variant subtypes into supertypes,
 * insert injections from singletons into options/lists,
 * insert binders and types for local variables in rules and functions,

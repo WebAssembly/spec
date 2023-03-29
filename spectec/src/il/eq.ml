@@ -79,8 +79,8 @@ and eq_exp exp1 exp2 =
     eq_exp exp11 exp21 && eq_iter iter1 iter2
   | OptE expo1, OptE expo2 ->
     eq_opt eq_exp expo1 expo2
-  | CaseE (atom1, exp1), CaseE (atom2, exp2) ->
-    atom1 = atom2 && eq_exp exp1 exp2
+  | CaseE (atom1, exp1, typ1), CaseE (atom2, exp2, typ2) ->
+    atom1 = atom2 && eq_exp exp1 exp2 && eq_typ typ1 typ2
   | SubE (exp1, typ11, typ12), SubE (exp2, typ21, typ22) ->
     eq_exp exp1 exp2 && eq_typ typ11 typ21 && eq_typ typ12 typ22
   | _, _ ->

@@ -152,7 +152,8 @@ and string_of_exp exp =
   | OptE expo -> "?(" ^ string_of_exps "" (Option.to_list expo) ^ ")"
   | ListE exps -> "[" ^ string_of_exps " " exps ^ "]"
   | CatE (exp1, exp2) -> string_of_exp exp1 ^ " :: " ^ string_of_exp exp2
-  | CaseE (atom, exp) -> string_of_atom atom ^ string_of_exp_args exp
+  | CaseE (atom, exp1, typ) ->
+    string_of_atom atom ^ "_" ^ string_of_typ typ ^ string_of_exp_args exp1
   | SubE (exp1, _typ1, typ2) ->
     "(" ^ string_of_exp exp1 ^ " <: " ^ string_of_typ typ2 ^ ")"
 

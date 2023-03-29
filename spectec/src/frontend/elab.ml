@@ -871,9 +871,10 @@ and elab_exp_variant env exps cases typ at : Il.exp =
     (* TODO: this is a bit hacky *)
     let exp2 = SeqE exps $ at in
     let _mixop', exps' = elab_exp_notation'' env exp2 (SeqT nottyps $ typ.at) in
+    let typ2 = expand_singular' env typ.it $ at in
     cast_exp "variant case" env
-      (Il.CaseE (elab_atom atom, tup_exp' exps' at) $ at)
-      (expand_singular' env typ.it $ typ.at) typ
+      (Il.CaseE (elab_atom atom, tup_exp' exps' at, elab_typ env typ2) $ at)
+      typ2 typ
   | _ ->
     error at ("expression does not match expected variant type `" ^
       string_of_typ typ ^ "`")
