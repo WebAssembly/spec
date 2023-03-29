@@ -373,9 +373,9 @@ and render_typ env typ =
   | BoolT -> render_synid env ("bool" $ typ.at)
   | NatT -> render_synid env ("nat" $ typ.at)
   | TextT -> render_synid env ("text" $ typ.at)
-  | ParenT typ -> "("^ render_typ env typ ^")"
-  | TupT typs -> "("^ render_typs ",\\; " env typs ^")"
-  | IterT (typ1, iter) -> render_typ env typ1 ^ render_iter env iter
+  | ParenT typ -> "(" ^ render_typ env typ ^ ")"
+  | TupT typs -> "(" ^ render_typs ",\\; " env typs ^ ")"
+  | IterT (typ1, iter) -> "{" ^ render_typ env typ1 ^ "}" ^ render_iter env iter
 
 and render_typs sep env typs =
   concat sep (List.filter ((<>) "") (List.map (render_typ env) typs))
@@ -409,7 +409,8 @@ and render_nottyp env nottyp =
   | BrackT (brack, nottyp1) ->
     let l, r = render_brack brack in l ^ render_nottyp env nottyp1 ^ r
   | ParenNT nottyp1 -> "(" ^ render_nottyp env nottyp1 ^ ")"
-  | IterNT (nottyp1, iter) -> render_nottyp env nottyp1 ^ render_iter env iter
+  | IterNT (nottyp1, iter) ->
+    "{" ^ render_nottyp env nottyp1 ^ "}" ^ render_iter env iter
 
 and render_nottyps sep env nottyps =
   concat sep (List.filter ((<>) "") (List.map (render_nottyp env) nottyps))
@@ -427,8 +428,8 @@ and render_typcase env at (atom, nottyps, _hints) =
       match atom, nottyps with
       | Atom id, nottyp1::nottyps2 when ends_sub id ->
         (* Handle subscripting *)
-        render_atomid env (chop_sub id) ^
-          "_{" ^ render_nottyp env nottyp1 ^ "}\\," ^
+        "{" ^ render_atomid env (chop_sub id) ^
+          "}_{" ^ render_nottyp env nottyp1 ^ "}\\," ^
           (if nottyps2 = [] then "" else "\\," ^ render_nottyps "~" env nottyps2)
       | _ ->
         let s1 = render_atom env atom in
@@ -455,7 +456,7 @@ and render_exp env exp =
   | TextE t -> "``" ^ t ^ "''"
   | UnE (unop, exp2) -> render_unop unop ^ render_exp env exp2
   | BinE (exp1, ExpOp, ({it = ParenE exp2; _ } | exp2)) ->
-    render_exp env exp1 ^ "^{" ^ render_exp env exp2 ^ "}"
+    "{" ^ render_exp env exp1 ^ "}^{" ^ render_exp env exp2 ^ "}"
   | BinE (exp1, binop, exp2) ->
     render_exp env exp1 ^ space render_binop binop ^ render_exp env exp2
   | CmpE (exp1, cmpop, exp2) ->
@@ -498,16 +499,16 @@ and render_exp env exp =
           render_defid env id ^ render_exp env exp1
         else
           (* Handle subscripting *)
-          render_defid env (chop_sub id.it $ id.at) ^
+          "{" ^ render_defid env (chop_sub id.it $ id.at) ^
           let exp1', exp2' =
             match untup_exp exp1 with
             | [] -> SeqE [] $ exp1.at, SeqE [] $ exp1.at
             | [exp1'] -> exp1', SeqE [] $ exp1.at
             | exp1'::exps -> exp1', TupE exps $ exp1.at
           in
-          "_{" ^ render_exp env exp1' ^ "}" ^ render_exp env exp2'
+          "}_{" ^ render_exp env exp1' ^ "}" ^ render_exp env exp2'
       )
-  | IterE (exp1, iter) -> render_exp env exp1 ^ render_iter env iter
+  | IterE (exp1, iter) -> "{" ^ render_exp env exp1 ^ "}" ^ render_iter env iter
   | FuseE (exp1, exp2) ->
     "{" ^ render_exp env exp1 ^ "}" ^ "{" ^ render_exp env exp2 ^ "}"
   | HoleE _ -> assert false
@@ -536,7 +537,7 @@ and render_expcase env atom exps at =
       match atom, exps with
       | Atom id, exp1::exps2 when ends_sub id ->
         (* Handle subscripting *)
-        render_atomid env (chop_sub id) ^ "_{" ^ render_exp env exp1 ^ "}" ^
+        "{" ^ render_atomid env (chop_sub id) ^ "}_{" ^ render_exp env exp1 ^ "}" ^
           (if exps2 = [] then "" else "\\," ^ render_exps "~" env exps2)
       | _ ->
         let s1 = render_atom env atom in
