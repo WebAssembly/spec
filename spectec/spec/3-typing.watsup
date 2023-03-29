@@ -122,6 +122,12 @@ rule Externtype_sub/mem:
 
 relation Instr_ok: context |- instr : functype     hint(show "T")
 relation InstrSeq_ok: context |- instr* : functype hint(show "T*")
+relation Expr_ok: context |- expr : resulttype     hint(show "T-expr")
+
+
+rule Expr_ok:
+  C |- instr* : t*
+  -- InstrSeq_ok: C |- instr* : epsilon -> t*
 
 
 rule InstrSeq_ok/empty:
@@ -345,8 +351,9 @@ rule Instr_ok/store:
 
 ;; Constant Instructions
 
-relation Instr_const: context |- instr CONST  hint(show "C-instr")
-relation Expr_const: context |- instr* CONST  hint(show "C-expr")
+relation Instr_const: context |- instr CONST             hint(show "C-instr")
+relation Expr_const: context |- expr CONST               hint(show "C-expr")
+relation Expr_ok_const: context |- expr : valtype CONST  hint(show "TC-expr")
 
 rule Instr_const/const:
   C |- (CONST nt c) CONST
@@ -364,3 +371,117 @@ rule Instr_const/global.get:
 
 rule Expr_const: C |- instr* CONST
   -- (Instr_const: C |- instr CONST)*
+
+
+rule Expr_ok_const:
+  C |- expr : t CONST
+  -- Expr_ok: C |- expr : t
+  -- Expr_const: C |- expr CONST
+
+
+;; Modules
+
+relation Func_ok: context |- func : functype         hint(show "T-func")
+relation Global_ok: context |- global : globaltype   hint(show "T-global")
+relation Table_ok: context |- table : tabletype      hint(show "T-table")
+relation Mem_ok: context |- mem : memtype            hint(show "T-mem")
+relation Elem_ok: context |- elem : reftype          hint(show "T-elem")
+relation Data_ok: context |- data : OK               hint(show "T-data")
+relation Elemmode_ok: context |- elemmode : reftype  hint(show "T-elemmode")
+relation Datamode_ok: context |- datamode : OK       hint(show "T-datamode")
+relation Start_ok: context |- start : OK             hint(show "T-start")
+
+
+rule Func_ok:
+  C |- FUNC ft t* expr : ft
+  -- iff ft = t_1* -> t_2*
+  -- Functype_ok: |- ft : OK
+  -- Expr_ok: C, LOCAL t_1* t*, LABEL (t_2*), RETURN (t_2*) |- expr : t_2*
+
+rule Global_ok:
+  C |- GLOBAL gt expr : gt
+  -- Globaltype_ok: |- gt : OK
+  -- iff gt = MUT? t
+  -- Expr_ok_const: C |- expr : t CONST
+
+rule Table_ok:
+  C |- TABLE tt : tt
+  -- Tabletype_ok: |- tt : OK
+
+rule Mem_ok:
+  C |- MEMORY mt : mt
+  -- Memtype_ok: |- mt : OK
+
+rule Elem_ok:
+  C |- ELEM rt expr* elemmode? : rt
+  -- (Expr_ok: C |- expr : rt)*
+  -- (Elemmode_ok: C |- elemmode : rt)?
+
+;; TODO: barfs on (b*)* instead of b**
+rule Data_ok:
+  C |- DATA b** datamode? : OK
+  -- (Datamode_ok: C |- datamode : OK)?
+
+rule Elemmode_ok/active:
+  C |- TABLE x expr : rt
+  -- iff C.TABLE[x] = lim rt
+  -- (Expr_ok_const: C |- expr : I32 CONST)*
+
+rule Elemmode_ok/declare:
+  C |- DECLARE : rt
+
+rule Datamode_ok:
+  C |- MEMORY 0 expr : OK
+  -- iff C.MEM[0] = mt
+  -- (Expr_ok_const: C |- expr : I32 CONST)*
+
+rule Start_ok:
+  C |- START x : OK
+  -- iff C.FUNC[x] = epsilon -> epsilon
+
+
+relation Import_ok: context |- import : externtype        hint(show "T-import")
+relation Export_ok: context |- export : externtype        hint(show "T-export")
+relation Externuse_ok: context |- externuse : externtype  hint(show "T-externuse")
+
+rule Import_ok:
+  C |- IMPORT name_1 name_2 xt : xt
+  -- Externtype_ok: |- xt : OK
+
+rule Export_ok:
+  C |- EXPORT name externuse : xt
+  -- Externuse_ok: C |- externuse : xt
+
+rule Externuse_ok/func:
+  C |- FUNC x : FUNC ft
+  -- iff C.FUNC[x] = ft
+
+rule Externuse_ok/global:
+  C |- GLOBAL x : GLOBAL gt
+  -- iff C.GLOBAL[x] = gt
+
+rule Externuse_ok/table:
+  C |- TABLE x : TABLE tt
+  -- iff C.TABLE[x] = tt
+
+rule Externuse_ok/mem:
+  C |- MEMORY x : MEMORY mt
+  -- iff C.MEM[x] = mt
+
+
+relation Module_ok: |- module : OK      hint(show "T-module")
+
+rule Module_ok:
+  |- MODULE import* func* global* table* mem* elem* data^n start* export* : OK
+  -- (Func_ok: C |- func : ft)*
+  -- (Global_ok: C |- global : gt)*
+  -- (Table_ok: C |- table : tt)*
+  -- (Mem_ok: C |- mem : mt)*
+  -- (Elem_ok: C |- elem : rt)*
+  -- (Data_ok: C |- data : OK)^n
+  -- (Start_ok: C |- start : OK)*
+  ;; TODO: incremental contexts for globals
+  -- iff C = {FUNC ft*, GLOBAL gt*, TABLE tt*, MEM mt*, ELEM rt*, DATA OK^n}
+  -- iff |mem*| <= 1
+  -- iff |start*| <= 1
+  ;; -- TODO: disjoint export names
