@@ -1,4 +1,6 @@
-![Build Status](https://github.com/WebAssembly/spec/actions/workflows/main.yml/badge.svg)
+![Spectec Status](https://github.com/Wasm-DSL/spectec/actions/workflows/ci-spectec.yml/badge.svg)
+![Interpreter Status](https://github.com/Wasm-DSL/spectec/actions/workflows/ci-interpreter.yml/badge.svg)
+![Spec doc Status](https://github.com/Wasm-DSL/spectec/actions/workflows/ci-spec.yml/badge.svg)
 
 # spec
 
