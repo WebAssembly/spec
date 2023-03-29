@@ -6,16 +6,26 @@ open Config
 
 (* Errors *)
 
-let rec pos' file s i j (line, column) : Source.pos =
-  if j = i then
-    Source.{file; line; column}
+type source = {file : string; s : string; mutable i : int}
+
+let eos src = src.i = String.length src.s
+let get src = src.s.[src.i]
+let str src j = String.sub src.s j (src.i - j)
+let advn src i = src.i <- src.i + i
+let adv src = advn src 1
+let left src = String.length src.s - src.i
+
+let rec pos' src j (line, column) : Source.pos =
+  if j = src.i then
+    Source.{file = src.file; line; column}
   else
-    pos' file s i (j + 1) (if s.[j] = '\n' then line + 1, 1 else line, column + 1)
+    pos' src (j + 1)
+      (if src.s.[j] = '\n' then line + 1, 1 else line, column + 1)
 
-let pos file s i = pos' file s i 0 (1, 1)
+let pos src = pos' src 0 (1, 1)
 
-let error file s i msg =
-  let pos = pos file s i in
+let error src msg =
+  let pos = pos src in
   Source.error {left = pos; right = pos} "splice replacement" msg
 
 
@@ -74,8 +84,6 @@ let env config script : env =
   env
 
 
-
-
 let warn_use use space id1 id2 =
   if !use <> 1 then
     let id = if id2 = "" then id1 else id1 ^ "/" ^ id2 in
@@ -92,116 +100,116 @@ let warn env =
   Map.iter (fun id1 {use; _} -> warn_use use "definition" id1 "") env.def
 
 
-let find_nosub space file s i id1 id2 =
+let find_nosub space src id1 id2 =
   if id2 <> "" then
-    error file s i ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`")
+    error src ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`")
 
-let find_entries space file s i id1 id2 entries =
+let find_entries space src id1 id2 entries =
   let re = Str.(regexp (global_replace (regexp "\\*\\|\\?") (".\\0") id2)) in
   let defs = List.filter (fun (id, _, _) -> Str.string_match re id 0) entries in
   if defs = [] then
-    error file s i ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
+    error src ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
   List.map (fun (_, def, use) -> incr use; def) defs
 
-let find_syntax env file s i id1 id2 =
+let find_syntax env src id1 id2 =
   match Map.find_opt id1 env.syn with
-  | None -> error file s i ("unknown syntax identifier `" ^ id1 ^ "`")
-  | Some syntax -> find_entries "syntax" file s i id1 id2 syntax.fragments
+  | None -> error src ("unknown syntax identifier `" ^ id1 ^ "`")
+  | Some syntax -> find_entries "syntax" src id1 id2 syntax.fragments
 
-let find_relation env file s i id1 id2 =
-  find_nosub "relation" file s i id1 id2;
+let find_relation env src id1 id2 =
+  find_nosub "relation" src id1 id2;
   match Map.find_opt id1 env.rel with
-  | None -> error file s i ("unknown relation identifier `" ^ id1 ^ "`")
+  | None -> error src ("unknown relation identifier `" ^ id1 ^ "`")
   | Some relation -> [relation.rdef]
 
-let find_rule env file s i id1 id2 =
+let find_rule env src id1 id2 =
   match Map.find_opt id1 env.rel with
-  | None -> error file s i ("unknown relation identifier `" ^ id1 ^ "`")
-  | Some relation -> find_entries "rule" file s i id1 id2 relation.rules
+  | None -> error src ("unknown relation identifier `" ^ id1 ^ "`")
+  | Some relation -> find_entries "rule" src id1 id2 relation.rules
 
-let find_func env file s i id1 id2 =
-  find_nosub "definition" file s i id1 id2;
+let find_func env src id1 id2 =
+  find_nosub "definition" src id1 id2;
   match Map.find_opt id1 env.def with
-  | None -> error file s i ("unknown definition identifier `" ^ id1 ^ "`")
+  | None -> error src ("unknown definition identifier `" ^ id1 ^ "`")
   | Some definition ->
     if definition.clauses = [] then
-      error file s i ("definition `" ^ id1 ^ "` has no clauses");
+      error src ("definition `" ^ id1 ^ "` has no clauses");
     incr definition.use; definition.clauses
 
 
-(* Splicing *)
+(* Parsing *)
 
 let len = String.length
 
-let rec skip_space s i =
-  if !i < len s && (s.[!i] = ' ' || s.[!i] = '\t' || s.[!i] = '\n') then
-    (incr i; skip_space s i)
+let rec parse_space src =
+  if not (eos src) && (get src = ' ' || get src = '\t' || get src = '\n') then
+    (adv src; parse_space src)
 
 let rec try_string' s i s' j : bool =
   j = len s' || s.[i] = s'.[j] && try_string' s (i + 1) s' (j + 1)
 
-let try_string s i s' : bool =
-  len s >= !i + len s' && try_string' s !i s' 0 && (i := !i + len s'; true)
+let try_string src s : bool =
+  left src >= len s && try_string' src.s src.i s 0 && (advn src (len s); true)
 
-let try_anchor_start s i anchor : bool =
-  try_string s i (anchor ^ "{")
+let try_anchor_start src anchor : bool =
+  try_string src (anchor ^ "{")
 
-let rec match_anchor_end file s j i depth =
-  if !i = len s then
-    error file s j "unclosed anchor"
-  else if s.[!i] = '{' then
-    (incr i; match_anchor_end file s j i (depth + 1))
-  else if s.[!i] <> '}' then
-    (incr i; match_anchor_end file s j i depth)
+let rec parse_anchor_end src j depth =
+  if eos src then
+    error {src with i = j} "unclosed anchor"
+  else if get src = '{' then
+    (adv src; parse_anchor_end src j (depth + 1))
+  else if get src <> '}' then
+    (adv src; parse_anchor_end src j depth)
   else if depth > 0 then
-    (incr i; match_anchor_end file s j i (depth - 1))
+    (adv src; parse_anchor_end src j (depth - 1))
 
-let rec match_id' s i =
-  if !i < len s then
-  match s.[!i] with
+let rec parse_id' src =
+  if not (eos src) then
+  match get src with
   | 'A'..'Z' | 'a'..'z' | '0'..'9' | '_' | '\'' | '`' | '-' | '*' ->
-    (incr i; match_id' s i)
+    (adv src; parse_id' src)
   | _ -> ()
 
-let match_id file s i space : string =
-  let j = !i in
-  match_id' s i;
-  if j = !i then
-    error file s j ("expected " ^ space ^ " identifier or `}`");
-  String.sub s j (!i - j)
+let parse_id src space : string =
+  let j = src.i in
+  parse_id' src;
+  if j = src.i then
+    error {src with i = j} ("expected " ^ space ^ " identifier or `}`");
+  str src j
 
-let match_id_id env file s i space1 space2 find : def list =
-  let j = !i in
-  let id1 = match_id file s i space1 in
+let parse_id_id env src space1 space2 find : def list =
+  let j = src.i in
+  let id1 = parse_id src space1 in
   let id2 =
-    if space2 <> "" && try_string s i "/" then match_id file s i space2 else ""
-  in find env file s j id1 id2
+    if space2 <> "" && try_string src "/" then parse_id src space2 else ""
+  in find env {src with i = j} id1 id2
 
-let rec match_id_id_list env file s i space1 space2 find : def list =
-  skip_space s i;
-  if try_string s i "}" then [] else
-  let defs1 = match_id_id env file s i space1 space2 find in
-  let defs2 = match_id_id_list env file s i space1 space2 find in
+let rec parse_id_id_list env src space1 space2 find : def list =
+  parse_space src;
+  if try_string src "}" then [] else
+  let defs1 = parse_id_id env src space1 space2 find in
+  let defs2 = parse_id_id_list env src space1 space2 find in
   defs1 @ defs2
 
-let rec match_group_list env file s i space1 space2 find : def list list =
-  skip_space s i;
-  if try_string s i "}" then [] else
+let rec parse_group_list env src space1 space2 find : def list list =
+  parse_space src;
+  if try_string src "}" then [] else
   let groups =
-    if try_string s i "{" then
-      [match_id_id_list env file s i space1 space2 find]
+    if try_string src "{" then
+      [parse_id_id_list env src space1 space2 find]
     else
-      List.map (fun def -> [def]) (match_id_id env file s i space1 space2 find)
+      List.map (fun def -> [def]) (parse_id_id env src space1 space2 find)
   in
-  groups @ match_group_list env file s i space1 space2 find
+  groups @ parse_group_list env src space1 space2 find
 
-let try_def_anchor env file s i r sort space1 space2 find deco : bool =
-  let b = try_string s i sort in
+let try_def_anchor env src r sort space1 space2 find deco : bool =
+  let b = try_string src sort in
   if b then (
-    skip_space s i;
-    if not (try_string s i ":") then
-      error file s !i "colon `:` expected";
-    let groups = match_group_list env file s i space1 space2 find in
+    parse_space src;
+    if not (try_string src ":") then
+      error src "colon `:` expected";
+    let groups = parse_group_list env src space1 space2 find in
     let defs = List.tl (List.concat_map ((@) [SepD $ no_region]) groups) in
     let env' = env.render
       |> Render.with_syntax_decoration deco
@@ -210,17 +218,17 @@ let try_def_anchor env file s i r sort space1 space2 find deco : bool =
   );
   b
 
-let try_exp_anchor env file s i r : bool =
-  let b = try_string s i ":" in
+let try_exp_anchor env src r : bool =
+  let b = try_string src ":" in
   if b then (
-  	let j = !i in
-    match_anchor_end file s (j - 4) i 0;
-    let src = String.sub s j (!i - j) in
-    incr i;
+  	let j = src.i in
+    parse_anchor_end src (j - 4) 0;
+    let s = str src j in
+    adv src;
     let exp =
-      try Frontend.Parse.parse_exp src with Source.Error (at, msg) ->
+      try Frontend.Parse.parse_exp s with Source.Error (at, msg) ->
         (* Translate relative positions *)
-        let pos = pos file s j in
+        let pos = pos {src with i = j} in
         let shift {file; line; column} =
           { file; line = line + pos.line;
             column = if line = 1 then column + pos.column else column} in
@@ -231,19 +239,22 @@ let try_exp_anchor env file s i r : bool =
   );
   b
 
-let splice_anchor env file s i anchor buf =
-  skip_space s i;
+
+(* Splicing *)
+
+let splice_anchor env src anchor buf =
+  parse_space src;
   Buffer.add_string buf anchor.prefix;
   let r = ref "" in
   ignore (
-    try_exp_anchor env file s i r ||
-    try_def_anchor env file s i r "syntax+" "syntax" "fragment" find_syntax true ||
-    try_def_anchor env file s i r "syntax" "syntax" "fragment" find_syntax false ||
-    try_def_anchor env file s i r "relation" "relation" "" find_relation false ||
-    try_def_anchor env file s i r "rule+" "relation" "rule" find_rule true ||
-    try_def_anchor env file s i r "rule" "relation" "rule" find_rule false ||
-    try_def_anchor env file s i r "definition" "definition" "" find_func false ||
-    error file s !i "unknown definition sort";
+    try_exp_anchor env src r ||
+    try_def_anchor env src r "syntax+" "syntax" "fragment" find_syntax true ||
+    try_def_anchor env src r "syntax" "syntax" "fragment" find_syntax false ||
+    try_def_anchor env src r "relation" "relation" "" find_relation false ||
+    try_def_anchor env src r "rule+" "relation" "rule" find_rule true ||
+    try_def_anchor env src r "rule" "relation" "rule" find_rule false ||
+    try_def_anchor env src r "definition" "definition" "" find_func false ||
+    error src "unknown definition sort";
   );
   let s =
     if anchor.indent = "" then !r else
@@ -252,19 +263,19 @@ let splice_anchor env file s i anchor buf =
   Buffer.add_string buf s;
   Buffer.add_string buf anchor.suffix
 
-let rec try_anchors env file s i buf = function
+let rec try_anchors env src buf = function
   | [] -> false
   | anchor::anchors ->
-    if try_anchor_start s i anchor.token then
-      (splice_anchor env file s i anchor buf; true)
+    if try_anchor_start src anchor.token then
+      (splice_anchor env src anchor buf; true)
     else
-      try_anchors env file s i buf anchors
+      try_anchors env src buf anchors
 
-let rec splice env file s i buf =
-  if !i < len s then (
-  	if not (try_anchors env file s i buf env.config.anchors) then
-      (Buffer.add_char buf s.[!i]; incr i);
-    splice env file s i buf
+let rec splice_all env src buf =
+  if not (eos src) then (
+  	if not (try_anchors env src buf env.config.anchors) then
+      (Buffer.add_char buf (get src); adv src);
+    splice_all env src buf
   )
 
 
@@ -272,7 +283,7 @@ let rec splice env file s i buf =
 
 let splice_string env file s : string =
   let buf = Buffer.create (String.length s) in
-  splice env file s (ref 0) buf;
+  splice_all env {file; s; i = 0} buf;
   Buffer.contents buf
 
 let splice_file ?(dry = false) env file =
