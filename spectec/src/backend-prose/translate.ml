@@ -53,17 +53,18 @@ let pop left = match left with
 
 (* 2. Handle premises *)
 
-let calc prems =
-  prems |> List.iter (fun p -> match p.it with
-    | IffPr(e, None) -> printf_step "Let %s." (Print.string_of_exp e)
+let calc (prems: premise nl_list) : unit =
+  prems |> List.iter (fun p -> match p with
+    | Elem { it = IffPr(e, None); _ } -> printf_step "Let %s." (Print.string_of_exp e)
     | _ -> ()
   )
 
-let cond prems =
+let cond (prems: premise nl_list) =
   prems
-  |> List.map (fun p -> match p.it with
-    | IffPr(e, None) -> Print.string_of_exp e
-    | _ -> Print.string_of_premise p
+  |> List.map (fun p -> match p with
+    | Elem {it = IffPr(e, None); _} -> Print.string_of_exp e
+    | Elem p -> Print.string_of_premise p
+    | Nl -> "Nl"
   )
   |> String.concat " and "
   |> printf_step "If %s, then:"
@@ -129,10 +130,12 @@ let destruct_as_rule r = match r.it with
     | _ -> None)
   | _ -> None
 let string_of_destructed (left, right, prems) =
+  let filter_nl xs = List.filter_map (function Nl -> None | Elem x -> Some x) xs in
+  let map_nl_list f xs = List.map f (filter_nl xs) in
   Print.string_of_exp {it = left; at = no_region} ^
   " ~> " ^
   Print.string_of_exp {it = right; at = no_region} ^
-  String.concat "" (List.map (fun x -> "\n    -- " ^ Print.string_of_premise x) prems)
+  String.concat "" (map_nl_list (fun x -> "\n    -- " ^ Print.string_of_premise x) prems)
 
 let handle_reduction_group red_group =
   (* assert: every redunction rule in red_group has same lhs *)
