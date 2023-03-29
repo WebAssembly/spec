@@ -65,30 +65,31 @@ There are two forms of splices:
    * `relation`: the identifiers refer to definitions of [relations](Language.md#definitions), whose schema is rendered,
 
    * `rule`: the identifiers refer to definitions of [rules](Language.md#definitions), which are rendered depending on the kind of relation:
-     * _typing rules_ (`... |- ...`) are rendered as inference rules
-     * _reduction rules_ (`... ~> ...`) are rendered as an array of one-line rules
-     Other forms of rules are not recognised and will be rejected.
+     * _typing rules_ (`... |- ...`) are rendered as inference rules,
+     * _reduction rules_ (`... ~> ...`) are rendered as an array of one-line rules,
 
-   * `rule+`: same as `rule`, but the rule _name_ is annotated,
+     other forms of rules are not recognised and will be rejected.,
+
+   * `rule+`: same as `rule`, but the rule is decorated with its [name](#definiiton-names),
 
    * `definition`: the identifiers refer to [function definitions](Language.md#definitions), whose clauses are rendered.
 
-Each splice may contain a list of identifiers, whose definitions will be arranged and aligned together in a single array, with multiple definitions separated by `0.8ex` vertical space.
+Each splice may contain a list of identifiers, whose definitions will be arranged and aligned together in a single array, with multiple definitions separated by (`0.8ex`) vertical space.
 
-In addition, definitions can be grouped together by using braces `{ name *}`, which removes the vertical space between them. this In the case of typing rules, the rules are placed on a single line.
+In addition, definitions can be grouped together by using braces `{ name* }`, which removes the vertical space between them. In the case of typing rules, the rules are placed on a single line.
 
-In the case of syntax, grouping together multiple [fragments](Language.md#definitions) of the same variant, _merges_ the fragments, removes trailing and leading dots in the middle.
+In the case of syntax, grouping together multiple [fragments](Language.md#definitions) of the same variant type also _merges_ the fragments, removing trailing and leading dots in the middle.
 
 
 #### Definition names
 
-The names in a definition slice or its groups refer to definitions according to the sort.
+The names in a definition splice refer to definitions according to the indicated sort.
 
-* Relations and definitions have a _flat_ namespace, and are hence refered to by a single identifier.
+* Relations and definitions have a _flat_ namespace, and are hence named by a single identifier.
 
-* Syntax fragments and rules have a _nested_ namespace, and are hence refered to by a pair of identifiers, `id1/id2`. If only one element exists in the nested namespace, `/id2` can be omitted, if it was omitted in the respective syntax or rule definition.
+* Syntax fragments and rules have a _nested_ namespace, and are hence named by a pair of identifiers, `id1/id2`. If only one element exists in the nested namespace, `/id2` can be omitted, in case it was also omitted in the respective syntax or rule definition.
 
-* Nested namespaces can also be referenced by a regular expression, which expands to `id2` matching it in the given namespace.
+* Nested namespaces can also be named by a regular expression, which expands to all `id2` matching it in the given namespace.
 
 
 #### Examples
@@ -159,7 +160,7 @@ Hints of the form `hint(show <exp>)` are recognised on a number of constructs an
   definition $size(valtype) : nat   hint(show |valtype|)
   ```
 
-* on a record field they control how the atom is rendered; the expression typically is some other ATOM,
+* on a record field they control how the atom is rendered; the expression typically is some other atom,
 
 * on a relation declaration they control how the rule names are rendered; the expression must be a text literal:
   ```
