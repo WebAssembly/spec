@@ -37,6 +37,32 @@ module VarSet = Set.Make(String)
 
 let atom_vars = ref VarSet.empty
 
+
+(* Parentheses Role *)
+
+type prec = Op | Seq | Post | Prim
+
+let prec_of_exp = function  (* as far as iteration is concerned *)
+  | VarE _ | BoolE _ | NatE _ | TextE _ | EpsE | StrE _
+  | ParenE _ | TupE _ | BrackE _ | CallE _ | HoleE _ -> Prim
+  | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
+  | SeqE _ -> Seq
+  | UnE _ | BinE _ | CmpE _ | InfixE _ | LenE _
+  | CommaE _ | CompE _ | FuseE _ -> Op
+
+(* Extra parentheses can be inserted to disambiguate the role of elements of
+ * an iteration. For example, `( x* )` will be interpreted differently from `x*`
+ * in a place where an expression of some type `t*` is expected. In particular,
+ * we assume `x* : t*` in the latter case, but `x* : t` in the former
+ * (which makes sense in the case where `t` itself is an iteration type).
+ * To make this distinction ducing elaboration, we mark potential parentheses
+ * as "significant" (true) when they are not syntactically enforced, and instead
+ * are assumed to have been inserted to express iteration injection.
+ *)
+let signify_parens prec = function
+  | ParenE (exp, false) -> ParenE (exp, prec < prec_of_exp exp.it)
+  | exp' -> exp'
+
 %}
 
 %token LPAR RPAR LBRACK RBRACK LBRACE RBRACE
@@ -258,8 +284,8 @@ exp_prim_ :
   | MULTIHOLE { HoleE true }
   | LPAR exp_list RPAR
     { match $2 with
-      | [], false -> ParenE (SeqE [] $ at $loc($2))
-      | [exp], false -> ParenE exp
+      | [], false -> ParenE (SeqE [] $ at $loc($2), false)
+      | [exp], false -> ParenE (exp, false)
       | exps, _ -> TupE exps
     }
   | TICK LPAR exp RPAR { BrackE (Paren, $3) }
@@ -270,7 +296,7 @@ exp_prim_ :
 
 exp_post : exp_post_ { $1 $ at $sloc }
 exp_post_ :
-  | exp_prim_ { $1 }
+  | exp_prim_ { signify_parens Post $1 }
   | exp_atom LBRACK arith RBRACK { IdxE ($1, $3) }
   | exp_atom LBRACK arith COLON arith RBRACK { SliceE ($1, $3, $5) }
   | exp_atom LBRACK path EQ exp RBRACK { UpdE ($1, $3, $5) }
@@ -285,12 +311,12 @@ exp_atom_ :
 
 exp_seq : exp_seq_ { $1 $ at $sloc }
 exp_seq_ :
-  | exp_atom_ { $1 }
+  | exp_atom_ { signify_parens Seq $1 }
   | exp_atom exp_seq { SeqE ($1 :: as_seq_exp $2) }
 
 exp_un : exp_un_ { $1 $ at $sloc }
 exp_un_ :
-  | exp_seq_ { $1 }
+  | exp_seq_ { signify_parens Op $1 }
   | BAR exp BAR { LenE $2 }
   | NL_BAR exp BAR { LenE $2 }
   | BAR exp NL_BAR { LenE $2 }
@@ -364,7 +390,7 @@ arith_prim : arith_prim_ { $1 $ at $sloc }
 arith_prim_ :
   | varid { VarE $1 }
   | NATLIT { NatE $1 }
-  | LPAR arith RPAR { ParenE $2 }
+  | LPAR arith RPAR { ParenE ($2, false) }
 
 arith_post : arith_post_ { $1 $ at $sloc }
 arith_post_ :

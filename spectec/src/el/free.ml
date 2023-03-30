@@ -78,7 +78,7 @@ and free_exp exp =
   | VarE id -> free_varid id
   | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE | HoleE _ -> empty
   | UnE (_, exp1) | DotE (exp1, _) | LenE exp1
-  | ParenE exp1 | BrackE (_, exp1) -> free_exp exp1
+  | ParenE (exp1, _) | BrackE (_, exp1) -> free_exp exp1
   | BinE (exp1, _, exp2) | CmpE (exp1, _, exp2)
   | IdxE (exp1, exp2) | CommaE (exp1, exp2) | CompE (exp1, exp2)
   | InfixE (exp1, _, exp2) | FuseE (exp1, exp2) ->

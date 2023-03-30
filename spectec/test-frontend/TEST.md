@@ -497,7 +497,7 @@ rec {
 relation Instr_ok: `%|-%:%`(context, instr, functype)
   ;; 3-typing.watsup:344.1-349.33
   rule store {C : context, in : in, mt : memtype, n : n, n_A : n, n_O : n, nt : numtype, t : valtype}:
-    `%|-%:%`(C, STORE_instr(nt, n?, n_A, n_O), `%->%`([I32_valtype] :: [(nt <: valtype)], []))
+    `%|-%:%`(C, STORE_instr(nt, n?, n_A, n_O), `%->%`([I32_valtype (nt <: valtype)], []))
     -- iff (C.MEM[0] = mt)
     -- iff ((2 ^ n_A) <= ($size(t) / 8))
     -- (iff (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(t) / 8))))?
@@ -518,18 +518,18 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 3-typing.watsup:328.1-331.24
   rule memory.init {C : context, mt : memtype, x : idx}:
-    `%|-%:%`(C, MEMORY.INIT_instr(x), `%->%`([I32_valtype] :: [I32_valtype] :: [I32_valtype], [I32_valtype]))
+    `%|-%:%`(C, MEMORY.INIT_instr(x), `%->%`([I32_valtype I32_valtype I32_valtype], [I32_valtype]))
     -- iff (C.MEM[0] = mt)
     -- iff (C.DATA[x] = OK)
 
   ;; 3-typing.watsup:324.1-326.23
   rule memory.copy {C : context, mt : memtype}:
-    `%|-%:%`(C, MEMORY.COPY_instr, `%->%`([I32_valtype] :: [I32_valtype] :: [I32_valtype], [I32_valtype]))
+    `%|-%:%`(C, MEMORY.COPY_instr, `%->%`([I32_valtype I32_valtype I32_valtype], [I32_valtype]))
     -- iff (C.MEM[0] = mt)
 
   ;; 3-typing.watsup:320.1-322.23
   rule memory.fill {C : context, mt : memtype}:
-    `%|-%:%`(C, MEMORY.FILL_instr, `%->%`([I32_valtype] :: [I32_valtype] :: [I32_valtype], [I32_valtype]))
+    `%|-%:%`(C, MEMORY.FILL_instr, `%->%`([I32_valtype I32_valtype I32_valtype], [I32_valtype]))
     -- iff (C.MEM[0] = mt)
 
   ;; 3-typing.watsup:316.1-318.23
@@ -549,24 +549,24 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 3-typing.watsup:302.1-305.26
   rule table.init {C : context, lim : limits, rt : reftype, x_1 : idx, x_2 : idx}:
-    `%|-%:%`(C, TABLE.INIT_instr(x_1, x_2), `%->%`([I32_valtype] :: [I32_valtype] :: [I32_valtype], []))
+    `%|-%:%`(C, TABLE.INIT_instr(x_1, x_2), `%->%`([I32_valtype I32_valtype I32_valtype], []))
     -- iff (C.TABLE[x_1] = `%%`(lim, rt))
     -- iff (C.ELEM[x_2] = rt)
 
   ;; 3-typing.watsup:297.1-300.33
   rule table.copy {C : context, lim_1 : limits, lim_2 : limits, rt : reftype, x_1 : idx, x_2 : idx}:
-    `%|-%:%`(C, TABLE.COPY_instr(x_1, x_2), `%->%`([I32_valtype] :: [I32_valtype] :: [I32_valtype], []))
+    `%|-%:%`(C, TABLE.COPY_instr(x_1, x_2), `%->%`([I32_valtype I32_valtype I32_valtype], []))
     -- iff (C.TABLE[x_1] = `%%`(lim_1, rt))
     -- iff (C.TABLE[x_2] = `%%`(lim_2, rt))
 
   ;; 3-typing.watsup:293.1-295.29
   rule table.fill {C : context, lim : limits, rt : reftype, x : idx}:
-    `%|-%:%`(C, TABLE.FILL_instr(x), `%->%`([I32_valtype] :: [(rt <: valtype)] :: [I32_valtype], []))
+    `%|-%:%`(C, TABLE.FILL_instr(x), `%->%`([I32_valtype (rt <: valtype) I32_valtype], []))
     -- iff (C.TABLE[x] = `%%`(lim, rt))
 
   ;; 3-typing.watsup:289.1-291.29
   rule table.grow {C : context, lim : limits, rt : reftype, x : idx}:
-    `%|-%:%`(C, TABLE.GROW_instr(x), `%->%`([(rt <: valtype)] :: [I32_valtype], [I32_valtype]))
+    `%|-%:%`(C, TABLE.GROW_instr(x), `%->%`([(rt <: valtype) I32_valtype], [I32_valtype]))
     -- iff (C.TABLE[x] = `%%`(lim, rt))
 
   ;; 3-typing.watsup:285.1-287.25
@@ -576,7 +576,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 3-typing.watsup:281.1-283.29
   rule table.set {C : context, lim : limits, rt : reftype, x : idx}:
-    `%|-%:%`(C, TABLE.SET_instr(x), `%->%`([I32_valtype] :: [(rt <: valtype)], []))
+    `%|-%:%`(C, TABLE.SET_instr(x), `%->%`([I32_valtype (rt <: valtype)], []))
     -- iff (C.TABLE[x] = `%%`(lim, rt))
 
   ;; 3-typing.watsup:277.1-279.29
@@ -631,7 +631,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 3-typing.watsup:234.1-235.37
   rule relop {C : context, nt : numtype, relop : relop_numtype}:
-    `%|-%:%`(C, RELOP_instr(nt, relop), `%->%`([(nt <: valtype)] :: [(nt <: valtype)], [I32_valtype]))
+    `%|-%:%`(C, RELOP_instr(nt, relop), `%->%`([(nt <: valtype) (nt <: valtype)], [I32_valtype]))
 
   ;; 3-typing.watsup:231.1-232.36
   rule testop {C : context, nt : numtype, testop : testop_numtype}:
@@ -639,7 +639,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 3-typing.watsup:228.1-229.36
   rule binop {C : context, binop : binop_numtype, nt : numtype}:
-    `%|-%:%`(C, BINOP_instr(nt, binop), `%->%`([(nt <: valtype)] :: [(nt <: valtype)], [(nt <: valtype)]))
+    `%|-%:%`(C, BINOP_instr(nt, binop), `%->%`([(nt <: valtype) (nt <: valtype)], [(nt <: valtype)]))
 
   ;; 3-typing.watsup:225.1-226.31
   rule unop {C : context, nt : numtype, unop : unop_numtype}:
@@ -702,13 +702,13 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 3-typing.watsup:166.1-169.38
   rule select-impl {C : context, numtype : numtype, t : valtype, t' : valtype, vectype : vectype}:
-    `%|-%:%`(C, SELECT_instr(?()), `%->%`([t] :: [t] :: [I32_valtype], [t]))
+    `%|-%:%`(C, SELECT_instr(?()), `%->%`([t t I32_valtype], [t]))
     -- Valtype_sub: `|-%<:%`(t, t')
     -- iff ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
 
   ;; 3-typing.watsup:163.1-164.31
   rule select-expl {C : context, t : valtype}:
-    `%|-%:%`(C, SELECT_instr(?(t)), `%->%`([t] :: [t] :: [I32_valtype], [t]))
+    `%|-%:%`(C, SELECT_instr(?(t)), `%->%`([t t I32_valtype], [t]))
 
   ;; 3-typing.watsup:159.1-160.27
   rule drop {C : context, t : valtype}:
@@ -1113,17 +1113,17 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
 
   ;; 5-reduction.watsup:29.1-31.15
   rule select-false {c : c_numtype, t : valtype, val_1 : val, val_2 : val}:
-    `%~>%`([(val_1 <: admininstr)] :: [(val_2 <: admininstr)] :: [CONST_admininstr(I32_numtype, c) SELECT_admininstr(t?)], [(val_2 <: admininstr)])
+    `%~>%`([(val_1 <: admininstr) (val_2 <: admininstr) CONST_admininstr(I32_numtype, c) SELECT_admininstr(t?)], [(val_2 <: admininstr)])
     -- iff (c = 0)
 
   ;; 5-reduction.watsup:25.1-27.17
   rule select-true {c : c_numtype, t : valtype, val_1 : val, val_2 : val}:
-    `%~>%`([(val_1 <: admininstr)] :: [(val_2 <: admininstr)] :: [CONST_admininstr(I32_numtype, c) SELECT_admininstr(t?)], [(val_1 <: admininstr)])
+    `%~>%`([(val_1 <: admininstr) (val_2 <: admininstr) CONST_admininstr(I32_numtype, c) SELECT_admininstr(t?)], [(val_1 <: admininstr)])
     -- iff (c =/= 0)
 
   ;; 5-reduction.watsup:22.1-23.24
   rule drop {val : val}:
-    `%~>%`([(val <: admininstr)] :: [DROP_admininstr], [])
+    `%~>%`([(val <: admininstr) DROP_admininstr], [])
 
   ;; 5-reduction.watsup:19.1-20.19
   rule nop:

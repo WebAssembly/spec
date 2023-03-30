@@ -303,7 +303,7 @@ and expand_exp' args exp' =
     let exp2' = expand_exp args exp2 in
     CompE (exp1', exp2')
   | LenE exp -> LenE (expand_exp args exp)
-  | ParenE exp -> ParenE (expand_exp args exp)
+  | ParenE (exp, b) -> ParenE (expand_exp args exp, b)
   | TupE exps -> TupE (List.map (expand_exp args) exps)
   | InfixE (exp1, atom, exp2) ->
     let exp1' = expand_exp args exp1 in
@@ -362,7 +362,8 @@ and render_iter env = function
   | Opt -> "^?"
   | List -> "^\\ast"
   | List1 -> "^{+}"
-  | ListN {it = ParenE exp; _} | ListN exp -> "^{" ^ render_exp env exp ^ "}"
+  | ListN {it = ParenE (exp, _); _} | ListN exp ->
+    "^{" ^ render_exp env exp ^ "}"
 
 
 (* Types *)
@@ -444,7 +445,7 @@ and render_typcase env at (atom, nottyps, _hints) =
 and untup_exp exp =
   match exp.it with
   | TupE exps -> exps
-  | ParenE exp1 -> [exp1]
+  | ParenE (exp1, _) -> [exp1]
   | _ -> [exp]
 
 and render_exp env exp =
@@ -455,7 +456,7 @@ and render_exp env exp =
   | NatE n -> string_of_int n
   | TextE t -> "``" ^ t ^ "''"
   | UnE (unop, exp2) -> render_unop unop ^ render_exp env exp2
-  | BinE (exp1, ExpOp, ({it = ParenE exp2; _ } | exp2)) ->
+  | BinE (exp1, ExpOp, ({it = ParenE (exp2, _); _ } | exp2)) ->
     "{" ^ render_exp env exp1 ^ "}^{" ^ render_exp env exp2 ^ "}"
   | BinE (exp1, binop, exp2) ->
     render_exp env exp1 ^ space render_binop binop ^ render_exp env exp2
@@ -484,7 +485,7 @@ and render_exp env exp =
   | CommaE (exp1, exp2) -> render_exp env exp1 ^ ", " ^ render_exp env exp2
   | CompE (exp1, exp2) -> render_exp env exp1 ^ " \\oplus " ^ render_exp env exp2
   | LenE exp1 -> "{|" ^ render_exp env exp1 ^ "|}"
-  | ParenE exp -> "(" ^ render_exp env exp ^ ")"
+  | ParenE (exp, _) -> "(" ^ render_exp env exp ^ ")"
   | TupE exps -> "(" ^ render_exps ",\\, " env exps ^ ")"
   | InfixE ({it = SeqE []; _}, atom, exp2) ->
     "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_exp env exp2

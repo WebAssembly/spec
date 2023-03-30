@@ -22,7 +22,7 @@ let error at msg = Source.error at "type" msg
 
 let unparen_exp exp =
   match exp.it with
-  | ParenE exp1 -> exp1
+  | ParenE (exp1, _) -> exp1
   | _ -> exp
 
 let unseq_exp exp =
@@ -54,8 +54,10 @@ let cons_exp' exp1' exp2' =
   | _ -> Il.CatE (Il.ListE [exp1'] $ exp1'.at, exp2')
 
 let cat_exp' exp1' exp2' =
-  match exp2'.it with
-  | Il.ListE [] -> exp1'.it
+  match exp1'.it, exp2'.it with
+  | _, Il.ListE [] -> exp1'.it
+  | Il.ListE [], _ -> exp2'.it
+  | Il.ListE exps1, Il.ListE exps2 -> Il.ListE (exps1 @ exps2)
   | _ -> Il.CatE (exp1', exp2')
 
 
@@ -493,7 +495,7 @@ and infer_exp env exp : typ =
   | EpsE -> error exp.at "cannot infer type of empty sequence"
   | SeqE _ -> error exp.at "cannot infer type of expression sequence"
   | TupE exps -> TupT (List.map (infer_exp env) exps) $ exp.at
-  | ParenE exp1 -> ParenT (infer_exp env exp1) $ exp.at
+  | ParenE (exp1, _) -> ParenT (infer_exp env exp1) $ exp.at
   | CallE (id, _) ->
     let _, typ2, _ = find "function" env.defs id in
     typ2
@@ -509,17 +511,6 @@ and infer_exp env exp : typ =
 and elab_exp env exp typ : Il.exp =
   (*
   Printf.printf "[elab %s] %s  :  %s\n%!"
-    (string_of_region exp.at) (string_of_exp exp) (string_of_typ typ);
-  *)
-  if is_iter_typ env typ then
-    let exp1 = unseq_exp exp in
-    elab_exp_iter env exp1 (as_iter_typ "" env Check typ exp.at) typ exp.at
-  else
-    elab_exp' env exp typ
-
-and elab_exp' env exp typ : Il.exp =
-  (*
-  Printf.printf "[elab' %s] %s  :  %s\n%!"
     (string_of_region exp.at) (string_of_exp exp) (string_of_typ typ);
   *)
   match exp.it with
@@ -625,7 +616,12 @@ and elab_exp' env exp typ : Il.exp =
     let exp1' = elab_exp env exp1 typ1 in
     let exp' = Il.LenE exp1' $ exp.at in
     cast_exp "list length" env exp' (NatT $ exp.at) typ
-  | ParenE exp1 ->
+  | ParenE (exp1, true) when is_iter_typ env typ ->
+    (* Significant parentheses indicate a singleton *)
+    let typ1, _iter = as_iter_typ "expression" env Check typ exp.at in
+    let exp1' = elab_exp env exp1 typ1 in
+    cast_exp "expression" env exp1' typ1 typ
+  | ParenE (exp1, _) ->
     elab_exp env exp1 typ
   | TupE exps ->
     let typs = as_tup_typ "tuple" env Check typ exp.at in
@@ -636,11 +632,21 @@ and elab_exp' env exp typ : Il.exp =
     let exp2' = elab_exp env exp2 typ2 in
     let exp' = Il.CallE (id, exp2') $ exp.at in
     cast_exp "expression" env exp' typ' typ
+  | SeqE [exp1] ->  (* TODO: this case shouldn't be needed *)
+    elab_exp env exp1 typ
+  | EpsE | SeqE _ when is_iter_typ env typ ->
+    let exp1 = unseq_exp exp in
+    elab_exp_iter env exp1 (as_iter_typ "" env Check typ exp.at) typ exp.at
+  | EpsE ->
+    error exp.at ("empty expression does not match expected type `" ^
+      string_of_typ typ ^ "`");
   | AtomE _
   | InfixE _
   | BrackE _
-  | EpsE
   | SeqE _ ->
+    (* All these expression forms can only be used when checking against
+     * either a defined notation/variant type or (for SeqE) an iteration type;
+     * the latter case is already captured above *)
     if is_notation_typ env typ then
       elab_exp_notation env exp (as_notation_typ "" env Check typ exp.at)
     else if is_variant_typ env typ then
@@ -650,7 +656,12 @@ and elab_exp' env exp typ : Il.exp =
       error exp.at ("expression does not match expected type `" ^
         string_of_typ typ ^ "`")
   | IterE (exp1, iter2) ->
-    let typ1, _iter = as_iter_typ "iteration" env Check typ exp.at in
+    (* An iteration expression must match the expected type directly,
+     * significant parentheses have to be used otherwise *)
+    let typ1, iter = as_iter_typ "iteration" env Check typ exp.at in
+    if (iter = Opt) <> (iter2 = Opt) then
+      error exp.at ("iteration expression does not match expected type `" ^
+        string_of_typ typ ^ "`");
     let exp1' = elab_exp env exp1 typ1 in
     let iter2' = elab_iter env iter2 in
     Il.IterE (exp1', iter2') $ exp.at
@@ -683,31 +694,22 @@ and elab_exp_iter env exps (typ1, iter) typ at : Il.exp =
     (string_of_typ typ) (string_of_typ typ1) (string_of_iter iter);
   *)
   match exps, iter with
-  | {it = AtomE atom; at = at1}::_, Opt when is_variant_typ env typ1 &&
+  (* If the sequence actually starts with a non-nullary constructor,
+   * then assume this is a singleton iteration and fallback to variant *)
+  | {it = AtomE atom; at = at1}::_, _ when is_variant_typ env typ1 &&
       case_has_args env typ1 atom at1 ->
     let cases, _dots = as_variant_typ "" env Check typ1 at in
-    Il.OptE (Some (elab_exp_variant env exps cases typ1 at)) $ at
-  | {it = AtomE atom; at = at1}::_, List when is_variant_typ env typ1 &&
-      case_has_args env typ1 atom at1 ->
-    let cases, _dots = as_variant_typ "" env Check typ1 at in
-    Il.ListE [elab_exp_variant env exps cases typ1 at] $ at
+    lift_exp' (elab_exp_variant env exps cases typ1 at) iter $ at
 
+  (* An empty sequence represents the None case for options *)
   | [], Opt ->
     Il.OptE None $ at
-  | [{it = ParenE exp1; _}], Opt ->
-    let exp1' = elab_exp env exp1 typ1 in
-    Il.OptE (Some exp1') $ at
-  | [exp1], Opt ->
-    elab_exp' env exp1 typ
-
+  (* An empty sequence represents the Nil case for lists *)
   | [], List ->
     Il.ListE [] $ at
-  | {it = ParenE exp1; _}::exps2, List ->
-    let exp1' = elab_exp env exp1 typ1 in
-    let exp2' = elab_exp_iter env exps2 (typ1, iter) typ at in
-    cons_exp' exp1' exp2' $ at
+  (* All other elements are either splices of (by cast injection) elements *)
   | exp1::exps2, List ->
-    let exp1' = elab_exp' env exp1 typ in
+    let exp1' = elab_exp env exp1 typ in
     let exp2' = elab_exp_iter env exps2 (typ1, iter) typ at in
     cat_exp' exp1' exp2' $ at
 
@@ -762,7 +764,7 @@ and elab_exp_notation'' env exp nottyp : Il.mixop * Il.exp list =
     let l, r = elab_brack brack in
     merge_mixop (merge_mixop [[l]] mixop1') [[r]], exps1'
 
-  | ParenE exp1, ParenNT nottyp1 ->
+  | ParenE (exp1, _), ParenNT nottyp1 ->
     let mixop1', typs1' = elab_exp_notation'' env exp1 nottyp1 in
     merge_mixop (merge_mixop [[Il.LParen]] mixop1') [[Il.RParen]], typs1'
   | _, ParenNT nottyp1 ->
@@ -828,7 +830,7 @@ and elab_exp_notation_iter env exps (nottyp1, iter) nottyp at : Il.exp =
 
   | [], Opt ->
     Il.OptE None $ at
-  | [{it = ParenE exp1; _}], Opt ->
+  | [{it = ParenE (exp1, _); _}], Opt ->
     let _mixop1', exps1' = elab_exp_notation'' env exp1 nottyp1 in
     let exp1' = tup_exp' exps1' exp1.at in
     Il.OptE (Some exp1') $ at
@@ -837,7 +839,7 @@ and elab_exp_notation_iter env exps (nottyp1, iter) nottyp at : Il.exp =
 
   | [], List ->
     Il.ListE [] $ at
-  | {it = ParenE exp1; _}::exps2, List ->
+  | {it = ParenE (exp1, _); _}::exps2, List ->
     let _mixop1', exps1' = elab_exp_notation'' env exp1 nottyp1 in
     let exp2' = elab_exp_notation_iter env exps2 (nottyp1, iter) nottyp at in
     cons_exp' (tup_exp' exps1' exp1.at) exp2' $ at

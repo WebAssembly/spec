@@ -126,7 +126,7 @@ and exp' =
   | CommaE of exp * exp          (* exp `,` exp *)
   | CompE of exp * exp           (* exp `++` exp *)
   | LenE of exp                  (* `|` exp `|` *)
-  | ParenE of exp                (* `(` exp `)` *)
+  | ParenE of exp * bool         (* `(` exp `)` *)
   | TupE of exp list             (* `(` list2(exp, `,`) `)` *)
   | InfixE of exp * atom * exp   (* exp atom exp *)
   | BrackE of brack * exp        (* ``` ([{ exp }]) *)

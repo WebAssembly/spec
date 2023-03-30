@@ -88,6 +88,8 @@ and eq_exp exp1 exp2 =
   | UpdE (exp11, path1, exp12), UpdE (exp21, path2, exp22)
   | ExtE (exp11, path1, exp12), ExtE (exp21, path2, exp22) ->
     eq_exp exp11 exp21 && eq_path path1 path2 && eq_exp exp12 exp22
+  | ParenE (exp11, b1), ParenE (exp21, b2) ->
+    eq_exp exp11 exp21 && b1 = b2
   | SeqE exps1, SeqE exps2
   | TupE exps1, TupE exps2 ->
     eq_list eq_exp exps1 exps2

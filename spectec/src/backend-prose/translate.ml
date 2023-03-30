@@ -45,7 +45,7 @@ let hds l = l |> List.rev |> List.tl
 let assert_type e =
   match e.it with
   (* ({CONST I32 c}) *)
-  | ParenE({it = SeqE({it = (AtomE (Atom "CONST")); _} :: {it = (AtomE (Atom "I32")); _}  :: _); _}) ->
+  | ParenE({it = SeqE({it = (AtomE (Atom "CONST")); _} :: {it = (AtomE (Atom "I32")); _}  :: _); _}, _) ->
     printf_step "Assert: Due to validation, a value of value type i32 is on the top of the stack."
   | _ ->
     printf_step "Assert: Due to validation, a value is on the top of the stack."
@@ -56,7 +56,7 @@ let pop left = match left with
     let v = Print.string_of_exp e in
     printf_step "Pop the value %s from the stack." v
   )
-  | ParenE({it = SeqE({it = AtomE(Atom "LABEL_"); _} :: _); at = _}) ->
+  | ParenE({it = SeqE({it = AtomE(Atom "LABEL_"); _} :: _); at = _}, _) ->
     printf_step "YET: Bubble-up semantics."
   | _ -> ()
 
@@ -102,7 +102,7 @@ let destruct_instr = function
 
 let rec push right = match right with
   | AtomE(Atom "TRAP") -> printf_step "Trap."
-  | ParenE({it = SeqE(instr); _}) -> (
+  | ParenE({it = SeqE(instr); _}, _) -> (
     match destruct_instr instr with
       | ("LABEL_", n :: cont :: args) ->
         printf_step

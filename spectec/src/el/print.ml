@@ -159,7 +159,7 @@ and string_of_exp exp =
   | CommaE (exp1, exp2) -> string_of_exp exp1 ^ ", " ^ string_of_exp exp2
   | CompE (exp1, exp2) -> string_of_exp exp1 ^ " ++ " ^ string_of_exp exp2
   | LenE exp1 -> "|" ^ string_of_exp exp1 ^ "|"
-  | ParenE exp -> "(" ^ string_of_exp exp ^ ")"
+  | ParenE (exp, _necessary) -> "(" ^ string_of_exp exp ^ ")"
   | TupE exps -> "(" ^ string_of_exps ", " exps ^ ")"
   | InfixE (exp1, atom, exp2) ->
     string_of_exp exp1 ^ space string_of_atom atom ^ string_of_exp exp2
