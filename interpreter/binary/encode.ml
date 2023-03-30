@@ -399,11 +399,10 @@ struct
     | ArraySet x -> op 0xfb; op 0x16; var x
     | ArrayLen -> op 0xfb; op 0x17
 
-    (* TODO: check encodings *)
     | ArrayCopy (x, y) -> op 0xfb; op 0x18; var x; var y
     | ArrayFill x -> op 0xfb; op 0x0f; var x
-    | ArrayInitData (x, y) -> op 0xfb; op 0x52; var x; var y
-    | ArrayInitElem (x, y) -> op 0xfb; op 0x53; var x; var y
+    | ArrayInitData (x, y) -> op 0xfb; op 0x54; var x; var y
+    | ArrayInitElem (x, y) -> op 0xfb; op 0x55; var x; var y
 
     | ExternConvert Internalize -> op 0xfb; op 0x70
     | ExternConvert Externalize -> op 0xfb; op 0x71
