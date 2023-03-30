@@ -73,12 +73,11 @@ let atom_vars = ref VarSet.empty
 %left DOT DOTDOT DOTDOTDOT
 %left PLUS MINUS COMPOSE
 %left STAR SLASH
-%left UP
 %left FUSE
 
-%start script exp check_atom
+%start script expression check_atom
 %type<El.Ast.script> script
-%type<El.Ast.exp> exp
+%type<El.Ast.exp> expression
 %type<bool> check_atom
 
 %%
@@ -161,7 +160,7 @@ dots :
   | NL_BAR DOTDOTDOT {}
 
 
-nottyp_prim : nottyp_prim_ { $1 $ at $sloc }
+/*nottyp_prim : nottyp_prim_ { $1 $ at $sloc }*/
 nottyp_prim_ :
   | typ_prim { TypT $1 }
   | atom { AtomT $1 }
@@ -206,18 +205,14 @@ nottyp_bin_ :
   | nottyp_bin SEMICOLON nottyp_bin { InfixT ($1, Semicolon, $3) }
   | nottyp_bin ARROW nottyp_bin { InfixT ($1, Arrow, $3) }
 
-nottyp_unrel : nottyp_unrel_ { $1 $ at $sloc }
-nottyp_unrel_ :
+nottyp_rel : nottyp_rel_ { $1 $ at $sloc }
+nottyp_rel_ :
   | nottyp_bin_ { $1 }
   | COLON nottyp_rel { InfixT (SeqT [] $ at $loc($1), Colon, $2) }
   | SUB nottyp_rel { InfixT (SeqT [] $ at $loc($1), Sub, $2) }
   | SQARROW nottyp_rel { InfixT (SeqT [] $ at $loc($1), SqArrow, $2) }
   | TILESTURN nottyp_rel { InfixT (SeqT [] $ at $loc($1), Tilesturn, $2) }
   | TURNSTILE nottyp_rel { InfixT (SeqT [] $ at $loc($1), Turnstile, $2) }
-
-nottyp_rel : nottyp_rel_ { $1 $ at $sloc }
-nottyp_rel_ :
-  | nottyp_unrel_ { $1 }
   | nottyp_rel COLON nottyp_rel { InfixT ($1, Colon, $3) }
   | nottyp_rel SUB nottyp_rel { InfixT ($1, Sub, $3) }
   | nottyp_rel SQARROW nottyp_rel { InfixT ($1, SqArrow, $3) }
@@ -293,17 +288,13 @@ exp_seq_ :
   | exp_atom_ { $1 }
   | exp_atom exp_seq { SeqE ($1 :: as_seq_exp $2) }
 
-exp_call : exp_call_ { $1 $ at $sloc }
-exp_call_ :
+exp_un : exp_un_ { $1 $ at $sloc }
+exp_un_ :
   | exp_seq_ { $1 }
   | BAR exp BAR { LenE $2 }
   | NL_BAR exp BAR { LenE $2 }
   | BAR exp NL_BAR { LenE $2 }
   | NL_BAR exp NL_BAR { LenE $2 }
-
-exp_un : exp_un_ { $1 $ at $sloc }
-exp_un_ :
-  | exp_call_ { $1 }
   | NOT exp_un { UnE (NotOp, $2) }
   | DOT exp_un { InfixE (SeqE [] $ at $loc($1), Dot, $2) }
   | DOTDOT exp_un { InfixE (SeqE [] $ at $loc($1), Dot2, $2) }
@@ -332,8 +323,8 @@ exp_bin_ :
   | exp_bin DARROW2 exp_bin { BinE ($1, EquivOp, $3) }
   | exp_bin FUSE exp_bin { FuseE ($1, $3) }
 
-exp_unrel : exp_unrel_ { $1 $ at $sloc }
-exp_unrel_ :
+exp_rel : exp_rel_ { $1 $ at $sloc }
+exp_rel_ :
   | exp_bin_ { $1 }
   | COMMA exp_rel { CommaE (SeqE [] $ at $loc($1), $2) }
   | COMMA_NL exp_rel { CommaE (SeqE [] $ at $loc($1), $2) }
@@ -342,10 +333,6 @@ exp_unrel_ :
   | SQARROW exp_rel { InfixE (SeqE [] $ at $loc($1), SqArrow, $2) }
   | TILESTURN exp_rel { InfixE (SeqE [] $ at $loc($1), Tilesturn, $2) }
   | TURNSTILE exp_rel { InfixE (SeqE [] $ at $loc($1), Turnstile, $2) }
-
-exp_rel : exp_rel_ { $1 $ at $sloc }
-exp_rel_ :
-  | exp_unrel_ { $1 }
   | exp_rel COMMA exp_rel { CommaE ($1, $3) }
   | exp_rel COMMA_NL exp_rel { CommaE ($1, $3) }
   | exp_rel COLON exp_rel { InfixE ($1, Colon, $3) }
@@ -382,8 +369,8 @@ arith_prim_ :
 arith_post : arith_post_ { $1 $ at $sloc }
 arith_post_ :
   | arith_prim_ { $1 }
-  | arith_post UP arith_prim { BinE ($1, ExpOp, $3) }
-  | arith_post LBRACK arith RBRACK { IdxE ($1, $3) }
+  | arith_atom UP arith_prim { BinE ($1, ExpOp, $3) }
+  | arith_atom LBRACK arith RBRACK { IdxE ($1, $3) }
   | arith_post dotid { DotE ($1, $2) }
 
 arith_atom : arith_atom_ { $1 $ at $sloc }
@@ -391,8 +378,8 @@ arith_atom_ :
   | arith_post_ { $1 }
   | atom { AtomE $1 }
 
-arith_call : arith_call_ { $1 $ at $sloc }
-arith_call_ :
+arith_un : arith_un_ { $1 $ at $sloc }
+arith_un_ :
   | arith_atom_ { $1 }
   | BAR exp BAR { LenE $2 }
   | NL_BAR exp BAR { LenE $2 }
@@ -400,10 +387,6 @@ arith_call_ :
   | NL_BAR exp NL_BAR { LenE $2 }
   | DOLLAR defid { CallE ($2, SeqE [] $ at $sloc) }
   | DOLLAR defid exp_prim { CallE ($2, $3) }
-
-arith_un : arith_un_ { $1 $ at $sloc }
-arith_un_ :
-  | arith_call_ { $1 }
   | NOT arith_un { UnE (NotOp, $2) }
   | PLUS arith_un { UnE (PlusOp, $2) }
   | MINUS arith_un { UnE (MinusOp, $2) }
@@ -502,5 +485,8 @@ def_list :
 
 script :
   | def_list EOF { $1 }
+
+expression :
+  | exp EOF { $1 }
 
 %%

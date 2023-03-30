@@ -10,11 +10,11 @@ let with_lexbuf name lexbuf start =
 
 let parse_exp s =
   let lexbuf = Lexing.from_string s in
-  with_lexbuf "string" lexbuf Parser.exp
+  with_lexbuf "(string)" lexbuf Parser.expression
 
 let parse_script s =
   let lexbuf = Lexing.from_string s in
-  with_lexbuf "string" lexbuf Parser.script
+  with_lexbuf "(string)" lexbuf Parser.script
 
 let parse_file file =
   let ic = open_in file in

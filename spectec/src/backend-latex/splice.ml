@@ -225,13 +225,14 @@ let try_exp_anchor env src r : bool =
     parse_anchor_end src (j - 4) 0;
     let s = str src j in
     adv src;
+Printf.printf "[exp %s]\n%!" s;
     let exp =
       try Frontend.Parse.parse_exp s with Source.Error (at, msg) ->
         (* Translate relative positions *)
         let pos = pos {src with i = j} in
-        let shift {file; line; column} =
-          { file; line = line + pos.line;
-            column = if line = 1 then column + pos.column else column} in
+        let shift {line; column; _} =
+          { file = src.file; line = line + pos.line - 1;
+            column = if false(*line = 1*) then column + pos.column - 1 else column} in
         let at' = {left = shift at.left; right = shift at.right} in
         raise (Source.Error (at', msg))
     in

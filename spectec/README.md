@@ -134,7 +134,7 @@ Lowering from EL into IL infers additional information and makes it explicit in 
 
 ## Building
 
-* You will need `ocaml` and `dune` installed.
+* You will need `ocaml` installed with `dune`, `menhir`, and `mdx`.
 
 * To run tests, you will also need `pdflatex` and `sphinx-build`.
 
