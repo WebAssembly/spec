@@ -29,6 +29,13 @@ let printf_step formatted =
   else
     Printf.printf ("%d. " ^^ formatted ^^ "\n") (stepIdx())
 
+let check_nothing _ =
+  if
+    !_indent && !_subIdx = 1 ||
+    not !_indent && !_stepIdx = 1
+  then
+    printf_step "Do nothing."
+
 (* 1. Handle lhs of reduction rules *)
 
 let hds l = l |> List.rev |> List.tl
@@ -47,7 +54,7 @@ let pop left = match left with
     let v = Print.string_of_exp e in
     printf_step "Pop the value %s from the stack." v
   )
-  | ParenE({it = SeqE({it = AtomE(Atom "LABEL"); _} :: _); at = _}) ->
+  | ParenE({it = SeqE({it = AtomE(Atom "LABEL_"); _} :: _); at = _}) ->
     printf_step "YET: Bubble-up semantics."
   | _ -> ()
 
@@ -93,19 +100,27 @@ let destruct_instr = function
 
 let rec push right = match right with
   | AtomE(Atom "TRAP") -> printf_step "Trap."
-  | EpsE -> printf_step "Do nothing."
   | ParenE({it = SeqE(instr); _}) -> (
     match destruct_instr instr with
-      | ("LABEL", n :: cont :: args) ->
+      | ("LABEL_", n :: cont :: args) ->
         printf_step
           "Let L be the label whose arity is %s and whose continuation is the %s of this instruction."
           (Print.string_of_exp n)
-          (if cont.it = EpsE then "end" else "start");
+          (
+            match cont.it with
+            | BrackE(_, {it = EpsE; _}) ->  "end"
+            | _ -> "start"
+          );
         printf_step
           "Enter the block %s with label L."
           (Print.string_of_exps " " args)
-      | ("FRAME", _n1 :: _frame :: label :: []) ->
-        printf_step "YET: Push the frame to the stack.";
+      | ("FRAME_", n :: frame :: label :: []) ->
+        printf_step
+          "Let F be the frame %s."
+          (Print.string_of_exp frame);
+        printf_step
+          "Push the activation of F with the arity %s to the stack."
+          (Print.string_of_exp n);
         push label.it
       | ("CONST" | "REF.NULL" | "REF.FUNC" as name, args) ->
         let args = bind_argument args in
@@ -163,13 +178,17 @@ let handle_reduction_group red_group =
       cond prems1;
         indent();
         push right1;
+        check_nothing();
         unindent();
       cond prems2;
         indent();
         push right2;
+        check_nothing();
         unindent();
     | _ -> raise (Failure "TODO")
   );
+
+  check_nothing();
 
   print_newline()
 
