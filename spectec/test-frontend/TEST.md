@@ -2797,5 +2797,114 @@ $$
 $$
 
 
+== Prose Generation...
+UNREACHABLE ~> TRAP
+1. Trap.
+
+NOP ~> epsilon
+1. Do nothing.
+
+{val DROP} ~> epsilon
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val from the stack.
+
+{val_1 val_2 ({CONST I32 c}) ({SELECT t?})} ~> val_1
+    -- iff c =/= 0
+{val_1 val_2 ({CONST I32 c}) ({SELECT t?})} ~> val_2
+    -- iff c = 0
+1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+2. Pop the value ({CONST I32 c}) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value val_2 from the stack.
+5. Assert: Due to validation, a value is on the top of the stack.
+6. Pop the value val_1 from the stack.
+7. If c =/= 0, then:
+  1) Push the value val_1 to the stack.
+8. If c = 0, then:
+  1) Push the value val_2 to the stack.
+
+{val^k ({BLOCK bt instr*})} ~> ({LABEL_ n `{epsilon} val^k instr*})
+    -- iff bt = t_1^k -> t_2^n
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val^k from the stack.
+3. Let bt = t_1^k -> t_2^n.
+4. Let L be the label whose arity is n and whose continuation is the end of this instruction.
+5. Enter the block val^k instr* with label L.
+
+{val^k ({LOOP bt instr*})} ~> ({LABEL_ n `{{LOOP bt instr*}} val^k instr*})
+    -- iff bt = t_1^k -> t_2^n
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val^k from the stack.
+3. Let bt = t_1^k -> t_2^n.
+4. Let L be the label whose arity is n and whose continuation is the start of this instruction.
+5. Enter the block val^k instr* with label L.
+
+{({CONST I32 c}) ({IF bt instr_1* ELSE instr_2*})} ~> ({BLOCK bt instr_1*})
+    -- iff c =/= 0
+{({CONST I32 c}) ({IF bt instr_1* ELSE instr_2*})} ~> ({BLOCK bt instr_2*})
+    -- iff c = 0
+1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+2. Pop the value ({CONST I32 c}) from the stack.
+3. If c =/= 0, then:
+  1) Execute the instruction BLOCK bt instr_1*.
+4. If c = 0, then:
+  1) Execute the instruction BLOCK bt instr_2*.
+
+({LABEL_ n `{instr'*} val'* val^n ({BR 0}) instr*}) ~> {val^n instr'*}
+1. YET: Bubble-up semantics.
+
+({LABEL_ n `{instr'*} val* ({BR l + 1}) instr*}) ~> {val* ({BR l})}
+1. YET: Bubble-up semantics.
+
+{({CONST I32 c}) ({BR_IF l})} ~> ({BR l})
+    -- iff c =/= 0
+{({CONST I32 c}) ({BR_IF l})} ~> epsilon
+    -- iff c = 0
+1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+2. Pop the value ({CONST I32 c}) from the stack.
+3. If c =/= 0, then:
+  1) Execute the instruction BR l.
+4. If c = 0, then:
+  1) Do nothing.
+
+{({CONST I32 i}) ({BR_TABLE l* l'})} ~> ({BR l*[i]})
+    -- iff i < |l*|
+{({CONST I32 i}) ({BR_TABLE l* l'})} ~> ({BR l'})
+    -- iff i >= |l*|
+1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+2. Pop the value ({CONST I32 i}) from the stack.
+3. If i < |l*|, then:
+  1) Let tmp0 be l*[i].
+  2) Execute the instruction BR tmp0.
+4. If i >= |l*|, then:
+  1) Execute the instruction BR l'.
+
+z ; ({CALL x}) ~> ({CALL_ADDR $funcaddr(z)[x]})
+1. Let tmp0 be $funcaddr(z)[x].
+2. Execute the instruction CALL_ADDR tmp0.
+
+z ; {({CONST I32 i}) ({CALL_INDIRECT x ft})} ~> ({CALL_ADDR a})
+    -- iff $table(z, x)[i] = ({REF.FUNC_ADDR a})
+    -- iff $funcinst(z)[a] = m ; func
+z ; {({CONST I32 i}) ({CALL_INDIRECT x ft})} ~> TRAP
+    -- otherwise
+1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+2. Pop the value ({CONST I32 i}) from the stack.
+3. If $table(z, x)[i] = ({REF.FUNC_ADDR a}) and $funcinst(z)[a] = m ; func, then:
+  1) Execute the instruction CALL_ADDR a.
+4. If otherwise, then:
+  1) Trap.
+
+z ; {val^k ({CALL_ADDR a})} ~> ({FRAME_ n `{m ; {val^k ($default_(t))*}} ({LABEL_ n `{epsilon} instr*})})
+    -- iff $funcinst(z)[a] = m ; {FUNC (t_1^k -> t_2^n) t* instr*}
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val^k from the stack.
+3. Let $funcinst(z)[a] = m ; {FUNC (t_1^k -> t_2^n) t* instr*}.
+4. Let F be the frame `{m ; {val^k ($default_(t))*}}.
+5. Push the activation of F with the arity n to the stack.
+6. Let L be the label whose arity is n and whose continuation is the end of this instruction.
+7. Enter the block instr* with label L.
+
+
 == Complete.
 ```

@@ -2,8 +2,10 @@ open Util.Source
 open El.Ast
 open El
 
-(* Helpers *)
+(* Output buffer *)
+let buf = Buffer.create 4096
 
+(* Helpers *)
 let _stepIdx = ref 1
 let stepIdx _ =
   let i = !_stepIdx in
@@ -25,9 +27,9 @@ let unindent _ =
 
 let printf_step formatted =
   if !_indent then
-    Printf.printf ("  %d) " ^^ formatted ^^ "\n") (subIdx())
+    Printf.bprintf buf ("  %d) " ^^ formatted ^^ "\n") (subIdx())
   else
-    Printf.printf ("%d. " ^^ formatted ^^ "\n") (stepIdx())
+    Printf.bprintf buf ("%d. " ^^ formatted ^^ "\n") (stepIdx())
 
 let check_nothing _ =
   if
@@ -155,7 +157,8 @@ let string_of_destructed (left, right, prems) =
 let handle_reduction_group red_group =
   (* assert: every redunction rule in red_group has same lhs *)
   red_group |> List.iter (fun red ->
-    print_endline (string_of_destructed red)
+    Buffer.add_string buf (string_of_destructed red);
+    Buffer.add_char buf '\n'
   );
   _stepIdx := 1;
   _freshId := 0;
@@ -190,7 +193,7 @@ let handle_reduction_group red_group =
 
   check_nothing();
 
-  print_newline()
+  Buffer.add_char buf '\n'
 
 let rec group_by f = function
   | [] -> []
@@ -201,8 +204,6 @@ let rec group_by f = function
     (hd :: l) :: (group_by f r)
 
 let translate el =
-  print_endline "starting translate";
-
   (* Filter and destruct redctions only *)
   let reductions = el |> List.filter_map destruct_as_rule in
 
@@ -214,4 +215,4 @@ let translate el =
   (* Handle each redction group *)
   List.iter handle_reduction_group reduction_groups;
 
-  print_endline "finishing translate";
+  Buffer.contents buf
