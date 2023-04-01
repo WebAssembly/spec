@@ -54,11 +54,10 @@ and typ' =
 
 and deftyp = deftyp' phrase
 and deftyp' =
-  | NotationT of typmix                 (* type alias *)
+  | NotationT of mixop * typ            (* type alias *)
   | StructT of typfield list            (* record type *)
   | VariantT of id list * typcase list  (* variant type *)
 
-and typmix = mixop * typ                (* mixfix type *)
 and typfield = atom * typ * hint list   (* record field *)
 and typcase = atom * typ * hint list    (* variant case *)
 
@@ -132,7 +131,7 @@ and binds = (id * typ) list
 and def = def' phrase
 and def' =
   | SynD of id * deftyp * hint list                   (* syntax type *)
-  | RelD of id * typmix * rule list * hint list       (* relation *)
+  | RelD of id * mixop * typ * rule list * hint list  (* relation *)
   | DecD of id * typ * typ * clause list * hint list  (* definition *)
   | RecD of def list                                  (* recursive *)
 

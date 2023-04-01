@@ -15,7 +15,7 @@ module Env = Map.Make(String)
 
 type var_typ = typ
 type syn_typ = deftyp
-type rel_typ = typmix
+type rel_typ = mixop * typ
 type def_typ = typ * typ
 
 type env =
@@ -232,8 +232,8 @@ and valid_typ env typ =
 
 and valid_deftyp env deftyp =
   match deftyp.it with
-  | NotationT typmix ->
-    valid_typmix env typmix deftyp.at
+  | NotationT (mixop, typ) ->
+    valid_typmix env (mixop, typ) deftyp.at
   | StructT fields ->
     check_atoms "record" "field" (fun (atom, _, _) -> atom) fields deftyp.at;
     List.iter (valid_typfield env) fields
@@ -444,11 +444,11 @@ let valid_prem env prem =
   | ElsePr ->
     ()
 
-let valid_rule env typmix rule =
+let valid_rule env mixop typ rule =
   match rule.it with
-  | RuleD (_id, binds, mixop, exp, prems) ->
+  | RuleD (_id, binds, mixop', exp, prems) ->
     valid_binds env binds;
-    valid_expmix env mixop exp typmix exp.at;
+    valid_expmix env mixop' exp (mixop, typ) exp.at;
     List.iter (valid_prem env) prems;
     env.vars <- Env.empty
 
@@ -468,9 +468,9 @@ let infer_def env def =
     let fwd_deftyp =
       match deftyp.it with NotationT _ -> fwd_deftyp_bad | _ -> fwd_deftyp_ok in
     env.typs <- bind "syntax" env.typs id fwd_deftyp
-  | RelD (id, typmix, _rules, _hints) ->
-    valid_typmix env typmix def.at;
-    env.rels <- bind "relation" env.rels id typmix
+  | RelD (id, mixop, typ, _rules, _hints) ->
+    valid_typmix env (mixop, typ) def.at;
+    env.rels <- bind "relation" env.rels id (mixop, typ)
   | DecD (id, typ1, typ2, _clauses, _hints) ->
     valid_typ env typ1;
     valid_typ env typ2;
@@ -485,10 +485,10 @@ let rec valid_def {bind} env def =
   | SynD (id, deftyp, _hints) ->
     valid_deftyp env deftyp;
     env.typs <- bind "syntax" env.typs id deftyp;
-  | RelD (id, typmix, rules, _hints) ->
-    valid_typmix env typmix def.at;
-    List.iter (valid_rule env typmix) rules;
-    env.rels <- bind "relation" env.rels id typmix
+  | RelD (id, mixop, typ, rules, _hints) ->
+    valid_typmix env (mixop, typ) def.at;
+    List.iter (valid_rule env mixop typ) rules;
+    env.rels <- bind "relation" env.rels id (mixop, typ)
   | DecD (id, typ1, typ2, clauses, _hints) ->
     valid_typ env typ1;
     valid_typ env typ2;

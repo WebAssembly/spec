@@ -99,7 +99,7 @@ and string_of_typs sep typs =
 
 and string_of_deftyp deftyp =
   match deftyp.it with
-  | NotationT typmix -> string_of_typmix typmix
+  | NotationT (mixop, typ) -> string_of_typmix (mixop, typ)
   | StructT typfields ->
     "{" ^ concat ", " (List.map string_of_typfield typfields) ^ "}"
   | VariantT (ids, typcases) ->
@@ -220,8 +220,8 @@ let rec string_of_def def =
   match def.it with
   | SynD (id, deftyp, _hints) ->
     "syntax " ^ id.it ^ " = " ^ string_of_deftyp deftyp
-  | RelD (id, typmix, rules, _hints) ->
-    "relation " ^ id.it ^ ": " ^ string_of_typmix typmix ^
+  | RelD (id, mixop, typ, rules, _hints) ->
+    "relation " ^ id.it ^ ": " ^ string_of_typmix (mixop, typ) ^
       concat "\n" (List.map string_of_rule rules)
   | DecD (id, typ1, typ2, clauses, _hints) ->
     let s1 =

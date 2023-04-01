@@ -63,12 +63,11 @@ and free_typ typ =
 
 and free_deftyp deftyp =
   match deftyp.it with
-  | NotationT typmix -> free_typmix typmix
+  | NotationT (_, typ) -> free_typ typ
   | StructT typfields -> free_list free_typfield typfields
   | VariantT (ids, typcases) ->
     union (free_list free_synid ids) (free_list free_typcase typcases)
 
-and free_typmix (_, typ) = free_typ typ
 and free_typfield (_, typ, _) = free_typ typ
 and free_typcase (_, typ, _) = free_typ typ
 
@@ -141,8 +140,8 @@ let free_clause clause =
 let rec free_def def =
   match def.it with
   | SynD (_id, deftyp, _hints) -> free_deftyp deftyp
-  | RelD (_id, typmix, rules, _hints) ->
-    union (free_typmix typmix) (free_list free_rule rules)
+  | RelD (_id, _mixop, typ, rules, _hints) ->
+    union (free_typ typ) (free_list free_rule rules)
   | DecD (_id, typ1, typ2, clauses, _hints) ->
     union (union (free_typ typ1) (free_typ typ2)) (free_list free_clause clauses)
   | RecD defs -> free_list free_def defs
@@ -151,6 +150,6 @@ let rec free_def def =
 let rec bound_def def =
   match def.it with
   | SynD (id, _, _) -> free_synid id
-  | RelD (id, _, _, _) -> free_relid id
+  | RelD (id, _, _, _, _) -> free_relid id
   | DecD (id, _, _, _, _) -> free_defid id
   | RecD defs -> free_list bound_def defs
