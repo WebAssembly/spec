@@ -84,6 +84,13 @@ and string_of_typ typ =
   | ParenT typ -> "(" ^ string_of_typ typ ^ ")"
   | TupT typs -> "(" ^ string_of_typs ", " typs ^ ")"
   | IterT (typ1, iter) -> string_of_typ typ1 ^ string_of_iter iter
+  | AtomT atom -> string_of_atom atom
+  | SeqT typs -> "{" ^ string_of_typs " " typs ^ "}"
+  | InfixT (typ1, atom, typ2) ->
+    string_of_typ typ1 ^ space string_of_atom atom ^ string_of_typ typ2
+  | BrackT (brack, typ1) ->
+    let l, r = string_of_brack brack in
+    "`" ^ l ^ string_of_typ typ1 ^ r
 
 and string_of_typs sep typs =
   concat sep (List.map string_of_typ typs)
@@ -91,7 +98,7 @@ and string_of_typs sep typs =
 
 and string_of_deftyp deftyp =
   match deftyp.it with
-  | NotationT nottyp -> string_of_nottyp nottyp
+  | NotationT typ -> string_of_typ typ
   | StructT typfields ->
     "{" ^ concat ", " (map_nl_list string_of_typfield typfields) ^ "}"
   | VariantT (dots1, ids, typcases, dots2) ->
@@ -99,32 +106,14 @@ and string_of_deftyp deftyp =
       (strings_of_dots dots1 @ map_nl_list it ids @
         map_nl_list string_of_typcase typcases @ strings_of_dots dots2)
 
-and string_of_nottyp nottyp =
-  match nottyp.it with
-  | TypT typ -> string_of_typ typ
-  | AtomT atom -> string_of_atom atom
-  | SeqT [] -> "epsilon"
-  | SeqT nottyps -> "{" ^ string_of_nottyps " " nottyps ^ "}"
-  | InfixT (nottyp1, atom, nottyp2) ->
-    string_of_nottyp nottyp1 ^ space string_of_atom atom ^ string_of_nottyp nottyp2
-  | BrackT (brack, nottyp1) ->
-    let l, r = string_of_brack brack in
-    "`" ^ l ^ string_of_nottyp nottyp1 ^ r
-  | ParenNT nottyp1 -> "(" ^ string_of_nottyp nottyp1 ^ ")"
-  | IterNT (nottyp1, iter) -> string_of_nottyp nottyp1 ^ string_of_iter iter
-
-and string_of_nottyps sep nottyps =
-  concat sep (List.map string_of_nottyp nottyps)
-
-
 and string_of_typfield (atom, typ, _hints) =
   string_of_atom atom ^ " " ^ string_of_typ typ
 
-and string_of_typcase (atom, nottyps, _hints) =
-  if nottyps = [] then
+and string_of_typcase (atom, typs, _hints) =
+  if typs = [] then
     string_of_atom atom
   else
-    string_of_atom atom ^ " " ^ string_of_nottyps " " nottyps
+    string_of_atom atom ^ " " ^ string_of_typs " " typs
 
 
 (* Expressions *)
@@ -204,8 +193,8 @@ let string_of_def def =
   | SynD (id1, id2, deftyp, _hints) ->
     let id2' = if id2.it = "" then "" else "/" ^ id2.it in
     "syntax " ^ id1.it ^ id2' ^ " = " ^ string_of_deftyp deftyp
-  | RelD (id, nottyp, _hints) ->
-    "relation " ^ id.it ^ ": " ^ string_of_nottyp nottyp
+  | RelD (id, typ, _hints) ->
+    "relation " ^ id.it ^ ": " ^ string_of_typ typ
   | RuleD (id1, id2, exp, prems) ->
     let id2' = if id2.it = "" then "" else "/" ^ id2.it in
     "rule " ^ id1.it ^ id2' ^ ":\n  " ^ string_of_exp exp ^

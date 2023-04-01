@@ -58,25 +58,20 @@ and typ' =
   | ParenT of typ                (* `(` typ `)` *)
   | TupT of typ list             (* `(` list2(typ, `,`) `)` *)
   | IterT of typ * iter          (* typ iter *)
+  (* The forms below are only allowed in type definitions *)
+  | AtomT of atom                (* atom *)
+  | SeqT of typ list             (* `epsilon` / typ typ *)
+  | InfixT of typ * atom * typ   (* typ atom typ *)
+  | BrackT of brack * typ        (* ``` ([{ typ }]) *)
 
 and deftyp = deftyp' phrase
 and deftyp' =
-  | NotationT of nottyp                      (* nottyp *)
+  | NotationT of typ                         (* typ *)
   | StructT of typfield nl_list              (* `{` list(typfield,`,`') `}` *)
   | VariantT of dots * id nl_list * typcase nl_list * dots (* `|` list(`...`|varid|typcase, `|`) *)
 
-and nottyp = nottyp' phrase
-and nottyp' =
-  | TypT of typ
-  | AtomT of atom                            (* atom *)
-  | SeqT of nottyp list                      (* `epsilon` / nottyp nottyp *)
-  | InfixT of nottyp * atom * nottyp         (* nottyp atom nottyp *)
-  | BrackT of brack * nottyp                 (* ``` ([{ nottyp }]) *)
-  | ParenNT of nottyp                        (* `(` nottyp `)` *)
-  | IterNT of nottyp * iter                  (* nottyp iter *)
-
-and typfield = atom * typ * hint list         (* atom typ hint* *)
-and typcase = atom * nottyp list * hint list  (* atom nottyp* hint* *)
+and typfield = atom * typ * hint list        (* atom typ hint* *)
+and typcase = atom * typ list * hint list    (* atom typ* hint* *)
 
 
 (* Expressions *)
@@ -149,7 +144,7 @@ and path' =
 and def = def' phrase
 and def' =
   | SynD of id * id * deftyp * hint list     (* `syntax` synid hint* `=` deftyp *)
-  | RelD of id * nottyp * hint list          (* `relation` relid `:` nottyp hint* *)
+  | RelD of id * typ * hint list             (* `relation` relid `:` typ hint* *)
   | RuleD of id * id * exp * premise nl_list (* `rule` relid ruleid? `:` exp (`--` premise)* *)
   | VarD of id * typ * hint list             (* `var` varid `:` typ *)
   | DecD of id * exp * typ * hint list       (* `def` `$` defid exp? `:` typ hint* *)

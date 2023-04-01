@@ -188,25 +188,17 @@ dots :
 
 /*nottyp_prim : nottyp_prim_ { $1 $ at $sloc }*/
 nottyp_prim_ :
-  | typ_prim { TypT $1 }
+  | typ_prim { $1.it }
   | atom { AtomT $1 }
   | TICK LPAR nottyp RPAR { BrackT (Paren, $3) }
   | TICK LBRACK nottyp RBRACK { BrackT (Brack, $3) }
   | TICK LBRACE nottyp RBRACE { BrackT (Brace, $3) }
-  | LPAR nottyp RPAR {
-      match $2.it with
-      | TypT typ -> TypT (ParenT typ $ at $sloc)
-      | _ -> ParenNT $2
-    }
+  | LPAR nottyp RPAR { ParenT $2 }
 
 nottyp_post : nottyp_post_ { $1 $ at $sloc }
 nottyp_post_ :
   | nottyp_prim_ { $1 }
-  | nottyp_post iter {
-      match $1.it with
-      | TypT typ -> TypT (IterT (typ, $2) $ at $sloc)
-      | _ -> IterNT ($1, $2)
-    }
+  | nottyp_post iter { IterT ($1, $2) }
 
 nottyp_seq : nottyp_seq_ { $1 $ at $sloc }
 nottyp_seq_ :

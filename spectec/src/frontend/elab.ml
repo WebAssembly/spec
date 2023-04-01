@@ -27,10 +27,6 @@ let error_typ at phrase typ =
   error at (phrase ^ " does not match expected type `" ^
     string_of_typ typ ^ "`")
 
-let error_nottyp at phrase nottyp =
-  error at (phrase ^ " does not match expected notation `" ^
-    string_of_nottyp nottyp ^ "`")
-
 let error_typ2 at phrase typ1 typ2 reason =
   error at (phrase ^ "'s type `" ^ string_of_typ typ1 ^ "`" ^
     " does not match expected type `" ^ string_of_typ typ2 ^ "`" ^ reason)
@@ -57,7 +53,6 @@ let unseq_exp exp =
   | EpsE -> []
   | SeqE exps -> exps
   | _ -> [exp]
-
 
 let tup_typ' typs' at =
   match typs' with
@@ -88,7 +83,7 @@ let cat_exp' exp1' exp2' =
 type fwd_typ = Bad | Ok
 type var_typ = typ
 type syn_typ = (fwd_typ, deftyp * Il.deftyp) Either.t
-type rel_typ = nottyp * Il.rule list
+type rel_typ = typ * Il.rule list
 type def_typ = typ * typ * Il.clause list
 
 type env =
@@ -143,16 +138,17 @@ and prefix_id' id =
 
 (* Type Accessors *)
 
-let as_defined_typid' env id at : deftyp' =
+let as_defined_typid' env id at : deftyp' * [`Alias | `NoAlias] =
   match find "syntax type" env.typs id with
-  | Either.Right (deftyp, _deftyp') -> deftyp.it
+  | Either.Right (deftyp, {it = Il.AliasT _typ'; _}) -> deftyp.it, `Alias
+  | Either.Right (deftyp, _deftyp') -> deftyp.it, `NoAlias
   | Either.Left _ ->
     error_id (id.it $ at) "invalid forward use of syntax type"
 
 let rec expand' env = function
   | VarT id as typ' ->
     (match as_defined_typid' env id id.at with
-    | NotationT {it = TypT typ1; _} -> expand' env typ1.it
+    | NotationT typ1, `Alias -> expand' env typ1.it
     | _ -> typ'
     )
   | ParenT typ -> expand' env typ.it
@@ -182,19 +178,19 @@ let as_tup_typ phrase env dir typ at : typ list =
   | _ -> error_dir_typ at phrase dir typ "(_,...,_)"
 
 
-let as_notation_typid' phrase env id at : nottyp =
+let as_notation_typid' phrase env id at : typ =
   match as_defined_typid' env id at with
-  | NotationT nottyp -> nottyp
+  | NotationT typ, _ -> typ
   | _ -> error_dir_typ at phrase Infer (VarT id $ id.at) "_ ... _"
 
-let as_notation_typ phrase env dir typ at : nottyp =
+let as_notation_typ phrase env dir typ at : typ =
   match expand_singular' env typ.it with
   | VarT id -> as_notation_typid' phrase env id at
   | _ -> error_dir_typ at phrase dir typ "_ ... _"
 
 let as_struct_typid' phrase env id at : typfield list =
   match as_defined_typid' env id at with
-  | StructT fields -> filter_nl fields
+  | StructT fields, _ -> filter_nl fields
   | _ -> error_dir_typ at phrase Infer (VarT id $ id.at) "| ..."
 
 let as_struct_typ phrase env dir typ at : typfield list =
@@ -204,7 +200,7 @@ let as_struct_typ phrase env dir typ at : typfield list =
 
 let rec as_variant_typid' phrase env id at : typcase list * dots =
   match as_defined_typid' env id at with
-  | VariantT (_dots1, ids, cases, dots2) ->
+  | VariantT (_dots1, ids, cases, dots2), _ ->
     let casess = map_nl_list (as_variant_typid "" env) ids in
     List.concat (filter_nl cases :: List.map fst casess), dots2
   | _ -> error_dir_typ id.at phrase Infer (VarT id $ id.at) "| ..."
@@ -229,22 +225,6 @@ let is_x_typ as_x_typ env typ =
 let is_iter_typ = is_x_typ as_iter_typ
 let is_notation_typ = is_x_typ as_notation_typ
 let is_variant_typ = is_x_typ as_variant_typ
-
-
-let as_plain_nottyp _env nottyp =
-  match nottyp.it with
-  | TypT typ -> typ
-  | _ -> assert false
-
-let is_variant_nottyp env nottyp =
-  match nottyp.it with
-  | TypT typ -> is_variant_typ env typ
-  | _ -> false
-
-let as_variant_nottyp env nottyp at : typcase list * typ =
-  match nottyp.it with
-  | TypT typ -> fst (as_variant_typ "" env Check typ at), typ
-  | _ -> error_dir_typ at "expression" Check (VarT ("?" $ at) $ at) "| ..."
 
 
 (* Type Equivalence *)
@@ -331,7 +311,7 @@ let merge_mixop mixop1 mixop2 =
   match mixop1, mixop2 with
   | _, [] -> mixop1
   | [], _ -> mixop2
-  | _, atoms2::mixop2' ->
+  | mixop1, atoms2::mixop2' ->
     let mixop1', atoms1 = Lib.List.split_last mixop1 in
     mixop1' @ [atoms1 @ atoms2] @ mixop2'
 
@@ -375,16 +355,69 @@ and elab_typ env typ : Il.typ =
   | TupT typs ->
     Il.TupT (List.map (elab_typ env) typs) $ typ.at
   | IterT (typ1, iter) ->
-    match iter with
+    (match iter with
     | List1 | ListN _ -> error typ.at "illegal iterator in syntax type"
     | _ -> Il.IterT (elab_typ env typ1, elab_iter env iter) $ typ.at
+    )
+  | AtomT _ | SeqT _ | InfixT _ | BrackT _ ->
+    error typ.at "this type is only allowed in type definitions"
+
+and elab_typ_notation env typ : bool * Il.mixop * Il.typ list =
+  (*
+  Printf.printf "[typ_not %s] %s\n%!"
+    (string_of_region typ.at) (string_of_typ typ);
+  *)
+  match typ.it with
+  | AtomT atom ->
+    true, [[elab_atom atom]], []
+  | SeqT [] ->
+    true, [[]], []
+  | SeqT (typ1::typs2) ->
+    let _b1, mixop1, typs1' = elab_typ_notation env typ1 in
+    let _b2, mixop2, typs2' = elab_typ_notation env (SeqT typs2 $ typ.at) in
+    true, merge_mixop mixop1 mixop2, typs1' @ typs2'
+  | InfixT (typ1, atom, typ2) ->
+    let _b1, mixop1, typs1' = elab_typ_notation env typ1 in
+    let _b2, mixop2, typs2' = elab_typ_notation env typ2 in
+    true, merge_mixop (merge_mixop mixop1 [[elab_atom atom]]) mixop2,
+      typs1' @ typs2'
+  | BrackT (brack, typ1) ->
+    let l, r = elab_brack brack in
+    let _b1, mixop1, typs' = elab_typ_notation env typ1 in
+    true, merge_mixop (merge_mixop [[l]] mixop1) [[r]], typs'
+  | ParenT typ1 ->
+    let b1, mixop1, typs1' = elab_typ_notation env typ1 in
+    b1, merge_mixop (merge_mixop [[Il.LParen]] mixop1) [[Il.RParen]], typs1'
+  | IterT (typ1, iter) ->
+    (match iter with
+    | List1 | ListN _ -> error typ.at "illegal iterator in notation type"
+    | _ ->
+      let b1, mixop1, typs' = elab_typ_notation env typ1 in
+      let iter' = elab_iter env iter in
+      let typ' = Il.IterT (tup_typ' typs' typ1.at, iter') $ typ.at in
+      let op = match iter with Opt -> Il.Quest | _ -> Il.Star in
+      b1, [List.flatten mixop1] @ [[op]], [typ']
+    )
+  | _ ->
+    false, [[]; []], [elab_typ env typ]
+
+
+and elab_typfield env (atom, typ, hints) : Il.typfield =
+  let _, _, typs' = elab_typ_notation env typ in
+  (elab_atom atom, tup_typ' typs' typ.at, elab_hints hints)
+
+and elab_typcase env at (atom, typs, hints) : Il.typcase =
+  let typss' =
+    List.map (fun (_, _, ts) -> ts) (List.map (elab_typ_notation env) typs) in
+  (elab_atom atom, tup_typ' (List.concat typss') at, elab_hints hints)
+
 
 and elab_deftyp env id deftyp : Il.deftyp =
   (match deftyp.it with
-  | NotationT nottyp ->
-    (match elab_nottyp' env nottyp with
-    | [[]; []], typ' -> Il.AliasT typ'
-    | mixop', typ' -> Il.NotationT (mixop', typ')
+  | NotationT typ ->
+    (match elab_typ_notation env typ with
+    | false, _mixop, typs' -> Il.AliasT (tup_typ' typs' typ.at)
+    | true, mixop, typs' -> Il.NotationT (mixop, tup_typ' typs' typ.at)
     )
   | StructT fields ->
     let fields' = filter_nl fields in
@@ -399,59 +432,6 @@ and elab_deftyp env id deftyp : Il.deftyp =
     check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' deftyp.at;
     Il.VariantT (filter_nl ids, map_nl_list (elab_typcase env deftyp.at) cases)
   ) $ deftyp.at
-
-and elab_nottyp env nottyp : Il.mixop * Il.typ list =
-  (*
-  Printf.printf "[nottyp %s] %s\n%!"
-    (string_of_region nottyp.at) (string_of_nottyp nottyp);
-  *)
-  match nottyp.it with
-  | TypT typ ->
-    [[]; []], [elab_typ env typ]
-  | AtomT atom ->
-    [[elab_atom atom]], []
-  | SeqT [] ->
-    [[]], []
-  | SeqT (nottyp1::nottyps2) ->
-    let mixop1', typs1' = elab_nottyp env nottyp1 in
-    let mixop2', typs2' = elab_nottyp env (SeqT nottyps2 $ nottyp.at) in
-    merge_mixop mixop1' mixop2', typs1' @ typs2'
-  | InfixT (nottyp1, atom, nottyp2) ->
-    let mixop1', typs1' = elab_nottyp env nottyp1 in
-    let mixop2', typs2' = elab_nottyp env nottyp2 in
-    merge_mixop (merge_mixop mixop1' [[elab_atom atom]]) mixop2', typs1' @ typs2'
-  | BrackT (brack, nottyp1) ->
-    let l, r = elab_brack brack in
-    let mixop', typs' = elab_nottyp env nottyp1 in
-    merge_mixop (merge_mixop [[l]] mixop') [[r]], typs'
-  | ParenNT nottyp1 ->
-    let mixop1', typs1' = elab_nottyp env nottyp1 in
-    merge_mixop (merge_mixop [[Il.LParen]] mixop1') [[Il.RParen]], typs1'
-  | IterNT (nottyp1, iter) ->
-    match iter with
-    | List1 | ListN _ -> error nottyp.at "illegal iterator in notation type"
-    | _ ->
-      let mixop', typs' = elab_nottyp env nottyp1 in
-      let iter' = elab_iter env iter in
-      let typ' = Il.IterT (tup_typ' typs' nottyp1.at, iter') $ nottyp.at in
-      let op = match iter with Opt -> Il.Quest | _ -> Il.Star in
-      [List.flatten mixop'] @ [[op]], [typ']
-
-and elab_nottyp' env nottyp : Il.mixop * Il.typ =
-  let mixop', typs' = elab_nottyp env nottyp in
-  mixop', tup_typ typs' nottyp.at
-
-and elab_typfield env (atom, typ, hints) : Il.typfield =
-  (elab_atom atom, elab_typ env typ, elab_hints hints)
-
-and elab_typcase env at (atom, nottyps, hints) : Il.typcase =
-  let typss' = List.map snd (List.map (elab_nottyp env) nottyps) in
-  (elab_atom atom, tup_typ (List.concat typss') at, elab_hints hints)
-
-and tup_typ typs' at =
-  match typs' with
-  | [typ'] -> typ'
-  | _ -> Il.TupT typs' $ at
 
 
 (* Expressions *)
@@ -509,10 +489,10 @@ and infer_exp env exp : typ =
 
 
 and elab_exp env exp typ : Il.exp =
-  (*
+  (* *)
   Printf.printf "[elab %s] %s  :  %s\n%!"
     (string_of_region exp.at) (string_of_exp exp) (string_of_typ typ);
-  *)
+  (* *)
   match exp.it with
   | VarE id ->
     let typ' = infer_exp env exp in
@@ -672,13 +652,15 @@ and elab_exps env exps typs at : Il.exp list =
 and elab_expfields env expfields typfields at : Il.expfield list =
   match expfields, typfields with
   | [], [] -> []
-  | (atom1, exp)::expfields', (atom2, typ, _)::typfields' when atom1 = atom2 ->
-    let exp' = elab_exp env exp typ in
-    (elab_atom atom1, exp') :: elab_expfields env expfields' typfields' at
-  | _, (atom, typ, _)::typfields' ->
-    let exp' =
-      cast_empty ("omitted record field `" ^ string_of_atom atom ^ "`") env typ at in
-    (elab_atom atom, exp') :: elab_expfields env expfields typfields' at
+  | (atom1, exp)::expfields2, (atom2, typ, _)::typfields2 when atom1 = atom2 ->
+    let exps' = elab_exp_notation' env exp typ in
+    let expfields2' = elab_expfields env expfields2 typfields2 at in
+    (elab_atom atom1, tup_exp' exps' exp.at) :: expfields2'
+  | _, (atom, typ, _)::typfields2 ->
+    let atom' = string_of_atom atom in
+    let exp' = cast_empty ("omitted record field `" ^ atom' ^ "`") env typ at in
+    let expfields2' = elab_expfields env expfields typfields2 at in
+    (elab_atom atom, exp') :: expfields2'
   | (atom, exp)::_, [] ->
     error_atom exp.at atom "unexpected record field"
 
@@ -712,102 +694,103 @@ and elab_exp_iter env exps (typ1, iter) typ at : Il.exp =
   | _, _ ->
     error_typ at "expression" typ
 
-and elab_exp_notation env exp nottyp : Il.exp =
+and elab_exp_notation env exp typ : Il.exp =
   (*
   Printf.printf "[notation %s] %s  :  %s\n%!"
-    (string_of_region exp.at) (string_of_exp exp) (string_of_nottyp nottyp);
+    (string_of_region exp.at) (string_of_exp exp) (string_of_typ typ);
   *)
   (* Convert notation into applications of mixin operators *)
-  let exp' = tup_exp' (elab_exp_notation' env exp nottyp) exp.at in
-  match elab_nottyp env nottyp with
-  | [[]; []], _ -> exp'
-  | mixop', _ -> Il.MixE (mixop', exp') $ exp.at
+  let exp' = tup_exp' (elab_exp_notation' env exp typ) exp.at in
+  match elab_typ_notation env typ with
+  | false, _, _ -> exp'
+  | true, mixop, _ -> Il.MixE (mixop, exp') $ exp.at
 
-and elab_exp_notation' env exp nottyp : Il.exp list =
-  (*
+and elab_exp_notation' env exp typ : Il.exp list =
+  (* *)
   Printf.printf "[notation %s] %s  :  %s\n%!"
-    (string_of_region exp.at) (string_of_exp exp) (string_of_nottyp nottyp);
-  *)
-  match exp.it, nottyp.it with
-  | SeqE [exp1], TypT typ1 ->
-    [elab_exp env exp1 typ1]
-  | _, TypT typ1 ->
-    [elab_exp env exp typ1]
+    (string_of_region exp.at) (string_of_exp exp) (string_of_typ typ);
+  (* *)
+  match exp.it, typ.it with
+(* TODO
+  | SeqE [exp1], _ ->
+    [elab_exp env exp1 typ]
+*)
 
   | AtomE atom, AtomT atom' ->
-    if atom <> atom' then error_nottyp exp.at "atom" nottyp;
+    if atom <> atom' then error_typ exp.at "atom" typ;
     []
-  | InfixE (exp1, atom, exp2), InfixT (nottyp1, atom', nottyp2) ->
-    if atom <> atom' then error_nottyp exp.at "infix expression" nottyp;
-    let exps1' = elab_exp_notation' env exp1 nottyp1 in
-    let exps2' = elab_exp_notation' env exp2 nottyp2 in
+  | InfixE (exp1, atom, exp2), InfixT (typ1, atom', typ2) ->
+    if atom <> atom' then error_typ exp.at "infix expression" typ;
+    let exps1' = elab_exp_notation' env exp1 typ1 in
+    let exps2' = elab_exp_notation' env exp2 typ2 in
     exps1' @ exps2'
-  | BrackE (brack, exp1), BrackT (brack', nottyp1) ->
-    if brack <> brack' then error_nottyp exp.at "bracket expression" nottyp;
-    elab_exp_notation' env exp1 nottyp1
-
-  | ParenE (exp1, _), ParenNT nottyp1 ->
-    elab_exp_notation' env exp1 nottyp1
-  | _, ParenNT nottyp1 ->
-    elab_exp_notation' env exp nottyp1
-
-  | (EpsE | SeqE _), IterNT (nottyp1, iter) ->
-    [elab_exp_notation_iter env (unseq_exp exp) (nottyp1, iter) nottyp exp.at]
-  | IterE (exp1, iter1), IterNT (nottyp1, iter) ->
-    if (iter = Opt) <> (iter1 = Opt) then
-      error_nottyp exp.at "iteration expression" nottyp;
-    let exps1' = elab_exp_notation' env exp1 nottyp1 in
-    let iter1' = elab_iter env iter1 in
-    [Il.IterE (tup_exp' exps1' exp1.at, iter1') $ exp.at]
-  (* Significant parentheses indicate a singleton *)
-  | ParenE (exp1, true), IterNT (nottyp1, iter) ->
-    let exps' = elab_exp_notation' env exp1 nottyp1 in
-    [lift_exp' (tup_exp' exps' exp.at) iter $ exp.at]
-  (* All other expressions are considered elements *)
-  (* TODO: can't they be splices, too? *)
-  | _, IterNT (nottyp1, iter) ->
-    let exps' = elab_exp_notation' env exp nottyp1 in
-    [lift_exp' (tup_exp' exps' exp.at) iter $ exp.at]
+  | BrackE (brack, exp1), BrackT (brack', typ1) ->
+    if brack <> brack' then error_typ exp.at "bracket expression" typ;
+    elab_exp_notation' env exp1 typ1
 
   | SeqE [], SeqT [] ->
     []
   (* Iterations at the end of a sequence may be inlined *)
-  | _, SeqT [{it = IterNT _ | TypT {it = IterT _; _}; _} as nottyp1] ->
-    elab_exp_notation' env exp nottyp1
-  | SeqE (exp1::exps2), SeqT (nottyp1::nottyps2) ->
-    let exps1' = elab_exp_notation' env (unparen_exp exp1) nottyp1 in
-    let exps2' = elab_exp_notation' env (SeqE exps2 $ exp.at) (SeqT nottyps2 $ nottyp.at) in
+  | _, SeqT [{it = IterT _; _} as typ1] ->
+    elab_exp_notation' env exp typ1
+  | SeqE (exp1::exps2), SeqT (typ1::typs2) ->
+    let exps1' = elab_exp_notation' env (unparen_exp exp1) typ1 in
+    let exps2' = elab_exp_notation' env (SeqE exps2 $ exp.at) (SeqT typs2 $ typ.at) in
     exps1' @ exps2'
   (* Trailing elements can be omitted if they can be epsilon *)
-  | SeqE [], SeqT (nottyp1::nottyps2) ->
-    let exp1' =
-      cast_empty_notation "omitted sequence tail" env nottyp1 exp.at in
+  | SeqE [], SeqT (typ1::typs2) ->
+    let exp1' = cast_empty "omitted sequence tail" env typ1 exp.at in
     let exps2' =
-      elab_exp_notation' env (SeqE [] $ exp.at) (SeqT nottyps2 $ nottyp.at) in
+      elab_exp_notation' env (SeqE [] $ exp.at) (SeqT typs2 $ typ.at) in
     [exp1'] @ exps2'
   | SeqE (exp1::_), SeqT [] ->
     error exp1.at
       "superfluous expression does not match expected empty notation type"
   (* Since trailing elements can be omitted, a singleton may match a sequence *)
   | _, SeqT _ ->
-    elab_exp_notation' env (SeqE [exp] $ exp.at) nottyp
+    elab_exp_notation' env (SeqE [exp] $ exp.at) typ
+
+  | SeqE [exp1], IterT _ ->
+    [elab_exp env exp1 typ]
+  | (EpsE | SeqE _), IterT (typ1, iter) ->
+    [elab_exp_notation_iter env (unseq_exp exp) (typ1, iter) typ exp.at]
+  | IterE (exp1, iter1), IterT (typ1, iter) ->
+    if (iter = Opt) <> (iter1 = Opt) then
+      error_typ exp.at "iteration expression" typ;
+    let exps1' = elab_exp_notation' env exp1 typ1 in
+    let iter1' = elab_iter env iter1 in
+    [Il.IterE (tup_exp' exps1' exp1.at, iter1') $ exp.at]
+  (* Significant parentheses indicate a singleton *)
+  | ParenE (exp1, true), IterT (typ1, iter) ->
+    let exps' = elab_exp_notation' env exp1 typ1 in
+    [lift_exp' (tup_exp' exps' exp.at) iter $ exp.at]
+  (* All other expressions are considered elements *)
+  (* TODO: can't they be splices, too? *)
+  | _, IterT (typ1, iter) ->
+    let exps' = elab_exp_notation' env exp typ1 in
+    [lift_exp' (tup_exp' exps' exp.at) iter $ exp.at]
+
+  | ParenE (exp1, _), _ ->
+    elab_exp_notation' env exp1 typ
+  | _, ParenT typ1 ->
+    elab_exp_notation' env exp typ1
 
   | _, _ ->
-    error_nottyp exp.at "expression" nottyp
+    [elab_exp env exp typ]
 
-and elab_exp_notation_iter env exps (nottyp1, iter) nottyp at : Il.exp =
-  (*
+and elab_exp_notation_iter env exps (typ1, iter) typ at : Il.exp =
+  (* *)
   Printf.printf "[niteration %s] %s  :  %s\n%!"
     (string_of_region at)
     (String.concat " " (List.map string_of_exp exps))
-    (string_of_nottyp nottyp);
-  *)
+    (string_of_typ typ);
+  (* *)
   match exps, iter with
   (* If the sequence actually starts with a non-nullary constructor,
    * then assume this is a singleton iteration and fallback to variant *)
-  | {it = AtomE atom; at = at1}::_, iter when is_variant_nottyp env nottyp1 &&
-      case_has_args env (as_plain_nottyp env nottyp1) atom at1 ->
-    let cases, typ1 = as_variant_nottyp env nottyp1 at in
+  | {it = AtomE atom; at = at1}::_, iter when is_variant_typ env typ1 &&
+      case_has_args env typ1 atom at1 ->
+    let cases, _ = as_variant_typ "expression" env Check typ1 at in
     lift_exp' (elab_exp_variant env exps cases typ1 at) iter $ at
 
   (* An empty sequence represents the None case for options *)
@@ -819,12 +802,12 @@ and elab_exp_notation_iter env exps (nottyp1, iter) nottyp at : Il.exp =
   (* All other elements are either splices or (by cast injection) elements;
    * nested expressions must be lifted into a tuple *)
   | exp1::exps2, List ->
-    let exps1' = elab_exp_notation' env exp1 nottyp in
-    let exp2' = elab_exp_notation_iter env exps2 (nottyp1, iter) nottyp at in
+    let exps1' = elab_exp_notation' env exp1 typ in
+    let exp2' = elab_exp_notation_iter env exps2 (typ1, iter) typ at in
     cat_exp' (tup_exp' exps1' exp1.at) exp2' $ at
 
   | _, _ ->
-    error_nottyp at "expression" nottyp
+    error_typ at "expression" typ
 
 and elab_exp_variant env exps cases typ at : Il.exp =
   (*
@@ -834,8 +817,8 @@ and elab_exp_variant env exps cases typ at : Il.exp =
     (string_of_typ typ);
   (*
     (String.concat " | "
-      (List.map (fun (atom, nottyps, _) ->
-          string_of_nottyp (SeqT ((AtomT atom $ at) :: nottyps) $ at)
+      (List.map (fun (atom, typs, _) ->
+          string_of_typ (SeqT ((AtomT atom $ at) :: typs) $ at)
         ) cases
       )
     );
@@ -843,10 +826,10 @@ and elab_exp_variant env exps cases typ at : Il.exp =
   *)
   match exps with
   | {it = AtomE atom; _} :: exps ->
-    let nottyps = find_case cases atom at in
+    let typs = find_case cases atom at in
     (* TODO: this is a bit hacky *)
     let exp2 = SeqE exps $ at in
-    let exps' = elab_exp_notation' env exp2 (SeqT nottyps $ typ.at) in
+    let exps' = elab_exp_notation' env exp2 (SeqT typs $ typ.at) in
     let typ2 = expand_singular' env typ.it $ at in
     cast_exp "variant case" env
       (Il.CaseE (elab_atom atom, tup_exp' exps' at, elab_typ env typ2) $ at)
@@ -876,11 +859,6 @@ and cast_empty phrase env typ at : Il.exp =
   | IterT (_, List) -> Il.ListE [] $ at
   | _ -> error_typ at phrase typ
 
-and cast_empty_notation phrase env nottyp at : Il.exp =
-  match nottyp.it with
-  | TypT typ -> cast_empty phrase env typ at
-  | _ -> error_nottyp at phrase nottyp
-
 and cast_exp phrase env exp' typ1 typ2 : Il.exp =
   (*
   Printf.printf "[cast %s] (%s) <: (%s)  >>  (%s) <: (%s)  eq=%b\n%!"
@@ -907,11 +885,11 @@ and cast_exp_variant phrase env exp' typ1 typ2 : Il.exp =
     if dots1 = Dots then
       error exp'.at "used variant type is only partially defined at this point";
     (try
-      List.iter (fun (atom, nottyps1, _) ->
-        let nottyps2 = find_case cases2 atom typ1.at in
+      List.iter (fun (atom, typs1, _) ->
+        let typs2 = find_case cases2 atom typ1.at in
         (* Shallow subtyping on variants *)
-        if List.length nottyps1 <> List.length nottyps2
-        || not (List.for_all2 Eq.eq_nottyp nottyps1 nottyps2) then
+        if List.length typs1 <> List.length typs2
+        || not (List.for_all2 Eq.eq_typ typs1 typs2) then
           error_atom exp'.at atom "type mismatch for case"
       ) cases1
     with Error (_, msg) -> error_typ2 exp'.at phrase typ1 typ2 (", " ^ msg)
@@ -935,11 +913,11 @@ let make_binds env free dims at : Il.binds =
 let elab_prem env prem : Il.premise =
   match prem.it with
   | RulePr (id, exp, iter_opt) ->
-    let nottyp, _ = find "relation" env.rels id in
-    let mixop', _ = elab_nottyp env nottyp in
-    let exps' = elab_exp_notation' env exp nottyp in
+    let typ, _ = find "relation" env.rels id in
+    let _, mixop, _ = elab_typ_notation env typ in
+    let exps' = elab_exp_notation' env exp typ in
     let iter_opt' = Option.map (elab_iter env) iter_opt in
-    Il.RulePr (id, mixop', tup_exp' exps' exp.at, iter_opt') $ prem.at
+    Il.RulePr (id, mixop, tup_exp' exps' exp.at, iter_opt') $ prem.at
   | IfPr (exp, iter_opt) ->
     let exp' = elab_exp env exp (BoolT $ exp.at) in
     let iter_opt' = Option.map (elab_iter env) iter_opt in
@@ -999,20 +977,20 @@ let elab_def env def : Il.def list =
       (Either.Right (deftyp1, deftyp1'));
     if not closed then [] else
     [Il.SynD (id1, deftyp1', elab_hints hints) $ def.at]
-  | RelD (id, nottyp, hints) ->
-    let mixop', typs' = elab_nottyp env nottyp in
-    env.rels <- bind "relation" env.rels id (nottyp, []);
-    [Il.RelD (id, mixop', tup_typ typs' nottyp.at, [], elab_hints hints) $ def.at]
+  | RelD (id, typ, hints) ->
+    let _, mixop, typs' = elab_typ_notation env typ in
+    env.rels <- bind "relation" env.rels id (typ, []);
+    [Il.RelD (id, mixop, tup_typ' typs' typ.at, [], elab_hints hints) $ def.at]
   | RuleD (id1, id2, exp, prems) ->
-    let nottyp, rules' = find "relation" env.rels id1 in
-    let mixop', _ = elab_nottyp env nottyp in
-    let exps' = elab_exp_notation' env exp nottyp in
+    let typ, rules' = find "relation" env.rels id1 in
+    let _, mixop, _ = elab_typ_notation env typ in
+    let exps' = elab_exp_notation' env exp typ in
     let prems' = map_nl_list (elab_prem env) prems in
     let free = (Free.free_def def).Free.varid in
     let dims = Multiplicity.check_def def in
     let binds' = make_binds env free dims def.at in
-    let rule' = Il.RuleD (id2, binds', mixop', tup_exp' exps' exp.at, prems') $ def.at in
-    env.rels <- rebind "relation" env.rels id1 (nottyp, rule'::rules');
+    let rule' = Il.RuleD (id2, binds', mixop, tup_exp' exps' exp.at, prems') $ def.at in
+    env.rels <- rebind "relation" env.rels id1 (typ, rule'::rules');
     []
   | VarD (id, typ, _hints) ->
     let _typ' = elab_typ env typ in
@@ -1048,9 +1026,9 @@ let populate_def env def' : Il.def =
   match def'.it with
   | Il.SynD _ ->
     def'
-  | Il.RelD (id, mixop', typ', [], hints') ->
+  | Il.RelD (id, mixop, typ', [], hints') ->
     let _, rules' = find "relation" env.rels id in
-    Il.RelD (id, mixop', typ', rules', hints') $ def'.at
+    Il.RelD (id, mixop, typ', rules', hints') $ def'.at
   | Il.DecD (id, typ1', typ2', [], hints') ->
     let _, _, clauses' = find "function" env.defs id in
     Il.DecD (id, typ1', typ2', clauses', hints') $ def'.at

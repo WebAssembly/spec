@@ -377,6 +377,16 @@ and render_typ env typ =
   | ParenT typ -> "(" ^ render_typ env typ ^ ")"
   | TupT typs -> "(" ^ render_typs ",\\; " env typs ^ ")"
   | IterT (typ1, iter) -> "{" ^ render_typ env typ1 ^ render_iter env iter ^ "}"
+  | AtomT atom -> render_typcase env typ.at (atom, [], [])
+  | SeqT [] -> "\\epsilon"
+  | SeqT ({it = AtomT atom; at}::typs) -> render_typcase env at (atom, typs, [])
+  | SeqT typs -> render_typs "~" env typs
+  | InfixT ({it = SeqT []; _}, atom, typ2) ->
+    "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_typ env typ2
+  | InfixT (typ1, atom, typ2) ->
+    render_typ env typ1 ^ space (render_atom env) atom ^ render_typ env typ2
+  | BrackT (brack, typ1) ->
+    let l, r = render_brack brack in l ^ render_typ env typ1 ^ r
 
 and render_typs sep env typs =
   concat sep (List.filter ((<>) "") (List.map (render_typ env) typs))
@@ -384,7 +394,7 @@ and render_typs sep env typs =
 
 and render_deftyp env deftyp =
   match deftyp.it with
-  | NotationT nottyp -> render_nottyp env nottyp
+  | NotationT typ -> render_typ env typ
   | StructT typfields ->
     "\\{\\; " ^
     "\\begin{array}[t]{@{}l@{}}\n" ^
@@ -395,46 +405,25 @@ and render_deftyp env deftyp =
       (render_dots dots1 @ map_nl_list (render_synid env) ids @
         map_nl_list (render_typcase env deftyp.at) typcases @ render_dots dots2)
 
-and render_nottyp env nottyp =
-  match nottyp.it with
-  | TypT typ -> render_typ env typ
-  | AtomT atom -> render_typcase env nottyp.at (atom, [], [])
-  | SeqT [] -> "\\epsilon"
-  | SeqT ({it = AtomT atom; at}::typs) -> render_typcase env at (atom, typs, [])
-  | SeqT nottyps -> render_nottyps "~" env nottyps
-  | InfixT ({it = SeqT []; _}, atom, nottyp2) ->
-    "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_nottyp env nottyp2
-  | InfixT (nottyp1, atom, nottyp2) ->
-    render_nottyp env nottyp1 ^ space (render_atom env) atom ^
-    render_nottyp env nottyp2
-  | BrackT (brack, nottyp1) ->
-    let l, r = render_brack brack in l ^ render_nottyp env nottyp1 ^ r
-  | ParenNT nottyp1 -> "(" ^ render_nottyp env nottyp1 ^ ")"
-  | IterNT (nottyp1, iter) ->
-    "{" ^ render_nottyp env nottyp1 ^ render_iter env iter ^ "}"
-
-and render_nottyps sep env nottyps =
-  concat sep (List.filter ((<>) "") (List.map (render_nottyp env) nottyps))
-
 
 and render_typfield env (atom, typ, _hints) =
   render_fieldname env atom typ.at  ^ "~" ^ render_typ env typ
 
-and render_typcase env at (atom, nottyps, _hints) =
-  let ss = List.map (render_nottyp env) nottyps in
+and render_typcase env at (atom, typs, _hints) =
+  let ss = List.map (render_typ env) typs in
   (* Hack: turn rendered types into literal atoms *)
-  let exps = List.map2 (fun s t -> AtomE (Atom s) $ t.at) ss nottyps in
+  let exps = List.map2 (fun s t -> AtomE (Atom s) $ t.at) ss typs in
   render_expand env env.show_case (El.Print.string_of_atom atom $ at) exps
     (fun () ->
-      match atom, nottyps with
-      | Atom id, nottyp1::nottyps2 when ends_sub id ->
+      match atom, typs with
+      | Atom id, typ1::typs2 when ends_sub id ->
         (* Handle subscripting *)
         "{" ^ render_atomid env (chop_sub id) ^
-          "}_{" ^ render_nottyp env nottyp1 ^ "}\\," ^
-          (if nottyps2 = [] then "" else "\\," ^ render_nottyps "~" env nottyps2)
+          "}_{" ^ render_typ env typ1 ^ "}\\," ^
+          (if typs2 = [] then "" else "\\," ^ render_typs "~" env typs2)
       | _ ->
         let s1 = render_atom env atom in
-        let s2 = render_nottyps "~" env nottyps in
+        let s2 = render_typs "~" env typs in
         assert (s1 <> "" || s2 <> "");
         if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
     )
@@ -670,9 +659,9 @@ let rec render_defs env = function
       "\\begin{array}{@{}" ^ deco ^ "rrl@{}}\n" ^
         render_sep_defs (render_syndef env) defs' ^
       "\\end{array}"
-    | RelD (id, nottyp, _hints) ->
+    | RelD (id, typ, _hints) ->
       "\\boxed{" ^
-        render_nottyp {env with current_rel = id.it} nottyp ^
+        render_typ {env with current_rel = id.it} typ ^
       "}" ^
       (if defs' = [] then "" else " \\; " ^ render_defs env defs')
     | RuleD (_, _, exp, _) ->

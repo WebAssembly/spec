@@ -39,27 +39,12 @@ and eq_typ typ1 typ2 =
     eq_list eq_typ typs1 typs2
   | IterT (typ11, iter1), IterT (typ21, iter2) ->
     eq_typ typ11 typ21 && eq_iter iter1 iter2
-  | _, _ ->
-    false
-
-and eq_nottyp nottyp1 nottyp2 =
-  (*
-  Printf.printf "[eq] (%s) == (%s)  eq=%b\n%!"
-    (Print.string_of_nottyp nottyp1) (Print.string_of_nottyp nottyp2)
-    (nottyp1.it = nottyp2.it);
-  *)
-  nottyp1.it = nottyp2.it ||
-  match nottyp1.it, nottyp2.it with
-  | TypT typ1, TypT typ2 -> eq_typ typ1 typ2
   | AtomT atom1, AtomT atom2 -> atom1 = atom2
-  | SeqT nottyps1, SeqT nottyps2 -> eq_list eq_nottyp nottyps1 nottyps2
-  | InfixT (nottyp11, atom1, nottyp12), InfixT (nottyp21, atom2, nottyp22) ->
-    eq_nottyp nottyp11 nottyp21 && atom1 = atom2 && eq_nottyp nottyp12 nottyp22
-  | BrackT (brack1, nottyp11), BrackT (brack2, nottyp21) ->
-    brack1 = brack2 && eq_nottyp nottyp11 nottyp21
-  | ParenNT nottyp1, ParenNT nottyp2 -> eq_nottyp nottyp1 nottyp2
-  | IterNT (nottyp11, iter1), IterNT (nottyp21, iter2) ->
-    eq_nottyp nottyp11 nottyp21 && eq_iter iter1 iter2
+  | SeqT typs1, SeqT typs2 -> eq_list eq_typ typs1 typs2
+  | InfixT (typ11, atom1, typ12), InfixT (typ21, atom2, typ22) ->
+    eq_typ typ11 typ21 && atom1 = atom2 && eq_typ typ12 typ22
+  | BrackT (brack1, typ11), BrackT (brack2, typ21) ->
+    brack1 = brack2 && eq_typ typ11 typ21
   | _, _ ->
     false
 

@@ -47,28 +47,23 @@ and free_typ typ =
   match typ.it with
   | VarT id -> free_synid id
   | BoolT | NatT | TextT -> empty
-  | ParenT typ -> free_typ typ
+  | ParenT typ1 -> free_typ typ1
   | TupT typs -> free_list free_typ typs
   | IterT (typ1, iter) -> union (free_typ typ1) (free_iter iter)
+  | AtomT _ -> empty
+  | SeqT typs -> free_list free_typ typs
+  | InfixT (typ1, _, typ2) -> free_list free_typ [typ1; typ2]
+  | BrackT (_, typ1) -> free_typ typ1
 
 and free_deftyp deftyp =
   match deftyp.it with
-  | NotationT nottyp -> free_nottyp nottyp
+  | NotationT typ -> free_typ typ
   | StructT typfields -> free_nl_list free_typfield typfields
   | VariantT (_, ids, typcases, _) ->
     union (free_nl_list free_synid ids) (free_nl_list free_typcase typcases)
 
-and free_nottyp nottyp =
-  match nottyp.it with
-  | TypT typ -> free_typ typ
-  | AtomT _ -> empty
-  | SeqT nottyps -> free_list free_nottyp nottyps
-  | InfixT (nottyp1, _, nottyp2) -> free_list free_nottyp [nottyp1; nottyp2]
-  | BrackT (_, nottyp1) | ParenNT nottyp1 -> free_nottyp nottyp1
-  | IterNT (nottyp1, iter) -> union (free_nottyp nottyp1) (free_iter iter)
-
 and free_typfield (_, typ, _) = free_typ typ
-and free_typcase (_, nottyps, _) = free_list free_nottyp nottyps
+and free_typcase (_, typs, _) = free_list free_typ typs
 
 
 (* Expressions *)
@@ -113,7 +108,7 @@ let free_def def =
   match def.it with
   | SynD (_id1, _id2, deftyp, _hints) -> free_deftyp deftyp
   | VarD _ | SepD -> empty
-  | RelD (_id, nottyp, _hints) -> free_nottyp nottyp
+  | RelD (_id, typ, _hints) -> free_typ typ
   | RuleD (id1, _id2, exp, prems) ->
     union (free_relid id1) (union (free_exp exp) (free_nl_list free_prem prems))
   | DecD (_id, exp, typ, _hints) -> union (free_exp exp) (free_typ typ)
