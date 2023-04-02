@@ -430,9 +430,8 @@ rule Elem_ok:
   -- (Expr_ok: C |- expr : rt)*
   -- (Elemmode_ok: C |- elemmode : rt)?
 
-;; TODO: barfs on (b*)* instead of b**
 rule Data_ok:
-  C |- DATA b** datamode? : OK
+  C |- DATA (b*)* datamode? : OK
   -- (Datamode_ok: C |- datamode : OK)?
 
 rule Elemmode_ok/active:
