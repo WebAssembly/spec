@@ -99,6 +99,7 @@ and string_of_typs sep typs =
 
 and string_of_deftyp deftyp =
   match deftyp.it with
+  | AliasT typ -> string_of_typ typ
   | NotationT (mixop, typ) -> string_of_typmix (mixop, typ)
   | StructT typfields ->
     "{" ^ concat ", " (List.map string_of_typfield typfields) ^ "}"

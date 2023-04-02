@@ -67,7 +67,7 @@ let find_case cases atom at =
 let rec expand' env = function
   | VarT id as typ' ->
     (match (find "syntax type" env.typs id).it with
-    | NotationT ([[]; []], typ1) -> expand' env typ1.it
+    | AliasT typ1 -> expand' env typ1.it
     | _ -> typ'
     )
   | typ' -> typ'
@@ -232,6 +232,8 @@ and valid_typ env typ =
 
 and valid_deftyp env deftyp =
   match deftyp.it with
+  | AliasT typ ->
+    valid_typ env typ
   | NotationT (mixop, typ) ->
     valid_typmix env (mixop, typ) deftyp.at
   | StructT fields ->

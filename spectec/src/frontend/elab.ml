@@ -380,14 +380,16 @@ and elab_typ env typ : Il.typ =
     | _ -> Il.IterT (elab_typ env typ1, elab_iter env iter) $ typ.at
 
 and elab_deftyp env id deftyp : Il.deftyp =
-  match deftyp.it with
+  (match deftyp.it with
   | NotationT nottyp ->
-    let mixop', typ' = elab_nottyp' env nottyp in
-    Il.NotationT (mixop', typ') $ deftyp.at
+    (match elab_nottyp' env nottyp with
+    | [[]; []], typ' -> Il.AliasT typ'
+    | mixop', typ' -> Il.NotationT (mixop', typ')
+    )
   | StructT fields ->
     let fields' = filter_nl fields in
     check_atoms "record" "field" (fun (atom, _, _) -> atom) fields' deftyp.at;
-    Il.StructT (map_nl_list (elab_typfield env) fields) $ deftyp.at
+    Il.StructT (map_nl_list (elab_typfield env) fields)
   | VariantT (dots1, ids, cases, _dots2) ->
     let cases0 =
       if dots1 = Dots then fst (as_variant_typid "own type" env id) else [] in
@@ -396,7 +398,7 @@ and elab_deftyp env id deftyp : Il.deftyp =
       List.flatten (cases0 :: filter_nl cases :: List.map fst casess) in
     check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' deftyp.at;
     Il.VariantT (filter_nl ids, map_nl_list (elab_typcase env deftyp.at) cases)
-      $ deftyp.at
+  ) $ deftyp.at
 
 and elab_nottyp env nottyp : Il.mixop * Il.typ list =
   (*
@@ -716,9 +718,10 @@ and elab_exp_notation env exp nottyp : Il.exp =
     (string_of_region exp.at) (string_of_exp exp) (string_of_nottyp nottyp);
   *)
   (* Convert notation into applications of mixin operators *)
-  let mixop', _ = elab_nottyp env nottyp in
-  let exps' = elab_exp_notation' env exp nottyp in
-  Il.MixE (mixop', tup_exp' exps' exp.at) $ exp.at
+  let exp' = tup_exp' (elab_exp_notation' env exp nottyp) exp.at in
+  match elab_nottyp env nottyp with
+  | [[]; []], _ -> exp'
+  | mixop', _ -> Il.MixE (mixop', exp') $ exp.at
 
 and elab_exp_notation' env exp nottyp : Il.exp list =
   (*

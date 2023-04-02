@@ -54,7 +54,8 @@ and typ' =
 
 and deftyp = deftyp' phrase
 and deftyp' =
-  | NotationT of mixop * typ            (* type alias *)
+  | AliasT of typ                       (* type alias *)
+  | NotationT of mixop * typ            (* notation type *)
   | StructT of typfield list            (* record type *)
   | VariantT of id list * typcase list  (* variant type *)
 

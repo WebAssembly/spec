@@ -63,7 +63,7 @@ and free_typ typ =
 
 and free_deftyp deftyp =
   match deftyp.it with
-  | NotationT (_, typ) -> free_typ typ
+  | AliasT typ | NotationT (_, typ) -> free_typ typ
   | StructT typfields -> free_list free_typfield typfields
   | VariantT (ids, typcases) ->
     union (free_list free_synid ids) (free_list free_typcase typcases)
