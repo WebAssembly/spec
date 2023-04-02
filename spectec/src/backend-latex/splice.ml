@@ -104,9 +104,12 @@ let find_nosub space src id1 id2 =
   if id2 <> "" then
     error src ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`")
 
+let match_full re s =
+  Str.string_match re s 0 && Str.match_end () = String.length s
+
 let find_entries space src id1 id2 entries =
   let re = Str.(regexp (global_replace (regexp "\\*\\|\\?") (".\\0") id2)) in
-  let defs = List.filter (fun (id, _, _) -> Str.string_match re id 0) entries in
+  let defs = List.filter (fun (id, _, _) -> match_full re id) entries in
   if defs = [] then
     error src ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
   List.map (fun (_, def, use) -> incr use; def) defs
