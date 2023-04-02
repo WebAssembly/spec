@@ -225,7 +225,6 @@ let try_exp_anchor env src r : bool =
     parse_anchor_end src (j - 4) 0;
     let s = str src j in
     adv src;
-Printf.printf "[exp %s]\n%!" s;
     let exp =
       try Frontend.Parse.parse_exp s with Source.Error (at, msg) ->
         (* Translate relative positions *)

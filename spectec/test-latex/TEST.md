@@ -7,9 +7,6 @@ $ (dune exec ../src/exe-watsup/main.exe -- ../spec/*.watsup -l -p -d spec-splice
 == Elaboration...
 == IL Validation...
 == Latex Generation...
-[exp instr*]
-[exp  t_1* -> t_2*]
-[exp  instr* : t_1* -> t_2*]
 warning: syntax `E` was never spliced
 warning: syntax `addr` was never spliced
 warning: syntax `admininstr` was never spliced
