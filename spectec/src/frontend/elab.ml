@@ -478,10 +478,10 @@ and infer_exp env e : typ =
 
 
 and elab_exp env e t : Il.exp =
-  (* *)
+  (*
   Printf.printf "[elab %s] %s  :  %s\n%!"
     (string_of_region e.at) (string_of_exp e) (string_of_typ t);
-  (* *)
+  *)
   match e.it with
   | VarE id ->
     let t' = infer_exp env e in
@@ -693,16 +693,11 @@ and elab_exp_notation env e t : Il.exp =
   | true, mixop, _ -> Il.MixE (mixop, e') $ e.at
 
 and elab_exp_notation' env e t : Il.exp list =
-  (* *)
+  (*
   Printf.printf "[notation %s] %s  :  %s\n%!"
     (string_of_region e.at) (string_of_exp e) (string_of_typ t);
-  (* *)
+  *)
   match e.it, t.it with
-(* TODO
-  | SeqE [e1], _ ->
-    [elab_exp env e1 t]
-*)
-
   | AtomE atom, AtomT atom' ->
     if atom <> atom' then error_typ e.at "atom" t;
     []
@@ -766,12 +761,12 @@ and elab_exp_notation' env e t : Il.exp list =
     [elab_exp env e t]
 
 and elab_exp_notation_iter env es (t1, iter) t at : Il.exp =
-  (* *)
+  (*
   Printf.printf "[niteration %s] %s  :  %s\n%!"
     (string_of_region at)
     (String.concat " " (List.map string_of_exp es))
     (string_of_typ t);
-  (* *)
+  *)
   match es, iter with
   (* If the sequence actually starts with a non-nullary constructor,
    * then assume this is a singleton iteration and fallback to variant *)

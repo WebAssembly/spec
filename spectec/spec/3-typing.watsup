@@ -485,15 +485,18 @@ relation Module_ok: |- module : OK      hint(show "T-module")
 
 rule Module_ok:
   |- MODULE import* func* global* table* mem* elem* data^n start* export* : OK
+  ;; TODO: incremental contexts for globals
+  -- if C = {FUNC ft*, GLOBAL gt*, TABLE tt*, MEM mt*, ELEM rt*, DATA OK^n}
+
   -- (Func_ok: C |- func : ft)*
   -- (Global_ok: C |- global : gt)*
   -- (Table_ok: C |- table : tt)*
   -- (Mem_ok: C |- mem : mt)*
+
   -- (Elem_ok: C |- elem : rt)*
   -- (Data_ok: C |- data : OK)^n
   -- (Start_ok: C |- start : OK)*
-  ;; TODO: incremental contexts for globals
-  -- if C = {FUNC ft*, GLOBAL gt*, TABLE tt*, MEM mt*, ELEM rt*, DATA OK^n}
+
   -- if |mem*| <= 1
   -- if |start*| <= 1
   ;; -- TODO: disjoint export names

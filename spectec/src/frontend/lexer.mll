@@ -133,9 +133,9 @@ rule token = parse
     { Lexing.new_line lexbuf; COMMA_NL }
   | line_comment? '\n' indent* "|"[' ''\t']
     { Lexing.new_line lexbuf; NL_BAR }
-  | line_comment? "\n\n" indent* "--"
+  | line_comment? '\n' indent* '\n' (indent* line_comment '\n')* indent* "--"
     { Lexing.new_line lexbuf; Lexing.new_line lexbuf; NL_NL_DASH }
-  | "\n\n\n"
+  | line_comment? '\n' indent* '\n' indent* '\n'
     { Lexing.new_line lexbuf; Lexing.new_line lexbuf; Lexing.new_line lexbuf;
       NL_NL_NL }
 
