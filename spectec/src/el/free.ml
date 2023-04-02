@@ -38,77 +38,77 @@ let free_defid id = {empty with defid = Set.singleton id.it}
 let rec free_iter iter =
   match iter with
   | Opt | List | List1 -> empty
-  | ListN exp -> free_exp exp
+  | ListN e -> free_exp e
 
 
 (* Types *)
 
-and free_typ typ =
-  match typ.it with
+and free_typ t =
+  match t.it with
   | VarT id -> free_synid id
   | BoolT | NatT | TextT -> empty
-  | ParenT typ1 -> free_typ typ1
-  | TupT typs -> free_list free_typ typs
-  | IterT (typ1, iter) -> union (free_typ typ1) (free_iter iter)
-  | StrT typfields -> free_nl_list free_typfield typfields
-  | CaseT (_, ids, typcases, _) ->
-    union (free_nl_list free_synid ids) (free_nl_list free_typcase typcases)
+  | ParenT t1 -> free_typ t1
+  | TupT ts -> free_list free_typ ts
+  | IterT (t1, iter) -> union (free_typ t1) (free_iter iter)
+  | StrT tfs -> free_nl_list free_typfield tfs
+  | CaseT (_, ids, tcases, _) ->
+    union (free_nl_list free_synid ids) (free_nl_list free_typcase tcases)
   | AtomT _ -> empty
-  | SeqT typs -> free_list free_typ typs
-  | InfixT (typ1, _, typ2) -> free_list free_typ [typ1; typ2]
-  | BrackT (_, typ1) -> free_typ typ1
+  | SeqT ts -> free_list free_typ ts
+  | InfixT (t1, _, t2) -> free_list free_typ [t1; t2]
+  | BrackT (_, t1) -> free_typ t1
 
-and free_typfield (_, typ, _) = free_typ typ
-and free_typcase (_, typs, _) = free_list free_typ typs
+and free_typfield (_, t, _) = free_typ t
+and free_typcase (_, ts, _) = free_list free_typ ts
 
 
 (* Expressions *)
 
-and free_exp exp =
-  match exp.it with
+and free_exp e =
+  match e.it with
   | VarE id -> free_varid id
   | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE | HoleE _ -> empty
-  | UnE (_, exp1) | DotE (exp1, _) | LenE exp1
-  | ParenE (exp1, _) | BrackE (_, exp1) -> free_exp exp1
-  | BinE (exp1, _, exp2) | CmpE (exp1, _, exp2)
-  | IdxE (exp1, exp2) | CommaE (exp1, exp2) | CompE (exp1, exp2)
-  | InfixE (exp1, _, exp2) | FuseE (exp1, exp2) ->
-    free_list free_exp [exp1; exp2]
-  | SliceE (exp1, exp2, exp3) -> free_list free_exp [exp1; exp2; exp3]
-  | SeqE exps | TupE exps -> free_list free_exp exps
-  | UpdE (exp1, path, exp2) | ExtE (exp1, path, exp2) ->
-    union (free_list free_exp [exp1; exp2]) (free_path path)
-  | StrE expfields -> free_nl_list free_expfield expfields
-  | CallE (id, exp1) -> union (free_defid id) (free_exp exp1)
-  | IterE (exp1, iter) -> union (free_exp exp1) (free_iter iter)
+  | UnE (_, e1) | DotE (e1, _) | LenE e1
+  | ParenE (e1, _) | BrackE (_, e1) -> free_exp e1
+  | BinE (e1, _, e2) | CmpE (e1, _, e2)
+  | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
+  | InfixE (e1, _, e2) | FuseE (e1, e2) ->
+    free_list free_exp [e1; e2]
+  | SliceE (e1, e2, e3) -> free_list free_exp [e1; e2; e3]
+  | SeqE es | TupE es -> free_list free_exp es
+  | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
+    union (free_list free_exp [e1; e2]) (free_path p)
+  | StrE efs -> free_nl_list free_expfield efs
+  | CallE (id, e1) -> union (free_defid id) (free_exp e1)
+  | IterE (e1, iter) -> union (free_exp e1) (free_iter iter)
 
-and free_expfield (_, exp) = free_exp exp
+and free_expfield (_, e) = free_exp e
 
-and free_path path =
-  match path.it with
+and free_path p =
+  match p.it with
   | RootP -> empty
-  | IdxP (path1, exp) -> union (free_path path1) (free_exp exp)
-  | DotP (path1, _) -> free_path path1
+  | IdxP (p1, e) -> union (free_path p1) (free_exp e)
+  | DotP (p1, _) -> free_path p1
 
 
 (* Definitions *)
 
 let free_prem prem =
   match prem.it with
-  | RulePr (id, exp, itero) ->
-    union (free_relid id) (union (free_exp exp) (free_opt free_iter itero))
-  | IfPr (exp, itero) -> union (free_exp exp) (free_opt free_iter itero)
+  | RulePr (id, e, itero) ->
+    union (free_relid id) (union (free_exp e) (free_opt free_iter itero))
+  | IfPr (e, itero) -> union (free_exp e) (free_opt free_iter itero)
   | ElsePr -> empty
 
-let free_def def =
-  match def.it with
-  | SynD (_id1, _id2, typ, _hints) -> free_typ typ
+let free_def d =
+  match d.it with
+  | SynD (_id1, _id2, t, _hints) -> free_typ t
   | VarD _ | SepD -> empty
-  | RelD (_id, typ, _hints) -> free_typ typ
-  | RuleD (id1, _id2, exp, prems) ->
-    union (free_relid id1) (union (free_exp exp) (free_nl_list free_prem prems))
-  | DecD (_id, exp, typ, _hints) -> union (free_exp exp) (free_typ typ)
-  | DefD (id, exp1, exp2, prems) ->
+  | RelD (_id, t, _hints) -> free_typ t
+  | RuleD (id1, _id2, e, prems) ->
+    union (free_relid id1) (union (free_exp e) (free_nl_list free_prem prems))
+  | DecD (_id, e, t, _hints) -> union (free_exp e) (free_typ t)
+  | DefD (id, e1, e2, prems) ->
     union
-      (union (free_defid id) (free_exp exp1))
-      (union (free_exp exp2) (free_nl_list free_prem prems))
+      (union (free_defid id) (free_exp e1))
+      (union (free_exp e2) (free_nl_list free_prem prems))

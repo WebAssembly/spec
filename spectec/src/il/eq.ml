@@ -18,83 +18,70 @@ let eq_list eq_x xs1 xs2 =
 let rec eq_iter iter1 iter2 =
   iter1 = iter2 ||
   match iter1, iter2 with
-  | ListN exp1, ListN exp2 -> eq_exp exp1 exp2
+  | ListN e1, ListN e2 -> eq_exp e1 e2
   | _, _ -> false
 
 
 (* Types *)
 
-and eq_typ typ1 typ2 =
+and eq_typ t1 t2 =
   (*
   Printf.printf "[eq] (%s) == (%s)  eq=%b\n%!"
-    (Print.string_of_typ typ1) (Print.string_of_typ typ2)
-    (typ1.it = typ2.it);
+    (Print.string_of_typ t1) (Print.string_of_typ t2)
+    (t1.it = t2.it);
   *)
-  typ1.it = typ2.it ||
-  match typ1.it, typ2.it with
+  t1.it = t2.it ||
+  match t1.it, t2.it with
   | VarT id1, VarT id2 -> id1.it = id2.it
-  | TupT typs1, TupT typs2 ->
-    eq_list eq_typ typs1 typs2
-  | IterT (typ11, iter1), IterT (typ21, iter2) ->
-    eq_typ typ11 typ21 && eq_iter iter1 iter2
+  | TupT ts1, TupT ts2 -> eq_list eq_typ ts1 ts2
+  | IterT (t11, iter1), IterT (t21, iter2) ->
+    eq_typ t11 t21 && eq_iter iter1 iter2
   | _, _ ->
     false
 
 
 (* Expressions *)
 
-and eq_exp exp1 exp2 =
-  exp1.it = exp2.it ||
-  match exp1.it, exp2.it with
+and eq_exp e1 e2 =
+  e1.it = e2.it ||
+  match e1.it, e2.it with
   | VarE id1, VarE id2 -> id1.it = id2.it
-  | UnE (unop1, exp11), UnE (unop2, exp21) ->
-    unop1 = unop2 && eq_exp exp11 exp21
-  | BinE (binop1, exp11, exp12), BinE (binop2, exp21, exp22) ->
-    binop1 = binop2 && eq_exp exp11 exp21 && eq_exp exp12 exp22
-  | CmpE (cmpop1, exp11, exp12), CmpE (cmpop2, exp21, exp22) ->
-    cmpop1 = cmpop2 && eq_exp exp11 exp21 && eq_exp exp12 exp22
-  | LenE exp11, LenE exp21 ->
-    eq_exp exp11 exp21
-  | IdxE (exp11, exp12), IdxE (exp21, exp22)
-  | CompE (exp11, exp12), CompE (exp21, exp22)
-  | CatE (exp11, exp12), CatE (exp21, exp22) ->
-    eq_exp exp11 exp21 && eq_exp exp12 exp22
-  | SliceE (exp11, exp12, exp13), SliceE (exp21, exp22, exp23) ->
-    eq_exp exp11 exp21 && eq_exp exp12 exp22 && eq_exp exp13 exp23
-  | UpdE (exp11, path1, exp12), UpdE (exp21, path2, exp22)
-  | ExtE (exp11, path1, exp12), ExtE (exp21, path2, exp22) ->
-    eq_exp exp11 exp21 && eq_path path1 path2 && eq_exp exp12 exp22
-  | TupE exps1, TupE exps2
-  | ListE exps1, ListE exps2 ->
-    eq_list eq_exp exps1 exps2
-  | StrE fields1, StrE fields2 ->
-    eq_list eq_expfield fields1 fields2
-  | DotE (typ1, exp11, atom1), DotE (typ2, exp21, atom2) ->
-    eq_typ typ1 typ2 && eq_exp exp11 exp21 && atom1 = atom2
-  | MixE (relop1, exp1), MixE (relop2, exp2) ->
-    relop1 = relop2 && eq_exp exp1 exp2
-  | CallE (id1, exp1), CallE (id2, exp2) ->
-    id1 = id2 && eq_exp exp1 exp2
-  | IterE (exp11, iter1), IterE (exp21, iter2) ->
-    eq_exp exp11 exp21 && eq_iter iter1 iter2
-  | OptE expo1, OptE expo2 ->
-    eq_opt eq_exp expo1 expo2
-  | CaseE (atom1, exp1, typ1), CaseE (atom2, exp2, typ2) ->
-    atom1 = atom2 && eq_exp exp1 exp2 && eq_typ typ1 typ2
-  | SubE (exp1, typ11, typ12), SubE (exp2, typ21, typ22) ->
-    eq_exp exp1 exp2 && eq_typ typ11 typ21 && eq_typ typ12 typ22
-  | _, _ ->
-    false
+  | UnE (op1, e11), UnE (op2, e21) -> op1 = op2 && eq_exp e11 e21
+  | BinE (op1, e11, e12), BinE (op2, e21, e22) ->
+    op1 = op2 && eq_exp e11 e21 && eq_exp e12 e22
+  | CmpE (op1, e11, e12), CmpE (op2, e21, e22) ->
+    op1 = op2 && eq_exp e11 e21 && eq_exp e12 e22
+  | LenE e11, LenE e21 -> eq_exp e11 e21
+  | IdxE (e11, e12), IdxE (e21, e22)
+  | CompE (e11, e12), CompE (e21, e22)
+  | CatE (e11, e12), CatE (e21, e22) -> eq_exp e11 e21 && eq_exp e12 e22
+  | SliceE (e11, e12, e13), SliceE (e21, e22, e23) ->
+    eq_exp e11 e21 && eq_exp e12 e22 && eq_exp e13 e23
+  | UpdE (e11, p1, e12), UpdE (e21, p2, e22)
+  | ExtE (e11, p1, e12), ExtE (e21, p2, e22) ->
+    eq_exp e11 e21 && eq_path p1 p2 && eq_exp e12 e22
+  | TupE es1, TupE es2
+  | ListE es1, ListE es2 -> eq_list eq_exp es1 es2
+  | StrE efs1, StrE efs2 -> eq_list eq_expfield efs1 efs2
+  | DotE (t1, e11, atom1), DotE (t2, e21, atom2) ->
+    eq_typ t1 t2 && eq_exp e11 e21 && atom1 = atom2
+  | MixE (op1, e1), MixE (op2, e2) -> op1 = op2 && eq_exp e1 e2
+  | CallE (id1, e1), CallE (id2, e2) -> id1 = id2 && eq_exp e1 e2
+  | IterE (e11, iter1), IterE (e21, iter2) ->
+    eq_exp e11 e21 && eq_iter iter1 iter2
+  | OptE eo1, OptE eo2 -> eq_opt eq_exp eo1 eo2
+  | CaseE (atom1, e1, t1), CaseE (atom2, e2, t2) ->
+    atom1 = atom2 && eq_exp e1 e2 && eq_typ t1 t2
+  | SubE (e1, t11, t12), SubE (e2, t21, t22) ->
+    eq_exp e1 e2 && eq_typ t11 t21 && eq_typ t12 t22
+  | _, _ -> false
 
-and eq_expfield (atom1, exp1) (atom2, exp2) =
-  atom1 = atom2 && eq_exp exp1 exp2
+and eq_expfield (atom1, e1) (atom2, e2) =
+  atom1 = atom2 && eq_exp e1 e2
 
-and eq_path path1 path2 =
-  match path1.it, path2.it with
+and eq_path p1 p2 =
+  match p1.it, p2.it with
   | RootP, RootP -> true
-  | IdxP (path11, exp1), IdxP (path21, exp2) ->
-    eq_path path11 path21 && eq_exp exp1 exp2
-  | DotP (path11, atom1), DotP (path21, atom2) ->
-    eq_path path11 path21 && atom1 = atom2
-  | _, _ ->
-    false
+  | IdxP (p11, e1), IdxP (p21, e2) -> eq_path p11 p21 && eq_exp e1 e2
+  | DotP (p11, atom1), DotP (p21, atom2) -> eq_path p11 p21 && atom1 = atom2
+  | _, _ -> false

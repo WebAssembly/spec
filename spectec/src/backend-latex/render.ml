@@ -61,19 +61,19 @@ let env_typcase env = function
   | Elem (Atom id, _, hints) -> env_hints env.show_case id hints
   | _ -> ()
 
-let env_typ env typ =
-  match typ.it with
-  | StrT typfields -> List.iter (env_typfield env) typfields
-  | CaseT (_, _, typcases, _) -> List.iter (env_typcase env) typcases
+let env_typ env t =
+  match t.it with
+  | StrT tfs -> List.iter (env_typfield env) tfs
+  | CaseT (_, _, tcases, _) -> List.iter (env_typcase env) tcases
   | _ -> ()  (* TODO: this assumes that types structs & variants aren't nested *)
 
-let env_def env def =
-  match def.it with
-  | SynD (id, _, typ, hints) ->
+let env_def env d =
+  match d.it with
+  | SynD (id, _, t, hints) ->
     env.vars := Set.add id.it !(env.vars);
     env_hints env.show_syn id.it hints;
     env_hints env.show_var id.it hints;
-    env_typ env typ
+    env_typ env t
   | RelD (id, _, hints) ->
     env_hints env.show_rel id.it hints
   | VarD (id, _, hints) ->
@@ -257,86 +257,86 @@ exception Arity_mismatch
 let rec expand_iter args iter =
   match iter with
   | Opt | List | List1 -> iter
-  | ListN exp -> ListN (expand_exp args exp)
+  | ListN e -> ListN (expand_exp args e)
 
-and expand_exp args exp = expand_exp' args exp.it $ exp.at
-and expand_exp' args exp' =
-  match exp' with
-  | VarE _ | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE -> exp'
-  | UnE (unop, exp) -> UnE (unop, expand_exp args exp)
-  | BinE (exp1, binop, exp2) ->
-    let exp1' = expand_exp args exp1 in
-    let exp2' = expand_exp args exp2 in
-    BinE (exp1', binop, exp2')
-  | CmpE (exp1, cmpop, exp2) ->
-    let exp1' = expand_exp args exp1 in
-    let exp2' = expand_exp args exp2 in
-    CmpE (exp1', cmpop, exp2')
-  | SeqE exps -> SeqE (List.map (expand_exp args) exps)
-  | IdxE (exp1, exp2) ->
-    let exp1' = expand_exp args exp1 in
-    let exp2' = expand_exp args exp2 in
-    IdxE (exp1', exp2')
-  | SliceE (exp1, exp2, exp3) ->
-    let exp1' = expand_exp args exp1 in
-    let exp2' = expand_exp args exp2 in
-    let exp3' = expand_exp args exp3 in
-    SliceE (exp1', exp2', exp3')
-  | UpdE (exp1, path, exp2) ->
-    let exp1' = expand_exp args exp1 in
-    let path' = expand_path args path in
-    let exp2' = expand_exp args exp2 in
-    UpdE (exp1', path', exp2')
-  | ExtE (exp1, path, exp2) ->
-    let exp1' = expand_exp args exp1 in
-    let path' = expand_path args path in
-    let exp2' = expand_exp args exp2 in
-    ExtE (exp1', path', exp2')
-  | StrE expfields -> StrE (map_nl_list (expand_expfield args) expfields)
-  | DotE (exp, atom) -> DotE (expand_exp args exp, atom)
-  | CommaE (exp1, exp2) ->
-    let exp1' = expand_exp args exp1 in
-    let exp2' = expand_exp args exp2 in
-    CommaE (exp1', exp2')
-  | CompE (exp1, exp2) ->
-    let exp1' = expand_exp args exp1 in
-    let exp2' = expand_exp args exp2 in
-    CompE (exp1', exp2')
-  | LenE exp -> LenE (expand_exp args exp)
-  | ParenE (exp, b) -> ParenE (expand_exp args exp, b)
-  | TupE exps -> TupE (List.map (expand_exp args) exps)
-  | InfixE (exp1, atom, exp2) ->
-    let exp1' = expand_exp args exp1 in
-    let exp2' = expand_exp args exp2 in
-    InfixE (exp1', atom, exp2')
-  | BrackE (brack, exp) -> BrackE (brack, expand_exp args exp)
-  | CallE (id, exp) -> CallE (id, expand_exp args exp)
-  | IterE (exp1, iter) ->
-    let exp1' = expand_exp args exp1 in
+and expand_exp args e = expand_exp' args e.it $ e.at
+and expand_exp' args e' =
+  match e' with
+  | VarE _ | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE -> e'
+  | UnE (op, e) -> UnE (op, expand_exp args e)
+  | BinE (e1, op, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    BinE (e1', op, e2')
+  | CmpE (e1, op, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    CmpE (e1', op, e2')
+  | SeqE es -> SeqE (List.map (expand_exp args) es)
+  | IdxE (e1, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    IdxE (e1', e2')
+  | SliceE (e1, e2, e3) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    let e3' = expand_exp args e3 in
+    SliceE (e1', e2', e3')
+  | UpdE (e1, p, e2) ->
+    let e1' = expand_exp args e1 in
+    let p' = expand_path args p in
+    let e2' = expand_exp args e2 in
+    UpdE (e1', p', e2')
+  | ExtE (e1, p, e2) ->
+    let e1' = expand_exp args e1 in
+    let p' = expand_path args p in
+    let e2' = expand_exp args e2 in
+    ExtE (e1', p', e2')
+  | StrE efs -> StrE (map_nl_list (expand_expfield args) efs)
+  | DotE (e, atom) -> DotE (expand_exp args e, atom)
+  | CommaE (e1, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    CommaE (e1', e2')
+  | CompE (e1, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    CompE (e1', e2')
+  | LenE e -> LenE (expand_exp args e)
+  | ParenE (e, b) -> ParenE (expand_exp args e, b)
+  | TupE es -> TupE (List.map (expand_exp args) es)
+  | InfixE (e1, atom, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    InfixE (e1', atom, e2')
+  | BrackE (brack, e) -> BrackE (brack, expand_exp args e)
+  | CallE (id, e) -> CallE (id, expand_exp args e)
+  | IterE (e1, iter) ->
+    let e1' = expand_exp args e1 in
     let iter' = expand_iter args iter in
-    IterE (exp1', iter')
+    IterE (e1', iter')
   | HoleE false ->
     (match !args with
     | [] -> raise Arity_mismatch
     | arg::args' -> args := args'; arg.it
     )
-  | HoleE true -> let exps = !args in args := []; SeqE exps
-  | FuseE (exp1, exp2) ->
-    let exp1' = expand_exp args exp1 in
-    let exp2' = expand_exp args exp2 in
-    FuseE (exp1', exp2')
+  | HoleE true -> let es = !args in args := []; SeqE es
+  | FuseE (e1, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    FuseE (e1', e2')
 
-and expand_expfield args (atom, exp) = (atom, expand_exp args exp)
+and expand_expfield args (atom, e) = (atom, expand_exp args e)
 
-and expand_path args path = expand_path' args path.it $ path.at
-and expand_path' args path' =
-  match path' with
+and expand_path args p = expand_path' args p.it $ p.at
+and expand_path' args p' =
+  match p' with
   | RootP -> RootP
-  | IdxP (path1, exp2) ->
-    let path1' = expand_path args path1 in
-    let exp2' = expand_exp args exp2 in
-    IdxP (path1', exp2')
-  | DotP (path1, atom) -> DotP (expand_path args path1, atom)
+  | IdxP (p1, e2) ->
+    let p1' = expand_path args p1 in
+    let e2' = expand_exp args e2 in
+    IdxP (p1', e2')
+  | DotP (p1, atom) -> DotP (expand_path args p1, atom)
 
 
 and render_expand env show id args f =
@@ -345,11 +345,11 @@ and render_expand env show id args f =
   | Some showexp ->
     try
       let rargs = ref args in
-      let exp = expand_exp rargs showexp in
+      let e = expand_exp rargs showexp in
       if !rargs <> [] then raise Arity_mismatch;
       (* Avoid cyclic expansion *)
       show := Map.remove id.it !show;
-      Fun.protect (fun () -> render_exp env exp)
+      Fun.protect (fun () -> render_exp env e)
         ~finally:(fun () -> show := Map.add id.it showexp !show)
     with Arity_mismatch -> f ()
       (* HACK: Ignore arity mismatches, such that overloading notation works,
@@ -362,63 +362,62 @@ and render_iter env = function
   | Opt -> "^?"
   | List -> "^\\ast"
   | List1 -> "^{+}"
-  | ListN {it = ParenE (exp, _); _} | ListN exp ->
-    "^{" ^ render_exp env exp ^ "}"
+  | ListN {it = ParenE (e, _); _} | ListN e -> "^{" ^ render_exp env e ^ "}"
 
 
 (* Types *)
 
-and render_typ env typ =
-  match typ.it with
+and render_typ env t =
+  match t.it with
   | VarT id -> render_synid env id
-  | BoolT -> render_synid env ("bool" $ typ.at)
-  | NatT -> render_synid env ("nat" $ typ.at)
-  | TextT -> render_synid env ("text" $ typ.at)
-  | ParenT typ -> "(" ^ render_typ env typ ^ ")"
-  | TupT typs -> "(" ^ render_typs ",\\; " env typs ^ ")"
-  | IterT (typ1, iter) -> "{" ^ render_typ env typ1 ^ render_iter env iter ^ "}"
-  | StrT typfields ->
+  | BoolT -> render_synid env ("bool" $ t.at)
+  | NatT -> render_synid env ("nat" $ t.at)
+  | TextT -> render_synid env ("text" $ t.at)
+  | ParenT t -> "(" ^ render_typ env t ^ ")"
+  | TupT ts -> "(" ^ render_typs ",\\; " env ts ^ ")"
+  | IterT (t1, iter) -> "{" ^ render_typ env t1 ^ render_iter env iter ^ "}"
+  | StrT tfs ->
     "\\{\\; " ^
     "\\begin{array}[t]{@{}l@{}}\n" ^
-    concat_map_nl ",\\; " "\\\\\n  " (render_typfield env) typfields ^ " \\;\\}" ^
+    concat_map_nl ",\\; " "\\\\\n  " (render_typfield env) tfs ^ " \\;\\}" ^
     "\\end{array}"
-  | CaseT (dots1, ids, typcases, dots2) ->
+  | CaseT (dots1, ids, tcases, dots2) ->
     altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
       (render_dots dots1 @ map_nl_list (render_synid env) ids @
-        map_nl_list (render_typcase env typ.at) typcases @ render_dots dots2)
-  | AtomT atom -> render_typcase env typ.at (atom, [], [])
+        map_nl_list (render_typcase env t.at) tcases @ render_dots dots2)
+  | AtomT atom -> render_typcase env t.at (atom, [], [])
   | SeqT [] -> "\\epsilon"
-  | SeqT ({it = AtomT atom; at}::typs) -> render_typcase env at (atom, typs, [])
-  | SeqT typs -> render_typs "~" env typs
-  | InfixT ({it = SeqT []; _}, atom, typ2) ->
-    "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_typ env typ2
-  | InfixT (typ1, atom, typ2) ->
-    render_typ env typ1 ^ space (render_atom env) atom ^ render_typ env typ2
-  | BrackT (brack, typ1) ->
-    let l, r = render_brack brack in l ^ render_typ env typ1 ^ r
+  | SeqT ({it = AtomT atom; at}::ts) -> render_typcase env at (atom, ts, [])
+  | SeqT ts -> render_typs "~" env ts
+  | InfixT ({it = SeqT []; _}, atom, t2) ->
+    "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_typ env t2
+  | InfixT (t1, atom, t2) ->
+    render_typ env t1 ^ space (render_atom env) atom ^ render_typ env t2
+  | BrackT (brack, t1) ->
+    let l, r = render_brack brack in l ^ render_typ env t1 ^ r
 
-and render_typs sep env typs =
-  concat sep (List.filter ((<>) "") (List.map (render_typ env) typs))
+and render_typs sep env ts =
+  concat sep (List.filter ((<>) "") (List.map (render_typ env) ts))
 
 
-and render_typfield env (atom, typ, _hints) =
-  render_fieldname env atom typ.at  ^ "~" ^ render_typ env typ
+and render_typfield env (atom, t, _hints) =
+  render_fieldname env atom t.at  ^ "~" ^ render_typ env t
 
-and render_typcase env at (atom, typs, _hints) =
-  let ss = List.map (render_typ env) typs in
+and render_typcase env at (atom, ts, _hints) =
+  let ss = List.map (render_typ env) ts in
   (* Hack: turn rendered types into literal atoms *)
-  let exps = List.map2 (fun s t -> AtomE (Atom s) $ t.at) ss typs in
-  render_expand env env.show_case (El.Print.string_of_atom atom $ at) exps
+  let es = List.map2 (fun s t -> AtomE (Atom s) $ t.at) ss ts in
+  render_expand env env.show_case (El.Print.string_of_atom atom $ at) es
     (fun () ->
-      match atom, typs with
-      | Atom id, typ1::typs2 when ends_sub id ->
+      match atom, ts with
+      | Atom id, t1::ts2 when ends_sub id ->
         (* Handle subscripting *)
         "{" ^ render_atomid env (chop_sub id) ^
-          "}_{" ^ render_typ env typ1 ^ "}\\," ^
-          (if typs2 = [] then "" else "\\," ^ render_typs "~" env typs2)
+          "}_{" ^ render_typ env t1 ^ "}\\," ^
+          (if ts2 = [] then "" else "\\," ^ render_typs "~" env ts2)
       | _ ->
         let s1 = render_atom env atom in
-        let s2 = render_typs "~" env typs in
+        let s2 = render_typs "~" env ts in
         assert (s1 <> "" || s2 <> "");
         if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
     )
@@ -426,107 +425,106 @@ and render_typcase env at (atom, typs, _hints) =
 
 (* Expressions *)
 
-and untup_exp exp =
-  match exp.it with
-  | TupE exps -> exps
-  | ParenE (exp1, _) -> [exp1]
-  | _ -> [exp]
+and untup_exp e =
+  match e.it with
+  | TupE es -> es
+  | ParenE (e1, _) -> [e1]
+  | _ -> [e]
 
-and render_exp env exp =
-  match exp.it with
+and render_exp env e =
+  match e.it with
   | VarE id -> render_varid env id
-  | AtomE atom -> render_expcase env atom [] exp.at
+  | AtomE atom -> render_expcase env atom [] e.at
   | BoolE b -> render_atom env (Atom (string_of_bool b))
   | NatE n -> string_of_int n
   | TextE t -> "``" ^ t ^ "''"
-  | UnE (unop, exp2) -> render_unop unop ^ render_exp env exp2
-  | BinE (exp1, ExpOp, ({it = ParenE (exp2, _); _ } | exp2)) ->
-    "{" ^ render_exp env exp1 ^ "^{" ^ render_exp env exp2 ^ "}}"
-  | BinE (exp1, binop, exp2) ->
-    render_exp env exp1 ^ space render_binop binop ^ render_exp env exp2
-  | CmpE (exp1, cmpop, exp2) ->
-    render_exp env exp1 ^ space render_cmpop cmpop ^ render_exp env exp2
+  | UnE (op, e2) -> render_unop op ^ render_exp env e2
+  | BinE (e1, ExpOp, ({it = ParenE (e2, _); _ } | e2)) ->
+    "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"
+  | BinE (e1, op, e2) ->
+    render_exp env e1 ^ space render_binop op ^ render_exp env e2
+  | CmpE (e1, op, e2) ->
+    render_exp env e1 ^ space render_cmpop op ^ render_exp env e2
   | EpsE -> "\\epsilon"
-  | SeqE ({it = AtomE atom; at}::exps) -> render_expcase env atom exps at
-  | SeqE exps -> render_exps "~" env exps
-  | IdxE (exp1, exp2) -> render_exp env exp1 ^ "[" ^ render_exp env exp2 ^ "]"
-  | SliceE (exp1, exp2, exp3) ->
-    render_exp env exp1 ^
-      "[" ^ render_exp env exp2 ^ " : " ^ render_exp env exp3 ^ "]"
-  | UpdE (exp1, path, exp2) ->
-    render_exp env exp1 ^
-      "[" ^ render_path env path ^ " = " ^ render_exp env exp2 ^ "]"
-  | ExtE (exp1, path, exp2) ->
-    render_exp env exp1 ^
-      "[" ^ render_path env path ^ " = .." ^ render_exp env exp2 ^ "]"
-  | StrE expfields ->
+  | SeqE ({it = AtomE atom; at}::es) -> render_expcase env atom es at
+  | SeqE es -> render_exps "~" env es
+  | IdxE (e1, e2) -> render_exp env e1 ^ "[" ^ render_exp env e2 ^ "]"
+  | SliceE (e1, e2, e3) ->
+    render_exp env e1 ^
+      "[" ^ render_exp env e2 ^ " : " ^ render_exp env e3 ^ "]"
+  | UpdE (e1, p, e2) ->
+    render_exp env e1 ^
+      "[" ^ render_path env p ^ " = " ^ render_exp env e2 ^ "]"
+  | ExtE (e1, p, e2) ->
+    render_exp env e1 ^
+      "[" ^ render_path env p ^ " = .." ^ render_exp env e2 ^ "]"
+  | StrE efs ->
     "\\{ " ^
     "\\begin{array}[t]{@{}l@{}}\n" ^
-    concat_map_nl ",\\; " "\\\\\n  " (render_expfield env) expfields ^ " \\}" ^
+    concat_map_nl ",\\; " "\\\\\n  " (render_expfield env) efs ^ " \\}" ^
     "\\end{array}"
-  | DotE (exp1, atom) ->
-    render_exp env exp1 ^ "." ^ render_fieldname env atom exp.at
-  | CommaE (exp1, exp2) -> render_exp env exp1 ^ ", " ^ render_exp env exp2
-  | CompE (exp1, exp2) -> render_exp env exp1 ^ " \\oplus " ^ render_exp env exp2
-  | LenE exp1 -> "{|" ^ render_exp env exp1 ^ "|}"
-  | ParenE (exp, _) -> "(" ^ render_exp env exp ^ ")"
-  | TupE exps -> "(" ^ render_exps ",\\, " env exps ^ ")"
-  | InfixE ({it = SeqE []; _}, atom, exp2) ->
-    "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_exp env exp2
-  | InfixE (exp1, atom, exp2) ->
-    render_exp env exp1 ^ space (render_atom env) atom ^ render_exp env exp2
-  | BrackE (brack, exp) ->
-    let l, r = render_brack brack in l ^ render_exp env exp ^ r
-  | CallE (id, exp1) ->
-    render_expand env env.show_def id (untup_exp exp1)
+  | DotE (e1, atom) -> render_exp env e1 ^ "." ^ render_fieldname env atom e.at
+  | CommaE (e1, e2) -> render_exp env e1 ^ ", " ^ render_exp env e2
+  | CompE (e1, e2) -> render_exp env e1 ^ " \\oplus " ^ render_exp env e2
+  | LenE e1 -> "{|" ^ render_exp env e1 ^ "|}"
+  | ParenE (e, _) -> "(" ^ render_exp env e ^ ")"
+  | TupE es -> "(" ^ render_exps ",\\, " env es ^ ")"
+  | InfixE ({it = SeqE []; _}, atom, e2) ->
+    "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_exp env e2
+  | InfixE (e1, atom, e2) ->
+    render_exp env e1 ^ space (render_atom env) atom ^ render_exp env e2
+  | BrackE (brack, e) ->
+    let l, r = render_brack brack in l ^ render_exp env e ^ r
+  | CallE (id, e1) ->
+    render_expand env env.show_def id (untup_exp e1)
       (fun () ->
         if not (ends_sub id.it) then
-          render_defid env id ^ render_exp env exp1
+          render_defid env id ^ render_exp env e1
         else
           (* Handle subscripting *)
           "{" ^ render_defid env (chop_sub id.it $ id.at) ^
-          let exp1', exp2' =
-            match untup_exp exp1 with
-            | [] -> SeqE [] $ exp1.at, SeqE [] $ exp1.at
-            | [exp1'] -> exp1', SeqE [] $ exp1.at
-            | exp1'::exps -> exp1', TupE exps $ exp1.at
+          let e1', e2' =
+            match untup_exp e1 with
+            | [] -> SeqE [] $ e1.at, SeqE [] $ e1.at
+            | [e1'] -> e1', SeqE [] $ e1.at
+            | e1'::es -> e1', TupE es $ e1.at
           in
-          "}_{" ^ render_exp env exp1' ^ "}" ^ render_exp env exp2'
+          "}_{" ^ render_exp env e1' ^ "}" ^ render_exp env e2'
       )
-  | IterE (exp1, iter) -> "{" ^ render_exp env exp1 ^ render_iter env iter ^ "}"
-  | FuseE (exp1, exp2) ->
-    "{" ^ render_exp env exp1 ^ "}" ^ "{" ^ render_exp env exp2 ^ "}"
+  | IterE (e1, iter) -> "{" ^ render_exp env e1 ^ render_iter env iter ^ "}"
+  | FuseE (e1, e2) ->
+    "{" ^ render_exp env e1 ^ "}" ^ "{" ^ render_exp env e2 ^ "}"
   | HoleE _ -> assert false
 
-and render_exps sep env exps =
-  concat sep (List.filter ((<>) "") (List.map (render_exp env) exps))
+and render_exps sep env es =
+  concat sep (List.filter ((<>) "") (List.map (render_exp env) es))
 
-and render_expfield env (atom, exp) =
-  render_fieldname env atom exp.at ^ "~" ^ render_exp env exp
+and render_expfield env (atom, e) =
+  render_fieldname env atom e.at ^ "~" ^ render_exp env e
 
-and render_path env path =
-  match path.it with
+and render_path env p =
+  match p.it with
   | RootP -> ""
-  | IdxP (path1, exp) -> render_path env path1 ^ "[" ^ render_exp env exp ^ "]"
-  | DotP ({it = RootP; _}, atom) -> render_fieldname env atom path.at
-  | DotP (path1, atom) ->
-    render_path env path1 ^ "." ^ render_fieldname env atom path.at
+  | IdxP (p1, e) -> render_path env p1 ^ "[" ^ render_exp env e ^ "]"
+  | DotP ({it = RootP; _}, atom) -> render_fieldname env atom p.at
+  | DotP (p1, atom) ->
+    render_path env p1 ^ "." ^ render_fieldname env atom p.at
 
 and render_fieldname env atom at =
   render_expand env env.show_field (El.Print.string_of_atom atom $ at) []
     (fun () -> render_atom env atom)
 
-and render_expcase env atom exps at =
-  render_expand env env.show_case (El.Print.string_of_atom atom $ at) exps
+and render_expcase env atom es at =
+  render_expand env env.show_case (El.Print.string_of_atom atom $ at) es
     (fun () ->
-      match atom, exps with
-      | Atom id, exp1::exps2 when ends_sub id ->
+      match atom, es with
+      | Atom id, e1::es2 when ends_sub id ->
         (* Handle subscripting *)
-        "{" ^ render_atomid env (chop_sub id) ^ "}_{" ^ render_exp env exp1 ^ "}" ^
-          (if exps2 = [] then "" else "\\," ^ render_exps "~" env exps2)
+        "{" ^ render_atomid env (chop_sub id) ^ "}_{" ^ render_exp env e1 ^ "}" ^
+          (if es2 = [] then "" else "\\," ^ render_exps "~" env es2)
       | _ ->
         let s1 = render_atom env atom in
-        let s2 = render_exps "~" env exps in
+        let s2 = render_exps "~" env es in
         assert (s1 <> "" || s2 <> "");
         if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
     )
@@ -541,33 +539,29 @@ let word s = "\\mbox{" ^ s ^ "}"
 
 let render_premise env prem =
   match prem.it with
-  | RulePr (id, exp, None) ->
-    render_exp {env with current_rel = id.it} exp
-  | RulePr (id, exp, Some iter) ->
+  | RulePr (id, e, None) -> render_exp {env with current_rel = id.it} e
+  | RulePr (id, e, Some iter) ->
     let env' = {env with current_rel = id.it} in
-    "(" ^ render_exp env' exp ^ ")" ^ render_iter env' iter
-  | IfPr (exp, None) ->
-    render_exp env exp
-  | IfPr (exp, Some iter) ->
-    "(" ^ render_exp env exp ^ ")" ^ render_iter env iter
-  | ElsePr ->
-    error prem.at "misplaced `otherwise` premise"
+    "(" ^ render_exp env' e ^ ")" ^ render_iter env' iter
+  | IfPr (e, None) -> render_exp env e
+  | IfPr (e, Some iter) -> "(" ^ render_exp env e ^ ")" ^ render_iter env iter
+  | ElsePr -> error prem.at "misplaced `otherwise` premise"
 
 
-let merge_typ typ1 typ2 =
-  match typ1.it, typ2.it with
+let merge_typ t1 t2 =
+  match t1.it, t2.it with
   | CaseT (dots1, ids1, cases1, _), CaseT (_, ids2, cases2, dots2) ->
-    CaseT( dots1, ids1 @ strip_nl ids2, cases1 @ strip_nl cases2, dots2) $ typ1.at
+    CaseT( dots1, ids1 @ strip_nl ids2, cases1 @ strip_nl cases2, dots2) $ t1.at
   | _, _ -> assert false
 
 let rec merge_syndefs = function
   | [] -> []
-  | {it = SynD (id1, id', typ1, _); at}::
-    {it = SynD (id2, _, typ2, _); _}::defs when id1.it = id2.it ->
-    let def' = SynD (id1, id', merge_typ typ1 typ2, []) $ at in
-    merge_syndefs (def'::defs)
-  | def::defs ->
-    def :: merge_syndefs defs
+  | {it = SynD (id1, id', t1, _); at}::
+    {it = SynD (id2, _, t2, _); _}::ds when id1.it = id2.it ->
+    let d' = SynD (id1, id', merge_typ t1 t2, []) $ at in
+    merge_syndefs (d'::ds)
+  | d::ds ->
+    d :: merge_syndefs ds
 
 let desc_of_hint = function
   | {hintid = {it = "desc"; _}; hintexp = {it = TextE s; _}} -> Some s
@@ -575,25 +569,25 @@ let desc_of_hint = function
     error at "malformed description hint"
   | _ -> None
 
-let render_syndef env def =
-  match def.it with
-  | SynD (id1, _id2, typ, hints) ->
+let render_syndef env d =
+  match d.it with
+  | SynD (id1, _id2, t, hints) ->
     (match env.deco_syn, List.find_map desc_of_hint hints with
     | true, Some s -> "\\mbox{(" ^ s ^ ")} & "
     | _ -> "& "
     ) ^
-    render_synid env id1 ^ " &::=& " ^ render_typ env typ
+    render_synid env id1 ^ " &::=& " ^ render_typ env t
   | _ -> assert false
 
-let render_ruledef env def =
-  match def.it with
-  | RuleD (id1, id2, exp, prems) ->
+let render_ruledef env d =
+  match d.it with
+  | RuleD (id1, id2, e, prems) ->
     "\\frac{\n" ^
       (if has_nl prems then "\\begin{array}{@{}c@{}}\n" else "") ^
       altern_map_nl " \\qquad\n" " \\\\\n" (suffix "\n" (render_premise env)) prems ^
       (if has_nl prems then "\\end{array}\n" else "") ^
     "}{\n" ^
-      render_exp {env with current_rel = id1.it} exp ^ "\n" ^
+      render_exp {env with current_rel = id1.it} e ^ "\n" ^
     "}" ^
     render_rule_deco env " \\, " id1 id2 ""
   | _ -> failwith "render_ruledef"
@@ -605,40 +599,40 @@ let render_conditions env = function
     " &\\quad\n  " ^ word "if" ^ "~" ^
     concat_map_nl " \\\\\n &&&\\quad {\\land}~" "" (render_premise env) prems
 
-let render_reddef env def =
-  match def.it with
-  | RuleD (id1, id2, exp, prems) ->
-    let exp1, exp2 =
-      match exp.it with
-      | InfixE (exp1, SqArrow, exp2) -> exp1, exp2
-      | _ -> error exp.at "unrecognized format for reduction rule"
+let render_reddef env d =
+  match d.it with
+  | RuleD (id1, id2, e, prems) ->
+    let e1, e2 =
+      match e.it with
+      | InfixE (e1, SqArrow, e2) -> e1, e2
+      | _ -> error e.at "unrecognized format for reduction rule"
     in
     render_rule_deco env "" id1 id2 " \\quad " ^ "& " ^
-      render_exp env exp1 ^ " &" ^ render_atom env SqArrow ^ "& " ^
-        render_exp env exp2 ^ render_conditions env prems
+      render_exp env e1 ^ " &" ^ render_atom env SqArrow ^ "& " ^
+        render_exp env e2 ^ render_conditions env prems
   | _ -> failwith "render_reddef"
 
-let render_funcdef env def =
-  match def.it with
-  | DefD (id1, exp1, exp2, prems) ->
-    render_exp env (CallE (id1, exp1) $ def.at) ^ " &=& " ^
-      render_exp env exp2 ^ render_conditions env prems
+let render_funcdef env d =
+  match d.it with
+  | DefD (id1, e1, e2, prems) ->
+    render_exp env (CallE (id1, e1) $ d.at) ^ " &=& " ^
+      render_exp env e2 ^ render_conditions env prems
   | _ -> failwith "render_funcdef"
 
 let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function
   | [] -> ""
-  | {it = SepD; _}::defs -> "{} \\\\[-2ex]\n" ^ render_sep_defs ~sep ~br f defs
-  | def::{it = SepD; _}::defs -> f def ^ br ^ render_sep_defs ~sep ~br f defs
-  | def::defs -> f def ^ sep ^ render_sep_defs ~sep ~br f defs
+  | {it = SepD; _}::ds -> "{} \\\\[-2ex]\n" ^ render_sep_defs ~sep ~br f ds
+  | d::{it = SepD; _}::ds -> f d ^ br ^ render_sep_defs ~sep ~br f ds
+  | d::ds -> f d ^ sep ^ render_sep_defs ~sep ~br f ds
 
 
-let rec classify_rel exp : rel_sort option =
-  match exp.it with
+let rec classify_rel e : rel_sort option =
+  match e.it with
   | InfixE (_, Turnstile, _) -> Some TypingRel
   | InfixE (_, SqArrow, _) -> Some ReductionRel
-  | InfixE (exp1, _, exp2) ->
-    (match classify_rel exp1 with
-    | None -> classify_rel exp2
+  | InfixE (e1, _, e2) ->
+    (match classify_rel e1 with
+    | None -> classify_rel e2
     | some -> some
     )
   | _ -> None
@@ -646,100 +640,99 @@ let rec classify_rel exp : rel_sort option =
 
 let rec render_defs env = function
   | [] -> ""
-  | def::defs' as defs ->
-    match def.it with
+  | d::ds' as ds ->
+    match d.it with
     | SynD _ ->
-      let defs' = merge_syndefs defs in
+      let ds' = merge_syndefs ds in
       let deco = if env.deco_syn then "l" else "l@{}" in
       "\\begin{array}{@{}" ^ deco ^ "rrl@{}}\n" ^
-        render_sep_defs (render_syndef env) defs' ^
+        render_sep_defs (render_syndef env) ds' ^
       "\\end{array}"
-    | RelD (id, typ, _hints) ->
+    | RelD (id, t, _hints) ->
       "\\boxed{" ^
-        render_typ {env with current_rel = id.it} typ ^
+        render_typ {env with current_rel = id.it} t ^
       "}" ^
-      (if defs' = [] then "" else " \\; " ^ render_defs env defs')
-    | RuleD (_, _, exp, _) ->
-      (match classify_rel exp with
+      (if ds' = [] then "" else " \\; " ^ render_defs env ds')
+    | RuleD (_, _, e, _) ->
+      (match classify_rel e with
       | Some TypingRel ->
         "\\begin{array}{@{}c@{}}\\displaystyle\n" ^
           render_sep_defs ~sep:"\n\\qquad\n" ~br:"\n\\\\[3ex]\\displaystyle\n"
-            (render_ruledef env) defs ^
+            (render_ruledef env) ds ^
         "\\end{array}"
       | Some ReductionRel ->
         "\\begin{array}{@{}l@{}lcl@{}l@{}}\n" ^
-          render_sep_defs (render_reddef env) defs ^
+          render_sep_defs (render_reddef env) ds ^
         "\\end{array}"
-      | None -> error def.at "unrecognized form of relation"
+      | None -> error d.at "unrecognized form of relation"
       )
     | DefD _ ->
       "\\begin{array}{@{}lcl@{}l@{}}\n" ^
-        render_sep_defs (render_funcdef env) defs ^
+        render_sep_defs (render_funcdef env) ds ^
       "\\end{array}"
     | SepD ->
       " \\\\\n" ^
-      render_defs env defs'
+      render_defs env ds'
     | VarD _ | DecD _ ->
       failwith "render_defs"
 
-let render_def env def = render_defs env [def]
+let render_def env d = render_defs env [d]
 
 
 (* Scripts *)
 
 let rec split_syndefs syndefs = function
   | [] -> List.rev syndefs, []
-  | def::defs ->
-    match def.it with
-    | SynD _ -> split_syndefs (def::syndefs) defs
-    | _ -> List.rev syndefs, def::defs
+  | d::ds ->
+    match d.it with
+    | SynD _ -> split_syndefs (d::syndefs) ds
+    | _ -> List.rev syndefs, d::ds
 
 let rec split_reddefs id reddefs = function
   | [] -> List.rev reddefs, []
-  | def::defs ->
-    match def.it with
+  | d::ds ->
+    match d.it with
     | RuleD (id1, _, _, _) when id1.it = id ->
-      split_reddefs id (def::reddefs) defs
-    | _ -> List.rev reddefs, def::defs
+      split_reddefs id (d::reddefs) ds
+    | _ -> List.rev reddefs, d::ds
 
 let rec split_funcdefs id funcdefs = function
   | [] -> List.rev funcdefs, []
-  | def::defs ->
-    match def.it with
-    | DefD (id1, _, _, _) when id1.it = id ->
-      split_funcdefs id (def::funcdefs) defs
-    | _ -> List.rev funcdefs, def::defs
+  | d::ds ->
+    match d.it with
+    | DefD (id1, _, _, _) when id1.it = id -> split_funcdefs id (d::funcdefs) ds
+    | _ -> List.rev funcdefs, d::ds
 
 let rec render_script env = function
   | [] -> ""
-  | def::defs ->
-    match def.it with
+  | d::ds ->
+    match d.it with
     | SynD _ ->
-      let syndefs, defs' = split_syndefs [def] defs in
+      let syndefs, ds' = split_syndefs [d] ds in
       "$$\n" ^ render_defs env syndefs ^ "\n$$\n\n" ^
-      render_script env defs'
+      render_script env ds'
     | RelD _ ->
-      "$" ^ render_def env def ^ "$\n\n" ^
-      render_script env defs
-    | RuleD (id1, _, exp, _) ->
-      (match classify_rel exp with
+      "$" ^ render_def env d ^ "$\n\n" ^
+      render_script env ds
+    | RuleD (id1, _, e, _) ->
+      (match classify_rel e with
       | Some TypingRel ->
-        "$$\n" ^ render_def env def ^ "\n$$\n\n" ^
-        render_script env defs
+        "$$\n" ^ render_def env d ^ "\n$$\n\n" ^
+        render_script env ds
       | Some ReductionRel ->
-        let reddefs, defs' = split_reddefs id1.it [def] defs in
+        let reddefs, ds' = split_reddefs id1.it [d] ds in
         "$$\n" ^ render_defs env reddefs ^ "\n$$\n\n" ^
-        render_script env defs'
-      | None -> error def.at "unrecognized form of relation"
+        render_script env ds'
+      | None -> error d.at "unrecognized form of relation"
       )
     | VarD _ ->
-      render_script env defs
+      render_script env ds
     | DecD _ ->
-      render_script env defs
+      render_script env ds
     | DefD (id, _, _, _) ->
-      let funcdefs, defs' = split_funcdefs id.it [def] defs in
+      let funcdefs, ds' = split_funcdefs id.it [d] ds in
       "$$\n" ^ render_defs env funcdefs ^ "\n$$\n\n" ^
-      render_script env defs'
+      render_script env ds'
     | SepD ->
       "\\vspace{1ex}\n\n" ^
-      render_script env defs
+      render_script env ds

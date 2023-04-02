@@ -68,88 +68,82 @@ let iter_nl_list f xs = List.iter (function Nl -> () | Elem x -> f x) xs
 let rec check_iter env ctx iter =
   match iter with
   | Opt | List | List1 -> ()
-  | ListN exp ->
-    check_exp env ctx exp
+  | ListN e -> check_exp env ctx e
 
-and check_exp env ctx exp =
-  match exp.it with
-  | VarE id ->
-    check_id env ctx id
+and check_exp env ctx e =
+  match e.it with
+  | VarE id -> check_id env ctx id
   | AtomE _
   | BoolE _
   | NatE _
   | TextE _
   | EpsE
   | HoleE _
-  | FuseE _ ->
-    ()
-  | UnE (_, exp1)
-  | DotE (exp1, _)
-  | LenE exp1
-  | ParenE (exp1, _)
-  | BrackE (_, exp1)
-  | CallE (_, exp1) ->
-    check_exp env ctx exp1
-  | BinE (exp1, _, exp2)
-  | CmpE (exp1, _, exp2)
-  | IdxE (exp1, exp2)
-  | CommaE (exp1, exp2)
-  | CompE (exp1, exp2)
-  | InfixE (exp1, _, exp2) ->
-    check_exp env ctx exp1;
-    check_exp env ctx exp2
-  | SliceE (exp1, exp2, exp3) ->
-    check_exp env ctx exp1;
-    check_exp env ctx exp2;
-    check_exp env ctx exp3
-  | UpdE (exp1, path, exp2)
-  | ExtE (exp1, path, exp2) ->
-    check_exp env ctx exp1;
-    check_path env ctx path;
-    check_exp env ctx exp2
-  | SeqE exps
-  | TupE exps ->
-    List.iter (check_exp env ctx) exps
-  | StrE fields ->
-    iter_nl_list (fun field -> check_exp env ctx (snd field)) fields
-  | IterE (exp1, iter) ->
+  | FuseE _ -> ()
+  | UnE (_, e1)
+  | DotE (e1, _)
+  | LenE e1
+  | ParenE (e1, _)
+  | BrackE (_, e1)
+  | CallE (_, e1) -> check_exp env ctx e1
+  | BinE (e1, _, e2)
+  | CmpE (e1, _, e2)
+  | IdxE (e1, e2)
+  | CommaE (e1, e2)
+  | CompE (e1, e2)
+  | InfixE (e1, _, e2) ->
+    check_exp env ctx e1;
+    check_exp env ctx e2
+  | SliceE (e1, e2, e3) ->
+    check_exp env ctx e1;
+    check_exp env ctx e2;
+    check_exp env ctx e3
+  | UpdE (e1, p, e2)
+  | ExtE (e1, p, e2) ->
+    check_exp env ctx e1;
+    check_path env ctx p;
+    check_exp env ctx e2
+  | SeqE es
+  | TupE es -> List.iter (check_exp env ctx) es
+  | StrE efs -> iter_nl_list (fun ef -> check_exp env ctx (snd ef)) efs
+  | IterE (e1, iter) ->
     check_iter env ctx iter;
-    check_exp env (iter::ctx) exp1
+    check_exp env (iter::ctx) e1
 
-and check_path env ctx path =
-  match path.it with
+and check_path env ctx p =
+  match p.it with
   | RootP -> ()
-  | IdxP (path1, exp) ->
-    check_path env ctx path1;
-    check_exp env ctx exp
-  | DotP (path1, _) ->
-    check_path env ctx path1
+  | IdxP (p1, e) ->
+    check_path env ctx p1;
+    check_exp env ctx e
+  | DotP (p1, _) ->
+    check_path env ctx p1
 
 let check_prem env prem =
   match prem.it with
-  | RulePr (_id, exp, None) ->
-    check_exp env [] exp
-  | RulePr (_id, exp, Some iter) ->
+  | RulePr (_id, e, None) ->
+    check_exp env [] e
+  | RulePr (_id, e, Some iter) ->
     check_iter env [] iter;
-    check_exp env [iter] exp
-  | IfPr (exp, None) ->
-    check_exp env [] exp
-  | IfPr (exp, Some iter) ->
+    check_exp env [iter] e
+  | IfPr (e, None) ->
+    check_exp env [] e
+  | IfPr (e, Some iter) ->
     check_iter env [] iter;
-    check_exp env [iter] exp
+    check_exp env [iter] e
   | ElsePr -> ()
 
-let check_def def : env =
-  match def.it with
+let check_def d : env =
+  match d.it with
   | SynD _ | RelD _ | VarD _ | DecD _ | SepD -> Env.empty
-  | RuleD (_id1, _id2, exp, prems) ->
+  | RuleD (_id1, _id2, e, prems) ->
     let env = ref Env.empty in
-    check_exp env [] exp;
+    check_exp env [] e;
     iter_nl_list (check_prem env) prems;
     check_env env
-  | DefD (_id, exp1, exp2, prems) ->
+  | DefD (_id, e1, e2, prems) ->
     let env = ref Env.empty in
-    check_exp env [] exp1;
-    check_exp env [] exp2;
+    check_exp env [] e1;
+    check_exp env [] e2;
     iter_nl_list (check_prem env) prems;
     check_env env
