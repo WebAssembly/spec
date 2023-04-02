@@ -50,17 +50,13 @@ and free_typ typ =
   | ParenT typ1 -> free_typ typ1
   | TupT typs -> free_list free_typ typs
   | IterT (typ1, iter) -> union (free_typ typ1) (free_iter iter)
+  | StrT typfields -> free_nl_list free_typfield typfields
+  | CaseT (_, ids, typcases, _) ->
+    union (free_nl_list free_synid ids) (free_nl_list free_typcase typcases)
   | AtomT _ -> empty
   | SeqT typs -> free_list free_typ typs
   | InfixT (typ1, _, typ2) -> free_list free_typ [typ1; typ2]
   | BrackT (_, typ1) -> free_typ typ1
-
-and free_deftyp deftyp =
-  match deftyp.it with
-  | NotationT typ -> free_typ typ
-  | StructT typfields -> free_nl_list free_typfield typfields
-  | VariantT (_, ids, typcases, _) ->
-    union (free_nl_list free_synid ids) (free_nl_list free_typcase typcases)
 
 and free_typfield (_, typ, _) = free_typ typ
 and free_typcase (_, typs, _) = free_list free_typ typs
@@ -106,7 +102,7 @@ let free_prem prem =
 
 let free_def def =
   match def.it with
-  | SynD (_id1, _id2, deftyp, _hints) -> free_deftyp deftyp
+  | SynD (_id1, _id2, typ, _hints) -> free_typ typ
   | VarD _ | SepD -> empty
   | RelD (_id, typ, _hints) -> free_typ typ
   | RuleD (id1, _id2, exp, prems) ->

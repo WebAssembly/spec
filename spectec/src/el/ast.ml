@@ -59,16 +59,12 @@ and typ' =
   | TupT of typ list             (* `(` list2(typ, `,`) `)` *)
   | IterT of typ * iter          (* typ iter *)
   (* The forms below are only allowed in type definitions *)
+  | StrT of typfield nl_list     (* `{` list(typfield,`,`') `}` *)
+  | CaseT of dots * id nl_list * typcase nl_list * dots (* `|` list(`...`|varid|typcase, `|`) *)
   | AtomT of atom                (* atom *)
   | SeqT of typ list             (* `epsilon` / typ typ *)
   | InfixT of typ * atom * typ   (* typ atom typ *)
   | BrackT of brack * typ        (* ``` ([{ typ }]) *)
-
-and deftyp = deftyp' phrase
-and deftyp' =
-  | NotationT of typ                         (* typ *)
-  | StructT of typfield nl_list              (* `{` list(typfield,`,`') `}` *)
-  | VariantT of dots * id nl_list * typcase nl_list * dots (* `|` list(`...`|varid|typcase, `|`) *)
 
 and typfield = atom * typ * hint list        (* atom typ hint* *)
 and typcase = atom * typ list * hint list    (* atom typ* hint* *)
@@ -143,7 +139,7 @@ and path' =
 
 and def = def' phrase
 and def' =
-  | SynD of id * id * deftyp * hint list     (* `syntax` synid hint* `=` deftyp *)
+  | SynD of id * id * typ * hint list        (* `syntax` synid hint* `=` typ *)
   | RelD of id * typ * hint list             (* `relation` relid `:` typ hint* *)
   | RuleD of id * id * exp * premise nl_list (* `rule` relid ruleid? `:` exp (`--` premise)* *)
   | VarD of id * typ * hint list             (* `var` varid `:` typ *)

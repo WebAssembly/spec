@@ -173,12 +173,12 @@ typ_list :
 
 deftyp : deftyp_ { $1 $ at $sloc }
 deftyp_ :
-  | nottyp { NotationT $1 }
-  | LBRACE fieldtyp_list RBRACE { StructT $2 }
-  | BAR casetyp_list { let x, y, z = $2 in VariantT (NoDots, x, y, z) }
-  | NL_BAR casetyp_list { let x, y, z = $2 in VariantT (NoDots, x, y, z) }
-  | dots BAR casetyp_list { let x, y, z = $3 in VariantT (Dots, x, y, z) }
-  | dots NL_BAR casetyp_list { let x, y, z = $3 in VariantT (Dots, x, Nl::y, z) }
+  | nottyp { $1.it }
+  | LBRACE fieldtyp_list RBRACE { StrT $2 }
+  | BAR casetyp_list { let x, y, z = $2 in CaseT (NoDots, x, y, z) }
+  | NL_BAR casetyp_list { let x, y, z = $2 in CaseT (NoDots, x, y, z) }
+  | dots BAR casetyp_list { let x, y, z = $3 in CaseT (Dots, x, y, z) }
+  | dots NL_BAR casetyp_list { let x, y, z = $3 in CaseT (Dots, x, Nl::y, z) }
 
 dots :
   | DOTDOTDOT {}

@@ -82,7 +82,7 @@ let cat_exp' exp1' exp2' =
 
 type fwd_typ = Bad | Ok
 type var_typ = typ
-type syn_typ = (fwd_typ, deftyp * Il.deftyp) Either.t
+type syn_typ = (fwd_typ, typ * Il.deftyp) Either.t
 type rel_typ = typ * Il.rule list
 type def_typ = typ * typ * Il.clause list
 
@@ -138,17 +138,17 @@ and prefix_id' id =
 
 (* Type Accessors *)
 
-let as_defined_typid' env id at : deftyp' * [`Alias | `NoAlias] =
+let as_defined_typid' env id at : typ' * [`Alias | `NoAlias] =
   match find "syntax type" env.typs id with
-  | Either.Right (deftyp, {it = Il.AliasT _typ'; _}) -> deftyp.it, `Alias
-  | Either.Right (deftyp, _deftyp') -> deftyp.it, `NoAlias
+  | Either.Right (typ, {it = Il.AliasT _typ'; _}) -> typ.it, `Alias
+  | Either.Right (typ, _deftyp') -> typ.it, `NoAlias
   | Either.Left _ ->
     error_id (id.it $ at) "invalid forward use of syntax type"
 
 let rec expand' env = function
   | VarT id as typ' ->
     (match as_defined_typid' env id id.at with
-    | NotationT typ1, `Alias -> expand' env typ1.it
+    | typ1, `Alias -> expand' env typ1
     | _ -> typ'
     )
   | ParenT typ -> expand' env typ.it
@@ -180,7 +180,7 @@ let as_tup_typ phrase env dir typ at : typ list =
 
 let as_notation_typid' phrase env id at : typ =
   match as_defined_typid' env id at with
-  | NotationT typ, _ -> typ
+  | (AtomT _ | SeqT _ | InfixT _ | BrackT _) as typ, _ -> typ $ at
   | _ -> error_dir_typ at phrase Infer (VarT id $ id.at) "_ ... _"
 
 let as_notation_typ phrase env dir typ at : typ =
@@ -190,7 +190,7 @@ let as_notation_typ phrase env dir typ at : typ =
 
 let as_struct_typid' phrase env id at : typfield list =
   match as_defined_typid' env id at with
-  | StructT fields, _ -> filter_nl fields
+  | StrT fields, _ -> filter_nl fields
   | _ -> error_dir_typ at phrase Infer (VarT id $ id.at) "| ..."
 
 let as_struct_typ phrase env dir typ at : typfield list =
@@ -200,7 +200,7 @@ let as_struct_typ phrase env dir typ at : typfield list =
 
 let rec as_variant_typid' phrase env id at : typcase list * dots =
   match as_defined_typid' env id at with
-  | VariantT (_dots1, ids, cases, dots2), _ ->
+  | CaseT (_dots1, ids, cases, dots2), _ ->
     let casess = map_nl_list (as_variant_typid "" env) ids in
     List.concat (filter_nl cases :: List.map fst casess), dots2
   | _ -> error_dir_typ id.at phrase Infer (VarT id $ id.at) "| ..."
@@ -359,8 +359,28 @@ and elab_typ env typ : Il.typ =
     | List1 | ListN _ -> error typ.at "illegal iterator in syntax type"
     | _ -> Il.IterT (elab_typ env typ1, elab_iter env iter) $ typ.at
     )
-  | AtomT _ | SeqT _ | InfixT _ | BrackT _ ->
+  | StrT _ | CaseT _ | AtomT _ | SeqT _ | InfixT _ | BrackT _ ->
     error typ.at "this type is only allowed in type definitions"
+
+and elab_typ_definition env id typ : Il.deftyp =
+  (match typ.it with
+  | StrT fields ->
+    let fields' = filter_nl fields in
+    check_atoms "record" "field" (fun (atom, _, _) -> atom) fields' typ.at;
+    Il.StructT (map_nl_list (elab_typfield env) fields)
+  | CaseT (dots1, ids, cases, _dots2) ->
+    let cases0 =
+      if dots1 = Dots then fst (as_variant_typid "own type" env id) else [] in
+    let casess = map_nl_list (as_variant_typid "parent type" env) ids in
+    let cases' =
+      List.flatten (cases0 :: filter_nl cases :: List.map fst casess) in
+    check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' typ.at;
+    Il.VariantT (filter_nl ids, map_nl_list (elab_typcase env typ.at) cases)
+  | _ ->
+    match elab_typ_notation env typ with
+    | false, _mixop, typs' -> Il.AliasT (tup_typ' typs' typ.at)
+    | true, mixop, typs' -> Il.NotationT (mixop, tup_typ' typs' typ.at)
+  ) $ typ.at
 
 and elab_typ_notation env typ : bool * Il.mixop * Il.typ list =
   (*
@@ -410,28 +430,6 @@ and elab_typcase env at (atom, typs, hints) : Il.typcase =
   let typss' =
     List.map (fun (_, _, ts) -> ts) (List.map (elab_typ_notation env) typs) in
   (elab_atom atom, tup_typ' (List.concat typss') at, elab_hints hints)
-
-
-and elab_deftyp env id deftyp : Il.deftyp =
-  (match deftyp.it with
-  | NotationT typ ->
-    (match elab_typ_notation env typ with
-    | false, _mixop, typs' -> Il.AliasT (tup_typ' typs' typ.at)
-    | true, mixop, typs' -> Il.NotationT (mixop, tup_typ' typs' typ.at)
-    )
-  | StructT fields ->
-    let fields' = filter_nl fields in
-    check_atoms "record" "field" (fun (atom, _, _) -> atom) fields' deftyp.at;
-    Il.StructT (map_nl_list (elab_typfield env) fields)
-  | VariantT (dots1, ids, cases, _dots2) ->
-    let cases0 =
-      if dots1 = Dots then fst (as_variant_typid "own type" env id) else [] in
-    let casess = map_nl_list (as_variant_typid "parent type" env) ids in
-    let cases' =
-      List.flatten (cases0 :: filter_nl cases :: List.map fst casess) in
-    check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' deftyp.at;
-    Il.VariantT (filter_nl ids, map_nl_list (elab_typcase env deftyp.at) cases)
-  ) $ deftyp.at
 
 
 (* Expressions *)
@@ -926,16 +924,16 @@ let elab_prem env prem : Il.premise =
     Il.ElsePr $ prem.at
 
 
-let infer_deftyp _env deftyp : syn_typ =
-  match deftyp.it with
-  | NotationT _ -> Either.Left Bad
-  | _ -> Either.Left Ok
+let infer_typ_definition _env typ : syn_typ =
+  match typ.it with
+  | StrT _ | CaseT _ -> Either.Left Ok
+  | _ -> Either.Left Bad
 
 let infer_def env def =
   match def.it with
-  | SynD (id1, _id2, deftyp, _hints) ->
+  | SynD (id1, _id2, typ, _hints) ->
     if not (bound env.typs id1) then (
-      env.typs <- bind "syntax type" env.typs id1 (infer_deftyp env deftyp);
+      env.typs <- bind "syntax type" env.typs id1 (infer_typ_definition env typ);
       env.vars <- bind "variable" env.vars id1 (VarT id1 $ id1.at);
     )
   | _ -> ()
@@ -949,32 +947,32 @@ let merge_deftyp' deftyp1' deftyp2' =
 
 let elab_def env def : Il.def list =
   match def.it with
-  | SynD (id1, _id2, deftyp, hints) ->
-    let deftyp' = elab_deftyp env id1 deftyp in
-    let deftyp1, deftyp1', closed =
-      match find "syntax type" env.typs id1, deftyp.it with
-      | Either.Left _, (NotationT _ | StructT _) ->
-        deftyp, deftyp', true
-      | Either.Left _, VariantT (NoDots, _, _, dots2) ->
-        deftyp, deftyp', dots2 = NoDots
-      | Either.Right _, (NotationT _ | StructT _ | VariantT (NoDots, _, _, _)) ->
-        error_id id1 "duplicate declaration for syntax type";
-      | Either.Right ({it = VariantT (dots1, ids1, cases1, Dots); at}, deftyp0'),
-          VariantT (Dots, ids2, cases2, dots2) ->
-        VariantT (dots1, ids1 @ ids2, cases1 @ cases2, dots2)
-          $ over_region [at; deftyp.at],
-        merge_deftyp' deftyp0' deftyp', dots2 = NoDots
-      | Either.Left _, VariantT (Dots, _, _, _) ->
+  | SynD (id1, _id2, typ, hints) ->
+    let deftyp' = elab_typ_definition env id1 typ in
+    let typ1, deftyp1', closed =
+      match find "syntax type" env.typs id1, typ.it with
+      | Either.Left _, CaseT (Dots, _, _, _) ->
         error_id id1 "extension of not yet defined syntax type"
-      | Either.Right _, VariantT (Dots, _, _, _) ->
+      | Either.Left _, CaseT (NoDots, _, _, dots2) ->
+        typ, deftyp', dots2 = NoDots
+      | Either.Left _, _ ->
+        typ, deftyp', true
+      | Either.Right ({it = CaseT (dots1, ids1, cases1, Dots); at}, deftyp0'),
+          CaseT (Dots, ids2, cases2, dots2) ->
+        CaseT (dots1, ids1 @ ids2, cases1 @ cases2, dots2)
+          $ over_region [at; typ.at],
+        merge_deftyp' deftyp0' deftyp', dots2 = NoDots
+      | Either.Right _, CaseT (Dots, _, _, _) ->
         error_id id1 "extension of non-extensible syntax type"
+      | Either.Right _, _ ->
+        error_id id1 "duplicate declaration for syntax type";
     in
     (*
     Printf.printf "[def %s] %s ~> %s\n%!" id1.it
-      (string_of_deftyp deftyp) (Il.Print.string_of_deftyp deftyp');
+      (string_of_typ typ) (Il.Print.string_of_deftyp deftyp');
     *)
     env.typs <- rebind "syntax type" env.typs id1
-      (Either.Right (deftyp1, deftyp1'));
+      (Either.Right (typ1, deftyp1'));
     if not closed then [] else
     [Il.SynD (id1, deftyp1', elab_hints hints) $ def.at]
   | RelD (id, typ, hints) ->

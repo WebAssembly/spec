@@ -14,4 +14,3 @@ val free_exp : exp -> sets
 val free_path : path -> sets
 val free_prem : premise -> sets
 val free_def : def -> sets
-val free_deftyp : deftyp -> sets

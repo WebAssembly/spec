@@ -61,19 +61,19 @@ let env_typcase env = function
   | Elem (Atom id, _, hints) -> env_hints env.show_case id hints
   | _ -> ()
 
-let env_deftyp env deftyp =
-  match deftyp.it with
-  | NotationT _ -> ()
-  | StructT typfields -> List.iter (env_typfield env) typfields
-  | VariantT (_, _, typcases, _) -> List.iter (env_typcase env) typcases
+let env_typ env typ =
+  match typ.it with
+  | StrT typfields -> List.iter (env_typfield env) typfields
+  | CaseT (_, _, typcases, _) -> List.iter (env_typcase env) typcases
+  | _ -> ()  (* TODO: this assumes that types structs & variants aren't nested *)
 
 let env_def env def =
   match def.it with
-  | SynD (id, _, deftyp, hints) ->
+  | SynD (id, _, typ, hints) ->
     env.vars := Set.add id.it !(env.vars);
     env_hints env.show_syn id.it hints;
     env_hints env.show_var id.it hints;
-    env_deftyp env deftyp
+    env_typ env typ
   | RelD (id, _, hints) ->
     env_hints env.show_rel id.it hints
   | VarD (id, _, hints) ->
@@ -377,6 +377,15 @@ and render_typ env typ =
   | ParenT typ -> "(" ^ render_typ env typ ^ ")"
   | TupT typs -> "(" ^ render_typs ",\\; " env typs ^ ")"
   | IterT (typ1, iter) -> "{" ^ render_typ env typ1 ^ render_iter env iter ^ "}"
+  | StrT typfields ->
+    "\\{\\; " ^
+    "\\begin{array}[t]{@{}l@{}}\n" ^
+    concat_map_nl ",\\; " "\\\\\n  " (render_typfield env) typfields ^ " \\;\\}" ^
+    "\\end{array}"
+  | CaseT (dots1, ids, typcases, dots2) ->
+    altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
+      (render_dots dots1 @ map_nl_list (render_synid env) ids @
+        map_nl_list (render_typcase env typ.at) typcases @ render_dots dots2)
   | AtomT atom -> render_typcase env typ.at (atom, [], [])
   | SeqT [] -> "\\epsilon"
   | SeqT ({it = AtomT atom; at}::typs) -> render_typcase env at (atom, typs, [])
@@ -390,20 +399,6 @@ and render_typ env typ =
 
 and render_typs sep env typs =
   concat sep (List.filter ((<>) "") (List.map (render_typ env) typs))
-
-
-and render_deftyp env deftyp =
-  match deftyp.it with
-  | NotationT typ -> render_typ env typ
-  | StructT typfields ->
-    "\\{\\; " ^
-    "\\begin{array}[t]{@{}l@{}}\n" ^
-    concat_map_nl ",\\; " "\\\\\n  " (render_typfield env) typfields ^ " \\;\\}" ^
-    "\\end{array}"
-  | VariantT (dots1, ids, typcases, dots2) ->
-    altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
-      (render_dots dots1 @ map_nl_list (render_synid env) ids @
-        map_nl_list (render_typcase env deftyp.at) typcases @ render_dots dots2)
 
 
 and render_typfield env (atom, typ, _hints) =
@@ -559,17 +554,17 @@ let render_premise env prem =
     error prem.at "misplaced `otherwise` premise"
 
 
-let merge_deftyp deftyp1 deftyp2 =
-  match deftyp1.it, deftyp2.it with
-  | VariantT (dots1, ids1, cases1, _), VariantT (_, ids2, cases2, dots2) ->
-    VariantT( dots1, ids1 @ strip_nl ids2, cases1 @ strip_nl cases2, dots2) $ deftyp1.at
+let merge_typ typ1 typ2 =
+  match typ1.it, typ2.it with
+  | CaseT (dots1, ids1, cases1, _), CaseT (_, ids2, cases2, dots2) ->
+    CaseT( dots1, ids1 @ strip_nl ids2, cases1 @ strip_nl cases2, dots2) $ typ1.at
   | _, _ -> assert false
 
 let rec merge_syndefs = function
   | [] -> []
-  | {it = SynD (id1, id', deftyp1, _); at}::
-    {it = SynD (id2, _, deftyp2, _); _}::defs when id1.it = id2.it ->
-    let def' = SynD (id1, id', merge_deftyp deftyp1 deftyp2, []) $ at in
+  | {it = SynD (id1, id', typ1, _); at}::
+    {it = SynD (id2, _, typ2, _); _}::defs when id1.it = id2.it ->
+    let def' = SynD (id1, id', merge_typ typ1 typ2, []) $ at in
     merge_syndefs (def'::defs)
   | def::defs ->
     def :: merge_syndefs defs
@@ -582,12 +577,12 @@ let desc_of_hint = function
 
 let render_syndef env def =
   match def.it with
-  | SynD (id1, _id2, deftyp, hints) ->
+  | SynD (id1, _id2, typ, hints) ->
     (match env.deco_syn, List.find_map desc_of_hint hints with
     | true, Some s -> "\\mbox{(" ^ s ^ ")} & "
     | _ -> "& "
     ) ^
-    render_synid env id1 ^ " &::=& " ^ render_deftyp env deftyp
+    render_synid env id1 ^ " &::=& " ^ render_typ env typ
   | _ -> assert false
 
 let render_ruledef env def =

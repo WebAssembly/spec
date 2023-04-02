@@ -84,6 +84,12 @@ and string_of_typ typ =
   | ParenT typ -> "(" ^ string_of_typ typ ^ ")"
   | TupT typs -> "(" ^ string_of_typs ", " typs ^ ")"
   | IterT (typ1, iter) -> string_of_typ typ1 ^ string_of_iter iter
+  | StrT typfields ->
+    "{" ^ concat ", " (map_nl_list string_of_typfield typfields) ^ "}"
+  | CaseT (dots1, ids, typcases, dots2) ->
+    "\n  | " ^ concat "\n  | "
+      (strings_of_dots dots1 @ map_nl_list it ids @
+        map_nl_list string_of_typcase typcases @ strings_of_dots dots2)
   | AtomT atom -> string_of_atom atom
   | SeqT typs -> "{" ^ string_of_typs " " typs ^ "}"
   | InfixT (typ1, atom, typ2) ->
@@ -94,17 +100,6 @@ and string_of_typ typ =
 
 and string_of_typs sep typs =
   concat sep (List.map string_of_typ typs)
-  
-
-and string_of_deftyp deftyp =
-  match deftyp.it with
-  | NotationT typ -> string_of_typ typ
-  | StructT typfields ->
-    "{" ^ concat ", " (map_nl_list string_of_typfield typfields) ^ "}"
-  | VariantT (dots1, ids, typcases, dots2) ->
-    "\n  | " ^ concat "\n  | "
-      (strings_of_dots dots1 @ map_nl_list it ids @
-        map_nl_list string_of_typcase typcases @ strings_of_dots dots2)
 
 and string_of_typfield (atom, typ, _hints) =
   string_of_atom atom ^ " " ^ string_of_typ typ
@@ -190,9 +185,9 @@ let string_of_premise prem =
 
 let string_of_def def =
   match def.it with
-  | SynD (id1, id2, deftyp, _hints) ->
+  | SynD (id1, id2, typ, _hints) ->
     let id2' = if id2.it = "" then "" else "/" ^ id2.it in
-    "syntax " ^ id1.it ^ id2' ^ " = " ^ string_of_deftyp deftyp
+    "syntax " ^ id1.it ^ id2' ^ " = " ^ string_of_typ typ
   | RelD (id, typ, _hints) ->
     "relation " ^ id.it ^ ": " ^ string_of_typ typ
   | RuleD (id1, id2, exp, prems) ->
