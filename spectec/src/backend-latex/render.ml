@@ -376,7 +376,7 @@ and render_typ env typ =
   | TextT -> render_synid env ("text" $ typ.at)
   | ParenT typ -> "(" ^ render_typ env typ ^ ")"
   | TupT typs -> "(" ^ render_typs ",\\; " env typs ^ ")"
-  | IterT (typ1, iter) -> "{" ^ render_typ env typ1 ^ "}" ^ render_iter env iter
+  | IterT (typ1, iter) -> "{" ^ render_typ env typ1 ^ render_iter env iter ^ "}"
 
 and render_typs sep env typs =
   concat sep (List.filter ((<>) "") (List.map (render_typ env) typs))
@@ -411,7 +411,7 @@ and render_nottyp env nottyp =
     let l, r = render_brack brack in l ^ render_nottyp env nottyp1 ^ r
   | ParenNT nottyp1 -> "(" ^ render_nottyp env nottyp1 ^ ")"
   | IterNT (nottyp1, iter) ->
-    "{" ^ render_nottyp env nottyp1 ^ "}" ^ render_iter env iter
+    "{" ^ render_nottyp env nottyp1 ^ render_iter env iter ^ "}"
 
 and render_nottyps sep env nottyps =
   concat sep (List.filter ((<>) "") (List.map (render_nottyp env) nottyps))
@@ -457,7 +457,7 @@ and render_exp env exp =
   | TextE t -> "``" ^ t ^ "''"
   | UnE (unop, exp2) -> render_unop unop ^ render_exp env exp2
   | BinE (exp1, ExpOp, ({it = ParenE (exp2, _); _ } | exp2)) ->
-    "{" ^ render_exp env exp1 ^ "}^{" ^ render_exp env exp2 ^ "}"
+    "{" ^ render_exp env exp1 ^ "^{" ^ render_exp env exp2 ^ "}}"
   | BinE (exp1, binop, exp2) ->
     render_exp env exp1 ^ space render_binop binop ^ render_exp env exp2
   | CmpE (exp1, cmpop, exp2) ->
@@ -509,7 +509,7 @@ and render_exp env exp =
           in
           "}_{" ^ render_exp env exp1' ^ "}" ^ render_exp env exp2'
       )
-  | IterE (exp1, iter) -> "{" ^ render_exp env exp1 ^ "}" ^ render_iter env iter
+  | IterE (exp1, iter) -> "{" ^ render_exp env exp1 ^ render_iter env iter ^ "}"
   | FuseE (exp1, exp2) ->
     "{" ^ render_exp env exp1 ^ "}" ^ "{" ^ render_exp env exp2 ^ "}"
   | HoleE _ -> assert false
