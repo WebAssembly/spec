@@ -135,12 +135,6 @@ let rec as_variant_typid phrase env id at : typcase list =
     List.concat (cases :: List.map (fun id -> as_variant_typid "" env id at) ids)
   | _ -> as_error at phrase Infer (VarT id $ id.at) "| ..."
 
-let as_variant_typ phrase env dir typ at : typcase list =
-  match expand' env typ.it with
-  | VarT id -> as_variant_typid phrase env id at
-  | _ -> as_error at phrase dir typ "| ..."
-
-
 (* Type Equivalence *)
 
 let equiv_list equiv_x xs1 xs2 =
@@ -214,11 +208,13 @@ let rec valid_iter env iter =
 
 (* Types *)
 
+and valid_id env id =
+    if find "syntax type" env.typs id = fwd_deftyp_bad then
+      error id.at ("invalid forward reference to syntax type `" ^ id.it ^ "`")
+
 and valid_typ env typ =
   match typ.it with
-  | VarT id ->
-    if find "syntax type" env.typs id = fwd_deftyp_bad then
-      error typ.at ("invalid forward reference to syntax type `" ^ id.it ^ "`")
+  | VarT id -> valid_id env id
   | BoolT
   | NatT
   | TextT ->
@@ -390,11 +386,13 @@ and valid_exp env exp typ =
     let _typ1 = as_iter_typ List "list" env Check typ exp.at in
     valid_exp env exp1 typ;
     valid_exp env exp2 typ
-  | CaseE (atom, exp1, typ2) ->
-    valid_typ env typ2;
-    let cases = as_variant_typ "case" env Check typ2 exp.at in
+  | CaseE (atom, exp1, id2, styps) ->
+    valid_id env id2;
+    List.iter (valid_id env) styps;
+    let cases = as_variant_typid "case" env id2 exp.at in
     let typ1 = find_case cases atom exp1.at in
     valid_exp env exp1 typ1;
+    let typ2 = {it = VarT id2; at= id2.at} in
     equiv_typ env typ2 typ exp.at
   | SubE (exp1, typ1, typ2) ->
     valid_typ env typ1;

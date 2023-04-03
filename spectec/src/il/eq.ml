@@ -24,6 +24,8 @@ let rec eq_iter iter1 iter2 =
 
 (* Types *)
 
+and eq_id id1 id2 = id1.it = id2.it
+
 and eq_typ typ1 typ2 =
   (*
   Printf.printf "[eq] (%s) == (%s)  eq=%b\n%!"
@@ -32,7 +34,7 @@ and eq_typ typ1 typ2 =
   *)
   typ1.it = typ2.it ||
   match typ1.it, typ2.it with
-  | VarT id1, VarT id2 -> id1.it = id2.it
+  | VarT id1, VarT id2 -> eq_id id1 id2
   | TupT typs1, TupT typs2 ->
     eq_list eq_typ typs1 typs2
   | IterT (typ11, iter1), IterT (typ21, iter2) ->
@@ -79,8 +81,8 @@ and eq_exp exp1 exp2 =
     eq_exp exp11 exp21 && eq_iter iter1 iter2
   | OptE expo1, OptE expo2 ->
     eq_opt eq_exp expo1 expo2
-  | CaseE (atom1, exp1, typ1), CaseE (atom2, exp2, typ2) ->
-    atom1 = atom2 && eq_exp exp1 exp2 && eq_typ typ1 typ2
+  | CaseE (atom1, exp1, id1, styps1), CaseE (atom2, exp2, id2, styps2) ->
+    atom1 = atom2 && eq_exp exp1 exp2 && eq_id id1 id2 && eq_list eq_id styps1 styps2
   | SubE (exp1, typ11, typ12), SubE (exp2, typ21, typ22) ->
     eq_exp exp1 exp2 && eq_typ typ11 typ21 && eq_typ typ12 typ22
   | _, _ ->

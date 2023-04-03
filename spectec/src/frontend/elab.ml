@@ -128,8 +128,8 @@ let find_field fields atom at =
   | None -> error_atom at atom "unbound field"
 
 let find_case cases atom at =
-  match List.find_opt (fun (atom', _, _) -> atom' = atom) cases with
-  | Some (_, x, _) -> x
+  match List.find_opt (fun ((atom', _, _), _) -> atom' = atom) cases with
+  | Some ((_, nottyp, _), styps) -> nottyp, styps
   | None -> error_atom at atom "unknown case"
 
 
@@ -202,24 +202,30 @@ let as_struct_typ phrase env dir typ at : typfield list =
   | VarT id -> as_struct_typid' phrase env id at
   | _ -> error_dir_typ at phrase dir typ "{...}"
 
-let rec as_variant_typid' phrase env id at : typcase list * dots =
+let rec as_variant_typid' phrase env id at : (typcase * Il.id list) list * dots =
   match as_defined_typid' env id at with
   | VariantT (_dots1, ids, cases, dots2) ->
-    let casess = map_nl_list (as_variant_typid "" env) ids in
-    List.concat (filter_nl cases :: List.map fst casess), dots2
+    let casess = map_nl_list (fun sid ->
+      let scases, _ = as_variant_typid "" env sid in
+      List.map (fun ((a, t, hint), ts) -> (a, t, hint), (sid :: ts)) scases
+    ) ids in
+    List.concat (
+      List.map (fun immediate_case -> (immediate_case, [])) (filter_nl cases) ::
+      casess), dots2
   | _ -> error_dir_typ id.at phrase Infer (VarT id $ id.at) "| ..."
 
-and as_variant_typid phrase env id : typcase list * dots =
+and as_variant_typid phrase env id : (typcase * Il.id list) list * dots =
   as_variant_typid' phrase env id id.at
 
-let as_variant_typ phrase env dir typ at : typcase list * dots =
+let as_variant_typ phrase env dir typ at : (typcase * Il.id list) list * dots =
   match expand_singular' env typ.it with
   | VarT id -> as_variant_typid' phrase env id at
   | _ -> error_dir_typ at phrase dir typ "| ..."
 
 let case_has_args env typ atom at : bool =
   let cases, _ = as_variant_typ "" env Check typ at in
-  find_case cases atom at <> []
+  let nottyp, _styps = find_case cases atom at
+  in nottyp <> []
 
 
 let is_x_typ as_x_typ env typ =
@@ -241,7 +247,7 @@ let is_variant_nottyp env nottyp =
   | TypT typ -> is_variant_typ env typ
   | _ -> false
 
-let as_variant_nottyp env nottyp at : typcase list * typ =
+let as_variant_nottyp env nottyp at : (typcase * Il.id list) list * typ =
   match nottyp.it with
   | TypT typ -> fst (as_variant_typ "" env Check typ at), typ
   | _ -> error_dir_typ at "expression" Check (VarT ("?" $ at) $ at) "| ..."
@@ -360,6 +366,15 @@ let rec elab_iter env iter : Il.iter =
 
 (* Types *)
 
+and elab_typ_id env typ : Il.id =
+  match typ.it with
+  | VarT id ->
+    (match find "syntax type" env.typs id with
+    | Either.Left Bad -> error_id id "invalid forward reference to syntax type"
+    | _ -> id
+    )
+  | _ -> error typ.at "expected explicit typ id"
+
 and elab_typ env typ : Il.typ =
   match typ.it with
   | VarT id ->
@@ -392,10 +407,10 @@ and elab_deftyp env id deftyp : Il.deftyp =
     Il.StructT (map_nl_list (elab_typfield env) fields)
   | VariantT (dots1, ids, cases, _dots2) ->
     let cases0 =
-      if dots1 = Dots then fst (as_variant_typid "own type" env id) else [] in
+      if dots1 = Dots then List.map fst (fst (as_variant_typid "own type" env id)) else [] in
     let casess = map_nl_list (as_variant_typid "parent type" env) ids in
-    let cases' =
-      List.flatten (cases0 :: filter_nl cases :: List.map fst casess) in
+    let cases' = List.flatten (
+      cases0 :: filter_nl cases :: List.map (List.map fst) (List.map fst casess)) in
     check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' deftyp.at;
     Il.VariantT (filter_nl ids, map_nl_list (elab_typcase env deftyp.at) cases)
   ) $ deftyp.at
@@ -843,13 +858,13 @@ and elab_exp_variant env exps cases typ at : Il.exp =
   *)
   match exps with
   | {it = AtomE atom; _} :: exps ->
-    let nottyps = find_case cases atom at in
+    let nottyps, styps = find_case cases atom at in
     (* TODO: this is a bit hacky *)
     let exp2 = SeqE exps $ at in
     let exps' = elab_exp_notation' env exp2 (SeqT nottyps $ typ.at) in
     let typ2 = expand_singular' env typ.it $ at in
     cast_exp "variant case" env
-      (Il.CaseE (elab_atom atom, tup_exp' exps' at, elab_typ env typ2) $ at)
+      (Il.CaseE (elab_atom atom, tup_exp' exps' at, elab_typ_id env typ2, styps) $ at)
       typ2 typ
   | _ ->
     error_typ at "expression" typ
@@ -907,8 +922,8 @@ and cast_exp_variant phrase env exp' typ1 typ2 : Il.exp =
     if dots1 = Dots then
       error exp'.at "used variant type is only partially defined at this point";
     (try
-      List.iter (fun (atom, nottyps1, _) ->
-        let nottyps2 = find_case cases2 atom typ1.at in
+      List.iter (fun ((atom, nottyps1, _), _) ->
+        let nottyps2, _styps = find_case cases2 atom typ1.at in
         (* Shallow subtyping on variants *)
         if List.length nottyps1 <> List.length nottyps2
         || not (List.for_all2 Eq.eq_nottyp nottyps1 nottyps2) then

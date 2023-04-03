@@ -79,9 +79,11 @@ let rec string_of_iter iter =
   | List1 -> "+"
   | ListN exp -> "^" ^ string_of_exp exp
 
+and string_of_id id = id.it
+
 and string_of_typ typ =
   match typ.it with
-  | VarT id -> id.it
+  | VarT id -> string_of_id id
   | BoolT -> "bool"
   | NatT -> "nat"
   | TextT -> "text"
@@ -153,8 +155,8 @@ and string_of_exp exp =
   | OptE expo -> "?(" ^ string_of_exps "" (Option.to_list expo) ^ ")"
   | ListE exps -> "[" ^ string_of_exps " " exps ^ "]"
   | CatE (exp1, exp2) -> string_of_exp exp1 ^ " :: " ^ string_of_exp exp2
-  | CaseE (atom, exp1, typ) ->
-    string_of_atom atom ^ "_" ^ string_of_typ typ ^ string_of_exp_args exp1
+  | CaseE (atom, exp1, id2, styps) ->
+    string_of_atom atom ^ "_" ^ String.concat "_" (List.map string_of_id (List.rev (id2 :: styps))) ^ string_of_exp_args exp1
   | SubE (exp1, _typ1, typ2) ->
     "(" ^ string_of_exp exp1 ^ " <: " ^ string_of_typ typ2 ^ ")"
 
