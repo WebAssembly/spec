@@ -119,7 +119,6 @@ Currently, the implementation consists of merely the frontend, which performs:
 * recursion analysis,
 * type checking for the EL,
 * elaboration from EL into IL,
-* type checking for the EL,
 * splicing expressions and definitions into files.
 
 Lowering from EL into IL infers additional information and makes it explicit in the representation:
