@@ -1,8 +1,9 @@
 ;; Instructions
 
 relation Step: config ~> config                 hint(show "E")
-relation Step_read: config ~> admininstr*       hint(show "E")
 relation Step_pure: admininstr* ~> admininstr*  hint(show "E")
+relation Step_read: config ~> admininstr*       hint(show "E")
+relation Step_write: config ~> config           hint(show "E")
 
 rule Step/pure:
   z; instr*  ~>  z; instr'*
@@ -12,6 +13,18 @@ rule Step/read:
   z; instr*  ~>  z; instr'*
   -- Step_read: z; instr* ~> instr'*
 
+rule Step/write:
+  z; instr*  ~>  z'; instr'*
+  -- Step_write: z; instr* ~> z'; instr'*
+
+
+rule Step_pure/ref.is_null-true:
+  val REF.IS_NULL ~> (CONST I32 1)
+  -- if val = REF.NULL rt
+
+rule Step_pure/ref.is_null-false:
+  val REF.IS_NULL ~> (CONST I32 0)
+  -- otherwise
 
 rule Step_pure/unreachable:
   UNREACHABLE  ~>  TRAP
@@ -29,6 +42,9 @@ rule Step_pure/select-true:
 rule Step_pure/select-false:
   val_1 val_2 (CONST I32 c) (SELECT t?)  ~>  val_2
   -- if c = 0
+
+rule Step_pure/local.tee:
+  val (LOCAL.TEE x)  ~>  val val (LOCAL.SET x)
 
 rule Step_pure/block:
   val^k (BLOCK bt instr*)  ~>  (LABEL_ n `{epsilon} val^k instr*)
@@ -67,10 +83,72 @@ rule Step_pure/br_table-lt:
   (CONST I32 i) (BR_TABLE l* l')  ~>  (BR l*[i])
   -- if i < |l*|
 
-rule Step_pure/br_table-le:
+rule Step_pure/br_table-ge:
   (CONST I32 i) (BR_TABLE l* l')  ~>  (BR l')
   -- if i >= |l*|
 
+rule Step_read/ref.func:
+  z; (REF.FUNC x) ~> (REF.FUNC_ADDR $funcaddr(z)[x]) ;; TODO
+
+rule Step_read/local.get:
+  z; (LOCAL.GET x) ~> $local(z, x)
+
+rule Step_read/global.get:
+  z; (GLOBAL.GET x) ~> $global(z, x)
+
+rule Step_read/table.get-ge:
+  z; (CONST I32 i) (TABLE.GET x) ~> TRAP
+  -- if i >= |$table(z, x)|
+
+rule Step_read/table.get-lt:
+  z; (CONST I32 i) (TABLE.GET x) ~> $table(z,x)[i]
+  -- if i < |$table(z, x)|
+
+rule Step_read/table.size:
+  z; (TABLE.SIZE x) ~> (CONST I32 n)
+  -- if |$table(z, x)| = n
+
+rule Step_read/table.fill-trap:
+  z; (CONST I32 i) val (CONST I32 n) (TABLE.FILL x) ~> TRAP
+  -- if $(i + n) > |$table(z, x)|
+rule Step_read/table.fill-zero:
+  z; (CONST I32 i) val (CONST I32 0) (TABLE.FILL x) ~> epsilon
+  -- otherwise
+rule Step_read/table.fill-succ:
+  z; (CONST I32 i) val (CONST I32 $(n+1)) (TABLE.FILL x)
+  ~> (CONST I32 i) val (TABLE.SET x) (CONST I32 $(i+1)) val (CONST I32 n) (TABLE.FILL x)
+  -- otherwise
+
+rule Step_read/table.copy-trap:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.COPY x y) ~> TRAP
+  -- if $(i + n) > |$table(z, y)| \/ $(j + n) > |$table(z, x)|
+rule Step_read/table.copy-zero:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 0) (TABLE.COPY x y) ~> epsilon
+  -- otherwise
+rule Step_read/table.copy-le:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 $(n+1)) (TABLE.COPY x y)
+  ~> (CONST I32 j) (CONST I32 i) (TABLE.GET y) (TABLE.SET x)
+     (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 n) (TABLE.COPY x y)
+;;-- otherwise
+  -- if j <= i
+rule Step_read/table.copy-gt:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 $(n+1)) (TABLE.COPY x y)
+  ~> (CONST I32 $(j+n)) (CONST I32 $(i+n)) (TABLE.GET y) (TABLE.SET x)
+     (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 n) (TABLE.COPY x y)
+;;-- otherwise
+  -- if i > i
+
+rule Step_read/table.init-trap:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.INIT x y) ~> TRAP
+  -- if $(i + n) > |$elem(z, y)| \/ $(j + n) > |$table(z, x)|
+rule Step_read/table.init-zero:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 0) (TABLE.INIT x y) ~> epsilon
+  -- otherwise
+rule Step_read/table.init-le:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 $(n+1)) (TABLE.INIT x y)
+  ~> (CONST I32 j) $elem(z,y)[i] (TABLE.SET x)
+     (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 n) (TABLE.INIT x y)
+  -- otherwise
 
 rule Step_read/call:
   z; (CALL x)  ~>  (CALL_ADDR $funcaddr(z)[x])  ;; TODO
@@ -85,5 +163,19 @@ rule Step_read/call_indirect-trap:
   -- otherwise
 
 rule Step_read/call_addr:
-  z; val^k (CALL_ADDR a)  ~>  (FRAME_ n `{m; val^k ($default_(t))*} (LABEL_ n `{epsilon} instr*))
+  z; val^k (CALL_ADDR a)  ~>  (FRAME_ n `{ {LOCAL val^k ($default_(t))*, MODULE m} } (LABEL_ n `{epsilon} instr*))
   -- if $funcinst(z)[a] = m; FUNC (t_1^k -> t_2^n) t* instr*
+
+rule Step_write/local.set:
+  z ; val (LOCAL.SET x) ~> $with_local(z, x, val) ; epsilon
+
+rule Step_write/global.set:
+  z ; val (GLOBAL.SET x) ~> $with_global(z, x, val) ; epsilon
+
+rule Step_write/table.set-lt:
+  z ; (CONST I32 i) ref (TABLE.GET x) ~> $with_table(z, x, i, ref) ; epsilon
+  -- if i < |$table(z, x)|
+
+rule Step_write/table.set-ge:  ;; Should it be Step_read?
+  z ; (CONST I32 i) ref (TABLE.GET x) ~> z; TRAP
+  -- if i >= |$table(z, x)|

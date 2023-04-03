@@ -138,6 +138,9 @@ warning: rule `Instr_ok/convert-f` was never spliced
 warning: rule `Instr_ok/ref.null` was never spliced
 warning: rule `Instr_ok/ref.func` was never spliced
 warning: rule `Instr_ok/ref.is_null` was never spliced
+warning: rule `Instr_ok/local.get` was never spliced
+warning: rule `Instr_ok/local.set` was never spliced
+warning: rule `Instr_ok/local.tee` was never spliced
 warning: rule `Instr_ok/global.get` was never spliced
 warning: rule `Instr_ok/global.set` was never spliced
 warning: rule `Instr_ok/table.get` was never spliced
@@ -164,11 +167,15 @@ warning: rule `Memtype_sub` was never spliced
 warning: rule `Module_ok` was never spliced
 warning: rule `Resulttype_sub` was never spliced
 warning: rule `Start_ok` was never spliced
+warning: rule `Step/write` was never spliced
+warning: rule `Step_pure/ref.is_null-true` was never spliced
+warning: rule `Step_pure/ref.is_null-false` was never spliced
 warning: rule `Step_pure/unreachable` was never spliced
 warning: rule `Step_pure/nop` was never spliced
 warning: rule `Step_pure/drop` was never spliced
 warning: rule `Step_pure/select-true` was never spliced
 warning: rule `Step_pure/select-false` was never spliced
+warning: rule `Step_pure/local.tee` was never spliced
 warning: rule `Step_pure/if-true` was spliced more than once
 warning: rule `Step_pure/if-false` was spliced more than once
 warning: rule `Step_pure/br-zero` was never spliced
@@ -176,15 +183,41 @@ warning: rule `Step_pure/br-succ` was never spliced
 warning: rule `Step_pure/br_if-true` was never spliced
 warning: rule `Step_pure/br_if-false` was never spliced
 warning: rule `Step_pure/br_table-lt` was never spliced
-warning: rule `Step_pure/br_table-le` was never spliced
+warning: rule `Step_pure/br_table-ge` was never spliced
+warning: rule `Step_read/ref.func` was never spliced
+warning: rule `Step_read/local.get` was never spliced
+warning: rule `Step_read/global.get` was never spliced
+warning: rule `Step_read/table.get-ge` was never spliced
+warning: rule `Step_read/table.get-lt` was never spliced
+warning: rule `Step_read/table.size` was never spliced
+warning: rule `Step_read/table.fill-trap` was never spliced
+warning: rule `Step_read/table.fill-zero` was never spliced
+warning: rule `Step_read/table.fill-succ` was never spliced
+warning: rule `Step_read/table.copy-trap` was never spliced
+warning: rule `Step_read/table.copy-zero` was never spliced
+warning: rule `Step_read/table.copy-le` was never spliced
+warning: rule `Step_read/table.copy-gt` was never spliced
+warning: rule `Step_read/table.init-trap` was never spliced
+warning: rule `Step_read/table.init-zero` was never spliced
+warning: rule `Step_read/table.init-le` was never spliced
 warning: rule `Step_read/call` was never spliced
 warning: rule `Step_read/call_indirect-call` was never spliced
 warning: rule `Step_read/call_indirect-trap` was never spliced
 warning: rule `Step_read/call_addr` was never spliced
+warning: rule `Step_write/local.set` was never spliced
+warning: rule `Step_write/global.set` was never spliced
+warning: rule `Step_write/table.set-lt` was never spliced
+warning: rule `Step_write/table.set-ge` was never spliced
 warning: rule `Table_ok` was never spliced
 warning: rule `Tabletype_ok` was never spliced
 warning: rule `Tabletype_sub` was never spliced
 warning: rule `Valtype_sub/refl` was never spliced
 warning: rule `Valtype_sub/bot` was never spliced
+warning: definition `elem` was never spliced
+warning: definition `global` was never spliced
+warning: definition `local` was never spliced
+warning: definition `with_global` was never spliced
+warning: definition `with_local` was never spliced
+warning: definition `with_table` was never spliced
 == Complete.
 ```

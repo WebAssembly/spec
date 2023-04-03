@@ -30,6 +30,7 @@ syntax labelidx hint(desc "label index") = idx
 syntax localidx hint(desc "local index") = idx
 
 var x : idx
+var y : idx
 var l : labelidx
 
 
