@@ -6,6 +6,8 @@ let render_tuple how tys = parens (String.concat ", " (List.map how tys))
 
 let render_type_name (id : id) = String.capitalize_ascii id.it
 
+let render_rec_con (id : id) = "Mk" ^ render_type_name id
+
 let make_id = String.map (function
   | '.' -> '_'
   | c -> c
@@ -23,6 +25,10 @@ let render_con_name id : atom -> string = function
     else render_type_name id ^ "_" ^ make_id s
   | a -> "{- render_con_name: TODO -} " ^ Il.Print.string_of_atom a
 
+let render_field_name : atom -> string = function
+  | Atom s -> String.uncapitalize_ascii (make_id s)
+  | a -> "{- render_field_name: TODO -} " ^ Il.Print.string_of_atom a
+
 
 let rec render_typ (ty : typ) = match ty.it with
   | VarT id -> render_type_name id
@@ -30,6 +36,7 @@ let rec render_typ (ty : typ) = match ty.it with
   | NatT -> "Natural"
   | TextT -> "String"
   | TupT tys -> render_tuple render_typ tys
+  | IterT (ty, Opt) -> "Maybe" $$ render_typ ty
   | IterT (ty, _) -> "[" ^ render_typ ty ^ "]"
 
 let _unsupported_def d =
@@ -67,6 +74,9 @@ let rec render_exp (exp : exp) = match exp.it with
   | IterE (e, _) -> render_exp e
   | CaseE (a, e, typ, styps) -> render_case a e typ styps
   | SubE (e, typ1, typ2) -> render_variant_inj' typ2 typ1 $$ render_exp e
+  | DotE (e, a) -> render_exp e ^ "." ^ render_field_name a
+  | IdxE (e1, e2) -> parens (render_exp e1 ^ " !! " ^ ("fromIntegral" $$ render_exp e2))
+  | BinE (AddOp, e1, e2) -> parens (render_exp e1 ^ " + " ^ render_exp e2)
   | _ -> "undefined {- " ^ Il.Print.string_of_exp exp ^ " -}"
 
 and render_case a e typ = function
@@ -98,9 +108,14 @@ let rec render_def (d : def) =
         List.map (render_variant_case id) cases
       )
     | StructT fields ->
+      (*
       "type " ^ render_type_name id ^ " = " ^ render_tuple render_typ (
         List.map (fun (_a, ty, _hints) -> ty) fields
       )
+      *)
+      "data " ^ render_type_name id ^ " = " ^ render_rec_con id ^ prepend "\n { " "\n , " (
+        List.map (fun (a, ty, _hints) -> render_field_name a ^ " :: " ^ render_typ ty) fields
+      ) ^ "\n }"
     end
   | DecD (id, typ1, typ2, clauses, _hints) ->
     id.it ^ " :: " ^ render_typ typ1 ^ " -> " ^ render_typ typ2 ^ "\n" ^
@@ -111,11 +126,13 @@ let rec render_def (d : def) =
   | _ -> ""
 
 let render_script (el : script) =
-  String.concat "\n" (List.map render_def el)
+  String.concat "\n\n" (List.map render_def el)
 
 let gen_string (el : script) =
+  "{-# LANGUAGE OverloadedRecordDot #-}\n" ^
+  "{-# LANGUAGE DuplicateRecordFields #-}\n" ^
   "module Test where\n" ^
-  "import Prelude (Bool, String, undefined)\n" ^
+  "import Prelude (Bool, String, undefined, Maybe, fromIntegral, (+), (!!))\n" ^
   "import Numeric.Natural (Natural)\n" ^
   render_script el
 
