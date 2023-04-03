@@ -1,5 +1,9 @@
 open Il.Ast
 
+let parens s = "(" ^ s ^ ")"
+let ($$) s1 s2 = parens (s1 ^ " " ^ s2)
+let render_tuple how tys = parens (String.concat ", " (List.map how tys))
+
 let render_type_name (id : id) = String.capitalize_ascii id.it
 
 let make_id = String.map (function
@@ -17,7 +21,7 @@ let render_con_name id : atom -> string = function
     if String.starts_with ~prefix:"_" s
     then render_type_name id ^ make_id s
     else render_type_name id ^ "_" ^ make_id s
-  | a -> "{- render_con_name: TODO -} " ^ Il.Print.string_of_atom a 
+  | a -> "{- render_con_name: TODO -} " ^ Il.Print.string_of_atom a
 
 
 let rec render_typ (ty : typ) = match ty.it with
@@ -25,11 +29,8 @@ let rec render_typ (ty : typ) = match ty.it with
   | BoolT -> "Bool"
   | NatT -> "Natural"
   | TextT -> "String"
-  | TupT tys -> render_tuple tys
+  | TupT tys -> render_tuple render_typ tys
   | IterT (ty, _) -> "[" ^ render_typ ty ^ "]"
-
-and render_tuple tys = "(" ^ String.concat ", " (List.map render_typ tys) ^ ")"
-
 
 let _unsupported_def d =
   "{- " ^
@@ -44,6 +45,10 @@ let rec prepend first rest = function
 let render_variant_inj id1 id2 =
   render_type_name id1 ^ "_of_" ^ render_type_name id2
 
+let render_variant_inj' (typ1 : typ) (typ2 : typ) = match typ1.it, typ2.it with
+  | VarT id1, VarT id2 -> render_variant_inj id1 id2
+  | _, _ -> "_ {- render_variant_inj': Typs not ids -}"
+
 let render_variant_inj_case id1 id2 =
   render_variant_inj id1 id2 ^ " " ^ render_type_name id2
 
@@ -51,6 +56,30 @@ let render_variant_case id (case : typcase) = match case with
   | (a, {it = TupT [];_}, _hints) -> render_con_name id a
   | (a, ty, _hints) -> render_con_name id a ^ " " ^ render_typ ty
 
+let rec render_exp (exp : exp) = match exp.it with
+  | VarE v -> v.it
+  | BoolE true -> "True"
+  | BoolE false -> "Frue"
+  | NatE n -> string_of_int n
+  | TextE t -> "\"" ^ String.escaped t ^ "\""
+  | MixE (_, e) -> render_exp e
+  | TupE es -> render_tuple render_exp es
+  | IterE (e, _) -> render_exp e
+  | CaseE (a, e, typ, styps) -> render_case a e typ styps
+  | SubE (e, typ1, typ2) -> render_variant_inj' typ2 typ1 $$ render_exp e
+  | _ -> "undefined {- " ^ Il.Print.string_of_exp exp ^ " -}"
+
+and render_case a e typ = function
+  | [] ->
+    if e.it = TupE []
+    then render_con_name typ a
+    else render_con_name typ a $$ render_exp e
+  | (styp::styps) -> render_variant_inj typ styp $$ render_case a e styp styps
+
+let render_clause (id : id) (clause : clause) = match clause.it with
+  | DefD (_binds, lhs, rhs, premise) ->
+   (if premise <> [] then "-- Premises ignored! \n" else "") ^
+   id.it ^ " " ^ render_exp lhs ^ " = " ^ render_exp rhs
 
 let rec render_def (d : def) =
   "{- " (*  ^ Util.Source.string_of_region d.at ^ "\n"*)  ^
@@ -69,10 +98,14 @@ let rec render_def (d : def) =
         List.map (render_variant_case id) cases
       )
     | StructT fields ->
-      "type " ^ render_type_name id ^ " = " ^ render_tuple (
+      "type " ^ render_type_name id ^ " = " ^ render_tuple render_typ (
         List.map (fun (_a, ty, _hints) -> ty) fields
       )
     end
+  | DecD (id, typ1, typ2, clauses, _hints) ->
+    id.it ^ " :: " ^ render_typ typ1 ^ " -> " ^ render_typ typ2 ^ "\n" ^
+    String.concat "\n" (List.map (render_clause id) clauses)
+
   | RecD defs ->
     String.concat "\n" (List.map render_def defs)
   | _ -> ""
@@ -82,7 +115,7 @@ let render_script (el : script) =
 
 let gen_string (el : script) =
   "module Test where\n" ^
-  "import Prelude (Bool, String)\n" ^
+  "import Prelude (Bool, String, undefined)\n" ^
   "import Numeric.Natural (Natural)\n" ^
   render_script el
 
