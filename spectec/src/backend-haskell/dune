@@ -1,0 +1,5 @@
+(library
+  (name backend_haskell)
+  (libraries util el frontend str)
+  (modules gen)
+)

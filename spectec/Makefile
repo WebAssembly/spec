@@ -6,11 +6,13 @@ EXT = $(NAME)
 TESTDIRS = test-frontend test-latex
 
 
+DUNE_OPTS ?=
+
 # Main targets
 
 .PHONY: default all ci
 
-default: exe
+default: exe exe-haskell
 all: exe latex test
 ci: all test-frontend test-latex
 
@@ -24,8 +26,12 @@ OUTDIR = _build/default/src
 .PHONY: exe
 
 exe:
-	dune build $(SRCDIR)/$(EXE)
-	ln -f $(OUTDIR)/$(EXE) ./$(NAME)
+	dune build $(DUNE_OPTS) $(SRCDIR)/$(EXE)
+	ln -sf $(OUTDIR)/$(EXE) ./$(NAME)
+
+exe-haskell:
+	dune build $(DUNE_OPTS) $(SRCDIR)/exe-haskell/main.exe
+	ln -sf $(OUTDIR)/exe-haskell/main.exe ./$(NAME)-haskell
 
 
 # Latex

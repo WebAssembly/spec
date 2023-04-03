@@ -14,6 +14,8 @@
             ocamlPackages.ocaml
             ocamlPackages.menhir
             ocamlPackages.mdx
+            ocamlPackages.merlin
+            ghc
           ];
         };
     };
