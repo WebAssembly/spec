@@ -115,7 +115,7 @@ let free_prem prem =
   match prem.it with
   | RulePr (id, _mixop, exp, itero) ->
     union (free_relid id) (union (free_exp exp) (free_opt free_iter itero))
-  | IffPr (exp, itero) -> union (free_exp exp) (free_opt free_iter itero)
+  | IfPr (exp, itero) -> union (free_exp exp) (free_opt free_iter itero)
   | ElsePr -> empty
 
 let free_rule rule =

@@ -147,7 +147,7 @@ and clause' =
 and premise = premise' phrase
 and premise' =
   | RulePr of id * mixop * exp * iter option          (* premise *)
-  | IffPr of exp * iter option                        (* side condition *)
+  | IfPr of exp * iter option                         (* side condition *)
   | ElsePr                                            (* otherwise *)
 
 and hint = {hintid : id; hintexp : string list}       (* hint *)

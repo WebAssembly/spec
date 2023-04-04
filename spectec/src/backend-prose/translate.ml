@@ -64,14 +64,14 @@ let pop left = match left with
 
 let calc (prems: premise nl_list) : unit =
   prems |> List.iter (fun p -> match p with
-    | Elem { it = IffPr(e, None); _ } -> printf_step "Let %s." (Print.string_of_exp e)
+    | Elem { it = IfPr(e, None); _ } -> printf_step "Let %s." (Print.string_of_exp e)
     | _ -> ()
   )
 
 let cond (prems: premise nl_list) =
   prems
   |> List.map (fun p -> match p with
-    | Elem {it = IffPr(e, None); _} -> Print.string_of_exp e
+    | Elem {it = IfPr(e, None); _} -> Print.string_of_exp e
     | Elem p -> Print.string_of_premise p
     | Nl -> "Nl"
   )

@@ -186,7 +186,7 @@ rule token = parse
   | "var" { VAR }
   | "def" { DEF }
 
-  | "iff" { IFF }
+  | "if" { IF }
   | "otherwise" { OTHERWISE }
   | "hint" { HINT }
 

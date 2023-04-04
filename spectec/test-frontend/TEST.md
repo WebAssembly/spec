@@ -357,10 +357,10 @@ syntax context = {FUNC functype*, GLOBAL globaltype*, TABLE tabletype*, MEM memt
 
 ;; 3-typing.watsup:14.1-14.66
 relation Limits_ok: `|-%:%`(limits, nat)
-  ;; 3-typing.watsup:22.1-24.25
+  ;; 3-typing.watsup:22.1-24.24
   rule _ {k : nat, n_1 : n, n_2 : n}:
     `|-%:%`(`[%..%]`(n_1, n_2), k)
-    -- iff ((n_1 <= n_2) /\ (n_2 <= k))
+    -- if ((n_1 <= n_2) /\ (n_2 <= k))
 
 ;; 3-typing.watsup:15.1-15.64
 relation Functype_ok: `|-%:OK`(functype)
@@ -429,11 +429,11 @@ relation Resulttype_sub: `|-%<:%`(valtype*, valtype*)
 
 ;; 3-typing.watsup:75.1-75.75
 relation Limits_sub: `|-%<:%`(limits, limits)
-  ;; 3-typing.watsup:83.1-86.22
+  ;; 3-typing.watsup:83.1-86.21
   rule _ {n_11 : n, n_12 : n, n_21 : n, n_22 : n}:
     `|-%<:%`(`[%..%]`(n_11, n_12), `[%..%]`(n_21, n_22))
-    -- iff (n_11 >= n_21)
-    -- iff (n_12 <= n_22)
+    -- if (n_11 >= n_21)
+    -- if (n_12 <= n_22)
 
 ;; 3-typing.watsup:76.1-76.73
 relation Functype_sub: `|-%<:%`(functype, functype)
@@ -495,139 +495,139 @@ rec {
 
 ;; 3-typing.watsup:123.1-123.66
 relation Instr_ok: `%|-%:%`(context, instr, functype)
-  ;; 3-typing.watsup:344.1-349.33
+  ;; 3-typing.watsup:344.1-349.32
   rule store {C : context, in : in, mt : memtype, n : n, n_A : n, n_O : n, nt : numtype, t : valtype}:
     `%|-%:%`(C, STORE_instr(nt, n?, n_A, n_O), `%->%`([I32_valtype (nt <: valtype)], []))
-    -- iff (C.MEM_context[0] = mt)
-    -- iff ((2 ^ n_A) <= ($size(t) / 8))
-    -- (iff (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(t) / 8))))?
-    -- iff ((n? = ?()) \/ (nt = (in <: numtype)))
+    -- if (C.MEM_context[0] = mt)
+    -- if ((2 ^ n_A) <= ($size(t) / 8))
+    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(t) / 8))))?
+    -- if ((n? = ?()) \/ (nt = (in <: numtype)))
 
-  ;; 3-typing.watsup:337.1-342.33
+  ;; 3-typing.watsup:337.1-342.32
   rule load {C : context, in : in, mt : memtype, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, t : valtype}:
     `%|-%:%`(C, LOAD_instr(nt, ?((n, sx)), n_A, n_O), `%->%`([I32_valtype], [(nt <: valtype)]))
-    -- iff (C.MEM_context[0] = mt)
-    -- iff ((2 ^ n_A) <= ($size(t) / 8))
-    -- (iff (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(t) / 8))))?
-    -- iff ((n? = ?()) \/ (nt = (in <: numtype)))
+    -- if (C.MEM_context[0] = mt)
+    -- if ((2 ^ n_A) <= ($size(t) / 8))
+    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(t) / 8))))?
+    -- if ((n? = ?()) \/ (nt = (in <: numtype)))
 
-  ;; 3-typing.watsup:333.1-335.24
+  ;; 3-typing.watsup:333.1-335.23
   rule data.drop {C : context, x : idx}:
     `%|-%:%`(C, DATA.DROP_instr(x), `%->%`([], []))
-    -- iff (C.DATA_context[x] = OK)
+    -- if (C.DATA_context[x] = OK)
 
-  ;; 3-typing.watsup:328.1-331.24
+  ;; 3-typing.watsup:328.1-331.23
   rule memory.init {C : context, mt : memtype, x : idx}:
     `%|-%:%`(C, MEMORY.INIT_instr(x), `%->%`([I32_valtype I32_valtype I32_valtype], [I32_valtype]))
-    -- iff (C.MEM_context[0] = mt)
-    -- iff (C.DATA_context[x] = OK)
+    -- if (C.MEM_context[0] = mt)
+    -- if (C.DATA_context[x] = OK)
 
-  ;; 3-typing.watsup:324.1-326.23
+  ;; 3-typing.watsup:324.1-326.22
   rule memory.copy {C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY.COPY_instr, `%->%`([I32_valtype I32_valtype I32_valtype], [I32_valtype]))
-    -- iff (C.MEM_context[0] = mt)
+    -- if (C.MEM_context[0] = mt)
 
-  ;; 3-typing.watsup:320.1-322.23
+  ;; 3-typing.watsup:320.1-322.22
   rule memory.fill {C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY.FILL_instr, `%->%`([I32_valtype I32_valtype I32_valtype], [I32_valtype]))
-    -- iff (C.MEM_context[0] = mt)
+    -- if (C.MEM_context[0] = mt)
 
-  ;; 3-typing.watsup:316.1-318.23
+  ;; 3-typing.watsup:316.1-318.22
   rule memory.grow {C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY.GROW_instr, `%->%`([I32_valtype], [I32_valtype]))
-    -- iff (C.MEM_context[0] = mt)
+    -- if (C.MEM_context[0] = mt)
 
-  ;; 3-typing.watsup:312.1-314.23
+  ;; 3-typing.watsup:312.1-314.22
   rule memory.size {C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY.SIZE_instr, `%->%`([], [I32_valtype]))
-    -- iff (C.MEM_context[0] = mt)
+    -- if (C.MEM_context[0] = mt)
 
-  ;; 3-typing.watsup:307.1-309.24
+  ;; 3-typing.watsup:307.1-309.23
   rule elem.drop {C : context, rt : reftype, x : idx}:
     `%|-%:%`(C, ELEM.DROP_instr(x), `%->%`([], []))
-    -- iff (C.ELEM_context[x] = rt)
+    -- if (C.ELEM_context[x] = rt)
 
-  ;; 3-typing.watsup:302.1-305.26
+  ;; 3-typing.watsup:302.1-305.25
   rule table.init {C : context, lim : limits, rt : reftype, x_1 : idx, x_2 : idx}:
     `%|-%:%`(C, TABLE.INIT_instr(x_1, x_2), `%->%`([I32_valtype I32_valtype I32_valtype], []))
-    -- iff (C.TABLE_context[x_1] = `%%`(lim, rt))
-    -- iff (C.ELEM_context[x_2] = rt)
+    -- if (C.TABLE_context[x_1] = `%%`(lim, rt))
+    -- if (C.ELEM_context[x_2] = rt)
 
-  ;; 3-typing.watsup:297.1-300.33
+  ;; 3-typing.watsup:297.1-300.32
   rule table.copy {C : context, lim_1 : limits, lim_2 : limits, rt : reftype, x_1 : idx, x_2 : idx}:
     `%|-%:%`(C, TABLE.COPY_instr(x_1, x_2), `%->%`([I32_valtype I32_valtype I32_valtype], []))
-    -- iff (C.TABLE_context[x_1] = `%%`(lim_1, rt))
-    -- iff (C.TABLE_context[x_2] = `%%`(lim_2, rt))
+    -- if (C.TABLE_context[x_1] = `%%`(lim_1, rt))
+    -- if (C.TABLE_context[x_2] = `%%`(lim_2, rt))
 
-  ;; 3-typing.watsup:293.1-295.29
+  ;; 3-typing.watsup:293.1-295.28
   rule table.fill {C : context, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, TABLE.FILL_instr(x), `%->%`([I32_valtype (rt <: valtype) I32_valtype], []))
-    -- iff (C.TABLE_context[x] = `%%`(lim, rt))
+    -- if (C.TABLE_context[x] = `%%`(lim, rt))
 
-  ;; 3-typing.watsup:289.1-291.29
+  ;; 3-typing.watsup:289.1-291.28
   rule table.grow {C : context, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, TABLE.GROW_instr(x), `%->%`([(rt <: valtype) I32_valtype], [I32_valtype]))
-    -- iff (C.TABLE_context[x] = `%%`(lim, rt))
+    -- if (C.TABLE_context[x] = `%%`(lim, rt))
 
-  ;; 3-typing.watsup:285.1-287.25
+  ;; 3-typing.watsup:285.1-287.24
   rule table.size {C : context, tt : tabletype, x : idx}:
     `%|-%:%`(C, TABLE.SIZE_instr(x), `%->%`([], [I32_valtype]))
-    -- iff (C.TABLE_context[x] = tt)
+    -- if (C.TABLE_context[x] = tt)
 
-  ;; 3-typing.watsup:281.1-283.29
+  ;; 3-typing.watsup:281.1-283.28
   rule table.set {C : context, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, TABLE.SET_instr(x), `%->%`([I32_valtype (rt <: valtype)], []))
-    -- iff (C.TABLE_context[x] = `%%`(lim, rt))
+    -- if (C.TABLE_context[x] = `%%`(lim, rt))
 
-  ;; 3-typing.watsup:277.1-279.29
+  ;; 3-typing.watsup:277.1-279.28
   rule table.get {C : context, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, TABLE.GET_instr(x), `%->%`([I32_valtype], [(rt <: valtype)]))
-    -- iff (C.TABLE_context[x] = `%%`(lim, rt))
+    -- if (C.TABLE_context[x] = `%%`(lim, rt))
 
-  ;; 3-typing.watsup:272.1-274.29
+  ;; 3-typing.watsup:272.1-274.28
   rule global.set {C : context, t : valtype, x : idx}:
     `%|-%:%`(C, GLOBAL.SET_instr(x), `%->%`([t], []))
-    -- iff (C.GLOBAL_context[x] = `MUT%?%`(?(()), t))
+    -- if (C.GLOBAL_context[x] = `MUT%?%`(?(()), t))
 
-  ;; 3-typing.watsup:268.1-270.30
+  ;; 3-typing.watsup:268.1-270.29
   rule global.get {C : context, t : valtype, x : idx}:
     `%|-%:%`(C, GLOBAL.GET_instr(x), `%->%`([], [t]))
-    -- iff (C.GLOBAL_context[x] = `MUT%?%`(?(()), t))
+    -- if (C.GLOBAL_context[x] = `MUT%?%`(?(()), t))
 
   ;; 3-typing.watsup:264.1-265.31
   rule ref.is_null {C : context, rt : reftype}:
     `%|-%:%`(C, REF.IS_NULL_instr, `%->%`([(rt <: valtype)], [I32_valtype]))
 
-  ;; 3-typing.watsup:260.1-262.24
+  ;; 3-typing.watsup:260.1-262.23
   rule ref.func {C : context, ft : functype, x : idx}:
     `%|-%:%`(C, REF.FUNC_instr(x), `%->%`([], [FUNCREF_valtype]))
-    -- iff (C.FUNC_context[x] = ft)
+    -- if (C.FUNC_context[x] = ft)
 
   ;; 3-typing.watsup:257.1-258.35
   rule ref.null {C : context, rt : reftype}:
     `%|-%:%`(C, REF.NULL_instr(rt), `%->%`([], [(rt <: valtype)]))
 
-  ;; 3-typing.watsup:252.1-254.23
+  ;; 3-typing.watsup:252.1-254.22
   rule convert-f {C : context, fn_1 : fn, fn_2 : fn}:
     `%|-%:%`(C, CVTOP_instr((fn_1 <: numtype), CONVERT_cvtop, (fn_2 <: numtype), ?()), `%->%`([(fn_2 <: valtype)], [(fn_1 <: valtype)]))
-    -- iff (fn_1 =/= fn_2)
+    -- if (fn_1 =/= fn_2)
 
-  ;; 3-typing.watsup:247.1-250.53
+  ;; 3-typing.watsup:247.1-250.52
   rule convert-i {C : context, in_1 : in, in_2 : in, sx : sx}:
     `%|-%:%`(C, CVTOP_instr((in_1 <: numtype), CONVERT_cvtop, (in_2 <: numtype), sx?), `%->%`([(in_2 <: valtype)], [(in_1 <: valtype)]))
-    -- iff (in_1 =/= in_2)
-    -- iff ((sx? = ?()) <=> ($size(in_1 <: valtype) > $size(in_2 <: valtype)))
+    -- if (in_1 =/= in_2)
+    -- if ((sx? = ?()) <=> ($size(in_1 <: valtype) > $size(in_2 <: valtype)))
 
-  ;; 3-typing.watsup:242.1-245.35
+  ;; 3-typing.watsup:242.1-245.34
   rule reinterpret {C : context, nt_1 : numtype, nt_2 : numtype}:
     `%|-%:%`(C, CVTOP_instr(nt_1, REINTERPRET_cvtop, nt_2, ?()), `%->%`([(nt_2 <: valtype)], [(nt_1 <: valtype)]))
-    -- iff (nt_1 =/= nt_2)
-    -- iff ($size(nt_1 <: valtype) = $size(nt_2 <: valtype))
+    -- if (nt_1 =/= nt_2)
+    -- if ($size(nt_1 <: valtype) = $size(nt_2 <: valtype))
 
-  ;; 3-typing.watsup:238.1-240.24
+  ;; 3-typing.watsup:238.1-240.23
   rule extend {C : context, n : n, nt : numtype}:
     `%|-%:%`(C, EXTEND_instr(nt, n), `%->%`([(nt <: valtype)], [(nt <: valtype)]))
-    -- iff (n <= $size(nt <: valtype))
+    -- if (n <= $size(nt <: valtype))
 
   ;; 3-typing.watsup:234.1-235.37
   rule relop {C : context, nt : numtype, relop : relop_numtype}:
@@ -649,21 +649,21 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule const {C : context, c_nt : c_numtype, nt : numtype}:
     `%|-%:%`(C, CONST_instr(nt, c_nt), `%->%`([], [(nt <: valtype)]))
 
-  ;; 3-typing.watsup:216.1-219.27
+  ;; 3-typing.watsup:216.1-219.26
   rule call_indirect {C : context, ft : functype, lim : limits, t_1 : valtype, t_2 : valtype, x : idx}:
     `%|-%:%`(C, CALL_INDIRECT_instr(x, ft), `%->%`(t_1* :: [I32_valtype], t_2*))
-    -- iff (C.TABLE_context[x] = `%%`(lim, FUNCREF_reftype))
-    -- iff (ft = `%->%`(t_1*, t_2*))
+    -- if (C.TABLE_context[x] = `%%`(lim, FUNCREF_reftype))
+    -- if (ft = `%->%`(t_1*, t_2*))
 
-  ;; 3-typing.watsup:212.1-214.34
+  ;; 3-typing.watsup:212.1-214.33
   rule call {C : context, t_1 : valtype, t_2 : valtype, x : idx}:
     `%|-%:%`(C, CALL_instr(x), `%->%`(t_1*, t_2*))
-    -- iff (C.FUNC_context[x] = `%->%`(t_1*, t_2*))
+    -- if (C.FUNC_context[x] = `%->%`(t_1*, t_2*))
 
-  ;; 3-typing.watsup:208.1-210.25
+  ;; 3-typing.watsup:208.1-210.24
   rule return {C : context, t : valtype, t_1 : valtype, t_2 : valtype}:
     `%|-%:%`(C, RETURN_instr, `%->%`(t_1* :: t*, t_2*))
-    -- iff (C.RETURN_context = ?(t*))
+    -- if (C.RETURN_context = ?(t*))
 
   ;; 3-typing.watsup:203.1-206.42
   rule br_table {C : context, l : labelidx, l' : labelidx, t : valtype, t_1 : valtype, t_2 : valtype}:
@@ -671,15 +671,15 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- (Resulttype_sub: `|-%<:%`(t*, C.LABEL_context[l]))*
     -- Resulttype_sub: `|-%<:%`(t*, C.LABEL_context[l'])
 
-  ;; 3-typing.watsup:199.1-201.25
+  ;; 3-typing.watsup:199.1-201.24
   rule br_if {C : context, l : labelidx, t : valtype}:
     `%|-%:%`(C, BR_IF_instr(l), `%->%`(t* :: [I32_valtype], t*))
-    -- iff (C.LABEL_context[l] = t*)
+    -- if (C.LABEL_context[l] = t*)
 
-  ;; 3-typing.watsup:195.1-197.25
+  ;; 3-typing.watsup:195.1-197.24
   rule br {C : context, l : labelidx, t : valtype, t_1 : valtype, t_2 : valtype}:
     `%|-%:%`(C, BR_instr(l), `%->%`(t_1* :: t*, t_2*))
-    -- iff (C.LABEL_context[l] = t*)
+    -- if (C.LABEL_context[l] = t*)
 
   ;; 3-typing.watsup:188.1-192.59
   rule if {C : context, bt : blocktype, instr_1 : instr, instr_2 : instr, t_1 : valtype, t_2 : valtype}:
@@ -700,11 +700,11 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*, t_2*))
     -- InstrSeq_ok: `%|-%:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2]*, RETURN ?()}, instr*, `%->%`(t_1*, t_2*))
 
-  ;; 3-typing.watsup:166.1-169.38
+  ;; 3-typing.watsup:166.1-169.37
   rule select-impl {C : context, numtype : numtype, t : valtype, t' : valtype, vectype : vectype}:
     `%|-%:%`(C, SELECT_instr(?()), `%->%`([t t I32_valtype], [t]))
     -- Valtype_sub: `|-%<:%`(t, t')
-    -- iff ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
+    -- if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
 
   ;; 3-typing.watsup:163.1-164.31
   rule select-expl {C : context, t : valtype}:
@@ -756,10 +756,10 @@ relation Expr_ok: `%|-%:%`(context, expr, resulttype)
 
 ;; 3-typing.watsup:354.1-354.78
 relation Instr_const: `%|-%CONST`(context, instr)
-  ;; 3-typing.watsup:367.1-369.33
+  ;; 3-typing.watsup:367.1-369.32
   rule global.get {C : context, t : valtype, x : idx}:
     `%|-%CONST`(C, GLOBAL.GET_instr(x))
-    -- iff (C.GLOBAL_context[x] = `MUT%?%`(?(), t))
+    -- if (C.GLOBAL_context[x] = `MUT%?%`(?(), t))
 
   ;; 3-typing.watsup:364.1-365.26
   rule ref.func {C : context, x : idx}:
@@ -793,7 +793,7 @@ relation Func_ok: `%|-%:%`(context, func, functype)
   ;; 3-typing.watsup:395.1-399.75
   rule _ {C : context, expr : expr, ft : functype, t : valtype, t_1 : valtype, t_2 : valtype}:
     `%|-%:%`(C, FUNC(ft, t*, expr), ft)
-    -- iff (ft = `%->%`(t_1*, t_2*))
+    -- if (ft = `%->%`(t_1*, t_2*))
     -- Functype_ok: `|-%:OK`(ft)
     -- Expr_ok: `%|-%:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL t_1* :: t*, LABEL [], RETURN ?()} ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*], RETURN ?()} ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?(t_2*)}, expr, t_2*)
 
@@ -803,7 +803,7 @@ relation Global_ok: `%|-%:%`(context, global, globaltype)
   rule _ {C : context, expr : expr, gt : globaltype, t : valtype}:
     `%|-%:%`(C, GLOBAL(gt, expr), gt)
     -- Globaltype_ok: `|-%:OK`(gt)
-    -- iff (gt = `MUT%?%`(?(()), t))
+    -- if (gt = `MUT%?%`(?(()), t))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, t)
 
 ;; 3-typing.watsup:386.1-386.74
@@ -829,7 +829,7 @@ relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
   ;; 3-typing.watsup:425.1-428.45
   rule active {C : context, expr : expr, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, TABLE_elemmode(x, expr), rt)
-    -- iff (C.TABLE_context[x] = `%%`(lim, rt))
+    -- if (C.TABLE_context[x] = `%%`(lim, rt))
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*
 
 ;; 3-typing.watsup:388.1-388.73
@@ -845,7 +845,7 @@ relation Datamode_ok: `%|-%:OK`(context, datamode)
   ;; 3-typing.watsup:433.1-436.45
   rule _ {C : context, expr : expr, mt : memtype}:
     `%|-%:OK`(C, MEMORY_datamode(0, expr))
-    -- iff (C.MEM_context[0] = mt)
+    -- if (C.MEM_context[0] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*
 
 ;; 3-typing.watsup:389.1-389.73
@@ -857,10 +857,10 @@ relation Data_ok: `%|-%:OK`(context, data)
 
 ;; 3-typing.watsup:392.1-392.74
 relation Start_ok: `%|-%:OK`(context, start)
-  ;; 3-typing.watsup:438.1-440.40
+  ;; 3-typing.watsup:438.1-440.39
   rule _ {C : context, x : idx}:
     `%|-%:OK`(C, START(x))
-    -- iff (C.FUNC_context[x] = `%->%`([], []))
+    -- if (C.FUNC_context[x] = `%->%`([], []))
 
 ;; 3-typing.watsup:443.1-443.80
 relation Import_ok: `%|-%:%`(context, import, externtype)
@@ -871,25 +871,25 @@ relation Import_ok: `%|-%:%`(context, import, externtype)
 
 ;; 3-typing.watsup:445.1-445.83
 relation Externuse_ok: `%|-%:%`(context, externuse, externtype)
-  ;; 3-typing.watsup:467.1-469.23
+  ;; 3-typing.watsup:467.1-469.22
   rule mem {C : context, mt : memtype, x : idx}:
     `%|-%:%`(C, MEMORY_externuse(x), MEMORY_externtype(mt))
-    -- iff (C.MEM_context[x] = mt)
+    -- if (C.MEM_context[x] = mt)
 
-  ;; 3-typing.watsup:463.1-465.25
+  ;; 3-typing.watsup:463.1-465.24
   rule table {C : context, tt : tabletype, x : idx}:
     `%|-%:%`(C, TABLE_externuse(x), TABLE_externtype(tt))
-    -- iff (C.TABLE_context[x] = tt)
+    -- if (C.TABLE_context[x] = tt)
 
-  ;; 3-typing.watsup:459.1-461.26
+  ;; 3-typing.watsup:459.1-461.25
   rule global {C : context, gt : globaltype, x : idx}:
     `%|-%:%`(C, GLOBAL_externuse(x), GLOBAL_externtype(gt))
-    -- iff (C.GLOBAL_context[x] = gt)
+    -- if (C.GLOBAL_context[x] = gt)
 
-  ;; 3-typing.watsup:455.1-457.24
+  ;; 3-typing.watsup:455.1-457.23
   rule func {C : context, ft : functype, x : idx}:
     `%|-%:%`(C, FUNC_externuse(x), FUNC_externtype(ft))
-    -- iff (C.FUNC_context[x] = ft)
+    -- if (C.FUNC_context[x] = ft)
 
 ;; 3-typing.watsup:444.1-444.80
 relation Export_ok: `%|-%:%`(context, export, externtype)
@@ -900,7 +900,7 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 
 ;; 3-typing.watsup:472.1-472.62
 relation Module_ok: `|-%:OK`(module)
-  ;; 3-typing.watsup:474.1-486.23
+  ;; 3-typing.watsup:474.1-486.22
   rule _ {C : context, data : data, elem : elem, export : export, ft : functype, func : func, global : global, gt : globaltype, import : import, mem : mem, mt : memtype, n : n, rt : reftype, start : start, table : table, tt : tabletype}:
     `|-%:OK`(MODULE(import*, func*, global*, table*, mem*, elem*, data^n, start*, export*))
     -- (Func_ok: `%|-%:%`(C, func, ft))*
@@ -910,9 +910,9 @@ relation Module_ok: `|-%:OK`(module)
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*
     -- (Data_ok: `%|-%:OK`(C, data))^n
     -- (Start_ok: `%|-%:OK`(C, start))*
-    -- iff (C = {FUNC ft*, GLOBAL gt*, TABLE tt*, MEM mt*, ELEM rt*, DATA OK^n, LOCAL [], LABEL [], RETURN ?()})
-    -- iff (|mem*| <= 1)
-    -- iff (|start*| <= 1)
+    -- if (C = {FUNC ft*, GLOBAL gt*, TABLE tt*, MEM mt*, ELEM rt*, DATA OK^n, LOCAL [], LABEL [], RETURN ?()})
+    -- if (|mem*| <= 1)
+    -- if (|start*| <= 1)
 
 ;; 4-runtime.watsup:3.1-3.39
 syntax addr = nat
@@ -1063,25 +1063,25 @@ syntax E =
 
 ;; 5-reduction.watsup:5.1-5.63
 relation Step_pure: `%~>%`(admininstr*, admininstr*)
-  ;; 5-reduction.watsup:70.1-72.19
+  ;; 5-reduction.watsup:70.1-72.18
   rule br_table-le {i : nat, l : labelidx, l' : labelidx}:
     `%~>%`([CONST_admininstr(I32_numtype, i) BR_TABLE_admininstr(l*, l')], [BR_admininstr(l')])
-    -- iff (i >= |l*|)
+    -- if (i >= |l*|)
 
-  ;; 5-reduction.watsup:66.1-68.18
+  ;; 5-reduction.watsup:66.1-68.17
   rule br_table-lt {i : nat, l : labelidx, l' : labelidx}:
     `%~>%`([CONST_admininstr(I32_numtype, i) BR_TABLE_admininstr(l*, l')], [BR_admininstr(l*[i])])
-    -- iff (i < |l*|)
+    -- if (i < |l*|)
 
-  ;; 5-reduction.watsup:61.1-63.15
+  ;; 5-reduction.watsup:61.1-63.14
   rule br_if-false {c : c_numtype, l : labelidx}:
     `%~>%`([CONST_admininstr(I32_numtype, c) BR_IF_admininstr(l)], [])
-    -- iff (c = 0)
+    -- if (c = 0)
 
-  ;; 5-reduction.watsup:57.1-59.17
+  ;; 5-reduction.watsup:57.1-59.16
   rule br_if-true {c : c_numtype, l : labelidx}:
     `%~>%`([CONST_admininstr(I32_numtype, c) BR_IF_admininstr(l)], [BR_admininstr(l)])
-    -- iff (c =/= 0)
+    -- if (c =/= 0)
 
   ;; 5-reduction.watsup:53.1-54.65
   rule br-succ {instr : instr, instr' : instr, l : labelidx, n : n, val : val}:
@@ -1091,35 +1091,35 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
   rule br-zero {instr : instr, instr' : instr, n : n, val : val, val' : val}:
     `%~>%`([LABEL__admininstr(n, instr'*, (val' <: admininstr)* :: (val <: admininstr)^n :: [BR_admininstr(0)] :: (instr <: admininstr)*)], (val <: admininstr)^n :: (instr' <: admininstr)*)
 
-  ;; 5-reduction.watsup:45.1-47.15
+  ;; 5-reduction.watsup:45.1-47.14
   rule if-false {bt : blocktype, c : c_numtype, instr_1 : instr, instr_2 : instr}:
     `%~>%`([CONST_admininstr(I32_numtype, c) IF_admininstr(bt, instr_1*, instr_2*)], [BLOCK_admininstr(bt, instr_2*)])
-    -- iff (c = 0)
+    -- if (c = 0)
 
-  ;; 5-reduction.watsup:41.1-43.17
+  ;; 5-reduction.watsup:41.1-43.16
   rule if-true {bt : blocktype, c : c_numtype, instr_1 : instr, instr_2 : instr}:
     `%~>%`([CONST_admininstr(I32_numtype, c) IF_admininstr(bt, instr_1*, instr_2*)], [BLOCK_admininstr(bt, instr_1*)])
-    -- iff (c =/= 0)
+    -- if (c =/= 0)
 
-  ;; 5-reduction.watsup:37.1-39.29
+  ;; 5-reduction.watsup:37.1-39.28
   rule loop {bt : blocktype, instr : instr, k : nat, n : n, t_1 : valtype, t_2 : valtype, val : val}:
     `%~>%`((val <: admininstr)^k :: [LOOP_admininstr(bt, instr*)], [LABEL__admininstr(n, [LOOP_instr(bt, instr*)], (val <: admininstr)^k :: (instr <: admininstr)*)])
-    -- iff (bt = `%->%`(t_1^k, t_2^n))
+    -- if (bt = `%->%`(t_1^k, t_2^n))
 
-  ;; 5-reduction.watsup:33.1-35.29
+  ;; 5-reduction.watsup:33.1-35.28
   rule block {bt : blocktype, instr : instr, k : nat, n : n, t_1 : valtype, t_2 : valtype, val : val}:
     `%~>%`((val <: admininstr)^k :: [BLOCK_admininstr(bt, instr*)], [LABEL__admininstr(n, [], (val <: admininstr)^k :: (instr <: admininstr)*)])
-    -- iff (bt = `%->%`(t_1^k, t_2^n))
+    -- if (bt = `%->%`(t_1^k, t_2^n))
 
-  ;; 5-reduction.watsup:29.1-31.15
+  ;; 5-reduction.watsup:29.1-31.14
   rule select-false {c : c_numtype, t : valtype, val_1 : val, val_2 : val}:
     `%~>%`([(val_1 <: admininstr) (val_2 <: admininstr) CONST_admininstr(I32_numtype, c) SELECT_admininstr(t?)], [(val_2 <: admininstr)])
-    -- iff (c = 0)
+    -- if (c = 0)
 
-  ;; 5-reduction.watsup:25.1-27.17
+  ;; 5-reduction.watsup:25.1-27.16
   rule select-true {c : c_numtype, t : valtype, val_1 : val, val_2 : val}:
     `%~>%`([(val_1 <: admininstr) (val_2 <: admininstr) CONST_admininstr(I32_numtype, c) SELECT_admininstr(t?)], [(val_1 <: admininstr)])
-    -- iff (c =/= 0)
+    -- if (c =/= 0)
 
   ;; 5-reduction.watsup:22.1-23.24
   rule drop {val : val}:
@@ -1135,21 +1135,21 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
 
 ;; 5-reduction.watsup:4.1-4.63
 relation Step_read: `%~>%`(config, admininstr*)
-  ;; 5-reduction.watsup:87.1-89.62
+  ;; 5-reduction.watsup:87.1-89.61
   rule call_addr {a : addr, instr : instr, k : nat, m : moduleinst, n : n, t : valtype, t_1 : valtype, t_2 : valtype, val : val, z : state}:
     `%~>%`(`%;%`(z, (val <: admininstr)^k :: [CALL_ADDR_admininstr(a)]), [FRAME__admininstr(n, `%;%`(m, val^k :: $default_(t)*), [LABEL__admininstr(n, [], (instr <: admininstr)*)])])
-    -- iff ($funcinst(z)[a] = `%;%`(m, FUNC(`%->%`(t_1^k, t_2^n), t*, instr*)))
+    -- if ($funcinst(z)[a] = `%;%`(m, FUNC(`%->%`(t_1^k, t_2^n), t*, instr*)))
 
   ;; 5-reduction.watsup:83.1-85.15
   rule call_indirect-trap {ft : functype, i : nat, x : idx, z : state}:
     `%~>%`(`%;%`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, ft)]), [TRAP_admininstr])
     -- otherwise
 
-  ;; 5-reduction.watsup:78.1-81.35
+  ;; 5-reduction.watsup:78.1-81.34
   rule call_indirect-call {a : addr, ft : functype, func : func, i : nat, m : moduleinst, x : idx, z : state}:
     `%~>%`(`%;%`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, ft)]), [CALL_ADDR_admininstr(a)])
-    -- iff ($table(z, x)[i] = REF.FUNC_ADDR_ref(a))
-    -- iff ($funcinst(z)[a] = `%;%`(m, func))
+    -- if ($table(z, x)[i] = REF.FUNC_ADDR_ref(a))
+    -- if ($funcinst(z)[a] = `%;%`(m, func))
 
   ;; 5-reduction.watsup:75.1-76.47
   rule call {x : idx, z : state}:
@@ -2809,9 +2809,9 @@ NOP ~> epsilon
 2. Pop the value val from the stack.
 
 {val_1 val_2 ({CONST I32 c}) ({SELECT t?})} ~> val_1
-    -- iff c =/= 0
+    -- if c =/= 0
 {val_1 val_2 ({CONST I32 c}) ({SELECT t?})} ~> val_2
-    -- iff c = 0
+    -- if c = 0
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value ({CONST I32 c}) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -2824,7 +2824,7 @@ NOP ~> epsilon
   1) Push the value val_2 to the stack.
 
 {val^k ({BLOCK bt instr*})} ~> ({LABEL_ n `{epsilon} val^k instr*})
-    -- iff bt = t_1^k -> t_2^n
+    -- if bt = t_1^k -> t_2^n
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val^k from the stack.
 3. Let bt = t_1^k -> t_2^n.
@@ -2832,7 +2832,7 @@ NOP ~> epsilon
 5. Enter the block val^k instr* with label L.
 
 {val^k ({LOOP bt instr*})} ~> ({LABEL_ n `{{LOOP bt instr*}} val^k instr*})
-    -- iff bt = t_1^k -> t_2^n
+    -- if bt = t_1^k -> t_2^n
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val^k from the stack.
 3. Let bt = t_1^k -> t_2^n.
@@ -2840,9 +2840,9 @@ NOP ~> epsilon
 5. Enter the block val^k instr* with label L.
 
 {({CONST I32 c}) ({IF bt instr_1* ELSE instr_2*})} ~> ({BLOCK bt instr_1*})
-    -- iff c =/= 0
+    -- if c =/= 0
 {({CONST I32 c}) ({IF bt instr_1* ELSE instr_2*})} ~> ({BLOCK bt instr_2*})
-    -- iff c = 0
+    -- if c = 0
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value ({CONST I32 c}) from the stack.
 3. If c =/= 0, then:
@@ -2857,9 +2857,9 @@ NOP ~> epsilon
 1. YET: Bubble-up semantics.
 
 {({CONST I32 c}) ({BR_IF l})} ~> ({BR l})
-    -- iff c =/= 0
+    -- if c =/= 0
 {({CONST I32 c}) ({BR_IF l})} ~> epsilon
-    -- iff c = 0
+    -- if c = 0
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value ({CONST I32 c}) from the stack.
 3. If c =/= 0, then:
@@ -2868,9 +2868,9 @@ NOP ~> epsilon
   1) Do nothing.
 
 {({CONST I32 i}) ({BR_TABLE l* l'})} ~> ({BR l*[i]})
-    -- iff i < |l*|
+    -- if i < |l*|
 {({CONST I32 i}) ({BR_TABLE l* l'})} ~> ({BR l'})
-    -- iff i >= |l*|
+    -- if i >= |l*|
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value ({CONST I32 i}) from the stack.
 3. If i < |l*|, then:
@@ -2884,8 +2884,8 @@ z ; ({CALL x}) ~> ({CALL_ADDR $funcaddr(z)[x]})
 2. Execute the instruction CALL_ADDR tmp0.
 
 z ; {({CONST I32 i}) ({CALL_INDIRECT x ft})} ~> ({CALL_ADDR a})
-    -- iff $table(z, x)[i] = ({REF.FUNC_ADDR a})
-    -- iff $funcinst(z)[a] = m ; func
+    -- if $table(z, x)[i] = ({REF.FUNC_ADDR a})
+    -- if $funcinst(z)[a] = m ; func
 z ; {({CONST I32 i}) ({CALL_INDIRECT x ft})} ~> TRAP
     -- otherwise
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -2896,7 +2896,7 @@ z ; {({CONST I32 i}) ({CALL_INDIRECT x ft})} ~> TRAP
   1) Trap.
 
 z ; {val^k ({CALL_ADDR a})} ~> ({FRAME_ n `{m ; {val^k ($default_(t))*}} ({LABEL_ n `{epsilon} instr*})})
-    -- iff $funcinst(z)[a] = m ; {FUNC (t_1^k -> t_2^n) t* instr*}
+    -- if $funcinst(z)[a] = m ; {FUNC (t_1^k -> t_2^n) t* instr*}
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val^k from the stack.
 3. Let $funcinst(z)[a] = m ; {FUNC (t_1^k -> t_2^n) t* instr*}.

@@ -24,27 +24,27 @@ rule Step_pure/drop:
 
 rule Step_pure/select-true:
   val_1 val_2 (CONST I32 c) (SELECT t?)  ~>  val_1
-  -- iff c =/= 0
+  -- if c =/= 0
 
 rule Step_pure/select-false:
   val_1 val_2 (CONST I32 c) (SELECT t?)  ~>  val_2
-  -- iff c = 0
+  -- if c = 0
 
 rule Step_pure/block:
   val^k (BLOCK bt instr*)  ~>  (LABEL_ n `{epsilon} val^k instr*)
-  -- iff bt = t_1^k -> t_2^n
+  -- if bt = t_1^k -> t_2^n
 
 rule Step_pure/loop:
   val^k (LOOP bt instr*)  ~>  (LABEL_ n `{LOOP bt instr*} val^k instr*)
-  -- iff bt = t_1^k -> t_2^n
+  -- if bt = t_1^k -> t_2^n
 
 rule Step_pure/if-true:
   (CONST I32 c) (IF bt instr_1* ELSE instr_2*)  ~>  (BLOCK bt instr_1*)
-  -- iff c =/= 0
+  -- if c =/= 0
 
 rule Step_pure/if-false:
   (CONST I32 c) (IF bt instr_1* ELSE instr_2*)  ~>  (BLOCK bt instr_2*)
-  -- iff c = 0
+  -- if c = 0
 
 
 rule Step_pure/br-zero:
@@ -56,20 +56,20 @@ rule Step_pure/br-succ:
 
 rule Step_pure/br_if-true:
   (CONST I32 c) (BR_IF l)  ~>  (BR l)
-  -- iff c =/= 0
+  -- if c =/= 0
 
 rule Step_pure/br_if-false:
   (CONST I32 c) (BR_IF l)  ~>  epsilon
-  -- iff c = 0
+  -- if c = 0
 
 
 rule Step_pure/br_table-lt:
   (CONST I32 i) (BR_TABLE l* l')  ~>  (BR l*[i])
-  -- iff i < |l*|
+  -- if i < |l*|
 
 rule Step_pure/br_table-le:
   (CONST I32 i) (BR_TABLE l* l')  ~>  (BR l')
-  -- iff i >= |l*|
+  -- if i >= |l*|
 
 
 rule Step_read/call:
@@ -77,8 +77,8 @@ rule Step_read/call:
 
 rule Step_read/call_indirect-call:
   z; (CONST I32 i) (CALL_INDIRECT x ft)  ~>  (CALL_ADDR a)
-  -- iff $table(z, x)[i] = (REF.FUNC_ADDR a)
-  -- iff $funcinst(z)[a] = m; func
+  -- if $table(z, x)[i] = (REF.FUNC_ADDR a)
+  -- if $funcinst(z)[a] = m; func
 
 rule Step_read/call_indirect-trap:
   z; (CONST I32 i) (CALL_INDIRECT x ft)  ~>  TRAP
@@ -86,4 +86,4 @@ rule Step_read/call_indirect-trap:
 
 rule Step_read/call_addr:
   z; val^k (CALL_ADDR a)  ~>  (FRAME_ n `{m; val^k ($default_(t))*} (LABEL_ n `{epsilon} instr*))
-  -- iff $funcinst(z)[a] = m; FUNC (t_1^k -> t_2^n) t* instr*
+  -- if $funcinst(z)[a] = m; FUNC (t_1^k -> t_2^n) t* instr*

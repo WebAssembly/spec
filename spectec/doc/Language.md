@@ -178,10 +178,10 @@ def ::=
 
 premise ::=
   relid ":" exp                                               relational premise
-  "iff" exp                                                   side condition
+  "if" exp                                                    side condition
   "otherwise"                                                 fallback side condition
   "(" relid ":" exp ")" iter                                  iterated relational premise
-  "(" "iff" exp ")" iter                                      iterated side condition
+  "(" "if" exp ")" iter                                       iterated side condition
 
 hint ::=
   "hint" "(" hintid exp ")"                                   hint

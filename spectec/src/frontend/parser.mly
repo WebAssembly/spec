@@ -77,7 +77,7 @@ let signify_parens prec = function
 %token HOLE MULTIHOLE FUSE
 %token BOOL NAT TEXT
 %token SYNTAX RELATION RULE VAR DEF
-%token IFF OTHERWISE HINT
+%token IF OTHERWISE HINT
 %token EPSILON
 %token<bool> BOOLLIT
 %token<int> NATLIT
@@ -121,7 +121,7 @@ fieldid : atomid_ { Atom $1 }
 dotid : DOTID { Atom $1 }
 
 ruleid : ruleid_ { $1 }
-ruleid_ : id { $1 } | ruleid_ DOTID { $1 ^ "." ^ $2 }
+ruleid_ : id { $1 } | IF { "if" } | ruleid_ DOTID { $1 ^ "." ^ $2 }
 atomid : atomid_ { $1 } | atomid DOTID { $1 ^ "." ^ $2 }
 
 atom :
@@ -487,13 +487,13 @@ premise_list :
 premise : premise_ { $1 $ at $sloc }
 premise_ :
   | relid COLON exp { RulePr ($1, $3, None) }
-  | IFF exp
+  | IF exp
     { match $2.it with
-      | IterE (exp1, iter) -> IffPr (exp1, Some iter)
-      | _ -> IffPr ($2, None) }
+      | IterE (exp1, iter) -> IfPr (exp1, Some iter)
+      | _ -> IfPr ($2, None) }
   | OTHERWISE { ElsePr }
   | LPAR relid COLON exp RPAR iter { RulePr ($2, $4, Some $6) }
-  | LPAR IFF exp RPAR iter { IffPr ($3, Some $5) }
+  | LPAR IF exp RPAR iter { IfPr ($3, Some $5) }
 
 hint :
   | HINT LPAR hintid exp RPAR { {hintid = $3 $ at $loc($3); hintexp = $4} }

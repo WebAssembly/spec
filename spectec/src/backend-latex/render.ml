@@ -562,9 +562,9 @@ let render_premise env prem =
   | RulePr (id, exp, Some iter) ->
     let env' = {env with current_rel = id.it} in
     "(" ^ render_exp env' exp ^ ")" ^ render_iter env' iter
-  | IffPr (exp, None) ->
+  | IfPr (exp, None) ->
     render_exp env exp
-  | IffPr (exp, Some iter) ->
+  | IfPr (exp, Some iter) ->
     "(" ^ render_exp env exp ^ ")" ^ render_iter env iter
   | ElsePr ->
     error prem.at "misplaced `otherwise` premise"

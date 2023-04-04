@@ -439,7 +439,7 @@ let valid_prem env prem =
   | RulePr (id, mixop, exp, iter_opt) ->
     valid_expmix env mixop exp (find "relation" env.rels id) exp.at;
     Option.iter (valid_iter env) iter_opt
-  | IffPr (exp, iter_opt) ->
+  | IfPr (exp, iter_opt) ->
     valid_exp env exp (BoolT $ exp.at);
     Option.iter (valid_iter env) iter_opt
   | ElsePr ->

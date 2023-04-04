@@ -938,10 +938,10 @@ let elab_prem env prem : Il.premise =
     let exps' = elab_exp_notation' env exp nottyp in
     let iter_opt' = Option.map (elab_iter env) iter_opt in
     Il.RulePr (id, mixop', tup_exp' exps' exp.at, iter_opt') $ prem.at
-  | IffPr (exp, iter_opt) ->
+  | IfPr (exp, iter_opt) ->
     let exp' = elab_exp env exp (BoolT $ exp.at) in
     let iter_opt' = Option.map (elab_iter env) iter_opt in
-    Il.IffPr (exp', iter_opt') $ prem.at
+    Il.IfPr (exp', iter_opt') $ prem.at
   | ElsePr ->
     Il.ElsePr $ prem.at
 

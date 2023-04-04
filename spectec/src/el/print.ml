@@ -194,9 +194,9 @@ let string_of_premise prem =
   | RulePr (id, exp, None) -> id.it ^ ": " ^ string_of_exp exp
   | RulePr (id, exp, Some iter) ->
     "(" ^ id.it ^ ": " ^ string_of_exp exp ^ ")" ^ string_of_iter iter
-  | IffPr (exp, None) -> "iff " ^ string_of_exp exp
-  | IffPr (exp, Some iter) ->
-    "(" ^ "iff " ^ string_of_exp exp ^ ")" ^ string_of_iter iter
+  | IfPr (exp, None) -> "if " ^ string_of_exp exp
+  | IfPr (exp, Some iter) ->
+    "(" ^ "if " ^ string_of_exp exp ^ ")" ^ string_of_iter iter
   | ElsePr -> "otherwise"
 
 let string_of_def def =
