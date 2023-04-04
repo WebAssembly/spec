@@ -317,7 +317,7 @@ syntax import = IMPORT(name, name, externtype)
 ;; 1-syntax.watsup:209.1-210.70
 syntax module = MODULE(import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
-;; 2-aux.watsup:5.1-5.41
+;; 2-aux.watsup:5.1-5.55
 def size : valtype -> nat
   ;; 2-aux.watsup:10.1-10.22
   def size(V128_valtype) = 128
@@ -968,7 +968,7 @@ syntax externval =
   | TABLE(tableaddr)
   | MEM(memaddr)
 
-;; 4-runtime.watsup:44.1-44.29
+;; 4-runtime.watsup:44.1-44.44
 def default_ : valtype -> val
   ;; 4-runtime.watsup:49.1-49.34
   def {rt : reftype} default_(rt <: valtype) = REF.NULL_val(rt)

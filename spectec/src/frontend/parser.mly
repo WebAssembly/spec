@@ -497,6 +497,7 @@ premise_ :
 
 hint :
   | HINT LPAR hintid exp RPAR { {hintid = $3 $ at $loc($3); hintexp = $4} }
+  | HINT LPAR hintid RPAR { {hintid = $3 $ at $loc($3); hintexp = SeqE [] $ at $loc($3)} }
 
 hint_list :
   | /* empty */ { [] }
