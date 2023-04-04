@@ -103,7 +103,7 @@ and exp' =
   | UpdE of exp * path * exp     (* exp `[` path `=` exp `]` *)
   | ExtE of exp * path * exp     (* exp `[` path `=..` exp `]` *)
   | StrE of expfield list        (* `{` list(expfield, `,`) `}` *)
-  | DotE of exp * atom           (* exp `.` atom *)
+  | DotE of typ * exp * atom     (* exp `.` atom *)
   | CompE of exp * exp           (* exp `@` exp *)
   | LenE of exp                  (* `|` exp `|` *)
   | TupE of exp list             (* `(` list2(exp, `,`) `)` *)

@@ -591,7 +591,7 @@ and elab_exp env exp typ : Il.exp =
     let exp1' = elab_exp env exp1 typ1 in
     let typfields = as_struct_typ "expression" env Infer typ1 exp1.at in
     let typ' = find_field typfields atom exp1.at in
-    let exp' = Il.DotE (exp1', elab_atom atom) $ exp.at in
+    let exp' = Il.DotE (elab_typ env typ1, exp1', elab_atom atom) $ exp.at in
     cast_exp "field" env exp' typ' typ
   | CommaE (exp1, exp2) ->
     let exp1' = elab_exp env exp1 typ in

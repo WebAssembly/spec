@@ -78,8 +78,7 @@ and free_exp exp =
   match exp.it with
   | VarE id -> free_varid id
   | BoolE _ | NatE _ | TextE _ -> empty
-  | UnE (_, exp1) | DotE (exp1, _)
-  | LenE exp1 | MixE (_, exp1) | SubE (exp1, _, _) ->
+  | UnE (_, exp1) | LenE exp1 | MixE (_, exp1) | SubE (exp1, _, _) ->
     free_exp exp1
   | BinE (_, exp1, exp2) | CmpE (_, exp1, exp2)
   | IdxE (exp1, exp2) | CompE (exp1, exp2) | CatE (exp1, exp2) ->
@@ -93,7 +92,7 @@ and free_exp exp =
   | StrE expfields -> free_list free_expfield expfields
   | CallE (id, exp1) -> union (free_defid id) (free_exp exp1)
   | IterE (exp1, iter) -> union (free_exp exp1) (free_iter iter)
-  | CaseE (_, exp1, typ) -> union (free_exp exp1) (free_typ typ)
+  | DotE (typ, exp1, _) | CaseE (_, exp1, typ) -> union (free_exp exp1) (free_typ typ)
 
 and free_expfield (_, exp) = free_exp exp
 

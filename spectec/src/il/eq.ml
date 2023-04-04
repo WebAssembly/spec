@@ -69,8 +69,8 @@ and eq_exp exp1 exp2 =
     eq_list eq_exp exps1 exps2
   | StrE fields1, StrE fields2 ->
     eq_list eq_expfield fields1 fields2
-  | DotE (exp11, atom1), DotE (exp21, atom2) ->
-    eq_exp exp11 exp21 && atom1 = atom2
+  | DotE (typ1, exp11, atom1), DotE (typ2, exp21, atom2) ->
+    eq_typ typ1 typ2 && eq_exp exp11 exp21 && atom1 = atom2
   | MixE (relop1, exp1), MixE (relop2, exp2) ->
     relop1 = relop2 && eq_exp exp1 exp2
   | CallE (id1, exp1), CallE (id2, exp2) ->

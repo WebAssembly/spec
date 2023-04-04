@@ -143,7 +143,8 @@ and string_of_exp exp =
       "[" ^ string_of_path path ^ " =.. " ^ string_of_exp exp2 ^ "]"
   | StrE expfields ->
     "{" ^ concat ", " (List.map string_of_expfield expfields) ^ "}"
-  | DotE (exp1, atom) -> string_of_exp exp1 ^ "." ^ string_of_atom atom
+  | DotE (typ, exp1, atom) ->
+    string_of_exp exp1 ^ "." ^ string_of_atom atom ^ "_" ^ string_of_typ typ
   | CompE (exp1, exp2) -> string_of_exp exp1 ^ " ++ " ^ string_of_exp exp2
   | LenE exp1 -> "|" ^ string_of_exp exp1 ^ "|"
   | TupE exps -> "(" ^ string_of_exps ", " exps ^ ")"
