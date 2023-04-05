@@ -265,6 +265,19 @@ rule Instr_ok/ref.is_null:
   C |- REF.IS_NULL : rt -> I32
 
 
+rule Instr_ok/local.get:
+  C |- LOCAL.GET x : epsilon -> t
+  -- if C.LOCAL[x] = t
+
+rule Instr_ok/local.set:
+  C |- LOCAL.SET x : t -> epsilon
+  -- if C.LOCAL[x] = t
+
+rule Instr_ok/local.tee:
+  C |- LOCAL.TEE x : t -> t
+  -- if C.LOCAL[x] = t
+
+
 rule Instr_ok/global.get:
   C |- GLOBAL.GET x : epsilon -> t
   -- if C.GLOBAL[x] = MUT? t

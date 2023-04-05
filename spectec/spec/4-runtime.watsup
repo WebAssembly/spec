@@ -76,7 +76,9 @@ syntax moduleinst hint(desc "module instance") =
     DATA dataaddr*,
     EXPORT exportinst* }
 
-syntax frame hint(desc "frame") = moduleinst; val*
+syntax frame hint(desc "frame") =
+  { LOCAL val*,
+    MODULE moduleinst }
 syntax state hint(desc "state") = store; frame
 syntax config hint(desc "configuration") = state; admininstr*
 
@@ -93,18 +95,35 @@ var ei : eleminst
 var di : datainst
 var xi : exportinst
 
-def $funcaddr(state) : funcaddr*  hint(show %.FUNC)
-def $funcaddr((s; (m; val*))) = m.FUNC
+def $funcaddr(state) : funcaddr*  hint(show %.MODULE.FUNC)
+def $funcaddr((s; f)) = f.MODULE.FUNC
 
 def $funcinst(state) : funcinst*  hint(show %.FUNC)
 def $funcinst((s; f)) = s.FUNC
 
 def $func(state, funcidx) : funcinst  hint(show %.FUNC#`[%])
-def $func((s; (m; val*)), x) = s.FUNC[m.FUNC[x]]
+def $func((s; f), x) = s.FUNC[f.MODULE.FUNC[x]]
+
+def $local(state, localidx) : val  hint(show %.LOCAL#`[%])
+def $local((s; f), x) = f.LOCAL[x]
+
+def $global(state, globalidx) : globalinst  hint(show %.GLOBAL#`[%])
+def $global((s; f), x) = s.GLOBAL[f.MODULE.GLOBAL[x]]
 
 def $table(state, tableidx) : tableinst  hint(show %.TABLE#`[%])
-def $table((s; (m; val*)), x) = s.TABLE[m.TABLE[x]]
+def $table((s; f), x) = s.TABLE[f.MODULE.TABLE[x]]
 
+def $elem(state, tableidx) : eleminst  hint(show %.ELEM#`[%])
+def $elem((s; f), x) = s.ELEM[f.MODULE.ELEM[x]]
+
+def $with_local(state, localidx, val) : state  hint(show %#`[LOCAL#`[%]=%])
+def $with_local((s; f), x, v) = s; f[.LOCAL[x]=v]
+
+def $with_global(state, globalidx, val) : state  hint(show %#`[GLOBAL#`[%]=%])
+def $with_global((s; f), x, v) = s[.GLOBAL[f.MODULE.GLOBAL[x]]=v]; f
+
+def $with_table(state, tableidx, n, ref) : state  hint(show %#`[TABLE#`[%]#`[%]=%])
+def $with_table((s; f), x, i, r) = s[.TABLE[f.MODULE.TABLE[x]][i]=r]; f
 
 ;; Administrative Instructions
 
