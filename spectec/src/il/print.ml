@@ -181,8 +181,9 @@ and string_of_path path =
 
 (* Definitions *)
 
-let string_of_bind (id, typ) =
-  id.it ^ " : " ^ string_of_typ typ
+let string_of_bind (id, typ, iters) =
+  let dim = String.concat "" (List.map string_of_iter iters) in
+  id.it ^ dim ^ " : " ^ string_of_typ typ ^ dim
 
 let string_of_binds = function
   | [] -> ""

@@ -13,7 +13,9 @@ let error at msg = Source.error at "multiplicity" msg
 
 module Env = Map.Make(String)
 
-type _ctx = iter list
+type ctx = iter list
+type env = ctx Env.t
+type env' = ((region * ctx) list) Env.t
 
 
 (* Solving constraints *)
@@ -39,15 +41,16 @@ let rec check_ctx id (at0, ctx0) = function
     check_ctx id (at0, ctx0) ctxs
 
 
-let check_ctxs id ctxs =
+let check_ctxs id ctxs : ctx =
   let sorted = List.stable_sort
     (fun (_, ctx1) (_, ctx2) -> compare (List.length ctx1) (List.length ctx2))
     (List.map (fun (at, ctx) -> (at, List.rev ctx)) ctxs)
   in
-  check_ctx id (List.hd sorted) (List.tl sorted)
+  check_ctx id (List.hd sorted) (List.tl sorted);
+  snd (List.hd sorted)
 
-let check_env env =
-  Env.iter check_ctxs !env
+let check_env (env : env' ref) : env =
+  Env.mapi check_ctxs !env
 
 
 (* Collecting constraints *)
@@ -136,9 +139,9 @@ let check_prem env prem =
     check_exp env [iter] exp
   | ElsePr -> ()
 
-let check_def def =
+let check_def def : env =
   match def.it with
-  | SynD _ | RelD _ | VarD _ | DecD _ | SepD -> ()
+  | SynD _ | RelD _ | VarD _ | DecD _ | SepD -> Env.empty
   | RuleD (_id1, _id2, exp, prems) ->
     let env = ref Env.empty in
     check_exp env [] exp;
@@ -150,5 +153,3 @@ let check_def def =
     check_exp env [] exp2;
     iter_nl_list (check_prem env) prems;
     check_env env
-
-let check script = List.iter check_def script

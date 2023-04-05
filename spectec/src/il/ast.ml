@@ -127,7 +127,7 @@ and path' =
 
 (* Definitions *)
 
-and binds = (id * typ) list
+and binds = (id * typ * iter list) list
 
 and def = def' phrase
 and def' =

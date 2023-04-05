@@ -105,10 +105,10 @@ and free_path path =
 
 (* Definitions *)
 
-let bound_bind (id, _typ) = free_varid id
+let bound_bind (id, _typ, _dim) = free_varid id
 let bound_binds binds = free_list bound_bind binds
 
-let free_bind (_id, typ) = free_typ typ
+let free_bind (_id, typ, _dim) = free_typ typ
 let free_binds binds = free_list free_bind binds
 
 let free_prem prem =
