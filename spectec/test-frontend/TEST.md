@@ -3085,13 +3085,9 @@ $$
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val from the stack.
 3. If val = {REF.NULL rt}, then:
-  1) Let tmp0 be I32.
-  2) Let tmp1 be 1.
-  3) Push the value CONST tmp0 tmp1 to the stack.
+  1) Push the value CONST I32 1 to the stack.
 4. If otherwise, then:
-  1) Let tmp2 be I32.
-  2) Let tmp3 be 0.
-  3) Push the value CONST tmp2 tmp3 to the stack.
+  1) Push the value CONST I32 0 to the stack.
 
 UNREACHABLE ~> TRAP
 1. Trap.
@@ -3121,6 +3117,9 @@ NOP ~> epsilon
 {val ({LOCAL.TEE x})} ~> {val val ({LOCAL.SET x})}
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val from the stack.
+3. Push the value val to the stack.
+4. Push the value val to the stack.
+5. Execute the instruction LOCAL.SET x.
 
 {val^k ({BLOCK bt instr*})} ~> ({LABEL_ n `{epsilon} val^k instr*})
     -- if bt = t_1^k -> t_2^n
@@ -3151,9 +3150,13 @@ NOP ~> epsilon
 
 ({LABEL_ n `{instr'*} val'* val^n ({BR 0}) instr*}) ~> {val^n instr'*}
 1. YET: Bubble-up semantics.
+2. Push the values val^n to the stack.
+3. Push the values instr'* to the stack.
 
 ({LABEL_ n `{instr'*} val* ({BR l + 1}) instr*}) ~> {val* ({BR l})}
 1. YET: Bubble-up semantics.
+2. Push the values val* to the stack.
+3. Execute the instruction BR l.
 
 {({CONST I32 c}) ({BR_IF l})} ~> ({BR l})
     -- if c =/= 0
@@ -3179,14 +3182,17 @@ NOP ~> epsilon
   1) Execute the instruction BR l'.
 
 z ; ({REF.FUNC x}) ~> ({REF.FUNC_ADDR $funcaddr(z)[x]})
-1. Let tmp0 be $funcaddr(z)[x].
-2. Execute the instruction REF.FUNC_ADDR tmp0.
+1. Let tmp0 be the result of computing $funcaddr(z).
+2. Let tmp1 be tmp0[x].
+3. Push the value REF.FUNC_ADDR tmp1 to the stack.
 
 z ; ({LOCAL.GET x}) ~> $local(z, x)
-1. Do nothing.
+1. Let tmp0 be the result of computing $local(z, x).
+2. Push the value tmp0 to the stack.
 
 z ; ({GLOBAL.GET x}) ~> $global(z, x)
-1. Do nothing.
+1. Let tmp0 be the result of computing $global(z, x).
+2. Push the value tmp0 to the stack.
 
 z ; {({CONST I32 i}) ({TABLE.GET x})} ~> TRAP
     -- if i >= |$table(z, x)|
@@ -3197,13 +3203,14 @@ z ; {({CONST I32 i}) ({TABLE.GET x})} ~> $table(z, x)[i]
 3. If i >= |$table(z, x)|, then:
   1) Trap.
 4. If i < |$table(z, x)|, then:
-  1) Do nothing.
+  1) Let tmp0 be the result of computing $table(z, x).
+  2) Let tmp1 be tmp0[i].
+  3) Push the value tmp1 to the stack.
 
 z ; ({TABLE.SIZE x}) ~> ({CONST I32 n})
     -- if |$table(z, x)| = n
 1. Let |$table(z, x)| = n.
-2. Let tmp0 be I32.
-3. Push the value CONST tmp0 n to the stack.
+2. Push the value CONST I32 n to the stack.
 
 z ; {({CONST I32 i}) val ({CONST I32 n}) ({TABLE.FILL x})} ~> TRAP
     -- if i + n > |$table(z, x)|
@@ -3233,6 +3240,13 @@ z ; {({CONST I32 i}) val ({CONST I32 n + 1}) ({TABLE.FILL x})} ~> {({CONST I32 i
 4. Pop the value val from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value ({CONST I32 i}) from the stack.
+7. Push the value CONST I32 i to the stack.
+8. Push the value val to the stack.
+9. Execute the instruction TABLE.SET x.
+10. Push the value CONST I32 (i + 1) to the stack.
+11. Push the value val to the stack.
+12. Push the value CONST I32 n to the stack.
+13. Execute the instruction TABLE.FILL x.
 
 z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n}) ({TABLE.COPY x y})} ~> TRAP
     -- if i + n > |$table(z, y)| \/ j + n > |$table(z, x)|
@@ -3265,9 +3279,23 @@ z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n + 1}) ({TABLE.COPY x y})} ~> 
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value ({CONST I32 j}) from the stack.
 7. If j <= i, then:
-  1) Do nothing.
+  1) Push the value CONST I32 j to the stack.
+  2) Push the value CONST I32 i to the stack.
+  3) Execute the instruction TABLE.GET y.
+  4) Execute the instruction TABLE.SET x.
+  5) Push the value CONST I32 (j + 1) to the stack.
+  6) Push the value CONST I32 (i + 1) to the stack.
+  7) Push the value CONST I32 n to the stack.
+  8) Execute the instruction TABLE.COPY x y.
 8. If j > i, then:
-  1) Do nothing.
+  1) Push the value CONST I32 (j + n) to the stack.
+  2) Push the value CONST I32 (i + n) to the stack.
+  3) Execute the instruction TABLE.GET y.
+  4) Execute the instruction TABLE.SET x.
+  5) Push the value CONST I32 (j + 1) to the stack.
+  6) Push the value CONST I32 (i + 1) to the stack.
+  7) Push the value CONST I32 n to the stack.
+  8) Execute the instruction TABLE.COPY x y.
 
 z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n}) ({TABLE.INIT x y})} ~> TRAP
     -- if i + n > |$elem(z, y)| \/ j + n > |$table(z, x)|
@@ -3297,10 +3325,20 @@ z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n + 1}) ({TABLE.INIT x y})} ~> 
 4. Pop the value ({CONST I32 i}) from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value ({CONST I32 j}) from the stack.
+7. Push the value CONST I32 j to the stack.
+8. Let tmp0 be the result of computing $elem(z, y).
+9. Let tmp1 be tmp0[i].
+10. Push the value tmp1 to the stack.
+11. Execute the instruction TABLE.SET x.
+12. Push the value CONST I32 (j + 1) to the stack.
+13. Push the value CONST I32 (i + 1) to the stack.
+14. Push the value CONST I32 n to the stack.
+15. Execute the instruction TABLE.INIT x y.
 
 z ; ({CALL x}) ~> ({CALL_ADDR $funcaddr(z)[x]})
-1. Let tmp0 be $funcaddr(z)[x].
-2. Execute the instruction CALL_ADDR tmp0.
+1. Let tmp0 be the result of computing $funcaddr(z).
+2. Let tmp1 be tmp0[x].
+3. Execute the instruction CALL_ADDR tmp1.
 
 z ; {({CONST I32 i}) ({CALL_INDIRECT x ft})} ~> ({CALL_ADDR a})
     -- if $table(z, x)[i] = ({REF.FUNC_ADDR a})
@@ -3327,10 +3365,12 @@ z ; {val^k ({CALL_ADDR a})} ~> ({FRAME_ n `{{LOCAL {val^k ($default_(t))*}, MODU
 z ; {val ({LOCAL.SET x})} ~> $with_local(z, x, val) ; epsilon
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val from the stack.
+3. Perform $with_local(z, x, val).
 
 z ; {val ({GLOBAL.SET x})} ~> $with_global(z, x, val) ; epsilon
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val from the stack.
+3. Perform $with_global(z, x, val).
 
 z ; {({CONST I32 i}) ref ({TABLE.GET x})} ~> $with_table(z, x, i, ref) ; epsilon
     -- if i < |$table(z, x)|
@@ -3341,9 +3381,9 @@ z ; {({CONST I32 i}) ref ({TABLE.GET x})} ~> z ; TRAP
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 4. Pop the value ({CONST I32 i}) from the stack.
 5. If i < |$table(z, x)|, then:
-  1) Do nothing.
+  1) Perform $with_table(z, x, i, ref).
 6. If i >= |$table(z, x)|, then:
-  1) Do nothing.
+  1) Trap.
 
 
 == Complete.

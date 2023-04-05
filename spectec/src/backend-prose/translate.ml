@@ -50,7 +50,7 @@ let assert_type e =
   | _ ->
     printf_step "Assert: Due to validation, a value is on the top of the stack."
 
-let pop left = match left with
+let pop left = match left.it with
   | SeqE(es) -> hds es |> List.iter (fun e ->
     assert_type e;
     let v = Print.string_of_exp e in
@@ -86,21 +86,43 @@ let fresh _ =
   _freshId := (id + 1);
   "tmp" ^ string_of_int id
 
-let bind_argument args =
-  args |> List.map (fun arg -> match arg.it with
-    | VarE _
-    | IterE({it = VarE _; _}, _) -> arg
-    | _ ->
-      let id = fresh() in
-      printf_step "Let %s be %s." id (Print.string_of_exp arg);
-      { it = VarE({it = id; at = arg.at}); at = arg.at }
-  )
+let bind_atomic e =
+  let is_call = match e.it with CallE _ -> true | _ -> false in
+  let id = fresh() in
+  if is_call then
+    printf_step "Let %s be the result of computing %s." id (Print.string_of_exp e)
+  else
+    printf_step "Let %s be %s." id (Print.string_of_exp e)
+  ;
+  { it = VarE({it = id; at = e.at}); at = e.at }
+
+let rec bind e = match e.it with
+  | VarE _
+  | IterE({it = VarE _; _}, _)
+  | AtomE _
+  | NatE _ -> e
+  | BinE _ -> { it = ParenE(e, true) ; at = no_region }
+  | IdxE(base, idx) ->
+    let base = bind base in
+    let idx  = bind idx in
+    bind_atomic {it = IdxE(base, idx); at = e.at}
+  | _ ->
+    bind_atomic e
 
 let destruct_instr = function
   | {it = AtomE(Atom name); _} :: args -> (name, args)
   | _ -> raise(Invalid_argument "invalid instr")
 
-let rec push right = match right with
+let mutate state = match state.it with
+  | CallE _ -> printf_step "Perform %s." (Print.string_of_exp state)
+  | _ -> ()
+
+let rec push right = match right.it with
+  | InfixE(state, Semicolon, stack) ->
+    mutate state;
+    push stack
+  | SeqE seq ->
+    List.iter push seq
   | AtomE(Atom "TRAP") -> printf_step "Trap."
   | ParenE({it = SeqE(instr); _}, _) -> (
     match destruct_instr instr with
@@ -123,25 +145,29 @@ let rec push right = match right with
         printf_step
           "Push the activation of F with the arity %s to the stack."
           (Print.string_of_exp n);
-        push label.it
-      | ("CONST" | "REF.NULL" | "REF.FUNC" as name, args) ->
-        let args = bind_argument args in
+        push label
+      | ("CONST" | "REF.NULL" | "REF.FUNC_ADDR" as name, args) ->
+        let args = List.map bind args in
         let str = Print.string_of_exps " " args in
         printf_step "Push the value %s %s to the stack." name str
       | (name, args) ->
-        let args = bind_argument args in
+        let args = List.map bind args in
         let str = Print.string_of_exps " " args in
         printf_step "Execute the instruction %s %s." name str
     )
   | VarE(id) -> printf_step "Push the value %s to the stack." id.it
-  | _ -> ()
+  | IterE({it = VarE _; _}, _) -> printf_step "Push the values %s to the stack." (Print.string_of_exp right)
+  | EpsE -> ()
+  | _ ->
+    let e = bind right in
+    printf_step "Push the value %s to the stack."  (Print.string_of_exp e)
 
 (* if r is a reduction rule, desturct it into triplet of (lhs, rhs, premises) *)
 let destruct_as_rule r = match r.it with
   | RuleD(name, _, e, prems) -> (match e.it with
     | InfixE(left, SqArrow, right) ->
       if String.starts_with ~prefix:"Step_" name.it then
-        Some (left.it, right.it, prems)
+        Some (left, right, prems)
       else
         None
     | _ -> None)
@@ -149,9 +175,9 @@ let destruct_as_rule r = match r.it with
 let string_of_destructed (left, right, prems) =
   let filter_nl xs = List.filter_map (function Nl -> None | Elem x -> Some x) xs in
   let map_nl_list f xs = List.map f (filter_nl xs) in
-  Print.string_of_exp {it = left; at = no_region} ^
+  Print.string_of_exp left ^
   " ~> " ^
-  Print.string_of_exp {it = right; at = no_region} ^
+  Print.string_of_exp right ^
   String.concat "" (map_nl_list (fun x -> "\n    -- " ^ Print.string_of_premise x) prems)
 
 let handle_reduction_group red_group =
@@ -164,8 +190,8 @@ let handle_reduction_group red_group =
   _freshId := 0;
 
   let (left, _, _) = List.hd red_group in
-  let left = match left with
-    | InfixE(_, Semicolon, left) -> left.it
+  let left = match left.it with
+    | InfixE(_, Semicolon, left) -> left
     | _ -> left
   in
   pop left;
@@ -209,7 +235,7 @@ let translate el =
 
   (* Group reductions by lefthand side *)
   let reduction_groups = group_by (fun (left, _, _) ->
-    Print.string_of_exp {it = left; at = no_region}
+    Print.string_of_exp left
   ) reductions in
 
   (* Handle each redction group *)
