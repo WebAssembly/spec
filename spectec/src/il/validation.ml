@@ -481,7 +481,11 @@ let valid_clause env typ1 typ2 clause =
     valid_exp env exp1 typ1;
     valid_exp env exp2 typ2;
     List.iter (valid_prem env) prems;
-    env.vars <- Env.empty
+    env.vars <- Env.empty;
+    let free_rh = Free.(Set.diff (free_exp exp2).varid (free_exp exp1).varid) in
+    if free_rh <> Free.Set.empty then
+      error clause.at ("definition contains unbound variable(s) `" ^
+        String.concat "`, `" (Free.Set.elements free_rh) ^ "`")
 
 
 let infer_def env def =
