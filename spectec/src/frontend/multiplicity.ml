@@ -21,7 +21,7 @@ type env' = ((region * ctx) list) Env.t
 (* Solving constraints *)
 
 let string_of_ctx id ctx =
-  id ^ String.concat "" (List.map Print.string_of_iter (List.rev ctx))
+  id ^ String.concat "" (List.map Print.string_of_iter ctx)
 
 let rec is_prefix ctx1 ctx2 =
   match ctx1, ctx2 with
@@ -44,7 +44,7 @@ let rec check_ctx id (at0, ctx0) = function
 let check_ctxs id ctxs : ctx =
   let sorted = List.stable_sort
     (fun (_, ctx1) (_, ctx2) -> compare (List.length ctx1) (List.length ctx2))
-    (List.map (fun (at, ctx) -> (at, List.rev ctx)) ctxs)
+    ctxs
   in
   check_ctx id (List.hd sorted) (List.tl sorted);
   snd (List.hd sorted)

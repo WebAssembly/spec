@@ -319,7 +319,7 @@ and valid_exp env exp typ =
   | VarE id ->
     let typ', dim = find "variable" env.vars id in
     equiv_typ env typ' typ exp.at;
-    if not (is_prefix (List.rev dim) (List.rev env.ctx)) then
+    if not (is_prefix dim env.ctx) then
       error exp.at ("inconsistent use of iterated variable `" ^
         id.it ^ String.concat "" (List.map string_of_iter dim) ^ "` in " ^
         "context `_" ^ String.concat "" (List.map string_of_iter env.ctx) ^ "`")
