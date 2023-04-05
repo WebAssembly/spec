@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly JavaScript Interface</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version a5f70c68e, updated Wed Mar 22 08:02:23 2023 -0700" name="generator">
+  <meta content="Bikeshed version d9bd89757, updated Thu Mar 23 10:06:53 2023 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="6802d86eba4d2d0aa7c165db370141b3e914f8fd" name="document-revision">
+  <meta content="eb71ed52ea6fcb24cbee62ffbbcef9973d09dfbf" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -302,7 +302,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-03-22">22 March 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-04-05">5 April 2023</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -413,7 +413,8 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
     <c- p>(</c-><c- g>func</c-> <c- g>$main</c-> <c- p>(</c-><c- g>call</c-> <c- g>$i1</c-><c- p>))</c->
     <c- p>(</c-><c- g>start</c-> <c- g>$main</c-><c- p>)</c->
     <c- p>(</c-><c- g>func</c-> <c- p>(</c->export <c- s>"f"</c-><c- p>)</c-> <c- p>(</c-><c- g>call</c-> <c- g>$i2</c-><c- p>))</c->
-<c- p>)</c-></pre>
+<c- p>)</c->
+</pre>
    <p>and the following JavaScript, run in a browser:</p>
 <pre class="language-javascript highlight"><c- a>var</c-> importObj <c- o>=</c-> <c- p>{</c->js<c- o>:</c-> <c- p>{</c->
     import1<c- o>:</c-> <c- p>()</c-> <c- p>=></c-> console<c- p>.</c->log<c- p>(</c-><c- u>"hello,"</c-><c- p>),</c->
@@ -425,7 +426,8 @@ fetch<c- p>(</c-><c- t>'demo.wasm'</c-><c- p>).</c->then<c- p>(</c->response <c-
     WebAssembly<c- p>.</c->instantiate<c- p>(</c->buffer<c- p>,</c-> importObj<c- p>)</c->
 <c- p>).</c->then<c- p>(({</c->module<c- p>,</c-> instance<c- p>})</c-> <c- p>=></c->
     instance<c- p>.</c->exports<c- p>.</c->f<c- p>()</c->
-<c- p>);</c-></pre>
+<c- p>);</c->
+</pre>
    <h2 class="heading settled" data-level="2" id="notation"><span class="secno">2. </span><span class="content">Notation</span><a class="self-link" href="#notation"></a></h2>
    <p>This specification depends on the Infra Standard. <a data-link-type="biblio" href="#biblio-infra" title="Infra Standard">[INFRA]</a></p>
    <p>The WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/conventions.html#grammar-notation" id="ref-for-grammar-notation">sequence</a> type is equivalent to the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> type defined there; values of one
@@ -468,7 +470,8 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
 
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise②"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="#instance" id="ref-for-instance①"><c- n>Instance</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-instantiate-moduleobject-importobject" id="ref-for-dom-webassembly-instantiate-moduleobject-importobject"><c- g>instantiate</c-></a>(
         <a data-link-type="idl-name" href="#module" id="ref-for-module②"><c- n>Module</c-></a> <dfn class="idl-code" data-dfn-for="WebAssembly/instantiate(moduleObject, importObject), WebAssembly/instantiate(moduleObject)" data-dfn-type="argument" data-export id="dom-webassembly-instantiate-moduleobject-importobject-moduleobject"><code><c- g>moduleObject</c-></code><a class="self-link" href="#dom-webassembly-instantiate-moduleobject-importobject-moduleobject"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object" id="ref-for-idl-object①"><c- b>object</c-></a> <dfn class="idl-code" data-dfn-for="WebAssembly/instantiate(moduleObject, importObject), WebAssembly/instantiate(moduleObject)" data-dfn-type="argument" data-export id="dom-webassembly-instantiate-moduleobject-importobject-importobject"><code><c- g>importObject</c-></code><a class="self-link" href="#dom-webassembly-instantiate-moduleobject-importobject-importobject"></a></dfn>);
-};</pre>
+};
+</pre>
    <div class="algorithm" data-algorithm="compile a WebAssembly module">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="compile-a-webassembly-module">compile a WebAssembly module</dfn> from source bytes <var>bytes</var>, perform the following steps: 
     <ol>
@@ -909,7 +912,8 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
   <c- b>static</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#dictdef-moduleexportdescriptor" id="ref-for-dictdef-moduleexportdescriptor"><c- n>ModuleExportDescriptor</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-exports" id="ref-for-dom-module-exports"><c- g>exports</c-></a>(<a data-link-type="idl-name" href="#module" id="ref-for-module⑧"><c- n>Module</c-></a> <dfn class="idl-code" data-dfn-for="Module/exports(moduleObject)" data-dfn-type="argument" data-export id="dom-module-exports-moduleobject-moduleobject"><code><c- g>moduleObject</c-></code><a class="self-link" href="#dom-module-exports-moduleobject-moduleobject"></a></dfn>);
   <c- b>static</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence①"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#dictdef-moduleimportdescriptor" id="ref-for-dictdef-moduleimportdescriptor"><c- n>ModuleImportDescriptor</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-imports" id="ref-for-dom-module-imports"><c- g>imports</c-></a>(<a data-link-type="idl-name" href="#module" id="ref-for-module⑨"><c- n>Module</c-></a> <dfn class="idl-code" data-dfn-for="Module/imports(moduleObject)" data-dfn-type="argument" data-export id="dom-module-imports-moduleobject-moduleobject"><code><c- g>moduleObject</c-></code><a class="self-link" href="#dom-module-imports-moduleobject-moduleobject"></a></dfn>);
   <c- b>static</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence②"><c- b>sequence</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects"><c- b>ArrayBuffer</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-customsections" id="ref-for-dom-module-customsections"><c- g>customSections</c-></a>(<a data-link-type="idl-name" href="#module" id="ref-for-module①⓪"><c- n>Module</c-></a> <dfn class="idl-code" data-dfn-for="Module/customSections(moduleObject, sectionName)" data-dfn-type="argument" data-export id="dom-module-customsections-moduleobject-sectionname-moduleobject"><code><c- g>moduleObject</c-></code><a class="self-link" href="#dom-module-customsections-moduleobject-sectionname-moduleobject"></a></dfn>, <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="Module/customSections(moduleObject, sectionName)" data-dfn-type="argument" data-export id="dom-module-customsections-moduleobject-sectionname-sectionname"><code><c- g>sectionName</c-></code><a class="self-link" href="#dom-module-customsections-moduleobject-sectionname-sectionname"></a></dfn>);
-};</pre>
+};
+</pre>
    <div class="algorithm" data-algorithm="string value of the extern type">
      The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="string-value-of-the-extern-type">string value of the extern type</dfn> <var>type</var> is 
     <ul>
@@ -1011,7 +1015,8 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="instance"><code><c- g>Instance</c-></code></dfn> {
   <a class="idl-code" data-link-type="constructor" href="#dom-instance-instance" id="ref-for-dom-instance-instance"><c- g>constructor</c-></a>(<a data-link-type="idl-name" href="#module" id="ref-for-module①①"><c- n>Module</c-></a> <dfn class="idl-code" data-dfn-for="Instance/Instance(module, importObject), Instance/constructor(module, importObject), Instance/Instance(module), Instance/constructor(module)" data-dfn-type="argument" data-export id="dom-instance-instance-module-importobject-module"><code><c- g>module</c-></code><a class="self-link" href="#dom-instance-instance-module-importobject-module"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object" id="ref-for-idl-object②"><c- b>object</c-></a> <dfn class="idl-code" data-dfn-for="Instance/Instance(module, importObject), Instance/constructor(module, importObject), Instance/Instance(module), Instance/constructor(module)" data-dfn-type="argument" data-export id="dom-instance-instance-module-importobject-importobject"><code><c- g>importObject</c-></code><a class="self-link" href="#dom-instance-instance-module-importobject-importobject"></a></dfn>);
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object" id="ref-for-idl-object③"><c- b>object</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="object" href="#dom-instance-exports" id="ref-for-dom-instance-exports"><c- g>exports</c-></a>;
-};</pre>
+};
+</pre>
    <div class="algorithm" data-algorithm="Instance(module, importObject)" data-algorithm-for="Instance">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Instance" data-dfn-type="constructor" data-export data-lt="Instance(module, importObject)|constructor(module, importObject)|Instance(module)|constructor(module)" id="dom-instance-instance"><code>Instance(<var>module</var>, <var>importObject</var>)</code></dfn> constructor, when invoked, runs the following steps: 
     <ol>
@@ -1038,7 +1043,8 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
   <a class="idl-code" data-link-type="constructor" href="#dom-memory-memory" id="ref-for-dom-memory-memory"><c- g>constructor</c-></a>(<a data-link-type="idl-name" href="#dictdef-memorydescriptor" id="ref-for-dictdef-memorydescriptor"><c- n>MemoryDescriptor</c-></a> <dfn class="idl-code" data-dfn-for="Memory/Memory(descriptor), Memory/constructor(descriptor)" data-dfn-type="argument" data-export id="dom-memory-memory-descriptor-descriptor"><code><c- g>descriptor</c-></code><a class="self-link" href="#dom-memory-memory-descriptor-descriptor"></a></dfn>);
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long②"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="method" href="#dom-memory-grow" id="ref-for-dom-memory-grow"><c- g>grow</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange②"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long③"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="Memory/grow(delta)" data-dfn-type="argument" data-export id="dom-memory-grow-delta-delta"><code><c- g>delta</c-></code><a class="self-link" href="#dom-memory-grow-delta-delta"></a></dfn>);
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects②"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="ArrayBuffer" href="#dom-memory-buffer" id="ref-for-dom-memory-buffer"><c- g>buffer</c-></a>;
-};</pre>
+};
+</pre>
    <p>A <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory③">Memory</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances" id="ref-for-memory-instances①">memory instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance⑤">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory④">Memory</a></code> object has the following internal slots:</p>
    <ul>
     <li data-md>
@@ -1193,7 +1199,8 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②"><c- b>any</c-></a> <a class="idl-code" data-link-type="method" href="#dom-table-get" id="ref-for-dom-table-get"><c- g>get</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange⑥"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑧"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="Table/get(index)" data-dfn-type="argument" data-export id="dom-table-get-index-index"><code><c- g>index</c-></code><a class="self-link" href="#dom-table-get-index-index"></a></dfn>);
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-table-set" id="ref-for-dom-table-set"><c- g>set</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange⑦"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑨"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="Table/set(index, value), Table/set(index)" data-dfn-type="argument" data-export id="dom-table-set-index-value-index"><code><c- g>index</c-></code><a class="self-link" href="#dom-table-set-index-value-index"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any③"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Table/set(index, value), Table/set(index)" data-dfn-type="argument" data-export id="dom-table-set-index-value-value"><code><c- g>value</c-></code><a class="self-link" href="#dom-table-set-index-value-value"></a></dfn>);
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long①⓪"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="unsigned long" href="#dom-table-length" id="ref-for-dom-table-length"><c- g>length</c-></a>;
-};</pre>
+};
+</pre>
    <p>A <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table②">Table</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#table-instances" id="ref-for-table-instances">table instance</a> which can be simultaneously referenced by
 multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance⑥">Instance</a></code> objects.
 Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table③">Table</a></code> object has a [[Table]] internal slot, which is a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tableaddr" id="ref-for-syntax-tableaddr①">table address</a>.</p>
@@ -1368,7 +1375,8 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
   <dfn class="idl-code" data-dfn-for="ValueType" data-dfn-type="enum-value" data-export id="dom-valuetype-v128"><code><c- s>"v128"</c-></code><a class="self-link" href="#dom-valuetype-v128"></a></dfn>,
   <dfn class="idl-code" data-dfn-for="ValueType" data-dfn-type="enum-value" data-export id="dom-valuetype-externref"><code><c- s>"externref"</c-></code><a class="self-link" href="#dom-valuetype-externref"></a></dfn>,
   <dfn class="idl-code" data-dfn-for="ValueType" data-dfn-type="enum-value" data-export id="dom-valuetype-anyfunc"><code><c- s>"anyfunc"</c-></code><a class="self-link" href="#dom-valuetype-anyfunc"></a></dfn>,
-};</pre>
+};
+</pre>
    <p class="note" role="note"><span class="marker">Note:</span> this type may be extended with additional cases in future versions of WebAssembly.</p>
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-globaldescriptor"><code><c- g>GlobalDescriptor</c-></code></dfn> {
   <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-valuetype" id="ref-for-enumdef-valuetype"><c- n>ValueType</c-></a> <dfn class="idl-code" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="ValueType " id="dom-globaldescriptor-value"><code><c- g>value</c-></code><a class="self-link" href="#dom-globaldescriptor-value"></a></dfn>;
@@ -1380,7 +1388,8 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
   <a class="idl-code" data-link-type="constructor" href="#dom-global-global" id="ref-for-dom-global-global"><c- g>constructor</c-></a>(<a data-link-type="idl-name" href="#dictdef-globaldescriptor" id="ref-for-dictdef-globaldescriptor"><c- n>GlobalDescriptor</c-></a> <dfn class="idl-code" data-dfn-for="Global/Global(descriptor, v), Global/constructor(descriptor, v), Global/Global(descriptor), Global/constructor(descriptor)" data-dfn-type="argument" data-export id="dom-global-global-descriptor-v-descriptor"><code><c- g>descriptor</c-></code><a class="self-link" href="#dom-global-global-descriptor-v-descriptor"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any④"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Global/Global(descriptor, v), Global/constructor(descriptor, v), Global/Global(descriptor), Global/constructor(descriptor)" data-dfn-type="argument" data-export id="dom-global-global-descriptor-v-v"><code><c- g>v</c-></code><a class="self-link" href="#dom-global-global-descriptor-v-v"></a></dfn>);
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any⑤"><c- b>any</c-></a> <a class="idl-code" data-link-type="method" href="#dom-global-valueof" id="ref-for-dom-global-valueof"><c- g>valueOf</c-></a>();
   <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any⑥"><c- b>any</c-></a> <a class="idl-code" data-link-type="attribute" data-type="any" href="#dom-global-value" id="ref-for-dom-global-value"><c- g>value</c-></a>;
-};</pre>
+};
+</pre>
    <p>A <code class="idl"><a data-link-type="idl" href="#global" id="ref-for-global②">Global</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#global-instances" id="ref-for-global-instances">global instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance⑦">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#global" id="ref-for-global③">Global</a></code> object has one internal slot:</p>
    <ul>
     <li data-md>
@@ -1704,7 +1713,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
        <li data-md>
         <p>If <var>method</var> is undefined, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-throw" id="ref-for-dfn-throw①">throw</a> a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">TypeError</a></code>.</p>
        <li data-md>
-        <p>Let <var>values</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑤">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iterabletolist" id="ref-for-sec-iterabletolist">IterableToList</a>(<var>ret</var>, <var>method</var>).</p>
+        <p>Let <var>values</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑤">?</a> <a data-link-type="abstract-op">IterableToList</a>(<var>ret</var>, <var>method</var>).</p>
        <li data-md>
         <p>Let <var>wasmValues</var> be a new, empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a>.</p>
        <li data-md>
@@ -2308,12 +2317,6 @@ In practice, an implementation may run out of resources for valid modules below 
    <ul>
     <li><a href="#ref-for-sec-iscallable">4. The WebAssembly Namespace</a>
     <li><a href="#ref-for-sec-iscallable①">4.6. Exported Functions</a> <a href="#ref-for-sec-iscallable②">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-608cc1ef1e994186056bb558676b2537" class="dfn-panel" data-for="608cc1ef1e994186056bb558676b2537" id="infopanel-for-608cc1ef1e994186056bb558676b2537">
-   <span id="infopaneltitle-for-608cc1ef1e994186056bb558676b2537" style="display:none">Info about the 'IterableToList' external reference.</span><a href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iterabletolist">https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iterabletolist</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sec-iterabletolist">4.6. Exported Functions</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-efac89a787c1493aac0ddb2751215610" class="dfn-panel" data-for="efac89a787c1493aac0ddb2751215610" id="infopanel-for-efac89a787c1493aac0ddb2751215610">
@@ -3280,7 +3283,6 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="3bd2d97768dc9491b84d8e144cac23f0">Get</span>
      <li><span class="dfn-paneled" id="55805e5f8198a2e2426397ec6afa5d6f">GetMethod</span>
      <li><span class="dfn-paneled" id="03cb7b919137fdd5ae2b539076cc484b">IsCallable</span>
-     <li><span class="dfn-paneled" id="608cc1ef1e994186056bb558676b2537">IterableToList</span>
      <li><span class="dfn-paneled" id="efac89a787c1493aac0ddb2751215610">NumericToRawBytes</span>
      <li><span class="dfn-paneled" id="414f2c9523dad9fafd987f0c5a49ca9d">OrdinaryObjectCreate</span>
      <li><span class="dfn-paneled" id="72fdf0b5fe8752c4c260c5c35591c96c">RangeError</span>
@@ -3484,6 +3486,7 @@ In practice, an implementation may run out of resources for valid modules below 
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="#instance"><c- n>Instance</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-instantiate-moduleobject-importobject"><c- g>instantiate</c-></a>(
         <a data-link-type="idl-name" href="#module"><c- n>Module</c-></a> <a href="#dom-webassembly-instantiate-moduleobject-importobject-moduleobject"><code><c- g>moduleObject</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object"><c- b>object</c-></a> <a href="#dom-webassembly-instantiate-moduleobject-importobject-importobject"><code><c- g>importObject</c-></code></a>);
 };
+
 <c- b>enum</c-> <a href="#enumdef-importexportkind"><code><c- g>ImportExportKind</c-></code></a> {
   <a href="#dom-importexportkind-function"><code><c- s>"function"</c-></code></a>,
   <a href="#dom-importexportkind-table"><code><c- s>"table"</c-></code></a>,
@@ -3510,11 +3513,13 @@ In practice, an implementation may run out of resources for valid modules below 
   <c- b>static</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#dictdef-moduleimportdescriptor"><c- n>ModuleImportDescriptor</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-imports"><c- g>imports</c-></a>(<a data-link-type="idl-name" href="#module"><c- n>Module</c-></a> <a href="#dom-module-imports-moduleobject-moduleobject"><code><c- g>moduleObject</c-></code></a>);
   <c- b>static</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence"><c- b>sequence</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects"><c- b>ArrayBuffer</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-module-customsections"><c- g>customSections</c-></a>(<a data-link-type="idl-name" href="#module"><c- n>Module</c-></a> <a href="#dom-module-customsections-moduleobject-sectionname-moduleobject"><code><c- g>moduleObject</c-></code></a>, <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-module-customsections-moduleobject-sectionname-sectionname"><code><c- g>sectionName</c-></code></a>);
 };
+
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNamespace"><c- g>LegacyNamespace</c-></a>=<a data-link-type="idl-name" href="#namespacedef-webassembly"><c- n>WebAssembly</c-></a>, Exposed=*]
 <c- b>interface</c-> <a href="#instance"><code><c- g>Instance</c-></code></a> {
   <a class="idl-code" data-link-type="constructor" href="#dom-instance-instance"><c- g>constructor</c-></a>(<a data-link-type="idl-name" href="#module"><c- n>Module</c-></a> <a href="#dom-instance-instance-module-importobject-module"><code><c- g>module</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object"><c- b>object</c-></a> <a href="#dom-instance-instance-module-importobject-importobject"><code><c- g>importObject</c-></code></a>);
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object"><c- b>object</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="object" href="#dom-instance-exports"><c- g>exports</c-></a>;
 };
+
 <c- b>dictionary</c-> <a href="#dictdef-memorydescriptor"><code><c- g>MemoryDescriptor</c-></code></a> {
   <c- b>required</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a data-type="[EnforceRange] unsigned long " href="#dom-memorydescriptor-initial"><code><c- g>initial</c-></code></a>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a data-type="unsigned long " href="#dom-memorydescriptor-maximum"><code><c- g>maximum</c-></code></a>;
@@ -3526,6 +3531,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="method" href="#dom-memory-grow"><c- g>grow</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a href="#dom-memory-grow-delta-delta"><code><c- g>delta</c-></code></a>);
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="ArrayBuffer" href="#dom-memory-buffer"><c- g>buffer</c-></a>;
 };
+
 <c- b>enum</c-> <a href="#enumdef-tablekind"><code><c- g>TableKind</c-></code></a> {
   <a href="#dom-tablekind-externref"><code><c- s>"externref"</c-></code></a>,
   <a href="#dom-tablekind-anyfunc"><code><c- s>"anyfunc"</c-></code></a>,
@@ -3547,6 +3553,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-table-set"><c- g>set</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a href="#dom-table-set-index-value-index"><code><c- g>index</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-table-set-index-value-value"><code><c- g>value</c-></code></a>);
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="unsigned long" href="#dom-table-length"><c- g>length</c-></a>;
 };
+
 <c- b>enum</c-> <a href="#enumdef-valuetype"><code><c- g>ValueType</c-></code></a> {
   <a href="#dom-valuetype-i32"><code><c- s>"i32"</c-></code></a>,
   <a href="#dom-valuetype-i64"><code><c- s>"i64"</c-></code></a>,
@@ -3556,6 +3563,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <a href="#dom-valuetype-externref"><code><c- s>"externref"</c-></code></a>,
   <a href="#dom-valuetype-anyfunc"><code><c- s>"anyfunc"</c-></code></a>,
 };
+
 <c- b>dictionary</c-> <a href="#dictdef-globaldescriptor"><code><c- g>GlobalDescriptor</c-></code></a> {
   <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-valuetype"><c- n>ValueType</c-></a> <a data-type="ValueType " href="#dom-globaldescriptor-value"><code><c- g>value</c-></code></a>;
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a> <a data-default="false" data-type="boolean " href="#dom-globaldescriptor-mutable"><code><c- g>mutable</c-></code></a> = <c- b>false</c->;
@@ -3567,6 +3575,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a class="idl-code" data-link-type="method" href="#dom-global-valueof"><c- g>valueOf</c-></a>();
   <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a class="idl-code" data-link-type="attribute" data-type="any" href="#dom-global-value"><c- g>value</c-></a>;
 };
+
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
