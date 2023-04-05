@@ -1232,7 +1232,7 @@ relation Step_read: `%~>%`(config, admininstr*)
   ;; 5-reduction.watsup:134.1-139.14
   rule table.copy-gt {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
     `%~>%`(`%;%`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, (n + 1)) TABLE.COPY_admininstr(x, y)]), [CONST_admininstr(I32_numtype, (j + n)) CONST_admininstr(I32_numtype, (i + n)) TABLE.GET_admininstr(y) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, n) TABLE.COPY_admininstr(x, y)])
-    -- if (i > i)
+    -- if (j > i)
 
   ;; 5-reduction.watsup:128.1-133.15
   rule table.copy-le {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
@@ -3046,7 +3046,7 @@ $$
 {[\textsc{\scriptsize E{-}table.copy{-}le}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n} + 1)~(\mathsf{table.copy}~\mathit{x}~\mathit{y}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{table.get}~\mathit{y})~(\mathsf{table.set}~\mathit{x})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j} + 1)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i} + 1)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.copy}~\mathit{x}~\mathit{y}) &\quad
   \mbox{if}~\mathit{j} \leq \mathit{i} \\
 {[\textsc{\scriptsize E{-}table.copy{-}gt}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n} + 1)~(\mathsf{table.copy}~\mathit{x}~\mathit{y}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j} + \mathit{n})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i} + \mathit{n})~(\mathsf{table.get}~\mathit{y})~(\mathsf{table.set}~\mathit{x})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j} + 1)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i} + 1)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.copy}~\mathit{x}~\mathit{y}) &\quad
-  \mbox{if}~\mathit{i} > \mathit{i} \\
+  \mbox{if}~\mathit{j} > \mathit{i} \\
 {[\textsc{\scriptsize E{-}table.init{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.init}~\mathit{x}~\mathit{y}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{if}~\mathit{i} + \mathit{n} > {|{\mathit{z}.\mathsf{elem}}{[\mathit{y}]}|} \lor \mathit{j} + \mathit{n} > {|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}|} \\
 {[\textsc{\scriptsize E{-}table.init{-}zero}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~0)~(\mathsf{table.init}~\mathit{x}~\mathit{y}) &\hookrightarrow& \epsilon &\quad
@@ -3257,7 +3257,7 @@ z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 0}) ({TABLE.COPY x y})} ~> epsi
 z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n + 1}) ({TABLE.COPY x y})} ~> {({CONST I32 j}) ({CONST I32 i}) ({TABLE.GET y}) ({TABLE.SET x}) ({CONST I32 j + 1}) ({CONST I32 i + 1}) ({CONST I32 n}) ({TABLE.COPY x y})}
     -- if j <= i
 z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n + 1}) ({TABLE.COPY x y})} ~> {({CONST I32 j + n}) ({CONST I32 i + n}) ({TABLE.GET y}) ({TABLE.SET x}) ({CONST I32 j + 1}) ({CONST I32 i + 1}) ({CONST I32 n}) ({TABLE.COPY x y})}
-    -- if i > i
+    -- if j > i
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value ({CONST I32 n + 1}) from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -3266,7 +3266,7 @@ z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n + 1}) ({TABLE.COPY x y})} ~> 
 6. Pop the value ({CONST I32 j}) from the stack.
 7. If j <= i, then:
   1) Do nothing.
-8. If i > i, then:
+8. If j > i, then:
   1) Do nothing.
 
 z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n}) ({TABLE.INIT x y})} ~> TRAP
