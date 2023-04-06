@@ -221,7 +221,7 @@ warning: rule `Step_read/table.copy-le` was never spliced
 warning: rule `Step_read/table.copy-gt` was never spliced
 warning: rule `Step_read/table.init-trap` was never spliced
 warning: rule `Step_read/table.init-zero` was never spliced
-warning: rule `Step_read/table.init-le` was never spliced
+warning: rule `Step_read/table.init-succ` was never spliced
 warning: rule `Table_ok` was never spliced
 warning: rule `Tabletype_ok` was never spliced
 warning: rule `Tabletype_sub` was never spliced

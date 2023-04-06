@@ -629,7 +629,7 @@ and elab_exp env e t : Il.exp =
     if (iter = Opt) <> (iter2 = Opt) then
       error_typ e.at "iteration expression" t;
     let e1' = elab_exp env e1 t1 in
-    let iter2' = elab_iter env iter2 in
+    let iter2' = elab_iterexp env iter2 in
     Il.IterE (e1', iter2') $ e.at
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token fuse"
@@ -744,7 +744,7 @@ and elab_exp_notation' env e t : Il.exp list =
       error_typ e.at "iteration expression" t;
     let es1' = elab_exp_notation' env e1 t1 in
     let iter1' = elab_iter env iter1 in
-    [Il.IterE (tup_exp' es1' e1.at, iter1') $ e.at]
+    [Il.IterE (tup_exp' es1' e1.at, (iter1', [])) $ e.at]
   (* Significant parentheses indicate a singleton *)
   | ParenE (e1, true), IterT (t1, iter) ->
     let es' = elab_exp_notation' env e1 t1 in
@@ -883,6 +883,10 @@ and cast_exp_variant phrase env e' t1 t2 : Il.exp =
     error_typ2 e'.at phrase t1 t2 ""
 
 
+and elab_iterexp env iter =
+  (elab_iter env iter, [])
+
+
 (* Definitions *)
 
 let make_binds env free dims at : Il.binds =
@@ -900,11 +904,11 @@ let elab_prem env prem : Il.premise =
     let t, _ = find "relation" env.rels id in
     let _, mixop, _ = elab_typ_notation env t in
     let es' = elab_exp_notation' env e t in
-    let iters' = List.map (elab_iter env) iters in
+    let iters' = List.map (elab_iterexp env) iters in
     Il.RulePr (id, mixop, tup_exp' es' e.at, iters') $ prem.at
   | IfPr (e, iters) ->
     let e' = elab_exp env e (BoolT $ e.at) in
-    let iters' = List.map (elab_iter env) iters in
+    let iters' = List.map (elab_iterexp env) iters in
     Il.IfPr (e', iters') $ prem.at
   | ElsePr ->
     Il.ElsePr $ prem.at
@@ -964,12 +968,14 @@ let elab_def env d : Il.def list =
     env.rels <- bind "relation" env.rels id (t, []);
     [Il.RelD (id, mixop, tup_typ' ts' t.at, [], elab_hints hints) $ d.at]
   | RuleD (id1, id2, e, prems) ->
+    let dims = Multiplicity.check_def d in
+    let dims' = Multiplicity.Env.map (List.map (elab_iter env)) dims in
     let t, rules' = find "relation" env.rels id1 in
     let _, mixop, _ = elab_typ_notation env t in
-    let es' = elab_exp_notation' env e t in
-    let prems' = map_nl_list (elab_prem env) prems in
+    let es' = List.map (Multiplicity.annot_exp dims') (elab_exp_notation' env e t) in
+    let prems' = List.map (Multiplicity.annot_prem dims')
+      (map_nl_list (elab_prem env) prems) in
     let free = (Free.free_def d).Free.varid in
-    let dims = Multiplicity.check_def d in
     let binds' = make_binds env free dims d.at in
     let rule' = Il.RuleD (id2, binds', mixop, tup_exp' es' e.at, prems') $ d.at in
     env.rels <- rebind "relation" env.rels id1 (t, rule'::rules');
@@ -986,17 +992,19 @@ let elab_def env d : Il.def list =
     env.defs <- bind "function" env.defs id (t1, t2, []);
     [Il.DecD (id, t1', t2', [], elab_hints hints) $ d.at]
   | DefD (id, e1, e2, prems) ->
+    let dims = Multiplicity.check_def d in
+    let dims' = Multiplicity.Env.map (List.map (elab_iter env)) dims in
     let t1, t2, clauses' = find "function" env.defs id in
-    let e1' = elab_exp env e1 t1 in
-    let e2' = elab_exp env e2 t2 in
-    let prems' = map_nl_list (elab_prem env) prems in
+    let e1' = Multiplicity.annot_exp dims' (elab_exp env e1 t1) in
+    let e2' = Multiplicity.annot_exp dims' (elab_exp env e2 t2) in
+    let prems' = List.map (Multiplicity.annot_prem dims')
+      (map_nl_list (elab_prem env) prems) in
     let free_rh = Free.(Set.diff (free_exp e2).varid (free_exp e1).varid) in
     if free_rh <> Free.Set.empty then
       error d.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" (Free.Set.elements free_rh) ^ "`");
     let free = Free.(Set.union
       (free_exp e1).varid (free_nl_list free_prem prems).varid) in
-    let dims = Multiplicity.check_def d in
     let binds' = make_binds env free dims d.at in
     let clause' = Il.DefD (binds', e1', e2', prems') $ d.at in
     env.defs <- rebind "definition" env.defs id (t1, t2, clause'::clauses');

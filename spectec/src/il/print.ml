@@ -148,7 +148,7 @@ and string_of_exp e =
   | TupE es -> "(" ^ string_of_exps ", " es ^ ")"
   | MixE (op, e1) -> string_of_mixop op ^ string_of_exp_args e1
   | CallE (id, e) -> "$" ^ id.it ^ string_of_exp_args e
-  | IterE (e1, iter) -> string_of_exp e1 ^ string_of_iter iter
+  | IterE (e1, iter) -> string_of_exp e1 ^ string_of_iterexp iter
   | OptE eo -> "?(" ^ string_of_exps "" (Option.to_list eo) ^ ")"
   | ListE es -> "[" ^ string_of_exps " " es ^ "]"
   | CatE (e1, e2) -> string_of_exp e1 ^ " :: " ^ string_of_exp e2
@@ -176,6 +176,9 @@ and string_of_path p =
   | DotP ({it = RootP; _}, atom) -> string_of_atom atom
   | DotP (p1, atom) -> string_of_path p1 ^ "." ^ string_of_atom atom
 
+and string_of_iterexp (iter, ids) =
+  string_of_iter iter ^ "{" ^ String.concat " " (List.map Source.it ids) ^ "}"
+
 
 (* Definitions *)
 
@@ -194,11 +197,11 @@ let string_of_premise prem =
     id.it ^ ": " ^ string_of_exp (MixE (op, e) $ e.at)
   | RulePr (id, op, e, iters) ->
     "(" ^ id.it ^ ": " ^ string_of_exp (MixE (op, e) $ e.at) ^ ")" ^
-      String.concat "" (List.map string_of_iter iters)
+      String.concat "" (List.map string_of_iterexp iters)
   | IfPr (e, []) -> "if " ^ string_of_exp e
   | IfPr (e, iters) ->
     "(" ^ "if " ^ string_of_exp e ^ ")" ^
-      String.concat "" (List.map string_of_iter iters)
+      String.concat "" (List.map string_of_iterexp iters)
   | ElsePr -> "otherwise"
 
 let string_of_rule rule =

@@ -23,7 +23,6 @@ type env =
     mutable typs : syn_typ Env.t;
     mutable rels : rel_typ Env.t;
     mutable defs : def_typ Env.t;
-    ctx : iter list;
   }
 
 let new_env () =
@@ -31,7 +30,6 @@ let new_env () =
     typs = Env.empty;
     rels = Env.empty;
     defs = Env.empty;
-    ctx = [];
   }
 
 let fwd_deftyp id = NotationT ([[]; []], VarT (id $ no_region) $ no_region)
@@ -62,14 +60,6 @@ let find_case cases atom at =
   match List.find_opt (fun (atom', _, _) -> atom' = atom) cases with
   | Some (_, x, _) -> x
   | None -> error at ("unknown case `" ^ string_of_atom atom ^ "`")
-
-
-let rec is_prefix ctx1 ctx2 =
-  match ctx1, ctx2 with
-  | [], _ -> true
-  | _, [] -> false
-  | iter1::ctx1', iter2::ctx2' ->
-    Eq.eq_iter iter1 iter2 && is_prefix ctx1' ctx2'
 
 
 (* Type Accessors *)
@@ -299,7 +289,7 @@ and infer_exp env e : typ =
   | CallE (id, _) -> snd (find "function" env.defs id)
   | MixE _ -> error e.at "cannot infer type of mixin notation"
   | IterE (e1, iter) ->
-    let iter' = match iter with ListN _ -> List | iter' -> iter' in
+    let iter' = match fst iter with ListN _ -> List | iter' -> iter' in
     IterT (infer_exp env e1, iter') $ e.at
   | OptE _ -> error e.at "cannot infer type of option"
   | ListE _ -> error e.at "cannot infer type of list"
@@ -317,10 +307,10 @@ and valid_exp env e t =
   | VarE id ->
     let t', dim = find "variable" env.vars id in
     equiv_typ env t' t e.at;
-    if not (is_prefix dim env.ctx) then
-      error e.at ("inconsistent use of iterated variable `" ^
-        id.it ^ String.concat "" (List.map string_of_iter dim) ^ "` in " ^
-        "context `_" ^ String.concat "" (List.map string_of_iter env.ctx) ^ "`")
+    if dim <> [] then
+      error e.at ("use of iterated variable `" ^
+        id.it ^ String.concat "" (List.map string_of_iter dim) ^
+        "` outside suitable iteraton context")
   | BoolE _ | NatE _ | TextE _ ->
     let t' = infer_exp env e in
     equiv_typ env t' t e.at
@@ -391,9 +381,9 @@ and valid_exp env e t =
     let tmix = as_mix_typ "mixin notation" env Check t e.at in
     valid_expmix env op e tmix e.at
   | IterE (e1, iter) ->
-    valid_iter env iter;
-    let t1 = as_iter_typ iter "iteration" env Check t e.at in
-    valid_exp {env with ctx = iter::env.ctx} e1 t1
+    let env' = valid_iterexp env iter in
+    let t1 = as_iter_typ (fst iter) "iteration" env Check t e.at in
+    valid_exp env' e1 t1
   | OptE eo ->
     let t1 = as_iter_typ Opt "option" env Check t e.at in
     Option.iter (fun e1 -> valid_exp env e1 t1) eo
@@ -440,6 +430,21 @@ and valid_path env p t : typ =
     let tfs = as_struct_typ "path" env Check t1 p1.at in
     find_field tfs atom p1.at
 
+and valid_iterexp env (iter, ids) : env =
+  valid_iter env iter;
+  List.fold_left (fun env id ->
+    match find "variable" env.vars id with
+    | t, iter1::iters
+      when Eq.eq_iter (snd (Lib.List.split_last (iter1::iters))) iter ->
+      {env with vars =
+        Env.add id.it (t, fst (Lib.List.split_last (iter1::iters))) env.vars}
+    | _, iters ->
+      error id.at ("iteration variable `" ^ id.it ^
+        "` has incompatible dimension `" ^ id.it ^
+        String.concat "" (List.map string_of_iter iters) ^
+        "` in iteration `_" ^ string_of_iter iter ^ "`")
+  ) env ids
+
 
 (* Definitions *)
 
@@ -451,8 +456,7 @@ let valid_binds env binds =
 
 let rec valid_iter_list env = function
   | [] -> env
-  | iter::iters ->
-    valid_iter env iter; valid_iter_list {env with ctx = env.ctx @ [iter]} iters
+  | iter::iters -> valid_iter_list (valid_iterexp env iter) iters
 
 let valid_prem env prem =
   match prem.it with

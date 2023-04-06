@@ -109,7 +109,7 @@ and exp' =
   | TupE of exp list             (* `(` list2(exp, `,`) `)` *)
   | MixE of mixop * exp          (* exp atom exp *)
   | CallE of id * exp            (* defid exp? *)
-  | IterE of exp * iter          (* exp iter *)
+  | IterE of exp * iterexp       (* exp iter *)
   | OptE of exp option           (* exp? : typ? *)
   | ListE of exp list            (* [exp ... exp] *)
   | CatE of exp * exp            (* exp :: exp *)
@@ -123,6 +123,8 @@ and path' =
   | RootP                        (*  *)
   | IdxP of path * exp           (* path `[` exp `]` *)
   | DotP of path * atom          (* path `.` atom *)
+
+and iterexp = iter * id list
 
 
 (* Definitions *)
@@ -146,8 +148,8 @@ and clause' =
 
 and premise = premise' phrase
 and premise' =
-  | RulePr of id * mixop * exp * iter list            (* premise *)
-  | IfPr of exp * iter list                           (* side condition *)
+  | RulePr of id * mixop * exp * iterexp list         (* premise *)
+  | IfPr of exp * iterexp list                        (* side condition *)
   | ElsePr                                            (* otherwise *)
 
 and hint = {hintid : id; hintexp : string list}       (* hint *)
