@@ -149,8 +149,8 @@ and def' =
 
 and premise = premise' phrase
 and premise' =
-  | RulePr of id * exp * iter option         (* `(` metaid exp `)` iter? *)
-  | IfPr of exp * iter option                (* `if` exp *)
+  | RulePr of id * exp * iter list           (* `(` metaid exp `)` iter? *)
+  | IfPr of exp * iter list                  (* `if` exp *)
   | ElsePr                                   (* `otherwise` *)
 
 and hint = {hintid : id; hintexp : exp}      (* `(` `hint` hintid exp `)` *)

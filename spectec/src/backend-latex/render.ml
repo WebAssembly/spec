@@ -539,12 +539,17 @@ let word s = "\\mbox{" ^ s ^ "}"
 
 let render_premise env prem =
   match prem.it with
-  | RulePr (id, e, None) -> render_exp {env with current_rel = id.it} e
-  | RulePr (id, e, Some iter) ->
+  | RulePr (id, e, []) -> render_exp {env with current_rel = id.it} e
+  | RulePr (id, e, iters) ->
     let env' = {env with current_rel = id.it} in
-    "(" ^ render_exp env' e ^ ")" ^ render_iter env' iter
-  | IfPr (e, None) -> render_exp env e
-  | IfPr (e, Some iter) -> "(" ^ render_exp env e ^ ")" ^ render_iter env iter
+    String.make (List.length iters - 1) '{' ^
+    "(" ^ render_exp env' e ^ ")" ^
+      String.concat "}" (List.map (render_iter env') iters)
+  | IfPr (e, []) -> render_exp env e
+  | IfPr (e, iters) ->
+    String.make (List.length iters - 1) '{' ^
+    "(" ^ render_exp env e ^ ")" ^
+      String.concat "}" (List.map (render_iter env) iters)
   | ElsePr -> error prem.at "misplaced `otherwise` premise"
 
 

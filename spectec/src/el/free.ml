@@ -18,7 +18,6 @@ let union sets1 sets2 =
     defid = Set.union sets1.defid sets2.defid;
   }
 
-let free_opt free_x xo = Option.(value (map free_x xo) ~default:empty)
 let free_list free_x xs = List.(fold_left union empty (map free_x xs))
 
 let free_nl_elem free_x = function Nl -> empty | Elem x -> free_x x
@@ -95,9 +94,9 @@ and free_path p =
 
 let free_prem prem =
   match prem.it with
-  | RulePr (id, e, itero) ->
-    union (free_relid id) (union (free_exp e) (free_opt free_iter itero))
-  | IfPr (e, itero) -> union (free_exp e) (free_opt free_iter itero)
+  | RulePr (id, e, iters) ->
+    union (free_relid id) (union (free_exp e) (free_list free_iter iters))
+  | IfPr (e, iters) -> union (free_exp e) (free_list free_iter iters)
   | ElsePr -> empty
 
 let free_def d =

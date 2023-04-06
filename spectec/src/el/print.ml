@@ -174,12 +174,14 @@ and string_of_path p =
 
 let string_of_premise prem =
   match prem.it with
-  | RulePr (id, e, None) -> id.it ^ ": " ^ string_of_exp e
-  | RulePr (id, e, Some iter) ->
-    "(" ^ id.it ^ ": " ^ string_of_exp e ^ ")" ^ string_of_iter iter
-  | IfPr (e, None) -> "if " ^ string_of_exp e
-  | IfPr (e, Some iter) ->
-    "(" ^ "if " ^ string_of_exp e ^ ")" ^ string_of_iter iter
+  | RulePr (id, e, []) -> id.it ^ ": " ^ string_of_exp e
+  | RulePr (id, e, iters) ->
+    "(" ^ id.it ^ ": " ^ string_of_exp e ^ ")" ^
+      String.concat "" (List.map string_of_iter iters)
+  | IfPr (e, []) -> "if " ^ string_of_exp e
+  | IfPr (e, iters) ->
+    "(" ^ "if " ^ string_of_exp e ^ ")" ^
+      String.concat "" (List.map string_of_iter iters)
   | ElsePr -> "otherwise"
 
 let string_of_def d =

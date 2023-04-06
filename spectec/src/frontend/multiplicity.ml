@@ -121,16 +121,14 @@ and check_path env ctx p =
 
 let check_prem env prem =
   match prem.it with
-  | RulePr (_id, e, None) ->
-    check_exp env [] e
-  | RulePr (_id, e, Some iter) ->
-    check_iter env [] iter;
-    check_exp env [iter] e
-  | IfPr (e, None) ->
-    check_exp env [] e
-  | IfPr (e, Some iter) ->
-    check_iter env [] iter;
-    check_exp env [iter] e
+  | RulePr (_id, e, iters) ->
+    ignore (List.fold_right (fun iter ctx ->
+      check_iter env ctx iter; iter::ctx) iters []);
+    check_exp env iters e
+  | IfPr (e, iters) ->
+    ignore (List.fold_right (fun iter ctx ->
+      check_iter env ctx iter; iter::ctx) iters []);
+    check_exp env iters e
   | ElsePr -> ()
 
 let check_def d : env =

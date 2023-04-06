@@ -896,16 +896,16 @@ let make_binds env free dims at : Il.binds =
 
 let elab_prem env prem : Il.premise =
   match prem.it with
-  | RulePr (id, e, iter_opt) ->
+  | RulePr (id, e, iters) ->
     let t, _ = find "relation" env.rels id in
     let _, mixop, _ = elab_typ_notation env t in
     let es' = elab_exp_notation' env e t in
-    let iter_opt' = Option.map (elab_iter env) iter_opt in
-    Il.RulePr (id, mixop, tup_exp' es' e.at, iter_opt') $ prem.at
-  | IfPr (e, iter_opt) ->
+    let iters' = List.map (elab_iter env) iters in
+    Il.RulePr (id, mixop, tup_exp' es' e.at, iters') $ prem.at
+  | IfPr (e, iters) ->
     let e' = elab_exp env e (BoolT $ e.at) in
-    let iter_opt' = Option.map (elab_iter env) iter_opt in
-    Il.IfPr (e', iter_opt') $ prem.at
+    let iters' = List.map (elab_iter env) iters in
+    Il.IfPr (e', iters') $ prem.at
   | ElsePr ->
     Il.ElsePr $ prem.at
 

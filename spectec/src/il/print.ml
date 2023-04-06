@@ -190,14 +190,15 @@ let string_of_binds = function
 
 let string_of_premise prem =
   match prem.it with
-  | RulePr (id, op, e, None) ->
+  | RulePr (id, op, e, []) ->
     id.it ^ ": " ^ string_of_exp (MixE (op, e) $ e.at)
-  | RulePr (id, op, e, Some iter) ->
+  | RulePr (id, op, e, iters) ->
     "(" ^ id.it ^ ": " ^ string_of_exp (MixE (op, e) $ e.at) ^ ")" ^
-      string_of_iter iter
-  | IfPr (e, None) -> "if " ^ string_of_exp e
-  | IfPr (e, Some iter) ->
-    "(" ^ "if " ^ string_of_exp e ^ ")" ^ string_of_iter iter
+      String.concat "" (List.map string_of_iter iters)
+  | IfPr (e, []) -> "if " ^ string_of_exp e
+  | IfPr (e, iters) ->
+    "(" ^ "if " ^ string_of_exp e ^ ")" ^
+      String.concat "" (List.map string_of_iter iters)
   | ElsePr -> "otherwise"
 
 let string_of_rule rule =
