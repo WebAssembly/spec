@@ -362,7 +362,7 @@ rule Instr_ok/store:
   -- if n? = epsilon \/ nt = in
 
 
-;; Constant Instructions
+;; Constant Expressions
 
 relation Instr_const: context |- instr CONST             hint(show "C-instr")
 relation Expr_const: context |- expr CONST               hint(show "C-expr")

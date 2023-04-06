@@ -1028,10 +1028,10 @@ syntax frame = {LOCAL val*, MODULE moduleinst}
 ;; 4-runtime.watsup:82.1-82.47
 syntax state = `%;%`(store, frame)
 
-;; 4-runtime.watsup:130.1-137.5
+;; 4-runtime.watsup:139.1-146.5
 rec {
 
-;; 4-runtime.watsup:130.1-137.5
+;; 4-runtime.watsup:139.1-146.5
 syntax admininstr =
   | instr
   | REF.FUNC_ADDR(funcaddr)
@@ -1045,284 +1045,398 @@ syntax admininstr =
 ;; 4-runtime.watsup:83.1-83.62
 syntax config = `%;%*`(state, admininstr*)
 
-;; 4-runtime.watsup:98.1-98.59
+;; 4-runtime.watsup:101.1-101.59
 def funcaddr : state -> funcaddr*
-  ;; 4-runtime.watsup:99.1-99.38
+  ;; 4-runtime.watsup:102.1-102.38
   def {f : frame, s : store} funcaddr(`%;%`(s, f)) = f.MODULE_frame.FUNC_moduleinst
 
-;; 4-runtime.watsup:101.1-101.52
+;; 4-runtime.watsup:104.1-104.52
 def funcinst : state -> funcinst*
-  ;; 4-runtime.watsup:102.1-102.31
+  ;; 4-runtime.watsup:105.1-105.31
   def {f : frame, s : store} funcinst(`%;%`(s, f)) = s.FUNC_store
 
-;; 4-runtime.watsup:104.1-104.61
+;; 4-runtime.watsup:107.1-107.67
 def func : (state, funcidx) -> funcinst
-  ;; 4-runtime.watsup:105.1-105.48
+  ;; 4-runtime.watsup:115.1-115.48
   def {f : frame, s : store, x : idx} func(`%;%`(s, f), x) = s.FUNC_store[f.MODULE_frame.FUNC_moduleinst[x]]
 
-;; 4-runtime.watsup:107.1-107.59
-def local : (state, localidx) -> val
-  ;; 4-runtime.watsup:108.1-108.35
-  def {f : frame, s : store, x : idx} local(`%;%`(s, f), x) = f.LOCAL_frame[x]
-
-;; 4-runtime.watsup:110.1-110.69
+;; 4-runtime.watsup:108.1-108.69
 def global : (state, globalidx) -> globalinst
-  ;; 4-runtime.watsup:111.1-111.54
+  ;; 4-runtime.watsup:116.1-116.54
   def {f : frame, s : store, x : idx} global(`%;%`(s, f), x) = s.GLOBAL_store[f.MODULE_frame.GLOBAL_moduleinst[x]]
 
-;; 4-runtime.watsup:113.1-113.65
+;; 4-runtime.watsup:109.1-109.68
 def table : (state, tableidx) -> tableinst
-  ;; 4-runtime.watsup:114.1-114.51
+  ;; 4-runtime.watsup:117.1-117.51
   def {f : frame, s : store, x : idx} table(`%;%`(s, f), x) = s.TABLE_store[f.MODULE_frame.TABLE_moduleinst[x]]
 
-;; 4-runtime.watsup:116.1-116.62
+;; 4-runtime.watsup:110.1-110.66
+def mem : (state, memidx) -> meminst
+  ;; 4-runtime.watsup:118.1-118.45
+  def {f : frame, s : store, x : idx} mem(`%;%`(s, f), x) = s.MEM_store[f.MODULE_frame.MEM_moduleinst[x]]
+
+;; 4-runtime.watsup:111.1-111.67
 def elem : (state, tableidx) -> eleminst
-  ;; 4-runtime.watsup:117.1-117.48
+  ;; 4-runtime.watsup:119.1-119.48
   def {f : frame, s : store, x : idx} elem(`%;%`(s, f), x) = s.ELEM_store[f.MODULE_frame.ELEM_moduleinst[x]]
 
-;; 4-runtime.watsup:119.1-119.76
+;; 4-runtime.watsup:112.1-112.67
+def data : (state, dataidx) -> datainst
+  ;; 4-runtime.watsup:120.1-120.48
+  def {f : frame, s : store, x : idx} data(`%;%`(s, f), x) = s.DATA_store[f.MODULE_frame.DATA_moduleinst[x]]
+
+;; 4-runtime.watsup:113.1-113.68
+def local : (state, localidx) -> val
+  ;; 4-runtime.watsup:121.1-121.35
+  def {f : frame, s : store, x : idx} local(`%;%`(s, f), x) = f.LOCAL_frame[x]
+
+;; 4-runtime.watsup:124.1-124.78
 def with_local : (state, localidx, val) -> state
-  ;; 4-runtime.watsup:120.1-120.50
+  ;; 4-runtime.watsup:130.1-130.52
   def {f : frame, s : store, v : val, x : idx} with_local(`%;%`(s, f), x, v) = `%;%`(s, f[LOCAL[x] = v])
 
-;; 4-runtime.watsup:122.1-122.79
+;; 4-runtime.watsup:125.1-125.79
 def with_global : (state, globalidx, val) -> state
-  ;; 4-runtime.watsup:123.1-123.69
+  ;; 4-runtime.watsup:131.1-131.71
   def {f : frame, s : store, v : val, x : idx} with_global(`%;%`(s, f), x, v) = `%;%`(s[GLOBAL[f.MODULE_frame.GLOBAL_moduleinst[x]] = v], f)
 
-;; 4-runtime.watsup:125.1-125.84
+;; 4-runtime.watsup:126.1-126.81
 def with_table : (state, tableidx, n, ref) -> state
-  ;; 4-runtime.watsup:126.1-126.72
+  ;; 4-runtime.watsup:132.1-132.74
   def {f : frame, i : nat, r : ref, s : store, x : idx} with_table(`%;%`(s, f), x, i, r) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]][i] = r], f)
 
-;; 4-runtime.watsup:139.1-142.21
+;; 4-runtime.watsup:127.1-127.80
+def with_tableext : (state, tableidx, ref*) -> state
+  ;; 4-runtime.watsup:133.1-133.75
+  def {f : frame, r* : ref*, s : store, x : idx} with_tableext(`%;%`(s, f), x, r*) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]] =.. r*], f)
+
+;; 4-runtime.watsup:128.1-128.77
+def with_elem : (state, elemidx, ref*) -> state
+  ;; 4-runtime.watsup:134.1-134.69
+  def {f : frame, r* : ref*, s : store, x : idx} with_elem(`%;%`(s, f), x, r*) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]] = r*], f)
+
+;; 4-runtime.watsup:148.1-151.21
 rec {
 
-;; 4-runtime.watsup:139.1-142.21
+;; 4-runtime.watsup:148.1-151.21
 syntax E =
   | _HOLE
   | _SEQ(val*, E, instr*)
   | LABEL_(n, instr*, E)
 }
 
-;; 5-reduction.watsup:4.1-4.63
+;; 5-numerics.watsup:3.1-3.76
+def unop : (unop_numtype, numtype, c_numtype) -> c_numtype*
+
+;; 5-numerics.watsup:4.1-4.79
+def binop : (binop_numtype, numtype, c_numtype, c_numtype) -> c_numtype*
+
+;; 5-numerics.watsup:5.1-5.76
+def testop : (testop_numtype, numtype, c_numtype) -> c_numtype
+
+;; 5-numerics.watsup:6.1-6.79
+def relop : (relop_numtype, numtype, c_numtype, c_numtype) -> c_numtype
+
+;; 5-numerics.watsup:8.1-8.84
+def ext : (nat, nat, sx, c_numtype) -> c_numtype
+
+;; 5-numerics.watsup:9.1-9.84
+def cvtop : (numtype, cvtop, numtype, sx?, c_numtype) -> c_numtype*
+
+;; 6-reduction.watsup:4.1-4.63
 relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
-  ;; 5-reduction.watsup:86.1-88.18
-  rule br_table-ge {i : nat, l* : labelidx*, l' : labelidx}:
-    `%*~>%*`([CONST_admininstr(I32_numtype, i) BR_TABLE_admininstr(l*, l')], [BR_admininstr(l')])
-    -- if (i >= |l*|)
-
-  ;; 5-reduction.watsup:82.1-84.17
-  rule br_table-lt {i : nat, l* : labelidx*, l' : labelidx}:
-    `%*~>%*`([CONST_admininstr(I32_numtype, i) BR_TABLE_admininstr(l*, l')], [BR_admininstr(l*[i])])
-    -- if (i < |l*|)
-
-  ;; 5-reduction.watsup:77.1-79.14
-  rule br_if-false {c : c_numtype, l : labelidx}:
-    `%*~>%*`([CONST_admininstr(I32_numtype, c) BR_IF_admininstr(l)], [])
-    -- if (c = 0)
-
-  ;; 5-reduction.watsup:73.1-75.16
-  rule br_if-true {c : c_numtype, l : labelidx}:
-    `%*~>%*`([CONST_admininstr(I32_numtype, c) BR_IF_admininstr(l)], [BR_admininstr(l)])
-    -- if (c =/= 0)
-
-  ;; 5-reduction.watsup:69.1-70.65
-  rule br-succ {instr* : instr*, instr'* : instr*, l : labelidx, n : n, val* : val*}:
-    `%*~>%*`([LABEL__admininstr(n, instr'*, (val <: admininstr)* :: [BR_admininstr(l + 1)] :: (instr <: admininstr)*)], (val <: admininstr)* :: [BR_admininstr(l)])
-
-  ;; 5-reduction.watsup:66.1-67.69
-  rule br-zero {instr* : instr*, instr'* : instr*, n : n, val^n : val^n, val'* : val*}:
-    `%*~>%*`([LABEL__admininstr(n, instr'*, (val' <: admininstr)* :: (val <: admininstr)^n :: [BR_admininstr(0)] :: (instr <: admininstr)*)], (val <: admininstr)^n :: (instr' <: admininstr)*)
-
-  ;; 5-reduction.watsup:61.1-63.14
-  rule if-false {bt : blocktype, c : c_numtype, instr_1* : instr*, instr_2* : instr*}:
-    `%*~>%*`([CONST_admininstr(I32_numtype, c) IF_admininstr(bt, instr_1*, instr_2*)], [BLOCK_admininstr(bt, instr_2*)])
-    -- if (c = 0)
-
-  ;; 5-reduction.watsup:57.1-59.16
-  rule if-true {bt : blocktype, c : c_numtype, instr_1* : instr*, instr_2* : instr*}:
-    `%*~>%*`([CONST_admininstr(I32_numtype, c) IF_admininstr(bt, instr_1*, instr_2*)], [BLOCK_admininstr(bt, instr_1*)])
-    -- if (c =/= 0)
-
-  ;; 5-reduction.watsup:53.1-55.28
-  rule loop {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k}:
-    `%*~>%*`((val <: admininstr)^k :: [LOOP_admininstr(bt, instr*)], [LABEL__admininstr(n, [LOOP_instr(bt, instr*)], (val <: admininstr)^k :: (instr <: admininstr)*)])
-    -- if (bt = `%->%`(t_1^k, t_2^n))
-
-  ;; 5-reduction.watsup:49.1-51.28
-  rule block {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k}:
-    `%*~>%*`((val <: admininstr)^k :: [BLOCK_admininstr(bt, instr*)], [LABEL__admininstr(n, [], (val <: admininstr)^k :: (instr <: admininstr)*)])
-    -- if (bt = `%->%`(t_1^k, t_2^n))
-
-  ;; 5-reduction.watsup:46.1-47.47
+  ;; 6-reduction.watsup:177.1-178.47
   rule local.tee {val : val, x : idx}:
     `%*~>%*`([(val <: admininstr) LOCAL.TEE_admininstr(x)], [(val <: admininstr) (val <: admininstr) LOCAL.SET_admininstr(x)])
 
-  ;; 5-reduction.watsup:42.1-44.14
-  rule select-false {c : c_numtype, t? : valtype?, val_1 : val, val_2 : val}:
-    `%*~>%*`([(val_1 <: admininstr) (val_2 <: admininstr) CONST_admininstr(I32_numtype, c) SELECT_admininstr(t?)], [(val_2 <: admininstr)])
-    -- if (c = 0)
-
-  ;; 5-reduction.watsup:38.1-40.16
-  rule select-true {c : c_numtype, t? : valtype?, val_1 : val, val_2 : val}:
-    `%*~>%*`([(val_1 <: admininstr) (val_2 <: admininstr) CONST_admininstr(I32_numtype, c) SELECT_admininstr(t?)], [(val_1 <: admininstr)])
-    -- if (c =/= 0)
-
-  ;; 5-reduction.watsup:35.1-36.24
-  rule drop {val : val}:
-    `%*~>%*`([(val <: admininstr) DROP_admininstr], [])
-
-  ;; 5-reduction.watsup:32.1-33.19
-  rule nop:
-    `%*~>%*`([NOP_admininstr], [])
-
-  ;; 5-reduction.watsup:29.1-30.24
-  rule unreachable:
-    `%*~>%*`([UNREACHABLE_admininstr], [TRAP_admininstr])
-
-  ;; 5-reduction.watsup:25.1-27.15
+  ;; 6-reduction.watsup:166.1-168.15
   rule ref.is_null-false {val : val}:
     `%*~>%*`([(val <: admininstr) REF.IS_NULL_admininstr], [CONST_admininstr(I32_numtype, 0)])
     -- otherwise
 
-  ;; 5-reduction.watsup:21.1-23.26
+  ;; 6-reduction.watsup:162.1-164.28
   rule ref.is_null-true {rt : reftype, val : val}:
     `%*~>%*`([(val <: admininstr) REF.IS_NULL_admininstr], [CONST_admininstr(I32_numtype, 1)])
     -- if (val = REF.NULL_val(rt))
 
-;; 5-reduction.watsup:5.1-5.63
-relation Step_read: `%~>%*`(config, admininstr*)
-  ;; 5-reduction.watsup:165.1-167.61
-  rule call_addr {a : addr, instr* : instr*, k : nat, m : moduleinst, n : n, t* : valtype*, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, z : state}:
-    `%~>%*`(`%;%*`(z, (val <: admininstr)^k :: [CALL_ADDR_admininstr(a)]), [FRAME__admininstr(n, {LOCAL val^k :: $default_(t)*, MODULE m}, [LABEL__admininstr(n, [], (instr <: admininstr)*)])])
-    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(`%->%`(t_1^k, t_2^n), t*, instr*)))
+  ;; 6-reduction.watsup:153.1-155.54
+  rule cvtop-trap {c_1 : c_numtype, cvtop : cvtop, nt : numtype, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
+    `%*~>%*`([CONST_admininstr(nt, c_1) CVTOP_admininstr(nt_1, cvtop, nt_2, sx?)], [TRAP_admininstr])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?, c_1) = [])
 
-  ;; 5-reduction.watsup:161.1-163.15
+  ;; 6-reduction.watsup:149.1-151.48
+  rule cvtop-val {c : c_numtype, c_1 : c_numtype, cvtop : cvtop, nt : numtype, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
+    `%*~>%*`([CONST_admininstr(nt, c_1) CVTOP_admininstr(nt_1, cvtop, nt_2, sx?)], [CONST_admininstr(nt, c)])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?, c_1) = [c])
+
+  ;; 6-reduction.watsup:145.1-146.70
+  rule extend {c : c_numtype, n : n, nt : numtype}:
+    `%*~>%*`([CONST_admininstr(nt, c) EXTEND_admininstr(nt, n)], [CONST_admininstr(nt, $ext(n, $size(nt <: valtype), S_sx, c))])
+
+  ;; 6-reduction.watsup:140.1-142.40
+  rule relop {c : c_numtype, c_1 : c_numtype, c_2 : c_numtype, nt : numtype, relop : relop_numtype}:
+    `%*~>%*`([CONST_admininstr(nt, c_1) CONST_admininstr(nt, c_2) RELOP_admininstr(nt, relop)], [CONST_admininstr(I32_numtype, c)])
+    -- if (c = $relop(relop, nt, c_1, c_2))
+
+  ;; 6-reduction.watsup:136.1-138.37
+  rule testop {c : c_numtype, c_1 : c_numtype, nt : numtype, testop : testop_numtype}:
+    `%*~>%*`([CONST_admininstr(nt, c_1) TESTOP_admininstr(nt, testop)], [CONST_admininstr(I32_numtype, c)])
+    -- if (c = $testop(testop, nt, c_1))
+
+  ;; 6-reduction.watsup:131.1-133.46
+  rule binop-trap {binop : binop_numtype, c_1 : c_numtype, c_2 : c_numtype, nt : numtype}:
+    `%*~>%*`([CONST_admininstr(nt, c_1) CONST_admininstr(nt, c_2) BINOP_admininstr(nt, binop)], [TRAP_admininstr])
+    -- if ($binop(binop, nt, c_1, c_2) = [])
+
+  ;; 6-reduction.watsup:127.1-129.40
+  rule binop-val {binop : binop_numtype, c : c_numtype, c_1 : c_numtype, c_2 : c_numtype, nt : numtype}:
+    `%*~>%*`([CONST_admininstr(nt, c_1) CONST_admininstr(nt, c_2) BINOP_admininstr(nt, binop)], [CONST_admininstr(nt, c)])
+    -- if ($binop(binop, nt, c_1, c_2) = [c])
+
+  ;; 6-reduction.watsup:122.1-124.39
+  rule unop-trap {c_1 : c_numtype, nt : numtype, unop : unop_numtype}:
+    `%*~>%*`([CONST_admininstr(nt, c_1) UNOP_admininstr(nt, unop)], [TRAP_admininstr])
+    -- if ($unop(unop, nt, c_1) = [])
+
+  ;; 6-reduction.watsup:118.1-120.33
+  rule unop-val {c : c_numtype, c_1 : c_numtype, nt : numtype, unop : unop_numtype}:
+    `%*~>%*`([CONST_admininstr(nt, c_1) UNOP_admininstr(nt, unop)], [CONST_admininstr(nt, c)])
+    -- if ($unop(unop, nt, c_1) = [c])
+
+  ;; 6-reduction.watsup:114.1-115.60
+  rule return-label {instr* : instr*, instr'* : instr*, k : nat, val* : val*}:
+    `%*~>%*`([LABEL__admininstr(k, instr'*, (val <: admininstr)* :: [RETURN_admininstr] :: (instr <: admininstr)*)], (val <: admininstr)* :: [RETURN_admininstr])
+
+  ;; 6-reduction.watsup:111.1-112.55
+  rule return-frame {f : frame, instr* : instr*, n : n, val^n : val^n, val'* : val*}:
+    `%*~>%*`([FRAME__admininstr(n, f, (val' <: admininstr)* :: (val <: admininstr)^n :: [RETURN_admininstr] :: (instr <: admininstr)*)], (val <: admininstr)^n)
+
+  ;; 6-reduction.watsup:108.1-109.35
+  rule frame-vals {f : frame, n : n, val^n : val^n}:
+    `%*~>%*`([FRAME__admininstr(n, f, (val <: admininstr)^n)], (val <: admininstr)^n)
+
+  ;; 6-reduction.watsup:85.1-87.18
+  rule br_table-ge {i : nat, l* : labelidx*, l' : labelidx}:
+    `%*~>%*`([CONST_admininstr(I32_numtype, i) BR_TABLE_admininstr(l*, l')], [BR_admininstr(l')])
+    -- if (i >= |l*|)
+
+  ;; 6-reduction.watsup:81.1-83.17
+  rule br_table-lt {i : nat, l* : labelidx*, l' : labelidx}:
+    `%*~>%*`([CONST_admininstr(I32_numtype, i) BR_TABLE_admininstr(l*, l')], [BR_admininstr(l*[i])])
+    -- if (i < |l*|)
+
+  ;; 6-reduction.watsup:76.1-78.14
+  rule br_if-false {c : c_numtype, l : labelidx}:
+    `%*~>%*`([CONST_admininstr(I32_numtype, c) BR_IF_admininstr(l)], [])
+    -- if (c = 0)
+
+  ;; 6-reduction.watsup:72.1-74.16
+  rule br_if-true {c : c_numtype, l : labelidx}:
+    `%*~>%*`([CONST_admininstr(I32_numtype, c) BR_IF_admininstr(l)], [BR_admininstr(l)])
+    -- if (c =/= 0)
+
+  ;; 6-reduction.watsup:68.1-69.65
+  rule br-succ {instr* : instr*, instr'* : instr*, l : labelidx, n : n, val* : val*}:
+    `%*~>%*`([LABEL__admininstr(n, instr'*, (val <: admininstr)* :: [BR_admininstr(l + 1)] :: (instr <: admininstr)*)], (val <: admininstr)* :: [BR_admininstr(l)])
+
+  ;; 6-reduction.watsup:65.1-66.69
+  rule br-zero {instr* : instr*, instr'* : instr*, n : n, val^n : val^n, val'* : val*}:
+    `%*~>%*`([LABEL__admininstr(n, instr'*, (val' <: admininstr)* :: (val <: admininstr)^n :: [BR_admininstr(0)] :: (instr <: admininstr)*)], (val <: admininstr)^n :: (instr' <: admininstr)*)
+
+  ;; 6-reduction.watsup:60.1-61.38
+  rule label-vals {instr* : instr*, n : n, val* : val*}:
+    `%*~>%*`([LABEL__admininstr(n, instr*, (val <: admininstr)*)], (val <: admininstr)*)
+
+  ;; 6-reduction.watsup:55.1-57.14
+  rule if-false {bt : blocktype, c : c_numtype, instr_1* : instr*, instr_2* : instr*}:
+    `%*~>%*`([CONST_admininstr(I32_numtype, c) IF_admininstr(bt, instr_1*, instr_2*)], [BLOCK_admininstr(bt, instr_2*)])
+    -- if (c = 0)
+
+  ;; 6-reduction.watsup:51.1-53.16
+  rule if-true {bt : blocktype, c : c_numtype, instr_1* : instr*, instr_2* : instr*}:
+    `%*~>%*`([CONST_admininstr(I32_numtype, c) IF_admininstr(bt, instr_1*, instr_2*)], [BLOCK_admininstr(bt, instr_1*)])
+    -- if (c =/= 0)
+
+  ;; 6-reduction.watsup:47.1-49.28
+  rule loop {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k}:
+    `%*~>%*`((val <: admininstr)^k :: [LOOP_admininstr(bt, instr*)], [LABEL__admininstr(n, [LOOP_instr(bt, instr*)], (val <: admininstr)^k :: (instr <: admininstr)*)])
+    -- if (bt = `%->%`(t_1^k, t_2^n))
+
+  ;; 6-reduction.watsup:43.1-45.28
+  rule block {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k}:
+    `%*~>%*`((val <: admininstr)^k :: [BLOCK_admininstr(bt, instr*)], [LABEL__admininstr(n, [], (val <: admininstr)^k :: (instr <: admininstr)*)])
+    -- if (bt = `%->%`(t_1^k, t_2^n))
+
+  ;; 6-reduction.watsup:38.1-40.14
+  rule select-false {c : c_numtype, t? : valtype?, val_1 : val, val_2 : val}:
+    `%*~>%*`([(val_1 <: admininstr) (val_2 <: admininstr) CONST_admininstr(I32_numtype, c) SELECT_admininstr(t?)], [(val_2 <: admininstr)])
+    -- if (c = 0)
+
+  ;; 6-reduction.watsup:34.1-36.16
+  rule select-true {c : c_numtype, t? : valtype?, val_1 : val, val_2 : val}:
+    `%*~>%*`([(val_1 <: admininstr) (val_2 <: admininstr) CONST_admininstr(I32_numtype, c) SELECT_admininstr(t?)], [(val_1 <: admininstr)])
+    -- if (c =/= 0)
+
+  ;; 6-reduction.watsup:30.1-31.24
+  rule drop {val : val}:
+    `%*~>%*`([(val <: admininstr) DROP_admininstr], [])
+
+  ;; 6-reduction.watsup:27.1-28.19
+  rule nop:
+    `%*~>%*`([NOP_admininstr], [])
+
+  ;; 6-reduction.watsup:24.1-25.24
+  rule unreachable:
+    `%*~>%*`([UNREACHABLE_admininstr], [TRAP_admininstr])
+
+  ;; 6-reduction.watsup:20.1-22.15
+  rule ref.is_null-false {val : val}:
+    `%*~>%*`([(val <: admininstr) REF.IS_NULL_admininstr], [CONST_admininstr(I32_numtype, 0)])
+    -- otherwise
+
+  ;; 6-reduction.watsup:16.1-18.26
+  rule ref.is_null-true {rt : reftype, val : val}:
+    `%*~>%*`([(val <: admininstr) REF.IS_NULL_admininstr], [CONST_admininstr(I32_numtype, 1)])
+    -- if (val = REF.NULL_val(rt))
+
+;; 6-reduction.watsup:5.1-5.63
+relation Step_read: `%~>%*`(config, admininstr*)
+  ;; 6-reduction.watsup:263.1-267.15
+  rule table.init-le {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, (n + 1)) TABLE.INIT_admininstr(x, y)]), [CONST_admininstr(I32_numtype, j) ($elem(z, y)[i] <: admininstr) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, y)])
+    -- otherwise
+
+  ;; 6-reduction.watsup:259.1-261.15
+  rule table.init-zero {i : nat, j : nat, x : idx, y : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, 0) TABLE.INIT_admininstr(x, y)]), [])
+    -- otherwise
+
+  ;; 6-reduction.watsup:255.1-257.62
+  rule table.init-trap {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, y)]), [TRAP_admininstr])
+    -- if (((i + n) > |$elem(z, y)|) \/ ((j + n) > |$table(z, x)|))
+
+  ;; 6-reduction.watsup:247.1-252.14
+  rule table.copy-gt {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, (n + 1)) TABLE.COPY_admininstr(x, y)]), [CONST_admininstr(I32_numtype, (j + n)) CONST_admininstr(I32_numtype, (i + n)) TABLE.GET_admininstr(y) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, n) TABLE.COPY_admininstr(x, y)])
+    -- if (j > i)
+
+  ;; 6-reduction.watsup:240.1-245.15
+  rule table.copy-le {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, (n + 1)) TABLE.COPY_admininstr(x, y)]), [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) TABLE.GET_admininstr(y) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, n) TABLE.COPY_admininstr(x, y)])
+    -- if (j <= i)
+
+  ;; 6-reduction.watsup:236.1-238.15
+  rule table.copy-zero {i : nat, j : nat, x : idx, y : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, 0) TABLE.COPY_admininstr(x, y)]), [])
+    -- otherwise
+
+  ;; 6-reduction.watsup:232.1-234.63
+  rule table.copy-trap {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.COPY_admininstr(x, y)]), [TRAP_admininstr])
+    -- if (((i + n) > |$table(z, y)|) \/ ((j + n) > |$table(z, x)|))
+
+  ;; 6-reduction.watsup:225.1-229.15
+  rule table.fill-succ {i : nat, n : n, val : val, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (val <: admininstr) CONST_admininstr(I32_numtype, (n + 1)) TABLE.FILL_admininstr(x)]), [CONST_admininstr(I32_numtype, i) (val <: admininstr) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (i + 1)) (val <: admininstr) CONST_admininstr(I32_numtype, n) TABLE.FILL_admininstr(x)])
+    -- otherwise
+
+  ;; 6-reduction.watsup:221.1-223.15
+  rule table.fill-zero {i : nat, val : val, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (val <: admininstr) CONST_admininstr(I32_numtype, 0) TABLE.FILL_admininstr(x)]), [])
+    -- otherwise
+
+  ;; 6-reduction.watsup:217.1-219.34
+  rule table.fill-trap {i : nat, n : n, val : val, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (val <: admininstr) CONST_admininstr(I32_numtype, n) TABLE.FILL_admininstr(x)]), [TRAP_admininstr])
+    -- if ((i + n) > |$table(z, x)|)
+
+  ;; 6-reduction.watsup:213.1-214.57
+  rule table.grow-fail {n : n, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, n) TABLE.GROW_admininstr(x)]), [CONST_admininstr(I32_numtype, - 1)])
+
+  ;; 6-reduction.watsup:205.1-207.27
+  rule table.size {n : n, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [TABLE.SIZE_admininstr(x)]), [CONST_admininstr(I32_numtype, n)])
+    -- if (|$table(z, x)| = n)
+
+  ;; 6-reduction.watsup:196.1-198.28
+  rule table.set-trap {i : nat, ref : ref, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (ref <: admininstr) TABLE.GET_admininstr(x)]), [TRAP_admininstr])
+    -- if (i >= |$table(z, x)|)
+
+  ;; 6-reduction.watsup:192.1-194.27
+  rule table.get-val {i : nat, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) TABLE.GET_admininstr(x)]), [($table(z, x)[i] <: admininstr)])
+    -- if (i < |$table(z, x)|)
+
+  ;; 6-reduction.watsup:188.1-190.28
+  rule table.get-trap {i : nat, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) TABLE.GET_admininstr(x)]), [TRAP_admininstr])
+    -- if (i >= |$table(z, x)|)
+
+  ;; 6-reduction.watsup:181.1-182.39
+  rule global.get {x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [GLOBAL.GET_admininstr(x)]), [($global(z, x) <: admininstr)])
+
+  ;; 6-reduction.watsup:171.1-172.37
+  rule local.get {x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [LOCAL.GET_admininstr(x)]), [($local(z, x) <: admininstr)])
+
+  ;; 6-reduction.watsup:158.1-159.53
+  rule ref.func {x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [REF.FUNC_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x])])
+
+  ;; 6-reduction.watsup:102.1-105.52
+  rule call_addr {a : addr, f : frame, instr* : instr*, k : nat, m : moduleinst, n : n, t* : valtype*, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, z : state}:
+    `%~>%*`(`%;%*`(z, (val <: admininstr)^k :: [CALL_ADDR_admininstr(a)]), [FRAME__admininstr(n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*)])])
+    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(`%->%`(t_1^k, t_2^n), t*, instr*)))
+    -- if (f = {LOCAL val^k :: $default_(t)*, MODULE m})
+
+  ;; 6-reduction.watsup:98.1-100.15
   rule call_indirect-trap {ft : functype, i : nat, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, ft)]), [TRAP_admininstr])
     -- otherwise
 
-  ;; 5-reduction.watsup:156.1-159.34
+  ;; 6-reduction.watsup:93.1-96.34
   rule call_indirect-call {a : addr, ft : functype, func : func, i : nat, m : moduleinst, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, ft)]), [CALL_ADDR_admininstr(a)])
     -- if ($table(z, x)[i] = REF.FUNC_ADDR_ref(a))
     -- if ($funcinst(z)[a] = `%;%`(m, func))
 
-  ;; 5-reduction.watsup:153.1-154.47
+  ;; 6-reduction.watsup:90.1-91.47
   rule call {x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
 
-  ;; 5-reduction.watsup:147.1-151.15
-  rule table.init-le {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, (n + 1)) TABLE.INIT_admininstr(x, y)]), [CONST_admininstr(I32_numtype, j) ($elem(z, y)[i] <: admininstr) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, y)])
-    -- otherwise
+;; 6-reduction.watsup:3.1-3.63
+relation Step: `%~>%`(config, config)
+  ;; 6-reduction.watsup:270.1-271.59
+  rule elem.drop {x : idx, z : state}:
+    `%~>%`(`%;%*`(z, [ELEM.DROP_admininstr(x)]), `%;%*`($with_elem(z, x, []), []))
 
-  ;; 5-reduction.watsup:144.1-146.15
-  rule table.init-zero {i : nat, j : nat, x : idx, y : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, 0) TABLE.INIT_admininstr(x, y)]), [])
-    -- otherwise
+  ;; 6-reduction.watsup:210.1-211.102
+  rule table.grow-succeed {n : n, ref : ref, x : idx, z : state}:
+    `%~>%`(`%;%*`(z, [(ref <: admininstr) CONST_admininstr(I32_numtype, n) TABLE.GROW_admininstr(x)]), `%;%*`($with_tableext(z, x, ref^n), [CONST_admininstr(I32_numtype, |$table(z, x)|)]))
 
-  ;; 5-reduction.watsup:141.1-143.62
-  rule table.init-trap {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, y)]), [TRAP_admininstr])
-    -- if (((i + n) > |$elem(z, y)|) \/ ((j + n) > |$table(z, x)|))
-
-  ;; 5-reduction.watsup:134.1-139.14
-  rule table.copy-gt {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, (n + 1)) TABLE.COPY_admininstr(x, y)]), [CONST_admininstr(I32_numtype, (j + n)) CONST_admininstr(I32_numtype, (i + n)) TABLE.GET_admininstr(y) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, n) TABLE.COPY_admininstr(x, y)])
-    -- if (j > i)
-
-  ;; 5-reduction.watsup:128.1-133.15
-  rule table.copy-le {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, (n + 1)) TABLE.COPY_admininstr(x, y)]), [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) TABLE.GET_admininstr(y) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, n) TABLE.COPY_admininstr(x, y)])
-    -- if (j <= i)
-
-  ;; 5-reduction.watsup:125.1-127.15
-  rule table.copy-zero {i : nat, j : nat, x : idx, y : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, 0) TABLE.COPY_admininstr(x, y)]), [])
-    -- otherwise
-
-  ;; 5-reduction.watsup:122.1-124.63
-  rule table.copy-trap {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.COPY_admininstr(x, y)]), [TRAP_admininstr])
-    -- if (((i + n) > |$table(z, y)|) \/ ((j + n) > |$table(z, x)|))
-
-  ;; 5-reduction.watsup:117.1-120.15
-  rule table.fill-succ {i : nat, n : n, val : val, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (val <: admininstr) CONST_admininstr(I32_numtype, (n + 1)) TABLE.FILL_admininstr(x)]), [CONST_admininstr(I32_numtype, i) (val <: admininstr) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (i + 1)) (val <: admininstr) CONST_admininstr(I32_numtype, n) TABLE.FILL_admininstr(x)])
-    -- otherwise
-
-  ;; 5-reduction.watsup:114.1-116.15
-  rule table.fill-zero {i : nat, val : val, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (val <: admininstr) CONST_admininstr(I32_numtype, 0) TABLE.FILL_admininstr(x)]), [])
-    -- otherwise
-
-  ;; 5-reduction.watsup:111.1-113.34
-  rule table.fill-trap {i : nat, n : n, val : val, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (val <: admininstr) CONST_admininstr(I32_numtype, n) TABLE.FILL_admininstr(x)]), [TRAP_admininstr])
-    -- if ((i + n) > |$table(z, x)|)
-
-  ;; 5-reduction.watsup:107.1-109.27
-  rule table.size {n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [TABLE.SIZE_admininstr(x)]), [CONST_admininstr(I32_numtype, n)])
-    -- if (|$table(z, x)| = n)
-
-  ;; 5-reduction.watsup:103.1-105.27
-  rule table.get-lt {i : nat, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) TABLE.GET_admininstr(x)]), [($table(z, x)[i] <: admininstr)])
-    -- if (i < |$table(z, x)|)
-
-  ;; 5-reduction.watsup:99.1-101.28
-  rule table.get-ge {i : nat, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) TABLE.GET_admininstr(x)]), [TRAP_admininstr])
-    -- if (i >= |$table(z, x)|)
-
-  ;; 5-reduction.watsup:96.1-97.37
-  rule global.get {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [GLOBAL.GET_admininstr(x)]), [($global(z, x) <: admininstr)])
-
-  ;; 5-reduction.watsup:93.1-94.35
-  rule local.get {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [LOCAL.GET_admininstr(x)]), [($local(z, x) <: admininstr)])
-
-  ;; 5-reduction.watsup:90.1-91.53
-  rule ref.func {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [REF.FUNC_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x])])
-
-;; 5-reduction.watsup:6.1-6.63
-relation Step_write: `%~>%`(config, config)
-  ;; 5-reduction.watsup:179.1-181.28
-  rule table.set-ge {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (ref <: admininstr) TABLE.GET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
-    -- if (i >= |$table(z, x)|)
-
-  ;; 5-reduction.watsup:175.1-177.27
-  rule table.set-lt {i : nat, ref : ref, x : idx, z : state}:
+  ;; 6-reduction.watsup:200.1-202.27
+  rule table.set-val {i : nat, ref : ref, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (ref <: admininstr) TABLE.GET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
     -- if (i < |$table(z, x)|)
 
-  ;; 5-reduction.watsup:172.1-173.62
+  ;; 6-reduction.watsup:184.1-185.62
   rule global.set {val : val, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [(val <: admininstr) GLOBAL.SET_admininstr(x)]), `%;%*`($with_global(z, x, val), []))
 
-  ;; 5-reduction.watsup:169.1-170.60
+  ;; 6-reduction.watsup:174.1-175.60
   rule local.set {val : val, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [(val <: admininstr) LOCAL.SET_admininstr(x)]), `%;%*`($with_local(z, x, val), []))
 
-;; 5-reduction.watsup:3.1-3.63
-relation Step: `%~>%`(config, config)
-  ;; 5-reduction.watsup:16.1-18.42
-  rule write {instr* : instr*, instr'* : instr*, z : state, z' : state}:
-    `%~>%`(`%;%*`(z, (instr <: admininstr)*), `%;%*`(z', (instr' <: admininstr)*))
-    -- Step_write: `%~>%`(`%;%*`(z, (instr <: admininstr)*), `%;%*`(z', (instr' <: admininstr)*))
-
-  ;; 5-reduction.watsup:12.1-14.37
+  ;; 6-reduction.watsup:11.1-13.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, (instr <: admininstr)*), `%;%*`(z, (instr' <: admininstr)*))
     -- Step_read: `%~>%*`(`%;%*`(z, (instr <: admininstr)*), (instr' <: admininstr)*)
 
-  ;; 5-reduction.watsup:8.1-10.34
+  ;; 6-reduction.watsup:7.1-9.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, (instr <: admininstr)*), `%;%*`(z, (instr' <: admininstr)*))
     -- Step_pure: `%*~>%*`((instr <: admininstr)*, (instr' <: admininstr)*)
@@ -2871,6 +2985,8 @@ $$
 \end{array}
 $$
 
+\vspace{1ex}
+
 $$
 \begin{array}{@{}lcl@{}l@{}}
 (\mathit{s} ; \mathit{f}).\mathsf{module}.\mathsf{func} &=& \mathit{f}.\mathsf{module}.\mathsf{func} &  \\
@@ -2891,12 +3007,6 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{(\mathit{s} ; \mathit{f}).\mathsf{local}}{[\mathit{x}]} &=& \mathit{f}.\mathsf{local}[\mathit{x}] &  \\
-\end{array}
-$$
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
 {(\mathit{s} ; \mathit{f}).\mathsf{global}}{[\mathit{x}]} &=& \mathit{s}.\mathsf{global}[\mathit{f}.\mathsf{module}.\mathsf{global}[\mathit{x}]] &  \\
 \end{array}
 $$
@@ -2909,27 +3019,61 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
+{(\mathit{s} ; \mathit{f}).\mathsf{mem}}{[\mathit{x}]} &=& \mathit{s}.\mathsf{mem}[\mathit{f}.\mathsf{module}.\mathsf{mem}[\mathit{x}]] &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
 {(\mathit{s} ; \mathit{f}).\mathsf{elem}}{[\mathit{x}]} &=& \mathit{s}.\mathsf{elem}[\mathit{f}.\mathsf{module}.\mathsf{elem}[\mathit{x}]] &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{(\mathit{s} ; \mathit{f})}{[{\mathsf{local}}{[\mathit{x}]} = \mathit{v}]} &=& \mathit{s} ; \mathit{f}[\mathsf{local}[\mathit{x}] = \mathit{v}] &  \\
+{(\mathit{s} ; \mathit{f}).\mathsf{data}}{[\mathit{x}]} &=& \mathit{s}.\mathsf{data}[\mathit{f}.\mathsf{module}.\mathsf{data}[\mathit{x}]] &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{(\mathit{s} ; \mathit{f})}{[{\mathsf{global}}{[\mathit{x}]} = \mathit{v}]} &=& \mathit{s}[\mathsf{global}[\mathit{f}.\mathsf{module}.\mathsf{global}[\mathit{x}]] = \mathit{v}] ; \mathit{f} &  \\
+{(\mathit{s} ; \mathit{f}).\mathsf{local}}{[\mathit{x}]} &=& \mathit{f}.\mathsf{local}[\mathit{x}] &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+(\mathit{s} ; \mathit{f})[\mathsf{local}[\mathit{x}] = \mathit{v}] &=& \mathit{s} ; \mathit{f}[\mathsf{local}[\mathit{x}] = \mathit{v}] &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{(\mathit{s} ; \mathit{f})}{[{{\mathsf{table}}{[\mathit{x}]}}{[\mathit{i}]} = \mathit{r}]} &=& \mathit{s}[\mathsf{table}[\mathit{f}.\mathsf{module}.\mathsf{table}[\mathit{x}]][\mathit{i}] = \mathit{r}] ; \mathit{f} &  \\
+(\mathit{s} ; \mathit{f})[\mathsf{global}[\mathit{x}] = \mathit{v}] &=& \mathit{s}[\mathsf{global}[\mathit{f}.\mathsf{module}.\mathsf{global}[\mathit{x}]] = \mathit{v}] ; \mathit{f} &  \\
 \end{array}
 $$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+(\mathit{s} ; \mathit{f})[\mathsf{table}[\mathit{x}][\mathit{i}] = \mathit{r}] &=& \mathit{s}[\mathsf{table}[\mathit{f}.\mathsf{module}.\mathsf{table}[\mathit{x}]][\mathit{i}] = \mathit{r}] ; \mathit{f} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+(\mathit{s} ; \mathit{f})[\mathsf{table}[\mathit{x}] = ..{\mathit{r}^\ast}] &=& \mathit{s}[\mathsf{table}[\mathit{f}.\mathsf{module}.\mathsf{table}[\mathit{x}]] = ..{\mathit{r}^\ast}] ; \mathit{f} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+(\mathit{s} ; \mathit{f})[\mathsf{elem}[\mathit{x}] = {\mathit{r}^\ast}] &=& \mathit{s}[\mathsf{table}[\mathit{f}.\mathsf{module}.\mathsf{table}[\mathit{x}]] = {\mathit{r}^\ast}] ; \mathit{f} &  \\
+\end{array}
+$$
+
+\vspace{1ex}
 
 $$
 \begin{array}{@{}lrrl@{}}
@@ -2952,16 +3096,12 @@ $\boxed{{\mathit{instr}^\ast} \hookrightarrow {\mathit{instr}^\ast}}$
 
 $\boxed{\mathit{config} \hookrightarrow {\mathit{instr}^\ast}}$
 
-$\boxed{\mathit{config} \hookrightarrow \mathit{config}}$
-
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}pure}]} \quad & \mathit{z} ; {\mathit{instr}^\ast} &\hookrightarrow& \mathit{z} ; {{\mathit{instr}'}^\ast} &\quad
   \mbox{if}~{\mathit{instr}^\ast} \hookrightarrow {{\mathit{instr}'}^\ast} \\
 {[\textsc{\scriptsize E{-}read}]} \quad & \mathit{z} ; {\mathit{instr}^\ast} &\hookrightarrow& \mathit{z} ; {{\mathit{instr}'}^\ast} &\quad
   \mbox{if}~\mathit{z} ; {\mathit{instr}^\ast} \hookrightarrow {{\mathit{instr}'}^\ast} \\
-{[\textsc{\scriptsize E{-}write}]} \quad & \mathit{z} ; {\mathit{instr}^\ast} &\hookrightarrow& {\mathit{z}'} ; {{\mathit{instr}'}^\ast} &\quad
-  \mbox{if}~\mathit{z} ; {\mathit{instr}^\ast} \hookrightarrow {\mathit{z}'} ; {{\mathit{instr}'}^\ast} \\
 \end{array}
 $$
 
@@ -2976,11 +3116,24 @@ $$
 {[\textsc{\scriptsize E{-}unreachable}]} \quad & \mathsf{unreachable} &\hookrightarrow& \mathsf{trap} &  \\
 {[\textsc{\scriptsize E{-}nop}]} \quad & \mathsf{nop} &\hookrightarrow& \epsilon &  \\
 {[\textsc{\scriptsize E{-}drop}]} \quad & \mathit{val}~\mathsf{drop} &\hookrightarrow& \epsilon &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}select{-}true}]} \quad & \mathit{val}_{1}~\mathit{val}_{2}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{c})~(\mathsf{select}~{\mathit{t}^?}) &\hookrightarrow& \mathit{val}_{1} &\quad
   \mbox{if}~\mathit{c} \neq 0 \\
 {[\textsc{\scriptsize E{-}select{-}false}]} \quad & \mathit{val}_{1}~\mathit{val}_{2}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{c})~(\mathsf{select}~{\mathit{t}^?}) &\hookrightarrow& \mathit{val}_{2} &\quad
   \mbox{if}~\mathit{c} = 0 \\
-{[\textsc{\scriptsize E{-}local.tee}]} \quad & \mathit{val}~(\mathsf{local.tee}~\mathit{x}) &\hookrightarrow& \mathit{val}~\mathit{val}~(\mathsf{local.set}~\mathit{x}) &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}block}]} \quad & {\mathit{val}^{\mathit{k}}}~(\mathsf{block}~\mathit{bt}~{\mathit{instr}^\ast}) &\hookrightarrow& ({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~{\mathit{val}^{\mathit{k}}}~{\mathit{instr}^\ast}}) &\quad
   \mbox{if}~\mathit{bt} = {\mathit{t}_{1}^{\mathit{k}}} \rightarrow {\mathit{t}_{2}^{\mathit{n}}} \\
 {[\textsc{\scriptsize E{-}loop}]} \quad & {\mathit{val}^{\mathit{k}}}~(\mathsf{loop}~\mathit{bt}~{\mathit{instr}^\ast}) &\hookrightarrow& ({{\mathsf{label}}_{\mathit{n}}}{\{\mathsf{loop}~\mathit{bt}~{\mathit{instr}^\ast}\}~{\mathit{val}^{\mathit{k}}}~{\mathit{instr}^\ast}}) &\quad
@@ -2989,6 +3142,14 @@ $$
   \mbox{if}~\mathit{c} \neq 0 \\
 {[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{c})~(\mathsf{if}~\mathit{bt}~{\mathit{instr}_{1}^\ast}~\mathsf{else}~{\mathit{instr}_{2}^\ast}) &\hookrightarrow& (\mathsf{block}~\mathit{bt}~{\mathit{instr}_{2}^\ast}) &\quad
   \mbox{if}~\mathit{c} = 0 \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}label{-}vals}]} \quad & ({{\mathsf{label}}_{\mathit{n}}}{\{{\mathit{instr}^\ast}\}~{\mathit{val}^\ast}}) &\hookrightarrow& {\mathit{val}^\ast} &  \\
 \end{array}
 $$
 
@@ -3023,23 +3184,198 @@ $$
 \end{array}
 $$
 
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}call}]} \quad & \mathit{z} ; (\mathsf{call}~\mathit{x}) &\hookrightarrow& (\mathsf{call}~\mathit{z}.\mathsf{module}.\mathsf{func}[\mathit{x}]) &  \\
+{[\textsc{\scriptsize E{-}call\_indirect{-}call}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& (\mathsf{call}~\mathit{a}) &\quad
+  \mbox{if}~{\mathit{z}.\mathsf{table}}{[\mathit{x}]}[\mathit{i}] = (\mathsf{ref.func}~\mathit{a}) \\
+ &&&&\quad {\land}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathit{func} \\
+{[\textsc{\scriptsize E{-}call\_indirect{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& \mathsf{trap} &\quad
+  \mbox{otherwise} \\
+{[\textsc{\scriptsize E{-}call\_addr}]} \quad & \mathit{z} ; {\mathit{val}^{\mathit{k}}}~(\mathsf{call}~\mathit{a}) &\hookrightarrow& ({{\mathsf{frame}}_{\mathit{n}}}{\{\mathit{f}\}~({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~{\mathit{instr}^\ast}})}) &\quad
+  \mbox{if}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathsf{func}~({\mathit{t}_{1}^{\mathit{k}}} \rightarrow {\mathit{t}_{2}^{\mathit{n}}})~{\mathit{t}^\ast}~{\mathit{instr}^\ast} \\
+ &&&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{local}~{\mathit{val}^{\mathit{k}}}~{({\mathrm{default}}_{\mathit{t}})^\ast},\; \mathsf{module}~\mathit{m} \}\end{array} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}frame{-}vals}]} \quad & ({{\mathsf{frame}}_{\mathit{n}}}{\{\mathit{f}\}~{\mathit{val}^{\mathit{n}}}}) &\hookrightarrow& {\mathit{val}^{\mathit{n}}} &  \\
+{[\textsc{\scriptsize E{-}return{-}frame}]} \quad & ({{\mathsf{frame}}_{\mathit{n}}}{\{\mathit{f}\}~{{\mathit{val}'}^\ast}~{\mathit{val}^{\mathit{n}}}~\mathsf{return}~{\mathit{instr}^\ast}}) &\hookrightarrow& {\mathit{val}^{\mathit{n}}} &  \\
+{[\textsc{\scriptsize E{-}return{-}label}]} \quad & ({{\mathsf{label}}_{\mathit{k}}}{\{{{\mathit{instr}'}^\ast}\}~{\mathit{val}^\ast}~\mathsf{return}~{\mathit{instr}^\ast}}) &\hookrightarrow& {\mathit{val}^\ast}~\mathsf{return} &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}unop{-}val}]} \quad & (\mathit{nt}.\mathsf{const}~\mathit{c}_{1})~(\mathit{nt} . \mathit{unop}) &\hookrightarrow& (\mathit{nt}.\mathsf{const}~\mathit{c}) &\quad
+  \mbox{if}~{\mathit{unop}}{{\mathsf{}}_{\mathit{nt}}\,(\mathit{c}_{1})} = \mathit{c} \\
+{[\textsc{\scriptsize E{-}unop{-}trap}]} \quad & (\mathit{nt}.\mathsf{const}~\mathit{c}_{1})~(\mathit{nt} . \mathit{unop}) &\hookrightarrow& \mathsf{trap} &\quad
+  \mbox{if}~{\mathit{unop}}{{\mathsf{}}_{\mathit{nt}}\,(\mathit{c}_{1})} = \epsilon \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}binop{-}val}]} \quad & (\mathit{nt}.\mathsf{const}~\mathit{c}_{1})~(\mathit{nt}.\mathsf{const}~\mathit{c}_{2})~(\mathit{nt} . \mathit{binop}) &\hookrightarrow& (\mathit{nt}.\mathsf{const}~\mathit{c}) &\quad
+  \mbox{if}~{\mathit{binop}}{{\mathsf{}}_{\mathit{nt}}\,(\mathit{c}_{1},\, \mathit{c}_{2})} = \mathit{c} \\
+{[\textsc{\scriptsize E{-}binop{-}trap}]} \quad & (\mathit{nt}.\mathsf{const}~\mathit{c}_{1})~(\mathit{nt}.\mathsf{const}~\mathit{c}_{2})~(\mathit{nt} . \mathit{binop}) &\hookrightarrow& \mathsf{trap} &\quad
+  \mbox{if}~{\mathit{binop}}{{\mathsf{}}_{\mathit{nt}}\,(\mathit{c}_{1},\, \mathit{c}_{2})} = \epsilon \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}testop}]} \quad & (\mathit{nt}.\mathsf{const}~\mathit{c}_{1})~(\mathit{nt} . \mathit{testop}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{c}) &\quad
+  \mbox{if}~\mathit{c} = {\mathit{testop}}{{\mathsf{}}_{\mathit{nt}}\,(\mathit{c}_{1})} \\
+{[\textsc{\scriptsize E{-}relop}]} \quad & (\mathit{nt}.\mathsf{const}~\mathit{c}_{1})~(\mathit{nt}.\mathsf{const}~\mathit{c}_{2})~(\mathit{nt} . \mathit{relop}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{c}) &\quad
+  \mbox{if}~\mathit{c} = {\mathit{relop}}{{\mathsf{}}_{\mathit{nt}}\,(\mathit{c}_{1},\, \mathit{c}_{2})} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}extend}]} \quad & (\mathit{nt}.\mathsf{const}~\mathit{c})~({\mathit{nt}.\mathsf{extend}}{\mathit{n}}) &\hookrightarrow& (\mathit{nt}.\mathsf{const}~{{\mathrm{ext}}_{\mathit{n}}({|\mathit{nt}|})^{\mathsf{s}}}~(\mathit{c})) &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}cvtop{-}val}]} \quad & (\mathit{nt}.\mathsf{const}~\mathit{c}_{1})~(\mathit{nt}_{1} . {{{{\mathit{cvtop}}{\mathsf{\_}}}{\mathit{nt}_{2}}}{\mathsf{\_}}}{{\mathit{sx}^?}}) &\hookrightarrow& (\mathit{nt}.\mathsf{const}~\mathit{c}) &\quad
+  \mbox{if}~\mathrm{cvtop}(\mathit{nt}_{1},\, \mathit{cvtop},\, \mathit{nt}_{2},\, {\mathit{sx}^?},\, \mathit{c}_{1}) = \mathit{c} \\
+{[\textsc{\scriptsize E{-}cvtop{-}trap}]} \quad & (\mathit{nt}.\mathsf{const}~\mathit{c}_{1})~(\mathit{nt}_{1} . {{{{\mathit{cvtop}}{\mathsf{\_}}}{\mathit{nt}_{2}}}{\mathsf{\_}}}{{\mathit{sx}^?}}) &\hookrightarrow& \mathsf{trap} &\quad
+  \mbox{if}~\mathrm{cvtop}(\mathit{nt}_{1},\, \mathit{cvtop},\, \mathit{nt}_{2},\, {\mathit{sx}^?},\, \mathit{c}_{1}) = \epsilon \\
+\end{array}
+$$
+
+\vspace{1ex}
+
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}ref.func}]} \quad & \mathit{z} ; (\mathsf{ref.func}~\mathit{x}) &\hookrightarrow& (\mathsf{ref.func}~\mathit{z}.\mathsf{module}.\mathsf{func}[\mathit{x}]) &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}ref.is\_null{-}true}]} \quad & \mathit{val}~\mathsf{ref.is\_null} &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~1) &\quad
+  \mbox{if}~\mathit{val} = (\mathsf{ref.null}~\mathit{rt}) \\
+{[\textsc{\scriptsize E{-}ref.is\_null{-}false}]} \quad & \mathit{val}~\mathsf{ref.is\_null} &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~0) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}local.get}]} \quad & \mathit{z} ; (\mathsf{local.get}~\mathit{x}) &\hookrightarrow& {\mathit{z}.\mathsf{local}}{[\mathit{x}]} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}local.set}]} \quad & \mathit{z} ; \mathit{val}~(\mathsf{local.set}~\mathit{x}) &\hookrightarrow& \mathit{z}[\mathsf{local}[\mathit{x}] = \mathit{val}] ; \epsilon &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}local.tee}]} \quad & \mathit{val}~(\mathsf{local.tee}~\mathit{x}) &\hookrightarrow& \mathit{val}~\mathit{val}~(\mathsf{local.set}~\mathit{x}) &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}global.get}]} \quad & \mathit{z} ; (\mathsf{global.get}~\mathit{x}) &\hookrightarrow& {\mathit{z}.\mathsf{global}}{[\mathit{x}]} &  \\
-{[\textsc{\scriptsize E{-}table.get{-}ge}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{table.get}~\mathit{x}) &\hookrightarrow& \mathsf{trap} &\quad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}global.set}]} \quad & \mathit{z} ; \mathit{val}~(\mathsf{global.set}~\mathit{x}) &\hookrightarrow& \mathit{z}[\mathsf{global}[\mathit{x}] = \mathit{val}] ; \epsilon &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}table.get{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{table.get}~\mathit{x}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{if}~\mathit{i} \geq {|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}|} \\
-{[\textsc{\scriptsize E{-}table.get{-}lt}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{table.get}~\mathit{x}) &\hookrightarrow& {\mathit{z}.\mathsf{table}}{[\mathit{x}]}[\mathit{i}] &\quad
+{[\textsc{\scriptsize E{-}table.get{-}val}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{table.get}~\mathit{x}) &\hookrightarrow& {\mathit{z}.\mathsf{table}}{[\mathit{x}]}[\mathit{i}] &\quad
   \mbox{if}~\mathit{i} < {|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}|} \\
+{[\textsc{\scriptsize E{-}table.set{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~\mathit{ref}~(\mathsf{table.get}~\mathit{x}) &\hookrightarrow& \mathsf{trap} &\quad
+  \mbox{if}~\mathit{i} \geq {|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}|} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}table.set{-}val}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~\mathit{ref}~(\mathsf{table.get}~\mathit{x}) &\hookrightarrow& \mathit{z}[\mathsf{table}[\mathit{x}][\mathit{i}] = \mathit{ref}] ; \epsilon &\quad
+  \mbox{if}~\mathit{i} < {|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}|} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}table.size}]} \quad & \mathit{z} ; (\mathsf{table.size}~\mathit{x}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n}) &\quad
   \mbox{if}~{|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}|} = \mathit{n} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}table.grow{-}succeed}]} \quad & \mathit{z} ; \mathit{ref}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.grow}~\mathit{x}) &\hookrightarrow& \mathit{z}[\mathsf{table}[\mathit{x}] = ..{\mathit{ref}^{\mathit{n}}}] ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}|}) &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}table.grow{-}fail}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.grow}~\mathit{x}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~-1) &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}table.fill{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~\mathit{val}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.fill}~\mathit{x}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{if}~\mathit{i} + \mathit{n} > {|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}|} \\
 {[\textsc{\scriptsize E{-}table.fill{-}zero}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~\mathit{val}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~0)~(\mathsf{table.fill}~\mathit{x}) &\hookrightarrow& \epsilon &\quad
   \mbox{otherwise} \\
 {[\textsc{\scriptsize E{-}table.fill{-}succ}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~\mathit{val}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n} + 1)~(\mathsf{table.fill}~\mathit{x}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~\mathit{val}~(\mathsf{table.set}~\mathit{x})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i} + 1)~\mathit{val}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.fill}~\mathit{x}) &\quad
   \mbox{otherwise} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}table.copy{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.copy}~\mathit{x}~\mathit{y}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{if}~\mathit{i} + \mathit{n} > {|{\mathit{z}.\mathsf{table}}{[\mathit{y}]}|} \lor \mathit{j} + \mathit{n} > {|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}|} \\
 {[\textsc{\scriptsize E{-}table.copy{-}zero}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~0)~(\mathsf{table.copy}~\mathit{x}~\mathit{y}) &\hookrightarrow& \epsilon &\quad
@@ -3048,343 +3384,31 @@ $$
   \mbox{if}~\mathit{j} \leq \mathit{i} \\
 {[\textsc{\scriptsize E{-}table.copy{-}gt}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n} + 1)~(\mathsf{table.copy}~\mathit{x}~\mathit{y}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j} + \mathit{n})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i} + \mathit{n})~(\mathsf{table.get}~\mathit{y})~(\mathsf{table.set}~\mathit{x})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j} + 1)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i} + 1)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.copy}~\mathit{x}~\mathit{y}) &\quad
   \mbox{if}~\mathit{j} > \mathit{i} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}table.init{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.init}~\mathit{x}~\mathit{y}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{if}~\mathit{i} + \mathit{n} > {|{\mathit{z}.\mathsf{elem}}{[\mathit{y}]}|} \lor \mathit{j} + \mathit{n} > {|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}|} \\
 {[\textsc{\scriptsize E{-}table.init{-}zero}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~0)~(\mathsf{table.init}~\mathit{x}~\mathit{y}) &\hookrightarrow& \epsilon &\quad
   \mbox{otherwise} \\
 {[\textsc{\scriptsize E{-}table.init{-}le}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n} + 1)~(\mathsf{table.init}~\mathit{x}~\mathit{y}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j})~{\mathit{z}.\mathsf{elem}}{[\mathit{y}]}[\mathit{i}]~(\mathsf{table.set}~\mathit{x})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{j} + 1)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i} + 1)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.init}~\mathit{x}~\mathit{y}) &\quad
   \mbox{otherwise} \\
-{[\textsc{\scriptsize E{-}call}]} \quad & \mathit{z} ; (\mathsf{call}~\mathit{x}) &\hookrightarrow& (\mathsf{call}~\mathit{z}.\mathsf{module}.\mathsf{func}[\mathit{x}]) &  \\
-{[\textsc{\scriptsize E{-}call\_indirect{-}call}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& (\mathsf{call}~\mathit{a}) &\quad
-  \mbox{if}~{\mathit{z}.\mathsf{table}}{[\mathit{x}]}[\mathit{i}] = (\mathsf{ref.func}~\mathit{a}) \\
- &&&\quad {\land}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathit{func} \\
-{[\textsc{\scriptsize E{-}call\_indirect{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& \mathsf{trap} &\quad
-  \mbox{otherwise} \\
-{[\textsc{\scriptsize E{-}call\_addr}]} \quad & \mathit{z} ; {\mathit{val}^{\mathit{k}}}~(\mathsf{call}~\mathit{a}) &\hookrightarrow& ({{\mathsf{frame}}_{\mathit{n}}}{\{\{ \begin{array}[t]{@{}l@{}}
-\mathsf{local}~{\mathit{val}^{\mathit{k}}}~{({\mathrm{default}}_{\mathit{t}})^\ast},\; \mathsf{module}~\mathit{m} \}\end{array}\}~({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}~{\mathit{instr}^\ast}})}) &\quad
-  \mbox{if}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathsf{func}~({\mathit{t}_{1}^{\mathit{k}}} \rightarrow {\mathit{t}_{2}^{\mathit{n}}})~{\mathit{t}^\ast}~{\mathit{instr}^\ast} \\
 \end{array}
 $$
+
+\vspace{1ex}
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}local.set}]} \quad & \mathit{z} ; \mathit{val}~(\mathsf{local.set}~\mathit{x}) &\hookrightarrow& {\mathit{z}}{[{\mathsf{local}}{[\mathit{x}]} = \mathit{val}]} ; \epsilon &  \\
-{[\textsc{\scriptsize E{-}global.set}]} \quad & \mathit{z} ; \mathit{val}~(\mathsf{global.set}~\mathit{x}) &\hookrightarrow& {\mathit{z}}{[{\mathsf{global}}{[\mathit{x}]} = \mathit{val}]} ; \epsilon &  \\
-{[\textsc{\scriptsize E{-}table.set{-}lt}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~\mathit{ref}~(\mathsf{table.get}~\mathit{x}) &\hookrightarrow& {\mathit{z}}{[{{\mathsf{table}}{[\mathit{x}]}}{[\mathit{i}]} = \mathit{ref}]} ; \epsilon &\quad
-  \mbox{if}~\mathit{i} < {|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}|} \\
-{[\textsc{\scriptsize E{-}table.set{-}ge}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~\mathit{ref}~(\mathsf{table.get}~\mathit{x}) &\hookrightarrow& \mathit{z} ; \mathsf{trap} &\quad
-  \mbox{if}~\mathit{i} \geq {|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}|} \\
+{[\textsc{\scriptsize E{-}elem.drop}]} \quad & \mathit{z} ; (\mathsf{elem.drop}~\mathit{x}) &\hookrightarrow& \mathit{z}[\mathsf{elem}[\mathit{x}] = \epsilon] ; \epsilon &  \\
 \end{array}
 $$
 
-
-== Prose Generation...
-{val REF.IS_NULL} ~> ({CONST I32 1})
-    -- if val = {REF.NULL rt}
-{val REF.IS_NULL} ~> ({CONST I32 0})
-    -- otherwise
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. If val = {REF.NULL rt}, then:
-  1) Push the value CONST I32 1 to the stack.
-4. If otherwise, then:
-  1) Push the value CONST I32 0 to the stack.
-
-UNREACHABLE ~> TRAP
-1. Trap.
-
-NOP ~> epsilon
-1. Do nothing.
-
-{val DROP} ~> epsilon
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-
-{val_1 val_2 ({CONST I32 c}) ({SELECT t?})} ~> val_1
-    -- if c =/= 0
-{val_1 val_2 ({CONST I32 c}) ({SELECT t?})} ~> val_2
-    -- if c = 0
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 c}) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val_2 from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
-6. Pop the value val_1 from the stack.
-7. If c =/= 0, then:
-  1) Push the value val_1 to the stack.
-8. If c = 0, then:
-  1) Push the value val_2 to the stack.
-
-{val ({LOCAL.TEE x})} ~> {val val ({LOCAL.SET x})}
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Push the value val to the stack.
-4. Push the value val to the stack.
-5. Execute the instruction LOCAL.SET x.
-
-{val^k ({BLOCK bt instr*})} ~> ({LABEL_ n `{epsilon} val^k instr*})
-    -- if bt = t_1^k -> t_2^n
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val^k from the stack.
-3. Let bt = t_1^k -> t_2^n.
-4. Let L be the label whose arity is n and whose continuation is the end of this instruction.
-5. Enter the block val^k instr* with label L.
-
-{val^k ({LOOP bt instr*})} ~> ({LABEL_ n `{{LOOP bt instr*}} val^k instr*})
-    -- if bt = t_1^k -> t_2^n
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val^k from the stack.
-3. Let bt = t_1^k -> t_2^n.
-4. Let L be the label whose arity is n and whose continuation is the start of this instruction.
-5. Enter the block val^k instr* with label L.
-
-{({CONST I32 c}) ({IF bt instr_1* ELSE instr_2*})} ~> ({BLOCK bt instr_1*})
-    -- if c =/= 0
-{({CONST I32 c}) ({IF bt instr_1* ELSE instr_2*})} ~> ({BLOCK bt instr_2*})
-    -- if c = 0
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 c}) from the stack.
-3. If c =/= 0, then:
-  1) Execute the instruction BLOCK bt instr_1*.
-4. If c = 0, then:
-  1) Execute the instruction BLOCK bt instr_2*.
-
-({LABEL_ n `{instr'*} val'* val^n ({BR 0}) instr*}) ~> {val^n instr'*}
-1. YET: Bubble-up semantics.
-2. Push the values val^n to the stack.
-3. Push the values instr'* to the stack.
-
-({LABEL_ n `{instr'*} val* ({BR l + 1}) instr*}) ~> {val* ({BR l})}
-1. YET: Bubble-up semantics.
-2. Push the values val* to the stack.
-3. Execute the instruction BR l.
-
-{({CONST I32 c}) ({BR_IF l})} ~> ({BR l})
-    -- if c =/= 0
-{({CONST I32 c}) ({BR_IF l})} ~> epsilon
-    -- if c = 0
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 c}) from the stack.
-3. If c =/= 0, then:
-  1) Execute the instruction BR l.
-4. If c = 0, then:
-  1) Do nothing.
-
-{({CONST I32 i}) ({BR_TABLE l* l'})} ~> ({BR l*[i]})
-    -- if i < |l*|
-{({CONST I32 i}) ({BR_TABLE l* l'})} ~> ({BR l'})
-    -- if i >= |l*|
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 i}) from the stack.
-3. If i < |l*|, then:
-  1) Let tmp0 be l*[i].
-  2) Execute the instruction BR tmp0.
-4. If i >= |l*|, then:
-  1) Execute the instruction BR l'.
-
-z ; ({REF.FUNC x}) ~> ({REF.FUNC_ADDR $funcaddr(z)[x]})
-1. Let tmp0 be the result of computing $funcaddr(z).
-2. Let tmp1 be tmp0[x].
-3. Push the value REF.FUNC_ADDR tmp1 to the stack.
-
-z ; ({LOCAL.GET x}) ~> $local(z, x)
-1. Let tmp0 be the result of computing $local(z, x).
-2. Push the value tmp0 to the stack.
-
-z ; ({GLOBAL.GET x}) ~> $global(z, x)
-1. Let tmp0 be the result of computing $global(z, x).
-2. Push the value tmp0 to the stack.
-
-z ; {({CONST I32 i}) ({TABLE.GET x})} ~> TRAP
-    -- if i >= |$table(z, x)|
-z ; {({CONST I32 i}) ({TABLE.GET x})} ~> $table(z, x)[i]
-    -- if i < |$table(z, x)|
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 i}) from the stack.
-3. If i >= |$table(z, x)|, then:
-  1) Trap.
-4. If i < |$table(z, x)|, then:
-  1) Let tmp0 be the result of computing $table(z, x).
-  2) Let tmp1 be tmp0[i].
-  3) Push the value tmp1 to the stack.
-
-z ; ({TABLE.SIZE x}) ~> ({CONST I32 n})
-    -- if |$table(z, x)| = n
-1. Let |$table(z, x)| = n.
-2. Push the value CONST I32 n to the stack.
-
-z ; {({CONST I32 i}) val ({CONST I32 n}) ({TABLE.FILL x})} ~> TRAP
-    -- if i + n > |$table(z, x)|
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 n}) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop the value ({CONST I32 i}) from the stack.
-7. Let i + n > |$table(z, x)|.
-8. Trap.
-
-z ; {({CONST I32 i}) val ({CONST I32 0}) ({TABLE.FILL x})} ~> epsilon
-    -- otherwise
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 0}) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop the value ({CONST I32 i}) from the stack.
-
-z ; {({CONST I32 i}) val ({CONST I32 n + 1}) ({TABLE.FILL x})} ~> {({CONST I32 i}) val ({TABLE.SET x}) ({CONST I32 i + 1}) val ({CONST I32 n}) ({TABLE.FILL x})}
-    -- otherwise
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 n + 1}) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop the value ({CONST I32 i}) from the stack.
-7. Push the value CONST I32 i to the stack.
-8. Push the value val to the stack.
-9. Execute the instruction TABLE.SET x.
-10. Push the value CONST I32 (i + 1) to the stack.
-11. Push the value val to the stack.
-12. Push the value CONST I32 n to the stack.
-13. Execute the instruction TABLE.FILL x.
-
-z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n}) ({TABLE.COPY x y})} ~> TRAP
-    -- if i + n > |$table(z, y)| \/ j + n > |$table(z, x)|
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 n}) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop the value ({CONST I32 i}) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop the value ({CONST I32 j}) from the stack.
-7. Let i + n > |$table(z, y)| \/ j + n > |$table(z, x)|.
-8. Trap.
-
-z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 0}) ({TABLE.COPY x y})} ~> epsilon
-    -- otherwise
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 0}) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop the value ({CONST I32 i}) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop the value ({CONST I32 j}) from the stack.
-
-z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n + 1}) ({TABLE.COPY x y})} ~> {({CONST I32 j}) ({CONST I32 i}) ({TABLE.GET y}) ({TABLE.SET x}) ({CONST I32 j + 1}) ({CONST I32 i + 1}) ({CONST I32 n}) ({TABLE.COPY x y})}
-    -- if j <= i
-z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n + 1}) ({TABLE.COPY x y})} ~> {({CONST I32 j + n}) ({CONST I32 i + n}) ({TABLE.GET y}) ({TABLE.SET x}) ({CONST I32 j + 1}) ({CONST I32 i + 1}) ({CONST I32 n}) ({TABLE.COPY x y})}
-    -- if j > i
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 n + 1}) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop the value ({CONST I32 i}) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop the value ({CONST I32 j}) from the stack.
-7. If j <= i, then:
-  1) Push the value CONST I32 j to the stack.
-  2) Push the value CONST I32 i to the stack.
-  3) Execute the instruction TABLE.GET y.
-  4) Execute the instruction TABLE.SET x.
-  5) Push the value CONST I32 (j + 1) to the stack.
-  6) Push the value CONST I32 (i + 1) to the stack.
-  7) Push the value CONST I32 n to the stack.
-  8) Execute the instruction TABLE.COPY x y.
-8. If j > i, then:
-  1) Push the value CONST I32 (j + n) to the stack.
-  2) Push the value CONST I32 (i + n) to the stack.
-  3) Execute the instruction TABLE.GET y.
-  4) Execute the instruction TABLE.SET x.
-  5) Push the value CONST I32 (j + 1) to the stack.
-  6) Push the value CONST I32 (i + 1) to the stack.
-  7) Push the value CONST I32 n to the stack.
-  8) Execute the instruction TABLE.COPY x y.
-
-z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n}) ({TABLE.INIT x y})} ~> TRAP
-    -- if i + n > |$elem(z, y)| \/ j + n > |$table(z, x)|
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 n}) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop the value ({CONST I32 i}) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop the value ({CONST I32 j}) from the stack.
-7. Let i + n > |$elem(z, y)| \/ j + n > |$table(z, x)|.
-8. Trap.
-
-z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 0}) ({TABLE.INIT x y})} ~> epsilon
-    -- otherwise
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 0}) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop the value ({CONST I32 i}) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop the value ({CONST I32 j}) from the stack.
-
-z ; {({CONST I32 j}) ({CONST I32 i}) ({CONST I32 n + 1}) ({TABLE.INIT x y})} ~> {({CONST I32 j}) $elem(z, y)[i] ({TABLE.SET x}) ({CONST I32 j + 1}) ({CONST I32 i + 1}) ({CONST I32 n}) ({TABLE.INIT x y})}
-    -- otherwise
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 n + 1}) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop the value ({CONST I32 i}) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop the value ({CONST I32 j}) from the stack.
-7. Push the value CONST I32 j to the stack.
-8. Let tmp0 be the result of computing $elem(z, y).
-9. Let tmp1 be tmp0[i].
-10. Push the value tmp1 to the stack.
-11. Execute the instruction TABLE.SET x.
-12. Push the value CONST I32 (j + 1) to the stack.
-13. Push the value CONST I32 (i + 1) to the stack.
-14. Push the value CONST I32 n to the stack.
-15. Execute the instruction TABLE.INIT x y.
-
-z ; ({CALL x}) ~> ({CALL_ADDR $funcaddr(z)[x]})
-1. Let tmp0 be the result of computing $funcaddr(z).
-2. Let tmp1 be tmp0[x].
-3. Execute the instruction CALL_ADDR tmp1.
-
-z ; {({CONST I32 i}) ({CALL_INDIRECT x ft})} ~> ({CALL_ADDR a})
-    -- if $table(z, x)[i] = ({REF.FUNC_ADDR a})
-    -- if $funcinst(z)[a] = m ; func
-z ; {({CONST I32 i}) ({CALL_INDIRECT x ft})} ~> TRAP
-    -- otherwise
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop the value ({CONST I32 i}) from the stack.
-3. If $table(z, x)[i] = ({REF.FUNC_ADDR a}) and $funcinst(z)[a] = m ; func, then:
-  1) Execute the instruction CALL_ADDR a.
-4. If otherwise, then:
-  1) Trap.
-
-z ; {val^k ({CALL_ADDR a})} ~> ({FRAME_ n `{{LOCAL {val^k ($default_(t))*}, MODULE m}} ({LABEL_ n `{epsilon} instr*})})
-    -- if $funcinst(z)[a] = m ; {FUNC (t_1^k -> t_2^n) t* instr*}
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val^k from the stack.
-3. Let $funcinst(z)[a] = m ; {FUNC (t_1^k -> t_2^n) t* instr*}.
-4. Let F be the frame `{{LOCAL {val^k ($default_(t))*}, MODULE m}}.
-5. Push the activation of F with the arity n to the stack.
-6. Let L be the label whose arity is n and whose continuation is the end of this instruction.
-7. Enter the block instr* with label L.
-
-z ; {val ({LOCAL.SET x})} ~> $with_local(z, x, val) ; epsilon
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Perform $with_local(z, x, val).
-
-z ; {val ({GLOBAL.SET x})} ~> $with_global(z, x, val) ; epsilon
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Perform $with_global(z, x, val).
-
-z ; {({CONST I32 i}) ref ({TABLE.GET x})} ~> $with_table(z, x, i, ref) ; epsilon
-    -- if i < |$table(z, x)|
-z ; {({CONST I32 i}) ref ({TABLE.GET x})} ~> z ; TRAP
-    -- if i >= |$table(z, x)|
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop the value ({CONST I32 i}) from the stack.
-5. If i < |$table(z, x)|, then:
-  1) Perform $with_table(z, x, i, ref).
-6. If i >= |$table(z, x)|, then:
-  1) Trap.
+\vspace{1ex}
 
 
 == Complete.

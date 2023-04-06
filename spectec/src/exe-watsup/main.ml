@@ -76,11 +76,13 @@ let () =
       List.iter (Backend_latex.Splice.splice_file ~dry:!dry env) !dsts;
       if !warn then Backend_latex.Splice.warn env;
     );
+(*
     if !odst = "" && !dsts = [] then (
       log "Prose Generation...";
       let prose = Backend_prose.Translate.translate el in
       print_endline prose
     );
+*)
     log "Complete."
   with
   | Source.Error (at, msg) ->

@@ -93,7 +93,10 @@ type env =
   }
 
 let new_env () =
-  { vars = Map.empty;
+  { vars = Map.empty
+      |> Map.add "bool" (BoolT $ no_region)
+      |> Map.add "nat" (NatT $ no_region)
+      |> Map.add "text" (TextT $ no_region);
     typs = Map.empty;
     rels = Map.empty;
     defs = Map.empty;

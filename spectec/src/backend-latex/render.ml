@@ -597,7 +597,7 @@ let render_conditions env = function
   | [Elem {it = ElsePr; _}] -> " &\\quad\n  " ^ word "otherwise"
   | prems ->
     " &\\quad\n  " ^ word "if" ^ "~" ^
-    concat_map_nl " \\\\\n &&&\\quad {\\land}~" "" (render_premise env) prems
+    concat_map_nl " \\\\\n &&&&\\quad {\\land}~" "" (render_premise env) prems
 
 let render_reddef env d =
   match d.it with

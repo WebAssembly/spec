@@ -267,6 +267,9 @@ casetyp_list :
 exp_prim : exp_prim_ { $1 $ at $sloc }
 exp_prim_ :
   | varid { VarE $1 }
+  | BOOL { VarE ("bool" $ at $sloc) }
+  | NAT { VarE ("nat" $ at $sloc) }
+  | TEXT { VarE ("text" $ at $sloc) }
   | BOOLLIT { BoolE $1 }
   | NATLIT { NatE $1 }
   | TEXTLIT { TextE $1 }
@@ -381,7 +384,12 @@ exps1 :
 arith_prim : arith_prim_ { $1 $ at $sloc }
 arith_prim_ :
   | varid { VarE $1 }
+  | BOOL { VarE ("bool" $ at $sloc) }
+  | NAT { VarE ("nat" $ at $sloc) }
+  | TEXT { VarE ("text" $ at $sloc) }
   | NATLIT { NatE $1 }
+  | HOLE { HoleE false }
+  | MULTIHOLE { HoleE true }
   | LPAR arith RPAR { ParenE ($2, false) }
 
 arith_post : arith_post_ { $1 $ at $sloc }
