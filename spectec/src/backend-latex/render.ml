@@ -537,20 +537,15 @@ let () = render_expand_fwd := render_expand
 
 let word s = "\\mbox{" ^ s ^ "}"
 
-let render_premise env prem =
+let rec render_prem env prem =
   match prem.it with
-  | RulePr (id, e, []) -> render_exp {env with current_rel = id.it} e
-  | RulePr (id, e, iters) ->
-    let env' = {env with current_rel = id.it} in
-    String.make (List.length iters - 1) '{' ^
-    "(" ^ render_exp env' e ^ ")" ^
-      String.concat "}" (List.map (render_iter env') iters)
-  | IfPr (e, []) -> render_exp env e
-  | IfPr (e, iters) ->
-    String.make (List.length iters - 1) '{' ^
-    "(" ^ render_exp env e ^ ")" ^
-      String.concat "}" (List.map (render_iter env) iters)
-  | ElsePr -> "otherwise"
+  | RulePr (id, e) -> render_exp {env with current_rel = id.it} e
+  | IfPr e -> render_exp env e
+  | ElsePr -> error prem.at "misplaced `otherwise` premise"
+  | IterPr ({it = IterPr _; _} as prem', iter) ->
+    "{" ^ render_prem env prem' ^ "}" ^ render_iter env iter
+  | IterPr (prem', iter) ->
+    "(" ^ render_prem env prem' ^ ")" ^ render_iter env iter
 
 
 let merge_typ t1 t2 =
@@ -589,7 +584,7 @@ let render_ruledef env d =
   | RuleD (id1, id2, e, prems) ->
     "\\frac{\n" ^
       (if has_nl prems then "\\begin{array}{@{}c@{}}\n" else "") ^
-      altern_map_nl " \\qquad\n" " \\\\\n" (suffix "\n" (render_premise env)) prems ^
+      altern_map_nl " \\qquad\n" " \\\\\n" (suffix "\n" (render_prem env)) prems ^
       (if has_nl prems then "\\end{array}\n" else "") ^
     "}{\n" ^
       render_exp {env with current_rel = id1.it} e ^ "\n" ^
@@ -600,9 +595,12 @@ let render_ruledef env d =
 let render_conditions env = function
   | [] -> " & "
   | [Elem {it = ElsePr; _}] -> " &\\quad\n  " ^ word "otherwise"
+  | (Elem {it = ElsePr; _})::prems ->
+    " &\\quad\n  " ^ word "otherwise, if" ^ "~" ^
+    concat_map_nl " \\\\\n &&&&\\quad {\\land}~" "" (render_prem env) prems
   | prems ->
     " &\\quad\n  " ^ word "if" ^ "~" ^
-    concat_map_nl " \\\\\n &&&&\\quad {\\land}~" "" (render_premise env) prems
+    concat_map_nl " \\\\\n &&&&\\quad {\\land}~" "" (render_prem env) prems
 
 let render_reddef env d =
   match d.it with

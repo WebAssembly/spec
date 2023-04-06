@@ -119,17 +119,14 @@ and check_path env ctx p =
   | DotP (p1, _) ->
     check_path env ctx p1
 
-let check_prem env prem =
+let rec check_prem env ctx prem =
   match prem.it with
-  | RulePr (_id, e, iters) ->
-    ignore (List.fold_right (fun iter ctx ->
-      check_iter env ctx iter; iter::ctx) iters []);
-    check_exp env iters e
-  | IfPr (e, iters) ->
-    ignore (List.fold_right (fun iter ctx ->
-      check_iter env ctx iter; iter::ctx) iters []);
-    check_exp env iters e
+  | RulePr (_id, e) -> check_exp env ctx e
+  | IfPr e -> check_exp env ctx e
   | ElsePr -> ()
+  | IterPr (prem', iter) ->
+    check_iter env ctx iter;
+    check_prem env (iter::ctx) prem'
 
 let check_def d : env =
   match d.it with
@@ -137,13 +134,13 @@ let check_def d : env =
   | RuleD (_id1, _id2, e, prems) ->
     let env = ref Env.empty in
     check_exp env [] e;
-    iter_nl_list (check_prem env) prems;
+    iter_nl_list (check_prem env []) prems;
     check_env env
   | DefD (_id, e1, e2, prems) ->
     let env = ref Env.empty in
     check_exp env [] e1;
     check_exp env [] e2;
-    iter_nl_list (check_prem env) prems;
+    iter_nl_list (check_prem env []) prems;
     check_env env
 
 
@@ -274,28 +271,20 @@ and annot_iterexp env occur1 (iter, ids) at : Il.Ast.iterexp * occur =
   (iter', ids'), union occur1' occur2
 
 
-and annot_premise env prem : Il.Ast.premise * occur =
+and annot_prem env prem : Il.Ast.premise * occur =
   match prem.it with
-  | RulePr (id, op, e, iters) ->
+  | RulePr (id, op, e) ->
     let e', occur = annot_exp env e in
-    let iters', occur' =
-      List.fold_left (fun (iters', occur) iter ->
-        let iter', occur' = annot_iterexp env occur iter e.at in
-        iters' @ [iter'], occur'
-      ) ([], occur) iters
-    in
-    RulePr (id, op, e', iters') $ prem.at, occur'
-  | IfPr (e, iters) ->
+    RulePr (id, op, e') $ prem.at, occur
+  | IfPr e ->
     let e', occur = annot_exp env e in
-    let iters', occur' =
-      List.fold_left (fun (iters', occur) iter ->
-        let iter', occur' = annot_iterexp env occur iter e.at in
-        iters' @ [iter'], occur'
-      ) ([], occur) iters
-    in
-    IfPr (e', iters') $ prem.at, occur'
+    IfPr e' $ prem.at, occur
   | ElsePr ->
     prem, Env.empty
+  | IterPr (prem1, iter) ->
+    let prem1', occur1 = annot_prem env prem1 in
+    let iter', occur' = annot_iterexp env occur1 iter prem.at in
+    IterPr (prem1', iter') $ prem.at, occur'
 
 
 let annot_exp env e =
@@ -304,6 +293,6 @@ let annot_exp env e =
   e'
 
 let annot_prem env prem =
-  let prem', occurs = annot_premise env prem in
+  let prem', occurs = annot_prem env prem in
   assert (Env.for_all (fun _ ctx -> ctx = []) occurs);
   prem'

@@ -486,16 +486,24 @@ premise_list :
 
 premise : premise_ { $1 $ at $sloc }
 premise_ :
-  | relid COLON exp { RulePr ($1, $3, []) }
+  | relid COLON exp { RulePr ($1, $3) }
   | IF exp
-    { let rec iters e its =
+    { let rec iters e =
         match e.it with
-        | IterE (e1, it) -> iters e1 (it::its)
-        | _ -> IfPr (e, its)
-      in iters $2 [] }
+        | IterE (e1, iter) -> IterPr (iters e1 $ e1.at, iter)
+        | _ -> IfPr e
+      in iters $2 }
   | OTHERWISE { ElsePr }
-  | LPAR relid COLON exp RPAR iter_list { RulePr ($2, $4, $6) }
-  | LPAR IF exp RPAR iter_list { IfPr ($3, $5) }
+  | LPAR relid COLON exp RPAR iter_list
+    { let rec iters prem = function
+        | [] -> prem
+        | iter::iters' -> iters (IterPr (prem $ at $sloc, iter)) iters'
+      in iters (RulePr ($2, $4)) $6 }
+  | LPAR IF exp RPAR iter_list
+    { let rec iters prem = function
+        | [] -> prem
+        | iter::iters' -> iters (IterPr (prem $ at $sloc, iter)) iters'
+      in iters (IfPr $3) $5 }
 
 iter_list :
   | /* empty */ { [] }

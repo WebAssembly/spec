@@ -64,15 +64,15 @@ let pop left = match left.it with
 
 let calc (prems: premise nl_list) : unit =
   prems |> List.iter (fun p -> match p with
-    | Elem { it = IfPr(e, []); _ } -> printf_step "Let %s." (Print.string_of_exp e)
+    | Elem { it = IfPr e; _ } -> printf_step "Let %s." (Print.string_of_exp e)
     | _ -> ()
   )
 
 let cond (prems: premise nl_list) =
   prems
   |> List.map (fun p -> match p with
-    | Elem {it = IfPr(e, []); _} -> Print.string_of_exp e
-    | Elem p -> Print.string_of_premise p
+    | Elem {it = IfPr e; _} -> Print.string_of_exp e
+    | Elem p -> Print.string_of_prem p
     | Nl -> "Nl"
   )
   |> String.concat " and "
@@ -178,7 +178,7 @@ let string_of_destructed (left, right, prems) =
   Print.string_of_exp left ^
   " ~> " ^
   Print.string_of_exp right ^
-  String.concat "" (map_nl_list (fun x -> "\n    -- " ^ Print.string_of_premise x) prems)
+  String.concat "" (map_nl_list (fun x -> "\n    -- " ^ Print.string_of_prem x) prems)
 
 let handle_reduction_group red_group =
   (* assert: every redunction rule in red_group has same lhs *)

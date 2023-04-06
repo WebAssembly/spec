@@ -92,12 +92,12 @@ and free_path p =
 
 (* Definitions *)
 
-let free_prem prem =
+let rec free_prem prem =
   match prem.it with
-  | RulePr (id, e, iters) ->
-    union (free_relid id) (union (free_exp e) (free_list free_iter iters))
-  | IfPr (e, iters) -> union (free_exp e) (free_list free_iter iters)
+  | RulePr (id, e) -> union (free_relid id) (free_exp e)
+  | IfPr e -> free_exp e
   | ElsePr -> empty
+  | IterPr (prem', iter) -> union (free_prem prem') (free_iter iter)
 
 let free_def d =
   match d.it with

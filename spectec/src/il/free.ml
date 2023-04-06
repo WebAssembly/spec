@@ -113,12 +113,12 @@ let bound_binds binds = free_list bound_bind binds
 let free_bind (_id, t, _dim) = free_typ t
 let free_binds binds = free_list free_bind binds
 
-let free_prem prem =
+let rec free_prem prem =
   match prem.it with
-  | RulePr (id, _mixop, e, iters) ->
-    union (free_relid id) (union (free_exp e) (free_list free_iterexp iters))
-  | IfPr (e, iters) -> union (free_exp e) (free_list free_iterexp iters)
+  | RulePr (id, _op, e) -> union (free_relid id) (free_exp e)
+  | IfPr e -> free_exp e
   | ElsePr -> empty
+  | IterPr (prem', iter) -> union (free_prem prem') (free_iterexp iter)
 
 let free_rule rule =
   match rule.it with

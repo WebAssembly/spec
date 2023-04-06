@@ -454,20 +454,18 @@ let valid_binds env binds =
     env.vars <- bind "variable" env.vars id (t, dim)
   ) binds
 
-let rec valid_iter_list env = function
-  | [] -> env
-  | iter::iters -> valid_iter_list (valid_iterexp env iter) iters
-
-let valid_prem env prem =
+let rec valid_prem env prem =
   match prem.it with
-  | RulePr (id, mixop, e, iters) ->
-    let env' = valid_iter_list env iters in
-    valid_expmix env' mixop e (find "relation" env.rels id) e.at
-  | IfPr (e, iters) ->
-    let env' = valid_iter_list env iters in
-    valid_exp env' e (BoolT $ e.at)
+  | RulePr (id, mixop, e) ->
+    valid_expmix env mixop e (find "relation" env.rels id) e.at
+  | IfPr e ->
+    valid_exp env e (BoolT $ e.at)
   | ElsePr ->
     ()
+  | IterPr (prem', iter) ->
+    let env' = valid_iterexp env iter in
+    valid_prem env' prem'
+
 
 let valid_rule env mixop t rule =
   match rule.it with

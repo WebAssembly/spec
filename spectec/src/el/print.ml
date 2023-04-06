@@ -172,17 +172,16 @@ and string_of_path p =
 
 (* Definitions *)
 
-let string_of_premise prem =
+let rec string_of_prem prem =
   match prem.it with
-  | RulePr (id, e, []) -> id.it ^ ": " ^ string_of_exp e
-  | RulePr (id, e, iters) ->
-    "(" ^ id.it ^ ": " ^ string_of_exp e ^ ")" ^
-      String.concat "" (List.map string_of_iter iters)
-  | IfPr (e, []) -> "if " ^ string_of_exp e
-  | IfPr (e, iters) ->
-    "(" ^ "if " ^ string_of_exp e ^ ")" ^
-      String.concat "" (List.map string_of_iter iters)
+  | RulePr (id, e) -> id.it ^ ": " ^ string_of_exp e
+  | IfPr e -> "if " ^ string_of_exp e
   | ElsePr -> "otherwise"
+  | IterPr ({it = IterPr _; _} as prem', iter) ->
+    string_of_prem prem' ^ string_of_iter iter
+  | IterPr (prem', iter) ->
+    "(" ^ string_of_prem prem' ^ ")" ^ string_of_iter iter
+
 
 let string_of_def d =
   match d.it with
@@ -194,7 +193,7 @@ let string_of_def d =
   | RuleD (id1, id2, e, prems) ->
     let id2' = if id2.it = "" then "" else "/" ^ id2.it in
     "rule " ^ id1.it ^ id2' ^ ":\n  " ^ string_of_exp e ^
-      concat "" (map_nl_list (prefix "\n  -- " string_of_premise) prems)
+      concat "" (map_nl_list (prefix "\n  -- " string_of_prem) prems)
   | VarD (id, t, _hints) ->
     "var " ^ id.it ^ " : " ^ string_of_typ t
   | DecD (id, e1, t2, _hints) ->
@@ -203,7 +202,7 @@ let string_of_def d =
   | DefD (id, e1, e2, prems) ->
     let s1 = match e1.it with SeqE [] -> "" | _ -> " " ^ string_of_exp e1 in
     "def " ^ id.it ^ s1 ^ " = " ^ string_of_exp e2 ^
-      concat "" (map_nl_list (prefix "\n  -- " string_of_premise) prems)
+      concat "" (map_nl_list (prefix "\n  -- " string_of_prem) prems)
   | SepD ->
     "\n\n"
 
