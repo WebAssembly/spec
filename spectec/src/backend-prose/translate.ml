@@ -202,19 +202,14 @@ let handle_reduction_group red_group =
     | [(_, right, prems)] ->
       calc prems;
       push right;
-    (* two rules -> premises are highly likely conditions *)
-    | [(_, right1, prems1) ; (_, right2, prems2)] ->
-      cond prems1;
-        indent();
-        push right1;
-        check_nothing();
-        unindent();
-      cond prems2;
-        indent();
-        push right2;
-        check_nothing();
-        unindent();
-    | _ -> raise (Failure "TODO")
+    (* two or more rules -> premises are highly likely conditions *)
+    | _ -> red_group |> List.iter (fun (_, right, prems) ->
+        cond prems;
+          indent();
+          push right;
+          check_nothing();
+          unindent();
+      )
   );
 
   check_nothing();

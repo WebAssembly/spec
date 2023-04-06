@@ -550,7 +550,7 @@ let render_premise env prem =
     String.make (List.length iters - 1) '{' ^
     "(" ^ render_exp env e ^ ")" ^
       String.concat "}" (List.map (render_iter env) iters)
-  | ElsePr -> error prem.at "misplaced `otherwise` premise"
+  | ElsePr -> "otherwise"
 
 
 let merge_typ t1 t2 =
