@@ -171,8 +171,6 @@ warning: rule `Step/global.set` was never spliced
 warning: rule `Step/table.set-val` was never spliced
 warning: rule `Step/table.grow-succeed` was never spliced
 warning: rule `Step/elem.drop` was never spliced
-warning: rule `Step_pure/ref.is_null-true` was never spliced
-warning: rule `Step_pure/ref.is_null-false` was never spliced
 warning: rule `Step_pure/unreachable` was never spliced
 warning: rule `Step_pure/nop` was never spliced
 warning: rule `Step_pure/drop` was never spliced

@@ -13,14 +13,6 @@ rule Step/read:
   -- Step_read: z; instr* ~> instr'*
 
 
-rule Step_pure/ref.is_null-true:
-  val REF.IS_NULL ~> (CONST I32 1)
-  -- if val = REF.NULL rt
-
-rule Step_pure/ref.is_null-false:
-  val REF.IS_NULL ~> (CONST I32 0)
-  -- otherwise
-
 rule Step_pure/unreachable:
   UNREACHABLE  ~>  TRAP
 
