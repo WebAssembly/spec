@@ -682,8 +682,8 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   ;; 3-typing.watsup:203.1-206.42
   rule br_table {C : context, l* : labelidx*, l' : labelidx, t* : valtype*, t_1* : valtype*, t_2* : valtype*}:
     `%|-%:%`(C, BR_TABLE_instr(l*{l}, l'), `%->%`(t_1*{t_1} :: t*{t}, t_2*{t_2}))
-    -- (Resulttype_sub: `|-%*<:%*`(t*{t}, [(C.LABEL_context[l] <: valtype)]))*{l}
-    -- Resulttype_sub: `|-%*<:%*`(t*{t}, [(C.LABEL_context[l'] <: valtype)])
+    -- (Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}
+    -- Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
 
   ;; 3-typing.watsup:199.1-201.24
   rule br_if {C : context, l : labelidx, t* : valtype*}:

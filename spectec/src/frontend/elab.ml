@@ -749,7 +749,10 @@ and elab_exp_notation' env e t : Il.exp list =
   | ParenE (e1, true), IterT (t1, iter) ->
     let es' = elab_exp_notation' env e1 t1 in
     [lift_exp' (tup_exp' es' e.at) iter $ e.at]
-  (* All other expressions are considered elements *)
+  (* Elimination forms are considered splices *)
+  | (IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | CallE _), IterT _ ->
+    [elab_exp env e t]
+  (* All other expressions are considered splices *)
   (* TODO: can't they be splices, too? *)
   | _, IterT (t1, iter) ->
     let es' = elab_exp_notation' env e t1 in
@@ -846,7 +849,7 @@ and cast_empty phrase env t at : Il.exp =
 and cast_exp phrase env e' t1 t2 : Il.exp =
   (*
   Printf.printf "[cast %s] (%s) <: (%s)  >>  (%s) <: (%s)  eq=%b\n%!"
-    (string_of_region e.at)
+    (string_of_region e'.at)
     (string_of_typ t1) (string_of_typ t2)
     (string_of_typ (expand env t1 $ t1.at))
     (string_of_typ (expand env t2 $ t2.at))

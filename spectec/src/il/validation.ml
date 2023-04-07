@@ -168,6 +168,41 @@ let equiv_typ env t1 t2 at =
       "does not match expected type `" ^ string_of_typ t2 ^ "`")
 
 
+(* Subtyping *)
+
+let sub_typ' env t1 t2 =
+  (*
+  Printf.printf "[sub] (%s) <: (%s)  eq=%b\n%!"
+    (Print.string_of_typ t1) (Print.string_of_typ t2)
+    (t1.it = t2.it);
+  *)
+  equiv_typ' env t1 t2 ||
+  match expand env t1, expand env t2 with
+  | VarT id1, VarT id2 ->
+    (match (find "" env.typs id1).it, (find "" env.typs id2).it with
+    | StructT tfs1, StructT tfs2 ->
+      List.for_all (fun (atom, t2, _) ->
+        try let t1 = find_field tfs1 atom t2.at in Eq.eq_typ t1 t2
+        with Error _ -> false
+      ) tfs2
+    | VariantT (ids1, tcs1), VariantT (ids2, tcs2) ->
+      (* TODO: handle ids *)
+      if ids1 <> [] || ids2 <> [] then true else
+      List.for_all (fun (atom, t1, _) ->
+        try let t2 = find_case tcs2 atom t1.at in Eq.eq_typ t1 t2
+        with Error _ -> false
+      ) tcs1
+    | _, _ -> false
+    )
+  | _, _ ->
+    false
+
+let sub_typ env t1 t2 at =
+  if not (sub_typ' env t1 t2) then
+    error at ("expression's type `" ^ string_of_typ t1 ^ "` " ^
+      "does not match expected supertype `" ^ string_of_typ t2 ^ "`")
+
+
 (* Operators *)
 
 let infer_unop = function
@@ -404,7 +439,8 @@ and valid_exp env e t =
     valid_typ env t1;
     valid_typ env t2;
     valid_exp env e1 t1;
-    equiv_typ env t2 t e.at
+    equiv_typ env t2 t e.at;
+    sub_typ env t1 t2 e.at
 
 and valid_expmix env mixop e (mixop', t) at =
   if mixop <> mixop' then
