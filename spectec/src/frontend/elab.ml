@@ -372,7 +372,7 @@ and elab_typ_definition env id t : Il.deftyp =
       if dots1 = Dots then fst (as_variant_typid "own type" env id) else [] in
     let casess = map_nl_list (as_variant_typid "parent type" env) ids in
     let cases' =
-      List.flatten (cases0 :: filter_nl cases :: List.map fst casess) in
+      List.flatten (cases0 :: List.map fst casess @ [filter_nl cases]) in
     let tcs' = List.map (elab_typcase env t.at) cases' in
     check_atoms "variant" "case" cases' t.at;
     Il.VariantT tcs'

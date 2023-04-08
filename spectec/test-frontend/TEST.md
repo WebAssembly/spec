@@ -64,7 +64,6 @@ syntax reftype =
 
 ;; 1-syntax.watsup:45.1-46.34
 syntax valtype =
-  | BOT
   | I32
   | I64
   | F32
@@ -72,6 +71,7 @@ syntax valtype =
   | V128
   | FUNCREF
   | EXTERNREF
+  | BOT
 
 ;; 1-syntax.watsup:48.1-48.39
 syntax in =
@@ -1039,12 +1039,6 @@ rec {
 
 ;; 4-runtime.watsup:139.1-146.5
 syntax admininstr =
-  | REF.FUNC_ADDR(funcaddr)
-  | REF.HOST_ADDR(hostaddr)
-  | CALL_ADDR(funcaddr)
-  | LABEL_(n, instr*, admininstr*)
-  | FRAME_(n, frame, admininstr*)
-  | TRAP
   | UNREACHABLE
   | NOP
   | DROP
@@ -1089,6 +1083,12 @@ syntax admininstr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, nat, nat)
   | STORE(numtype, n?, nat, nat)
+  | REF.FUNC_ADDR(funcaddr)
+  | REF.HOST_ADDR(hostaddr)
+  | CALL_ADDR(funcaddr)
+  | LABEL_(n, instr*, admininstr*)
+  | FRAME_(n, frame, admininstr*)
+  | TRAP
 }
 
 ;; 4-runtime.watsup:83.1-83.62
