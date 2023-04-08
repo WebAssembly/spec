@@ -51,7 +51,7 @@ and eq_typ t1 t2 =
 and eq_exp e1 e2 =
   e1.it = e2.it ||
   match e1.it, e2.it with
-  | VarE id1, VarE id2 -> id1.it = id2.it
+  | VarE id1, VarE id2 -> eq_id id1 id2
   | UnE (op1, e11), UnE (op2, e21) -> op1 = op2 && eq_exp e11 e21
   | BinE (op1, e11, e12), BinE (op2, e21, e22) ->
     op1 = op2 && eq_exp e11 e21 && eq_exp e12 e22
@@ -72,10 +72,11 @@ and eq_exp e1 e2 =
   | DotE (t1, e11, atom1), DotE (t2, e21, atom2) ->
     eq_typ t1 t2 && eq_exp e11 e21 && atom1 = atom2
   | MixE (op1, e1), MixE (op2, e2) -> op1 = op2 && eq_exp e1 e2
-  | CallE (id1, e1), CallE (id2, e2) -> id1 = id2 && eq_exp e1 e2
+  | CallE (id1, e1), CallE (id2, e2) -> eq_id id1 id2 && eq_exp e1 e2
   | IterE (e11, iter1), IterE (e21, iter2) ->
     eq_exp e11 e21 && eq_iterexp iter1 iter2
   | OptE eo1, OptE eo2 -> eq_opt eq_exp eo1 eo2
+  | TheE e1, TheE e2 -> eq_exp e1 e2
   | CaseE (atom1, e1, t1), CaseE (atom2, e2, t2) ->
     atom1 = atom2 && eq_exp e1 e2 && eq_typ t1 t2
   | SubE (e1, t11, t12), SubE (e2, t21, t22) ->
@@ -96,3 +97,14 @@ and eq_path p1 p2 =
 
 and eq_iterexp (iter1, ids1) (iter2, ids2) =
   eq_iter iter1 iter2 && eq_list eq_id ids1 ids2
+
+let rec eq_prem prem1 prem2 =
+  prem1.it = prem2.it ||
+  match prem1.it, prem2.it with
+  | RulePr (id1, op1, e1), RulePr (id2, op2, e2) ->
+    eq_id id1 id2 && op1 = op2 && eq_exp e1 e2
+  | IfPr e1, IfPr e2 -> eq_exp e1 e2
+  | ElsePr, ElsePr -> true
+  | IterPr (prem1, iterexp1), IterPr (prem2, iterexp2) ->
+  eq_prem prem1 prem2 && eq_iterexp iterexp1 iterexp2
+  | _, _ -> false
