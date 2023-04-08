@@ -725,19 +725,19 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.DATA_context[x] = OK)
 
   ;; 3-typing.watsup:350.1-355.32
-  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, t : valtype}:
+  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?}:
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [(nt <: valtype)]))
     -- if (C.MEM_context[0] = mt)
-    -- if ((2 ^ n_A) <= ($size(t) / 8))
-    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(t) / 8))))?{n}
+    -- if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
+    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
     -- if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 
   ;; 3-typing.watsup:357.1-362.32
-  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, t : valtype}:
+  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype (nt <: valtype)], []))
     -- if (C.MEM_context[0] = mt)
-    -- if ((2 ^ n_A) <= ($size(t) / 8))
-    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(t) / 8))))?{n}
+    -- if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
+    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
     -- if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 
 ;; 3-typing.watsup:124.1-124.67
@@ -2590,9 +2590,9 @@ $$
 \frac{
 \mathit{C}.\mathsf{mem}[0] = \mathit{mt}
  \qquad
-{2^{\mathit{n}_{\mathsf{a}}}} \leq {|\mathit{t}|} / 8
+{2^{\mathit{n}_{\mathsf{a}}}} \leq {|\mathit{nt}|} / 8
  \qquad
-({2^{\mathit{n}_{\mathsf{a}}}} \leq \mathit{n} / 8 < {|\mathit{t}|} / 8)^?
+({2^{\mathit{n}_{\mathsf{a}}}} \leq \mathit{n} / 8 < {|\mathit{nt}|} / 8)^?
  \qquad
 {\mathit{n}^?} = \epsilon \lor \mathit{nt} = {\mathsf{i}}{\mathit{n}}
 }{
@@ -2607,9 +2607,9 @@ $$
 \frac{
 \mathit{C}.\mathsf{mem}[0] = \mathit{mt}
  \qquad
-{2^{\mathit{n}_{\mathsf{a}}}} \leq {|\mathit{t}|} / 8
+{2^{\mathit{n}_{\mathsf{a}}}} \leq {|\mathit{nt}|} / 8
  \qquad
-({2^{\mathit{n}_{\mathsf{a}}}} \leq \mathit{n} / 8 < {|\mathit{t}|} / 8)^?
+({2^{\mathit{n}_{\mathsf{a}}}} \leq \mathit{n} / 8 < {|\mathit{nt}|} / 8)^?
  \qquad
 {\mathit{n}^?} = \epsilon \lor \mathit{nt} = {\mathsf{i}}{\mathit{n}}
 }{
