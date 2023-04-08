@@ -100,13 +100,11 @@ and string_of_typs sep ts =
 and string_of_deftyp dt =
   match dt.it with
   | AliasT t -> string_of_typ t
-  | NotationT (mixop, t) -> string_of_typmix (mixop, t)
+  | NotationT (mixop, t) -> string_of_typ_mix mixop t
   | StructT tfs -> "{" ^ concat ", " (List.map string_of_typfield tfs) ^ "}"
-  | VariantT (ids, tcases) ->
-    "\n  | " ^ concat "\n  | "
-      (List.map it ids @ List.map string_of_typcase tcases)
+  | VariantT tcs -> "\n  | " ^ concat "\n  | " (List.map string_of_typcase tcs)
 
-and string_of_typmix (mixop, t) =
+and string_of_typ_mix mixop t =
   if mixop = [[]; []] then string_of_typ t else
   string_of_mixop mixop ^ string_of_typ_args t
 
@@ -225,7 +223,7 @@ let rec string_of_def d =
   | SynD (id, dt, _hints) ->
     "syntax " ^ id.it ^ " = " ^ string_of_deftyp dt
   | RelD (id, mixop, t, rules, _hints) ->
-    "relation " ^ id.it ^ ": " ^ string_of_typmix (mixop, t) ^
+    "relation " ^ id.it ^ ": " ^ string_of_typ_mix mixop t ^
       concat "\n" (List.map string_of_rule rules)
   | DecD (id, t1, t2, clauses, _hints) ->
     let s1 =

@@ -129,10 +129,9 @@ let as_struct_typ phrase env dir t at : typfield list =
   | VarT id -> as_struct_typid phrase env id at
   | _ -> as_error at phrase dir t "{...}"
 
-let rec as_variant_typid phrase env id at : typcase list =
+let as_variant_typid phrase env id at : typcase list =
   match (find "syntax type" env.typs id).it with
-  | VariantT (ids, cases) ->
-    List.concat (cases :: List.map (fun id -> as_variant_typid "" env id at) ids)
+  | VariantT tcs -> tcs
   | _ -> as_error at phrase Infer (VarT id $ id.at) "| ..."
 
 let as_variant_typ phrase env dir t at : typcase list =
@@ -185,9 +184,7 @@ let sub_typ' env t1 t2 =
         try let t1 = find_field tfs1 atom t2.at in Eq.eq_typ t1 t2
         with Error _ -> false
       ) tfs2
-    | VariantT (ids1, tcs1), VariantT (ids2, tcs2) ->
-      (* TODO: handle ids *)
-      if ids1 <> [] || ids2 <> [] then true else
+    | VariantT tcs1, VariantT tcs2 ->
       List.for_all (fun (atom, t1, _) ->
         try let t2 = find_case tcs2 atom t1.at in Eq.eq_typ t1 t2
         with Error _ -> false
@@ -220,10 +217,10 @@ let infer_cmpop = function
 
 (* Atom Bindings *)
 
-let check_atoms phrase item get_atom list at =
+let check_atoms phrase item list at =
   let _, dups =
-    List.fold_right (fun item (set, dups) ->
-      let s = Print.string_of_atom (get_atom item) in
+    List.fold_right (fun (atom, _, _) (set, dups) ->
+      let s = Print.string_of_atom atom in
       Free.Set.(if mem s set then (set, s::dups) else (add s set, dups))
     ) list (Free.Set.empty, [])
   in
@@ -270,22 +267,15 @@ and valid_deftyp env dt =
   | AliasT t ->
     valid_typ env t
   | NotationT (mixop, t) ->
-    valid_typmix env (mixop, t) dt.at
+    valid_typ_mix env mixop t dt.at
   | StructT tfs ->
-    check_atoms "record" "field" (fun (atom, _, _) -> atom) tfs dt.at;
+    check_atoms "record" "field" tfs dt.at;
     List.iter (valid_typfield env) tfs
-  | VariantT (ids, cases) ->
-    List.iter (fun id ->
-      let dtI = find "syntax type" env.typs id in
-      if dtI = fwd_deftyp_ok || dtI = fwd_deftyp_bad then
-        error id.at ("invalid forward reference to syntax type `" ^ id.it ^ "`");
-    ) ids;
-    let casess = List.map (fun id -> as_variant_typid "parent" env id id.at) ids in
-    let cases' = List.flatten (cases::casess) in
-    check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' dt.at;
-    List.iter (valid_typcase env) cases
+  | VariantT tcs ->
+    check_atoms "variant" "case" tcs dt.at;
+    List.iter (valid_typcase env) tcs
 
-and valid_typmix env (mixop, t) at =
+and valid_typ_mix env mixop t at =
   let arity =
     match t.it with
     | TupT ts -> List.length ts
@@ -532,7 +522,7 @@ let infer_def env d =
       match dt.it with NotationT _ -> fwd_deftyp_bad | _ -> fwd_deftyp_ok in
     env.typs <- bind "syntax" env.typs id fwd_deftyp
   | RelD (id, mixop, t, _rules, _hints) ->
-    valid_typmix env (mixop, t) d.at;
+    valid_typ_mix env mixop t d.at;
     env.rels <- bind "relation" env.rels id (mixop, t)
   | DecD (id, t1, t2, _clauses, _hints) ->
     valid_typ env t1;
@@ -549,7 +539,7 @@ let rec valid_def {bind} env d =
     valid_deftyp env dt;
     env.typs <- bind "syntax" env.typs id dt;
   | RelD (id, mixop, t, rules, _hints) ->
-    valid_typmix env (mixop, t) d.at;
+    valid_typ_mix env mixop t d.at;
     List.iter (valid_rule env mixop t) rules;
     env.rels <- bind "relation" env.rels id (mixop, t)
   | DecD (id, t1, t2, clauses, _hints) ->

@@ -57,7 +57,7 @@ and deftyp' =
   | AliasT of typ                       (* type alias *)
   | NotationT of mixop * typ            (* notation type *)
   | StructT of typfield list            (* record type *)
-  | VariantT of id list * typcase list  (* variant type *)
+  | VariantT of typcase list            (* variant type *)
 
 and typfield = atom * typ * hint list   (* record field *)
 and typcase = atom * typ * hint list    (* variant case *)

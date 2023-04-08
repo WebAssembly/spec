@@ -316,10 +316,10 @@ let merge_mixop mixop1 mixop2 =
     mixop1' @ [atoms1 @ atoms2] @ mixop2'
 
 
-let check_atoms phrase item get_atom list at =
+let check_atoms phrase item list at =
   let _, dups =
-    List.fold_right (fun item (set, dups) ->
-      let s = Print.string_of_atom (get_atom item) in
+    List.fold_right (fun (atom, _, _) (set, dups) ->
+      let s = Print.string_of_atom atom in
       if Set.mem s set then (set, s::dups) else (Set.add s set, dups)
     ) list (Set.empty, [])
   in
@@ -365,7 +365,7 @@ and elab_typ_definition env id t : Il.deftyp =
   (match t.it with
   | StrT tfs ->
     let tfs' = filter_nl tfs in
-    check_atoms "record" "field" (fun (atom, _, _) -> atom) tfs' t.at;
+    check_atoms "record" "field" tfs' t.at;
     Il.StructT (map_nl_list (elab_typfield env) tfs)
   | CaseT (dots1, ids, cases, _dots2) ->
     let cases0 =
@@ -373,8 +373,9 @@ and elab_typ_definition env id t : Il.deftyp =
     let casess = map_nl_list (as_variant_typid "parent type" env) ids in
     let cases' =
       List.flatten (cases0 :: filter_nl cases :: List.map fst casess) in
-    check_atoms "variant" "case" (fun (atom, _, _) -> atom) cases' t.at;
-    Il.VariantT (filter_nl ids, map_nl_list (elab_typcase env t.at) cases)
+    let tcs' = List.map (elab_typcase env t.at) cases' in
+    check_atoms "variant" "case" cases' t.at;
+    Il.VariantT tcs'
   | _ ->
     match elab_typ_notation env t with
     | false, _mixop, ts' -> Il.AliasT (tup_typ' ts' t.at)
@@ -933,30 +934,22 @@ let infer_def env d =
     )
   | _ -> ()
 
-let merge_deftyp' dt1' dt2' =
-  match dt1'.it, dt2'.it with
-  | Il.VariantT (ids1, cases1'), Il.VariantT (ids2, cases2') ->
-    Il.VariantT (ids1 @ ids2, cases1' @ cases2')
-      $ over_region [dt1'.at; dt2'.at]
-  | _, _ -> assert false
-
 let elab_def env d : Il.def list =
   match d.it with
   | SynD (id1, _id2, t, hints) ->
     let dt' = elab_typ_definition env id1 t in
-    let t1, dt1', closed =
+    let t1, closed =
       match find "syntax type" env.typs id1, t.it with
       | Either.Left _, CaseT (Dots, _, _, _) ->
         error_id id1 "extension of not yet defined syntax type"
       | Either.Left _, CaseT (NoDots, _, _, dots2) ->
-        t, dt', dots2 = NoDots
+        t, dots2 = NoDots
       | Either.Left _, _ ->
-        t, dt', true
-      | Either.Right ({it = CaseT (dots1, ids1, cases1, Dots); at}, dt0'),
-          CaseT (Dots, ids2, cases2, dots2) ->
-        CaseT (dots1, ids1 @ ids2, cases1 @ cases2, dots2)
-          $ over_region [at; t.at],
-        merge_deftyp' dt0' dt', dots2 = NoDots
+        t, true
+      | Either.Right ({it = CaseT (dots1, ids1, tcs1, Dots); at}, _),
+          CaseT (Dots, ids2, tcs2, dots2) ->
+        CaseT (dots1, ids1 @ ids2, tcs1 @ tcs2, dots2) $ over_region [at; t.at],
+          dots2 = NoDots
       | Either.Right _, CaseT (Dots, _, _, _) ->
         error_id id1 "extension of non-extensible syntax type"
       | Either.Right _, _ ->
@@ -966,8 +959,8 @@ let elab_def env d : Il.def list =
     Printf.printf "[def %s] %s ~> %s\n%!" id1.it
       (string_of_typ t) (Il.Print.string_of_deftyp dt');
     *)
-    env.typs <- rebind "syntax type" env.typs id1 (Either.Right (t1, dt1'));
-    if not closed then [] else [Il.SynD (id1, dt1', elab_hints hints) $ d.at]
+    env.typs <- rebind "syntax type" env.typs id1 (Either.Right (t1, dt'));
+    if not closed then [] else [Il.SynD (id1, dt', elab_hints hints) $ d.at]
   | RelD (id, t, hints) ->
     let _, mixop, ts' = elab_typ_notation env t in
     env.rels <- bind "relation" env.rels id (t, []);

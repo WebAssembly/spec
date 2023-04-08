@@ -64,10 +64,14 @@ syntax reftype =
 
 ;; 1-syntax.watsup:45.1-46.34
 syntax valtype =
-  | numtype
-  | vectype
-  | reftype
   | BOT
+  | I32
+  | I64
+  | F32
+  | F64
+  | V128
+  | FUNCREF
+  | EXTERNREF
 
 ;; 1-syntax.watsup:48.1-48.39
 syntax in =
@@ -522,18 +526,18 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
     -- InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2]*{t_2}, RETURN ?()}, instr*{instr}, `%->%`(t_1*{t_1}, t_2*{t_2}))
 
-  ;; 3-typing.watsup:183.1-186.56
-  rule loop {C : context, bt : blocktype, instr* : instr*, t_1* : valtype*, t_2 : valtype}:
-    `%|-%:%`(C, LOOP_instr(bt, instr*{instr}), `%->%`(t_1*{t_1}, t_2*{}))
-    -- Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{}))
-    -- InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_1]*{t_1}, RETURN ?()}, instr*{instr}, `%->%`(t_1*{t_1}, [t_2]))
+  ;; 3-typing.watsup:183.1-186.57
+  rule loop {C : context, bt : blocktype, instr* : instr*, t_1* : valtype*, t_2* : valtype*}:
+    `%|-%:%`(C, LOOP_instr(bt, instr*{instr}), `%->%`(t_1*{t_1}, t_2*{t_2}))
+    -- Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
+    -- InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_1]*{t_1}, RETURN ?()}, instr*{instr}, `%->%`(t_1*{t_1}, t_2*{t_2}))
 
   ;; 3-typing.watsup:188.1-192.59
-  rule if {C : context, bt : blocktype, instr_1* : instr*, instr_2* : instr*, t_1* : valtype*, t_2 : valtype}:
-    `%|-%:%`(C, IF_instr(bt, instr_1*{instr_1}, instr_2*{instr_2}), `%->%`(t_1*{t_1}, [t_2]))
-    -- Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, [t_2]))
-    -- InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2]*{}, RETURN ?()}, instr_1*{instr_1}, `%->%`(t_1*{t_1}, t_2*{}))
-    -- InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2]*{}, RETURN ?()}, instr_2*{instr_2}, `%->%`(t_1*{t_1}, t_2*{}))
+  rule if {C : context, bt : blocktype, instr_1* : instr*, instr_2* : instr*, t_1* : valtype*, t_2* : valtype*}:
+    `%|-%:%`(C, IF_instr(bt, instr_1*{instr_1}, instr_2*{instr_2}), `%->%`(t_1*{t_1}, t_2*{t_2}))
+    -- Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
+    -- InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2]*{t_2}, RETURN ?()}, instr_1*{instr_1}, `%->%`(t_1*{t_1}, t_2*{t_2}))
+    -- InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2]*{t_2}, RETURN ?()}, instr_2*{instr_2}, `%->%`(t_1*{t_1}, t_2*{t_2}))
 
   ;; 3-typing.watsup:195.1-197.24
   rule br {C : context, l : labelidx, t* : valtype*, t_1* : valtype*, t_2* : valtype*}:
@@ -967,8 +971,10 @@ syntax ref =
 
 ;; 4-runtime.watsup:28.1-29.10
 syntax val =
-  | num
-  | ref
+  | CONST(numtype, c_numtype)
+  | REF.NULL(reftype)
+  | REF.FUNC_ADDR(funcaddr)
+  | REF.HOST_ADDR(hostaddr)
 
 ;; 4-runtime.watsup:31.1-32.18
 syntax result =
@@ -1033,13 +1039,56 @@ rec {
 
 ;; 4-runtime.watsup:139.1-146.5
 syntax admininstr =
-  | instr
   | REF.FUNC_ADDR(funcaddr)
   | REF.HOST_ADDR(hostaddr)
   | CALL_ADDR(funcaddr)
   | LABEL_(n, instr*, admininstr*)
   | FRAME_(n, frame, admininstr*)
   | TRAP
+  | UNREACHABLE
+  | NOP
+  | DROP
+  | SELECT(valtype?)
+  | BLOCK(blocktype, instr*)
+  | LOOP(blocktype, instr*)
+  | IF(blocktype, instr*, instr*)
+  | BR(labelidx)
+  | BR_IF(labelidx)
+  | BR_TABLE(labelidx*, labelidx)
+  | CALL(funcidx)
+  | CALL_INDIRECT(tableidx, functype)
+  | RETURN
+  | CONST(numtype, c_numtype)
+  | UNOP(numtype, unop_numtype)
+  | BINOP(numtype, binop_numtype)
+  | TESTOP(numtype, testop_numtype)
+  | RELOP(numtype, relop_numtype)
+  | EXTEND(numtype, n)
+  | CVTOP(numtype, cvtop, numtype, sx?)
+  | REF.NULL(reftype)
+  | REF.FUNC(funcidx)
+  | REF.IS_NULL
+  | LOCAL.GET(localidx)
+  | LOCAL.SET(localidx)
+  | LOCAL.TEE(localidx)
+  | GLOBAL.GET(globalidx)
+  | GLOBAL.SET(globalidx)
+  | TABLE.GET(tableidx)
+  | TABLE.SET(tableidx)
+  | TABLE.SIZE(tableidx)
+  | TABLE.GROW(tableidx)
+  | TABLE.FILL(tableidx)
+  | TABLE.COPY(tableidx, tableidx)
+  | TABLE.INIT(tableidx, elemidx)
+  | ELEM.DROP(elemidx)
+  | MEMORY.SIZE
+  | MEMORY.GROW
+  | MEMORY.FILL
+  | MEMORY.COPY
+  | MEMORY.INIT(dataidx)
+  | DATA.DROP(dataidx)
+  | LOAD(numtype, (n, sx)?, nat, nat)
+  | STORE(numtype, n?, nat, nat)
 }
 
 ;; 4-runtime.watsup:83.1-83.62
@@ -2083,7 +2132,7 @@ $$
 \frac{
 \mathit{C} \vdash \mathit{bt} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
  \qquad
-\mathit{C}, \mathsf{label}~{\mathit{t}_{1}^\ast} \vdash {\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow \mathit{t}_{2}
+\mathit{C}, \mathsf{label}~{\mathit{t}_{1}^\ast} \vdash {\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 }{
 \mathit{C} \vdash \mathsf{loop}~\mathit{bt}~{\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 } \, {[\textsc{\scriptsize T{-}loop}]}
@@ -2094,13 +2143,13 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-\mathit{C} \vdash \mathit{bt} : {\mathit{t}_{1}^\ast} \rightarrow \mathit{t}_{2}
+\mathit{C} \vdash \mathit{bt} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
  \qquad
 \mathit{C}, \mathsf{label}~{\mathit{t}_{2}^\ast} \vdash {\mathit{instr}_{1}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
  \qquad
 \mathit{C}, \mathsf{label}~{\mathit{t}_{2}^\ast} \vdash {\mathit{instr}_{2}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 }{
-\mathit{C} \vdash \mathsf{if}~\mathit{bt}~{\mathit{instr}_{1}^\ast}~\mathsf{else}~{\mathit{instr}_{2}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow \mathit{t}_{2}
+\mathit{C} \vdash \mathsf{if}~\mathit{bt}~{\mathit{instr}_{1}^\ast}~\mathsf{else}~{\mathit{instr}_{2}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 } \, {[\textsc{\scriptsize T{-}if}]}
 \qquad
 \end{array}

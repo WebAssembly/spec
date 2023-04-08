@@ -65,8 +65,7 @@ and free_deftyp dt =
   match dt.it with
   | AliasT t | NotationT (_, t) -> free_typ t
   | StructT tfs -> free_list free_typfield tfs
-  | VariantT (ids, tcases) ->
-    union (free_list free_synid ids) (free_list free_typcase tcases)
+  | VariantT tcs -> free_list free_typcase tcs
 
 and free_typfield (_, t, _) = free_typ t
 and free_typcase (_, t, _) = free_typ t
