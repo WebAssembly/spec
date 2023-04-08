@@ -1022,10 +1022,10 @@ let populate_def env d' : Il.def =
   | Il.SynD _ -> d'
   | Il.RelD (id, mixop, t', [], hints') ->
     let _, rules' = find "relation" env.rels id in
-    Il.RelD (id, mixop, t', rules', hints') $ d'.at
+    Il.RelD (id, mixop, t', List.rev rules', hints') $ d'.at
   | Il.DecD (id, t1', t2', [], hints') ->
     let _, _, clauses' = find "function" env.defs id in
-    Il.DecD (id, t1', t2', clauses', hints') $ d'.at
+    Il.DecD (id, t1', t2', List.rev clauses', hints') $ d'.at
   | _ ->
     assert false
 
