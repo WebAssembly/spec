@@ -111,6 +111,7 @@ and exp' =
   | CallE of id * exp            (* defid exp? *)
   | IterE of exp * iterexp       (* exp iter *)
   | OptE of exp option           (* exp? : typ? *)
+  | TheE of exp                  (* THE exp *)
   | ListE of exp list            (* [exp ... exp] *)
   | CatE of exp * exp            (* exp :: exp *)
   | CaseE of atom * exp * typ    (* atom exp : typ *)

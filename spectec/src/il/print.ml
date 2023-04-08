@@ -145,9 +145,10 @@ and string_of_exp e =
   | LenE e1 -> "|" ^ string_of_exp e1 ^ "|"
   | TupE es -> "(" ^ string_of_exps ", " es ^ ")"
   | MixE (op, e1) -> string_of_mixop op ^ string_of_exp_args e1
-  | CallE (id, e) -> "$" ^ id.it ^ string_of_exp_args e
+  | CallE (id, e1) -> "$" ^ id.it ^ string_of_exp_args e1
   | IterE (e1, iter) -> string_of_exp e1 ^ string_of_iterexp iter
   | OptE eo -> "?(" ^ string_of_exps "" (Option.to_list eo) ^ ")"
+  | TheE e1 -> "!(" ^ string_of_exp e1 ^ ")"
   | ListE es -> "[" ^ string_of_exps " " es ^ "]"
   | CatE (e1, e2) -> string_of_exp e1 ^ " :: " ^ string_of_exp e2
   | CaseE (atom, e1, t) ->

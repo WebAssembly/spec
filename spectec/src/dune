@@ -6,6 +6,7 @@
     (re_export el)
     (re_export il)
     (re_export frontend)
+    (re_export middlend)
     (re_export backend_latex)
     (re_export backend_prose)
   )
