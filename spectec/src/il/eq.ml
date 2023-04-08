@@ -12,6 +12,10 @@ let eq_opt eq_x xo1 xo2 =
 let eq_list eq_x xs1 xs2 =
   List.length xs1 = List.length xs2 && List.for_all2 eq_x xs1 xs2
 
+(* Ids *)
+
+let eq_id i1 i2 =
+  i1.it = i2.it
 
 (* Iteration *)
 
@@ -32,7 +36,7 @@ and eq_typ t1 t2 =
   *)
   t1.it = t2.it ||
   match t1.it, t2.it with
-  | VarT id1, VarT id2 -> id1.it = id2.it
+  | VarT id1, VarT id2 -> eq_id id1 id2
   | TupT ts1, TupT ts2 -> eq_list eq_typ ts1 ts2
   | IterT (t11, iter1), IterT (t21, iter2) ->
     eq_typ t11 t21 && eq_iter iter1 iter2

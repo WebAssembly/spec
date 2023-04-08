@@ -317,6 +317,7 @@ and infer_exp env e : typ =
     let iter' = match fst iter with ListN _ -> List | iter' -> iter' in
     IterT (infer_exp env e1, iter') $ e.at
   | OptE _ -> error e.at "cannot infer type of option"
+  | TheE e -> as_iter_typ Opt "option" env Check (infer_exp env e) e.at
   | ListE _ -> error e.at "cannot infer type of list"
   | CatE _ -> error e.at "cannot infer type of concatenation"
   | CaseE _ -> error e.at "cannot infer type of case constructor"
@@ -412,6 +413,8 @@ and valid_exp env e t =
   | OptE eo ->
     let t1 = as_iter_typ Opt "option" env Check t e.at in
     Option.iter (fun e1 -> valid_exp env e1 t1) eo
+  | TheE e ->
+    valid_exp env e (IterT (t, Opt) $ e.at)
   | ListE es ->
     let t1 = as_iter_typ List "list" env Check t e.at in
     List.iter (fun eI -> valid_exp env eI t1) es
