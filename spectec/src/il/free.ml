@@ -77,14 +77,13 @@ and free_exp e =
   match e.it with
   | VarE id -> free_varid id
   | BoolE _ | NatE _ | TextE _ -> empty
-  | UnE (_, e1) | LenE e1 | MixE (_, e1) | SubE (e1, _, _) ->
+  | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1) | SubE (e1, _, _) ->
     free_exp e1
   | BinE (_, e1, e2) | CmpE (_, e1, e2)
   | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
     free_list free_exp [e1; e2]
   | SliceE (e1, e2, e3) -> free_list free_exp [e1; e2; e3]
   | OptE eo -> free_opt free_exp eo
-  | TheE e -> free_exp e
   | TupE es | ListE es -> free_list free_exp es
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
     union (free_list free_exp [e1; e2]) (free_path p)
