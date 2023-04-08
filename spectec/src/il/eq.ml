@@ -12,10 +12,12 @@ let eq_opt eq_x xo1 xo2 =
 let eq_list eq_x xs1 xs2 =
   List.length xs1 = List.length xs2 && List.for_all2 eq_x xs1 xs2
 
+
 (* Ids *)
 
 let eq_id i1 i2 =
   i1.it = i2.it
+
 
 (* Iteration *)
 
@@ -91,4 +93,4 @@ and eq_path p1 p2 =
   | _, _ -> false
 
 and eq_iterexp (iter1, ids1) (iter2, ids2) =
-  eq_iter iter1 iter2 && eq_list (fun id1 id2 -> id1.it = id2.it) ids1 ids2
+  eq_iter iter1 iter2 && eq_list eq_id ids1 ids2
