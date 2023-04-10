@@ -52,7 +52,8 @@ type instr =
   | AssertI of string
   | PushI of expr
   | PopI of expr option
-  | LetI of (name * expr)
+  (* change name as a `expr` type *)
+  | LetI of (expr * expr)
   | TrapI
   | NopI
   | ReturnI

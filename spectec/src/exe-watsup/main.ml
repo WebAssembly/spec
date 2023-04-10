@@ -80,7 +80,7 @@ let () =
     if !odst = "" && !dsts = [] then (
       let ir = false in
       if ir then
-        let program = Backend_prose.Tmptrans.translate il in
+        let program = Backend_prose.Il2ir.translate il in
         List.map Backend_prose.Print.string_of_program program
         |> List.iter print_endline
       else (

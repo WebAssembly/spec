@@ -160,7 +160,7 @@ let rec structured_string_of_instr depth = function
   | PopI None -> "PopI"
   | PopI (Some e) -> "PopI (" ^ structured_string_of_expr e ^ ")"
   | LetI (n, e) ->
-      "LetI (" ^ structured_string_of_name n ^ ", " ^ structured_string_of_expr e ^ ")"
+      "LetI (" ^ structured_string_of_expr n ^ ", " ^ structured_string_of_expr e ^ ")"
   | TrapI -> "TrapI"
   | NopI -> "NopI"
   | ReturnI -> "ReturnI"
@@ -316,7 +316,7 @@ let rec string_of_instr index depth = function
   | LetI (n, e) ->
       sprintf "%s Let %s be %s."
         (make_index index depth)
-        (string_of_name n)
+        (string_of_expr n)
         (string_of_expr e)
   | TrapI -> sprintf "%s Trap." (make_index index depth)
   | NopI -> sprintf "%s Do nothing." (make_index index depth)
