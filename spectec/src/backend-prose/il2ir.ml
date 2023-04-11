@@ -1,12 +1,7 @@
 open Util.Source
 open Il
 
-(*let translate_expr e = match e.it with
-  | Ast.VarE s -> Ir.NameE (N s.it)
-  | Ast.ParenE ({ it = SeqE [{it=AtomE (Atom "\"CONST\"");_}]; _ }, false) -> Ir.YetE ""
-  | _ -> Print.structured_string_of_exp e |> failwith*)
-
-(** Translate il to ir **)
+(** Translate `Ast.exp` **)
 
 (* `Ast.exp` -> `Ir.expr` *)
 let translate_expr exp = match exp.it with
@@ -22,30 +17,22 @@ let insert_assert exp = match exp.it with
       Ir.AssertI
         "Due to validation, a value of value type i32 is on the top of the stack"
   | _ ->
-      Ir.AssertI "Yet"
-      (*Ir.AssertI "Due to validation, a value is on the top of the stack"*)
+      Ir.AssertI "Due to validation, a value is on the top of the stack"
 
 (* `Ast.exp` -> `Ir.instr list` *)
 let rec lhs2pop exp = match exp.it with
   (* TODO: Handle bubble-up semantics *)
   | Ast.ListE exps ->
-      List.rev exps
-      |> List.tl
-      |> List.fold_left
-        (fun acc e -> insert_assert e :: Ir.PopI (Some (translate_expr e)) :: acc)
+      let rev = List.rev exps |> List.tl in
+      List.fold_right
+        (fun e acc -> insert_assert e :: Ir.PopI (Some (translate_expr e)) :: acc)
+        rev
         []
   | Ast.CatE (iterexp, listexp) ->
-      Ir.PopI (Some (translate_expr iterexp)) :: lhs2pop listexp
+      insert_assert iterexp ::
+        Ir.PopI (Some (translate_expr iterexp)) ::
+        lhs2pop listexp
   | _ -> failwith "Unreachable"
-
-(* `Ast.prem list` -> `Ir.instr list` *)
-let prem2let prems =
-  prems
-  |> List.filter_map
-    (function
-      | { it = Ast.IfPr { it = Ast.CmpE (Ast.EqOp, exp1, exp2); _ }; _ } ->
-          Some (Ir.LetI (translate_expr exp1, translate_expr exp2))
-      | _ -> None)
 
 (* `Ast.CaseE | Ast.SubE` -> `Ir.instr list` *)
 let casesub2instrs exp = match exp.it with
@@ -53,17 +40,15 @@ let casesub2instrs exp = match exp.it with
   | Ast.CaseE (Atom atomid, _, _)
     when atomid = "CONST" || atomid = "REF.FUNC_ADDR" ->
       [Ir.PushI (translate_expr exp)]
-  | Ast.CaseE (Atom "CALL_ADDR", addrexp, _) ->
-      [Ir.InvokeI (translate_expr addrexp)]
   | Ast.CaseE (Atom "FRAME_", tupexp, _) ->
-      (* TODO: Insert current frame instruction at the top *)
       [Ir.LetI (Ir.NameE (Ir.N "F"), Ir.FrameE); Ir.PushI (translate_expr tupexp)]
   | Ast.CaseE (Atom "LABEL_", _, _) ->
       (* TODO *)
-      [ Ir.LetI (Ir.NameE (Ir.N "L"), Ir.YetE ""); Ir.EnterI ("", YetE "") ]
+      [ Ir.LetI (Ir.NameE (Ir.N "L"), Ir.YetE ""); Ir.EnterI ("Yet", YetE "") ]
   | Ast.CaseE (Atom atomid, argexp, _)
     when String.starts_with ~prefix: "TABLE." atomid ||
-    atomid = "BLOCK" || atomid = "BR" || atomid = "LOCAL.SET" || atomid = "RETURN" ->
+    atomid = "BLOCK" || atomid = "BR" || atomid = "CALL_ADDR" ||
+    atomid = "LOCAL.SET" || atomid = "RETURN" ->
       (match argexp.it with
         | Ast.TupE (exps) ->
             let argexprs = List.map translate_expr exps in
@@ -80,7 +65,6 @@ let rec rhs2instrs exp =
       (* z' ; instr'* *)
       { it = TupE ([callexp; rhs]); _ }
     ) ->
-      (* TODO: handle mutation *)
       let yet_instr = Ir.YetI ("Perform " ^ Print.string_of_exp callexp) in
       let push_instrs = rhs2instrs rhs in
       yet_instr :: push_instrs
@@ -90,14 +74,34 @@ let rec rhs2instrs exp =
         rhs2instrs exp1 @ rhs2instrs exp2
     | _ -> failwith "Unreachable"
 
+let check_nop instrs = match instrs with
+    | [] -> [Ir.NopI]
+    | _ -> instrs
+
+
+
+(** Translate `Ast.premise` **)
+
+(* `Ast.prem list` -> `Ir.instr list` *)
+let prem2let prems =
+  List.filter_map
+    (function
+      | { it = Ast.IfPr { it = Ast.CmpE (Ast.EqOp, exp1, exp2); _ }; _ } ->
+          Some (Ir.LetI (translate_expr exp1, translate_expr exp2))
+      | _ -> None)
+    prems
+
 (* `Ast.prem list` -> `Ir.cond` *)
-let prem2cond _prems = Ir.YetC ""
+let prem2cond _prems = Ir.YetC ("")
+
+
+
+(** Main translation **)
 
 (* `reduction_group list` -> `Backend-prose.Ir.Program` *)
-let reduction_group2program acc reduction_group =
-  let (name, lhs, _, _) = List.hd reduction_group in
-
-  (* DEBUG *)
+let reduction_group2program reduction_group acc =
+  let (reduction_name, lhs, _, _) = List.hd reduction_group in
+  let program_name = String.split_on_char '-' reduction_name |> List.hd in
 
   let pop_instrs = match lhs.it with
     (* z; lhs *)
@@ -118,17 +122,23 @@ let reduction_group2program acc reduction_group =
         List.map
           (fun (_, _, rhs, prems) ->
             let cond = prem2cond prems in
-            let rhs_instrs = rhs2instrs rhs in
+            let rhs_instrs = rhs2instrs rhs |> check_nop in
             Ir.IfI(cond, rhs_instrs, [])
           )
           reduction_group in
 
-  Ir.Program (name, pop_instrs @ instrs) :: acc
+  let body = (pop_instrs @ instrs) |> check_nop in
 
-(** Temporarily convert `Ast.RuleD` into `reduction_relation` **)
+  Ir.Program (program_name, body) :: acc
+
+
+
+(** Temporarily convert `Ast.RuleD` into `reduction_group` **)
+
+type reduction_group = (string * Ast.exp * Ast.exp * Ast.premise list) list
 
 (* extract rules except Step/pure and Step/read *)
-let extract_rules acc def = match def.it with
+let extract_rules def acc = match def.it with
   | Ast.RelD (id, _, _, rules, _)
     when String.starts_with ~prefix:"Step" id.it ->
       let filter_context =
@@ -137,8 +147,6 @@ let extract_rules acc def = match def.it with
           ruleid.it <> "pure" && ruleid.it <> "read") in
       (List.filter filter_context rules) :: acc
   | _ -> acc
-
-type reduction_group = (string * Ast.exp * Ast.exp * Ast.premise list) list
 
 let name_of_rule rule = 
   let Ast.RuleD (id1, _, _, _, _) = rule.it in
@@ -160,11 +168,13 @@ let rec group = function
         t in
     List.map rule2tup (h :: reduction_group) :: (group rem)
 
+
+
 (** Entry **)
 
 (* `Ast.script` -> `Ir.Program` *)
 let translate il =
-  let rules = List.fold_left extract_rules [] il |> List.flatten in
+  let rules = List.fold_right extract_rules il [] |> List.flatten in
   let reduction_groups: reduction_group list = group rules in
 
-  List.fold_left reduction_group2program [] reduction_groups
+  List.fold_right reduction_group2program reduction_groups []
