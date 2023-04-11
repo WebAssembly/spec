@@ -12,6 +12,7 @@ let version = "0.3"
 type target =
  | None
  | Latex of Backend_latex.Config.config
+ | Prose
 
  let target = ref (Latex Backend_latex.Config.latex)
 
@@ -58,6 +59,7 @@ let argspec = Arg.align
   "--check-only", Arg.Unit (fun () -> target := None), " No output (just checking)";
   "--latex", Arg.Unit (fun () -> target := Latex Backend_latex.Config.latex), " Use Latex settings (default)";
   "--sphinx", Arg.Unit (fun () -> target := Latex Backend_latex.Config.latex), " Use Sphinx settings";
+  "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
@@ -104,14 +106,18 @@ let () =
         List.iter (Backend_latex.Splice.splice_file ~dry:!dry env) !dsts;
         if !warn then Backend_latex.Splice.warn env;
       );
-    end;
-(*
-    if !odst = "" && !dsts = [] then (
+    | Prose ->
       log "Prose Generation...";
-      let prose = Backend_prose.Translate.translate el in
-      print_endline prose
-    );
-*)
+      let ir = true in
+      if ir then
+        let program = Backend_prose.Il2ir.translate il in
+        List.map Backend_prose.Print.string_of_program program
+        |> List.iter print_endline
+      else (
+        let prose = Backend_prose.Translate.translate el in
+        print_endline prose
+      )
+    end;
     log "Complete."
   with
   | Source.Error (at, msg) ->
