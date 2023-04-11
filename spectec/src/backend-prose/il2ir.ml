@@ -26,16 +26,16 @@ let insert_assert exp = match exp.it with
       (*Ir.AssertI "Due to validation, a value is on the top of the stack"*)
 
 (* `Ast.exp` -> `Ir.instr list` *)
-let lhs2pop exp = match exp.it with
+let rec lhs2pop exp = match exp.it with
+  (* TODO: Handle bubble-up semantics *)
   | Ast.ListE exps ->
       List.rev exps
       |> List.tl
       |> List.fold_left
         (fun acc e -> insert_assert e :: Ir.PopI (Some (translate_expr e)) :: acc)
         []
-  | Ast.CatE (_, _) ->
-      (* TODO *)
-      [Ir.YetI ("Pop: " ^ Print.string_of_exp exp)]
+  | Ast.CatE (iterexp, listexp) ->
+      Ir.PopI (Some (translate_expr iterexp)) :: lhs2pop listexp
   | _ -> failwith "Unreachable"
 
 (* `Ast.prem list` -> `Ir.instr list` *)
@@ -55,17 +55,20 @@ let casesub2instrs exp = match exp.it with
       [Ir.PushI (translate_expr exp)]
   | Ast.CaseE (Atom "CALL_ADDR", addrexp, _) ->
       [Ir.InvokeI (translate_expr addrexp)]
-  | Ast.CaseE (Atom "FRAME_", _, _) ->
-      (* TODO *)
-      [Ir.LetI (YetE "F", FrameE); Ir.PushI (YetE "")]
+  | Ast.CaseE (Atom "FRAME_", tupexp, _) ->
+      (* TODO: Insert current frame instruction at the top *)
+      [Ir.LetI (Ir.NameE (Ir.N "F"), Ir.FrameE); Ir.PushI (translate_expr tupexp)]
   | Ast.CaseE (Atom "LABEL_", _, _) ->
       (* TODO *)
-      [ Ir.LetI (YetE "L", YetE ""); Ir.EnterI ("", YetE "") ]
-  | Ast.CaseE (Atom atomid, _, _)
-      (* TODO *)
+      [ Ir.LetI (Ir.NameE (Ir.N "L"), Ir.YetE ""); Ir.EnterI ("", YetE "") ]
+  | Ast.CaseE (Atom atomid, argexp, _)
     when String.starts_with ~prefix: "TABLE." atomid ||
-    atomid = "BLOCK" || atomid = "BR" || atomid = "LOCAL.SET" ->
-      [Ir.ExecuteI ("", [])]
+    atomid = "BLOCK" || atomid = "BR" || atomid = "LOCAL.SET" || atomid = "RETURN" ->
+      (match argexp.it with
+        | Ast.TupE (exps) ->
+            let argexprs = List.map translate_expr exps in
+            [Ir.ExecuteI (atomid, argexprs)]
+        | _ -> [Ir.ExecuteI (atomid, [translate_expr argexp])])
   | Ast.SubE (_, _, _) -> [Ir.PushI (YetE (Print.string_of_exp exp))]
   | _ -> failwith "Unreachable"
 
@@ -83,9 +86,8 @@ let rec rhs2instrs exp =
       yet_instr :: push_instrs
     | Ast.ListE (exps) -> List.map casesub2instrs exps |> List.flatten
     | Ast.IterE (_, _) -> [Ir.PushI (YetE (Print.string_of_exp exp))]
-    | Ast.CatE (_, _) ->
-        (* TODO *)
-        [Ir.YetI ("Push: " ^ Print.string_of_exp exp)]
+    | Ast.CatE (exp1, exp2) ->
+        rhs2instrs exp1 @ rhs2instrs exp2
     | _ -> failwith "Unreachable"
 
 (* `Ast.prem list` -> `Ir.cond` *)
