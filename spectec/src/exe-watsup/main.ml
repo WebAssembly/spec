@@ -30,6 +30,7 @@ let print_final_il = ref false
 let print_all_il = ref false
 
 let pass_totalize = ref false
+let pass_sideconditions = ref false
 
 (* Argument parsing *)
 
@@ -55,6 +56,7 @@ let argspec = Arg.align
   "--print-all-il", Arg.Set print_all_il, "Print il after each step";
 
   "--totalize", Arg.Set pass_totalize, "Run function totalization";
+  "--sideconditions", Arg.Set pass_sideconditions, "Infer side conditoins";
 
   "--check-only", Arg.Unit (fun () -> target := None), " No output (just checking)";
   "--latex", Arg.Unit (fun () -> target := Latex Backend_latex.Config.latex), " Use Latex settings (default)";
@@ -85,6 +87,15 @@ let () =
     let il = if !pass_totalize then begin
       log "Function totalization...";
       let il = Middlend.Totalize.transform il in
+      if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+      log "IL Validation...";
+      Il.Validation.valid il;
+      il
+    end else il in
+
+    let il = if !pass_sideconditions then begin
+      log "Side condition inference";
+      let il = Middlend.Sideconditions.transform il in
       if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
       log "IL Validation...";
       Il.Validation.valid il;
