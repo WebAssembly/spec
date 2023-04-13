@@ -95,6 +95,31 @@
 (assert_return (invoke "get3") (ref.func))
 
 
+(assert_invalid
+  (module
+    (type $f (func))
+    (table 10 (ref $f))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (type $f (func))
+    (table 0 (ref $f))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (type $f (func))
+    (table 0 0 (ref $f))
+  )
+  "type mismatch"
+)
+
+
 ;; Duplicate table identifiers
 
 (assert_malformed
