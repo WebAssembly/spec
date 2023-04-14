@@ -114,6 +114,7 @@ let rec structured_string_of_expr = function
         structured_string_of_wtype t ^ ", " ^
         structured_string_of_expr e ^ ")"
   | RefNullE n -> "RefNullE (" ^ structured_string_of_name n ^ ")"
+  | RefFuncAddrE e -> "RefFuncAddrE (" ^ structured_string_of_expr e ^ ")"
   | YetE s -> "YetE (" ^ s ^ ")"
 
 and structured_string_of_field (n, e) =
@@ -200,6 +201,7 @@ let rec structured_string_of_instr depth = function
         structured_string_of_expr e1 ^ ", " ^
         structured_string_of_expr e2 ^ ")"
   | JumpI e -> "JumpI (" ^ structured_string_of_expr e ^ ")"
+  | PerformI e -> "PerformI (" ^ structured_string_of_expr e ^ ")"
   | YetI s -> "YetI " ^ s
 
 and structured_string_of_instrs depth instrs =
@@ -271,7 +273,7 @@ let rec string_of_expr = function
   | RecordE (fl) ->
       let string_of_field (n, e) =
         sprintf "%s %s" (string_of_name n) (string_of_expr e) in
-      sprintf "the instance { %s }"
+      sprintf "{ %s }"
         (string_of_list string_of_field "" ", " "" fl)
   | PageSizeE -> "the page size"
   | AfterCallE -> "the instruction after the original call that pushed the frame"
@@ -283,6 +285,7 @@ let rec string_of_expr = function
   | ConstE (t, e) ->
       sprintf "the value %s.CONST %s" (string_of_wtype t) (string_of_expr e)
   | RefNullE n -> sprintf "the value ref.null %s" (string_of_name n)
+  | RefFuncAddrE e -> sprintf "the value ref.funcaddr %s" (string_of_expr e)
   | YetE s -> sprintf "YetE (%s)" s
 
 and string_of_cond = function
@@ -381,6 +384,7 @@ let rec string_of_instr index depth = function
         (string_of_expr e1)
         (string_of_expr e2)
   | JumpI e -> sprintf "%s Jump to %s." (make_index index depth) (string_of_expr e)
+  | PerformI e -> sprintf "%s Perform %s." (make_index index depth) (string_of_expr e)
   | YetI s -> sprintf "%s YetI: %s." (make_index index depth) s
 
 and string_of_instrs depth instrs =

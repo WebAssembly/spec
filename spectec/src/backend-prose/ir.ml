@@ -34,6 +34,7 @@ type expr =
   (* Wasm Value Expr *)
   | ConstE of wtype * expr
   | RefNullE of name
+  | RefFuncAddrE of expr
   (* Yet *)
   | YetE of string
 
@@ -70,6 +71,7 @@ type instr =
   | ExecuteI of (string * expr list)
   | ReplaceI of (expr * expr)
   | JumpI of expr
+  | PerformI of expr
   (* Yet *)
   | YetI of string
 

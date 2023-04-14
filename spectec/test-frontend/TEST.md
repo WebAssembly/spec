@@ -1393,9 +1393,9 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [TABLE.SIZE_admininstr(x)]), [CONST_admininstr(I32_numtype, n)])
     -- if (|$table(z, x)| = n)
 
-  ;; 6-reduction.watsup:205.1-206.57
-  rule table.grow-fail {n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, n) TABLE.GROW_admininstr(x)]), [CONST_admininstr(I32_numtype, - 1)])
+  ;; 6-reduction.watsup:205.1-206.61
+  rule table.grow-fail {n : n, ref : ref, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [(ref <: admininstr) CONST_admininstr(I32_numtype, n) TABLE.GROW_admininstr(x)]), [CONST_admininstr(I32_numtype, - 1)])
 
   ;; 6-reduction.watsup:209.1-211.34
   rule table.fill-trap {i : nat, n : n, val : val, x : idx, z : state}:
@@ -3394,7 +3394,7 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}table.grow{-}fail}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.grow}~\mathit{x}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~-1) &  \\
+{[\textsc{\scriptsize E{-}table.grow{-}fail}]} \quad & \mathit{z} ; \mathit{ref}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.grow}~\mathit{x}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~-1) &  \\
 \end{array}
 $$
 
@@ -3598,7 +3598,7 @@ call
 call_indirect
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. If $table(z, x)[i] is YetE (REF.FUNC_ADDR_ref(a)) and $funcinst(z)[a] is YetE (`%;%`(m, func)), then:
+3. If $table(z, x)[i] is the value ref.funcaddr a and $funcinst(z)[a] is YetE (`%;%`(m, func)), then:
   a. Execute (CALL_ADDR a).
 4. If YetC (Otherwise), then:
   a. Trap.
@@ -3607,12 +3607,12 @@ call_addr
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val^k from the stack.
 3. Let $funcinst(z)[a] be YetE (`%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr}))).
-4. Let f be YetE ({LOCAL val^k{val} :: $default_(t)*{t}, MODULE m}).
+4. Let f be { LOCAL [val^k, YetE ($default_(t)*{t})], MODULE m }.
 5. Let F be the current frame.
 6. Push YetE ((n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])) to the stack.
 
 ref.func
-1. Push YetE (REF.FUNC_ADDR_admininstr($funcaddr(z)[x])) to the stack.
+1. Push the value ref.funcaddr $funcaddr(z)[x] to the stack.
 
 local.get
 1. Push $local(z, x) to the stack.
@@ -3636,7 +3636,7 @@ table.set
 5. If i ≥ the length of $table(z, x), then:
   a. Trap.
 6. If i < the length of $table(z, x), then:
-  a. YetI: Perform $with_table(z, x, i, ref).
+  a. Perform $with_table(z, x, i, ref).
 
 table.size
 1. Let the length of $table(z, x) be n.
@@ -3645,10 +3645,12 @@ table.size
 table.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST n from the stack.
-3. If YetC ([]), then:
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop ref from the stack.
+5. Either:
   a. Push the value i32.CONST -1 to the stack.
-4. If YetC ([]), then:
-  a. YetI: Perform $with_tableext(z, x, ref^n{}).
+6. Or:
+  a. Perform $with_tableext(z, x, YetE (ref^n{})).
   b. Push the value i32.CONST the length of $table(z, x) to the stack.
 
 table.fill
@@ -3724,15 +3726,15 @@ table.init
 local.set
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
-3. YetI: Perform $with_local(z, x, val).
+3. Perform $with_local(z, x, val).
 
 global.set
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
-3. YetI: Perform $with_global(z, x, val).
+3. Perform $with_global(z, x, val).
 
 elem.drop
-1. YetI: Perform $with_elem(z, x, []).
+1. Perform $with_elem(z, x, []).
 
 == Complete.
 ```
