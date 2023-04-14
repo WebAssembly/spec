@@ -3459,155 +3459,155 @@ nop
 
 drop
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)) from the stack.
+2. Pop val from the stack.
 
 select
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, c)) from the stack.
+2. Pop the value i32.CONST c from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop YetE ((val_2 <: admininstr)) from the stack.
+4. Pop val_2 from the stack.
 5. Assert: Due to validation, a value is on the top of the stack.
-6. Pop YetE ((val_1 <: admininstr)) from the stack.
-7. If YetC (), then:
-  a. Push YetE ((val_1 <: admininstr)) to the stack.
-8. If YetC (), then:
-  a. Push YetE ((val_2 <: admininstr)) to the stack.
+6. Pop val_1 from the stack.
+7. If c is not 0, then:
+  a. Push val_1 to the stack.
+8. If c is 0, then:
+  a. Push val_2 to the stack.
 
 block
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)^k{val}) from the stack.
-3. Let YetE (bt) be YetE (`%->%`(t_1^k{t_1}, t_2^n{t_2})).
+2. Pop val^k from the stack.
+3. Let bt be YetE (`%->%`(t_1^k{t_1}, t_2^n{t_2})).
 4. Let L be YetE ().
 5. Enter the block Yet with label YetE ().
 
 loop
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)^k{val}) from the stack.
-3. Let YetE (bt) be YetE (`%->%`(t_1^k{t_1}, t_2^n{t_2})).
+2. Pop val^k from the stack.
+3. Let bt be YetE (`%->%`(t_1^k{t_1}, t_2^n{t_2})).
 4. Let L be YetE ().
 5. Enter the block Yet with label YetE ().
 
 if
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, c)) from the stack.
-3. If YetC (), then:
-  a. Execute (BLOCK YetE (bt) YetE (instr_1*{instr_1})).
-4. If YetC (), then:
-  a. Execute (BLOCK YetE (bt) YetE (instr_2*{instr_2})).
+2. Pop the value i32.CONST c from the stack.
+3. If c is not 0, then:
+  a. Execute (BLOCK bt instr_1^*).
+4. If c is 0, then:
+  a. Execute (BLOCK bt instr_2^*).
 
 label
-1. Push YetE ((val <: admininstr)*{val}) to the stack.
+1. Push val^* to the stack.
 
 br
-1. If YetC (), then:
-  a. Push YetE ((val <: admininstr)^n{val}) to the stack.
-  b. Push YetE ((instr' <: admininstr)*{instr'}) to the stack.
-2. If YetC (), then:
-  a. Push YetE ((val <: admininstr)*{val}) to the stack.
-  b. Execute (BR YetE (l)).
+1. If YetC ([]), then:
+  a. Push val^n to the stack.
+  b. Push instr'^* to the stack.
+2. If YetC ([]), then:
+  a. Push val^* to the stack.
+  b. Execute (BR l).
 
 br_if
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, c)) from the stack.
-3. If YetC (), then:
-  a. Execute (BR YetE (l)).
-4. If YetC (), then:
+2. Pop the value i32.CONST c from the stack.
+3. If c is not 0, then:
+  a. Execute (BR l).
+4. If c is 0, then:
   a. Do nothing.
 
 br_table
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-3. If YetC (), then:
-  a. Execute (BR YetE (l*{l}[i])).
-4. If YetC (), then:
-  a. Execute (BR YetE (l')).
+2. Pop the value i32.CONST i from the stack.
+3. If i < the length of l^*, then:
+  a. Execute (BR l^*[i]).
+4. If i ≥ the length of l^*, then:
+  a. Execute (BR l').
 
 frame
-1. Push YetE ((val <: admininstr)^n{val}) to the stack.
+1. Push val^n to the stack.
 
 return
-1. If YetC (), then:
-  a. Push YetE ((val <: admininstr)^n{val}) to the stack.
-2. If YetC (), then:
-  a. Push YetE ((val <: admininstr)*{val}) to the stack.
+1. If YetC ([]), then:
+  a. Push val^n to the stack.
+2. If YetC ([]), then:
+  a. Push val^* to the stack.
   b. Execute (RETURN).
 
 unop
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c_1)) from the stack.
-3. If YetC (), then:
-  a. Push YetE (CONST_admininstr(nt, c)) to the stack.
-4. If YetC (), then:
+2. Pop the value nt.CONST c_1 from the stack.
+3. If $unop(unop, nt, c_1) is [c], then:
+  a. Push the value nt.CONST c to the stack.
+4. If $unop(unop, nt, c_1) is [], then:
   a. Trap.
 
 binop
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c_2)) from the stack.
+2. Pop the value nt.CONST c_2 from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop YetE (CONST_admininstr(nt, c_1)) from the stack.
-5. If YetC (), then:
-  a. Push YetE (CONST_admininstr(nt, c)) to the stack.
-6. If YetC (), then:
+4. Pop the value nt.CONST c_1 from the stack.
+5. If $binop(binop, nt, c_1, c_2) is [c], then:
+  a. Push the value nt.CONST c to the stack.
+6. If $binop(binop, nt, c_1, c_2) is [], then:
   a. Trap.
 
 testop
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c_1)) from the stack.
-3. Let YetE (c) be YetE ($testop(testop, nt, c_1)).
-4. Push YetE (CONST_admininstr(I32_numtype, c)) to the stack.
+2. Pop the value nt.CONST c_1 from the stack.
+3. Let c be $testop(testop, nt, c_1).
+4. Push the value i32.CONST c to the stack.
 
 relop
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c_2)) from the stack.
+2. Pop the value nt.CONST c_2 from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop YetE (CONST_admininstr(nt, c_1)) from the stack.
-5. Let YetE (c) be YetE ($relop(relop, nt, c_1, c_2)).
-6. Push YetE (CONST_admininstr(I32_numtype, c)) to the stack.
+4. Pop the value nt.CONST c_1 from the stack.
+5. Let c be $relop(relop, nt, c_1, c_2).
+6. Push the value i32.CONST c to the stack.
 
 extend
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c)) from the stack.
-3. Push YetE (CONST_admininstr(nt, $ext(n, $size(nt <: valtype), S_sx, c))) to the stack.
+2. Pop the value nt.CONST c from the stack.
+3. Push the value nt.CONST $ext(n, $size(nt), YetE (S_sx), c) to the stack.
 
 cvtop
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c_1)) from the stack.
-3. If YetC (), then:
-  a. Push YetE (CONST_admininstr(nt, c)) to the stack.
-4. If YetC (), then:
+2. Pop the value nt.CONST c_1 from the stack.
+3. If $cvtop(nt_1, cvtop, nt_2, sx^?, c_1) is [c], then:
+  a. Push the value nt.CONST c to the stack.
+4. If $cvtop(nt_1, cvtop, nt_2, sx^?, c_1) is [], then:
   a. Trap.
 
 ref.is_null
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)) from the stack.
-3. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, 1)) to the stack.
-4. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, 0)) to the stack.
+2. Pop val from the stack.
+3. If val is the value ref.null rt, then:
+  a. Push the value i32.CONST 1 to the stack.
+4. If YetC (Otherwise), then:
+  a. Push the value i32.CONST 0 to the stack.
 
 local.tee
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)) from the stack.
-3. Push YetE ((val <: admininstr)) to the stack.
-4. Push YetE ((val <: admininstr)) to the stack.
-5. Execute (LOCAL.SET YetE (x)).
+2. Pop val from the stack.
+3. Push val to the stack.
+4. Push val to the stack.
+5. Execute (LOCAL.SET x).
 
 call
-1. Execute (CALL_ADDR YetE ($funcaddr(z)[x])).
+1. Execute (CALL_ADDR $funcaddr(z)[x]).
 
 call_indirect
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-3. If YetC (), then:
-  a. Execute (CALL_ADDR YetE (a)).
-4. If YetC (), then:
+2. Pop the value i32.CONST i from the stack.
+3. If $table(z, x)[i] is YetE (REF.FUNC_ADDR_ref(a)) and $funcinst(z)[a] is YetE (`%;%`(m, func)), then:
+  a. Execute (CALL_ADDR a).
+4. If YetC (Otherwise), then:
   a. Trap.
 
 call_addr
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)^k{val}) from the stack.
-3. Let YetE ($funcinst(z)[a]) be YetE (`%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr}))).
-4. Let YetE (f) be YetE ({LOCAL val^k{val} :: $default_(t)*{t}, MODULE m}).
+2. Pop val^k from the stack.
+3. Let $funcinst(z)[a] be YetE (`%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr}))).
+4. Let f be YetE ({LOCAL val^k{val} :: $default_(t)*{t}, MODULE m}).
 5. Let F be the current frame.
 6. Push YetE ((n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])) to the stack.
 
@@ -3615,120 +3615,120 @@ ref.func
 1. Push YetE (REF.FUNC_ADDR_admininstr($funcaddr(z)[x])) to the stack.
 
 local.get
-1. Push YetE (($local(z, x) <: admininstr)) to the stack.
+1. Push $local(z, x) to the stack.
 
 global.get
-1. Push YetE (($global(z, x) <: admininstr)) to the stack.
+1. Push $global(z, x) to the stack.
 
 table.get
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-3. If YetC (), then:
+2. Pop the value i32.CONST i from the stack.
+3. If i ≥ the length of $table(z, x), then:
   a. Trap.
-4. If YetC (), then:
-  a. Push YetE (($table(z, x)[i] <: admininstr)) to the stack.
+4. If i < the length of $table(z, x), then:
+  a. Push $table(z, x)[i] to the stack.
 
 table.set
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((ref <: admininstr)) from the stack.
+2. Pop ref from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-5. If YetC (), then:
+4. Pop the value i32.CONST i from the stack.
+5. If i ≥ the length of $table(z, x), then:
   a. Trap.
-6. If YetC (), then:
+6. If i < the length of $table(z, x), then:
   a. YetI: Perform $with_table(z, x, i, ref).
 
 table.size
-1. Let YetE (|$table(z, x)|) be YetE (n).
-2. Push YetE (CONST_admininstr(I32_numtype, n)) to the stack.
+1. Let the length of $table(z, x) be n.
+2. Push the value i32.CONST n to the stack.
 
 table.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
-3. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, - 1)) to the stack.
-4. If YetC (), then:
+2. Pop the value i32.CONST n from the stack.
+3. If YetC ([]), then:
+  a. Push the value i32.CONST -1 to the stack.
+4. If YetC ([]), then:
   a. YetI: Perform $with_tableext(z, x, ref^n{}).
-  b. Push YetE (CONST_admininstr(I32_numtype, |$table(z, x)|)) to the stack.
+  b. Push the value i32.CONST the length of $table(z, x) to the stack.
 
 table.fill
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
+2. Pop the value i32.CONST n from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop YetE ((val <: admininstr)) from the stack.
+4. Pop val from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-7. If YetC (), then:
+6. Pop the value i32.CONST i from the stack.
+7. If (i + n) > the length of $table(z, x), then:
   a. Trap.
-8. If YetC (), then:
+8. If YetC (Otherwise) and n is 0, then:
   a. Do nothing.
-9. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, i)) to the stack.
-  b. Push YetE ((val <: admininstr)) to the stack.
-  c. Execute (TABLE.SET YetE (x)).
-  d. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
-  e. Push YetE ((val <: admininstr)) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
-  g. Execute (TABLE.FILL YetE (x)).
+9. If YetC (Otherwise), then:
+  a. Push the value i32.CONST i to the stack.
+  b. Push val to the stack.
+  c. Execute (TABLE.SET x).
+  d. Push the value i32.CONST (i + 1) to the stack.
+  e. Push val to the stack.
+  f. Push the value i32.CONST (n - 1) to the stack.
+  g. Execute (TABLE.FILL x).
 
 table.copy
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
+2. Pop the value i32.CONST n from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
+4. Pop the value i32.CONST i from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop YetE (CONST_admininstr(I32_numtype, j)) from the stack.
-7. If YetC (), then:
+6. Pop the value i32.CONST j from the stack.
+7. If (i + n) > the length of $table(z, y) or (j + n) > the length of $table(z, x), then:
   a. Trap.
-8. If YetC (), then:
+8. If YetC (Otherwise) and n is 0, then:
   a. Do nothing.
-9. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, j)) to the stack.
-  b. Push YetE (CONST_admininstr(I32_numtype, i)) to the stack.
-  c. Execute (TABLE.GET YetE (y)).
-  d. Execute (TABLE.SET YetE (x)).
-  e. Push YetE (CONST_admininstr(I32_numtype, (j + 1))) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
-  g. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
-  h. Execute (TABLE.COPY YetE (x) YetE (y)).
-10. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, ((j + n) - 1))) to the stack.
-  b. Push YetE (CONST_admininstr(I32_numtype, ((i + n) - 1))) to the stack.
-  c. Execute (TABLE.GET YetE (y)).
-  d. Execute (TABLE.SET YetE (x)).
-  e. Push YetE (CONST_admininstr(I32_numtype, (j + 1))) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
-  g. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
-  h. Execute (TABLE.COPY YetE (x) YetE (y)).
+9. If YetC (Otherwise) and j ≤ i, then:
+  a. Push the value i32.CONST j to the stack.
+  b. Push the value i32.CONST i to the stack.
+  c. Execute (TABLE.GET y).
+  d. Execute (TABLE.SET x).
+  e. Push the value i32.CONST (j + 1) to the stack.
+  f. Push the value i32.CONST (i + 1) to the stack.
+  g. Push the value i32.CONST (n - 1) to the stack.
+  h. Execute (TABLE.COPY x y).
+10. If YetC (Otherwise), then:
+  a. Push the value i32.CONST ((j + n) - 1) to the stack.
+  b. Push the value i32.CONST ((i + n) - 1) to the stack.
+  c. Execute (TABLE.GET y).
+  d. Execute (TABLE.SET x).
+  e. Push the value i32.CONST (j + 1) to the stack.
+  f. Push the value i32.CONST (i + 1) to the stack.
+  g. Push the value i32.CONST (n - 1) to the stack.
+  h. Execute (TABLE.COPY x y).
 
 table.init
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
+2. Pop the value i32.CONST n from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
+4. Pop the value i32.CONST i from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop YetE (CONST_admininstr(I32_numtype, j)) from the stack.
-7. If YetC (), then:
+6. Pop the value i32.CONST j from the stack.
+7. If (i + n) > the length of $elem(z, y) or (j + n) > the length of $table(z, x), then:
   a. Trap.
-8. If YetC (), then:
+8. If YetC (Otherwise) and n is 0, then:
   a. Do nothing.
-9. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, j)) to the stack.
-  b. Push YetE (($elem(z, y)[i] <: admininstr)) to the stack.
-  c. Execute (TABLE.SET YetE (x)).
-  d. Push YetE (CONST_admininstr(I32_numtype, (j + 1))) to the stack.
-  e. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
-  g. Execute (TABLE.INIT YetE (x) YetE (y)).
+9. If YetC (Otherwise), then:
+  a. Push the value i32.CONST j to the stack.
+  b. Push $elem(z, y)[i] to the stack.
+  c. Execute (TABLE.SET x).
+  d. Push the value i32.CONST (j + 1) to the stack.
+  e. Push the value i32.CONST (i + 1) to the stack.
+  f. Push the value i32.CONST (n - 1) to the stack.
+  g. Execute (TABLE.INIT x y).
 
 local.set
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)) from the stack.
+2. Pop val from the stack.
 3. YetI: Perform $with_local(z, x, val).
 
 global.set
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)) from the stack.
+2. Pop val from the stack.
 3. YetI: Perform $with_global(z, x, val).
 
 elem.drop

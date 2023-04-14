@@ -1,8 +1,12 @@
+type wtype = I32T | VarT of string
+
 type name = N of string | SupN of name * string | SubN of name * string
 
 type expr =
   | ValueE of int
+  | MinusE of expr
   | AddE of (expr * expr)
+  | SubE of (expr * expr)
   | MulE of (expr * expr)
   | DivE of (expr * expr)
   | VecE of (expr * expr)
@@ -16,6 +20,7 @@ type expr =
   | FrameE
   | BitWidthE of expr
   | PropE of (expr * string)
+  | ListE of expr list
   | IndexAccessE of (expr * expr)
   | SliceAccessE of (expr * expr * expr)
   | ForWhichE of cond
@@ -27,7 +32,7 @@ type expr =
   | LabelE of (expr * expr)
   | NameE of name
   (* Wasm Value Expr *)
-  | ConstE of name * expr
+  | ConstE of wtype * expr
   | RefNullE of name
   (* Yet *)
   | YetE of string
@@ -37,7 +42,10 @@ and cond =
   | AndC of (cond * cond)
   | OrC of (cond * cond)
   | EqC of (expr * expr)
+  | GtC of (expr * expr)
+  | GeC of (expr * expr)
   | LtC of (expr * expr)
+  | LeC of (expr * expr)
   | DefinedC of expr
   | PartOfC of expr list
   | TopC of string
