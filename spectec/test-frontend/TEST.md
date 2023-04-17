@@ -3496,13 +3496,19 @@ if
   a. Execute (BLOCK bt instr_2^*).
 
 label
-1. Push val^* to the stack.
+1. Pop val^* from the stack.
+2. Assert: Assert: due to validation, the label L is now on the top of the stack.
+3. Pop the label from the stack.
+4. Push val^* to the stack.
 
 br
-1. If YetC ([]), then:
+1. Pop [val'^*, [val^n, [[YetE (BR_admininstr(0))], instr^*]]] from the stack.
+2. Assert: Assert: due to validation, the label L is now on the top of the stack.
+3. Pop the label from the stack.
+4. If YetC ([]), then:
   a. Push val^n to the stack.
   b. Push instr'^* to the stack.
-2. If YetC ([]), then:
+5. If YetC ([]), then:
   a. Push val^* to the stack.
   b. Execute (BR l).
 
