@@ -3474,14 +3474,14 @@ select
   a. Push val_2 to the stack.
 
 block
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: due to validation, there are at least k values on the top of the stack.
 2. Pop val^k from the stack.
 3. Let bt be YetE (`%->%`(t_1^k{t_1}, t_2^n{t_2})).
 4. Let L be YetE ().
 5. Enter the block Yet with label YetE ().
 
 loop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: due to validation, there are at least k values on the top of the stack.
 2. Pop val^k from the stack.
 3. Let bt be YetE (`%->%`(t_1^k{t_1}, t_2^n{t_2})).
 4. Let L be YetE ().
@@ -3523,12 +3523,27 @@ br_table
   a. Execute (BR l').
 
 frame
-1. Push val^n to the stack.
+1. Let f be the current frame.
+2. Let n be the arity of f.
+3. Assert: due to validation, there are at least n values on the top of the stack.
+4. Pop val^n from the stack.
+5. Assert: due to validation, the frame F is now on the top of the stack.
+6. Pop the frame from the stack.
+7. Push val^n to the stack.
 
 return
-1. If YetC ([]), then:
+1. Let f be the current frame.
+2. Let n be the arity of f.
+3. Assert: due to validation, there are at least n values on the top of the stack.
+4. Pop val^n from the stack.
+5. Assert: due to validation, the stack contains at least one frame.
+6. While the top of the stack is not a frame, do:
+  a. Pop the top element from the stack.
+7. Assert: due to validation, the frame F is now on the top of the stack.
+8. Pop the frame from the stack.
+9. If YetC ([]), then:
   a. Push val^n to the stack.
-2. If YetC ([]), then:
+10. If YetC ([]), then:
   a. Push val^* to the stack.
   b. Execute (RETURN).
 
@@ -3604,12 +3619,12 @@ call_indirect
   a. Trap.
 
 call_addr
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: due to validation, there are at least k values on the top of the stack.
 2. Pop val^k from the stack.
 3. Let $funcinst(z)[a] be YetE (`%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr}))).
 4. Let f be { LOCAL [val^k, YetE ($default_(t)*{t})], MODULE m }.
 5. Let F be the current frame.
-6. Push YetE ((n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])) to the stack.
+6. Push YetE () to the stack.
 
 ref.func
 1. Push the value ref.funcaddr $funcaddr(z)[x] to the stack.
