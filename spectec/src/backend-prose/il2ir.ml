@@ -94,11 +94,22 @@ let rec exp2expr exp = match exp.it with
             | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith)
           expfields in
       Ir.RecordE (record)
+  (* TODO: Handle MixE *)
   (* Yet *)
   | _ -> Ir.YetE (Print.string_of_exp exp)
 
 (* `Ast.exp` -> `Ir.AssertI` *)
 let insert_assert exp = match exp.it with
+  | Ast.ListE ([{ it = Ast.CaseE(Ast.Atom "FRAME_", _, _); _ }]) ->
+      Ir.AssertI
+        "due to validation, the frame F is now on the top of the stack"
+  | Ast.CatE (_val', { it = Ast.CatE (_valn, _); _ }) ->
+      Ir.AssertI "due to validation, the stack contains at least one frame"
+  | Ast.IterE (_, (Ast.ListN { it = VarE n; _ }, _)) ->
+      Ir.AssertI
+        (sprintf
+          "due to validation, there are at least %s values on the top of the stack"
+          n.it)
   | Ast.CaseE (
     Ast.Atom "CONST",
     { it = Ast.TupE({ it = Ast.CaseE (Ast.Atom "I32", _, _); _ } :: _); _ },
@@ -112,6 +123,43 @@ let insert_assert exp = match exp.it with
 (* `Ast.exp` -> `Ir.instr list` *)
 let rec lhs2pop exp = match exp.it with
   (* TODO: Handle bubble-up semantics *)
+  (* Frame *)
+  | Ast.ListE ([{
+    it = Ast.CaseE(Ast.Atom "FRAME_", { it = Ast.TupE (exps); _ }, _); _
+  }]) ->
+      begin match exps with
+        | { it = Ast.VarE (arity); _ } ::
+          { it = Ast.VarE (name); _ } ::
+          inner_exp :: [] ->
+            let let_instrs = [
+              Ir.LetI (Ir.NameE(Ir.N name.it), Ir.FrameE);
+              Ir.LetI (Ir.NameE(Ir.N arity.it), Ir.ArityE (Ir.NameE (Ir.N name.it)))
+            ] in
+            let pop_instrs = match inner_exp.it with
+              (* hardcoded pop instructions for frame reduction rule *)
+              | Ast.IterE (_, _) ->
+                  insert_assert inner_exp ::
+                    Ir.PopI (Some (exp2expr inner_exp)) :: []
+              (* hardcoded pop instructions for return reduction rule *)
+              | Ast.CatE (_val', { it = Ast.CatE (valn, _); _ }) ->
+                  insert_assert valn ::
+                    Ir.PopI (Some (exp2expr valn)) ::
+                    insert_assert inner_exp ::
+                    (* While the top of the stack is not a frame, do ... *)
+                    Ir.WhileI (
+                      Ir.NotC (Ir.EqC (
+                        Ir.NameE (N "the top of the stack"),
+                        Ir.NameE (N "a frame")
+                      )),
+                      [Ir.PopI (Some (Ir.NameE (N "the top element")))]
+                    ) :: []
+              | _ -> gen_fail_msg_of_exp inner_exp "Pop instruction" |> failwith in
+            let pop_frame_instrs =
+              insert_assert exp ::
+                Ir.PopI (Some (Ir.NameE (Ir.N "the frame"))) :: [] in
+            let_instrs @ pop_instrs @ pop_frame_instrs
+        | _ -> gen_fail_msg_of_exp exp "Pop instruction" |> failwith
+      end
   | Ast.ListE exps ->
       let rev = List.rev exps |> List.tl in
       List.fold_right
@@ -119,6 +167,7 @@ let rec lhs2pop exp = match exp.it with
         rev
         []
   | Ast.CatE (iterexp, listexp) ->
+      (* TODO: check *)
       insert_assert iterexp ::
         Ir.PopI (Some (exp2expr iterexp)) ::
         lhs2pop listexp
@@ -137,8 +186,8 @@ let rec rhs2instrs exp = match exp.it with
   | Ast.CatE (exp1, exp2) -> rhs2instrs exp1 @ rhs2instrs exp2
   | Ast.ListE (exps) -> List.map rhs2instrs exps |> List.flatten
   (* TODO: Frame *)
-  | Ast.CaseE (Atom "FRAME_", tupexp, _) ->
-      [Ir.LetI (Ir.NameE (Ir.N "F"), Ir.FrameE); Ir.PushI (exp2expr tupexp)]
+  | Ast.CaseE (Atom "FRAME_", _tupexp, _) ->
+      [Ir.LetI (Ir.NameE (Ir.N "F"), Ir.FrameE); Ir.PushI (YetE "")]
   (* TODO: Label *)
   | Ast.CaseE (Atom "LABEL_", _, _) ->
       [ Ir.LetI (Ir.NameE (Ir.N "L"), Ir.YetE ""); Ir.EnterI ("Yet", YetE "") ]
@@ -195,6 +244,7 @@ let prem2let prems =
   List.filter_map
     (function
       | { it = Ast.IfPr { it = Ast.CmpE (Ast.EqOp, exp1, exp2); _ }; _ } ->
+          (* TODO: change to exp2name *)
           Some (Ir.LetI (exp2expr exp1, exp2expr exp2))
       | _ -> None)
     prems
@@ -232,7 +282,7 @@ let reduction_group2program reduction_group acc =
         let let_instrs = prem2let prems in
         let push_instrs = rhs2instrs rhs in
         let_instrs @ push_instrs
-    (* same lhs' witha no premise: either *)
+    (* same lhs' with no premise: either *)
     | [(_, lhs1, rhs1, []); (_, lhs2, rhs2, [])]
       when Print.string_of_exp lhs1 = Print.string_of_exp lhs2 ->
         let rhs_instrs1 = rhs2instrs rhs1 |> check_nop in
