@@ -90,7 +90,7 @@ let rec exp2expr exp = match exp.it with
       let record =
         List.map
           (function
-            | (Ast.Atom name, fieldexp) -> (Ir.N name, exp2expr fieldexp)
+            | (Ast.Atom name, fieldexp) -> (name, exp2expr fieldexp)
             | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith)
           expfields in
       Ir.RecordE (record)
@@ -134,50 +134,48 @@ let rec lhs2pop exp = match exp.it with
         lhs2pop listexp
   (* Frame *)
   | Ast.ListE ([{
-    it = Ast.CaseE(Ast.Atom "FRAME_", { it = Ast.TupE (exps); _ }, _); _
+    it = Ast.CaseE(Ast.Atom "FRAME_", { it = Ast.TupE ([
+      { it = Ast.VarE (arity); _ };
+      { it = Ast.VarE (name); _ };
+      inner_exp
+    ]); _ }, _); _
   }]) ->
-      begin match exps with
-        | { it = Ast.VarE (arity); _ } ::
-          { it = Ast.VarE (name); _ } ::
-          inner_exp :: [] ->
-            let let_instrs = [
-              Ir.LetI (Ir.NameE(Ir.N name.it), Ir.FrameE);
-              Ir.LetI (Ir.NameE(Ir.N arity.it), Ir.ArityE (Ir.NameE (Ir.N name.it)))
-            ] in
-            let pop_instrs = match inner_exp.it with
-              (* hardcoded pop instructions for "frame" reduction rule *)
-              | Ast.IterE (_, _) ->
-                  insert_assert inner_exp ::
-                    Ir.PopI (Some (exp2expr inner_exp)) :: []
-              (* hardcoded pop instructions for "return" reduction rule *)
-              | Ast.CatE (_val', { it = Ast.CatE (valn, _); _ }) ->
-                  insert_assert valn ::
-                    Ir.PopI (Some (exp2expr valn)) ::
-                    insert_assert inner_exp ::
-                    (* While the top of the stack is not a frame, do ... *)
-                    Ir.WhileI (
-                      Ir.NotC (Ir.EqC (
-                        Ir.NameE (Ir.N "the top of the stack"),
-                        Ir.NameE (Ir.N "a frame")
-                      )),
-                      [Ir.PopI (Some (Ir.NameE (Ir.N "the top element")))]
-                    ) :: []
-              | _ -> gen_fail_msg_of_exp inner_exp "Pop instruction" |> failwith in
-            let pop_frame_instrs =
-              insert_assert exp ::
-                Ir.PopI (Some (Ir.NameE (Ir.N "the frame"))) :: [] in
-            let_instrs @ pop_instrs @ pop_frame_instrs
-        | _ -> gen_fail_msg_of_exp exp "Pop instruction" |> failwith
-      end
+      let let_instrs = [
+        Ir.LetI (Ir.NameE(Ir.N name.it), Ir.FrameE);
+        Ir.LetI (Ir.NameE(Ir.N arity.it), Ir.ArityE (Ir.NameE (Ir.N name.it)))
+      ] in
+      let pop_instrs = match inner_exp.it with
+        (* hardcoded pop instructions for "frame" reduction rule *)
+        | Ast.IterE (_, _) ->
+            insert_assert inner_exp ::
+              Ir.PopI (Some (exp2expr inner_exp)) :: []
+        (* hardcoded pop instructions for "return" reduction rule *)
+        | Ast.CatE (_val', { it = Ast.CatE (valn, _); _ }) ->
+            insert_assert valn ::
+              Ir.PopI (Some (exp2expr valn)) ::
+              insert_assert inner_exp ::
+              (* While the top of the stack is not a frame, do ... *)
+              Ir.WhileI (
+                Ir.NotC (Ir.EqC (
+                  Ir.NameE (Ir.N "the top of the stack"),
+                  Ir.NameE (Ir.N "a frame")
+                )),
+                [Ir.PopI (Some (Ir.NameE (Ir.N "the top element")))]
+              ) :: []
+        | _ -> gen_fail_msg_of_exp inner_exp "Pop instruction" |> failwith in
+      let pop_frame_instrs =
+        insert_assert exp ::
+          Ir.PopI (Some (Ir.NameE (Ir.N "the frame"))) :: [] in
+      let_instrs @ pop_instrs @ pop_frame_instrs
   (* Label *)
   | Ast.ListE ([{ it = Ast.CaseE (
     Ast.Atom "LABEL_",
     { it = Ast.TupE ([_n; _instrs; vals]); _ }, _
   ); _ }]) ->
-    (* TODO: append Jump instr *)
-    Ir.PopI (Some (exp2expr vals)) ::
-      insert_assert exp ::
-      Ir.PopI (Some ( Ir.NameE (N "the label"))) :: []
+      (* TODO: append Jump instr *)
+      Ir.PopI (Some (exp2expr vals)) ::
+        insert_assert exp ::
+        Ir.PopI (Some ( Ir.NameE (N "the label"))) :: []
   (* noraml list expression *)
   | Ast.ListE exps ->
       let rev = List.rev exps |> List.tl in
@@ -185,7 +183,7 @@ let rec lhs2pop exp = match exp.it with
         (fun e acc -> insert_assert e :: Ir.PopI (Some (exp2expr e)) :: acc)
         rev
         []
-  | _ -> gen_fail_msg_of_exp exp "instruction" |> failwith
+  | _ -> gen_fail_msg_of_exp exp "lhs instruction" |> failwith
 
 (* `Ast.exp` -> `Ir.instr list` *)
 let rec rhs2instrs exp = match exp.it with
@@ -199,9 +197,25 @@ let rec rhs2instrs exp = match exp.it with
   (* multiple rhs' *)
   | Ast.CatE (exp1, exp2) -> rhs2instrs exp1 @ rhs2instrs exp2
   | Ast.ListE (exps) -> List.map rhs2instrs exps |> List.flatten
-  (* TODO: Frame *)
-  | Ast.CaseE (Atom "FRAME_", _tupexp, _) ->
-      [Ir.LetI (Ir.NameE (Ir.N "F"), Ir.FrameE); Ir.PushI (YetE "")]
+  (* Frame *)
+  | Ast.CaseE(Ast.Atom "FRAME_", { it = Ast.TupE ([
+      { it = Ast.VarE (arity); _ };
+      { it = Ast.VarE (_name); _ };
+      _inner_exp
+    ]); _ }, _) ->
+
+      [
+        Ir.LetI (
+          Ir.NameE (Ir.N "F"),
+          Ir.RecordE ([
+            ("module", Ir.YetE "f.module");
+            ("locals", Ir.YetE "val^n :: default_t*")
+          ]));
+        Ir.PushI (Ir.NameE (Ir.N (
+          sprintf "the activation of F with arity %s" arity.it
+        )))
+        (* TODO: enter label *)
+      ]
   (* TODO: Label *)
   | Ast.CaseE (Atom "LABEL_", _, _) ->
       [ Ir.LetI (Ir.NameE (Ir.N "L"), Ir.YetE ""); Ir.EnterI ("Yet", YetE "") ]

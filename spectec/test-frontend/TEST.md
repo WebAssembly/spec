@@ -3629,8 +3629,8 @@ call_addr
 2. Pop val^k from the stack.
 3. Let $funcinst(z)[a] be YetE (`%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr}))).
 4. Let f be { LOCAL [val^k, YetE ($default_(t)*{t})], MODULE m }.
-5. Let F be the current frame.
-6. Push YetE () to the stack.
+5. Let F be { module YetE (f.module), locals YetE (val^n :: default_t*) }.
+6. Push the activation of F with arity n to the stack.
 
 ref.func
 1. Push the value ref.funcaddr $funcaddr(z)[x] to the stack.

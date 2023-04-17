@@ -118,7 +118,7 @@ let rec structured_string_of_expr = function
   | YetE s -> "YetE (" ^ s ^ ")"
 
 and structured_string_of_field (n, e) =
-  "(" ^ structured_string_of_name n ^ ", " ^ structured_string_of_expr e ^ ")"
+  "(" ^ n ^ ", " ^ structured_string_of_expr e ^ ")"
 
 
 (* condition *)
@@ -272,7 +272,7 @@ let rec string_of_expr = function
   | ForWhichE c -> sprintf "the constant for which %s" (string_of_cond c)
   | RecordE (fl) ->
       let string_of_field (n, e) =
-        sprintf "%s %s" (string_of_name n) (string_of_expr e) in
+        sprintf "%s %s" n (string_of_expr e) in
       sprintf "{ %s }"
         (string_of_list string_of_field "" ", " "" fl)
   | PageSizeE -> "the page size"

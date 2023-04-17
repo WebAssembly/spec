@@ -24,7 +24,7 @@ type expr =
   | IndexAccessE of (expr * expr)
   | SliceAccessE of (expr * expr * expr)
   | ForWhichE of cond
-  | RecordE of (name * expr) list
+  | RecordE of (string * expr) list
   | PageSizeE
   | AfterCallE
   | ContE of expr
