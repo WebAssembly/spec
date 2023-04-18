@@ -1,4 +1,5 @@
-![Build Status](https://github.com/WebAssembly/extended-const/actions/workflows/main.yml/badge.svg)
+[![CI for specs](https://github.com/WebAssembly/extended-const/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/extended-const/actions/workflows/ci-spec.yml)
+[![CI for interpreter & tests](https://github.com/WebAssembly/extended-const/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/extended-const/actions/workflows/ci-interpreter.yml)
 
 # Extended Const Expressions Proposal for WebAssembly
 
@@ -10,6 +11,9 @@ It is meant for discussion, prototype specification and implementation of a prop
 * See the [modified spec](https://webassembly.github.io/extended-const/core/) for details.
 
 Original `README` from upstream repository follows...
+
+[![CI for specs](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml)
+[![CI for interpreter & tests](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml)
 
 # spec
 
