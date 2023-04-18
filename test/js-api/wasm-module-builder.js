@@ -402,22 +402,32 @@ function GCInstr(opcode) {
 }
 
 // GC opcodes
-let kExprStructNew = 0x01;
-let kExprStructNewDefault = 0x02;
+// Opcodes with "Canon" are opcode numbers from the specification.
+// The non-"Canon" variants such as kExprStructNew are de-facto
+// opcode numbers that are in use in some web engine implementations.
+let kExprStructNewCanon = 0x01;
+let kExprStructNewCanonDefault = 0x02;
 let kExprStructGet = 0x03;
 let kExprStructGetS = 0x04;
 let kExprStructGetU = 0x05;
 let kExprStructSet = 0x06;
-let kExprArrayNew = 0x11;
-let kExprArrayNewDefault = 0x12;
+let kExprStructNew = 0x07;
+let kExprStructNewDefault = 0x08;
+let kExprArrayNewCanon = 0x11;
+let kExprArrayNewCanonDefault = 0x12;
 let kExprArrayGet = 0x13;
 let kExprArrayGetS = 0x14;
 let kExprArrayGetU = 0x15;
 let kExprArraySet = 0x16;
 let kExprArrayLen = 0x17;
-let kExprArrayNewFixed = 0x19;
-let kExprArrayNewData = 0x1b;
-let kExprArrayNewElem = 0x1c;
+let kExprArrayNewCanonFixed = 0x19;
+let kExprArrayNewFixed = 0x1a;
+let kExprArrayNew = 0x1b;
+let kExprArrayNewDefault = 0x1c;
+let kExprArrayNewCanonData = 0x1b;
+let kExprArrayNewCanonElem = 0x1c;
+let kExprArrayNewData = 0x1d;
+let kExprArrayNewElem = 0x1f;
 let kExprI31New = 0x20;
 let kExprI31GetS = 0x21;
 let kExprI31GetU = 0x22;
