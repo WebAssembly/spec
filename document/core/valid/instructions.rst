@@ -1604,6 +1604,8 @@ Constant Expressions
 
   * either of the form :math:`t.\CONST~c`,
 
+  * or of the form :math:`\K{i}\X{nn}\K{.}\ibinop`, where :math:`\ibinop` is limited to :math:`\ADD`, :math:`\SUB`, or :math:`\MUL`.
+
   * or of the form :math:`\REFNULL`,
 
   * or of the form :math:`\REFFUNC~x`,
@@ -1619,18 +1621,9 @@ Constant Expressions
 
 .. math::
    \frac{
+     \ibinop \in \{\ADD, \SUB, \MUL\}
    }{
-     C \vdashinstrconst t.\CONST~c \const
-   }
-   \qquad
-   \frac{
-   }{
-     C \vdashinstrconst \REFNULL~t \const
-   }
-   \qquad
-   \frac{
-   }{
-     C \vdashinstrconst \REFFUNC~x \const
+     C \vdashinstrconst \K{i}\X{nn}\K{.}\ibinop \const
    }
 
 .. math::
