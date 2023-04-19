@@ -1603,13 +1603,11 @@ Control Instructions
 
 * The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be the same as :math:`C.\CRETURN`.
 
-* Then the instruction is valid with type :math:`[t_3^\ast~t_1^\ast] \to [t_4^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_3^\ast` and :math:`t_4^\ast`.
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type :math:`[t_3^\ast~t_1^\ast] \toX{{x'}^\ast} [t_4^\ast]`.
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = [t_1^\ast] \toF [t_2^\ast]
-     \qquad
-     C.\CRETURN = [t_2^\ast]
+     C.\CFUNCS[x] = [t_1^\ast] \toF C.\CRETURN
    }{
      C \vdashinstr \RETURNCALL~x : [t_3^\ast~t_1^\ast] \to [t_4^\ast]
    }
@@ -1629,16 +1627,17 @@ Control Instructions
 
 * The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be the same as :math:`C.\CRETURN`.
 
-* Then the instruction is valid with type :math:`[t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]`.
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type :math:`[t_3^\ast~t_1^\ast~(\REF~\NULL~x)] \to [t_4^\ast]`.
 
 .. math::
    \frac{
-     C.\CTYPES[x] = [t_1^\ast] \toF [t_2^\ast]
-     \qquad
-     C.\CRETURN = [t_2^\ast]
+     C.\CTYPES[x] = [t_1^\ast] \toF C.\CRETURN
    }{
-     C \vdashinstr \CALLREF~x : [t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]
+     C \vdashinstr \CALLREF~x : [t_3^\ast~t_1^\ast~(\REF~\NULL~x)] \to [t_4^\ast]
    }
+
+.. note::
+   The |RETURNCALLREF| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
 .. _valid-return_call_indirect:
@@ -1662,14 +1661,11 @@ Control Instructions
 
 * Then the instruction is valid with type :math:`[t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_3^\ast` and :math:`t_4^\ast`.
 
-
 .. math::
    \frac{
      C.\CTABLES[x] = \limits~\FUNCREF
      \qquad
-     C.\CTYPES[y] = [t_1^\ast] \toF [t_2^\ast]
-     \qquad
-     C.\CRETURN = [t_2^\ast]
+     C.\CTYPES[y] = [t_1^\ast] \toF C.\CRETURN
    }{
      C \vdashinstr \RETURNCALLINDIRECT~x~y : [t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]
    }
