@@ -64,10 +64,6 @@ struct
   and make' n x xs =
     if n = 0 then xs else make' (n - 1) x (x::xs)
 
-  let rec table n f = table' n f []
-  and table' n f xs =
-    if n = 0 then xs else table' (n - 1) f (f (n - 1) :: xs)
-
   let rec take n xs =
     match n, xs with
     | 0, _ -> []

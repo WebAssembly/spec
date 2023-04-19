@@ -360,7 +360,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
 
   | BrTable (xs, x) ->
     let n = List.length (label c x) in
-    let ts = Lib.List.table n (fun i -> peek (n - i) s) in
+    let ts = List.init n (fun i -> peek (n - i) s) in
     check_stack c ts (label c x) x.at;
     List.iter (fun x' -> check_stack c ts (label c x') x'.at) xs;
     (ts @ [NumT I32T]) -->... [], []
