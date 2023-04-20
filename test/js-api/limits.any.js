@@ -252,9 +252,9 @@ function testModuleSizeLimit(size, expectPass) {
   // has an empty name. The module size will be `size`.
   const buffer = new Uint8Array(size);
   const header = [
-    kWasmH0, kWasmH1, kWasmH2, kWasmH3, // Magic word
-    kWasmV0, kWasmV1, kWasmV2, kWasmV3, // Version
-    0,  // custom section
+    kWasmH0, kWasmH1, kWasmH2, kWasmH3, // magic word
+    kWasmV0, kWasmV1, kWasmV2, kWasmV3, // version
+    0                                   // custom section
   ];
   // We calculate the section length so that the total module size is `size`.
   // For that we have to calculate the length of the leb encoding of the section
@@ -264,7 +264,6 @@ function testModuleSizeLimit(size, expectPass) {
   const lengthBytes = wasmSignedLeb(sectionLength);
   buffer.set(header);
   buffer.set(lengthBytes, header.length);
-  const name = "module";
 
   if (expectPass) {
     test(() => {
