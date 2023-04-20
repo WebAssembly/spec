@@ -244,3 +244,54 @@ test(() => {
                 () => memory.grow(kJSEmbeddingMaxTableSize));
 }, `Grow WebAssembly.Table object beyond the embedder-defined limit`);
 
+function testModuleSizeLimit(size, expectPass) {
+  // We do not use `testLimit` here to avoid OOMs due to having multiple big
+  // modules alive at the same time.
+
+  // Define a WebAssembly module that consists of a single custom section which
+  // has an empty name. The module size will be `size`.
+  const buffer = new Uint8Array(size);
+  const header = [
+    kWasmH0, kWasmH1, kWasmH2, kWasmH3, // Magic word
+    kWasmV0, kWasmV1, kWasmV2, kWasmV3, // Version
+    0,  // custom section
+  ];
+  // We calculate the section length so that the total module size is `size`.
+  // For that we have to calculate the length of the leb encoding of the section
+  // length.
+  const sectionLength = size - header.length -
+      wasmSignedLeb(size).length;
+  const lengthBytes = wasmSignedLeb(sectionLength);
+  buffer.set(header);
+  buffer.set(lengthBytes, header.length);
+  const name = "module";
+
+  if (expectPass) {
+    test(() => {
+      assert_true(WebAssembly.validate(buffer));
+    }, `Validate module size limit`);
+    test(() => {
+      new WebAssembly.Module(buffer);
+    }, `Compile module size limit`);
+    promise_test(t => {
+      return WebAssembly.compile(buffer);
+    }, `Async compile module size limit`);
+  } else {
+    test(() => {
+      assert_false(WebAssembly.validate(buffer));
+    }, `Validate module size over limit`);
+    test(() => {
+      assert_throws(
+          new WebAssembly.CompileError(),
+          () => new WebAssembly.Module(buffer));
+    }, `Compile module size over limit`);
+    promise_test(t => {
+      return promise_rejects(
+          t, new WebAssembly.CompileError(),
+          WebAssembly.compile(buffer));
+    }, `Async compile module size over limit`);
+  }
+}
+
+testModuleSizeLimit(kJSEmbeddingMaxModuleSize, true);
+testModuleSizeLimit(kJSEmbeddingMaxModuleSize + 1, false);
