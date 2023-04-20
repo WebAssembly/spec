@@ -31,6 +31,7 @@ let print_all_il = ref false
 
 let pass_totalize = ref false
 let pass_sideconditions = ref false
+let pass_animate = ref false
 
 (* Argument parsing *)
 
@@ -51,12 +52,13 @@ let argspec = Arg.align
   "-l", Arg.Set log, " Log execution steps";
   "-w", Arg.Set warn, " Warn about unsed or multiply used splices";
 
-  "--print-il", Arg.Set print_elab_il, "Print il (after elaboration)";
-  "--print-final-il", Arg.Set print_final_il, "Print final il";
-  "--print-all-il", Arg.Set print_all_il, "Print il after each step";
+  "--print-il", Arg.Set print_elab_il, " Print il (after elaboration)";
+  "--print-final-il", Arg.Set print_final_il, " Print final il";
+  "--print-all-il", Arg.Set print_all_il, " Print il after each step";
 
-  "--totalize", Arg.Set pass_totalize, "Run function totalization";
-  "--sideconditions", Arg.Set pass_sideconditions, "Infer side conditoins";
+  "--totalize", Arg.Set pass_totalize, " Run function totalization";
+  "--sideconditions", Arg.Set pass_sideconditions, " Infer side conditoins";
+  "--animate", Arg.Set pass_animate, " Animate equality conditions";
 
   "--check-only", Arg.Unit (fun () -> target := None), " No output (just checking)";
   "--latex", Arg.Unit (fun () -> target := Latex Backend_latex.Config.latex), " Use Latex settings (default)";
@@ -96,6 +98,15 @@ let () =
     let il = if !pass_sideconditions then begin
       log "Side condition inference";
       let il = Middlend.Sideconditions.transform il in
+      if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+      log "IL Validation...";
+      Il.Validation.valid il;
+      il
+    end else il in
+
+    let il = if !pass_animate then begin
+      log "Animate";
+      let il = Middlend.Animate.transform il in
       if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
       log "IL Validation...";
       Il.Validation.valid il;

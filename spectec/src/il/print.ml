@@ -194,6 +194,7 @@ let rec string_of_prem prem =
   match prem.it with
   | RulePr (id, op, e) -> id.it ^ ": " ^ string_of_exp (MixE (op, e) $ e.at)
   | IfPr e -> "if " ^ string_of_exp e
+  | AssignPr (e1, e2) -> "where " ^ string_of_exp e1 ^ " := " ^ string_of_exp e2
   | ElsePr -> "otherwise"
   | IterPr ({it = IterPr _; _} as prem', iter) ->
     string_of_prem prem' ^ string_of_iterexp iter

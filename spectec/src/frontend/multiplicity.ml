@@ -282,6 +282,10 @@ and annot_prem env prem : Il.Ast.premise * occur =
   | IfPr e ->
     let e', occur = annot_exp env e in
     IfPr e' $ prem.at, occur
+  | AssignPr (e1, e2) ->
+    let e1', occur1 = annot_exp env e1 in
+    let e2', occur2 = annot_exp env e2 in
+    AssignPr (e1', e2') $ prem.at, union occur1 occur2
   | ElsePr ->
     prem, Env.empty
   | IterPr (prem1, iter) ->

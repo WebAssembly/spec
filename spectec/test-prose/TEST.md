@@ -1,10 +1,16 @@
 # Preview
 
 ```sh
-$ (cd ../spec && dune exec ../src/exe-watsup/main.exe -- *.watsup -v -l --prose)
+$ (cd ../spec && dune exec ../src/exe-watsup/main.exe -- *.watsup -v -l --totalize --sideconditions --animate --prose)
 watsup 0.3 generator
 == Parsing...
 == Elaboration...
+== IL Validation...
+== Function totalization...
+== IL Validation...
+== Side condition inference
+== IL Validation...
+== Animate
 == IL Validation...
 == Prose Generation...
 unreachable
@@ -32,16 +38,22 @@ select
 block
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop YetE ((val <: admininstr)^k{val}) from the stack.
-3. Let YetE (bt) be YetE (`%->%`(t_1^k{t_1}, t_2^n{t_2})).
-4. Let L be YetE ().
-5. Enter the block Yet with label YetE ().
+3. Let YetE (|val^k{val}|) be YetE (k).
+4. Let YetE (|t_1^k{t_1}|) be YetE (k).
+5. Let YetE (bt) be YetE (`%->%`(t_1^k{t_1}, t_2^n{t_2})).
+6. Let YetE (|t_2^n{t_2}|) be YetE (n).
+7. Let L be YetE ().
+8. Enter the block Yet with label YetE ().
 
 loop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop YetE ((val <: admininstr)^k{val}) from the stack.
-3. Let YetE (bt) be YetE (`%->%`(t_1^k{t_1}, t_2^n{t_2})).
-4. Let L be YetE ().
-5. Enter the block Yet with label YetE ().
+3. Let YetE (|val^k{val}|) be YetE (k).
+4. Let YetE (|t_1^k{t_1}|) be YetE (k).
+5. Let YetE (bt) be YetE (`%->%`(t_1^k{t_1}, t_2^n{t_2})).
+6. Let YetE (|t_2^n{t_2}|) be YetE (n).
+7. Let L be YetE ().
+8. Enter the block Yet with label YetE ().
 
 if
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -79,7 +91,8 @@ br_table
   a. Execute (BR YetE (l')).
 
 frame
-1. Push YetE ((val <: admininstr)^n{val}) to the stack.
+1. Let YetE (|val^n{val}|) be YetE (n).
+2. Push YetE ((val <: admininstr)^n{val}) to the stack.
 
 return
 1. If YetC (), then:
@@ -109,21 +122,19 @@ binop
 testop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop YetE (CONST_admininstr(nt, c_1)) from the stack.
-3. Let YetE (c) be YetE ($testop(testop, nt, c_1)).
-4. Push YetE (CONST_admininstr(I32_numtype, c)) to the stack.
+3. Push YetE (CONST_admininstr(I32_numtype, c)) to the stack.
 
 relop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop YetE (CONST_admininstr(nt, c_2)) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop YetE (CONST_admininstr(nt, c_1)) from the stack.
-5. Let YetE (c) be YetE ($relop(relop, nt, c_1, c_2)).
-6. Push YetE (CONST_admininstr(I32_numtype, c)) to the stack.
+5. Push YetE (CONST_admininstr(I32_numtype, c)) to the stack.
 
 extend
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop YetE (CONST_admininstr(nt, c)) from the stack.
-3. Push YetE (CONST_admininstr(nt, $ext(n, $size(nt <: valtype), S_sx, c))) to the stack.
+3. Push YetE (CONST_admininstr(nt, $ext(n, !($size(nt <: valtype)), S_sx, c))) to the stack.
 
 cvtop
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -162,10 +173,12 @@ call_indirect
 call_addr
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop YetE ((val <: admininstr)^k{val}) from the stack.
-3. Let YetE ($funcinst(z)[a]) be YetE (`%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr}))).
-4. Let YetE (f) be YetE ({LOCAL val^k{val} :: $default_(t)*{t}, MODULE m}).
-5. Let F be the current frame.
-6. Push YetE ((n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])) to the stack.
+3. Let YetE (|val^k{val}|) be YetE (k).
+4. Let YetE (|t_1^k{t_1}|) be YetE (k).
+5. Let YetE ($funcinst(z)[a]) be YetE (`%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr}))).
+6. Let YetE (|t_2^n{t_2}|) be YetE (n).
+7. Let F be the current frame.
+8. Push YetE ((n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])) to the stack.
 
 ref.func
 1. Push YetE (REF.FUNC_ADDR_admininstr($funcaddr(z)[x])) to the stack.
@@ -195,8 +208,7 @@ table.set
   a. YetI: Perform $with_table(z, x, i, ref).
 
 table.size
-1. Let YetE (|$table(z, x)|) be YetE (n).
-2. Push YetE (CONST_admininstr(I32_numtype, n)) to the stack.
+1. Push YetE (CONST_admininstr(I32_numtype, n)) to the stack.
 
 table.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.

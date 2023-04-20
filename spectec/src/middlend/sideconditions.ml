@@ -89,6 +89,7 @@ and t_path path = match path.it with
 let rec t_prem prem = match prem.it with
   | RulePr (_, _, exp) -> t_exp exp
   | IfPr e -> t_exp e
+  | AssignPr (e1, e2) -> t_exp e1 @ t_exp e2
   | ElsePr -> []
   | IterPr (prem, iterexp)
   -> iter_side_conditions iterexp @

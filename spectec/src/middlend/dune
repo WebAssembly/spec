@@ -1,5 +1,9 @@
 (library
   (name middlend)
   (libraries util il)
-  (modules totalize sideconditions)
+  (modules
+    totalize
+    sideconditions
+    animate
+  )
 )

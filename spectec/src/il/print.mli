@@ -11,3 +11,4 @@ val string_of_exp : exp -> string
 val string_of_def : def -> string
 val string_of_deftyp : deftyp -> string
 val string_of_script : script -> string
+val string_of_prem : premise -> string

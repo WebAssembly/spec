@@ -489,6 +489,8 @@ let rec valid_prem env prem =
     valid_expmix env mixop e (find "relation" env.rels id) e.at
   | IfPr e ->
     valid_exp env e (BoolT $ e.at)
+  | AssignPr (_, _) ->
+    ()
   | ElsePr ->
     ()
   | IterPr (prem', iter) ->
