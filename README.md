@@ -1,4 +1,5 @@
-![Build Status](https://github.com/WebAssembly/exception-handling/actions/workflows/main.yml/badge.svg)
+[![CI for specs](https://github.com/WebAssembly/exception-handling/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/exception-handling/actions/workflows/ci-spec.yml)
+[![CI for interpreter & tests](https://github.com/WebAssembly/exception-handling/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/exception-handling/actions/workflows/ci-interpreter.yml)
 
 # Exception Handling Proposal for WebAssembly
 
@@ -11,7 +12,6 @@ summary of the proposal.
 [webassembly.github.io/exception-handling](https://webassembly.github.io/exception-handling/).
 
 Original README from upstream repository follows...
-=======
 
 # spec
 
