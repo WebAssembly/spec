@@ -483,6 +483,8 @@ let valid_binds env binds =
     env.vars <- bind "variable" env.vars id (t, dim)
   ) binds
 
+let clear_binds env = env.vars <- Env.empty
+
 let rec valid_prem env prem =
   match prem.it with
   | RulePr (id, mixop, e) ->
@@ -502,7 +504,7 @@ let valid_rule env mixop t rule =
     valid_binds env binds;
     valid_expmix env mixop' e (mixop, t) e.at;
     List.iter (valid_prem env) prems;
-    env.vars <- Env.empty
+    clear_binds env
 
 let valid_clause env t1 t2 clause =
   match clause.it with
@@ -511,7 +513,7 @@ let valid_clause env t1 t2 clause =
     valid_exp env e1 t1;
     valid_exp env e2 t2;
     List.iter (valid_prem env) prems;
-    env.vars <- Env.empty;
+    clear_binds env;
     let free_rh = Free.(Set.diff (free_exp e2).varid (free_exp e1).varid) in
     if free_rh <> Free.Set.empty then
       error clause.at ("definition contains unbound variable(s) `" ^
@@ -563,9 +565,10 @@ let rec valid_def {bind} env d =
           ": invalid recurion between definitions of different sort")
     ) ds
 
+let valid_defs env = List.iter (valid_def {bind} env)
 
 (* Scripts *)
 
 let valid ds =
   let env = new_env () in
-  List.iter (valid_def {bind} env) ds
+  valid_defs env ds

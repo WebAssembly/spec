@@ -3556,21 +3556,26 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, RELOP_instr(nt, relop), `%->%`([(nt <: valtype) (nt <: valtype)], [I32_valtype]))
 
   ;; 3-typing.watsup:238.1-240.23
-  rule extend {C : context, n : n, nt : numtype}:
+  rule extend {C : context, n : n, nt : numtype, o0 : nat}:
     `%|-%:%`(C, EXTEND_instr(nt, n), `%->%`([(nt <: valtype)], [(nt <: valtype)]))
-    -- if (n <= !($size(nt <: valtype)))
+    -- if ($size(nt <: valtype) = ?(o0))
+    -- if (n <= o0)
 
   ;; 3-typing.watsup:242.1-245.34
-  rule reinterpret {C : context, nt_1 : numtype, nt_2 : numtype}:
+  rule reinterpret {C : context, nt_1 : numtype, nt_2 : numtype, o0 : nat, o1 : nat}:
     `%|-%:%`(C, CVTOP_instr(nt_1, REINTERPRET_cvtop, nt_2, ?()), `%->%`([(nt_2 <: valtype)], [(nt_1 <: valtype)]))
+    -- if ($size(nt_1 <: valtype) = ?(o0))
+    -- if ($size(nt_2 <: valtype) = ?(o1))
     -- if (nt_1 =/= nt_2)
-    -- if (!($size(nt_1 <: valtype)) = !($size(nt_2 <: valtype)))
+    -- if (o0 = o1)
 
   ;; 3-typing.watsup:247.1-250.52
-  rule convert-i {C : context, in_1 : in, in_2 : in, sx? : sx?}:
+  rule convert-i {C : context, in_1 : in, in_2 : in, sx? : sx?, o0 : nat, o1 : nat}:
     `%|-%:%`(C, CVTOP_instr((in_1 <: numtype), CONVERT_cvtop, (in_2 <: numtype), sx?{sx}), `%->%`([(in_2 <: valtype)], [(in_1 <: valtype)]))
+    -- if ($size(in_1 <: valtype) = ?(o0))
+    -- if ($size(in_2 <: valtype) = ?(o1))
     -- if (in_1 =/= in_2)
-    -- if ((sx?{sx} = ?()) <=> (!($size(in_1 <: valtype)) > !($size(in_2 <: valtype))))
+    -- if ((sx?{sx} = ?()) <=> (o0 > o1))
 
   ;; 3-typing.watsup:252.1-254.22
   rule convert-f {C : context, fn_1 : fn, fn_2 : fn}:
@@ -3689,19 +3694,23 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.DATA_context[x] = OK)
 
   ;; 3-typing.watsup:350.1-355.32
-  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?}:
+  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [(nt <: valtype)]))
+    -- if ($size(nt <: valtype) = ?(o0))
+    -- (if ($size(nt <: valtype) = ?(o1)))?{n o1}
     -- if (C.MEM_context[0] = mt)
-    -- if ((2 ^ n_A) <= (!($size(nt <: valtype)) / 8))
-    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (!($size(nt <: valtype)) / 8))))?{n}
+    -- if ((2 ^ n_A) <= (o0 / 8))
+    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
     -- if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 
   ;; 3-typing.watsup:357.1-362.32
-  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype}:
+  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype (nt <: valtype)], []))
+    -- if ($size(nt <: valtype) = ?(o0))
+    -- (if ($size(nt <: valtype) = ?(o1)))?{n o1}
     -- if (C.MEM_context[0] = mt)
-    -- if ((2 ^ n_A) <= (!($size(nt <: valtype)) / 8))
-    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (!($size(nt <: valtype)) / 8))))?{n}
+    -- if ((2 ^ n_A) <= (o0 / 8))
+    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
     -- if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 
 ;; 3-typing.watsup:124.1-124.67
@@ -4277,8 +4286,9 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (c = $relop(relop, nt, c_1, c_2))
 
   ;; 6-reduction.watsup:137.1-138.70
-  rule extend {c : c_numtype, n : n, nt : numtype}:
-    `%*~>%*`([CONST_admininstr(nt, c) EXTEND_admininstr(nt, n)], [CONST_admininstr(nt, $ext(n, !($size(nt <: valtype)), S_sx, c))])
+  rule extend {c : c_numtype, n : n, nt : numtype, o0 : nat}:
+    `%*~>%*`([CONST_admininstr(nt, c) EXTEND_admininstr(nt, n)], [CONST_admininstr(nt, $ext(n, o0, S_sx, c))])
+    -- if ($size(nt <: valtype) = ?(o0))
 
   ;; 6-reduction.watsup:141.1-143.48
   rule cvtop-val {c : c_numtype, c_1 : c_numtype, cvtop : cvtop, nt : numtype, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
@@ -4322,10 +4332,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 6-reduction.watsup:94.1-97.52
-  rule call_addr {a : addr, f : frame, instr* : instr*, k : nat, m : moduleinst, n : n, t* : valtype*, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, z : state}:
+  rule call_addr {a : addr, f : frame, instr* : instr*, k : nat, m : moduleinst, n : n, t* : valtype*, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, z : state, o0* : val*}:
     `%~>%*`(`%;%*`(z, (val <: admininstr)^k{val} :: [CALL_ADDR_admininstr(a)]), [FRAME__admininstr(n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])])
+    -- (if ($default_(t) = ?(o0)))*{t o0}
     -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr})))
-    -- if (f = {LOCAL val^k{val} :: !($default_(t))*{t}, MODULE m})
+    -- if (f = {LOCAL val^k{val} :: o0*{t o0}, MODULE m})
 
   ;; 6-reduction.watsup:150.1-151.53
   rule ref.func {x : idx, z : state}:
@@ -5047,26 +5058,26 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, RELOP_instr(nt, relop), `%->%`([(nt <: valtype) (nt <: valtype)], [I32_valtype]))
 
   ;; 3-typing.watsup:238.1-240.23
-  rule extend {C : context, n : n, nt : numtype}:
+  rule extend {C : context, n : n, nt : numtype, o0 : nat}:
     `%|-%:%`(C, EXTEND_instr(nt, n), `%->%`([(nt <: valtype)], [(nt <: valtype)]))
-    -- if ($size(nt <: valtype) =/= ?())
-    -- if (n <= !($size(nt <: valtype)))
+    -- if ($size(nt <: valtype) = ?(o0))
+    -- if (n <= o0)
 
   ;; 3-typing.watsup:242.1-245.34
-  rule reinterpret {C : context, nt_1 : numtype, nt_2 : numtype}:
+  rule reinterpret {C : context, nt_1 : numtype, nt_2 : numtype, o0 : nat, o1 : nat}:
     `%|-%:%`(C, CVTOP_instr(nt_1, REINTERPRET_cvtop, nt_2, ?()), `%->%`([(nt_2 <: valtype)], [(nt_1 <: valtype)]))
-    -- if ($size(nt_1 <: valtype) =/= ?())
-    -- if ($size(nt_2 <: valtype) =/= ?())
+    -- if ($size(nt_1 <: valtype) = ?(o0))
+    -- if ($size(nt_2 <: valtype) = ?(o1))
     -- if (nt_1 =/= nt_2)
-    -- if (!($size(nt_1 <: valtype)) = !($size(nt_2 <: valtype)))
+    -- if (o0 = o1)
 
   ;; 3-typing.watsup:247.1-250.52
-  rule convert-i {C : context, in_1 : in, in_2 : in, sx? : sx?}:
+  rule convert-i {C : context, in_1 : in, in_2 : in, sx? : sx?, o0 : nat, o1 : nat}:
     `%|-%:%`(C, CVTOP_instr((in_1 <: numtype), CONVERT_cvtop, (in_2 <: numtype), sx?{sx}), `%->%`([(in_2 <: valtype)], [(in_1 <: valtype)]))
-    -- if ($size(in_1 <: valtype) =/= ?())
-    -- if ($size(in_2 <: valtype) =/= ?())
+    -- if ($size(in_1 <: valtype) = ?(o0))
+    -- if ($size(in_2 <: valtype) = ?(o1))
     -- if (in_1 =/= in_2)
-    -- if ((sx?{sx} = ?()) <=> (!($size(in_1 <: valtype)) > !($size(in_2 <: valtype))))
+    -- if ((sx?{sx} = ?()) <=> (o0 > o1))
 
   ;; 3-typing.watsup:252.1-254.22
   rule convert-f {C : context, fn_1 : fn, fn_2 : fn}:
@@ -5208,24 +5219,28 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.DATA_context[x] = OK)
 
   ;; 3-typing.watsup:350.1-355.32
-  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?}:
+  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [(nt <: valtype)]))
+    -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
     -- if (0 < |C.MEM_context|)
-    -- if ($size(nt <: valtype) =/= ?())
     -- if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
+    -- if ($size(nt <: valtype) = ?(o0))
+    -- (if ($size(nt <: valtype) = ?(o1)))?{n o1}
     -- if (C.MEM_context[0] = mt)
-    -- if ((2 ^ n_A) <= (!($size(nt <: valtype)) / 8))
-    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (!($size(nt <: valtype)) / 8))))?{n}
+    -- if ((2 ^ n_A) <= (o0 / 8))
+    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
     -- if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 
   ;; 3-typing.watsup:357.1-362.32
-  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype}:
+  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype (nt <: valtype)], []))
+    -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
     -- if (0 < |C.MEM_context|)
-    -- if ($size(nt <: valtype) =/= ?())
+    -- if ($size(nt <: valtype) = ?(o0))
+    -- (if ($size(nt <: valtype) = ?(o1)))?{n o1}
     -- if (C.MEM_context[0] = mt)
-    -- if ((2 ^ n_A) <= (!($size(nt <: valtype)) / 8))
-    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (!($size(nt <: valtype)) / 8))))?{n}
+    -- if ((2 ^ n_A) <= (o0 / 8))
+    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
     -- if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 
 ;; 3-typing.watsup:124.1-124.67
@@ -5824,9 +5839,9 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (c = $relop(relop, nt, c_1, c_2))
 
   ;; 6-reduction.watsup:137.1-138.70
-  rule extend {c : c_numtype, n : n, nt : numtype}:
-    `%*~>%*`([CONST_admininstr(nt, c) EXTEND_admininstr(nt, n)], [CONST_admininstr(nt, $ext(n, !($size(nt <: valtype)), S_sx, c))])
-    -- if ($size(nt <: valtype) =/= ?())
+  rule extend {c : c_numtype, n : n, nt : numtype, o0 : nat}:
+    `%*~>%*`([CONST_admininstr(nt, c) EXTEND_admininstr(nt, n)], [CONST_admininstr(nt, $ext(n, o0, S_sx, c))])
+    -- if ($size(nt <: valtype) = ?(o0))
 
   ;; 6-reduction.watsup:141.1-143.48
   rule cvtop-val {c : c_numtype, c_1 : c_numtype, cvtop : cvtop, nt : numtype, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
@@ -5873,15 +5888,16 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 6-reduction.watsup:94.1-97.52
-  rule call_addr {a : addr, f : frame, instr* : instr*, k : nat, m : moduleinst, n : n, t* : valtype*, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, z : state}:
+  rule call_addr {a : addr, f : frame, instr* : instr*, k : nat, m : moduleinst, n : n, t* : valtype*, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, z : state, o0* : val*}:
     `%~>%*`(`%;%*`(z, (val <: admininstr)^k{val} :: [CALL_ADDR_admininstr(a)]), [FRAME__admininstr(n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])])
+    -- if (|t*{t}| = |o0*{o0}|)
     -- if (a < |$funcinst(z)|)
     -- if (|t_1^k{t_1}| = k)
     -- if (|t_2^n{t_2}| = n)
     -- if (|val^k{val}| = k)
-    -- (if ($default_(t) =/= ?()))*{t}
+    -- (if ($default_(t) = ?(o0)))*{t o0}
     -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr})))
-    -- if (f = {LOCAL val^k{val} :: !($default_(t))*{t}, MODULE m})
+    -- if (f = {LOCAL val^k{val} :: o0*{t o0}, MODULE m})
 
   ;; 6-reduction.watsup:150.1-151.53
   rule ref.func {x : idx, z : state}:
