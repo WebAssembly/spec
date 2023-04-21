@@ -179,6 +179,8 @@ syntax instr/state hint(desc "state instruction") = ...
 syntax expr hint(desc "expression") =
   instr*
 
+syntax instr hint(desc "instruction")
+
 
 ;; Modules
 

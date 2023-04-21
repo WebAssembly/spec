@@ -134,7 +134,7 @@ let rec t_def' env = function
       DecD (id, typ1, typ2, clauses', hints)
   | RelD (id, mixop, typ, rules, hints) ->
     RelD (id, mixop, typ, List.map (t_rule env) rules, hints)
-  | def -> def
+  | (SynD _ | HintD _) as def -> def
 
 and t_def env x = { x with it = t_def' env x.it }
 

@@ -555,13 +555,16 @@ let rec valid_def {bind} env d =
     List.iter (valid_def {bind = rebind} env) ds;
     List.iter (fun d ->
       match (List.hd ds).it, d.it with
+      | HintD _, _ | _, HintD _
       | SynD _, SynD _
       | RelD _, RelD _
       | DecD _, DecD _ -> ()
       | _, _ ->
         error (List.hd ds).at (" " ^ string_of_region d.at ^
-          ": invalid recurion between definitions of different sort")
+          ": invalid recursion between definitions of different sort")
     ) ds
+  | HintD _ ->
+    ()
 
 
 (* Scripts *)
