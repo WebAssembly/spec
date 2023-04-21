@@ -58,8 +58,27 @@ Results
      S \vdashresult \TRAP : [t^\ast]
    }
 
-.. todo::
-   Add validation for exception results.
+
+:ref:`Results <syntax-result>` :math:`\val^\ast~(\THROWadm~\tagaddr)`
+.....................................................................
+
+* The :ref:`external tag value <syntax-externval>` :math:`\EVTAG~\tagaddr` must be :ref:`valid <valid-externval-tag>` with :ref:`external tag type <syntax-externtype>` :math:`\ETTAG~[t^\ast]\to[]`.
+
+* For each :ref:`value <syntax-val>` :math:`\val_i` in :math:`\val^\ast` and corresponding :ref:`value type <syntax-valtype>` :math:`t_i` in :math:`t_i`:
+
+  * The value :math:`\val_i` must be :ref:`valid <valid-val>` with :ref:`value type <syntax-valtype>` :math:`t_i`.
+
+* Then the result is valid with :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]`, for any sequence :math:`{t'}^\ast` of :ref:`value types <syntax-valtype>`.
+
+
+.. math::
+   \frac{
+     S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t^\ast] \to []
+     \qquad
+     (S \vdashval \val : t)^\ast
+   }{
+     S \vdashresult \val^\ast~(\THROWadm~\tagaddr) : [{t'}^\ast]
+   }
 
 
 .. _module-context:
