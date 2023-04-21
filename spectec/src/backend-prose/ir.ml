@@ -1,3 +1,7 @@
+type value =
+  | IV of int
+  | BoolV of bool
+
 type wtype = I32T | VarT of string
 
 type name = N of string | SupN of name * string | SubN of name * string

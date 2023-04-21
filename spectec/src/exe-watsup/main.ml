@@ -80,9 +80,13 @@ let () =
       log "Prose Generation...";
       let ir = true in
       if ir then
-        let program = Backend_prose.Il2ir.translate il in
-        List.map Backend_prose.Print.string_of_program program
-        |> List.iter print_endline
+        let ir_programs = Backend_prose.Il2ir.translate il in
+        List.map Backend_prose.Print.string_of_program ir_programs
+        |> List.iter print_endline;
+
+        log "Interpret IR...";
+        let result = Backend_prose.Interpreter.interpret ir_programs in
+        string_of_int result |> print_endline
       else (
         let prose = Backend_prose.Translate.translate el in
         print_endline prose

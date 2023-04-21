@@ -3757,5 +3757,7 @@ global.set
 elem.drop
 1. Perform $with_elem(z, x, []).
 
+== Interpret IR...
+1
 == Complete.
 ```
