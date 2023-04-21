@@ -30,6 +30,7 @@ let print_final_il = ref false
 let print_all_il = ref false
 
 let pass_totalize = ref false
+let pass_unthe = ref false
 let pass_sideconditions = ref false
 
 (* Argument parsing *)
@@ -56,6 +57,7 @@ let argspec = Arg.align
   "--print-all-il", Arg.Set print_all_il, "Print il after each step";
 
   "--totalize", Arg.Set pass_totalize, "Run function totalization";
+  "--the-elimination", Arg.Set pass_unthe, "Eliminate the ! operator in relations";
   "--sideconditions", Arg.Set pass_sideconditions, "Infer side conditoins";
 
   "--check-only", Arg.Unit (fun () -> target := None), " No output (just checking)";
@@ -87,6 +89,15 @@ let () =
     let il = if !pass_totalize then begin
       log "Function totalization...";
       let il = Middlend.Totalize.transform il in
+      if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+      log "IL Validation...";
+      Il.Validation.valid il;
+      il
+    end else il in
+
+    let il = if !pass_unthe then begin
+      log "Option projection eliminiation";
+      let il = Middlend.Unthe.transform il in
       if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
       log "IL Validation...";
       Il.Validation.valid il;
