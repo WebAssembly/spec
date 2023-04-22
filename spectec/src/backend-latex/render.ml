@@ -134,6 +134,17 @@ let strip_nl = function
   | xs -> xs
 
 
+let as_tup_typ t =
+  match t.it with
+  | TupT ts -> ts
+  | _ -> [t]
+
+let as_tup_exp e =
+  match e.it with
+  | TupE es -> es
+  | _ -> [e]
+
+
 (* Identifiers *)
 
 let render_expand_fwd = ref (fun _ -> assert false)
@@ -346,10 +357,15 @@ and expand_path args p = expand_path' args p.it $ p.at
 and expand_path' args p' =
   match p' with
   | RootP -> RootP
-  | IdxP (p1, e2) ->
+  | IdxP (p1, e1) ->
     let p1' = expand_path args p1 in
+    let e1' = expand_exp args e1 in
+    IdxP (p1', e1')
+  | SliceP (p1, e1, e2) ->
+    let p1' = expand_path args p1 in
+    let e1' = expand_exp args e1 in
     let e2' = expand_exp args e2 in
-    IdxP (p1', e2')
+    SliceP (p1', e1', e2')
   | DotP (p1, atom) -> DotP (expand_path args p1, atom)
 
 
@@ -427,7 +443,7 @@ and render_typcase env at (atom, ts, _hints) =
       | Atom id, t1::ts2 when ends_sub id ->
         (* Handle subscripting *)
         "{" ^ render_atomid env (chop_sub id) ^
-          "}_{" ^ render_typ env t1 ^ "}\\," ^
+          "}_{" ^ render_typs "," env (as_tup_typ t1) ^ "}\\," ^
           (if ts2 = [] then "" else "\\," ^ render_typs "~" env ts2)
       | _ ->
         let s1 = render_atom env atom in
@@ -493,7 +509,9 @@ and render_exp env e =
     render_expand env env.show_def id (untup_exp e1)
       (fun () ->
         if not (ends_sub id.it) then
-          render_defid env id ^ render_exp env e1
+          match e1.it with
+          | TupE [] -> render_defid env id
+          | _ -> render_defid env id ^ render_exp env e1
         else
           (* Handle subscripting *)
           "{" ^ render_defid env (chop_sub id.it $ id.at) ^
@@ -503,7 +521,7 @@ and render_exp env e =
             | [e1'] -> e1', SeqE [] $ e1.at
             | e1'::es -> e1', TupE es $ e1.at
           in
-          "}_{" ^ render_exp env e1' ^ "}" ^ render_exp env e2'
+          "}_{" ^ render_exps "," env (as_tup_exp e1') ^ "}" ^ render_exp env e2'
       )
   | IterE (e1, iter) -> "{" ^ render_exp env e1 ^ render_iter env iter ^ "}"
   | FuseE (e1, e2) ->
@@ -520,6 +538,8 @@ and render_path env p =
   match p.it with
   | RootP -> ""
   | IdxP (p1, e) -> render_path env p1 ^ "[" ^ render_exp env e ^ "]"
+  | SliceP (p1, e1, e2) ->
+    render_path env p1 ^ "[" ^ render_exp env e1 ^ " : " ^ render_exp env e2 ^ "]"
   | DotP ({it = RootP; _}, atom) -> render_fieldname env atom p.at
   | DotP (p1, atom) ->
     render_path env p1 ^ "." ^ render_fieldname env atom p.at
@@ -534,7 +554,8 @@ and render_expcase env atom es at =
       match atom, es with
       | Atom id, e1::es2 when ends_sub id ->
         (* Handle subscripting *)
-        "{" ^ render_atomid env (chop_sub id) ^ "}_{" ^ render_exp env e1 ^ "}" ^
+        "{" ^ render_atomid env (chop_sub id) ^ "}_{" ^
+          render_exps "," env (as_tup_exp e1) ^ "}" ^
           (if es2 = [] then "" else "\\," ^ render_exps "~" env es2)
       | _ ->
         let s1 = render_atom env atom in

@@ -450,10 +450,16 @@ and valid_expfield env (atom1, e) (atom2, t, _) =
 and valid_path env p t : typ =
   match p.it with
   | RootP -> t
-  | IdxP (p1, e2) ->
+  | IdxP (p1, e1) ->
     let t1 = valid_path env p1 t in
-    valid_exp env e2 (NatT $ e2.at);
+    valid_exp env e1 (NatT $ e1.at);
     as_list_typ "path" env Check t1 p1.at
+  | SliceP (p1, e1, e2) ->
+    let t1 = valid_path env p1 t in
+    valid_exp env e1 (NatT $ e1.at);
+    valid_exp env e2 (NatT $ e2.at);
+    let _ = as_list_typ "path" env Check t1 p1.at in
+    t1
   | DotP (p1, atom) ->
     let t1 = valid_path env p1 t in
     let tfs = as_struct_typ "path" env Check t1 p1.at in

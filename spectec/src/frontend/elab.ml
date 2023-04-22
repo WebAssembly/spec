@@ -830,11 +830,17 @@ and elab_path env p t : Il.path * typ =
   match p.it with
   | RootP ->
     Il.RootP $ p.at, t
-  | IdxP (p1, e2) ->
+  | IdxP (p1, e1) ->
     let p1', t1 = elab_path env p1 t in
+    let e1' = elab_exp env e1 (NatT $ e1.at) in
+    let t = as_list_typ "path" env Check t1 p1.at in
+    Il.IdxP (p1', e1') $ p.at, t
+  | SliceP (p1, e1, e2) ->
+    let p1', t1 = elab_path env p1 t in
+    let e1' = elab_exp env e1 (NatT $ e1.at) in
     let e2' = elab_exp env e2 (NatT $ e2.at) in
-    let t1 = as_list_typ "path" env Check t1 p1.at in
-    Il.IdxP (p1', e2') $ p.at, t1
+    let _ = as_list_typ "path" env Check t1 p1.at in
+    Il.SliceP (p1', e1', e2') $ p.at, t1
   | DotP (p1, atom) ->
     let p1', t1 = elab_path env p1 t in
     let tfs = as_struct_typ "path" env Check t1 p1.at in

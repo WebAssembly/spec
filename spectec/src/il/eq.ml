@@ -89,6 +89,8 @@ and eq_path p1 p2 =
   match p1.it, p2.it with
   | RootP, RootP -> true
   | IdxP (p11, e1), IdxP (p21, e2) -> eq_path p11 p21 && eq_exp e1 e2
+  | SliceP (p11, e11, e12), SliceP (p21, e21, e22) ->
+    eq_path p11 p21 && eq_exp e11 e21 && eq_exp e12 e22
   | DotP (p11, atom1), DotP (p21, atom2) -> eq_path p11 p21 && atom1 = atom2
   | _, _ -> false
 

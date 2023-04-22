@@ -411,7 +411,7 @@ arith_un_ :
   | NL_BAR exp BAR { LenE $2 }
   | BAR exp NL_BAR { LenE $2 }
   | NL_BAR exp NL_BAR { LenE $2 }
-  | DOLLAR defid { CallE ($2, SeqE [] $ at $sloc) }
+  | DOLLAR defid { CallE ($2, TupE [] $ at $sloc) }
   | DOLLAR defid exp_prim { CallE ($2, $3) }
   | NOT arith_un { UnE (NotOp, $2) }
   | PLUS arith_un { UnE (PlusOp, $2) }
@@ -441,6 +441,7 @@ path : path_ { $1 $ at $sloc }
 path_ :
   | /* empty */ { RootP }
   | path LBRACK arith RBRACK { IdxP ($1, $3) }
+  | path LBRACK arith COLON arith RBRACK { SliceP ($1, $3, $5) }
   | path dotid { DotP ($1, $2) }
 
 
@@ -464,11 +465,11 @@ def_ :
   | VAR atom_as_varid COLON typ hint_list
     { VarD ($2, $4, $5) }
   | DEF DOLLAR defid COLON typ hint_list
-    { DecD ($3, SeqE [] $ at $loc($4), $5, $6) }
+    { DecD ($3, TupE [] $ at $loc($4), $5, $6) }
   | DEF DOLLAR defid exp_prim COLON typ hint_list
     { DecD ($3, $4, $6, $7) }
   | DEF DOLLAR defid EQ exp premise_list
-    { DefD ($3, SeqE [] $ at $loc($4), $5, $6) }
+    { DefD ($3, TupE [] $ at $loc($4), $5, $6) }
   | DEF DOLLAR defid exp_prim EQ exp premise_list
     { DefD ($3, $4, $6, $7) }
   | NL_NL_NL

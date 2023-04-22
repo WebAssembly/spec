@@ -86,6 +86,7 @@ and t_iterexp env (iter, vs) = (t_iter env iter, vs)
 and t_path' env = function
   | RootP -> RootP
   | IdxP (path, e) -> IdxP (t_path env path, t_exp env e)
+  | SliceP (path, e1, e2) -> SliceP (t_path env path, t_exp env e1, t_exp env e2)
   | DotP (path, a) -> DotP (t_path env path, a)
 
 and t_path env x = { x with it = t_path' env x.it }

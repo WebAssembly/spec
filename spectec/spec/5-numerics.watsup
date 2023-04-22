@@ -7,3 +7,7 @@ def $relop(relop_numtype, numtype, c, c) : c_numtype     hint(show %#_%(%, %))
 
 def $ext(nat, nat, sx, c) : c_numtype                    hint(show $ext_(%,%)^%(%))
 def $cvtop(numtype, cvtop, numtype, sx?, c) : c_numtype* hint(show $ext_(%,%)^%(%))
+
+def $wrap_((nat, nat), c) : nat
+
+def $bytes_(nat, c) : byte*

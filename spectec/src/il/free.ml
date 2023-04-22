@@ -104,6 +104,8 @@ and free_path p =
   match p.it with
   | RootP -> empty
   | IdxP (p1, e) -> union (free_path p1) (free_exp e)
+  | SliceP (p1, e1, e2) ->
+    union (free_path p1) (union (free_exp e1) (free_exp e2))
   | DotP (p1, _) -> free_path p1
 
 and free_iterexp (iter, ids) =

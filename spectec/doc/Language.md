@@ -156,6 +156,7 @@ arith ::=
 
 path ::=
   path? "[" arith "]"                  list element
+  path? "[" arith ":" arith "]"        list slice
   path? "." atom                       record element
 ```
 
