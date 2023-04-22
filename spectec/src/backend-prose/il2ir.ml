@@ -75,7 +75,9 @@ let rec exp2expr exp = match exp.it with
   | Ast.CaseE (Ast.Atom "CONST", { it = Ast.TupE ([ty; num]); _ }, _) ->
       begin match ty.it with
         | Ast.CaseE (Ast.Atom "I32", _, _) ->
-            Ir.ConstE (Ir.I32T, exp2expr num)
+            let ty =
+              Reference_interpreter.Types.NumType Reference_interpreter.Types.I32Type in
+            Ir.ConstE (Ir.WasmT (ty), exp2expr num)
         | Ast.VarE (id) -> Ir.ConstE (Ir.VarT id.it, exp2expr num)
         | _ -> gen_fail_msg_of_exp exp "value expression" |> failwith
       end

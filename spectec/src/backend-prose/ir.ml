@@ -3,7 +3,7 @@ type value =
   | WasmV of Reference_interpreter.Values.value
   | IntV of int
 
-type wtype = I32T | VarT of string
+type wtype = WasmT of Reference_interpreter.Types.value_type | VarT of string
 
 type name = N of string | SupN of name * string | SubN of name * string
 

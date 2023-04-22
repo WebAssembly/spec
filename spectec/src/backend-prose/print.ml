@@ -24,8 +24,8 @@ let rec repeat str num =
 (* wasm type *)
 
 let structured_string_of_wtype = function
-  | I32T -> "I32T"
   | VarT s -> "VarT " ^ s
+  | _ -> "WasmT _"
 
 (* name *)
 
@@ -216,8 +216,8 @@ let structured_string_of_program = function
 (* IR stringifier *)
 
 let string_of_wtype = function
-  | I32T -> "i32"
   | VarT s -> s
+  | _ -> "WasmT"
 
 let rec string_of_name = function
   | N s -> s
