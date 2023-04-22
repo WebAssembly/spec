@@ -273,9 +273,6 @@ syntax instr =
 ;; 1-syntax.watsup:179.1-180.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:182.1-182.38
-
-
 ;; 1-syntax.watsup:187.1-187.50
 syntax elemmode =
   | TABLE(tableidx, expr)

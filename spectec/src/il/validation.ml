@@ -520,14 +520,14 @@ let valid_clause env t1 t2 clause =
 
 let infer_def env d =
   match d.it with
-  | SynD (id, dt, _hints) ->
+  | SynD (id, dt) ->
     let fwd_deftyp =
       match dt.it with NotationT _ -> fwd_deftyp_bad | _ -> fwd_deftyp_ok in
     env.typs <- bind "syntax" env.typs id fwd_deftyp
-  | RelD (id, mixop, t, _rules, _hints) ->
+  | RelD (id, mixop, t, _rules) ->
     valid_typ_mix env mixop t d.at;
     env.rels <- bind "relation" env.rels id (mixop, t)
-  | DecD (id, t1, t2, _clauses, _hints) ->
+  | DecD (id, t1, t2, _clauses) ->
     valid_typ env t1;
     valid_typ env t2;
     env.defs <- bind "function" env.defs id (t1, t2)
@@ -538,14 +538,14 @@ type bind = {bind : 'a. string -> 'a Env.t -> id -> 'a -> 'a Env.t}
 
 let rec valid_def {bind} env d =
   match d.it with
-  | SynD (id, dt, _hints) ->
+  | SynD (id, dt) ->
     valid_deftyp env dt;
     env.typs <- bind "syntax" env.typs id dt;
-  | RelD (id, mixop, t, rules, _hints) ->
+  | RelD (id, mixop, t, rules) ->
     valid_typ_mix env mixop t d.at;
     List.iter (valid_rule env mixop t) rules;
     env.rels <- bind "relation" env.rels id (mixop, t)
-  | DecD (id, t1, t2, clauses, _hints) ->
+  | DecD (id, t1, t2, clauses) ->
     valid_typ env t1;
     valid_typ env t2;
     List.iter (valid_clause env t1 t2) clauses;

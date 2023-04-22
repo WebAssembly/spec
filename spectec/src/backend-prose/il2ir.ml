@@ -139,7 +139,7 @@ type reduction_group = (string * Ast.exp * Ast.exp * Ast.premise list) list
 
 (* extract rules except Step/pure and Step/read *)
 let extract_rules def acc = match def.it with
-  | Ast.RelD (id, _, _, rules, _)
+  | Ast.RelD (id, _, _, rules)
     when String.starts_with ~prefix:"Step" id.it ->
       let filter_context =
         (fun rule ->

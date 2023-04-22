@@ -171,12 +171,13 @@ To use arithmetic operators in a place that is not naturally arithmetic, the sub
 def ::=
   "syntax" varid (("/" | "-") ruleid)* hint* "=" deftyp       syntax definition
   "relation" relid hint* ":" typ                              relation declaration
-  "rule" relid (("/" | "-") ruleid)* ":" exp ("--" premise)*  rule
+  "rule" relid (("/" | "-") ruleid)* hint* ":" exp ("--" premise)*  rule
   "var" varid ":" typ hint*                                   variable declaration
   "def" "$" defid exp? ":" typ hint*                          function declaration
   "def" "$" defid exp? "=" exp ("--" premise)*                function clause
   "syntax" varid (("/" | "-") ruleid)* atom? hint+            outline hints
   "relation" relid hint+
+  "rule" relid (("/" | "-") ruleid)* hint+
   "var" varid hint+
   "def" "$" defid hint+
 

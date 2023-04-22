@@ -143,21 +143,27 @@ let free_clause clause =
         (bound_binds binds)
       )
 
+let free_hintdef hd =
+  match hd.it with
+  | SynH (id, _) -> free_synid id
+  | RelH (id, _) -> free_relid id
+  | DecH (id, _) -> free_defid id
+
 let rec free_def d =
   match d.it with
-  | SynD (_id, dt, _hints) -> free_deftyp dt
-  | RelD (_id, _mixop, t, rules, _hints) ->
+  | SynD (_id, dt) -> free_deftyp dt
+  | RelD (_id, _mixop, t, rules) ->
     union (free_typ t) (free_list free_rule rules)
-  | DecD (_id, t1, t2, clauses, _hints) ->
+  | DecD (_id, t1, t2, clauses) ->
     union (union (free_typ t1) (free_typ t2)) (free_list free_clause clauses)
   | RecD ds -> free_list free_def ds
-  | HintD _ -> empty
+  | HintD hd -> free_hintdef hd
 
 
 let rec bound_def d =
   match d.it with
-  | SynD (id, _, _) -> free_synid id
-  | RelD (id, _, _, _, _) -> free_relid id
-  | DecD (id, _, _, _, _) -> free_defid id
+  | SynD (id, _) -> free_synid id
+  | RelD (id, _, _, _) -> free_relid id
+  | DecD (id, _, _, _) -> free_defid id
   | RecD ds -> free_list bound_def ds
   | HintD _ -> empty
