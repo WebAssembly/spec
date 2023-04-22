@@ -1,8 +1,14 @@
 open Print
+open Reference_interpreter
+open Source
 
-let ast = [
-  Ast.Const (Ast.I32 0);
-  Ast.Test Ast.Eqz
+(* helper function *)
+let (@) x = (@@) x no_region
+
+(* Hardcoded Wasm AST *)
+let ast: Ast.instr list = [
+  Ast.Const (Values.I32 I32.zero |> (@)) |> (@);
+  Ast.Test (Values.I32 Ast.I32Op.Eqz) |> (@)
 ]
 
 module EnvKey =
@@ -10,8 +16,8 @@ module EnvKey =
     type t = Ir.name
     let compare a b =
       Stdlib.compare
-        (Print.string_of_name a)
-        (Print.string_of_name b)
+        (string_of_name a)
+        (string_of_name b)
   end
 
 module Env = Map.Make(EnvKey)
@@ -61,13 +67,9 @@ let interp_prog stenv prog =
   let Ir.Program (_, il) = prog in
   interp_instrs stenv il
 
-let call_algo programs (st, env) = function
-  | Ast.Const I32 n -> (Ir.IV n :: st, env)
-  | Ast.Binary Ast.Add ->
-      programs
-      |> List.find (function | Ir.Program ("binop", _) -> true | _ -> false)
-      |> interp_prog (st, env)
-  | Ast.Test Ast.Eqz ->
+let call_algo programs (st, env) winstr = match winstr.it with
+  | Ast.Const ({ it = Values.I32 n; _ }) -> (Ir.IV (I32.to_int_s n) :: st, env)
+  | Ast.Test (Values.I32 Ast.I32Op.Eqz) ->
       programs
       |> List.find (function | Ir.Program ("testop", _) -> true | _ -> false)
       |> interp_prog (st, env)
@@ -76,7 +78,7 @@ let call_algo programs (st, env) = function
 let interpret programs =
   let (result_st, _) =
     List.fold_left
-      (fun acc winst -> call_algo programs acc winst)
+      (fun acc winstr -> call_algo programs acc winstr)
       ([], Env.empty)
       ast in
   match result_st with
