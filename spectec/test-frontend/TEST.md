@@ -273,50 +273,53 @@ syntax instr =
 ;; 1-syntax.watsup:179.1-180.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:185.1-185.50
+;; 1-syntax.watsup:182.1-182.38
+
+
+;; 1-syntax.watsup:187.1-187.50
 syntax elemmode =
   | TABLE(tableidx, expr)
   | DECLARE
 
-;; 1-syntax.watsup:186.1-186.39
+;; 1-syntax.watsup:188.1-188.39
 syntax datamode =
   | MEMORY(memidx, expr)
 
-;; 1-syntax.watsup:188.1-189.30
+;; 1-syntax.watsup:190.1-191.30
 syntax func = `FUNC%%*%`(functype, valtype*, expr)
 
-;; 1-syntax.watsup:190.1-191.25
+;; 1-syntax.watsup:192.1-193.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:192.1-193.18
+;; 1-syntax.watsup:194.1-195.18
 syntax table = TABLE(tabletype)
 
-;; 1-syntax.watsup:194.1-195.17
+;; 1-syntax.watsup:196.1-197.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:196.1-197.31
+;; 1-syntax.watsup:198.1-199.31
 syntax elem = `ELEM%%*%?`(reftype, expr*, elemmode?)
 
-;; 1-syntax.watsup:198.1-199.26
+;; 1-syntax.watsup:200.1-201.26
 syntax data = `DATA(*)%*%?`(byte**, datamode?)
 
-;; 1-syntax.watsup:200.1-201.16
+;; 1-syntax.watsup:202.1-203.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:203.1-204.65
+;; 1-syntax.watsup:205.1-206.65
 syntax externuse =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEMORY(memidx)
 
-;; 1-syntax.watsup:205.1-206.24
+;; 1-syntax.watsup:207.1-208.24
 syntax export = EXPORT(name, externuse)
 
-;; 1-syntax.watsup:207.1-208.30
+;; 1-syntax.watsup:209.1-210.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:210.1-211.70
+;; 1-syntax.watsup:212.1-213.70
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*`(import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-aux.watsup:5.1-5.55
@@ -1588,7 +1591,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}}
-& \mathit{instr} &::=& \mathsf{unreachable} \\ &&|&
+\mbox{(instruction)} & \mathit{instr} &::=& \mathsf{unreachable} \\ &&|&
 \mathsf{nop} \\ &&|&
 \mathsf{drop} \\ &&|&
 \mathsf{select}~{\mathit{valtype}^?} \\ &&|&

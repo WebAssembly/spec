@@ -146,6 +146,7 @@ and def' =
   | DecD of id * exp * typ * hint list       (* `def` `$` defid exp? `:` typ hint* *)
   | DefD of id * exp * exp * premise nl_list (* `def` `$` defid exp? `=` exp (`--` premise)* *)
   | SepD                                     (* separator *)
+  | HintD of hintdef
 
 and premise = premise' phrase
 and premise' =
@@ -153,6 +154,14 @@ and premise' =
   | IfPr of exp                              (* `if` exp *)
   | ElsePr                                   (* `otherwise` *)
   | IterPr of premise * iter                 (* premise iter *)
+
+and hintdef = hintdef' phrase
+and hintdef' =
+  | AtomH of id * hint list
+  | SynH of id * id * hint list
+  | RelH of id * hint list
+  | VarH of id * hint list
+  | DecH of id * hint list
 
 and hint = {hintid : id; hintexp : exp}      (* `(` `hint` hintid exp `)` *)
 

@@ -130,7 +130,7 @@ let rec check_prem env ctx prem =
 
 let check_def d : env =
   match d.it with
-  | SynD _ | RelD _ | VarD _ | DecD _ | SepD -> Env.empty
+  | SynD _ | RelD _ | VarD _ | DecD _ | SepD | HintD _ -> Env.empty
   | RuleD (_id1, _id2, e, prems) ->
     let env = ref Env.empty in
     check_exp env [] e;

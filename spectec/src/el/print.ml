@@ -205,6 +205,7 @@ let string_of_def d =
       concat "" (map_nl_list (prefix "\n  -- " string_of_prem) prems)
   | SepD ->
     "\n\n"
+  | HintD _ -> ""
 
 
 (* Scripts *)

@@ -473,6 +473,22 @@ def_ :
     { DefD ($3, $4, $6, $7) }
   | NL_NL_NL
     { SepD }
+  | SYNTAX varid ruleid_list hint_list
+    { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
+      HintD (SynH ($2, id $ at $loc($3), $4) $ at $sloc) }
+  | SYNTAX atom_as_varid ruleid_list hint_list
+    { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
+      HintD (SynH ($2, id $ at $loc($3), $4) $ at $sloc) }
+  | SYNTAX varid ruleid_list atomid hint_list
+    { HintD (AtomH ($4 $ at $loc($4), $5) $ at $sloc) }
+  | SYNTAX atom_as_varid ruleid_list atomid hint_list
+    { HintD (AtomH ($4 $ at $loc($4), $5) $ at $sloc) }
+  | RELATION relid hint_list
+    { HintD (RelH ($2, $3) $ at $sloc) }
+  | VAR varid hint_list
+    { HintD (VarH ($2, $3) $ at $sloc) }
+  | DEF DOLLAR defid hint_list
+    { HintD (DecH ($3, $4) $ at $sloc) }
 
 ruleid_list :
   | /* empty */ { "" }

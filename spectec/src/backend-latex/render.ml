@@ -25,6 +25,7 @@ type env =
     show_def : exp Map.t ref;
     show_case : exp Map.t ref;
     show_field : exp Map.t ref;
+    desc_syn : exp Map.t ref;
     deco_syn : bool;
     deco_rule : bool;
     current_rel : string;
@@ -39,6 +40,7 @@ let new_env config =
     show_def = ref Map.empty;
     show_case = ref Map.empty;
     show_field = ref Map.empty;
+    desc_syn = ref Map.empty;
     deco_syn = false;
     deco_rule = false;
     current_rel = "";
@@ -48,17 +50,17 @@ let with_syntax_decoration b env = {env with deco_syn = b}
 let with_rule_decoration b env = {env with deco_rule = b}
 
 
-let env_hints map id hints =
+let env_hints name map id hints =
   List.iter (fun {hintid; hintexp} ->
-    if hintid.it = "show" then map := Map.add id hintexp !map
+    if hintid.it = name then map := Map.add id hintexp !map
   ) hints
 
 let env_typfield env = function
-  | Elem (Atom id, _, hints) -> env_hints env.show_field id hints
+  | Elem (Atom id, _, hints) -> env_hints "show" env.show_field id hints
   | _ -> ()
 
 let env_typcase env = function
-  | Elem (Atom id, _, hints) -> env_hints env.show_case id hints
+  | Elem (Atom id, _, hints) -> env_hints "show" env.show_case id hints
   | _ -> ()
 
 let env_typ env t =
@@ -67,21 +69,33 @@ let env_typ env t =
   | CaseT (_, _, tcases, _) -> List.iter (env_typcase env) tcases
   | _ -> ()  (* TODO: this assumes that types structs & variants aren't nested *)
 
+let env_hintdef env hd =
+  match hd.it with
+  | AtomH (id, hints) ->
+    env_hints "show" env.show_field id.it hints;
+    env_hints "show" env.show_case id.it hints
+  | SynH (id1, id2, hints) ->
+    let id = if id2.it = "" then id1.it else id1.it ^ "/" ^ id2.it in
+    env_hints "desc" env.desc_syn id hints;
+    env_hints "show" env.show_syn id1.it hints;
+    env_hints "show" env.show_var id1.it hints
+  | RelH (id, hints) -> env_hints "show" env.show_rel id.it hints
+  | VarH (id, hints) -> env_hints "show" env.show_var id.it hints
+  | DecH (id, hints) -> env_hints "show" env.show_def id.it hints
+
 let env_def env d =
   match d.it with
-  | SynD (id, _, t, hints) ->
-    env.vars := Set.add id.it !(env.vars);
-    env_hints env.show_syn id.it hints;
-    env_hints env.show_var id.it hints;
+  | SynD (id1, id2, t, hints) ->
+    env.vars := Set.add id1.it !(env.vars);
+    env_hintdef env (SynH (id1, id2, hints) $ d.at);
     env_typ env t
-  | RelD (id, _, hints) ->
-    env_hints env.show_rel id.it hints
+  | RelD (id, _, hints) -> env_hintdef env (RelH (id, hints) $ d.at)
   | VarD (id, _, hints) ->
     env.vars := Set.add id.it !(env.vars);
-    env_hints env.show_var id.it hints
-  | DecD (id, _, _, hints) ->
-    env_hints env.show_def id.it hints
+    env_hintdef env (VarH (id, hints) $ d.at)
+  | DecD (id, _, _, hints) -> env_hintdef env (DecH (id, hints) $ d.at)
   | RuleD _ | DefD _ | SepD -> ()
+  | HintD hd -> env_hintdef env hd
 
 let env config script : env =
   let env = new_env config in
@@ -401,7 +415,7 @@ and render_typs sep env ts =
 
 
 and render_typfield env (atom, t, _hints) =
-  render_fieldname env atom t.at  ^ "~" ^ render_typ env t
+  render_fieldname env atom t.at ^ "~" ^ render_typ env t
 
 and render_typcase env at (atom, ts, _hints) =
   let ss = List.map (render_typ env) ts in
@@ -556,23 +570,22 @@ let merge_typ t1 t2 =
 
 let rec merge_syndefs = function
   | [] -> []
-  | {it = SynD (id1, id', t1, _); at}::
+  | {it = SynD (id1, _, t1, _); at}::
     {it = SynD (id2, _, t2, _); _}::ds when id1.it = id2.it ->
-    let d' = SynD (id1, id', merge_typ t1 t2, []) $ at in
+    let d' = SynD (id1, "" $ no_region, merge_typ t1 t2, []) $ at in
     merge_syndefs (d'::ds)
   | d::ds ->
     d :: merge_syndefs ds
 
-let desc_of_hint = function
-  | {hintid = {it = "desc"; _}; hintexp = {it = TextE s; _}} -> Some s
-  | {hintid = {it = "desc"; _}; hintexp = {at; _}} ->
-    error at "malformed description hint"
+let string_of_desc = function
+  | Some {it = TextE s; _} -> Some s
+  | Some {at; _} -> error at "malformed description hint"
   | _ -> None
 
 let render_syndef env d =
   match d.it with
-  | SynD (id1, _id2, t, hints) ->
-    (match env.deco_syn, List.find_map desc_of_hint hints with
+  | SynD (id1, _id2, t, _) ->
+    (match env.deco_syn, string_of_desc (Map.find_opt id1.it !(env.desc_syn)) with
     | true, Some s -> "\\mbox{(" ^ s ^ ")} & "
     | _ -> "& "
     ) ^
@@ -676,7 +689,7 @@ let rec render_defs env = function
     | SepD ->
       " \\\\\n" ^
       render_defs env ds'
-    | VarD _ | DecD _ ->
+    | VarD _ | DecD _ | HintD _ ->
       failwith "render_defs"
 
 let render_def env d = render_defs env [d]
@@ -738,4 +751,6 @@ let rec render_script env = function
       render_script env ds'
     | SepD ->
       "\\vspace{1ex}\n\n" ^
+      render_script env ds
+    | HintD _ ->
       render_script env ds
