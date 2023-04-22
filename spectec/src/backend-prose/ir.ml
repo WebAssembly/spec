@@ -1,6 +1,7 @@
+
 type value =
-  | IV of int
-  | BoolV of bool
+  | WasmV of Reference_interpreter.Values.value
+  | IntV of int
 
 type wtype = I32T | VarT of string
 

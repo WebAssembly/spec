@@ -86,7 +86,7 @@ let () =
 
         log "Interpret IR...";
         let result = Backend_prose.Interpreter.interpret ir_programs in
-        string_of_int result |> print_endline
+        print_endline result
       else (
         let prose = Backend_prose.Translate.translate el in
         print_endline prose
