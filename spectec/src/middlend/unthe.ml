@@ -32,18 +32,24 @@ let fresh_id (n : int ref) : id =
   n := !n+1;
   name i $ no_region
 
+(* If the expression (or premise) under iteration changes, we may be able to
+drop some variables from the iterexp *)
+
+let update_iterexp_vars (sets : Il.Free.sets) ((iter, vs) : iterexp) : iterexp =
+  (iter, List.filter (fun v -> Il.Free.Set.mem v.it sets.varid) vs)
+
 (* If a bind and premise is generated under an iteration, wrap them accordingly *)
-let eqn_under_iterexp (i, vs) new_vs ((v, t, is), pr) : eqn =
- ((v, t, is@[i]), IterPr (pr, (i, vs @ new_vs)) $ no_region)
 
 let under_iterexp (iter, vs) eqns : iterexp * eqns =
    let new_vs = List.map (fun ((v, _, _), _) -> v) eqns in
    let iterexp' = (iter, vs @ new_vs) in
-   let eqns' = List.map (eqn_under_iterexp (iter, vs) new_vs) eqns in
+   let eqns' = List.map (fun ((v, t, is), pr) ->
+     let pr_iterexp = update_iterexp_vars (Il.Free.free_prem pr) (iter, vs @ new_vs) in
+     let pr' = IterPr (pr, pr_iterexp) $ no_region in
+     ((v, t, is@[iter]), pr')
+   ) eqns in
    iterexp', eqns'
 
-let update_iterexp_vars (sets : Il.Free.sets) ((iter, vs) : iterexp) : iterexp =
-  (iter, List.filter (fun v -> Il.Free.Set.mem v.it sets.varid) vs)
 
 (* Generic traversal helpers *)
 
