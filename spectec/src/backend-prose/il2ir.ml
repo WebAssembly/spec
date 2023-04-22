@@ -132,7 +132,7 @@ let insert_assert exp = match exp.it with
 let rec lhs2pop exp = match exp.it with
   | Ast.CatE (iterexp, listexp) ->
       insert_assert iterexp ::
-        Ir.PopI (Some (exp2expr iterexp)) ::
+        Ir.PopI (exp2expr iterexp) ::
         lhs2pop listexp
   (* Frame *)
   | Ast.ListE ([{
@@ -150,11 +150,11 @@ let rec lhs2pop exp = match exp.it with
         (* hardcoded pop instructions for "frame" reduction rule *)
         | Ast.IterE (_, _) ->
             insert_assert inner_exp ::
-              Ir.PopI (Some (exp2expr inner_exp)) :: []
+              Ir.PopI (exp2expr inner_exp) :: []
         (* hardcoded pop instructions for "return" reduction rule *)
         | Ast.CatE (_val', { it = Ast.CatE (valn, _); _ }) ->
             insert_assert valn ::
-              Ir.PopI (Some (exp2expr valn)) ::
+              Ir.PopI (exp2expr valn) ::
               insert_assert inner_exp ::
               (* While the top of the stack is not a frame, do ... *)
               Ir.WhileI (
@@ -162,12 +162,12 @@ let rec lhs2pop exp = match exp.it with
                   Ir.NameE (Ir.N "the top of the stack"),
                   Ir.NameE (Ir.N "a frame")
                 )),
-                [Ir.PopI (Some (Ir.NameE (Ir.N "the top element")))]
+                [Ir.PopI (Ir.NameE (Ir.N "the top element"))]
               ) :: []
         | _ -> gen_fail_msg_of_exp inner_exp "Pop instruction" |> failwith in
       let pop_frame_instrs =
         insert_assert exp ::
-          Ir.PopI (Some (Ir.NameE (Ir.N "the frame"))) :: [] in
+          Ir.PopI (Ir.NameE (Ir.N "the frame")) :: [] in
       let_instrs @ pop_instrs @ pop_frame_instrs
   (* Label *)
   | Ast.ListE ([{ it = Ast.CaseE (
@@ -175,14 +175,14 @@ let rec lhs2pop exp = match exp.it with
     { it = Ast.TupE ([_n; _instrs; vals]); _ }, _
   ); _ }]) ->
       (* TODO: append Jump instr *)
-      Ir.PopI (Some (exp2expr vals)) ::
+      Ir.PopI (exp2expr vals) ::
         insert_assert exp ::
-        Ir.PopI (Some ( Ir.NameE (N "the label"))) :: []
+        Ir.PopI (Ir.NameE (N "the label")) :: []
   (* noraml list expression *)
   | Ast.ListE exps ->
       let rev = List.rev exps |> List.tl in
       List.fold_right
-        (fun e acc -> insert_assert e :: Ir.PopI (Some (exp2expr e)) :: acc)
+        (fun e acc -> insert_assert e :: Ir.PopI (exp2expr e) :: acc)
         rev
         []
   | _ -> gen_fail_msg_of_exp exp "lhs instruction" |> failwith
@@ -293,10 +293,10 @@ let rec prem2cond prems = match prems with
 
 (** Main translation **)
 
-(* `reduction_group list` -> `Backend-prose.Ir.Program` *)
-let reduction_group2program reduction_group acc =
+(* `reduction_group list` -> `Backend-prose.Ir.Algo` *)
+let reduction_group2algo reduction_group acc =
   let (reduction_name, lhs, _, _) = List.hd reduction_group in
-  let program_name = String.split_on_char '-' reduction_name |> List.hd in
+  let algo_name = String.split_on_char '-' reduction_name |> List.hd in
 
   let pop_instrs = match lhs.it with
     (* z; lhs *)
@@ -331,7 +331,7 @@ let reduction_group2program reduction_group acc =
 
   let body = (pop_instrs @ instrs) |> check_nop in
 
-  Ir.Program (program_name, body) :: acc
+  Ir.Algo (algo_name, body) :: acc
 
 
 
@@ -377,9 +377,9 @@ let rec group = function
 
 (** Entry **)
 
-(* `Ast.script` -> `Ir.Program` *)
+(* `Ast.script` -> `Ir.Algo` *)
 let translate il =
   let rules = List.fold_right extract_rules il [] |> List.flatten in
   let reduction_groups: reduction_group list = group rules in
 
-  List.fold_right reduction_group2program reduction_groups []
+  List.fold_right reduction_group2algo reduction_groups []

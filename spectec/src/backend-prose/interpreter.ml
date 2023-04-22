@@ -3,10 +3,44 @@ open Reference_interpreter
 open Source
 
 (* Hardcoded Wasm AST *)
-let mk_phrase x = (@@) x no_region
-let ast: Ast.instr list = [
-  Ast.Const (Values.I32 I32.zero |> mk_phrase) |> mk_phrase;
-  Ast.Test (Values.I32 Ast.I32Op.Eqz) |> mk_phrase
+let to_phrase x = (@@) x no_region
+let i32 = I32.of_int_s
+let i64 = I64.of_int_s
+let f32 = F32.of_float
+let f64 = F64.of_float
+
+let testop = [
+  Ast.Const (Values.I32 I32.zero |> to_phrase) |> to_phrase;
+  Ast.Test (Values.I32 Ast.I32Op.Eqz) |> to_phrase
+]
+
+let relop = [
+  Ast.Const (Values.F32 (f32 1.4142135) |> to_phrase) |> to_phrase;
+  Ast.Const (Values.F32 (f32 3.1415926) |> to_phrase) |> to_phrase;
+  Ast.Compare (Values.I32 Ast.I32Op.GtS) |> to_phrase
+]
+
+let nop = [
+  Ast.Const (Values.I64 (i64 42) |> to_phrase) |> to_phrase;
+  Ast.Nop |> to_phrase
+]
+
+let drop = [
+  Ast.Const (Values.F64 (f64 3.0) |> to_phrase) |> to_phrase;
+  Ast.Const (Values.F64 (f64 5.0) |> to_phrase) |> to_phrase;
+  Ast.Drop |> to_phrase
+]
+
+let ref_is_null = [
+  Ast.RefNull Types.ExternRefType |> to_phrase;
+  Ast.RefIsNull |> to_phrase
+]
+
+let select = [
+  Ast.Const (Values.F64 (f64 Float.max_float) |> to_phrase) |> to_phrase;
+  Ast.RefNull Types.FuncRefType |> to_phrase;
+  Ast.Const (Values.I32 (I32.of_int_s 0) |> to_phrase) |> to_phrase;
+  Ast.Select None |> to_phrase
 ]
 
 
@@ -22,7 +56,7 @@ module Env =
     module TypeEnvKey =
       struct
         type t = string
-        let compare a b = Stdlib.compare a b
+        let compare = Stdlib.compare
       end
 
     module ValueEnv = Map.Make(ValueEnvKey)
@@ -83,15 +117,15 @@ let mk_wasm_num ty i = match ty with
 
 
 (* Interpreter *)
-(* TODO: handle non-deterministic *)
 let rec try_numerics env fname args = match (fname, args) with
   | (Ir.N "testop", [Ir.NameE N "testop"; _; arg]) ->
       let v = eval_expr env arg |> ir_value2int in
       v = 0 |> Bool.to_int
+  (* TODO: handle non-deterministic *)
   | _ -> string_of_name fname |> failwith
 
 and eval_expr env e = match e with
-  (* TODO: handle other function application *)
+  (* TODO: extend function application *)
   | Ir.AppE (fname, el) -> Ir.IntV (try_numerics env fname el)
   | Ir.NameE name -> Env.find name env
   | Ir.ConstE (ty, inner_e) ->
@@ -113,7 +147,7 @@ let rec interp_instr env i = match (i, !st_ref) with
       let v = eval_expr env e |> ir_value2wasm_value in
       st_ref := v :: st;
       env
-  | (Ir.PopI (Some (Ir.ConstE (Ir.VarT nt, Ir.NameE name))), h :: t) ->
+  | (Ir.PopI (Ir.ConstE (Ir.VarT nt, Ir.NameE name)), h :: t) ->
       st_ref := t;
 
       let ty = Values.type_of_value h in
@@ -125,22 +159,44 @@ let rec interp_instr env i = match (i, !st_ref) with
 and interp_instrs env il =
   List.fold_left interp_instr env il
 
-let interp_prog prog =
-  let Ir.Program (_, il) = prog in
+let interp_algo algo =
+  let Ir.Algo (_, il) = algo in
   interp_instrs Env.empty il
 
 
 
-(* Search IR program to run *)
-let call_algo programs winstr = match winstr.it with
-  | Ast.Const num -> st_ref := Values.Num (num.it) :: !st_ref
-  | Ast.Test (Values.I32 Ast.I32Op.Eqz) ->
-      let _ = programs
-        |> List.find (function | Ir.Program ("testop", _) -> true | _ -> false)
-        |> interp_prog in
-      ()
-  | _ -> failwith ""
+(* Search IR algorithm to run *)
 
-let interpret programs =
-  List.iter (call_algo programs) ast;
+module AlgoMapKey =
+  struct
+    type t = string
+    let compare = Stdlib.compare
+  end
+
+module AlgoMap = Map.Make(AlgoMapKey)
+
+let to_map algos =
+  let f acc algo =
+    let Ir.Algo (name, _) = algo in
+    AlgoMap.add name algo acc in
+
+  List.fold_left f AlgoMap.empty algos
+
+let get_algo_name winstr = match winstr.it with
+  | Ast.Test (_) -> "testop"
+  | _ -> failwith "Not implemented"
+
+let run_algo algos winstr = match winstr.it with
+  | Ast.Const num -> st_ref := Values.Num (num.it) :: !st_ref
+  | _ ->
+      let algo_name = get_algo_name winstr in
+      let _env = AlgoMap.find algo_name algos |> interp_algo in
+      ()
+
+
+
+(* Entry *)
+let interpret algos =
+  let algo_map = to_map algos in
+  List.iter (run_algo algo_map) testop;
   Values.string_of_values !st_ref

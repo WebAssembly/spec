@@ -183,8 +183,7 @@ let rec structured_string_of_instr depth = function
         structured_string_of_instrs (depth + 1) il2 ^ repeat indent depth ^ ")"
   | AssertI s -> "AssertI (" ^ s ^ ")"
   | PushI e -> "PushI (" ^ structured_string_of_expr e ^ ")"
-  | PopI None -> "PopI"
-  | PopI (Some e) -> "PopI (" ^ structured_string_of_expr e ^ ")"
+  | PopI e -> "PopI (" ^ structured_string_of_expr e ^ ")"
   | LetI (n, e) ->
       "LetI (" ^ structured_string_of_expr n ^ ", " ^ structured_string_of_expr e ^ ")"
   | TrapI -> "TrapI"
@@ -210,8 +209,8 @@ and structured_string_of_instrs depth instrs =
       acc ^ repeat indent depth ^ structured_string_of_instr depth i ^ "\n")
     "" instrs
 
-let structured_string_of_program = function
-  | Program (name, instrs) -> name ^ ":\n" ^ structured_string_of_instrs 1 instrs
+let structured_string_of_algorithm = function
+  | Algo (name, instrs) -> name ^ ":\n" ^ structured_string_of_instrs 1 instrs
 
 (* IR stringifier *)
 
@@ -351,8 +350,7 @@ let rec string_of_instr index depth = function
   | AssertI s -> sprintf "%s Assert: %s." (make_index index depth) s
   | PushI e ->
       sprintf "%s Push %s to the stack." (make_index index depth) (string_of_expr e)
-  | PopI None -> sprintf "%s Pop a value from the stack." (make_index index depth)
-  | PopI (Some e) ->
+  | PopI e ->
       sprintf "%s Pop %s from the stack." (make_index index depth) (string_of_expr e) 
   | LetI (n, e) ->
       sprintf "%s Let %s be %s."
@@ -393,6 +391,6 @@ and string_of_instrs depth instrs =
     (fun acc i -> acc ^ "\n" ^ repeat indent depth ^ string_of_instr index depth i)
     "" instrs
 
-let string_of_program = function
-  | Program (name, instrs) -> "" ^ name ^ string_of_instrs 0 instrs ^ "\n"
+let string_of_algorithm = function
+  | Algo (name, instrs) -> "" ^ name ^ string_of_instrs 0 instrs ^ "\n"
 

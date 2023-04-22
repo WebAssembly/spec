@@ -78,19 +78,13 @@ let () =
     );
     if !odst = "" && !dsts = [] then (
       log "Prose Generation...";
-      let ir = true in
-      if ir then
-        let ir_programs = Backend_prose.Il2ir.translate il in
-        List.map Backend_prose.Print.string_of_program ir_programs
-        |> List.iter print_endline;
-
-        log "Interpret IR...";
-        let result = Backend_prose.Interpreter.interpret ir_programs in
-        print_endline result
-      else (
-        let prose = Backend_prose.Translate.translate el in
-        print_endline prose
-      )
+      let ir_algos = Backend_prose.Il2ir.translate il in
+      List.iter
+        (fun algo -> Backend_prose.Print.string_of_algorithm algo |> print_endline)
+        ir_algos;
+      log "Interpret IR...";
+      let result = Backend_prose.Interpreter.interpret ir_algos in
+      print_endline result
     );
     log "Complete."
   with

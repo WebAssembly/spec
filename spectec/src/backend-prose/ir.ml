@@ -66,7 +66,7 @@ type instr =
   | EitherI of (instr list * instr list)
   | AssertI of string
   | PushI of expr
-  | PopI of expr option
+  | PopI of expr
   (* change name as a `expr` type *)
   | LetI of (expr * expr)
   | TrapI
@@ -81,4 +81,4 @@ type instr =
   (* Yet *)
   | YetI of string
 
-type program = Program of (string * instr list)
+type algorithm = Algo of (string * instr list)
