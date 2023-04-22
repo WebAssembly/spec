@@ -42,6 +42,9 @@ let under_iterexp (iter, vs) eqns : iterexp * eqns =
    let eqns' = List.map (eqn_under_iterexp (iter, vs) new_vs) eqns in
    iterexp', eqns'
 
+let update_iterexp_vars (sets : Il.Free.sets) ((iter, vs) : iterexp) : iterexp =
+  (iter, List.filter (fun v -> Il.Free.Set.mem v.it sets.varid) vs)
+
 (* Generic traversal helpers *)
 
 type 'a traversal = Il.Validation.env -> int ref -> 'a -> eqns * 'a
@@ -131,7 +134,8 @@ and t_exp' env n e : eqns * exp' =
     let eqns1, e' = t_exp env n e in
     let iterexp', eqns1' = under_iterexp iterexp eqns1 in
     let eqns2, iterexp'' = t_iterexp env n iterexp' in
-    eqns1' @ eqns2, IterE (e', iterexp'')
+    let iterexp''' = update_iterexp_vars (Il.Free.free_exp e') iterexp'' in
+    eqns1' @ eqns2, IterE (e', iterexp''')
 
 and t_field env n ((a, e) : expfield) =
   unary t_exp env n e (fun e' -> (a, e'))
@@ -162,7 +166,8 @@ and t_prem' env n prem : eqns * premise' =
     let eqns1, prem' = t_prem env n prem in
     let iterexp', eqns1' = under_iterexp iterexp eqns1 in
     let eqns2, iterexp'' = t_iterexp env n iterexp' in
-    eqns1' @ eqns2, IterPr (prem', iterexp'')
+    let iterexp''' = update_iterexp_vars (Il.Free.free_prem prem') iterexp'' in
+    eqns1' @ eqns2, IterPr (prem', iterexp''')
 
 let t_prems env n k  = t_list t_prem env n k (fun x -> x)
 
