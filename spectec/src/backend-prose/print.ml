@@ -217,7 +217,7 @@ let structured_string_of_program = function
 
 let string_of_wtype = function
   | VarT s -> s
-  | _ -> "WasmT"
+  | WasmT (ty) -> Reference_interpreter.Types.string_of_value_type ty
 
 let rec string_of_name = function
   | N s -> s
