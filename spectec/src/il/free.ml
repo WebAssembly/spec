@@ -31,6 +31,12 @@ let subset sets1 sets2 =
   Set.subset sets1.varid sets2.varid &&
   Set.subset sets1.defid sets2.defid
 
+let disjoint sets1 sets2 =
+  Set.disjoint sets1.synid sets2.synid &&
+  Set.disjoint sets1.relid sets2.relid &&
+  Set.disjoint sets1.varid sets2.varid &&
+  Set.disjoint sets1.defid sets2.defid
+
 
 let free_opt free_x xo = Option.(value (map free_x xo) ~default:empty)
 let free_list free_x xs = List.(fold_left union empty (map free_x xs))
@@ -145,6 +151,7 @@ let rec free_def d =
   | DecD (_id, t1, t2, clauses, _hints) ->
     union (union (free_typ t1) (free_typ t2)) (free_list free_clause clauses)
   | RecD ds -> free_list free_def ds
+  | HintD _ -> empty
 
 
 let rec bound_def d =
@@ -153,3 +160,4 @@ let rec bound_def d =
   | RelD (id, _, _, _, _) -> free_relid id
   | DecD (id, _, _, _, _) -> free_defid id
   | RecD ds -> free_list bound_def ds
+  | HintD _ -> empty

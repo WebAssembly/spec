@@ -934,6 +934,18 @@ let infer_def env d =
     )
   | _ -> ()
 
+let elab_hintdef _env hd : Il.def list =
+  match hd.it with
+  | SynH (id1, id2, hints) ->
+    let id' = if id2.it = "" then id1.it else id1.it ^ "/" ^ id2.it in
+    [Il.HintD (Il.SynH (id' $ id1.at, elab_hints hints) $ hd.at) $ hd.at]
+  | RelH (id, hints) ->
+    [Il.HintD (Il.RelH (id, elab_hints hints) $ hd.at) $ hd.at]
+  | DecH (id, hints) ->
+    [Il.HintD (Il.DecH (id, elab_hints hints) $ hd.at) $ hd.at]
+  | AtomH _ | VarH _ ->
+    []
+
 let elab_def env d : Il.def list =
   match d.it with
   | SynD (id1, _id2, t, hints) ->
@@ -1009,10 +1021,13 @@ let elab_def env d : Il.def list =
     []
   | SepD ->
     []
+  | HintD hd ->
+    elab_hintdef env hd
+
 
 let populate_def env d' : Il.def =
   match d'.it with
-  | Il.SynD _ -> d'
+  | Il.SynD _ | Il.HintD _ -> d'
   | Il.RelD (id, mixop, t', [], hints') ->
     let _, rules' = find "relation" env.rels id in
     Il.RelD (id, mixop, t', List.rev rules', hints') $ d'.at
@@ -1034,12 +1049,13 @@ let deps (map : int Map.t) (set : Il.Free.Set.t) : int array =
 let check_recursion ds' =
   List.iter (fun d' ->
     match d'.it, (List.hd ds').it with
+    | Il.HintD _, _ | _, Il.HintD _
     | Il.SynD _, Il.SynD _
     | Il.RelD _, Il.RelD _
     | Il.DecD _, Il.DecD _ -> ()
     | _, _ ->
       error (List.hd ds').at (" " ^ string_of_region d'.at ^
-        ": invalid recurion between definitions of different sort")
+        ": invalid recursion between definitions of different sort")
   ) ds'
   (* TODO: check that notations are non-recursive and defs are inductive? *)
 
@@ -1071,7 +1087,7 @@ let recursify_defs ds' : Il.def list =
     check_recursion ds'';
     let i = Scc.Set.choose set in
     match ds'' with
-    | [d'] when not (Il.Free.subset bounds.(i) frees.(i)) -> d'
+    | [d'] when Il.Free.disjoint bounds.(i) frees.(i) -> d'
     | ds'' -> Il.RecD ds'' $ Source.over_region (List.map at ds'')
   ) sccs
 

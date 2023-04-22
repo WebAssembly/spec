@@ -111,3 +111,4 @@ let free_def d =
     union
       (union (free_defid id) (free_exp e1))
       (union (free_exp e2) (free_nl_list free_prem prems))
+  | HintD _ -> empty

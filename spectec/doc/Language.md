@@ -175,6 +175,10 @@ def ::=
   "var" varid ":" typ hint*                                   variable declaration
   "def" "$" defid exp? ":" typ hint*                          function declaration
   "def" "$" defid exp? "=" exp ("--" premise)*                function clause
+  "syntax" varid (("/" | "-") ruleid)* atom? hint+            outline hints
+  "relation" relid hint+
+  "var" varid hint+
+  "def" "$" defid hint+
 
 premise ::=
   relid ":" exp                                               relational premise

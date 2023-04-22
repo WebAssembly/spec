@@ -236,6 +236,8 @@ let rec string_of_def d =
       concat "" (List.map (string_of_clause id) clauses)
   | RecD ds ->
     "rec {\n" ^ concat "\n" (List.map string_of_def ds) ^ "\n}"
+  | HintD _ ->
+    ""
 
 
 (* Scripts *)

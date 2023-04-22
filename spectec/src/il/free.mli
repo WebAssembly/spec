@@ -5,6 +5,7 @@ module Set : Set.S with type elt = string
 type sets = {synid : Set.t; relid : Set.t; varid : Set.t; defid : Set.t}
 
 val subset : sets -> sets -> bool
+val disjoint : sets -> sets -> bool
 val union : sets -> sets -> sets
 val diff : sets -> sets -> sets
 
