@@ -29,6 +29,8 @@ let br_table xs x = BrTable (xs, x)
 let return = Return
 let call x = Call x
 let call_indirect x y = CallIndirect (x, y)
+let return_call x = ReturnCall x
+let return_call_indirect x y = ReturnCallIndirect (x, y)
 let throw x = Throw x
 let rethrow x = Rethrow x
 

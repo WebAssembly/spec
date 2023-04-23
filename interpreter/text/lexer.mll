@@ -168,6 +168,8 @@ rule token = parse
       | "select" -> SELECT
       | "call" -> CALL
       | "call_indirect" -> CALL_INDIRECT
+      | "return_call" -> RETURN_CALL
+      | "return_call_indirect" -> RETURN_CALL_INDIRECT
 
       | "local.get" -> LOCAL_GET
       | "local.set" -> LOCAL_SET

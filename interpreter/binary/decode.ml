@@ -303,8 +303,13 @@ let rec instr s =
     let y = at var s in
     let x = at var s in
     call_indirect x y
+  | 0x12 -> return_call (at var s)
+  | 0x13 ->
+    let y = at var s in
+    let x = at var s in
+    return_call_indirect x y
 
-  | 0x12 | 0x13 | 0x14 | 0x15 | 0x16 | 0x17 as b -> illegal s pos b
+  | 0x14 | 0x15 | 0x16 | 0x17 as b -> illegal s pos b
 
   | 0x18 -> error s pos "misplaced DELEGATE opcode"
   | 0x19 -> error s pos "misplaced CATCH_ALL opcode"

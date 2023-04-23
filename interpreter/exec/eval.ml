@@ -63,6 +63,7 @@ and admin_instr' =
   | Invoke of func_inst
   | Trapping of string
   | Returning of value stack
+  | ReturningInvoke of value stack * func_inst
   | Breaking of int32 * value stack
   | Throwing of Tag.t * value stack
   | Rethrowing of int32 * (admin_instr -> admin_instr)
@@ -213,6 +214,21 @@ let rec step (c : config) : config =
           vs, [Trapping "indirect call type mismatch" @@ e.at]
         else
           vs, [Invoke func @@ e.at]
+
+      | ReturnCall x, vs ->
+        (match (step {c with code = (vs, [Plain (Call x) @@ e.at])}).code with
+        | vs', [{it = Invoke a; at}] -> vs', [ReturningInvoke (vs', a) @@ at]
+        | _ -> assert false
+        )
+
+      | ReturnCallIndirect (x, y), vs ->
+        (match
+          (step {c with code = (vs, [Plain (CallIndirect (x, y)) @@ e.at])}).code
+        with
+        | vs', [{it = Invoke a; at}] -> vs', [ReturningInvoke (vs', a) @@ at]
+        | vs', [{it = Trapping s; at}] -> vs', [Trapping s @@ at]
+        | _ -> assert false
+        )
 
       | Throw x, vs ->
         let t = tag frame.inst x in
@@ -629,7 +645,8 @@ let rec step (c : config) : config =
     | Trapping msg, vs ->
       assert false
 
-    | Returning vs', vs ->
+    | Returning _, vs
+    | ReturningInvoke _, vs ->
       Crash.error e.at "undefined frame"
 
     | Breaking (k, vs'), vs ->
@@ -652,6 +669,9 @@ let rec step (c : config) : config =
 
     | Label (n, es0, (vs', {it = Returning vs0; at} :: es')), vs ->
       vs, [Returning vs0 @@ at]
+
+    | Label (n, es0, (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
+      vs, [ReturningInvoke (vs0, f) @@ at]
 
     | Label (n, es0, (vs', {it = Breaking (0l, vs0); at} :: es')), vs ->
       take n vs0 e.at @ vs, List.map plain es0
@@ -684,6 +704,10 @@ let rec step (c : config) : config =
     | Frame (n, frame', (vs', {it = Returning vs0; at} :: es')), vs ->
       take n vs0 e.at @ vs, []
 
+    | Frame (n, frame', (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
+      let FuncType (ins, out) = Func.type_of f in
+      take (Lib.List32.length ins) vs0 e.at @ vs, [Invoke f @@ at]
+
     | Frame (n, frame', (vs', {it = Throwing (a, vs0); at} :: es')), vs ->
       vs, [Throwing (a, vs0) @@ at]
 
@@ -694,7 +718,7 @@ let rec step (c : config) : config =
     | Catch (n, cts, ca, (vs', [])), vs ->
       vs' @ vs, []
 
-    | Catch (n, cts, ca, (vs', ({it = Trapping _ | Breaking _ | Returning _ | Delegating _; at} as e) :: es')), vs ->
+    | Catch (n, cts, ca, (vs', ({it = Trapping _ | Breaking _ | Returning _ | ReturningInvoke _ | Delegating _; at} as e) :: es')), vs ->
       vs, [e]
 
     | Catch (n, cts, ca, (vs', {it = Rethrowing (k, cont); at} :: es')), vs ->
@@ -719,7 +743,7 @@ let rec step (c : config) : config =
     | Caught (n, a, vs0, (vs', [])), vs ->
       vs' @ vs, []
 
-    | Caught (n, a, vs0, (vs', ({it = Trapping _ | Breaking _ | Returning _ | Throwing _ | Delegating _; at} as e) :: es')), vs ->
+    | Caught (n, a, vs0, (vs', ({it = Trapping _ | Breaking _ | Returning _ | ReturningInvoke _ | Throwing _ | Delegating _; at} as e) :: es')), vs ->
       vs, [e]
 
     | Caught (n, a, vs0, (vs', {it = Rethrowing (0l, cont); at} :: es')), vs ->
@@ -735,7 +759,7 @@ let rec step (c : config) : config =
     | Delegate (l, (vs', [])), vs ->
       vs' @ vs, []
 
-    | Delegate (l, (vs', ({it = Trapping _ | Breaking _ | Returning _ | Rethrowing _ | Delegating _; at} as e) :: es')), vs ->
+    | Delegate (l, (vs', ({it = Trapping _ | Breaking _ | Returning _ | ReturningInvoke _ | Rethrowing _ | Delegating _; at} as e) :: es')), vs ->
       vs, [e]
 
     | Delegate (l, (vs', {it = Throwing (a, vs0); at} :: es')), vs ->

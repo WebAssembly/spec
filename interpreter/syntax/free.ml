@@ -79,8 +79,9 @@ let rec instr (e : instr) =
   | Br x | BrIf x -> labels (var x)
   | BrTable (xs, x) -> list (fun x -> labels (var x)) (x::xs)
   | Return -> empty
-  | Call x -> funcs (var x)
-  | CallIndirect (x, y) -> tables (var x) ++ types (var y)
+  | Call x | ReturnCall x -> funcs (var x)
+  | CallIndirect (x, y) | ReturnCallIndirect (x, y) ->
+    tables (var x) ++ types (var y)
   | LocalGet x | LocalSet x | LocalTee x -> locals (var x)
   | GlobalGet x | GlobalSet x -> globals (var x)
   | TableGet x | TableSet x | TableSize x | TableGrow x | TableFill x ->
