@@ -203,6 +203,7 @@ func_type:   ( type <var> )? <param>* <result>*
 global_type: <val_type> | ( mut <val_type> )
 table_type:  <nat> <nat>? <ref_type>
 memory_type: <nat> <nat>?
+tag_type: ( type <var> )? <param>*
 
 num: <int> | <float>
 var: <nat> | <name>
@@ -231,6 +232,8 @@ expr:
   ( loop <name>? <block_type> <instr>* )
   ( if <name>? <block_type> ( then <instr>* ) ( else <instr>* )? )
   ( if <name>? <block_type> <expr>+ ( then <instr>* ) ( else <instr>* )? ) ;; = <expr>+ (if <name>? <block_type> (then <instr>*) (else <instr>*)?)
+  ( try <name>? <block_type> ( do <instr>* ) ( catch <instr>* )* ( catch_all <instr>* )? )
+  ( try <name>? <block_type> ( do <instr>* ) ( delegate <var> ) )
 
 instr:
   <expr>
@@ -239,6 +242,9 @@ instr:
   loop <name>? <block_type> <instr>* end <name>?                     ;; = (loop <name>? <block_type> <instr>*)
   if <name>? <block_type> <instr>* end <name>?                       ;; = (if <name>? <block_type> (then <instr>*))
   if <name>? <block_type> <instr>* else <name>? <instr>* end <name>? ;; = (if <name>? <block_type> (then <instr>*) (else <instr>*))
+  try <name>? <block_type> <instr>* (catch <name>? <instr>*)* (catch_all <name>? <instr>*)? end <name>?
+                                                                     ;; = (try <name>? <block_type> (do <instr>*) (catch <instr>*)* (catch_all <instr>*)?)
+  try <name>? <block_type> <instr>* delegate <var>                   ;; = (try <name>? <block_type> (do <instr>*) (delegate <var>))
 
 op:
   unreachable
@@ -279,6 +285,8 @@ op:
   ref.null <ref_kind>
   ref.is_null <ref_kind>
   ref.func <var>
+  throw <tag_type>
+  rethrow <var>
   <num_type>.const <num>
   <num_type>.<unop>
   <num_type>.<binop>
@@ -404,6 +412,7 @@ assertion:
   ( assert_return <action> <result>* )       ;; assert action has expected results
   ( assert_trap <action> <failure> )         ;; assert action traps with given failure string
   ( assert_exhaustion <action> <failure> )   ;; assert action exhausts system resources
+  ( assert_exception <action> )              ;; assert action throws an exception
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
   ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
@@ -495,6 +504,7 @@ assertion:
   ( assert_return <action> <result>* )       ;; assert action has expected results
   ( assert_trap <action> <failure> )         ;; assert action traps with given failure string
   ( assert_exhaustion <action> <failure> )   ;; assert action exhausts system resources
+  ( assert_exception <action> )              ;; assert action throws an exception
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
   ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
