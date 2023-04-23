@@ -181,8 +181,6 @@ syntax expr hint(desc "expression") =
 
 syntax instr hint(desc "instruction")
 
-var o : nat
-
 
 ;; Modules
 

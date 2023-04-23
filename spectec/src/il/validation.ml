@@ -6,7 +6,7 @@ open Print
 
 (* Errors *)
 
-let error at msg = Source.error at "type" msg
+let error at msg = Source.error at "validation" msg
 
 
 (* Environment *)

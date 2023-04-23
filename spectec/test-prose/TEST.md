@@ -299,9 +299,9 @@ store
 6. If YetC (), then:
   a. Trap.
 7. If YetC (), then:
-  a. YetI: Perform $with_mem(z, 0, (i + o), ($size(nt <: valtype) / 8), b*{b}).
+  a. YetI: Perform $with_mem(z, 0, (i + n_O), ($size(nt <: valtype) / 8), b*{b}).
 8. If YetC (), then:
-  a. YetI: Perform $with_mem(z, 0, (i + o), (n / 8), b*{b}).
+  a. YetI: Perform $with_mem(z, 0, (i + n_O), (n / 8), b*{b}).
 
 memory.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
