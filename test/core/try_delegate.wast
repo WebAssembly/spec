@@ -115,6 +115,36 @@
                          (delegate $l3))))
           unreachable)
       (catch_all (i32.const 1))))
+
+  (func $throw-void (throw $e0))
+  (func (export "return-call-in-try-delegate")
+    (try $l
+      (do
+        (try
+          (do
+            (return_call $throw-void)
+          )
+          (delegate $l)
+        )
+      )
+      (catch $e0)
+    )
+  )
+
+  (table funcref (elem $throw-void))
+  (func (export "return-call-indirect-in-try-delegate")
+    (try $l
+      (do
+        (try
+          (do
+            (return_call_indirect (param) (i32.const 0))
+          )
+          (delegate $l)
+        )
+      )
+      (catch $e0)
+    )
+  )
 )
 
 (assert_return (invoke "delegate-no-throw") (i32.const 1))
@@ -139,6 +169,9 @@
 (assert_exception (invoke "delegate-to-caller-skipping"))
 
 (assert_return (invoke "delegate-correct-targets") (i32.const 1))
+
+(assert_exception (invoke "return-call-in-try-delegate"))
+(assert_exception (invoke "return-call-indirect-in-try-delegate"))
 
 (assert_malformed
   (module quote "(module (func (delegate 0)))")
