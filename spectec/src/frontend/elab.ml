@@ -719,6 +719,21 @@ and elab_exp_notation' env e t : Il.exp list =
   (* Iterations at the end of a sequence may be inlined *)
   | _, SeqT [{it = IterT _; _} as t1] ->
     elab_exp_notation' env e t1
+  (* Optional iterations may always be inlined, use backtracking *)
+  | SeqE (e1::es2), SeqT (({it = IterT (_, Opt); _} as t1)::ts2) ->
+    (try
+      let es1' = [cast_empty "omitted sequence tail" env t1 e.at] in
+      let es2' = elab_exp_notation' env e (SeqT ts2 $ t.at) in
+      es1' @ es2'
+    with Source.Error _ ->
+      (*
+      Printf.printf "[backtrack %s] %s  :  %s\n%!"
+        (string_of_region e.at) (string_of_exp e) (string_of_typ t);
+      *)
+      let es1' = elab_exp_notation' env e1 t1 in
+      let es2' = elab_exp_notation' env (SeqE es2 $ e.at) (SeqT ts2 $ t.at) in
+      es1' @ es2'
+    )
   | SeqE (e1::es2), SeqT (t1::ts2) ->
     let es1' = elab_exp_notation' env (unparen_exp e1) t1 in
     let es2' = elab_exp_notation' env (SeqE es2 $ e.at) (SeqT ts2 $ t.at) in

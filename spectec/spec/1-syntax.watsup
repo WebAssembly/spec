@@ -173,8 +173,8 @@ syntax instr/state hint(desc "state instruction") = ...
   | MEMORY.COPY
   | MEMORY.INIT dataidx
   | DATA.DROP dataidx
-  | LOAD numtype (n sx)? u32 u32  hint(show %.LOAD#% % %)  ;; TODO
-  | STORE numtype n? u32 u32      hint(show %.STORE#% % %)
+  | LOAD numtype (n _ sx)? u32 u32  hint(show %.LOAD % %)  hint(show %.LOAD#% % %)
+  | STORE numtype n? u32 u32        hint(show %.STORE % %) hint(show %.STORE#% % %)
 
 syntax expr hint(desc "expression") =
   instr*

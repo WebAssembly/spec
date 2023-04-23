@@ -218,10 +218,10 @@ syntax c_vectype = nat
 ;; 1-syntax.watsup:121.1-121.52
 syntax blocktype = functype
 
-;; 1-syntax.watsup:156.1-177.55
+;; 1-syntax.watsup:156.1-177.80
 rec {
 
-;; 1-syntax.watsup:156.1-177.55
+;; 1-syntax.watsup:156.1-177.80
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -1205,16 +1205,16 @@ syntax E =
   | LABEL_(n, instr*, E)
 }
 
-;; 5-numerics.watsup:3.1-3.76
+;; 5-numerics.watsup:3.1-3.79
 def unop : (unop_numtype, numtype, c_numtype) -> c_numtype*
 
-;; 5-numerics.watsup:4.1-4.79
+;; 5-numerics.watsup:4.1-4.80
 def binop : (binop_numtype, numtype, c_numtype, c_numtype) -> c_numtype*
 
-;; 5-numerics.watsup:5.1-5.76
+;; 5-numerics.watsup:5.1-5.79
 def testop : (testop_numtype, numtype, c_numtype) -> c_numtype
 
-;; 5-numerics.watsup:6.1-6.79
+;; 5-numerics.watsup:6.1-6.80
 def relop : (relop_numtype, numtype, c_numtype, c_numtype) -> c_numtype
 
 ;; 5-numerics.watsup:8.1-8.84
@@ -1843,10 +1843,10 @@ syntax c_vectype = nat
 ;; 1-syntax.watsup:121.1-121.52
 syntax blocktype = functype
 
-;; 1-syntax.watsup:156.1-177.55
+;; 1-syntax.watsup:156.1-177.80
 rec {
 
-;; 1-syntax.watsup:156.1-177.55
+;; 1-syntax.watsup:156.1-177.80
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -2834,16 +2834,16 @@ syntax E =
   | LABEL_(n, instr*, E)
 }
 
-;; 5-numerics.watsup:3.1-3.76
+;; 5-numerics.watsup:3.1-3.79
 def unop : (unop_numtype, numtype, c_numtype) -> c_numtype*
 
-;; 5-numerics.watsup:4.1-4.79
+;; 5-numerics.watsup:4.1-4.80
 def binop : (binop_numtype, numtype, c_numtype, c_numtype) -> c_numtype*
 
-;; 5-numerics.watsup:5.1-5.76
+;; 5-numerics.watsup:5.1-5.79
 def testop : (testop_numtype, numtype, c_numtype) -> c_numtype
 
-;; 5-numerics.watsup:6.1-6.79
+;; 5-numerics.watsup:6.1-6.80
 def relop : (relop_numtype, numtype, c_numtype, c_numtype) -> c_numtype
 
 ;; 5-numerics.watsup:8.1-8.84

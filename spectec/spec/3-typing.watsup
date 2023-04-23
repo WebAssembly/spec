@@ -348,7 +348,7 @@ rule Instr_ok/data.drop:
   -- if C.DATA[x] = OK
 
 rule Instr_ok/load:
-  C |- LOAD nt (n sx)? n_A n_O : I32 -> nt
+  C |- LOAD nt (n _ sx)? n_A n_O : I32 -> nt
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) <= $size(nt)/8)
   -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
