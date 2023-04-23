@@ -184,28 +184,9 @@ table.get
 4. If YetC (), then:
   a. Push YetE (($table(z, x)[i] <: admininstr)) to the stack.
 
-table.set
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((ref <: admininstr)) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-5. If YetC (), then:
-  a. Trap.
-6. If YetC (), then:
-  a. YetI: Perform $with_table(z, x, i, ref).
-
 table.size
 1. Let YetE (|$table(z, x)|) be YetE (n).
 2. Push YetE (CONST_admininstr(I32_numtype, n)) to the stack.
-
-table.grow
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
-3. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, - 1)) to the stack.
-4. If YetC (), then:
-  a. YetI: Perform $with_tableext(z, x, ref^n{}).
-  b. Push YetE (CONST_admininstr(I32_numtype, |$table(z, x)|)) to the stack.
 
 table.fill
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -289,29 +270,6 @@ load
 6. If YetC (), then:
   a. Push YetE (CONST_admininstr(nt, c)) to the stack.
 
-store
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, c)) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-5. If YetC (), then:
-  a. Trap.
-6. If YetC (), then:
-  a. Trap.
-7. If YetC (), then:
-  a. YetI: Perform $with_mem(z, 0, (i + n_O), ($size(nt <: valtype) / 8), b*{b}).
-8. If YetC (), then:
-  a. YetI: Perform $with_mem(z, 0, (i + n_O), (n / 8), b*{b}).
-
-memory.grow
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
-3. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, - 1)) to the stack.
-4. If YetC (), then:
-  a. YetI: Perform $with_memext(z, 0, 0^((n * 64) * $Ki){}).
-  b. Push YetE (CONST_admininstr(I32_numtype, |$mem(z, 0)|)) to the stack.
-
 memory.fill
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
@@ -392,8 +350,57 @@ global.set
 2. Pop YetE ((val <: admininstr)) from the stack.
 3. YetI: Perform $with_global(z, x, val).
 
+table.set
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop YetE ((ref <: admininstr)) from the stack.
+3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
+5. If YetC (), then:
+  a. YetI: Perform z.
+  b. Trap.
+6. If YetC (), then:
+  a. YetI: Perform $with_table(z, x, i, ref).
+
+table.grow
+1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop YetE ((ref <: admininstr)) from the stack.
+5. If YetC (), then:
+  a. YetI: Perform $with_tableext(z, x, ref^n{}).
+  b. Push YetE (CONST_admininstr(I32_numtype, |$table(z, x)|)) to the stack.
+6. If YetC (), then:
+  a. YetI: Perform z.
+  b. Push YetE (CONST_admininstr(I32_numtype, - 1)) to the stack.
+
 elem.drop
 1. YetI: Perform $with_elem(z, x, []).
+
+store
+1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+2. Pop YetE (CONST_admininstr(I32_numtype, c)) from the stack.
+3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
+5. If YetC (), then:
+  a. YetI: Perform z.
+  b. Trap.
+6. If YetC (), then:
+  a. YetI: Perform $with_mem(z, 0, (i + n_O), ($size(nt <: valtype) / 8), b*{b}).
+7. If YetC (), then:
+  a. YetI: Perform z.
+  b. Trap.
+8. If YetC (), then:
+  a. YetI: Perform $with_mem(z, 0, (i + n_O), (n / 8), b*{b}).
+
+memory.grow
+1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
+3. If YetC (), then:
+  a. YetI: Perform $with_memext(z, 0, 0^((n * 64) * $Ki){}).
+  b. Push YetE (CONST_admininstr(I32_numtype, |$mem(z, 0)|)) to the stack.
+4. If YetC (), then:
+  a. YetI: Perform z.
+  b. Push YetE (CONST_admininstr(I32_numtype, - 1)) to the stack.
 
 data.drop
 1. YetI: Perform $with_data(z, x, []).

@@ -168,12 +168,17 @@ warning: rule `Resulttype_sub` was never spliced
 warning: rule `Start_ok` was never spliced
 warning: rule `Step/local.set` was never spliced
 warning: rule `Step/global.set` was never spliced
+warning: rule `Step/table.set-trap` was never spliced
 warning: rule `Step/table.set-val` was never spliced
 warning: rule `Step/table.grow-succeed` was never spliced
+warning: rule `Step/table.grow-fail` was never spliced
 warning: rule `Step/elem.drop` was never spliced
+warning: rule `Step/store-num-trap` was never spliced
 warning: rule `Step/store-num-val` was never spliced
+warning: rule `Step/store-pack-trap` was never spliced
 warning: rule `Step/store-pack-val` was never spliced
 warning: rule `Step/memory.grow-succeed` was never spliced
+warning: rule `Step/memory.grow-fail` was never spliced
 warning: rule `Step/data.drop` was never spliced
 warning: rule `Step_pure/unreachable` was never spliced
 warning: rule `Step_pure/nop` was never spliced
@@ -213,9 +218,7 @@ warning: rule `Step_read/local.get` was never spliced
 warning: rule `Step_read/global.get` was never spliced
 warning: rule `Step_read/table.get-trap` was never spliced
 warning: rule `Step_read/table.get-val` was never spliced
-warning: rule `Step_read/table.set-trap` was never spliced
 warning: rule `Step_read/table.size` was never spliced
-warning: rule `Step_read/table.grow-fail` was never spliced
 warning: rule `Step_read/table.fill-trap` was never spliced
 warning: rule `Step_read/table.fill-zero` was never spliced
 warning: rule `Step_read/table.fill-succ` was never spliced
@@ -230,9 +233,6 @@ warning: rule `Step_read/load-num-trap` was never spliced
 warning: rule `Step_read/load-num-val` was never spliced
 warning: rule `Step_read/load-pack-trap` was never spliced
 warning: rule `Step_read/load-pack-val` was never spliced
-warning: rule `Step_read/store-num-trap` was never spliced
-warning: rule `Step_read/store-pack-trap` was never spliced
-warning: rule `Step_read/memory.grow-fail` was never spliced
 warning: rule `Step_read/memory.fill-trap` was never spliced
 warning: rule `Step_read/memory.fill-zero` was never spliced
 warning: rule `Step_read/memory.fill-succ` was never spliced
