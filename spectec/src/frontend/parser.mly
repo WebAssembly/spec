@@ -99,7 +99,6 @@ let signify_parens prec = function
 %left DOT DOTDOT DOTDOTDOT
 %left PLUS MINUS COMPOSE
 %left STAR SLASH
-%left FUSE
 
 %start script expression check_atom
 %type<El.Ast.script> script
@@ -108,7 +107,7 @@ let signify_parens prec = function
 
 %%
 
-/* Identifiers */
+(* Identifiers *)
 
 id : UPID { $1 } | LOID { $1 }
 
@@ -135,7 +134,7 @@ check_atom :
   | UPID EOF { VarSet.mem $1 !atom_vars }
 
 
-/* Iteration */
+(* Iteration *)
 
 iter :
   | QUEST { Opt }
@@ -144,7 +143,7 @@ iter :
   | UP arith_prim { ListN $2 }
 
 
-/* Types */
+(* Types *)
 
 typ_prim : typ_prim_ { $1 $ at $sloc }
 typ_prim_ :
@@ -166,7 +165,7 @@ typ_post_ :
 typ : typ_post { $1 }
 
 typ_list :
-  | /* empty */ { [], true }
+  | (* empty *) { [], true }
   | typ { $1::[], false }
   | typ COMMA typ_list { $1::fst $3, snd $3 }
   | typ COMMA_NL typ_list { $1::fst $3, snd $3 }
@@ -186,7 +185,7 @@ dots :
   | NL_BAR DOTDOTDOT {}
 
 
-/*nottyp_prim : nottyp_prim_ { $1 $ at $sloc }*/
+(*nottyp_prim : nottyp_prim_ { $1 $ at $sloc }*)
 nottyp_prim_ :
   | typ_prim { $1.it }
   | atom { AtomT $1 }
@@ -240,17 +239,17 @@ nottyp_rel_ :
 nottyp : nottyp_rel { $1 }
 
 nottyps :
-  | /* empty */ { [] }
+  | (* empty *) { [] }
   | nottyp_post nottyps { $1::$2 }
 
 fieldtyp_list :
-  | /* empty */ { [] }
+  | (* empty *) { [] }
   | fieldid typ hint_list { (Elem ($1, $2, $3))::[] }
   | fieldid typ hint_list COMMA fieldtyp_list { (Elem ($1, $2, $3))::$5 }
   | fieldid typ hint_list COMMA_NL fieldtyp_list { (Elem ($1, $2, $3))::Nl::$5 }
 
 casetyp_list :
-  | /* empty */ { [], [], NoDots }
+  | (* empty *) { [], [], NoDots }
   | DOTDOTDOT { [], [], Dots }
   | varid { [Elem $1], [], NoDots }
   | varid BAR casetyp_list { let x, y, z = $3 in (Elem $1)::x, y, z }
@@ -262,7 +261,7 @@ casetyp_list :
     { let x, y, z = $5 in x, (Elem ($1, $2, $3))::Nl::y, z }
 
 
-/* Expressions */
+(* Expressions *)
 
 exp_prim : exp_prim_ { $1 $ at $sloc }
 exp_prim_ :
@@ -307,7 +306,8 @@ exp_atom_ :
 exp_seq : exp_seq_ { $1 $ at $sloc }
 exp_seq_ :
   | exp_atom_ { signify_parens Seq $1 }
-  | exp_atom exp_seq { SeqE ($1 :: as_seq_exp $2) }
+  | exp_seq exp_atom { SeqE (as_seq_exp $1 @ [$2]) }
+  | exp_seq FUSE exp_atom { FuseE ($1, $3) }
 
 exp_un : exp_un_ { $1 $ at $sloc }
 exp_un_ :
@@ -342,7 +342,6 @@ exp_bin_ :
   | exp_bin OR exp_bin { BinE ($1, OrOp, $3) }
   | exp_bin ARROW2 exp_bin { BinE ($1, ImplOp, $3) }
   | exp_bin DARROW2 exp_bin { BinE ($1, EquivOp, $3) }
-  | exp_bin FUSE exp_bin { FuseE ($1, $3) }
 
 exp_rel : exp_rel_ { $1 $ at $sloc }
 exp_rel_ :
@@ -365,13 +364,13 @@ exp_rel_ :
 exp : exp_rel { $1 }
 
 fieldexp_list :
-  | /* empty */ { [] }
+  | (* empty *) { [] }
   | fieldid exps1 { (Elem ($1, $2))::[] }
   | fieldid exps1 COMMA fieldexp_list { (Elem ($1, $2))::$4 }
   | fieldid exps1 COMMA_NL fieldexp_list { (Elem ($1, $2))::Nl::$4 }
 
 exp_list :
-  | /* empty */ { [], true }
+  | (* empty *) { [], true }
   | exp_bin { $1::[], false }
   | exp_bin COMMA exp_list { $1::fst $3, snd $3 }
   | exp_bin COMMA_NL exp_list { $1::fst $3, snd $3 }
@@ -411,7 +410,7 @@ arith_un_ :
   | NL_BAR exp BAR { LenE $2 }
   | BAR exp NL_BAR { LenE $2 }
   | NL_BAR exp NL_BAR { LenE $2 }
-  | DOLLAR defid { CallE ($2, SeqE [] $ at $sloc) }
+  | DOLLAR defid { CallE ($2, TupE [] $ at $sloc) }
   | DOLLAR defid exp_prim { CallE ($2, $3) }
   | NOT arith_un { UnE (NotOp, $2) }
   | PLUS arith_un { UnE (PlusOp, $2) }
@@ -439,12 +438,13 @@ arith : arith_bin { $1 }
 
 path : path_ { $1 $ at $sloc }
 path_ :
-  | /* empty */ { RootP }
+  | (* empty *) { RootP }
   | path LBRACK arith RBRACK { IdxP ($1, $3) }
+  | path LBRACK arith COLON arith RBRACK { SliceP ($1, $3, $5) }
   | path dotid { DotP ($1, $2) }
 
 
-/* Definitions */
+(* Definitions *)
 
 def : def_ { $1 $ at $sloc }
 def_ :
@@ -464,11 +464,11 @@ def_ :
   | VAR atom_as_varid COLON typ hint_list
     { VarD ($2, $4, $5) }
   | DEF DOLLAR defid COLON typ hint_list
-    { DecD ($3, SeqE [] $ at $loc($4), $5, $6) }
+    { DecD ($3, TupE [] $ at $loc($4), $5, $6) }
   | DEF DOLLAR defid exp_prim COLON typ hint_list
     { DecD ($3, $4, $6, $7) }
   | DEF DOLLAR defid EQ exp premise_list
-    { DefD ($3, SeqE [] $ at $loc($4), $5, $6) }
+    { DefD ($3, TupE [] $ at $loc($4), $5, $6) }
   | DEF DOLLAR defid exp_prim EQ exp premise_list
     { DefD ($3, $4, $6, $7) }
   | NL_NL_NL
@@ -491,12 +491,12 @@ def_ :
     { HintD (DecH ($3, $4) $ at $sloc) }
 
 ruleid_list :
-  | /* empty */ { "" }
+  | (* empty *) { "" }
   | SLASH ruleid ruleid_list { "/" ^ $2 ^ $3 }
   | MINUS ruleid ruleid_list { "-" ^ $2 ^ $3 }
 
 premise_list :
-  | /* empty */ { [] }
+  | (* empty *) { [] }
   | DASH premise premise_list { (Elem $2)::$3 }
   | NL_NL_DASH premise premise_list { Nl::(Elem $2)::$3 }
 
@@ -522,7 +522,7 @@ premise_ :
       in iters (IfPr $3) $5 }
 
 iter_list :
-  | /* empty */ { [] }
+  | (* empty *) { [] }
   | iter iter_list { $1::$2 }
 
 
@@ -531,14 +531,14 @@ hint :
   | HINT LPAR hintid RPAR { {hintid = $3 $ at $loc($3); hintexp = SeqE [] $ at $loc($3)} }
 
 hint_list :
-  | /* empty */ { [] }
+  | (* empty *) { [] }
   | hint hint_list { $1::$2 }
 
 
-/* Scripts */
+(* Scripts *)
 
 def_list :
-  | /* empty */ { [] }
+  | (* empty *) { [] }
   | def def_list { $1::$2 }
 
 script :

@@ -1,9 +1,13 @@
 ;; TODO: how to do sets, definitions, etc.
 
-def $unop(unop_numtype, numtype, c) : c_numtype*         hint(show %#_%(%))
-def $binop(binop_numtype, numtype, c, c) : c_numtype*    hint(show %#_%(%, %))
-def $testop(testop_numtype, numtype, c) : c_numtype      hint(show %#_%(%))
-def $relop(relop_numtype, numtype, c, c) : c_numtype     hint(show %#_%(%, %))
+def $unop(unop_numtype, numtype, c) : c_numtype*         hint(show %#_%#((%)))
+def $binop(binop_numtype, numtype, c, c) : c_numtype*    hint(show %#_%#(%, %))
+def $testop(testop_numtype, numtype, c) : c_numtype      hint(show %#_%#((%)))
+def $relop(relop_numtype, numtype, c, c) : c_numtype     hint(show %#_%#(%, %))
 
 def $ext(nat, nat, sx, c) : c_numtype                    hint(show $ext_(%,%)^%(%))
 def $cvtop(numtype, cvtop, numtype, sx?, c) : c_numtype* hint(show $ext_(%,%)^%(%))
+
+def $wrap_((nat, nat), c) : nat
+
+def $bytes_(nat, c) : byte*

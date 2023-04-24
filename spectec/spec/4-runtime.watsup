@@ -123,15 +123,21 @@ def $local((s; f), x) = f.LOCAL[x]
 
 def $with_local(state, localidx, val) : state     hint(show %[.LOCAL[%] = %])
 def $with_global(state, globalidx, val) : state   hint(show %[.GLOBAL[%] = %])
-def $with_table(state, tableidx, n, ref) : state  hint(show %[.TABLE[%][%] = %])
+def $with_table(state, tableidx, nat, ref) : state  hint(show %[.TABLE[%][%] = %])
 def $with_tableext(state, tableidx, ref*) : state hint(show %[.TABLE[%] =.. %])
+def $with_mem(state, tableidx, nat, nat, byte*) : state  hint(show %[.MEM[%][% : %] = %])
+def $with_memext(state, tableidx, byte*) : state  hint(show %[.MEM[%] =.. %])
 def $with_elem(state, elemidx, ref*) : state      hint(show %[.ELEM[%] = %])
+def $with_data(state, dataidx, byte*) : state     hint(show %[.DATA[%] = %])
 
 def $with_local((s; f), x, v) = s; f[.LOCAL[x] = v]
 def $with_global((s; f), x, v) = s[.GLOBAL[f.MODULE.GLOBAL[x]] = v]; f
 def $with_table((s; f), x, i, r) = s[.TABLE[f.MODULE.TABLE[x]][i] = r]; f
 def $with_tableext((s; f), x, r*) = s[.TABLE[f.MODULE.TABLE[x]] =.. r*]; f
+def $with_mem((s; f), x, i, j, b*) = s[.MEM[f.MODULE.MEM[x]][i : j] = b*]; f
+def $with_memext((s; f), x, b*) = s[.MEM[f.MODULE.MEM[x]] =.. b*]; f
 def $with_elem((s; f), x, r*) = s[.TABLE[f.MODULE.TABLE[x]] = r*]; f
+def $with_data((s; f), x, b*) = s[.MEM[f.MODULE.MEM[x]] = b*]; f
 
 
 ;; Administrative Instructions
