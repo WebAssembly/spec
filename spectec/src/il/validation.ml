@@ -6,7 +6,7 @@ open Print
 
 (* Errors *)
 
-let error at msg = Source.error at "type" msg
+let error at msg = Source.error at "validation" msg
 
 
 (* Environment *)
@@ -450,10 +450,16 @@ and valid_expfield env (atom1, e) (atom2, t, _) =
 and valid_path env p t : typ =
   match p.it with
   | RootP -> t
-  | IdxP (p1, e2) ->
+  | IdxP (p1, e1) ->
     let t1 = valid_path env p1 t in
-    valid_exp env e2 (NatT $ e2.at);
+    valid_exp env e1 (NatT $ e1.at);
     as_list_typ "path" env Check t1 p1.at
+  | SliceP (p1, e1, e2) ->
+    let t1 = valid_path env p1 t in
+    valid_exp env e1 (NatT $ e1.at);
+    valid_exp env e2 (NatT $ e2.at);
+    let _ = as_list_typ "path" env Check t1 p1.at in
+    t1
   | DotP (p1, atom) ->
     let t1 = valid_path env p1 t in
     let tfs = as_struct_typ "path" env Check t1 p1.at in
@@ -483,6 +489,8 @@ let valid_binds env binds =
     env.vars <- bind "variable" env.vars id (t, dim)
   ) binds
 
+let clear_binds env = env.vars <- Env.empty
+
 let rec valid_prem env prem =
   match prem.it with
   | RulePr (id, mixop, e) ->
@@ -504,7 +512,7 @@ let valid_rule env mixop t rule =
     valid_binds env binds;
     valid_expmix env mixop' e (mixop, t) e.at;
     List.iter (valid_prem env) prems;
-    env.vars <- Env.empty
+    clear_binds env
 
 let valid_clause env t1 t2 clause =
   match clause.it with
@@ -513,7 +521,7 @@ let valid_clause env t1 t2 clause =
     valid_exp env e1 t1;
     valid_exp env e2 t2;
     List.iter (valid_prem env) prems;
-    env.vars <- Env.empty;
+    clear_binds env;
     let free_rh = Free.(Set.diff (free_exp e2).varid (free_exp e1).varid) in
     if free_rh <> Free.Set.empty then
       error clause.at ("definition contains unbound variable(s) `" ^
@@ -522,14 +530,14 @@ let valid_clause env t1 t2 clause =
 
 let infer_def env d =
   match d.it with
-  | SynD (id, dt, _hints) ->
+  | SynD (id, dt) ->
     let fwd_deftyp =
       match dt.it with NotationT _ -> fwd_deftyp_bad | _ -> fwd_deftyp_ok in
     env.typs <- bind "syntax" env.typs id fwd_deftyp
-  | RelD (id, mixop, t, _rules, _hints) ->
+  | RelD (id, mixop, t, _rules) ->
     valid_typ_mix env mixop t d.at;
     env.rels <- bind "relation" env.rels id (mixop, t)
-  | DecD (id, t1, t2, _clauses, _hints) ->
+  | DecD (id, t1, t2, _clauses) ->
     valid_typ env t1;
     valid_typ env t2;
     env.defs <- bind "function" env.defs id (t1, t2)
@@ -540,14 +548,14 @@ type bind = {bind : 'a. string -> 'a Env.t -> id -> 'a -> 'a Env.t}
 
 let rec valid_def {bind} env d =
   match d.it with
-  | SynD (id, dt, _hints) ->
+  | SynD (id, dt) ->
     valid_deftyp env dt;
     env.typs <- bind "syntax" env.typs id dt;
-  | RelD (id, mixop, t, rules, _hints) ->
+  | RelD (id, mixop, t, rules) ->
     valid_typ_mix env mixop t d.at;
     List.iter (valid_rule env mixop t) rules;
     env.rels <- bind "relation" env.rels id (mixop, t)
-  | DecD (id, t1, t2, clauses, _hints) ->
+  | DecD (id, t1, t2, clauses) ->
     valid_typ env t1;
     valid_typ env t2;
     List.iter (valid_clause env t1 t2) clauses;
@@ -557,17 +565,21 @@ let rec valid_def {bind} env d =
     List.iter (valid_def {bind = rebind} env) ds;
     List.iter (fun d ->
       match (List.hd ds).it, d.it with
+      | HintD _, _ | _, HintD _
       | SynD _, SynD _
       | RelD _, RelD _
       | DecD _, DecD _ -> ()
       | _, _ ->
         error (List.hd ds).at (" " ^ string_of_region d.at ^
-          ": invalid recurion between definitions of different sort")
+          ": invalid recursion between definitions of different sort")
     ) ds
+  | HintD _ ->
+    ()
 
+let valid_defs env = List.iter (valid_def {bind} env)
 
 (* Scripts *)
 
 let valid ds =
   let env = new_env () in
-  List.iter (valid_def {bind} env) ds
+  valid_defs env ds

@@ -10,10 +10,6 @@ open Util
 open Source
 open Il.Ast
 open Il.Free
-open Il.Print
-
-let debug = false
-let log = if debug then print_endline else (fun _ -> ())
 
 (* Helper for handling free-var set *)
 let subset x y = Set.subset x.varid y.varid
@@ -47,27 +43,13 @@ let rec select_tight prems acc env = ( match prems with
 | [] -> acc
 | _ ->
   let (tight, non_tight) = List.partition (is_tight env) prems in
-  log "======== select_tight ========";
-  log "tight" ;
-  tight |> List.map string_of_prem |> List.iter log;
-  log "------------------------------";
-  log "non-tight" ;
-  non_tight |> List.map string_of_prem |> List.iter log;
-  log "==============================\n";
   select_assign non_tight (acc @ tight) env
 )
 and select_assign prems acc env = ( match prems with
 | [] -> acc
 | _ -> let (assign, non_assign) = List.partition_map (is_assign env) prems in
-  log "======== select_assign ========";
-  log "assign" ;
-  assign |> List.map string_of_prem |> List.iter log;
-  log "------------------------------";
-  log "non-assign" ;
-  non_assign |> List.map string_of_prem |> List.iter log;
-  log "==============================\n";
   ( match assign with
-  | [] -> failwith "Animation failed"
+  | [] -> (* failwith "Animation failed" *) acc @ prems
   | _ ->
     let new_env = assign |> List.map free_prem |> List.fold_left union env in
     select_tight non_assign (acc @ assign) new_env
@@ -92,8 +74,6 @@ let animate_rule r = match r.it with
     | ([ [] ; [SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
     (* lhs ~> rhs *)
     | ([ [] ; [SqArrow] ; []] , TupE ([lhs; _rhs])) ->
-      log id.it;
-      Il.Print.string_of_exp lhs |> log;
       let new_prems = animate_prems lhs prems in
       RuleD(id, binds, mixop, e, new_prems) $ r.at
     | _ -> r
@@ -101,9 +81,9 @@ let animate_rule r = match r.it with
 
 (* Animate def it it is a relation *)
 let animate_def d = match d.it with
-  | RelD(id, mixop, t, rules, hints) ->
+  | RelD(id, mixop, t, rules) ->
     let new_rules = List.map animate_rule rules in
-    RelD(id, mixop, t, new_rules, hints) $ d.at
+    RelD(id, mixop, t, new_rules) $ d.at
   | _ -> d
 
 (* Main entry *)

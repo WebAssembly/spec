@@ -7,7 +7,6 @@ open Ast
 
 let concat = String.concat
 let prefix s f x = s ^ f x
-let suffix f s x = f x ^ s
 let space f x = " " ^ f x ^ " "
 
 
@@ -172,6 +171,8 @@ and string_of_path p =
   match p.it with
   | RootP -> ""
   | IdxP (p1, e) -> string_of_path p1 ^ "[" ^ string_of_exp e ^ "]"
+  | SliceP (p1, e1, e2) ->
+    string_of_path p1 ^ "[" ^ string_of_exp e1 ^ " : " ^ string_of_exp e2 ^ "]"
   | DotP ({it = RootP; _}, atom) -> string_of_atom atom
   | DotP (p1, atom) -> string_of_path p1 ^ "." ^ string_of_atom atom
 
@@ -220,26 +221,28 @@ let string_of_clause id clause =
       concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 let rec string_of_def d =
-  "\n;; " ^ string_of_region d.at ^ "\n" ^
+  let pre = "\n;; " ^ string_of_region d.at ^ "\n" in
   match d.it with
-  | SynD (id, dt, _hints) ->
-    "syntax " ^ id.it ^ " = " ^ string_of_deftyp dt
-  | RelD (id, mixop, t, rules, _hints) ->
-    "relation " ^ id.it ^ ": " ^ string_of_typ_mix mixop t ^
-      concat "\n" (List.map string_of_rule rules)
-  | DecD (id, t1, t2, clauses, _hints) ->
+  | SynD (id, dt) ->
+    pre ^ "syntax " ^ id.it ^ " = " ^ string_of_deftyp dt ^ "\n"
+  | RelD (id, mixop, t, rules) ->
+    pre ^ "relation " ^ id.it ^ ": " ^ string_of_typ_mix mixop t ^
+      concat "\n" (List.map string_of_rule rules) ^ "\n"
+  | DecD (id, t1, t2, clauses) ->
     let s1 =
       match t1.it with
       | TupT [] -> ""
       | _ -> string_of_typ t1 ^ " -> "
     in
-    "def " ^ id.it ^ " : " ^ s1 ^ string_of_typ t2 ^
-      concat "" (List.map (string_of_clause id) clauses)
+    pre ^ "def " ^ id.it ^ " : " ^ s1 ^ string_of_typ t2 ^
+      concat "" (List.map (string_of_clause id) clauses) ^ "\n"
   | RecD ds ->
-    "rec {\n" ^ concat "\n" (List.map string_of_def ds) ^ "\n}"
+    pre ^ "rec {\n" ^ concat "" (List.map string_of_def ds) ^ "}" ^ "\n"
+  | HintD _ ->
+    ""
 
 
 (* Scripts *)
 
 let string_of_script ds =
-  concat "" (List.map (suffix string_of_def "\n") ds)
+  concat "" (List.map string_of_def ds)

@@ -83,6 +83,7 @@ and t_iter = function
 and t_path path = match path.it with
   | RootP -> []
   | IdxP (path, e) -> t_path path @ t_exp e
+  | SliceP (path, e1, e2) -> t_path path @ t_exp e1 @ t_exp e2
   | DotP (path, _) -> t_path path
 
 
@@ -116,8 +117,8 @@ let t_rules = List.map t_rule
 
 let rec t_def' = function
   | RecD defs -> RecD (List.map t_def defs)
-  | RelD (id, mixop, typ, rules, hints) ->
-    RelD (id, mixop, typ, t_rules rules, hints)
+  | RelD (id, mixop, typ, rules) ->
+    RelD (id, mixop, typ, t_rules rules)
   | def -> def
 
 and t_def x = { x with it = t_def' x.it }
