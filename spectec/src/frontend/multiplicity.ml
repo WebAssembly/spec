@@ -116,6 +116,10 @@ and check_path env ctx p =
   | IdxP (p1, e) ->
     check_path env ctx p1;
     check_exp env ctx e
+  | SliceP (p1, e1, e2) ->
+    check_path env ctx p1;
+    check_exp env ctx e1;
+    check_exp env ctx e2
   | DotP (p1, _) ->
     check_path env ctx p1
 
@@ -130,7 +134,7 @@ let rec check_prem env ctx prem =
 
 let check_def d : env =
   match d.it with
-  | SynD _ | RelD _ | VarD _ | DecD _ | SepD -> Env.empty
+  | SynD _ | RelD _ | VarD _ | DecD _ | SepD | HintD _ -> Env.empty
   | RuleD (_id1, _id2, e, prems) ->
     let env = ref Env.empty in
     check_exp env [] e;
@@ -256,6 +260,11 @@ and annot_path env p : Il.Ast.path * occur =
     let p1', occur1 = annot_path env p1 in
     let e', occur2 = annot_exp env e in
     IdxP (p1', e') $ p.at, union occur1 occur2
+  | SliceP (p1, e1, e2) ->
+    let p1', occur1 = annot_path env p1 in
+    let e1', occur2 = annot_exp env e1 in
+    let e2', occur3 = annot_exp env e2 in
+    SliceP (p1', e1', e2') $ p.at, union occur1 (union occur2 occur3)
   | DotP (p1, atom) ->
     let p1', occur1 = annot_path env p1 in
     DotP (p1', atom) $ p.at, occur1

@@ -64,14 +64,14 @@ sphinx-splice: sphinx-html sphinx-pdf
 sphinx-html: $(SPHINXOUTNAME).rst conf.py
 	mkdir -p $(SPHINXDIR)/_build
 	cp $(SPHINXOUTNAME).rst conf.py $(SPHINXDIR)
-	sphinx-build -b html $(SPHINXDIR) $(SPHINXDIR)/_build
+	sphinx-build -W -b html $(SPHINXDIR) $(SPHINXDIR)/_build
 	sed "s/textsc{/mathrm{/g" $(SPHINXDIR)/_build/$(SPHINXOUTNAME).html >$(SPHINXOUTNAME).html.tmp
 	mv -f $(SPHINXOUTNAME).html.tmp $(SPHINXDIR)/_build/$(SPHINXOUTNAME).html
 
 sphinx-pdf: $(SPHINXOUTNAME).rst conf.py
 	mkdir -p $(SPHINXDIR)/_build
 	cp $(SPHINXOUTNAME).rst conf.py $(SPHINXDIR)
-	sphinx-build -b latex $(SPHINXDIR) $(SPHINXDIR)/_build
+	sphinx-build -W -b latex $(SPHINXDIR) $(SPHINXDIR)/_build
 	(cd $(SPHINXDIR)/_build; pdflatex $(SPHINXOUTNAME).tex)
 
 

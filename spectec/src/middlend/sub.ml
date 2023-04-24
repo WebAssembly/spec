@@ -127,6 +127,7 @@ and t_iterexp env (iter, vs) = (t_iter env iter, vs)
 and t_path' env = function
   | RootP -> RootP
   | IdxP (path, e) -> IdxP (t_path env path, t_exp env e)
+  | SliceP (path, e1, e2) -> SliceP (t_path env path, t_exp env e1, t_exp env e2)
   | DotP (path, a) -> DotP (t_path env path, a)
 
 and t_path env x = { x with it = t_path' env x.it }
@@ -157,10 +158,10 @@ let t_rule env x = { x with it = t_rule' env x.it }
 
 let rec t_def' env = function
   | RecD defs -> RecD (List.map (t_def env) defs)
-  | DecD (id, typ1, typ2, clauses, hints) ->
-    DecD (id, typ1, typ2, t_clauses env clauses, hints)
-  | RelD (id, mixop, typ, rules, hints) ->
-    RelD (id, mixop, typ, List.map (t_rule env) rules, hints)
+  | DecD (id, typ1, typ2, clauses) ->
+    DecD (id, typ1, typ2, t_clauses env clauses)
+  | RelD (id, mixop, typ, rules) ->
+    RelD (id, mixop, typ, List.map (t_rule env) rules)
   | def -> def
 
 and t_def env (def : def) = { def with it = t_def' env def.it }
@@ -169,7 +170,7 @@ and t_def env (def : def) = { def with it = t_def' env def.it }
 
 let rec add_type_info env (def : def) = match def.it with
   | RecD defs -> List.iter (add_type_info env) defs
-  | SynD (id, deftyp, _hints) ->
+  | SynD (id, deftyp) ->
     begin match deftyp.it with
     | VariantT cases -> register_variant env id cases
     | AliasT {it = VarT id2; _} -> register_alias env id id2
@@ -208,7 +209,7 @@ let insert_injections env (def : def) : def list =
             CaseE (a, xe, VarT real_id $ no_region) $ no_region,
             CaseE (a, xe, sup_ty) $ no_region, []) $ no_region
       ) cases in
-    DecD (name, sub_ty, sup_ty, clauses, []) $ no_region
+    DecD (name, sub_ty, sup_ty, clauses) $ no_region
   ) pairs
 
 

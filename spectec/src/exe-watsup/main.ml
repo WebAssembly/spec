@@ -10,11 +10,11 @@ let version = "0.3"
 (* Flags and parameters *)
 
 type target =
- | None
+ | Check
  | Latex of Backend_latex.Config.config
  | Prose
 
- let target = ref (Latex Backend_latex.Config.latex)
+let target = ref (Latex Backend_latex.Config.latex)
 
 let log = ref false  (* log execution steps *)
 let dst = ref false  (* patch files *)
@@ -31,6 +31,7 @@ let print_all_il = ref false
 
 let pass_sub = ref false
 let pass_totalize = ref false
+
 
 (* Argument parsing *)
 
@@ -51,17 +52,19 @@ let argspec = Arg.align
   "-l", Arg.Set log, " Log execution steps";
   "-w", Arg.Set warn, " Warn about unsed or multiply used splices";
 
+  "--check", Arg.Unit (fun () -> target := Check), " Check only";
+  "--latex", Arg.Unit (fun () -> target := Latex Backend_latex.Config.latex),
+    " Generate Latex (default)";
+  "--sphinx", Arg.Unit (fun () -> target := Latex Backend_latex.Config.sphinx),
+    " Generate Latex for Sphinx";
+  "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
+
   "--print-il", Arg.Set print_elab_il, "Print il (after elaboration)";
   "--print-final-il", Arg.Set print_final_il, "Print final il";
   "--print-all-il", Arg.Set print_all_il, "Print il after each step";
 
   "--sub", Arg.Set pass_sub, "Synthesize explicit subtype coercions";
   "--totalize", Arg.Set pass_totalize, "Run function totalization";
-
-  "--check-only", Arg.Unit (fun () -> target := None), " No output (just checking)";
-  "--latex", Arg.Unit (fun () -> target := Latex Backend_latex.Config.latex), " Use Latex settings (default)";
-  "--sphinx", Arg.Unit (fun () -> target := Latex Backend_latex.Config.latex), " Use Sphinx settings";
-  "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
@@ -80,32 +83,37 @@ let () =
     let el = List.concat_map Frontend.Parse.parse_file !srcs in
     log "Elaboration...";
     let il = Frontend.Elab.elab el in
-    if !print_elab_il || !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+    if !print_elab_il || !print_all_il then
+      Printf.printf "%s\n%!" (Il.Print.string_of_script il);
     log "IL Validation...";
     Il.Validation.valid il;
 
-    let il = if !pass_sub then begin
-      log "Subtype injection...";
-      let il = Middlend.Sub.transform il in
-      if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
-      log "IL Validation...";
-      Il.Validation.valid il;
-      il
-    end else il in
+    let il = if not !pass_sub then il else
+      ( log "Subtype injection...";
+        let il = Middlend.Sub.transform il in
+        if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+        log "IL Validation...";
+        Il.Validation.valid il;
+        il
+      )
+    in
 
-    let il = if !pass_totalize then begin
-      log "Function totalization...";
-      let il = Middlend.Totalize.transform il in
-      if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
-      log "IL Validation...";
-      Il.Validation.valid il;
-      il
-    end else il in
+    let il = if not !pass_totalize then il else
+      ( log "Function totalization...";
+        let il = Middlend.Totalize.transform il in
+        if !print_all_il then
+          Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+        log "IL Validation...";
+        Il.Validation.valid il;
+        il
+      )
+    in
 
-    if !print_final_il && not !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+    if !print_final_il && not !print_all_il then
+      Printf.printf "%s\n%!" (Il.Print.string_of_script il);
 
-    begin match !target with
-    | None -> ()
+    (match !target with
+    | Check -> ()
     | Latex config ->
       log "Latex Generation...";
       if !odst = "" && !dsts = [] then
@@ -128,7 +136,7 @@ let () =
         let prose = Backend_prose.Translate.translate el in
         print_endline prose
       )
-    end;
+    );
     log "Complete."
   with
   | Source.Error (at, msg) ->
