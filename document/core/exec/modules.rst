@@ -414,7 +414,7 @@ where:
    S_5, \elemaddr^\ast &=&
      \allocelem^\ast(S_4, \insttype_{\moduleinst}(\elem.\ETYPE)^\ast, (\reff_{\F{e}}^\ast)^\ast) \\
    S', \dataaddr^\ast &=&
-     \allocdata^\ast(S_5, \insttype_{\moduleinst}(\data.\DINIT)^\ast) \\
+     \allocdata^\ast(S_5, \data.\DINIT^\ast) \\
    \exportinst^\ast &=&
      \{ \EINAME~(\export.\ENAME), \EIVALUE~\externval_{\F{ex}} \}^\ast \\[1ex]
    \evfuncs(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIFUNCS[x])^\ast
