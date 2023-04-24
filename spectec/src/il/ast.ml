@@ -123,6 +123,7 @@ and path = path' phrase
 and path' =
   | RootP                        (*  *)
   | IdxP of path * exp           (* path `[` exp `]` *)
+  | SliceP of path * exp * exp   (* path `[` exp `:` exp `]` *)
   | DotP of path * atom          (* path `.` atom *)
 
 and iterexp = iter * id list
@@ -134,9 +135,9 @@ and binds = (id * typ * iter list) list
 
 and def = def' phrase
 and def' =
-  | SynD of id * deftyp * hint list                   (* syntax type *)
-  | RelD of id * mixop * typ * rule list * hint list  (* relation *)
-  | DecD of id * typ * typ * clause list * hint list  (* definition *)
+  | SynD of id * deftyp                               (* syntax type *)
+  | RelD of id * mixop * typ * rule list              (* relation *)
+  | DecD of id * typ * typ * clause list              (* definition *)
   | RecD of def list                                  (* recursive *)
   | HintD of hintdef
 

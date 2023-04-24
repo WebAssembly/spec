@@ -158,6 +158,7 @@ and t_path env n = phrase t_path' env n
 and t_path' env n path = match path with
   | RootP -> [], path
   | IdxP (path, e) -> binary t_path t_exp env n (path, e) (fun (path', e') -> IdxP (path', e'))
+  | SliceP (path, e1, e2) -> ternary t_path t_exp t_exp env n (path, e1, e2) (fun (path', e1', e2') -> SliceP (path', e1', e2'))
   | DotP (path, a) -> unary t_path env n path (fun path' -> DotP (path', a))
 
 let rec t_prem env n : premise -> eqns * premise = phrase t_prem' env n
@@ -194,8 +195,8 @@ let t_rules env = List.map (t_rule env)
 
 let rec t_def' env = function
   | RecD defs -> RecD (List.map (t_def env) defs)
-  | RelD (id, mixop, typ, rules, hints) ->
-    RelD (id, mixop, typ, t_rules env rules, hints)
+  | RelD (id, mixop, typ, rules) ->
+    RelD (id, mixop, typ, t_rules env rules)
   | def -> def
 
 and t_def env x = { x with it = t_def' env x.it }

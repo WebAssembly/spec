@@ -27,17 +27,17 @@ let _error at msg = Source.error at "totalize" msg
 module S = Set.Make(String)
 
 type env =
-  { mutable total_funs : S.t;
+  { mutable partial_funs : S.t;
   }
 
 let new_env () : env =
-  { total_funs = S.empty;
+  { partial_funs = S.empty;
   }
 
-let is_partial (env : env) (id : id) = S.mem id.it env.total_funs
+let is_partial (env : env) (id : id) = S.mem id.it env.partial_funs
 
-let register (env : env) (id :id) =
-  env.total_funs <- S.add id.it env.total_funs
+let register_partial (env : env) (id :id) =
+  env.partial_funs <- S.add id.it env.partial_funs
 
 (* Transformation *)
 
@@ -86,6 +86,7 @@ and t_iterexp env (iter, vs) = (t_iter env iter, vs)
 and t_path' env = function
   | RootP -> RootP
   | IdxP (path, e) -> IdxP (t_path env path, t_exp env e)
+  | SliceP (path, e1, e2) -> SliceP (t_path env path, t_exp env e1, t_exp env e2)
   | DotP (path, a) -> DotP (t_path env path, a)
 
 and t_path env x = { x with it = t_path' env x.it }
@@ -106,8 +107,6 @@ let t_clause' env = function
 
 let t_clause env (clause : clause) = { clause with it = t_clause' env clause.it }
 
-let is_partial_hint hint = hint.hintid.it = "partial"
-
 let t_rule' env = function
   | RuleD (id, binds, mixop, exp, prems) ->
     RuleD (id, binds, mixop, t_exp env exp, t_prems env prems)
@@ -116,9 +115,9 @@ let t_rule env x = { x with it = t_rule' env x.it }
 
 let rec t_def' env = function
   | RecD defs -> RecD (List.map (t_def env) defs)
-  | DecD (id, typ1, typ2, clauses, hints) ->
+  | DecD (id, typ1, typ2, clauses) ->
     let clauses' = List.map (t_clause env) clauses in
-    if List.exists is_partial_hint hints
+    if is_partial env id
     then
       let typ2' = IterT (typ2, Opt) $ no_region in
       let clauses'' = List.map (fun clause -> match clause.it with
@@ -127,19 +126,26 @@ let rec t_def' env = function
         ) clauses' in
       let x = "x" $ no_region in
       let catch_all = DefD ([(x, typ1, [])], VarE x $ no_region, OptE None $ no_region, []) $ no_region in
-      let hints' = List.filter (fun hint -> not (is_partial_hint hint)) hints in
-      register env id;
-      DecD (id, typ1, typ2', clauses'' @ [ catch_all ], hints')
+      DecD (id, typ1, typ2', clauses'' @ [ catch_all ])
     else
-      DecD (id, typ1, typ2, clauses', hints)
-  | RelD (id, mixop, typ, rules, hints) ->
-    RelD (id, mixop, typ, List.map (t_rule env) rules, hints)
+      DecD (id, typ1, typ2, clauses')
+  | RelD (id, mixop, typ, rules) ->
+    RelD (id, mixop, typ, List.map (t_rule env) rules)
   | (SynD _ | HintD _) as def -> def
 
 and t_def env x = { x with it = t_def' env x.it }
 
 
+let is_partial_hint hint = hint.hintid.it = "partial"
+
+let register_hints env def =
+  match def.it with
+  | HintD {it = DecH (id, hints); _} when List.exists is_partial_hint hints ->
+    register_partial env id
+  | _ -> ()
+
 let transform (defs : script) =
   let env = new_env () in
+  List.iter (register_hints env) defs;
   List.map (t_def env) defs
 

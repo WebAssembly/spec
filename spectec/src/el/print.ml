@@ -166,6 +166,8 @@ and string_of_path p =
   match p.it with
   | RootP -> ""
   | IdxP (p1, e) -> string_of_path p1 ^ "[" ^ string_of_exp e ^ "]"
+  | SliceP (p1, e1, e2) ->
+    string_of_path p1 ^ "[" ^ string_of_exp e1 ^ " : " ^ string_of_exp e2 ^ "]"
   | DotP ({it = RootP; _}, atom) -> string_of_atom atom
   | DotP (p1, atom) -> string_of_path p1 ^ "." ^ string_of_atom atom
 

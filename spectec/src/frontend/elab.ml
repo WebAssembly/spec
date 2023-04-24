@@ -719,6 +719,21 @@ and elab_exp_notation' env e t : Il.exp list =
   (* Iterations at the end of a sequence may be inlined *)
   | _, SeqT [{it = IterT _; _} as t1] ->
     elab_exp_notation' env e t1
+  (* Optional iterations may always be inlined, use backtracking *)
+  | SeqE (e1::es2), SeqT (({it = IterT (_, Opt); _} as t1)::ts2) ->
+    (try
+      let es1' = [cast_empty "omitted sequence tail" env t1 e.at] in
+      let es2' = elab_exp_notation' env e (SeqT ts2 $ t.at) in
+      es1' @ es2'
+    with Source.Error _ ->
+      (*
+      Printf.printf "[backtrack %s] %s  :  %s\n%!"
+        (string_of_region e.at) (string_of_exp e) (string_of_typ t);
+      *)
+      let es1' = elab_exp_notation' env e1 t1 in
+      let es2' = elab_exp_notation' env (SeqE es2 $ e.at) (SeqT ts2 $ t.at) in
+      es1' @ es2'
+    )
   | SeqE (e1::es2), SeqT (t1::ts2) ->
     let es1' = elab_exp_notation' env (unparen_exp e1) t1 in
     let es2' = elab_exp_notation' env (SeqE es2 $ e.at) (SeqT ts2 $ t.at) in
@@ -830,11 +845,17 @@ and elab_path env p t : Il.path * typ =
   match p.it with
   | RootP ->
     Il.RootP $ p.at, t
-  | IdxP (p1, e2) ->
+  | IdxP (p1, e1) ->
     let p1', t1 = elab_path env p1 t in
+    let e1' = elab_exp env e1 (NatT $ e1.at) in
+    let t = as_list_typ "path" env Check t1 p1.at in
+    Il.IdxP (p1', e1') $ p.at, t
+  | SliceP (p1, e1, e2) ->
+    let p1', t1 = elab_path env p1 t in
+    let e1' = elab_exp env e1 (NatT $ e1.at) in
     let e2' = elab_exp env e2 (NatT $ e2.at) in
-    let t1 = as_list_typ "path" env Check t1 p1.at in
-    Il.IdxP (p1', e2') $ p.at, t1
+    let _ = as_list_typ "path" env Check t1 p1.at in
+    Il.SliceP (p1', e1', e2') $ p.at, t1
   | DotP (p1, atom) ->
     let p1', t1 = elab_path env p1 t in
     let tfs = as_struct_typ "path" env Check t1 p1.at in
@@ -936,19 +957,21 @@ let infer_def env d =
 
 let elab_hintdef _env hd : Il.def list =
   match hd.it with
-  | SynH (id1, id2, hints) ->
-    let id' = if id2.it = "" then id1.it else id1.it ^ "/" ^ id2.it in
-    [Il.HintD (Il.SynH (id' $ id1.at, elab_hints hints) $ hd.at) $ hd.at]
+  | SynH (id1, _id2, hints) ->
+    if hints = [] then [] else
+    [Il.HintD (Il.SynH (id1, elab_hints hints) $ hd.at) $ hd.at]
   | RelH (id, hints) ->
+    if hints = [] then [] else
     [Il.HintD (Il.RelH (id, elab_hints hints) $ hd.at) $ hd.at]
   | DecH (id, hints) ->
+    if hints = [] then [] else
     [Il.HintD (Il.DecH (id, elab_hints hints) $ hd.at) $ hd.at]
   | AtomH _ | VarH _ ->
     []
 
 let elab_def env d : Il.def list =
   match d.it with
-  | SynD (id1, _id2, t, hints) ->
+  | SynD (id1, id2, t, hints) ->
     let dt' = elab_typ_definition env id1 t in
     let t1, closed =
       match find "syntax type" env.typs id1, t.it with
@@ -972,11 +995,13 @@ let elab_def env d : Il.def list =
       (string_of_typ t) (Il.Print.string_of_deftyp dt');
     *)
     env.typs <- rebind "syntax type" env.typs id1 (Either.Right (t1, dt'));
-    if not closed then [] else [Il.SynD (id1, dt', elab_hints hints) $ d.at]
+    (if not closed then [] else [Il.SynD (id1, dt') $ d.at])
+      @ elab_hintdef env (SynH (id1, id2, hints) $ d.at)
   | RelD (id, t, hints) ->
     let _, mixop, ts' = elab_typ_notation env t in
     env.rels <- bind "relation" env.rels id (t, []);
-    [Il.RelD (id, mixop, tup_typ' ts' t.at, [], elab_hints hints) $ d.at]
+    [Il.RelD (id, mixop, tup_typ' ts' t.at, []) $ d.at]
+      @ elab_hintdef env (RelH (id, hints) $ d.at)
   | RuleD (id1, id2, e, prems) ->
     let dims = Multiplicity.check_def d in
     let dims' = Multiplicity.Env.map (List.map (elab_iter env)) dims in
@@ -1000,7 +1025,8 @@ let elab_def env d : Il.def list =
     let t1' = elab_typ env t1 in
     let t2' = elab_typ env t2 in
     env.defs <- bind "function" env.defs id (t1, t2, []);
-    [Il.DecD (id, t1', t2', [], elab_hints hints) $ d.at]
+    [Il.DecD (id, t1', t2', []) $ d.at]
+      @ elab_hintdef env (DecH (id, hints) $ d.at)
   | DefD (id, e1, e2, prems) ->
     let dims = Multiplicity.check_def d in
     let dims' = Multiplicity.Env.map (List.map (elab_iter env)) dims in
@@ -1028,12 +1054,12 @@ let elab_def env d : Il.def list =
 let populate_def env d' : Il.def =
   match d'.it with
   | Il.SynD _ | Il.HintD _ -> d'
-  | Il.RelD (id, mixop, t', [], hints') ->
+  | Il.RelD (id, mixop, t', []) ->
     let _, rules' = find "relation" env.rels id in
-    Il.RelD (id, mixop, t', List.rev rules', hints') $ d'.at
-  | Il.DecD (id, t1', t2', [], hints') ->
+    Il.RelD (id, mixop, t', List.rev rules') $ d'.at
+  | Il.DecD (id, t1', t2', []) ->
     let _, _, clauses' = find "function" env.defs id in
-    Il.DecD (id, t1', t2', List.rev clauses', hints') $ d'.at
+    Il.DecD (id, t1', t2', List.rev clauses') $ d'.at
   | _ ->
     assert false
 
@@ -1044,7 +1070,12 @@ let origins i (map : int Map.t ref) (set : Il.Free.Set.t) =
   Il.Free.Set.iter (fun id -> map := Map.add id i !map) set
 
 let deps (map : int Map.t) (set : Il.Free.Set.t) : int array =
-  Array.map (fun id -> Map.find id map) (Array.of_seq (Il.Free.Set.to_seq set))
+  Array.map (fun id ->
+try
+   Map.find id map
+with Not_found as e -> Printf.printf "[%s]\n%!" id; raise e
+ ) (Array.of_seq (Il.Free.Set.to_seq set))
+
 
 let check_recursion ds' =
   List.iter (fun d' ->
