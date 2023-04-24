@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly Web API</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version d9bd89757, updated Thu Mar 23 10:06:53 2023 -0700" name="generator">
+  <meta content="Bikeshed version bf22245b8, updated Tue Apr 18 15:53:37 2023 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-2/" rel="canonical">
-  <meta content="2a992ec2d30b0a7f0533ebdb5fe0cd7eb42553ca" name="document-revision">
+  <meta content="899ce6695d6555e1f3b9cdf3883bdbd2e8936372" name="document-revision">
 <style>/* style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -107,8 +107,7 @@ figcaption:not(.no-marker)::before {
     position: absolute;
     z-index: 35;
     width: 20em;
-    min-width: min-content;
-    max-width: 300px;
+    width: 300px;
     height: auto;
     max-height: 500px;
     overflow: auto;
@@ -125,8 +124,15 @@ figcaption:not(.no-marker)::before {
 .dfn-panel a { color: var(--dfnpanel-text); }
 .dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
 .dfn-panel > b + b { margin-top: 0.25em; }
-.dfn-panel ul { padding: 0; }
-.dfn-panel li { list-style: inside; }
+.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
+.dfn-panel li a {
+    white-space: pre;
+    display: inline-block;
+    max-width: calc(300px - 1.5em - 1em);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .dfn-panel.activated {
     display: inline-block;
     position: fixed;
@@ -137,7 +143,7 @@ figcaption:not(.no-marker)::before {
     max-height: 30vh;
 }
 
-.dfn-paneled { cursor: pointer; }
+.dfn-paneled[role="button"] { cursor: pointer; }
 </style>
 <style>/* style-issues */
 a[href].issue-return {
@@ -282,22 +288,21 @@ c-[vi] { color: #0077aa } /* Name.Variable.Instance */
 c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
 </style>
 <style>/* style-var-click-highlighting */
-
-    var { cursor: pointer; }
-    var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
-    var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
-    var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
-    var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
-    var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
-    var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
-    var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
-    </style>
+var { cursor: pointer; }
+var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
+var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
+var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
+var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
+var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
+var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
+var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+</style>
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-04-08">8 April 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-04-24">24 April 2023</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -663,331 +668,77 @@ review, approval, and registration with IANA.</p>
    <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source)</a><span>, in § 1</span>
    <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source, importObject)</a><span>, in § 1</span>
   </ul>
-  <aside aria-labelledby="infopaneltitle-for-c95026beaa8440767d9b07e67366e8a7" class="dfn-panel" data-for="c95026beaa8440767d9b07e67366e8a7" id="infopanel-for-c95026beaa8440767d9b07e67366e8a7">
-   <span id="infopaneltitle-for-c95026beaa8440767d9b07e67366e8a7" style="display:none">Info about the 'ArrayBuffer' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects">https://tc39.github.io/ecma262/#sec-arraybuffer-objects</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sec-arraybuffer-objects">1. Streaming Module Compilation and Instantiation</a>
-    <li><a href="#ref-for-sec-arraybuffer-objects①">3. Developer-Facing Display Conventions</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-28f48920b78e327d90225af978074155" class="dfn-panel" data-for="28f48920b78e327d90225af978074155" id="infopanel-for-28f48920b78e327d90225af978074155">
-   <span id="infopaneltitle-for-28f48920b78e327d90225af978074155" style="display:none">Info about the 'TypeError' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror①">(2)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror②">(3)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror③">(4)</a> <a href="#ref-for-sec-native-error-types-used-in-this-standard-typeerror④">(5)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-2b69410046aab674d5f0546bec85d1b3" class="dfn-panel" data-for="2b69410046aab674d5f0546bec85d1b3" id="infopanel-for-2b69410046aab674d5f0546bec85d1b3">
-   <span id="infopaneltitle-for-2b69410046aab674d5f0546bec85d1b3" style="display:none">Info about the 'agent cluster' external reference.</span><a href="https://tc39.github.io/ecma262/#sec-agent-clusters">https://tc39.github.io/ecma262/#sec-agent-clusters</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sec-agent-clusters">2. Serialization</a> <a href="#ref-for-sec-agent-clusters①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-6c9eecddeb7e35c49eca59bce9015c67" class="dfn-panel" data-for="6c9eecddeb7e35c49eca59bce9015c67" id="infopanel-for-6c9eecddeb7e35c49eca59bce9015c67">
-   <span id="infopaneltitle-for-6c9eecddeb7e35c49eca59bce9015c67" style="display:none">Info about the 'current realm' external reference.</span><a href="https://tc39.github.io/ecma262/#current-realm">https://tc39.github.io/ecma262/#current-realm</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-current-realm">2. Serialization</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-df56c9933bfdc177c891bb711f259407" class="dfn-panel" data-for="df56c9933bfdc177c891bb711f259407" id="infopanel-for-df56c9933bfdc177c891bb711f259407">
-   <span id="infopaneltitle-for-df56c9933bfdc177c891bb711f259407" style="display:none">Info about the 'Response' external reference.</span><a href="https://fetch.spec.whatwg.org/#response">https://fetch.spec.whatwg.org/#response</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-response">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-response①">(2)</a> <a href="#ref-for-response②">(3)</a> <a href="#ref-for-response③">(4)</a> <a href="#ref-for-response④">(5)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-0b6fcf799cb7ea0359e0702123ab61e5" class="dfn-panel" data-for="0b6fcf799cb7ea0359e0702123ab61e5" id="infopanel-for-0b6fcf799cb7ea0359e0702123ab61e5">
-   <span id="infopaneltitle-for-0b6fcf799cb7ea0359e0702123ab61e5" style="display:none">Info about the 'consume body' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-body-consume-body">https://fetch.spec.whatwg.org/#concept-body-consume-body</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-body-consume-body">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-6ef0be99a5b17cb515c6816ad5548e89" class="dfn-panel" data-for="6ef0be99a5b17cb515c6816ad5548e89" id="infopanel-for-6ef0be99a5b17cb515c6816ad5548e89">
-   <span id="infopaneltitle-for-6ef0be99a5b17cb515c6816ad5548e89" style="display:none">Info about the 'get' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-header-list-get">https://fetch.spec.whatwg.org/#concept-header-list-get</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-header-list-get">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-d94cb5e6252c9158478ebbe8a624e99c" class="dfn-panel" data-for="d94cb5e6252c9158478ebbe8a624e99c" id="infopanel-for-d94cb5e6252c9158478ebbe8a624e99c">
-   <span id="infopaneltitle-for-d94cb5e6252c9158478ebbe8a624e99c" style="display:none">Info about the 'header list' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-response-header-list">https://fetch.spec.whatwg.org/#concept-response-header-list</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-response-header-list">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-7fc2d90e004303dc3283c8fec6edc2e1" class="dfn-panel" data-for="7fc2d90e004303dc3283c8fec6edc2e1" id="infopanel-for-7fc2d90e004303dc3283c8fec6edc2e1">
-   <span id="infopaneltitle-for-7fc2d90e004303dc3283c8fec6edc2e1" style="display:none">Info about the 'http tab or space byte' external reference.</span><a href="https://fetch.spec.whatwg.org/#http-tab-or-space-byte">https://fetch.spec.whatwg.org/#http-tab-or-space-byte</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-http-tab-or-space-byte">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-4c5f8fcb3d3bc6012b505bef39f38ada" class="dfn-panel" data-for="4c5f8fcb3d3bc6012b505bef39f38ada" id="infopanel-for-4c5f8fcb3d3bc6012b505bef39f38ada">
-   <span id="infopaneltitle-for-4c5f8fcb3d3bc6012b505bef39f38ada" style="display:none">Info about the 'ok status' external reference.</span><a href="https://fetch.spec.whatwg.org/#ok-status">https://fetch.spec.whatwg.org/#ok-status</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-ok-status">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-ok-status①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-12a5f639c62d2f0bd5e5e8ab36848416" class="dfn-panel" data-for="12a5f639c62d2f0bd5e5e8ab36848416" id="infopanel-for-12a5f639c62d2f0bd5e5e8ab36848416">
-   <span id="infopaneltitle-for-12a5f639c62d2f0bd5e5e8ab36848416" style="display:none">Info about the 'response' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-response-response">https://fetch.spec.whatwg.org/#concept-response-response</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-response-response">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-1b6fecbab51caa95d9e527debe16b0b0" class="dfn-panel" data-for="1b6fecbab51caa95d9e527debe16b0b0" id="infopanel-for-1b6fecbab51caa95d9e527debe16b0b0">
-   <span id="infopaneltitle-for-1b6fecbab51caa95d9e527debe16b0b0" style="display:none">Info about the 'status' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-response-status">https://fetch.spec.whatwg.org/#concept-response-status</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-response-status">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-d920b917b35b57f8b17f0e92fc7e202a" class="dfn-panel" data-for="d920b917b35b57f8b17f0e92fc7e202a" id="infopanel-for-d920b917b35b57f8b17f0e92fc7e202a">
-   <span id="infopaneltitle-for-d920b917b35b57f8b17f0e92fc7e202a" style="display:none">Info about the 'Serializable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#serializable">https://html.spec.whatwg.org/multipage/structured-data.html#serializable</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-serializable">2. Serialization</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-b422b1bbdd20533a7dc8ad39fa0b5f84" class="dfn-panel" data-for="b422b1bbdd20533a7dc8ad39fa0b5f84" id="infopanel-for-b422b1bbdd20533a7dc8ad39fa0b5f84">
-   <span id="infopaneltitle-for-b422b1bbdd20533a7dc8ad39fa0b5f84" style="display:none">Info about the 'cors-same-origin' external reference.</span><a href="https://html.spec.whatwg.org/#cors-same-origin">https://html.spec.whatwg.org/#cors-same-origin</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-cors-same-origin">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-cors-same-origin①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-3ad3a8594a35249376ff51fe520fe1ce" class="dfn-panel" data-for="3ad3a8594a35249376ff51fe520fe1ce" id="infopanel-for-3ad3a8594a35249376ff51fe520fe1ce">
-   <span id="infopaneltitle-for-3ad3a8594a35249376ff51fe520fe1ce" style="display:none">Info about the 'deserialization steps' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps">https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-deserialization-steps">2. Serialization</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-a62bba5e3257149e6f7839babb61b77a" class="dfn-panel" data-for="a62bba5e3257149e6f7839babb61b77a" id="infopanel-for-a62bba5e3257149e6f7839babb61b77a">
-   <span id="infopaneltitle-for-a62bba5e3257149e6f7839babb61b77a" style="display:none">Info about the 'networking task source' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source">https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-networking-task-source">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-86e3b084870f52f55c6f2f6acf81fc1c" class="dfn-panel" data-for="86e3b084870f52f55c6f2f6acf81fc1c" id="infopanel-for-86e3b084870f52f55c6f2f6acf81fc1c">
-   <span id="infopaneltitle-for-86e3b084870f52f55c6f2f6acf81fc1c" style="display:none">Info about the 'serialization steps' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps">https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-serialization-steps">2. Serialization</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-f203d50266622c51007b87c613ac606a" class="dfn-panel" data-for="f203d50266622c51007b87c613ac606a" id="infopanel-for-f203d50266622c51007b87c613ac606a">
-   <span id="infopaneltitle-for-f203d50266622c51007b87c613ac606a" style="display:none">Info about the 'sub-deserialization' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization">https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sub-deserialization">2. Serialization</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-322c2e013a81d54c9fafc08d176f786a" class="dfn-panel" data-for="322c2e013a81d54c9fafc08d176f786a" id="infopanel-for-322c2e013a81d54c9fafc08d176f786a">
-   <span id="infopaneltitle-for-322c2e013a81d54c9fafc08d176f786a" style="display:none">Info about the 'sub-serialization' external reference.</span><a href="https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization">https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-sub-serialization">2. Serialization</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-c79a743632b2700b6247337edd905ce4" class="dfn-panel" data-for="c79a743632b2700b6247337edd905ce4" id="infopanel-for-c79a743632b2700b6247337edd905ce4">
-   <span id="infopaneltitle-for-c79a743632b2700b6247337edd905ce4" style="display:none">Info about the 'byte-case-insensitive' external reference.</span><a href="https://infra.spec.whatwg.org/#byte-case-insensitive">https://infra.spec.whatwg.org/#byte-case-insensitive</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-byte-case-insensitive">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-472069b9d8a16861fa9664c9792a7131" class="dfn-panel" data-for="472069b9d8a16861fa9664c9792a7131" id="infopanel-for-472069b9d8a16861fa9664c9792a7131">
-   <span id="infopaneltitle-for-472069b9d8a16861fa9664c9792a7131" style="display:none">Info about the 'CompileError' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror">https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-exceptiondef-compileerror">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-3140fd7e0da5c570743bffe1d66c7ce3" class="dfn-panel" data-for="3140fd7e0da5c570743bffe1d66c7ce3" id="infopanel-for-3140fd7e0da5c570743bffe1d66c7ce3">
-   <span id="infopaneltitle-for-3140fd7e0da5c570743bffe1d66c7ce3" style="display:none">Info about the 'Module' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#module">https://webassembly.github.io/spec/js-api/#module</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-module">1. Streaming Module Compilation and Instantiation</a>
-    <li><a href="#ref-for-module①">2. Serialization</a> <a href="#ref-for-module②">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-26e990cf3dbe445b574eee9bcf3ccd63" class="dfn-panel" data-for="26e990cf3dbe445b574eee9bcf3ccd63" id="infopanel-for-26e990cf3dbe445b574eee9bcf3ccd63">
-   <span id="infopaneltitle-for-26e990cf3dbe445b574eee9bcf3ccd63" style="display:none">Info about the 'WebAssembly' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly">https://webassembly.github.io/spec/js-api/#namespacedef-webassembly</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-namespacedef-webassembly">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-1972f7e99f285e8c7a05bf5639894d0c" class="dfn-panel" data-for="1972f7e99f285e8c7a05bf5639894d0c" id="infopanel-for-1972f7e99f285e8c7a05bf5639894d0c">
-   <span id="infopaneltitle-for-1972f7e99f285e8c7a05bf5639894d0c" style="display:none">Info about the 'WebAssemblyInstantiatedSource' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource">https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dictdef-webassemblyinstantiatedsource">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-a1183097e07243fa99953ed37c09456c" class="dfn-panel" data-for="a1183097e07243fa99953ed37c09456c" id="infopanel-for-a1183097e07243fa99953ed37c09456c">
-   <span id="infopaneltitle-for-a1183097e07243fa99953ed37c09456c" style="display:none">Info about the 'asynchronously compile a webassembly module' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module">https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-asynchronously-compile-a-webassembly-module">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-ee14d9890846b52d2e6de0acc27a99d4" class="dfn-panel" data-for="ee14d9890846b52d2e6de0acc27a99d4" id="infopanel-for-ee14d9890846b52d2e6de0acc27a99d4">
-   <span id="infopaneltitle-for-ee14d9890846b52d2e6de0acc27a99d4" style="display:none">Info about the 'compile a webassembly module' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module">https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-compile-a-webassembly-module">2. Serialization</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-3ed910d68fafd94810fd8ed644f9a0aa" class="dfn-panel" data-for="3ed910d68fafd94810fd8ed644f9a0aa" id="infopanel-for-3ed910d68fafd94810fd8ed644f9a0aa">
-   <span id="infopaneltitle-for-3ed910d68fafd94810fd8ed644f9a0aa" style="display:none">Info about the 'exported function' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#exported-function">https://webassembly.github.io/spec/js-api/#exported-function</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-exported-function">3. Developer-Facing Display Conventions</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-6faea3f0afd7563f930d0b2a1fed49c1" class="dfn-panel" data-for="6faea3f0afd7563f930d0b2a1fed49c1" id="infopanel-for-6faea3f0afd7563f930d0b2a1fed49c1">
-   <span id="infopaneltitle-for-6faea3f0afd7563f930d0b2a1fed49c1" style="display:none">Info about the 'instantiate' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate">https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-webassembly-instantiate">3. Developer-Facing Display Conventions</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-5ac1912add7c40a9b5570acfcbed8007" class="dfn-panel" data-for="5ac1912add7c40a9b5570acfcbed8007" id="infopanel-for-5ac1912add7c40a9b5570acfcbed8007">
-   <span id="infopaneltitle-for-5ac1912add7c40a9b5570acfcbed8007" style="display:none">Info about the 'instantiate a promise of a module' external reference.</span><a href="https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module">https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-instantiate-a-promise-of-a-module">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-03f5a516ed2db63b6b9fe3530ba53ba5" class="dfn-panel" data-for="03f5a516ed2db63b6b9fe3530ba53ba5" id="infopanel-for-03f5a516ed2db63b6b9fe3530ba53ba5">
-   <span id="infopaneltitle-for-03f5a516ed2db63b6b9fe3530ba53ba5" style="display:none">Info about the 'function index' external reference.</span><a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx">https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-syntax-funcidx">3. Developer-Facing Display Conventions</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-43f4ac33ddf496432bbe4bcbb4dc3ef9" class="dfn-panel" data-for="43f4ac33ddf496432bbe4bcbb4dc3ef9" id="infopanel-for-43f4ac33ddf496432bbe4bcbb4dc3ef9">
-   <span id="infopaneltitle-for-43f4ac33ddf496432bbe4bcbb4dc3ef9" style="display:none">Info about the 'name section' external reference.</span><a href="https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec">https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-binary-namesec">3. Developer-Facing Display Conventions</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-0ab204fb9cc9a746edaff83c0db0740a" class="dfn-panel" data-for="0ab204fb9cc9a746edaff83c0db0740a" id="infopanel-for-0ab204fb9cc9a746edaff83c0db0740a">
-   <span id="infopaneltitle-for-0ab204fb9cc9a746edaff83c0db0740a" style="display:none">Info about the 'DOMException' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-DOMException">https://webidl.spec.whatwg.org/#idl-DOMException</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idl-DOMException">2. Serialization</a> <a href="#ref-for-idl-DOMException①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-1af5e3e985ab9044ac30e5cd83bb4545" class="dfn-panel" data-for="1af5e3e985ab9044ac30e5cd83bb4545" id="infopanel-for-1af5e3e985ab9044ac30e5cd83bb4545">
-   <span id="infopaneltitle-for-1af5e3e985ab9044ac30e5cd83bb4545" style="display:none">Info about the 'DataCloneError' external reference.</span><a href="https://webidl.spec.whatwg.org/#datacloneerror">https://webidl.spec.whatwg.org/#datacloneerror</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-datacloneerror">2. Serialization</a> <a href="#ref-for-datacloneerror①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dde049eb112f043fc45407ec0d4cb457" class="dfn-panel" data-for="dde049eb112f043fc45407ec0d4cb457" id="infopanel-for-dde049eb112f043fc45407ec0d4cb457">
-   <span id="infopaneltitle-for-dde049eb112f043fc45407ec0d4cb457" style="display:none">Info about the 'Exposed' external reference.</span><a href="https://webidl.spec.whatwg.org/#Exposed">https://webidl.spec.whatwg.org/#Exposed</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-Exposed">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-93669c631ec1ef8e696b4c083bdbe12c" class="dfn-panel" data-for="93669c631ec1ef8e696b4c083bdbe12c" id="infopanel-for-93669c631ec1ef8e696b4c083bdbe12c">
-   <span id="infopaneltitle-for-93669c631ec1ef8e696b4c083bdbe12c" style="display:none">Info about the 'Promise' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-promise">https://webidl.spec.whatwg.org/#idl-promise</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idl-promise">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-idl-promise①">(2)</a> <a href="#ref-for-idl-promise②">(3)</a> <a href="#ref-for-idl-promise③">(4)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-bbe33fc7ac016834e4aaddbfd1b084a1" class="dfn-panel" data-for="bbe33fc7ac016834e4aaddbfd1b084a1" id="infopanel-for-bbe33fc7ac016834e4aaddbfd1b084a1">
-   <span id="infopaneltitle-for-bbe33fc7ac016834e4aaddbfd1b084a1" style="display:none">Info about the 'a new promise' external reference.</span><a href="https://webidl.spec.whatwg.org/#a-new-promise">https://webidl.spec.whatwg.org/#a-new-promise</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-a-new-promise">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-0603a0691b03d199124b442d2d3e4f87" class="dfn-panel" data-for="0603a0691b03d199124b442d2d3e4f87" id="infopanel-for-0603a0691b03d199124b442d2d3e4f87">
-   <span id="infopaneltitle-for-0603a0691b03d199124b442d2d3e4f87" style="display:none">Info about the 'get a copy of the buffer source' external reference.</span><a href="https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy">https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-get-buffer-source-copy">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-5039223412f0d0a24ee17570f82d3d59" class="dfn-panel" data-for="5039223412f0d0a24ee17570f82d3d59" id="infopanel-for-5039223412f0d0a24ee17570f82d3d59">
-   <span id="infopaneltitle-for-5039223412f0d0a24ee17570f82d3d59" style="display:none">Info about the 'object' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-object">https://webidl.spec.whatwg.org/#idl-object</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idl-object">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-f7204c0306e7ffcb24c31adf6e629e1d" class="dfn-panel" data-for="f7204c0306e7ffcb24c31adf6e629e1d" id="infopanel-for-f7204c0306e7ffcb24c31adf6e629e1d">
-   <span id="infopaneltitle-for-f7204c0306e7ffcb24c31adf6e629e1d" style="display:none">Info about the 'reject' external reference.</span><a href="https://webidl.spec.whatwg.org/#reject">https://webidl.spec.whatwg.org/#reject</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-reject">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-reject①">(2)</a> <a href="#ref-for-reject②">(3)</a> <a href="#ref-for-reject③">(4)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-f4f973f92274819781816b033aea1f11" class="dfn-panel" data-for="f4f973f92274819781816b033aea1f11" id="infopanel-for-f4f973f92274819781816b033aea1f11">
-   <span id="infopaneltitle-for-f4f973f92274819781816b033aea1f11" style="display:none">Info about the 'resolve' external reference.</span><a href="https://webidl.spec.whatwg.org/#resolve">https://webidl.spec.whatwg.org/#resolve</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-resolve">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-f5ca5e20b5517a5008ecab4bb1349e91" class="dfn-panel" data-for="f5ca5e20b5517a5008ecab4bb1349e91" id="infopanel-for-f5ca5e20b5517a5008ecab4bb1349e91">
-   <span id="infopaneltitle-for-f5ca5e20b5517a5008ecab4bb1349e91" style="display:none">Info about the 'upon fulfillment' external reference.</span><a href="https://webidl.spec.whatwg.org/#upon-fulfillment">https://webidl.spec.whatwg.org/#upon-fulfillment</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-upon-fulfillment">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-upon-fulfillment①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-fa4b9722c62694623b5c8d8781bef7a7" class="dfn-panel" data-for="fa4b9722c62694623b5c8d8781bef7a7" id="infopanel-for-fa4b9722c62694623b5c8d8781bef7a7">
-   <span id="infopaneltitle-for-fa4b9722c62694623b5c8d8781bef7a7" style="display:none">Info about the 'upon rejection' external reference.</span><a href="https://webidl.spec.whatwg.org/#upon-rejection">https://webidl.spec.whatwg.org/#upon-rejection</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-upon-rejection">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-upon-rejection①">(2)</a>
-   </ul>
-  </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
     <a data-link-type="biblio">[ECMA-262]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="c95026beaa8440767d9b07e67366e8a7">ArrayBuffer</span>
-     <li><span class="dfn-paneled" id="28f48920b78e327d90225af978074155">TypeError</span>
-     <li><span class="dfn-paneled" id="2b69410046aab674d5f0546bec85d1b3">agent cluster</span>
-     <li><span class="dfn-paneled" id="6c9eecddeb7e35c49eca59bce9015c67">current realm</span>
+     <li><span class="dfn-paneled" id="f17862f0">ArrayBuffer</span>
+     <li><span class="dfn-paneled" id="58788f9d">TypeError</span>
+     <li><span class="dfn-paneled" id="f6e4cbfd">agent cluster</span>
+     <li><span class="dfn-paneled" id="b107f911">current realm</span>
     </ul>
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="df56c9933bfdc177c891bb711f259407">Response</span>
-     <li><span class="dfn-paneled" id="0b6fcf799cb7ea0359e0702123ab61e5">consume body</span>
-     <li><span class="dfn-paneled" id="6ef0be99a5b17cb515c6816ad5548e89">get</span>
-     <li><span class="dfn-paneled" id="d94cb5e6252c9158478ebbe8a624e99c">header list</span>
-     <li><span class="dfn-paneled" id="7fc2d90e004303dc3283c8fec6edc2e1">http tab or space byte</span>
-     <li><span class="dfn-paneled" id="4c5f8fcb3d3bc6012b505bef39f38ada">ok status</span>
-     <li><span class="dfn-paneled" id="12a5f639c62d2f0bd5e5e8ab36848416">response</span>
-     <li><span class="dfn-paneled" id="1b6fecbab51caa95d9e527debe16b0b0">status</span>
+     <li><span class="dfn-paneled" id="08a12aad">Response</span>
+     <li><span class="dfn-paneled" id="13c2b84c">consume body</span>
+     <li><span class="dfn-paneled" id="d47d0690">get</span>
+     <li><span class="dfn-paneled" id="f7b00a8b">header list</span>
+     <li><span class="dfn-paneled" id="ba6e4111">http tab or space byte</span>
+     <li><span class="dfn-paneled" id="a27468c5">ok status</span>
+     <li><span class="dfn-paneled" id="e3201629">response</span>
+     <li><span class="dfn-paneled" id="a1d47575">status</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="d920b917b35b57f8b17f0e92fc7e202a">Serializable</span>
-     <li><span class="dfn-paneled" id="b422b1bbdd20533a7dc8ad39fa0b5f84">cors-same-origin</span>
-     <li><span class="dfn-paneled" id="3ad3a8594a35249376ff51fe520fe1ce">deserialization steps</span>
-     <li><span class="dfn-paneled" id="a62bba5e3257149e6f7839babb61b77a">networking task source</span>
-     <li><span class="dfn-paneled" id="86e3b084870f52f55c6f2f6acf81fc1c">serialization steps</span>
-     <li><span class="dfn-paneled" id="f203d50266622c51007b87c613ac606a">sub-deserialization</span>
-     <li><span class="dfn-paneled" id="322c2e013a81d54c9fafc08d176f786a">sub-serialization</span>
+     <li><span class="dfn-paneled" id="eb5c4be3">Serializable</span>
+     <li><span class="dfn-paneled" id="c4099679">cors-same-origin</span>
+     <li><span class="dfn-paneled" id="888d7c65">deserialization steps</span>
+     <li><span class="dfn-paneled" id="b6ae4501">networking task source</span>
+     <li><span class="dfn-paneled" id="f32dc6c1">serialization steps</span>
+     <li><span class="dfn-paneled" id="c187d599">sub-deserialization</span>
+     <li><span class="dfn-paneled" id="d76ab844">sub-serialization</span>
     </ul>
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="c79a743632b2700b6247337edd905ce4">byte-case-insensitive</span>
+     <li><span class="dfn-paneled" id="970896d2">byte-case-insensitive</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WASMJS]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="472069b9d8a16861fa9664c9792a7131">CompileError</span>
-     <li><span class="dfn-paneled" id="3140fd7e0da5c570743bffe1d66c7ce3">Module</span>
-     <li><span class="dfn-paneled" id="26e990cf3dbe445b574eee9bcf3ccd63">WebAssembly</span>
-     <li><span class="dfn-paneled" id="1972f7e99f285e8c7a05bf5639894d0c">WebAssemblyInstantiatedSource</span>
-     <li><span class="dfn-paneled" id="a1183097e07243fa99953ed37c09456c">asynchronously compile a webassembly module</span>
-     <li><span class="dfn-paneled" id="ee14d9890846b52d2e6de0acc27a99d4">compile a webassembly module</span>
-     <li><span class="dfn-paneled" id="3ed910d68fafd94810fd8ed644f9a0aa">exported function</span>
-     <li><span class="dfn-paneled" id="6faea3f0afd7563f930d0b2a1fed49c1">instantiate</span>
-     <li><span class="dfn-paneled" id="5ac1912add7c40a9b5570acfcbed8007">instantiate a promise of a module</span>
+     <li><span class="dfn-paneled" id="dd57410d">CompileError</span>
+     <li><span class="dfn-paneled" id="29228fdf">Module</span>
+     <li><span class="dfn-paneled" id="9feefb27">WebAssembly</span>
+     <li><span class="dfn-paneled" id="ba9b32c1">WebAssemblyInstantiatedSource</span>
+     <li><span class="dfn-paneled" id="70d2cdbd">asynchronously compile a webassembly module</span>
+     <li><span class="dfn-paneled" id="8beb99bd">compile a webassembly module</span>
+     <li><span class="dfn-paneled" id="72f9eaed">exported function</span>
+     <li><span class="dfn-paneled" id="275fa0e6">instantiate</span>
+     <li><span class="dfn-paneled" id="1f72c462">instantiate a promise of a module</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBASSEMBLY]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="03f5a516ed2db63b6b9fe3530ba53ba5">function index</span>
-     <li><span class="dfn-paneled" id="43f4ac33ddf496432bbe4bcbb4dc3ef9">name section</span>
+     <li><span class="dfn-paneled" id="1295a79f">function index</span>
+     <li><span class="dfn-paneled" id="0bb5940b">name section</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBIDL]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="0ab204fb9cc9a746edaff83c0db0740a">DOMException</span>
-     <li><span class="dfn-paneled" id="1af5e3e985ab9044ac30e5cd83bb4545">DataCloneError</span>
-     <li><span class="dfn-paneled" id="dde049eb112f043fc45407ec0d4cb457">Exposed</span>
-     <li><span class="dfn-paneled" id="93669c631ec1ef8e696b4c083bdbe12c">Promise</span>
-     <li><span class="dfn-paneled" id="bbe33fc7ac016834e4aaddbfd1b084a1">a new promise</span>
-     <li><span class="dfn-paneled" id="0603a0691b03d199124b442d2d3e4f87">get a copy of the buffer source</span>
-     <li><span class="dfn-paneled" id="5039223412f0d0a24ee17570f82d3d59">object</span>
-     <li><span class="dfn-paneled" id="f7204c0306e7ffcb24c31adf6e629e1d">reject</span>
-     <li><span class="dfn-paneled" id="f4f973f92274819781816b033aea1f11">resolve</span>
-     <li><span class="dfn-paneled" id="f5ca5e20b5517a5008ecab4bb1349e91">upon fulfillment</span>
-     <li><span class="dfn-paneled" id="fa4b9722c62694623b5c8d8781bef7a7">upon rejection</span>
+     <li><span class="dfn-paneled" id="dca2de17">DOMException</span>
+     <li><span class="dfn-paneled" id="d54f5897">DataCloneError</span>
+     <li><span class="dfn-paneled" id="889e932f">Exposed</span>
+     <li><span class="dfn-paneled" id="bdbd19d1">Promise</span>
+     <li><span class="dfn-paneled" id="dacde8b5">a new promise</span>
+     <li><span class="dfn-paneled" id="92d13070">get a copy of the buffer source</span>
+     <li><span class="dfn-paneled" id="efd1ec5d">object</span>
+     <li><span class="dfn-paneled" id="b262501e">reject</span>
+     <li><span class="dfn-paneled" id="3b90bdcd">resolve</span>
+     <li><span class="dfn-paneled" id="24bd7d25">upon fulfillment</span>
+     <li><span class="dfn-paneled" id="f14ed351">upon rejection</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -1019,39 +770,68 @@ review, approval, and registration with IANA.</p>
 };
 
 </pre>
-  <aside aria-labelledby="infopaneltitle-for-dom-webassembly-compilestreaming" class="dfn-panel" data-for="dom-webassembly-compilestreaming" id="infopanel-for-dom-webassembly-compilestreaming">
-   <span id="infopaneltitle-for-dom-webassembly-compilestreaming" style="display:none">Info about the 'compileStreaming(source)' definition.</span><b><a href="#dom-webassembly-compilestreaming">#dom-webassembly-compilestreaming</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-webassembly-compilestreaming">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-webassembly-instantiatestreaming" class="dfn-panel" data-for="dom-webassembly-instantiatestreaming" id="infopanel-for-dom-webassembly-instantiatestreaming">
-   <span id="infopaneltitle-for-dom-webassembly-instantiatestreaming" style="display:none">Info about the 'instantiateStreaming(source, importObject)' definition.</span><b><a href="#dom-webassembly-instantiatestreaming">#dom-webassembly-instantiatestreaming</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-webassembly-instantiatestreaming">1. Streaming Module Compilation and Instantiation</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-compile-a-potential-webassembly-response" class="dfn-panel" data-for="compile-a-potential-webassembly-response" id="infopanel-for-compile-a-potential-webassembly-response">
-   <span id="infopaneltitle-for-compile-a-potential-webassembly-response" style="display:none">Info about the 'compile a potential WebAssembly response' definition.</span><b><a href="#compile-a-potential-webassembly-response">#compile-a-potential-webassembly-response</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-compile-a-potential-webassembly-response">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-compile-a-potential-webassembly-response①">(2)</a>
-   </ul>
-  </aside>
 <script>/* script-dfn-panel */
 "use strict";
 {
-    function queryAll(sel) {
-        return [].slice.call(document.querySelectorAll(sel));
+    const dfnsJson = window.dfnsJson || {};
+
+    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
+        return mk.aside({
+            class: "dfn-panel",
+            id: `infopanel-for-${dfnID}`,
+            "data-for": dfnID,
+            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+            },
+            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
+                `Info about the '${dfnText}' ${external?"external":""} reference.`),
+            mk.a({href:url}, url),
+            mk.b({}, "Referenced in:"),
+            mk.ul({},
+                ...refSections.map(section=>
+                    mk.li({},
+                        ...section.refs.map((ref, refI)=>
+                            [
+                                mk.a({
+                                    href: `#${ref.id}`
+                                    },
+                                    (refI == 0) ? section.title : `(${refI + 1})`
+                                ),
+                                " ",
+                            ]
+                        ),
+                    ),
+                ),
+            ),
+        );
     }
 
-    // Add popup behavior to all dfns to show the corresponding dfn-panel.
-    var dfns = document.querySelectorAll('.dfn-paneled');
-    for (let dfn of dfns) { insertDfnPopupAction(dfn); }
+    function genAllDfnPanels() {
+        for(const panelData of Object.values(window.dfnpanelData)) {
+            const dfnID = panelData.dfnID;
+            const dfn = document.getElementById(dfnID);
+            if(!dfn) {
+                console.log(`Can't find dfn#${dfnID}.`, panelData);
+            } else {
+                const panel = genDfnPanel(panelData);
+                append(document.body, panel);
+                insertDfnPopupAction(dfn, panel)
+            }
+        }
+    }
 
-    document.body.addEventListener("click", (e) => {
-        // If not handled already, just hide all dfn panels.
-        hideAllDfnPanels();
-    });
+    document.addEventListener("DOMContentLoaded", ()=>{
+        genAllDfnPanels();
+
+        // Add popup behavior to all dfns to show the corresponding dfn-panel.
+        var dfns = queryAll('.dfn-paneled');
+        for(let dfn of dfns) { ; }
+
+        document.body.addEventListener("click", (e) => {
+            // If not handled already, just hide all dfn panels.
+            hideAllDfnPanels();
+        });
+    })
+
 
     function hideAllDfnPanels() {
         // Turn off any currently "on" or "activated" panels.
@@ -1101,52 +881,290 @@ review, approval, and registration with IANA.</p>
         }
     }
 
-    function insertDfnPopupAction(dfn) {
+    function insertDfnPopupAction(dfn, dfnPanel) {
         // Find dfn panel
-        const dfnPanel = document.querySelector(`.dfn-panel[data-for='${dfn.id}']`);
-        if (dfnPanel) {
-            const panelWrapper = document.createElement('span');
-            panelWrapper.appendChild(dfnPanel);
-            panelWrapper.style.position = "relative";
-            panelWrapper.style.height = "0px";
-            dfn.insertAdjacentElement("afterend", panelWrapper);
-            dfn.setAttribute('role', 'button');
-            dfn.setAttribute('aria-expanded', 'false')
-            dfn.tabIndex = 0;
-            dfn.classList.add('has-dfn-panel');
-            dfn.addEventListener('click', (event) => {
-                showDfnPanel(dfnPanel, dfn);
+        const panelWrapper = document.createElement('span');
+        panelWrapper.appendChild(dfnPanel);
+        panelWrapper.style.position = "relative";
+        panelWrapper.style.height = "0px";
+        dfn.insertAdjacentElement("afterend", panelWrapper);
+        dfn.setAttribute('role', 'button');
+        dfn.setAttribute('aria-expanded', 'false')
+        dfn.tabIndex = 0;
+        dfn.classList.add('has-dfn-panel');
+        dfn.addEventListener('click', (event) => {
+            showDfnPanel(dfnPanel, dfn);
+            event.stopPropagation();
+        });
+        dfn.addEventListener('keypress', (event) => {
+            const kc = event.keyCode;
+            // 32->Space, 13->Enter
+            if(kc == 32 || kc == 13) {
+                toggleDfnPanel(dfnPanel, dfn);
                 event.stopPropagation();
-            });
-            dfn.addEventListener('keypress', (event) => {
-                const kc = event.keyCode;
-                // 32->Space, 13->Enter
-                if(kc == 32 || kc == 13) {
-                    toggleDfnPanel(dfnPanel, dfn);
-                    event.stopPropagation();
-                    event.preventDefault();
-                }
-            });
+                event.preventDefault();
+            }
+        });
 
-            dfnPanel.addEventListener('click', (event) => {
+        dfnPanel.addEventListener('click', (event) => {
+            if (event.target.nodeName == 'A') {
                 pinDfnPanel(dfnPanel);
+            }
+            event.stopPropagation();
+        });
+
+        dfnPanel.addEventListener('keydown', (event) => {
+            if(event.keyCode == 27) { // Escape key
+                hideDfnPanel(dfnPanel, dfn);
                 event.stopPropagation();
-            });
-
-            dfnPanel.addEventListener('keydown', (event) => {
-                if(event.keyCode == 27) { // Escape key
-                    hideDfnPanel(dfnPanel, dfn);
-                    event.stopPropagation();
-                    event.preventDefault();
-                }
-            })
-
-        } else {
-            console.log("Couldn't find .dfn-panel[data-for='" + dfn.id + "']");
-        }
+                event.preventDefault();
+            }
+        })
     }
 }
 </script>
+<script>/* script-dfn-panel-json */
+window.dfnpanelData = {};
+window.dfnpanelData['f17862f0'] = {"dfnID": "f17862f0", "url": "https://tc39.github.io/ecma262/#sec-arraybuffer-objects", "dfnText": "ArrayBuffer", "refSections": [{"refs": [{"id": "ref-for-sec-arraybuffer-objects"}], "title": "1. Streaming Module Compilation and Instantiation"}, {"refs": [{"id": "ref-for-sec-arraybuffer-objects\u2460"}], "title": "3. Developer-Facing Display Conventions"}], "external": true};
+window.dfnpanelData['58788f9d'] = {"dfnID": "58788f9d", "url": "https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror", "dfnText": "TypeError", "refSections": [{"refs": [{"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2460"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2461"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2462"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2463"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['f6e4cbfd'] = {"dfnID": "f6e4cbfd", "url": "https://tc39.github.io/ecma262/#sec-agent-clusters", "dfnText": "agent cluster", "refSections": [{"refs": [{"id": "ref-for-sec-agent-clusters"}, {"id": "ref-for-sec-agent-clusters\u2460"}], "title": "2. Serialization"}], "external": true};
+window.dfnpanelData['b107f911'] = {"dfnID": "b107f911", "url": "https://tc39.github.io/ecma262/#current-realm", "dfnText": "current realm", "refSections": [{"refs": [{"id": "ref-for-current-realm"}], "title": "2. Serialization"}], "external": true};
+window.dfnpanelData['08a12aad'] = {"dfnID": "08a12aad", "url": "https://fetch.spec.whatwg.org/#response", "dfnText": "Response", "refSections": [{"refs": [{"id": "ref-for-response"}, {"id": "ref-for-response\u2460"}, {"id": "ref-for-response\u2461"}, {"id": "ref-for-response\u2462"}, {"id": "ref-for-response\u2463"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['13c2b84c'] = {"dfnID": "13c2b84c", "url": "https://fetch.spec.whatwg.org/#concept-body-consume-body", "dfnText": "consume body", "refSections": [{"refs": [{"id": "ref-for-concept-body-consume-body"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['d47d0690'] = {"dfnID": "d47d0690", "url": "https://fetch.spec.whatwg.org/#concept-header-list-get", "dfnText": "get", "refSections": [{"refs": [{"id": "ref-for-concept-header-list-get"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['f7b00a8b'] = {"dfnID": "f7b00a8b", "url": "https://fetch.spec.whatwg.org/#concept-response-header-list", "dfnText": "header list", "refSections": [{"refs": [{"id": "ref-for-concept-response-header-list"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['ba6e4111'] = {"dfnID": "ba6e4111", "url": "https://fetch.spec.whatwg.org/#http-tab-or-space-byte", "dfnText": "http tab or space byte", "refSections": [{"refs": [{"id": "ref-for-http-tab-or-space-byte"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['a27468c5'] = {"dfnID": "a27468c5", "url": "https://fetch.spec.whatwg.org/#ok-status", "dfnText": "ok status", "refSections": [{"refs": [{"id": "ref-for-ok-status"}, {"id": "ref-for-ok-status\u2460"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['e3201629'] = {"dfnID": "e3201629", "url": "https://fetch.spec.whatwg.org/#concept-response-response", "dfnText": "response", "refSections": [{"refs": [{"id": "ref-for-concept-response-response"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['a1d47575'] = {"dfnID": "a1d47575", "url": "https://fetch.spec.whatwg.org/#concept-response-status", "dfnText": "status", "refSections": [{"refs": [{"id": "ref-for-concept-response-status"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['eb5c4be3'] = {"dfnID": "eb5c4be3", "url": "https://html.spec.whatwg.org/multipage/structured-data.html#serializable", "dfnText": "Serializable", "refSections": [{"refs": [{"id": "ref-for-serializable"}], "title": "2. Serialization"}], "external": true};
+window.dfnpanelData['c4099679'] = {"dfnID": "c4099679", "url": "https://html.spec.whatwg.org/#cors-same-origin", "dfnText": "cors-same-origin", "refSections": [{"refs": [{"id": "ref-for-cors-same-origin"}, {"id": "ref-for-cors-same-origin\u2460"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['888d7c65'] = {"dfnID": "888d7c65", "url": "https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps", "dfnText": "deserialization steps", "refSections": [{"refs": [{"id": "ref-for-deserialization-steps"}], "title": "2. Serialization"}], "external": true};
+window.dfnpanelData['b6ae4501'] = {"dfnID": "b6ae4501", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source", "dfnText": "networking task source", "refSections": [{"refs": [{"id": "ref-for-networking-task-source"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['f32dc6c1'] = {"dfnID": "f32dc6c1", "url": "https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps", "dfnText": "serialization steps", "refSections": [{"refs": [{"id": "ref-for-serialization-steps"}], "title": "2. Serialization"}], "external": true};
+window.dfnpanelData['c187d599'] = {"dfnID": "c187d599", "url": "https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization", "dfnText": "sub-deserialization", "refSections": [{"refs": [{"id": "ref-for-sub-deserialization"}], "title": "2. Serialization"}], "external": true};
+window.dfnpanelData['d76ab844'] = {"dfnID": "d76ab844", "url": "https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization", "dfnText": "sub-serialization", "refSections": [{"refs": [{"id": "ref-for-sub-serialization"}], "title": "2. Serialization"}], "external": true};
+window.dfnpanelData['970896d2'] = {"dfnID": "970896d2", "url": "https://infra.spec.whatwg.org/#byte-case-insensitive", "dfnText": "byte-case-insensitive", "refSections": [{"refs": [{"id": "ref-for-byte-case-insensitive"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['dd57410d'] = {"dfnID": "dd57410d", "url": "https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror", "dfnText": "CompileError", "refSections": [{"refs": [{"id": "ref-for-exceptiondef-compileerror"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['29228fdf'] = {"dfnID": "29228fdf", "url": "https://webassembly.github.io/spec/js-api/#module", "dfnText": "Module", "refSections": [{"refs": [{"id": "ref-for-module"}], "title": "1. Streaming Module Compilation and Instantiation"}, {"refs": [{"id": "ref-for-module\u2460"}, {"id": "ref-for-module\u2461"}], "title": "2. Serialization"}], "external": true};
+window.dfnpanelData['9feefb27'] = {"dfnID": "9feefb27", "url": "https://webassembly.github.io/spec/js-api/#namespacedef-webassembly", "dfnText": "WebAssembly", "refSections": [{"refs": [{"id": "ref-for-namespacedef-webassembly"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['ba9b32c1'] = {"dfnID": "ba9b32c1", "url": "https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource", "dfnText": "WebAssemblyInstantiatedSource", "refSections": [{"refs": [{"id": "ref-for-dictdef-webassemblyinstantiatedsource"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['70d2cdbd'] = {"dfnID": "70d2cdbd", "url": "https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module", "dfnText": "asynchronously compile a webassembly module", "refSections": [{"refs": [{"id": "ref-for-asynchronously-compile-a-webassembly-module"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['8beb99bd'] = {"dfnID": "8beb99bd", "url": "https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module", "dfnText": "compile a webassembly module", "refSections": [{"refs": [{"id": "ref-for-compile-a-webassembly-module"}], "title": "2. Serialization"}], "external": true};
+window.dfnpanelData['72f9eaed'] = {"dfnID": "72f9eaed", "url": "https://webassembly.github.io/spec/js-api/#exported-function", "dfnText": "exported function", "refSections": [{"refs": [{"id": "ref-for-exported-function"}], "title": "3. Developer-Facing Display Conventions"}], "external": true};
+window.dfnpanelData['275fa0e6'] = {"dfnID": "275fa0e6", "url": "https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate", "dfnText": "instantiate", "refSections": [{"refs": [{"id": "ref-for-dom-webassembly-instantiate"}], "title": "3. Developer-Facing Display Conventions"}], "external": true};
+window.dfnpanelData['1f72c462'] = {"dfnID": "1f72c462", "url": "https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module", "dfnText": "instantiate a promise of a module", "refSections": [{"refs": [{"id": "ref-for-instantiate-a-promise-of-a-module"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['1295a79f'] = {"dfnID": "1295a79f", "url": "https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx", "dfnText": "function index", "refSections": [{"refs": [{"id": "ref-for-syntax-funcidx"}], "title": "3. Developer-Facing Display Conventions"}], "external": true};
+window.dfnpanelData['0bb5940b'] = {"dfnID": "0bb5940b", "url": "https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec", "dfnText": "name section", "refSections": [{"refs": [{"id": "ref-for-binary-namesec"}], "title": "3. Developer-Facing Display Conventions"}], "external": true};
+window.dfnpanelData['dca2de17'] = {"dfnID": "dca2de17", "url": "https://webidl.spec.whatwg.org/#idl-DOMException", "dfnText": "DOMException", "refSections": [{"refs": [{"id": "ref-for-idl-DOMException"}, {"id": "ref-for-idl-DOMException\u2460"}], "title": "2. Serialization"}], "external": true};
+window.dfnpanelData['d54f5897'] = {"dfnID": "d54f5897", "url": "https://webidl.spec.whatwg.org/#datacloneerror", "dfnText": "DataCloneError", "refSections": [{"refs": [{"id": "ref-for-datacloneerror"}, {"id": "ref-for-datacloneerror\u2460"}], "title": "2. Serialization"}], "external": true};
+window.dfnpanelData['889e932f'] = {"dfnID": "889e932f", "url": "https://webidl.spec.whatwg.org/#Exposed", "dfnText": "Exposed", "refSections": [{"refs": [{"id": "ref-for-Exposed"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['bdbd19d1'] = {"dfnID": "bdbd19d1", "url": "https://webidl.spec.whatwg.org/#idl-promise", "dfnText": "Promise", "refSections": [{"refs": [{"id": "ref-for-idl-promise"}, {"id": "ref-for-idl-promise\u2460"}, {"id": "ref-for-idl-promise\u2461"}, {"id": "ref-for-idl-promise\u2462"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['dacde8b5'] = {"dfnID": "dacde8b5", "url": "https://webidl.spec.whatwg.org/#a-new-promise", "dfnText": "a new promise", "refSections": [{"refs": [{"id": "ref-for-a-new-promise"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['92d13070'] = {"dfnID": "92d13070", "url": "https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy", "dfnText": "get a copy of the buffer source", "refSections": [{"refs": [{"id": "ref-for-dfn-get-buffer-source-copy"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['efd1ec5d'] = {"dfnID": "efd1ec5d", "url": "https://webidl.spec.whatwg.org/#idl-object", "dfnText": "object", "refSections": [{"refs": [{"id": "ref-for-idl-object"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['b262501e'] = {"dfnID": "b262501e", "url": "https://webidl.spec.whatwg.org/#reject", "dfnText": "reject", "refSections": [{"refs": [{"id": "ref-for-reject"}, {"id": "ref-for-reject\u2460"}, {"id": "ref-for-reject\u2461"}, {"id": "ref-for-reject\u2462"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['3b90bdcd'] = {"dfnID": "3b90bdcd", "url": "https://webidl.spec.whatwg.org/#resolve", "dfnText": "resolve", "refSections": [{"refs": [{"id": "ref-for-resolve"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['24bd7d25'] = {"dfnID": "24bd7d25", "url": "https://webidl.spec.whatwg.org/#upon-fulfillment", "dfnText": "upon fulfillment", "refSections": [{"refs": [{"id": "ref-for-upon-fulfillment"}, {"id": "ref-for-upon-fulfillment\u2460"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['f14ed351'] = {"dfnID": "f14ed351", "url": "https://webidl.spec.whatwg.org/#upon-rejection", "dfnText": "upon rejection", "refSections": [{"refs": [{"id": "ref-for-upon-rejection"}, {"id": "ref-for-upon-rejection\u2460"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
+window.dfnpanelData['dom-webassembly-compilestreaming'] = {"dfnID": "dom-webassembly-compilestreaming", "url": "#dom-webassembly-compilestreaming", "dfnText": "compileStreaming(source)", "refSections": [{"refs": [{"id": "ref-for-dom-webassembly-compilestreaming"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": false};
+window.dfnpanelData['dom-webassembly-instantiatestreaming'] = {"dfnID": "dom-webassembly-instantiatestreaming", "url": "#dom-webassembly-instantiatestreaming", "dfnText": "instantiateStreaming(source, importObject)", "refSections": [{"refs": [{"id": "ref-for-dom-webassembly-instantiatestreaming"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": false};
+window.dfnpanelData['compile-a-potential-webassembly-response'] = {"dfnID": "compile-a-potential-webassembly-response", "url": "#compile-a-potential-webassembly-response", "dfnText": "compile a potential WebAssembly response", "refSections": [{"refs": [{"id": "ref-for-compile-a-potential-webassembly-response"}, {"id": "ref-for-compile-a-potential-webassembly-response\u2460"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": false};</script>
+<script>/* script-dom-helper */
+function query(sel) { return document.querySelector(sel); }
+
+function queryAll(sel) { return [...document.querySelectorAll(sel)]; }
+
+function iter(obj) {
+	if(!obj) return [];
+	var it = obj[Symbol.iterator];
+	if(it) return it;
+	return Object.entries(obj);
+}
+
+function mk(tagname, attrs, ...children) {
+	const el = document.createElement(tagname);
+	for(const [k,v] of iter(attrs)) {
+		if(k.slice(0,3) == "_on") {
+			const eventName = k.slice(3);
+			el.addEventListener(eventName, v);
+		} else if(k[0] == "_") {
+			// property, not attribute
+			el[k.slice(1)] = v;
+		} else {
+			if(v === false || v == null) {
+        continue;
+      } else if(v === true) {
+        el.setAttribute(k, "");
+        continue;
+      } else {
+  			el.setAttribute(k, v);
+      }
+		}
+	}
+	append(el, children);
+	return el;
+}
+
+/* Create shortcuts for every known HTML element */
+[
+  "a",
+  "abbr",
+  "acronym",
+  "address",
+  "applet",
+  "area",
+  "article",
+  "aside",
+  "audio",
+  "b",
+  "base",
+  "basefont",
+  "bdo",
+  "big",
+  "blockquote",
+  "body",
+  "br",
+  "button",
+  "canvas",
+  "caption",
+  "center",
+  "cite",
+  "code",
+  "col",
+  "colgroup",
+  "datalist",
+  "dd",
+  "del",
+  "details",
+  "dfn",
+  "dialog",
+  "div",
+  "dl",
+  "dt",
+  "em",
+  "embed",
+  "fieldset",
+  "figcaption",
+  "figure",
+  "font",
+  "footer",
+  "form",
+  "frame",
+  "frameset",
+  "head",
+  "header",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "hr",
+  "html",
+  "i",
+  "iframe",
+  "img",
+  "input",
+  "ins",
+  "kbd",
+  "label",
+  "legend",
+  "li",
+  "link",
+  "main",
+  "map",
+  "mark",
+  "meta",
+  "meter",
+  "nav",
+  "nobr",
+  "noscript",
+  "object",
+  "ol",
+  "optgroup",
+  "option",
+  "output",
+  "p",
+  "param",
+  "pre",
+  "progress",
+  "q",
+  "s",
+  "samp",
+  "script",
+  "section",
+  "select",
+  "small",
+  "source",
+  "span",
+  "strike",
+  "strong",
+  "style",
+  "sub",
+  "summary",
+  "sup",
+  "table",
+  "tbody",
+  "td",
+  "template",
+  "textarea",
+  "tfoot",
+  "th",
+  "thead",
+  "time",
+  "title",
+  "tr",
+  "u",
+  "ul",
+  "var",
+  "video",
+  "wbr",
+  "xmp",
+].forEach(tagname=>{
+	mk[tagname] = (...args) => mk(tagname, ...args);
+});
+
+function* nodesFromChildList(children) {
+	for(const child of children.flat(Infinity)) {
+		if(child instanceof Node) {
+			yield child;
+		} else {
+			yield new Text(child);
+		}
+	}
+}
+function append(el, ...children) {
+	for(const child of nodesFromChildList(children)) {
+		if(el instanceof Node) el.appendChild(child);
+		else el.push(child);
+	}
+	return el;
+}
+
+function insertAfter(el, ...children) {
+	for(const child of nodesFromChildList(children)) {
+		el.parentNode.insertBefore(child, el.nextSibling);
+	}
+	return el;
+}
+
+function clearContents(el) {
+	el.innerHTML = "";
+	return el;
+}
+
+function parseHTML(markup) {
+	if(markup.toLowerCase().trim().indexOf('<!doctype') === 0) {
+		const doc = document.implementation.createHTMLDocument("");
+		doc.documentElement.innerHTML = markup;
+		return doc;
+	} else {
+		const el = mk.template({});
+		el.innerHTML = markup;
+		return el.content;
+	}
+}</script>
 <script>/* script-var-click-highlighting */
 
     "use strict";
@@ -1231,4 +1249,4 @@ review, approval, and registration with IANA.</p>
             return "selected" + index;
         }
     }
-    </script>
+</script>
