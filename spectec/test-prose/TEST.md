@@ -38,22 +38,20 @@ select
 block
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop YetE ((val <: admininstr)^k{val}) from the stack.
-3. Let YetE (|val^k{val}|) be YetE (k).
-4. Let YetE (|t_1^k{t_1}|) be YetE (k).
-5. Let YetE (bt) be YetE (`%->%`(t_1^k{t_1}, t_2^n{t_2})).
-6. Let YetE (|t_2^n{t_2}|) be YetE (n).
-7. Let L be YetE ().
-8. Enter the block Yet with label YetE ().
+3. Let YetE (|t_1^k{t_1}|) be YetE (k).
+4. Let YetE (|t_2^n{t_2}|) be YetE (n).
+5. Let YetE (|val^k{val}|) be YetE (k).
+6. Let L be YetE ().
+7. Enter the block Yet with label YetE ().
 
 loop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop YetE ((val <: admininstr)^k{val}) from the stack.
-3. Let YetE (|val^k{val}|) be YetE (k).
-4. Let YetE (|t_1^k{t_1}|) be YetE (k).
-5. Let YetE (bt) be YetE (`%->%`(t_1^k{t_1}, t_2^n{t_2})).
-6. Let YetE (|t_2^n{t_2}|) be YetE (n).
-7. Let L be YetE ().
-8. Enter the block Yet with label YetE ().
+3. Let YetE (|t_1^k{t_1}|) be YetE (k).
+4. Let YetE (|t_2^n{t_2}|) be YetE (n).
+5. Let YetE (|val^k{val}|) be YetE (k).
+6. Let L be YetE ().
+7. Enter the block Yet with label YetE ().
 
 if
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -173,12 +171,11 @@ call_indirect
 call_addr
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop YetE ((val <: admininstr)^k{val}) from the stack.
-3. Let YetE (|val^k{val}|) be YetE (k).
-4. Let YetE (|t_1^k{t_1}|) be YetE (k).
-5. Let YetE ($funcinst(z)[a]) be YetE (`%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr}))).
-6. Let YetE (|t_2^n{t_2}|) be YetE (n).
-7. Let F be the current frame.
-8. Push YetE ((n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])) to the stack.
+3. Let YetE (|t_1^k{t_1}|) be YetE (k).
+4. Let YetE (|t_2^n{t_2}|) be YetE (n).
+5. Let YetE (|val^k{val}|) be YetE (k).
+6. Let F be the current frame.
+7. Push YetE ((n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])) to the stack.
 
 ref.func
 1. Push YetE (REF.FUNC_ADDR_admininstr($funcaddr(z)[x])) to the stack.

@@ -347,7 +347,7 @@ rule Step_read/memory.copy-gt:
 
 rule Step_read/memory.init-trap:
   z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.INIT x)  ~>  TRAP
-  -- if $(i + n) > |$data(z, y)| \/ $(j + n) > |$mem(z, 0)|
+  -- if $(i + n) > |$data(z, x)| \/ $(j + n) > |$mem(z, 0)|
 
 rule Step_read/memory.init-zero:
   z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.INIT x)  ~>  epsilon

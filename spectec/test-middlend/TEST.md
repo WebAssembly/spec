@@ -1538,9 +1538,9 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 6-reduction.watsup:348.1-350.60
-  rule memory.init-trap {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+  rule memory.init-trap {i : nat, j : nat, n : n, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.INIT_admininstr(x)]), [TRAP_admininstr])
-    -- if (((i + n) > |$data(z, y)|) \/ ((j + n) > |$mem(z, 0)|))
+    -- if (((i + n) > |$data(z, x)|) \/ ((j + n) > |$mem(z, 0)|))
 
   ;; 6-reduction.watsup:352.1-355.14
   rule memory.init-zero {i : nat, j : nat, n : n, x : idx, z : state}:
@@ -3167,9 +3167,9 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 6-reduction.watsup:348.1-350.60
-  rule memory.init-trap {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+  rule memory.init-trap {i : nat, j : nat, n : n, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.INIT_admininstr(x)]), [TRAP_admininstr])
-    -- if (((i + n) > |$data(z, y)|) \/ ((j + n) > |$mem(z, 0)|))
+    -- if (((i + n) > |$data(z, x)|) \/ ((j + n) > |$mem(z, 0)|))
 
   ;; 6-reduction.watsup:352.1-355.14
   rule memory.init-zero {i : nat, j : nat, n : n, x : idx, z : state}:
@@ -4810,9 +4810,9 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 6-reduction.watsup:348.1-350.60
-  rule memory.init-trap {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+  rule memory.init-trap {i : nat, j : nat, n : n, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.INIT_admininstr(x)]), [TRAP_admininstr])
-    -- if (((i + n) > |$data(z, y)|) \/ ((j + n) > |$mem(z, 0)|))
+    -- if (((i + n) > |$data(z, x)|) \/ ((j + n) > |$mem(z, 0)|))
 
   ;; 6-reduction.watsup:352.1-355.14
   rule memory.init-zero {i : nat, j : nat, n : n, x : idx, z : state}:
@@ -6525,9 +6525,9 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 6-reduction.watsup:348.1-350.60
-  rule memory.init-trap {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+  rule memory.init-trap {i : nat, j : nat, n : n, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.INIT_admininstr(x)]), [TRAP_admininstr])
-    -- if (((i + n) > |$data(z, y)|) \/ ((j + n) > |$mem(z, 0)|))
+    -- if (((i + n) > |$data(z, x)|) \/ ((j + n) > |$mem(z, 0)|))
 
   ;; 6-reduction.watsup:352.1-355.14
   rule memory.init-zero {i : nat, j : nat, n : n, x : idx, z : state}:
@@ -7935,18 +7935,18 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 6-reduction.watsup:35.1-37.28
   rule block {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k}:
     `%*~>%*`((val <: admininstr)^k{val} :: [BLOCK_admininstr(bt, instr*{instr})], [LABEL__admininstr(n, [], (val <: admininstr)^k{val} :: (instr <: admininstr)*{instr})])
-    -- if (|val^k{val}| = k)
+    -- where `%->%`(t_1^k{t_1}, t_2^n{t_2}) := bt
     -- if (|t_1^k{t_1}| = k)
-    -- if (bt = `%->%`(t_1^k{t_1}, t_2^n{t_2}))
     -- if (|t_2^n{t_2}| = n)
+    -- if (|val^k{val}| = k)
 
   ;; 6-reduction.watsup:39.1-41.28
   rule loop {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k}:
     `%*~>%*`((val <: admininstr)^k{val} :: [LOOP_admininstr(bt, instr*{instr})], [LABEL__admininstr(n, [LOOP_instr(bt, instr*{instr})], (val <: admininstr)^k{val} :: (instr <: admininstr)*{instr})])
-    -- if (|val^k{val}| = k)
+    -- where `%->%`(t_1^k{t_1}, t_2^n{t_2}) := bt
     -- if (|t_1^k{t_1}| = k)
-    -- if (bt = `%->%`(t_1^k{t_1}, t_2^n{t_2}))
     -- if (|t_2^n{t_2}| = n)
+    -- if (|val^k{val}| = k)
 
   ;; 6-reduction.watsup:43.1-45.16
   rule if-true {bt : blocktype, c : c_numtype, instr_1* : instr*, instr_2* : instr*}:
@@ -8088,10 +8088,10 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule call_addr {a : addr, f : frame, instr* : instr*, k : nat, m : moduleinst, n : n, t* : valtype*, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, z : state, o0* : val*}:
     `%~>%*`(`%;%*`(z, (val <: admininstr)^k{val} :: [CALL_ADDR_admininstr(a)]), [FRAME__admininstr(n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])])
     -- if (a < |$funcinst(z)|)
-    -- if (|val^k{val}| = k)
+    -- where `%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr})) := $funcinst(z)[a]
     -- if (|t_1^k{t_1}| = k)
-    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr})))
     -- if (|t_2^n{t_2}| = n)
+    -- if (|val^k{val}| = k)
     -- where |o0*{o0}| := |t*{t}|
     -- (if ($default_(t) = ?(o0)))*{t o0}
     -- where f := {LOCAL val^k{val} :: o0*{o0}, MODULE m}
@@ -8190,7 +8190,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?(), n_A, n_O)]), [CONST_admininstr(nt, c)])
     -- where ?(o0) := $size(nt <: valtype)
     -- where ?(o1) := $size(nt <: valtype)
-    -- if ($bytes_(o0, c) = $mem(z, 0)[(i + n_O) : (o1 / 8)])
+    -- where $bytes_(o0, c) := $mem(z, 0)[(i + n_O) : (o1 / 8)]
 
   ;; 6-reduction.watsup:276.1-278.41
   rule load-pack-trap {i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
@@ -8200,7 +8200,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
   ;; 6-reduction.watsup:280.1-282.50
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, c)])
-    -- if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
+    -- where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
 
   ;; 6-reduction.watsup:309.1-311.32
   rule memory.fill-trap {i : nat, n : n, val : val, z : state}:
@@ -8241,9 +8241,9 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 6-reduction.watsup:348.1-350.60
-  rule memory.init-trap {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+  rule memory.init-trap {i : nat, j : nat, n : n, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.INIT_admininstr(x)]), [TRAP_admininstr])
-    -- if (((i + n) > |$data(z, y)|) \/ ((j + n) > |$mem(z, 0)|))
+    -- if (((i + n) > |$data(z, x)|) \/ ((j + n) > |$mem(z, 0)|))
 
   ;; 6-reduction.watsup:352.1-355.14
   rule memory.init-zero {i : nat, j : nat, n : n, x : idx, z : state}:

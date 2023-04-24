@@ -11,6 +11,54 @@ open Source
 open Il.Ast
 open Il.Free
 
+(* for debugging *)
+let debug = 0 (* 1 : print msg, 2 : fail *)
+let fail prem =
+  let msg = "Animation failed:" ^ Il.Print.string_of_prem prem in
+  match debug with
+  | 1 -> Printf.printf "%s\n" msg
+  | 2 -> failwith msg
+  | _ -> ()
+
+(* free_lhs_??? are equivalent to free_??? in Il.Free module,
+   except k appearing in val^k is not considered free.
+   see block and loop instructions *)
+
+let empty =
+  {synid = Set.empty; relid = Set.empty; varid = Set.empty; defid = Set.empty}
+let free_varid id = {empty with varid = Set.singleton id.it}
+
+let rec free_lhs_exp e =
+  match e.it with
+  | VarE id -> free_varid id
+  | BoolE _ | NatE _ | TextE _ -> empty
+  | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1) | SubE (e1, _, _) ->
+    free_lhs_exp e1
+  | BinE (_, e1, e2) | CmpE (_, e1, e2)
+  | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
+    free_list free_lhs_exp [e1; e2]
+  | SliceE (e1, e2, e3) -> free_list free_lhs_exp [e1; e2; e3]
+  | OptE eo -> free_opt free_lhs_exp eo
+  | TupE es | ListE es -> free_list free_lhs_exp es
+  | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
+    union (free_list free_lhs_exp [e1; e2]) (free_lhs_path p)
+  | StrE efs -> free_list free_lhs_expfield efs
+  | CallE (_id, e1) -> free_lhs_exp e1
+  | IterE (e1, iter) -> union (free_lhs_exp e1) (free_lhs_iterexp iter)
+  | DotE (_t, e1, _) | CaseE (_, e1, _t) -> free_lhs_exp e1
+
+and free_lhs_expfield (_, e) = free_lhs_exp e
+
+and free_lhs_path p =
+  match p.it with
+  | RootP -> empty
+  | IdxP (p1, e) -> union (free_lhs_path p1) (free_lhs_exp e)
+  | SliceP (p1, e1, e2) ->
+    union (free_lhs_path p1) (union (free_lhs_exp e1) (free_lhs_exp e2))
+  | DotP (p1, _) -> free_lhs_path p1
+
+and free_lhs_iterexp (_iter, ids) = free_list free_varid ids
+
 (* Helper for handling free-var set *)
 let subset x y = Set.subset x.varid y.varid
 let disjoint x y = Set.disjoint x.varid y.varid
@@ -20,7 +68,7 @@ let disjoint x y = Set.disjoint x.varid y.varid
 let is_tight env prem = subset (free_prem prem) env
 
 (* Check if a given premise is an assignment:
-     is eqaulity, and all free variables in one sie of equality is known *)
+     is eqaulity, and all free variables in one side of equality is known *)
 let is_assign env prem = match prem.it with
 | IfPr e -> ( match e.it with
   | CmpE(EqOp, l, r) ->
@@ -28,8 +76,14 @@ let is_assign env prem = match prem.it with
       Either.Left (AssignPr(r, l) $ prem.at)
     else if subset (free_exp r) env && disjoint (free_exp l) env then
       Either.Left (AssignPr(l, r) $ prem.at)
-    else if subset (free_exp l) env || subset (free_exp r) env then
-      Either.Left prem (* TODO: bt = t1^k t2^n *)
+    else if subset (free_exp l) env || subset (free_exp r) env then (
+      (* TODO: if ($bytes_(o0, c) = $mem(z, 0)[(i + n_O) : (o1 / 8)]) *)
+      fail prem;
+      if subset (free_exp l) env then
+        Either.Left (AssignPr(r, l) $ prem.at)
+      else
+        Either.Left (AssignPr(l, r) $ prem.at)
+    )
     else
       Either.Right prem
   | _ -> Either.Right prem
@@ -49,7 +103,7 @@ and select_assign prems acc env = ( match prems with
 | [] -> acc
 | _ -> let (assign, non_assign) = List.partition_map (is_assign env) prems in
   ( match assign with
-  | [] -> (* failwith "Animation failed" *) acc @ prems
+  | [] -> List.iter fail non_assign; ( acc @ prems )
   | _ ->
     let new_env = assign |> List.map free_prem |> List.fold_left union env in
     select_tight non_assign (acc @ assign) new_env
@@ -58,7 +112,7 @@ and select_assign prems acc env = ( match prems with
 
 (* Animate the list of premises *)
 let animate_prems lhs prems =
-  let known_vars = free_exp lhs in
+  let known_vars = free_lhs_exp lhs in
 
   let reorder prems = select_tight prems [] known_vars in
   reorder prems
