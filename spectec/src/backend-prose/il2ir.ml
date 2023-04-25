@@ -237,11 +237,13 @@ let rec rhs2instrs exp = match exp.it with
   | Ast.MixE (
     [[]; [Ast.Semicolon]; [Ast.Star]],
     (* z' ; instr'* *)
-    { it = TupE ([callexp; rhs]); _ }
+    { it = TupE ([state_exp; rhs]); _ }
   ) ->
-    let perform_instr = Ir.PerformI (exp2expr callexp) in
     let push_instrs = rhs2instrs rhs in
-    perform_instr :: push_instrs
+    begin match state_exp.it with
+      | VarE(_) -> push_instrs
+      | _ -> Ir.PerformI (exp2expr state_exp) :: push_instrs
+    end
   | _ -> gen_fail_msg_of_exp exp "rhs instructions" |> failwith
 
 (* `Ast.exp` -> `Ir.cond` *)
@@ -289,7 +291,7 @@ let rec prem2cond prems = match prems with
   | { it = Ast.IfPr exp; _ } :: t -> Ir.AndC (exp2cond exp, prem2cond t)
   | [{ it = Ast.ElsePr; _ }] -> Ir.YetC "Otherwise"
   | { it = Ast.ElsePr; _ } :: t -> Ir.AndC (Ir.YetC "Otherwise", prem2cond t)
-  | prem :: _ -> gen_fail_msg_of_prem prem "condition" |> failwith
+  | _ -> Ir.YetC ("Animation")
 
 
 
