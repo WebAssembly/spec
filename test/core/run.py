@@ -47,11 +47,10 @@ class RunTests(unittest.TestCase):
   def _runCommand(self, command, logPath, expectedExitCode = 0):
     with open(logPath, 'w+') as out:
       exitCode = subprocess.call(command, shell=True, stdout=out, stderr=subprocess.STDOUT)
-    if exitCode != expectedExitCode:
-      print("=== log ===")
-      subprocess.call("cat %s" % logPath, shell=True)
-      print("===========")
-    self.assertEqual(expectedExitCode, exitCode, "failed with exit code %i (expected %i) for %s" % (exitCode, expectedExitCode, command))
+    with open(logPath) as out:
+      log = out.read()
+    msg = "failed with exit code %i (expected %i)\nCommand:\n  %s\nLog:\n%s"
+    self.assertEqual(expectedExitCode, exitCode, msg % (exitCode, expectedExitCode, command, log))
 
   def _auxFile(self, path):
     if os.path.exists(path):
@@ -64,7 +63,7 @@ class RunTests(unittest.TestCase):
         with open(actualFile) as actual:
           expectText = expect.read()
           actualText = actual.read()
-          self.assertEqual(expectText, actualText)
+      self.assertEqual(expectText, actualText)
 
   def _runTestFile(self, inputPath):
     dir, inputFile = os.path.split(inputPath)

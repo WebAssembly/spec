@@ -117,7 +117,7 @@
   ) (@a)
 ) (@a)
 
-((@a) module (@a) $m (@a) (@a)
+((@a) module (@a) $m1 (@a) (@a)
   ((@a) global (@a) $g (@a)
     ((@a) export (@a) "g" (@a)) (@a)
     ((@a) import (@a) "spectest" (@a) "global_i32" (@a)) (@a)
@@ -142,7 +142,7 @@
   ) (@a)
 ) (@a)
 
-((@a) module (@a) $m (@a) (@a)
+((@a) module (@a) $m2 (@a) (@a)
   ((@a) type (@a) $T (@a)
     ((@a) func (@a)
       ((@a) param (@a) i32 (@a) i64 (@a)) (@a)

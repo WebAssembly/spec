@@ -303,11 +303,14 @@ let modules : Ast.module_ Map.t ref = ref Map.empty
 let instances : Instance.module_inst Map.t ref = ref Map.empty
 let registry : Instance.module_inst Map.t ref = ref Map.empty
 
-let bind map x_opt y =
+let bind category map x_opt y =
   let map' =
     match x_opt with
     | None -> !map
-    | Some x -> Map.add x.it y !map
+    | Some x ->
+      if Map.mem x.it !map then
+        IO.error x.at (category ^ " " ^ x.it ^ " already defined");
+      Map.add x.it y !map
   in map := Map.add "" y map'
 
 let lookup category map x_opt at =
@@ -518,13 +521,13 @@ let rec run_command cmd =
         print_module x_opt m
       end
     end;
-    bind scripts x_opt [cmd];
-    bind modules x_opt m;
+    bind "module" modules x_opt m;
+    bind "script" scripts x_opt [cmd];
     if not !Flags.dry then begin
       trace "Initializing...";
       let imports = Import.link m in
       let inst = Eval.init m imports in
-      bind instances x_opt inst
+      bind "instance" instances x_opt inst
     end
 
   | Register (name, x_opt) ->
@@ -556,17 +559,17 @@ and run_meta cmd =
   match cmd.it with
   | Script (x_opt, script) ->
     run_quote_script script;
-    bind scripts x_opt (lookup_script None cmd.at)
+    bind "script" scripts x_opt (lookup_script None cmd.at)
 
   | Input (x_opt, file) ->
     (try if not (input_file file run_quote_script) then
       Abort.error cmd.at "aborting"
     with Sys_error msg -> IO.error cmd.at msg);
-    bind scripts x_opt (lookup_script None cmd.at);
+    bind "script" scripts x_opt (lookup_script None cmd.at);
     if x_opt <> None then begin
-      bind modules x_opt (lookup_module None cmd.at);
+      bind "module" modules x_opt (lookup_module None cmd.at);
       if not !Flags.dry then begin
-        bind instances x_opt (lookup_instance None cmd.at)
+        bind "instance" instances x_opt (lookup_instance None cmd.at)
       end
     end
 
@@ -588,7 +591,7 @@ and run_quote_script script =
   let save_quote = !quote in
   quote := [];
   (try run_script script with exn -> quote := save_quote; raise exn);
-  bind scripts None (List.rev !quote);
+  bind "script" scripts None (List.rev !quote);
   quote := !quote @ save_quote
 
 let run_file file = input_file file run_script
