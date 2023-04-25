@@ -620,31 +620,35 @@ let global off i g =
 let start s =
   Node ("start " ^ var s.it.sfunc, [])
 
+let custom m mnode (module S : Custom.Section) =
+  S.Handler.arrange m mnode S.it
 
-(* Modules *)
+(* Module *)
 
 let var_opt = function
   | None -> ""
   | Some x -> " " ^ x.it
 
-let module_with_var_opt x_opt m =
+let module_with_var_opt x_opt (m, cs) =
   let fx = ref 0 in
   let tx = ref 0 in
   let mx = ref 0 in
   let gx = ref 0 in
   let imports = list (import fx tx mx gx) m.it.imports in
-  Node ("module" ^ var_opt x_opt,
+  let ret = Node ("module" ^ var_opt x_opt,
     listi typedef m.it.types @
     imports @
     listi (table !tx) m.it.tables @
     listi (memory !mx) m.it.memories @
     listi (global !gx) m.it.globals @
-    listi (func_with_index !fx) m.it.funcs @
     list export m.it.exports @
     opt start m.it.start @
     listi elem m.it.elems @
+    listi (func_with_index !fx) m.it.funcs @
     listi data m.it.datas
-  )
+  ) in
+  List.fold_left (custom m) ret cs
+
 
 let binary_module_with_var_opt x_opt bs =
   Node ("module" ^ var_opt x_opt ^ " binary", break_bytes bs)
@@ -652,7 +656,8 @@ let binary_module_with_var_opt x_opt bs =
 let quoted_module_with_var_opt x_opt s =
   Node ("module" ^ var_opt x_opt ^ " quote", break_string s)
 
-let module_ = module_with_var_opt None
+let module_with_custom = module_with_var_opt None
+let module_ m = module_with_custom (m, [])
 
 
 (* Scripts *)
@@ -677,20 +682,21 @@ let definition mode x_opt def =
     | `Textual ->
       let rec unquote def =
         match def.it with
-        | Textual m -> m
-        | Encoded (_, bs) -> Decode.decode "" bs
+        | Textual (m, cs) -> m, cs
+        | Encoded (_, bs) -> Decode.decode_with_custom "" bs
         | Quoted (_, s) -> unquote (Parse.string_to_module s)
       in module_with_var_opt x_opt (unquote def)
     | `Binary ->
       let rec unquote def =
         match def.it with
-        | Textual m -> Encode.encode m
-        | Encoded (_, bs) -> Encode.encode (Decode.decode "" bs)
+        | Textual (m, cs) -> Encode.encode_with_custom (m, cs)
+        | Encoded (_, bs) ->
+          Encode.encode_with_custom (Decode.decode_with_custom "" bs)
         | Quoted (_, s) -> unquote (Parse.string_to_module s)
       in binary_module_with_var_opt x_opt (unquote def)
     | `Original ->
       match def.it with
-      | Textual m -> module_with_var_opt x_opt m
+      | Textual (m, cs) -> module_with_var_opt x_opt (m, cs)
       | Encoded (_, bs) -> binary_module_with_var_opt x_opt bs
       | Quoted (_, s) -> quoted_module_with_var_opt x_opt s
   with Parse.Syntax _ ->

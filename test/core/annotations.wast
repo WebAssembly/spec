@@ -1,18 +1,20 @@
-(@a)
+(module
+  (@a)
 
-(@aas-3!@$d-@#4)
-(@@) (@$) (@+) (@0) (@.) (@!$@#$23414@#$)
-(@a x y z)
-(@a x-y $yz "aa" -2 0.3 0x3)
-(@a x-y$yz"aa"-2)
-(@a block func module i32.add)
-(@a 0x 8q 0xfa #4g0-.@f#^&@#$*0sf -- @#)
-(@a , ; ] [ }} }x{ ({) ,{{};}] ;)
-(@a (bla) () (5-g) ("aa" a) ($x) (bla bla) (x (y)) ")" "(" x")"y)
-(@a @ @x (@x) (@x y) (@) (@ x) (@(@(@(@)))))
-(@a (;bla;) (; ) ;)
-  ;; bla)
-  ;; bla (@x
+  (@aas-3!@$d-@#4)
+  (@@) (@$) (@+) (@0) (@.) (@!$@#$23414@#$)
+  (@a x y z)
+  (@a x-y $yz "aa" -2 0.3 0x3)
+  (@a x-y$yz"aa"-2)
+  (@a block func module i32.add)
+  (@a 0x 8q 0xfa #4g0-.@f#^&@#$*0sf -- @#)
+  (@a , ; ] [ }} }x{ ({) ,{{};}] ;)
+  (@a (bla) () (5-g) ("aa" a) ($x) (bla bla) (x (y)) ")" "(" x")"y)
+  (@a @ @x (@x) (@x y) (@) (@ x) (@(@(@(@)))))
+  (@a (;bla;) (; ) ;)
+    ;; bla)
+    ;; bla (@x
+  )
 )
 
 (assert_malformed (module quote "(@a \00)") "illegal character")
@@ -115,7 +117,7 @@
   ((@a) export (@a) "f" (@a)
     ((@a) func (@a) $f (@a)) (@a)
   ) (@a)
-) (@a)
+)
 
 ((@a) module (@a) $m1 (@a) (@a)
   ((@a) global (@a) $g (@a)
@@ -140,7 +142,7 @@
     ((@a) param (@a) i32 (@a) f32 (@a)) (@a)
     ((@a) result (@a)) (@a)
   ) (@a)
-) (@a)
+)
 
 ((@a) module (@a) $m2 (@a) (@a)
   ((@a) type (@a) $T (@a)
@@ -192,4 +194,4 @@
 
   (func $s)
   ((@a) start (@a) $s (@a)) (@a)
-) (@a)
+)

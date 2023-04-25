@@ -697,7 +697,10 @@ rule token = parse
 
   | id as s { VAR s }
 
-  | "(@"name { annot (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
+  | "(@"(name as n)
+    { let r = region lexbuf in
+      let items = annot (Lexing.lexeme_start_p lexbuf) lexbuf in
+      Annot.record (Annot.{name = Utf8.decode n; items} @@ r); token lexbuf }
   | "(@" { error lexbuf "malformed annotation id" }
 
   | ";;"utf8_no_nl*eof { EOF }
@@ -714,16 +717,37 @@ rule token = parse
   | _ { error lexbuf "malformed UTF-8 encoding" }
 
 and annot start = parse
-  | ")" { () }
-  | "(" { annot (Lexing.lexeme_start_p lexbuf) lexbuf; annot start lexbuf }
+  | ")" { [] }
+  | "("
+    { let r = region lexbuf in
+      let items = annot (Lexing.lexeme_start_p lexbuf) lexbuf in
+      (Annot.Parens items @@ r) :: annot start lexbuf }
+  | "(@"(name as n)
+    { let r = region lexbuf in
+      let items = annot (Lexing.lexeme_start_p lexbuf) lexbuf in
+      let ann = Annot.{name = Utf8.decode n; items} @@ r in
+      (Annot.Annot ann @@ r) :: annot start lexbuf }
 
-  | reserved { annot start lexbuf }
-  | nat { annot start lexbuf }
-  | int { annot start lexbuf }
-  | float { annot start lexbuf }
-  | id { annot start lexbuf }
-  | string { annot start lexbuf }
-  | '"'character*('\n'|eof) { error lexbuf "unclosed string literal" }
+  | nat as s
+    { let r = region lexbuf in
+      (Annot.Nat s @@ r) :: annot start lexbuf }
+  | int as s
+    { let r = region lexbuf in
+      (Annot.Int s @@ r) :: annot start lexbuf }
+  | float as s
+    { let r = region lexbuf in
+      (Annot.Float s @@ r) :: annot start lexbuf }
+  | id as s
+    { let r = region lexbuf in
+      (Annot.Var s @@ r) :: annot start lexbuf }
+  | string as s
+    { let r = region lexbuf in
+      (Annot.String (string s) @@ r) :: annot start lexbuf }
+  | reserved as s
+    { let r = region lexbuf in
+      (Annot.Atom s @@ r) :: annot start lexbuf }
+  | '"'character*('\n'|eof)
+    { error lexbuf "unclosed string literal" }
   | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
     { error lexbuf "illegal control character in string literal" }
   | '"'character*'\\'_

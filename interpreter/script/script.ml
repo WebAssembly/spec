@@ -7,7 +7,7 @@ type literal = Values.value Source.phrase
 
 type definition = definition' Source.phrase
 and definition' =
-  | Textual of Ast.module_
+  | Textual of Ast.module_ * Custom.section list
   | Encoded of string * string
   | Quoted of string * string
 

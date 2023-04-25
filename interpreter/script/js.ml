@@ -523,11 +523,11 @@ let of_result res =
 
 let rec of_definition def =
   match def.it with
-  | Textual m -> of_bytes (Encode.encode m)
+  | Textual (m, _) -> of_bytes (Encode.encode m)
   | Encoded (_, bs) -> of_bytes bs
   | Quoted (_, s) ->
-    try of_definition (Parse.string_to_module s) with Parse.Syntax _ ->
-      of_bytes "<malformed quote>"
+    try of_definition (Parse.string_to_module s)
+    with Parse.Syntax _ | Custom.Syntax _ -> of_bytes "<malformed quote>"
 
 let of_wrapper mods x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt mods x_opt in
@@ -592,7 +592,7 @@ let of_command mods cmd =
   | Module (x_opt, def) ->
     let rec unquote def =
       match def.it with
-      | Textual m -> m
+      | Textual (m, _) -> m
       | Encoded (_, bs) -> Decode.decode "binary" bs
       | Quoted (_, s) -> unquote (Parse.string_to_module s)
     in bind mods x_opt (unquote def);

@@ -202,6 +202,30 @@ let inline_type_explicit (c : context) x ft at =
     error at "inline function type does not match explicit type";
   x
 
+
+(* Custom annotations *)
+
+let parse_annots (m : module_) : Custom.section list =
+  let bs = Annot.get_source () in
+  let annots = Annot.get m.at in
+  let secs =
+    Annot.NameMap.fold (fun name anns secs ->
+      match Custom.handler name with
+      | Some (module Handler) ->
+        let secs' = Handler.parse m bs anns in
+        List.map (fun fmt ->
+          let module S = struct module Handler = Handler let it = fmt end in
+          (module S : Custom.Section)
+        ) secs' @ secs
+      | None ->
+        if !Flags.custom_reject then
+          raise (Custom.Syntax ((List.hd anns).at,
+            "unknown annotation @" ^ Utf8.encode name))
+        else []
+    ) annots []
+  in
+   List.stable_sort Custom.compare_section secs
+
 %}
 
 %token LPAR RPAR
@@ -915,13 +939,13 @@ inline_export :
 /* Modules */
 
 type_ :
-  | def_type { $1 @@ at () }
+  | def_type { $1 }
 
 type_def :
   | LPAR TYPE type_ RPAR
-    { fun c -> anon_type c $3 }
+    { let at = at () in fun c -> anon_type c ($3 @@ at) }
   | LPAR TYPE bind_var type_ RPAR  /* Sugar */
-    { fun c -> bind_type c $3 $4 }
+    { let at = at () in fun c -> bind_type c $3 ($4 @@ at) }
 
 start :
   | LPAR START var RPAR
@@ -992,13 +1016,26 @@ module_var_opt :
 
 module_ :
   | LPAR MODULE module_var_opt module_fields RPAR
-    { $3, Textual ($4 (empty_context ()) () @@ at ()) @@ at () }
+    { let m = $4 (empty_context ()) () @@ at () in
+      $3, Textual (m, parse_annots m) @@ at () }
 
 inline_module :  /* Sugar */
-  | module_fields { Textual ($1 (empty_context ()) () @@ at ()) @@ at () }
+  | module_fields
+    { let at = at () in
+      (* Hack for empty modules *)
+      let at = if at.left <> at.right then at else
+        {at with right = {at.right with line = Stdlib.Int.max_int}} in
+      let m = $1 (empty_context ()) () @@ at in
+      Textual (m, parse_annots m) @@ at }
 
 inline_module1 :  /* Sugar */
-  | module_fields1 { Textual ($1 (empty_context ()) () @@ at ()) @@ at () }
+  | module_fields1
+    { let at = at () in
+      (* Hack for empty modules *)
+      let at = if at.left <> at.right then at else
+        {at with right = {at.right with line = Stdlib.Int.max_int}} in
+      let m = $1 (empty_context ()) () @@ at in
+      Textual (m, parse_annots m) @@ at }
 
 
 /* Scripts */

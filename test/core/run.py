@@ -13,27 +13,29 @@ import sys
 ownDir = os.path.dirname(os.path.abspath(sys.argv[0]))
 inputDir = ownDir
 outputDir = os.path.join(inputDir, "_output")
+opts = ""
+
+mainTestFiles = glob.glob(os.path.join(inputDir, "*.wast"))
+otherTestFiles = glob.glob(os.path.join(inputDir, "[a-z]*/*.wast"))
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--wasm", metavar="<wasm-command>", default=os.path.join(os.getcwd(), "wasm"))
 parser.add_argument("--js", metavar="<js-command>")
 parser.add_argument("--generate-js-only", action='store_true')
 parser.add_argument("--out", metavar="<out-dir>", default=outputDir)
+parser.add_argument("--opts", metavar="<options>", default=opts)
 parser.add_argument("file", nargs='*')
 arguments = parser.parse_args()
 sys.argv = sys.argv[:1]
 
-main_test_files = glob.glob(os.path.join(inputDir, "*.wast"))
-# SIMD test files are in a subdirectory.
-simd_test_files = glob.glob(os.path.join(inputDir, "simd", "*.wast"))
-
-wasmCommand = arguments.wasm
+wasmExec = arguments.wasm
 jsCommand = arguments.js
 generateJsOnly = arguments.generate_js_only
 outputDir = arguments.out
-inputFiles = arguments.file if arguments.file else main_test_files + simd_test_files
+inputFiles = arguments.file if arguments.file else mainTestFiles + otherTestFiles
+wasmCommand = wasmExec + " " + arguments.opts
 
-if not os.path.exists(wasmCommand):
+if not os.path.exists(wasmExec):
   sys.stderr.write("""\
 Error: The executable '%s' does not exist.
 Provide the correct path with the '--wasm' flag.

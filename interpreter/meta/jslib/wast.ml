@@ -11,7 +11,7 @@ let _ =
         let def = Parse.string_to_module (Js.to_string s) in
         let bs =
           match def.Source.it with
-          | Script.Textual m -> (Encode.encode m)
+          | Script.Textual (m, cs) -> Encode.encode_with_custom (m, cs)
           | Script.Encoded (_, bs) -> bs
           | Script.Quoted (_, _) -> failwith "Unsupported" in
         let buf = new%js Typed_array.arrayBuffer (String.length bs) in

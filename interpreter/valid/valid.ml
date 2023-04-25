@@ -735,3 +735,7 @@ let check_module (m : module_) =
   ignore (List.fold_left (check_export c) NameSet.empty exports);
   require (List.length c.memories <= 1) m.at
     "multiple memories are not allowed (yet)"
+
+let check_module_with_custom ((m : module_), (cs : Custom.section list)) =
+  check_module m;
+  List.iter (fun (module S : Custom.Section) -> S.Handler.check m S.it) cs
