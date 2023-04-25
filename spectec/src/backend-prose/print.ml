@@ -309,10 +309,16 @@ and string_of_cond = function
 
 let make_index index depth =
   index := !index + 1;
-  if depth = 0 then string_of_int !index ^ "."
-  else if depth = 1 then Char.escaped (Char.chr (96 + !index)) ^ "."
-  else if depth = 2 then "i."
-  else failwith "Invalid case"
+
+  let num_idx = string_of_int !index in
+  let alp_idx = Char.escaped (Char.chr (96 + !index)) in
+
+  match depth mod 4 with
+  | 0 -> num_idx ^ "."
+  | 1 -> alp_idx ^ "."
+  | 2 -> num_idx ^ ")"
+  | 3 -> alp_idx ^ ")"
+  | _ -> assert false
 
 let rec string_of_instr index depth = function
   | IfI (c, il, []) ->

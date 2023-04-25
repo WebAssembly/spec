@@ -33,7 +33,7 @@ let rec exp2name exp = match exp.it with
         | _ -> Print.string_of_iter iter
       end in
       Ir.SupN (name, sup)
-  | _ -> gen_fail_msg_of_exp exp "identifier" |> failwith
+  | _ -> gen_fail_msg_of_exp exp "identifier" |> print_endline; Ir.N "Yet"
 
 (* `Ast.exp` -> `Ir.expr` *)
 let rec exp2expr exp = match exp.it with
@@ -48,9 +48,9 @@ let rec exp2expr exp = match exp.it with
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
   | Ast.IterE ({ it = Ast.CallE (_, _); _ }, (_, _)) ->
       Ir.YetE (Print.string_of_exp exp)
-  | Ast.IterE (inner_exp, (iter, [id])) ->
+  | Ast.IterE (inner_exp, (iter, [_id])) ->
       let name = exp2name inner_exp in
-      assert (name = Ir.N id.it);
+      (* assert (name = Ir.N id.it); *)
       let sup = begin match iter with
         | Ast.ListN nexp -> Print.string_of_exp nexp
         | _ -> Print.string_of_iter iter
@@ -271,29 +271,20 @@ let rec exp2cond exp = match exp.it with
 
 
 
-(** Translate `Ast.premise` **)
+(** reduction -> `Ir.instr list` **)
 
-(* `Ast.prem list` -> `Ir.instr list` *)
-let prem2let prems =
-  List.filter_map
-    (function
-      | { it = Ast.IfPr { it = Ast.CmpE (Ast.EqOp, exp1, exp2); _ }; _ } ->
-          (* TODO: change to exp2name *)
-          Some (Ir.LetI (exp2expr exp1, exp2expr exp2))
-      | _ -> None)
-    prems
-
-(* `Ast.prem list` -> `Ir.cond` *)
-let rec prem2cond prems = match prems with
-  (* TODO: return, br *)
-  | [] -> Ir.YetC "[]"
-  | [{ it = Ast.IfPr exp; _ }] -> exp2cond exp
-  | { it = Ast.IfPr exp; _ } :: t -> Ir.AndC (exp2cond exp, prem2cond t)
-  | [{ it = Ast.ElsePr; _ }] -> Ir.YetC "Otherwise"
-  | { it = Ast.ElsePr; _ } :: t -> Ir.AndC (Ir.YetC "Otherwise", prem2cond t)
-  | _ -> Ir.YetC ("Animation")
-
-
+let reduction2instrs (_, _, rhs, prems) =
+  List.fold_right ( fun prem instrs ->
+    match prem.it with
+    | Ast.IfPr exp -> [ Ir.IfI (exp2cond exp, instrs |> check_nop, []) ]
+    | Ast.ElsePr -> [ Ir.IfI (Ir.YetC "otherwise", instrs |> check_nop, []) ]
+    | Ast.AssignPr(exp1, exp2) -> Ir.LetI (exp2expr exp1, exp2expr exp2) :: instrs
+    | _ ->
+      gen_fail_msg_of_prem prem "instr" |> print_endline ;
+      Ir.YetI (Il.Print.string_of_prem prem) :: instrs
+  )
+  prems
+  (rhs2instrs rhs)
 
 (** Main translation **)
 
@@ -311,27 +302,14 @@ let reduction_group2algo reduction_group acc =
     | _ -> lhs2pop lhs in
 
   let instrs = match reduction_group with
-    (* one reduction rule: assignment *)
-    | [(_, _, rhs, prems)] ->
-        let let_instrs = prem2let prems in
-        let push_instrs = rhs2instrs rhs in
-        let_instrs @ push_instrs
-    (* same lhs' with no premise: either *)
+    (* no premise: either *)
     | [(_, lhs1, rhs1, []); (_, lhs2, rhs2, [])]
       when Print.string_of_exp lhs1 = Print.string_of_exp lhs2 ->
         let rhs_instrs1 = rhs2instrs rhs1 |> check_nop in
         let rhs_instrs2 = rhs2instrs rhs2 |> check_nop in
         [Ir.EitherI(rhs_instrs1, rhs_instrs2)]
-    (* multiple reduction rules: condition or assignment *)
-    | _ ->
-        List.map
-          (fun (_, _, rhs, prems) ->
-            (* TODO: distinguish condition and assignment *)
-            let cond = prem2cond prems in
-            let rhs_instrs = rhs2instrs rhs |> check_nop in
-            Ir.IfI(cond, rhs_instrs, [])
-          )
-          reduction_group in
+    | _ -> List.concat_map reduction2instrs reduction_group
+    in
 
   let body = (pop_instrs @ instrs) |> check_nop in
 
@@ -354,7 +332,7 @@ let extract_rules def acc = match def.it with
       (List.filter filter_context rules) :: acc
   | _ -> acc
 
-let name_of_rule rule = 
+let name_of_rule rule =
   let Ast.RuleD (id1, _, _, _, _) = rule.it in
   String.split_on_char '-' id1.it |> List.hd
 
