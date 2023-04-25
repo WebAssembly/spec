@@ -27,8 +27,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 18.14.x
+          node-version: 19.x
       - name: Build interpreter
         run: cd interpreter && opam exec make
+      - name: Run annotate test
+        run: cd interpreter && (opam exec make test/annotations || node _output/annotations.js)
       - name: Run tests
         run: cd interpreter && opam exec make JS=node ci
