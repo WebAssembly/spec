@@ -61,6 +61,7 @@ and cond =
 
 type instr =
   | IfI of (cond * instr list * instr list)
+  | OtherwiseI of (instr list) (* This is only for intermideate process durinng il->ir *)
   | WhileI of (cond * instr list)
   | RepeatI of (expr * instr list)
   | EitherI of (instr list * instr list)

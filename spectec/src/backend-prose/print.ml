@@ -167,6 +167,9 @@ let rec structured_string_of_instr depth = function
         structured_string_of_cond c ^ "\n" ^ repeat indent depth ^ "then\n" ^
         structured_string_of_instrs (depth + 1) t ^ repeat indent depth ^ "else\n" ^
         structured_string_of_instrs (depth + 1) e ^ repeat indent depth ^ ")"
+  | OtherwiseI (b) ->
+      "OtherwiseI (\n" ^
+        structured_string_of_instrs (depth + 1) b ^ repeat indent depth ^ ")"
   | WhileI (c, il) ->
       "WhileI (\n" ^ repeat indent (depth + 1) ^
         structured_string_of_cond c ^ ":\n" ^
@@ -335,6 +338,10 @@ let rec string_of_instr index depth = function
         (string_of_instrs (depth + 1) il1)
         ((repeat indent depth) ^ else_index)
         (string_of_instrs (depth + 1) il2)
+  | OtherwiseI il->
+      sprintf "%s Otherwise:%s"
+        (make_index index depth)
+        (string_of_instrs (depth + 1) il)
   | WhileI (c, il) ->
       sprintf "%s While %s, do:%s"
         (make_index index depth)

@@ -19,6 +19,9 @@ Animation failed:where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
 == Prose Generation...
 Invalid expression `!($default_(t))` to be IR identifier.
 Invalid premise `(if ($default_(t) =/= ?()))*{t}` to be IR instr.
+Warning: No corresponding if for
+1. Otherwise:
+  a. Push the value i32.CONST 0 to the stack.
 unreachable
 1. Trap.
 
@@ -181,8 +184,6 @@ ref.is_null
 2. Pop val from the stack.
 3. Let the value ref.null rt be val.
 4. Push the value i32.CONST 1 to the stack.
-5. If YetC (otherwise), then:
-  a. Push the value i32.CONST 0 to the stack.
 
 local.tee
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -203,7 +204,9 @@ call_indirect
   b. If a < the length of $funcinst(z), then:
     1) Let YetE (`%;%`(m, func)) be $funcinst(z)[a].
     2) Execute (CALL_ADDR a).
-4. If YetC (otherwise), then:
+  c. Else:
+    1) Trap.
+4. Else:
   a. Trap.
 
 call_addr
@@ -254,17 +257,17 @@ table.fill
 6. Pop the value i32.CONST i from the stack.
 7. If (i + n) > the length of $table(z, x), then:
   a. Trap.
-8. If YetC (otherwise), then:
+8. Else:
   a. If n is 0, then:
     1) Do nothing.
-9. If YetC (otherwise), then:
-  a. Push the value i32.CONST i to the stack.
-  b. Push val to the stack.
-  c. Execute (TABLE.SET x).
-  d. Push the value i32.CONST (i + 1) to the stack.
-  e. Push val to the stack.
-  f. Push the value i32.CONST (n - 1) to the stack.
-  g. Execute (TABLE.FILL x).
+  b. Else:
+    1) Push the value i32.CONST i to the stack.
+    2) Push val to the stack.
+    3) Execute (TABLE.SET x).
+    4) Push the value i32.CONST (i + 1) to the stack.
+    5) Push val to the stack.
+    6) Push the value i32.CONST (n - 1) to the stack.
+    7) Execute (TABLE.FILL x).
 
 table.copy
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -275,28 +278,28 @@ table.copy
 6. Pop the value i32.CONST j from the stack.
 7. If (i + n) > the length of $table(z, y) or (j + n) > the length of $table(z, x), then:
   a. Trap.
-8. If YetC (otherwise), then:
+8. Else:
   a. If n is 0, then:
     1) Do nothing.
-9. If YetC (otherwise), then:
-  a. If j ≤ i, then:
-    1) Push the value i32.CONST j to the stack.
-    2) Push the value i32.CONST i to the stack.
-    3) Execute (TABLE.GET y).
-    4) Execute (TABLE.SET x).
-    5) Push the value i32.CONST (j + 1) to the stack.
-    6) Push the value i32.CONST (i + 1) to the stack.
-    7) Push the value i32.CONST (n - 1) to the stack.
-    8) Execute (TABLE.COPY x y).
-10. If YetC (otherwise), then:
-  a. Push the value i32.CONST ((j + n) - 1) to the stack.
-  b. Push the value i32.CONST ((i + n) - 1) to the stack.
-  c. Execute (TABLE.GET y).
-  d. Execute (TABLE.SET x).
-  e. Push the value i32.CONST (j + 1) to the stack.
-  f. Push the value i32.CONST (i + 1) to the stack.
-  g. Push the value i32.CONST (n - 1) to the stack.
-  h. Execute (TABLE.COPY x y).
+  b. Else:
+    1) If j ≤ i, then:
+      a) Push the value i32.CONST j to the stack.
+      b) Push the value i32.CONST i to the stack.
+      c) Execute (TABLE.GET y).
+      d) Execute (TABLE.SET x).
+      e) Push the value i32.CONST (j + 1) to the stack.
+      f) Push the value i32.CONST (i + 1) to the stack.
+      g) Push the value i32.CONST (n - 1) to the stack.
+      h) Execute (TABLE.COPY x y).
+    2) Else:
+      a) Push the value i32.CONST ((j + n) - 1) to the stack.
+      b) Push the value i32.CONST ((i + n) - 1) to the stack.
+      c) Execute (TABLE.GET y).
+      d) Execute (TABLE.SET x).
+      e) Push the value i32.CONST (j + 1) to the stack.
+      f) Push the value i32.CONST (i + 1) to the stack.
+      g) Push the value i32.CONST (n - 1) to the stack.
+      h) Execute (TABLE.COPY x y).
 
 table.init
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -307,18 +310,18 @@ table.init
 6. Pop the value i32.CONST j from the stack.
 7. If (i + n) > the length of $elem(z, y) or (j + n) > the length of $table(z, x), then:
   a. Trap.
-8. If YetC (otherwise), then:
+8. Else:
   a. If n is 0, then:
     1) Do nothing.
-9. If i < the length of $elem(z, y), then:
-  a. If YetC (otherwise), then:
-    1) Push the value i32.CONST j to the stack.
-    2) Push $elem(z, y)[i] to the stack.
-    3) Execute (TABLE.SET x).
-    4) Push the value i32.CONST (j + 1) to the stack.
-    5) Push the value i32.CONST (i + 1) to the stack.
-    6) Push the value i32.CONST (n - 1) to the stack.
-    7) Execute (TABLE.INIT x y).
+  b. Else:
+    1) If i < the length of $elem(z, y), then:
+      a) Push the value i32.CONST j to the stack.
+      b) Push $elem(z, y)[i] to the stack.
+      c) Execute (TABLE.SET x).
+      d) Push the value i32.CONST (j + 1) to the stack.
+      e) Push the value i32.CONST (i + 1) to the stack.
+      f) Push the value i32.CONST (n - 1) to the stack.
+      g) Execute (TABLE.INIT x y).
 
 load
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -343,17 +346,17 @@ memory.fill
 6. Pop the value i32.CONST i from the stack.
 7. If (i + n) > the length of $mem(z, 0), then:
   a. Trap.
-8. If YetC (otherwise), then:
+8. Else:
   a. If n is 0, then:
     1) Do nothing.
-9. If YetC (otherwise), then:
-  a. Push the value i32.CONST i to the stack.
-  b. Push val to the stack.
-  c. Execute (STORE YetE (I32_numtype) YetE (?(8)) 0 0).
-  d. Push the value i32.CONST (i + 1) to the stack.
-  e. Push val to the stack.
-  f. Push the value i32.CONST (n - 1) to the stack.
-  g. Execute (MEMORY.FILL).
+  b. Else:
+    1) Push the value i32.CONST i to the stack.
+    2) Push val to the stack.
+    3) Execute (STORE YetE (I32_numtype) YetE (?(8)) 0 0).
+    4) Push the value i32.CONST (i + 1) to the stack.
+    5) Push val to the stack.
+    6) Push the value i32.CONST (n - 1) to the stack.
+    7) Execute (MEMORY.FILL).
 
 memory.copy
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -364,28 +367,28 @@ memory.copy
 6. Pop the value i32.CONST j from the stack.
 7. If (i + n) > the length of $table(z, 0) or (j + n) > the length of $table(z, 0), then:
   a. Trap.
-8. If YetC (otherwise), then:
+8. Else:
   a. If n is 0, then:
     1) Do nothing.
-9. If YetC (otherwise), then:
-  a. If j ≤ i, then:
-    1) Push the value i32.CONST j to the stack.
-    2) Push the value i32.CONST i to the stack.
-    3) Execute (LOAD YetE (I32_numtype) YetE (?((8, U_sx))) 0 0).
-    4) Execute (STORE YetE (I32_numtype) YetE (?(8)) 0 0).
-    5) Push the value i32.CONST (j + 1) to the stack.
-    6) Push the value i32.CONST (i + 1) to the stack.
-    7) Push the value i32.CONST (n - 1) to the stack.
-    8) Execute (MEMORY.COPY).
-10. If YetC (otherwise), then:
-  a. Push the value i32.CONST ((j + n) - 1) to the stack.
-  b. Push the value i32.CONST ((i + n) - 1) to the stack.
-  c. Execute (LOAD YetE (I32_numtype) YetE (?((8, U_sx))) 0 0).
-  d. Execute (STORE YetE (I32_numtype) YetE (?(8)) 0 0).
-  e. Push the value i32.CONST (j + 1) to the stack.
-  f. Push the value i32.CONST (i + 1) to the stack.
-  g. Push the value i32.CONST (n - 1) to the stack.
-  h. Execute (MEMORY.COPY).
+  b. Else:
+    1) If j ≤ i, then:
+      a) Push the value i32.CONST j to the stack.
+      b) Push the value i32.CONST i to the stack.
+      c) Execute (LOAD YetE (I32_numtype) YetE (?((8, U_sx))) 0 0).
+      d) Execute (STORE YetE (I32_numtype) YetE (?(8)) 0 0).
+      e) Push the value i32.CONST (j + 1) to the stack.
+      f) Push the value i32.CONST (i + 1) to the stack.
+      g) Push the value i32.CONST (n - 1) to the stack.
+      h) Execute (MEMORY.COPY).
+    2) Else:
+      a) Push the value i32.CONST ((j + n) - 1) to the stack.
+      b) Push the value i32.CONST ((i + n) - 1) to the stack.
+      c) Execute (LOAD YetE (I32_numtype) YetE (?((8, U_sx))) 0 0).
+      d) Execute (STORE YetE (I32_numtype) YetE (?(8)) 0 0).
+      e) Push the value i32.CONST (j + 1) to the stack.
+      f) Push the value i32.CONST (i + 1) to the stack.
+      g) Push the value i32.CONST (n - 1) to the stack.
+      h) Execute (MEMORY.COPY).
 
 memory.init
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -396,18 +399,18 @@ memory.init
 6. Pop the value i32.CONST j from the stack.
 7. If (i + n) > the length of $data(z, x) or (j + n) > the length of $mem(z, 0), then:
   a. Trap.
-8. If YetC (otherwise), then:
+8. Else:
   a. If n is 0, then:
     1) Do nothing.
-9. If i < the length of $data(z, x), then:
-  a. If YetC (otherwise), then:
-    1) Push the value i32.CONST j to the stack.
-    2) Push the value i32.CONST $data(z, x)[i] to the stack.
-    3) Execute (STORE YetE (I32_numtype) YetE (?(8)) 0 0).
-    4) Push the value i32.CONST (j + 1) to the stack.
-    5) Push the value i32.CONST (i + 1) to the stack.
-    6) Push the value i32.CONST (n - 1) to the stack.
-    7) Execute (MEMORY.INIT x).
+  b. Else:
+    1) If i < the length of $data(z, x), then:
+      a) Push the value i32.CONST j to the stack.
+      b) Push the value i32.CONST $data(z, x)[i] to the stack.
+      c) Execute (STORE YetE (I32_numtype) YetE (?(8)) 0 0).
+      d) Push the value i32.CONST (j + 1) to the stack.
+      e) Push the value i32.CONST (i + 1) to the stack.
+      f) Push the value i32.CONST (n - 1) to the stack.
+      g) Execute (MEMORY.INIT x).
 
 local.set
 1. Assert: Due to validation, a value is on the top of the stack.

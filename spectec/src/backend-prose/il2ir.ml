@@ -1,3 +1,4 @@
+module IrPrint = Print
 open Il
 open Printf
 open Util.Source
@@ -17,7 +18,9 @@ let gen_fail_msg_of_prem prem =
   Print.string_of_prem prem
   |> sprintf "Invalid premise `%s` to be IR %s."
 
-
+let take n str =
+  let len = min n (String.length str) in
+  (String.sub str 0 len) ^ if len <= n then "" else "..."
 
 (** Translate `Ast.exp` **)
 
@@ -277,7 +280,7 @@ let reduction2instrs (_, _, rhs, prems) =
   List.fold_right ( fun prem instrs ->
     match prem.it with
     | Ast.IfPr exp -> [ Ir.IfI (exp2cond exp, instrs |> check_nop, []) ]
-    | Ast.ElsePr -> [ Ir.IfI (Ir.YetC "otherwise", instrs |> check_nop, []) ]
+    | Ast.ElsePr -> [ Ir.OtherwiseI (instrs |> check_nop) ]
     | Ast.AssignPr(exp1, exp2) -> Ir.LetI (exp2expr exp1, exp2expr exp2) :: instrs
     | _ ->
       gen_fail_msg_of_prem prem "instr" |> print_endline ;
@@ -285,6 +288,50 @@ let reduction2instrs (_, _, rhs, prems) =
   )
   prems
   (rhs2instrs rhs)
+
+(* Recursively append else block to every empty if *)
+let rec insert_otherwise else_body instrs =
+  let walk = insert_otherwise else_body in
+  List.fold_left_map (fun visit_if inst ->
+    match inst with
+    | Ir.IfI (c, il, []) ->
+      let (_, il') = walk il in
+      ( true, Ir.IfI(c, il', else_body) )
+    | Ir.IfI (c, il1, il2) ->
+      let (visit_if1, il1') = walk il1 in
+      let (visit_if2, il2') = walk il2 in
+      let visit_if = visit_if || visit_if1 || visit_if2 in
+      ( visit_if, Ir.IfI(c, il1', il2') )
+    | Ir.OtherwiseI (il) ->
+      let (visit_if', il') = walk il in
+      let visit_if = visit_if || visit_if' in
+      ( visit_if, Ir.OtherwiseI(il') )
+    | Ir.WhileI (c, il) ->
+      let (visit_if', il') = walk il in
+      let visit_if = visit_if || visit_if' in
+      ( visit_if, Ir.WhileI(c, il') )
+    | Ir.RepeatI (e, il) ->
+      let (visit_if', il') = walk il in
+      let visit_if = visit_if || visit_if' in
+      ( visit_if, Ir.RepeatI(e, il') )
+    | Ir.EitherI (il1, il2) ->
+      let (visit_if1, il1') = walk il1 in
+      let (visit_if2, il2') = walk il2 in
+      let visit_if = visit_if || visit_if1 || visit_if2 in
+      ( visit_if, Ir.EitherI(il1', il2') )
+    | _ -> (visit_if, inst)
+  ) false instrs
+
+(* If the latter block of instrs is a single Otherwise, merge them *)
+let merge_otherwise instrs1 instrs2 = match instrs2 with
+| [ Ir.OtherwiseI else_body ] ->
+  let ( visit_if, merged ) = insert_otherwise else_body instrs1 in
+  if not visit_if then print_endline (
+    "Warning: No corresponding if for" ^
+    take 100 ( IrPrint.string_of_instrs 0 instrs2 )
+  );
+  merged
+| _ -> instrs1 @ instrs2
 
 (** Main translation **)
 
@@ -308,7 +355,9 @@ let reduction_group2algo reduction_group acc =
         let rhs_instrs1 = rhs2instrs rhs1 |> check_nop in
         let rhs_instrs2 = rhs2instrs rhs2 |> check_nop in
         [Ir.EitherI(rhs_instrs1, rhs_instrs2)]
-    | _ -> List.concat_map reduction2instrs reduction_group
+    | _ ->
+      let blocks = List.map reduction2instrs reduction_group in
+      List.fold_right merge_otherwise blocks []
     in
 
   let body = (pop_instrs @ instrs) |> check_nop in

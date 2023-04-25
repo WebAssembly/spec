@@ -8189,8 +8189,8 @@ relation Step_read: `%~>%*`(config, admininstr*)
   ;; 6-reduction.watsup:257.1-261.15
   rule table.init-succ {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, y)]), [CONST_admininstr(I32_numtype, j) ($elem(z, y)[i] <: admininstr) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, (n - 1)) TABLE.INIT_admininstr(x, y)])
-    -- if (i < |$elem(z, y)|)
     -- otherwise
+    -- if (i < |$elem(z, y)|)
 
   ;; 6-reduction.watsup:268.1-270.49
   rule load-num-trap {i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat}:
@@ -8267,8 +8267,8 @@ relation Step_read: `%~>%*`(config, admininstr*)
   ;; 6-reduction.watsup:357.1-361.15
   rule memory.init-succ {i : nat, j : nat, n : n, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.INIT_admininstr(x)]), [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, $data(z, x)[i]) STORE_admininstr(I32_numtype, ?(8), 0, 0) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, (n - 1)) MEMORY.INIT_admininstr(x)])
-    -- if (i < |$data(z, x)|)
     -- otherwise
+    -- if (i < |$data(z, x)|)
 
 ;; 6-reduction.watsup:3.1-3.63
 relation Step: `%~>%`(config, config)

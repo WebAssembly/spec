@@ -164,7 +164,10 @@ let animate_prems lhs prems =
   _fresh := 0;
 
   let known_vars = free_lhs_exp lhs in
-  let reorder prems = select_tight prems [] known_vars in
+  let reorder prems =
+    let (other, non_other) = List.partition (function {it = ElsePr; _} -> true | _ -> false) prems in
+    select_tight non_other other known_vars
+  in
   reorder prems
 
 (* Animate rule *)
