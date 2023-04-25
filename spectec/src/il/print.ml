@@ -7,7 +7,6 @@ open Ast
 
 let concat = String.concat
 let prefix s f x = s ^ f x
-let suffix f s x = f x ^ s
 let space f x = " " ^ f x ^ " "
 
 
@@ -172,6 +171,8 @@ and string_of_path p =
   match p.it with
   | RootP -> ""
   | IdxP (p1, e) -> string_of_path p1 ^ "[" ^ string_of_exp e ^ "]"
+  | SliceP (p1, e1, e2) ->
+    string_of_path p1 ^ "[" ^ string_of_exp e1 ^ " : " ^ string_of_exp e2 ^ "]"
   | DotP ({it = RootP; _}, atom) -> string_of_atom atom
   | DotP (p1, atom) -> string_of_path p1 ^ "." ^ string_of_atom atom
 
@@ -194,6 +195,7 @@ let rec string_of_prem prem =
   match prem.it with
   | RulePr (id, op, e) -> id.it ^ ": " ^ string_of_exp (MixE (op, e) $ e.at)
   | IfPr e -> "if " ^ string_of_exp e
+  | AssignPr (e1, e2) -> "where " ^ string_of_exp e1 ^ " := " ^ string_of_exp e2
   | ElsePr -> "otherwise"
   | IterPr ({it = IterPr _; _} as prem', iter) ->
     string_of_prem prem' ^ string_of_iterexp iter
@@ -219,29 +221,31 @@ let string_of_clause id clause =
       concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 let rec string_of_def d =
-  "\n;; " ^ string_of_region d.at ^ "\n" ^
+  let pre = "\n;; " ^ string_of_region d.at ^ "\n" in
   match d.it with
-  | SynD (id, dt, _hints) ->
-    "syntax " ^ id.it ^ " = " ^ string_of_deftyp dt
-  | RelD (id, mixop, t, rules, _hints) ->
-    "relation " ^ id.it ^ ": " ^ string_of_typ_mix mixop t ^
-      concat "\n" (List.map string_of_rule rules)
-  | DecD (id, t1, t2, clauses, _hints) ->
+  | SynD (id, dt) ->
+    pre ^ "syntax " ^ id.it ^ " = " ^ string_of_deftyp dt ^ "\n"
+  | RelD (id, mixop, t, rules) ->
+    pre ^ "relation " ^ id.it ^ ": " ^ string_of_typ_mix mixop t ^
+      concat "\n" (List.map string_of_rule rules) ^ "\n"
+  | DecD (id, t1, t2, clauses) ->
     let s1 =
       match t1.it with
       | TupT [] -> ""
       | _ -> string_of_typ t1 ^ " -> "
     in
-    "def " ^ id.it ^ " : " ^ s1 ^ string_of_typ t2 ^
-      concat "" (List.map (string_of_clause id) clauses)
+    pre ^ "def " ^ id.it ^ " : " ^ s1 ^ string_of_typ t2 ^
+      concat "" (List.map (string_of_clause id) clauses) ^ "\n"
   | RecD ds ->
-    "rec {\n" ^ concat "\n" (List.map string_of_def ds) ^ "\n}"
+    pre ^ "rec {\n" ^ concat "" (List.map string_of_def ds) ^ "}" ^ "\n"
+  | HintD _ ->
+    ""
 
 
 (* Scripts *)
 
 let string_of_script ds =
-  concat "" (List.map (suffix string_of_def "\n") ds)
+  concat "" (List.map string_of_def ds)
 
 
 let sprintf = Printf.sprintf
@@ -265,6 +269,12 @@ let structured_string_of_hint hint =
 
 let structured_string_of_hints hints =
     structured_string_of_list structured_string_of_hint hints
+
+let structured_string_of_hintdef hintdef = 
+  match hintdef.it with
+  | SynH (id, hints) -> sprintf "SynH (%s, %s)" id.it (structured_string_of_list structured_string_of_hint hints)
+  | RelH (id, hints) -> sprintf "RelH (%s, %s)" id.it (structured_string_of_list structured_string_of_hint hints)
+  | DecH (id, hints) -> sprintf "DecH (%s, %s)" id.it (structured_string_of_list structured_string_of_hint hints)
 
 let structured_string_of_atom = function
   | Atom atomid -> sprintf "Atom \"%s\"" atomid
@@ -476,6 +486,11 @@ and structured_string_of_path path =
       sprintf "IdxP (%s, %s)"
         (structured_string_of_path path1)
         (structured_string_of_exp exp)
+  | SliceP (path1, exp1, exp2) ->
+      sprintf "SliceP (%s, %s, %s)"
+        (structured_string_of_path path1)
+        (structured_string_of_exp exp1)
+        (structured_string_of_exp exp2)
   | DotP (path1, atom) ->
       sprintf "DotP (%s, %s)"
         (structured_string_of_path path1)
@@ -502,6 +517,10 @@ let rec structured_string_of_premise prem =
         (structured_string_of_mixop mixop)
         (structured_string_of_exp exp)
   | IfPr (exp) -> sprintf "IfPr (%s)" (structured_string_of_exp exp)
+  | AssignPr (exp1, exp2) ->
+      sprintf "AssignPr (%s, %s)"
+        (structured_string_of_exp exp1)
+        (structured_string_of_exp exp2)
   | ElsePr -> "ElsePr"
   | IterPr (prem, iterexp) ->
       sprintf "IterPr (%s, %s)"
@@ -529,30 +548,29 @@ let structured_string_of_clause clause =
 
 let rec structured_string_of_def def =
   match def.it with
-  | SynD (id, deftyp, hints) ->
-      sprintf "SynD (\n   \"%s\",\n   %s,\n   %s\n)"
+  | SynD (id, deftyp) ->
+      sprintf "SynD (\n   \"%s\",\n   %s\n)\n"
         id.it
         (structured_string_of_deftyp deftyp)
-        (structured_string_of_hints hints)
-  | RelD (id, mixop, typ, rules, hints) ->
-      sprintf "RelD (\n   \"%s\",\n   %s,\n   %s,\n   %s,\n   %s\n)"
+  | RelD (id, mixop, typ, rules) ->
+      sprintf "RelD (\n   \"%s\",\n   %s,\n   %s,\n   %s\n)\n"
         id.it
         (structured_string_of_mixop mixop)
         (structured_string_of_typ typ)
         (structured_string_of_list structured_string_of_rule rules)
-        (structured_string_of_hints hints)
-  | DecD (id, typ1, typ2, clauses, hints) ->
-      sprintf "DecD (\n   \"%s\",\n   %s,\n   %s,\n   %s,\n   %s\n)"
+  | DecD (id, typ1, typ2, clauses) ->
+      sprintf "DecD (\n   \"%s\",\n   %s,\n   %s,\n   %s\n)\n"
         id.it
         (structured_string_of_typ typ1)
         (structured_string_of_typ typ2)
         (structured_string_of_list structured_string_of_clause clauses)
-        (structured_string_of_hints hints)
   | RecD defs ->
-      sprintf "RecD (%s)" (structured_string_of_list structured_string_of_def defs)
+      sprintf "RecD (%s)\n" (structured_string_of_list structured_string_of_def defs)
+  | HintD hintdef ->
+      sprintf "HintD (%s)\n" (structured_string_of_hintdef hintdef)
 
 
 (* Scripts *)
 
 let structured_string_of_script defs =
-  concat "" (List.map (suffix structured_string_of_def "\n") defs)
+  concat "" (List.map structured_string_of_def defs)

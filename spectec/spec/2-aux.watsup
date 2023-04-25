@@ -1,4 +1,18 @@
-;; Auxuliary Definitions on Types
+;; General constants
+
+def $Ki : nat
+def $Ki = 1024
+
+
+;; General functions
+
+def $min(nat, nat) : nat
+def $min(0, j) = 0
+def $min(i, 0) = 0
+def $min($(i+1), $(j+1)) = $min(i, j)
+
+
+;; Auxiliary Definitions on Types
 
 ;; def |I n| = |F n| = |V n| = n        ;; ????
 

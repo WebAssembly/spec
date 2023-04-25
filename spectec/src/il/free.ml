@@ -31,6 +31,12 @@ let subset sets1 sets2 =
   Set.subset sets1.varid sets2.varid &&
   Set.subset sets1.defid sets2.defid
 
+let disjoint sets1 sets2 =
+  Set.disjoint sets1.synid sets2.synid &&
+  Set.disjoint sets1.relid sets2.relid &&
+  Set.disjoint sets1.varid sets2.varid &&
+  Set.disjoint sets1.defid sets2.defid
+
 
 let free_opt free_x xo = Option.(value (map free_x xo) ~default:empty)
 let free_list free_x xs = List.(fold_left union empty (map free_x xs))
@@ -98,6 +104,8 @@ and free_path p =
   match p.it with
   | RootP -> empty
   | IdxP (p1, e) -> union (free_path p1) (free_exp e)
+  | SliceP (p1, e1, e2) ->
+    union (free_path p1) (union (free_exp e1) (free_exp e2))
   | DotP (p1, _) -> free_path p1
 
 and free_iterexp (iter, ids) =
@@ -116,6 +124,7 @@ let rec free_prem prem =
   match prem.it with
   | RulePr (id, _op, e) -> union (free_relid id) (free_exp e)
   | IfPr e -> free_exp e
+  | AssignPr (e1, e2) -> union (free_exp e1) (free_exp e2)
   | ElsePr -> empty
   | IterPr (prem', iter) -> union (free_prem prem') (free_iterexp iter)
 
@@ -137,19 +146,27 @@ let free_clause clause =
         (bound_binds binds)
       )
 
+let free_hintdef hd =
+  match hd.it with
+  | SynH (id, _) -> free_synid id
+  | RelH (id, _) -> free_relid id
+  | DecH (id, _) -> free_defid id
+
 let rec free_def d =
   match d.it with
-  | SynD (_id, dt, _hints) -> free_deftyp dt
-  | RelD (_id, _mixop, t, rules, _hints) ->
+  | SynD (_id, dt) -> free_deftyp dt
+  | RelD (_id, _mixop, t, rules) ->
     union (free_typ t) (free_list free_rule rules)
-  | DecD (_id, t1, t2, clauses, _hints) ->
+  | DecD (_id, t1, t2, clauses) ->
     union (union (free_typ t1) (free_typ t2)) (free_list free_clause clauses)
   | RecD ds -> free_list free_def ds
+  | HintD hd -> free_hintdef hd
 
 
 let rec bound_def d =
   match d.it with
-  | SynD (id, _, _) -> free_synid id
-  | RelD (id, _, _, _, _) -> free_relid id
-  | DecD (id, _, _, _, _) -> free_defid id
+  | SynD (id, _) -> free_synid id
+  | RelD (id, _, _, _) -> free_relid id
+  | DecD (id, _, _, _) -> free_defid id
   | RecD ds -> free_list bound_def ds
+  | HintD _ -> empty
