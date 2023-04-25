@@ -45,11 +45,11 @@
 (assert_malformed (module binary "\00asm\00\00\00\01") "unknown binary version")
 
 ;; Invalid section id.
-(assert_malformed (module binary "\00asm" "\01\00\00\00" "\0d\00") "malformed section id")
-(assert_malformed (module binary "\00asm" "\01\00\00\00" "\7f\00") "malformed section id")
-(assert_malformed (module binary "\00asm" "\01\00\00\00" "\80\00\01\00") "malformed section id")
-(assert_malformed (module binary "\00asm" "\01\00\00\00" "\81\00\01\00") "malformed section id")
-(assert_malformed (module binary "\00asm" "\01\00\00\00" "\ff\00\01\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\0e\01\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\7f\01\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\80\01\00\01\01\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\81\01\00\01\01\00") "malformed section id")
+(assert_malformed (module binary "\00asm" "\01\00\00\00" "\ff\01\00\01\01\00") "malformed section id")
 
 ;; Unsigned LEB128 can have non-minimal length
 (module binary
@@ -1241,7 +1241,7 @@
   )                            ;; end
   "data count section required")
 
-;; passive element segment containing opcode other than ref.func or ref.null
+;; passive element segment containing illegal opcode
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -1258,7 +1258,7 @@
     "\09\07\01"                ;; Element section with one segment
     "\05\70"                   ;; Passive, funcref
     "\01"                      ;; 1 element
-    "\d3\00\0b"                ;; bad opcode, index 0, end
+    "\f3\00\0b"                ;; bad opcode, index 0, end
 
     "\0a\04\01"                ;; Code section
 

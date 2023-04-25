@@ -108,7 +108,7 @@ If inline declarations are given, then their types must match the referenced :re
         \end{array} \\
    \end{array}
 
-The synthesized attribute of a |Ttypeuse| is a pair consisting of both the used :ref:`type index <syntax-typeidx>` and the updated :ref:`identifier context <text-context>` including possible parameter identifiers.
+The synthesized attribute of a |Ttypeuse| is a pair consisting of both the used :ref:`type index <syntax-typeidx>` and the local :ref:`identifier context <text-context>` containing possible parameter identifiers.
 The following auxiliary function extracts optional identifiers from parameters:
 
 .. math::
@@ -200,7 +200,7 @@ Function definitions can bind a symbolic :ref:`function identifier <text-id>`, a
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~~
      (t{:}\Tlocal)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)} \\ &&& \qquad
        \Rightarrow\quad \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\X{in}^\ast~\END \} \\ &&& \qquad\qquad\qquad
-       (\iff I'' = I' \compose \{\ILOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\[1ex]
+       (\iff I'' = I \compose I' \compose \{\ILOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\[1ex]
    \production{local} & \Tlocal &::=&
      \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype~\text{)}
        \quad\Rightarrow\quad t \\
@@ -290,7 +290,7 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~\expr^n{:}\Tvec(\Telemexpr)~\text{)}~~\text{)} \quad\equiv \\ & \qquad
+     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~\expr^n{:}\Tvec(\Telemexpr)~\text{)}~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)} \\ & \qquad
        \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Telemexpr)~\text{)}
        \\ & \qquad\qquad
@@ -300,7 +300,7 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)} \quad\equiv \\ & \qquad
+     \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)} \\ & \qquad
        \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Tvec(\Tfuncidx)~\text{)}
        \\ & \qquad\qquad

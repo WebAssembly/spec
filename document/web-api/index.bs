@@ -32,12 +32,6 @@ Prepare For TR: true
     "title": "WebAssembly JS Integration Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
-  },
-  "SECURECONTEXTS": {
-    "href": "https://w3c.github.io/webappsec-secure-contexts/",
-    "title": "Secure Contexts",
-    "publisher": "WebAppSec WG",
-    "status": "Candidate Recommendation"
   }
 }
 </pre>
@@ -71,11 +65,11 @@ urlPrefix: https://webassembly.github.io/spec/js-api/; spec: WASMJS
         text: Exported Function; url: #exported-function
 url:https://html.spec.whatwg.org/#cors-same-origin;text:CORS-same-origin;type:dfn;spec:HTML
 url:https://fetch.spec.whatwg.org/#concept-body-consume-body;text:consume body;type:dfn;spec:FETCH
-url:https://w3c.github.io/webappsec-secure-contexts/#environment-settings-object-contextually-secure; text:contextually secure; type: dfn; spec: SECURECONTEXTS
 </pre>
 
 <pre class='link-defaults'>
 spec:ecma-262; type:exception; for:ECMAScript; text:TypeError
+spec:fetch; type:dfn; text:get
 spec:webidl; type:dfn; text:resolve
 </pre>
 
@@ -118,8 +112,10 @@ Note: This algorithm accepts a {{Response}} object, or a
     1. Let |returnValue| be [=a new promise=]
     1. [=Upon fulfillment=] of |source| with value |unwrappedSource|:
         1. Let |response| be |unwrappedSource|'s [=Response/response=].
-        1. Let |mimeType| be the result of [=extracting a MIME type=] from |response|'s [=response/header list=].
-        1. If |mimeType| is not `` `application/wasm` ``, reject |returnValue| with a {{TypeError}} and abort these substeps.
+        1. Let |mimeType| be the result of [=header list/getting=] `` `Content-Type` `` from |response|'s [=response/header list=].
+        1. If |mimeType| is null, reject |returnValue| with a {{TypeError}} and abort these substeps.
+        1. Remove all [=HTTP tab or space byte=] from the start and end of |mimeType|.
+        1. If |mimeType| is not a [=byte-case-insensitive=] match for `` `application/wasm` ``, reject |returnValue| with a {{TypeError}} and abort these substeps.
 
             Note: extra parameters are not allowed, including the empty `` `application/wasm;` ``.
 
@@ -151,7 +147,7 @@ The [=serialization steps=], given |value|, |serialized|, and |forStorage|, are:
 
     1. Set |serialized|.\[[AgentCluster]] to the [=current Realm=]'s corresponding [=agent cluster=].
 
-The [=deserialization steps=], given |serialized| and |value|, are:
+The [=deserialization steps=], given |serialized|, |value|, and |targetRealm| are:
 
     1. Let |bytes| be the [=sub-deserialization=] of |serialized|.\[[Bytes]].
 

@@ -88,7 +88,7 @@ release = version + ('' if proposal == '' else ' + ') + proposal + draft
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -297,7 +297,8 @@ latex_elements = {
   'pointsize': '10pt',
 
    # Additional stuff for the LaTeX preamble.
-   'preamble': '',
+   # Don't type-set cross references with emphasis.
+   'preamble': '\\renewcommand\\sphinxcrossref[1]{#1}\n',
 
    # Latex figure (float) alignment
   'figure_align': 'htbp',

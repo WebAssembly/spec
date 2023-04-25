@@ -205,8 +205,11 @@ let inline_type_explicit (c : context) x ft at =
 %}
 
 %token LPAR RPAR
-%token NAT INT FLOAT STRING VAR
-%token NUM_TYPE VEC_TYPE VEC_SHAPE FUNCREF EXTERNREF EXTERN MUT
+%token<string> NAT INT FLOAT STRING VAR
+%token<Types.num_type> NUM_TYPE
+%token<Types.vec_type> VEC_TYPE
+%token<V128.shape> VEC_SHAPE
+%token FUNCREF EXTERNREF EXTERN MUT
 %token UNREACHABLE NOP DROP SELECT
 %token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE
 %token CALL CALL_INDIRECT RETURN
@@ -214,60 +217,27 @@ let inline_type_explicit (c : context) x ft at =
 %token TABLE_GET TABLE_SET
 %token TABLE_SIZE TABLE_GROW TABLE_FILL TABLE_COPY TABLE_INIT ELEM_DROP
 %token MEMORY_SIZE MEMORY_GROW MEMORY_FILL MEMORY_COPY MEMORY_INIT DATA_DROP
-%token LOAD STORE OFFSET_EQ_NAT ALIGN_EQ_NAT
-%token CONST UNARY BINARY TEST COMPARE CONVERT
+%token<int option -> Memory.offset -> Ast.instr'> LOAD STORE
+%token<string> OFFSET_EQ_NAT ALIGN_EQ_NAT
+%token<string Source.phrase -> Ast.instr' * Values.num> CONST
+%token<Ast.instr'> UNARY BINARY TEST COMPARE CONVERT
 %token REF_NULL REF_FUNC REF_EXTERN REF_IS_NULL
-%token VEC_LOAD VEC_STORE VEC_LOAD_LANE VEC_STORE_LANE
-%token VEC_CONST VEC_UNARY VEC_BINARY VEC_TERNARY VEC_TEST
-%token VEC_SHIFT VEC_BITMASK VEC_SHUFFLE
-%token VEC_EXTRACT VEC_REPLACE
+%token<int option -> Memory.offset -> Ast.instr'> VEC_LOAD VEC_STORE
+%token<int option -> Memory.offset -> int -> Ast.instr'> VEC_LOAD_LANE VEC_STORE_LANE
+%token<V128.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Values.vec> VEC_CONST
+%token<Ast.instr'> VEC_UNARY VEC_BINARY VEC_TERNARY VEC_TEST
+%token<Ast.instr'> VEC_SHIFT VEC_BITMASK VEC_SPLAT
+%token VEC_SHUFFLE
+%token<int -> Ast.instr'> VEC_EXTRACT VEC_REPLACE
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
-%token ASSERT_MALFORMED ASSERT_INVALID ASSERT_SOFT_INVALID ASSERT_UNLINKABLE
+%token ASSERT_MALFORMED ASSERT_INVALID ASSERT_UNLINKABLE
 %token ASSERT_RETURN ASSERT_TRAP ASSERT_EXHAUSTION
-%token NAN
+%token<Script.nan> NAN
 %token INPUT OUTPUT
 %token EOF
-
-%token<string> NAT
-%token<string> INT
-%token<string> FLOAT
-%token<string> STRING
-%token<string> VAR
-%token<Types.num_type> NUM_TYPE
-%token<Types.vec_type> VEC_TYPE
-%token<string Source.phrase -> Ast.instr' * Values.num> CONST
-%token<V128.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Values.vec> VEC_CONST
-%token<Ast.instr'> UNARY
-%token<Ast.instr'> BINARY
-%token<Ast.instr'> TEST
-%token<Ast.instr'> COMPARE
-%token<Ast.instr'> CONVERT
-%token<int option -> Memory.offset -> Ast.instr'> LOAD
-%token<int option -> Memory.offset -> Ast.instr'> STORE
-%token<int option -> Memory.offset -> Ast.instr'> VEC_LOAD
-%token<int option -> Memory.offset -> Ast.instr'> VEC_STORE
-%token<int option -> Memory.offset -> int -> Ast.instr'> VEC_LOAD_LANE
-%token<int option -> Memory.offset -> int -> Ast.instr'> VEC_STORE_LANE
-%token<Ast.instr'> VEC_UNARY
-%token<Ast.instr'> VEC_BINARY
-%token<Ast.instr'> VEC_TERNARY
-%token<Ast.instr'> VEC_TEST
-%token<Ast.instr'> VEC_SHIFT
-%token<Ast.instr'> VEC_BITMASK
-%token<Ast.instr'> VEC_SPLAT
-%token<int -> Ast.instr'> VEC_EXTRACT
-%token<int -> Ast.instr'> VEC_REPLACE
-%token<string> OFFSET_EQ_NAT
-%token<string> ALIGN_EQ_NAT
-%token<V128.shape> VEC_SHAPE
-
-%token<Script.nan> NAN
-
-%nonassoc LOW
-%nonassoc VAR
 
 %start script script1 module1
 %type<Script.script> script
@@ -367,7 +337,7 @@ bind_var :
   | VAR { $1 @@ at () }
 
 labeling_opt :
-  | /* empty */ %prec LOW
+  | /* empty */
     { fun c xs ->
       List.iter (fun x -> error x.at "mismatching label") xs;
       anon_label c }
@@ -378,7 +348,7 @@ labeling_opt :
       bind_label c $1 }
 
 labeling_end_opt :
-  | /* empty */ %prec LOW { [] }
+  | /* empty */ { [] }
   | bind_var { [$1] }
 
 offset_opt :
@@ -396,12 +366,16 @@ align_opt :
 
 /* Instructions & Expressions */
 
-instr :
+instr_list :
+  | /* empty */ { fun c -> [] }
+  | instr1 instr_list { fun c -> $1 c @ $2 c }
+  | select_instr_instr_list { $1 }
+  | call_instr_instr_list { $1 }
+
+instr1 :
   | plain_instr { let at = at () in fun c -> [$1 c @@ at] }
-  | select_instr_instr { fun c -> let e, es = $1 c in e :: es }
-  | call_instr_instr { fun c -> let e, es = $1 c in e :: es }
   | block_instr { let at = at () in fun c -> [$1 c @@ at] }
-  | expr { $1 } /* Sugar */
+  | expr { $1 }  /* Sugar */
 
 plain_instr :
   | UNREACHABLE { fun c -> unreachable }
@@ -472,89 +446,51 @@ plain_instr :
   | VEC_REPLACE NAT { let at = at () in fun c -> $1 (vec_lane_index $2 at) }
 
 
-select_instr :
-  | SELECT select_instr_results
-    { let at = at () in fun c -> let b, ts = $2 in
-      select (if b then (Some ts) else None) @@ at }
-
-select_instr_results :
-  | LPAR RESULT value_type_list RPAR select_instr_results
-    { let _, ts = $5 in true, $3 @ ts }
-  | /* empty */
-    { false, [] }
-
-select_instr_instr :
-  | SELECT select_instr_results_instr
+select_instr_instr_list :
+  | SELECT select_instr_results_instr_list
     { let at1 = ati 1 in
       fun c -> let b, ts, es = $2 c in
-      select (if b then (Some ts) else None) @@ at1, es }
+      (select (if b then (Some ts) else None) @@ at1) :: es }
 
-select_instr_results_instr :
-  | LPAR RESULT value_type_list RPAR select_instr_results_instr
+select_instr_results_instr_list :
+  | LPAR RESULT value_type_list RPAR select_instr_results_instr_list
     { fun c -> let _, ts, es = $5 c in true, $3 @ ts, es }
-  | instr
+  | instr_list
     { fun c -> false, [], $1 c }
 
 
-call_instr :
-  | CALL_INDIRECT var call_instr_type
-    { let at = at () in fun c -> call_indirect ($2 c table) ($3 c) @@ at }
-  | CALL_INDIRECT call_instr_type  /* Sugar */
-    { let at = at () in fun c -> call_indirect (0l @@ at) ($2 c) @@ at }
-
-call_instr_type :
-  | type_use call_instr_params
+call_instr_instr_list :
+  | CALL_INDIRECT var call_instr_type_instr_list
     { let at1 = ati 1 in
-      fun c ->
-      match $2 c with
-      | FuncType ([], []) -> $1 c type_
-      | ft -> inline_type_explicit c ($1 c type_) ft at1 }
-  | call_instr_params
-    { let at = at () in fun c -> inline_type c ($1 c) at }
-
-call_instr_params :
-  | LPAR PARAM value_type_list RPAR call_instr_params
-    { fun c -> let FuncType (ts1, ts2) = $5 c in FuncType ($3 @ ts1, ts2) }
-  | call_instr_results
-    { fun c -> FuncType ([], $1 c) }
-
-call_instr_results :
-  | LPAR RESULT value_type_list RPAR call_instr_results
-    { fun c -> $3 @ $5 c }
-  | /* empty */
-    { fun c -> [] }
-
-
-call_instr_instr :
-  | CALL_INDIRECT var call_instr_type_instr
+      fun c -> let x, es = $3 c in
+      (call_indirect ($2 c table) x @@ at1) :: es }
+  | CALL_INDIRECT call_instr_type_instr_list  /* Sugar */
     { let at1 = ati 1 in
-      fun c -> let x, es = $3 c in call_indirect ($2 c table) x @@ at1, es }
-  | CALL_INDIRECT call_instr_type_instr  /* Sugar */
-    { let at1 = ati 1 in
-      fun c -> let x, es = $2 c in call_indirect (0l @@ at1) x @@ at1, es }
+      fun c -> let x, es = $2 c in
+      (call_indirect (0l @@ at1) x @@ at1) :: es }
 
-call_instr_type_instr :
-  | type_use call_instr_params_instr
+call_instr_type_instr_list :
+  | type_use call_instr_params_instr_list
     { let at1 = ati 1 in
       fun c ->
       match $2 c with
       | FuncType ([], []), es -> $1 c type_, es
       | ft, es -> inline_type_explicit c ($1 c type_) ft at1, es }
-  | call_instr_params_instr
+  | call_instr_params_instr_list
     { let at = at () in
       fun c -> let ft, es = $1 c in inline_type c ft at, es }
 
-call_instr_params_instr :
-  | LPAR PARAM value_type_list RPAR call_instr_params_instr
+call_instr_params_instr_list :
+  | LPAR PARAM value_type_list RPAR call_instr_params_instr_list
     { fun c ->
       let FuncType (ts1, ts2), es = $5 c in FuncType ($3 @ ts1, ts2), es }
-  | call_instr_results_instr
+  | call_instr_results_instr_list
     { fun c -> let ts, es = $1 c in FuncType ([], ts), es }
 
-call_instr_results_instr :
-  | LPAR RESULT value_type_list RPAR call_instr_results_instr
+call_instr_results_instr_list :
+  | LPAR RESULT value_type_list RPAR call_instr_results_instr_list
     { fun c -> let ts, es = $5 c in $3 @ ts, es }
-  | instr
+  | instr_list
     { fun c -> [], $1 c }
 
 
@@ -686,12 +622,6 @@ if_ :
     { fun c c' -> [], $3 c', $7 c' }
   | LPAR THEN instr_list RPAR  /* Sugar */
     { fun c c' -> [], $3 c', [] }
-
-instr_list :
-  | /* empty */ { fun c -> [] }
-  | select_instr { fun c -> [$1 c] }
-  | call_instr { fun c -> [$1 c] }
-  | instr instr_list { fun c -> $1 c @ $2 c }
 
 expr_list :
   | /* empty */ { fun c -> [] }
