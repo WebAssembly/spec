@@ -12,7 +12,7 @@ open Il.Ast
 open Il.Free
 
 (* for debugging *)
-let debug = 0 (* 1 : print msg, 2 : fail *)
+let debug = 1 (* 1 : print msg, 2 : fail *)
 let fail prem =
   let msg = "Animation failed:" ^ Il.Print.string_of_prem prem in
   match debug with
@@ -90,30 +90,80 @@ let is_assign env prem = match prem.it with
   )
 | _ -> Either.Right prem
 
+(* Generate fresh variables *)
+let _fresh = ref 0
+let fresh _ =
+  let id = !_fresh in
+  _fresh := id + 1;
+  "tmp" ^ string_of_int id
+
+(* Simplify assign target of each premises *)
+let rec simplify_assign_target assign =
+  let bind_var e = match e.it with
+    | VarE _
+    | IterE (_, (Opt, _))
+    | IterE (_, (List, _))
+    | IterE (_, (List1, _)) -> (e, [])
+    | _ ->
+      let fresh = (VarE ( fresh() $ no_region)) $ no_region in
+      let new_assigns = simplify_assign_target (AssignPr (e, fresh) $ no_region) in
+      (fresh, new_assigns)
+  in
+  let bind_vars = List.fold_left (fun (ids, acc) e ->
+    let (id, new_assigns) = bind_var e in
+    (ids @ [id], acc @ new_assigns)
+  ) ([], [])
+  in
+  match assign.it with
+  | AssignPr(target, rhs) -> ( match target.it with
+    | VarE _  | IterE _ -> [assign]
+    | ListE es ->
+      let (vars, new_assigns) = bind_vars es in
+      let simplified_assign = AssignPr((ListE vars) $ target.at, rhs) $ assign.at in
+      simplified_assign :: new_assigns
+    | OptE _ -> [assign]
+    | MixE (mixOp, { it = TupE es ; at = _ }) ->
+      let (vars, new_assigns) = bind_vars es in
+      let simplified_assign = AssignPr(MixE(mixOp, TupE vars $ target.at) $ target.at, rhs) $ assign.at in
+      simplified_assign :: new_assigns
+    | CaseE (atom, { it = TupE es; at = _}, t) ->
+      let (vars, new_assigns) = bind_vars es in
+      let simplified_assign = AssignPr(CaseE(atom, TupE vars $ target.at, t) $ target.at, rhs) $ assign.at in
+      simplified_assign :: new_assigns
+    | CaseE (atom, e, t) ->
+      let (var, new_assigns) = bind_var e in
+      let simplified_assign = AssignPr(CaseE(atom, var, t) $ target.at, rhs) $ assign.at in
+      simplified_assign :: new_assigns
+    | CallE _ -> fail assign; [assign]
+    | _ -> fail assign; [assign]
+    )
+  | _ -> failwith "Unreachable"
 
 (* Mutual recursive functions that iteratively select tight and assignment premises,
    effectively sorting the premises as a result *)
 let rec select_tight prems acc env = ( match prems with
 | [] -> acc
 | _ ->
-  let (tight, non_tight) = List.partition (is_tight env) prems in
-  select_assign non_tight (acc @ tight) env
+  let (tights, non_tights) = List.partition (is_tight env) prems in
+  select_assign non_tights (acc @ tights) env
 )
 and select_assign prems acc env = ( match prems with
 | [] -> acc
-| _ -> let (assign, non_assign) = List.partition_map (is_assign env) prems in
-  ( match assign with
-  | [] -> List.iter fail non_assign; ( acc @ prems )
+| _ -> let (assigns, non_assigns) = List.partition_map (is_assign env) prems in
+  ( match assigns with
+  | [] -> List.iter fail non_assigns; ( acc @ prems )
   | _ ->
-    let new_env = assign |> List.map free_prem |> List.fold_left union env in
-    select_tight non_assign (acc @ assign) new_env
+    let new_assigns = List.concat_map simplify_assign_target assigns in
+    let new_env = new_assigns |> List.map free_prem |> List.fold_left union env in
+    select_tight non_assigns (acc @ new_assigns) new_env
   )
 )
 
 (* Animate the list of premises *)
 let animate_prems lhs prems =
-  let known_vars = free_lhs_exp lhs in
+  _fresh := 0;
 
+  let known_vars = free_lhs_exp lhs in
   let reorder prems = select_tight prems [] known_vars in
   reorder prems
 
