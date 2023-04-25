@@ -158,9 +158,9 @@ let () =
       List.iter
         (fun algo -> Backend_prose.Print.string_of_algorithm algo |> print_endline)
         ir_algos;
-      log "Interpret IR...";
+      (*log "Interpret IR...";
       let result = Backend_prose.Interpreter.interpret ir_algos in
-      print_endline result
+      print_endline result*)
     );
     log "Complete."
   with
