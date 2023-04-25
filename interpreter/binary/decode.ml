@@ -166,7 +166,7 @@ let var_type s =
 let heap_type s =
   let pos = pos s in
   either [
-    (fun s -> DefHT (Stat (var_type s)));
+    (fun s -> VarHT (StatX (var_type s)));
     (fun s ->
       match s7 s with
       | -0x10 -> FuncHT

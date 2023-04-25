@@ -12,7 +12,7 @@ type module_inst =
   exports : export_inst list;
 }
 
-and type_inst = type_addr
+and type_inst = def_type
 and func_inst = module_inst Lib.Promise.t Func.t
 and table_inst = Table.t
 and memory_inst = Memory.t
@@ -35,7 +35,7 @@ type Value.ref_ += FuncRef of func_inst
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | FuncRef f -> DefHT (Dyn (Func.type_inst_of f))
+    | FuncRef f -> DefHT (DefFuncT (Func.type_of f))
     | r -> type_of_ref' r
 
 let () =
@@ -50,6 +50,14 @@ let () =
     match r1, r2 with
     | FuncRef f1, FuncRef f2 -> f1 == f2
     | _, _ -> eq_ref' r1 r2
+
+
+(* Projections *)
+
+let func_inst_of_extern = function ExternFunc f -> f | _ -> failwith "func_inst_of_extern"
+let table_inst_of_extern = function ExternTable f -> f | _ -> failwith "table_inst_of_extern"
+let memory_inst_of_extern = function ExternMemory f -> f | _ -> failwith "memory_inst_of_extern"
+let global_inst_of_extern = function ExternGlobal f -> f | _ -> failwith "global_inst_of_extern"
 
 
 (* Auxiliary functions *)

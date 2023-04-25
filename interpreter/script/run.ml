@@ -233,7 +233,7 @@ let type_of_result r =
   | NumResult (NanPat n) -> NumT (Value.type_of_num n.it)
   | VecResult (VecPat v) -> VecT (Value.type_of_vec v)
   | RefResult (RefPat r) -> RefT (Value.type_of_ref r.it)
-  | RefResult (RefTypePat t) -> RefT (NoNull, dyn_heap_type [] t)
+  | RefResult (RefTypePat t) -> RefT (NoNull, t)  (* assume closed *)
   | RefResult (NullPat) -> RefT (Null, ExternHT)
 
 let string_of_num_pat (p : num_pat) =
@@ -329,7 +329,7 @@ let run_action act : Value.t list =
       if List.length vs <> List.length ts1 then
         Script.error act.at "wrong number of arguments";
       List.iter2 (fun v t ->
-        if not (Match.match_val_type [] (Value.type_of_value v.it) t) then
+        if not (Match.match_val_type (Value.type_of_value v.it) t) then
           Script.error v.at "wrong type of argument"
       ) vs ts1;
       Eval.invoke f (List.map (fun v -> v.it) vs)

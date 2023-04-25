@@ -221,7 +221,6 @@
 
 .. Types, non-terminals
 
-.. |typeid| mathdef:: \xref{syntax/types}{syntax-typeid}{\X{typeid}}
 .. |numtype| mathdef:: \xref{syntax/types}{syntax-numtype}{\X{numtype}}
 .. |vectype| mathdef:: \xref{syntax/types}{syntax-vectype}{\X{vectype}}
 .. |heaptype| mathdef:: \xref{syntax/types}{syntax-heaptype}{\X{heaptype}}
@@ -229,6 +228,7 @@
 .. |valtype| mathdef:: \xref{syntax/types}{syntax-valtype}{\X{valtype}}
 .. |resulttype| mathdef:: \xref{syntax/types}{syntax-resulttype}{\X{resulttype}}
 .. |functype| mathdef:: \xref{syntax/types}{syntax-functype}{\X{functype}}
+.. |deftype| mathdef:: \xref{syntax/types}{syntax-deftype}{\X{deftype}}
 
 .. |globaltype| mathdef:: \xref{syntax/types}{syntax-globaltype}{\X{globaltype}}
 .. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
@@ -341,7 +341,7 @@
 .. Modules, non-terminals
 
 .. |module| mathdef:: \xref{syntax/modules}{syntax-module}{\X{module}}
-.. |type| mathdef:: \xref{syntax/types}{syntax-functype}{\X{type}}
+.. |type| mathdef:: \xref{syntax/types}{syntax-deftype}{\X{type}}
 .. |func| mathdef:: \xref{syntax/modules}{syntax-func}{\X{func}}
 .. |local| mathdef:: \xref{syntax/modules}{syntax-local}{\X{local}}
 .. |table| mathdef:: \xref{syntax/modules}{syntax-table}{\X{table}}
@@ -627,6 +627,7 @@
 .. |Bvaltype| mathdef:: \xref{binary/types}{binary-valtype}{\B{valtype}}
 .. |Bresulttype| mathdef:: \xref{binary/types}{binary-resulttype}{\B{resulttype}}
 .. |Bfunctype| mathdef:: \xref{binary/types}{binary-functype}{\B{functype}}
+.. |Bdeftype| mathdef:: \xref{binary/types}{binary-deftype}{\B{deftype}}
 .. |Bglobaltype| mathdef:: \xref{binary/types}{binary-globaltype}{\B{globaltype}}
 .. |Btabletype| mathdef:: \xref{binary/types}{binary-tabletype}{\B{tabletype}}
 .. |Bmemtype| mathdef:: \xref{binary/types}{binary-memtype}{\B{memtype}}
@@ -792,6 +793,7 @@
 .. |Treftype| mathdef:: \xref{text/types}{text-reftype}{\T{reftype}}
 .. |Tvaltype| mathdef:: \xref{text/types}{text-valtype}{\T{valtype}}
 .. |Tfunctype| mathdef:: \xref{text/types}{text-functype}{\T{functype}}
+.. |Tdeftype| mathdef:: \xref{text/types}{text-deftype}{\T{deftype}}
 
 .. |Tglobaltype| mathdef:: \xref{text/types}{text-globaltype}{\T{globaltype}}
 .. |Ttabletype| mathdef:: \xref{text/types}{text-tabletype}{\T{tabletype}}
@@ -934,7 +936,6 @@
 
 .. Judgments
 
-.. |vdashtypeid| mathdef:: \xref{valid/types}{valid-typeid}{\vdash}
 .. |vdashnumtype| mathdef:: \xref{valid/types}{valid-numtype}{\vdash}
 .. |vdashvectype| mathdef:: \xref{valid/types}{valid-vectype}{\vdash}
 .. |vdashheaptype| mathdef:: \xref{valid/types}{valid-heaptype}{\vdash}
@@ -948,6 +949,7 @@
 .. |vdashmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\vdash}
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
 .. |vdashexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\vdash}
+.. |vdashdeftype| mathdef:: \xref{valid/types}{valid-deftype}{\vdash}
 
 .. |vdashinstrtype| mathdef:: \xref{valid/types}{valid-instrtype}{\vdash}
 
@@ -1005,9 +1007,8 @@
 
 .. Allocation
 
-.. |dyn| mathdef:: \xref{exec/types}{dyn}{\F{dyn}}
+.. |insttype| mathdef:: \xref{exec/types}{type-inst}{\F{clos}}
 
-.. |alloctype| mathdef:: \xref{exec/modules}{alloc-type}{\F{alloctype}}
 .. |allocfunc| mathdef:: \xref{exec/modules}{alloc-func}{\F{allocfunc}}
 .. |allochostfunc| mathdef:: \xref{exec/modules}{alloc-hostfunc}{\F{allochostfunc}}
 .. |alloctable| mathdef:: \xref{exec/modules}{alloc-table}{\F{alloctable}}
@@ -1024,7 +1025,6 @@
 .. Addresses, non-terminals
 
 .. |addr| mathdef:: \xref{exec/runtime}{syntax-addr}{\X{addr}}
-.. |typeaddr| mathdef:: \xref{exec/runtime}{syntax-typeaddr}{\X{typeaddr}}
 .. |funcaddr| mathdef:: \xref{exec/runtime}{syntax-funcaddr}{\X{funcaddr}}
 .. |tableaddr| mathdef:: \xref{exec/runtime}{syntax-tableaddr}{\X{tableaddr}}
 .. |memaddr| mathdef:: \xref{exec/runtime}{syntax-memaddr}{\X{memaddr}}
@@ -1036,7 +1036,6 @@
 
 .. Address, meta functions
 
-.. |freetypeaddr| mathdef:: \xref{syntax/modules}{syntax-typeaddr}{\F{typeaddr}}
 .. |freefuncaddr| mathdef:: \xref{syntax/modules}{syntax-funcaddr}{\F{funcaddr}}
 .. |freetableaddr| mathdef:: \xref{syntax/modules}{syntax-tableaddr}{\F{tableaddr}}
 .. |freememaddr| mathdef:: \xref{syntax/modules}{syntax-memaddr}{\F{memaddr}}
@@ -1089,7 +1088,6 @@
 .. |externval| mathdef:: \xref{exec/runtime}{syntax-externval}{\X{externval}}
 
 .. |moduleinst| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\X{moduleinst}}
-.. |typeinst| mathdef:: \xref{exec/runtime}{syntax-typeinst}{\X{typeinst}}
 .. |funcinst| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\X{funcinst}}
 .. |tableinst| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\X{tableinst}}
 .. |meminst| mathdef:: \xref{exec/runtime}{syntax-meminst}{\X{meminst}}
@@ -1111,7 +1109,6 @@
 
 .. Store, terminals
 
-.. |STYPES| mathdef:: \xref{exec/runtime}{syntax-store}{\K{types}}
 .. |SFUNCS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{funcs}}
 .. |STABLES| mathdef:: \xref{exec/runtime}{syntax-store}{\K{tables}}
 .. |SMEMS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{mems}}
@@ -1309,7 +1306,6 @@
 .. |vdashval| mathdef:: \xref{appendix/properties}{valid-val}{\vdash}
 .. |vdashresult| mathdef:: \xref{appendix/properties}{valid-result}{\vdash}
 
-.. |vdashtypeinst| mathdef:: \xref{appendix/properties}{valid-typeinst}{\vdash}
 .. |vdashfuncinst| mathdef:: \xref{appendix/properties}{valid-funcinst}{\vdash}
 .. |vdashtableinst| mathdef:: \xref{appendix/properties}{valid-tableinst}{\vdash}
 .. |vdashmeminst| mathdef:: \xref{appendix/properties}{valid-meminst}{\vdash}
@@ -1325,7 +1321,6 @@
 .. |vdashthread| mathdef:: \xref{appendix/properties}{valid-thread}{\vdash}
 .. |vdashframe| mathdef:: \xref{appendix/properties}{valid-frame}{\vdash}
 
-.. |vdashtypeinstextends| mathdef:: \xref{appendix/properties}{extend-typeinst}{\vdash}
 .. |vdashfuncinstextends| mathdef:: \xref{appendix/properties}{extend-funcinst}{\vdash}
 .. |vdashtableinstextends| mathdef:: \xref{appendix/properties}{extend-tableinst}{\vdash}
 .. |vdashmeminstextends| mathdef:: \xref{appendix/properties}{extend-meminst}{\vdash}

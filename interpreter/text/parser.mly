@@ -287,7 +287,7 @@ null_opt :
 heap_type :
   | FUNC { fun c -> FuncHT }
   | EXTERN { fun c -> ExternHT }
-  | var { fun c -> DefHT (Stat ($1 c type_).it) }
+  | var { fun c -> VarHT (StatX ($1 c type_).it) }
 
 ref_type :
   | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
@@ -1141,8 +1141,7 @@ literal_vec :
   | LPAR VEC_CONST VEC_SHAPE num_list RPAR { snd (vec $2 $3 $4 (at ())) }
 
 literal_ref :
-  | LPAR REF_NULL heap_type RPAR
-    { Value.NullRef (Types.dyn_heap_type [] ($3 (empty_context ()))) }
+  | LPAR REF_NULL heap_type RPAR { Value.NullRef ($3 (empty_context ())) }
   | LPAR REF_EXTERN NAT RPAR { Script.ExternRef (nat32 $3 (ati 3)) }
 
 literal :

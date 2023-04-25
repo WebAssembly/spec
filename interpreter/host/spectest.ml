@@ -19,11 +19,9 @@ let global (GlobalT (_, t) as gt) =
     | BotT -> assert false
   in Global.alloc gt v
 
-let table =
-  Table.alloc (TableT ({min = 10l; max = Some 20l}, (Null, FuncHT)))
-    (NullRef FuncHT)
-let memory = Memory.alloc (MemoryT {min = 1l; max = Some 2l})
-let func f ft = Func.alloc_host (Types.alloc (DefFuncT ft)) (f ft)
+let table tt = Table.alloc tt (NullRef BotHT)
+let memory mt = Memory.alloc mt
+let func f ft = Func.alloc_host ft (f ft)
 
 let print_value v =
   Printf.printf "%s : %s\n"
@@ -48,6 +46,6 @@ let lookup name t =
   | "global_i64", _ -> ExternGlobal (global (GlobalT (Cons, NumT I64T)))
   | "global_f32", _ -> ExternGlobal (global (GlobalT (Cons, NumT F32T)))
   | "global_f64", _ -> ExternGlobal (global (GlobalT (Cons, NumT F64T)))
-  | "table", _ -> ExternTable table
-  | "memory", _ -> ExternMemory memory
+  | "table", _ -> ExternTable (table (TableT ({min = 10l; max = Some 20l}, (Null, FuncHT))))
+  | "memory", _ -> ExternMemory (memory (MemoryT {min = 1l; max = Some 2l}))
   | _ -> raise Not_found
