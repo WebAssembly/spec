@@ -161,6 +161,8 @@ let () =
       List.iter
         (fun algo -> Backend_prose.Print.string_of_algorithm algo |> print_endline)
         ir_algos;
+      log "IR Validation...";
+      Backend_prose.Validation.valid ir_algos;
       (*log "Interpret IR...";
       let result = Backend_prose.Interpreter.interpret ir_algos in
       print_endline result*)

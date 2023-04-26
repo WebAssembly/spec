@@ -1,12 +1,18 @@
+type ir_type =
+  | WasmValueT of Reference_interpreter.Types.value_type
+  | WasmValueTopT
+  | IntT
+  | BotT
+
 type value =
   | WasmV of Reference_interpreter.Values.value
   | IntV of int
 
-type wtype =
-  | WasmT of Reference_interpreter.Types.value_type
-  | VarT of string
-
 type name = N of string | SupN of name * string | SubN of name * string
+
+type wasm_type_expr =
+  | WasmTE of Reference_interpreter.Types.value_type
+  | VarTE of string
 
 type expr =
   | ValueE of int
@@ -38,7 +44,7 @@ type expr =
   | LabelE of (expr * expr)
   | NameE of name
   (* Wasm Value Expr *)
-  | ConstE of wtype * expr
+  | ConstE of wasm_type_expr * expr
   | RefNullE of name
   | RefFuncAddrE of expr
   (* Yet *)

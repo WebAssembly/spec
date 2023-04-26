@@ -478,5 +478,6 @@ memory.grow
 data.drop
 1. Perform $with_data(z, x, []).
 
+== IR Validation...
 == Complete.
 ```

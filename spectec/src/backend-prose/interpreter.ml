@@ -86,8 +86,8 @@ let st_ref: stack ref = ref []
 (* Helper functions *)
 
 let ir_type2wasm_type env = function
-  | Ir.WasmT ty -> ty
-  | Ir.VarT x -> Env.find_type x env
+  | Ir.WasmTE ty -> ty
+  | Ir.VarTE x -> Env.find_type x env
 
 (* NOTE: These functions should be used only if validation ensures no failure *)
 let ir_value2wasm_value = function
@@ -147,7 +147,7 @@ let rec interp_instr env i = match (i, !st_ref) with
       let v = eval_expr env e |> ir_value2wasm_value in
       st_ref := v :: st;
       env
-  | (Ir.PopI (Ir.ConstE (Ir.VarT nt, Ir.NameE name)), h :: t) ->
+  | (Ir.PopI (Ir.ConstE (Ir.VarTE nt, Ir.NameE name)), h :: t) ->
       st_ref := t;
 
       let ty = Values.type_of_value h in

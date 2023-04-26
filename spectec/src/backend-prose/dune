@@ -1,5 +1,5 @@
 (library
   (name backend_prose)
   (libraries reference_interpreter util il el)
-  (modules translate il2ir print ir interpreter)
+  (modules il2ir print ir interpreter validation)
 )

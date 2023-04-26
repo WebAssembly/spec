@@ -80,8 +80,8 @@ let rec exp2expr exp = match exp.it with
         | Ast.CaseE (Ast.Atom "I32", _, _) ->
             let ty =
               Reference_interpreter.Types.NumType Reference_interpreter.Types.I32Type in
-            Ir.ConstE (Ir.WasmT (ty), exp2expr num)
-        | Ast.VarE (id) -> Ir.ConstE (Ir.VarT id.it, exp2expr num)
+            Ir.ConstE (Ir.WasmTE (ty), exp2expr num)
+        | Ast.VarE (id) -> Ir.ConstE (Ir.VarTE id.it, exp2expr num)
         | _ -> gen_fail_msg_of_exp exp "value expression" |> failwith
       end
   (* Call with multiple arguments *)

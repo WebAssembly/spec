@@ -23,9 +23,9 @@ let rec repeat str num =
 
 (* wasm type *)
 
-let structured_string_of_wtype = function
-  | VarT s -> "VarT " ^ s
-  | _ -> "WasmT _"
+let structured_string_of_wasm_type_expr = function
+  | VarTE s -> "VarTE " ^ s
+  | _ -> "WasmTE _"
 
 (* name *)
 
@@ -111,7 +111,7 @@ let rec structured_string_of_expr = function
   | NameE n -> "NameE (" ^ structured_string_of_name n ^ ")"
   | ConstE (t, e) ->
       "ConstE (" ^
-        structured_string_of_wtype t ^ ", " ^
+        structured_string_of_wasm_type_expr t ^ ", " ^
         structured_string_of_expr e ^ ")"
   | RefNullE n -> "RefNullE (" ^ structured_string_of_name n ^ ")"
   | RefFuncAddrE e -> "RefFuncAddrE (" ^ structured_string_of_expr e ^ ")"
@@ -217,9 +217,15 @@ let structured_string_of_algorithm = function
 
 (* IR stringifier *)
 
-let string_of_wtype = function
-  | VarT s -> s
-  | WasmT (ty) -> Reference_interpreter.Types.string_of_value_type ty
+let string_of_ir_type = function
+  | WasmValueT (_) -> "WasmValueT"
+  | WasmValueTopT -> "WasmValueTopT"
+  | IntT -> "IntT"
+  | BotT -> "BotT"
+
+let string_of_wasm_type_expr = function
+  | VarTE s -> s
+  | WasmTE (ty) -> Reference_interpreter.Types.string_of_value_type ty
 
 let rec string_of_name = function
   | N s -> s
@@ -285,7 +291,7 @@ let rec string_of_expr = function
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | NameE n -> string_of_name n
   | ConstE (t, e) ->
-      sprintf "the value %s.CONST %s" (string_of_wtype t) (string_of_expr e)
+      sprintf "the value %s.CONST %s" (string_of_wasm_type_expr t) (string_of_expr e)
   | RefNullE n -> sprintf "the value ref.null %s" (string_of_name n)
   | RefFuncAddrE e -> sprintf "the value ref.funcaddr %s" (string_of_expr e)
   | YetE s -> sprintf "YetE (%s)" s
