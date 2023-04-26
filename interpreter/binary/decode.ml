@@ -172,7 +172,7 @@ let vec_type s =
 let heap_type s =
   let pos = pos s in
   either [
-    (fun s -> DefHT (var_type s33 s));
+    (fun s -> VarHT (var_type s33 s));
     (fun s ->
       match s7 s with
       | -0x10 -> FuncHT
@@ -256,14 +256,14 @@ let sub_type s =
   | Some i when i = -0x30 land 0x7f ->
     skip 1 s;
     let xs = vec (var_type u32) s in
-    SubT (NoFinal, xs, str_type s)
+    SubT (NoFinal, List.map (fun x -> VarHT x) xs, str_type s)
   | Some i when i = -0x32 land 0x7f ->
     skip 1 s;
     let xs = vec (var_type u32) s in
-    SubT (Final, xs, str_type s)
+    SubT (Final, List.map (fun x -> VarHT x) xs, str_type s)
   | _ -> SubT (Final, [], str_type s)
 
-let def_type s =
+let rec_type s =
   match peek s with
   | Some i when i = -0x31 land 0x7f -> skip 1 s; RecT (vec sub_type s)
   | _ -> RecT [sub_type s]
@@ -975,7 +975,7 @@ let section tag f default s =
 
 (* Type section *)
 
-let type_ s = at def_type s
+let type_ s = at rec_type s
 
 let type_section s =
   section `TypeSection (vec type_) [] s

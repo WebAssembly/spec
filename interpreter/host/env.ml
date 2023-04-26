@@ -39,11 +39,8 @@ let exit vs =
   exit (int (single vs))
 
 
-let alloc_func f x =
-  ExternFunc (Func.alloc_host x f)
-
 let lookup name et =
   match Utf8.encode name, et with
-  | "abort", ExternFuncT (DynX x) -> alloc_func abort x
-  | "exit", ExternFuncT (DynX x) -> alloc_func exit x
+  | "abort", ExternFuncT ct -> ExternFunc (Func.alloc_host ct abort)
+  | "exit", ExternFuncT ct -> ExternFunc (Func.alloc_host ct exit)
   | _ -> raise Not_found

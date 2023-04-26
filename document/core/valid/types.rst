@@ -9,36 +9,6 @@ However, restrictions apply to most other types, such as :ref:`reference types <
 Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`function types <syntax-functype>` for ease of processing.
 
 
-.. index:: type identifier, type index
-   pair: validation; type identifier
-   single: abstract syntax; type identifier
-.. _valid-typeid:
-.. _valid-typeidx:
-
-Type Identifiers
-~~~~~~~~~~~~~~~~
-
-During validation, :ref:`type identifiers <syntax-typeid>` are represented as :ref:`type indices <syntax-typeidx>`, which are lookued up as :ref:`function types <syntax-functype>` by the following rule.
-
-:math:`\typeidx`
-................
-
-* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
-
-* Then the type identifier is valid as :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
-
-.. math::
-   \frac{
-     C.\CTYPES[\typeidx] = \functype
-   }{
-     C \vdashtypeid \typeidx : \functype
-   }
-
-.. note::
-   :ref:`Dynamic types <syntax-type-dyn>` do not arise during validation.
-   They only need to be :ref:`looked up <valid-typeaddr>` during :ref:`execution <exec-type>`.
-
-
 .. index:: number type
    pair: validation; number type
    single: abstract syntax; number type
@@ -81,7 +51,7 @@ Vector Types
 Heap Types
 ~~~~~~~~~~
 
-Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type identifier <syntax-typeid>` is.
+Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is.
 
 :math:`\FUNC`
 .............
@@ -105,18 +75,18 @@ Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type 
      C \vdashheaptype \EXTERN \ok
    }
 
-:math:`\typeid`
-...............
+:math:`\typeidx`
+................
 
-* The type identifier :math:`\typeid` must be valid.
+* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
 
 * Then the heap type is valid.
 
 .. math::
    \frac{
-     C \vdashtypeid \typeid : \functype
+     C.\CTYPES[\typeidx] = \deftype
    }{
-     C \vdashheaptype \typeid \ok
+     C \vdashheaptype \typeidx \ok
    }
 
 :math:`\BOT`
@@ -278,6 +248,7 @@ Instruction Types
    pair: validation; function type
    single: abstract syntax; function type
 .. _valid-functype:
+.. _valid-deftype:
 
 Function Types
 ~~~~~~~~~~~~~~

@@ -28,9 +28,8 @@ let memory =
   ExternMemory (Memory.alloc mt)
 
 let func f ft =
-  let x = Types.alloc_uninit () in
-  Types.init x (CtxT ([(DynX x, SubT (Final, [], DefFuncT ft))], 0l));
-  ExternFunc (Func.alloc_host x (f ft))
+  let dt = DefT (RecT [SubT (Final, [], DefFuncT ft)], 0l) in
+  ExternFunc (Func.alloc_host dt (f ft))
 
 let print_value v =
   Printf.printf "%s : %s\n"

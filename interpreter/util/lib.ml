@@ -157,7 +157,7 @@ struct
   let rec iteri f xs = iteri' f 0l xs
   and iteri' f i = function
     | [] -> ()
-    | x::xs -> f i; iteri' f (Int32.add i 1l) xs
+    | x::xs -> f i x; iteri' f (Int32.add i 1l) xs
 
   let rec mapi f xs = mapi' f 0l xs
   and mapi' f i = function

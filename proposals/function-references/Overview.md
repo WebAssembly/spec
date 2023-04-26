@@ -62,9 +62,9 @@ The function `$hof` takes a function pointer as parameter, and is invoked by `$c
 
 It is also possible to create a typed function table:
 ```wasm
-(table 0 (ref $i32-i32))
+(table 1 (ref $i32-i32) (ref.func $inc))
 ```
-Such a table can neither contain `null` entries nor functions of another type. Any use of `call_indirect` on this table does hence avoid all runtime checks beyond the basic bounds check. By using multiple tables, each one can be given a homogeneous type. The table can be initialised with an initializer or by growing it.
+Such a table can neither contain `null` entries nor functions of another type. Because entries can't be `null`, tables of concrete type are required to be declared with an explicit initialisation value. Any use of `call_indirect` on this table does hence avoid all runtime checks beyond the basic bounds check. By using multiple tables, each one can be given a homogeneous type. The table can be initialised with an initializer or by growing it.
 
 Typed function references are a subtype of `funcref`, so they can also be used as untyped references. All previous uses of `ref.func` remain valid:
 ```wasm

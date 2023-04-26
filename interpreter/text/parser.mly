@@ -116,7 +116,7 @@ let scoped category n space at =
   {map = VarMap.map (shift category at n) space.map; count = space.count}
 
 
-type types = {space : space; mutable list : type_ list; mutable ctx : ctx_type list}
+type types = {space : space; mutable list : type_ list; mutable ctx : def_type list}
 let empty_types () = {space = empty (); list = []; ctx = []}
 
 type context =
@@ -162,7 +162,7 @@ let label (c : context) x = lookup "label " c.labels x
 let field (c : context) x = lookup "field " c.fields x
 
 let func_type (c : context) x =
-  match expand_ctx_type (Lib.List32.nth c.types.ctx x.it) with
+  match expand_def_type (Lib.List32.nth c.types.ctx x.it) with
   | DefFuncT ft -> ft
   | _ -> error x.at ("non-function type " ^ Int32.to_string x.it)
   | exception Failure _ -> error x.at ("unknown type " ^ Int32.to_string x.it)
@@ -194,9 +194,9 @@ let bind_field (c : context) x = bind_abs "field" c.fields x
 let define_type (c : context) (ty : type_) =
   c.types.list <- c.types.list @ [ty]
 
-let define_ctx_type (c : context) (ct : ctx_type) =
+let define_def_type (c : context) (dt : def_type) =
   assert (c.types.space.count > Lib.List32.length c.types.ctx);
-  c.types.ctx <- c.types.ctx @ [ct]
+  c.types.ctx <- c.types.ctx @ [dt]
 
 let anon_type (c : context) at = bind "type" c.types.space 1l at
 let anon_func (c : context) at = bind "function" c.funcs 1l at
@@ -215,17 +215,15 @@ let inline_func_type (c : context) ft at =
   let st = SubT (Final, [], DefFuncT ft) in
   match
     Lib.List.index_where (function
-      | CtxT ([(_, st')], 0l) -> st = st'
+      | DefT (RecT [st'], 0l) -> st = st'
       | _ -> false
       ) c.types.ctx
   with
   | Some i -> Int32.of_int i @@ at
   | None ->
     let i = anon_type c at in
-    let x = Types.alloc_uninit () in
-    Types.init x (CtxT ([(DynX x, st)], 0l));
     define_type c (RecT [st] @@ at);
-    define_ctx_type c (def_of x);
+    define_def_type c (DefT (RecT [st], 0l));
     i @@ at
 
 let inline_func_type_explicit (c : context) x ft at =
@@ -328,7 +326,7 @@ heap_type :
   | NOFUNC { fun c -> NoFuncHT }
   | EXTERN { fun c -> ExternHT }
   | NOEXTERN { fun c -> NoExternHT }
-  | var { fun c -> DefHT (StatX ($1 c type_).it) }
+  | var { fun c -> VarHT (StatX ($1 c type_).it) }
 
 ref_type :
   | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
@@ -407,9 +405,11 @@ str_type :
 sub_type :
   | str_type { fun c -> SubT (Final, [], $1 c) }
   | LPAR SUB var_list str_type RPAR
-    { fun c -> SubT (NoFinal, List.map (fun x -> StatX x.it) ($3 c type_), $4 c) }
+    { fun c -> SubT (NoFinal,
+        List.map (fun x -> VarHT (StatX x.it)) ($3 c type_), $4 c) }
   | LPAR SUB FINAL var_list str_type RPAR
-    { fun c -> SubT (Final, List.map (fun x -> StatX x.it) ($4 c type_), $5 c) }
+    { fun c -> SubT (Final,
+        List.map (fun x -> VarHT (StatX x.it)) ($4 c type_), $5 c) }
 
 table_type :
   | limits ref_type { fun c -> TableT ($1, $2 c) }
@@ -1099,9 +1099,9 @@ inline_export :
 type_def :
   | LPAR TYPE sub_type RPAR
     { let at = at () in
-      fun c -> let i = anon_type c at in fun () -> i, $3 c }
+      fun c -> ignore (anon_type c at); fun () -> $3 c }
   | LPAR TYPE bind_var sub_type RPAR  /* Sugar */
-    { fun c -> let i = bind_type c $3 in fun () -> i, $4 c }
+    { fun c -> ignore (bind_type c $3); fun () -> $4 c }
 
 type_def_list :
   | /* empty */ { fun c () -> [] }
@@ -1109,21 +1109,20 @@ type_def_list :
     { fun c -> let tf = $1 c in let tsf = $2 c in fun () ->
       let st = tf () and sts = tsf () in st::sts }
 
-def_type :
+rec_type :
   | type_def
     { fun c -> let tf = $1 c in fun () ->
-      let x, st = tf () in
-      define_ctx_type c (CtxT ([(StatX x, st)], 0l));
+      let st = tf () in
+      define_def_type c (DefT (RecT [st], 0l));
       RecT [st] }
   | LPAR REC type_def_list RPAR
     { fun c -> let tf = $3 c in fun () ->
-      let xsts = tf () in
-      let rts = List.map (fun (x, st) -> (StatX x, st)) xsts in
-      Lib.List32.iteri (fun i (x, _) -> define_ctx_type c (CtxT (rts, i))) xsts;
-      RecT (snd (List.split xsts)) }
+      let sts = tf () in
+      Lib.List32.iteri (fun i _ -> define_def_type c (DefT (RecT sts, i))) sts;
+      RecT sts }
 
 type_ :
-  | def_type
+  | rec_type
     { let at = at () in
       fun c -> let tf = $1 c in fun () -> define_type c (tf () @@ at) }
 

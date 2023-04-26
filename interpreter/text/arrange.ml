@@ -77,11 +77,6 @@ let heap_type t = string_of_heap_type t
 let val_type t = string_of_val_type t
 let storage_type t = string_of_storage_type t
 
-let var_type = function
-  | StatX x -> nat32 x
-  | DynX _ -> assert false
-  | RecX x -> "rec." ^ nat32 x
-
 let null = function
   | NoNull -> ""
   | Null -> "null "
@@ -117,9 +112,9 @@ let sub_type = function
   | SubT (Final, [], st) -> str_type st
   | SubT (fin, xs, st) ->
     Node (String.concat " "
-      (("sub" ^ final fin ):: List.map var_type xs), [str_type st])
+      (("sub" ^ final fin ):: List.map heap_type xs), [str_type st])
 
-let def_type i j st =
+let rec_type i j st =
   Node ("type $" ^ nat (i + j), [sub_type st])
 
 let limits nat {min; max} =
@@ -673,9 +668,9 @@ let data i seg =
 let type_ (ns, i) ty =
   match ty.it with
   | RecT [st] when not Free.(Set.mem (Int32.of_int i) (type_ ty).types) ->
-    def_type i 0 st :: ns, i + 1
+    rec_type i 0 st :: ns, i + 1
   | RecT sts ->
-    Node ("rec", List.mapi (def_type i) sts) :: ns, i + List.length sts
+    Node ("rec", List.mapi (rec_type i) sts) :: ns, i + List.length sts
 
 let import_desc fx tx mx gx d =
   match d.it with

@@ -64,7 +64,7 @@ let list free xs = List.fold_left union empty (List.map free xs)
 
 let var_type = function
   | StatX x -> types (idx' x)
-  | DynX _ | RecX _ -> empty
+  | RecX _ -> empty
 
 let num_type = function
   | I32T | I64T | F32T | F64T -> empty
@@ -77,7 +77,8 @@ let heap_type = function
   | I31HT | StructHT | ArrayHT -> empty
   | FuncHT | NoFuncHT -> empty
   | ExternHT | NoExternHT -> empty
-  | DefHT x -> var_type x
+  | VarHT x -> var_type x
+  | DefHT _ct -> empty  (* assume closed *)
   | BotHT -> empty
 
 let ref_type = function
@@ -107,9 +108,9 @@ let str_type = function
   | DefFuncT ft -> func_type ft
 
 let sub_type = function
-  | SubT (_fin, xs, st) -> list var_type xs ++ str_type st
+  | SubT (_fin, hts, st) -> list heap_type hts ++ str_type st
 
-let def_type = function
+let rec_type = function
   | RecT sts -> list sub_type sts
 
 let global_type (GlobalT (_mut, t)) = val_type t
@@ -189,7 +190,7 @@ let elem (s : elem_segment) =
 let data (s : data_segment) =
   segment_mode memories s.it.dmode
 
-let type_ (t : type_) = def_type t.it
+let type_ (t : type_) = rec_type t.it
 
 let export_desc (d : export_desc) =
   match d.it with

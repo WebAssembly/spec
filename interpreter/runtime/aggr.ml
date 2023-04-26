@@ -5,8 +5,8 @@ type field =
   | ValField of value ref
   | PackField of Pack.pack_size * int ref
 
-type struct_ = Struct of type_addr * field list
-type array = Array of type_addr * field list
+type struct_ = Struct of def_type * field list
+type array = Array of def_type * field list
 
 type ref_ += StructRef of struct_
 type ref_ += ArrayRef of array
@@ -38,29 +38,24 @@ let read_field fld exto =
   | _, _ -> failwith "read_field"
 
 
-let alloc_struct x vs =
-  let StructT fts = as_struct_str_type (expand_ctx_type (def_of x)) in
-  Struct (x, List.map2 alloc_field fts vs)
+let alloc_struct dt vs =
+  let StructT fts = as_struct_str_type (expand_def_type dt) in
+  Struct (dt, List.map2 alloc_field fts vs)
 
-let alloc_array x vs =
-  let ArrayT ft = as_array_str_type (expand_ctx_type (def_of x)) in
-  Array (x, List.map (alloc_field ft) vs)
+let alloc_array dt vs =
+  let ArrayT ft = as_array_str_type (expand_def_type dt) in
+  Array (dt, List.map (alloc_field ft) vs)
 
 
-let type_inst_of_struct (Struct (x, _)) = x
-let type_inst_of_array (Array (x, _)) = x
-
-let type_of_struct s =
-  as_struct_str_type (expand_ctx_type (def_of (type_inst_of_struct s)))
-let type_of_array a =
-  as_array_str_type (expand_ctx_type (def_of (type_inst_of_array a)))
+let type_of_struct (Struct (dt, _)) = dt
+let type_of_array (Array (dt, _)) = dt
 
 
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | StructRef s -> DefHT (DynX (type_inst_of_struct s))
-    | ArrayRef a -> DefHT (DynX (type_inst_of_array a))
+    | StructRef s -> DefHT (type_of_struct s)
+    | ArrayRef a -> DefHT (type_of_array a)
     | r -> type_of_ref' r
 
 let string_of_field = function
