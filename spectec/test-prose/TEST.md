@@ -479,5 +479,138 @@ data.drop
 1. Perform $with_data(z, x, []).
 
 == IR Validation...
+
+unreachable
+Ok
+
+nop
+Ok
+
+drop
+Ok
+
+select
+Ok
+
+block
+Failure("LetI (YetE (`%->%`(tmp0, tmp1)), NameE (N(bt)))")
+
+loop
+Failure("LetI (YetE (`%->%`(tmp0, tmp1)), NameE (N(bt)))")
+
+if
+Failure("Not found: SupN(N(instr_1), *)")
+
+label
+Ok
+
+br
+Failure("PopI (ListE ([NameE (SupN(N(val'), *)), ListE ([NameE (SupN(N(val), n)), ListE ([ListE ([YetE (BR_admininstr(0))]), NameE (SupN(N(instr), *))])])]))")
+
+br_if
+Ok
+
+br_table
+Failure("IndexAccessE (NameE (SupN(N(l), *)), NameE (N(i)))")
+
+frame
+Failure("FrameE")
+
+return
+Failure("FrameE")
+
+unop
+Ok
+
+binop
+Ok
+
+testop
+Ok
+
+relop
+Ok
+
+extend
+Failure("Not found: N(nt)")
+
+cvtop
+Failure("Not found: N(nt_1)")
+
+ref.is_null
+Ok
+
+local.tee
+Ok
+
+call
+Failure("IndexAccessE (AppE (N(funcaddr), [ NameE (N(z)) ]), NameE (N(x)))")
+
+call_indirect
+Failure("LetI (RefFuncAddrE (NameE (N(a))), IndexAccessE (AppE (N(table), [ NameE (N(z)), NameE (N(x)) ]), NameE (N(i))))")
+
+call_addr
+Failure("Not found: N(a)")
+
+ref.func
+Failure("RefFuncAddrE (IndexAccessE (AppE (N(funcaddr), [ NameE (N(z)) ]), NameE (N(x))))")
+
+local.get
+Failure("AppE (N(local), [ NameE (N(z)), NameE (N(x)) ]): TopT is not subtype of WasmValueTopT")
+
+global.get
+Failure("AppE (N(global), [ NameE (N(z)), NameE (N(x)) ]): TopT is not subtype of WasmValueTopT")
+
+table.get
+Failure("IndexAccessE (AppE (N(table), [ NameE (N(z)), NameE (N(x)) ]), NameE (N(i)))")
+
+table.size
+Ok
+
+table.fill
+Ok
+
+table.copy
+Ok
+
+table.init
+Failure("IndexAccessE (AppE (N(elem), [ NameE (N(z)), NameE (N(y)) ]), NameE (N(i)))")
+
+load
+Failure("Not found: N(nt)")
+
+memory.fill
+Failure("YetE (I32_numtype)")
+
+memory.copy
+Failure("YetE (I32_numtype)")
+
+memory.init
+Failure("YetE (I32_numtype)")
+
+local.set
+Ok
+
+global.set
+Ok
+
+table.set
+Ok
+
+table.grow
+Failure("YetE (ref^n{})")
+
+elem.drop
+Ok
+
+store
+Failure("Not found: N(nt)")
+
+memory.grow
+Failure("YetE (0^((n * 64) * $Ki){})")
+
+data.drop
+Ok
+Pass/Total: [20/44]
 == Complete.
 ```

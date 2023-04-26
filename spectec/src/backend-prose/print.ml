@@ -221,7 +221,8 @@ let string_of_ir_type = function
   | WasmValueT (_) -> "WasmValueT"
   | WasmValueTopT -> "WasmValueTopT"
   | IntT -> "IntT"
-  | BotT -> "BotT"
+  | EmptyListT -> "EmptyListT"
+  | TopT -> "TopT"
 
 let string_of_wasm_type_expr = function
   | VarTE s -> s

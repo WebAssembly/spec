@@ -2,7 +2,8 @@ type ir_type =
   | WasmValueT of Reference_interpreter.Types.value_type
   | WasmValueTopT
   | IntT
-  | BotT
+  | EmptyListT
+  | TopT
 
 type value =
   | WasmV of Reference_interpreter.Values.value
