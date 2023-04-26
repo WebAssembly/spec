@@ -78,6 +78,7 @@ let log s = if !log then Printf.printf "== %s\n%!" s
 let () =
   Printexc.record_backtrace true;
   try
+    log "Starting."
     Arg.parse argspec add_arg usage;
     log "Parsing...";
     let el = List.concat_map Frontend.Parse.parse_file !srcs in
