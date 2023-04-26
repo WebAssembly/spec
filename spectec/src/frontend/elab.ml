@@ -859,7 +859,8 @@ and elab_path env p t : Il.path * typ =
   | DotP (p1, atom) ->
     let p1', t1 = elab_path env p1 t in
     let tfs = as_struct_typ "path" env Check t1 p1.at in
-    Il.DotP (p1', elab_atom atom) $ p.at, find_field tfs atom p1.at
+    Il.DotP (p1', elab_typ env t1, elab_atom atom) $ p.at,
+      find_field tfs atom p1.at
 
 
 and cast_empty phrase env t at : Il.exp =

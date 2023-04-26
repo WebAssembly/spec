@@ -159,7 +159,7 @@ and t_path' env n path = match path with
   | RootP -> [], path
   | IdxP (path, e) -> binary t_path t_exp env n (path, e) (fun (path', e') -> IdxP (path', e'))
   | SliceP (path, e1, e2) -> ternary t_path t_exp t_exp env n (path, e1, e2) (fun (path', e1', e2') -> SliceP (path', e1', e2'))
-  | DotP (path, a) -> unary t_path env n path (fun path' -> DotP (path', a))
+  | DotP (path, t, a) -> unary t_path env n path (fun path' -> DotP (path', t, a))
 
 let rec t_prem env n : premise -> eqns * premise = phrase t_prem' env n
 

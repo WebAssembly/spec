@@ -84,7 +84,7 @@ and t_path path = match path.it with
   | RootP -> []
   | IdxP (path, e) -> t_path path @ t_exp e
   | SliceP (path, e1, e2) -> t_path path @ t_exp e1 @ t_exp e2
-  | DotP (path, _) -> t_path path
+  | DotP (path, _, _) -> t_path path
 
 
 let rec t_prem prem = match prem.it with

@@ -170,11 +170,14 @@ and string_of_expfield (atom, e) =
 and string_of_path p =
   match p.it with
   | RootP -> ""
-  | IdxP (p1, e) -> string_of_path p1 ^ "[" ^ string_of_exp e ^ "]"
+  | IdxP (p1, e) ->
+    string_of_path p1 ^ "[" ^ string_of_exp e ^ "]"
   | SliceP (p1, e1, e2) ->
     string_of_path p1 ^ "[" ^ string_of_exp e1 ^ " : " ^ string_of_exp e2 ^ "]"
-  | DotP ({it = RootP; _}, atom) -> string_of_atom atom
-  | DotP (p1, atom) -> string_of_path p1 ^ "." ^ string_of_atom atom
+  | DotP ({it = RootP; _}, t, atom) ->
+    string_of_atom atom ^ "_" ^ string_of_typ t
+  | DotP (p1, t, atom) ->
+    string_of_path p1 ^ "." ^ string_of_atom atom ^ "_" ^ string_of_typ t
 
 and string_of_iterexp (iter, ids) =
   string_of_iter iter ^ "{" ^ String.concat " " (List.map Source.it ids) ^ "}"

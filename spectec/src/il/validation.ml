@@ -460,8 +460,9 @@ and valid_path env p t : typ =
     valid_exp env e2 (NatT $ e2.at);
     let _ = as_list_typ "path" env Check t1 p1.at in
     t1
-  | DotP (p1, atom) ->
-    let t1 = valid_path env p1 t in
+  | DotP (p1, t1, atom) ->
+    let t1' = valid_path env p1 t in
+    equiv_typ env t1' t1 p1.at;
     let tfs = as_struct_typ "path" env Check t1 p1.at in
     find_field tfs atom p1.at
 
