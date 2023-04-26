@@ -4,7 +4,7 @@ open Printf
 open Util.Source
 
 
-(* helper functions *)
+(** helper functions *)
 
 let check_nop instrs = match instrs with
   | [] -> [Ir.NopI]
@@ -21,6 +21,26 @@ let gen_fail_msg_of_prem prem =
 let take n str =
   let len = min n (String.length str) in
   (String.sub str 0 len) ^ if len <= n then "" else "..."
+
+let rec neg cond = match cond with
+| Ir.NotC c -> c
+| Ir.AndC (c1, c2) -> Ir.OrC (neg c1, neg c2)
+| Ir.OrC (c1, c2) -> Ir.AndC (neg c1, neg c2)
+| Ir.GtC (e1, e2) -> Ir.LeC(e1, e2)
+| Ir.GeC (e1, e2) -> Ir.LtC(e1, e2)
+| Ir.LtC (e1, e2) -> Ir.GeC(e1, e2)
+| Ir.LeC (e1, e2) -> Ir.GtC(e1, e2)
+| _ -> Ir.NotC cond
+
+let rec count_instrs instrs = instrs |>
+  List.map (function
+  | Ir.IfI (_, il1, il2)
+  | Ir.EitherI (il1, il2) -> 1 + count_instrs il1 + count_instrs il2
+  | Ir.OtherwiseI (il)
+  | Ir.WhileI (_, il)
+  | Ir.RepeatI (_, il) -> 1 + count_instrs il
+  | _ -> 1
+  ) |> List.fold_left (+) 0
 
 (** Translate `Ast.exp` **)
 
@@ -277,8 +297,9 @@ let reduction2instrs (_, _, rhs, prems) =
     | Ast.ElsePr -> [ Ir.OtherwiseI (instrs |> check_nop) ]
     | Ast.AssignPr(exp1, exp2) -> ( match exp1.it with
       | CaseE (atom, _e, t) -> [ Ir.IfI (
-          YetC ("typeof(" ^ (Print.string_of_exp exp2) ^ ") = " ^
-            (Print.string_of_atom atom) ^ "_" ^ (Print.string_of_typ t)
+          EqC (
+            (YetE ("typeof(" ^ (Print.string_of_exp exp2) ^ ")")),
+            (YetE ((Print.string_of_atom atom) ^ "_" ^ (Print.string_of_typ t)))
           ),
           Ir.LetI (exp2expr exp1, exp2expr exp2) :: instrs,
           []
@@ -336,6 +357,67 @@ let merge_otherwise instrs1 instrs2 = match instrs2 with
   merged
 | _ -> instrs1 @ instrs2
 
+(* Enhance readability of IR *)
+let rec infer_else instrs = List.fold_right (fun i il ->
+  let new_i = match i with
+  | Ir.IfI (c, il1, il2) -> Ir.IfI (c, infer_else il1, infer_else il2)
+  | Ir.OtherwiseI (il) -> Ir.OtherwiseI (infer_else il)
+  | Ir.WhileI (c, il) -> Ir.WhileI (c, infer_else il)
+  | Ir.RepeatI (e, il) -> Ir.RepeatI (e, infer_else il)
+  | Ir.EitherI (il1, il2) -> Ir.EitherI (infer_else il1, infer_else il2)
+  | _ -> i
+  in
+  match (new_i, il) with
+  | ( Ir.IfI(c1, then_body, []), Ir.IfI(c2, else_body, []) :: rest )
+    when neg c1 = c2 ->
+      Ir.IfI(c1, then_body, else_body) :: rest
+  | _ -> new_i :: il
+) instrs []
+
+let rec swap_if instr =
+  let new_ = List.map swap_if in
+  match instr with
+  | Ir.IfI (c, il, [])
+  | Ir.IfI (c, il, [ NopI ]) -> Ir.IfI (c, new_ il, [])
+  | Ir.IfI (c, [ NopI ], il) -> Ir.IfI (neg c, new_ il, [])
+  | Ir.IfI (c, il1, il2) ->
+    if count_instrs il1 <= count_instrs il2 then
+      Ir.IfI (c, new_ il1, new_ il2)
+    else
+      Ir.IfI (neg c, new_ il2, new_ il1)
+  | Ir.OtherwiseI (il) -> Ir.OtherwiseI (new_ il)
+  | Ir.WhileI (c, il) -> Ir.WhileI (c, new_ il)
+  | Ir.RepeatI (e, il) -> Ir.RepeatI (e, new_ il)
+  | Ir.EitherI (il1, il2) -> Ir.EitherI (new_ il1, new_ il2)
+  | _ -> instr
+
+let rec unify_head acc l1 l2 = match (l1, l2) with
+| h1 :: t1, h2 :: t2 when h1 = h2 -> unify_head (h1 :: acc) t1 t2
+| _ -> ((List.rev acc), l1, l2)
+
+let unify_tail instrs1 instrs2 =
+  let rev = List.rev in
+  let (rh, rt1, rt2) = unify_head [] (rev instrs1) (rev instrs2) in
+  (rev rt1, rev rt2, rev rh)
+
+let rec unify_if_tail instr =
+  let new_ = List.concat_map unify_if_tail in
+  match instr with
+  | Ir.IfI (c, il1, il2) ->
+    let (then_il, else_il, finally_il) = unify_tail (new_ il1) (new_ il2) in
+    Ir.IfI (c, then_il, else_il) :: finally_il
+  | Ir.OtherwiseI (il) -> [ Ir.OtherwiseI (new_ il) ]
+  | Ir.WhileI (c, il) -> [ Ir.WhileI (c, new_ il) ]
+  | Ir.RepeatI (e, il) -> [ Ir.RepeatI (e, new_ il) ]
+  | Ir.EitherI (il1, il2) -> [ Ir.EitherI (new_ il1, new_ il2) ]
+  | _ -> [instr]
+
+let enhance_readability instrs =
+  instrs
+  |> infer_else
+  |> List.map swap_if
+  |> List.concat_map unify_if_tail
+
 (** Main translation **)
 
 (* `reduction_group list` -> `Backend-prose.Ir.Algo` *)
@@ -363,7 +445,7 @@ let reduction_group2algo reduction_group acc =
       List.fold_right merge_otherwise blocks []
     in
 
-  let body = (pop_instrs @ instrs) |> check_nop in
+  let body = (pop_instrs @ instrs) |> check_nop |> enhance_readability in
 
   Ir.Algo (algo_name, body) :: acc
 
