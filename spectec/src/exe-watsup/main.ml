@@ -153,6 +153,9 @@ let () =
         if !warn then Backend_latex.Splice.warn env;
       );
     | Prose ->
+      if not !pass_animate then
+        failwith "Prose generatiron requires `--animate` flag."
+      else
       log "Prose Generation...";
       let ir_algos = Backend_prose.Il2ir.translate il in
       List.iter
