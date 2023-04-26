@@ -19,9 +19,6 @@ Animation failed:where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
 == Prose Generation...
 Invalid expression `!($default_(t))` to be IR identifier.
 Invalid premise `(if ($default_(t) =/= ?()))*{t}` to be IR instr.
-Warning: No corresponding if for
-1. Otherwise:
-  a. Push the value i32.CONST 0 to the stack.
 unreachable
 1. Trap.
 
@@ -182,8 +179,11 @@ cvtop
 ref.is_null
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
-3. Let the value ref.null rt be val.
-4. Push the value i32.CONST 1 to the stack.
+3. If YetC (typeof(val) = REF.NULL_val), then:
+  a. Let the value ref.null rt be val.
+  b. Push the value i32.CONST 1 to the stack.
+4. Else:
+  a. Push the value i32.CONST 0 to the stack.
 
 local.tee
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -200,11 +200,14 @@ call_indirect
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
 3. If i < the length of $table(z, x), then:
-  a. Let the value ref.funcaddr a be $table(z, x)[i].
-  b. If a < the length of $funcinst(z), then:
-    1) Let YetE (`%;%`(m, func)) be $funcinst(z)[a].
-    2) Execute (CALL_ADDR a).
-  c. Else:
+  a. If YetC (typeof($table(z, x)[i]) = REF.FUNC_ADDR_ref), then:
+    1) Let the value ref.funcaddr a be $table(z, x)[i].
+    2) If a < the length of $funcinst(z), then:
+      a) Let YetE (`%;%`(m, func)) be $funcinst(z)[a].
+      b) Execute (CALL_ADDR a).
+    3) Else:
+      a) Trap.
+  b. Else:
     1) Trap.
 4. Else:
   a. Trap.
