@@ -106,6 +106,6 @@ let rec eq_prem prem1 prem2 =
     eq_id id1 id2 && op1 = op2 && eq_exp e1 e2
   | IfPr e1, IfPr e2 -> eq_exp e1 e2
   | ElsePr, ElsePr -> true
-  | IterPr (prem1, iterexp1), IterPr (prem2, iterexp2) ->
-  eq_prem prem1 prem2 && eq_iterexp iterexp1 iterexp2
+  | IterPr (prem1, e1), IterPr (prem2, e2) ->
+    eq_prem prem1 prem2 && eq_iterexp e1 e2
   | _, _ -> false
